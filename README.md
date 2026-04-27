@@ -1,56 +1,115 @@
-# SnackPack Universe Website
+# SnackPack Universe — Website
 
-Public-facing website for the SnackPack Universe app world.
+**Live site:** [www.snackpackuniverse.com](https://www.snackpackuniverse.com)  
+**Hosted:** GitHub Pages (free tier)
 
-Live domain: [www.snackpackuniverse.com](https://www.snackpackuniverse.com)  
-GitHub Pages repo: [Rarepuppers/website-snackpack-universe](https://github.com/Rarepuppers/website-snackpack-universe)
+---
 
-## Purpose
+## Naming Structure
 
-This site is the central home for 10+ SnackPack apps that share the same characters, visual world, and studio branding.
+This project uses two related names intentionally — here's why:
 
-It is intended to:
+| Name | Where it's used | Why |
+|---|---|---|
+| **SnackPack Universe** | Domain, website, registered business name, app store developer account | The public-facing "universe" brand that holds all 10 apps together |
+| **SnackPack Studios** | Logo, app store developer description, internal identity | The studio/creator identity behind the universe |
 
-- introduce the SnackPack Universe brand
-- list all apps in one place
-- give each app its own landing page
-- host privacy-policy pages needed for store submissions
-- provide a stable public website that can grow as more apps launch
+### The Parent Company Model
+In the Google Play Store and Apple App Store, the developer account is registered as **SnackPack Universe** (the legal business name). The developer description reads: *"Developed by the team at SnackPack Studios."*
 
-## Current Status
+This is a common pattern — think "Pixar" (studio) vs. the individual film franchises, or "Supercell" (studio) vs. Clash of Clans. The studio makes the universe; the universe holds the apps.
 
-The website structure is in place and published through GitHub Pages with a custom Porkbun domain.
+### Visual Identity
+The logo — the Corgi peeking out of the teal and yellow backpack — is the primary brand anchor. On a small phone screen, the icon character is what parents and kids remember, not the small text underneath it. Whether the supporting text reads "Studios" or "Universe," the visual DNA is consistent.
 
-Two apps are close to launch. The remaining launch blockers are:
+---
 
-- Google Play developer account setup
-- billing configuration
-- final privacy-policy review and publication
-- linking each app listing back to its website and privacy page
+## Project Structure
 
-## Site Structure
+```
+snackpackuniverse.com/
+├── index.html                          # Homepage — studio landing page
+├── site.css                            # Global styles
+├── sitemap.xml
+├── robots.txt
+│
+├── apps/
+│   ├── index.html                      # Apps index — all 10 listed
+│   ├── snackpack-1-abcs-alphabet/
+│   │   ├── index.html                  # App 1 product page
+│   │   └── screenshots/               # App 1 screenshots (9 screens)
+│   ├── snackpack-2-123s-counting/
+│   │   ├── index.html                  # App 2 product page
+│   │   └── screenshots/               # App 2 screenshots (7 screens)
+│   └── snackpack-3-spelling-sentences/ # through snackpack-10-robot-recipe/
+│       └── index.html                  # Placeholder pages (apps 3–10)
+│
+├── privacy/
+│   ├── index.html                      # Privacy hub
+│   ├── snackpack-1-abcs-alphabet/      # Per-app privacy pages
+│   └── ... (one per app, all 10)
+│
+└── [branding assets]
+    ├── SnackPackStudios-logo.png        # Main logo (Corgi + backpack, white bg)
+    ├── SnackPackStudios-icon-preview.png # Logo on black circle bg
+    ├── snackpack-favicon-transparent.png # Site favicon
+    ├── snackpack-favicon-whitebg.png
+    ├── snackpack-wordmark-horizontal.png # "SNACKPACK" text only
+    ├── snackpack-feature-banner-transparent.png  # Hero banner (bear + corgi picnic)
+    ├── snackpack-feature-banner.png
+    ├── snackpack-social-share.png       # OG/social share image (1424x752)
+    ├── snackpack-social-share-transparent.png
+    ├── google-play-app-icon-512.png     # Google Play store icon (512x512)
+    ├── google-play-feature-graphic-1024x500.png  # Play Store feature graphic
+    └── google-play-feature-graphic-1024x500.jpg
+```
 
-- `index.html` - main studio homepage
-- `apps/` - app index plus individual app pages
-- `privacy/` - privacy hub plus per-app privacy pages
-- `site.css` - shared styling
-- `robots.txt` - crawler rules
-- `sitemap.xml` - search indexing support
-- `snackpack-*` assets - logos, icons, banners, and share images
+---
 
-## Hosting
+## Launch Checklist
 
-This repository is set up as a standalone GitHub Pages site for the SnackPack Universe brand, separate from the older account site:
+### Done ✅
+- [x] ABN registered and active
+- [x] Business name paid and pending (delayed by public holiday)
+- [x] Domain purchased — snackpackuniverse.com
+- [x] GitHub Pages hosting active
+- [x] Website live with all 10 app pages and privacy pages
+- [x] Privacy policies updated to meet Google Play and iOS App Store requirements
+- [x] App 1 (ABCs Alphabet) linked to its privacy page
+- [x] Google Play store assets prepared (icon 512px, feature graphic 1024x500)
 
-- older GitHub Pages site: [rarepuppers.github.io](https://rarepuppers.github.io/)
-- current branded domain: [www.snackpackuniverse.com](https://www.snackpackuniverse.com)
+### In Progress ⏳
+- [ ] Business name registration finalising (public holiday/weekend delay)
+- [ ] DUNS number — apply once ABN business name shows as active
+- [ ] Google Play Developer account — apply once DUNS confirmed
 
-## Next Updates
+### Pending 🔜
+- [ ] Set up Brevo (newsletter) and wire to homepage signup form
+- [ ] Set up Google Search Console and verify domain
+- [ ] Submit App 1 to Google Play once developer account active
+- [ ] Add real Google Play store links to app pages once live
+- [ ] iOS release — deferred (requires Mac + Apple Developer account)
 
-As launch work continues, this repo will be updated with:
+---
 
-- final app descriptions
-- store links
-- screenshots
-- polished privacy-policy text
-- launch-ready branding and metadata
+## App Roadmap
+
+| # | App Name | Status |
+|---|---|---|
+| 1 | ABCs Alphabet | Ready for launch |
+| 2 | 123s Counting | Ready for launch |
+| 3 | Spelling Sentences | Pipeline |
+| 4 | Math Arithmetic | Pipeline |
+| 5 | Tales & Trivia | Pipeline |
+| 6 | Creative Studio | Pipeline |
+| 7 | Mathematics | Pipeline |
+| 8 | Earth & Explorer | Pipeline |
+| 9 | Shape Space | Pipeline |
+| 10 | Robot Recipe | Pipeline |
+
+---
+
+## Contact
+
+**Email:** snackpackuniverse@gmail.com  
+**Website:** www.snackpackuniverse.com

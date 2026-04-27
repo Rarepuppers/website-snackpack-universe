@@ -431,25 +431,16 @@ section { padding: clamp(64px,8vw,112px) clamp(20px,5vw,60px); }
 /* ── NEWSLETTER ── */
 .nl-bg { background: linear-gradient(135deg, #2a1a08 0%, #1a2e20 100%); }
 .nl-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-.nl-card {
-  background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.14);
-  border-radius: var(--radius-lg); padding: 36px;
-}
-.nl-label {
-  font-family: var(--font-display); font-weight: 700; font-size: 0.82rem;
-  color: rgba(255,255,255,0.5); margin-bottom: 10px; display: block;
-}
-.nl-row { display: flex; gap: 10px; }
-.nl-input {
-  flex: 1; padding: 13px 20px; border-radius: 100px;
-  border: none; background: rgba(255,255,255,0.92);
-  font-family: var(--font-body); font-size: 0.95rem; font-weight: 600;
-  color: var(--ink); outline: none;
-}
-.nl-input:focus { box-shadow: 0 0 0 3px rgba(245,200,66,0.5); }
-.nl-note { font-size: 0.76rem; color: rgba(255,255,255,0.35); margin-top: 13px; text-align: center; }
 .nl-feats { display: flex; gap: 18px; margin-top: 22px; flex-wrap: wrap; }
 .nl-feat { font-size: 0.8rem; color: rgba(255,255,255,0.55); font-weight: 700; display: flex; align-items: center; gap: 5px; }
+.nl-brevo-wrap {
+  background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.nl-brevo-wrap iframe {
+  display: block; width: 100% !important; max-width: 100% !important;
+  border: none; margin-bottom: -8px;
+}
 
 /* ── FOOTER ── */
 footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
@@ -482,6 +473,7 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
   .app-card.flip { direction: ltr; }
   .app-card-screens { min-height: 300px; }
   .studio-inner, .nl-inner { grid-template-columns: 1fr; }
+  .nl-brevo-wrap iframe { height: 320px; }
   .studio-logo-wrap { order: -1; }
 }
 @media (max-width: 640px) {
@@ -805,17 +797,11 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
           <span class="nl-feat">✓ No spam, ever</span>
           <span class="nl-feat">✓ Unsubscribe anytime</span>
           <span class="nl-feat">✓ Android-first updates</span>
+          <span class="nl-feat">✓ Powered by Brevo</span>
         </div>
       </div>
-      <div class="nl-card">
-        <form action="mailto:snackpackuniverse@gmail.com?subject=SnackPack%20Newsletter%20Signup" method="post" enctype="text/plain">
-          <label class="nl-label" for="nl-email">Your email address</label>
-          <div class="nl-row">
-            <input class="nl-input" id="nl-email" name="email" type="email" placeholder="you@example.com" required>
-            <button class="btn btn-yellow" type="submit">Join →</button>
-          </div>
-          <p class="nl-note">Sends an email request. Mailchimp integration coming soon.</p>
-        </form>
+      <div class="nl-brevo-wrap">
+        <iframe width="540" height="305" src="https://c8e915bf.sibforms.com/serve/MUIFADVt4ZlXsiMM8wqiXqcGeRGBU0WF59M6fHpCegIo6lKDBIizhj4EybwGYQygjM8s619mIdox-2D8mik7upF-_5x30R9bApxbcK16bM2mPFLFTDokgMBnqtOdTY4r7u9TKTorSiC2MPn5mwOTncBTtrQAx2W58RDmqLLtC5OLxrFrNmZH7As9WjK4krNNglwOtxjzbYH3k9qc4Q==" frameborder="0" scrolling="auto" allowfullscreen style="display:block;margin-left:auto;margin-right:auto;max-width:100%;"></iframe>
       </div>
     </div>
   </div>
@@ -827,8 +813,8 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
     <a class="foot-brand" href="./">
       <img class="foot-logo" src="SnackPackStudios-logo.png" alt="SnackPack Studios">
       <div>
-        <div class="foot-name">SnackPack Studios</div>
-        <div class="foot-tagline">snackpackuniverse.com</div>
+        <div class="foot-name">SnackPack Universe</div>
+        <div class="foot-tagline">Developed by SnackPack Studios</div>
       </div>
     </a>
     <div class="foot-links">
@@ -840,7 +826,7 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
     </div>
   </div>
   <div class="foot-bottom">
-    <div class="foot-copy">© 2025 SnackPack Studios. All rights reserved.</div>
+    <div class="foot-copy">© 2025 SnackPack Universe. Developed by the team at SnackPack Studios.</div>
     <div class="foot-copy">Made with ♥ for curious kids</div>
   </div>
 </footer>
