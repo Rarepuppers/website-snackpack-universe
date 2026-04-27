@@ -435,21 +435,21 @@ section { padding: clamp(64px,8vw,112px) clamp(20px,5vw,60px); }
 .nl-feat { font-size: 0.8rem; color: rgba(255,255,255,0.55); font-weight: 700; display: flex; align-items: center; gap: 5px; }
 .nl-card {
   background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.14);
-  border-radius: var(--radius-lg); padding: 36px;
+  border-radius: var(--radius-lg); padding: 36px; text-align: center;
 }
 .nl-card-title {
-  font-family: var(--font-display); font-weight: 800; font-size: 1.1rem;
-  color: #fff; margin-bottom: 6px;
+  font-family: var(--font-display); font-weight: 800; font-size: 1.2rem;
+  color: #fff; margin-bottom: 8px;
 }
-.nl-card-sub { font-size: 0.88rem; color: rgba(255,255,255,0.55); margin-bottom: 24px; line-height: 1.55; }
-.nl-label { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: rgba(255,255,255,0.5); display: block; margin-bottom: 8px; }
+.nl-card-sub { font-size: 0.88rem; color: rgba(255,255,255,0.55); margin-bottom: 28px; line-height: 1.55; }
+.nl-label { font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; color: rgba(255,255,255,0.4); display: block; margin-bottom: 8px; letter-spacing: 0.06em; text-transform: uppercase; }
 .nl-input {
-  width: 100%; padding: 14px 20px; border-radius: 14px;
+  width: 100%; padding: 14px 20px; border-radius: 100px;
   border: 1.5px solid rgba(255,255,255,0.15);
   background: rgba(255,255,255,0.92);
   font-family: var(--font-body); font-size: 0.95rem; font-weight: 600;
   color: var(--ink); outline: none; margin-bottom: 12px; display: block;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s; text-align: center;
 }
 .nl-input:focus { box-shadow: 0 0 0 3px rgba(245,200,66,0.5); border-color: var(--yellow); }
 .nl-submit {
@@ -459,8 +459,7 @@ section { padding: clamp(64px,8vw,112px) clamp(20px,5vw,60px); }
   border: none; cursor: pointer; transition: all 0.2s;
 }
 .nl-submit:hover { background: var(--yellow-deep); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245,200,66,0.4); }
-.nl-note { font-size: 0.74rem; color: rgba(255,255,255,0.3); margin-top: 12px; text-align: center; }
-/* Success / error states */
+.nl-note { font-size: 0.74rem; color: rgba(255,255,255,0.28); margin-top: 14px; text-align: center; }
 .nl-success, .nl-error { display: none; border-radius: 12px; padding: 14px 18px; margin-top: 14px; font-weight: 700; font-size: 0.88rem; text-align: center; }
 .nl-success { background: rgba(74,140,63,0.25); border: 1.5px solid rgba(74,140,63,0.5); color: #a8f0a0; }
 .nl-error   { background: rgba(217,79,58,0.2);  border: 1.5px solid rgba(217,79,58,0.4);  color: #ffb0a8; }
@@ -744,6 +743,7 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
         </p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
           <a class="btn btn-yellow" href="#apps">See the Apps</a>
+          <a class="btn btn-ghost" href="#newsletter">Join the Newsletter</a>
           <a class="btn btn-ghost" href="mailto:snackpackuniverse@gmail.com">Get in Touch</a>
         </div>
       </div>
@@ -826,8 +826,8 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
         <div class="nl-card-title">Join the Universe 🐶</div>
         <div class="nl-card-sub">Get early access to new apps, alphabet adventures, and secret SnackPack updates.</div>
         <form id="brevo-form" novalidate>
-          <label class="nl-label" for="nl-email">Send Email Updates To: *</label>
-          <input class="nl-input" id="nl-email" name="EMAIL" type="email" placeholder="Enter your email@example.com" required autocomplete="email">
+          <label class="nl-label" for="nl-email">Your email address</label>
+          <input class="nl-input" id="nl-email" name="EMAIL" type="email" placeholder="you@example.com" required autocomplete="email">
           <!-- Brevo requires these hidden fields -->
           <input type="hidden" name="OPT_IN" value="1">
           <input type="hidden" name="locale" value="en">
