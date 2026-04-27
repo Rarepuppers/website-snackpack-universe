@@ -387,6 +387,17 @@ main section {
   text-align: center;
 }
 
+.app-shot--image {
+  padding: 0;
+  overflow: hidden;
+}
+
+.app-shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .app-shot strong {
   display: block;
   color: var(--ink);
@@ -421,10 +432,35 @@ main section {
   padding: 26px;
 }
 
+.policy-meta {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
 .content-card h2,
 .privacy-card h2 {
   font-size: 1.7rem;
   margin: 0 0 12px;
+}
+
+.policy-stack {
+  display: grid;
+  gap: 18px;
+}
+
+.policy-section {
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.policy-section:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.policy-section h2 {
+  margin: 0 0 10px;
 }
 
 .list-clean {
@@ -457,9 +493,70 @@ main section {
     linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(248, 237, 222, 0.88));
 }
 
+.shot-card img {
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  object-fit: cover;
+  box-shadow: 0 16px 40px rgba(32, 23, 19, 0.12);
+}
+
 .shot-card span {
   color: var(--muted);
   max-width: 180px;
+}
+
+.newsletter-card {
+  padding: 30px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(circle at top right, rgba(222, 106, 56, 0.12), transparent 35%),
+    linear-gradient(140deg, rgba(255, 253, 248, 0.97), rgba(247, 237, 222, 0.97));
+  border-radius: calc(var(--radius) + 4px);
+  box-shadow: var(--shadow);
+}
+
+.newsletter-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+  gap: 24px;
+  align-items: center;
+}
+
+.newsletter-row p {
+  margin: 0;
+}
+
+.newsletter-form {
+  display: grid;
+  gap: 12px;
+}
+
+.newsletter-form label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.newsletter-form input {
+  min-height: 52px;
+  width: 100%;
+  padding: 0 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  font: inherit;
+  color: var(--ink);
+}
+
+.newsletter-form button {
+  cursor: pointer;
+}
+
+.newsletter-note {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
 }
 
 .timeline-card {
@@ -505,7 +602,8 @@ button:focus-visible {
   .two-up,
   .stats-grid,
   .app-grid,
-  .shot-grid {
+  .shot-grid,
+  .newsletter-row {
     grid-template-columns: 1fr;
   }
 
