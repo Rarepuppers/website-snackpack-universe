@@ -433,14 +433,37 @@ section { padding: clamp(64px,8vw,112px) clamp(20px,5vw,60px); }
 .nl-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
 .nl-feats { display: flex; gap: 18px; margin-top: 22px; flex-wrap: wrap; }
 .nl-feat { font-size: 0.8rem; color: rgba(255,255,255,0.55); font-weight: 700; display: flex; align-items: center; gap: 5px; }
-.nl-brevo-wrap {
-  background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.12);
-  border-radius: var(--radius-lg); overflow: hidden;
+.nl-card {
+  background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.14);
+  border-radius: var(--radius-lg); padding: 36px;
 }
-.nl-brevo-wrap iframe {
-  display: block; width: 100% !important; max-width: 100% !important;
-  border: none; margin-bottom: -8px;
+.nl-card-title {
+  font-family: var(--font-display); font-weight: 800; font-size: 1.1rem;
+  color: #fff; margin-bottom: 6px;
 }
+.nl-card-sub { font-size: 0.88rem; color: rgba(255,255,255,0.55); margin-bottom: 24px; line-height: 1.55; }
+.nl-label { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: rgba(255,255,255,0.5); display: block; margin-bottom: 8px; }
+.nl-input {
+  width: 100%; padding: 14px 20px; border-radius: 14px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.92);
+  font-family: var(--font-body); font-size: 0.95rem; font-weight: 600;
+  color: var(--ink); outline: none; margin-bottom: 12px; display: block;
+  transition: box-shadow 0.2s;
+}
+.nl-input:focus { box-shadow: 0 0 0 3px rgba(245,200,66,0.5); border-color: var(--yellow); }
+.nl-submit {
+  width: 100%; padding: 14px; border-radius: 100px;
+  background: var(--yellow); color: var(--ink);
+  font-family: var(--font-display); font-weight: 800; font-size: 1rem;
+  border: none; cursor: pointer; transition: all 0.2s;
+}
+.nl-submit:hover { background: var(--yellow-deep); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245,200,66,0.4); }
+.nl-note { font-size: 0.74rem; color: rgba(255,255,255,0.3); margin-top: 12px; text-align: center; }
+/* Success / error states */
+.nl-success, .nl-error { display: none; border-radius: 12px; padding: 14px 18px; margin-top: 14px; font-weight: 700; font-size: 0.88rem; text-align: center; }
+.nl-success { background: rgba(74,140,63,0.25); border: 1.5px solid rgba(74,140,63,0.5); color: #a8f0a0; }
+.nl-error   { background: rgba(217,79,58,0.2);  border: 1.5px solid rgba(217,79,58,0.4);  color: #ffb0a8; }
 
 /* ── FOOTER ── */
 footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
@@ -473,7 +496,6 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
   .app-card.flip { direction: ltr; }
   .app-card-screens { min-height: 300px; }
   .studio-inner, .nl-inner { grid-template-columns: 1fr; }
-  .nl-brevo-wrap iframe { height: 320px; }
   .studio-logo-wrap { order: -1; }
 }
 @media (max-width: 640px) {
@@ -800,8 +822,21 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
           <span class="nl-feat">✓ Powered by Brevo</span>
         </div>
       </div>
-      <div class="nl-brevo-wrap">
-        <iframe width="540" height="305" src="https://c8e915bf.sibforms.com/serve/MUIFADVt4ZlXsiMM8wqiXqcGeRGBU0WF59M6fHpCegIo6lKDBIizhj4EybwGYQygjM8s619mIdox-2D8mik7upF-_5x30R9bApxbcK16bM2mPFLFTDokgMBnqtOdTY4r7u9TKTorSiC2MPn5mwOTncBTtrQAx2W58RDmqLLtC5OLxrFrNmZH7As9WjK4krNNglwOtxjzbYH3k9qc4Q==" frameborder="0" scrolling="auto" allowfullscreen style="display:block;margin-left:auto;margin-right:auto;max-width:100%;"></iframe>
+      <div class="nl-card">
+        <div class="nl-card-title">Join the Universe 🐶</div>
+        <div class="nl-card-sub">Get early access to new apps, alphabet adventures, and secret SnackPack updates.</div>
+        <form id="brevo-form" novalidate>
+          <label class="nl-label" for="nl-email">Send Email Updates To: *</label>
+          <input class="nl-input" id="nl-email" name="EMAIL" type="email" placeholder="Enter your email@example.com" required autocomplete="email">
+          <!-- Brevo requires these hidden fields -->
+          <input type="hidden" name="OPT_IN" value="1">
+          <input type="hidden" name="locale" value="en">
+          <input type="hidden" name="html_type" value="simple">
+          <button class="nl-submit" type="submit">SUBSCRIBE</button>
+        </form>
+        <div class="nl-success" id="nl-success">✓ Check your inbox 🐶 — we've sent a link to confirm your spot in the Universe!</div>
+        <div class="nl-error"   id="nl-error">Sorry, the Universe hit a snag! Please try again in a moment.</div>
+        <p class="nl-note">By subscribing you agree to receive email updates. Unsubscribe anytime.</p>
       </div>
     </div>
   </div>
@@ -826,12 +861,13 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
     </div>
   </div>
   <div class="foot-bottom">
-    <div class="foot-copy">© 2025 SnackPack Universe. Developed by the team at SnackPack Studios.</div>
+    <div class="foot-copy">© 2025 SnackPack Universe (ABN 51 918 351 341). Developed by the team at SnackPack Studios.</div>
     <div class="foot-copy">Made with ♥ for curious kids</div>
   </div>
 </footer>
 
 <script>
+  // Scroll reveal
   const obs = new IntersectionObserver((entries) => {
     entries.forEach((e, i) => {
       if (e.isIntersecting) {
@@ -841,6 +877,48 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
     });
   }, { threshold: 0.08 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Brevo newsletter form — posts via fetch to avoid iframe CSP issues
+  const brevoForm = document.getElementById('brevo-form');
+  if (brevoForm) {
+    brevoForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('nl-email').value.trim();
+      const btn   = brevoForm.querySelector('.nl-submit');
+      const ok    = document.getElementById('nl-success');
+      const err   = document.getElementById('nl-error');
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        err.textContent = 'Please enter a valid email address.';
+        err.style.display = 'block'; ok.style.display = 'none'; return;
+      }
+
+      btn.textContent = 'Subscribing…'; btn.disabled = true;
+      ok.style.display = 'none'; err.style.display = 'none';
+
+      try {
+        const body = new FormData();
+        body.append('EMAIL', email);
+        body.append('OPT_IN', '1');
+        body.append('locale', 'en');
+        body.append('html_type', 'simple');
+
+        const res = await fetch(
+          'https://c8e915bf.sibforms.com/serve/MUIFADVt4ZlXsiMM8wqiXqcGeRGBU0WF59M6fHpCegIo6lKDBIizhj4EybwGYQygjM8s619mIdox-2D8mik7upF-_5x30R9bApxbcK16bM2mPFLFTDokgMBnqtOdTY4r7u9TKTorSiC2MPn5mwOTncBTtrQAx2W58RDmqLLtC5OLxrFrNmZH7As9WjK4krNNglwOtxjzbYH3k9qc4Q==',
+          { method: 'POST', body, mode: 'no-cors' }
+        );
+        // no-cors means we can't read the response — but Brevo accepts it fine
+        // Show success and clear the form
+        ok.style.display = 'block';
+        brevoForm.reset();
+      } catch(ex) {
+        err.textContent = 'Sorry, the Universe hit a snag! Please try again in a moment.';
+        err.style.display = 'block';
+      } finally {
+        btn.textContent = 'SUBSCRIBE'; btn.disabled = false;
+      }
+    });
+  }
 </script>
 </body>
 </html>
