@@ -75,7 +75,7 @@ snackpackuniverse.com/
 - [x] GitHub Pages hosting active
 - [x] Website live with all 10 app pages and privacy pages
 - [x] Privacy policies updated to meet Google Play and iOS App Store requirements
-- [x] App 1 (ABCs Alphabet) linked to its privacy page
+- [x] App 1 (Learn to Read) linked to its privacy page
 - [x] Google Play store assets prepared (icon 512px, feature graphic 1024x500)
 
 ### In Progress ⏳
@@ -96,7 +96,7 @@ snackpackuniverse.com/
 
 | # | App Name | Status |
 |---|---|---|
-| 1 | ABCs Alphabet | Ready for launch |
+| 1 | Learn to Read | Ready for launch |
 | 2 | 123s Counting | Ready for launch |
 | 3 | Spelling Sentences | Pipeline |
 | 4 | Math Arithmetic | Pipeline |
@@ -111,5 +111,5 @@ snackpackuniverse.com/
 
 ## Contact
 
-**Email:** snackpackuniverse@gmail.com  
+**Email:** privacy@snackpackuniverse.com  
 **Website:** www.snackpackuniverse.com
