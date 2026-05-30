@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60" viewBox="0 0 200 60">
+  <rect width="200" height="60" rx="8" fill="#000"/>
+  <rect x="1" y="1" width="198" height="58" rx="7.5" fill="none" stroke="#a6a6a6" stroke-width="1"/>
+  <!-- Google Play triangle icon -->
+  <g transform="translate(14, 14)">
+    <path d="M2 1.5L18 16 2 30.5V1.5z" fill="url(#gp-grad-a)"/>
+    <path d="M22.5 12L2 1.5l12.5 12L22.5 12z" fill="url(#gp-grad-b)"/>
+    <path d="M2 30.5L14.5 18.5 22.5 20 2 30.5z" fill="url(#gp-grad-c)"/>
+    <path d="M22.5 12L14.5 18.5 18 16l4.5-4z" fill="url(#gp-grad-d)"/>
+    <defs>
+      <linearGradient id="gp-grad-a" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#00A0FF"/>
+        <stop offset="100%" stop-color="#00A0FF"/>
+      </linearGradient>
+      <linearGradient id="gp-grad-b" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FFD900"/>
+        <stop offset="100%" stop-color="#FFBD00"/>
+      </linearGradient>
+      <linearGradient id="gp-grad-c" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FF3A44"/>
+        <stop offset="100%" stop-color="#C31162"/>
+      </linearGradient>
+      <linearGradient id="gp-grad-d" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#32A071"/>
+        <stop offset="100%" stop-color="#2DA771"/>
+      </linearGradient>
+    </defs>
+  </g>
+  <!-- "GET IT ON" text -->
+  <text x="54" y="22" font-family="Arial, sans-serif" font-size="9" fill="#fff" letter-spacing="1">GET IT ON</text>
+  <!-- "Google Play" text -->
+  <text x="54" y="42" font-family="Arial, sans-serif" font-size="18" font-weight="500" fill="#fff">Google Play</text>
+</svg>
