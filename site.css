@@ -421,6 +421,32 @@ main section {
   margin-top: auto;
 }
 
+.featured-qr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 12px;
+  width: fit-content;
+  max-width: 100%;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(32, 23, 19, 0.08);
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.featured-qr img {
+  width: 86px;
+  height: 86px;
+  display: block;
+  border-radius: 12px;
+  background: #fff;
+  flex: 0 0 auto;
+}
+
 .device-fan {
   position: relative;
   min-height: 460px;

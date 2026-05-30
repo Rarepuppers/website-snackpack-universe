@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SnackPack Learn to Read | SnackPack Studios</title>
-<meta name="description" content="SnackPack Learn to Read is a first-step literacy app for kids. Letters, mini books, character discovery, and a calm learning experience. Coming to Google Play.">
+<meta name="description" content="SnackPack Learn to Read is a first-step literacy app for kids. Letters, mini books, character discovery, and a calm learning experience. Now available on Google Play.">
 <meta name="theme-color" content="#2a8a90">
 <link rel="canonical" href="https://www.snackpackuniverse.com/apps/snackpack-1-abcs-alphabet/">
 <link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
@@ -72,6 +72,10 @@ body { font-family: var(--font-body); background: var(--cream); color: var(--ink
 .store-coming:hover { background:rgba(255,255,255,0.13); }
 .store-inner { display:flex; flex-direction:column; line-height:1.1; }
 .store-sub { font-size:0.57rem; text-transform:uppercase; letter-spacing:0.06em; opacity:0.55; }
+.qr-card { display:flex; align-items:center; gap:14px; width:fit-content; margin-top:22px; padding:12px 16px 12px 12px; border-radius:18px; background:rgba(255,255,255,0.1); border:1.5px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.78); }
+.qr-card img { width:92px; height:92px; display:block; border-radius:12px; background:#fff; }
+.qr-card strong { display:block; font-family:var(--font-display); font-size:0.95rem; color:#fff; line-height:1.1; margin-bottom:3px; }
+.qr-card span { display:block; font-size:0.78rem; line-height:1.35; max-width:180px; }
 
 /* phone fan */
 .hero-phones { display:flex; align-items:flex-end; justify-content:center; gap:10px; height:520px; }
@@ -170,19 +174,23 @@ footer { background:var(--ink); padding:40px clamp(20px,5vw,60px); }
         <span class="pill">⚙️ Settings</span>
       </div>
       <div class="hero-actions">
-        <a class="store-coming" href="#">
+        <a class="store-coming" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.abcalphabet" target="_blank" rel="noopener">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.4c.27.15.57.2.87.16l12.04-11.51L12.51 8.4 3.18 23.4zM21.4 10.5l-2.36-1.35-3.18 3.05 3.19 3.05 2.38-1.37c.68-.39.68-1.02-.03-1.38zM1.5.9C1.19 1.2 1 1.67 1 2.27v19.47c0 .6.19 1.07.5 1.36l.07.07 10.9-10.44v-.25L1.57.83 1.5.9zM16.09 8.02L4.05.51c-.29-.18-.57-.25-.83-.2l12.09 11.56 2.58-2.47-1.8-1.38z"/></svg>
-          <div class="store-inner"><span class="store-sub">Coming soon to</span><span>Google Play</span></div>
+          <div class="store-inner"><span class="store-sub">Get it on</span><span>Google Play</span></div>
         </a>
-        <a class="btn btn-teal" href="../../#newsletter">Get Notified</a>
+        <a class="btn btn-teal" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.abcalphabet" target="_blank" rel="noopener">Download App 1</a>
         <a class="btn btn-ghost" href="../">All Apps</a>
+      </div>
+      <div class="qr-card">
+        <img src="../../assets/qrcodes/qr-code-abc-learn-to-read.png" alt="QR code for SnackPack Learn to Read on Google Play">
+        <div><strong>Scan to download</strong><span>Open SnackPack Learn to Read directly in Google Play.</span></div>
       </div>
     </div>
     <div class="hero-phones">
-      <div class="hp hp-a"><img src="./screenshots/progress.png" alt="Progress"></div>
+      <div class="hp hp-a"><img src="./screenshots/practice.png" alt="Practice"></div>
       <div class="hp hp-b"><img src="./screenshots/bookshelf.png" alt="Bookshelf"></div>
       <div class="hp hp-c"><img src="./screenshots/home.png" alt="Home"></div>
-      <div class="hp hp-b"><img src="./screenshots/minibooks.png" alt="Mini Books"></div>
+      <div class="hp hp-b"><img src="./screenshots/minibook.png" alt="Mini Book"></div>
       <div class="hp hp-a"><img src="./screenshots/characters.png" alt="Characters"></div>
     </div>
   </div>
@@ -202,10 +210,9 @@ footer { background:var(--ink); padding:40px clamp(20px,5vw,60px); }
       <div class="ss-card"><img src="./screenshots/bookshelf.png" alt="Bookshelf"><div class="ss-label">Bookshelf</div></div>
       <div class="ss-card"><img src="./screenshots/book1.png" alt="Reading"><div class="ss-label">Reading</div></div>
       <div class="ss-card"><img src="./screenshots/book2.png" alt="Story"><div class="ss-label">Story</div></div>
-      <div class="ss-card"><img src="./screenshots/minibooks.png" alt="Mini Books"><div class="ss-label">Mini Books</div></div>
-      <div class="ss-card"><img src="./screenshots/minibooks1.png" alt="Mini Books 2"><div class="ss-label">Mini Books 2</div></div>
+      <div class="ss-card"><img src="./screenshots/minibook.png" alt="Mini Book"><div class="ss-label">Mini Book</div></div>
       <div class="ss-card"><img src="./screenshots/characters.png" alt="Characters"><div class="ss-label">Characters</div></div>
-      <div class="ss-card"><img src="./screenshots/progress.png" alt="Progress"><div class="ss-label">Progress</div></div>
+      <div class="ss-card"><img src="./screenshots/practice.png" alt="Practice"><div class="ss-label">Practice</div></div>
       <div class="ss-card"><img src="./screenshots/settings.png" alt="Settings"><div class="ss-label">Settings</div></div>
     </div>
   </div>
@@ -231,11 +238,11 @@ footer { background:var(--ink); padding:40px clamp(20px,5vw,60px); }
       <div class="detail-card reveal">
         <h3>📱 Platform & Launch</h3>
         <ul>
-          <li>Launching first on Android via Google Play</li>
+          <li>Available first on Android via Google Play</li>
           <li>iOS release planned for a later date</li>
           <li>Optimised for phones and tablets</li>
           <li>Dedicated privacy page published and ready</li>
-          <li>Part of the 10-app SnackPack universe</li>
+          <li>Part of the SnackPack universe lineup</li>
         </ul>
       </div>
     </div>
@@ -244,12 +251,16 @@ footer { background:var(--ink); padding:40px clamp(20px,5vw,60px); }
 
 <section class="cta-bg">
   <div class="container reveal" style="text-align:center;">
-    <span class="eyebrow eyebrow-light">Coming Soon</span>
-    <h2 class="section-title section-title-light" style="margin-bottom:14px;">Be the first to download</h2>
-    <p class="section-body section-body-light" style="margin:0 auto 36px;max-width:440px;">Sign up to hear the moment Learn to Read lands on Google Play.</p>
+    <span class="eyebrow eyebrow-light">Available Now</span>
+    <h2 class="section-title section-title-light" style="margin-bottom:14px;">Download Learn to Read</h2>
+    <p class="section-body section-body-light" style="margin:0 auto 36px;max-width:440px;">SnackPack Learn to Read is now available on Google Play for Android devices.</p>
     <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-      <a class="btn btn-yellow" href="../../#newsletter">Get Notified</a>
+      <a class="btn btn-yellow" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.abcalphabet" target="_blank" rel="noopener">Get it on Google Play</a>
       <a class="btn btn-ghost" href="../">See All Apps</a>
+    </div>
+    <div class="qr-card" style="margin:26px auto 0;text-align:left;">
+      <img src="../../assets/qrcodes/qr-code-abc-learn-to-read.png" alt="QR code for SnackPack Learn to Read on Google Play">
+      <div><strong>Scan with your phone</strong><span>Jump straight to the App 1 Google Play listing.</span></div>
     </div>
   </div>
 </section>

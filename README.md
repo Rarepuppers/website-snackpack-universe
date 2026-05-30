@@ -11,7 +11,7 @@ This project uses two related names intentionally — here's why:
 
 | Name | Where it's used | Why |
 |---|---|---|
-| **SnackPack Universe** | Domain, website, registered business name, app store developer account | The public-facing "universe" brand that holds all 10 apps together |
+| **SnackPack Universe** | Domain, website, registered business name, app store developer account | The public-facing "universe" brand that holds the apps together |
 | **SnackPack Studios** | Logo, app store developer description, internal identity | The studio/creator identity behind the universe |
 
 ### The Parent Company Model
@@ -34,20 +34,20 @@ snackpackuniverse.com/
 ├── robots.txt
 │
 ├── apps/
-│   ├── index.html                      # Apps index — all 10 listed
+│   ├── index.html                      # Apps index — full lineup listed
 │   ├── snackpack-1-abcs-alphabet/
 │   │   ├── index.html                  # App 1 product page
-│   │   └── screenshots/               # App 1 screenshots (9 screens)
+│   │   └── screenshots/               # App 1 screenshots (8 screens)
 │   ├── snackpack-2-123s-counting/
 │   │   ├── index.html                  # App 2 product page
-│   │   └── screenshots/               # App 2 screenshots (7 screens)
-│   └── snackpack-3-spelling-sentences/ # through snackpack-10-robot-recipe/
+│   │   └── screenshots/               # App 2 screenshots (8 screens)
+│   └── snackpack-3-spelling-sentences/ # through snackpack-12-zoo-world/
 │       └── index.html                  # Placeholder pages (apps 3–10)
 │
 ├── privacy/
 │   ├── index.html                      # Privacy hub
 │   ├── snackpack-1-abcs-alphabet/      # Per-app privacy pages
-│   └── ... (one per app, all 10)
+│   └── ... (one per app)
 │
 └── [branding assets]
     ├── SnackPackStudios-logo.png        # Main logo (Corgi + backpack, white bg)
@@ -73,21 +73,23 @@ snackpackuniverse.com/
 - [x] Business name paid and pending (delayed by public holiday)
 - [x] Domain purchased — snackpackuniverse.com
 - [x] GitHub Pages hosting active
-- [x] Website live with all 10 app pages and privacy pages
+- [x] Website live with app pages and privacy pages
 - [x] Privacy policies updated to meet Google Play and iOS App Store requirements
 - [x] App 1 (Learn to Read) linked to its privacy page
 - [x] Google Play store assets prepared (icon 512px, feature graphic 1024x500)
+- [x] App 1 released on Google Play
+- [x] App 1 Google Play links added to website
+- [x] App 2 Google Play pending-production link added to website
+- [x] App 11 and App 12 upcoming pages added
 
 ### In Progress ⏳
 - [ ] Business name registration finalising (public holiday/weekend delay)
 - [ ] DUNS number — apply once ABN business name shows as active
-- [ ] Google Play Developer account — apply once DUNS confirmed
+- [ ] App 2 pending Google Play production approval
 
 ### Pending 🔜
 - [ ] Set up Brevo (newsletter) and wire to homepage signup form
 - [ ] Set up Google Search Console and verify domain
-- [ ] Submit App 1 to Google Play once developer account active
-- [ ] Add real Google Play store links to app pages once live
 - [ ] iOS release — deferred (requires Mac + Apple Developer account)
 
 ---
@@ -96,8 +98,8 @@ snackpackuniverse.com/
 
 | # | App Name | Status |
 |---|---|---|
-| 1 | Learn to Read | Ready for launch |
-| 2 | 123s Counting | Ready for launch |
+| 1 | Learn to Read | Live on Google Play |
+| 2 | 123s Counting | Pending Google Play production approval |
 | 3 | Spelling Sentences | Pipeline |
 | 4 | Math Arithmetic | Pipeline |
 | 5 | Tales & Trivia | Pipeline |
@@ -106,6 +108,8 @@ snackpackuniverse.com/
 | 8 | Earth & Explorer | Pipeline |
 | 9 | Shape Space | Pipeline |
 | 10 | Robot Recipe | Pipeline |
+| 11 | Prehistoric Pals | Upcoming |
+| 12 | Zoo World | Upcoming |
 
 ---
 
