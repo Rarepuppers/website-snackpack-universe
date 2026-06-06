@@ -971,6 +971,17 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
                   </div>
                 </div>
               </div>
+              <!-- GDPR consent (required) — the Brevo list has consent enabled, so this
+                   field must be present and ticked. value="1" is what Brevo records. -->
+              <div style="padding:8px 0;">
+                <div class="sib-optin sib-form-block">
+                  <label style="display:flex; align-items:flex-start; gap:8px; text-align:left; cursor:pointer; font-family:'Nunito', sans-serif; font-size:13px; color:#4a3520; line-height:1.45;">
+                    <input type="checkbox" value="1" id="GDPR_CONSENT" name="GDPR_CONSENT" required style="width:16px; height:16px; margin-top:1px; flex:0 0 auto; accent-color:#3a9ea5; cursor:pointer;" />
+                    <span>I agree to receive SnackPack Universe updates by email and accept the <a href="/privacy/" style="color:#3a9ea5;">privacy policy</a>. Unsubscribe anytime.</span>
+                  </label>
+                  <label class="entry__error entry__error--primary"></label>
+                </div>
+              </div>
               <div style="padding:8px 0;">
                 <div class="sib-form-block" style="text-align:center;">
                   <button class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit">
