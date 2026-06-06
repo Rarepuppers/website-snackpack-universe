@@ -1041,24 +1041,60 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 </script>
 
-<!-- Brevo form JS — handles validation, submission and success/error states -->
+<!-- Self-contained signup handler. We deliberately do NOT load Brevo's main.js:
+     it can't parse our custom consent field, which made it misreport the email
+     error and fall back to a native POST (blank-page redirect). This validates
+     inline and POSTs into a hidden iframe so the page never navigates; the same
+     POST still triggers Brevo's double-opt-in confirmation email. -->
 <script>
-  window.REQUIRED_CODE_ERROR_MESSAGE = 'Please choose a country code';
-  window.LOCALE = 'en';
-  window.EMAIL_INVALID_MESSAGE = "Oops! That email looks a bit unusual. Could you double-check it for us and try again?";
-  window.REQUIRED_ERROR_MESSAGE = "Don't forget your email! We need it to send you updates.";
-  window.GENERIC_INVALID_MESSAGE = "Oops! That email looks a bit unusual. Could you double-check it for us and try again?";
-  window.translation = {
-    common: {
-      selectedList: '{quantity} list selected',
-      selectedLists: '{quantity} lists selected',
-      selectedOption: '{quantity} selected',
-      selectedOptions: '{quantity} selected',
-    }
-  };
-  var AUTOHIDE = Boolean(0);
+  (function () {
+    var form = document.getElementById('sib-form');
+    if (!form) return;
+    var email      = document.getElementById('EMAIL');
+    var consent    = document.getElementById('GDPR_CONSENT');
+    var emailErr   = form.querySelector('.sib-input .entry__error');
+    var consentErr = form.querySelector('.sib-optin .entry__error');
+    var errorPanel = document.getElementById('error-message');
+    var okPanel    = document.getElementById('success-message');
+
+    var MSG_EMAIL_REQUIRED   = "Don't forget your email! We need it to send you updates.";
+    var MSG_EMAIL_INVALID    = "Oops! That email looks a bit unusual. Could you double-check it for us and try again?";
+    var MSG_CONSENT_REQUIRED = "Please tick the box so we can send you updates.";
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Hidden sink: the form POSTs into this iframe instead of navigating the page.
+    var sink = document.createElement('iframe');
+    sink.name = 'sib-sink';
+    sink.setAttribute('aria-hidden', 'true');
+    sink.style.display = 'none';
+    document.body.appendChild(sink);
+    form.setAttribute('target', 'sib-sink');
+    form.setAttribute('novalidate', 'novalidate'); // we validate ourselves
+
+    function setErr(el, msg) { if (el) { el.textContent = msg || ''; el.style.display = msg ? 'block' : 'none'; } }
+    function hidePanels() { if (errorPanel) errorPanel.style.display = 'none'; if (okPanel) okPanel.style.display = 'none'; }
+
+    var pending = false;
+
+    form.addEventListener('submit', function (ev) {
+      setErr(emailErr, ''); setErr(consentErr, ''); hidePanels();
+      var val = (email && email.value || '').trim();
+      if (!val)                 { ev.preventDefault(); setErr(emailErr, MSG_EMAIL_REQUIRED); email.focus(); return; }
+      if (!EMAIL_RE.test(val))  { ev.preventDefault(); setErr(emailErr, MSG_EMAIL_INVALID);  email.focus(); return; }
+      if (consent && !consent.checked) { ev.preventDefault(); setErr(consentErr, MSG_CONSENT_REQUIRED); consent.focus(); return; }
+      pending = true; // valid → allow the POST into the hidden iframe
+    });
+
+    // The iframe fires 'load' once the POST completes (even cross-origin).
+    sink.addEventListener('load', function () {
+      if (!pending) return; // ignore the initial about:blank load
+      pending = false;
+      hidePanels();
+      if (okPanel) { okPanel.style.display = 'block'; okPanel.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      form.reset();
+    });
+  })();
 </script>
-<script defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
   <!-- Cloudflare Web Analytics -->
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
           data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
