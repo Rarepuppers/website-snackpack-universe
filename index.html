@@ -1058,6 +1058,8 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
     var consentErr = form.querySelector('.sib-optin .entry__error');
     var errorPanel = document.getElementById('error-message');
     var okPanel    = document.getElementById('success-message');
+    var errorInner = errorPanel && errorPanel.querySelector('.sib-form-message-panel__inner-text');
+    var DEFAULT_ERROR = errorInner ? errorInner.textContent : '';
 
     var MSG_EMAIL_REQUIRED   = "Don't forget your email! We need it to send you updates.";
     var MSG_EMAIL_INVALID    = "Oops! That email looks a bit unusual. Could you double-check it for us and try again?";
@@ -1069,7 +1071,25 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
     function setErr(el, msg) { if (el) { el.textContent = msg || ''; el.style.display = msg ? 'block' : 'none'; } }
     function hidePanels() { if (errorPanel) errorPanel.style.display = 'none'; if (okPanel) okPanel.style.display = 'none'; }
     function showSuccess() { hidePanels(); if (okPanel) { okPanel.style.display = 'block'; okPanel.scrollIntoView({ behavior: 'smooth', block: 'center' }); } form.reset(); }
-    function showError()   { hidePanels(); if (errorPanel) { errorPanel.style.display = 'block'; errorPanel.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
+    function brevoErrorText(res) {
+      if (!res) return '';
+      if (typeof res.message === 'string' && res.message) return res.message;
+      if (res.errors) {
+        try {
+          if (typeof res.errors === 'string') return res.errors;
+          var parts = [];
+          if (Array.isArray(res.errors)) res.errors.forEach(function (e) { parts.push(typeof e === 'string' ? e : (e.message || JSON.stringify(e))); });
+          else Object.keys(res.errors).forEach(function (k) { parts.push(res.errors[k]); });
+          return parts.join(' ');
+        } catch (e) {}
+      }
+      return '';
+    }
+    function showError(res) {
+      if (errorInner) errorInner.textContent = brevoErrorText(res) || DEFAULT_ERROR;
+      hidePanels();
+      if (errorPanel) { errorPanel.style.display = 'block'; errorPanel.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    }
 
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
@@ -1084,10 +1104,11 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
       var xhr = new XMLHttpRequest();
       xhr.addEventListener('load', function () {
         var res = null; try { res = JSON.parse(xhr.response); } catch (e) {}
+        console.log('[signup] Brevo response (' + xhr.status + '):', res || xhr.response);
         if (xhr.status >= 200 && xhr.status < 300 && !(res && res.errors)) showSuccess();
-        else showError();
+        else showError(res);
       });
-      xhr.addEventListener('error', showError);
+      xhr.addEventListener('error', function () { console.error('[signup] network error reaching Brevo'); showError(null); });
       xhr.open('POST', form.getAttribute('action') + '?isAjax=1');
       xhr.send(data);
     });
