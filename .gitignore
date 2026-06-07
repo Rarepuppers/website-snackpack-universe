@@ -1,0 +1,29 @@
+.claude/settings.local.json
+
+
+# Wrangler local cache/state (Cloudflare Worker tooling)
+.wrangler/
+
+# ── Backup snapshot folders (contain node_modules, never commit) ──
+patch-app6-*/
+verify-app6-*/
+
+# ── Zip archives ──
+*.zip
+
+# ── Patch/verify reference text files ──
+patch-app6-current.txt
+patch-app6-zip-current.txt
+verify-app6-current.txt
+
+# ── Node modules (belt-and-suspenders for any nested projects) ──
+node_modules/
+**/node_modules/
+
+# ── Claude config (local only) ──
+.claude/
+
+# ── OS junk ──
+.DS_Store
+Thumbs.db
+desktop.ini
