@@ -1038,3 +1038,69 @@ button:focus-visible {
 .app-card--illustrated:hover .illus-emoji--3 {
   transform: translateY(6px) scale(1.05);
 }
+
+/* FAQ accordion (shared across app pages) */
+.faq-list {
+  max-width: 760px;
+  margin: 0 auto;
+  display: grid;
+  gap: 12px;
+}
+
+.faq-item {
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 4px 22px;
+  box-shadow: var(--shadow);
+  transition: border-color 0.18s ease;
+}
+
+.faq-item[open] {
+  border-color: rgba(31, 143, 119, 0.45);
+}
+
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.08rem;
+  color: var(--ink);
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: "+";
+  flex-shrink: 0;
+  font-family: var(--sans);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--accent);
+  transition: transform 0.2s ease;
+}
+
+.faq-item[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.faq-item summary:focus-visible {
+  outline: 3px solid rgba(31, 143, 119, 0.3);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.faq-item p {
+  margin: 0;
+  padding: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.7;
+}
