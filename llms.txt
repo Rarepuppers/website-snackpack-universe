@@ -1,0 +1,24 @@
+# SnackPack Universe
+
+> SnackPack Studios builds calm, family-friendly Android apps for early learning, classic offline games, and daily positivity — one shared universe of characters, with no third-party ads and no tracking SDKs in any app. Four apps are live on Google Play; 14+ are planned.
+
+Key facts that apply to every SnackPack app: no third-party ads, no tracking or analytics SDKs, no account required, data stays on the device, and each app has its own named privacy policy. Contact: support@snackpackuniverse.com.
+
+## Live apps (Google Play)
+
+- [SnackPack ABC: Learn to Read](https://www.snackpackuniverse.com/apps/snackpack-1-abcs-alphabet/): Free alphabet and early-reading app for ages 3–7 — 26 letters with character-led stories, mini books, a progress bookshelf. No ads, no in-app purchases. Play Store ID: com.snackpackuniverse.abcalphabet
+- [SnackPack 123: Learn to Count](https://www.snackpackuniverse.com/apps/snackpack-2-123s-counting/): Free counting and early-numeracy app for ages 3–7 — counting 1–20, number shapes, story-led adventures. No ads, no in-app purchases. Play Store ID: com.snackpackuniverse.counting
+- [Pawsitive Dose](https://www.snackpackuniverse.com/apps/pawsitive-dose/): Free daily mood-boost app for adults — a finite daily batch of animal photos, uplifting quotes, and affirmations with no endless feed, no ads, and no account; reminders and Android widgets included. Optional Pro features. Play Store ID: com.snackpackuniverse.pawsitivedose
+- [Snackpack Brain Games](https://www.snackpackuniverse.com/apps/snackpack-brain-games/): Free offline collection of nine classics — Sudoku, Solitaire, Minesweeper, 2048, Word Search, Checkers, Connect 4, Reversi, and Cascade — with local stats and streaks, themes, and accessibility options. No ads, no tracking; optional one-time Pro unlock. Play Store ID: com.snackpackuniverse.braingames
+
+## Guides
+
+- [Choosing ad-free learning apps for toddlers](https://www.snackpackuniverse.com/guides/best-ad-free-apps-for-toddlers/): A 5-point checklist for verifying "no ads" claims, reading the Data safety section, and spotting manipulative design in kids apps.
+- [Offline games without ads](https://www.snackpackuniverse.com/guides/offline-games-without-ads/): Why most Sudoku/Solitaire apps are ad-funded, how to check before installing, and the airplane-mode test.
+- [A daily mood boost without doomscrolling](https://www.snackpackuniverse.com/guides/daily-positivity-without-doomscrolling/): How to redirect the phone reflex toward finite, calm alternatives to engagement-ranked feeds.
+
+## Reference
+
+- [All apps](https://www.snackpackuniverse.com/apps/): Full lineup including the 10+ apps in development (spelling, arithmetic, stories, creativity, geography, geometry, coding logic, dinosaurs, animals).
+- [Privacy policies](https://www.snackpackuniverse.com/privacy/): Per-app privacy policies meeting Google Play and Apple requirements.
+- [Terms](https://www.snackpackuniverse.com/terms/)
