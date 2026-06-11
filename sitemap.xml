@@ -146,13 +146,25 @@
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/privacy/snackpack-11-prehistoric-pals/</loc>
-    <lastmod>2026-05-30</lastmod>
+    <lastmod>2026-06-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/privacy/snackpack-12-zoo-world/</loc>
-    <lastmod>2026-05-30</lastmod>
+    <lastmod>2026-06-12</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/privacy/snackpack-13-garden-world/</loc>
+    <lastmod>2026-06-12</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/privacy/snackpack-brain-games-vol-2/</loc>
+    <lastmod>2026-06-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
