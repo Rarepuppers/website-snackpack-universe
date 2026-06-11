@@ -230,7 +230,7 @@ a {
 }
 
 .hero-card {
-  align-self: stretch;
+  align-self: center;
   padding: 22px;
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.72);
@@ -301,6 +301,7 @@ main section {
 
 .stat-card {
   padding: 24px;
+  text-align: center;
 }
 
 .stat-card strong {
