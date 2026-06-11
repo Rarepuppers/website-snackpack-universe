@@ -602,6 +602,14 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
 .foot-links a:hover { color: var(--yellow); }
 .foot-bottom { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
 .foot-copy { font-size: 0.8rem; color: rgba(255,255,255,0.25); }
+.foot-support { max-width: 1200px; margin: 0 auto 22px; display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 26px; }
+.foot-support .donate-badge { display: inline-block; line-height: 0; }
+.foot-support .donate-badge img { display: block; width: 112px; height: auto; border-radius: 16px; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.foot-support .donate-badge:hover img, .foot-support .donate-badge:focus-visible img { transform: translateY(-3px) scale(1.04); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+.foot-support-copy { max-width: 340px; }
+.foot-support-copy strong { display: block; font-family: var(--font-display); font-weight: 800; font-size: 1rem; color: #fff; }
+.foot-support-copy span { font-size: 0.86rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+@media(max-width:560px){ .foot-support { text-align: center; } .foot-support-copy { text-align: center; } }
 
 /* ── REVEAL ── */
 .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.55s ease, transform 0.55s ease; }
@@ -1148,6 +1156,15 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
       <a href="/privacy/">Privacy</a>
       <a href="/terms/">Terms</a>
       <a href="mailto:privacy@snackpackuniverse.com">Contact</a>
+    </div>
+  </div>
+  <div class="foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="112" height="87" loading="lazy">
+    </a>
+    <div class="foot-support-copy">
+      <strong>Enjoying SnackPack?</strong>
+      <span>We're a small studio — tips and donations help us keep building calm, ad-free apps.</span>
     </div>
   </div>
   <div class="foot-bottom">
