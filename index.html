@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SnackPack Universe | Learning, Games & Daily Positivity Apps</title>
 <meta name="description" content="SnackPack Studios builds family-friendly apps for early learning, counting, positive quotes, cute animal photos, classic games, and playful discovery.">
-<meta name="theme-color" content="#1a1a0a">
+<meta name="theme-color" content="#de6a38">
 <link rel="canonical" href="https://www.snackpackuniverse.com/">
 <link rel="icon" type="image/png" href="snackpack-favicon-transparent.png">
 <link rel="apple-touch-icon" href="snackpack-favicon-transparent.png">
@@ -19,8 +19,9 @@
 <meta name="twitter:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
+<link rel="stylesheet" href="site.css">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -57,479 +58,62 @@
         "operatingSystem": "Android",
         "url": "https://play.google.com/store/apps/details?id=com.snackpackuniverse.pawsitivedose"
       }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "SoftwareApplication",
+        "name": "Snackpack Brain Games",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Android",
+        "url": "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames"
+      }
     }
   ]
 }
 </script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  /* Brand colors pulled directly from the SnackPack palette */
-  --teal: #3a9ea5;
-  --teal-dark: #2a7a80;
-  --yellow: #f5c842;
-  --yellow-deep: #e0a800;
-  --brown: #8b4a2a;
-  --cream: #fdf8ef;
-  --warm-white: #fff9f0;
-  --ink: #1c1208;
-  --ink-soft: #4a3520;
-  --green: #4a8c3f;
-  --orange: #e8732a;
-  --red: #d94f3a;
-  --blue: #3a7abf;
-
-  --font-display: 'Baloo 2', cursive;
-  --font-body: 'Nunito', sans-serif;
-  --radius: 20px;
-  --radius-lg: 32px;
-  --shadow: 0 4px 24px rgba(28,18,8,0.10);
-  --shadow-lg: 0 12px 48px rgba(28,18,8,0.16);
-}
-
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--font-body);
-  background: var(--cream);
-  color: var(--ink);
-  overflow-x: hidden;
-  line-height: 1.6;
-}
-
-/* ── NAV ── */
-.nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 clamp(20px, 5vw, 60px); height: 72px;
-  background: rgba(253,248,239,0.92);
-  backdrop-filter: blur(16px);
-  border-bottom: 2px solid rgba(245,200,66,0.3);
-}
-.nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-.nav-logo { height: 44px; width: auto; }
-.nav-wordmark { height: 22px; width: auto; /* cream on white won't show — use logo only */ display: none; }
-.nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
-.nav-links a {
-  text-decoration: none; font-family: var(--font-display); font-weight: 700; font-size: 0.9rem;
-  color: var(--ink-soft); padding: 8px 16px; border-radius: 100px; transition: all 0.2s;
-}
-.nav-links a:hover { background: var(--yellow); color: var(--ink); }
-.nav-cta {
-  background: var(--ink) !important; color: var(--yellow) !important;
-  border-radius: 100px !important;
-}
-.nav-cta:hover { background: var(--teal) !important; color: #fff !important; transform: translateY(-1px); }
-
-/* ── BUTTONS ── */
-.btn {
-  font-family: var(--font-display); font-weight: 700; font-size: 1rem;
-  padding: 14px 28px; border-radius: 100px; text-decoration: none;
-  border: none; cursor: pointer; transition: all 0.2s;
-  display: inline-flex; align-items: center; gap: 8px;
-}
-.btn-yellow { background: var(--yellow); color: var(--ink); }
-.btn-yellow:hover { background: var(--yellow-deep); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,200,66,0.5); }
-.btn-teal { background: var(--teal); color: #fff; }
-.btn-teal:hover { background: var(--teal-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(58,158,165,0.4); }
-.btn-ghost { background: rgba(255,255,255,0.14); color: #fff; border: 1.5px solid rgba(255,255,255,0.3); }
-.btn-ghost:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
-.btn-outline { background: transparent; color: var(--ink); border: 2px solid var(--ink); }
-.btn-outline:hover { background: var(--ink); color: var(--yellow); transform: translateY(-2px); }
-.btn-lg { font-size: 1.1rem; padding: 18px 36px; }
-.btn-sm { font-size: 0.85rem; padding: 10px 20px; }
-
-/* ── HERO ── */
-.hero {
-  min-height: 100vh;
-  padding: 100px clamp(20px, 5vw, 60px) 0;
-  background: linear-gradient(170deg, #1c1208 0%, #2a1a08 35%, #1a2e20 70%, #0d1e28 100%);
-  display: flex; flex-direction: column; align-items: center;
-  position: relative; overflow: hidden;
-}
-
-/* Subtle grass/ground texture at bottom */
-.hero::after {
-  content: '';
-  position: absolute; bottom: 0; left: 0; right: 0; height: 120px;
-  background: linear-gradient(to top, rgba(74,140,63,0.25) 0%, transparent 100%);
-  pointer-events: none;
-}
-
-.hero-dots {
-  position: absolute; inset: 0; pointer-events: none;
-  background-image: radial-gradient(circle, rgba(245,200,66,0.08) 1px, transparent 1px);
-  background-size: 44px 44px;
-}
-
-/* Floating orbs matching brand palette */
-.hero-orbs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
-.orb {
-  position: absolute; border-radius: 50%;
-  filter: blur(70px); opacity: 0.4;
-  animation: floatOrb 9s ease-in-out infinite;
-}
-.orb-teal  { width: 420px; height: 420px; background: #3a9ea5; top: -80px; left: -60px; animation-delay: 0s; }
-.orb-yellow{ width: 320px; height: 320px; background: #f5c842; bottom: 80px; right: -60px; animation-delay: -4s; }
-.orb-green { width: 260px; height: 260px; background: #4a8c3f; top: 35%; left: 8%;  animation-delay: -7s; }
-.orb-orange{ width: 200px; height: 200px; background: #e8732a; top: 20%; right: 12%; animation-delay: -2s; }
-@keyframes floatOrb {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50%       { transform: translateY(-28px) scale(1.06); }
-}
-
-.hero-content {
-  position: relative; z-index: 1;
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 48px; align-items: center;
-  max-width: 1200px; width: 100%;
-  padding-bottom: 0;
-}
-
-.hero-left { display: flex; flex-direction: column; align-items: flex-start; }
-
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(245,200,66,0.15); border: 1.5px solid rgba(245,200,66,0.4);
-  color: var(--yellow); font-family: var(--font-display); font-weight: 700; font-size: 0.78rem;
-  padding: 5px 14px; border-radius: 100px; letter-spacing: 0.06em; text-transform: uppercase;
-  margin-bottom: 24px; animation: fadeUp 0.6s ease both;
-}
-.badge-dot { width: 7px; height: 7px; background: var(--yellow); border-radius: 50%; animation: blink 2s infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
-
-.hero-title {
-  font-family: var(--font-display); font-weight: 800;
-  font-size: clamp(2.4rem, 5.5vw, 4.2rem);
-  color: #fff; line-height: 1.05; margin-bottom: 20px;
-  animation: fadeUp 0.6s 0.1s ease both;
-}
-.hero-title .hl-teal  { color: #7ee8ee; }
-.hero-title .hl-yellow{ color: var(--yellow); }
-
-.hero-sub {
-  font-size: clamp(1rem, 1.8vw, 1.18rem); font-weight: 500;
-  color: rgba(255,255,255,0.68); max-width: 480px;
-  line-height: 1.75; margin-bottom: 36px;
-  animation: fadeUp 0.6s 0.2s ease both;
-}
-
-.hero-actions {
-  display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 48px;
-  animation: fadeUp 0.6s 0.3s ease both;
-}
-
-/* The big feature banner image on the right */
-.hero-banner-wrap {
-  position: relative; z-index: 1;
-  animation: fadeUp 0.8s 0.35s ease both;
-}
-.hero-banner {
-  width: 100%; border-radius: var(--radius-lg);
-  box-shadow: 0 32px 80px rgba(0,0,0,0.5);
-  display: block;
-}
-/* Subtle glow ring behind banner */
-.hero-banner-wrap::before {
-  content: '';
-  position: absolute; inset: -12px;
-  border-radius: calc(var(--radius-lg) + 12px);
-  background: radial-gradient(ellipse, rgba(58,158,165,0.35) 0%, transparent 70%);
-  z-index: -1;
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(22px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* phone strip below hero content */
-.hero-phones-strip {
-  position: relative; z-index: 1;
-  display: flex; align-items: flex-end; justify-content: center;
-  gap: clamp(8px, 1.5vw, 16px);
-  padding-top: 48px;
-  max-width: 1000px; width: 100%;
-  animation: fadeUp 1s 0.5s ease both;
-}
-.hphone {
-  background: #0a0a0a; border-radius: 26px;
-  border: 2.5px solid rgba(255,255,255,0.14);
-  overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.55);
-  position: relative; transition: transform 0.3s; flex-shrink: 0;
-}
-.hphone::before {
-  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-  width: 48px; height: 13px; background: #0a0a0a; border-radius: 0 0 9px 9px; z-index: 2;
-}
-.hphone img { display: block; width: 100%; }
-.hphone:hover { transform: translateY(-10px); opacity: 1 !important; }
-.hp-c { width: clamp(130px, 14vw, 190px); }
-.hp-b { width: clamp(105px, 11vw, 152px); transform: translateY(28px); opacity: 0.88; }
-.hp-a { width: clamp(88px,  9vw, 126px); transform: translateY(50px); opacity: 0.68; }
-
-/* ── STATS BAR ── */
-.stats-bar {
-  background: var(--yellow); padding: 22px clamp(20px,5vw,60px);
-  display: flex; align-items: center; justify-content: center;
-  flex-wrap: wrap; gap: clamp(16px,4vw,56px);
-}
-.stat-item { text-align: center; }
-.stat-num {
-  font-family: var(--font-display); font-weight: 800;
-  font-size: clamp(1.7rem,3vw,2.4rem); color: var(--ink); line-height: 1;
-}
-.stat-lbl {
-  font-family: var(--font-display); font-weight: 700; font-size: 0.75rem;
-  color: rgba(28,18,8,0.55); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px;
-}
-.stat-div { width: 2px; height: 38px; background: rgba(28,18,8,0.12); }
-
-/* ── TICKER ── */
-.ticker-wrap {
-  background: var(--ink); overflow: hidden; padding: 11px 0;
-  border-top: 2px solid rgba(245,200,66,0.2);
-}
-.ticker { display: flex; white-space: nowrap; animation: tick 28s linear infinite; }
-.ticker-item {
-  font-family: var(--font-display); font-weight: 700; font-size: 0.88rem;
-  color: rgba(255,255,255,0.6); padding: 0 28px;
-}
-.ticker-item .dot { color: var(--yellow); padding: 0 6px; }
-@keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-/* ── COMMON SECTION ── */
-section { padding: clamp(64px,8vw,112px) clamp(20px,5vw,60px); }
-.container { max-width: 1200px; margin: 0 auto; }
-
-.eyebrow {
-  display: inline-block; font-family: var(--font-display);
-  font-weight: 700; font-size: 0.75rem; letter-spacing: 0.12em;
-  text-transform: uppercase; padding: 4px 13px; border-radius: 100px;
-  margin-bottom: 12px;
-}
-.eyebrow-teal { background: rgba(58,158,165,0.12); color: var(--teal-dark); }
-.eyebrow-yellow { background: rgba(245,200,66,0.18); color: #8a6800; }
-.eyebrow-light { background: rgba(245,200,66,0.18); color: var(--yellow); }
-
-.section-title {
-  font-family: var(--font-display); font-weight: 800;
-  font-size: clamp(1.9rem,3.8vw,2.8rem); line-height: 1.1; color: var(--ink); margin-bottom: 14px;
-}
-.section-title-light { color: #fff; }
-.section-body { font-size: 1.05rem; color: var(--ink-soft); line-height: 1.72; }
-.section-body-light { color: rgba(255,255,255,0.62); }
-
-/* ── FEATURED APPS ── */
-.featured-bg { background: var(--warm-white); }
-
-.app-card {
-  background: #fff; border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg); overflow: hidden; margin-bottom: 48px;
-  display: grid; grid-template-columns: 1fr 1fr;
-  transition: transform 0.3s;
-}
-.app-card:hover { transform: translateY(-4px); }
-.app-card.flip { direction: rtl; }
-.app-card.flip > * { direction: ltr; }
-
-.app-card-copy {
-  padding: clamp(28px,4vw,52px);
-  display: flex; flex-direction: column; justify-content: center; gap: 18px;
-}
-.app-num-badge {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-family: var(--font-display); font-weight: 800; font-size: 0.72rem;
-  padding: 5px 13px; border-radius: 100px; width: fit-content;
-  text-transform: uppercase; letter-spacing: 0.08em;
-}
-.badge-teal   { background: rgba(58,158,165,0.12); color: var(--teal-dark); }
-.badge-orange { background: rgba(232,115,42,0.12); color: #b34d00; }
-
-.app-card-title {
-  font-family: var(--font-display); font-weight: 800;
-  font-size: clamp(1.5rem,2.8vw,2.2rem); color: var(--ink); line-height: 1.1;
-}
-.app-card-desc { font-size: 0.98rem; color: var(--ink-soft); line-height: 1.7; }
-
-.pills { display: flex; flex-wrap: wrap; gap: 7px; }
-.pill {
-  font-family: var(--font-display); font-weight: 700; font-size: 0.75rem;
-  padding: 4px 12px; border-radius: 100px;
-  background: var(--cream); color: var(--ink-soft);
-  border: 1.5px solid rgba(28,18,8,0.1);
-}
-
-.app-card-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.store-btn {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: var(--ink); color: #fff; border-radius: 13px;
-  padding: 9px 18px; text-decoration: none; font-weight: 700; font-size: 0.82rem;
-  transition: all 0.2s; border: none;
-}
-.store-btn:hover { background: var(--teal); transform: translateY(-2px); }
-.store-btn-inner { display: flex; flex-direction: column; line-height: 1.1; }
-.store-btn-sub { font-size: 0.58rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.06em; }
-.store-btn-name { font-size: 0.9rem; font-weight: 800; }
-.store-coming {
-  background: rgba(28,18,8,0.05); color: var(--ink-soft);
-  border: 2px dashed rgba(28,18,8,0.18);
-}
-.store-coming:hover { background: rgba(28,18,8,0.09); transform: none; }
-
-/* screenshot panels */
-.app-card-screens {
-  position: relative; overflow: hidden;
-  display: flex; align-items: flex-end; justify-content: center;
-  min-height: 440px;
-}
-.screens-app1 { background: linear-gradient(145deg, #2a8a90 0%, #1a5f90 100%); }
-.screens-app2 { background: linear-gradient(145deg, #7a4a1a 0%, #4a2a8a 100%); }
-.screens-pawsitive {
-  background: linear-gradient(145deg, #1d9e75 0%, #e8732a 100%);
-  align-items: center;
-  padding: 34px;
-}
-.feature-preview {
-  width: min(100%, 520px);
-  border-radius: 22px;
-  box-shadow: 0 24px 62px rgba(0,0,0,0.34);
-  border: 6px solid rgba(255,255,255,0.72);
-}
-
-.screens-grid {
-  display: flex; align-items: flex-end; justify-content: center;
-  gap: 10px; padding: 36px 20px 0; height: 100%;
-}
-.sphone {
-  background: #080808; border-radius: 22px;
-  border: 2.5px solid rgba(255,255,255,0.18);
-  overflow: hidden; box-shadow: 0 16px 44px rgba(0,0,0,0.4);
-  position: relative; transition: transform 0.3s; flex-shrink: 0;
-}
-.sphone::before {
-  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-  width: 42px; height: 12px; background: #080808; border-radius: 0 0 8px 8px; z-index: 2;
-}
-.sphone img { display: block; width: 100%; }
-.sp-c { width: 128px; z-index: 3; }
-.sp-b { width: 104px; transform: translateY(20px); opacity: 0.88; z-index: 2; }
-.sp-a { width: 86px;  transform: translateY(38px); opacity: 0.68; z-index: 1; }
-.sphone:hover { transform: translateY(-12px) scale(1.04); opacity: 1 !important; }
-
-/* ── WHY SECTION ── */
-.why-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
-  gap: 22px; margin-top: 52px;
-}
-.why-card {
-  background: #fff; border-radius: var(--radius); padding: 30px;
-  box-shadow: var(--shadow); border: 1.5px solid rgba(28,18,8,0.06);
-  transition: all 0.25s;
-}
-.why-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-.why-icon {
-  width: 50px; height: 50px; border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.5rem; margin-bottom: 16px;
-}
-.why-card h3 {
-  font-family: var(--font-display); font-weight: 800; font-size: 1.08rem;
-  color: var(--ink); margin-bottom: 9px;
-}
-.why-card p { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.65; }
-
-/* ── PIPELINE ── */
-.pipeline-bg { background: var(--ink); }
-.pipeline-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(195px,1fr));
-  gap: 14px; margin-top: 48px;
-}
-.pipe-card {
-  background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.09);
-  border-radius: var(--radius); padding: 22px;
-  transition: all 0.25s; position: relative; overflow: hidden;
-}
-.pipe-card::before {
-  content: ''; position: absolute; inset: 0;
-  background: var(--c, rgba(58,158,165,0.25)); opacity: 0; transition: opacity 0.25s;
-}
-.pipe-card:hover { border-color: rgba(255,255,255,0.22); transform: translateY(-3px); }
-.pipe-card:hover::before { opacity: 1; }
-.pipe-num {
-  font-family: var(--font-display); font-weight: 700; font-size: 0.7rem;
-  color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;
-  margin-bottom: 7px; position: relative; display: flex; align-items: center; gap: 7px;
-}
-.pipe-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c, var(--yellow)); flex-shrink: 0; }
-.pipe-name {
-  font-family: var(--font-display); font-weight: 700; font-size: 1rem;
-  color: #fff; line-height: 1.2; margin-bottom: 7px; position: relative;
-}
-.pipe-desc { font-size: 0.8rem; color: rgba(255,255,255,0.4); position: relative; }
-
-/* ── STUDIO SECTION ── */
-.studio-section {
-  background: linear-gradient(135deg, var(--teal-dark) 0%, #1a3a3a 100%);
-}
-.studio-inner {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
-}
-.studio-logo-wrap {
-  display: flex; align-items: center; justify-content: center;
-}
-.studio-logo { width: min(300px, 80%); filter: drop-shadow(0 20px 60px rgba(0,0,0,0.5)); }
-
-/* ── NEWSLETTER ── */
-.nl-bg { background: linear-gradient(135deg, #2a1a08 0%, #1a2e20 100%); }
-.nl-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-.nl-feats { display: flex; gap: 18px; margin-top: 22px; flex-wrap: wrap; }
-.nl-feat { font-size: 0.8rem; color: rgba(255,255,255,0.55); font-weight: 700; display: flex; align-items: center; gap: 5px; }
-
-/* Override Brevo's default white-background container to match our dark card */
+/* Brevo form, restyled for the cream system */
 #sib-container {
-  background-color: rgba(255,255,255,0.07) !important;
-  border: 1.5px solid rgba(255,255,255,0.14) !important;
-  border-radius: 24px !important;
+  background: var(--surface-strong) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow) !important;
   max-width: 100% !important;
-  padding: 32px !important;
+  padding: 30px !important;
   text-align: center !important;
 }
-/* Title */
 #sib-container .sib-form-block p,
 #sib-container .sib-form-block {
-  color: #fff !important;
-  font-family: var(--font-display) !important;
+  color: var(--ink) !important;
+  font-family: var(--serif) !important;
   text-align: center !important;
 }
 #sib-container .sib-form-block:first-child p {
-  font-size: 1.2rem !important;
-  font-weight: 800 !important;
+  font-size: 1.4rem !important;
+  font-weight: 600 !important;
 }
-/* Subtitle */
 #sib-container .sib-text-form-block p {
-  font-size: 0.88rem !important;
-  color: rgba(255,255,255,0.55) !important;
-  font-family: var(--font-body) !important;
+  font-size: 0.95rem !important;
+  color: var(--muted) !important;
+  font-family: var(--sans) !important;
   font-weight: 500 !important;
 }
-/* Label */
 #sib-container .entry__label {
-  color: rgba(255,255,255,0.4) !important;
-  font-family: var(--font-display) !important;
-  font-size: 0.75rem !important;
+  color: var(--muted) !important;
+  font-family: var(--sans) !important;
+  font-size: 0.78rem !important;
   text-transform: uppercase !important;
   letter-spacing: 0.08em !important;
   font-weight: 700 !important;
   text-align: center !important;
   display: block !important;
 }
-/* Input */
 #sib-container input.input {
-  border-radius: 100px !important;
-  border: 1.5px solid rgba(255,255,255,0.15) !important;
-  background: rgba(255,255,255,0.92) !important;
-  font-family: var(--font-body) !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--line-strong) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  font-family: var(--sans) !important;
   font-size: 0.95rem !important;
   font-weight: 600 !important;
   color: var(--ink) !important;
@@ -538,653 +122,427 @@ section { padding: clamp(64px,8vw,112px) clamp(20px,5vw,60px); }
   width: 100% !important;
 }
 #sib-container input.input:focus {
-  box-shadow: 0 0 0 3px rgba(245,200,66,0.5) !important;
-  border-color: var(--yellow) !important;
+  box-shadow: 0 0 0 3px rgba(31, 143, 119, 0.25) !important;
+  border-color: var(--accent) !important;
   outline: none !important;
 }
-/* Hide the hint text */
 #sib-container .entry__specification { display: none !important; }
-/* Submit button */
 #sib-container .sib-form-block__button {
-  background: var(--yellow) !important;
-  color: var(--ink) !important;
-  font-family: var(--font-display) !important;
-  font-weight: 800 !important;
+  background: var(--brand) !important;
+  color: #fff !important;
+  font-family: var(--sans) !important;
+  font-weight: 700 !important;
   font-size: 1rem !important;
-  border-radius: 100px !important;
+  border-radius: 999px !important;
   border: none !important;
   padding: 14px 28px !important;
   width: 100% !important;
   cursor: pointer !important;
-  transition: all 0.2s !important;
+  transition: background 0.2s ease, transform 0.2s ease !important;
 }
 #sib-container .sib-form-block__button:hover {
-  background: var(--yellow-deep) !important;
+  background: var(--brand-deep) !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 6px 20px rgba(245,200,66,0.4) !important;
 }
-/* Success message */
+#sib-container .sib-optin label {
+  font-family: var(--sans) !important;
+  color: var(--muted) !important;
+}
 #success-message {
-  background-color: rgba(74,140,63,0.25) !important;
-  border-color: rgba(74,140,63,0.5) !important;
-  color: #a8f0a0 !important;
+  background-color: rgba(31, 143, 119, 0.12) !important;
+  border-color: rgba(31, 143, 119, 0.4) !important;
+  color: #14604f !important;
   border-radius: 12px !important;
-  font-family: var(--font-body) !important;
+  font-family: var(--sans) !important;
   max-width: 100% !important;
 }
-/* Error message */
 #error-message {
-  background-color: rgba(217,79,58,0.2) !important;
-  border-color: rgba(217,79,58,0.4) !important;
-  color: #ffb0a8 !important;
+  background-color: rgba(217, 79, 58, 0.12) !important;
+  border-color: rgba(217, 79, 58, 0.4) !important;
+  color: #8c2a1c !important;
   border-radius: 12px !important;
-  font-family: var(--font-body) !important;
+  font-family: var(--sans) !important;
   max-width: 100% !important;
 }
-/* Outer wrapper — remove Brevo's light grey page background */
 .sib-form { background-color: transparent !important; padding: 0 !important; }
 .sib-form-container { background-color: transparent !important; }
-
-/* ── FOOTER ── */
-footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
-.foot-top {
-  max-width: 1200px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 24px;
-  border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 30px; margin-bottom: 22px;
-}
-.foot-brand { display: flex; align-items: center; gap: 14px; text-decoration: none; }
-.foot-logo { height: 44px; }
-.foot-name { font-family: var(--font-display); font-weight: 800; font-size: 1rem; color: #fff; }
-.foot-tagline { font-size: 0.7rem; color: rgba(255,255,255,0.35); font-weight: 600; }
-.foot-links { display: flex; gap: 20px; flex-wrap: wrap; }
-.foot-links a { font-weight: 700; font-size: 0.86rem; color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.2s; }
-.foot-links a:hover { color: var(--yellow); }
-.foot-bottom { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-.foot-copy { font-size: 0.8rem; color: rgba(255,255,255,0.25); }
-.foot-support { max-width: 1200px; margin: 0 auto 22px; display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 26px; }
-.foot-support .donate-badge { display: inline-block; line-height: 0; }
-.foot-support .donate-badge img { display: block; width: 112px; height: auto; border-radius: 16px; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.foot-support .donate-badge:hover img, .foot-support .donate-badge:focus-visible img { transform: translateY(-3px) scale(1.04); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
-.foot-support-copy { max-width: 340px; }
-.foot-support-copy strong { display: block; font-family: var(--font-display); font-weight: 800; font-size: 1rem; color: #fff; }
-.foot-support-copy span { font-size: 0.86rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
-@media(max-width:560px){ .foot-support { text-align: center; } .foot-support-copy { text-align: center; } }
-
-/* ── REVEAL ── */
-.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.55s ease, transform 0.55s ease; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 900px) {
-  .hero-content { grid-template-columns: 1fr; text-align: center; }
-  .hero-left { align-items: center; }
-  .hero-sub { max-width: 100%; }
-  .app-card { grid-template-columns: 1fr; }
-  .app-card.flip { direction: ltr; }
-  .app-card-screens { min-height: 300px; }
-  .studio-inner, .nl-inner { grid-template-columns: 1fr; }
-  .studio-logo-wrap { order: -1; }
-}
-/* ── QR + iOS note (added today) ── */
-.app-qr-row {
-  display: flex; align-items: center; gap: 12px;
-  margin-top: 16px; padding: 12px 14px;
-  background: rgba(28,18,8,0.04);
-  border: 1.5px solid rgba(28,18,8,0.08);
-  border-radius: 14px; width: fit-content; max-width: 100%;
-}
-.app-qr-row--muted { opacity: 0.5; }
-.app-qr {
-  width: 72px; height: 72px; flex-shrink: 0;
-  border-radius: 8px; background: #fff; display: block;
-}
-.app-qr-label {
-  font-size: 0.78rem; font-weight: 700;
-  color: var(--ink-soft); line-height: 1.45;
-  font-family: var(--font-display);
-}
-.ios-coming {
-  margin: 10px 0 0; font-size: 0.78rem;
-  color: rgba(28,18,8,0.4); font-weight: 600;
-}
 </style>
 </head>
 <body>
-
-<!-- NAV -->
-<nav class="nav">
-  <a class="nav-brand" href="./">
-    <img class="nav-logo" src="SnackPackStudios-logo.png" alt="SnackPack Studios">
-  </a>
-  <ul class="nav-links">
-    <li><a href="./">Home</a></li>
-    <li><a href="#apps">Apps</a></li>
-    <li><a href="#pipeline">Roadmap</a></li>
-    <li><a href="/privacy/">Privacy</a></li>
-    <li><a href="/terms/">Terms</a></li>
-    <li><a class="nav-cta" href="mailto:privacy@snackpackuniverse.com">Contact</a></li>
-  </ul>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-dots"></div>
-  <div class="hero-orbs">
-    <div class="orb orb-teal"></div>
-    <div class="orb orb-yellow"></div>
-    <div class="orb orb-green"></div>
-    <div class="orb orb-orange"></div>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="./">
+      <img class="brand-mark" src="snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">SnackPack Universe</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="/apps/">Apps</a></li>
+        <li><a href="#pipeline">Roadmap</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
   </div>
+</header>
 
-  <div class="hero-content">
-    <div class="hero-left">
-      <div class="hero-badge">
-        <span class="badge-dot"></span>
-        Now live — SnackPack ABC, 123, Pawsitive Dose, and Brain Games are on Google Play
-      </div>
-      <h1 class="hero-title">
-        One Studio.<br>
-        <span class="hl-yellow">Learning, games, and good moments.</span><br>
-        <span class="hl-teal" style="font-size:0.62em;">Family-friendly apps on Google Play.</span>
-      </h1>
-      <p class="hero-sub">
-        SnackPack Studios builds calm, colorful apps for early learning, classic play, daily positivity, and feel-good screen time.
-      </p>
-      <div class="hero-actions">
-        <a class="btn btn-yellow btn-lg" href="#apps">Explore the Apps</a>
-        <a class="btn btn-ghost btn-lg" href="#pipeline">See the Roadmap</a>
-      </div>
-    </div>
-    <div class="hero-banner-wrap">
-      <img class="hero-banner" src="snackpack-feature-banner.png" alt="SnackPack Studios — Welcome to SnackPack">
-    </div>
-  </div>
-
-  <!-- Phone strip -->
-  <div class="hero-phones-strip">
-    <div class="hphone hp-a"><img src="apps/snackpack-1-abcs-alphabet/screenshots/book1.png" alt=""></div>
-    <div class="hphone hp-b"><img src="apps/snackpack-1-abcs-alphabet/screenshots/minibook.png" alt=""></div>
-    <div class="hphone hp-c"><img src="apps/snackpack-1-abcs-alphabet/screenshots/home.png" alt=""></div>
-    <div class="hphone hp-b"><img src="apps/snackpack-2-123s-counting/screenshots/home.png" alt=""></div>
-    <div class="hphone hp-c"><img src="apps/snackpack-2-123s-counting/screenshots/count.png" alt=""></div>
-    <div class="hphone hp-b"><img src="apps/snackpack-2-123s-counting/screenshots/stories.png" alt=""></div>
-    <div class="hphone hp-a"><img src="apps/snackpack-1-abcs-alphabet/screenshots/book1.png" alt=""></div>
-  </div>
-</section>
-
-<!-- STATS -->
-<div class="stats-bar">
-  <div class="stat-item"><div class="stat-num">12+</div><div class="stat-lbl">Apps Planned</div></div>
-  <div class="stat-div"></div>
-  <div class="stat-item"><div class="stat-num">4</div><div class="stat-lbl">Live on Google Play</div></div>
-  <div class="stat-div"></div>
-  <div class="stat-item"><div class="stat-num">1</div><div class="stat-lbl">Shared World</div></div>
-  <div class="stat-div"></div>
-  <div class="stat-item"><div class="stat-num">∞</div><div class="stat-lbl">Adventures</div></div>
-</div>
-
-<!-- TICKER -->
-<div class="ticker-wrap">
-  <div class="ticker">
-    <span class="ticker-item">ABCs Alphabet <span class="dot">✦</span></span>
-    <span class="ticker-item">123s Counting <span class="dot">✦</span></span>
-    <span class="ticker-item">Pawsitive Dose <span class="dot">✦</span></span>
-    <span class="ticker-item">Brain Games <span class="dot">✦</span></span>
-    <span class="ticker-item">Spelling &amp; Sentences <span class="dot">✦</span></span>
-    <span class="ticker-item">Math Arithmetic <span class="dot">✦</span></span>
-    <span class="ticker-item">Tales &amp; Trivia <span class="dot">✦</span></span>
-    <span class="ticker-item">Creative Studio <span class="dot">✦</span></span>
-    <span class="ticker-item">Mathematics <span class="dot">✦</span></span>
-    <span class="ticker-item">Earth Explorer <span class="dot">✦</span></span>
-    <span class="ticker-item">Shape Space <span class="dot">✦</span></span>
-    <span class="ticker-item">Robot Recipe <span class="dot">✦</span></span>
-    <span class="ticker-item">ABCs Alphabet <span class="dot">✦</span></span>
-    <span class="ticker-item">123s Counting <span class="dot">✦</span></span>
-    <span class="ticker-item">Pawsitive Dose <span class="dot">✦</span></span>
-    <span class="ticker-item">Brain Games <span class="dot">✦</span></span>
-    <span class="ticker-item">Spelling &amp; Sentences <span class="dot">✦</span></span>
-    <span class="ticker-item">Math Arithmetic <span class="dot">✦</span></span>
-    <span class="ticker-item">Tales &amp; Trivia <span class="dot">✦</span></span>
-    <span class="ticker-item">Creative Studio <span class="dot">✦</span></span>
-    <span class="ticker-item">Mathematics <span class="dot">✦</span></span>
-    <span class="ticker-item">Earth Explorer <span class="dot">✦</span></span>
-    <span class="ticker-item">Shape Space <span class="dot">✦</span></span>
-    <span class="ticker-item">Robot Recipe <span class="dot">✦</span></span>
-  </div>
-</div>
-
-<!-- FEATURED APPS -->
-<section class="featured-bg" id="apps">
-  <div class="container">
-    <div class="reveal" style="margin-bottom:52px;">
-      <span class="eyebrow eyebrow-teal">Live on Google Play</span>
-      <h2 class="section-title">Meet the live SnackPack apps</h2>
-      <p class="section-body" style="max-width:620px;">Start with ABC and 123 for early reading and counting, try Pawsitive Dose for a daily lift with positive quotes and cute animal photos, then unwind with Brain Games — nine calm, offline classics like Sudoku and Solitaire.</p>
-    </div>
-
-    <!-- APP 1 -->
-    <article class="app-card reveal">
-      <div class="app-card-copy">
-        <span class="app-num-badge badge-teal">
-          <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#3a9ea5"/></svg>
-          App 01
-        </span>
-        <h2 class="app-card-title">SnackPack ABC:<br>Learn to Read</h2>
-        <p class="app-card-desc">A calm, joyful first step into letters and reading. Explore the SnackPack world through the alphabet — with mini books, character discovery, and a bookshelf that fills as you learn.</p>
-        <div class="pills">
-          <span class="pill">🔤 Alphabet</span>
-          <span class="pill">📚 Mini Books</span>
-          <span class="pill">🌟 Characters</span>
-          <span class="pill">📈 Progress</span>
-          <span class="pill">Android First</span>
+<main>
+  <section class="hero">
+    <div class="shell">
+      <div class="hero-panel">
+        <div>
+          <span class="eyebrow">Now live — 4 apps on Google Play</span>
+          <h1>One studio. Learning, games, and good moments.</h1>
+          <p class="lead">SnackPack Studios builds calm, colorful, family-friendly apps for early learning, classic play, daily positivity, and feel-good screen time — all in one shared universe of characters.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="/apps/">Explore the apps</a>
+            <a class="btn btn-secondary" href="#newsletter">Join the newsletter</a>
+          </div>
         </div>
-        <div class="app-card-actions">
-          <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.abcalphabet" target="_blank" rel="noopener">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.4c.27.15.57.2.87.16l12.04-11.51L12.51 8.4 3.18 23.4zM21.4 10.5l-2.36-1.35-3.18 3.05 3.19 3.05 2.38-1.37c.68-.39.68-1.02-.03-1.38zM1.5.9C1.19 1.2 1 1.67 1 2.27v19.47c0 .6.19 1.07.5 1.36l.07.07 10.9-10.44v-.25L1.57.83 1.5.9zM16.09 8.02L4.05.51c-.29-.18-.57-.25-.83-.2l12.09 11.56 2.58-2.47-1.8-1.38z"/></svg>
-            <div class="store-btn-inner">
-              <span class="store-btn-sub">Get it on</span>
-              <span class="store-btn-name">Google Play</span>
+        <div class="hero-card">
+          <img src="snackpack-feature-banner.png" alt="SnackPack Studios — welcome to the SnackPack universe, with the corgi and friends at a picnic.">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell grid stats-grid">
+      <div class="stat-card"><strong>14+</strong><span class="section-copy">Apps in the growing universe</span></div>
+      <div class="stat-card"><strong>4</strong><span class="section-copy">Live on Google Play</span></div>
+      <div class="stat-card"><strong>1</strong><span class="section-copy">Shared world of characters</span></div>
+      <div class="stat-card"><strong>0</strong><span class="section-copy">Third-party ads or tracking</span></div>
+    </div>
+  </section>
+
+  <!-- LIVE APPS -->
+  <section id="apps">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Live on Google Play</span>
+          <h2 class="section-title">Meet the live SnackPack apps</h2>
+          <p class="section-copy">Start with ABC and 123 for early reading and counting, try Pawsitive Dose for a daily lift with positive quotes and cute animal photos, then unwind with Brain Games — nine calm, offline classics like Sudoku and Solitaire.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- ABC -->
+        <article class="featured-app-card">
+          <div class="featured-copy">
+            <span class="app-index">App 1 · Early literacy</span>
+            <h3>SnackPack ABC:<br>Learn to Read</h3>
+            <p>A calm, joyful first step into letters and reading. Explore the SnackPack world through the alphabet — with mini books, character discovery, and a bookshelf that fills as you learn.</p>
+            <div class="featured-meta">
+              <span class="meta-tag meta-tag--live">● Live on Google Play</span>
+              <span class="meta-tag">Alphabet</span>
+              <span class="meta-tag">Mini books</span>
+              <span class="meta-tag">Ages 3–7</span>
             </div>
-          </a>
-          <a class="btn btn-outline btn-sm" href="/apps/snackpack-1-abcs-alphabet/">View App Page →</a>
-        </div>
-        <!-- QR code -->
-        <div class="app-qr-row">
-          <img class="app-qr" src="assets/qrcodes/qr-code-abc-learn-to-read.png" alt="QR code to download SnackPack ABC on Google Play">
-          <span class="app-qr-label">Scan to download on Android</span>
-        </div>
-        <p class="ios-coming">🍎 iOS App Store — coming in the future</p>
-      </div>
-      <div class="app-card-screens screens-app1">
-        <div class="screens-grid">
-          <div class="sphone sp-a"><img src="apps/snackpack-1-abcs-alphabet/screenshots/book1.png" alt=""></div>
-          <div class="sphone sp-b"><img src="apps/snackpack-1-abcs-alphabet/screenshots/minibook.png" alt=""></div>
-          <div class="sphone sp-c"><img src="apps/snackpack-1-abcs-alphabet/screenshots/home.png" alt=""></div>
-          <div class="sphone sp-b"><img src="apps/snackpack-1-abcs-alphabet/screenshots/book1.png" alt=""></div>
-          <div class="sphone sp-a"><img src="apps/snackpack-1-abcs-alphabet/screenshots/minibook.png" alt=""></div>
-        </div>
-      </div>
-    </article>
-
-    <!-- APP 2 -->
-    <article class="app-card flip reveal">
-      <div class="app-card-copy">
-        <span class="app-num-badge badge-orange">
-          <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#e8732a"/></svg>
-          App 02
-        </span>
-        <h2 class="app-card-title">SnackPack 123:<br>Learn to Count</h2>
-        <p class="app-card-desc">Numbers come alive with the SnackPack crew. Count, explore number shapes, and follow story-led adventures that build real number sense in a world kids already love.</p>
-        <div class="pills">
-          <span class="pill">🔢 Counting</span>
-          <span class="pill">📖 Stories</span>
-          <span class="pill">🌟 Characters</span>
-          <span class="pill">🎮 Games</span>
-          <span class="pill">Android First</span>
-        </div>
-        <div class="app-card-actions">
-          <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.counting" target="_blank" rel="noopener">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.4c.27.15.57.2.87.16l12.04-11.51L12.51 8.4 3.18 23.4zM21.4 10.5l-2.36-1.35-3.18 3.05 3.19 3.05 2.38-1.37c.68-.39.68-1.02-.03-1.38zM1.5.9C1.19 1.2 1 1.67 1 2.27v19.47c0 .6.19 1.07.5 1.36l.07.07 10.9-10.44v-.25L1.57.83 1.5.9zM16.09 8.02L4.05.51c-.29-.18-.57-.25-.83-.2l12.09 11.56 2.58-2.47-1.8-1.38z"/></svg>
-            <div class="store-btn-inner">
-              <span class="store-btn-sub">Get it on</span>
-              <span class="store-btn-name">Google Play</span>
+            <div class="featured-actions">
+              <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.abcalphabet" target="_blank" rel="noopener" aria-label="Get SnackPack ABC on Google Play">
+                <img class="store-badge" src="assets/google-play-badge.svg" alt="Get it on Google Play">
+              </a>
+              <a class="btn btn-secondary" href="/apps/snackpack-1-abcs-alphabet/">Full app page</a>
+              <a class="text-link" href="/privacy/snackpack-1-abcs-alphabet/">Privacy policy</a>
             </div>
-          </a>
-          <a class="btn btn-outline btn-sm" href="/apps/snackpack-2-123s-counting/">View App Page →</a>
-        </div>
-        <!-- QR code -->
-        <div class="app-qr-row">
-          <img class="app-qr" src="assets/qrcodes/qr-code-123-learn-to-count.png" alt="QR code to download SnackPack 123 on Google Play">
-          <span class="app-qr-label">Scan to download on Android</span>
-        </div>
-        <p class="ios-coming">🍎 iOS App Store — coming in the future</p>
-      </div>
-      <div class="app-card-screens screens-app2">
-        <div class="screens-grid">
-          <div class="sphone sp-a"><img src="apps/snackpack-2-123s-counting/screenshots/count.png" alt=""></div>
-          <div class="sphone sp-b"><img src="apps/snackpack-2-123s-counting/screenshots/stories.png" alt=""></div>
-          <div class="sphone sp-c"><img src="apps/snackpack-2-123s-counting/screenshots/home.png" alt=""></div>
-          <div class="sphone sp-b"><img src="apps/snackpack-2-123s-counting/screenshots/numbers1.png" alt=""></div>
-          <div class="sphone sp-a"><img src="apps/snackpack-2-123s-counting/screenshots/count.png" alt=""></div>
-        </div>
-      </div>
-    </article>
-
-    <!-- PAWSITIVE DOSE -->
-    <article class="app-card reveal">
-      <div class="app-card-copy">
-        <span class="app-num-badge badge-teal">
-          <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#1d9e75"/></svg>
-          Wellbeing
-        </span>
-        <h2 class="app-card-title">Pawsitive Dose:<br>Daily Positivity</h2>
-        <p class="app-card-desc">A gentle mood boost with adorable animal photos, positive quotes, affirmations, mindful imagery, saved cards, twice-daily reminders, and Android widgets.</p>
-        <div class="pills">
-          <span class="pill">Positive Quotes</span>
-          <span class="pill">Cute Animals</span>
-          <span class="pill">Affirmations</span>
-          <span class="pill">Widgets</span>
-          <span class="pill">Google Play</span>
-        </div>
-        <div class="app-card-actions">
-          <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.pawsitivedose" target="_blank" rel="noopener">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.4c.27.15.57.2.87.16l12.04-11.51L12.51 8.4 3.18 23.4zM21.4 10.5l-2.36-1.35-3.18 3.05 3.19 3.05 2.38-1.37c.68-.39.68-1.02-.03-1.38zM1.5.9C1.19 1.2 1 1.67 1 2.27v19.47c0 .6.19 1.07.5 1.36l.07.07 10.9-10.44v-.25L1.57.83 1.5.9zM16.09 8.02L4.05.51c-.29-.18-.57-.25-.83-.2l12.09 11.56 2.58-2.47-1.8-1.38z"/></svg>
-            <div class="store-btn-inner">
-              <span class="store-btn-sub">Get it on</span>
-              <span class="store-btn-name">Google Play</span>
+            <div class="featured-qr">
+              <img src="assets/qrcodes/qr-code-abc-learn-to-read.png" alt="QR code to download SnackPack ABC on Google Play">
+              <span>Scan to download<br>SnackPack ABC<br>on Android</span>
             </div>
-          </a>
-          <a class="btn btn-outline btn-sm" href="/apps/pawsitive-dose/">View App Page →</a>
-        </div>
-        <div class="app-qr-row">
-          <img class="app-qr" src="assets/qrcodes/qr-code-pawsitive-dose.png" alt="QR code to download Pawsitive Dose on Google Play">
-          <span class="app-qr-label">Scan to download on Android</span>
-        </div>
-      </div>
-      <div class="app-card-screens screens-pawsitive">
-        <img class="feature-preview" src="apps/pawsitive-dose/assets/feature-graphic-1024-500.png" alt="Pawsitive Dose animal photos and positive affirmation cards.">
-      </div>
-    </article>
+            <p class="ios-note">🍎 iOS App Store — coming in the future</p>
+          </div>
+          <div class="device-fan">
+            <figure class="device-shot device-shot--a"><img src="apps/snackpack-1-abcs-alphabet/screenshots/practice.png" loading="lazy" alt="SnackPack ABC practice screen."></figure>
+            <figure class="device-shot device-shot--b"><img src="apps/snackpack-1-abcs-alphabet/screenshots/home.png" loading="lazy" alt="SnackPack ABC home screen."></figure>
+            <figure class="device-shot device-shot--c"><img src="apps/snackpack-1-abcs-alphabet/screenshots/minibook.png" loading="lazy" alt="SnackPack ABC mini book."></figure>
+          </div>
+        </article>
 
-    <!-- BRAIN GAMES -->
-    <article class="app-card flip reveal">
-      <div class="app-card-copy">
-        <span class="app-num-badge badge-teal">
-          <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#4b62d6"/></svg>
-          Games
-        </span>
-        <h2 class="app-card-title">Snackpack<br>Brain Games</h2>
-        <p class="app-card-desc">Nine timeless games in one calm, offline app — Sudoku, Solitaire, Minesweeper, 2048, Word Search, Checkers, Connect 4, Reversi, and Cascade. No ads, no tracking, and your stats stay on your device.</p>
-        <div class="pills">
-          <span class="pill">🧩 Sudoku</span>
-          <span class="pill">🃏 Solitaire</span>
-          <span class="pill">📴 Offline</span>
-          <span class="pill">🔥 Streaks</span>
-          <span class="pill">Google Play</span>
-        </div>
-        <div class="app-card-actions">
-          <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames" target="_blank" rel="noopener">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.4c.27.15.57.2.87.16l12.04-11.51L12.51 8.4 3.18 23.4zM21.4 10.5l-2.36-1.35-3.18 3.05 3.19 3.05 2.38-1.37c.68-.39.68-1.02-.03-1.38zM1.5.9C1.19 1.2 1 1.67 1 2.27v19.47c0 .6.19 1.07.5 1.36l.07.07 10.9-10.44v-.25L1.57.83 1.5.9zM16.09 8.02L4.05.51c-.29-.18-.57-.25-.83-.2l12.09 11.56 2.58-2.47-1.8-1.38z"/></svg>
-            <div class="store-btn-inner">
-              <span class="store-btn-sub">Get it on</span>
-              <span class="store-btn-name">Google Play</span>
+        <!-- 123 -->
+        <article class="featured-app-card">
+          <div class="featured-copy">
+            <span class="app-index">App 2 · Early numeracy</span>
+            <h3>SnackPack 123:<br>Learn to Count</h3>
+            <p>Numbers come alive with the SnackPack crew. Count, explore number shapes, and follow story-led adventures that build real number sense in a world kids already love.</p>
+            <div class="featured-meta">
+              <span class="meta-tag meta-tag--live">● Live on Google Play</span>
+              <span class="meta-tag">Counting</span>
+              <span class="meta-tag">Stories</span>
+              <span class="meta-tag">Ages 3–7</span>
             </div>
-          </a>
-          <a class="btn btn-outline btn-sm" href="/apps/snackpack-brain-games/">View App Page →</a>
-        </div>
-        <div class="app-qr-row">
-          <img class="app-qr" src="assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play">
-          <span class="app-qr-label">Scan to download on Android</span>
-        </div>
-      </div>
-      <div class="app-card-screens screens-pawsitive" style="background:linear-gradient(145deg,#3a4ea8 0%,#6a3ad9 100%);">
-        <img class="feature-preview" src="apps/snackpack-brain-games/assets/feature-graphic-1024-500.png" alt="Snackpack Brain Games puzzles including Sudoku and Solitaire.">
-      </div>
-    </article>
-  </div>
-</section>
+            <div class="featured-actions">
+              <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.counting" target="_blank" rel="noopener" aria-label="Get SnackPack 123 on Google Play">
+                <img class="store-badge" src="assets/google-play-badge.svg" alt="Get it on Google Play">
+              </a>
+              <a class="btn btn-secondary" href="/apps/snackpack-2-123s-counting/">Full app page</a>
+              <a class="text-link" href="/privacy/snackpack-2-123s-counting/">Privacy policy</a>
+            </div>
+            <div class="featured-qr">
+              <img src="assets/qrcodes/qr-code-123-learn-to-count.png" alt="QR code to download SnackPack 123 on Google Play">
+              <span>Scan to download<br>SnackPack 123<br>on Android</span>
+            </div>
+            <p class="ios-note">🍎 iOS App Store — coming in the future</p>
+          </div>
+          <div class="device-fan">
+            <figure class="device-shot device-shot--a"><img src="apps/snackpack-2-123s-counting/screenshots/count.png" loading="lazy" alt="SnackPack 123 counting game."></figure>
+            <figure class="device-shot device-shot--b"><img src="apps/snackpack-2-123s-counting/screenshots/home.png" loading="lazy" alt="SnackPack 123 home screen."></figure>
+            <figure class="device-shot device-shot--c"><img src="apps/snackpack-2-123s-counting/screenshots/stories.png" loading="lazy" alt="SnackPack 123 stories screen."></figure>
+          </div>
+        </article>
 
-<!-- WHY SNACKPACK -->
-<section>
-  <div class="container">
-    <div class="reveal" style="text-align:center;max-width:620px;margin:0 auto 0;">
-      <span class="eyebrow eyebrow-yellow">Why SnackPack</span>
-      <h2 class="section-title">Premium learning, designed with care</h2>
-      <p class="section-body">Every app is built to be calm, focused, and genuinely delightful — for kids just discovering the world, and parents who want better choices.</p>
-    </div>
-    <div class="why-grid">
-      <div class="why-card reveal">
-        <div class="why-icon" style="background:rgba(245,200,66,0.15);">🌍</div>
-        <h3>One Shared World</h3>
-        <p>The same loveable SnackPack characters appear across every app — so each new app feels like a reunion, not a restart.</p>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon" style="background:rgba(58,158,165,0.15);">🎯</div>
-        <h3>Focused & Calm</h3>
-        <p>No ads, no dark patterns, no random notifications. Each app does one thing well and treats children's attention with respect.</p>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon" style="background:rgba(74,140,63,0.15);">📱</div>
-        <h3>Android First</h3>
-        <p>Live on Google Play, with iOS planned to follow where appropriate. Accessible to families on any device, any budget.</p>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon" style="background:rgba(232,115,42,0.15);">🌱</div>
-        <h3>Built to Grow</h3>
-        <p>Ten apps in the roadmap, all sharing the same visual language. Progress and familiarity compound across the whole series.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- STUDIO SECTION -->
-<section class="studio-section">
-  <div class="container">
-    <div class="studio-inner">
-      <div class="studio-logo-wrap reveal">
-        <img class="studio-logo" src="SnackPackStudios-logo.png" alt="SnackPack Studios">
-      </div>
-      <div class="reveal">
-        <span class="eyebrow eyebrow-light">About the Studio</span>
-        <h2 class="section-title section-title-light">The SnackPack Universe</h2>
-        <p class="section-body section-body-light" style="margin-bottom:24px;">
-          SnackPack Studios is building a connected world of learning apps anchored by the same cast of characters — from the cheerful corgi peeking out of the backpack to the friendly bear at the picnic. Every app lives in the same universe, shares the same art style, and is built with the same care.
-        </p>
-        <p class="section-body section-body-light" style="margin-bottom:32px;">
-          SnackPack ABC, SnackPack 123, Pawsitive Dose, and Snackpack Brain Games are live on Google Play. More apps are in the pipeline — each one built with the same calm, colorful SnackPack care.
-        </p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <a class="btn btn-yellow" href="#apps">See the Apps</a>
-          <a class="btn btn-ghost" href="#newsletter">Join the Newsletter</a>
-          <a class="btn btn-ghost" href="mailto:privacy@snackpackuniverse.com">Get in Touch</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PIPELINE -->
-<section class="pipeline-bg" id="pipeline">
-  <div class="container">
-    <div class="reveal" style="margin-bottom:0;">
-      <span class="eyebrow eyebrow-light">Future Pipeline</span>
-      <h2 class="section-title section-title-light">The full SnackPack roadmap</h2>
-      <p class="section-body section-body-light" style="max-width:540px;">Ten more adventures in development — each expanding the universe with new subjects, new surprises, and the same beloved cast. Including Prehistoric Pals and Zoo World.</p>
-    </div>
-    <div class="pipeline-grid">
-      <div class="pipe-card reveal" style="--c:rgba(58,158,165,0.3);">
-        <div class="pipe-num"><span class="pipe-dot" style="background:#3a9ea5;"></span>App 03</div>
-        <div class="pipe-name">Spelling Sentences</div>
-        <div class="pipe-desc">Words, word-building and sentence adventure.</div>
-      </div>
-      <div class="pipe-card reveal" style="--c:rgba(232,115,42,0.3);">
-        <div class="pipe-num"><span class="pipe-dot" style="background:#e8732a;"></span>App 04</div>
-        <div class="pipe-name">Math Arithmetic</div>
-        <div class="pipe-desc">Core arithmetic in the SnackPack style.</div>
-      </div>
-      <div class="pipe-card reveal" style="--c:rgba(217,79,58,0.3);">
-        <div class="pipe-num"><span class="pipe-dot" style="background:#d94f3a;"></span>App 05</div>
-        <div class="pipe-name">Tales &amp; Trivia</div>
-        <div class="pipe-desc">Stories, quizzes and knowledge exploration.</div>
-      </div>
-      <div class="pipe-card reveal" style="--c:rgba(139,74,42,0.4);">
-        <div class="pipe-num"><span class="pipe-dot" style="background:#b86b3a;"></span>App 06</div>
-        <div class="pipe-name">Creative Studio</div>
-        <div class="pipe-desc">Drawing, making and creative play.</div>
-      </div>
-      <div class="pipe-card reveal" style="--c:rgba(58,122,191,0.3);">
-        <div class="pipe-num"><span class="pipe-dot" style="background:#3a7abf;"></span>App 07</div>
-        <div class="pipe-name">Mathematics</div>
-        <div class="pipe-desc">Deeper maths with the SnackPack crew.</div>
-      </div>
-      <div class="pipe-card reveal" style="--c:rgba(74,140,63,0.3);">
-        <div class="pipe-num"><span class="pipe-dot" style="background:#4a8c3f;"></span>App 08</div>
-        <div class="pipe-name">Earth Explorer</div>
-        <div class="pipe-desc">Geography, nature and the world around us.</div>
-      </div>
-      <div class="pipe-card reveal" style="--c:rgba(245,200,66,0.25);">
-        <div class="pipe-num"><span class="pipe-dot" style="background:#f5c842;"></span>App 09</div>
-        <div class="pipe-name">Shape Space</div>
-        <div class="pipe-desc">Geometry, patterns and spatial thinking.</div>
-      </div>
-      <div class="pipe-card reveal" style="--c:rgba(58,158,165,0.2);">
-        <div class="pipe-num"><span class="pipe-dot" style="background:#3a9ea5;"></span>App 10</div>
-        <div class="pipe-name">Robot Recipe</div>
-        <div class="pipe-desc">Coding logic and computational thinking.</div>
-      </div>
-      <div class="pipe-card reveal" style="--c:rgba(74,140,63,0.3);">
-        <div class="pipe-num"><span class="pipe-dot" style="background:#4a8c3f;"></span>App 11</div>
-        <div class="pipe-name">Prehistoric Pals</div>
-        <div class="pipe-desc">Dinosaurs, fossils, and prehistoric science.</div>
-      </div>
-      <div class="pipe-card reveal" style="--c:rgba(232,115,42,0.3);">
-        <div class="pipe-num"><span class="pipe-dot" style="background:#e8732a;"></span>App 12</div>
-        <div class="pipe-name">Zoo World</div>
-        <div class="pipe-desc">Animals, habitats, and conservation adventures.</div>
-      </div>
-    </div>
-    <div class="reveal" style="text-align:center;margin-top:44px;">
-      <a class="btn btn-yellow" href="#newsletter">Get notified when apps launch →</a>
-    </div>
-  </div>
-</section>
-
-<!-- NEWSLETTER -->
-<section class="nl-bg" id="newsletter">
-  <div class="container">
-    <div class="nl-inner reveal">
-      <div>
-        <span class="eyebrow eyebrow-light">Stay in the Loop</span>
-        <h2 class="section-title section-title-light">Be first to know when new apps launch</h2>
-        <p class="section-body section-body-light">Get Android launch updates, new app releases, and a look behind the scenes of the SnackPack universe.</p>
-        <div class="nl-feats">
-          <span class="nl-feat">✓ No spam, ever</span>
-          <span class="nl-feat">✓ Unsubscribe anytime</span>
-          <span class="nl-feat">✓ Android-first updates</span>
-          <span class="nl-feat">✓ Powered by Brevo</span>
-        </div>
-      </div>
-
-      <!-- Brevo HTML Form (real submission, no iframe) -->
-      <div class="sib-form">
-        <div id="sib-form-container" class="sib-form-container">
-          <div id="error-message" class="sib-form-message-panel" style="display:none;">
-            <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
-              <span class="sib-form-message-panel__inner-text">Sorry, the Universe hit a snag! Please try again in a moment.</span>
+        <!-- Pawsitive Dose -->
+        <article class="featured-app-card">
+          <div class="featured-copy">
+            <span class="app-index">Wellbeing</span>
+            <h3>Pawsitive<br>Dose</h3>
+            <p>A gentle mood boost with adorable animal photos, positive quotes, affirmations, mindful imagery, saved cards, twice-daily reminders, and Android widgets.</p>
+            <div class="featured-meta">
+              <span class="meta-tag meta-tag--live">● Live on Google Play</span>
+              <span class="meta-tag">Positive quotes</span>
+              <span class="meta-tag">Animal photos</span>
+              <span class="meta-tag">Daily reminders</span>
+            </div>
+            <div class="featured-actions">
+              <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.pawsitivedose" target="_blank" rel="noopener" aria-label="Get Pawsitive Dose on Google Play">
+                <img class="store-badge" src="assets/google-play-badge.svg" alt="Get it on Google Play">
+              </a>
+              <a class="btn btn-secondary" href="/apps/pawsitive-dose/">Full app page</a>
+              <a class="text-link" href="/privacy/pawsitive-dose/">Privacy policy</a>
+            </div>
+            <div class="featured-qr">
+              <img src="assets/qrcodes/qr-code-pawsitive-dose.png" alt="QR code to download Pawsitive Dose on Google Play">
+              <span>Scan to download<br>Pawsitive Dose<br>on Android</span>
             </div>
           </div>
-          <div id="success-message" class="sib-form-message-panel" style="display:none;">
-            <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
-              <span class="sib-form-message-panel__inner-text">Success! Check your inbox 🐶 — we've sent a link to confirm your spot in the Universe. Please click the link inside to join!</span>
+          <div class="showcase-frame">
+            <img src="apps/pawsitive-dose/assets/feature-graphic-1024-500.png" loading="lazy" alt="Pawsitive Dose feature graphic with animal photos and positive affirmation cards.">
+          </div>
+        </article>
+
+        <!-- Brain Games -->
+        <article class="featured-app-card">
+          <div class="featured-copy">
+            <span class="app-index">Games</span>
+            <h3>Snackpack<br>Brain Games</h3>
+            <p>Nine timeless games in one calm, offline app — Sudoku, Solitaire, Minesweeper, 2048, Word Search, Checkers, Connect 4, Reversi, and Cascade. No ads, no tracking, and your stats stay on your device.</p>
+            <div class="featured-meta">
+              <span class="meta-tag meta-tag--live">● Live on Google Play</span>
+              <span class="meta-tag">9 classic games</span>
+              <span class="meta-tag">Offline</span>
+              <span class="meta-tag">No ads</span>
+            </div>
+            <div class="featured-actions">
+              <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games on Google Play">
+                <img class="store-badge" src="assets/google-play-badge.svg" alt="Get it on Google Play">
+              </a>
+              <a class="btn btn-secondary" href="/apps/snackpack-brain-games/">Full app page</a>
+              <a class="text-link" href="/privacy/snackpack-brain-games/">Privacy policy</a>
+            </div>
+            <div class="featured-qr">
+              <img src="assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play">
+              <span>Scan to download<br>Brain Games<br>on Android</span>
             </div>
           </div>
-          <div id="sib-container" class="sib-container--large sib-container--vertical">
-            <form id="sib-form" method="POST" action="https://c8e915bf.sibforms.com/serve/MUIFADVt4ZlXsiMM8wqiXqcGeRGBU0WF59M6fHpCegIo6lKDBIizhj4EybwGYQygjM8s619mIdox-2D8mik7upF-_5x30R9bApxbcK16bM2mPFLFTDokgMBnqtOdTY4r7u9TKTorSiC2MPn5mwOTncBTtrQAx2W58RDmqLLtC5OLxrFrNmZH7As9WjK4krNNglwOtxjzbYH3k9qc4Q==" data-type="subscription">
-              <div style="padding:8px 0;">
-                <div class="sib-form-block">
-                  <p>Join the Universe 🐶</p>
-                </div>
+          <div class="showcase-frame">
+            <img src="apps/snackpack-brain-games/assets/feature-graphic-1024-500.png" loading="lazy" alt="Snackpack Brain Games feature graphic with Sudoku, Solitaire, and classic puzzle tiles.">
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY SNACKPACK -->
+  <section>
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Why SnackPack</span>
+          <h2 class="section-title">Premium learning, designed with care</h2>
+          <p class="section-copy">Every app is built to be calm, focused, and genuinely delightful — for kids just discovering the world, and parents who want better choices.</p>
+        </div>
+      </div>
+      <div class="grid stats-grid">
+        <article class="content-card">
+          <h2>🌍 One shared world</h2>
+          <p class="section-copy">The same loveable SnackPack characters appear across every app — so each new app feels like a reunion, not a restart.</p>
+        </article>
+        <article class="content-card">
+          <h2>🎯 Focused &amp; calm</h2>
+          <p class="section-copy">No ads, no dark patterns, no random notifications. Each app does one thing well and treats children's attention with respect.</p>
+        </article>
+        <article class="content-card">
+          <h2>📱 Android first</h2>
+          <p class="section-copy">Live on Google Play, with iOS planned to follow where appropriate. Accessible to families on any device, any budget.</p>
+        </article>
+        <article class="content-card">
+          <h2>🌱 Built to grow</h2>
+          <p class="section-copy">A growing universe of 14+ apps, all sharing the same visual language. Progress and familiarity compound across the whole series.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDIO -->
+  <section>
+    <div class="shell showcase-shell">
+      <div class="showcase-copy">
+        <span class="eyebrow">About the studio</span>
+        <h2 class="section-title">The SnackPack Universe</h2>
+        <p class="section-copy">SnackPack Studios is building a connected world of learning apps anchored by the same cast of characters — from the cheerful corgi peeking out of the backpack to the friendly bear at the picnic. Every app lives in the same universe, shares the same art style, and is built with the same care.</p>
+        <p class="section-copy">SnackPack ABC, SnackPack 123, Pawsitive Dose, and Snackpack Brain Games are live on Google Play. More apps are in the pipeline — each one built with the same calm, colorful SnackPack care.</p>
+        <div class="stack-inline">
+          <a class="btn btn-primary" href="/apps/">See the apps</a>
+          <a class="btn btn-secondary" href="#newsletter">Join the newsletter</a>
+          <a class="btn btn-secondary" href="mailto:support@snackpackuniverse.com">Get in touch</a>
+        </div>
+      </div>
+      <div class="showcase-frame">
+        <img src="SnackPackStudios-logo.png" loading="lazy" alt="SnackPack Studios logo — corgi in a green backpack.">
+      </div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="pipeline">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Future pipeline</span>
+          <h2 class="section-title">The full SnackPack roadmap</h2>
+          <p class="section-copy">A growing universe of adventures in development — each expanding the world with new subjects, new surprises, and the same beloved cast. Including Prehistoric Pals and Zoo World.</p>
+        </div>
+      </div>
+      <div class="grid upcoming-grid">
+        <article class="timeline-card"><h3>App 3 · Spelling Sentences</h3><p>Words, word-building, and sentence adventures.</p></article>
+        <article class="timeline-card"><h3>App 4 · Math Arithmetic</h3><p>Core arithmetic in the SnackPack style.</p></article>
+        <article class="timeline-card"><h3>App 5 · Tales &amp; Trivia</h3><p>Stories, quizzes, and knowledge exploration.</p></article>
+        <article class="timeline-card"><h3>App 6 · Creative Studio</h3><p>Drawing, making, and creative play.</p></article>
+        <article class="timeline-card"><h3>App 7 · Mathematics</h3><p>Deeper maths with the SnackPack crew.</p></article>
+        <article class="timeline-card"><h3>App 8 · Earth Explorer</h3><p>Geography, nature, and the world around us.</p></article>
+        <article class="timeline-card"><h3>App 9 · Shape Space</h3><p>Geometry, patterns, and spatial thinking.</p></article>
+        <article class="timeline-card"><h3>App 10 · Robot Recipe</h3><p>Coding logic and computational thinking.</p></article>
+        <article class="timeline-card"><h3>App 11 · Prehistoric Pals</h3><p>Dinosaurs, fossils, and prehistoric science.</p></article>
+        <article class="timeline-card"><h3>App 12 · Zoo World</h3><p>Animals, habitats, and conservation adventures.</p></article>
+      </div>
+      <div class="stack-inline">
+        <a class="btn btn-primary" href="#newsletter">Get notified when apps launch →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section id="newsletter">
+    <div class="shell newsletter-card">
+      <div class="newsletter-row">
+        <div>
+          <span class="eyebrow">Stay in the loop</span>
+          <h2 class="section-title">Be first to know when new apps launch</h2>
+          <p class="section-copy">Get Android launch updates, new app releases, and a look behind the scenes of the SnackPack universe.</p>
+          <p class="newsletter-note" style="margin-top:14px;">✓ No spam, ever &nbsp;·&nbsp; ✓ Unsubscribe anytime &nbsp;·&nbsp; ✓ Android-first updates &nbsp;·&nbsp; ✓ Powered by Brevo</p>
+        </div>
+
+        <!-- Brevo HTML Form (real submission, no iframe) -->
+        <div class="sib-form">
+          <div id="sib-form-container" class="sib-form-container">
+            <div id="error-message" class="sib-form-message-panel" style="display:none;">
+              <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
+                <span class="sib-form-message-panel__inner-text">Sorry, the Universe hit a snag! Please try again in a moment.</span>
               </div>
-              <div style="padding:8px 0;">
-                <div class="sib-form-block">
-                  <div class="sib-text-form-block">
-                    <p>Get early access to new apps, alphabet adventures, and secret SnackPack updates.</p>
+            </div>
+            <div id="success-message" class="sib-form-message-panel" style="display:none;">
+              <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
+                <span class="sib-form-message-panel__inner-text">Success! Check your inbox 🐶 — we've sent a link to confirm your spot in the Universe. Please click the link inside to join!</span>
+              </div>
+            </div>
+            <div id="sib-container" class="sib-container--large sib-container--vertical">
+              <form id="sib-form" method="POST" action="https://c8e915bf.sibforms.com/serve/MUIFADVt4ZlXsiMM8wqiXqcGeRGBU0WF59M6fHpCegIo6lKDBIizhj4EybwGYQygjM8s619mIdox-2D8mik7upF-_5x30R9bApxbcK16bM2mPFLFTDokgMBnqtOdTY4r7u9TKTorSiC2MPn5mwOTncBTtrQAx2W58RDmqLLtC5OLxrFrNmZH7As9WjK4krNNglwOtxjzbYH3k9qc4Q==" data-type="subscription">
+                <div style="padding:8px 0;">
+                  <div class="sib-form-block">
+                    <p>Join the Universe 🐶</p>
                   </div>
                 </div>
-              </div>
-              <div style="padding:8px 0;">
-                <div class="sib-input sib-form-block">
-                  <div class="form__entry entry_block">
-                    <div class="form__label-row">
-                      <label class="entry__label" for="EMAIL">Your email address</label>
-                      <div class="entry__field">
-                        <input class="input" type="text" id="EMAIL" name="EMAIL" autocomplete="email" placeholder="you@example.com" data-required="true" required />
-                      </div>
+                <div style="padding:8px 0;">
+                  <div class="sib-form-block">
+                    <div class="sib-text-form-block">
+                      <p>Get early access to new apps, alphabet adventures, and secret SnackPack updates.</p>
                     </div>
+                  </div>
+                </div>
+                <div style="padding:8px 0;">
+                  <div class="sib-input sib-form-block">
+                    <div class="form__entry entry_block">
+                      <div class="form__label-row">
+                        <label class="entry__label" for="EMAIL">Your email address</label>
+                        <div class="entry__field">
+                          <input class="input" type="text" id="EMAIL" name="EMAIL" autocomplete="email" placeholder="you@example.com" data-required="true" required />
+                        </div>
+                      </div>
+                      <label class="entry__error entry__error--primary"></label>
+                    </div>
+                  </div>
+                </div>
+                <!-- GDPR consent (required) — the Brevo list has consent enabled, so this
+                     field must be present and ticked. value="1" is what Brevo records. -->
+                <div style="padding:8px 0;">
+                  <div class="sib-optin sib-form-block" data-required="true">
+                    <label style="display:flex; align-items:flex-start; gap:8px; text-align:left; cursor:pointer; font-size:13px; line-height:1.45;">
+                      <input type="checkbox" value="1" id="GDPR_CONSENT" name="GDPR_CONSENT" required style="width:16px; height:16px; margin-top:1px; flex:0 0 auto; accent-color:#1f8f77; cursor:pointer;" />
+                      <span>I agree to receive SnackPack Universe updates by email and accept the <a href="/privacy/" style="color:#1f8f77; text-decoration:underline;">privacy policy</a>. Unsubscribe anytime.</span>
+                    </label>
                     <label class="entry__error entry__error--primary"></label>
                   </div>
                 </div>
-              </div>
-              <!-- GDPR consent (required) — the Brevo list has consent enabled, so this
-                   field must be present and ticked. value="1" is what Brevo records. -->
-              <div style="padding:8px 0;">
-                <div class="sib-optin sib-form-block" data-required="true">
-                  <label style="display:flex; align-items:flex-start; gap:8px; text-align:left; cursor:pointer; font-family:'Nunito', sans-serif; font-size:13px; color:rgba(255,255,255,0.82); line-height:1.45;">
-                    <input type="checkbox" value="1" id="GDPR_CONSENT" name="GDPR_CONSENT" required style="width:16px; height:16px; margin-top:1px; flex:0 0 auto; accent-color:#3a9ea5; cursor:pointer;" />
-                    <span>I agree to receive SnackPack Universe updates by email and accept the <a href="/privacy/" style="color:#7ee8ee; text-decoration:underline;">privacy policy</a>. Unsubscribe anytime.</span>
-                  </label>
-                  <label class="entry__error entry__error--primary"></label>
+                <div style="padding:8px 0;">
+                  <div class="sib-form-block" style="text-align:center;">
+                    <button class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit">
+                      <svg class="icon clickable__icon progress-indicator__icon sib-hide-loader-icon" viewBox="0 0 512 512">
+                        <path d="M460.116 373.846l-20.823-12.022c-5.541-3.199-7.54-10.159-4.663-15.874 30.137-59.886 28.343-131.652-5.386-189.946-33.641-58.394-94.896-95.833-161.827-99.676C261.028 55.961 256 50.751 256 44.352V20.309c0-6.904 5.808-12.337 12.703-11.982 83.556 4.306 160.163 50.864 202.11 123.677 42.063 72.696 44.079 162.316 6.031 236.832-3.14 6.148-10.75 8.461-16.728 5.01z" />
+                      </svg>
+                      SUBSCRIBE
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div style="padding:8px 0;">
-                <div class="sib-form-block" style="text-align:center;">
-                  <button class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit">
-                    <svg class="icon clickable__icon progress-indicator__icon sib-hide-loader-icon" viewBox="0 0 512 512">
-                      <path d="M460.116 373.846l-20.823-12.022c-5.541-3.199-7.54-10.159-4.663-15.874 30.137-59.886 28.343-131.652-5.386-189.946-33.641-58.394-94.896-95.833-161.827-99.676C261.028 55.961 256 50.751 256 44.352V20.309c0-6.904 5.808-12.337 12.703-11.982 83.556 4.306 160.163 50.864 202.11 123.677 42.063 72.696 44.079 162.316 6.031 236.832-3.14 6.148-10.75 8.461-16.728 5.01z" />
-                    </svg>
-                    SUBSCRIBE
-                  </button>
-                </div>
-              </div>
-              <input type="text" name="email_address_check" value="" class="input--hidden">
-              <input type="hidden" name="locale" value="en">
-            </form>
+                <input type="text" name="email_address_check" value="" class="input--hidden">
+                <input type="hidden" name="locale" value="en">
+              </form>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
-  </div>
-</section>
+  </section>
+</main>
 
-<!-- FOOTER -->
-<footer>
-  <div class="foot-top">
-    <a class="foot-brand" href="./">
-      <img class="foot-logo" src="SnackPackStudios-logo.png" alt="SnackPack Studios">
-      <div>
-        <div class="foot-name">SnackPack Universe</div>
-        <div class="foot-tagline">Developed by SnackPack Studios</div>
-      </div>
-    </a>
-    <div class="foot-links">
-      <a href="/apps/">All Apps</a>
-      <a href="/apps/snackpack-1-abcs-alphabet/">ABCs Alphabet</a>
-      <a href="/apps/snackpack-2-123s-counting/">123s Counting</a>
-      <a href="/apps/pawsitive-dose/">Pawsitive Dose</a>
-      <a href="/privacy/">Privacy</a>
-      <a href="/terms/">Terms</a>
-      <a href="mailto:privacy@snackpackuniverse.com">Contact</a>
-    </div>
-  </div>
-  <div class="foot-support">
+<footer class="foot">
+  <div class="shell foot-support">
     <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
-      <img src="assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="112" height="87" loading="lazy">
+      <img src="assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
     </a>
-    <div class="foot-support-copy">
-      <strong>Enjoying SnackPack?</strong>
-      <span>We're a small studio — tips and donations help us keep building calm, ad-free apps.</span>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free apps.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">SnackPack Universe · Developed by SnackPack Studios</p>
+    <div class="footer-links">
+      <a class="text-link" href="/apps/">All Apps</a>
+      <a class="text-link" href="/apps/snackpack-1-abcs-alphabet/">ABC</a>
+      <a class="text-link" href="/apps/snackpack-2-123s-counting/">123</a>
+      <a class="text-link" href="/apps/pawsitive-dose/">Pawsitive Dose</a>
+      <a class="text-link" href="/apps/snackpack-brain-games/">Brain Games</a>
+      <a class="text-link" href="/privacy/">Privacy</a>
+      <a class="text-link" href="/terms/">Terms</a>
+      <a class="text-link" href="mailto:support@snackpackuniverse.com">Contact</a>
     </div>
   </div>
-  <div class="foot-bottom">
-    <div class="foot-copy">© 2025–2026 SnackPack Universe (ABN 51 918 351 341). Developed by the team at SnackPack Studios.</div>
-    <div class="foot-copy">Made with ♥ for curious kids</div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">© 2025–2026 SnackPack Universe (ABN 51 918 351 341). Developed by the team at SnackPack Studios.</p>
+    <p class="foot-note">Made with ♥ for curious kids</p>
   </div>
 </footer>
-
-<script>
-  // Scroll reveal
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 55);
-        obs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-</script>
 
 <!-- Self-contained signup handler. We deliberately do NOT load Brevo's main.js:
      it can't parse our custom consent field, which made it misreport the email
@@ -1259,9 +617,9 @@ footer { background: var(--ink); padding: 48px clamp(20px,5vw,60px) 28px; }
     });
   })();
 </script>
-  <!-- Cloudflare Web Analytics -->
-  <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
-          data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
-  <!-- End Cloudflare Web Analytics -->
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
 </body>
 </html>
