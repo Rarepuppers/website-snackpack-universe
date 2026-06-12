@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play 2048 Online Free | No Ads, No Download — SnackPack</title>
+<meta name="description" content="Play 2048 free in your browser — slide and merge tiles to reach 2048. No ads, no sign-in, no download. Arrow keys or swipe, with your best score saved. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/2048/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play 2048 Online Free | No Ads, No Download">
+<meta property="og:description" content="Slide and merge tiles to reach 2048, free in your browser. Arrow keys or swipe — no ads, no sign-in.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/2048/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "2048",
+  "url": "https://www.snackpackuniverse.com/play/2048/",
+  "applicationCategory": "Game",
+  "genre": "Puzzle",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "description": "Free browser 2048: slide and merge numbered tiles to reach the 2048 tile. Arrow keys or swipe. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play 2048",
+  "step": [
+    { "@type": "HowToStep", "name": "Slide the tiles", "text": "Use the arrow keys or swipe to slide every tile in one direction." },
+    { "@type": "HowToStep", "name": "Merge matching numbers", "text": "When two tiles with the same number touch as they slide, they merge into one tile of double the value." },
+    { "@type": "HowToStep", "name": "Keep the board open", "text": "A new 2 or 4 appears after each move, so plan to avoid filling the grid." },
+    { "@type": "HowToStep", "name": "Reach 2048", "text": "Combine tiles until you build a tile worth 2048 to win — then keep going for a higher score." }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">2048</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>2048</h1>
+        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">Slide the tiles, merge matching numbers, and chase the 2048 tile. Easy to learn, hard to put down. Arrow keys or swipe — no ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Score</span><b id="g-score">0</b></span>
+            <span class="readout-chip"><span>Best</span><b id="g-best">0</b></span>
+          </div>
+          <div class="game-controls">
+            <button class="btn-game btn-game--primary" id="g-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="g-status" aria-live="polite">Use the arrow keys or swipe to start.</p>
+        <div class="game-board-wrap">
+          <div class="g2048-board" id="g-board">
+            <div class="g2048-grid" id="g-grid"></div>
+            <div class="g2048-tiles" id="g-tiles"></div>
+          </div>
+        </div>
+        <p class="game-hint">Arrow keys ← ↑ → ↓ on desktop · Swipe on touch.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">Play on the go</span>
+          <h2>Like it? Take it offline.</h2>
+          <p>2048 is one of nine classics in Snackpack Brain Games — our calm, ad-free Android bundle that plays anywhere, even with no signal.</p>
+          <ul class="funnel-points">
+            <li>Plays fully offline — flights, commutes, anywhere</li>
+            <li>Best scores &amp; daily streaks saved on your device</li>
+            <li>Eight more games in the same app · no ads, no tracking</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games on Google Play">
+              <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play">
+            </a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <img class="funnel-qr" src="../../assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play">
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;">Scan to download</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play 2048</h2>
+      <p>2048 is played on a 4×4 grid. Each move slides every tile as far as it can go in one direction — up, down, left, or right. When two tiles with the same number collide, they merge into a single tile worth their sum: two 2s become a 4, two 4s become an 8, and so on. After every move that changes the board, a new tile (usually a 2, occasionally a 4) appears in a random empty cell. Reach the 2048 tile to win — but you can keep going to push your score as high as possible.</p>
+
+      <h3>Strategy tips</h3>
+      <ul>
+        <li><strong>Pick a corner and commit.</strong> Keep your largest tile pinned in one corner and build around it. Most strong players favour the bottom-right or bottom-left.</li>
+        <li><strong>Use mostly two directions.</strong> Alternate between, say, down and right, and only break the pattern when you must. This keeps big tiles anchored.</li>
+        <li><strong>Build a chain.</strong> Line up a descending row of values next to your anchor (2048, 1024, 512…) so merges cascade neatly.</li>
+        <li><strong>Avoid the "up" move</strong> if your anchor is on the bottom — it scrambles your stack.</li>
+        <li><strong>Don't fill the board.</strong> Keep empty cells in reserve; a full grid with no merges available is game over.</li>
+      </ul>
+
+      <h3>A little history</h3>
+      <p>2048 was created in March 2014 by 19-year-old Italian developer Gabriele Cirulli over a single weekend, as a free, open-source web game. It was itself inspired by earlier games <em>1024</em> and <em>Threes!</em>. Within a week it had millions of players and spawned countless clones — a textbook example of a dead-simple ruleset producing genuinely deep play.</p>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is 2048 free here?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>How do I control it on a phone?</summary><p>Swipe up, down, left, or right anywhere on the board to slide the tiles.</p></details>
+        <details class="faq-item"><summary>What happens when I reach 2048?</summary><p>You win — but you can keep playing to build even larger tiles and a higher score.</p></details>
+        <details class="faq-item"><summary>Is my best score saved?</summary><p>Your best score is stored locally in this browser. For stats and streaks that travel with you, try the free <a class="text-link" href="../../apps/snackpack-brain-games/" style="color:var(--accent);">Snackpack Brain Games</a> app.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play 2048 free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../apps/snackpack-brain-games/">Brain Games app</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+  var SIZE = 4;
+  var BEST_KEY = "sp_2048_best";
+
+  var tilesEl = document.getElementById("g-tiles");
+  var gridEl = document.getElementById("g-grid");
+  var scoreEl = document.getElementById("g-score");
+  var bestEl = document.getElementById("g-best");
+  var statusEl = document.getElementById("g-status");
+  var newBtn = document.getElementById("g-new");
+  var boardEl = document.getElementById("g-board");
+
+  var grid, score, best, over, won, uid;
+
+  // Background cells
+  for (var i = 0; i < SIZE * SIZE; i++) {
+    var c = document.createElement("div");
+    c.className = "g2048-cell";
+    gridEl.appendChild(c);
+  }
+
+  best = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0;
+  bestEl.textContent = best;
+
+  function reset() {
+    grid = [];
+    for (var r = 0; r < SIZE; r++) { grid[r] = []; for (var c = 0; c < SIZE; c++) grid[r][c] = null; }
+    score = 0; over = false; won = false; uid = 1;
+    tilesEl.innerHTML = "";
+    scoreEl.textContent = "0";
+    statusEl.textContent = "Use the arrow keys or swipe to start.";
+    statusEl.className = "game-status";
+    addRandom(); addRandom();
+    render();
+  }
+
+  function empties() {
+    var out = [];
+    for (var r = 0; r < SIZE; r++) for (var c = 0; c < SIZE; c++) if (!grid[r][c]) out.push([r, c]);
+    return out;
+  }
+
+  function addRandom() {
+    var e = empties();
+    if (!e.length) return;
+    var p = e[Math.floor(Math.random() * e.length)];
+    grid[p[0]][p[1]] = { id: uid++, v: Math.random() < 0.9 ? 2 : 4, r: p[0], c: p[1], merged: false, isNew: true };
+  }
+
+  function pos(r, c) {
+    // Percentage offset within the tiles layer.
+    var step = 100 / SIZE;
+    return { left: c * step + "%", top: r * step + "%" };
+  }
+
+  function render() {
+    tilesEl.innerHTML = "";
+    for (var r = 0; r < SIZE; r++) for (var c = 0; c < SIZE; c++) {
+      var t = grid[r][c];
+      if (!t) continue;
+      var el = document.createElement("div");
+      el.className = "g2048-tile";
+      el.dataset.v = t.v;
+      el.textContent = t.v;
+      var p = pos(r, c);
+      el.style.left = p.left;
+      el.style.top = p.top;
+      tilesEl.appendChild(el);
+    }
+    scoreEl.textContent = score;
+    if (score > best) { best = score; bestEl.textContent = best; localStorage.setItem(BEST_KEY, String(best)); }
+  }
+
+  function slide(line) {
+    // line: array of tiles/null moving toward index 0. Returns {line, gained, moved}.
+    var vals = line.filter(Boolean);
+    var out = []; var gained = 0;
+    for (var i = 0; i < vals.length; i++) {
+      if (i + 1 < vals.length && vals[i].v === vals[i + 1].v) {
+        var nv = vals[i].v * 2;
+        out.push({ v: nv });
+        gained += nv;
+        if (nv === 2048) won = true;
+        i++;
+      } else {
+        out.push({ v: vals[i].v });
+      }
+    }
+    while (out.length < SIZE) out.push(null);
+    return { line: out, gained: gained };
+  }
+
+  function move(dir) {
+    if (over) return;
+    // dir: 'left','right','up','down'
+    var moved = false, gained = 0;
+    var newGrid = [];
+    for (var r = 0; r < SIZE; r++) { newGrid[r] = []; for (var c = 0; c < SIZE; c++) newGrid[r][c] = null; }
+
+    for (var k = 0; k < SIZE; k++) {
+      var line = [];
+      for (var j = 0; j < SIZE; j++) {
+        var rr, cc;
+        if (dir === "left")  { rr = k; cc = j; }
+        if (dir === "right") { rr = k; cc = SIZE - 1 - j; }
+        if (dir === "up")    { rr = j; cc = k; }
+        if (dir === "down")  { rr = SIZE - 1 - j; cc = k; }
+        line.push(grid[rr][cc]);
+      }
+      var res = slide(line);
+      gained += res.gained;
+      for (var j2 = 0; j2 < SIZE; j2++) {
+        var rr2, cc2;
+        if (dir === "left")  { rr2 = k; cc2 = j2; }
+        if (dir === "right") { rr2 = k; cc2 = SIZE - 1 - j2; }
+        if (dir === "up")    { rr2 = j2; cc2 = k; }
+        if (dir === "down")  { rr2 = SIZE - 1 - j2; cc2 = k; }
+        newGrid[rr2][cc2] = res.line[j2];
+        var before = grid[rr2][cc2] ? grid[rr2][cc2].v : 0;
+        var after = res.line[j2] ? res.line[j2].v : 0;
+        if (before !== after) moved = true;
+      }
+    }
+
+    if (!moved) return;
+    grid = newGrid;
+    score += gained;
+    addRandom();
+    render();
+
+    if (won) {
+      statusEl.textContent = "You reached 2048! 🎉 Keep going for a higher score.";
+      var w = won; won = false; // only celebrate once
+      if (w && window.SnackPack) window.SnackPack.celebrate({
+        title: "You hit 2048! 🎉",
+        body: "Beautifully done. We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app to play 2048 offline with saved scores."
+      });
+    }
+    if (!hasMoves()) {
+      over = true;
+      statusEl.textContent = "No moves left — game over. Hit New game to try again.";
+      statusEl.className = "game-status game-status--lose";
+    }
+  }
+
+  function hasMoves() {
+    if (empties().length) return true;
+    for (var r = 0; r < SIZE; r++) for (var c = 0; c < SIZE; c++) {
+      var v = grid[r][c].v;
+      if (c + 1 < SIZE && grid[r][c + 1].v === v) return true;
+      if (r + 1 < SIZE && grid[r + 1][c].v === v) return true;
+    }
+    return false;
+  }
+
+  // ── Input ────────────────────────────────────────
+  var KEYS = { ArrowLeft: "left", ArrowRight: "right", ArrowUp: "up", ArrowDown: "down",
+               a: "left", d: "right", w: "up", s: "down" };
+  window.addEventListener("keydown", function (e) {
+    var dir = KEYS[e.key];
+    if (!dir) return;
+    e.preventDefault();
+    move(dir);
+  });
+
+  var sx = 0, sy = 0;
+  boardEl.addEventListener("touchstart", function (e) {
+    var t = e.changedTouches[0]; sx = t.clientX; sy = t.clientY;
+  }, { passive: true });
+  boardEl.addEventListener("touchend", function (e) {
+    var t = e.changedTouches[0];
+    var dx = t.clientX - sx, dy = t.clientY - sy;
+    if (Math.abs(dx) < 24 && Math.abs(dy) < 24) return;
+    if (Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? "right" : "left");
+    else move(dy > 0 ? "down" : "up");
+  }, { passive: true });
+
+  newBtn.addEventListener("click", reset);
+  reset();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

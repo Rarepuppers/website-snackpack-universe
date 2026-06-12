@@ -11,6 +11,13 @@ Key facts that apply to every SnackPack app: no third-party ads, no tracking or 
 - [Pawsitive Dose](https://www.snackpackuniverse.com/apps/pawsitive-dose/): Free daily mood-boost app for adults — a finite daily batch of animal photos, uplifting quotes, and affirmations with no endless feed, no ads, and no account; reminders and Android widgets included. Optional Pro features. Play Store ID: com.snackpackuniverse.pawsitivedose
 - [Snackpack Brain Games](https://www.snackpackuniverse.com/apps/snackpack-brain-games/): Free offline collection of nine classics — Sudoku, Solitaire, Minesweeper, 2048, Word Search, Checkers, Connect 4, Reversi, and Cascade — with local stats and streaks, themes, and accessibility options. No ads, no tracking; optional one-time Pro unlock. Play Store ID: com.snackpackuniverse.braingames
 
+## Play free in your browser (web arcade)
+
+- [SnackPack Arcade](https://www.snackpackuniverse.com/play/): Free classic games playable instantly in the browser — no ads, no sign-in, no download. A taster for the Snackpack Brain Games Android app.
+- [Play Minesweeper](https://www.snackpackuniverse.com/play/minesweeper/): Free browser Minesweeper with flags, a timer, and Beginner/Intermediate/Expert boards; first click always safe. Includes rules, strategy, and history.
+- [Play 2048](https://www.snackpackuniverse.com/play/2048/): Free browser 2048 — slide and merge tiles to reach 2048; arrow keys or swipe, best score saved locally. Includes rules, strategy, and history.
+- [Play Connect 4](https://www.snackpackuniverse.com/play/connect-4/): Free browser Connect 4 vs a computer opponent with three difficulty levels. Includes rules, strategy, and history.
+
 ## Guides
 
 - [Choosing ad-free learning apps for toddlers](https://www.snackpackuniverse.com/guides/best-ad-free-apps-for-toddlers/): A 5-point checklist for verifying "no ads" claims, reading the Data safety section, and spotting manipulative design in kids apps.

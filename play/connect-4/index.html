@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Connect 4 Online Free vs Computer | No Ads — SnackPack</title>
+<meta name="description" content="Play Connect 4 free in your browser against the computer — drop discs and line up four in a row. Three difficulty levels, no ads, no sign-in, no download. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/connect-4/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Connect 4 Online Free vs Computer | No Ads">
+<meta property="og:description" content="Drop discs and line up four in a row against the computer. Three levels, free in your browser — no ads, no sign-in.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/connect-4/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Connect 4",
+  "url": "https://www.snackpackuniverse.com/play/connect-4/",
+  "applicationCategory": "Game",
+  "genre": "Strategy",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser Connect 4 against a computer opponent with three difficulty levels. Line up four discs in a row. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Connect 4",
+  "step": [
+    { "@type": "HowToStep", "name": "Drop a disc", "text": "Choose a column; your disc falls to the lowest empty slot." },
+    { "@type": "HowToStep", "name": "Take turns", "text": "You and the computer alternate dropping discs into the seven columns." },
+    { "@type": "HowToStep", "name": "Line up four", "text": "Be the first to connect four of your discs in a row — horizontally, vertically, or diagonally." }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Connect 4</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Connect 4</h1>
+        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">Drop your discs and line up four in a row before the computer does. Quick, clever, and surprisingly deep. Three thinking levels — no ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>You</span><b id="c-you">0</b></span>
+            <span class="readout-chip"><span>CPU</span><b id="c-cpu">0</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Difficulty">
+              <button type="button" data-level="2" aria-pressed="false">Easy</button>
+              <button type="button" data-level="4" aria-pressed="true">Medium</button>
+              <button type="button" data-level="6" aria-pressed="false">Hard</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="c-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="c-status" aria-live="polite">Your move — drop a disc.</p>
+        <div class="game-board-wrap">
+          <div>
+            <div class="c4-col-btns" id="c-btns"></div>
+            <div class="c4-board" id="c-board"></div>
+          </div>
+        </div>
+        <p class="game-hint">You're red 🔴 · the computer is yellow 🟡 · use the buttons above each column.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">Play on the go</span>
+          <h2>Like it? Take it offline.</h2>
+          <p>Connect 4 is one of nine classics in Snackpack Brain Games — our calm, ad-free Android bundle with strategy, cards and puzzles in one app.</p>
+          <ul class="funnel-points">
+            <li>Plays fully offline — flights, commutes, anywhere</li>
+            <li>Wins &amp; daily streaks saved on your device</li>
+            <li>Eight more games in the same app · no ads, no tracking</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games on Google Play">
+              <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play">
+            </a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <img class="funnel-qr" src="../../assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play">
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;">Scan to download</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Connect 4</h2>
+      <p>Connect 4 is played on a grid that's seven columns wide and six rows tall. Players take turns dropping a coloured disc into a column; it falls to the lowest empty slot. You play red, the computer plays yellow. The first player to line up four of their own discs in a straight line — horizontally, vertically, or diagonally — wins. If the board fills with no four-in-a-row, it's a draw.</p>
+
+      <h3>Strategy tips</h3>
+      <ul>
+        <li><strong>Play the centre.</strong> The middle column is part of the most winning lines, so controlling it is a big advantage — open there when you can.</li>
+        <li><strong>Build double threats.</strong> Aim for positions where you threaten four-in-a-row in two places at once; your opponent can only block one.</li>
+        <li><strong>Watch the diagonals.</strong> They're the easiest threats to miss, both yours and the computer's.</li>
+        <li><strong>Block early.</strong> If the computer has three in a row with an open end, you must block immediately — don't get distracted by your own attack.</li>
+        <li><strong>Think about odd and even rows.</strong> Advanced players count which threats land on which rows to set up unstoppable endgames.</li>
+      </ul>
+
+      <h3>A little history</h3>
+      <p>Connect 4 was sold as a physical "vertical checkers" game by Milton Bradley in 1974, though the idea of four-in-a-row is much older. In 1988 it became one of the first non-trivial games to be <em>solved</em> by computer: with perfect play, the first player wins by moving in the centre column. Don't worry — the computer here gives you a fair, beatable fight across three difficulty levels.</p>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Connect 4 free here?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>Do I play against a person or the computer?</summary><p>Against the computer, which you can set to Easy, Medium, or Hard.</p></details>
+        <details class="faq-item"><summary>Who goes first?</summary><p>You do — you play red and move first each game.</p></details>
+        <details class="faq-item"><summary>Can I play a friend or play offline?</summary><p>This web version is solo vs. the computer. For more game modes and fully offline play, try the free <a class="text-link" href="../../apps/snackpack-brain-games/" style="color:var(--accent);">Snackpack Brain Games</a> app.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Connect 4 free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../apps/snackpack-brain-games/">Brain Games app</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+  var ROWS = 6, COLS = 7;
+  var HUMAN = 1, CPU = 2;
+
+  var boardEl = document.getElementById("c-board");
+  var btnsEl = document.getElementById("c-btns");
+  var statusEl = document.getElementById("c-status");
+  var newBtn = document.getElementById("c-new");
+  var youEl = document.getElementById("c-you");
+  var cpuEl = document.getElementById("c-cpu");
+
+  var board, cells, busy, gameOver, depth = 4;
+  var wins = { you: 0, cpu: 0 };
+
+  // Build column buttons + cells once.
+  for (var c = 0; c < COLS; c++) {
+    var b = document.createElement("button");
+    b.className = "c4-col-btn";
+    b.type = "button";
+    b.textContent = "▾";
+    b.dataset.col = c;
+    b.setAttribute("aria-label", "Drop in column " + (c + 1));
+    btnsEl.appendChild(b);
+  }
+  cells = [];
+  for (var i = 0; i < ROWS * COLS; i++) {
+    var d = document.createElement("div");
+    d.className = "c4-cell";
+    boardEl.appendChild(d);
+    cells.push(d);
+  }
+
+  function reset() {
+    board = [];
+    for (var r = 0; r < ROWS; r++) { board[r] = []; for (var c = 0; c < COLS; c++) board[r][c] = 0; }
+    busy = false; gameOver = false;
+    cells.forEach(function (el) { el.className = "c4-cell"; });
+    setBtns(true);
+    statusEl.textContent = "Your move — drop a disc.";
+    statusEl.className = "game-status";
+  }
+
+  function setBtns(on) {
+    var btns = btnsEl.querySelectorAll(".c4-col-btn");
+    for (var c = 0; c < COLS; c++) {
+      btns[c].disabled = !on || board[0][c] !== 0 || gameOver;
+    }
+  }
+
+  function lowestRow(b, col) {
+    for (var r = ROWS - 1; r >= 0; r--) if (b[r][col] === 0) return r;
+    return -1;
+  }
+
+  function paint(r, c, who) {
+    cells[r * COLS + c].classList.add(who === HUMAN ? "is-p1" : "is-p2");
+  }
+
+  function winner(b, who) {
+    // Returns true if `who` has four in a row.
+    for (var r = 0; r < ROWS; r++) for (var c = 0; c < COLS; c++) {
+      if (b[r][c] !== who) continue;
+      if (c + 3 < COLS && b[r][c+1]===who && b[r][c+2]===who && b[r][c+3]===who) return true;
+      if (r + 3 < ROWS) {
+        if (b[r+1][c]===who && b[r+2][c]===who && b[r+3][c]===who) return true;
+        if (c + 3 < COLS && b[r+1][c+1]===who && b[r+2][c+2]===who && b[r+3][c+3]===who) return true;
+        if (c - 3 >= 0 && b[r+1][c-1]===who && b[r+2][c-2]===who && b[r+3][c-3]===who) return true;
+      }
+    }
+    return false;
+  }
+
+  function isFull(b) {
+    for (var c = 0; c < COLS; c++) if (b[0][c] === 0) return false;
+    return true;
+  }
+
+  function humanMove(col) {
+    if (busy || gameOver) return;
+    var r = lowestRow(board, col);
+    if (r < 0) return;
+    board[r][col] = HUMAN;
+    paint(r, col, HUMAN);
+    if (winner(board, HUMAN)) { finish("you"); return; }
+    if (isFull(board)) { finish("draw"); return; }
+    busy = true; setBtns(false);
+    statusEl.textContent = "Computer is thinking…";
+    setTimeout(cpuMove, 280);
+  }
+
+  function cpuMove() {
+    var col = bestMove();
+    var r = lowestRow(board, col);
+    board[r][col] = CPU;
+    paint(r, col, CPU);
+    busy = false;
+    if (winner(board, CPU)) { finish("cpu"); return; }
+    if (isFull(board)) { finish("draw"); return; }
+    setBtns(true);
+    statusEl.textContent = "Your move — drop a disc.";
+  }
+
+  function finish(who) {
+    gameOver = true; setBtns(false);
+    if (who === "you") {
+      wins.you++; youEl.textContent = wins.you;
+      statusEl.textContent = "You win! 🎉 Four in a row.";
+      statusEl.className = "game-status";
+      if (window.SnackPack) window.SnackPack.celebrate({
+        title: "You beat the computer! 🎉",
+        body: "Sharp play. We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app to play Connect 4 and eight more, offline."
+      });
+    } else if (who === "cpu") {
+      wins.cpu++; cpuEl.textContent = wins.cpu;
+      statusEl.textContent = "The computer got four in a row. Try again!";
+      statusEl.className = "game-status game-status--lose";
+    } else {
+      statusEl.textContent = "It's a draw — the board is full.";
+      statusEl.className = "game-status";
+    }
+  }
+
+  // ── AI: minimax with alpha-beta ──────────────────
+  var ORDER = [3, 2, 4, 1, 5, 0, 6];
+
+  function validCols(b) {
+    var out = [];
+    for (var k = 0; k < ORDER.length; k++) if (b[0][ORDER[k]] === 0) out.push(ORDER[k]);
+    return out;
+  }
+
+  function evalWindow(a, b2, c2, d) {
+    var arr = [a, b2, c2, d], cpu = 0, hum = 0, empty = 0;
+    for (var i = 0; i < 4; i++) { if (arr[i] === CPU) cpu++; else if (arr[i] === HUMAN) hum++; else empty++; }
+    if (cpu === 4) return 1000;
+    if (hum === 4) return -1000;
+    if (cpu === 3 && empty === 1) return 12;
+    if (cpu === 2 && empty === 2) return 4;
+    if (hum === 3 && empty === 1) return -16;
+    if (hum === 2 && empty === 2) return -3;
+    return 0;
+  }
+
+  function score(b) {
+    var s = 0, r, c;
+    // Centre preference
+    for (r = 0; r < ROWS; r++) if (b[r][3] === CPU) s += 6; else if (b[r][3] === HUMAN) s -= 6;
+    for (r = 0; r < ROWS; r++) for (c = 0; c < COLS; c++) {
+      if (c + 3 < COLS) s += evalWindow(b[r][c], b[r][c+1], b[r][c+2], b[r][c+3]);
+      if (r + 3 < ROWS) s += evalWindow(b[r][c], b[r+1][c], b[r+2][c], b[r+3][c]);
+      if (r + 3 < ROWS && c + 3 < COLS) s += evalWindow(b[r][c], b[r+1][c+1], b[r+2][c+2], b[r+3][c+3]);
+      if (r + 3 < ROWS && c - 3 >= 0) s += evalWindow(b[r][c], b[r+1][c-1], b[r+2][c-2], b[r+3][c-3]);
+    }
+    return s;
+  }
+
+  function drop(b, col, who) {
+    var nb = b.map(function (row) { return row.slice(); });
+    var r = lowestRow(nb, col);
+    nb[r][col] = who;
+    return nb;
+  }
+
+  function minimax(b, d, alpha, beta, maximizing) {
+    if (winner(b, CPU)) return 100000 - (depth - d);
+    if (winner(b, HUMAN)) return -100000 + (depth - d);
+    var cols = validCols(b);
+    if (d === 0 || cols.length === 0) return score(b);
+    var i, val;
+    if (maximizing) {
+      val = -Infinity;
+      for (i = 0; i < cols.length; i++) {
+        val = Math.max(val, minimax(drop(b, cols[i], CPU), d - 1, alpha, beta, false));
+        alpha = Math.max(alpha, val);
+        if (alpha >= beta) break;
+      }
+      return val;
+    } else {
+      val = Infinity;
+      for (i = 0; i < cols.length; i++) {
+        val = Math.min(val, minimax(drop(b, cols[i], HUMAN), d - 1, alpha, beta, true));
+        beta = Math.min(beta, val);
+        if (alpha >= beta) break;
+      }
+      return val;
+    }
+  }
+
+  function bestMove() {
+    var cols = validCols(board);
+    // Immediate win / block shortcuts.
+    var i;
+    for (i = 0; i < cols.length; i++) if (winner(drop(board, cols[i], CPU), CPU)) return cols[i];
+    for (i = 0; i < cols.length; i++) if (winner(drop(board, cols[i], HUMAN), HUMAN)) return cols[i];
+    // On Easy, mix in randomness.
+    if (depth <= 2 && Math.random() < 0.35) return cols[Math.floor(Math.random() * cols.length)];
+    var best = cols[0], bestVal = -Infinity;
+    for (i = 0; i < cols.length; i++) {
+      var v = minimax(drop(board, cols[i], CPU), depth - 1, -Infinity, Infinity, false);
+      if (v > bestVal) { bestVal = v; best = cols[i]; }
+    }
+    return best;
+  }
+
+  // ── Input ────────────────────────────────────────
+  btnsEl.addEventListener("click", function (e) {
+    var b = e.target.closest(".c4-col-btn"); if (!b || b.disabled) return;
+    humanMove(+b.dataset.col);
+  });
+  newBtn.addEventListener("click", reset);
+  document.querySelectorAll(".seg [data-level]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      depth = +btn.dataset.level;
+      document.querySelectorAll(".seg [data-level]").forEach(function (x) {
+        x.setAttribute("aria-pressed", String(x === btn));
+      });
+      reset();
+    });
+  });
+
+  reset();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
