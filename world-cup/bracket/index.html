@@ -153,8 +153,12 @@
 }
 .team-flag {
   flex: 0 0 auto;
-  font-size: 1.05rem;
-  line-height: 1;
+  width: 22px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid rgba(32,23,19,0.16);
+  object-fit: cover;
+  box-shadow: 0 1px 2px rgba(32,23,19,0.08);
 }
 .team-name {
   min-width: 0;
@@ -462,55 +466,55 @@
 
   var storeKey = "snackpack-world-cup-2026-picks";
   var teams = Object.keys(groups).reduce(function (all, key) { return all.concat(groups[key]); }, []).sort();
-  var flags = {
-    "Mexico": "🇲🇽",
-    "South Africa": "🇿🇦",
-    "South Korea": "🇰🇷",
-    "Czechia": "🇨🇿",
-    "Canada": "🇨🇦",
-    "Bosnia and Herzegovina": "🇧🇦",
-    "Qatar": "🇶🇦",
-    "Switzerland": "🇨🇭",
-    "Haiti": "🇭🇹",
-    "Scotland": "🏴",
-    "Brazil": "🇧🇷",
-    "Morocco": "🇲🇦",
-    "United States": "🇺🇸",
-    "Paraguay": "🇵🇾",
-    "Australia": "🇦🇺",
-    "Turkiye": "🇹🇷",
-    "Cote d'Ivoire": "🇨🇮",
-    "Ecuador": "🇪🇨",
-    "Germany": "🇩🇪",
-    "Curacao": "🇨🇼",
-    "Netherlands": "🇳🇱",
-    "Japan": "🇯🇵",
-    "Sweden": "🇸🇪",
-    "Tunisia": "🇹🇳",
-    "Iran": "🇮🇷",
-    "New Zealand": "🇳🇿",
-    "Belgium": "🇧🇪",
-    "Egypt": "🇪🇬",
-    "Saudi Arabia": "🇸🇦",
-    "Uruguay": "🇺🇾",
-    "Spain": "🇪🇸",
-    "Cape Verde": "🇨🇻",
-    "France": "🇫🇷",
-    "Senegal": "🇸🇳",
-    "Iraq": "🇮🇶",
-    "Norway": "🇳🇴",
-    "Argentina": "🇦🇷",
-    "Algeria": "🇩🇿",
-    "Austria": "🇦🇹",
-    "Jordan": "🇯🇴",
-    "Portugal": "🇵🇹",
-    "DR Congo": "🇨🇩",
-    "Uzbekistan": "🇺🇿",
-    "Colombia": "🇨🇴",
-    "Ghana": "🇬🇭",
-    "Panama": "🇵🇦",
-    "England": "🏴",
-    "Croatia": "🇭🇷"
+  var flagCodes = {
+    "Mexico": "mx",
+    "South Africa": "za",
+    "South Korea": "kr",
+    "Czechia": "cz",
+    "Canada": "ca",
+    "Bosnia and Herzegovina": "ba",
+    "Qatar": "qa",
+    "Switzerland": "ch",
+    "Haiti": "ht",
+    "Scotland": "gb-sct",
+    "Brazil": "br",
+    "Morocco": "ma",
+    "United States": "us",
+    "Paraguay": "py",
+    "Australia": "au",
+    "Turkiye": "tr",
+    "Cote d'Ivoire": "ci",
+    "Ecuador": "ec",
+    "Germany": "de",
+    "Curacao": "cw",
+    "Netherlands": "nl",
+    "Japan": "jp",
+    "Sweden": "se",
+    "Tunisia": "tn",
+    "Iran": "ir",
+    "New Zealand": "nz",
+    "Belgium": "be",
+    "Egypt": "eg",
+    "Saudi Arabia": "sa",
+    "Uruguay": "uy",
+    "Spain": "es",
+    "Cape Verde": "cv",
+    "France": "fr",
+    "Senegal": "sn",
+    "Iraq": "iq",
+    "Norway": "no",
+    "Argentina": "ar",
+    "Algeria": "dz",
+    "Austria": "at",
+    "Jordan": "jo",
+    "Portugal": "pt",
+    "DR Congo": "cd",
+    "Uzbekistan": "uz",
+    "Colombia": "co",
+    "Ghana": "gh",
+    "Panama": "pa",
+    "England": "gb-eng",
+    "Croatia": "hr"
   };
 
   function blankStats(team) {
@@ -525,8 +529,11 @@
 
   function teamHtml(team) {
     var safeTeam = escapeHtml(team);
-    var flag = flags[team] || "⚽";
-    return '<span class="team-chip" title="' + safeTeam + '" aria-label="' + safeTeam + '"><span class="team-flag" aria-hidden="true">' + flag + '</span><span class="team-name">' + safeTeam + '</span></span>';
+    var flagCode = flagCodes[team];
+    var flag = flagCode
+      ? '<img class="team-flag" src="https://flagcdn.com/w40/' + flagCode + '.png" srcset="https://flagcdn.com/w80/' + flagCode + '.png 2x" width="22" height="16" loading="lazy" alt="">'
+      : '<span class="team-flag" aria-hidden="true"></span>';
+    return '<span class="team-chip" title="' + safeTeam + '" aria-label="' + safeTeam + '">' + flag + '<span class="team-name">' + safeTeam + '</span></span>';
   }
 
   function isLive(match) {
