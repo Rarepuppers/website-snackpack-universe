@@ -18,7 +18,7 @@ Use API-FOOTBALL by API-SPORTS for automated fixture and score updates.
    - `API_FOOTBALL_LEAGUE_ID` defaults to `1`
    - `API_FOOTBALL_SEASON` defaults to `2026`
 
-The workflow `.github/workflows/update-world-cup-data.yml` runs every 30 minutes
+The workflow `.github/workflows/update-world-cup-data.yml` runs every 20 minutes
 and can also be run manually from the Actions tab. It commits changes to
 `data/world-cup-2026.json` when fixtures or scores change.
 
