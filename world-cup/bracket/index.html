@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 Bracket, Groups, Results & Predictions | SnackPack</title>
+<meta name="description" content="Track World Cup 2026 groups, results, upcoming games, and bracket predictions. Save group winners, knockout picks, champion predictions, and create shareable cards from SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/world-cup/bracket/">
+<meta name="theme-color" content="#1f8f77">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="World Cup 2026 Bracket, Groups, Results & Predictions">
+<meta property="og:description" content="Track groups, results, upcoming games, and save your World Cup 2026 predictions.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/world-cup/bracket/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../../play/play.css">
+<style>
+.bracket-hero {
+  background:
+    linear-gradient(145deg, rgba(8, 82, 73, 0.9), rgba(31, 143, 119, 0.78)),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.07) 0 38px, rgba(255,255,255,0.02) 38px 76px);
+  color: #fff;
+}
+.bracket-hero p,
+.bracket-hero .lead { color: rgba(255,255,255,0.86); }
+.bracket-hero .eyebrow { color: #fff; background: rgba(255,255,255,0.14); }
+.bracket-hero .btn-secondary { color: var(--ink); }
+.bracket-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 20px;
+  align-items: start;
+}
+.bracket-panel,
+.prediction-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow);
+}
+.bracket-panel { padding: 22px; }
+.prediction-panel {
+  position: sticky;
+  top: 96px;
+  padding: 18px;
+}
+.bracket-panel h2,
+.prediction-panel h2 {
+  margin: 0 0 12px;
+  font-family: var(--serif);
+  font-size: 1.45rem;
+}
+.bracket-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+.bracket-tabs button {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.72);
+  color: var(--muted);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.bracket-tabs button[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.group-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.72);
+  overflow: hidden;
+}
+.group-card h3 {
+  margin: 0;
+  padding: 12px 14px;
+  font-family: var(--serif);
+  font-size: 1.12rem;
+  background: rgba(31,143,119,0.1);
+}
+.standings {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+.standings th,
+.standings td {
+  padding: 8px 7px;
+  border-top: 1px solid var(--line);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.standings th:first-child,
+.standings td:first-child {
+  text-align: left;
+  font-weight: 800;
+}
+.standings th {
+  color: var(--muted);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.match-list {
+  display: grid;
+  gap: 10px;
+}
+.match-row {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.76);
+}
+.match-date {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+.match-teams {
+  display: grid;
+  gap: 3px;
+  font-weight: 800;
+}
+.match-meta {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+.score-pill {
+  min-width: 62px;
+  padding: 7px 9px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  text-align: center;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.prediction-form {
+  display: grid;
+  gap: 12px;
+}
+.prediction-field {
+  display: grid;
+  gap: 6px;
+}
+.prediction-field label {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.prediction-field select,
+.prediction-field input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+}
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.share-preview {
+  display: none;
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+.knockout-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.round-card {
+  min-width: 180px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.76);
+  padding: 12px;
+}
+.round-card h3 {
+  margin: 0 0 10px;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+}
+.slot {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  padding: 7px 9px;
+  margin-bottom: 7px;
+  border-radius: 8px;
+  background: rgba(32,23,19,0.05);
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 0.86rem;
+}
+.seo-note {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+@media (max-width: 980px) {
+  .bracket-layout { grid-template-columns: 1fr; }
+  .prediction-panel { position: static; }
+  .group-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  .match-row { grid-template-columns: 1fr; }
+  .score-pill { width: fit-content; }
+  .mini-grid { grid-template-columns: 1fr; }
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "World Cup 2026 Bracket, Groups, Results and Predictions",
+  "url": "https://www.snackpackuniverse.com/world-cup/bracket/",
+  "description": "Track World Cup 2026 groups, results, upcoming games, and save local bracket predictions.",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "SnackPack Universe",
+    "url": "https://www.snackpackuniverse.com/"
+  }
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">World Cup bracket</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../">World Cup</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card bracket-hero">
+        <span class="eyebrow">World Cup 2026 tracker</span>
+        <h1>Groups, results, fixtures, and your bracket picks.</h1>
+        <p class="lead" style="max-width:780px;">Follow played games, upcoming matches, live group tables, and your own World Cup predictions. Pick group winners, sketch the knockout path, choose a champion, then generate a shareable card that points friends back to SnackPack.</p>
+        <div class="stack-inline">
+          <a class="btn btn-primary" href="#predictions">Make predictions</a>
+          <a class="btn btn-secondary" href="../../play/soccer-trivia-sprint/">Play Soccer Trivia Sprint</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell bracket-layout">
+      <div class="bracket-panel">
+        <div class="bracket-tabs" role="tablist" aria-label="World Cup tracker views">
+          <button type="button" data-view="groups" aria-pressed="true">Groups</button>
+          <button type="button" data-view="played" aria-pressed="false">Played</button>
+          <button type="button" data-view="upcoming" aria-pressed="false">Upcoming</button>
+          <button type="button" data-view="knockout" aria-pressed="false">Knockout</button>
+        </div>
+        <div id="view-groups">
+          <h2>Group Tables</h2>
+          <div class="group-grid" id="group-grid"></div>
+          <p class="seo-note">Tables are calculated from the match data embedded on this page. Update the match list as results come in and the standings will recalculate automatically.</p>
+        </div>
+        <div id="view-played" hidden>
+          <h2>Played Games</h2>
+          <div class="match-list" id="played-list"></div>
+        </div>
+        <div id="view-upcoming" hidden>
+          <h2>Upcoming Games</h2>
+          <div class="match-list" id="upcoming-list"></div>
+        </div>
+        <div id="view-knockout" hidden>
+          <h2>Knockout Prediction Board</h2>
+          <div class="knockout-grid" id="knockout-grid"></div>
+          <p class="seo-note">The official Round of 32 fills after the group stage. For now, use this as a prediction board: group winners, runners-up, wildcards, finalists, and champion.</p>
+        </div>
+      </div>
+
+      <aside class="prediction-panel" id="predictions">
+        <h2>Your Picks</h2>
+        <div class="prediction-form">
+          <div class="mini-grid">
+            <div class="prediction-field">
+              <label for="pick-champion">Champion</label>
+              <select id="pick-champion"></select>
+            </div>
+            <div class="prediction-field">
+              <label for="pick-golden-boot">Top scorer</label>
+              <input id="pick-golden-boot" type="text" placeholder="Player name">
+            </div>
+          </div>
+          <div class="mini-grid">
+            <div class="prediction-field">
+              <label for="pick-finalist-a">Finalist</label>
+              <select id="pick-finalist-a"></select>
+            </div>
+            <div class="prediction-field">
+              <label for="pick-finalist-b">Finalist</label>
+              <select id="pick-finalist-b"></select>
+            </div>
+          </div>
+          <div class="prediction-field">
+            <label for="pick-dark-horse">Dark horse</label>
+            <select id="pick-dark-horse"></select>
+          </div>
+          <div id="group-picks"></div>
+          <button class="btn-game btn-game--primary" id="save-picks" type="button">Save picks</button>
+          <button class="btn-game" id="share-card" type="button">Generate share card</button>
+          <a class="btn btn-secondary" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" style="width:100%;">Tip SnackPack</a>
+          <canvas id="share-canvas" width="1080" height="1350" hidden></canvas>
+          <img class="share-preview" id="share-preview" alt="Generated World Cup prediction share card">
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>World Cup 2026 groups and bracket predictions</h2>
+      <p>This page is a simple World Cup 2026 results and bracket tracker for fans who want a quick view of the groups, played matches, upcoming fixtures, and personal predictions. It is designed for search traffic around World Cup results, World Cup groups, World Cup schedule, World Cup bracket, and World Cup predictions.</p>
+      <p>Your picks are stored only in this browser. The share card is generated locally as an image and includes a small SnackPack link so friends can find the tracker, trivia sprint, and free soccer games.</p>
+      <p style="font-size:0.85rem;color:var(--muted);">This is an original SnackPack Studios tracker and is not affiliated with, endorsed by, or connected to FIFA, the World Cup, any team, league, or governing body. Results are manually maintained and should be checked against official match reports before publication-critical use.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack - Tip or Donate - Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio. Tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">World Cup 2026 bracket tracker from SnackPack Studios.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">World Cup games</a>
+      <a class="text-link" href="../../play/">Arcade</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var groups = {
+    A: ["Mexico", "South Africa", "South Korea", "Czechia"],
+    B: ["Canada", "Bosnia and Herzegovina", "Qatar", "Switzerland"],
+    C: ["Haiti", "Scotland", "Brazil", "Morocco"],
+    D: ["United States", "Paraguay", "Australia", "Turkiye"],
+    E: ["Cote d'Ivoire", "Ecuador", "Germany", "Curacao"],
+    F: ["Netherlands", "Japan", "Sweden", "Tunisia"],
+    G: ["Iran", "New Zealand", "Belgium", "Egypt"],
+    H: ["Saudi Arabia", "Uruguay", "Spain", "Cape Verde"],
+    I: ["France", "Senegal", "Iraq", "Norway"],
+    J: ["Argentina", "Algeria", "Austria", "Jordan"],
+    K: ["Portugal", "DR Congo", "Uzbekistan", "Colombia"],
+    L: ["Ghana", "Panama", "England", "Croatia"]
+  };
+
+  var matches = [
+    { date: "Jun 11", time: "FT", group: "A", home: "Mexico", away: "South Africa", hs: 2, as: 0, venue: "Mexico City" },
+    { date: "Jun 12", time: "FT", group: "A", home: "South Korea", away: "Czechia", hs: 2, as: 1, venue: "Guadalajara" },
+    { date: "Jun 12", time: "Upcoming", group: "B", home: "Canada", away: "Bosnia and Herzegovina", venue: "Toronto" },
+    { date: "Jun 12", time: "Upcoming", group: "D", home: "United States", away: "Paraguay", venue: "Los Angeles" },
+    { date: "Jun 13", time: "Upcoming", group: "C", home: "Haiti", away: "Scotland", venue: "Boston" },
+    { date: "Jun 13", time: "Upcoming", group: "D", home: "Australia", away: "Turkiye", venue: "Vancouver" },
+    { date: "Jun 13", time: "Upcoming", group: "C", home: "Brazil", away: "Morocco", venue: "New York/New Jersey" },
+    { date: "Jun 13", time: "Upcoming", group: "B", home: "Qatar", away: "Switzerland", venue: "San Francisco Bay Area" },
+    { date: "Jun 14", time: "Upcoming", group: "E", home: "Cote d'Ivoire", away: "Ecuador", venue: "Philadelphia" },
+    { date: "Jun 14", time: "Upcoming", group: "E", home: "Germany", away: "Curacao", venue: "Houston" },
+    { date: "Jun 14", time: "Upcoming", group: "F", home: "Netherlands", away: "Japan", venue: "Dallas" },
+    { date: "Jun 14", time: "Upcoming", group: "F", home: "Sweden", away: "Tunisia", venue: "Monterrey" },
+    { date: "Jun 15", time: "Upcoming", group: "H", home: "Saudi Arabia", away: "Uruguay", venue: "Miami" },
+    { date: "Jun 15", time: "Upcoming", group: "H", home: "Spain", away: "Cape Verde", venue: "Atlanta" },
+    { date: "Jun 15", time: "Upcoming", group: "G", home: "Iran", away: "New Zealand", venue: "Los Angeles" },
+    { date: "Jun 15", time: "Upcoming", group: "G", home: "Belgium", away: "Egypt", venue: "Seattle" },
+    { date: "Jun 16", time: "Upcoming", group: "I", home: "France", away: "Senegal", venue: "New York/New Jersey" },
+    { date: "Jun 16", time: "Upcoming", group: "I", home: "Iraq", away: "Norway", venue: "Boston" },
+    { date: "Jun 16", time: "Upcoming", group: "J", home: "Argentina", away: "Algeria", venue: "Kansas City" },
+    { date: "Jun 16", time: "Upcoming", group: "J", home: "Austria", away: "Jordan", venue: "San Francisco Bay Area" },
+    { date: "Jun 17", time: "Upcoming", group: "L", home: "Ghana", away: "Panama", venue: "Toronto" },
+    { date: "Jun 17", time: "Upcoming", group: "L", home: "England", away: "Croatia", venue: "Dallas" },
+    { date: "Jun 17", time: "Upcoming", group: "K", home: "Portugal", away: "DR Congo", venue: "Houston" },
+    { date: "Jun 17", time: "Upcoming", group: "K", home: "Uzbekistan", away: "Colombia", venue: "Mexico City" },
+    { date: "Jun 18", time: "Upcoming", group: "A", home: "Czechia", away: "South Africa", venue: "Atlanta" },
+    { date: "Jun 18", time: "Upcoming", group: "B", home: "Switzerland", away: "Bosnia and Herzegovina", venue: "Los Angeles" },
+    { date: "Jun 18", time: "Upcoming", group: "B", home: "Canada", away: "Qatar", venue: "Vancouver" }
+  ];
+
+  var storeKey = "snackpack-world-cup-2026-picks";
+  var teams = Object.keys(groups).reduce(function (all, key) { return all.concat(groups[key]); }, []).sort();
+
+  function blankStats(team) {
+    return { team: team, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, pts: 0 };
+  }
+
+  function standingsFor(groupId) {
+    var table = {};
+    groups[groupId].forEach(function (team) { table[team] = blankStats(team); });
+    matches.filter(function (m) { return m.group === groupId && typeof m.hs === "number"; }).forEach(function (m) {
+      var h = table[m.home], a = table[m.away];
+      h.p++; a.p++;
+      h.gf += m.hs; h.ga += m.as;
+      a.gf += m.as; a.ga += m.hs;
+      if (m.hs > m.as) { h.w++; a.l++; h.pts += 3; }
+      else if (m.hs < m.as) { a.w++; h.l++; a.pts += 3; }
+      else { h.d++; a.d++; h.pts++; a.pts++; }
+    });
+    return Object.keys(table).map(function (team) {
+      table[team].gd = table[team].gf - table[team].ga;
+      return table[team];
+    }).sort(function (a, b) {
+      return b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team);
+    });
+  }
+
+  function renderGroups() {
+    var root = document.getElementById("group-grid");
+    root.innerHTML = "";
+    Object.keys(groups).forEach(function (groupId) {
+      var card = document.createElement("article");
+      card.className = "group-card";
+      card.innerHTML = '<h3>Group ' + groupId + '</h3><table class="standings"><thead><tr><th>Team</th><th>P</th><th>GD</th><th>Pts</th></tr></thead><tbody></tbody></table>';
+      var tbody = card.querySelector("tbody");
+      standingsFor(groupId).forEach(function (row) {
+        var tr = document.createElement("tr");
+        tr.innerHTML = "<td>" + row.team + "</td><td>" + row.p + "</td><td>" + (row.gd > 0 ? "+" : "") + row.gd + "</td><td>" + row.pts + "</td>";
+        tbody.appendChild(tr);
+      });
+      root.appendChild(card);
+    });
+  }
+
+  function matchHtml(m) {
+    var score = typeof m.hs === "number" ? '<span class="score-pill">' + m.hs + '-' + m.as + '</span>' : '<span class="score-pill">Next</span>';
+    return '<div class="match-row"><div class="match-date">' + m.date + '<br>' + m.time + '</div><div><div class="match-teams"><span>' + m.home + '</span><span>' + m.away + '</span></div><div class="match-meta">Group ' + m.group + ' - ' + m.venue + '</div></div>' + score + '</div>';
+  }
+
+  function renderMatches() {
+    document.getElementById("played-list").innerHTML = matches.filter(function (m) { return typeof m.hs === "number"; }).map(matchHtml).join("");
+    document.getElementById("upcoming-list").innerHTML = matches.filter(function (m) { return typeof m.hs !== "number"; }).map(matchHtml).join("");
+  }
+
+  function optionHtml(selected) {
+    return '<option value="">Pick team</option>' + teams.map(function (team) {
+      return '<option value="' + team + '"' + (team === selected ? " selected" : "") + '>' + team + '</option>';
+    }).join("");
+  }
+
+  function loadPicks() {
+    try { return JSON.parse(localStorage.getItem(storeKey) || "{}"); }
+    catch (e) { return {}; }
+  }
+
+  function savePicks() {
+    var picks = {
+      champion: document.getElementById("pick-champion").value,
+      finalistA: document.getElementById("pick-finalist-a").value,
+      finalistB: document.getElementById("pick-finalist-b").value,
+      goldenBoot: document.getElementById("pick-golden-boot").value,
+      darkHorse: document.getElementById("pick-dark-horse").value,
+      groups: {}
+    };
+    Object.keys(groups).forEach(function (groupId) {
+      picks.groups[groupId] = {
+        winner: document.getElementById("group-" + groupId + "-winner").value,
+        runner: document.getElementById("group-" + groupId + "-runner").value
+      };
+    });
+    localStorage.setItem(storeKey, JSON.stringify(picks));
+    return picks;
+  }
+
+  function renderPredictionForm() {
+    var picks = loadPicks();
+    ["pick-champion", "pick-finalist-a", "pick-finalist-b", "pick-dark-horse"].forEach(function (id) {
+      var key = id.replace("pick-", "").replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); });
+      document.getElementById(id).innerHTML = optionHtml(picks[key] || "");
+    });
+    document.getElementById("pick-golden-boot").value = picks.goldenBoot || "";
+    var groupRoot = document.getElementById("group-picks");
+    groupRoot.innerHTML = "";
+    Object.keys(groups).forEach(function (groupId) {
+      var row = document.createElement("div");
+      row.className = "mini-grid";
+      row.innerHTML = '<div class="prediction-field"><label for="group-' + groupId + '-winner">Group ' + groupId + ' winner</label><select id="group-' + groupId + '-winner"></select></div><div class="prediction-field"><label for="group-' + groupId + '-runner">Group ' + groupId + ' runner-up</label><select id="group-' + groupId + '-runner"></select></div>';
+      groupRoot.appendChild(row);
+      var groupPick = picks.groups && picks.groups[groupId] ? picks.groups[groupId] : {};
+      document.getElementById("group-" + groupId + "-winner").innerHTML = '<option value="">Pick team</option>' + groups[groupId].map(function (team) { return '<option value="' + team + '"' + (team === groupPick.winner ? " selected" : "") + '>' + team + '</option>'; }).join("");
+      document.getElementById("group-" + groupId + "-runner").innerHTML = '<option value="">Pick team</option>' + groups[groupId].map(function (team) { return '<option value="' + team + '"' + (team === groupPick.runner ? " selected" : "") + '>' + team + '</option>'; }).join("");
+    });
+  }
+
+  function renderKnockout() {
+    var picks = loadPicks();
+    var groupWinners = Object.keys(groups).map(function (g) { return picks.groups && picks.groups[g] && picks.groups[g].winner ? "W" + g + ": " + picks.groups[g].winner : "W" + g + ": TBD"; });
+    var runners = Object.keys(groups).map(function (g) { return picks.groups && picks.groups[g] && picks.groups[g].runner ? "R" + g + ": " + picks.groups[g].runner : "R" + g + ": TBD"; });
+    var root = document.getElementById("knockout-grid");
+    var rounds = [
+      { name: "Round of 32", slots: groupWinners.concat(runners).slice(0, 16) },
+      { name: "Round of 16", slots: ["Your winners", "Official bracket fills after groups", "Best third-place teams join", "Save picks to update"] },
+      { name: "Final", slots: [picks.finalistA || "Finalist TBD", picks.finalistB || "Finalist TBD"] },
+      { name: "Champion", slots: [picks.champion || "Champion TBD", picks.darkHorse ? "Dark horse: " + picks.darkHorse : "Dark horse TBD"] }
+    ];
+    root.innerHTML = rounds.map(function (round) {
+      return '<article class="round-card"><h3>' + round.name + '</h3>' + round.slots.map(function (slot) { return '<div class="slot">' + slot + '</div>'; }).join("") + '</article>';
+    }).join("");
+  }
+
+  function generateShareCard() {
+    var picks = savePicks();
+    renderKnockout();
+    var canvas = document.getElementById("share-canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#0f5f4e";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "rgba(255,255,255,0.08)";
+    for (var x = 0; x < canvas.width; x += 90) ctx.fillRect(x, 0, 45, canvas.height);
+    ctx.fillStyle = "#fffdf8";
+    ctx.fillRect(70, 70, canvas.width - 140, canvas.height - 140);
+    ctx.fillStyle = "#201713";
+    ctx.font = "700 64px Georgia, serif";
+    ctx.fillText("My World Cup 2026 Picks", 120, 170);
+    ctx.font = "700 44px Arial, sans-serif";
+    ctx.fillText("Champion: " + (picks.champion || "TBD"), 120, 280);
+    ctx.fillText("Final: " + (picks.finalistA || "TBD") + " vs " + (picks.finalistB || "TBD"), 120, 350);
+    ctx.fillText("Top scorer: " + (picks.goldenBoot || "TBD"), 120, 420);
+    ctx.fillText("Dark horse: " + (picks.darkHorse || "TBD"), 120, 490);
+    ctx.fillStyle = "#1f8f77";
+    ctx.font = "800 30px Arial, sans-serif";
+    ctx.fillText("Group winners", 120, 590);
+    ctx.fillStyle = "#201713";
+    ctx.font = "700 26px Arial, sans-serif";
+    var y = 645;
+    Object.keys(groups).forEach(function (g, i) {
+      var pick = picks.groups && picks.groups[g] && picks.groups[g].winner ? picks.groups[g].winner : "TBD";
+      var col = i < 6 ? 120 : 580;
+      var yy = i < 6 ? y + i * 44 : y + (i - 6) * 44;
+      ctx.fillText("Group " + g + ": " + pick, col, yy);
+    });
+    ctx.fillStyle = "#b9481e";
+    ctx.font = "800 30px Arial, sans-serif";
+    ctx.fillText("Play free soccer games + trivia:", 120, 1110);
+    ctx.fillText("snackpackuniverse.com/world-cup/", 120, 1160);
+    ctx.fillStyle = "#6a5b52";
+    ctx.font = "700 24px Arial, sans-serif";
+    ctx.fillText("Support the tiny studio: Tip SnackPack from the site footer", 120, 1220);
+    var img = document.getElementById("share-preview");
+    img.src = canvas.toDataURL("image/png");
+    img.style.display = "block";
+  }
+
+  function switchView(view) {
+    ["groups", "played", "upcoming", "knockout"].forEach(function (name) {
+      document.getElementById("view-" + name).hidden = name !== view;
+      document.querySelector('[data-view="' + name + '"]').setAttribute("aria-pressed", String(name === view));
+    });
+  }
+
+  document.querySelectorAll("[data-view]").forEach(function (button) {
+    button.addEventListener("click", function () { switchView(button.dataset.view); });
+  });
+  document.getElementById("save-picks").addEventListener("click", function () {
+    savePicks();
+    renderKnockout();
+  });
+  document.getElementById("share-card").addEventListener("click", generateShareCard);
+
+  renderGroups();
+  renderMatches();
+  renderPredictionForm();
+  renderKnockout();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

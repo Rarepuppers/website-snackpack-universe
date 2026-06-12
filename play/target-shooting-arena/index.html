@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Target Shooting Arena Online Free | Soccer Shooting Game - SnackPack</title>
+<meta name="description" content="Play Target Shooting Arena free in your browser. Aim soccer shots at moving goal targets, build combos, and chase a high score. No ads, no sign-in, no download.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/target-shooting-arena/">
+<meta name="theme-color" content="#1f8f77">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Target Shooting Arena Online Free">
+<meta property="og:description" content="Hit moving goal targets, build combos, and chase a high score. Free in your browser, no ads, no sign-in.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/target-shooting-arena/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<style>
+.ts-stage { max-width: 720px; }
+.ts-canvas {
+  width: min(100%, 640px);
+  aspect-ratio: 640 / 430;
+  border-radius: 16px;
+  border: 3px solid #244f2b;
+  background: #3f9a43;
+  display: block;
+  margin: 0 auto;
+  box-shadow: var(--shadow);
+  touch-action: none;
+}
+.ts-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+  width: min(100%, 640px);
+  margin: 16px auto 0;
+}
+.ts-fieldset { display: grid; gap: 8px; }
+.ts-label {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ts-slider { width: 100%; accent-color: var(--accent); }
+.ts-shoot { min-width: 128px; }
+.ts-history {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 6px;
+  width: min(100%, 640px);
+  margin: 14px auto 0;
+}
+.ts-dot {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(32, 23, 19, 0.12);
+}
+.ts-dot.hit { background: var(--accent); }
+.ts-dot.bullseye { background: var(--gold); }
+.ts-dot.miss { background: var(--brand-deep); }
+.ts-hint-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.ts-hint-row span {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(32,23,19,0.05);
+}
+@media (max-width: 640px) {
+  .ts-stage { padding: 14px; }
+  .ts-panel { grid-template-columns: 1fr; }
+  .ts-shoot { width: 100%; }
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Target Shooting Arena",
+  "url": "https://www.snackpackuniverse.com/play/target-shooting-arena/",
+  "applicationCategory": "Game",
+  "genre": "Sports",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser soccer shooting game. Aim at moving goal targets, build combos, and chase a high score.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Target Shooting Arena</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../world-cup/">World Cup</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free soccer game</span>
+        <h1>Target Shooting Arena</h1>
+        <p class="lead" style="max-width:620px;margin-left:auto;margin-right:auto;">Pick your spot, set power, and fire at moving targets inside the goal. Bullseyes and streaks turn a simple shot into a big score.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage ts-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Score</span><b id="ts-score">0</b></span>
+            <span class="readout-chip"><span>Shot</span><b id="ts-shot">1/12</b></span>
+            <span class="readout-chip"><span>Best</span><b id="ts-best">0</b></span>
+            <span class="readout-chip"><span>Combo</span><b id="ts-combo">x1</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Difficulty">
+              <button type="button" data-difficulty="rookie" aria-pressed="true">Rookie</button>
+              <button type="button" data-difficulty="pro" aria-pressed="false">Pro</button>
+              <button type="button" data-difficulty="legend" aria-pressed="false">Legend</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="ts-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="ts-status" aria-live="polite">Tap the goal to aim, then shoot.</p>
+        <canvas class="ts-canvas" id="ts-canvas" width="640" height="430" aria-label="Target Shooting Arena soccer goal"></canvas>
+        <div class="ts-panel">
+          <div class="ts-fieldset">
+            <label class="ts-label" for="ts-power">Power</label>
+            <input class="ts-slider" id="ts-power" type="range" min="70" max="112" value="92">
+          </div>
+          <button class="btn-game btn-game--primary ts-shoot" id="ts-shoot" type="button">Shoot</button>
+        </div>
+        <div class="ts-history" id="ts-history" aria-label="Shot history"></div>
+        <div class="ts-hint-row">
+          <span>Tap or drag in the goal to aim.</span>
+          <span>Hit the centre ring for bullseyes.</span>
+          <span>Moving targets are worth more.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">More soccer games</span>
+          <h2>One shot, one target, one more go.</h2>
+          <p>Target Shooting Arena adds a simple arcade scoring loop to the SnackPack World Cup games hub: moving targets, short rounds, and fast restarts.</p>
+          <ul class="funnel-points">
+            <li>Instant browser play on phone or desktop</li>
+            <li>No ads, no sign-in, no download</li>
+            <li>High score saved locally on your device</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="btn btn-primary" href="../../world-cup/">World Cup games hub</a>
+            <a class="btn btn-secondary" href="../keepy-uppy/">Play Keepy-Uppy</a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">TS</div>
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">Pick the corner. Hit the ring.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Target Shooting Arena</h2>
+      <p>You get 12 shots. Tap or drag inside the goal to aim, set power, and shoot at the moving target. A normal target hit scores points. A bullseye scores more. Consecutive hits raise your combo multiplier.</p>
+      <p>Rookie mode gives larger, slower targets. Pro and Legend make targets smaller, faster, and less forgiving, so timing and power matter more.</p>
+      <h3>Tips for a higher score</h3>
+      <ul>
+        <li>Lead the target slightly when it is moving fast.</li>
+        <li>Use moderate power unless you are aiming for high corners.</li>
+        <li>A regular hit keeps the combo alive, so do not force every bullseye.</li>
+        <li>Watch the ring size: smaller targets are worth more points.</li>
+      </ul>
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Target Shooting Arena free?</summary><p>Yes. It plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>Does Target Shooting Arena work on mobile?</summary><p>Yes. Tap or drag on the goal to aim, then press Shoot.</p></details>
+        <details class="faq-item"><summary>Is this an official World Cup game?</summary><p>No. It is an original SnackPack Studios soccer game and is not affiliated with FIFA, the World Cup, any team, league, or governing body.</p></details>
+      </div>
+      <p style="margin-top:22px;"><a class="text-link" href="../../world-cup/" style="color:var(--accent);font-weight:700;">Back to World Cup games</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack - Tip or Donate - Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio. Tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Target Shooting Arena free. SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../world-cup/">World Cup games</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>window.SP_PLAY_URL = "../../world-cup/";</script>
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+  var canvas = document.getElementById("ts-canvas");
+  var ctx = canvas.getContext("2d");
+  var scoreEl = document.getElementById("ts-score");
+  var shotEl = document.getElementById("ts-shot");
+  var bestEl = document.getElementById("ts-best");
+  var comboEl = document.getElementById("ts-combo");
+  var statusEl = document.getElementById("ts-status");
+  var powerEl = document.getElementById("ts-power");
+  var shootBtn = document.getElementById("ts-shoot");
+  var newBtn = document.getElementById("ts-new");
+  var historyEl = document.getElementById("ts-history");
+
+  var W = canvas.width, H = canvas.height;
+  var goal = { x: 118, y: 50, w: 404, h: 162 };
+  var ballStart = { x: W / 2, y: 382 };
+  var bestKey = "snackpack-target-shooting-arena-best";
+  var configs = {
+    rookie: { radius: 31, speed: 0.72, drift: 9 },
+    pro: { radius: 25, speed: 1.05, drift: 14 },
+    legend: { radius: 20, speed: 1.42, drift: 21 }
+  };
+  var difficulty = "rookie";
+  var best = parseInt(localStorage.getItem(bestKey) || "0", 10);
+  var score = 0, shot = 1, combo = 1, busy = false;
+  var aim = { x: goal.x + goal.w / 2, y: goal.y + goal.h / 2 };
+  var target = null;
+  var ball = { x: ballStart.x, y: ballStart.y };
+  var trail = [];
+  var results = [];
+  var raf = null;
+
+  function clamp(n, min, max) {
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function makeTarget() {
+    var cfg = configs[difficulty];
+    var r = cfg.radius - Math.min(8, Math.floor((shot - 1) / 3));
+    return {
+      x: goal.x + r + Math.random() * (goal.w - r * 2),
+      y: goal.y + r + Math.random() * (goal.h - r * 2),
+      r: r,
+      vx: (Math.random() < 0.5 ? -1 : 1) * cfg.speed * (0.85 + Math.random() * 0.4),
+      vy: (Math.random() < 0.5 ? -1 : 1) * cfg.speed * 0.55,
+      value: Math.round((34 - r) * 4)
+    };
+  }
+
+  function reset() {
+    if (raf) cancelAnimationFrame(raf);
+    score = 0;
+    shot = 1;
+    combo = 1;
+    busy = false;
+    results = [];
+    aim = { x: goal.x + goal.w / 2, y: goal.y + goal.h / 2 };
+    target = makeTarget();
+    ball = { x: ballStart.x, y: ballStart.y };
+    trail = [];
+    statusEl.className = "game-status";
+    statusEl.textContent = "Tap the goal to aim, then shoot.";
+    setControls(true);
+    updateReadout();
+    renderHistory();
+    loop();
+  }
+
+  function setControls(enabled) {
+    busy = !enabled;
+    shootBtn.disabled = !enabled;
+    powerEl.disabled = !enabled;
+  }
+
+  function updateReadout() {
+    scoreEl.textContent = score;
+    shotEl.textContent = Math.min(shot, 12) + "/12";
+    bestEl.textContent = best;
+    comboEl.textContent = "x" + combo;
+  }
+
+  function renderHistory() {
+    historyEl.innerHTML = "";
+    for (var i = 0; i < 12; i++) {
+      var dot = document.createElement("div");
+      dot.className = "ts-dot" + (results[i] ? " " + results[i] : "");
+      historyEl.appendChild(dot);
+    }
+  }
+
+  function loop() {
+    stepTarget();
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+
+  function stepTarget() {
+    if (!target || busy) return;
+    target.x += target.vx;
+    target.y += target.vy;
+    if (target.x < goal.x + target.r || target.x > goal.x + goal.w - target.r) target.vx *= -1;
+    if (target.y < goal.y + target.r || target.y > goal.y + goal.h - target.r) target.vy *= -1;
+    target.x = clamp(target.x, goal.x + target.r, goal.x + goal.w - target.r);
+    target.y = clamp(target.y, goal.y + target.r, goal.y + goal.h - target.r);
+  }
+
+  function setAimFromEvent(event) {
+    if (busy) return;
+    var rect = canvas.getBoundingClientRect();
+    aim = {
+      x: clamp((event.clientX - rect.left) / rect.width * W, goal.x + 8, goal.x + goal.w - 8),
+      y: clamp((event.clientY - rect.top) / rect.height * H, goal.y + 8, goal.y + goal.h - 8)
+    };
+    draw();
+  }
+
+  function shoot() {
+    if (busy || shot > 12) return;
+    setControls(false);
+    if (raf) cancelAnimationFrame(raf);
+    statusEl.className = "game-status";
+    statusEl.textContent = "Shot away...";
+    var cfg = configs[difficulty];
+    var power = parseInt(powerEl.value, 10);
+    var ideal = 91 + (aim.y - (goal.y + goal.h / 2)) * -0.05;
+    var end = {
+      x: aim.x + (Math.random() - 0.5) * cfg.drift,
+      y: aim.y + (power - ideal) * -1.15
+    };
+    trail = [];
+    animateShot(end, function () {
+      applyOutcome(judge(end));
+      setTimeout(nextShot, 820);
+    });
+  }
+
+  function judge(end) {
+    var dist = Math.hypot(end.x - target.x, end.y - target.y);
+    if (dist <= target.r * 0.36) return { kind: "bullseye", text: "Bullseye.", points: target.value + 140 };
+    if (dist <= target.r) return { kind: "hit", text: "Target hit.", points: target.value + 70 };
+    return { kind: "miss", text: "Missed the target. Lead it and check power.", points: 0 };
+  }
+
+  function applyOutcome(outcome) {
+    if (outcome.kind === "miss") {
+      combo = 1;
+      results.push("miss");
+      statusEl.className = "game-status game-status--lose";
+      statusEl.textContent = outcome.text;
+    } else {
+      var gained = outcome.points * combo;
+      score += gained;
+      combo = Math.min(8, combo + 1);
+      results.push(outcome.kind);
+      statusEl.className = "game-status";
+      statusEl.textContent = outcome.text + " +" + gained;
+      if (score > best) {
+        best = score;
+        localStorage.setItem(bestKey, String(best));
+      }
+    }
+    updateReadout();
+    renderHistory();
+  }
+
+  function nextShot() {
+    if (shot >= 12) {
+      finish();
+      return;
+    }
+    shot++;
+    target = makeTarget();
+    ball = { x: ballStart.x, y: ballStart.y };
+    trail = [];
+    setControls(true);
+    updateReadout();
+    statusEl.className = "game-status";
+    statusEl.textContent = "Shot " + shot + ": new target.";
+    loop();
+  }
+
+  function finish() {
+    setControls(false);
+    statusEl.className = "game-status";
+    statusEl.textContent = "Full time: " + score + " points.";
+    ball = { x: ballStart.x, y: ballStart.y };
+    draw();
+    if (window.SnackPack && score >= 1400) {
+      window.SnackPack.celebrate({
+        title: "Target master",
+        body: "You scored " + score + " in Target Shooting Arena. Try the World Cup games hub for more free soccer games."
+      });
+    }
+  }
+
+  function animateShot(end, done) {
+    var start = performance.now();
+    var duration = 680;
+    var from = { x: ballStart.x, y: ballStart.y };
+    function frame(now) {
+      var t = clamp((now - start) / duration, 0, 1);
+      var ease = 1 - Math.pow(1 - t, 3);
+      var arc = Math.sin(t * Math.PI) * 52;
+      ball = {
+        x: from.x + (end.x - from.x) * ease,
+        y: from.y + (end.y - from.y) * ease - arc
+      };
+      trail.push({ x: ball.x, y: ball.y });
+      if (trail.length > 18) trail.shift();
+      draw();
+      if (t < 1) requestAnimationFrame(frame);
+      else {
+        ball = end;
+        draw();
+        done();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function drawPitch() {
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#58b75d");
+    g.addColorStop(1, "#318c43");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(255,255,255,0.06)";
+    for (var y = 0; y < H; y += 42) ctx.fillRect(0, y, W, 21);
+    ctx.strokeStyle = "rgba(255,255,255,0.58)";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(W / 2, 330, 112, Math.PI * 1.12, Math.PI * 1.88);
+    ctx.stroke();
+  }
+
+  function drawGoal() {
+    ctx.fillStyle = "rgba(255,255,255,0.13)";
+    ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
+    ctx.strokeStyle = "rgba(255,255,255,0.42)";
+    ctx.lineWidth = 1;
+    for (var x = goal.x; x <= goal.x + goal.w; x += 18) {
+      ctx.beginPath(); ctx.moveTo(x, goal.y); ctx.lineTo(x, goal.y + goal.h); ctx.stroke();
+    }
+    for (var y = goal.y; y <= goal.y + goal.h; y += 18) {
+      ctx.beginPath(); ctx.moveTo(goal.x, y); ctx.lineTo(goal.x + goal.w, y); ctx.stroke();
+    }
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(goal.x - 8, goal.y - 8, 8, goal.h + 8);
+    ctx.fillRect(goal.x + goal.w, goal.y - 8, 8, goal.h + 8);
+    ctx.fillRect(goal.x - 8, goal.y - 8, goal.w + 16, 8);
+  }
+
+  function drawTarget() {
+    if (!target) return;
+    ctx.save();
+    ctx.translate(target.x, target.y);
+    ctx.fillStyle = "rgba(239,181,77,0.26)";
+    ctx.beginPath(); ctx.arc(0, 0, target.r + 8, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#efb54d";
+    ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.arc(0, 0, target.r, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(0, 0, target.r * 0.58, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = "#de6a38";
+    ctx.beginPath(); ctx.arc(0, 0, target.r * 0.22, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  function drawAim() {
+    if (busy) return;
+    ctx.strokeStyle = "rgba(255,255,255,0.92)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(aim.x - 14, aim.y);
+    ctx.lineTo(aim.x + 14, aim.y);
+    ctx.moveTo(aim.x, aim.y - 14);
+    ctx.lineTo(aim.x, aim.y + 14);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(32,23,19,0.36)";
+    ctx.beginPath();
+    ctx.moveTo(ballStart.x, ballStart.y);
+    ctx.lineTo(aim.x, aim.y);
+    ctx.stroke();
+  }
+
+  function drawBall() {
+    trail.forEach(function (p, i) {
+      ctx.fillStyle = "rgba(255,255,255," + (0.08 + i / trail.length * 0.28) + ")";
+      ctx.beginPath(); ctx.arc(p.x, p.y, 4 + i / trail.length * 4, 0, Math.PI * 2); ctx.fill();
+    });
+    ctx.fillStyle = "#fff";
+    ctx.beginPath(); ctx.arc(ball.x, ball.y, 10, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#201713"; ctx.lineWidth = 1.4; ctx.stroke();
+    ctx.fillStyle = "#201713";
+    ctx.beginPath(); ctx.arc(ball.x, ball.y, 2.7, 0, Math.PI * 2); ctx.fill();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    drawPitch();
+    drawGoal();
+    drawTarget();
+    drawAim();
+    drawBall();
+  }
+
+  canvas.addEventListener("pointerdown", function (event) {
+    canvas.setPointerCapture(event.pointerId);
+    setAimFromEvent(event);
+  });
+  canvas.addEventListener("pointermove", function (event) {
+    if (event.buttons || event.pointerType === "touch") setAimFromEvent(event);
+  });
+  canvas.addEventListener("click", setAimFromEvent);
+  shootBtn.addEventListener("click", shoot);
+  newBtn.addEventListener("click", reset);
+  powerEl.addEventListener("input", draw);
+  document.querySelectorAll("[data-difficulty]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      difficulty = button.dataset.difficulty;
+      document.querySelectorAll("[data-difficulty]").forEach(function (x) {
+        x.setAttribute("aria-pressed", String(x === button));
+      });
+      reset();
+    });
+  });
+
+  bestEl.textContent = best;
+  reset();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

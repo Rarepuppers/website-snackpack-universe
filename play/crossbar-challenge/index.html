@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Crossbar Challenge Online Free | Soccer Skill Game - SnackPack</title>
+<meta name="description" content="Play Crossbar Challenge free in your browser. Aim, set power, add curl, and try to hit the soccer crossbar across 15 shots. No ads, no sign-in, no download.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/crossbar-challenge/">
+<meta name="theme-color" content="#1f8f77">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Crossbar Challenge Online Free">
+<meta property="og:description" content="Aim for the bar, dial in power, and chase a streak. Free in your browser, no ads, no sign-in.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/crossbar-challenge/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<style>
+.cb-stage {
+  max-width: 720px;
+}
+.cb-canvas {
+  width: min(100%, 640px);
+  aspect-ratio: 640 / 430;
+  border-radius: 16px;
+  border: 3px solid #244f2b;
+  background: #3f9a43;
+  display: block;
+  margin: 0 auto;
+  box-shadow: var(--shadow);
+  touch-action: none;
+}
+.cb-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+  width: min(100%, 640px);
+  margin: 16px auto 0;
+}
+.cb-fieldset {
+  display: grid;
+  gap: 8px;
+}
+.cb-label {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.cb-slider {
+  width: 100%;
+  accent-color: var(--accent);
+}
+.cb-curl {
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(32, 23, 19, 0.05);
+}
+.cb-curl button {
+  min-height: 38px;
+  min-width: 72px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cb-curl button[aria-pressed="true"] {
+  background: var(--surface-strong);
+  color: var(--ink);
+  box-shadow: 0 4px 12px rgba(32, 23, 19, 0.1);
+}
+.cb-shoot {
+  min-width: 128px;
+}
+.cb-history {
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  gap: 5px;
+  width: min(100%, 640px);
+  margin: 14px auto 0;
+}
+.cb-dot {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(32, 23, 19, 0.12);
+}
+.cb-dot.hit {
+  background: var(--accent);
+}
+.cb-dot.perfect {
+  background: var(--gold);
+}
+.cb-dot.miss {
+  background: var(--brand-deep);
+}
+.cb-hint-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.cb-hint-row span {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(32,23,19,0.05);
+}
+@media (max-width: 640px) {
+  .cb-stage {
+    padding: 14px;
+  }
+  .cb-panel {
+    grid-template-columns: 1fr;
+  }
+  .cb-shoot {
+    width: 100%;
+  }
+  .cb-curl {
+    width: 100%;
+  }
+  .cb-curl button {
+    flex: 1;
+    min-width: 0;
+  }
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Crossbar Challenge",
+  "url": "https://www.snackpackuniverse.com/play/crossbar-challenge/",
+  "applicationCategory": "Game",
+  "genre": "Sports",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser soccer crossbar challenge. Aim, set power, add curl, and try to hit the crossbar across 15 shots.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Crossbar Challenge</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../world-cup/">World Cup</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free soccer game</span>
+        <h1>Crossbar Challenge</h1>
+        <p class="lead" style="max-width:620px;margin-left:auto;margin-right:auto;">Aim for the bar from changing distances. You get 15 shots. Clip the crossbar for points, hit the centre for a perfect strike, and keep your streak alive.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage cb-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Score</span><b id="cb-score">0</b></span>
+            <span class="readout-chip"><span>Shot</span><b id="cb-shot">1/15</b></span>
+            <span class="readout-chip"><span>Best</span><b id="cb-best">0</b></span>
+            <span class="readout-chip"><span>Streak</span><b id="cb-streak">0</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Difficulty">
+              <button type="button" data-difficulty="rookie" aria-pressed="true">Rookie</button>
+              <button type="button" data-difficulty="pro" aria-pressed="false">Pro</button>
+              <button type="button" data-difficulty="legend" aria-pressed="false">Legend</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="cb-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="cb-status" aria-live="polite">Drag the target along the bar, set power, then shoot.</p>
+        <canvas class="cb-canvas" id="cb-canvas" width="640" height="430" aria-label="Crossbar Challenge soccer field"></canvas>
+        <div class="cb-panel">
+          <div class="cb-fieldset">
+            <label class="cb-label" for="cb-power">Power</label>
+            <input class="cb-slider" id="cb-power" type="range" min="60" max="118" value="88">
+            <div class="cb-curl" role="group" aria-label="Curl direction">
+              <button type="button" data-curl="-1" aria-pressed="false">Left</button>
+              <button type="button" data-curl="0" aria-pressed="true">Straight</button>
+              <button type="button" data-curl="1" aria-pressed="false">Right</button>
+            </div>
+          </div>
+          <button class="btn-game btn-game--primary cb-shoot" id="cb-shoot" type="button">Shoot</button>
+        </div>
+        <div class="cb-history" id="cb-history" aria-label="Shot history"></div>
+        <div class="cb-hint-row">
+          <span>Drag or tap the crossbar to aim.</span>
+          <span>Perfect hits are worth extra.</span>
+          <span>Wind grows on harder levels.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">More soccer games</span>
+          <h2>Another one-shot skill test.</h2>
+          <p>Crossbar Challenge joins the SnackPack soccer arcade: quick free games for the 2026 football build-up, tuned for one more attempt.</p>
+          <ul class="funnel-points">
+            <li>Instant browser play on phone or desktop</li>
+            <li>No ads, no sign-in, no download</li>
+            <li>High score and streak saved locally on your device</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="btn btn-primary" href="../../world-cup/">World Cup games hub</a>
+            <a class="btn btn-secondary" href="../free-kick-curl/">Play Free Kick Curl</a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">CB</div>
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">Hit the bar. Beat your best.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Crossbar Challenge</h2>
+      <p>You have 15 shots to hit the soccer crossbar. Drag the target along the bar, set your power, choose curl, and shoot. A crossbar hit scores points, and a perfect centre-bar strike scores more. Consecutive hits build a streak bonus.</p>
+      <p>Each shot changes the distance and wind. Rookie mode is forgiving. Pro and Legend make the target thinner and the wind stronger, so power control matters more.</p>
+      <h3>Tips to hit the crossbar</h3>
+      <ul>
+        <li>Adjust power when the ball moves farther from goal.</li>
+        <li>Use curl to correct for side wind instead of aiming wildly off-centre.</li>
+        <li>A perfect hit is valuable, but a safe bar clip protects your streak.</li>
+        <li>Watch the wind marker before every shot. It changes often.</li>
+      </ul>
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Crossbar Challenge free?</summary><p>Yes. It plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>Does Crossbar Challenge work on mobile?</summary><p>Yes. Tap or drag on the crossbar to aim, then use the controls below the pitch.</p></details>
+        <details class="faq-item"><summary>Is this an official World Cup game?</summary><p>No. It is an original SnackPack Studios soccer game and is not affiliated with FIFA, the World Cup, any team, league, or governing body.</p></details>
+      </div>
+      <p style="margin-top:22px;"><a class="text-link" href="../../world-cup/" style="color:var(--accent);font-weight:700;">Back to World Cup games</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack - Tip or Donate - Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio. Tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Crossbar Challenge free. SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../world-cup/">World Cup games</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>window.SP_PLAY_URL = "../../world-cup/";</script>
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+  var canvas = document.getElementById("cb-canvas");
+  var ctx = canvas.getContext("2d");
+  var scoreEl = document.getElementById("cb-score");
+  var shotEl = document.getElementById("cb-shot");
+  var bestEl = document.getElementById("cb-best");
+  var streakEl = document.getElementById("cb-streak");
+  var statusEl = document.getElementById("cb-status");
+  var powerEl = document.getElementById("cb-power");
+  var shootBtn = document.getElementById("cb-shoot");
+  var newBtn = document.getElementById("cb-new");
+  var historyEl = document.getElementById("cb-history");
+
+  var W = canvas.width, H = canvas.height;
+  var goal = { x: 118, y: 58, w: 404, h: 150 };
+  var bestKey = "snackpack-crossbar-challenge-best";
+  var streakKey = "snackpack-crossbar-challenge-streak";
+  var configs = {
+    rookie: { tolerance: 13, wind: 8, distance: 0 },
+    pro: { tolerance: 10, wind: 18, distance: 22 },
+    legend: { tolerance: 8, wind: 30, distance: 42 }
+  };
+  var difficulty = "rookie";
+  var curl = 0;
+  var score = 0, shot = 1, streak = 0, busy = false;
+  var best = parseInt(localStorage.getItem(bestKey) || "0", 10);
+  var bestStreak = parseInt(localStorage.getItem(streakKey) || "0", 10);
+  var aimX = goal.x + goal.w / 2;
+  var ball = { x: W / 2, y: 372 };
+  var trail = [];
+  var state = makeState();
+  var results = [];
+
+  function clamp(n, min, max) {
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function makeState() {
+    var cfg = configs[difficulty];
+    var phase = (shot - 1) / 14;
+    return {
+      distance: 48 + cfg.distance + Math.round(phase * 44) + Math.round(Math.random() * 16),
+      wind: (Math.random() * cfg.wind * 2 - cfg.wind),
+      sweetX: goal.x + goal.w * (0.28 + Math.random() * 0.44)
+    };
+  }
+
+  function reset() {
+    score = 0;
+    shot = 1;
+    streak = 0;
+    busy = false;
+    results = [];
+    aimX = goal.x + goal.w / 2;
+    trail = [];
+    state = makeState();
+    ball = ballStart();
+    statusEl.className = "game-status";
+    statusEl.textContent = "Drag the target along the bar, set power, then shoot.";
+    setControls(true);
+    updateReadout();
+    renderHistory();
+    draw();
+  }
+
+  function ballStart() {
+    return { x: W / 2, y: clamp(336 + state.distance * 0.46, 336, 402) };
+  }
+
+  function setControls(enabled) {
+    busy = !enabled;
+    shootBtn.disabled = !enabled;
+    powerEl.disabled = !enabled;
+    document.querySelectorAll("[data-curl]").forEach(function (button) {
+      button.disabled = !enabled;
+    });
+  }
+
+  function updateReadout() {
+    scoreEl.textContent = score;
+    shotEl.textContent = Math.min(shot, 15) + "/15";
+    bestEl.textContent = best;
+    streakEl.textContent = streak;
+  }
+
+  function renderHistory() {
+    historyEl.innerHTML = "";
+    for (var i = 0; i < 15; i++) {
+      var dot = document.createElement("div");
+      dot.className = "cb-dot" + (results[i] ? " " + results[i] : "");
+      historyEl.appendChild(dot);
+    }
+  }
+
+  function setAimFromEvent(event) {
+    if (busy) return;
+    var rect = canvas.getBoundingClientRect();
+    aimX = clamp((event.clientX - rect.left) / rect.width * W, goal.x + 12, goal.x + goal.w - 12);
+    draw();
+  }
+
+  function shoot() {
+    if (busy || shot > 15) return;
+    setControls(false);
+    statusEl.className = "game-status";
+    statusEl.textContent = "Tracking the flight...";
+    var power = parseInt(powerEl.value, 10);
+    var start = ballStart();
+    var idealPower = 78 + state.distance * 0.28;
+    var yError = (power - idealPower) * -1.65;
+    var xError = state.wind * 0.72 + curl * (20 + power * 0.12);
+    var end = {
+      x: aimX + xError,
+      y: goal.y - 5 + yError
+    };
+    trail = [];
+    animateShot(start, end, function () {
+      applyOutcome(judge(end));
+      setTimeout(nextShot, 820);
+    });
+  }
+
+  function judge(end) {
+    var cfg = configs[difficulty];
+    var yDiff = Math.abs(end.y - (goal.y - 4));
+    var onBarX = end.x >= goal.x - 8 && end.x <= goal.x + goal.w + 8;
+    var barHit = onBarX && yDiff <= cfg.tolerance;
+    var perfect = barHit && Math.abs(end.x - state.sweetX) <= 22 && yDiff <= Math.max(5, cfg.tolerance * 0.55);
+    if (!barHit) {
+      if (end.y < goal.y - cfg.tolerance) return { kind: "miss", text: "Too high. Take a little power off." };
+      if (end.y > goal.y + cfg.tolerance) return { kind: "miss", text: "Under the bar. Add power next time." };
+      return { kind: "miss", text: "Wide of the frame. Check the wind and curl." };
+    }
+    return { kind: perfect ? "perfect" : "hit", text: perfect ? "Perfect crossbar hit." : "Crossbar clipped." };
+  }
+
+  function applyOutcome(outcome) {
+    if (outcome.kind === "miss") {
+      streak = 0;
+      results.push("miss");
+      statusEl.className = "game-status game-status--lose";
+      statusEl.textContent = outcome.text;
+    } else {
+      streak++;
+      var gained = outcome.kind === "perfect" ? 160 : 95;
+      gained += Math.max(0, streak - 1) * 18;
+      score += gained;
+      results.push(outcome.kind);
+      statusEl.className = "game-status";
+      statusEl.textContent = outcome.text + " +" + gained;
+      if (streak > bestStreak) {
+        bestStreak = streak;
+        localStorage.setItem(streakKey, String(bestStreak));
+      }
+      if (score > best) {
+        best = score;
+        localStorage.setItem(bestKey, String(best));
+      }
+    }
+    updateReadout();
+    renderHistory();
+  }
+
+  function nextShot() {
+    if (shot >= 15) {
+      finish();
+      return;
+    }
+    shot++;
+    state = makeState();
+    ball = ballStart();
+    trail = [];
+    setControls(true);
+    updateReadout();
+    statusEl.className = "game-status";
+    statusEl.textContent = "Shot " + shot + ": distance and wind changed.";
+    draw();
+  }
+
+  function finish() {
+    setControls(false);
+    ball = ballStart();
+    trail = [];
+    statusEl.className = "game-status";
+    statusEl.textContent = "Full time: " + score + " points. Best streak: " + bestStreak + ".";
+    if (window.SnackPack && score >= 1000) {
+      window.SnackPack.celebrate({
+        title: "Crossbar specialist",
+        body: "You scored " + score + " points in Crossbar Challenge. Try the World Cup games hub for more free soccer games."
+      });
+    }
+    draw();
+  }
+
+  function animateShot(start, end, done) {
+    var startTime = performance.now();
+    var duration = 760;
+    function frame(now) {
+      var t = clamp((now - startTime) / duration, 0, 1);
+      var ease = 1 - Math.pow(1 - t, 3);
+      var arc = Math.sin(t * Math.PI) * (92 + state.distance * 0.15);
+      var curveArc = curl * Math.sin(t * Math.PI) * 38;
+      ball = {
+        x: start.x + (end.x - start.x) * ease + curveArc,
+        y: start.y + (end.y - start.y) * ease - arc
+      };
+      trail.push({ x: ball.x, y: ball.y });
+      if (trail.length > 20) trail.shift();
+      draw();
+      if (t < 1) requestAnimationFrame(frame);
+      else {
+        ball = end;
+        draw();
+        done();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function drawPitch() {
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#58b75d");
+    g.addColorStop(1, "#318c43");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(255,255,255,0.06)";
+    for (var y = 0; y < H; y += 42) ctx.fillRect(0, y, W, 21);
+    ctx.strokeStyle = "rgba(255,255,255,0.58)";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(92, 34, 456, 248);
+  }
+
+  function drawGoal() {
+    ctx.fillStyle = "rgba(255,255,255,0.12)";
+    ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
+    ctx.strokeStyle = "rgba(255,255,255,0.42)";
+    ctx.lineWidth = 1;
+    for (var x = goal.x; x <= goal.x + goal.w; x += 18) {
+      ctx.beginPath();
+      ctx.moveTo(x, goal.y);
+      ctx.lineTo(x, goal.y + goal.h);
+      ctx.stroke();
+    }
+    for (var y = goal.y; y <= goal.y + goal.h; y += 18) {
+      ctx.beginPath();
+      ctx.moveTo(goal.x, y);
+      ctx.lineTo(goal.x + goal.w, y);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(goal.x - 8, goal.y - 8, 8, goal.h + 8);
+    ctx.fillRect(goal.x + goal.w, goal.y - 8, 8, goal.h + 8);
+    ctx.fillRect(goal.x - 8, goal.y - 8, goal.w + 16, 8);
+    ctx.fillStyle = "#efb54d";
+    ctx.fillRect(state.sweetX - 22, goal.y - 12, 44, 8);
+  }
+
+  function drawAim() {
+    if (busy || shot > 15) return;
+    ctx.strokeStyle = "rgba(255,255,255,0.92)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(aimX, goal.y - 32);
+    ctx.lineTo(aimX, goal.y + 22);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.beginPath();
+    ctx.arc(aimX, goal.y - 8, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "rgba(32,23,19,0.58)";
+    ctx.font = "700 13px 'DM Sans', Arial, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("target", aimX, goal.y - 39);
+  }
+
+  function drawInfo() {
+    ctx.fillStyle = "rgba(255,255,255,0.88)";
+    ctx.font = "700 13px 'DM Sans', Arial, sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText("Distance: " + state.distance + "m", 22, H - 34);
+    var windText = state.wind > 1 ? "Wind -> " + Math.round(state.wind) : state.wind < -1 ? "Wind <- " + Math.abs(Math.round(state.wind)) : "Wind calm";
+    ctx.fillText(windText, 22, H - 14);
+  }
+
+  function drawBall() {
+    trail.forEach(function (p, i) {
+      ctx.fillStyle = "rgba(255,255,255," + (0.08 + i / trail.length * 0.28) + ")";
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 4 + i / trail.length * 4, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#201713";
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+    ctx.fillStyle = "#201713";
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, 2.7, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    drawPitch();
+    drawGoal();
+    drawAim();
+    drawInfo();
+    drawBall();
+  }
+
+  canvas.addEventListener("pointerdown", function (event) {
+    canvas.setPointerCapture(event.pointerId);
+    setAimFromEvent(event);
+  });
+  canvas.addEventListener("pointermove", function (event) {
+    if (event.buttons || event.pointerType === "touch") setAimFromEvent(event);
+  });
+  canvas.addEventListener("click", setAimFromEvent);
+  shootBtn.addEventListener("click", shoot);
+  newBtn.addEventListener("click", reset);
+  powerEl.addEventListener("input", draw);
+  document.querySelectorAll("[data-curl]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      curl = parseInt(button.dataset.curl, 10);
+      document.querySelectorAll("[data-curl]").forEach(function (x) {
+        x.setAttribute("aria-pressed", String(x === button));
+      });
+      draw();
+    });
+  });
+  document.querySelectorAll("[data-difficulty]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      difficulty = button.dataset.difficulty;
+      document.querySelectorAll("[data-difficulty]").forEach(function (x) {
+        x.setAttribute("aria-pressed", String(x === button));
+      });
+      reset();
+    });
+  });
+
+  bestEl.textContent = best;
+  reset();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

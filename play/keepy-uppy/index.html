@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Keepy-Uppy Online Free | Soccer Juggling Game - SnackPack</title>
+<meta name="description" content="Play Keepy-Uppy free in your browser. Tap or click the ball to keep it in the air, build combos, collect stars, and chase a high score. No ads, no sign-in, no download.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/keepy-uppy/">
+<meta name="theme-color" content="#1f8f77">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Keepy-Uppy Online Free">
+<meta property="og:description" content="Tap the ball, keep it up, build combos, and chase a high score. Free in your browser, no ads, no sign-in.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/keepy-uppy/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<style>
+.ku-stage {
+  max-width: 720px;
+}
+.ku-canvas {
+  width: min(100%, 640px);
+  aspect-ratio: 640 / 430;
+  border-radius: 16px;
+  border: 3px solid #244f2b;
+  background: #3f9a43;
+  display: block;
+  margin: 0 auto;
+  box-shadow: var(--shadow);
+  touch-action: none;
+}
+.ku-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  width: min(100%, 640px);
+  margin: 14px auto 0;
+}
+.ku-actions .btn-game {
+  min-width: 132px;
+}
+.ku-history {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 6px;
+  width: min(100%, 640px);
+  margin: 14px auto 0;
+}
+.ku-dot {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(32, 23, 19, 0.12);
+}
+.ku-dot.live {
+  background: var(--accent);
+}
+.ku-dot.star {
+  background: var(--gold);
+}
+.ku-dot.drop {
+  background: var(--brand-deep);
+}
+.ku-hint-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.ku-hint-row span {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(32,23,19,0.05);
+}
+@media (max-width: 640px) {
+  .ku-stage {
+    padding: 14px;
+  }
+  .ku-actions .btn-game {
+    flex: 1;
+    min-width: 0;
+  }
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Keepy-Uppy",
+  "url": "https://www.snackpackuniverse.com/play/keepy-uppy/",
+  "applicationCategory": "Game",
+  "genre": "Sports",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser soccer juggling game. Tap the ball to keep it up, build combos, collect stars, and chase a high score.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Keepy-Uppy</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../world-cup/">World Cup</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free soccer game</span>
+        <h1>Keepy-Uppy</h1>
+        <p class="lead" style="max-width:620px;margin-left:auto;margin-right:auto;">Tap the ball before it drops. Keep the rhythm, catch stars, and build a combo that turns every touch into a bigger score.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage ku-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Score</span><b id="ku-score">0</b></span>
+            <span class="readout-chip"><span>Touches</span><b id="ku-touches">0</b></span>
+            <span class="readout-chip"><span>Best</span><b id="ku-best">0</b></span>
+            <span class="readout-chip"><span>Combo</span><b id="ku-combo">x1</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Difficulty">
+              <button type="button" data-difficulty="chill" aria-pressed="true">Chill</button>
+              <button type="button" data-difficulty="match" aria-pressed="false">Match</button>
+              <button type="button" data-difficulty="chaos" aria-pressed="false">Chaos</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="ku-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="ku-status" aria-live="polite">Tap the ball to start juggling.</p>
+        <canvas class="ku-canvas" id="ku-canvas" width="640" height="430" aria-label="Keepy-Uppy soccer juggling field"></canvas>
+        <div class="ku-actions">
+          <button class="btn-game btn-game--primary" id="ku-kick" type="button">Kick</button>
+          <button class="btn-game" id="ku-pause" type="button">Pause</button>
+        </div>
+        <div class="ku-history" id="ku-history" aria-label="Recent touch history"></div>
+        <div class="ku-hint-row">
+          <span>Tap/click the ball, or press Kick.</span>
+          <span>Hit near the centre for cleaner control.</span>
+          <span>Stars add bonus points.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">More soccer games</span>
+          <h2>Fast touches, fast rematches.</h2>
+          <p>Keepy-Uppy is a pure one-more-go soccer game for the SnackPack World Cup arcade. Short sessions, instant restarts, and a best score to chase.</p>
+          <ul class="funnel-points">
+            <li>Instant browser play on phone or desktop</li>
+            <li>No ads, no sign-in, no download</li>
+            <li>High score saved locally on your device</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="btn btn-primary" href="../../world-cup/">World Cup games hub</a>
+            <a class="btn btn-secondary" href="../crossbar-challenge/">Play Crossbar Challenge</a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">KU</div>
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">One touch away from a new best.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Keepy-Uppy</h2>
+      <p>Tap or click the ball before it hits the grass. Every good touch pops the ball back into the air and adds points. Clean centre touches keep the ball under control, while edge touches send it sideways. Collect stars for bonus points and keep the combo alive for a bigger score.</p>
+      <p>Chill mode is forgiving. Match mode adds more speed and sideways drift. Chaos mode makes the ball smaller, faster, and harder to recover.</p>
+      <h3>Tips for a higher score</h3>
+      <ul>
+        <li>Tap the lower half of the ball to lift it cleanly.</li>
+        <li>Centre touches reduce drift and help preserve your combo.</li>
+        <li>Only chase stars when the ball is already under control.</li>
+        <li>Use short taps on mobile. Long presses do not help.</li>
+      </ul>
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Keepy-Uppy free?</summary><p>Yes. It plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>Does Keepy-Uppy work on mobile?</summary><p>Yes. Tap the ball directly or use the Kick button below the pitch.</p></details>
+        <details class="faq-item"><summary>Is this an official World Cup game?</summary><p>No. It is an original SnackPack Studios soccer game and is not affiliated with FIFA, the World Cup, any team, league, or governing body.</p></details>
+      </div>
+      <p style="margin-top:22px;"><a class="text-link" href="../../world-cup/" style="color:var(--accent);font-weight:700;">Back to World Cup games</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack - Tip or Donate - Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio. Tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Keepy-Uppy free. SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../world-cup/">World Cup games</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>window.SP_PLAY_URL = "../../world-cup/";</script>
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+  var canvas = document.getElementById("ku-canvas");
+  var ctx = canvas.getContext("2d");
+  var scoreEl = document.getElementById("ku-score");
+  var touchesEl = document.getElementById("ku-touches");
+  var bestEl = document.getElementById("ku-best");
+  var comboEl = document.getElementById("ku-combo");
+  var statusEl = document.getElementById("ku-status");
+  var historyEl = document.getElementById("ku-history");
+  var kickBtn = document.getElementById("ku-kick");
+  var pauseBtn = document.getElementById("ku-pause");
+  var newBtn = document.getElementById("ku-new");
+
+  var W = canvas.width, H = canvas.height;
+  var groundY = 382;
+  var bestKey = "snackpack-keepy-uppy-best";
+  var best = parseInt(localStorage.getItem(bestKey) || "0", 10);
+  var configs = {
+    chill: { gravity: 0.24, lift: 8.2, drift: 2.2, radius: 19, starEvery: 7 },
+    match: { gravity: 0.31, lift: 8.8, drift: 3.4, radius: 17, starEvery: 6 },
+    chaos: { gravity: 0.39, lift: 9.5, drift: 4.8, radius: 15, starEvery: 5 }
+  };
+  var difficulty = "chill";
+  var ball = null;
+  var star = null;
+  var score = 0, touches = 0, combo = 1;
+  var running = false, paused = false, over = false;
+  var raf = null;
+  var history = [];
+  var particles = [];
+
+  function reset() {
+    if (raf) cancelAnimationFrame(raf);
+    score = 0;
+    touches = 0;
+    combo = 1;
+    running = false;
+    paused = false;
+    over = false;
+    history = [];
+    particles = [];
+    ball = {
+      x: W / 2,
+      y: 190,
+      vx: 0,
+      vy: 0,
+      r: configs[difficulty].radius
+    };
+    star = makeStar();
+    pauseBtn.textContent = "Pause";
+    statusEl.className = "game-status";
+    statusEl.textContent = "Tap the ball to start juggling.";
+    updateReadout();
+    renderHistory();
+    draw();
+  }
+
+  function makeStar() {
+    return {
+      x: 90 + Math.random() * (W - 180),
+      y: 82 + Math.random() * 150,
+      r: 13,
+      live: true
+    };
+  }
+
+  function updateReadout() {
+    scoreEl.textContent = score;
+    touchesEl.textContent = touches;
+    bestEl.textContent = best;
+    comboEl.textContent = "x" + combo;
+  }
+
+  function renderHistory() {
+    historyEl.innerHTML = "";
+    for (var i = 0; i < 12; i++) {
+      var dot = document.createElement("div");
+      dot.className = "ku-dot" + (history[i] ? " " + history[i] : "");
+      historyEl.appendChild(dot);
+    }
+  }
+
+  function startLoop() {
+    if (running) return;
+    running = true;
+    paused = false;
+    raf = requestAnimationFrame(loop);
+  }
+
+  function loop() {
+    if (!running || paused) return;
+    step();
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+
+  function step() {
+    var cfg = configs[difficulty];
+    ball.vy += cfg.gravity;
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+    ball.vx *= 0.994;
+    if (ball.x < ball.r) {
+      ball.x = ball.r;
+      ball.vx = Math.abs(ball.vx) * 0.82;
+    }
+    if (ball.x > W - ball.r) {
+      ball.x = W - ball.r;
+      ball.vx = -Math.abs(ball.vx) * 0.82;
+    }
+    particles.forEach(function (p) {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 1;
+    });
+    particles = particles.filter(function (p) { return p.life > 0; });
+    if (star && star.live && Math.hypot(ball.x - star.x, ball.y - star.y) < ball.r + star.r) {
+      score += 75 * combo;
+      star.live = false;
+      statusEl.className = "game-status";
+      statusEl.textContent = "Star collected. +" + (75 * combo);
+      addParticles(star.x, star.y, "#efb54d");
+      updateReadout();
+    }
+    if (ball.y + ball.r >= groundY) {
+      endGame();
+    }
+  }
+
+  function kickAt(x, y) {
+    if (over || paused) return;
+    var dist = Math.hypot(x - ball.x, y - ball.y);
+    var cfg = configs[difficulty];
+    if (dist > ball.r + 26 && running) {
+      statusEl.className = "game-status game-status--lose";
+      statusEl.textContent = "Missed the touch. Stay close to the ball.";
+      return;
+    }
+    startLoop();
+    var offset = clamp((ball.x - x) / ball.r, -1.3, 1.3);
+    var clean = Math.max(0, 1 - Math.abs(offset) * 0.55);
+    ball.vy = -cfg.lift - clean * 2.1;
+    ball.vx += offset * cfg.drift + (Math.random() - 0.5) * 0.35;
+    ball.y = Math.min(ball.y, groundY - ball.r - 2);
+    touches++;
+    combo = Math.min(9, 1 + Math.floor(touches / 6));
+    var gained = Math.round((18 + clean * 22) * combo);
+    score += gained;
+    if (touches % cfg.starEvery === 0) star = makeStar();
+    history.unshift(clean > 0.78 ? "star" : "live");
+    history = history.slice(0, 12);
+    statusEl.className = "game-status";
+    statusEl.textContent = clean > 0.78 ? "Clean touch. +" + gained : "Kept up. +" + gained;
+    addParticles(ball.x, ball.y, clean > 0.78 ? "#efb54d" : "#ffffff");
+    if (score > best) {
+      best = score;
+      localStorage.setItem(bestKey, String(best));
+    }
+    updateReadout();
+    renderHistory();
+    draw();
+  }
+
+  function kickCenter() {
+    kickAt(ball.x, ball.y + ball.r * 0.55);
+  }
+
+  function endGame() {
+    running = false;
+    over = true;
+    history.unshift("drop");
+    history = history.slice(0, 12);
+    statusEl.className = "game-status game-status--lose";
+    statusEl.textContent = "Dropped after " + touches + " touches. Score: " + score + ".";
+    renderHistory();
+    if (window.SnackPack && score >= 1200) {
+      window.SnackPack.celebrate({
+        title: "Keepy-Uppy run",
+        body: "You scored " + score + " in Keepy-Uppy. Try the World Cup games hub for more free soccer games."
+      });
+    }
+  }
+
+  function addParticles(x, y, color) {
+    for (var i = 0; i < 10; i++) {
+      particles.push({
+        x: x,
+        y: y,
+        vx: (Math.random() - 0.5) * 4,
+        vy: (Math.random() - 0.5) * 4,
+        life: 18 + Math.random() * 10,
+        color: color
+      });
+    }
+  }
+
+  function canvasPoint(event) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+      x: (event.clientX - rect.left) / rect.width * W,
+      y: (event.clientY - rect.top) / rect.height * H
+    };
+  }
+
+  function drawPitch() {
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#60ba64");
+    g.addColorStop(1, "#318c43");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(255,255,255,0.06)";
+    for (var y = 0; y < H; y += 42) ctx.fillRect(0, y, W, 21);
+    ctx.strokeStyle = "rgba(255,255,255,0.58)";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, groundY);
+    ctx.lineTo(W, groundY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(W / 2, groundY, 96, Math.PI, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  function drawStar() {
+    if (!star || !star.live || over) return;
+    ctx.save();
+    ctx.translate(star.x, star.y);
+    ctx.fillStyle = "#efb54d";
+    ctx.beginPath();
+    for (var i = 0; i < 10; i++) {
+      var radius = i % 2 === 0 ? star.r : star.r * 0.45;
+      var angle = -Math.PI / 2 + i * Math.PI / 5;
+      ctx.lineTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawBall() {
+    ctx.save();
+    ctx.translate(ball.x, ball.y);
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.arc(0, 0, ball.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#201713";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = "#201713";
+    ctx.beginPath();
+    ctx.arc(0, 0, ball.r * 0.25, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#201713";
+    ctx.lineWidth = 1;
+    for (var i = 0; i < 5; i++) {
+      var a = i * Math.PI * 2 / 5;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a) * ball.r * 0.25, Math.sin(a) * ball.r * 0.25);
+      ctx.lineTo(Math.cos(a) * ball.r * 0.78, Math.sin(a) * ball.r * 0.78);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawParticles() {
+    particles.forEach(function (p) {
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = clamp(p.life / 28, 0, 1);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  function drawPrompt() {
+    ctx.fillStyle = "rgba(255,255,255,0.88)";
+    ctx.font = "700 14px 'DM Sans', Arial, sans-serif";
+    ctx.textAlign = "center";
+    if (!running && !over) ctx.fillText("Tap the ball to begin", W / 2, H - 16);
+    else if (paused) ctx.fillText("Paused", W / 2, H - 16);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    drawPitch();
+    drawStar();
+    drawParticles();
+    drawBall();
+    drawPrompt();
+  }
+
+  canvas.addEventListener("pointerdown", function (event) {
+    canvas.setPointerCapture(event.pointerId);
+    var p = canvasPoint(event);
+    kickAt(p.x, p.y);
+  });
+  kickBtn.addEventListener("click", kickCenter);
+  pauseBtn.addEventListener("click", function () {
+    if (over || !running) return;
+    paused = !paused;
+    pauseBtn.textContent = paused ? "Resume" : "Pause";
+    statusEl.className = "game-status";
+    statusEl.textContent = paused ? "Paused." : "Back in play.";
+    if (!paused) raf = requestAnimationFrame(loop);
+    draw();
+  });
+  newBtn.addEventListener("click", reset);
+  document.querySelectorAll("[data-difficulty]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      difficulty = button.dataset.difficulty;
+      document.querySelectorAll("[data-difficulty]").forEach(function (x) {
+        x.setAttribute("aria-pressed", String(x === button));
+      });
+      reset();
+    });
+  });
+
+  bestEl.textContent = best;
+  reset();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
