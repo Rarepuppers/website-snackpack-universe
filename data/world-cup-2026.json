@@ -1,0 +1,327 @@
+{
+  "updatedAt": "2026-06-12T12:30:24.886Z",
+  "source": "Manual seed from current public 2026 World Cup reports",
+  "groups": {
+    "A": [
+      "Mexico",
+      "South Africa",
+      "South Korea",
+      "Czechia"
+    ],
+    "B": [
+      "Canada",
+      "Bosnia and Herzegovina",
+      "Qatar",
+      "Switzerland"
+    ],
+    "C": [
+      "Haiti",
+      "Scotland",
+      "Brazil",
+      "Morocco"
+    ],
+    "D": [
+      "United States",
+      "Paraguay",
+      "Australia",
+      "Turkiye"
+    ],
+    "E": [
+      "Cote d'Ivoire",
+      "Ecuador",
+      "Germany",
+      "Curacao"
+    ],
+    "F": [
+      "Netherlands",
+      "Japan",
+      "Sweden",
+      "Tunisia"
+    ],
+    "G": [
+      "Iran",
+      "New Zealand",
+      "Belgium",
+      "Egypt"
+    ],
+    "H": [
+      "Saudi Arabia",
+      "Uruguay",
+      "Spain",
+      "Cape Verde"
+    ],
+    "I": [
+      "France",
+      "Senegal",
+      "Iraq",
+      "Norway"
+    ],
+    "J": [
+      "Argentina",
+      "Algeria",
+      "Austria",
+      "Jordan"
+    ],
+    "K": [
+      "Portugal",
+      "DR Congo",
+      "Uzbekistan",
+      "Colombia"
+    ],
+    "L": [
+      "Ghana",
+      "Panama",
+      "England",
+      "Croatia"
+    ]
+  },
+  "matches": [
+    {
+      "date": "Jun 11",
+      "isoDate": "2026-06-11",
+      "time": "FT",
+      "group": "A",
+      "home": "Mexico",
+      "away": "South Africa",
+      "hs": 2,
+      "as": 0,
+      "venue": "Mexico City"
+    },
+    {
+      "date": "Jun 12",
+      "isoDate": "2026-06-12",
+      "time": "FT",
+      "group": "A",
+      "home": "South Korea",
+      "away": "Czechia",
+      "hs": 2,
+      "as": 1,
+      "venue": "Guadalajara"
+    },
+    {
+      "date": "Jun 12",
+      "isoDate": "2026-06-12",
+      "time": "Upcoming",
+      "group": "B",
+      "home": "Canada",
+      "away": "Bosnia and Herzegovina",
+      "venue": "Toronto"
+    },
+    {
+      "date": "Jun 12",
+      "isoDate": "2026-06-12",
+      "time": "Upcoming",
+      "group": "D",
+      "home": "United States",
+      "away": "Paraguay",
+      "venue": "Los Angeles"
+    },
+    {
+      "date": "Jun 13",
+      "isoDate": "2026-06-13",
+      "time": "Upcoming",
+      "group": "C",
+      "home": "Haiti",
+      "away": "Scotland",
+      "venue": "Boston"
+    },
+    {
+      "date": "Jun 13",
+      "isoDate": "2026-06-13",
+      "time": "Upcoming",
+      "group": "D",
+      "home": "Australia",
+      "away": "Turkiye",
+      "venue": "Vancouver"
+    },
+    {
+      "date": "Jun 13",
+      "isoDate": "2026-06-13",
+      "time": "Upcoming",
+      "group": "C",
+      "home": "Brazil",
+      "away": "Morocco",
+      "venue": "New York/New Jersey"
+    },
+    {
+      "date": "Jun 13",
+      "isoDate": "2026-06-13",
+      "time": "Upcoming",
+      "group": "B",
+      "home": "Qatar",
+      "away": "Switzerland",
+      "venue": "San Francisco Bay Area"
+    },
+    {
+      "date": "Jun 14",
+      "isoDate": "2026-06-14",
+      "time": "Upcoming",
+      "group": "E",
+      "home": "Cote d'Ivoire",
+      "away": "Ecuador",
+      "venue": "Philadelphia"
+    },
+    {
+      "date": "Jun 14",
+      "isoDate": "2026-06-14",
+      "time": "Upcoming",
+      "group": "E",
+      "home": "Germany",
+      "away": "Curacao",
+      "venue": "Houston"
+    },
+    {
+      "date": "Jun 14",
+      "isoDate": "2026-06-14",
+      "time": "Upcoming",
+      "group": "F",
+      "home": "Netherlands",
+      "away": "Japan",
+      "venue": "Dallas"
+    },
+    {
+      "date": "Jun 14",
+      "isoDate": "2026-06-14",
+      "time": "Upcoming",
+      "group": "F",
+      "home": "Sweden",
+      "away": "Tunisia",
+      "venue": "Monterrey"
+    },
+    {
+      "date": "Jun 15",
+      "isoDate": "2026-06-15",
+      "time": "Upcoming",
+      "group": "H",
+      "home": "Saudi Arabia",
+      "away": "Uruguay",
+      "venue": "Miami"
+    },
+    {
+      "date": "Jun 15",
+      "isoDate": "2026-06-15",
+      "time": "Upcoming",
+      "group": "H",
+      "home": "Spain",
+      "away": "Cape Verde",
+      "venue": "Atlanta"
+    },
+    {
+      "date": "Jun 15",
+      "isoDate": "2026-06-15",
+      "time": "Upcoming",
+      "group": "G",
+      "home": "Iran",
+      "away": "New Zealand",
+      "venue": "Los Angeles"
+    },
+    {
+      "date": "Jun 15",
+      "isoDate": "2026-06-15",
+      "time": "Upcoming",
+      "group": "G",
+      "home": "Belgium",
+      "away": "Egypt",
+      "venue": "Seattle"
+    },
+    {
+      "date": "Jun 16",
+      "isoDate": "2026-06-16",
+      "time": "Upcoming",
+      "group": "I",
+      "home": "France",
+      "away": "Senegal",
+      "venue": "New York/New Jersey"
+    },
+    {
+      "date": "Jun 16",
+      "isoDate": "2026-06-16",
+      "time": "Upcoming",
+      "group": "I",
+      "home": "Iraq",
+      "away": "Norway",
+      "venue": "Boston"
+    },
+    {
+      "date": "Jun 16",
+      "isoDate": "2026-06-16",
+      "time": "Upcoming",
+      "group": "J",
+      "home": "Argentina",
+      "away": "Algeria",
+      "venue": "Kansas City"
+    },
+    {
+      "date": "Jun 16",
+      "isoDate": "2026-06-16",
+      "time": "Upcoming",
+      "group": "J",
+      "home": "Austria",
+      "away": "Jordan",
+      "venue": "San Francisco Bay Area"
+    },
+    {
+      "date": "Jun 17",
+      "isoDate": "2026-06-17",
+      "time": "Upcoming",
+      "group": "L",
+      "home": "Ghana",
+      "away": "Panama",
+      "venue": "Toronto"
+    },
+    {
+      "date": "Jun 17",
+      "isoDate": "2026-06-17",
+      "time": "Upcoming",
+      "group": "L",
+      "home": "England",
+      "away": "Croatia",
+      "venue": "Dallas"
+    },
+    {
+      "date": "Jun 17",
+      "isoDate": "2026-06-17",
+      "time": "Upcoming",
+      "group": "K",
+      "home": "Portugal",
+      "away": "DR Congo",
+      "venue": "Houston"
+    },
+    {
+      "date": "Jun 17",
+      "isoDate": "2026-06-17",
+      "time": "Upcoming",
+      "group": "K",
+      "home": "Uzbekistan",
+      "away": "Colombia",
+      "venue": "Mexico City"
+    },
+    {
+      "date": "Jun 18",
+      "isoDate": "2026-06-18",
+      "time": "Upcoming",
+      "group": "A",
+      "home": "Czechia",
+      "away": "South Africa",
+      "venue": "Atlanta"
+    },
+    {
+      "date": "Jun 18",
+      "isoDate": "2026-06-18",
+      "time": "Upcoming",
+      "group": "B",
+      "home": "Switzerland",
+      "away": "Bosnia and Herzegovina",
+      "venue": "Los Angeles"
+    },
+    {
+      "date": "Jun 18",
+      "isoDate": "2026-06-18",
+      "time": "Upcoming",
+      "group": "B",
+      "home": "Canada",
+      "away": "Qatar",
+      "venue": "Vancouver"
+    }
+  ]
+}

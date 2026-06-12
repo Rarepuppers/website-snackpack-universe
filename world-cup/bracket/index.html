@@ -612,19 +612,39 @@
     });
   }
 
-  document.querySelectorAll("[data-view]").forEach(function (button) {
-    button.addEventListener("click", function () { switchView(button.dataset.view); });
-  });
-  document.getElementById("save-picks").addEventListener("click", function () {
-    savePicks();
-    renderKnockout();
-  });
-  document.getElementById("share-card").addEventListener("click", generateShareCard);
+  function applyData(data) {
+    if (!data || !data.groups || !Array.isArray(data.matches)) return;
+    groups = data.groups;
+    matches = data.matches;
+    teams = Object.keys(groups).reduce(function (all, key) { return all.concat(groups[key]); }, []).sort();
+  }
 
-  renderGroups();
-  renderMatches();
-  renderPredictionForm();
-  renderKnockout();
+  function init() {
+    document.querySelectorAll("[data-view]").forEach(function (button) {
+      button.addEventListener("click", function () { switchView(button.dataset.view); });
+    });
+    document.getElementById("save-picks").addEventListener("click", function () {
+      savePicks();
+      renderKnockout();
+    });
+    document.getElementById("share-card").addEventListener("click", generateShareCard);
+
+    renderGroups();
+    renderMatches();
+    renderPredictionForm();
+    renderKnockout();
+  }
+
+  fetch("../../data/world-cup-2026.json", { cache: "no-cache" })
+    .then(function (response) {
+      if (!response.ok) throw new Error("World Cup data not available");
+      return response.json();
+    })
+    .then(applyData)
+    .catch(function () {
+      // Keep the embedded seed data as a fallback for local file previews.
+    })
+    .then(init);
 })();
 </script>
 <!-- Cloudflare Web Analytics -->
