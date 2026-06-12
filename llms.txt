@@ -19,6 +19,7 @@ Key facts that apply to every SnackPack app: no third-party ads, no tracking or 
 - [Play Connect 4](https://www.snackpackuniverse.com/play/connect-4/): Free browser Connect 4 vs a computer opponent with three difficulty levels. Includes rules, strategy, and history.
 - [Play Sudoku](https://www.snackpackuniverse.com/play/sudoku/): Free browser Sudoku with Easy/Medium/Hard/Expert puzzles (unique solutions), pencil notes, hints and mistake checking. Includes rules, strategy, and history.
 - [Play Word Search](https://www.snackpackuniverse.com/play/word-search/): Free browser Word Search across themed word lists (Animals, Food, Nature, Space); drag or tap to find words in any of eight directions. Includes rules, strategy, and history.
+- [Play Solitaire](https://www.snackpackuniverse.com/play/solitaire/): Free browser Klondike Solitaire with Draw 1 and Draw 3 modes, click-to-move, undo, timer and move counter. Includes rules, strategy, and history.
 
 ## Guides
 

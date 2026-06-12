@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Solitaire Online Free | Klondike, No Ads — SnackPack</title>
+<meta name="description" content="Play Klondike Solitaire free in your browser — no ads, no sign-in, no download. Draw 1 or Draw 3, click to move, with a timer and move counter. Plus rules and strategy. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/solitaire/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Solitaire Online Free | Klondike, No Ads">
+<meta property="og:description" content="Classic Klondike Solitaire, free in your browser. Draw 1 or Draw 3, click to move — no ads, no sign-in.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/solitaire/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<style>
+/* Klondike Solitaire (local styles). */
+.sol-table { --cw: clamp(40px, 12vw, 62px); --ch: calc(var(--cw) * 1.4); --gap: clamp(5px, 1.6vw, 12px); margin: 0 auto; width: fit-content; max-width: 100%; }
+.sol-row { display: grid; grid-template-columns: repeat(7, var(--cw)); gap: var(--gap); }
+.sol-top { margin-bottom: calc(var(--ch) * 0.28); }
+.sol-slot { width: var(--cw); height: var(--ch); border-radius: calc(var(--cw) * 0.13); }
+.sol-pile { position: relative; width: var(--cw); }
+.sol-empty { border: 1.5px dashed var(--line-strong); background: rgba(32,23,19,0.03); display: grid; place-items: center; color: var(--line-strong); font-size: calc(var(--cw) * 0.5); }
+.sol-empty.recycle { cursor: pointer; color: var(--accent); border-color: rgba(31,143,119,0.4); }
+.sol-card {
+  position: absolute; left: 0; width: var(--cw); height: var(--ch);
+  border-radius: calc(var(--cw) * 0.13);
+  background: var(--surface-strong);
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 2px 4px rgba(32,23,19,0.12);
+  font-family: var(--sans); font-weight: 700; cursor: pointer;
+  user-select: none; overflow: hidden;
+}
+.sol-card .r { position: absolute; top: 3px; left: 5px; font-size: calc(var(--cw) * 0.32); line-height: 1; }
+.sol-card .s { position: absolute; bottom: 4px; right: 5px; font-size: calc(var(--cw) * 0.4); line-height: 1; }
+.sol-card .big { position: absolute; inset: 0; display: grid; place-items: center; font-size: calc(var(--cw) * 0.62); opacity: 0.9; }
+.sol-card.red { color: #c0392b; }
+.sol-card.black { color: #201713; }
+.sol-card.down {
+  background: repeating-linear-gradient(45deg, #5b73d8, #5b73d8 6px, #4b62d6 6px, #4b62d6 12px);
+  border-color: #3f55c4; cursor: pointer;
+}
+.sol-card.down .r, .sol-card.down .s, .sol-card.down .big { display: none; }
+.sol-card.sel { outline: 3px solid var(--gold); outline-offset: -1px; box-shadow: 0 6px 14px rgba(32,23,19,0.22); }
+.sol-card.hintable { box-shadow: 0 0 0 2px var(--accent); }
+.sol-foundation { display: grid; place-items: center; color: rgba(31,143,119,0.5); font-size: calc(var(--cw) * 0.5); border: 1.5px dashed rgba(31,143,119,0.4); background: rgba(31,143,119,0.05); }
+.sol-tableau { min-height: var(--ch); }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Klondike Solitaire",
+  "url": "https://www.snackpackuniverse.com/play/solitaire/",
+  "applicationCategory": "Game",
+  "genre": "Card",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "description": "Free browser Klondike Solitaire with Draw 1 and Draw 3 modes, click-to-move, a timer and move counter. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Klondike Solitaire",
+  "step": [
+    { "@type": "HowToStep", "name": "Build the foundations", "text": "Move cards to the four foundation piles in order from Ace up to King, one pile per suit." },
+    { "@type": "HowToStep", "name": "Stack the tableau", "text": "In the seven columns, stack cards downward in alternating colours (red on black, black on red)." },
+    { "@type": "HowToStep", "name": "Turn over the stock", "text": "Draw from the stock pile to find more cards when you run out of moves." },
+    { "@type": "HowToStep", "name": "Clear the board", "text": "Move every card to the foundations to win." }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Solitaire</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Solitaire</h1>
+        <p class="lead" style="max-width:580px;margin-left:auto;margin-right:auto;">The timeless card game of patience. Build the four foundations Ace to King and clear the board. Draw 1 or Draw 3, click to move — no ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage" style="max-width:680px;">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Time</span><b id="sol-time">0:00</b></span>
+            <span class="readout-chip"><span>Moves</span><b id="sol-moves">0</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Draw mode">
+              <button type="button" data-draw="1" aria-pressed="true">Draw 1</button>
+              <button type="button" data-draw="3" aria-pressed="false">Draw 3</button>
+            </div>
+            <button class="btn-game" id="sol-undo" type="button">Undo</button>
+            <button class="btn-game btn-game--primary" id="sol-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="sol-status" aria-live="polite">Click a card to select it, then click where it should go.</p>
+        <div class="game-board-wrap">
+          <div class="sol-table" id="sol-table">
+            <div class="sol-row sol-top">
+              <div class="sol-pile" id="sol-stock" data-pile="stock"></div>
+              <div class="sol-pile" id="sol-waste" data-pile="waste"></div>
+              <div></div>
+              <div class="sol-pile" data-pile="foundation" data-pi="0"></div>
+              <div class="sol-pile" data-pile="foundation" data-pi="1"></div>
+              <div class="sol-pile" data-pile="foundation" data-pi="2"></div>
+              <div class="sol-pile" data-pile="foundation" data-pi="3"></div>
+            </div>
+            <div class="sol-row" id="sol-tableau-row"></div>
+          </div>
+        </div>
+        <p class="game-hint">Click a card, then a destination · Double-click sends a card to its foundation · Click the stock to deal.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">Play on the go</span>
+          <h2>Like it? Take it offline.</h2>
+          <p>Solitaire is one of nine classics in Snackpack Brain Games — our calm, ad-free Android bundle of cards, puzzles and strategy.</p>
+          <ul class="funnel-points">
+            <li>Plays fully offline — flights, commutes, anywhere</li>
+            <li>Best times &amp; daily streaks saved on your device</li>
+            <li>Eight more games in the same app · no ads, no tracking</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games on Google Play">
+              <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play">
+            </a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <img class="funnel-qr" src="../../assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play">
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;">Scan to download</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Klondike Solitaire</h2>
+      <p>Solitaire — properly called Klondike — is played with a standard 52-card deck. The board has four areas: the <strong>tableau</strong> of seven columns where most play happens, four <strong>foundations</strong> you're trying to fill, the face-down <strong>stock</strong>, and the <strong>waste</strong> pile you deal into. Your goal is to move all 52 cards onto the foundations, building each one up by suit from Ace to King.</p>
+      <p>In the tableau, you build <em>downward</em> in alternating colours — a red six goes on a black seven, a black five on a red six, and so on. You can move a single card or a whole valid sequence at once. Only a King (or a run starting with a King) may be placed in an empty column. Turn face-down tableau cards over as you expose them, and deal from the stock whenever you're stuck. Here, click a card to pick it up, then click its destination; double-click a card to send it straight to a foundation.</p>
+
+      <h3>Strategy tips</h3>
+      <ul>
+        <li><strong>Free the face-down cards first.</strong> Your real goal early on is to flip the hidden tableau cards — prioritise moves that uncover them.</li>
+        <li><strong>Don't rush Aces and Twos up… actually, do.</strong> Aces and Twos are safe to send to the foundations immediately; they're never useful in the tableau.</li>
+        <li><strong>Be careful emptying a column.</strong> An empty column is valuable — keep a King ready before you clear one.</li>
+        <li><strong>Think before you auto-play everything.</strong> Leaving a low card in the tableau can give you a place to park an alternating-colour card you need.</li>
+        <li><strong>Use Draw 1 to learn, Draw 3 for a challenge.</strong> Draw 3 shows fewer options each pass and is the classic "hard" mode.</li>
+      </ul>
+
+      <h3>A little history</h3>
+      <p>Patience games — solo card games — date to the late 18th century in Europe, and Klondike takes its name from the Canadian gold-rush region, suggesting it spread among prospectors in the 1890s. It became a household name in 1990 when Microsoft bundled Solitaire with Windows, partly to teach people how to use a mouse with drag-and-drop. It's since become one of the most-played computer games ever made.</p>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is this Solitaire free?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>What's the difference between Draw 1 and Draw 3?</summary><p>Draw 1 turns over one stock card at a time (easier); Draw 3 turns over three at once, so you see fewer options each pass.</p></details>
+        <details class="faq-item"><summary>How do I move a card?</summary><p>Click a card to select it, then click the pile or card you want to move it onto. Double-click a card to send it to a foundation automatically.</p></details>
+        <details class="faq-item"><summary>Can I play offline?</summary><p>The web version needs an open browser tab. For fully offline play with saved best times, install the free <a class="text-link" href="../../apps/snackpack-brain-games/" style="color:var(--accent);">Snackpack Brain Games</a> app on Android.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Solitaire free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../apps/snackpack-brain-games/">Brain Games app</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+  var SUITS = ["♠", "♥", "♦", "♣"]; // spade, heart, diamond, club
+  var RANKS = ["", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+  function isRed(suit) { return suit === 1 || suit === 2; }
+
+  var tableEl = document.getElementById("sol-table");
+  var tableauRow = document.getElementById("sol-tableau-row");
+  var stockEl = document.getElementById("sol-stock");
+  var wasteEl = document.getElementById("sol-waste");
+  var statusEl = document.getElementById("sol-status");
+  var timeEl = document.getElementById("sol-time");
+  var movesEl = document.getElementById("sol-moves");
+  var newBtn = document.getElementById("sol-new");
+  var undoBtn = document.getElementById("sol-undo");
+
+  var stock, waste, foundations, tableau;
+  var drawN = 1, moves, solved, sel = null, timer, seconds, started;
+  var history = [];
+
+  function snapshot() {
+    return JSON.stringify({ stock: stock, waste: waste, foundations: foundations, tableau: tableau, moves: moves });
+  }
+  function pushHistory() { history.push(snapshot()); if (history.length > 200) history.shift(); }
+
+  function makeDeck() {
+    var d = [];
+    for (var s = 0; s < 4; s++) for (var r = 1; r <= 13; r++) d.push({ r: r, s: s, up: false });
+    for (var i = d.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = d[i]; d[i] = d[j]; d[j] = t;
+    }
+    return d;
+  }
+
+  function deal() {
+    var d = makeDeck();
+    tableau = [[], [], [], [], [], [], []];
+    for (var col = 0; col < 7; col++) {
+      for (var k = 0; k <= col; k++) {
+        var card = d.pop();
+        card.up = (k === col);
+        tableau[col].push(card);
+      }
+    }
+    stock = d;
+    stock.forEach(function (c) { c.up = false; });
+    waste = [];
+    foundations = [[], [], [], []];
+    moves = 0; solved = false; sel = null; started = false; history = [];
+    clearInterval(timer); seconds = 0; renderTime();
+    statusEl.className = "game-status";
+    statusEl.textContent = "Click a card to select it, then click where it should go.";
+  }
+
+  function startTimer() {
+    if (started) return;
+    started = true;
+    timer = setInterval(function () { seconds++; renderTime(); }, 1000);
+  }
+  function renderTime() {
+    var m = Math.floor(seconds / 60), s = seconds % 60;
+    timeEl.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  function cardEl(card, faceUp) {
+    var el = document.createElement("div");
+    el.className = "sol-card " + (faceUp ? (isRed(card.s) ? "red" : "black") : "down");
+    if (faceUp) {
+      el.innerHTML = '<span class="r">' + RANKS[card.r] + "</span>" +
+                     '<span class="s">' + SUITS[card.s] + "</span>" +
+                     '<span class="big">' + SUITS[card.s] + "</span>";
+    }
+    return el;
+  }
+
+  function render() {
+    // Stock
+    stockEl.innerHTML = "";
+    if (stock.length) {
+      var sc = cardEl(stock[stock.length - 1], false);
+      sc.dataset.act = "draw";
+      stockEl.appendChild(sc);
+    } else {
+      var rec = document.createElement("div");
+      rec.className = "sol-slot sol-empty recycle";
+      rec.dataset.act = "recycle";
+      rec.textContent = "↻";
+      stockEl.appendChild(rec);
+    }
+
+    // Resolve actual pixel sizes (CSS custom props read as their literal
+    // clamp() string, so measure a rendered slot instead).
+    var cwPx = stockEl.getBoundingClientRect().width || 56;
+    var chPx = cwPx * 1.4;
+
+    // Waste (show up to last 3 fanned when draw 3)
+    wasteEl.innerHTML = "";
+    if (waste.length === 0) {
+      var we = document.createElement("div"); we.className = "sol-slot sol-empty"; wasteEl.appendChild(we);
+    } else {
+      var showN = drawN === 3 ? Math.min(3, waste.length) : 1;
+      var start = waste.length - showN;
+      var off = Math.max(8, cwPx * 0.26);
+      for (var i = start; i < waste.length; i++) {
+        var top = i === waste.length - 1;
+        var ce = cardEl(waste[i], true);
+        ce.style.left = ((i - start) * off) + "px";
+        if (top) { ce.dataset.pile = "waste"; ce.dataset.ci = waste.length - 1; }
+        wasteEl.appendChild(ce);
+      }
+      wasteEl.style.width = "calc(var(--cw) + " + ((showN - 1) * off) + "px)";
+    }
+
+    // Foundations
+    document.querySelectorAll('[data-pile="foundation"]').forEach(function (pileEl, pi) {
+      pileEl.innerHTML = "";
+      var f = foundations[pi];
+      if (f.length === 0) {
+        var fe = document.createElement("div"); fe.className = "sol-slot sol-foundation";
+        fe.textContent = SUITS[pi]; pileEl.appendChild(fe);
+      } else {
+        var fc = cardEl(f[f.length - 1], true);
+        fc.dataset.pile = "foundation"; fc.dataset.pi = pi;
+        pileEl.appendChild(fc);
+      }
+    });
+
+    // Tableau
+    tableauRow.innerHTML = "";
+    var offset = Math.max(12, chPx * 0.26);
+    var downOffset = offset * 0.5;
+    for (var col = 0; col < 7; col++) {
+      var colEl = document.createElement("div");
+      colEl.className = "sol-pile sol-tableau";
+      colEl.dataset.pile = "tableau"; colEl.dataset.pi = col;
+      var pile = tableau[col];
+      if (pile.length === 0) {
+        var ee = document.createElement("div"); ee.className = "sol-slot sol-empty"; colEl.appendChild(ee);
+      }
+      var y = 0;
+      for (var ci = 0; ci < pile.length; ci++) {
+        var card = pile[ci];
+        var el = cardEl(card, card.up);
+        el.style.top = y + "px";
+        el.dataset.pile = "tableau"; el.dataset.pi = col; el.dataset.ci = ci;
+        colEl.appendChild(el);
+        y += card.up ? offset : downOffset;
+      }
+      colEl.style.height = (y + chPx) + "px";
+      tableauRow.appendChild(colEl);
+    }
+
+    movesEl.textContent = moves;
+    applySel();
+  }
+
+  function applySel() {
+    document.querySelectorAll(".sol-card.sel").forEach(function (e) { e.classList.remove("sel"); });
+    if (!sel) return;
+    if (sel.pile === "waste") {
+      var w = wasteEl.querySelector('[data-ci]');
+      if (w) w.classList.add("sel");
+    } else if (sel.pile === "tableau") {
+      tableauRow.querySelectorAll('[data-pi="' + sel.pi + '"][data-ci]').forEach(function (e) {
+        if (+e.dataset.ci >= sel.ci) e.classList.add("sel");
+      });
+    } else if (sel.pile === "foundation") {
+      var fEl = document.querySelector('[data-pile="foundation"][data-pi="' + sel.pi + '"] .sol-card');
+      if (fEl) fEl.classList.add("sel");
+    }
+  }
+
+  // ── Move logic ───────────────────────────────────
+  function getMoving() {
+    // Returns array of cards being moved based on sel.
+    if (!sel) return null;
+    if (sel.pile === "waste") return waste.length ? [waste[waste.length - 1]] : null;
+    if (sel.pile === "foundation") { var f = foundations[sel.pi]; return f.length ? [f[f.length - 1]] : null; }
+    if (sel.pile === "tableau") return tableau[sel.pi].slice(sel.ci);
+    return null;
+  }
+
+  function canStackTableau(moving, destCol) {
+    var first = moving[0];
+    var pile = tableau[destCol];
+    if (pile.length === 0) return first.r === 13; // King to empty
+    var top = pile[pile.length - 1];
+    if (!top.up) return false;
+    return top.r === first.r + 1 && isRed(top.s) !== isRed(first.s);
+  }
+
+  function canToFoundation(card, pi) {
+    var f = foundations[pi];
+    if (card.s !== pi) return false;
+    if (f.length === 0) return card.r === 1;
+    return f[f.length - 1].r === card.r - 1;
+  }
+
+  function removeFromSource() {
+    if (sel.pile === "waste") return [waste.pop()];
+    if (sel.pile === "foundation") return [foundations[sel.pi].pop()];
+    if (sel.pile === "tableau") {
+      var moved = tableau[sel.pi].splice(sel.ci);
+      var src = tableau[sel.pi];
+      if (src.length && !src[src.length - 1].up) src[src.length - 1].up = true;
+      return moved;
+    }
+  }
+
+  function tryMoveToTableau(destCol) {
+    var moving = getMoving();
+    if (!moving || !moving.length) return false;
+    // sequence validity already implied by selection for tableau; verify alt-color run
+    for (var k = 0; k < moving.length - 1; k++) {
+      if (!(moving[k].r === moving[k + 1].r + 1 && isRed(moving[k].s) !== isRed(moving[k + 1].s))) return false;
+    }
+    if (!canStackTableau(moving, destCol)) return false;
+    if (sel.pile === "tableau" && sel.pi === destCol) return false;
+    pushHistory();
+    var cards = removeFromSource();
+    tableau[destCol] = tableau[destCol].concat(cards);
+    moves++; afterMove();
+    return true;
+  }
+
+  function tryMoveToFoundation(pi) {
+    var moving = getMoving();
+    if (!moving || moving.length !== 1) return false;
+    if (!canToFoundation(moving[0], pi)) return false;
+    pushHistory();
+    var cards = removeFromSource();
+    foundations[pi].push(cards[0]);
+    moves++; afterMove();
+    return true;
+  }
+
+  function autoToFoundation(card, fromPile, fromPi) {
+    // Used by double-click.
+    for (var pi = 0; pi < 4; pi++) {
+      if (canToFoundation(card, pi)) {
+        sel = { pile: fromPile, pi: fromPi, ci: (fromPile === "tableau" ? tableau[fromPi].length - 1 : undefined) };
+        return tryMoveToFoundation(pi);
+      }
+    }
+    return false;
+  }
+
+  function afterMove() {
+    sel = null;
+    startTimer();
+    render();
+    checkWin();
+  }
+
+  function checkWin() {
+    var totalF = foundations.reduce(function (a, f) { return a + f.length; }, 0);
+    if (totalF === 52) {
+      solved = true;
+      clearInterval(timer);
+      statusEl.textContent = "You won in " + timeEl.textContent + " and " + moves + " moves! 🎉";
+      statusEl.className = "game-status";
+      if (window.SnackPack) window.SnackPack.celebrate({
+        title: "You cleared the board! 🎉",
+        body: "Beautifully played — solved in " + timeEl.textContent + ". We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app to play Solitaire offline with saved best times."
+      });
+    }
+  }
+
+  // ── Stock / waste ────────────────────────────────
+  function drawStock() {
+    if (!stock.length) return;
+    pushHistory();
+    var n = Math.min(drawN, stock.length);
+    for (var i = 0; i < n; i++) { var c = stock.pop(); c.up = true; waste.push(c); }
+    sel = null; startTimer(); render();
+  }
+  function recycle() {
+    if (stock.length || !waste.length) return;
+    pushHistory();
+    while (waste.length) { var c = waste.pop(); c.up = false; stock.push(c); }
+    sel = null; render();
+  }
+
+  // ── Input ────────────────────────────────────────
+  tableEl.addEventListener("click", function (e) {
+    if (solved) return;
+    var card = e.target.closest(".sol-card");
+    var pileSlot = e.target.closest("[data-pile]");
+
+    // Stock interactions
+    if (e.target.closest('[data-act="draw"]')) { drawStock(); return; }
+    if (e.target.closest('[data-act="recycle"]')) { recycle(); return; }
+
+    var destPile = pileSlot ? pileSlot.dataset.pile : null;
+    var destPi = pileSlot ? (pileSlot.dataset.pi !== undefined ? +pileSlot.dataset.pi : undefined) : null;
+
+    if (!sel) {
+      // Select a card if it's selectable.
+      if (!card) return;
+      var p = card.dataset.pile;
+      if (p === "waste") { sel = { pile: "waste" }; }
+      else if (p === "foundation") { sel = { pile: "foundation", pi: +card.dataset.pi }; }
+      else if (p === "tableau") {
+        var ci = +card.dataset.ci;
+        if (!tableau[+card.dataset.pi][ci].up) return; // can't pick face-down
+        sel = { pile: "tableau", pi: +card.dataset.pi, ci: ci };
+      } else return;
+      applySel();
+      return;
+    }
+
+    // We have a selection — attempt a move to the clicked destination.
+    if (destPile === "foundation") {
+      if (tryMoveToFoundation(destPi !== undefined ? destPi : sel.pi)) return;
+    }
+    if (destPile === "tableau") {
+      if (tryMoveToTableau(destPi)) return;
+    }
+    // Clicking the same selection or empty space: if clicked another selectable card, reselect.
+    if (card && card.dataset.pile && card.dataset.pile !== "foundation") {
+      var np = card.dataset.pile;
+      if (np === "waste") sel = { pile: "waste" };
+      else if (np === "tableau") {
+        var nci = +card.dataset.ci;
+        if (tableau[+card.dataset.pi][nci].up) sel = { pile: "tableau", pi: +card.dataset.pi, ci: nci };
+        else { sel = null; }
+      }
+      applySel();
+      return;
+    }
+    // Otherwise clear selection.
+    sel = null; applySel();
+  });
+
+  // Double-click → auto to foundation
+  tableEl.addEventListener("dblclick", function (e) {
+    if (solved) return;
+    var card = e.target.closest(".sol-card");
+    if (!card || !card.dataset.pile) return;
+    var p = card.dataset.pile;
+    if (p === "waste" && waste.length) { sel = null; autoToFoundation(waste[waste.length - 1], "waste"); }
+    else if (p === "tableau") {
+      var col = +card.dataset.pi, ci = +card.dataset.ci, pile = tableau[col];
+      if (ci === pile.length - 1 && pile[ci].up) { sel = null; autoToFoundation(pile[ci], "tableau", col); }
+    }
+  });
+
+  undoBtn.addEventListener("click", function () {
+    if (!history.length) return;
+    var s = JSON.parse(history.pop());
+    stock = s.stock; waste = s.waste; foundations = s.foundations; tableau = s.tableau; moves = s.moves;
+    sel = null; solved = false; statusEl.className = "game-status";
+    render();
+  });
+
+  newBtn.addEventListener("click", function () { deal(); render(); });
+  document.querySelectorAll(".seg [data-draw]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      drawN = +btn.dataset.draw;
+      document.querySelectorAll(".seg [data-draw]").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b === btn));
+      });
+      deal(); render();
+    });
+  });
+
+  window.addEventListener("resize", function () { if (tableau) render(); });
+
+  deal();
+  render();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
