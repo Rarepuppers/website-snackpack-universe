@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Free Kick Curl Online Free | Soccer Free Kick Game - SnackPack</title>
+<meta name="description" content="Play Free Kick Curl free in your browser. Bend soccer free kicks around the wall, beat the keeper, hit bonus corners, and chase a high score. No ads, no sign-in, no download.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/free-kick-curl/">
+<meta name="theme-color" content="#1f8f77">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Free Kick Curl Online Free">
+<meta property="og:description" content="Bend free kicks around the wall and beat the keeper. Free in your browser, no ads, no sign-in.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/free-kick-curl/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<style>
+.fk-stage {
+  max-width: 720px;
+}
+.fk-canvas-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.fk-canvas {
+  width: min(100%, 640px);
+  aspect-ratio: 640 / 430;
+  border-radius: 16px;
+  border: 3px solid #244f2b;
+  background: #3f9a43;
+  display: block;
+  box-shadow: var(--shadow);
+  touch-action: none;
+}
+.fk-shot-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+  margin-top: 16px;
+}
+.fk-fieldset {
+  display: grid;
+  gap: 8px;
+}
+.fk-label {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.fk-slider {
+  width: 100%;
+  accent-color: var(--accent);
+}
+.fk-curve {
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(32, 23, 19, 0.05);
+}
+.fk-curve button {
+  min-height: 38px;
+  min-width: 72px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.fk-curve button[aria-pressed="true"] {
+  background: var(--surface-strong);
+  color: var(--ink);
+  box-shadow: 0 4px 12px rgba(32, 23, 19, 0.1);
+}
+.fk-shoot {
+  min-width: 128px;
+}
+.fk-history {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+  margin-top: 14px;
+}
+.fk-dot {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(32,23,19,0.12);
+}
+.fk-dot.hit {
+  background: var(--accent);
+}
+.fk-dot.bonus {
+  background: var(--gold);
+}
+.fk-dot.miss {
+  background: var(--brand-deep);
+}
+.fk-hint-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.fk-hint-row span {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(32,23,19,0.05);
+}
+@media (max-width: 640px) {
+  .fk-stage {
+    padding: 14px;
+  }
+  .fk-shot-panel {
+    grid-template-columns: 1fr;
+  }
+  .fk-shoot {
+    width: 100%;
+  }
+  .fk-curve {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .fk-curve button {
+    flex: 1;
+    min-width: 0;
+  }
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Free Kick Curl",
+  "url": "https://www.snackpackuniverse.com/play/free-kick-curl/",
+  "applicationCategory": "Game",
+  "genre": "Sports",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser soccer free kick game. Aim, add curl, bend the ball around the wall, beat the keeper, and chase a high score.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Free Kick Curl</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../world-cup/">World Cup</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free soccer game</span>
+        <h1>Free Kick Curl</h1>
+        <p class="lead" style="max-width:620px;margin-left:auto;margin-right:auto;">Bend the ball around the wall, beat the keeper, and hit the bonus corners. You get 10 free kicks. Every clean goal scores, every golden corner pays extra.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage fk-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Score</span><b id="fk-score">0</b></span>
+            <span class="readout-chip"><span>Kick</span><b id="fk-kick">1/10</b></span>
+            <span class="readout-chip"><span>Best</span><b id="fk-best">0</b></span>
+            <span class="readout-chip"><span>Streak</span><b id="fk-streak">0</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Difficulty">
+              <button type="button" data-difficulty="rookie" aria-pressed="true">Rookie</button>
+              <button type="button" data-difficulty="pro" aria-pressed="false">Pro</button>
+              <button type="button" data-difficulty="legend" aria-pressed="false">Legend</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="fk-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="fk-status" aria-live="polite">Aim inside the goal, set curl, then shoot.</p>
+        <div class="fk-canvas-wrap">
+          <canvas class="fk-canvas" id="fk-canvas" width="640" height="430" aria-label="Free Kick Curl soccer field"></canvas>
+        </div>
+        <div class="fk-shot-panel">
+          <div class="fk-fieldset">
+            <label class="fk-label" for="fk-power">Power</label>
+            <input class="fk-slider" id="fk-power" type="range" min="72" max="112" value="92">
+            <div class="fk-curve" role="group" aria-label="Curl direction">
+              <button type="button" data-curve="-1" aria-pressed="false">Left</button>
+              <button type="button" data-curve="0" aria-pressed="true">Straight</button>
+              <button type="button" data-curve="1" aria-pressed="false">Right</button>
+            </div>
+          </div>
+          <button class="btn-game btn-game--primary fk-shoot" id="fk-shoot" type="button">Shoot</button>
+        </div>
+        <div class="fk-history" id="fk-history" aria-label="Shot history"></div>
+        <div class="fk-hint-row">
+          <span>Drag or tap the goal to aim.</span>
+          <span>Golden corners are bonus targets.</span>
+          <span>More curl helps beat the wall.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">More soccer games</span>
+          <h2>Built for football's biggest summer.</h2>
+          <p>Free Kick Curl is part of the SnackPack soccer arcade: quick browser games for players searching during the 2026 football hype.</p>
+          <ul class="funnel-points">
+            <li>Play instantly on phone or desktop</li>
+            <li>No ads, no sign-in, no download</li>
+            <li>More soccer games planned for the tournament run-up</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="btn btn-primary" href="../../world-cup/">World Cup games hub</a>
+            <a class="btn btn-secondary" href="../penalty-shootout/">Play Penalty Shootout</a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">FK</div>
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">Original SnackPack soccer arcade game.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Free Kick Curl</h2>
+      <p>You have 10 free kicks. Aim inside the goal, choose your curl direction, set power, and press Shoot. A normal goal is worth 100 points. Hit a golden corner target for a bonus. Scoring several kicks in a row builds your streak and adds extra points.</p>
+      <p>The wall, keeper, and target positions change as the round goes on. On harder difficulties the wall blocks more of the shot lane and the keeper reacts faster, so you need to mix placement, power, and curl.</p>
+      <h3>Tips for a higher score</h3>
+      <ul>
+        <li>Use curl to bend around the wall instead of shooting through it.</li>
+        <li>Do not overhit every shot. Too much power can send the ball high.</li>
+        <li>Target the golden corners when the keeper starts near the middle.</li>
+        <li>Keep a scoring streak alive. Streak points often decide your best score.</li>
+      </ul>
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Free Kick Curl free?</summary><p>Yes. It plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>Does it work on mobile?</summary><p>Yes. Tap or drag on the goal to aim, then use the controls below the field.</p></details>
+        <details class="faq-item"><summary>Is this an official World Cup game?</summary><p>No. It is an original SnackPack Studios soccer game and is not affiliated with FIFA, the World Cup, any team, league, or governing body.</p></details>
+      </div>
+      <p style="margin-top:22px;"><a class="text-link" href="../../world-cup/" style="color:var(--accent);font-weight:700;">Back to World Cup games</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack - Tip or Donate - Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio. Tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Free Kick Curl free. SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../world-cup/">World Cup games</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>window.SP_PLAY_URL = "../../world-cup/";</script>
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+  var canvas = document.getElementById("fk-canvas");
+  var ctx = canvas.getContext("2d");
+  var scoreEl = document.getElementById("fk-score");
+  var kickEl = document.getElementById("fk-kick");
+  var bestEl = document.getElementById("fk-best");
+  var streakEl = document.getElementById("fk-streak");
+  var statusEl = document.getElementById("fk-status");
+  var powerEl = document.getElementById("fk-power");
+  var shootBtn = document.getElementById("fk-shoot");
+  var newBtn = document.getElementById("fk-new");
+  var historyEl = document.getElementById("fk-history");
+
+  var W = canvas.width, H = canvas.height;
+  var goal = { x: 130, y: 42, w: 380, h: 142 };
+  var ballStart = { x: 320, y: 385 };
+  var aim = { x: goal.x + goal.w * 0.72, y: goal.y + goal.h * 0.34 };
+  var curve = 0;
+  var difficulty = "rookie";
+  var score = 0, kick = 1, streak = 0, busy = false, results = [];
+  var bestKey = "snackpack-free-kick-curl-best";
+  var streakKey = "snackpack-free-kick-curl-streak";
+  var best = parseInt(localStorage.getItem(bestKey) || "0", 10);
+  var bestStreak = parseInt(localStorage.getItem(streakKey) || "0", 10);
+  var state = makeState();
+  var trail = [];
+  var ball = { x: ballStart.x, y: ballStart.y };
+
+  var configs = {
+    rookie: { keeper: 42, wall: 3, block: 0.74, wind: 0 },
+    pro: { keeper: 54, wall: 4, block: 0.86, wind: 6 },
+    legend: { keeper: 66, wall: 5, block: 0.94, wind: 12 }
+  };
+
+  function clamp(n, min, max) {
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function makeState() {
+    var cfg = configs[difficulty];
+    var phase = (kick - 1) / 9;
+    var targetSide = Math.random() < 0.5 ? -1 : 1;
+    var bonus = {
+      x: targetSide < 0 ? goal.x + 42 : goal.x + goal.w - 42,
+      y: goal.y + 34 + Math.random() * 34,
+      r: difficulty === "legend" ? 18 : 22
+    };
+    var keeperX = goal.x + goal.w * (0.5 + (Math.random() - 0.5) * (0.32 + phase * 0.22));
+    var wallCenter = goal.x + goal.w * (0.5 - targetSide * (0.12 + Math.random() * 0.12));
+    return {
+      bonus: bonus,
+      keeper: { x: clamp(keeperX, goal.x + 45, goal.x + goal.w - 45), y: goal.y + goal.h - 35, reach: cfg.keeper },
+      wall: { x: wallCenter, y: 238, count: cfg.wall },
+      wind: cfg.wind ? (Math.random() * cfg.wind - cfg.wind / 2) : 0
+    };
+  }
+
+  function reset() {
+    score = 0;
+    kick = 1;
+    streak = 0;
+    busy = false;
+    results = [];
+    aim = { x: goal.x + goal.w * 0.72, y: goal.y + goal.h * 0.34 };
+    ball = { x: ballStart.x, y: ballStart.y };
+    trail = [];
+    state = makeState();
+    statusEl.className = "game-status";
+    statusEl.textContent = "Aim inside the goal, set curl, then shoot.";
+    updateReadout();
+    renderHistory();
+    draw();
+  }
+
+  function updateReadout() {
+    scoreEl.textContent = score;
+    kickEl.textContent = Math.min(kick, 10) + "/10";
+    bestEl.textContent = best;
+    streakEl.textContent = streak;
+  }
+
+  function renderHistory() {
+    historyEl.innerHTML = "";
+    for (var i = 0; i < 10; i++) {
+      var dot = document.createElement("div");
+      dot.className = "fk-dot" + (results[i] ? " " + results[i] : "");
+      historyEl.appendChild(dot);
+    }
+  }
+
+  function setControls(enabled) {
+    busy = !enabled;
+    shootBtn.disabled = !enabled;
+    powerEl.disabled = !enabled;
+    document.querySelectorAll("[data-curve]").forEach(function (btn) { btn.disabled = !enabled; });
+  }
+
+  function pointFromEvent(e) {
+    var rect = canvas.getBoundingClientRect();
+    var clientX = e.clientX;
+    var clientY = e.clientY;
+    if (e.touches && e.touches[0]) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    }
+    return {
+      x: (clientX - rect.left) / rect.width * W,
+      y: (clientY - rect.top) / rect.height * H
+    };
+  }
+
+  function setAimFromEvent(e) {
+    if (busy) return;
+    var p = pointFromEvent(e);
+    aim.x = clamp(p.x, goal.x + 18, goal.x + goal.w - 18);
+    aim.y = clamp(p.y, goal.y + 16, goal.y + goal.h - 18);
+    draw();
+  }
+
+  function shoot() {
+    if (busy || kick > 10) return;
+    setControls(false);
+    statusEl.textContent = "Curling toward goal...";
+    var cfg = configs[difficulty];
+    var power = parseInt(powerEl.value, 10);
+    var lift = (power - 92) * -0.95;
+    var curlOffset = curve * (58 + (power - 72) * 0.35);
+    var end = {
+      x: aim.x + curlOffset + state.wind,
+      y: aim.y + lift
+    };
+    trail = [];
+    animateShot(end, function () {
+      var outcome = judge(end, cfg);
+      applyOutcome(outcome);
+      setTimeout(nextKick, 800);
+    });
+  }
+
+  function judge(end, cfg) {
+    var insideGoal = end.x > goal.x + 8 && end.x < goal.x + goal.w - 8 && end.y > goal.y + 8 && end.y < goal.y + goal.h - 8;
+    var wallHit = crossesWall(end, cfg.block);
+    var keeperDist = Math.hypot(end.x - state.keeper.x, end.y - state.keeper.y);
+    var saved = keeperDist < state.keeper.reach;
+    var bonusHit = Math.hypot(end.x - state.bonus.x, end.y - state.bonus.y) < state.bonus.r;
+    if (!insideGoal) return { kind: "miss", text: "Wide or high. Adjust power and placement." };
+    if (wallHit) return { kind: "miss", text: "Blocked by the wall. Add curl or pick another lane." };
+    if (saved) return { kind: "miss", text: "Saved by the keeper. Aim away from the gloves." };
+    return { kind: bonusHit ? "bonus" : "hit", text: bonusHit ? "Golden corner! Bonus goal." : "Goal. Keep the streak alive." };
+  }
+
+  function crossesWall(end, block) {
+    var wallY = state.wall.y;
+    var t = (ballStart.y - wallY) / (ballStart.y - end.y);
+    if (t < 0 || t > 1) return false;
+    var midX = ballStart.x + (end.x - ballStart.x) * t + curve * 34 * block;
+    var wallWidth = state.wall.count * 28;
+    var clearByCurl = Math.abs(curve) > 0 && Math.abs(midX - state.wall.x) > wallWidth * 0.32;
+    return Math.abs(midX - state.wall.x) < wallWidth * 0.42 && !clearByCurl;
+  }
+
+  function applyOutcome(outcome) {
+    if (outcome.kind === "miss") {
+      streak = 0;
+      results.push("miss");
+      statusEl.className = "game-status game-status--lose";
+    } else {
+      streak++;
+      var gained = outcome.kind === "bonus" ? 180 : 100;
+      gained += Math.max(0, streak - 1) * 20;
+      score += gained;
+      results.push(outcome.kind);
+      statusEl.className = "game-status";
+      statusEl.textContent = outcome.text + " +" + gained;
+      if (streak > bestStreak) {
+        bestStreak = streak;
+        localStorage.setItem(streakKey, String(bestStreak));
+      }
+    }
+    if (outcome.kind === "miss") statusEl.textContent = outcome.text;
+    if (score > best) {
+      best = score;
+      localStorage.setItem(bestKey, String(best));
+    }
+    updateReadout();
+    renderHistory();
+  }
+
+  function nextKick() {
+    if (kick >= 10) {
+      finish();
+      return;
+    }
+    kick++;
+    state = makeState();
+    ball = { x: ballStart.x, y: ballStart.y };
+    trail = [];
+    setControls(true);
+    updateReadout();
+    statusEl.className = "game-status";
+    statusEl.textContent = "Kick " + kick + ". The wall has shifted.";
+    draw();
+  }
+
+  function finish() {
+    setControls(false);
+    ball = { x: ballStart.x, y: ballStart.y };
+    trail = [];
+    statusEl.className = "game-status";
+    statusEl.textContent = "Full time: " + score + " points. Best streak: " + bestStreak + ".";
+    if (window.SnackPack && score >= 900) {
+      window.SnackPack.celebrate({
+        title: "Free kick master",
+        body: "You scored " + score + " points in Free Kick Curl. Try the World Cup games hub or support the studio if you want more free games."
+      });
+    }
+    draw();
+  }
+
+  function animateShot(end, done) {
+    var start = performance.now();
+    var dur = 760;
+    function step(now) {
+      var t = clamp((now - start) / dur, 0, 1);
+      var ease = 1 - Math.pow(1 - t, 3);
+      var arc = Math.sin(t * Math.PI) * 44;
+      var curveArc = curve * Math.sin(t * Math.PI) * 64;
+      ball = {
+        x: ballStart.x + (end.x - ballStart.x) * ease + curveArc * (1 - t * 0.35),
+        y: ballStart.y + (end.y - ballStart.y) * ease - arc
+      };
+      trail.push({ x: ball.x, y: ball.y });
+      if (trail.length > 18) trail.shift();
+      draw();
+      if (t < 1) requestAnimationFrame(step);
+      else {
+        ball = end;
+        draw();
+        done();
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  function drawPitch() {
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#58b75d");
+    g.addColorStop(1, "#318c43");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(255,255,255,0.06)";
+    for (var y = 0; y < H; y += 42) ctx.fillRect(0, y, W, 21);
+    ctx.strokeStyle = "rgba(255,255,255,0.58)";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(W / 2, 332, 118, Math.PI * 1.12, Math.PI * 1.88);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    ctx.beginPath();
+    ctx.arc(ballStart.x, ballStart.y + 10, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawGoal() {
+    ctx.fillStyle = "rgba(255,255,255,0.14)";
+    ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
+    ctx.strokeStyle = "rgba(255,255,255,0.45)";
+    ctx.lineWidth = 1;
+    for (var x = goal.x; x <= goal.x + goal.w; x += 18) {
+      ctx.beginPath();
+      ctx.moveTo(x, goal.y);
+      ctx.lineTo(x, goal.y + goal.h);
+      ctx.stroke();
+    }
+    for (var y = goal.y; y <= goal.y + goal.h; y += 18) {
+      ctx.beginPath();
+      ctx.moveTo(goal.x, y);
+      ctx.lineTo(goal.x + goal.w, y);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(goal.x - 8, goal.y - 8, 8, goal.h + 8);
+    ctx.fillRect(goal.x + goal.w, goal.y - 8, 8, goal.h + 8);
+    ctx.fillRect(goal.x - 8, goal.y - 8, goal.w + 16, 8);
+  }
+
+  function drawBonus() {
+    ctx.save();
+    ctx.translate(state.bonus.x, state.bonus.y);
+    ctx.fillStyle = "rgba(239,181,77,0.32)";
+    ctx.beginPath();
+    ctx.arc(0, 0, state.bonus.r + 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#efb54d";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(0, 0, state.bonus.r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = "#efb54d";
+    ctx.beginPath();
+    ctx.arc(0, 0, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawKeeper() {
+    var k = state.keeper;
+    ctx.save();
+    ctx.translate(k.x, k.y);
+    ctx.fillStyle = "#ffd54f";
+    ctx.fillRect(-18, 2, 36, 42);
+    ctx.fillStyle = "#f0c27a";
+    ctx.beginPath();
+    ctx.arc(0, -9, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#f4c542";
+    ctx.fillRect(-42, 8, 24, 12);
+    ctx.fillRect(18, 8, 24, 12);
+    ctx.fillStyle = "#244f2b";
+    ctx.fillRect(-15, 42, 10, 22);
+    ctx.fillRect(5, 42, 10, 22);
+    ctx.restore();
+  }
+
+  function drawWall() {
+    var w = state.wall;
+    for (var i = 0; i < w.count; i++) {
+      var x = w.x + (i - (w.count - 1) / 2) * 28;
+      ctx.save();
+      ctx.translate(x, w.y);
+      ctx.fillStyle = "#1f8f77";
+      ctx.fillRect(-10, 0, 20, 42);
+      ctx.fillStyle = "#f0c27a";
+      ctx.beginPath();
+      ctx.arc(0, -8, 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(-8, 42, 7, 18);
+      ctx.fillRect(1, 42, 7, 18);
+      ctx.restore();
+    }
+  }
+
+  function drawAim() {
+    if (busy || kick > 10) return;
+    ctx.strokeStyle = "rgba(255,255,255,0.86)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(aim.x - 13, aim.y);
+    ctx.lineTo(aim.x + 13, aim.y);
+    ctx.moveTo(aim.x, aim.y - 13);
+    ctx.lineTo(aim.x, aim.y + 13);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(32,23,19,0.38)";
+    ctx.beginPath();
+    ctx.moveTo(ballStart.x, ballStart.y);
+    ctx.quadraticCurveTo(ballStart.x + curve * 90, 240, aim.x, aim.y);
+    ctx.stroke();
+  }
+
+  function drawBall() {
+    trail.forEach(function (p, i) {
+      ctx.fillStyle = "rgba(255,255,255," + (0.08 + i / trail.length * 0.28) + ")";
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 5 + i / trail.length * 3, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#201713";
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+    ctx.fillStyle = "#201713";
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, 2.7, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    drawPitch();
+    drawGoal();
+    drawBonus();
+    drawKeeper();
+    drawWall();
+    drawAim();
+    drawBall();
+    if (!busy && kick <= 10) {
+      ctx.fillStyle = "rgba(255,255,255,0.88)";
+      ctx.font = "700 14px 'DM Sans', Arial, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("Aim for the goal, curl around the wall", W / 2, H - 12);
+    }
+  }
+
+  shootBtn.addEventListener("click", shoot);
+  newBtn.addEventListener("click", reset);
+  canvas.addEventListener("pointerdown", function (e) {
+    canvas.setPointerCapture(e.pointerId);
+    setAimFromEvent(e);
+  });
+  canvas.addEventListener("pointermove", function (e) {
+    if (e.buttons || e.pointerType === "touch") setAimFromEvent(e);
+  });
+  canvas.addEventListener("click", setAimFromEvent);
+  document.querySelectorAll("[data-curve]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      curve = parseInt(btn.dataset.curve, 10);
+      document.querySelectorAll("[data-curve]").forEach(function (x) {
+        x.setAttribute("aria-pressed", String(x === btn));
+      });
+      draw();
+    });
+  });
+  document.querySelectorAll("[data-difficulty]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      difficulty = btn.dataset.difficulty;
+      document.querySelectorAll("[data-difficulty]").forEach(function (x) {
+        x.setAttribute("aria-pressed", String(x === btn));
+      });
+      reset();
+    });
+  });
+  powerEl.addEventListener("input", draw);
+
+  bestEl.textContent = best;
+  reset();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

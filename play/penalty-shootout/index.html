@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Penalty Shootout Online Free | Soccer Penalty Kicks, No Ads — SnackPack</title>
+<meta name="description" content="Play Penalty Shootout free in your browser — take penalty kicks and dive to save in a best-of-five soccer shootout vs the computer. Three difficulties, no ads, no sign-in, no download. Perfect for the big football summer. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/penalty-shootout/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Penalty Shootout Online Free | Soccer Penalty Kicks">
+<meta property="og:description" content="Take penalty kicks and dive to save in a best-of-five shootout vs the computer. Free in your browser — no ads, no sign-in.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/penalty-shootout/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<style>
+/* Penalty Shootout canvas (local styles). */
+.pk-stage { display: grid; place-items: center; }
+.pk-canvas {
+  width: min(94vw, 460px);
+  aspect-ratio: 460 / 320;
+  border-radius: 14px;
+  border: 3px solid #2c4a23;
+  background: #4caf50;
+  display: block;
+  box-shadow: var(--shadow);
+}
+.pk-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: min(94vw, 460px); margin: 14px auto 0; }
+.pk-pad button {
+  min-height: 52px; border: 1px solid var(--line-strong); border-radius: 12px;
+  background: var(--surface-strong); font: inherit; font-size: 1rem; font-weight: 700;
+  color: var(--ink); cursor: pointer; transition: transform 0.1s ease, border-color 0.1s ease;
+}
+.pk-pad button:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--accent); }
+.pk-pad button:disabled { opacity: 0.4; cursor: default; }
+.pk-rounds { display: flex; gap: 6px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+.pk-dot { width: 14px; height: 14px; border-radius: 999px; background: rgba(32,23,19,0.12); }
+.pk-dot.goal { background: var(--accent); }
+.pk-dot.miss { background: var(--brand-deep); }
+.pk-track { display: flex; align-items: center; gap: 8px; }
+.pk-track span { font-size: 0.78rem; font-weight: 700; color: var(--muted); min-width: 34px; }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Penalty Shootout",
+  "url": "https://www.snackpackuniverse.com/play/penalty-shootout/",
+  "applicationCategory": "Game",
+  "genre": "Sports",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser Penalty Shootout — take penalty kicks and dive to save in a best-of-five soccer shootout against the computer, with three difficulty levels. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Penalty Shootout",
+  "step": [
+    { "@type": "HowToStep", "name": "Take your kick", "text": "On your turn to shoot, aim left, centre, or right. If the keeper dives the wrong way, you score." },
+    { "@type": "HowToStep", "name": "Save the kick", "text": "On defence, pick which way to dive. Guess the same direction as the striker to make the save." },
+    { "@type": "HowToStep", "name": "Win the shootout", "text": "Each side takes five penalties; whoever has scored more wins. If it's level, it goes to sudden death." }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Penalty Shootout</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Penalty Shootout</h1>
+        <p class="lead" style="max-width:580px;margin-left:auto;margin-right:auto;">Step up to the spot. Pick your corner, beat the keeper, then dive the right way to save theirs — a best-of-five shootout against the computer. Perfect for football's big summer. No ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage" style="max-width:520px;">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>You</span><b id="pk-you">0</b></span>
+            <span class="readout-chip"><span>CPU</span><b id="pk-cpu">0</b></span>
+            <span class="readout-chip"><span>Round</span><b id="pk-round">1</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Difficulty">
+              <button type="button" data-smart="0.25" aria-pressed="false">Easy</button>
+              <button type="button" data-smart="0.4" aria-pressed="true">Medium</button>
+              <button type="button" data-smart="0.55" aria-pressed="false">Hard</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="pk-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="pk-status" aria-live="polite">You're shooting first — pick a corner.</p>
+        <div class="pk-stage">
+          <canvas class="pk-canvas" id="pk-canvas" width="460" height="320" aria-label="Penalty shootout"></canvas>
+        </div>
+        <div class="pk-pad" id="pk-pad">
+          <button type="button" data-dir="L">◀ Left</button>
+          <button type="button" data-dir="C">▲ Centre</button>
+          <button type="button" data-dir="R">Right ▶</button>
+        </div>
+        <div style="display:grid;gap:6px;margin-top:12px;">
+          <div class="pk-track"><span>You</span><div class="pk-rounds" id="pk-track-you"></div></div>
+          <div class="pk-track"><span>CPU</span><div class="pk-rounds" id="pk-track-cpu"></div></div>
+        </div>
+        <p class="game-hint">Click a button (or the left/middle/right of the goal). When shooting, beat the keeper; when saving, dive the same way as the striker.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">Love quick arcade games?</span>
+          <h2>Try our calm, ad-free bundle.</h2>
+          <p>If a one-more-go arcade game is your thing, you'll feel right at home in <strong>Snackpack Brain Games Vol 2</strong> — Flappy Snacky, Snacky Worm, Table Tennis and more, all offline and ad-free.</p>
+          <ul class="funnel-points">
+            <li>Quick arcade games made to be calm, not noisy</li>
+            <li>Plays fully offline with high scores saved on your device</li>
+            <li>No ads, no tracking — ever</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="btn btn-primary" href="../../apps/snackpack-brain-games-vol-2/">About Brain Games Vol 2</a>
+            <a class="btn btn-secondary" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener">Tip the studio</a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">⚽</div>
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">A tiny, ad-free studio — tips keep us building.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Penalty Shootout</h2>
+      <p>It's you against the computer in a classic football penalty shootout. Each side takes five penalty kicks, and whoever scores more wins. You play both roles every round: first you <strong>take a kick</strong>, then you <strong>try to save</strong> the computer's kick.</p>
+      <p>When you're shooting, choose a corner — left, centre, or right. The goalkeeper commits to a direction at the same moment; if they guess wrong, the ball hits the net. When you're saving, pick which way to dive — guess the same direction the striker shoots and you'll keep it out. After five kicks each, if the score is level, it goes to sudden death: one kick each per round until someone comes out ahead.</p>
+
+      <h3>Tips to win the shootout</h3>
+      <ul>
+        <li><strong>Mix up your corners.</strong> A smart keeper will read a pattern, so don't keep aiming the same way.</li>
+        <li><strong>The centre is sneaky.</strong> Keepers often dive to a side, so straight down the middle can pay off.</li>
+        <li><strong>When saving, watch the rhythm.</strong> On harder levels the computer is a better shooter — trust your read and commit.</li>
+        <li><strong>Stay cool in sudden death.</strong> One save or one goal can settle it; don't get predictable when it matters most.</li>
+      </ul>
+
+      <h3>About this game</h3>
+      <p>The penalty shootout is football's most nerve-shredding moment — a simple duel of striker against goalkeeper that decides cup finals and, every four years, the world's biggest summer tournament. This is SnackPack Studios' calm, ad-free take on it: no interruptions, no tracking, just one more shootout. If you enjoy it, you'll like our pick-up-and-play games in <a class="text-link" href="../../apps/snackpack-brain-games-vol-2/" style="color:var(--accent);">Brain Games Vol 2</a>.</p>
+      <p style="font-size:0.85rem;color:var(--muted);">Penalty Shootout is an original SnackPack game and is not affiliated with, endorsed by, or connected to any official football tournament, league, or governing body.</p>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Penalty Shootout free?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>Do I shoot, save, or both?</summary><p>Both. Each round you take a penalty and then try to save the computer's penalty.</p></details>
+        <details class="faq-item"><summary>What happens if it's a tie?</summary><p>After five kicks each, a level score goes to sudden death — one kick each per round until someone leads.</p></details>
+        <details class="faq-item"><summary>Is this an official World Cup or FIFA game?</summary><p>No. It's an original SnackPack game with no affiliation to any official tournament or governing body — just a fun penalty shootout to play.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Penalty Shootout free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../apps/snackpack-brain-games-vol-2/">Brain Games Vol 2</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Point the shared funnel/donation prompt at Brain Games Vol 2 (app 2). -->
+<script>window.SP_PLAY_URL = "../../apps/snackpack-brain-games-vol-2/";</script>
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+  var DIRS = ["L", "C", "R"];
+  var canvas = document.getElementById("pk-canvas");
+  var ctx = canvas.getContext("2d");
+  var youEl = document.getElementById("pk-you");
+  var cpuEl = document.getElementById("pk-cpu");
+  var roundEl = document.getElementById("pk-round");
+  var statusEl = document.getElementById("pk-status");
+  var pad = document.getElementById("pk-pad");
+  var newBtn = document.getElementById("pk-new");
+  var trackYou = document.getElementById("pk-track-you");
+  var trackCpu = document.getElementById("pk-track-cpu");
+
+  // Goal geometry
+  var GX = 70, GY = 46, GW = 320, GH = 150;
+  function dirX(d) { return d === "L" ? GX + GW * 0.22 : d === "R" ? GX + GW * 0.78 : GX + GW * 0.5; }
+  var BALL_START = { x: 230, y: 286 };
+
+  var smart = 0.4;
+  var you, cpu, round, phase, busy;
+  var cpuShotDir = null, lastCpuShot = null;
+  var anim = null; // { ball:{x,y}, keeper:{x}, t }
+  var keeperX = dirX("C"), ballPos = { x: BALL_START.x, y: BALL_START.y };
+  var youResults = [], cpuResults = [];
+
+  function reset() {
+    you = 0; cpu = 0; round = 1; busy = false; phase = "shoot";
+    youResults = []; cpuResults = []; cpuShotDir = null; lastCpuShot = null;
+    keeperX = dirX("C"); ballPos = { x: BALL_START.x, y: BALL_START.y };
+    youEl.textContent = "0"; cpuEl.textContent = "0"; roundEl.textContent = "1";
+    statusEl.className = "game-status";
+    statusEl.textContent = "You're shooting first — pick a corner.";
+    renderTracks();
+    setPad(true);
+    draw();
+  }
+
+  function setPad(on) { pad.querySelectorAll("button").forEach(function (b) { b.disabled = !on || busy; }); }
+
+  function renderTracks() {
+    function fill(el, arr) {
+      el.innerHTML = "";
+      var n = Math.max(5, arr.length);
+      for (var i = 0; i < n; i++) {
+        var d = document.createElement("div");
+        d.className = "pk-dot" + (arr[i] === "goal" ? " goal" : arr[i] === "miss" ? " miss" : "");
+        el.appendChild(d);
+      }
+    }
+    fill(trackYou, youResults);
+    fill(trackCpu, cpuResults);
+  }
+
+  function randDir(exclude) {
+    var opts = DIRS.filter(function (d) { return d !== exclude; });
+    return opts[Math.floor(Math.random() * opts.length)];
+  }
+  function aiKeeper(playerDir) { return Math.random() < smart ? playerDir : randDir(playerDir); }
+  function aiShooter() {
+    // Mostly random, lightly avoid shooting the same way three times running.
+    var d = DIRS[Math.floor(Math.random() * 3)];
+    if (d === lastCpuShot && Math.random() < 0.5) d = randDir(lastCpuShot);
+    lastCpuShot = d;
+    return d;
+  }
+
+  // ── Flow ─────────────────────────────────────────
+  function onChoose(dir) {
+    if (busy) return;
+    if (phase === "shoot") doShoot(dir);
+    else if (phase === "save") doSave(dir);
+  }
+
+  function doShoot(dir) {
+    busy = true; setPad(false);
+    var keeperDir = aiKeeper(dir);
+    var scored = keeperDir !== dir;
+    statusEl.textContent = "You shoot " + label(dir) + "…";
+    animate({ kind: "shoot", ballTo: dir, keeperTo: keeperDir }, function () {
+      if (scored) { you++; youEl.textContent = you; youResults.push("goal"); statusEl.textContent = "GOAL! 🥅"; }
+      else { youResults.push("miss"); statusEl.textContent = "Saved! The keeper guessed right."; }
+      renderTracks();
+      setTimeout(startSave, 950);
+    });
+  }
+
+  function startSave() {
+    phase = "save"; busy = false;
+    cpuShotDir = aiShooter();
+    keeperX = dirX("C"); ballPos = { x: BALL_START.x, y: BALL_START.y };
+    statusEl.textContent = "Now save! Which way do you dive?";
+    statusEl.className = "game-status";
+    setPad(true);
+    draw();
+  }
+
+  function doSave(diveDir) {
+    busy = true; setPad(false);
+    var saved = diveDir === cpuShotDir;
+    statusEl.textContent = "You dive " + label(diveDir) + "…";
+    animate({ kind: "save", ballTo: cpuShotDir, keeperTo: diveDir }, function () {
+      if (saved) { cpuResults.push("miss"); statusEl.textContent = "Great save! 🧤"; }
+      else { cpu++; cpuEl.textContent = cpu; cpuResults.push("goal"); statusEl.textContent = "The computer scores."; }
+      renderTracks();
+      setTimeout(endRound, 950);
+    });
+  }
+
+  function endRound() {
+    busy = false;
+    // Both have taken `round` kicks now.
+    var decided = (round >= 5 && you !== cpu);
+    if (decided) { finish(); return; }
+    round++;
+    roundEl.textContent = round;
+    phase = "shoot";
+    keeperX = dirX("C"); ballPos = { x: BALL_START.x, y: BALL_START.y };
+    statusEl.textContent = round > 5 ? "Sudden death — you shoot. Pick a corner." : "Your kick — pick a corner.";
+    statusEl.className = "game-status";
+    setPad(true);
+    draw();
+  }
+
+  function finish() {
+    phase = "over"; setPad(false);
+    if (you > cpu) {
+      statusEl.textContent = "You win the shootout " + you + "–" + cpu + "! 🏆";
+      statusEl.className = "game-status";
+      if (window.SnackPack) window.SnackPack.celebrate({
+        title: "Shootout winner! 🏆",
+        body: "Ice in the veins — you won " + you + "–" + cpu + ". We build these calm, ad-free games as a tiny studio. A small tip helps, or check out Brain Games Vol 2 for more quick arcade games."
+      });
+    } else {
+      statusEl.textContent = "The computer wins " + cpu + "–" + you + ". Hit New game for a rematch.";
+      statusEl.className = "game-status game-status--lose";
+    }
+    draw();
+  }
+
+  function label(d) { return d === "L" ? "left" : d === "R" ? "right" : "centre"; }
+
+  // ── Animation ────────────────────────────────────
+  function animate(spec, done) {
+    var fromBall = { x: BALL_START.x, y: BALL_START.y };
+    var toBall = { x: dirX(spec.ballTo), y: GY + GH * 0.5 };
+    var fromKeeper = dirX("C"), toKeeper = dirX(spec.keeperTo);
+    var dur = 600, start = performance.now(), raf;
+    function step(now) {
+      var t = Math.min(1, (now - start) / dur);
+      ballPos = { x: fromBall.x + (toBall.x - fromBall.x) * t, y: fromBall.y + (toBall.y - fromBall.y) * t };
+      keeperX = fromKeeper + (toKeeper - fromKeeper) * t;
+      draw();
+      if (t < 1) raf = requestAnimationFrame(step);
+    }
+    raf = requestAnimationFrame(step);
+    // Resolve on a timer so it works even if rAF is throttled (background tab).
+    setTimeout(function () {
+      cancelAnimationFrame(raf);
+      ballPos = toBall; keeperX = toKeeper; draw();
+      done();
+    }, dur + 40);
+  }
+
+  // ── Render ───────────────────────────────────────
+  function draw() {
+    // Pitch
+    var g = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    g.addColorStop(0, "#56b65a"); g.addColorStop(1, "#3f9a43");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // mowed stripes
+    ctx.fillStyle = "rgba(255,255,255,0.05)";
+    for (var s = 0; s < canvas.height; s += 36) ctx.fillRect(0, s, canvas.width, 18);
+
+    // Goal net
+    ctx.fillStyle = "rgba(255,255,255,0.12)";
+    ctx.fillRect(GX, GY, GW, GH);
+    ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.lineWidth = 1;
+    for (var x = GX; x <= GX + GW; x += 16) { ctx.beginPath(); ctx.moveTo(x, GY); ctx.lineTo(x, GY + GH); ctx.stroke(); }
+    for (var y = GY; y <= GY + GH; y += 16) { ctx.beginPath(); ctx.moveTo(GX, y); ctx.lineTo(GX + GW, y); ctx.stroke(); }
+    // Posts + crossbar
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(GX - 7, GY - 7, 7, GH + 7);
+    ctx.fillRect(GX + GW, GY - 7, 7, GH + 7);
+    ctx.fillRect(GX - 7, GY - 7, GW + 14, 7);
+
+    // Keeper
+    var ky = GY + GH - 46;
+    ctx.save();
+    ctx.translate(keeperX, ky);
+    ctx.fillStyle = "#ffd54f"; // jersey
+    ctx.fillRect(-15, 6, 30, 38); // body
+    ctx.fillStyle = "#f4c542";
+    ctx.fillRect(-30, 10, 16, 12); ctx.fillRect(14, 10, 16, 12); // gloves/arms out
+    ctx.beginPath(); ctx.fillStyle = "#f0c27a"; ctx.arc(0, -4, 11, 0, Math.PI * 2); ctx.fill(); // head
+    ctx.restore();
+
+    // Penalty spot
+    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    ctx.beginPath(); ctx.arc(BALL_START.x, BALL_START.y + 16, 3, 0, Math.PI * 2); ctx.fill();
+
+    // Ball
+    ctx.beginPath();
+    ctx.arc(ballPos.x, ballPos.y, 9, 0, Math.PI * 2);
+    ctx.fillStyle = "#fff"; ctx.fill();
+    ctx.strokeStyle = "#222"; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.fillStyle = "#222";
+    ctx.beginPath(); ctx.arc(ballPos.x, ballPos.y, 2.4, 0, Math.PI * 2); ctx.fill();
+
+    // Prompt arrows when awaiting input
+    if (!busy && (phase === "shoot" || phase === "save")) {
+      ctx.fillStyle = "rgba(255,255,255,0.85)";
+      ctx.font = "700 13px 'DM Sans', Arial, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(phase === "shoot" ? "Shoot!" : "Dive to save!", canvas.width / 2, canvas.height - 8);
+    }
+  }
+
+  // ── Input ────────────────────────────────────────
+  pad.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b || b.disabled) return;
+    onChoose(b.dataset.dir);
+  });
+  canvas.addEventListener("click", function (e) {
+    if (busy || (phase !== "shoot" && phase !== "save")) return;
+    var rect = canvas.getBoundingClientRect();
+    var x = (e.clientX - rect.left) / rect.width * canvas.width;
+    onChoose(x < GX + GW / 3 ? "L" : x > GX + GW * 2 / 3 ? "R" : "C");
+  });
+  newBtn.addEventListener("click", reset);
+  document.querySelectorAll(".seg [data-smart]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      smart = parseFloat(btn.dataset.smart);
+      document.querySelectorAll(".seg [data-smart]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
+      reset();
+    });
+  });
+
+  reset();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

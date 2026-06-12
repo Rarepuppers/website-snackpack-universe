@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Goalkeeper Hero Online Free | Soccer Save Game - SnackPack</title>
+<meta name="description" content="Play Goalkeeper Hero free in your browser. Read the striker, dive left, centre, or right, save shots, build a streak, and chase a high score. No ads, no sign-in, no download.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/goalkeeper-hero/">
+<meta name="theme-color" content="#1f8f77">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Goalkeeper Hero Online Free">
+<meta property="og:description" content="Dive for saves, build a streak, and become the keeper. Free in your browser, no ads, no sign-in.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/goalkeeper-hero/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<style>
+.gk-stage {
+  max-width: 720px;
+}
+.gk-canvas {
+  width: min(100%, 640px);
+  aspect-ratio: 640 / 430;
+  border-radius: 16px;
+  border: 3px solid #244f2b;
+  background: #3f9a43;
+  display: block;
+  margin: 0 auto;
+  box-shadow: var(--shadow);
+  touch-action: manipulation;
+}
+.gk-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: min(100%, 640px);
+  margin: 14px auto 0;
+}
+.gk-pad button {
+  min-height: 54px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+.gk-pad button:hover:not(:disabled),
+.gk-pad button:focus-visible {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+}
+.gk-pad button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+.gk-meter {
+  width: min(100%, 640px);
+  height: 10px;
+  margin: 12px auto 0;
+  border-radius: 999px;
+  background: rgba(32, 23, 19, 0.08);
+  overflow: hidden;
+}
+.gk-meter span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  background: linear-gradient(90deg, var(--accent), var(--gold), var(--brand));
+}
+.gk-history {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 6px;
+  width: min(100%, 640px);
+  margin: 14px auto 0;
+}
+.gk-dot {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(32, 23, 19, 0.12);
+}
+.gk-dot.save {
+  background: var(--accent);
+}
+.gk-dot.quick {
+  background: var(--gold);
+}
+.gk-dot.goal {
+  background: var(--brand-deep);
+}
+.gk-hint-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.gk-hint-row span {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(32,23,19,0.05);
+}
+@media (max-width: 640px) {
+  .gk-stage {
+    padding: 14px;
+  }
+  .gk-pad {
+    gap: 8px;
+  }
+  .gk-pad button {
+    min-height: 50px;
+    padding: 0 8px;
+  }
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Goalkeeper Hero",
+  "url": "https://www.snackpackuniverse.com/play/goalkeeper-hero/",
+  "applicationCategory": "Game",
+  "genre": "Sports",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser soccer goalkeeper game. Read the striker, dive for saves, build a streak, and chase a high score.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Goalkeeper Hero</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../world-cup/">World Cup</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free soccer game</span>
+        <h1>Goalkeeper Hero</h1>
+        <p class="lead" style="max-width:620px;margin-left:auto;margin-right:auto;">Read the striker, dive the right way, and stack saves across 12 shots. Quick saves score more. Miss the read and the crowd goes quiet.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage gk-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Score</span><b id="gk-score">0</b></span>
+            <span class="readout-chip"><span>Shot</span><b id="gk-shot">1/12</b></span>
+            <span class="readout-chip"><span>Best</span><b id="gk-best">0</b></span>
+            <span class="readout-chip"><span>Streak</span><b id="gk-streak">0</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Difficulty">
+              <button type="button" data-difficulty="rookie" aria-pressed="true">Rookie</button>
+              <button type="button" data-difficulty="pro" aria-pressed="false">Pro</button>
+              <button type="button" data-difficulty="legend" aria-pressed="false">Legend</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="gk-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="gk-status" aria-live="polite">Watch the striker's body shape, then dive.</p>
+        <canvas class="gk-canvas" id="gk-canvas" width="640" height="430" aria-label="Goalkeeper Hero soccer goal"></canvas>
+        <div class="gk-meter" aria-hidden="true"><span id="gk-meter"></span></div>
+        <div class="gk-pad" id="gk-pad">
+          <button type="button" data-dir="L">Left</button>
+          <button type="button" data-dir="C">Centre</button>
+          <button type="button" data-dir="R">Right</button>
+        </div>
+        <div class="gk-history" id="gk-history" aria-label="Save history"></div>
+        <div class="gk-hint-row">
+          <span>Click the goal or use the buttons.</span>
+          <span>Fast correct dives earn quick-save points.</span>
+          <span>The striker gives smaller clues on harder levels.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">More soccer games</span>
+          <h2>Keep the tournament run going.</h2>
+          <p>Goalkeeper Hero joins Free Kick Curl and Penalty Shootout in the SnackPack soccer arcade: quick free games made for replay during the 2026 football build-up.</p>
+          <ul class="funnel-points">
+            <li>Instant browser play on phone or desktop</li>
+            <li>No ads, no sign-in, no download</li>
+            <li>High score and streaks saved locally on your device</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="btn btn-primary" href="../../world-cup/">World Cup games hub</a>
+            <a class="btn btn-secondary" href="../free-kick-curl/">Play Free Kick Curl</a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">GK</div>
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">Make the save. Keep the streak.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Goalkeeper Hero</h2>
+      <p>You face 12 shots. Before each kick, the striker leans toward a likely side. Choose left, centre, or right before the timer runs down. If your dive matches the shot, you make the save and score points. Quick saves and long streaks are worth more.</p>
+      <p>Rookie mode gives clearer tells and more time. Pro and Legend shrink the reaction window, hide some tells, and make the striker less predictable.</p>
+      <h3>Tips to save more shots</h3>
+      <ul>
+        <li>Watch the striker's lean, not just the ball.</li>
+        <li>Do not always chase the obvious tell. Harder strikers fake more often.</li>
+        <li>Commit quickly when you are confident. Quick saves add bonus points.</li>
+        <li>Protect the streak. A steady run of saves beats risky guessing.</li>
+      </ul>
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Goalkeeper Hero free?</summary><p>Yes. It plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>Does Goalkeeper Hero work on mobile?</summary><p>Yes. Tap the left, centre, or right side of the goal, or use the three buttons below the pitch.</p></details>
+        <details class="faq-item"><summary>Is this an official World Cup game?</summary><p>No. It is an original SnackPack Studios soccer game and is not affiliated with FIFA, the World Cup, any team, league, or governing body.</p></details>
+      </div>
+      <p style="margin-top:22px;"><a class="text-link" href="../../world-cup/" style="color:var(--accent);font-weight:700;">Back to World Cup games</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack - Tip or Donate - Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio. Tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Goalkeeper Hero free. SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../world-cup/">World Cup games</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>window.SP_PLAY_URL = "../../world-cup/";</script>
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+  var canvas = document.getElementById("gk-canvas");
+  var ctx = canvas.getContext("2d");
+  var scoreEl = document.getElementById("gk-score");
+  var shotEl = document.getElementById("gk-shot");
+  var bestEl = document.getElementById("gk-best");
+  var streakEl = document.getElementById("gk-streak");
+  var statusEl = document.getElementById("gk-status");
+  var meterEl = document.getElementById("gk-meter");
+  var pad = document.getElementById("gk-pad");
+  var newBtn = document.getElementById("gk-new");
+  var historyEl = document.getElementById("gk-history");
+
+  var W = canvas.width, H = canvas.height;
+  var goal = { x: 120, y: 42, w: 400, h: 158 };
+  var dirs = ["L", "C", "R"];
+  var difficulty = "rookie";
+  var configs = {
+    rookie: { time: 1850, fake: 0.08, clue: 84 },
+    pro: { time: 1450, fake: 0.2, clue: 58 },
+    legend: { time: 1120, fake: 0.32, clue: 38 }
+  };
+  var bestKey = "snackpack-goalkeeper-hero-best";
+  var streakKey = "snackpack-goalkeeper-hero-streak";
+  var best = parseInt(localStorage.getItem(bestKey) || "0", 10);
+  var bestStreak = parseInt(localStorage.getItem(streakKey) || "0", 10);
+  var score = 0, shot = 1, streak = 0, busy = false;
+  var results = [];
+  var current = null;
+  var roundStart = 0;
+  var timer = null;
+  var raf = null;
+  var keeperX = goal.x + goal.w / 2;
+  var keeperY = goal.y + goal.h - 22;
+  var ball = { x: W / 2, y: 334 };
+
+  function clamp(n, min, max) {
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function dirX(dir) {
+    if (dir === "L") return goal.x + goal.w * 0.22;
+    if (dir === "R") return goal.x + goal.w * 0.78;
+    return goal.x + goal.w * 0.5;
+  }
+
+  function label(dir) {
+    return dir === "L" ? "left" : dir === "R" ? "right" : "centre";
+  }
+
+  function reset() {
+    if (timer) clearTimeout(timer);
+    if (raf) cancelAnimationFrame(raf);
+    score = 0;
+    shot = 1;
+    streak = 0;
+    results = [];
+    busy = false;
+    current = null;
+    keeperX = dirX("C");
+    ball = { x: W / 2, y: 334 };
+    statusEl.className = "game-status";
+    statusEl.textContent = "Watch the striker's body shape, then dive.";
+    setPad(true);
+    updateReadout();
+    renderHistory();
+    startShot();
+  }
+
+  function updateReadout() {
+    scoreEl.textContent = score;
+    shotEl.textContent = Math.min(shot, 12) + "/12";
+    bestEl.textContent = best;
+    streakEl.textContent = streak;
+  }
+
+  function setPad(enabled) {
+    pad.querySelectorAll("button").forEach(function (button) {
+      button.disabled = !enabled;
+    });
+  }
+
+  function renderHistory() {
+    historyEl.innerHTML = "";
+    for (var i = 0; i < 12; i++) {
+      var dot = document.createElement("div");
+      dot.className = "gk-dot" + (results[i] ? " " + results[i] : "");
+      historyEl.appendChild(dot);
+    }
+  }
+
+  function pickShot() {
+    var cfg = configs[difficulty];
+    var shotDir = dirs[Math.floor(Math.random() * dirs.length)];
+    var clueDir = Math.random() < cfg.fake ? dirs.filter(function (d) { return d !== shotDir; })[Math.floor(Math.random() * 2)] : shotDir;
+    return {
+      shotDir: shotDir,
+      clueDir: clueDir,
+      time: Math.max(780, cfg.time - (shot - 1) * 28),
+      clue: cfg.clue
+    };
+  }
+
+  function startShot() {
+    if (shot > 12) {
+      finish();
+      return;
+    }
+    current = pickShot();
+    busy = false;
+    keeperX = dirX("C");
+    ball = { x: W / 2, y: 334 };
+    roundStart = performance.now();
+    statusEl.className = "game-status";
+    statusEl.textContent = "Shot " + shot + ": read the striker and dive.";
+    setPad(true);
+    draw();
+    tickMeter();
+    timer = setTimeout(function () {
+      choose("none");
+    }, current.time);
+  }
+
+  function tickMeter() {
+    var elapsed = performance.now() - roundStart;
+    var ratio = clamp(1 - elapsed / current.time, 0, 1);
+    meterEl.style.transform = "scaleX(" + ratio + ")";
+    draw();
+    if (ratio > 0 && !busy) raf = requestAnimationFrame(tickMeter);
+  }
+
+  function choose(dir) {
+    if (busy || !current) return;
+    busy = true;
+    setPad(false);
+    if (timer) clearTimeout(timer);
+    if (raf) cancelAnimationFrame(raf);
+    meterEl.style.transform = "scaleX(0)";
+    var elapsed = performance.now() - roundStart;
+    var saved = dir === current.shotDir;
+    var quick = saved && elapsed < current.time * 0.48;
+    statusEl.textContent = dir === "none" ? "Too late. The striker scores." : "You dive " + label(dir) + ".";
+    animateDive(dir, function () {
+      resolveShot(saved, quick);
+    });
+  }
+
+  function resolveShot(saved, quick) {
+    if (saved) {
+      streak++;
+      var gained = quick ? 170 : 110;
+      gained += Math.max(0, streak - 1) * 18;
+      score += gained;
+      results.push(quick ? "quick" : "save");
+      statusEl.className = "game-status";
+      statusEl.textContent = quick ? "Quick save! +" + gained : "Saved. +" + gained;
+      if (streak > bestStreak) {
+        bestStreak = streak;
+        localStorage.setItem(streakKey, String(bestStreak));
+      }
+    } else {
+      streak = 0;
+      results.push("goal");
+      statusEl.className = "game-status game-status--lose";
+      statusEl.textContent = "Goal to the " + label(current.shotDir) + ". Reset and read the next striker.";
+    }
+    if (score > best) {
+      best = score;
+      localStorage.setItem(bestKey, String(best));
+    }
+    updateReadout();
+    renderHistory();
+    setTimeout(function () {
+      shot++;
+      startShot();
+    }, 850);
+  }
+
+  function animateDive(dir, done) {
+    var start = performance.now();
+    var fromKeeper = dirX("C");
+    var toKeeper = dir === "none" ? fromKeeper : dirX(dir);
+    var fromBall = { x: W / 2, y: 334 };
+    var toBall = { x: dirX(current.shotDir), y: goal.y + goal.h * 0.5 };
+    function step(now) {
+      var t = clamp((now - start) / 540, 0, 1);
+      var ease = 1 - Math.pow(1 - t, 3);
+      keeperX = fromKeeper + (toKeeper - fromKeeper) * ease;
+      ball = {
+        x: fromBall.x + (toBall.x - fromBall.x) * ease,
+        y: fromBall.y + (toBall.y - fromBall.y) * ease - Math.sin(t * Math.PI) * 24
+      };
+      draw();
+      if (t < 1) requestAnimationFrame(step);
+      else done();
+    }
+    requestAnimationFrame(step);
+  }
+
+  function finish() {
+    busy = true;
+    setPad(false);
+    current = null;
+    meterEl.style.transform = "scaleX(0)";
+    statusEl.className = "game-status";
+    statusEl.textContent = "Full time: " + score + " points. Best streak: " + bestStreak + ".";
+    if (window.SnackPack && score >= 950) {
+      window.SnackPack.celebrate({
+        title: "Goalkeeper Hero",
+        body: "You scored " + score + " points and owned the box. Try the World Cup games hub for more free soccer games."
+      });
+    }
+    draw();
+  }
+
+  function drawPitch() {
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#58b75d");
+    g.addColorStop(1, "#318c43");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(255,255,255,0.06)";
+    for (var y = 0; y < H; y += 42) ctx.fillRect(0, y, W, 21);
+    ctx.strokeStyle = "rgba(255,255,255,0.56)";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(98, 26, 444, 246);
+    ctx.beginPath();
+    ctx.arc(W / 2, 332, 118, Math.PI * 1.12, Math.PI * 1.88);
+    ctx.stroke();
+  }
+
+  function drawGoal() {
+    ctx.fillStyle = "rgba(255,255,255,0.14)";
+    ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
+    ctx.strokeStyle = "rgba(255,255,255,0.45)";
+    ctx.lineWidth = 1;
+    for (var x = goal.x; x <= goal.x + goal.w; x += 18) {
+      ctx.beginPath();
+      ctx.moveTo(x, goal.y);
+      ctx.lineTo(x, goal.y + goal.h);
+      ctx.stroke();
+    }
+    for (var y = goal.y; y <= goal.y + goal.h; y += 18) {
+      ctx.beginPath();
+      ctx.moveTo(goal.x, y);
+      ctx.lineTo(goal.x + goal.w, y);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(goal.x - 8, goal.y - 8, 8, goal.h + 8);
+    ctx.fillRect(goal.x + goal.w, goal.y - 8, 8, goal.h + 8);
+    ctx.fillRect(goal.x - 8, goal.y - 8, goal.w + 16, 8);
+  }
+
+  function drawStriker() {
+    var clue = current ? current.clueDir : "C";
+    var clueShift = current ? (clue === "L" ? -current.clue : clue === "R" ? current.clue : 0) : 0;
+    ctx.save();
+    ctx.translate(W / 2 + clueShift * 0.22, 332);
+    ctx.rotate(clueShift / 540);
+    ctx.fillStyle = "#de6a38";
+    ctx.fillRect(-16, -36, 32, 44);
+    ctx.fillStyle = "#f0c27a";
+    ctx.beginPath();
+    ctx.arc(0, -50, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#201713";
+    ctx.fillRect(-15, 8, 10, 30);
+    ctx.fillRect(5, 8, 10, 30);
+    ctx.restore();
+    if (current && !busy) {
+      ctx.strokeStyle = "rgba(255,255,255,0.72)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(W / 2, 284);
+      ctx.lineTo(W / 2 + clueShift, 256);
+      ctx.stroke();
+    }
+  }
+
+  function drawKeeper() {
+    ctx.save();
+    ctx.translate(keeperX, keeperY);
+    ctx.fillStyle = "#ffd54f";
+    ctx.fillRect(-19, -26, 38, 48);
+    ctx.fillStyle = "#f0c27a";
+    ctx.beginPath();
+    ctx.arc(0, -42, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#f4c542";
+    ctx.fillRect(-48, -20, 30, 13);
+    ctx.fillRect(18, -20, 30, 13);
+    ctx.fillStyle = "#244f2b";
+    ctx.fillRect(-16, 22, 11, 24);
+    ctx.fillRect(5, 22, 11, 24);
+    ctx.restore();
+  }
+
+  function drawBall() {
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#201713";
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+    ctx.fillStyle = "#201713";
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, 2.7, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawZones() {
+    if (!current || busy) return;
+    ctx.fillStyle = "rgba(255,255,255,0.12)";
+    ctx.fillRect(goal.x, goal.y, goal.w / 3, goal.h);
+    ctx.fillRect(goal.x + goal.w / 3, goal.y, goal.w / 3, goal.h);
+    ctx.fillRect(goal.x + goal.w * 2 / 3, goal.y, goal.w / 3, goal.h);
+    ctx.fillStyle = "rgba(255,255,255,0.86)";
+    ctx.font = "700 13px 'DM Sans', Arial, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("Left", goal.x + goal.w / 6, goal.y + goal.h - 10);
+    ctx.fillText("Centre", goal.x + goal.w / 2, goal.y + goal.h - 10);
+    ctx.fillText("Right", goal.x + goal.w * 5 / 6, goal.y + goal.h - 10);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    drawPitch();
+    drawGoal();
+    drawZones();
+    drawKeeper();
+    drawStriker();
+    drawBall();
+  }
+
+  pad.addEventListener("click", function (event) {
+    var button = event.target.closest("button");
+    if (!button || button.disabled) return;
+    choose(button.dataset.dir);
+  });
+  canvas.addEventListener("click", function (event) {
+    if (busy || !current) return;
+    var rect = canvas.getBoundingClientRect();
+    var x = (event.clientX - rect.left) / rect.width * W;
+    choose(x < goal.x + goal.w / 3 ? "L" : x > goal.x + goal.w * 2 / 3 ? "R" : "C");
+  });
+  newBtn.addEventListener("click", reset);
+  document.querySelectorAll("[data-difficulty]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      difficulty = button.dataset.difficulty;
+      document.querySelectorAll("[data-difficulty]").forEach(function (x) {
+        x.setAttribute("aria-pressed", String(x === button));
+      });
+      reset();
+    });
+  });
+
+  bestEl.textContent = best;
+  reset();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
