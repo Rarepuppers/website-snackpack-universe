@@ -30,6 +30,22 @@ Key facts that apply to every SnackPack app: no third-party ads, no tracking or 
 - [Play Flappy Snacky](https://www.snackpackuniverse.com/play/flappy-snacky/): Free browser Flappy Snacky — a one-button tap-to-fly arcade game with Classic, Hard and Night modes and a saved best score. From Brain Games Vol 2 (Play Store ID com.snackpackuniverse.braingames2). Includes rules, tips, and an about section.
 - [Play Snacky Worm](https://www.snackpackuniverse.com/play/snacky-worm/): Free browser Snacky Worm — the classic Snake game with Classic, Zen (wrap) and Speed modes and a saved best score. From Brain Games Vol 2. Includes rules, tips, and an about section.
 
+## World Cup 2026 (free soccer games & tournament tracker)
+
+Original SnackPack browser soccer games and a 2026 tournament tracker. Not affiliated with, endorsed by, or connected to FIFA, the World Cup, any national team, league, or governing body. No ads, no sign-in, no download.
+
+- [World Cup 2026 hub](https://www.snackpackuniverse.com/world-cup/): Free soccer games for the 2026 football summer plus a tournament tracker (schedule, teams, bracket and predictions).
+- [Schedule](https://www.snackpackuniverse.com/world-cup/schedule/): Today's matches and what's on next, for quick answers.
+- [All 48 teams](https://www.snackpackuniverse.com/world-cup/teams/): Every team with flags, groups, players to know, and short facts.
+- [Bracket tracker](https://www.snackpackuniverse.com/world-cup/bracket/): Group tables, played and upcoming fixtures, knockout placeholders, and saveable champion/top-scorer predictions with a shareable card.
+- [Soccer Trivia Sprint](https://www.snackpackuniverse.com/play/soccer-trivia-sprint/): Fast football quiz — build a streak and chase your best score across 12 rounds.
+- [Keepy-Uppy](https://www.snackpackuniverse.com/play/keepy-uppy/): Tap to keep the ball up, collect stars and build combos for a new best touch run.
+- [Target Shooting Arena](https://www.snackpackuniverse.com/play/target-shooting-arena/): Aim at moving goal targets, score bullseyes, and protect your combo across 12 shots.
+- [Free Kick Curl](https://www.snackpackuniverse.com/play/free-kick-curl/): Bend shots around the wall, beat the keeper and hit bonus corners across 10 kicks.
+- [Crossbar Challenge](https://www.snackpackuniverse.com/play/crossbar-challenge/): Hit the bar from changing distances, fight the wind, and stack perfect hits across 15 shots.
+- [Goalkeeper Hero](https://www.snackpackuniverse.com/play/goalkeeper-hero/): Read the striker, dive the right way, and stack quick saves across 12 shots.
+- [Penalty Shootout](https://www.snackpackuniverse.com/play/penalty-shootout/): Best-of-five penalty shootout vs the computer — you both shoot and dive to save, with three difficulty levels and sudden death. Includes rules, tips, and an about section.
+
 ## Guides
 
 - [Choosing ad-free learning apps for toddlers](https://www.snackpackuniverse.com/guides/best-ad-free-apps-for-toddlers/): A 5-point checklist for verifying "no ads" claims, reading the Data safety section, and spotting manipulative design in kids apps.
