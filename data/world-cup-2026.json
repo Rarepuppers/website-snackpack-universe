@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-12T12:30:24.886Z",
-  "source": "Manual seed from current public 2026 World Cup reports",
+  "updatedAt": "2026-06-12T12:42:08.485Z",
+  "source": "API-FOOTBALL fixtures endpoint",
   "groups": {
     "A": [
       "Mexico",
@@ -90,6 +90,15 @@
     {
       "date": "Jun 12",
       "isoDate": "2026-06-12",
+      "time": "Upcoming",
+      "group": "B",
+      "home": "Canada",
+      "away": "Bosnia and Herzegovina",
+      "venue": "Toronto"
+    },
+    {
+      "date": "Jun 12",
+      "isoDate": "2026-06-12",
       "time": "FT",
       "group": "A",
       "home": "South Korea",
@@ -102,28 +111,10 @@
       "date": "Jun 12",
       "isoDate": "2026-06-12",
       "time": "Upcoming",
-      "group": "B",
-      "home": "Canada",
-      "away": "Bosnia and Herzegovina",
-      "venue": "Toronto"
-    },
-    {
-      "date": "Jun 12",
-      "isoDate": "2026-06-12",
-      "time": "Upcoming",
       "group": "D",
       "home": "United States",
       "away": "Paraguay",
       "venue": "Los Angeles"
-    },
-    {
-      "date": "Jun 13",
-      "isoDate": "2026-06-13",
-      "time": "Upcoming",
-      "group": "C",
-      "home": "Haiti",
-      "away": "Scotland",
-      "venue": "Boston"
     },
     {
       "date": "Jun 13",
@@ -142,6 +133,15 @@
       "home": "Brazil",
       "away": "Morocco",
       "venue": "New York/New Jersey"
+    },
+    {
+      "date": "Jun 13",
+      "isoDate": "2026-06-13",
+      "time": "Upcoming",
+      "group": "C",
+      "home": "Haiti",
+      "away": "Scotland",
+      "venue": "Boston"
     },
     {
       "date": "Jun 13",
@@ -192,19 +192,10 @@
       "date": "Jun 15",
       "isoDate": "2026-06-15",
       "time": "Upcoming",
-      "group": "H",
-      "home": "Saudi Arabia",
-      "away": "Uruguay",
-      "venue": "Miami"
-    },
-    {
-      "date": "Jun 15",
-      "isoDate": "2026-06-15",
-      "time": "Upcoming",
-      "group": "H",
-      "home": "Spain",
-      "away": "Cape Verde",
-      "venue": "Atlanta"
+      "group": "G",
+      "home": "Belgium",
+      "away": "Egypt",
+      "venue": "Seattle"
     },
     {
       "date": "Jun 15",
@@ -219,28 +210,19 @@
       "date": "Jun 15",
       "isoDate": "2026-06-15",
       "time": "Upcoming",
-      "group": "G",
-      "home": "Belgium",
-      "away": "Egypt",
-      "venue": "Seattle"
+      "group": "H",
+      "home": "Saudi Arabia",
+      "away": "Uruguay",
+      "venue": "Miami"
     },
     {
-      "date": "Jun 16",
-      "isoDate": "2026-06-16",
+      "date": "Jun 15",
+      "isoDate": "2026-06-15",
       "time": "Upcoming",
-      "group": "I",
-      "home": "France",
-      "away": "Senegal",
-      "venue": "New York/New Jersey"
-    },
-    {
-      "date": "Jun 16",
-      "isoDate": "2026-06-16",
-      "time": "Upcoming",
-      "group": "I",
-      "home": "Iraq",
-      "away": "Norway",
-      "venue": "Boston"
+      "group": "H",
+      "home": "Spain",
+      "away": "Cape Verde",
+      "venue": "Atlanta"
     },
     {
       "date": "Jun 16",
@@ -261,13 +243,22 @@
       "venue": "San Francisco Bay Area"
     },
     {
-      "date": "Jun 17",
-      "isoDate": "2026-06-17",
+      "date": "Jun 16",
+      "isoDate": "2026-06-16",
       "time": "Upcoming",
-      "group": "L",
-      "home": "Ghana",
-      "away": "Panama",
-      "venue": "Toronto"
+      "group": "I",
+      "home": "France",
+      "away": "Senegal",
+      "venue": "New York/New Jersey"
+    },
+    {
+      "date": "Jun 16",
+      "isoDate": "2026-06-16",
+      "time": "Upcoming",
+      "group": "I",
+      "home": "Iraq",
+      "away": "Norway",
+      "venue": "Boston"
     },
     {
       "date": "Jun 17",
@@ -277,6 +268,15 @@
       "home": "England",
       "away": "Croatia",
       "venue": "Dallas"
+    },
+    {
+      "date": "Jun 17",
+      "isoDate": "2026-06-17",
+      "time": "Upcoming",
+      "group": "L",
+      "home": "Ghana",
+      "away": "Panama",
+      "venue": "Toronto"
     },
     {
       "date": "Jun 17",
@@ -300,6 +300,15 @@
       "date": "Jun 18",
       "isoDate": "2026-06-18",
       "time": "Upcoming",
+      "group": "B",
+      "home": "Canada",
+      "away": "Qatar",
+      "venue": "Vancouver"
+    },
+    {
+      "date": "Jun 18",
+      "isoDate": "2026-06-18",
+      "time": "Upcoming",
       "group": "A",
       "home": "Czechia",
       "away": "South Africa",
@@ -313,15 +322,6 @@
       "home": "Switzerland",
       "away": "Bosnia and Herzegovina",
       "venue": "Los Angeles"
-    },
-    {
-      "date": "Jun 18",
-      "isoDate": "2026-06-18",
-      "time": "Upcoming",
-      "group": "B",
-      "home": "Canada",
-      "away": "Qatar",
-      "venue": "Vancouver"
     }
   ]
 }
