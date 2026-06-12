@@ -221,6 +221,14 @@
   border-radius: 12px;
   border: 1px solid var(--line);
 }
+.share-actions {
+  display: none;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.share-actions.is-visible {
+  display: grid;
+}
 .knockout-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(180px, 1fr));
@@ -333,7 +341,7 @@
         <div id="view-groups">
           <h2>Group Tables</h2>
           <div class="group-grid" id="group-grid"></div>
-          <p class="seo-note">Tables are calculated from the match data embedded on this page. Update the match list as results come in and the standings will recalculate automatically.</p>
+          <p class="seo-note">Tables are calculated from the automated World Cup data file. When GitHub Actions updates results and fixtures, the standings recalculate from the latest match data.</p>
         </div>
         <div id="view-played" hidden>
           <h2>Played Games</h2>
@@ -380,6 +388,10 @@
           <div id="group-picks"></div>
           <button class="btn-game btn-game--primary" id="save-picks" type="button">Save picks</button>
           <button class="btn-game" id="share-card" type="button">Generate share card</button>
+          <div class="share-actions" id="share-actions">
+            <button class="btn-game" id="download-card" type="button">Download card</button>
+            <button class="btn-game" id="native-share-card" type="button">Share card</button>
+          </div>
           <a class="btn btn-secondary" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" style="width:100%;">Tip SnackPack</a>
           <canvas id="share-canvas" width="1080" height="1350" hidden></canvas>
           <img class="share-preview" id="share-preview" alt="Generated World Cup prediction share card">
@@ -466,55 +478,55 @@
 
   var storeKey = "snackpack-world-cup-2026-picks";
   var teams = Object.keys(groups).reduce(function (all, key) { return all.concat(groups[key]); }, []).sort();
-  var flagCodes = {
-    "Mexico": "mx",
-    "South Africa": "za",
-    "South Korea": "kr",
-    "Czechia": "cz",
-    "Canada": "ca",
-    "Bosnia and Herzegovina": "ba",
-    "Qatar": "qa",
-    "Switzerland": "ch",
-    "Haiti": "ht",
-    "Scotland": "gb-sct",
-    "Brazil": "br",
-    "Morocco": "ma",
-    "United States": "us",
-    "Paraguay": "py",
-    "Australia": "au",
-    "Turkiye": "tr",
-    "Cote d'Ivoire": "ci",
-    "Ecuador": "ec",
-    "Germany": "de",
-    "Curacao": "cw",
-    "Netherlands": "nl",
-    "Japan": "jp",
-    "Sweden": "se",
-    "Tunisia": "tn",
-    "Iran": "ir",
-    "New Zealand": "nz",
-    "Belgium": "be",
-    "Egypt": "eg",
-    "Saudi Arabia": "sa",
-    "Uruguay": "uy",
-    "Spain": "es",
-    "Cape Verde": "cv",
-    "France": "fr",
-    "Senegal": "sn",
-    "Iraq": "iq",
-    "Norway": "no",
-    "Argentina": "ar",
-    "Algeria": "dz",
-    "Austria": "at",
-    "Jordan": "jo",
-    "Portugal": "pt",
-    "DR Congo": "cd",
-    "Uzbekistan": "uz",
-    "Colombia": "co",
-    "Ghana": "gh",
-    "Panama": "pa",
-    "England": "gb-eng",
-    "Croatia": "hr"
+  var flagStyles = {
+    "Mexico": { code: "MX", colors: ["#006847", "#ffffff", "#ce1126"] },
+    "South Africa": { code: "ZA", colors: ["#007a4d", "#ffb612", "#de3831", "#002395"] },
+    "South Korea": { code: "KR", colors: ["#ffffff", "#c60c30", "#003478"] },
+    "Czechia": { code: "CZ", colors: ["#ffffff", "#d7141a", "#11457e"] },
+    "Canada": { code: "CA", colors: ["#d52b1e", "#ffffff", "#d52b1e"] },
+    "Bosnia and Herzegovina": { code: "BA", colors: ["#002f6c", "#f7d116", "#ffffff"] },
+    "Qatar": { code: "QA", colors: ["#ffffff", "#8a1538"] },
+    "Switzerland": { code: "CH", colors: ["#d52b1e", "#ffffff", "#d52b1e"] },
+    "Haiti": { code: "HT", colors: ["#00209f", "#d21034"] },
+    "Scotland": { code: "SCO", colors: ["#0065bd", "#ffffff"] },
+    "Brazil": { code: "BR", colors: ["#009b3a", "#ffdf00", "#002776"] },
+    "Morocco": { code: "MA", colors: ["#c1272d", "#006233"] },
+    "United States": { code: "US", colors: ["#b22234", "#ffffff", "#3c3b6e"] },
+    "Paraguay": { code: "PY", colors: ["#d52b1e", "#ffffff", "#0038a8"] },
+    "Australia": { code: "AU", colors: ["#00008b", "#ffffff", "#e4002b"] },
+    "Turkiye": { code: "TR", colors: ["#e30a17", "#ffffff"] },
+    "Cote d'Ivoire": { code: "CI", colors: ["#f77f00", "#ffffff", "#009e60"] },
+    "Ecuador": { code: "EC", colors: ["#ffdd00", "#034ea2", "#ed1c24"] },
+    "Germany": { code: "DE", colors: ["#000000", "#dd0000", "#ffce00"] },
+    "Curacao": { code: "CW", colors: ["#002b7f", "#f9e814", "#ffffff"] },
+    "Netherlands": { code: "NL", colors: ["#ae1c28", "#ffffff", "#21468b"] },
+    "Japan": { code: "JP", colors: ["#ffffff", "#bc002d"] },
+    "Sweden": { code: "SE", colors: ["#006aa7", "#fecc00"] },
+    "Tunisia": { code: "TN", colors: ["#e70013", "#ffffff"] },
+    "Iran": { code: "IR", colors: ["#239f40", "#ffffff", "#da0000"] },
+    "New Zealand": { code: "NZ", colors: ["#00247d", "#ffffff", "#cc142b"] },
+    "Belgium": { code: "BE", colors: ["#000000", "#ffd90c", "#ef3340"] },
+    "Egypt": { code: "EG", colors: ["#ce1126", "#ffffff", "#000000"] },
+    "Saudi Arabia": { code: "SA", colors: ["#006c35", "#ffffff"] },
+    "Uruguay": { code: "UY", colors: ["#ffffff", "#0038a8", "#fcd116"] },
+    "Spain": { code: "ES", colors: ["#aa151b", "#f1bf00", "#aa151b"] },
+    "Cape Verde": { code: "CV", colors: ["#003893", "#ffffff", "#cf2027"] },
+    "France": { code: "FR", colors: ["#0055a4", "#ffffff", "#ef4135"] },
+    "Senegal": { code: "SN", colors: ["#00853f", "#fdef42", "#e31b23"] },
+    "Iraq": { code: "IQ", colors: ["#ce1126", "#ffffff", "#000000"] },
+    "Norway": { code: "NO", colors: ["#ba0c2f", "#ffffff", "#00205b"] },
+    "Argentina": { code: "AR", colors: ["#74acdf", "#ffffff", "#74acdf"] },
+    "Algeria": { code: "DZ", colors: ["#006233", "#ffffff", "#d21034"] },
+    "Austria": { code: "AT", colors: ["#ed2939", "#ffffff", "#ed2939"] },
+    "Jordan": { code: "JO", colors: ["#000000", "#ffffff", "#007a3d", "#ce1126"] },
+    "Portugal": { code: "PT", colors: ["#006600", "#ff0000"] },
+    "DR Congo": { code: "CD", colors: ["#007fff", "#f7d618", "#ce1021"] },
+    "Uzbekistan": { code: "UZ", colors: ["#1eb5e5", "#ffffff", "#009739"] },
+    "Colombia": { code: "CO", colors: ["#fcd116", "#003893", "#ce1126"] },
+    "Ghana": { code: "GH", colors: ["#ce1126", "#fcd116", "#006b3f"] },
+    "Panama": { code: "PA", colors: ["#ffffff", "#005293", "#d21034"] },
+    "England": { code: "ENG", colors: ["#ffffff", "#cf142b"] },
+    "Croatia": { code: "HR", colors: ["#ff0000", "#ffffff", "#171796"] }
   };
 
   function blankStats(team) {
@@ -529,11 +541,23 @@
 
   function teamHtml(team) {
     var safeTeam = escapeHtml(team);
-    var flagCode = flagCodes[team];
-    var flag = flagCode
-      ? '<img class="team-flag" src="https://flagcdn.com/w40/' + flagCode + '.png" srcset="https://flagcdn.com/w80/' + flagCode + '.png 2x" width="22" height="16" loading="lazy" alt="">'
-      : '<span class="team-flag" aria-hidden="true"></span>';
+    var flag = '<img class="team-flag" src="' + flagDataUrl(team) + '" width="22" height="16" loading="lazy" alt="">';
     return '<span class="team-chip" title="' + safeTeam + '" aria-label="' + safeTeam + '">' + flag + '<span class="team-name">' + safeTeam + '</span></span>';
+  }
+
+  function flagDataUrl(team) {
+    var style = flagStyles[team] || { code: "FC", colors: ["#1f8f77", "#ffffff", "#de6a38"] };
+    var colors = style.colors;
+    var stripeWidth = 60 / colors.length;
+    var stripes = colors.map(function (color, index) {
+      return '<rect x="' + (index * stripeWidth) + '" y="0" width="' + stripeWidth + '" height="40" fill="' + color + '"/>';
+    }).join("");
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40">' +
+      stripes +
+      '<rect x="0" y="0" width="60" height="40" fill="none" stroke="rgba(0,0,0,0.22)" stroke-width="1"/>' +
+      '<text x="30" y="25" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="800" fill="#201713" stroke="#fff" stroke-width="3" paint-order="stroke">' + escapeHtml(style.code) + '</text>' +
+      '</svg>';
+    return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
   }
 
   function isLive(match) {
@@ -703,6 +727,33 @@
     var img = document.getElementById("share-preview");
     img.src = canvas.toDataURL("image/png");
     img.style.display = "block";
+    document.getElementById("share-actions").classList.add("is-visible");
+  }
+
+  function downloadShareCard() {
+    var canvas = document.getElementById("share-canvas");
+    if (!document.getElementById("share-preview").src) generateShareCard();
+    var link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = "snackpack-world-cup-2026-picks.png";
+    link.click();
+  }
+
+  function nativeShareCard() {
+    var canvas = document.getElementById("share-canvas");
+    if (!document.getElementById("share-preview").src) generateShareCard();
+    canvas.toBlob(function (blob) {
+      var file = new File([blob], "snackpack-world-cup-2026-picks.png", { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({
+          title: "My World Cup 2026 picks",
+          text: "I made my World Cup 2026 picks on SnackPack.",
+          files: [file]
+        }).catch(function () {});
+        return;
+      }
+      downloadShareCard();
+    }, "image/png");
   }
 
   function switchView(view) {
@@ -728,6 +779,8 @@
       renderKnockout();
     });
     document.getElementById("share-card").addEventListener("click", generateShareCard);
+    document.getElementById("download-card").addEventListener("click", downloadShareCard);
+    document.getElementById("native-share-card").addEventListener("click", nativeShareCard);
 
     renderGroups();
     renderMatches();

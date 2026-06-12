@@ -66,12 +66,14 @@ function normalizeFixture(fixture) {
   const home = normalizeTeam(fixture.teams?.home?.name || "");
   const away = normalizeTeam(fixture.teams?.away?.name || "");
   const group = groupByPair.get(pairKey(home, away)) || "";
+  const fixtureId = fixture.fixture?.id ? String(fixture.fixture.id) : "";
   const statusShort = fixture.fixture?.status?.short;
   const statusLong = fixture.fixture?.status?.long || "";
   const elapsed = fixture.fixture?.status?.elapsed ?? null;
   const isPlayed = ["FT", "AET", "PEN"].includes(statusShort);
   const isLive = ["1H", "2H", "HT", "ET", "BT", "P", "LIVE"].includes(statusShort);
   const match = {
+    id: fixtureId,
     date: formatDate(fixture.fixture?.date),
     isoDate: String(fixture.fixture?.date || "").slice(0, 10),
     time: isPlayed ? "FT" : isLive ? (statusShort === "HT" ? "HT" : "Live") : formatTime(fixture.fixture?.date),
@@ -122,11 +124,22 @@ async function fetchApiFootball() {
 
 function mergeMatches(current, incoming) {
   const merged = new Map();
-  for (const match of current.matches || []) merged.set(pairKey(match.home, match.away), match);
-  for (const match of incoming) merged.set(pairKey(match.home, match.away), match);
+  for (const match of current.matches || []) merged.set(matchKey(match), match);
+  for (const match of incoming) {
+    merged.delete(legacyMatchKey(match));
+    merged.set(matchKey(match), match);
+  }
   return Array.from(merged.values()).sort((a, b) => {
     return String(a.isoDate || a.date).localeCompare(String(b.isoDate || b.date)) || a.home.localeCompare(b.home);
   });
+}
+
+function legacyMatchKey(match) {
+  return `date:${match.isoDate || match.date || ""}::${pairKey(match.home, match.away)}`;
+}
+
+function matchKey(match) {
+  return match.id ? `fixture:${match.id}` : legacyMatchKey(match);
 }
 
 async function main() {
