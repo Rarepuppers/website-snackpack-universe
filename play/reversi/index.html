@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Reversi / Othello Online Free vs Computer | No Ads — SnackPack</title>
+<meta name="description" content="Play Reversi (Othello) free in your browser against the computer — flip discs to outnumber your opponent. Three difficulty levels, legal-move hints, no ads, no sign-in, no download. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/reversi/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Reversi / Othello Online Free vs Computer | No Ads">
+<meta property="og:description" content="Flip discs to outnumber the computer in classic Reversi (Othello). Three levels, free in your browser — no ads, no sign-in.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/reversi/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<style>
+/* Reversi board (local styles). */
+.rv-board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  width: min(92vw, 420px);
+  aspect-ratio: 1 / 1;
+  padding: 6px;
+  background: #1f6f4f;
+  border: 4px solid #14502f;
+  border-radius: 10px;
+  margin: 0 auto;
+  touch-action: manipulation;
+}
+.rv-sq { position: relative; background: #2a8a63; border-radius: 4px; display: grid; place-items: center; cursor: default; }
+.rv-disc { width: 80%; height: 80%; border-radius: 999px; }
+.rv-disc.b { background: radial-gradient(circle at 35% 30%, #4a4a52, #15151a); box-shadow: 0 2px 3px rgba(0,0,0,0.35); }
+.rv-disc.w { background: radial-gradient(circle at 35% 30%, #ffffff, #d6d2c8); box-shadow: 0 2px 3px rgba(0,0,0,0.3); }
+.rv-sq.legal { cursor: pointer; }
+.rv-sq.legal::after {
+  content: ""; width: 26%; height: 26%; border-radius: 999px;
+  background: rgba(255,255,255,0.35); outline: 2px solid rgba(255,255,255,0.4);
+}
+.rv-sq.legal:hover::after { background: rgba(255,255,255,0.55); }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Reversi (Othello)",
+  "url": "https://www.snackpackuniverse.com/play/reversi/",
+  "applicationCategory": "Game",
+  "genre": "Strategy",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser Reversi / Othello against a computer opponent with three difficulty levels and legal-move hints. Flip discs to outnumber your opponent. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Reversi (Othello)",
+  "step": [
+    { "@type": "HowToStep", "name": "Place a disc", "text": "On your turn, place a disc so that it traps a straight line of your opponent's discs between the new disc and another of your own." },
+    { "@type": "HowToStep", "name": "Flip the trapped discs", "text": "Every opponent disc on a bracketed line flips to your colour." },
+    { "@type": "HowToStep", "name": "Pass if stuck", "text": "If you have no legal move, your turn is skipped." },
+    { "@type": "HowToStep", "name": "Hold the majority", "text": "When the board is full or neither player can move, whoever has more discs wins." }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Reversi</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Reversi</h1>
+        <p class="lead" style="max-width:580px;margin-left:auto;margin-right:auto;">The classic disc-flipping game, also known as Othello. Trap your opponent's pieces to flip them, grab the corners, and finish with the most discs. Play the computer across three levels. No ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>You ⚫</span><b id="rv-you">2</b></span>
+            <span class="readout-chip"><span>CPU ⚪</span><b id="rv-cpu">2</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Difficulty">
+              <button type="button" data-level="1" aria-pressed="false">Easy</button>
+              <button type="button" data-level="3" aria-pressed="true">Medium</button>
+              <button type="button" data-level="5" aria-pressed="false">Hard</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="rv-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="rv-status" aria-live="polite">Your move — you're black. Legal squares are dotted.</p>
+        <div class="game-board-wrap">
+          <div class="rv-board" id="rv-board" role="grid" aria-label="Reversi board"></div>
+        </div>
+        <p class="game-hint">Click a dotted square to place a disc and flip the trapped line · Corners can't be flipped — grab them.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">Play on the go</span>
+          <h2>Like it? Take it offline.</h2>
+          <p>Reversi is one of nine classics in Snackpack Brain Games — our calm, ad-free Android bundle of strategy, cards and puzzles.</p>
+          <ul class="funnel-points">
+            <li>Plays fully offline — flights, commutes, anywhere</li>
+            <li>Wins &amp; daily streaks saved on your device</li>
+            <li>Eight more games in the same app · no ads, no tracking</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games on Google Play">
+              <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play">
+            </a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <img class="funnel-qr" src="../../assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play">
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;">Scan to download</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Reversi (Othello)</h2>
+      <p>Reversi is played on an 8×8 board. It begins with four discs in the centre — two black, two white — placed diagonally. You play black and move first. On your turn you place a disc on an empty square so that it <strong>brackets</strong> one or more of your opponent's discs in a straight line — horizontally, vertically, or diagonally — with another of your discs at the far end. Every opponent disc trapped on those lines flips to your colour. You can only play a move that flips at least one disc.</p>
+      <p>If you have no legal move, your turn is skipped (a pass). The game ends when the board is full or neither player can move, and whoever has more discs on the board wins. Here the legal squares for your turn are shown as small dots — just click one to place and flip.</p>
+
+      <h3>Strategy tips</h3>
+      <ul>
+        <li><strong>Corners are everything.</strong> A disc in a corner can never be flipped, and it anchors whole edges. Take corners whenever you safely can.</li>
+        <li><strong>Avoid the X-squares.</strong> The squares diagonally next to a corner are dangerous early — they often hand your opponent the corner.</li>
+        <li><strong>Fewer is more, early on.</strong> Having the <em>most</em> discs in the midgame is often bad; it usually means fewer safe moves later. Prioritise mobility.</li>
+        <li><strong>Limit your opponent's options.</strong> Aim for positions where they have very few legal moves — even forcing them to pass.</li>
+        <li><strong>Build stable edges.</strong> Discs anchored to a corner along an edge are safe and powerful.</li>
+      </ul>
+
+      <h3>A little history</h3>
+      <p>Reversi dates to 1880s England, where two inventors disputed its origin. The modern, standardised version — fixed starting position and the name <em>Othello</em> — was popularised in Japan in the early 1970s by Goro Hasegawa, and it became a worldwide bestseller. Its appeal is famous: "a minute to learn, a lifetime to master." Computers play it extremely well, but the opponent here is tuned to give you a fair, enjoyable game.</p>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Reversi the same as Othello?</summary><p>Practically yes — Othello is a standardised version of Reversi with a fixed starting position. The rules you play here are the common modern ones.</p></details>
+        <details class="faq-item"><summary>Why can't I place a disc on some squares?</summary><p>A move is only legal if it traps at least one of the opponent's discs between your new disc and an existing one. Legal squares are shown as dots.</p></details>
+        <details class="faq-item"><summary>What happens if I can't move?</summary><p>Your turn is passed automatically. If neither player can move, the game ends and the majority of discs wins.</p></details>
+        <details class="faq-item"><summary>Can I play offline?</summary><p>The web version needs an open browser tab. For fully offline play, install the free <a class="text-link" href="../../apps/snackpack-brain-games/" style="color:var(--accent);">Snackpack Brain Games</a> app on Android.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Reversi free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../apps/snackpack-brain-games/">Brain Games app</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+  // 1 = black (human), -1 = white (cpu), 0 empty. Index r*8+c.
+  var HUMAN = 1, CPU = -1;
+  var DIRS = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+  // Positional weights for the CPU evaluation.
+  var W = [
+    120,-20, 20,  5,  5, 20,-20,120,
+    -20,-40, -5, -5, -5, -5,-40,-20,
+     20, -5, 15,  3,  3, 15, -5, 20,
+      5, -5,  3,  3,  3,  3, -5,  5,
+      5, -5,  3,  3,  3,  3, -5,  5,
+     20, -5, 15,  3,  3, 15, -5, 20,
+    -20,-40, -5, -5, -5, -5,-40,-20,
+    120,-20, 20,  5,  5, 20,-20,120
+  ];
+
+  var boardEl = document.getElementById("rv-board");
+  var statusEl = document.getElementById("rv-status");
+  var youEl = document.getElementById("rv-you");
+  var cpuEl = document.getElementById("rv-cpu");
+  var newBtn = document.getElementById("rv-new");
+
+  var board, cells, busy = false, gameOver = false, depth = 3, legal = [];
+
+  function build() {
+    boardEl.innerHTML = "";
+    cells = [];
+    for (var i = 0; i < 64; i++) {
+      var sq = document.createElement("div");
+      sq.className = "rv-sq";
+      sq.dataset.i = i;
+      cells.push(sq);
+      boardEl.appendChild(sq);
+    }
+  }
+
+  function reset() {
+    board = new Array(64).fill(0);
+    board[27] = -1; board[28] = 1; board[35] = 1; board[36] = -1; // d4 w, e4 b, d5 b, e5 w
+    busy = false; gameOver = false;
+    statusEl.className = "game-status";
+    statusEl.textContent = "Your move — you're black. Legal squares are dotted.";
+    render();
+  }
+
+  function flipsFor(b, idx, who) {
+    if (b[idx] !== 0) return [];
+    var r = Math.floor(idx / 8), c = idx % 8, all = [];
+    for (var d = 0; d < DIRS.length; d++) {
+      var dr = DIRS[d][0], dc = DIRS[d][1], rr = r + dr, cc = c + dc, line = [];
+      while (rr >= 0 && rr < 8 && cc >= 0 && cc < 8 && b[rr * 8 + cc] === -who) {
+        line.push(rr * 8 + cc); rr += dr; cc += dc;
+      }
+      if (line.length && rr >= 0 && rr < 8 && cc >= 0 && cc < 8 && b[rr * 8 + cc] === who) {
+        all = all.concat(line);
+      }
+    }
+    return all;
+  }
+
+  function legalMoves(b, who) {
+    var out = [];
+    for (var i = 0; i < 64; i++) {
+      if (b[i] !== 0) continue;
+      var f = flipsFor(b, i, who);
+      if (f.length) out.push({ idx: i, flips: f });
+    }
+    return out;
+  }
+
+  function applyMove(b, mv, who) {
+    var nb = b.slice();
+    nb[mv.idx] = who;
+    mv.flips.forEach(function (i) { nb[i] = who; });
+    return nb;
+  }
+
+  function counts(b) {
+    var you = 0, cpu = 0;
+    for (var i = 0; i < 64; i++) { if (b[i] === 1) you++; else if (b[i] === -1) cpu++; }
+    return { you: you, cpu: cpu };
+  }
+
+  function render() {
+    legal = gameOver ? [] : legalMoves(board, HUMAN);
+    var legalSet = {};
+    legal.forEach(function (m) { legalSet[m.idx] = true; });
+    for (var i = 0; i < 64; i++) {
+      var sq = cells[i];
+      sq.className = "rv-sq" + (!busy && !gameOver && legalSet[i] ? " legal" : "");
+      sq.innerHTML = "";
+      if (board[i] !== 0) {
+        var d = document.createElement("div");
+        d.className = "rv-disc " + (board[i] === 1 ? "b" : "w");
+        sq.appendChild(d);
+      }
+    }
+    var cnt = counts(board);
+    youEl.textContent = cnt.you; cpuEl.textContent = cnt.cpu;
+  }
+
+  function humanPlay(i) {
+    if (busy || gameOver) return;
+    var mv = legal.filter(function (m) { return m.idx === i; })[0];
+    if (!mv) return;
+    board = applyMove(board, mv, HUMAN);
+    busy = true;
+    render();
+    setTimeout(nextAfterHuman, 250);
+  }
+
+  function nextAfterHuman() {
+    // CPU turn, handling passes.
+    if (endIfDone()) return;
+    if (legalMoves(board, CPU).length === 0) {
+      // CPU passes
+      if (legalMoves(board, HUMAN).length === 0) { finish(); return; }
+      busy = false;
+      statusEl.textContent = "Computer has no move — it passes. Your turn.";
+      render();
+      return;
+    }
+    statusEl.textContent = "Computer is thinking…";
+    setTimeout(function () {
+      var mv = pickCpuMove();
+      board = applyMove(board, mv, CPU);
+      render();
+      // Back to human, handle human pass
+      if (endIfDone()) return;
+      if (legalMoves(board, HUMAN).length === 0) {
+        if (legalMoves(board, CPU).length === 0) { finish(); return; }
+        statusEl.textContent = "You have no move — you pass. Computer plays again…";
+        busy = true;
+        setTimeout(nextAfterHuman, 600);
+        return;
+      }
+      busy = false;
+      statusEl.textContent = "Your move — you're black.";
+      render();
+    }, 300);
+  }
+
+  function endIfDone() {
+    if (legalMoves(board, HUMAN).length === 0 && legalMoves(board, CPU).length === 0) { finish(); return true; }
+    return false;
+  }
+
+  function finish() {
+    gameOver = true; busy = false;
+    var cnt = counts(board);
+    render();
+    if (cnt.you > cnt.cpu) {
+      statusEl.textContent = "You win " + cnt.you + "–" + cnt.cpu + "! 🎉";
+      statusEl.className = "game-status";
+      if (window.SnackPack) window.SnackPack.celebrate({
+        title: "You won at Reversi! 🎉",
+        body: "Great board control — " + cnt.you + "–" + cnt.cpu + ". We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app to play Reversi and eight more, offline."
+      });
+    } else if (cnt.cpu > cnt.you) {
+      statusEl.textContent = "Computer wins " + cnt.cpu + "–" + cnt.you + ". Try again!";
+      statusEl.className = "game-status game-status--lose";
+    } else {
+      statusEl.textContent = "It's a tie, " + cnt.you + "–" + cnt.cpu + ". Rematch?";
+      statusEl.className = "game-status";
+    }
+  }
+
+  // ── AI: minimax with alpha-beta ──────────────────
+  function evaluate(b) {
+    // From CPU's perspective (CPU wants to maximise its score).
+    var s = 0, cnt = counts(b);
+    var empties = 64 - cnt.you - cnt.cpu;
+    for (var i = 0; i < 64; i++) {
+      if (b[i] === CPU) s += W[i];
+      else if (b[i] === HUMAN) s -= W[i];
+    }
+    // Mobility matters more in the midgame.
+    var cpuMob = legalMoves(b, CPU).length, humMob = legalMoves(b, HUMAN).length;
+    s += (cpuMob - humMob) * (empties > 8 ? 8 : 2);
+    // Late game: disc count dominates.
+    if (empties <= 10) s += (cnt.cpu - cnt.you) * 6;
+    return s;
+  }
+
+  function minimax(b, d, alpha, beta, who) {
+    var moves = legalMoves(b, who);
+    if (d === 0) return evaluate(b);
+    if (moves.length === 0) {
+      // pass; if both pass, terminal
+      if (legalMoves(b, -who).length === 0) {
+        var c = counts(b);
+        return (c.cpu - c.you) * 1000;
+      }
+      return minimax(b, d - 1, alpha, beta, -who);
+    }
+    var i;
+    if (who === CPU) {
+      var best = -Infinity;
+      for (i = 0; i < moves.length; i++) {
+        best = Math.max(best, minimax(applyMove(b, moves[i], CPU), d - 1, alpha, beta, HUMAN));
+        alpha = Math.max(alpha, best);
+        if (alpha >= beta) break;
+      }
+      return best;
+    } else {
+      var worst = Infinity;
+      for (i = 0; i < moves.length; i++) {
+        worst = Math.min(worst, minimax(applyMove(b, moves[i], HUMAN), d - 1, alpha, beta, CPU));
+        beta = Math.min(beta, worst);
+        if (alpha >= beta) break;
+      }
+      return worst;
+    }
+  }
+
+  function pickCpuMove() {
+    var moves = legalMoves(board, CPU);
+    if (depth <= 1 && Math.random() < 0.25) return moves[Math.floor(Math.random() * moves.length)];
+    var best = moves[0], bestVal = -Infinity;
+    for (var i = 0; i < moves.length; i++) {
+      var v = minimax(applyMove(board, moves[i], CPU), depth - 1, -Infinity, Infinity, HUMAN);
+      if (v > bestVal) { bestVal = v; best = moves[i]; }
+    }
+    return best;
+  }
+
+  // ── Input ────────────────────────────────────────
+  boardEl.addEventListener("click", function (e) {
+    var sq = e.target.closest(".rv-sq"); if (!sq) return;
+    humanPlay(+sq.dataset.i);
+  });
+  newBtn.addEventListener("click", reset);
+  document.querySelectorAll(".seg [data-level]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      depth = +btn.dataset.level;
+      document.querySelectorAll(".seg [data-level]").forEach(function (x) {
+        x.setAttribute("aria-pressed", String(x === btn));
+      });
+      reset();
+    });
+  });
+
+  build();
+  reset();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

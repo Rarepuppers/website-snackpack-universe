@@ -21,6 +21,7 @@ Key facts that apply to every SnackPack app: no third-party ads, no tracking or 
 - [Play Word Search](https://www.snackpackuniverse.com/play/word-search/): Free browser Word Search across themed word lists (Animals, Food, Nature, Space); drag or tap to find words in any of eight directions. Includes rules, strategy, and history.
 - [Play Solitaire](https://www.snackpackuniverse.com/play/solitaire/): Free browser Klondike Solitaire with Draw 1 and Draw 3 modes, click-to-move, undo, timer and move counter. Includes rules, strategy, and history.
 - [Play Checkers](https://www.snackpackuniverse.com/play/checkers/): Free browser Checkers (draughts) vs a computer opponent with three difficulty levels, compulsory captures, multi-jumps and kings. Includes rules, strategy, and history.
+- [Play Reversi](https://www.snackpackuniverse.com/play/reversi/): Free browser Reversi / Othello vs a computer opponent with three difficulty levels, legal-move hints, corner-aware AI and pass handling. Includes rules, strategy, and history.
 
 ## Guides
 
