@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Minesweeper Online Free | No Ads, No Download — SnackPack</title>
+<meta name="description" content="Play Minesweeper free in your browser — no ads, no sign-in, no download. Flags, a timer, and Beginner, Intermediate and Expert boards. Plus rules and strategy. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/minesweeper/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Minesweeper Online Free | No Ads, No Download">
+<meta property="og:description" content="The timeless logic puzzle, free in your browser. Flags, timer, three difficulties — no ads, no sign-in.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/minesweeper/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Minesweeper",
+  "url": "https://www.snackpackuniverse.com/play/minesweeper/",
+  "applicationCategory": "Game",
+  "genre": "Puzzle",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "description": "Free browser Minesweeper with flags, a timer, and Beginner, Intermediate and Expert difficulty. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Minesweeper",
+  "step": [
+    { "@type": "HowToStep", "name": "Make the first move", "text": "Click any square to start. Your first click is always safe and reveals an opening area." },
+    { "@type": "HowToStep", "name": "Read the numbers", "text": "Each revealed number tells you how many mines touch that square, counting all eight neighbours." },
+    { "@type": "HowToStep", "name": "Flag the mines", "text": "Right-click (or long-press on mobile) a square you believe is a mine to place a flag." },
+    { "@type": "HowToStep", "name": "Clear the board", "text": "Reveal every safe square without detonating a mine to win." }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is this Minesweeper free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It plays free in your browser with no ads, no sign-in, and no download required." } },
+    { "@type": "Question", "name": "How do I place a flag?", "acceptedAnswer": { "@type": "Answer", "text": "Right-click a square on desktop, or long-press it on a touchscreen. You can also toggle Flag mode and then tap squares." } },
+    { "@type": "Question", "name": "Is the first click always safe?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Mines are placed after your first click so you never lose on the opening move." } },
+    { "@type": "Question", "name": "Can I play Minesweeper offline?", "acceptedAnswer": { "@type": "Answer", "text": "The web version needs a browser tab open. For fully offline play with saved stats, install the free Snackpack Brain Games app on Android." } }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Minesweeper</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Minesweeper</h1>
+        <p class="lead" style="max-width:620px;margin-left:auto;margin-right:auto;">Clear the field without detonating a mine. Pure logic, no luck once you're rolling — flags, a timer, and three classic board sizes. No ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Mines</span><b id="ms-mines">10</b></span>
+            <span class="readout-chip"><span>Time</span><b id="ms-time">0</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Difficulty">
+              <button type="button" data-diff="beginner" aria-pressed="true">Beginner</button>
+              <button type="button" data-diff="intermediate" aria-pressed="false">Inter</button>
+              <button type="button" data-diff="expert" aria-pressed="false">Expert</button>
+            </div>
+            <button class="btn-game" id="ms-flagmode" type="button" aria-pressed="false" title="Toggle flag mode for touch">🚩 Flag</button>
+            <button class="btn-game btn-game--primary" id="ms-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="ms-status" aria-live="polite">Click any square to begin.</p>
+        <div class="game-board-wrap">
+          <div class="ms-grid" id="ms-grid" role="grid" aria-label="Minesweeper board"></div>
+        </div>
+        <p class="game-hint">Left-click to reveal · Right-click or long-press to flag · First click is always safe.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">Play on the go</span>
+          <h2>Like it? Take it offline.</h2>
+          <p>The full Minesweeper — with extra lives, chord reveal, number highlights and saved best times — is part of Snackpack Brain Games, our calm Android bundle of nine classics.</p>
+          <ul class="funnel-points">
+            <li>Plays fully offline — flights, commutes, anywhere</li>
+            <li>Best times &amp; daily streaks saved on your device</li>
+            <li>Eight more games in the same app · no ads, no tracking</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games on Google Play">
+              <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play">
+            </a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <img class="funnel-qr" src="../../assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play">
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;">Scan to download</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Minesweeper</h2>
+      <p>The goal is simple: reveal every square that doesn't hide a mine. Click a square to uncover it. If it's a mine, the game ends; if it's safe, it shows a number — the count of mines touching that square across all eight neighbours. A blank square means zero nearby mines, so the board automatically opens up the surrounding area for you.</p>
+      <p>Your very first click is always safe, and it usually opens a large region to give you a foothold. From there, the numbers are everything: they let you deduce exactly where the mines are. Mark suspected mines with a flag (right-click on desktop, long-press on mobile, or switch on Flag mode and tap) so you don't click them by accident.</p>
+
+      <h3>A few strategy tips</h3>
+      <ul>
+        <li><strong>Start from the edges and corners.</strong> Squares with fewer neighbours give you cleaner information.</li>
+        <li><strong>Use the "1" rule.</strong> A <em>1</em> touching exactly one unrevealed square means that square is a mine — flag it.</li>
+        <li><strong>Use the satisfied-number rule.</strong> If a number already has all its mines flagged, every other neighbour is safe to open.</li>
+        <li><strong>Look for patterns.</strong> A row reading <em>1-2-1</em> or <em>1-2-2-1</em> along a wall has known mine positions worth memorising.</li>
+        <li><strong>When stuck, count.</strong> Compare two adjacent numbers and the squares they share to force out a safe move before you ever guess.</li>
+      </ul>
+
+      <h3>A little history</h3>
+      <p>Minesweeper's roots go back to mainframe and early home-computer puzzles of the 1960s and 70s, but it reached hundreds of millions of people bundled with Microsoft Windows from 1990 onward. For a generation it was the definitive "quick break" game — a pure test of logic you could finish in a minute or chase for a record time. It endures because the rules fit in a sentence and the deduction never gets old.</p>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is this Minesweeper free?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>How do I place a flag?</summary><p>Right-click a square on desktop, or long-press on a touchscreen. You can also tap the “🚩 Flag” button to switch into flag mode and then tap squares.</p></details>
+        <details class="faq-item"><summary>Is the first click always safe?</summary><p>Yes. Mines are placed after your first click, so you can never lose on the opening move.</p></details>
+        <details class="faq-item"><summary>Can I play offline?</summary><p>The web version needs an open browser tab. For fully offline play with saved best times, install the free <a class="text-link" href="../../apps/snackpack-brain-games/" style="color:var(--accent);">Snackpack Brain Games</a> app on Android.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Minesweeper free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../apps/snackpack-brain-games/">Brain Games app</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+  var LEVELS = {
+    beginner:     { rows: 9,  cols: 9,  mines: 10 },
+    intermediate: { rows: 16, cols: 16, mines: 40 },
+    expert:       { rows: 16, cols: 30, mines: 99 }
+  };
+
+  var gridEl = document.getElementById("ms-grid");
+  var minesEl = document.getElementById("ms-mines");
+  var timeEl = document.getElementById("ms-time");
+  var statusEl = document.getElementById("ms-status");
+  var newBtn = document.getElementById("ms-new");
+  var flagBtn = document.getElementById("ms-flagmode");
+
+  var diff = "beginner";
+  var flagMode = false;
+  var rows, cols, mineCount;
+  var mineSet, revealed, flags, adj, cells;
+  var started, over, won, placed, flagsUsed, revealCount, timer, seconds;
+
+  function reset() {
+    var lv = LEVELS[diff];
+    rows = lv.rows; cols = lv.cols; mineCount = lv.mines;
+    mineSet = {}; revealed = []; flags = []; adj = [];
+    started = false; over = false; won = false; placed = false;
+    flagsUsed = 0; revealCount = 0; seconds = 0;
+    clearInterval(timer); timer = null;
+    minesEl.textContent = mineCount;
+    timeEl.textContent = "0";
+    statusEl.textContent = "Click any square to begin.";
+    statusEl.className = "game-status";
+    build();
+  }
+
+  function build() {
+    gridEl.style.gridTemplateColumns = "repeat(" + cols + ", 32px)";
+    gridEl.innerHTML = "";
+    cells = [];
+    // Shrink cells for the big expert board so it fits.
+    var size = cols > 20 ? 26 : 32;
+    gridEl.style.gridTemplateColumns = "repeat(" + cols + ", " + size + "px)";
+    for (var i = 0; i < rows * cols; i++) {
+      revealed[i] = false; flags[i] = false; adj[i] = 0;
+      var b = document.createElement("button");
+      b.className = "ms-cell";
+      b.style.width = size + "px";
+      b.style.height = size + "px";
+      b.type = "button";
+      b.dataset.i = i;
+      cells.push(b);
+      gridEl.appendChild(b);
+    }
+  }
+
+  function idx(r, c) { return r * cols + c; }
+
+  function neighbours(i) {
+    var r = Math.floor(i / cols), c = i % cols, out = [];
+    for (var dr = -1; dr <= 1; dr++) for (var dc = -1; dc <= 1; dc++) {
+      if (!dr && !dc) continue;
+      var nr = r + dr, nc = c + dc;
+      if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) out.push(idx(nr, nc));
+    }
+    return out;
+  }
+
+  function placeMines(safe) {
+    var safeZone = {};
+    safeZone[safe] = true;
+    neighbours(safe).forEach(function (n) { safeZone[n] = true; });
+    var pool = [];
+    for (var i = 0; i < rows * cols; i++) if (!safeZone[i]) pool.push(i);
+    for (var m = 0; m < mineCount && pool.length; m++) {
+      var k = Math.floor(Math.random() * pool.length);
+      mineSet[pool[k]] = true;
+      pool.splice(k, 1);
+    }
+    for (var j = 0; j < rows * cols; j++) {
+      if (mineSet[j]) continue;
+      var cnt = 0;
+      neighbours(j).forEach(function (n) { if (mineSet[n]) cnt++; });
+      adj[j] = cnt;
+    }
+    placed = true;
+  }
+
+  function startTimer() {
+    timer = setInterval(function () {
+      seconds++;
+      timeEl.textContent = seconds;
+    }, 1000);
+  }
+
+  function reveal(i) {
+    if (over || revealed[i] || flags[i]) return;
+    if (!placed) placeMines(i);
+    if (!started) { started = true; startTimer(); }
+
+    if (mineSet[i]) { lose(i); return; }
+
+    // Flood fill for zero-adjacency squares.
+    var stack = [i];
+    while (stack.length) {
+      var cur = stack.pop();
+      if (revealed[cur] || flags[cur]) continue;
+      revealed[cur] = true; revealCount++;
+      var el = cells[cur];
+      el.classList.add("is-open");
+      if (adj[cur] > 0) {
+        el.textContent = adj[cur];
+        el.dataset.n = adj[cur];
+      } else {
+        neighbours(cur).forEach(function (n) {
+          if (!revealed[n] && !mineSet[n]) stack.push(n);
+        });
+      }
+    }
+    checkWin();
+  }
+
+  function chord(i) {
+    // Reveal neighbours of a satisfied number.
+    if (!revealed[i] || adj[i] === 0) return;
+    var f = 0;
+    neighbours(i).forEach(function (n) { if (flags[n]) f++; });
+    if (f === adj[i]) neighbours(i).forEach(function (n) { if (!flags[n]) reveal(n); });
+  }
+
+  function toggleFlag(i) {
+    if (over || revealed[i]) return;
+    flags[i] = !flags[i];
+    flagsUsed += flags[i] ? 1 : -1;
+    cells[i].classList.toggle("is-flag", flags[i]);
+    cells[i].textContent = flags[i] ? "🚩" : "";
+    minesEl.textContent = mineCount - flagsUsed;
+  }
+
+  function lose(hit) {
+    over = true;
+    clearInterval(timer);
+    for (var i = 0; i < rows * cols; i++) {
+      if (mineSet[i]) {
+        cells[i].classList.add("is-open", "is-mine");
+        if (!flags[i]) cells[i].textContent = "💣";
+      }
+    }
+    cells[hit].textContent = "💥";
+    statusEl.textContent = "Boom! You hit a mine. Try again.";
+    statusEl.className = "game-status game-status--lose";
+  }
+
+  function checkWin() {
+    if (revealCount === rows * cols - mineCount) {
+      over = true; won = true;
+      clearInterval(timer);
+      for (var i = 0; i < rows * cols; i++) {
+        if (mineSet[i] && !flags[i]) {
+          cells[i].classList.add("is-flag");
+          cells[i].textContent = "🚩";
+        }
+      }
+      minesEl.textContent = 0;
+      statusEl.textContent = "Cleared in " + seconds + "s — well played! 🎉";
+      statusEl.className = "game-status";
+      if (window.SnackPack) window.SnackPack.celebrate({
+        title: "Board cleared! 🎉",
+        body: "Nice deduction — solved in " + seconds + "s. We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app to play Minesweeper offline with saved best times."
+      });
+    }
+  }
+
+  // ── Input ────────────────────────────────────────
+  gridEl.addEventListener("click", function (e) {
+    var t = e.target.closest(".ms-cell"); if (!t) return;
+    var i = +t.dataset.i;
+    if (flagMode) { toggleFlag(i); return; }
+    if (revealed[i]) chord(i); else reveal(i);
+  });
+
+  gridEl.addEventListener("contextmenu", function (e) {
+    var t = e.target.closest(".ms-cell"); if (!t) return;
+    e.preventDefault();
+    toggleFlag(+t.dataset.i);
+  });
+
+  // Long-press to flag on touch.
+  var pressTimer = null, longPressed = false;
+  gridEl.addEventListener("touchstart", function (e) {
+    var t = e.target.closest(".ms-cell"); if (!t) return;
+    longPressed = false;
+    pressTimer = setTimeout(function () {
+      longPressed = true;
+      toggleFlag(+t.dataset.i);
+    }, 350);
+  }, { passive: true });
+  gridEl.addEventListener("touchend", function (e) {
+    clearTimeout(pressTimer);
+    if (longPressed) { e.preventDefault(); }
+  });
+  gridEl.addEventListener("touchmove", function () { clearTimeout(pressTimer); }, { passive: true });
+
+  flagBtn.addEventListener("click", function () {
+    flagMode = !flagMode;
+    flagBtn.setAttribute("aria-pressed", String(flagMode));
+    flagBtn.classList.toggle("btn-game--primary", flagMode);
+  });
+
+  newBtn.addEventListener("click", reset);
+
+  document.querySelectorAll(".seg [data-diff]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      diff = btn.dataset.diff;
+      document.querySelectorAll(".seg [data-diff]").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b === btn));
+      });
+      reset();
+    });
+  });
+
+  reset();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
