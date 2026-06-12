@@ -17,6 +17,7 @@ Key facts that apply to every SnackPack app: no third-party ads, no tracking or 
 - [Play Minesweeper](https://www.snackpackuniverse.com/play/minesweeper/): Free browser Minesweeper with flags, a timer, and Beginner/Intermediate/Expert boards; first click always safe. Includes rules, strategy, and history.
 - [Play 2048](https://www.snackpackuniverse.com/play/2048/): Free browser 2048 — slide and merge tiles to reach 2048; arrow keys or swipe, best score saved locally. Includes rules, strategy, and history.
 - [Play Connect 4](https://www.snackpackuniverse.com/play/connect-4/): Free browser Connect 4 vs a computer opponent with three difficulty levels. Includes rules, strategy, and history.
+- [Play Sudoku](https://www.snackpackuniverse.com/play/sudoku/): Free browser Sudoku with Easy/Medium/Hard/Expert puzzles (unique solutions), pencil notes, hints and mistake checking. Includes rules, strategy, and history.
 
 ## Guides
 

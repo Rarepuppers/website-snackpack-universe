@@ -37,6 +37,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.snackpackuniverse.com/play/sudoku/</loc>
+    <lastmod>2026-06-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.snackpackuniverse.com/guides/</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>monthly</changefreq>

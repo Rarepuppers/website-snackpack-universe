@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Sudoku Online Free | No Ads, No Download — SnackPack</title>
+<meta name="description" content="Play Sudoku free in your browser — Easy, Medium, Hard and Expert puzzles with pencil notes, mistake checking and hints. No ads, no sign-in, no download. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/sudoku/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Sudoku Online Free | No Ads, No Download">
+<meta property="og:description" content="Easy to Expert Sudoku, free in your browser. Pencil notes, hints, mistake check — no ads, no sign-in.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/sudoku/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<style>
+/* Sudoku-specific board styles (kept local; play.css holds shared bits). */
+.su-board {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  width: min(92vw, 460px);
+  aspect-ratio: 1 / 1;
+  background: var(--ink);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  overflow: hidden;
+  gap: 1px;
+}
+.su-cell {
+  border: 0;
+  background: var(--surface-strong);
+  font: inherit;
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 4.4vw, 1.7rem);
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  position: relative;
+  padding: 0;
+  line-height: 1;
+}
+.su-cell.given { color: var(--ink); cursor: default; }
+.su-cell.sel { background: #e2f3ef; }
+.su-cell.peer { background: #f3ede1; }
+.su-cell.same { background: #f7e6cf; }
+.su-cell.bad { color: var(--brand-deep); background: rgba(185,72,30,0.12); }
+/* 3x3 box separators via thicker borders */
+.su-cell:nth-child(9n+4),
+.su-cell:nth-child(9n+7) { box-shadow: inset 2px 0 0 var(--line-strong); }
+.su-board > .su-cell:nth-child(n+28):nth-child(-n+36),
+.su-board > .su-cell:nth-child(n+55):nth-child(-n+63) { box-shadow: inset 0 2px 0 var(--line-strong); }
+.su-cell:nth-child(9n+4):nth-child(n+28),
+.su-cell:nth-child(9n+7):nth-child(n+28) { box-shadow: inset 2px 0 0 var(--line-strong), inset 0 0 0 transparent; }
+.su-notes {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  font-family: var(--sans);
+  font-size: clamp(0.45rem, 1.7vw, 0.62rem);
+  font-weight: 600;
+  color: var(--muted);
+}
+.su-notes span { display: grid; place-items: center; }
+.su-pad {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  width: min(92vw, 460px);
+  margin: 16px auto 0;
+}
+.su-pad button {
+  min-height: 52px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--surface-strong);
+  font: inherit;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+.su-pad button:hover { transform: translateY(-1px); border-color: var(--accent); }
+.su-pad .su-util {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+  line-height: 1.05;
+}
+.su-pad .su-util[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+@media (max-width: 480px) {
+  .su-pad { grid-template-columns: repeat(5, 1fr); }
+  .su-pad button { min-height: 44px; font-size: 1.1rem; }
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Sudoku",
+  "url": "https://www.snackpackuniverse.com/play/sudoku/",
+  "applicationCategory": "Game",
+  "genre": "Puzzle",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "description": "Free browser Sudoku with Easy, Medium, Hard and Expert puzzles, pencil notes, hints and mistake checking. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Sudoku",
+  "step": [
+    { "@type": "HowToStep", "name": "Understand the grid", "text": "Sudoku is a 9x9 grid split into nine 3x3 boxes. Some numbers are filled in to start." },
+    { "@type": "HowToStep", "name": "Fill every row, column and box", "text": "Place the digits 1 to 9 so that each row, each column and each 3x3 box contains every digit exactly once." },
+    { "@type": "HowToStep", "name": "Use logic, not guessing", "text": "Every puzzle has one solution reachable by deduction. Use pencil notes to track candidates." },
+    { "@type": "HowToStep", "name": "Complete the grid", "text": "Fill all 81 squares correctly to solve the puzzle." }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Sudoku</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Sudoku</h1>
+        <p class="lead" style="max-width:580px;margin-left:auto;margin-right:auto;">The world's favourite logic puzzle. Fill the grid so every row, column and box holds 1–9. Pencil notes, hints, and mistake checking — across four difficulties. No ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Time</span><b id="su-time">0:00</b></span>
+            <span class="readout-chip"><span>Mistakes</span><b id="su-mistakes">0</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Difficulty">
+              <button type="button" data-diff="easy" aria-pressed="true">Easy</button>
+              <button type="button" data-diff="medium" aria-pressed="false">Medium</button>
+              <button type="button" data-diff="hard" aria-pressed="false">Hard</button>
+              <button type="button" data-diff="expert" aria-pressed="false">Expert</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="su-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="su-status" aria-live="polite">Select a square, then pick a number.</p>
+        <div class="game-board-wrap">
+          <div class="su-board" id="su-board" role="grid" aria-label="Sudoku board"></div>
+        </div>
+        <div class="su-pad" id="su-pad">
+          <button type="button" data-num="1">1</button>
+          <button type="button" data-num="2">2</button>
+          <button type="button" data-num="3">3</button>
+          <button type="button" data-num="4">4</button>
+          <button type="button" data-num="5">5</button>
+          <button type="button" data-num="6">6</button>
+          <button type="button" data-num="7">7</button>
+          <button type="button" data-num="8">8</button>
+          <button type="button" data-num="9">9</button>
+          <button type="button" class="su-util" data-act="erase">Erase</button>
+          <button type="button" class="su-util" id="su-notes-btn" data-act="notes" aria-pressed="false">Notes<br>Off</button>
+          <button type="button" class="su-util" data-act="hint">Hint</button>
+          <button type="button" class="su-util" data-act="check">Check</button>
+        </div>
+        <p class="game-hint">Click a square and type a number (or use the pad) · Notes mode adds pencil marks · Arrow keys move.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">Play on the go</span>
+          <h2>Like it? Take it offline.</h2>
+          <p>The full Sudoku — with tracked hints, notes and saved best times — is part of Snackpack Brain Games, our calm Android bundle of nine classics.</p>
+          <ul class="funnel-points">
+            <li>Plays fully offline — flights, commutes, anywhere</li>
+            <li>Best times &amp; daily streaks saved on your device</li>
+            <li>Eight more games in the same app · no ads, no tracking</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games on Google Play">
+              <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play">
+            </a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <img class="funnel-qr" src="../../assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play">
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;">Scan to download</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Sudoku</h2>
+      <p>Sudoku is played on a 9×9 grid divided into nine 3×3 boxes. A handful of digits are filled in to begin. Your job is to complete the grid so that every <strong>row</strong>, every <strong>column</strong>, and every <strong>3×3 box</strong> contains each of the digits 1 through 9 exactly once. There's no arithmetic involved — it's pure logic, and every puzzle here has exactly one solution you can reach by reasoning alone.</p>
+      <p>Click a square and type a number, or tap a number on the pad. Switch on <strong>Notes</strong> to jot small pencil candidates in a square while you narrow things down. <strong>Check</strong> highlights any wrong entries, and <strong>Hint</strong> fills the selected square correctly when you're stuck.</p>
+
+      <h3>Strategy tips</h3>
+      <ul>
+        <li><strong>Scan for singles.</strong> Look for a square where only one digit can possibly go — either because the row, column and box rule it out (a "naked single") or because a digit fits only one spot in a unit (a "hidden single").</li>
+        <li><strong>Pencil in candidates.</strong> Use Notes to mark every possible digit per square; the puzzle solves itself as candidates disappear.</li>
+        <li><strong>Work the most-filled units first.</strong> Rows, columns and boxes that already have many digits give you the quickest deductions.</li>
+        <li><strong>Look for pairs.</strong> If two squares in a unit can only hold the same two digits, those digits can be removed from every other square in that unit.</li>
+        <li><strong>Never guess.</strong> If you're tempted to guess, there's a logical step you've missed — slow down and scan again.</li>
+      </ul>
+
+      <h3>A little history</h3>
+      <p>Although it feels timeless, modern Sudoku was designed by Howard Garns, a retired American architect, and first published in 1979 as "Number Place." It was popularised in Japan in the 1980s under the name Sudoku ("single number"), and exploded worldwide in 2004–2005 when newspapers began printing a daily puzzle. Today it's one of the most-played logic puzzles on earth — and unlike a crossword, it needs no language at all.</p>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is this Sudoku free?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>Does every puzzle have a unique solution?</summary><p>Yes. Each board is generated and verified to have exactly one solution reachable by logic.</p></details>
+        <details class="faq-item"><summary>How do pencil notes work?</summary><p>Tap “Notes” to switch into note mode, then enter digits to add or remove small candidate marks in the selected square.</p></details>
+        <details class="faq-item"><summary>Can I play offline?</summary><p>The web version needs an open browser tab. For fully offline play with saved best times, install the free <a class="text-link" href="../../apps/snackpack-brain-games/" style="color:var(--accent);">Snackpack Brain Games</a> app on Android.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Sudoku free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../apps/snackpack-brain-games/">Brain Games app</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var CLUES = { easy: 42, medium: 34, hard: 30, expert: 26 };
+
+  var boardEl = document.getElementById("su-board");
+  var statusEl = document.getElementById("su-status");
+  var timeEl = document.getElementById("su-time");
+  var mistakesEl = document.getElementById("su-mistakes");
+  var newBtn = document.getElementById("su-new");
+  var notesBtn = document.getElementById("su-notes-btn");
+
+  var diff = "easy";
+  var solution, puzzle, given, value, notes, cells;
+  var selected = -1, notesMode = false, mistakes = 0, solved = false;
+  var timer = null, seconds = 0;
+
+  // ── Generator ────────────────────────────────────
+  function emptyGrid() { return new Array(81).fill(0); }
+
+  function canPlace(g, i, n) {
+    var r = Math.floor(i / 9), c = i % 9;
+    for (var k = 0; k < 9; k++) {
+      if (g[r * 9 + k] === n) return false;
+      if (g[k * 9 + c] === n) return false;
+    }
+    var br = Math.floor(r / 3) * 3, bc = Math.floor(c / 3) * 3;
+    for (var dr = 0; dr < 3; dr++) for (var dc = 0; dc < 3; dc++) {
+      if (g[(br + dr) * 9 + (bc + dc)] === n) return false;
+    }
+    return true;
+  }
+
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function fill(g) {
+    // Backtracking fill of a full valid solution.
+    for (var i = 0; i < 81; i++) {
+      if (g[i] !== 0) continue;
+      var nums = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      for (var k = 0; k < 9; k++) {
+        if (canPlace(g, i, nums[k])) {
+          g[i] = nums[k];
+          if (fill(g)) return true;
+          g[i] = 0;
+        }
+      }
+      return false;
+    }
+    return true;
+  }
+
+  function countSolutions(g, limit) {
+    // Count up to `limit` solutions to verify uniqueness.
+    var idx = g.indexOf(0);
+    if (idx === -1) return 1;
+    var total = 0;
+    for (var n = 1; n <= 9; n++) {
+      if (canPlace(g, idx, n)) {
+        g[idx] = n;
+        total += countSolutions(g, limit - total);
+        g[idx] = 0;
+        if (total >= limit) break;
+      }
+    }
+    return total;
+  }
+
+  function generate(clues) {
+    var full = emptyGrid();
+    fill(full);
+    var puz = full.slice();
+    var order = shuffle([...Array(81).keys()]);
+    var removed = 0, target = 81 - clues;
+    for (var p = 0; p < order.length && removed < target; p++) {
+      var pos = order[p];
+      var backup = puz[pos];
+      if (backup === 0) continue;
+      puz[pos] = 0;
+      var test = puz.slice();
+      if (countSolutions(test, 2) !== 1) {
+        puz[pos] = backup; // keep — removal broke uniqueness
+      } else {
+        removed++;
+      }
+    }
+    return { solution: full, puzzle: puz };
+  }
+
+  // ── Render ───────────────────────────────────────
+  function build() {
+    boardEl.innerHTML = "";
+    cells = [];
+    for (var i = 0; i < 81; i++) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "su-cell";
+      b.dataset.i = i;
+      cells.push(b);
+      boardEl.appendChild(b);
+    }
+  }
+
+  function paint() {
+    var selVal = selected >= 0 ? value[selected] : 0;
+    for (var i = 0; i < 81; i++) {
+      var el = cells[i];
+      el.className = "su-cell" + (given[i] ? " given" : "");
+      el.innerHTML = "";
+      if (value[i]) {
+        el.textContent = value[i];
+      } else if (notes[i] && notes[i].size) {
+        var wrap = document.createElement("div");
+        wrap.className = "su-notes";
+        for (var n = 1; n <= 9; n++) {
+          var s = document.createElement("span");
+          s.textContent = notes[i].has(n) ? n : "";
+          wrap.appendChild(s);
+        }
+        el.appendChild(wrap);
+      }
+      // highlight selection, peers, matching numbers
+      if (selected >= 0) {
+        var r = Math.floor(i / 9), c = i % 9;
+        var sr = Math.floor(selected / 9), sc = selected % 9;
+        var sameBox = Math.floor(r / 3) === Math.floor(sr / 3) && Math.floor(c / 3) === Math.floor(sc / 3);
+        if (i === selected) el.classList.add("sel");
+        else if (r === sr || c === sc || sameBox) el.classList.add("peer");
+        if (selVal && value[i] === selVal && i !== selected) el.classList.add("same");
+      }
+      if (value[i] && !given[i] && value[i] !== solution[i]) el.classList.add("bad");
+    }
+  }
+
+  // ── Game flow ────────────────────────────────────
+  function startTimer() {
+    clearInterval(timer);
+    seconds = 0; renderTime();
+    timer = setInterval(function () { seconds++; renderTime(); }, 1000);
+  }
+  function renderTime() {
+    var m = Math.floor(seconds / 60), s = seconds % 60;
+    timeEl.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  function reset() {
+    statusEl.textContent = "Generating puzzle…";
+    statusEl.className = "game-status";
+    // Defer so the status paints before the (brief) blocking generate.
+    setTimeout(function () {
+      var g = generate(CLUES[diff]);
+      solution = g.solution;
+      puzzle = g.puzzle;
+      given = puzzle.map(function (v) { return v !== 0; });
+      value = puzzle.slice();
+      notes = []; for (var i = 0; i < 81; i++) notes[i] = new Set();
+      selected = -1; mistakes = 0; solved = false;
+      mistakesEl.textContent = "0";
+      statusEl.textContent = "Select a square, then pick a number.";
+      paint();
+      startTimer();
+    }, 20);
+  }
+
+  function setCell(n) {
+    if (solved || selected < 0 || given[selected]) return;
+    if (notesMode && n > 0) {
+      if (value[selected]) return;
+      if (notes[selected].has(n)) notes[selected].delete(n);
+      else notes[selected].add(n);
+      paint();
+      return;
+    }
+    if (n === 0) { value[selected] = 0; notes[selected].clear(); paint(); return; }
+    value[selected] = n;
+    notes[selected].clear();
+    // clear matching notes in peers
+    if (n === solution[selected]) {
+      // tidy peer notes
+      var r = Math.floor(selected / 9), c = selected % 9;
+      for (var k = 0; k < 9; k++) { notes[r*9+k].delete(n); notes[k*9+c].delete(n); }
+    } else {
+      mistakes++; mistakesEl.textContent = mistakes;
+    }
+    paint();
+    checkWin();
+  }
+
+  function hint() {
+    if (solved || selected < 0 || given[selected] || value[selected] === solution[selected]) return;
+    value[selected] = solution[selected];
+    notes[selected].clear();
+    paint();
+    checkWin();
+  }
+
+  function check() {
+    var wrong = 0;
+    for (var i = 0; i < 81; i++) if (value[i] && value[i] !== solution[i]) wrong++;
+    statusEl.textContent = wrong ? (wrong + " square" + (wrong > 1 ? "s are" : " is") + " wrong — shown in red.")
+                                 : "No mistakes so far — keep going!";
+    statusEl.className = "game-status";
+    paint();
+  }
+
+  function checkWin() {
+    for (var i = 0; i < 81; i++) if (value[i] !== solution[i]) return;
+    solved = true;
+    clearInterval(timer);
+    statusEl.textContent = "Solved in " + timeEl.textContent + "! 🎉";
+    statusEl.className = "game-status";
+    if (window.SnackPack) window.SnackPack.celebrate({
+      title: "Puzzle solved! 🎉",
+      body: "Lovely logic — finished in " + timeEl.textContent + ". We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app to play Sudoku offline with saved best times."
+    });
+  }
+
+  // ── Input ────────────────────────────────────────
+  boardEl.addEventListener("click", function (e) {
+    var t = e.target.closest(".su-cell"); if (!t) return;
+    selected = +t.dataset.i;
+    paint();
+  });
+
+  document.getElementById("su-pad").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.num) setCell(+b.dataset.num);
+    else if (b.dataset.act === "erase") setCell(0);
+    else if (b.dataset.act === "hint") hint();
+    else if (b.dataset.act === "check") check();
+    else if (b.dataset.act === "notes") toggleNotes();
+  });
+
+  function toggleNotes() {
+    notesMode = !notesMode;
+    notesBtn.setAttribute("aria-pressed", String(notesMode));
+    notesBtn.innerHTML = "Notes<br>" + (notesMode ? "On" : "Off");
+  }
+
+  window.addEventListener("keydown", function (e) {
+    if (e.key >= "1" && e.key <= "9") { setCell(+e.key); return; }
+    if (e.key === "0" || e.key === "Backspace" || e.key === "Delete") { setCell(0); return; }
+    if (e.key === "n" || e.key === "N") { toggleNotes(); return; }
+    if (selected < 0) return;
+    var r = Math.floor(selected / 9), c = selected % 9;
+    if (e.key === "ArrowUp" && r > 0) { selected -= 9; e.preventDefault(); paint(); }
+    if (e.key === "ArrowDown" && r < 8) { selected += 9; e.preventDefault(); paint(); }
+    if (e.key === "ArrowLeft" && c > 0) { selected -= 1; e.preventDefault(); paint(); }
+    if (e.key === "ArrowRight" && c < 8) { selected += 1; e.preventDefault(); paint(); }
+  });
+
+  newBtn.addEventListener("click", reset);
+  document.querySelectorAll(".seg [data-diff]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      diff = btn.dataset.diff;
+      document.querySelectorAll(".seg [data-diff]").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b === btn));
+      });
+      reset();
+    });
+  });
+
+  build();
+  reset();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
