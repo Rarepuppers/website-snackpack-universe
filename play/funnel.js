@@ -6,7 +6,10 @@
   "use strict";
 
   var STRIPE_URL = "https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04";
-  var PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames";
+  // Default to Brain Games (Vol 1). A page can point the funnel at a different
+  // app by setting window.SP_PLAY_URL before this script loads (e.g. Vol 2).
+  var DEFAULT_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames";
+  function playUrl() { return window.SP_PLAY_URL || DEFAULT_PLAY_URL; }
   var DWELL_MS = 10 * 60 * 1000; // 10 minutes of continuous play
   var SHOWN_KEY = "sp_donate_shown_on";
 
@@ -45,7 +48,7 @@
       '<p class="sp-modal-body"></p>' +
       '<div class="sp-modal-actions">' +
       '<a class="btn btn-primary" target="_blank" rel="noopener" href="' + STRIPE_URL + '">Tip the studio</a>' +
-      '<a class="btn btn-secondary" target="_blank" rel="noopener" href="' + PLAY_URL + '">Get the free app on Android</a>' +
+      '<a class="btn btn-secondary" target="_blank" rel="noopener" href="' + playUrl() + '">Get the free app on Android</a>' +
       '<button class="sp-dismiss-link" type="button">Maybe later</button>' +
       "</div>" +
       "</div>";

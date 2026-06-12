@@ -23,6 +23,7 @@ Key facts that apply to every SnackPack app: no third-party ads, no tracking or 
 - [Play Checkers](https://www.snackpackuniverse.com/play/checkers/): Free browser Checkers (draughts) vs a computer opponent with three difficulty levels, compulsory captures, multi-jumps and kings. Includes rules, strategy, and history.
 - [Play Reversi](https://www.snackpackuniverse.com/play/reversi/): Free browser Reversi / Othello vs a computer opponent with three difficulty levels, legal-move hints, corner-aware AI and pass handling. Includes rules, strategy, and history.
 - [Play Cascade](https://www.snackpackuniverse.com/play/cascade/): Free browser Cascade — a calm falling-blocks puzzle (the SnackPack take on tetromino stacking) with Normal and Turbo modes, keyboard and touch controls, and saved best score. Includes rules, strategy, and history.
+- [Play Flappy Snacky](https://www.snackpackuniverse.com/play/flappy-snacky/): Free browser Flappy Snacky — a one-button tap-to-fly arcade game with Classic, Hard and Night modes and a saved best score. From Brain Games Vol 2 (Play Store ID com.snackpackuniverse.braingames2). Includes rules, tips, and an about section.
 
 ## Guides
 

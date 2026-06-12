@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Flappy Snacky Online Free | Tap-to-Fly Arcade, No Ads — SnackPack</title>
+<meta name="description" content="Play Flappy Snacky free in your browser — tap to fly, dodge the pipes, and chase a high score. Classic, Hard and Night modes. No ads, no sign-in, no download. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/flappy-snacky/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Flappy Snacky Online Free | Tap-to-Fly Arcade, No Ads">
+<meta property="og:description" content="Tap to fly, dodge the pipes, chase a high score. Classic, Hard and Night modes — free in your browser, no ads.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/flappy-snacky/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<style>
+/* Flappy Snacky canvas (local styles). */
+.fl-stage { display: grid; place-items: center; }
+.fl-canvas {
+  width: min(92vw, 360px);
+  aspect-ratio: 390 / 680;
+  border-radius: 16px;
+  border: 3px solid #14502f;
+  background: #87CEEB;
+  cursor: pointer;
+  touch-action: manipulation;
+  display: block;
+  box-shadow: var(--shadow);
+}
+.fl-hint-modes { margin-top: 4px; }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Flappy Snacky",
+  "url": "https://www.snackpackuniverse.com/play/flappy-snacky/",
+  "applicationCategory": "Game",
+  "genre": "Arcade",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "description": "Free browser Flappy Snacky — tap to fly, dodge the pipes, and chase a high score. Classic, Hard and Night modes. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Flappy Snacky",
+  "step": [
+    { "@type": "HowToStep", "name": "Flap to fly", "text": "Tap, click, or press space to make Snacky flap upward. Gravity constantly pulls you down." },
+    { "@type": "HowToStep", "name": "Dodge the pipes", "text": "Steer Snacky through the gap in each pair of pipes." },
+    { "@type": "HowToStep", "name": "Score", "text": "You score one point for every pair of pipes you pass." },
+    { "@type": "HowToStep", "name": "Survive", "text": "Hitting a pipe, the ground, or the ceiling ends the run. Beat your best score." }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Flappy Snacky</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Flappy Snacky</h1>
+        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">Tap to fly, dodge the pipes, and see how far Snacky can go. One more try, every time. Tap, click, or hit space — no ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage" style="max-width:460px;">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Score</span><b id="fl-score">0</b></span>
+            <span class="readout-chip"><span>Best</span><b id="fl-best">0</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Mode">
+              <button type="button" data-mode="classic" aria-pressed="true">Classic</button>
+              <button type="button" data-mode="hard" aria-pressed="false">Hard</button>
+              <button type="button" data-mode="night" aria-pressed="false">Night</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="fl-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="fl-status" aria-live="polite">Tap the board (or press space) to start flying.</p>
+        <div class="fl-stage">
+          <canvas class="fl-canvas" id="fl-canvas" width="390" height="680" aria-label="Flappy Snacky game"></canvas>
+        </div>
+        <p class="game-hint">Tap / click the board · or Space / ↑ to flap · Mode switch starts a fresh run.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">From Brain Games Vol 2</span>
+          <h2>Want the full pack?</h2>
+          <p>Flappy Snacky is one of the new games in <strong>Snackpack Brain Games Vol 2</strong> — our calm, ad-free Android bundle with more arcade games, modes and saved high scores.</p>
+          <ul class="funnel-points">
+            <li>Plays fully offline — flights, commutes, anywhere</li>
+            <li>High scores &amp; daily challenges saved on your device</li>
+            <li>More new games in the app · no ads, no tracking</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games Vol 2 on Google Play">
+              <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play">
+            </a>
+            <a class="btn btn-secondary" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener">Tip the studio</a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">🐤</div>
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">A tiny, ad-free studio — tips keep us flying.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Flappy Snacky</h2>
+      <p>Flappy Snacky is a one-button arcade game. Snacky is constantly pulled down by gravity, so you tap, click, or press the space bar to make him flap upward. Each tap gives a quick lift; let go and he falls again. The whole game is finding the rhythm of taps that keeps Snacky level as pipes scroll toward you from the right. Steer him through the gap in each pair of pipes — every pair you clear scores a point. Touch a pipe, the ground, or the ceiling and the run ends. It's simple to pick up and very hard to put down.</p>
+
+      <h3>Tips for a higher score</h3>
+      <ul>
+        <li><strong>Tap little and often.</strong> Lots of small taps keep Snacky steady; big panicked taps send him into the ceiling.</li>
+        <li><strong>Aim for the lower third of each gap.</strong> It leaves room to flap up, which is easier to control than falling fast.</li>
+        <li><strong>Find a rhythm.</strong> The pipes are evenly spaced — settle into a steady tap-tap-tap rather than reacting late.</li>
+        <li><strong>Look ahead, not at Snacky.</strong> Watch the next gap coming in, not the bird itself.</li>
+        <li><strong>Try Classic first.</strong> Hard mode is faster with tighter gaps; Night mode is the same speed as Classic with a darker sky.</li>
+      </ul>
+
+      <h3>About Flappy Snacky</h3>
+      <p>Flappy Snacky is SnackPack Studios' friendly take on the tap-to-fly arcade craze that <em>Flappy Bird</em> set off in 2013–2014 — proof that one button and a single rule can be wildly addictive. Like everything we make, it's calm and ad-free: no interruptions, no tracking, just you and your high score. It's part of <a class="text-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2" target="_blank" rel="noopener" style="color:var(--accent);">Snackpack Brain Games Vol 2</a> on Android, alongside more new arcade and puzzle games.</p>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Flappy Snacky free?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>What are the controls?</summary><p>Tap or click the board, or press the space bar or up arrow, to flap. That's the only control.</p></details>
+        <details class="faq-item"><summary>What's the difference between the modes?</summary><p>Classic is the standard speed and gap size. Hard is faster with tighter gaps. Night uses Classic rules with a dark sky.</p></details>
+        <details class="faq-item"><summary>Where's the full game?</summary><p>Flappy Snacky is part of the free <a class="text-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2" target="_blank" rel="noopener" style="color:var(--accent);">Snackpack Brain Games Vol 2</a> app on Android, with more games and saved high scores.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Flappy Snacky free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2" target="_blank" rel="noopener">Brain Games Vol 2</a>
+      <a class="text-link" href="../../privacy/snackpack-brain-games-vol-2/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Point the shared funnel/donation prompt at Brain Games Vol 2 (app 2). -->
+<script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2";</script>
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+  // Faithful port of the app's Flappy Snacky engine (390x680 world).
+  var GAME_WIDTH = 390, GAME_HEIGHT = 680;
+  var BIRD_X = 90, BIRD_R = 18, PIPE_WIDTH = 54;
+  var GROUND_HEIGHT = 60;
+  var GROUND_Y = GAME_HEIGHT - GROUND_HEIGHT; // 620
+  var CEILING_Y = 40;
+  var MIN_GAP_TOP = 80;
+  var MODE_CONFIG = {
+    classic: { gravity: 0.48, flapStrength: -9.2, pipeSpeed: 3.2, gapSize: 160, pipeInterval: 95 },
+    hard:    { gravity: 0.54, flapStrength: -9.8, pipeSpeed: 4.2, gapSize: 130, pipeInterval: 85 },
+    night:   { gravity: 0.48, flapStrength: -9.2, pipeSpeed: 3.2, gapSize: 160, pipeInterval: 95 }
+  };
+  var BEST_KEY = "sp_flappy_best";
+
+  var canvas = document.getElementById("fl-canvas");
+  var ctx = canvas.getContext("2d");
+  var scoreEl = document.getElementById("fl-score");
+  var bestEl = document.getElementById("fl-best");
+  var statusEl = document.getElementById("fl-status");
+  var newBtn = document.getElementById("fl-new");
+
+  var mode = "classic";
+  var best = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0;
+  bestEl.textContent = best;
+
+  var st, raf = null;
+
+  function initialState() {
+    return { phase: "menu", birdY: GAME_HEIGHT / 2, birdVY: 0, pipes: [], score: 0, frame: 0, nextPipeId: 0 };
+  }
+
+  function randomGapTop(gapSize) {
+    var max = GROUND_Y - gapSize - 80;
+    return MIN_GAP_TOP + Math.floor(Math.random() * (max - MIN_GAP_TOP));
+  }
+
+  function tick() {
+    var cfg = MODE_CONFIG[mode];
+    st.frame += 1;
+    st.birdVY += cfg.gravity;
+    st.birdY += st.birdVY;
+
+    st.pipes = st.pipes.map(function (p) { return { id: p.id, x: p.x - cfg.pipeSpeed, gapTop: p.gapTop, passed: p.passed }; })
+                       .filter(function (p) { return p.x > -PIPE_WIDTH - 10; });
+
+    if (st.frame % cfg.pipeInterval === 0) {
+      st.pipes.push({ id: st.nextPipeId++, x: GAME_WIDTH + 10, gapTop: randomGapTop(cfg.gapSize), passed: false });
+    }
+
+    st.pipes.forEach(function (p) {
+      if (!p.passed && p.x + PIPE_WIDTH < BIRD_X - BIRD_R) { st.score += 1; p.passed = true; }
+    });
+
+    var dead = st.birdY + BIRD_R >= GROUND_Y ||
+               st.birdY - BIRD_R <= CEILING_Y ||
+               st.pipes.some(function (p) { return collides(p, cfg.gapSize); });
+    if (dead) die();
+  }
+
+  function collides(pipe, gapSize) {
+    var birdLeft = BIRD_X - BIRD_R, birdRight = BIRD_X + BIRD_R, pipeRight = pipe.x + PIPE_WIDTH;
+    if (birdRight < pipe.x || birdLeft > pipeRight) return false;
+    var gapBottom = pipe.gapTop + gapSize;
+    if (st.birdY - BIRD_R > pipe.gapTop && st.birdY + BIRD_R < gapBottom) return false;
+    return true;
+  }
+
+  function flap() {
+    if (st.phase === "dead") { restart(); return; }
+    if (st.phase === "menu") { st.phase = "playing"; statusEl.textContent = "Flap to stay airborne!"; startLoop(); }
+    st.birdVY = MODE_CONFIG[mode].flapStrength;
+  }
+
+  function die() {
+    st.phase = "dead";
+    stopLoop();
+    var prevBest = best;
+    if (st.score > best) { best = st.score; localStorage.setItem(BEST_KEY, String(best)); }
+    bestEl.textContent = best;
+    if (st.score > prevBest && prevBest > 0) {
+      statusEl.textContent = "Game over — new best, " + st.score + "! 🎉 Tap to play again.";
+      statusEl.className = "game-status";
+      if (window.SnackPack) window.SnackPack.celebrate({
+        title: "New best score! 🎉",
+        body: "You flew " + st.score + " pipes — nicely done. Flappy Snacky is part of Brain Games Vol 2, our calm, ad-free Android bundle. A small tip keeps us building, or grab the free app for more games and saved high scores."
+      });
+    } else {
+      statusEl.textContent = "Game over — you scored " + st.score + ". Tap the board to try again.";
+      statusEl.className = "game-status game-status--lose";
+    }
+    draw();
+  }
+
+  function restart() {
+    st = initialState();
+    statusEl.className = "game-status";
+    statusEl.textContent = "Tap the board (or press space) to start flying.";
+    scoreEl.textContent = "0";
+    draw();
+  }
+
+  // ── Loop ─────────────────────────────────────────
+  function frame() {
+    if (st.phase !== "playing") return;
+    tick();
+    scoreEl.textContent = st.score;
+    draw();
+    if (st.phase === "playing") raf = requestAnimationFrame(frame);
+  }
+  function startLoop() { stopLoop(); raf = requestAnimationFrame(frame); }
+  function stopLoop() { if (raf !== null) { cancelAnimationFrame(raf); raf = null; } }
+
+  // ── Render ───────────────────────────────────────
+  function draw() {
+    var night = mode === "night";
+    var skyTop = night ? "#0D1B3E" : "#87CEEB", skyBot = night ? "#1A2A5E" : "#B0E0FF";
+    var groundC = night ? "#2A4E38" : "#8BC34A";
+    var pipeC = night ? "#4CAF7D" : "#4CAF50", pipeDark = night ? "#2E8B57" : "#388E3C";
+    var cfg = MODE_CONFIG[mode];
+
+    var g = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
+    g.addColorStop(0, skyTop); g.addColorStop(1, skyBot);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+    // Pipes
+    st.pipes.forEach(function (p) {
+      var gapBottom = p.gapTop + cfg.gapSize;
+      ctx.fillStyle = pipeC;
+      ctx.fillRect(p.x, 0, PIPE_WIDTH, p.gapTop);
+      ctx.fillRect(p.x, gapBottom, PIPE_WIDTH, GROUND_Y - gapBottom);
+      ctx.fillStyle = pipeDark;
+      ctx.fillRect(p.x - 4, p.gapTop - 22, PIPE_WIDTH + 8, 22);
+      ctx.fillRect(p.x - 4, gapBottom, PIPE_WIDTH + 8, 22);
+    });
+
+    // Ground
+    ctx.fillStyle = groundC;
+    ctx.fillRect(0, GROUND_Y, GAME_WIDTH, GROUND_HEIGHT);
+    ctx.fillStyle = night ? "#23402F" : "#7CB342";
+    ctx.fillRect(0, GROUND_Y, GAME_WIDTH, 6);
+
+    // Bird (rotated by velocity)
+    var angle = Math.min(Math.max(st.birdVY * 3.5, -30), 70) * Math.PI / 180;
+    ctx.save();
+    ctx.translate(BIRD_X, st.birdY);
+    ctx.rotate(angle);
+    ctx.fillStyle = "#FFB300";
+    ctx.beginPath(); ctx.arc(0, 0, BIRD_R, 0, Math.PI * 2); ctx.fill();
+    // beak
+    ctx.fillStyle = "#FF6F00";
+    ctx.fillRect(BIRD_R - 3, -3, 10, 7);
+    // eye
+    ctx.fillStyle = "#fff";
+    ctx.beginPath(); ctx.arc(6, -6, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#201713";
+    ctx.beginPath(); ctx.arc(7, -6, 2, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+
+    // Score (in-canvas, big)
+    if (st.phase === "playing") {
+      ctx.fillStyle = "rgba(255,255,255,0.95)";
+      ctx.strokeStyle = "rgba(0,0,0,0.4)";
+      ctx.lineWidth = 4;
+      ctx.font = "900 48px 'Fraunces', Georgia, serif";
+      ctx.textAlign = "center";
+      ctx.strokeText(st.score, GAME_WIDTH / 2, 70);
+      ctx.fillText(st.score, GAME_WIDTH / 2, 70);
+    }
+
+    // Overlays
+    if (st.phase === "menu" || st.phase === "dead") {
+      ctx.fillStyle = "rgba(0,0,0,0.44)";
+      ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#fff";
+      ctx.font = "900 34px 'Fraunces', Georgia, serif";
+      if (st.phase === "menu") {
+        ctx.fillText("Flappy Snacky", GAME_WIDTH / 2, GAME_HEIGHT / 2 - 14);
+        ctx.font = "700 18px 'DM Sans', Arial, sans-serif";
+        ctx.fillText("Tap to start flying!", GAME_WIDTH / 2, GAME_HEIGHT / 2 + 20);
+      } else {
+        ctx.fillText("Game Over", GAME_WIDTH / 2, GAME_HEIGHT / 2 - 40);
+        ctx.fillStyle = "#FFB300";
+        ctx.font = "900 60px 'Fraunces', Georgia, serif";
+        ctx.fillText(st.score, GAME_WIDTH / 2, GAME_HEIGHT / 2 + 26);
+        ctx.fillStyle = "#fff";
+        ctx.font = "700 17px 'DM Sans', Arial, sans-serif";
+        ctx.fillText(st.score >= best && st.score > 0 ? "🏆 New best!" : (best > 0 ? "Best: " + best : ""), GAME_WIDTH / 2, GAME_HEIGHT / 2 + 60);
+        ctx.fillText("Tap to play again", GAME_WIDTH / 2, GAME_HEIGHT / 2 + 92);
+      }
+    }
+  }
+
+  // ── Input ────────────────────────────────────────
+  function onTap(e) { if (e) e.preventDefault(); flap(); }
+  canvas.addEventListener("pointerdown", onTap);
+  window.addEventListener("keydown", function (e) {
+    if (e.key === " " || e.key === "ArrowUp" || e.key === "Spacebar") { e.preventDefault(); flap(); }
+  });
+  newBtn.addEventListener("click", function () { stopLoop(); restart(); });
+  document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      mode = btn.dataset.mode;
+      document.querySelectorAll(".seg [data-mode]").forEach(function (x) {
+        x.setAttribute("aria-pressed", String(x === btn));
+      });
+      stopLoop(); restart();
+    });
+  });
+  // Pause the loop when the tab is backgrounded; resume on return (no unfair death).
+  document.addEventListener("visibilitychange", function () {
+    if (!st || st.phase !== "playing") return;
+    if (document.hidden) { stopLoop(); statusEl.textContent = "Paused — tap to resume."; }
+    else { startLoop(); statusEl.textContent = "Flap to stay airborne!"; }
+  });
+
+  restart();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
