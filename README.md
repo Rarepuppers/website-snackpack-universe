@@ -100,8 +100,8 @@ snackpackuniverse.com/
 |---|---|---|
 | 1 | Learn to Read | Live on Google Play |
 | 2 | 123s Counting | Pending Google Play production approval |
-| 3 | Spelling Sentences | Pipeline |
-| 4 | Math Arithmetic | Pipeline |
+| 3 | Sentences & Spelling | Pipeline |
+| 4 | Basic Math | Pipeline |
 | 5 | Tales & Trivia | Pipeline |
 | 6 | Creative Studio | Pipeline |
 | 7 | Mathematics | Pipeline |
