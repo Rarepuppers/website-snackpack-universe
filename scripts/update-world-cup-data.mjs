@@ -34,10 +34,10 @@ const nameMap = new Map([
   ["USA", "United States"],
   ["U.S.A.", "United States"],
   ["Turkey", "Turkiye"],
-  ["Türkiye", "Turkiye"],
+  ["T\u00fcrkiye", "Turkiye"],
   ["Ivory Coast", "Cote d'Ivoire"],
-  ["Côte d'Ivoire", "Cote d'Ivoire"],
-  ["Curaçao", "Curacao"],
+  ["C\u00f4te d'Ivoire", "Cote d'Ivoire"],
+  ["Cura\u00e7ao", "Curacao"],
   ["Cape Verde Islands", "Cape Verde"],
   ["IR Iran", "Iran"],
   ["Congo DR", "DR Congo"],
@@ -57,16 +57,27 @@ function formatDate(dateString) {
   return date.toLocaleString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
 }
 
+function formatTime(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "UTC", timeZoneName: "short" });
+}
+
 function normalizeFixture(fixture) {
   const home = normalizeTeam(fixture.teams?.home?.name || "");
   const away = normalizeTeam(fixture.teams?.away?.name || "");
   const group = groupByPair.get(pairKey(home, away)) || "";
   const statusShort = fixture.fixture?.status?.short;
+  const statusLong = fixture.fixture?.status?.long || "";
+  const elapsed = fixture.fixture?.status?.elapsed ?? null;
   const isPlayed = ["FT", "AET", "PEN"].includes(statusShort);
+  const isLive = ["1H", "2H", "HT", "ET", "BT", "P", "LIVE"].includes(statusShort);
   const match = {
     date: formatDate(fixture.fixture?.date),
     isoDate: String(fixture.fixture?.date || "").slice(0, 10),
-    time: isPlayed ? "FT" : "Upcoming",
+    time: isPlayed ? "FT" : isLive ? (statusShort === "HT" ? "HT" : "Live") : formatTime(fixture.fixture?.date),
+    statusShort,
+    statusLong,
+    elapsed,
     group,
     home,
     away,

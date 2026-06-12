@@ -105,6 +105,58 @@
   transform: rotate(-25deg);
   opacity: 0.45;
 }
+.cup-ball-image {
+  position: absolute;
+  right: 28px;
+  bottom: 28px;
+  width: clamp(108px, 16vw, 168px);
+  height: auto;
+  filter: drop-shadow(0 22px 28px rgba(0,0,0,0.22));
+  transform: rotate(-9deg);
+  z-index: 1;
+}
+.cup-live-strip {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.1);
+}
+.cup-live-strip strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #fff;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.cup-live-list {
+  display: grid;
+  gap: 7px;
+}
+.cup-live-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  color: rgba(255,255,255,0.92);
+  font-weight: 800;
+}
+.cup-live-item span {
+  color: rgba(255,255,255,0.74);
+  font-size: 0.82rem;
+}
+.cup-live-badge {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
+.cup-live-badge--live {
+  background: #c73f3f;
+}
 .cup-card-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -195,9 +247,15 @@
             <a class="btn btn-primary" href="../play/free-kick-curl/">Play Free Kick Curl</a>
             <a class="btn btn-secondary" href="./bracket/">Bracket + results</a>
           </div>
+          <div class="cup-live-strip" aria-live="polite">
+            <strong>Now and next</strong>
+            <div class="cup-live-list" id="cup-live-list">
+              <div class="cup-live-item">Loading latest fixtures... <span class="cup-live-badge">Soon</span></div>
+            </div>
+          </div>
         </div>
         <div class="cup-hero-art" aria-hidden="true">
-          <div class="cup-ball"></div>
+          <img class="cup-ball-image" src="../assets/world-cup-2026-soccer-ball.svg" alt="">
         </div>
       </div>
     </div>
@@ -329,6 +387,64 @@
     </div>
   </div>
 </footer>
+
+<script>
+(function () {
+  "use strict";
+
+  function isPlayed(match) {
+    return typeof match.hs === "number";
+  }
+
+  function isLive(match) {
+    var status = String(match.statusShort || match.time || "").toUpperCase();
+    return ["1H", "2H", "HT", "ET", "BT", "P", "LIVE", "IN PROGRESS"].indexOf(status) !== -1;
+  }
+
+  function matchBadge(match) {
+    if (isLive(match)) return "Live";
+    return match.time && match.time !== "Upcoming" ? match.time : "Next";
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (char) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char];
+    });
+  }
+
+  function renderMatches(data) {
+    var root = document.getElementById("cup-live-list");
+    if (!root || !data || !Array.isArray(data.matches)) return;
+    var active = data.matches
+      .filter(function (match) { return !isPlayed(match); })
+      .sort(function (a, b) {
+        return (isLive(b) ? 1 : 0) - (isLive(a) ? 1 : 0) ||
+          String(a.isoDate || a.date).localeCompare(String(b.isoDate || b.date));
+      })
+      .slice(0, 3);
+    if (!active.length) {
+      root.innerHTML = '<div class="cup-live-item">All listed games are final. <span class="cup-live-badge">FT</span></div>';
+      return;
+    }
+    root.innerHTML = active.map(function (match) {
+      var badgeClass = isLive(match) ? " cup-live-badge--live" : "";
+      return '<div class="cup-live-item"><div>' + escapeHtml(match.home) + ' vs ' + escapeHtml(match.away) + '<br><span>' + escapeHtml(match.date || "") + ' - Group ' + escapeHtml(match.group || "") + ' - ' + escapeHtml(match.venue || "") + '</span></div><span class="cup-live-badge' + badgeClass + '">' + escapeHtml(matchBadge(match)) + '</span></div>';
+    }).join("");
+  }
+
+  fetch("../data/world-cup-2026.json", { cache: "no-cache" })
+    .then(function (response) {
+      if (!response.ok) throw new Error("World Cup data not available");
+      return response.json();
+    })
+    .then(renderMatches)
+    .catch(function () {
+      var root = document.getElementById("cup-live-list");
+      if (root) root.innerHTML = '<div class="cup-live-item">Open the bracket for the latest schedule. <span class="cup-live-badge">Next</span></div>';
+    });
+})();
+</script>
+
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>

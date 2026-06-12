@@ -145,6 +145,21 @@
   gap: 3px;
   font-weight: 800;
 }
+.team-chip {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+}
+.team-flag {
+  flex: 0 0 auto;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+.team-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 .match-meta {
   color: var(--muted);
   font-size: 0.84rem;
@@ -159,6 +174,9 @@
   text-align: center;
   font-weight: 900;
   font-variant-numeric: tabular-nums;
+}
+.score-pill--live {
+  background: #c73f3f;
 }
 .prediction-form {
   display: grid;
@@ -371,7 +389,7 @@
       <h2>World Cup 2026 groups and bracket predictions</h2>
       <p>This page is a simple World Cup 2026 results and bracket tracker for fans who want a quick view of the groups, played matches, upcoming fixtures, and personal predictions. It is designed for search traffic around World Cup results, World Cup groups, World Cup schedule, World Cup bracket, and World Cup predictions.</p>
       <p>Your picks are stored only in this browser. The share card is generated locally as an image and includes a small SnackPack link so friends can find the tracker, trivia sprint, and free soccer games.</p>
-      <p style="font-size:0.85rem;color:var(--muted);">This is an original SnackPack Studios tracker and is not affiliated with, endorsed by, or connected to FIFA, the World Cup, any team, league, or governing body. Results are manually maintained and should be checked against official match reports before publication-critical use.</p>
+      <p style="font-size:0.85rem;color:var(--muted);">This is an original SnackPack Studios tracker and is not affiliated with, endorsed by, or connected to FIFA, the World Cup, any team, league, or governing body. Results are pulled from the configured data provider when available and should be checked against official match reports before publication-critical use.</p>
     </div>
   </section>
 </main>
@@ -444,9 +462,80 @@
 
   var storeKey = "snackpack-world-cup-2026-picks";
   var teams = Object.keys(groups).reduce(function (all, key) { return all.concat(groups[key]); }, []).sort();
+  var flags = {
+    "Mexico": "🇲🇽",
+    "South Africa": "🇿🇦",
+    "South Korea": "🇰🇷",
+    "Czechia": "🇨🇿",
+    "Canada": "🇨🇦",
+    "Bosnia and Herzegovina": "🇧🇦",
+    "Qatar": "🇶🇦",
+    "Switzerland": "🇨🇭",
+    "Haiti": "🇭🇹",
+    "Scotland": "🏴",
+    "Brazil": "🇧🇷",
+    "Morocco": "🇲🇦",
+    "United States": "🇺🇸",
+    "Paraguay": "🇵🇾",
+    "Australia": "🇦🇺",
+    "Turkiye": "🇹🇷",
+    "Cote d'Ivoire": "🇨🇮",
+    "Ecuador": "🇪🇨",
+    "Germany": "🇩🇪",
+    "Curacao": "🇨🇼",
+    "Netherlands": "🇳🇱",
+    "Japan": "🇯🇵",
+    "Sweden": "🇸🇪",
+    "Tunisia": "🇹🇳",
+    "Iran": "🇮🇷",
+    "New Zealand": "🇳🇿",
+    "Belgium": "🇧🇪",
+    "Egypt": "🇪🇬",
+    "Saudi Arabia": "🇸🇦",
+    "Uruguay": "🇺🇾",
+    "Spain": "🇪🇸",
+    "Cape Verde": "🇨🇻",
+    "France": "🇫🇷",
+    "Senegal": "🇸🇳",
+    "Iraq": "🇮🇶",
+    "Norway": "🇳🇴",
+    "Argentina": "🇦🇷",
+    "Algeria": "🇩🇿",
+    "Austria": "🇦🇹",
+    "Jordan": "🇯🇴",
+    "Portugal": "🇵🇹",
+    "DR Congo": "🇨🇩",
+    "Uzbekistan": "🇺🇿",
+    "Colombia": "🇨🇴",
+    "Ghana": "🇬🇭",
+    "Panama": "🇵🇦",
+    "England": "🏴",
+    "Croatia": "🇭🇷"
+  };
 
   function blankStats(team) {
     return { team: team, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, pts: 0 };
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (char) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char];
+    });
+  }
+
+  function teamHtml(team) {
+    var safeTeam = escapeHtml(team);
+    var flag = flags[team] || "⚽";
+    return '<span class="team-chip" title="' + safeTeam + '" aria-label="' + safeTeam + '"><span class="team-flag" aria-hidden="true">' + flag + '</span><span class="team-name">' + safeTeam + '</span></span>';
+  }
+
+  function isLive(match) {
+    var status = String(match.statusShort || match.time || "").toUpperCase();
+    return ["1H", "2H", "HT", "ET", "BT", "P", "LIVE", "IN PROGRESS"].indexOf(status) !== -1;
+  }
+
+  function isPlayed(match) {
+    return typeof match.hs === "number";
   }
 
   function standingsFor(groupId) {
@@ -479,7 +568,7 @@
       var tbody = card.querySelector("tbody");
       standingsFor(groupId).forEach(function (row) {
         var tr = document.createElement("tr");
-        tr.innerHTML = "<td>" + row.team + "</td><td>" + row.p + "</td><td>" + (row.gd > 0 ? "+" : "") + row.gd + "</td><td>" + row.pts + "</td>";
+        tr.innerHTML = "<td>" + teamHtml(row.team) + "</td><td>" + row.p + "</td><td>" + (row.gd > 0 ? "+" : "") + row.gd + "</td><td>" + row.pts + "</td>";
         tbody.appendChild(tr);
       });
       root.appendChild(card);
@@ -487,13 +576,17 @@
   }
 
   function matchHtml(m) {
-    var score = typeof m.hs === "number" ? '<span class="score-pill">' + m.hs + '-' + m.as + '</span>' : '<span class="score-pill">Next</span>';
-    return '<div class="match-row"><div class="match-date">' + m.date + '<br>' + m.time + '</div><div><div class="match-teams"><span>' + m.home + '</span><span>' + m.away + '</span></div><div class="match-meta">Group ' + m.group + ' - ' + m.venue + '</div></div>' + score + '</div>';
+    var score = isPlayed(m)
+      ? '<span class="score-pill">' + m.hs + '-' + m.as + '</span>'
+      : '<span class="score-pill' + (isLive(m) ? ' score-pill--live' : '') + '">' + (isLive(m) ? 'Live' : 'Next') + '</span>';
+    return '<div class="match-row"><div class="match-date">' + escapeHtml(m.date || "") + '<br>' + escapeHtml(m.time || "") + '</div><div><div class="match-teams">' + teamHtml(m.home) + teamHtml(m.away) + '</div><div class="match-meta">Group ' + escapeHtml(m.group || "") + ' - ' + escapeHtml(m.venue || "") + '</div></div>' + score + '</div>';
   }
 
   function renderMatches() {
-    document.getElementById("played-list").innerHTML = matches.filter(function (m) { return typeof m.hs === "number"; }).map(matchHtml).join("");
-    document.getElementById("upcoming-list").innerHTML = matches.filter(function (m) { return typeof m.hs !== "number"; }).map(matchHtml).join("");
+    document.getElementById("played-list").innerHTML = matches.filter(isPlayed).map(matchHtml).join("");
+    document.getElementById("upcoming-list").innerHTML = matches.filter(function (m) { return !isPlayed(m); }).sort(function (a, b) {
+      return (isLive(b) ? 1 : 0) - (isLive(a) ? 1 : 0) || String(a.isoDate || a.date).localeCompare(String(b.isoDate || b.date));
+    }).map(matchHtml).join("");
   }
 
   function optionHtml(selected) {

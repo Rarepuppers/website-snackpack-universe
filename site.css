@@ -244,6 +244,85 @@ a {
   object-fit: cover;
 }
 
+.world-cup-home-banner {
+  padding: 0 0 28px;
+}
+
+.world-cup-banner-card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: center;
+  padding: 24px;
+  border: 1px solid rgba(255,255,255,0.34);
+  border-radius: var(--radius-sm);
+  background:
+    linear-gradient(135deg, rgba(8,82,73,0.96), rgba(31,143,119,0.88)),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.07) 0 34px, rgba(255,255,255,0.02) 34px 68px);
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+
+.world-cup-banner-card::before {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border: 2px solid rgba(255,255,255,0.22);
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+.world-cup-banner-copy {
+  position: relative;
+  display: grid;
+  gap: 8px;
+}
+
+.world-cup-banner-copy .eyebrow {
+  width: fit-content;
+  background: rgba(255,255,255,0.16);
+  color: #fff;
+}
+
+.world-cup-banner-copy h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.55rem, 3vw, 2.45rem);
+  line-height: 1.02;
+}
+
+.world-cup-banner-copy p {
+  max-width: 720px;
+  margin: 0;
+  color: rgba(255,255,255,0.86);
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.world-cup-banner-actions {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.world-cup-banner-art {
+  position: relative;
+  width: clamp(112px, 16vw, 172px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.world-cup-banner-art img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transform: rotate(-8deg);
+}
+
 .hero-card h2,
 .section-title,
 .card-title,
@@ -893,6 +972,15 @@ button:focus-visible {
   .featured-app-card,
   .showcase-shell {
     grid-template-columns: 1fr;
+  }
+
+  .world-cup-banner-card {
+    grid-template-columns: 1fr;
+  }
+
+  .world-cup-banner-art {
+    justify-self: start;
+    width: 118px;
   }
 
   .section-head,
