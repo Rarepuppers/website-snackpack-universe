@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Checkers Online Free vs Computer | No Ads — SnackPack</title>
+<meta name="description" content="Play Checkers (draughts) free in your browser against the computer — forced captures, multi-jumps and kings. Three difficulty levels, no ads, no sign-in, no download. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/checkers/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Checkers Online Free vs Computer | No Ads">
+<meta property="og:description" content="Classic Checkers against the computer — forced captures, multi-jumps, kings. Three levels, free in your browser.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/checkers/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<style>
+/* Checkers board (local styles). */
+.ck-board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  width: min(92vw, 440px);
+  aspect-ratio: 1 / 1;
+  border: 4px solid #5a3d28;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 auto;
+  touch-action: manipulation;
+}
+.ck-sq { position: relative; display: grid; place-items: center; }
+.ck-sq.light { background: #f2e2c6; }
+.ck-sq.dark { background: #a9764a; }
+.ck-sq.move::after {
+  content: ""; width: 28%; height: 28%; border-radius: 999px;
+  background: rgba(31, 143, 119, 0.55);
+}
+.ck-sq.sel { box-shadow: inset 0 0 0 4px var(--gold); }
+.ck-piece {
+  width: 76%; height: 76%; border-radius: 999px; cursor: pointer;
+  box-shadow: inset 0 -3px 5px rgba(0,0,0,0.3), 0 2px 3px rgba(0,0,0,0.3);
+  display: grid; place-items: center;
+}
+.ck-piece.red { background: radial-gradient(circle at 35% 30%, #ef6f5a, #c0392b); }
+.ck-piece.black { background: radial-gradient(circle at 35% 30%, #4a4a52, #1c1c22); }
+.ck-piece.king::after { content: "♚"; color: rgba(255,255,255,0.9); font-size: 1.1rem; line-height: 1; }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Checkers",
+  "url": "https://www.snackpackuniverse.com/play/checkers/",
+  "applicationCategory": "Game",
+  "genre": "Strategy",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser Checkers (draughts) against a computer opponent with three difficulty levels, forced captures, multi-jumps and kings. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Checkers",
+  "step": [
+    { "@type": "HowToStep", "name": "Move diagonally", "text": "Move your pieces one square diagonally forward onto an empty dark square." },
+    { "@type": "HowToStep", "name": "Capture by jumping", "text": "Jump diagonally over an adjacent opposing piece to an empty square beyond to capture it. Captures are compulsory." },
+    { "@type": "HowToStep", "name": "Crown your kings", "text": "Reach the far row to promote a piece to a king, which can move and capture in any diagonal direction." },
+    { "@type": "HowToStep", "name": "Win the game", "text": "Capture all of your opponent's pieces, or leave them with no legal move." }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Checkers</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">Home</a></li>
+        <li><a href="../">Play</a></li>
+        <li><a href="../../apps/">Apps</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Checkers</h1>
+        <p class="lead" style="max-width:580px;margin-left:auto;margin-right:auto;">The classic game of diagonal strategy — also known as draughts. Jump your opponent's pieces, crown your kings, and clear the board. Play the computer across three levels. No ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>You</span><b id="ck-you">12</b></span>
+            <span class="readout-chip"><span>CPU</span><b id="ck-cpu">12</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Difficulty">
+              <button type="button" data-level="2" aria-pressed="false">Easy</button>
+              <button type="button" data-level="4" aria-pressed="true">Medium</button>
+              <button type="button" data-level="6" aria-pressed="false">Hard</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="ck-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="ck-status" aria-live="polite">Your move — you're red.</p>
+        <div class="game-board-wrap">
+          <div class="ck-board" id="ck-board" role="grid" aria-label="Checkers board"></div>
+        </div>
+        <p class="game-hint">Click a red piece, then a highlighted square · Captures are compulsory · Reach the top row to make a king.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">Play on the go</span>
+          <h2>Like it? Take it offline.</h2>
+          <p>Checkers is one of nine classics in Snackpack Brain Games — our calm, ad-free Android bundle of strategy, cards and puzzles.</p>
+          <ul class="funnel-points">
+            <li>Plays fully offline — flights, commutes, anywhere</li>
+            <li>Wins &amp; daily streaks saved on your device</li>
+            <li>Eight more games in the same app · no ads, no tracking</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games on Google Play">
+              <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play">
+            </a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <img class="funnel-qr" src="../../assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play">
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;">Scan to download</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Checkers</h2>
+      <p>Checkers — known as draughts outside North America — is played on an 8×8 board using only the dark squares. Each player starts with 12 pieces. You are red and move first, sending pieces diagonally <em>forward</em> one square at a time onto an empty dark square. The aim is to capture all of your opponent's pieces, or to leave them with no legal move.</p>
+      <p>You capture by jumping: if an opponent's piece sits diagonally in front of yours with an empty square directly beyond it, you leap over it and remove it. <strong>Captures are compulsory</strong> — if you can jump, you must, and if more jumps are available with the same piece, you must keep going in one turn. When a piece reaches the far row it becomes a <strong>king</strong>, which can move and capture in any diagonal direction. Here, click one of your pieces and the legal destinations light up; click a highlighted square to move.</p>
+
+      <h3>Strategy tips</h3>
+      <ul>
+        <li><strong>Control the centre.</strong> Central pieces have more options and are harder to trap against the edge.</li>
+        <li><strong>Use the edges defensively.</strong> A piece on the side wall can't be captured from that side — handy for safe development.</li>
+        <li><strong>Think in trades.</strong> Because captures are forced, you can often set up an exchange that wins you a second piece.</li>
+        <li><strong>Race for kings.</strong> A king is far stronger than a man; getting the first one is a real advantage.</li>
+        <li><strong>Keep your back row intact.</strong> Holding your home row late stops the opponent from crowning easy kings.</li>
+      </ul>
+
+      <h3>A little history</h3>
+      <p>Checkers is ancient — boards resembling it date back thousands of years, and the modern form on a chess board emerged in 12th-century Europe. It's also a landmark in computer science: in 2007, researchers announced that checkers had been <em>solved</em> — with perfect play by both sides, the game is a draw. The computer opponent here plays a fair, beatable game across three difficulty levels.</p>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is this Checkers free?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>Are captures really compulsory?</summary><p>Yes. If a jump is available you must take it, and you must continue a multi-jump while more captures are possible.</p></details>
+        <details class="faq-item"><summary>How do kings work?</summary><p>When a piece reaches the opposite end it is crowned and can then move and capture both forwards and backwards diagonally.</p></details>
+        <details class="faq-item"><summary>Can I play offline?</summary><p>The web version needs an open browser tab. For fully offline play, install the free <a class="text-link" href="../../apps/snackpack-brain-games/" style="color:var(--accent);">Snackpack Brain Games</a> app on Android.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Checkers free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../apps/snackpack-brain-games/">Brain Games app</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+  // Board: 8x8, index r*8+c. Values: 0 empty, 1 red man, 2 red king,
+  // -1 black man, -2 black king. Red (human) at bottom, moves up (row--).
+  // Black (CPU) at top, moves down (row++).
+  var RED = 1, BLACK = -1;
+
+  var boardEl = document.getElementById("ck-board");
+  var statusEl = document.getElementById("ck-status");
+  var youEl = document.getElementById("ck-you");
+  var cpuEl = document.getElementById("ck-cpu");
+  var newBtn = document.getElementById("ck-new");
+
+  var board, cells, selected = -1, legalForSel = [], busy = false, gameOver = false, depth = 4;
+
+  function build() {
+    boardEl.innerHTML = "";
+    cells = [];
+    for (var r = 0; r < 8; r++) for (var c = 0; c < 8; c++) {
+      var sq = document.createElement("div");
+      sq.className = "ck-sq " + ((r + c) % 2 ? "dark" : "light");
+      sq.dataset.i = r * 8 + c;
+      cells.push(sq);
+      boardEl.appendChild(sq);
+    }
+  }
+
+  function reset() {
+    board = new Array(64).fill(0);
+    for (var r = 0; r < 8; r++) for (var c = 0; c < 8; c++) {
+      if ((r + c) % 2 === 1) {
+        if (r < 3) board[r * 8 + c] = BLACK;
+        else if (r > 4) board[r * 8 + c] = RED;
+      }
+    }
+    selected = -1; legalForSel = []; busy = false; gameOver = false;
+    statusEl.textContent = "Your move — you're red.";
+    statusEl.className = "game-status";
+    render();
+  }
+
+  function side(v) { return v > 0 ? 1 : (v < 0 ? -1 : 0); }
+  function isKing(v) { return Math.abs(v) === 2; }
+
+  // Generate all legal moves for `who` (1 red / -1 black) on board b.
+  // A move = { from, seq:[landing squares...], caps:[captured indices...] }.
+  // Captures are compulsory, so if any capture exists only captures are returned.
+  function genMoves(b, who) {
+    var caps = [];
+    for (var i = 0; i < 64; i++) {
+      if (side(b[i]) === who) extendCaptures(b, i, i, b[i], [], [], caps);
+    }
+    if (caps.length) return caps;
+    var simples = [];
+    for (var j = 0; j < 64; j++) {
+      if (side(b[j]) === who) collectSimples(b, j, b[j], simples);
+    }
+    return simples;
+  }
+
+  function dirsFor(piece) {
+    if (isKing(piece)) return [[-1,-1],[-1,1],[1,-1],[1,1]];
+    return piece > 0 ? [[-1,-1],[-1,1]] : [[1,-1],[1,1]]; // red up, black down
+  }
+
+  function collectSimples(b, i, piece, out) {
+    var r = Math.floor(i / 8), c = i % 8;
+    dirsFor(piece).forEach(function (d) {
+      var nr = r + d[0], nc = c + d[1];
+      if (nr < 0 || nr > 7 || nc < 0 || nc > 7) return;
+      if (b[nr * 8 + nc] === 0) out.push({ from: i, seq: [nr * 8 + nc], caps: [] });
+    });
+  }
+
+  function extendCaptures(b, origin, i, piece, capMids, pathLands, out) {
+    var r = Math.floor(i / 8), c = i % 8;
+    dirsFor(piece).forEach(function (d) {
+      var mr = r + d[0], mc = c + d[1], lr = r + 2*d[0], lc = c + 2*d[1];
+      if (lr < 0 || lr > 7 || lc < 0 || lc > 7) return;
+      var mid = mr * 8 + mc, land = lr * 8 + lc;
+      if (side(b[mid]) === -side(piece) && side(b[mid]) !== 0 && b[land] === 0 && capMids.indexOf(mid) === -1) {
+        var nb = b.slice();
+        nb[i] = 0; nb[mid] = 0;
+        // Crowning ends the turn in standard rules: promote and stop extending.
+        var promoted = false, np = piece;
+        if (piece === 1 && lr === 0) { np = 2; promoted = true; }
+        else if (piece === -1 && lr === 7) { np = -2; promoted = true; }
+        nb[land] = np;
+        var nm = capMids.concat([mid]), npath = pathLands.concat([land]);
+        var before = out.length;
+        if (!promoted) extendCaptures(nb, origin, land, np, nm, npath, out);
+        if (promoted || out.length === before) {
+          out.push({ from: origin, seq: npath, caps: nm });
+        }
+      }
+    });
+  }
+
+  function applyMove(b, mv) {
+    var nb = b.slice();
+    var from = mv.from;
+    var piece = nb[from];
+    nb[from] = 0;
+    mv.caps.forEach(function (m) { nb[m] = 0; });
+    var dest = mv.seq[mv.seq.length - 1];
+    var dr = Math.floor(dest / 8);
+    if (piece === 1 && dr === 0) piece = 2;
+    else if (piece === -1 && dr === 7) piece = -2;
+    nb[dest] = piece;
+    return nb;
+  }
+
+  function render() {
+    for (var i = 0; i < 64; i++) {
+      var sq = cells[i];
+      sq.className = "ck-sq " + ((Math.floor(i/8) + (i%8)) % 2 ? "dark" : "light");
+      sq.innerHTML = "";
+      var v = board[i];
+      if (v !== 0) {
+        var p = document.createElement("div");
+        p.className = "ck-piece " + (v > 0 ? "red" : "black") + (isKing(v) ? " king" : "");
+        p.dataset.i = i;
+        sq.appendChild(p);
+      }
+    }
+    if (selected >= 0) cells[selected].classList.add("sel");
+    legalForSel.forEach(function (mv) { cells[mv.seq[mv.seq.length - 1]].classList.add("move"); });
+    var red = board.filter(function (v) { return v > 0; }).length;
+    var black = board.filter(function (v) { return v < 0; }).length;
+    youEl.textContent = red; cpuEl.textContent = black;
+  }
+
+  // ── Turn handling ────────────────────────────────
+  function humanSelect(i) {
+    if (busy || gameOver) return;
+    var all = genMoves(board, RED);
+    if (side(board[i]) === RED) {
+      var mine = all.filter(function (mv) { return mv.from === i; });
+      if (mine.length) { selected = i; legalForSel = mine; render(); return; }
+    }
+    if (selected >= 0) {
+      var pick = legalForSel.filter(function (mv) { return mv.seq[mv.seq.length - 1] === i; });
+      if (pick.length) {
+        board = applyMove(board, pick[0]);
+        selected = -1; legalForSel = [];
+        render();
+        if (checkEnd(BLACK)) return;
+        busy = true;
+        statusEl.textContent = "Computer is thinking…";
+        setTimeout(cpuTurn, 300);
+        return;
+      }
+    }
+    selected = -1; legalForSel = []; render();
+  }
+
+  function cpuTurn() {
+    var moves = genMoves(board, BLACK);
+    if (!moves.length) { busy = false; checkEnd(BLACK); return; }
+    var mv = pickCpuMove(moves);
+    board = applyMove(board, mv);
+    render();
+    busy = false;
+    if (checkEnd(RED)) return;
+    statusEl.textContent = "Your move — you're red.";
+  }
+
+  function checkEnd(nextSide) {
+    var red = board.filter(function (v) { return v > 0; }).length;
+    var black = board.filter(function (v) { return v < 0; }).length;
+    if (red === 0) { return end("cpu"); }
+    if (black === 0) { return end("you"); }
+    if (genMoves(board, nextSide).length === 0) {
+      return end(nextSide === RED ? "cpu" : "you");
+    }
+    return false;
+  }
+
+  function end(who) {
+    gameOver = true; busy = false;
+    if (who === "you") {
+      statusEl.textContent = "You win! 🎉 The computer is out of moves.";
+      statusEl.className = "game-status";
+      if (window.SnackPack) window.SnackPack.celebrate({
+        title: "You won at Checkers! 🎉",
+        body: "Sharp play. We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app to play Checkers and eight more, offline."
+      });
+    } else {
+      statusEl.textContent = "The computer wins this one. Try again!";
+      statusEl.className = "game-status game-status--lose";
+    }
+    return true;
+  }
+
+  // ── AI: minimax with alpha-beta ──────────────────
+  function evaluate(b) {
+    var s = 0;
+    for (var i = 0; i < 64; i++) {
+      var v = b[i]; if (!v) continue;
+      var r = Math.floor(i / 8);
+      var val = isKing(v) ? 5 : 3;
+      // small positional nudge: advance men, keep back row early
+      if (!isKing(v)) val += v > 0 ? (7 - r) * 0.12 : r * 0.12;
+      s += v > 0 ? val : -val; // black is negative -> good for CPU when s is low
+    }
+    return s; // positive favours RED
+  }
+
+  function minimax(b, d, alpha, beta, who) {
+    var moves = genMoves(b, who);
+    if (moves.length === 0) return who === RED ? -1000 : 1000; // side to move loses
+    if (d === 0) return evaluate(b);
+    var i;
+    if (who === BLACK) { // CPU minimises (favours negative)
+      var best = Infinity;
+      for (i = 0; i < moves.length; i++) {
+        best = Math.min(best, minimax(applyMove(b, moves[i]), d - 1, alpha, beta, RED));
+        beta = Math.min(beta, best);
+        if (alpha >= beta) break;
+      }
+      return best;
+    } else {
+      var bestR = -Infinity;
+      for (i = 0; i < moves.length; i++) {
+        bestR = Math.max(bestR, minimax(applyMove(b, moves[i]), d - 1, alpha, beta, BLACK));
+        alpha = Math.max(alpha, bestR);
+        if (alpha >= beta) break;
+      }
+      return bestR;
+    }
+  }
+
+  function pickCpuMove(moves) {
+    // Easy: some randomness.
+    if (depth <= 2 && Math.random() < 0.3) return moves[Math.floor(Math.random() * moves.length)];
+    var best = moves[0], bestVal = Infinity;
+    for (var i = 0; i < moves.length; i++) {
+      var v = minimax(applyMove(board, moves[i]), depth - 1, -Infinity, Infinity, RED);
+      if (v < bestVal) { bestVal = v; best = moves[i]; }
+    }
+    return best;
+  }
+
+  // ── Input ────────────────────────────────────────
+  boardEl.addEventListener("click", function (e) {
+    var sq = e.target.closest(".ck-sq"); if (!sq) return;
+    humanSelect(+sq.dataset.i);
+  });
+  newBtn.addEventListener("click", reset);
+  document.querySelectorAll(".seg [data-level]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      depth = +btn.dataset.level;
+      document.querySelectorAll(".seg [data-level]").forEach(function (x) {
+        x.setAttribute("aria-pressed", String(x === btn));
+      });
+      reset();
+    });
+  });
+
+  build();
+  reset();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
