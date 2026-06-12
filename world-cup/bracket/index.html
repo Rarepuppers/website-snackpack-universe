@@ -78,6 +78,45 @@
   border-color: var(--ink);
   color: #fff;
 }
+.bracket-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+}
+.summary-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.74);
+  padding: 14px;
+}
+.summary-card h2 {
+  margin: 0 0 10px;
+  font-size: 1.18rem;
+}
+.summary-list {
+  display: grid;
+  gap: 8px;
+}
+.summary-list .match-row {
+  grid-template-columns: 78px minmax(0, 1fr) auto;
+  gap: 9px;
+  padding: 9px;
+  box-shadow: none;
+}
+.last-updated {
+  margin: -2px 0 14px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+.empty-state {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.45;
+  margin: 0;
+}
 .group-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -270,6 +309,7 @@
   .bracket-layout { grid-template-columns: 1fr; }
   .prediction-panel { position: static; }
   .group-grid { grid-template-columns: 1fr; }
+  .bracket-summary { grid-template-columns: 1fr; }
 }
 @media (max-width: 620px) {
   .match-row { grid-template-columns: 1fr; }
@@ -332,6 +372,21 @@
   <section>
     <div class="shell bracket-layout">
       <div class="bracket-panel">
+        <div class="bracket-summary" aria-label="World Cup match summary">
+          <article class="summary-card">
+            <h2>Today's Matches</h2>
+            <div class="summary-list" id="today-list">
+              <p class="empty-state">Loading today's World Cup matches...</p>
+            </div>
+          </article>
+          <article class="summary-card">
+            <h2>Recently Finished</h2>
+            <div class="summary-list" id="recent-list">
+              <p class="empty-state">Loading recent World Cup results...</p>
+            </div>
+          </article>
+        </div>
+        <p class="last-updated" id="last-updated">Last updated: loading World Cup data...</p>
         <div class="bracket-tabs" role="tablist" aria-label="World Cup tracker views">
           <button type="button" data-view="groups" aria-pressed="true">Groups</button>
           <button type="button" data-view="played" aria-pressed="false">Played</button>
@@ -569,6 +624,63 @@
     return typeof match.hs === "number";
   }
 
+  function normalizeGroups(source) {
+    if (!Array.isArray(source)) return source || groups;
+    return source.reduce(function (mapped, group) {
+      var key = String(group.name || "").replace(/^Group\s+/i, "");
+      if (key && Array.isArray(group.teams)) mapped[key] = group.teams;
+      return mapped;
+    }, {});
+  }
+
+  function localTodayKey() {
+    var now = new Date();
+    var month = String(now.getMonth() + 1).padStart(2, "0");
+    var day = String(now.getDate()).padStart(2, "0");
+    return now.getFullYear() + "-" + month + "-" + day;
+  }
+
+  function matchDateKey(match) {
+    if (match.isoDate) return String(match.isoDate).slice(0, 10);
+    var parsed = Date.parse((match.date || "") + " 2026");
+    if (Number.isNaN(parsed)) return "";
+    var date = new Date(parsed);
+    return "2026-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+  }
+
+  function matchSortValue(match) {
+    return String(match.isoDate || match.date || "") + " " + String(match.time || "");
+  }
+
+  function renderList(rootId, items, emptyText) {
+    var root = document.getElementById(rootId);
+    root.innerHTML = items.length ? items.map(matchHtml).join("") : '<p class="empty-state">' + escapeHtml(emptyText) + '</p>';
+  }
+
+  function renderSummary() {
+    var today = localTodayKey();
+    var todaysMatches = matches.filter(function (match) {
+      return matchDateKey(match) === today || isLive(match);
+    }).sort(function (a, b) {
+      return (isLive(b) ? 1 : 0) - (isLive(a) ? 1 : 0) || matchSortValue(a).localeCompare(matchSortValue(b));
+    });
+    var recentMatches = matches.filter(isPlayed).sort(function (a, b) {
+      return matchSortValue(b).localeCompare(matchSortValue(a));
+    }).slice(0, 4);
+    renderList("today-list", todaysMatches.slice(0, 4), "No World Cup matches are listed for today yet. Check Upcoming for the next fixtures.");
+    renderList("recent-list", recentMatches, "No completed World Cup matches are listed yet.");
+  }
+
+  function renderLastUpdated(updatedAt) {
+    var root = document.getElementById("last-updated");
+    if (!updatedAt) {
+      root.textContent = "Last updated: using built-in fallback data until the automated feed refreshes.";
+      return;
+    }
+    var date = new Date(updatedAt);
+    root.textContent = "Last updated: " + date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) + " from data/world-cup-2026.json.";
+  }
+
   function standingsFor(groupId) {
     var table = {};
     groups[groupId].forEach(function (team) { table[team] = blankStats(team); });
@@ -765,9 +877,10 @@
 
   function applyData(data) {
     if (!data || !data.groups || !Array.isArray(data.matches)) return;
-    groups = data.groups;
+    groups = normalizeGroups(data.groups);
     matches = data.matches;
     teams = Object.keys(groups).reduce(function (all, key) { return all.concat(groups[key]); }, []).sort();
+    renderLastUpdated(data.updatedAt);
   }
 
   function init() {
@@ -783,6 +896,7 @@
     document.getElementById("native-share-card").addEventListener("click", nativeShareCard);
 
     renderGroups();
+    renderSummary();
     renderMatches();
     renderPredictionForm();
     renderKnockout();
@@ -795,6 +909,7 @@
     })
     .then(applyData)
     .catch(function () {
+      renderLastUpdated(null);
       // Keep the embedded seed data as a fallback for local file previews.
     })
     .then(init);

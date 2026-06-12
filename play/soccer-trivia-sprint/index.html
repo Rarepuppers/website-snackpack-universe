@@ -34,6 +34,31 @@
     repeating-linear-gradient(90deg, rgba(31,143,119,0.08) 0 36px, transparent 36px 72px);
   box-shadow: var(--shadow);
 }
+.category-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 0 auto 14px;
+  width: min(100%, 680px);
+}
+.category-controls button {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.74);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+.category-controls button[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
 .trivia-topline {
   display: flex;
   flex-wrap: wrap;
@@ -252,6 +277,13 @@
           </div>
         </div>
         <p class="game-status" id="trivia-status" aria-live="polite">Pick the right answer before the timer runs out.</p>
+        <div class="category-controls" role="group" aria-label="Trivia category">
+          <button type="button" data-category="mixed" aria-pressed="true">Mixed</button>
+          <button type="button" data-category="players" aria-pressed="false">Players</button>
+          <button type="button" data-category="teams2026" aria-pressed="false">2026 Teams</button>
+          <button type="button" data-category="history" aria-pressed="false">World Cup History</button>
+          <button type="button" data-category="rules" aria-pressed="false">Rules</button>
+        </div>
         <div class="trivia-card">
           <div class="trivia-topline">
             <span class="trivia-topic" id="trivia-topic">Rules</span>
@@ -302,7 +334,7 @@
     <div class="shell seo-prose">
       <h2>How to play Soccer Trivia Sprint</h2>
       <p>You get 12 soccer trivia questions. Choose the correct answer before the timer runs out. Correct answers score points, fast answers add a speed bonus, and streaks add even more. A wrong answer or timeout resets your streak.</p>
-      <p>Rookie mode has more time and easier questions. Pro and Legend reduce the timer and include tougher questions about rules, tournaments, positions, and football culture.</p>
+      <p>Rookie mode has more time and easier questions. Pro and Legend reduce the timer and include tougher questions about rules, tournaments, positions, and football culture. Use category badges to focus a sprint on Players, 2026 Teams, World Cup History, or Rules.</p>
       <h3>Tips for a higher score</h3>
       <ul>
         <li>Answer easy questions quickly to build early streak points.</li>
@@ -359,10 +391,18 @@
   var bestKey = "snackpack-soccer-trivia-sprint-best";
   var best = parseInt(localStorage.getItem(bestKey) || "0", 10);
   var difficulty = "rookie";
+  var category = "mixed";
   var settings = {
     rookie: { time: 15000, count: 12, minLevel: 1 },
     pro: { time: 11500, count: 12, minLevel: 2 },
     legend: { time: 8500, count: 12, minLevel: 3 }
+  };
+  var categorySettings = {
+    mixed: { label: "Mixed", topics: null },
+    players: { label: "Players", topics: ["Players"] },
+    teams2026: { label: "2026 Teams", topics: ["World Cup 2026 Teams"] },
+    history: { label: "World Cup History", topics: ["World Cup History", "World Cup 2002", "World Cup 2006", "World Cup 2010", "World Cup 2014", "World Cup 2018", "World Cup 2022"] },
+    rules: { label: "Rules", topics: ["Rules", "Match", "Scoring", "Terms"] }
   };
   var questions = [
     { topic: "Rules", level: 1, q: "How many players does a soccer team usually have on the field?", a: ["11", "9", "10", "12"], correct: 0 },
@@ -586,11 +626,26 @@
     };
   }
 
+  function categoryMatches(item) {
+    var cfg = categorySettings[category] || categorySettings.mixed;
+    return !cfg.topics || cfg.topics.indexOf(item.topic) !== -1;
+  }
+
+  function difficultyMatches(item, cfg) {
+    return difficulty === "rookie" ? item.level <= 2 : item.level >= cfg.minLevel || item.level === 2;
+  }
+
   function reset() {
     if (timer) clearTimeout(timer);
     if (raf) cancelAnimationFrame(raf);
     var cfg = settings[difficulty];
-    var pool = questions.filter(function (q) { return difficulty === "rookie" ? q.level <= 2 : q.level >= cfg.minLevel || q.level === 2; });
+    var pool = questions.filter(function (q) { return categoryMatches(q) && difficultyMatches(q, cfg); });
+    if (pool.length < cfg.count) {
+      pool = questions.filter(categoryMatches);
+    }
+    if (pool.length < cfg.count) {
+      pool = questions.filter(function (q) { return difficultyMatches(q, cfg); });
+    }
     deck = shuffle(pool).slice(0, cfg.count).map(prepareQuestion);
     while (deck.length < cfg.count) deck = deck.concat(shuffle(pool).map(prepareQuestion)).slice(0, cfg.count);
     index = 0;
@@ -599,7 +654,7 @@
     history = [];
     answered = false;
     statusEl.className = "game-status";
-    statusEl.textContent = "Pick the right answer before the timer runs out.";
+    statusEl.textContent = "Category: " + categorySettings[category].label + ". Pick the right answer before the timer runs out.";
     updateReadout();
     renderHistory();
     showQuestion();
@@ -720,6 +775,15 @@
     button.addEventListener("click", function () {
       difficulty = button.dataset.difficulty;
       document.querySelectorAll("[data-difficulty]").forEach(function (x) {
+        x.setAttribute("aria-pressed", String(x === button));
+      });
+      reset();
+    });
+  });
+  document.querySelectorAll("[data-category]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      category = button.dataset.category;
+      document.querySelectorAll("[data-category]").forEach(function (x) {
         x.setAttribute("aria-pressed", String(x === button));
       });
       reset();
