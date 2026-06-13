@@ -241,6 +241,28 @@
     </div>
   </section>
 
+  <!-- Score-checker -> play / app / tip bridge. Catches visitors who came for live scores. -->
+  <section id="kickoff-cta">
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">While you wait for kickoff</span>
+          <h2>Here for the scores? Make the wait fun.</h2>
+          <p>Fixtures update live above. Between matches, play a quick free game, grab a SnackPack app for the road, or drop a tip to keep this tracker ad-free.</p>
+          <div class="stack-inline">
+            <a class="btn btn-primary" href="#soccer-games" data-cta="play">Play free games</a>
+            <a class="btn btn-secondary" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames&referrer=utm_source%3Dworldcup%26utm_medium%3Dweb%26utm_campaign%3Dworldcup2026" target="_blank" rel="noopener" data-cta="app">Get our app</a>
+            <a class="btn btn-secondary" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04?client_reference_id=worldcup" target="_blank" rel="noopener" data-cta="tip">Tip the studio</a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">⚽</div>
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">Free to play. No account. Tips keep it ad-free.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="soccer-games">
     <div class="shell">
       <div class="section-head">
@@ -384,7 +406,7 @@
 
 <footer class="foot">
   <div class="shell foot-support">
-    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04?client_reference_id=worldcup" target="_blank" rel="noopener" data-cta="tip" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
       <img src="../assets/donate2-50.png" alt="SnackPack - Tip or Donate - Support Us" width="104" height="81" loading="lazy">
     </a>
     <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio. Tips and donations help us keep building calm, ad-free games.</span></span>
@@ -453,6 +475,18 @@
       var root = document.getElementById("cup-live-list");
       if (root) root.innerHTML = '<div class="cup-live-item">Open the bracket for the latest schedule. <span class="cup-live-badge">Next</span></div>';
     });
+})();
+</script>
+
+<!-- CTA click tracking. Pushes to dataLayer so GA4/GTM can pick it up if added later; harmless no-op otherwise. -->
+<script>
+(function () {
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-cta]");
+    if (!el) return;
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: "cta_click", cta: el.getAttribute("data-cta"), page: "world-cup" });
+  });
 })();
 </script>
 
