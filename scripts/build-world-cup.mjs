@@ -178,6 +178,79 @@ const SCHEDULE = [
   ["L", "2026-06-27", "Croatia", "Ghana", "Philadelphia"]
 ];
 
+const TEAM_INFO = {
+  "Mexico": { players: ["Raul Jimenez", "Hirving Lozano", "Santiago Gimenez"], fact: "Co-host with deep World Cup history and opening-match energy at Estadio Azteca." },
+  "South Africa": { players: ["Percy Tau", "Teboho Mokoena", "Ronwen Williams"], fact: "Back on the World Cup stage after becoming the first African host in 2010." },
+  "South Korea": { players: ["Son Heung-min", "Kim Min-jae", "Lee Kang-in"], fact: "Fast transitions, elite defensive talent, and recent knockout-round pedigree." },
+  "Czechia": { players: ["Patrik Schick", "Tomas Soucek", "Ladislav Krejci"], fact: "Disciplined European side with aerial strength and set-piece danger." },
+  "Canada": { players: ["Alphonso Davies", "Jonathan David", "Tajon Buchanan"], fact: "Co-host with pace, direct attacking, and home crowds in Toronto and Vancouver." },
+  "Bosnia and Herzegovina": { players: ["Edin Dzeko", "Miralem Pjanic", "Sead Kolasinac"], fact: "Experienced spine and one of Europe's most passionate fan cultures." },
+  "Qatar": { players: ["Akram Afif", "Almoez Ali", "Hassan Al-Haydos"], fact: "Asian Cup pedigree and recent tournament-hosting experience." },
+  "Switzerland": { players: ["Granit Xhaka", "Manuel Akanji", "Breel Embolo"], fact: "Reliable knockout-stage contender built on structure and experience." },
+  "Haiti": { players: ["Duckens Nazon", "Frantzdy Pierrot", "Johny Placide"], fact: "Caribbean qualifier with pace, emotion, and a proud football story." },
+  "Scotland": { players: ["Scott McTominay", "Andy Robertson", "John McGinn"], fact: "High-energy midfield and one of football's loudest supporter cultures." },
+  "Brazil": { players: ["Vinicius Junior", "Rodrygo", "Alisson"], fact: "Five-time champions with elite attacking depth and global star power." },
+  "Morocco": { players: ["Achraf Hakimi", "Sofyan Amrabat", "Yassine Bounou"], fact: "2022 semi-finalists with defensive grit and dangerous wide play." },
+  "United States": { players: ["Christian Pulisic", "Weston McKennie", "Tyler Adams"], fact: "Co-host with a young core and major home-field attention." },
+  "Paraguay": { players: ["Miguel Almiron", "Julio Enciso", "Gustavo Gomez"], fact: "Traditionally tough South American side with counterattacking bite." },
+  "Australia": { players: ["Mathew Ryan", "Jackson Irvine", "Craig Goodwin"], fact: "Physical, organized team with strong tournament resilience." },
+  "Turkiye": { players: ["Hakan Calhanoglu", "Arda Guler", "Kenan Yildiz"], fact: "Technical midfield, quick attackers, and a rising generation." },
+  "Cote d'Ivoire": { players: ["Sebastien Haller", "Franck Kessie", "Simon Adingra"], fact: "African champions with power, pace, and box presence." },
+  "Ecuador": { players: ["Moises Caicedo", "Piero Hincapie", "Enner Valencia"], fact: "Athletic South American team with a strong defensive platform." },
+  "Germany": { players: ["Jamal Musiala", "Florian Wirtz", "Joshua Kimmich"], fact: "Four-time champions with elite midfield creativity." },
+  "Curacao": { players: ["Leandro Bacuna", "Juninho Bacuna", "Eloy Room"], fact: "Small-island story with Dutch-Caribbean roots and experienced professionals." },
+  "Netherlands": { players: ["Virgil van Dijk", "Frenkie de Jong", "Cody Gakpo"], fact: "Historic football nation known for possession, width, and tournament consistency." },
+  "Japan": { players: ["Kaoru Mitoma", "Takefusa Kubo", "Wataru Endo"], fact: "Technical, fast, and disciplined; famous for 2022 comeback wins." },
+  "Sweden": { players: ["Alexander Isak", "Dejan Kulusevski", "Viktor Gyokeres"], fact: "Powerful European side with dangerous forwards." },
+  "Tunisia": { players: ["Wahbi Khazri", "Ellyes Skhiri", "Hannibal Mejbri"], fact: "North African side known for compact defending and committed pressing." },
+  "Iran": { players: ["Mehdi Taremi", "Sardar Azmoun", "Alireza Jahanbakhsh"], fact: "Experienced Asian side with strong forwards and tournament familiarity." },
+  "New Zealand": { players: ["Chris Wood", "Liberato Cacace", "Sarpreet Singh"], fact: "Oceania standard-bearer with aerial threat and physical presence." },
+  "Belgium": { players: ["Kevin De Bruyne", "Romelu Lukaku", "Jeremy Doku"], fact: "Elite attacking talent and a new generation around established stars." },
+  "Egypt": { players: ["Mohamed Salah", "Omar Marmoush", "Mohamed Elneny"], fact: "African giants led by one of world football's most famous forwards." },
+  "Saudi Arabia": { players: ["Salem Al-Dawsari", "Firas Al-Buraikan", "Mohammed Al-Owais"], fact: "Produced one of 2022's biggest shocks by beating Argentina." },
+  "Uruguay": { players: ["Federico Valverde", "Darwin Nunez", "Ronald Araujo"], fact: "Two-time champions with intensity, history, and elite modern talent." },
+  "Spain": { players: ["Pedri", "Lamine Yamal", "Rodri"], fact: "Possession powerhouse with young stars and deep midfield control." },
+  "Cape Verde": { players: ["Ryan Mendes", "Bebe", "Vozinha"], fact: "Island nation with a compact squad and growing tournament reputation." },
+  "France": { players: ["Kylian Mbappe", "Antoine Griezmann", "Aurelien Tchouameni"], fact: "Recent finalists with speed, depth, and elite knockout experience." },
+  "Senegal": { players: ["Sadio Mane", "Kalidou Koulibaly", "Edouard Mendy"], fact: "African champions with pace, leadership, and physical strength." },
+  "Iraq": { players: ["Aymen Hussein", "Ali Jasim", "Ibrahim Bayesh"], fact: "Proud Asian side with passionate support and dangerous forwards." },
+  "Norway": { players: ["Erling Haaland", "Martin Odegaard", "Alexander Sorloth"], fact: "Headline attacking talent led by Haaland and Odegaard." },
+  "Argentina": { players: ["Lionel Messi", "Julian Alvarez", "Emiliano Martinez"], fact: "Defending champions with elite mentality and world-famous leadership." },
+  "Algeria": { players: ["Riyad Mahrez", "Ismael Bennacer", "Youcef Belaili"], fact: "North African side with flair, left-footed creativity, and tournament pedigree." },
+  "Austria": { players: ["David Alaba", "Marcel Sabitzer", "Christoph Baumgartner"], fact: "Organized European team with strong pressing and versatile midfielders." },
+  "Jordan": { players: ["Mousa Al-Taamari", "Yazan Al-Naimat", "Nizar Al-Rashdan"], fact: "Asian Cup finalists with quick counters and rising confidence." },
+  "Portugal": { players: ["Cristiano Ronaldo", "Bruno Fernandes", "Bernardo Silva"], fact: "European powerhouse with generational icons and deep attacking options." },
+  "DR Congo": { players: ["Chancel Mbemba", "Yoane Wissa", "Cedric Bakambu"], fact: "Physical, direct side with powerful forwards and strong defensive leaders." },
+  "Uzbekistan": { players: ["Eldor Shomurodov", "Abbosbek Fayzullaev", "Oston Urunov"], fact: "Emerging Asian team with technical midfielders and a historic opportunity." },
+  "Colombia": { players: ["Luis Diaz", "James Rodriguez", "Davinson Sanchez"], fact: "South American side with flair, speed, and a passionate fan base." },
+  "Ghana": { players: ["Mohammed Kudus", "Thomas Partey", "Jordan Ayew"], fact: "Four-time African champions known for athleticism and attacking bursts." },
+  "Panama": { players: ["Adalberto Carrasquilla", "Anibal Godoy", "Michael Murillo"], fact: "Central American side with energy, organization, and tournament grit." },
+  "England": { players: ["Harry Kane", "Jude Bellingham", "Bukayo Saka"], fact: "Deep squad with major attacking options and high tournament expectations." },
+  "Croatia": { players: ["Luka Modric", "Josko Gvardiol", "Mateo Kovacic"], fact: "Recent finalists and semi-finalists with elite midfield control." }
+};
+
+function escapeHtml(value) {
+  return String(value == null ? "" : value).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+
+function slug(name) {
+  return String(name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function groupOf(team) {
+  return Object.keys(GROUPS).find(function (g) { return GROUPS[g].indexOf(team) !== -1; }) || "";
+}
+
+function flagDataUrl(team) {
+  var s = FLAGS[team] || { code: "FC", colors: ["#1f8f77", "#ffffff", "#de6a38"] };
+  var sw = 60 / s.colors.length;
+  var stripes = s.colors.map(function (c, i) { return '<rect x="' + (i * sw) + '" y="0" width="' + sw + '" height="40" fill="' + c + '"/>'; }).join("");
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40">' + stripes + '<text x="30" y="25" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="800" fill="#201713" stroke="#fff" stroke-width="3" paint-order="stroke">' + s.code + '</text></svg>';
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+}
+
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 function shortDate(iso) {
   const [y, m, d] = iso.split("-").map(Number);
@@ -643,6 +716,291 @@ ${"ABCDEFGHIJKL".split("").map((g) => `        <a href="../group-${g.toLowerCase
 `;
 }
 
+function teamFixtures(team) {
+  return SCHEDULE.filter(function (r) { return r[2] === team || r[3] === team; })
+    .map(function (r) {
+      var home = r[2], away = r[3];
+      var obj = { iso: r[1], date: shortDate(r[1]), home: home, away: away, venue: r[4] };
+      if (typeof r[5] === "number") { obj.hs = r[5]; obj.as = r[6]; }
+      return obj;
+    })
+    .sort(function (a, b) { return a.iso.localeCompare(b.iso); });
+}
+
+function teamPage(team) {
+  var g = groupOf(team);
+  var info = TEAM_INFO[team] || { players: [], fact: "" };
+  var fixtures = teamFixtures(team);
+  var oppFlags = {};
+  (GROUPS[g] || []).forEach(function (t) { oppFlags[t] = flagDataUrl(t); });
+  var players = info.players.map(function (p) { return '<li>' + escapeHtml(p) + '</li>'; }).join("");
+
+  function rowHtml(m) {
+    var isHome = m.home === team;
+    var opp = isHome ? m.away : m.home;
+    var played = typeof m.hs === "number";
+    var pill, cls = "";
+    if (played) {
+      var ours = isHome ? m.hs : m.as;
+      var theirs = isHome ? m.as : m.hs;
+      pill = ours + "-" + theirs;
+      cls = ours > theirs ? " team-result--w" : ours < theirs ? " team-result--l" : " team-result--d";
+    } else {
+      pill = "Next";
+      cls = " team-result--next";
+    }
+    return '<div class="team-fixture"><div class="tf-date">' + escapeHtml(m.date) + '</div>' +
+      '<div class="tf-mid"><div class="tf-opp">' + escapeHtml(isHome ? "vs" : "at") + ' <img class="tf-flag" src="' + flagDataUrl(opp) + '" alt=""> ' + escapeHtml(opp) + '</div>' +
+      '<div class="tf-venue">' + escapeHtml(m.venue || "") + '</div></div>' +
+      '<span class="team-result' + cls + '">' + escapeHtml(pill) + '</span></div>';
+  }
+
+  var fixturesHtml = fixtures.map(rowHtml).join("");
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${escapeHtml(team)} at the World Cup 2026: Group ${g}, Fixtures & Players | SnackPack</title>
+<meta name="description" content="${escapeHtml(team)} at the 2026 World Cup: Group ${g}, full fixture list with dates and venues, players to know, and a quick team guide.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/world-cup/team/${slug(team)}/">
+<meta name="theme-color" content="#1f8f77">
+<link rel="icon" type="image/png" href="../../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="${escapeHtml(team)} at the World Cup 2026">
+<meta property="og:description" content="Group ${g} fixtures, players to know, and a quick guide to ${escapeHtml(team)} at the 2026 World Cup.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.snackpackuniverse.com/world-cup/team/${slug(team)}/">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../site.css">
+<link rel="stylesheet" href="../../../play/play.css">
+<style>
+.team-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 22px;
+  align-items: center;
+  background:
+    linear-gradient(145deg, rgba(8, 82, 73, 0.9), rgba(31, 143, 119, 0.78)),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.07) 0 38px, rgba(255,255,255,0.02) 38px 76px);
+  color: #fff;
+}
+.team-hero p, .team-hero .lead { color: rgba(255,255,255,0.88); }
+.team-hero .eyebrow { color: #fff; background: rgba(255,255,255,0.14); }
+.team-hero .btn-secondary { color: var(--ink); }
+.team-hero-flag {
+  width: 132px;
+  height: 88px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.4);
+  box-shadow: 0 18px 36px rgba(0,0,0,0.3);
+}
+.team-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; align-items: start; }
+.team-panel, .team-side {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+.team-side { position: sticky; top: 94px; }
+.team-panel h2, .team-side h2 { margin: 0 0 12px; font-family: var(--serif); font-size: 1.4rem; }
+.player-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; padding: 0; list-style: none; }
+.player-list li {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.7);
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+.team-fixtures { display: grid; gap: 10px; margin-top: 4px; }
+.team-fixture {
+  display: grid;
+  grid-template-columns: 60px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.76);
+}
+.tf-date { color: var(--muted); font-size: 0.8rem; font-weight: 900; text-transform: uppercase; }
+.tf-opp { font-weight: 800; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.tf-flag { width: 22px; height: 16px; border-radius: 3px; border: 1px solid rgba(32,23,19,0.16); object-fit: cover; }
+.tf-venue { color: var(--muted); font-size: 0.84rem; font-weight: 600; margin-top: 2px; }
+.team-result {
+  min-width: 56px; text-align: center; padding: 7px 9px; border-radius: 999px;
+  background: var(--ink); color: #fff; font-weight: 900; font-variant-numeric: tabular-nums;
+}
+.team-result--w { background: var(--accent); }
+.team-result--l { background: var(--brand-deep); }
+.team-result--d { background: #6a5b52; }
+.team-result--next { background: #1f8f77; }
+.team-links { display: grid; gap: 9px; }
+.team-links a {
+  border: 1px solid var(--line); border-radius: 999px; color: var(--ink);
+  font-weight: 800; padding: 10px 12px; text-decoration: none; background: rgba(255,255,255,0.74);
+}
+.team-links a:hover { border-color: var(--accent); color: var(--accent); }
+@media (max-width: 900px) {
+  .team-hero { grid-template-columns: 1fr; }
+  .team-layout { grid-template-columns: 1fr; }
+  .team-side { position: static; }
+}
+@media (max-width: 560px) { .team-fixture { grid-template-columns: 1fr; } .team-result { width: fit-content; } }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SportsTeam",
+  "name": ${JSON.stringify(team)},
+  "sport": "Association football",
+  "url": "https://www.snackpackuniverse.com/world-cup/team/${slug(team)}/",
+  "memberOf": { "@type": "SportsEvent", "name": "World Cup 2026" }
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../../">
+      <img class="brand-mark" src="../../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">${escapeHtml(team)}</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="../../">World Cup</a></li>
+        <li><a href="../../schedule/">Schedule</a></li>
+        <li><a href="../../teams/">Teams</a></li>
+        <li><a href="../../bracket/">Bracket</a></li>
+        <li><a class="pill-link" href="../../../play/">Play</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card team-hero">
+        <div>
+          <span class="eyebrow">World Cup 2026 &middot; Group ${g}</span>
+          <h1>${escapeHtml(team)} at the World Cup 2026</h1>
+          <p class="lead" style="max-width:680px;">${escapeHtml(info.fact)}</p>
+          <div class="stack-inline">
+            <a class="btn btn-primary" href="../../group-${g.toLowerCase()}/">Group ${g} table</a>
+            <a class="btn btn-secondary" href="../../schedule/">Full schedule</a>
+          </div>
+        </div>
+        <img class="team-hero-flag" src="${flagDataUrl(team)}" alt="${escapeHtml(team)} flag">
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell team-layout">
+      <article class="team-panel">
+        <h2>${escapeHtml(team)} group fixtures</h2>
+        <div class="team-fixtures" id="team-fixtures">${fixturesHtml}</div>
+        <h2 style="margin-top:22px;">Players to know</h2>
+        <ul class="player-list">${players}</ul>
+        <p class="tf-venue" id="updated-note" style="margin-top:6px;">Group ${g} of the 2026 World Cup. Results update from the live data file.</p>
+      </article>
+      <aside class="team-side">
+        <h2>More World Cup</h2>
+        <div class="team-links">
+          <a href="../../group-${g.toLowerCase()}/">Group ${g} table &amp; results</a>
+          <a href="../../bracket/">Full bracket tracker</a>
+          <a href="../../schedule/">Schedule &amp; fixtures</a>
+          <a href="../../teams/">All 48 teams</a>
+          <a href="../../../play/soccer-trivia-sprint/">Soccer Trivia Sprint</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>${escapeHtml(team)} World Cup 2026 guide</h2>
+      <p>${escapeHtml(team)} is in Group ${g} at the 2026 World Cup, co-hosted by the United States, Canada, and Mexico. This page lists ${escapeHtml(team)}'s group-stage fixtures with dates and host cities, plus players to know. Results update automatically as the tournament is played.</p>
+      <p>For the live group table, see the <a class="text-link" href="../../group-${g.toLowerCase()}/" style="color:var(--accent);font-weight:700;">Group ${g} page</a>. For the full tournament, open the <a class="text-link" href="../../bracket/" style="color:var(--accent);font-weight:700;">bracket tracker</a> or the <a class="text-link" href="../../schedule/" style="color:var(--accent);font-weight:700;">schedule</a>.</p>
+      <p style="font-size:0.85rem;color:var(--muted);">Original SnackPack Studios guide. Not affiliated with, endorsed by, or connected to FIFA, the World Cup, any national team, league, or governing body. Player lists are a fan guide and final squads can change.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../../assets/donate2-50.png" alt="SnackPack - Tip or Donate - Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio. Tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">${escapeHtml(team)} &mdash; World Cup 2026 guide from SnackPack Studios.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../../">World Cup</a>
+      <a class="text-link" href="../../../play/">Arcade</a>
+      <a class="text-link" href="../../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var TEAM = ${JSON.stringify(team)};
+  var FLAGS = ${JSON.stringify(oppFlags)};
+  function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function flag(team) { return FLAGS[team] || ""; }
+  function rowHtml(m) {
+    var isHome = m.home === TEAM;
+    var opp = isHome ? m.away : m.home;
+    var played = typeof m.hs === "number";
+    var pill, cls = "";
+    if (played) {
+      var ours = isHome ? m.hs : m.as, theirs = isHome ? m.as : m.hs;
+      pill = ours + "-" + theirs;
+      cls = ours > theirs ? " team-result--w" : ours < theirs ? " team-result--l" : " team-result--d";
+    } else { pill = (m.time && m.time !== "Upcoming") ? m.time : "Next"; cls = " team-result--next"; }
+    var fl = flag(opp) ? '<img class="tf-flag" src="' + flag(opp) + '" alt=""> ' : "";
+    return '<div class="team-fixture"><div class="tf-date">' + esc(m.date || "") + '</div>' +
+      '<div class="tf-mid"><div class="tf-opp">' + (isHome ? "vs" : "at") + ' ' + fl + esc(opp) + '</div>' +
+      '<div class="tf-venue">' + esc(m.venue || "") + '</div></div>' +
+      '<span class="team-result' + cls + '">' + esc(pill) + '</span></div>';
+  }
+  fetch("../../../data/world-cup-2026.json", { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error("no data"); return r.json(); })
+    .then(function (data) {
+      if (!data || !Array.isArray(data.matches)) return;
+      var mine = data.matches.filter(function (m) { return m.home === TEAM || m.away === TEAM; })
+        .sort(function (a, b) { return String(a.isoDate || a.date).localeCompare(String(b.isoDate || b.date)); });
+      if (mine.length) document.getElementById("team-fixtures").innerHTML = mine.map(rowHtml).join("");
+      if (data.updatedAt) {
+        document.getElementById("updated-note").textContent = "Group ${g} of the 2026 World Cup. Results last updated " + new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) + ".";
+      }
+    })
+    .catch(function () {});
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "${CF_TOKEN}"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
+`;
+}
+
 async function main() {
   const seedData = process.argv.includes("--seed-data");
 
@@ -666,6 +1024,14 @@ async function main() {
     await fs.writeFile(path.join(dir, "index.html"), groupPage(letter), "utf8");
   }
   console.log(`Wrote ${Object.keys(GROUPS).length} group pages (world-cup/group-a … group-l).`);
+
+  const allTeams = Object.keys(GROUPS).reduce((acc, g) => acc.concat(GROUPS[g]), []);
+  for (const team of allTeams) {
+    const dir = path.join(root, "world-cup", "team", slug(team));
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(path.join(dir, "index.html"), teamPage(team), "utf8");
+  }
+  console.log(`Wrote ${allTeams.length} team pages (world-cup/team/<team>/).`);
 }
 
 main().catch((error) => { console.error(error); process.exit(1); });

@@ -423,7 +423,7 @@ function teamCard(team, groupName) {
     <div class="team-card-head">
       <img class="team-flag" src="${flagDataUrl(team)}" alt="${esc(team)} flag" loading="lazy" title="${esc(team)}">
       <div>
-        <div class="team-name">${esc(team)}</div>
+        <div class="team-name"><a href="../team/${groupId(team)}/" style="color:inherit;text-decoration:none;">${esc(team)}</a></div>
         <div class="team-group">${esc(groupName)}</div>
       </div>
     </div>
