@@ -151,6 +151,43 @@
   font-size: 0.86rem;
   line-height: 1.6;
 }
+.fixture-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 18px;
+}
+.fixture-filters label {
+  display: grid;
+  gap: 5px;
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+.fixture-filters select {
+  min-height: 42px;
+  min-width: 170px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+}
+.fixture-filters .btn-game { align-self: end; }
+.day-group { margin-bottom: 20px; }
+.day-head {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+.day-count { color: var(--muted); font-size: 0.82rem; font-weight: 700; }
 @media (max-width: 900px) {
   .schedule-hero { grid-template-columns: 1fr; }
   .schedule-layout { grid-template-columns: 1fr; }
@@ -240,6 +277,28 @@
         </div>
         <p class="schedule-note" style="margin-top:14px;">Schedule data is loaded from the same JSON file used by the bracket page. If the API provider is unavailable, the page keeps the latest saved data.</p>
       </aside>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Full schedule</span>
+          <h2 class="section-title" style="margin-top:12px;">All group-stage fixtures by day</h2>
+        </div>
+        <p class="section-copy">Filter by team or group. Every fixture with its date and host city.</p>
+      </div>
+      <div class="fixture-filters">
+        <label>Team
+          <select id="filter-team"><option value="">All teams</option></select>
+        </label>
+        <label>Group
+          <select id="filter-group"><option value="">All groups</option></select>
+        </label>
+        <button type="button" class="btn-game" id="filter-reset">Reset</button>
+      </div>
+      <div id="all-fixtures"></div>
     </div>
   </section>
 
@@ -343,10 +402,73 @@
     root.innerHTML = matches.length ? matches.map(matchHtml).join("") : '<p class="schedule-note">' + empty + '</p>';
   }
 
+  var ALL_MATCHES = [];
+
+  function dayLabel(iso) {
+    if (!iso) return "Date TBD";
+    var d = new Date(iso + "T12:00:00");
+    if (isNaN(d)) return iso;
+    return d.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
+  }
+
+  function setupFilters() {
+    var teamSel = document.getElementById("filter-team");
+    var groupSel = document.getElementById("filter-group");
+    var teams = {};
+    var groupsSeen = {};
+    ALL_MATCHES.forEach(function (m) {
+      if (m.home) teams[m.home] = true;
+      if (m.away) teams[m.away] = true;
+      if (m.group) groupsSeen[m.group] = true;
+    });
+    teamSel.innerHTML = '<option value="">All teams</option>' + Object.keys(teams).sort().map(function (t) {
+      return '<option value="' + escapeHtml(t) + '">' + escapeHtml(t) + '</option>';
+    }).join("");
+    groupSel.innerHTML = '<option value="">All groups</option>' + Object.keys(groupsSeen).sort().map(function (g) {
+      return '<option value="' + escapeHtml(g) + '">Group ' + escapeHtml(g) + '</option>';
+    }).join("");
+    teamSel.addEventListener("change", renderAllFixtures);
+    groupSel.addEventListener("change", renderAllFixtures);
+    document.getElementById("filter-reset").addEventListener("click", function () {
+      teamSel.value = ""; groupSel.value = ""; renderAllFixtures();
+    });
+  }
+
+  function renderAllFixtures() {
+    var root = document.getElementById("all-fixtures");
+    if (!root) return;
+    var team = document.getElementById("filter-team").value;
+    var group = document.getElementById("filter-group").value;
+    var filtered = ALL_MATCHES.filter(function (m) {
+      if (team && m.home !== team && m.away !== team) return false;
+      if (group && m.group !== group) return false;
+      return true;
+    });
+    if (!filtered.length) {
+      root.innerHTML = '<p class="schedule-note">No fixtures match that filter.</p>';
+      return;
+    }
+    var days = [];
+    var byDay = {};
+    filtered.forEach(function (m) {
+      var key = m.isoDate || m.date || "";
+      if (!byDay[key]) { byDay[key] = []; days.push(key); }
+      byDay[key].push(m);
+    });
+    days.sort();
+    root.innerHTML = days.map(function (key) {
+      var dayMatches = byDay[key];
+      return '<div class="day-group"><h3 class="day-head">' + escapeHtml(dayLabel(key)) +
+        ' <span class="day-count">' + dayMatches.length + (dayMatches.length === 1 ? " match" : " matches") + '</span></h3>' +
+        '<div class="schedule-list">' + dayMatches.map(matchHtml).join("") + '</div></div>';
+    }).join("");
+  }
+
   function render(data) {
     var matches = (data.matches || seedMatches).slice().sort(function (a, b) {
       return String(a.isoDate || a.date).localeCompare(String(b.isoDate || b.date)) || a.home.localeCompare(b.home);
     });
+    ALL_MATCHES = matches;
     var today = todayIso();
     var todaysMatches = matches.filter(function (match) { return match.isoDate === today; });
     var nextMatches = matches.filter(function (match) { return !isPlayed(match) && String(match.isoDate || "") >= today; }).slice(0, 8);
@@ -354,6 +476,8 @@
     renderList("today-list", todaysMatches, "No World Cup games are listed for today in the current data. Check who plays next below.");
     renderList("next-list", nextMatches, "No upcoming games are listed in the current data.");
     renderList("played-list", playedMatches, "No played games are listed yet.");
+    setupFilters();
+    renderAllFixtures();
     var updated = data.updatedAt ? new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "saved local data";
     document.getElementById("updated-note").textContent = "Last data update: " + updated + ".";
   }
