@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-13T22:03:34.364Z",
+  "updatedAt": "2026-06-13T23:15:43.268Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -136,11 +136,12 @@
     {
       "date": "Jun 13",
       "isoDate": "2026-06-13",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "C",
       "home": "Brazil",
       "away": "Morocco",
-      "venue": "New York/New Jersey"
+      "venue": "New York/New Jersey",
+      "statusShort": "LIVE"
     },
     {
       "date": "Jun 13",
