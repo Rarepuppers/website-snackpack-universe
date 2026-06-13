@@ -283,6 +283,90 @@
 .share-actions.is-visible {
   display: grid;
 }
+.qual-note {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.qual-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.qual-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.72);
+  padding: 12px 14px;
+}
+.qual-card h3 {
+  margin: 0 0 6px;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+}
+.qual-row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: center;
+  padding: 6px 0;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+.qual-row + .qual-row { border-top: 1px solid var(--line); }
+.qual-pos {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 0.74rem;
+  color: #fff;
+  background: rgba(32,23,19,0.35);
+}
+.qual-row--q .qual-pos { background: var(--accent); }
+.qual-row--maybe .qual-pos { background: var(--gold); color: var(--ink); }
+.qual-pts { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 0.84rem; }
+.qual-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 14px 0 6px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--muted);
+}
+.qual-key span { display: inline-flex; align-items: center; gap: 6px; }
+.qual-dot { width: 12px; height: 12px; border-radius: 999px; }
+.qual-dot--q { background: var(--accent); }
+.qual-dot--maybe { background: var(--gold); }
+.third-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin-top: 8px;
+}
+.third-table th,
+.third-table td {
+  padding: 8px 8px;
+  border-top: 1px solid var(--line);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.third-table th:first-child,
+.third-table td:first-child { text-align: left; }
+.third-table th {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.third-advance { color: var(--accent); font-weight: 900; }
+.third-out { color: var(--muted); }
+@media (max-width: 860px) { .qual-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .qual-grid { grid-template-columns: 1fr; } }
 .knockout-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(180px, 1fr));
@@ -411,6 +495,7 @@
         <p class="last-updated" id="last-updated">Last updated: loading World Cup data...</p>
         <div class="bracket-tabs" role="tablist" aria-label="World Cup tracker views">
           <button type="button" data-view="groups" aria-pressed="true">Groups</button>
+          <button type="button" data-view="qualified" aria-pressed="false">Qualified</button>
           <button type="button" data-view="played" aria-pressed="false">Played</button>
           <button type="button" data-view="upcoming" aria-pressed="false">Upcoming</button>
           <button type="button" data-view="knockout" aria-pressed="false">Knockout</button>
@@ -419,6 +504,20 @@
           <h2>Group Tables</h2>
           <div class="group-grid" id="group-grid"></div>
           <p class="seo-note">Tables are calculated from the automated World Cup data file. When GitHub Actions updates results and fixtures, the standings recalculate from the latest match data.</p>
+        </div>
+        <div id="view-qualified" hidden>
+          <h2>Who qualifies (live)</h2>
+          <p class="qual-note">The top two teams in every group advance, plus the eight best third-placed teams &mdash; 32 teams reach the Round of 32. Positions update live from results and are final when the group stage ends June 27.</p>
+          <div class="qual-key">
+            <span><span class="qual-dot qual-dot--q"></span>Top two &mdash; through</span>
+            <span><span class="qual-dot qual-dot--maybe"></span>3rd in a best-eight spot</span>
+          </div>
+          <div class="qual-grid" id="qual-grid"></div>
+          <h2 style="margin-top:24px;">Best third-placed teams</h2>
+          <table class="third-table">
+            <thead><tr><th>Team</th><th>Grp</th><th>P</th><th>GD</th><th>Pts</th><th>Status</th></tr></thead>
+            <tbody id="third-body"></tbody>
+          </table>
         </div>
         <div id="view-played" hidden>
           <h2>Played Games</h2>
@@ -804,6 +903,41 @@
     });
   }
 
+  function renderQualified() {
+    var grid = document.getElementById("qual-grid");
+    var body = document.getElementById("third-body");
+    if (!grid || !body) return;
+    var groupRows = {};
+    var thirds = [];
+    Object.keys(groups).forEach(function (g) {
+      var rows = standingsFor(g);
+      groupRows[g] = rows;
+      if (rows[2]) {
+        thirds.push({ group: g, team: rows[2].team, p: rows[2].p, gd: rows[2].gd, gf: rows[2].gf, pts: rows[2].pts });
+      }
+    });
+    thirds.sort(function (a, b) {
+      return b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team);
+    });
+    var advancingGroup = {};
+    thirds.slice(0, 8).forEach(function (t) { advancingGroup[t.group] = true; });
+
+    grid.innerHTML = Object.keys(groups).map(function (g) {
+      var rows = groupRows[g];
+      var cells = rows.map(function (row, i) {
+        var pos = i + 1;
+        var cls = pos <= 2 ? " qual-row--q" : (pos === 3 && advancingGroup[g] ? " qual-row--maybe" : "");
+        return '<div class="qual-row' + cls + '"><span class="qual-pos">' + pos + '</span>' + teamHtml(row.team) + '<span class="qual-pts">' + row.pts + ' pts</span></div>';
+      }).join("");
+      return '<article class="qual-card"><h3>Group ' + g + '</h3>' + cells + '</article>';
+    }).join("");
+
+    body.innerHTML = thirds.map(function (t, i) {
+      var adv = i < 8;
+      return '<tr><td>' + teamHtml(t.team) + '</td><td>' + t.group + '</td><td>' + t.p + '</td><td>' + (t.gd > 0 ? "+" : "") + t.gd + '</td><td>' + t.pts + '</td><td class="' + (adv ? "third-advance" : "third-out") + '">' + (adv ? "Advances" : "Out") + '</td></tr>';
+    }).join("");
+  }
+
   function renderKnockout() {
     var picks = loadPicks();
     var groupWinners = Object.keys(groups).map(function (g) { return picks.groups && picks.groups[g] && picks.groups[g].winner ? "W" + g + ": " + picks.groups[g].winner : "W" + g + ": TBD"; });
@@ -891,7 +1025,7 @@
   }
 
   function switchView(view) {
-    ["groups", "played", "upcoming", "knockout"].forEach(function (name) {
+    ["groups", "qualified", "played", "upcoming", "knockout"].forEach(function (name) {
       document.getElementById("view-" + name).hidden = name !== view;
       document.querySelector('[data-view="' + name + '"]').setAttribute("aria-pressed", String(name === view));
     });
@@ -918,6 +1052,7 @@
     document.getElementById("native-share-card").addEventListener("click", nativeShareCard);
 
     renderGroups();
+    renderQualified();
     renderSummary();
     renderMatches();
     renderPredictionForm();
