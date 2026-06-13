@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 470" role="img" aria-labelledby="tr-title tr-desc">
+  <title id="tr-title">SnackPack 2026 champions trophy</title>
+  <desc id="tr-desc">An original gold soccer trophy: a two-handled cup topped with a soccer ball, three stars above, and a 2026 base plate. Not an official tournament emblem.</desc>
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbe7a6"/>
+      <stop offset="0.45" stop-color="#efb54d"/>
+      <stop offset="1" stop-color="#b9851f"/>
+    </linearGradient>
+    <linearGradient id="goldDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0a93a"/>
+      <stop offset="1" stop-color="#9c6f17"/>
+    </linearGradient>
+    <radialGradient id="ball" cx="36%" cy="30%" r="72%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.7" stop-color="#f4f1ea"/>
+      <stop offset="1" stop-color="#d9d2c6"/>
+    </radialGradient>
+    <linearGradient id="teal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f8f77"/>
+      <stop offset="1" stop-color="#0f5f4e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- three stars (three host nations) -->
+  <g fill="#efb54d">
+    <path d="M180 14 l6 13 14 2 -10 10 2 14 -12 -7 -12 7 2 -14 -10 -10 14 -2 z"/>
+    <path d="M126 40 l4.5 9.5 10.5 1.5 -7.5 7.5 1.5 10.5 -9 -5 -9 5 1.5 -10.5 -7.5 -7.5 10.5 -1.5 z" opacity="0.85"/>
+    <path d="M234 40 l4.5 9.5 10.5 1.5 -7.5 7.5 1.5 10.5 -9 -5 -9 5 1.5 -10.5 -7.5 -7.5 10.5 -1.5 z" opacity="0.85"/>
+  </g>
+
+  <!-- soccer ball finial -->
+  <g transform="translate(180 118)">
+    <circle r="30" fill="url(#ball)" stroke="#cbc3b4" stroke-width="1.5"/>
+    <g fill="#201713">
+      <path d="M0 -16 l9 7 -3.5 11 h-11 l-3.5 -11 z"/>
+    </g>
+    <g fill="none" stroke="#201713" stroke-width="2" opacity="0.8" stroke-linecap="round">
+      <path d="M-9 -2 l-11 -2"/>
+      <path d="M9 -2 l11 -2"/>
+      <path d="M-6 13 l-7 9"/>
+      <path d="M6 13 l7 9"/>
+    </g>
+  </g>
+
+  <!-- handles -->
+  <g fill="none" stroke="url(#goldDark)" stroke-width="13" stroke-linecap="round">
+    <path d="M120 168 C 78 176, 70 232, 116 256"/>
+    <path d="M240 168 C 282 176, 290 232, 244 256"/>
+  </g>
+
+  <!-- cup bowl -->
+  <path d="M112 158 H248 C246 210 226 268 180 300 C134 268 114 210 112 158 Z" fill="url(#gold)"/>
+  <ellipse cx="180" cy="158" rx="68" ry="15" fill="#fbe7a6"/>
+  <ellipse cx="180" cy="158" rx="68" ry="15" fill="none" stroke="#b9851f" stroke-width="2" opacity="0.5"/>
+  <path d="M150 170 C150 220 162 258 180 282" fill="none" stroke="#fff6dd" stroke-width="5" opacity="0.5" stroke-linecap="round"/>
+
+  <!-- stem -->
+  <path d="M168 300 H192 L198 330 H162 Z" fill="url(#goldDark)"/>
+
+  <!-- base tiers -->
+  <ellipse cx="180" cy="332" rx="40" ry="9" fill="url(#gold)"/>
+  <rect x="120" y="346" width="120" height="20" rx="4" fill="url(#goldDark)"/>
+  <rect x="104" y="372" width="152" height="46" rx="6" fill="url(#teal)"/>
+  <rect x="92" y="424" width="176" height="20" rx="6" fill="url(#goldDark)"/>
+  <text x="180" y="403" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="#fdf6e3" letter-spacing="4">2026</text>
+</svg>
