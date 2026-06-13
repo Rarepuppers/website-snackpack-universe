@@ -21,10 +21,6 @@ jobs:
           node-version: "20"
 
       - name: Update World Cup data JSON
-        env:
-          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
-          API_FOOTBALL_LEAGUE_ID: ${{ vars.API_FOOTBALL_LEAGUE_ID || '1' }}
-          API_FOOTBALL_SEASON: ${{ vars.API_FOOTBALL_SEASON || '2026' }}
         run: node scripts/update-world-cup-data.mjs
 
       - name: Commit updated data

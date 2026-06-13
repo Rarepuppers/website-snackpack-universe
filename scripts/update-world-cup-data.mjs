@@ -1,8 +1,24 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
+/*
+ * Updates data/world-cup-2026.json with live results.
+ *
+ * Source: ESPN's public soccer scoreboard feed (no API key required).
+ *   https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard
+ * It is an undocumented endpoint but free and reliable; if it ever changes or
+ * is unreachable, this script leaves the existing JSON untouched so the site
+ * keeps its last good data (the seed schedule from build-world-cup.mjs).
+ *
+ * Strategy: we OVERLAY ESPN results onto the seed fixtures already in the JSON
+ * rather than replacing them. The seed owns the authoritative dates, venues,
+ * and groups (per the official schedule); ESPN only supplies scores/status.
+ * Matches are paired by team names (each group-stage pairing happens once), so
+ * ESPN's UTC kickoff dates can't create duplicates or shift the schedule.
+ */
+
 const outFile = path.resolve("data/world-cup-2026.json");
-const apiKey = process.env.API_FOOTBALL_KEY;
+const ESPN_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard";
 
 const seedGroups = {
   A: ["Mexico", "South Africa", "South Korea", "Czechia"],
@@ -28,68 +44,27 @@ for (const [group, teams] of Object.entries(seedGroups)) {
   }
 }
 
-const nameMap = new Map([
-  ["Korea Republic", "South Korea"],
-  ["Czech Republic", "Czechia"],
-  ["USA", "United States"],
-  ["U.S.A.", "United States"],
-  ["Turkey", "Turkiye"],
-  ["T\u00fcrkiye", "Turkiye"],
-  ["Ivory Coast", "Cote d'Ivoire"],
-  ["C\u00f4te d'Ivoire", "Cote d'Ivoire"],
-  ["Cura\u00e7ao", "Curacao"],
-  ["Cape Verde Islands", "Cape Verde"],
-  ["IR Iran", "Iran"],
+// ESPN display name -> our canonical name. Only the names that differ.
+const espnNameMap = new Map([
+  ["Bosnia-Herzegovina", "Bosnia and Herzegovina"],
   ["Congo DR", "DR Congo"],
-  ["Korea Rep.", "South Korea"]
+  ["Curaçao", "Curacao"],
+  ["Ivory Coast", "Cote d'Ivoire"],
+  ["Türkiye", "Turkiye"]
 ]);
 
 function normalizeTeam(name) {
-  return nameMap.get(name) || name;
+  return espnNameMap.get(name) || name;
 }
 
 function pairKey(a, b) {
   return [a, b].sort().join("::");
 }
 
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  return date.toLocaleString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
-}
-
-function formatTime(dateString) {
-  const date = new Date(dateString);
-  return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "UTC", timeZoneName: "short" });
-}
-
-function normalizeFixture(fixture) {
-  const home = normalizeTeam(fixture.teams?.home?.name || "");
-  const away = normalizeTeam(fixture.teams?.away?.name || "");
-  const group = groupByPair.get(pairKey(home, away)) || "";
-  const fixtureId = fixture.fixture?.id ? String(fixture.fixture.id) : "";
-  const statusShort = fixture.fixture?.status?.short;
-  const statusLong = fixture.fixture?.status?.long || "";
-  const elapsed = fixture.fixture?.status?.elapsed ?? null;
-  const isPlayed = ["FT", "AET", "PEN"].includes(statusShort);
-  const isLive = ["1H", "2H", "HT", "ET", "BT", "P", "LIVE"].includes(statusShort);
-  const match = {
-    id: fixtureId,
-    date: formatDate(fixture.fixture?.date),
-    isoDate: String(fixture.fixture?.date || "").slice(0, 10),
-    time: isPlayed ? "FT" : isLive ? (statusShort === "HT" ? "HT" : "Live") : formatTime(fixture.fixture?.date),
-    statusShort,
-    statusLong,
-    elapsed,
-    group,
-    home,
-    away,
-    venue: fixture.fixture?.venue?.city || fixture.fixture?.venue?.name || ""
-  };
-  if (isPlayed) {
-    match.hs = fixture.goals?.home ?? 0;
-    match.as = fixture.goals?.away ?? 0;
-  }
-  return match;
+// Knockout placeholders ESPN returns ("Group A Winner", "Round of 32 3 Winner",
+// "Third Place Group ...") are not real teams — used to suppress false warnings.
+function isPlaceholder(name) {
+  return /winner|2nd place|third place|group [a-l]\b/i.test(name);
 }
 
 async function readCurrent() {
@@ -100,83 +75,110 @@ async function readCurrent() {
   }
 }
 
-async function fetchApiFootball() {
-  if (!apiKey) {
-    throw new Error("Missing API_FOOTBALL_KEY");
-  }
+function dateRangeFor(matches) {
+  const isos = matches.map((m) => m.isoDate).filter(Boolean).sort();
+  const compact = (iso) => iso.replace(/-/g, "");
+  if (!isos.length) return "20260611-20260712";
+  return `${compact(isos[0])}-${compact(isos[isos.length - 1])}`;
+}
 
-  const url = new URL("https://v3.football.api-sports.io/fixtures");
-  url.searchParams.set("league", process.env.API_FOOTBALL_LEAGUE_ID || "1");
-  url.searchParams.set("season", process.env.API_FOOTBALL_SEASON || "2026");
-
-  const response = await fetch(url, {
-    headers: { "x-apisports-key": apiKey }
-  });
+async function fetchEspnResults(dateRange) {
+  const response = await fetch(`${ESPN_URL}?dates=${dateRange}`);
   if (!response.ok) {
-    throw new Error(`API-FOOTBALL request failed: ${response.status} ${response.statusText}`);
+    throw new Error(`ESPN request failed: ${response.status} ${response.statusText}`);
   }
-  const payload = await response.json();
-  if (!Array.isArray(payload.response)) {
-    throw new Error("API-FOOTBALL response did not contain a response array");
+  const data = await response.json();
+  if (!Array.isArray(data.events)) {
+    throw new Error("ESPN response did not contain an events array");
   }
 
-  const league = url.searchParams.get("league");
-  const season = url.searchParams.get("season");
-  console.log(`API-FOOTBALL returned ${payload.response.length} fixtures (league ${league}, season ${season}).`);
+  console.log(`ESPN returned ${data.events.length} events for ${dateRange}.`);
 
-  const normalized = payload.response.map(normalizeFixture).filter((match) => match.home && match.away);
-
-  // Diagnostics: a fixture only updates our seed if both team names map to a
-  // known group via nameMap/pairKey. When the feed returns no results (as with
-  // the missing US-Paraguay score), the most common causes are an empty feed
-  // for this league/season, or team names the nameMap doesn't recognize, which
-  // leaves them ungrouped and unable to replace the seed fixture.
+  const results = new Map();
   const unmatched = new Set();
-  let withGroup = 0;
-  let finished = 0;
-  for (const match of normalized) {
-    if (match.group) withGroup += 1;
-    else { unmatched.add(match.home); unmatched.add(match.away); }
-    if (typeof match.hs === "number") finished += 1;
+  let completed = 0;
+  let live = 0;
+
+  for (const event of data.events) {
+    const comp = event.competitions?.[0];
+    if (!comp) continue;
+    const competitors = comp.competitors || [];
+    const home = competitors.find((c) => c.homeAway === "home");
+    const away = competitors.find((c) => c.homeAway === "away");
+    if (!home || !away) continue;
+
+    const homeName = normalizeTeam(home.team?.displayName || "");
+    const awayName = normalizeTeam(away.team?.displayName || "");
+    const key = pairKey(homeName, awayName);
+    if (!groupByPair.has(key)) {
+      if (!isPlaceholder(homeName)) unmatched.add(homeName);
+      if (!isPlaceholder(awayName)) unmatched.add(awayName);
+      continue;
+    }
+
+    const type = comp.status?.type || {};
+    const result = {
+      home: homeName,
+      away: awayName,
+      state: type.state,
+      completed: type.completed === true,
+      statusShort: type.shortDetail || type.detail || "",
+      hs: Number(home.score),
+      as: Number(away.score)
+    };
+    if (result.completed) completed += 1;
+    else if (result.state === "in") live += 1;
+    results.set(key, result);
   }
-  console.log(`Mapped ${withGroup}/${normalized.length} fixtures to a group; ${finished} finished with scores.`);
+
+  console.log(`Mapped ${results.size} group-stage fixtures (${completed} final, ${live} live).`);
   if (unmatched.size) {
-    console.warn(`Teams not matched to a group (add to nameMap): ${Array.from(unmatched).sort().join(", ")}`);
+    console.warn(`ESPN names not matched to a group (add to espnNameMap): ${Array.from(unmatched).sort().join(", ")}`);
   }
-
-  return normalized;
+  return results;
 }
 
-function mergeMatches(current, incoming) {
-  const merged = new Map();
-  for (const match of current.matches || []) merged.set(matchKey(match), match);
-  for (const match of incoming) {
-    merged.delete(legacyMatchKey(match));
-    merged.set(matchKey(match), match);
+// Overlay ESPN results onto a seed fixture. Scores are only written for FINAL
+// matches so an in-progress score can't leak into the group standings (which
+// treat any match with a numeric score as played). Live matches just get a
+// status; scheduled matches are left exactly as seeded.
+function applyResult(match, result) {
+  const next = { ...match };
+  delete next.hs;
+  delete next.as;
+  delete next.statusShort;
+
+  if (result && result.completed && Number.isFinite(result.hs) && Number.isFinite(result.as)) {
+    const aligned = result.home === match.home;
+    next.hs = aligned ? result.hs : result.as;
+    next.as = aligned ? result.as : result.hs;
+    next.time = "FT";
+    next.statusShort = "FT";
+  } else if (result && result.state === "in") {
+    next.time = result.statusShort || "Live";
+    next.statusShort = "LIVE";
+  } else {
+    next.time = "Upcoming";
   }
-  return Array.from(merged.values()).sort((a, b) => {
-    return String(a.isoDate || a.date).localeCompare(String(b.isoDate || b.date)) || a.home.localeCompare(b.home);
-  });
-}
-
-function legacyMatchKey(match) {
-  return `date:${match.isoDate || match.date || ""}::${pairKey(match.home, match.away)}`;
-}
-
-function matchKey(match) {
-  return match.id ? `fixture:${match.id}` : legacyMatchKey(match);
+  return next;
 }
 
 async function main() {
   const current = await readCurrent();
-  let matches = current.matches || [];
+  const base = current.matches || [];
+
+  if (!base.length) {
+    console.warn("No seed matches in JSON; run `node scripts/build-world-cup.mjs --seed-data` first.");
+  }
+
+  let matches = base;
   let source = current.source || "Manual seed";
   let fetched = false;
 
   try {
-    const incoming = await fetchApiFootball();
-    matches = mergeMatches(current, incoming);
-    source = "API-FOOTBALL fixtures endpoint";
+    const results = await fetchEspnResults(dateRangeFor(base));
+    matches = base.map((m) => applyResult(m, results.get(pairKey(m.home, m.away))));
+    source = "ESPN scoreboard (unofficial)";
     fetched = true;
   } catch (error) {
     console.warn(`World Cup data automation used existing JSON: ${error.message}`);
@@ -188,13 +190,13 @@ async function main() {
   }
 
   // Only advance "updatedAt" when the match data actually changed. This job
-  // runs every 20 minutes; previously it bumped the timestamp on every run, so
-  // the site's "Last data update" claimed fresh data even when nothing had
-  // changed. If the feed returns nothing new we leave the file byte-identical
-  // so no spurious commit is made and the timestamp stays honest.
-  const matchesChanged = JSON.stringify(matches) !== JSON.stringify(current.matches || []);
+  // runs every 20 minutes; bumping the timestamp on every run made the site's
+  // "Last data update" claim fresh data even when nothing had changed. If the
+  // feed brought nothing new we leave the file byte-identical so no spurious
+  // commit is made and the timestamp stays honest.
+  const matchesChanged = JSON.stringify(matches) !== JSON.stringify(base);
   if (!matchesChanged && current.updatedAt) {
-    console.log(`Provider data unchanged; left ${outFile} as-is (last real update ${current.updatedAt})`);
+    console.log(`Results unchanged; left ${outFile} as-is (last real update ${current.updatedAt})`);
     return;
   }
 
