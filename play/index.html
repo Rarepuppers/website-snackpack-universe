@@ -93,6 +93,42 @@
     </div>
   </section>
 
+  <section aria-labelledby="daily-challenges-title">
+    <div class="shell">
+      <div class="daily-challenge-panel">
+        <div class="daily-challenge-head">
+          <div>
+            <span class="eyebrow">Daily challenges</span>
+            <h2 id="daily-challenges-title">A fresh set for today.</h2>
+          </div>
+          <span class="daily-challenge-date" id="daily-challenge-date">Today</span>
+        </div>
+        <div class="daily-challenge-grid">
+          <a class="daily-challenge-card" data-daily-game="sudoku" href="./sudoku/">
+            <strong>Sudoku seed</strong>
+            <span>Start with a shared daily puzzle target.</span>
+            <span class="daily-challenge-seed">Seed loading</span>
+          </a>
+          <a class="daily-challenge-card" data-daily-game="word-search" href="./word-search/">
+            <strong>Word Search seed</strong>
+            <span>Use the same date seed for a themed grid.</span>
+            <span class="daily-challenge-seed">Seed loading</span>
+          </a>
+          <a class="daily-challenge-card" data-daily-game="minesweeper" href="./minesweeper/">
+            <strong>Minesweeper seed</strong>
+            <span>Clear a seeded board and compare times.</span>
+            <span class="daily-challenge-seed">Seed loading</span>
+          </a>
+          <a class="daily-challenge-card" data-daily-game="soccer" href="./soccer-trivia-sprint/">
+            <strong>Soccer challenge</strong>
+            <span id="daily-soccer-copy">A rotating World Cup arcade pick.</span>
+            <span class="daily-challenge-seed">Seed loading</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="games">
     <div class="shell">
       <div class="section-head">
@@ -267,6 +303,39 @@
     </div>
   </div>
 </footer>
+<script>
+(function () {
+  "use strict";
+  var today = new Date();
+  var seed = today.toISOString().slice(0, 10);
+  var display = today.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
+  var soccerGames = [
+    { slug: "soccer-trivia-sprint", title: "Soccer Trivia Sprint", copy: "Beat today's quiz streak." },
+    { slug: "keepy-uppy", title: "Keepy-Uppy", copy: "Set today's juggling score." },
+    { slug: "target-shooting-arena", title: "Target Shooting Arena", copy: "Chase today's target run." },
+    { slug: "free-kick-curl", title: "Free Kick Curl", copy: "Bend today's free-kick set." },
+    { slug: "crossbar-challenge", title: "Crossbar Challenge", copy: "Hit today's crossbar target." },
+    { slug: "goalkeeper-hero", title: "Goalkeeper Hero", copy: "Protect today's save streak." },
+    { slug: "penalty-shootout", title: "Penalty Shootout", copy: "Win today's shootout." }
+  ];
+  var soccer = soccerGames[Math.floor(today.getTime() / 86400000) % soccerGames.length];
+  var dateEl = document.getElementById("daily-challenge-date");
+  if (dateEl) dateEl.textContent = display + " - " + seed;
+  document.querySelectorAll("[data-daily-game]").forEach(function (card) {
+    var game = card.getAttribute("data-daily-game");
+    var target = game === "soccer" ? soccer.slug : game;
+    card.href = "./" + target + "/?daily=" + encodeURIComponent(seed);
+    var seedEl = card.querySelector(".daily-challenge-seed");
+    if (seedEl) seedEl.textContent = "Seed " + seed;
+    if (game === "soccer") {
+      var title = card.querySelector("strong");
+      var copy = document.getElementById("daily-soccer-copy");
+      if (title) title.textContent = soccer.title;
+      if (copy) copy.textContent = soccer.copy;
+    }
+  });
+})();
+</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
