@@ -374,6 +374,19 @@
   overflow-x: auto;
   padding-bottom: 4px;
 }
+#bracket-grid { grid-template-columns: repeat(5, minmax(168px, 1fr)); }
+.ko-tie { margin-bottom: 10px; }
+.ko-tie:last-child { margin-bottom: 0; }
+.ko-num {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 3px;
+}
+.ko-tie .slot { margin-bottom: 4px; }
 .round-card {
   min-width: 180px;
   border: 1px solid var(--line);
@@ -528,9 +541,12 @@
           <div class="match-list" id="upcoming-list"></div>
         </div>
         <div id="view-knockout" hidden>
-          <h2>Knockout Prediction Board</h2>
+          <h2>Knockout bracket</h2>
+          <p class="seo-note" style="margin-top:0;">The official Round of 32 &rarr; Final pairings. Seed labels &mdash; Winner (W), Runner-up (RU), and best third-placed teams &mdash; fill in with team names once the group stage ends on June 27.</p>
+          <div class="knockout-grid" id="bracket-grid"></div>
+          <h2 style="margin-top:26px;">Your predicted bracket</h2>
           <div class="knockout-grid" id="knockout-grid"></div>
-          <p class="seo-note">The official Round of 32 fills after the group stage. For now, use this as a prediction board: group winners, runners-up, wildcards, finalists, and champion.</p>
+          <p class="seo-note">This board mirrors your saved picks &mdash; set group winners, runners-up, finalists, and a champion in the panel and they appear here.</p>
         </div>
       </div>
 
@@ -939,6 +955,62 @@
     }).join("");
   }
 
+  function renderBracket() {
+    var root = document.getElementById("bracket-grid");
+    if (!root) return;
+    var r32 = [
+      { n: 73, a: "RU A", b: "RU B" },
+      { n: 74, a: "W E", b: "3rd A/B/C/D/F" },
+      { n: 75, a: "W F", b: "RU C" },
+      { n: 76, a: "W C", b: "RU F" },
+      { n: 77, a: "W I", b: "3rd C/D/F/G/H" },
+      { n: 78, a: "RU E", b: "RU I" },
+      { n: 79, a: "W A", b: "3rd C/E/F/H/I" },
+      { n: 80, a: "W L", b: "3rd E/H/I/J/K" },
+      { n: 81, a: "W D", b: "3rd B/E/F/I/J" },
+      { n: 82, a: "W G", b: "3rd A/E/H/I/J" },
+      { n: 83, a: "RU K", b: "RU L" },
+      { n: 84, a: "W H", b: "RU J" },
+      { n: 85, a: "W B", b: "3rd E/F/G/I/J" },
+      { n: 86, a: "W J", b: "RU H" },
+      { n: 87, a: "W K", b: "3rd D/E/I/J/L" },
+      { n: 88, a: "RU D", b: "RU G" }
+    ];
+    var r16 = [
+      { n: 89, a: "W 74", b: "W 77" },
+      { n: 90, a: "W 73", b: "W 75" },
+      { n: 91, a: "W 76", b: "W 78" },
+      { n: 92, a: "W 79", b: "W 80" },
+      { n: 93, a: "W 83", b: "W 84" },
+      { n: 94, a: "W 81", b: "W 82" },
+      { n: 95, a: "W 86", b: "W 88" },
+      { n: 96, a: "W 85", b: "W 87" }
+    ];
+    var qf = [
+      { n: 97, a: "W 89", b: "W 90" },
+      { n: 98, a: "W 93", b: "W 94" },
+      { n: 99, a: "W 91", b: "W 92" },
+      { n: 100, a: "W 95", b: "W 96" }
+    ];
+    var sf = [
+      { n: 101, a: "W 97", b: "W 98" },
+      { n: 102, a: "W 99", b: "W 100" }
+    ];
+    var fin = [{ n: 104, a: "W 101", b: "W 102" }];
+    var rounds = [
+      { name: "Round of 32", ties: r32 },
+      { name: "Round of 16", ties: r16 },
+      { name: "Quarter-finals", ties: qf },
+      { name: "Semi-finals", ties: sf },
+      { name: "Final", ties: fin }
+    ];
+    root.innerHTML = rounds.map(function (round) {
+      return '<article class="round-card"><h3>' + round.name + '</h3>' + round.ties.map(function (t) {
+        return '<div class="ko-tie"><span class="ko-num">Match ' + t.n + '</span><div class="slot">' + t.a + '</div><div class="slot">' + t.b + '</div></div>';
+      }).join("") + '</article>';
+    }).join("");
+  }
+
   function renderKnockout() {
     var picks = loadPicks();
     var groupWinners = Object.keys(groups).map(function (g) { return picks.groups && picks.groups[g] && picks.groups[g].winner ? "W" + g + ": " + picks.groups[g].winner : "W" + g + ": TBD"; });
@@ -1054,6 +1126,7 @@
 
     renderGroups();
     renderQualified();
+    renderBracket();
     renderSummary();
     renderMatches();
     renderPredictionForm();
