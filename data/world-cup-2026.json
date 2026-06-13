@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-13T08:06:33.788Z",
+  "updatedAt": "2026-06-13T19:55:52.409Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -154,11 +154,12 @@
     {
       "date": "Jun 13",
       "isoDate": "2026-06-13",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "B",
       "home": "Qatar",
       "away": "Switzerland",
-      "venue": "San Francisco Bay Area"
+      "venue": "San Francisco Bay Area",
+      "statusShort": "LIVE"
     },
     {
       "date": "Jun 14",
