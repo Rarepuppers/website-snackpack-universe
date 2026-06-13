@@ -121,6 +121,36 @@
   color: var(--muted);
   line-height: 1.6;
 }
+.cup-group-links {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+.cup-group-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.cup-group-links a:hover,
+.cup-group-links a:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+@media (max-width: 720px) {
+  .cup-group-links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 @media (max-width: 900px) {
   .cup-hero-card,
   .cup-card-grid {
@@ -307,6 +337,32 @@
           <h3>SnackPack funnel</h3>
           <p>Every game keeps the no-ads promise and routes interested players toward SnackPack apps and the studio support link.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Standings by group</span>
+          <h2 class="section-title" style="margin-top:12px;">Browse all 12 groups</h2>
+        </div>
+        <p class="section-copy">Jump to any group for its live table, results, and full fixture list with dates and host cities.</p>
+      </div>
+      <div class="cup-group-links">
+        <a href="./group-a/">Group A</a>
+        <a href="./group-b/">Group B</a>
+        <a href="./group-c/">Group C</a>
+        <a href="./group-d/">Group D</a>
+        <a href="./group-e/">Group E</a>
+        <a href="./group-f/">Group F</a>
+        <a href="./group-g/">Group G</a>
+        <a href="./group-h/">Group H</a>
+        <a href="./group-i/">Group I</a>
+        <a href="./group-j/">Group J</a>
+        <a href="./group-k/">Group K</a>
+        <a href="./group-l/">Group L</a>
       </div>
     </div>
   </section>
