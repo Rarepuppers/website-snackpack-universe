@@ -483,6 +483,18 @@
     renderAllFixtures();
     var updated = data.updatedAt ? new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "saved local data";
     document.getElementById("updated-note").textContent = "Last data update: " + updated + ".";
+    scrollToHash();
+  }
+
+  // The lists above #full-schedule are filled in asynchronously, so when the
+  // page is opened with a hash (e.g. .../schedule/#full-schedule) the browser
+  // scrolls before that content exists and lands in the wrong place. Re-apply
+  // the hash once the content has rendered.
+  function scrollToHash() {
+    if (!location.hash || location.hash.length < 2) return;
+    var target = null;
+    try { target = document.querySelector(location.hash); } catch (err) { return; }
+    if (target) target.scrollIntoView();
   }
 
   fetch("../../data/world-cup-2026.json", { cache: "no-cache" })

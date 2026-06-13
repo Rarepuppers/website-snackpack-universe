@@ -119,7 +119,32 @@ async function fetchApiFootball() {
   if (!Array.isArray(payload.response)) {
     throw new Error("API-FOOTBALL response did not contain a response array");
   }
-  return payload.response.map(normalizeFixture).filter((match) => match.home && match.away);
+
+  const league = url.searchParams.get("league");
+  const season = url.searchParams.get("season");
+  console.log(`API-FOOTBALL returned ${payload.response.length} fixtures (league ${league}, season ${season}).`);
+
+  const normalized = payload.response.map(normalizeFixture).filter((match) => match.home && match.away);
+
+  // Diagnostics: a fixture only updates our seed if both team names map to a
+  // known group via nameMap/pairKey. When the feed returns no results (as with
+  // the missing US-Paraguay score), the most common causes are an empty feed
+  // for this league/season, or team names the nameMap doesn't recognize, which
+  // leaves them ungrouped and unable to replace the seed fixture.
+  const unmatched = new Set();
+  let withGroup = 0;
+  let finished = 0;
+  for (const match of normalized) {
+    if (match.group) withGroup += 1;
+    else { unmatched.add(match.home); unmatched.add(match.away); }
+    if (typeof match.hs === "number") finished += 1;
+  }
+  console.log(`Mapped ${withGroup}/${normalized.length} fixtures to a group; ${finished} finished with scores.`);
+  if (unmatched.size) {
+    console.warn(`Teams not matched to a group (add to nameMap): ${Array.from(unmatched).sort().join(", ")}`);
+  }
+
+  return normalized;
 }
 
 function mergeMatches(current, incoming) {
@@ -146,30 +171,41 @@ async function main() {
   const current = await readCurrent();
   let matches = current.matches || [];
   let source = current.source || "Manual seed";
-  let changed = false;
+  let fetched = false;
 
   try {
     const incoming = await fetchApiFootball();
     matches = mergeMatches(current, incoming);
     source = "API-FOOTBALL fixtures endpoint";
-    changed = true;
+    fetched = true;
   } catch (error) {
     console.warn(`World Cup data automation used existing JSON: ${error.message}`);
   }
 
-  if (!changed) {
+  if (!fetched) {
     console.log(`No provider data fetched; left ${outFile} unchanged`);
     return;
   }
 
+  // Only advance "updatedAt" when the match data actually changed. This job
+  // runs every 20 minutes; previously it bumped the timestamp on every run, so
+  // the site's "Last data update" claimed fresh data even when nothing had
+  // changed. If the feed returns nothing new we leave the file byte-identical
+  // so no spurious commit is made and the timestamp stays honest.
+  const matchesChanged = JSON.stringify(matches) !== JSON.stringify(current.matches || []);
+  if (!matchesChanged && current.updatedAt) {
+    console.log(`Provider data unchanged; left ${outFile} as-is (last real update ${current.updatedAt})`);
+    return;
+  }
+
   const next = {
-    updatedAt: new Date().toISOString(),
+    updatedAt: matchesChanged ? new Date().toISOString() : (current.updatedAt || new Date().toISOString()),
     source,
     groups: current.groups || seedGroups,
     matches
   };
   await fs.writeFile(outFile, `${JSON.stringify(next, null, 2)}\n`, "utf8");
-  console.log(`Wrote ${outFile} with ${matches.length} matches`);
+  console.log(`Wrote ${outFile} with ${matches.length} matches (updatedAt advanced).`);
 }
 
 main().catch((error) => {
