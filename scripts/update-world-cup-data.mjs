@@ -155,7 +155,9 @@ function applyResult(match, result) {
     next.time = "FT";
     next.statusShort = "FT";
   } else if (result && result.state === "in") {
-    next.time = result.statusShort || "Live";
+    // Static "Live" rather than ESPN's ticking minute, so frequent runs only
+    // commit on real transitions (kickoff -> live -> final), not every clock tick.
+    next.time = "Live";
     next.statusShort = "LIVE";
   } else {
     next.time = "Upcoming";

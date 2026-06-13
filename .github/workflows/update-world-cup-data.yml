@@ -3,7 +3,10 @@ name: Update World Cup data
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/20 * * * *"
+    # Every 5 minutes (the GitHub minimum) so final scores post quickly during
+    # the tournament. Free-tier scheduled runs are best-effort and may be
+    # delayed, and a run only commits when results actually change.
+    - cron: "*/5 * * * *"
 
 permissions:
   contents: write
