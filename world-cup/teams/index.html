@@ -42,6 +42,13 @@
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.2);
 }
+.hero-ball {
+  width: min(100%, 210px);
+  height: auto;
+  justify-self: center;
+  margin-bottom: 2px;
+  filter: drop-shadow(0 22px 34px rgba(0,0,0,0.32));
+}
 .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .stat-pill {
   border-radius: 14px;
@@ -227,6 +234,7 @@
           </div>
         </div>
         <aside class="hero-panel" aria-label="Tournament team summary">
+          <img class="hero-ball" src="../officialball_transparent2-50.png" alt="" loading="eager" width="520" height="520" aria-hidden="true">
           <div class="stat-row">
             <div class="stat-pill"><strong>48</strong><span>Teams</span></div>
             <div class="stat-pill"><strong>12</strong><span>Groups</span></div>

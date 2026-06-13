@@ -22,6 +22,10 @@
 <link rel="stylesheet" href="../../play/play.css">
 <style>
 .schedule-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(220px, 0.5fr);
+  gap: 24px;
+  align-items: center;
   background:
     linear-gradient(145deg, rgba(8,82,73,0.92), rgba(31,143,119,0.78)),
     repeating-linear-gradient(90deg, rgba(255,255,255,0.07) 0 38px, rgba(255,255,255,0.02) 38px 76px);
@@ -31,6 +35,17 @@
 .schedule-hero p,
 .schedule-hero .lead { color: rgba(255,255,255,0.86); }
 .schedule-hero .btn-secondary { color: var(--ink); }
+.cup-ball-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 210px;
+}
+.cup-ball-art img {
+  width: min(100%, 245px);
+  height: auto;
+  filter: drop-shadow(0 24px 38px rgba(0,0,0,0.34));
+}
 .schedule-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;
@@ -137,8 +152,10 @@
   line-height: 1.6;
 }
 @media (max-width: 900px) {
+  .schedule-hero { grid-template-columns: 1fr; }
   .schedule-layout { grid-template-columns: 1fr; }
   .schedule-side { position: static; }
+  .cup-ball-art { min-height: 170px; }
 }
 @media (max-width: 620px) {
   .schedule-match { grid-template-columns: 1fr; }
@@ -186,12 +203,17 @@
   <section class="page-hero">
     <div class="shell">
       <div class="page-hero-card schedule-hero">
-        <span class="eyebrow">World Cup 2026 schedule today</span>
-        <h1>Games today, recent results, and who plays next.</h1>
-        <p class="lead" style="max-width:760px;">See which World Cup 2026 games are on today, who plays next, and the latest results. A fast, mobile-friendly schedule you can check in seconds.</p>
-        <div class="stack-inline">
-          <a class="btn btn-primary" href="#today">See today's games</a>
-          <a class="btn btn-secondary" href="../bracket/">Open bracket tracker</a>
+        <div>
+          <span class="eyebrow">World Cup 2026 schedule today</span>
+          <h1>Games today, recent results, and who plays next.</h1>
+          <p class="lead" style="max-width:760px;">See which World Cup 2026 games are on today, who plays next, and the latest results. A fast, mobile-friendly schedule you can check in seconds.</p>
+          <div class="stack-inline">
+            <a class="btn btn-primary" href="#today">See today's games</a>
+            <a class="btn btn-secondary" href="../bracket/">Open bracket tracker</a>
+          </div>
+        </div>
+        <div class="cup-ball-art" aria-hidden="true">
+          <img src="../officialball_transparent2-50.png" alt="" loading="eager" width="520" height="520">
         </div>
       </div>
     </div>

@@ -17,6 +17,10 @@
 <link rel="stylesheet" href="../../play/play.css">
 <style>
 .group-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(200px, 0.45fr);
+  gap: 22px;
+  align-items: center;
   background:
     linear-gradient(145deg, rgba(8, 82, 73, 0.9), rgba(31, 143, 119, 0.78)),
     repeating-linear-gradient(90deg, rgba(255,255,255,0.07) 0 38px, rgba(255,255,255,0.02) 38px 76px);
@@ -25,6 +29,17 @@
 .group-hero p,
 .group-hero .lead { color: rgba(255,255,255,0.86); }
 .group-hero .eyebrow { color: #fff; background: rgba(255,255,255,0.14); }
+.cup-ball-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 190px;
+}
+.cup-ball-art img {
+  width: min(100%, 230px);
+  height: auto;
+  filter: drop-shadow(0 24px 38px rgba(0,0,0,0.34));
+}
 .group-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;
@@ -156,9 +171,11 @@
   margin-top: 18px;
 }
 @media (max-width: 900px) {
+  .group-hero { grid-template-columns: 1fr; }
   .group-layout { grid-template-columns: 1fr; }
   .group-side { position: static; }
   .team-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cup-ball-art { min-height: 160px; }
 }
 @media (max-width: 560px) {
   .team-strip,
@@ -207,12 +224,17 @@
   <section class="page-hero">
     <div class="shell">
       <div class="page-hero-card group-hero">
-        <span class="eyebrow">World Cup 2026 Group A</span>
-        <h1>Group A table, teams, results, and upcoming matches.</h1>
-        <p class="lead" style="max-width:760px;">Follow Mexico, South Africa, South Korea, and Czechia in Group A. This page is the first group-specific template for future search pages.</p>
-        <div class="stack-inline">
-          <a class="btn btn-primary" href="../bracket/">Full bracket</a>
-          <a class="btn btn-secondary" href="../schedule/">Games today</a>
+        <div>
+          <span class="eyebrow">World Cup 2026 Group A</span>
+          <h1>Group A table, teams, results, and upcoming matches.</h1>
+          <p class="lead" style="max-width:760px;">Follow Mexico, South Africa, South Korea, and Czechia in Group A. This page is the first group-specific template for future search pages.</p>
+          <div class="stack-inline">
+            <a class="btn btn-primary" href="../bracket/">Full bracket</a>
+            <a class="btn btn-secondary" href="../schedule/">Games today</a>
+          </div>
+        </div>
+        <div class="cup-ball-art" aria-hidden="true">
+          <img src="../officialball_transparent2-50.png" alt="" loading="eager" width="520" height="520">
         </div>
       </div>
     </div>
