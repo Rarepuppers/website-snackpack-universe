@@ -729,7 +729,7 @@
     Object.keys(groups).forEach(function (groupId) {
       var card = document.createElement("article");
       card.className = "group-card";
-      card.innerHTML = '<h3>Group ' + groupId + '</h3><table class="standings"><thead><tr><th>Team</th><th>P</th><th>GD</th><th>Pts</th></tr></thead><tbody></tbody></table>';
+      card.innerHTML = '<h3><a href="../group-' + groupId.toLowerCase() + '/" style="color:inherit;text-decoration:none;">Group ' + groupId + ' &rsaquo;</a></h3><table class="standings"><thead><tr><th>Team</th><th>P</th><th>GD</th><th>Pts</th></tr></thead><tbody></tbody></table>';
       var tbody = card.querySelector("tbody");
       standingsFor(groupId).forEach(function (row) {
         var tr = document.createElement("tr");
