@@ -139,6 +139,22 @@ a {
   background: var(--brand-deep);
 }
 
+/* World Cup nav link with its small ball icon */
+.nav-wc {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-ball {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  /* Source PNG is wide (1.83:1) with the ball centered; crop the transparent
+     side padding so the ball shows round, not squished. */
+  object-fit: cover;
+}
+
 .hero {
   padding: 76px 0 40px;
 }
