@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-13T02:37:50.906Z",
-  "source": "Official 2026 World Cup match schedule (verified)",
+  "updatedAt": "2026-06-13T06:32:59.363Z",
+  "source": "API-FOOTBALL fixtures endpoint",
   "groups": {
     "A": [
       "Mexico",
@@ -99,42 +99,6 @@
       "as": 1
     },
     {
-      "date": "Jun 18",
-      "isoDate": "2026-06-18",
-      "time": "Upcoming",
-      "group": "A",
-      "home": "Czechia",
-      "away": "South Africa",
-      "venue": "Atlanta"
-    },
-    {
-      "date": "Jun 18",
-      "isoDate": "2026-06-18",
-      "time": "Upcoming",
-      "group": "A",
-      "home": "Mexico",
-      "away": "South Korea",
-      "venue": "Guadalajara"
-    },
-    {
-      "date": "Jun 24",
-      "isoDate": "2026-06-24",
-      "time": "Upcoming",
-      "group": "A",
-      "home": "Czechia",
-      "away": "Mexico",
-      "venue": "Mexico City"
-    },
-    {
-      "date": "Jun 24",
-      "isoDate": "2026-06-24",
-      "time": "Upcoming",
-      "group": "A",
-      "home": "South Africa",
-      "away": "South Korea",
-      "venue": "Monterrey"
-    },
-    {
       "date": "Jun 12",
       "isoDate": "2026-06-12",
       "time": "FT",
@@ -144,105 +108,6 @@
       "venue": "Toronto",
       "hs": 1,
       "as": 1
-    },
-    {
-      "date": "Jun 13",
-      "isoDate": "2026-06-13",
-      "time": "Upcoming",
-      "group": "B",
-      "home": "Qatar",
-      "away": "Switzerland",
-      "venue": "San Francisco Bay Area"
-    },
-    {
-      "date": "Jun 18",
-      "isoDate": "2026-06-18",
-      "time": "Upcoming",
-      "group": "B",
-      "home": "Switzerland",
-      "away": "Bosnia and Herzegovina",
-      "venue": "Los Angeles"
-    },
-    {
-      "date": "Jun 18",
-      "isoDate": "2026-06-18",
-      "time": "Upcoming",
-      "group": "B",
-      "home": "Canada",
-      "away": "Qatar",
-      "venue": "Vancouver"
-    },
-    {
-      "date": "Jun 24",
-      "isoDate": "2026-06-24",
-      "time": "Upcoming",
-      "group": "B",
-      "home": "Switzerland",
-      "away": "Canada",
-      "venue": "Vancouver"
-    },
-    {
-      "date": "Jun 24",
-      "isoDate": "2026-06-24",
-      "time": "Upcoming",
-      "group": "B",
-      "home": "Bosnia and Herzegovina",
-      "away": "Qatar",
-      "venue": "Seattle"
-    },
-    {
-      "date": "Jun 13",
-      "isoDate": "2026-06-13",
-      "time": "Upcoming",
-      "group": "C",
-      "home": "Brazil",
-      "away": "Morocco",
-      "venue": "New York/New Jersey"
-    },
-    {
-      "date": "Jun 13",
-      "isoDate": "2026-06-13",
-      "time": "Upcoming",
-      "group": "C",
-      "home": "Haiti",
-      "away": "Scotland",
-      "venue": "Boston"
-    },
-    {
-      "date": "Jun 19",
-      "isoDate": "2026-06-19",
-      "time": "Upcoming",
-      "group": "C",
-      "home": "Scotland",
-      "away": "Morocco",
-      "venue": "Boston"
-    },
-    {
-      "date": "Jun 19",
-      "isoDate": "2026-06-19",
-      "time": "Upcoming",
-      "group": "C",
-      "home": "Brazil",
-      "away": "Haiti",
-      "venue": "Philadelphia"
-    },
-    {
-      "date": "Jun 24",
-      "isoDate": "2026-06-24",
-      "time": "Upcoming",
-      "group": "C",
-      "home": "Scotland",
-      "away": "Brazil",
-      "venue": "Miami"
-    },
-    {
-      "date": "Jun 24",
-      "isoDate": "2026-06-24",
-      "time": "Upcoming",
-      "group": "C",
-      "home": "Morocco",
-      "away": "Haiti",
-      "venue": "Atlanta"
     },
     {
       "date": "Jun 12",
@@ -263,49 +128,31 @@
       "venue": "Vancouver"
     },
     {
-      "date": "Jun 19",
-      "isoDate": "2026-06-19",
+      "date": "Jun 13",
+      "isoDate": "2026-06-13",
       "time": "Upcoming",
-      "group": "D",
-      "home": "United States",
-      "away": "Australia",
-      "venue": "Seattle"
+      "group": "C",
+      "home": "Brazil",
+      "away": "Morocco",
+      "venue": "New York/New Jersey"
     },
     {
-      "date": "Jun 19",
-      "isoDate": "2026-06-19",
+      "date": "Jun 13",
+      "isoDate": "2026-06-13",
       "time": "Upcoming",
-      "group": "D",
-      "home": "Turkiye",
-      "away": "Paraguay",
+      "group": "C",
+      "home": "Haiti",
+      "away": "Scotland",
+      "venue": "Boston"
+    },
+    {
+      "date": "Jun 13",
+      "isoDate": "2026-06-13",
+      "time": "Upcoming",
+      "group": "B",
+      "home": "Qatar",
+      "away": "Switzerland",
       "venue": "San Francisco Bay Area"
-    },
-    {
-      "date": "Jun 25",
-      "isoDate": "2026-06-25",
-      "time": "Upcoming",
-      "group": "D",
-      "home": "Turkiye",
-      "away": "United States",
-      "venue": "Los Angeles"
-    },
-    {
-      "date": "Jun 25",
-      "isoDate": "2026-06-25",
-      "time": "Upcoming",
-      "group": "D",
-      "home": "Paraguay",
-      "away": "Australia",
-      "venue": "San Francisco Bay Area"
-    },
-    {
-      "date": "Jun 14",
-      "isoDate": "2026-06-14",
-      "time": "Upcoming",
-      "group": "E",
-      "home": "Germany",
-      "away": "Curacao",
-      "venue": "Houston"
     },
     {
       "date": "Jun 14",
@@ -317,40 +164,13 @@
       "venue": "Philadelphia"
     },
     {
-      "date": "Jun 20",
-      "isoDate": "2026-06-20",
+      "date": "Jun 14",
+      "isoDate": "2026-06-14",
       "time": "Upcoming",
       "group": "E",
       "home": "Germany",
-      "away": "Cote d'Ivoire",
-      "venue": "Toronto"
-    },
-    {
-      "date": "Jun 20",
-      "isoDate": "2026-06-20",
-      "time": "Upcoming",
-      "group": "E",
-      "home": "Ecuador",
       "away": "Curacao",
-      "venue": "Kansas City"
-    },
-    {
-      "date": "Jun 25",
-      "isoDate": "2026-06-25",
-      "time": "Upcoming",
-      "group": "E",
-      "home": "Curacao",
-      "away": "Cote d'Ivoire",
-      "venue": "Philadelphia"
-    },
-    {
-      "date": "Jun 25",
-      "isoDate": "2026-06-25",
-      "time": "Upcoming",
-      "group": "E",
-      "home": "Ecuador",
-      "away": "Germany",
-      "venue": "New York/New Jersey"
+      "venue": "Houston"
     },
     {
       "date": "Jun 14",
@@ -371,42 +191,6 @@
       "venue": "Monterrey"
     },
     {
-      "date": "Jun 20",
-      "isoDate": "2026-06-20",
-      "time": "Upcoming",
-      "group": "F",
-      "home": "Netherlands",
-      "away": "Sweden",
-      "venue": "Houston"
-    },
-    {
-      "date": "Jun 20",
-      "isoDate": "2026-06-20",
-      "time": "Upcoming",
-      "group": "F",
-      "home": "Tunisia",
-      "away": "Japan",
-      "venue": "Monterrey"
-    },
-    {
-      "date": "Jun 25",
-      "isoDate": "2026-06-25",
-      "time": "Upcoming",
-      "group": "F",
-      "home": "Japan",
-      "away": "Sweden",
-      "venue": "Dallas"
-    },
-    {
-      "date": "Jun 25",
-      "isoDate": "2026-06-25",
-      "time": "Upcoming",
-      "group": "F",
-      "home": "Tunisia",
-      "away": "Netherlands",
-      "venue": "Kansas City"
-    },
-    {
       "date": "Jun 15",
       "isoDate": "2026-06-15",
       "time": "Upcoming",
@@ -425,51 +209,6 @@
       "venue": "Los Angeles"
     },
     {
-      "date": "Jun 21",
-      "isoDate": "2026-06-21",
-      "time": "Upcoming",
-      "group": "G",
-      "home": "Belgium",
-      "away": "Iran",
-      "venue": "Los Angeles"
-    },
-    {
-      "date": "Jun 21",
-      "isoDate": "2026-06-21",
-      "time": "Upcoming",
-      "group": "G",
-      "home": "New Zealand",
-      "away": "Egypt",
-      "venue": "Vancouver"
-    },
-    {
-      "date": "Jun 26",
-      "isoDate": "2026-06-26",
-      "time": "Upcoming",
-      "group": "G",
-      "home": "Egypt",
-      "away": "Iran",
-      "venue": "Seattle"
-    },
-    {
-      "date": "Jun 26",
-      "isoDate": "2026-06-26",
-      "time": "Upcoming",
-      "group": "G",
-      "home": "New Zealand",
-      "away": "Belgium",
-      "venue": "Vancouver"
-    },
-    {
-      "date": "Jun 15",
-      "isoDate": "2026-06-15",
-      "time": "Upcoming",
-      "group": "H",
-      "home": "Spain",
-      "away": "Cape Verde",
-      "venue": "Atlanta"
-    },
-    {
       "date": "Jun 15",
       "isoDate": "2026-06-15",
       "time": "Upcoming",
@@ -479,94 +218,13 @@
       "venue": "Miami"
     },
     {
-      "date": "Jun 21",
-      "isoDate": "2026-06-21",
+      "date": "Jun 15",
+      "isoDate": "2026-06-15",
       "time": "Upcoming",
       "group": "H",
       "home": "Spain",
-      "away": "Saudi Arabia",
-      "venue": "Atlanta"
-    },
-    {
-      "date": "Jun 21",
-      "isoDate": "2026-06-21",
-      "time": "Upcoming",
-      "group": "H",
-      "home": "Uruguay",
       "away": "Cape Verde",
-      "venue": "Miami"
-    },
-    {
-      "date": "Jun 26",
-      "isoDate": "2026-06-26",
-      "time": "Upcoming",
-      "group": "H",
-      "home": "Cape Verde",
-      "away": "Saudi Arabia",
-      "venue": "Houston"
-    },
-    {
-      "date": "Jun 26",
-      "isoDate": "2026-06-26",
-      "time": "Upcoming",
-      "group": "H",
-      "home": "Uruguay",
-      "away": "Spain",
-      "venue": "Guadalajara"
-    },
-    {
-      "date": "Jun 16",
-      "isoDate": "2026-06-16",
-      "time": "Upcoming",
-      "group": "I",
-      "home": "France",
-      "away": "Senegal",
-      "venue": "New York/New Jersey"
-    },
-    {
-      "date": "Jun 16",
-      "isoDate": "2026-06-16",
-      "time": "Upcoming",
-      "group": "I",
-      "home": "Iraq",
-      "away": "Norway",
-      "venue": "Boston"
-    },
-    {
-      "date": "Jun 22",
-      "isoDate": "2026-06-22",
-      "time": "Upcoming",
-      "group": "I",
-      "home": "France",
-      "away": "Iraq",
-      "venue": "Philadelphia"
-    },
-    {
-      "date": "Jun 22",
-      "isoDate": "2026-06-22",
-      "time": "Upcoming",
-      "group": "I",
-      "home": "Norway",
-      "away": "Senegal",
-      "venue": "New York/New Jersey"
-    },
-    {
-      "date": "Jun 26",
-      "isoDate": "2026-06-26",
-      "time": "Upcoming",
-      "group": "I",
-      "home": "Norway",
-      "away": "France",
-      "venue": "Boston"
-    },
-    {
-      "date": "Jun 26",
-      "isoDate": "2026-06-26",
-      "time": "Upcoming",
-      "group": "I",
-      "home": "Senegal",
-      "away": "Iraq",
-      "venue": "Toronto"
+      "venue": "Atlanta"
     },
     {
       "date": "Jun 16",
@@ -587,94 +245,22 @@
       "venue": "San Francisco Bay Area"
     },
     {
-      "date": "Jun 22",
-      "isoDate": "2026-06-22",
+      "date": "Jun 16",
+      "isoDate": "2026-06-16",
       "time": "Upcoming",
-      "group": "J",
-      "home": "Argentina",
-      "away": "Austria",
-      "venue": "Dallas"
+      "group": "I",
+      "home": "France",
+      "away": "Senegal",
+      "venue": "New York/New Jersey"
     },
     {
-      "date": "Jun 22",
-      "isoDate": "2026-06-22",
+      "date": "Jun 16",
+      "isoDate": "2026-06-16",
       "time": "Upcoming",
-      "group": "J",
-      "home": "Jordan",
-      "away": "Algeria",
-      "venue": "San Francisco Bay Area"
-    },
-    {
-      "date": "Jun 27",
-      "isoDate": "2026-06-27",
-      "time": "Upcoming",
-      "group": "J",
-      "home": "Algeria",
-      "away": "Austria",
-      "venue": "Kansas City"
-    },
-    {
-      "date": "Jun 27",
-      "isoDate": "2026-06-27",
-      "time": "Upcoming",
-      "group": "J",
-      "home": "Jordan",
-      "away": "Argentina",
-      "venue": "Dallas"
-    },
-    {
-      "date": "Jun 17",
-      "isoDate": "2026-06-17",
-      "time": "Upcoming",
-      "group": "K",
-      "home": "Portugal",
-      "away": "DR Congo",
-      "venue": "Houston"
-    },
-    {
-      "date": "Jun 17",
-      "isoDate": "2026-06-17",
-      "time": "Upcoming",
-      "group": "K",
-      "home": "Uzbekistan",
-      "away": "Colombia",
-      "venue": "Mexico City"
-    },
-    {
-      "date": "Jun 23",
-      "isoDate": "2026-06-23",
-      "time": "Upcoming",
-      "group": "K",
-      "home": "Portugal",
-      "away": "Uzbekistan",
-      "venue": "Houston"
-    },
-    {
-      "date": "Jun 23",
-      "isoDate": "2026-06-23",
-      "time": "Upcoming",
-      "group": "K",
-      "home": "Colombia",
-      "away": "DR Congo",
-      "venue": "Guadalajara"
-    },
-    {
-      "date": "Jun 27",
-      "isoDate": "2026-06-27",
-      "time": "Upcoming",
-      "group": "K",
-      "home": "Colombia",
-      "away": "Portugal",
-      "venue": "Miami"
-    },
-    {
-      "date": "Jun 27",
-      "isoDate": "2026-06-27",
-      "time": "Upcoming",
-      "group": "K",
-      "home": "DR Congo",
-      "away": "Uzbekistan",
-      "venue": "Atlanta"
+      "group": "I",
+      "home": "Iraq",
+      "away": "Norway",
+      "venue": "Boston"
     },
     {
       "date": "Jun 17",
@@ -695,6 +281,213 @@
       "venue": "Toronto"
     },
     {
+      "date": "Jun 17",
+      "isoDate": "2026-06-17",
+      "time": "Upcoming",
+      "group": "K",
+      "home": "Portugal",
+      "away": "DR Congo",
+      "venue": "Houston"
+    },
+    {
+      "date": "Jun 17",
+      "isoDate": "2026-06-17",
+      "time": "Upcoming",
+      "group": "K",
+      "home": "Uzbekistan",
+      "away": "Colombia",
+      "venue": "Mexico City"
+    },
+    {
+      "date": "Jun 18",
+      "isoDate": "2026-06-18",
+      "time": "Upcoming",
+      "group": "B",
+      "home": "Canada",
+      "away": "Qatar",
+      "venue": "Vancouver"
+    },
+    {
+      "date": "Jun 18",
+      "isoDate": "2026-06-18",
+      "time": "Upcoming",
+      "group": "A",
+      "home": "Czechia",
+      "away": "South Africa",
+      "venue": "Atlanta"
+    },
+    {
+      "date": "Jun 18",
+      "isoDate": "2026-06-18",
+      "time": "Upcoming",
+      "group": "A",
+      "home": "Mexico",
+      "away": "South Korea",
+      "venue": "Guadalajara"
+    },
+    {
+      "date": "Jun 18",
+      "isoDate": "2026-06-18",
+      "time": "Upcoming",
+      "group": "B",
+      "home": "Switzerland",
+      "away": "Bosnia and Herzegovina",
+      "venue": "Los Angeles"
+    },
+    {
+      "date": "Jun 19",
+      "isoDate": "2026-06-19",
+      "time": "Upcoming",
+      "group": "C",
+      "home": "Brazil",
+      "away": "Haiti",
+      "venue": "Philadelphia"
+    },
+    {
+      "date": "Jun 19",
+      "isoDate": "2026-06-19",
+      "time": "Upcoming",
+      "group": "C",
+      "home": "Scotland",
+      "away": "Morocco",
+      "venue": "Boston"
+    },
+    {
+      "date": "Jun 19",
+      "isoDate": "2026-06-19",
+      "time": "Upcoming",
+      "group": "D",
+      "home": "Turkiye",
+      "away": "Paraguay",
+      "venue": "San Francisco Bay Area"
+    },
+    {
+      "date": "Jun 19",
+      "isoDate": "2026-06-19",
+      "time": "Upcoming",
+      "group": "D",
+      "home": "United States",
+      "away": "Australia",
+      "venue": "Seattle"
+    },
+    {
+      "date": "Jun 20",
+      "isoDate": "2026-06-20",
+      "time": "Upcoming",
+      "group": "E",
+      "home": "Ecuador",
+      "away": "Curacao",
+      "venue": "Kansas City"
+    },
+    {
+      "date": "Jun 20",
+      "isoDate": "2026-06-20",
+      "time": "Upcoming",
+      "group": "E",
+      "home": "Germany",
+      "away": "Cote d'Ivoire",
+      "venue": "Toronto"
+    },
+    {
+      "date": "Jun 20",
+      "isoDate": "2026-06-20",
+      "time": "Upcoming",
+      "group": "F",
+      "home": "Netherlands",
+      "away": "Sweden",
+      "venue": "Houston"
+    },
+    {
+      "date": "Jun 20",
+      "isoDate": "2026-06-20",
+      "time": "Upcoming",
+      "group": "F",
+      "home": "Tunisia",
+      "away": "Japan",
+      "venue": "Monterrey"
+    },
+    {
+      "date": "Jun 21",
+      "isoDate": "2026-06-21",
+      "time": "Upcoming",
+      "group": "G",
+      "home": "Belgium",
+      "away": "Iran",
+      "venue": "Los Angeles"
+    },
+    {
+      "date": "Jun 21",
+      "isoDate": "2026-06-21",
+      "time": "Upcoming",
+      "group": "G",
+      "home": "New Zealand",
+      "away": "Egypt",
+      "venue": "Vancouver"
+    },
+    {
+      "date": "Jun 21",
+      "isoDate": "2026-06-21",
+      "time": "Upcoming",
+      "group": "H",
+      "home": "Spain",
+      "away": "Saudi Arabia",
+      "venue": "Atlanta"
+    },
+    {
+      "date": "Jun 21",
+      "isoDate": "2026-06-21",
+      "time": "Upcoming",
+      "group": "H",
+      "home": "Uruguay",
+      "away": "Cape Verde",
+      "venue": "Miami"
+    },
+    {
+      "date": "Jun 22",
+      "isoDate": "2026-06-22",
+      "time": "Upcoming",
+      "group": "J",
+      "home": "Argentina",
+      "away": "Austria",
+      "venue": "Dallas"
+    },
+    {
+      "date": "Jun 22",
+      "isoDate": "2026-06-22",
+      "time": "Upcoming",
+      "group": "I",
+      "home": "France",
+      "away": "Iraq",
+      "venue": "Philadelphia"
+    },
+    {
+      "date": "Jun 22",
+      "isoDate": "2026-06-22",
+      "time": "Upcoming",
+      "group": "J",
+      "home": "Jordan",
+      "away": "Algeria",
+      "venue": "San Francisco Bay Area"
+    },
+    {
+      "date": "Jun 22",
+      "isoDate": "2026-06-22",
+      "time": "Upcoming",
+      "group": "I",
+      "home": "Norway",
+      "away": "Senegal",
+      "venue": "New York/New Jersey"
+    },
+    {
+      "date": "Jun 23",
+      "isoDate": "2026-06-23",
+      "time": "Upcoming",
+      "group": "K",
+      "home": "Colombia",
+      "away": "DR Congo",
+      "venue": "Guadalajara"
+    },
+    {
       "date": "Jun 23",
       "isoDate": "2026-06-23",
       "time": "Upcoming",
@@ -713,13 +506,193 @@
       "venue": "Toronto"
     },
     {
+      "date": "Jun 23",
+      "isoDate": "2026-06-23",
+      "time": "Upcoming",
+      "group": "K",
+      "home": "Portugal",
+      "away": "Uzbekistan",
+      "venue": "Houston"
+    },
+    {
+      "date": "Jun 24",
+      "isoDate": "2026-06-24",
+      "time": "Upcoming",
+      "group": "B",
+      "home": "Bosnia and Herzegovina",
+      "away": "Qatar",
+      "venue": "Seattle"
+    },
+    {
+      "date": "Jun 24",
+      "isoDate": "2026-06-24",
+      "time": "Upcoming",
+      "group": "A",
+      "home": "Czechia",
+      "away": "Mexico",
+      "venue": "Mexico City"
+    },
+    {
+      "date": "Jun 24",
+      "isoDate": "2026-06-24",
+      "time": "Upcoming",
+      "group": "C",
+      "home": "Morocco",
+      "away": "Haiti",
+      "venue": "Atlanta"
+    },
+    {
+      "date": "Jun 24",
+      "isoDate": "2026-06-24",
+      "time": "Upcoming",
+      "group": "C",
+      "home": "Scotland",
+      "away": "Brazil",
+      "venue": "Miami"
+    },
+    {
+      "date": "Jun 24",
+      "isoDate": "2026-06-24",
+      "time": "Upcoming",
+      "group": "A",
+      "home": "South Africa",
+      "away": "South Korea",
+      "venue": "Monterrey"
+    },
+    {
+      "date": "Jun 24",
+      "isoDate": "2026-06-24",
+      "time": "Upcoming",
+      "group": "B",
+      "home": "Switzerland",
+      "away": "Canada",
+      "venue": "Vancouver"
+    },
+    {
+      "date": "Jun 25",
+      "isoDate": "2026-06-25",
+      "time": "Upcoming",
+      "group": "E",
+      "home": "Curacao",
+      "away": "Cote d'Ivoire",
+      "venue": "Philadelphia"
+    },
+    {
+      "date": "Jun 25",
+      "isoDate": "2026-06-25",
+      "time": "Upcoming",
+      "group": "E",
+      "home": "Ecuador",
+      "away": "Germany",
+      "venue": "New York/New Jersey"
+    },
+    {
+      "date": "Jun 25",
+      "isoDate": "2026-06-25",
+      "time": "Upcoming",
+      "group": "F",
+      "home": "Japan",
+      "away": "Sweden",
+      "venue": "Dallas"
+    },
+    {
+      "date": "Jun 25",
+      "isoDate": "2026-06-25",
+      "time": "Upcoming",
+      "group": "D",
+      "home": "Paraguay",
+      "away": "Australia",
+      "venue": "San Francisco Bay Area"
+    },
+    {
+      "date": "Jun 25",
+      "isoDate": "2026-06-25",
+      "time": "Upcoming",
+      "group": "F",
+      "home": "Tunisia",
+      "away": "Netherlands",
+      "venue": "Kansas City"
+    },
+    {
+      "date": "Jun 25",
+      "isoDate": "2026-06-25",
+      "time": "Upcoming",
+      "group": "D",
+      "home": "Turkiye",
+      "away": "United States",
+      "venue": "Los Angeles"
+    },
+    {
+      "date": "Jun 26",
+      "isoDate": "2026-06-26",
+      "time": "Upcoming",
+      "group": "H",
+      "home": "Cape Verde",
+      "away": "Saudi Arabia",
+      "venue": "Houston"
+    },
+    {
+      "date": "Jun 26",
+      "isoDate": "2026-06-26",
+      "time": "Upcoming",
+      "group": "G",
+      "home": "Egypt",
+      "away": "Iran",
+      "venue": "Seattle"
+    },
+    {
+      "date": "Jun 26",
+      "isoDate": "2026-06-26",
+      "time": "Upcoming",
+      "group": "G",
+      "home": "New Zealand",
+      "away": "Belgium",
+      "venue": "Vancouver"
+    },
+    {
+      "date": "Jun 26",
+      "isoDate": "2026-06-26",
+      "time": "Upcoming",
+      "group": "I",
+      "home": "Norway",
+      "away": "France",
+      "venue": "Boston"
+    },
+    {
+      "date": "Jun 26",
+      "isoDate": "2026-06-26",
+      "time": "Upcoming",
+      "group": "I",
+      "home": "Senegal",
+      "away": "Iraq",
+      "venue": "Toronto"
+    },
+    {
+      "date": "Jun 26",
+      "isoDate": "2026-06-26",
+      "time": "Upcoming",
+      "group": "H",
+      "home": "Uruguay",
+      "away": "Spain",
+      "venue": "Guadalajara"
+    },
+    {
       "date": "Jun 27",
       "isoDate": "2026-06-27",
       "time": "Upcoming",
-      "group": "L",
-      "home": "Panama",
-      "away": "England",
-      "venue": "New York/New Jersey"
+      "group": "J",
+      "home": "Algeria",
+      "away": "Austria",
+      "venue": "Kansas City"
+    },
+    {
+      "date": "Jun 27",
+      "isoDate": "2026-06-27",
+      "time": "Upcoming",
+      "group": "K",
+      "home": "Colombia",
+      "away": "Portugal",
+      "venue": "Miami"
     },
     {
       "date": "Jun 27",
@@ -729,6 +702,33 @@
       "home": "Croatia",
       "away": "Ghana",
       "venue": "Philadelphia"
+    },
+    {
+      "date": "Jun 27",
+      "isoDate": "2026-06-27",
+      "time": "Upcoming",
+      "group": "K",
+      "home": "DR Congo",
+      "away": "Uzbekistan",
+      "venue": "Atlanta"
+    },
+    {
+      "date": "Jun 27",
+      "isoDate": "2026-06-27",
+      "time": "Upcoming",
+      "group": "J",
+      "home": "Jordan",
+      "away": "Argentina",
+      "venue": "Dallas"
+    },
+    {
+      "date": "Jun 27",
+      "isoDate": "2026-06-27",
+      "time": "Upcoming",
+      "group": "L",
+      "home": "Panama",
+      "away": "England",
+      "venue": "New York/New Jersey"
     }
   ]
 }
