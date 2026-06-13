@@ -1,0 +1,25 @@
+name: Diagnose World Cup API
+
+# One-shot, manual-only diagnostic. Prints what the API-FOOTBALL account can
+# see (plan, league coverage, fixture count) without writing any files.
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Diagnose API-FOOTBALL access
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          API_FOOTBALL_LEAGUE_ID: ${{ vars.API_FOOTBALL_LEAGUE_ID || '1' }}
+          API_FOOTBALL_SEASON: ${{ vars.API_FOOTBALL_SEASON || '2026' }}
+        run: node scripts/diagnose-world-cup-api.mjs
