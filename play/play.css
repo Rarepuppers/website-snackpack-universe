@@ -183,6 +183,12 @@
 
 .game-status--lose {
   color: var(--brand-deep);
+  animation: c4-status-nudge 0.42s ease;
+}
+
+.game-status--win {
+  color: var(--accent);
+  animation: c4-status-win 0.72s ease;
 }
 
 .game-board-wrap {
@@ -319,6 +325,8 @@
   border-radius: 18px;
   background: linear-gradient(180deg, #2f6fd6, #2456ad);
   box-shadow: var(--shadow);
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .c4-cell {
@@ -327,11 +335,92 @@
   border-radius: 999px;
   background: var(--bg-soft);
   box-shadow: inset 0 2px 5px rgba(32, 23, 19, 0.18);
-  transition: background 0.15s ease;
+  position: relative;
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  will-change: transform;
 }
 
 .c4-cell.is-p1 { background: radial-gradient(circle at 35% 30%, #ef8a5a, #b9481e); }
 .c4-cell.is-p2 { background: radial-gradient(circle at 35% 30%, #f3cf6a, #d99b1f); }
+.c4-cell.is-drop {
+  animation: c4-drop 0.34s cubic-bezier(0.2, 0.88, 0.28, 1.12);
+}
+.c4-cell.is-win-line {
+  animation: c4-win-pop 0.78s ease-in-out 2;
+  box-shadow: inset 0 2px 5px rgba(32, 23, 19, 0.18), 0 0 0 4px rgba(255,255,255,0.7), 0 0 24px rgba(239,181,77,0.72);
+}
+.c4-board.is-win {
+  animation: c4-board-win 0.85s ease;
+}
+.c4-board.is-loss {
+  animation: c4-board-loss 0.46s ease;
+}
+.c4-board.is-busy {
+  cursor: wait;
+}
+
+.c4-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+.c4-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.c4-key::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  box-shadow: inset 0 2px 4px rgba(32, 23, 19, 0.18);
+}
+.c4-key--you::before { background: radial-gradient(circle at 35% 30%, #ef8a5a, #b9481e); }
+.c4-key--cpu::before { background: radial-gradient(circle at 35% 30%, #f3cf6a, #d99b1f); }
+.c4-board-hint {
+  margin-top: -6px;
+  margin-bottom: 12px;
+}
+.c4-board-hint + .game-board-wrap + .game-hint {
+  display: none;
+}
+
+@keyframes c4-drop {
+  0% { transform: translateY(calc(var(--drop-distance, 6) * -50px)) scale(0.86); }
+  74% { transform: translateY(4px) scale(1.04); }
+  100% { transform: translateY(0) scale(1); }
+}
+@keyframes c4-win-pop {
+  0%, 100% { transform: scale(1); }
+  45% { transform: scale(1.16); }
+}
+@keyframes c4-board-win {
+  0%, 100% { transform: scale(1); }
+  42% { transform: scale(1.025); }
+}
+@keyframes c4-board-loss {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+@keyframes c4-status-win {
+  0%, 100% { transform: scale(1); }
+  45% { transform: scale(1.08); }
+}
+@keyframes c4-status-nudge {
+  0%, 100% { transform: translateX(0); }
+  30% { transform: translateX(-5px); }
+  60% { transform: translateX(5px); }
+}
 
 .c4-col-btns {
   display: grid;
@@ -355,6 +444,17 @@
 
 .c4-col-btn:hover:not(:disabled) { background: rgba(31, 143, 119, 0.24); }
 .c4-col-btn:disabled { opacity: 0.35; cursor: default; }
+
+@media (prefers-reduced-motion: reduce) {
+  .c4-cell.is-drop,
+  .c4-cell.is-win-line,
+  .c4-board.is-win,
+  .c4-board.is-loss,
+  .game-status--win,
+  .game-status--lose {
+    animation: none;
+  }
+}
 
 /* ── App-download funnel card ────────────────────── */
 .funnel-card {

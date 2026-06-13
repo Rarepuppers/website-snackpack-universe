@@ -99,6 +99,11 @@
           </div>
         </div>
         <p class="game-status" id="c-status" aria-live="polite">Your move — drop a disc.</p>
+        <div class="c4-legend" aria-label="Connect 4 colour key">
+          <span class="c4-key c4-key--you">You: red</span>
+          <span class="c4-key c4-key--cpu">Computer: yellow</span>
+        </div>
+        <p class="game-hint c4-board-hint">Click a column on the board, or use the buttons above each column.</p>
         <div class="game-board-wrap">
           <div>
             <div class="c4-col-btns" id="c-btns"></div>
@@ -222,13 +227,18 @@
     board = [];
     for (var r = 0; r < ROWS; r++) { board[r] = []; for (var c = 0; c < COLS; c++) board[r][c] = 0; }
     busy = false; gameOver = false;
-    cells.forEach(function (el) { el.className = "c4-cell"; });
+    boardEl.className = "c4-board";
+    cells.forEach(function (el) {
+      el.className = "c4-cell";
+      el.style.removeProperty("--drop-distance");
+    });
     setBtns(true);
     statusEl.textContent = "Your move — drop a disc.";
     statusEl.className = "game-status";
   }
 
   function setBtns(on) {
+    boardEl.classList.toggle("is-busy", !on && !gameOver);
     var btns = btnsEl.querySelectorAll(".c4-col-btn");
     for (var c = 0; c < COLS; c++) {
       btns[c].disabled = !on || board[0][c] !== 0 || gameOver;
@@ -240,22 +250,30 @@
     return -1;
   }
 
-  function paint(r, c, who) {
-    cells[r * COLS + c].classList.add(who === HUMAN ? "is-p1" : "is-p2");
+  function paint(r, c, who, fromRow) {
+    var cell = cells[r * COLS + c];
+    cell.classList.remove("is-drop");
+    cell.style.setProperty("--drop-distance", String(Math.max(1, r - fromRow + 1)));
+    cell.classList.add(who === HUMAN ? "is-p1" : "is-p2");
+    void cell.offsetWidth;
+    cell.classList.add("is-drop");
   }
 
   function winner(b, who) {
-    // Returns true if `who` has four in a row.
+    return !!winningLine(b, who);
+  }
+
+  function winningLine(b, who) {
     for (var r = 0; r < ROWS; r++) for (var c = 0; c < COLS; c++) {
       if (b[r][c] !== who) continue;
-      if (c + 3 < COLS && b[r][c+1]===who && b[r][c+2]===who && b[r][c+3]===who) return true;
+      if (c + 3 < COLS && b[r][c+1]===who && b[r][c+2]===who && b[r][c+3]===who) return [[r,c], [r,c+1], [r,c+2], [r,c+3]];
       if (r + 3 < ROWS) {
-        if (b[r+1][c]===who && b[r+2][c]===who && b[r+3][c]===who) return true;
-        if (c + 3 < COLS && b[r+1][c+1]===who && b[r+2][c+2]===who && b[r+3][c+3]===who) return true;
-        if (c - 3 >= 0 && b[r+1][c-1]===who && b[r+2][c-2]===who && b[r+3][c-3]===who) return true;
+        if (b[r+1][c]===who && b[r+2][c]===who && b[r+3][c]===who) return [[r,c], [r+1,c], [r+2,c], [r+3,c]];
+        if (c + 3 < COLS && b[r+1][c+1]===who && b[r+2][c+2]===who && b[r+3][c+3]===who) return [[r,c], [r+1,c+1], [r+2,c+2], [r+3,c+3]];
+        if (c - 3 >= 0 && b[r+1][c-1]===who && b[r+2][c-2]===who && b[r+3][c-3]===who) return [[r,c], [r+1,c-1], [r+2,c-2], [r+3,c-3]];
       }
     }
-    return false;
+    return null;
   }
 
   function isFull(b) {
@@ -268,7 +286,7 @@
     var r = lowestRow(board, col);
     if (r < 0) return;
     board[r][col] = HUMAN;
-    paint(r, col, HUMAN);
+    paint(r, col, HUMAN, -1);
     if (winner(board, HUMAN)) { finish("you"); return; }
     if (isFull(board)) { finish("draw"); return; }
     busy = true; setBtns(false);
@@ -280,7 +298,7 @@
     var col = bestMove();
     var r = lowestRow(board, col);
     board[r][col] = CPU;
-    paint(r, col, CPU);
+    paint(r, col, CPU, -1);
     busy = false;
     if (winner(board, CPU)) { finish("cpu"); return; }
     if (isFull(board)) { finish("draw"); return; }
@@ -293,15 +311,19 @@
     if (who === "you") {
       wins.you++; youEl.textContent = wins.you;
       statusEl.textContent = "You win! 🎉 Four in a row.";
-      statusEl.className = "game-status";
+      statusEl.className = "game-status game-status--win";
+      markWinningLine(HUMAN);
+      boardEl.classList.add("is-win");
       if (window.SnackPack) window.SnackPack.celebrate({
         title: "You beat the computer! 🎉",
         body: "Sharp play. We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app to play Connect 4 and eight more, offline."
       });
     } else if (who === "cpu") {
       wins.cpu++; cpuEl.textContent = wins.cpu;
-      statusEl.textContent = "The computer got four in a row. Try again!";
+      statusEl.textContent = "Bad luck - the computer got four in a row. Try again!";
       statusEl.className = "game-status game-status--lose";
+      markWinningLine(CPU);
+      boardEl.classList.add("is-loss");
     } else {
       statusEl.textContent = "It's a draw — the board is full.";
       statusEl.className = "game-status";
@@ -309,6 +331,14 @@
   }
 
   // ── AI: minimax with alpha-beta ──────────────────
+  function markWinningLine(who) {
+    var line = winningLine(board, who);
+    if (!line) return;
+    line.forEach(function (pos) {
+      cells[pos[0] * COLS + pos[1]].classList.add("is-win-line");
+    });
+  }
+
   var ORDER = [3, 2, 4, 1, 5, 0, 6];
 
   function validCols(b) {
@@ -394,6 +424,18 @@
   btnsEl.addEventListener("click", function (e) {
     var b = e.target.closest(".c4-col-btn"); if (!b || b.disabled) return;
     humanMove(+b.dataset.col);
+  });
+  boardEl.addEventListener("click", function (e) {
+    if (busy || gameOver) return;
+    var cell = e.target.closest(".c4-cell");
+    var col;
+    if (cell) {
+      col = cells.indexOf(cell) % COLS;
+    } else {
+      var box = boardEl.getBoundingClientRect();
+      col = Math.floor((e.clientX - box.left - 12) / 50);
+    }
+    if (col >= 0 && col < COLS && board[0][col] === 0) humanMove(col);
   });
   newBtn.addEventListener("click", reset);
   document.querySelectorAll(".seg [data-level]").forEach(function (btn) {
