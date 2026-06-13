@@ -2,14 +2,23 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 /*
- * Seed builder for the World Cup 2026 hub.
- * Writes the canonical data/world-cup-2026.json (full 72-match group schedule,
- * verified against the official draw and per-group fixture lists) and generates
- * the 12 group pages (world-cup/group-{a..l}/index.html) from one template.
+ * Builder for the World Cup 2026 group pages.
  *
- * The live updater (scripts/update-world-cup-data.mjs) overwrites the JSON with
- * real API results when API_FOOTBALL_KEY is configured; this file is the seed
- * and the page generator. Re-run with: node scripts/build-world-cup.mjs
+ * WHAT IT DOES
+ *   By default it (re)writes the 12 group pages:
+ *     world-cup/group-a/index.html ... world-cup/group-l/index.html
+ *   from one template, using the data tables below (GROUPS, FLAGS, SCHEDULE).
+ *
+ * IT DOES *NOT* TOUCH data/world-cup-2026.json BY DEFAULT.
+ *   That file is updated automatically every 20 minutes by GitHub Actions
+ *   (.github/workflows/update-world-cup-data.yml -> scripts/update-world-cup-data.mjs)
+ *   with live scores. Overwriting it here would wipe out those live results.
+ *
+ * COMMANDS
+ *   node scripts/build-world-cup.mjs              # rebuild the 12 group pages only
+ *   node scripts/build-world-cup.mjs --seed-data  # ALSO overwrite the JSON seed
+ *                                                  # (only for first setup or a draw change;
+ *                                                  #  the next Actions run will refresh it)
  */
 
 const root = path.resolve(".");
@@ -635,21 +644,28 @@ ${"ABCDEFGHIJKL".split("").map((g) => `        <a href="../group-${g.toLowerCase
 }
 
 async function main() {
-  const data = {
-    updatedAt: new Date().toISOString(),
-    source: "Official 2026 World Cup match schedule (verified)",
-    groups: GROUPS,
-    matches: buildMatches()
-  };
-  await fs.writeFile(path.join(root, "data/world-cup-2026.json"), JSON.stringify(data, null, 2) + "\n", "utf8");
-  console.log(`Wrote data/world-cup-2026.json with ${data.matches.length} matches`);
+  const seedData = process.argv.includes("--seed-data");
+
+  if (seedData) {
+    const data = {
+      updatedAt: new Date().toISOString(),
+      source: "Official 2026 World Cup match schedule (verified)",
+      groups: GROUPS,
+      matches: buildMatches()
+    };
+    await fs.writeFile(path.join(root, "data/world-cup-2026.json"), JSON.stringify(data, null, 2) + "\n", "utf8");
+    console.log(`--seed-data: overwrote data/world-cup-2026.json with ${data.matches.length} matches.`);
+    console.log("   Note: GitHub Actions will refresh this file with live scores on its next run.");
+  } else {
+    console.log("Left data/world-cup-2026.json untouched (it is updated automatically by GitHub Actions).");
+  }
 
   for (const letter of Object.keys(GROUPS)) {
     const dir = path.join(root, "world-cup", `group-${letter.toLowerCase()}`);
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(path.join(dir, "index.html"), groupPage(letter), "utf8");
   }
-  console.log(`Wrote ${Object.keys(GROUPS).length} group pages`);
+  console.log(`Wrote ${Object.keys(GROUPS).length} group pages (world-cup/group-a … group-l).`);
 }
 
 main().catch((error) => { console.error(error); process.exit(1); });
