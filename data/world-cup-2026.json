@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-14T18:03:31.246Z",
+  "updatedAt": "2026-06-14T19:49:35.086Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -184,14 +184,14 @@
     {
       "date": "Jun 14",
       "isoDate": "2026-06-14",
-      "time": "Live",
+      "time": "FT",
       "group": "E",
       "home": "Germany",
       "away": "Curacao",
       "venue": "Houston",
-      "statusShort": "LIVE",
-      "lhs": 3,
-      "las": 1
+      "hs": 7,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 14",
