@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Thirteen (Tien Len) Online Free vs Computer | No Ads — SnackPack</title>
+<meta name="description" content="Play Thirteen (Tien Len / Vietnamese cards) free in your browser against three computer players. Singles, pairs, sequences and bombs, two rule sets. No ads, no sign-in, no download. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/thirteen/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Thirteen (Tien Len) Online Free vs Computer | No Ads">
+<meta property="og:description" content="The Vietnamese shedding card game. Beat three computer players with singles, pairs, sequences and bombs — free in your browser, no ads.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/thirteen/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Thirteen (Tien Len)",
+  "url": "https://www.snackpackuniverse.com/play/thirteen/",
+  "applicationCategory": "Game",
+  "genre": "Card",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser Thirteen (Tien Len), the Vietnamese shedding card game, against three computer players. Play singles, pairs, triples, sequences and bombs across two rule sets. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Thirteen",
+  "step": [
+    { "@type": "HowToStep", "name": "Open the round", "text": "The player holding the 3 of spades leads first and must include it in their opening play." },
+    { "@type": "HowToStep", "name": "Beat the table", "text": "On your turn, play a higher combination of the same shape — single, pair, triple or sequence — or pass." },
+    { "@type": "HowToStep", "name": "Empty your hand", "text": "When everyone else passes, the last player to play leads a new round. The first player to play out their whole hand wins." }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Thirteen</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="/apps/">Apps</a></li>
+        <li><a href="/play/">Play</a></li>
+        <li><a href="/guides/">Guides</a></li>
+        <li><a class="nav-wc" href="/world-cup/"><img class="nav-ball" src="/world-cup/officialball_transparent2-50.png" alt="" width="18" height="18">World Cup</a></li>
+        <li><a href="/#pipeline">Roadmap</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Thirteen</h1>
+        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">The Vietnamese shedding card game, also called Tien Len. Beat three computer players with singles, pairs, sequences and bombs — be the first to empty your hand. No ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Wins</span><b id="t-wins">0</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Rules">
+              <button type="button" data-mode="standard" aria-pressed="true">Standard</button>
+              <button type="button" data-mode="classic" aria-pressed="false">Classic</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="t-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="t-status" aria-live="polite">Dealing…</p>
+
+        <div class="th-opponents" id="t-opponents"></div>
+
+        <div class="th-table">
+          <div class="th-table-label" id="t-tablelabel">Table</div>
+          <div class="th-table-cards" id="t-tablecards"></div>
+          <div class="th-table-by" id="t-tableby"></div>
+        </div>
+
+        <div class="th-hand-wrap">
+          <div class="th-hand" id="t-hand" aria-label="Your hand"></div>
+        </div>
+
+        <div class="th-actions">
+          <button class="btn-game btn-game--primary" id="t-play" type="button" disabled>Play</button>
+          <button class="btn-game" id="t-pass" type="button" disabled>Pass</button>
+          <button class="btn-game" id="t-sort" type="button">Sort</button>
+        </div>
+        <p class="game-hint" id="t-combohint"></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">Play on the go</span>
+          <h2>Like it? Take it offline.</h2>
+          <p>Thirteen is one of the games in Snackpack Brain Games Vol 2 — our calm, ad-free Android bundle with cards, puzzles and arcade games in one app.</p>
+          <ul class="funnel-points">
+            <li>Plays fully offline — flights, commutes, anywhere</li>
+            <li>Wins &amp; high scores saved on your device</li>
+            <li>More games in the same app · no ads, no tracking</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingamesvol2" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games Vol 2 on Google Play">
+              <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play">
+            </a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <img class="funnel-qr" src="../../assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play">
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;">Scan to download</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Thirteen (Tien Len)</h2>
+      <p>Thirteen — known in Vietnam as Tien Len ("go forward") — is a shedding-type card game for four players using a standard 52-card deck. Everyone is dealt 13 cards, and the goal is simple: be the first to get rid of them all. The ranking runs 3 (lowest) up to King, then Ace, then 2 (highest), so the humble 2 is the most powerful card in the game. The player holding the 3 of spades leads the very first play and must include it.</p>
+
+      <h3>Combinations</h3>
+      <ul>
+        <li><strong>Single</strong> — one card.</li>
+        <li><strong>Pair</strong> — two cards of the same rank.</li>
+        <li><strong>Triple</strong> — three of a kind.</li>
+        <li><strong>Sequence</strong> — three or more cards in a run (e.g. 5-6-7). Twos can't be used in runs in Standard rules.</li>
+        <li><strong>Double sequence</strong> — three or more consecutive pairs.</li>
+        <li><strong>Bomb</strong> — four of a kind (or a long double-sequence) can "chop" a powerful 2.</li>
+      </ul>
+      <p>On your turn you must beat the current play with a higher combination <em>of the same shape and length</em>, or pass. Once three players pass, the last to play wins the round and leads a fresh one with anything they like.</p>
+
+      <h3>Rule sets</h3>
+      <ul>
+        <li><strong>Standard</strong> — Southern (Miền Nam) rules: 2 is the highest card and can't appear in sequences.</li>
+        <li><strong>Classic</strong> — Northern (Miền Bắc) rules: sequences may wrap around the top of the deck.</li>
+      </ul>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Thirteen free here?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>Who do I play against?</summary><p>Three computer players. You're seated as "You" and the 3 of spades decides who opens.</p></details>
+        <details class="faq-item"><summary>Why is the 2 so strong?</summary><p>In Thirteen the rank order ends King, Ace, 2 — so a 2 beats every other single card. Save them for when you really need them.</p></details>
+        <details class="faq-item"><summary>Can I play offline?</summary><p>This web version needs a browser. For fully offline play and more games, try the free <a class="text-link" href="../../apps/snackpack-brain-games-vol-2/" style="color:var(--accent);">Snackpack Brain Games Vol 2</a> app.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Thirteen free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../apps/snackpack-brain-games-vol-2/">Brain Games Vol 2 app</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingamesvol2";</script>
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // ════ Engine (ported from the Vol 2 app's thirteen/engine.ts) ════
+  var SUIT_SYMBOLS = ["♠", "♣", "♦", "♥"];
+  var SUIT_RED = { 2: true, 3: true };
+
+  function cardLabel(c) {
+    var v = c.value;
+    var face = v === 1 ? "A" : v === 11 ? "J" : v === 12 ? "Q" : v === 13 ? "K" : String(v);
+    return face + SUIT_SYMBOLS[c.suit];
+  }
+
+  function rankValue(c, mode) {
+    if (mode === "classic" && c.value === 2) return c.suit;
+    if (mode === "classic" && c.value === 1) return 12 * 4 + c.suit;
+    if (mode === "classic") return (c.value - 2) * 4 + c.suit;
+    if (c.value === 2) return 13 * 4 + c.suit;
+    if (c.value === 1) return 12 * 4 + c.suit;
+    return (c.value - 3) * 4 + c.suit;
+  }
+
+  function sortCards(cards, mode) {
+    return cards.slice().sort(function (a, b) { return rankValue(a, mode) - rankValue(b, mode); });
+  }
+
+  function seqRank(c) { return c.value === 2 ? 15 : c.value === 1 ? 14 : c.value; }
+  function seqIndex(c) { return c.value === 1 ? 11 : c.value === 2 ? 12 : c.value - 3; }
+
+  function isCircularConsecutive(cards) {
+    var indices = Array.from(new Set(cards.map(seqIndex))).sort(function (a, b) { return a - b; });
+    if (indices.length !== cards.length) return false;
+    var gaps = indices.map(function (rank, i) {
+      var next = indices[(i + 1) % indices.length];
+      return (next - rank + 13) % 13;
+    });
+    return gaps.filter(function (g) { return g > 1; }).length <= 1 && gaps.every(function (g) { return g > 0; });
+  }
+
+  function identifyCombo(cards, mode) {
+    if (cards.length === 0) return null;
+    var sorted = sortCards(cards, mode);
+    var n = sorted.length;
+    if (n === 1) return { type: "single", cards: sorted, rankKey: rankValue(sorted[0], mode) };
+    if (n === 2 && sorted[0].value === sorted[1].value)
+      return { type: "pair", cards: sorted, rankKey: rankValue(sorted[1], mode) };
+    if (n === 3 && sorted[0].value === sorted[1].value && sorted[1].value === sorted[2].value)
+      return { type: "triple", cards: sorted, rankKey: rankValue(sorted[2], mode) };
+    if (n === 4 && sorted.every(function (c) { return c.value === sorted[0].value; }))
+      return { type: "quad", cards: sorted, rankKey: rankValue(sorted[3], mode) };
+    if (n >= 3) {
+      var ranks = sorted.map(seqRank);
+      if (!(mode === "standard" && ranks.some(function (r) { return r === 15; }))) {
+        var isConsec = ranks.every(function (r, i) { return i === 0 || r === ranks[i - 1] + 1; });
+        if (isConsec) return { type: "sequence", cards: sorted, rankKey: rankValue(sorted[n - 1], mode) };
+        if (mode === "classic" && n >= 3 && isCircularConsecutive(sorted))
+          return { type: "sequence", cards: sorted, rankKey: Math.max.apply(null, sorted.map(function (c) { return rankValue(c, mode); })) };
+      }
+    }
+    if (n >= 6 && n % 2 === 0) {
+      var pairRanks = [], ok = true;
+      for (var i = 0; i < n; i += 2) {
+        if (sorted[i].value !== sorted[i + 1].value) { ok = false; break; }
+        pairRanks.push(seqRank(sorted[i]));
+      }
+      if (ok && pairRanks.length >= 3) {
+        if (mode === "standard" && pairRanks.some(function (r) { return r === 15; })) ok = false;
+        var consec = pairRanks.every(function (r, i) { return i === 0 || r === pairRanks[i - 1] + 1; });
+        if (ok && consec) return { type: "pair-sequence", cards: sorted, rankKey: rankValue(sorted[n - 1], mode) };
+      }
+    }
+    return null;
+  }
+
+  function canBeat(attempt, current, mode) {
+    if (!current) return true;
+    if (attempt.type === current.type && attempt.cards.length === current.cards.length)
+      return attempt.rankKey > current.rankKey;
+    if (mode === "standard" && attempt.type === "quad" && current.type === "single"
+        && current.cards[current.cards.length - 1].value === 2) return true;
+    if (mode === "standard" && attempt.type === "pair-sequence" && attempt.cards.length >= 6
+        && current.type === "single" && current.cards[current.cards.length - 1].value === 2) return true;
+    if (mode === "standard" && attempt.type === "pair-sequence" && attempt.cards.length >= 8
+        && current.type === "pair" && current.cards[current.cards.length - 1].value === 2) return true;
+    return false;
+  }
+
+  function comboName(combo) {
+    if (!combo) return "";
+    var n = combo.cards.length;
+    switch (combo.type) {
+      case "single": return "Single";
+      case "pair": return "Pair";
+      case "triple": return "Triple";
+      case "quad": return "Bomb (four of a kind)";
+      case "sequence": return n + "-card sequence";
+      case "pair-sequence": return (n / 2) + "-pair sequence";
+    }
+    return "";
+  }
+
+  // Seeded RNG (optional daily deal)
+  var dailySeed = new URLSearchParams(location.search).get("daily");
+  function makeRng(seedStr) {
+    if (!seedStr) return Math.random;
+    var h = 1779033703 ^ seedStr.length;
+    for (var i = 0; i < seedStr.length; i++) { h = Math.imul(h ^ seedStr.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = h >>> 0;
+    return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  function dealHands(rng) {
+    var deck = [];
+    for (var v = 1; v <= 13; v++) for (var s = 0; s <= 3; s++) deck.push({ value: v, suit: s, id: v + "-" + s });
+    for (var i = deck.length - 1; i > 0; i--) { var j = Math.floor(rng() * (i + 1)); var tmp = deck[i]; deck[i] = deck[j]; deck[j] = tmp; }
+    return [0, 13, 26, 39].map(function (start) { return sortCards(deck.slice(start, start + 13), "standard"); });
+  }
+
+  function findFirstPlayer(hands) {
+    for (var i = 0; i < hands.length; i++)
+      if (hands[i].some(function (c) { return c.value === 3 && c.suit === 0; })) return i;
+    return 0;
+  }
+
+  // CPU choice (ported)
+  function cpuChoosePlay(state, idx) {
+    var hand = state.players[idx].hand, mode = state.mode, current = state.lastCombo;
+    function lowestSingle() {
+      return hand.map(function (c) { return identifyCombo([c], mode); }).sort(function (a, b) { return a.rankKey - b.rankKey; })[0] || "pass";
+    }
+    if (!current || state.lastPlayerIdx === idx) return lowestSingle();
+    var cand = [];
+    function byValue() { var m = {}; hand.forEach(function (c) { (m[c.value] = m[c.value] || []).push(c); }); return m; }
+    if (current.type === "single") hand.forEach(function (c) { var cm = identifyCombo([c], mode); if (cm && canBeat(cm, current, mode)) cand.push(cm); });
+    if (current.type === "pair") { var m = byValue(); Object.keys(m).forEach(function (k) { if (m[k].length >= 2) { var cm = identifyCombo(m[k].slice(0, 2), mode); if (cm && canBeat(cm, current, mode)) cand.push(cm); } }); }
+    if (current.type === "triple") { var m2 = byValue(); Object.keys(m2).forEach(function (k) { if (m2[k].length >= 3) { var cm = identifyCombo(m2[k].slice(0, 3), mode); if (cm && canBeat(cm, current, mode)) cand.push(cm); } }); }
+    if (current.type === "sequence") { var len = current.cards.length, srt = sortCards(hand, mode); for (var i = 0; i <= srt.length - len; i++) { var cm = identifyCombo(srt.slice(i, i + len), mode); if (cm && cm.type === "sequence" && canBeat(cm, current, mode)) cand.push(cm); } }
+    if (current.type === "single" && current.cards[0].value === 2 && mode === "standard") { var m3 = byValue(); Object.keys(m3).forEach(function (k) { if (m3[k].length === 4) { var cm = identifyCombo(m3[k], mode); if (cm) cand.push(cm); } }); }
+    if (cand.length === 0) return "pass";
+    var nonBombs = cand.filter(function (c) { return c.type !== "quad"; });
+    return (nonBombs.length ? nonBombs : cand).sort(function (a, b) { return a.rankKey - b.rankKey; })[0];
+  }
+
+  function nextTurn(state, currentIdx, passed) {
+    var n = state.players.length, skip = passed || state.passedPlayers;
+    for (var i = 1; i <= n; i++) { var next = (currentIdx + i) % n; if (!skip.has(next)) return next; }
+    return currentIdx;
+  }
+
+  function applyPlay(state, idx, combo) {
+    var player = state.players[idx];
+    var played = new Set(combo.cards.map(function (c) { return c.id; }));
+    player.hand = player.hand.filter(function (c) { return !played.has(c.id); });
+    state.lastCombo = combo; state.lastPlayerIdx = idx; state.selectedCards = []; state.passedPlayers = new Set();
+    if (player.hand.length === 0) { state.winner = idx; state.phase = "gameover"; return state; }
+    state.currentPlayer = nextTurn(state, idx); state.isFirstTurn = false;
+    return state;
+  }
+
+  function applyPass(state, idx) {
+    state.passedPlayers.add(idx);
+    var active = state.players.filter(function (_, i) { return !state.passedPlayers.has(i); });
+    if (active.length === 1) {
+      var starter = active[0].id;
+      state.lastCombo = null; state.lastPlayerIdx = null; state.selectedCards = []; state.passedPlayers = new Set();
+      state.currentPlayer = starter; state.roundStarter = starter;
+      return state;
+    }
+    state.currentPlayer = nextTurn(state, idx);
+    return state;
+  }
+
+  function initialState(mode) {
+    var rng = makeRng(dailySeed ? dailySeed + "-" + mode : null);
+    var hands = dealHands(rng);
+    var first = findFirstPlayer(hands);
+    return {
+      phase: "playing", mode: mode,
+      players: hands.map(function (h, i) { return { id: i, name: i === 0 ? "You" : "CPU " + i, hand: h, isHuman: i === 0 }; }),
+      currentPlayer: first, lastCombo: null, lastPlayerIdx: null,
+      selectedCards: [], passedPlayers: new Set(), winner: null,
+      roundStarter: first, isFirstTurn: true
+    };
+  }
+
+  // ════ UI ════
+  var statusEl = document.getElementById("t-status");
+  var oppEl = document.getElementById("t-opponents");
+  var tableCardsEl = document.getElementById("t-tablecards");
+  var tableByEl = document.getElementById("t-tableby");
+  var tableLabelEl = document.getElementById("t-tablelabel");
+  var handEl = document.getElementById("t-hand");
+  var playBtn = document.getElementById("t-play");
+  var passBtn = document.getElementById("t-pass");
+  var sortBtn = document.getElementById("t-sort");
+  var newBtn = document.getElementById("t-new");
+  var winsEl = document.getElementById("t-wins");
+  var hintEl = document.getElementById("t-combohint");
+
+  var mode = "standard";
+  var gs = null;
+  var selected = [];
+  var cpuTimer = null;
+  var wins = 0;
+  try { wins = parseInt(localStorage.getItem("sp_thirteen_wins") || "0", 10) || 0; } catch (e) {}
+  winsEl.textContent = wins;
+
+  function cardEl(c, opts) {
+    opts = opts || {};
+    var b = document.createElement(opts.button ? "button" : "div");
+    b.className = "th-card" + (SUIT_RED[c.suit] ? " th-card--red" : "");
+    if (opts.button) { b.type = "button"; b.dataset.id = c.id; }
+    var v = c.value;
+    var face = v === 1 ? "A" : v === 11 ? "J" : v === 12 ? "Q" : v === 13 ? "K" : String(v);
+    b.innerHTML = '<span class="th-rank">' + face + '</span><span class="th-suit">' + SUIT_SYMBOLS[c.suit] + '</span>';
+    return b;
+  }
+
+  function render() {
+    if (!gs) return;
+    // Opponents
+    oppEl.innerHTML = "";
+    gs.players.forEach(function (p) {
+      if (p.id === 0) return;
+      var d = document.createElement("div");
+      var state = gs.passedPlayers.has(p.id) ? "passed" : (gs.currentPlayer === p.id && gs.phase === "playing" ? "turn" : "");
+      d.className = "th-opp" + (state === "turn" ? " is-turn" : "") + (state === "passed" ? " is-passed" : "");
+      d.innerHTML = '<strong>' + p.name + '</strong><span>' + p.hand.length + ' cards' + (state === "passed" ? ' · passed' : state === "turn" ? ' · thinking…' : '') + '</span>';
+      oppEl.appendChild(d);
+    });
+
+    // Table
+    tableCardsEl.innerHTML = "";
+    if (gs.lastCombo) {
+      gs.lastCombo.cards.forEach(function (c) { tableCardsEl.appendChild(cardEl(c)); });
+      tableLabelEl.textContent = comboName(gs.lastCombo);
+      tableByEl.textContent = gs.lastPlayerIdx != null ? "played by " + gs.players[gs.lastPlayerIdx].name : "";
+    } else {
+      tableLabelEl.textContent = "New round";
+      tableByEl.textContent = gs.phase === "playing" ? gs.players[gs.currentPlayer].name + " leads" : "";
+    }
+
+    // Hand
+    handEl.innerHTML = "";
+    var you = gs.players[0];
+    you.hand.forEach(function (c) {
+      var el = cardEl(c, { button: true });
+      if (selected.some(function (s) { return s.id === c.id; })) el.classList.add("is-selected");
+      handEl.appendChild(el);
+    });
+
+    updateActions();
+    updateStatus();
+  }
+
+  function updateStatus() {
+    if (gs.phase === "gameover") {
+      if (gs.winner === 0) {
+        statusEl.textContent = "You win! 🏆 Hand cleared.";
+        statusEl.className = "game-status game-status--win";
+      } else {
+        statusEl.textContent = gs.players[gs.winner].name + " wins this round. Try again!";
+        statusEl.className = "game-status game-status--lose";
+      }
+      return;
+    }
+    statusEl.className = "game-status";
+    if (gs.currentPlayer === 0) {
+      statusEl.textContent = gs.isFirstTurn ? "Your move — you have 3♠, lead the round." : (gs.lastCombo ? "Your move — beat it or pass." : "Your move — lead the round.");
+    } else {
+      statusEl.textContent = gs.players[gs.currentPlayer].name + " is thinking…";
+    }
+  }
+
+  function updateActions() {
+    var myTurn = gs.phase === "playing" && gs.currentPlayer === 0;
+    var combo = identifyCombo(selected, gs.mode);
+    var validPlay = !!combo && canBeat(combo, gs.lastCombo, gs.mode) &&
+      (!gs.isFirstTurn || selected.some(function (c) { return c.value === 3 && c.suit === 0; }));
+    playBtn.disabled = !(myTurn && validPlay);
+    passBtn.disabled = !(myTurn && gs.lastCombo && gs.lastPlayerIdx !== 0);
+    sortBtn.disabled = gs.phase !== "playing";
+    if (!myTurn) { hintEl.textContent = ""; return; }
+    if (selected.length === 0) hintEl.textContent = gs.isFirstTurn ? "Tap cards to select — your opening play must include 3♠." : "Tap cards to build a combination.";
+    else if (!combo) hintEl.textContent = "That's not a valid combination.";
+    else if (!validPlay) hintEl.textContent = gs.isFirstTurn ? "Your first play must include 3♠." : "Selected " + comboName(combo) + " — doesn't beat the table.";
+    else hintEl.textContent = "Ready: " + comboName(combo) + ".";
+  }
+
+  function scheduleCpu() {
+    if (cpuTimer) clearTimeout(cpuTimer);
+    if (!gs || gs.phase !== "playing" || gs.currentPlayer === 0) return;
+    cpuTimer = setTimeout(function () {
+      if (!gs || gs.phase !== "playing" || gs.currentPlayer === 0) return;
+      var idx = gs.currentPlayer;
+      var play = cpuChoosePlay(gs, idx);
+      if (play === "pass") applyPass(gs, idx); else applyPlay(gs, idx, play);
+      render();
+      if (gs.phase === "gameover") { finish(); return; }
+      scheduleCpu();
+    }, 1100);
+  }
+
+  function finish() {
+    if (cpuTimer) clearTimeout(cpuTimer);
+    if (gs.winner === 0) {
+      wins++; winsEl.textContent = wins;
+      try { localStorage.setItem("sp_thirteen_wins", String(wins)); } catch (e) {}
+      if (window.SnackPack) window.SnackPack.celebrate({
+        title: "You emptied your hand! 🏆",
+        body: "Sharp card play. We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app to play Thirteen and more, offline."
+      });
+    }
+  }
+
+  function newGame() {
+    if (cpuTimer) clearTimeout(cpuTimer);
+    gs = initialState(mode);
+    selected = [];
+    render();
+    scheduleCpu();
+  }
+
+  handEl.addEventListener("click", function (e) {
+    var card = e.target.closest(".th-card");
+    if (!card || !gs || gs.phase !== "playing" || gs.currentPlayer !== 0) return;
+    var id = card.dataset.id;
+    var c = gs.players[0].hand.find(function (x) { return x.id === id; });
+    if (!c) return;
+    if (selected.some(function (s) { return s.id === id; })) selected = selected.filter(function (s) { return s.id !== id; });
+    else selected = selected.concat([c]);
+    render();
+  });
+
+  playBtn.addEventListener("click", function () {
+    if (gs.currentPlayer !== 0 || gs.phase !== "playing") return;
+    var combo = identifyCombo(selected, gs.mode);
+    if (!combo || !canBeat(combo, gs.lastCombo, gs.mode)) return;
+    if (gs.isFirstTurn && !selected.some(function (c) { return c.value === 3 && c.suit === 0; })) return;
+    applyPlay(gs, 0, combo);
+    selected = [];
+    render();
+    if (gs.phase === "gameover") { finish(); return; }
+    scheduleCpu();
+  });
+
+  passBtn.addEventListener("click", function () {
+    if (gs.currentPlayer !== 0 || gs.phase !== "playing" || !gs.lastCombo || gs.lastPlayerIdx === 0) return;
+    applyPass(gs, 0);
+    selected = [];
+    render();
+    scheduleCpu();
+  });
+
+  sortBtn.addEventListener("click", function () {
+    if (!gs) return;
+    gs.players[0].hand = sortCards(gs.players[0].hand, gs.mode);
+    render();
+  });
+
+  newBtn.addEventListener("click", newGame);
+
+  document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      mode = btn.dataset.mode;
+      document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
+      newGame();
+    });
+  });
+
+  newGame();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

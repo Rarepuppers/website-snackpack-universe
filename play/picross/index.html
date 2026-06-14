@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Picross / Nonogram Online Free | Picture Logic Puzzle — SnackPack</title>
+<meta name="description" content="Play Picross (Nonograms) free in your browser — use the number clues to reveal a hidden picture. Three grid sizes, a daily puzzle, hints and a timer. No ads, no sign-in, no download. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/picross/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Picross / Nonogram Online Free | Picture Logic Puzzle">
+<meta property="og:description" content="Use the number clues to reveal a hidden picture. Three grid sizes, a daily puzzle and hints — free in your browser, no ads.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/picross/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Picross (Nonogram)",
+  "url": "https://www.snackpackuniverse.com/play/picross/",
+  "applicationCategory": "Game",
+  "genre": "Puzzle",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser Picross / Nonogram picture logic puzzles. Use the row and column number clues to fill the grid and reveal a hidden picture. Three grid sizes, a daily puzzle, hints and a timer. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Picross",
+  "step": [
+    { "@type": "HowToStep", "name": "Read the clues", "text": "Each number beside a row or column is the length of a run of filled cells, in order." },
+    { "@type": "HowToStep", "name": "Fill and cross", "text": "Fill cells you're sure are part of the picture, and cross out cells you know must be empty." },
+    { "@type": "HowToStep", "name": "Reveal the picture", "text": "When every row and column matches its clues, the hidden picture is complete." }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Picross</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="/apps/">Apps</a></li>
+        <li><a href="/play/">Play</a></li>
+        <li><a href="/guides/">Guides</a></li>
+        <li><a class="nav-wc" href="/world-cup/"><img class="nav-ball" src="/world-cup/officialball_transparent2-50.png" alt="" width="18" height="18">World Cup</a></li>
+        <li><a href="/#pipeline">Roadmap</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Picross</h1>
+        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">Also known as Nonograms. Use the number clues along each row and column to fill the grid and reveal a hidden picture. Three sizes, a daily puzzle and hints. No ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Time</span><b id="p-time">0:00</b></span>
+            <span class="readout-chip"><span>Best</span><b id="p-best">—</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Grid size">
+              <button type="button" data-size="5" aria-pressed="true">5×5</button>
+              <button type="button" data-size="10" aria-pressed="false">10×10</button>
+              <button type="button" data-size="15" aria-pressed="false">15×15</button>
+              <button type="button" data-size="daily" aria-pressed="false">Daily</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="p-new" type="button">New</button>
+          </div>
+        </div>
+        <p class="game-status" id="p-status" aria-live="polite">Fill the cells that match the clues.</p>
+
+        <div class="game-board-wrap">
+          <div class="pc-wrap" id="p-wrap">
+            <div class="pc-corner">
+              <div class="seg pc-marktoggle" role="group" aria-label="Mark mode">
+                <button type="button" data-mark="fill" aria-pressed="true" title="Fill">▣</button>
+                <button type="button" data-mark="cross" aria-pressed="false" title="Cross out">✕</button>
+              </div>
+            </div>
+            <div class="pc-colclues" id="p-colclues"></div>
+            <div class="pc-rowclues" id="p-rowclues"></div>
+            <div class="pc-grid" id="p-grid"></div>
+          </div>
+        </div>
+
+        <div class="th-actions" style="margin-top:16px;">
+          <button class="btn-game" id="p-hint" type="button">Hint</button>
+          <button class="btn-game" id="p-clear" type="button">Clear</button>
+        </div>
+        <p class="game-hint">Tap to mark · switch Fill / Cross with the corner toggle · right-click a cell to cross it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">Play on the go</span>
+          <h2>Like it? Take it offline.</h2>
+          <p>Picross is one of the games in Snackpack Brain Games Vol 2 — our calm, ad-free Android bundle with picture-logic puzzles, cards and arcade games in one app.</p>
+          <ul class="funnel-points">
+            <li>Plays fully offline — flights, commutes, anywhere</li>
+            <li>Best times saved on your device</li>
+            <li>Dozens of puzzles · no ads, no tracking</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingamesvol2" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games Vol 2 on Google Play">
+              <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play">
+            </a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <img class="funnel-qr" src="../../assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play">
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;">Scan to download</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Picross (Nonograms)</h2>
+      <p>Picross — also called Nonograms, Griddlers or Hanjie — is a picture logic puzzle. Each row and column has a list of numbers; each number is the length of a run of filled cells, given in order, with at least one empty cell between runs. By cross-referencing the row and column clues you can deduce exactly which cells must be filled, and a hidden picture gradually appears. There's no guessing in a well-made nonogram — every cell can be reasoned out.</p>
+
+      <h3>Tips</h3>
+      <ul>
+        <li><strong>Start with the big numbers.</strong> A clue close to the row or column length overlaps itself — those overlap cells are always filled.</li>
+        <li><strong>Cross out the empties.</strong> Marking cells you know are blank is just as important as filling — it stops you re-checking them and reveals new deductions.</li>
+        <li><strong>Work the edges.</strong> A clue starting at an edge fixes the first run's position immediately.</li>
+        <li><strong>Switch between rows and columns.</strong> Each fill you place gives the crossing line new information.</li>
+      </ul>
+
+      <h3>Grid sizes</h3>
+      <ul>
+        <li><strong>5×5</strong> — quick, friendly puzzles to learn the rules.</li>
+        <li><strong>10×10</strong> — the classic size, a satisfying few minutes each.</li>
+        <li><strong>15×15</strong> — larger pictures with more deduction.</li>
+        <li><strong>Daily</strong> — one shared puzzle that changes every day.</li>
+      </ul>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Picross free here?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>How do I cross out a cell?</summary><p>Switch the corner toggle to ✕, or right-click (long-press on touch) any cell.</p></details>
+        <details class="faq-item"><summary>Are my best times saved?</summary><p>Yes — your fastest solve for each grid size is saved on your own device.</p></details>
+        <details class="faq-item"><summary>Can I play offline?</summary><p>This web version needs a browser. For fully offline play and dozens more puzzles, try the free <a class="text-link" href="../../apps/snackpack-brain-games-vol-2/" style="color:var(--accent);">Snackpack Brain Games Vol 2</a> app.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Picross free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../apps/snackpack-brain-games-vol-2/">Brain Games Vol 2 app</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingamesvol2";</script>
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // ════ Puzzle data (extracted from the Vol 2 app's picross/puzzles.ts) ════
+  var PUZZLES = {
+    "5": [
+      {t:"Heart",g:["01110","01110","11111","01110","00100"]},
+      {t:"Star",g:["00100","01110","11111","01110","10001"]},
+      {t:"Cross",g:["00100","00100","11111","00100","00100"]},
+      {t:"Square",g:["11111","10001","10001","10001","11111"]},
+      {t:"Diamond",g:["00100","01110","11111","01110","00100"]},
+      {t:"Flag",g:["11110","11110","10000","10000","10000"]},
+      {t:"Arrow",g:["00100","01100","11111","01100","00100"]},
+      {t:"Smile",g:["01010","01010","00000","10001","01110"]},
+      {t:"House",g:["00100","01110","11111","11011","11111"]},
+      {t:"Cup",g:["10001","10001","01110","00100","01110"]},
+      {t:"Letter T",g:["11111","00100","00100","00100","00100"]},
+      {t:"Letter L",g:["10000","10000","10000","10000","11111"]},
+      {t:"Zigzag",g:["11000","11000","01100","00110","00011"]},
+      {t:"Rocket",g:["00100","01110","01110","11111","00100"]},
+      {t:"Anchor",g:["01110","00100","11111","01110","10001"]}
+    ],
+    "10": [
+      {t:"Mushroom",g:["0011111100","0111111110","1111111111","1101111011","1111111111","0111111110","0001111000","0001111000","0001111000","0000110000"]},
+      {t:"Boat",g:["0000100000","0001110000","0011111000","0111111100","1111111110","0111111100","0011111000","0001110000","1111111111","0111111110"]},
+      {t:"Sun",g:["0010000100","0011111100","0111111110","1111111111","0111111110","1111111111","0111111110","0011111100","0010000100","0000000000"]},
+      {t:"Flower",g:["0110001100","1111011110","1111111111","0111111110","0011111100","0011111100","0111111110","1111111111","1111011110","0110001100"]},
+      {t:"Fish",g:["1000000010","1100000110","0111001110","0011111110","0001111111","0011111110","0111001110","1100000110","1000000010","0000000000"]},
+      {t:"Clock",g:["0011111100","0110000110","1100001011","1000011001","1000111001","1000100001","1100000011","0110000110","0011111100","0000000000"]},
+      {t:"Lightning",g:["0000111100","0001111100","0011111000","0111111100","0011111100","0001111110","0000111110","0000011100","0000011000","0000010000"]},
+      {t:"Tree",g:["0000100000","0001110000","0011111000","0001110000","0011111000","0111111100","0011111000","0001110000","0001110000","0001110000"]},
+      {t:"Key",g:["0011111100","0110000110","1100000011","1100000011","0110000110","0011111100","0001100000","0001111000","0001100000","0001100000"]},
+      {t:"Crown",g:["1000010001","1100110011","1111111111","1111111111","1111111111","1111111111","0111111110","0111111110","0011111100","0000000000"]},
+      {t:"Butterfly",g:["1100001100","1110011100","1111111110","0111111100","0011111000","0011111000","0111111100","1111111110","1110011100","1100001100"]},
+      {t:"Mountain",g:["0000010000","0000111000","0001111100","0011111110","0111100111","1111000011","1110000011","1100000011","1000000001","1111111111"]},
+      {t:"Spaceship",g:["0000110000","0001111000","0011111100","0111111110","1111001111","1111001111","0111111110","0011111100","0001111000","0000110000"]},
+      {t:"Hourglass",g:["1111111111","0111111110","0011111100","0001111000","0000110000","0000110000","0001111000","0011111100","0111111110","1111111111"]},
+      {t:"Bat",g:["1000000001","1100000011","1110000111","1111111111","1111111111","1111111111","0111111110","0011111100","0001001000","0000110000"]},
+      {t:"Lock",g:["0011111100","0110000110","1100000011","1100000011","1111111111","1111111111","1110011111","1110011111","1111111111","1111111111"]},
+      {t:"Leaf",g:["0000000100","0000011110","0001111110","0111111110","1111111100","1111111000","0111110000","0011100000","0001000000","0000000000"]},
+      {t:"Shield",g:["0111111110","1111111111","1111111111","1111111111","1111111111","0111111110","0011111100","0001111000","0000110000","0000000000"]},
+      {t:"Crab",g:["1000000001","1011111101","1111111111","1101001011","1111111111","0111111110","0110110110","1100000011","1000000001","0000000000"]},
+      {t:"Comet",g:["0000001110","0000111110","0001111100","0011111000","0111110000","1111100000","1111000000","1110000000","1100000000","1000000000"]}
+    ],
+    "15": [
+      {t:"Castle",g:["101000000000101","111000000000111","111000000000111","111111111111111","100000000000001","100000000000001","100000000000001","101100000001101","111100000001111","100000000000001","100001111100001","100001000100001","100001000100001","100001000100001","111111111111111"]},
+      {t:"Dragon",g:["000001100000000","000011110000000","000111111100000","001111111110000","011110011111000","111100001111100","111000000111110","111000000011111","111100000011110","011110000111100","001111001111000","000111111110000","000011111100000","000001111000000","000000110000000"]},
+      {t:"Globe",g:["000011111100000","001111111111000","011100011100110","011000111000110","110001111100011","110011001110011","111110000011111","111110000011111","110011001110011","110001111100011","011000111000110","011100011100110","001111111111000","000011111100000","000000000000000"]},
+      {t:"Elephant",g:["001111111110000","011111111111000","111111111111100","111110001111100","111100000111110","111000000011111","111000111011111","111001111111110","111111111111100","011111111111000","001111111100000","001100011000000","011100011100000","111100011110000","111100011110000"]},
+      {t:"Lighthouse",g:["000000100000000","000000100000000","000001110000000","000001110000000","000011111000000","000011111000000","000111111100000","000111111100000","001111111110000","001111111110000","011111111111000","011111111111000","111111111111100","000011111000000","111111111111111"]},
+      {t:"Phoenix",g:["000000100000000","000001110000000","000011111000000","000111111100000","001111111110000","011111111111000","111111111111100","011111111111000","001111111110000","000111111100000","000011111000000","000001110000000","000001110000000","000011111000000","000111111100000"]},
+      {t:"Robot",g:["000011111100000","000111111110000","001101001011000","001100000011000","001101001011000","000111111110000","000011111100000","000111111110000","001111111111000","001100000011000","001100000011000","001100000011000","011110000111100","011110000111100","000110000110000"]},
+      {t:"Snowflake",g:["000000100000000","000001110000000","100001110000001","011001110001100","001111111110000","000111111110000","000011111100000","111111111111111","000011111100000","000111111110000","001111111110000","011001110001100","100001110000001","000001110000000","000000100000000"]},
+      {t:"Whale",g:["000000011100000","000000111110000","000001111111000","000011111111100","000111111111110","001111111111111","011111111111111","111111111111110","011111111111100","001111111111000","000111111110000","000011111100000","000001111000000","000000110000001","000000000000011"]},
+      {t:"Pyramid",g:["000000100000000","000001110000000","000011111000000","000111111100000","001111111110000","011111111111000","111111111111100","011111111111110","001111111111111","000111111111110","000011111111100","000001111111000","000000111110000","000000011100000","111111111111111"]},
+      {t:"Spaceship",g:["000000100000000","000001110000000","000011111000000","000111111100000","001111111110000","011111111111000","111111111111100","111111001111110","111110000111111","011111001111110","001111111110000","001100000011000","011000000001100","110000000000110","100000000000010"]},
+      {t:"Owl",g:["001111111110000","011111111111000","111001111001100","111001111001110","110011111100110","110111111110110","011111111111100","001111111111000","001111111110000","011111111111000","011110001111000","011110001111000","001110001110000","001110001110000","011111111111000"]},
+      {t:"Guitar",g:["000001100000000","000011110000000","000111111000000","001111111100000","001111111100000","000111111000000","000011100000000","000001100000000","000001100000000","000001100110000","000001101111000","000001111111100","000001111111110","000000111111111","000000011111110"]},
+      {t:"Compass",g:["000000100000000","000001010000000","000011111000000","001110001110000","001110001110000","010000000000100","010000000000100","111000000000111","010000000000100","010000000000100","001110001110000","001110001110000","000011111000000","000001010000000","000000100000000"]},
+      {t:"Volcano",g:["000000100000000","000001110000000","000011111000000","000001110000000","000011011000000","000111111100000","001111111110000","001111111110000","011111111111000","011111111111000","111111111111100","111111111111110","111111111111111","111111111111111","111111111111111"]}
+    ]
+  };
+
+  var CELL = { "5": 38, "10": 26, "15": 19 };
+
+  var wrap = document.getElementById("p-wrap");
+  var gridEl = document.getElementById("p-grid");
+  var rowCluesEl = document.getElementById("p-rowclues");
+  var colCluesEl = document.getElementById("p-colclues");
+  var statusEl = document.getElementById("p-status");
+  var timeEl = document.getElementById("p-time");
+  var bestEl = document.getElementById("p-best");
+  var newBtn = document.getElementById("p-new");
+  var hintBtn = document.getElementById("p-hint");
+  var clearBtn = document.getElementById("p-clear");
+
+  var size = "5";
+  var markMode = "fill";
+  var solution, rows, cols, grid, rowClues, colClues, puzzleTitle;
+  var solved, started, elapsed, timerId;
+
+  function bestKey() { return "sp_picross_best_" + size; }
+  function fmt(s) { var m = Math.floor(s / 60); return m + ":" + (s % 60 < 10 ? "0" : "") + (s % 60); }
+  function showBest() {
+    var b = 0; try { b = parseInt(localStorage.getItem(bestKey()) || "0", 10) || 0; } catch (e) {}
+    bestEl.textContent = b ? fmt(b) : "—";
+  }
+
+  function cluesFor(sol) {
+    var rc = sol.map(function (row) {
+      var clue = [], run = 0;
+      row.forEach(function (c) { if (c) run++; else if (run > 0) { clue.push(run); run = 0; } });
+      if (run > 0) clue.push(run);
+      return clue.length ? clue : [0];
+    });
+    var cc = [];
+    for (var c = 0; c < cols; c++) {
+      var clue = [], run = 0;
+      for (var r = 0; r < rows; r++) { if (sol[r][c]) run++; else if (run > 0) { clue.push(run); run = 0; } }
+      if (run > 0) clue.push(run);
+      cc.push(clue.length ? clue : [0]);
+    }
+    return { rc: rc, cc: cc };
+  }
+
+  function lineMatches(cells, clue) {
+    var runs = [], run = 0;
+    cells.forEach(function (c) { if (c === 1) run++; else if (run > 0) { runs.push(run); run = 0; } });
+    if (run > 0) runs.push(run);
+    if (runs.length === 0) runs.push(0);
+    if (clue.length !== runs.length) return false;
+    return clue.every(function (n, i) { return n === runs[i]; });
+  }
+
+  function isSolved() {
+    for (var r = 0; r < rows; r++) if (!lineMatches(grid[r], rowClues[r])) return false;
+    for (var c = 0; c < cols; c++) {
+      var col = [];
+      for (var r2 = 0; r2 < rows; r2++) col.push(grid[r2][c]);
+      if (!lineMatches(col, colClues[c])) return false;
+    }
+    return true;
+  }
+
+  function pickPuzzle() {
+    if (size === "daily") {
+      var packs = PUZZLES["10"];
+      var idx = Math.floor(Date.now() / 86400000) % packs.length;
+      return { pack: packs[idx], sizeKey: "10" };
+    }
+    var arr = PUZZLES[size];
+    return { pack: arr[Math.floor(Math.random() * arr.length)], sizeKey: size };
+  }
+
+  function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
+  function startTimer() {
+    if (timerId) return;
+    var t0 = Date.now() - elapsed * 1000;
+    timerId = setInterval(function () { elapsed = Math.floor((Date.now() - t0) / 1000); timeEl.textContent = fmt(elapsed); }, 250);
+  }
+
+  function build() {
+    stopTimer();
+    var sel = pickPuzzle();
+    var sizeKey = sel.sizeKey;
+    solution = sel.pack.g.map(function (s) { return s.split("").map(function (ch) { return ch === "1"; }); });
+    puzzleTitle = sel.pack.t;
+    rows = solution.length; cols = solution[0].length;
+    var cl = cluesFor(solution); rowClues = cl.rc; colClues = cl.cc;
+    grid = []; for (var r = 0; r < rows; r++) { grid[r] = []; for (var c = 0; c < cols; c++) grid[r][c] = 0; }
+    solved = false; started = false; elapsed = 0;
+    timeEl.textContent = "0:00";
+    statusEl.textContent = "Fill the cells that match the clues.";
+    statusEl.className = "game-status";
+    showBest();
+
+    var px = CELL[sizeKey];
+    wrap.style.setProperty("--cell", px + "px");
+    wrap.style.setProperty("--cols", String(cols));
+    wrap.style.setProperty("--rows", String(rows));
+
+    // Column clues
+    colCluesEl.innerHTML = "";
+    for (var c2 = 0; c2 < cols; c2++) {
+      var cc = document.createElement("div");
+      cc.className = "pc-cc";
+      cc.innerHTML = colClues[c2].map(function (n) { return "<span>" + n + "</span>"; }).join("");
+      colCluesEl.appendChild(cc);
+    }
+    // Row clues
+    rowCluesEl.innerHTML = "";
+    for (var r3 = 0; r3 < rows; r3++) {
+      var rcd = document.createElement("div");
+      rcd.className = "pc-rc";
+      rcd.innerHTML = rowClues[r3].map(function (n) { return "<span>" + n + "</span>"; }).join("");
+      rowCluesEl.appendChild(rcd);
+    }
+    // Cells
+    gridEl.innerHTML = "";
+    gridEl.style.gridTemplateColumns = "repeat(" + cols + ", var(--cell))";
+    for (var r4 = 0; r4 < rows; r4++) for (var c4 = 0; c4 < cols; c4++) {
+      var cell = document.createElement("button");
+      cell.className = "pc-cell";
+      cell.type = "button";
+      cell.dataset.r = r4; cell.dataset.c = c4;
+      if (c4 % 5 === 0 && c4 > 0) cell.classList.add("pc-edge-l");
+      if (r4 % 5 === 0 && r4 > 0) cell.classList.add("pc-edge-t");
+      gridEl.appendChild(cell);
+    }
+  }
+
+  function paintCell(r, c) {
+    var cell = gridEl.children[r * cols + c];
+    cell.classList.toggle("is-fill", grid[r][c] === 1);
+    cell.classList.toggle("is-cross", grid[r][c] === 2);
+  }
+
+  function applyMark(r, c, mode) {
+    if (solved) return;
+    if (!started) { started = true; startTimer(); }
+    var cur = grid[r][c];
+    if (mode === "fill") grid[r][c] = cur === 1 ? 0 : 1;
+    else grid[r][c] = cur === 2 ? 0 : 2;
+    paintCell(r, c);
+    if (isSolved()) finish();
+  }
+
+  function finish() {
+    solved = true;
+    stopTimer();
+    // Reveal: clear stray crosses for a clean picture
+    for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
+      if (grid[r][c] === 2) { grid[r][c] = 0; paintCell(r, c); }
+    }
+    statusEl.textContent = "Solved: " + puzzleTitle + "! 🎉 " + fmt(elapsed);
+    statusEl.className = "game-status game-status--win";
+    gridEl.classList.add("is-solved");
+    var prev = 0; try { prev = parseInt(localStorage.getItem(bestKey()) || "0", 10) || 0; } catch (e) {}
+    var improved = !prev || elapsed < prev;
+    if (improved) { try { localStorage.setItem(bestKey(), String(elapsed)); } catch (e) {} }
+    showBest();
+    if (window.SnackPack) window.SnackPack.celebrate({
+      title: improved ? "New best time! 🎉" : "Picture revealed! 🎉",
+      body: "You solved the " + puzzleTitle + " nonogram. We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app for dozens more puzzles, offline."
+    });
+  }
+
+  function hint() {
+    if (solved) return;
+    var cands = [];
+    for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++)
+      if (grid[r][c] !== 1 && solution[r][c]) cands.push([r, c]);
+    if (!cands.length) return;
+    var pick = cands[Math.floor(Math.random() * cands.length)];
+    if (!started) { started = true; startTimer(); }
+    grid[pick[0]][pick[1]] = 1; paintCell(pick[0], pick[1]);
+    if (isSolved()) finish();
+  }
+
+  gridEl.addEventListener("click", function (e) {
+    var cell = e.target.closest(".pc-cell"); if (!cell) return;
+    applyMark(+cell.dataset.r, +cell.dataset.c, markMode);
+  });
+  gridEl.addEventListener("contextmenu", function (e) {
+    var cell = e.target.closest(".pc-cell"); if (!cell) return;
+    e.preventDefault();
+    applyMark(+cell.dataset.r, +cell.dataset.c, "cross");
+  });
+
+  newBtn.addEventListener("click", build);
+  hintBtn.addEventListener("click", hint);
+  clearBtn.addEventListener("click", function () {
+    if (solved) return;
+    for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) { grid[r][c] = 0; paintCell(r, c); }
+  });
+
+  document.querySelectorAll(".pc-marktoggle [data-mark]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      markMode = btn.dataset.mark;
+      document.querySelectorAll(".pc-marktoggle [data-mark]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
+    });
+  });
+
+  document.querySelectorAll(".seg [data-size]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      size = btn.dataset.size;
+      document.querySelectorAll(".seg [data-size]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
+      build();
+    });
+  });
+
+  build();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
