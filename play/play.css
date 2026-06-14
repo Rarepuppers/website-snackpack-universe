@@ -943,6 +943,128 @@ button.th-card.is-selected {
   .kk-fill, .kk-pad button { transition: none; }
 }
 
+/* ── Crossword ───────────────────────────────────── */
+.cw-stage { max-width: 560px; }
+
+.cw-cluebar {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(31, 143, 119, 0.1);
+}
+.cw-cluetext { flex: 1; font-weight: 600; font-size: 0.95rem; min-height: 1.2em; }
+.cw-navbtn {
+  width: 36px; height: 36px; flex: none;
+  border: 1px solid var(--line-strong); border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85); font-size: 1.2rem; line-height: 1; cursor: pointer; color: var(--ink);
+}
+.cw-navbtn:hover { border-color: var(--accent); }
+
+.cw-board-wrap { display: flex; justify-content: center; }
+.cw-grid { display: grid; gap: 2px; width: 100%; margin: 0 auto; }
+
+.cw-cell {
+  position: relative;
+  aspect-ratio: 1;
+  border: 0; padding: 0; margin: 0;
+  border-radius: 3px;
+  background: #fffdf8;
+  box-shadow: inset 0 0 0 1px rgba(32, 23, 19, 0.14);
+  cursor: pointer;
+  display: grid; place-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.cw-black { background: #2b2018; box-shadow: none; cursor: default; }
+.cw-cnum { position: absolute; top: 1px; left: 2px; font-size: clamp(0.42rem, 1.5vw, 0.6rem); font-weight: 700; color: var(--muted); line-height: 1; }
+.cw-clet { font-weight: 800; font-size: clamp(0.8rem, 3vw, 1.2rem); text-transform: uppercase; color: var(--ink); }
+.cw-cell.is-active { background: #d8efe8; }
+.cw-cell.is-selected { background: #efb54d; box-shadow: inset 0 0 0 2px var(--brand-deep); }
+.cw-cell.is-correct .cw-clet { color: #1f8f77; }
+.cw-cell.is-wrong .cw-clet { color: #c0392b; }
+
+.cw-keys { display: grid; gap: 5px; margin-top: 16px; }
+.cw-keyrow { display: flex; gap: 5px; justify-content: center; }
+.cw-key {
+  flex: 1 1 0; max-width: 42px; min-height: 42px;
+  border: 1px solid var(--line-strong); border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  font: inherit; font-weight: 700; color: var(--ink); cursor: pointer;
+  transition: transform 0.1s ease, background 0.1s ease;
+}
+.cw-key:hover { transform: translateY(-1px); background: #fff; }
+.cw-key--del { max-width: 56px; color: var(--brand-deep); }
+
+.cw-cluelists {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+  margin-top: 20px; text-align: left;
+}
+.cw-cluelists h3 { font-family: var(--serif); font-size: 1.05rem; margin: 0 0 8px; }
+.cw-cluelists ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 3px; max-height: 220px; overflow-y: auto; }
+.cw-cluelists li { padding: 5px 7px; border-radius: 7px; font-size: 0.86rem; color: var(--muted); cursor: pointer; line-height: 1.35; }
+.cw-cluelists li b { color: var(--ink); margin-right: 3px; }
+.cw-cluelists li:hover { background: rgba(32, 23, 19, 0.05); }
+.cw-cluelists li.is-active { background: rgba(31, 143, 119, 0.16); color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) { .cw-key { transition: none; } }
+@media (max-width: 520px) { .cw-cluelists { grid-template-columns: 1fr; } }
+
+/* ── Mahjong Solitaire ───────────────────────────── */
+.mj-board-wrap {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  padding: 4px;
+}
+
+.mj-board {
+  position: relative;
+  margin: 0 auto;
+  flex: none;
+}
+
+.mj-tile {
+  position: absolute;
+  border: 0;
+  padding: 0;
+  border-radius: 6px;
+  background: linear-gradient(160deg, #fffdf8, #efe3cf);
+  box-shadow:
+    0 2px 0 rgba(32, 23, 19, 0.32),
+    1px 2px 4px rgba(32, 23, 19, 0.28),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  justify-items: center;
+  gap: 0;
+  cursor: pointer;
+  color: var(--suit, var(--ink));
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+}
+
+.mj-glyph { font-size: 0.95rem; line-height: 1; margin-top: 3px; }
+.mj-label { font-size: 0.8rem; font-weight: 900; line-height: 1; margin-bottom: 3px; color: var(--suit, var(--ink)); }
+
+.mj-tile.is-blocked { filter: brightness(0.9) saturate(0.85); cursor: default; }
+.mj-tile.is-open:hover { transform: translateY(-1px); }
+.mj-tile.is-selected {
+  background: linear-gradient(160deg, #fff7e6, #f4d68a);
+  box-shadow: 0 2px 0 rgba(32, 23, 19, 0.32), 0 0 0 2px var(--accent), 1px 2px 6px rgba(31, 143, 119, 0.4);
+}
+.mj-tile.is-hint { animation: mj-hint 0.55s ease 2; }
+
+@keyframes mj-hint {
+  0%, 100% { box-shadow: 0 2px 0 rgba(32, 23, 19, 0.32), 1px 2px 4px rgba(32, 23, 19, 0.28); }
+  50% { box-shadow: 0 2px 0 rgba(32, 23, 19, 0.32), 0 0 0 3px var(--brand-deep); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mj-tile { transition: none; }
+  .mj-tile.is-hint { animation: none; }
+}
+
 /* ── App-download funnel card ────────────────────── */
 .funnel-card {
   display: grid;

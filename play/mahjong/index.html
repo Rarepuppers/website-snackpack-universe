@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Mahjong Solitaire Online Free | Tile Match Game — SnackPack</title>
+<meta name="description" content="Play Mahjong Solitaire free in your browser — match free pairs of tiles to clear the board. Three layouts, hints, shuffle and a timer. No ads, no sign-in, no download. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/mahjong/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Mahjong Solitaire Online Free | Tile Match Game">
+<meta property="og:description" content="Match free pairs of tiles to clear the board. Three layouts, hints and a timer — free in your browser, no ads, no sign-in.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/mahjong/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Mahjong Solitaire",
+  "url": "https://www.snackpackuniverse.com/play/mahjong/",
+  "applicationCategory": "Game",
+  "genre": "Puzzle",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser Mahjong Solitaire. Match free pairs of identical tiles to clear the board across three layouts, with hints, shuffle and a timer. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Mahjong Solitaire",
+  "step": [
+    { "@type": "HowToStep", "name": "Find free tiles", "text": "A tile is free if nothing sits on top of it and it has an open left or right edge." },
+    { "@type": "HowToStep", "name": "Match a pair", "text": "Tap two free tiles with the same face to remove them." },
+    { "@type": "HowToStep", "name": "Clear the board", "text": "Remove every pair to win. Use Hint if you're stuck or Shuffle if there are no moves left." }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Mahjong Solitaire</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="/apps/">Apps</a></li>
+        <li><a href="/play/">Play</a></li>
+        <li><a href="/guides/">Guides</a></li>
+        <li><a class="nav-wc" href="/world-cup/"><img class="nav-ball" src="/world-cup/officialball_transparent2-50.png" alt="" width="18" height="18">World Cup</a></li>
+        <li><a href="/#pipeline">Roadmap</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Mahjong Solitaire</h1>
+        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">The calm tile-matching classic. Clear the board by matching free pairs of identical tiles — a tile is free when nothing covers it and one side is open. Three layouts, hints and shuffle. No ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage mj-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Time</span><b id="mj-time">0:00</b></span>
+            <span class="readout-chip"><span>Tiles</span><b id="mj-left">0</b></span>
+            <span class="readout-chip"><span>Best</span><b id="mj-best">—</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Layout">
+              <button type="button" data-layout="classic" aria-pressed="true">Classic</button>
+              <button type="button" data-layout="fortress" aria-pressed="false">Fortress</button>
+              <button type="button" data-layout="garden" aria-pressed="false">Garden</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="mj-new" type="button">New</button>
+          </div>
+        </div>
+        <p class="game-status" id="mj-status" aria-live="polite">Match two free tiles with the same face.</p>
+
+        <div class="mj-board-wrap">
+          <div class="mj-board" id="mj-board"></div>
+        </div>
+
+        <div class="th-actions" style="margin-top:16px;">
+          <button class="btn-game" id="mj-hint" type="button">Hint</button>
+          <button class="btn-game" id="mj-shuffle" type="button">Shuffle</button>
+        </div>
+        <p class="game-hint">Free tiles have an open left or right side and nothing on top. Tap two matching free tiles to clear them.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">Play on the go</span>
+          <h2>Like it? Take it offline.</h2>
+          <p>Mahjong Solitaire is one of nine classics in Snackpack Brain Games — our calm, ad-free Android bundle with tile games, cards and puzzles in one app.</p>
+          <ul class="funnel-points">
+            <li>Plays fully offline — flights, commutes, anywhere</li>
+            <li>Best times saved on your device</li>
+            <li>Eight more games in the same app · no ads, no tracking</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games on Google Play">
+              <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play">
+            </a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <img class="funnel-qr" src="../../assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play">
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;">Scan to download</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Mahjong Solitaire</h2>
+      <p>Mahjong Solitaire (also called Shanghai or Mahjong tiles) is a calm single-player matching game built from the tiles of classic mahjong. The tiles are stacked into a layout, and your job is to remove them all by matching identical pairs. The catch is that you can only take a tile that's <em>free</em>: nothing is stacked on top of it, and either its left or its right edge is clear. Match two free tiles with the same face and they're removed, opening up the tiles beneath and beside them.</p>
+
+      <h3>Tips</h3>
+      <ul>
+        <li><strong>Look before you match.</strong> Removing a pair can free — or trap — other tiles, so plan a move ahead.</li>
+        <li><strong>Free the stacks.</strong> Prioritise tiles that are blocking the most others, especially on the top layers.</li>
+        <li><strong>Use Hint sparingly.</strong> It points out one available pair when you can't spot a move.</li>
+        <li><strong>Shuffle when stuck.</strong> If no matches remain among the free tiles, Shuffle rearranges the remaining faces so you can continue.</li>
+      </ul>
+
+      <h3>Layouts</h3>
+      <ul>
+        <li><strong>Classic</strong> — 36 tiles in an open starter layout.</li>
+        <li><strong>Fortress</strong> — 48 tiles in a layered, taller stack.</li>
+        <li><strong>Garden</strong> — 60 tiles across a wider board.</li>
+      </ul>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Mahjong Solitaire free here?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>What makes a tile playable?</summary><p>A tile is free if no tile sits on top of it and at least one of its left or right sides is open.</p></details>
+        <details class="faq-item"><summary>What if there are no moves left?</summary><p>Use the Shuffle button to rearrange the remaining tiles so new matches become possible.</p></details>
+        <details class="faq-item"><summary>Can I play offline?</summary><p>This web version needs a browser. For fully offline play and eight more games, try the free <a class="text-link" href="../../apps/snackpack-brain-games/" style="color:var(--accent);">Snackpack Brain Games</a> app.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Mahjong Solitaire free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../apps/snackpack-brain-games/">Brain Games app</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // ════ Engine (ported from the Vol 1 app's mahjong/engine.ts) ════
+  var LAYOUTS = {
+    classic:  { label: "Classic",  pairs: 18 },
+    fortress: { label: "Fortress", pairs: 24 },
+    garden:   { label: "Garden",   pairs: 30 }
+  };
+  var FACES = [
+    ["dot-1","1","dots"],["dot-2","2","dots"],["dot-3","3","dots"],["dot-4","4","dots"],["dot-5","5","dots"],["dot-6","6","dots"],
+    ["bam-1","1","bamboo"],["bam-2","2","bamboo"],["bam-3","3","bamboo"],["bam-4","4","bamboo"],["bam-5","5","bamboo"],["bam-6","6","bamboo"],
+    ["crak-1","1","cracks"],["crak-2","2","cracks"],["crak-3","3","cracks"],["crak-4","4","cracks"],["crak-5","5","cracks"],["crak-6","6","cracks"],
+    ["wind-n","N","winds"],["wind-e","E","winds"],["wind-s","S","winds"],["wind-w","W","winds"],
+    ["flower-a","A","flowers"],["flower-b","B","flowers"],
+    ["snack-1","1","snacks"],["snack-2","2","snacks"],["snack-3","3","snacks"],["snack-4","4","snacks"],["snack-5","5","snacks"],["snack-6","6","snacks"]
+  ].map(function (f) { return { pairKey: f[0], label: f[1], suit: f[2] }; });
+
+  var SUIT = {
+    dots:    { glyph: "🔵", color: "#2f6fd6" },
+    bamboo:  { glyph: "🎋", color: "#1f8f77" },
+    cracks:  { glyph: "🔶", color: "#d8483a" },
+    winds:   { glyph: "🧭", color: "#5b3fb0" },
+    flowers: { glyph: "🌸", color: "#d24a86" },
+    snacks:  { glyph: "🍪", color: "#b9772e" }
+  };
+
+  function shuffle(a) { var n = a.slice(); for (var i = n.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = n[i]; n[i] = n[j]; n[j] = t; } return n; }
+
+  function rectSlots(x0, x1, y0, y1, z) { var s = []; for (var y = y0; y <= y1; y++) for (var x = x0; x <= x1; x++) s.push({ x: x, y: y, z: z }); return s; }
+  function uniqueSlots(slots) { var seen = {}; return slots.filter(function (s) { var k = s.x + ":" + s.y + ":" + s.z; if (seen[k]) return false; seen[k] = true; return true; }); }
+
+  function slotsFor(layout) {
+    if (layout === "fortress") return uniqueSlots(rectSlots(1, 8, 1, 4, 0).concat(rectSlots(2, 7, 2, 3, 1), rectSlots(3, 6, 2, 2, 2)));
+    if (layout === "garden") return uniqueSlots(rectSlots(1, 10, 1, 4, 0).concat(rectSlots(3, 10, 2, 3, 1), rectSlots(5, 8, 2, 2, 2)));
+    return uniqueSlots(rectSlots(3, 8, 1, 4, 0).concat(rectSlots(4, 7, 2, 3, 1), rectSlots(5, 6, 2, 3, 2)));
+  }
+
+  function createBoard(layout) {
+    var slots = slotsFor(layout);
+    var pool = FACES.slice(0, LAYOUTS[layout].pairs);
+    var faces = shuffle(pool.concat(pool));
+    return slots.map(function (slot, i) {
+      var f = faces[i];
+      return { id: layout + "-" + slot.z + "-" + slot.y + "-" + slot.x + "-" + i, x: slot.x, y: slot.y, z: slot.z, pairKey: f.pairKey, label: f.label, suit: f.suit, removed: false };
+    });
+  }
+
+  function tileAt(board, x, y, z) { return board.find(function (t) { return !t.removed && t.x === x && t.y === y && t.z === z; }); }
+  function isTileOpen(board, t) {
+    if (t.removed) return false;
+    if (tileAt(board, t.x, t.y, t.z + 1)) return false;
+    var left = !!tileAt(board, t.x - 1, t.y, t.z);
+    var right = !!tileAt(board, t.x + 1, t.y, t.z);
+    return !left || !right;
+  }
+  function availablePairs(board) {
+    var open = board.filter(function (t) { return isTileOpen(board, t); });
+    var pairs = [];
+    for (var i = 0; i < open.length; i++) for (var j = i + 1; j < open.length; j++)
+      if (open[i].pairKey === open[j].pairKey) pairs.push([open[i], open[j]]);
+    return pairs;
+  }
+  function remaining(board) { return board.filter(function (t) { return !t.removed; }).length; }
+  function shuffleRemaining(board) {
+    var active = board.filter(function (t) { return !t.removed; });
+    var faces = shuffle(active.map(function (t) { return { pairKey: t.pairKey, label: t.label, suit: t.suit }; }));
+    var i = 0;
+    board.forEach(function (t) { if (!t.removed) { var f = faces[i++]; t.pairKey = f.pairKey; t.label = f.label; t.suit = f.suit; } });
+    return board;
+  }
+
+  // ════ UI ════
+  var UX = 30, UY = 40, OFF = 6;
+  var boardEl = document.getElementById("mj-board");
+  var statusEl = document.getElementById("mj-status");
+  var timeEl = document.getElementById("mj-time");
+  var leftEl = document.getElementById("mj-left");
+  var bestEl = document.getElementById("mj-best");
+  var newBtn = document.getElementById("mj-new");
+  var hintBtn = document.getElementById("mj-hint");
+  var shuffleBtn = document.getElementById("mj-shuffle");
+
+  var layout = "classic";
+  var board, selectedId, solved, started, elapsed, timerId, minX, minY, zmax;
+
+  function bestKey() { return "sp_mahjong_best_" + layout; }
+  function fmt(s) { var m = Math.floor(s / 60); return m + ":" + (s % 60 < 10 ? "0" : "") + (s % 60); }
+  function showBest() { var b = 0; try { b = parseInt(localStorage.getItem(bestKey()) || "0", 10) || 0; } catch (e) {} bestEl.textContent = b ? fmt(b) : "—"; }
+  function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
+  function startTimer() { if (timerId) return; var t0 = Date.now() - elapsed * 1000; timerId = setInterval(function () { elapsed = Math.floor((Date.now() - t0) / 1000); timeEl.textContent = fmt(elapsed); }, 250); }
+
+  function build() {
+    stopTimer();
+    board = createBoard(layout);
+    selectedId = null; solved = false; started = false; elapsed = 0;
+    timeEl.textContent = "0:00";
+    statusEl.textContent = "Match two free tiles with the same face.";
+    statusEl.className = "game-status";
+    showBest();
+
+    minX = Math.min.apply(null, board.map(function (t) { return t.x; }));
+    minY = Math.min.apply(null, board.map(function (t) { return t.y; }));
+    var maxX = Math.max.apply(null, board.map(function (t) { return t.x; }));
+    var maxY = Math.max.apply(null, board.map(function (t) { return t.y; }));
+    zmax = Math.max.apply(null, board.map(function (t) { return t.z; }));
+    var pad = zmax * OFF + 6;
+    boardEl.style.width = (pad * 2 + (maxX - minX + 1) * UX) + "px";
+    boardEl.style.height = (pad * 2 + (maxY - minY + 1) * UY) + "px";
+
+    render();
+  }
+
+  function render() {
+    var pad = zmax * OFF + 6;
+    boardEl.innerHTML = "";
+    // draw in stacking order
+    var order = board.slice().sort(function (a, b) { return (a.z - b.z) || (a.y - b.y) || (a.x - b.x); });
+    order.forEach(function (t) {
+      if (t.removed) return;
+      var open = isTileOpen(board, t);
+      var el = document.createElement("button");
+      el.type = "button";
+      el.className = "mj-tile" + (open ? " is-open" : " is-blocked") + (t.id === selectedId ? " is-selected" : "");
+      el.dataset.id = t.id;
+      el.style.left = (pad + (t.x - minX) * UX - t.z * OFF) + "px";
+      el.style.top = (pad + (t.y - minY) * UY - t.z * OFF) + "px";
+      el.style.width = (UX - 2) + "px";
+      el.style.height = (UY - 2) + "px";
+      el.style.zIndex = String(t.z * 100 + t.y * 10 + t.x);
+      var info = SUIT[t.suit];
+      el.style.setProperty("--suit", info.color);
+      el.innerHTML = '<span class="mj-glyph">' + info.glyph + '</span><span class="mj-label">' + t.label + '</span>';
+      boardEl.appendChild(el);
+    });
+    leftEl.textContent = remaining(board);
+  }
+
+  function tap(id) {
+    if (solved) return;
+    var tile = board.find(function (t) { return t.id === id; });
+    if (!tile || tile.removed) return;
+    if (!isTileOpen(board, tile)) { statusEl.textContent = "That tile is covered — pick a free one."; statusEl.className = "game-status"; return; }
+    if (!started) { started = true; startTimer(); }
+
+    if (selectedId === id) { selectedId = null; render(); return; }
+    if (!selectedId) { selectedId = id; render(); return; }
+
+    var a = board.find(function (t) { return t.id === selectedId; });
+    if (a && a.pairKey === tile.pairKey) {
+      a.removed = true; tile.removed = true; selectedId = null;
+      render();
+      if (remaining(board) === 0) { finish(); return; }
+      if (availablePairs(board).length === 0) {
+        statusEl.textContent = "No moves left — Shuffle to keep going.";
+        statusEl.className = "game-status game-status--lose";
+      } else { statusEl.textContent = "Nice match!"; statusEl.className = "game-status"; }
+    } else {
+      selectedId = id; render();
+    }
+  }
+
+  function finish() {
+    solved = true; stopTimer();
+    statusEl.textContent = "Board cleared! 🎉 " + fmt(elapsed);
+    statusEl.className = "game-status game-status--win";
+    var prev = 0; try { prev = parseInt(localStorage.getItem(bestKey()) || "0", 10) || 0; } catch (e) {}
+    var improved = !prev || elapsed < prev;
+    if (improved) { try { localStorage.setItem(bestKey(), String(elapsed)); } catch (e) {} }
+    showBest();
+    if (window.SnackPack) window.SnackPack.celebrate({
+      title: improved ? "New best time! 🎉" : "Board cleared! 🎉",
+      body: "Every tile matched. We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app to play Mahjong and eight more, offline."
+    });
+  }
+
+  function hint() {
+    if (solved) return;
+    var pairs = availablePairs(board);
+    if (!pairs.length) { statusEl.textContent = "No moves left — Shuffle to keep going."; statusEl.className = "game-status game-status--lose"; return; }
+    var pair = pairs[Math.floor(Math.random() * pairs.length)];
+    var ids = [pair[0].id, pair[1].id];
+    boardEl.querySelectorAll(".mj-tile").forEach(function (el) {
+      if (ids.indexOf(el.dataset.id) >= 0) { el.classList.add("is-hint"); setTimeout(function () { el.classList.remove("is-hint"); }, 1100); }
+    });
+  }
+
+  function doShuffle() {
+    if (solved) return;
+    shuffleRemaining(board);
+    selectedId = null;
+    render();
+    statusEl.textContent = "Tiles shuffled.";
+    statusEl.className = "game-status";
+  }
+
+  boardEl.addEventListener("click", function (e) {
+    var el = e.target.closest(".mj-tile"); if (!el) return;
+    tap(el.dataset.id);
+  });
+  newBtn.addEventListener("click", build);
+  hintBtn.addEventListener("click", hint);
+  shuffleBtn.addEventListener("click", doShuffle);
+  document.querySelectorAll(".seg [data-layout]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      layout = btn.dataset.layout;
+      document.querySelectorAll(".seg [data-layout]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
+      build();
+    });
+  });
+
+  build();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
