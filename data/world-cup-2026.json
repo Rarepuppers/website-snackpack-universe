@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-14T22:00:00.173Z",
+  "updatedAt": "2026-06-14T23:08:56.087Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -175,11 +175,14 @@
     {
       "date": "Jun 14",
       "isoDate": "2026-06-14",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "E",
       "home": "Cote d'Ivoire",
       "away": "Ecuador",
-      "venue": "Philadelphia"
+      "venue": "Philadelphia",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 14",
