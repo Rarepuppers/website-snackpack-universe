@@ -179,7 +179,9 @@
   background: var(--ink);
   color: #fff;
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
 }
+.score-pill--live { background: #c73f3f; }
 .quick-links {
   display: grid;
   gap: 9px;
@@ -336,6 +338,7 @@
   </div>
 </footer>
 
+<script src="/world-cup/wc-live.js"></script>
 <script>
 (function () {
   "use strict";
@@ -392,9 +395,19 @@
       return b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team);
     });
   }
+  function isLive(match) {
+    var status = String(match.statusShort || match.time || "").toUpperCase();
+    return ["1H", "2H", "HT", "ET", "BT", "P", "LIVE", "IN PROGRESS"].indexOf(status) !== -1;
+  }
   function matchHtml(match) {
-    var score = typeof match.hs === "number" ? match.hs + "-" + match.as : "Next";
-    return '<div class="match-row"><div class="match-date">' + escapeHtml(match.date || "") + '<br>' + escapeHtml(match.time || "") + '</div><div><div class="match-teams">' + teamHtml(match.home) + teamHtml(match.away) + '</div><div class="match-meta">' + escapeHtml(match.venue || "") + '</div></div><span class="score-pill">' + escapeHtml(score) + '</span></div>';
+    // Live matches carry their running score in lhs/las (separate from the final
+    // hs/as so standings ignore it). Show the score if present, else "Live".
+    var live = isLive(match);
+    var score = typeof match.hs === "number" ? match.hs + "-" + match.as
+      : live ? (typeof match.lhs === "number" ? match.lhs + "-" + match.las : "Live")
+      : "Next";
+    var pillClass = "score-pill" + (live ? " score-pill--live" : "");
+    return '<div class="match-row"><div class="match-date">' + escapeHtml(match.date || "") + '<br>' + escapeHtml(match.time || "") + '</div><div><div class="match-teams">' + teamHtml(match.home) + teamHtml(match.away) + '</div><div class="match-meta">' + escapeHtml(match.venue || "") + '</div></div><span class="' + pillClass + '">' + escapeHtml(score) + '</span></div>';
   }
   function render() {
     document.getElementById("team-strip").innerHTML = (groups[groupId] || []).map(function (team) {
@@ -416,16 +429,43 @@
       document.getElementById("updated-note").textContent = "Last updated: " + new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) + ".";
     }
   }
-  fetch("../../data/world-cup-2026.json", { cache: "no-cache" })
-    .then(function (response) {
-      if (!response.ok) throw new Error("World Cup data unavailable");
-      return response.json();
-    })
-    .then(applyData)
-    .catch(function () {
-      document.getElementById("updated-note").textContent = "Using built-in Group E fallback data.";
-    })
-    .then(render);
+  var pollTimer = null;
+  function todayIso() {
+    var n = new Date();
+    return n.getFullYear() + "-" + String(n.getMonth() + 1).padStart(2, "0") + "-" + String(n.getDate()).padStart(2, "0");
+  }
+  // Keep refreshing only while a match is live, or one is scheduled today and not
+  // yet final. Otherwise stop polling and sit idle.
+  function scheduleNext() {
+    if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; }
+    var today = todayIso();
+    var live = matches.some(isLive);
+    var pendingToday = matches.some(function (m) { return String(m.isoDate || "") === today && typeof m.hs !== "number"; });
+    if (!live && !pendingToday) return;
+    pollTimer = setTimeout(load, live ? 60000 : 120000);
+  }
+  // Overlay live scores straight from ESPN (only while a match is on).
+  function withLive(data) {
+    if (!data || !Array.isArray(data.matches)) return Promise.resolve(data);
+    if (window.WCLive && WCLive.worthLive(data.matches)) {
+      return WCLive.overlay(data.matches).then(function (merged) { data.matches = merged; return data; });
+    }
+    return Promise.resolve(data);
+  }
+  function load() {
+    fetch("../../data/world-cup-2026.json", { cache: "no-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("World Cup data unavailable");
+        return response.json();
+      })
+      .then(withLive)
+      .then(applyData)
+      .catch(function () {
+        document.getElementById("updated-note").textContent = "Using built-in Group E fallback data.";
+      })
+      .then(function () { render(); scheduleNext(); });
+  }
+  load();
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

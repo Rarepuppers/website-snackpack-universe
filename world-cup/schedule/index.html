@@ -333,6 +333,7 @@
   </div>
 </footer>
 
+<script src="/world-cup/wc-live.js"></script>
 <script>
 (function () {
   "use strict";
@@ -375,6 +376,12 @@
     return ["1H", "2H", "HT", "ET", "BT", "P", "LIVE", "IN PROGRESS"].indexOf(status) !== -1;
   }
 
+  // Live matches carry their running score in lhs/las (kept separate from the
+  // final hs/as so standings ignore it). Show the score if we have it, else "Live".
+  function liveBadge(match) {
+    return typeof match.lhs === "number" ? match.lhs + "-" + match.las : "Live";
+  }
+
   function todayIso() {
     // Use the viewer's local date so "today" matches the bracket page (which also uses local time).
     var now = new Date();
@@ -398,7 +405,7 @@
   }
 
   function matchHtml(match) {
-    var badge = isPlayed(match) ? match.hs + "-" + match.as : isLive(match) ? "Live" : "Next";
+    var badge = isPlayed(match) ? match.hs + "-" + match.as : isLive(match) ? liveBadge(match) : "Next";
     var badgeClass = isLive(match) ? " status-pill--live" : !isPlayed(match) ? " status-pill--next" : "";
     return '<article class="schedule-match"><div class="schedule-date">' + escapeHtml(match.date || "") + '<br>' + escapeHtml(match.time || "") + '</div><div><div class="schedule-teams">' + teamChip(match.home) + teamChip(match.away) + '</div><div class="schedule-meta">Group ' + escapeHtml(match.group || "") + ' - ' + escapeHtml(match.venue || "") + '</div></div><span class="status-pill' + badgeClass + '">' + escapeHtml(badge) + '</span></article>';
   }
@@ -409,6 +416,8 @@
   }
 
   var ALL_MATCHES = [];
+  var filtersReady = false;
+  var pollTimer = null;
 
   function dayLabel(iso) {
     if (!iso) return "Date TBD";
@@ -482,7 +491,9 @@
     renderList("today-list", todaysMatches, "No World Cup games are listed for today in the current data. Check who plays next below.");
     renderList("next-list", nextMatches, "No upcoming games are listed in the current data.");
     renderList("played-list", playedMatches, "No played games are listed yet.");
-    setupFilters();
+    // Build the filter dropdowns once; rebuilding on every poll would reset the
+    // viewer's active team/group selection.
+    if (!filtersReady) { setupFilters(); filtersReady = true; }
     renderAllFixtures();
     var updated = data.updatedAt ? new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "saved local data";
     document.getElementById("updated-note").textContent = "Last data update: " + updated + ".";
@@ -500,15 +511,43 @@
     if (target) target.scrollIntoView();
   }
 
-  fetch("../../data/world-cup-2026.json", { cache: "no-cache" })
-    .then(function (response) {
-      if (!response.ok) throw new Error("World Cup data not available");
-      return response.json();
-    })
-    .catch(function () {
-      return { groups: seedGroups, matches: seedMatches };
-    })
-    .then(render);
+  // Auto-refresh only while it's worth it: keep polling the data file while a
+  // match is live (so scores update on their own) or a match is scheduled today
+  // and not yet final (so we catch kickoffs/finals). On non-match days, or once
+  // everything today is final, polling stops and the page sits idle.
+  function scheduleNext() {
+    if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; }
+    var today = todayIso();
+    var live = ALL_MATCHES.some(isLive);
+    var pendingToday = ALL_MATCHES.some(function (m) { return String(m.isoDate || "") === today && !isPlayed(m); });
+    if (!live && !pendingToday) return;
+    pollTimer = setTimeout(load, live ? 60000 : 120000);
+  }
+
+  function load() {
+    fetch("../../data/world-cup-2026.json", { cache: "no-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("World Cup data not available");
+        return response.json();
+      })
+      .catch(function () {
+        return { groups: seedGroups, matches: seedMatches };
+      })
+      .then(function (data) {
+        // Overlay live scores straight from ESPN (only while a match is on).
+        var base = data.matches || seedMatches;
+        if (window.WCLive && WCLive.worthLive(base)) {
+          return WCLive.overlay(base).then(function (merged) { data.matches = merged; return data; });
+        }
+        return data;
+      })
+      .then(function (data) {
+        render(data);
+        scheduleNext();
+      });
+  }
+
+  load();
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

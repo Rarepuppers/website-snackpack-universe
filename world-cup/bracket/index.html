@@ -481,6 +481,7 @@
           <p class="lead" style="max-width:760px;">Follow live group tables, played results, and upcoming fixtures in one place. Then make your own predictions: pick group winners, sketch the knockout path, and crown a champion to share with friends.</p>
           <div class="stack-inline">
             <a class="btn btn-primary" href="#predictions">Make predictions</a>
+            <a class="btn btn-secondary" href="../schedule/">Full schedule</a>
             <a class="btn btn-secondary" href="../../play/soccer-trivia-sprint/">Play Soccer Trivia Sprint</a>
           </div>
         </div>
@@ -623,6 +624,7 @@
   </div>
 </footer>
 
+<script src="/world-cup/wc-live.js"></script>
 <script>
 (function () {
   "use strict";
@@ -862,7 +864,7 @@
   function matchHtml(m) {
     var score = isPlayed(m)
       ? '<span class="score-pill">' + m.hs + '-' + m.as + '</span>'
-      : '<span class="score-pill' + (isLive(m) ? ' score-pill--live' : '') + '">' + (isLive(m) ? 'Live' : 'Next') + '</span>';
+      : '<span class="score-pill' + (isLive(m) ? ' score-pill--live' : '') + '">' + (isLive(m) ? (typeof m.lhs === 'number' ? m.lhs + '-' + m.las : 'Live') : 'Next') + '</span>';
     return '<div class="match-row"><div class="match-date">' + escapeHtml(m.date || "") + '<br>' + escapeHtml(m.time || "") + '</div><div><div class="match-teams">' + teamHtml(m.home) + teamHtml(m.away) + '</div><div class="match-meta">Group ' + escapeHtml(m.group || "") + ' - ' + escapeHtml(m.venue || "") + '</div></div>' + score + '</div>';
   }
 
@@ -1136,17 +1138,62 @@
     renderKnockout();
   }
 
+  var pollTimer = null;
+  function todayIso() {
+    var n = new Date();
+    return n.getFullYear() + "-" + String(n.getMonth() + 1).padStart(2, "0") + "-" + String(n.getDate()).padStart(2, "0");
+  }
+  // Keep refreshing only while a match is live, or one is scheduled today and not
+  // yet final. Otherwise stop polling and sit idle.
+  function scheduleNext() {
+    if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; }
+    var today = todayIso();
+    var live = matches.some(isLive);
+    var pendingToday = matches.some(function (m) { return String(m.isoDate || "") === today && !isPlayed(m); });
+    if (!live && !pendingToday) return;
+    pollTimer = setTimeout(refresh, live ? 60000 : 120000);
+  }
+  // Overlay live scores straight from ESPN (only while a match is on).
+  function withLive(data) {
+    if (!data || !Array.isArray(data.matches)) return Promise.resolve(data);
+    if (window.WCLive && WCLive.worthLive(data.matches)) {
+      return WCLive.overlay(data.matches).then(function (merged) { data.matches = merged; return data; });
+    }
+    return Promise.resolve(data);
+  }
+  // On a poll we only refresh the data-driven views (live scores + standings).
+  // The prediction form, knockout, and event listeners are left untouched so the
+  // visitor's in-progress picks are never wiped out by a background refresh.
+  function refresh() {
+    fetch("../../data/world-cup-2026.json", { cache: "no-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("World Cup data not available");
+        return response.json();
+      })
+      .then(withLive)
+      .then(function (data) {
+        applyData(data);
+        renderGroups();
+        renderSummary();
+        renderMatches();
+        scheduleNext();
+      })
+      .catch(scheduleNext);
+  }
+
   fetch("../../data/world-cup-2026.json", { cache: "no-cache" })
     .then(function (response) {
       if (!response.ok) throw new Error("World Cup data not available");
       return response.json();
     })
+    .then(withLive)
     .then(applyData)
     .catch(function () {
       renderLastUpdated(null);
       // Keep the embedded seed data as a fallback for local file previews.
     })
-    .then(init);
+    .then(init)
+    .then(scheduleNext);
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

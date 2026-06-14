@@ -421,6 +421,7 @@
   </div>
 </footer>
 
+<script src="/world-cup/wc-live.js"></script>
 <script>
 (function () {
   "use strict";
@@ -435,7 +436,9 @@
   }
 
   function matchBadge(match) {
-    if (isLive(match)) return "Live";
+    // Live matches carry their running score in lhs/las (separate from the final
+    // hs/as so standings ignore it). Show the score if present, else "Live".
+    if (isLive(match)) return typeof match.lhs === "number" ? match.lhs + "-" + match.las : "Live";
     return match.time && match.time !== "Upcoming" ? match.time : "Next";
   }
 
@@ -465,16 +468,47 @@
     }).join("");
   }
 
-  fetch("../data/world-cup-2026.json", { cache: "no-cache" })
-    .then(function (response) {
-      if (!response.ok) throw new Error("World Cup data not available");
-      return response.json();
-    })
-    .then(renderMatches)
-    .catch(function () {
-      var root = document.getElementById("cup-live-list");
-      if (root) root.innerHTML = '<div class="cup-live-item">Open the bracket for the latest schedule. <span class="cup-live-badge">Next</span></div>';
-    });
+  var pollTimer = null;
+  function todayIso() {
+    var now = new Date();
+    return now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
+  }
+  // Keep refreshing only while a match is live, or one is scheduled today and not
+  // yet final (to catch kickoffs/finals). Otherwise stop polling and sit idle.
+  function scheduleNext(matches) {
+    if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; }
+    var today = todayIso();
+    var live = matches.some(isLive);
+    var pendingToday = matches.some(function (m) { return String(m.isoDate || "") === today && !isPlayed(m); });
+    if (!live && !pendingToday) return;
+    pollTimer = setTimeout(load, live ? 60000 : 120000);
+  }
+
+  function load() {
+    fetch("../data/world-cup-2026.json", { cache: "no-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("World Cup data not available");
+        return response.json();
+      })
+      .then(function (data) {
+        // Overlay live scores straight from ESPN (only while a match is on).
+        var base = (data && data.matches) || [];
+        if (window.WCLive && WCLive.worthLive(base)) {
+          return WCLive.overlay(base).then(function (merged) { data.matches = merged; return data; });
+        }
+        return data;
+      })
+      .then(function (data) {
+        renderMatches(data);
+        scheduleNext((data && data.matches) || []);
+      })
+      .catch(function () {
+        var root = document.getElementById("cup-live-list");
+        if (root) root.innerHTML = '<div class="cup-live-item">Open the bracket for the latest schedule. <span class="cup-live-badge">Next</span></div>';
+      });
+  }
+
+  load();
 })();
 </script>
 

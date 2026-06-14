@@ -138,14 +138,20 @@ async function fetchEspnResults(dateRange) {
   return results;
 }
 
-// Overlay ESPN results onto a seed fixture. Scores are only written for FINAL
-// matches so an in-progress score can't leak into the group standings (which
-// treat any match with a numeric score as played). Live matches just get a
-// status; scheduled matches are left exactly as seeded.
+// Overlay ESPN results onto a seed fixture.
+//
+// FINAL scores go in hs/as. The whole site treats "match has a numeric hs" as
+// "this result is final and counts in the standings", so a live, in-progress
+// score must NOT go there. Live scores are written to separate lhs/las fields
+// that only the match-row display reads; standings ignore them entirely.
+//
+// Scheduled matches are left exactly as seeded.
 function applyResult(match, result) {
   const next = { ...match };
   delete next.hs;
   delete next.as;
+  delete next.lhs;
+  delete next.las;
   delete next.statusShort;
 
   if (result && result.completed && Number.isFinite(result.hs) && Number.isFinite(result.as)) {
@@ -155,10 +161,17 @@ function applyResult(match, result) {
     next.time = "FT";
     next.statusShort = "FT";
   } else if (result && result.state === "in") {
-    // Static "Live" rather than ESPN's ticking minute, so frequent runs only
-    // commit on real transitions (kickoff -> live -> final), not every clock tick.
+    // Live match: keep the "Live" status and overlay the running score into
+    // lhs/las. The score changes as goals go in, so a run during a live match
+    // now commits on each score change (kickoff -> goals -> final), not only
+    // on the kickoff/final transitions.
     next.time = "Live";
     next.statusShort = "LIVE";
+    if (Number.isFinite(result.hs) && Number.isFinite(result.as)) {
+      const aligned = result.home === match.home;
+      next.lhs = aligned ? result.hs : result.as;
+      next.las = aligned ? result.as : result.hs;
+    }
   } else {
     next.time = "Upcoming";
   }

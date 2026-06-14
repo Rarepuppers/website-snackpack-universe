@@ -472,7 +472,9 @@ function groupPage(letter) {
   background: var(--ink);
   color: #fff;
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
 }
+.score-pill--live { background: #c73f3f; }
 .quick-links {
   display: grid;
   gap: 9px;
@@ -618,6 +620,7 @@ ${"ABCDEFGHIJKL".split("").map((g) => `        <a href="../group-${g.toLowerCase
   </div>
 </footer>
 
+<script src="/world-cup/wc-live.js"></script>
 <script>
 (function () {
   "use strict";
@@ -674,9 +677,19 @@ ${"ABCDEFGHIJKL".split("").map((g) => `        <a href="../group-${g.toLowerCase
       return b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team);
     });
   }
+  function isLive(match) {
+    var status = String(match.statusShort || match.time || "").toUpperCase();
+    return ["1H", "2H", "HT", "ET", "BT", "P", "LIVE", "IN PROGRESS"].indexOf(status) !== -1;
+  }
   function matchHtml(match) {
-    var score = typeof match.hs === "number" ? match.hs + "-" + match.as : "Next";
-    return '<div class="match-row"><div class="match-date">' + escapeHtml(match.date || "") + '<br>' + escapeHtml(match.time || "") + '</div><div><div class="match-teams">' + teamHtml(match.home) + teamHtml(match.away) + '</div><div class="match-meta">' + escapeHtml(match.venue || "") + '</div></div><span class="score-pill">' + escapeHtml(score) + '</span></div>';
+    // Live matches carry their running score in lhs/las (separate from the final
+    // hs/as so standings ignore it). Show the score if present, else "Live".
+    var live = isLive(match);
+    var score = typeof match.hs === "number" ? match.hs + "-" + match.as
+      : live ? (typeof match.lhs === "number" ? match.lhs + "-" + match.las : "Live")
+      : "Next";
+    var pillClass = "score-pill" + (live ? " score-pill--live" : "");
+    return '<div class="match-row"><div class="match-date">' + escapeHtml(match.date || "") + '<br>' + escapeHtml(match.time || "") + '</div><div><div class="match-teams">' + teamHtml(match.home) + teamHtml(match.away) + '</div><div class="match-meta">' + escapeHtml(match.venue || "") + '</div></div><span class="' + pillClass + '">' + escapeHtml(score) + '</span></div>';
   }
   function render() {
     document.getElementById("team-strip").innerHTML = (groups[groupId] || []).map(function (team) {
@@ -698,16 +711,43 @@ ${"ABCDEFGHIJKL".split("").map((g) => `        <a href="../group-${g.toLowerCase
       document.getElementById("updated-note").textContent = "Last updated: " + new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) + ".";
     }
   }
-  fetch("../../data/world-cup-2026.json", { cache: "no-cache" })
-    .then(function (response) {
-      if (!response.ok) throw new Error("World Cup data unavailable");
-      return response.json();
-    })
-    .then(applyData)
-    .catch(function () {
-      document.getElementById("updated-note").textContent = "Using built-in Group ${letter} fallback data.";
-    })
-    .then(render);
+  var pollTimer = null;
+  function todayIso() {
+    var n = new Date();
+    return n.getFullYear() + "-" + String(n.getMonth() + 1).padStart(2, "0") + "-" + String(n.getDate()).padStart(2, "0");
+  }
+  // Keep refreshing only while a match is live, or one is scheduled today and not
+  // yet final. Otherwise stop polling and sit idle.
+  function scheduleNext() {
+    if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; }
+    var today = todayIso();
+    var live = matches.some(isLive);
+    var pendingToday = matches.some(function (m) { return String(m.isoDate || "") === today && typeof m.hs !== "number"; });
+    if (!live && !pendingToday) return;
+    pollTimer = setTimeout(load, live ? 60000 : 120000);
+  }
+  // Overlay live scores straight from ESPN (only while a match is on).
+  function withLive(data) {
+    if (!data || !Array.isArray(data.matches)) return Promise.resolve(data);
+    if (window.WCLive && WCLive.worthLive(data.matches)) {
+      return WCLive.overlay(data.matches).then(function (merged) { data.matches = merged; return data; });
+    }
+    return Promise.resolve(data);
+  }
+  function load() {
+    fetch("../../data/world-cup-2026.json", { cache: "no-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("World Cup data unavailable");
+        return response.json();
+      })
+      .then(withLive)
+      .then(applyData)
+      .catch(function () {
+        document.getElementById("updated-note").textContent = "Using built-in Group ${letter} fallback data.";
+      })
+      .then(function () { render(); scheduleNext(); });
+  }
+  load();
 })();
 </script>
 <!-- Cloudflare Web Analytics -->
@@ -845,6 +885,7 @@ function teamPage(team) {
 .team-result--l { background: var(--brand-deep); }
 .team-result--d { background: #6a5b52; }
 .team-result--next { background: #1f8f77; }
+.team-result--live { background: #c73f3f; }
 .team-links { display: grid; gap: 9px; }
 .team-links a {
   border: 1px solid var(--line); border-radius: 999px; color: var(--ink);
@@ -961,6 +1002,7 @@ function teamPage(team) {
   </div>
 </footer>
 
+<script src="/world-cup/wc-live.js"></script>
 <script>
 (function () {
   "use strict";
@@ -968,6 +1010,10 @@ function teamPage(team) {
   var FLAGS = ${JSON.stringify(oppFlags)};
   function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function flag(team) { return FLAGS[team] || ""; }
+  function isLive(m) {
+    var status = String(m.statusShort || m.time || "").toUpperCase();
+    return ["1H", "2H", "HT", "ET", "BT", "P", "LIVE", "IN PROGRESS"].indexOf(status) !== -1;
+  }
   function rowHtml(m) {
     var isHome = m.home === TEAM;
     var opp = isHome ? m.away : m.home;
@@ -977,25 +1023,58 @@ function teamPage(team) {
       var ours = isHome ? m.hs : m.as, theirs = isHome ? m.as : m.hs;
       pill = ours + "-" + theirs;
       cls = ours > theirs ? " team-result--w" : ours < theirs ? " team-result--l" : " team-result--d";
-    } else { pill = (m.time && m.time !== "Upcoming") ? m.time : "Next"; cls = " team-result--next"; }
+    } else if (isLive(m)) {
+      // Live score lives in lhs/las (separate from final hs/as). Show it if present.
+      var lours = isHome ? m.lhs : m.las, ltheirs = isHome ? m.las : m.lhs;
+      pill = typeof lours === "number" ? lours + "-" + ltheirs : "Live";
+      cls = " team-result--live";
+    } else { pill = "Next"; cls = " team-result--next"; }
     var fl = flag(opp) ? '<img class="tf-flag" src="' + flag(opp) + '" alt=""> ' : "";
     return '<div class="team-fixture"><div class="tf-date">' + esc(m.date || "") + '</div>' +
       '<div class="tf-mid"><div class="tf-opp">' + (isHome ? "vs" : "at") + ' ' + fl + esc(opp) + '</div>' +
       '<div class="tf-venue">' + esc(m.venue || "") + '</div></div>' +
       '<span class="team-result' + cls + '">' + esc(pill) + '</span></div>';
   }
-  fetch("../../../data/world-cup-2026.json", { cache: "no-cache" })
-    .then(function (r) { if (!r.ok) throw new Error("no data"); return r.json(); })
-    .then(function (data) {
-      if (!data || !Array.isArray(data.matches)) return;
-      var mine = data.matches.filter(function (m) { return m.home === TEAM || m.away === TEAM; })
-        .sort(function (a, b) { return String(a.isoDate || a.date).localeCompare(String(b.isoDate || b.date)); });
-      if (mine.length) document.getElementById("team-fixtures").innerHTML = mine.map(rowHtml).join("");
-      if (data.updatedAt) {
-        document.getElementById("updated-note").textContent = "Group ${g} of the 2026 World Cup. Results last updated " + new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) + ".";
-      }
-    })
-    .catch(function () {});
+  var pollTimer = null;
+  function todayIso() {
+    var n = new Date();
+    return n.getFullYear() + "-" + String(n.getMonth() + 1).padStart(2, "0") + "-" + String(n.getDate()).padStart(2, "0");
+  }
+  // Keep refreshing only while this team has a live match, or one scheduled today
+  // and not yet final. Otherwise stop polling and sit idle.
+  function scheduleNext(mine) {
+    if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; }
+    var today = todayIso();
+    var live = mine.some(isLive);
+    var pendingToday = mine.some(function (m) { return String(m.iso || m.isoDate || "") === today && typeof m.hs !== "number"; });
+    if (!live && !pendingToday) return;
+    pollTimer = setTimeout(load, live ? 60000 : 120000);
+  }
+  // Overlay live scores straight from ESPN (only while a match is on).
+  function withLive(data) {
+    if (!data || !Array.isArray(data.matches)) return Promise.resolve(data);
+    if (window.WCLive && WCLive.worthLive(data.matches)) {
+      return WCLive.overlay(data.matches).then(function (merged) { data.matches = merged; return data; });
+    }
+    return Promise.resolve(data);
+  }
+  function load() {
+    fetch("../../../data/world-cup-2026.json", { cache: "no-cache" })
+      .then(function (r) { if (!r.ok) throw new Error("no data"); return r.json(); })
+      .then(withLive)
+      .then(function (data) {
+        if (!data || !Array.isArray(data.matches)) return;
+        var mine = data.matches.filter(function (m) { return m.home === TEAM || m.away === TEAM; })
+          .sort(function (a, b) { return String(a.isoDate || a.date).localeCompare(String(b.isoDate || b.date)); });
+        if (mine.length) document.getElementById("team-fixtures").innerHTML = mine.map(rowHtml).join("");
+        if (data.updatedAt) {
+          document.getElementById("updated-note").textContent = "Group ${g} of the 2026 World Cup. Results last updated " + new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) + ".";
+        }
+        scheduleNext(mine);
+      })
+      .catch(function () {});
+  }
+  load();
 })();
 </script>
 <!-- Cloudflare Web Analytics -->
