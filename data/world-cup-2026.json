@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-14T19:49:35.086Z",
+  "updatedAt": "2026-06-14T20:54:11.262Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -196,11 +196,14 @@
     {
       "date": "Jun 14",
       "isoDate": "2026-06-14",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "F",
       "home": "Netherlands",
       "away": "Japan",
-      "venue": "Dallas"
+      "venue": "Dallas",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 14",
