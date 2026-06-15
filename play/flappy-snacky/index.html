@@ -35,6 +35,8 @@
   box-shadow: var(--shadow);
 }
 .fl-hint-modes { margin-top: 4px; }
+.fl-options { display: flex; align-items: center; gap: 10px; justify-content: center; margin: 14px auto 0; }
+.fl-options-label { color: var(--muted); font-size: 0.85rem; font-weight: 600; }
 </style>
 <script type="application/ld+json">
 {
@@ -121,6 +123,14 @@
         <p class="game-status" id="fl-status" aria-live="polite">Tap the board (or press space) to start flying.</p>
         <div class="fl-stage">
           <canvas class="fl-canvas" id="fl-canvas" width="390" height="680" aria-label="Flappy Snacky game"></canvas>
+        </div>
+        <div class="fl-options">
+          <span class="fl-options-label">Speed</span>
+          <div class="seg" role="group" aria-label="Speed">
+            <button type="button" data-speed="cozy" aria-pressed="false">Cozy</button>
+            <button type="button" data-speed="normal" aria-pressed="true">Normal</button>
+            <button type="button" data-speed="zippy" aria-pressed="false">Zippy</button>
+          </div>
         </div>
         <p class="game-hint">Tap / click the board · or Space / ↑ to flap · Mode switch starts a fresh run.</p>
       </div>
@@ -227,6 +237,11 @@
   var newBtn = document.getElementById("fl-new");
 
   var mode = "classic";
+  // QoL: speed presets (mirrors the app's Cozy/Normal/Zippy).
+  var SPEED = { cozy: 0.86, normal: 1, zippy: 1.16 };
+  var speed = "normal";
+  try { speed = localStorage.getItem("sp_flappy_speed") || "normal"; } catch (e) {}
+  if (!SPEED[speed]) speed = "normal";
   var best = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0;
   bestEl.textContent = best;
 
@@ -243,14 +258,16 @@
 
   function tick() {
     var cfg = MODE_CONFIG[mode];
+    var mult = SPEED[speed];
+    var interval = Math.max(1, Math.round(cfg.pipeInterval / mult));
     st.frame += 1;
     st.birdVY += cfg.gravity;
     st.birdY += st.birdVY;
 
-    st.pipes = st.pipes.map(function (p) { return { id: p.id, x: p.x - cfg.pipeSpeed, gapTop: p.gapTop, passed: p.passed }; })
+    st.pipes = st.pipes.map(function (p) { return { id: p.id, x: p.x - cfg.pipeSpeed * mult, gapTop: p.gapTop, passed: p.passed }; })
                        .filter(function (p) { return p.x > -PIPE_WIDTH - 10; });
 
-    if (st.frame % cfg.pipeInterval === 0) {
+    if (st.frame % interval === 0) {
       st.pipes.push({ id: st.nextPipeId++, x: GAME_WIDTH + 10, gapTop: randomGapTop(cfg.gapSize), passed: false });
     }
 
@@ -415,6 +432,17 @@
       stopLoop(); restart();
     });
   });
+  document.querySelectorAll(".seg [data-speed]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      speed = btn.dataset.speed;
+      try { localStorage.setItem("sp_flappy_speed", speed); } catch (e) {}
+      document.querySelectorAll(".seg [data-speed]").forEach(function (x) {
+        x.setAttribute("aria-pressed", String(x === btn));
+      });
+    });
+  });
+  document.querySelectorAll(".seg [data-speed]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.speed === speed)); });
+
   // Pause the loop when the tab is backgrounded; resume on return (no unfair death).
   document.addEventListener("visibilitychange", function () {
     if (!st || st.phase !== "playing") return;

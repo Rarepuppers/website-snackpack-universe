@@ -126,6 +126,7 @@
               <button type="button" data-level="3" aria-pressed="true">Medium</button>
               <button type="button" data-level="5" aria-pressed="false">Hard</button>
             </div>
+            <button class="btn-game" id="rv-undo" type="button" disabled>Undo</button>
             <button class="btn-game btn-game--primary" id="rv-new" type="button">New game</button>
           </div>
         </div>
@@ -240,8 +241,11 @@
   var youEl = document.getElementById("rv-you");
   var cpuEl = document.getElementById("rv-cpu");
   var newBtn = document.getElementById("rv-new");
+  var undoBtn = document.getElementById("rv-undo");
 
   var board, cells, busy = false, gameOver = false, depth = 3, legal = [];
+  var undoStack = [];
+  function updateUndo() { undoBtn.disabled = busy || undoStack.length === 0; }
 
   function build() {
     boardEl.innerHTML = "";
@@ -259,6 +263,7 @@
     board = new Array(64).fill(0);
     board[27] = -1; board[28] = 1; board[35] = 1; board[36] = -1; // d4 w, e4 b, d5 b, e5 w
     busy = false; gameOver = false;
+    undoStack = [];
     statusEl.className = "game-status";
     statusEl.textContent = "Your move — you're black. Legal squares are dotted.";
     render();
@@ -318,16 +323,27 @@
     }
     var cnt = counts(board);
     youEl.textContent = cnt.you; cpuEl.textContent = cnt.cpu;
+    updateUndo();
   }
 
   function humanPlay(i) {
     if (busy || gameOver) return;
     var mv = legal.filter(function (m) { return m.idx === i; })[0];
     if (!mv) return;
+    undoStack.push(board.slice());
     board = applyMove(board, mv, HUMAN);
     busy = true;
     render();
     setTimeout(nextAfterHuman, 250);
+  }
+
+  function undo() {
+    if (busy || !undoStack.length) return;
+    board = undoStack.pop();
+    busy = false; gameOver = false;
+    statusEl.textContent = "Move undone — your turn.";
+    statusEl.className = "game-status";
+    render();
   }
 
   function nextAfterHuman() {
@@ -450,6 +466,7 @@
     var sq = e.target.closest(".rv-sq"); if (!sq) return;
     humanPlay(+sq.dataset.i);
   });
+  undoBtn.addEventListener("click", undo);
   newBtn.addEventListener("click", reset);
   document.querySelectorAll(".seg [data-level]").forEach(function (btn) {
     btn.addEventListener("click", function () {

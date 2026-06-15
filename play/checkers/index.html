@@ -130,6 +130,7 @@
               <button type="button" data-level="4" aria-pressed="true">Medium</button>
               <button type="button" data-level="6" aria-pressed="false">Hard</button>
             </div>
+            <button class="btn-game" id="ck-undo" type="button" disabled>Undo</button>
             <button class="btn-game btn-game--primary" id="ck-new" type="button">New game</button>
           </div>
         </div>
@@ -234,8 +235,11 @@
   var youEl = document.getElementById("ck-you");
   var cpuEl = document.getElementById("ck-cpu");
   var newBtn = document.getElementById("ck-new");
+  var undoBtn = document.getElementById("ck-undo");
 
   var board, cells, selected = -1, legalForSel = [], busy = false, gameOver = false, depth = 4;
+  var undoStack = [];
+  function updateUndo() { undoBtn.disabled = busy || undoStack.length === 0; }
 
   function build() {
     boardEl.innerHTML = "";
@@ -258,6 +262,7 @@
       }
     }
     selected = -1; legalForSel = []; busy = false; gameOver = false;
+    undoStack = [];
     statusEl.textContent = "Your move — you're red.";
     statusEl.className = "game-status";
     render();
@@ -352,6 +357,7 @@
     var red = board.filter(function (v) { return v > 0; }).length;
     var black = board.filter(function (v) { return v < 0; }).length;
     youEl.textContent = red; cpuEl.textContent = black;
+    updateUndo();
   }
 
   // ── Turn handling ────────────────────────────────
@@ -365,6 +371,7 @@
     if (selected >= 0) {
       var pick = legalForSel.filter(function (mv) { return mv.seq[mv.seq.length - 1] === i; });
       if (pick.length) {
+        undoStack.push(board.slice());
         board = applyMove(board, pick[0]);
         selected = -1; legalForSel = [];
         render();
@@ -387,6 +394,7 @@
     busy = false;
     if (checkEnd(RED)) return;
     statusEl.textContent = "Your move — you're red.";
+    updateUndo();
   }
 
   function checkEnd(nextSide) {
@@ -401,7 +409,7 @@
   }
 
   function end(who) {
-    gameOver = true; busy = false;
+    gameOver = true; busy = false; updateUndo();
     if (who === "you") {
       statusEl.textContent = "You win! 🎉 The computer is out of moves.";
       statusEl.className = "game-status";
@@ -470,6 +478,15 @@
     var sq = e.target.closest(".ck-sq"); if (!sq) return;
     humanSelect(+sq.dataset.i);
   });
+  function undo() {
+    if (busy || !undoStack.length) return;
+    board = undoStack.pop();
+    selected = -1; legalForSel = []; gameOver = false;
+    statusEl.textContent = "Move undone — your turn.";
+    statusEl.className = "game-status";
+    render();
+  }
+  undoBtn.addEventListener("click", undo);
   newBtn.addEventListener("click", reset);
   document.querySelectorAll(".seg [data-level]").forEach(function (btn) {
     btn.addEventListener("click", function () {
