@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-15T16:26:47.667Z",
+  "updatedAt": "2026-06-15T20:00:41.444Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -223,11 +223,14 @@
     {
       "date": "Jun 15",
       "isoDate": "2026-06-15",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "G",
       "home": "Belgium",
       "away": "Egypt",
-      "venue": "Seattle"
+      "venue": "Seattle",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 1
     },
     {
       "date": "Jun 15",
@@ -250,14 +253,14 @@
     {
       "date": "Jun 15",
       "isoDate": "2026-06-15",
-      "time": "Live",
+      "time": "FT",
       "group": "H",
       "home": "Spain",
       "away": "Cape Verde",
       "venue": "Atlanta",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "hs": 0,
+      "as": 0,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 16",
