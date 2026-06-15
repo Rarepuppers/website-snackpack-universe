@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-14T23:08:56.087Z",
+  "updatedAt": "2026-06-15T05:31:45.837Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -175,14 +175,14 @@
     {
       "date": "Jun 14",
       "isoDate": "2026-06-14",
-      "time": "Live",
+      "time": "FT",
       "group": "E",
       "home": "Cote d'Ivoire",
       "away": "Ecuador",
       "venue": "Philadelphia",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "hs": 1,
+      "as": 0,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 14",
@@ -211,11 +211,14 @@
     {
       "date": "Jun 14",
       "isoDate": "2026-06-14",
-      "time": "Upcoming",
+      "time": "FT",
       "group": "F",
       "home": "Sweden",
       "away": "Tunisia",
-      "venue": "Monterrey"
+      "venue": "Monterrey",
+      "hs": 5,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 15",
