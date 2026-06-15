@@ -103,9 +103,13 @@
           </div>
         </div>
         <p class="game-status" id="c-status" aria-live="polite">Your move — drop a disc.</p>
+        <div class="color-pick" id="c-colors" aria-label="Disc colours">
+          <div class="cp-group"><span class="cp-label">You</span><span class="cp-swatches" id="c-you-sw"></span></div>
+          <div class="cp-group"><span class="cp-label">Computer</span><span class="cp-swatches" id="c-cpu-sw"></span></div>
+        </div>
         <div class="c4-legend" aria-label="Connect 4 colour key">
-          <span class="c4-key c4-key--you">You: red</span>
-          <span class="c4-key c4-key--cpu">Computer: yellow</span>
+          <span class="c4-key c4-key--you" id="c-key-you">You</span>
+          <span class="c4-key c4-key--cpu" id="c-key-cpu">Computer</span>
         </div>
         <p class="game-hint c4-board-hint">Click a column on the board, or use the buttons above each column.</p>
         <div class="game-board-wrap">
@@ -114,7 +118,7 @@
             <div class="c4-board" id="c-board"></div>
           </div>
         </div>
-        <p class="game-hint">You're red 🔴 · the computer is yellow 🟡 · use the buttons above each column.</p>
+        <p class="game-hint">Drop a disc — use the buttons above each column, or click a column on the board. Pick your colours above.</p>
       </div>
     </div>
   </section>
@@ -437,7 +441,10 @@
       col = cells.indexOf(cell) % COLS;
     } else {
       var box = boardEl.getBoundingClientRect();
-      col = Math.floor((e.clientX - box.left - 12) / 50);
+      var cs = getComputedStyle(boardEl);
+      var padL = parseFloat(cs.paddingLeft) || 0, padR = parseFloat(cs.paddingRight) || 0;
+      var inner = box.width - padL - padR;
+      col = Math.floor((e.clientX - box.left - padL) / (inner / COLS));
     }
     if (col >= 0 && col < COLS && board[0][col] === 0) humanMove(col);
   });
@@ -451,6 +458,51 @@
       reset();
     });
   });
+
+  // ── Colour / colour-blind picker ─────────────────
+  var PALETTE = [
+    { id: "red",    name: "red",    light: "#ef8a5a", dark: "#b9481e" },
+    { id: "amber",  name: "amber",  light: "#f3cf6a", dark: "#d99b1f" },
+    { id: "blue",   name: "blue",   light: "#5aa9ef", dark: "#1e6fb9" },
+    { id: "teal",   name: "teal",   light: "#5fd0bf", dark: "#1f8f77" },
+    { id: "purple", name: "purple", light: "#b08aef", dark: "#5b3fb0" },
+    { id: "pink",   name: "pink",   light: "#ef8ac0", dark: "#b91e7a" }
+  ];
+  function paletteById(id) { for (var i = 0; i < PALETTE.length; i++) if (PALETTE[i].id === id) return PALETTE[i]; return PALETTE[0]; }
+  var colP1 = "red", colP2 = "amber";
+  try { colP1 = localStorage.getItem("sp_connect4_p1") || colP1; colP2 = localStorage.getItem("sp_connect4_p2") || colP2; } catch (e) {}
+  if (colP1 === colP2) colP2 = colP1 === "amber" ? "blue" : "amber";
+
+  function applyColours() {
+    var p1 = paletteById(colP1), p2 = paletteById(colP2);
+    var root = document.documentElement.style;
+    root.setProperty("--c4-p1-light", p1.light); root.setProperty("--c4-p1-dark", p1.dark);
+    root.setProperty("--c4-p2-light", p2.light); root.setProperty("--c4-p2-dark", p2.dark);
+    document.getElementById("c-key-you").textContent = "You: " + p1.name;
+    document.getElementById("c-key-cpu").textContent = "Computer: " + p2.name;
+    document.querySelectorAll("#c-you-sw .cp-swatch").forEach(function (b) { b.classList.toggle("is-on", b.dataset.id === colP1); });
+    document.querySelectorAll("#c-cpu-sw .cp-swatch").forEach(function (b) { b.classList.toggle("is-on", b.dataset.id === colP2); });
+    try { localStorage.setItem("sp_connect4_p1", colP1); localStorage.setItem("sp_connect4_p2", colP2); } catch (e) {}
+  }
+
+  function buildSwatches(container, isYou) {
+    container.innerHTML = "";
+    PALETTE.forEach(function (p) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "cp-swatch"; b.dataset.id = p.id;
+      b.style.setProperty("--sw", p.dark);
+      b.setAttribute("aria-label", (isYou ? "Your" : "Computer") + " colour " + p.name);
+      b.addEventListener("click", function () {
+        if (isYou) { colP1 = p.id; if (colP2 === colP1) colP2 = PALETTE[(PALETTE.indexOf(p) + 1) % PALETTE.length].id; }
+        else { colP2 = p.id; if (colP1 === colP2) colP1 = PALETTE[(PALETTE.indexOf(p) + 1) % PALETTE.length].id; }
+        applyColours();
+      });
+      container.appendChild(b);
+    });
+  }
+  buildSwatches(document.getElementById("c-you-sw"), true);
+  buildSwatches(document.getElementById("c-cpu-sw"), false);
+  applyColours();
 
   reset();
 })();

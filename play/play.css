@@ -419,8 +419,8 @@
   will-change: transform;
 }
 
-.c4-cell.is-p1 { background: radial-gradient(circle at 35% 30%, #ef8a5a, #b9481e); }
-.c4-cell.is-p2 { background: radial-gradient(circle at 35% 30%, #f3cf6a, #d99b1f); }
+.c4-cell.is-p1 { background: radial-gradient(circle at 35% 30%, var(--c4-p1-light, #ef8a5a), var(--c4-p1-dark, #b9481e)); }
+.c4-cell.is-p2 { background: radial-gradient(circle at 35% 30%, var(--c4-p2-light, #f3cf6a), var(--c4-p2-dark, #d99b1f)); }
 .c4-cell.is-drop {
   animation: c4-drop 0.34s cubic-bezier(0.2, 0.88, 0.28, 1.12);
 }
@@ -461,8 +461,8 @@
   border-radius: 999px;
   box-shadow: inset 0 2px 4px rgba(32, 23, 19, 0.18);
 }
-.c4-key--you::before { background: radial-gradient(circle at 35% 30%, #ef8a5a, #b9481e); }
-.c4-key--cpu::before { background: radial-gradient(circle at 35% 30%, #f3cf6a, #d99b1f); }
+.c4-key--you::before { background: radial-gradient(circle at 35% 30%, var(--c4-p1-light, #ef8a5a), var(--c4-p1-dark, #b9481e)); }
+.c4-key--cpu::before { background: radial-gradient(circle at 35% 30%, var(--c4-p2-light, #f3cf6a), var(--c4-p2-dark, #d99b1f)); }
 .c4-board-hint {
   margin-top: -6px;
   margin-bottom: 12px;
@@ -1064,6 +1064,112 @@ button.th-card.is-selected {
   .mj-tile { transition: none; }
   .mj-tile.is-hint { animation: none; }
 }
+
+/* ── Table Tennis ────────────────────────────────── */
+.tt-colors { display: flex; align-items: center; gap: 8px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap; }
+.tt-colors-label { color: var(--muted); font-size: 0.85rem; font-weight: 600; }
+.tt-swatch {
+  width: 26px; height: 26px; border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  background: var(--sw);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(32, 23, 19, 0.25);
+}
+.tt-swatch.is-on { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.tt-board-wrap { position: relative; display: flex; justify-content: center; }
+#tt-canvas, #as-canvas {
+  width: auto;
+  height: min(62vh, 540px);
+  max-width: 100%;
+  aspect-ratio: 390 / 680;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  touch-action: none;
+  cursor: pointer;
+}
+.tt-overlay {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  min-height: 48px;
+  padding: 0 30px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font: inherit; font-weight: 700; font-size: 1.05rem;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(32, 23, 19, 0.35);
+}
+.tt-overlay:hover { transform: translate(-50%, -50%) translateY(-2px); }
+
+@media (prefers-reduced-motion: reduce) { .tt-overlay:hover { transform: translate(-50%, -50%); } }
+
+/* ── Asteroid Destroyer controls ─────────────────── */
+.as-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.as-btn {
+  min-width: 56px;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  font: inherit;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--ink);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  transition: transform 0.08s ease, background 0.08s ease;
+}
+.as-btn:active { transform: scale(0.95); background: var(--accent); color: #fff; }
+.as-btn--fire {
+  background: var(--brand-deep);
+  color: #fff;
+  border-color: var(--brand-deep);
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  padding: 0 22px;
+}
+.as-btn--fire:active { background: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) { .as-btn { transition: none; } }
+
+/* ── Reusable colour / colour-blind picker ───────── */
+.color-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.cp-group { display: flex; align-items: center; gap: 7px; }
+.cp-label { color: var(--muted); font-size: 0.85rem; font-weight: 600; }
+.cp-swatch {
+  width: 24px; height: 24px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  background: var(--sw);
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 1px 4px rgba(32, 23, 19, 0.25);
+  transition: transform 0.1s ease;
+}
+.cp-swatch:hover { transform: scale(1.1); }
+.cp-swatch.is-on { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) { .cp-swatch { transition: none; } }
 
 /* ── App-download funnel card ────────────────────── */
 .funnel-card {

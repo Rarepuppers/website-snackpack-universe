@@ -37,8 +37,8 @@
 }
 .rv-sq { position: relative; background: #2a8a63; border-radius: 4px; display: grid; place-items: center; cursor: default; }
 .rv-disc { width: 80%; height: 80%; border-radius: 999px; }
-.rv-disc.b { background: radial-gradient(circle at 35% 30%, #4a4a52, #15151a); box-shadow: 0 2px 3px rgba(0,0,0,0.35); }
-.rv-disc.w { background: radial-gradient(circle at 35% 30%, #ffffff, #d6d2c8); box-shadow: 0 2px 3px rgba(0,0,0,0.3); }
+.rv-disc.b { background: radial-gradient(circle at 35% 30%, var(--rv-p1-light, #4a4a52), var(--rv-p1-dark, #15151a)); box-shadow: 0 2px 3px rgba(0,0,0,0.35); }
+.rv-disc.w { background: radial-gradient(circle at 35% 30%, var(--rv-p2-light, #ffffff), var(--rv-p2-dark, #d6d2c8)); box-shadow: 0 2px 3px rgba(0,0,0,0.3); }
 .rv-sq.legal { cursor: pointer; }
 .rv-sq.legal::after {
   content: ""; width: 26%; height: 26%; border-radius: 999px;
@@ -129,7 +129,11 @@
             <button class="btn-game btn-game--primary" id="rv-new" type="button">New game</button>
           </div>
         </div>
-        <p class="game-status" id="rv-status" aria-live="polite">Your move — you're black. Legal squares are dotted.</p>
+        <p class="game-status" id="rv-status" aria-live="polite">Your move. Legal squares are dotted.</p>
+        <div class="color-pick" id="rv-colors" aria-label="Disc colours">
+          <div class="cp-group"><span class="cp-label">You</span><span class="cp-swatches" id="rv-you-sw"></span></div>
+          <div class="cp-group"><span class="cp-label">Computer</span><span class="cp-swatches" id="rv-cpu-sw"></span></div>
+        </div>
         <div class="game-board-wrap">
           <div class="rv-board" id="rv-board" role="grid" aria-label="Reversi board"></div>
         </div>
@@ -456,6 +460,50 @@
       reset();
     });
   });
+
+  // ── Colour / colour-blind picker ─────────────────
+  var PALETTE = [
+    { id: "slate",  name: "slate",  light: "#4a4a52", dark: "#15151a" },
+    { id: "cream",  name: "cream",  light: "#ffffff", dark: "#d6d2c8" },
+    { id: "red",    name: "red",    light: "#ef6f5a", dark: "#c0392b" },
+    { id: "amber",  name: "amber",  light: "#f3cf6a", dark: "#d99b1f" },
+    { id: "blue",   name: "blue",   light: "#5aa9ef", dark: "#1e6fb9" },
+    { id: "teal",   name: "teal",   light: "#5fd0bf", dark: "#1f8f77" },
+    { id: "purple", name: "purple", light: "#b08aef", dark: "#5b3fb0" },
+    { id: "pink",   name: "pink",   light: "#ef8ac0", dark: "#b91e7a" }
+  ];
+  function palById(id) { for (var i = 0; i < PALETTE.length; i++) if (PALETTE[i].id === id) return PALETTE[i]; return PALETTE[0]; }
+  var colP1 = "slate", colP2 = "cream";
+  try { colP1 = localStorage.getItem("sp_reversi_p1") || colP1; colP2 = localStorage.getItem("sp_reversi_p2") || colP2; } catch (e) {}
+  if (colP1 === colP2) colP2 = colP1 === "cream" ? "slate" : "cream";
+
+  function applyColours() {
+    var p1 = palById(colP1), p2 = palById(colP2);
+    var root = document.documentElement.style;
+    root.setProperty("--rv-p1-light", p1.light); root.setProperty("--rv-p1-dark", p1.dark);
+    root.setProperty("--rv-p2-light", p2.light); root.setProperty("--rv-p2-dark", p2.dark);
+    document.querySelectorAll("#rv-you-sw .cp-swatch").forEach(function (b) { b.classList.toggle("is-on", b.dataset.id === colP1); });
+    document.querySelectorAll("#rv-cpu-sw .cp-swatch").forEach(function (b) { b.classList.toggle("is-on", b.dataset.id === colP2); });
+    try { localStorage.setItem("sp_reversi_p1", colP1); localStorage.setItem("sp_reversi_p2", colP2); } catch (e) {}
+  }
+  function buildSwatches(container, isYou) {
+    container.innerHTML = "";
+    PALETTE.forEach(function (p) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "cp-swatch"; b.dataset.id = p.id;
+      b.style.setProperty("--sw", p.dark);
+      b.setAttribute("aria-label", (isYou ? "Your" : "Computer") + " colour " + p.name);
+      b.addEventListener("click", function () {
+        if (isYou) { colP1 = p.id; if (colP2 === colP1) colP2 = PALETTE[(PALETTE.indexOf(p) + 1) % PALETTE.length].id; }
+        else { colP2 = p.id; if (colP1 === colP2) colP1 = PALETTE[(PALETTE.indexOf(p) + 1) % PALETTE.length].id; }
+        applyColours();
+      });
+      container.appendChild(b);
+    });
+  }
+  buildSwatches(document.getElementById("rv-you-sw"), true);
+  buildSwatches(document.getElementById("rv-cpu-sw"), false);
+  applyColours();
 
   build();
   reset();

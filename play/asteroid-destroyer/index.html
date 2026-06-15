@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Asteroid Destroyer Online Free | Asteroids Arcade Game — SnackPack</title>
+<meta name="description" content="Play Asteroid Destroyer free in your browser — blast asteroids, grab power-ups and chase a high score. Classic turret, rotation and 60-second blitz modes. No ads, no sign-in, no download. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/asteroid-destroyer/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Asteroid Destroyer Online Free | Asteroids Arcade Game">
+<meta property="og:description" content="Blast asteroids, grab power-ups and chase a high score. Classic, rotation and 60-second blitz modes — free in your browser, no ads.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/asteroid-destroyer/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Asteroid Destroyer",
+  "url": "https://www.snackpackuniverse.com/play/asteroid-destroyer/",
+  "applicationCategory": "Game",
+  "genre": "Arcade",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser Asteroid Destroyer arcade game. Blast asteroids, grab power-ups and chase a high score across classic turret, rotation and 60-second blitz modes. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Asteroid Destroyer",
+  "step": [
+    { "@type": "HowToStep", "name": "Aim and fire", "text": "Shoot the drifting asteroids. Large ones split into smaller, faster pieces." },
+    { "@type": "HowToStep", "name": "Grab power-ups", "text": "Collect shield, triple-shot and slow-time drops from destroyed asteroids." },
+    { "@type": "HowToStep", "name": "Survive", "text": "Avoid colliding with asteroids. You have three lives — clear waves and chase a high score." }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Asteroid Destroyer</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="/apps/">Apps</a></li>
+        <li><a href="/play/">Play</a></li>
+        <li><a href="/guides/">Guides</a></li>
+        <li><a class="nav-wc" href="/world-cup/"><img class="nav-ball" src="/world-cup/officialball_transparent2-50.png" alt="" width="18" height="18">World Cup</a></li>
+        <li><a href="/#pipeline">Roadmap</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Asteroid Destroyer</h1>
+        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">Blast the drifting rocks before they hit you. Big asteroids split into faster shards, power-ups drop from the rubble, and the score keeps climbing. Classic, rotation and 60-second blitz modes. No ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage tt-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Score</span><b id="as-score">0</b></span>
+            <span class="readout-chip"><span>Best</span><b id="as-best">0</b></span>
+            <span class="readout-chip"><span>Lives</span><b id="as-lives">3</b></span>
+            <span class="readout-chip"><span>Wave</span><b id="as-wave">1</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Mode">
+              <button type="button" data-mode="classic" aria-pressed="true">Classic</button>
+              <button type="button" data-mode="rotation" aria-pressed="false">Rotation</button>
+              <button type="button" data-mode="blitz" aria-pressed="false">Blitz</button>
+            </div>
+            <button class="btn-game btn-game--primary" id="as-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="as-status" aria-live="polite">Press Start to launch.</p>
+
+        <div class="tt-board-wrap">
+          <canvas id="as-canvas" width="390" height="680" aria-label="Asteroid field"></canvas>
+          <button class="tt-overlay" id="as-start" type="button">Start</button>
+        </div>
+
+        <div class="as-controls" id="as-controls">
+          <button type="button" class="as-btn" data-ctrl="left" aria-label="Rotate left">◀</button>
+          <button type="button" class="as-btn" data-ctrl="thrust" aria-label="Thrust">▲</button>
+          <button type="button" class="as-btn" data-ctrl="right" aria-label="Rotate right">▶</button>
+          <button type="button" class="as-btn as-btn--fire" data-ctrl="fire" aria-label="Fire">FIRE</button>
+        </div>
+        <p class="game-hint" id="as-hint">Keys: ← → rotate · ↑ thrust · Space fire. Or use the buttons / tap the field.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">Play on the go</span>
+          <h2>Like it? Take it offline.</h2>
+          <p>Asteroid Destroyer is one of the games in Snackpack Brain Games Vol 2 — our calm, ad-free Android bundle with arcade games, cards and puzzles in one app.</p>
+          <ul class="funnel-points">
+            <li>Plays fully offline — flights, commutes, anywhere</li>
+            <li>High scores saved on your device</li>
+            <li>More games in the same app · no ads, no tracking</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingamesvol2" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games Vol 2 on Google Play">
+              <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play">
+            </a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <img class="funnel-qr" src="../../assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play">
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;">Scan to download</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Asteroid Destroyer</h2>
+      <p>Asteroid Destroyer is a modern take on the arcade classic Asteroids. Rocks drift across the screen and your job is to blow them up before they hit you. Shooting a large asteroid breaks it into two medium ones, and mediums break into fast little shards — so the screen gets busier before it clears. Destroyed rocks sometimes drop power-ups: a shield that soaks one hit, a triple-shot that widens your fire, and slow-time that eases the chaos. You have three lives; clear waves and push your high score as far as you can.</p>
+
+      <h3>Controls</h3>
+      <ul>
+        <li><strong>Keyboard</strong> — left/right arrows (or A/D) rotate, up arrow (or W) thrusts, Space fires.</li>
+        <li><strong>Touch</strong> — use the on-screen rotate, thrust and fire buttons, or tap the field to shoot.</li>
+      </ul>
+
+      <h3>Modes</h3>
+      <ul>
+        <li><strong>Classic</strong> — your ship holds position and fires straight up; time your shots as rocks close in.</li>
+        <li><strong>Rotation</strong> — full Asteroids control: rotate, thrust and drift with momentum.</li>
+        <li><strong>Blitz</strong> — rotation control against the clock: score as much as you can in 60 seconds, with a rising combo multiplier.</li>
+      </ul>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Asteroid Destroyer free here?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>What do the power-ups do?</summary><p>Shield absorbs one hit, triple-shot widens your fire for a while, and slow-time slows everything down briefly.</p></details>
+        <details class="faq-item"><summary>Is my high score saved?</summary><p>Yes — your best score for each mode is saved on your own device.</p></details>
+        <details class="faq-item"><summary>Can I play offline?</summary><p>This web version needs a browser. For fully offline play and more games, try the free <a class="text-link" href="../../apps/snackpack-brain-games-vol-2/" style="color:var(--accent);">Snackpack Brain Games Vol 2</a> app.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Asteroid Destroyer free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../apps/snackpack-brain-games-vol-2/">Brain Games Vol 2 app</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingamesvol2";</script>
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // ════ Engine (ported from the Vol 2 app's asteroid-destroyer/engine.ts) ════
+  var W = 390, H = 680;
+  var ASTEROID_RADII = { large: 38, medium: 22, small: 12 };
+  var ASTEROID_HP = { large: 3, medium: 2, small: 1 };
+  var POINTS = { large: 20, medium: 50, small: 100 };
+  var BULLET_SPEED = 9, BULLET_LIFE = 70, SHIP_RADIUS = 14, SHIP_THRUST = 0.18, SHIP_DRAG = 0.97, SHIP_ROTATION_SPEED = 0.065;
+  var BLITZ_FRAMES = 60 * 60, POWERUP_DROP_CHANCE = 1 / 8, POWERUP_LIFE = 60 * 7;
+  var TRIPLE_SHOT_FRAMES = 60 * 8, SLOW_TIME_FRAMES = 60 * 6, WAVE_SPLASH_FRAMES = 90;
+
+  var MODE_CONFIG = {
+    classic:  { shipFixed: true,  canRotate: false, blitz: false, initAsteroids: 3, spawnInterval: 240, asteroidSpeedMult: 1.0 },
+    rotation: { shipFixed: false, canRotate: true,  blitz: false, initAsteroids: 4, spawnInterval: 200, asteroidSpeedMult: 1.1 },
+    blitz:    { shipFixed: false, canRotate: true,  blitz: true,  initAsteroids: 5, spawnInterval: 140, asteroidSpeedMult: 1.3 }
+  };
+
+  function rand(min, max) { return min + Math.random() * (max - min); }
+  function dist(a, b) { var dx = a.x - b.x, dy = a.y - b.y; return Math.sqrt(dx * dx + dy * dy); }
+  function wrapX(x) { return x < -50 ? W + 50 : x > W + 50 ? -50 : x; }
+  function wrapY(y) { return y < -50 ? H + 50 : y > H + 50 ? -50 : y; }
+
+  function spawnAsteroid(nextId, size, speedMult, avoidX, avoidY) {
+    var r = ASTEROID_RADII[size], x = 0, y = 0;
+    for (var attempt = 0; attempt < 10; attempt++) {
+      var edge = Math.floor(Math.random() * 4);
+      if (edge === 0) { x = rand(0, W); y = -r; }
+      else if (edge === 1) { x = rand(0, W); y = H + r; }
+      else if (edge === 2) { x = -r; y = rand(0, H); }
+      else { x = W + r; y = rand(0, H); }
+      if (avoidX === undefined || dist({ x: x, y: y }, { x: avoidX, y: avoidY === undefined ? H / 2 : avoidY }) > 100) break;
+    }
+    var cx = W / 2 + rand(-60, 60), cy = H / 2 + rand(-60, 60);
+    var spd = rand(0.6, 1.4) * speedMult;
+    var len = Math.sqrt((cx - x) * (cx - x) + (cy - y) * (cy - y)) || 1;
+    return { id: nextId, x: x, y: y, vx: ((cx - x) / len) * spd, vy: ((cy - y) / len) * spd, radius: r, size: size, angle: rand(0, Math.PI * 2), spin: rand(-0.03, 0.03), hp: ASTEROID_HP[size] };
+  }
+
+  function spawnParticles(nextId, x, y, color, count) {
+    var out = [];
+    for (var i = 0; i < count; i++) {
+      var angle = (i / count) * Math.PI * 2 + rand(-0.3, 0.3);
+      var spd = rand(1.5, 4.0), life = Math.floor(rand(18, 36));
+      out.push({ id: nextId + i, x: x, y: y, vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd, life: life, maxLife: life, color: color, size: rand(2, 5) });
+    }
+    return out;
+  }
+
+  function spawnPowerUp(nextId, x, y) {
+    var roll = Math.floor(Math.random() * 3);
+    var type = roll === 0 ? "shield" : roll === 1 ? "triple" : "slow";
+    return { id: nextId, type: type, x: x, y: y, vx: rand(-0.35, 0.35), vy: rand(0.25, 0.75), radius: 13, life: POWERUP_LIFE };
+  }
+
+  function makeBullet(id, ship, angle) {
+    return { id: id, x: ship.x + Math.sin(angle) * (ship.radius + 2), y: ship.y - Math.cos(angle) * (ship.radius + 2), vx: Math.sin(angle) * BULLET_SPEED, vy: -Math.cos(angle) * BULLET_SPEED, radius: 3, life: BULLET_LIFE };
+  }
+
+  function initialState(mode, bestScore) {
+    var cfg = MODE_CONFIG[mode], nextId = 1;
+    var shipY = cfg.shipFixed ? H - 60 : H / 2;
+    var ship = { x: W / 2, y: shipY, angle: 0, vx: 0, vy: 0, radius: SHIP_RADIUS, invincible: 0 };
+    var asteroids = [];
+    for (var i = 0; i < cfg.initAsteroids; i++) asteroids.push(spawnAsteroid(nextId++, "large", cfg.asteroidSpeedMult, ship.x, ship.y));
+    return {
+      phase: "playing", mode: mode, ship: ship, asteroids: asteroids, bullets: [], powerUps: [], particles: [],
+      score: 0, bestScore: bestScore || 0, lives: 3, wave: 1, waveSplash: WAVE_SPLASH_FRAMES,
+      shieldHits: 0, tripleShot: 0, slowTime: 0, hitStreak: 0, multiplier: 1, frame: 0, blitzTimeLeft: BLITZ_FRAMES, nextId: nextId, started: false
+    };
+  }
+
+  function fireClassic(state) {
+    if (state.phase !== "playing") return state;
+    var spread = state.tripleShot > 0 ? [-0.25, 0, 0.25] : [0];
+    spread.forEach(function (angle, i) { state.bullets.push(makeBullet(state.nextId + i, state.ship, angle)); });
+    state.nextId += spread.length;
+    return state;
+  }
+  function fireDirectional(state) {
+    if (state.phase !== "playing") return state;
+    var spread = state.tripleShot > 0 ? [-0.25, 0, 0.25] : [0];
+    spread.forEach(function (offset, i) { state.bullets.push(makeBullet(state.nextId + i, state.ship, state.ship.angle + offset)); });
+    state.nextId += spread.length;
+    return state;
+  }
+  function rotateLeft(state) { state.ship.angle -= SHIP_ROTATION_SPEED; }
+  function rotateRight(state) { state.ship.angle += SHIP_ROTATION_SPEED; }
+  function thrust(state) { state.ship.vx += Math.sin(state.ship.angle) * SHIP_THRUST; state.ship.vy -= Math.cos(state.ship.angle) * SHIP_THRUST; }
+
+  function splitAsteroid(nextId, asteroid, wave, speedMult) {
+    var children = [], i, child;
+    if (asteroid.size === "large") {
+      for (i = 0; i < 2; i++) { child = spawnAsteroid(nextId++, "medium", speedMult * (1 + wave * 0.05)); child.x = asteroid.x + rand(-20, 20); child.y = asteroid.y + rand(-20, 20); children.push(child); }
+    } else if (asteroid.size === "medium") {
+      for (i = 0; i < 2; i++) { child = spawnAsteroid(nextId++, "small", speedMult * (1 + wave * 0.05)); child.x = asteroid.x + rand(-12, 12); child.y = asteroid.y + rand(-12, 12); children.push(child); }
+    }
+    return { children: children, nextId: nextId };
+  }
+
+  function tick(state) {
+    if (state.phase !== "playing") return state;
+    var cfg = MODE_CONFIG[state.mode];
+    state.frame += 1;
+    var nextId = state.nextId, score = state.score, lives = state.lives, wave = state.wave;
+    state.waveSplash = Math.max(0, state.waveSplash - 1);
+    var shieldHits = state.shieldHits, tripleShot = Math.max(0, state.tripleShot - 1), slowTime = Math.max(0, state.slowTime - 1);
+    var hitStreak = state.hitStreak, multiplier = state.multiplier;
+    var blitzTimeLeft = state.blitzTimeLeft - (cfg.blitz ? 1 : 0);
+    var newParticles = [];
+    var speedScale = slowTime > 0 ? 0.45 : 1;
+
+    var ship = state.ship;
+    if (!cfg.shipFixed) {
+      ship.vx *= SHIP_DRAG; ship.vy *= SHIP_DRAG;
+      ship.x = wrapX(ship.x + ship.vx * speedScale); ship.y = wrapY(ship.y + ship.vy * speedScale);
+    }
+    if (ship.invincible > 0) ship.invincible -= 1;
+
+    var bullets = [];
+    state.bullets.forEach(function (b) { b.x += b.vx; b.y += b.vy; b.life -= 1; if (b.life > 0 && b.x > -10 && b.x < W + 10 && b.y > -10 && b.y < H + 10) bullets.push(b); });
+
+    var asteroids = state.asteroids.map(function (a) { a.x = wrapX(a.x + a.vx * speedScale); a.y = wrapY(a.y + a.vy * speedScale); a.angle += a.spin * speedScale; return a; });
+
+    var powerUps = [];
+    state.powerUps.forEach(function (p) { p.x = wrapX(p.x + p.vx); p.y = wrapY(p.y + p.vy * speedScale); p.life -= 1; if (p.life > 0) powerUps.push(p); });
+
+    var hitBulletIds = {}, hitAsteroidUpdates = {}, splitAsteroids = [];
+    for (var bi = 0; bi < bullets.length; bi++) {
+      var bullet = bullets[bi];
+      for (var ai = 0; ai < asteroids.length; ai++) {
+        var asteroid = asteroids[ai];
+        if (hitBulletIds[bullet.id]) continue;
+        if (hitAsteroidUpdates[asteroid.id] && hitAsteroidUpdates[asteroid.id].hp <= 0) continue;
+        if (dist(bullet, asteroid) < bullet.radius + asteroid.radius) {
+          hitBulletIds[bullet.id] = true;
+          var curHp = hitAsteroidUpdates[asteroid.id] ? hitAsteroidUpdates[asteroid.id].hp : asteroid.hp;
+          var hp = curHp - 1;
+          if (hp <= 0) {
+            hitStreak += 1;
+            multiplier = cfg.blitz ? Math.min(3, 1 + Math.floor(hitStreak / 6)) : 1;
+            score += POINTS[asteroid.size] * multiplier;
+            var pColor = asteroid.size === "large" ? "#FF7043" : asteroid.size === "medium" ? "#FFB74D" : "#FFF176";
+            var pCount = asteroid.size === "large" ? 12 : asteroid.size === "medium" ? 8 : 5;
+            newParticles = newParticles.concat(spawnParticles(nextId, asteroid.x, asteroid.y, pColor, pCount)); nextId += pCount;
+            var split = splitAsteroid(nextId, asteroid, wave, cfg.asteroidSpeedMult); splitAsteroids = splitAsteroids.concat(split.children); nextId = split.nextId;
+            if (Math.random() < POWERUP_DROP_CHANCE) powerUps.push(spawnPowerUp(nextId++, asteroid.x, asteroid.y));
+            hitAsteroidUpdates[asteroid.id] = { hp: -1 };
+          } else {
+            hitAsteroidUpdates[asteroid.id] = { hp: hp };
+          }
+        }
+      }
+    }
+
+    bullets = bullets.filter(function (b) { return !hitBulletIds[b.id]; });
+    var keptAsteroids = [];
+    asteroids.forEach(function (a) {
+      var up = hitAsteroidUpdates[a.id];
+      if (up) { if (up.hp > 0) { a.hp = up.hp; keptAsteroids.push(a); } }
+      else keptAsteroids.push(a);
+    });
+    asteroids = keptAsteroids.concat(splitAsteroids);
+
+    var collected = {};
+    powerUps.forEach(function (p) {
+      if (dist(ship, p) < ship.radius + p.radius) {
+        collected[p.id] = true;
+        if (p.type === "shield") shieldHits = Math.min(1, shieldHits + 1);
+        if (p.type === "triple") tripleShot = TRIPLE_SHOT_FRAMES;
+        if (p.type === "slow") slowTime = SLOW_TIME_FRAMES;
+        var color = p.type === "shield" ? "#64B5F6" : p.type === "triple" ? "#FFF176" : "#B388FF";
+        newParticles = newParticles.concat(spawnParticles(nextId, p.x, p.y, color, 10)); nextId += 10;
+      }
+    });
+    powerUps = powerUps.filter(function (p) { return !collected[p.id]; });
+
+    if (ship.invincible === 0) {
+      for (var k = 0; k < asteroids.length; k++) {
+        if (dist(ship, asteroids[k]) < ship.radius + asteroids[k].radius - 4) {
+          if (shieldHits > 0) shieldHits -= 1; else lives -= 1;
+          hitStreak = 0; multiplier = 1;
+          ship.invincible = 120; ship.x = W / 2; ship.y = cfg.shipFixed ? H - 60 : H / 2; ship.vx = 0; ship.vy = 0;
+          newParticles = newParticles.concat(spawnParticles(nextId, ship.x, ship.y, "#FFFFFF", 16)); nextId += 16;
+          break;
+        }
+      }
+    }
+
+    var particles = [];
+    state.particles.forEach(function (p) { p.x += p.vx; p.y += p.vy; p.life -= 1; p.vx *= 0.94; p.vy *= 0.94; if (p.life > 0) particles.push(p); });
+    particles = particles.concat(newParticles);
+
+    if (asteroids.length === 0) {
+      wave += 1; state.waveSplash = WAVE_SPLASH_FRAMES;
+      var newCount = Math.min(3 + wave, 8);
+      for (var n = 0; n < newCount; n++) asteroids.push(spawnAsteroid(nextId++, "large", cfg.asteroidSpeedMult * (1 + wave * 0.08), ship.x, ship.y));
+    } else if (state.frame % cfg.spawnInterval === 0) {
+      asteroids.push(spawnAsteroid(nextId++, "large", cfg.asteroidSpeedMult * (1 + wave * 0.05), ship.x, ship.y));
+    }
+
+    state.ship = ship; state.asteroids = asteroids; state.bullets = bullets; state.powerUps = powerUps; state.particles = particles;
+    state.score = score; state.bestScore = Math.max(state.bestScore, score); state.lives = lives; state.wave = wave;
+    state.shieldHits = shieldHits; state.tripleShot = tripleShot; state.slowTime = slowTime;
+    state.hitStreak = hitStreak; state.multiplier = multiplier; state.nextId = nextId; state.blitzTimeLeft = blitzTimeLeft; state.started = true;
+
+    if (lives <= 0) state.phase = "dead";
+    else if (cfg.blitz && blitzTimeLeft <= 0) { state.blitzTimeLeft = 0; state.phase = "blitz-end"; }
+    return state;
+  }
+
+  // ════ UI / loop ════
+  var canvas = document.getElementById("as-canvas");
+  var ctx = canvas.getContext("2d");
+  var statusEl = document.getElementById("as-status");
+  var scoreEl = document.getElementById("as-score");
+  var bestEl = document.getElementById("as-best");
+  var livesEl = document.getElementById("as-lives");
+  var waveEl = document.getElementById("as-wave");
+  var newBtn = document.getElementById("as-new");
+  var startBtn = document.getElementById("as-start");
+  var controlsEl = document.getElementById("as-controls");
+  var hintEl = document.getElementById("as-hint");
+
+  var mode = "classic";
+  var state = initialState(mode, bestFor(mode));
+  var input = { left: false, right: false, thrust: false, fire: false };
+  var fireTimer = 0;
+  var FIRE_CD = 9;
+
+  function bestKey(m) { return "sp_asteroid_best_" + m; }
+  function bestFor(m) { try { return parseInt(localStorage.getItem(bestKey(m)) || "0", 10) || 0; } catch (e) { return 0; } }
+
+  function reset(startNow) {
+    state = initialState(mode, bestFor(mode));
+    state.phase = startNow ? "playing" : "paused";
+    fireTimer = 0;
+    bestEl.textContent = state.bestScore;
+    updateHud();
+    statusEl.className = "game-status";
+    if (startNow) { startBtn.style.display = "none"; statusEl.textContent = "Go!"; }
+    else { startBtn.style.display = ""; startBtn.textContent = "Start"; statusEl.textContent = "Press Start to launch."; }
+    applyModeUi();
+    draw();
+  }
+
+  function applyModeUi() {
+    var rotMode = MODE_CONFIG[mode].canRotate;
+    controlsEl.querySelectorAll('[data-ctrl="left"],[data-ctrl="right"],[data-ctrl="thrust"]').forEach(function (b) {
+      b.style.display = rotMode ? "" : "none";
+    });
+    hintEl.textContent = rotMode ? "Keys: ← → rotate · ↑ thrust · Space fire. Or use the buttons / tap the field." : "Keys: Space fire. Or tap the field / the FIRE button. (Classic = fixed turret.)";
+  }
+
+  function updateHud() {
+    scoreEl.textContent = state.score;
+    bestEl.textContent = state.bestScore;
+    livesEl.textContent = state.lives;
+    waveEl.textContent = MODE_CONFIG[mode].blitz ? Math.ceil(state.blitzTimeLeft / 60) + "s" : state.wave;
+  }
+
+  function loop() {
+    requestAnimationFrame(loop);
+    if (state.phase !== "playing") return;
+    // inputs
+    if (MODE_CONFIG[mode].canRotate) {
+      if (input.left) rotateLeft(state);
+      if (input.right) rotateRight(state);
+      if (input.thrust) thrust(state);
+    }
+    if (fireTimer > 0) fireTimer -= 1;
+    if (input.fire && fireTimer <= 0) { MODE_CONFIG[mode].shipFixed ? fireClassic(state) : fireDirectional(state); fireTimer = FIRE_CD; }
+    tick(state);
+    draw();
+    updateHud();
+    if (state.phase === "dead" || state.phase === "blitz-end") finish();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = "#0a0e1f"; ctx.fillRect(0, 0, W, H);
+    // stars
+    ctx.fillStyle = "rgba(255,255,255,0.12)";
+    for (var i = 0; i < 40; i++) { var sx = (i * 97) % W, sy = (i * 53) % H; ctx.fillRect(sx, sy, 1.5, 1.5); }
+
+    // powerups
+    state.powerUps.forEach(function (p) {
+      var c = p.type === "shield" ? "#64B5F6" : p.type === "triple" ? "#FFF176" : "#B388FF";
+      ctx.fillStyle = c; ctx.globalAlpha = 0.9;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 1; ctx.fillStyle = "#0a0e1f"; ctx.font = "bold 13px DM Sans, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(p.type === "shield" ? "S" : p.type === "triple" ? "3" : "~", p.x, p.y + 1);
+    });
+
+    // asteroids
+    state.asteroids.forEach(function (a) {
+      ctx.save(); ctx.translate(a.x, a.y); ctx.rotate(a.angle);
+      ctx.fillStyle = a.size === "large" ? "#6b5d52" : a.size === "medium" ? "#8a7a6c" : "#a89684";
+      ctx.strokeStyle = "rgba(255,255,255,0.25)"; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      var pts = 9;
+      for (var k = 0; k < pts; k++) { var ang = (k / pts) * Math.PI * 2; var rr = a.radius * (0.82 + ((k * 7) % 5) / 14); var px = Math.cos(ang) * rr, py = Math.sin(ang) * rr; if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); }
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.restore();
+    });
+
+    // bullets
+    ctx.fillStyle = "#FFF176";
+    state.bullets.forEach(function (b) { ctx.beginPath(); ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2); ctx.fill(); });
+
+    // particles
+    state.particles.forEach(function (p) { ctx.globalAlpha = Math.max(0, p.life / p.maxLife); ctx.fillStyle = p.color; ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size); });
+    ctx.globalAlpha = 1;
+
+    // ship
+    var s = state.ship;
+    if (!(s.invincible > 0 && Math.floor(s.invincible / 6) % 2)) {
+      ctx.save(); ctx.translate(s.x, s.y); ctx.rotate(s.angle);
+      ctx.fillStyle = "#29B6F6"; ctx.strokeStyle = "#fffdf8"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(0, -s.radius * 1.3); ctx.lineTo(s.radius * 0.85, s.radius); ctx.lineTo(0, s.radius * 0.5); ctx.lineTo(-s.radius * 0.85, s.radius); ctx.closePath(); ctx.fill(); ctx.stroke();
+      if (input.thrust && MODE_CONFIG[mode].canRotate) { ctx.fillStyle = "#FF7043"; ctx.beginPath(); ctx.moveTo(-4, s.radius); ctx.lineTo(4, s.radius); ctx.lineTo(0, s.radius + 8 + Math.random() * 6); ctx.closePath(); ctx.fill(); }
+      ctx.restore();
+      if (state.shieldHits > 0) { ctx.strokeStyle = "rgba(100,181,246,0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(s.x, s.y, s.radius + 6, 0, Math.PI * 2); ctx.stroke(); }
+    }
+
+    // wave splash
+    if (state.waveSplash > 0 && !MODE_CONFIG[mode].blitz) {
+      ctx.globalAlpha = Math.min(1, state.waveSplash / 45); ctx.fillStyle = "#fffdf8"; ctx.font = "bold 30px Fraunces, serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText("Wave " + state.wave, W / 2, H / 2); ctx.globalAlpha = 1;
+    }
+    // active powerup labels
+    var badges = [];
+    if (state.tripleShot > 0) badges.push("3× shot");
+    if (state.slowTime > 0) badges.push("slow");
+    if (state.shieldHits > 0) badges.push("shield");
+    if (badges.length) { ctx.fillStyle = "rgba(255,255,255,0.7)"; ctx.font = "bold 12px DM Sans, sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "top"; ctx.fillText(badges.join(" · "), 8, 8); }
+    if (MODE_CONFIG[mode].blitz && state.multiplier > 1) { ctx.fillStyle = "#FFF176"; ctx.font = "bold 16px DM Sans, sans-serif"; ctx.textAlign = "right"; ctx.textBaseline = "top"; ctx.fillText(state.multiplier + "×", W - 8, 8); }
+  }
+
+  function finish() {
+    var newBest = state.score >= state.bestScore && state.score > 0;
+    try { if (state.score > bestFor(mode)) localStorage.setItem(bestKey(mode), String(state.score)); } catch (e) {}
+    bestEl.textContent = bestFor(mode);
+    statusEl.textContent = (state.phase === "blitz-end" ? "Time! " : "Game over — ") + "Score " + state.score + (newBest ? " · new best! 🎉" : ".");
+    statusEl.className = "game-status " + (newBest ? "game-status--win" : "game-status--lose");
+    startBtn.style.display = ""; startBtn.textContent = "Play again";
+    state.phase = "ended";
+    if (window.SnackPack) window.SnackPack.celebrate({
+      title: newBest ? "New high score! 🎉" : "Nice run! 🚀",
+      body: "Scored " + state.score + ". We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app to play Asteroid Destroyer and more, offline."
+    });
+  }
+
+  function startGame() { reset(true); }
+
+  // Input — keyboard
+  document.addEventListener("keydown", function (e) {
+    var k = e.key.toLowerCase();
+    if (k === "arrowleft" || k === "a") { input.left = true; e.preventDefault(); }
+    else if (k === "arrowright" || k === "d") { input.right = true; e.preventDefault(); }
+    else if (k === "arrowup" || k === "w") { input.thrust = true; e.preventDefault(); }
+    else if (k === " ") { input.fire = true; if (state.phase === "playing") e.preventDefault(); }
+  });
+  document.addEventListener("keyup", function (e) {
+    var k = e.key.toLowerCase();
+    if (k === "arrowleft" || k === "a") input.left = false;
+    else if (k === "arrowright" || k === "d") input.right = false;
+    else if (k === "arrowup" || k === "w") input.thrust = false;
+    else if (k === " ") input.fire = false;
+  });
+
+  // Input — on-screen buttons
+  function bindHold(btn, prop) {
+    btn.addEventListener("pointerdown", function (e) { input[prop] = true; e.preventDefault(); });
+    btn.addEventListener("pointerup", function () { input[prop] = false; });
+    btn.addEventListener("pointerleave", function () { input[prop] = false; });
+    btn.addEventListener("pointercancel", function () { input[prop] = false; });
+  }
+  controlsEl.querySelectorAll(".as-btn").forEach(function (b) { bindHold(b, b.dataset.ctrl); });
+
+  // tap field to fire
+  canvas.addEventListener("pointerdown", function (e) { input.fire = true; e.preventDefault(); });
+  canvas.addEventListener("pointerup", function () { input.fire = false; });
+  canvas.addEventListener("pointerleave", function () { input.fire = false; });
+
+  startBtn.addEventListener("click", function () { startGame(); });
+  newBtn.addEventListener("click", function () { reset(false); });
+  document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      mode = btn.dataset.mode;
+      document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
+      reset(false);
+    });
+  });
+
+  reset(false);
+  loop();
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

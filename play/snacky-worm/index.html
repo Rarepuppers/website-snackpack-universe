@@ -43,6 +43,8 @@
 .sw-dpad .left { grid-column: 1; grid-row: 2; }
 .sw-dpad .down { grid-column: 2; grid-row: 2; }
 .sw-dpad .right { grid-column: 3; grid-row: 2; }
+.sw-options { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; margin: 14px auto 0; }
+.sw-zonetoggle[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
 </style>
 <script type="application/ld+json">
 {
@@ -135,6 +137,14 @@
           <button type="button" class="left" data-dir="LEFT" aria-label="Left">←</button>
           <button type="button" class="down" data-dir="DOWN" aria-label="Down">↓</button>
           <button type="button" class="right" data-dir="RIGHT" aria-label="Right">→</button>
+        </div>
+        <div class="sw-options">
+          <div class="seg" role="group" aria-label="Pace">
+            <button type="button" data-pace="calm" aria-pressed="false">Calm</button>
+            <button type="button" data-pace="normal" aria-pressed="true">Normal</button>
+            <button type="button" data-pace="quick" aria-pressed="false">Quick</button>
+          </div>
+          <button type="button" class="btn-game sw-zonetoggle" id="sw-zones" aria-pressed="false">Four-zone tap: off</button>
         </div>
         <p class="game-hint">Arrow keys / WASD · swipe the board · or the pad · Zen mode wraps around the walls.</p>
       </div>
@@ -245,6 +255,15 @@
   var best = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0;
   bestEl.textContent = best;
 
+  // QoL: pace (speed multiplier) + four-zone tap controls (mirrors the app).
+  var PACE = { calm: 0.72, normal: 1, quick: 1.18 };
+  var pace = "normal", zonesOn = false;
+  try {
+    pace = localStorage.getItem("sp_worm_pace") || "normal";
+    zonesOn = localStorage.getItem("sp_worm_zones") === "1";
+  } catch (e) {}
+  if (!PACE[pace]) pace = "normal";
+
   var st, timer = null;
 
   function opposite(d) { return d === "UP" ? "DOWN" : d === "DOWN" ? "UP" : d === "LEFT" ? "RIGHT" : "LEFT"; }
@@ -321,7 +340,7 @@
   }
 
   // ── Loop ─────────────────────────────────────────
-  function startLoop() { stopLoop(); timer = setInterval(function () { if (st.phase === "playing") tick(); }, MODE_CONFIG[mode].intervalMs); }
+  function startLoop() { stopLoop(); var iv = Math.round(MODE_CONFIG[mode].intervalMs / PACE[pace]); timer = setInterval(function () { if (st.phase === "playing") tick(); }, iv); }
   function stopLoop() { if (timer !== null) { clearInterval(timer); timer = null; } }
 
   // ── Render ───────────────────────────────────────
@@ -414,6 +433,38 @@
   document.querySelector(".sw-dpad").addEventListener("click", function (e) {
     var b = e.target.closest("button"); if (b) steer(b.dataset.dir);
   });
+
+  // Four-zone tap: tap a triangular quadrant of the board to steer that way.
+  canvas.addEventListener("click", function (e) {
+    if (!zonesOn) return;
+    var rect = canvas.getBoundingClientRect();
+    var px = (e.clientX - rect.left) / rect.width - 0.5;
+    var py = (e.clientY - rect.top) / rect.height - 0.5;
+    if (Math.abs(px) > Math.abs(py)) steer(px > 0 ? "RIGHT" : "LEFT");
+    else steer(py > 0 ? "DOWN" : "UP");
+  });
+
+  var zonesBtn = document.getElementById("sw-zones");
+  function applyZones() {
+    zonesBtn.setAttribute("aria-pressed", String(zonesOn));
+    zonesBtn.textContent = "Four-zone tap: " + (zonesOn ? "on" : "off");
+    try { localStorage.setItem("sp_worm_zones", zonesOn ? "1" : "0"); } catch (e) {}
+  }
+  zonesBtn.addEventListener("click", function () { zonesOn = !zonesOn; applyZones(); });
+  applyZones();
+
+  function applyPaceUi() {
+    document.querySelectorAll(".seg [data-pace]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.pace === pace)); });
+  }
+  document.querySelectorAll(".seg [data-pace]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      pace = btn.dataset.pace;
+      try { localStorage.setItem("sp_worm_pace", pace); } catch (e) {}
+      applyPaceUi();
+      if (st && st.phase === "playing") startLoop();
+    });
+  });
+  applyPaceUi();
 
   newBtn.addEventListener("click", function () { stopLoop(); restart(); });
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
