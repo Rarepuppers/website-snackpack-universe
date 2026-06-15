@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-15T05:31:45.837Z",
+  "updatedAt": "2026-06-15T16:26:47.667Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -250,11 +250,14 @@
     {
       "date": "Jun 15",
       "isoDate": "2026-06-15",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "H",
       "home": "Spain",
       "away": "Cape Verde",
-      "venue": "Atlanta"
+      "venue": "Atlanta",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 16",
