@@ -797,6 +797,10 @@ main section {
 }
 
 .showcase-frame {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
   padding: 24px;
   border-radius: calc(var(--radius) + 2px);
   background:
@@ -804,6 +808,60 @@ main section {
     linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 239, 229, 0.98));
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
+}
+
+.showcase-frame > img {
+  border-radius: var(--radius);
+}
+
+/* Feature graphic + screenshots / tiles used to fill the showcase frame */
+.showcase-feature {
+  width: 100%;
+  border-radius: var(--radius);
+}
+
+.showcase-shots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.showcase-shots img {
+  width: 100%;
+  aspect-ratio: 9 / 19;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 28px rgba(32, 23, 19, 0.12);
+}
+
+.showcase-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px 12px;
+}
+
+.showcase-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  text-align: center;
+}
+
+.showcase-tile img {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 18px;
+  box-shadow: 0 10px 22px rgba(32, 23, 19, 0.14);
+}
+
+.showcase-tile span {
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  line-height: 1.15;
+  color: var(--ink);
 }
 
 .policy-meta {
