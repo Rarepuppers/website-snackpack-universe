@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-16T05:24:07.271Z",
+  "updatedAt": "2026-06-16T21:41:05.277Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -289,11 +289,14 @@
     {
       "date": "Jun 16",
       "isoDate": "2026-06-16",
-      "time": "Upcoming",
+      "time": "FT",
       "group": "I",
       "home": "France",
       "away": "Senegal",
-      "venue": "New York/New Jersey"
+      "venue": "New York/New Jersey",
+      "hs": 3,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 16",
