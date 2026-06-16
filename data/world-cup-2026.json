@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-16T21:41:05.277Z",
+  "updatedAt": "2026-06-16T23:08:33.627Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -301,11 +301,14 @@
     {
       "date": "Jun 16",
       "isoDate": "2026-06-16",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "I",
       "home": "Iraq",
       "away": "Norway",
-      "venue": "Boston"
+      "venue": "Boston",
+      "statusShort": "LIVE",
+      "lhs": 1,
+      "las": 2
     },
     {
       "date": "Jun 17",
