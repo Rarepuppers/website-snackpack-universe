@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-17T19:14:32.624Z",
+  "updatedAt": "2026-06-17T21:21:22.242Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -319,11 +319,14 @@
     {
       "date": "Jun 17",
       "isoDate": "2026-06-17",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "L",
       "home": "England",
       "away": "Croatia",
-      "venue": "Dallas"
+      "venue": "Dallas",
+      "statusShort": "LIVE",
+      "lhs": 3,
+      "las": 2
     },
     {
       "date": "Jun 17",
