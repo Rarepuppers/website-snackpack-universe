@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-17T10:09:18.167Z",
+  "updatedAt": "2026-06-17T19:14:32.624Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -337,11 +337,14 @@
     {
       "date": "Jun 17",
       "isoDate": "2026-06-17",
-      "time": "Upcoming",
+      "time": "FT",
       "group": "K",
       "home": "Portugal",
       "away": "DR Congo",
-      "venue": "Houston"
+      "venue": "Houston",
+      "hs": 1,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 17",
