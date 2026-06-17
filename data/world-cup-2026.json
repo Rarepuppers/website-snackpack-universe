@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-17T05:20:58.909Z",
+  "updatedAt": "2026-06-17T10:09:18.167Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -283,14 +283,14 @@
     {
       "date": "Jun 16",
       "isoDate": "2026-06-16",
-      "time": "Live",
+      "time": "FT",
       "group": "J",
       "home": "Austria",
       "away": "Jordan",
       "venue": "San Francisco Bay Area",
-      "statusShort": "LIVE",
-      "lhs": 1,
-      "las": 1
+      "hs": 3,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 16",
