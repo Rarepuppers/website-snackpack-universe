@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-18T04:55:30.021Z",
+  "updatedAt": "2026-06-18T16:02:11.442Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -376,11 +376,14 @@
     {
       "date": "Jun 18",
       "isoDate": "2026-06-18",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "A",
       "home": "Czechia",
       "away": "South Africa",
-      "venue": "Atlanta"
+      "venue": "Atlanta",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 18",
