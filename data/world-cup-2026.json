@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-18T18:32:12.879Z",
+  "updatedAt": "2026-06-18T21:03:39.797Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -397,11 +397,14 @@
     {
       "date": "Jun 18",
       "isoDate": "2026-06-18",
-      "time": "Upcoming",
+      "time": "FT",
       "group": "B",
       "home": "Switzerland",
       "away": "Bosnia and Herzegovina",
-      "venue": "Los Angeles"
+      "venue": "Los Angeles",
+      "hs": 4,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 19",
