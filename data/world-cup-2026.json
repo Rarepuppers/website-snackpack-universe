@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-18T00:05:24.858Z",
+  "updatedAt": "2026-06-18T04:55:30.021Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -331,14 +331,14 @@
     {
       "date": "Jun 17",
       "isoDate": "2026-06-17",
-      "time": "Live",
+      "time": "FT",
       "group": "L",
       "home": "Ghana",
       "away": "Panama",
       "venue": "Toronto",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "hs": 1,
+      "as": 0,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 17",
@@ -355,11 +355,14 @@
     {
       "date": "Jun 17",
       "isoDate": "2026-06-17",
-      "time": "Upcoming",
+      "time": "FT",
       "group": "K",
       "home": "Uzbekistan",
       "away": "Colombia",
-      "venue": "Mexico City"
+      "venue": "Mexico City",
+      "hs": 1,
+      "as": 3,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 18",
