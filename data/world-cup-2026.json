@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-18T22:59:53.012Z",
+  "updatedAt": "2026-06-19T00:26:00.777Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -367,14 +367,14 @@
     {
       "date": "Jun 18",
       "isoDate": "2026-06-18",
-      "time": "Live",
+      "time": "FT",
       "group": "B",
       "home": "Canada",
       "away": "Qatar",
       "venue": "Vancouver",
-      "statusShort": "LIVE",
-      "lhs": 3,
-      "las": 0
+      "hs": 6,
+      "as": 0,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 18",
