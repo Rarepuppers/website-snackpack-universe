@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-19T05:31:16.681Z",
+  "updatedAt": "2026-06-19T20:01:51.563Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -442,11 +442,14 @@
     {
       "date": "Jun 19",
       "isoDate": "2026-06-19",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "D",
       "home": "United States",
       "away": "Australia",
-      "venue": "Seattle"
+      "venue": "Seattle",
+      "statusShort": "LIVE",
+      "lhs": 2,
+      "las": 0
     },
     {
       "date": "Jun 20",
