@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-19T22:13:07.512Z",
+  "updatedAt": "2026-06-20T00:19:23.267Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -424,14 +424,14 @@
     {
       "date": "Jun 19",
       "isoDate": "2026-06-19",
-      "time": "Live",
+      "time": "FT",
       "group": "C",
       "home": "Scotland",
       "away": "Morocco",
       "venue": "Boston",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 1
+      "hs": 0,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 19",
