@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-20T04:42:56.379Z",
+  "updatedAt": "2026-06-20T08:05:51.918Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -439,14 +439,14 @@
     {
       "date": "Jun 19",
       "isoDate": "2026-06-19",
-      "time": "Live",
+      "time": "FT",
       "group": "D",
       "home": "Turkiye",
       "away": "Paraguay",
       "venue": "San Francisco Bay Area",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 1
+      "hs": 0,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 19",
