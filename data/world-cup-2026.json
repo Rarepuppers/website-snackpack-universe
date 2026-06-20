@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-20T20:08:33.560Z",
+  "updatedAt": "2026-06-20T21:38:16.794Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -478,8 +478,8 @@
       "away": "Cote d'Ivoire",
       "venue": "Toronto",
       "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "lhs": 1,
+      "las": 1
     },
     {
       "date": "Jun 20",
