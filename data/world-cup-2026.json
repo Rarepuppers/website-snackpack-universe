@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-20T08:05:51.918Z",
+  "updatedAt": "2026-06-20T17:26:07.156Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -481,11 +481,14 @@
     {
       "date": "Jun 20",
       "isoDate": "2026-06-20",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "F",
       "home": "Netherlands",
       "away": "Sweden",
-      "venue": "Houston"
+      "venue": "Houston",
+      "statusShort": "LIVE",
+      "lhs": 2,
+      "las": 0
     },
     {
       "date": "Jun 20",
