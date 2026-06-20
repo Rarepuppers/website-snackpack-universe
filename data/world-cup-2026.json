@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-20T17:26:07.156Z",
+  "updatedAt": "2026-06-20T18:51:59.969Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -487,8 +487,8 @@
       "away": "Sweden",
       "venue": "Houston",
       "statusShort": "LIVE",
-      "lhs": 2,
-      "las": 0
+      "lhs": 5,
+      "las": 1
     },
     {
       "date": "Jun 20",
