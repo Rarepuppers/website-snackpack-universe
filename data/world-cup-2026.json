@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-20T00:19:23.267Z",
+  "updatedAt": "2026-06-20T04:42:56.379Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -415,11 +415,14 @@
     {
       "date": "Jun 19",
       "isoDate": "2026-06-19",
-      "time": "Upcoming",
+      "time": "FT",
       "group": "C",
       "home": "Brazil",
       "away": "Haiti",
-      "venue": "Philadelphia"
+      "venue": "Philadelphia",
+      "hs": 3,
+      "as": 0,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 19",
@@ -436,11 +439,14 @@
     {
       "date": "Jun 19",
       "isoDate": "2026-06-19",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "D",
       "home": "Turkiye",
       "away": "Paraguay",
-      "venue": "San Francisco Bay Area"
+      "venue": "San Francisco Bay Area",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 1
     },
     {
       "date": "Jun 19",
