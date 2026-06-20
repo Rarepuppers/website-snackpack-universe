@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-20T18:51:59.969Z",
+  "updatedAt": "2026-06-20T20:08:33.560Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -472,23 +472,26 @@
     {
       "date": "Jun 20",
       "isoDate": "2026-06-20",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "E",
       "home": "Germany",
       "away": "Cote d'Ivoire",
-      "venue": "Toronto"
+      "venue": "Toronto",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 20",
       "isoDate": "2026-06-20",
-      "time": "Live",
+      "time": "FT",
       "group": "F",
       "home": "Netherlands",
       "away": "Sweden",
       "venue": "Houston",
-      "statusShort": "LIVE",
-      "lhs": 5,
-      "las": 1
+      "hs": 5,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 20",
