@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-20T21:38:16.794Z",
+  "updatedAt": "2026-06-20T22:46:39.377Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -472,14 +472,14 @@
     {
       "date": "Jun 20",
       "isoDate": "2026-06-20",
-      "time": "Live",
+      "time": "FT",
       "group": "E",
       "home": "Germany",
       "away": "Cote d'Ivoire",
       "venue": "Toronto",
-      "statusShort": "LIVE",
-      "lhs": 1,
-      "las": 1
+      "hs": 2,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 20",
