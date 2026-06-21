@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-21T19:07:34.709Z",
+  "updatedAt": "2026-06-21T22:02:10.434Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -511,14 +511,14 @@
     {
       "date": "Jun 21",
       "isoDate": "2026-06-21",
-      "time": "Live",
+      "time": "FT",
       "group": "G",
       "home": "Belgium",
       "away": "Iran",
       "venue": "Los Angeles",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "hs": 0,
+      "as": 0,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 21",
@@ -544,11 +544,14 @@
     {
       "date": "Jun 21",
       "isoDate": "2026-06-21",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "H",
       "home": "Uruguay",
       "away": "Cape Verde",
-      "venue": "Miami"
+      "venue": "Miami",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 22",
