@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-21T22:02:10.434Z",
+  "updatedAt": "2026-06-21T23:20:48.811Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -550,8 +550,8 @@
       "away": "Cape Verde",
       "venue": "Miami",
       "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "lhs": 2,
+      "las": 1
     },
     {
       "date": "Jun 22",
