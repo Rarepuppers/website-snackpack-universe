@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-21T02:07:19.380Z",
+  "updatedAt": "2026-06-21T07:02:32.985Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -499,11 +499,14 @@
     {
       "date": "Jun 20",
       "isoDate": "2026-06-20",
-      "time": "Upcoming",
+      "time": "FT",
       "group": "F",
       "home": "Tunisia",
       "away": "Japan",
-      "venue": "Monterrey"
+      "venue": "Monterrey",
+      "hs": 0,
+      "as": 4,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 21",
