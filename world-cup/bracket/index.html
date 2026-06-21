@@ -365,6 +365,25 @@
 }
 .third-advance { color: var(--accent); font-weight: 900; }
 .third-out { color: var(--muted); }
+.elim-grid { display: grid; gap: 8px; }
+.elim-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-left: 4px solid #c73f3f;
+  border-radius: 10px;
+  background: rgba(199,63,63,0.06);
+  font-weight: 800;
+}
+.elim-meta {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: right;
+}
 @media (max-width: 860px) { .qual-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .qual-grid { grid-template-columns: 1fr; } }
 .knockout-grid {
@@ -513,6 +532,7 @@
         <div class="bracket-tabs" role="tablist" aria-label="World Cup tracker views">
           <button type="button" data-view="groups" aria-pressed="true">Groups</button>
           <button type="button" data-view="qualified" aria-pressed="false">Qualified</button>
+          <button type="button" data-view="eliminated" aria-pressed="false">Eliminated</button>
           <button type="button" data-view="played" aria-pressed="false">Played</button>
           <button type="button" data-view="upcoming" aria-pressed="false">Upcoming</button>
           <button type="button" data-view="knockout" aria-pressed="false">Knockout</button>
@@ -535,6 +555,11 @@
             <thead><tr><th>Team</th><th>Grp</th><th>P</th><th>GD</th><th>Pts</th><th>Status</th></tr></thead>
             <tbody id="third-body"></tbody>
           </table>
+        </div>
+        <div id="view-eliminated" hidden>
+          <h2>Eliminated teams</h2>
+          <p class="qual-note">A team appears here once it can no longer reach the Round of 32 &mdash; it can't finish in its group's top two and can't grab one of the eight best third-place spots. Positions are final when the group stage ends June 27.</p>
+          <div class="elim-grid" id="eliminated-list"></div>
         </div>
         <div id="view-played" hidden>
           <h2>Played Games</h2>
@@ -960,6 +985,72 @@
     }).join("");
   }
 
+  // How many of its three group games a team has already finished.
+  function playedCount(groupId, team) {
+    return matches.filter(function (m) {
+      return m.group === groupId && (m.home === team || m.away === team) && isPlayed(m);
+    }).length;
+  }
+
+  // A group is decided once every team in it has played all three games. Counting
+  // per team (rather than trusting the fixture list) stays correct even if the
+  // feed is briefly missing an unplayed fixture.
+  function groupComplete(groupId) {
+    return (groups[groupId] || []).every(function (team) { return playedCount(groupId, team) >= 3; });
+  }
+
+  function renderEliminated() {
+    var root = document.getElementById("eliminated-list");
+    if (!root) return;
+
+    // Recompute the best-eight third-placed teams the same way the Qualified tab
+    // does, so a 3rd-place team is only called out once it misses that cut.
+    var groupRows = {};
+    var thirds = [];
+    Object.keys(groups).forEach(function (g) {
+      var rows = standingsFor(g);
+      groupRows[g] = rows;
+      if (rows[2]) thirds.push({ team: rows[2].team, gd: rows[2].gd, gf: rows[2].gf, pts: rows[2].pts });
+    });
+    thirds.sort(function (a, b) {
+      return b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team);
+    });
+    var thirdAdvances = {};
+    thirds.slice(0, 8).forEach(function (t) { thirdAdvances[t.team] = true; });
+
+    // Mark a team out only when it is mathematically certain: either its group is
+    // complete and it finished outside the qualifying spots, or it can no longer
+    // climb out of last place (3 group rivals already sit above its ceiling). This
+    // never wrongly eliminates a team and becomes exact once the group stage ends.
+    var out = [];
+    Object.keys(groups).forEach(function (g) {
+      var rows = groupRows[g];
+      var complete = groupComplete(g);
+      rows.forEach(function (row, i) {
+        var pos = i + 1;
+        var maxPts = row.pts + 3 * (3 - playedCount(g, row.team));
+        var guaranteedAbove = rows.filter(function (o) { return o.team !== row.team && o.pts > maxPts; }).length;
+        var reason = "";
+        if (complete) {
+          if (pos === 4) reason = "Finished 4th in Group " + g;
+          else if (pos === 3 && !thirdAdvances[row.team]) reason = "3rd in Group " + g + " - outside the best eight";
+        } else if (guaranteedAbove >= 3) {
+          reason = "Cannot climb out of last in Group " + g;
+        }
+        if (reason) out.push({ team: row.team, group: g, pos: pos, reason: reason });
+      });
+    });
+
+    if (!out.length) {
+      root.innerHTML = '<p class="empty-state">No teams are mathematically eliminated yet. Teams appear here the moment they can no longer reach the Round of 32 - most are decided as the group stage finishes on June 27.</p>';
+      return;
+    }
+    out.sort(function (a, b) { return a.group.localeCompare(b.group) || a.pos - b.pos; });
+    root.innerHTML = out.map(function (t) {
+      return '<div class="elim-row">' + teamHtml(t.team) + '<span class="elim-meta">' + escapeHtml(t.reason) + '</span></div>';
+    }).join("");
+  }
+
   function renderBracket() {
     var root = document.getElementById("bracket-grid");
     if (!root) return;
@@ -1103,7 +1194,7 @@
   }
 
   function switchView(view) {
-    ["groups", "qualified", "played", "upcoming", "knockout"].forEach(function (name) {
+    ["groups", "qualified", "eliminated", "played", "upcoming", "knockout"].forEach(function (name) {
       document.getElementById("view-" + name).hidden = name !== view;
       document.querySelector('[data-view="' + name + '"]').setAttribute("aria-pressed", String(name === view));
     });
@@ -1131,6 +1222,7 @@
 
     renderGroups();
     renderQualified();
+    renderEliminated();
     renderBracket();
     renderSummary();
     renderMatches();
@@ -1174,6 +1266,8 @@
       .then(function (data) {
         applyData(data);
         renderGroups();
+        renderQualified();
+        renderEliminated();
         renderSummary();
         renderMatches();
         scheduleNext();

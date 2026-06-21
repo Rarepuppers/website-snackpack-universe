@@ -188,6 +188,38 @@
   border-bottom: 1px solid var(--line);
 }
 .day-count { color: var(--muted); font-size: 0.82rem; font-weight: 700; }
+.past-fixtures {
+  margin-bottom: 22px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.55);
+  overflow: hidden;
+}
+.past-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 900;
+  color: var(--ink);
+  user-select: none;
+}
+.past-toggle::-webkit-details-marker { display: none; }
+.past-toggle::before {
+  content: "\25B8"; /* right-pointing triangle */
+  display: inline-block;
+  color: var(--accent, #1f8f77);
+  font-size: 0.9em;
+  transition: transform 0.15s ease;
+}
+.past-fixtures[open] .past-toggle::before { transform: rotate(90deg); }
+.past-range { color: var(--muted); font-weight: 700; }
+.past-toggle .day-count { margin-left: auto; }
+.past-body { padding: 4px 16px 14px; }
+.past-body .day-group:last-child { margin-bottom: 0; }
 @media (max-width: 900px) {
   .schedule-hero { grid-template-columns: 1fr; }
   .schedule-layout { grid-template-columns: 1fr; }
@@ -471,12 +503,43 @@
       byDay[key].push(m);
     });
     days.sort();
-    root.innerHTML = days.map(function (key) {
+
+    function dayGroupHtml(key) {
       var dayMatches = byDay[key];
       return '<div class="day-group"><h3 class="day-head">' + escapeHtml(dayLabel(key)) +
         ' <span class="day-count">' + dayMatches.length + (dayMatches.length === 1 ? " match" : " matches") + '</span></h3>' +
         '<div class="schedule-list">' + dayMatches.map(matchHtml).join("") + '</div></div>';
-    }).join("");
+    }
+
+    // Keep the view focused on the last completed day, today, and what's coming
+    // up. Everything earlier is tucked into a single click-to-expand container so
+    // the page doesn't open onto weeks of finished group games.
+    var today = todayIso();
+    var pastDays = days.filter(function (k) { return k < today; });
+    var currentFuture = days.filter(function (k) { return k >= today; });
+    // Always leave the most recent completed day ("the last day") visible.
+    var collapsedPast = pastDays.slice(0, Math.max(0, pastDays.length - 1));
+    var visibleDays = pastDays.slice(collapsedPast.length).concat(currentFuture);
+
+    // Preserve the expanded/collapsed state across background re-renders so a
+    // poll during a live match day doesn't snap the section shut on a visitor
+    // who just opened it.
+    var prevPast = document.querySelector(".past-fixtures");
+    var keepOpen = prevPast ? prevPast.open : false;
+
+    var html = "";
+    if (collapsedPast.length) {
+      var rangeStart = dayLabel(collapsedPast[0]);
+      var rangeEnd = dayLabel(collapsedPast[collapsedPast.length - 1]);
+      var rangeLabel = collapsedPast.length === 1 ? rangeStart : rangeStart + " – " + rangeEnd;
+      var collapsedCount = collapsedPast.reduce(function (sum, k) { return sum + byDay[k].length; }, 0);
+      html += '<details class="past-fixtures"' + (keepOpen ? " open" : "") + '><summary class="past-toggle">' +
+        'Earlier matches <span class="past-range">' + escapeHtml(rangeLabel) + '</span>' +
+        '<span class="day-count">' + collapsedCount + (collapsedCount === 1 ? " match" : " matches") + '</span>' +
+        '</summary><div class="past-body">' + collapsedPast.map(dayGroupHtml).join("") + '</div></details>';
+    }
+    html += visibleDays.map(dayGroupHtml).join("");
+    root.innerHTML = html;
   }
 
   function render(data) {
