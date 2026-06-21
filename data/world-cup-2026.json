@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-21T07:02:32.985Z",
+  "updatedAt": "2026-06-21T16:18:28.717Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -529,11 +529,14 @@
     {
       "date": "Jun 21",
       "isoDate": "2026-06-21",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "H",
       "home": "Spain",
       "away": "Saudi Arabia",
-      "venue": "Atlanta"
+      "venue": "Atlanta",
+      "statusShort": "LIVE",
+      "lhs": 1,
+      "las": 0
     },
     {
       "date": "Jun 21",
