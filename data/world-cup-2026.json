@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-22T07:03:43.770Z",
+  "updatedAt": "2026-06-22T17:23:36.097Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -559,11 +559,14 @@
     {
       "date": "Jun 22",
       "isoDate": "2026-06-22",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "J",
       "home": "Argentina",
       "away": "Austria",
-      "venue": "Dallas"
+      "venue": "Dallas",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 22",
