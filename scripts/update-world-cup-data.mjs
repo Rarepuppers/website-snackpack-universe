@@ -1,5 +1,16 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { createRequire } from "node:module";
+import { pathToFileURL } from "node:url";
+
+const require = createRequire(import.meta.url);
+const KO = require("../world-cup/wc-knockout.js");
+const THIRD_ALLOCATION = require("../world-cup/third-place-allocation.js");
+
+// Group games end June 27; the knockout starts June 28. Used to keep knockout
+// result-matching from ever picking up a group-stage game between the same two
+// teams (possible if group opponents meet again deep in the bracket).
+const KO_START_ISO = "2026-06-28";
 
 /*
  * Updates data/world-cup-2026.json with live results.
@@ -95,6 +106,10 @@ async function fetchEspnResults(dateRange) {
   console.log(`ESPN returned ${data.events.length} events for ${dateRange}.`);
 
   const results = new Map();
+  // Every event between two real (non-placeholder) teams, keyed by team pair.
+  // Used to resolve knockout results once the bracket teams are known. If a pair
+  // somehow appears twice, the later-dated event wins (the knockout rematch).
+  const allByPair = new Map();
   const unmatched = new Set();
   let completed = 0;
   let live = 0;
@@ -110,13 +125,32 @@ async function fetchEspnResults(dateRange) {
     const homeName = normalizeTeam(home.team?.displayName || "");
     const awayName = normalizeTeam(away.team?.displayName || "");
     const key = pairKey(homeName, awayName);
+    const type = comp.status?.type || {};
+    const isoDate = String(event.date || "").slice(0, 10);
+
+    if (!isPlaceholder(homeName) && !isPlaceholder(awayName)) {
+      const entry = {
+        home: homeName,
+        away: awayName,
+        state: type.state,
+        completed: type.completed === true,
+        statusShort: type.shortDetail || type.detail || "",
+        hs: Number(home.score),
+        as: Number(away.score),
+        // ESPN flags the advancing side, which also covers penalty shootouts.
+        winner: home.winner === true ? homeName : away.winner === true ? awayName : null,
+        isoDate
+      };
+      const prev = allByPair.get(key);
+      if (!prev || (entry.isoDate && entry.isoDate >= (prev.isoDate || ""))) allByPair.set(key, entry);
+    }
+
     if (!groupByPair.has(key)) {
       if (!isPlaceholder(homeName)) unmatched.add(homeName);
       if (!isPlaceholder(awayName)) unmatched.add(awayName);
       continue;
     }
 
-    const type = comp.status?.type || {};
     const result = {
       home: homeName,
       away: awayName,
@@ -135,7 +169,37 @@ async function fetchEspnResults(dateRange) {
   if (unmatched.size) {
     console.warn(`ESPN names not matched to a group (add to espnNameMap): ${Array.from(unmatched).sort().join(", ")}`);
   }
-  return results;
+  return { results, allByPair };
+}
+
+// Build the resolved knockout bracket and overlay any ESPN results onto it.
+// Returns the 32 knockout match objects, or null if the group stage isn't done.
+function buildKnockout(groups, groupMatches, allByPair) {
+  function lookup(n, home, away) {
+    const e = allByPair.get(pairKey(home, away));
+    // Ignore a same-pair group game (June) when resolving a knockout tie.
+    if (!e || (e.isoDate && e.isoDate < KO_START_ISO)) return null;
+    const aligned = e.home === home;
+    const out = { statusShort: e.statusShort };
+    if (e.completed && Number.isFinite(e.hs) && Number.isFinite(e.as)) {
+      out.hs = aligned ? e.hs : e.as;
+      out.as = aligned ? e.as : e.hs;
+      out.time = "FT";
+      out.winner = e.winner || (out.hs > out.as ? home : out.hs < out.as ? away : null);
+    } else if (e.state === "in") {
+      out.time = "Live";
+      out.statusShort = "LIVE";
+      if (Number.isFinite(e.hs) && Number.isFinite(e.as)) {
+        out.lhs = aligned ? e.hs : e.as;
+        out.las = aligned ? e.as : e.hs;
+      }
+    }
+    return out;
+  }
+  const resolved = KO.resolve({ groups, groupMatches, allocation: THIRD_ALLOCATION, lookup });
+  // Only publish once the Round of 32 is actually set (all groups finished).
+  const r32Ready = resolved.filter((m) => m.round === "Round of 32").every((m) => m.home && m.away);
+  return r32Ready ? resolved : null;
 }
 
 // Overlay ESPN results onto a seed fixture.
@@ -189,10 +253,12 @@ async function main() {
   let matches = base;
   let source = current.source || "Manual seed";
   let fetched = false;
+  let allByPair = new Map();
 
   try {
-    const results = await fetchEspnResults(dateRangeFor(base));
-    matches = base.map((m) => applyResult(m, results.get(pairKey(m.home, m.away))));
+    const fetchResult = await fetchEspnResults(dateRangeFor(base));
+    allByPair = fetchResult.allByPair;
+    matches = base.map((m) => applyResult(m, fetchResult.results.get(pairKey(m.home, m.away))));
     source = "ESPN scoreboard (unofficial)";
     fetched = true;
   } catch (error) {
@@ -204,28 +270,42 @@ async function main() {
     return;
   }
 
-  // Only advance "updatedAt" when the match data actually changed. This job
-  // runs every 20 minutes; bumping the timestamp on every run made the site's
-  // "Last data update" claim fresh data even when nothing had changed. If the
-  // feed brought nothing new we leave the file byte-identical so no spurious
-  // commit is made and the timestamp stays honest.
+  const groups = current.groups || seedGroups;
+  const knockout = buildKnockout(groups, matches, allByPair);
+  if (knockout) {
+    const koScored = knockout.filter((m) => typeof m.hs === "number").length;
+    console.log(`Resolved knockout bracket (${koScored} of 32 ties have results).`);
+  }
+
+  // Only advance "updatedAt" when the data actually changed. This job runs every
+  // few minutes; bumping the timestamp on every run made the site's "Last data
+  // update" claim fresh data even when nothing changed. Compare both the group
+  // matches and the resolved knockout so a knockout-only change still publishes.
   const matchesChanged = JSON.stringify(matches) !== JSON.stringify(base);
-  if (!matchesChanged && current.updatedAt) {
+  const knockoutChanged = JSON.stringify(knockout || null) !== JSON.stringify(current.knockout || null);
+  if (!matchesChanged && !knockoutChanged && current.updatedAt) {
     console.log(`Results unchanged; left ${outFile} as-is (last real update ${current.updatedAt})`);
     return;
   }
 
   const next = {
-    updatedAt: matchesChanged ? new Date().toISOString() : (current.updatedAt || new Date().toISOString()),
+    updatedAt: (matchesChanged || knockoutChanged) ? new Date().toISOString() : (current.updatedAt || new Date().toISOString()),
     source,
-    groups: current.groups || seedGroups,
+    groups,
     matches
   };
+  if (knockout) next.knockout = knockout;
   await fs.writeFile(outFile, `${JSON.stringify(next, null, 2)}\n`, "utf8");
-  console.log(`Wrote ${outFile} with ${matches.length} matches (updatedAt advanced).`);
+  console.log(`Wrote ${outFile} with ${matches.length} group matches${knockout ? " + 32 knockout ties" : ""} (updatedAt advanced).`);
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+export { buildKnockout, fetchEspnResults };
+
+// Only fetch + write when run directly (node scripts/update-world-cup-data.mjs).
+// Importing the module for tests must not hit the network.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}

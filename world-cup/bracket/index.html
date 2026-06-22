@@ -435,6 +435,22 @@
   color: var(--ink);
 }
 .slot--filled .team-name { overflow-wrap: anywhere; }
+.slot--win {
+  background: rgba(31,143,119,0.26);
+  box-shadow: inset 3px 0 0 var(--accent, #1f8f77);
+}
+.slot--win .team-name { font-weight: 900; }
+.ko-num { display: flex; flex-direction: column; gap: 1px; }
+.ko-when { font-weight: 700; color: var(--muted); text-transform: none; letter-spacing: 0; font-size: 0.66rem; }
+.ko-score {
+  margin-top: 3px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+.ko-score--live { color: #c73f3f; }
+.ko-pens { font-size: 0.72rem; font-weight: 800; color: var(--muted); }
 .seo-note {
   margin-top: 12px;
   color: var(--muted);
@@ -656,6 +672,7 @@
 
 <script src="/world-cup/wc-live.js"></script>
 <script src="/world-cup/third-place-allocation.js"></script>
+<script src="/world-cup/wc-knockout.js"></script>
 <script>
 (function () {
   "use strict";
@@ -705,6 +722,7 @@
     { date: "Jun 18", time: "Upcoming", group: "B", home: "Canada", away: "Qatar", venue: "Vancouver" }
   ];
 
+  var knockoutData = null;
   var storeKey = "snackpack-world-cup-2026-picks";
   var teams = Object.keys(groups).reduce(function (all, key) { return all.concat(groups[key]); }, []).sort();
   var flagStyles = {
@@ -1057,114 +1075,54 @@
     }).join("");
   }
 
+  // The official knockout board. Driven by the shared resolver (wc-knockout.js):
+  // group winners/runners-up fill as each group is decided, the eight best thirds
+  // drop in once the group stage ends, and from the knockout onward each tie's
+  // winner (served in data.knockout) advances to the next round automatically.
+  function resolvedKnockout() {
+    if (knockoutData && knockoutData.length) return knockoutData;
+    if (!window.WC_KNOCKOUT) return [];
+    return WC_KNOCKOUT.resolve({ groups: groups, groupMatches: matches, allocation: window.WC_THIRD_ALLOCATION });
+  }
+
   function renderBracket() {
     var root = document.getElementById("bracket-grid");
     if (!root) return;
-    var r32 = [
-      { n: 73, a: "RU A", b: "RU B" },
-      { n: 74, a: "W E", b: "3rd A/B/C/D/F" },
-      { n: 75, a: "W F", b: "RU C" },
-      { n: 76, a: "W C", b: "RU F" },
-      { n: 77, a: "W I", b: "3rd C/D/F/G/H" },
-      { n: 78, a: "RU E", b: "RU I" },
-      { n: 79, a: "W A", b: "3rd C/E/F/H/I" },
-      { n: 80, a: "W L", b: "3rd E/H/I/J/K" },
-      { n: 81, a: "W D", b: "3rd B/E/F/I/J" },
-      { n: 82, a: "W G", b: "3rd A/E/H/I/J" },
-      { n: 83, a: "RU K", b: "RU L" },
-      { n: 84, a: "W H", b: "RU J" },
-      { n: 85, a: "W B", b: "3rd E/F/G/I/J" },
-      { n: 86, a: "W J", b: "RU H" },
-      { n: 87, a: "W K", b: "3rd D/E/I/J/L" },
-      { n: 88, a: "RU D", b: "RU G" }
-    ];
-    var r16 = [
-      { n: 89, a: "W 74", b: "W 77" },
-      { n: 90, a: "W 73", b: "W 75" },
-      { n: 91, a: "W 76", b: "W 78" },
-      { n: 92, a: "W 79", b: "W 80" },
-      { n: 93, a: "W 83", b: "W 84" },
-      { n: 94, a: "W 81", b: "W 82" },
-      { n: 95, a: "W 86", b: "W 88" },
-      { n: 96, a: "W 85", b: "W 87" }
-    ];
-    var qf = [
-      { n: 97, a: "W 89", b: "W 90" },
-      { n: 98, a: "W 93", b: "W 94" },
-      { n: 99, a: "W 91", b: "W 92" },
-      { n: 100, a: "W 95", b: "W 96" }
-    ];
-    var sf = [
-      { n: 101, a: "W 97", b: "W 98" },
-      { n: 102, a: "W 99", b: "W 100" }
-    ];
-    var fin = [{ n: 104, a: "W 101", b: "W 102" }];
-    var rounds = [
-      { name: "Round of 32", ties: r32 },
-      { name: "Round of 16", ties: r16 },
-      { name: "Quarter-finals", ties: qf },
-      { name: "Semi-finals", ties: sf },
-      { name: "Final", ties: fin }
-    ];
+    var ko = resolvedKnockout();
+    if (!ko.length) { root.innerHTML = '<p class="empty-state">Bracket loads once the schedule data is available.</p>'; return; }
 
-    // Resolve seed labels (W A, RU B, 3rd .../...) to real teams as results come
-    // in. Group winners/runners-up fill the moment that group is decided; the
-    // third-place slots fill once every group is done, using the official FIFA
-    // allocation table to map the eight best thirds to their Round-of-32 matches.
-    var ctx = bracketContext();
-    function slotHtml(label, matchNum) {
-      var m;
-      if ((m = /^W ([A-L])$/.exec(label)) && ctx.winners[m[1]]) return filledSlot(ctx.winners[m[1]]);
-      if ((m = /^RU ([A-L])$/.exec(label)) && ctx.runners[m[1]]) return filledSlot(ctx.runners[m[1]]);
-      if (/^3rd/.test(label) && ctx.thirdByMatch[matchNum]) return filledSlot(ctx.thirdByMatch[matchNum]);
+    // Group the flat match list back into rounds, in bracket order.
+    var order = ["Round of 32", "Round of 16", "Quarter-finals", "Semi-finals", "Third place", "Final"];
+    var byRound = {};
+    ko.forEach(function (m) { (byRound[m.round] = byRound[m.round] || []).push(m); });
+
+    function teamCell(team, label, isWinner) {
+      if (team) {
+        return '<div class="slot slot--filled' + (isWinner ? ' slot--win' : '') + '">' + teamHtml(team) + '</div>';
+      }
       return '<div class="slot">' + escapeHtml(label) + '</div>';
     }
-    function filledSlot(team) {
-      return '<div class="slot slot--filled">' + teamHtml(team) + '</div>';
+    function scoreLine(m) {
+      var live = isLive(m);
+      if (typeof m.hs === "number") {
+        var pens = /pen/i.test(m.statusShort || "") ? ' <span class="ko-pens">(pens)</span>' : '';
+        return '<div class="ko-score">' + m.hs + '&ndash;' + m.as + pens + '</div>';
+      }
+      if (live) {
+        return '<div class="ko-score ko-score--live">' + (typeof m.lhs === "number" ? m.lhs + '&ndash;' + m.las : 'LIVE') + '</div>';
+      }
+      return '';
     }
 
-    root.innerHTML = rounds.map(function (round) {
-      return '<article class="round-card"><h3>' + round.name + '</h3>' + round.ties.map(function (t) {
-        return '<div class="ko-tie"><span class="ko-num">Match ' + t.n + '</span>' + slotHtml(t.a, t.n) + slotHtml(t.b, t.n) + '</div>';
+    root.innerHTML = order.filter(function (r) { return byRound[r]; }).map(function (roundName) {
+      return '<article class="round-card"><h3>' + roundName + '</h3>' + byRound[roundName].map(function (m) {
+        var meta = m.date ? '<span class="ko-when">' + escapeHtml(m.date) + (m.venue ? ' &middot; ' + escapeHtml(m.venue) : '') + '</span>' : '';
+        return '<div class="ko-tie"><span class="ko-num">Match ' + m.n + meta + '</span>' +
+          teamCell(m.home, m.homeLabel, m.winner && m.winner === m.home) +
+          teamCell(m.away, m.awayLabel, m.winner && m.winner === m.away) +
+          scoreLine(m) + '</div>';
       }).join("") + '</article>';
     }).join("");
-  }
-
-  // Snapshot of what the live results let us pin down in the official bracket:
-  // confirmed group winners/runners-up, plus the third-place team feeding each
-  // Round-of-32 third slot once the whole group stage is complete.
-  function bracketContext() {
-    var winners = {};
-    var runners = {};
-    var thirdByMatch = {};
-    Object.keys(groups).forEach(function (g) {
-      if (groupComplete(g)) {
-        var rows = standingsFor(g);
-        winners[g] = rows[0].team;
-        runners[g] = rows[1].team;
-      }
-    });
-    var allComplete = Object.keys(groups).every(groupComplete);
-    if (allComplete && window.WC_THIRD_ALLOCATION) {
-      var thirds = Object.keys(groups).map(function (g) {
-        var r = standingsFor(g)[2];
-        return { g: g, pts: r.pts, gd: r.gd, gf: r.gf, team: r.team };
-      });
-      thirds.sort(function (a, b) {
-        return b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team);
-      });
-      var key = thirds.slice(0, 8).map(function (t) { return t.g; }).sort().join("");
-      var alloc = window.WC_THIRD_ALLOCATION.table[key];
-      var colMatches = window.WC_THIRD_ALLOCATION.columnMatches;
-      if (alloc) {
-        var thirdOf = {};
-        thirds.forEach(function (t) { thirdOf[t.g] = t.team; });
-        for (var i = 0; i < alloc.length; i++) {
-          thirdByMatch[colMatches[i]] = thirdOf[alloc[i]];
-        }
-      }
-    }
-    return { winners: winners, runners: runners, thirdByMatch: thirdByMatch };
   }
 
   function renderKnockout() {
@@ -1264,6 +1222,7 @@
     if (!data || !data.groups || !Array.isArray(data.matches)) return;
     groups = normalizeGroups(data.groups);
     matches = data.matches;
+    knockoutData = Array.isArray(data.knockout) ? data.knockout : null;
     teams = Object.keys(groups).reduce(function (all, key) { return all.concat(groups[key]); }, []).sort();
     renderLastUpdated(data.updatedAt);
   }

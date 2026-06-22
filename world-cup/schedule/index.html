@@ -321,9 +321,9 @@
       <div class="section-head">
         <div>
           <span class="eyebrow">Full schedule</span>
-          <h2 class="section-title" style="margin-top:12px;">All group-stage fixtures by day</h2>
+          <h2 class="section-title" style="margin-top:12px;">All fixtures by day</h2>
         </div>
-        <p class="section-copy">Filter by team or group. Every fixture with its date and host city.</p>
+        <p class="section-copy">Group stage plus the knockout rounds as they're set. Filter by team or group; every fixture with its date and host city.</p>
       </div>
       <div class="fixture-filters">
         <label>Team
@@ -366,6 +366,8 @@
 </footer>
 
 <script src="/world-cup/wc-live.js"></script>
+<script src="/world-cup/third-place-allocation.js"></script>
+<script src="/world-cup/wc-knockout.js"></script>
 <script>
 (function () {
   "use strict";
@@ -439,7 +441,7 @@
   function matchHtml(match) {
     var badge = isPlayed(match) ? match.hs + "-" + match.as : isLive(match) ? liveBadge(match) : "Next";
     var badgeClass = isLive(match) ? " status-pill--live" : !isPlayed(match) ? " status-pill--next" : "";
-    return '<article class="schedule-match"><div class="schedule-date">' + escapeHtml(match.date || "") + '<br>' + escapeHtml(match.time || "") + '</div><div><div class="schedule-teams">' + teamChip(match.home) + teamChip(match.away) + '</div><div class="schedule-meta">Group ' + escapeHtml(match.group || "") + ' - ' + escapeHtml(match.venue || "") + '</div></div><span class="status-pill' + badgeClass + '">' + escapeHtml(badge) + '</span></article>';
+    return '<article class="schedule-match"><div class="schedule-date">' + escapeHtml(match.date || "") + '<br>' + escapeHtml(match.time || "") + '</div><div><div class="schedule-teams">' + teamChip(match.home) + teamChip(match.away) + '</div><div class="schedule-meta">' + escapeHtml(match.roundName || ("Group " + (match.group || ""))) + ' - ' + escapeHtml(match.venue || "") + '</div></div><span class="status-pill' + badgeClass + '">' + escapeHtml(badge) + '</span></article>';
   }
 
   function renderList(id, matches, empty) {
@@ -542,8 +544,24 @@
     root.innerHTML = html;
   }
 
+  // Pull in the knockout ties once their teams are known, so the schedule shows
+  // Round of 32 -> Final alongside the group games. Uses the server-resolved
+  // data.knockout when present, else resolves locally from the group results.
+  function knockoutFixtures(data) {
+    if (!window.WC_KNOCKOUT) return [];
+    var ko = (data.knockout && data.knockout.length)
+      ? data.knockout
+      : WC_KNOCKOUT.resolve({ groups: data.groups || seedGroups, groupMatches: data.matches || seedMatches, allocation: window.WC_THIRD_ALLOCATION });
+    return ko.filter(function (m) { return m.home && m.away && m.isoDate; }).map(function (m) {
+      var row = { date: m.date, isoDate: m.isoDate, time: m.time, home: m.home, away: m.away, venue: m.venue, group: "", roundName: m.round, statusShort: m.statusShort };
+      if (typeof m.hs === "number") { row.hs = m.hs; row.as = m.as; }
+      if (typeof m.lhs === "number") { row.lhs = m.lhs; row.las = m.las; }
+      return row;
+    });
+  }
+
   function render(data) {
-    var matches = (data.matches || seedMatches).slice().sort(function (a, b) {
+    var matches = (data.matches || seedMatches).concat(knockoutFixtures(data)).slice().sort(function (a, b) {
       return String(a.isoDate || a.date).localeCompare(String(b.isoDate || b.date)) || a.home.localeCompare(b.home);
     });
     ALL_MATCHES = matches;
