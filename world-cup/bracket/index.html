@@ -430,6 +430,11 @@
   font-weight: 800;
   font-size: 0.86rem;
 }
+.slot--filled {
+  background: rgba(31,143,119,0.12);
+  color: var(--ink);
+}
+.slot--filled .team-name { overflow-wrap: anywhere; }
 .seo-note {
   margin-top: 12px;
   color: var(--muted);
@@ -571,7 +576,7 @@
         </div>
         <div id="view-knockout" hidden>
           <h2>Knockout bracket</h2>
-          <p class="seo-note" style="margin-top:0;">The official Round of 32 &rarr; Final pairings. Seed labels &mdash; Winner (W), Runner-up (RU), and best third-placed teams &mdash; fill in with team names once the group stage ends on June 27.</p>
+          <p class="seo-note" style="margin-top:0;">The official Round of 32 &rarr; Final pairings. Winner (W) and Runner-up (RU) slots fill with real teams as each group is decided, and the best third-placed teams drop into their matches automatically &mdash; using FIFA's official allocation &mdash; once the group stage ends June 27. Later rounds fill in as the knockout games are played.</p>
           <div class="knockout-grid" id="bracket-grid"></div>
           <h2 style="margin-top:26px;">Your predicted bracket</h2>
           <div class="knockout-grid" id="knockout-grid"></div>
@@ -650,6 +655,7 @@
 </footer>
 
 <script src="/world-cup/wc-live.js"></script>
+<script src="/world-cup/third-place-allocation.js"></script>
 <script>
 (function () {
   "use strict";
@@ -1100,11 +1106,65 @@
       { name: "Semi-finals", ties: sf },
       { name: "Final", ties: fin }
     ];
+
+    // Resolve seed labels (W A, RU B, 3rd .../...) to real teams as results come
+    // in. Group winners/runners-up fill the moment that group is decided; the
+    // third-place slots fill once every group is done, using the official FIFA
+    // allocation table to map the eight best thirds to their Round-of-32 matches.
+    var ctx = bracketContext();
+    function slotHtml(label, matchNum) {
+      var m;
+      if ((m = /^W ([A-L])$/.exec(label)) && ctx.winners[m[1]]) return filledSlot(ctx.winners[m[1]]);
+      if ((m = /^RU ([A-L])$/.exec(label)) && ctx.runners[m[1]]) return filledSlot(ctx.runners[m[1]]);
+      if (/^3rd/.test(label) && ctx.thirdByMatch[matchNum]) return filledSlot(ctx.thirdByMatch[matchNum]);
+      return '<div class="slot">' + escapeHtml(label) + '</div>';
+    }
+    function filledSlot(team) {
+      return '<div class="slot slot--filled">' + teamHtml(team) + '</div>';
+    }
+
     root.innerHTML = rounds.map(function (round) {
       return '<article class="round-card"><h3>' + round.name + '</h3>' + round.ties.map(function (t) {
-        return '<div class="ko-tie"><span class="ko-num">Match ' + t.n + '</span><div class="slot">' + t.a + '</div><div class="slot">' + t.b + '</div></div>';
+        return '<div class="ko-tie"><span class="ko-num">Match ' + t.n + '</span>' + slotHtml(t.a, t.n) + slotHtml(t.b, t.n) + '</div>';
       }).join("") + '</article>';
     }).join("");
+  }
+
+  // Snapshot of what the live results let us pin down in the official bracket:
+  // confirmed group winners/runners-up, plus the third-place team feeding each
+  // Round-of-32 third slot once the whole group stage is complete.
+  function bracketContext() {
+    var winners = {};
+    var runners = {};
+    var thirdByMatch = {};
+    Object.keys(groups).forEach(function (g) {
+      if (groupComplete(g)) {
+        var rows = standingsFor(g);
+        winners[g] = rows[0].team;
+        runners[g] = rows[1].team;
+      }
+    });
+    var allComplete = Object.keys(groups).every(groupComplete);
+    if (allComplete && window.WC_THIRD_ALLOCATION) {
+      var thirds = Object.keys(groups).map(function (g) {
+        var r = standingsFor(g)[2];
+        return { g: g, pts: r.pts, gd: r.gd, gf: r.gf, team: r.team };
+      });
+      thirds.sort(function (a, b) {
+        return b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team);
+      });
+      var key = thirds.slice(0, 8).map(function (t) { return t.g; }).sort().join("");
+      var alloc = window.WC_THIRD_ALLOCATION.table[key];
+      var colMatches = window.WC_THIRD_ALLOCATION.columnMatches;
+      if (alloc) {
+        var thirdOf = {};
+        thirds.forEach(function (t) { thirdOf[t.g] = t.team; });
+        for (var i = 0; i < alloc.length; i++) {
+          thirdByMatch[colMatches[i]] = thirdOf[alloc[i]];
+        }
+      }
+    }
+    return { winners: winners, runners: runners, thirdByMatch: thirdByMatch };
   }
 
   function renderKnockout() {
@@ -1268,6 +1328,7 @@
         renderGroups();
         renderQualified();
         renderEliminated();
+        renderBracket();
         renderSummary();
         renderMatches();
         scheduleNext();
