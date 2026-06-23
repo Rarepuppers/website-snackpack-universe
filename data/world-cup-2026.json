@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-23T18:24:26.738Z",
+  "updatedAt": "2026-06-23T20:28:18.343Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -616,11 +616,14 @@
     {
       "date": "Jun 23",
       "isoDate": "2026-06-23",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "L",
       "home": "England",
       "away": "Ghana",
-      "venue": "Boston"
+      "venue": "Boston",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 23",
@@ -634,14 +637,14 @@
     {
       "date": "Jun 23",
       "isoDate": "2026-06-23",
-      "time": "Live",
+      "time": "FT",
       "group": "K",
       "home": "Portugal",
       "away": "Uzbekistan",
       "venue": "Houston",
-      "statusShort": "LIVE",
-      "lhs": 3,
-      "las": 0
+      "hs": 5,
+      "as": 0,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 24",
