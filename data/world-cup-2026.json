@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-23T05:48:31.750Z",
+  "updatedAt": "2026-06-23T18:24:26.738Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -634,11 +634,14 @@
     {
       "date": "Jun 23",
       "isoDate": "2026-06-23",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "K",
       "home": "Portugal",
       "away": "Uzbekistan",
-      "venue": "Houston"
+      "venue": "Houston",
+      "statusShort": "LIVE",
+      "lhs": 3,
+      "las": 0
     },
     {
       "date": "Jun 24",
