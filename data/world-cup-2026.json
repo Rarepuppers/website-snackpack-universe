@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-23T01:34:24.901Z",
+  "updatedAt": "2026-06-23T05:48:31.750Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -583,23 +583,26 @@
     {
       "date": "Jun 22",
       "isoDate": "2026-06-22",
-      "time": "Upcoming",
+      "time": "FT",
       "group": "J",
       "home": "Jordan",
       "away": "Algeria",
-      "venue": "San Francisco Bay Area"
+      "venue": "San Francisco Bay Area",
+      "hs": 1,
+      "as": 2,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 22",
       "isoDate": "2026-06-22",
-      "time": "Live",
+      "time": "FT",
       "group": "I",
       "home": "Norway",
       "away": "Senegal",
       "venue": "New York/New Jersey",
-      "statusShort": "LIVE",
-      "lhs": 3,
-      "las": 1
+      "hs": 3,
+      "as": 2,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 23",
