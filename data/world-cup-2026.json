@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-23T20:28:18.343Z",
+  "updatedAt": "2026-06-23T22:56:15.302Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -616,14 +616,14 @@
     {
       "date": "Jun 23",
       "isoDate": "2026-06-23",
-      "time": "Live",
+      "time": "FT",
       "group": "L",
       "home": "England",
       "away": "Ghana",
       "venue": "Boston",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "hs": 0,
+      "as": 0,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 23",
