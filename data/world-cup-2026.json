@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-23T22:56:15.302Z",
+  "updatedAt": "2026-06-23T23:47:41.620Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -628,11 +628,14 @@
     {
       "date": "Jun 23",
       "isoDate": "2026-06-23",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "L",
       "home": "Panama",
       "away": "Croatia",
-      "venue": "Toronto"
+      "venue": "Toronto",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 23",
