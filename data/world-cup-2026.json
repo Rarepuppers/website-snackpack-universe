@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-24T20:59:15.246Z",
+  "updatedAt": "2026-06-24T22:14:47.733Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -676,20 +676,26 @@
     {
       "date": "Jun 24",
       "isoDate": "2026-06-24",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "C",
       "home": "Morocco",
       "away": "Haiti",
-      "venue": "Atlanta"
+      "venue": "Atlanta",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 1
     },
     {
       "date": "Jun 24",
       "isoDate": "2026-06-24",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "C",
       "home": "Scotland",
       "away": "Brazil",
-      "venue": "Miami"
+      "venue": "Miami",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 1
     },
     {
       "date": "Jun 24",
