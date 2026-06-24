@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-24T19:18:34.803Z",
+  "updatedAt": "2026-06-24T20:59:15.246Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -655,14 +655,14 @@
     {
       "date": "Jun 24",
       "isoDate": "2026-06-24",
-      "time": "Live",
+      "time": "FT",
       "group": "B",
       "home": "Bosnia and Herzegovina",
       "away": "Qatar",
       "venue": "Seattle",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "hs": 3,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 24",
@@ -703,14 +703,14 @@
     {
       "date": "Jun 24",
       "isoDate": "2026-06-24",
-      "time": "Live",
+      "time": "FT",
       "group": "B",
       "home": "Switzerland",
       "away": "Canada",
       "venue": "Vancouver",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "hs": 2,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 25",
