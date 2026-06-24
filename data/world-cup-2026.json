@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-24T22:14:47.733Z",
+  "updatedAt": "2026-06-24T23:33:58.476Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -682,8 +682,8 @@
       "away": "Haiti",
       "venue": "Atlanta",
       "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 1
+      "lhs": 2,
+      "las": 2
     },
     {
       "date": "Jun 24",
@@ -695,7 +695,7 @@
       "venue": "Miami",
       "statusShort": "LIVE",
       "lhs": 0,
-      "las": 1
+      "las": 3
     },
     {
       "date": "Jun 24",
