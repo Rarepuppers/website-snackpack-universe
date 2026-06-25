@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-25T05:46:38.959Z",
+  "updatedAt": "2026-06-25T20:24:04.176Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -727,20 +727,26 @@
     {
       "date": "Jun 25",
       "isoDate": "2026-06-25",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "E",
       "home": "Curacao",
       "away": "Cote d'Ivoire",
-      "venue": "Philadelphia"
+      "venue": "Philadelphia",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 1
     },
     {
       "date": "Jun 25",
       "isoDate": "2026-06-25",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "E",
       "home": "Ecuador",
       "away": "Germany",
-      "venue": "New York/New Jersey"
+      "venue": "New York/New Jersey",
+      "statusShort": "LIVE",
+      "lhs": 1,
+      "las": 1
     },
     {
       "date": "Jun 25",
