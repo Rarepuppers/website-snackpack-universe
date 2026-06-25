@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-25T01:33:36.167Z",
+  "updatedAt": "2026-06-25T05:46:38.959Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -667,14 +667,14 @@
     {
       "date": "Jun 24",
       "isoDate": "2026-06-24",
-      "time": "Live",
+      "time": "FT",
       "group": "A",
       "home": "Czechia",
       "away": "Mexico",
       "venue": "Mexico City",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "hs": 0,
+      "as": 3,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 24",
@@ -703,14 +703,14 @@
     {
       "date": "Jun 24",
       "isoDate": "2026-06-24",
-      "time": "Live",
+      "time": "FT",
       "group": "A",
       "home": "South Africa",
       "away": "South Korea",
       "venue": "Monterrey",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "hs": 1,
+      "as": 0,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 24",
