@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-25T21:56:18.205Z",
+  "updatedAt": "2026-06-25T23:06:37.218Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -727,35 +727,38 @@
     {
       "date": "Jun 25",
       "isoDate": "2026-06-25",
-      "time": "Live",
+      "time": "FT",
       "group": "E",
       "home": "Curacao",
       "away": "Cote d'Ivoire",
       "venue": "Philadelphia",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 2
+      "hs": 0,
+      "as": 2,
+      "statusShort": "FT"
+    },
+    {
+      "date": "Jun 25",
+      "isoDate": "2026-06-25",
+      "time": "FT",
+      "group": "E",
+      "home": "Ecuador",
+      "away": "Germany",
+      "venue": "New York/New Jersey",
+      "hs": 2,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 25",
       "isoDate": "2026-06-25",
       "time": "Live",
-      "group": "E",
-      "home": "Ecuador",
-      "away": "Germany",
-      "venue": "New York/New Jersey",
-      "statusShort": "LIVE",
-      "lhs": 2,
-      "las": 1
-    },
-    {
-      "date": "Jun 25",
-      "isoDate": "2026-06-25",
-      "time": "Upcoming",
       "group": "F",
       "home": "Japan",
       "away": "Sweden",
-      "venue": "Dallas"
+      "venue": "Dallas",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 25",
@@ -769,11 +772,14 @@
     {
       "date": "Jun 25",
       "isoDate": "2026-06-25",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "F",
       "home": "Tunisia",
       "away": "Netherlands",
-      "venue": "Kansas City"
+      "venue": "Kansas City",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 1
     },
     {
       "date": "Jun 25",
