@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-25T20:24:04.176Z",
+  "updatedAt": "2026-06-25T21:56:18.205Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -734,7 +734,7 @@
       "venue": "Philadelphia",
       "statusShort": "LIVE",
       "lhs": 0,
-      "las": 1
+      "las": 2
     },
     {
       "date": "Jun 25",
@@ -745,7 +745,7 @@
       "away": "Germany",
       "venue": "New York/New Jersey",
       "statusShort": "LIVE",
-      "lhs": 1,
+      "lhs": 2,
       "las": 1
     },
     {
