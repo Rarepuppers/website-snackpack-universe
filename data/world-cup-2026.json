@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-26T19:05:02.134Z",
+  "updatedAt": "2026-06-26T20:50:27.655Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -832,8 +832,8 @@
       "away": "France",
       "venue": "Boston",
       "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "lhs": 1,
+      "las": 3
     },
     {
       "date": "Jun 26",
@@ -844,7 +844,7 @@
       "away": "Iraq",
       "venue": "Toronto",
       "statusShort": "LIVE",
-      "lhs": 0,
+      "lhs": 4,
       "las": 0
     },
     {
