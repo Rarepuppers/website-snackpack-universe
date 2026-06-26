@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-25T23:06:37.218Z",
+  "updatedAt": "2026-06-26T00:20:36.669Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -757,7 +757,7 @@
       "away": "Sweden",
       "venue": "Dallas",
       "statusShort": "LIVE",
-      "lhs": 0,
+      "lhs": 1,
       "las": 0
     },
     {
@@ -778,8 +778,8 @@
       "away": "Netherlands",
       "venue": "Kansas City",
       "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 1
+      "lhs": 1,
+      "las": 2
     },
     {
       "date": "Jun 25",
