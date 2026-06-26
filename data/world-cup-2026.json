@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-26T04:43:46.300Z",
+  "updatedAt": "2026-06-26T19:05:02.134Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -826,20 +826,26 @@
     {
       "date": "Jun 26",
       "isoDate": "2026-06-26",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "I",
       "home": "Norway",
       "away": "France",
-      "venue": "Boston"
+      "venue": "Boston",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 26",
       "isoDate": "2026-06-26",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "I",
       "home": "Senegal",
       "away": "Iraq",
-      "venue": "Toronto"
+      "venue": "Toronto",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 26",
