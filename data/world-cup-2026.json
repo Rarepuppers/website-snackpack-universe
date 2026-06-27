@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-26T21:54:56.331Z",
+  "updatedAt": "2026-06-27T01:48:31.297Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -799,11 +799,14 @@
     {
       "date": "Jun 26",
       "isoDate": "2026-06-26",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "H",
       "home": "Cape Verde",
       "away": "Saudi Arabia",
-      "venue": "Houston"
+      "venue": "Houston",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 26",
@@ -850,11 +853,14 @@
     {
       "date": "Jun 26",
       "isoDate": "2026-06-26",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "H",
       "home": "Uruguay",
       "away": "Spain",
-      "venue": "Guadalajara"
+      "venue": "Guadalajara",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 1
     },
     {
       "date": "Jun 27",
