@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-27T21:02:01.623Z",
+  "updatedAt": "2026-06-27T22:07:10.115Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -889,11 +889,14 @@
     {
       "date": "Jun 27",
       "isoDate": "2026-06-27",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "L",
       "home": "Croatia",
       "away": "Ghana",
-      "venue": "Philadelphia"
+      "venue": "Philadelphia",
+      "statusShort": "LIVE",
+      "lhs": 1,
+      "las": 0
     },
     {
       "date": "Jun 27",
