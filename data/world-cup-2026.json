@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-27T01:48:31.297Z",
+  "updatedAt": "2026-06-27T05:39:48.193Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -799,32 +799,38 @@
     {
       "date": "Jun 26",
       "isoDate": "2026-06-26",
-      "time": "Live",
+      "time": "FT",
       "group": "H",
       "home": "Cape Verde",
       "away": "Saudi Arabia",
       "venue": "Houston",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "hs": 0,
+      "as": 0,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 26",
       "isoDate": "2026-06-26",
-      "time": "Upcoming",
+      "time": "FT",
       "group": "G",
       "home": "Egypt",
       "away": "Iran",
-      "venue": "Seattle"
+      "venue": "Seattle",
+      "hs": 1,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 26",
       "isoDate": "2026-06-26",
-      "time": "Upcoming",
+      "time": "FT",
       "group": "G",
       "home": "New Zealand",
       "away": "Belgium",
-      "venue": "Vancouver"
+      "venue": "Vancouver",
+      "hs": 1,
+      "as": 5,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 26",
@@ -853,14 +859,14 @@
     {
       "date": "Jun 26",
       "isoDate": "2026-06-26",
-      "time": "Live",
+      "time": "FT",
       "group": "H",
       "home": "Uruguay",
       "away": "Spain",
       "venue": "Guadalajara",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 1
+      "hs": 0,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 27",
