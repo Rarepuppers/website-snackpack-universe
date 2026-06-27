@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-27T22:07:10.115Z",
+  "updatedAt": "2026-06-27T23:13:47.783Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -889,14 +889,14 @@
     {
       "date": "Jun 27",
       "isoDate": "2026-06-27",
-      "time": "Live",
+      "time": "FT",
       "group": "L",
       "home": "Croatia",
       "away": "Ghana",
       "venue": "Philadelphia",
-      "statusShort": "LIVE",
-      "lhs": 1,
-      "las": 0
+      "hs": 2,
+      "as": 1,
+      "statusShort": "FT"
     },
     {
       "date": "Jun 27",
@@ -919,14 +919,14 @@
     {
       "date": "Jun 27",
       "isoDate": "2026-06-27",
-      "time": "Live",
+      "time": "FT",
       "group": "L",
       "home": "Panama",
       "away": "England",
       "venue": "New York/New Jersey",
-      "statusShort": "LIVE",
-      "lhs": 0,
-      "las": 0
+      "hs": 0,
+      "as": 2,
+      "statusShort": "FT"
     }
   ]
 }
