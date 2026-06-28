@@ -865,6 +865,35 @@ main section {
   color: var(--ink);
 }
 
+.prehistoric-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.prehistoric-gallery figure {
+  margin: 0;
+}
+
+.prehistoric-gallery img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 34px rgba(32, 23, 19, 0.12);
+}
+
+.prehistoric-gallery figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.prehistoric-mode-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .policy-meta {
   margin-top: 14px;
   color: var(--muted);
@@ -1046,7 +1075,9 @@ button:focus-visible {
   .detail-gallery,
   .newsletter-row,
   .featured-app-card,
-  .showcase-shell {
+  .showcase-shell,
+  .prehistoric-gallery,
+  .prehistoric-mode-grid {
     grid-template-columns: 1fr;
   }
 
