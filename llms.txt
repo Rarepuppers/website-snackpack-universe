@@ -14,6 +14,7 @@ Key facts that apply to every SnackPack app: no third-party ads, no tracking or 
 ## Coming soon
 
 - [Snackpack Brain Games Vol 2](https://www.snackpackuniverse.com/apps/snackpack-brain-games-vol-2/): A second collection of calm, offline classic games — Flappy Snacky, Snacky Worm, Table Tennis, Snakes & Ladders, Picross, Thirteen, Asteroid Destroyer, and a themed Crossword. No ads, no tracking. Coming soon to Android (Play Store ID com.snackpackuniverse.braingames2); Flappy Snacky and Snacky Worm are playable free in the web arcade now.
+- [SnackPack Garden World](https://www.snackpackuniverse.com/apps/snackpack-13-garden-world/): Upcoming calm nature learning app with plants, pollinators, garden habitats, and ecology mini-games. Privacy policy: https://www.snackpackuniverse.com/privacy/snackpack-13-garden-world/. Play Store ID planned: com.snackpackuniverse.gardenworld
 
 ## Play free in your browser (web arcade)
 
@@ -55,6 +56,6 @@ Original SnackPack browser soccer games and a 2026 tournament tracker. Not affil
 
 ## Reference
 
-- [All apps](https://www.snackpackuniverse.com/apps/): Full lineup including the 10+ apps in development (spelling, arithmetic, stories, creativity, geography, geometry, coding logic, dinosaurs, animals).
+- [All apps](https://www.snackpackuniverse.com/apps/): Full lineup including the 10+ apps in development (spelling, arithmetic, stories, creativity, geography, geometry, coding logic, dinosaurs, animals, gardens).
 - [Privacy policies](https://www.snackpackuniverse.com/privacy/): Per-app privacy policies meeting Google Play and Apple requirements.
 - [Terms](https://www.snackpackuniverse.com/terms/)
