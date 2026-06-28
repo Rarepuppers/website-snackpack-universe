@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-27T23:13:47.783Z",
+  "updatedAt": "2026-06-28T00:14:06.722Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -880,11 +880,14 @@
     {
       "date": "Jun 27",
       "isoDate": "2026-06-27",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "K",
       "home": "Colombia",
       "away": "Portugal",
-      "venue": "Miami"
+      "venue": "Miami",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 0
     },
     {
       "date": "Jun 27",
@@ -901,11 +904,14 @@
     {
       "date": "Jun 27",
       "isoDate": "2026-06-27",
-      "time": "Upcoming",
+      "time": "Live",
       "group": "K",
       "home": "DR Congo",
       "away": "Uzbekistan",
-      "venue": "Atlanta"
+      "venue": "Atlanta",
+      "statusShort": "LIVE",
+      "lhs": 0,
+      "las": 1
     },
     {
       "date": "Jun 27",
