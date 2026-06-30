@@ -4,7 +4,7 @@ Two scripts manage the World Cup hub. They do different jobs — don't mix them 
 
 | Script | What it does | Who runs it |
 |---|---|---|
-| `update-world-cup-data.mjs` | Pulls **live scores** from API-FOOTBALL and updates `data/world-cup-2026.json` | **GitHub Actions, automatically, every 20 minutes.** You never run this by hand. |
+| `update-world-cup-data.mjs` | Pulls **live scores** from API-FOOTBALL and updates `data/world-cup-2026.json` | **GitHub Actions, automatically, every 5 minutes.** You never run this by hand. |
 | `build-world-cup.mjs` | Rebuilds the **12 group pages** (`world-cup/group-a/` … `group-l/`) from the data tables inside the script | **You**, only when you change the group pages. |
 
 `data/world-cup-2026.json` is the single source of truth for scores and fixtures.
@@ -62,6 +62,6 @@ Use `--seed-data` rarely. For everyday changes, leave it off.
 
 ## Live-data automation (reference)
 
-The workflow `.github/workflows/update-world-cup-data.yml` runs every 20 minutes
+The workflow `.github/workflows/update-world-cup-data.yml` runs every 5 minutes
 and commits `data/world-cup-2026.json` when scores change. It needs a repository
 secret `API_FOOTBALL_KEY`. See `WORLD-CUP-DATA-AUTOMATION.md` for full setup.
