@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-30T17:27:53.208Z",
+  "updatedAt": "2026-06-30T19:15:50.947Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1034,11 +1034,11 @@
       "awayLabel": "RU I",
       "home": "Cote d'Ivoire",
       "away": "Norway",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 0,
-      "las": 0
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Norway",
+      "hs": 1,
+      "as": 2
     },
     {
       "n": 79,
@@ -1217,9 +1217,9 @@
       "homeLabel": "W 76",
       "awayLabel": "W 78",
       "home": "Brazil",
-      "away": null,
+      "away": "Norway",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
