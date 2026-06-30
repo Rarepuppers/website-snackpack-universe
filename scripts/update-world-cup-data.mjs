@@ -137,6 +137,8 @@ async function fetchEspnResults(dateRange) {
         statusShort: type.shortDetail || type.detail || "",
         hs: Number(home.score),
         as: Number(away.score),
+        hps: Number.isFinite(Number(home.shootoutScore)) ? Number(home.shootoutScore) : null,
+        aps: Number.isFinite(Number(away.shootoutScore)) ? Number(away.shootoutScore) : null,
         // ESPN flags the advancing side, which also covers penalty shootouts.
         winner: home.winner === true ? homeName : away.winner === true ? awayName : null,
         isoDate
@@ -187,6 +189,10 @@ function buildKnockout(groups, groupMatches, allByPair) {
       out.as = aligned ? e.as : e.hs;
       out.time = "FT";
       out.winner = e.winner || (out.hs > out.as ? home : out.hs < out.as ? away : null);
+      if (e.hps != null && e.aps != null) {
+        out.hps = aligned ? e.hps : e.aps;
+        out.aps = aligned ? e.aps : e.hps;
+      }
     } else if (e.state === "in") {
       out.time = "Live";
       out.statusShort = "LIVE";

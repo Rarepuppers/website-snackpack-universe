@@ -40,6 +40,19 @@ body {
     linear-gradient(180deg, #fffaf3 0%, var(--bg) 55%, #f0e3d2 100%);
 }
 
+body.world-cup-page {
+  cursor: url("/world-cup/ball-cursor-32.png") 10 10, auto;
+}
+
+body.world-cup-page a,
+body.world-cup-page button,
+body.world-cup-page summary,
+body.world-cup-page select,
+body.world-cup-page input,
+body.world-cup-page textarea {
+  cursor: pointer;
+}
+
 img {
   max-width: 100%;
   display: block;

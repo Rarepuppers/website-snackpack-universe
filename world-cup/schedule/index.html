@@ -246,7 +246,7 @@
 }
 </script>
 </head>
-<body>
+<body class="world-cup-page">
 <header class="topbar">
   <div class="shell topbar-inner">
     <a class="brand" href="../../">
@@ -534,7 +534,7 @@
     if (collapsedPast.length) {
       var rangeStart = dayLabel(collapsedPast[0]);
       var rangeEnd = dayLabel(collapsedPast[collapsedPast.length - 1]);
-      var rangeLabel = collapsedPast.length === 1 ? rangeStart : rangeStart + " – " + rangeEnd;
+      var rangeLabel = collapsedPast.length === 1 ? rangeStart : rangeStart + " â€“ " + rangeEnd;
       var collapsedCount = collapsedPast.reduce(function (sum, k) { return sum + byDay[k].length; }, 0);
       html += '<details class="past-fixtures"' + (keepOpen ? " open" : "") + '><summary class="past-toggle">' +
         'Earlier matches <span class="past-range">' + escapeHtml(rangeLabel) + '</span>' +

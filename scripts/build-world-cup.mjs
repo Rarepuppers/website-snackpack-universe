@@ -522,7 +522,7 @@ function groupPage(letter) {
 }
 </script>
 </head>
-<body>
+<body class="world-cup-page">
 <header class="topbar">
   <div class="shell topbar-inner">
     <a class="brand" href="../../">
@@ -936,7 +936,7 @@ function teamPage(team) {
 }
 </script>
 </head>
-<body>
+<body class="world-cup-page">
 <header class="topbar">
   <div class="shell topbar-inner">
     <a class="brand" href="../../../">

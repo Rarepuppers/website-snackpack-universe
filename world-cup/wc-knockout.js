@@ -186,6 +186,7 @@
         var res = home && away ? lookup(tie.n, home, away) : null;
         if (res) {
           if (typeof res.hs === "number") { match.hs = res.hs; match.as = res.as; match.time = "FT"; match.statusShort = res.statusShort || "FT"; }
+          if (typeof res.hps === "number") { match.hps = res.hps; match.aps = res.aps; }
           if (typeof res.lhs === "number") { match.lhs = res.lhs; match.las = res.las; }
           if (res.statusShort) match.statusShort = res.statusShort;
           if (res.time) match.time = res.time;

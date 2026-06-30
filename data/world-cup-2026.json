@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-30T07:31:05.801Z",
+  "updatedAt": "2026-06-30T08:29:58.560Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -972,7 +972,9 @@
       "statusShort": "FT-Pens",
       "winner": "Paraguay",
       "hs": 1,
-      "as": 1
+      "as": 1,
+      "hps": 3,
+      "aps": 4
     },
     {
       "n": 75,
@@ -988,7 +990,9 @@
       "statusShort": "FT-Pens",
       "winner": "Morocco",
       "hs": 1,
-      "as": 1
+      "as": 1,
+      "hps": 2,
+      "aps": 3
     },
     {
       "n": 76,

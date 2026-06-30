@@ -87,7 +87,9 @@
             state: t.state,
             completed: t.completed === true,
             hs: Number(home.score),
-            as: Number(away.score)
+            as: Number(away.score),
+            hps: isFinite(Number(home.shootoutScore)) ? Number(home.shootoutScore) : null,
+            aps: isFinite(Number(away.shootoutScore)) ? Number(away.shootoutScore) : null
           };
         });
         return map;
@@ -113,6 +115,11 @@
             next.as = aligned ? r.as : r.hs;
             next.time = "FT";
             next.statusShort = "FT";
+            if (r.hps != null && r.aps != null) {
+              next.hps = aligned ? r.hps : r.aps;
+              next.aps = aligned ? r.aps : r.hps;
+              next.statusShort = "FT-Pens";
+            }
             delete next.lhs;
             delete next.las;
           }
