@@ -587,6 +587,36 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   font-weight: 900;
   text-decoration: none;
 }
+.data-health {
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.68);
+}
+.data-health summary {
+  padding: 12px;
+  cursor: pointer;
+  color: var(--ink);
+  font-weight: 900;
+}
+.data-health dl {
+  display: grid;
+  grid-template-columns: minmax(92px, auto) minmax(0, 1fr);
+  gap: 7px 10px;
+  margin: 0;
+  padding: 0 12px 12px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.data-health dt {
+  font-weight: 900;
+}
+.data-health dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-weight: 800;
+}
 .empty-state,
 .ko-note {
   color: var(--muted);
@@ -637,6 +667,9 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     "url": "https://www.snackpackuniverse.com/"
   }
 }
+</script>
+<script type="application/ld+json" id="knockout-events-jsonld">
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[]}
 </script>
 </head>
 <body class="world-cup-page">
@@ -764,6 +797,12 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
           <a href="../">World Cup hub <span>-></span></a>
         </div>
         <p class="ko-note" style="margin-top:14px;">This page reads the same live JSON as the bracket and schedule pages. The GitHub Action checks for score changes every 5 minutes during the tournament and commits updates when provider data changes.</p>
+        <details class="data-health">
+          <summary>Data health</summary>
+          <dl id="data-health-list">
+            <dt>Status</dt><dd>Loading...</dd>
+          </dl>
+        </details>
       </aside>
     </div>
   </section>
@@ -1334,6 +1373,80 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     }).join("");
   }
 
+  function eventStatus(match) {
+    if (isLive(match)) return "https://schema.org/EventInProgress";
+    return isPlayed(match) ? "https://schema.org/EventCompleted" : "https://schema.org/EventScheduled";
+  }
+
+  function renderStructuredData(knockout) {
+    var root = document.getElementById("knockout-events-jsonld");
+    if (!root) return;
+    var events = knockout.filter(function (match) { return match.home && match.away; }).map(function (match, index) {
+      var home = match.home || match.homeLabel || "TBD";
+      var away = match.away || match.awayLabel || "TBD";
+      var score = isPlayed(match) ? " Final score: " + matchBadge(match) + "." : "";
+      var winner = winnerOf(match);
+      var winnerText = winner ? " Advancing team: " + winner + "." : "";
+      return {
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "SportsEvent",
+          "name": "World Cup 2026 " + (match.round || "knockout") + ": " + home + " vs " + away,
+          "url": "https://www.snackpackuniverse.com/world-cup/knockout/#match-" + match.n,
+          "startDate": match.isoDate || undefined,
+          "eventStatus": eventStatus(match),
+          "description": "Match " + match.n + " in the World Cup 2026 knockout bracket." + score + winnerText,
+          "location": {
+            "@type": "Place",
+            "name": match.venue || "Venue TBD"
+          },
+          "homeTeam": { "@type": "SportsTeam", "name": home },
+          "awayTeam": { "@type": "SportsTeam", "name": away },
+          "competitor": [
+            { "@type": "SportsTeam", "name": home },
+            { "@type": "SportsTeam", "name": away }
+          ],
+          "isPartOf": {
+            "@type": "SportsEvent",
+            "name": "World Cup 2026 knockout stage"
+          }
+        }
+      };
+    });
+    root.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "World Cup 2026 knockout matches",
+      "url": "https://www.snackpackuniverse.com/world-cup/knockout/",
+      "itemListElement": events
+    });
+  }
+
+  function renderDataHealth(data, knockout) {
+    var root = document.getElementById("data-health-list");
+    if (!root) return;
+    var updated = data.updatedAt ? new Date(data.updatedAt) : null;
+    var updatedText = updated && !isNaN(updated) ? updated.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "Unavailable";
+    var fetched = data._fetchedAt ? new Date(data._fetchedAt) : null;
+    var fetchedText = fetched && !isNaN(fetched) ? fetched.toLocaleTimeString([], { timeStyle: "short" }) : "Unavailable";
+    var today = todayIso();
+    var liveCount = knockout.filter(isLive).length;
+    var pendingToday = knockout.filter(function (match) { return String(match.isoDate || "") === today && !isPlayed(match); }).length;
+    var status = liveCount ? "Live window" : pendingToday ? "Match day pending" : "Idle";
+    var source = data.source || "Saved JSON";
+    var overlay = data._liveOverlay ? "Applied" : "Not needed";
+    var polling = shouldPoll(knockout) ? (knockout.some(isLive) ? "Every 60s" : "Every 120s") : "Stopped";
+    root.innerHTML =
+      '<dt>Status</dt><dd>' + escapeHtml(status) + '</dd>' +
+      '<dt>JSON update</dt><dd>' + escapeHtml(updatedText) + '</dd>' +
+      '<dt>Fetched</dt><dd>' + escapeHtml(fetchedText) + '</dd>' +
+      '<dt>Source</dt><dd>' + escapeHtml(source) + '</dd>' +
+      '<dt>Live overlay</dt><dd>' + escapeHtml(overlay) + '</dd>' +
+      '<dt>Polling</dt><dd>' + escapeHtml(polling) + '</dd>' +
+      '<dt>Knockout</dt><dd>' + escapeHtml(knockout.filter(isPlayed).length + ' of ' + knockout.length + ' ties final') + '</dd>';
+  }
+
   function render(data) {
     var knockout = addNextMatchContext(resolveKnockout(data));
     CURRENT_KNOCKOUT = knockout;
@@ -1359,6 +1472,8 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     renderTeams(teams, knockout);
     renderRounds(knockout);
     renderMobilePath(knockout);
+    renderStructuredData(knockout);
+    renderDataHealth(data, knockout);
     var updated = data.updatedAt ? new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "saved local data";
     document.getElementById("updated-note").textContent = "Last data update: " + updated + ".";
   }
@@ -1377,9 +1492,10 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   }
 
   function withLive(data) {
+    data._liveOverlay = false;
     var base = Array.isArray(data.knockout) ? data.knockout : [];
     if (window.WCLive && WCLive.worthLive(base)) {
-      return WCLive.overlay(base).then(function (merged) { data.knockout = merged; return data; });
+      return WCLive.overlay(base).then(function (merged) { data.knockout = merged; data._liveOverlay = true; return data; });
     }
     return Promise.resolve(data);
   }
@@ -1389,6 +1505,10 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
       .then(function (response) {
         if (!response.ok) throw new Error("World Cup data not available");
         return response.json();
+      })
+      .then(function (data) {
+        data._fetchedAt = new Date().toISOString();
+        return data;
       })
       .then(withLive)
       .then(function (data) {
