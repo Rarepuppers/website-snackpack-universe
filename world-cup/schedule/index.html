@@ -301,6 +301,7 @@
             <div class="wc-live-item"><span>Loading latest fixtures...</span><strong class="wc-live-badge">Soon</strong></div>
           </div>
         </div>
+        <p class="wc-timezone-note" id="timezone-note">Dates use your local timezone.</p>
         <h2 id="today">World Cup games today</h2>
         <div class="schedule-list" id="today-list"></div>
         <h2>Who plays next?</h2>
@@ -563,7 +564,7 @@
       ? data.knockout
       : WC_KNOCKOUT.resolve({ groups: data.groups || seedGroups, groupMatches: data.matches || seedMatches, allocation: window.WC_THIRD_ALLOCATION });
     return ko.filter(function (m) { return m.home && m.away && m.isoDate; }).map(function (m) {
-      var row = { n: m.n, date: m.date, isoDate: m.isoDate, time: m.time, home: m.home, away: m.away, venue: m.venue, group: "", roundName: m.round, statusShort: m.statusShort, winner: m.winner, hps: m.hps, aps: m.aps };
+      var row = { n: m.n, date: m.date, isoDate: m.isoDate, time: m.time, home: m.home, away: m.away, venue: m.venue, group: "", roundName: m.round, statusShort: m.statusShort, winner: m.winner, hps: m.hps, aps: m.aps, hpk: m.hpk, apk: m.apk };
       if (typeof m.hs === "number") { row.hs = m.hs; row.as = m.as; }
       if (typeof m.lhs === "number") { row.lhs = m.lhs; row.las = m.las; }
       return row;
@@ -588,6 +589,7 @@
     renderAllFixtures();
     if (window.WCUI) {
       WCUI.renderLiveStrip("wc-live-list", matches);
+      WCUI.renderTimezoneNote("timezone-note");
       WCUI.bindMatchDrawer({ root: document.body, drawer: "match-drawer", getMatches: function () { return ALL_MATCHES; } });
     }
     var updated = data.updatedAt ? new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "saved local data";

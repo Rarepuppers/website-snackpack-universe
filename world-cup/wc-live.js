@@ -64,6 +64,9 @@
   }
 
   function fetchEspn() {
+    function kicks(c) {
+      return c.shootoutKicks || c.penaltyKicks || c.penaltyShootout || null;
+    }
     return fetch(ESPN + "?dates=" + liveDateRange(), { cache: "no-store" })
       .then(function (r) {
         if (!r.ok) throw new Error("ESPN " + r.status);
@@ -89,7 +92,9 @@
             hs: Number(home.score),
             as: Number(away.score),
             hps: isFinite(Number(home.shootoutScore)) ? Number(home.shootoutScore) : null,
-            aps: isFinite(Number(away.shootoutScore)) ? Number(away.shootoutScore) : null
+            aps: isFinite(Number(away.shootoutScore)) ? Number(away.shootoutScore) : null,
+            hpk: kicks(home),
+            apk: kicks(away)
           };
         });
         return map;
@@ -118,6 +123,10 @@
             if (r.hps != null && r.aps != null) {
               next.hps = aligned ? r.hps : r.aps;
               next.aps = aligned ? r.aps : r.hps;
+              if (r.hpk || r.apk) {
+                next.hpk = aligned ? r.hpk : r.apk;
+                next.apk = aligned ? r.apk : r.hpk;
+              }
               next.statusShort = "FT-Pens";
             }
             delete next.lhs;

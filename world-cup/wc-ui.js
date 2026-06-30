@@ -52,6 +52,47 @@
     return String(match.isoDate || match.date || "") + "|" + String(match.time || "") + "|" + String(match.home || "");
   }
 
+  function timezoneName() {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || "your local timezone";
+    } catch (error) {
+      return "your local timezone";
+    }
+  }
+
+  function renderTimezoneNote(target) {
+    var root = typeof target === "string" ? document.getElementById(target) : target;
+    if (!root) return;
+    root.textContent = "Dates and today's match filters use your device timezone (" + timezoneName() + "). Live/final status comes from the score provider.";
+  }
+
+  function penaltyKicks(value) {
+    if (Array.isArray(value)) return value.map(String);
+    if (typeof value === "string") return value.trim().split(/\s*,\s*|\s+/).join("").split("");
+    return [];
+  }
+
+  function penaltyMark(kick) {
+    var value = String(kick || "").toLowerCase();
+    if (value === "1" || value === "o" || value === "ok" || value === "made" || value === "scored" || value === "goal") return "O";
+    if (value === "0" || value === "x" || value === "miss" || value === "missed" || value === "saved") return "X";
+    return value ? value.toUpperCase() : "";
+  }
+
+  function penaltyShootoutHtml(match) {
+    var home = penaltyKicks(match.hpk || match.homePenaltyKicks || match.homePens);
+    var away = penaltyKicks(match.apk || match.awayPenaltyKicks || match.awayPens);
+    if (!home.length && !away.length) return "";
+    function row(team, kicks) {
+      return '<div class="wc-pen-row"><span>' + escapeHtml(team || "TBD") + '</span><strong>' +
+        kicks.map(function (kick) {
+          var mark = penaltyMark(kick);
+          return '<i class="wc-pen-mark wc-pen-mark--' + (mark === "O" ? "made" : mark === "X" ? "miss" : "other") + '">' + escapeHtml(mark) + '</i>';
+        }).join("") + '</strong></div>';
+    }
+    return '<div class="wc-pen-detail"><span>Shootout kicks</span>' + row(match.home, home) + row(match.away, away) + '</div>';
+  }
+
   function renderLiveStrip(target, matches) {
     var root = typeof target === "string" ? document.getElementById(target) : target;
     if (!root) return;
@@ -82,6 +123,7 @@
     var pens = /pen/i.test(String(match.statusShort || "")) && Number.isFinite(Number(match.hps)) && Number.isFinite(Number(match.aps))
       ? '<span>Penalties</span><strong>' + escapeHtml(match.hps + "-" + match.aps) + '</strong>'
       : "";
+    var shootout = penaltyShootoutHtml(match);
     var next = match.nextMatch ? '<span>Winner plays</span><strong>Match ' + escapeHtml(match.nextMatch) + '</strong>' : "";
     root.hidden = false;
     root.innerHTML =
@@ -93,7 +135,7 @@
       '<span>Venue</span><strong>' + escapeHtml(match.venue || "Venue TBD") + '</strong>' +
       (winner ? '<span>Advancing team</span><strong>' + escapeHtml(winner) + '</strong>' : '') +
       pens + next +
-      '</div>';
+      '</div>' + shootout;
   }
 
   function bindMatchDrawer(options) {
@@ -136,6 +178,7 @@
     matchId: matchId,
     renderDrawer: renderDrawer,
     renderLiveStrip: renderLiveStrip,
+    renderTimezoneNote: renderTimezoneNote,
     scoreText: scoreText
   };
 })(window);

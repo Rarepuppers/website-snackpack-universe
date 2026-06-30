@@ -235,6 +235,7 @@
               <div class="cup-live-item">Loading latest fixtures... <span class="cup-live-badge">Soon</span></div>
             </div>
           </div>
+          <p class="wc-timezone-note" id="timezone-note">Dates use your local timezone.</p>
           <div class="wc-match-drawer" id="match-drawer" hidden></div>
         </div>
         <div class="cup-hero-art">
@@ -463,6 +464,7 @@
     CURRENT_MATCHES = allMatches;
     if (window.WCUI) {
       WCUI.renderLiveStrip(root, allMatches);
+      WCUI.renderTimezoneNote("timezone-note");
       WCUI.bindMatchDrawer({ root: document.body, drawer: "match-drawer", getMatches: function () { return CURRENT_MATCHES; } });
       return;
     }

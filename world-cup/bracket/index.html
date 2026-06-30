@@ -542,6 +542,7 @@
             <div class="wc-live-item"><span>Loading latest fixtures...</span><strong class="wc-live-badge">Soon</strong></div>
           </div>
         </div>
+        <p class="wc-timezone-note" id="timezone-note">Dates use your local timezone.</p>
         <div class="bracket-summary" aria-label="World Cup match summary">
           <article class="summary-card">
             <h2>Today's Matches</h2>
@@ -877,6 +878,7 @@
     renderList("recent-list", recentMatches, "No completed World Cup matches are listed yet.");
     if (window.WCUI) {
       WCUI.renderLiveStrip("wc-live-list", displayMatches());
+      WCUI.renderTimezoneNote("timezone-note");
       WCUI.bindMatchDrawer({ root: document.body, drawer: "match-drawer", getMatches: displayMatches });
     }
   }

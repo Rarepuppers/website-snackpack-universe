@@ -93,6 +93,10 @@ function dateRangeFor(matches) {
   return `${compact(isos[0])}-${compact(isos[isos.length - 1])}`;
 }
 
+function penaltyKicks(competitor) {
+  return competitor?.shootoutKicks || competitor?.penaltyKicks || competitor?.penaltyShootout || null;
+}
+
 async function fetchEspnResults(dateRange) {
   const response = await fetch(`${ESPN_URL}?dates=${dateRange}`);
   if (!response.ok) {
@@ -139,6 +143,8 @@ async function fetchEspnResults(dateRange) {
         as: Number(away.score),
         hps: Number.isFinite(Number(home.shootoutScore)) ? Number(home.shootoutScore) : null,
         aps: Number.isFinite(Number(away.shootoutScore)) ? Number(away.shootoutScore) : null,
+        hpk: penaltyKicks(home),
+        apk: penaltyKicks(away),
         // ESPN flags the advancing side, which also covers penalty shootouts.
         winner: home.winner === true ? homeName : away.winner === true ? awayName : null,
         isoDate
@@ -192,6 +198,10 @@ function buildKnockout(groups, groupMatches, allByPair) {
       if (e.hps != null && e.aps != null) {
         out.hps = aligned ? e.hps : e.aps;
         out.aps = aligned ? e.aps : e.hps;
+        if (e.hpk || e.apk) {
+          out.hpk = aligned ? e.hpk : e.apk;
+          out.apk = aligned ? e.apk : e.hpk;
+        }
       }
     } else if (e.state === "in") {
       out.time = "Live";
