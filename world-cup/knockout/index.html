@@ -391,6 +391,36 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   font-size: 0.86rem;
   font-weight: 700;
 }
+.knockout-share {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.knockout-share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.knockout-share-actions .btn {
+  min-height: 40px;
+}
+.share-actions {
+  display: none;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+.share-actions.is-visible {
+  display: grid;
+}
+.share-preview {
+  display: none;
+  width: 100%;
+  max-width: 520px;
+  margin-top: 12px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-soft);
+}
 .ko-list,
 .team-list,
 .quick-links {
@@ -408,14 +438,34 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   background: rgba(255,255,255,0.76);
 }
 .team-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
   padding: 11px 12px;
+  color: var(--ink);
   font-weight: 900;
+  text-decoration: none;
 }
-.team-row span:last-child {
+.team-row:hover,
+.team-row:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 8px 18px rgba(31,143,119,0.12);
+}
+.team-path {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.team-path strong,
+.team-path small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.team-path small,
+.team-row > span:last-child {
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 800;
@@ -620,6 +670,15 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
             </div>
             <span class="score-pill score-pill--next">Ready</span>
           </div>
+          <div class="knockout-share">
+            <div class="knockout-share-actions">
+              <button class="btn btn-primary" id="share-knockout-card" type="button">Generate bracket card</button>
+              <button class="btn btn-secondary" id="download-knockout-card" type="button">Download card</button>
+              <button class="btn btn-secondary" id="native-share-knockout-card" type="button">Share card</button>
+            </div>
+            <canvas id="knockout-share-canvas" width="1080" height="1350" hidden></canvas>
+            <img class="share-preview" id="knockout-share-preview" alt="Generated World Cup knockout bracket share card">
+          </div>
         </div>
 
         <div class="ko-stats" aria-label="Knockout summary">
@@ -795,6 +854,21 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     return Object.keys(entrants).filter(function (team) { return !out[team]; }).sort();
   }
 
+  function teamSlug(team) {
+    return String(team || "").toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
+
+  function teamProgress(team, knockout) {
+    var played = knockout.filter(function (m) { return isPlayed(m) && (m.home === team || m.away === team); });
+    var last = played.length ? played[played.length - 1] : knockout.find(function (m) { return m.round === "Round of 32" && (m.home === team || m.away === team); });
+    var next = knockout.find(function (m) { return !isPlayed(m) && (m.home === team || m.away === team); });
+    var opponent = next ? (next.home === team ? next.away : next.home) : "";
+    return {
+      round: last ? last.round : "Round of 32",
+      next: next ? "M" + next.n + (opponent ? " vs " + opponent : "") : "Awaiting next opponent"
+    };
+  }
+
   function renderTeams(teams, knockout) {
     var root = document.getElementById("team-list");
     if (!teams.length) {
@@ -802,10 +876,132 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
       return;
     }
     root.innerHTML = teams.map(function (team) {
-      var next = knockout.find(function (m) { return !isPlayed(m) && (m.home === team || m.away === team); });
-      var meta = next ? "Next: M" + next.n : "Alive";
-      return '<div class="team-row"><span>' + escapeHtml(team) + '</span><span>' + escapeHtml(meta) + '</span></div>';
+      var path = teamProgress(team, knockout);
+      return '<a class="team-row" href="../team/' + escapeHtml(teamSlug(team)) + '/"><span class="team-path"><strong>' + escapeHtml(team) + '</strong><small>' + escapeHtml("Reached " + path.round) + '</small></span><span>' + escapeHtml(path.next) + '</span></a>';
     }).join("");
+  }
+
+  function drawText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+    var words = String(text || "").split(/\s+/);
+    var line = "";
+    var lines = [];
+    words.forEach(function (word) {
+      var test = line ? line + " " + word : word;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = test;
+      }
+    });
+    if (line) lines.push(line);
+    lines.slice(0, maxLines || lines.length).forEach(function (item, index) {
+      ctx.fillText(item, x, y + index * lineHeight);
+    });
+    return y + Math.min(lines.length, maxLines || lines.length) * lineHeight;
+  }
+
+  function generateKnockoutShareCard() {
+    var canvas = document.getElementById("knockout-share-canvas");
+    if (!canvas) return;
+    var ctx = canvas.getContext("2d");
+    var knockout = CURRENT_KNOCKOUT || [];
+    var teams = remainingTeams(knockout);
+    var played = knockout.filter(isPlayed).slice(-6).reverse();
+    var next = knockout.filter(function (m) { return !isPlayed(m); }).slice(0, 5);
+    var champion = knockout.find(function (m) { return m.n === 104; });
+    var championName = champion && winnerOf(champion) ? winnerOf(champion) : "Champion TBD";
+
+    ctx.fillStyle = "#0f5f4e";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "rgba(255,255,255,0.08)";
+    for (var x = -120; x < canvas.width; x += 120) ctx.fillRect(x, 0, 56, canvas.height);
+    ctx.fillStyle = "#fffdf8";
+    ctx.fillRect(70, 70, canvas.width - 140, canvas.height - 140);
+
+    ctx.fillStyle = "#1f8f77";
+    ctx.font = "800 30px Arial, sans-serif";
+    ctx.fillText("SNACKPACK WORLD CUP 2026", 120, 145);
+    ctx.fillStyle = "#201713";
+    ctx.font = "700 64px Georgia, serif";
+    drawText(ctx, "Knockout Bracket Snapshot", 120, 220, 840, 70, 2);
+    ctx.font = "800 34px Arial, sans-serif";
+    ctx.fillStyle = "#1f8f77";
+    ctx.fillText(teams.length + " teams still alive", 120, 340);
+    ctx.fillStyle = "#201713";
+    ctx.font = "800 30px Arial, sans-serif";
+    ctx.fillText("Champion", 120, 405);
+    ctx.font = "700 44px Georgia, serif";
+    drawText(ctx, championName, 120, 460, 820, 50, 1);
+
+    ctx.fillStyle = "#201713";
+    ctx.font = "800 30px Arial, sans-serif";
+    ctx.fillText("Remaining Teams", 120, 550);
+    ctx.font = "700 25px Arial, sans-serif";
+    var colWidth = 260;
+    teams.slice(0, 24).forEach(function (team, index) {
+      var col = index % 3;
+      var row = Math.floor(index / 3);
+      drawText(ctx, team, 120 + col * colWidth, 600 + row * 36, colWidth - 24, 30, 1);
+    });
+
+    ctx.font = "800 30px Arial, sans-serif";
+    ctx.fillText("Recent Results", 120, 920);
+    ctx.font = "700 23px Arial, sans-serif";
+    played.slice(0, 4).forEach(function (match, index) {
+      drawText(ctx, "M" + match.n + " " + (match.home || "TBD") + " " + matchBadge(match) + " " + (match.away || "TBD"), 120, 970 + index * 34, 820, 30, 1);
+    });
+
+    ctx.font = "800 30px Arial, sans-serif";
+    ctx.fillText("Next Ties", 120, 1130);
+    ctx.font = "700 23px Arial, sans-serif";
+    next.slice(0, 3).forEach(function (match, index) {
+      drawText(ctx, "M" + match.n + " " + (match.home || match.homeLabel || "TBD") + " vs " + (match.away || match.awayLabel || "TBD") + " - " + (match.date || "TBD"), 120, 1180 + index * 34, 820, 30, 1);
+    });
+
+    ctx.fillStyle = "#6f6860";
+    ctx.font = "700 22px Arial, sans-serif";
+    ctx.fillText("snackpackuniverse.com/world-cup/knockout", 120, 1280);
+
+    var img = document.getElementById("knockout-share-preview");
+    img.src = canvas.toDataURL("image/png");
+    img.style.display = "block";
+    return canvas;
+  }
+
+  function downloadKnockoutShareCard() {
+    var canvas = generateKnockoutShareCard();
+    if (!canvas) return;
+    var link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = "snackpack-world-cup-2026-knockout.png";
+    link.click();
+  }
+
+  function nativeShareKnockoutCard() {
+    var canvas = generateKnockoutShareCard();
+    if (!canvas || !canvas.toBlob) return;
+    canvas.toBlob(function (blob) {
+      var file = new File([blob], "snackpack-world-cup-2026-knockout.png", { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({
+          title: "World Cup 2026 knockout bracket",
+          text: "Current World Cup knockout bracket snapshot from SnackPack.",
+          files: [file]
+        });
+      } else {
+        downloadKnockoutShareCard();
+      }
+    }, "image/png");
+  }
+
+  function setupShareCard() {
+    var generate = document.getElementById("share-knockout-card");
+    if (!generate || generate.dataset.ready === "true") return;
+    generate.dataset.ready = "true";
+    generate.addEventListener("click", generateKnockoutShareCard);
+    document.getElementById("download-knockout-card").addEventListener("click", downloadKnockoutShareCard);
+    document.getElementById("native-share-knockout-card").addEventListener("click", nativeShareKnockoutCard);
   }
 
   function matchByNumber(knockout) {
@@ -1082,6 +1278,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     }
     setupWideToggle();
     setupDragPan();
+    setupShareCard();
     renderTournamentBracket(knockout);
     renderTeams(teams, knockout);
     renderRounds(knockout);
