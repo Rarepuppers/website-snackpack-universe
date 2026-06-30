@@ -295,12 +295,19 @@
   <section>
     <div class="shell schedule-layout">
       <div class="schedule-panel">
+        <div class="wc-live-strip" aria-live="polite">
+          <span class="wc-live-title">Live now / next kickoff</span>
+          <div class="wc-live-list" id="wc-live-list">
+            <div class="wc-live-item"><span>Loading latest fixtures...</span><strong class="wc-live-badge">Soon</strong></div>
+          </div>
+        </div>
         <h2 id="today">World Cup games today</h2>
         <div class="schedule-list" id="today-list"></div>
         <h2>Who plays next?</h2>
         <div class="schedule-list" id="next-list"></div>
         <h2>Recently played</h2>
         <div class="schedule-list" id="played-list"></div>
+        <div class="wc-match-drawer" id="match-drawer" hidden></div>
         <p class="schedule-note" id="updated-note">Loading the latest World Cup schedule data...</p>
       </div>
       <aside class="schedule-side">
@@ -367,6 +374,7 @@
 </footer>
 
 <script src="/world-cup/wc-live.js"></script>
+<script src="/world-cup/wc-ui.js"></script>
 <script src="/world-cup/third-place-allocation.js"></script>
 <script src="/world-cup/wc-knockout.js"></script>
 <script>
@@ -442,7 +450,8 @@
   function matchHtml(match) {
     var badge = isPlayed(match) ? match.hs + "-" + match.as : isLive(match) ? liveBadge(match) : "Next";
     var badgeClass = isLive(match) ? " status-pill--live" : !isPlayed(match) ? " status-pill--next" : "";
-    return '<article class="schedule-match"><div class="schedule-date">' + escapeHtml(match.date || "") + '<br>' + escapeHtml(match.time || "") + '</div><div><div class="schedule-teams">' + teamChip(match.home) + teamChip(match.away) + '</div><div class="schedule-meta">' + escapeHtml(match.roundName || ("Group " + (match.group || ""))) + ' - ' + escapeHtml(match.venue || "") + '</div></div><span class="status-pill' + badgeClass + '">' + escapeHtml(badge) + '</span></article>';
+    var id = window.WCUI ? WCUI.matchId(match) : "";
+    return '<article class="schedule-match wc-match-trigger" role="button" tabindex="0" data-match-id="' + id + '"><div class="schedule-date">' + escapeHtml(match.date || "") + '<br>' + escapeHtml(match.time || "") + '</div><div><div class="schedule-teams">' + teamChip(match.home) + teamChip(match.away) + '</div><div class="schedule-meta">' + escapeHtml(match.roundName || ("Group " + (match.group || ""))) + ' - ' + escapeHtml(match.venue || "") + '</div></div><span class="status-pill' + badgeClass + '">' + escapeHtml(badge) + '</span></article>';
   }
 
   function renderList(id, matches, empty) {
@@ -554,7 +563,7 @@
       ? data.knockout
       : WC_KNOCKOUT.resolve({ groups: data.groups || seedGroups, groupMatches: data.matches || seedMatches, allocation: window.WC_THIRD_ALLOCATION });
     return ko.filter(function (m) { return m.home && m.away && m.isoDate; }).map(function (m) {
-      var row = { date: m.date, isoDate: m.isoDate, time: m.time, home: m.home, away: m.away, venue: m.venue, group: "", roundName: m.round, statusShort: m.statusShort };
+      var row = { n: m.n, date: m.date, isoDate: m.isoDate, time: m.time, home: m.home, away: m.away, venue: m.venue, group: "", roundName: m.round, statusShort: m.statusShort, winner: m.winner, hps: m.hps, aps: m.aps };
       if (typeof m.hs === "number") { row.hs = m.hs; row.as = m.as; }
       if (typeof m.lhs === "number") { row.lhs = m.lhs; row.las = m.las; }
       return row;
@@ -577,6 +586,10 @@
     // viewer's active team/group selection.
     if (!filtersReady) { setupFilters(); filtersReady = true; }
     renderAllFixtures();
+    if (window.WCUI) {
+      WCUI.renderLiveStrip("wc-live-list", matches);
+      WCUI.bindMatchDrawer({ root: document.body, drawer: "match-drawer", getMatches: function () { return ALL_MATCHES; } });
+    }
     var updated = data.updatedAt ? new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "saved local data";
     document.getElementById("updated-note").textContent = "Last data update: " + updated + ".";
     scrollToHash();

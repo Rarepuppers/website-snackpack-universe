@@ -235,6 +235,7 @@
               <div class="cup-live-item">Loading latest fixtures... <span class="cup-live-badge">Soon</span></div>
             </div>
           </div>
+          <div class="wc-match-drawer" id="match-drawer" hidden></div>
         </div>
         <div class="cup-hero-art">
           <img src="./officialball_transparent2-50.png" alt="World Cup soccer ball" loading="eager" width="520" height="520">
@@ -426,9 +427,12 @@
 </footer>
 
 <script src="/world-cup/wc-live.js"></script>
+<script src="/world-cup/wc-ui.js"></script>
 <script>
 (function () {
   "use strict";
+
+  var CURRENT_MATCHES = [];
 
   function isPlayed(match) {
     return typeof match.hs === "number";
@@ -456,22 +460,12 @@
     var root = document.getElementById("cup-live-list");
     if (!root || !data) return;
     var allMatches = (Array.isArray(data.matches) ? data.matches : []).concat(Array.isArray(data.knockout) ? data.knockout : []);
-    var active = allMatches
-      .filter(function (match) { return !isPlayed(match); })
-      .sort(function (a, b) {
-        return (isLive(b) ? 1 : 0) - (isLive(a) ? 1 : 0) ||
-          String(a.isoDate || a.date).localeCompare(String(b.isoDate || b.date));
-      })
-      .slice(0, 3);
-    if (!active.length) {
-      root.innerHTML = '<div class="cup-live-item">All listed games are final. <span class="cup-live-badge">FT</span></div>';
+    CURRENT_MATCHES = allMatches;
+    if (window.WCUI) {
+      WCUI.renderLiveStrip(root, allMatches);
+      WCUI.bindMatchDrawer({ root: document.body, drawer: "match-drawer", getMatches: function () { return CURRENT_MATCHES; } });
       return;
     }
-    root.innerHTML = active.map(function (match) {
-      var badgeClass = isLive(match) ? " cup-live-badge--live" : "";
-      var label = match.round || ("Group " + (match.group || ""));
-      return '<div class="cup-live-item"><div>' + escapeHtml(match.home) + ' vs ' + escapeHtml(match.away) + '<br><span>' + escapeHtml(match.date || "") + ' - ' + escapeHtml(label) + ' - ' + escapeHtml(match.venue || "") + '</span></div><span class="cup-live-badge' + badgeClass + '">' + escapeHtml(matchBadge(match)) + '</span></div>';
-    }).join("");
   }
 
   var pollTimer = null;

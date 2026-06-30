@@ -509,6 +509,137 @@ main section {
   color: var(--accent);
 }
 
+.wc-live-strip,
+.wc-match-drawer {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 253, 248, 0.94);
+  box-shadow: var(--shadow-soft);
+}
+
+.wc-live-strip {
+  margin: 18px 0;
+  padding: 14px;
+}
+
+.wc-live-title {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.wc-live-list {
+  display: grid;
+  gap: 8px;
+}
+
+.wc-live-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(32, 23, 19, 0.1);
+  border-radius: 10px;
+  background: #fffdf8;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+}
+
+.wc-live-item b,
+.wc-live-item small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wc-live-item small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.wc-live-badge {
+  min-width: 58px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.wc-live-badge--live {
+  background: #c73f3f;
+}
+
+.wc-match-trigger {
+  cursor: pointer;
+}
+
+.wc-match-trigger:hover,
+.wc-match-trigger:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 8px 18px rgba(31, 143, 119, 0.12);
+}
+
+.wc-match-drawer {
+  margin: 16px 0;
+  padding: 16px;
+}
+
+.wc-match-drawer[hidden] {
+  display: none;
+}
+
+.wc-drawer-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.wc-drawer-head h3 {
+  margin: 6px 0 0;
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 3vw, 1.45rem);
+}
+
+.wc-drawer-close {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+}
+
+.wc-drawer-grid {
+  display: grid;
+  grid-template-columns: minmax(110px, auto) minmax(0, 1fr);
+  gap: 8px 14px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.wc-drawer-grid strong {
+  color: var(--ink);
+}
+
 .meta-tag--pending {
   background: rgba(239, 181, 77, 0.15);
   color: #8a6a1a;

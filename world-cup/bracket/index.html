@@ -536,6 +536,12 @@
   <section>
     <div class="shell bracket-layout">
       <div class="bracket-panel">
+        <div class="wc-live-strip" aria-live="polite">
+          <span class="wc-live-title">Live now / next kickoff</span>
+          <div class="wc-live-list" id="wc-live-list">
+            <div class="wc-live-item"><span>Loading latest fixtures...</span><strong class="wc-live-badge">Soon</strong></div>
+          </div>
+        </div>
         <div class="bracket-summary" aria-label="World Cup match summary">
           <article class="summary-card">
             <h2>Today's Matches</h2>
@@ -591,6 +597,7 @@
           <h2>Upcoming Games</h2>
           <div class="match-list" id="upcoming-list"></div>
         </div>
+        <div class="wc-match-drawer" id="match-drawer" hidden></div>
         <div id="view-knockout" hidden>
           <h2>Knockout bracket</h2>
           <p class="seo-note" style="margin-top:0;">The official Round of 32 &rarr; Final pairings. Winner (W) and Runner-up (RU) slots fill with real teams as each group is decided, and the best third-placed teams drop into their matches automatically &mdash; using FIFA's official allocation &mdash; once the group stage ends June 27. Later rounds fill in as the knockout games are played.</p>
@@ -673,6 +680,7 @@
 </footer>
 
 <script src="/world-cup/wc-live.js"></script>
+<script src="/world-cup/wc-ui.js"></script>
 <script src="/world-cup/third-place-allocation.js"></script>
 <script src="/world-cup/wc-knockout.js"></script>
 <script>
@@ -851,6 +859,10 @@
     root.innerHTML = items.length ? items.map(matchHtml).join("") : '<p class="empty-state">' + escapeHtml(emptyText) + '</p>';
   }
 
+  function displayMatches() {
+    return matches.concat(Array.isArray(knockoutData) ? knockoutData : []);
+  }
+
   function renderSummary() {
     var today = localTodayKey();
     var todaysMatches = matches.filter(function (match) {
@@ -863,6 +875,10 @@
     }).slice(0, 4);
     renderList("today-list", todaysMatches.slice(0, 4), "No World Cup matches are listed for today yet. Check Upcoming for the next fixtures.");
     renderList("recent-list", recentMatches, "No completed World Cup matches are listed yet.");
+    if (window.WCUI) {
+      WCUI.renderLiveStrip("wc-live-list", displayMatches());
+      WCUI.bindMatchDrawer({ root: document.body, drawer: "match-drawer", getMatches: displayMatches });
+    }
   }
 
   function renderLastUpdated(updatedAt) {
@@ -916,7 +932,9 @@
     var score = isPlayed(m)
       ? '<span class="score-pill">' + m.hs + '-' + m.as + '</span>'
       : '<span class="score-pill' + (isLive(m) ? ' score-pill--live' : '') + '">' + (isLive(m) ? (typeof m.lhs === 'number' ? m.lhs + '-' + m.las : 'Live') : 'Next') + '</span>';
-    return '<div class="match-row"><div class="match-date">' + escapeHtml(m.date || "") + '<br>' + escapeHtml(m.time || "") + '</div><div><div class="match-teams">' + teamHtml(m.home) + teamHtml(m.away) + '</div><div class="match-meta">Group ' + escapeHtml(m.group || "") + ' - ' + escapeHtml(m.venue || "") + '</div></div>' + score + '</div>';
+    var id = window.WCUI ? WCUI.matchId(m) : "";
+    var label = m.round || m.roundName || ("Group " + (m.group || ""));
+    return '<div class="match-row wc-match-trigger" role="button" tabindex="0" data-match-id="' + id + '"><div class="match-date">' + escapeHtml(m.date || "") + '<br>' + escapeHtml(m.time || "") + '</div><div><div class="match-teams">' + teamHtml(m.home) + teamHtml(m.away) + '</div><div class="match-meta">' + escapeHtml(label) + ' - ' + escapeHtml(m.venue || "") + '</div></div>' + score + '</div>';
   }
 
   function renderMatches() {
