@@ -543,6 +543,7 @@
           </div>
         </div>
         <p class="wc-timezone-note" id="timezone-note">Dates use your local timezone.</p>
+        <p class="wc-freshness-warning" id="freshness-warning" hidden></p>
         <div class="bracket-summary" aria-label="World Cup match summary">
           <article class="summary-card">
             <h2>Today's Matches</h2>
@@ -734,6 +735,7 @@
   ];
 
   var knockoutData = null;
+  var dataUpdatedAt = null;
   var storeKey = "snackpack-world-cup-2026-picks";
   var teams = Object.keys(groups).reduce(function (all, key) { return all.concat(groups[key]); }, []).sort();
   var flagStyles = {
@@ -879,6 +881,7 @@
     if (window.WCUI) {
       WCUI.renderLiveStrip("wc-live-list", displayMatches());
       WCUI.renderTimezoneNote("timezone-note");
+      WCUI.renderFreshnessWarning("freshness-warning", dataUpdatedAt, displayMatches());
       WCUI.bindMatchDrawer({ root: document.body, drawer: "match-drawer", getMatches: displayMatches });
     }
   }
@@ -1245,6 +1248,7 @@
     groups = normalizeGroups(data.groups);
     matches = data.matches;
     knockoutData = Array.isArray(data.knockout) ? data.knockout : null;
+    dataUpdatedAt = data.updatedAt || null;
     teams = Object.keys(groups).reduce(function (all, key) { return all.concat(groups[key]); }, []).sort();
     renderLastUpdated(data.updatedAt);
   }

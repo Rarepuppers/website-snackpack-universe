@@ -421,6 +421,52 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   border-radius: 12px;
   box-shadow: var(--shadow-soft);
 }
+.mobile-path-view {
+  display: none;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.78);
+}
+.mobile-path-view h3 {
+  margin: 0 0 10px;
+  font-family: var(--serif);
+  font-size: 1.08rem;
+}
+.mobile-path-list {
+  display: grid;
+  gap: 10px;
+}
+.mobile-round {
+  display: grid;
+  gap: 8px;
+}
+.mobile-round h4 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.mobile-path-match {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid rgba(32,23,19,0.1);
+  border-radius: 10px;
+  background: #fffdf8;
+}
+.mobile-path-match strong,
+.mobile-path-match span {
+  overflow-wrap: anywhere;
+}
+.mobile-path-match span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
 .ko-list,
 .team-list,
 .quick-links {
@@ -563,6 +609,9 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   .tournament-board {
     padding: 14px;
   }
+  .mobile-path-view {
+    display: block;
+  }
   .bracket-stage {
     min-width: 980px;
   }
@@ -649,6 +698,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
           </div>
         </div>
         <p class="wc-timezone-note" id="timezone-note">Dates use your local timezone.</p>
+        <p class="wc-freshness-warning" id="freshness-warning" hidden></p>
         <div class="tournament-board" id="interactive-bracket">
           <div class="tournament-head">
             <div>
@@ -678,6 +728,10 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
             </div>
             <canvas id="knockout-share-canvas" width="1080" height="1350" hidden></canvas>
             <img class="share-preview" id="knockout-share-preview" alt="Generated World Cup knockout bracket share card">
+          </div>
+          <div class="mobile-path-view" aria-label="Mobile knockout path list">
+            <h3>Mobile path list</h3>
+            <div class="mobile-path-list" id="mobile-path-list"></div>
           </div>
         </div>
 
@@ -1259,6 +1313,27 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     }).join("");
   }
 
+  function renderMobilePath(knockout) {
+    var root = document.getElementById("mobile-path-list");
+    if (!root) return;
+    if (!knockout.length) {
+      root.innerHTML = '<p class="empty-state">The path list loads once knockout data is available.</p>';
+      return;
+    }
+    var order = ["Round of 32", "Round of 16", "Quarter-finals", "Semi-finals", "Third place", "Final"];
+    var byRound = {};
+    knockout.forEach(function (match) { (byRound[match.round] = byRound[match.round] || []).push(match); });
+    root.innerHTML = order.filter(function (round) { return byRound[round]; }).map(function (round) {
+      return '<div class="mobile-round"><h4>' + escapeHtml(round) + '</h4>' + byRound[round].map(function (match) {
+        var winner = winnerOf(match);
+        var teams = (match.home || match.homeLabel || "TBD") + " vs " + (match.away || match.awayLabel || "TBD");
+        var detail = "M" + match.n + " - " + (match.date || "Date TBD") + " - " + matchBadge(match);
+        if (winner) detail += " - " + winner + " advances";
+        return '<button class="mobile-path-match wc-match-trigger" type="button" data-match-id="' + (window.WCUI ? WCUI.matchId(match) : "") + '"><strong>' + escapeHtml(teams) + '</strong><span>' + escapeHtml(detail) + '</span></button>';
+      }).join("") + '</div>';
+    }).join("");
+  }
+
   function render(data) {
     var knockout = addNextMatchContext(resolveKnockout(data));
     CURRENT_KNOCKOUT = knockout;
@@ -1274,6 +1349,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     if (window.WCUI) {
       WCUI.renderLiveStrip("wc-live-list", knockout);
       WCUI.renderTimezoneNote("timezone-note");
+      WCUI.renderFreshnessWarning("freshness-warning", data.updatedAt, knockout);
       WCUI.bindMatchDrawer({ root: document.body, drawer: "match-drawer", getMatches: function () { return CURRENT_KNOCKOUT; } });
     }
     setupWideToggle();
@@ -1282,6 +1358,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     renderTournamentBracket(knockout);
     renderTeams(teams, knockout);
     renderRounds(knockout);
+    renderMobilePath(knockout);
     var updated = data.updatedAt ? new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "saved local data";
     document.getElementById("updated-note").textContent = "Last data update: " + updated + ".";
   }

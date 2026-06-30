@@ -66,6 +66,28 @@
     root.textContent = "Dates and today's match filters use your device timezone (" + timezoneName() + "). Live/final status comes from the score provider.";
   }
 
+  function hasMatchWindow(matches) {
+    var today = todayIso();
+    return (matches || []).some(function (match) {
+      return isLive(match) || (!isPlayed(match) && String(match.isoDate || "") === today);
+    });
+  }
+
+  function renderFreshnessWarning(target, updatedAt, matches) {
+    var root = typeof target === "string" ? document.getElementById(target) : target;
+    if (!root) return;
+    var date = updatedAt ? new Date(updatedAt) : null;
+    var stale = date && !isNaN(date) ? Date.now() - date.getTime() : Infinity;
+    var shouldWarn = hasMatchWindow(matches) && stale > 20 * 60 * 1000;
+    root.hidden = !shouldWarn;
+    if (!shouldWarn) {
+      root.textContent = "";
+      return;
+    }
+    var age = isFinite(stale) ? Math.max(21, Math.round(stale / 60000)) + " minutes" : "an unknown time";
+    root.textContent = "Score feed may be delayed: the saved data is " + age + " old during a match window. The page will keep checking live scores automatically.";
+  }
+
   function penaltyKicks(value) {
     if (Array.isArray(value)) return value.map(String);
     if (typeof value === "string") return value.trim().split(/\s*,\s*|\s+/).join("").split("");
@@ -177,6 +199,7 @@
     isPlayed: isPlayed,
     matchId: matchId,
     renderDrawer: renderDrawer,
+    renderFreshnessWarning: renderFreshnessWarning,
     renderLiveStrip: renderLiveStrip,
     renderTimezoneNote: renderTimezoneNote,
     scoreText: scoreText

@@ -647,6 +647,21 @@ main section {
   font-weight: 700;
 }
 
+.wc-freshness-warning {
+  margin: 10px 0 16px;
+  padding: 10px 12px;
+  border: 1px solid rgba(199, 63, 63, 0.28);
+  border-radius: 10px;
+  background: rgba(199, 63, 63, 0.08);
+  color: #8f2929;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.wc-freshness-warning[hidden] {
+  display: none;
+}
+
 .wc-pen-detail {
   margin-top: 14px;
   padding-top: 12px;

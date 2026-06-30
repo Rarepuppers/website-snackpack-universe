@@ -302,6 +302,7 @@
           </div>
         </div>
         <p class="wc-timezone-note" id="timezone-note">Dates use your local timezone.</p>
+        <p class="wc-freshness-warning" id="freshness-warning" hidden></p>
         <h2 id="today">World Cup games today</h2>
         <div class="schedule-list" id="today-list"></div>
         <h2>Who plays next?</h2>
@@ -590,6 +591,7 @@
     if (window.WCUI) {
       WCUI.renderLiveStrip("wc-live-list", matches);
       WCUI.renderTimezoneNote("timezone-note");
+      WCUI.renderFreshnessWarning("freshness-warning", data.updatedAt, matches);
       WCUI.bindMatchDrawer({ root: document.body, drawer: "match-drawer", getMatches: function () { return ALL_MATCHES; } });
     }
     var updated = data.updatedAt ? new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "saved local data";

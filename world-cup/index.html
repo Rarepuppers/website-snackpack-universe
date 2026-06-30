@@ -236,6 +236,7 @@
             </div>
           </div>
           <p class="wc-timezone-note" id="timezone-note">Dates use your local timezone.</p>
+          <p class="wc-freshness-warning" id="freshness-warning" hidden></p>
           <div class="wc-match-drawer" id="match-drawer" hidden></div>
         </div>
         <div class="cup-hero-art">
@@ -465,6 +466,7 @@
     if (window.WCUI) {
       WCUI.renderLiveStrip(root, allMatches);
       WCUI.renderTimezoneNote("timezone-note");
+      WCUI.renderFreshnessWarning("freshness-warning", data.updatedAt, allMatches);
       WCUI.bindMatchDrawer({ root: document.body, drawer: "match-drawer", getMatches: function () { return CURRENT_MATCHES; } });
       return;
     }
