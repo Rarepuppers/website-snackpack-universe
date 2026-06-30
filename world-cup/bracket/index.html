@@ -521,6 +521,7 @@
           <p class="lead" style="max-width:760px;">Follow live group tables, played results, and upcoming fixtures in one place. Then make your own predictions: pick group winners, sketch the knockout path, and crown a champion to share with friends.</p>
           <div class="stack-inline">
             <a class="btn btn-primary" href="#predictions">Make predictions</a>
+            <a class="btn btn-secondary" href="../knockout/">Knockout bracket</a>
             <a class="btn btn-secondary" href="../schedule/">Full schedule</a>
             <a class="btn btn-secondary" href="../../play/soccer-trivia-sprint/">Play Soccer Trivia Sprint</a>
           </div>
@@ -593,6 +594,7 @@
         <div id="view-knockout" hidden>
           <h2>Knockout bracket</h2>
           <p class="seo-note" style="margin-top:0;">The official Round of 32 &rarr; Final pairings. Winner (W) and Runner-up (RU) slots fill with real teams as each group is decided, and the best third-placed teams drop into their matches automatically &mdash; using FIFA's official allocation &mdash; once the group stage ends June 27. Later rounds fill in as the knockout games are played.</p>
+          <p class="seo-note" style="margin-top:0;"><a class="text-link" href="../knockout/" style="color:var(--accent);font-weight:900;">Open the dedicated knockout page</a> for remaining teams, today's knockout games, and a cleaner round-by-round match listing.</p>
           <div class="knockout-grid" id="bracket-grid"></div>
           <h2 style="margin-top:26px;">Your predicted bracket</h2>
           <div class="knockout-grid" id="knockout-grid"></div>
@@ -1267,8 +1269,13 @@
   // Overlay live scores straight from ESPN (only while a match is on).
   function withLive(data) {
     if (!data || !Array.isArray(data.matches)) return Promise.resolve(data);
-    if (window.WCLive && WCLive.worthLive(data.matches)) {
-      return WCLive.overlay(data.matches).then(function (merged) { data.matches = merged; return data; });
+    var knockoutMatches = Array.isArray(data.knockout) ? data.knockout : [];
+    if (window.WCLive && (WCLive.worthLive(data.matches) || WCLive.worthLive(knockoutMatches))) {
+      return Promise.all([WCLive.overlay(data.matches), WCLive.overlay(knockoutMatches)]).then(function (merged) {
+        data.matches = merged[0];
+        data.knockout = merged[1];
+        return data;
+      });
     }
     return Promise.resolve(data);
   }

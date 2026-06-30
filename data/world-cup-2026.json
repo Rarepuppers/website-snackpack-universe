@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-28T04:49:40.387Z",
+  "updatedAt": "2026-06-30T07:31:05.801Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -952,9 +952,11 @@
       "awayLabel": "RU B",
       "home": "South Africa",
       "away": "Canada",
-      "time": "Upcoming",
-      "statusShort": "",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Canada",
+      "hs": 0,
+      "as": 1
     },
     {
       "n": 74,
@@ -966,9 +968,11 @@
       "awayLabel": "3rd A/B/C/D/F",
       "home": "Germany",
       "away": "Paraguay",
-      "time": "Upcoming",
-      "statusShort": "",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT-Pens",
+      "winner": "Paraguay",
+      "hs": 1,
+      "as": 1
     },
     {
       "n": 75,
@@ -980,9 +984,11 @@
       "awayLabel": "RU C",
       "home": "Netherlands",
       "away": "Morocco",
-      "time": "Upcoming",
-      "statusShort": "",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT-Pens",
+      "winner": "Morocco",
+      "hs": 1,
+      "as": 1
     },
     {
       "n": 76,
@@ -994,9 +1000,11 @@
       "awayLabel": "RU F",
       "home": "Brazil",
       "away": "Japan",
-      "time": "Upcoming",
-      "statusShort": "",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Brazil",
+      "hs": 2,
+      "as": 1
     },
     {
       "n": 77,
@@ -1009,7 +1017,7 @@
       "home": "France",
       "away": "Sweden",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1023,7 +1031,7 @@
       "home": "Cote d'Ivoire",
       "away": "Norway",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1037,7 +1045,7 @@
       "home": "Mexico",
       "away": "Ecuador",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1051,7 +1059,7 @@
       "home": "England",
       "away": "DR Congo",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1065,7 +1073,7 @@
       "home": "United States",
       "away": "Bosnia and Herzegovina",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1079,7 +1087,7 @@
       "home": "Belgium",
       "away": "Senegal",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1093,7 +1101,7 @@
       "home": "Portugal",
       "away": "Croatia",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1107,7 +1115,7 @@
       "home": "Spain",
       "away": "Austria",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1121,7 +1129,7 @@
       "home": "Switzerland",
       "away": "Algeria",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1135,7 +1143,7 @@
       "home": "Argentina",
       "away": "Cape Verde",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1149,7 +1157,7 @@
       "home": "Colombia",
       "away": "Ghana",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1163,7 +1171,7 @@
       "home": "Australia",
       "away": "Egypt",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1174,7 +1182,7 @@
       "venue": "Philadelphia",
       "homeLabel": "W 74",
       "awayLabel": "W 77",
-      "home": null,
+      "home": "Paraguay",
       "away": null,
       "time": "Upcoming",
       "statusShort": "",
@@ -1188,10 +1196,10 @@
       "venue": "Houston",
       "homeLabel": "W 73",
       "awayLabel": "W 75",
-      "home": null,
-      "away": null,
+      "home": "Canada",
+      "away": "Morocco",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1202,7 +1210,7 @@
       "venue": "New York/New Jersey",
       "homeLabel": "W 76",
       "awayLabel": "W 78",
-      "home": null,
+      "home": "Brazil",
       "away": null,
       "time": "Upcoming",
       "statusShort": "",

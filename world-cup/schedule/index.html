@@ -307,6 +307,7 @@
         <h2>Quick links</h2>
         <div class="quick-links">
           <a href="../bracket/">Bracket + predictions <span>-></span></a>
+          <a href="../knockout/">Knockout bracket <span>-></span></a>
           <a href="../teams/">All 48 teams <span>-></span></a>
           <a href="../../play/soccer-trivia-sprint/">Soccer Trivia Sprint <span>-></span></a>
           <a href="../">World Cup games hub <span>-></span></a>
@@ -617,8 +618,13 @@
       .then(function (data) {
         // Overlay live scores straight from ESPN (only while a match is on).
         var base = data.matches || seedMatches;
-        if (window.WCLive && WCLive.worthLive(base)) {
-          return WCLive.overlay(base).then(function (merged) { data.matches = merged; return data; });
+        var knockoutBase = data.knockout || [];
+        if (window.WCLive && (WCLive.worthLive(base) || WCLive.worthLive(knockoutBase))) {
+          return Promise.all([WCLive.overlay(base), WCLive.overlay(knockoutBase)]).then(function (merged) {
+            data.matches = merged[0];
+            data.knockout = merged[1];
+            return data;
+          });
         }
         return data;
       })

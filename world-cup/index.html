@@ -178,6 +178,7 @@
     { "@type": "WebPage", "name": "World Cup 2026 Schedule", "url": "https://www.snackpackuniverse.com/world-cup/schedule/" },
     { "@type": "WebPage", "name": "World Cup 2026 Teams", "url": "https://www.snackpackuniverse.com/world-cup/teams/" },
     { "@type": "WebPage", "name": "World Cup 2026 Bracket", "url": "https://www.snackpackuniverse.com/world-cup/bracket/" },
+    { "@type": "WebPage", "name": "World Cup 2026 Knockout Bracket", "url": "https://www.snackpackuniverse.com/world-cup/knockout/" },
     { "@type": "WebPage", "name": "Keepy-Uppy", "url": "https://www.snackpackuniverse.com/play/keepy-uppy/" },
     { "@type": "WebPage", "name": "Target Shooting Arena", "url": "https://www.snackpackuniverse.com/play/target-shooting-arena/" },
     { "@type": "WebPage", "name": "Free Kick Curl", "url": "https://www.snackpackuniverse.com/play/free-kick-curl/" },
@@ -223,6 +224,7 @@
           <p class="lead">Track every group, result, and fixture &mdash; then jump into seven fast, free soccer games. No ads, no account, no download. Just open and play.</p>
           <div class="stack-inline">
             <a class="btn btn-primary" href="./bracket/">Open the tracker</a>
+            <a class="btn btn-secondary" href="./knockout/">Knockout bracket</a>
             <a class="btn btn-secondary" href="./schedule/">Games today</a>
             <a class="btn btn-secondary" href="./schedule/#full-schedule">Full Schedule</a>
             <a class="btn btn-secondary" href="#soccer-games">Play the arcade</a>
@@ -325,17 +327,19 @@
         <div>
           <span class="eyebrow">Results + predictions</span>
           <h2>Track the tournament, then make your picks.</h2>
-          <p>Use the World Cup pages to view today's schedule, who plays next, all 48 teams, group tables, played games, upcoming fixtures, knockout placeholders, champion predictions, and local share cards that promote the SnackPack soccer arcade.</p>
+          <p>Use the World Cup pages to view today's schedule, who plays next, all 48 teams, group tables, played games, upcoming fixtures, the live knockout bracket, champion predictions, and local share cards that promote the SnackPack soccer arcade.</p>
           <ul class="funnel-points">
             <li>Today and next-match schedule page for quick answers</li>
             <li>All 48 teams with flags, groups, players to know, and short facts</li>
             <li>Current group results and upcoming match list</li>
+            <li>Knockout-stage page with remaining teams and the full bracket path</li>
             <li>Save group winners, finalists, champion and top scorer picks</li>
             <li>Generate a shareable prediction card for social posts</li>
           </ul>
           <div class="stack-inline">
             <a class="btn btn-primary" href="./schedule/">Open schedule</a>
             <a class="btn btn-secondary" href="./schedule/#full-schedule">Full Schedule</a>
+            <a class="btn btn-secondary" href="./knockout/">Knockout bracket</a>
             <a class="btn btn-secondary" href="./teams/">View all teams</a>
             <a class="btn btn-primary" href="./bracket/">Open bracket tracker</a>
             <a class="btn btn-secondary" href="../play/soccer-trivia-sprint/">Play Soccer Trivia Sprint</a>
@@ -450,8 +454,9 @@
 
   function renderMatches(data) {
     var root = document.getElementById("cup-live-list");
-    if (!root || !data || !Array.isArray(data.matches)) return;
-    var active = data.matches
+    if (!root || !data) return;
+    var allMatches = (Array.isArray(data.matches) ? data.matches : []).concat(Array.isArray(data.knockout) ? data.knockout : []);
+    var active = allMatches
       .filter(function (match) { return !isPlayed(match); })
       .sort(function (a, b) {
         return (isLive(b) ? 1 : 0) - (isLive(a) ? 1 : 0) ||
@@ -464,7 +469,8 @@
     }
     root.innerHTML = active.map(function (match) {
       var badgeClass = isLive(match) ? " cup-live-badge--live" : "";
-      return '<div class="cup-live-item"><div>' + escapeHtml(match.home) + ' vs ' + escapeHtml(match.away) + '<br><span>' + escapeHtml(match.date || "") + ' - Group ' + escapeHtml(match.group || "") + ' - ' + escapeHtml(match.venue || "") + '</span></div><span class="cup-live-badge' + badgeClass + '">' + escapeHtml(matchBadge(match)) + '</span></div>';
+      var label = match.round || ("Group " + (match.group || ""));
+      return '<div class="cup-live-item"><div>' + escapeHtml(match.home) + ' vs ' + escapeHtml(match.away) + '<br><span>' + escapeHtml(match.date || "") + ' - ' + escapeHtml(label) + ' - ' + escapeHtml(match.venue || "") + '</span></div><span class="cup-live-badge' + badgeClass + '">' + escapeHtml(matchBadge(match)) + '</span></div>';
     }).join("");
   }
 
@@ -492,15 +498,20 @@
       })
       .then(function (data) {
         // Overlay live scores straight from ESPN (only while a match is on).
-        var base = (data && data.matches) || [];
-        if (window.WCLive && WCLive.worthLive(base)) {
-          return WCLive.overlay(base).then(function (merged) { data.matches = merged; return data; });
+        var groupMatches = (data && data.matches) || [];
+        var knockoutMatches = (data && data.knockout) || [];
+        if (window.WCLive && (WCLive.worthLive(groupMatches) || WCLive.worthLive(knockoutMatches))) {
+          return Promise.all([WCLive.overlay(groupMatches), WCLive.overlay(knockoutMatches)]).then(function (merged) {
+            data.matches = merged[0];
+            data.knockout = merged[1];
+            return data;
+          });
         }
         return data;
       })
       .then(function (data) {
         renderMatches(data);
-        scheduleNext((data && data.matches) || []);
+        scheduleNext(((data && data.matches) || []).concat((data && data.knockout) || []));
       })
       .catch(function () {
         var root = document.getElementById("cup-live-list");

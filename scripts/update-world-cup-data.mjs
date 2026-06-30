@@ -146,6 +146,7 @@ async function fetchEspnResults(dateRange) {
     }
 
     if (!groupByPair.has(key)) {
+      if (isoDate >= KO_START_ISO) continue;
       if (!isPlaceholder(homeName)) unmatched.add(homeName);
       if (!isPlaceholder(awayName)) unmatched.add(awayName);
       continue;
@@ -256,7 +257,8 @@ async function main() {
   let allByPair = new Map();
 
   try {
-    const fetchResult = await fetchEspnResults(dateRangeFor(base));
+    const knownFixtures = base.concat(Array.isArray(current.knockout) ? current.knockout : []);
+    const fetchResult = await fetchEspnResults(dateRangeFor(knownFixtures));
     allByPair = fetchResult.allByPair;
     matches = base.map((m) => applyResult(m, fetchResult.results.get(pairKey(m.home, m.away))));
     source = "ESPN scoreboard (unofficial)";
