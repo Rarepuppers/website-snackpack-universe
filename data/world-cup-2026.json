@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-30T22:20:25.768Z",
+  "updatedAt": "2026-06-30T23:39:25.422Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1020,11 +1020,11 @@
       "awayLabel": "3rd C/D/F/G/H",
       "home": "France",
       "away": "Sweden",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 2,
-      "las": 0
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "France",
+      "hs": 3,
+      "as": 0
     },
     {
       "n": 78,
@@ -1191,9 +1191,9 @@
       "homeLabel": "W 74",
       "awayLabel": "W 77",
       "home": "Paraguay",
-      "away": null,
+      "away": "France",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
