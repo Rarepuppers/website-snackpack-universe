@@ -681,6 +681,8 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
 (function () {
   "use strict";
 
+  var pollTimer = null;
+
   var flagStyles = {
     "Mexico": ["MX", "#006847", "#ffffff", "#ce1126"], "South Africa": ["ZA", "#007a4d", "#ffb612", "#de3831"], "South Korea": ["KR", "#ffffff", "#c60c30", "#003478"], "Czechia": ["CZ", "#ffffff", "#d7141a", "#11457e"], "Canada": ["CA", "#d52b1e", "#ffffff", "#d52b1e"], "Bosnia and Herzegovina": ["BA", "#002f6c", "#f7d116", "#ffffff"], "Qatar": ["QA", "#ffffff", "#8a1538"], "Switzerland": ["CH", "#d52b1e", "#ffffff", "#d52b1e"], "Haiti": ["HT", "#00209f", "#d21034"], "Scotland": ["SCO", "#0065bd", "#ffffff"], "Brazil": ["BR", "#009b3a", "#ffdf00", "#002776"], "Morocco": ["MA", "#c1272d", "#006233"], "United States": ["US", "#b22234", "#ffffff", "#3c3b6e"], "Paraguay": ["PY", "#d52b1e", "#ffffff", "#0038a8"], "Australia": ["AU", "#00008b", "#ffffff", "#e4002b"], "Turkiye": ["TR", "#e30a17", "#ffffff"], "Cote d'Ivoire": ["CI", "#f77f00", "#ffffff", "#009e60"], "Ecuador": ["EC", "#ffdd00", "#034ea2", "#ed1c24"], "Germany": ["DE", "#000000", "#dd0000", "#ffce00"], "Curacao": ["CW", "#002b7f", "#f9e814", "#ffffff"], "Netherlands": ["NL", "#ae1c28", "#ffffff", "#21468b"], "Japan": ["JP", "#ffffff", "#bc002d"], "Sweden": ["SE", "#006aa7", "#fecc00"], "Tunisia": ["TN", "#e70013", "#ffffff"], "Iran": ["IR", "#239f40", "#ffffff", "#da0000"], "New Zealand": ["NZ", "#00247d", "#ffffff", "#cc142b"], "Belgium": ["BE", "#000000", "#ffd90c", "#ef3340"], "Egypt": ["EG", "#ce1126", "#ffffff", "#000000"], "Saudi Arabia": ["SA", "#006c35", "#ffffff"], "Uruguay": ["UY", "#ffffff", "#0038a8", "#fcd116"], "Spain": ["ES", "#aa151b", "#f1bf00", "#aa151b"], "Cape Verde": ["CV", "#003893", "#ffffff", "#cf2027"], "France": ["FR", "#0055a4", "#ffffff", "#ef4135"], "Senegal": ["SN", "#00853f", "#fdef42", "#e31b23"], "Iraq": ["IQ", "#ce1126", "#ffffff", "#000000"], "Norway": ["NO", "#ba0c2f", "#ffffff", "#00205b"], "Argentina": ["AR", "#74acdf", "#ffffff", "#74acdf"], "Algeria": ["DZ", "#006233", "#ffffff", "#d21034"], "Austria": ["AT", "#ed2939", "#ffffff", "#ed2939"], "Jordan": ["JO", "#000000", "#ffffff", "#007a3d"], "Portugal": ["PT", "#006600", "#ff0000"], "DR Congo": ["CD", "#007fff", "#f7d618", "#ce1021"], "Uzbekistan": ["UZ", "#1eb5e5", "#ffffff", "#009739"], "Colombia": ["CO", "#fcd116", "#003893", "#ce1126"], "Ghana": ["GH", "#ce1126", "#fcd116", "#006b3f"], "Panama": ["PA", "#ffffff", "#005293", "#d21034"], "England": ["ENG", "#ffffff", "#cf142b"], "Croatia": ["HR", "#ff0000", "#ffffff", "#171796"]
   };
@@ -1060,23 +1062,46 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     document.getElementById("updated-note").textContent = "Last data update: " + updated + ".";
   }
 
-  fetch("../../data/world-cup-2026.json", { cache: "no-cache" })
-    .then(function (response) {
-      if (!response.ok) throw new Error("World Cup data not available");
-      return response.json();
-    })
-    .then(function (data) {
-      var base = Array.isArray(data.knockout) ? data.knockout : [];
-      if (window.WCLive && WCLive.worthLive(base)) {
-        return WCLive.overlay(base).then(function (merged) { data.knockout = merged; return data; });
-      }
-      return data;
-    })
-    .then(render)
-    .catch(function () {
-      document.getElementById("updated-note").textContent = "Knockout data is temporarily unavailable.";
-      render({ groups: {}, matches: [], knockout: [] });
+  function shouldPoll(knockout) {
+    var today = todayIso();
+    return knockout.some(isLive) || knockout.some(function (match) {
+      return String(match.isoDate || "") === today && !isPlayed(match);
     });
+  }
+
+  function scheduleNext(knockout) {
+    if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; }
+    if (!shouldPoll(knockout || [])) return;
+    pollTimer = setTimeout(load, knockout.some(isLive) ? 60000 : 120000);
+  }
+
+  function withLive(data) {
+    var base = Array.isArray(data.knockout) ? data.knockout : [];
+    if (window.WCLive && WCLive.worthLive(base)) {
+      return WCLive.overlay(base).then(function (merged) { data.knockout = merged; return data; });
+    }
+    return Promise.resolve(data);
+  }
+
+  function load() {
+    fetch("../../data/world-cup-2026.json", { cache: "no-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("World Cup data not available");
+        return response.json();
+      })
+      .then(withLive)
+      .then(function (data) {
+        render(data);
+        scheduleNext(resolveKnockout(data));
+      })
+      .catch(function () {
+        document.getElementById("updated-note").textContent = "Knockout data is temporarily unavailable.";
+        render({ groups: {}, matches: [], knockout: [] });
+        scheduleNext([]);
+      });
+  }
+
+  load();
 })();
 </script>
 <!-- Cloudflare Web Analytics -->
