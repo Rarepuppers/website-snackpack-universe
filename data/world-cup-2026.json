@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-30T19:15:50.947Z",
+  "updatedAt": "2026-06-30T21:05:03.419Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1020,9 +1020,11 @@
       "awayLabel": "3rd C/D/F/G/H",
       "home": "France",
       "away": "Sweden",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 0
     },
     {
       "n": 78,
