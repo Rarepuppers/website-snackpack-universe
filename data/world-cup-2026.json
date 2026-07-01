@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-01T17:27:48.397Z",
+  "updatedAt": "2026-07-01T19:16:22.102Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1068,11 +1068,11 @@
       "awayLabel": "3rd E/H/I/J/K",
       "home": "England",
       "away": "DR Congo",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 0,
-      "las": 1
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "England",
+      "hs": 2,
+      "as": 1
     },
     {
       "n": 81,
@@ -1237,9 +1237,9 @@
       "homeLabel": "W 79",
       "awayLabel": "W 80",
       "home": "Mexico",
-      "away": null,
+      "away": "England",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
