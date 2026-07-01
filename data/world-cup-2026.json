@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-01T19:16:22.102Z",
+  "updatedAt": "2026-07-01T20:55:05.086Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1098,9 +1098,11 @@
       "awayLabel": "3rd A/E/H/I/J",
       "home": "Belgium",
       "away": "Senegal",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 1
     },
     {
       "n": 83,
