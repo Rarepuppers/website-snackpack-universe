@@ -13,7 +13,7 @@
 <meta property="og:description" content="Group L fixtures, players to know, and a quick guide to Croatia at the 2026 World Cup.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.snackpackuniverse.com/world-cup/team/croatia/">
-<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:image" content="https://www.snackpackuniverse.com/world-cup/og-world-cup.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,10 +90,65 @@
   font-weight: 800; padding: 10px 12px; text-decoration: none; background: rgba(255,255,255,0.74);
 }
 .team-links a:hover { border-color: var(--accent); color: var(--accent); }
+.team-games-strip {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.team-game-link {
+  position: relative;
+  overflow: hidden;
+  min-height: 112px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(226,243,239,0.82));
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: 0 12px 26px rgba(32,23,19,0.08);
+}
+.team-game-link::after {
+  content: "";
+  position: absolute;
+  right: -22px;
+  bottom: -24px;
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  background: rgba(31,143,119,0.12);
+}
+.team-game-link img {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+.team-game-link strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.1;
+}
+.team-game-link span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+.team-game-link:hover,
+.team-game-link:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  outline: none;
+}
 @media (max-width: 900px) {
   .team-hero { grid-template-columns: 1fr; }
   .team-layout { grid-template-columns: 1fr; }
   .team-side { position: static; }
+  .team-games-strip { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) { .team-fixture { grid-template-columns: 1fr; } .team-result { width: fit-content; } }
 </style>
@@ -112,7 +167,7 @@
     "eventStatus": "https://schema.org/EventScheduled",
     "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
     "url": "https://www.snackpackuniverse.com/world-cup/",
-    "image": "https://www.snackpackuniverse.com/snackpack-social-share.png",
+    "image": "https://www.snackpackuniverse.com/world-cup/og-world-cup.png",
     "location": {
       "@type": "Place",
       "name": "United States, Canada and Mexico",
@@ -194,6 +249,23 @@
           <a href="../../schedule/">Schedule &amp; fixtures</a>
           <a href="../../teams/">All 48 teams</a>
           <a href="../../../play/soccer-trivia-sprint/">Soccer Trivia Sprint</a>
+        </div>
+        <div class="team-games-strip" aria-label="World Cup games">
+          <a class="team-game-link" href="../../../play/soccer-trivia-sprint/">
+            <img src="../../../play/tiles/soccer-trivia-sprint.png" alt="" aria-hidden="true" loading="lazy" width="42" height="42">
+            <strong>Soccer Trivia Sprint</strong>
+            <span>Quiz the tournament</span>
+          </a>
+          <a class="team-game-link" href="../../../play/penalty-shootout/">
+            <img src="../../../play/tiles/penalty-shootout.png" alt="" aria-hidden="true" loading="lazy" width="42" height="42">
+            <strong>Penalty Shootout</strong>
+            <span>Best-of-five duel</span>
+          </a>
+          <a class="team-game-link" href="../../../play/free-kick-curl/">
+            <img src="../../../play/tiles/free-kick-curl.png" alt="" aria-hidden="true" loading="lazy" width="42" height="42">
+            <strong>Free Kick Curl</strong>
+            <span>Bend one top corner</span>
+          </a>
         </div>
       </aside>
     </div>

@@ -88,6 +88,70 @@
     root.textContent = "Score feed may be delayed: the saved data is " + age + " old during a match window. The page will keep checking live scores automatically.";
   }
 
+  var favoriteKey = "snackpack_world_cup_favorite_team";
+
+  function getFavoriteTeam() {
+    try {
+      return localStorage.getItem(favoriteKey) || "";
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function setFavoriteTeam(team) {
+    try {
+      if (team) localStorage.setItem(favoriteKey, team);
+      else localStorage.removeItem(favoriteKey);
+    } catch (error) {}
+  }
+
+  function uniqueTeams(teams) {
+    var seen = {};
+    return (teams || []).filter(function (team) {
+      team = String(team || "").trim();
+      if (!team || /^W |^L |^RU |^3rd|TBD$/i.test(team) || seen[team]) return false;
+      seen[team] = true;
+      return true;
+    }).sort();
+  }
+
+  function highlightFavorite(scope) {
+    var root = scope || document;
+    var favorite = getFavoriteTeam();
+    root.querySelectorAll(".is-favorite-team").forEach(function (node) {
+      node.classList.remove("is-favorite-team");
+    });
+    if (!favorite) return;
+    root.querySelectorAll("[data-team-name]").forEach(function (node) {
+      node.classList.toggle("is-favorite-team", node.getAttribute("data-team-name") === favorite);
+    });
+  }
+
+  function renderFavoriteTeam(target, teams) {
+    var root = typeof target === "string" ? document.getElementById(target) : target;
+    if (!root) return;
+    var values = uniqueTeams(teams);
+    if (!values.length) {
+      root.innerHTML = "";
+      return;
+    }
+    var current = getFavoriteTeam();
+    root.innerHTML = '<div class="wc-favorite-panel"><label for="wc-favorite-team">Favorite team</label><select id="wc-favorite-team"><option value="">No favorite selected</option>' +
+      values.map(function (team) {
+        return '<option value="' + escapeHtml(team) + '"' + (team === current ? " selected" : "") + '>' + escapeHtml(team) + '</option>';
+      }).join("") + '</select></div>';
+    var select = root.querySelector("select");
+    if (select && root.dataset.favoriteReady !== "true") {
+      root.dataset.favoriteReady = "true";
+      root.addEventListener("change", function (event) {
+        if (!event.target.matches("select")) return;
+        setFavoriteTeam(event.target.value);
+        highlightFavorite(document);
+      });
+    }
+    highlightFavorite(document);
+  }
+
   function penaltyKicks(value) {
     if (Array.isArray(value)) return value.map(String);
     if (typeof value === "string") return value.trim().split(/\s*,\s*|\s+/).join("").split("");
@@ -169,6 +233,7 @@
       return (options.getMatches() || []).filter(function (match) { return matchId(match) === id; })[0];
     }
     function openFrom(target) {
+      if (target.closest("a")) return;
       var trigger = target.closest(".wc-match-trigger");
       if (!trigger) return;
       var match = findMatch(trigger.getAttribute("data-match-id"));
@@ -195,10 +260,13 @@
   global.WCUI = {
     bindMatchDrawer: bindMatchDrawer,
     escapeHtml: escapeHtml,
+    getFavoriteTeam: getFavoriteTeam,
+    highlightFavorite: highlightFavorite,
     isLive: isLive,
     isPlayed: isPlayed,
     matchId: matchId,
     renderDrawer: renderDrawer,
+    renderFavoriteTeam: renderFavoriteTeam,
     renderFreshnessWarning: renderFreshnessWarning,
     renderLiveStrip: renderLiveStrip,
     renderTimezoneNote: renderTimezoneNote,

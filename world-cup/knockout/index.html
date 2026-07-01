@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
 <meta property="og:title" content="World Cup 2026 Knockout Bracket">
 <meta property="og:description" content="Remaining teams, today's knockout matches, and the full bracket path to the Final.">
-<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:image" content="https://www.snackpackuniverse.com/world-cup/og-knockout.png">
 <meta property="og:url" content="https://www.snackpackuniverse.com/world-cup/knockout/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
@@ -210,8 +210,8 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
 .bracket-col--qf { grid-template-rows: repeat(2, minmax(86px, auto)); gap: 76px; }
 .bracket-col--sf { grid-template-rows: minmax(96px, auto); }
 .bracket-col--final {
-  grid-template-rows: auto minmax(96px, auto) minmax(78px, auto) auto;
-  gap: 18px;
+  grid-template-rows: auto auto minmax(96px, auto) minmax(84px, auto) auto;
+  gap: 14px;
 }
 .bracket-round-label {
   color: var(--muted);
@@ -223,6 +223,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
 }
 .bracket-match {
   position: relative;
+  z-index: 2;
   width: 100%;
   min-height: 60px;
   display: grid;
@@ -245,7 +246,45 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   box-shadow: 0 10px 22px rgba(31,143,119,0.18);
 }
 .bracket-match.is-path {
-  background: rgba(31,143,119,0.1);
+  background:
+    linear-gradient(0deg, rgba(31,143,119,0.1), rgba(31,143,119,0.1)),
+    #fffdf8;
+}
+.final-trophy-tile {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  min-height: 104px;
+  padding: 12px 10px;
+  border: 1px solid rgba(151,103,22,0.34);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,244,174,0.9), rgba(239,181,77,0.2) 46%, transparent 72%),
+    linear-gradient(140deg, #fff7c8 0%, #f1c957 42%, #b9771c 100%);
+  color: #3a2507;
+  box-shadow: 0 18px 34px rgba(151,103,22,0.22);
+  text-align: center;
+}
+.final-trophy-tile img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 14px rgba(82,45,6,0.32));
+}
+.final-trophy-tile span {
+  font-family: var(--serif);
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.final-trophy-tile small {
+  color: rgba(58,37,7,0.76);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .bracket-match.is-live {
   border-color: #c73f3f;
@@ -312,13 +351,17 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   text-transform: uppercase;
 }
 .bracket-champion {
+  position: relative;
+  z-index: 2;
   display: grid;
   place-items: center;
   min-height: 78px;
   padding: 12px;
   border: 2px solid rgba(31,143,119,0.42);
   border-radius: 12px;
-  background: rgba(31,143,119,0.12);
+  background:
+    linear-gradient(0deg, rgba(31,143,119,0.12), rgba(31,143,119,0.12)),
+    #fffdf8;
   text-align: center;
 }
 .final-icons {
@@ -338,6 +381,10 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   width: 36px;
   height: 36px;
 }
+.final-icons--ball img:first-child {
+  width: 34px;
+  height: 34px;
+}
 .bracket-lines {
   position: absolute;
   inset: 0;
@@ -356,6 +403,9 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
 .bracket-lines path.is-path-line {
   stroke: rgba(31,143,119,0.62);
   stroke-width: 3;
+}
+.bracket-lines path.is-final-line {
+  stroke: rgba(151,103,22,0.38);
 }
 .bracket-champion span {
   color: var(--muted);
@@ -390,6 +440,89 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   color: var(--muted);
   font-size: 0.86rem;
   font-weight: 700;
+}
+.calendar-link {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 6px;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+.calendar-link:hover,
+.calendar-link:focus-visible {
+  color: var(--brand);
+  outline: none;
+}
+.ko-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0 20px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.74);
+}
+.ko-control {
+  display: grid;
+  gap: 5px;
+}
+.ko-control label {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ko-control select {
+  min-height: 42px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fffdf8;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  padding: 0 10px;
+}
+.wc-favorite-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 14px 0 6px;
+  padding: 12px;
+  border: 1px solid rgba(239,181,77,0.38);
+  border-radius: 12px;
+  background:
+    linear-gradient(90deg, rgba(239,181,77,0.16), rgba(31,143,119,0.08)),
+    #fffdf8;
+}
+.wc-favorite-panel label {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.wc-favorite-panel select {
+  min-height: 40px;
+  min-width: min(100%, 260px);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fffdf8;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  padding: 0 10px;
+}
+.is-favorite-team {
+  outline: 2px solid rgba(239,181,77,0.72);
+  outline-offset: 2px;
 }
 .knockout-share {
   margin-top: 14px;
@@ -630,6 +763,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     grid-template-columns: 1fr;
   }
   .ko-side { position: static; }
+  .ko-controls { grid-template-columns: 1fr; }
 }
 @media (max-width: 620px) {
   .ko-stats,
@@ -732,6 +866,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
         </div>
         <p class="wc-timezone-note" id="timezone-note">Dates use your local timezone.</p>
         <p class="wc-freshness-warning" id="freshness-warning" hidden></p>
+        <div id="favorite-team-panel"></div>
         <div class="tournament-board" id="interactive-bracket">
           <div class="tournament-head">
             <div>
@@ -784,6 +919,29 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
         <div class="team-list" id="team-list"></div>
 
         <h2 id="bracket-list" style="margin-top:24px;">Bracket listing</h2>
+        <div class="ko-controls" aria-label="Filter knockout listing">
+          <div class="ko-control">
+            <label for="ko-filter-round">Round</label>
+            <select id="ko-filter-round">
+              <option value="">All rounds</option>
+            </select>
+          </div>
+          <div class="ko-control">
+            <label for="ko-filter-team">Team</label>
+            <select id="ko-filter-team">
+              <option value="">All teams</option>
+            </select>
+          </div>
+          <div class="ko-control">
+            <label for="ko-filter-status">Status</label>
+            <select id="ko-filter-status">
+              <option value="">Any status</option>
+              <option value="live">Live</option>
+              <option value="scheduled">Scheduled</option>
+              <option value="final">Final</option>
+            </select>
+          </div>
+        </div>
         <div id="round-list"></div>
         <div class="wc-match-drawer" id="match-drawer" hidden></div>
       </div>
@@ -844,6 +1002,8 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
 
   var pollTimer = null;
   var CURRENT_KNOCKOUT = [];
+  var FILTERS_READY = false;
+  var filterState = { round: "", team: "", status: "" };
 
   var flagStyles = {
     "Mexico": ["MX", "#006847", "#ffffff", "#ce1126"], "South Africa": ["ZA", "#007a4d", "#ffb612", "#de3831"], "South Korea": ["KR", "#ffffff", "#c60c30", "#003478"], "Czechia": ["CZ", "#ffffff", "#d7141a", "#11457e"], "Canada": ["CA", "#d52b1e", "#ffffff", "#d52b1e"], "Bosnia and Herzegovina": ["BA", "#002f6c", "#f7d116", "#ffffff"], "Qatar": ["QA", "#ffffff", "#8a1538"], "Switzerland": ["CH", "#d52b1e", "#ffffff", "#d52b1e"], "Haiti": ["HT", "#00209f", "#d21034"], "Scotland": ["SCO", "#0065bd", "#ffffff"], "Brazil": ["BR", "#009b3a", "#ffdf00", "#002776"], "Morocco": ["MA", "#c1272d", "#006233"], "United States": ["US", "#b22234", "#ffffff", "#3c3b6e"], "Paraguay": ["PY", "#d52b1e", "#ffffff", "#0038a8"], "Australia": ["AU", "#00008b", "#ffffff", "#e4002b"], "Turkiye": ["TR", "#e30a17", "#ffffff"], "Cote d'Ivoire": ["CI", "#f77f00", "#ffffff", "#009e60"], "Ecuador": ["EC", "#ffdd00", "#034ea2", "#ed1c24"], "Germany": ["DE", "#000000", "#dd0000", "#ffce00"], "Curacao": ["CW", "#002b7f", "#f9e814", "#ffffff"], "Netherlands": ["NL", "#ae1c28", "#ffffff", "#21468b"], "Japan": ["JP", "#ffffff", "#bc002d"], "Sweden": ["SE", "#006aa7", "#fecc00"], "Tunisia": ["TN", "#e70013", "#ffffff"], "Iran": ["IR", "#239f40", "#ffffff", "#da0000"], "New Zealand": ["NZ", "#00247d", "#ffffff", "#cc142b"], "Belgium": ["BE", "#000000", "#ffd90c", "#ef3340"], "Egypt": ["EG", "#ce1126", "#ffffff", "#000000"], "Saudi Arabia": ["SA", "#006c35", "#ffffff"], "Uruguay": ["UY", "#ffffff", "#0038a8", "#fcd116"], "Spain": ["ES", "#aa151b", "#f1bf00", "#aa151b"], "Cape Verde": ["CV", "#003893", "#ffffff", "#cf2027"], "France": ["FR", "#0055a4", "#ffffff", "#ef4135"], "Senegal": ["SN", "#00853f", "#fdef42", "#e31b23"], "Iraq": ["IQ", "#ce1126", "#ffffff", "#000000"], "Norway": ["NO", "#ba0c2f", "#ffffff", "#00205b"], "Argentina": ["AR", "#74acdf", "#ffffff", "#74acdf"], "Algeria": ["DZ", "#006233", "#ffffff", "#d21034"], "Austria": ["AT", "#ed2939", "#ffffff", "#ed2939"], "Jordan": ["JO", "#000000", "#ffffff", "#007a3d"], "Portugal": ["PT", "#006600", "#ff0000"], "DR Congo": ["CD", "#007fff", "#f7d618", "#ce1021"], "Uzbekistan": ["UZ", "#1eb5e5", "#ffffff", "#009739"], "Colombia": ["CO", "#fcd116", "#003893", "#ce1126"], "Ghana": ["GH", "#ce1126", "#fcd116", "#006b3f"], "Panama": ["PA", "#ffffff", "#005293", "#d21034"], "England": ["ENG", "#ffffff", "#cf142b"], "Croatia": ["HR", "#ff0000", "#ffffff", "#171796"]
@@ -907,6 +1067,40 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     return "Next";
   }
 
+  function calendarHref(match) {
+    if (!match || !match.isoDate || isPlayed(match)) return "";
+    var date = String(match.isoDate).replace(/-/g, "");
+    var end = new Date(match.isoDate + "T00:00:00");
+    if (isNaN(end)) return "";
+    end.setDate(end.getDate() + 1);
+    var endDate = end.getFullYear() + String(end.getMonth() + 1).padStart(2, "0") + String(end.getDate()).padStart(2, "0");
+    var home = match.home || match.homeLabel || "TBD";
+    var away = match.away || match.awayLabel || "TBD";
+    var lines = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//SnackPack Studios//World Cup//EN",
+      "BEGIN:VEVENT",
+      "UID:world-cup-2026-match-" + (match.n || date) + "@snackpackuniverse.com",
+      "DTSTAMP:" + new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z"),
+      "DTSTART;VALUE=DATE:" + date,
+      "DTEND;VALUE=DATE:" + endDate,
+      "SUMMARY:World Cup " + (match.round || "match") + ": " + home + " vs " + away,
+      "DESCRIPTION:Match " + (match.n || "") + " from SnackPack World Cup tracker.",
+      "LOCATION:" + (match.venue || "Venue TBD"),
+      "URL:https://www.snackpackuniverse.com/world-cup/knockout/",
+      "END:VEVENT",
+      "END:VCALENDAR"
+    ];
+    return "data:text/calendar;charset=utf-8," + encodeURIComponent(lines.join("\r\n"));
+  }
+
+  function calendarLink(match) {
+    var href = calendarHref(match);
+    if (!href) return "";
+    return '<a class="calendar-link" href="' + href + '" download="world-cup-match-' + escapeHtml(match.n || "fixture") + '.ics">Add to calendar</a>';
+  }
+
   function matchHtml(match) {
     var winner = winnerOf(match);
     var badgeClass = isLive(match) ? " score-pill--live" : !isPlayed(match) ? " score-pill--next" : "";
@@ -914,10 +1108,10 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     var away = match.away || match.awayLabel || "TBD";
     var id = window.WCUI ? WCUI.matchId(match) : "";
     return '<article class="match-row wc-match-trigger" role="button" tabindex="0" data-match-id="' + id + '"><div class="match-date">' + escapeHtml(match.date || "") + '<br>' + escapeHtml(match.time || "") + '</div><div><div class="match-teams">' +
-      '<span class="match-team' + (winner === home ? ' match-team--winner' : winner ? ' match-team--out' : '') + '">' + flagImg(home) + escapeHtml(home) + '</span>' +
-      '<span class="match-team' + (winner === away ? ' match-team--winner' : winner ? ' match-team--out' : '') + '">' + flagImg(away) + escapeHtml(away) + '</span>' +
+      '<span class="match-team' + (winner === home ? ' match-team--winner' : winner ? ' match-team--out' : '') + '" data-team-name="' + escapeHtml(home) + '">' + flagImg(home) + escapeHtml(home) + '</span>' +
+      '<span class="match-team' + (winner === away ? ' match-team--winner' : winner ? ' match-team--out' : '') + '" data-team-name="' + escapeHtml(away) + '">' + flagImg(away) + escapeHtml(away) + '</span>' +
       '</div><div class="match-meta">' + escapeHtml(match.round || "") + ' - Match ' + escapeHtml(match.n || "") + ' - ' + escapeHtml(match.venue || "") + '</div></div>' +
-      '<span class="score-pill' + badgeClass + '">' + escapeHtml(matchBadge(match)) + '</span></article>';
+      '<div><span class="score-pill' + badgeClass + '">' + escapeHtml(matchBadge(match)) + '</span>' + calendarLink(match) + '</div></article>';
   }
 
   function renderList(id, rows, empty) {
@@ -970,7 +1164,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     }
     root.innerHTML = teams.map(function (team) {
       var path = teamProgress(team, knockout);
-      return '<a class="team-row" href="../team/' + escapeHtml(teamSlug(team)) + '/"><span class="team-path"><strong>' + escapeHtml(team) + '</strong><small>' + escapeHtml("Reached " + path.round) + '</small></span><span>' + escapeHtml(path.next) + '</span></a>';
+      return '<a class="team-row" href="../team/' + escapeHtml(teamSlug(team)) + '/" data-team-name="' + escapeHtml(team) + '"><span class="team-path"><strong>' + escapeHtml(team) + '</strong><small>' + escapeHtml("Reached " + path.round) + '</small></span><span>' + escapeHtml(path.next) + '</span></a>';
     }).join("");
   }
 
@@ -1116,7 +1310,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   function bracketTeamHtml(team, label, score, isWinner, isOut, penScore) {
     var name = team || label || "TBD";
     var scoreHtml = score === "" || score == null ? "" : '<span class="bracket-score">' + escapeHtml(score) + (penScore !== "" && penScore != null ? '<span class="bracket-pens">' + escapeHtml(penScore) + 'P</span>' : '') + '</span>';
-    return '<div class="bracket-team' + (isWinner ? ' bracket-team--winner' : '') + (isOut ? ' bracket-team--out' : '') + '">' + flagImg(name) + '<span class="bracket-name">' + escapeHtml(name) + '</span>' + scoreHtml + '</div>';
+    return '<div class="bracket-team' + (isWinner ? ' bracket-team--winner' : '') + (isOut ? ' bracket-team--out' : '') + '" data-team-name="' + escapeHtml(name) + '">' + flagImg(name) + '<span class="bracket-name">' + escapeHtml(name) + '</span>' + scoreHtml + '</div>';
   }
 
   function bracketMatchHtml(match) {
@@ -1212,9 +1406,10 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
       var fromBeforeTo = fromRect.left < toRect.left;
       var a = cardCenter(rootRect, fromCard, fromBeforeTo ? "right" : "left");
       var b = cardCenter(rootRect, toCard, fromBeforeTo ? "left" : "right");
-      var mid = a.x + (b.x - a.x) / 2;
+      var finalLink = Number(link[1]) === 104;
+      var mid = finalLink ? a.x + (fromBeforeTo ? 30 : -30) : a.x + (b.x - a.x) / 2;
       var d = "M " + a.x.toFixed(1) + " " + a.y.toFixed(1) + " H " + mid.toFixed(1) + " V " + b.y.toFixed(1) + " H " + b.x.toFixed(1);
-      return '<path data-from="' + link[0] + '" data-to="' + link[1] + '" d="' + d + '"></path>';
+      return '<path class="' + (finalLink ? 'is-final-line' : '') + '" data-from="' + link[0] + '" data-to="' + link[1] + '" d="' + d + '"></path>';
     }).join("");
   }
 
@@ -1242,9 +1437,11 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
       bracketColumnHtml("Round of 16", leftR16, "bracket-col--r16") +
       bracketColumnHtml("Quarter-finals", leftQf, "bracket-col--qf") +
       bracketColumnHtml("Semi-final", leftSf, "bracket-col--sf") +
-      '<div class="bracket-col bracket-col--final"><div class="bracket-round-label">Final</div>' + bracketMatchHtml(final) +
+      '<div class="bracket-col bracket-col--final"><div class="bracket-round-label">Final</div>' +
+      '<div class="final-trophy-tile"><img src="../../assets/world-cup-2026-trophy.svg" alt=""><span>World Cup Final</span><small>Golden path</small></div>' +
+      bracketMatchHtml(final) +
       '<div class="bracket-champion"><span>Winner</span><strong>' + escapeHtml(champion) + '</strong></div>' +
-      '<div class="final-icons"><img src="../officialball_transparent2-50.png" alt=""><img src="../../assets/world-cup-2026-trophy.svg" alt=""></div></div>' +
+      '<div class="final-icons final-icons--ball"><img src="../officialball_transparent2-50.png" alt=""></div></div>' +
       bracketColumnHtml("Semi-final", rightSf, "bracket-col--sf") +
       bracketColumnHtml("Quarter-finals", rightQf, "bracket-col--qf") +
       bracketColumnHtml("Round of 16", rightR16, "bracket-col--r16") +
@@ -1338,18 +1535,73 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     window.addEventListener("resize", drawBracketLines);
   }
 
+  function matchStatus(match) {
+    if (isLive(match)) return "live";
+    return isPlayed(match) ? "final" : "scheduled";
+  }
+
+  function populateSelect(select, values, firstLabel) {
+    if (!select) return;
+    var current = select.value;
+    select.innerHTML = '<option value="">' + escapeHtml(firstLabel) + '</option>' + values.map(function (value) {
+      return '<option value="' + escapeHtml(value) + '">' + escapeHtml(value) + '</option>';
+    }).join("");
+    if (values.indexOf(current) !== -1) select.value = current;
+  }
+
+  function setupKnockoutFilters(knockout) {
+    var round = document.getElementById("ko-filter-round");
+    var team = document.getElementById("ko-filter-team");
+    var status = document.getElementById("ko-filter-status");
+    populateSelect(round, ["Round of 32", "Round of 16", "Quarter-finals", "Semi-finals", "Third place", "Final"].filter(function (value) {
+      return knockout.some(function (match) { return match.round === value; });
+    }), "All rounds");
+    var teamNames = {};
+    knockout.forEach(function (match) {
+      if (match.home) teamNames[match.home] = true;
+      if (match.away) teamNames[match.away] = true;
+    });
+    populateSelect(team, Object.keys(teamNames).sort(), "All teams");
+    if (FILTERS_READY) return;
+    FILTERS_READY = true;
+    [round, team, status].forEach(function (select) {
+      if (!select) return;
+      select.addEventListener("change", function () {
+        filterState.round = round ? round.value : "";
+        filterState.team = team ? team.value : "";
+        filterState.status = status ? status.value : "";
+        renderRounds(CURRENT_KNOCKOUT);
+      });
+    });
+  }
+
+  function filteredKnockout(knockout) {
+    return knockout.filter(function (match) {
+      if (filterState.round && match.round !== filterState.round) return false;
+      if (filterState.team && match.home !== filterState.team && match.away !== filterState.team) return false;
+      if (filterState.status && matchStatus(match) !== filterState.status) return false;
+      return true;
+    });
+  }
+
   function renderRounds(knockout) {
     var root = document.getElementById("round-list");
     if (!knockout.length) {
       root.innerHTML = '<p class="empty-state">Knockout bracket loads once the schedule data is available.</p>';
       return;
     }
+    var visible = filteredKnockout(knockout);
+    if (!visible.length) {
+      root.innerHTML = '<p class="empty-state">No matches match those filters.</p>';
+      return;
+    }
     var order = ["Round of 32", "Round of 16", "Quarter-finals", "Semi-finals", "Third place", "Final"];
     var byRound = {};
-    knockout.forEach(function (m) { (byRound[m.round] = byRound[m.round] || []).push(m); });
+    visible.forEach(function (m) { (byRound[m.round] = byRound[m.round] || []).push(m); });
     root.innerHTML = order.filter(function (round) { return byRound[round]; }).map(function (round) {
       return '<div class="round-block"><h3>' + escapeHtml(round) + '</h3><div class="ko-list">' + byRound[round].map(matchHtml).join("") + '</div></div>';
     }).join("");
+    if (window.WCUI) WCUI.highlightFavorite(document);
   }
 
   function renderMobilePath(knockout) {
@@ -1463,17 +1715,24 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
       WCUI.renderLiveStrip("wc-live-list", knockout);
       WCUI.renderTimezoneNote("timezone-note");
       WCUI.renderFreshnessWarning("freshness-warning", data.updatedAt, knockout);
+      WCUI.renderFavoriteTeam("favorite-team-panel", teams.concat(knockout.reduce(function (acc, match) {
+        if (match.home) acc.push(match.home);
+        if (match.away) acc.push(match.away);
+        return acc;
+      }, [])));
       WCUI.bindMatchDrawer({ root: document.body, drawer: "match-drawer", getMatches: function () { return CURRENT_KNOCKOUT; } });
     }
     setupWideToggle();
     setupDragPan();
     setupShareCard();
+    setupKnockoutFilters(knockout);
     renderTournamentBracket(knockout);
     renderTeams(teams, knockout);
     renderRounds(knockout);
     renderMobilePath(knockout);
     renderStructuredData(knockout);
     renderDataHealth(data, knockout);
+    if (window.WCUI) WCUI.highlightFavorite(document);
     var updated = data.updatedAt ? new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "saved local data";
     document.getElementById("updated-note").textContent = "Last data update: " + updated + ".";
   }
