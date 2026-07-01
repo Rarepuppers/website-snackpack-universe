@@ -534,6 +534,12 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   flex-wrap: wrap;
   gap: 8px;
 }
+.knockout-share-status {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
 .knockout-share-actions .btn {
   min-height: 40px;
 }
@@ -787,6 +793,56 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   }
   .score-pill { width: fit-content; }
 }
+@media print {
+  .topbar,
+  .page-hero,
+  .wc-live-strip,
+  .wc-timezone-note,
+  .wc-freshness-warning,
+  #favorite-team-panel,
+  .tournament-actions,
+  .bracket-detail,
+  .knockout-share,
+  .mobile-path-view,
+  .ko-stats,
+  #today-list,
+  #next-list,
+  #team-list,
+  #bracket-list,
+  .ko-controls,
+  #round-list,
+  .ko-side,
+  .seo-prose,
+  .foot {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #000;
+  }
+  .shell,
+  .ko-layout,
+  .ko-panel {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+  .tournament-board,
+  .bracket-scroll {
+    overflow: visible !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+  }
+  .bracket-stage {
+    min-width: 0 !important;
+    transform: scale(0.68);
+    transform-origin: top left;
+    width: 145%;
+  }
+}
 </style>
 <script type="application/ld+json">
 {
@@ -807,6 +863,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
 </script>
 </head>
 <body class="world-cup-page">
+<a class="skip-link" href="#interactive-bracket">Skip to bracket</a>
 <header class="topbar">
   <div class="shell topbar-inner">
     <a class="brand" href="../../">
@@ -893,7 +950,10 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
               <button class="btn btn-primary" id="share-knockout-card" type="button">Generate bracket card</button>
               <button class="btn btn-secondary" id="download-knockout-card" type="button">Download card</button>
               <button class="btn btn-secondary" id="native-share-knockout-card" type="button">Share card</button>
+              <button class="btn btn-secondary" id="copy-bracket-link" type="button">Copy match link</button>
+              <button class="btn btn-secondary" id="print-bracket" type="button">Print bracket</button>
             </div>
+            <p class="knockout-share-status" id="knockout-share-status" aria-live="polite"></p>
             <canvas id="knockout-share-canvas" width="1080" height="1350" hidden></canvas>
             <img class="share-preview" id="knockout-share-preview" alt="Generated World Cup knockout bracket share card">
           </div>
@@ -1002,6 +1062,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
 
   var pollTimer = null;
   var CURRENT_KNOCKOUT = [];
+  var SELECTED_MATCH = null;
   var FILTERS_READY = false;
   var filterState = { round: "", team: "", status: "" };
 
@@ -1289,6 +1350,8 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     generate.addEventListener("click", generateKnockoutShareCard);
     document.getElementById("download-knockout-card").addEventListener("click", downloadKnockoutShareCard);
     document.getElementById("native-share-knockout-card").addEventListener("click", nativeShareKnockoutCard);
+    document.getElementById("copy-bracket-link").addEventListener("click", copyBracketLink);
+    document.getElementById("print-bracket").addEventListener("click", function () { window.print(); });
   }
 
   function matchByNumber(knockout) {
@@ -1342,6 +1405,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   function renderBracketDetail(match) {
     var root = document.getElementById("bracket-detail");
     if (!root || !match) return;
+    SELECTED_MATCH = match;
     var winner = winnerOf(match);
     var teams = (match.home || match.homeLabel || "TBD") + " vs " + (match.away || match.awayLabel || "TBD");
     var status = isLive(match) ? "Live" : (isPlayed(match) ? "Final" : "Scheduled");
@@ -1350,6 +1414,36 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     root.innerHTML = '<div><h3>Match ' + escapeHtml(match.n) + ' - ' + escapeHtml(match.round || "") + '</h3>' +
       '<p>' + escapeHtml(teams) + '. ' + escapeHtml(match.date || "Date TBD") + ' at ' + escapeHtml(match.venue || "venue TBD") + '.' + escapeHtml(shootoutText + winnerText) + '</p></div>' +
       '<span class="score-pill' + (isLive(match) ? ' score-pill--live' : !isPlayed(match) ? ' score-pill--next' : '') + '">' + escapeHtml(status === "Final" ? matchBadge(match) : status) + '</span>';
+  }
+
+  function selectedMatchUrl() {
+    var base = window.location.href.split("#")[0];
+    return base + (SELECTED_MATCH ? "#match-" + encodeURIComponent(SELECTED_MATCH.n) : "#interactive-bracket");
+  }
+
+  function copyBracketLink() {
+    var status = document.getElementById("knockout-share-status");
+    var url = selectedMatchUrl();
+    function done(ok) {
+      if (!status) return;
+      status.textContent = ok ? "Match link copied." : "Copy failed. Use the address bar link.";
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () { done(true); }).catch(function () { done(false); });
+      return;
+    }
+    done(false);
+  }
+
+  function setMatchHash(match) {
+    if (!match || !window.history || !history.replaceState) return;
+    history.replaceState(null, "", "#match-" + encodeURIComponent(match.n));
+  }
+
+  function matchFromHash(byNumber) {
+    var hash = String(window.location.hash || "");
+    var found = hash.match(/^#match-(\d+)$/);
+    return found ? byNumber[found[1]] : null;
   }
 
   function highlightPath(knockout, matchNumber) {
@@ -1451,14 +1545,17 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
         var match = byNumber[button.getAttribute("data-match")];
         renderBracketDetail(match);
         highlightPath(knockout, match.n);
+        setMatchHash(match);
       });
     });
-    var active = knockout.find(isLive) || knockout.find(function (m) { return !isPlayed(m) && String(m.isoDate || "") >= todayIso(); }) || knockout[0];
+    var active = matchFromHash(byNumber) || knockout.find(isLive) || knockout.find(function (m) { return !isPlayed(m) && String(m.isoDate || "") >= todayIso(); }) || knockout[0];
     if (active) {
       renderBracketDetail(active);
       requestAnimationFrame(function () {
         drawBracketLines();
         highlightPath(knockout, active.n);
+        var activeButton = root.querySelector('[data-match="' + active.n + '"]');
+        if (activeButton && window.location.hash) activeButton.scrollIntoView({ block: "nearest", inline: "center" });
       });
     }
   }

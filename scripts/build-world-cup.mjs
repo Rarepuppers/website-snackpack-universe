@@ -523,6 +523,7 @@ function groupPage(letter) {
 </script>
 </head>
 <body class="world-cup-page">
+<a class="skip-link" href="#group-table">Skip to group table</a>
 <header class="topbar">
   <div class="shell topbar-inner">
     <a class="brand" href="../../">
@@ -580,7 +581,7 @@ ${"ABCDEFGHIJKL".split("").map((g) => `        <a href="../group-${g.toLowerCase
       <article class="group-panel">
         <h2>Group ${letter} Teams</h2>
         <div class="team-strip" id="team-strip"></div>
-        <h2>Group ${letter} Table</h2>
+        <h2 id="group-table">Group ${letter} Table</h2>
         <table class="standings">
           <thead><tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th></tr></thead>
           <tbody id="standings-body"></tbody>
@@ -863,6 +864,33 @@ function teamPage(team) {
   font-size: 0.92rem;
 }
 .team-fixtures { display: grid; gap: 10px; margin-top: 4px; }
+.team-next-card {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding: 14px;
+  border: 1px solid rgba(31,143,119,0.24);
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, rgba(31,143,119,0.12), rgba(239,181,77,0.12)),
+    #fffdf8;
+}
+.team-next-card span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.team-next-card strong {
+  font-family: var(--serif);
+  font-size: 1.18rem;
+}
+.team-next-card small {
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.45;
+}
 .team-fixture {
   display: grid;
   grid-template-columns: 60px minmax(0, 1fr) auto;
@@ -946,6 +974,11 @@ function teamPage(team) {
   color: var(--accent);
   outline: none;
 }
+.team-favorite-button[aria-pressed="true"] {
+  background: var(--gold);
+  border-color: rgba(151,103,22,0.36);
+  color: #3a2507;
+}
 @media (max-width: 900px) {
   .team-hero { grid-template-columns: 1fr; }
   .team-layout { grid-template-columns: 1fr; }
@@ -992,6 +1025,7 @@ function teamPage(team) {
 </script>
 </head>
 <body class="world-cup-page">
+<a class="skip-link" href="#team-fixtures">Skip to fixtures</a>
 <header class="topbar">
   <div class="shell topbar-inner">
     <a class="brand" href="../../../">
@@ -1027,6 +1061,7 @@ function teamPage(team) {
           <div class="stack-inline">
             <a class="btn btn-primary" href="../../group-${g.toLowerCase()}/">Group ${g} table</a>
             <a class="btn btn-secondary" href="../../schedule/">Full schedule</a>
+            <button class="btn btn-secondary team-favorite-button" id="team-favorite-button" type="button" aria-pressed="false">Set favorite team</button>
           </div>
         </div>
         <img class="team-hero-flag" src="${flagDataUrl(team)}" alt="${escapeHtml(team)} flag">
@@ -1038,6 +1073,11 @@ function teamPage(team) {
     <div class="shell team-layout">
       <article class="team-panel">
         <h2>${escapeHtml(team)} group fixtures</h2>
+        <div class="team-next-card" id="team-next-card" aria-live="polite">
+          <span>Next match</span>
+          <strong>Loading ${escapeHtml(team)} fixtures...</strong>
+          <small>Live data will update this card when the schedule file loads.</small>
+        </div>
         <div class="team-fixtures" id="team-fixtures">${fixturesHtml}</div>
         <h2 style="margin-top:22px;">Players to know</h2>
         <ul class="player-list">${players}</ul>
@@ -1106,8 +1146,32 @@ function teamPage(team) {
   "use strict";
   var TEAM = ${JSON.stringify(team)};
   var FLAGS = ${JSON.stringify(oppFlags)};
+  var FAVORITE_KEY = "snackpack_world_cup_favorite_team";
   function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function flag(team) { return FLAGS[team] || ""; }
+  function isFavorite() {
+    try { return localStorage.getItem(FAVORITE_KEY) === TEAM; } catch (error) { return false; }
+  }
+  function updateFavoriteButton() {
+    var button = document.getElementById("team-favorite-button");
+    if (!button) return;
+    var favorite = isFavorite();
+    button.setAttribute("aria-pressed", String(favorite));
+    button.textContent = favorite ? "Favorite team" : "Set favorite team";
+  }
+  function setupFavoriteButton() {
+    var button = document.getElementById("team-favorite-button");
+    if (!button || button.dataset.ready === "true") return;
+    button.dataset.ready = "true";
+    button.addEventListener("click", function () {
+      try {
+        if (isFavorite()) localStorage.removeItem(FAVORITE_KEY);
+        else localStorage.setItem(FAVORITE_KEY, TEAM);
+      } catch (error) {}
+      updateFavoriteButton();
+    });
+    updateFavoriteButton();
+  }
   function isLive(m) {
     var status = String(m.statusShort || m.time || "").toUpperCase();
     return ["1H", "2H", "HT", "ET", "BT", "P", "LIVE", "IN PROGRESS"].indexOf(status) !== -1;
@@ -1132,6 +1196,21 @@ function teamPage(team) {
       '<div class="tf-mid"><div class="tf-opp">' + (isHome ? "vs" : "at") + ' ' + fl + esc(opp) + '</div>' +
       '<div class="tf-venue">' + esc(m.venue || "") + '</div></div>' +
       '<span class="team-result' + cls + '">' + esc(pill) + '</span></div>';
+  }
+  function renderNextCard(mine) {
+    var root = document.getElementById("team-next-card");
+    if (!root) return;
+    var today = todayIso();
+    var next = mine.filter(function (m) { return isLive(m) || (typeof m.hs !== "number" && String(m.isoDate || m.iso || "") >= today); })[0];
+    if (!next) {
+      root.innerHTML = '<span>Fixture status</span><strong>Group fixtures complete</strong><small>Open the knockout bracket to follow any remaining tournament path.</small>';
+      return;
+    }
+    var isHome = next.home === TEAM;
+    var opp = isHome ? next.away : next.home;
+    var venue = next.venue ? " at " + next.venue : "";
+    var score = isLive(next) ? "Live now" : (next.date || "Date TBD");
+    root.innerHTML = '<span>Next match</span><strong>' + esc((isHome ? "vs " : "at ") + opp) + '</strong><small>' + esc(score + venue) + '</small>';
   }
   var pollTimer = null;
   function todayIso() {
@@ -1164,6 +1243,7 @@ function teamPage(team) {
         if (!data || !Array.isArray(data.matches)) return;
         var mine = data.matches.filter(function (m) { return m.home === TEAM || m.away === TEAM; })
           .sort(function (a, b) { return String(a.isoDate || a.date).localeCompare(String(b.isoDate || b.date)); });
+        renderNextCard(mine);
         if (mine.length) document.getElementById("team-fixtures").innerHTML = mine.map(rowHtml).join("");
         if (data.updatedAt) {
           document.getElementById("updated-note").textContent = "Group ${g} of the 2026 World Cup. Results last updated " + new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) + ".";
@@ -1172,6 +1252,8 @@ function teamPage(team) {
       })
       .catch(function () {});
   }
+  setupFavoriteButton();
+  renderNextCard(${JSON.stringify(fixtures)});
   load();
 })();
 </script>

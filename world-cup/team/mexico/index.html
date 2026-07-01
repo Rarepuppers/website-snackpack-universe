@@ -61,6 +61,33 @@
   font-size: 0.92rem;
 }
 .team-fixtures { display: grid; gap: 10px; margin-top: 4px; }
+.team-next-card {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding: 14px;
+  border: 1px solid rgba(31,143,119,0.24);
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, rgba(31,143,119,0.12), rgba(239,181,77,0.12)),
+    #fffdf8;
+}
+.team-next-card span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.team-next-card strong {
+  font-family: var(--serif);
+  font-size: 1.18rem;
+}
+.team-next-card small {
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.45;
+}
 .team-fixture {
   display: grid;
   grid-template-columns: 60px minmax(0, 1fr) auto;
@@ -144,6 +171,11 @@
   color: var(--accent);
   outline: none;
 }
+.team-favorite-button[aria-pressed="true"] {
+  background: var(--gold);
+  border-color: rgba(151,103,22,0.36);
+  color: #3a2507;
+}
 @media (max-width: 900px) {
   .team-hero { grid-template-columns: 1fr; }
   .team-layout { grid-template-columns: 1fr; }
@@ -190,6 +222,7 @@
 </script>
 </head>
 <body class="world-cup-page">
+<a class="skip-link" href="#team-fixtures">Skip to fixtures</a>
 <header class="topbar">
   <div class="shell topbar-inner">
     <a class="brand" href="../../../">
@@ -225,6 +258,7 @@
           <div class="stack-inline">
             <a class="btn btn-primary" href="../../group-a/">Group A table</a>
             <a class="btn btn-secondary" href="../../schedule/">Full schedule</a>
+            <button class="btn btn-secondary team-favorite-button" id="team-favorite-button" type="button" aria-pressed="false">Set favorite team</button>
           </div>
         </div>
         <img class="team-hero-flag" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23006847%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ce1126%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EMX%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Mexico flag">
@@ -236,6 +270,11 @@
     <div class="shell team-layout">
       <article class="team-panel">
         <h2>Mexico group fixtures</h2>
+        <div class="team-next-card" id="team-next-card" aria-live="polite">
+          <span>Next match</span>
+          <strong>Loading Mexico fixtures...</strong>
+          <small>Live data will update this card when the schedule file loads.</small>
+        </div>
         <div class="team-fixtures" id="team-fixtures"><div class="team-fixture"><div class="tf-date">Jun 11</div><div class="tf-mid"><div class="tf-opp">vs <img class="tf-flag" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23007a4d%22%2F%3E%3Crect%20x%3D%2215%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23ffb612%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23de3831%22%2F%3E%3Crect%20x%3D%2245%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23002395%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EZA%3C%2Ftext%3E%3C%2Fsvg%3E" alt=""> South Africa</div><div class="tf-venue">Mexico City</div></div><span class="team-result team-result--w">2-0</span></div><div class="team-fixture"><div class="tf-date">Jun 18</div><div class="tf-mid"><div class="tf-opp">vs <img class="tf-flag" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23c60c30%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23003478%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EKR%3C%2Ftext%3E%3C%2Fsvg%3E" alt=""> South Korea</div><div class="tf-venue">Guadalajara</div></div><span class="team-result team-result--next">Next</span></div><div class="team-fixture"><div class="tf-date">Jun 24</div><div class="tf-mid"><div class="tf-opp">at <img class="tf-flag" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23d7141a%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%2311457e%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ECZ%3C%2Ftext%3E%3C%2Fsvg%3E" alt=""> Czechia</div><div class="tf-venue">Mexico City</div></div><span class="team-result team-result--next">Next</span></div></div>
         <h2 style="margin-top:22px;">Players to know</h2>
         <ul class="player-list"><li>Raul Jimenez</li><li>Hirving Lozano</li><li>Santiago Gimenez</li></ul>
@@ -304,8 +343,32 @@
   "use strict";
   var TEAM = "Mexico";
   var FLAGS = {"Mexico":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23006847%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ce1126%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EMX%3C%2Ftext%3E%3C%2Fsvg%3E","South Africa":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23007a4d%22%2F%3E%3Crect%20x%3D%2215%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23ffb612%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23de3831%22%2F%3E%3Crect%20x%3D%2245%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23002395%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EZA%3C%2Ftext%3E%3C%2Fsvg%3E","South Korea":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23c60c30%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23003478%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EKR%3C%2Ftext%3E%3C%2Fsvg%3E","Czechia":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23d7141a%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%2311457e%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ECZ%3C%2Ftext%3E%3C%2Fsvg%3E"};
+  var FAVORITE_KEY = "snackpack_world_cup_favorite_team";
   function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function flag(team) { return FLAGS[team] || ""; }
+  function isFavorite() {
+    try { return localStorage.getItem(FAVORITE_KEY) === TEAM; } catch (error) { return false; }
+  }
+  function updateFavoriteButton() {
+    var button = document.getElementById("team-favorite-button");
+    if (!button) return;
+    var favorite = isFavorite();
+    button.setAttribute("aria-pressed", String(favorite));
+    button.textContent = favorite ? "Favorite team" : "Set favorite team";
+  }
+  function setupFavoriteButton() {
+    var button = document.getElementById("team-favorite-button");
+    if (!button || button.dataset.ready === "true") return;
+    button.dataset.ready = "true";
+    button.addEventListener("click", function () {
+      try {
+        if (isFavorite()) localStorage.removeItem(FAVORITE_KEY);
+        else localStorage.setItem(FAVORITE_KEY, TEAM);
+      } catch (error) {}
+      updateFavoriteButton();
+    });
+    updateFavoriteButton();
+  }
   function isLive(m) {
     var status = String(m.statusShort || m.time || "").toUpperCase();
     return ["1H", "2H", "HT", "ET", "BT", "P", "LIVE", "IN PROGRESS"].indexOf(status) !== -1;
@@ -330,6 +393,21 @@
       '<div class="tf-mid"><div class="tf-opp">' + (isHome ? "vs" : "at") + ' ' + fl + esc(opp) + '</div>' +
       '<div class="tf-venue">' + esc(m.venue || "") + '</div></div>' +
       '<span class="team-result' + cls + '">' + esc(pill) + '</span></div>';
+  }
+  function renderNextCard(mine) {
+    var root = document.getElementById("team-next-card");
+    if (!root) return;
+    var today = todayIso();
+    var next = mine.filter(function (m) { return isLive(m) || (typeof m.hs !== "number" && String(m.isoDate || m.iso || "") >= today); })[0];
+    if (!next) {
+      root.innerHTML = '<span>Fixture status</span><strong>Group fixtures complete</strong><small>Open the knockout bracket to follow any remaining tournament path.</small>';
+      return;
+    }
+    var isHome = next.home === TEAM;
+    var opp = isHome ? next.away : next.home;
+    var venue = next.venue ? " at " + next.venue : "";
+    var score = isLive(next) ? "Live now" : (next.date || "Date TBD");
+    root.innerHTML = '<span>Next match</span><strong>' + esc((isHome ? "vs " : "at ") + opp) + '</strong><small>' + esc(score + venue) + '</small>';
   }
   var pollTimer = null;
   function todayIso() {
@@ -362,6 +440,7 @@
         if (!data || !Array.isArray(data.matches)) return;
         var mine = data.matches.filter(function (m) { return m.home === TEAM || m.away === TEAM; })
           .sort(function (a, b) { return String(a.isoDate || a.date).localeCompare(String(b.isoDate || b.date)); });
+        renderNextCard(mine);
         if (mine.length) document.getElementById("team-fixtures").innerHTML = mine.map(rowHtml).join("");
         if (data.updatedAt) {
           document.getElementById("updated-note").textContent = "Group A of the 2026 World Cup. Results last updated " + new Date(data.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) + ".";
@@ -370,6 +449,8 @@
       })
       .catch(function () {});
   }
+  setupFavoriteButton();
+  renderNextCard([{"iso":"2026-06-11","date":"Jun 11","home":"Mexico","away":"South Africa","venue":"Mexico City","hs":2,"as":0},{"iso":"2026-06-18","date":"Jun 18","home":"Mexico","away":"South Korea","venue":"Guadalajara"},{"iso":"2026-06-24","date":"Jun 24","home":"Czechia","away":"Mexico","venue":"Mexico City"}]);
   load();
 })();
 </script>

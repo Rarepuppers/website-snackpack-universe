@@ -30,6 +30,39 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: 10px;
+  z-index: 100;
+  transform: translateY(-140%);
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 body {
   margin: 0;
   font-family: var(--sans);
