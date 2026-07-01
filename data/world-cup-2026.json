@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-30T23:39:25.422Z",
+  "updatedAt": "2026-07-01T06:13:17.582Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1052,9 +1052,11 @@
       "awayLabel": "3rd C/E/F/H/I",
       "home": "Mexico",
       "away": "Ecuador",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Mexico",
+      "hs": 2,
+      "as": 0
     },
     {
       "n": 80,
@@ -1232,7 +1234,7 @@
       "venue": "Mexico City",
       "homeLabel": "W 79",
       "awayLabel": "W 80",
-      "home": null,
+      "home": "Mexico",
       "away": null,
       "time": "Upcoming",
       "statusShort": "",
