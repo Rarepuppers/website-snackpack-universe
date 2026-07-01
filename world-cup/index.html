@@ -99,6 +99,38 @@
 .cup-live-badge--live {
   background: #c73f3f;
 }
+.world-cup-games .game-tile {
+  position: relative;
+  overflow: hidden;
+}
+.world-cup-games .game-tile::after {
+  content: "";
+  position: absolute;
+  right: -26px;
+  top: -26px;
+  width: 92px;
+  height: 92px;
+  border-radius: 999px;
+  background: rgba(31,143,119,0.08);
+  pointer-events: none;
+}
+.world-cup-games .game-icon {
+  position: relative;
+  z-index: 1;
+}
+.game-kicker {
+  display: inline-flex;
+  width: fit-content;
+  margin: 0 0 10px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(31,143,119,0.1);
+  color: var(--accent);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
 .cup-card-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -277,45 +309,52 @@
         </div>
         <p class="section-copy">Short sessions, satisfying scores, and clear rematch hooks. Built for mobile and desktop so visitors can play from search without installing anything.</p>
       </div>
-      <div class="game-grid">
+      <div class="game-grid world-cup-games">
         <a class="game-tile" href="../play/soccer-trivia-sprint/">
-          <span class="game-emoji" aria-hidden="true">🧠</span>
+          <img class="game-icon" src="../play/tiles/soccer-trivia-sprint.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+          <span class="game-kicker">Quiz · 12 rounds</span>
           <h3>Soccer Trivia Sprint</h3>
           <p>Answer fast football quiz questions, build a streak, and chase your best score across 12 rounds.</p>
           <span class="game-play">Play now -></span>
         </a>
         <a class="game-tile" href="../play/keepy-uppy/">
-          <span class="game-emoji" aria-hidden="true">🤹</span>
+          <img class="game-icon" src="../play/tiles/keepy-uppy.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+          <span class="game-kicker">Arcade · Best run</span>
           <h3>Keepy-Uppy</h3>
           <p>Tap the ball to keep it in the air, collect stars, build combos, and chase a new best touch run.</p>
           <span class="game-play">Play now -></span>
         </a>
         <a class="game-tile" href="../play/target-shooting-arena/">
-          <span class="game-emoji" aria-hidden="true">🎯</span>
+          <img class="game-icon" src="../play/tiles/target-shooting-arena.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+          <span class="game-kicker">Shooting · 12 shots</span>
           <h3>Target Shooting Arena</h3>
           <p>Aim at moving goal targets, score bullseyes, and protect your combo across 12 shots.</p>
           <span class="game-play">Play now -></span>
         </a>
         <a class="game-tile" href="../play/free-kick-curl/">
-          <span class="game-emoji" aria-hidden="true">🌀</span>
+          <img class="game-icon" src="../play/tiles/free-kick-curl.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+          <span class="game-kicker">Free kicks · 10 shots</span>
           <h3>Free Kick Curl</h3>
           <p>Bend shots around the wall, beat the keeper, hit bonus corners, and chase a new high score across 10 kicks.</p>
           <span class="game-play">Play now -></span>
         </a>
         <a class="game-tile" href="../play/crossbar-challenge/">
-          <span class="game-emoji" aria-hidden="true">🥅</span>
+          <img class="game-icon" src="../play/tiles/crossbar-challenge.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+          <span class="game-kicker">Precision · 15 shots</span>
           <h3>Crossbar Challenge</h3>
           <p>Aim for the bar from changing distances, fight the wind, and stack perfect hits across 15 shots.</p>
           <span class="game-play">Play now -></span>
         </a>
         <a class="game-tile" href="../play/goalkeeper-hero/">
-          <span class="game-emoji" aria-hidden="true">🧤</span>
+          <img class="game-icon" src="../play/tiles/goalkeeper-hero.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+          <span class="game-kicker">Keeper · 12 saves</span>
           <h3>Goalkeeper Hero</h3>
           <p>Read the striker, dive the right way, stack quick saves, and protect your streak across 12 shots.</p>
           <span class="game-play">Play now -></span>
         </a>
         <a class="game-tile" href="../play/penalty-shootout/">
-          <span class="game-emoji" aria-hidden="true">⚽</span>
+          <img class="game-icon" src="../play/tiles/penalty-shootout.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+          <span class="game-kicker">Shootout · Best of five</span>
           <h3>Penalty Shootout</h3>
           <p>Take penalties and dive for saves in a best-of-five shootout against the computer.</p>
           <span class="game-play">Play now -></span>
