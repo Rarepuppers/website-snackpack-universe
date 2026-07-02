@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-01T06:13:17.582Z",
+  "updatedAt": "2026-07-02T05:38:04.176Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1068,9 +1068,11 @@
       "awayLabel": "3rd E/H/I/J/K",
       "home": "England",
       "away": "DR Congo",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "England",
+      "hs": 2,
+      "as": 1
     },
     {
       "n": 81,
@@ -1082,9 +1084,11 @@
       "awayLabel": "3rd B/E/F/I/J",
       "home": "United States",
       "away": "Bosnia and Herzegovina",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "United States",
+      "hs": 2,
+      "as": 0
     },
     {
       "n": 82,
@@ -1096,9 +1100,11 @@
       "awayLabel": "3rd A/E/H/I/J",
       "home": "Belgium",
       "away": "Senegal",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "AET",
+      "winner": "Belgium",
+      "hs": 3,
+      "as": 2
     },
     {
       "n": 83,
@@ -1235,9 +1241,9 @@
       "homeLabel": "W 79",
       "awayLabel": "W 80",
       "home": "Mexico",
-      "away": null,
+      "away": "England",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1262,10 +1268,10 @@
       "venue": "Seattle",
       "homeLabel": "W 81",
       "awayLabel": "W 82",
-      "home": null,
-      "away": null,
+      "home": "United States",
+      "away": "Belgium",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
