@@ -63,16 +63,23 @@
     return d(-1) + "-" + d(1);
   }
 
+  // Concurrent overlay() calls on the same page (group matches + knockout ties)
+  // share one in-flight ESPN request instead of firing two. Resets once the
+  // request settles, so the next poll cycle fetches fresh again.
+  var pendingFetch = null;
+
   function fetchEspn() {
+    if (pendingFetch) return pendingFetch;
     function kicks(c) {
       return c.shootoutKicks || c.penaltyKicks || c.penaltyShootout || null;
     }
-    return fetch(ESPN + "?dates=" + liveDateRange(), { cache: "no-store" })
+    pendingFetch = fetch(ESPN + "?dates=" + liveDateRange(), { cache: "no-store" })
       .then(function (r) {
         if (!r.ok) throw new Error("ESPN " + r.status);
         return r.json();
       })
       .then(function (data) {
+        pendingFetch = null;
         var map = {};
         (data.events || []).forEach(function (ev) {
           var comp = ev.competitions && ev.competitions[0];
@@ -98,15 +105,22 @@
           };
         });
         return map;
+      })
+      .catch(function (err) {
+        pendingFetch = null;
+        throw err;
       });
+    return pendingFetch;
   }
 
   // Returns a Promise of a NEW matches array with ESPN live/final data overlaid.
-  // Never rejects.
+  // The resolved array has ._live = true when ESPN was actually reached (as
+  // opposed to the input being handed back unchanged after a failed fetch), so
+  // callers can tell a genuine live refresh from a silent fallback. Never rejects.
   function overlay(matches) {
     if (!Array.isArray(matches) || !matches.length) return Promise.resolve(matches);
     return fetchEspn().then(function (map) {
-      return matches.map(function (m) {
+      var merged = matches.map(function (m) {
         var r = map[pairKey(m.home, m.away)];
         if (!r) return m;
         var next = {};
@@ -142,6 +156,8 @@
         }
         return next;
       });
+      merged._live = true;
+      return merged;
     }).catch(function () {
       return matches;
     });

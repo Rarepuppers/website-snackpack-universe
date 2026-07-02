@@ -1298,6 +1298,9 @@
       return Promise.all([WCLive.overlay(data.matches), WCLive.overlay(knockoutMatches)]).then(function (merged) {
         data.matches = merged[0];
         data.knockout = merged[1];
+        // A successful ESPN read means the data on screen is fresh right now,
+        // even though the committed JSON's own updatedAt may be older.
+        if (merged[0]._live || merged[1]._live) data.updatedAt = new Date().toISOString();
         return data;
       });
     }
