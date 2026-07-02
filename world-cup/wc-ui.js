@@ -84,8 +84,7 @@
       root.textContent = "";
       return;
     }
-    var age = isFinite(stale) ? Math.max(21, Math.round(stale / 60000)) + " minutes" : "an unknown time";
-    root.textContent = "Score feed may be delayed: the saved data is " + age + " old during a match window. The page will keep checking live scores automatically.";
+    root.textContent = "Score feed may be a few minutes behind during this match window. The page will keep checking live scores automatically.";
   }
 
   var favoriteKey = "snackpack_world_cup_favorite_team";
