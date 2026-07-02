@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-01T23:39:42.530Z",
+  "updatedAt": "2026-07-02T01:35:15.984Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1084,9 +1084,11 @@
       "awayLabel": "3rd B/E/F/I/J",
       "home": "United States",
       "away": "Bosnia and Herzegovina",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 1,
+      "las": 0
     },
     {
       "n": 82,
