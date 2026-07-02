@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-02T05:38:04.176Z",
+  "updatedAt": "2026-07-02T20:06:26.802Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1130,9 +1130,11 @@
       "awayLabel": "RU J",
       "home": "Spain",
       "away": "Austria",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 1,
+      "las": 0
     },
     {
       "n": 85,
