@@ -1068,8 +1068,25 @@ main section {
   box-shadow: var(--shadow);
 }
 
-.showcase-frame > img {
+.showcase-frame > img,
+.showcase-frame > a > img {
   border-radius: var(--radius);
+}
+
+.showcase-frame > a,
+.device-shot > a {
+  display: block;
+}
+
+.featured-title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.featured-title-link:hover,
+.featured-title-link:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 /* Feature graphic + screenshots / tiles used to fill the showcase frame */

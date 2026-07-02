@@ -69,7 +69,15 @@
   background: var(--surface-strong);
   box-shadow: var(--shadow);
 }
-.ko-panel { padding: 22px; }
+.ko-panel {
+  padding: 22px;
+  /* Grid items default to min-width: auto, which grows to fit the widest
+     descendant's content — including the horizontally-scrollable bracket
+     buried inside. min-width: 0 lets this track shrink to the available
+     space so .bracket-scroll's own overflow-x:auto can do the scrolling
+     instead of the whole page. */
+  min-width: 0;
+}
 .ko-side {
   position: sticky;
   top: 96px;
