@@ -1634,6 +1634,20 @@ button:focus-visible {
   color: var(--muted);
 }
 
+/* Single credited feature photo — e.g. a bundled animal photo with attribution */
+.app-feature-photo {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.app-feature-photo img {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 34px rgba(32, 23, 19, 0.12);
+}
+
 /* Donate / support badge — used in footers */
 .donate-badge {
   display: inline-block;
