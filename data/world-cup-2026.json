@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-02T21:19:41.106Z",
+  "updatedAt": "2026-07-02T23:36:28.853Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1116,9 +1116,11 @@
       "awayLabel": "RU L",
       "home": "Portugal",
       "away": "Croatia",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 0
     },
     {
       "n": 84,
