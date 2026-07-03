@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-02T05:38:04.176Z",
+  "updatedAt": "2026-07-03T07:53:21.904Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1116,9 +1116,11 @@
       "awayLabel": "RU L",
       "home": "Portugal",
       "away": "Croatia",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Portugal",
+      "hs": 2,
+      "as": 1
     },
     {
       "n": 84,
@@ -1130,9 +1132,11 @@
       "awayLabel": "RU J",
       "home": "Spain",
       "away": "Austria",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Spain",
+      "hs": 3,
+      "as": 0
     },
     {
       "n": 85,
@@ -1144,9 +1148,11 @@
       "awayLabel": "3rd E/F/G/I/J",
       "home": "Switzerland",
       "away": "Algeria",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Switzerland",
+      "hs": 2,
+      "as": 0
     },
     {
       "n": 86,
@@ -1254,10 +1260,10 @@
       "venue": "Arlington",
       "homeLabel": "W 83",
       "awayLabel": "W 84",
-      "home": null,
-      "away": null,
+      "home": "Portugal",
+      "away": "Spain",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1296,7 +1302,7 @@
       "venue": "Vancouver",
       "homeLabel": "W 85",
       "awayLabel": "W 87",
-      "home": null,
+      "home": "Switzerland",
       "away": null,
       "time": "Upcoming",
       "statusShort": "",
