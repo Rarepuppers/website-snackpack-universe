@@ -47,6 +47,9 @@ Original SnackPack browser soccer games and a 2026 tournament tracker. Not affil
 - [Crossbar Challenge](https://www.snackpackuniverse.com/play/crossbar-challenge/): Hit the bar from changing distances, fight the wind, and stack perfect hits across 15 shots.
 - [Goalkeeper Hero](https://www.snackpackuniverse.com/play/goalkeeper-hero/): Read the striker, dive the right way, and stack quick saves across 12 shots.
 - [Penalty Shootout](https://www.snackpackuniverse.com/play/penalty-shootout/): Best-of-five penalty shootout vs the computer — you both shoot and dive to save, with three difficulty levels and sudden death. Includes rules, tips, and an about section.
+- [Dribble Rush](https://www.snackpackuniverse.com/play/dribble-rush/): Endless three-lane soccer runner — dodge defenders, hop sliding tackles, collect stars, and chase your best distance across three difficulty modes.
+- [Header Hero](https://www.snackpackuniverse.com/play/header-hero/): Aim your header, time your jump, and beat the keeper across 12 crosses; perfect timing always scores.
+- [Flag Frenzy](https://www.snackpackuniverse.com/play/flag-frenzy/): Daily guessing game — find the mystery World Cup 2026 team in 6 tries using confederation, group, points and live status clues, with a shareable result.
 
 ## Guides
 

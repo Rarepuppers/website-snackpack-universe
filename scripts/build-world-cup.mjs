@@ -559,6 +559,7 @@ function groupPage(letter) {
           <div class="stack-inline">
             <a class="btn btn-primary" href="../bracket/">Full bracket</a>
             <a class="btn btn-secondary" href="../schedule/">Games today</a>
+            <a class="btn btn-secondary" href="../../play/soccer-trivia-sprint/">Play Soccer Trivia Sprint</a>
           </div>
         </div>
         <div class="cup-ball-art" aria-hidden="true">
@@ -1061,6 +1062,7 @@ function teamPage(team) {
           <div class="stack-inline">
             <a class="btn btn-primary" href="../../group-${g.toLowerCase()}/">Group ${g} table</a>
             <a class="btn btn-secondary" href="../../schedule/">Full schedule</a>
+            <a class="btn btn-secondary" href="../../../play/soccer-trivia-sprint/">Play Soccer Trivia Sprint</a>
             <button class="btn btn-secondary team-favorite-button" id="team-favorite-button" type="button" aria-pressed="false">Set favorite team</button>
           </div>
         </div>
@@ -1103,10 +1105,10 @@ function teamPage(team) {
             <strong>Penalty Shootout</strong>
             <span>Best-of-five duel</span>
           </a>
-          <a class="team-game-link" href="../../../play/free-kick-curl/">
-            <img src="../../../play/tiles/free-kick-curl.png" alt="" aria-hidden="true" loading="lazy" width="42" height="42">
-            <strong>Free Kick Curl</strong>
-            <span>Bend one top corner</span>
+          <a class="team-game-link" href="../../../play/flag-frenzy/">
+            <img src="../../../play/tiles/flag-frenzy.png" alt="" aria-hidden="true" loading="lazy" width="42" height="42">
+            <strong>Flag Frenzy</strong>
+            <span>Guess today's team</span>
           </a>
         </div>
       </aside>
