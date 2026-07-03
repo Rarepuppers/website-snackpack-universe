@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-03T07:53:21.904Z",
+  "updatedAt": "2026-07-03T18:49:47.573Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1192,9 +1192,11 @@
       "awayLabel": "RU G",
       "home": "Australia",
       "away": "Egypt",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 1
     },
     {
       "n": 89,
