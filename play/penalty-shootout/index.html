@@ -166,7 +166,7 @@
           </div>
         </div>
         <div class="funnel-aside">
-          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">⚽</div>
+          <img class="soccer-funnel-icon" src="../tiles/penalty-shootout.png" alt="Penalty Shootout game tile" loading="lazy" width="110" height="110">
           <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">A tiny, ad-free studio — tips keep us building.</span>
         </div>
       </div>
@@ -230,6 +230,16 @@
   var DIRS = ["L", "C", "R"];
   var canvas = document.getElementById("pk-canvas");
   var ctx = canvas.getContext("2d");
+  var W = canvas.width, H = canvas.height;
+  setupCanvasScale(W, H);
+
+  function setupCanvasScale(width, height) {
+    var ratio = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    canvas.style.aspectRatio = width + " / " + height;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
   var youEl = document.getElementById("pk-you");
   var cpuEl = document.getElementById("pk-cpu");
   var roundEl = document.getElementById("pk-round");
@@ -392,12 +402,12 @@
   // ── Render ───────────────────────────────────────
   function draw() {
     // Pitch
-    var g = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    var g = ctx.createLinearGradient(0, 0, 0, H);
     g.addColorStop(0, "#56b65a"); g.addColorStop(1, "#3f9a43");
-    ctx.fillStyle = g; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
     // mowed stripes
     ctx.fillStyle = "rgba(255,255,255,0.05)";
-    for (var s = 0; s < canvas.height; s += 36) ctx.fillRect(0, s, canvas.width, 18);
+    for (var s = 0; s < H; s += 36) ctx.fillRect(0, s, W, 18);
 
     // Goal net
     ctx.fillStyle = "rgba(255,255,255,0.12)";
@@ -439,7 +449,7 @@
       ctx.fillStyle = "rgba(255,255,255,0.85)";
       ctx.font = "700 13px 'DM Sans', Arial, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(phase === "shoot" ? "Shoot!" : "Dive to save!", canvas.width / 2, canvas.height - 8);
+      ctx.fillText(phase === "shoot" ? "Shoot!" : "Dive to save!", W / 2, H - 8);
     }
   }
 
@@ -451,7 +461,7 @@
   canvas.addEventListener("click", function (e) {
     if (busy || (phase !== "shoot" && phase !== "save")) return;
     var rect = canvas.getBoundingClientRect();
-    var x = (e.clientX - rect.left) / rect.width * canvas.width;
+    var x = (e.clientX - rect.left) / rect.width * W;
     onChoose(x < GX + GW / 3 ? "L" : x > GX + GW * 2 / 3 ? "R" : "C");
   });
   newBtn.addEventListener("click", reset);

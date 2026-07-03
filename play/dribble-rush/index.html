@@ -158,7 +158,7 @@
           </div>
         </div>
         <div class="funnel-aside">
-          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">DR</div>
+          <img class="soccer-funnel-icon" src="../tiles/dribble-rush.png" alt="Dribble Rush game tile" loading="lazy" width="110" height="110">
           <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">Every metre counts. Beat your best.</span>
         </div>
       </div>
@@ -231,6 +231,15 @@
 
   var canvas = document.getElementById("dr-canvas");
   var ctx = canvas.getContext("2d");
+  setupCanvasScale(GAME_WIDTH, GAME_HEIGHT);
+
+  function setupCanvasScale(width, height) {
+    var ratio = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    canvas.style.aspectRatio = width + " / " + height;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
   var distanceEl = document.getElementById("dr-distance");
   var starsEl = document.getElementById("dr-stars");
   var bestEl = document.getElementById("dr-best");

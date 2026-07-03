@@ -195,7 +195,7 @@
           </div>
         </div>
         <div class="funnel-aside">
-          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">TS</div>
+          <img class="soccer-funnel-icon" src="../tiles/target-shooting-arena.png" alt="Target Shooting Arena game tile" loading="lazy" width="110" height="110">
           <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">Pick the corner. Hit the ring.</span>
         </div>
       </div>
@@ -260,6 +260,15 @@
   var historyEl = document.getElementById("ts-history");
 
   var W = canvas.width, H = canvas.height;
+  setupCanvasScale(W, H);
+
+  function setupCanvasScale(width, height) {
+    var ratio = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    canvas.style.aspectRatio = width + " / " + height;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
   var goal = { x: 118, y: 50, w: 404, h: 162 };
   var ballStart = { x: W / 2, y: 382 };
   var bestKey = "snackpack-target-shooting-arena-best";

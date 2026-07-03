@@ -233,7 +233,7 @@
           </div>
         </div>
         <div class="funnel-aside">
-          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">GK</div>
+          <img class="soccer-funnel-icon" src="../tiles/goalkeeper-hero.png" alt="Goalkeeper Hero game tile" loading="lazy" width="110" height="110">
           <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">Make the save. Keep the streak.</span>
         </div>
       </div>
@@ -298,6 +298,15 @@
   var historyEl = document.getElementById("gk-history");
 
   var W = canvas.width, H = canvas.height;
+  setupCanvasScale(W, H);
+
+  function setupCanvasScale(width, height) {
+    var ratio = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    canvas.style.aspectRatio = width + " / " + height;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
   var goal = { x: 120, y: 42, w: 400, h: 158 };
   var dirs = ["L", "C", "R"];
   var difficulty = "rookie";

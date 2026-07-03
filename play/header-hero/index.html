@@ -226,7 +226,7 @@
           </div>
         </div>
         <div class="funnel-aside">
-          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">HH</div>
+          <img class="soccer-funnel-icon" src="../tiles/header-hero.png" alt="Header Hero game tile" loading="lazy" width="110" height="110">
           <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">Meet it clean. Find the corner.</span>
         </div>
       </div>
@@ -291,6 +291,15 @@
   var historyEl = document.getElementById("hh-history");
 
   var W = canvas.width, H = canvas.height;
+  setupCanvasScale(W, H);
+
+  function setupCanvasScale(width, height) {
+    var ratio = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    canvas.style.aspectRatio = width + " / " + height;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
   var TOTAL = 12;
   var goal = { x: 120, y: 42, w: 400, h: 158 };
   var headerPoint = { x: W / 2, y: 300 };

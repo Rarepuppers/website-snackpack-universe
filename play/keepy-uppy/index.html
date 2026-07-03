@@ -197,7 +197,7 @@
           </div>
         </div>
         <div class="funnel-aside">
-          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">KU</div>
+          <img class="soccer-funnel-icon" src="../tiles/keepy-uppy.png" alt="Keepy-Uppy game tile" loading="lazy" width="110" height="110">
           <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">One touch away from a new best.</span>
         </div>
       </div>
@@ -262,6 +262,15 @@
   var newBtn = document.getElementById("ku-new");
 
   var W = canvas.width, H = canvas.height;
+  setupCanvasScale(W, H);
+
+  function setupCanvasScale(width, height) {
+    var ratio = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    canvas.style.aspectRatio = width + " / " + height;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
   var groundY = 382;
   var bestKey = "snackpack-keepy-uppy-best";
   var best = parseInt(localStorage.getItem(bestKey) || "0", 10);
