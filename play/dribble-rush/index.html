@@ -11,10 +11,11 @@
 <link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
 <meta property="og:title" content="Play Dribble Rush Online Free | Endless Soccer Runner, No Ads">
 <meta property="og:description" content="Dodge defenders, hop sliding tackles, and see how far you can run. Free in your browser, no ads, no sign-in.">
-<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:image" content="https://www.snackpackuniverse.com/play/social/dribble-rush.png">
 <meta property="og:url" content="https://www.snackpackuniverse.com/play/dribble-rush/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.snackpackuniverse.com/play/social/dribble-rush.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -213,6 +214,7 @@
 
 <script>window.SP_PLAY_URL = "../../world-cup/";</script>
 <script src="../funnel.js"></script>
+<script src="../soccer-assets.js"></script>
 <script>
 (function () {
   "use strict";
@@ -413,6 +415,7 @@
 
   // ── Render ───────────────────────────────────────
   function drawPitch() {
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawPitch(ctx, GAME_WIDTH, GAME_HEIGHT, "runner")) return;
     var g = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
     g.addColorStop(0, "#3fa860");
     g.addColorStop(1, "#2c7a3f");
@@ -627,6 +630,7 @@
     if (document.hidden) { stopLoop(); statusEl.textContent = "Paused — tap to resume."; }
     else { startLoop(); statusEl.textContent = "Dodge, hop, and keep running!"; }
   });
+  if (window.SnackSoccerAssets) window.SnackSoccerAssets.onReady(draw);
 
   restart();
 })();

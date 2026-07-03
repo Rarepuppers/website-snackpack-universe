@@ -11,10 +11,11 @@
 <link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
 <meta property="og:title" content="Play Goalkeeper Hero Online Free">
 <meta property="og:description" content="Dive for saves, build a streak, and become the keeper. Free in your browser, no ads, no sign-in.">
-<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:image" content="https://www.snackpackuniverse.com/play/social/goalkeeper-hero.png">
 <meta property="og:url" content="https://www.snackpackuniverse.com/play/goalkeeper-hero/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.snackpackuniverse.com/play/social/goalkeeper-hero.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -282,6 +283,7 @@
 
 <script>window.SP_PLAY_URL = "../../world-cup/";</script>
 <script src="../funnel.js"></script>
+<script src="../soccer-assets.js"></script>
 <script>
 (function () {
   "use strict";
@@ -509,6 +511,7 @@
   }
 
   function drawPitch() {
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawPitch(ctx, W, H, "wide")) return;
     var g = ctx.createLinearGradient(0, 0, 0, H);
     g.addColorStop(0, "#58b75d");
     g.addColorStop(1, "#318c43");
@@ -592,6 +595,7 @@
   }
 
   function drawBall() {
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawBall(ctx, ball.x, ball.y, 14)) return;
     ctx.fillStyle = "#fff";
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, 10, 0, Math.PI * 2);
@@ -652,6 +656,7 @@
   });
 
   bestEl.textContent = best;
+  if (window.SnackSoccerAssets) window.SnackSoccerAssets.onReady(draw);
   reset();
 })();
 </script>
