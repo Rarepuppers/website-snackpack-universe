@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-03T07:53:21.904Z",
+  "updatedAt": "2026-07-03T22:17:23.522Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1164,9 +1164,11 @@
       "awayLabel": "RU H",
       "home": "Argentina",
       "away": "Cape Verde",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 0
     },
     {
       "n": 87,
@@ -1192,9 +1194,13 @@
       "awayLabel": "RU G",
       "home": "Australia",
       "away": "Egypt",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT-Pens",
+      "winner": "Egypt",
+      "hs": 1,
+      "as": 1,
+      "hps": 2,
+      "aps": 4
     },
     {
       "n": 89,
@@ -1289,7 +1295,7 @@
       "homeLabel": "W 86",
       "awayLabel": "W 88",
       "home": null,
-      "away": null,
+      "away": "Egypt",
       "time": "Upcoming",
       "statusShort": "",
       "winner": null
