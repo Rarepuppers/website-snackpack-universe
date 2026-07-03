@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Flag Frenzy Online Free | Daily World Cup Team Guessing Game - SnackPack</title>
+<meta name="description" content="Play Flag Frenzy free in your browser. Guess today's World Cup 2026 team in 6 tries using confederation, group, points and status clues. A new team every day. No ads, no sign-in, no download.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/flag-frenzy/">
+<meta name="theme-color" content="#1f8f77">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Play Flag Frenzy Online Free | Daily World Cup Guessing Game">
+<meta property="og:description" content="Guess today's World Cup 2026 team in 6 tries. A new team every day, free in your browser, no ads.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/flag-frenzy/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<style>
+.ff-stage { max-width: 640px; }
+.ff-flagcard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 0 6px;
+}
+.ff-puzzle-num {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.ff-flag-wrap {
+  width: 220px;
+  aspect-ratio: 3 / 2;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 3px solid #244f2b;
+  background: #dfe6dc;
+  box-shadow: var(--shadow);
+}
+.ff-flag-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: filter 0.4s ease;
+}
+.ff-answer-name {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: 700;
+  min-height: 1.6em;
+}
+.ff-form {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  margin-top: 6px;
+}
+.ff-input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-strong);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+}
+.ff-input:disabled { opacity: 0.6; }
+.ff-pips {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 10px;
+}
+.ff-pip {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(32, 23, 19, 0.14);
+}
+.ff-pip.used { background: var(--accent); }
+.ff-pip.win { background: var(--gold); }
+.ff-history {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 16px;
+}
+.ff-row {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 6px 8px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(32, 23, 19, 0.03);
+  border: 1px solid var(--line);
+}
+.ff-row-flag { width: 24px; height: 16px; border-radius: 3px; object-fit: cover; border: 1px solid rgba(32,23,19,0.16); }
+.ff-row-name { font-weight: 800; font-size: 0.86rem; }
+.ff-row-chips {
+  grid-column: 1 / 3;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.ff-chip {
+  padding: 6px 4px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgba(32, 23, 19, 0.08);
+  color: var(--muted);
+  line-height: 1.25;
+}
+.ff-chip--match { background: var(--accent); color: #fff; }
+@media (max-width: 480px) {
+  .ff-row-chips { grid-template-columns: repeat(2, 1fr); }
+}
+.ff-result {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(31, 143, 119, 0.08);
+  border: 1px solid var(--line);
+  text-align: center;
+  width: 100%;
+}
+.ff-result.lose { background: rgba(206, 17, 38, 0.06); }
+.ff-share-box {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  font-family: monospace;
+  font-size: 0.82rem;
+  min-height: 96px;
+  resize: none;
+}
+.ff-mode-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+.ff-hint-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+.ff-hint-row span {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(32,23,19,0.05);
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Flag Frenzy",
+  "url": "https://www.snackpackuniverse.com/play/flag-frenzy/",
+  "applicationCategory": "Game",
+  "genre": "Puzzle",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": "SinglePlayer",
+  "description": "Free browser daily guessing game. Guess today's World Cup 2026 team in 6 tries using confederation, group, points and status clues.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios icon">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Flag Frenzy</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="/apps/">Apps</a></li>
+        <li><a href="/play/">Play</a></li>
+        <li><a href="/guides/">Guides</a></li>
+        <li><a class="nav-wc" href="/world-cup/"><img class="nav-ball" src="/world-cup/officialball_transparent2-50.png" alt="" width="18" height="18">World Cup</a></li>
+        <li><a href="/#pipeline">Roadmap</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free daily game</span>
+        <h1>Flag Frenzy</h1>
+        <p class="lead" style="max-width:600px;margin-left:auto;margin-right:auto;">Guess today's World Cup 2026 team in 6 tries. Every guess reveals confederation, group, points and status clues — and sharpens the flag.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage ff-stage">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span>Guess</span><b id="ff-guess-count">0/6</b></span>
+            <span class="readout-chip"><span>Streak</span><b id="ff-streak">0</b></span>
+            <span class="readout-chip"><span>Best streak</span><b id="ff-best-streak">0</b></span>
+          </div>
+        </div>
+        <p class="game-status" id="ff-status" aria-live="polite">Loading today's tournament data...</p>
+
+        <div class="ff-flagcard">
+          <span class="ff-puzzle-num" id="ff-puzzle-num">Puzzle #1</span>
+          <div class="ff-flag-wrap"><img class="ff-flag-img" id="ff-flag-img" alt="Mystery team flag"></div>
+          <div class="ff-answer-name" id="ff-answer-name"></div>
+          <div class="ff-pips" id="ff-pips" aria-label="Guesses used"></div>
+        </div>
+
+        <form class="ff-form" id="ff-form">
+          <input class="ff-input" id="ff-input" type="text" list="ff-teamlist" autocomplete="off" placeholder="Type a World Cup team..." aria-label="Guess a team" disabled>
+          <datalist id="ff-teamlist"></datalist>
+          <button class="btn-game btn-game--primary" id="ff-submit" type="submit" disabled>Guess</button>
+        </form>
+
+        <div class="ff-history" id="ff-history"></div>
+
+        <div class="ff-result" id="ff-result" hidden>
+          <p id="ff-result-text" style="font-weight:800;"></p>
+          <button class="btn-game btn-game--primary" id="ff-share" type="button">Copy share result</button>
+          <textarea class="ff-share-box" id="ff-share-box" readonly hidden></textarea>
+        </div>
+
+        <div class="ff-mode-row">
+          <button class="btn-game" id="ff-practice" type="button">Practice round (random team)</button>
+        </div>
+
+        <div class="ff-hint-row">
+          <span>Green chip = exact match.</span>
+          <span>▲ / ▼ on points means the answer is higher / lower.</span>
+          <span>Status compares still-in vs eliminated, whatever the round.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">More soccer games</span>
+          <h2>One puzzle a day, all tournament long.</h2>
+          <p>Flag Frenzy joins the SnackPack soccer arcade: quick free games for the 2026 football build-up.</p>
+          <ul class="funnel-points">
+            <li>Instant browser play on phone or desktop</li>
+            <li>No ads, no sign-in, no download</li>
+            <li>Daily streak saved locally on your device</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="btn btn-primary" href="../../world-cup/">World Cup games hub</a>
+            <a class="btn btn-secondary" href="../soccer-trivia-sprint/">Play Soccer Trivia Sprint</a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">FF</div>
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">One team a day. Don't break the streak.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Flag Frenzy</h2>
+      <p>Every day, Flag Frenzy picks one of the 48 teams at the World Cup 2026. You have 6 guesses to find it. Type any team name into the box — a dropdown will help with spelling. Each guess adds a row to your guess history showing four clues compared against the mystery team: confederation, group, group-stage points, and whether the team is still alive in the tournament or already eliminated. A green chip means that clue matches the answer exactly. The mystery flag also gets a little clearer with every guess, so between the clues and the flag you should be able to close in fast.</p>
+      <h3>Reading the clues</h3>
+      <ul>
+        <li><strong>Confederation</strong> — green if the guessed team plays in the same confederation as the answer (UEFA, CONMEBOL, CONCACAF, CAF, AFC, or OFC).</li>
+        <li><strong>Group</strong> — green if they were drawn into the same group.</li>
+        <li><strong>Points</strong> — shows the guessed team's group-stage points, with an arrow pointing toward whether the answer scored more or fewer.</li>
+        <li><strong>Status</strong> — green if both teams share the same still-in-it or eliminated status right now.</li>
+      </ul>
+      <h3>About Flag Frenzy</h3>
+      <p>Flag Frenzy is an original SnackPack Studios daily puzzle built for the 2026 football summer, in the spirit of daily word and sports guessing games. Status and points clues update automatically as the real tournament results come in, so the game stays accurate from the group stage through the final. Try a practice round any time for extra reps that don't affect your daily streak.</p>
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Flag Frenzy free?</summary><p>Yes. It plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>Is there a new puzzle every day?</summary><p>Yes. Everyone gets the same mystery team each day, and your progress for the day is saved if you come back later.</p></details>
+        <details class="faq-item"><summary>What happens if I run out of guesses?</summary><p>The answer is revealed and your streak resets to zero. Come back tomorrow for a new team, or try a practice round any time.</p></details>
+        <details class="faq-item"><summary>Is this an official World Cup game?</summary><p>No. It is an original SnackPack Studios soccer game and is not affiliated with FIFA, the World Cup, any team, league, or governing body.</p></details>
+      </div>
+      <p style="margin-top:22px;"><a class="text-link" href="../../world-cup/" style="color:var(--accent);font-weight:700;">Back to World Cup games</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy">
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Flag Frenzy free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../world-cup/">World Cup games</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>window.SP_PLAY_URL = "../../world-cup/";</script>
+<script src="../funnel.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var TOTAL_GUESSES = 6;
+  var DATA_URL = "../../data/world-cup-2026.json";
+  var EPOCH_DAY = Math.floor(Date.parse("2026-06-01T00:00:00Z") / 86400000);
+
+  var FLAGS = {"Mexico":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23006847%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ce1126%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EMX%3C%2Ftext%3E%3C%2Fsvg%3E","South Africa":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23007a4d%22%2F%3E%3Crect%20x%3D%2215%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23ffb612%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23de3831%22%2F%3E%3Crect%20x%3D%2245%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23002395%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EZA%3C%2Ftext%3E%3C%2Fsvg%3E","South Korea":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23c60c30%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23003478%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EKR%3C%2Ftext%3E%3C%2Fsvg%3E","Czechia":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23d7141a%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%2311457e%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ECZ%3C%2Ftext%3E%3C%2Fsvg%3E","Canada":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23d52b1e%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23d52b1e%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ECA%3C%2Ftext%3E%3C%2Fsvg%3E","Bosnia and Herzegovina":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23002f6c%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23f7d116%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EBA%3C%2Ftext%3E%3C%2Fsvg%3E","Qatar":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%238a1538%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EQA%3C%2Ftext%3E%3C%2Fsvg%3E","Switzerland":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23d52b1e%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23d52b1e%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ECH%3C%2Ftext%3E%3C%2Fsvg%3E","Brazil":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23009b3a%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffdf00%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23002776%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EBR%3C%2Ftext%3E%3C%2Fsvg%3E","Morocco":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23c1272d%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23006233%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EMA%3C%2Ftext%3E%3C%2Fsvg%3E","Haiti":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%2300209f%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23d21034%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EHT%3C%2Ftext%3E%3C%2Fsvg%3E","Scotland":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%230065bd%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ESCO%3C%2Ftext%3E%3C%2Fsvg%3E","United States":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23b22234%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%233c3b6e%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EUS%3C%2Ftext%3E%3C%2Fsvg%3E","Paraguay":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23d52b1e%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%230038a8%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EPY%3C%2Ftext%3E%3C%2Fsvg%3E","Australia":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%2300008b%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23e4002b%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EAU%3C%2Ftext%3E%3C%2Fsvg%3E","Turkiye":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23e30a17%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ETR%3C%2Ftext%3E%3C%2Fsvg%3E","Germany":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23000000%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23dd0000%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffce00%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EDE%3C%2Ftext%3E%3C%2Fsvg%3E","Curacao":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23002b7f%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23f9e814%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ECW%3C%2Ftext%3E%3C%2Fsvg%3E","Cote d'Ivoire":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23f77f00%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23009e60%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ECI%3C%2Ftext%3E%3C%2Fsvg%3E","Ecuador":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffdd00%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23034ea2%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ed1c24%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EEC%3C%2Ftext%3E%3C%2Fsvg%3E","Netherlands":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ae1c28%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%2321468b%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ENL%3C%2Ftext%3E%3C%2Fsvg%3E","Japan":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23bc002d%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EJP%3C%2Ftext%3E%3C%2Fsvg%3E","Sweden":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23006aa7%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23fecc00%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ESE%3C%2Ftext%3E%3C%2Fsvg%3E","Tunisia":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23e70013%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ETN%3C%2Ftext%3E%3C%2Fsvg%3E","Belgium":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23000000%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffd90c%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ef3340%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EBE%3C%2Ftext%3E%3C%2Fsvg%3E","Egypt":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ce1126%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23000000%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EEG%3C%2Ftext%3E%3C%2Fsvg%3E","Iran":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23239f40%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23da0000%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EIR%3C%2Ftext%3E%3C%2Fsvg%3E","New Zealand":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%2300247d%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23cc142b%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ENZ%3C%2Ftext%3E%3C%2Fsvg%3E","Spain":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23aa151b%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23f1bf00%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23aa151b%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EES%3C%2Ftext%3E%3C%2Fsvg%3E","Cape Verde":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23003893%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23cf2027%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ECV%3C%2Ftext%3E%3C%2Fsvg%3E","Saudi Arabia":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23006c35%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ESA%3C%2Ftext%3E%3C%2Fsvg%3E","Uruguay":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%230038a8%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23fcd116%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EUY%3C%2Ftext%3E%3C%2Fsvg%3E","France":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%230055a4%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ef4135%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EFR%3C%2Ftext%3E%3C%2Fsvg%3E","Senegal":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%2300853f%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23fdef42%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23e31b23%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ESN%3C%2Ftext%3E%3C%2Fsvg%3E","Iraq":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ce1126%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23000000%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EIQ%3C%2Ftext%3E%3C%2Fsvg%3E","Norway":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ba0c2f%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%2300205b%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ENO%3C%2Ftext%3E%3C%2Fsvg%3E","Argentina":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%2374acdf%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%2374acdf%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EAR%3C%2Ftext%3E%3C%2Fsvg%3E","Algeria":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23006233%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23d21034%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EDZ%3C%2Ftext%3E%3C%2Fsvg%3E","Austria":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ed2939%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ed2939%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EAT%3C%2Ftext%3E%3C%2Fsvg%3E","Jordan":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23000000%22%2F%3E%3Crect%20x%3D%2215%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23007a3d%22%2F%3E%3Crect%20x%3D%2245%22%20y%3D%220%22%20width%3D%2215%22%20height%3D%2240%22%20fill%3D%22%23ce1126%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EJO%3C%2Ftext%3E%3C%2Fsvg%3E","Portugal":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23006600%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23ff0000%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EPT%3C%2Ftext%3E%3C%2Fsvg%3E","DR Congo":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23007fff%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23f7d618%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ce1021%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ECD%3C%2Ftext%3E%3C%2Fsvg%3E","Uzbekistan":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%231eb5e5%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23009739%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EUZ%3C%2Ftext%3E%3C%2Fsvg%3E","Colombia":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23fcd116%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23003893%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ce1126%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3ECO%3C%2Ftext%3E%3C%2Fsvg%3E","England":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%220%22%20width%3D%2230%22%20height%3D%2240%22%20fill%3D%22%23cf142b%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EENG%3C%2Ftext%3E%3C%2Fsvg%3E","Croatia":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ff0000%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23171796%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EHR%3C%2Ftext%3E%3C%2Fsvg%3E","Ghana":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ce1126%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23fcd116%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23006b3f%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EGH%3C%2Ftext%3E%3C%2Fsvg%3E","Panama":"data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2040%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ffffff%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23005293%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23d21034%22%2F%3E%3Ctext%20x%3D%2230%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22800%22%20fill%3D%22%23201713%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20paint-order%3D%22stroke%22%3EPA%3C%2Ftext%3E%3C%2Fsvg%3E"};
+
+  var GROUP_OF = {
+    "Mexico":"A","South Africa":"A","South Korea":"A","Czechia":"A",
+    "Canada":"B","Bosnia and Herzegovina":"B","Qatar":"B","Switzerland":"B",
+    "Brazil":"C","Morocco":"C","Haiti":"C","Scotland":"C",
+    "United States":"D","Paraguay":"D","Australia":"D","Turkiye":"D",
+    "Germany":"E","Curacao":"E","Cote d'Ivoire":"E","Ecuador":"E",
+    "Netherlands":"F","Japan":"F","Sweden":"F","Tunisia":"F",
+    "Belgium":"G","Egypt":"G","Iran":"G","New Zealand":"G",
+    "Spain":"H","Cape Verde":"H","Saudi Arabia":"H","Uruguay":"H",
+    "France":"I","Senegal":"I","Iraq":"I","Norway":"I",
+    "Argentina":"J","Algeria":"J","Austria":"J","Jordan":"J",
+    "Portugal":"K","DR Congo":"K","Uzbekistan":"K","Colombia":"K",
+    "England":"L","Croatia":"L","Ghana":"L","Panama":"L"
+  };
+
+  var CONFED = {
+    "Mexico":"CONCACAF","South Africa":"CAF","South Korea":"AFC","Czechia":"UEFA",
+    "Canada":"CONCACAF","Bosnia and Herzegovina":"UEFA","Qatar":"AFC","Switzerland":"UEFA",
+    "Brazil":"CONMEBOL","Morocco":"CAF","Haiti":"CONCACAF","Scotland":"UEFA",
+    "United States":"CONCACAF","Paraguay":"CONMEBOL","Australia":"AFC","Turkiye":"UEFA",
+    "Germany":"UEFA","Curacao":"CONCACAF","Cote d'Ivoire":"CAF","Ecuador":"CONMEBOL",
+    "Netherlands":"UEFA","Japan":"AFC","Sweden":"UEFA","Tunisia":"CAF",
+    "Belgium":"UEFA","Egypt":"CAF","Iran":"AFC","New Zealand":"OFC",
+    "Spain":"UEFA","Cape Verde":"CAF","Saudi Arabia":"AFC","Uruguay":"CONMEBOL",
+    "France":"UEFA","Senegal":"CAF","Iraq":"AFC","Norway":"UEFA",
+    "Argentina":"CONMEBOL","Algeria":"CAF","Austria":"UEFA","Jordan":"AFC",
+    "Portugal":"UEFA","DR Congo":"CAF","Uzbekistan":"AFC","Colombia":"CONMEBOL",
+    "England":"UEFA","Croatia":"UEFA","Ghana":"CAF","Panama":"CONCACAF"
+  };
+
+  var ALIASES = {
+    "usa": "United States", "us": "United States", "america": "United States", "united states of america": "United States",
+    "ivory coast": "Cote d'Ivoire", "cote divoire": "Cote d'Ivoire", "cote d ivoire": "Cote d'Ivoire",
+    "drc": "DR Congo", "congo": "DR Congo", "dr congo": "DR Congo", "democratic republic of congo": "DR Congo", "congo dr": "DR Congo",
+    "turkey": "Turkiye",
+    "bosnia": "Bosnia and Herzegovina", "bosnia herzegovina": "Bosnia and Herzegovina",
+    "korea": "South Korea", "korea republic": "South Korea", "republic of korea": "South Korea",
+    "czech republic": "Czechia", "czech": "Czechia",
+    "holland": "Netherlands",
+    "saudi": "Saudi Arabia",
+    "cabo verde": "Cape Verde",
+    "uzbeks": "Uzbekistan"
+  };
+
+  var ANSWER_POOL = Object.keys(FLAGS).sort();
+  var NAME_LOOKUP = {};
+  ANSWER_POOL.forEach(function (n) { NAME_LOOKUP[n.toLowerCase()] = n; });
+
+  var statusEl = document.getElementById("ff-status");
+  var puzzleNumEl = document.getElementById("ff-puzzle-num");
+  var flagImgEl = document.getElementById("ff-flag-img");
+  var answerNameEl = document.getElementById("ff-answer-name");
+  var pipsEl = document.getElementById("ff-pips");
+  var form = document.getElementById("ff-form");
+  var input = document.getElementById("ff-input");
+  var submitBtn = document.getElementById("ff-submit");
+  var teamList = document.getElementById("ff-teamlist");
+  var historyEl = document.getElementById("ff-history");
+  var resultEl = document.getElementById("ff-result");
+  var resultTextEl = document.getElementById("ff-result-text");
+  var shareBtn = document.getElementById("ff-share");
+  var shareBox = document.getElementById("ff-share-box");
+  var practiceBtn = document.getElementById("ff-practice");
+  var guessCountEl = document.getElementById("ff-guess-count");
+  var streakEl = document.getElementById("ff-streak");
+  var bestStreakEl = document.getElementById("ff-best-streak");
+
+  var PROGRESS_KEY = "snackpack-flag-frenzy-progress";
+  var STREAK_KEY = "snackpack-flag-frenzy-streak";
+  var MAXSTREAK_KEY = "snackpack-flag-frenzy-maxstreak";
+  var STREAKDATE_KEY = "snackpack-flag-frenzy-streakdate";
+
+  var TEAM_DATA = {};
+  var mode = "daily";
+  var answer = null;
+  var puzzleNumber = 1;
+  var guesses = [];
+  var done = false;
+  var won = false;
+  var dataError = false;
+
+  ANSWER_POOL.forEach(function (n) {
+    var opt = document.createElement("option");
+    opt.value = n;
+    teamList.appendChild(opt);
+  });
+
+  function todayStr() { return new Date().toISOString().slice(0, 10); }
+
+  function computeStatus(name, matches, knockout) {
+    var koEntries = knockout.filter(function (m) { return m.home === name || m.away === name; });
+    if (koEntries.length === 0) {
+      var allGroupsDone = matches.length > 0 && matches.every(function (m) { return m.statusShort === "FT"; });
+      return allGroupsDone ? { state: "eliminated", round: "Group Stage" } : { state: "group-stage", round: "Group Stage" };
+    }
+    koEntries.sort(function (a, b) { return a.n - b.n; });
+    var last = koEntries[koEntries.length - 1];
+    if (last.statusShort !== "FT" && last.statusShort !== "FT-Pens") {
+      return { state: "alive", round: last.round };
+    }
+    if (last.winner === name) return { state: "alive", round: last.round };
+    return { state: "eliminated", round: last.round };
+  }
+
+  function buildTeamData(json) {
+    var matches = (json && json.matches) || [];
+    var knockout = (json && json.knockout) || [];
+    ANSWER_POOL.forEach(function (name) {
+      var points = 0;
+      matches.forEach(function (m) {
+        if (m.statusShort !== "FT") return;
+        if (m.home === name) points += m.hs > m.as ? 3 : (m.hs === m.as ? 1 : 0);
+        else if (m.away === name) points += m.as > m.hs ? 3 : (m.hs === m.as ? 1 : 0);
+      });
+      TEAM_DATA[name] = {
+        confed: CONFED[name] || "—",
+        group: GROUP_OF[name] || "—",
+        points: json ? points : null,
+        status: json ? computeStatus(name, matches, knockout) : null
+      };
+    });
+  }
+
+  function statusLabel(status) {
+    if (!status) return "Unknown";
+    if (status.state === "alive") return "Still in · " + status.round;
+    if (status.state === "group-stage") return "In group stage";
+    return "Out · " + status.round;
+  }
+
+  function compareGuess(name) {
+    var g = TEAM_DATA[name], a = TEAM_DATA[answer];
+    var pointsDir = "eq";
+    if (g.points !== null && a.points !== null) {
+      pointsDir = g.points === a.points ? "eq" : (a.points > g.points ? "up" : "down");
+    }
+    return {
+      confed: { value: g.confed, match: g.confed === a.confed },
+      group: { value: "Group " + g.group, match: g.group === a.group },
+      points: { value: g.points === null ? "—" : g.points + " pts", match: pointsDir === "eq", dir: pointsDir },
+      status: { value: statusLabel(g.status), match: g.status && a.status && g.status.state === a.status.state }
+    };
+  }
+
+  function loadProgress() {
+    try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || "null"); } catch (e) { return null; }
+  }
+  function saveProgress() {
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+        date: todayStr(),
+        answer: answer,
+        guesses: guesses.map(function (g) { return g.team; }),
+        done: done,
+        won: won
+      }));
+    } catch (e) {}
+  }
+
+  function updateStreak(didWin) {
+    var streak = parseInt(localStorage.getItem(STREAK_KEY) || "0", 10);
+    var best = parseInt(localStorage.getItem(MAXSTREAK_KEY) || "0", 10);
+    if (didWin) {
+      var lastDate = localStorage.getItem(STREAKDATE_KEY);
+      if (lastDate) {
+        var diff = Math.round((Date.parse(todayStr()) - Date.parse(lastDate)) / 86400000);
+        streak = diff === 1 ? streak + 1 : 1;
+      } else {
+        streak = 1;
+      }
+      localStorage.setItem(STREAKDATE_KEY, todayStr());
+    } else {
+      streak = 0;
+    }
+    if (streak > best) best = streak;
+    localStorage.setItem(STREAK_KEY, String(streak));
+    localStorage.setItem(MAXSTREAK_KEY, String(best));
+    streakEl.textContent = streak;
+    bestStreakEl.textContent = best;
+  }
+
+  function blurFor(guessCount) {
+    var steps = [14, 11, 8, 6, 4, 2, 0];
+    return steps[Math.min(guessCount, steps.length - 1)];
+  }
+
+  function renderPips() {
+    pipsEl.innerHTML = "";
+    for (var i = 0; i < TOTAL_GUESSES; i++) {
+      var pip = document.createElement("div");
+      pip.className = "ff-pip" + (i < guesses.length ? (won && i === guesses.length - 1 ? " win" : " used") : "");
+      pipsEl.appendChild(pip);
+    }
+  }
+
+  function chipEl(text, isMatch) {
+    var span = document.createElement("span");
+    span.className = "ff-chip" + (isMatch ? " ff-chip--match" : "");
+    span.textContent = text;
+    return span;
+  }
+
+  function renderHistory() {
+    historyEl.innerHTML = "";
+    guesses.forEach(function (entry) {
+      var row = document.createElement("div");
+      row.className = "ff-row";
+      var img = document.createElement("img");
+      img.className = "ff-row-flag";
+      img.src = FLAGS[entry.team];
+      img.alt = "";
+      var name = document.createElement("div");
+      name.className = "ff-row-name";
+      name.textContent = entry.team;
+      row.appendChild(img);
+      row.appendChild(name);
+      var chips = document.createElement("div");
+      chips.className = "ff-row-chips";
+      var cmp = entry.cmp;
+      chips.appendChild(chipEl(cmp.confed.value, cmp.confed.match));
+      chips.appendChild(chipEl(cmp.group.value, cmp.group.match));
+      var pointsText = cmp.points.value + (cmp.points.dir === "up" ? " ▲" : cmp.points.dir === "down" ? " ▼" : "");
+      chips.appendChild(chipEl(pointsText, cmp.points.match));
+      chips.appendChild(chipEl(cmp.status.value, cmp.status.match));
+      row.appendChild(chips);
+      historyEl.appendChild(row);
+    });
+  }
+
+  function buildShareText() {
+    var lines = guesses.map(function (entry) {
+      var c = entry.cmp;
+      var pointsEmoji = c.points.match ? "🟩" : (c.points.dir === "up" ? "🔼" : "🔽");
+      return (c.confed.match ? "🟩" : "⬜") + (c.group.match ? "🟩" : "⬜") + pointsEmoji + (c.status.match ? "🟩" : "⬜");
+    });
+    var header = "SnackPack Flag Frenzy #" + puzzleNumber + " " + (won ? guesses.length : "X") + "/" + TOTAL_GUESSES;
+    return header + "\n" + lines.join("\n") + "\nhttps://www.snackpackuniverse.com/play/flag-frenzy/";
+  }
+
+  function renderResult() {
+    if (!done) { resultEl.hidden = true; return; }
+    resultEl.hidden = false;
+    resultEl.className = "ff-result" + (won ? "" : " lose");
+    if (won) {
+      resultTextEl.textContent = "Solved in " + guesses.length + "/" + TOTAL_GUESSES + "! It was " + answer + ".";
+    } else {
+      resultTextEl.textContent = "Out of guesses. It was " + answer + ".";
+    }
+  }
+
+  function renderAll() {
+    puzzleNumEl.textContent = mode === "practice" ? "Practice round" : "Puzzle #" + puzzleNumber;
+    var blur = won || (done && !won) ? 0 : blurFor(guesses.length);
+    flagImgEl.style.filter = "blur(" + blur + "px)";
+    flagImgEl.src = FLAGS[answer];
+    answerNameEl.textContent = done ? answer : "";
+    guessCountEl.textContent = guesses.length + "/" + TOTAL_GUESSES;
+    input.disabled = done;
+    submitBtn.disabled = done;
+    statusEl.className = "game-status" + (done && !won ? " game-status--lose" : "");
+    if (done) {
+      statusEl.textContent = won
+        ? (mode === "practice" ? "Solved! Try another practice round below." : "You've already solved today's puzzle — come back tomorrow for a new one.")
+        : (mode === "practice" ? "Out of guesses. Try another practice round below." : "Out of guesses for today. Come back tomorrow for a new team.");
+    } else {
+      statusEl.textContent = mode === "practice" ? "Practice round: guess the mystery team." : "Guess today's World Cup team.";
+    }
+    renderPips();
+    renderHistory();
+    renderResult();
+  }
+
+  function handleGuess(event) {
+    event.preventDefault();
+    if (done) return;
+    var raw = input.value.trim();
+    if (!raw) return;
+    var key = raw.toLowerCase();
+    var name = NAME_LOOKUP[key] || (ALIASES[key] ? ALIASES[key] : null);
+    if (!name) {
+      statusEl.className = "game-status game-status--lose";
+      statusEl.textContent = "Not a recognised World Cup 2026 team. Check the spelling and try again.";
+      return;
+    }
+    if (guesses.some(function (g) { return g.team === name; })) {
+      statusEl.className = "game-status game-status--lose";
+      statusEl.textContent = "You already guessed " + name + ".";
+      return;
+    }
+    guesses.push({ team: name, cmp: compareGuess(name) });
+    input.value = "";
+    if (name === answer) { done = true; won = true; }
+    else if (guesses.length >= TOTAL_GUESSES) { done = true; won = false; }
+    if (mode === "daily") {
+      saveProgress();
+      if (done) updateStreak(won);
+    }
+    renderAll();
+  }
+
+  function startDaily() {
+    mode = "daily";
+    var dayIndex = Math.floor(Date.now() / 86400000);
+    answer = ANSWER_POOL[((dayIndex % ANSWER_POOL.length) + ANSWER_POOL.length) % ANSWER_POOL.length];
+    puzzleNumber = Math.max(1, dayIndex - EPOCH_DAY + 1);
+    var saved = loadProgress();
+    if (saved && saved.date === todayStr() && saved.answer === answer) {
+      guesses = saved.guesses.map(function (team) { return { team: team, cmp: compareGuess(team) }; });
+      done = saved.done;
+      won = saved.won;
+    } else {
+      guesses = []; done = false; won = false;
+    }
+    renderAll();
+  }
+
+  function startPractice() {
+    mode = "practice";
+    var pool = ANSWER_POOL.filter(function (n) { return n !== answer; });
+    answer = pool[Math.floor(Math.random() * pool.length)];
+    guesses = []; done = false; won = false;
+    renderAll();
+  }
+
+  form.addEventListener("submit", handleGuess);
+  practiceBtn.addEventListener("click", function () {
+    if (mode === "daily") { startPractice(); practiceBtn.textContent = "Back to today's challenge"; }
+    else { startDaily(); practiceBtn.textContent = "Practice round (random team)"; }
+  });
+  shareBtn.addEventListener("click", function () {
+    var text = buildShareText();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        shareBtn.textContent = "Copied!";
+        setTimeout(function () { shareBtn.textContent = "Copy share result"; }, 1800);
+      }).catch(function () { showShareFallback(text); });
+    } else {
+      showShareFallback(text);
+    }
+  });
+  function showShareFallback(text) {
+    shareBox.value = text;
+    shareBox.hidden = false;
+    shareBox.focus();
+    shareBox.select();
+  }
+
+  streakEl.textContent = localStorage.getItem(STREAK_KEY) || "0";
+  bestStreakEl.textContent = localStorage.getItem(MAXSTREAK_KEY) || "0";
+
+  fetch(DATA_URL)
+    .then(function (r) { if (!r.ok) throw new Error("bad response"); return r.json(); })
+    .then(function (json) {
+      buildTeamData(json);
+      startDaily();
+    })
+    .catch(function () {
+      dataError = true;
+      buildTeamData(null);
+      startDaily();
+      if (!done) {
+        statusEl.className = "game-status";
+        statusEl.textContent = "Couldn't load live match data — points and status hints are unavailable today, but confederation and group clues still work.";
+      }
+    });
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
