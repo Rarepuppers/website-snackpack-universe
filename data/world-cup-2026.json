@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-03T21:18:01.811Z",
+  "updatedAt": "2026-07-03T22:17:23.522Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1164,9 +1164,11 @@
       "awayLabel": "RU H",
       "home": "Argentina",
       "away": "Cape Verde",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 0
     },
     {
       "n": 87,
