@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-02T23:36:28.853Z",
+  "updatedAt": "2026-07-03T01:12:44.266Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1116,11 +1116,11 @@
       "awayLabel": "RU L",
       "home": "Portugal",
       "away": "Croatia",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 0,
-      "las": 0
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Portugal",
+      "hs": 2,
+      "as": 1
     },
     {
       "n": 84,
@@ -1258,10 +1258,10 @@
       "venue": "Arlington",
       "homeLabel": "W 83",
       "awayLabel": "W 84",
-      "home": null,
+      "home": "Portugal",
       "away": "Spain",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
