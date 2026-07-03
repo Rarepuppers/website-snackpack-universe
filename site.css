@@ -1071,6 +1071,8 @@ main section {
 
 .showcase-frame > img,
 .showcase-frame > a > img {
+  width: 100%;
+  height: auto;
   border-radius: var(--radius);
 }
 
