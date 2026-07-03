@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-03T04:55:44.158Z",
+  "updatedAt": "2026-07-03T07:53:21.904Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1148,11 +1148,11 @@
       "awayLabel": "3rd E/F/G/I/J",
       "home": "Switzerland",
       "away": "Algeria",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 2,
-      "las": 0
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Switzerland",
+      "hs": 2,
+      "as": 0
     },
     {
       "n": 86,
@@ -1302,7 +1302,7 @@
       "venue": "Vancouver",
       "homeLabel": "W 85",
       "awayLabel": "W 87",
-      "home": null,
+      "home": "Switzerland",
       "away": null,
       "time": "Upcoming",
       "statusShort": "",
