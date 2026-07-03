@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-03T01:12:44.266Z",
+  "updatedAt": "2026-07-03T04:55:44.158Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1148,9 +1148,11 @@
       "awayLabel": "3rd E/F/G/I/J",
       "home": "Switzerland",
       "away": "Algeria",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 2,
+      "las": 0
     },
     {
       "n": 86,
