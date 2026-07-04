@@ -210,13 +210,13 @@
   "use strict";
 
   // ════ Engine (ported from the Vol 2 app's thirteen/engine.ts) ════
-  var SUIT_SYMBOLS = ["♠", "♣", "♦", "♥"];
+  var SUIT_SYMBOLS = ["spade", "club", "diamond", "heart"];
   var SUIT_RED = { 2: true, 3: true };
 
   function cardLabel(c) {
     var v = c.value;
     var face = v === 1 ? "A" : v === 11 ? "J" : v === 12 ? "Q" : v === 13 ? "K" : String(v);
-    return face + SUIT_SYMBOLS[c.suit];
+    return face + ["♠", "♣", "♦", "♥"][c.suit];
   }
 
   function rankValue(c, mode) {
@@ -420,7 +420,7 @@
     if (opts.button) { b.type = "button"; b.dataset.id = c.id; }
     var v = c.value;
     var face = v === 1 ? "A" : v === 11 ? "J" : v === 12 ? "Q" : v === 13 ? "K" : String(v);
-    b.innerHTML = '<span class="th-rank">' + face + '</span><span class="th-suit">' + SUIT_SYMBOLS[c.suit] + '</span>';
+    b.innerHTML = '<span class="th-rank">' + face + '</span><span class="th-suit"><span class="card-suit-icon card-suit-icon--' + SUIT_SYMBOLS[c.suit] + '" aria-hidden="true"></span></span>';
     return b;
   }
 

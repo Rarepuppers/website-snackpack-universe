@@ -216,13 +216,14 @@
   ].map(function (f) { return { pairKey: f[0], label: f[1], suit: f[2] }; });
 
   var SUIT = {
-    dots:    { glyph: "🔵", color: "#2f6fd6" },
-    bamboo:  { glyph: "🎋", color: "#1f8f77" },
-    cracks:  { glyph: "🔶", color: "#d8483a" },
-    winds:   { glyph: "🧭", color: "#5b3fb0" },
-    flowers: { glyph: "🌸", color: "#d24a86" },
-    snacks:  { glyph: "🍪", color: "#b9772e" }
+    dots:    { icon: "dots", color: "#2f6fd6" },
+    bamboo:  { icon: "bamboo", color: "#1f8f77" },
+    cracks:  { icon: "cracks", color: "#d8483a" },
+    winds:   { icon: "winds", color: "#5b3fb0" },
+    flowers: { icon: "flowers", color: "#d24a86" },
+    snacks:  { icon: "", color: "#b9772e" }
   };
+  var SNACK_TILE_ICONS = ["cookie", "donut", "chocolate", "candy", "cupcake", "cake"];
 
   function shuffle(a) { var n = a.slice(); for (var i = n.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = n[i]; n[i] = n[j]; n[j] = t; } return n; }
 
@@ -329,7 +330,11 @@
       el.style.zIndex = String(t.z * 100 + t.y * 10 + t.x);
       var info = SUIT[t.suit];
       el.style.setProperty("--suit", info.color);
-      el.innerHTML = '<span class="mj-glyph">' + info.glyph + '</span><span class="mj-label">' + t.label + '</span>';
+      var glyph = '<span class="mj-suit-icon mj-suit-icon--' + info.icon + '" aria-hidden="true"></span>';
+      if (t.suit === "snacks") {
+        glyph = '<span class="snack-symbol snack-symbol--' + SNACK_TILE_ICONS[(parseInt(t.label, 10) || 1) - 1] + '" aria-hidden="true"></span>';
+      }
+      el.innerHTML = '<span class="mj-glyph">' + glyph + '</span><span class="mj-label">' + t.label + '</span>';
       boardEl.appendChild(el);
     });
     leftEl.textContent = remaining(board);

@@ -617,6 +617,50 @@
   transform: rotateY(180deg);
 }
 
+.snack-symbol {
+  display: inline-block;
+  width: min(68%, 54px);
+  aspect-ratio: 1;
+  background-image: url("sprites/snack-symbols.png");
+  background-size: 600% 300%;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 4px 7px rgba(32, 23, 19, 0.18));
+}
+
+.snack-symbol--cookie { background-position: 0 0; }
+.snack-symbol--donut { background-position: 20% 0; }
+.snack-symbol--chocolate { background-position: 40% 0; }
+.snack-symbol--candy { background-position: 60% 0; }
+.snack-symbol--cupcake { background-position: 80% 0; }
+.snack-symbol--cake { background-position: 100% 0; }
+.snack-symbol--icecream { background-position: 0 50%; }
+.snack-symbol--strawberry { background-position: 20% 50%; }
+.snack-symbol--apple { background-position: 40% 50%; }
+.snack-symbol--banana { background-position: 60% 50%; }
+.snack-symbol--watermelon { background-position: 80% 50%; }
+.snack-symbol--grapes { background-position: 100% 50%; }
+.snack-symbol--popcorn { background-position: 0 100%; }
+.snack-symbol--pretzel { background-position: 20% 100%; }
+.snack-symbol--croissant { background-position: 40% 100%; }
+.snack-symbol--waffle { background-position: 60% 100%; }
+.snack-symbol--cherries { background-position: 80% 100%; }
+.snack-symbol--pancake { background-position: 100% 100%; }
+
+.card-suit-icon {
+  display: inline-block;
+  width: 1em;
+  aspect-ratio: 1;
+  background-image: url("sprites/card-suits.png");
+  background-size: 400% 100%;
+  background-repeat: no-repeat;
+  vertical-align: -0.14em;
+  filter: drop-shadow(0 1px 2px rgba(32, 23, 19, 0.14));
+}
+.card-suit-icon--spade { background-position: 0 0; }
+.card-suit-icon--heart { background-position: 33.333% 0; }
+.card-suit-icon--diamond { background-position: 66.666% 0; }
+.card-suit-icon--club { background-position: 100% 0; }
+
 .mem-card:hover:not(.is-flipped):not(.is-matched) .mem-face--cover {
   filter: saturate(1.05) brightness(1.04);
 }
@@ -702,6 +746,7 @@
 .th-card--red { color: #c0392b; }
 .th-rank { font-size: 1.05rem; }
 .th-suit { font-size: 1rem; }
+.th-suit .card-suit-icon { width: 1.05rem; }
 
 .th-hand-wrap { display: flex; justify-content: center; }
 .th-hand {
@@ -1069,6 +1114,25 @@ button.th-card.is-selected {
 }
 
 .mj-glyph { font-size: 0.95rem; line-height: 1; margin-top: 3px; }
+.mj-suit-icon {
+  display: block;
+  width: 21px;
+  aspect-ratio: 1;
+  background-image: url("sprites/mahjong-suits.png");
+  background-size: 500% 100%;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 2px 3px rgba(32, 23, 19, 0.16));
+}
+.mj-suit-icon--dots { background-position: 0 0; }
+.mj-suit-icon--bamboo { background-position: 25% 0; }
+.mj-suit-icon--cracks { background-position: 50% 0; }
+.mj-suit-icon--winds { background-position: 75% 0; }
+.mj-suit-icon--flowers { background-position: 100% 0; }
+.mj-glyph .snack-symbol {
+  width: 21px;
+  display: block;
+  filter: drop-shadow(0 2px 3px rgba(32, 23, 19, 0.16));
+}
 .mj-label { font-size: 0.8rem; font-weight: 900; line-height: 1; margin-bottom: 3px; color: var(--suit, var(--ink)); }
 
 .mj-tile.is-blocked { filter: brightness(0.9) saturate(0.85); cursor: default; }

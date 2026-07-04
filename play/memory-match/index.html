@@ -203,8 +203,27 @@
     challenge: { label: "Challenge", cols: 5, pairs: 10, sub: "Challenge · 4×5 board · 10 pairs" },
     expert:    { label: "Expert",    cols: 6, pairs: 15, sub: "Expert · 5×6 board · 15 pairs" }
   };
-  // Snack/food themed deck — at least 15 symbols for the Expert board.
-  var DECK = ["🍪","🍩","🍫","🍬","🧁","🍰","🍦","🍓","🍎","🍌","🍉","🍇","🍿","🥨","🥐","🧇","🍒","🥞"];
+  // Snack themed deck; ids map to the shared sprite sheet in play.css.
+  var DECK = [
+    { id: "cookie", name: "cookie" },
+    { id: "donut", name: "donut" },
+    { id: "chocolate", name: "chocolate bar" },
+    { id: "candy", name: "wrapped candy" },
+    { id: "cupcake", name: "cupcake" },
+    { id: "cake", name: "cake slice" },
+    { id: "icecream", name: "ice cream" },
+    { id: "strawberry", name: "strawberry" },
+    { id: "apple", name: "apple" },
+    { id: "banana", name: "banana" },
+    { id: "watermelon", name: "watermelon" },
+    { id: "grapes", name: "grapes" },
+    { id: "popcorn", name: "popcorn" },
+    { id: "pretzel", name: "pretzel" },
+    { id: "croissant", name: "croissant" },
+    { id: "waffle", name: "waffle" },
+    { id: "cherries", name: "cherries" },
+    { id: "pancake", name: "pancake" }
+  ];
 
   var boardEl  = document.getElementById("m-board");
   var movesEl  = document.getElementById("m-moves");
@@ -293,13 +312,14 @@
       var card = document.createElement("button");
       card.className = "mem-card";
       card.type = "button";
-      card.dataset.sym = sym;
+      card.dataset.sym = sym.id;
+      card.dataset.name = sym.name;
       card.dataset.idx = String(idx);
       card.setAttribute("aria-label", "Face-down card");
       card.innerHTML =
         '<span class="mem-card-inner">' +
-          '<span class="mem-face mem-face--cover" aria-hidden="true">🍱</span>' +
-          '<span class="mem-face mem-face--symbol">' + sym + '</span>' +
+          '<span class="mem-face mem-face--cover" aria-hidden="true"><span class="snack-symbol snack-symbol--popcorn"></span></span>' +
+          '<span class="mem-face mem-face--symbol"><span class="snack-symbol snack-symbol--' + sym.id + '" aria-hidden="true"></span></span>' +
         '</span>';
       boardEl.appendChild(card);
     });
@@ -345,7 +365,7 @@
     if (!started) { started = true; startTimer(); }
 
     card.classList.add("is-flipped");
-    card.setAttribute("aria-label", "Card showing " + card.dataset.sym);
+    card.setAttribute("aria-label", "Card showing " + card.dataset.name);
     flipped.push(card);
 
     if (flipped.length < 2) return;

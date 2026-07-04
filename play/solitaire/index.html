@@ -42,6 +42,8 @@
 .sol-card .r { position: absolute; top: 3px; left: 5px; font-size: calc(var(--cw) * 0.32); line-height: 1; }
 .sol-card .s { position: absolute; bottom: 4px; right: 5px; font-size: calc(var(--cw) * 0.4); line-height: 1; }
 .sol-card .big { position: absolute; inset: 0; display: grid; place-items: center; font-size: calc(var(--cw) * 0.62); opacity: 0.9; }
+.sol-card .s .card-suit-icon { width: calc(var(--cw) * 0.32); }
+.sol-card .big .card-suit-icon { width: calc(var(--cw) * 0.54); }
 .sol-card.red { color: #c0392b; }
 .sol-card.black { color: #201713; }
 .sol-card.down {
@@ -52,6 +54,7 @@
 .sol-card.sel { outline: 3px solid var(--gold); outline-offset: -1px; box-shadow: 0 6px 14px rgba(32,23,19,0.22); }
 .sol-card.hintable { box-shadow: 0 0 0 2px var(--accent); }
 .sol-foundation { display: grid; place-items: center; color: rgba(31,143,119,0.5); font-size: calc(var(--cw) * 0.5); border: 1.5px dashed rgba(31,143,119,0.4); background: rgba(31,143,119,0.05); }
+.sol-foundation .card-suit-icon { width: calc(var(--cw) * 0.46); opacity: 0.55; }
 .sol-tableau { min-height: var(--ch); }
 </style>
 <script type="application/ld+json">
@@ -234,7 +237,7 @@
 <script>
 (function () {
   "use strict";
-  var SUITS = ["♠", "♥", "♦", "♣"]; // spade, heart, diamond, club
+  var SUITS = ["spade", "heart", "diamond", "club"];
   var RANKS = ["", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
   function isRed(suit) { return suit === 1 || suit === 2; }
 
@@ -301,9 +304,10 @@
     var el = document.createElement("div");
     el.className = "sol-card " + (faceUp ? (isRed(card.s) ? "red" : "black") : "down");
     if (faceUp) {
+      var suitIcon = '<span class="card-suit-icon card-suit-icon--' + SUITS[card.s] + '" aria-hidden="true"></span>';
       el.innerHTML = '<span class="r">' + RANKS[card.r] + "</span>" +
-                     '<span class="s">' + SUITS[card.s] + "</span>" +
-                     '<span class="big">' + SUITS[card.s] + "</span>";
+                     '<span class="s">' + suitIcon + "</span>" +
+                     '<span class="big">' + suitIcon + "</span>";
     }
     return el;
   }
@@ -352,7 +356,8 @@
       var f = foundations[pi];
       if (f.length === 0) {
         var fe = document.createElement("div"); fe.className = "sol-slot sol-foundation";
-        fe.textContent = SUITS[pi]; pileEl.appendChild(fe);
+        fe.innerHTML = '<span class="card-suit-icon card-suit-icon--' + SUITS[pi] + '" aria-hidden="true"></span>';
+        pileEl.appendChild(fe);
       } else {
         var fc = cardEl(f[f.length - 1], true);
         fc.dataset.pile = "foundation"; fc.dataset.pi = pi;
