@@ -1,0 +1,80 @@
+﻿{
+    "version":  1,
+    "canonicalPath":  "shared-assets/game-ui/card-decks",
+    "backs":  [
+                  {
+                      "key":  "felt-green",
+                      "name":  "Felt Green",
+                      "tier":  "free",
+                      "role":  "default",
+                      "file":  "backs/felt-green.png"
+                  },
+                  {
+                      "key":  "classic-navy",
+                      "name":  "Classic Navy",
+                      "tier":  "free",
+                      "role":  "alternate",
+                      "file":  "backs/classic-navy.png"
+                  },
+                  {
+                      "key":  "snackpack-gold",
+                      "name":  "SnackPack Gold",
+                      "tier":  "free",
+                      "role":  "brand",
+                      "file":  "backs/snackpack-gold.png"
+                  },
+                  {
+                      "key":  "royal-plum",
+                      "name":  "Royal Plum",
+                      "tier":  "pro",
+                      "role":  "premium",
+                      "file":  "backs/royal-plum.png"
+                  },
+                  {
+                      "key":  "midnight-neon",
+                      "name":  "Midnight Neon",
+                      "tier":  "pro",
+                      "role":  "premium",
+                      "file":  "backs/midnight-neon.png"
+                  },
+                  {
+                      "key":  "marble-rose",
+                      "name":  "Marble Rose",
+                      "tier":  "pro",
+                      "role":  "premium",
+                      "file":  "backs/marble-rose.png"
+                  },
+                  {
+                      "key":  "emerald-arcade",
+                      "name":  "Emerald Arcade",
+                      "tier":  "pro",
+                      "role":  "premium",
+                      "file":  "backs/emerald-arcade.png"
+                  },
+                  {
+                      "key":  "obsidian-star",
+                      "name":  "Obsidian Star",
+                      "tier":  "pro",
+                      "role":  "premium",
+                      "file":  "backs/obsidian-star.png"
+                  }
+              ],
+    "faceDecks":  [
+                      {
+                          "key":  "classic",
+                          "name":  "Classic Readable",
+                          "tier":  "free",
+                          "role":  "standard-readable",
+                          "path":  "faces/classic",
+                          "status":  "generated",
+                          "wiring":  "deferred-until-shared-face-renderer"
+                      }
+                  ],
+    "deferredTasks":  [
+                          "Wire every card game in Brain Games Vol 1, Vol 2, Vol 3, and the website to this registry.",
+                          "Use PNG backs in stock/facedown piles and card-back pickers.",
+                          "Use suit sprites in compact card layouts.",
+                          "Use the full classic face deck only through a shared face renderer.",
+                          "Add alternate Pro face decks after the shared renderer exists."
+                      ]
+}

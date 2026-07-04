@@ -276,12 +276,26 @@
   function drawOverlay() {
     var ns = "http://www.w3.org/2000/svg";
     overlay.innerHTML = "";
-    function line(from, to, cls, w) {
+    function ladderPath(from, to) {
       var a = squareToXY(from), b = squareToXY(to);
+      var dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy) || 1;
+      var px = -dy / L, py = dx / L; // unit perpendicular to the ladder
+      var w = 0.13;                  // half the rail spacing
+      // two rails
+      line2(a.x + px * w, a.y + py * w, b.x + px * w, b.y + py * w, "0.08");
+      line2(a.x - px * w, a.y - py * w, b.x - px * w, b.y - py * w, "0.08");
+      // rungs
+      var rungs = Math.max(2, Math.round(L * 1.1));
+      for (var r = 0; r <= rungs; r++) {
+        var t = r / rungs, cx = a.x + dx * t, cy = a.y + dy * t;
+        line2(cx + px * w, cy + py * w, cx - px * w, cy - py * w, "0.06");
+      }
+    }
+    function line2(x1, y1, x2, y2, w) {
       var el = document.createElementNS(ns, "line");
-      el.setAttribute("x1", a.x); el.setAttribute("y1", a.y);
-      el.setAttribute("x2", b.x); el.setAttribute("y2", b.y);
-      el.setAttribute("class", cls); el.setAttribute("stroke-width", w);
+      el.setAttribute("x1", x1); el.setAttribute("y1", y1);
+      el.setAttribute("x2", x2); el.setAttribute("y2", y2);
+      el.setAttribute("class", "sl-ladder"); el.setAttribute("stroke-width", w);
       el.setAttribute("stroke-linecap", "round");
       overlay.appendChild(el);
     }
@@ -299,7 +313,7 @@
       head.setAttribute("class", "sl-snake-head");
       overlay.appendChild(head);
     }
-    Object.keys(ladders).forEach(function (k) { line(+k, ladders[k], "sl-ladder", "0.3"); });
+    Object.keys(ladders).forEach(function (k) { ladderPath(+k, ladders[k]); });
     Object.keys(snakes).forEach(function (k) { snakePath(+k, snakes[k]); });
   }
 
@@ -313,7 +327,13 @@
       var xy = squareToXY(p.pos);
       var group = byPos[p.pos];
       var i = group.indexOf(p);
-      var ox = (i % 2) * 10 - 5, oy = Math.floor(i / 2) * 10 - 5;
+      // A lone token sits dead-centre on its square; only fan out when
+      // two or more tokens share a square (2×2 grid, ±4% around centre).
+      var ox = 0, oy = 0;
+      if (group.length > 1) {
+        ox = (i % 2 === 0 ? -1 : 1) * 4;
+        oy = (i < 2 ? -1 : 1) * 4;
+      }
       var t = document.createElement("div");
       t.className = "sl-token sl-token--" + p.id;
       t.style.left = "calc(" + (xy.x * 10) + "% + " + ox + "%)";

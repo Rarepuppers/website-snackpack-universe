@@ -1,0 +1,51 @@
+﻿{
+    "cellSize":  512,
+    "sprite":  "board-game-icons.png",
+    "layout":  {
+                   "rows":  3,
+                   "columns":  6,
+                   "cells":  [
+                                 "dice-1",
+                                 "dice-2",
+                                 "dice-3",
+                                 "dice-4",
+                                 "dice-5",
+                                 "dice-6",
+                                 "snake-marker",
+                                 "ladder-marker",
+                                 "pawn-red",
+                                 "pawn-blue",
+                                 "pawn-green",
+                                 "pawn-gold",
+                                 "crown",
+                                 null,
+                                 null,
+                                 null,
+                                 null,
+                                 null
+                             ]
+               },
+    "individual":  [
+                       "dice-1",
+                       "dice-2",
+                       "dice-3",
+                       "dice-4",
+                       "dice-5",
+                       "dice-6",
+                       "snake-marker",
+                       "ladder-marker",
+                       "pawn-red",
+                       "pawn-blue",
+                       "pawn-green",
+                       "pawn-gold",
+                       "crown",
+                       "checker-red",
+                       "checker-dark",
+                       "checker-light"
+                   ],
+    "appExportDirs":  [
+                          "apps\\snackpack-brain-games\\assets\\game-ui\\board-games",
+                          "apps\\snackpack-brain-games-vol-2\\assets\\game-ui\\board-games",
+                          "apps\\snackpack-brain-games-vol-3\\assets\\game-ui\\board-games"
+                      ]
+}
