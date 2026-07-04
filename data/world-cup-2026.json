@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-04T04:05:13.868Z",
+  "updatedAt": "2026-07-04T17:44:08.283Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1228,9 +1228,11 @@
       "awayLabel": "W 75",
       "home": "Canada",
       "away": "Morocco",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 0
     },
     {
       "n": 91,
