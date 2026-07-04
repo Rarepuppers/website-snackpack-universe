@@ -112,12 +112,12 @@
             <div class="sl-tokens" id="s-tokens"></div>
           </div>
           <div class="sl-side">
-            <button class="sl-dice" id="s-dice" type="button" aria-label="Roll the dice">🎲</button>
+            <button class="sl-dice" id="s-dice" type="button" aria-label="Roll the dice"><span class="board-icon board-icon--dice-1" aria-hidden="true"></span></button>
             <button class="btn-game btn-game--primary" id="s-roll" type="button">Roll</button>
             <div class="sl-players" id="s-playerlist"></div>
           </div>
         </div>
-        <p class="game-hint">Tap the dice (or Roll) on your turn. Ladders 🪜 climb up, snakes 🐍 slide down — land exactly on 100 to win.</p>
+        <p class="game-hint">Tap the dice (or Roll) on your turn. Ladders climb up, snakes slide down — land exactly on 100 to win.</p>
       </div>
     </div>
   </section>
@@ -200,8 +200,6 @@
   // ════ Engine (ported from the Vol 2 app's snakes-and-ladders/engine.ts) ════
   var STANDARD_SNAKES  = { 97: 78, 95: 56, 88: 24, 62: 18, 48: 26, 36: 6, 32: 10 };
   var STANDARD_LADDERS = { 4: 14, 9: 31, 20: 38, 28: 84, 40: 59, 51: 67, 63: 81, 71: 91 };
-  var COLORS = ["#EF5350", "#29B6F6", "#66BB6A", "#FFA726"];
-  var SHAPES = ["★", "●", "◆", "■"];
   var NAMES  = ["You", "CPU 1", "CPU 2", "CPU 3"];
 
   function chaosBoard() {
@@ -227,7 +225,7 @@
       out.push({
         id: i,
         name: mode === "2p" && i === 1 ? "Player 2" : NAMES[i],
-        pos: 0, color: COLORS[i], shape: SHAPES[i], isHuman: humans[i]
+        pos: 0, isHuman: humans[i]
       });
     }
     return out;
@@ -255,7 +253,7 @@
   var playerListEl = document.getElementById("s-playerlist");
   var newBtn = document.getElementById("s-new");
 
-  var DICE_FACES = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+  var DICE_FACES = ["", "dice-1", "dice-2", "dice-3", "dice-4", "dice-5", "dice-6"];
   var mode = "classic";
   var players, snakes, ladders, current, busy, over;
 
@@ -268,7 +266,7 @@
         var num = rowFromBottom * 10 + idx + 1;
         var sq = document.createElement("div");
         sq.className = "sl-sq" + ((dispRow + dispCol) % 2 ? " sl-sq--alt" : "");
-        var mark = snakes[num] ? '<span class="sl-mark">🐍</span>' : ladders[num] ? '<span class="sl-mark">🪜</span>' : "";
+        var mark = snakes[num] ? '<span class="board-icon board-icon--snake sl-mark" aria-hidden="true"></span>' : ladders[num] ? '<span class="board-icon board-icon--ladder sl-mark" aria-hidden="true"></span>' : "";
         sq.innerHTML = '<span class="sl-num">' + num + '</span>' + mark;
         boardEl.appendChild(sq);
       }
@@ -317,11 +315,9 @@
       var i = group.indexOf(p);
       var ox = (i % 2) * 10 - 5, oy = Math.floor(i / 2) * 10 - 5;
       var t = document.createElement("div");
-      t.className = "sl-token";
+      t.className = "sl-token sl-token--" + p.id;
       t.style.left = "calc(" + (xy.x * 10) + "% + " + ox + "%)";
       t.style.top = "calc(" + (xy.y * 10) + "% + " + oy + "%)";
-      t.style.background = p.color;
-      t.textContent = p.shape;
       tokensEl.appendChild(t);
     });
   }
@@ -331,7 +327,7 @@
     players.forEach(function (p) {
       var d = document.createElement("div");
       d.className = "sl-pchip" + (p.id === current && !over ? " is-turn" : "");
-      d.innerHTML = '<span class="sl-pdot" style="background:' + p.color + '">' + p.shape + '</span>' +
+      d.innerHTML = '<span class="sl-pdot sl-pdot--' + p.id + '" aria-hidden="true"></span>' +
         '<span><strong>' + p.name + '</strong><br><span class="sl-ppos">Square ' + p.pos + '</span></span>';
       playerListEl.appendChild(d);
     });
@@ -356,15 +352,19 @@
     busy = true; setTurnReadout();
     var frames = 0;
     var anim = setInterval(function () {
-      diceEl.textContent = DICE_FACES[Math.floor(Math.random() * 6) + 1];
+      setDice(Math.floor(Math.random() * 6) + 1);
       frames++;
       if (frames >= 8) {
         clearInterval(anim);
         var dice = Math.floor(Math.random() * 6) + 1;
-        diceEl.textContent = DICE_FACES[dice];
+        setDice(dice);
         moveCurrent(dice);
       }
     }, 60);
+  }
+
+  function setDice(n) {
+    diceEl.innerHTML = '<span class="board-icon board-icon--' + DICE_FACES[n] + '" aria-hidden="true"></span>';
   }
 
   function moveCurrent(dice) {
@@ -396,8 +396,8 @@
     var p = players[current];
     var landed = p.pos;
     var msg = "";
-    if (snakes[landed]) { p.pos = snakes[landed]; msg = "🐍 Snake! " + p.name + " slides to " + p.pos + "."; }
-    else if (ladders[landed]) { p.pos = ladders[landed]; msg = "🪜 Ladder! " + p.name + " climbs to " + p.pos + "."; }
+    if (snakes[landed]) { p.pos = snakes[landed]; msg = "Snake! " + p.name + " slides to " + p.pos + "."; }
+    else if (ladders[landed]) { p.pos = ladders[landed]; msg = "Ladder! " + p.name + " climbs to " + p.pos + "."; }
 
     setTimeout(function () {
       renderTokens(); renderPlayers();
@@ -417,12 +417,12 @@
 
   function finish(winner) {
     over = true; busy = false;
-    statusEl.textContent = "🏆 " + winner.name + " wins! Reached 100.";
+    statusEl.textContent = winner.name + " wins! Reached 100.";
     statusEl.className = "game-status " + (winner.isHuman && winner.id === 0 ? "game-status--win" : "game-status--lose");
     setTurnReadout(); renderPlayers();
     if (winner.id === 0) {
       if (window.SnackPack) window.SnackPack.celebrate({
-        title: "You reached 100 first! 🏆",
+        title: "You reached 100 first!",
         body: "Lucky dice! We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app to play Snakes & Ladders and more, offline."
       });
     }
@@ -433,7 +433,7 @@
     snakes = board.snakes; ladders = board.ladders;
     players = makePlayers(mode);
     current = 0; busy = false; over = false;
-    diceEl.textContent = "🎲";
+    setDice(1);
     statusEl.textContent = "Roll to start.";
     statusEl.className = "game-status";
     buildBoard(); drawOverlay(); renderTokens(); renderPlayers(); setTurnReadout();
