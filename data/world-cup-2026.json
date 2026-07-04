@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-04T00:18:53.598Z",
+  "updatedAt": "2026-07-04T04:05:13.868Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1164,11 +1164,11 @@
       "awayLabel": "RU H",
       "home": "Argentina",
       "away": "Cape Verde",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 2,
-      "las": 2
+      "time": "FT",
+      "statusShort": "AET",
+      "winner": "Argentina",
+      "hs": 3,
+      "as": 2
     },
     {
       "n": 87,
@@ -1180,9 +1180,11 @@
       "awayLabel": "3rd D/E/I/J/L",
       "home": "Colombia",
       "away": "Ghana",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Colombia",
+      "hs": 1,
+      "as": 0
     },
     {
       "n": 88,
@@ -1294,10 +1296,10 @@
       "venue": "Atlanta",
       "homeLabel": "W 86",
       "awayLabel": "W 88",
-      "home": null,
+      "home": "Argentina",
       "away": "Egypt",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1309,9 +1311,9 @@
       "homeLabel": "W 85",
       "awayLabel": "W 87",
       "home": "Switzerland",
-      "away": null,
+      "away": "Colombia",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
