@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-04T19:50:53.296Z",
+  "updatedAt": "2026-07-04T21:34:06.031Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1214,9 +1214,11 @@
       "awayLabel": "W 77",
       "home": "Paraguay",
       "away": "France",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 0
     },
     {
       "n": 90,
