@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-04T17:44:08.283Z",
+  "updatedAt": "2026-07-04T18:40:47.454Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1232,7 +1232,7 @@
       "statusShort": "LIVE",
       "winner": null,
       "lhs": 0,
-      "las": 0
+      "las": 1
     },
     {
       "n": 91,
