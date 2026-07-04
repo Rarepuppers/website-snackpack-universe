@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-04T21:34:06.031Z",
+  "updatedAt": "2026-07-04T23:33:11.372Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1214,11 +1214,11 @@
       "awayLabel": "W 77",
       "home": "Paraguay",
       "away": "France",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 0,
-      "las": 0
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "France",
+      "hs": 0,
+      "as": 1
     },
     {
       "n": 90,
@@ -1328,10 +1328,10 @@
       "venue": "Foxborough",
       "homeLabel": "W 89",
       "awayLabel": "W 90",
-      "home": null,
+      "home": "France",
       "away": "Morocco",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
