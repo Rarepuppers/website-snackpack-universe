@@ -11,10 +11,11 @@
 <link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
 <meta property="og:title" content="Play Table Tennis (Pong) Online Free vs Computer | No Ads">
 <meta property="og:description" content="Classic Pong in your browser. Beat the computer to 7 — three difficulties, 2-player and turbo. Free, no ads, no sign-in.">
-<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:image" content="https://www.snackpackuniverse.com/play/social/table-tennis.png">
 <meta property="og:url" content="https://www.snackpackuniverse.com/play/table-tennis/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.snackpackuniverse.com/play/social/table-tennis.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -201,6 +202,7 @@
 
 <script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingamesvol2";</script>
 <script src="../funnel.js"></script>
+<script src="../arcade-assets.js"></script>
 <script>
 (function () {
   "use strict";
@@ -318,7 +320,8 @@
 
   // ════ UI / loop ════
   var canvas = document.getElementById("tt-canvas");
-  var ctx = canvas.getContext("2d");
+  var ctx = window.SnackPackArcadeAssets.configureCanvas(canvas, W, H);
+  var assets = window.SnackPackArcadeAssets.load("table-tennis");
   var statusEl = document.getElementById("tt-status");
   var slEl = document.getElementById("tt-sl");
   var srEl = document.getElementById("tt-sr");
@@ -331,6 +334,10 @@
   var state = initialState(mode, 7, paddleColor);
   var keys = {};
   var rafId = null;
+
+  window.addEventListener("snackpack:arcade-assets-ready", function (e) {
+    if (e.detail && e.detail.slug === "table-tennis") draw();
+  });
 
   function resetGame(startNow) {
     state = initialState(mode, 7, paddleColor);
@@ -366,26 +373,43 @@
   function draw() {
     ctx.clearRect(0, 0, W, H);
     // court
-    ctx.fillStyle = "#0f3b32"; ctx.fillRect(0, 0, W, H);
-    // mid line
-    ctx.strokeStyle = "rgba(255,255,255,0.35)"; ctx.lineWidth = 3; ctx.setLineDash([10, 12]);
-    ctx.beginPath(); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke(); ctx.setLineDash([]);
+    if (assets.images.bg) {
+      window.SnackPackArcadeAssets.drawCover(ctx, assets.images.bg, 0, 0, W, H);
+    } else {
+      ctx.fillStyle = "#0f3b32"; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = "rgba(255,255,255,0.35)"; ctx.lineWidth = 3; ctx.setLineDash([10, 12]);
+      ctx.beginPath(); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke(); ctx.setLineDash([]);
+    }
     // flashes
     if (state.flashL > 0) { ctx.fillStyle = "rgba(216,72,58," + (state.flashL / FLASH_DURATION * 0.4) + ")"; ctx.fillRect(0, 0, W, H / 2); }
     if (state.flashR > 0) { ctx.fillStyle = "rgba(216,72,58," + (state.flashR / FLASH_DURATION * 0.4) + ")"; ctx.fillRect(0, H / 2, W, H / 2); }
     // ball trail
     state.ballTrail.forEach(function (t) {
       var a = (1 - t.age / TRAIL_MAX) * 0.4;
-      ctx.fillStyle = "rgba(255,255,255," + a + ")";
-      ctx.beginPath(); ctx.arc(t.x, t.y, BALL_R * (1 - t.age / (TRAIL_MAX * 2)), 0, Math.PI * 2); ctx.fill();
+      if (assets.images.sheet) {
+        ctx.globalAlpha = a;
+        window.SnackPackArcadeAssets.drawSprite(ctx, assets, "ball", t.x - BALL_R, t.y - BALL_R, BALL_R * 2, BALL_R * 2, 0);
+        ctx.globalAlpha = 1;
+      } else {
+        ctx.fillStyle = "rgba(255,255,255," + a + ")";
+        ctx.beginPath(); ctx.arc(t.x, t.y, BALL_R * (1 - t.age / (TRAIL_MAX * 2)), 0, Math.PI * 2); ctx.fill();
+      }
     });
     // ball
-    ctx.fillStyle = "#fffdf8"; ctx.beginPath(); ctx.arc(state.ballX, state.ballY, BALL_R, 0, Math.PI * 2); ctx.fill();
+    if (!window.SnackPackArcadeAssets.drawSprite(ctx, assets, "ball", state.ballX - BALL_R, state.ballY - BALL_R, BALL_R * 2, BALL_R * 2, 0)) {
+      ctx.fillStyle = "#fffdf8"; ctx.beginPath(); ctx.arc(state.ballX, state.ballY, BALL_R, 0, Math.PI * 2); ctx.fill();
+    }
     // paddles (note: board is rotated mentally — left paddle = top of screen = YOU)
-    ctx.fillStyle = state.paddleColorL;
-    roundRect(PADDLE_X_L, state.paddleL - PADDLE_H / 2, PADDLE_W, PADDLE_H, 5); ctx.fill();
-    ctx.fillStyle = "#efb54d";
-    roundRect(PADDLE_X_R, state.paddleR - PADDLE_H / 2, PADDLE_W, PADDLE_H, 5); ctx.fill();
+    if (state.paddleColorL === "#29B6F6" && window.SnackPackArcadeAssets.drawSprite(ctx, assets, "paddleBlue", PADDLE_X_L - 4, state.paddleL - PADDLE_H / 2 - 3, PADDLE_W + 8, PADDLE_H + 6, 0)) {
+      // Sprite drawn.
+    } else {
+      ctx.fillStyle = state.paddleColorL;
+      roundRect(PADDLE_X_L, state.paddleL - PADDLE_H / 2, PADDLE_W, PADDLE_H, 5); ctx.fill();
+    }
+    if (!window.SnackPackArcadeAssets.drawSprite(ctx, assets, "paddleGold", PADDLE_X_R - 4, state.paddleR - PADDLE_H / 2 - 3, PADDLE_W + 8, PADDLE_H + 6, 0)) {
+      ctx.fillStyle = "#efb54d";
+      roundRect(PADDLE_X_R, state.paddleR - PADDLE_H / 2, PADDLE_W, PADDLE_H, 5); ctx.fill();
+    }
   }
 
   function roundRect(x, y, w, h, r) {

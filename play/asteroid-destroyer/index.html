@@ -11,10 +11,11 @@
 <link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
 <meta property="og:title" content="Play Asteroid Destroyer Online Free | Asteroids Arcade Game">
 <meta property="og:description" content="Blast asteroids, grab power-ups and chase a high score. Classic, rotation and 60-second blitz modes — free in your browser, no ads.">
-<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:image" content="https://www.snackpackuniverse.com/play/social/asteroid-destroyer.png">
 <meta property="og:url" content="https://www.snackpackuniverse.com/play/asteroid-destroyer/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.snackpackuniverse.com/play/social/asteroid-destroyer.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -198,6 +199,7 @@
 
 <script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingamesvol2";</script>
 <script src="../funnel.js"></script>
+<script src="../arcade-assets.js"></script>
 <script>
 (function () {
   "use strict";
@@ -412,7 +414,8 @@
 
   // ════ UI / loop ════
   var canvas = document.getElementById("as-canvas");
-  var ctx = canvas.getContext("2d");
+  var ctx = window.SnackPackArcadeAssets.configureCanvas(canvas, W, H);
+  var assets = window.SnackPackArcadeAssets.load("asteroid-destroyer");
   var statusEl = document.getElementById("as-status");
   var scoreEl = document.getElementById("as-score");
   var bestEl = document.getElementById("as-best");
@@ -428,6 +431,10 @@
   var input = { left: false, right: false, thrust: false, fire: false };
   var fireTimer = 0;
   var FIRE_CD = 9;
+
+  window.addEventListener("snackpack:arcade-assets-ready", function (e) {
+    if (e.detail && e.detail.slug === "asteroid-destroyer") draw();
+  });
 
   function bestKey(m) { return "sp_asteroid_best_" + m; }
   function bestFor(m) { try { return parseInt(localStorage.getItem(bestKey(m)) || "0", 10) || 0; } catch (e) { return 0; } }
@@ -479,30 +486,39 @@
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = "#0a0e1f"; ctx.fillRect(0, 0, W, H);
-    // stars
-    ctx.fillStyle = "rgba(255,255,255,0.12)";
-    for (var i = 0; i < 40; i++) { var sx = (i * 97) % W, sy = (i * 53) % H; ctx.fillRect(sx, sy, 1.5, 1.5); }
+    if (assets.images.bg) {
+      window.SnackPackArcadeAssets.drawCover(ctx, assets.images.bg, 0, 0, W, H);
+    } else {
+      ctx.fillStyle = "#0a0e1f"; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = "rgba(255,255,255,0.12)";
+      for (var i = 0; i < 40; i++) { var sx = (i * 97) % W, sy = (i * 53) % H; ctx.fillRect(sx, sy, 1.5, 1.5); }
+    }
 
     // powerups
     state.powerUps.forEach(function (p) {
       var c = p.type === "shield" ? "#64B5F6" : p.type === "triple" ? "#FFF176" : "#B388FF";
-      ctx.fillStyle = c; ctx.globalAlpha = 0.9;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
-      ctx.globalAlpha = 1; ctx.fillStyle = "#0a0e1f"; ctx.font = "bold 13px DM Sans, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      ctx.fillText(p.type === "shield" ? "S" : p.type === "triple" ? "3" : "~", p.x, p.y + 1);
+      var sprite = p.type === "shield" ? "shield" : p.type === "triple" ? "triple" : "slow";
+      if (!window.SnackPackArcadeAssets.drawSprite(ctx, assets, sprite, p.x - 15, p.y - 15, 30, 30, 0)) {
+        ctx.fillStyle = c; ctx.globalAlpha = 0.9;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = 1; ctx.fillStyle = "#0a0e1f"; ctx.font = "bold 13px DM Sans, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillText(p.type === "shield" ? "S" : p.type === "triple" ? "3" : "~", p.x, p.y + 1);
+      }
     });
 
     // asteroids
     state.asteroids.forEach(function (a) {
-      ctx.save(); ctx.translate(a.x, a.y); ctx.rotate(a.angle);
-      ctx.fillStyle = a.size === "large" ? "#6b5d52" : a.size === "medium" ? "#8a7a6c" : "#a89684";
-      ctx.strokeStyle = "rgba(255,255,255,0.25)"; ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      var pts = 9;
-      for (var k = 0; k < pts; k++) { var ang = (k / pts) * Math.PI * 2; var rr = a.radius * (0.82 + ((k * 7) % 5) / 14); var px = Math.cos(ang) * rr, py = Math.sin(ang) * rr; if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); }
-      ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.restore();
+      var name = a.size === "large" ? "asteroidLarge" : a.size === "medium" ? "asteroidMedium" : "asteroidSmall";
+      if (!window.SnackPackArcadeAssets.drawSprite(ctx, assets, name, a.x - a.radius * 1.15, a.y - a.radius * 1.15, a.radius * 2.3, a.radius * 2.3, a.angle)) {
+        ctx.save(); ctx.translate(a.x, a.y); ctx.rotate(a.angle);
+        ctx.fillStyle = a.size === "large" ? "#6b5d52" : a.size === "medium" ? "#8a7a6c" : "#a89684";
+        ctx.strokeStyle = "rgba(255,255,255,0.25)"; ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        var pts = 9;
+        for (var k = 0; k < pts; k++) { var ang = (k / pts) * Math.PI * 2; var rr = a.radius * (0.82 + ((k * 7) % 5) / 14); var px = Math.cos(ang) * rr, py = Math.sin(ang) * rr; if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); }
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.restore();
+      }
     });
 
     // bullets
@@ -516,11 +532,18 @@
     // ship
     var s = state.ship;
     if (!(s.invincible > 0 && Math.floor(s.invincible / 6) % 2)) {
-      ctx.save(); ctx.translate(s.x, s.y); ctx.rotate(s.angle);
-      ctx.fillStyle = "#29B6F6"; ctx.strokeStyle = "#fffdf8"; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(0, -s.radius * 1.3); ctx.lineTo(s.radius * 0.85, s.radius); ctx.lineTo(0, s.radius * 0.5); ctx.lineTo(-s.radius * 0.85, s.radius); ctx.closePath(); ctx.fill(); ctx.stroke();
-      if (input.thrust && MODE_CONFIG[mode].canRotate) { ctx.fillStyle = "#FF7043"; ctx.beginPath(); ctx.moveTo(-4, s.radius); ctx.lineTo(4, s.radius); ctx.lineTo(0, s.radius + 8 + Math.random() * 6); ctx.closePath(); ctx.fill(); }
-      ctx.restore();
+      if (input.thrust && MODE_CONFIG[mode].canRotate) {
+        ctx.save(); ctx.translate(s.x, s.y); ctx.rotate(s.angle);
+        ctx.fillStyle = "#FF7043"; ctx.beginPath(); ctx.moveTo(-4, s.radius); ctx.lineTo(4, s.radius); ctx.lineTo(0, s.radius + 8 + Math.random() * 6); ctx.closePath(); ctx.fill();
+        ctx.restore();
+      }
+      var shipDrawn = window.SnackPackArcadeAssets.drawSprite(ctx, assets, "ship", s.x - 23, s.y - 27, 46, 54, s.angle);
+      if (!shipDrawn) {
+        ctx.save(); ctx.translate(s.x, s.y); ctx.rotate(s.angle);
+        ctx.fillStyle = "#29B6F6"; ctx.strokeStyle = "#fffdf8"; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(0, -s.radius * 1.3); ctx.lineTo(s.radius * 0.85, s.radius); ctx.lineTo(0, s.radius * 0.5); ctx.lineTo(-s.radius * 0.85, s.radius); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.restore();
+      }
       if (state.shieldHits > 0) { ctx.strokeStyle = "rgba(100,181,246,0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(s.x, s.y, s.radius + 6, 0, Math.PI * 2); ctx.stroke(); }
     }
 

@@ -11,10 +11,11 @@
 <link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
 <meta property="og:title" content="Play Snacky Worm Online Free | Classic Snake Game, No Ads">
 <meta property="og:description" content="The classic Snake game — eat, grow, don't bite yourself. Classic, Zen and Speed modes, free in your browser.">
-<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:image" content="https://www.snackpackuniverse.com/play/social/snacky-worm.png">
 <meta property="og:url" content="https://www.snackpackuniverse.com/play/snacky-worm/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.snackpackuniverse.com/play/social/snacky-worm.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -169,7 +170,7 @@
           </div>
         </div>
         <div class="funnel-aside">
-          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">🐛</div>
+          <img class="arcade-funnel-icon" src="../tiles/snacky-worm.png" alt="Snacky Worm game art" loading="lazy">
           <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">A tiny, ad-free studio — tips keep us building.</span>
         </div>
       </div>
@@ -233,6 +234,7 @@
 <!-- Point the shared funnel/donation prompt at Brain Games Vol 2 (app 2). -->
 <script>window.SP_PLAY_URL = "../../apps/snackpack-brain-games-vol-2/";</script>
 <script src="../funnel.js"></script>
+<script src="../arcade-assets.js"></script>
 <script>
 (function () {
   "use strict";
@@ -243,9 +245,11 @@
     speed:   { cols: 20, rows: 20, intervalMs: 80,  wrap: false }
   };
   var BEST_KEY = "sp_worm_best";
+  var BOARD_SIZE = 400;
 
   var canvas = document.getElementById("sw-canvas");
-  var ctx = canvas.getContext("2d");
+  var ctx = window.SnackPackArcadeAssets.configureCanvas(canvas, BOARD_SIZE, BOARD_SIZE);
+  var assets = window.SnackPackArcadeAssets.load("snacky-worm");
   var scoreEl = document.getElementById("sw-score");
   var bestEl = document.getElementById("sw-best");
   var statusEl = document.getElementById("sw-status");
@@ -265,6 +269,10 @@
   if (!PACE[pace]) pace = "normal";
 
   var st, timer = null;
+
+  window.addEventListener("snackpack:arcade-assets-ready", function (e) {
+    if (e.detail && e.detail.slug === "snacky-worm") draw();
+  });
 
   function opposite(d) { return d === "UP" ? "DOWN" : d === "DOWN" ? "UP" : d === "LEFT" ? "RIGHT" : "LEFT"; }
 
@@ -346,29 +354,37 @@
   // ── Render ───────────────────────────────────────
   function draw() {
     var cfg = MODE_CONFIG[mode];
-    var cw = canvas.width / cfg.cols, ch = canvas.height / cfg.rows;
-    ctx.fillStyle = "#dff0d0";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // subtle grid
-    ctx.strokeStyle = "rgba(44,74,35,0.07)";
-    ctx.lineWidth = 1;
-    for (var i = 1; i < cfg.cols; i++) { ctx.beginPath(); ctx.moveTo(i * cw, 0); ctx.lineTo(i * cw, canvas.height); ctx.stroke(); }
-    for (var j = 1; j < cfg.rows; j++) { ctx.beginPath(); ctx.moveTo(0, j * ch); ctx.lineTo(canvas.width, j * ch); ctx.stroke(); }
+    var cw = BOARD_SIZE / cfg.cols, ch = BOARD_SIZE / cfg.rows;
+    if (assets.images.bg) {
+      ctx.drawImage(assets.images.bg, 0, 0, BOARD_SIZE, BOARD_SIZE);
+    } else {
+      ctx.fillStyle = "#dff0d0";
+      ctx.fillRect(0, 0, BOARD_SIZE, BOARD_SIZE);
+      ctx.strokeStyle = "rgba(44,74,35,0.07)";
+      ctx.lineWidth = 1;
+      for (var i = 1; i < cfg.cols; i++) { ctx.beginPath(); ctx.moveTo(i * cw, 0); ctx.lineTo(i * cw, BOARD_SIZE); ctx.stroke(); }
+      for (var j = 1; j < cfg.rows; j++) { ctx.beginPath(); ctx.moveTo(0, j * ch); ctx.lineTo(BOARD_SIZE, j * ch); ctx.stroke(); }
+    }
 
     // Food (apple)
-    ctx.fillStyle = "#E53935";
-    roundRect(st.food.x * cw + 2, st.food.y * ch + 2, cw - 4, ch - 4, 5);
-    ctx.fill();
+    if (!window.SnackPackArcadeAssets.drawSprite(ctx, assets, "food", st.food.x * cw - 1, st.food.y * ch - 5, cw + 2, ch + 7, 0)) {
+      ctx.fillStyle = "#E53935";
+      roundRect(st.food.x * cw + 2, st.food.y * ch + 2, cw - 4, ch - 4, 5);
+      ctx.fill();
+    }
 
     // Snake
     for (var k = st.snake.length - 1; k >= 0; k--) {
       var s = st.snake[k];
-      ctx.fillStyle = k === 0 ? "#2E7D32" : "#43A047";
-      roundRect(s.x * cw + 1, s.y * ch + 1, cw - 2, ch - 2, 5);
-      ctx.fill();
+      var sprite = k === 0 ? "head" : k === st.snake.length - 1 ? "tail" : "body";
+      if (!window.SnackPackArcadeAssets.drawSprite(ctx, assets, sprite, s.x * cw + 1, s.y * ch + 1, cw - 2, ch - 2, 0)) {
+        ctx.fillStyle = k === 0 ? "#2E7D32" : "#43A047";
+        roundRect(s.x * cw + 1, s.y * ch + 1, cw - 2, ch - 2, 5);
+        ctx.fill();
+      }
     }
     // eyes on head
-    if (st.snake.length) {
+    if (st.snake.length && !assets.images.sheet) {
       var h = st.snake[0];
       ctx.fillStyle = "#fff";
       var ex = h.x * cw + cw / 2, ey = h.y * ch + ch / 2;
@@ -377,22 +393,22 @@
 
     if (st.phase === "menu" || st.phase === "dead") {
       ctx.fillStyle = "rgba(20,30,18,0.5)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, BOARD_SIZE, BOARD_SIZE);
       ctx.textAlign = "center"; ctx.fillStyle = "#fff";
       if (st.phase === "menu") {
         ctx.font = "900 30px 'Fraunces', Georgia, serif";
-        ctx.fillText("Snacky Worm", canvas.width / 2, canvas.height / 2 - 8);
+        ctx.fillText("Snacky Worm", BOARD_SIZE / 2, BOARD_SIZE / 2 - 8);
         ctx.font = "700 16px 'DM Sans', Arial, sans-serif";
-        ctx.fillText("Press an arrow or swipe to start", canvas.width / 2, canvas.height / 2 + 22);
+        ctx.fillText("Press an arrow or swipe to start", BOARD_SIZE / 2, BOARD_SIZE / 2 + 22);
       } else {
         ctx.font = "900 32px 'Fraunces', Georgia, serif";
-        ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 16);
+        ctx.fillText("Game Over", BOARD_SIZE / 2, BOARD_SIZE / 2 - 16);
         ctx.fillStyle = "#9CCC65";
         ctx.font = "900 48px 'Fraunces', Georgia, serif";
-        ctx.fillText(st.score, canvas.width / 2, canvas.height / 2 + 28);
+        ctx.fillText(st.score, BOARD_SIZE / 2, BOARD_SIZE / 2 + 28);
         ctx.fillStyle = "#fff";
         ctx.font = "700 15px 'DM Sans', Arial, sans-serif";
-        ctx.fillText("New game to play again", canvas.width / 2, canvas.height / 2 + 58);
+        ctx.fillText("New game to play again", BOARD_SIZE / 2, BOARD_SIZE / 2 + 58);
       }
     }
   }

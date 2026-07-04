@@ -560,6 +560,8 @@
   }
 
   function drawKeeper() {
+    var keeperName = keeperDiveDir === "L" ? "keeperL" : keeperDiveDir === "R" ? "keeperR" : "keeperC";
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawActor(ctx, keeperName, keeper.x - 58, keeper.y - 70, 116, 116)) return;
     ctx.save();
     ctx.translate(keeper.x, keeper.y);
     ctx.fillStyle = "#ffd54f";
@@ -577,6 +579,8 @@
 
   function drawStriker() {
     var bounce = current && !current.resolved ? Math.sin(performance.now() / 140) * 3 : 0;
+    var actor = current && current.resolved ? "strikerHeader" : "striker";
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawActor(ctx, actor, headerPoint.x - 54, headerPoint.y - 63 + bounce, 108, 108)) return;
     ctx.save();
     ctx.translate(headerPoint.x, headerPoint.y + 6 + bounce);
     ctx.fillStyle = "#de6a38";
@@ -590,6 +594,8 @@
   }
 
   function drawBall() {
+    var ballFrame = "ball" + (Math.floor(performance.now() / 90) % 4);
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawActor(ctx, ballFrame, ball.x - 14, ball.y - 14, 28, 28)) return;
     if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawBall(ctx, ball.x, ball.y, 14)) return;
     ctx.fillStyle = "#fff";
     ctx.beginPath(); ctx.arc(ball.x, ball.y, 10, 0, Math.PI * 2); ctx.fill();
@@ -605,6 +611,9 @@
     drawPitch();
     drawGoal();
     drawAimZones();
+    if (current && !current.resolved) {
+      window.SnackSoccerAssets && window.SnackSoccerAssets.drawFx(ctx, "timingRing", headerPoint.x - 42, headerPoint.y - 70, 84, 78);
+    }
     drawKeeper();
     drawStriker();
     drawBall();

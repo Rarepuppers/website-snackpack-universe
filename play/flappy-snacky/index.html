@@ -11,10 +11,11 @@
 <link rel="apple-touch-icon" href="../../snackpack-favicon-transparent.png">
 <meta property="og:title" content="Play Flappy Snacky Online Free | Tap-to-Fly Arcade, No Ads">
 <meta property="og:description" content="Tap to fly, dodge the pipes, chase a high score. Classic, Hard and Night modes — free in your browser, no ads.">
-<meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
+<meta property="og:image" content="https://www.snackpackuniverse.com/play/social/flappy-snacky.png">
 <meta property="og:url" content="https://www.snackpackuniverse.com/play/flappy-snacky/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.snackpackuniverse.com/play/social/flappy-snacky.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -155,7 +156,7 @@
           </div>
         </div>
         <div class="funnel-aside">
-          <div class="sp-emoji" aria-hidden="true" style="font-size:3rem;">🐤</div>
+          <img class="arcade-funnel-icon" src="../tiles/flappy-snacky.png" alt="Flappy Snacky game art" loading="lazy">
           <span style="color:var(--muted);font-size:0.82rem;font-weight:600;max-width:160px;">A tiny, ad-free studio — tips keep us flying.</span>
         </div>
       </div>
@@ -212,12 +213,14 @@
 <!-- Point the shared funnel/donation prompt at Brain Games Vol 2 (app 2). -->
 <script>window.SP_PLAY_URL = "../../apps/snackpack-brain-games-vol-2/";</script>
 <script src="../funnel.js"></script>
+<script src="../arcade-assets.js"></script>
 <script>
 (function () {
   "use strict";
   // Faithful port of the app's Flappy Snacky engine (390x680 world).
   var GAME_WIDTH = 390, GAME_HEIGHT = 680;
-  var BIRD_X = 90, BIRD_R = 18, PIPE_WIDTH = 54;
+  var BIRD_X = 90, BIRD_R = 18, BIRD_HIT_R = 14, PIPE_WIDTH = 54;
+  var FIXED_DT = 1000 / 60, FLAP_BUFFER_FRAMES = 5;
   var GROUND_HEIGHT = 60;
   var GROUND_Y = GAME_HEIGHT - GROUND_HEIGHT; // 620
   var CEILING_Y = 40;
@@ -230,7 +233,8 @@
   var BEST_KEY = "sp_flappy_best";
 
   var canvas = document.getElementById("fl-canvas");
-  var ctx = canvas.getContext("2d");
+  var ctx = window.SnackPackArcadeAssets.configureCanvas(canvas, GAME_WIDTH, GAME_HEIGHT);
+  var assets = window.SnackPackArcadeAssets.load("flappy-snacky");
   var scoreEl = document.getElementById("fl-score");
   var bestEl = document.getElementById("fl-best");
   var statusEl = document.getElementById("fl-status");
@@ -247,8 +251,12 @@
 
   var st, raf = null;
 
+  window.addEventListener("snackpack:arcade-assets-ready", function (e) {
+    if (e.detail && e.detail.slug === "flappy-snacky") draw();
+  });
+
   function initialState() {
-    return { phase: "menu", birdY: GAME_HEIGHT / 2, birdVY: 0, pipes: [], score: 0, frame: 0, nextPipeId: 0 };
+    return { phase: "menu", birdY: GAME_HEIGHT / 2, birdVY: 0, pipes: [], score: 0, frame: 0, nextPipeId: 0, flapBuffer: 0 };
   }
 
   function randomGapTop(gapSize) {
@@ -261,6 +269,10 @@
     var mult = SPEED[speed];
     var interval = Math.max(1, Math.round(cfg.pipeInterval / mult));
     st.frame += 1;
+    if (st.flapBuffer > 0) {
+      st.birdVY = cfg.flapStrength;
+      st.flapBuffer = 0;
+    }
     st.birdVY += cfg.gravity;
     st.birdY += st.birdVY;
 
@@ -275,24 +287,24 @@
       if (!p.passed && p.x + PIPE_WIDTH < BIRD_X - BIRD_R) { st.score += 1; p.passed = true; }
     });
 
-    var dead = st.birdY + BIRD_R >= GROUND_Y ||
-               st.birdY - BIRD_R <= CEILING_Y ||
+    var dead = st.birdY + BIRD_HIT_R >= GROUND_Y ||
+               st.birdY - BIRD_HIT_R <= CEILING_Y ||
                st.pipes.some(function (p) { return collides(p, cfg.gapSize); });
     if (dead) die();
   }
 
   function collides(pipe, gapSize) {
-    var birdLeft = BIRD_X - BIRD_R, birdRight = BIRD_X + BIRD_R, pipeRight = pipe.x + PIPE_WIDTH;
+    var birdLeft = BIRD_X - BIRD_HIT_R, birdRight = BIRD_X + BIRD_HIT_R, pipeRight = pipe.x + PIPE_WIDTH;
     if (birdRight < pipe.x || birdLeft > pipeRight) return false;
     var gapBottom = pipe.gapTop + gapSize;
-    if (st.birdY - BIRD_R > pipe.gapTop && st.birdY + BIRD_R < gapBottom) return false;
+    if (st.birdY - BIRD_HIT_R > pipe.gapTop && st.birdY + BIRD_HIT_R < gapBottom) return false;
     return true;
   }
 
   function flap() {
     if (st.phase === "dead") { restart(); return; }
     if (st.phase === "menu") { st.phase = "playing"; statusEl.textContent = "Flap to stay airborne!"; startLoop(); }
-    st.birdVY = MODE_CONFIG[mode].flapStrength;
+    st.flapBuffer = FLAP_BUFFER_FRAMES;
   }
 
   function die() {
@@ -324,15 +336,23 @@
   }
 
   // ── Loop ─────────────────────────────────────────
-  function frame() {
+  var lastFrameTime = 0, accumulator = 0;
+  function frame(now) {
     if (st.phase !== "playing") return;
-    tick();
+    if (!lastFrameTime) lastFrameTime = now;
+    accumulator += Math.min(80, now - lastFrameTime);
+    lastFrameTime = now;
+    while (accumulator >= FIXED_DT) {
+      tick();
+      accumulator -= FIXED_DT;
+      if (st.phase !== "playing") break;
+    }
     scoreEl.textContent = st.score;
     draw();
     if (st.phase === "playing") raf = requestAnimationFrame(frame);
   }
-  function startLoop() { stopLoop(); raf = requestAnimationFrame(frame); }
-  function stopLoop() { if (raf !== null) { cancelAnimationFrame(raf); raf = null; } }
+  function startLoop() { stopLoop(); lastFrameTime = 0; accumulator = 0; raf = requestAnimationFrame(frame); }
+  function stopLoop() { if (raf !== null) { cancelAnimationFrame(raf); raf = null; } lastFrameTime = 0; accumulator = 0; }
 
   // ── Render ───────────────────────────────────────
   function draw() {
@@ -342,20 +362,36 @@
     var pipeC = night ? "#4CAF7D" : "#4CAF50", pipeDark = night ? "#2E8B57" : "#388E3C";
     var cfg = MODE_CONFIG[mode];
 
-    var g = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
-    g.addColorStop(0, skyTop); g.addColorStop(1, skyBot);
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+    var bg = night ? assets.images.bgNight : assets.images.bgDay;
+    if (bg) {
+      window.SnackPackArcadeAssets.drawCover(ctx, bg, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+    } else {
+      var g = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
+      g.addColorStop(0, skyTop); g.addColorStop(1, skyBot);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+    }
 
     // Pipes
     st.pipes.forEach(function (p) {
       var gapBottom = p.gapTop + cfg.gapSize;
-      ctx.fillStyle = pipeC;
-      ctx.fillRect(p.x, 0, PIPE_WIDTH, p.gapTop);
-      ctx.fillRect(p.x, gapBottom, PIPE_WIDTH, GROUND_Y - gapBottom);
-      ctx.fillStyle = pipeDark;
-      ctx.fillRect(p.x - 4, p.gapTop - 22, PIPE_WIDTH + 8, 22);
-      ctx.fillRect(p.x - 4, gapBottom, PIPE_WIDTH + 8, 22);
+      if (assets.images.sheet) {
+        ctx.save();
+        ctx.translate(p.x + PIPE_WIDTH / 2, p.gapTop / 2);
+        ctx.scale(1, -1);
+        ctx.drawImage(assets.images.sheet, 360, 18, 58, 132, -PIPE_WIDTH / 2, -p.gapTop / 2, PIPE_WIDTH, p.gapTop);
+        ctx.restore();
+        ctx.drawImage(assets.images.sheet, 348, 150, 82, 30, p.x - 4, p.gapTop - 22, PIPE_WIDTH + 8, 22);
+        ctx.drawImage(assets.images.sheet, 360, 18, 58, 132, p.x, gapBottom, PIPE_WIDTH, GROUND_Y - gapBottom);
+        ctx.drawImage(assets.images.sheet, 348, 150, 82, 30, p.x - 4, gapBottom, PIPE_WIDTH + 8, 22);
+      } else {
+        ctx.fillStyle = pipeC;
+        ctx.fillRect(p.x, 0, PIPE_WIDTH, p.gapTop);
+        ctx.fillRect(p.x, gapBottom, PIPE_WIDTH, GROUND_Y - gapBottom);
+        ctx.fillStyle = pipeDark;
+        ctx.fillRect(p.x - 4, p.gapTop - 22, PIPE_WIDTH + 8, 22);
+        ctx.fillRect(p.x - 4, gapBottom, PIPE_WIDTH + 8, 22);
+      }
     });
 
     // Ground
@@ -369,16 +405,20 @@
     ctx.save();
     ctx.translate(BIRD_X, st.birdY);
     ctx.rotate(angle);
-    ctx.fillStyle = "#FFB300";
-    ctx.beginPath(); ctx.arc(0, 0, BIRD_R, 0, Math.PI * 2); ctx.fill();
-    // beak
-    ctx.fillStyle = "#FF6F00";
-    ctx.fillRect(BIRD_R - 3, -3, 10, 7);
-    // eye
-    ctx.fillStyle = "#fff";
-    ctx.beginPath(); ctx.arc(6, -6, 4, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#201713";
-    ctx.beginPath(); ctx.arc(7, -6, 2, 0, Math.PI * 2); ctx.fill();
+    var frameName = "bird" + (Math.floor(st.frame / 8) % 3);
+    if (assets.images.sheet && assets.manifest.sprites[frameName]) {
+      var src = assets.manifest.sprites[frameName];
+      ctx.drawImage(assets.images.sheet, src[0], src[1], src[2], src[3], -30, -25, 60, 50);
+    } else {
+      ctx.fillStyle = "#FFB300";
+      ctx.beginPath(); ctx.arc(0, 0, BIRD_R, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#FF6F00";
+      ctx.fillRect(BIRD_R - 3, -3, 10, 7);
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.arc(6, -6, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#201713";
+      ctx.beginPath(); ctx.arc(7, -6, 2, 0, Math.PI * 2); ctx.fill();
+    }
     ctx.restore();
 
     // Score (in-canvas, big)

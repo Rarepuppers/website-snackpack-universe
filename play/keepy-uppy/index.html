@@ -289,6 +289,10 @@
   var raf = null;
   var history = [];
   var particles = [];
+  var badgeFlash = null;
+  var FIXED_DT = 1000 / 60;
+  var accumulator = 0;
+  var lastFrameTime = 0;
 
   function reset() {
     if (raf) cancelAnimationFrame(raf);
@@ -300,6 +304,9 @@
     over = false;
     history = [];
     particles = [];
+    badgeFlash = null;
+    accumulator = 0;
+    lastFrameTime = 0;
     ball = {
       x: W / 2,
       y: 190,
@@ -345,12 +352,20 @@
     if (running) return;
     running = true;
     paused = false;
+    accumulator = 0;
+    lastFrameTime = 0;
     raf = requestAnimationFrame(loop);
   }
 
-  function loop() {
+  function loop(now) {
     if (!running || paused) return;
-    step();
+    if (!lastFrameTime) lastFrameTime = now;
+    accumulator += Math.min(80, now - lastFrameTime);
+    lastFrameTime = now;
+    while (accumulator >= FIXED_DT && running && !paused) {
+      step();
+      accumulator -= FIXED_DT;
+    }
     draw();
     raf = requestAnimationFrame(loop);
   }
@@ -378,6 +393,7 @@
     if (star && star.live && Math.hypot(ball.x - star.x, ball.y - star.y) < ball.r + star.r) {
       score += 75 * combo;
       star.live = false;
+      badgeFlash = { name: "goldenBoot", text: "Bonus", life: 72 };
       statusEl.className = "game-status";
       statusEl.textContent = "Star collected. +" + (75 * combo);
       addParticles(star.x, star.y, "#efb54d");
@@ -408,6 +424,11 @@
     var gained = Math.round((18 + clean * 22) * combo);
     score += gained;
     if (touches % cfg.starEvery === 0) star = makeStar();
+    if (touches > 0 && touches % 20 === 0) {
+      badgeFlash = { name: "longRun", text: touches + " touches", life: 108 };
+    } else if (clean > 0.86) {
+      badgeFlash = { name: "bullseye", text: "Clean", life: 58 };
+    }
     history.unshift(clean > 0.78 ? "star" : "live");
     history = history.slice(0, 12);
     statusEl.className = "game-status";
@@ -433,6 +454,7 @@
     history = history.slice(0, 12);
     statusEl.className = "game-status game-status--lose";
     statusEl.textContent = "Dropped after " + touches + " touches. Score: " + score + ".";
+    badgeFlash = touches >= 20 ? { name: "longRun", text: "Keepy run", life: 150 } : null;
     renderHistory();
     if (window.SnackPack && score >= 1200) {
       window.SnackPack.celebrate({
@@ -485,6 +507,9 @@
 
   function drawStar() {
     if (!star || !star.live || over) return;
+    if (window.SnackSoccerAssets) {
+      window.SnackSoccerAssets.drawFx(ctx, "sparkle", star.x - 24, star.y - 24, 48, 48);
+    }
     if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawStar(ctx, star.x, star.y, star.r + 5)) return;
     ctx.save();
     ctx.translate(star.x, star.y);
@@ -503,7 +528,11 @@
   function drawBall() {
     ctx.save();
     ctx.translate(ball.x, ball.y);
-    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawBall(ctx, 0, 0, ball.r + 4)) { ctx.restore(); return; }
+    if (window.SnackSoccerAssets) {
+      var frame = Math.abs(Math.floor((ball.x + ball.y + touches * 9) / 18)) % 4;
+      if (window.SnackSoccerAssets.drawActor(ctx, "ball" + frame, -ball.r - 4, -ball.r - 4, (ball.r + 4) * 2, (ball.r + 4) * 2)) { ctx.restore(); return; }
+      if (window.SnackSoccerAssets.drawBall(ctx, 0, 0, ball.r + 4)) { ctx.restore(); return; }
+    }
     ctx.fillStyle = "#fff";
     ctx.beginPath();
     ctx.arc(0, 0, ball.r, 0, Math.PI * 2);
@@ -529,6 +558,7 @@
 
   function drawParticles() {
     particles.forEach(function (p) {
+      if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawFx(ctx, p.color === "#efb54d" ? "sparkle" : "dust", p.x - 10, p.y - 10, 20, 20)) return;
       ctx.fillStyle = p.color;
       ctx.globalAlpha = clamp(p.life / 28, 0, 1);
       ctx.beginPath();
@@ -536,6 +566,36 @@
       ctx.fill();
       ctx.globalAlpha = 1;
     });
+  }
+
+  function drawPlayer() {
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawActor(ctx, "striker", W / 2 - 46, groundY - 92, 92, 104)) return;
+    ctx.save();
+    ctx.translate(W / 2, groundY - 44);
+    ctx.fillStyle = "#1f8f77";
+    ctx.fillRect(-16, -30, 32, 42);
+    ctx.fillStyle = "#f0c27a";
+    ctx.beginPath();
+    ctx.arc(0, -42, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawBadgeFlash() {
+    if (!badgeFlash || !window.SnackSoccerAssets) return;
+    badgeFlash.life -= 1;
+    var a = clamp(badgeFlash.life / 24, 0, 1);
+    ctx.save();
+    ctx.globalAlpha = a;
+    window.SnackSoccerAssets.drawBadge(ctx, badgeFlash.name, W - 124, 34, 86, 86);
+    ctx.fillStyle = "#fff";
+    ctx.font = "800 13px 'DM Sans', Arial, sans-serif";
+    ctx.textAlign = "center";
+    ctx.shadowColor = "rgba(0,0,0,0.45)";
+    ctx.shadowBlur = 5;
+    ctx.fillText(badgeFlash.text, W - 81, 134);
+    ctx.restore();
+    if (badgeFlash.life <= 0) badgeFlash = null;
   }
 
   function drawPrompt() {
@@ -549,9 +609,11 @@
   function draw() {
     ctx.clearRect(0, 0, W, H);
     drawPitch();
+    drawPlayer();
     drawStar();
     drawParticles();
     drawBall();
+    drawBadgeFlash();
     drawPrompt();
   }
 
@@ -567,7 +629,11 @@
     pauseBtn.textContent = paused ? "Resume" : "Pause";
     statusEl.className = "game-status";
     statusEl.textContent = paused ? "Paused." : "Back in play.";
-    if (!paused) raf = requestAnimationFrame(loop);
+    if (!paused) {
+      accumulator = 0;
+      lastFrameTime = 0;
+      raf = requestAnimationFrame(loop);
+    }
     draw();
   });
   newBtn.addEventListener("click", reset);

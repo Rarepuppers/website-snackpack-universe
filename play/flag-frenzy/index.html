@@ -139,6 +139,30 @@
   width: 100%;
 }
 .ff-result.lose { background: rgba(206, 17, 38, 0.06); }
+.ff-badge-pop {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+  font-weight: 900;
+  color: var(--ink);
+}
+.ff-badge-pop.is-visible { display: flex; animation: ffBadgePop 420ms ease-out both; }
+.ff-badge-icon {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 auto;
+  background-image: url("../sprites/soccer-badges.png");
+  background-size: 400% 200%;
+  filter: drop-shadow(0 8px 14px rgba(32,23,19,0.18));
+}
+.ff-badge-icon.flagStreak { background-position: 0 100%; }
+.ff-badge-icon.longRun { background-position: 100% 0; }
+@keyframes ffBadgePop {
+  from { opacity: 0; transform: translateY(8px) scale(0.88); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 .ff-share-box {
   width: 100%;
   margin-top: 10px;
@@ -253,6 +277,7 @@
 
         <div class="ff-result" id="ff-result" hidden>
           <p id="ff-result-text" style="font-weight:800;"></p>
+          <div class="ff-badge-pop" id="ff-badge-pop" aria-live="polite"><span class="ff-badge-icon flagStreak" id="ff-badge-icon" aria-hidden="true"></span><span id="ff-badge-text">Daily streak</span></div>
           <button class="btn-game btn-game--primary" id="ff-share" type="button">Copy share result</button>
           <textarea class="ff-share-box" id="ff-share-box" readonly hidden></textarea>
         </div>
@@ -409,6 +434,9 @@
   var historyEl = document.getElementById("ff-history");
   var resultEl = document.getElementById("ff-result");
   var resultTextEl = document.getElementById("ff-result-text");
+  var badgePopEl = document.getElementById("ff-badge-pop");
+  var badgeIconEl = document.getElementById("ff-badge-icon");
+  var badgeTextEl = document.getElementById("ff-badge-text");
   var shareBtn = document.getElementById("ff-share");
   var shareBox = document.getElementById("ff-share-box");
   var practiceBtn = document.getElementById("ff-practice");
@@ -528,6 +556,15 @@
     localStorage.setItem(MAXSTREAK_KEY, String(best));
     streakEl.textContent = streak;
     bestStreakEl.textContent = best;
+    return { streak: streak, best: best };
+  }
+
+  function showBadge(kind, text) {
+    badgeIconEl.className = "ff-badge-icon " + kind;
+    badgeTextEl.textContent = text;
+    badgePopEl.classList.remove("is-visible");
+    void badgePopEl.offsetWidth;
+    badgePopEl.classList.add("is-visible");
   }
 
   function blurFor(guessCount) {
@@ -589,13 +626,14 @@
   }
 
   function renderResult() {
-    if (!done) { resultEl.hidden = true; return; }
+    if (!done) { resultEl.hidden = true; badgePopEl.classList.remove("is-visible"); return; }
     resultEl.hidden = false;
     resultEl.className = "ff-result" + (won ? "" : " lose");
     if (won) {
       resultTextEl.textContent = "Solved in " + guesses.length + "/" + TOTAL_GUESSES + "! It was " + answer + ".";
     } else {
       resultTextEl.textContent = "Out of guesses. It was " + answer + ".";
+      badgePopEl.classList.remove("is-visible");
     }
   }
 
@@ -644,9 +682,15 @@
     else if (guesses.length >= TOTAL_GUESSES) { done = true; won = false; }
     if (mode === "daily") {
       saveProgress();
-      if (done) updateStreak(won);
+      if (done) {
+        var streakInfo = updateStreak(won);
+        if (won) {
+          showBadge(streakInfo.streak >= 3 ? "longRun" : "flagStreak", streakInfo.streak >= 3 ? "Streak x" + streakInfo.streak : "Daily streak");
+        }
+      }
     }
     renderAll();
+    if (done && won && mode === "practice") showBadge("flagStreak", "Practice solved");
   }
 
   function startDaily() {

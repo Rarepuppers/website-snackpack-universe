@@ -329,6 +329,7 @@
   var raf = null;
   var keeperX = goal.x + goal.w / 2;
   var keeperY = goal.y + goal.h - 22;
+  var keeperPose = "C";
   var ball = { x: W / 2, y: 334 };
 
   function clamp(n, min, max) {
@@ -355,6 +356,7 @@
     busy = false;
     current = null;
     keeperX = dirX("C");
+    keeperPose = "C";
     ball = { x: W / 2, y: 334 };
     statusEl.className = "game-status";
     statusEl.textContent = "Watch the striker's body shape, then dive.";
@@ -406,6 +408,7 @@
     current = pickShot();
     busy = false;
     keeperX = dirX("C");
+    keeperPose = "C";
     ball = { x: W / 2, y: 334 };
     roundStart = performance.now();
     statusEl.className = "game-status";
@@ -477,6 +480,7 @@
     var start = performance.now();
     var fromKeeper = dirX("C");
     var toKeeper = dir === "none" ? fromKeeper : dirX(dir);
+    keeperPose = dir === "none" ? "C" : dir;
     var fromBall = { x: W / 2, y: 334 };
     var toBall = { x: dirX(current.shotDir), y: goal.y + goal.h * 0.5 };
     function step(now) {
@@ -553,6 +557,17 @@
   function drawStriker() {
     var clue = current ? current.clueDir : "C";
     var clueShift = current ? (clue === "L" ? -current.clue : clue === "R" ? current.clue : 0) : 0;
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawActor(ctx, "striker", W / 2 + clueShift * 0.22 - 54, 269, 108, 108, clueShift / 540)) {
+      if (current && !busy) {
+        ctx.strokeStyle = "rgba(255,255,255,0.72)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(W / 2, 284);
+        ctx.lineTo(W / 2 + clueShift, 256);
+        ctx.stroke();
+      }
+      return;
+    }
     ctx.save();
     ctx.translate(W / 2 + clueShift * 0.22, 332);
     ctx.rotate(clueShift / 540);
@@ -577,6 +592,8 @@
   }
 
   function drawKeeper() {
+    var keeperName = keeperPose === "L" ? "keeperL" : keeperPose === "R" ? "keeperR" : "keeperC";
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawActor(ctx, keeperName, keeperX - 58, keeperY - 70, 116, 116)) return;
     ctx.save();
     ctx.translate(keeperX, keeperY);
     ctx.fillStyle = "#ffd54f";
@@ -595,6 +612,8 @@
   }
 
   function drawBall() {
+    var ballFrame = "ball" + (Math.floor(performance.now() / 90) % 4);
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawActor(ctx, ballFrame, ball.x - 14, ball.y - 14, 28, 28)) return;
     if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawBall(ctx, ball.x, ball.y, 14)) return;
     ctx.fillStyle = "#fff";
     ctx.beginPath();

@@ -346,6 +346,7 @@
   var state = makeState();
   var trail = [];
   var ball = { x: ballStart.x, y: ballStart.y };
+  var badgeFlash = null;
 
   var configs = {
     rookie: { keeper: 42, wall: 3, block: 0.74, wind: 0 },
@@ -385,6 +386,7 @@
     aim = { x: goal.x + goal.w * 0.72, y: goal.y + goal.h * 0.34 };
     ball = { x: ballStart.x, y: ballStart.y };
     trail = [];
+    badgeFlash = null;
     state = makeState();
     statusEl.className = "game-status";
     statusEl.textContent = "Aim inside the goal, set curl, then shoot.";
@@ -493,18 +495,27 @@
       results.push(outcome.kind);
       statusEl.className = "game-status";
       statusEl.textContent = outcome.text + " +" + gained;
+      badgeFlash = {
+        name: outcome.kind === "bonus" ? "bullseye" : (streak >= 3 ? "hatTrick" : "goldenBoot"),
+        text: outcome.kind === "bonus" ? "Golden corner" : (streak >= 3 ? "Streak x" + streak : "Goal"),
+        life: 96
+      };
       if (streak > bestStreak) {
         bestStreak = streak;
         localStorage.setItem(streakKey, String(bestStreak));
       }
     }
-    if (outcome.kind === "miss") statusEl.textContent = outcome.text;
+    if (outcome.kind === "miss") {
+      badgeFlash = null;
+      statusEl.textContent = outcome.text;
+    }
     if (score > best) {
       best = score;
       localStorage.setItem(bestKey, String(best));
     }
     updateReadout();
     renderHistory();
+    draw();
   }
 
   function nextKick() {
@@ -516,6 +527,7 @@
     state = makeState();
     ball = { x: ballStart.x, y: ballStart.y };
     trail = [];
+    badgeFlash = null;
     setControls(true);
     updateReadout();
     statusEl.className = "game-status";
@@ -527,6 +539,7 @@
     setControls(false);
     ball = { x: ballStart.x, y: ballStart.y };
     trail = [];
+    badgeFlash = score >= 900 ? { name: "goldenBoot", text: "Free kick master", life: 180 } : null;
     statusEl.className = "game-status";
     statusEl.textContent = "Full time: " + score + " points. Best streak: " + bestStreak + ".";
     if (window.SnackPack && score >= 900) {
@@ -604,11 +617,18 @@
     ctx.fillRect(goal.x - 8, goal.y - 8, 8, goal.h + 8);
     ctx.fillRect(goal.x + goal.w, goal.y - 8, 8, goal.h + 8);
     ctx.fillRect(goal.x - 8, goal.y - 8, goal.w + 16, 8);
+    if (badgeFlash && window.SnackSoccerAssets) {
+      window.SnackSoccerAssets.drawFx(ctx, "netRipple", goal.x + 116, goal.y + 20, 190, 86);
+    }
   }
 
   function drawBonus() {
     ctx.save();
     ctx.translate(state.bonus.x, state.bonus.y);
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawFx(ctx, "timingRing", -34, -34, 68, 68)) {
+      ctx.restore();
+      return;
+    }
     ctx.fillStyle = "rgba(239,181,77,0.32)";
     ctx.beginPath();
     ctx.arc(0, 0, state.bonus.r + 10, 0, Math.PI * 2);
@@ -627,6 +647,7 @@
 
   function drawKeeper() {
     var k = state.keeper;
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawActor(ctx, "keeperC", k.x - 44, k.y - 60, 88, 104)) return;
     ctx.save();
     ctx.translate(k.x, k.y);
     ctx.fillStyle = "#ffd54f";
@@ -648,6 +669,7 @@
     var w = state.wall;
     for (var i = 0; i < w.count; i++) {
       var x = w.x + (i - (w.count - 1) / 2) * 28;
+      if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawActor(ctx, "defender", x - 28, w.y - 36, 56, 78)) continue;
       ctx.save();
       ctx.translate(x, w.y);
       ctx.fillStyle = "#1f8f77";
@@ -682,6 +704,7 @@
 
   function drawBall() {
     trail.forEach(function (p, i) {
+      if (window.SnackSoccerAssets && i % 3 === 0 && window.SnackSoccerAssets.drawFx(ctx, "speedLines", p.x - 28, p.y - 11, 56, 22, curve * 0.35)) return;
       ctx.fillStyle = "rgba(255,255,255," + (0.08 + i / trail.length * 0.28) + ")";
       ctx.beginPath();
       ctx.arc(p.x, p.y, 5 + i / trail.length * 3, 0, Math.PI * 2);
@@ -701,6 +724,32 @@
     ctx.fill();
   }
 
+  function drawBadgeFlash() {
+    if (!badgeFlash || !window.SnackSoccerAssets) return;
+    badgeFlash.life -= 1;
+    var a = clamp(badgeFlash.life / 24, 0, 1);
+    var scale = 1 + Math.max(0, badgeFlash.life - 72) / 240;
+    ctx.save();
+    ctx.globalAlpha = a;
+    ctx.translate(W - 88, 84);
+    ctx.scale(scale, scale);
+    if (!window.SnackSoccerAssets.drawBadge(ctx, badgeFlash.name, -42, -42, 84, 84)) {
+      ctx.globalAlpha = a * 0.9;
+      ctx.fillStyle = "rgba(239,181,77,0.92)";
+      ctx.beginPath();
+      ctx.arc(0, 0, 38, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.fillStyle = "#fff";
+    ctx.font = "800 13px 'DM Sans', Arial, sans-serif";
+    ctx.textAlign = "center";
+    ctx.shadowColor = "rgba(0,0,0,0.45)";
+    ctx.shadowBlur = 5;
+    ctx.fillText(badgeFlash.text, 0, 55);
+    ctx.restore();
+    if (badgeFlash.life <= 0) badgeFlash = null;
+  }
+
   function draw() {
     ctx.clearRect(0, 0, W, H);
     drawPitch();
@@ -710,6 +759,7 @@
     drawWall();
     drawAim();
     drawBall();
+    drawBadgeFlash();
     if (!busy && kick <= 10) {
       ctx.fillStyle = "rgba(255,255,255,0.88)";
       ctx.font = "700 14px 'DM Sans', Arial, sans-serif";

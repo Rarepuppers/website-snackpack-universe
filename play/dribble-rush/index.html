@@ -222,6 +222,10 @@
   var LANES = [65, 195, 325];
   var PLAYER_Y = 560, PLAYER_R = 20;
   var HOP_FRAMES = 26;
+  var HOP_BUFFER_FRAMES = 8;
+  var MOVE_BUFFER_FRAMES = 7;
+  var TACKLE_COYOTE_FRAMES = 5;
+  var FIXED_DT = 1000 / 60;
   var BEST_KEY = "snackpack-dribble-rush-best";
   var MODE_KEY = "snackpack-dribble-rush-mode";
 
@@ -269,8 +273,10 @@
       stars: 0,
       score: 0,
       frame: 0,
+      runTime: 0,
       obstacles: [],
-      nextSpawn: 0
+      nextSpawn: 0,
+      inputBuffer: { hop: 0, move: 0, moveDelta: 0 }
     };
   }
 
@@ -295,10 +301,36 @@
     }
   }
 
-  function tick() {
+  function queueHop() {
+    if (!st || st.phase !== "playing") return;
+    st.inputBuffer.hop = HOP_BUFFER_FRAMES;
+  }
+
+  function queueMove(delta) {
+    if (!st || st.phase !== "playing") return;
+    st.inputBuffer.move = MOVE_BUFFER_FRAMES;
+    st.inputBuffer.moveDelta = delta;
+  }
+
+  function consumeBufferedInput() {
+    if (st.inputBuffer.move > 0) {
+      st.lane = Math.max(0, Math.min(LANES.length - 1, st.lane + st.inputBuffer.moveDelta));
+      st.inputBuffer.move = 0;
+    }
+    if (st.inputBuffer.hop > 0 && st.hopFrames <= 0) {
+      st.hopFrames = HOP_FRAMES;
+      st.inputBuffer.hop = 0;
+    }
+    if (st.inputBuffer.move > 0) st.inputBuffer.move -= 1;
+    if (st.inputBuffer.hop > 0) st.inputBuffer.hop -= 1;
+  }
+
+  function tickStep() {
     var cfg = MODE_CONFIG[mode];
     var speed = currentSpeed(cfg);
     st.frame += 1;
+    st.runTime += 1;
+    consumeBufferedInput();
     st.distance += speed;
 
     if (st.hopFrames > 0) st.hopFrames -= 1;
@@ -315,12 +347,15 @@
     particles.forEach(function (p) { p.x += p.vx; p.y += p.vy; p.life -= 1; });
     particles = particles.filter(function (p) { return p.life > 0; });
 
-    var band = 34;
+    var defenderBand = 26;
+    var starBand = 30;
+    var tackleBand = 28;
     for (var i = 0; i < st.obstacles.length; i++) {
       var o = st.obstacles[i];
       if (o.cleared || o.lane !== st.lane) continue;
-      if (Math.abs(o.y - PLAYER_Y) > band) continue;
+      var dy = o.y - PLAYER_Y;
       if (o.type === "star") {
+        if (Math.abs(dy) > starBand) continue;
         o.cleared = true;
         st.stars += 1;
         st.score += 20;
@@ -328,11 +363,14 @@
       } else if (o.type === "tackle") {
         if (st.hopFrames > 0) {
           o.cleared = true;
-        } else {
+        } else if (dy > -TACKLE_COYOTE_FRAMES && dy < tackleBand) {
           crash();
           return;
+        } else {
+          continue;
         }
       } else if (o.type === "defender") {
+        if (Math.abs(dy) > defenderBand) continue;
         crash();
         return;
       }
@@ -363,13 +401,11 @@
   }
 
   function hop() {
-    if (st.phase !== "playing" || st.hopFrames > 0) return;
-    st.hopFrames = HOP_FRAMES;
+    queueHop();
   }
 
   function moveLane(delta) {
-    if (st.phase !== "playing") return;
-    st.lane = Math.max(0, Math.min(LANES.length - 1, st.lane + delta));
+    queueMove(delta);
   }
 
   function beginOrRestart() {
@@ -398,9 +434,17 @@
     }
   }
 
-  function frame() {
+  var lastFrameTime = 0, accumulator = 0;
+  function frame(now) {
     if (st.phase !== "playing") return;
-    tick();
+    if (!lastFrameTime) lastFrameTime = now;
+    accumulator += Math.min(80, now - lastFrameTime);
+    lastFrameTime = now;
+    while (accumulator >= FIXED_DT) {
+      tickStep();
+      accumulator -= FIXED_DT;
+      if (st.phase !== "playing") break;
+    }
     if (st.phase === "playing") {
       distanceEl.textContent = Math.floor(st.distance / 8) + "m";
       starsEl.textContent = st.stars;
@@ -410,8 +454,8 @@
       draw();
     }
   }
-  function startLoop() { stopLoop(); raf = requestAnimationFrame(frame); }
-  function stopLoop() { if (raf !== null) { cancelAnimationFrame(raf); raf = null; } }
+  function startLoop() { stopLoop(); lastFrameTime = 0; accumulator = 0; raf = requestAnimationFrame(frame); }
+  function stopLoop() { if (raf !== null) { cancelAnimationFrame(raf); raf = null; } lastFrameTime = 0; accumulator = 0; }
 
   // ── Render ───────────────────────────────────────
   function drawPitch() {
@@ -444,6 +488,7 @@
   function drawObstacle(o) {
     var x = laneX(o.lane);
     if (o.type === "defender") {
+      if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawActor(ctx, "defender", x - 48, o.y - 64, 96, 96)) return;
       ctx.save();
       ctx.translate(x, o.y);
       ctx.fillStyle = "#2f3b8f";
@@ -458,6 +503,7 @@
       ctx.fill();
       ctx.restore();
     } else if (o.type === "tackle") {
+      if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawActor(ctx, "tackle", x - 58, o.y - 46, 116, 82)) return;
       ctx.save();
       ctx.translate(x, o.y);
       ctx.fillStyle = "#a53a2c";
@@ -471,6 +517,7 @@
       ctx.stroke();
       ctx.restore();
     } else if (o.type === "star" && !o.cleared) {
+      if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawStar(ctx, x, o.y, 17)) return;
       ctx.save();
       ctx.translate(x, o.y);
       ctx.fillStyle = "#efb54d";
@@ -503,10 +550,16 @@
     ctx.save();
     ctx.translate(st.renderX, PLAYER_Y - lift);
     if (hopping) {
+      if (window.SnackSoccerAssets) window.SnackSoccerAssets.drawFx(ctx, "dust", -46, lift + 3, 92, 34);
       ctx.fillStyle = "rgba(0,0,0,0.16)";
       ctx.beginPath();
       ctx.ellipse(0, lift + 6, PLAYER_R * (1 - arc * 0.35), 7, 0, 0, Math.PI * 2);
       ctx.fill();
+    }
+    var frameName = hopping ? "runnerHop" : "runner" + (Math.floor(st.runTime / 8) % 3);
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawActor(ctx, frameName, -45, -69, 90, 96)) {
+      ctx.restore();
+      return;
     }
     ctx.fillStyle = "#fff";
     ctx.beginPath();
@@ -531,6 +584,7 @@
 
   function drawParticles() {
     particles.forEach(function (p) {
+      if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawFx(ctx, "sparkle", p.x - 12, p.y - 12, 24, 24)) return;
       ctx.fillStyle = p.color;
       ctx.globalAlpha = Math.max(0, Math.min(1, p.life / 24));
       ctx.beginPath();

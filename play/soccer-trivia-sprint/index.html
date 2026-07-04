@@ -156,6 +156,32 @@
 .trivia-dot.correct { background: var(--accent); }
 .trivia-dot.fast { background: var(--gold); }
 .trivia-dot.wrong { background: var(--brand-deep); }
+.trivia-badge-pop {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 58px;
+  margin: 12px 0 0;
+  font-weight: 900;
+  color: var(--ink);
+}
+.trivia-badge-pop.is-visible { display: flex; animation: triviaBadgePop 420ms ease-out both; }
+.trivia-badge-icon {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 auto;
+  background-image: url("../sprites/soccer-badges.png");
+  background-size: 400% 200%;
+  filter: drop-shadow(0 8px 14px rgba(32,23,19,0.18));
+}
+.trivia-badge-icon.bullseye { background-position: 100% 100%; }
+.trivia-badge-icon.hatTrick { background-position: 33.333% 0; }
+.trivia-badge-icon.goldenBoot { background-position: 33.333% 100%; }
+@keyframes triviaBadgePop {
+  from { opacity: 0; transform: translateY(8px) scale(0.88); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 .trivia-hint-row {
   display: flex;
   flex-wrap: wrap;
@@ -281,6 +307,7 @@
           </div>
         </div>
         <p class="game-status" id="trivia-status" aria-live="polite">Pick the right answer before the timer runs out.</p>
+        <div class="trivia-badge-pop" id="trivia-badge-pop" aria-live="polite"><span class="trivia-badge-icon bullseye" id="trivia-badge-icon" aria-hidden="true"></span><span id="trivia-badge-text">Fast answer</span></div>
         <div class="category-controls" role="group" aria-label="Trivia category">
           <button type="button" data-category="mixed" aria-pressed="true">Mixed</button>
           <button type="button" data-category="players" aria-pressed="false">Players</button>
@@ -391,6 +418,9 @@
   var nextBtn = document.getElementById("trivia-next");
   var newBtn = document.getElementById("trivia-new");
   var historyEl = document.getElementById("trivia-history");
+  var badgePopEl = document.getElementById("trivia-badge-pop");
+  var badgeIconEl = document.getElementById("trivia-badge-icon");
+  var badgeTextEl = document.getElementById("trivia-badge-text");
 
   var bestKey = "snackpack-soccer-trivia-sprint-best";
   var best = parseInt(localStorage.getItem(bestKey) || "0", 10);
@@ -659,6 +689,7 @@
     answered = false;
     statusEl.className = "game-status";
     statusEl.textContent = "Category: " + categorySettings[category].label + ". Pick the right answer before the timer runs out.";
+    badgePopEl.classList.remove("is-visible");
     updateReadout();
     renderHistory();
     showQuestion();
@@ -700,6 +731,7 @@
     });
     statusEl.className = "game-status";
     statusEl.textContent = "Question " + (index + 1) + ": answer fast for bonus points.";
+    badgePopEl.classList.remove("is-visible");
     roundStart = performance.now();
     tick();
     timer = setTimeout(function () { answer(-1); }, settings[difficulty].time);
@@ -711,6 +743,14 @@
     var ratio = Math.max(0, 1 - (performance.now() - roundStart) / settings[difficulty].time);
     meterEl.style.transform = "scaleX(" + ratio + ")";
     if (ratio > 0) raf = requestAnimationFrame(tick);
+  }
+
+  function showBadge(kind, text) {
+    badgeIconEl.className = "trivia-badge-icon " + kind;
+    badgeTextEl.textContent = text;
+    badgePopEl.classList.remove("is-visible");
+    void badgePopEl.offsetWidth;
+    badgePopEl.classList.add("is-visible");
   }
 
   function answer(choice) {
@@ -733,6 +773,8 @@
       history.push(fast ? "fast" : "correct");
       statusEl.className = "game-status";
       statusEl.textContent = fast ? "Fast answer. +" + gained : "Correct. +" + gained;
+      if (streak >= 5) showBadge("hatTrick", "Streak x" + streak);
+      else if (fast) showBadge("bullseye", "Fast answer");
       if (score > best) {
         best = score;
         localStorage.setItem(bestKey, String(best));
@@ -742,6 +784,7 @@
       history.push("wrong");
       statusEl.className = "game-status game-status--lose";
       statusEl.textContent = choice < 0 ? "Time. The answer was " + current.options[current.correctIndex].text + "." : "Not quite. The answer was " + current.options[current.correctIndex].text + ".";
+      badgePopEl.classList.remove("is-visible");
     }
     meterEl.style.transform = "scaleX(0)";
     nextBtn.disabled = false;
@@ -765,6 +808,7 @@
     statusEl.className = "game-status";
     statusEl.textContent = "Sprint complete. Best score: " + best + ".";
     roundEl.textContent = settings[difficulty].count + "/" + settings[difficulty].count;
+    if (score >= 1450) showBadge("goldenBoot", "Trivia sprint");
     if (window.SnackPack && score >= 1450) {
       window.SnackPack.celebrate({
         title: "Trivia sprint won",

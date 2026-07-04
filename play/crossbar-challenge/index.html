@@ -346,6 +346,7 @@
   var trail = [];
   var state = makeState();
   var results = [];
+  var badgeFlash = null;
 
   function clamp(n, min, max) {
     return Math.max(min, Math.min(max, n));
@@ -369,6 +370,7 @@
     results = [];
     aimX = goal.x + goal.w / 2;
     trail = [];
+    badgeFlash = null;
     state = makeState();
     ball = ballStart();
     statusEl.className = "game-status";
@@ -464,6 +466,11 @@
       results.push(outcome.kind);
       statusEl.className = "game-status";
       statusEl.textContent = outcome.text + " +" + gained;
+      badgeFlash = {
+        name: outcome.kind === "perfect" ? "bullseye" : (streak >= 4 ? "hatTrick" : "goldenBoot"),
+        text: outcome.kind === "perfect" ? "Perfect" : (streak >= 4 ? "Streak x" + streak : "Hit"),
+        life: 96
+      };
       if (streak > bestStreak) {
         bestStreak = streak;
         localStorage.setItem(streakKey, String(bestStreak));
@@ -473,8 +480,10 @@
         localStorage.setItem(bestKey, String(best));
       }
     }
+    if (outcome.kind === "miss") badgeFlash = null;
     updateReadout();
     renderHistory();
+    draw();
   }
 
   function nextShot() {
@@ -486,6 +495,7 @@
     state = makeState();
     ball = ballStart();
     trail = [];
+    badgeFlash = null;
     setControls(true);
     updateReadout();
     statusEl.className = "game-status";
@@ -497,6 +507,7 @@
     setControls(false);
     ball = ballStart();
     trail = [];
+    badgeFlash = score >= 1000 ? { name: "bullseye", text: "Crossbar specialist", life: 180 } : null;
     statusEl.className = "game-status";
     statusEl.textContent = "Full time: " + score + " points. Best streak: " + bestStreak + ".";
     if (window.SnackPack && score >= 1000) {
@@ -570,6 +581,9 @@
     ctx.fillRect(goal.x - 8, goal.y - 8, goal.w + 16, 8);
     ctx.fillStyle = "#efb54d";
     ctx.fillRect(state.sweetX - 22, goal.y - 12, 44, 8);
+    if (badgeFlash && window.SnackSoccerAssets) {
+      window.SnackSoccerAssets.drawFx(ctx, "impact", state.sweetX - 40, goal.y - 42, 80, 54);
+    }
   }
 
   function drawAim() {
@@ -584,6 +598,9 @@
     ctx.beginPath();
     ctx.arc(aimX, goal.y - 8, 8, 0, Math.PI * 2);
     ctx.fill();
+    if (window.SnackSoccerAssets) {
+      window.SnackSoccerAssets.drawFx(ctx, "timingRing", aimX - 34, goal.y - 42, 68, 68);
+    }
     ctx.fillStyle = "rgba(32,23,19,0.58)";
     ctx.font = "700 13px 'DM Sans', Arial, sans-serif";
     ctx.textAlign = "center";
@@ -601,6 +618,7 @@
 
   function drawBall() {
     trail.forEach(function (p, i) {
+      if (window.SnackSoccerAssets && i % 3 === 0 && window.SnackSoccerAssets.drawFx(ctx, "speedLines", p.x - 26, p.y - 10, 52, 20, curl * 0.3)) return;
       ctx.fillStyle = "rgba(255,255,255," + (0.08 + i / trail.length * 0.28) + ")";
       ctx.beginPath();
       ctx.arc(p.x, p.y, 4 + i / trail.length * 4, 0, Math.PI * 2);
@@ -620,13 +638,50 @@
     ctx.fill();
   }
 
+  function drawStriker() {
+    if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawActor(ctx, "striker", W / 2 - 46, H - 114, 92, 104)) return;
+    ctx.save();
+    ctx.translate(W / 2, H - 56);
+    ctx.fillStyle = "#1f8f77";
+    ctx.fillRect(-16, -30, 32, 42);
+    ctx.fillStyle = "#f0c27a";
+    ctx.beginPath();
+    ctx.arc(0, -42, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawBadgeFlash() {
+    if (!badgeFlash || !window.SnackSoccerAssets) return;
+    badgeFlash.life -= 1;
+    var a = clamp(badgeFlash.life / 24, 0, 1);
+    ctx.save();
+    ctx.globalAlpha = a;
+    if (!window.SnackSoccerAssets.drawBadge(ctx, badgeFlash.name, W - 128, 38, 84, 84)) {
+      ctx.fillStyle = "rgba(239,181,77,0.92)";
+      ctx.beginPath();
+      ctx.arc(W - 86, 80, 38, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.fillStyle = "#fff";
+    ctx.font = "800 13px 'DM Sans', Arial, sans-serif";
+    ctx.textAlign = "center";
+    ctx.shadowColor = "rgba(0,0,0,0.45)";
+    ctx.shadowBlur = 5;
+    ctx.fillText(badgeFlash.text, W - 86, 136);
+    ctx.restore();
+    if (badgeFlash.life <= 0) badgeFlash = null;
+  }
+
   function draw() {
     ctx.clearRect(0, 0, W, H);
     drawPitch();
     drawGoal();
     drawAim();
     drawInfo();
+    drawStriker();
     drawBall();
+    drawBadgeFlash();
   }
 
   canvas.addEventListener("pointerdown", function (event) {
