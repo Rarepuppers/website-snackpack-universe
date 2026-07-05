@@ -343,16 +343,15 @@
   var streakKey = "snackpack-free-kick-curl-streak";
   var best = parseInt(localStorage.getItem(bestKey) || "0", 10);
   var bestStreak = parseInt(localStorage.getItem(streakKey) || "0", 10);
-  var state = makeState();
-  var trail = [];
-  var ball = { x: ballStart.x, y: ballStart.y };
-  var badgeFlash = null;
-
   var configs = {
     rookie: { keeper: 42, wall: 3, block: 0.74, wind: 0 },
     pro: { keeper: 54, wall: 4, block: 0.86, wind: 6 },
     legend: { keeper: 66, wall: 5, block: 0.94, wind: 12 }
   };
+  var state = makeState();
+  var trail = [];
+  var ball = { x: ballStart.x, y: ballStart.y };
+  var badgeFlash = null;
 
   function clamp(n, min, max) {
     return Math.max(min, Math.min(max, n));

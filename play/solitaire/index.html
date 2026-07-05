@@ -275,18 +275,226 @@
     return d;
   }
 
-  function deal() {
-    var d = makeDeck();
-    tableau = [[], [], [], [], [], [], []];
+  function dealFromDeck(d) {
+    var dd = d.slice();
+    var t = [[], [], [], [], [], [], []];
     for (var col = 0; col < 7; col++) {
       for (var k = 0; k <= col; k++) {
-        var card = d.pop();
-        card.up = (k === col);
-        tableau[col].push(card);
+        var card = dd.pop();
+        t[col].push({ r: card.r, s: card.s, up: (k === col) });
       }
     }
-    stock = d;
-    stock.forEach(function (c) { c.up = false; });
+    var st = dd.map(function (c) { return { r: c.r, s: c.s, up: false }; });
+    return { tableau: t, stock: st };
+  }
+
+  // ── Solver-backed deal guarantee ──────────────────
+  // We know the whole shuffled deck (a real player doesn't), which makes
+  // checking solvability tractable: a move-ordered, bounded DFS over a
+  // lightweight clone of the board, with a safe-autoplay heuristic to skip
+  // the "always fine" foundation moves instead of branching on them. It's
+  // not a perfect prover (full Klondike solving is expensive) — if it can't
+  // find a winning line within its budget the deal is reshuffled and tried
+  // again, up to a capped number of attempts, so New Game never spins forever.
+  var SOLVER_MAX_ATTEMPTS = 12;
+  var SOLVER_NODE_BUDGET = 9000;
+  var SOLVER_TIME_BUDGET_MS = 150;
+  var SOLVER_MAX_RECYCLES = 5;
+  var SOLVER_VISITED_CAP = 40000;
+
+  function solverIsRed(s) { return s === 1 || s === 2; }
+
+  function solverCloneState(s) {
+    return {
+      tableau: s.tableau.map(function (p) { return p.map(function (c) { return { r: c.r, s: c.s, up: c.up }; }); }),
+      stock: s.stock.map(function (c) { return { r: c.r, s: c.s }; }),
+      waste: s.waste.map(function (c) { return { r: c.r, s: c.s }; }),
+      found: s.found.slice(),
+      recycles: s.recycles
+    };
+  }
+
+  function solverEncode(s) {
+    return s.found.join(",") + "#" +
+      s.stock.map(function (c) { return c.r + "-" + c.s; }).join("") + "#" +
+      s.waste.map(function (c) { return c.r + "-" + c.s; }).join("") + "#" +
+      s.tableau.map(function (p) { return p.map(function (c) { return c.r + "-" + c.s + (c.up ? "u" : "d"); }).join(","); }).join("|");
+  }
+
+  function solverIsWon(s) { return s.found[0] === 13 && s.found[1] === 13 && s.found[2] === 13 && s.found[3] === 13; }
+
+  function solverCanFoundation(s, card) { return s.found[card.s] === card.r - 1; }
+
+  function solverCanStack(s, card, destCol) {
+    var pile = s.tableau[destCol];
+    if (!pile.length) return card.r === 13;
+    var top = pile[pile.length - 1];
+    return top.up && top.r === card.r + 1 && solverIsRed(top.s) !== solverIsRed(card.s);
+  }
+
+  function solverIsSafeAutoplay(s, card) {
+    if (card.r <= 2) return true;
+    var oppMin = 13;
+    for (var suit = 0; suit < 4; suit++) {
+      if (solverIsRed(suit) !== solverIsRed(card.s)) oppMin = Math.min(oppMin, s.found[suit]);
+    }
+    return oppMin >= card.r - 1;
+  }
+
+  // Repeatedly send provably-safe cards to their foundations. Safe here
+  // means no future tableau move could ever need this card back, so doing
+  // it can never cost us a line the solver would otherwise have found.
+  function solverAutoSafe(s) {
+    var changed = true;
+    while (changed) {
+      changed = false;
+      if (s.waste.length) {
+        var w = s.waste[s.waste.length - 1];
+        if (solverIsSafeAutoplay(s, w)) { s.waste.pop(); s.found[w.s] = w.r; changed = true; continue; }
+      }
+      for (var i = 0; i < 7; i++) {
+        var pile = s.tableau[i];
+        if (!pile.length) continue;
+        var top = pile[pile.length - 1];
+        if (top.up && solverIsSafeAutoplay(s, top)) {
+          pile.pop(); s.found[top.s] = top.r;
+          if (pile.length && !pile[pile.length - 1].up) pile[pile.length - 1].up = true;
+          changed = true;
+        }
+      }
+    }
+  }
+
+  function solverMovePriority(s, m) {
+    if (m.kind === "tabFound" || m.kind === "wasteFound") return 100;
+    if (m.kind === "tabTab") {
+      var p = s.tableau[m.from];
+      return (m.idx > 0 && !p[m.idx - 1].up) ? 80 : 40;
+    }
+    if (m.kind === "wasteTab") return 60;
+    if (m.kind === "draw") return 10;
+    return 5; // recycle
+  }
+
+  function solverGenerateMoves(s, drawMode) {
+    var moves = [], c, pile, top;
+    for (c = 0; c < 7; c++) {
+      pile = s.tableau[c];
+      if (!pile.length) continue;
+      top = pile[pile.length - 1];
+      if (top.up && solverCanFoundation(s, top)) moves.push({ kind: "tabFound", col: c });
+    }
+    if (s.waste.length && solverCanFoundation(s, s.waste[s.waste.length - 1])) moves.push({ kind: "wasteFound" });
+
+    for (c = 0; c < 7; c++) {
+      pile = s.tableau[c];
+      if (!pile.length) continue;
+      var maxStart = pile.length - 1;
+      while (maxStart > 0 && pile[maxStart - 1].up &&
+             pile[maxStart - 1].r === pile[maxStart].r + 1 &&
+             solverIsRed(pile[maxStart - 1].s) !== solverIsRed(pile[maxStart].s)) maxStart--;
+      if (!pile[maxStart].up) continue;
+      var starts = maxStart === pile.length - 1 ? [maxStart] : [maxStart, pile.length - 1];
+      for (var si = 0; si < starts.length; si++) {
+        var startIdx = starts[si], moving = pile[startIdx];
+        for (var d = 0; d < 7; d++) {
+          if (d === c) continue;
+          if (solverCanStack(s, moving, d)) moves.push({ kind: "tabTab", from: c, idx: startIdx, to: d });
+        }
+      }
+    }
+
+    if (s.waste.length) {
+      var w = s.waste[s.waste.length - 1];
+      for (c = 0; c < 7; c++) if (solverCanStack(s, w, c)) moves.push({ kind: "wasteTab", col: c });
+    }
+
+    if (s.stock.length) moves.push({ kind: "draw" });
+    else if (s.waste.length && s.recycles < SOLVER_MAX_RECYCLES) moves.push({ kind: "recycle" });
+
+    moves.sort(function (a, b) { return solverMovePriority(s, b) - solverMovePriority(s, a); });
+    return moves;
+  }
+
+  function solverApplyMove(s, move, drawMode) {
+    if (move.kind === "tabFound") {
+      var pile = s.tableau[move.col], card = pile.pop();
+      s.found[card.s] = card.r;
+      if (pile.length && !pile[pile.length - 1].up) pile[pile.length - 1].up = true;
+    } else if (move.kind === "wasteFound") {
+      var w = s.waste.pop(); s.found[w.s] = w.r;
+    } else if (move.kind === "tabTab") {
+      var src = s.tableau[move.from];
+      var moving = src.splice(move.idx);
+      s.tableau[move.to] = s.tableau[move.to].concat(moving);
+      if (src.length && !src[src.length - 1].up) src[src.length - 1].up = true;
+    } else if (move.kind === "wasteTab") {
+      s.tableau[move.col].push(s.waste.pop());
+    } else if (move.kind === "draw") {
+      var n = Math.min(drawMode, s.stock.length);
+      for (var i = 0; i < n; i++) s.waste.push(s.stock.pop());
+    } else if (move.kind === "recycle") {
+      s.recycles++;
+      while (s.waste.length) s.stock.push(s.waste.pop());
+    }
+    return s;
+  }
+
+  // Bounded, move-ordered DFS. Returns true only if it actually found a
+  // winning line; false means "couldn't prove it in budget", not "impossible".
+  function solverIsSolvable(dealt, drawMode) {
+    var startTime = (typeof performance !== "undefined" ? performance.now() : Date.now());
+    var nodes = 0;
+    var visited = new Set();
+    var root = {
+      tableau: dealt.tableau.map(function (p) { return p.map(function (c) { return { r: c.r, s: c.s, up: c.up }; }); }),
+      stock: dealt.stock.map(function (c) { return { r: c.r, s: c.s }; }),
+      waste: [],
+      found: [0, 0, 0, 0],
+      recycles: 0
+    };
+    solverAutoSafe(root);
+    if (solverIsWon(root)) return true;
+
+    var stack = [root];
+    while (stack.length) {
+      nodes++;
+      if (nodes > SOLVER_NODE_BUDGET) return false;
+      if (nodes % 200 === 0) {
+        var now = (typeof performance !== "undefined" ? performance.now() : Date.now());
+        if (now - startTime > SOLVER_TIME_BUDGET_MS) return false;
+      }
+      var cur = stack.pop();
+      var key = solverEncode(cur);
+      if (visited.has(key)) continue;
+      visited.add(key);
+      if (visited.size > SOLVER_VISITED_CAP) return false;
+
+      var moves = solverGenerateMoves(cur, drawMode);
+      for (var i = moves.length - 1; i >= 0; i--) {
+        var next = solverApplyMove(solverCloneState(cur), moves[i], drawMode);
+        solverAutoSafe(next);
+        if (solverIsWon(next)) return true;
+        stack.push(next);
+      }
+    }
+    return false;
+  }
+
+  function dealSolvableDeck(drawMode) {
+    var lastAttempt = null;
+    for (var attempt = 0; attempt < SOLVER_MAX_ATTEMPTS; attempt++) {
+      var dealt = dealFromDeck(makeDeck());
+      lastAttempt = dealt;
+      if (solverIsSolvable(dealt, drawMode)) return dealt;
+    }
+    return lastAttempt; // couldn't prove one in budget — deal the last shuffle rather than stall New Game
+  }
+
+  function deal() {
+    var dealt = dealSolvableDeck(drawN);
+    tableau = dealt.tableau;
+    stock = dealt.stock;
     waste = [];
     foundations = [[], [], [], []];
     moves = 0; solved = false; sel = null; started = false; history = [];
@@ -356,7 +564,11 @@
     }
 
     // Foundations
-    document.querySelectorAll('[data-pile="foundation"]').forEach(function (pileEl, pi) {
+    // Scope to the 4 pile containers only (.sol-pile) — the card placed
+    // inside a foundation also carries data-pile="foundation" (for
+    // click/drag targeting), so the broader attribute selector would match
+    // it too and throw off this loop's pi index once any foundation has a card.
+    document.querySelectorAll('.sol-pile[data-pile="foundation"]').forEach(function (pileEl, pi) {
       pileEl.innerHTML = "";
       var f = foundations[pi];
       if (f.length === 0) {

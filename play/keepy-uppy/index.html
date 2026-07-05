@@ -294,6 +294,10 @@
   var accumulator = 0;
   var lastFrameTime = 0;
 
+  function clamp(n, min, max) {
+    return Math.max(min, Math.min(max, n));
+  }
+
   function reset() {
     if (raf) cancelAnimationFrame(raf);
     score = 0;
@@ -602,7 +606,7 @@
     ctx.fillStyle = "rgba(255,255,255,0.88)";
     ctx.font = "700 14px 'DM Sans', Arial, sans-serif";
     ctx.textAlign = "center";
-    if (!running && !over) ctx.fillText("Tap the ball to begin", W / 2, H - 16);
+    if (!running && !over) ctx.fillText("Tap the ball to keep it up — don't let it hit the grass", W / 2, H - 16);
     else if (paused) ctx.fillText("Paused", W / 2, H - 16);
   }
 
