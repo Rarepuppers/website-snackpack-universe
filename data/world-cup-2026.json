@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-04T23:33:11.372Z",
+  "updatedAt": "2026-07-05T20:46:56.355Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1246,9 +1246,11 @@
       "awayLabel": "W 78",
       "home": "Brazil",
       "away": "Norway",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 0
     },
     {
       "n": 92,
