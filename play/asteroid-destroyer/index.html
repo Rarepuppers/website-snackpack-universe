@@ -214,7 +214,7 @@
   var TRIPLE_SHOT_FRAMES = 60 * 8, SLOW_TIME_FRAMES = 60 * 6, WAVE_SPLASH_FRAMES = 90;
 
   var MODE_CONFIG = {
-    classic:  { shipFixed: true,  canRotate: false, blitz: false, initAsteroids: 3, spawnInterval: 240, asteroidSpeedMult: 1.0 },
+    classic:  { shipFixed: true,  canRotate: true,  blitz: false, initAsteroids: 3, spawnInterval: 240, asteroidSpeedMult: 1.0 },
     rotation: { shipFixed: false, canRotate: true,  blitz: false, initAsteroids: 4, spawnInterval: 200, asteroidSpeedMult: 1.1 },
     blitz:    { shipFixed: false, canRotate: true,  blitz: true,  initAsteroids: 5, spawnInterval: 140, asteroidSpeedMult: 1.3 }
   };
@@ -453,11 +453,16 @@
   }
 
   function applyModeUi() {
-    var rotMode = MODE_CONFIG[mode].canRotate;
-    controlsEl.querySelectorAll('[data-ctrl="left"],[data-ctrl="right"],[data-ctrl="thrust"]').forEach(function (b) {
-      b.style.display = rotMode ? "" : "none";
+    var cfg = MODE_CONFIG[mode];
+    controlsEl.querySelectorAll('[data-ctrl="left"],[data-ctrl="right"]').forEach(function (b) {
+      b.style.display = cfg.canRotate ? "" : "none";
     });
-    hintEl.textContent = rotMode ? "Keys: ← → rotate · ↑ thrust · Space fire. Or use the buttons / tap the field." : "Keys: Space fire. Or tap the field / the FIRE button. (Classic = fixed turret.)";
+    controlsEl.querySelectorAll('[data-ctrl="thrust"]').forEach(function (b) {
+      b.style.display = cfg.shipFixed ? "none" : "";
+    });
+    hintEl.textContent = cfg.shipFixed
+      ? "Keys: ← → aim · Space fire. Or use the buttons / tap the field. (Classic = fixed turret you can aim.)"
+      : "Keys: ← → rotate · ↑ thrust · Space fire. Or use the buttons / tap the field.";
   }
 
   function updateHud() {
@@ -474,10 +479,10 @@
     if (MODE_CONFIG[mode].canRotate) {
       if (input.left) rotateLeft(state);
       if (input.right) rotateRight(state);
-      if (input.thrust) thrust(state);
     }
+    if (!MODE_CONFIG[mode].shipFixed && input.thrust) thrust(state);
     if (fireTimer > 0) fireTimer -= 1;
-    if (input.fire && fireTimer <= 0) { MODE_CONFIG[mode].shipFixed ? fireClassic(state) : fireDirectional(state); fireTimer = FIRE_CD; }
+    if (input.fire && fireTimer <= 0) { fireDirectional(state); fireTimer = FIRE_CD; }
     tick(state);
     draw();
     updateHud();
@@ -532,7 +537,7 @@
     // ship
     var s = state.ship;
     if (!(s.invincible > 0 && Math.floor(s.invincible / 6) % 2)) {
-      if (input.thrust && MODE_CONFIG[mode].canRotate) {
+      if (input.thrust && !MODE_CONFIG[mode].shipFixed) {
         ctx.save(); ctx.translate(s.x, s.y); ctx.rotate(s.angle);
         ctx.fillStyle = "#FF7043"; ctx.beginPath(); ctx.moveTo(-4, s.radius); ctx.lineTo(4, s.radius); ctx.lineTo(0, s.radius + 8 + Math.random() * 6); ctx.closePath(); ctx.fill();
         ctx.restore();

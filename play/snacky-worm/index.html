@@ -288,21 +288,28 @@
     var cx = Math.floor(cfg.cols / 2), cy = Math.floor(cfg.rows / 2);
     var snake = [{ x: cx, y: cy }, { x: cx - 1, y: cy }, { x: cx - 2, y: cy }];
     return {
-      phase: "menu", snake: snake, dir: "RIGHT", nextDir: "RIGHT",
+      phase: "menu", snake: snake, dir: "RIGHT", dirQueue: [],
       food: randomFood(snake, cfg.cols, cfg.rows), score: 0, cols: cfg.cols, rows: cfg.rows
     };
   }
 
+  function startFromMenu() {
+    if (st.phase === "menu") { st.phase = "playing"; statusEl.textContent = "Eat, grow, don't bite yourself!"; startLoop(); }
+  }
+
+  // Buffer up to two turns so quick, consecutive inputs (tight turns) all
+  // register. Each new turn is validated against the last *queued* direction —
+  // not just the current heading — so a rapid UP-then-LEFT both land.
   function steer(d) {
     if (!st || st.phase === "dead") return;
-    if (d === opposite(st.dir)) return;
-    st.nextDir = d;
-    if (st.phase === "menu") { st.phase = "playing"; statusEl.textContent = "Eat, grow, don't bite yourself!"; startLoop(); }
+    var ref = st.dirQueue.length ? st.dirQueue[st.dirQueue.length - 1] : st.dir;
+    if (d !== ref && d !== opposite(ref) && st.dirQueue.length < 2) st.dirQueue.push(d);
+    startFromMenu();
   }
 
   function tick() {
     var cfg = MODE_CONFIG[mode];
-    var dir = st.nextDir, head = st.snake[0];
+    var dir = st.dirQueue.length ? st.dirQueue.shift() : st.dir, head = st.snake[0];
     var nx = head.x + (dir === "RIGHT" ? 1 : dir === "LEFT" ? -1 : 0);
     var ny = head.y + (dir === "DOWN" ? 1 : dir === "UP" ? -1 : 0);
 

@@ -115,6 +115,17 @@
 
         <div class="cw-board-wrap">
           <div class="cw-grid" id="cw-grid"></div>
+          <div class="cw-victory" id="cw-victory" hidden>
+            <div class="cw-victory-card">
+              <div class="cw-victory-emoji" aria-hidden="true">🎉</div>
+              <h2 class="cw-victory-title" id="cw-victory-title">Solved!</h2>
+              <p class="cw-victory-sub" id="cw-victory-sub"></p>
+              <div class="cw-victory-actions">
+                <button class="btn-game btn-game--primary" id="cw-victory-new" type="button">New puzzle</button>
+                <button class="btn-game" id="cw-victory-hard" type="button">Bigger challenge</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="cw-keys" id="cw-keys"></div>
@@ -317,9 +328,29 @@
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  function build() {
+  function whiteCount(p) {
+    var n = 0;
+    p.grid.forEach(function (row) { for (var i = 0; i < row.length; i++) if (row[i] !== "#") n++; });
+    return n;
+  }
+  function harderPuzzle() {
+    var all = allPuzzles();
+    var cur = whiteCount(puzzle);
+    var bigger = all.filter(function (p) { return p.id !== puzzle.id && whiteCount(p) > cur; });
+    if (bigger.length) return bigger[Math.floor(Math.random() * bigger.length)];
+    all.sort(function (a, b) { return whiteCount(b) - whiteCount(a); });
+    return all[0].id === puzzle.id ? (all[1] || all[0]) : all[0];
+  }
+  function setMode(m) {
+    mode = m;
+    document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.mode === m)); });
+  }
+  function hideVictory() { document.getElementById("cw-victory").hidden = true; }
+
+  function build(forced) {
     stopTimer();
-    puzzle = pickPuzzle();
+    hideVictory();
+    puzzle = forced || pickPuzzle();
     meta = buildGridMeta(puzzle);
     userGrid = []; checkGrid = [];
     for (var r = 0; r < meta.rows; r++) { userGrid[r] = []; checkGrid[r] = []; for (var c = 0; c < meta.cols; c++) { userGrid[r][c] = ""; checkGrid[r][c] = "unchecked"; } }
@@ -460,10 +491,14 @@
     solved = true; stopTimer();
     statusEl.textContent = "Solved: " + puzzle.title + "! 🎉 " + fmt(elapsed);
     statusEl.className = "game-status game-status--win";
+    paintClueStatus();
     var prev = 0; try { prev = parseInt(localStorage.getItem(bestKey()) || "0", 10) || 0; } catch (e) {}
     var improved = !prev || elapsed < prev;
     if (improved) { try { localStorage.setItem(bestKey(), String(elapsed)); } catch (e) {} }
     showBest();
+    document.getElementById("cw-victory-title").textContent = improved ? "New best time! 🎉" : "Solved! 🎉";
+    document.getElementById("cw-victory-sub").textContent = puzzle.title + " · " + fmt(elapsed);
+    document.getElementById("cw-victory").hidden = false;
     if (window.SnackPack) window.SnackPack.celebrate({
       title: improved ? "New best time! 🎉" : "Crossword solved! 🎉",
       body: "Every clue cracked. We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app for more themed crosswords, offline."
@@ -488,6 +523,31 @@
     if (retreatCursor()) { userGrid[selR][selC] = ""; checkGrid[selR][selC] = "unchecked"; paint(); }
   }
 
+  function clueCells(num, d) {
+    var out = [];
+    for (var r = 0; r < meta.rows; r++) for (var c = 0; c < meta.cols; c++) {
+      var cell = meta.cells[r][c];
+      if (cell.isBlack) continue;
+      if ((d === "across" ? cell.acrossWord : cell.downWord) === num) out.push({ r: r, c: c });
+    }
+    return out;
+  }
+  // Colour each clue in the Across/Down lists after a Check: green when the
+  // whole word is filled correctly, red when it contains a wrong letter.
+  function paintClueStatus() {
+    document.querySelectorAll(".cw-cluelists li").forEach(function (li) {
+      var cells = clueCells(+li.dataset.num, li.dataset.dir);
+      var allCorrect = cells.length > 0, anyWrong = false;
+      cells.forEach(function (p) {
+        var v = userGrid[p.r][p.c];
+        if (v === "") allCorrect = false;
+        else if (v !== puzzle.grid[p.r][p.c]) { anyWrong = true; allCorrect = false; }
+      });
+      li.classList.toggle("cw-clue-correct", allCorrect);
+      li.classList.toggle("cw-clue-wrong", anyWrong);
+    });
+  }
+
   function checkAnswers() {
     for (var r = 0; r < meta.rows; r++) for (var c = 0; c < meta.cols; c++) {
       var cell = meta.cells[r][c];
@@ -496,6 +556,7 @@
       checkGrid[r][c] = v === "" ? "unchecked" : (v === puzzle.grid[r][c] ? "correct" : "wrong");
     }
     paint();
+    paintClueStatus();
     var wrong = 0; for (var rr = 0; rr < meta.rows; rr++) for (var cc = 0; cc < meta.cols; cc++) if (checkGrid[rr][cc] === "wrong") wrong++;
     statusEl.textContent = wrong === 0 ? "No mistakes so far — keep going." : (wrong === 1 ? "1 letter is wrong." : wrong + " letters are wrong.");
     statusEl.className = "game-status";
@@ -568,7 +629,11 @@
   document.getElementById("cw-check").addEventListener("click", checkAnswers);
   document.getElementById("cw-reveal").addEventListener("click", revealCell);
   document.getElementById("cw-revealword").addEventListener("click", revealWord);
-  newBtn.addEventListener("click", build);
+  newBtn.addEventListener("click", function () { build(); });
+  document.getElementById("cw-victory-new").addEventListener("click", function () { build(); });
+  document.getElementById("cw-victory-hard").addEventListener("click", function () {
+    var p = harderPuzzle(); setMode(p.pack); build(p);
+  });
 
   document.addEventListener("keydown", function (e) {
     if (solved) return;

@@ -37,8 +37,10 @@
   border: 1px solid var(--line-strong);
   box-shadow: 0 2px 4px rgba(32,23,19,0.12);
   font-family: var(--sans); font-weight: 700; cursor: pointer;
-  user-select: none; overflow: hidden;
+  user-select: none; overflow: hidden; touch-action: none;
 }
+.sol-drag { position: fixed; z-index: 80; pointer-events: none; opacity: 0.92; filter: drop-shadow(0 8px 16px rgba(32,23,19,0.32)); }
+.sol-drag .sol-card { box-shadow: none; }
 .sol-card .r { position: absolute; top: 3px; left: 5px; font-size: calc(var(--cw) * 0.32); line-height: 1; }
 .sol-card .s { position: absolute; bottom: 4px; right: 5px; font-size: calc(var(--cw) * 0.4); line-height: 1; }
 .sol-card .big { position: absolute; inset: 0; display: grid; place-items: center; font-size: calc(var(--cw) * 0.62); opacity: 0.9; }
@@ -155,7 +157,7 @@
             <div class="sol-row" id="sol-tableau-row"></div>
           </div>
         </div>
-        <p class="game-hint">Click a card, then a destination · Double-click sends a card to its foundation · Click the stock to deal.</p>
+        <p class="game-hint">Drag a card to move it — or click a card then its destination · Double-click sends a card to its foundation · Click the stock to deal.</p>
       </div>
     </div>
   </section>
@@ -255,6 +257,8 @@
   var stock, waste, foundations, tableau;
   var drawN = 1, moves, solved, sel = null, timer, seconds, started;
   var history = [];
+  var dragInfo = null, dragGhost = null, justDragged = false;
+  var DRAG_THRESHOLD = 6;
 
   function snapshot() {
     return JSON.stringify({ stock: stock, waste: waste, foundations: foundations, tableau: tableau, moves: moves });
@@ -524,6 +528,7 @@
 
   // ── Input ────────────────────────────────────────
   tableEl.addEventListener("click", function (e) {
+    if (justDragged) { justDragged = false; return; } // a drag already handled this
     if (solved) return;
     var card = e.target.closest(".sol-card");
     var pileSlot = e.target.closest("[data-pile]");
@@ -571,6 +576,90 @@
     }
     // Otherwise clear selection.
     sel = null; applySel();
+  });
+
+  // ── Drag-and-drop (the natural gesture) ──────────
+  // Taps still fall through to the click handler above; only a real drag
+  // (movement past a small threshold) grabs and moves the card(s).
+  function sourceFromCard(cardEl) {
+    var p = cardEl.dataset.pile;
+    if (p === "waste") return waste.length ? { pile: "waste" } : null;
+    if (p === "foundation") { var fpi = +cardEl.dataset.pi; return foundations[fpi] && foundations[fpi].length ? { pile: "foundation", pi: fpi } : null; }
+    if (p === "tableau") {
+      var pi = +cardEl.dataset.pi, ci = +cardEl.dataset.ci;
+      if (!tableau[pi] || !tableau[pi][ci] || !tableau[pi][ci].up) return null;
+      return { pile: "tableau", pi: pi, ci: ci };
+    }
+    return null;
+  }
+  function movingCardEls(src) {
+    if (src.pile === "waste") { var w = wasteEl.querySelector("[data-ci]"); return w ? [w] : []; }
+    if (src.pile === "foundation") { var f = document.querySelector('[data-pile="foundation"][data-pi="' + src.pi + '"] .sol-card'); return f ? [f] : []; }
+    if (src.pile === "tableau") {
+      return [].slice.call(tableauRow.querySelectorAll('[data-pi="' + src.pi + '"][data-ci]'))
+        .filter(function (el) { return +el.dataset.ci >= src.ci; });
+    }
+    return [];
+  }
+  function buildGhost(cardEls) {
+    var g = document.createElement("div"); g.className = "sol-drag";
+    var r0 = cardEls[0].getBoundingClientRect();
+    var step = r0.height * 0.28, y = 0;
+    cardEls.forEach(function (el) {
+      var c = el.cloneNode(true);
+      c.classList.remove("sel");
+      c.style.position = "absolute"; c.style.left = "0"; c.style.top = y + "px";
+      c.style.width = r0.width + "px"; c.style.height = r0.height + "px";
+      g.appendChild(c);
+      y += step;
+    });
+    g.style.width = r0.width + "px";
+    return g;
+  }
+
+  tableEl.addEventListener("pointerdown", function (e) {
+    justDragged = false;
+    if (solved || (e.button !== undefined && e.button !== 0)) return;
+    var cardEl = e.target.closest(".sol-card"); if (!cardEl) return;
+    var src = sourceFromCard(cardEl); if (!src) return;
+    dragInfo = { src: src, startX: e.clientX, startY: e.clientY, dragging: false, cardEls: movingCardEls(src) || [] };
+  });
+
+  window.addEventListener("pointermove", function (e) {
+    if (!dragInfo) return;
+    if (!dragInfo.dragging) {
+      var dx = e.clientX - dragInfo.startX, dy = e.clientY - dragInfo.startY;
+      if (dx * dx + dy * dy < DRAG_THRESHOLD * DRAG_THRESHOLD) return;
+      if (!dragInfo.cardEls.length) { dragInfo = null; return; }
+      dragInfo.dragging = true;
+      sel = dragInfo.src; applySel();
+      dragGhost = buildGhost(dragInfo.cardEls);
+      document.body.appendChild(dragGhost);
+      var r = dragInfo.cardEls[0].getBoundingClientRect();
+      dragInfo.offX = dragInfo.startX - r.left; dragInfo.offY = dragInfo.startY - r.top;
+    }
+    e.preventDefault();
+    dragGhost.style.left = (e.clientX - dragInfo.offX) + "px";
+    dragGhost.style.top = (e.clientY - dragInfo.offY) + "px";
+  }, { passive: false });
+
+  window.addEventListener("pointerup", function (e) {
+    if (!dragInfo) return;
+    var info = dragInfo; dragInfo = null;
+    if (dragGhost) { dragGhost.remove(); dragGhost = null; }
+    if (!info.dragging) return; // a tap — leave it to the click handler
+    justDragged = true;
+    var target = document.elementFromPoint(e.clientX, e.clientY);
+    var pileSlot = target ? target.closest("[data-pile]") : null;
+    var moved = false;
+    if (pileSlot) {
+      var dp = pileSlot.dataset.pile;
+      var dpi = pileSlot.dataset.pi !== undefined ? +pileSlot.dataset.pi : undefined;
+      sel = info.src;
+      if (dp === "foundation") moved = tryMoveToFoundation(dpi !== undefined ? dpi : info.src.pi);
+      else if (dp === "tableau") moved = tryMoveToTableau(dpi);
+    }
+    if (!moved) { sel = null; applySel(); }
   });
 
   // Double-click → auto to foundation
