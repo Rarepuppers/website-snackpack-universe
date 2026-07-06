@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-06T05:39:33.068Z",
+  "updatedAt": "2026-07-06T20:18:53.962Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1278,9 +1278,11 @@
       "awayLabel": "W 84",
       "home": "Portugal",
       "away": "Spain",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 0
     },
     {
       "n": 94,
