@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-06T01:20:47.377Z",
+  "updatedAt": "2026-07-06T05:39:33.068Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1262,11 +1262,11 @@
       "awayLabel": "W 80",
       "home": "Mexico",
       "away": "England",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 0,
-      "las": 0
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "England",
+      "hs": 2,
+      "as": 3
     },
     {
       "n": 93,
@@ -1361,9 +1361,9 @@
       "homeLabel": "W 91",
       "awayLabel": "W 92",
       "home": "Norway",
-      "away": null,
+      "away": "England",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
