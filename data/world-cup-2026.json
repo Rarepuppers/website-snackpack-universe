@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-06T20:18:53.962Z",
+  "updatedAt": "2026-07-06T21:49:40.534Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1278,11 +1278,11 @@
       "awayLabel": "W 84",
       "home": "Portugal",
       "away": "Spain",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 0,
-      "las": 0
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Spain",
+      "hs": 0,
+      "as": 1
     },
     {
       "n": 94,
@@ -1348,7 +1348,7 @@
       "venue": "Inglewood",
       "homeLabel": "W 93",
       "awayLabel": "W 94",
-      "home": null,
+      "home": "Spain",
       "away": null,
       "time": "Upcoming",
       "statusShort": "",
