@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-06T21:49:40.534Z",
+  "updatedAt": "2026-07-07T01:26:07.768Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1294,9 +1294,11 @@
       "awayLabel": "W 82",
       "home": "United States",
       "away": "Belgium",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 1,
+      "las": 3
     },
     {
       "n": 95,
