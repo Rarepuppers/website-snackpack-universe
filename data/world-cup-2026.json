@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-07T01:26:07.768Z",
+  "updatedAt": "2026-07-07T05:13:37.922Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1294,11 +1294,11 @@
       "awayLabel": "W 82",
       "home": "United States",
       "away": "Belgium",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 1,
-      "las": 3
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Belgium",
+      "hs": 1,
+      "as": 4
     },
     {
       "n": 95,
@@ -1351,9 +1351,9 @@
       "homeLabel": "W 93",
       "awayLabel": "W 94",
       "home": "Spain",
-      "away": null,
+      "away": "Belgium",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
