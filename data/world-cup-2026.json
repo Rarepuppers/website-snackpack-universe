@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-07T18:08:40.319Z",
+  "updatedAt": "2026-07-07T20:09:32.842Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1326,9 +1326,11 @@
       "awayLabel": "W 87",
       "home": "Switzerland",
       "away": "Colombia",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 0
     },
     {
       "n": 97,
