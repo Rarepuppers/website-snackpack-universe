@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-07T20:09:32.842Z",
+  "updatedAt": "2026-07-07T23:34:11.808Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1326,11 +1326,13 @@
       "awayLabel": "W 87",
       "home": "Switzerland",
       "away": "Colombia",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 0,
-      "las": 0
+      "time": "FT",
+      "statusShort": "FT-Pens",
+      "winner": "Switzerland",
+      "hs": 0,
+      "as": 0,
+      "hps": 4,
+      "aps": 3
     },
     {
       "n": 97,
@@ -1383,9 +1385,9 @@
       "homeLabel": "W 95",
       "awayLabel": "W 96",
       "home": "Argentina",
-      "away": null,
+      "away": "Switzerland",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
