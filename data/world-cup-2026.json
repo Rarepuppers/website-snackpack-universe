@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-07T05:13:37.922Z",
+  "updatedAt": "2026-07-07T16:03:29.334Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1310,9 +1310,11 @@
       "awayLabel": "W 88",
       "home": "Argentina",
       "away": "Egypt",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 0
     },
     {
       "n": 96,
