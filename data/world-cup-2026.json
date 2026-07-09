@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-09T21:39:24.082Z",
+  "updatedAt": "2026-07-09T22:52:25.501Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1344,11 +1344,11 @@
       "awayLabel": "W 90",
       "home": "France",
       "away": "Morocco",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 2,
-      "las": 0
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "France",
+      "hs": 2,
+      "as": 0
     },
     {
       "n": 98,
@@ -1400,7 +1400,7 @@
       "venue": "Arlington",
       "homeLabel": "W 97",
       "awayLabel": "W 98",
-      "home": null,
+      "home": "France",
       "away": null,
       "time": "Upcoming",
       "statusShort": "",
