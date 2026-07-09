@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-07T23:34:11.808Z",
+  "updatedAt": "2026-07-09T20:07:15.646Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1344,9 +1344,11 @@
       "awayLabel": "W 90",
       "home": "France",
       "away": "Morocco",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 0
     },
     {
       "n": 98,
