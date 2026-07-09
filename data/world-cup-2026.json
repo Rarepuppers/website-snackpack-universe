@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-04T23:33:11.372Z",
+  "updatedAt": "2026-07-07T23:34:11.808Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1246,9 +1246,11 @@
       "awayLabel": "W 78",
       "home": "Brazil",
       "away": "Norway",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Norway",
+      "hs": 1,
+      "as": 2
     },
     {
       "n": 92,
@@ -1260,9 +1262,11 @@
       "awayLabel": "W 80",
       "home": "Mexico",
       "away": "England",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "England",
+      "hs": 2,
+      "as": 3
     },
     {
       "n": 93,
@@ -1274,9 +1278,11 @@
       "awayLabel": "W 84",
       "home": "Portugal",
       "away": "Spain",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Spain",
+      "hs": 0,
+      "as": 1
     },
     {
       "n": 94,
@@ -1288,9 +1294,11 @@
       "awayLabel": "W 82",
       "home": "United States",
       "away": "Belgium",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Belgium",
+      "hs": 1,
+      "as": 4
     },
     {
       "n": 95,
@@ -1302,9 +1310,11 @@
       "awayLabel": "W 88",
       "home": "Argentina",
       "away": "Egypt",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Argentina",
+      "hs": 3,
+      "as": 2
     },
     {
       "n": 96,
@@ -1316,9 +1326,13 @@
       "awayLabel": "W 87",
       "home": "Switzerland",
       "away": "Colombia",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT-Pens",
+      "winner": "Switzerland",
+      "hs": 0,
+      "as": 0,
+      "hps": 4,
+      "aps": 3
     },
     {
       "n": 97,
@@ -1342,10 +1356,10 @@
       "venue": "Inglewood",
       "homeLabel": "W 93",
       "awayLabel": "W 94",
-      "home": null,
-      "away": null,
+      "home": "Spain",
+      "away": "Belgium",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1356,10 +1370,10 @@
       "venue": "Miami Gardens",
       "homeLabel": "W 91",
       "awayLabel": "W 92",
-      "home": null,
-      "away": null,
+      "home": "Norway",
+      "away": "England",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1370,10 +1384,10 @@
       "venue": "Kansas City",
       "homeLabel": "W 95",
       "awayLabel": "W 96",
-      "home": null,
-      "away": null,
+      "home": "Argentina",
+      "away": "Switzerland",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
