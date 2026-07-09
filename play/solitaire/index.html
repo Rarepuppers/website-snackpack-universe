@@ -296,11 +296,11 @@
   // not a perfect prover (full Klondike solving is expensive) — if it can't
   // find a winning line within its budget the deal is reshuffled and tried
   // again, up to a capped number of attempts, so New Game never spins forever.
-  var SOLVER_MAX_ATTEMPTS = 12;
-  var SOLVER_NODE_BUDGET = 9000;
-  var SOLVER_TIME_BUDGET_MS = 150;
-  var SOLVER_MAX_RECYCLES = 5;
-  var SOLVER_VISITED_CAP = 40000;
+  var SOLVER_MAX_ATTEMPTS = 8;
+  var SOLVER_NODE_BUDGET = 150000;
+  var SOLVER_TIME_BUDGET_MS = 450;
+  var SOLVER_MAX_RECYCLES = 8;
+  var SOLVER_VISITED_CAP = 260000;
 
   function solverIsRed(s) { return s === 1 || s === 2; }
 
@@ -440,8 +440,51 @@
     return s;
   }
 
-  // Bounded, move-ordered DFS. Returns true only if it actually found a
-  // winning line; false means "couldn't prove it in budget", not "impossible".
+  // Minimal binary min-heap keyed by .cost — lower cost pops first.
+  function SolverHeap() { this.a = []; }
+  SolverHeap.prototype.push = function (item) {
+    var a = this.a; a.push(item);
+    var i = a.length - 1;
+    while (i > 0) {
+      var p = (i - 1) >> 1;
+      if (a[p].cost <= a[i].cost) break;
+      var t = a[p]; a[p] = a[i]; a[i] = t; i = p;
+    }
+  };
+  SolverHeap.prototype.pop = function () {
+    var a = this.a, top = a[0], last = a.pop();
+    if (a.length) {
+      a[0] = last;
+      var i = 0, n = a.length;
+      while (true) {
+        var l = i * 2 + 1, r = i * 2 + 2, m = i;
+        if (l < n && a[l].cost < a[m].cost) m = l;
+        if (r < n && a[r].cost < a[m].cost) m = r;
+        if (m === i) break;
+        var t = a[i]; a[i] = a[m]; a[m] = t; i = m;
+      }
+    }
+    return top;
+  };
+
+  function solverCost(s, depth) {
+    var foundationCount = s.found[0] + s.found[1] + s.found[2] + s.found[3];
+    var hidden = 0, emptyCols = 0;
+    for (var i = 0; i < 7; i++) {
+      if (!s.tableau[i].length) emptyCols++;
+      for (var c = 0; c < s.tableau[i].length; c++) if (!s.tableau[i][c].up) hidden++;
+    }
+    // Lower is better. Flipping hidden cards is the real bottleneck in
+    // Klondike, so it outweighs foundation progress; empty columns (a King
+    // parking spot) are valuable too. Depth/recycles only break ties.
+    return -foundationCount * 20 - (21 - hidden) * 30 - emptyCols * 15 + s.recycles * 6 + depth * 0.05;
+  }
+
+  // Greedy best-first search: always expand the most-progressed board first
+  // (priority queue on solverCost), which finds a winning line far more
+  // often within a small budget than plain DFS. Returns true only if it
+  // actually found a winning line; false means "couldn't prove it in
+  // budget", not "impossible".
   function solverIsSolvable(dealt, drawMode) {
     var startTime = (typeof performance !== "undefined" ? performance.now() : Date.now());
     var nodes = 0;
@@ -456,26 +499,33 @@
     solverAutoSafe(root);
     if (solverIsWon(root)) return true;
 
-    var stack = [root];
-    while (stack.length) {
+    var heap = new SolverHeap();
+    heap.push({ state: root, cost: solverCost(root, 0), depth: 0, inv: null });
+    while (heap.a.length) {
       nodes++;
       if (nodes > SOLVER_NODE_BUDGET) return false;
       if (nodes % 200 === 0) {
         var now = (typeof performance !== "undefined" ? performance.now() : Date.now());
         if (now - startTime > SOLVER_TIME_BUDGET_MS) return false;
       }
-      var cur = stack.pop();
-      var key = solverEncode(cur);
+      var cur = heap.pop();
+      var key = solverEncode(cur.state);
       if (visited.has(key)) continue;
       visited.add(key);
       if (visited.size > SOLVER_VISITED_CAP) return false;
 
-      var moves = solverGenerateMoves(cur, drawMode);
-      for (var i = moves.length - 1; i >= 0; i--) {
-        var next = solverApplyMove(solverCloneState(cur), moves[i], drawMode);
+      var moves = solverGenerateMoves(cur.state, drawMode);
+      for (var i = 0; i < moves.length; i++) {
+        var m = moves[i];
+        // Skip immediately undoing the move that produced this node (e.g.
+        // shuffling a run A->B then straight back B->A) — pure busywork
+        // that only inflates the frontier without any real progress.
+        if (cur.inv && m.kind === "tabTab" && m.from === cur.inv.to && m.to === cur.inv.from) continue;
+        var next = solverApplyMove(solverCloneState(cur.state), m, drawMode);
         solverAutoSafe(next);
         if (solverIsWon(next)) return true;
-        stack.push(next);
+        var inv = m.kind === "tabTab" ? { from: m.from, to: m.to } : null;
+        heap.push({ state: next, cost: solverCost(next, cur.depth + 1), depth: cur.depth + 1, inv: inv });
       }
     }
     return false;
@@ -491,16 +541,27 @@
     return lastAttempt; // couldn't prove one in budget — deal the last shuffle rather than stall New Game
   }
 
-  function deal() {
-    var dealt = dealSolvableDeck(drawN);
-    tableau = dealt.tableau;
-    stock = dealt.stock;
-    waste = [];
+  // Dealing runs a bounded solver search before committing to a deal, which
+  // can take up to a couple of seconds — deferred a tick so the "Shuffling…"
+  // status actually paints before the (synchronous) search blocks the thread,
+  // instead of the page just looking frozen.
+  function deal(onReady) {
+    tableau = [[], [], [], [], [], [], []];
+    stock = []; waste = [];
     foundations = [[], [], [], []];
     moves = 0; solved = false; sel = null; started = false; history = [];
     clearInterval(timer); seconds = 0; renderTime();
     statusEl.className = "game-status";
-    statusEl.textContent = "Click a card to select it, then click where it should go.";
+    statusEl.textContent = "Shuffling a solvable deal…";
+    render();
+    setTimeout(function () {
+      var dealt = dealSolvableDeck(drawN);
+      tableau = dealt.tableau;
+      stock = dealt.stock;
+      statusEl.textContent = "Click a card to select it, then click where it should go.";
+      render();
+      if (onReady) onReady();
+    }, 20);
   }
 
   function startTimer() {
@@ -895,21 +956,20 @@
     render();
   });
 
-  newBtn.addEventListener("click", function () { deal(); render(); });
+  newBtn.addEventListener("click", function () { deal(); });
   document.querySelectorAll(".seg [data-draw]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       drawN = +btn.dataset.draw;
       document.querySelectorAll(".seg [data-draw]").forEach(function (b) {
         b.setAttribute("aria-pressed", String(b === btn));
       });
-      deal(); render();
+      deal();
     });
   });
 
   window.addEventListener("resize", function () { if (tableau) render(); });
 
   deal();
-  render();
 })();
 </script>
 <!-- Cloudflare Web Analytics -->
