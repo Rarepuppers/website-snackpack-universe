@@ -173,6 +173,7 @@
           <span>Tap or drag in the goal to aim.</span>
           <span>Hit the centre ring for bullseyes.</span>
           <span>Moving targets are worth more.</span>
+          <span>Legend: target keeps moving after you shoot.</span>
         </div>
       </div>
     </div>
@@ -275,9 +276,9 @@
   var ballStart = { x: W / 2, y: 382 };
   var bestKey = "snackpack-target-shooting-arena-best";
   var configs = {
-    rookie: { radius: 31, speed: 0.72, drift: 9 },
-    pro: { radius: 25, speed: 1.05, drift: 14 },
-    legend: { radius: 20, speed: 1.42, drift: 21 }
+    rookie: { radius: 31, speed: 0.72, drift: 9, movingFlight: false },
+    pro: { radius: 25, speed: 1.05, drift: 14, movingFlight: false },
+    legend: { radius: 20, speed: 1.42, drift: 21, movingFlight: true }
   };
   var difficulty = "rookie";
   var best = parseInt(localStorage.getItem(bestKey) || "0", 10);
@@ -325,7 +326,9 @@
     accumulator = 0;
     lastFrameTime = 0;
     statusEl.className = "game-status";
-    statusEl.textContent = "Tap the goal to aim, then shoot.";
+    statusEl.textContent = configs[difficulty].movingFlight
+      ? "Legend: the target keeps moving after you shoot. Lead it."
+      : "Tap the goal to aim, then shoot.";
     setControls(true);
     updateReadout();
     renderHistory();
@@ -367,14 +370,19 @@
     raf = requestAnimationFrame(loop);
   }
 
-  function stepTarget() {
-    if (!target || busy) return;
+  function advanceTarget() {
+    if (!target) return;
     target.x += target.vx;
     target.y += target.vy;
     if (target.x < goal.x + target.r || target.x > goal.x + goal.w - target.r) target.vx *= -1;
     if (target.y < goal.y + target.r || target.y > goal.y + goal.h - target.r) target.vy *= -1;
     target.x = clamp(target.x, goal.x + target.r, goal.x + goal.w - target.r);
     target.y = clamp(target.y, goal.y + target.r, goal.y + goal.h - target.r);
+  }
+
+  function stepTarget() {
+    if (busy) return;
+    advanceTarget();
   }
 
   function setAimFromEvent(event) {
@@ -401,7 +409,7 @@
       y: aim.y + (power - ideal) * -1.15
     };
     trail = [];
-    animateShot(end, function () {
+    animateShot(end, cfg.movingFlight, function () {
       applyOutcome(judge(end));
       setTimeout(nextShot, 820);
     });
@@ -477,7 +485,7 @@
     }
   }
 
-  function animateShot(end, done) {
+  function animateShot(end, moveTarget, done) {
     var start = performance.now();
     var duration = 680;
     var from = { x: ballStart.x, y: ballStart.y };
@@ -491,6 +499,7 @@
       };
       trail.push({ x: ball.x, y: ball.y });
       if (trail.length > 18) trail.shift();
+      if (moveTarget) advanceTarget();
       draw();
       if (t < 1) requestAnimationFrame(frame);
       else {
