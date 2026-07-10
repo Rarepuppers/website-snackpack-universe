@@ -1,0 +1,19 @@
+﻿{
+    "title":  "Photo Jigsaw Asset Pack",
+    "generatedAt":  "2026-07-10",
+    "pack":  "photo-jigsaw",
+    "assets":  [
+                   "drop-shadow.png",
+                   "piece-mask-a.png",
+                   "piece-mask-b.png",
+                   "piece-mask-c.png",
+                   "piece-outline-a.png",
+                   "piece-outline-b.png",
+                   "piece-outline-c.png",
+                   "preview-frame.png",
+                   "slot-highlight.png",
+                   "solved-shimmer.png"
+               ],
+    "format":  "transparent PNG, high-resolution raster",
+    "polishedAt":  "2026-07-10"
+}

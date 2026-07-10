@@ -1,0 +1,12 @@
+﻿{
+    "title":  "Pro Hand Painted table-themes",
+    "generatedAt":  "2026-07-10",
+    "pack":  "pro-hand-painted/table-themes",
+    "assets":  [
+                   "painted-arcade-night.png",
+                   "painted-felt-emerald.png",
+                   "painted-rose-marble.png",
+                   "painted-walnut.png"
+               ],
+    "format":  "transparent PNG, high-resolution hand-painted style raster"
+}

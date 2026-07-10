@@ -45,19 +45,25 @@
 .ck-sq.sel { box-shadow: inset 0 0 0 4px var(--gold); }
 .ck-piece {
   width: 76%; height: 76%; border-radius: 999px; cursor: pointer;
-  box-shadow: inset 0 -3px 5px rgba(0,0,0,0.3), 0 2px 3px rgba(0,0,0,0.3);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 112% 112%;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.3);
   display: grid; place-items: center;
 }
-.ck-piece.red { background: radial-gradient(circle at 35% 30%, var(--ck-p1-light, #ef6f5a), var(--ck-p1-dark, #c0392b)); }
-.ck-piece.black { background: radial-gradient(circle at 35% 30%, var(--ck-p2-light, #4a4a52), var(--ck-p2-dark, #1c1c22)); }
+.ck-piece.red {
+  background-color: var(--ck-p1-dark, #c0392b);
+  background-image: url("../shared-assets/game-ui/board-games/png/checker-red.png");
+}
+.ck-piece.black {
+  background-color: var(--ck-p2-dark, #1c1c22);
+  background-image: url("../shared-assets/game-ui/board-games/png/checker-dark.png");
+}
 .ck-piece.king::after {
   content: "";
-  width: 42%;
+  width: 44%;
   aspect-ratio: 1;
-  background-image: url("../sprites/board-game-icons.png");
-  background-size: 600% 300%;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
+  background: url("../shared-assets/game-ui/board-games/png/crown.png") center / contain no-repeat;
   filter: drop-shadow(0 1px 2px rgba(32,23,19,0.25));
 }
 </style>

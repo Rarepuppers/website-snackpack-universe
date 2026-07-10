@@ -1,0 +1,20 @@
+﻿{
+    "title":  "Pro Hand Painted chess-pieces",
+    "generatedAt":  "2026-07-10",
+    "pack":  "pro-hand-painted/chess-pieces",
+    "assets":  [
+                   "png/bB.png",
+                   "png/bK.png",
+                   "png/bN.png",
+                   "png/bP.png",
+                   "png/bQ.png",
+                   "png/bR.png",
+                   "png/wB.png",
+                   "png/wK.png",
+                   "png/wN.png",
+                   "png/wP.png",
+                   "png/wQ.png",
+                   "png/wR.png"
+               ],
+    "format":  "transparent PNG, high-resolution hand-painted style raster"
+}

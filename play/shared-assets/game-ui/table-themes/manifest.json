@@ -1,0 +1,17 @@
+﻿{
+    "title":  "Table Theme Pack",
+    "generatedAt":  "2026-07-10",
+    "pack":  "table-themes",
+    "assets":  [
+                   "arcade-grid.png",
+                   "felt-blue.png",
+                   "felt-green.png",
+                   "marble-rose.png",
+                   "paper-warm.png",
+                   "royal-plum.png",
+                   "slate-pro.png",
+                   "wood-walnut.png"
+               ],
+    "format":  "transparent PNG, high-resolution raster",
+    "polishedAt":  "2026-07-10"
+}

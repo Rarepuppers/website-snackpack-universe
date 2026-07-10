@@ -1,0 +1,28 @@
+﻿{
+    "title":  "Pro Hand Painted board-games",
+    "generatedAt":  "2026-07-10",
+    "pack":  "pro-hand-painted/board-games",
+    "assets":  [
+                   "board-game-icons.png",
+                   "png/backgammon-point-dark.png",
+                   "png/backgammon-point-light.png",
+                   "png/checker-dark.png",
+                   "png/checker-light.png",
+                   "png/checker-red.png",
+                   "png/crown.png",
+                   "png/dice-1.png",
+                   "png/dice-2.png",
+                   "png/dice-3.png",
+                   "png/dice-4.png",
+                   "png/dice-5.png",
+                   "png/dice-6.png",
+                   "png/doubling-cube.png",
+                   "png/ladder-marker.png",
+                   "png/pawn-blue.png",
+                   "png/pawn-gold.png",
+                   "png/pawn-green.png",
+                   "png/pawn-red.png",
+                   "png/snake-marker.png"
+               ],
+    "format":  "transparent PNG, high-resolution hand-painted style raster"
+}

@@ -1,0 +1,22 @@
+﻿{
+    "title":  "Pro Hand Painted word-game-tiles",
+    "generatedAt":  "2026-07-10",
+    "pack":  "pro-hand-painted/word-game-tiles",
+    "assets":  [
+                   "png/clue-number.png",
+                   "png/found-highlight.png",
+                   "png/hint-ring.png",
+                   "png/keyboard-absent.png",
+                   "png/keyboard-correct.png",
+                   "png/keyboard-key.png",
+                   "png/keyboard-present.png",
+                   "png/tile-absent.png",
+                   "png/tile-correct.png",
+                   "png/tile-empty.png",
+                   "png/tile-present.png",
+                   "png/trail-end.png",
+                   "png/trail-segment.png",
+                   "png/trail-start.png"
+               ],
+    "format":  "transparent PNG, high-resolution hand-painted style raster"
+}

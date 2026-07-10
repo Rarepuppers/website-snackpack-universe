@@ -1,0 +1,14 @@
+﻿{
+    "title":  "Pro Hand Painted sokoban",
+    "generatedAt":  "2026-07-10",
+    "pack":  "pro-hand-painted/sokoban",
+    "assets":  [
+                   "png/crate.png",
+                   "png/crate-goal.png",
+                   "png/floor.png",
+                   "png/goal.png",
+                   "png/player.png",
+                   "png/wall.png"
+               ],
+    "format":  "transparent PNG, high-resolution hand-painted style raster"
+}

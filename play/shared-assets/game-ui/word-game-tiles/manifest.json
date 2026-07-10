@@ -1,0 +1,22 @@
+﻿{
+    "title":  "Word Game Tile Pack",
+    "generatedAt":  "2026-07-10",
+    "pack":  "word-game-tiles",
+    "assets":  [
+                   "trail-segment.png",
+                   "tile-present.png",
+                   "trail-end.png",
+                   "keyboard-key.png",
+                   "trail-start.png",
+                   "clue-number.png",
+                   "tile-empty.png",
+                   "keyboard-absent.png",
+                   "found-highlight.png",
+                   "hint-ring.png",
+                   "keyboard-correct.png",
+                   "tile-correct.png",
+                   "tile-absent.png",
+                   "keyboard-present.png"
+               ],
+    "format":  "transparent PNG, high-resolution raster"
+}

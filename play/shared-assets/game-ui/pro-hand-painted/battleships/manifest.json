@@ -1,0 +1,18 @@
+﻿{
+    "title":  "Pro Hand Painted battleships",
+    "generatedAt":  "2026-07-10",
+    "pack":  "pro-hand-painted/battleships",
+    "assets":  [
+                   "png/hit.png",
+                   "png/miss.png",
+                   "png/ship.png",
+                   "png/ship-bow-h.png",
+                   "png/ship-bow-v.png",
+                   "png/ship-mid-h.png",
+                   "png/ship-mid-v.png",
+                   "png/ship-stern-h.png",
+                   "png/ship-stern-v.png",
+                   "png/water.png"
+               ],
+    "format":  "transparent PNG, high-resolution hand-painted style raster"
+}

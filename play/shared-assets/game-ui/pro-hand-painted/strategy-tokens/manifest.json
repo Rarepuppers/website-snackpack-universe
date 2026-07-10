@@ -1,0 +1,19 @@
+﻿{
+    "title":  "Pro Hand Painted strategy-tokens",
+    "generatedAt":  "2026-07-10",
+    "pack":  "pro-hand-painted/strategy-tokens",
+    "assets":  [
+                   "png/connect-red.png",
+                   "png/connect-yellow.png",
+                   "png/gomoku-black.png",
+                   "png/gomoku-white.png",
+                   "png/mancala-stone-blue.png",
+                   "png/mancala-stone-gold.png",
+                   "png/mancala-stone-red.png",
+                   "png/morris-black.png",
+                   "png/morris-white.png",
+                   "png/reversi-black.png",
+                   "png/reversi-white.png"
+               ],
+    "format":  "transparent PNG, high-resolution hand-painted style raster"
+}

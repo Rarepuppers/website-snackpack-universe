@@ -26,26 +26,30 @@
                              ]
                },
     "individual":  [
+                       "backgammon-point-dark",
+                       "backgammon-point-light",
+                       "checker-dark",
+                       "checker-light",
+                       "checker-red",
+                       "crown",
                        "dice-1",
                        "dice-2",
                        "dice-3",
                        "dice-4",
                        "dice-5",
                        "dice-6",
-                       "snake-marker",
+                       "doubling-cube",
                        "ladder-marker",
-                       "pawn-red",
                        "pawn-blue",
-                       "pawn-green",
                        "pawn-gold",
-                       "crown",
-                       "checker-red",
-                       "checker-dark",
-                       "checker-light"
+                       "pawn-green",
+                       "pawn-red",
+                       "snake-marker"
                    ],
     "appExportDirs":  [
                           "apps\\snackpack-brain-games\\assets\\game-ui\\board-games",
                           "apps\\snackpack-brain-games-vol-2\\assets\\game-ui\\board-games",
                           "apps\\snackpack-brain-games-vol-3\\assets\\game-ui\\board-games"
-                      ]
+                      ],
+    "updatedAt":  "2026-07-10"
 }

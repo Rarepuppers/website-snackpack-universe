@@ -37,9 +37,24 @@
   touch-action: manipulation;
 }
 .rv-sq { position: relative; background: #2a8a63; border-radius: 4px; display: grid; place-items: center; cursor: default; }
-.rv-disc { width: 80%; height: 80%; border-radius: 999px; }
-.rv-disc.b { background: radial-gradient(circle at 35% 30%, var(--rv-p1-light, #4a4a52), var(--rv-p1-dark, #15151a)); box-shadow: 0 2px 3px rgba(0,0,0,0.35); }
-.rv-disc.w { background: radial-gradient(circle at 35% 30%, var(--rv-p2-light, #ffffff), var(--rv-p2-dark, #d6d2c8)); box-shadow: 0 2px 3px rgba(0,0,0,0.3); }
+.rv-disc {
+  width: 80%;
+  height: 80%;
+  border-radius: 999px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 112% 112%;
+}
+.rv-disc.b {
+  background-color: var(--rv-p1-dark, #15151a);
+  background-image: url("../shared-assets/game-ui/strategy-tokens/png/reversi-black.png");
+  box-shadow: 0 2px 3px rgba(0,0,0,0.35);
+}
+.rv-disc.w {
+  background-color: var(--rv-p2-dark, #d6d2c8);
+  background-image: url("../shared-assets/game-ui/strategy-tokens/png/reversi-white.png");
+  box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+}
 .rv-sq.legal { cursor: pointer; }
 .rv-sq.legal::after {
   content: ""; width: 26%; height: 26%; border-radius: 999px;

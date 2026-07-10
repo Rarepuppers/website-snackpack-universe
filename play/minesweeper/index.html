@@ -21,6 +21,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../site.css">
 <link rel="stylesheet" href="../play.css">
+<script src="../game-ui-assets.js" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -112,7 +113,7 @@
               <button type="button" data-diff="intermediate" aria-pressed="false">Inter</button>
               <button type="button" data-diff="expert" aria-pressed="false">Expert</button>
             </div>
-            <button class="btn-game" id="ms-flagmode" type="button" aria-pressed="false" title="Toggle flag mode for touch">🚩 Flag</button>
+            <button class="btn-game" id="ms-flagmode" type="button" aria-pressed="false" title="Toggle flag mode for touch"><span class="ms-flag-icon" aria-hidden="true"></span> Flag</button>
             <button class="btn-game btn-game--primary" id="ms-new" type="button">New game</button>
           </div>
         </div>
@@ -172,7 +173,7 @@
       <h3>Frequently asked questions</h3>
       <div class="faq-list" style="margin-top:14px;">
         <details class="faq-item"><summary>Is this Minesweeper free?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
-        <details class="faq-item"><summary>How do I place a flag?</summary><p>Right-click a square on desktop, or long-press on a touchscreen. You can also tap the “🚩 Flag” button to switch into flag mode and then tap squares.</p></details>
+        <details class="faq-item"><summary>How do I place a flag?</summary><p>Right-click a square on desktop, or long-press on a touchscreen. You can also tap the Flag button to switch into flag mode and then tap squares.</p></details>
         <details class="faq-item"><summary>Is the first click always safe?</summary><p>Yes. Mines are placed after your first click, so you can never lose on the opening move.</p></details>
         <details class="faq-item"><summary>Can I play offline?</summary><p>The web version needs an open browser tab. For fully offline play with saved best times, install the free <a class="text-link" href="../../apps/snackpack-brain-games/" style="color:var(--accent);">Snackpack Brain Games</a> app on Android.</p></details>
       </div>
@@ -335,7 +336,7 @@
     flags[i] = !flags[i];
     flagsUsed += flags[i] ? 1 : -1;
     cells[i].classList.toggle("is-flag", flags[i]);
-    cells[i].textContent = flags[i] ? "🚩" : "";
+    cells[i].textContent = "";
     minesEl.textContent = mineCount - flagsUsed;
   }
 
@@ -345,10 +346,11 @@
     for (var i = 0; i < rows * cols; i++) {
       if (mineSet[i]) {
         cells[i].classList.add("is-open", "is-mine");
-        if (!flags[i]) cells[i].textContent = "💣";
+        if (!flags[i]) cells[i].textContent = "";
       }
     }
-    cells[hit].textContent = "💥";
+    cells[hit].classList.add("is-hit");
+    cells[hit].textContent = "";
     statusEl.textContent = "Boom! You hit a mine. Try again.";
     statusEl.className = "game-status game-status--lose";
   }
@@ -360,7 +362,7 @@
       for (var i = 0; i < rows * cols; i++) {
         if (mineSet[i] && !flags[i]) {
           cells[i].classList.add("is-flag");
-          cells[i].textContent = "🚩";
+          cells[i].textContent = "";
         }
       }
       minesEl.textContent = 0;

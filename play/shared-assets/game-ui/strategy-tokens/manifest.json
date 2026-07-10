@@ -1,0 +1,18 @@
+﻿{
+    "pack":  "strategy-tokens",
+    "generatedAt":  "2026-07-10",
+    "assets":  [
+                   "connect-red.png",
+                   "connect-yellow.png",
+                   "gomoku-black.png",
+                   "gomoku-white.png",
+                   "mancala-stone-blue.png",
+                   "mancala-stone-gold.png",
+                   "mancala-stone-red.png",
+                   "morris-black.png",
+                   "morris-white.png",
+                   "reversi-black.png",
+                   "reversi-white.png"
+               ],
+    "updatedAt":  "2026-07-10"
+}

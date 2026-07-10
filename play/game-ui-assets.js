@@ -31,6 +31,31 @@
     chessPieces: BASE + "chess-pieces/png/",
     sokoban: BASE + "sokoban/png/",
     battleships: BASE + "battleships/png/",
-    boardGames: BASE + "board-games/png/"
+    boardGames: BASE + "board-games/png/",
+    dominoes: BASE + "dominoes/png/",
+    gridLogicMarkers: BASE + "grid-logic-markers/png/",
+    wordGameTiles: BASE + "word-game-tiles/png/",
+    arcadeSprites: BASE + "arcade-sprites/png/",
+    photoJigsaw: BASE + "photo-jigsaw/png/",
+    tableThemes: BASE + "table-themes/png/",
+    proHandPainted: {
+      boardGames: BASE + "pro-hand-painted/board-games/png/",
+      cardDecks: {
+        backs: BASE + "pro-hand-painted/card-decks/backs/",
+        suits: BASE + "pro-hand-painted/card-decks/suits/",
+        classicFacePath: BASE + "pro-hand-painted/card-decks/faces/classic/"
+      },
+      mahjongTiles: BASE + "pro-hand-painted/mahjong-tiles/png/",
+      strategyTokens: BASE + "pro-hand-painted/strategy-tokens/png/",
+      chessPieces: BASE + "pro-hand-painted/chess-pieces/png/",
+      sokoban: BASE + "pro-hand-painted/sokoban/png/",
+      battleships: BASE + "pro-hand-painted/battleships/png/",
+      dominoes: BASE + "pro-hand-painted/dominoes/png/",
+      gridLogicMarkers: BASE + "pro-hand-painted/grid-logic-markers/png/",
+      wordGameTiles: BASE + "pro-hand-painted/word-game-tiles/png/",
+      arcadeSprites: BASE + "pro-hand-painted/arcade-sprites/png/",
+      photoJigsaw: BASE + "pro-hand-painted/photo-jigsaw/png/",
+      tableThemes: BASE + "pro-hand-painted/table-themes/png/"
+    }
   };
 }());

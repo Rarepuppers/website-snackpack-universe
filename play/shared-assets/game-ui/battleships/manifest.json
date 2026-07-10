@@ -1,0 +1,17 @@
+﻿{
+    "pack":  "battleships",
+    "generatedAt":  "2026-07-10",
+    "assets":  [
+                   "hit.png",
+                   "miss.png",
+                   "ship.png",
+                   "ship-bow-h.png",
+                   "ship-bow-v.png",
+                   "ship-mid-h.png",
+                   "ship-mid-v.png",
+                   "ship-stern-h.png",
+                   "ship-stern-v.png",
+                   "water.png"
+               ],
+    "updatedAt":  "2026-07-10"
+}
