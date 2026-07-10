@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-09T22:52:25.501Z",
+  "updatedAt": "2026-07-10T20:08:51.475Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1360,9 +1360,11 @@
       "awayLabel": "W 94",
       "home": "Spain",
       "away": "Belgium",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 1,
+      "las": 1
     },
     {
       "n": 99,
