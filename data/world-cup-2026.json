@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-10T21:17:08.321Z",
+  "updatedAt": "2026-07-11T21:10:41.114Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1376,9 +1376,11 @@
       "awayLabel": "W 92",
       "home": "Norway",
       "away": "England",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 0
     },
     {
       "n": 100,
