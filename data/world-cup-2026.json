@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-11T22:04:06.470Z",
+  "updatedAt": "2026-07-11T23:50:23.509Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1376,11 +1376,11 @@
       "awayLabel": "W 92",
       "home": "Norway",
       "away": "England",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 1,
-      "las": 1
+      "time": "FT",
+      "statusShort": "AET",
+      "winner": "England",
+      "hs": 1,
+      "as": 2
     },
     {
       "n": 100,
@@ -1418,7 +1418,7 @@
       "venue": "Atlanta",
       "homeLabel": "W 99",
       "awayLabel": "W 100",
-      "home": null,
+      "home": "England",
       "away": null,
       "time": "Upcoming",
       "statusShort": "",
