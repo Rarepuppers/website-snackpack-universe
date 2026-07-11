@@ -10,11 +10,11 @@ Key facts that apply to every SnackPack app: no third-party ads, no tracking or 
 - [SnackPack 123: Learn to Count](https://www.snackpackuniverse.com/apps/snackpack-2-123s-counting/): Free counting and early-numeracy app for ages 3–7 — counting 1–20, number shapes, story-led adventures. No ads, no in-app purchases. Play Store ID: com.snackpackuniverse.counting
 - [Pawsitive Dose](https://www.snackpackuniverse.com/apps/pawsitive-dose/): Free daily mood-boost app for adults — a finite daily batch of animal photos, uplifting quotes, and affirmations with no endless feed, no ads, and no account; reminders and Android widgets included. Optional Pro features. Play Store ID: com.snackpackuniverse.pawsitivedose
 - [Snackpack Brain Games](https://www.snackpackuniverse.com/apps/snackpack-brain-games/): Free offline collection of nine classics — Sudoku, Solitaire, Minesweeper, 2048, Word Search, Checkers, Connect 4, Reversi, and Cascade — with local stats and streaks, themes, and accessibility options. No ads, no tracking; optional one-time Pro unlock. Play Store ID: com.snackpackuniverse.braingames
+- [SnackPack Garden World](https://www.snackpackuniverse.com/apps/snackpack-13-garden-world/): Free calm nature learning app for ages 6–12 — six connected habitats, plant and bug discovery, Garden Lens close-up photos, Interactive Viewers, and six ecology mini-games. No ads, no tracking. Privacy policy: https://www.snackpackuniverse.com/privacy/snackpack-13-garden-world/. Play Store ID: com.snackpackuniverse.gardenworld
 
 ## Coming soon
 
 - [Snackpack Brain Games Vol 2](https://www.snackpackuniverse.com/apps/snackpack-brain-games-vol-2/): A second collection of calm, offline classic games — Flappy Snacky, Snacky Worm, Table Tennis, Snakes & Ladders, Picross, Thirteen, Asteroid Destroyer, and a themed Crossword. No ads, no tracking. Coming soon to Android (Play Store ID com.snackpackuniverse.braingames2); Flappy Snacky and Snacky Worm are playable free in the web arcade now.
-- [SnackPack Garden World](https://www.snackpackuniverse.com/apps/snackpack-13-garden-world/): Upcoming calm nature learning app with plants, pollinators, garden habitats, and ecology mini-games. Privacy policy: https://www.snackpackuniverse.com/privacy/snackpack-13-garden-world/. Play Store ID planned: com.snackpackuniverse.gardenworld
 
 ## Play free in your browser (web arcade)
 
