@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-12T01:13:50.020Z",
+  "updatedAt": "2026-07-12T04:37:36.971Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1392,11 +1392,11 @@
       "awayLabel": "W 96",
       "home": "Argentina",
       "away": "Switzerland",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 1,
-      "las": 0
+      "time": "FT",
+      "statusShort": "AET",
+      "winner": "Argentina",
+      "hs": 3,
+      "as": 1
     },
     {
       "n": 101,
@@ -1421,7 +1421,7 @@
       "homeLabel": "W 99",
       "awayLabel": "W 100",
       "home": "England",
-      "away": null,
+      "away": "Argentina",
       "time": "Upcoming",
       "statusShort": "",
       "winner": null
