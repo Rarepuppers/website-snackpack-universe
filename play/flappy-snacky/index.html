@@ -382,17 +382,22 @@
       ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
     }
 
-    // Pipes use the shared premium pipe body, then rotate the themed cap
-    // art so the three obstacle types match the Vol 2 app's variation.
+    // Rotate through clear pipe colors before the food-themed obstacles.
     st.pipes.forEach(function (p) {
       var gapBottom = p.gapTop + cfg.gapSize;
       if (assets.images.pipe) {
-        drawAsset(assets.images.pipe, p.x - 10, 0, PIPE_WIDTH + 20, p.gapTop, true);
-        drawAsset(assets.images.pipe, p.x - 10, gapBottom, PIPE_WIDTH + 20, GROUND_Y - gapBottom, false);
-        var variantNames = ["chopsticks", "burger", "lollipop"];
-        var variant = assets.images[variantNames[p.id % variantNames.length]];
-        drawAsset(variant, p.x - 14, p.gapTop - 46, PIPE_WIDTH + 28, 58, true);
-        drawAsset(variant, p.x - 14, gapBottom - 12, PIPE_WIDTH + 28, 58, false);
+        var pipeNames = ["pipeGreen", "pipeBlue", "pipePurple"];
+        var styleIndex = p.id % 6;
+        var pipeVariant = styleIndex < 3 ? assets.images[pipeNames[styleIndex]] : null;
+        var themedNames = ["chopsticks", "burger", "lollipop"];
+        var themedVariant = styleIndex >= 3 ? assets.images[themedNames[styleIndex - 3]] : null;
+        var pipeImage = pipeVariant || assets.images.pipe;
+        drawAsset(pipeImage, p.x - 10, 0, PIPE_WIDTH + 20, p.gapTop, true);
+        drawAsset(pipeImage, p.x - 10, gapBottom, PIPE_WIDTH + 20, GROUND_Y - gapBottom, false);
+        if (!pipeVariant) {
+          drawAsset(themedVariant, p.x - 14, p.gapTop - 46, PIPE_WIDTH + 28, 58, true);
+          drawAsset(themedVariant, p.x - 14, gapBottom - 12, PIPE_WIDTH + 28, 58, false);
+        }
       } else {
         ctx.fillStyle = pipeC;
         ctx.fillRect(p.x, 0, PIPE_WIDTH, p.gapTop);
