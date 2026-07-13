@@ -67,6 +67,7 @@
 .ts-dot.hit { background: var(--accent); }
 .ts-dot.bullseye { background: var(--gold); }
 .ts-dot.miss { background: var(--brand-deep); }
+.ts-dot.woodwork { background: var(--gold); }
 .ts-hint-row {
   display: flex;
   flex-wrap: wrap;
@@ -416,6 +417,8 @@
   }
 
   function judge(end) {
+    var woodwork = window.SnackSoccerAssets && window.SnackSoccerAssets.goalFrameHit(goal, end, 12);
+    if (woodwork) return { kind: "woodwork", text: "Off the " + woodwork + "! The frame denies the target.", points: 0 };
     var dist = Math.hypot(end.x - target.x, end.y - target.y);
     if (dist <= target.r * 0.36) return { kind: "bullseye", text: "Bullseye.", points: target.value + 140 };
     if (dist <= target.r) return { kind: "hit", text: "Target hit.", points: target.value + 70 };
@@ -426,6 +429,12 @@
     if (outcome.kind === "miss") {
       combo = 1;
       results.push("miss");
+      badgeFlash = null;
+      statusEl.className = "game-status game-status--lose";
+      statusEl.textContent = outcome.text;
+    } else if (outcome.kind === "woodwork") {
+      combo = 1;
+      results.push("woodwork");
       badgeFlash = null;
       statusEl.className = "game-status game-status--lose";
       statusEl.textContent = outcome.text;
@@ -528,20 +537,22 @@
   }
 
   function drawGoal() {
-    ctx.fillStyle = "rgba(255,255,255,0.13)";
-    ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
-    ctx.strokeStyle = "rgba(255,255,255,0.42)";
-    ctx.lineWidth = 1;
-    for (var x = goal.x; x <= goal.x + goal.w; x += 18) {
-      ctx.beginPath(); ctx.moveTo(x, goal.y); ctx.lineTo(x, goal.y + goal.h); ctx.stroke();
+    if (!(window.SnackSoccerAssets && window.SnackSoccerAssets.drawGoal(ctx, goal))) {
+      ctx.fillStyle = "rgba(255,255,255,0.13)";
+      ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
+      ctx.strokeStyle = "rgba(255,255,255,0.42)";
+      ctx.lineWidth = 1;
+      for (var x = goal.x; x <= goal.x + goal.w; x += 18) {
+        ctx.beginPath(); ctx.moveTo(x, goal.y); ctx.lineTo(x, goal.y + goal.h); ctx.stroke();
+      }
+      for (var y = goal.y; y <= goal.y + goal.h; y += 18) {
+        ctx.beginPath(); ctx.moveTo(goal.x, y); ctx.lineTo(goal.x + goal.w, y); ctx.stroke();
+      }
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(goal.x - 8, goal.y - 8, 8, goal.h + 8);
+      ctx.fillRect(goal.x + goal.w, goal.y - 8, 8, goal.h + 8);
+      ctx.fillRect(goal.x - 8, goal.y - 8, goal.w + 16, 8);
     }
-    for (var y = goal.y; y <= goal.y + goal.h; y += 18) {
-      ctx.beginPath(); ctx.moveTo(goal.x, y); ctx.lineTo(goal.x + goal.w, y); ctx.stroke();
-    }
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(goal.x - 8, goal.y - 8, 8, goal.h + 8);
-    ctx.fillRect(goal.x + goal.w, goal.y - 8, 8, goal.h + 8);
-    ctx.fillRect(goal.x - 8, goal.y - 8, goal.w + 16, 8);
     if (badgeFlash && window.SnackSoccerAssets) {
       window.SnackSoccerAssets.drawFx(ctx, "netRipple", goal.x + 120, goal.y + 26, 164, 76);
     }

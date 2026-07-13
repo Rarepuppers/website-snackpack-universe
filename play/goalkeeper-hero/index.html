@@ -99,6 +99,9 @@
 .gk-dot.goal {
   background: var(--brand-deep);
 }
+.gk-dot.woodwork {
+  background: var(--gold);
+}
 .gk-hint-row {
   display: flex;
   flex-wrap: wrap;
@@ -439,6 +442,7 @@
     var elapsed = performance.now() - roundStart;
     var saved = dir === current.shotDir;
     var quick = saved && elapsed < current.time * 0.48;
+    current.woodwork = !saved && Math.random() < 0.1 ? (current.shotDir === "C" ? "crossbar" : "post") : null;
     statusEl.textContent = dir === "none" ? "Too late. The striker scores." : "You dive " + label(dir) + ".";
     animateDive(dir, function () {
       resolveShot(saved, quick);
@@ -458,6 +462,11 @@
         bestStreak = streak;
         localStorage.setItem(streakKey, String(bestStreak));
       }
+    } else if (current.woodwork) {
+      streak = 0;
+      results.push("woodwork");
+      statusEl.className = "game-status game-status--lose";
+      statusEl.textContent = "Off the " + current.woodwork + "! The frame saves you.";
     } else {
       streak = 0;
       results.push("goal");
@@ -482,7 +491,11 @@
     var toKeeper = dir === "none" ? fromKeeper : dirX(dir);
     keeperPose = dir === "none" ? "C" : dir;
     var fromBall = { x: W / 2, y: 334 };
-    var toBall = { x: dirX(current.shotDir), y: goal.y + goal.h * 0.5 };
+    var toBall = current.woodwork === "crossbar"
+      ? { x: dirX(current.shotDir), y: goal.y }
+      : current.woodwork === "post"
+        ? { x: current.shotDir === "L" ? goal.x : current.shotDir === "R" ? goal.x + goal.w : goal.x + goal.w / 2, y: goal.y + goal.h * 0.44 }
+        : { x: dirX(current.shotDir), y: goal.y + goal.h * 0.5 };
     function step(now) {
       var t = clamp((now - start) / 540, 0, 1);
       var ease = 1 - Math.pow(1 - t, 3);
@@ -532,26 +545,28 @@
   }
 
   function drawGoal() {
-    ctx.fillStyle = "rgba(255,255,255,0.14)";
-    ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
-    ctx.strokeStyle = "rgba(255,255,255,0.45)";
-    ctx.lineWidth = 1;
-    for (var x = goal.x; x <= goal.x + goal.w; x += 18) {
-      ctx.beginPath();
-      ctx.moveTo(x, goal.y);
-      ctx.lineTo(x, goal.y + goal.h);
-      ctx.stroke();
+    if (!(window.SnackSoccerAssets && window.SnackSoccerAssets.drawGoal(ctx, goal))) {
+      ctx.fillStyle = "rgba(255,255,255,0.14)";
+      ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
+      ctx.strokeStyle = "rgba(255,255,255,0.45)";
+      ctx.lineWidth = 1;
+      for (var x = goal.x; x <= goal.x + goal.w; x += 18) {
+        ctx.beginPath();
+        ctx.moveTo(x, goal.y);
+        ctx.lineTo(x, goal.y + goal.h);
+        ctx.stroke();
+      }
+      for (var y = goal.y; y <= goal.y + goal.h; y += 18) {
+        ctx.beginPath();
+        ctx.moveTo(goal.x, y);
+        ctx.lineTo(goal.x + goal.w, y);
+        ctx.stroke();
+      }
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(goal.x - 8, goal.y - 8, 8, goal.h + 8);
+      ctx.fillRect(goal.x + goal.w, goal.y - 8, 8, goal.h + 8);
+      ctx.fillRect(goal.x - 8, goal.y - 8, goal.w + 16, 8);
     }
-    for (var y = goal.y; y <= goal.y + goal.h; y += 18) {
-      ctx.beginPath();
-      ctx.moveTo(goal.x, y);
-      ctx.lineTo(goal.x + goal.w, y);
-      ctx.stroke();
-    }
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(goal.x - 8, goal.y - 8, 8, goal.h + 8);
-    ctx.fillRect(goal.x + goal.w, goal.y - 8, 8, goal.h + 8);
-    ctx.fillRect(goal.x - 8, goal.y - 8, goal.w + 16, 8);
   }
 
   function drawStriker() {

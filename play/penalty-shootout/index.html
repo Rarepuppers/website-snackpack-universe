@@ -45,6 +45,7 @@
 .pk-dot { width: 14px; height: 14px; border-radius: 999px; background: rgba(32,23,19,0.12); }
 .pk-dot.goal { background: var(--accent); }
 .pk-dot.miss { background: var(--brand-deep); }
+.pk-dot.woodwork { background: var(--gold); box-shadow: inset 0 0 0 2px rgba(255,255,255,0.72); }
 .pk-track { display: flex; align-items: center; gap: 8px; }
 .pk-track span { font-size: 0.78rem; font-weight: 700; color: var(--muted); min-width: 34px; }
 </style>
@@ -288,7 +289,7 @@
       var n = Math.max(5, arr.length);
       for (var i = 0; i < n; i++) {
         var d = document.createElement("div");
-        d.className = "pk-dot" + (arr[i] === "goal" ? " goal" : arr[i] === "miss" ? " miss" : "");
+        d.className = "pk-dot" + (arr[i] === "goal" ? " goal" : arr[i] === "miss" ? " miss" : arr[i] === "woodwork" ? " woodwork" : "");
         el.appendChild(d);
       }
     }
@@ -320,9 +321,15 @@
     busy = true; setPad(false);
     var keeperDir = aiKeeper(dir);
     var scored = keeperDir !== dir;
+    var woodwork = scored && Math.random() < 0.1 ? (dir === "C" ? "crossbar" : "post") : null;
     statusEl.textContent = "You shoot " + label(dir) + "…";
-    animate({ kind: "shoot", ballTo: dir, keeperTo: keeperDir }, function () {
-      if (scored) {
+    animate({ kind: "shoot", ballTo: dir, keeperTo: keeperDir, woodwork: woodwork }, function () {
+      if (woodwork) {
+        youResults.push("woodwork");
+        statusEl.textContent = "Off the " + woodwork + "! The frame saves the keeper.";
+        badgeFlash = null;
+        fxFlash = { name: "missPuff", x: GX + GW / 2 - 78, y: GY + GH / 2 - 78, w: 156, h: 156, life: 36 };
+      } else if (scored) {
         you++;
         youEl.textContent = you;
         youResults.push("goal");
@@ -356,13 +363,20 @@
   function doSave(diveDir) {
     busy = true; setPad(false);
     var saved = diveDir === cpuShotDir;
+    var woodwork = !saved && Math.random() < 0.1 ? (cpuShotDir === "C" ? "crossbar" : "post") : null;
     statusEl.textContent = "You dive " + label(diveDir) + "…";
-    animate({ kind: "save", ballTo: cpuShotDir, keeperTo: diveDir }, function () {
+    animate({ kind: "save", ballTo: cpuShotDir, keeperTo: diveDir, woodwork: woodwork }, function () {
       if (saved) {
         cpuResults.push("miss");
         statusEl.textContent = "Great save! 🧤";
         badgeFlash = { name: "saveStreak", text: "Great save", life: 96 };
         fxFlash = { name: "saveBurst", x: GX + GW / 2 - 78, y: GY + GH / 2 - 78, w: 156, h: 156, life: 42 };
+      }
+      else if (woodwork) {
+        cpuResults.push("woodwork");
+        statusEl.textContent = "Off the " + woodwork + "! You survive the shot.";
+        badgeFlash = null;
+        fxFlash = { name: "missPuff", x: GX + GW / 2 - 78, y: GY + GH / 2 - 78, w: 156, h: 156, life: 36 };
       }
       else {
         cpu++;
@@ -417,7 +431,11 @@
   // ── Animation ────────────────────────────────────
   function animate(spec, done) {
     var fromBall = { x: BALL_START.x, y: BALL_START.y };
-    var toBall = { x: dirX(spec.ballTo), y: GY + GH * 0.5 };
+    var toBall = spec.woodwork === "crossbar"
+      ? { x: dirX(spec.ballTo), y: GY }
+      : spec.woodwork === "post"
+        ? { x: spec.ballTo === "L" ? GX : spec.ballTo === "R" ? GX + GW : GX + GW / 2, y: GY + GH * 0.44 }
+        : { x: dirX(spec.ballTo), y: GY + GH * 0.5 };
     var fromKeeper = dirX("C"), toKeeper = dirX(spec.keeperTo);
     ballTrail = [];
     keeperPose = spec.keeperTo;
@@ -453,16 +471,17 @@
     }
 
     // Goal net
-    ctx.fillStyle = "rgba(255,255,255,0.12)";
-    ctx.fillRect(GX, GY, GW, GH);
-    ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.lineWidth = 1;
-    for (var x = GX; x <= GX + GW; x += 16) { ctx.beginPath(); ctx.moveTo(x, GY); ctx.lineTo(x, GY + GH); ctx.stroke(); }
-    for (var y = GY; y <= GY + GH; y += 16) { ctx.beginPath(); ctx.moveTo(GX, y); ctx.lineTo(GX + GW, y); ctx.stroke(); }
-    // Posts + crossbar
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(GX - 7, GY - 7, 7, GH + 7);
-    ctx.fillRect(GX + GW, GY - 7, 7, GH + 7);
-    ctx.fillRect(GX - 7, GY - 7, GW + 14, 7);
+    if (!(window.SnackSoccerAssets && window.SnackSoccerAssets.drawGoal(ctx, { x: GX, y: GY, w: GW, h: GH }))) {
+      ctx.fillStyle = "rgba(255,255,255,0.12)";
+      ctx.fillRect(GX, GY, GW, GH);
+      ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.lineWidth = 1;
+      for (var x = GX; x <= GX + GW; x += 16) { ctx.beginPath(); ctx.moveTo(x, GY); ctx.lineTo(x, GY + GH); ctx.stroke(); }
+      for (var y = GY; y <= GY + GH; y += 16) { ctx.beginPath(); ctx.moveTo(GX, y); ctx.lineTo(GX + GW, y); ctx.stroke(); }
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(GX - 7, GY - 7, 7, GH + 7);
+      ctx.fillRect(GX + GW, GY - 7, 7, GH + 7);
+      ctx.fillRect(GX - 7, GY - 7, GW + 14, 7);
+    }
     if (badgeFlash && window.SnackSoccerAssets) {
       window.SnackSoccerAssets.drawFx(ctx, "netRipple", GX + 82, GY + 22, 156, 76);
     }

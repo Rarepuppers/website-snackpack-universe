@@ -104,7 +104,7 @@
       <div class="page-hero-card" style="text-align:center;">
         <span class="eyebrow">Free · No download</span>
         <h1>Dribble Rush</h1>
-        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">Dodge defenders, hop the sliding tackles, and see how far you can run. Three lanes, quick reflexes, one more attempt. No ads, no sign-in.</p>
+        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">Dodge defenders, hop sliding tackles, collect stars, and build a distance-plus-skill score. Three lanes, quick reflexes, one more attempt. No ads, no sign-in.</p>
       </div>
     </div>
   </section>
@@ -116,6 +116,9 @@
           <div class="game-readout">
             <span class="readout-chip"><span>Distance</span><b id="dr-distance">0m</b></span>
             <span class="readout-chip"><span>Stars</span><b id="dr-stars">0</b></span>
+            <span class="readout-chip"><span>Score</span><b id="dr-score">0</b></span>
+            <span class="readout-chip"><span>Lives</span><b id="dr-lives">1</b></span>
+            <span class="readout-chip"><span>Boost</span><b id="dr-boost">—</b></span>
             <span class="readout-chip"><span>Best</span><b id="dr-best">0m</b></span>
           </div>
           <div class="game-controls">
@@ -151,7 +154,7 @@
           <ul class="funnel-points">
             <li>Instant browser play on phone or desktop</li>
             <li>No ads, no sign-in, no download</li>
-            <li>Best distance saved locally on your device</li>
+            <li>Best distance and score saved locally on your device</li>
           </ul>
           <div class="stack-inline">
             <a class="btn btn-primary" href="../../world-cup/">World Cup games hub</a>
@@ -169,13 +172,14 @@
   <section>
     <div class="shell seo-prose">
       <h2>How to play Dribble Rush</h2>
-      <p>Dribble Rush is an endless three-lane soccer runner. You're always moving up the pitch, and it's your job to steer around whatever comes at you. Standing defenders block an entire lane, so you need to switch lanes early to get past them. Sliding tackles are lower and can be jumped — hop at the right moment and you'll sail straight over. Collect stars along the way for bonus points, but don't let chasing them cost you a clean lane change. The pitch gets faster and busier the further you run, so the game is really about how long you can keep reading the field under pressure.</p>
+      <p>Dribble Rush is an endless three-lane soccer runner. Your score starts with distance, then grows with star pickups, consecutive-star combo bonuses, and clean jumps over sliding tackles. Missing a star costs 2 points but never costs a life. Rare extra-life and five-second speed power-ups reward a brave lane choice. Standing defenders still require a lane change, while sliding tackles can be hopped. The pitch gets faster and busier the further you run.</p>
 
       <h3>Tips for a longer run</h3>
       <ul>
         <li><strong>Decide early.</strong> Obstacles scroll in from the top, so pick your lane as soon as you see trouble instead of waiting until the last second.</li>
         <li><strong>Hop only for tackles.</strong> A hop won't get you past a standing defender — you still need to change lanes for those.</li>
-        <li><strong>Don't chase every star.</strong> A star in a risky lane isn't worth a bad collision — a clean run is worth more than the bonus.</li>
+        <li><strong>Build the star combo.</strong> Consecutive stars add +1, +2, +3 and so on, but a missed star resets the chain.</li>
+        <li><strong>Use power-ups deliberately.</strong> The rare life pickup protects one collision; the speed boost lasts five seconds and makes distance points arrive faster.</li>
         <li><strong>Start on Sunday League.</strong> Cup Final and Extra Time ramp up speed and traffic much faster.</li>
       </ul>
 
@@ -225,8 +229,11 @@
   var HOP_BUFFER_FRAMES = 8;
   var MOVE_BUFFER_FRAMES = 7;
   var TACKLE_COYOTE_FRAMES = 5;
+  var BOOST_FRAMES = 60 * 5;
+  var BOOST_MULTIPLIER = 1.32;
   var FIXED_DT = 1000 / 60;
   var BEST_KEY = "snackpack-dribble-rush-best";
+  var BEST_SCORE_KEY = "snackpack-dribble-rush-best-score";
   var MODE_KEY = "snackpack-dribble-rush-mode";
 
   var MODE_CONFIG = {
@@ -248,6 +255,9 @@
   }
   var distanceEl = document.getElementById("dr-distance");
   var starsEl = document.getElementById("dr-stars");
+  var scoreEl = document.getElementById("dr-score");
+  var livesEl = document.getElementById("dr-lives");
+  var boostEl = document.getElementById("dr-boost");
   var bestEl = document.getElementById("dr-best");
   var statusEl = document.getElementById("dr-status");
   var newBtn = document.getElementById("dr-new");
@@ -259,6 +269,7 @@
   try { mode = localStorage.getItem(MODE_KEY) || "sunday"; } catch (e) {}
   if (!MODE_CONFIG[mode]) mode = "sunday";
   var best = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0;
+  var bestScore = parseInt(localStorage.getItem(BEST_SCORE_KEY) || "0", 10) || 0;
   bestEl.textContent = best + "m";
 
   var st, raf = null, particles = [];
@@ -270,8 +281,13 @@
       renderX: LANES[1],
       hopFrames: 0,
       distance: 0,
+      scoredMetres: 0,
       stars: 0,
+      starCombo: 0,
       score: 0,
+      lives: 1,
+      speedBoostFrames: 0,
+      jumps: 0,
       frame: 0,
       runTime: 0,
       obstacles: [],
@@ -282,7 +298,10 @@
 
   function laneX(i) { return LANES[Math.max(0, Math.min(LANES.length - 1, i))]; }
 
-  function currentSpeed(cfg) { return Math.min(cfg.maxSpeed, cfg.baseSpeed + st.distance * cfg.rampRate); }
+  function currentSpeed(cfg) {
+    var base = Math.min(cfg.maxSpeed, cfg.baseSpeed + st.distance * cfg.rampRate);
+    return st.speedBoostFrames > 0 ? base * BOOST_MULTIPLIER : base;
+  }
   function currentInterval(cfg) { return Math.max(cfg.minInterval, cfg.baseInterval - st.distance * cfg.rampIntervalRate); }
 
   function spawnWave() {
@@ -293,11 +312,16 @@
     if (type) {
       st.obstacles.push({ type: type, lane: hazardLane, y: -60, cleared: false });
     }
+    var safeLanes = lanes.filter(function (l) { return l !== hazardLane || !type; });
     // Occasionally drop a star in a lane that's safe this wave.
     if (Math.random() < 0.55) {
-      var safeLanes = lanes.filter(function (l) { return l !== hazardLane || !type; });
       var starLane = safeLanes[Math.floor(Math.random() * safeLanes.length)];
       st.obstacles.push({ type: "star", lane: starLane, y: type ? -110 : -60, cleared: false });
+    }
+    // Power-ups are intentionally uncommon. Life is rarer than speed.
+    if (Math.random() < 0.075) {
+      var powerLane = safeLanes[Math.floor(Math.random() * safeLanes.length)];
+      st.obstacles.push({ type: Math.random() < 0.22 ? "life" : "speed", lane: powerLane, y: -150, cleared: false });
     }
   }
 
@@ -330,8 +354,14 @@
     var speed = currentSpeed(cfg);
     st.frame += 1;
     st.runTime += 1;
+    if (st.speedBoostFrames > 0) st.speedBoostFrames -= 1;
     consumeBufferedInput();
     st.distance += speed;
+    var metres = Math.floor(st.distance / 8);
+    if (metres > st.scoredMetres) {
+      st.score += metres - st.scoredMetres;
+      st.scoredMetres = metres;
+    }
 
     if (st.hopFrames > 0) st.hopFrames -= 1;
     st.renderX += (laneX(st.lane) - st.renderX) * 0.32;
@@ -341,14 +371,21 @@
       st.nextSpawn = st.frame + Math.round(currentInterval(cfg));
     }
 
-    st.obstacles.forEach(function (o) { o.y += speed; });
+    var starBand = 30;
+    st.obstacles.forEach(function (o) {
+      o.y += speed;
+      if (o.type === "star" && !o.cleared && o.y > PLAYER_Y + starBand) {
+        o.cleared = true;
+        st.score = Math.max(0, st.score - 2);
+        st.starCombo = 0;
+      }
+    });
     st.obstacles = st.obstacles.filter(function (o) { return o.y < GAME_HEIGHT + 80; });
 
     particles.forEach(function (p) { p.x += p.vx; p.y += p.vy; p.life -= 1; });
     particles = particles.filter(function (p) { return p.life > 0; });
 
     var defenderBand = 26;
-    var starBand = 30;
     var tackleBand = 28;
     for (var i = 0; i < st.obstacles.length; i++) {
       var o = st.obstacles[i];
@@ -358,35 +395,62 @@
         if (Math.abs(dy) > starBand) continue;
         o.cleared = true;
         st.stars += 1;
-        st.score += 20;
+        st.starCombo += 1;
+        st.score += 10 + st.starCombo;
         addParticles(laneX(o.lane), PLAYER_Y, "#efb54d");
+        statusEl.textContent = "Star collected: +10 and combo +" + st.starCombo + ".";
+      } else if (o.type === "life") {
+        if (Math.abs(dy) > 32) continue;
+        o.cleared = true;
+        st.lives = Math.min(3, st.lives + 1);
+        addParticles(laneX(o.lane), PLAYER_Y, "#54d6c2");
+        statusEl.textContent = "Extra life collected. Lives: " + st.lives + ".";
+      } else if (o.type === "speed") {
+        if (Math.abs(dy) > 32) continue;
+        o.cleared = true;
+        st.speedBoostFrames = BOOST_FRAMES;
+        addParticles(laneX(o.lane), PLAYER_Y, "#efb54d");
+        statusEl.textContent = "Speed boost! Five seconds of faster points.";
       } else if (o.type === "tackle") {
         if (st.hopFrames > 0) {
           o.cleared = true;
+          st.jumps += 1;
+          st.score += 15;
+          addParticles(laneX(o.lane), PLAYER_Y, "#efb54d");
         } else if (dy > -TACKLE_COYOTE_FRAMES && dy < tackleBand) {
-          crash();
-          return;
+          if (crash(o)) return;
         } else {
           continue;
         }
       } else if (o.type === "defender") {
         if (Math.abs(dy) > defenderBand) continue;
-        crash();
-        return;
+        if (crash(o)) return;
       }
     }
   }
 
-  function crash() {
+  function crash(obstacle) {
+    if (st.lives > 1) {
+      st.lives -= 1;
+      if (obstacle) obstacle.cleared = true;
+      addParticles(st.renderX, PLAYER_Y, "#de6a38");
+      statusEl.className = "game-status game-status--lose";
+      statusEl.textContent = "Contact! One life used — keep dribbling.";
+      return false;
+    }
     st.phase = "dead";
     stopLoop();
     var metres = Math.floor(st.distance / 8);
     var prevBest = best;
+    var prevBestScore = bestScore;
     if (metres > best) { best = metres; localStorage.setItem(BEST_KEY, String(best)); }
+    if (st.score > bestScore) { bestScore = st.score; localStorage.setItem(BEST_SCORE_KEY, String(bestScore)); }
     bestEl.textContent = best + "m";
-    if (metres > prevBest && prevBest > 0) {
+    scoreEl.textContent = st.score;
+    livesEl.textContent = st.lives;
+    if (metres > prevBest || st.score > prevBestScore) {
       statusEl.className = "game-status";
-      statusEl.textContent = "Tackled after a new best — " + metres + "m! 🎉 Tap to run again.";
+      statusEl.textContent = "New best: " + st.score + " points over " + metres + "m! Tap to run again.";
       if (window.SnackPack && metres >= 300) {
         window.SnackPack.celebrate({
           title: "New best run! 🎉",
@@ -395,7 +459,7 @@
       }
     } else {
       statusEl.className = "game-status game-status--lose";
-      statusEl.textContent = "Tackled after " + metres + "m and " + st.stars + " stars. Tap to try again.";
+      statusEl.textContent = "Tackled after " + metres + "m. Score: " + st.score + ". Tap to try again.";
     }
     draw();
   }
@@ -423,9 +487,17 @@
     st = initialState();
     statusEl.className = "game-status";
     statusEl.textContent = "Tap the pitch (or press space) to start running.";
-    distanceEl.textContent = "0m";
-    starsEl.textContent = "0";
+    updateReadout();
     draw();
+  }
+
+  function updateReadout() {
+    if (!st) return;
+    distanceEl.textContent = Math.floor(st.distance / 8) + "m";
+    starsEl.textContent = st.stars;
+    scoreEl.textContent = st.score;
+    livesEl.textContent = st.lives;
+    boostEl.textContent = st.speedBoostFrames > 0 ? Math.ceil(st.speedBoostFrames / 60) + "s" : "—";
   }
 
   function addParticles(x, y, color) {
@@ -446,8 +518,7 @@
       if (st.phase !== "playing") break;
     }
     if (st.phase === "playing") {
-      distanceEl.textContent = Math.floor(st.distance / 8) + "m";
-      starsEl.textContent = st.stars;
+      updateReadout();
       draw();
       raf = requestAnimationFrame(frame);
     } else {
@@ -515,6 +586,22 @@
       ctx.moveTo(-46, 4); ctx.lineTo(-30, -2);
       ctx.moveTo(-46, 12); ctx.lineTo(-26, 4);
       ctx.stroke();
+      ctx.restore();
+    } else if (o.type === "life" && !o.cleared) {
+      if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawFxExtra(ctx, "saveBurst", x - 26, o.y - 26, 52, 52)) return;
+      ctx.save();
+      ctx.translate(x, o.y);
+      ctx.fillStyle = "#54d6c2";
+      ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "#fff"; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(8, 0); ctx.moveTo(0, -8); ctx.lineTo(0, 8); ctx.stroke();
+      ctx.restore();
+    } else if (o.type === "speed" && !o.cleared) {
+      if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawFx(ctx, "speedLines", x - 28, o.y - 18, 56, 36)) return;
+      ctx.save();
+      ctx.translate(x, o.y);
+      ctx.fillStyle = "#efb54d";
+      ctx.beginPath(); ctx.moveTo(4, -22); ctx.lineTo(-10, 1); ctx.lineTo(0, 1); ctx.lineTo(-5, 22); ctx.lineTo(12, -5); ctx.lineTo(3, -5); ctx.closePath(); ctx.fill();
       ctx.restore();
     } else if (o.type === "star" && !o.cleared) {
       if (window.SnackSoccerAssets && window.SnackSoccerAssets.drawStar(ctx, x, o.y, 17)) return;
@@ -612,6 +699,8 @@
       var label = Math.floor(st.distance / 8) + "m";
       ctx.strokeText(label, GAME_WIDTH / 2, 66);
       ctx.fillText(label, GAME_WIDTH / 2, 66);
+      ctx.font = "800 16px 'DM Sans', Arial, sans-serif";
+      ctx.fillText(st.score + " pts", GAME_WIDTH / 2, 90);
     }
 
     if (!st || st.phase === "menu" || st.phase === "dead") {

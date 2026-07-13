@@ -8,11 +8,12 @@
   var badges = new Image();
   var fx = new Image();
   var fxExtra = new Image();
+  var goal = new Image();
   var pitchWide = new Image();
   var pitchRunner = new Image();
   var ready = false;
   var callbacks = [];
-  var pending = 7;
+  var pending = 8;
 
   var actorRects = {
     runner0: [0, 0, 128, 128],
@@ -104,6 +105,27 @@
     return drawFrom(ctx, fxExtra, fxExtraRects[name], x, y, w, h, angle);
   }
 
+  function drawGoal(ctx, rect) {
+    if (!ready || !goal.complete || goal.naturalWidth === 0 || !rect) return false;
+    // Map the generated asset's visible alpha bounds to the gameplay goal
+    // rect so the frame remains aligned with the existing hitbox.
+    var alphaX = 78 / 1774, alphaY = 112 / 887;
+    var alphaW = 1610 / 1774, alphaH = 666 / 887;
+    var drawW = rect.w / alphaW, drawH = rect.h / alphaH;
+    ctx.drawImage(goal, rect.x - alphaX * drawW, rect.y - alphaY * drawH, drawW, drawH);
+    return true;
+  }
+
+  function goalFrameHit(rect, point, radius) {
+    if (!rect || !point) return null;
+    var r = radius || 10;
+    var topHit = point.x >= rect.x - r && point.x <= rect.x + rect.w + r && Math.abs(point.y - rect.y) <= r;
+    if (topHit) return "crossbar";
+    var leftHit = Math.abs(point.x - rect.x) <= r && point.y >= rect.y - r && point.y <= rect.y + rect.h + r;
+    var rightHit = Math.abs(point.x - (rect.x + rect.w)) <= r && point.y >= rect.y - r && point.y <= rect.y + rect.h + r;
+    return leftHit || rightHit ? "post" : null;
+  }
+
   function drawBall(ctx, x, y, radius) {
     return sprite(ctx, 0, 0, 256, 256, x - radius, y - radius, radius * 2, radius * 2);
   }
@@ -134,6 +156,8 @@
     drawBoot: drawBoot,
     drawFx: drawFx,
     drawFxExtra: drawFxExtra,
+    drawGoal: drawGoal,
+    goalFrameHit: goalFrameHit,
     drawPitch: drawPitch,
     drawStar: drawStar,
     drawTarget: drawTarget,
@@ -148,6 +172,7 @@
   load(badges, "soccer-badges.png");
   load(fx, "soccer-fx.png");
   load(fxExtra, "soccer-fx-extra.png");
+  load(goal, "soccer-goal.png");
   load(pitchWide, "pitch-wide.png");
   load(pitchRunner, "pitch-runner.png");
 })();

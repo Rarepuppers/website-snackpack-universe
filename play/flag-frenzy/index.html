@@ -264,7 +264,7 @@
       <div class="page-hero-card" style="text-align:center;">
         <span class="eyebrow">Free daily game</span>
         <h1>Flag Frenzy</h1>
-        <p class="lead" style="max-width:600px;margin-left:auto;margin-right:auto;">Guess today's World Cup 2026 team in 6 tries. Every guess reveals confederation, group, points and status clues — and every miss unlocks a new hint.</p>
+        <p class="lead" style="max-width:600px;margin-left:auto;margin-right:auto;">Guess today's World Cup 2026 team in 6 tries. Start with a geography clue, then use each guess to reveal more.</p>
       </div>
     </div>
   </section>
@@ -345,7 +345,7 @@
   <section>
     <div class="shell seo-prose">
       <h2>How to play Flag Frenzy</h2>
-      <p>Every day, Flag Frenzy picks one of the 48 teams at the World Cup 2026. You have 6 guesses to find it. Type any team name into the box — a dropdown will help with spelling. Each guess adds a row to your guess history showing four clues compared against the mystery team: confederation, group, group-stage points, and whether the team is still alive in the tournament or already eliminated. A green chip means that clue matches the answer exactly. The mystery flag itself stays hidden while you play — but every incorrect guess unlocks a new hint about the answer (a geography clue, a flag-colour clue, a group clue, a capital-city clue, or a group-stage form clue). Run out of guesses or solve it, and the real flag and team name are both revealed.</p>
+      <p>Every day, Flag Frenzy picks one of the 48 teams at the World Cup 2026. You have 6 guesses to find it. Type any team name into the box — a dropdown will help with spelling. A starter geography clue is visible immediately, then each guess adds a row to your guess history showing four clues compared against the mystery team: confederation, group, group-stage points, and whether the team is still alive in the tournament or already eliminated. A green chip means that clue matches the answer exactly. The mystery flag itself stays hidden while you play, with another hint unlocked after each miss. Run out of guesses or solve it, and the real flag and team name are both revealed.</p>
       <h3>Reading the clues</h3>
       <ul>
         <li><strong>Confederation</strong> — green if the guessed team plays in the same confederation as the answer (UEFA, CONMEBOL, CONCACAF, CAF, AFC, or OFC).</li>
@@ -681,7 +681,7 @@
     hintsEl.innerHTML = "";
     var hints = hintsFor(answer);
     var wrongCount = guesses.filter(function (g) { return g.team !== answer; }).length;
-    var shown = won ? 0 : Math.min(wrongCount, hints.length);
+    var shown = won || !answer ? 0 : Math.min(Math.max(1, wrongCount), hints.length);
     for (var i = 0; i < shown; i++) {
       var row = document.createElement("div");
       row.className = "ff-hint";
@@ -757,8 +757,8 @@
 
   function renderAll() {
     puzzleNumEl.textContent = mode === "practice" ? "Practice round" : "Puzzle #" + puzzleNumber;
-    // The real flag only appears once the puzzle is over — while you play,
-    // guessing is driven by the clue chips and the unlocked hints below.
+    // The real flag stays hidden while the starter clue and guess chips teach
+    // the puzzle; the full flag is reserved for the result state.
     flagImgEl.src = done ? FLAGS[answer] : MYSTERY_FLAG;
     flagImgEl.classList.add("is-shown");
     flagImgEl.alt = done ? answer + " flag" : "Mystery team flag — hidden until the puzzle ends";
@@ -772,7 +772,7 @@
         ? (mode === "practice" ? "Solved! Try another practice round below." : "You've already solved today's puzzle — come back tomorrow for a new one.")
         : (mode === "practice" ? "Out of guesses. Try another practice round below." : "Out of guesses for today. Come back tomorrow for a new team.");
     } else {
-      statusEl.textContent = mode === "practice" ? "Practice round: guess the mystery team." : "Guess today's World Cup team.";
+      statusEl.textContent = mode === "practice" ? "Practice round: use the starter clue, then guess the mystery team." : "Use the starter clue, then guess today's World Cup team.";
     }
     renderPips();
     renderHints();
