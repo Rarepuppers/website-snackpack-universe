@@ -67,14 +67,13 @@
                           "role":  "standard-readable",
                           "path":  "faces/classic",
                           "status":  "generated",
-                          "wiring":  "deferred-until-shared-face-renderer"
+                          "wiring":  "shared-face-renderer"
                       }
                   ],
-    "deferredTasks":  [
-                          "Wire every card game in Brain Games Vol 1, Vol 2, Vol 3, and the website to this registry.",
-                          "Use PNG backs in stock/facedown piles and card-back pickers.",
-                          "Use suit sprites in compact card layouts.",
-                          "Use the full classic face deck only through a shared face renderer.",
-                          "Add alternate Pro face decks after the shared renderer exists."
-                      ]
+    "remainingTasks":  [
+                           "Keep compact hand and trick layouts on the suit-sprite fallback until a portrait face improves the layout.",
+                           "Use PNG backs in stock/facedown piles and card-back pickers.",
+                           "Use suit sprites in compact card layouts.",
+                           "Consider alternate Pro face decks only after the current classic deck is smoke-tested across all large-card games."
+                       ]
 }

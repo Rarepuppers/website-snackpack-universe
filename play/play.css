@@ -226,12 +226,12 @@
 }
 
 .ms-flag-icon {
-  background-image: url("shared-assets/game-ui/grid-logic-markers/png/mine-flag-red.png");
+  background-image: url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine-flag-red.png");
   vertical-align: -0.18em;
 }
 
 .pc-cross-icon {
-  background-image: url("shared-assets/game-ui/grid-logic-markers/png/x-mark.png");
+  background-image: url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/x-mark.png");
   vertical-align: -0.16em;
 }
 
@@ -392,15 +392,15 @@
 }
 
 .ms-cell.is-flag::after {
-  background-image: url("shared-assets/game-ui/grid-logic-markers/png/mine-flag-red.png");
+  background-image: url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine-flag-red.png");
 }
 
 .ms-cell.is-mine::after {
-  background-image: url("shared-assets/game-ui/grid-logic-markers/png/mine.png");
+  background-image: url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine.png");
 }
 
 .ms-cell.is-hit::after {
-  background-image: url("shared-assets/game-ui/grid-logic-markers/png/mine-hit.png");
+  background-image: url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine-hit.png");
 }
 
 .ms-cell[data-n="1"] { color: #2f6fd6; }
@@ -502,11 +502,11 @@
 }
 .c4-cell.is-p1 {
   background-color: var(--c4-p1-dark, #b9481e);
-  background-image: url("shared-assets/game-ui/strategy-tokens/png/connect-red.png");
+  background-image: url("shared-assets/game-ui/pro-hand-painted/strategy-tokens/png/connect-red.png");
 }
 .c4-cell.is-p2 {
   background-color: var(--c4-p2-dark, #d99b1f);
-  background-image: url("shared-assets/game-ui/strategy-tokens/png/connect-yellow.png");
+  background-image: url("shared-assets/game-ui/pro-hand-painted/strategy-tokens/png/connect-yellow.png");
 }
 .c4-cell.is-drop {
   animation: c4-drop 0.34s cubic-bezier(0.2, 0.88, 0.28, 1.12);
@@ -713,16 +713,17 @@
   display: inline-block;
   width: 1em;
   aspect-ratio: 1;
-  background-image: url("sprites/card-suits.png");
-  background-size: 400% 100%;
+  background-image: none;
+  background-size: contain;
+  background-position: center;
   background-repeat: no-repeat;
   vertical-align: -0.14em;
   filter: drop-shadow(0 1px 2px rgba(32, 23, 19, 0.14));
 }
-.card-suit-icon--spade { background-position: 0 0; }
-.card-suit-icon--heart { background-position: 33.333% 0; }
-.card-suit-icon--diamond { background-position: 66.666% 0; }
-.card-suit-icon--club { background-position: 100% 0; }
+.card-suit-icon--spade { background-image: url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/spade.png"); }
+.card-suit-icon--heart { background-image: url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/heart.png"); }
+.card-suit-icon--diamond { background-image: url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/diamond.png"); }
+.card-suit-icon--club { background-image: url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/club.png"); }
 
 .mem-card:hover:not(.is-flipped):not(.is-matched) .mem-face--cover {
   filter: saturate(1.05) brightness(1.04);
@@ -904,7 +905,7 @@ button.th-card.is-selected {
   display: block;
   width: 78%;
   height: 78%;
-  background: url("shared-assets/game-ui/grid-logic-markers/png/x-mark.png") center / contain no-repeat;
+  background: url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/x-mark.png") center / contain no-repeat;
 }
 .pc-cell.pc-edge-l { margin-left: 2px; }
 .pc-cell.pc-edge-t { margin-top: 2px; }
@@ -955,7 +956,7 @@ button.th-card.is-selected {
 .board-icon {
   display: inline-block;
   aspect-ratio: 1;
-  background-image: url("sprites/board-game-icons.png");
+  background-image: url("shared-assets/game-ui/pro-hand-painted/board-games/board-game-icons.png");
   background-size: 600% 300%;
   background-repeat: no-repeat;
 }
@@ -992,7 +993,7 @@ button.th-card.is-selected {
   width: 8%; height: 8%;
   transform: translate(-50%, -50%);
   border-radius: 999px;
-  background-image: url("sprites/board-game-icons.png");
+  background-image: url("shared-assets/game-ui/pro-hand-painted/board-games/board-game-icons.png");
   background-size: 600% 300%;
   background-repeat: no-repeat;
   filter: drop-shadow(0 2px 4px rgba(32, 23, 19, 0.35));
@@ -1042,7 +1043,7 @@ button.th-card.is-selected {
   width: 30px;
   height: 30px;
   flex: none;
-  background-image: url("sprites/board-game-icons.png");
+  background-image: url("shared-assets/game-ui/pro-hand-painted/board-games/board-game-icons.png");
   background-size: 600% 300%;
   background-repeat: no-repeat;
   filter: drop-shadow(0 1px 3px rgba(32, 23, 19, 0.2));

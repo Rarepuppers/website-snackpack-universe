@@ -1,6 +1,6 @@
 ﻿{
     "title":  "Arcade Sprite Pack",
-    "generatedAt":  "2026-07-10",
+    "generatedAt":  "2026-07-12",
     "pack":  "arcade-sprites",
     "assets":  [
                    "asteroid.png",
@@ -44,6 +44,6 @@
                    "worm-turn.png"
                ],
     "format":  "transparent PNG, high-resolution raster",
-    "polishedAt":  "2026-07-10",
-    "updatedAt":  "2026-07-10"
+    "polishedAt":  "2026-07-12",
+    "updatedAt":  "2026-07-12"
 }

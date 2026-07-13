@@ -1,6 +1,6 @@
 ﻿{
     "pack":  "battleships",
-    "generatedAt":  "2026-07-10",
+    "generatedAt":  "2026-07-12",
     "assets":  [
                    "hit.png",
                    "miss.png",
@@ -13,5 +13,5 @@
                    "ship-stern-v.png",
                    "water.png"
                ],
-    "updatedAt":  "2026-07-10"
+    "updatedAt":  "2026-07-12"
 }

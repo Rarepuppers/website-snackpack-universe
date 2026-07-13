@@ -87,14 +87,14 @@
                              "role":  "standard-readable",
                              "path":  "faces/classic",
                              "status":  "generated",
-                             "wiring":  "deferred-until-shared-face-renderer"
+                             "wiring":  "shared-face-renderer"
                          }
                      ],
     "implementationPlan":  {
                                "free":  "2-3 polished backs plus the standard readable face deck.",
                                "pro":  "Several premium card backs first, because existing card-back pickers can expose them safely.",
                                "laterProUpgrade":  "Alternate full face decks only after apps and website share one card-face renderer.",
-                               "deferredRendererPass":  "Do not patch full face PNGs into six separate card layouts; build one shared renderer and wire apps/games/website through it."
+                               "rendererStatus":  "Full face PNGs are wired into the large-card renderers; compact layouts retain suit sprites for readability."
                            },
     "appExportDirs":  [
                           "apps\\snackpack-brain-games\\assets\\game-ui\\card-decks",

@@ -15,7 +15,7 @@ Exports:
 - `faces/classic/*.png` - full classic card-face PNGs.
 - App copies under `apps/*/assets/game-ui/card-decks/`.
 - `deck-registry.json` - the canonical free/pro deck registry.
-- `manifest.json` - generated dimensions, pack listings, and deferred wiring notes.
+- `manifest.json` - generated dimensions, pack listings, and renderer status.
 
 Recommended deck structure:
 
@@ -38,8 +38,9 @@ Generated Pro backs:
 - Emerald Arcade
 - Obsidian Star
 
-Deferred final wiring task:
+Current renderer wiring:
 
-- Wire every card game in Brain Games Vol 1, Vol 2, Vol 3, and the website to the shared deck registry.
+- Full face PNGs are wired into the large-card renderers in Vol 1, Vol 2, and Vol 3.
+- Compact hand and trick layouts retain suit sprites for readability and responsive sizing.
 - Keep shared assets canonical in `shared-assets/game-ui/card-decks` and sync/copy outward.
 - Audit each game for the correct surface: full face PNGs for large cards, suit sprites for compact cards, PNG backs for stock/facedown piles and card-back pickers.
