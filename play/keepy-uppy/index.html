@@ -290,6 +290,7 @@
   var history = [];
   var particles = [];
   var badgeFlash = null;
+  var fxFlash = null;
   var FIXED_DT = 1000 / 60;
   var accumulator = 0;
   var lastFrameTime = 0;
@@ -309,6 +310,7 @@
     history = [];
     particles = [];
     badgeFlash = null;
+    fxFlash = null;
     accumulator = 0;
     lastFrameTime = 0;
     ball = {
@@ -415,6 +417,8 @@
     if (dist > ball.r + 26 && running) {
       statusEl.className = "game-status game-status--lose";
       statusEl.textContent = "Missed the touch. Stay close to the ball.";
+      fxFlash = { name: "missPuff", x: ball.x - 62, y: ball.y - 62, w: 124, h: 124, life: 34 };
+      draw();
       return;
     }
     startLoop();
@@ -424,7 +428,11 @@
     ball.vx += offset * cfg.drift + (Math.random() - 0.5) * 0.35;
     ball.y = Math.min(ball.y, groundY - ball.r - 2);
     touches++;
+    var previousCombo = combo;
     combo = Math.min(9, 1 + Math.floor(touches / 6));
+    if (combo > previousCombo) {
+      fxFlash = { name: "comboFlare", x: ball.x - 72, y: ball.y - 72, w: 144, h: 144, life: 42 };
+    }
     var gained = Math.round((18 + clean * 22) * combo);
     score += gained;
     if (touches % cfg.starEvery === 0) star = makeStar();
@@ -459,6 +467,7 @@
     statusEl.className = "game-status game-status--lose";
     statusEl.textContent = "Dropped after " + touches + " touches. Score: " + score + ".";
     badgeFlash = touches >= 20 ? { name: "longRun", text: "Keepy run", life: 150 } : null;
+    fxFlash = { name: "missPuff", x: ball.x - 72, y: groundY - 116, w: 144, h: 144, life: 42 };
     renderHistory();
     if (window.SnackPack && score >= 1200) {
       window.SnackPack.celebrate({
@@ -602,6 +611,16 @@
     if (badgeFlash.life <= 0) badgeFlash = null;
   }
 
+  function drawFxFlash() {
+    if (!fxFlash || !window.SnackSoccerAssets) return;
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, Math.min(1, fxFlash.life / 12));
+    window.SnackSoccerAssets.drawFxExtra(ctx, fxFlash.name, fxFlash.x, fxFlash.y, fxFlash.w, fxFlash.h);
+    ctx.restore();
+    fxFlash.life -= 1;
+    if (fxFlash.life <= 0) fxFlash = null;
+  }
+
   function drawPrompt() {
     ctx.fillStyle = "rgba(255,255,255,0.88)";
     ctx.font = "700 14px 'DM Sans', Arial, sans-serif";
@@ -617,6 +636,7 @@
     drawStar();
     drawParticles();
     drawBall();
+    drawFxFlash();
     drawBadgeFlash();
     drawPrompt();
   }

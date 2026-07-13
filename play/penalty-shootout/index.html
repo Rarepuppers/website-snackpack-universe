@@ -265,12 +265,13 @@
   var keeperPose = "C";
   var ballTrail = [];
   var badgeFlash = null;
+  var fxFlash = null;
 
   function reset() {
     you = 0; cpu = 0; round = 1; busy = false; phase = "shoot";
     youResults = []; cpuResults = []; cpuShotDir = null; lastCpuShot = null;
     keeperX = dirX("C"); ballPos = { x: BALL_START.x, y: BALL_START.y };
-    keeperPose = "C"; ballTrail = []; badgeFlash = null;
+    keeperPose = "C"; ballTrail = []; badgeFlash = null; fxFlash = null;
     youEl.textContent = "0"; cpuEl.textContent = "0"; roundEl.textContent = "1";
     statusEl.className = "game-status";
     statusEl.textContent = "You're shooting first — pick a corner.";
@@ -327,11 +328,13 @@
         youResults.push("goal");
         statusEl.textContent = "GOAL! 🥅";
         badgeFlash = { name: "goldenBoot", text: "Goal", life: 84 };
+        fxFlash = { name: "goalBurst", x: GX + GW / 2 - 78, y: GY + GH / 2 - 78, w: 156, h: 156, life: 42 };
       }
       else {
         youResults.push("miss");
         statusEl.textContent = "Saved! The keeper guessed right.";
         badgeFlash = { name: "saveStreak", text: "Saved", life: 84 };
+        fxFlash = { name: "saveBurst", x: GX + GW / 2 - 78, y: GY + GH / 2 - 78, w: 156, h: 156, life: 42 };
       }
       renderTracks();
       draw();
@@ -359,6 +362,7 @@
         cpuResults.push("miss");
         statusEl.textContent = "Great save! 🧤";
         badgeFlash = { name: "saveStreak", text: "Great save", life: 96 };
+        fxFlash = { name: "saveBurst", x: GX + GW / 2 - 78, y: GY + GH / 2 - 78, w: 156, h: 156, life: 42 };
       }
       else {
         cpu++;
@@ -366,6 +370,7 @@
         cpuResults.push("goal");
         statusEl.textContent = "The computer scores.";
         badgeFlash = null;
+        fxFlash = { name: "missPuff", x: GX + GW / 2 - 78, y: GY + GH / 2 - 78, w: 156, h: 156, life: 36 };
       }
       renderTracks();
       draw();
@@ -460,6 +465,15 @@
     ctx.fillRect(GX - 7, GY - 7, GW + 14, 7);
     if (badgeFlash && window.SnackSoccerAssets) {
       window.SnackSoccerAssets.drawFx(ctx, "netRipple", GX + 82, GY + 22, 156, 76);
+    }
+    if (fxFlash && window.SnackSoccerAssets) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, Math.min(1, fxFlash.life / 12));
+      window.SnackSoccerAssets.drawFxExtra(ctx, fxFlash.name, fxFlash.x, fxFlash.y, fxFlash.w, fxFlash.h);
+      ctx.restore();
+      fxFlash.life -= 1;
+      if (fxFlash.life <= 0) fxFlash = null;
+      else if (typeof requestAnimationFrame === "function") requestAnimationFrame(draw);
     }
 
     // Keeper

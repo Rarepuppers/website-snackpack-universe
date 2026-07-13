@@ -326,6 +326,7 @@
   var ball = { x: 0, y: 0 };
   var keeper = { x: 0, y: 0 };
   var keeperDiveDir = "C";
+  var fxFlash = null;
 
   function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
 
@@ -346,6 +347,7 @@
     aimHistory = [];
     busy = false;
     current = null;
+    fxFlash = null;
     keeper = { x: dirX("C"), y: goal.y + goal.h - 22 };
     statusEl.className = "game-status";
     statusEl.textContent = "Pick your aim, then time the cross.";
@@ -469,6 +471,14 @@
   }
 
   function resolveCross(outcome) {
+    fxFlash = {
+      name: outcome === "perfect" || outcome === "goal" ? "goalBurst" : outcome === "save" ? "saveBurst" : "missPuff",
+      x: goal.x + goal.w / 2 - 82,
+      y: goal.y + goal.h / 2 - 82,
+      w: 164,
+      h: 164,
+      life: outcome === "miss" ? 36 : 42
+    };
     if (outcome === "perfect") {
       streak++;
       var gained = 220 + Math.max(0, streak - 1) * 22;
@@ -498,6 +508,7 @@
     if (score > best) { best = score; localStorage.setItem(bestKey, String(best)); }
     updateReadout();
     renderHistory();
+    draw();
     setTimeout(function () { cross++; startCross(); }, 900);
   }
 
@@ -606,6 +617,17 @@
     ctx.beginPath(); ctx.arc(ball.x, ball.y, 2.7, 0, Math.PI * 2); ctx.fill();
   }
 
+  function drawFxFlash() {
+    if (!fxFlash || !window.SnackSoccerAssets) return;
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, Math.min(1, fxFlash.life / 12));
+    window.SnackSoccerAssets.drawFxExtra(ctx, fxFlash.name, fxFlash.x, fxFlash.y, fxFlash.w, fxFlash.h);
+    ctx.restore();
+    fxFlash.life -= 1;
+    if (fxFlash.life <= 0) fxFlash = null;
+    else if (typeof requestAnimationFrame === "function") requestAnimationFrame(draw);
+  }
+
   function draw() {
     ctx.clearRect(0, 0, W, H);
     drawPitch();
@@ -614,6 +636,7 @@
     if (current && !current.resolved) {
       window.SnackSoccerAssets && window.SnackSoccerAssets.drawFx(ctx, "timingRing", headerPoint.x - 42, headerPoint.y - 70, 84, 78);
     }
+    drawFxFlash();
     drawKeeper();
     drawStriker();
     drawBall();

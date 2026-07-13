@@ -625,10 +625,8 @@
     }
 
     // Foundations
-    // Scope to the 4 pile containers only (.sol-pile) — the card placed
-    // inside a foundation also carries data-pile="foundation" (for
-    // click/drag targeting), so the broader attribute selector would match
-    // it too and throw off this loop's pi index once any foundation has a card.
+    // Scope to the four pile containers. Foundation cards use their own
+    // marker so they can never be mistaken for another foundation container.
     document.querySelectorAll('.sol-pile[data-pile="foundation"]').forEach(function (pileEl, pi) {
       pileEl.innerHTML = "";
       var f = foundations[pi];
@@ -638,7 +636,7 @@
         pileEl.appendChild(fe);
       } else {
         var fc = cardEl(f[f.length - 1], true);
-        fc.dataset.pile = "foundation"; fc.dataset.pi = pi;
+        fc.dataset.cardPile = "foundation"; fc.dataset.pi = pi;
         pileEl.appendChild(fc);
       }
     });
@@ -683,7 +681,7 @@
         if (+e.dataset.ci >= sel.ci) e.classList.add("sel");
       });
     } else if (sel.pile === "foundation") {
-      var fEl = document.querySelector('[data-pile="foundation"][data-pi="' + sel.pi + '"] .sol-card');
+      var fEl = document.querySelector('.sol-pile[data-pile="foundation"][data-pi="' + sel.pi + '"] .sol-card');
       if (fEl) fEl.classList.add("sel");
     }
   }
@@ -816,7 +814,7 @@
     if (!sel) {
       // Select a card if it's selectable.
       if (!card) return;
-      var p = card.dataset.pile;
+      var p = card.dataset.pile || card.dataset.cardPile;
       if (p === "waste") { sel = { pile: "waste" }; }
       else if (p === "foundation") { sel = { pile: "foundation", pi: +card.dataset.pi }; }
       else if (p === "tableau") {
@@ -836,8 +834,8 @@
       if (tryMoveToTableau(destPi)) return;
     }
     // Clicking the same selection or empty space: if clicked another selectable card, reselect.
-    if (card && card.dataset.pile && card.dataset.pile !== "foundation") {
-      var np = card.dataset.pile;
+    if (card && (card.dataset.pile || card.dataset.cardPile) && card.dataset.cardPile !== "foundation") {
+      var np = card.dataset.pile || card.dataset.cardPile;
       if (np === "waste") sel = { pile: "waste" };
       else if (np === "tableau") {
         var nci = +card.dataset.ci;
@@ -855,7 +853,7 @@
   // Taps still fall through to the click handler above; only a real drag
   // (movement past a small threshold) grabs and moves the card(s).
   function sourceFromCard(cardEl) {
-    var p = cardEl.dataset.pile;
+    var p = cardEl.dataset.pile || cardEl.dataset.cardPile;
     if (p === "waste") return waste.length ? { pile: "waste" } : null;
     if (p === "foundation") { var fpi = +cardEl.dataset.pi; return foundations[fpi] && foundations[fpi].length ? { pile: "foundation", pi: fpi } : null; }
     if (p === "tableau") {
@@ -867,7 +865,7 @@
   }
   function movingCardEls(src) {
     if (src.pile === "waste") { var w = wasteEl.querySelector("[data-ci]"); return w ? [w] : []; }
-    if (src.pile === "foundation") { var f = document.querySelector('[data-pile="foundation"][data-pi="' + src.pi + '"] .sol-card'); return f ? [f] : []; }
+    if (src.pile === "foundation") { var f = document.querySelector('.sol-pile[data-pile="foundation"][data-pi="' + src.pi + '"] .sol-card'); return f ? [f] : []; }
     if (src.pile === "tableau") {
       return [].slice.call(tableauRow.querySelectorAll('[data-pi="' + src.pi + '"][data-ci]'))
         .filter(function (el) { return +el.dataset.ci >= src.ci; });
