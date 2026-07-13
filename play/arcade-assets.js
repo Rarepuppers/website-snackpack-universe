@@ -19,16 +19,15 @@
     "flappy-snacky": {
       bgDay: "flappy-snacky-bg-day.png",
       bgNight: "flappy-snacky-bg-night.png",
-      pipe: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe.png",
-      pipeGreen: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe-green.png",
-      pipeBlue: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe-blue.png",
-      pipePurple: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe-purple.png",
+      pipeGreenBody: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe-green-body.png",
+      pipeGreenCap: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe-green-cap.png",
+      pipeBlueBody: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe-blue-body.png",
+      pipeBlueCap: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe-blue-cap.png",
+      pipePurpleBody: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe-purple-body.png",
+      pipePurpleCap: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe-purple-cap.png",
       bird0: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/flappy-bird-0.png",
       bird1: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/flappy-bird-1.png",
       bird2: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/flappy-bird-2.png",
-      chopsticks: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/flappy-chopsticks.png",
-      burger: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/flappy-burger.png",
-      lollipop: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/flappy-lollipop.png"
     },
     "snacky-worm": {
       bg: "snacky-worm-bg.png",

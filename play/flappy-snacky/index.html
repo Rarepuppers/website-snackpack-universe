@@ -220,6 +220,8 @@
   // Faithful port of the app's Flappy Snacky engine (390x680 world).
   var GAME_WIDTH = 390, GAME_HEIGHT = 680;
   var BIRD_X = 90, BIRD_R = 18, BIRD_HIT_R = 14, PIPE_WIDTH = 54;
+  var PIPE_CAP_OVERHANG = 5, PIPE_CAP_HEIGHT = 24;
+  var PIPE_COLLISION_WIDTH = PIPE_WIDTH + PIPE_CAP_OVERHANG * 2;
   var FIXED_DT = 1000 / 60, FLAP_BUFFER_FRAMES = 5;
   var GROUND_HEIGHT = 60;
   var GROUND_Y = GAME_HEIGHT - GROUND_HEIGHT; // 620
@@ -277,14 +279,14 @@
     st.birdY += st.birdVY;
 
     st.pipes = st.pipes.map(function (p) { return { id: p.id, x: p.x - cfg.pipeSpeed * mult, gapTop: p.gapTop, passed: p.passed }; })
-                       .filter(function (p) { return p.x > -PIPE_WIDTH - 10; });
+                       .filter(function (p) { return p.x > -PIPE_COLLISION_WIDTH - 10; });
 
     if (st.frame % interval === 0) {
       st.pipes.push({ id: st.nextPipeId++, x: GAME_WIDTH + 10, gapTop: randomGapTop(cfg.gapSize), passed: false });
     }
 
     st.pipes.forEach(function (p) {
-      if (!p.passed && p.x + PIPE_WIDTH < BIRD_X - BIRD_R) { st.score += 1; p.passed = true; }
+      if (!p.passed && p.x + PIPE_COLLISION_WIDTH < BIRD_X - BIRD_R) { st.score += 1; p.passed = true; }
     });
 
     var dead = st.birdY + BIRD_HIT_R >= GROUND_Y ||
@@ -294,8 +296,9 @@
   }
 
   function collides(pipe, gapSize) {
-    var birdLeft = BIRD_X - BIRD_HIT_R, birdRight = BIRD_X + BIRD_HIT_R, pipeRight = pipe.x + PIPE_WIDTH;
-    if (birdRight < pipe.x || birdLeft > pipeRight) return false;
+    var birdLeft = BIRD_X - BIRD_HIT_R, birdRight = BIRD_X + BIRD_HIT_R;
+    var pipeLeft = pipe.x - PIPE_CAP_OVERHANG, pipeRight = pipe.x + PIPE_WIDTH + PIPE_CAP_OVERHANG;
+    if (birdRight < pipeLeft || birdLeft > pipeRight) return false;
     var gapBottom = pipe.gapTop + gapSize;
     if (st.birdY - BIRD_HIT_R > pipe.gapTop && st.birdY + BIRD_HIT_R < gapBottom) return false;
     return true;
@@ -364,6 +367,25 @@
     return true;
   }
 
+  function drawPipePiece(body, cap, x, y, height, isTop) {
+    if (!body || !cap || height <= 0) return false;
+    var capHeight = Math.min(PIPE_CAP_HEIGHT, height);
+    var bodyHeight = Math.max(0, height - capHeight);
+    if (bodyHeight > 0) {
+      drawAsset(body, x, isTop ? y : y + capHeight, PIPE_WIDTH, bodyHeight, false);
+    }
+    drawAsset(cap, x - PIPE_CAP_OVERHANG, isTop ? y + height - capHeight : y, PIPE_COLLISION_WIDTH, capHeight, !isTop);
+    return true;
+  }
+
+  function drawFallbackPipe(x, y, height, isTop, bodyColor, capColor) {
+    var capHeight = Math.min(PIPE_CAP_HEIGHT, height);
+    ctx.fillStyle = bodyColor;
+    ctx.fillRect(x, isTop ? y : y + capHeight, PIPE_WIDTH, Math.max(0, height - capHeight));
+    ctx.fillStyle = capColor;
+    ctx.fillRect(x - PIPE_CAP_OVERHANG, isTop ? y + height - capHeight : y, PIPE_COLLISION_WIDTH, capHeight);
+  }
+
   // ── Render ───────────────────────────────────────
   function draw() {
     var night = mode === "night";
@@ -382,29 +404,21 @@
       ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
     }
 
-    // Rotate through clear pipe colors before the food-themed obstacles.
+    // Separate body and cap layers keep the classic pipe edge fixed at the gap.
     st.pipes.forEach(function (p) {
       var gapBottom = p.gapTop + cfg.gapSize;
-      if (assets.images.pipe) {
-        var pipeNames = ["pipeGreen", "pipeBlue", "pipePurple"];
-        var styleIndex = p.id % 6;
-        var pipeVariant = styleIndex < 3 ? assets.images[pipeNames[styleIndex]] : null;
-        var themedNames = ["chopsticks", "burger", "lollipop"];
-        var themedVariant = styleIndex >= 3 ? assets.images[themedNames[styleIndex - 3]] : null;
-        var pipeImage = pipeVariant || assets.images.pipe;
-        drawAsset(pipeImage, p.x - 10, 0, PIPE_WIDTH + 20, p.gapTop, true);
-        drawAsset(pipeImage, p.x - 10, gapBottom, PIPE_WIDTH + 20, GROUND_Y - gapBottom, false);
-        if (!pipeVariant) {
-          drawAsset(themedVariant, p.x - 14, p.gapTop - 46, PIPE_WIDTH + 28, 58, true);
-          drawAsset(themedVariant, p.x - 14, gapBottom - 12, PIPE_WIDTH + 28, 58, false);
-        }
+      var styles = [
+        [assets.images.pipeGreenBody, assets.images.pipeGreenCap],
+        [assets.images.pipeBlueBody, assets.images.pipeBlueCap],
+        [assets.images.pipePurpleBody, assets.images.pipePurpleCap]
+      ];
+      var style = styles[p.id % styles.length];
+      if (style[0] && style[1]) {
+        drawPipePiece(style[0], style[1], p.x, 0, p.gapTop, true);
+        drawPipePiece(style[0], style[1], p.x, gapBottom, GROUND_Y - gapBottom, false);
       } else {
-        ctx.fillStyle = pipeC;
-        ctx.fillRect(p.x, 0, PIPE_WIDTH, p.gapTop);
-        ctx.fillRect(p.x, gapBottom, PIPE_WIDTH, GROUND_Y - gapBottom);
-        ctx.fillStyle = pipeDark;
-        ctx.fillRect(p.x - 4, p.gapTop - 22, PIPE_WIDTH + 8, 22);
-        ctx.fillRect(p.x - 4, gapBottom, PIPE_WIDTH + 8, 22);
+        drawFallbackPipe(p.x, 0, p.gapTop, true, pipeC, pipeDark);
+        drawFallbackPipe(p.x, gapBottom, GROUND_Y - gapBottom, false, pipeC, pipeDark);
       }
     });
 
