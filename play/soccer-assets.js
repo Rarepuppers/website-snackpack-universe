@@ -7,11 +7,12 @@
   var actors = new Image();
   var badges = new Image();
   var fx = new Image();
+  var fxExtra = new Image();
   var pitchWide = new Image();
   var pitchRunner = new Image();
   var ready = false;
   var callbacks = [];
-  var pending = 6;
+  var pending = 7;
 
   var actorRects = {
     runner0: [0, 0, 128, 128],
@@ -49,6 +50,13 @@
     speedLines: [0, 128, 192, 96],
     netRipple: [208, 128, 160, 96],
     impact: [368, 128, 128, 96]
+  };
+
+  var fxExtraRects = {
+    goalBurst: [0, 0, 256, 256],
+    saveBurst: [256, 0, 256, 256],
+    comboFlare: [512, 0, 256, 256],
+    missPuff: [768, 0, 256, 256]
   };
 
   function assetReady() {
@@ -92,6 +100,10 @@
     return drawFrom(ctx, fx, fxRects[name], x, y, w, h, angle);
   }
 
+  function drawFxExtra(ctx, name, x, y, w, h, angle) {
+    return drawFrom(ctx, fxExtra, fxExtraRects[name], x, y, w, h, angle);
+  }
+
   function drawBall(ctx, x, y, radius) {
     return sprite(ctx, 0, 0, 256, 256, x - radius, y - radius, radius * 2, radius * 2);
   }
@@ -121,6 +133,7 @@
     drawBall: drawBall,
     drawBoot: drawBoot,
     drawFx: drawFx,
+    drawFxExtra: drawFxExtra,
     drawPitch: drawPitch,
     drawStar: drawStar,
     drawTarget: drawTarget,
@@ -134,6 +147,7 @@
   load(actors, "soccer-actors.png");
   load(badges, "soccer-badges.png");
   load(fx, "soccer-fx.png");
+  load(fxExtra, "soccer-fx-extra.png");
   load(pitchWide, "pitch-wide.png");
   load(pitchRunner, "pitch-runner.png");
 })();
