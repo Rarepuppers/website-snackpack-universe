@@ -19,15 +19,13 @@
     "flappy-snacky": {
       bgDay: "flappy-snacky-bg-day.png",
       bgNight: "flappy-snacky-bg-night.png",
-      sheet: "flappy-snacky-sprites.png",
-      sprites: {
-        bird0: [14, 38, 84, 70],
-        bird1: [112, 34, 84, 76],
-        bird2: [210, 38, 84, 70],
-        pipeBody: [360, 18, 58, 132],
-        pipeCap: [348, 150, 82, 30],
-        medal: [390, 196, 44, 44]
-      }
+      pipe: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe.png",
+      bird0: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/flappy-bird-0.png",
+      bird1: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/flappy-bird-1.png",
+      bird2: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/flappy-bird-2.png",
+      chopsticks: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/flappy-chopsticks.png",
+      burger: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/flappy-burger.png",
+      lollipop: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/flappy-lollipop.png"
     },
     "snacky-worm": {
       bg: "snacky-worm-bg.png",

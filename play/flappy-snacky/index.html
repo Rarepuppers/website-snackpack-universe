@@ -354,6 +354,16 @@
   function startLoop() { stopLoop(); lastFrameTime = 0; accumulator = 0; raf = requestAnimationFrame(frame); }
   function stopLoop() { if (raf !== null) { cancelAnimationFrame(raf); raf = null; } lastFrameTime = 0; accumulator = 0; }
 
+  function drawAsset(img, x, y, w, h, flipY) {
+    if (!img) return false;
+    ctx.save();
+    ctx.translate(x + w / 2, y + h / 2);
+    if (flipY) ctx.scale(1, -1);
+    ctx.drawImage(img, -w / 2, -h / 2, w, h);
+    ctx.restore();
+    return true;
+  }
+
   // ── Render ───────────────────────────────────────
   function draw() {
     var night = mode === "night";
@@ -372,18 +382,17 @@
       ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
     }
 
-    // Pipes
+    // Pipes use the shared premium pipe body, then rotate the themed cap
+    // art so the three obstacle types match the Vol 2 app's variation.
     st.pipes.forEach(function (p) {
       var gapBottom = p.gapTop + cfg.gapSize;
-      if (assets.images.sheet) {
-        ctx.save();
-        ctx.translate(p.x + PIPE_WIDTH / 2, p.gapTop / 2);
-        ctx.scale(1, -1);
-        ctx.drawImage(assets.images.sheet, 360, 18, 58, 132, -PIPE_WIDTH / 2, -p.gapTop / 2, PIPE_WIDTH, p.gapTop);
-        ctx.restore();
-        ctx.drawImage(assets.images.sheet, 348, 150, 82, 30, p.x - 4, p.gapTop - 22, PIPE_WIDTH + 8, 22);
-        ctx.drawImage(assets.images.sheet, 360, 18, 58, 132, p.x, gapBottom, PIPE_WIDTH, GROUND_Y - gapBottom);
-        ctx.drawImage(assets.images.sheet, 348, 150, 82, 30, p.x - 4, gapBottom, PIPE_WIDTH + 8, 22);
+      if (assets.images.pipe) {
+        drawAsset(assets.images.pipe, p.x - 10, 0, PIPE_WIDTH + 20, p.gapTop, true);
+        drawAsset(assets.images.pipe, p.x - 10, gapBottom, PIPE_WIDTH + 20, GROUND_Y - gapBottom, false);
+        var variantNames = ["chopsticks", "burger", "lollipop"];
+        var variant = assets.images[variantNames[p.id % variantNames.length]];
+        drawAsset(variant, p.x - 14, p.gapTop - 46, PIPE_WIDTH + 28, 58, true);
+        drawAsset(variant, p.x - 14, gapBottom - 12, PIPE_WIDTH + 28, 58, false);
       } else {
         ctx.fillStyle = pipeC;
         ctx.fillRect(p.x, 0, PIPE_WIDTH, p.gapTop);
@@ -406,9 +415,8 @@
     ctx.translate(BIRD_X, st.birdY);
     ctx.rotate(angle);
     var frameName = "bird" + (Math.floor(st.frame / 8) % 3);
-    if (assets.images.sheet && assets.manifest.sprites[frameName]) {
-      var src = assets.manifest.sprites[frameName];
-      ctx.drawImage(assets.images.sheet, src[0], src[1], src[2], src[3], -30, -25, 60, 50);
+    if (assets.images[frameName]) {
+      ctx.drawImage(assets.images[frameName], -34, -34, 68, 68);
     } else {
       ctx.fillStyle = "#FFB300";
       ctx.beginPath(); ctx.arc(0, 0, BIRD_R, 0, Math.PI * 2); ctx.fill();
