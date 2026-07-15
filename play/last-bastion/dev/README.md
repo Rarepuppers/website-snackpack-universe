@@ -15,6 +15,10 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?art=placeholder` — code-shape comparison renderer
 - `/play/last-bastion/?helmet=0` — styled Marine without the removable helmet
 - `/play/last-bastion/?weapons=1`, `4`, `6`, or `12` — selected weapon-ring count
+- `/play/last-bastion/?loadout=vertical` — Service Rifle, Scattergun, and Arc Carbine functional placeholder loadout
+- `/play/last-bastion/?loadout=scattergun` or `?loadout=arc-carbine` — isolate one new weapon behaviour
+- `/play/last-bastion/?scenario=slime-spitter&loadout=vertical` — hostile-glob, slowing-puddle, and three-weapon review lab
+- `/play/last-bastion/?scenario=carapace-elite&loadout=vertical` — directional armour, charge recovery, and guaranteed elite-reward lab
 - `/play/last-bastion/?stress=4` — normal four-weapon mixed-enemy readability stress scene
 - `/play/last-bastion/?stress=12` — twelve-weapon capacity/performance stress scene
 - `/play/last-bastion/?mode=gallery` — production art frame, pivot, scale, state, and equipment gallery

@@ -3,6 +3,7 @@ import {
   MAX_EQUIPPED_WEAPONS,
   clampWeaponCount,
   createServiceRifleLoadout,
+  createWeaponLoadout,
 } from "./WeaponLoadout";
 
 describe("WeaponLoadout", () => {
@@ -24,6 +25,16 @@ describe("WeaponLoadout", () => {
 
   it("rejects loadouts beyond the twelve-weapon capacity", () => {
     expect(() => createServiceRifleLoadout(MAX_EQUIPPED_WEAPONS + 1)).toThrow(RangeError);
+  });
+
+  it("creates mixed weapon instances with isolated runtime stats", () => {
+    const loadout = createWeaponLoadout(["bastion-service-rifle", "scattergun", "arc-carbine"]);
+    expect(loadout.map((weapon) => weapon.weaponId)).toEqual([
+      "bastion-service-rifle", "scattergun", "arc-carbine",
+    ]);
+    loadout[1]!.stats.projectileDamage = 999;
+    expect(loadout[0]!.stats.projectileDamage).not.toBe(999);
+    expect(loadout[2]!.stats.projectileDamage).not.toBe(999);
   });
 
   it("clamps review parameters to the supported range", () => {

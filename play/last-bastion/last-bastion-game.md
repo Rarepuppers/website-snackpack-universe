@@ -156,6 +156,8 @@ The combat prototype proves one manual weapon. The next implementation step test
 
 The placeholder implementation now supports zero to twelve independently firing Service Rifle instances. One weapon follows the aim-side anchor; multiple weapons use a fixed circular arrangement whose radius expands with count and whose vertical position controls whether each sprite passes behind or in front of the hero. Review builds can select a count with the `?weapons=` URL parameter. This proves technical capacity only; four weapons remain the next intended gameplay test and twelve is a stress/readability case.
 
+The functional vertical-slice placeholder loadout is available with `?loadout=vertical`: the Service Rifle remains cursor-aimed, the Scattergun fires a short-lived five-pellet spread with knockback, and the Arc Carbine automatically selects a nearby enemy and chains from its first impact. Weapon definitions now own targeting, attack pattern, range, projectile, knockback, and chain rules. Final Scattergun and Arc Carbine art remains in Production Asset Batch B.
+
 Individual weapons may use different behaviours while sharing the visible ring. Examples include cursor-aimed weapons, automatic target-seeking weapons, orbiting contact weapons, and cooldown-driven support devices. The firing rules must remain understandable; adding more visible guns must not turn player choices into unreadable noise.
 
 ### Modular equipment appearance
@@ -212,6 +214,10 @@ The web MVP may introduce Common, Uncommon, and Rare rewards, but rarity must co
 
 - One additional pressure enemy
 - One elite or mini-boss with clearly telegraphed attacks
+
+The functional Slime Spitter placeholder now supplies the additional ranged pressure role. It maintains medium distance, locks a ground target during a visible wind-up, fires a hostile glob, and creates a four-second slowing puddle on its target or the first obstacle struck. Puddles slow ordinary movement but not the Marine's evasive displacement, and simultaneous coverage is capped at five.
+
+The first functional elite is the Carapace Scuttler. It retains the Scuttler pursuit role but adds directional frontal armour, a visible charge wind-up, a committed charge, and a full-damage recovery window. Direct projectiles striking the front deal 25% damage; rear attacks and all attacks during recovery deal full damage. Its death always drops an elite upgrade cache, proving that elite rewards are guaranteed rather than random.
 
 ### Web MVP
 

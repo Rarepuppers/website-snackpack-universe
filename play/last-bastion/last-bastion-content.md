@@ -179,3 +179,157 @@ All three initial weapon concepts were approved on 15 July 2026 and are stored u
 - How weapon tier affects reward availability
 - Audio and VFX budget at high weapon counts
 - Ring layout and visibility at six to twelve weapons
+
+## Production roster and implementation priority
+
+Content enters production in three gates so every new asset proves a gameplay role.
+
+### Weapon production plan
+
+| Gate | Weapon | Class | Role being proved | Visual requirement |
+| --- | --- | --- | --- | --- |
+| Implemented | Bastion Service Rifle | Neutral I | Accurate automatic baseline | Existing east-facing ring sprite and rifle effect family |
+| Functional placeholder | Scattergun | Neutral I | Close spread and knockback | Final wide-barrel ring sprite, pellet burst, impact fan pending Batch B |
+| Functional placeholder | Arc Carbine | Neutral II | Automatic targeting and chaining | Final forked-coil sprite, bolt, chain arc, conductive hit pending Batch B |
+| Web MVP | Machine Pistol | Neutral I | High cadence and short effective range | Compact silhouette and restrained muzzle effect |
+| Web MVP | Patrol Blade | Neutral I | Orbit-position melee sweep | Four readable sweep poses and crescent trail |
+| Web MVP | Bolt Carbine | Neutral I | Slow piercing line projectile | Long receiver, bright bolt, penetration wake |
+| Web MVP | Grenade Tube | Neutral II | Arcing area damage | Stub launcher, grenade, warning marker, blast |
+| Web MVP | Guard Drone | Neutral II | Autonomous targeting | Folded/deployed poses, targeting line, drone shot |
+| Web MVP | Bulwark Rotary Cannon | Marine II | Hero identity, spin-up, movement trade-off | Approved concept converted to idle/spin/fire ring states |
+| Web MVP rare | Event Horizon | Unique | Pull-and-implode build | Approved concept, gravitic projectile, pull field, implosion |
+| Later | Remaining catalogue | Mixed | Expansion after MVP evidence | Generate only when its behaviour is scheduled |
+
+The vertical slice contains three weapons total: Service Rifle, Scattergun, and Arc Carbine. The Web MVP target is nine ordinary/hero weapons plus one Unique. Twelve visible slots remain technical capacity, not the expected inventory size.
+
+Weapon implementation precedes final art for each family. Shared data must define targeting mode, attack pattern, range, cooldown or heat, projectile/hit shape, muzzle anchor, effect IDs, audio IDs, and upgrade tags. Duplicate weapons are allowed only if copies can diverge meaningfully; otherwise a duplicate reward upgrades the owned copy.
+
+### Standard monster production plan
+
+| Gate | Monster | Role | Signature pressure | Required authored states |
+| --- | --- | --- | --- | --- |
+| Implemented | Scuttler | Basic swarmer | Direct pursuit | Existing gait A/B × four facings, spawn, hit, death |
+| Implemented | Egg Cluster | Nest object | Delayed hatch priority | Existing dormant, pulse, crack, rupture |
+| Implemented | Brain Blob | Telegraph attacker | Wind-up and short lunge | Existing drift, wind-up, lunge, recovery |
+| Functional placeholder | Slime Spitter | Ranged area denial | Glob creates bounded slowing puddle | Final idle/move, aim, spit, hit/death, glob, and puddle art pending Batch B |
+| Web MVP | Ripper | Melee bruiser | Long claw reach after wind-up | Move, sweep tell, active sweep, recovery, hit/death |
+| Web MVP | Razor Scuttler | Interceptor | Fast commit followed by punishable miss | Fast gait, leap/charge tell, miss recovery, death |
+| Web MVP | Brood Tender | Support | Speeds eggs and retreats | Move, channel, interrupted, hit/death |
+| Later | Mireback | Mobile denial | Wide trail but slow turning | Deferred until slime coverage proves fair |
+
+Egg Clusters remain encounter objects rather than a moving archetype. The vertical slice has three moving enemies (Scuttler, Brain Blob, Slime Spitter) plus eggs. The Web MVP adds Ripper, Razor Scuttler, and Brood Tender as encounter-budget options; not every wave uses all of them.
+
+### Elite monster plan
+
+Elites retain a standard monster's role, add one mechanic, use approximately 2.5–4× durability, and should take roughly 15–30 seconds to defeat. They receive a silhouette attachment, emissive markings, one added telegraph, and a guaranteed reward; a palette swap alone is insufficient.
+
+| Elite | Base family | Added rule | Reward |
+| --- | --- | --- | --- |
+| Carapace Scuttler — functional placeholder | Scuttler | Frontal armour; vulnerable rear and post-charge window | Guaranteed upgrade cache |
+| Volatile Spitter | Slime Spitter | Three-glob fan with capped puddle coverage | Upgrade plus ordnance-cache chance |
+| Synapse Brain | Brain Blob | Marks one delayed danger zone during wind-up | Upgrade or relic when relics are active |
+| Broodguard | Egg/Brood | Shields one nearby egg until interrupted | Weapon or upgrade chest |
+
+Only the Carapace Scuttler is required for the first elite implementation. Others enter after their base enemy is accepted.
+
+### Mini-boss plan
+
+Mini-bosses use bespoke silhouettes, two or three attacks, a short entrance, a boss bar, and a guaranteed high-value reward. They have no more than one phase transition and target a 45–90 second fight.
+
+| Mini-boss | Encounter identity | Attacks | Production gate |
+| --- | --- | --- | --- |
+| Siege Crusher | Arena-geometry breaker | Telegraph charge, broad claw sweep, debris shockwave; exposed after collision | Vertical slice |
+| Brood Warden | Spawn-priority test | Places eggs, guards them, enrages briefly when a hatch is prevented | Web MVP |
+| Synapse Herald | Telegraph mastery | Lunge chain, marked danger zones, temporary Brain Blob link | Web MVP or later |
+
+Siege Crusher is the recommended first mini-boss because it reuses arena collision and damaged-obstacle work while creating a new combat rhythm.
+
+### Final boss plan
+
+The Web MVP ships with one final boss: **The Bastion Eater**, a giant alien siege organism built around the game's arena and swarm identity.
+
+1. **Breach phase:** telegraphed claw lanes and charges damage cover; exposed head nodes create damage windows.
+2. **Brood phase:** the boss anchors and grows a limited number of eggs while sweeping safe lanes with biomass tendrils.
+3. **Last stand:** fewer summons, faster readable combinations, and expanding breach zones; never an unavoidable full-arena attack.
+
+The fight targets 3–5 minutes and ends the run in victory. It may unlock an Artifact for future runs, but must not award an unusable current-run item after the final fight. Required art includes a 192–256 pixel logical body, separate damageable head/node overlays, phase damage states, claw/tendril attacks, breach decals, portrait/banner, boss bar treatment, entrance, defeat, and victory-vault presentation.
+
+Future boss seeds such as a Mire Sovereign or Choir Mind remain names only until a second biome is justified. They are not part of the MVP art batch.
+
+## Rewards, interactables, and run objects
+
+| Object | Purpose | Rule | Initial scope |
+| --- | --- | --- | --- |
+| Weapon chest | Adds or replaces a weapon | Presents 2–3 weapon choices after combat; no unusable duplicates | Vertical slice |
+| Upgrade chest | Improves the current build | Elite version guarantees higher-impact options | Vertical slice |
+| Ordnance cache | Temporary combat power | Replaces ammo boxes; grants rapid cycling, explosive shots, or drone support briefly | Web MVP |
+| Supply depot | Between-wave recovery decision | Choose one: heal, reroll, or repair/refresh; limited uses | Vertical slice signature interaction candidate |
+| Supply drop | In-combat optional objective | Telegraphs landing, then requires holding or clearing a small zone | Web MVP |
+| Powerup | Short-lived immediate effect | Four types maximum: Overcharge, Aegis, Magnet Pulse, Adrenaline | Web MVP after pickup timers exist |
+| Collectible | Feeds an implemented economy | XP and health now; Scrap only when a same-run shop exists | As supporting system exists |
+| Relic | Run-long passive modifier | One copy unless stated; changes a rule or build tag | Web MVP route rewards |
+| Artifact | Named run-defining reward | One equipped; earned before the final fight from a mini-boss, rare shrine, or major event | Web MVP |
+| Shrine | Explicit risk/reward choice | Shows cost and result before confirmation; one use | Web MVP route/interactable |
+
+Traditional ammunition is not tracked. “Ammo boxes” become **Ordnance Caches**, preserving the military fantasy without adding reload inventory bookkeeping.
+
+### Powerup set
+
+- **Overcharge:** faster weapon cycling briefly; orange lightning icon.
+- **Aegis:** absorbs one hit or grants a brief shield pool; cyan hexagonal icon.
+- **Magnet Pulse:** attracts nearby XP and temporarily expands pickup range; blue-white field icon.
+- **Adrenaline:** movement and evasive recovery boost without changing invulnerability duration; red chevron icon.
+
+### First relic set
+
+| Relic | Build effect |
+| --- | --- |
+| Stabiliser Gyro | Spread narrows while moving |
+| Salvaged Capacitor | Every fifth non-melee attack gains a small chain arc |
+| Blast Baffle | Reduced self/explosive damage; slightly larger explosions |
+| Hunter's Beacon | Elites are marked earlier and take bonus damage after telegraphed misses |
+| Field Lattice | Picking up health creates a short slowing pulse |
+| Kinetic Greaves | Longer evasive distance but slightly longer recovery |
+
+### First Artifact set
+
+| Artifact | Run-defining effect |
+| --- | --- |
+| Event Horizon Core | Periodically turns the next projectile impact into a pull-and-implode event |
+| Broodbreaker Seal | Destroyed eggs damage nearby aliens and cannot hatch during their final crack window |
+| Last Bastion Protocol | At critical health, weapons brace into a tighter, faster formation; long cooldown |
+
+### First shrine set
+
+| Shrine | Choice |
+| --- | --- |
+| Shrine of Steel | Lose maximum health to gain a weapon slot or strengthen one owned weapon |
+| Shrine of the Hunt | Add an elite to the next encounter for a guaranteed relic reward |
+| Shrine of Echoes | Duplicate an ordinary upgrade but add a visible cooldown penalty to that effect family |
+
+Treasure chests are reward presentation, not a separate currency. Relic fragments, Scrap, keys, and meta-currency remain disabled until their spend/use loop exists and is visible.
+
+## Visual production batches after Batch A
+
+### Batch B — vertical-slice combat roster
+
+- Scattergun and Arc Carbine ring sprites, effects, projectiles, icons, and upgrade-card icons.
+- Slime Spitter directional/state sheet, slime glob, impact, slowing-puddle stages, and dissolve edge.
+- Carapace Scuttler elite overlay/state additions.
+- Siege Crusher body, charge/sweep/recovery states, boss portrait/bar, debris shockwave, and obstacle-damage effects.
+
+### Batch C — rewards and battlefield interaction
+
+- Weapon and upgrade chest closed/open/claimed states.
+- Supply depot idle/available/used/damaged states and three choice icons.
+- Health pickup refinement plus four powerup pickup/HUD icons.
+- Relic, Artifact, and shrine frames; six relic icons, three Artifact icons, and three shrine state sets.
+- Supply-drop pod descent shadow, landed, unlocking, open, and exhausted states.
+
+### Batch D — Web MVP enemies and final boss
+
+- Ripper, Razor Scuttler, Brood Tender, approved elite attachments, and telegraphs/effects.
+- Brood Warden if encounter testing needs a second route mini-boss.
+- The Bastion Eater body layers, attack overlays, phase damage states, arena breach assets, entrance/defeat presentation, and boss reward vault.
+
+Do not generate Batch C until the reward/interactable state model exists, or Batch D until the five-wave vertical slice and Siege Crusher fight pass their playtest gates.

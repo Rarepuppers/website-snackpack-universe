@@ -54,6 +54,9 @@ try {
     '/play/last-bastion/?art=placeholder',
     '/play/last-bastion/?mode=gallery',
     '/play/last-bastion/?mode=gallery&batch=a',
+    '/play/last-bastion/?loadout=vertical',
+    '/play/last-bastion/?scenario=slime-spitter&loadout=vertical',
+    '/play/last-bastion/?scenario=carapace-elite&loadout=vertical',
     '/play/last-bastion/?stress=4',
     '/play/last-bastion/?stress=12'
   )

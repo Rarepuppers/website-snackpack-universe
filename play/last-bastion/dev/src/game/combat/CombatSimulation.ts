@@ -4,10 +4,15 @@ import { normalizeVector } from "../math/Vector2Data";
 import { HeroMotionController } from "../hero/HeroMotionController";
 import { MARINE } from "../hero/marine";
 import { ENEMY_CATALOG, type EnemyType } from "../content/enemyCatalog";
-import { BASTION_SERVICE_RIFLE, type WeaponRuntimeStats } from "../content/weaponCatalog";
+import {
+  BASTION_SERVICE_RIFLE,
+  type WeaponId,
+  type WeaponRuntimeStats,
+} from "../content/weaponCatalog";
 import {
   clampWeaponCount,
   createServiceRifleLoadout,
+  createWeaponLoadout,
   type EquippedWeapon,
 } from "../equipment/WeaponLoadout";
 import { calculateWeaponRingLayout } from "../equipment/WeaponRingLayout";
@@ -26,11 +31,17 @@ import {
 
 export type EncounterStatus = "combat" | "intermission" | "victory" | "defeat";
 export type BrainPhase = "drift" | "windup" | "lunge" | "recover";
+export type SlimeSpitterPhase = "positioning" | "windup" | "recover";
+export type EnemyRank = "standard" | "elite";
+export type EliteKind = "carapace-scuttler";
+export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
+export type CombatScenario = "slime-spitter" | "carapace-elite";
 
 export type CombatEvent =
   | {
     type: "weapon-fired";
     weaponInstanceId: number;
+    weaponId: WeaponId;
     position: Vector2Data;
     direction: Vector2Data;
   }
@@ -42,7 +53,14 @@ export type CombatEvent =
   | { type: "level-up"; level: number }
   | { type: "enemy-spawned"; position: Vector2Data; enemyType: EnemyType }
   | { type: "egg-hatched"; position: Vector2Data }
-  | { type: "projectile-blocked"; position: Vector2Data };
+  | { type: "projectile-blocked"; position: Vector2Data }
+  | { type: "chain-arc"; from: Vector2Data; to: Vector2Data; weaponId: WeaponId }
+  | { type: "slime-spit-windup"; position: Vector2Data; target: Vector2Data }
+  | { type: "slime-glob-fired"; position: Vector2Data; target: Vector2Data }
+  | { type: "slime-impact"; position: Vector2Data; createdPuddle: boolean }
+  | { type: "elite-armour-hit"; position: Vector2Data; eliteKind: EliteKind }
+  | { type: "elite-reward-dropped"; position: Vector2Data; eliteKind: EliteKind }
+  | { type: "elite-reward-collected"; position: Vector2Data };
 
 export interface EnemySnapshot {
   id: number;
@@ -53,10 +71,17 @@ export interface EnemySnapshot {
   radiusMetres: number;
   hatchProgress: number;
   brainPhase?: BrainPhase;
+  spitterPhase?: SlimeSpitterPhase;
+  spitterTarget?: Vector2Data;
+  rank: EnemyRank;
+  eliteKind?: EliteKind;
+  carapacePhase?: CarapacePhase;
+  facingDirection: Vector2Data;
 }
 
 export interface ProjectileSnapshot {
   id: number;
+  weaponId: WeaponId;
   position: Vector2Data;
   rotationRadians: number;
 }
@@ -65,6 +90,28 @@ export interface ExperiencePickupSnapshot {
   id: number;
   position: Vector2Data;
   value: number;
+}
+
+export interface EnemyProjectileSnapshot {
+  id: number;
+  type: "slime-glob";
+  position: Vector2Data;
+  rotationRadians: number;
+}
+
+export interface GroundHazardSnapshot {
+  id: number;
+  type: "slowing-slime";
+  position: Vector2Data;
+  radiusMetres: number;
+  remainingSeconds: number;
+  durationSeconds: number;
+}
+
+export interface EliteRewardSnapshot {
+  id: number;
+  type: "elite-upgrade-cache";
+  position: Vector2Data;
 }
 
 export interface CombatSnapshot {
@@ -84,12 +131,17 @@ export interface CombatSnapshot {
   pendingUpgradeChoices: readonly UpgradeDefinition[];
   enemies: readonly EnemySnapshot[];
   projectiles: readonly ProjectileSnapshot[];
+  enemyProjectiles: readonly EnemyProjectileSnapshot[];
+  groundHazards: readonly GroundHazardSnapshot[];
+  eliteRewards: readonly EliteRewardSnapshot[];
   pickups: readonly ExperiencePickupSnapshot[];
   weapon: Readonly<WeaponRuntimeStats>;
   equippedWeapons: readonly Readonly<EquippedWeapon>[];
   events: readonly CombatEvent[];
   arena: Readonly<ArenaDefinition>;
   stressProfile: 4 | 12 | null;
+  scenario: CombatScenario | null;
+  playerSlowed: boolean;
 }
 
 interface EnemyState {
@@ -104,16 +156,29 @@ interface EnemyState {
   brainPhase: BrainPhase;
   brainPhaseRemainingSeconds: number;
   brainLungeDirection: Vector2Data;
+  spitterPhase: SlimeSpitterPhase;
+  spitterPhaseRemainingSeconds: number;
+  spitterTarget: Vector2Data;
+  rank: EnemyRank;
+  eliteKind?: EliteKind;
+  carapacePhase: CarapacePhase;
+  carapacePhaseRemainingSeconds: number;
+  facingDirection: Vector2Data;
+  maxHealth: number;
 }
 
 interface ProjectileState {
   id: number;
+  weaponId: WeaponId;
   position: Vector2Data;
   velocity: Vector2Data;
   damage: number;
   remainingSeconds: number;
   pierceRemaining: number;
   explosionRadiusMetres: number;
+  knockbackMetres: number;
+  chainRemaining: number;
+  chainRadiusMetres: number;
   hitEnemyIds: Set<number>;
   dead: boolean;
 }
@@ -122,6 +187,32 @@ interface ExperiencePickupState {
   id: number;
   position: Vector2Data;
   value: number;
+  collected: boolean;
+}
+
+interface EnemyProjectileState {
+  id: number;
+  type: "slime-glob";
+  position: Vector2Data;
+  velocity: Vector2Data;
+  target: Vector2Data;
+  remainingSeconds: number;
+  dead: boolean;
+}
+
+interface GroundHazardState {
+  id: number;
+  type: "slowing-slime";
+  position: Vector2Data;
+  radiusMetres: number;
+  remainingSeconds: number;
+  durationSeconds: number;
+}
+
+interface EliteRewardState {
+  id: number;
+  type: "elite-upgrade-cache";
+  position: Vector2Data;
   collected: boolean;
 }
 
@@ -136,8 +227,10 @@ export interface CombatSimulationOptions {
   autoStartWaves?: boolean;
   seed?: number;
   startingWeaponCount?: number;
+  startingWeaponIds?: readonly WeaponId[];
   arena?: ArenaDefinition;
   stressProfile?: 4 | 12;
+  scenario?: CombatScenario;
 }
 
 interface EquippedWeaponState extends EquippedWeapon {
@@ -149,6 +242,11 @@ const PLAYER_MAX_HEALTH = 100;
 const PLAYER_RADIUS_METRES = 0.55;
 const PLAYER_HURT_COOLDOWN_SECONDS = 0.65;
 const INTERMISSION_SECONDS = 2;
+const MAX_SLOWING_PUDDLES = 5;
+const SLOWING_PUDDLE_DURATION_SECONDS = 4;
+const SLOWING_PUDDLE_RADIUS_METRES = 1.25;
+const SLIME_MOVEMENT_MULTIPLIER = 0.55;
+const SLIME_GLOB_DAMAGE = 8;
 
 export class CombatSimulation {
   readonly widthMetres: number;
@@ -168,6 +266,9 @@ export class CombatSimulation {
   private lastAimDirection: Vector2Data = { x: 1, y: 0 };
   private enemies: EnemyState[] = [];
   private projectiles: ProjectileState[] = [];
+  private enemyProjectiles: EnemyProjectileState[] = [];
+  private groundHazards: GroundHazardState[] = [];
+  private eliteRewards: EliteRewardState[] = [];
   private pickups: ExperiencePickupState[] = [];
   private nextEntityId = 1;
   private status: EncounterStatus = "combat";
@@ -182,6 +283,7 @@ export class CombatSimulation {
   private readonly wavesEnabled: boolean;
   private frameEvents: CombatEvent[] = [];
   private readonly stressProfile: 4 | 12 | null;
+  private readonly scenario: CombatScenario | null;
 
   constructor(options: CombatSimulationOptions = {}) {
     this.arena = options.arena ?? BASTION_ARENA;
@@ -193,13 +295,21 @@ export class CombatSimulation {
     };
     this.randomState = options.seed ?? 0x5a17b45;
     this.stressProfile = options.stressProfile ?? null;
-    this.wavesEnabled = options.autoStartWaves !== false && this.stressProfile === null;
-    this.equippedWeapons = createServiceRifleLoadout(
-      clampWeaponCount(options.startingWeaponCount ?? 1),
-    ).map((weapon) => ({ ...weapon, cooldownSeconds: 0 }));
+    this.scenario = options.scenario ?? null;
+    this.wavesEnabled = options.autoStartWaves !== false
+      && this.stressProfile === null
+      && this.scenario === null;
+    const initialLoadout = options.startingWeaponIds
+      ? createWeaponLoadout(options.startingWeaponIds)
+      : createServiceRifleLoadout(clampWeaponCount(options.startingWeaponCount ?? 1));
+    this.equippedWeapons = initialLoadout.map((weapon) => ({ ...weapon, cooldownSeconds: 0 }));
 
     if (this.stressProfile !== null) {
       this.populateStressScenario(this.stressProfile);
+    } else if (this.scenario === "slime-spitter") {
+      this.populateSlimeSpitterScenario();
+    } else if (this.scenario === "carapace-elite") {
+      this.populateCarapaceEliteScenario();
     } else if (this.wavesEnabled) {
       this.beginWave(0);
     }
@@ -223,12 +333,15 @@ export class CombatSimulation {
     this.playerInvulnerable = motionFrame.isInvulnerable;
     this.evasiveReady = motionFrame.evasiveReady;
     this.evasiveCooldownRemainingSeconds = motionFrame.evasiveCooldownRemainingSeconds;
+    const movementMultiplier = motionFrame.state !== "evading" && this.isPlayerSlowed()
+      ? SLIME_MOVEMENT_MULTIPLIER
+      : 1;
     const previousPlayerPosition = { ...this.playerPosition };
     this.playerPosition = resolveCircleMovement(
       previousPlayerPosition,
       {
-        x: previousPlayerPosition.x + motionFrame.displacementMetres.x,
-        y: previousPlayerPosition.y + motionFrame.displacementMetres.y,
+        x: previousPlayerPosition.x + motionFrame.displacementMetres.x * movementMultiplier,
+        y: previousPlayerPosition.y + motionFrame.displacementMetres.y * movementMultiplier,
       },
       PLAYER_RADIUS_METRES,
       this.arena,
@@ -241,8 +354,11 @@ export class CombatSimulation {
     if (intent.fireHeld) {
       for (const weapon of this.equippedWeapons) {
         if (weapon.cooldownSeconds <= 0) {
-          this.fireWeapon(weapon, this.lastAimDirection);
-          weapon.cooldownSeconds = weapon.stats.fireIntervalSeconds;
+          const fireDirection = this.resolveWeaponAimDirection(weapon, this.lastAimDirection);
+          if (fireDirection) {
+            this.fireWeapon(weapon, fireDirection);
+            weapon.cooldownSeconds = weapon.stats.fireIntervalSeconds;
+          }
         }
       }
     }
@@ -253,7 +369,10 @@ export class CombatSimulation {
 
     this.updateEnemies(delta);
     this.updateProjectiles(delta);
+    this.updateEnemyProjectiles(delta);
+    this.updateGroundHazards(delta);
     this.updateExperiencePickups(delta);
+    this.updateEliteRewards();
     this.resolveEnemyContactDamage();
     this.removeDeadEntities();
     if (this.wavesEnabled) {
@@ -273,6 +392,7 @@ export class CombatSimulation {
       type,
       position: spawnPosition,
       health: definition.maxHealth,
+      maxHealth: definition.maxHealth,
       attackCooldownSeconds: 0,
       dead: false,
       hatchRemainingSeconds: type === "egg-cluster" ? 6 : 0,
@@ -280,6 +400,16 @@ export class CombatSimulation {
       brainPhase: "drift",
       brainPhaseRemainingSeconds: type === "brain-blob" ? 1.5 + this.random() : 0,
       brainLungeDirection: { x: 0, y: 0 },
+      spitterPhase: "positioning",
+      spitterPhaseRemainingSeconds: type === "slime-spitter" ? 0.8 + this.random() * 0.5 : 0,
+      spitterTarget: { ...this.playerPosition },
+      rank: "standard",
+      carapacePhase: "pursuit",
+      carapacePhaseRemainingSeconds: 0,
+      facingDirection: normalizeVector({
+        x: this.playerPosition.x - spawnPosition.x,
+        y: this.playerPosition.y - spawnPosition.y,
+      }),
     });
     this.frameEvents.push({
       type: "enemy-spawned",
@@ -287,6 +417,18 @@ export class CombatSimulation {
       enemyType: type,
     });
 
+    return id;
+  }
+
+  spawnElite(eliteKind: EliteKind, position?: Vector2Data): number {
+    const id = this.spawnEnemy("scuttler", position);
+    const enemy = this.enemies.find((candidate) => candidate.id === id)!;
+    enemy.rank = "elite";
+    enemy.eliteKind = eliteKind;
+    enemy.maxHealth = ENEMY_CATALOG.scuttler.maxHealth * 3.5;
+    enemy.health = enemy.maxHealth;
+    enemy.carapacePhase = "pursuit";
+    enemy.carapacePhaseRemainingSeconds = 1.25;
     return id;
   }
 
@@ -353,8 +495,28 @@ export class CombatSimulation {
       enemies: this.enemies.filter((enemy) => !enemy.dead).map((enemy) => this.enemySnapshot(enemy)),
       projectiles: this.projectiles.filter((projectile) => !projectile.dead).map((projectile) => ({
         id: projectile.id,
+        weaponId: projectile.weaponId,
         position: { ...projectile.position },
         rotationRadians: Math.atan2(projectile.velocity.y, projectile.velocity.x),
+      })),
+      enemyProjectiles: this.enemyProjectiles.filter((projectile) => !projectile.dead).map((projectile) => ({
+        id: projectile.id,
+        type: projectile.type,
+        position: { ...projectile.position },
+        rotationRadians: Math.atan2(projectile.velocity.y, projectile.velocity.x),
+      })),
+      groundHazards: this.groundHazards.map((hazard) => ({
+        id: hazard.id,
+        type: hazard.type,
+        position: { ...hazard.position },
+        radiusMetres: hazard.radiusMetres,
+        remainingSeconds: hazard.remainingSeconds,
+        durationSeconds: hazard.durationSeconds,
+      })),
+      eliteRewards: this.eliteRewards.filter((reward) => !reward.collected).map((reward) => ({
+        id: reward.id,
+        type: reward.type,
+        position: { ...reward.position },
       })),
       pickups: this.pickups.filter((pickup) => !pickup.collected).map((pickup) => ({
         id: pickup.id,
@@ -370,6 +532,8 @@ export class CombatSimulation {
       events: this.frameEvents.map((event) => ({ ...event })),
       arena: this.arena,
       stressProfile: this.stressProfile,
+      scenario: this.scenario,
+      playerSlowed: this.isPlayerSlowed(),
     };
   }
 
@@ -394,6 +558,7 @@ export class CombatSimulation {
 
       this.projectiles.push({
         id: this.nextId(),
+        weaponId: weapon.weaponId,
         position: { ...muzzlePosition },
         velocity: {
           x: direction.x * weapon.stats.projectileSpeedMetresPerSecond,
@@ -403,6 +568,9 @@ export class CombatSimulation {
         remainingSeconds: weapon.stats.projectileLifetimeSeconds,
         pierceRemaining: weapon.stats.pierceCount,
         explosionRadiusMetres: weapon.stats.explosionRadiusMetres,
+        knockbackMetres: weapon.stats.knockbackMetres,
+        chainRemaining: weapon.stats.chainCount,
+        chainRadiusMetres: weapon.stats.chainRadiusMetres,
         hitEnemyIds: new Set<number>(),
         dead: false,
       });
@@ -410,10 +578,37 @@ export class CombatSimulation {
       this.frameEvents.push({
         type: "weapon-fired",
         weaponInstanceId: weapon.instanceId,
+        weaponId: weapon.weaponId,
         position: muzzlePosition,
         direction,
       });
     }
+  }
+
+  private resolveWeaponAimDirection(
+    weapon: EquippedWeaponState,
+    cursorDirection: Vector2Data,
+  ): Vector2Data | null {
+    if (weapon.stats.targetingMode === "cursor") {
+      return cursorDirection;
+    }
+
+    let nearest: EnemyState | null = null;
+    let nearestDistance = weapon.stats.rangeMetres;
+    for (const enemy of this.enemies) {
+      if (enemy.dead) continue;
+      const candidateDistance = distance(this.playerPosition, enemy.position);
+      if (candidateDistance <= nearestDistance) {
+        nearest = enemy;
+        nearestDistance = candidateDistance;
+      }
+    }
+    return nearest
+      ? normalizeVector({
+        x: nearest.position.x - this.playerPosition.x,
+        y: nearest.position.y - this.playerPosition.y,
+      })
+      : null;
   }
 
   private modifyAllWeapons(modifier: (weapon: WeaponRuntimeStats) => void): void {
@@ -463,7 +658,10 @@ export class CombatSimulation {
         }
 
         projectile.hitEnemyIds.add(enemy.id);
-        this.damageEnemy(enemy, projectile.damage);
+        const damageMultiplier = this.projectileDamageMultiplier(projectile, enemy);
+        this.damageEnemy(enemy, projectile.damage * damageMultiplier);
+        if (damageMultiplier >= 1) this.applyProjectileKnockback(projectile, enemy);
+        this.resolveProjectileChain(projectile, enemy);
 
         if (projectile.explosionRadiusMetres > 0) {
           this.frameEvents.push({
@@ -492,6 +690,62 @@ export class CombatSimulation {
     }
   }
 
+  private projectileDamageMultiplier(projectile: ProjectileState, enemy: EnemyState): number {
+    if (enemy.eliteKind !== "carapace-scuttler" || enemy.carapacePhase === "recovery") return 1;
+    const directionToShooter = normalizeVector({ x: -projectile.velocity.x, y: -projectile.velocity.y });
+    const frontalDot = directionToShooter.x * enemy.facingDirection.x
+      + directionToShooter.y * enemy.facingDirection.y;
+    if (frontalDot <= 0.25) return 1;
+    this.frameEvents.push({
+      type: "elite-armour-hit",
+      position: { ...enemy.position },
+      eliteKind: enemy.eliteKind,
+    });
+    return 0.25;
+  }
+
+  private applyProjectileKnockback(projectile: ProjectileState, enemy: EnemyState): void {
+    if (projectile.knockbackMetres <= 0 || enemy.dead) return;
+    const direction = normalizeVector(projectile.velocity);
+    const definition = ENEMY_CATALOG[enemy.type];
+    enemy.position = resolveCircleMovement(
+      enemy.position,
+      {
+        x: enemy.position.x + direction.x * projectile.knockbackMetres,
+        y: enemy.position.y + direction.y * projectile.knockbackMetres,
+      },
+      definition.radiusMetres,
+      this.arena,
+    );
+  }
+
+  private resolveProjectileChain(projectile: ProjectileState, source: EnemyState): void {
+    let from = source;
+    while (projectile.chainRemaining > 0) {
+      let target: EnemyState | null = null;
+      let nearestDistance = projectile.chainRadiusMetres;
+      for (const enemy of this.enemies) {
+        if (enemy.dead || projectile.hitEnemyIds.has(enemy.id)) continue;
+        const candidateDistance = distance(from.position, enemy.position);
+        if (candidateDistance <= nearestDistance) {
+          target = enemy;
+          nearestDistance = candidateDistance;
+        }
+      }
+      if (!target) return;
+      projectile.hitEnemyIds.add(target.id);
+      projectile.chainRemaining -= 1;
+      this.frameEvents.push({
+        type: "chain-arc",
+        from: { ...from.position },
+        to: { ...target.position },
+        weaponId: projectile.weaponId,
+      });
+      this.damageEnemy(target, projectile.damage * 0.7);
+      from = target;
+    }
+  }
+
   private updateEnemies(deltaSeconds: number): void {
     for (const enemy of [...this.enemies]) {
       if (enemy.dead) {
@@ -502,13 +756,17 @@ export class CombatSimulation {
 
       switch (enemy.type) {
         case "scuttler":
-          this.moveEnemyTowardPlayer(enemy, ENEMY_CATALOG.scuttler.movementSpeedMetresPerSecond, deltaSeconds);
+          if (enemy.eliteKind === "carapace-scuttler") this.updateCarapaceScuttler(enemy, deltaSeconds);
+          else this.moveEnemyTowardPlayer(enemy, ENEMY_CATALOG.scuttler.movementSpeedMetresPerSecond, deltaSeconds);
           break;
         case "egg-cluster":
           this.updateEggCluster(enemy, deltaSeconds);
           break;
         case "brain-blob":
           this.updateBrainBlob(enemy, deltaSeconds);
+          break;
+        case "slime-spitter":
+          this.updateSlimeSpitter(enemy, deltaSeconds);
           break;
       }
     }
@@ -568,6 +826,169 @@ export class CombatSimulation {
     }
   }
 
+  private updateCarapaceScuttler(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.carapacePhaseRemainingSeconds -= deltaSeconds;
+    switch (enemy.carapacePhase) {
+      case "pursuit":
+        enemy.facingDirection = normalizeVector({
+          x: this.playerPosition.x - enemy.position.x,
+          y: this.playerPosition.y - enemy.position.y,
+        });
+        this.moveEnemy(enemy, enemy.facingDirection, 1.85, deltaSeconds);
+        if (enemy.carapacePhaseRemainingSeconds <= 0 && distance(enemy.position, this.playerPosition) <= 8) {
+          enemy.carapacePhase = "windup";
+          enemy.carapacePhaseRemainingSeconds = 0.55;
+        }
+        break;
+      case "windup":
+        if (enemy.carapacePhaseRemainingSeconds <= 0) {
+          enemy.facingDirection = normalizeVector({
+            x: this.playerPosition.x - enemy.position.x,
+            y: this.playerPosition.y - enemy.position.y,
+          });
+          enemy.carapacePhase = "charge";
+          enemy.carapacePhaseRemainingSeconds = 0.48;
+        }
+        break;
+      case "charge":
+        this.moveEnemy(enemy, enemy.facingDirection, 7.2, deltaSeconds);
+        if (enemy.carapacePhaseRemainingSeconds <= 0) {
+          enemy.carapacePhase = "recovery";
+          enemy.carapacePhaseRemainingSeconds = 1.05;
+        }
+        break;
+      case "recovery":
+        if (enemy.carapacePhaseRemainingSeconds <= 0) {
+          enemy.carapacePhase = "pursuit";
+          enemy.carapacePhaseRemainingSeconds = 1.4;
+        }
+        break;
+    }
+  }
+
+  private updateSlimeSpitter(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.spitterPhaseRemainingSeconds -= deltaSeconds;
+    const playerDistance = distance(enemy.position, this.playerPosition);
+
+    switch (enemy.spitterPhase) {
+      case "positioning":
+        if (playerDistance > 8) {
+          this.moveEnemyTowardPlayer(enemy, ENEMY_CATALOG["slime-spitter"].movementSpeedMetresPerSecond, deltaSeconds);
+        } else if (playerDistance < 5) {
+          const away = normalizeVector({
+            x: enemy.position.x - this.playerPosition.x,
+            y: enemy.position.y - this.playerPosition.y,
+          });
+          this.moveEnemy(enemy, away, ENEMY_CATALOG["slime-spitter"].movementSpeedMetresPerSecond, deltaSeconds);
+        }
+        if (enemy.spitterPhaseRemainingSeconds <= 0 && playerDistance <= 10) {
+          enemy.spitterPhase = "windup";
+          enemy.spitterPhaseRemainingSeconds = 0.65;
+          enemy.spitterTarget = { ...this.playerPosition };
+          this.frameEvents.push({
+            type: "slime-spit-windup",
+            position: { ...enemy.position },
+            target: { ...enemy.spitterTarget },
+          });
+        }
+        break;
+      case "windup":
+        if (enemy.spitterPhaseRemainingSeconds <= 0) {
+          this.launchSlimeGlob(enemy);
+          enemy.spitterPhase = "recover";
+          enemy.spitterPhaseRemainingSeconds = 1.1;
+        }
+        break;
+      case "recover":
+        if (enemy.spitterPhaseRemainingSeconds <= 0) {
+          enemy.spitterPhase = "positioning";
+          enemy.spitterPhaseRemainingSeconds = 0.85 + this.random() * 0.35;
+        }
+        break;
+    }
+  }
+
+  private launchSlimeGlob(enemy: EnemyState): void {
+    const direction = normalizeVector({
+      x: enemy.spitterTarget.x - enemy.position.x,
+      y: enemy.spitterTarget.y - enemy.position.y,
+    });
+    const speed = 7;
+    const start = {
+      x: enemy.position.x + direction.x * 0.7,
+      y: enemy.position.y + direction.y * 0.7,
+    };
+    this.enemyProjectiles.push({
+      id: this.nextId(),
+      type: "slime-glob",
+      position: start,
+      velocity: { x: direction.x * speed, y: direction.y * speed },
+      target: { ...enemy.spitterTarget },
+      remainingSeconds: Math.max(0.12, distance(start, enemy.spitterTarget) / speed),
+      dead: false,
+    });
+    this.frameEvents.push({
+      type: "slime-glob-fired",
+      position: { ...start },
+      target: { ...enemy.spitterTarget },
+    });
+  }
+
+  private updateEnemyProjectiles(deltaSeconds: number): void {
+    for (const projectile of this.enemyProjectiles) {
+      if (projectile.dead) continue;
+      const previous = { ...projectile.position };
+      projectile.position.x += projectile.velocity.x * deltaSeconds;
+      projectile.position.y += projectile.velocity.y * deltaSeconds;
+      projectile.remainingSeconds -= deltaSeconds;
+
+      if (pointHitsObstacle(projectile.position, this.arena.obstacles)) {
+        projectile.position = previous;
+        this.resolveSlimeImpact(projectile);
+      } else if (projectile.remainingSeconds <= 0) {
+        projectile.position = { ...projectile.target };
+        this.resolveSlimeImpact(projectile);
+      }
+    }
+  }
+
+  private resolveSlimeImpact(projectile: EnemyProjectileState): void {
+    projectile.dead = true;
+    const createdPuddle = this.createSlowingPuddle(projectile.position);
+    this.frameEvents.push({
+      type: "slime-impact",
+      position: { ...projectile.position },
+      createdPuddle,
+    });
+    if (distance(projectile.position, this.playerPosition) <= PLAYER_RADIUS_METRES + 0.45) {
+      this.damagePlayer(SLIME_GLOB_DAMAGE);
+    }
+  }
+
+  private createSlowingPuddle(position: Vector2Data): boolean {
+    this.groundHazards.push({
+      id: this.nextId(),
+      type: "slowing-slime",
+      position: { ...position },
+      radiusMetres: SLOWING_PUDDLE_RADIUS_METRES,
+      remainingSeconds: SLOWING_PUDDLE_DURATION_SECONDS,
+      durationSeconds: SLOWING_PUDDLE_DURATION_SECONDS,
+    });
+    while (this.groundHazards.length > MAX_SLOWING_PUDDLES) this.groundHazards.shift();
+    return true;
+  }
+
+  private updateGroundHazards(deltaSeconds: number): void {
+    for (const hazard of this.groundHazards) hazard.remainingSeconds -= deltaSeconds;
+    this.groundHazards = this.groundHazards.filter((hazard) => hazard.remainingSeconds > 0);
+  }
+
+  private isPlayerSlowed(): boolean {
+    return this.groundHazards.some((hazard) => (
+      distance(hazard.position, this.playerPosition) <= hazard.radiusMetres + PLAYER_RADIUS_METRES * 0.35
+    ));
+  }
+
   private moveEnemyTowardPlayer(enemy: EnemyState, speed: number, deltaSeconds: number): void {
     const direction = normalizeVector({
       x: this.playerPosition.x - enemy.position.x,
@@ -605,26 +1026,31 @@ export class CombatSimulation {
       }
 
       const definition = ENEMY_CATALOG[enemy.type];
+      const contactDamage = enemy.rank === "elite"
+        ? Math.round(definition.contactDamage * 1.4)
+        : definition.contactDamage;
       if (
-        definition.contactDamage > 0
+        contactDamage > 0
         && enemy.attackCooldownSeconds <= 0
         && distance(enemy.position, this.playerPosition) <= definition.radiusMetres + PLAYER_RADIUS_METRES
       ) {
-        this.playerHealth = Math.max(0, this.playerHealth - definition.contactDamage);
-        this.playerHurtCooldownSeconds = PLAYER_HURT_COOLDOWN_SECONDS;
+        this.damagePlayer(contactDamage);
         enemy.attackCooldownSeconds = 0.8;
-        this.frameEvents.push({
-          type: "player-hit",
-          position: { ...this.playerPosition },
-          damage: definition.contactDamage,
-        });
-
-        if (this.playerHealth <= 0) {
-          this.status = "defeat";
-        }
         break;
       }
     }
+  }
+
+  private damagePlayer(damage: number): void {
+    if (damage <= 0 || this.playerInvulnerable || this.playerHurtCooldownSeconds > 0) return;
+    this.playerHealth = Math.max(0, this.playerHealth - damage);
+    this.playerHurtCooldownSeconds = PLAYER_HURT_COOLDOWN_SECONDS;
+    this.frameEvents.push({
+      type: "player-hit",
+      position: { ...this.playerPosition },
+      damage,
+    });
+    if (this.playerHealth <= 0) this.status = "defeat";
   }
 
   private updateExperiencePickups(deltaSeconds: number): void {
@@ -659,6 +1085,17 @@ export class CombatSimulation {
     }
   }
 
+  private updateEliteRewards(): void {
+    if (this.pendingUpgradeIds.length > 0) return;
+    for (const reward of this.eliteRewards) {
+      if (reward.collected || distance(reward.position, this.playerPosition) > 0.8) continue;
+      reward.collected = true;
+      this.frameEvents.push({ type: "elite-reward-collected", position: { ...reward.position } });
+      this.addExperience(this.experienceThreshold());
+      break;
+    }
+  }
+
   private damageEnemy(enemy: EnemyState, damage: number): void {
     if (enemy.dead) {
       return;
@@ -676,6 +1113,19 @@ export class CombatSimulation {
       position: { ...enemy.position },
       enemyType: enemy.type,
     });
+    if (enemy.eliteKind) {
+      this.eliteRewards.push({
+        id: this.nextId(),
+        type: "elite-upgrade-cache",
+        position: { ...enemy.position },
+        collected: false,
+      });
+      this.frameEvents.push({
+        type: "elite-reward-dropped",
+        position: { ...enemy.position },
+        eliteKind: enemy.eliteKind,
+      });
+    }
     const experienceValue = ENEMY_CATALOG[enemy.type].experienceValue;
     if (experienceValue > 0) {
       this.pickups.push({
@@ -690,7 +1140,9 @@ export class CombatSimulation {
   private removeDeadEntities(): void {
     this.enemies = this.enemies.filter((enemy) => !enemy.dead);
     this.projectiles = this.projectiles.filter((projectile) => !projectile.dead);
+    this.enemyProjectiles = this.enemyProjectiles.filter((projectile) => !projectile.dead);
     this.pickups = this.pickups.filter((pickup) => !pickup.collected);
+    this.eliteRewards = this.eliteRewards.filter((reward) => !reward.collected);
   }
 
   private updateWaveSpawns(deltaSeconds: number): void {
@@ -703,7 +1155,12 @@ export class CombatSimulation {
   }
 
   private updateEncounterProgress(deltaSeconds: number): void {
-    if (this.status === "combat" && this.spawnQueue.length === 0 && this.enemies.length === 0) {
+    if (
+      this.status === "combat"
+      && this.spawnQueue.length === 0
+      && this.enemies.length === 0
+      && this.enemyProjectiles.length === 0
+    ) {
       if (this.waveIndex >= TOTAL_WAVES - 1) {
         this.status = "victory";
       } else {
@@ -738,6 +1195,25 @@ export class CombatSimulation {
     for (let index = 0; index < counts.brain; index += 1) this.spawnEnemy("brain-blob");
   }
 
+  private populateSlimeSpitterScenario(): void {
+    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+    for (const offset of [
+      { x: -7, y: -4 },
+      { x: 7, y: -3 },
+      { x: 6, y: 4 },
+    ]) {
+      this.spawnEnemy("slime-spitter", { x: centre.x + offset.x, y: centre.y + offset.y });
+    }
+    this.spawnEnemy("scuttler", { x: centre.x - 6, y: centre.y + 3.5 });
+  }
+
+  private populateCarapaceEliteScenario(): void {
+    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+    this.spawnElite("carapace-scuttler", { x: centre.x + 6.5, y: centre.y });
+    this.spawnEnemy("scuttler", { x: centre.x - 5.5, y: centre.y - 3 });
+    this.spawnEnemy("scuttler", { x: centre.x - 6.5, y: centre.y + 3 });
+  }
+
   private checkForLevelUp(): void {
     if (this.pendingUpgradeIds.length > 0) {
       return;
@@ -770,12 +1246,20 @@ export class CombatSimulation {
       type: enemy.type,
       position: { ...enemy.position },
       health: enemy.health,
-      maxHealth: definition.maxHealth,
+      maxHealth: enemy.maxHealth,
       radiusMetres: definition.radiusMetres,
       hatchProgress: enemy.hatchDurationSeconds > 0
         ? 1 - enemy.hatchRemainingSeconds / enemy.hatchDurationSeconds
         : 0,
       brainPhase: enemy.type === "brain-blob" ? enemy.brainPhase : undefined,
+      spitterPhase: enemy.type === "slime-spitter" ? enemy.spitterPhase : undefined,
+      spitterTarget: enemy.type === "slime-spitter" && enemy.spitterPhase === "windup"
+        ? { ...enemy.spitterTarget }
+        : undefined,
+      rank: enemy.rank,
+      eliteKind: enemy.eliteKind,
+      carapacePhase: enemy.eliteKind === "carapace-scuttler" ? enemy.carapacePhase : undefined,
+      facingDirection: { ...enemy.facingDirection },
     };
   }
 
@@ -827,6 +1311,7 @@ function buildWave(index: number): SpawnPlan[] {
     default:
       add("scuttler", 10, 0.2, 0.55);
       add("brain-blob", 4, 1.2, 1.6);
+      add("slime-spitter", 2, 2.4, 2.8);
       break;
   }
 

@@ -5,6 +5,10 @@ import {
   type CombatSnapshot,
   type EnemySnapshot,
   type ExperiencePickupSnapshot,
+  type EnemyProjectileSnapshot,
+  type GroundHazardSnapshot,
+  type EliteRewardSnapshot,
+  type CombatScenario,
   type ProjectileSnapshot,
   type CombatEvent,
 } from "../combat/CombatSimulation";
@@ -25,6 +29,11 @@ import { renderArena } from "../rendering/ArenaRenderer";
 import { worldDepth } from "../rendering/WorldDepth";
 import { VisualEffectPool } from "../effects/VisualEffectPool";
 import { CombatHud } from "../ui/CombatHud";
+import {
+  VERTICAL_SLICE_WEAPON_IDS,
+  WEAPON_CATALOG,
+  type WeaponId,
+} from "../content/weaponCatalog";
 
 const PIXELS_PER_METRE = 32;
 
@@ -36,6 +45,7 @@ type EnemyView =
 type WeaponView = Phaser.GameObjects.Rectangle | Phaser.GameObjects.Image;
 type ProjectileView = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
 type PickupView = Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite;
+type EliteRewardView = Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite;
 
 export class PrototypeScene extends Phaser.Scene {
   private player!: Phaser.GameObjects.Container;
@@ -45,13 +55,20 @@ export class PrototypeScene extends Phaser.Scene {
   private hud!: CombatHud;
   private effectPool!: VisualEffectPool;
   private readonly stressProfile = readStressProfile();
-  private readonly startingWeaponCount = this.stressProfile ?? readStartingWeaponCount();
+  private readonly scenario = readScenario();
+  private readonly startingWeaponIds = this.stressProfile === null ? readStartingWeaponIds() : null;
+  private readonly startingWeaponCount = this.stressProfile ?? this.startingWeaponIds?.length ?? readStartingWeaponCount();
   private readonly useMarineArt = readMarineArtPreview();
   private readonly useMarineHelmet = this.useMarineArt && readMarineHelmetPreview();
   private readonly showDebug = readDebugMode();
-  private simulation = createSimulation(this.startingWeaponCount, this.stressProfile);
+  private simulation = createSimulation(this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario);
   private readonly enemyViews = new Map<number, EnemyView>();
   private readonly projectileViews = new Map<number, ProjectileView>();
+  private readonly enemyProjectileViews = new Map<number, Phaser.GameObjects.Arc>();
+  private readonly hazardViews = new Map<number, Phaser.GameObjects.Ellipse>();
+  private readonly spitterTelegraphs = new Map<number, Phaser.GameObjects.Arc>();
+  private readonly eliteArmorViews = new Map<number, Phaser.GameObjects.Triangle>();
+  private readonly eliteRewardViews = new Map<number, EliteRewardView>();
   private readonly pickupViews = new Map<number, PickupView>();
   private readonly weaponViews = new Map<number, WeaponView>();
   private upgradeOverlay: Phaser.GameObjects.Container | null = null;
@@ -170,9 +187,17 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncWeapons(snapshot.equippedWeapons, snapshot.playerPosition, firing);
     this.syncEnemies(snapshot.enemies, snapshot.playerPosition);
     this.syncProjectiles(snapshot.projectiles);
+    this.syncEnemyProjectiles(snapshot.enemyProjectiles);
+    this.syncGroundHazards(snapshot.groundHazards);
+    this.syncSpitterTelegraphs(snapshot.enemies);
+    this.syncEliteArmor(snapshot.enemies);
+    this.syncEliteRewards(snapshot.eliteRewards);
     this.syncPickups(snapshot.pickups);
     this.syncUpgradeOverlay(snapshot.pendingUpgradeChoices);
     this.hud.update(snapshot, this.isPaused, this.effectPool.activeCount);
+    const marineTint = snapshot.playerSlowed ? 0xb9ef62 : 0xffffff;
+    snapshot.playerSlowed ? this.marineSprite?.setTint(marineTint) : this.marineSprite?.clearTint();
+    snapshot.playerSlowed ? this.marineHelmetSprite?.setTint(marineTint) : this.marineHelmetSprite?.clearTint();
   }
 
   private updateMarineFrame(heroState: string, move: { x: number; y: number }): void {
@@ -195,14 +220,23 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   private restartRun(): void {
-    this.simulation = createSimulation(this.startingWeaponCount, this.stressProfile);
+    this.simulation = createSimulation(this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario);
     this.lastSnapshot = this.simulation.snapshot();
     this.isPaused = false;
     this.visibleUpgradeKey = "";
     this.upgradeOverlay?.destroy(true);
     this.upgradeOverlay = null;
 
-    for (const views of [this.enemyViews, this.projectileViews, this.pickupViews]) {
+    for (const views of [
+      this.enemyViews,
+      this.projectileViews,
+      this.enemyProjectileViews,
+      this.hazardViews,
+      this.spitterTelegraphs,
+      this.eliteArmorViews,
+      this.eliteRewardViews,
+      this.pickupViews,
+    ]) {
       for (const view of views.values()) {
         view.destroy();
       }
@@ -218,6 +252,9 @@ export class PrototypeScene extends Phaser.Scene {
         case "weapon-fired":
           this.pulseWeapon(event.weaponInstanceId);
           this.emitAuthoredEffect(5, event.position, 90, 0.48, 0.9, Math.atan2(event.direction.y, event.direction.x));
+          break;
+        case "chain-arc":
+          this.drawChainArc(event.from, event.to);
           break;
         case "enemy-hit":
           this.emitAuthoredEffect(7, event.position, 110, 0.55, 0.95);
@@ -249,8 +286,41 @@ export class PrototypeScene extends Phaser.Scene {
         case "projectile-blocked":
           this.emitAuthoredEffect(7, event.position, 130, 0.5, 0.95);
           break;
+        case "slime-spit-windup":
+          this.flashCircle(event.target, 12, 0xb9ef62, 260, 1.5, true);
+          break;
+        case "slime-glob-fired":
+          this.flashCircle(event.position, 7, 0xb9ef62, 130, 1.7);
+          break;
+        case "slime-impact":
+          this.flashCircle(event.position, 18, 0x9cd63d, 260, 1.8);
+          break;
+        case "elite-armour-hit":
+          this.flashCircle(event.position, 13, 0xffd36b, 150, 1.45, true);
+          break;
+        case "elite-reward-dropped":
+          this.flashCircle(event.position, 20, 0xffd36b, 360, 2.2, true);
+          break;
+        case "elite-reward-collected":
+          this.flashCircle(event.position, 24, 0xd696ff, 420, 2.8, true);
+          break;
       }
     }
+  }
+
+  private drawChainArc(from: { x: number; y: number }, to: { x: number; y: number }): void {
+    const line = this.add.line(
+      0,
+      0,
+      from.x * PIXELS_PER_METRE,
+      from.y * PIXELS_PER_METRE,
+      to.x * PIXELS_PER_METRE,
+      to.y * PIXELS_PER_METRE,
+      0x68e4e8,
+      0.95,
+    ).setOrigin(0).setLineWidth(3).setDepth(905);
+    this.tweens.add({ targets: line, alpha: 0, duration: 130, onComplete: () => line.destroy() });
+    this.emitAuthoredEffect(8, to, 150, 0.42, 0.8);
   }
 
   private emitAuthoredEffect(
@@ -320,9 +390,11 @@ export class PrototypeScene extends Phaser.Scene {
       view.setRotation(this.lastAimAngle);
       view.setDepth(worldDepth(playerPosition.y) + slot.depthOffset * 2);
       if (view instanceof Phaser.GameObjects.Rectangle) {
-        view.setFillStyle(firing ? 0xffffff : 0xe9e3cf);
+        view.setFillStyle(firing ? 0xffffff : weaponColor(weapon.weaponId));
       } else {
-        firing ? view.setTint(0xffffff) : view.clearTint();
+        if (firing) view.setTint(0xffffff);
+        else if (weapon.weaponId === "bastion-service-rifle") view.clearTint();
+        else view.setTint(weaponColor(weapon.weaponId));
       }
     });
   }
@@ -381,6 +453,8 @@ export class PrototypeScene extends Phaser.Scene {
           return createManifestSprite(this, "brain-blob-v1");
         }
         return this.add.circle(0, 0, 18, 0xc06cdb).setStrokeStyle(3, 0x55236b);
+      case "slime-spitter":
+        return this.add.ellipse(0, 0, 44, 34, 0x7cab38).setStrokeStyle(3, 0xd9f36a);
       default:
         if (this.useMarineArt) {
           return createManifestSprite(this, "scuttler-v1");
@@ -392,7 +466,12 @@ export class PrototypeScene extends Phaser.Scene {
 
   private styleEnemyView(view: EnemyView, enemy: EnemySnapshot): void {
     if (view instanceof Phaser.GameObjects.Sprite) {
-      view.setScale(1);
+      view.setScale(enemy.rank === "elite" ? 1.3 : 1);
+      if (enemy.eliteKind === "carapace-scuttler") {
+        view.setTint(enemy.carapacePhase === "recovery" ? 0xff9a72 : 0xffd36b);
+      } else {
+        view.clearTint();
+      }
       return;
     }
 
@@ -413,6 +492,11 @@ export class PrototypeScene extends Phaser.Scene {
       };
       view.setFillStyle(colors[enemy.brainPhase ?? "drift"] ?? 0xc06cdb);
     }
+    if (enemy.type === "slime-spitter" && view instanceof Phaser.GameObjects.Ellipse) {
+      const colors = { positioning: 0x7cab38, windup: 0xe7f36a, recover: 0x55752d } as const;
+      view.setFillStyle(colors[enemy.spitterPhase ?? "positioning"]);
+      view.setScale(enemy.spitterPhase === "windup" ? healthScale * 1.12 : healthScale);
+    }
   }
 
   private updateEnemySprite(
@@ -430,7 +514,13 @@ export class PrototypeScene extends Phaser.Scene {
         view.setRotation(angleToward(enemy.position, playerPosition));
         return;
       default: {
-        const facingColumn = cardinalFacingColumn(enemy.position, playerPosition);
+        const facingTarget = enemy.eliteKind === "carapace-scuttler"
+          ? {
+            x: enemy.position.x + enemy.facingDirection.x,
+            y: enemy.position.y + enemy.facingDirection.y,
+          }
+          : playerPosition;
+        const facingColumn = cardinalFacingColumn(enemy.position, facingTarget);
         const gaitRow = offsetGaitRow(this.time.now, enemy.id);
         view.setFrame(gaitRow * 4 + facingColumn);
         view.setRotation(0);
@@ -446,7 +536,7 @@ export class PrototypeScene extends Phaser.Scene {
       let view = this.projectileViews.get(projectile.id);
       if (!view) {
         view = this.useMarineArt
-          ? this.add.sprite(0, 0, "combat-effects-v1", 6).setScale(0.3)
+          ? this.add.sprite(0, 0, "combat-effects-v1", 6)
           : this.add.circle(0, 0, 4, 0xffd36b).setStrokeStyle(1, 0xffffff);
         view.setDepth(700);
         this.projectileViews.set(projectile.id, view);
@@ -456,6 +546,101 @@ export class PrototypeScene extends Phaser.Scene {
         projectile.position.y * PIXELS_PER_METRE,
       );
       view.setRotation(projectile.rotationRadians);
+      if (view instanceof Phaser.GameObjects.Sprite) {
+        view.setScale(projectile.weaponId === "scattergun" ? 0.22 : projectile.weaponId === "arc-carbine" ? 0.34 : 0.3);
+        projectile.weaponId === "bastion-service-rifle"
+          ? view.clearTint()
+          : view.setTint(weaponColor(projectile.weaponId));
+      } else {
+        view.setFillStyle(weaponColor(projectile.weaponId));
+      }
+    }
+  }
+
+  private syncEnemyProjectiles(projectiles: readonly EnemyProjectileSnapshot[]): void {
+    const liveIds = new Set(projectiles.map((projectile) => projectile.id));
+    this.destroyMissing(this.enemyProjectileViews, liveIds);
+    for (const projectile of projectiles) {
+      let view = this.enemyProjectileViews.get(projectile.id);
+      if (!view) {
+        view = this.add.circle(0, 0, 9, 0xa9e34b).setStrokeStyle(3, 0xefff9a).setDepth(710);
+        this.enemyProjectileViews.set(projectile.id, view);
+      }
+      view.setPosition(projectile.position.x * PIXELS_PER_METRE, projectile.position.y * PIXELS_PER_METRE)
+        .setRotation(projectile.rotationRadians);
+    }
+  }
+
+  private syncGroundHazards(hazards: readonly GroundHazardSnapshot[]): void {
+    const liveIds = new Set(hazards.map((hazard) => hazard.id));
+    this.destroyMissing(this.hazardViews, liveIds);
+    for (const hazard of hazards) {
+      let view = this.hazardViews.get(hazard.id);
+      if (!view) {
+        view = this.add.ellipse(0, 0, 1, 1, 0x86bd35, 0.55)
+          .setStrokeStyle(3, 0xc9f164, 0.9).setDepth(45);
+        this.hazardViews.set(hazard.id, view);
+      }
+      const diameter = hazard.radiusMetres * PIXELS_PER_METRE * 2;
+      const lifetime = Math.max(0, hazard.remainingSeconds / hazard.durationSeconds);
+      view.setPosition(hazard.position.x * PIXELS_PER_METRE, hazard.position.y * PIXELS_PER_METRE)
+        .setDisplaySize(diameter, diameter * 0.62)
+        .setAlpha(0.22 + lifetime * 0.55)
+        .setScale(0.72 + lifetime * 0.28);
+    }
+  }
+
+  private syncSpitterTelegraphs(enemies: readonly EnemySnapshot[]): void {
+    const active = enemies.filter((enemy) => enemy.type === "slime-spitter" && enemy.spitterTarget);
+    const liveIds = new Set(active.map((enemy) => enemy.id));
+    this.destroyMissing(this.spitterTelegraphs, liveIds);
+    for (const enemy of active) {
+      let view = this.spitterTelegraphs.get(enemy.id);
+      if (!view) {
+        view = this.add.circle(0, 0, 18, 0x000000, 0).setStrokeStyle(3, 0xd9f36a, 0.9).setDepth(60);
+        this.spitterTelegraphs.set(enemy.id, view);
+      }
+      view.setPosition(enemy.spitterTarget!.x * PIXELS_PER_METRE, enemy.spitterTarget!.y * PIXELS_PER_METRE)
+        .setScale(0.85 + Math.sin(this.time.now / 70) * 0.12);
+    }
+  }
+
+  private syncEliteArmor(enemies: readonly EnemySnapshot[]): void {
+    const elites = enemies.filter((enemy) => enemy.eliteKind === "carapace-scuttler");
+    const liveIds = new Set(elites.map((enemy) => enemy.id));
+    this.destroyMissing(this.eliteArmorViews, liveIds);
+    for (const enemy of elites) {
+      let view = this.eliteArmorViews.get(enemy.id);
+      if (!view) {
+        view = this.add.triangle(0, 0, 0, -14, 13, 11, -13, 11, 0xffd36b, 0.88)
+          .setStrokeStyle(3, 0xfff1a8).setDepth(650);
+        this.eliteArmorViews.set(enemy.id, view);
+      }
+      const angle = Math.atan2(enemy.facingDirection.y, enemy.facingDirection.x);
+      view.setPosition(
+        (enemy.position.x + enemy.facingDirection.x * 0.72) * PIXELS_PER_METRE,
+        (enemy.position.y + enemy.facingDirection.y * 0.72) * PIXELS_PER_METRE,
+      ).setRotation(angle + Math.PI / 2)
+        .setAlpha(enemy.carapacePhase === "recovery" ? 0.22 : 0.9)
+        .setScale(enemy.carapacePhase === "windup" ? 1.25 : 1);
+    }
+  }
+
+  private syncEliteRewards(rewards: readonly EliteRewardSnapshot[]): void {
+    const liveIds = new Set(rewards.map((reward) => reward.id));
+    this.destroyMissing(this.eliteRewardViews, liveIds);
+    for (const reward of rewards) {
+      let view = this.eliteRewardViews.get(reward.id);
+      if (!view) {
+        view = this.useMarineArt
+          ? this.add.sprite(0, 0, "pickups-v1", 3).setScale(0.72)
+          : this.add.rectangle(0, 0, 18, 18, 0xd696ff).setRotation(Math.PI / 4)
+            .setStrokeStyle(3, 0xffd36b);
+        this.eliteRewardViews.set(reward.id, view);
+      }
+      view.setPosition(reward.position.x * PIXELS_PER_METRE, reward.position.y * PIXELS_PER_METRE)
+        .setDepth(worldDepth(reward.position.y) - 2)
+        .setScale(0.68 + Math.sin(this.time.now / 120) * 0.08);
     }
   }
 
@@ -552,6 +737,15 @@ function readStartingWeaponCount(): number {
   return clampWeaponCount(Number(rawCount));
 }
 
+function readStartingWeaponIds(): readonly WeaponId[] | null {
+  const raw = new URLSearchParams(window.location.search).get("loadout")?.trim().toLowerCase();
+  if (!raw) return null;
+  if (raw === "vertical") return VERTICAL_SLICE_WEAPON_IDS;
+  const ids = raw.split(",").map((value) => value.trim())
+    .filter((value): value is WeaponId => value in WEAPON_CATALOG);
+  return ids.length > 0 ? ids.slice(0, 12) : null;
+}
+
 function readMarineArtPreview(): boolean {
   return new URLSearchParams(window.location.search).get("art") !== "placeholder";
 }
@@ -565,15 +759,35 @@ function readStressProfile(): 4 | 12 | null {
   return stress === 4 || stress === 12 ? stress : null;
 }
 
+function readScenario(): CombatScenario | null {
+  const scenario = new URLSearchParams(window.location.search).get("scenario");
+  return scenario === "slime-spitter" || scenario === "carapace-elite" ? scenario : null;
+}
+
 function readDebugMode(): boolean {
   return new URLSearchParams(window.location.search).get("debug") === "1";
 }
 
-function createSimulation(startingWeaponCount: number, stressProfile: 4 | 12 | null): CombatSimulation {
+function createSimulation(
+  startingWeaponCount: number,
+  stressProfile: 4 | 12 | null,
+  startingWeaponIds: readonly WeaponId[] | null,
+  scenario: CombatScenario | null,
+): CombatSimulation {
   return new CombatSimulation({
     startingWeaponCount,
+    startingWeaponIds: startingWeaponIds ?? undefined,
     stressProfile: stressProfile ?? undefined,
+    scenario: scenario ?? undefined,
   });
+}
+
+function weaponColor(weaponId: WeaponId): number {
+  switch (weaponId) {
+    case "scattergun": return 0xff9a72;
+    case "arc-carbine": return 0x68e4e8;
+    default: return 0xe9e3cf;
+  }
 }
 
 function applyManifestOrigin(

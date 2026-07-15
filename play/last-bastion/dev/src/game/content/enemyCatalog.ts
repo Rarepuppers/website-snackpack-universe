@@ -1,4 +1,4 @@
-export type EnemyType = "scuttler" | "egg-cluster" | "brain-blob";
+export type EnemyType = "scuttler" | "egg-cluster" | "brain-blob" | "slime-spitter";
 
 export interface EnemyDefinition {
   id: EnemyType;
@@ -33,5 +33,13 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     movementSpeedMetresPerSecond: 0.9,
     contactDamage: 14,
     experienceValue: 2,
+  },
+  "slime-spitter": {
+    id: "slime-spitter",
+    maxHealth: 34,
+    radiusMetres: 0.62,
+    movementSpeedMetresPerSecond: 1.15,
+    contactDamage: 8,
+    experienceValue: 3,
   },
 });

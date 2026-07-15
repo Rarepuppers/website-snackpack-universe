@@ -235,7 +235,7 @@ Remaining before completion: visual runtime check and creator playtest feedback 
 
 - Wave 1 introduces Scuttlers.
 - Wave 2 adds Egg Clusters that hatch into two Scuttlers after six seconds.
-- Wave 3 adds Brain Blobs with visible colour-state telegraphs before lunging.
+- Wave 3 adds Brain Blobs with visible colour-state telegraphs before lunging and two Slime Spitters with locked-target glob tells.
 - Seeded spawn positions make test runs reproducible.
 - Contact damage respects the Marine's resolved invulnerability window.
 
@@ -362,3 +362,118 @@ Completion evidence:
 - Automated acceptance: 47 unit tests across nine files and TypeScript validation passed before the final production build and HTTP smoke pass.
 
 Batch acceptance criterion: the styled stress scene remains readable with four normal weapons, mixed Wave 3 enemies, active telegraphs, pickups, and simultaneous combat effects. Twelve weapons remain a separate capacity stress case.
+
+## Remaining production roadmap
+
+### Gate 1 acceptance and tuning
+
+**Status:** Pending — next task
+
+- Creator review of normal, `stress=4`, `stress=12`, Batch A gallery, and placeholder comparison routes.
+- Record movement, aiming, roll timing, weapon-ring readability, enemy tells, pickup visibility, and effect overlap findings.
+- Tune the existing three-wave encounter and demonstrate three distinct upgrade builds.
+- Close the representative art-pipeline and combat-prototype acceptance gates.
+
+No additional production art should be generated before critical readability corrections from this review are known.
+
+### Vertical-slice systems foundation
+
+**Status:** Pending
+
+- Completed: replaced Service-Rifle-only assumptions with data-driven targeting, attack-pattern, range, projectile, knockback, and chain contracts.
+- Completed: functional Scattergun five-pellet spread/knockback and Arc Carbine nearest-target/chain behaviours.
+- Completed: Slime Spitter positioning/wind-up/recovery states, hostile glob projectiles, obstacle impacts, direct-hit damage, and target telegraphs.
+- Completed: four-second slowing puddles with visible decay, five-puddle fairness cap, 55% ordinary-movement multiplier, and unaffected evasive displacement.
+- Completed: reusable standard/elite rank metadata, Carapace directional armour/facing rules, charge phases, and guaranteed elite upgrade-cache rewards.
+- Pending: mini-boss health/phase presentation and encounter-budget support.
+- Expand three waves to a seeded five-wave encounter with intermission rewards.
+- Add weapon acquisition/replacement, duplicate handling, reward choices, and a simple between-wave supply decision.
+- Add gamepad input, settings persistence, and representative audio hooks required by Gate 2.
+
+Acceptance criterion: Scattergun, Arc Carbine, Slime Spitter, Carapace Scuttler, and Siege Crusher all function with placeholders and automated rules tests before final asset generation.
+
+Weapon-foundation checkpoint — completed 16 July 2026:
+
+- Mixed loadouts use stable weapon IDs and isolated mutable runtime stats.
+- `?loadout=vertical`, `?loadout=scattergun`, and `?loadout=arc-carbine` provide deterministic review routes.
+- Ring sprites, projectile colours/scales, HUD markers, muzzle events, and chain arcs distinguish placeholder families without pretending final Batch B art exists.
+- Verification evidence: 53 tests across ten files, TypeScript validation, production build, twelve asset HTTP checks, and seven review-route checks.
+
+Slime-Spitter checkpoint — completed 16 July 2026:
+
+- Wave 3 introduces two Slime Spitters after the existing movement and lunge lessons.
+- `?scenario=slime-spitter&loadout=vertical` provides a deterministic hostile-projectile/hazard review lab.
+- Simulation snapshots expose hostile projectiles, timed ground hazards, slow state, Spitter phase, and locked target without coupling rules to Phaser.
+- Placeholder rendering supplies a distinct silhouette, phase colour, target marker, glob, puddle decay, Marine slow feedback, and debug counts while final art remains in Batch B.
+- Verification evidence: 56 tests across ten files plus TypeScript, production build, twelve asset checks, and eight review routes.
+
+Carapace-Elite checkpoint — completed 16 July 2026:
+
+- Elite state is orthogonal to base enemy type, allowing an upgraded Scuttler to retain existing movement/render contracts without becoming a duplicate standard archetype.
+- Frontal direct-projectile damage is reduced to 25%; rear hits and the post-charge recovery window take full damage.
+- The elite cycles through pursuit, visible wind-up, committed charge, and 1.05-second recovery states.
+- Defeat guarantees an elite upgrade cache; collection enters the existing deterministic three-choice upgrade flow.
+- `?scenario=carapace-elite&loadout=vertical` isolates armour, flanking, charge timing, and reward collection.
+- Placeholder presentation includes a larger tinted body, facing shield attachment, recovery fade, armour-hit feedback, and pulsing reward cache while final art remains in Batch B.
+- Verification evidence: 59 tests across ten files plus TypeScript, production build, twelve asset checks, and nine review routes.
+
+### Production Asset Batch B: vertical-slice combat roster
+
+**Status:** Pending — next asset batch after placeholder behaviours pass
+
+- Two weapon families: Scattergun and Arc Carbine, including ring sprites, icons, projectiles, impacts, and signature effects.
+- Slime Spitter directional/state art, glob projectile, slowing puddle stages, and dissolve effect.
+- Carapace Scuttler elite silhouette/telegraph additions.
+- Siege Crusher mini-boss body and attacks, portrait, boss bar treatment, obstacle damage, entrance, hit, and defeat effects.
+- Gallery coverage, stable manifest contracts, gameplay integration, stress routes, and HTTP asset verification.
+
+### Vertical-slice reward and interaction loop
+
+**Status:** Pending
+
+- Implement separate Weapon Chest and Upgrade Chest reward models.
+- Implement one Supply Depot with heal, reroll, and refresh/repair choices.
+- Implement pickup timers and HUD indicators for temporary powerups.
+- Decide the same-run shop currency before enabling Scrap; do not award unusable currency.
+- Validate that reward choice time improves build planning without repeatedly interrupting combat.
+
+### Production Asset Batch C: rewards and battlefield interaction
+
+**Status:** Pending — blocked by reward state model, not started
+
+- Weapon/upgrade chests, Supply Depot, Supply Drop, four powerups, six Relics, three Artifacts, and three Shrines.
+- Closed, available, opening/activation, claimed/used, and disabled states wherever gameplay distinguishes them.
+- Reward icons, interaction prompts, HUD timers, choice panels, and gallery contracts without baked text.
+
+### Web MVP route and progression loop
+
+**Status:** Deferred until the vertical-slice gate succeeds
+
+- Ten-wave run and small branching route with Combat, Elite, Shop, Rest, Shrine, and Boss nodes.
+- Nine ordinary/hero weapons plus Event Horizon as the first Unique.
+- Ripper, Razor Scuttler, Brood Tender, additional approved elites, and optionally Brood Warden.
+- Run-long Relics, one equipped Artifact, autosave between encounters, menus, route/shop/rest screens, and useful unlocks.
+- One complete final boss: The Bastion Eater, with three readable phases and a 3–5 minute target fight.
+
+### Production Asset Batch D: Web MVP enemies and final boss
+
+**Status:** Deferred until the five-wave vertical slice and Siege Crusher pass playtesting
+
+- Remaining Web MVP standard/elite monster sheets and effects.
+- Optional Brood Warden mini-boss if route variety requires it.
+- The Bastion Eater layered body, damage nodes, attacks, phase damage states, breach decals, portrait/banner, boss HUD, entrance, defeat, and reward vault.
+- Do not generate second-biome bosses during the Web MVP.
+
+## Revised implementation order
+
+1. Run and record Gate 1 creator playtest/readability review.
+2. Fix critical movement, combat, telegraph, HUD, or asset-scale issues found in that review.
+3. Implement generic weapon attack/targeting behaviours with placeholder Scattergun and Arc Carbine. **Completed.**
+4. Implement ranged projectiles and bounded slowing hazards with a placeholder Slime Spitter. **Completed.**
+5. Implement elite armour/reward rules and placeholder Carapace Scuttler. **Completed.**
+6. Implement mini-boss encounter support and placeholder Siege Crusher. **Next.**
+7. Generate, normalize, integrate, gallery-test, and verify Production Asset Batch B.
+8. Expand to a tuned five-wave vertical slice with weapon/upgrade rewards and one Supply Depot decision.
+9. Implement reward/interactable state contracts, then generate Production Asset Batch C.
+10. External-playtest the vertical slice; proceed to route, relic, Artifact, shop/rest, and boss systems only if Gate 2 succeeds.
+11. Implement and verify The Bastion Eater with placeholders before generating Production Asset Batch D.

@@ -80,6 +80,125 @@ describe("CombatSimulation", () => {
     expect(observedPhases).toContain("lunge");
   });
 
+  it("telegraphs and fires a Slime Spitter glob that creates a timed puddle", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, seed: 5 });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("slime-spitter", { x: player.x + 6, y: player.y });
+    let observedWindup = false;
+    let observedGlob = false;
+    let observedImpact = false;
+    let snapshot = simulation.snapshot();
+
+    for (let frame = 0; frame < 100; frame += 1) {
+      snapshot = simulation.step(intent(), 0.05);
+      observedWindup ||= snapshot.events.some((event) => event.type === "slime-spit-windup");
+      observedGlob ||= snapshot.events.some((event) => event.type === "slime-glob-fired");
+      observedImpact ||= snapshot.events.some((event) => event.type === "slime-impact");
+      if (observedImpact) break;
+    }
+
+    expect(observedWindup).toBe(true);
+    expect(observedGlob).toBe(true);
+    expect(observedImpact).toBe(true);
+    expect(snapshot.groundHazards).toHaveLength(1);
+    expect(snapshot.groundHazards[0]?.remainingSeconds).toBeLessThanOrEqual(4);
+  });
+
+  it("slows ordinary movement while preserving the evasive escape action", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, seed: 5 });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("slime-spitter", { x: player.x + 6, y: player.y });
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 100 && snapshot.groundHazards.length === 0; frame += 1) {
+      snapshot = simulation.step(intent(), 0.05);
+    }
+
+    const beforeWalk = snapshot.playerPosition.x;
+    const walked = simulation.step(intent({ move: { x: 1, y: 0 } }), 0.05);
+    const slowedWalkDistance = walked.playerPosition.x - beforeWalk;
+    const beforeRoll = walked.playerPosition.x;
+    const rolled = simulation.step(intent({
+      move: { x: 1, y: 0 },
+      evasiveMovePressed: true,
+    }), 0.05);
+
+    expect(walked.playerSlowed).toBe(true);
+    expect(slowedWalkDistance).toBeGreaterThan(0);
+    expect(slowedWalkDistance).toBeLessThan(0.2);
+    expect(rolled.playerPosition.x - beforeRoll).toBeGreaterThan(slowedWalkDistance);
+  });
+
+  it("caps simultaneous slowing puddles at five", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      scenario: "slime-spitter",
+      seed: 12,
+    });
+    let maximumPuddles = 0;
+    for (let frame = 0; frame < 240; frame += 1) {
+      const snapshot = simulation.step(intent({
+        move: { x: frame % 80 < 40 ? 1 : -1, y: 0.35 },
+        evasiveMovePressed: frame % 36 === 0,
+      }), 0.05);
+      maximumPuddles = Math.max(maximumPuddles, snapshot.groundHazards.length);
+      expect(snapshot.groundHazards.length).toBeLessThanOrEqual(5);
+    }
+    expect(maximumPuddles).toBeGreaterThan(1);
+  });
+
+  it("creates a durable Carapace Scuttler with telegraphed elite phases", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      scenario: "carapace-elite",
+      seed: 4,
+    });
+    const elite = simulation.snapshot().enemies.find((enemy) => enemy.rank === "elite");
+
+    expect(elite?.eliteKind).toBe("carapace-scuttler");
+    expect(elite?.maxHealth).toBe(70);
+    const observed = new Set<string>();
+    for (let frame = 0; frame < 80; frame += 1) {
+      const current = simulation.step(intent(), 0.05).enemies
+        .find((enemy) => enemy.eliteKind === "carapace-scuttler");
+      if (current?.carapacePhase) observed.add(current.carapacePhase);
+    }
+    expect(observed).toContain("windup");
+    expect(observed).toContain("charge");
+    expect(observed).toContain("recovery");
+  });
+
+  it("reduces direct projectile damage against Carapace frontal armour", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnElite("carapace-scuttler", { x: player.x + 3, y: player.y });
+    let snapshot = simulation.step(intent({ fireHeld: true }), 0.05);
+    let observedArmourHit = snapshot.events.some((event) => event.type === "elite-armour-hit");
+    for (let frame = 0; frame < 12; frame += 1) {
+      snapshot = simulation.step(intent(), 0.05);
+      observedArmourHit ||= snapshot.events.some((event) => event.type === "elite-armour-hit");
+    }
+    const elite = snapshot.enemies.find((enemy) => enemy.eliteKind === "carapace-scuttler");
+    expect(observedArmourHit).toBe(true);
+    expect(elite?.health).toBeCloseTo(67.5);
+  });
+
+  it("guarantees an upgrade cache when an elite is defeated", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      startingWeaponCount: 12,
+    });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnElite("carapace-scuttler", { x: player.x + 5, y: player.y });
+    let observedDrop = false;
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 100 && !observedDrop; frame += 1) {
+      snapshot = simulation.step(intent({ fireHeld: true }), 0.05);
+      observedDrop ||= snapshot.events.some((event) => event.type === "elite-reward-dropped");
+    }
+    expect(observedDrop).toBe(true);
+    expect(snapshot.eliteRewards.length > 0 || snapshot.pendingUpgradeChoices.length > 0).toBe(true);
+  });
+
   it("prevents contact damage during the Marine's invulnerability window", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false });
     const player = simulation.snapshot().playerPosition;
@@ -143,6 +262,49 @@ describe("CombatSimulation", () => {
     expect(snapshot.equippedWeapons).toHaveLength(4);
     expect(new Set(firedIds)).toEqual(new Set([1, 2, 3, 4]));
     expect(snapshot.projectiles).toHaveLength(4);
+  });
+
+  it("fires the Scattergun as a short-range five-pellet spread", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      startingWeaponIds: ["scattergun"],
+    });
+    const snapshot = simulation.step(intent({ fireHeld: true }), 0.05);
+
+    expect(snapshot.equippedWeapons[0]?.weaponId).toBe("scattergun");
+    expect(snapshot.projectiles).toHaveLength(5);
+    expect(snapshot.events.filter((event) => event.type === "weapon-fired")).toHaveLength(5);
+    const rotations = snapshot.projectiles.map((projectile) => projectile.rotationRadians);
+    expect(Math.max(...rotations) - Math.min(...rotations)).toBeGreaterThan(0.4);
+  });
+
+  it("auto-targets and chains with the Arc Carbine", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      startingWeaponIds: ["arc-carbine"],
+    });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("egg-cluster", { x: player.x + 3, y: player.y });
+    simulation.spawnEnemy("egg-cluster", { x: player.x + 5, y: player.y });
+
+    let observedChain = false;
+    for (let frame = 0; frame < 20; frame += 1) {
+      const snapshot = simulation.step(intent({ aim: { x: -1, y: 0 }, fireHeld: true }), 0.05);
+      observedChain ||= snapshot.events.some((event) => event.type === "chain-arc");
+    }
+
+    expect(observedChain).toBe(true);
+    expect(simulation.snapshot().enemies.some((enemy) => enemy.health < enemy.maxHealth)).toBe(true);
+  });
+
+  it("does not waste Arc Carbine cooldowns without a target", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      startingWeaponIds: ["arc-carbine"],
+    });
+    const snapshot = simulation.step(intent({ fireHeld: true }), 0.05);
+    expect(snapshot.projectiles).toHaveLength(0);
+    expect(snapshot.events.some((event) => event.type === "weapon-fired")).toBe(false);
   });
 
   it("supports a deliberately unarmed review state", () => {

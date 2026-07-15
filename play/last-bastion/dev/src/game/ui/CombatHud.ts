@@ -81,18 +81,21 @@ export class CombatHud {
       : 1 - Math.min(snapshot.evasiveCooldownRemainingSeconds / totalRollTime, 1);
     this.rollFill.setScale(Math.max(readiness, 0.001), 1)
       .setFillStyle(snapshot.evasiveReady ? 0x68e4e8 : 0xffa31a);
-    this.waveText.setText(snapshot.stressProfile
-      ? `STRESS ${snapshot.stressProfile}`
-      : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}`);
-    this.statsText.setText(`LV ${snapshot.level}  HP ${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}\nXP ${snapshot.experience}/${snapshot.experienceForNextLevel}`);
+    this.waveText.setText(snapshot.scenario
+      ? snapshot.scenario === "slime-spitter" ? "SPITTER LAB" : "ELITE LAB"
+      : snapshot.stressProfile
+        ? `STRESS ${snapshot.stressProfile}`
+        : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}`);
+    this.statsText.setText(`LV ${snapshot.level}  HP ${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}\nXP ${snapshot.experience}/${snapshot.experienceForNextLevel}${snapshot.playerSlowed ? "  SLOWED" : ""}`);
     this.rollText.setText(snapshot.evasiveReady
       ? "READY — SPACE"
       : `${snapshot.evasiveCooldownRemainingSeconds.toFixed(2)}s`);
     this.weaponPips.forEach((pip, index) => {
-      pip.setFillStyle(index < snapshot.equippedWeapons.length ? 0xffa31a : 0x273747);
+      const weapon = snapshot.equippedWeapons[index];
+      pip.setFillStyle(weapon ? weaponPipColor(weapon.weaponId) : 0x273747);
     });
     this.debugText.setText(
-      `state=${snapshot.heroState} enemies=${snapshot.enemies.length} projectiles=${snapshot.projectiles.length} effects=${activeEffectCount}`,
+      `state=${snapshot.heroState} enemies=${snapshot.enemies.length} friendly=${snapshot.projectiles.length} hostile=${snapshot.enemyProjectiles.length} hazards=${snapshot.groundHazards.length} rewards=${snapshot.eliteRewards.length} effects=${activeEffectCount}`,
     );
 
     let message = "";
@@ -103,6 +106,12 @@ export class CombatHud {
     this.stateText.setText(message);
     this.statePanel.setVisible(message.length > 0);
   }
+}
+
+function weaponPipColor(weaponId: string): number {
+  if (weaponId === "scattergun") return 0xff9a72;
+  if (weaponId === "arc-carbine") return 0x68e4e8;
+  return 0xffa31a;
 }
 
 function hudText(color: string, fontSize: string): Phaser.Types.GameObjects.Text.TextStyle {
