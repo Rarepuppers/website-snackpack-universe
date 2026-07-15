@@ -295,13 +295,19 @@
     if (dead) die();
   }
 
+  function circleIntersectsRect(cx, cy, radius, left, top, width, height) {
+    var closestX = Math.max(left, Math.min(cx, left + width));
+    var closestY = Math.max(top, Math.min(cy, top + height));
+    var dx = cx - closestX, dy = cy - closestY;
+    return dx * dx + dy * dy < radius * radius;
+  }
+
   function collides(pipe, gapSize) {
-    var birdLeft = BIRD_X - BIRD_HIT_R, birdRight = BIRD_X + BIRD_HIT_R;
-    var pipeLeft = pipe.x - PIPE_CAP_OVERHANG, pipeRight = pipe.x + PIPE_WIDTH + PIPE_CAP_OVERHANG;
-    if (birdRight < pipeLeft || birdLeft > pipeRight) return false;
+    var pipeLeft = pipe.x - PIPE_CAP_OVERHANG;
+    var pipeWidth = PIPE_COLLISION_WIDTH;
     var gapBottom = pipe.gapTop + gapSize;
-    if (st.birdY - BIRD_HIT_R > pipe.gapTop && st.birdY + BIRD_HIT_R < gapBottom) return false;
-    return true;
+    return circleIntersectsRect(BIRD_X, st.birdY, BIRD_HIT_R, pipeLeft, 0, pipeWidth, pipe.gapTop) ||
+           circleIntersectsRect(BIRD_X, st.birdY, BIRD_HIT_R, pipeLeft, gapBottom, pipeWidth, GROUND_Y - gapBottom);
   }
 
   function flap() {

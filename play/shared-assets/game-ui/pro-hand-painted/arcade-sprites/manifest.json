@@ -1,8 +1,10 @@
 ﻿{
     "title":  "Pro Hand Painted arcade-sprites",
-    "generatedAt":  "2026-07-14",
+    "generatedAt":  "2026-07-15",
     "pack":  "pro-hand-painted/arcade-sprites",
     "assets":  [
+                   "backgrounds/flappy-snacky-bg-day.png",
+                   "backgrounds/flappy-snacky-bg-night.png",
                    "png/asteroid.png",
                    "png/ball.png",
                    "png/block-blue.png",
