@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { PlayerIntent } from "../input/PlayerIntent";
 import { CombatSimulation } from "./CombatSimulation";
+import type { ArenaDefinition } from "../arena/ArenaDefinition";
 
 function intent(overrides: Partial<PlayerIntent> = {}): PlayerIntent {
   return {
@@ -154,4 +155,56 @@ describe("CombatSimulation", () => {
     expect(snapshot.equippedWeapons).toHaveLength(0);
     expect(snapshot.projectiles).toHaveLength(0);
   });
+
+  it.each([
+    [4, 23],
+    [12, 45],
+  ] as const)("creates the deterministic %i-weapon stress population", (profile, enemyCount) => {
+    const simulation = new CombatSimulation({
+      stressProfile: profile,
+      startingWeaponCount: profile,
+      seed: 99,
+    });
+    const snapshot = simulation.snapshot();
+
+    expect(snapshot.stressProfile).toBe(profile);
+    expect(snapshot.equippedWeapons).toHaveLength(profile);
+    expect(snapshot.enemies).toHaveLength(enemyCount);
+  });
+
+  it("blocks the Marine from crossing an arena obstacle", () => {
+    const arena = arenaWithObstacle(16, 7.4, 2, 2);
+    const simulation = new CombatSimulation({ autoStartWaves: false, arena });
+
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 120; frame += 1) {
+      snapshot = simulation.step(intent({ move: { x: 1, y: 0 } }), 0.05);
+    }
+
+    expect(snapshot.playerPosition.x).toBeLessThanOrEqual(16 - 0.55);
+  });
+
+  it("destroys projectiles that strike arena obstacles", () => {
+    const arena = arenaWithObstacle(18, 7.4, 1, 2);
+    const simulation = new CombatSimulation({ autoStartWaves: false, arena });
+    let observedBlock = false;
+
+    for (let frame = 0; frame < 30; frame += 1) {
+      const snapshot = simulation.step(intent({ fireHeld: frame === 0 }), 0.05);
+      observedBlock ||= snapshot.events.some((event) => event.type === "projectile-blocked");
+    }
+
+    expect(observedBlock).toBe(true);
+    expect(simulation.snapshot().projectiles).toHaveLength(0);
+  });
 });
+
+function arenaWithObstacle(x: number, y: number, width: number, height: number): ArenaDefinition {
+  return {
+    id: "test-arena",
+    widthMetres: 30,
+    heightMetres: 16.875,
+    tileSizeMetres: 1,
+    obstacles: [{ id: "test-obstacle", kind: "cargo-crate", x, y, width, height }],
+  };
+}

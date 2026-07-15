@@ -1,5 +1,8 @@
 import Phaser from "phaser";
 import { PrototypeScene } from "./scenes/PrototypeScene";
+import { AssetGalleryScene } from "./scenes/AssetGalleryScene";
+
+const galleryMode = new URLSearchParams(window.location.search).get("mode") === "gallery";
 
 export const gameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -13,5 +16,5 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [PrototypeScene],
+  scene: galleryMode ? [AssetGalleryScene] : [PrototypeScene],
 };

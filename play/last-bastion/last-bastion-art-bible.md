@@ -146,6 +146,17 @@ These values must be tested rather than treated as final:
 
 Final colours require an arena-background test before approval.
 
+## Enemy state-authored sheets
+
+Enemy animation frames should correspond to simulation truth whenever a state affects player decisions.
+
+- Egg Cluster frames are selected from hatch progress: dormant, pulsing, cracked, and ruptured.
+- Brain Blob frames map directly to drift, wind-up, lunge, and recovery phases.
+- Yellow warning light is reserved for an attack that has not yet become dangerous.
+- Hot coral-pink identifies the Brain Blob's active lunge rather than its preparation.
+- Directional attack sprites are authored facing east and rotated at runtime when full directional sheets add little value.
+- Ambient gait cycles may use stable per-entity offsets, but gameplay telegraphs must never drift away from simulation timing.
+
 ## Export requirements
 
 Each production asset should have:
@@ -168,6 +179,21 @@ Provisional filename pattern:
 ```
 
 Sprite sheets may replace individual files after the prototype proves the required frames.
+
+## Production Asset Batch A contracts
+
+The first environment-and-presentation batch is locked to six centered, nearest-neighbour atlases:
+
+| Stable ID | Grid | Logical cell | Frame count |
+| --- | ---: | ---: | ---: |
+| `arena-floor-v1` | 3×2 | 64×64 | 6 |
+| `arena-boundary-v1` | 4×2 | 64×64 | 8 |
+| `arena-obstacle-v1` | 4×2 | 96×96 | 8 |
+| `combat-effects-v1` | 5×4 | 64×64 | 20 |
+| `pickups-v1` | 4×1 | 64×64 | 4 |
+| `hud-panels-v1` | 3×2 | 256×128 | 6 |
+
+HUD art contains frames and empty surfaces only; all language, numbers, meters, and state labels remain runtime UI. Effect frames encode simulation events rather than running as decorative clocks. Obstacles keep intact and damaged frames paired by column even though destruction gameplay is deferred.
 
 The first production-test sheets use a four-column by three-row grid with 96 × 96 logical cells. Body and headgear layers must use identical canvas dimensions, cell order, pivots, and frame indices so equipment can toggle without moving or replacing the body.
 

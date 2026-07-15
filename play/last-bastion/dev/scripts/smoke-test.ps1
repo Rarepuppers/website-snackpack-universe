@@ -26,6 +26,43 @@ try {
   }
 
   $asset = Invoke-WebRequest -UseBasicParsing ("http://127.0.0.1:4173$assetPath")
+  $requiredArtAssets = @(
+    'bastion-service-rifle-gameplay-v1-64.png',
+    'brain-blob-states-v1-64.png',
+    'egg-cluster-spritesheet-v1-64.png',
+    'marine-base-spritesheet-v1-96.png',
+    'marine-bastion-helmet-overlay-v1-96.png',
+    'scuttler-spritesheet-v1-64.png',
+    'arena-floor-atlas-v1-64.png',
+    'arena-boundary-atlas-v1-64.png',
+    'arena-obstacle-atlas-v1-96.png',
+    'combat-effect-atlas-v1-64.png',
+    'pickup-atlas-v1-64.png',
+    'hud-panel-atlas-v1-256x128.png'
+  )
+
+  foreach ($artAssetName in $requiredArtAssets) {
+    $artResponse = Invoke-WebRequest -UseBasicParsing (
+      "http://127.0.0.1:4173/play/last-bastion/game-assets/$artAssetName"
+    )
+    if ($artResponse.StatusCode -ne 200 -or $artResponse.RawContentLength -le 0) {
+      throw "Required art asset failed HTTP verification: $artAssetName"
+    }
+  }
+
+  $reviewRoutes = @(
+    '/play/last-bastion/?art=placeholder',
+    '/play/last-bastion/?mode=gallery',
+    '/play/last-bastion/?mode=gallery&batch=a',
+    '/play/last-bastion/?stress=4',
+    '/play/last-bastion/?stress=12'
+  )
+  foreach ($reviewRoute in $reviewRoutes) {
+    $routeResponse = Invoke-WebRequest -UseBasicParsing ("http://127.0.0.1:4173$reviewRoute")
+    if ($routeResponse.StatusCode -ne 200 -or -not $routeResponse.Content.Contains('id="game-root"')) {
+      throw "Review route failed HTTP verification: $reviewRoute"
+    }
+  }
 
   [pscustomobject]@{
     PageStatus = $page.StatusCode
@@ -34,6 +71,8 @@ try {
     AssetPath = $assetPath
     AssetStatus = $asset.StatusCode
     AssetBytes = $asset.RawContentLength
+    ArtAssetCount = $requiredArtAssets.Count
+    ReviewRouteCount = $reviewRoutes.Count + 1
   }
 }
 finally {

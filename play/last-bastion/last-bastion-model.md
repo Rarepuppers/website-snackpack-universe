@@ -22,7 +22,7 @@ An item is not completed merely because code or an asset exists. It must meet it
 
 **Milestone status:** In progress
 
-**Current objective:** visually review one-, four-, six-, and twelve-weapon placeholder layouts, then playtest and tune the complete three-wave loop before beginning production sprite work.
+**Current objective:** visually approve the completed styled combat/arena foundation, then replace its code-native presentation with Production Asset Batch A.
 
 ## Completed
 
@@ -141,6 +141,27 @@ An item is not completed merely because code or an asset exists. It must meet it
 - Converted the approved Bastion Service Rifle direction into a separate 64 × 32 gameplay asset used by every visible weapon instance in the art preview.
 - Preserved source, chroma-key, extracted, and gameplay-sized assets under `art/production-tests/`.
 
+### Representative Scuttler pipeline
+
+**Status:** Completed — 15 July 2026; gameplay-scale approval pending under the art-pipeline gate
+
+- Established an original low crustacean-like silhouette with six running legs, two short grasping claws, coral carapace, violet joints, pale claw tips, and yellow sensory markings.
+- Produced a transparent 4 × 2 sheet using 64 × 64 logical cells.
+- Added south, north, east, and west facings with alternating gait poses.
+- Integrated runtime facing and independently offset gait timing behind the `?art=marine` preview switch.
+- Preserved the placeholder triangle renderer for direct comparison.
+
+### Egg Cluster and Brain Blob production-state pipeline
+
+**Status:** Completed — 16 July 2026; gameplay-scale approval pending under the art-pipeline gate
+
+- Added a four-stage Egg Cluster sheet: dormant, pulsing, cracked, and ruptured/empty.
+- Connected Egg Cluster frames to normalized six-second hatch progress.
+- Added a four-state Brain Blob sheet: drift, yellow wind-up, directional lunge, and exhausted recovery.
+- Connected Brain Blob frames directly to its simulation phase and rotated the east-authored attack toward the player.
+- Added portable visual-state mapping helpers with five focused tests.
+- Expanded verification to 35 passing tests across seven test files.
+
 ## In progress
 
 ### Technical scaffold
@@ -249,12 +270,13 @@ Exit criterion: multiple testers voluntarily replay and can describe how their s
 
 - Completed for first review: Marine base-body gameplay sheet with idle, move, and dodge key poses.
 - Completed for first review: one aligned helmet overlay reflected in gameplay.
-- One alien enemy.
-- One terrain set.
-- Assault-rifle representation plus attachment, recoil, rotation, and depth-sorting rules.
-- A two-to-four weapon loadout readability test before considering higher counts.
-- One HUD panel.
-- Muzzle flash, impact, damage, death, dodge, XP, and level-up effects.
+- Completed for first review: one animated four-facing Scuttler gameplay sheet.
+- Completed for first review: simulation-driven Egg Cluster and Brain Blob state sheets.
+- Completed: deterministic authored tiled arena floor, boundary set, four obstacle types, collision, and depth rules; damaged obstacle frames are retained for later destruction gameplay.
+- Completed for first review: assault-rifle representation plus attachment, recoil, rotation, and depth-sorting rules.
+- Completed foundation: four-weapon normal stress route and twelve-weapon capacity stress route.
+- Completed foundation: camera-safe HUD, scalable health/XP/roll bars, twelve weapon markers, upgrade cards, and pause/victory/defeat panels.
+- Completed: pooled authored muzzle, projectile, impact, damage, death, dodge, XP, level-up, spawn, hatch, explosion, and obstacle-hit effects.
 
 Acceptance criterion: the styled build remains more readable than the placeholder build during maximum prototype pressure.
 
@@ -294,6 +316,49 @@ The following remain deferred until their preceding scope gates succeed:
 6. Build placeholder movement, Marine roll, and shooting with one visible modular weapon.
 7. Add Scuttlers, Egg Clusters, Brain Blobs, waves, XP, and upgrades.
 8. Implement the zero-to-twelve weapon-ring foundation and independent weapon firing. **Completed.**
-9. Review one-, four-, six-, and twelve-weapon layouts; tune spacing before replacing placeholders. **In progress.**
+9. Implement styled arena, HUD, pooled effects, gallery, and four-/twelve-weapon stress routes. **Completed.**
 10. Run the combat-prototype playtest gate and representative gameplay art pipeline.
 11. Decide whether to proceed to the vertical slice and higher weapon counts.
+
+## Production batch status
+
+### Large implementation: styled combat presentation and arena foundation
+
+**Status:** Completed — 16 July 2026; automated visual browser capture unavailable in the current environment
+
+- Completed: data-driven manifest with stable IDs, URLs, logical sizes, frame counts, and pivots for all six production-test assets.
+- Completed: authored animation/state clocks, hit/death presentation, spawn tells, hatch tells, and shared world-depth rules.
+- Completed: deterministic tiled arena with boundary walls, four readable obstacle types, player/enemy collision, and projectile blocking.
+- Completed: camera-safe HUD with scalable health, XP, and roll bars; twelve weapon markers; upgrade cards; and pause/victory/defeat panels.
+- Completed: bounded effect pool for muzzle flashes, impacts, enemy deaths, XP collection, level-up, roll trails, spawn/hatch bursts, explosions, and obstacle strikes.
+- Completed: production-art debug gallery covering every authored frame, manifest pivot, state, and representative 1/4/12 weapon arrangements.
+- Completed: deterministic mixed-enemy `stress=4` readability scene and `stress=12` capacity scene.
+- Completed: styled renderer is now the default; `art=placeholder` preserves the comparison renderer.
+- Verification evidence: 47 passing tests across nine files, TypeScript check, production build, six HTTP route checks, and twelve required-art HTTP checks.
+
+Review routes are documented in `dev/README.md`. The in-app browser runtime could not initialise in the current environment, so final visual acceptance remains a manual review gate rather than an implementation gap.
+
+### Production asset batch A: arena and combat readability
+
+**Status:** Completed and integrated — 16 July 2026; creator gameplay-scale review queued
+
+- Arena floor tiles: clean base, two subtle variants, seams, damaged panel, organic contamination edge.
+- Boundary set: north/south/east/west walls, inner/outer corners, one closed bulkhead, one damaged breach.
+- Obstacles: low barricade, cargo crate, power conduit, alien biomass mound; intact states are active and paired damaged states are reserved for destruction gameplay.
+- Character effects: Marine ground shadow, roll trail, protected-frame shimmer, hit flash mask, defeat burst.
+- Weapon effects: Service Rifle muzzle flash, tracer/projectile, impact spark, critical impact, explosive impact ring.
+- Enemy effects: Scuttler spawn and death burst; Egg pulse glow, crack flash, hatch burst; Brain wind-up aura, lunge streak, recovery particles, death burst.
+- Pickups: XP shard with two-frame shimmer, health pickup seed, upgrade/relic pickup placeholder.
+- HUD: health frame/fill, XP frame/fill, roll-ready icon/bar, weapon-slot marker, wave banner, three upgrade-card backgrounds, pause/victory/defeat panels.
+- Completed contract: stable IDs, transparent backgrounds, intended logical sizes, centered pivot metadata, nearest-neighbour runtime atlases, and no baked text.
+
+Completion evidence:
+
+- Six locked runtime atlases provide 52 frames: floor (6), boundaries (8), obstacles (8), effects (20), pickups (4), and HUD panels (6).
+- The manifest records stable IDs, logical sizes, frame counts, centered pivots, and versioned URLs for all Batch A assets.
+- Default gameplay now renders authored terrain, walls, obstacles, shadow, projectiles, pickups, event effects, status panels, wave banner, upgrade cards, and run-state modal.
+- Placeholder art remains available through `?art=placeholder`; the complete batch is visible at `?mode=gallery&batch=a`.
+- Source chroma sheets, transparent extractions, normalized atlases, frame order, and the repeatable normalization script are retained under `art/production-tests/batch-a/`.
+- Automated acceptance: 47 unit tests across nine files and TypeScript validation passed before the final production build and HTTP smoke pass.
+
+Batch acceptance criterion: the styled stress scene remains readable with four normal weapons, mixed Wave 3 enemies, active telegraphs, pickups, and simultaneous combat effects. Twelve weapons remain a separate capacity stress case.

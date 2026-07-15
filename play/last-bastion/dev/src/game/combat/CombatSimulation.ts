@@ -17,6 +17,12 @@ import {
   type UpgradeDefinition,
   type UpgradeId,
 } from "../content/upgradeCatalog";
+import {
+  BASTION_ARENA,
+  pointHitsObstacle,
+  resolveCircleMovement,
+  type ArenaDefinition,
+} from "../arena/ArenaDefinition";
 
 export type EncounterStatus = "combat" | "intermission" | "victory" | "defeat";
 export type BrainPhase = "drift" | "windup" | "lunge" | "recover";
@@ -33,7 +39,10 @@ export type CombatEvent =
   | { type: "explosion"; position: Vector2Data; radiusMetres: number }
   | { type: "player-hit"; position: Vector2Data; damage: number }
   | { type: "xp-collected"; position: Vector2Data; value: number }
-  | { type: "level-up"; level: number };
+  | { type: "level-up"; level: number }
+  | { type: "enemy-spawned"; position: Vector2Data; enemyType: EnemyType }
+  | { type: "egg-hatched"; position: Vector2Data }
+  | { type: "projectile-blocked"; position: Vector2Data };
 
 export interface EnemySnapshot {
   id: number;
@@ -49,6 +58,7 @@ export interface EnemySnapshot {
 export interface ProjectileSnapshot {
   id: number;
   position: Vector2Data;
+  rotationRadians: number;
 }
 
 export interface ExperiencePickupSnapshot {
@@ -78,6 +88,8 @@ export interface CombatSnapshot {
   weapon: Readonly<WeaponRuntimeStats>;
   equippedWeapons: readonly Readonly<EquippedWeapon>[];
   events: readonly CombatEvent[];
+  arena: Readonly<ArenaDefinition>;
+  stressProfile: 4 | 12 | null;
 }
 
 interface EnemyState {
@@ -124,6 +136,8 @@ export interface CombatSimulationOptions {
   autoStartWaves?: boolean;
   seed?: number;
   startingWeaponCount?: number;
+  arena?: ArenaDefinition;
+  stressProfile?: 4 | 12;
 }
 
 interface EquippedWeaponState extends EquippedWeapon {
@@ -139,6 +153,7 @@ const INTERMISSION_SECONDS = 2;
 export class CombatSimulation {
   readonly widthMetres: number;
   readonly heightMetres: number;
+  readonly arena: Readonly<ArenaDefinition>;
 
   private readonly heroMotion = new HeroMotionController(MARINE);
   private playerPosition: Vector2Data;
@@ -166,21 +181,26 @@ export class CombatSimulation {
   private randomState: number;
   private readonly wavesEnabled: boolean;
   private frameEvents: CombatEvent[] = [];
+  private readonly stressProfile: 4 | 12 | null;
 
   constructor(options: CombatSimulationOptions = {}) {
-    this.widthMetres = options.widthMetres ?? 30;
-    this.heightMetres = options.heightMetres ?? 16.875;
+    this.arena = options.arena ?? BASTION_ARENA;
+    this.widthMetres = options.widthMetres ?? this.arena.widthMetres;
+    this.heightMetres = options.heightMetres ?? this.arena.heightMetres;
     this.playerPosition = {
       x: this.widthMetres / 2,
       y: this.heightMetres / 2,
     };
     this.randomState = options.seed ?? 0x5a17b45;
-    this.wavesEnabled = options.autoStartWaves !== false;
+    this.stressProfile = options.stressProfile ?? null;
+    this.wavesEnabled = options.autoStartWaves !== false && this.stressProfile === null;
     this.equippedWeapons = createServiceRifleLoadout(
       clampWeaponCount(options.startingWeaponCount ?? 1),
     ).map((weapon) => ({ ...weapon, cooldownSeconds: 0 }));
 
-    if (this.wavesEnabled) {
+    if (this.stressProfile !== null) {
+      this.populateStressScenario(this.stressProfile);
+    } else if (this.wavesEnabled) {
       this.beginWave(0);
     }
   }
@@ -203,10 +223,16 @@ export class CombatSimulation {
     this.playerInvulnerable = motionFrame.isInvulnerable;
     this.evasiveReady = motionFrame.evasiveReady;
     this.evasiveCooldownRemainingSeconds = motionFrame.evasiveCooldownRemainingSeconds;
-    this.playerPosition.x += motionFrame.displacementMetres.x;
-    this.playerPosition.y += motionFrame.displacementMetres.y;
-    this.playerPosition.x = clamp(this.playerPosition.x, PLAYER_RADIUS_METRES, this.widthMetres - PLAYER_RADIUS_METRES);
-    this.playerPosition.y = clamp(this.playerPosition.y, PLAYER_RADIUS_METRES, this.heightMetres - PLAYER_RADIUS_METRES);
+    const previousPlayerPosition = { ...this.playerPosition };
+    this.playerPosition = resolveCircleMovement(
+      previousPlayerPosition,
+      {
+        x: previousPlayerPosition.x + motionFrame.displacementMetres.x,
+        y: previousPlayerPosition.y + motionFrame.displacementMetres.y,
+      },
+      PLAYER_RADIUS_METRES,
+      this.arena,
+    );
 
     if (intent.aim.x !== 0 || intent.aim.y !== 0) {
       this.lastAimDirection = normalizeVector(intent.aim);
@@ -254,6 +280,11 @@ export class CombatSimulation {
       brainPhase: "drift",
       brainPhaseRemainingSeconds: type === "brain-blob" ? 1.5 + this.random() : 0,
       brainLungeDirection: { x: 0, y: 0 },
+    });
+    this.frameEvents.push({
+      type: "enemy-spawned",
+      position: { ...spawnPosition },
+      enemyType: type,
     });
 
     return id;
@@ -323,6 +354,7 @@ export class CombatSimulation {
       projectiles: this.projectiles.filter((projectile) => !projectile.dead).map((projectile) => ({
         id: projectile.id,
         position: { ...projectile.position },
+        rotationRadians: Math.atan2(projectile.velocity.y, projectile.velocity.x),
       })),
       pickups: this.pickups.filter((pickup) => !pickup.collected).map((pickup) => ({
         id: pickup.id,
@@ -336,6 +368,8 @@ export class CombatSimulation {
         stats: { ...weapon.stats },
       })),
       events: this.frameEvents.map((event) => ({ ...event })),
+      arena: this.arena,
+      stressProfile: this.stressProfile,
     };
   }
 
@@ -409,6 +443,15 @@ export class CombatSimulation {
         continue;
       }
 
+      if (pointHitsObstacle(projectile.position, this.arena.obstacles)) {
+        projectile.dead = true;
+        this.frameEvents.push({
+          type: "projectile-blocked",
+          position: { ...projectile.position },
+        });
+        continue;
+      }
+
       for (const enemy of this.enemies) {
         if (enemy.dead || projectile.hitEnemyIds.has(enemy.id)) {
           continue;
@@ -479,6 +522,7 @@ export class CombatSimulation {
     }
 
     enemy.dead = true;
+    this.frameEvents.push({ type: "egg-hatched", position: { ...enemy.position } });
     for (const offset of [-0.45, 0.45]) {
       this.spawnEnemy("scuttler", {
         x: clamp(enemy.position.x + offset, 0.5, this.widthMetres - 0.5),
@@ -509,8 +553,7 @@ export class CombatSimulation {
         }
         break;
       case "lunge":
-        enemy.position.x += enemy.brainLungeDirection.x * 6 * deltaSeconds;
-        enemy.position.y += enemy.brainLungeDirection.y * 6 * deltaSeconds;
+        this.moveEnemy(enemy, enemy.brainLungeDirection, 6, deltaSeconds);
         if (enemy.brainPhaseRemainingSeconds <= 0) {
           enemy.brainPhase = "recover";
           enemy.brainPhaseRemainingSeconds = 0.6;
@@ -530,8 +573,25 @@ export class CombatSimulation {
       x: this.playerPosition.x - enemy.position.x,
       y: this.playerPosition.y - enemy.position.y,
     });
-    enemy.position.x += direction.x * speed * deltaSeconds;
-    enemy.position.y += direction.y * speed * deltaSeconds;
+    this.moveEnemy(enemy, direction, speed, deltaSeconds);
+  }
+
+  private moveEnemy(
+    enemy: EnemyState,
+    direction: Vector2Data,
+    speed: number,
+    deltaSeconds: number,
+  ): void {
+    const radius = ENEMY_CATALOG[enemy.type].radiusMetres;
+    enemy.position = resolveCircleMovement(
+      enemy.position,
+      {
+        x: enemy.position.x + direction.x * speed * deltaSeconds,
+        y: enemy.position.y + direction.y * speed * deltaSeconds,
+      },
+      radius,
+      this.arena,
+    );
   }
 
   private resolveEnemyContactDamage(): void {
@@ -666,6 +726,16 @@ export class CombatSimulation {
     this.waveElapsedSeconds = 0;
     this.status = "combat";
     this.spawnQueue = buildWave(index);
+  }
+
+  private populateStressScenario(profile: 4 | 12): void {
+    const counts = profile === 12
+      ? { scuttler: 32, egg: 5, brain: 8 }
+      : { scuttler: 16, egg: 3, brain: 4 };
+
+    for (let index = 0; index < counts.scuttler; index += 1) this.spawnEnemy("scuttler");
+    for (let index = 0; index < counts.egg; index += 1) this.spawnEnemy("egg-cluster");
+    for (let index = 0; index < counts.brain; index += 1) this.spawnEnemy("brain-blob");
   }
 
   private checkForLevelUp(): void {

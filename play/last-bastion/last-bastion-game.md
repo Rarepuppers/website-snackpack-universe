@@ -238,7 +238,9 @@ Seeds should make bugs and balance problems reproducible. Later director systems
 
 ## Battlefield interactions
 
-The combat prototype may use an empty arena. The vertical slice must test one signature interaction, such as:
+The styled combat prototype now uses a deterministic tiled test chamber with boundary walls and four collision footprints: a low barricade, cargo crate, power conduit, and alien biomass mound. Player and enemy movement slide against these footprints, and projectiles stop on impact. These objects currently prove navigation, cover, depth, and readability; they are not yet the signature interactive battlefield system.
+
+The vertical slice must test one signature interaction, such as:
 
 - A power switch that activates an electrical fence
 - A defensive turret with limited charge
@@ -284,6 +286,8 @@ Art must prioritise:
 - Effects that communicate timing and damage without hiding gameplay
 
 The first Marine concept was approved as the initial art-direction anchor. The art pipeline test consists of one Marine base-body sprite set, one aligned helmet overlay, visible weapon sprites and anchors, one alien, one terrain set, one HUD panel, and core combat effects.
+
+The styled foundation uses a manifest for every production-test asset's stable ID, logical dimensions, frame contract, and pivot. A dedicated gallery displays every frame and representative weapon-ring counts. The normal combat route uses styled art by default, while the placeholder renderer remains available for comparison. Four weapons define the ordinary readability stress case; twelve weapons remain a separate capacity test.
 
 Modular character art must define shared attachment points for the head and weapon ring. Base-body animations must not move these anchors unpredictably. Equipment previews must be assembled from production sprite layers rather than generated as unique images for every possible loadout.
 
