@@ -154,6 +154,8 @@ Equipped weapons appear as separate sprites arranged around the character, inspi
 
 The combat prototype proves one manual weapon. The next implementation step tests two to four simultaneous weapons. Counts above six require explicit readability, targeting, audio, VFX, and performance validation before becoming normal gameplay.
 
+The placeholder implementation now supports zero to twelve independently firing Service Rifle instances. One weapon follows the aim-side anchor; multiple weapons use a fixed circular arrangement whose radius expands with count and whose vertical position controls whether each sprite passes behind or in front of the hero. Review builds can select a count with the `?weapons=` URL parameter. This proves technical capacity only; four weapons remain the next intended gameplay test and twelve is a stress/readability case.
+
 Individual weapons may use different behaviours while sharing the visible ring. Examples include cursor-aimed weapons, automatic target-seeking weapons, orbiting contact weapons, and cooldown-driven support devices. The firing rules must remain understandable; adding more visible guns must not turn player choices into unreadable noise.
 
 ### Modular equipment appearance
@@ -183,6 +185,8 @@ Every hero has one evasive move and three base secondary stats:
 The presentation may be a sprint, dodge, roll, slide, dash, or rush, but gameplay always consumes the same three core values. Items, perks, relics, mutations, curses, and hero traits may modify them later.
 
 Invulnerability duration must be zero or greater and may not exceed the total move duration. Metres are engine-independent design units converted through a shared pixels-per-metre constant.
+
+The prototype currently adds a universal 0.75-second recovery after an evasive move. Recovery is a shared prototype rule, not a fourth hero secondary stat. It may be revised or promoted into a modifiable system only after playtesting demonstrates the need.
 
 Initial upgrade families may include:
 

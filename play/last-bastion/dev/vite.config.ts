@@ -4,6 +4,7 @@ export default defineConfig({
   base: "/play/last-bastion/",
   publicDir: false,
   build: {
+    assetsInlineLimit: 0,
     assetsDir: "game-assets",
     emptyOutDir: false,
     outDir: "..",

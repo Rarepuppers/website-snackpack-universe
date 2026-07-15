@@ -22,7 +22,7 @@ An item is not completed merely because code or an asset exists. It must meet it
 
 **Milestone status:** In progress
 
-**Current objective:** finish the technical visual smoke test, add Service Rifle firing, then introduce Scuttlers as the first combat target.
+**Current objective:** visually review one-, four-, six-, and twelve-weapon placeholder layouts, then playtest and tune the complete three-wave loop before beginning production sprite work.
 
 ## Completed
 
@@ -83,6 +83,30 @@ An item is not completed merely because code or an asset exists. It must meet it
 - Added validation preventing negative values or invulnerability longer than the complete evasive move.
 - Verified four evasive-state/stat tests plus two synthetic-intent controller tests.
 
+### Placeholder combat-loop implementation
+
+**Status:** Completed — 15 July 2026
+
+- Implemented the Bastion Service Rifle cadence, projectiles, aiming, collision, damage, and modular runtime stats.
+- Implemented Scuttlers, six-second Egg Cluster hatching, and telegraphed Brain Blob drift/wind-up/lunge/recovery phases.
+- Implemented three deterministic prototype waves and two-second intermissions.
+- Implemented player health, contact damage, roll invulnerability, defeat, and prototype victory.
+- Implemented XP drops, attraction, collection, level thresholds, and paused upgrade choice UI.
+- Implemented six upgrades: Rapid Cycling, Twin Shot, Piercing Rounds, Explosive Payload, Heavy Calibre, and Field Magnet.
+- Expanded verification to 12 passing tests across four test files.
+
+### Prototype controls and feedback pass
+
+**Status:** Completed — 15 July 2026
+
+- Added Escape pause/resume without advancing the combat simulation.
+- Added Enter restart after victory or defeat with complete entity and UI cleanup.
+- Added a universal provisional 0.75-second roll recovery without changing the three hero secondary stats.
+- Added roll readiness text and a visible recovery bar.
+- Added typed combat events for firing, impacts, defeats, explosions, player damage, XP collection, and level-ups.
+- Added placeholder muzzle flashes, impact flashes, death bursts, explosion rings, camera shake, and level-up flash.
+- Expanded verification to 15 passing tests across four test files.
+
 ### Marine art-direction checkpoint
 
 **Status:** Completed — 15 July 2026
@@ -91,6 +115,31 @@ An item is not completed merely because code or an asset exists. It must meet it
 - Approved the compact practical armour language, navy/charcoal base, ivory panels, teal equipment lights, restrained orange accents, and amber visor.
 - Preserved the approved concept under `art/concepts/marine-art-direction-v1.png`.
 - Established the concept as an art-direction anchor rather than a production sprite sheet.
+
+### Modular weapon-ring foundation
+
+**Status:** Completed — 15 July 2026
+
+- Added a stable loadout model supporting zero to twelve independently identified weapon instances.
+- Added isolated mutable runtime stats and firing cooldowns for every equipped weapon.
+- Added a pure circular layout with expanding radius and front/behind depth ordering.
+- Made projectile and muzzle origins match each weapon's visible ring position.
+- Added `?weapons=0` through `?weapons=12` review parameters; values outside the range are safely clamped.
+- Kept one weapon as the default and twelve as an architectural capacity rather than a balance target.
+- Expanded verification to 30 passing tests across six test files.
+
+### Representative Marine layer pipeline
+
+**Status:** Completed — 15 July 2026; visual gameplay-scale approval pending under the art-pipeline gate
+
+- Generated and extracted a transparent 4 × 3 Marine base-body sheet from the approved concept direction.
+- Standardised the production test on 96 × 96 logical cells with south, north, east, and west facings.
+- Added idle, movement contact, and compact dodge key poses for every facing.
+- Kept boots and the close-fitting default head layer in the base body while excluding weapons.
+- Generated a separate twelve-frame Bastion helmet-and-visor overlay registered to the same grid.
+- Integrated both sheets behind `?art=marine`, with `helmet=0` providing a direct modularity comparison.
+- Converted the approved Bastion Service Rifle direction into a separate 64 × 32 gameplay asset used by every visible weapon instance in the art preview.
+- Preserved source, chroma-key, extracted, and gameplay-sized assets under `art/production-tests/`.
 
 ## In progress
 
@@ -112,7 +161,7 @@ Acceptance criterion remaining: visually load the canvas and confirm there are n
 **Status:** In progress
 
 - Record the approved Marine palette, armour language, silhouette, and pixel treatment.
-- Choose the gameplay camera angle and base sprite dimensions.
+- Completed for representative test: high three-quarter camera and 96 × 96 logical cells.
 - Define base-body, helmet/hat, and visible-weapon layers.
 - Define headgear and weapon attachment points for every direction and animation.
 - Define preview rendering, depth sorting, outline, shading, and export rules.
@@ -126,8 +175,10 @@ Acceptance criterion: a second artist or generation session can create a compati
 
 **Status:** In progress
 
-- Support zero to twelve equipped weapon records in the data model.
-- Render all equipped weapons around the character using calculated anchors.
+- Completed: support zero to twelve equipped weapon records in the data model.
+- Completed: render all equipped weapons around the character using calculated anchors.
+- Completed: give every weapon independent runtime stats, cooldown, projectile origin, recoil pulse, and typed firing identity.
+- In progress: evaluate one-, four-, six-, and twelve-weapon spacing and combat readability at gameplay scale.
 - Use the same equipment state for gameplay, in-game visuals, and the loadout preview.
 - Render helmets and hats as directional overlays aligned to the base-body animation.
 - Keep boots visually baked into the base body even if footwear becomes an equipment category later.
@@ -155,44 +206,32 @@ Review criteria:
 - Added the Marine's provisional 0.55-second, 4-metre roll with 0.25 seconds of invulnerability.
 - Added arena boundaries and an on-screen state/stat readout.
 
-Remaining before completion: visual runtime check, roll cooldown/readiness feedback, firing, damage feedback, defeat, restart, and pause behaviour.
+Remaining before completion: visual runtime check and creator playtest feedback on movement, roll, firing, pressure, and readability.
+
+### Early enemies and three-wave encounter
+
+**Status:** In progress — implementation complete; balance and fairness playtest pending
+
+- Wave 1 introduces Scuttlers.
+- Wave 2 adds Egg Clusters that hatch into two Scuttlers after six seconds.
+- Wave 3 adds Brain Blobs with visible colour-state telegraphs before lunging.
+- Seeded spawn positions make test runs reproducible.
+- Contact damage respects the Marine's resolved invulnerability window.
+
+Acceptance criterion remaining: confirm through playtesting that combinations create movement decisions without unavoidable damage.
+
+### XP and upgrade choices
+
+**Status:** In progress — implementation complete; build-diversity playtest pending
+
+- XP pickups attract and collect using a modifiable magnet radius.
+- Level-up pauses the simulation and presents three clickable choices.
+- Six upgrade definitions modify real weapon or pickup behaviour.
+- Upgrade application is data-addressed with stable IDs.
+
+Acceptance criterion remaining: demonstrate at least three recognisably different short-run builds in playtesting.
 
 ## Pending
-
-### Combat prototype: enemies and waves
-
-**Status:** Pending
-
-- Swarmer behaviour.
-- Spitter behaviour with telegraphed projectiles.
-- Seeded three-wave encounter.
-- Spawn safety and pressure limits.
-- Player damage, invulnerability feedback, and defeat.
-
-Acceptance criterion: enemy combinations create movement decisions without unavoidable damage.
-
-### Combat prototype: dodge
-
-**Status:** Pending
-
-- Directional dodge.
-- Cooldown and readable availability.
-- Clearly defined invulnerability or damage-reduction rule.
-- Feedback that communicates start, active window, and recovery.
-
-Acceptance criterion: testers can learn and intentionally use dodge without reading documentation.
-
-### Combat prototype: XP and upgrades
-
-**Status:** Pending
-
-- XP drops and collection.
-- Safe level-up presentation.
-- Approximately six transformative upgrade choices.
-- Data-driven upgrade definitions with stable IDs.
-- Upgrade combinations that visibly change combat.
-
-Acceptance criterion: at least three recognisably different builds can emerge during the short prototype.
 
 ### Internal playtest
 
@@ -206,10 +245,10 @@ Exit criterion: multiple testers voluntarily replay and can describe how their s
 
 ### Representative art pipeline test
 
-**Status:** Pending — begins after combat prototype and art-bible approval
+**Status:** In progress — Marine base-body and first helmet overlay implemented; gameplay-scale review pending
 
-- Marine base-body gameplay sprite and essential animations.
-- One aligned helmet/hat overlay reflected in gameplay and the dynamic loadout preview.
+- Completed for first review: Marine base-body gameplay sheet with idle, move, and dodge key poses.
+- Completed for first review: one aligned helmet overlay reflected in gameplay.
 - One alien enemy.
 - One terrain set.
 - Assault-rifle representation plus attachment, recoil, rotation, and depth-sorting rules.
@@ -254,6 +293,7 @@ The following remain deferred until their preceding scope gates succeed:
 5. Implement the input-intent layer and shared hero state machine.
 6. Build placeholder movement, Marine roll, and shooting with one visible modular weapon.
 7. Add Scuttlers, Egg Clusters, Brain Blobs, waves, XP, and upgrades.
-8. Test two to four simultaneous weapons and their targeting/readability.
-9. Run the combat-prototype playtest gate and representative gameplay art pipeline.
-10. Decide whether to proceed to the vertical slice and higher weapon counts.
+8. Implement the zero-to-twelve weapon-ring foundation and independent weapon firing. **Completed.**
+9. Review one-, four-, six-, and twelve-weapon layouts; tune spacing before replacing placeholders. **In progress.**
+10. Run the combat-prototype playtest gate and representative gameplay art pipeline.
+11. Decide whether to proceed to the vertical slice and higher weapon counts.

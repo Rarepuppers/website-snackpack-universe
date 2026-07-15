@@ -12,6 +12,7 @@ function intent(overrides: Partial<PlayerIntent> = {}): PlayerIntent {
     interactPressed: false,
     ultimatePressed: false,
     pausePressed: false,
+    restartPressed: false,
     ...overrides,
   };
 }
@@ -33,5 +34,21 @@ describe("HeroMotionController", () => {
     expect(frame.state).toBe("evading");
     expect(frame.displacementMetres.y).toBeLessThan(0);
     expect(frame.isInvulnerable).toBe(true);
+    expect(frame.evasiveReady).toBe(false);
+  });
+
+  it("enforces prototype recovery without adding a fourth hero secondary stat", () => {
+    const controller = new HeroMotionController(MARINE);
+    controller.update(intent({ evasiveMovePressed: true }), 0.1);
+    controller.update(intent(), 0.5);
+
+    const rejected = controller.update(intent({ evasiveMovePressed: true }), 0.01);
+    expect(rejected.state).not.toBe("evading");
+    expect(rejected.evasiveReady).toBe(false);
+
+    controller.update(intent(), 0.8);
+    const ready = controller.update(intent({ evasiveMovePressed: true }), 0.01);
+    expect(ready.state).toBe("evading");
+    expect(ready.evasiveReady).toBe(false);
   });
 });

@@ -8,4 +8,5 @@ export interface PlayerIntent {
   interactPressed: boolean;
   ultimatePressed: boolean;
   pausePressed: boolean;
+  restartPressed: boolean;
 }

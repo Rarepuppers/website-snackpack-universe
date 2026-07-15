@@ -15,6 +15,7 @@ interface ControlKeys {
   interact: Phaser.Input.Keyboard.Key;
   ultimate: Phaser.Input.Keyboard.Key;
   pause: Phaser.Input.Keyboard.Key;
+  restart: Phaser.Input.Keyboard.Key;
 }
 
 export class KeyboardMouseInput {
@@ -40,6 +41,7 @@ export class KeyboardMouseInput {
       interact: Phaser.Input.Keyboard.KeyCodes.E,
       ultimate: Phaser.Input.Keyboard.KeyCodes.R,
       pause: Phaser.Input.Keyboard.KeyCodes.ESC,
+      restart: Phaser.Input.Keyboard.KeyCodes.ENTER,
     }) as unknown as ControlKeys;
   }
 
@@ -61,6 +63,7 @@ export class KeyboardMouseInput {
       interactPressed: Phaser.Input.Keyboard.JustDown(this.keys.interact),
       ultimatePressed: Phaser.Input.Keyboard.JustDown(this.keys.ultimate),
       pausePressed: Phaser.Input.Keyboard.JustDown(this.keys.pause),
+      restartPressed: Phaser.Input.Keyboard.JustDown(this.keys.restart),
     };
   }
 }

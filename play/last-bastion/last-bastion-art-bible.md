@@ -8,7 +8,7 @@
 
 **Visual anchor:** `art/concepts/marine-art-direction-v1.png`
 
-This document records the reusable rules derived from the approved Marine concept. Exact gameplay sprite dimensions and frame counts remain provisional until tested inside the Phaser prototype.
+This document records the reusable rules derived from the approved Marine concept. The representative pipeline now uses a 96 × 96 logical cell and four facings; final animation frame counts remain provisional until motion is playtested inside the Phaser prototype.
 
 ## Visual identity
 
@@ -36,7 +36,7 @@ Last Bastion uses colourful modern pixel art with a tense but adventurous scienc
 
 - Gameplay uses a high three-quarter view close to top-down.
 - Movement is calculated in any direction.
-- The first production test uses four visual facings: north, south, east, and west.
+- The first production test uses four visual facings: north, south, east, and west, stored in the sheet as south, north, east, west.
 - East and west may share mirrored frames unless asymmetrical equipment makes mirroring visibly incorrect.
 - Eight visual directions are added only if the four-direction test looks too abrupt during diagonal movement or dodge.
 - Weapons rotate independently and therefore do not require the body to face the aiming direction.
@@ -119,6 +119,8 @@ The first Marine values are provisional:
 
 These values exist to test the data path and animation timing. Playtesting owns final balance.
 
+The prototype also uses a universal 0.75-second post-move recovery. It is displayed through a readiness bar but does not belong to the hero's three secondary stats.
+
 The helmet overlay must include matching dodge frames. Weapons may briefly tighten toward the body, trail behind, or hide during the most compressed roll frames, but must return to their anchors predictably.
 
 ## Provisional animation economy
@@ -167,9 +169,11 @@ Provisional filename pattern:
 
 Sprite sheets may replace individual files after the prototype proves the required frames.
 
+The first production-test sheets use a four-column by three-row grid with 96 × 96 logical cells. Body and headgear layers must use identical canvas dimensions, cell order, pivots, and frame indices so equipment can toggle without moving or replacing the body.
+
 ## Approval still required
 
-- Exact logical canvas and sprite cell dimensions
+- Whether the tested 96 × 96 logical cell remains final after gameplay-scale review
 - Four-direction versus eight-direction final decision
 - Final shared palette
 - Helmet anchor behaviour during the Marine roll
