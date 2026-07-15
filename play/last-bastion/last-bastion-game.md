@@ -172,6 +172,18 @@ The prototype uses one movement animation. A separate sprint animation is added 
 
 Dodge always has its own animation. All heroes use the same input and shared action contract, while their presentation may differ: a Marine roll, Medic slide, Scout dash, or heavy shoulder rush. A data-driven dodge profile may later vary travel, cooldown, protected frames, or charges without changing the input system.
 
+### Evasive-move secondary stats
+
+Every hero has one evasive move and three base secondary stats:
+
+- Duration in seconds
+- Distance in metres
+- Invulnerability duration in seconds
+
+The presentation may be a sprint, dodge, roll, slide, dash, or rush, but gameplay always consumes the same three core values. Items, perks, relics, mutations, curses, and hero traits may modify them later.
+
+Invulnerability duration must be zero or greater and may not exceed the total move duration. Metres are engine-independent design units converted through a shared pixels-per-metre constant.
+
 Initial upgrade families may include:
 
 - Piercing rounds

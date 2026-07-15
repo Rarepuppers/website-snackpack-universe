@@ -22,7 +22,7 @@ An item is not completed merely because code or an asset exists. It must meet it
 
 **Milestone status:** In progress
 
-**Current objective:** record the approved Marine direction in Art Bible version 1, design the modular equipment renderer, then build a placeholder combat prototype that proves movement, aiming, shooting, dodging, enemy pressure, XP collection, and transformative upgrades.
+**Current objective:** finish the technical visual smoke test, add Service Rifle firing, then introduce Scuttlers as the first combat target.
 
 ## Completed
 
@@ -62,6 +62,27 @@ An item is not completed merely because code or an asset exists. It must meet it
 - Added Tier I–III Neutral and Marine weapon lists plus future Medic and Unique seeds.
 - Selected three weapon concepts for the first visual review.
 
+### Weapon art-direction samples
+
+**Status:** Completed — 15 July 2026
+
+- Approved the Neutral Tier I Bastion Service Rifle.
+- Approved the Marine-specific Tier II Bulwark Rotary Cannon.
+- Approved the Unique Event Horizon gravitic weapon.
+- Preserved all three concepts under `art/concepts/weapons/`.
+
+### Input-intent and evasive-move foundation
+
+**Status:** Completed — 15 July 2026
+
+- Defined device-independent movement, aim, fire, evasive move, interact, ultimate, and pause intentions.
+- Implemented the keyboard and mouse adapter without leaking physical key checks into hero logic.
+- Added a pure shared hero state machine and motion controller that synthetic intents can drive in tests.
+- Added Marine duration, distance, and invulnerability secondary stats through `EvasiveMoveProfile`.
+- Added additive and multiplicative stat resolution for future item, perk, and relic modifiers.
+- Added validation preventing negative values or invulnerability longer than the complete evasive move.
+- Verified four evasive-state/stat tests plus two synthetic-intent controller tests.
+
 ### Marine art-direction checkpoint
 
 **Status:** Completed — 15 July 2026
@@ -72,6 +93,19 @@ An item is not completed merely because code or an asset exists. It must meet it
 - Established the concept as an art-direction anchor rather than a production sprite sheet.
 
 ## In progress
+
+### Technical scaffold
+
+**Status:** In progress — build and HTTP smoke verified; visual browser smoke pending
+
+- Created an isolated Phaser 4.1, TypeScript, Vite, and Vitest project under `dev/`.
+- Added development, typecheck, test, build, smoke, and combined verify commands.
+- Configured production output for the exact `/play/last-bastion/` GitHub Pages route without deleting design documents or concept art.
+- Built the tracked `index.html` and hashed `game-assets/` output.
+- Verified the route, game root, and compiled JavaScript asset return HTTP 200.
+- The in-app browser runtime could not initialise in the current environment, so visual canvas execution remains to be checked manually or in a later browser session.
+
+Acceptance criterion remaining: visually load the canvas and confirm there are no runtime console errors.
 
 ### Art bible version 1
 
@@ -100,6 +134,8 @@ Acceptance criterion: a second artist or generation session can create a compati
 - Treat twelve weapons as supported capacity; prove one weapon first and two to four weapons next.
 - Define readable layout expansion, depth sorting, recoil, and targeting rules before enabling high weapon counts.
 - Keep the dodge action contract shared while allowing hero-specific roll, slide, or dash presentation.
+- Store evasive-move duration, distance, and invulnerability duration as hero secondary stats.
+- Permit future items, perks, relics, and other systems to modify resolved values without mutating hero base data.
 
 Review criteria:
 
@@ -109,55 +145,19 @@ Review criteria:
 - Adding a new weapon or helmet does not require redrawing every hero combination.
 - Supporting twelve weapons does not require twelve weapon slots to be enabled in the initial balance.
 
-### Weapon art-direction samples
+### Combat prototype: movement, aim, and Marine roll
 
-**Status:** In progress — awaiting creator review
+**Status:** In progress
 
-- Neutral Tier I: Bastion Service Rifle
-- Marine-specific Tier II: Bulwark Rotary Cannon
-- Unique: Event Horizon
+- Added responsive eight-direction placeholder movement.
+- Added mouse aim through the shared intent layer.
+- Added an independently rotating placeholder Service Rifle.
+- Added the Marine's provisional 0.55-second, 4-metre roll with 0.25 seconds of invulnerability.
+- Added arena boundaries and an on-screen state/stat readout.
 
-Acceptance criterion: all three weapons belong to the approved Last Bastion visual world, remain distinguishable at reduced size, and suggest their gameplay behaviour through silhouette and colour.
+Remaining before completion: visual runtime check, roll cooldown/readiness feedback, firing, damage feedback, defeat, restart, and pause behaviour.
 
 ## Pending
-
-### Technical scaffold
-
-**Status:** Pending
-
-- Create an isolated TypeScript/Vite/Phaser project inside the Last Bastion folder.
-- Confirm the current supported Phaser major version with a minimal rendering and input spike.
-- Add development, build, typecheck, and test commands.
-- Configure a relative production base path compatible with `/play/last-bastion/` on GitHub Pages.
-- Keep generated build output separate from source.
-- Add a minimal automated deployment path without changing the rest of the static website.
-
-Acceptance criterion: a placeholder player loads locally and from the intended nested static path with no console errors.
-
-### Input-intent layer
-
-**Status:** Pending
-
-- Define device-independent move, aim, fire, dodge, interact, ultimate, and pause intentions.
-- Implement keyboard and mouse adapters first.
-- Reserve clean adapters for gamepad and touch.
-- Prevent gameplay systems from reading physical keys or pointer buttons directly.
-
-Acceptance criterion: the player controller can be driven by a synthetic test input without a keyboard or mouse.
-
-### Combat prototype: movement and shooting
-
-**Status:** Pending
-
-- Responsive eight-direction movement.
-- Mouse aiming.
-- Assault-rifle firing cadence.
-- One visible assault-rifle sprite attached through the modular weapon renderer.
-- Projectile or hitscan decision based on feel and readability.
-- Arena boundaries and camera behaviour.
-- Damage, hit feedback, death, restart, and pause.
-
-Acceptance criterion: movement and firing remain responsive at the target enemy count and frame rate.
 
 ### Combat prototype: enemies and waves
 

@@ -107,7 +107,17 @@ All heroes use the same dodge input and shared action contract, but may use diff
 - Scout: fast dash or short displacement effect
 - Heavy heroes: braced shoulder rush
 
-A `DodgeProfile` should define duration, travel curve, protected frames, cooldown, charges, and recovery. Hero-specific profiles may add diversity, but every dodge must remain readable and fair.
+An `EvasiveMoveProfile` defines presentation, duration in seconds, distance in metres, invulnerability duration in seconds, travel curve, and future cooldown or charge rules. Hero-specific profiles may add diversity, but every evasive move must remain readable and fair.
+
+The first Marine values are provisional:
+
+| Secondary stat | Initial value |
+| --- | ---: |
+| Duration | 0.55 seconds |
+| Distance | 4 metres |
+| Invulnerability | 0.25 seconds |
+
+These values exist to test the data path and animation timing. Playtesting owns final balance.
 
 The helmet overlay must include matching dodge frames. Weapons may briefly tighten toward the body, trail behind, or hide during the most compressed roll frames, but must return to their anchors predictably.
 
@@ -165,4 +175,3 @@ Sprite sheets may replace individual files after the prototype proves the requir
 - Helmet anchor behaviour during the Marine roll
 - Weapon-ring radius at one, four, six, and twelve weapons
 - Whether dialogue portraits exist separately from the dynamic loadout preview
-

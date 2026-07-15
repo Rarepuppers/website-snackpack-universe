@@ -4,7 +4,7 @@
 
 **Version:** 0.1
 
-**Status:** Design draft; unbalanced
+**Status:** Design draft; weapon concepts approved; unbalanced
 
 This document lists early enemies and weapons without implying that all of them belong in the combat prototype. Gameplay data will eventually replace these tables as the implementation source of truth.
 
@@ -161,6 +161,8 @@ The first weapon art-direction review covers:
 
 These concepts test whether Neutral, hero-specific, and Unique weapons can look related while remaining immediately distinguishable.
 
+All three initial weapon concepts were approved on 15 July 2026 and are stored under `art/concepts/weapons/`.
+
 ## Balance still required
 
 - Starting and maximum weapon-slot counts
@@ -171,4 +173,3 @@ These concepts test whether Neutral, hero-specific, and Unique weapons can look 
 - How weapon tier affects reward availability
 - Audio and VFX budget at high weapon counts
 - Ring layout and visibility at six to twelve weapons
-
