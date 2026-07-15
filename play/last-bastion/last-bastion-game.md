@@ -1,1202 +1,390 @@
-\# Last Bastion
+# Last Bastion
 
+## Document purpose
 
+This is the durable game design document for Last Bastion. It describes the game we are trying to make, the decisions that are currently locked, and the boundaries between the prototype, vertical slice, web MVP, and future releases.
 
-\## Vision
+Implementation status belongs in `last-bastion-model.md`. Detailed content lists should eventually live in data files rather than being duplicated here.
 
+Current supporting documents:
 
+- `last-bastion-art-bible.md` — visual rules and animation architecture
+- `last-bastion-content.md` — draft enemy and weapon catalogue
 
-Build \*\*Last Bastion\*\*, a premium browser-based 2D sci-fi survival action RPG.
+## Vision
 
+Last Bastion is a colourful top-down science-fiction action roguelite about expeditions beyond humanity's final fortified settlements.
 
+The player chooses a soldier, enters a hostile arena, survives increasingly dangerous alien attacks, and creates a distinctive combat build from weapons and transformative upgrades. Between encounters, the player makes a small number of meaningful route and resource decisions.
 
-Humanity has been reduced to a handful of isolated fortresses known as the Last Bastions. Every expedition beyond the walls is a desperate fight for survival against endless alien swarms.
+The intended feeling is immediate, responsive, difficult but fair, and capable of producing a genuine "one more run" response.
 
+## Primary game identity
 
+Last Bastion is primarily a manual action shooter with survivor-like escalation and roguelite build choices.
 
-The player chooses a soldier, survives 20 increasingly difficult waves, upgrades their hero and equipment, recruits companions, strengthens the Bastion between missions, and ultimately attempts to save humanity.
+- Movement and aiming are active skills.
+- Positioning, dodging, target priority, and battlefield interactions matter.
+- Upgrades should alter behaviour, not merely increase numbers.
+- Optional auto-aim and auto-fire may be offered for accessibility and touch devices, but desktop combat is designed around manual aiming.
+- The branching campaign supports the combat loop; it must not overwhelm or repeatedly interrupt it.
 
+Base management, extensive inventory management, companions, mutations, curses, and a large campaign are future expansion systems, not prerequisites for proving the game.
 
+## Design pillars
 
-The game should feel satisfying, highly replayable, polished, and suitable for commercial release.
+### Responsive combat
 
+Movement, aiming, firing, impacts, dodging, and damage feedback must feel immediate. Graphical effects must never make controls unclear or reduce responsiveness.
 
+### Transformative builds
 
-\---
+Level-up choices should create recognisably different builds. Interesting examples include ricochets, piercing rounds, chain lightning, orbiting drones, explosive impacts, and a dodge that leaves a damaging decoy.
 
+Small numerical increases may support these mechanics but should rarely be the headline reward.
 
+### The battlefield fights back
 
-\# Core Gameplay Loop
+Each polished arena should contain at least one readable interactive element. Power switches, defensive turrets, electrical fences, destructible biomass, shrines, traps, and timed objectives can turn movement into tactical decision-making.
 
+This is the intended signature feature that differentiates Last Bastion from a generic arena-survival game.
 
+### Fair escalation
 
-Every run consists of:
+Difficulty should rise through understandable enemy combinations, encounter budgets, arena pressure, and boss mechanics. The game should not secretly punish strong performance or rescue weak performance so aggressively that builds become impossible to evaluate.
 
+### Readable spectacle
 
+Large enemy groups and powerful effects should look exciting while preserving silhouettes, hazards, projectiles, pickups, and safe routes.
 
-1\. Choose a hero.
+## Core loop
 
-2\. Choose starting equipment.
+The long-term run structure is:
 
-3\. Choose starting perk.
+1. Choose a hero and starting loadout.
+2. Enter an encounter.
+3. Fight, collect XP, and choose upgrades.
+4. Collect a clearly useful reward.
+5. Choose the next route node.
+6. Repeat through escalating encounters.
+7. Defeat the final boss or fall during the expedition.
+8. Review the run and apply meaningful persistent unlocks.
 
-4\. Survive a 60-second wave.
+The prototype and vertical slice intentionally implement only parts of this loop.
 
-5\. Collect XP, gold, relics and loot.
+## Combat rules
 
-6\. Level up.
+### Desktop controls
 
-7\. Choose upgrades.
+- WASD or arrow keys: move
+- Mouse: aim
+- Left mouse button: fire
+- Space: dodge
+- R: ultimate ability, once ultimates are implemented
+- Escape: pause
 
-8\. Travel to the next encounter using a branching campaign map.
+Gamepad support is required for the vertical slice. Default bindings should follow common twin-stick conventions.
 
-9\. Repeat for up to 20 waves.
+### Touch controls
 
-10\. Defeat the final boss and defend the Last Bastion.
+Touch is not required for the combat prototype, but the input architecture must support it without changing combat logic.
 
+The anticipated mobile layout is:
 
+- Left virtual stick: move
+- Right virtual stick: aim and fire, or optional auto-aim/auto-fire
+- Large dodge button
+- Large ultimate button
 
-Every run should be different.
+Six mobile quick slots are not part of the current plan. Phone controls must remain legible and comfortable.
 
+### Input architecture
 
+Keyboard, mouse, gamepad, and touch adapters should produce a shared player-intent model:
 
-\---
+```text
+move direction
+aim direction
+fire pressed/held
+dodge pressed
+ultimate pressed
+interact pressed
+pause pressed
+```
 
+Gameplay systems consume these intentions and must not directly depend on a particular physical input device.
 
+## Heroes
 
-\# Design Goals
+### Marine
 
+The Marine is the first playable hero and the baseline used to tune the game.
 
+- Role: durable all-round ranged fighter
+- Starting weapon: assault rifle
+- Passive: deferred until the base weapon and damage model are proven
+- Ultimate: deferred until the base combat loop is proven
+- Visual identity: compact, readable sci-fi armour; practical rather than superheroic; strong silhouette at gameplay scale
 
-Gameplay should emphasize:
+The Marine and future heroes use modular visual equipment. The base body and armour animation remains stable while equipped headgear and weapons are separate visual layers driven by the same equipment data used by gameplay.
 
+The approved Marine art-direction concept is the visual anchor for the initial art bible.
 
+### Medic
 
-\- constant movement
+The Medic is the second planned hero for the web MVP. The Medic must produce a meaningfully different play style rather than simply having more healing.
 
-\- satisfying combat
+Additional heroes are future content: Assault, Tactician, Scout, and Sniper.
 
-\- overwhelming alien swarms
+## Weapons and upgrades
 
-\- meaningful progression
+The combat prototype starts with one assault rifle. The vertical slice expands to several simultaneous weapons only after shooting and enemy reactions feel good.
 
-\- difficult decisions
+### Visible weapon ring
 
-\- build diversity
+Equipped weapons appear as separate sprites arranged around the character, inspired by the immediate loadout readability of games such as Brotato. The character may support zero to twelve equipped weapons without requiring twelve hand-drawn variants of every hero animation.
 
-\- replayability
+- The hero body and weapon sprites animate independently.
+- Each weapon occupies a calculated anchor around the character.
+- Weapon position, rotation, recoil, firing effect, and depth sorting are controlled at runtime.
+- The layout expands or staggers its radius as the weapon count grows so weapons do not completely overlap.
+- Every equipped weapon should be visible during ordinary play unless temporary effects make that impossible.
+- The equipment data is the single source of truth for gameplay, the in-game ring, and the loadout preview.
+- Supporting twelve weapons is an architectural capacity, not a promise that twelve is the best balance target.
 
+The combat prototype proves one manual weapon. The next implementation step tests two to four simultaneous weapons. Counts above six require explicit readability, targeting, audio, VFX, and performance validation before becoming normal gameplay.
 
+Individual weapons may use different behaviours while sharing the visible ring. Examples include cursor-aimed weapons, automatic target-seeking weapons, orbiting contact weapons, and cooldown-driven support devices. The firing rules must remain understandable; adding more visible guns must not turn player choices into unreadable noise.
 
-The player should constantly become stronger while enemies become more dangerous.
+### Modular equipment appearance
 
+The equipped helmet or hat is a swappable overlay in the in-game sprite and character preview. Every supported head item therefore needs compatible directional views and animation alignment points.
 
+The loadout portrait should be a dynamic preview rendered from the same base body, headgear, and weapon sprites used in gameplay. This allows the preview to reflect zero to twelve weapons without painting a unique portrait for every combination. A separate illustrated dialogue portrait may show the equipped helmet and primary weapon only if one is added later.
 
-\---
+Boots may exist as an equipment or stat category later, but they do not change the character's appearance. Keeping footwear baked into the base body avoids another low-value overlay across every direction and animation frame.
 
+### Hero movement and dodge animation
 
+Each hero needs separate body artwork for idle, movement, dodge, hit, and defeat because hero proportions and silhouettes differ. The implementation should reuse animation state names, timing conventions, attachment-point formats, and dodge logic across heroes rather than attempting to reuse one character's pixels.
 
-\# Heroes
+The prototype uses one movement animation. A separate sprint animation is added only if sprint becomes a mechanically distinct state.
 
+Dodge always has its own animation. All heroes use the same input and shared action contract, while their presentation may differ: a Marine roll, Medic slide, Scout dash, or heavy shoulder rush. A data-driven dodge profile may later vary travel, cooldown, protected frames, or charges without changing the input system.
 
+Initial upgrade families may include:
 
-Launch with six heroes.
+- Piercing rounds
+- Ricochet rounds
+- Explosive impact
+- Chain lightning
+- Faster firing with an accuracy or heat trade-off
+- Dodge decoy or damaging dodge trail
 
+Weapon-slot counts, quick-slot inventories, consumables, and rarity tiers are deferred until the game has enough content to justify them.
 
+The web MVP may introduce Common, Uncommon, and Rare rewards, but rarity must communicate a real difference in behaviour or value.
 
-\- Marine
+## Enemies
 
-\- Medic
+### Prototype
 
-\- Assault
+- Swarmer: closes distance directly and teaches movement
+- Spitter: maintains range and creates dodgeable projectiles
 
-\- Tactician
+### Vertical slice
 
-\- Scout
+- One additional pressure enemy
+- One elite or mini-boss with clearly telegraphed attacks
 
-\- Sniper
+### Web MVP
 
+- Three or four complementary standard archetypes
+- Elite variants
+- One final boss
 
+Flying, shielding, exploding, psychic, summoning, and giant tank enemies remain future content.
 
-Each hero should have:
+## Encounter direction
 
+Encounters should use seeded threat budgets and explicit fairness rules rather than opaque real-time difficulty adjustment.
 
+An encounter definition may control:
 
-\- unique passive ability
+- Enemy types and quantities
+- Spawn cadence and valid spawn regions
+- Maximum simultaneous pressure
+- Elite timing
+- Interactive battlefield elements
+- Reward budget
 
-\- unique ultimate
+Seeds should make bugs and balance problems reproducible. Later director systems may vary encounters within authored constraints.
 
-\- unique starting equipment
+## Battlefield interactions
 
-\- unique perk pool
+The combat prototype may use an empty arena. The vertical slice must test one signature interaction, such as:
 
-\- different stat growth
+- A power switch that activates an electrical fence
+- A defensive turret with limited charge
+- Destructible alien biomass that spawns enemies until destroyed
+- An explosive environmental object that can damage either side
 
-\- three flavour quotes selected randomly each run
+Future interactions may include shrines, doors, consoles, supply crates, medical stations, survivor cages, teleporters, hazards, destructible cover, and timed objectives.
 
+Status combinations such as Wet plus Lightning are promising future systems, but they should be added only after the core interaction is readable and fun.
 
+## Progression
 
-Example base stats:
+### During a run
 
+Enemies provide XP. Level-ups pause or safely slow combat and present a small number of meaningful choices. Upgrade presentation must explain the behavioural change clearly.
 
+### Between runs
 
-Strength
+Persistent currency and relics are deferred until there is something meaningful to spend or unlock. The web MVP must not award purposeless meta-currency.
 
-Agility
+Future persistent progression may unlock heroes, starting weapons, upgrade families, and new encounter possibilities without making early runs permanently trivial.
 
-Intelligence
+## Saving
 
-Luck
+The prototype does not require saving.
 
+The vertical slice should save settings and basic progress locally. The web MVP should autosave between encounters and version its save schema so future migrations are possible.
 
+Browser storage can be cleared, so the web build must not imply that local saves are equivalent to permanent cloud saves.
 
-Health
+## Art direction
 
-Stamina
+The target is modern, colourful pixel art with premium lighting and effects.
 
-Energy
+Art must prioritise:
 
+- Readable silhouettes at actual gameplay scale
+- A consistent top-down or high three-quarter camera angle
+- A limited, documented palette
+- Consistent sprite dimensions and lighting direction
+- Distinct player, enemy, hazard, projectile, and pickup colour families
+- Crisp pixel treatment without inconsistent faux-pixel detail
+- Effects that communicate timing and damage without hiding gameplay
 
+The first Marine concept was approved as the initial art-direction anchor. The art pipeline test consists of one Marine base-body sprite set, one aligned helmet overlay, visible weapon sprites and anchors, one alien, one terrain set, one HUD panel, and core combat effects.
 
-Critical Chance
+Modular character art must define shared attachment points for the head and weapon ring. Base-body animations must not move these anchors unpredictably. Equipment previews must be assembled from production sprite layers rather than generated as unique images for every possible loadout.
 
-Critical Damage
+## Audio direction
 
-Evasion
+Early development may use placeholders. The vertical slice needs representative rifle fire, impacts, alien hits/deaths, dodge feedback, level-up feedback, UI sounds, and one music loop.
 
-Movement Speed
+Audio should reinforce timing and impact rather than merely add noise.
 
+## Scope gates
 
+### Gate 1: Combat prototype
 
-\---
+Target run length: approximately 5 to 10 minutes.
 
+Included:
 
+- Marine
+- Assault rifle
+- Swarmer and spitter
+- Movement, aiming, firing, damage, death, and dodge
+- Three short waves
+- XP collection and level-ups
+- Approximately six transformative upgrade choices
+- Placeholder shapes or temporary sprites and audio
 
-\# Controls
+Excluded:
 
+- Campaign map
+- Inventory and equipment screens
+- Rarity and loot systems
+- Shops and relics
+- Persistent progression and saving
+- Finished artwork
+- Boss
 
+Exit criterion: multiple testers understand the controls quickly and voluntarily replay the build.
 
-WASD or Arrow Keys
+### Gate 2: Vertical slice
 
+Target run length: approximately 10 to 15 minutes.
 
+Included:
 
-Mouse Aim
+- Five waves
+- Marine with a defined passive and ultimate
+- Three weapons
+- Three standard enemy types
+- One elite or mini-boss
+- Approximately twelve meaningful upgrades
+- One shop or rest decision
+- One signature battlefield interaction
+- Representative final-quality art, UI, audio, and VFX
+- Gamepad support
+- Local settings and progress save
 
+Exit criterion: the build communicates Last Bastion's identity, runs reliably, and receives strong replay feedback from external testers.
 
+### Gate 3: Web MVP
 
-Left Click
+Included:
 
-Attack
+- Marine and Medic
+- Ten waves
+- Three or four standard enemy archetypes plus elites
+- One final boss
+- A small branching route with Combat, Elite, Shop, Rest, and Boss nodes
+- Useful relics and persistent unlocks
+- Main menu, character select, gameplay HUD, pause, route, shop/rest, victory, and defeat screens
+- Autosave between encounters
+- Keyboard/mouse and gamepad support
+- A complete, coherent art and audio pass
 
+Exit criterion: the complete web loop produces a reliable "one more run" response and provides enough real player evidence to consider a commercial edition.
 
+## Future roadmap
 
-Space
+Possible post-MVP systems include additional heroes and biomes, environmental status combinations, companions, mutations, curses, active items, extensive relics, base management, more route nodes, statistics, achievements, leaderboards, and additional bosses.
 
-Roll / Dodge
+These are backlog items, not promises. They enter production only when the preceding scope gate succeeds.
 
+## Platform strategy
 
+### Web first
 
-R
+The first release target is the SnackPack Universe website. The game should be a self-contained TypeScript project compiled to static files for GitHub Pages.
 
-Ultimate Ability
+### Steam after validation
 
+A successful web game can be packaged as a desktop application without immediately rewriting it in another engine. A Steam edition would require excellent gamepad support, offline behaviour, reliable saves, display and audio settings, accessibility options, and substantially polished content.
 
+A Godot rewrite is considered only when a proven requirement justifies it, such as performance, native tooling, console targets, or maintainability at a larger content scale.
 
-1-6
+### Android after touch validation
 
-Quick Slot Items
+Android is technically viable through a native web container, but only after dedicated touch controls, lifecycle handling, phone/tablet layouts, and mid-range-device performance are proven. A desktop web build placed unchanged in a mobile wrapper is not an acceptable release.
 
+## Technical principles
 
+- Use TypeScript with a current supported Phaser release and Vite.
+- Verify the current Phaser version and required plugin compatibility when scaffolding; do not permanently lock this document to an obsolete major version.
+- Keep hero, weapon, enemy, upgrade, encounter, and reward definitions data-driven with stable IDs.
+- Separate portable rules and calculations from Phaser scene and rendering code where practical.
+- Use a versioned save schema.
+- Make encounter randomness seedable for testing.
+- Pool high-volume objects such as projectiles, pickups, and enemies when profiling shows it is needed.
+- Measure performance on representative low- and mid-range hardware.
+- Prioritise playability, then performance, polish, content, and only then additional systems.
 
-ESC
+## Success criteria
 
-Pause
+Last Bastion succeeds when it is:
 
-
-
-\---
-
-
-
-\# Equipment
-
-
-
-Weapon slots
-
-
-
-\- 3 Light
-
-\- 2 Medium
-
-\- 1 Heavy
-
-
-
-Quick Slots
-
-
-
-\- 6 consumable slots
-
-
-
-Equipment rarity
-
-
-
-Common
-
-
-
-Uncommon
-
-
-
-Rare
-
-
-
-Epic
-
-
-
-Legendary
-
-
-
-Mythic
-
-
-
-Unique
-
-
-
-Unique items may only be owned once.
-
-
-
-\---
-
-
-
-\# Character Progression
-
-
-
-Every level grants:
-
-
-
-\- stat increases
-
-\- one upgrade choice
-
-
-
-Upgrade choices should feel exciting rather than generic.
-
-
-
-Examples
-
-
-
-\+ explosive bullets
-
-
-
-\+ orbital drone
-
-
-
-\+ chain lightning rounds
-
-
-
-\+ bouncing bullets
-
-
-
-\+ plasma explosions
-
-
-
-\+ poison rounds
-
-
-
-\+ auto turret
-
-
-
-\+ shoulder missile launcher
-
-
-
-\+ teleport dodge
-
-
-
-\+ attack speed
-
-
-
-\+ summon attack drone
-
-
-
-Avoid boring upgrades like simply "+5 damage" unless combined with interesting mechanics.
-
-
-
-\---
-
-
-
-\# Progression Systems
-
-
-
-Implement:
-
-
-
-\- Level system
-
-\- Perk system
-
-\- Mutation system
-
-\- Curse / Taint system
-
-\- Companion system
-
-\- Weapon upgrades
-
-\- Relics
-
-\- Passive items
-
-\- Active items
-
-
-
-Every system should include both positive and negative trade-offs where appropriate.
-
-
-
-\---
-
-
-
-\# World
-
-
-
-Camera
-
-
-
-Compact top-down.
-
-
-
-Maps
-
-
-
-Initially open arenas.
-
-
-
-Later maps include:
-
-
-
-\- rocks
-
-\- walls
-
-\- bunkers
-
-\- barricades
-
-\- rivers
-
-\- lava
-
-\- traps
-
-\- laser fences
-
-\- minefields
-
-
-
-Some arenas shrink.
-
-
-
-Some expand.
-
-
-
-Some contain objectives.
-
-
-
-\---
-
-
-
-\# Enemies
-
-
-
-Create many enemy archetypes.
-
-
-
-Examples
-
-
-
-\- melee swarmers
-
-\- ranged spitters
-
-\- flying aliens
-
-\- shield units
-
-\- exploding enemies
-
-\- psychic enemies
-
-\- summoners
-
-\- giant tanks
-
-\- bosses
-
-
-
-Enemies should have varied movement, attacks and behaviours.
-
-
-
-\---
-
-
-
-\# Campaign
-
-
-
-Between waves present a branching campaign map.
-
-
-
-Possible nodes
-
-
-
-Combat
-
-
-
-Elite Combat
-
-
-
-Boss
-
-
-
-Shop
-
-
-
-Treasure
-
-
-
-Event
-
-
-
-Survivor Rescue
-
-
-
-Rest
-
-
-
-Upgrade Bunker
-
-
-
-Mystery
-
-
-
-Relic
-
-
-
-Merchant
-
-
-
-This system should resemble a branching campaign rather than a linear sequence.
-
-
-
-\---
-
-
-
-\# Base Management
-
-
-
-Between missions the player may upgrade:
-
-
-
-\- walls
-
-\- bunker
-
-\- command centre
-
-\- laboratory
-
-\- armoury
-
-\- workshop
-
-\- companion quarters
-
-
-
-These upgrades affect future runs.
-
-
-
-\---
-
-
-
-\# UI
-
-
-
-Include:
-
-
-
-Main Menu
-
-
-
-Character Select
-
-
-
-Loadout Screen
-
-
-
-Campaign Map
-
-
-
-Gameplay HUD
-
-
-
-Inventory
-
-
-
-Character Sheet
-
-
-
-Weapon Screen
-
-
-
-Pause Menu
-
-
-
-Victory Screen
-
-
-
-Defeat Screen
-
-
-
-Statistics Screen
-
-
-
-Use a polished modern pixel-art presentation with satisfying animations and feedback.
-
-
-
-\---
-
-
-
-\# Art Direction
-
-
-
-Generate original artwork using image generation.
-
-
-
-Style
-
-
-
-\- colourful pixel art
-
-\- modern lighting
-
-\- premium indie quality
-
-\- readable silhouettes
-
-\- satisfying VFX
-
-\- detailed UI
-
-
-
-Generate:
-
-
-
-heroes
-
-
-
-aliens
-
-
-
-weapons
-
-
-
-companions
-
-
-
-tilesets
-
-
-
-icons
-
-
-
-particles
-
-
-
-UI
-
-
-
-backgrounds
-
-
-
-bosses
-
-
-
-\---
-
-
-
-\# Audio
-
-
-
-Generate placeholders for:
-
-
-
-music
-
-
-
-ambient sounds
-
-
-
-weapon sounds
-
-
-
-explosions
-
-
-
-UI sounds
-
-
-
-enemy sounds
-
-
-
-voice effects
-
-
-
-\---
-
-
-
-\# Statistics
-
-
-
-Track:
-
-
-
-highest wave
-
-
-
-total XP
-
-
-
-kills
-
-
-
-headshots
-
-
-
-gold
-
-
-
-relics
-
-
-
-damage dealt
-
-
-
-damage taken
-
-
-
-weapons collected
-
-
-
-companions rescued
-
-
-
-time survived
-
-
-
-\---
-
-
-
-\# Leaderboards
-
-
-
-Not required for MVP.
-
-
-
-Add to backlog.
-
-
-
-When implemented:
-
-
-
-\- highest wave
-
-\- total XP
-
-\- kills
-
-\- gold
-
-\- relics
-
-
-
-\---
-
-
-
-\# Saving
-
-
-
-Runs should autosave.
-
-
-
-Meta progression should persist.
-
-
-
-Player settings should persist.
-
-
-
-\---
-
-
-
-\# Deployment
-
-
-
-The project lives in a public GitHub repository.
-
-
-
-The game is deployed automatically through GitHub Pages to a custom domain.
-
-
-
-Do not depend on proprietary hosting solutions.
-
-
-
-Use web-compatible technologies.
-
-
-
-\---
-
-
-
-\# Development Strategy
-
-
-
-Always prioritize:
-
-
-
-1\. Playability
-
-2\. Performance
-
-3\. Polish
-
-4\. Content
-
-5\. Additional systems
-
-
-
-Never sacrifice responsiveness for graphical effects.
-
-
-
-When requirements conflict, choose the solution that produces the most fun, polished, replayable experience.
-
-
-
-Continue improving the game autonomously until it is commercially polished and ready for release.
-
-
-
-\# Success Criteria
-
-
-
-The finished game should feel like:
-
-
-
-\- "one more run"
-
-\- immediately understandable
-
-\- difficult but fair
-
-\- highly replayable
-
-\- visually polished
-
-\- satisfying to level up
-
-\- satisfying to defeat large enemy swarms
-
-\- capable of supporting hundreds of future weapons, perks, heroes and enemies without major refactoring
-
-
-
-Whenever uncertain, choose the design that increases replayability, build variety, player satisfaction and long-term extensibility.
-
-
-
-
-
-
-
-\####
-
-
-
-Option 1: free Web game first, these are all optional, if you have a better plan do that instead
-
-example https://www.snackpackuniverse.com/play/last-bastion
-
-
-
-HTML5
-
-TypeScript
-
-Phaser 3
-
-GitHub
-
-GitHub Pages
-
-Custom domain
-
-
-
-option 2: future end goal (very far off, just letting you know) If this proves to be a success, In the future is it possible to port to godot, re-create and create assets and release on steam?
-
-
-
-\---
-
-
-
-\# MVP Scope
-
-
-
-The full vision above is the north star. The MVP is the smallest version of it that is fun, complete, and shippable. Everything not listed below is deferred to Phase 2/3.
-
-
-
-\## MVP Heroes
-
-
-
-\- Marine
-
-\- Medic
-
-
-
-Fully realized: unique passive, unique ultimate, unique starting equipment, unique perk pool, three flavour quotes.
-
-
-
-\*\*Phase 2:\*\* Assault, Tactician, Scout, Sniper.
-
-
-
-\## MVP Content
-
-
-
-\- 1 biome (open arena, no environmental hazards yet)
-
-\- 10 waves (not 20)
-
-\- 1 boss
-
-
-
-\*\*Phase 2:\*\* additional biomes, hazards (rivers, lava, minefields, laser fences, shrinking/expanding arenas), waves 11-20, additional bosses.
-
-
-
-\## MVP Progression Systems
-
-
-
-\- Level system
-
-\- Perk system
-
-\- Relics
-
-
-
-\*\*Phase 2:\*\* Mutation system, Curse / Taint system, Companion system, Weapon upgrades, Passive items, Active items.
-
-
-
-\## MVP Equipment
-
-
-
-\- Rarity: Common, Uncommon, Rare
-
-\- Weapon slots: 3 Light, 2 Medium, 1 Heavy (unchanged)
-
-\- Quick slots: 6 (unchanged)
-
-
-
-\*\*Phase 2:\*\* Epic, Legendary, Mythic, Unique rarities.
-
-
-
-\## MVP Campaign Map
-
-
-
-Node types:
-
-
-
-\- Combat
-
-\- Elite Combat
-
-\- Boss
-
-\- Shop
-
-\- Rest
-
-
-
-\*\*Phase 2:\*\* Treasure, Event, Survivor Rescue, Upgrade Bunker, Mystery, Relic, Merchant.
-
-
-
-\## MVP Base Management
-
-
-
-Cut entirely for MVP. Meta progression persists (gold/relics carry between runs) but base upgrade screens (walls, bunker, command centre, laboratory, armoury, workshop, companion quarters) are Phase 2.
-
-
-
-\## MVP UI
-
-
-
-\- Main Menu
-
-\- Character Select
-
-\- Loadout Screen
-
-\- Campaign Map
-
-\- Gameplay HUD
-
-\- Inventory
-
-\- Pause Menu
-
-\- Victory Screen
-
-\- Defeat Screen
-
-
-
-\*\*Phase 2:\*\* Character Sheet, Weapon Screen, Statistics Screen.
-
-
-
-\## MVP Enemies
-
-
-
-\- 3-4 melee/ranged swarmer archetypes
-
-\- 1 boss
-
-
-
-\*\*Phase 2:\*\* flying, shield, exploding, psychic, summoner, giant tank archetypes, additional bosses.
-
-
-
-\## MVP Art \& Audio
-
-
-
-\- Core art pipeline proven on 2 heroes, 1 enemy set, 1 tileset, core UI
-
-\- Placeholder audio for combat, UI, and one music track
-
-
-
-\*\*Phase 2:\*\* full hero/alien/companion/boss roster, additional tilesets, full music/ambient/voice pass.
-
-
-
-\## MVP Statistics
-
-
-
-\- highest wave
-
-\- kills
-
-\- gold
-
-\- time survived
-
-
-
-\*\*Phase 2:\*\* full stat tracking (XP, headshots, relics, damage dealt/taken, weapons collected, companions rescued).
-
-
-
-\## Explicitly Deferred (already noted, kept for completeness)
-
-
-
-\- Leaderboards — not required for MVP, backlog only.
-
-\- Godot / Steam port — future consideration only, not in scope for MVP or Phase 2/3.
-
-
-
-\## Definition of Done for MVP
-
-
-
-The MVP is complete when a player can: pick 1 of 2 heroes, choose starting equipment/perk, survive 10 waves across a branching map with 5 node types, level up with meaningful perk choices, collect Common-Rare loot and relics, defeat 1 boss, and see a Victory/Defeat screen — with autosave and persistent meta-currency. If that loop feels like "one more run," MVP is done and Phase 2 begins.
-
-
-
-\---
-
+- Immediately understandable
+- Responsive and satisfying
+- Difficult but fair
+- Distinctive because the battlefield participates in combat
+- Highly replayable through genuinely different builds
+- Readable during large encounters
+- Structured so new content can be added without rewriting core systems
