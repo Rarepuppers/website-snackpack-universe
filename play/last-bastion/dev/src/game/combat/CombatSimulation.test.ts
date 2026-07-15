@@ -199,6 +199,73 @@ describe("CombatSimulation", () => {
     expect(snapshot.eliteRewards.length > 0 || snapshot.pendingUpgradeChoices.length > 0).toBe(true);
   });
 
+  it("cycles the Siege Crusher through telegraphed mini-boss attacks", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      scenario: "siege-crusher",
+      seed: 9,
+    });
+    const observed = new Set<string>();
+    for (let frame = 0; frame < 150; frame += 1) {
+      const boss = simulation.step(intent(), 0.05).enemies
+        .find((enemy) => enemy.miniBossKind === "siege-crusher");
+      if (boss?.siegeCrusherPhase) observed.add(boss.siegeCrusherPhase);
+    }
+    expect(observed).toContain("charge-windup");
+    expect(observed).toContain("charge");
+    expect(observed).toContain("recovery");
+  });
+
+  it("damages and then destroys cover struck by Crusher charges", () => {
+    const arena: ArenaDefinition = {
+      id: "crusher-test",
+      widthMetres: 30,
+      heightMetres: 16.875,
+      tileSizeMetres: 1,
+      obstacles: [{ id: "charge-cover", kind: "barricade", x: 11, y: 7.5, width: 1, height: 2 }],
+    };
+    const simulation = new CombatSimulation({ autoStartWaves: false, arena });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnMiniBoss("siege-crusher", { x: 7, y: player.y });
+    let observedDamage = false;
+    let observedDestruction = false;
+    for (let frame = 0; frame < 240; frame += 1) {
+      const snapshot = simulation.step(intent(), 0.05);
+      observedDamage ||= snapshot.events.some((event) => event.type === "obstacle-damaged");
+      observedDestruction ||= snapshot.events.some((event) => event.type === "obstacle-destroyed");
+      if (observedDestruction) {
+        expect(snapshot.destroyedObstacleIds).toContain("charge-cover");
+        break;
+      }
+    }
+    expect(observedDamage).toBe(true);
+    expect(observedDestruction).toBe(true);
+  });
+
+  it("guarantees an arsenal cache when the Siege Crusher is defeated", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, startingWeaponCount: 12 });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnMiniBoss("siege-crusher", { x: player.x + 5, y: player.y });
+    let observedDrop = false;
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 240 && !observedDrop; frame += 1) {
+      const boss = snapshot.enemies.find((enemy) => enemy.miniBossKind === "siege-crusher");
+      const dx = (boss?.position.x ?? player.x + 1) - snapshot.playerPosition.x;
+      const dy = (boss?.position.y ?? player.y) - snapshot.playerPosition.y;
+      const magnitude = Math.hypot(dx, dy) || 1;
+      snapshot = simulation.step(intent({
+        aim: { x: dx / magnitude, y: dy / magnitude },
+        fireHeld: true,
+        move: { x: -dx / magnitude, y: -dy / magnitude },
+        evasiveMovePressed: frame % 28 === 0,
+      }), 0.05);
+      observedDrop ||= snapshot.events.some((event) => event.type === "mini-boss-reward-dropped");
+    }
+    expect(observedDrop).toBe(true);
+    expect(snapshot.eliteRewards.some((reward) => reward.type === "mini-boss-arsenal-cache")
+      || snapshot.pendingUpgradeChoices.length > 0).toBe(true);
+  });
+
   it("prevents contact damage during the Marine's invulnerability window", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false });
     const player = simulation.snapshot().playerPosition;

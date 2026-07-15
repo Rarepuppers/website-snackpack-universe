@@ -96,6 +96,7 @@ function renderAuthoredObstacles(
     const width = obstacle.width * pixelsPerMetre;
     const height = obstacle.height * pixelsPerMetre;
     const view = scene.add.sprite(x, y, "arena-obstacle-v1", OBSTACLE_FRAMES[obstacle.kind])
+      .setName(`arena-obstacle:${obstacle.id}`)
       .setDisplaySize(width, height)
       .setDepth(worldDepth(obstacle.y + obstacle.height));
     if (debugCollision) {
@@ -134,6 +135,7 @@ function renderPlaceholderArena(
     const width = obstacle.width * pixelsPerMetre;
     const height = obstacle.height * pixelsPerMetre;
     scene.add.rectangle(x, y, width, height, colors.body)
+      .setName(`arena-obstacle:${obstacle.id}`)
       .setStrokeStyle(debugCollision ? 3 : 2, debugCollision ? 0xff3d55 : colors.edge)
       .setDepth(worldDepth(obstacle.y + obstacle.height));
   }

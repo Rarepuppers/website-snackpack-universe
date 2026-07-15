@@ -38,7 +38,14 @@ try {
     'arena-obstacle-atlas-v1-96.png',
     'combat-effect-atlas-v1-64.png',
     'pickup-atlas-v1-64.png',
-    'hud-panel-atlas-v1-256x128.png'
+    'hud-panel-atlas-v1-256x128.png',
+    'scattergun-gameplay-v1-64.png',
+    'arc-carbine-gameplay-v1-64.png',
+    'slime-spitter-spritesheet-v1-64.png',
+    'carapace-scuttler-spritesheet-v1-96.png',
+    'siege-crusher-spritesheet-v1-128.png',
+    'batch-b-effect-atlas-v1-64.png',
+    'siege-crusher-portrait-v1-128.png'
   )
 
   foreach ($artAssetName in $requiredArtAssets) {
@@ -54,9 +61,11 @@ try {
     '/play/last-bastion/?art=placeholder',
     '/play/last-bastion/?mode=gallery',
     '/play/last-bastion/?mode=gallery&batch=a',
+    '/play/last-bastion/?mode=gallery&batch=b',
     '/play/last-bastion/?loadout=vertical',
     '/play/last-bastion/?scenario=slime-spitter&loadout=vertical',
     '/play/last-bastion/?scenario=carapace-elite&loadout=vertical',
+    '/play/last-bastion/?scenario=siege-crusher&loadout=vertical',
     '/play/last-bastion/?stress=4',
     '/play/last-bastion/?stress=12'
   )

@@ -10,6 +10,13 @@ import arenaObstacleSheetUrl from "../../../../art/production-tests/batch-a/aren
 import combatEffectSheetUrl from "../../../../art/production-tests/batch-a/combat-effect-atlas-v1-64.png";
 import pickupSheetUrl from "../../../../art/production-tests/batch-a/pickup-atlas-v1-64.png";
 import hudPanelSheetUrl from "../../../../art/production-tests/batch-a/hud-panel-atlas-v1-256x128.png";
+import scattergunUrl from "../../../../art/production-tests/batch-b/scattergun-gameplay-v1-64.png";
+import arcCarbineUrl from "../../../../art/production-tests/batch-b/arc-carbine-gameplay-v1-64.png";
+import slimeSpitterSheetUrl from "../../../../art/production-tests/batch-b/slime-spitter-spritesheet-v1-64.png";
+import carapaceScuttlerSheetUrl from "../../../../art/production-tests/batch-b/carapace-scuttler-spritesheet-v1-96.png";
+import siegeCrusherSheetUrl from "../../../../art/production-tests/batch-b/siege-crusher-spritesheet-v1-128.png";
+import batchBEffectSheetUrl from "../../../../art/production-tests/batch-b/batch-b-effect-atlas-v1-64.png";
+import siegeCrusherPortraitUrl from "../../../../art/production-tests/batch-b/siege-crusher-portrait-v1-128.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -23,7 +30,14 @@ export type GameAssetId =
   | "arena-obstacle-v1"
   | "combat-effects-v1"
   | "pickups-v1"
-  | "hud-panels-v1";
+  | "hud-panels-v1"
+  | "scattergun-v1"
+  | "arc-carbine-v1"
+  | "slime-spitter-v1"
+  | "carapace-scuttler-v1"
+  | "siege-crusher-v1"
+  | "batch-b-effects-v1"
+  | "siege-crusher-portrait-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -59,6 +73,13 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("combat-effects-v1", combatEffectSheetUrl, 64, 64, 20, 0.5, 0.5),
   sheet("pickups-v1", pickupSheetUrl, 64, 64, 4, 0.5, 0.5),
   sheet("hud-panels-v1", hudPanelSheetUrl, 256, 128, 6, 0.5, 0.5),
+  image("scattergun-v1", scattergunUrl, 64, 32, 0.25, 0.5),
+  image("arc-carbine-v1", arcCarbineUrl, 64, 32, 0.25, 0.5),
+  sheet("slime-spitter-v1", slimeSpitterSheetUrl, 64, 64, 12, 0.5, 0.5),
+  sheet("carapace-scuttler-v1", carapaceScuttlerSheetUrl, 96, 96, 16, 0.5, 0.5),
+  sheet("siege-crusher-v1", siegeCrusherSheetUrl, 128, 128, 12, 0.5, 0.5),
+  sheet("batch-b-effects-v1", batchBEffectSheetUrl, 64, 64, 20, 0.5, 0.5),
+  image("siege-crusher-portrait-v1", siegeCrusherPortraitUrl, 128, 128, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(

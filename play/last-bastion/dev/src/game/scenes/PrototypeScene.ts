@@ -40,10 +40,14 @@ const PIXELS_PER_METRE = 32;
 type EnemyView =
   | Phaser.GameObjects.Arc
   | Phaser.GameObjects.Ellipse
+  | Phaser.GameObjects.Rectangle
   | Phaser.GameObjects.Triangle
   | Phaser.GameObjects.Sprite;
 type WeaponView = Phaser.GameObjects.Rectangle | Phaser.GameObjects.Image;
 type ProjectileView = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
+type EnemyProjectileView = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
+type HazardView = Phaser.GameObjects.Ellipse | Phaser.GameObjects.Sprite;
+type TelegraphView = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
 type PickupView = Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite;
 type EliteRewardView = Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite;
 
@@ -64,11 +68,12 @@ export class PrototypeScene extends Phaser.Scene {
   private simulation = createSimulation(this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario);
   private readonly enemyViews = new Map<number, EnemyView>();
   private readonly projectileViews = new Map<number, ProjectileView>();
-  private readonly enemyProjectileViews = new Map<number, Phaser.GameObjects.Arc>();
-  private readonly hazardViews = new Map<number, Phaser.GameObjects.Ellipse>();
-  private readonly spitterTelegraphs = new Map<number, Phaser.GameObjects.Arc>();
+  private readonly enemyProjectileViews = new Map<number, EnemyProjectileView>();
+  private readonly hazardViews = new Map<number, HazardView>();
+  private readonly spitterTelegraphs = new Map<number, TelegraphView>();
   private readonly eliteArmorViews = new Map<number, Phaser.GameObjects.Triangle>();
   private readonly eliteRewardViews = new Map<number, EliteRewardView>();
+  private readonly miniBossTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly pickupViews = new Map<number, PickupView>();
   private readonly weaponViews = new Map<number, WeaponView>();
   private upgradeOverlay: Phaser.GameObjects.Container | null = null;
@@ -192,6 +197,8 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncSpitterTelegraphs(snapshot.enemies);
     this.syncEliteArmor(snapshot.enemies);
     this.syncEliteRewards(snapshot.eliteRewards);
+    this.syncMiniBossTelegraphs(snapshot.enemies);
+    this.syncObstacleDamage(snapshot.damagedObstacleIds, snapshot.destroyedObstacleIds);
     this.syncPickups(snapshot.pickups);
     this.syncUpgradeOverlay(snapshot.pendingUpgradeChoices);
     this.hud.update(snapshot, this.isPaused, this.effectPool.activeCount);
@@ -235,6 +242,7 @@ export class PrototypeScene extends Phaser.Scene {
       this.spitterTelegraphs,
       this.eliteArmorViews,
       this.eliteRewardViews,
+      this.miniBossTelegraphs,
       this.pickupViews,
     ]) {
       for (const view of views.values()) {
@@ -251,7 +259,15 @@ export class PrototypeScene extends Phaser.Scene {
       switch (event.type) {
         case "weapon-fired":
           this.pulseWeapon(event.weaponInstanceId);
-          this.emitAuthoredEffect(5, event.position, 90, 0.48, 0.9, Math.atan2(event.direction.y, event.direction.x));
+          this.emitAuthoredEffect(
+            event.weaponId === "scattergun" ? 0 : event.weaponId === "arc-carbine" ? 5 : 5,
+            event.position,
+            90,
+            0.48,
+            0.9,
+            Math.atan2(event.direction.y, event.direction.x),
+            event.weaponId === "bastion-service-rifle" ? "combat-effects-v1" : "batch-b-effects-v1",
+          );
           break;
         case "chain-arc":
           this.drawChainArc(event.from, event.to);
@@ -260,7 +276,11 @@ export class PrototypeScene extends Phaser.Scene {
           this.emitAuthoredEffect(7, event.position, 110, 0.55, 0.95);
           break;
         case "enemy-defeated":
-          this.emitAuthoredEffect(event.enemyType === "brain-blob" ? 18 : event.enemyType === "egg-cluster" ? 13 : 11, event.position, 210, 0.72, 1.2);
+          if (event.enemyType === "siege-crusher") {
+            this.emitAuthoredEffect(19, event.position, 420, 0.8, 2.1, 0, "batch-b-effects-v1");
+          } else {
+            this.emitAuthoredEffect(event.enemyType === "brain-blob" ? 18 : event.enemyType === "egg-cluster" ? 13 : 11, event.position, 210, 0.72, 1.2);
+          }
           break;
         case "explosion":
           this.emitAuthoredEffect(9, event.position, 240, event.radiusMetres, event.radiusMetres * 1.5);
@@ -287,22 +307,40 @@ export class PrototypeScene extends Phaser.Scene {
           this.emitAuthoredEffect(7, event.position, 130, 0.5, 0.95);
           break;
         case "slime-spit-windup":
-          this.flashCircle(event.target, 12, 0xb9ef62, 260, 1.5, true);
+          this.emitAuthoredEffect(12, event.target, 260, 0.65, 0.9, 0, "batch-b-effects-v1");
           break;
         case "slime-glob-fired":
-          this.flashCircle(event.position, 7, 0xb9ef62, 130, 1.7);
+          this.emitAuthoredEffect(10, event.position, 130, 0.35, 0.65, 0, "batch-b-effects-v1");
           break;
         case "slime-impact":
-          this.flashCircle(event.position, 18, 0x9cd63d, 260, 1.8);
+          this.emitAuthoredEffect(13, event.position, 260, 0.55, 1.05, 0, "batch-b-effects-v1");
           break;
         case "elite-armour-hit":
-          this.flashCircle(event.position, 13, 0xffd36b, 150, 1.45, true);
+          this.emitAuthoredEffect(18, event.position, 150, 0.52, 0.95, 0, "batch-b-effects-v1");
           break;
         case "elite-reward-dropped":
           this.flashCircle(event.position, 20, 0xffd36b, 360, 2.2, true);
           break;
         case "elite-reward-collected":
           this.flashCircle(event.position, 24, 0xd696ff, 420, 2.8, true);
+          break;
+        case "mini-boss-sweep":
+          this.emitAuthoredEffect(16, event.position, 320, event.radiusMetres * 0.5, event.radiusMetres, 0, "batch-b-effects-v1");
+          break;
+        case "mini-boss-shockwave":
+          this.emitAuthoredEffect(17, event.position, 360, event.radiusMetres * 0.5, event.radiusMetres, 0, "batch-b-effects-v1");
+          this.cameras.main.shake(150, 0.006);
+          break;
+        case "obstacle-damaged":
+          this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xffd36b, 5);
+          break;
+        case "obstacle-destroyed":
+          this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xff6654, 8);
+          this.emitAuthoredEffect(17, event.position, 300, 0.55, 1.25, 0, "batch-b-effects-v1");
+          this.cameras.main.shake(180, 0.008);
+          break;
+        case "mini-boss-reward-dropped":
+          this.flashCircle(event.position, 30, 0xffd36b, 520, 3.2, true);
           break;
       }
     }
@@ -320,7 +358,7 @@ export class PrototypeScene extends Phaser.Scene {
       0.95,
     ).setOrigin(0).setLineWidth(3).setDepth(905);
     this.tweens.add({ targets: line, alpha: 0, duration: 130, onComplete: () => line.destroy() });
-    this.emitAuthoredEffect(8, to, 150, 0.42, 0.8);
+    this.emitAuthoredEffect(8, to, 150, 0.42, 0.8, 0, "batch-b-effects-v1");
   }
 
   private emitAuthoredEffect(
@@ -330,6 +368,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
+    texture: "combat-effects-v1" | "batch-b-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -338,7 +377,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.effectPool.emitSprite({
       x: position.x * PIXELS_PER_METRE,
       y: position.y * PIXELS_PER_METRE,
-      frame, duration, scale, targetScale, rotation,
+      frame, duration, scale, targetScale, rotation, texture,
     });
   }
 
@@ -373,9 +412,10 @@ export class PrototypeScene extends Phaser.Scene {
     weapons.forEach((weapon, index) => {
       let view = this.weaponViews.get(weapon.instanceId);
       if (!view) {
+        const assetId = weaponAssetId(weapon.weaponId);
         view = this.useMarineArt
-          ? this.add.image(0, 0, "service-rifle-v1")
-            .setOrigin(GAME_ASSETS["service-rifle-v1"].pivot.x, GAME_ASSETS["service-rifle-v1"].pivot.y)
+          ? this.add.image(0, 0, assetId)
+            .setOrigin(GAME_ASSETS[assetId].pivot.x, GAME_ASSETS[assetId].pivot.y)
           : this.add.rectangle(0, 0, 34, 8, 0xe9e3cf)
             .setOrigin(0.2, 0.5)
             .setStrokeStyle(2, 0x101720);
@@ -393,8 +433,7 @@ export class PrototypeScene extends Phaser.Scene {
         view.setFillStyle(firing ? 0xffffff : weaponColor(weapon.weaponId));
       } else {
         if (firing) view.setTint(0xffffff);
-        else if (weapon.weaponId === "bastion-service-rifle") view.clearTint();
-        else view.setTint(weaponColor(weapon.weaponId));
+        else view.clearTint();
       }
     });
   }
@@ -442,6 +481,9 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   private createEnemyView(enemy: EnemySnapshot): EnemyView {
+    if (this.useMarineArt && enemy.eliteKind === "carapace-scuttler") {
+      return createManifestSprite(this, "carapace-scuttler-v1");
+    }
     switch (enemy.type) {
       case "egg-cluster":
         if (this.useMarineArt) {
@@ -454,7 +496,15 @@ export class PrototypeScene extends Phaser.Scene {
         }
         return this.add.circle(0, 0, 18, 0xc06cdb).setStrokeStyle(3, 0x55236b);
       case "slime-spitter":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "slime-spitter-v1");
+        }
         return this.add.ellipse(0, 0, 44, 34, 0x7cab38).setStrokeStyle(3, 0xd9f36a);
+      case "siege-crusher":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "siege-crusher-v1");
+        }
+        return this.add.rectangle(0, 0, 82, 62, 0x8b4937).setStrokeStyle(5, 0xffb15c);
       default:
         if (this.useMarineArt) {
           return createManifestSprite(this, "scuttler-v1");
@@ -466,12 +516,8 @@ export class PrototypeScene extends Phaser.Scene {
 
   private styleEnemyView(view: EnemyView, enemy: EnemySnapshot): void {
     if (view instanceof Phaser.GameObjects.Sprite) {
-      view.setScale(enemy.rank === "elite" ? 1.3 : 1);
-      if (enemy.eliteKind === "carapace-scuttler") {
-        view.setTint(enemy.carapacePhase === "recovery" ? 0xff9a72 : 0xffd36b);
-      } else {
-        view.clearTint();
-      }
+      view.setScale(enemy.rank === "elite" && !enemy.eliteKind ? 1.3 : 1);
+      view.clearTint();
       return;
     }
 
@@ -497,6 +543,20 @@ export class PrototypeScene extends Phaser.Scene {
       view.setFillStyle(colors[enemy.spitterPhase ?? "positioning"]);
       view.setScale(enemy.spitterPhase === "windup" ? healthScale * 1.12 : healthScale);
     }
+    if (enemy.type === "siege-crusher" && view instanceof Phaser.GameObjects.Rectangle) {
+      const phaseColors: Record<string, number> = {
+        entrance: 0x5c3d38,
+        stalk: 0x8b4937,
+        "charge-windup": 0xffc45e,
+        charge: 0xff6b3d,
+        "sweep-windup": 0xff9a72,
+        sweep: 0xff4d47,
+        recovery: 0x5a6672,
+      };
+      view.setFillStyle(phaseColors[enemy.siegeCrusherPhase ?? "stalk"] ?? 0x8b4937)
+        .setRotation(Math.atan2(enemy.facingDirection.y, enemy.facingDirection.x))
+        .setScale(enemy.siegeCrusherPhase === "charge-windup" ? healthScale * 1.08 : healthScale);
+    }
   }
 
   private updateEnemySprite(
@@ -513,6 +573,25 @@ export class PrototypeScene extends Phaser.Scene {
         view.setFrame(brainBlobFrame(enemy.brainPhase ?? "drift"));
         view.setRotation(angleToward(enemy.position, playerPosition));
         return;
+      case "slime-spitter": {
+        const facingColumn = cardinalFacingColumn(enemy.position, playerPosition);
+        const row = enemy.spitterPhase === "windup" ? 1 : enemy.spitterPhase === "recover" ? 2 : 0;
+        view.setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
+      case "siege-crusher": {
+        const target = {
+          x: enemy.position.x + enemy.facingDirection.x,
+          y: enemy.position.y + enemy.facingDirection.y,
+        };
+        const facingColumn = cardinalFacingColumn(enemy.position, target);
+        const phase = enemy.siegeCrusherPhase ?? "stalk";
+        const row = phase === "charge" || phase === "charge-windup"
+          ? 1
+          : phase === "sweep" || phase === "sweep-windup" ? 2 : 0;
+        view.setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
       default: {
         const facingTarget = enemy.eliteKind === "carapace-scuttler"
           ? {
@@ -521,8 +600,12 @@ export class PrototypeScene extends Phaser.Scene {
           }
           : playerPosition;
         const facingColumn = cardinalFacingColumn(enemy.position, facingTarget);
-        const gaitRow = offsetGaitRow(this.time.now, enemy.id);
-        view.setFrame(gaitRow * 4 + facingColumn);
+        const row = enemy.eliteKind === "carapace-scuttler"
+          ? enemy.carapacePhase === "windup" ? 1
+            : enemy.carapacePhase === "charge" ? 2
+              : enemy.carapacePhase === "recovery" ? 3 : 0
+          : offsetGaitRow(this.time.now, enemy.id);
+        view.setFrame(row * 4 + facingColumn);
         view.setRotation(0);
       }
     }
@@ -535,8 +618,13 @@ export class PrototypeScene extends Phaser.Scene {
     for (const projectile of projectiles) {
       let view = this.projectileViews.get(projectile.id);
       if (!view) {
+        const authoredProjectile = projectile.weaponId === "scattergun"
+          ? { texture: "batch-b-effects-v1", frame: 1 }
+          : projectile.weaponId === "arc-carbine"
+            ? { texture: "batch-b-effects-v1", frame: 6 }
+            : { texture: "combat-effects-v1", frame: 6 };
         view = this.useMarineArt
-          ? this.add.sprite(0, 0, "combat-effects-v1", 6)
+          ? this.add.sprite(0, 0, authoredProjectile.texture, authoredProjectile.frame)
           : this.add.circle(0, 0, 4, 0xffd36b).setStrokeStyle(1, 0xffffff);
         view.setDepth(700);
         this.projectileViews.set(projectile.id, view);
@@ -547,10 +635,8 @@ export class PrototypeScene extends Phaser.Scene {
       );
       view.setRotation(projectile.rotationRadians);
       if (view instanceof Phaser.GameObjects.Sprite) {
-        view.setScale(projectile.weaponId === "scattergun" ? 0.22 : projectile.weaponId === "arc-carbine" ? 0.34 : 0.3);
-        projectile.weaponId === "bastion-service-rifle"
-          ? view.clearTint()
-          : view.setTint(weaponColor(projectile.weaponId));
+        view.setScale(projectile.weaponId === "scattergun" ? 0.24 : projectile.weaponId === "arc-carbine" ? 0.3 : 0.3);
+        view.clearTint();
       } else {
         view.setFillStyle(weaponColor(projectile.weaponId));
       }
@@ -563,7 +649,9 @@ export class PrototypeScene extends Phaser.Scene {
     for (const projectile of projectiles) {
       let view = this.enemyProjectileViews.get(projectile.id);
       if (!view) {
-        view = this.add.circle(0, 0, 9, 0xa9e34b).setStrokeStyle(3, 0xefff9a).setDepth(710);
+        view = this.useMarineArt
+          ? this.add.sprite(0, 0, "batch-b-effects-v1", 10).setScale(0.42).setDepth(710)
+          : this.add.circle(0, 0, 9, 0xa9e34b).setStrokeStyle(3, 0xefff9a).setDepth(710);
         this.enemyProjectileViews.set(projectile.id, view);
       }
       view.setPosition(projectile.position.x * PIXELS_PER_METRE, projectile.position.y * PIXELS_PER_METRE)
@@ -577,16 +665,18 @@ export class PrototypeScene extends Phaser.Scene {
     for (const hazard of hazards) {
       let view = this.hazardViews.get(hazard.id);
       if (!view) {
-        view = this.add.ellipse(0, 0, 1, 1, 0x86bd35, 0.55)
-          .setStrokeStyle(3, 0xc9f164, 0.9).setDepth(45);
+        view = this.useMarineArt
+          ? this.add.sprite(0, 0, "batch-b-effects-v1", 13).setDepth(45)
+          : this.add.ellipse(0, 0, 1, 1, 0x86bd35, 0.55)
+            .setStrokeStyle(3, 0xc9f164, 0.9).setDepth(45);
         this.hazardViews.set(hazard.id, view);
       }
       const diameter = hazard.radiusMetres * PIXELS_PER_METRE * 2;
       const lifetime = Math.max(0, hazard.remainingSeconds / hazard.durationSeconds);
       view.setPosition(hazard.position.x * PIXELS_PER_METRE, hazard.position.y * PIXELS_PER_METRE)
-        .setDisplaySize(diameter, diameter * 0.62)
-        .setAlpha(0.22 + lifetime * 0.55)
-        .setScale(0.72 + lifetime * 0.28);
+        .setDisplaySize(diameter * (0.72 + lifetime * 0.28), diameter * 0.62 * (0.72 + lifetime * 0.28))
+        .setAlpha(0.22 + lifetime * 0.55);
+      if (view instanceof Phaser.GameObjects.Sprite) view.setFrame(lifetime < 0.3 ? 14 : 13);
     }
   }
 
@@ -597,7 +687,9 @@ export class PrototypeScene extends Phaser.Scene {
     for (const enemy of active) {
       let view = this.spitterTelegraphs.get(enemy.id);
       if (!view) {
-        view = this.add.circle(0, 0, 18, 0x000000, 0).setStrokeStyle(3, 0xd9f36a, 0.9).setDepth(60);
+        view = this.useMarineArt
+          ? this.add.sprite(0, 0, "batch-b-effects-v1", 12).setScale(0.72).setDepth(60)
+          : this.add.circle(0, 0, 18, 0x000000, 0).setStrokeStyle(3, 0xd9f36a, 0.9).setDepth(60);
         this.spitterTelegraphs.set(enemy.id, view);
       }
       view.setPosition(enemy.spitterTarget!.x * PIXELS_PER_METRE, enemy.spitterTarget!.y * PIXELS_PER_METRE)
@@ -606,7 +698,7 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   private syncEliteArmor(enemies: readonly EnemySnapshot[]): void {
-    const elites = enemies.filter((enemy) => enemy.eliteKind === "carapace-scuttler");
+    const elites = this.useMarineArt ? [] : enemies.filter((enemy) => enemy.eliteKind === "carapace-scuttler");
     const liveIds = new Set(elites.map((enemy) => enemy.id));
     this.destroyMissing(this.eliteArmorViews, liveIds);
     for (const enemy of elites) {
@@ -640,7 +732,55 @@ export class PrototypeScene extends Phaser.Scene {
       }
       view.setPosition(reward.position.x * PIXELS_PER_METRE, reward.position.y * PIXELS_PER_METRE)
         .setDepth(worldDepth(reward.position.y) - 2)
-        .setScale(0.68 + Math.sin(this.time.now / 120) * 0.08);
+        .setScale((reward.type === "mini-boss-arsenal-cache" ? 0.86 : 0.68) + Math.sin(this.time.now / 120) * 0.08);
+      if (view instanceof Phaser.GameObjects.Sprite) {
+        view.setTint(reward.type === "mini-boss-arsenal-cache" ? 0xffd36b : 0xd696ff);
+      }
+    }
+  }
+
+  private syncMiniBossTelegraphs(enemies: readonly EnemySnapshot[]): void {
+    const bosses = enemies.filter((enemy) => enemy.miniBossKind === "siege-crusher");
+    const liveIds = new Set(bosses.map((enemy) => enemy.id));
+    this.destroyMissing(this.miniBossTelegraphs, liveIds);
+    for (const boss of bosses) {
+      let view = this.miniBossTelegraphs.get(boss.id);
+      if (!view) {
+        view = this.add.graphics().setDepth(62);
+        this.miniBossTelegraphs.set(boss.id, view);
+      }
+      view.clear();
+      const x = boss.position.x * PIXELS_PER_METRE;
+      const y = boss.position.y * PIXELS_PER_METRE;
+      if (boss.siegeCrusherPhase === "charge-windup" && boss.siegeCrusherDirection) {
+        view.lineStyle(5, 0xffc45e, 0.75);
+        view.lineBetween(
+          x,
+          y,
+          x + boss.siegeCrusherDirection.x * PIXELS_PER_METRE * 8,
+          y + boss.siegeCrusherDirection.y * PIXELS_PER_METRE * 8,
+        );
+      } else if (boss.siegeCrusherPhase === "sweep-windup") {
+        view.lineStyle(5, 0xff8a4c, 0.78);
+        view.strokeCircle(x, y, 2.7 * PIXELS_PER_METRE);
+      }
+    }
+  }
+
+  private syncObstacleDamage(damagedIds: readonly string[], destroyedIds: readonly string[]): void {
+    const damaged = new Set(damagedIds);
+    const destroyed = new Set(destroyedIds);
+    for (const obstacle of this.simulation.arena.obstacles) {
+      const view = this.children.getByName(`arena-obstacle:${obstacle.id}`);
+      if (!(view instanceof Phaser.GameObjects.Sprite) && !(view instanceof Phaser.GameObjects.Rectangle)) continue;
+      view.setVisible(!destroyed.has(obstacle.id));
+      if (view instanceof Phaser.GameObjects.Sprite) {
+        const current = Number(view.frame.name);
+        const baseFrame = Number.isFinite(current) ? current % 4 : 0;
+        view.setFrame(damaged.has(obstacle.id) ? baseFrame + 4 : baseFrame).setAlpha(1);
+      } else if (view instanceof Phaser.GameObjects.Rectangle) {
+        view.setAlpha(damaged.has(obstacle.id) ? 0.48 : 1);
+      }
     }
   }
 
@@ -761,7 +901,9 @@ function readStressProfile(): 4 | 12 | null {
 
 function readScenario(): CombatScenario | null {
   const scenario = new URLSearchParams(window.location.search).get("scenario");
-  return scenario === "slime-spitter" || scenario === "carapace-elite" ? scenario : null;
+  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher"
+    ? scenario
+    : null;
 }
 
 function readDebugMode(): boolean {
@@ -790,6 +932,12 @@ function weaponColor(weaponId: WeaponId): number {
   }
 }
 
+function weaponAssetId(weaponId: WeaponId): "service-rifle-v1" | "scattergun-v1" | "arc-carbine-v1" {
+  if (weaponId === "scattergun") return "scattergun-v1";
+  if (weaponId === "arc-carbine") return "arc-carbine-v1";
+  return "service-rifle-v1";
+}
+
 function applyManifestOrigin(
   view: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image,
   assetId: GameAssetId,
@@ -800,7 +948,7 @@ function applyManifestOrigin(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

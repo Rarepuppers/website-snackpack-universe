@@ -14,7 +14,12 @@ export class AssetGalleryScene extends Phaser.Scene {
 
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
-    if (new URLSearchParams(window.location.search).get("batch") === "a") {
+    const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "b") {
+      this.createBatchBGallery();
+      return;
+    }
+    if (batch === "a") {
       this.createBatchAGallery();
       return;
     }
@@ -112,6 +117,46 @@ export class AssetGalleryScene extends Phaser.Scene {
     }
 
     this.add.text(20, 500, "Review: ?mode=gallery&batch=a  •  Gameplay: remove mode  •  Fallback: ?art=placeholder", style("#8fb2c9", "10px"));
+  }
+
+  private createBatchBGallery(): void {
+    this.add.text(20, 14, "LAST BASTION — PRODUCTION ASSET BATCH B", style("#ffffff", "17px"));
+    this.add.text(20, 38, "63 runtime visuals • weapons, enemy escalation, boss identity, and authored effects", style("#8fb2c9", "11px"));
+
+    this.add.text(20, 70, "WEAPONS", style("#ffd36b", "11px"));
+    this.add.image(88, 104, "scattergun-v1").setScale(1.2);
+    this.add.image(194, 104, "arc-carbine-v1").setScale(1.2);
+    this.add.text(42, 126, "SCATTER", style("#ff9a72", "9px"));
+    this.add.text(160, 126, "ARC", style("#68e4e8", "9px"));
+
+    this.add.text(284, 70, "SLIME SPITTER — position / wind-up / recover × S N E W", style("#b9ef62", "11px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const column = frame % 6;
+      const row = Math.floor(frame / 6);
+      this.add.sprite(320 + column * 66, 101 + row * 58, "slime-spitter-v1", frame).setScale(0.72);
+    }
+    this.add.image(900, 112, "siege-crusher-portrait-v1").setDisplaySize(86, 86);
+
+    this.add.text(20, 186, "CARAPACE SCUTTLER — pursuit / wind-up / charge / recover × S N E W", style("#ff9a72", "11px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const column = frame % 8;
+      const row = Math.floor(frame / 8);
+      this.add.sprite(64 + column * 112, 226 + row * 62, "carapace-scuttler-v1", frame).setScale(0.56);
+    }
+
+    this.add.text(20, 320, "SIEGE CRUSHER — stalk / charge / sweep × S N E W", style("#ffd36b", "11px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const column = frame % 6;
+      const row = Math.floor(frame / 6);
+      this.add.sprite(72 + column * 142, 365 + row * 64, "siege-crusher-v1", frame).setScale(0.48);
+    }
+
+    this.add.text(20, 456, "BATCH B EFFECTS — weapon / arc / slime / Crusher, frames 0–19", style("#68e4e8", "11px"));
+    for (let frame = 0; frame < 20; frame += 1) {
+      const x = 52 + frame * 45;
+      this.add.sprite(x, 494, "batch-b-effects-v1", frame).setScale(0.48);
+      this.add.text(x, 516, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
   }
 
   private drawWeaponRing(x: number, y: number, count: number, scale: number): void {

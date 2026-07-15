@@ -385,7 +385,8 @@ No additional production art should be generated before critical readability cor
 - Completed: Slime Spitter positioning/wind-up/recovery states, hostile glob projectiles, obstacle impacts, direct-hit damage, and target telegraphs.
 - Completed: four-second slowing puddles with visible decay, five-puddle fairness cap, 55% ordinary-movement multiplier, and unaffected evasive displacement.
 - Completed: reusable standard/elite rank metadata, Carapace directional armour/facing rules, charge phases, and guaranteed elite upgrade-cache rewards.
-- Pending: mini-boss health/phase presentation and encounter-budget support.
+- Completed: reusable mini-boss rank, Siege Crusher phase/health presentation, attack telegraphs, destructible-cover state, and guaranteed arsenal reward.
+- Pending: seeded five-wave encounter-budget integration and intermission placement.
 - Expand three waves to a seeded five-wave encounter with intermission rewards.
 - Add weapon acquisition/replacement, duplicate handling, reward choices, and a simple between-wave supply decision.
 - Add gamepad input, settings persistence, and representative audio hooks required by Gate 2.
@@ -416,6 +417,16 @@ Carapace-Elite checkpoint — completed 16 July 2026:
 - `?scenario=carapace-elite&loadout=vertical` isolates armour, flanking, charge timing, and reward collection.
 - Placeholder presentation includes a larger tinted body, facing shield attachment, recovery fade, armour-hit feedback, and pulsing reward cache while final art remains in Batch B.
 - Verification evidence: 59 tests across ten files plus TypeScript, production build, twelve asset checks, and nine review routes.
+
+Siege-Crusher checkpoint — completed 16 July 2026:
+
+- Mini-boss rank and kind are separate from standard and elite definitions, with snapshot-driven phase, health, facing, and attack direction.
+- Siege Crusher cycles through entrance, stalk, charge tell, committed charge, sweep tell, sweep, and 1.15-second recovery states.
+- Charge impacts damage cover, create debris shockwaves, and destroy cover after the second impact; destroyed obstacles leave collision as well as rendering.
+- The HUD exposes a dedicated boss health/phase bar and the world renderer exposes charge lanes, sweep radius, phase colour, shockwaves, and damaged/destroyed obstacle states.
+- Defeat guarantees a mini-boss arsenal cache that heals 30 health and grants two upgrade thresholds.
+- `?scenario=siege-crusher&loadout=vertical` isolates the complete fight and reward loop while final character/effect art remains in Batch B.
+- Verification evidence: 62 tests across ten files plus TypeScript, production build, twelve asset checks, and ten review routes.
 
 ### Production Asset Batch B: vertical-slice combat roster
 
@@ -471,8 +482,8 @@ Carapace-Elite checkpoint — completed 16 July 2026:
 3. Implement generic weapon attack/targeting behaviours with placeholder Scattergun and Arc Carbine. **Completed.**
 4. Implement ranged projectiles and bounded slowing hazards with a placeholder Slime Spitter. **Completed.**
 5. Implement elite armour/reward rules and placeholder Carapace Scuttler. **Completed.**
-6. Implement mini-boss encounter support and placeholder Siege Crusher. **Next.**
-7. Generate, normalize, integrate, gallery-test, and verify Production Asset Batch B.
+6. Implement mini-boss encounter support and placeholder Siege Crusher. **Completed.**
+7. Generate, normalize, integrate, gallery-test, and verify Production Asset Batch B. **Next.**
 8. Expand to a tuned five-wave vertical slice with weapon/upgrade rewards and one Supply Depot decision.
 9. Implement reward/interactable state contracts, then generate Production Asset Batch C.
 10. External-playtest the vertical slice; proceed to route, relic, Artifact, shop/rest, and boss systems only if Gate 2 succeeds.

@@ -238,7 +238,7 @@ Mini-bosses use bespoke silhouettes, two or three attacks, a short entrance, a b
 
 | Mini-boss | Encounter identity | Attacks | Production gate |
 | --- | --- | --- | --- |
-| Siege Crusher | Arena-geometry breaker | Telegraph charge, broad claw sweep, debris shockwave; exposed after collision | Vertical slice |
+| Siege Crusher — functional placeholder | Arena-geometry breaker | Telegraph charge, broad claw sweep, debris shockwave; exposed after collision | Final art pending Batch B |
 | Brood Warden | Spawn-priority test | Places eggs, guards them, enrages briefly when a hatch is prevented | Web MVP |
 | Synapse Herald | Telegraph mastery | Lunge chain, marked danger zones, temporary Brain Blob link | Web MVP or later |
 

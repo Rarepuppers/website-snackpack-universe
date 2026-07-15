@@ -1,4 +1,4 @@
-export type EnemyType = "scuttler" | "egg-cluster" | "brain-blob" | "slime-spitter";
+export type EnemyType = "scuttler" | "egg-cluster" | "brain-blob" | "slime-spitter" | "siege-crusher";
 
 export interface EnemyDefinition {
   id: EnemyType;
@@ -41,5 +41,13 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     movementSpeedMetresPerSecond: 1.15,
     contactDamage: 8,
     experienceValue: 3,
+  },
+  "siege-crusher": {
+    id: "siege-crusher",
+    maxHealth: 3000,
+    radiusMetres: 1.15,
+    movementSpeedMetresPerSecond: 1.25,
+    contactDamage: 22,
+    experienceValue: 0,
   },
 });

@@ -39,11 +39,28 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(12);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(19);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
       if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
     }
+  });
+
+  it("locks Production Batch B frame contracts", () => {
+    const expectedFrames = {
+      "slime-spitter-v1": 12,
+      "carapace-scuttler-v1": 16,
+      "siege-crusher-v1": 12,
+      "batch-b-effects-v1": 20,
+    } as const;
+    for (const [id, frameCount] of Object.entries(expectedFrames)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
+    }
+    expect(GAME_ASSETS["scattergun-v1"].kind).toBe("image");
+    expect(GAME_ASSETS["arc-carbine-v1"].kind).toBe("image");
+    expect(GAME_ASSETS["siege-crusher-portrait-v1"].kind).toBe("image");
   });
 });

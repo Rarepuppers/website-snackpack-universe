@@ -32,10 +32,14 @@ import {
 export type EncounterStatus = "combat" | "intermission" | "victory" | "defeat";
 export type BrainPhase = "drift" | "windup" | "lunge" | "recover";
 export type SlimeSpitterPhase = "positioning" | "windup" | "recover";
-export type EnemyRank = "standard" | "elite";
+export type EnemyRank = "standard" | "elite" | "mini-boss";
 export type EliteKind = "carapace-scuttler";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite";
+export type MiniBossKind = "siege-crusher";
+export type SiegeCrusherPhase =
+  | "entrance" | "stalk" | "charge-windup" | "charge"
+  | "sweep-windup" | "sweep" | "recovery";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher";
 
 export type CombatEvent =
   | {
@@ -60,7 +64,12 @@ export type CombatEvent =
   | { type: "slime-impact"; position: Vector2Data; createdPuddle: boolean }
   | { type: "elite-armour-hit"; position: Vector2Data; eliteKind: EliteKind }
   | { type: "elite-reward-dropped"; position: Vector2Data; eliteKind: EliteKind }
-  | { type: "elite-reward-collected"; position: Vector2Data };
+  | { type: "elite-reward-collected"; position: Vector2Data }
+  | { type: "mini-boss-sweep"; position: Vector2Data; radiusMetres: number }
+  | { type: "mini-boss-shockwave"; position: Vector2Data; radiusMetres: number }
+  | { type: "obstacle-damaged"; obstacleId: string; position: Vector2Data }
+  | { type: "obstacle-destroyed"; obstacleId: string; position: Vector2Data }
+  | { type: "mini-boss-reward-dropped"; position: Vector2Data; miniBossKind: MiniBossKind };
 
 export interface EnemySnapshot {
   id: number;
@@ -76,6 +85,9 @@ export interface EnemySnapshot {
   rank: EnemyRank;
   eliteKind?: EliteKind;
   carapacePhase?: CarapacePhase;
+  miniBossKind?: MiniBossKind;
+  siegeCrusherPhase?: SiegeCrusherPhase;
+  siegeCrusherDirection?: Vector2Data;
   facingDirection: Vector2Data;
 }
 
@@ -110,7 +122,7 @@ export interface GroundHazardSnapshot {
 
 export interface EliteRewardSnapshot {
   id: number;
-  type: "elite-upgrade-cache";
+  type: "elite-upgrade-cache" | "mini-boss-arsenal-cache";
   position: Vector2Data;
 }
 
@@ -142,6 +154,8 @@ export interface CombatSnapshot {
   stressProfile: 4 | 12 | null;
   scenario: CombatScenario | null;
   playerSlowed: boolean;
+  damagedObstacleIds: readonly string[];
+  destroyedObstacleIds: readonly string[];
 }
 
 interface EnemyState {
@@ -165,6 +179,10 @@ interface EnemyState {
   carapacePhaseRemainingSeconds: number;
   facingDirection: Vector2Data;
   maxHealth: number;
+  miniBossKind?: MiniBossKind;
+  siegeCrusherPhase: SiegeCrusherPhase;
+  siegeCrusherPhaseRemainingSeconds: number;
+  siegeCrusherDirection: Vector2Data;
 }
 
 interface ProjectileState {
@@ -211,7 +229,7 @@ interface GroundHazardState {
 
 interface EliteRewardState {
   id: number;
-  type: "elite-upgrade-cache";
+  type: "elite-upgrade-cache" | "mini-boss-arsenal-cache";
   position: Vector2Data;
   collected: boolean;
 }
@@ -269,6 +287,7 @@ export class CombatSimulation {
   private enemyProjectiles: EnemyProjectileState[] = [];
   private groundHazards: GroundHazardState[] = [];
   private eliteRewards: EliteRewardState[] = [];
+  private readonly obstacleDamage = new Map<string, number>();
   private pickups: ExperiencePickupState[] = [];
   private nextEntityId = 1;
   private status: EncounterStatus = "combat";
@@ -310,6 +329,8 @@ export class CombatSimulation {
       this.populateSlimeSpitterScenario();
     } else if (this.scenario === "carapace-elite") {
       this.populateCarapaceEliteScenario();
+    } else if (this.scenario === "siege-crusher") {
+      this.populateSiegeCrusherScenario();
     } else if (this.wavesEnabled) {
       this.beginWave(0);
     }
@@ -344,7 +365,7 @@ export class CombatSimulation {
         y: previousPlayerPosition.y + motionFrame.displacementMetres.y * movementMultiplier,
       },
       PLAYER_RADIUS_METRES,
-      this.arena,
+      this.collisionArena(),
     );
 
     if (intent.aim.x !== 0 || intent.aim.y !== 0) {
@@ -410,6 +431,9 @@ export class CombatSimulation {
         x: this.playerPosition.x - spawnPosition.x,
         y: this.playerPosition.y - spawnPosition.y,
       }),
+      siegeCrusherPhase: "entrance",
+      siegeCrusherPhaseRemainingSeconds: 0,
+      siegeCrusherDirection: { x: 0, y: 0 },
     });
     this.frameEvents.push({
       type: "enemy-spawned",
@@ -429,6 +453,20 @@ export class CombatSimulation {
     enemy.health = enemy.maxHealth;
     enemy.carapacePhase = "pursuit";
     enemy.carapacePhaseRemainingSeconds = 1.25;
+    return id;
+  }
+
+  spawnMiniBoss(miniBossKind: MiniBossKind, position?: Vector2Data): number {
+    const id = this.spawnEnemy("siege-crusher", position);
+    const enemy = this.enemies.find((candidate) => candidate.id === id)!;
+    enemy.rank = "mini-boss";
+    enemy.miniBossKind = miniBossKind;
+    enemy.siegeCrusherPhase = "entrance";
+    enemy.siegeCrusherPhaseRemainingSeconds = 0.9;
+    enemy.facingDirection = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
     return id;
   }
 
@@ -534,6 +572,10 @@ export class CombatSimulation {
       stressProfile: this.stressProfile,
       scenario: this.scenario,
       playerSlowed: this.isPlayerSlowed(),
+      damagedObstacleIds: [...this.obstacleDamage.entries()]
+        .filter(([, damage]) => damage === 1).map(([id]) => id),
+      destroyedObstacleIds: [...this.obstacleDamage.entries()]
+        .filter(([, damage]) => damage >= 2).map(([id]) => id),
     };
   }
 
@@ -638,7 +680,7 @@ export class CombatSimulation {
         continue;
       }
 
-      if (pointHitsObstacle(projectile.position, this.arena.obstacles)) {
+      if (pointHitsObstacle(projectile.position, this.activeObstacles())) {
         projectile.dead = true;
         this.frameEvents.push({
           type: "projectile-blocked",
@@ -715,7 +757,7 @@ export class CombatSimulation {
         y: enemy.position.y + direction.y * projectile.knockbackMetres,
       },
       definition.radiusMetres,
-      this.arena,
+      this.collisionArena(),
     );
   }
 
@@ -767,6 +809,9 @@ export class CombatSimulation {
           break;
         case "slime-spitter":
           this.updateSlimeSpitter(enemy, deltaSeconds);
+          break;
+        case "siege-crusher":
+          this.updateSiegeCrusher(enemy, deltaSeconds);
           break;
       }
     }
@@ -866,6 +911,117 @@ export class CombatSimulation {
     }
   }
 
+  private updateSiegeCrusher(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.siegeCrusherPhaseRemainingSeconds -= deltaSeconds;
+    const playerDistance = distance(enemy.position, this.playerPosition);
+    switch (enemy.siegeCrusherPhase) {
+      case "entrance":
+        if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
+          enemy.siegeCrusherPhase = "stalk";
+          enemy.siegeCrusherPhaseRemainingSeconds = 1.1;
+        }
+        break;
+      case "stalk":
+        enemy.facingDirection = normalizeVector({
+          x: this.playerPosition.x - enemy.position.x,
+          y: this.playerPosition.y - enemy.position.y,
+        });
+        this.moveEnemy(enemy, enemy.facingDirection, 1.25, deltaSeconds);
+        if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
+          if (playerDistance > 3.4) {
+            enemy.siegeCrusherDirection = { ...enemy.facingDirection };
+            enemy.siegeCrusherPhase = "charge-windup";
+            enemy.siegeCrusherPhaseRemainingSeconds = 0.7;
+          } else {
+            enemy.siegeCrusherPhase = "sweep-windup";
+            enemy.siegeCrusherPhaseRemainingSeconds = 0.55;
+          }
+        }
+        break;
+      case "charge-windup":
+        if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
+          enemy.siegeCrusherPhase = "charge";
+          enemy.siegeCrusherPhaseRemainingSeconds = 0.72;
+        }
+        break;
+      case "charge": {
+        const travel = 8.4 * deltaSeconds;
+        const desired = {
+          x: enemy.position.x + enemy.siegeCrusherDirection.x * travel,
+          y: enemy.position.y + enemy.siegeCrusherDirection.y * travel,
+        };
+        const obstacle = this.firstCollidingObstacle(desired, ENEMY_CATALOG["siege-crusher"].radiusMetres);
+        if (obstacle) {
+          this.damageObstacle(obstacle.id, {
+            x: obstacle.x + obstacle.width / 2,
+            y: obstacle.y + obstacle.height / 2,
+          });
+          this.emitCrusherShockwave(enemy.position);
+          enemy.siegeCrusherPhase = "recovery";
+          enemy.siegeCrusherPhaseRemainingSeconds = 1.15;
+          break;
+        }
+        this.moveEnemy(enemy, enemy.siegeCrusherDirection, 8.4, deltaSeconds);
+        if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
+          enemy.siegeCrusherPhase = "recovery";
+          enemy.siegeCrusherPhaseRemainingSeconds = 1.15;
+        }
+        break;
+      }
+      case "sweep-windup":
+        if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
+          enemy.siegeCrusherPhase = "sweep";
+          enemy.siegeCrusherPhaseRemainingSeconds = 0.28;
+          this.frameEvents.push({
+            type: "mini-boss-sweep",
+            position: { ...enemy.position },
+            radiusMetres: 2.7,
+          });
+          if (playerDistance <= 2.7 + PLAYER_RADIUS_METRES) this.damagePlayer(24);
+        }
+        break;
+      case "sweep":
+        if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
+          enemy.siegeCrusherPhase = "recovery";
+          enemy.siegeCrusherPhaseRemainingSeconds = 1.15;
+        }
+        break;
+      case "recovery":
+        if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
+          enemy.siegeCrusherPhase = "stalk";
+          enemy.siegeCrusherPhaseRemainingSeconds = 1.05;
+        }
+        break;
+    }
+  }
+
+  private firstCollidingObstacle(position: Vector2Data, radius: number) {
+    return this.activeObstacles().find((obstacle) => (
+      position.x + radius > obstacle.x
+      && position.x - radius < obstacle.x + obstacle.width
+      && position.y + radius > obstacle.y
+      && position.y - radius < obstacle.y + obstacle.height
+    ));
+  }
+
+  private damageObstacle(obstacleId: string, position: Vector2Data): void {
+    const damage = Math.min((this.obstacleDamage.get(obstacleId) ?? 0) + 1, 2);
+    this.obstacleDamage.set(obstacleId, damage);
+    this.frameEvents.push({
+      type: damage >= 2 ? "obstacle-destroyed" : "obstacle-damaged",
+      obstacleId,
+      position: { ...position },
+    });
+  }
+
+  private emitCrusherShockwave(position: Vector2Data): void {
+    const radiusMetres = 2.2;
+    this.frameEvents.push({ type: "mini-boss-shockwave", position: { ...position }, radiusMetres });
+    if (distance(position, this.playerPosition) <= radiusMetres + PLAYER_RADIUS_METRES) {
+      this.damagePlayer(16);
+    }
+  }
+
   private updateSlimeSpitter(enemy: EnemyState, deltaSeconds: number): void {
     enemy.spitterPhaseRemainingSeconds -= deltaSeconds;
     const playerDistance = distance(enemy.position, this.playerPosition);
@@ -942,7 +1098,7 @@ export class CombatSimulation {
       projectile.position.y += projectile.velocity.y * deltaSeconds;
       projectile.remainingSeconds -= deltaSeconds;
 
-      if (pointHitsObstacle(projectile.position, this.arena.obstacles)) {
+      if (pointHitsObstacle(projectile.position, this.activeObstacles())) {
         projectile.position = previous;
         this.resolveSlimeImpact(projectile);
       } else if (projectile.remainingSeconds <= 0) {
@@ -1011,7 +1167,7 @@ export class CombatSimulation {
         y: enemy.position.y + direction.y * speed * deltaSeconds,
       },
       radius,
-      this.arena,
+      this.collisionArena(),
     );
   }
 
@@ -1091,7 +1247,12 @@ export class CombatSimulation {
       if (reward.collected || distance(reward.position, this.playerPosition) > 0.8) continue;
       reward.collected = true;
       this.frameEvents.push({ type: "elite-reward-collected", position: { ...reward.position } });
-      this.addExperience(this.experienceThreshold());
+      if (reward.type === "mini-boss-arsenal-cache") {
+        this.playerHealth = Math.min(PLAYER_MAX_HEALTH, this.playerHealth + 30);
+        this.addExperience(this.experienceThreshold() * 2);
+      } else {
+        this.addExperience(this.experienceThreshold());
+      }
       break;
     }
   }
@@ -1124,6 +1285,19 @@ export class CombatSimulation {
         type: "elite-reward-dropped",
         position: { ...enemy.position },
         eliteKind: enemy.eliteKind,
+      });
+    }
+    if (enemy.miniBossKind) {
+      this.eliteRewards.push({
+        id: this.nextId(),
+        type: "mini-boss-arsenal-cache",
+        position: { ...enemy.position },
+        collected: false,
+      });
+      this.frameEvents.push({
+        type: "mini-boss-reward-dropped",
+        position: { ...enemy.position },
+        miniBossKind: enemy.miniBossKind,
       });
     }
     const experienceValue = ENEMY_CATALOG[enemy.type].experienceValue;
@@ -1214,6 +1388,12 @@ export class CombatSimulation {
     this.spawnEnemy("scuttler", { x: centre.x - 6.5, y: centre.y + 3 });
   }
 
+  private populateSiegeCrusherScenario(): void {
+    this.spawnMiniBoss("siege-crusher", { x: 4, y: 14 });
+    this.spawnEnemy("scuttler", { x: 25, y: 3 });
+    this.spawnEnemy("scuttler", { x: 26, y: 13 });
+  }
+
   private checkForLevelUp(): void {
     if (this.pendingUpgradeIds.length > 0) {
       return;
@@ -1259,6 +1439,11 @@ export class CombatSimulation {
       rank: enemy.rank,
       eliteKind: enemy.eliteKind,
       carapacePhase: enemy.eliteKind === "carapace-scuttler" ? enemy.carapacePhase : undefined,
+      miniBossKind: enemy.miniBossKind,
+      siegeCrusherPhase: enemy.miniBossKind === "siege-crusher" ? enemy.siegeCrusherPhase : undefined,
+      siegeCrusherDirection: enemy.miniBossKind === "siege-crusher"
+        ? { ...enemy.siegeCrusherDirection }
+        : undefined,
       facingDirection: { ...enemy.facingDirection },
     };
   }
@@ -1278,6 +1463,14 @@ export class CombatSimulation {
       default:
         return { x: radius, y };
     }
+  }
+
+  private activeObstacles(): ArenaDefinition["obstacles"] {
+    return this.arena.obstacles.filter((obstacle) => (this.obstacleDamage.get(obstacle.id) ?? 0) < 2);
+  }
+
+  private collisionArena(): ArenaDefinition {
+    return { ...this.arena, obstacles: this.activeObstacles() };
   }
 
   private nextId(): number {

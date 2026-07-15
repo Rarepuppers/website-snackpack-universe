@@ -19,6 +19,7 @@ export interface PooledSpriteEffect {
   scale?: number;
   targetScale?: number;
   rotation?: number;
+  texture?: "combat-effects-v1" | "batch-b-effects-v1";
 }
 
 export class VisualEffectPool {
@@ -39,7 +40,7 @@ export class VisualEffectPool {
   emitSprite(effect: PooledSpriteEffect): void {
     const view = this.acquireSprite();
     const startScale = effect.scale ?? 1;
-    view.setFrame(effect.frame)
+    view.setTexture(effect.texture ?? "combat-effects-v1", effect.frame)
       .setPosition(effect.x, effect.y)
       .setRotation(effect.rotation ?? 0)
       .setAlpha(1)

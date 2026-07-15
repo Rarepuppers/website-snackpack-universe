@@ -14,6 +14,9 @@ export class CombatHud {
   private readonly statePanel: Phaser.GameObjects.Container;
   private readonly stateText: Phaser.GameObjects.Text;
   private readonly debugText: Phaser.GameObjects.Text;
+  private readonly bossPanel: Phaser.GameObjects.Container;
+  private readonly bossFill: Phaser.GameObjects.Rectangle;
+  private readonly bossText: Phaser.GameObjects.Text;
 
   constructor(scene: Phaser.Scene, showDebug: boolean, productionArt = true) {
     const panel = productionArt
@@ -68,6 +71,19 @@ export class CombatHud {
       padding: { x: 5, y: 3 },
     }).setDepth(2000).setVisible(showDebug);
 
+    const bossBackground = scene.add.rectangle(0, 0, 430, 54, 0x0b121c, 0.94)
+      .setStrokeStyle(3, 0xffb15c);
+    const bossPortrait = productionArt
+      ? scene.add.image(-187, 0, "siege-crusher-portrait-v1").setDisplaySize(48, 48)
+      : scene.add.circle(-187, 0, 21, 0x8b4937).setStrokeStyle(2, 0xffb15c);
+    const bossBar = scene.add.rectangle(-155, 12, 340, 12, 0x2b1714)
+      .setOrigin(0, 0.5).setStrokeStyle(1, 0x75382d);
+    this.bossFill = scene.add.rectangle(-153, 12, 336, 8, 0xff6b3d)
+      .setOrigin(0, 0.5);
+    this.bossText = scene.add.text(15, -15, "", hudText("#fff1dc", "13px")).setOrigin(0.5);
+    this.bossPanel = scene.add.container(480, 466, [bossBackground, bossPortrait, bossBar, this.bossFill, this.bossText])
+      .setDepth(2050).setVisible(false);
+
     panel.setScrollFactor(0);
     rollPanel.setScrollFactor(0);
   }
@@ -97,6 +113,12 @@ export class CombatHud {
     this.debugText.setText(
       `state=${snapshot.heroState} enemies=${snapshot.enemies.length} friendly=${snapshot.projectiles.length} hostile=${snapshot.enemyProjectiles.length} hazards=${snapshot.groundHazards.length} rewards=${snapshot.eliteRewards.length} effects=${activeEffectCount}`,
     );
+    const boss = snapshot.enemies.find((enemy) => enemy.rank === "mini-boss");
+    this.bossPanel.setVisible(Boolean(boss));
+    if (boss) {
+      this.bossFill.setScale(Math.max(boss.health / boss.maxHealth, 0.001), 1);
+      this.bossText.setText(`SIEGE CRUSHER  •  ${(boss.siegeCrusherPhase ?? "stalk").toUpperCase()}`);
+    }
 
     let message = "";
     if (paused) message = "PAUSED\nPress Esc to continue";

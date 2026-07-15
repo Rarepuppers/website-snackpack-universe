@@ -219,6 +219,8 @@ The functional Slime Spitter placeholder now supplies the additional ranged pres
 
 The first functional elite is the Carapace Scuttler. It retains the Scuttler pursuit role but adds directional frontal armour, a visible charge wind-up, a committed charge, and a full-damage recovery window. Direct projectiles striking the front deal 25% damage; rear attacks and all attacks during recovery deal full damage. Its death always drops an elite upgrade cache, proving that elite rewards are guaranteed rather than random.
 
+The functional mini-boss is the Siege Crusher. It enters under a dedicated boss bar, stalks before selecting attacks by range, locks a charge lane during a 0.7-second tell, performs a broad telegraphed sweep at close range, and enters a 1.15-second punishable recovery. Charges damage cover on first impact and destroy it on the second, removing the obstacle from both rendering and collision while producing a debris shockwave. Defeat guarantees an arsenal cache that heals and supplies two upgrade thresholds.
+
 ### Web MVP
 
 - Three or four complementary standard archetypes

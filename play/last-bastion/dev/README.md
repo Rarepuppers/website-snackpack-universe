@@ -19,6 +19,7 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?loadout=scattergun` or `?loadout=arc-carbine` — isolate one new weapon behaviour
 - `/play/last-bastion/?scenario=slime-spitter&loadout=vertical` — hostile-glob, slowing-puddle, and three-weapon review lab
 - `/play/last-bastion/?scenario=carapace-elite&loadout=vertical` — directional armour, charge recovery, and guaranteed elite-reward lab
+- `/play/last-bastion/?scenario=siege-crusher&loadout=vertical` — mini-boss phases, cover destruction, boss bar, and arsenal-cache lab
 - `/play/last-bastion/?stress=4` — normal four-weapon mixed-enemy readability stress scene
 - `/play/last-bastion/?stress=12` — twelve-weapon capacity/performance stress scene
 - `/play/last-bastion/?mode=gallery` — production art frame, pivot, scale, state, and equipment gallery
