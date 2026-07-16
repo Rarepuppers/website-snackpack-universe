@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(19);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(23);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -62,5 +62,19 @@ describe("GameAssetManifest", () => {
     expect(GAME_ASSETS["scattergun-v1"].kind).toBe("image");
     expect(GAME_ASSETS["arc-carbine-v1"].kind).toBe("image");
     expect(GAME_ASSETS["siege-crusher-portrait-v1"].kind).toBe("image");
+  });
+
+  it("locks the gameplay-critical Production Batch C contracts", () => {
+    const expectedFrames = {
+      "blast-mite-v1": 12,
+      "warp-flanker-v1": 12,
+      "batch-c-rewards-v1": 16,
+      "batch-c-effects-v1": 20,
+    } as const;
+    for (const [id, frameCount] of Object.entries(expectedFrames)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
+    }
   });
 });

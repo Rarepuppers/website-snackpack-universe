@@ -79,9 +79,9 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly eliteArmorViews = new Map<number, Phaser.GameObjects.Triangle>();
   private readonly eliteRewardViews = new Map<number, EliteRewardView>();
   private readonly miniBossTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
-  private readonly warpTelegraphs = new Map<number, Phaser.GameObjects.Arc>();
+  private readonly warpTelegraphs = new Map<number, TelegraphView>();
   private readonly pickupViews = new Map<number, PickupView>();
-  private readonly powerupViews = new Map<number, Phaser.GameObjects.Rectangle>();
+  private readonly powerupViews = new Map<number, PickupView>();
   private readonly weaponViews = new Map<number, WeaponView>();
   private decisionOverlay: Phaser.GameObjects.Container | null = null;
   private visibleDecisionKey = "";
@@ -90,8 +90,8 @@ export class PrototypeScene extends Phaser.Scene {
   private marineFacingColumn = 0;
   private lastRollTrailMilliseconds = -1000;
   private lastSnapshot = this.simulation.snapshot();
-  private fenceLine: Phaser.GameObjects.Line | null = null;
-  private fenceSwitch: Phaser.GameObjects.Rectangle | null = null;
+  private fenceLine: Phaser.GameObjects.Line | Phaser.GameObjects.Image | null = null;
+  private fenceSwitch: Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite | null = null;
   private fencePrompt: Phaser.GameObjects.Text | null = null;
   private readonly saveStore = createSaveStore();
   private settings = applySettingOverrides(this.saveStore);
@@ -332,6 +332,10 @@ export class PrototypeScene extends Phaser.Scene {
         case "enemy-defeated":
           if (event.enemyType === "siege-crusher") {
             this.emitAuthoredEffect(19, event.position, 420, 0.8, 2.1, 0, "batch-b-effects-v1");
+          } else if (event.enemyType === "blast-mite") {
+            this.emitAuthoredEffect(16, event.position, 300, 0.65, 1.35, 0, "batch-c-effects-v1");
+          } else if (event.enemyType === "warp-flanker") {
+            this.emitAuthoredEffect(18, event.position, 260, 0.6, 1.2, 0, "batch-c-effects-v1");
           } else {
             this.emitAuthoredEffect(event.enemyType === "brain-blob" ? 18 : event.enemyType === "egg-cluster" ? 13 : 11, event.position, 210, 0.72, 1.2);
           }
@@ -397,21 +401,22 @@ export class PrototypeScene extends Phaser.Scene {
           this.flashCircle(event.position, 30, 0xffd36b, 520, 3.2, true);
           break;
         case "status-applied":
-          this.flashCircle(event.position, 14, statusColor(event.status), 260, 1.8, true);
+          this.emitAuthoredEffect(statusEffectFrame(event.status), event.position, 320, 0.58, 1.12, 0, "batch-c-effects-v1");
           break;
         case "powerup-collected":
-          this.flashCircle(event.position, 20, powerupColor(event.powerupType), 360, 2.4, true);
+          this.emitAuthoredEffect(powerupRewardFrame(event.powerupType), event.position, 360, 0.6, 1.3, 0, "batch-c-rewards-v1");
           break;
         case "warp-arrival":
-          this.flashCircle(event.position, 18, 0xd65cff, 240, 2, true);
+          this.emitAuthoredEffect(17, event.position, 280, 0.62, 1.2, 0, "batch-c-effects-v1");
           break;
         case "ultimate-fired":
           this.cameras.main.flash(140, 255, 214, 107);
-          this.flashCircle(event.position, 26, 0xffd36b, 380, 3, true);
+          this.emitAuthoredEffect(10, event.position, 420, 0.7, 2.2, 0, "batch-c-effects-v1");
+          this.emitAuthoredEffect(14, event.position, 460, 0.75, 2.4, 0, "batch-c-effects-v1");
           break;
         case "fence-activated":
-          this.flashCircle(event.from, 16, 0x8fe8ff, 300, 2.2, true);
-          this.flashCircle(event.to, 16, 0x8fe8ff, 300, 2.2, true);
+          this.emitAuthoredEffect(9, event.from, 300, 0.55, 1.2, 0, "batch-c-effects-v1");
+          this.emitAuthoredEffect(9, event.to, 300, 0.55, 1.2, 0, "batch-c-effects-v1");
           break;
       }
     }
@@ -439,7 +444,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -556,11 +561,15 @@ export class PrototypeScene extends Phaser.Scene {
       return createManifestSprite(this, "carapace-scuttler-v1");
     }
     switch (enemy.type) {
-      // Blast Mite and Warp Flanker use placeholder shapes in both render
-      // modes until their production sprite sheets are generated.
       case "blast-mite":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "blast-mite-v1");
+        }
         return this.add.circle(0, 0, 11, 0xff8a3d).setStrokeStyle(3, 0x7a2f12);
       case "warp-flanker":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "warp-flanker-v1");
+        }
         return this.add.triangle(0, 0, 0, -15, 13, 12, -13, 12, 0xd65cff)
           .setStrokeStyle(3, 0x4d1a66);
       case "egg-cluster":
@@ -595,8 +604,11 @@ export class PrototypeScene extends Phaser.Scene {
   private styleEnemyView(view: EnemyView, enemy: EnemySnapshot): void {
     if (view instanceof Phaser.GameObjects.Sprite) {
       view.setScale(enemy.rank === "elite" && !enemy.eliteKind ? 1.3 : 1);
+      view.setAlpha(enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup" ? 0.72 : 1);
       const status = enemy.statuses[0];
-      if (status) view.setTint(statusColor(status));
+      if (enemy.type === "blast-mite" && enemy.mitePhase === "armed" && Math.floor(this.time.now / 80) % 2 === 0) {
+        view.setTint(0xffffff);
+      } else if (status) view.setTint(statusColor(status));
       else view.clearTint();
       return;
     }
@@ -664,6 +676,18 @@ export class PrototypeScene extends Phaser.Scene {
         view.setFrame(eggClusterFrame(enemy.hatchProgress));
         view.setRotation(0);
         return;
+      case "blast-mite": {
+        const facingColumn = cardinalFacingColumn(enemy.position, playerPosition);
+        const row = enemy.mitePhase === "armed" ? 1 : 0;
+        view.setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
+      case "warp-flanker": {
+        const facingColumn = cardinalFacingColumn(enemy.position, playerPosition);
+        const row = enemy.warpPhase === "warp-windup" ? 1 : enemy.warpPhase === "materialize" ? 2 : 0;
+        view.setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
       case "brain-blob":
         view.setFrame(brainBlobFrame(enemy.brainPhase ?? "drift"));
         view.setRotation(angleToward(enemy.position, playerPosition));
@@ -1177,7 +1201,7 @@ function applyManifestOrigin(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "blast-mite-v1" | "warp-flanker-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

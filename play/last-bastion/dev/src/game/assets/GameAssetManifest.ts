@@ -17,6 +17,10 @@ import carapaceScuttlerSheetUrl from "../../../../art/production-tests/batch-b/c
 import siegeCrusherSheetUrl from "../../../../art/production-tests/batch-b/siege-crusher-spritesheet-v1-128.png";
 import batchBEffectSheetUrl from "../../../../art/production-tests/batch-b/batch-b-effect-atlas-v1-64.png";
 import siegeCrusherPortraitUrl from "../../../../art/production-tests/batch-b/siege-crusher-portrait-v1-128.png";
+import blastMiteSheetUrl from "../../../../art/production-tests/batch-c/blast-mite-spritesheet-v1-64.png";
+import warpFlankerSheetUrl from "../../../../art/production-tests/batch-c/warp-flanker-spritesheet-v1-96.png";
+import batchCRewardSheetUrl from "../../../../art/production-tests/batch-c/batch-c-reward-atlas-v1-64.png";
+import batchCEffectSheetUrl from "../../../../art/production-tests/batch-c/batch-c-effect-atlas-v1-64.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -37,7 +41,11 @@ export type GameAssetId =
   | "carapace-scuttler-v1"
   | "siege-crusher-v1"
   | "batch-b-effects-v1"
-  | "siege-crusher-portrait-v1";
+  | "siege-crusher-portrait-v1"
+  | "blast-mite-v1"
+  | "warp-flanker-v1"
+  | "batch-c-rewards-v1"
+  | "batch-c-effects-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -80,6 +88,10 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("siege-crusher-v1", siegeCrusherSheetUrl, 128, 128, 12, 0.5, 0.5),
   sheet("batch-b-effects-v1", batchBEffectSheetUrl, 64, 64, 20, 0.5, 0.5),
   image("siege-crusher-portrait-v1", siegeCrusherPortraitUrl, 128, 128, 0.5, 0.5),
+  sheet("blast-mite-v1", blastMiteSheetUrl, 64, 64, 12, 0.5, 0.5),
+  sheet("warp-flanker-v1", warpFlankerSheetUrl, 96, 96, 12, 0.5, 0.5),
+  sheet("batch-c-rewards-v1", batchCRewardSheetUrl, 64, 64, 16, 0.5, 0.5),
+  sheet("batch-c-effects-v1", batchCEffectSheetUrl, 64, 64, 20, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(
