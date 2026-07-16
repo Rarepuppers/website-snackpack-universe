@@ -10,6 +10,8 @@ The gameplay-critical portion of Production Asset Batch C is documented in [`bat
 
 Production Asset Batch D1 is documented in [`batch-d/README.md`](batch-d/README.md) and contains the integrated Brood Warden set. Production Asset Batch D2 is documented in [`batch-d2/README.md`](batch-d2/README.md) and contains the integrated Ripper body and melee effects.
 
+Production Asset Batch E1 is documented in [`batch-e1/README.md`](batch-e1/README.md) and contains the integrated Quillback body, individual spike projectile, launch accents, impacts, hit, and defeat effects.
+
 ## Marine base body v1
 
 - Source sheet: `marine-base-spritesheet-v1.png`
@@ -74,6 +76,6 @@ The retained `*-chroma.png` files record the generated source before background 
 
 ## Review switches
 
-Production art is enabled by default. Use `?art=placeholder` for the code-shape comparison renderer. The helmet is enabled by default; add `?helmet=0` to verify the unchanged base body without it. The existing `weapons=` parameter may be combined with either view. Use `?mode=gallery` for character/enemy/equipment frames and `?mode=gallery&batch=a|b|c|d|d2` for each production batch; Batch D is the Brood Warden set and D2 is the Ripper set.
+Production art is enabled by default. Use `?art=placeholder` for the code-shape comparison renderer. The helmet is enabled by default; add `?helmet=0` to verify the unchanged base body without it. The existing `weapons=` parameter may be combined with either view. Use `?mode=gallery` for character/enemy/equipment frames and `?mode=gallery&batch=a|b|c|d|d2|e1` for each production batch; D is the Brood Warden set, D2 is the Ripper set, and E1 is the Quillback set.
 
 The in-app browser runtime could not initialise in the current environment, so creator visual acceptance remains a manual review step. Automated type, unit, build, asset-HTTP, and route-HTTP validation is complete.

@@ -43,6 +43,7 @@ import {
   mitigateDamage,
   resolveSlowedMultiplier,
 } from "../stats/DefenceStats";
+import { stepSpinewheelReflection } from "./SpinewheelPhysics";
 
 export type EncounterStatus = "combat" | "intermission" | "victory" | "defeat";
 export type BrainPhase = "drift" | "windup" | "lunge" | "recover";
@@ -50,6 +51,8 @@ export type SlimeSpitterPhase = "positioning" | "windup" | "recover";
 export type BlastMitePhase = "chase" | "armed";
 export type WarpFlankerPhase = "stalk" | "warp-windup" | "materialize";
 export type RipperPhase = "pursuit" | "windup" | "sweep" | "recovery";
+export type QuillbackPhase = "positioning" | "windup" | "recover";
+export type SpinewheelPhase = "positioning" | "windup" | "rolling" | "recovery";
 export type EnemyRank = "standard" | "elite" | "mini-boss";
 export type EliteKind = "carapace-scuttler";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
@@ -61,7 +64,7 @@ export type BroodWardenPhase =
   | "entrance" | "stalk" | "cleave-windup" | "cleave"
   | "acid-windup" | "acid-volley" | "egg-windup" | "egg-lay"
   | "rush-windup" | "swarm-rush" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "quillback" | "spinewheel";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot";
 
@@ -115,6 +118,13 @@ export type CombatEvent =
   | { type: "powerup-collected"; position: Vector2Data; powerupType: PowerupType }
   | { type: "warp-arrival"; position: Vector2Data }
   | { type: "ripper-sweep"; position: Vector2Data; direction: Vector2Data; reachMetres: number }
+  | { type: "quillback-windup"; position: Vector2Data; direction: Vector2Data; count: 1 | 3 | 5 }
+  | { type: "quillback-volley"; position: Vector2Data; direction: Vector2Data; count: 1 | 3 | 5 }
+  | { type: "quillback-spike-impact"; position: Vector2Data; hitPlayer: boolean }
+  | { type: "spinewheel-windup"; position: Vector2Data; direction: Vector2Data }
+  | { type: "spinewheel-bounce"; position: Vector2Data; direction: Vector2Data; bouncesRemaining: number }
+  | { type: "spinewheel-hit"; position: Vector2Data }
+  | { type: "spinewheel-recovery"; position: Vector2Data }
   | { type: "ultimate-fired"; position: Vector2Data }
   | { type: "fence-activated"; from: Vector2Data; to: Vector2Data };
 
@@ -134,6 +144,13 @@ export interface EnemySnapshot {
   warpTarget?: Vector2Data;
   ripperPhase?: RipperPhase;
   ripperDirection?: Vector2Data;
+  quillbackPhase?: QuillbackPhase;
+  quillbackDirection?: Vector2Data;
+  quillbackShotCount?: 1 | 3 | 5;
+  spinewheelPhase?: SpinewheelPhase;
+  spinewheelDirection?: Vector2Data;
+  spinewheelSpeedMetresPerSecond?: number;
+  spinewheelBouncesRemaining?: number;
   rank: EnemyRank;
   eliteKind?: EliteKind;
   carapacePhase?: CarapacePhase;
@@ -184,7 +201,7 @@ export interface FenceSnapshot {
 
 export interface EnemyProjectileSnapshot {
   id: number;
-  type: "slime-glob" | "brood-acid";
+  type: "slime-glob" | "brood-acid" | "quill-spike";
   position: Vector2Data;
   rotationRadians: number;
 }
@@ -268,6 +285,17 @@ interface EnemyState {
   ripperPhase: RipperPhase;
   ripperPhaseRemainingSeconds: number;
   ripperDirection: Vector2Data;
+  quillbackPhase: QuillbackPhase;
+  quillbackPhaseRemainingSeconds: number;
+  quillbackDirection: Vector2Data;
+  quillbackAttackCount: number;
+  quillbackShotCount: 1 | 3 | 5;
+  spinewheelPhase: SpinewheelPhase;
+  spinewheelPhaseRemainingSeconds: number;
+  spinewheelDirection: Vector2Data;
+  spinewheelSpeedMetresPerSecond: number;
+  spinewheelBouncesRemaining: number;
+  spinewheelPlayerHitCooldownSeconds: number;
   rank: EnemyRank;
   eliteKind?: EliteKind;
   carapacePhase: CarapacePhase;
@@ -322,7 +350,7 @@ interface PowerupPickupState {
 
 interface EnemyProjectileState {
   id: number;
-  type: "slime-glob" | "brood-acid";
+  type: "slime-glob" | "brood-acid" | "quill-spike";
   position: Vector2Data;
   velocity: Vector2Data;
   target: Vector2Data;
@@ -379,6 +407,18 @@ const SLOWING_PUDDLE_DURATION_SECONDS = 4;
 const SLOWING_PUDDLE_RADIUS_METRES = 1.25;
 const SLIME_MOVEMENT_MULTIPLIER = 0.55;
 const SLIME_GLOB_DAMAGE = 8;
+const QUILLBACK_SPIKE_DAMAGE = 7;
+const QUILLBACK_PROJECTILE_SPEED = 7.5;
+const QUILLBACK_PROJECTILE_RANGE_METRES = 11;
+const QUILLBACK_FAN_ARC_RADIANS = Math.PI * 64 / 180;
+export const SPINEWHEEL_BASE_ROLL_SPEED = 7;
+export const SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER = 0.85;
+export const SPINEWHEEL_MAX_REBOUNDS = 2;
+export const SPINEWHEEL_REPEAT_HIT_LOCKOUT_SECONDS = 0.75;
+const SPINEWHEEL_ROLL_DAMAGE = 14;
+const SPINEWHEEL_WINDUP_SECONDS = 0.7;
+const SPINEWHEEL_MAX_ROLL_SECONDS = 3.2;
+const SPINEWHEEL_RECOVERY_SECONDS = 1.5;
 const POWERUP_LIFETIME_SECONDS = 12;
 const POWERUP_COLLECT_RADIUS_METRES = 0.7;
 const OVERCHARGE_ATTACK_SPEED_MULTIPLIER = 1.6;
@@ -487,6 +527,10 @@ export class CombatSimulation {
       this.populateBroodWardenScenario();
     } else if (this.scenario === "ripper") {
       this.populateRipperScenario();
+    } else if (this.scenario === "quillback") {
+      this.populateQuillbackScenario();
+    } else if (this.scenario === "spinewheel") {
+      this.populateSpinewheelScenario();
     } else if (this.wavesEnabled) {
       this.beginWave(0);
     }
@@ -609,6 +653,20 @@ export class CombatSimulation {
       ripperPhase: "pursuit",
       ripperPhaseRemainingSeconds: type === "ripper" ? 0.35 : 0,
       ripperDirection: { x: 0, y: 0 },
+      quillbackPhase: "positioning",
+      quillbackPhaseRemainingSeconds: type === "quillback" ? 0.55 : 0,
+      quillbackDirection: { x: 0, y: 0 },
+      quillbackAttackCount: 0,
+      quillbackShotCount: 1,
+      spinewheelPhase: "positioning",
+      spinewheelPhaseRemainingSeconds: type === "spinewheel" ? 0.6 : 0,
+      spinewheelDirection: normalizeVector({
+        x: this.playerPosition.x - spawnPosition.x,
+        y: this.playerPosition.y - spawnPosition.y,
+      }),
+      spinewheelSpeedMetresPerSecond: SPINEWHEEL_BASE_ROLL_SPEED,
+      spinewheelBouncesRemaining: SPINEWHEEL_MAX_REBOUNDS,
+      spinewheelPlayerHitCooldownSeconds: 0,
       rank: "standard",
       carapacePhase: "pursuit",
       carapacePhaseRemainingSeconds: 0,
@@ -1319,6 +1377,12 @@ export class CombatSimulation {
         case "ripper":
           this.updateRipper(enemy, deltaSeconds);
           break;
+        case "quillback":
+          this.updateQuillback(enemy, deltaSeconds);
+          break;
+        case "spinewheel":
+          this.updateSpinewheel(enemy, deltaSeconds);
+          break;
         case "siege-crusher":
           this.updateSiegeCrusher(enemy, deltaSeconds);
           break;
@@ -1929,6 +1993,201 @@ export class CombatSimulation {
     }
   }
 
+  private updateQuillback(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.quillbackPhaseRemainingSeconds -= deltaSeconds;
+    const playerDistance = distance(enemy.position, this.playerPosition);
+    const towardPlayer = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
+
+    switch (enemy.quillbackPhase) {
+      case "positioning":
+        if (playerDistance < 4.5) {
+          this.moveEnemy(
+            enemy,
+            { x: -towardPlayer.x, y: -towardPlayer.y },
+            ENEMY_CATALOG.quillback.movementSpeedMetresPerSecond * 1.15,
+            deltaSeconds,
+          );
+        } else if (playerDistance > 9.5) {
+          this.moveEnemy(enemy, towardPlayer, ENEMY_CATALOG.quillback.movementSpeedMetresPerSecond, deltaSeconds);
+        } else {
+          enemy.facingDirection = towardPlayer;
+        }
+        if (enemy.quillbackPhaseRemainingSeconds <= 0 && playerDistance >= 4.75 && playerDistance <= 10.5) {
+          enemy.quillbackPhase = "windup";
+          enemy.quillbackShotCount = quillbackVolleyCount(enemy.quillbackAttackCount);
+          enemy.quillbackPhaseRemainingSeconds = 0.62 + (enemy.quillbackShotCount - 1) * 0.055;
+          enemy.quillbackDirection = towardPlayer;
+          enemy.facingDirection = towardPlayer;
+          this.frameEvents.push({
+            type: "quillback-windup",
+            position: { ...enemy.position },
+            direction: { ...enemy.quillbackDirection },
+            count: enemy.quillbackShotCount,
+          });
+        }
+        break;
+      case "windup":
+        if (enemy.quillbackPhaseRemainingSeconds <= 0) {
+          this.launchQuillbackVolley(enemy);
+          enemy.quillbackAttackCount += 1;
+          enemy.quillbackPhase = "recover";
+          enemy.quillbackPhaseRemainingSeconds = enemy.quillbackShotCount === 1
+            ? 1.15
+            : enemy.quillbackShotCount === 3 ? 1.45 : 1.75;
+        }
+        break;
+      case "recover":
+        if (enemy.quillbackPhaseRemainingSeconds <= 0) {
+          enemy.quillbackPhase = "positioning";
+          enemy.quillbackPhaseRemainingSeconds = 0.4;
+        }
+        break;
+    }
+  }
+
+  private launchQuillbackVolley(enemy: EnemyState): void {
+    const directions = createQuillbackFanDirections(
+      enemy.quillbackDirection,
+      enemy.quillbackShotCount,
+      QUILLBACK_FAN_ARC_RADIANS,
+    );
+    for (const direction of directions) {
+      const start = {
+        x: enemy.position.x + direction.x * 0.72,
+        y: enemy.position.y + direction.y * 0.72,
+      };
+      const target = {
+        x: start.x + direction.x * QUILLBACK_PROJECTILE_RANGE_METRES,
+        y: start.y + direction.y * QUILLBACK_PROJECTILE_RANGE_METRES,
+      };
+      this.enemyProjectiles.push({
+        id: this.nextId(),
+        type: "quill-spike",
+        position: start,
+        velocity: {
+          x: direction.x * QUILLBACK_PROJECTILE_SPEED,
+          y: direction.y * QUILLBACK_PROJECTILE_SPEED,
+        },
+        target,
+        remainingSeconds: QUILLBACK_PROJECTILE_RANGE_METRES / QUILLBACK_PROJECTILE_SPEED,
+        damage: QUILLBACK_SPIKE_DAMAGE,
+        createsPuddle: false,
+        dead: false,
+      });
+    }
+    this.frameEvents.push({
+      type: "quillback-volley",
+      position: { ...enemy.position },
+      direction: { ...enemy.quillbackDirection },
+      count: enemy.quillbackShotCount,
+    });
+  }
+
+  private updateSpinewheel(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.spinewheelPhaseRemainingSeconds -= deltaSeconds;
+    enemy.spinewheelPlayerHitCooldownSeconds = Math.max(
+      0,
+      enemy.spinewheelPlayerHitCooldownSeconds - deltaSeconds,
+    );
+    const towardPlayer = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
+
+    switch (enemy.spinewheelPhase) {
+      case "positioning":
+        enemy.facingDirection = towardPlayer;
+        if (distance(enemy.position, this.playerPosition) > 6.5) {
+          this.moveEnemy(
+            enemy,
+            towardPlayer,
+            ENEMY_CATALOG.spinewheel.movementSpeedMetresPerSecond,
+            deltaSeconds,
+          );
+        }
+        if (enemy.spinewheelPhaseRemainingSeconds <= 0) {
+          enemy.spinewheelPhase = "windup";
+          enemy.spinewheelPhaseRemainingSeconds = SPINEWHEEL_WINDUP_SECONDS;
+          enemy.spinewheelDirection = towardPlayer;
+          enemy.facingDirection = towardPlayer;
+          this.frameEvents.push({
+            type: "spinewheel-windup",
+            position: { ...enemy.position },
+            direction: { ...towardPlayer },
+          });
+        }
+        break;
+      case "windup":
+        if (enemy.spinewheelPhaseRemainingSeconds <= 0) {
+          enemy.spinewheelPhase = "rolling";
+          enemy.spinewheelPhaseRemainingSeconds = SPINEWHEEL_MAX_ROLL_SECONDS;
+          enemy.spinewheelSpeedMetresPerSecond = SPINEWHEEL_BASE_ROLL_SPEED;
+          enemy.spinewheelBouncesRemaining = SPINEWHEEL_MAX_REBOUNDS;
+        }
+        break;
+      case "rolling": {
+        const previous = { ...enemy.position };
+        const reflection = stepSpinewheelReflection(
+          previous,
+          enemy.spinewheelDirection,
+          enemy.spinewheelSpeedMetresPerSecond * this.enemyStatusSpeedMultiplier(enemy) * deltaSeconds,
+          ENEMY_CATALOG.spinewheel.radiusMetres,
+          this.collisionArena(),
+        );
+        enemy.position = reflection.position;
+        enemy.spinewheelDirection = reflection.direction;
+        enemy.facingDirection = reflection.direction;
+
+        if (reflection.bounced) {
+          if (enemy.spinewheelBouncesRemaining <= 0) {
+            this.enterSpinewheelRecovery(enemy);
+            break;
+          }
+          enemy.spinewheelBouncesRemaining -= 1;
+          enemy.spinewheelSpeedMetresPerSecond *= SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER;
+          this.frameEvents.push({
+            type: "spinewheel-bounce",
+            position: { ...enemy.position },
+            direction: { ...enemy.spinewheelDirection },
+            bouncesRemaining: enemy.spinewheelBouncesRemaining,
+          });
+        }
+
+        const crossedPlayer = distanceToSegment(this.playerPosition, previous, enemy.position)
+          <= ENEMY_CATALOG.spinewheel.radiusMetres + PLAYER_RADIUS_METRES;
+        if (
+          crossedPlayer
+          && enemy.spinewheelPlayerHitCooldownSeconds <= 0
+          && !this.playerInvulnerable
+          && this.playerHurtCooldownSeconds <= 0
+        ) {
+          this.damagePlayer(SPINEWHEEL_ROLL_DAMAGE);
+          enemy.spinewheelPlayerHitCooldownSeconds = SPINEWHEEL_REPEAT_HIT_LOCKOUT_SECONDS;
+          this.frameEvents.push({ type: "spinewheel-hit", position: { ...this.playerPosition } });
+        }
+        if (enemy.spinewheelPhaseRemainingSeconds <= 0) {
+          this.enterSpinewheelRecovery(enemy);
+        }
+        break;
+      }
+      case "recovery":
+        if (enemy.spinewheelPhaseRemainingSeconds <= 0) {
+          enemy.spinewheelPhase = "positioning";
+          enemy.spinewheelPhaseRemainingSeconds = 0.65;
+        }
+        break;
+    }
+  }
+
+  private enterSpinewheelRecovery(enemy: EnemyState): void {
+    enemy.spinewheelPhase = "recovery";
+    enemy.spinewheelPhaseRemainingSeconds = SPINEWHEEL_RECOVERY_SECONDS;
+    this.frameEvents.push({ type: "spinewheel-recovery", position: { ...enemy.position } });
+  }
+
   private launchSlimeGlob(enemy: EnemyState): void {
     const direction = normalizeVector({
       x: enemy.spitterTarget.x - enemy.position.x,
@@ -1968,6 +2227,8 @@ export class CombatSimulation {
       if (pointHitsObstacle(projectile.position, this.activeObstacles())) {
         projectile.position = previous;
         this.resolveEnemyProjectileImpact(projectile);
+      } else if (distanceToSegment(this.playerPosition, previous, projectile.position) <= PLAYER_RADIUS_METRES + 0.3) {
+        this.resolveEnemyProjectileImpact(projectile);
       } else if (projectile.remainingSeconds <= 0) {
         projectile.position = { ...projectile.target };
         this.resolveEnemyProjectileImpact(projectile);
@@ -1978,8 +2239,11 @@ export class CombatSimulation {
   private resolveEnemyProjectileImpact(projectile: EnemyProjectileState): void {
     projectile.dead = true;
     const createdPuddle = projectile.createsPuddle && this.createSlowingPuddle(projectile.position);
+    const hitPlayer = distance(projectile.position, this.playerPosition) <= PLAYER_RADIUS_METRES + 0.45;
     if (projectile.type === "brood-acid") {
       this.frameEvents.push({ type: "brood-acid-impact", position: { ...projectile.position } });
+    } else if (projectile.type === "quill-spike") {
+      this.frameEvents.push({ type: "quillback-spike-impact", position: { ...projectile.position }, hitPlayer });
     } else {
       this.frameEvents.push({
         type: "slime-impact",
@@ -1987,7 +2251,7 @@ export class CombatSimulation {
         createdPuddle,
       });
     }
-    if (distance(projectile.position, this.playerPosition) <= PLAYER_RADIUS_METRES + 0.45) {
+    if (hitPlayer) {
       this.damagePlayer(projectile.damage);
     }
   }
@@ -2054,6 +2318,9 @@ export class CombatSimulation {
       }
 
       const definition = ENEMY_CATALOG[enemy.type];
+      if (enemy.type === "spinewheel" && enemy.spinewheelPhase === "rolling") {
+        continue;
+      }
       const contactDamage = enemy.rank === "elite"
         ? Math.round(definition.contactDamage * 1.4)
         : definition.contactDamage;
@@ -2412,6 +2679,20 @@ export class CombatSimulation {
     this.spawnEnemy("scuttler", { x: centre.x + 6, y: centre.y + 3.5 });
   }
 
+  private populateQuillbackScenario(): void {
+    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+    this.spawnEnemy("quillback", { x: centre.x + 7.5, y: centre.y });
+    this.spawnEnemy("quillback", { x: centre.x - 7, y: centre.y - 3.5 });
+    this.spawnEnemy("scuttler", { x: centre.x + 4.5, y: centre.y + 4 });
+  }
+
+  private populateSpinewheelScenario(): void {
+    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+    this.spawnEnemy("spinewheel", { x: centre.x - 7.5, y: centre.y });
+    this.spawnEnemy("spinewheel", { x: centre.x + 6.5, y: centre.y - 4.5 });
+    this.spawnEnemy("scuttler", { x: centre.x + 5, y: centre.y + 4.5 });
+  }
+
   private pickMiniBoss(): MiniBossKind {
     return selectMiniBossForRoll(this.random());
   }
@@ -2460,6 +2741,17 @@ export class CombatSimulation {
         : undefined,
       ripperPhase: enemy.type === "ripper" ? enemy.ripperPhase : undefined,
       ripperDirection: enemy.type === "ripper" ? { ...enemy.ripperDirection } : undefined,
+      quillbackPhase: enemy.type === "quillback" ? enemy.quillbackPhase : undefined,
+      quillbackDirection: enemy.type === "quillback" ? { ...enemy.quillbackDirection } : undefined,
+      quillbackShotCount: enemy.type === "quillback" ? enemy.quillbackShotCount : undefined,
+      spinewheelPhase: enemy.type === "spinewheel" ? enemy.spinewheelPhase : undefined,
+      spinewheelDirection: enemy.type === "spinewheel" ? { ...enemy.spinewheelDirection } : undefined,
+      spinewheelSpeedMetresPerSecond: enemy.type === "spinewheel"
+        ? enemy.spinewheelSpeedMetresPerSecond
+        : undefined,
+      spinewheelBouncesRemaining: enemy.type === "spinewheel"
+        ? enemy.spinewheelBouncesRemaining
+        : undefined,
       rank: enemy.rank,
       eliteKind: enemy.eliteKind,
       carapacePhase: enemy.eliteKind === "carapace-scuttler" ? enemy.carapacePhase : undefined,
@@ -2594,6 +2886,27 @@ export function pointInsideRipperSweep(
   const facing = normalizeVector(direction);
   const dot = (offset.x / magnitude) * facing.x + (offset.y / magnitude) * facing.y;
   return dot >= Math.cos(halfAngleRadians);
+}
+
+export function quillbackVolleyCount(attackCount: number): 1 | 3 | 5 {
+  if (attackCount <= 0) return 1;
+  if (attackCount === 1) return 3;
+  return 5;
+}
+
+export function createQuillbackFanDirections(
+  direction: Vector2Data,
+  count: 1 | 3 | 5,
+  totalArcRadians = Math.PI * 64 / 180,
+): readonly Vector2Data[] {
+  const facing = normalizeVector(direction);
+  const centreAngle = Math.atan2(facing.y, facing.x);
+  if (count === 1) return [facing];
+  return Array.from({ length: count }, (_, index) => {
+    const offset = -totalArcRadians / 2 + totalArcRadians * index / (count - 1);
+    const angle = centreAngle + offset;
+    return { x: Math.cos(angle), y: Math.sin(angle) };
+  });
 }
 
 function distanceToSegment(point: Vector2Data, from: Vector2Data, to: Vector2Data): number {

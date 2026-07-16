@@ -281,7 +281,7 @@ Recommended order after the Web MVP is **Magma breach → Cryo incursion → Voi
 | Working name | Role | Recommended behavior | Escalation | Anti-frustration rules |
 | --- | --- | --- | --- | --- |
 | Spinewheel | Ricochet disruptor | Telegraphs its heading, curls into a spinning shell, then rebounds from walls and solid cover | Base version makes two rebounds; later encounters raise speed and allow three or four, followed by a longer vulnerable rest | Loses roughly 15% speed per bounce; one enemy cannot hit the same player more than once per 0.75 s; never spawns already rolling beside the player |
-| Quillback | Ranged lane controller | Locks aim during a visible charge and fires slow readable spikes | Starts with one aimed spike, graduates to a three-shot fan, then a five-shot fan over a fixed 60–70° arc | Fire interval increases with projectile count; close-range firing is disabled or forces retreat; fans leave intentional dodge gaps and never silently home |
+| Quillback — production lab | Ranged lane controller | Locks aim during a visible charge and fires slow readable spikes | Starts with one aimed spike, graduates to three, then five across a fixed 64° arc | Production E1 body/projectile/effects integrated; wind-up/recovery increase with count; retreats inside 4.5 m and cannot charge below 4.75 m; fans never home |
 | Tether Bloom | Non-damaging control plant | Roots in place, telegraphs a tendril, then pulls a nearby player slowly for about 1.6–2 s | Later encounters modestly increase acquisition range from roughly 3.5 m toward a hard 5 m cap, not pull duration | Dodge/roll breaks the tether; dealing a defined break threshold also frees the player; only one tether may control a player; failed/broken grabs incur a long cooldown |
 
 These are stronger as complementary roles than as raw-stat variants. Recommended implementation order is **Quillback → Spinewheel → Tether Bloom**: Quillback reuses the hostile-projectile system, Spinewheel adds reusable reflection physics, and Tether Bloom comes last because forced movement needs the most careful input and accessibility testing. Suggested elites are Thorn Crown (denser but slower fan), Siege Wheel (one cover-breaking rebound and pronounced rest), and Anchor Bloom (two target candidates but still one tether per player).
@@ -416,3 +416,9 @@ The gameplay-critical Batch C subset was completed on 16 July 2026: Blast Mite a
 - The Bastion Eater body layers, attack overlays, phase damage states, arena breach assets, entrance/defeat presentation, and boss reward vault.
 
 Batch C, Batch D1, and Batch D2 are complete. D3 remains gated behind the vertical-slice creator playtest and placeholder final-boss implementation.
+
+### Batch E1 — Quillback production set
+
+- Completed: 4 × 3 directional positioning/wind-up/recovery body sheet at 96 × 96 logical cells.
+- Completed: dedicated 4 × 2 atlas at 64 × 64 logical cells for the separate spike projectile, charge/fan accents, cover/flesh impacts, hit, and defeat.
+- Code remains authoritative for the exact 64° fan paths and telegraph lines; generated effects must support rather than replace those fairness contracts.

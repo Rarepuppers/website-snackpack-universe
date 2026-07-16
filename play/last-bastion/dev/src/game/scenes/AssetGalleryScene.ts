@@ -15,6 +15,10 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "e1") {
+      this.createBatchE1Gallery();
+      return;
+    }
     if (batch === "d2") {
       this.createBatchD2Gallery();
       return;
@@ -268,6 +272,33 @@ export class AssetGalleryScene extends Phaser.Scene {
 
     this.add.text(480, 492, "Coral telegraph → ivory active strike → cracked-thorax punish window", style("#ffb982", "11px")).setOrigin(0.5);
     this.add.text(480, 518, "Review: ?mode=gallery&batch=d2 • Encounter: ?scenario=ripper&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchE1Gallery(): void {
+    this.add.text(20, 14, "LAST BASTION — QUILLBACK PRODUCTION ASSET BATCH E1", style("#ffffff", "17px"));
+    this.add.text(20, 38, "20 runtime visuals • retained Steam-quality masters • exact code-driven fan geometry", style("#8fb2c9", "11px"));
+
+    this.add.text(20, 70, "QUILLBACK — positioning / charged wind-up / exposed recovery × S N E W", style("#ffb06b", "11px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const column = frame % 6;
+      const row = Math.floor(frame / 6);
+      const x = 92 + column * 152;
+      const y = 132 + row * 124;
+      this.add.sprite(x, y, "quillback-v1", frame).setScale(0.82);
+      this.drawPivot(x, y);
+      this.add.text(x, y + 48, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 326, "QUILLBACK EFFECTS — spike / charge / fan accents / impacts / hit / defeat", style("#ffd08a", "11px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 64 + frame * 118;
+      this.add.sprite(x, 400, "quillback-effects-v1", frame).setScale(1.12);
+      this.drawPivot(x, 400);
+      this.add.text(x, 444, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(480, 490, "Ivory spike projectile remains separate; warning paths and collision use the same 64° runtime fan", style("#ffb982", "10px")).setOrigin(0.5);
+    this.add.text(480, 518, "Review: ?mode=gallery&batch=e1 • Encounter: ?scenario=quillback&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private drawWeaponRing(x: number, y: number, count: number, scale: number): void {

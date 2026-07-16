@@ -123,7 +123,9 @@ export class CombatHud {
       ? snapshot.scenario === "slime-spitter" ? "SPITTER LAB"
         : snapshot.scenario === "carapace-elite" ? "ELITE LAB"
           : snapshot.scenario === "brood-warden" ? "BROOD LAB"
-            : snapshot.scenario === "ripper" ? "RIPPER LAB" : "CRUSHER LAB"
+            : snapshot.scenario === "ripper" ? "RIPPER LAB"
+              : snapshot.scenario === "quillback" ? "QUILLBACK LAB"
+                : snapshot.scenario === "spinewheel" ? "SPINEWHEEL LAB" : "CRUSHER LAB"
       : snapshot.stressProfile
         ? `STRESS ${snapshot.stressProfile}`
         : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}`);

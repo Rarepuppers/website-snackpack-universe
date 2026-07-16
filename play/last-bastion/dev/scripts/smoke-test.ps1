@@ -1,17 +1,27 @@
 $ErrorActionPreference = 'Stop'
 
 $siteRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')
+$port = 44173
 $processInfo = [System.Diagnostics.ProcessStartInfo]::new()
 $processInfo.FileName = 'C:\Python314\python.exe'
-$processInfo.Arguments = "-m http.server 4173 --bind 127.0.0.1 --directory `"$siteRoot`""
+$processInfo.Arguments = "-m http.server $port --bind 127.0.0.1 --directory `"$siteRoot`""
 $processInfo.UseShellExecute = $false
 $processInfo.CreateNoWindow = $true
 $server = [System.Diagnostics.Process]::Start($processInfo)
 
 try {
-  Start-Sleep -Milliseconds 500
-
-  $page = Invoke-WebRequest -UseBasicParsing 'http://127.0.0.1:4173/play/last-bastion/'
+  $page = $null
+  for ($attempt = 0; $attempt -lt 20 -and $null -eq $page; $attempt += 1) {
+    try {
+      $page = Invoke-WebRequest -UseBasicParsing "http://127.0.0.1:$port/play/last-bastion/"
+    }
+    catch {
+      Start-Sleep -Milliseconds 150
+    }
+  }
+  if ($null -eq $page) {
+    throw 'Local smoke server did not become ready.'
+  }
   $assetPath = [regex]::Match(
     $page.Content,
     '/play/last-bastion/game-assets/[^"'']+\.js'
@@ -25,7 +35,7 @@ try {
     throw 'Built page does not reference a JavaScript game asset.'
   }
 
-  $asset = Invoke-WebRequest -UseBasicParsing ("http://127.0.0.1:4173$assetPath")
+  $asset = Invoke-WebRequest -UseBasicParsing ("http://127.0.0.1:$port$assetPath")
   $requiredArtAssets = @(
     'bastion-service-rifle-gameplay-v1-64.png',
     'brain-blob-states-v1-64.png',
@@ -54,12 +64,14 @@ try {
     'brood-warden-portrait-v1-128.png',
     'brood-warden-effect-atlas-v1-64.png',
     'ripper-spritesheet-v1-96.png',
-    'ripper-effect-atlas-v1-64.png'
+    'ripper-effect-atlas-v1-64.png',
+    'quillback-spritesheet-v1-96.png',
+    'quillback-effect-atlas-v1-64.png'
   )
 
   foreach ($artAssetName in $requiredArtAssets) {
     $artResponse = Invoke-WebRequest -UseBasicParsing (
-      "http://127.0.0.1:4173/play/last-bastion/game-assets/$artAssetName"
+      "http://127.0.0.1:$port/play/last-bastion/game-assets/$artAssetName"
     )
     if ($artResponse.StatusCode -ne 200 -or $artResponse.RawContentLength -le 0) {
       throw "Required art asset failed HTTP verification: $artAssetName"
@@ -74,17 +86,20 @@ try {
     '/play/last-bastion/?mode=gallery&batch=c',
     '/play/last-bastion/?mode=gallery&batch=d',
     '/play/last-bastion/?mode=gallery&batch=d2',
+    '/play/last-bastion/?mode=gallery&batch=e1',
     '/play/last-bastion/?loadout=vertical',
     '/play/last-bastion/?scenario=slime-spitter&loadout=vertical',
     '/play/last-bastion/?scenario=carapace-elite&loadout=vertical',
     '/play/last-bastion/?scenario=siege-crusher&loadout=vertical',
     '/play/last-bastion/?scenario=brood-warden&loadout=vertical',
     '/play/last-bastion/?scenario=ripper&loadout=vertical',
+    '/play/last-bastion/?scenario=quillback&loadout=vertical',
+    '/play/last-bastion/?scenario=spinewheel&loadout=vertical',
     '/play/last-bastion/?stress=4',
     '/play/last-bastion/?stress=12'
   )
   foreach ($reviewRoute in $reviewRoutes) {
-    $routeResponse = Invoke-WebRequest -UseBasicParsing ("http://127.0.0.1:4173$reviewRoute")
+    $routeResponse = Invoke-WebRequest -UseBasicParsing ("http://127.0.0.1:$port$reviewRoute")
     if ($routeResponse.StatusCode -ne 200 -or -not $routeResponse.Content.Contains('id="game-root"')) {
       throw "Review route failed HTTP verification: $reviewRoute"
     }

@@ -246,6 +246,8 @@ The exploding Blast Mite and teleporting Warp Flanker were pulled forward for wa
 
 The next functional Web MVP enemy is the Ripper, a slower melee bruiser with a locked-direction claw tell, a long frontal cone rather than circular contact damage, and a pronounced recovery window. Its deterministic lab now uses the Production Batch D2 directional pursuit, wind-up, sweep, and exposed-recovery sheet plus authored spawn, sweep, and defeat effects. The exact code-driven cone remains the warning and hit-test authority. It is intentionally excluded from ordinary waves until gameplay-scale timing and dodge-behind readability are accepted.
 
+The Quillback behavior gate adds a ranged lane controller without adding homing shots. It locks aim during a visible charge and escalates over repeated attacks from one spike to three and then five across a fixed 64-degree fan. Increased projectile count also increases wind-up and recovery. Inside 4.5 metres it retreats instead of firing, while its 4.75-metre firing floor prevents unavoidable point-blank fans. Production Asset Batch E1 supplies directional positioning, charged wind-up, and exposed-recovery body frames plus separate rotated spike projectiles, launch accents, cover/flesh impacts, and defeat presentation. Exact code-driven warning lines and projectile paths remain authoritative.
+
 The vertical-slice arena is 45 × 25.3125 metres—1.5 times the original viewport in each dimension—and uses smooth camera follow with a dead zone. The entire battlefield is no longer visible at once. Future arenas should usually range from roughly 1.4× to 2× the gameplay viewport unless a deliberately compact encounter needs full visibility.
 
 ## Encounter direction

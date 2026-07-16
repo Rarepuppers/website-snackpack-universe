@@ -50,7 +50,7 @@ type EnemyView =
   | Phaser.GameObjects.Sprite;
 type WeaponView = Phaser.GameObjects.Rectangle | Phaser.GameObjects.Image;
 type ProjectileView = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
-type EnemyProjectileView = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
+type EnemyProjectileView = Phaser.GameObjects.Arc | Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite;
 type HazardView = Phaser.GameObjects.Ellipse | Phaser.GameObjects.Sprite;
 type TelegraphView = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
 type PickupView = Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite;
@@ -80,6 +80,8 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly eliteRewardViews = new Map<number, EliteRewardView>();
   private readonly miniBossTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly ripperTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
+  private readonly quillbackTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
+  private readonly spinewheelTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly warpTelegraphs = new Map<number, TelegraphView>();
   private readonly pickupViews = new Map<number, PickupView>();
   private readonly powerupViews = new Map<number, PickupView>();
@@ -231,6 +233,8 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncEliteRewards(snapshot.eliteRewards);
     this.syncMiniBossTelegraphs(snapshot.enemies);
     this.syncRipperTelegraphs(snapshot.enemies);
+    this.syncQuillbackTelegraphs(snapshot.enemies);
+    this.syncSpinewheelTelegraphs(snapshot.enemies);
     this.syncWarpTelegraphs(snapshot.enemies);
     this.syncObstacleDamage(snapshot.damagedObstacleIds, snapshot.destroyedObstacleIds);
     this.syncPickups(snapshot.pickups);
@@ -282,6 +286,8 @@ export class PrototypeScene extends Phaser.Scene {
       this.eliteRewardViews,
       this.miniBossTelegraphs,
       this.ripperTelegraphs,
+      this.quillbackTelegraphs,
+      this.spinewheelTelegraphs,
       this.warpTelegraphs,
       this.pickupViews,
       this.powerupViews,
@@ -352,6 +358,8 @@ export class PrototypeScene extends Phaser.Scene {
             this.emitAuthoredEffect(18, event.position, 260, 0.6, 1.2, 0, "batch-c-effects-v1");
           } else if (event.enemyType === "ripper") {
             this.emitAuthoredEffect(7, event.position, 340, 0.72, 1.5, 0, "ripper-effects-v1");
+          } else if (event.enemyType === "quillback") {
+            this.emitAuthoredEffect(7, event.position, 360, 0.75, 1.55, 0, "quillback-effects-v1");
           } else {
             this.emitAuthoredEffect(event.enemyType === "brain-blob" ? 18 : event.enemyType === "egg-cluster" ? 13 : 11, event.position, 210, 0.72, 1.2);
           }
@@ -437,6 +445,46 @@ export class PrototypeScene extends Phaser.Scene {
           );
           this.shakeCamera(90, 0.0035);
           break;
+        case "quillback-windup":
+          this.emitAuthoredEffect(
+            1,
+            event.position,
+            260,
+            0.52,
+            0.85,
+            Math.atan2(event.direction.y, event.direction.x),
+            "quillback-effects-v1",
+          );
+          break;
+        case "quillback-volley":
+          this.emitAuthoredEffect(
+            event.count === 5 ? 3 : event.count === 3 ? 2 : 1,
+            event.position,
+            180,
+            event.count === 5 ? 0.72 : 0.58,
+            event.count === 5 ? 1.05 : 0.88,
+            Math.atan2(event.direction.y, event.direction.x),
+            "quillback-effects-v1",
+          );
+          break;
+        case "quillback-spike-impact":
+          this.emitAuthoredEffect(event.hitPlayer ? 5 : 4, event.position, 190, 0.48, 0.9, 0, "quillback-effects-v1");
+          break;
+        case "spinewheel-windup":
+          this.flashCircle(event.position, 18, 0xffc45e, 260, 1.7, true);
+          break;
+        case "spinewheel-bounce":
+          this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xff8a4c, 8);
+          this.flashCircle(event.position, 14, 0xff8a4c, 150, 1.45, true);
+          this.shakeCamera(70, 0.0025);
+          break;
+        case "spinewheel-hit":
+          this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xff6654, 7);
+          this.shakeCamera(110, 0.005);
+          break;
+        case "spinewheel-recovery":
+          this.flashCircle(event.position, 20, 0x68e4e8, 320, 1.85, true);
+          break;
         case "obstacle-damaged":
           this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xffd36b, 5);
           break;
@@ -492,7 +540,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" | "quillback-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -626,6 +674,15 @@ export class PrototypeScene extends Phaser.Scene {
         }
         return this.add.triangle(0, 0, -28, -18, 30, 0, -28, 18, 0xc9475f)
           .setStrokeStyle(4, 0xffc27a);
+      case "quillback":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "quillback-v1");
+        }
+        return this.add.triangle(0, 0, -24, -20, 30, 0, -24, 20, 0x6d3645)
+          .setStrokeStyle(5, 0xffc45e);
+      case "spinewheel":
+        return this.add.triangle(0, 0, 0, -23, 21, 17, -21, 17, 0x8f4a4e)
+          .setStrokeStyle(5, 0xffa14f);
       case "egg-cluster":
         if (this.useMarineArt) {
           return createManifestSprite(this, "egg-cluster-v1");
@@ -696,6 +753,31 @@ export class PrototypeScene extends Phaser.Scene {
       view.setFillStyle(phaseColors[enemy.ripperPhase ?? "pursuit"])
         .setRotation(Math.atan2(enemy.facingDirection.y, enemy.facingDirection.x))
         .setScale(enemy.ripperPhase === "windup" ? 1.12 : enemy.ripperPhase === "recovery" ? 0.9 : 1);
+      return;
+    }
+    if (enemy.type === "quillback" && view instanceof Phaser.GameObjects.Triangle) {
+      const phaseColors = { positioning: 0x6d3645, windup: 0xff9a52, recover: 0x514552 } as const;
+      const direction = enemy.quillbackDirection ?? enemy.facingDirection;
+      view.setFillStyle(phaseColors[enemy.quillbackPhase ?? "positioning"])
+        .setRotation(Math.atan2(direction.y, direction.x))
+        .setScale(enemy.quillbackPhase === "windup" ? 1.18 : enemy.quillbackPhase === "recover" ? 0.92 : 1);
+      return;
+    }
+    if (enemy.type === "spinewheel" && view instanceof Phaser.GameObjects.Triangle) {
+      const phase = enemy.spinewheelPhase ?? "positioning";
+      const phaseColors = {
+        positioning: 0x8f4a4e,
+        windup: 0xffc45e,
+        rolling: 0xff6b3d,
+        recovery: 0x526876,
+      } as const;
+      const direction = enemy.spinewheelDirection ?? enemy.facingDirection;
+      const rollingRotation = this.time.now / 75;
+      view.setFillStyle(phaseColors[phase])
+        .setStrokeStyle(5, phase === "recovery" ? 0x68e4e8 : 0xffa14f)
+        .setRotation(phase === "rolling" ? rollingRotation : Math.atan2(direction.y, direction.x) + Math.PI / 2)
+        .setScale(phase === "windup" ? 1.16 : phase === "recovery" ? 0.86 : 1)
+        .setAlpha(phase === "recovery" ? 0.82 : 1);
       return;
     }
 
@@ -778,6 +860,20 @@ export class PrototypeScene extends Phaser.Scene {
         const facingColumn = cardinalFacingColumn(enemy.position, target);
         const phase = enemy.ripperPhase ?? "pursuit";
         const row = phase === "windup" ? 1 : phase === "sweep" ? 2 : phase === "recovery" ? 3 : 0;
+        view.setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
+      case "quillback": {
+        const direction = enemy.quillbackPhase === "positioning"
+          ? enemy.facingDirection
+          : enemy.quillbackDirection ?? enemy.facingDirection;
+        const target = {
+          x: enemy.position.x + direction.x,
+          y: enemy.position.y + direction.y,
+        };
+        const facingColumn = cardinalFacingColumn(enemy.position, target);
+        const phase = enemy.quillbackPhase ?? "positioning";
+        const row = phase === "windup" ? 1 : phase === "recover" ? 2 : 0;
         view.setFrame(row * 4 + facingColumn).setRotation(0);
         return;
       }
@@ -875,7 +971,11 @@ export class PrototypeScene extends Phaser.Scene {
     for (const projectile of projectiles) {
       let view = this.enemyProjectileViews.get(projectile.id);
       if (!view) {
-        view = this.useMarineArt
+        view = projectile.type === "quill-spike" && this.useMarineArt
+          ? this.add.sprite(0, 0, "quillback-effects-v1", 0).setScale(0.48).setDepth(710)
+          : projectile.type === "quill-spike"
+            ? this.add.rectangle(0, 0, 18, 5, 0xffd08a).setStrokeStyle(2, 0xff6b52).setDepth(710)
+          : this.useMarineArt
           ? this.add.sprite(
             0,
             0,
@@ -889,6 +989,8 @@ export class PrototypeScene extends Phaser.Scene {
         .setRotation(projectile.rotationRadians);
       if (view instanceof Phaser.GameObjects.Sprite) {
         view.clearTint();
+      } else if (view instanceof Phaser.GameObjects.Rectangle) {
+        view.setFillStyle(0xffd08a).setStrokeStyle(2, 0xff6b52);
       } else {
         view.setFillStyle(projectile.type === "brood-acid" ? 0xd696ff : 0xa9e34b);
       }
@@ -1047,6 +1149,62 @@ export class PrototypeScene extends Phaser.Scene {
       view.strokePath();
       view.lineBetween(x, y, x + Math.cos(angle - halfAngle) * radius, y + Math.sin(angle - halfAngle) * radius);
       view.lineBetween(x, y, x + Math.cos(angle + halfAngle) * radius, y + Math.sin(angle + halfAngle) * radius);
+    }
+  }
+
+  private syncQuillbackTelegraphs(enemies: readonly EnemySnapshot[]): void {
+    const active = enemies.filter((enemy) => enemy.type === "quillback" && enemy.quillbackPhase === "windup");
+    const liveIds = new Set(active.map((enemy) => enemy.id));
+    this.destroyMissing(this.quillbackTelegraphs, liveIds);
+    for (const enemy of active) {
+      let view = this.quillbackTelegraphs.get(enemy.id);
+      if (!view) {
+        view = this.add.graphics().setDepth(61);
+        this.quillbackTelegraphs.set(enemy.id, view);
+      }
+      view.clear();
+      const x = enemy.position.x * PIXELS_PER_METRE;
+      const y = enemy.position.y * PIXELS_PER_METRE;
+      const direction = enemy.quillbackDirection ?? enemy.facingDirection;
+      const centreAngle = Math.atan2(direction.y, direction.x);
+      const count = enemy.quillbackShotCount ?? 1;
+      const totalArc = Math.PI * 64 / 180;
+      view.lineStyle(3, count === 5 ? 0xff6b52 : 0xffc45e, 0.72);
+      for (let index = 0; index < count; index += 1) {
+        const offset = count === 1 ? 0 : -totalArc / 2 + totalArc * index / (count - 1);
+        const angle = centreAngle + offset;
+        view.lineBetween(
+          x,
+          y,
+          x + Math.cos(angle) * 10.5 * PIXELS_PER_METRE,
+          y + Math.sin(angle) * 10.5 * PIXELS_PER_METRE,
+        );
+      }
+    }
+  }
+
+  private syncSpinewheelTelegraphs(enemies: readonly EnemySnapshot[]): void {
+    const active = enemies.filter((enemy) => enemy.type === "spinewheel" && enemy.spinewheelPhase === "windup");
+    const liveIds = new Set(active.map((enemy) => enemy.id));
+    this.destroyMissing(this.spinewheelTelegraphs, liveIds);
+    for (const enemy of active) {
+      let view = this.spinewheelTelegraphs.get(enemy.id);
+      if (!view) {
+        view = this.add.graphics().setDepth(61);
+        this.spinewheelTelegraphs.set(enemy.id, view);
+      }
+      view.clear();
+      const x = enemy.position.x * PIXELS_PER_METRE;
+      const y = enemy.position.y * PIXELS_PER_METRE;
+      const direction = enemy.spinewheelDirection ?? enemy.facingDirection;
+      const endX = x + direction.x * 11 * PIXELS_PER_METRE;
+      const endY = y + direction.y * 11 * PIXELS_PER_METRE;
+      view.lineStyle(6, 0xffc45e, 0.34);
+      view.lineBetween(x, y, endX, endY);
+      view.lineStyle(2, 0xffffff, 0.78);
+      view.lineBetween(x, y, endX, endY);
+      view.fillStyle(0xffc45e, 0.88);
+      view.fillCircle(endX, endY, 5);
     }
   }
 
@@ -1288,7 +1446,7 @@ function readStressProfile(): 4 | 12 | null {
 
 function readScenario(): CombatScenario | null {
   const scenario = new URLSearchParams(window.location.search).get("scenario");
-  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper"
+  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper" || scenario === "quillback" || scenario === "spinewheel"
     ? scenario
     : null;
 }
@@ -1397,7 +1555,7 @@ function applyManifestOrigin(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "quillback-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

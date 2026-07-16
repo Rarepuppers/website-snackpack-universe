@@ -3,8 +3,12 @@ import type { PlayerIntent } from "../input/PlayerIntent";
 import {
   broodWardenEnrageTier,
   CombatSimulation,
+  createQuillbackFanDirections,
   pointInsideRipperSweep,
+  quillbackVolleyCount,
   selectMiniBossForRoll,
+  SPINEWHEEL_BASE_ROLL_SPEED,
+  SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER,
 } from "./CombatSimulation";
 import type { ArenaDefinition } from "../arena/ArenaDefinition";
 
@@ -300,6 +304,53 @@ describe("CombatSimulation", () => {
     expect(snapshot.playerHealth).toBeLessThan(snapshot.playerMaxHealth);
   });
 
+  it("builds symmetric Quillback fans with intentional gaps", () => {
+    expect(quillbackVolleyCount(0)).toBe(1);
+    expect(quillbackVolleyCount(1)).toBe(3);
+    expect(quillbackVolleyCount(2)).toBe(5);
+    const fan = createQuillbackFanDirections({ x: 1, y: 0 }, 5);
+    const angles = fan.map((direction) => Math.atan2(direction.y, direction.x));
+    expect(fan).toHaveLength(5);
+    expect(angles[0]).toBeCloseTo(-Math.PI * 32 / 180, 5);
+    expect(angles[2]).toBeCloseTo(0, 5);
+    expect(angles[4]).toBeCloseTo(Math.PI * 32 / 180, 5);
+    expect(angles[1]! - angles[0]!).toBeGreaterThan(Math.PI * 14 / 180);
+  });
+
+  it("escalates Quillback volleys from one to three to five locked spikes", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, seed: 21 });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("quillback", { x: player.x + 7, y: player.y });
+    const windups: number[] = [];
+    const volleys: number[] = [];
+    for (let frame = 0; frame < 180 && volleys.length < 3; frame += 1) {
+      const snapshot = simulation.step(intent(), 0.05);
+      for (const event of snapshot.events) {
+        if (event.type === "quillback-windup") windups.push(event.count);
+        if (event.type === "quillback-volley") volleys.push(event.count);
+      }
+    }
+    expect(windups.slice(0, 3)).toEqual([1, 3, 5]);
+    expect(volleys.slice(0, 3)).toEqual([1, 3, 5]);
+  });
+
+  it("forces a close Quillback to retreat instead of firing point-blank", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, seed: 22 });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("quillback", { x: player.x + 2.5, y: player.y });
+    const initialDistance = 2.5;
+    let fired = false;
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 20; frame += 1) {
+      snapshot = simulation.step(intent(), 0.05);
+      fired ||= snapshot.events.some((event) => event.type === "quillback-volley");
+    }
+    const quillback = snapshot.enemies.find((enemy) => enemy.type === "quillback")!;
+    expect(Math.abs(quillback.position.x - snapshot.playerPosition.x)).toBeGreaterThan(initialDistance);
+    expect(fired).toBe(false);
+    expect(quillback.quillbackPhase).toBe("positioning");
+  });
+
   it("damages and then destroys cover struck by Crusher charges", () => {
     const arena: ArenaDefinition = {
       id: "crusher-test",
@@ -509,6 +560,67 @@ describe("CombatSimulation", () => {
 
     expect(observedBlock).toBe(true);
     expect(simulation.snapshot().projectiles).toHaveLength(0);
+  });
+
+  it("locks the Spinewheel heading during its warning instead of tracking the player", () => {
+    const arena: ArenaDefinition = {
+      id: "heading-lock-arena",
+      widthMetres: 40,
+      heightMetres: 22.5,
+      tileSizeMetres: 1,
+      obstacles: [],
+    };
+    const simulation = new CombatSimulation({ autoStartWaves: false, arena });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("spinewheel", { x: player.x - 6, y: player.y });
+
+    let lockedDirection = { x: 0, y: 0 };
+    for (let frame = 0; frame < 14; frame += 1) {
+      const snapshot = simulation.step(intent(), 0.05);
+      const wheel = snapshot.enemies[0]!;
+      if (wheel.spinewheelPhase === "windup") lockedDirection = wheel.spinewheelDirection!;
+    }
+    for (let frame = 0; frame < 16; frame += 1) {
+      simulation.step(intent({ move: { x: 0, y: -1 } }), 0.05);
+    }
+    const rolling = simulation.snapshot().enemies[0]!;
+
+    expect(rolling.spinewheelPhase).toBe("rolling");
+    expect(rolling.spinewheelDirection?.x).toBeCloseTo(lockedDirection.x, 5);
+    expect(rolling.spinewheelDirection?.y).toBeCloseTo(lockedDirection.y, 5);
+  });
+
+  it("completes two speed-decaying Spinewheel rebounds before exposed recovery", () => {
+    const arena: ArenaDefinition = {
+      id: "bounce-cycle-arena",
+      widthMetres: 12,
+      heightMetres: 8,
+      tileSizeMetres: 1,
+      obstacles: [],
+    };
+    const simulation = new CombatSimulation({ autoStartWaves: false, arena });
+    simulation.spawnEnemy("spinewheel", { x: 2, y: 4 });
+    const bounceSpeeds: number[] = [];
+    let observedRecovery = false;
+
+    for (let frame = 0; frame < 140; frame += 1) {
+      const snapshot = simulation.step(intent(), 0.05);
+      const wheel = snapshot.enemies[0];
+      if (!wheel) break;
+      if (snapshot.events.some((event) => event.type === "spinewheel-bounce")) {
+        bounceSpeeds.push(wheel.spinewheelSpeedMetresPerSecond!);
+      }
+      observedRecovery ||= wheel.spinewheelPhase === "recovery";
+    }
+
+    expect(bounceSpeeds).toHaveLength(2);
+    expect(bounceSpeeds[0]).toBeCloseTo(
+      SPINEWHEEL_BASE_ROLL_SPEED * SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER,
+    );
+    expect(bounceSpeeds[1]).toBeCloseTo(
+      SPINEWHEEL_BASE_ROLL_SPEED * SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER ** 2,
+    );
+    expect(observedRecovery).toBe(true);
   });
 });
 

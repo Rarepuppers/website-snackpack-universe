@@ -8,6 +8,8 @@ export type EnemyType =
   | "blast-mite"
   | "warp-flanker"
   | "ripper"
+  | "quillback"
+  | "spinewheel"
   | "siege-crusher"
   | "brood-warden";
 
@@ -88,6 +90,24 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 8,
     experienceValue: 4,
     armour: 8,
+  }),
+  quillback: enemy({
+    id: "quillback",
+    maxHealth: 46,
+    radiusMetres: 0.66,
+    movementSpeedMetresPerSecond: 1.35,
+    contactDamage: 6,
+    experienceValue: 4,
+    armour: 4,
+  }),
+  spinewheel: enemy({
+    id: "spinewheel",
+    maxHealth: 58,
+    radiusMetres: 0.68,
+    movementSpeedMetresPerSecond: 1.45,
+    contactDamage: 7,
+    experienceValue: 4,
+    armour: 6,
   }),
   "siege-crusher": enemy({
     id: "siege-crusher",
