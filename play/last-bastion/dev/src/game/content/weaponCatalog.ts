@@ -1,9 +1,16 @@
+import type { DamageType } from "../combat/damageTypes";
+import type { WeaponClass } from "../hero/HeroDefinition";
+
 export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine";
 export type WeaponTargetingMode = "cursor" | "nearest-enemy";
 export type WeaponAttackPattern = "projectile" | "scatter" | "chain-projectile";
 
 export interface WeaponRuntimeStats {
   id: WeaponId;
+  displayName: string;
+  description: string;
+  weaponClass: WeaponClass;
+  damageType: DamageType;
   targetingMode: WeaponTargetingMode;
   attackPattern: WeaponAttackPattern;
   rangeMetres: number;
@@ -22,6 +29,10 @@ export interface WeaponRuntimeStats {
 
 export const BASTION_SERVICE_RIFLE: Readonly<WeaponRuntimeStats> = weapon({
   id: "bastion-service-rifle",
+  displayName: "Bastion Service Rifle",
+  description: "Accurate cursor-aimed automatic rifle.",
+  weaponClass: "medium",
+  damageType: "physical",
   targetingMode: "cursor",
   attackPattern: "projectile",
   rangeMetres: 22,
@@ -33,6 +44,10 @@ export const BASTION_SERVICE_RIFLE: Readonly<WeaponRuntimeStats> = weapon({
 
 export const SCATTERGUN: Readonly<WeaponRuntimeStats> = weapon({
   id: "scattergun",
+  displayName: "Scattergun",
+  description: "Close-range five-pellet burst with heavy knockback.",
+  weaponClass: "heavy",
+  damageType: "physical",
   targetingMode: "cursor",
   attackPattern: "scatter",
   rangeMetres: 7,
@@ -47,6 +62,10 @@ export const SCATTERGUN: Readonly<WeaponRuntimeStats> = weapon({
 
 export const ARC_CARBINE: Readonly<WeaponRuntimeStats> = weapon({
   id: "arc-carbine",
+  displayName: "Arc Carbine",
+  description: "Auto-targets a nearby enemy; shock damage that chains.",
+  weaponClass: "light",
+  damageType: "shock",
   targetingMode: "nearest-enemy",
   attackPattern: "chain-projectile",
   rangeMetres: 10,
@@ -72,7 +91,8 @@ export const VERTICAL_SLICE_WEAPON_IDS: readonly WeaponId[] = Object.freeze([
 
 function weapon(
   definition: Pick<WeaponRuntimeStats,
-    | "id" | "targetingMode" | "attackPattern" | "rangeMetres"
+    | "id" | "displayName" | "description" | "weaponClass" | "damageType"
+    | "targetingMode" | "attackPattern" | "rangeMetres"
     | "fireIntervalSeconds" | "projectileSpeedMetresPerSecond"
     | "projectileLifetimeSeconds" | "projectileDamage"
   > & Partial<WeaponRuntimeStats>,

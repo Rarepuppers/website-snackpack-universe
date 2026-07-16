@@ -464,6 +464,31 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   font-style: italic;
   letter-spacing: 0.01em;
 }
+.bracket-champion--blurred {
+  cursor: pointer;
+}
+.bracket-champion--blurred strong {
+  filter: blur(9px);
+  user-select: none;
+  transition: filter 0.25s ease;
+}
+.bracket-champion--blurred::after {
+  content: "Tap to reveal";
+  position: absolute;
+  z-index: 3;
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(255,253,248,0.88);
+  padding: 4px 10px;
+  border-radius: 999px;
+  box-shadow: 0 4px 10px rgba(9,54,44,0.18);
+}
+.bracket-champion--blurred:hover strong {
+  filter: blur(6px);
+}
 @keyframes championGlow {
   0%, 100% { box-shadow: 0 14px 28px rgba(9,54,44,0.28), 0 0 0 rgba(239,181,77,0); }
   50% { box-shadow: 0 14px 28px rgba(9,54,44,0.28), 0 0 26px rgba(239,181,77,0.4); }
@@ -1583,6 +1608,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     var final = byNumber[104];
     var championKnown = !!(final && winnerOf(final));
     var champion = championKnown ? winnerOf(final) : "TBD";
+    var championRevealed = !championKnown || sessionStorage.getItem("wcChampionRevealed") === "1";
     root.innerHTML =
       '<svg class="bracket-lines" aria-hidden="true"></svg>' +
       bracketColumnHtml("Round of 32", leftR32, "bracket-col--r32") +
@@ -1592,12 +1618,28 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
       '<div class="bracket-col bracket-col--final"><div class="bracket-round-label">Final</div>' +
       '<div class="final-trophy-tile"><img src="../../assets/world-cup-2026-trophy.svg" alt=""><span>World Cup Final</span><small>Golden path</small></div>' +
       bracketMatchHtml(final) +
-      '<div class="bracket-champion' + (championKnown ? "" : " bracket-champion--pending") + '"><span>Winner</span><strong>' + escapeHtml(champion) + '</strong></div>' +
+      '<div class="bracket-champion' + (championKnown ? "" : " bracket-champion--pending") + (championKnown && !championRevealed ? " bracket-champion--blurred" : "") + '"><span>Winner</span><strong>' + escapeHtml(champion) + '</strong></div>' +
       '<div class="final-icons final-icons--ball"><img src="../officialball_transparent2-50.png" alt=""></div></div>' +
       bracketColumnHtml("Semi-final", rightSf, "bracket-col--sf") +
       bracketColumnHtml("Quarter-finals", rightQf, "bracket-col--qf") +
       bracketColumnHtml("Round of 16", rightR16, "bracket-col--r16") +
       bracketColumnHtml("Round of 32", rightR32, "bracket-col--r32");
+    if (championKnown && !championRevealed) {
+      var championEl = root.querySelector(".bracket-champion--blurred");
+      if (championEl) {
+        championEl.setAttribute("role", "button");
+        championEl.setAttribute("tabindex", "0");
+        championEl.setAttribute("aria-label", "Reveal the World Cup winner");
+        var reveal = function () {
+          championEl.classList.remove("bracket-champion--blurred");
+          try { sessionStorage.setItem("wcChampionRevealed", "1"); } catch (e) {}
+        };
+        championEl.addEventListener("click", reveal);
+        championEl.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); reveal(); }
+        });
+      }
+    }
     root.querySelectorAll(".bracket-match[data-match]").forEach(function (button) {
       button.addEventListener("click", function () {
         var match = byNumber[button.getAttribute("data-match")];

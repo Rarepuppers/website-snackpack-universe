@@ -11,4 +11,21 @@ export const MARINE = Object.freeze({
     distanceMetres: 4,
     invulnerabilitySeconds: 0.25,
   },
+  defence: {
+    armour: 0,
+    flatDamageReduction: 0,
+    maxShield: 0,
+    shieldRechargeDelaySeconds: 3,
+    shieldRechargePerSecond: 8,
+    slowResistance: 0,
+    attackSpeedMultiplier: 1,
+    hitInvulnerabilitySeconds: 0.65,
+    mineralFindPercent: 100,
+  },
+  weaponProficiencies: {
+    light: 1,
+    medium: 1,
+    heavy: 1,
+    unique: 1,
+  },
 } satisfies HeroDefinition);
