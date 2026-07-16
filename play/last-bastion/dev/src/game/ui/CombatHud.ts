@@ -108,10 +108,13 @@ export class CombatHud {
         .map((buff) => `${buff.type.toUpperCase()} ${buff.remainingSeconds.toFixed(1)}s`)
         .join("  ")}`
       : "";
-    this.statsText.setText(`LV ${snapshot.level}  HP ${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}\nXP ${snapshot.experience}/${snapshot.experienceForNextLevel}${snapshot.playerSlowed ? "  SLOWED" : ""}${buffLabel}`);
-    this.rollText.setText(snapshot.evasiveReady
+    this.statsText.setText(`LV ${snapshot.level}  HP ${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}\nXP ${snapshot.experience}/${snapshot.experienceForNextLevel}${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerEntrenched ? "  ENTRENCHED" : ""}${buffLabel}`);
+    const ultimateLabel = snapshot.ultimateReady
+      ? "ULT READY — R"
+      : `ULT ${snapshot.ultimateCooldownRemainingSeconds.toFixed(1)}s`;
+    this.rollText.setText(`${snapshot.evasiveReady
       ? "READY — SPACE"
-      : `${snapshot.evasiveCooldownRemainingSeconds.toFixed(2)}s`);
+      : `${snapshot.evasiveCooldownRemainingSeconds.toFixed(2)}s`}   ${ultimateLabel}`);
     this.weaponPips.forEach((pip, index) => {
       const weapon = snapshot.equippedWeapons[index];
       pip.setFillStyle(weapon ? weaponPipColor(weapon.weaponId) : 0x273747);

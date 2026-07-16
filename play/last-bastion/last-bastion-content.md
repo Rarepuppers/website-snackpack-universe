@@ -363,7 +363,7 @@ Treasure chests are reward presentation, not a separate currency. Relic fragment
 
 ### Batch C — rewards and battlefield interaction
 
-The reward state model (weapon chest, Supply Depot, powerup timers) now exists in code, so Batch C is unblocked. Also required from this batch: Blast Mite and Warp Flanker sprite sheets plus status-effect overlays (Blaze, Overload, Freeze, Corrode tints/particles).
+The reward state model (weapon chest, Supply Depot, powerup timers) now exists in code, so Batch C is unblocked. Also required from this batch: Blast Mite and Warp Flanker sprite sheets, status-effect overlays (Blaze, Overload, Freeze, Corrode tints/particles), the electric-fence set (power switch states, two pylons, energized beam, zap effect), and Bastion Barrage ultimate effects (launch ring, volley projectile, HUD ultimate icon).
 
 - Weapon and upgrade chest closed/open/claimed states.
 - Supply depot idle/available/used/damaged states and three choice icons.

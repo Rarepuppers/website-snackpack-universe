@@ -28,4 +28,20 @@ export const MARINE = Object.freeze({
     heavy: 1,
     unique: 1,
   },
+  passive: {
+    id: "entrenched",
+    name: "Entrenched",
+    description: "Holding your ground for 1 second grants +3 armour until you move.",
+    stationarySecondsRequired: 1,
+    bonusArmour: 3,
+  },
+  ultimate: {
+    id: "bastion-barrage",
+    name: "Bastion Barrage",
+    description: "Launch an explosive volley in every direction.",
+    cooldownSeconds: 24,
+    projectileCount: 12,
+    projectileDamage: 18,
+    explosionRadiusMetres: 1.4,
+  },
 } satisfies HeroDefinition);

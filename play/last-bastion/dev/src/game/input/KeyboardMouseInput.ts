@@ -1,6 +1,12 @@
 import Phaser from "phaser";
 import type { PlayerIntent } from "./PlayerIntent";
 import { normalizeVector } from "../math/Vector2Data";
+import {
+  DISCONNECTED_GAMEPAD,
+  GamepadIntentMapper,
+  mergeIntents,
+  type GamepadStateSnapshot,
+} from "./GamepadIntentMapper";
 
 interface ControlKeys {
   up: Phaser.Input.Keyboard.Key;
@@ -20,6 +26,7 @@ interface ControlKeys {
 
 export class KeyboardMouseInput {
   private readonly keys: ControlKeys;
+  private readonly gamepadMapper = new GamepadIntentMapper();
 
   constructor(private readonly scene: Phaser.Scene) {
     const keyboard = scene.input.keyboard;
@@ -52,7 +59,7 @@ export class KeyboardMouseInput {
     const vertical = Number(this.keys.down.isDown || this.keys.downAlt.isDown)
       - Number(this.keys.up.isDown || this.keys.upAlt.isDown);
 
-    return {
+    const keyboardMouse: PlayerIntent = {
       move: normalizeVector({ x: horizontal, y: vertical }),
       aim: normalizeVector({
         x: pointer.worldX - playerPosition.x,
@@ -64,6 +71,25 @@ export class KeyboardMouseInput {
       ultimatePressed: Phaser.Input.Keyboard.JustDown(this.keys.ultimate),
       pausePressed: Phaser.Input.Keyboard.JustDown(this.keys.pause),
       restartPressed: Phaser.Input.Keyboard.JustDown(this.keys.restart),
+    };
+
+    return mergeIntents(keyboardMouse, this.gamepadMapper.update(this.readGamepadState()));
+  }
+
+  private readGamepadState(): GamepadStateSnapshot {
+    const pad = this.scene.input.gamepad?.getPad(0);
+    if (!pad || !pad.connected) {
+      return DISCONNECTED_GAMEPAD;
+    }
+    return {
+      connected: true,
+      leftStick: { x: pad.leftStick?.x ?? 0, y: pad.leftStick?.y ?? 0 },
+      rightStick: { x: pad.rightStick?.x ?? 0, y: pad.rightStick?.y ?? 0 },
+      fireHeld: (pad.R2 ?? 0) > 0.35 || pad.R1 > 0.35,
+      southPressed: pad.A,
+      westPressed: pad.X,
+      northPressed: pad.Y,
+      startPressed: Boolean(pad.buttons[9]?.pressed),
     };
   }
 }

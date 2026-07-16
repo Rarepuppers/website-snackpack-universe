@@ -103,7 +103,9 @@ export type CombatEvent =
   | { type: "mini-boss-reward-dropped"; position: Vector2Data; miniBossKind: MiniBossKind }
   | { type: "status-applied"; position: Vector2Data; status: StatusEffectType }
   | { type: "powerup-collected"; position: Vector2Data; powerupType: PowerupType }
-  | { type: "warp-arrival"; position: Vector2Data };
+  | { type: "warp-arrival"; position: Vector2Data }
+  | { type: "ultimate-fired"; position: Vector2Data }
+  | { type: "fence-activated"; from: Vector2Data; to: Vector2Data };
 
 export interface EnemySnapshot {
   id: number;
@@ -154,6 +156,17 @@ export interface ActiveBuffSnapshot {
   remainingSeconds: number;
 }
 
+export interface FenceSnapshot {
+  switchPosition: Vector2Data;
+  from: Vector2Data;
+  to: Vector2Data;
+  active: boolean;
+  activeRemainingSeconds: number;
+  ready: boolean;
+  cooldownRemainingSeconds: number;
+  playerNearSwitch: boolean;
+}
+
 export interface EnemyProjectileSnapshot {
   id: number;
   type: "slime-glob";
@@ -186,8 +199,12 @@ export interface CombatSnapshot {
   playerShield: number;
   playerMaxShield: number;
   playerInvulnerable: boolean;
+  playerEntrenched: boolean;
   evasiveReady: boolean;
   evasiveCooldownRemainingSeconds: number;
+  ultimateReady: boolean;
+  ultimateCooldownRemainingSeconds: number;
+  fence: FenceSnapshot | null;
   heroState: string;
   level: number;
   experience: number;
@@ -345,6 +362,13 @@ const AEGIS_SHIELD_AMOUNT = 25;
 const BLAST_MITE_EXPLOSION_RADIUS_METRES = 1.6;
 const BLAST_MITE_EXPLOSION_DAMAGE = 16;
 const SUPPLY_DEPOT_HEAL = 45;
+const FENCE_ACTIVE_SECONDS = 6;
+const FENCE_COOLDOWN_SECONDS = 18;
+const FENCE_DAMAGE_PER_SECOND = 22;
+const FENCE_CONTACT_RANGE_METRES = 0.6;
+const FENCE_SWITCH_RANGE_METRES = 1.4;
+const ULTIMATE_PROJECTILE_SPEED = 12;
+const ULTIMATE_PROJECTILE_LIFETIME_SECONDS = 0.9;
 
 const POWERUP_DURATION_SECONDS: Readonly<Record<PowerupType, number>> = Object.freeze({
   overcharge: 6,
@@ -363,7 +387,12 @@ export class CombatSimulation {
   readonly arena: Readonly<ArenaDefinition>;
 
   private readonly heroMotion = new HeroMotionController(MARINE);
-  private readonly defence = MARINE.defence;
+  private defence = { ...MARINE.defence };
+  private moveSpeedMultiplier = 1;
+  private stationarySeconds = 0;
+  private ultimateCooldownRemainingSeconds = 0;
+  private fenceActiveRemainingSeconds = 0;
+  private fenceCooldownRemainingSeconds = 0;
   private playerPosition: Vector2Data;
   private playerHealth = PLAYER_MAX_HEALTH;
   private playerShield = MARINE.defence.maxShield;
@@ -444,19 +473,33 @@ export class CombatSimulation {
       weapon.cooldownSeconds = Math.max(0, weapon.cooldownSeconds - delta);
     }
     this.playerHurtCooldownSeconds = Math.max(0, this.playerHurtCooldownSeconds - delta);
+    this.ultimateCooldownRemainingSeconds = Math.max(0, this.ultimateCooldownRemainingSeconds - delta);
     this.updateBuffs(delta);
     this.updateShieldRecharge(delta);
+    this.updateFence(intent, delta);
 
     const motionFrame = this.heroMotion.update(intent, delta);
     this.heroState = motionFrame.state;
     this.playerInvulnerable = motionFrame.isInvulnerable;
     this.evasiveReady = motionFrame.evasiveReady;
     this.evasiveCooldownRemainingSeconds = motionFrame.evasiveCooldownRemainingSeconds;
+    if (intent.move.x !== 0 || intent.move.y !== 0 || motionFrame.state === "evading") {
+      this.stationarySeconds = 0;
+    } else {
+      this.stationarySeconds += delta;
+    }
     let movementMultiplier = motionFrame.state !== "evading" && this.isPlayerSlowed()
       ? resolveSlowedMultiplier(SLIME_MOVEMENT_MULTIPLIER, this.defence.slowResistance)
       : 1;
-    if (motionFrame.state !== "evading" && this.isBuffActive("adrenaline")) {
-      movementMultiplier *= ADRENALINE_MOVE_MULTIPLIER;
+    if (motionFrame.state !== "evading") {
+      movementMultiplier *= this.moveSpeedMultiplier;
+      if (this.isBuffActive("adrenaline")) {
+        movementMultiplier *= ADRENALINE_MOVE_MULTIPLIER;
+      }
+    }
+
+    if (intent.ultimatePressed && this.ultimateCooldownRemainingSeconds <= 0) {
+      this.fireUltimate();
     }
     const previousPlayerPosition = { ...this.playerPosition };
     this.playerPosition = resolveCircleMovement(
@@ -648,8 +691,12 @@ export class CombatSimulation {
       playerShield: this.playerShield,
       playerMaxShield: this.defence.maxShield,
       playerInvulnerable: this.playerInvulnerable || this.playerHurtCooldownSeconds > 0,
+      playerEntrenched: this.isPlayerEntrenched(),
       evasiveReady: this.evasiveReady,
       evasiveCooldownRemainingSeconds: this.evasiveCooldownRemainingSeconds,
+      ultimateReady: this.ultimateCooldownRemainingSeconds <= 0,
+      ultimateCooldownRemainingSeconds: this.ultimateCooldownRemainingSeconds,
+      fence: this.fenceSnapshot(),
       heroState: this.heroState,
       level: this.level,
       experience: this.experience,
@@ -746,6 +793,27 @@ export class CombatSimulation {
         break;
       case "field-magnet":
         this.magnetMultiplier *= 1.5;
+        break;
+      case "incendiary-rounds":
+        this.modifyAllWeapons((weapon) => { weapon.damageType = "fire"; });
+        break;
+      case "cryo-coating":
+        this.modifyAllWeapons((weapon) => { weapon.damageType = "cryo"; });
+        break;
+      case "chain-lightning":
+        this.modifyAllWeapons((weapon) => {
+          weapon.chainCount += 1;
+          weapon.chainRadiusMetres = Math.max(weapon.chainRadiusMetres, 2.5);
+        });
+        break;
+      case "adrenal-servos":
+        this.moveSpeedMultiplier *= 1.12;
+        break;
+      case "composite-plating":
+        this.defence.armour += 3;
+        break;
+      case "shield-capacitor":
+        this.defence.maxShield += 15;
         break;
     }
   }
@@ -921,6 +989,94 @@ export class CombatSimulation {
     for (const weapon of this.equippedWeapons) {
       modifier(weapon.stats);
     }
+  }
+
+  private isPlayerEntrenched(): boolean {
+    return this.stationarySeconds >= MARINE.passive.stationarySecondsRequired;
+  }
+
+  private fireUltimate(): void {
+    const ultimate = MARINE.ultimate;
+    this.ultimateCooldownRemainingSeconds = ultimate.cooldownSeconds;
+    for (let index = 0; index < ultimate.projectileCount; index += 1) {
+      const angle = (index / ultimate.projectileCount) * Math.PI * 2;
+      const direction = { x: Math.cos(angle), y: Math.sin(angle) };
+      this.projectiles.push({
+        id: this.nextId(),
+        weaponId: "bastion-service-rifle",
+        damageType: "physical",
+        position: {
+          x: this.playerPosition.x + direction.x * 0.6,
+          y: this.playerPosition.y + direction.y * 0.6,
+        },
+        velocity: {
+          x: direction.x * ULTIMATE_PROJECTILE_SPEED,
+          y: direction.y * ULTIMATE_PROJECTILE_SPEED,
+        },
+        damage: ultimate.projectileDamage,
+        remainingSeconds: ULTIMATE_PROJECTILE_LIFETIME_SECONDS,
+        pierceRemaining: 0,
+        explosionRadiusMetres: ultimate.explosionRadiusMetres,
+        knockbackMetres: 0.4,
+        chainRemaining: 0,
+        chainRadiusMetres: 0,
+        hitEnemyIds: new Set<number>(),
+        dead: false,
+      });
+    }
+    this.frameEvents.push({ type: "ultimate-fired", position: { ...this.playerPosition } });
+  }
+
+  private updateFence(intent: PlayerIntent, deltaSeconds: number): void {
+    const fence = this.arena.fence;
+    if (!fence) {
+      return;
+    }
+    this.fenceActiveRemainingSeconds = Math.max(0, this.fenceActiveRemainingSeconds - deltaSeconds);
+    this.fenceCooldownRemainingSeconds = Math.max(0, this.fenceCooldownRemainingSeconds - deltaSeconds);
+
+    if (
+      intent.interactPressed
+      && this.fenceCooldownRemainingSeconds <= 0
+      && distance(this.playerPosition, fence.switchPosition) <= FENCE_SWITCH_RANGE_METRES
+    ) {
+      this.fenceActiveRemainingSeconds = FENCE_ACTIVE_SECONDS;
+      this.fenceCooldownRemainingSeconds = FENCE_COOLDOWN_SECONDS;
+      this.frameEvents.push({
+        type: "fence-activated",
+        from: { ...fence.from },
+        to: { ...fence.to },
+      });
+    }
+
+    if (this.fenceActiveRemainingSeconds <= 0) {
+      return;
+    }
+    for (const enemy of this.enemies) {
+      if (enemy.dead) continue;
+      const reach = FENCE_CONTACT_RANGE_METRES + ENEMY_CATALOG[enemy.type].radiusMetres * 0.5;
+      if (distanceToSegment(enemy.position, fence.from, fence.to) <= reach) {
+        this.damageEnemy(enemy, FENCE_DAMAGE_PER_SECOND * deltaSeconds, "shock");
+      }
+    }
+  }
+
+  private fenceSnapshot(): FenceSnapshot | null {
+    const fence = this.arena.fence;
+    if (!fence) {
+      return null;
+    }
+    return {
+      switchPosition: { ...fence.switchPosition },
+      from: { ...fence.from },
+      to: { ...fence.to },
+      active: this.fenceActiveRemainingSeconds > 0,
+      activeRemainingSeconds: this.fenceActiveRemainingSeconds,
+      ready: this.fenceCooldownRemainingSeconds <= 0,
+      cooldownRemainingSeconds: this.fenceCooldownRemainingSeconds,
+      playerNearSwitch:
+        distance(this.playerPosition, fence.switchPosition) <= FENCE_SWITCH_RANGE_METRES,
+    };
   }
 
   private currentAttackSpeedMultiplier(): number {
@@ -1622,9 +1778,10 @@ export class CombatSimulation {
     this.playerShield = absorption.remainingShield;
     this.shieldRechargeCooldownSeconds = this.defence.shieldRechargeDelaySeconds;
     if (absorption.remainingDamage > 0) {
+      const entrenchedBonus = this.isPlayerEntrenched() ? MARINE.passive.bonusArmour : 0;
       const mitigated = mitigateDamage(
         absorption.remainingDamage,
-        this.defence.armour,
+        this.defence.armour + entrenchedBonus,
         this.defence.flatDamageReduction,
       );
       this.playerHealth = Math.max(0, this.playerHealth - mitigated);
@@ -2086,6 +2243,20 @@ function buildWave(index: number): SpawnPlan[] {
 
 function distance(left: Vector2Data, right: Vector2Data): number {
   return Math.hypot(left.x - right.x, left.y - right.y);
+}
+
+function distanceToSegment(point: Vector2Data, from: Vector2Data, to: Vector2Data): number {
+  const segmentX = to.x - from.x;
+  const segmentY = to.y - from.y;
+  const lengthSquared = segmentX * segmentX + segmentY * segmentY;
+  if (lengthSquared === 0) {
+    return distance(point, from);
+  }
+  const t = Math.min(Math.max(
+    ((point.x - from.x) * segmentX + (point.y - from.y) * segmentY) / lengthSquared,
+    0,
+  ), 1);
+  return distance(point, { x: from.x + segmentX * t, y: from.y + segmentY * t });
 }
 
 function clamp(value: number, minimum: number, maximum: number): number {

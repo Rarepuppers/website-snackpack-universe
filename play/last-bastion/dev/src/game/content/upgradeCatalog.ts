@@ -4,7 +4,13 @@ export type UpgradeId =
   | "piercing-rounds"
   | "explosive-payload"
   | "heavy-calibre"
-  | "field-magnet";
+  | "field-magnet"
+  | "incendiary-rounds"
+  | "cryo-coating"
+  | "chain-lightning"
+  | "adrenal-servos"
+  | "composite-plating"
+  | "shield-capacitor";
 
 export interface UpgradeDefinition {
   id: UpgradeId;
@@ -43,13 +49,49 @@ export const UPGRADE_CATALOG: Readonly<Record<UpgradeId, UpgradeDefinition>> = O
     name: "Field Magnet",
     description: "Increase XP attraction and collection range.",
   },
+  "incendiary-rounds": {
+    id: "incendiary-rounds",
+    name: "Incendiary Rounds",
+    description: "All weapons deal Fire damage; buildup ignites aliens (Blaze).",
+  },
+  "cryo-coating": {
+    id: "cryo-coating",
+    name: "Cryo Coating",
+    description: "All weapons deal Cryo damage; buildup freezes aliens.",
+  },
+  "chain-lightning": {
+    id: "chain-lightning",
+    name: "Chain Lightning",
+    description: "Attacks arc to one additional nearby alien.",
+  },
+  "adrenal-servos": {
+    id: "adrenal-servos",
+    name: "Adrenal Servos",
+    description: "Move 12% faster.",
+  },
+  "composite-plating": {
+    id: "composite-plating",
+    name: "Composite Plating",
+    description: "Gain 3 armour (percentage reduction with diminishing returns).",
+  },
+  "shield-capacitor": {
+    id: "shield-capacitor",
+    name: "Shield Capacitor",
+    description: "Gain a 15-point shield that recharges out of combat.",
+  },
 });
 
 export const UPGRADE_ORDER: readonly UpgradeId[] = Object.freeze([
   "rapid-cycling",
+  "incendiary-rounds",
   "twin-shot",
+  "cryo-coating",
   "piercing-rounds",
+  "chain-lightning",
   "explosive-payload",
+  "adrenal-servos",
   "heavy-calibre",
+  "composite-plating",
   "field-magnet",
+  "shield-capacitor",
 ]);

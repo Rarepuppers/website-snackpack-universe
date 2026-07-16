@@ -122,8 +122,8 @@ The Marine is the first playable hero and the baseline used to tune the game.
 
 - Role: durable all-round ranged fighter
 - Starting weapon: assault rifle
-- Passive: deferred until the base weapon and damage model are proven
-- Ultimate: deferred until the base combat loop is proven
+- Passive: **Entrenched** — holding position for 1 second grants bonus armour until moving (implemented 16 July 2026; showcases the armour stat and rewards deliberate positioning)
+- Ultimate: **Bastion Barrage** — a radial explosive volley on a 24-second cooldown, fired with R or the top gamepad face button (implemented 16 July 2026)
 - Visual identity: compact, readable sci-fi armour; practical rather than superheroic; strong silhouette at gameplay scale
 
 The Marine and future heroes use modular visual equipment. The base body and armour animation remains stable while equipped headgear and weapons are separate visual layers driven by the same equipment data used by gameplay.
@@ -261,9 +261,10 @@ Seeds should make bugs and balance problems reproducible. Later director systems
 
 The styled combat prototype now uses a deterministic tiled test chamber with boundary walls and four collision footprints: a low barricade, cargo crate, power conduit, and alien biomass mound. Player and enemy movement slide against these footprints, and projectiles stop on impact. These objects currently prove navigation, cover, depth, and readability; they are not yet the signature interactive battlefield system.
 
-The vertical slice must test one signature interaction, such as:
+The vertical slice's signature interaction is implemented (16 July 2026): a **power switch that energizes an electrical fence**. Pressing interact at the switch activates the fence line for six seconds; enemies crossing it take continuous Shock damage that builds toward an Overload stun, and the switch then recharges. Production art for the switch, pylons, and beam is an outstanding Batch C task.
 
-- A power switch that activates an electrical fence
+Other candidate interactions remain future content:
+
 - A defensive turret with limited charge
 - Destructible alien biomass that spawns enemies until destroyed
 - An explosive environmental object that can damage either side

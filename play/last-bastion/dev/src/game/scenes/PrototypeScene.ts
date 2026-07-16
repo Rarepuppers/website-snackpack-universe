@@ -28,6 +28,9 @@ import {
 import { loadGameAssets } from "../assets/PhaserAssetLoader";
 import { GAME_ASSETS, type GameAssetId } from "../assets/GameAssetManifest";
 import { renderArena } from "../rendering/ArenaRenderer";
+import { LocalSaveStore } from "../save/LocalSaveStore";
+import { cueForEvent, EVASIVE_MOVE_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
+import { WebAudioSynth } from "../audio/WebAudioSynth";
 import { worldDepth } from "../rendering/WorldDepth";
 import { VisualEffectPool } from "../effects/VisualEffectPool";
 import { CombatHud } from "../ui/CombatHud";
@@ -87,6 +90,14 @@ export class PrototypeScene extends Phaser.Scene {
   private marineFacingColumn = 0;
   private lastRollTrailMilliseconds = -1000;
   private lastSnapshot = this.simulation.snapshot();
+  private fenceLine: Phaser.GameObjects.Line | null = null;
+  private fenceSwitch: Phaser.GameObjects.Rectangle | null = null;
+  private fencePrompt: Phaser.GameObjects.Text | null = null;
+  private readonly saveStore = createSaveStore();
+  private settings = applySettingOverrides(this.saveStore);
+  private readonly synth = new WebAudioSynth(this.settings.soundEnabled);
+  private runOutcomeRecorded = false;
+  private previousHeroState = "idle";
 
   constructor() {
     super("prototype");
@@ -122,13 +133,14 @@ export class PrototypeScene extends Phaser.Scene {
     this.player = this.add.container(width / 2, height / 2, playerLayers);
     this.player.setDepth(worldDepth(this.simulation.snapshot().playerPosition.y));
 
-    this.add.text(width / 2, height - 14, "WASD / ARROWS MOVE   •   MOUSE AIM / FIRE   •   SPACE ROLL   •   ESC PAUSE", {
+    this.add.text(width / 2, height - 14, "WASD MOVE   •   MOUSE AIM / FIRE   •   SPACE ROLL   •   R ULTIMATE   •   E INTERACT   •   ESC PAUSE", {
       color: "#9fb3c8",
       fontFamily: "monospace",
       fontSize: "10px",
     }).setOrigin(0.5, 1).setDepth(2000);
 
     this.hud = new CombatHud(this, this.showDebug, this.useMarineArt);
+    this.createFenceViews();
 
     this.controls = new KeyboardMouseInput(this);
     this.lastSnapshot = this.simulation.snapshot();
@@ -158,6 +170,7 @@ export class PrototypeScene extends Phaser.Scene {
 
     const snapshot = this.simulation.step(intent, deltaSeconds);
     this.lastSnapshot = snapshot;
+    this.recordRunOutcome(snapshot);
     this.updateMarineFrame(snapshot.heroState, intent.move);
 
     if (intent.aim.x !== 0 || intent.aim.y !== 0) {
@@ -165,7 +178,12 @@ export class PrototypeScene extends Phaser.Scene {
     }
 
     this.renderSnapshot(snapshot, intent.fireHeld);
+    this.synth.beginFrame();
     this.playCombatEvents(snapshot.events);
+    if (snapshot.heroState === "evading" && this.previousHeroState !== "evading") {
+      this.synth.play(EVASIVE_MOVE_CUE);
+    }
+    this.previousHeroState = snapshot.heroState;
     if (snapshot.heroState === "evading" && this.time.now - this.lastRollTrailMilliseconds >= 70) {
       this.lastRollTrailMilliseconds = this.time.now;
       if (this.useMarineArt) {
@@ -206,6 +224,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncObstacleDamage(snapshot.damagedObstacleIds, snapshot.destroyedObstacleIds);
     this.syncPickups(snapshot.pickups);
     this.syncPowerups(snapshot.powerups);
+    this.syncFence(snapshot);
     this.syncDecisionOverlay(snapshot.pendingDecision);
     this.hud.update(snapshot, this.isPaused, this.effectPool.activeCount);
     const marineTint = snapshot.playerSlowed ? 0xb9ef62 : 0xffffff;
@@ -236,6 +255,8 @@ export class PrototypeScene extends Phaser.Scene {
     this.simulation = createSimulation(this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario);
     this.lastSnapshot = this.simulation.snapshot();
     this.isPaused = false;
+    this.runOutcomeRecorded = false;
+    this.previousHeroState = "idle";
     this.visibleDecisionKey = "";
     this.decisionOverlay?.destroy(true);
     this.decisionOverlay = null;
@@ -262,8 +283,33 @@ export class PrototypeScene extends Phaser.Scene {
     this.renderSnapshot(this.lastSnapshot, false);
   }
 
+  private recordRunOutcome(snapshot: CombatSnapshot): void {
+    if (this.runOutcomeRecorded) {
+      return;
+    }
+    if (snapshot.status === "victory" || snapshot.status === "defeat") {
+      this.runOutcomeRecorded = true;
+      if (snapshot.stressProfile === null && snapshot.scenario === null) {
+        this.saveStore.recordRunEnd({
+          victory: snapshot.status === "victory",
+          waveReached: snapshot.waveNumber,
+        });
+      }
+    }
+  }
+
+  private shakeCamera(durationMilliseconds: number, intensity: number): void {
+    if (this.settings.screenShakeEnabled) {
+      this.cameras.main.shake(durationMilliseconds, intensity);
+    }
+  }
+
   private playCombatEvents(events: readonly CombatEvent[]): void {
     for (const event of events) {
+      const audioCue = cueForEvent(event.type);
+      if (audioCue) {
+        this.synth.play(audioCue);
+      }
       switch (event.type) {
         case "weapon-fired":
           this.pulseWeapon(event.weaponInstanceId);
@@ -294,7 +340,7 @@ export class PrototypeScene extends Phaser.Scene {
           this.emitAuthoredEffect(9, event.position, 240, event.radiusMetres, event.radiusMetres * 1.5);
           break;
         case "player-hit":
-          this.cameras.main.shake(120, 0.006);
+          this.shakeCamera(120, 0.006);
           this.emitAuthoredEffect(3, event.position, 180, 0.85, 1.4);
           break;
         case "xp-collected":
@@ -309,7 +355,7 @@ export class PrototypeScene extends Phaser.Scene {
           break;
         case "egg-hatched":
           this.emitAuthoredEffect(14, event.position, 280, 0.9, 1.45);
-          this.cameras.main.shake(90, 0.0025);
+          this.shakeCamera(90, 0.0025);
           break;
         case "projectile-blocked":
           this.emitAuthoredEffect(7, event.position, 130, 0.5, 0.95);
@@ -337,7 +383,7 @@ export class PrototypeScene extends Phaser.Scene {
           break;
         case "mini-boss-shockwave":
           this.emitAuthoredEffect(17, event.position, 360, event.radiusMetres * 0.5, event.radiusMetres, 0, "batch-b-effects-v1");
-          this.cameras.main.shake(150, 0.006);
+          this.shakeCamera(150, 0.006);
           break;
         case "obstacle-damaged":
           this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xffd36b, 5);
@@ -345,7 +391,7 @@ export class PrototypeScene extends Phaser.Scene {
         case "obstacle-destroyed":
           this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xff6654, 8);
           this.emitAuthoredEffect(17, event.position, 300, 0.55, 1.25, 0, "batch-b-effects-v1");
-          this.cameras.main.shake(180, 0.008);
+          this.shakeCamera(180, 0.008);
           break;
         case "mini-boss-reward-dropped":
           this.flashCircle(event.position, 30, 0xffd36b, 520, 3.2, true);
@@ -358,6 +404,14 @@ export class PrototypeScene extends Phaser.Scene {
           break;
         case "warp-arrival":
           this.flashCircle(event.position, 18, 0xd65cff, 240, 2, true);
+          break;
+        case "ultimate-fired":
+          this.cameras.main.flash(140, 255, 214, 107);
+          this.flashCircle(event.position, 26, 0xffd36b, 380, 3, true);
+          break;
+        case "fence-activated":
+          this.flashCircle(event.from, 16, 0x8fe8ff, 300, 2.2, true);
+          this.flashCircle(event.to, 16, 0x8fe8ff, 300, 2.2, true);
           break;
       }
     }
@@ -882,6 +936,59 @@ export class PrototypeScene extends Phaser.Scene {
     }
   }
 
+  /** Placeholder fence presentation: pylon rectangles, switch, energized line. */
+  private createFenceViews(): void {
+    const fence = this.simulation.arena.fence;
+    if (!fence) {
+      return;
+    }
+    for (const pylon of [fence.from, fence.to]) {
+      this.add.rectangle(
+        pylon.x * PIXELS_PER_METRE,
+        pylon.y * PIXELS_PER_METRE,
+        10,
+        22,
+        0x5a6672,
+      ).setStrokeStyle(2, 0x9fb3c8).setDepth(worldDepth(pylon.y));
+    }
+    this.fenceSwitch = this.add.rectangle(
+      fence.switchPosition.x * PIXELS_PER_METRE,
+      fence.switchPosition.y * PIXELS_PER_METRE,
+      16,
+      16,
+      0x3fae6a,
+    ).setStrokeStyle(2, 0xe9e3cf).setDepth(worldDepth(fence.switchPosition.y));
+    this.fenceLine = this.add.line(
+      0,
+      0,
+      fence.from.x * PIXELS_PER_METRE,
+      fence.from.y * PIXELS_PER_METRE,
+      fence.to.x * PIXELS_PER_METRE,
+      fence.to.y * PIXELS_PER_METRE,
+      0x8fe8ff,
+      0.95,
+    ).setOrigin(0).setLineWidth(3).setDepth(640).setVisible(false);
+    this.fencePrompt = this.add.text(
+      fence.switchPosition.x * PIXELS_PER_METRE,
+      fence.switchPosition.y * PIXELS_PER_METRE - 24,
+      "E — ELECTRIC FENCE",
+      { color: "#b8ffd9", fontFamily: "monospace", fontSize: "11px" },
+    ).setOrigin(0.5).setDepth(1900).setVisible(false);
+  }
+
+  private syncFence(snapshot: CombatSnapshot): void {
+    const fence = snapshot.fence;
+    if (!fence || !this.fenceSwitch || !this.fenceLine || !this.fencePrompt) {
+      return;
+    }
+    this.fenceSwitch.setFillStyle(fence.active ? 0xffd36b : fence.ready ? 0x3fae6a : 0x44505c);
+    this.fenceLine.setVisible(fence.active);
+    if (fence.active) {
+      this.fenceLine.setAlpha(0.55 + Math.abs(Math.sin(this.time.now / 45)) * 0.45);
+    }
+    this.fencePrompt.setVisible(fence.ready && fence.playerNearSwitch && !fence.active);
+  }
+
   private syncDecisionOverlay(decision: PendingDecision | null): void {
     const nextKey = decision
       ? `${decision.kind}|${decision.options.map((option) => option.id).join("|")}`
@@ -924,7 +1031,10 @@ export class PrototypeScene extends Phaser.Scene {
       });
       button.on("pointerover", () => button.setAlpha(0.82));
       button.on("pointerout", () => button.setAlpha(1));
-      button.on("pointerdown", () => this.simulation.chooseOption(choice.id));
+      button.on("pointerdown", () => {
+        this.synth.play(UI_CONFIRM_CUE);
+        this.simulation.chooseOption(choice.id);
+      });
       children.push(button, label);
     });
 
@@ -984,6 +1094,30 @@ function readScenario(): CombatScenario | null {
 
 function readDebugMode(): boolean {
   return new URLSearchParams(window.location.search).get("debug") === "1";
+}
+
+function createSaveStore(): LocalSaveStore {
+  try {
+    return new LocalSaveStore(window.localStorage);
+  } catch {
+    return new LocalSaveStore(null);
+  }
+}
+
+/**
+ * `?shake=0|1` and `?sound=0|1` persist into local settings until a proper
+ * settings screen exists; absent parameters leave stored values untouched.
+ */
+function applySettingOverrides(store: LocalSaveStore) {
+  const params = new URLSearchParams(window.location.search);
+  const overrides: { screenShakeEnabled?: boolean; soundEnabled?: boolean } = {};
+  const shake = params.get("shake");
+  if (shake === "0" || shake === "1") overrides.screenShakeEnabled = shake === "1";
+  const sound = params.get("sound");
+  if (sound === "0" || sound === "1") overrides.soundEnabled = sound === "1";
+  return Object.keys(overrides).length > 0
+    ? store.updateSettings(overrides).settings
+    : store.load().settings;
 }
 
 function createSimulation(

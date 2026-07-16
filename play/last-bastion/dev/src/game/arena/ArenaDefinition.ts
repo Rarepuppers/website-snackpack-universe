@@ -11,12 +11,20 @@ export interface ArenaObstacle {
   height: number;
 }
 
+/** Signature battlefield interaction: a switch that energizes a fence line. */
+export interface ArenaFenceDefinition {
+  switchPosition: Vector2Data;
+  from: Vector2Data;
+  to: Vector2Data;
+}
+
 export interface ArenaDefinition {
   id: string;
   widthMetres: number;
   heightMetres: number;
   tileSizeMetres: number;
   obstacles: readonly ArenaObstacle[];
+  fence?: ArenaFenceDefinition;
 }
 
 export const BASTION_ARENA: Readonly<ArenaDefinition> = Object.freeze({
@@ -30,6 +38,11 @@ export const BASTION_ARENA: Readonly<ArenaDefinition> = Object.freeze({
     obstacle("south-conduit", "power-conduit", 7.1, 11.8, 1.2, 2.4),
     obstacle("east-biomass", "biomass", 21.3, 12.1, 2.6, 1.4),
   ]),
+  fence: Object.freeze({
+    switchPosition: Object.freeze({ x: 15, y: 13.6 }),
+    from: Object.freeze({ x: 11, y: 12.6 }),
+    to: Object.freeze({ x: 19, y: 12.6 }),
+  }),
 });
 
 export function resolveCircleMovement(
