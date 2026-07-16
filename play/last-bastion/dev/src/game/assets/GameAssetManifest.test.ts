@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(26);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(28);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -86,5 +86,14 @@ describe("GameAssetManifest", () => {
     if (body.kind === "spritesheet") expect(body.frameCount).toBe(12);
     if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(10);
     expect(GAME_ASSETS["brood-warden-portrait-v1"].kind).toBe("image");
+  });
+
+  it("locks Production Batch D2 Ripper contracts", () => {
+    const body = GAME_ASSETS["ripper-v1"];
+    const effects = GAME_ASSETS["ripper-effects-v1"];
+    expect(body.kind).toBe("spritesheet");
+    expect(effects.kind).toBe("spritesheet");
+    if (body.kind === "spritesheet") expect(body.frameCount).toBe(16);
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
   });
 });

@@ -24,6 +24,8 @@ import batchCEffectSheetUrl from "../../../../art/production-tests/batch-c/batch
 import broodWardenSheetUrl from "../../../../art/production-tests/batch-d/brood-warden-spritesheet-v1-128.png";
 import broodWardenPortraitUrl from "../../../../art/production-tests/batch-d/brood-warden-portrait-v1-128.png";
 import broodWardenEffectSheetUrl from "../../../../art/production-tests/batch-d/brood-warden-effect-atlas-v1-64.png";
+import ripperSheetUrl from "../../../../art/production-tests/batch-d2/ripper-spritesheet-v1-96.png";
+import ripperEffectSheetUrl from "../../../../art/production-tests/batch-d2/ripper-effect-atlas-v1-64.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -51,7 +53,9 @@ export type GameAssetId =
   | "batch-c-effects-v1"
   | "brood-warden-v1"
   | "brood-warden-portrait-v1"
-  | "brood-warden-effects-v1";
+  | "brood-warden-effects-v1"
+  | "ripper-v1"
+  | "ripper-effects-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -101,6 +105,8 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("brood-warden-v1", broodWardenSheetUrl, 128, 128, 12, 0.5, 0.5),
   image("brood-warden-portrait-v1", broodWardenPortraitUrl, 128, 128, 0.5, 0.5),
   sheet("brood-warden-effects-v1", broodWardenEffectSheetUrl, 64, 64, 10, 0.5, 0.5),
+  sheet("ripper-v1", ripperSheetUrl, 96, 96, 16, 0.5, 0.5),
+  sheet("ripper-effects-v1", ripperEffectSheetUrl, 64, 64, 8, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(

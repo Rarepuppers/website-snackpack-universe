@@ -234,14 +234,15 @@ An item is not completed merely because code or an asset exists. It must meet it
 
 ### Ripper behavior gate
 
-**Status:** Completed — 16 July 2026; creator timing/readability review and production art queued
+**Status:** Completed — 16 July 2026; production art integrated and creator gameplay-scale review queued
 
 - Added the Ripper as a 72-health, lightly armoured melee bruiser with slower pursuit and low incidental contact damage.
 - Implemented a locked-direction 0.62-second wind-up, 2.55-metre frontal cone sweep, 18 sweep damage, short active phase, and 1.1-second stationary recovery window.
-- Added a deterministic `scenario=ripper` lab, phase-driven code-art silhouette, exact cone telegraph, sweep event/audio feedback, and `RIPPER LAB` HUD identity.
+- Added a deterministic `scenario=ripper` lab, exact cone telegraph, sweep event/audio feedback, and `RIPPER LAB` HUD identity.
+- Replaced the phase-driven prototype shape with the Production Batch D2 directional/state sheet plus authored spawn, sweep, and defeat effects. The exact code-driven cone remains authoritative for fair hit detection and warning geometry.
 - Kept the Ripper out of ordinary waves until creator review confirms its tell, reach, dodge-behind behavior, and recovery punishment are readable at gameplay scale.
 - Rules coverage verifies cone front/back/side/range boundaries and the pursuit → wind-up → sweep → recovery sequence.
-- Verification evidence: 113 tests across 16 files, TypeScript validation, production build, 26 runtime asset checks, and 15 review routes.
+- Verification evidence: 114 tests across 16 files, TypeScript validation, production build, 28 runtime asset checks, and 16 review routes.
 
 ## In progress
 
@@ -571,12 +572,13 @@ Completion evidence:
 
 ### Production Asset Batch D2: Ripper enemy
 
-**Status:** Pending — mechanics and runtime contracts complete; next production asset batch
+**Status:** Completed — 16 July 2026; creator gameplay-scale review queued
 
-- One retained master at no less than 4× logical size, normalized to a 4 × 4 sheet of 96 × 96 cells.
-- Directional columns south, north, east, west; rows pursuit, wind-up, active sweep, and recovery.
-- One 4 × 2 effect atlas of 64 × 64 cells: cone warning, claw sweep, impact, recovery vulnerability, spawn, hit, death, and optional elite-compatible accent.
-- Preserve prompts, chroma source, transparent master, normalizer, pivots, frame map, and nearest-neighbour runtime outputs. No baked ground shadow, telegraph, text, or UI in the body sheet.
+- Completed a retained `1448 × 1086` body master, normalized to a 4 × 4 sheet of 96 × 96 cells.
+- Directional columns are south, north, east, west; rows are pursuit, wind-up, active sweep, and exposed recovery.
+- Completed a retained `1774 × 887` 4 × 2 effect master, normalized to 64 × 64 cells: cone warning, paired-claw glint, active sweep, impact, recovery vulnerability, spawn, hit, and defeat.
+- Preserved the final prompts, chroma sources, transparent review masters, deterministic normalizer, pivots, frame map, and nearest-neighbour runtime outputs. The body sheet has no baked shadow, telegraph, text, or UI.
+- Integrated stable manifest IDs, gameplay bindings, `batch=d2` gallery coverage, asset-contract tests, production build output, and HTTP smoke checks.
 
 ### Production Asset Batch D3: remaining Web MVP enemies and final boss
 
@@ -601,6 +603,6 @@ Completion evidence:
 10. Implement Brood Warden behavior and seed it into the eligible mini-boss pool. **Completed 16 July 2026.**
 11. Generate, normalize, integrate, and gallery-test Production Asset Batch D1 for Brood Warden. **Completed 16 July 2026; creator gameplay-scale review queued.**
 12. Implement and rules-test Ripper behavior with placeholder presentation. **Completed 16 July 2026; creator timing review queued.**
-13. Generate, normalize, integrate, and gallery-test Production Asset Batch D2 for the Ripper.
+13. Generate, normalize, integrate, and gallery-test Production Asset Batch D2 for the Ripper. **Completed 16 July 2026; creator gameplay-scale review queued.**
 14. External-playtest the vertical slice; proceed to route, relic, Artifact, shop/rest, and boss systems only if Gate 2 succeeds.
 15. Implement and verify The Bastion Eater with placeholders before generating Production Asset Batch D3.

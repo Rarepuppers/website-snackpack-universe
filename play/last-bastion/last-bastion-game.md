@@ -244,7 +244,7 @@ The seeded five-wave mini-boss pool also contains the mechanically complete Broo
 
 The exploding Blast Mite and teleporting Warp Flanker were pulled forward for waves 3–5 and now use production state sheets. The Slime Spitter is the current hostile-projectile enemy; future ranged archetypes require dedicated projectile and impact sprites. Flying, shielding, psychic, summoning, and giant tank enemies remain future content.
 
-The next functional Web MVP enemy is the Ripper, a slower melee bruiser with a locked-direction claw tell, a long frontal cone rather than circular contact damage, and a pronounced recovery window. Its deterministic lab uses code-art presentation until the sweep timing and dodge-behind readability are accepted; it is intentionally excluded from ordinary waves during this gate.
+The next functional Web MVP enemy is the Ripper, a slower melee bruiser with a locked-direction claw tell, a long frontal cone rather than circular contact damage, and a pronounced recovery window. Its deterministic lab now uses the Production Batch D2 directional pursuit, wind-up, sweep, and exposed-recovery sheet plus authored spawn, sweep, and defeat effects. The exact code-driven cone remains the warning and hit-test authority. It is intentionally excluded from ordinary waves until gameplay-scale timing and dodge-behind readability are accepted.
 
 The vertical-slice arena is 45 × 25.3125 metres—1.5 times the original viewport in each dimension—and uses smooth camera follow with a dead zone. The entire battlefield is no longer visible at once. Future arenas should usually range from roughly 1.4× to 2× the gameplay viewport unless a deliberately compact encounter needs full visibility.
 

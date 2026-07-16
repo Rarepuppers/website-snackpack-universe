@@ -8,6 +8,8 @@ Production Asset Batch B (weapons, Spitter, Carapace elite, Siege Crusher, portr
 
 The gameplay-critical portion of Production Asset Batch C is documented in [`batch-c/README.md`](batch-c/README.md). Blast Mite, Warp Flanker, rewards, powerups, statuses, the electric fence, and Bastion Barrage presentation are integrated; Relic, Artifact, and Shrine art remains deferred until those systems exist.
 
+Production Asset Batch D1 is documented in [`batch-d/README.md`](batch-d/README.md) and contains the integrated Brood Warden set. Production Asset Batch D2 is documented in [`batch-d2/README.md`](batch-d2/README.md) and contains the integrated Ripper body and melee effects.
+
 ## Marine base body v1
 
 - Source sheet: `marine-base-spritesheet-v1.png`
@@ -72,6 +74,6 @@ The retained `*-chroma.png` files record the generated source before background 
 
 ## Review switches
 
-Production art is enabled by default. Use `?art=placeholder` for the code-shape comparison renderer. The helmet is enabled by default; add `?helmet=0` to verify the unchanged base body without it. The existing `weapons=` parameter may be combined with either view. Use `?mode=gallery` for character/enemy/equipment frames and `?mode=gallery&batch=a|b|c|d` for each production batch; Batch D is the complete Brood Warden set.
+Production art is enabled by default. Use `?art=placeholder` for the code-shape comparison renderer. The helmet is enabled by default; add `?helmet=0` to verify the unchanged base body without it. The existing `weapons=` parameter may be combined with either view. Use `?mode=gallery` for character/enemy/equipment frames and `?mode=gallery&batch=a|b|c|d|d2` for each production batch; Batch D is the Brood Warden set and D2 is the Ripper set.
 
 The in-app browser runtime could not initialise in the current environment, so creator visual acceptance remains a manual review step. Automated type, unit, build, asset-HTTP, and route-HTTP validation is complete.

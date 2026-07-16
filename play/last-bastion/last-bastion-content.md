@@ -253,7 +253,7 @@ Weapon implementation precedes final art for each family. Shared data must defin
 | Vertical slice | Slime Spitter | Ranged area denial | Glob creates bounded slowing puddle | Production directional/state sheet, glob, target, and puddle art integrated |
 | Vertical slice | Blast Mite | Kamikaze | Armed flashing tell, detonation on contact or death | Production sheet: chase gait, armed flash, detonation burst |
 | Vertical slice | Warp Flanker | Teleporting harasser | Telegraphed arrival ring and materialise window | Production sheet: stalk, dissolve, arrival ring, materialise shimmer |
-| Functional placeholder | Ripper | Melee bruiser | Locked 2.55 m frontal claw cone after 0.62 s wind-up; 1.1 s punish window | Production 4 × 4 move/wind-up/sweep/recovery sheet and dedicated effects pending Batch D2 |
+| Production lab | Ripper | Melee bruiser | Locked 2.55 m frontal claw cone after 0.62 s wind-up; 1.1 s punish window | Production 4 × 4 pursuit/wind-up/sweep/recovery sheet and dedicated 4 × 2 effects integrated in Batch D2 |
 | Web MVP | Razor Scuttler | Interceptor | Fast commit followed by punishable miss | Fast gait, leap/charge tell, miss recovery, death |
 | Web MVP | Brood Tender | Support | Speeds eggs and retreats | Move, channel, interrupted, hit/death |
 | Later | Mireback | Mobile denial | Wide trail but slow turning | Deferred until slime coverage proves fair |
@@ -407,12 +407,12 @@ The gameplay-critical Batch C subset was completed on 16 July 2026: Blast Mite a
 
 ### Batch D2 — Ripper production set
 
-- Pending: 4 × 4 directional/state body sheet at 96 × 96 logical cells and a dedicated 4 × 2 melee-effect atlas at 64 × 64 logical cells.
-- Mechanics are complete; retain ≥4× masters, prompt provenance, transparent review assets, deterministic normalization, pivots, and frame maps.
+- Completed: 4 × 4 directional/state body sheet at 96 × 96 logical cells and a dedicated 4 × 2 melee-effect atlas at 64 × 64 logical cells.
+- Completed: retained ≥4× masters, prompt provenance, transparent review assets, deterministic normalization, pivots, frame maps, manifest contracts, gameplay bindings, and D2 gallery.
 
 ### Batch D3 — remaining Web MVP enemies and final boss
 
 - Razor Scuttler, Brood Tender, approved elite attachments, and telegraphs/effects.
 - The Bastion Eater body layers, attack overlays, phase damage states, arena breach assets, entrance/defeat presentation, and boss reward vault.
 
-Batch C and Batch D1 are complete. Batch D2 is eligible after the Ripper behavior gate; D3 remains gated behind the vertical-slice creator playtest and placeholder final-boss implementation.
+Batch C, Batch D1, and Batch D2 are complete. D3 remains gated behind the vertical-slice creator playtest and placeholder final-boss implementation.

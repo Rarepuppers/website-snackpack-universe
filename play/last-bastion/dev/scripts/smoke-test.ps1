@@ -52,7 +52,9 @@ try {
     'batch-c-effect-atlas-v1-64.png',
     'brood-warden-spritesheet-v1-128.png',
     'brood-warden-portrait-v1-128.png',
-    'brood-warden-effect-atlas-v1-64.png'
+    'brood-warden-effect-atlas-v1-64.png',
+    'ripper-spritesheet-v1-96.png',
+    'ripper-effect-atlas-v1-64.png'
   )
 
   foreach ($artAssetName in $requiredArtAssets) {
@@ -71,6 +73,7 @@ try {
     '/play/last-bastion/?mode=gallery&batch=b',
     '/play/last-bastion/?mode=gallery&batch=c',
     '/play/last-bastion/?mode=gallery&batch=d',
+    '/play/last-bastion/?mode=gallery&batch=d2',
     '/play/last-bastion/?loadout=vertical',
     '/play/last-bastion/?scenario=slime-spitter&loadout=vertical',
     '/play/last-bastion/?scenario=carapace-elite&loadout=vertical',

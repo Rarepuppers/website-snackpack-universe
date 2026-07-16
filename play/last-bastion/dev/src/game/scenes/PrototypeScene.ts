@@ -350,6 +350,8 @@ export class PrototypeScene extends Phaser.Scene {
             this.emitAuthoredEffect(16, event.position, 300, 0.65, 1.35, 0, "batch-c-effects-v1");
           } else if (event.enemyType === "warp-flanker") {
             this.emitAuthoredEffect(18, event.position, 260, 0.6, 1.2, 0, "batch-c-effects-v1");
+          } else if (event.enemyType === "ripper") {
+            this.emitAuthoredEffect(7, event.position, 340, 0.72, 1.5, 0, "ripper-effects-v1");
           } else {
             this.emitAuthoredEffect(event.enemyType === "brain-blob" ? 18 : event.enemyType === "egg-cluster" ? 13 : 11, event.position, 210, 0.72, 1.2);
           }
@@ -369,7 +371,11 @@ export class PrototypeScene extends Phaser.Scene {
           this.emitAuthoredEffect(2, this.lastSnapshot.playerPosition, 420, 0.9, 2.2);
           break;
         case "enemy-spawned":
-          this.emitAuthoredEffect(event.enemyType === "egg-cluster" ? 12 : event.enemyType === "scuttler" ? 10 : 19, event.position, 230, 0.65, 1.25);
+          if (event.enemyType === "ripper") {
+            this.emitAuthoredEffect(5, event.position, 260, 0.72, 1.3, 0, "ripper-effects-v1");
+          } else {
+            this.emitAuthoredEffect(event.enemyType === "egg-cluster" ? 12 : event.enemyType === "scuttler" ? 10 : 19, event.position, 230, 0.65, 1.25);
+          }
           break;
         case "egg-hatched":
           this.emitAuthoredEffect(14, event.position, 280, 0.9, 1.45);
@@ -420,7 +426,16 @@ export class PrototypeScene extends Phaser.Scene {
           this.shakeCamera(120, 0.004);
           break;
         case "ripper-sweep":
-          this.flashCircle(event.position, event.reachMetres * PIXELS_PER_METRE, 0xff7a5c, 220, 1.08, true);
+          this.emitAuthoredEffect(
+            2,
+            event.position,
+            240,
+            1.05,
+            1.28,
+            Math.atan2(event.direction.y, event.direction.x),
+            "ripper-effects-v1",
+          );
+          this.shakeCamera(90, 0.0035);
           break;
         case "obstacle-damaged":
           this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xffd36b, 5);
@@ -477,7 +492,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -606,6 +621,9 @@ export class PrototypeScene extends Phaser.Scene {
         return this.add.triangle(0, 0, 0, -15, 13, 12, -13, 12, 0xd65cff)
           .setStrokeStyle(3, 0x4d1a66);
       case "ripper":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "ripper-v1");
+        }
         return this.add.triangle(0, 0, -28, -18, 30, 0, -28, 18, 0xc9475f)
           .setStrokeStyle(4, 0xffc27a);
       case "egg-cluster":
@@ -746,6 +764,20 @@ export class PrototypeScene extends Phaser.Scene {
       case "warp-flanker": {
         const facingColumn = cardinalFacingColumn(enemy.position, playerPosition);
         const row = enemy.warpPhase === "warp-windup" ? 1 : enemy.warpPhase === "materialize" ? 2 : 0;
+        view.setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
+      case "ripper": {
+        const direction = enemy.ripperPhase === "pursuit"
+          ? enemy.facingDirection
+          : enemy.ripperDirection ?? enemy.facingDirection;
+        const target = {
+          x: enemy.position.x + direction.x,
+          y: enemy.position.y + direction.y,
+        };
+        const facingColumn = cardinalFacingColumn(enemy.position, target);
+        const phase = enemy.ripperPhase ?? "pursuit";
+        const row = phase === "windup" ? 1 : phase === "sweep" ? 2 : phase === "recovery" ? 3 : 0;
         view.setFrame(row * 4 + facingColumn).setRotation(0);
         return;
       }
@@ -1365,7 +1397,7 @@ function applyManifestOrigin(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

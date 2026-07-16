@@ -15,6 +15,10 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "d2") {
+      this.createBatchD2Gallery();
+      return;
+    }
     if (batch === "d") {
       this.createBatchDGallery();
       return;
@@ -237,6 +241,33 @@ export class AssetGalleryScene extends Phaser.Scene {
     }
 
     this.add.text(480, 514, "Review: ?mode=gallery&batch=d • Encounter: ?scenario=brood-warden&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchD2Gallery(): void {
+    this.add.text(20, 14, "LAST BASTION — RIPPER PRODUCTION ASSET BATCH D2", style("#ffffff", "17px"));
+    this.add.text(20, 38, "24 runtime visuals • retained Steam-quality masters • fixed pivots and frame contracts", style("#8fb2c9", "11px"));
+
+    this.add.text(20, 70, "RIPPER — pursuit / wind-up / sweep / exposed recovery × S N E W", style("#ff9a72", "11px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const column = frame % 8;
+      const row = Math.floor(frame / 8);
+      const x = 66 + column * 116;
+      const y = 130 + row * 116;
+      this.add.sprite(x, y, "ripper-v1", frame).setScale(0.82);
+      this.drawPivot(x, y);
+      this.add.text(x, y + 46, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 318, "RIPPER EFFECTS — cone / wind-up / sweep / impact / recovery / spawn / hit / defeat", style("#ffd36b", "11px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 64 + frame * 118;
+      this.add.sprite(x, 386, "ripper-effects-v1", frame).setScale(1.15);
+      this.drawPivot(x, 386);
+      this.add.text(x, 430, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(480, 492, "Coral telegraph → ivory active strike → cracked-thorax punish window", style("#ffb982", "11px")).setOrigin(0.5);
+    this.add.text(480, 518, "Review: ?mode=gallery&batch=d2 • Encounter: ?scenario=ripper&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private drawWeaponRing(x: number, y: number, count: number, scale: number): void {

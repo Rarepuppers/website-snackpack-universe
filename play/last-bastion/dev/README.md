@@ -29,6 +29,7 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?mode=gallery&batch=b` — all 63 Production Asset Batch B runtime visuals
 - `/play/last-bastion/?mode=gallery&batch=c` — 60 gameplay-critical Production Asset Batch C visuals
 - `/play/last-bastion/?mode=gallery&batch=d` — all 23 Brood Warden Production Asset Batch D1 visuals
+- `/play/last-bastion/?mode=gallery&batch=d2` — all 24 Ripper Production Asset Batch D2 visuals
 - Add `debug=1` to the normal or stress route for collision labels and live entity/effect counts.
 
 ## Architecture
