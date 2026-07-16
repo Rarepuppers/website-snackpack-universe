@@ -21,6 +21,9 @@ import blastMiteSheetUrl from "../../../../art/production-tests/batch-c/blast-mi
 import warpFlankerSheetUrl from "../../../../art/production-tests/batch-c/warp-flanker-spritesheet-v1-96.png";
 import batchCRewardSheetUrl from "../../../../art/production-tests/batch-c/batch-c-reward-atlas-v1-64.png";
 import batchCEffectSheetUrl from "../../../../art/production-tests/batch-c/batch-c-effect-atlas-v1-64.png";
+import broodWardenSheetUrl from "../../../../art/production-tests/batch-d/brood-warden-spritesheet-v1-128.png";
+import broodWardenPortraitUrl from "../../../../art/production-tests/batch-d/brood-warden-portrait-v1-128.png";
+import broodWardenEffectSheetUrl from "../../../../art/production-tests/batch-d/brood-warden-effect-atlas-v1-64.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -45,7 +48,10 @@ export type GameAssetId =
   | "blast-mite-v1"
   | "warp-flanker-v1"
   | "batch-c-rewards-v1"
-  | "batch-c-effects-v1";
+  | "batch-c-effects-v1"
+  | "brood-warden-v1"
+  | "brood-warden-portrait-v1"
+  | "brood-warden-effects-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -92,6 +98,9 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("warp-flanker-v1", warpFlankerSheetUrl, 96, 96, 12, 0.5, 0.5),
   sheet("batch-c-rewards-v1", batchCRewardSheetUrl, 64, 64, 16, 0.5, 0.5),
   sheet("batch-c-effects-v1", batchCEffectSheetUrl, 64, 64, 20, 0.5, 0.5),
+  sheet("brood-warden-v1", broodWardenSheetUrl, 128, 128, 12, 0.5, 0.5),
+  image("brood-warden-portrait-v1", broodWardenPortraitUrl, 128, 128, 0.5, 0.5),
+  sheet("brood-warden-effects-v1", broodWardenEffectSheetUrl, 64, 64, 10, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(

@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(23);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(26);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -76,5 +76,15 @@ describe("GameAssetManifest", () => {
       expect(asset.kind).toBe("spritesheet");
       if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
     }
+  });
+
+  it("locks Production Batch D1 Brood Warden contracts", () => {
+    const body = GAME_ASSETS["brood-warden-v1"];
+    const effects = GAME_ASSETS["brood-warden-effects-v1"];
+    expect(body.kind).toBe("spritesheet");
+    expect(effects.kind).toBe("spritesheet");
+    if (body.kind === "spritesheet") expect(body.frameCount).toBe(12);
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(10);
+    expect(GAME_ASSETS["brood-warden-portrait-v1"].kind).toBe("image");
   });
 });

@@ -28,20 +28,24 @@ export interface ArenaDefinition {
 }
 
 export const BASTION_ARENA: Readonly<ArenaDefinition> = Object.freeze({
-  id: "bastion-test-chamber",
-  widthMetres: 30,
-  heightMetres: 16.875,
+  id: "bastion-outer-yard",
+  widthMetres: 45,
+  heightMetres: 25.3125,
   tileSizeMetres: 1,
   obstacles: Object.freeze([
-    obstacle("west-barricade", "barricade", 6.2, 4.1, 2.8, 0.8),
-    obstacle("east-crate", "cargo-crate", 22.2, 3.7, 1.7, 1.7),
-    obstacle("south-conduit", "power-conduit", 7.1, 11.8, 1.2, 2.4),
-    obstacle("east-biomass", "biomass", 21.3, 12.1, 2.6, 1.4),
+    obstacle("west-barricade", "barricade", 7.2, 5.1, 3.2, 0.8),
+    obstacle("north-crate", "cargo-crate", 20.1, 4.2, 1.7, 1.7),
+    obstacle("east-crate", "cargo-crate", 35.4, 6.3, 1.8, 1.8),
+    obstacle("south-conduit", "power-conduit", 9.4, 18.2, 1.2, 2.6),
+    obstacle("east-biomass", "biomass", 32.6, 17.4, 2.8, 1.5),
+    obstacle("centre-barricade", "barricade", 25.8, 9.1, 3.4, 0.8),
+    obstacle("west-biomass", "biomass", 13.8, 12.7, 2.4, 1.4),
+    obstacle("south-crate", "cargo-crate", 24.2, 20.8, 1.7, 1.7),
   ]),
   fence: Object.freeze({
-    switchPosition: Object.freeze({ x: 15, y: 13.6 }),
-    from: Object.freeze({ x: 11, y: 12.6 }),
-    to: Object.freeze({ x: 19, y: 12.6 }),
+    switchPosition: Object.freeze({ x: 22.5, y: 19.8 }),
+    from: Object.freeze({ x: 17.5, y: 18.6 }),
+    to: Object.freeze({ x: 27.5, y: 18.6 }),
   }),
 });
 

@@ -26,3 +26,9 @@ Effect atlas rows:
 - 15–19: Blast Mite warning ring, Blast Mite detonation, Warp arrival ring, Warp dissolve particles, Warp materialise shimmer.
 
 All sheets use transparent runtime output, nearest-neighbour scaling, centered pivots, no baked text, and state selection driven by simulation truth.
+
+## Generation and acceptance
+
+The built-in image workflow used the approved Scuttler, Brain Blob, Batch B enemy/effect, pickup, HUD, weapon, and arena assets as strict style references. Prompts locked exact grids, the high-three-quarter camera, stable directional/state order, text-free output, and flat chroma-magenta masters. Chroma was removed locally with soft matte and despill; `normalize_atlases.py` emits the fixed runtime sheets with nearest-neighbour sampling.
+
+Review the complete subset at `?mode=gallery&batch=c`. Automated acceptance on 16 July 2026: TypeScript passed, 104 tests passed across 16 files, the production build emitted all 23 manifest assets, and 12 HTTP review routes passed.

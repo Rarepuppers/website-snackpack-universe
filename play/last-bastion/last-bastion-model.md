@@ -22,7 +22,7 @@ An item is not completed merely because code or an asset exists. It must meet it
 
 **Milestone status:** In progress
 
-**Current objective:** playtest and tune the implemented five-wave vertical slice (rewards, stats, damage types, powerups, new enemies), then generate Production Asset Batch C, which is now unblocked.
+**Current objective:** creator-playtest and tune the implemented five-wave vertical slice with its gameplay-critical Batch C presentation.
 
 ## Completed
 
@@ -182,7 +182,7 @@ An item is not completed merely because code or an asset exists. It must meet it
 - Weapon Chest after waves 1 and 3 offers unowned catalogue weapons and falls back to an upgrade choice when everything is owned.
 - Supply Depot after waves 2 and 4 offers Patch Up (heal 45), Field Armoury (immediate upgrade choice), or Aegis Lattice (25 shield).
 - Implemented the timed powerup system: one seeded pickup per wave from wave 2 (Overcharge, Magnet Pulse, Adrenaline, Aegis cycle), 12-second ground lifetime, HUD buff timers and shield readout.
-- Implemented the Blast Mite (kamikaze: armed flashing tell, detonation on proximity or death) and Warp Flanker (stalk, telegraphed arrival ring, teleport, materialise window) with placeholder shapes; sprite sheets are an outstanding Batch C art task.
+- Implemented the Blast Mite (kamikaze: armed flashing tell, detonation on proximity or death) and Warp Flanker (stalk, telegraphed arrival ring, teleport, materialise window); their state-authored Batch C sheets are integrated.
 - Verification evidence: TypeScript check, 81 tests across twelve files (up from 63), production build, and the HTTP smoke pass with 19 asset checks and 11 review routes.
 
 ### Gamepad, local persistence, and representative audio hooks
@@ -204,8 +204,44 @@ An item is not completed merely because code or an asset exists. It must meet it
 - Implemented the Marine passive **Entrenched**: standing still for one second grants +3 armour until moving, surfaced on the HUD.
 - Implemented the Marine ultimate **Bastion Barrage**: R or the top gamepad button fires a twelve-projectile radial explosive volley on a 24-second cooldown with HUD readiness, camera flash, and an audio cue.
 - Implemented the signature battlefield interaction: a power switch (interact key/button within range) energizes an arena fence line for six seconds; enemies crossing take continuous Shock damage that builds toward Overload, and the fence recharges over eighteen seconds. The fence is data-driven per arena (`ArenaDefinition.fence`); arenas without one simply have no interactable.
-- Placeholder presentation: pylons, switch state colours, flickering energized line, and a proximity prompt. Production art is queued in Batch C.
+- Batch C presentation supplies authored pylons, switch states, energized beam, zap feedback, and the live proximity prompt.
 - Verification evidence: TypeScript check, 103 tests across sixteen files, production build, and the HTTP smoke pass.
+
+### Scrolling arena, sharp UI, and Siege Crusher enrage
+
+**Status:** Completed — 16 July 2026; creator scale/readability and balance review pending
+
+- Expanded the Bastion arena from exactly one viewport to 45 × 25.3125 metres (1.5× the viewport on each axis), added distributed cover, and enabled smooth bounded camera follow with a dead zone.
+- Made combat HUD, boss bar, controls, pause/result panels, and decision overlays camera-fixed.
+- Raised live HUD/decision text texture resolution, adopted a desktop monospace stack with controlled stroke, and replaced heavily stretched level-up card bitmaps with sharp scalable panel/button surfaces.
+- Increased Siege Crusher base pursuit speed and added health-tier tuning: radial slam unlocks at 50% health; the final 20% shortens tells/recovery and raises movement, charge, sweep, shockwave radius, and damage.
+- Locked the future seeded mini-boss pool to fully implemented candidates only: Siege Crusher, Brood Warden, and Rift Stalker are the initial design targets, each with two to four moves and documented enrage behavior.
+- Confirmed the Slime Spitter as the current projectile enemy and added a durable Codex instruction to produce body plus projectile/warning/impact assets together for every future ranged enemy.
+- Added the Steam-portable asset quality floor to the art bible: retained high-resolution masters, reproducible normalization, non-stretched UI contracts, and 1080p-safe dynamic text.
+- Verification evidence: 106 tests across 16 files, TypeScript validation, production build, 23 asset checks, and 12 review routes.
+
+### Seeded mini-boss pool and Brood Warden encounter
+
+**Status:** Completed — 16 July 2026; production art and creator balance review queued
+
+- Expanded the live seeded mini-boss pool from Siege Crusher alone to two mechanically complete entries: Siege Crusher and Brood Warden. Rift Stalker remains design-only and cannot be selected.
+- Added the Brood Warden as a slightly faster 2,700-health encounter with four telegraphed moves: close guarding cleave, acid projectile fan, capped egg placement, and a one-time half-health swarm rush.
+- Added final-20-percent frenzy tuning with shorter tells/recovery, faster movement, wider cleave, five acid shots, three eggs, and a six-add rush.
+- Reused the established egg hatch, hostile-projectile/cover collision, generic mini-boss reward, boss HUD, telegraph, event, audio, and deterministic scenario systems.
+- Added a dedicated `scenario=brood-warden` review route with a distinct temporary code-art silhouette and dynamic boss identity; it intentionally does not reuse the Siege Crusher portrait.
+- Rules coverage locks pool selection boundaries, health thresholds, the half-health rush/add count, and the complete cleave/acid/egg move cycle.
+- Verification evidence: 110 tests across 16 files, TypeScript validation, production build, 23 runtime asset checks, and 13 review routes.
+
+### Ripper behavior gate
+
+**Status:** Completed — 16 July 2026; creator timing/readability review and production art queued
+
+- Added the Ripper as a 72-health, lightly armoured melee bruiser with slower pursuit and low incidental contact damage.
+- Implemented a locked-direction 0.62-second wind-up, 2.55-metre frontal cone sweep, 18 sweep damage, short active phase, and 1.1-second stationary recovery window.
+- Added a deterministic `scenario=ripper` lab, phase-driven code-art silhouette, exact cone telegraph, sweep event/audio feedback, and `RIPPER LAB` HUD identity.
+- Kept the Ripper out of ordinary waves until creator review confirms its tell, reach, dodge-behind behavior, and recovery punishment are readable at gameplay scale.
+- Rules coverage verifies cone front/back/side/range boundaries and the pursuit → wind-up → sweep → recovery sequence.
+- Verification evidence: 113 tests across 16 files, TypeScript validation, production build, 26 runtime asset checks, and 15 review routes.
 
 ## In progress
 
@@ -301,7 +337,7 @@ Acceptance criterion remaining: demonstrate at least three recognisably differen
 
 ### Internal playtest
 
-**Status:** In progress — combat roster and final Batch B presentation complete; five-wave reward integration next
+**Status:** In progress — five-wave implementation and gameplay-critical Batch C presentation complete; creator playtest next
 
 - Test onboarding, control clarity, responsiveness, difficulty, upgrade comprehension, and replay desire.
 - Record observed behaviour rather than relying only on verbal feedback.
@@ -423,7 +459,7 @@ Do not queue Production Asset Batch C until critical readability corrections and
 
 ### Vertical-slice systems foundation
 
-**Status:** In progress — combat roster and final Batch B presentation complete; five-wave reward integration next
+**Status:** In progress — five-wave implementation and gameplay-critical Batch C presentation complete; creator playtest next
 
 - Completed: replaced Service-Rifle-only assumptions with data-driven targeting, attack-pattern, range, projectile, knockback, and chain contracts.
 - Completed: functional Scattergun five-pellet spread/knockback and Arc Carbine nearest-target/chain behaviours.
@@ -504,13 +540,14 @@ Completion evidence:
 
 ### Production Asset Batch C: rewards, battlefield interaction, and new combat art
 
-**Status:** Unblocked — 16 July 2026; generation not started. All items below are art-only tasks; their gameplay contracts already exist in code.
+**Status:** Gameplay-critical subset completed and integrated — 16 July 2026; creator gameplay-scale review queued
 
-- Weapon/upgrade chests, Supply Depot, Supply Drop, four powerup pickups and HUD icons, six Relics, three Artifacts, and three Shrines.
-- Blast Mite sprite sheet (chase gait, armed flash, detonation burst) and Warp Flanker sheet (stalk, dissolve, arrival ring, materialise shimmer).
-- Status-effect presentation: Blaze, Overload, Freeze, and Corrode tints/particles, plus a shield-hit shimmer for the player.
-- Closed, available, opening/activation, claimed/used, and disabled states wherever gameplay distinguishes them.
-- Reward icons, interaction prompts, HUD timers, choice panels, and gallery contracts without baked text.
+- Completed: 12-frame Blast Mite sheet and 12-frame Warp Flanker sheet with simulation-driven state selection.
+- Completed: 16-frame reward atlas covering Weapon Chest, Supply Depot, four world powerups, and four HUD icons.
+- Completed: 20-frame effect atlas covering statuses, shield impact, electric fence, Bastion Barrage, Blast Mite, and Warp presentation.
+- Completed: production world powerups, decision icons, HUD buff icons, authored switch/pylons/beam, event effects, stable manifest contracts, Batch C gallery, and HTTP asset verification.
+- Deferred until consuming systems exist: Supply Drop, six Relics, three Artifacts, and three Shrines. Do not generate inventory or state variants that gameplay cannot validate.
+- Acceptance evidence: 104 tests across 16 files, TypeScript validation, production build, 23 asset checks, and 12 review routes.
 
 ### Web MVP route and progression loop
 
@@ -518,16 +555,35 @@ Completion evidence:
 
 - Ten-wave run and small branching route with Combat, Elite, Shop, Rest, Shrine, and Boss nodes.
 - Nine ordinary/hero weapons plus Event Horizon as the first Unique.
-- Ripper, Razor Scuttler, Brood Tender, additional approved elites, and optionally Brood Warden.
+- Ripper, Razor Scuttler, Brood Tender, and additional approved elites; Brood Warden is already integrated in the vertical-slice pool.
 - Run-long Relics, one equipped Artifact, autosave between encounters, menus, route/shop/rest screens, and useful unlocks.
 - One complete final boss: The Bastion Eater, with three readable phases and a 3–5 minute target fight.
 
-### Production Asset Batch D: Web MVP enemies and final boss
+### Production Asset Batch D1: Brood Warden mini-boss
+
+**Status:** Completed and integrated — 16 July 2026; creator gameplay-scale review queued
+
+- Completed: Steam-quality retained masters exceed 4× logical resolution and normalize to a transparent 128 × 128 body sheet, 128 × 128 portrait, and 64 × 64 effects atlas.
+- Completed: four facings across stalk/idle, attack/wind-up, and hurt/enraged/defeat rows with consistent pivots and no baked shadows, text, UI, weapons, or ground effects.
+- Completed: ten effect frames cover acid projectile/fan/impact, egg-lay pulse, cleave tell/arc, swarm-rush lane/burst, enrage, and defeat.
+- Completed: source prompts, chroma provenance, large transparent masters, frame map, deterministic normalizer, nearest-neighbour runtime outputs, manifest contracts, gameplay bindings, and Batch D gallery are retained.
+- Verification evidence: 111 tests across 16 files, TypeScript validation, production build, 26 runtime asset checks, and 14 review routes.
+
+### Production Asset Batch D2: Ripper enemy
+
+**Status:** Pending — mechanics and runtime contracts complete; next production asset batch
+
+- One retained master at no less than 4× logical size, normalized to a 4 × 4 sheet of 96 × 96 cells.
+- Directional columns south, north, east, west; rows pursuit, wind-up, active sweep, and recovery.
+- One 4 × 2 effect atlas of 64 × 64 cells: cone warning, claw sweep, impact, recovery vulnerability, spawn, hit, death, and optional elite-compatible accent.
+- Preserve prompts, chroma source, transparent master, normalizer, pivots, frame map, and nearest-neighbour runtime outputs. No baked ground shadow, telegraph, text, or UI in the body sheet.
+
+### Production Asset Batch D3: remaining Web MVP enemies and final boss
 
 **Status:** Deferred until the five-wave vertical slice and Siege Crusher pass playtesting
 
-- Remaining Web MVP standard/elite monster sheets and effects.
-- Optional Brood Warden mini-boss if route variety requires it.
+- Remaining Web MVP standard/elite monster sheets and effects after the Ripper.
+- Brood Warden and Ripper are split into D1 and D2; D3 must not duplicate them.
 - The Bastion Eater layered body, damage nodes, attacks, phase damage states, breach decals, portrait/banner, boss HUD, entrance, defeat, and reward vault.
 - Do not generate second-biome bosses during the Web MVP.
 
@@ -541,6 +597,10 @@ Completion evidence:
 6. Implement mini-boss encounter support and placeholder Siege Crusher. **Completed.**
 7. Generate, normalize, integrate, gallery-test, and verify Production Asset Batch B. **Completed.**
 8. Expand to a five-wave vertical slice with weapon/upgrade rewards and one Supply Depot decision. **Completed 16 July 2026** (with defensive stats, damage types/statuses, powerups, Blast Mite, and Warp Flanker); tuning playtest still open.
-9. Generate Production Asset Batch C (now unblocked: reward, powerup, new-enemy, and status-effect state contracts exist in code).
-10. External-playtest the vertical slice; proceed to route, relic, Artifact, shop/rest, and boss systems only if Gate 2 succeeds.
-11. Implement and verify The Bastion Eater with placeholders before generating Production Asset Batch D.
+9. Generate and integrate the gameplay-critical Production Asset Batch C subset. **Completed 16 July 2026.** Defer Supply Drop/Relic/Artifact/Shrine art until their systems exist.
+10. Implement Brood Warden behavior and seed it into the eligible mini-boss pool. **Completed 16 July 2026.**
+11. Generate, normalize, integrate, and gallery-test Production Asset Batch D1 for Brood Warden. **Completed 16 July 2026; creator gameplay-scale review queued.**
+12. Implement and rules-test Ripper behavior with placeholder presentation. **Completed 16 July 2026; creator timing review queued.**
+13. Generate, normalize, integrate, and gallery-test Production Asset Batch D2 for the Ripper.
+14. External-playtest the vertical slice; proceed to route, relic, Artifact, shop/rest, and boss systems only if Gate 2 succeeds.
+15. Implement and verify The Bastion Eater with placeholders before generating Production Asset Batch D3.

@@ -79,6 +79,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly eliteArmorViews = new Map<number, Phaser.GameObjects.Triangle>();
   private readonly eliteRewardViews = new Map<number, EliteRewardView>();
   private readonly miniBossTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
+  private readonly ripperTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly warpTelegraphs = new Map<number, TelegraphView>();
   private readonly pickupViews = new Map<number, PickupView>();
   private readonly powerupViews = new Map<number, PickupView>();
@@ -132,12 +133,21 @@ export class PrototypeScene extends Phaser.Scene {
     }
     this.player = this.add.container(width / 2, height / 2, playerLayers);
     this.player.setDepth(worldDepth(this.simulation.snapshot().playerPosition.y));
+    this.cameras.main
+      .setBounds(
+        0,
+        0,
+        this.simulation.arena.widthMetres * PIXELS_PER_METRE,
+        this.simulation.arena.heightMetres * PIXELS_PER_METRE,
+      )
+      .startFollow(this.player, true, 0.12, 0.12)
+      .setDeadzone(210, 130);
 
     this.add.text(width / 2, height - 14, "WASD MOVE   •   MOUSE AIM / FIRE   •   SPACE ROLL   •   R ULTIMATE   •   E INTERACT   •   ESC PAUSE", {
       color: "#9fb3c8",
       fontFamily: "monospace",
       fontSize: "10px",
-    }).setOrigin(0.5, 1).setDepth(2000);
+    }).setOrigin(0.5, 1).setDepth(2000).setScrollFactor(0).setResolution(2);
 
     this.hud = new CombatHud(this, this.showDebug, this.useMarineArt);
     this.createFenceViews();
@@ -220,6 +230,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncEliteArmor(snapshot.enemies);
     this.syncEliteRewards(snapshot.eliteRewards);
     this.syncMiniBossTelegraphs(snapshot.enemies);
+    this.syncRipperTelegraphs(snapshot.enemies);
     this.syncWarpTelegraphs(snapshot.enemies);
     this.syncObstacleDamage(snapshot.damagedObstacleIds, snapshot.destroyedObstacleIds);
     this.syncPickups(snapshot.pickups);
@@ -270,6 +281,7 @@ export class PrototypeScene extends Phaser.Scene {
       this.eliteArmorViews,
       this.eliteRewardViews,
       this.miniBossTelegraphs,
+      this.ripperTelegraphs,
       this.warpTelegraphs,
       this.pickupViews,
       this.powerupViews,
@@ -332,6 +344,8 @@ export class PrototypeScene extends Phaser.Scene {
         case "enemy-defeated":
           if (event.enemyType === "siege-crusher") {
             this.emitAuthoredEffect(19, event.position, 420, 0.8, 2.1, 0, "batch-b-effects-v1");
+          } else if (event.enemyType === "brood-warden") {
+            this.emitAuthoredEffect(9, event.position, 460, 0.9, 2.3, 0, "brood-warden-effects-v1");
           } else if (event.enemyType === "blast-mite") {
             this.emitAuthoredEffect(16, event.position, 300, 0.65, 1.35, 0, "batch-c-effects-v1");
           } else if (event.enemyType === "warp-flanker") {
@@ -389,6 +403,25 @@ export class PrototypeScene extends Phaser.Scene {
           this.emitAuthoredEffect(17, event.position, 360, event.radiusMetres * 0.5, event.radiusMetres, 0, "batch-b-effects-v1");
           this.shakeCamera(150, 0.006);
           break;
+        case "brood-cleave":
+          this.emitAuthoredEffect(5, event.position, 300, event.radiusMetres * 0.5, event.radiusMetres, 0, "brood-warden-effects-v1");
+          break;
+        case "brood-acid-volley":
+          this.emitAuthoredEffect(1, event.position, 190, 0.5, 1.05, Math.atan2(event.target.y - event.position.y, event.target.x - event.position.x), "brood-warden-effects-v1");
+          break;
+        case "brood-acid-impact":
+          this.emitAuthoredEffect(2, event.position, 190, 0.48, 1, 0, "brood-warden-effects-v1");
+          break;
+        case "brood-eggs-laid":
+          this.emitAuthoredEffect(3, event.position, 270, 0.65, 1.45, 0, "brood-warden-effects-v1");
+          break;
+        case "brood-swarm-rush":
+          this.emitAuthoredEffect(7, event.position, 350, 0.8, 1.9, 0, "brood-warden-effects-v1");
+          this.shakeCamera(120, 0.004);
+          break;
+        case "ripper-sweep":
+          this.flashCircle(event.position, event.reachMetres * PIXELS_PER_METRE, 0xff7a5c, 220, 1.08, true);
+          break;
         case "obstacle-damaged":
           this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xffd36b, 5);
           break;
@@ -444,7 +477,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -572,6 +605,9 @@ export class PrototypeScene extends Phaser.Scene {
         }
         return this.add.triangle(0, 0, 0, -15, 13, 12, -13, 12, 0xd65cff)
           .setStrokeStyle(3, 0x4d1a66);
+      case "ripper":
+        return this.add.triangle(0, 0, -28, -18, 30, 0, -28, 18, 0xc9475f)
+          .setStrokeStyle(4, 0xffc27a);
       case "egg-cluster":
         if (this.useMarineArt) {
           return createManifestSprite(this, "egg-cluster-v1");
@@ -592,6 +628,11 @@ export class PrototypeScene extends Phaser.Scene {
           return createManifestSprite(this, "siege-crusher-v1");
         }
         return this.add.rectangle(0, 0, 82, 62, 0x8b4937).setStrokeStyle(5, 0xffb15c);
+      case "brood-warden":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "brood-warden-v1");
+        }
+        return this.add.ellipse(0, 0, 76, 58, 0x68408b).setStrokeStyle(5, 0xb9f35b);
       default:
         if (this.useMarineArt) {
           return createManifestSprite(this, "scuttler-v1");
@@ -625,6 +666,18 @@ export class PrototypeScene extends Phaser.Scene {
       view.setAlpha(enemy.warpPhase === "warp-windup" ? 0.3
         : enemy.warpPhase === "materialize" ? 0.65 : 1);
       view.setScale(1);
+      return;
+    }
+    if (enemy.type === "ripper" && view instanceof Phaser.GameObjects.Triangle) {
+      const phaseColors = {
+        pursuit: 0xc9475f,
+        windup: 0xffc45e,
+        sweep: 0xff5a42,
+        recovery: 0x6f5260,
+      } as const;
+      view.setFillStyle(phaseColors[enemy.ripperPhase ?? "pursuit"])
+        .setRotation(Math.atan2(enemy.facingDirection.y, enemy.facingDirection.x))
+        .setScale(enemy.ripperPhase === "windup" ? 1.12 : enemy.ripperPhase === "recovery" ? 0.9 : 1);
       return;
     }
 
@@ -663,6 +716,14 @@ export class PrototypeScene extends Phaser.Scene {
       view.setFillStyle(phaseColors[enemy.siegeCrusherPhase ?? "stalk"] ?? 0x8b4937)
         .setRotation(Math.atan2(enemy.facingDirection.y, enemy.facingDirection.x))
         .setScale(enemy.siegeCrusherPhase === "charge-windup" ? healthScale * 1.08 : healthScale);
+    }
+    if (enemy.type === "brood-warden" && view instanceof Phaser.GameObjects.Ellipse) {
+      const phase = enemy.broodWardenPhase ?? "stalk";
+      const warning = phase.endsWith("windup") || phase === "swarm-rush";
+      view.setFillStyle(warning ? 0xd95c78 : phase === "recovery" ? 0x554767 : 0x68408b)
+        .setStrokeStyle(5, warning ? 0xffd36b : 0xb9f35b)
+        .setRotation(Math.atan2(enemy.facingDirection.y, enemy.facingDirection.x))
+        .setScale(warning ? healthScale * 1.08 : healthScale);
     }
   }
 
@@ -707,7 +768,21 @@ export class PrototypeScene extends Phaser.Scene {
         const phase = enemy.siegeCrusherPhase ?? "stalk";
         const row = phase === "charge" || phase === "charge-windup"
           ? 1
-          : phase === "sweep" || phase === "sweep-windup" ? 2 : 0;
+          : phase === "sweep" || phase === "sweep-windup" || phase === "slam" || phase === "slam-windup" ? 2 : 0;
+        view.setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
+      case "brood-warden": {
+        const target = {
+          x: enemy.position.x + enemy.facingDirection.x,
+          y: enemy.position.y + enemy.facingDirection.y,
+        };
+        const facingColumn = cardinalFacingColumn(enemy.position, target);
+        const phase = enemy.broodWardenPhase ?? "stalk";
+        const attacking = phase.endsWith("windup")
+          || phase === "cleave" || phase === "acid-volley"
+          || phase === "egg-lay" || phase === "swarm-rush";
+        const row = enemy.health / enemy.maxHealth <= 0.2 ? 2 : attacking ? 1 : 0;
         view.setFrame(row * 4 + facingColumn).setRotation(0);
         return;
       }
@@ -769,12 +844,22 @@ export class PrototypeScene extends Phaser.Scene {
       let view = this.enemyProjectileViews.get(projectile.id);
       if (!view) {
         view = this.useMarineArt
-          ? this.add.sprite(0, 0, "batch-b-effects-v1", 10).setScale(0.42).setDepth(710)
+          ? this.add.sprite(
+            0,
+            0,
+            projectile.type === "brood-acid" ? "brood-warden-effects-v1" : "batch-b-effects-v1",
+            projectile.type === "brood-acid" ? 0 : 10,
+          ).setScale(0.42).setDepth(710)
           : this.add.circle(0, 0, 9, 0xa9e34b).setStrokeStyle(3, 0xefff9a).setDepth(710);
         this.enemyProjectileViews.set(projectile.id, view);
       }
       view.setPosition(projectile.position.x * PIXELS_PER_METRE, projectile.position.y * PIXELS_PER_METRE)
         .setRotation(projectile.rotationRadians);
+      if (view instanceof Phaser.GameObjects.Sprite) {
+        view.clearTint();
+      } else {
+        view.setFillStyle(projectile.type === "brood-acid" ? 0xd696ff : 0xa9e34b);
+      }
     }
   }
 
@@ -859,7 +944,7 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   private syncMiniBossTelegraphs(enemies: readonly EnemySnapshot[]): void {
-    const bosses = enemies.filter((enemy) => enemy.miniBossKind === "siege-crusher");
+    const bosses = enemies.filter((enemy) => Boolean(enemy.miniBossKind));
     const liveIds = new Set(bosses.map((enemy) => enemy.id));
     this.destroyMissing(this.miniBossTelegraphs, liveIds);
     for (const boss of bosses) {
@@ -871,7 +956,24 @@ export class PrototypeScene extends Phaser.Scene {
       view.clear();
       const x = boss.position.x * PIXELS_PER_METRE;
       const y = boss.position.y * PIXELS_PER_METRE;
-      if (boss.siegeCrusherPhase === "charge-windup" && boss.siegeCrusherDirection) {
+      if (boss.miniBossKind === "brood-warden") {
+        const phase = boss.broodWardenPhase;
+        if (phase === "cleave-windup") {
+          view.lineStyle(5, 0xb9f35b, 0.82).strokeCircle(x, y, 2.5 * PIXELS_PER_METRE);
+        } else if (phase === "acid-windup") {
+          const direction = boss.broodWardenDirection ?? boss.facingDirection;
+          view.lineStyle(4, 0xa9e34b, 0.72);
+          for (const offset of [-0.3, 0, 0.3]) {
+            const angle = Math.atan2(direction.y, direction.x) + offset;
+            view.lineBetween(x, y, x + Math.cos(angle) * 8 * PIXELS_PER_METRE, y + Math.sin(angle) * 8 * PIXELS_PER_METRE);
+          }
+        } else if (phase === "egg-windup") {
+          view.lineStyle(4, 0xd696ff, 0.75).strokeCircle(x, y, 2.2 * PIXELS_PER_METRE);
+        } else if (phase === "rush-windup" && boss.broodWardenDirection) {
+          view.lineStyle(6, 0xff668f, 0.78);
+          view.lineBetween(x, y, x + boss.broodWardenDirection.x * 7 * PIXELS_PER_METRE, y + boss.broodWardenDirection.y * 7 * PIXELS_PER_METRE);
+        }
+      } else if (boss.siegeCrusherPhase === "charge-windup" && boss.siegeCrusherDirection) {
         view.lineStyle(5, 0xffc45e, 0.75);
         view.lineBetween(
           x,
@@ -882,7 +984,37 @@ export class PrototypeScene extends Phaser.Scene {
       } else if (boss.siegeCrusherPhase === "sweep-windup") {
         view.lineStyle(5, 0xff8a4c, 0.78);
         view.strokeCircle(x, y, 2.7 * PIXELS_PER_METRE);
+      } else if (boss.siegeCrusherPhase === "slam-windup") {
+        const radius = boss.health / boss.maxHealth <= 0.2 ? 4 : 3.4;
+        view.lineStyle(6, 0xffd36b, 0.82);
+        view.strokeCircle(x, y, radius * PIXELS_PER_METRE);
       }
+    }
+  }
+
+  private syncRipperTelegraphs(enemies: readonly EnemySnapshot[]): void {
+    const active = enemies.filter((enemy) => enemy.type === "ripper" && enemy.ripperPhase === "windup");
+    const liveIds = new Set(active.map((enemy) => enemy.id));
+    this.destroyMissing(this.ripperTelegraphs, liveIds);
+    for (const enemy of active) {
+      let view = this.ripperTelegraphs.get(enemy.id);
+      if (!view) {
+        view = this.add.graphics().setDepth(61);
+        this.ripperTelegraphs.set(enemy.id, view);
+      }
+      view.clear();
+      const x = enemy.position.x * PIXELS_PER_METRE;
+      const y = enemy.position.y * PIXELS_PER_METRE;
+      const direction = enemy.ripperDirection ?? enemy.facingDirection;
+      const angle = Math.atan2(direction.y, direction.x);
+      const halfAngle = Math.PI * 0.32;
+      const radius = 2.55 * PIXELS_PER_METRE;
+      view.lineStyle(5, 0xffc45e, 0.82);
+      view.beginPath();
+      view.arc(x, y, radius, angle - halfAngle, angle + halfAngle, false);
+      view.strokePath();
+      view.lineBetween(x, y, x + Math.cos(angle - halfAngle) * radius, y + Math.sin(angle - halfAngle) * radius);
+      view.lineBetween(x, y, x + Math.cos(angle + halfAngle) * radius, y + Math.sin(angle + halfAngle) * radius);
     }
   }
 
@@ -893,8 +1025,10 @@ export class PrototypeScene extends Phaser.Scene {
     for (const enemy of active) {
       let view = this.warpTelegraphs.get(enemy.id);
       if (!view) {
-        view = this.add.circle(0, 0, 17, 0x000000, 0)
-          .setStrokeStyle(3, 0xd65cff, 0.9).setDepth(61);
+        view = this.useMarineArt
+          ? this.add.sprite(0, 0, "batch-c-effects-v1", 17).setScale(0.75).setDepth(61)
+          : this.add.circle(0, 0, 17, 0x000000, 0)
+            .setStrokeStyle(3, 0xd65cff, 0.9).setDepth(61);
         this.warpTelegraphs.set(enemy.id, view);
       }
       view.setPosition(enemy.warpTarget!.x * PIXELS_PER_METRE, enemy.warpTarget!.y * PIXELS_PER_METRE)
@@ -908,8 +1042,10 @@ export class PrototypeScene extends Phaser.Scene {
     for (const powerup of powerups) {
       let view = this.powerupViews.get(powerup.id);
       if (!view) {
-        view = this.add.rectangle(0, 0, 16, 16, powerupColor(powerup.type))
-          .setRotation(Math.PI / 4).setStrokeStyle(2, 0xffffff);
+        view = this.useMarineArt
+          ? this.add.sprite(0, 0, "batch-c-rewards-v1", powerupRewardFrame(powerup.type)).setScale(0.72)
+          : this.add.rectangle(0, 0, 16, 16, powerupColor(powerup.type))
+            .setRotation(Math.PI / 4).setStrokeStyle(2, 0xffffff);
         this.powerupViews.set(powerup.id, view);
       }
       view.setPosition(powerup.position.x * PIXELS_PER_METRE, powerup.position.y * PIXELS_PER_METRE)
@@ -960,38 +1096,38 @@ export class PrototypeScene extends Phaser.Scene {
     }
   }
 
-  /** Placeholder fence presentation: pylon rectangles, switch, energized line. */
   private createFenceViews(): void {
     const fence = this.simulation.arena.fence;
     if (!fence) {
       return;
     }
     for (const pylon of [fence.from, fence.to]) {
-      this.add.rectangle(
-        pylon.x * PIXELS_PER_METRE,
-        pylon.y * PIXELS_PER_METRE,
-        10,
-        22,
-        0x5a6672,
-      ).setStrokeStyle(2, 0x9fb3c8).setDepth(worldDepth(pylon.y));
+      if (this.useMarineArt) {
+        this.add.image(pylon.x * PIXELS_PER_METRE, pylon.y * PIXELS_PER_METRE, "batch-c-effects-v1", 7)
+          .setScale(0.72).setDepth(worldDepth(pylon.y));
+      } else {
+        this.add.rectangle(pylon.x * PIXELS_PER_METRE, pylon.y * PIXELS_PER_METRE, 10, 22, 0x5a6672)
+          .setStrokeStyle(2, 0x9fb3c8).setDepth(worldDepth(pylon.y));
+      }
     }
-    this.fenceSwitch = this.add.rectangle(
-      fence.switchPosition.x * PIXELS_PER_METRE,
-      fence.switchPosition.y * PIXELS_PER_METRE,
-      16,
-      16,
-      0x3fae6a,
-    ).setStrokeStyle(2, 0xe9e3cf).setDepth(worldDepth(fence.switchPosition.y));
-    this.fenceLine = this.add.line(
-      0,
-      0,
-      fence.from.x * PIXELS_PER_METRE,
-      fence.from.y * PIXELS_PER_METRE,
-      fence.to.x * PIXELS_PER_METRE,
-      fence.to.y * PIXELS_PER_METRE,
-      0x8fe8ff,
-      0.95,
-    ).setOrigin(0).setLineWidth(3).setDepth(640).setVisible(false);
+    this.fenceSwitch = this.useMarineArt
+      ? this.add.sprite(fence.switchPosition.x * PIXELS_PER_METRE, fence.switchPosition.y * PIXELS_PER_METRE, "batch-c-effects-v1", 5)
+        .setScale(0.72).setDepth(worldDepth(fence.switchPosition.y))
+      : this.add.rectangle(fence.switchPosition.x * PIXELS_PER_METRE, fence.switchPosition.y * PIXELS_PER_METRE, 16, 16, 0x3fae6a)
+        .setStrokeStyle(2, 0xe9e3cf).setDepth(worldDepth(fence.switchPosition.y));
+    if (this.useMarineArt) {
+      const fromX = fence.from.x * PIXELS_PER_METRE;
+      const fromY = fence.from.y * PIXELS_PER_METRE;
+      const toX = fence.to.x * PIXELS_PER_METRE;
+      const toY = fence.to.y * PIXELS_PER_METRE;
+      this.fenceLine = this.add.image((fromX + toX) / 2, (fromY + toY) / 2, "batch-c-effects-v1", 8)
+        .setDisplaySize(Math.hypot(toX - fromX, toY - fromY), 28)
+        .setRotation(Math.atan2(toY - fromY, toX - fromX))
+        .setDepth(640).setVisible(false);
+    } else {
+      this.fenceLine = this.add.line(0, 0, fence.from.x * PIXELS_PER_METRE, fence.from.y * PIXELS_PER_METRE, fence.to.x * PIXELS_PER_METRE, fence.to.y * PIXELS_PER_METRE, 0x8fe8ff, 0.95)
+        .setOrigin(0).setLineWidth(3).setDepth(640).setVisible(false);
+    }
     this.fencePrompt = this.add.text(
       fence.switchPosition.x * PIXELS_PER_METRE,
       fence.switchPosition.y * PIXELS_PER_METRE - 24,
@@ -1005,7 +1141,11 @@ export class PrototypeScene extends Phaser.Scene {
     if (!fence || !this.fenceSwitch || !this.fenceLine || !this.fencePrompt) {
       return;
     }
-    this.fenceSwitch.setFillStyle(fence.active ? 0xffd36b : fence.ready ? 0x3fae6a : 0x44505c);
+    if (this.fenceSwitch instanceof Phaser.GameObjects.Sprite) {
+      this.fenceSwitch.setFrame(fence.active ? 6 : 5).setAlpha(fence.ready || fence.active ? 1 : 0.45);
+    } else {
+      this.fenceSwitch.setFillStyle(fence.active ? 0xffd36b : fence.ready ? 0x3fae6a : 0x44505c);
+    }
     this.fenceLine.setVisible(fence.active);
     if (fence.active) {
       this.fenceLine.setAlpha(0.55 + Math.abs(Math.sin(this.time.now / 45)) * 0.45);
@@ -1031,30 +1171,34 @@ export class PrototypeScene extends Phaser.Scene {
 
     const { width, height } = this.scale;
     const children: Phaser.GameObjects.GameObject[] = [];
-    children.push(this.useMarineArt
-      ? this.add.image(0, 0, "hud-panels-v1", 4).setDisplaySize(760, 330)
-      : this.add.rectangle(0, 0, 760, 330, 0x101722, 0.96).setStrokeStyle(3, 0x68e4e8));
-    children.push(this.add.text(0, -125, decision.title, {
+    children.push(this.add.rectangle(0, 0, 760, 330, 0x0b121c, 0.985).setStrokeStyle(4, 0x68e4e8));
+    children.push(this.add.rectangle(0, 0, 742, 312, 0x172536, 0.72).setStrokeStyle(1, 0x4d6a83));
+    const title = this.add.text(0, -125, decision.title, {
       color: "#ffffff",
-      fontFamily: "monospace",
+      fontFamily: "Consolas, Courier New, monospace",
       fontSize: "22px",
-    }).setOrigin(0.5));
+      fontStyle: "bold",
+      stroke: "#081018",
+      strokeThickness: 4,
+    }).setOrigin(0.5).setResolution(2);
+    children.push(title);
+    if (this.useMarineArt) {
+      const decisionFrame = decision.kind === "weapon-chest" ? 1 : decision.kind === "supply-depot" ? 4 : 12;
+      children.push(this.add.image(-325, -125, "batch-c-rewards-v1", decisionFrame).setScale(0.62));
+    }
 
     decision.options.forEach((choice, index) => {
       const y = -60 + index * 86;
-      const button = this.useMarineArt
-        ? this.add.image(0, y, "hud-panels-v1", 3).setDisplaySize(670, 66)
-          .setInteractive({ useHandCursor: true })
-        : this.add.rectangle(0, y, 670, 66, 0x22334a)
-          .setStrokeStyle(2, 0x4f6e8d).setInteractive({ useHandCursor: true });
+      const button = this.add.rectangle(0, y, 670, 66, 0x1b2d42, 0.98)
+        .setStrokeStyle(2, 0x5d7892).setInteractive({ useHandCursor: true });
       const label = this.add.text(-310, y - 18, `${index + 1}. ${choice.name}\n${choice.description}`, {
         color: "#edf4ff",
-        fontFamily: "monospace",
+        fontFamily: "Consolas, Courier New, monospace",
         fontSize: "15px",
         lineSpacing: 5,
-      });
-      button.on("pointerover", () => button.setAlpha(0.82));
-      button.on("pointerout", () => button.setAlpha(1));
+      }).setResolution(2);
+      button.on("pointerover", () => button.setFillStyle(0x294865).setStrokeStyle(3, 0x68e4e8));
+      button.on("pointerout", () => button.setFillStyle(0x1b2d42).setStrokeStyle(2, 0x5d7892));
       button.on("pointerdown", () => {
         this.synth.play(UI_CONFIRM_CUE);
         this.simulation.chooseOption(choice.id);
@@ -1062,7 +1206,8 @@ export class PrototypeScene extends Phaser.Scene {
       children.push(button, label);
     });
 
-    this.decisionOverlay = this.add.container(width / 2, height / 2, children).setDepth(2200);
+    this.decisionOverlay = this.add.container(width / 2, height / 2, children)
+      .setDepth(2200).setScrollFactor(0);
   }
 
   private destroyMissing<T extends Phaser.GameObjects.GameObject>(
@@ -1111,7 +1256,7 @@ function readStressProfile(): 4 | 12 | null {
 
 function readScenario(): CombatScenario | null {
   const scenario = new URLSearchParams(window.location.search).get("scenario");
-  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher"
+  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper"
     ? scenario
     : null;
 }
@@ -1177,6 +1322,25 @@ function powerupColor(type: PowerupType): number {
   }
 }
 
+function statusEffectFrame(status: string): number {
+  switch (status) {
+    case "blaze": return 0;
+    case "overload": return 1;
+    case "freeze": return 2;
+    case "corrode": return 3;
+    default: return 4;
+  }
+}
+
+function powerupRewardFrame(type: PowerupType): number {
+  switch (type) {
+    case "overcharge": return 8;
+    case "aegis": return 9;
+    case "magnet-pulse": return 10;
+    case "adrenaline": return 11;
+  }
+}
+
 function weaponColor(weaponId: WeaponId): number {
   switch (weaponId) {
     case "scattergun": return 0xff9a72;
@@ -1201,7 +1365,7 @@ function applyManifestOrigin(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "blast-mite-v1" | "warp-flanker-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

@@ -171,6 +171,16 @@ Each production asset should have:
 - Explicit nearest-neighbour scaling
 - No baked text, UI labels, or contradictory background scenery
 
+### Steam-portable quality floor
+
+- Retain every approved transparent source master at least four times the logical runtime cell where generation resolution permits; runtime atlases are derivatives, never the only surviving art.
+- Use nearest-neighbour sampling for sprites and atlas normalization. Never upscale a small runtime PNG and treat it as a new source master.
+- Evaluate silhouette and animation at logical gameplay size, then inspect the retained master for extraction damage, inconsistent outlines, cell bleed, and chroma fringe.
+- Dynamic text remains live UI rendered at high text-texture resolution. Do not bake language into HUD art.
+- HUD frames must be designed for their real aspect ratio or assembled from scalable corners/edges. Do not stretch a square or 2:1 panel into a wide level-up card.
+- Steam/desktop builds should support at least 1080p output without changing world-unit, pivot, frame, attachment, or UI-layout contracts. Higher display resolution improves presentation but must not change gameplay scale.
+- AI-generated masters remain project-bound with prompt summary, chroma source, transparent extraction, runtime derivative, frame order, and normalization script so individual assets can be repainted later without breaking code.
+
 Provisional filename pattern:
 
 ```text
@@ -210,6 +220,17 @@ The vertical-slice combat roster uses seven stable, text-free assets:
 | `siege-crusher-portrait-v1` | image | 128×128 | 1 |
 
 Directional columns remain south, north, east, west. State rows are simulation-authored: Spitter positioning/wind-up/recovery, Carapace pursuit/wind-up/charge/recovery, and Crusher stalk/charge/sweep. The two east-facing weapon images rotate at runtime and are never painted into the hero body. Slime and Crusher effect frames encode actual projectile, target, hazard, armour, sweep, shockwave, and defeat events. The Crusher portrait is presentation-only and may not replace the runtime body sheet.
+
+## Production Asset Batch C contracts
+
+| Stable ID | Grid | Logical cell | Frame count |
+| --- | ---: | ---: | ---: |
+| `blast-mite-v1` | 4×3 | 64×64 | 12 |
+| `warp-flanker-v1` | 4×3 | 96×96 | 12 |
+| `batch-c-rewards-v1` | 4×4 | 64×64 | 16 |
+| `batch-c-effects-v1` | 5×4 | 64×64 | 20 |
+
+Blast Mite rows are chase, armed, and detonation; Warp Flanker rows are stalk, dissolve, and materialise. Both retain the south/north/east/west column order. Reward and effect frames map to implemented decisions, pickups, buffs, statuses, fence state, ultimate events, and the two new enemies. Relic, Artifact, Shrine, and Supply Drop art is not part of the locked subset because those consuming systems do not yet exist.
 
 The first production-test sheets use a four-column by three-row grid with 96 × 96 logical cells. Body and headgear layers must use identical canvas dimensions, cell order, pivots, and frame indices so equipment can toggle without moving or replacing the body.
 

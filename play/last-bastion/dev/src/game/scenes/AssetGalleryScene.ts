@@ -15,6 +15,14 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "d") {
+      this.createBatchDGallery();
+      return;
+    }
+    if (batch === "c") {
+      this.createBatchCGallery();
+      return;
+    }
     if (batch === "b") {
       this.createBatchBGallery();
       return;
@@ -157,6 +165,78 @@ export class AssetGalleryScene extends Phaser.Scene {
       this.add.sprite(x, 494, "batch-b-effects-v1", frame).setScale(0.48);
       this.add.text(x, 516, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
     }
+  }
+
+  private createBatchCGallery(): void {
+    this.add.text(20, 14, "LAST BASTION — PRODUCTION ASSET BATCH C", style("#ffffff", "17px"));
+    this.add.text(20, 38, "60 gameplay-critical visuals • new enemies, rewards, powerups, statuses, fence, and ultimate", style("#8fb2c9", "11px"));
+
+    this.add.text(20, 68, "BLAST MITE — chase / armed / detonation × S N E W", style("#ff9a52", "11px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const column = frame % 6;
+      const row = Math.floor(frame / 6);
+      this.add.sprite(54 + column * 70, 104 + row * 54, "blast-mite-v1", frame).setScale(0.72);
+    }
+
+    this.add.text(470, 68, "WARP FLANKER — stalk / dissolve / materialise", style("#d696ff", "11px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const column = frame % 6;
+      const row = Math.floor(frame / 6);
+      this.add.sprite(500 + column * 74, 104 + row * 54, "warp-flanker-v1", frame).setScale(0.5);
+    }
+
+    this.add.text(20, 204, "REWARDS + POWERUPS 4×4 — chest / depot / world pickup / HUD icon", style("#ffd36b", "11px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const column = frame % 8;
+      const row = Math.floor(frame / 8);
+      const x = 58 + column * 112;
+      const y = 246 + row * 66;
+      this.add.sprite(x, y, "batch-c-rewards-v1", frame).setScale(0.72);
+      this.add.text(x, y + 25, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 354, "BATCH C EFFECTS 5×4 — status / fence / barrage / mite + warp", style("#68e4e8", "11px"));
+    for (let frame = 0; frame < 20; frame += 1) {
+      const column = frame % 10;
+      const row = Math.floor(frame / 10);
+      const x = 50 + column * 92;
+      const y = 400 + row * 70;
+      this.add.sprite(x, y, "batch-c-effects-v1", frame).setScale(0.68);
+      this.add.text(x, y + 26, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(480, 526, "Review: ?mode=gallery&batch=c • Gameplay: normal five-wave run", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchDGallery(): void {
+    this.add.text(20, 14, "LAST BASTION — PRODUCTION ASSET BATCH D1", style("#ffffff", "17px"));
+    this.add.text(20, 38, "23 Brood Warden runtime visuals • retained masters • fixed pivots • Steam-ready source pipeline", style("#8fb2c9", "11px"));
+
+    this.add.text(20, 70, "BROOD WARDEN — stalk / attack / frenzy × S N E W", style("#b9ef62", "11px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const column = frame % 6;
+      const row = Math.floor(frame / 6);
+      const x = 78 + column * 138;
+      const y = 126 + row * 102;
+      this.add.sprite(x, y, "brood-warden-v1", frame).setScale(0.68);
+      this.add.text(x, y + 48, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 286, "BOSS PORTRAIT — HUD SIZE + SOURCE READABILITY", style("#d696ff", "11px"));
+    this.add.image(82, 358, "brood-warden-portrait-v1").setDisplaySize(128, 128);
+    this.add.image(188, 330, "brood-warden-portrait-v1").setDisplaySize(48, 48);
+
+    this.add.text(280, 286, "EFFECTS 5×2 — acid / egg / cleave / rush / enrage / defeat", style("#68e4e8", "11px"));
+    for (let frame = 0; frame < 10; frame += 1) {
+      const column = frame % 5;
+      const row = Math.floor(frame / 5);
+      const x = 340 + column * 112;
+      const y = 340 + row * 90;
+      this.add.sprite(x, y, "brood-warden-effects-v1", frame).setScale(0.9);
+      this.add.text(x, y + 34, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(480, 514, "Review: ?mode=gallery&batch=d • Encounter: ?scenario=brood-warden&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private drawWeaponRing(x: number, y: number, count: number, scale: number): void {

@@ -232,7 +232,9 @@ The functional Slime Spitter supplies the additional ranged pressure role. Its d
 
 The first functional elite is the Carapace Scuttler. Its larger four-direction production sheet gives pursuit, wind-up, charge, and recovery distinct silhouettes. It retains the Scuttler pursuit role but adds directional frontal armour and a full-damage recovery window. Direct projectiles striking the front deal 25% damage; rear attacks and all attacks during recovery deal full damage. Its death always drops an elite upgrade cache, proving that elite rewards are guaranteed rather than random.
 
-The functional mini-boss is the Siege Crusher. Its four-direction production sheet exposes stalk, charge, and sweep poses; its portrait appears in the dedicated boss bar. It stalks before selecting attacks by range, locks a charge lane during a 0.7-second tell, performs a broad authored sweep at close range, and enters a 1.15-second punishable recovery. Charges damage cover on first impact and destroy it on the second, removing the obstacle from both rendering and collision while producing an authored debris shockwave. Defeat guarantees an arsenal cache that heals and supplies two upgrade thresholds.
+The functional mini-boss is the Siege Crusher. Its four-direction production sheet exposes stalk, charge, sweep, and slam presentation; its portrait appears in the dedicated boss bar. It chooses between a telegraphed charge and broad claw sweep, damages cover on impact, and gains a radial shockwave slam below 50% health. At 20% it enters a faster, harder-hitting frenzy with shorter tells and recovery while preserving readable telegraphs. Defeat guarantees an arsenal cache that heals and supplies two upgrade thresholds.
+
+The seeded five-wave mini-boss pool also contains the mechanically complete Brood Warden. It cycles a guarding cleave, acid projectile fan, and capped egg placement, then unlocks a one-time swarm rush at 50% health. The final 20% accelerates its movement and timings and increases attack volume without removing windups. Its production body sheet, portrait, projectile, attack effects, enrage state, and defeat burst are integrated through reusable manifest contracts; the deterministic review route exposes the complete encounter.
 
 ### Web MVP
 
@@ -240,7 +242,11 @@ The functional mini-boss is the Siege Crusher. Its four-direction production she
 - Elite variants
 - One final boss
 
-The exploding archetype (Blast Mite) and a teleporting flanker (Warp Flanker) were pulled forward and implemented functionally on 16 July 2026 for waves 3–5; their production art is outstanding. Flying, shielding, psychic, summoning, and giant tank enemies remain future content.
+The exploding Blast Mite and teleporting Warp Flanker were pulled forward for waves 3–5 and now use production state sheets. The Slime Spitter is the current hostile-projectile enemy; future ranged archetypes require dedicated projectile and impact sprites. Flying, shielding, psychic, summoning, and giant tank enemies remain future content.
+
+The next functional Web MVP enemy is the Ripper, a slower melee bruiser with a locked-direction claw tell, a long frontal cone rather than circular contact damage, and a pronounced recovery window. Its deterministic lab uses code-art presentation until the sweep timing and dodge-behind readability are accepted; it is intentionally excluded from ordinary waves during this gate.
+
+The vertical-slice arena is 45 × 25.3125 metres—1.5 times the original viewport in each dimension—and uses smooth camera follow with a dead zone. The entire battlefield is no longer visible at once. Future arenas should usually range from roughly 1.4× to 2× the gameplay viewport unless a deliberately compact encounter needs full visibility.
 
 ## Encounter direction
 
@@ -261,7 +267,7 @@ Seeds should make bugs and balance problems reproducible. Later director systems
 
 The styled combat prototype now uses a deterministic tiled test chamber with boundary walls and four collision footprints: a low barricade, cargo crate, power conduit, and alien biomass mound. Player and enemy movement slide against these footprints, and projectiles stop on impact. These objects currently prove navigation, cover, depth, and readability; they are not yet the signature interactive battlefield system.
 
-The vertical slice's signature interaction is implemented (16 July 2026): a **power switch that energizes an electrical fence**. Pressing interact at the switch activates the fence line for six seconds; enemies crossing it take continuous Shock damage that builds toward an Overload stun, and the switch then recharges. Production art for the switch, pylons, and beam is an outstanding Batch C task.
+The vertical slice's signature interaction is implemented (16 July 2026): a **power switch that energizes an electrical fence**. Pressing interact at the authored Batch C switch activates the pylon beam for six seconds; enemies crossing it take continuous Shock damage that builds toward an Overload stun, and the switch then recharges.
 
 Other candidate interactions remain future content:
 

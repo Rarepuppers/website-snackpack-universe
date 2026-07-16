@@ -99,13 +99,14 @@ function buildIntent(
   }
 
   const move = applyDeadzone(state.leftStick);
+  const rawAimMagnitude = Math.hypot(state.rightStick.x, state.rightStick.y);
   const aimStick = applyDeadzone(state.rightStick);
   const aimMagnitude = Math.hypot(aimStick.x, aimStick.y);
 
   return {
     move,
     aim: aimMagnitude > 0 ? normalizeVector(aimStick) : { x: 0, y: 0 },
-    fireHeld: state.fireHeld || aimMagnitude >= GAMEPAD_FIRE_THRESHOLD,
+    fireHeld: state.fireHeld || rawAimMagnitude >= GAMEPAD_FIRE_THRESHOLD,
     ...pressed,
   };
 }

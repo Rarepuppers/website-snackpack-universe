@@ -4,7 +4,7 @@
 
 **Version:** 0.2
 
-**Status:** Design draft; weapon concepts approved; unbalanced. Damage types, defensive statistics, Blast Mite, Warp Flanker, and the four powerups are now implemented in the simulation (16 July 2026) and await production art.
+**Status:** Design draft; weapon concepts approved; unbalanced. Damage types, defensive statistics, Blast Mite, Warp Flanker, and the four powerups have gameplay-critical Batch C production art integrated (16 July 2026).
 
 This document lists early enemies and weapons without implying that all of them belong in the combat prototype. Gameplay data will eventually replace these tables as the implementation source of truth.
 
@@ -58,7 +58,7 @@ The first Brain Blob production test uses a violet cerebral mass in a dark coral
 | Mireback | Mobile ground denial | Leaves a wider persistent trail but turns slowly | Trail coverage |
 | Brood Tender | Support/spawner | Accelerates nearby egg hatching and retreats from the player | Target priority |
 
-The Blast Mite and Warp Flanker were implemented functionally on 16 July 2026 (waves 3–5) using placeholder shapes; production sprite sheets are an outstanding art task.
+The Blast Mite and Warp Flanker were implemented functionally on 16 July 2026 (waves 3–5); their directional/state Batch C sprite sheets are integrated.
 
 ### Tier 3: Elite concepts
 
@@ -250,15 +250,41 @@ Weapon implementation precedes final art for each family. Shared data must defin
 | Implemented | Scuttler | Basic swarmer | Direct pursuit | Existing gait A/B × four facings, spawn, hit, death |
 | Implemented | Egg Cluster | Nest object | Delayed hatch priority | Existing dormant, pulse, crack, rupture |
 | Implemented | Brain Blob | Telegraph attacker | Wind-up and short lunge | Existing drift, wind-up, lunge, recovery |
-| Functional placeholder | Slime Spitter | Ranged area denial | Glob creates bounded slowing puddle | Final idle/move, aim, spit, hit/death, glob, and puddle art pending Batch B |
-| Functional placeholder | Blast Mite | Kamikaze | Armed flashing tell, detonation on contact or death | Small sheet: chase gait, armed flash, detonation burst — awaiting art |
-| Functional placeholder | Warp Flanker | Teleporting harasser | Telegraphed arrival ring and materialise window | Sheet: stalk, dissolve, arrival ring, materialise shimmer — awaiting art |
-| Web MVP | Ripper | Melee bruiser | Long claw reach after wind-up | Move, sweep tell, active sweep, recovery, hit/death |
+| Vertical slice | Slime Spitter | Ranged area denial | Glob creates bounded slowing puddle | Production directional/state sheet, glob, target, and puddle art integrated |
+| Vertical slice | Blast Mite | Kamikaze | Armed flashing tell, detonation on contact or death | Production sheet: chase gait, armed flash, detonation burst |
+| Vertical slice | Warp Flanker | Teleporting harasser | Telegraphed arrival ring and materialise window | Production sheet: stalk, dissolve, arrival ring, materialise shimmer |
+| Functional placeholder | Ripper | Melee bruiser | Locked 2.55 m frontal claw cone after 0.62 s wind-up; 1.1 s punish window | Production 4 × 4 move/wind-up/sweep/recovery sheet and dedicated effects pending Batch D2 |
 | Web MVP | Razor Scuttler | Interceptor | Fast commit followed by punishable miss | Fast gait, leap/charge tell, miss recovery, death |
 | Web MVP | Brood Tender | Support | Speeds eggs and retreats | Move, channel, interrupted, hit/death |
 | Later | Mireback | Mobile denial | Wide trail but slow turning | Deferred until slime coverage proves fair |
 
 Egg Clusters remain encounter objects rather than a moving archetype. The vertical slice has three moving enemies (Scuttler, Brain Blob, Slime Spitter) plus eggs. The Web MVP adds Ripper, Razor Scuttler, and Brood Tender as encounter-budget options; not every wave uses all of them.
+
+The functional Ripper behavior gate uses 72 health, 8 armour, 1.7 m/s pursuit, low contact damage, and an 18-damage frontal sweep. Direction locks when the tell begins, allowing the Marine to dodge behind or beyond the cone. The Ripper remains stationary through its active sweep and recovery, creating a deliberate damage window. It stays out of normal waves until its review lab passes gameplay-scale readability.
+
+Projectile-enemy coverage currently exists through the Slime Spitter: it fires a visible hostile glob that can strike the Marine or cover and produces a bounded puddle. Future ranged enemies must receive separate projectile, warning, impact, and optional trail sprites; do not bake shots into body frames. **Codex asset note:** when a new projectile enemy is implemented, queue its body sheet and projectile/effect mini-atlas together so gameplay never ships with an invisible or generic enemy shot.
+
+### Later biome enemy families
+
+Elemental and malevolent entities are viable if translated into Last Bastion's science-fantasy universe rather than introduced as unrelated fantasy monsters. Each family enters through one complete biome or encounter package and remains excluded from live spawning until its behavior, counters, telegraphs, and production assets are implemented.
+
+| Family | Standard enemies | Elite | Mini-boss/boss | Combat identity |
+| --- | --- | --- | --- | --- |
+| Magma breach | Cinder Grub, Magma Spitter | Obsidian Brute | Molten Behemoth | Slow lava lanes, delayed eruptions, armour that cracks under sustained damage; fire zones must be capped and visibly expire |
+| Cryo incursion | Rime Skitter, Cryo Elemental | Glacier Warden | Frost Giant | Chill buildup, shard lanes, temporary ice cover, heavy telegraphed slams; ordinary chill slows but never chain-freezes the player |
+| Void dominion | Null Wisp, Umbral Stalker | Dread Archon | Malevolent Archon | Marks, projectile fans, short warps, temporary vision/space pressure; avoids unavoidable darkness or control loss |
+
+Recommended order after the Web MVP is **Magma breach → Cryo incursion → Void dominion**. Magma reuses the established hazard and armour systems, Cryo adds controlled terrain/status depth, and Void is reserved until teleport/projectile readability is proven. Each family should start with two standards and one elite; only then should its mini-boss enter the seeded pool.
+
+### Additional pressure-archetype recommendations
+
+| Working name | Role | Recommended behavior | Escalation | Anti-frustration rules |
+| --- | --- | --- | --- | --- |
+| Spinewheel | Ricochet disruptor | Telegraphs its heading, curls into a spinning shell, then rebounds from walls and solid cover | Base version makes two rebounds; later encounters raise speed and allow three or four, followed by a longer vulnerable rest | Loses roughly 15% speed per bounce; one enemy cannot hit the same player more than once per 0.75 s; never spawns already rolling beside the player |
+| Quillback | Ranged lane controller | Locks aim during a visible charge and fires slow readable spikes | Starts with one aimed spike, graduates to a three-shot fan, then a five-shot fan over a fixed 60–70° arc | Fire interval increases with projectile count; close-range firing is disabled or forces retreat; fans leave intentional dodge gaps and never silently home |
+| Tether Bloom | Non-damaging control plant | Roots in place, telegraphs a tendril, then pulls a nearby player slowly for about 1.6–2 s | Later encounters modestly increase acquisition range from roughly 3.5 m toward a hard 5 m cap, not pull duration | Dodge/roll breaks the tether; dealing a defined break threshold also frees the player; only one tether may control a player; failed/broken grabs incur a long cooldown |
+
+These are stronger as complementary roles than as raw-stat variants. Recommended implementation order is **Quillback → Spinewheel → Tether Bloom**: Quillback reuses the hostile-projectile system, Spinewheel adds reusable reflection physics, and Tether Bloom comes last because forced movement needs the most careful input and accessibility testing. Suggested elites are Thorn Crown (denser but slower fan), Siege Wheel (one cover-breaking rebound and pronounced rest), and Anchor Bloom (two target candidates but still one tether per player).
 
 ### Elite monster plan
 
@@ -275,15 +301,18 @@ Only the Carapace Scuttler is required for the first elite implementation. Other
 
 ### Mini-boss plan
 
-Mini-bosses use bespoke silhouettes, two or three attacks, a short entrance, a boss bar, and a guaranteed high-value reward. They have no more than one phase transition and target a 45–90 second fight.
+Mini-bosses use bespoke silhouettes, two to four attacks, a short entrance, a boss bar, and a guaranteed high-value reward. A run selects one eligible mini-boss from a seeded pool rather than always spawning the same fight. Each boss may gain speed, damage, or one new attack at 50% health and may enter a stronger but still readable frenzy in the final 20%. The target is a 45–90 second fight.
 
 | Mini-boss | Encounter identity | Attacks | Production gate |
 | --- | --- | --- | --- |
-| Siege Crusher — functional placeholder | Arena-geometry breaker | Telegraph charge, broad claw sweep, debris shockwave; exposed after collision | Final art pending Batch B |
-| Brood Warden | Spawn-priority test | Places eggs, guards them, enrages briefly when a hatch is prevented | Web MVP |
-| Synapse Herald | Telegraph mastery | Lunge chain, marked danger zones, temporary Brain Blob link | Web MVP or later |
+| Siege Crusher — vertical slice | Arena-geometry breaker | Charge, claw sweep, cover shockwave; gains radial slam at 50%, faster/wider frenzy at 20% | Production art integrated; tuning open |
+| Brood Warden — vertical-slice pool | Spawn-priority test | Egg placement, guarding cleave, acid volley; 50% swarm rush; faster/larger frenzy at 20% | Production encounter and Batch D1 art integrated; tuning review open |
+| Rift Stalker | Mobility/projectile test | Warp strike, projectile fan, decoy mark; 20% chained warp | Web MVP candidate |
+| Synapse Herald | Telegraph mastery | Lunge chain, marked danger zones, temporary Brain Blob link | Later pool expansion |
 
-Siege Crusher is the recommended first mini-boss because it reuses arena collision and damaged-obstacle work while creating a new combat rhythm.
+The initial random pool should grow only through fully implemented bosses, with no immediate repeat when run history is available. The eligible five-wave pool now contains Siege Crusher and Brood Warden; Rift Stalker remains excluded until its complete behavior and rules tests exist. Codex must implement and rules-test each complete move set before generating its production sprites.
+
+Brood Warden implementation contract: 2,700 health, 1.55 m/s base pursuit, guarding cleave at close range, a three-shot acid fan, two-egg placement capped at six live eggs, and a one-time four-add swarm rush unlocked at 50% health. Its final 20% uses shorter tells/recovery, higher movement, a wider/harder cleave, five acid shots, three eggs, and a six-add/faster rush. All attacks retain visible windups.
 
 ### Final boss plan
 
@@ -363,18 +392,27 @@ Treasure chests are reward presentation, not a separate currency. Relic fragment
 
 ### Batch C — rewards and battlefield interaction
 
-The reward state model (weapon chest, Supply Depot, powerup timers) now exists in code, so Batch C is unblocked. Also required from this batch: Blast Mite and Warp Flanker sprite sheets, status-effect overlays (Blaze, Overload, Freeze, Corrode tints/particles), the electric-fence set (power switch states, two pylons, energized beam, zap effect), and Bastion Barrage ultimate effects (launch ring, volley projectile, HUD ultimate icon).
+The gameplay-critical Batch C subset was completed on 16 July 2026: Blast Mite and Warp Flanker sheets, reward/powerup atlas, status presentation, electric-fence set, and Bastion Barrage effects are normalized and integrated.
 
-- Weapon and upgrade chest closed/open/claimed states.
-- Supply depot idle/available/used/damaged states and three choice icons.
-- Health pickup refinement plus four powerup pickup/HUD icons.
-- Relic, Artifact, and shrine frames; six relic icons, three Artifact icons, and three shrine state sets.
-- Supply-drop pod descent shadow, landed, unlocking, open, and exhausted states.
+- Completed: Weapon Chest closed/available/open/claimed states.
+- Completed: Supply Depot available/active/used/disabled states.
+- Completed: four powerup pickup/HUD icon pairs.
+- Deferred until implemented: Relic, Artifact, and Shrine frames/icons.
+- Deferred until implemented: Supply Drop descent, landed, unlocking, open, and exhausted states.
 
-### Batch D — Web MVP enemies and final boss
+### Batch D1 — Brood Warden production set
 
-- Ripper, Razor Scuttler, Brood Tender, approved elite attachments, and telegraphs/effects.
-- Brood Warden if encounter testing needs a second route mini-boss.
+- Completed: 128 × 128 logical body sheet, 128 × 128 boss portrait, and 64 × 64 effects atlas covering every implemented attack, tell, impact, enrage, hit, and defeat state.
+- Completed: retained masters exceed four times logical size and normalize through a documented nearest-neighbour pipeline.
+
+### Batch D2 — Ripper production set
+
+- Pending: 4 × 4 directional/state body sheet at 96 × 96 logical cells and a dedicated 4 × 2 melee-effect atlas at 64 × 64 logical cells.
+- Mechanics are complete; retain ≥4× masters, prompt provenance, transparent review assets, deterministic normalization, pivots, and frame maps.
+
+### Batch D3 — remaining Web MVP enemies and final boss
+
+- Razor Scuttler, Brood Tender, approved elite attachments, and telegraphs/effects.
 - The Bastion Eater body layers, attack overlays, phase damage states, arena breach assets, entrance/defeat presentation, and boss reward vault.
 
-Do not generate Batch C until the reward/interactable state model exists, or Batch D until the five-wave vertical slice and Siege Crusher fight pass their playtest gates.
+Batch C and Batch D1 are complete. Batch D2 is eligible after the Ripper behavior gate; D3 remains gated behind the vertical-slice creator playtest and placeholder final-boss implementation.

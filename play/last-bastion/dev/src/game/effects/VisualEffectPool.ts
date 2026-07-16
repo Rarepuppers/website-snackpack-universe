@@ -19,7 +19,7 @@ export interface PooledSpriteEffect {
   scale?: number;
   targetScale?: number;
   rotation?: number;
-  texture?: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1";
+  texture?: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1";
 }
 
 export class VisualEffectPool {

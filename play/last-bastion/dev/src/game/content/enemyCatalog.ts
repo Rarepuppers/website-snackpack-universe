@@ -7,7 +7,9 @@ export type EnemyType =
   | "slime-spitter"
   | "blast-mite"
   | "warp-flanker"
-  | "siege-crusher";
+  | "ripper"
+  | "siege-crusher"
+  | "brood-warden";
 
 export interface EnemyDefinition {
   id: EnemyType;
@@ -78,14 +80,33 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     experienceValue: 2,
     resistances: { cryo: 1.3 },
   }),
+  ripper: enemy({
+    id: "ripper",
+    maxHealth: 72,
+    radiusMetres: 0.72,
+    movementSpeedMetresPerSecond: 1.7,
+    contactDamage: 8,
+    experienceValue: 4,
+    armour: 8,
+  }),
   "siege-crusher": enemy({
     id: "siege-crusher",
     maxHealth: 3000,
     radiusMetres: 1.15,
-    movementSpeedMetresPerSecond: 1.25,
+    movementSpeedMetresPerSecond: 1.4,
     contactDamage: 22,
     experienceValue: 0,
     flatDamageReduction: 2,
+  }),
+  "brood-warden": enemy({
+    id: "brood-warden",
+    maxHealth: 2700,
+    radiusMetres: 1.05,
+    movementSpeedMetresPerSecond: 1.55,
+    contactDamage: 20,
+    experienceValue: 0,
+    flatDamageReduction: 1,
+    resistances: { toxic: 0.35 },
   }),
 });
 

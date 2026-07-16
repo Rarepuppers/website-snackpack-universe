@@ -49,14 +49,19 @@ export type BrainPhase = "drift" | "windup" | "lunge" | "recover";
 export type SlimeSpitterPhase = "positioning" | "windup" | "recover";
 export type BlastMitePhase = "chase" | "armed";
 export type WarpFlankerPhase = "stalk" | "warp-windup" | "materialize";
+export type RipperPhase = "pursuit" | "windup" | "sweep" | "recovery";
 export type EnemyRank = "standard" | "elite" | "mini-boss";
 export type EliteKind = "carapace-scuttler";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
-export type MiniBossKind = "siege-crusher";
+export type MiniBossKind = "siege-crusher" | "brood-warden";
 export type SiegeCrusherPhase =
   | "entrance" | "stalk" | "charge-windup" | "charge"
-  | "sweep-windup" | "sweep" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher";
+  | "sweep-windup" | "sweep" | "slam-windup" | "slam" | "recovery";
+export type BroodWardenPhase =
+  | "entrance" | "stalk" | "cleave-windup" | "cleave"
+  | "acid-windup" | "acid-volley" | "egg-windup" | "egg-lay"
+  | "rush-windup" | "swarm-rush" | "recovery";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot";
 
@@ -98,12 +103,18 @@ export type CombatEvent =
   | { type: "elite-reward-collected"; position: Vector2Data }
   | { type: "mini-boss-sweep"; position: Vector2Data; radiusMetres: number }
   | { type: "mini-boss-shockwave"; position: Vector2Data; radiusMetres: number }
+  | { type: "brood-cleave"; position: Vector2Data; radiusMetres: number }
+  | { type: "brood-acid-volley"; position: Vector2Data; target: Vector2Data; count: number }
+  | { type: "brood-acid-impact"; position: Vector2Data }
+  | { type: "brood-eggs-laid"; position: Vector2Data; count: number }
+  | { type: "brood-swarm-rush"; position: Vector2Data; count: number }
   | { type: "obstacle-damaged"; obstacleId: string; position: Vector2Data }
   | { type: "obstacle-destroyed"; obstacleId: string; position: Vector2Data }
   | { type: "mini-boss-reward-dropped"; position: Vector2Data; miniBossKind: MiniBossKind }
   | { type: "status-applied"; position: Vector2Data; status: StatusEffectType }
   | { type: "powerup-collected"; position: Vector2Data; powerupType: PowerupType }
   | { type: "warp-arrival"; position: Vector2Data }
+  | { type: "ripper-sweep"; position: Vector2Data; direction: Vector2Data; reachMetres: number }
   | { type: "ultimate-fired"; position: Vector2Data }
   | { type: "fence-activated"; from: Vector2Data; to: Vector2Data };
 
@@ -121,12 +132,16 @@ export interface EnemySnapshot {
   mitePhase?: BlastMitePhase;
   warpPhase?: WarpFlankerPhase;
   warpTarget?: Vector2Data;
+  ripperPhase?: RipperPhase;
+  ripperDirection?: Vector2Data;
   rank: EnemyRank;
   eliteKind?: EliteKind;
   carapacePhase?: CarapacePhase;
   miniBossKind?: MiniBossKind;
   siegeCrusherPhase?: SiegeCrusherPhase;
   siegeCrusherDirection?: Vector2Data;
+  broodWardenPhase?: BroodWardenPhase;
+  broodWardenDirection?: Vector2Data;
   facingDirection: Vector2Data;
   statuses: readonly StatusEffectType[];
 }
@@ -169,7 +184,7 @@ export interface FenceSnapshot {
 
 export interface EnemyProjectileSnapshot {
   id: number;
-  type: "slime-glob";
+  type: "slime-glob" | "brood-acid";
   position: Vector2Data;
   rotationRadians: number;
 }
@@ -250,6 +265,9 @@ interface EnemyState {
   warpPhase: WarpFlankerPhase;
   warpPhaseRemainingSeconds: number;
   warpTarget: Vector2Data;
+  ripperPhase: RipperPhase;
+  ripperPhaseRemainingSeconds: number;
+  ripperDirection: Vector2Data;
   rank: EnemyRank;
   eliteKind?: EliteKind;
   carapacePhase: CarapacePhase;
@@ -260,6 +278,12 @@ interface EnemyState {
   siegeCrusherPhase: SiegeCrusherPhase;
   siegeCrusherPhaseRemainingSeconds: number;
   siegeCrusherDirection: Vector2Data;
+  siegeCrusherAttackCount: number;
+  broodWardenPhase: BroodWardenPhase;
+  broodWardenPhaseRemainingSeconds: number;
+  broodWardenDirection: Vector2Data;
+  broodWardenAttackCount: number;
+  broodWardenRushUsed: boolean;
   statusBuildup: Partial<Record<StatusEffectType, number>>;
   statusTimers: Partial<Record<StatusEffectType, number>>;
 }
@@ -298,11 +322,13 @@ interface PowerupPickupState {
 
 interface EnemyProjectileState {
   id: number;
-  type: "slime-glob";
+  type: "slime-glob" | "brood-acid";
   position: Vector2Data;
   velocity: Vector2Data;
   target: Vector2Data;
   remainingSeconds: number;
+  damage: number;
+  createsPuddle: boolean;
   dead: boolean;
 }
 
@@ -369,6 +395,7 @@ const FENCE_CONTACT_RANGE_METRES = 0.6;
 const FENCE_SWITCH_RANGE_METRES = 1.4;
 const ULTIMATE_PROJECTILE_SPEED = 12;
 const ULTIMATE_PROJECTILE_LIFETIME_SECONDS = 0.9;
+export const MINI_BOSS_POOL: readonly MiniBossKind[] = Object.freeze(["siege-crusher", "brood-warden"]);
 
 const POWERUP_DURATION_SECONDS: Readonly<Record<PowerupType, number>> = Object.freeze({
   overcharge: 6,
@@ -456,6 +483,10 @@ export class CombatSimulation {
       this.populateCarapaceEliteScenario();
     } else if (this.scenario === "siege-crusher") {
       this.populateSiegeCrusherScenario();
+    } else if (this.scenario === "brood-warden") {
+      this.populateBroodWardenScenario();
+    } else if (this.scenario === "ripper") {
+      this.populateRipperScenario();
     } else if (this.wavesEnabled) {
       this.beginWave(0);
     }
@@ -575,6 +606,9 @@ export class CombatSimulation {
       warpPhase: "stalk",
       warpPhaseRemainingSeconds: type === "warp-flanker" ? 1.2 : 0,
       warpTarget: { x: 0, y: 0 },
+      ripperPhase: "pursuit",
+      ripperPhaseRemainingSeconds: type === "ripper" ? 0.35 : 0,
+      ripperDirection: { x: 0, y: 0 },
       rank: "standard",
       carapacePhase: "pursuit",
       carapacePhaseRemainingSeconds: 0,
@@ -585,6 +619,12 @@ export class CombatSimulation {
       siegeCrusherPhase: "entrance",
       siegeCrusherPhaseRemainingSeconds: 0,
       siegeCrusherDirection: { x: 0, y: 0 },
+      siegeCrusherAttackCount: 0,
+      broodWardenPhase: "entrance",
+      broodWardenPhaseRemainingSeconds: 0,
+      broodWardenDirection: { x: 0, y: 0 },
+      broodWardenAttackCount: 0,
+      broodWardenRushUsed: false,
       statusBuildup: {},
       statusTimers: {},
     });
@@ -610,12 +650,14 @@ export class CombatSimulation {
   }
 
   spawnMiniBoss(miniBossKind: MiniBossKind, position?: Vector2Data): number {
-    const id = this.spawnEnemy("siege-crusher", position);
+    const id = this.spawnEnemy(miniBossKind, position);
     const enemy = this.enemies.find((candidate) => candidate.id === id)!;
     enemy.rank = "mini-boss";
     enemy.miniBossKind = miniBossKind;
     enemy.siegeCrusherPhase = "entrance";
     enemy.siegeCrusherPhaseRemainingSeconds = 0.9;
+    enemy.broodWardenPhase = "entrance";
+    enemy.broodWardenPhaseRemainingSeconds = 0.9;
     enemy.facingDirection = normalizeVector({
       x: this.playerPosition.x - enemy.position.x,
       y: this.playerPosition.y - enemy.position.y,
@@ -1274,8 +1316,14 @@ export class CombatSimulation {
         case "warp-flanker":
           this.updateWarpFlanker(enemy, deltaSeconds);
           break;
+        case "ripper":
+          this.updateRipper(enemy, deltaSeconds);
+          break;
         case "siege-crusher":
           this.updateSiegeCrusher(enemy, deltaSeconds);
+          break;
+        case "brood-warden":
+          this.updateBroodWarden(enemy, deltaSeconds);
           break;
       }
     }
@@ -1485,9 +1533,68 @@ export class CombatSimulation {
     }
   }
 
+  private updateRipper(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.ripperPhaseRemainingSeconds -= deltaSeconds;
+    const reachMetres = 2.55;
+    switch (enemy.ripperPhase) {
+      case "pursuit": {
+        enemy.facingDirection = normalizeVector({
+          x: this.playerPosition.x - enemy.position.x,
+          y: this.playerPosition.y - enemy.position.y,
+        });
+        const playerDistance = distance(enemy.position, this.playerPosition);
+        if (playerDistance > reachMetres) {
+          this.moveEnemy(enemy, enemy.facingDirection, ENEMY_CATALOG.ripper.movementSpeedMetresPerSecond, deltaSeconds);
+        }
+        if (enemy.ripperPhaseRemainingSeconds <= 0 && playerDistance <= reachMetres + 0.35) {
+          enemy.ripperDirection = { ...enemy.facingDirection };
+          enemy.ripperPhase = "windup";
+          enemy.ripperPhaseRemainingSeconds = 0.62;
+        }
+        break;
+      }
+      case "windup":
+        if (enemy.ripperPhaseRemainingSeconds <= 0) {
+          enemy.ripperPhase = "sweep";
+          enemy.ripperPhaseRemainingSeconds = 0.24;
+          this.frameEvents.push({
+            type: "ripper-sweep",
+            position: { ...enemy.position },
+            direction: { ...enemy.ripperDirection },
+            reachMetres,
+          });
+          if (pointInsideRipperSweep(
+            enemy.position,
+            enemy.ripperDirection,
+            this.playerPosition,
+            reachMetres + PLAYER_RADIUS_METRES,
+          )) {
+            this.damagePlayer(18);
+          }
+        }
+        break;
+      case "sweep":
+        if (enemy.ripperPhaseRemainingSeconds <= 0) {
+          enemy.ripperPhase = "recovery";
+          enemy.ripperPhaseRemainingSeconds = 1.1;
+        }
+        break;
+      case "recovery":
+        if (enemy.ripperPhaseRemainingSeconds <= 0) {
+          enemy.ripperPhase = "pursuit";
+          enemy.ripperPhaseRemainingSeconds = 0.45;
+        }
+        break;
+    }
+  }
+
   private updateSiegeCrusher(enemy: EnemyState, deltaSeconds: number): void {
     enemy.siegeCrusherPhaseRemainingSeconds -= deltaSeconds;
     const playerDistance = distance(enemy.position, this.playerPosition);
+    const enrageTier = siegeCrusherEnrageTier(enemy.health, enemy.maxHealth);
+    const stalkSpeed = [1.4, 1.62, 1.85][enrageTier]!;
+    const chargeSpeed = [8.8, 9.8, 10.8][enrageTier]!;
+    const recoverySeconds = [1.05, 0.88, 0.7][enrageTier]!;
     switch (enemy.siegeCrusherPhase) {
       case "entrance":
         if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
@@ -1500,15 +1607,20 @@ export class CombatSimulation {
           x: this.playerPosition.x - enemy.position.x,
           y: this.playerPosition.y - enemy.position.y,
         });
-        this.moveEnemy(enemy, enemy.facingDirection, 1.25, deltaSeconds);
+        this.moveEnemy(enemy, enemy.facingDirection, stalkSpeed, deltaSeconds);
         if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
-          if (playerDistance > 3.4) {
+          enemy.siegeCrusherAttackCount += 1;
+          const slamFrequency = enrageTier === 2 ? 2 : 3;
+          if (enrageTier >= 1 && enemy.siegeCrusherAttackCount % slamFrequency === 0) {
+            enemy.siegeCrusherPhase = "slam-windup";
+            enemy.siegeCrusherPhaseRemainingSeconds = enrageTier === 2 ? 0.42 : 0.58;
+          } else if (playerDistance > 3.4) {
             enemy.siegeCrusherDirection = { ...enemy.facingDirection };
             enemy.siegeCrusherPhase = "charge-windup";
-            enemy.siegeCrusherPhaseRemainingSeconds = 0.7;
+            enemy.siegeCrusherPhaseRemainingSeconds = [0.65, 0.54, 0.44][enrageTier]!;
           } else {
             enemy.siegeCrusherPhase = "sweep-windup";
-            enemy.siegeCrusherPhaseRemainingSeconds = 0.55;
+            enemy.siegeCrusherPhaseRemainingSeconds = [0.52, 0.44, 0.36][enrageTier]!;
           }
         }
         break;
@@ -1519,7 +1631,7 @@ export class CombatSimulation {
         }
         break;
       case "charge": {
-        const travel = 8.4 * deltaSeconds;
+        const travel = chargeSpeed * deltaSeconds;
         const desired = {
           x: enemy.position.x + enemy.siegeCrusherDirection.x * travel,
           y: enemy.position.y + enemy.siegeCrusherDirection.y * travel,
@@ -1532,13 +1644,13 @@ export class CombatSimulation {
           });
           this.emitCrusherShockwave(enemy.position);
           enemy.siegeCrusherPhase = "recovery";
-          enemy.siegeCrusherPhaseRemainingSeconds = 1.15;
+          enemy.siegeCrusherPhaseRemainingSeconds = recoverySeconds;
           break;
         }
-        this.moveEnemy(enemy, enemy.siegeCrusherDirection, 8.4, deltaSeconds);
+        this.moveEnemy(enemy, enemy.siegeCrusherDirection, chargeSpeed, deltaSeconds);
         if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
           enemy.siegeCrusherPhase = "recovery";
-          enemy.siegeCrusherPhaseRemainingSeconds = 1.15;
+          enemy.siegeCrusherPhaseRemainingSeconds = recoverySeconds;
         }
         break;
       }
@@ -1546,27 +1658,207 @@ export class CombatSimulation {
         if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
           enemy.siegeCrusherPhase = "sweep";
           enemy.siegeCrusherPhaseRemainingSeconds = 0.28;
+          const radiusMetres = [2.7, 2.9, 3.1][enrageTier]!;
           this.frameEvents.push({
             type: "mini-boss-sweep",
             position: { ...enemy.position },
-            radiusMetres: 2.7,
+            radiusMetres,
           });
-          if (playerDistance <= 2.7 + PLAYER_RADIUS_METRES) this.damagePlayer(24);
+          if (playerDistance <= radiusMetres + PLAYER_RADIUS_METRES) {
+            this.damagePlayer([24, 28, 34][enrageTier]!);
+          }
         }
         break;
       case "sweep":
         if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
           enemy.siegeCrusherPhase = "recovery";
-          enemy.siegeCrusherPhaseRemainingSeconds = 1.15;
+          enemy.siegeCrusherPhaseRemainingSeconds = recoverySeconds;
+        }
+        break;
+      case "slam-windup":
+        if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
+          enemy.siegeCrusherPhase = "slam";
+          enemy.siegeCrusherPhaseRemainingSeconds = 0.3;
+          this.emitCrusherShockwave(
+            enemy.position,
+            enrageTier === 2 ? 4 : 3.4,
+            enrageTier === 2 ? 30 : 22,
+          );
+        }
+        break;
+      case "slam":
+        if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
+          enemy.siegeCrusherPhase = "recovery";
+          enemy.siegeCrusherPhaseRemainingSeconds = recoverySeconds;
         }
         break;
       case "recovery":
         if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
           enemy.siegeCrusherPhase = "stalk";
-          enemy.siegeCrusherPhaseRemainingSeconds = 1.05;
+          enemy.siegeCrusherPhaseRemainingSeconds = [0.95, 0.78, 0.62][enrageTier]!;
         }
         break;
     }
+  }
+
+  private updateBroodWarden(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.broodWardenPhaseRemainingSeconds -= deltaSeconds;
+    const enrageTier = broodWardenEnrageTier(enemy.health, enemy.maxHealth);
+    const playerDistance = distance(enemy.position, this.playerPosition);
+    const recoverySeconds = [1.05, 0.82, 0.62][enrageTier]!;
+    enemy.facingDirection = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
+
+    switch (enemy.broodWardenPhase) {
+      case "entrance":
+        if (enemy.broodWardenPhaseRemainingSeconds <= 0) {
+          enemy.broodWardenPhase = "stalk";
+          enemy.broodWardenPhaseRemainingSeconds = 0.8;
+        }
+        break;
+      case "stalk":
+        this.moveEnemy(
+          enemy,
+          enemy.facingDirection,
+          [1.55, 1.82, 2.08][enrageTier]!,
+          deltaSeconds,
+        );
+        if (enemy.broodWardenPhaseRemainingSeconds <= 0) {
+          enemy.broodWardenAttackCount += 1;
+          if (enrageTier >= 1 && !enemy.broodWardenRushUsed) {
+            enemy.broodWardenDirection = { ...enemy.facingDirection };
+            enemy.broodWardenPhase = "rush-windup";
+            enemy.broodWardenPhaseRemainingSeconds = enrageTier === 2 ? 0.4 : 0.55;
+          } else if (playerDistance <= 2.8 && enemy.broodWardenAttackCount % 3 === 1) {
+            enemy.broodWardenPhase = "cleave-windup";
+            enemy.broodWardenPhaseRemainingSeconds = [0.58, 0.48, 0.38][enrageTier]!;
+          } else if (enemy.broodWardenAttackCount % 3 === 2) {
+            enemy.broodWardenPhase = "acid-windup";
+            enemy.broodWardenPhaseRemainingSeconds = [0.7, 0.58, 0.46][enrageTier]!;
+          } else {
+            enemy.broodWardenPhase = "egg-windup";
+            enemy.broodWardenPhaseRemainingSeconds = [0.72, 0.58, 0.45][enrageTier]!;
+          }
+        }
+        break;
+      case "cleave-windup":
+        if (enemy.broodWardenPhaseRemainingSeconds <= 0) {
+          const radiusMetres = [2.5, 2.75, 3][enrageTier]!;
+          enemy.broodWardenPhase = "cleave";
+          enemy.broodWardenPhaseRemainingSeconds = 0.25;
+          this.frameEvents.push({ type: "brood-cleave", position: { ...enemy.position }, radiusMetres });
+          if (playerDistance <= radiusMetres + PLAYER_RADIUS_METRES) {
+            this.damagePlayer([20, 25, 31][enrageTier]!);
+          }
+        }
+        break;
+      case "acid-windup":
+        if (enemy.broodWardenPhaseRemainingSeconds <= 0) {
+          enemy.broodWardenPhase = "acid-volley";
+          enemy.broodWardenPhaseRemainingSeconds = 0.3;
+          this.launchBroodAcidVolley(enemy, [3, 4, 5][enrageTier]!);
+        }
+        break;
+      case "egg-windup":
+        if (enemy.broodWardenPhaseRemainingSeconds <= 0) {
+          enemy.broodWardenPhase = "egg-lay";
+          enemy.broodWardenPhaseRemainingSeconds = 0.32;
+          this.layBroodEggs(enemy, [2, 2, 3][enrageTier]!);
+        }
+        break;
+      case "rush-windup":
+        if (enemy.broodWardenPhaseRemainingSeconds <= 0) {
+          const count = enrageTier === 2 ? 6 : 4;
+          enemy.broodWardenRushUsed = true;
+          enemy.broodWardenPhase = "swarm-rush";
+          enemy.broodWardenPhaseRemainingSeconds = enrageTier === 2 ? 0.75 : 0.65;
+          this.spawnBroodSwarm(enemy, count);
+        }
+        break;
+      case "swarm-rush":
+        this.moveEnemy(enemy, enemy.broodWardenDirection, enrageTier === 2 ? 7.8 : 6.8, deltaSeconds);
+        if (enemy.broodWardenPhaseRemainingSeconds <= 0) {
+          enemy.broodWardenPhase = "recovery";
+          enemy.broodWardenPhaseRemainingSeconds = recoverySeconds;
+        }
+        break;
+      case "cleave":
+      case "acid-volley":
+      case "egg-lay":
+        if (enemy.broodWardenPhaseRemainingSeconds <= 0) {
+          enemy.broodWardenPhase = "recovery";
+          enemy.broodWardenPhaseRemainingSeconds = recoverySeconds;
+        }
+        break;
+      case "recovery":
+        if (enemy.broodWardenPhaseRemainingSeconds <= 0) {
+          enemy.broodWardenPhase = "stalk";
+          enemy.broodWardenPhaseRemainingSeconds = [0.9, 0.72, 0.55][enrageTier]!;
+        }
+        break;
+    }
+  }
+
+  private launchBroodAcidVolley(enemy: EnemyState, count: number): void {
+    const target = { ...this.playerPosition };
+    const base = Math.atan2(target.y - enemy.position.y, target.x - enemy.position.x);
+    const spread = Math.PI / 8;
+    const speed = 8.2;
+    for (let index = 0; index < count; index += 1) {
+      const offset = count === 1 ? 0 : (index / (count - 1) - 0.5) * spread * 2;
+      const direction = { x: Math.cos(base + offset), y: Math.sin(base + offset) };
+      const start = {
+        x: enemy.position.x + direction.x * 0.9,
+        y: enemy.position.y + direction.y * 0.9,
+      };
+      const projectileTarget = {
+        x: clamp(start.x + direction.x * 10, 0.3, this.widthMetres - 0.3),
+        y: clamp(start.y + direction.y * 10, 0.3, this.heightMetres - 0.3),
+      };
+      this.enemyProjectiles.push({
+        id: this.nextId(),
+        type: "brood-acid",
+        position: start,
+        velocity: { x: direction.x * speed, y: direction.y * speed },
+        target: projectileTarget,
+        remainingSeconds: distance(start, projectileTarget) / speed,
+        damage: 11,
+        createsPuddle: false,
+        dead: false,
+      });
+    }
+    this.frameEvents.push({
+      type: "brood-acid-volley",
+      position: { ...enemy.position },
+      target,
+      count,
+    });
+  }
+
+  private layBroodEggs(enemy: EnemyState, requestedCount: number): void {
+    const liveEggs = this.enemies.filter((candidate) => !candidate.dead && candidate.type === "egg-cluster").length;
+    const count = Math.max(0, Math.min(requestedCount, 6 - liveEggs));
+    for (let index = 0; index < count; index += 1) {
+      const angle = (index / Math.max(count, 1)) * Math.PI * 2 + this.random() * 0.45;
+      this.spawnEnemy("egg-cluster", {
+        x: clamp(enemy.position.x + Math.cos(angle) * 2.2, 0.8, this.widthMetres - 0.8),
+        y: clamp(enemy.position.y + Math.sin(angle) * 2.2, 0.8, this.heightMetres - 0.8),
+      });
+    }
+    this.frameEvents.push({ type: "brood-eggs-laid", position: { ...enemy.position }, count });
+  }
+
+  private spawnBroodSwarm(enemy: EnemyState, count: number): void {
+    for (let index = 0; index < count; index += 1) {
+      const angle = (index / count) * Math.PI * 2;
+      this.spawnEnemy("scuttler", {
+        x: clamp(enemy.position.x + Math.cos(angle) * 1.7, 0.6, this.widthMetres - 0.6),
+        y: clamp(enemy.position.y + Math.sin(angle) * 1.7, 0.6, this.heightMetres - 0.6),
+      });
+    }
+    this.frameEvents.push({ type: "brood-swarm-rush", position: { ...enemy.position }, count });
   }
 
   private firstCollidingObstacle(position: Vector2Data, radius: number) {
@@ -1588,11 +1880,10 @@ export class CombatSimulation {
     });
   }
 
-  private emitCrusherShockwave(position: Vector2Data): void {
-    const radiusMetres = 2.2;
+  private emitCrusherShockwave(position: Vector2Data, radiusMetres = 2.2, damage = 16): void {
     this.frameEvents.push({ type: "mini-boss-shockwave", position: { ...position }, radiusMetres });
     if (distance(position, this.playerPosition) <= radiusMetres + PLAYER_RADIUS_METRES) {
-      this.damagePlayer(16);
+      this.damagePlayer(damage);
     }
   }
 
@@ -1655,6 +1946,8 @@ export class CombatSimulation {
       velocity: { x: direction.x * speed, y: direction.y * speed },
       target: { ...enemy.spitterTarget },
       remainingSeconds: Math.max(0.12, distance(start, enemy.spitterTarget) / speed),
+      damage: SLIME_GLOB_DAMAGE,
+      createsPuddle: true,
       dead: false,
     });
     this.frameEvents.push({
@@ -1674,24 +1967,28 @@ export class CombatSimulation {
 
       if (pointHitsObstacle(projectile.position, this.activeObstacles())) {
         projectile.position = previous;
-        this.resolveSlimeImpact(projectile);
+        this.resolveEnemyProjectileImpact(projectile);
       } else if (projectile.remainingSeconds <= 0) {
         projectile.position = { ...projectile.target };
-        this.resolveSlimeImpact(projectile);
+        this.resolveEnemyProjectileImpact(projectile);
       }
     }
   }
 
-  private resolveSlimeImpact(projectile: EnemyProjectileState): void {
+  private resolveEnemyProjectileImpact(projectile: EnemyProjectileState): void {
     projectile.dead = true;
-    const createdPuddle = this.createSlowingPuddle(projectile.position);
-    this.frameEvents.push({
-      type: "slime-impact",
-      position: { ...projectile.position },
-      createdPuddle,
-    });
+    const createdPuddle = projectile.createsPuddle && this.createSlowingPuddle(projectile.position);
+    if (projectile.type === "brood-acid") {
+      this.frameEvents.push({ type: "brood-acid-impact", position: { ...projectile.position } });
+    } else {
+      this.frameEvents.push({
+        type: "slime-impact",
+        position: { ...projectile.position },
+        createdPuddle,
+      });
+    }
     if (distance(projectile.position, this.playerPosition) <= PLAYER_RADIUS_METRES + 0.45) {
-      this.damagePlayer(SLIME_GLOB_DAMAGE);
+      this.damagePlayer(projectile.damage);
     }
   }
 
@@ -2017,7 +2314,7 @@ export class CombatSimulation {
       if (spawn.rank === "elite") {
         this.spawnElite("carapace-scuttler");
       } else if (spawn.rank === "mini-boss") {
-        this.spawnMiniBoss("siege-crusher");
+        this.spawnMiniBoss(this.pickMiniBoss());
       } else {
         this.spawnEnemy(spawn.type);
       }
@@ -2103,6 +2400,22 @@ export class CombatSimulation {
     this.spawnEnemy("scuttler", { x: 26, y: 13 });
   }
 
+  private populateBroodWardenScenario(): void {
+    this.spawnMiniBoss("brood-warden", { x: 7, y: this.heightMetres / 2 });
+    this.spawnEnemy("egg-cluster", { x: this.widthMetres - 8, y: 4 });
+  }
+
+  private populateRipperScenario(): void {
+    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+    this.spawnEnemy("ripper", { x: centre.x + 4.5, y: centre.y - 2.5 });
+    this.spawnEnemy("ripper", { x: centre.x - 5, y: centre.y + 2.5 });
+    this.spawnEnemy("scuttler", { x: centre.x + 6, y: centre.y + 3.5 });
+  }
+
+  private pickMiniBoss(): MiniBossKind {
+    return selectMiniBossForRoll(this.random());
+  }
+
   private checkForLevelUp(): void {
     if (this.decisionQueue.length > 0) {
       return;
@@ -2145,6 +2458,8 @@ export class CombatSimulation {
       warpTarget: enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup"
         ? { ...enemy.warpTarget }
         : undefined,
+      ripperPhase: enemy.type === "ripper" ? enemy.ripperPhase : undefined,
+      ripperDirection: enemy.type === "ripper" ? { ...enemy.ripperDirection } : undefined,
       rank: enemy.rank,
       eliteKind: enemy.eliteKind,
       carapacePhase: enemy.eliteKind === "carapace-scuttler" ? enemy.carapacePhase : undefined,
@@ -2152,6 +2467,10 @@ export class CombatSimulation {
       siegeCrusherPhase: enemy.miniBossKind === "siege-crusher" ? enemy.siegeCrusherPhase : undefined,
       siegeCrusherDirection: enemy.miniBossKind === "siege-crusher"
         ? { ...enemy.siegeCrusherDirection }
+        : undefined,
+      broodWardenPhase: enemy.miniBossKind === "brood-warden" ? enemy.broodWardenPhase : undefined,
+      broodWardenDirection: enemy.miniBossKind === "brood-warden"
+        ? { ...enemy.broodWardenDirection }
         : undefined,
       facingDirection: { ...enemy.facingDirection },
       statuses: this.activeStatuses(enemy),
@@ -2243,6 +2562,38 @@ function buildWave(index: number): SpawnPlan[] {
 
 function distance(left: Vector2Data, right: Vector2Data): number {
   return Math.hypot(left.x - right.x, left.y - right.y);
+}
+
+export function siegeCrusherEnrageTier(health: number, maxHealth: number): 0 | 1 | 2 {
+  const ratio = maxHealth > 0 ? health / maxHealth : 0;
+  if (ratio <= 0.2) return 2;
+  if (ratio <= 0.5) return 1;
+  return 0;
+}
+
+export function broodWardenEnrageTier(health: number, maxHealth: number): 0 | 1 | 2 {
+  return siegeCrusherEnrageTier(health, maxHealth);
+}
+
+export function selectMiniBossForRoll(roll: number): MiniBossKind {
+  const index = Math.min(Math.floor(clamp(roll, 0, 0.999999) * MINI_BOSS_POOL.length), MINI_BOSS_POOL.length - 1);
+  return MINI_BOSS_POOL[index]!;
+}
+
+export function pointInsideRipperSweep(
+  origin: Vector2Data,
+  direction: Vector2Data,
+  point: Vector2Data,
+  reachMetres: number,
+  halfAngleRadians = Math.PI * 0.32,
+): boolean {
+  const offset = { x: point.x - origin.x, y: point.y - origin.y };
+  const magnitude = Math.hypot(offset.x, offset.y);
+  if (magnitude > reachMetres) return false;
+  if (magnitude === 0) return true;
+  const facing = normalizeVector(direction);
+  const dot = (offset.x / magnitude) * facing.x + (offset.y / magnitude) * facing.y;
+  return dot >= Math.cos(halfAngleRadians);
 }
 
 function distanceToSegment(point: Vector2Data, from: Vector2Data, to: Vector2Data): number {

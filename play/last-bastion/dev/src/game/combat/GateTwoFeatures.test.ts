@@ -1,7 +1,16 @@
 import { describe, expect, it } from "vitest";
 import type { PlayerIntent } from "../input/PlayerIntent";
-import { CombatSimulation } from "./CombatSimulation";
+import { CombatSimulation, siegeCrusherEnrageTier } from "./CombatSimulation";
 import { UPGRADE_ORDER } from "../content/upgradeCatalog";
+
+describe("Siege Crusher enrage thresholds", () => {
+  it("enters enrage at half health and frenzy in the final fifth", () => {
+    expect(siegeCrusherEnrageTier(3000, 3000)).toBe(0);
+    expect(siegeCrusherEnrageTier(1500, 3000)).toBe(1);
+    expect(siegeCrusherEnrageTier(601, 3000)).toBe(1);
+    expect(siegeCrusherEnrageTier(600, 3000)).toBe(2);
+  });
+});
 
 function intent(overrides: Partial<PlayerIntent> = {}): PlayerIntent {
   return {
@@ -117,8 +126,8 @@ describe("electric fence battlefield interaction", () => {
     expect(snapshot.fence!.ready).toBe(true);
     expect(snapshot.fence!.playerNearSwitch).toBe(false);
 
-    // Walk south from the arena centre to the switch.
-    for (let frame = 0; frame < 20; frame += 1) {
+    // Walk south from the arena centre until the configured switch is reached.
+    for (let frame = 0; frame < 80 && !snapshot.fence!.playerNearSwitch; frame += 1) {
       snapshot = simulation.step(intent({ move: { x: 0, y: 1 } }), 0.05);
     }
     expect(snapshot.fence!.playerNearSwitch).toBe(true);
@@ -129,7 +138,11 @@ describe("electric fence battlefield interaction", () => {
     expect(snapshot.fence!.ready).toBe(false);
 
     // A Scuttler approaching from beyond the fence must cross the line.
-    const scuttlerId = simulation.spawnEnemy("scuttler", { x: 15, y: 11.9 });
+    const fenceMidX = (snapshot.fence!.from.x + snapshot.fence!.to.x) / 2;
+    const scuttlerId = simulation.spawnEnemy("scuttler", {
+      x: fenceMidX,
+      y: snapshot.fence!.from.y - 0.7,
+    });
     let lowestHealth = 20;
     for (let frame = 0; frame < 30; frame += 1) {
       snapshot = simulation.step(intent(), 0.05);

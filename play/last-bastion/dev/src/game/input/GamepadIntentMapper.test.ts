@@ -46,6 +46,9 @@ describe("GamepadIntentMapper", () => {
     expect(intent.fireHeld).toBe(true);
     expect(intent.aim.x).toBeCloseTo(1);
 
+    const boundary = mapper.update(padState({ rightStick: { x: 0.5, y: 0 } }));
+    expect(boundary.fireHeld).toBe(true);
+
     const idle = mapper.update(padState({ rightStick: { x: 0.28, y: 0 } }));
     expect(idle.fireHeld).toBe(false);
   });

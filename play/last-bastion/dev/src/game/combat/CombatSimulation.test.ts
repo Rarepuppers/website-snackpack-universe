@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { PlayerIntent } from "../input/PlayerIntent";
-import { CombatSimulation } from "./CombatSimulation";
+import {
+  broodWardenEnrageTier,
+  CombatSimulation,
+  pointInsideRipperSweep,
+  selectMiniBossForRoll,
+} from "./CombatSimulation";
 import type { ArenaDefinition } from "../arena/ArenaDefinition";
 
 function intent(overrides: Partial<PlayerIntent> = {}): PlayerIntent {
@@ -214,6 +219,85 @@ describe("CombatSimulation", () => {
     expect(observed).toContain("charge-windup");
     expect(observed).toContain("charge");
     expect(observed).toContain("recovery");
+  });
+
+  it("maps seeded mini-boss rolls only to mechanically complete pool entries", () => {
+    expect(selectMiniBossForRoll(0)).toBe("siege-crusher");
+    expect(selectMiniBossForRoll(0.499)).toBe("siege-crusher");
+    expect(selectMiniBossForRoll(0.5)).toBe("brood-warden");
+    expect(selectMiniBossForRoll(0.999)).toBe("brood-warden");
+  });
+
+  it("uses the Brood Warden's half-health and final-20-percent enrage tiers", () => {
+    expect(broodWardenEnrageTier(2700, 2700)).toBe(0);
+    expect(broodWardenEnrageTier(1350, 2700)).toBe(1);
+    expect(broodWardenEnrageTier(540, 2700)).toBe(2);
+  });
+
+  it("unlocks the Brood Warden swarm rush at half health", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, scenario: "brood-warden", seed: 12 });
+    const boss = simulation.snapshot().enemies.find((enemy) => enemy.miniBossKind === "brood-warden")!;
+    simulation.dealDamage(boss.id, boss.maxHealth * 0.51);
+    let observedRush = false;
+    let observedAdds = false;
+    for (let frame = 0; frame < 100; frame += 1) {
+      const snapshot = simulation.step(intent(), 0.05);
+      observedRush ||= snapshot.events.some((event) => event.type === "brood-swarm-rush");
+      observedAdds ||= snapshot.enemies.filter((enemy) => enemy.type === "scuttler").length >= 4;
+    }
+    expect(observedRush).toBe(true);
+    expect(observedAdds).toBe(true);
+  });
+
+  it("cycles Brood Warden cleave, acid-volley, and egg-placement moves", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, seed: 3 });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnMiniBoss("brood-warden", { x: player.x + 2.6, y: player.y });
+    const observed = new Set<string>();
+    for (let frame = 0; frame < 360 && observed.size < 3; frame += 1) {
+      const cleaveObserved = observed.has("brood-cleave");
+      const snapshot = simulation.step(intent({
+        move: cleaveObserved
+          ? { x: frame < 160 ? -1 : 1, y: frame % 160 < 80 ? 0.35 : -0.35 }
+          : { x: 0, y: 0 },
+        evasiveMovePressed: cleaveObserved && frame % 26 === 0,
+      }), 0.05);
+      for (const event of snapshot.events) {
+        if (event.type === "brood-cleave" || event.type === "brood-acid-volley" || event.type === "brood-eggs-laid") {
+          observed.add(event.type);
+        }
+      }
+    }
+    expect(observed).toEqual(new Set(["brood-cleave", "brood-acid-volley", "brood-eggs-laid"]));
+  });
+
+  it("restricts the Ripper sweep to its telegraphed forward cone", () => {
+    const origin = { x: 4, y: 4 };
+    const facing = { x: 1, y: 0 };
+    expect(pointInsideRipperSweep(origin, facing, { x: 6.4, y: 4 }, 2.55)).toBe(true);
+    expect(pointInsideRipperSweep(origin, facing, { x: 3, y: 4 }, 2.55)).toBe(false);
+    expect(pointInsideRipperSweep(origin, facing, { x: 4, y: 6.5 }, 2.55)).toBe(false);
+    expect(pointInsideRipperSweep(origin, facing, { x: 7, y: 4 }, 2.55)).toBe(false);
+  });
+
+  it("cycles the Ripper through wind-up, sweep, and punishable recovery", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, seed: 17 });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("ripper", { x: player.x + 2.35, y: player.y });
+    const phases = new Set<string>();
+    let sweepEvent = false;
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 80; frame += 1) {
+      snapshot = simulation.step(intent(), 0.05);
+      const ripper = snapshot.enemies.find((enemy) => enemy.type === "ripper");
+      if (ripper?.ripperPhase) phases.add(ripper.ripperPhase);
+      sweepEvent ||= snapshot.events.some((event) => event.type === "ripper-sweep");
+    }
+    expect(phases).toContain("windup");
+    expect(phases).toContain("sweep");
+    expect(phases).toContain("recovery");
+    expect(sweepEvent).toBe(true);
+    expect(snapshot.playerHealth).toBeLessThan(snapshot.playerMaxHealth);
   });
 
   it("damages and then destroys cover struck by Crusher charges", () => {

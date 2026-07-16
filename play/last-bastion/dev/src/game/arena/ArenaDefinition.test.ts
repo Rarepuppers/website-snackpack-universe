@@ -7,7 +7,15 @@ import {
 
 describe("ArenaDefinition", () => {
   it("keeps the central player spawn clear", () => {
-    expect(pointHitsObstacle({ x: 15, y: 8.4375 }, BASTION_ARENA.obstacles)).toBe(false);
+    expect(pointHitsObstacle({
+      x: BASTION_ARENA.widthMetres / 2,
+      y: BASTION_ARENA.heightMetres / 2,
+    }, BASTION_ARENA.obstacles)).toBe(false);
+  });
+
+  it("is larger than one 960 by 540 gameplay viewport", () => {
+    expect(BASTION_ARENA.widthMetres * 32).toBeGreaterThan(960);
+    expect(BASTION_ARENA.heightMetres * 32).toBeGreaterThan(540);
   });
 
   it("clamps movement to arena bounds", () => {

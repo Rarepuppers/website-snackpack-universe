@@ -45,7 +45,14 @@ try {
     'carapace-scuttler-spritesheet-v1-96.png',
     'siege-crusher-spritesheet-v1-128.png',
     'batch-b-effect-atlas-v1-64.png',
-    'siege-crusher-portrait-v1-128.png'
+    'siege-crusher-portrait-v1-128.png',
+    'blast-mite-spritesheet-v1-64.png',
+    'warp-flanker-spritesheet-v1-96.png',
+    'batch-c-reward-atlas-v1-64.png',
+    'batch-c-effect-atlas-v1-64.png',
+    'brood-warden-spritesheet-v1-128.png',
+    'brood-warden-portrait-v1-128.png',
+    'brood-warden-effect-atlas-v1-64.png'
   )
 
   foreach ($artAssetName in $requiredArtAssets) {
@@ -62,10 +69,14 @@ try {
     '/play/last-bastion/?mode=gallery',
     '/play/last-bastion/?mode=gallery&batch=a',
     '/play/last-bastion/?mode=gallery&batch=b',
+    '/play/last-bastion/?mode=gallery&batch=c',
+    '/play/last-bastion/?mode=gallery&batch=d',
     '/play/last-bastion/?loadout=vertical',
     '/play/last-bastion/?scenario=slime-spitter&loadout=vertical',
     '/play/last-bastion/?scenario=carapace-elite&loadout=vertical',
     '/play/last-bastion/?scenario=siege-crusher&loadout=vertical',
+    '/play/last-bastion/?scenario=brood-warden&loadout=vertical',
+    '/play/last-bastion/?scenario=ripper&loadout=vertical',
     '/play/last-bastion/?stress=4',
     '/play/last-bastion/?stress=12'
   )
