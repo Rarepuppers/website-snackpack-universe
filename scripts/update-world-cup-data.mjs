@@ -93,6 +93,22 @@ function dateRangeFor(matches) {
   return `${compact(isos[0])}-${compact(isos[isos.length - 1])}`;
 }
 
+// ESPN's scoreboard endpoint silently caps its response at 100 events. This
+// tournament has 104 total matches (72 group + 32 knockout), so once the
+// knockout rounds are underway, a single wide-range request truncates before
+// the most recent games (e.g. it drops the semi-finals once played, since
+// they sort last chronologically). Splitting the request at the group/
+// knockout boundary keeps each request's event count well under the cap.
+function dateRangesFor(matches) {
+  const isos = matches.map((m) => m.isoDate).filter(Boolean).sort();
+  const groupIsos = isos.filter((iso) => iso < KO_START_ISO);
+  const koIsos = isos.filter((iso) => iso >= KO_START_ISO);
+  const ranges = [];
+  if (groupIsos.length) ranges.push(dateRangeFor(groupIsos.map((iso) => ({ isoDate: iso }))));
+  if (koIsos.length) ranges.push(dateRangeFor(koIsos.map((iso) => ({ isoDate: iso }))));
+  return ranges.length ? ranges : [dateRangeFor(matches)];
+}
+
 function penaltyKicks(competitor) {
   return competitor?.shootoutKicks || competitor?.penaltyKicks || competitor?.penaltyShootout || null;
 }
@@ -274,9 +290,16 @@ async function main() {
 
   try {
     const knownFixtures = base.concat(Array.isArray(current.knockout) ? current.knockout : []);
-    const fetchResult = await fetchEspnResults(dateRangeFor(knownFixtures));
-    allByPair = fetchResult.allByPair;
-    matches = base.map((m) => applyResult(m, fetchResult.results.get(pairKey(m.home, m.away))));
+    const results = new Map();
+    for (const range of dateRangesFor(knownFixtures)) {
+      const chunk = await fetchEspnResults(range);
+      for (const [key, value] of chunk.results) results.set(key, value);
+      for (const [key, value] of chunk.allByPair) {
+        const prev = allByPair.get(key);
+        if (!prev || (value.isoDate && value.isoDate >= (prev.isoDate || ""))) allByPair.set(key, value);
+      }
+    }
+    matches = base.map((m) => applyResult(m, results.get(pairKey(m.home, m.away))));
     source = "ESPN scoreboard (unofficial)";
     fetched = true;
   } catch (error) {

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-12T04:37:36.971Z",
+  "updatedAt": "2026-07-16T04:06:02.855Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1408,9 +1408,11 @@
       "awayLabel": "W 98",
       "home": "France",
       "away": "Spain",
-      "time": "Upcoming",
-      "statusShort": "",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Spain",
+      "hs": 0,
+      "as": 2
     },
     {
       "n": 102,
@@ -1422,9 +1424,11 @@
       "awayLabel": "W 100",
       "home": "England",
       "away": "Argentina",
-      "time": "Upcoming",
-      "statusShort": "",
-      "winner": null
+      "time": "FT",
+      "statusShort": "FT",
+      "winner": "Argentina",
+      "hs": 1,
+      "as": 2
     },
     {
       "n": 103,
@@ -1434,10 +1438,10 @@
       "venue": "Miami Gardens",
       "homeLabel": "L 101",
       "awayLabel": "L 102",
-      "home": null,
-      "away": null,
+      "home": "France",
+      "away": "England",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     },
     {
@@ -1448,10 +1452,10 @@
       "venue": "New York/New Jersey",
       "homeLabel": "W 101",
       "awayLabel": "W 102",
-      "home": null,
-      "away": null,
+      "home": "Spain",
+      "away": "Argentina",
       "time": "Upcoming",
-      "statusShort": "",
+      "statusShort": "Scheduled",
       "winner": null
     }
   ]

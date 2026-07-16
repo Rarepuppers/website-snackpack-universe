@@ -377,6 +377,32 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
   font-weight: 900;
   text-transform: uppercase;
 }
+.bracket-match--blurred .bracket-team {
+  filter: blur(9px);
+  user-select: none;
+  transition: filter 0.25s ease;
+}
+.bracket-match--blurred:hover .bracket-team {
+  filter: blur(6px);
+}
+.bracket-match--blurred::after {
+  content: "Tap to reveal final result";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px 8px;
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  background: rgba(255,253,248,0.72);
+  border-radius: 10px;
+}
 .bracket-champion {
   position: relative;
   z-index: 2;
@@ -1458,7 +1484,20 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     return '<div class="bracket-team' + (isWinner ? ' bracket-team--winner' : '') + (isOut ? ' bracket-team--out' : '') + '" data-team-name="' + escapeHtml(name) + '">' + flagImg(name) + '<span class="bracket-name">' + escapeHtml(name) + '</span>' + scoreHtml + '</div>';
   }
 
-  function bracketMatchHtml(match) {
+  function isFinalMatch(match) {
+    return !!(match && match.n === 104);
+  }
+
+  function finalRevealed() {
+    try { return sessionStorage.getItem("wcFinalRevealed") === "1"; } catch (e) { return false; }
+  }
+
+  function revealFinal(knockout) {
+    try { sessionStorage.setItem("wcFinalRevealed", "1"); } catch (e) {}
+    renderTournamentBracket(knockout);
+  }
+
+  function bracketMatchHtml(match, blurred) {
     if (!match) {
       return '<button class="bracket-match" type="button" disabled><span class="bracket-meta"><span>TBD</span><span>Pending</span></span>' +
         bracketTeamHtml("", "TBD", "", false, false, false) + bracketTeamHtml("", "TBD", "", false, false, false) + '</button>';
@@ -1467,12 +1506,14 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     var home = match.home || match.homeLabel || "TBD";
     var away = match.away || match.awayLabel || "TBD";
     var liveClass = isLive(match) ? " is-live" : "";
+    var blurClass = blurred ? " bracket-match--blurred" : "";
+    var ariaLabel = blurred ? "Final result hidden. Tap to reveal." : ("Match " + match.n + ", " + escapeHtml(home) + " vs " + escapeHtml(away));
     var homeScore = typeof match.hs === "number" ? match.hs : (typeof match.lhs === "number" ? match.lhs : "");
     var awayScore = typeof match.as === "number" ? match.as : (typeof match.las === "number" ? match.las : "");
     var pens = wonOnPens(match);
     var homePens = pens && Number.isFinite(Number(match.hps)) ? match.hps : "";
     var awayPens = pens && Number.isFinite(Number(match.aps)) ? match.aps : "";
-    return '<button class="bracket-match' + liveClass + '" type="button" data-match="' + match.n + '" aria-label="Match ' + match.n + ', ' + escapeHtml(home) + ' vs ' + escapeHtml(away) + '">' +
+    return '<button class="bracket-match' + liveClass + blurClass + '" type="button" data-match="' + match.n + '" aria-label="' + ariaLabel + '">' +
       '<span class="bracket-meta"><span>M' + match.n + '</span><span>' + escapeHtml(match.date || match.round || "") + '</span></span>' +
       bracketTeamHtml(match.home, match.homeLabel, homeScore, winner === match.home, winner && winner !== match.home, homePens) +
       bracketTeamHtml(match.away, match.awayLabel, awayScore, winner === match.away, winner && winner !== match.away, awayPens) +
@@ -1481,12 +1522,18 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
 
   function bracketColumnHtml(label, matches, sideClass) {
     return '<div class="bracket-col ' + sideClass + '"><div class="bracket-round-label">' + escapeHtml(label) + '</div>' +
-      matches.map(bracketMatchHtml).join("") + '</div>';
+      matches.map(function (m) { return bracketMatchHtml(m); }).join("") + '</div>';
   }
 
   function renderBracketDetail(match) {
     var root = document.getElementById("bracket-detail");
     if (!root || !match) return;
+    if (isFinalMatch(match) && winnerOf(match) && !finalRevealed()) {
+      SELECTED_MATCH = match;
+      root.innerHTML = '<div><h3>Match ' + escapeHtml(match.n) + ' - ' + escapeHtml(match.round || "") + '</h3>' +
+        '<p>Final result hidden. Tap the Final match card above to reveal it.</p></div>';
+      return;
+    }
     SELECTED_MATCH = match;
     var winner = winnerOf(match);
     var teams = (match.home || match.homeLabel || "TBD") + " vs " + (match.away || match.awayLabel || "TBD");
@@ -1608,7 +1655,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
     var final = byNumber[104];
     var championKnown = !!(final && winnerOf(final));
     var champion = championKnown ? winnerOf(final) : "TBD";
-    var championRevealed = !championKnown || sessionStorage.getItem("wcChampionRevealed") === "1";
+    var hideFinal = championKnown && !finalRevealed();
     root.innerHTML =
       '<svg class="bracket-lines" aria-hidden="true"></svg>' +
       bracketColumnHtml("Round of 32", leftR32, "bracket-col--r32") +
@@ -1617,32 +1664,32 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
       bracketColumnHtml("Semi-final", leftSf, "bracket-col--sf") +
       '<div class="bracket-col bracket-col--final"><div class="bracket-round-label">Final</div>' +
       '<div class="final-trophy-tile"><img src="../../assets/world-cup-2026-trophy.svg" alt=""><span>World Cup Final</span><small>Golden path</small></div>' +
-      bracketMatchHtml(final) +
-      '<div class="bracket-champion' + (championKnown ? "" : " bracket-champion--pending") + (championKnown && !championRevealed ? " bracket-champion--blurred" : "") + '"><span>Winner</span><strong>' + escapeHtml(champion) + '</strong></div>' +
+      bracketMatchHtml(final, hideFinal) +
+      '<div class="bracket-champion' + (championKnown ? "" : " bracket-champion--pending") + (hideFinal ? " bracket-champion--blurred" : "") + '"><span>Winner</span><strong>' + escapeHtml(champion) + '</strong></div>' +
       '<div class="final-icons final-icons--ball"><img src="../officialball_transparent2-50.png" alt=""></div></div>' +
       bracketColumnHtml("Semi-final", rightSf, "bracket-col--sf") +
       bracketColumnHtml("Quarter-finals", rightQf, "bracket-col--qf") +
       bracketColumnHtml("Round of 16", rightR16, "bracket-col--r16") +
       bracketColumnHtml("Round of 32", rightR32, "bracket-col--r32");
-    if (championKnown && !championRevealed) {
+    if (hideFinal) {
       var championEl = root.querySelector(".bracket-champion--blurred");
       if (championEl) {
         championEl.setAttribute("role", "button");
         championEl.setAttribute("tabindex", "0");
         championEl.setAttribute("aria-label", "Reveal the World Cup winner");
-        var reveal = function () {
-          championEl.classList.remove("bracket-champion--blurred");
-          try { sessionStorage.setItem("wcChampionRevealed", "1"); } catch (e) {}
-        };
-        championEl.addEventListener("click", reveal);
+        championEl.addEventListener("click", function () { revealFinal(knockout); });
         championEl.addEventListener("keydown", function (e) {
-          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); reveal(); }
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); revealFinal(knockout); }
         });
       }
     }
     root.querySelectorAll(".bracket-match[data-match]").forEach(function (button) {
       button.addEventListener("click", function () {
         var match = byNumber[button.getAttribute("data-match")];
+        if (isFinalMatch(match) && hideFinal) {
+          revealFinal(knockout);
+          return;
+        }
         renderBracketDetail(match);
         highlightPath(knockout, match.n);
         setMatchHash(match);
