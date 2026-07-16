@@ -22,7 +22,7 @@ An item is not completed merely because code or an asset exists. It must meet it
 
 **Milestone status:** In progress
 
-**Current objective:** visually approve the completed styled combat/arena foundation, then replace its code-native presentation with Production Asset Batch A.
+**Current objective:** tune the five-wave vertical slice and reward cadence now that Production Asset B is integrated.
 
 ## Completed
 
@@ -256,7 +256,7 @@ Acceptance criterion remaining: demonstrate at least three recognisably differen
 
 ### Internal playtest
 
-**Status:** Pending
+**Status:** In progress — combat roster and final Batch B presentation complete; five-wave reward integration next
 
 - Test onboarding, control clarity, responsiveness, difficulty, upgrade comprehension, and replay desire.
 - Record observed behaviour rather than relying only on verbal feedback.
@@ -367,18 +367,18 @@ Batch acceptance criterion: the styled stress scene remains readable with four n
 
 ### Gate 1 acceptance and tuning
 
-**Status:** Pending — next task
+**Status:** Pending — creator gameplay-scale review remains open
 
 - Creator review of normal, `stress=4`, `stress=12`, Batch A gallery, and placeholder comparison routes.
 - Record movement, aiming, roll timing, weapon-ring readability, enemy tells, pickup visibility, and effect overlap findings.
 - Tune the existing three-wave encounter and demonstrate three distinct upgrade builds.
 - Close the representative art-pipeline and combat-prototype acceptance gates.
 
-No additional production art should be generated before critical readability corrections from this review are known.
+Do not queue Production Asset Batch C until critical readability corrections and the reward-state contracts are known.
 
 ### Vertical-slice systems foundation
 
-**Status:** Pending
+**Status:** In progress — combat roster and final Batch B presentation complete; five-wave reward integration next
 
 - Completed: replaced Service-Rifle-only assumptions with data-driven targeting, attack-pattern, range, projectile, knockback, and chain contracts.
 - Completed: functional Scattergun five-pellet spread/knockback and Arc Carbine nearest-target/chain behaviours.
@@ -391,13 +391,13 @@ No additional production art should be generated before critical readability cor
 - Add weapon acquisition/replacement, duplicate handling, reward choices, and a simple between-wave supply decision.
 - Add gamepad input, settings persistence, and representative audio hooks required by Gate 2.
 
-Acceptance criterion: Scattergun, Arc Carbine, Slime Spitter, Carapace Scuttler, and Siege Crusher all function with placeholders and automated rules tests before final asset generation.
+Acceptance criterion: Scattergun, Arc Carbine, Slime Spitter, Carapace Scuttler, and Siege Crusher function with state-authored production art and automated rules tests before encounter-budget expansion.
 
 Weapon-foundation checkpoint — completed 16 July 2026:
 
 - Mixed loadouts use stable weapon IDs and isolated mutable runtime stats.
 - `?loadout=vertical`, `?loadout=scattergun`, and `?loadout=arc-carbine` provide deterministic review routes.
-- Ring sprites, projectile colours/scales, HUD markers, muzzle events, and chain arcs distinguish placeholder families without pretending final Batch B art exists.
+- Ring sprites, projectiles, HUD markers, muzzle events, and chain arcs now use their distinct Batch B families.
 - Verification evidence: 53 tests across ten files, TypeScript validation, production build, twelve asset HTTP checks, and seven review-route checks.
 
 Slime-Spitter checkpoint — completed 16 July 2026:
@@ -405,7 +405,7 @@ Slime-Spitter checkpoint — completed 16 July 2026:
 - Wave 3 introduces two Slime Spitters after the existing movement and lunge lessons.
 - `?scenario=slime-spitter&loadout=vertical` provides a deterministic hostile-projectile/hazard review lab.
 - Simulation snapshots expose hostile projectiles, timed ground hazards, slow state, Spitter phase, and locked target without coupling rules to Phaser.
-- Placeholder rendering supplies a distinct silhouette, phase colour, target marker, glob, puddle decay, Marine slow feedback, and debug counts while final art remains in Batch B.
+- Production rendering supplies the directional state sheet, target marker, glob, puddle decay, Marine slow feedback, and debug counts; `art=placeholder` preserves the comparison renderer.
 - Verification evidence: 56 tests across ten files plus TypeScript, production build, twelve asset checks, and eight review routes.
 
 Carapace-Elite checkpoint — completed 16 July 2026:
@@ -415,7 +415,7 @@ Carapace-Elite checkpoint — completed 16 July 2026:
 - The elite cycles through pursuit, visible wind-up, committed charge, and 1.05-second recovery states.
 - Defeat guarantees an elite upgrade cache; collection enters the existing deterministic three-choice upgrade flow.
 - `?scenario=carapace-elite&loadout=vertical` isolates armour, flanking, charge timing, and reward collection.
-- Placeholder presentation includes a larger tinted body, facing shield attachment, recovery fade, armour-hit feedback, and pulsing reward cache while final art remains in Batch B.
+- Production presentation uses the larger state-authored body and authored armour impact; the pulsing reward cache remains a Batch A pickup until reward-state art is defined.
 - Verification evidence: 59 tests across ten files plus TypeScript, production build, twelve asset checks, and nine review routes.
 
 Siege-Crusher checkpoint — completed 16 July 2026:
@@ -425,18 +425,27 @@ Siege-Crusher checkpoint — completed 16 July 2026:
 - Charge impacts damage cover, create debris shockwaves, and destroy cover after the second impact; destroyed obstacles leave collision as well as rendering.
 - The HUD exposes a dedicated boss health/phase bar and the world renderer exposes charge lanes, sweep radius, phase colour, shockwaves, and damaged/destroyed obstacle states.
 - Defeat guarantees a mini-boss arsenal cache that heals 30 health and grants two upgrade thresholds.
-- `?scenario=siege-crusher&loadout=vertical` isolates the complete fight and reward loop while final character/effect art remains in Batch B.
+- `?scenario=siege-crusher&loadout=vertical` isolates the complete fight and reward loop with the Crusher sheet, portrait, sweep, shockwave, armour, and defeat effects.
 - Verification evidence: 62 tests across ten files plus TypeScript, production build, twelve asset checks, and ten review routes.
 
 ### Production Asset Batch B: vertical-slice combat roster
 
-**Status:** Pending — next asset batch after placeholder behaviours pass
+**Status:** Completed and integrated — 16 July 2026; creator gameplay-scale review queued
 
 - Two weapon families: Scattergun and Arc Carbine, including ring sprites, icons, projectiles, impacts, and signature effects.
 - Slime Spitter directional/state art, glob projectile, slowing puddle stages, and dissolve effect.
 - Carapace Scuttler elite silhouette/telegraph additions.
 - Siege Crusher mini-boss body and attacks, portrait, boss bar treatment, obstacle damage, entrance, hit, and defeat effects.
 - Gallery coverage, stable manifest contracts, gameplay integration, stress routes, and HTTP asset verification.
+
+Completion evidence:
+
+- Seven runtime assets provide 63 visuals: two weapon images, 12 Spitter frames, 16 Carapace frames, 12 Crusher frames, 20 signature-effect frames, and one Crusher portrait.
+- Production gameplay now uses distinct Scattergun and Arc Carbine ring sprites/projectiles/muzzle effects; state-authored Spitter, Carapace, and Crusher sheets; authored slime/armour/sweep/shockwave/defeat effects; and the Crusher HUD portrait.
+- Creature sheets use shared nearest-neighbour scale, stable four-direction column order, state-driven row selection, and cleaned cell boundaries.
+- Source chroma sheets, transparent masters, runtime assets, frame contracts, prompt summary, and the repeatable normalizer are retained under `art/production-tests/batch-b/`.
+- `?mode=gallery&batch=b` displays the complete batch; deterministic scenario routes isolate the Spitter, Carapace, and Crusher behaviours.
+- Automated acceptance: TypeScript, 63 tests across ten files, production build, 19 asset HTTP checks, and 11 route checks passed.
 
 ### Vertical-slice reward and interaction loop
 
@@ -483,8 +492,8 @@ Siege-Crusher checkpoint — completed 16 July 2026:
 4. Implement ranged projectiles and bounded slowing hazards with a placeholder Slime Spitter. **Completed.**
 5. Implement elite armour/reward rules and placeholder Carapace Scuttler. **Completed.**
 6. Implement mini-boss encounter support and placeholder Siege Crusher. **Completed.**
-7. Generate, normalize, integrate, gallery-test, and verify Production Asset Batch B. **Next.**
-8. Expand to a tuned five-wave vertical slice with weapon/upgrade rewards and one Supply Depot decision.
+7. Generate, normalize, integrate, gallery-test, and verify Production Asset Batch B. **Completed.**
+8. Expand to a tuned five-wave vertical slice with weapon/upgrade rewards and one Supply Depot decision. **Next.**
 9. Implement reward/interactable state contracts, then generate Production Asset Batch C.
 10. External-playtest the vertical slice; proceed to route, relic, Artifact, shop/rest, and boss systems only if Gate 2 succeeds.
 11. Implement and verify The Bastion Eater with placeholders before generating Production Asset Batch D.

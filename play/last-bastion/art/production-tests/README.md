@@ -4,6 +4,8 @@ These assets test the representative modular character pipeline. They are versio
 
 Production Asset Batch A (arena, effects, pickups, and HUD) is documented in [`batch-a/README.md`](batch-a/README.md). Its six runtime atlases are integrated into the default renderer.
 
+Production Asset Batch B (weapons, Spitter, Carapace elite, Siege Crusher, portrait, and signature effects) is documented in [`batch-b/README.md`](batch-b/README.md). Its seven assets are integrated into gameplay and the Batch B gallery.
+
 ## Marine base body v1
 
 - Source sheet: `marine-base-spritesheet-v1.png`
@@ -68,6 +70,6 @@ The retained `*-chroma.png` files record the generated source before background 
 
 ## Review switches
 
-Production art is enabled by default. Use `?art=placeholder` for the code-shape comparison renderer. The helmet is enabled by default; add `?helmet=0` to verify the unchanged base body without it. The existing `weapons=` parameter may be combined with either view. Use `?mode=gallery` for character/enemy/equipment frames and `?mode=gallery&batch=a` for the arena/effect/pickup/HUD batch.
+Production art is enabled by default. Use `?art=placeholder` for the code-shape comparison renderer. The helmet is enabled by default; add `?helmet=0` to verify the unchanged base body without it. The existing `weapons=` parameter may be combined with either view. Use `?mode=gallery` for character/enemy/equipment frames, `?mode=gallery&batch=a` for the arena/effect/pickup/HUD batch, and `?mode=gallery&batch=b` for the vertical-slice combat roster.
 
 The in-app browser runtime could not initialise in the current environment, so creator visual acceptance remains a manual review step. Automated type, unit, build, asset-HTTP, and route-HTTP validation is complete.

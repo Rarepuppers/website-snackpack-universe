@@ -2,7 +2,7 @@
 
 ## Status
 
-**Version:** 0.1
+**Version:** 0.2
 
 **Status:** In progress
 
@@ -194,6 +194,22 @@ The first environment-and-presentation batch is locked to six centered, nearest-
 | `hud-panels-v1` | 3×2 | 256×128 | 6 |
 
 HUD art contains frames and empty surfaces only; all language, numbers, meters, and state labels remain runtime UI. Effect frames encode simulation events rather than running as decorative clocks. Obstacles keep intact and damaged frames paired by column even though destruction gameplay is deferred.
+
+## Production Asset Batch B contracts
+
+The vertical-slice combat roster uses seven stable, text-free assets:
+
+| Stable ID | Grid | Logical cell | Frame count |
+| --- | ---: | ---: | ---: |
+| `scattergun-v1` | image | 64×32 | 1 |
+| `arc-carbine-v1` | image | 64×32 | 1 |
+| `slime-spitter-v1` | 4×3 | 64×64 | 12 |
+| `carapace-scuttler-v1` | 4×4 | 96×96 | 16 |
+| `siege-crusher-v1` | 4×3 | 128×128 | 12 |
+| `batch-b-effects-v1` | 5×4 | 64×64 | 20 |
+| `siege-crusher-portrait-v1` | image | 128×128 | 1 |
+
+Directional columns remain south, north, east, west. State rows are simulation-authored: Spitter positioning/wind-up/recovery, Carapace pursuit/wind-up/charge/recovery, and Crusher stalk/charge/sweep. The two east-facing weapon images rotate at runtime and are never painted into the hero body. Slime and Crusher effect frames encode actual projectile, target, hazard, armour, sweep, shockwave, and defeat events. The Crusher portrait is presentation-only and may not replace the runtime body sheet.
 
 The first production-test sheets use a four-column by three-row grid with 96 × 96 logical cells. Body and headgear layers must use identical canvas dimensions, cell order, pivots, and frame indices so equipment can toggle without moving or replacing the body.
 
