@@ -23,6 +23,8 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?scenario=brood-warden&loadout=vertical` — four-move Brood Warden, egg priority, acid fan, enrage, and swarm-rush lab
 - `/play/last-bastion/?scenario=ripper&loadout=vertical` — long-reach melee cone, locked wind-up, dodge-behind, and recovery-punish lab
 - `/play/last-bastion/?scenario=quillback&loadout=vertical` — locked 1/3/5 spike fans, close-range retreat, and dodge-gap readability lab
+- `/play/last-bastion/?scenario=spinewheel&loadout=vertical` — locked heading, wall/cover rebounds, speed decay, repeat-hit safety, and recovery-punish lab
+- `/play/last-bastion/?scenario=tether-bloom&loadout=vertical` — non-damaging pull, cover blocking, dodge/damage breaks, and single-controller lab
 - `/play/last-bastion/?stress=4` — normal four-weapon mixed-enemy readability stress scene
 - `/play/last-bastion/?stress=12` — twelve-weapon capacity/performance stress scene
 - `/play/last-bastion/?mode=gallery` — production art frame, pivot, scale, state, and equipment gallery
@@ -32,6 +34,8 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?mode=gallery&batch=d` — all 23 Brood Warden Production Asset Batch D1 visuals
 - `/play/last-bastion/?mode=gallery&batch=d2` — all 24 Ripper Production Asset Batch D2 visuals
 - `/play/last-bastion/?mode=gallery&batch=e1` — all 20 Quillback Production Asset Batch E1 visuals
+- `/play/last-bastion/?mode=gallery&batch=e2` — all 24 Spinewheel Production Asset Batch E2 visuals
+- `/play/last-bastion/?mode=gallery&batch=e3` — all 24 Tether Bloom Production Asset Batch E3 visuals
 - Add `debug=1` to the normal or stress route for collision labels and live entity/effect counts.
 
 ## Architecture

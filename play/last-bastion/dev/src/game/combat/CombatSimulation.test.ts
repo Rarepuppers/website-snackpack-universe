@@ -9,6 +9,8 @@ import {
   selectMiniBossForRoll,
   SPINEWHEEL_BASE_ROLL_SPEED,
   SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER,
+  segmentHitsArenaObstacle,
+  TETHER_BLOOM_BREAK_DAMAGE,
 } from "./CombatSimulation";
 import type { ArenaDefinition } from "../arena/ArenaDefinition";
 
@@ -621,6 +623,80 @@ describe("CombatSimulation", () => {
       SPINEWHEEL_BASE_ROLL_SPEED * SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER ** 2,
     );
     expect(observedRecovery).toBe(true);
+  });
+
+  it("blocks Tether Bloom line-of-sight with arena cover", () => {
+    const obstacle = arenaWithObstacle(5, 3, 2, 2).obstacles;
+    expect(segmentHitsArenaObstacle({ x: 2, y: 4 }, { x: 9, y: 4 }, obstacle)).toBe(true);
+    expect(segmentHitsArenaObstacle({ x: 2, y: 1 }, { x: 9, y: 1 }, obstacle)).toBe(false);
+  });
+
+  it("allows only one Tether Bloom to control the player", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("tether-bloom", { x: player.x - 3, y: player.y });
+    simulation.spawnEnemy("tether-bloom", { x: player.x + 3, y: player.y });
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 30; frame += 1) snapshot = simulation.step(intent(), 0.05);
+
+    expect(snapshot.playerTethered).toBe(true);
+    expect(snapshot.enemies.filter((enemy) => enemy.tetherBloomPhase === "tethering")).toHaveLength(1);
+    expect(snapshot.activeTetherEnemyId).not.toBeNull();
+    expect(snapshot.playerHealth).toBe(snapshot.playerMaxHealth);
+  });
+
+  it("pulls without disabling input and breaks immediately on an evasive move", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("tether-bloom", { x: player.x - 3, y: player.y });
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 28; frame += 1) snapshot = simulation.step(intent(), 0.05);
+    const beforePull = snapshot.playerPosition.x;
+    snapshot = simulation.step(intent({ move: { x: 1, y: 0 } }), 0.05);
+    expect(snapshot.playerPosition.x).toBeGreaterThan(beforePull);
+
+    snapshot = simulation.step(intent({ move: { x: 1, y: 0 }, evasiveMovePressed: true }), 0.05);
+    expect(snapshot.playerTethered).toBe(false);
+    expect(snapshot.enemies[0]?.tetherBloomPhase).toBe("recovery");
+    expect(snapshot.events.some((event) => (
+      event.type === "tether-bloom-broken" && event.reason === "evasive"
+    ))).toBe(true);
+  });
+
+  it("breaks a latched Tether Bloom after the defined damage threshold", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false });
+    const player = simulation.snapshot().playerPosition;
+    const bloomId = simulation.spawnEnemy("tether-bloom", { x: player.x + 3, y: player.y });
+    for (let frame = 0; frame < 28; frame += 1) simulation.step(intent(), 0.05);
+    expect(simulation.snapshot().playerTethered).toBe(true);
+
+    expect(simulation.dealDamage(bloomId, TETHER_BLOOM_BREAK_DAMAGE)).toBe(true);
+    const snapshot = simulation.snapshot();
+    expect(snapshot.playerTethered).toBe(false);
+    expect(snapshot.enemies[0]?.tetherBloomPhase).toBe("recovery");
+    expect(snapshot.events.some((event) => (
+      event.type === "tether-bloom-broken" && event.reason === "damage"
+    ))).toBe(true);
+  });
+
+  it("cancels Tether Bloom acquisition beyond the hard range cap", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("tether-bloom", { x: player.x - 3, y: player.y });
+    for (let frame = 0; frame < 12; frame += 1) simulation.step(intent(), 0.05);
+
+    let observedRangeBreak = false;
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 14; frame += 1) {
+      snapshot = simulation.step(intent({ move: { x: 1, y: 0 } }), 0.05);
+      observedRangeBreak ||= snapshot.events.some((event) => (
+        event.type === "tether-bloom-broken" && event.reason === "range"
+      ));
+    }
+
+    expect(observedRangeBreak).toBe(true);
+    expect(snapshot.playerTethered).toBe(false);
+    expect(snapshot.enemies[0]?.tetherBloomPhase).toBe("recovery");
   });
 });
 

@@ -30,6 +30,7 @@ import {
   pointHitsObstacle,
   resolveCircleMovement,
   type ArenaDefinition,
+  type ArenaObstacle,
 } from "../arena/ArenaDefinition";
 import {
   STATUS_BY_DAMAGE_TYPE,
@@ -53,6 +54,7 @@ export type WarpFlankerPhase = "stalk" | "warp-windup" | "materialize";
 export type RipperPhase = "pursuit" | "windup" | "sweep" | "recovery";
 export type QuillbackPhase = "positioning" | "windup" | "recover";
 export type SpinewheelPhase = "positioning" | "windup" | "rolling" | "recovery";
+export type TetherBloomPhase = "idle" | "windup" | "tethering" | "recovery";
 export type EnemyRank = "standard" | "elite" | "mini-boss";
 export type EliteKind = "carapace-scuttler";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
@@ -64,7 +66,7 @@ export type BroodWardenPhase =
   | "entrance" | "stalk" | "cleave-windup" | "cleave"
   | "acid-windup" | "acid-volley" | "egg-windup" | "egg-lay"
   | "rush-windup" | "swarm-rush" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "quillback" | "spinewheel";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "quillback" | "spinewheel" | "tether-bloom";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot";
 
@@ -125,6 +127,10 @@ export type CombatEvent =
   | { type: "spinewheel-bounce"; position: Vector2Data; direction: Vector2Data; bouncesRemaining: number }
   | { type: "spinewheel-hit"; position: Vector2Data }
   | { type: "spinewheel-recovery"; position: Vector2Data }
+  | { type: "tether-bloom-windup"; position: Vector2Data; target: Vector2Data }
+  | { type: "tether-bloom-latched"; position: Vector2Data }
+  | { type: "tether-bloom-broken"; position: Vector2Data; reason: "evasive" | "damage" | "range" }
+  | { type: "tether-bloom-released"; position: Vector2Data }
   | { type: "ultimate-fired"; position: Vector2Data }
   | { type: "fence-activated"; from: Vector2Data; to: Vector2Data };
 
@@ -151,6 +157,9 @@ export interface EnemySnapshot {
   spinewheelDirection?: Vector2Data;
   spinewheelSpeedMetresPerSecond?: number;
   spinewheelBouncesRemaining?: number;
+  tetherBloomPhase?: TetherBloomPhase;
+  tetherBloomTarget?: Vector2Data;
+  tetherBloomBreakDamage?: number;
   rank: EnemyRank;
   eliteKind?: EliteKind;
   carapacePhase?: CarapacePhase;
@@ -260,6 +269,8 @@ export interface CombatSnapshot {
   playerSlowed: boolean;
   damagedObstacleIds: readonly string[];
   destroyedObstacleIds: readonly string[];
+  playerTethered: boolean;
+  activeTetherEnemyId: number | null;
 }
 
 interface EnemyState {
@@ -296,6 +307,10 @@ interface EnemyState {
   spinewheelSpeedMetresPerSecond: number;
   spinewheelBouncesRemaining: number;
   spinewheelPlayerHitCooldownSeconds: number;
+  tetherBloomPhase: TetherBloomPhase;
+  tetherBloomPhaseRemainingSeconds: number;
+  tetherBloomTarget: Vector2Data;
+  tetherBloomDamageDuringGrab: number;
   rank: EnemyRank;
   eliteKind?: EliteKind;
   carapacePhase: CarapacePhase;
@@ -419,6 +434,13 @@ const SPINEWHEEL_ROLL_DAMAGE = 14;
 const SPINEWHEEL_WINDUP_SECONDS = 0.7;
 const SPINEWHEEL_MAX_ROLL_SECONDS = 3.2;
 const SPINEWHEEL_RECOVERY_SECONDS = 1.5;
+export const TETHER_BLOOM_ACQUISITION_RANGE_METRES = 3.5;
+export const TETHER_BLOOM_HARD_RANGE_METRES = 5;
+export const TETHER_BLOOM_BREAK_DAMAGE = 28;
+const TETHER_BLOOM_WINDUP_SECONDS = 0.7;
+const TETHER_BLOOM_DURATION_SECONDS = 1.8;
+const TETHER_BLOOM_PULL_SPEED_METRES_PER_SECOND = 1.15;
+const TETHER_BLOOM_RECOVERY_SECONDS = 3.2;
 const POWERUP_LIFETIME_SECONDS = 12;
 const POWERUP_COLLECT_RADIUS_METRES = 0.7;
 const OVERCHARGE_ATTACK_SPEED_MULTIPLIER = 1.6;
@@ -495,6 +517,7 @@ export class CombatSimulation {
   private frameEvents: CombatEvent[] = [];
   private readonly stressProfile: 4 | 12 | null;
   private readonly scenario: CombatScenario | null;
+  private activeTetherEnemyId: number | null = null;
 
   constructor(options: CombatSimulationOptions = {}) {
     this.arena = options.arena ?? BASTION_ARENA;
@@ -531,6 +554,8 @@ export class CombatSimulation {
       this.populateQuillbackScenario();
     } else if (this.scenario === "spinewheel") {
       this.populateSpinewheelScenario();
+    } else if (this.scenario === "tether-bloom") {
+      this.populateTetherBloomScenario();
     } else if (this.wavesEnabled) {
       this.beginWave(0);
     }
@@ -667,6 +692,10 @@ export class CombatSimulation {
       spinewheelSpeedMetresPerSecond: SPINEWHEEL_BASE_ROLL_SPEED,
       spinewheelBouncesRemaining: SPINEWHEEL_MAX_REBOUNDS,
       spinewheelPlayerHitCooldownSeconds: 0,
+      tetherBloomPhase: "idle",
+      tetherBloomPhaseRemainingSeconds: type === "tether-bloom" ? 0.5 : 0,
+      tetherBloomTarget: { ...this.playerPosition },
+      tetherBloomDamageDuringGrab: 0,
       rank: "standard",
       carapacePhase: "pursuit",
       carapacePhaseRemainingSeconds: 0,
@@ -863,6 +892,10 @@ export class CombatSimulation {
         .filter(([, damage]) => damage === 1).map(([id]) => id),
       destroyedObstacleIds: [...this.obstacleDamage.entries()]
         .filter(([, damage]) => damage >= 2).map(([id]) => id),
+      playerTethered: this.enemies.some((enemy) => (
+        !enemy.dead && enemy.id === this.activeTetherEnemyId && enemy.tetherBloomPhase === "tethering"
+      )),
+      activeTetherEnemyId: this.activeTetherEnemyId,
     };
   }
 
@@ -1383,6 +1416,9 @@ export class CombatSimulation {
         case "spinewheel":
           this.updateSpinewheel(enemy, deltaSeconds);
           break;
+        case "tether-bloom":
+          this.updateTetherBloom(enemy, deltaSeconds);
+          break;
         case "siege-crusher":
           this.updateSiegeCrusher(enemy, deltaSeconds);
           break;
@@ -1440,6 +1476,7 @@ export class CombatSimulation {
     }
 
     enemy.dead = true;
+    if (this.activeTetherEnemyId === enemy.id) this.activeTetherEnemyId = null;
     this.frameEvents.push({ type: "egg-hatched", position: { ...enemy.position } });
     for (const offset of [-0.45, 0.45]) {
       this.spawnEnemy("scuttler", {
@@ -2188,6 +2225,116 @@ export class CombatSimulation {
     this.frameEvents.push({ type: "spinewheel-recovery", position: { ...enemy.position } });
   }
 
+  private updateTetherBloom(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.tetherBloomPhaseRemainingSeconds -= deltaSeconds;
+    const playerDistance = distance(enemy.position, this.playerPosition);
+    const hasClearPath = !segmentHitsArenaObstacle(
+      enemy.position,
+      this.playerPosition,
+      this.activeObstacles(),
+    );
+
+    switch (enemy.tetherBloomPhase) {
+      case "idle":
+        if (
+          enemy.tetherBloomPhaseRemainingSeconds <= 0
+          && this.activeTetherEnemyId === null
+          && playerDistance <= TETHER_BLOOM_ACQUISITION_RANGE_METRES
+          && hasClearPath
+        ) {
+          this.activeTetherEnemyId = enemy.id;
+          enemy.tetherBloomPhase = "windup";
+          enemy.tetherBloomPhaseRemainingSeconds = TETHER_BLOOM_WINDUP_SECONDS;
+          enemy.tetherBloomTarget = { ...this.playerPosition };
+          this.frameEvents.push({
+            type: "tether-bloom-windup",
+            position: { ...enemy.position },
+            target: { ...enemy.tetherBloomTarget },
+          });
+        }
+        break;
+      case "windup":
+        if (this.heroState === "evading") {
+          this.breakTetherBloom(enemy, "evasive");
+        } else if (playerDistance > TETHER_BLOOM_HARD_RANGE_METRES || !hasClearPath) {
+          this.breakTetherBloom(enemy, "range");
+        } else if (enemy.tetherBloomPhaseRemainingSeconds <= 0) {
+          enemy.tetherBloomPhase = "tethering";
+          enemy.tetherBloomPhaseRemainingSeconds = TETHER_BLOOM_DURATION_SECONDS;
+          enemy.tetherBloomDamageDuringGrab = 0;
+          this.frameEvents.push({ type: "tether-bloom-latched", position: { ...enemy.position } });
+        }
+        break;
+      case "tethering": {
+        if (this.activeTetherEnemyId !== enemy.id) {
+          enemy.tetherBloomPhase = "recovery";
+          enemy.tetherBloomPhaseRemainingSeconds = TETHER_BLOOM_RECOVERY_SECONDS;
+          break;
+        }
+        if (this.heroState === "evading") {
+          this.breakTetherBloom(enemy, "evasive");
+          break;
+        }
+        if (playerDistance > TETHER_BLOOM_HARD_RANGE_METRES || !hasClearPath) {
+          this.breakTetherBloom(enemy, "range");
+          break;
+        }
+
+        const minimumDistance = ENEMY_CATALOG["tether-bloom"].radiusMetres + PLAYER_RADIUS_METRES + 0.15;
+        const pullDistance = Math.min(
+          TETHER_BLOOM_PULL_SPEED_METRES_PER_SECOND * deltaSeconds,
+          Math.max(0, playerDistance - minimumDistance),
+        );
+        if (pullDistance > 0) {
+          const towardBloom = normalizeVector({
+            x: enemy.position.x - this.playerPosition.x,
+            y: enemy.position.y - this.playerPosition.y,
+          });
+          this.playerPosition = resolveCircleMovement(
+            this.playerPosition,
+            {
+              x: this.playerPosition.x + towardBloom.x * pullDistance,
+              y: this.playerPosition.y + towardBloom.y * pullDistance,
+            },
+            PLAYER_RADIUS_METRES,
+            this.collisionArena(),
+          );
+        }
+        if (enemy.tetherBloomPhaseRemainingSeconds <= 0) {
+          this.releaseTetherBloom(enemy);
+        }
+        break;
+      }
+      case "recovery":
+        if (enemy.tetherBloomPhaseRemainingSeconds <= 0) {
+          enemy.tetherBloomPhase = "idle";
+          enemy.tetherBloomPhaseRemainingSeconds = 0.6;
+        }
+        break;
+    }
+  }
+
+  private breakTetherBloom(
+    enemy: EnemyState,
+    reason: "evasive" | "damage" | "range",
+  ): void {
+    if (this.activeTetherEnemyId === enemy.id) this.activeTetherEnemyId = null;
+    enemy.tetherBloomPhase = "recovery";
+    enemy.tetherBloomPhaseRemainingSeconds = TETHER_BLOOM_RECOVERY_SECONDS;
+    this.frameEvents.push({
+      type: "tether-bloom-broken",
+      position: { ...enemy.position },
+      reason,
+    });
+  }
+
+  private releaseTetherBloom(enemy: EnemyState): void {
+    if (this.activeTetherEnemyId === enemy.id) this.activeTetherEnemyId = null;
+    enemy.tetherBloomPhase = "recovery";
+    enemy.tetherBloomPhaseRemainingSeconds = TETHER_BLOOM_RECOVERY_SECONDS;
+    this.frameEvents.push({ type: "tether-bloom-released", position: { ...enemy.position } });
+  }
+
   private launchSlimeGlob(enemy: EnemyState): void {
     const direction = normalizeVector({
       x: enemy.spitterTarget.x - enemy.position.x,
@@ -2487,6 +2634,12 @@ export class CombatSimulation {
     }
 
     this.frameEvents.push({ type: "enemy-hit", position: { ...enemy.position } });
+    if (enemy.type === "tether-bloom" && enemy.tetherBloomPhase === "tethering") {
+      enemy.tetherBloomDamageDuringGrab += mitigated;
+      if (enemy.tetherBloomDamageDuringGrab >= TETHER_BLOOM_BREAK_DAMAGE) {
+        this.breakTetherBloom(enemy, "damage");
+      }
+    }
     this.applyRawDamage(enemy, mitigated);
   }
 
@@ -2693,6 +2846,13 @@ export class CombatSimulation {
     this.spawnEnemy("scuttler", { x: centre.x + 5, y: centre.y + 4.5 });
   }
 
+  private populateTetherBloomScenario(): void {
+    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+    this.spawnEnemy("tether-bloom", { x: centre.x - 3.2, y: centre.y });
+    this.spawnEnemy("tether-bloom", { x: centre.x + 4.6, y: centre.y - 2.8 });
+    this.spawnEnemy("scuttler", { x: centre.x + 5.5, y: centre.y + 3.8 });
+  }
+
   private pickMiniBoss(): MiniBossKind {
     return selectMiniBossForRoll(this.random());
   }
@@ -2751,6 +2911,11 @@ export class CombatSimulation {
         : undefined,
       spinewheelBouncesRemaining: enemy.type === "spinewheel"
         ? enemy.spinewheelBouncesRemaining
+        : undefined,
+      tetherBloomPhase: enemy.type === "tether-bloom" ? enemy.tetherBloomPhase : undefined,
+      tetherBloomTarget: enemy.type === "tether-bloom" ? { ...enemy.tetherBloomTarget } : undefined,
+      tetherBloomBreakDamage: enemy.type === "tether-bloom"
+        ? enemy.tetherBloomDamageDuringGrab
         : undefined,
       rank: enemy.rank,
       eliteKind: enemy.eliteKind,
@@ -2854,6 +3019,39 @@ function buildWave(index: number): SpawnPlan[] {
 
 function distance(left: Vector2Data, right: Vector2Data): number {
   return Math.hypot(left.x - right.x, left.y - right.y);
+}
+
+export function segmentHitsArenaObstacle(
+  from: Vector2Data,
+  to: Vector2Data,
+  obstacles: readonly ArenaObstacle[],
+): boolean {
+  return obstacles.some((obstacle) => segmentIntersectsRectangle(from, to, obstacle));
+}
+
+function segmentIntersectsRectangle(
+  from: Vector2Data,
+  to: Vector2Data,
+  obstacle: ArenaObstacle,
+): boolean {
+  const delta = { x: to.x - from.x, y: to.y - from.y };
+  let minimum = 0;
+  let maximum = 1;
+  for (const [origin, direction, low, high] of [
+    [from.x, delta.x, obstacle.x, obstacle.x + obstacle.width],
+    [from.y, delta.y, obstacle.y, obstacle.y + obstacle.height],
+  ] as const) {
+    if (Math.abs(direction) < 1e-9) {
+      if (origin < low || origin > high) return false;
+      continue;
+    }
+    const first = (low - origin) / direction;
+    const second = (high - origin) / direction;
+    minimum = Math.max(minimum, Math.min(first, second));
+    maximum = Math.min(maximum, Math.max(first, second));
+    if (minimum > maximum) return false;
+  }
+  return true;
 }
 
 export function siegeCrusherEnrageTier(health: number, maxHealth: number): 0 | 1 | 2 {

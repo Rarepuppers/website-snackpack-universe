@@ -82,6 +82,9 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly ripperTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly quillbackTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly spinewheelTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
+  private readonly tetherBloomTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
+  private readonly spinewheelTrailTimes = new Map<number, number>();
+  private readonly tetherBloomAccentTimes = new Map<number, number>();
   private readonly warpTelegraphs = new Map<number, TelegraphView>();
   private readonly pickupViews = new Map<number, PickupView>();
   private readonly powerupViews = new Map<number, PickupView>();
@@ -235,6 +238,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncRipperTelegraphs(snapshot.enemies);
     this.syncQuillbackTelegraphs(snapshot.enemies);
     this.syncSpinewheelTelegraphs(snapshot.enemies);
+    this.syncTetherBloomTelegraphs(snapshot.enemies, snapshot.playerPosition);
     this.syncWarpTelegraphs(snapshot.enemies);
     this.syncObstacleDamage(snapshot.damagedObstacleIds, snapshot.destroyedObstacleIds);
     this.syncPickups(snapshot.pickups);
@@ -288,6 +292,7 @@ export class PrototypeScene extends Phaser.Scene {
       this.ripperTelegraphs,
       this.quillbackTelegraphs,
       this.spinewheelTelegraphs,
+      this.tetherBloomTelegraphs,
       this.warpTelegraphs,
       this.pickupViews,
       this.powerupViews,
@@ -360,6 +365,10 @@ export class PrototypeScene extends Phaser.Scene {
             this.emitAuthoredEffect(7, event.position, 340, 0.72, 1.5, 0, "ripper-effects-v1");
           } else if (event.enemyType === "quillback") {
             this.emitAuthoredEffect(7, event.position, 360, 0.75, 1.55, 0, "quillback-effects-v1");
+          } else if (event.enemyType === "spinewheel") {
+            this.emitAuthoredEffect(7, event.position, 380, 0.78, 1.65, 0, "spinewheel-effects-v1");
+          } else if (event.enemyType === "tether-bloom") {
+            this.emitAuthoredEffect(7, event.position, 400, 0.82, 1.75, 0, "tether-bloom-effects-v1");
           } else {
             this.emitAuthoredEffect(event.enemyType === "brain-blob" ? 18 : event.enemyType === "egg-cluster" ? 13 : 11, event.position, 210, 0.72, 1.2);
           }
@@ -471,19 +480,40 @@ export class PrototypeScene extends Phaser.Scene {
           this.emitAuthoredEffect(event.hitPlayer ? 5 : 4, event.position, 190, 0.48, 0.9, 0, "quillback-effects-v1");
           break;
         case "spinewheel-windup":
-          this.flashCircle(event.position, 18, 0xffc45e, 260, 1.7, true);
+          this.emitAuthoredEffect(0, event.position, 260, 0.62, 1.05, 0, "spinewheel-effects-v1");
           break;
         case "spinewheel-bounce":
-          this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xff8a4c, 8);
-          this.flashCircle(event.position, 14, 0xff8a4c, 150, 1.45, true);
+          this.emitAuthoredEffect(2, event.position, 180, 0.72, 1.2, Math.atan2(event.direction.y, event.direction.x), "spinewheel-effects-v1");
+          this.emitAuthoredEffect(5, event.position, 210, 0.58, 1.05, 0, "spinewheel-effects-v1");
           this.shakeCamera(70, 0.0025);
           break;
         case "spinewheel-hit":
-          this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xff6654, 7);
+          this.emitAuthoredEffect(4, event.position, 210, 0.72, 1.2, 0, "spinewheel-effects-v1");
           this.shakeCamera(110, 0.005);
           break;
         case "spinewheel-recovery":
-          this.flashCircle(event.position, 20, 0x68e4e8, 320, 1.85, true);
+          this.emitAuthoredEffect(6, event.position, 320, 0.7, 1.35, 0, "spinewheel-effects-v1");
+          break;
+        case "tether-bloom-windup":
+          this.emitAuthoredEffect(0, event.position, 340, 0.62, 1.3, 0, "tether-bloom-effects-v1");
+          this.emitAuthoredEffect(1, event.target, 340, 0.52, 0.92, 0, "tether-bloom-effects-v1");
+          break;
+        case "tether-bloom-latched":
+          this.emitAuthoredEffect(2, event.position, 300, 0.58, 1.08, 0, "tether-bloom-effects-v1");
+          break;
+        case "tether-bloom-broken":
+          this.emitAuthoredEffect(
+            event.reason === "damage" ? 5 : 4,
+            event.position,
+            260,
+            0.68,
+            1.28,
+            0,
+            "tether-bloom-effects-v1",
+          );
+          break;
+        case "tether-bloom-released":
+          this.emitAuthoredEffect(6, event.position, 340, 0.62, 1.18, 0, "tether-bloom-effects-v1");
           break;
         case "obstacle-damaged":
           this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xffd36b, 5);
@@ -540,7 +570,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" | "quillback-effects-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -632,6 +662,12 @@ export class PrototypeScene extends Phaser.Scene {
   ): void {
     const liveIds = new Set(enemies.map((enemy) => enemy.id));
     this.destroyMissing(this.enemyViews, liveIds);
+    for (const id of this.spinewheelTrailTimes.keys()) {
+      if (!liveIds.has(id)) this.spinewheelTrailTimes.delete(id);
+    }
+    for (const id of this.tetherBloomAccentTimes.keys()) {
+      if (!liveIds.has(id)) this.tetherBloomAccentTimes.delete(id);
+    }
 
     for (const enemy of enemies) {
       let view = this.enemyViews.get(enemy.id);
@@ -681,8 +717,17 @@ export class PrototypeScene extends Phaser.Scene {
         return this.add.triangle(0, 0, -24, -20, 30, 0, -24, 20, 0x6d3645)
           .setStrokeStyle(5, 0xffc45e);
       case "spinewheel":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "spinewheel-v1");
+        }
         return this.add.triangle(0, 0, 0, -23, 21, 17, -21, 17, 0x8f4a4e)
           .setStrokeStyle(5, 0xffa14f);
+      case "tether-bloom":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "tether-bloom-v1");
+        }
+        return this.add.ellipse(0, 0, 46, 56, 0x536c38)
+          .setStrokeStyle(5, 0xc4e66a);
       case "egg-cluster":
         if (this.useMarineArt) {
           return createManifestSprite(this, "egg-cluster-v1");
@@ -780,6 +825,20 @@ export class PrototypeScene extends Phaser.Scene {
         .setAlpha(phase === "recovery" ? 0.82 : 1);
       return;
     }
+    if (enemy.type === "tether-bloom" && view instanceof Phaser.GameObjects.Ellipse) {
+      const phase = enemy.tetherBloomPhase ?? "idle";
+      const phaseColors = {
+        idle: 0x536c38,
+        windup: 0xa6c94a,
+        tethering: 0x7f4ca5,
+        recovery: 0x465052,
+      } as const;
+      view.setFillStyle(phaseColors[phase])
+        .setStrokeStyle(5, phase === "tethering" ? 0xd696ff : phase === "windup" ? 0xe7f58a : 0x91ad55)
+        .setScale(phase === "windup" ? 1.12 : phase === "recovery" ? 0.86 : 1)
+        .setAlpha(phase === "recovery" ? 0.72 : 1);
+      return;
+    }
 
     const healthScale = 0.82 + 0.18 * Math.max(enemy.health / enemy.maxHealth, 0);
     view.setScale(healthScale);
@@ -875,6 +934,63 @@ export class PrototypeScene extends Phaser.Scene {
         const phase = enemy.quillbackPhase ?? "positioning";
         const row = phase === "windup" ? 1 : phase === "recover" ? 2 : 0;
         view.setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
+      case "spinewheel": {
+        const phase = enemy.spinewheelPhase ?? "positioning";
+        if (phase === "rolling") {
+          view.setTexture("spinewheel-shell-v1")
+            .setFrame(Math.floor(this.time.now / 80) % 4)
+            .setRotation(0);
+          const previousTrail = this.spinewheelTrailTimes.get(enemy.id) ?? -1000;
+          if (this.time.now - previousTrail >= 110) {
+            this.spinewheelTrailTimes.set(enemy.id, this.time.now);
+            this.emitAuthoredEffect(
+              1,
+              enemy.position,
+              150,
+              0.48,
+              0.85,
+              Math.atan2(enemy.spinewheelDirection?.y ?? 0, enemy.spinewheelDirection?.x ?? 1),
+              "spinewheel-effects-v1",
+            );
+          }
+          return;
+        }
+        view.setTexture("spinewheel-v1");
+        const direction = phase === "positioning"
+          ? enemy.facingDirection
+          : enemy.spinewheelDirection ?? enemy.facingDirection;
+        const target = { x: enemy.position.x + direction.x, y: enemy.position.y + direction.y };
+        const facingColumn = cardinalFacingColumn(enemy.position, target);
+        const row = phase === "windup" ? 1 : phase === "recovery" ? 2 : 0;
+        view.setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
+      case "tether-bloom": {
+        const phase = enemy.tetherBloomPhase ?? "idle";
+        const row = phase === "windup" ? 1 : phase === "tethering" ? 2 : phase === "recovery" ? 3 : 0;
+        const animationPhase = (Math.floor(this.time.now / 145) + enemy.id) % 4;
+        view.setTexture("tether-bloom-v1").setFrame(row * 4 + animationPhase).setRotation(0);
+        if (phase === "tethering") {
+          const previousAccent = this.tetherBloomAccentTimes.get(enemy.id) ?? -1000;
+          if (this.time.now - previousAccent >= 180) {
+            this.tetherBloomAccentTimes.set(enemy.id, this.time.now);
+            const midpoint = {
+              x: (enemy.position.x + playerPosition.x) / 2,
+              y: (enemy.position.y + playerPosition.y) / 2,
+            };
+            this.emitAuthoredEffect(
+              3,
+              midpoint,
+              150,
+              0.42,
+              0.72,
+              angleToward(enemy.position, playerPosition),
+              "tether-bloom-effects-v1",
+            );
+          }
+        }
         return;
       }
       case "brain-blob":
@@ -1208,6 +1324,44 @@ export class PrototypeScene extends Phaser.Scene {
     }
   }
 
+  private syncTetherBloomTelegraphs(
+    enemies: readonly EnemySnapshot[],
+    playerPosition: { x: number; y: number },
+  ): void {
+    const active = enemies.filter((enemy) => (
+      enemy.type === "tether-bloom"
+      && (enemy.tetherBloomPhase === "windup" || enemy.tetherBloomPhase === "tethering")
+    ));
+    const liveIds = new Set(active.map((enemy) => enemy.id));
+    this.destroyMissing(this.tetherBloomTelegraphs, liveIds);
+    for (const enemy of active) {
+      let view = this.tetherBloomTelegraphs.get(enemy.id);
+      if (!view) {
+        view = this.add.graphics().setDepth(62);
+        this.tetherBloomTelegraphs.set(enemy.id, view);
+      }
+      view.clear();
+      const fromX = enemy.position.x * PIXELS_PER_METRE;
+      const fromY = enemy.position.y * PIXELS_PER_METRE;
+      const target = enemy.tetherBloomPhase === "tethering"
+        ? playerPosition
+        : enemy.tetherBloomTarget ?? playerPosition;
+      const toX = target.x * PIXELS_PER_METRE;
+      const toY = target.y * PIXELS_PER_METRE;
+      const latched = enemy.tetherBloomPhase === "tethering";
+      view.lineStyle(latched ? 7 : 5, latched ? 0xd696ff : 0xd8f06a, latched ? 0.72 : 0.42);
+      view.lineBetween(fromX, fromY, toX, toY);
+      view.lineStyle(2, 0xffffff, latched ? 0.8 : 0.58);
+      view.lineBetween(fromX, fromY, toX, toY);
+      view.fillStyle(latched ? 0xd696ff : 0xd8f06a, 0.82);
+      view.fillCircle(toX, toY, latched ? 7 : 5);
+      if (!latched) {
+        view.lineStyle(2, 0xd8f06a, 0.32);
+        view.strokeCircle(fromX, fromY, 3.5 * PIXELS_PER_METRE);
+      }
+    }
+  }
+
   private syncWarpTelegraphs(enemies: readonly EnemySnapshot[]): void {
     const active = enemies.filter((enemy) => enemy.warpPhase === "warp-windup" && enemy.warpTarget);
     const liveIds = new Set(active.map((enemy) => enemy.id));
@@ -1353,6 +1507,8 @@ export class PrototypeScene extends Phaser.Scene {
 
     this.decisionOverlay?.destroy(true);
     this.decisionOverlay = null;
+    this.spinewheelTrailTimes.clear();
+    this.tetherBloomAccentTimes.clear();
     this.visibleDecisionKey = nextKey;
 
     if (!decision) {
@@ -1446,7 +1602,7 @@ function readStressProfile(): 4 | 12 | null {
 
 function readScenario(): CombatScenario | null {
   const scenario = new URLSearchParams(window.location.search).get("scenario");
-  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper" || scenario === "quillback" || scenario === "spinewheel"
+  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom"
     ? scenario
     : null;
 }
@@ -1555,7 +1711,7 @@ function applyManifestOrigin(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "quillback-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

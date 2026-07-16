@@ -15,6 +15,14 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "e3") {
+      this.createBatchE3Gallery();
+      return;
+    }
+    if (batch === "e2") {
+      this.createBatchE2Gallery();
+      return;
+    }
     if (batch === "e1") {
       this.createBatchE1Gallery();
       return;
@@ -299,6 +307,65 @@ export class AssetGalleryScene extends Phaser.Scene {
 
     this.add.text(480, 490, "Ivory spike projectile remains separate; warning paths and collision use the same 64° runtime fan", style("#ffb982", "10px")).setOrigin(0.5);
     this.add.text(480, 518, "Review: ?mode=gallery&batch=e1 • Encounter: ?scenario=quillback&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchE2Gallery(): void {
+    this.add.text(20, 14, "LAST BASTION — SPINEWHEEL PRODUCTION ASSET BATCH E2", style("#ffffff", "17px"));
+    this.add.text(20, 38, "24 runtime visuals • retained Steam-quality masters • code-driven reflection geometry", style("#8fb2c9", "11px"));
+
+    this.add.text(20, 68, "BODY — positioning / heading lock / exposed recovery × S N E W", style("#ffb06b", "11px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const x = 78 + (frame % 6) * 160;
+      const y = 126 + Math.floor(frame / 6) * 112;
+      this.add.sprite(x, y, "spinewheel-v1", frame).setScale(0.78);
+      this.drawPivot(x, y);
+      this.add.text(x, y + 44, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 278, "CLOSED SHELL — four rotation phases", style("#ffcf88", "11px"));
+    for (let frame = 0; frame < 4; frame += 1) {
+      const x = 92 + frame * 126;
+      this.add.sprite(x, 336, "spinewheel-shell-v1", frame).setScale(0.82);
+      this.drawPivot(x, 336);
+      this.add.text(x, 380, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(552, 278, "EFFECTS — curl / trail / rebounds / impact / recovery / defeat", style("#ffd08a", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 578 + (frame % 4) * 96;
+      const y = 326 + Math.floor(frame / 4) * 86;
+      this.add.sprite(x, y, "spinewheel-effects-v1", frame).setScale(1.02);
+      this.drawPivot(x, y);
+      this.add.text(x, y + 36, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(480, 486, "Shell animation is rotation-neutral; warning path, collision, rebound count, and speed decay remain authoritative code", style("#ffb982", "9px")).setOrigin(0.5);
+    this.add.text(480, 518, "Review: ?mode=gallery&batch=e2 • Encounter: ?scenario=spinewheel&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchE3Gallery(): void {
+    this.add.text(20, 14, "LAST BASTION — TETHER BLOOM PRODUCTION ASSET BATCH E3", style("#ffffff", "17px"));
+    this.add.text(20, 38, "24 runtime visuals • retained Steam-quality masters • code-driven tether geometry", style("#8fb2c9", "11px"));
+
+    this.add.text(20, 68, "BODY — idle / acquisition / active channel / exhausted recovery × four animation phases", style("#d696ff", "11px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const x = 62 + (frame % 8) * 118;
+      const y = 128 + Math.floor(frame / 8) * 116;
+      this.add.sprite(x, y, "tether-bloom-v1", frame).setScale(0.72);
+      this.drawPivot(x, y);
+      this.add.text(x, y + 42, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 302, "EFFECTS — acquisition / target / latch / travelling accent / evasive sever / damage sever / recovery / defeat", style("#cdea72", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 64 + frame * 118;
+      this.add.sprite(x, 376, "tether-bloom-effects-v1", frame).setScale(1.08);
+      this.drawPivot(x, 376);
+      this.add.text(x, 420, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(480, 478, "The authored accent rides the live line; LOS, target, range, pull, cover, dodge, and damage breaks remain authoritative code", style("#d8b7ff", "9px")).setOrigin(0.5);
+    this.add.text(480, 518, "Review: ?mode=gallery&batch=e3 • Encounter: ?scenario=tether-bloom&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private drawWeaponRing(x: number, y: number, count: number, scale: number): void {

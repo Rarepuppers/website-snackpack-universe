@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(30);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(35);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -103,6 +103,27 @@ describe("GameAssetManifest", () => {
     expect(body.kind).toBe("spritesheet");
     expect(effects.kind).toBe("spritesheet");
     if (body.kind === "spritesheet") expect(body.frameCount).toBe(12);
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
+  });
+
+  it("locks Production Batch E2 Spinewheel contracts", () => {
+    const body = GAME_ASSETS["spinewheel-v1"];
+    const shell = GAME_ASSETS["spinewheel-shell-v1"];
+    const effects = GAME_ASSETS["spinewheel-effects-v1"];
+    expect(body.kind).toBe("spritesheet");
+    expect(shell.kind).toBe("spritesheet");
+    expect(effects.kind).toBe("spritesheet");
+    if (body.kind === "spritesheet") expect(body.frameCount).toBe(12);
+    if (shell.kind === "spritesheet") expect(shell.frameCount).toBe(4);
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
+  });
+
+  it("locks Production Batch E3 Tether Bloom contracts", () => {
+    const body = GAME_ASSETS["tether-bloom-v1"];
+    const effects = GAME_ASSETS["tether-bloom-effects-v1"];
+    expect(body.kind).toBe("spritesheet");
+    expect(effects.kind).toBe("spritesheet");
+    if (body.kind === "spritesheet") expect(body.frameCount).toBe(16);
     if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
   });
 });

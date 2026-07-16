@@ -125,7 +125,8 @@ export class CombatHud {
           : snapshot.scenario === "brood-warden" ? "BROOD LAB"
             : snapshot.scenario === "ripper" ? "RIPPER LAB"
               : snapshot.scenario === "quillback" ? "QUILLBACK LAB"
-                : snapshot.scenario === "spinewheel" ? "SPINEWHEEL LAB" : "CRUSHER LAB"
+                : snapshot.scenario === "spinewheel" ? "SPINEWHEEL LAB"
+                  : snapshot.scenario === "tether-bloom" ? "TETHER LAB" : "CRUSHER LAB"
       : snapshot.stressProfile
         ? `STRESS ${snapshot.stressProfile}`
         : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}`);
@@ -139,7 +140,7 @@ export class CombatHud {
     for (const [type, icon] of this.powerupIcons) {
       icon.setVisible(type === "aegis" ? snapshot.playerShield > 0 : activeBuffTypes.has(type));
     }
-    this.statsText.setText(`LV ${snapshot.level}  HP ${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}\nXP ${snapshot.experience}/${snapshot.experienceForNextLevel}${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerEntrenched ? "  ENTRENCHED" : ""}${buffLabel}`);
+    this.statsText.setText(`LV ${snapshot.level}  HP ${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}\nXP ${snapshot.experience}/${snapshot.experienceForNextLevel}${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerTethered ? "  TETHERED" : ""}${snapshot.playerEntrenched ? "  ENTRENCHED" : ""}${buffLabel}`);
     const ultimateLabel = snapshot.ultimateReady
       ? "ULT READY — R"
       : `ULT ${snapshot.ultimateCooldownRemainingSeconds.toFixed(1)}s`;

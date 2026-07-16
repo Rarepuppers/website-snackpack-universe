@@ -66,7 +66,12 @@ try {
     'ripper-spritesheet-v1-96.png',
     'ripper-effect-atlas-v1-64.png',
     'quillback-spritesheet-v1-96.png',
-    'quillback-effect-atlas-v1-64.png'
+    'quillback-effect-atlas-v1-64.png',
+    'spinewheel-spritesheet-v1-96.png',
+    'spinewheel-shell-spin-v1-96.png',
+    'spinewheel-effect-atlas-v1-64.png',
+    'tether-bloom-spritesheet-v1-96.png',
+    'tether-bloom-effect-atlas-v1-64.png'
   )
 
   foreach ($artAssetName in $requiredArtAssets) {
@@ -87,6 +92,8 @@ try {
     '/play/last-bastion/?mode=gallery&batch=d',
     '/play/last-bastion/?mode=gallery&batch=d2',
     '/play/last-bastion/?mode=gallery&batch=e1',
+    '/play/last-bastion/?mode=gallery&batch=e2',
+    '/play/last-bastion/?mode=gallery&batch=e3',
     '/play/last-bastion/?loadout=vertical',
     '/play/last-bastion/?scenario=slime-spitter&loadout=vertical',
     '/play/last-bastion/?scenario=carapace-elite&loadout=vertical',
@@ -95,6 +102,7 @@ try {
     '/play/last-bastion/?scenario=ripper&loadout=vertical',
     '/play/last-bastion/?scenario=quillback&loadout=vertical',
     '/play/last-bastion/?scenario=spinewheel&loadout=vertical',
+    '/play/last-bastion/?scenario=tether-bloom&loadout=vertical',
     '/play/last-bastion/?stress=4',
     '/play/last-bastion/?stress=12'
   )

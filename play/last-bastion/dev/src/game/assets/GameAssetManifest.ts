@@ -28,6 +28,11 @@ import ripperSheetUrl from "../../../../art/production-tests/batch-d2/ripper-spr
 import ripperEffectSheetUrl from "../../../../art/production-tests/batch-d2/ripper-effect-atlas-v1-64.png";
 import quillbackSheetUrl from "../../../../art/production-tests/batch-e1/quillback-spritesheet-v1-96.png";
 import quillbackEffectSheetUrl from "../../../../art/production-tests/batch-e1/quillback-effect-atlas-v1-64.png";
+import spinewheelSheetUrl from "../../../../art/production-tests/batch-e2/spinewheel-spritesheet-v1-96.png";
+import spinewheelShellSheetUrl from "../../../../art/production-tests/batch-e2/spinewheel-shell-spin-v1-96.png";
+import spinewheelEffectSheetUrl from "../../../../art/production-tests/batch-e2/spinewheel-effect-atlas-v1-64.png";
+import tetherBloomSheetUrl from "../../../../art/production-tests/batch-e3/tether-bloom-spritesheet-v1-96.png";
+import tetherBloomEffectSheetUrl from "../../../../art/production-tests/batch-e3/tether-bloom-effect-atlas-v1-64.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -59,7 +64,12 @@ export type GameAssetId =
   | "ripper-v1"
   | "ripper-effects-v1"
   | "quillback-v1"
-  | "quillback-effects-v1";
+  | "quillback-effects-v1"
+  | "spinewheel-v1"
+  | "spinewheel-shell-v1"
+  | "spinewheel-effects-v1"
+  | "tether-bloom-v1"
+  | "tether-bloom-effects-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -113,6 +123,11 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("ripper-effects-v1", ripperEffectSheetUrl, 64, 64, 8, 0.5, 0.5),
   sheet("quillback-v1", quillbackSheetUrl, 96, 96, 12, 0.5, 0.5),
   sheet("quillback-effects-v1", quillbackEffectSheetUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("spinewheel-v1", spinewheelSheetUrl, 96, 96, 12, 0.5, 0.5),
+  sheet("spinewheel-shell-v1", spinewheelShellSheetUrl, 96, 96, 4, 0.5, 0.5),
+  sheet("spinewheel-effects-v1", spinewheelEffectSheetUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("tether-bloom-v1", tetherBloomSheetUrl, 96, 96, 16, 0.5, 0.5),
+  sheet("tether-bloom-effects-v1", tetherBloomEffectSheetUrl, 64, 64, 8, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(

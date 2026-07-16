@@ -10,6 +10,7 @@ export type EnemyType =
   | "ripper"
   | "quillback"
   | "spinewheel"
+  | "tether-bloom"
   | "siege-crusher"
   | "brood-warden";
 
@@ -108,6 +109,15 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 7,
     experienceValue: 4,
     armour: 6,
+  }),
+  "tether-bloom": enemy({
+    id: "tether-bloom",
+    maxHealth: 52,
+    radiusMetres: 0.72,
+    movementSpeedMetresPerSecond: 0,
+    contactDamage: 0,
+    experienceValue: 4,
+    resistances: { toxic: 0.4 },
   }),
   "siege-crusher": enemy({
     id: "siege-crusher",

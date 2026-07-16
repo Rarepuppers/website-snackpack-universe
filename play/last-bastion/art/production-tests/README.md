@@ -76,6 +76,6 @@ The retained `*-chroma.png` files record the generated source before background 
 
 ## Review switches
 
-Production art is enabled by default. Use `?art=placeholder` for the code-shape comparison renderer. The helmet is enabled by default; add `?helmet=0` to verify the unchanged base body without it. The existing `weapons=` parameter may be combined with either view. Use `?mode=gallery` for character/enemy/equipment frames and `?mode=gallery&batch=a|b|c|d|d2|e1` for each production batch; D is the Brood Warden set, D2 is the Ripper set, and E1 is the Quillback set.
+Production art is enabled by default. Use `?art=placeholder` for the code-shape comparison renderer. The helmet is enabled by default; add `?helmet=0` to verify the unchanged base body without it. The existing `weapons=` parameter may be combined with either view. Use `?mode=gallery` for character/enemy/equipment frames and `?mode=gallery&batch=a|b|c|d|d2|e1|e2|e3` for each production batch; D is the Brood Warden set, D2 is the Ripper set, E1 is the Quillback set, E2 is the Spinewheel set, and E3 is the Tether Bloom set.
 
 The in-app browser runtime could not initialise in the current environment, so creator visual acceptance remains a manual review step. Automated type, unit, build, asset-HTTP, and route-HTTP validation is complete.
