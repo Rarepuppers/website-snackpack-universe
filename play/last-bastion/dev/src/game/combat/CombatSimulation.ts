@@ -6,6 +6,8 @@ import { MARINE } from "../hero/marine";
 import { ENEMY_CATALOG, type EnemyType } from "../content/enemyCatalog";
 import {
   BASTION_SERVICE_RIFLE,
+  WEAPON_CATALOG,
+  VERTICAL_SLICE_WEAPON_IDS,
   type WeaponId,
   type WeaponRuntimeStats,
 } from "../content/weaponCatalog";
@@ -13,6 +15,7 @@ import {
   clampWeaponCount,
   createServiceRifleLoadout,
   createWeaponLoadout,
+  MAX_EQUIPPED_WEAPONS,
   type EquippedWeapon,
 } from "../equipment/WeaponLoadout";
 import { calculateWeaponRingLayout } from "../equipment/WeaponRingLayout";
@@ -28,10 +31,24 @@ import {
   resolveCircleMovement,
   type ArenaDefinition,
 } from "../arena/ArenaDefinition";
+import {
+  STATUS_BY_DAMAGE_TYPE,
+  STATUS_BUILDUP_THRESHOLD,
+  STATUS_RULES,
+  type DamageType,
+  type StatusEffectType,
+} from "./damageTypes";
+import {
+  absorbWithShield,
+  mitigateDamage,
+  resolveSlowedMultiplier,
+} from "../stats/DefenceStats";
 
 export type EncounterStatus = "combat" | "intermission" | "victory" | "defeat";
 export type BrainPhase = "drift" | "windup" | "lunge" | "recover";
 export type SlimeSpitterPhase = "positioning" | "windup" | "recover";
+export type BlastMitePhase = "chase" | "armed";
+export type WarpFlankerPhase = "stalk" | "warp-windup" | "materialize";
 export type EnemyRank = "standard" | "elite" | "mini-boss";
 export type EliteKind = "carapace-scuttler";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
@@ -40,6 +57,20 @@ export type SiegeCrusherPhase =
   | "entrance" | "stalk" | "charge-windup" | "charge"
   | "sweep-windup" | "sweep" | "recovery";
 export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher";
+export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse";
+export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot";
+
+export interface DecisionOption {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface PendingDecision {
+  kind: DecisionKind;
+  title: string;
+  options: readonly DecisionOption[];
+}
 
 export type CombatEvent =
   | {
@@ -69,7 +100,10 @@ export type CombatEvent =
   | { type: "mini-boss-shockwave"; position: Vector2Data; radiusMetres: number }
   | { type: "obstacle-damaged"; obstacleId: string; position: Vector2Data }
   | { type: "obstacle-destroyed"; obstacleId: string; position: Vector2Data }
-  | { type: "mini-boss-reward-dropped"; position: Vector2Data; miniBossKind: MiniBossKind };
+  | { type: "mini-boss-reward-dropped"; position: Vector2Data; miniBossKind: MiniBossKind }
+  | { type: "status-applied"; position: Vector2Data; status: StatusEffectType }
+  | { type: "powerup-collected"; position: Vector2Data; powerupType: PowerupType }
+  | { type: "warp-arrival"; position: Vector2Data };
 
 export interface EnemySnapshot {
   id: number;
@@ -82,6 +116,9 @@ export interface EnemySnapshot {
   brainPhase?: BrainPhase;
   spitterPhase?: SlimeSpitterPhase;
   spitterTarget?: Vector2Data;
+  mitePhase?: BlastMitePhase;
+  warpPhase?: WarpFlankerPhase;
+  warpTarget?: Vector2Data;
   rank: EnemyRank;
   eliteKind?: EliteKind;
   carapacePhase?: CarapacePhase;
@@ -89,6 +126,7 @@ export interface EnemySnapshot {
   siegeCrusherPhase?: SiegeCrusherPhase;
   siegeCrusherDirection?: Vector2Data;
   facingDirection: Vector2Data;
+  statuses: readonly StatusEffectType[];
 }
 
 export interface ProjectileSnapshot {
@@ -102,6 +140,18 @@ export interface ExperiencePickupSnapshot {
   id: number;
   position: Vector2Data;
   value: number;
+}
+
+export interface PowerupPickupSnapshot {
+  id: number;
+  type: PowerupType;
+  position: Vector2Data;
+  remainingSeconds: number;
+}
+
+export interface ActiveBuffSnapshot {
+  type: PowerupType;
+  remainingSeconds: number;
 }
 
 export interface EnemyProjectileSnapshot {
@@ -133,6 +183,8 @@ export interface CombatSnapshot {
   playerPosition: Vector2Data;
   playerHealth: number;
   playerMaxHealth: number;
+  playerShield: number;
+  playerMaxShield: number;
   playerInvulnerable: boolean;
   evasiveReady: boolean;
   evasiveCooldownRemainingSeconds: number;
@@ -141,12 +193,15 @@ export interface CombatSnapshot {
   experience: number;
   experienceForNextLevel: number;
   pendingUpgradeChoices: readonly UpgradeDefinition[];
+  pendingDecision: PendingDecision | null;
   enemies: readonly EnemySnapshot[];
   projectiles: readonly ProjectileSnapshot[];
   enemyProjectiles: readonly EnemyProjectileSnapshot[];
   groundHazards: readonly GroundHazardSnapshot[];
   eliteRewards: readonly EliteRewardSnapshot[];
   pickups: readonly ExperiencePickupSnapshot[];
+  powerups: readonly PowerupPickupSnapshot[];
+  activeBuffs: readonly ActiveBuffSnapshot[];
   weapon: Readonly<WeaponRuntimeStats>;
   equippedWeapons: readonly Readonly<EquippedWeapon>[];
   events: readonly CombatEvent[];
@@ -173,6 +228,11 @@ interface EnemyState {
   spitterPhase: SlimeSpitterPhase;
   spitterPhaseRemainingSeconds: number;
   spitterTarget: Vector2Data;
+  mitePhase: BlastMitePhase;
+  mitePhaseRemainingSeconds: number;
+  warpPhase: WarpFlankerPhase;
+  warpPhaseRemainingSeconds: number;
+  warpTarget: Vector2Data;
   rank: EnemyRank;
   eliteKind?: EliteKind;
   carapacePhase: CarapacePhase;
@@ -183,11 +243,14 @@ interface EnemyState {
   siegeCrusherPhase: SiegeCrusherPhase;
   siegeCrusherPhaseRemainingSeconds: number;
   siegeCrusherDirection: Vector2Data;
+  statusBuildup: Partial<Record<StatusEffectType, number>>;
+  statusTimers: Partial<Record<StatusEffectType, number>>;
 }
 
 interface ProjectileState {
   id: number;
   weaponId: WeaponId;
+  damageType: DamageType;
   position: Vector2Data;
   velocity: Vector2Data;
   damage: number;
@@ -205,6 +268,14 @@ interface ExperiencePickupState {
   id: number;
   position: Vector2Data;
   value: number;
+  collected: boolean;
+}
+
+interface PowerupPickupState {
+  id: number;
+  type: PowerupType;
+  position: Vector2Data;
+  remainingSeconds: number;
   collected: boolean;
 }
 
@@ -237,6 +308,7 @@ interface EliteRewardState {
 interface SpawnPlan {
   atSeconds: number;
   type: EnemyType;
+  rank?: "elite" | "mini-boss";
 }
 
 export interface CombatSimulationOptions {
@@ -255,16 +327,35 @@ interface EquippedWeaponState extends EquippedWeapon {
   cooldownSeconds: number;
 }
 
-const TOTAL_WAVES = 3;
+const TOTAL_WAVES = 5;
 const PLAYER_MAX_HEALTH = 100;
 const PLAYER_RADIUS_METRES = 0.55;
-const PLAYER_HURT_COOLDOWN_SECONDS = 0.65;
 const INTERMISSION_SECONDS = 2;
 const MAX_SLOWING_PUDDLES = 5;
 const SLOWING_PUDDLE_DURATION_SECONDS = 4;
 const SLOWING_PUDDLE_RADIUS_METRES = 1.25;
 const SLIME_MOVEMENT_MULTIPLIER = 0.55;
 const SLIME_GLOB_DAMAGE = 8;
+const POWERUP_LIFETIME_SECONDS = 12;
+const POWERUP_COLLECT_RADIUS_METRES = 0.7;
+const OVERCHARGE_ATTACK_SPEED_MULTIPLIER = 1.6;
+const ADRENALINE_MOVE_MULTIPLIER = 1.35;
+const MAGNET_PULSE_MULTIPLIER = 2.5;
+const AEGIS_SHIELD_AMOUNT = 25;
+const BLAST_MITE_EXPLOSION_RADIUS_METRES = 1.6;
+const BLAST_MITE_EXPLOSION_DAMAGE = 16;
+const SUPPLY_DEPOT_HEAL = 45;
+
+const POWERUP_DURATION_SECONDS: Readonly<Record<PowerupType, number>> = Object.freeze({
+  overcharge: 6,
+  aegis: 0,
+  adrenaline: 5,
+  "magnet-pulse": 6,
+});
+
+const POWERUP_WAVE_CYCLE: readonly PowerupType[] = Object.freeze([
+  "overcharge", "magnet-pulse", "adrenaline", "aegis",
+]);
 
 export class CombatSimulation {
   readonly widthMetres: number;
@@ -272,8 +363,11 @@ export class CombatSimulation {
   readonly arena: Readonly<ArenaDefinition>;
 
   private readonly heroMotion = new HeroMotionController(MARINE);
+  private readonly defence = MARINE.defence;
   private playerPosition: Vector2Data;
   private playerHealth = PLAYER_MAX_HEALTH;
+  private playerShield = MARINE.defence.maxShield;
+  private shieldRechargeCooldownSeconds = 0;
   private playerInvulnerable = false;
   private heroState = "idle";
   private playerHurtCooldownSeconds = 0;
@@ -287,6 +381,8 @@ export class CombatSimulation {
   private enemyProjectiles: EnemyProjectileState[] = [];
   private groundHazards: GroundHazardState[] = [];
   private eliteRewards: EliteRewardState[] = [];
+  private powerups: PowerupPickupState[] = [];
+  private readonly activeBuffs = new Map<PowerupType, number>();
   private readonly obstacleDamage = new Map<string, number>();
   private pickups: ExperiencePickupState[] = [];
   private nextEntityId = 1;
@@ -297,7 +393,7 @@ export class CombatSimulation {
   private spawnQueue: SpawnPlan[] = [];
   private level = 1;
   private experience = 0;
-  private pendingUpgradeIds: UpgradeId[] = [];
+  private decisionQueue: PendingDecision[] = [];
   private randomState: number;
   private readonly wavesEnabled: boolean;
   private frameEvents: CombatEvent[] = [];
@@ -340,7 +436,7 @@ export class CombatSimulation {
     const delta = Math.min(Math.max(deltaSeconds, 0), 0.05);
     this.frameEvents = [];
 
-    if (this.status === "defeat" || this.status === "victory" || this.pendingUpgradeIds.length > 0) {
+    if (this.status === "defeat" || this.status === "victory" || this.decisionQueue.length > 0) {
       return this.snapshot();
     }
 
@@ -348,15 +444,20 @@ export class CombatSimulation {
       weapon.cooldownSeconds = Math.max(0, weapon.cooldownSeconds - delta);
     }
     this.playerHurtCooldownSeconds = Math.max(0, this.playerHurtCooldownSeconds - delta);
+    this.updateBuffs(delta);
+    this.updateShieldRecharge(delta);
 
     const motionFrame = this.heroMotion.update(intent, delta);
     this.heroState = motionFrame.state;
     this.playerInvulnerable = motionFrame.isInvulnerable;
     this.evasiveReady = motionFrame.evasiveReady;
     this.evasiveCooldownRemainingSeconds = motionFrame.evasiveCooldownRemainingSeconds;
-    const movementMultiplier = motionFrame.state !== "evading" && this.isPlayerSlowed()
-      ? SLIME_MOVEMENT_MULTIPLIER
+    let movementMultiplier = motionFrame.state !== "evading" && this.isPlayerSlowed()
+      ? resolveSlowedMultiplier(SLIME_MOVEMENT_MULTIPLIER, this.defence.slowResistance)
       : 1;
+    if (motionFrame.state !== "evading" && this.isBuffActive("adrenaline")) {
+      movementMultiplier *= ADRENALINE_MOVE_MULTIPLIER;
+    }
     const previousPlayerPosition = { ...this.playerPosition };
     this.playerPosition = resolveCircleMovement(
       previousPlayerPosition,
@@ -373,12 +474,13 @@ export class CombatSimulation {
     }
 
     if (intent.fireHeld) {
+      const attackSpeed = this.currentAttackSpeedMultiplier();
       for (const weapon of this.equippedWeapons) {
         if (weapon.cooldownSeconds <= 0) {
           const fireDirection = this.resolveWeaponAimDirection(weapon, this.lastAimDirection);
           if (fireDirection) {
             this.fireWeapon(weapon, fireDirection);
-            weapon.cooldownSeconds = weapon.stats.fireIntervalSeconds;
+            weapon.cooldownSeconds = weapon.stats.fireIntervalSeconds / attackSpeed;
           }
         }
       }
@@ -393,6 +495,7 @@ export class CombatSimulation {
     this.updateEnemyProjectiles(delta);
     this.updateGroundHazards(delta);
     this.updateExperiencePickups(delta);
+    this.updatePowerups(delta);
     this.updateEliteRewards();
     this.resolveEnemyContactDamage();
     this.removeDeadEntities();
@@ -424,6 +527,11 @@ export class CombatSimulation {
       spitterPhase: "positioning",
       spitterPhaseRemainingSeconds: type === "slime-spitter" ? 0.8 + this.random() * 0.5 : 0,
       spitterTarget: { ...this.playerPosition },
+      mitePhase: "chase",
+      mitePhaseRemainingSeconds: 0,
+      warpPhase: "stalk",
+      warpPhaseRemainingSeconds: type === "warp-flanker" ? 1.2 : 0,
+      warpTarget: { x: 0, y: 0 },
       rank: "standard",
       carapacePhase: "pursuit",
       carapacePhaseRemainingSeconds: 0,
@@ -434,6 +542,8 @@ export class CombatSimulation {
       siegeCrusherPhase: "entrance",
       siegeCrusherPhaseRemainingSeconds: 0,
       siegeCrusherDirection: { x: 0, y: 0 },
+      statusBuildup: {},
+      statusTimers: {},
     });
     this.frameEvents.push({
       type: "enemy-spawned",
@@ -470,51 +580,64 @@ export class CombatSimulation {
     return id;
   }
 
+  spawnPowerup(type: PowerupType, position?: Vector2Data): number {
+    const id = this.nextId();
+    this.powerups.push({
+      id,
+      type,
+      position: position ? { ...position } : this.nextPowerupPosition(),
+      remainingSeconds: POWERUP_LIFETIME_SECONDS,
+      collected: false,
+    });
+    return id;
+  }
+
   addExperience(amount: number): void {
     this.experience += Math.max(0, Math.floor(amount));
     this.checkForLevelUp();
   }
 
-  chooseUpgrade(upgradeId: UpgradeId): boolean {
-    if (!this.pendingUpgradeIds.includes(upgradeId)) {
+  /** Applies typed damage to an enemy by id. Also used by rules tests. */
+  dealDamage(enemyId: number, amount: number, damageType: DamageType = "physical"): boolean {
+    const enemy = this.enemies.find((candidate) => candidate.id === enemyId && !candidate.dead);
+    if (!enemy) {
+      return false;
+    }
+    this.damageEnemy(enemy, amount, damageType);
+    return true;
+  }
+
+  chooseOption(optionId: string): boolean {
+    const decision = this.decisionQueue[0];
+    if (!decision || !decision.options.some((option) => option.id === optionId)) {
       return false;
     }
 
-    switch (upgradeId) {
-      case "rapid-cycling":
-        this.modifyAllWeapons((weapon) => { weapon.fireIntervalSeconds *= 0.8; });
+    this.decisionQueue.shift();
+    switch (decision.kind) {
+      case "upgrade":
+        this.applyUpgrade(optionId as UpgradeId);
         break;
-      case "twin-shot":
-        this.modifyAllWeapons((weapon) => {
-          weapon.projectileCount += 1;
-          weapon.spreadRadians = Math.max(weapon.spreadRadians, 0.11);
-        });
+      case "weapon-chest":
+        this.addWeapon(optionId as WeaponId);
         break;
-      case "piercing-rounds":
-        this.modifyAllWeapons((weapon) => { weapon.pierceCount += 1; });
-        break;
-      case "explosive-payload":
-        this.modifyAllWeapons((weapon) => {
-          weapon.explosionRadiusMetres = Math.max(weapon.explosionRadiusMetres, 1.4);
-        });
-        break;
-      case "heavy-calibre":
-        this.modifyAllWeapons((weapon) => {
-          weapon.projectileDamage *= 1.4;
-          weapon.fireIntervalSeconds *= 1.1;
-        });
-        break;
-      case "field-magnet":
-        this.magnetMultiplier *= 1.5;
+      case "supply-depot":
+        this.applySupplyChoice(optionId);
         break;
     }
-
-    this.pendingUpgradeIds = [];
     this.checkForLevelUp();
     return true;
   }
 
+  chooseUpgrade(upgradeId: UpgradeId): boolean {
+    if (this.decisionQueue[0]?.kind !== "upgrade") {
+      return false;
+    }
+    return this.chooseOption(upgradeId);
+  }
+
   snapshot(): CombatSnapshot {
+    const decision = this.decisionQueue[0] ?? null;
     return {
       status: this.status,
       waveNumber: this.waveIndex + 1,
@@ -522,6 +645,8 @@ export class CombatSimulation {
       playerPosition: { ...this.playerPosition },
       playerHealth: this.playerHealth,
       playerMaxHealth: PLAYER_MAX_HEALTH,
+      playerShield: this.playerShield,
+      playerMaxShield: this.defence.maxShield,
       playerInvulnerable: this.playerInvulnerable || this.playerHurtCooldownSeconds > 0,
       evasiveReady: this.evasiveReady,
       evasiveCooldownRemainingSeconds: this.evasiveCooldownRemainingSeconds,
@@ -529,7 +654,12 @@ export class CombatSimulation {
       level: this.level,
       experience: this.experience,
       experienceForNextLevel: this.experienceThreshold(),
-      pendingUpgradeChoices: this.pendingUpgradeIds.map((id) => UPGRADE_CATALOG[id]),
+      pendingUpgradeChoices: decision?.kind === "upgrade"
+        ? decision.options.map((option) => UPGRADE_CATALOG[option.id as UpgradeId])
+        : [],
+      pendingDecision: decision
+        ? { kind: decision.kind, title: decision.title, options: decision.options.map((option) => ({ ...option })) }
+        : null,
       enemies: this.enemies.filter((enemy) => !enemy.dead).map((enemy) => this.enemySnapshot(enemy)),
       projectiles: this.projectiles.filter((projectile) => !projectile.dead).map((projectile) => ({
         id: projectile.id,
@@ -561,6 +691,16 @@ export class CombatSimulation {
         position: { ...pickup.position },
         value: pickup.value,
       })),
+      powerups: this.powerups.filter((powerup) => !powerup.collected).map((powerup) => ({
+        id: powerup.id,
+        type: powerup.type,
+        position: { ...powerup.position },
+        remainingSeconds: powerup.remainingSeconds,
+      })),
+      activeBuffs: [...this.activeBuffs.entries()].map(([type, remainingSeconds]) => ({
+        type,
+        remainingSeconds,
+      })),
       weapon: { ...(this.equippedWeapons[0]?.stats ?? BASTION_SERVICE_RIFLE) },
       equippedWeapons: this.equippedWeapons.map((weapon) => ({
         instanceId: weapon.instanceId,
@@ -576,6 +716,129 @@ export class CombatSimulation {
         .filter(([, damage]) => damage === 1).map(([id]) => id),
       destroyedObstacleIds: [...this.obstacleDamage.entries()]
         .filter(([, damage]) => damage >= 2).map(([id]) => id),
+    };
+  }
+
+  private applyUpgrade(upgradeId: UpgradeId): void {
+    switch (upgradeId) {
+      case "rapid-cycling":
+        this.modifyAllWeapons((weapon) => { weapon.fireIntervalSeconds *= 0.8; });
+        break;
+      case "twin-shot":
+        this.modifyAllWeapons((weapon) => {
+          weapon.projectileCount += 1;
+          weapon.spreadRadians = Math.max(weapon.spreadRadians, 0.11);
+        });
+        break;
+      case "piercing-rounds":
+        this.modifyAllWeapons((weapon) => { weapon.pierceCount += 1; });
+        break;
+      case "explosive-payload":
+        this.modifyAllWeapons((weapon) => {
+          weapon.explosionRadiusMetres = Math.max(weapon.explosionRadiusMetres, 1.4);
+        });
+        break;
+      case "heavy-calibre":
+        this.modifyAllWeapons((weapon) => {
+          weapon.projectileDamage *= 1.4;
+          weapon.fireIntervalSeconds *= 1.1;
+        });
+        break;
+      case "field-magnet":
+        this.magnetMultiplier *= 1.5;
+        break;
+    }
+  }
+
+  private addWeapon(weaponId: WeaponId): void {
+    if (this.equippedWeapons.length >= MAX_EQUIPPED_WEAPONS) {
+      return;
+    }
+    const nextInstanceId = this.equippedWeapons
+      .reduce((maximum, weapon) => Math.max(maximum, weapon.instanceId), 0) + 1;
+    this.equippedWeapons.push({
+      instanceId: nextInstanceId,
+      weaponId,
+      stats: { ...WEAPON_CATALOG[weaponId] },
+      cooldownSeconds: 0,
+    });
+  }
+
+  private applySupplyChoice(optionId: string): void {
+    switch (optionId) {
+      case "patch-up":
+        this.playerHealth = Math.min(PLAYER_MAX_HEALTH, this.playerHealth + SUPPLY_DEPOT_HEAL);
+        break;
+      case "field-armoury":
+        this.decisionQueue.unshift(this.buildUpgradeDecision());
+        break;
+      case "aegis-lattice":
+        this.playerShield += AEGIS_SHIELD_AMOUNT;
+        break;
+    }
+  }
+
+  private buildUpgradeDecision(): PendingDecision {
+    const start = (this.level - 2 + UPGRADE_ORDER.length * 2) % UPGRADE_ORDER.length;
+    const ids = [
+      UPGRADE_ORDER[start]!,
+      UPGRADE_ORDER[(start + 2) % UPGRADE_ORDER.length]!,
+      UPGRADE_ORDER[(start + 4) % UPGRADE_ORDER.length]!,
+    ];
+    return {
+      kind: "upgrade",
+      title: "LEVEL UP — CHOOSE AN UPGRADE",
+      options: ids.map((id) => ({
+        id,
+        name: UPGRADE_CATALOG[id].name,
+        description: UPGRADE_CATALOG[id].description,
+      })),
+    };
+  }
+
+  private buildWeaponChestDecision(): PendingDecision | null {
+    if (this.equippedWeapons.length >= MAX_EQUIPPED_WEAPONS) {
+      return null;
+    }
+    const ownedIds = new Set(this.equippedWeapons.map((weapon) => weapon.weaponId));
+    const options = VERTICAL_SLICE_WEAPON_IDS
+      .filter((weaponId) => !ownedIds.has(weaponId))
+      .map((weaponId) => ({
+        id: weaponId,
+        name: WEAPON_CATALOG[weaponId].displayName,
+        description: WEAPON_CATALOG[weaponId].description,
+      }));
+    if (options.length === 0) {
+      return null;
+    }
+    return {
+      kind: "weapon-chest",
+      title: "WEAPON CHEST — CHOOSE A WEAPON",
+      options,
+    };
+  }
+
+  private buildSupplyDepotDecision(): PendingDecision {
+    return {
+      kind: "supply-depot",
+      title: "SUPPLY DEPOT — CHOOSE ONE",
+      options: [
+        {
+          id: "patch-up",
+          name: "Patch Up",
+          description: `Restore ${SUPPLY_DEPOT_HEAL} health.`,
+        },
+        {
+          id: "field-armoury",
+          name: "Field Armoury",
+          description: "Choose one upgrade immediately.",
+        },
+        {
+          id: "aegis-lattice",
+          name: "Aegis Lattice",
+          description: `Gain a ${AEGIS_SHIELD_AMOUNT}-point shield that absorbs damage before health.`,
+        },
+      ],
     };
   }
 
@@ -601,6 +864,7 @@ export class CombatSimulation {
       this.projectiles.push({
         id: this.nextId(),
         weaponId: weapon.weaponId,
+        damageType: weapon.stats.damageType,
         position: { ...muzzlePosition },
         velocity: {
           x: direction.x * weapon.stats.projectileSpeedMetresPerSecond,
@@ -659,6 +923,39 @@ export class CombatSimulation {
     }
   }
 
+  private currentAttackSpeedMultiplier(): number {
+    return this.defence.attackSpeedMultiplier
+      * (this.isBuffActive("overcharge") ? OVERCHARGE_ATTACK_SPEED_MULTIPLIER : 1);
+  }
+
+  private isBuffActive(type: PowerupType): boolean {
+    return (this.activeBuffs.get(type) ?? 0) > 0;
+  }
+
+  private updateBuffs(deltaSeconds: number): void {
+    for (const [type, remaining] of this.activeBuffs) {
+      const next = remaining - deltaSeconds;
+      if (next <= 0) {
+        this.activeBuffs.delete(type);
+      } else {
+        this.activeBuffs.set(type, next);
+      }
+    }
+  }
+
+  private updateShieldRecharge(deltaSeconds: number): void {
+    this.shieldRechargeCooldownSeconds = Math.max(0, this.shieldRechargeCooldownSeconds - deltaSeconds);
+    if (
+      this.shieldRechargeCooldownSeconds <= 0
+      && this.playerShield < this.defence.maxShield
+    ) {
+      this.playerShield = Math.min(
+        this.defence.maxShield,
+        this.playerShield + this.defence.shieldRechargePerSecond * deltaSeconds,
+      );
+    }
+  }
+
   private updateProjectiles(deltaSeconds: number): void {
     for (const projectile of this.projectiles) {
       if (projectile.dead) {
@@ -701,7 +998,7 @@ export class CombatSimulation {
 
         projectile.hitEnemyIds.add(enemy.id);
         const damageMultiplier = this.projectileDamageMultiplier(projectile, enemy);
-        this.damageEnemy(enemy, projectile.damage * damageMultiplier);
+        this.damageEnemy(enemy, projectile.damage * damageMultiplier, projectile.damageType);
         if (damageMultiplier >= 1) this.applyProjectileKnockback(projectile, enemy);
         this.resolveProjectileChain(projectile, enemy);
 
@@ -717,7 +1014,7 @@ export class CombatSimulation {
               && !nearby.dead
               && distance(nearby.position, enemy.position) <= projectile.explosionRadiusMetres
             ) {
-              this.damageEnemy(nearby, projectile.damage * 0.5);
+              this.damageEnemy(nearby, projectile.damage * 0.5, projectile.damageType);
             }
           }
         }
@@ -783,7 +1080,7 @@ export class CombatSimulation {
         to: { ...target.position },
         weaponId: projectile.weaponId,
       });
-      this.damageEnemy(target, projectile.damage * 0.7);
+      this.damageEnemy(target, projectile.damage * 0.7, projectile.damageType);
       from = target;
     }
   }
@@ -791,6 +1088,11 @@ export class CombatSimulation {
   private updateEnemies(deltaSeconds: number): void {
     for (const enemy of [...this.enemies]) {
       if (enemy.dead) {
+        continue;
+      }
+
+      this.tickEnemyStatuses(enemy, deltaSeconds);
+      if (enemy.dead || this.isEnemyStunned(enemy)) {
         continue;
       }
 
@@ -810,11 +1112,56 @@ export class CombatSimulation {
         case "slime-spitter":
           this.updateSlimeSpitter(enemy, deltaSeconds);
           break;
+        case "blast-mite":
+          this.updateBlastMite(enemy, deltaSeconds);
+          break;
+        case "warp-flanker":
+          this.updateWarpFlanker(enemy, deltaSeconds);
+          break;
         case "siege-crusher":
           this.updateSiegeCrusher(enemy, deltaSeconds);
           break;
       }
     }
+  }
+
+  private tickEnemyStatuses(enemy: EnemyState, deltaSeconds: number): void {
+    for (const status of Object.keys(enemy.statusTimers) as StatusEffectType[]) {
+      const remaining = enemy.statusTimers[status] ?? 0;
+      if (remaining <= 0) {
+        delete enemy.statusTimers[status];
+        continue;
+      }
+      const rule = STATUS_RULES[status];
+      if (rule.damagePerSecond > 0) {
+        this.applyRawDamage(enemy, rule.damagePerSecond * deltaSeconds);
+        if (enemy.dead) return;
+      }
+      const next = remaining - deltaSeconds;
+      if (next <= 0) {
+        delete enemy.statusTimers[status];
+      } else {
+        enemy.statusTimers[status] = next;
+      }
+    }
+  }
+
+  private isEnemyStunned(enemy: EnemyState): boolean {
+    return (Object.keys(enemy.statusTimers) as StatusEffectType[])
+      .some((status) => STATUS_RULES[status].stunned);
+  }
+
+  private enemyStatusSpeedMultiplier(enemy: EnemyState): number {
+    let multiplier = 1;
+    for (const status of Object.keys(enemy.statusTimers) as StatusEffectType[]) {
+      multiplier = Math.min(multiplier, STATUS_RULES[status].speedMultiplier);
+    }
+    return multiplier;
+  }
+
+  private activeStatuses(enemy: EnemyState): StatusEffectType[] {
+    return (Object.keys(enemy.statusTimers) as StatusEffectType[])
+      .filter((status) => (enemy.statusTimers[status] ?? 0) > 0);
   }
 
   private updateEggCluster(enemy: EnemyState, deltaSeconds: number): void {
@@ -869,6 +1216,77 @@ export class CombatSimulation {
         }
         break;
     }
+  }
+
+  private updateBlastMite(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.mitePhaseRemainingSeconds -= deltaSeconds;
+    switch (enemy.mitePhase) {
+      case "chase":
+        this.moveEnemyTowardPlayer(enemy, ENEMY_CATALOG["blast-mite"].movementSpeedMetresPerSecond, deltaSeconds);
+        if (distance(enemy.position, this.playerPosition) <= 1) {
+          enemy.mitePhase = "armed";
+          enemy.mitePhaseRemainingSeconds = 0.45;
+        }
+        break;
+      case "armed":
+        if (enemy.mitePhaseRemainingSeconds <= 0) {
+          this.applyRawDamage(enemy, enemy.health + 1);
+        }
+        break;
+    }
+  }
+
+  private updateWarpFlanker(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.warpPhaseRemainingSeconds -= deltaSeconds;
+    switch (enemy.warpPhase) {
+      case "stalk":
+        enemy.facingDirection = normalizeVector({
+          x: this.playerPosition.x - enemy.position.x,
+          y: this.playerPosition.y - enemy.position.y,
+        });
+        this.moveEnemyTowardPlayer(enemy, ENEMY_CATALOG["warp-flanker"].movementSpeedMetresPerSecond, deltaSeconds);
+        if (enemy.warpPhaseRemainingSeconds <= 0) {
+          if (distance(enemy.position, this.playerPosition) > 3) {
+            enemy.warpPhase = "warp-windup";
+            enemy.warpPhaseRemainingSeconds = 0.7;
+            enemy.warpTarget = this.pickWarpTarget();
+          } else {
+            enemy.warpPhaseRemainingSeconds = 1;
+          }
+        }
+        break;
+      case "warp-windup":
+        if (enemy.warpPhaseRemainingSeconds <= 0) {
+          enemy.position = { ...enemy.warpTarget };
+          enemy.warpPhase = "materialize";
+          enemy.warpPhaseRemainingSeconds = 0.35;
+          this.frameEvents.push({ type: "warp-arrival", position: { ...enemy.position } });
+        }
+        break;
+      case "materialize":
+        if (enemy.warpPhaseRemainingSeconds <= 0) {
+          enemy.warpPhase = "stalk";
+          enemy.warpPhaseRemainingSeconds = 2.2;
+        }
+        break;
+    }
+  }
+
+  private pickWarpTarget(): Vector2Data {
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      const angle = this.random() * Math.PI * 2;
+      const candidate = {
+        x: clamp(this.playerPosition.x + Math.cos(angle) * 2.2, 0.8, this.widthMetres - 0.8),
+        y: clamp(this.playerPosition.y + Math.sin(angle) * 2.2, 0.8, this.heightMetres - 0.8),
+      };
+      if (!pointHitsObstacle(candidate, this.activeObstacles())) {
+        return candidate;
+      }
+    }
+    return {
+      x: clamp(this.playerPosition.x + 2.2, 0.8, this.widthMetres - 0.8),
+      y: this.playerPosition.y,
+    };
   }
 
   private updateCarapaceScuttler(enemy: EnemyState, deltaSeconds: number): void {
@@ -1160,11 +1578,12 @@ export class CombatSimulation {
     deltaSeconds: number,
   ): void {
     const radius = ENEMY_CATALOG[enemy.type].radiusMetres;
+    const effectiveSpeed = speed * this.enemyStatusSpeedMultiplier(enemy);
     enemy.position = resolveCircleMovement(
       enemy.position,
       {
-        x: enemy.position.x + direction.x * speed * deltaSeconds,
-        y: enemy.position.y + direction.y * speed * deltaSeconds,
+        x: enemy.position.x + direction.x * effectiveSpeed * deltaSeconds,
+        y: enemy.position.y + direction.y * effectiveSpeed * deltaSeconds,
       },
       radius,
       this.collisionArena(),
@@ -1197,21 +1616,32 @@ export class CombatSimulation {
     }
   }
 
-  private damagePlayer(damage: number): void {
-    if (damage <= 0 || this.playerInvulnerable || this.playerHurtCooldownSeconds > 0) return;
-    this.playerHealth = Math.max(0, this.playerHealth - damage);
-    this.playerHurtCooldownSeconds = PLAYER_HURT_COOLDOWN_SECONDS;
+  private damagePlayer(rawDamage: number): void {
+    if (rawDamage <= 0 || this.playerInvulnerable || this.playerHurtCooldownSeconds > 0) return;
+    const absorption = absorbWithShield(this.playerShield, rawDamage);
+    this.playerShield = absorption.remainingShield;
+    this.shieldRechargeCooldownSeconds = this.defence.shieldRechargeDelaySeconds;
+    if (absorption.remainingDamage > 0) {
+      const mitigated = mitigateDamage(
+        absorption.remainingDamage,
+        this.defence.armour,
+        this.defence.flatDamageReduction,
+      );
+      this.playerHealth = Math.max(0, this.playerHealth - mitigated);
+    }
+    this.playerHurtCooldownSeconds = this.defence.hitInvulnerabilitySeconds;
     this.frameEvents.push({
       type: "player-hit",
       position: { ...this.playerPosition },
-      damage,
+      damage: rawDamage,
     });
     if (this.playerHealth <= 0) this.status = "defeat";
   }
 
   private updateExperiencePickups(deltaSeconds: number): void {
-    const attractionRadius = 2.2 * this.magnetMultiplier;
-    const collectionRadius = 0.5 * this.magnetMultiplier;
+    const magnetBoost = this.isBuffActive("magnet-pulse") ? MAGNET_PULSE_MULTIPLIER : 1;
+    const attractionRadius = 2.2 * this.magnetMultiplier * magnetBoost;
+    const collectionRadius = 0.5 * this.magnetMultiplier * magnetBoost;
 
     for (const pickup of this.pickups) {
       if (pickup.collected) {
@@ -1241,8 +1671,52 @@ export class CombatSimulation {
     }
   }
 
+  private updatePowerups(deltaSeconds: number): void {
+    for (const powerup of this.powerups) {
+      if (powerup.collected) continue;
+      powerup.remainingSeconds -= deltaSeconds;
+      if (powerup.remainingSeconds <= 0) {
+        powerup.collected = true;
+        continue;
+      }
+      if (distance(powerup.position, this.playerPosition) <= POWERUP_COLLECT_RADIUS_METRES) {
+        powerup.collected = true;
+        this.applyPowerup(powerup.type);
+        this.frameEvents.push({
+          type: "powerup-collected",
+          position: { ...powerup.position },
+          powerupType: powerup.type,
+        });
+      }
+    }
+  }
+
+  private applyPowerup(type: PowerupType): void {
+    if (type === "aegis") {
+      this.playerShield += AEGIS_SHIELD_AMOUNT;
+      return;
+    }
+    this.activeBuffs.set(
+      type,
+      Math.max(this.activeBuffs.get(type) ?? 0, POWERUP_DURATION_SECONDS[type]),
+    );
+  }
+
+  private nextPowerupPosition(): Vector2Data {
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+      const candidate = {
+        x: this.widthMetres / 2 + (this.random() - 0.5) * this.widthMetres * 0.55,
+        y: this.heightMetres / 2 + (this.random() - 0.5) * this.heightMetres * 0.55,
+      };
+      if (!pointHitsObstacle(candidate, this.activeObstacles())) {
+        return candidate;
+      }
+    }
+    return { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+  }
+
   private updateEliteRewards(): void {
-    if (this.pendingUpgradeIds.length > 0) return;
+    if (this.decisionQueue.length > 0) return;
     for (const reward of this.eliteRewards) {
       if (reward.collected || distance(reward.position, this.playerPosition) > 0.8) continue;
       reward.collected = true;
@@ -1257,13 +1731,58 @@ export class CombatSimulation {
     }
   }
 
-  private damageEnemy(enemy: EnemyState, damage: number): void {
-    if (enemy.dead) {
+  private damageEnemy(enemy: EnemyState, rawDamage: number, damageType: DamageType = "physical"): void {
+    if (enemy.dead || rawDamage <= 0) {
+      return;
+    }
+
+    const definition = ENEMY_CATALOG[enemy.type];
+    const resistanceMultiplier = definition.resistances[damageType] ?? 1;
+    const corrodeActive = (enemy.statusTimers.corrode ?? 0) > 0;
+    const effectiveArmour = Math.max(
+      definition.armour - (corrodeActive ? STATUS_RULES.corrode.armourReduction : 0),
+      0,
+    );
+    const mitigated = mitigateDamage(
+      rawDamage * resistanceMultiplier,
+      effectiveArmour,
+      definition.flatDamageReduction,
+    );
+
+    const status = STATUS_BY_DAMAGE_TYPE[damageType];
+    if (status && this.canStatusApply(enemy, status)) {
+      const buildup = (enemy.statusBuildup[status] ?? 0) + mitigated;
+      if (buildup >= STATUS_BUILDUP_THRESHOLD) {
+        enemy.statusBuildup[status] = 0;
+        enemy.statusTimers[status] = STATUS_RULES[status].durationSeconds;
+        this.frameEvents.push({
+          type: "status-applied",
+          position: { ...enemy.position },
+          status,
+        });
+      } else {
+        enemy.statusBuildup[status] = buildup;
+      }
+    }
+
+    this.frameEvents.push({ type: "enemy-hit", position: { ...enemy.position } });
+    this.applyRawDamage(enemy, mitigated);
+  }
+
+  private canStatusApply(enemy: EnemyState, status: StatusEffectType): boolean {
+    if (enemy.rank !== "mini-boss") {
+      return true;
+    }
+    return !STATUS_RULES[status].stunned && STATUS_RULES[status].speedMultiplier >= 1;
+  }
+
+  /** Direct unmitigated damage: used by status ticks and self-detonations. */
+  private applyRawDamage(enemy: EnemyState, damage: number): void {
+    if (enemy.dead || damage <= 0) {
       return;
     }
 
     enemy.health -= damage;
-    this.frameEvents.push({ type: "enemy-hit", position: { ...enemy.position } });
     if (enemy.health > 0) {
       return;
     }
@@ -1274,6 +1793,19 @@ export class CombatSimulation {
       position: { ...enemy.position },
       enemyType: enemy.type,
     });
+    if (enemy.type === "blast-mite") {
+      this.frameEvents.push({
+        type: "explosion",
+        position: { ...enemy.position },
+        radiusMetres: BLAST_MITE_EXPLOSION_RADIUS_METRES,
+      });
+      if (
+        distance(enemy.position, this.playerPosition)
+        <= BLAST_MITE_EXPLOSION_RADIUS_METRES + PLAYER_RADIUS_METRES
+      ) {
+        this.damagePlayer(BLAST_MITE_EXPLOSION_DAMAGE);
+      }
+    }
     if (enemy.eliteKind) {
       this.eliteRewards.push({
         id: this.nextId(),
@@ -1316,6 +1848,7 @@ export class CombatSimulation {
     this.projectiles = this.projectiles.filter((projectile) => !projectile.dead);
     this.enemyProjectiles = this.enemyProjectiles.filter((projectile) => !projectile.dead);
     this.pickups = this.pickups.filter((pickup) => !pickup.collected);
+    this.powerups = this.powerups.filter((powerup) => !powerup.collected);
     this.eliteRewards = this.eliteRewards.filter((reward) => !reward.collected);
   }
 
@@ -1324,7 +1857,13 @@ export class CombatSimulation {
 
     while (this.spawnQueue.length > 0 && this.spawnQueue[0]!.atSeconds <= this.waveElapsedSeconds) {
       const spawn = this.spawnQueue.shift()!;
-      this.spawnEnemy(spawn.type);
+      if (spawn.rank === "elite") {
+        this.spawnElite("carapace-scuttler");
+      } else if (spawn.rank === "mini-boss") {
+        this.spawnMiniBoss("siege-crusher");
+      } else {
+        this.spawnEnemy(spawn.type);
+      }
     }
   }
 
@@ -1340,6 +1879,7 @@ export class CombatSimulation {
       } else {
         this.status = "intermission";
         this.intermissionRemainingSeconds = INTERMISSION_SECONDS;
+        this.queueIntermissionReward();
       }
       return;
     }
@@ -1352,11 +1892,23 @@ export class CombatSimulation {
     }
   }
 
+  private queueIntermissionReward(): void {
+    if (this.waveIndex === 0 || this.waveIndex === 2) {
+      const chest = this.buildWeaponChestDecision();
+      this.decisionQueue.push(chest ?? this.buildUpgradeDecision());
+    } else if (this.waveIndex === 1 || this.waveIndex === 3) {
+      this.decisionQueue.push(this.buildSupplyDepotDecision());
+    }
+  }
+
   private beginWave(index: number): void {
     this.waveIndex = index;
     this.waveElapsedSeconds = 0;
     this.status = "combat";
     this.spawnQueue = buildWave(index);
+    if (index >= 1) {
+      this.spawnPowerup(POWERUP_WAVE_CYCLE[(index - 1) % POWERUP_WAVE_CYCLE.length]!);
+    }
   }
 
   private populateStressScenario(profile: 4 | 12): void {
@@ -1395,7 +1947,7 @@ export class CombatSimulation {
   }
 
   private checkForLevelUp(): void {
-    if (this.pendingUpgradeIds.length > 0) {
+    if (this.decisionQueue.length > 0) {
       return;
     }
 
@@ -1407,12 +1959,7 @@ export class CombatSimulation {
     this.experience -= threshold;
     this.level += 1;
     this.frameEvents.push({ type: "level-up", level: this.level });
-    const start = (this.level - 2) % UPGRADE_ORDER.length;
-    this.pendingUpgradeIds = [
-      UPGRADE_ORDER[start]!,
-      UPGRADE_ORDER[(start + 2) % UPGRADE_ORDER.length]!,
-      UPGRADE_ORDER[(start + 4) % UPGRADE_ORDER.length]!,
-    ];
+    this.decisionQueue.push(this.buildUpgradeDecision());
   }
 
   private experienceThreshold(): number {
@@ -1436,6 +1983,11 @@ export class CombatSimulation {
       spitterTarget: enemy.type === "slime-spitter" && enemy.spitterPhase === "windup"
         ? { ...enemy.spitterTarget }
         : undefined,
+      mitePhase: enemy.type === "blast-mite" ? enemy.mitePhase : undefined,
+      warpPhase: enemy.type === "warp-flanker" ? enemy.warpPhase : undefined,
+      warpTarget: enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup"
+        ? { ...enemy.warpTarget }
+        : undefined,
       rank: enemy.rank,
       eliteKind: enemy.eliteKind,
       carapacePhase: enemy.eliteKind === "carapace-scuttler" ? enemy.carapacePhase : undefined,
@@ -1445,6 +1997,7 @@ export class CombatSimulation {
         ? { ...enemy.siegeCrusherDirection }
         : undefined,
       facingDirection: { ...enemy.facingDirection },
+      statuses: this.activeStatuses(enemy),
     };
   }
 
@@ -1487,9 +2040,15 @@ export class CombatSimulation {
 
 function buildWave(index: number): SpawnPlan[] {
   const plans: SpawnPlan[] = [];
-  const add = (type: EnemyType, count: number, start: number, interval: number): void => {
+  const add = (
+    type: EnemyType,
+    count: number,
+    start: number,
+    interval: number,
+    rank?: SpawnPlan["rank"],
+  ): void => {
     for (let item = 0; item < count; item += 1) {
-      plans.push({ type, atSeconds: start + item * interval });
+      plans.push({ type, atSeconds: start + item * interval, rank });
     }
   };
 
@@ -1501,10 +2060,24 @@ function buildWave(index: number): SpawnPlan[] {
       add("scuttler", 8, 0.2, 0.65);
       add("egg-cluster", 3, 1.4, 1.8);
       break;
-    default:
-      add("scuttler", 10, 0.2, 0.55);
-      add("brain-blob", 4, 1.2, 1.6);
+    case 2:
+      add("scuttler", 8, 0.2, 0.6);
+      add("brain-blob", 3, 1.2, 1.6);
       add("slime-spitter", 2, 2.4, 2.8);
+      add("blast-mite", 3, 3, 1.4);
+      break;
+    case 3:
+      add("scuttler", 8, 0.2, 0.6);
+      add("blast-mite", 4, 1, 1.2);
+      add("slime-spitter", 2, 2, 2.6);
+      add("warp-flanker", 3, 2.5, 1.8);
+      add("scuttler", 1, 6, 1, "elite");
+      break;
+    default:
+      add("siege-crusher", 1, 0.5, 1, "mini-boss");
+      add("scuttler", 6, 2, 2.2);
+      add("blast-mite", 4, 4, 2.4);
+      add("warp-flanker", 3, 6, 3);
       break;
   }
 

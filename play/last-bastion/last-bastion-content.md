@@ -2,9 +2,9 @@
 
 ## Status
 
-**Version:** 0.1
+**Version:** 0.2
 
-**Status:** Design draft; weapon concepts approved; unbalanced
+**Status:** Design draft; weapon concepts approved; unbalanced. Damage types, defensive statistics, Blast Mite, Warp Flanker, and the four powerups are now implemented in the simulation (16 July 2026) and await production art.
 
 This document lists early enemies and weapons without implying that all of them belong in the combat prototype. Gameplay data will eventually replace these tables as the implementation source of truth.
 
@@ -53,8 +53,12 @@ The first Brain Blob production test uses a violet cerebral mass in a dark coral
 | Ripper | Large melee bruiser | Slower approach followed by a long claw sweep | Larger size and reach |
 | Razor Scuttler | Fragile interceptor | Very fast approach with low health and a short recovery after missing | Speed |
 | Slime Spitter | Ranged pressure | Fires a telegraphed slime glob that creates a temporary puddle | Ranged attack |
+| Blast Mite | Kamikaze | Very fast and fragile; arms with a flashing tell at close range and detonates, also exploding on death | Corpse denial and kiting |
+| Warp Flanker | Teleporting harasser | Stalks, marks a telegraphed arrival ring near the player, teleports there, and materialises briefly before attacking | 360° awareness |
 | Mireback | Mobile ground denial | Leaves a wider persistent trail but turns slowly | Trail coverage |
 | Brood Tender | Support/spawner | Accelerates nearby egg hatching and retreats from the player | Target priority |
+
+The Blast Mite and Warp Flanker were implemented functionally on 16 July 2026 (waves 3–5) using placeholder shapes; production sprite sheets are an outstanding art task.
 
 ### Tier 3: Elite concepts
 
@@ -83,6 +87,41 @@ Tier 3 concepts are vertical-slice or later material.
 4. Later prototype tuning: introduce either the Slime Mite or Slime Spitter, but not both at once.
 
 This sequence lets each wave teach one additional rule.
+
+## Damage types and status effects
+
+Implemented 16 July 2026. Five damage types exist; four of them build a status effect instead of having a separately named "tier two" damage type. Status pressure is therefore mechanical, not a bigger number.
+
+| Damage type | Status built | Status effect |
+| --- | --- | --- |
+| Physical | — | Knockback/stagger comes from weapon knockback values |
+| Fire | Blaze | Damage over time (7/s for 3 s) |
+| Shock | Overload | Brief stun (0.8 s) |
+| Cryo | Freeze | Heavy slow (35% speed for 2.2 s) |
+| Toxic | Corrode | Damage over time plus temporary armour reduction |
+
+Rules:
+
+- Typed damage accumulates buildup equal to post-mitigation damage; at 40 buildup the status triggers and the meter resets. Small enemies usually die before triggering; statuses matter against elites and bosses by design.
+- Mini-bosses are immune to hard control (Overload, Freeze) but not to Blaze or Corrode.
+- Enemies declare per-type resistance/vulnerability multipliers in the enemy catalogue (for example eggs and slime creatures are vulnerable to Fire; slime is highly resistant to Toxic).
+- Chaos/space is deliberately **not** a damage type. Gravitic and exotic behaviour is the signature of Unique weapons such as Event Horizon.
+
+## Defensive statistics
+
+Implemented 16 July 2026 for the hero and every enemy definition. Two separate armour stats exist, Brotato/Warcraft-style:
+
+- **Armour** — percentage reduction with diminishing returns: `reduction = armour / (armour + 15)`. One point is worth ~6.25% at low totals and progressively less afterwards, but it always remains worth stacking for large health pools.
+- **Flat damage reduction** — subtracted from each hit after the percentage step, with a floor of 1 damage per hit. Deliberately rarer; reserved for specific builds and units (the Siege Crusher carries 2).
+
+Supporting defensive/secondary stats, all data-driven per hero:
+
+- **Shields** — a pool absorbed before armour and health; recharges after a no-damage delay. Overshield above the maximum (from Aegis effects) persists but does not recharge.
+- **Slow resistance** — fraction of incoming slows ignored.
+- **Attack speed multiplier** — scales every weapon's fire interval.
+- **Hit invulnerability** — the post-hit protection window is now a hero stat (Marine: 0.65 s).
+- **Evasive move** — duration, distance, and invulnerability remain the existing three secondary stats.
+- **Weapon proficiencies** (light/medium/heavy/unique) and **mineral find %** are reserved fields: proficiencies activate when the catalogue is wide enough to matter, and mineral find stays inert until a currency loop exists.
 
 ## Weapon classification
 
@@ -212,6 +251,8 @@ Weapon implementation precedes final art for each family. Shared data must defin
 | Implemented | Egg Cluster | Nest object | Delayed hatch priority | Existing dormant, pulse, crack, rupture |
 | Implemented | Brain Blob | Telegraph attacker | Wind-up and short lunge | Existing drift, wind-up, lunge, recovery |
 | Functional placeholder | Slime Spitter | Ranged area denial | Glob creates bounded slowing puddle | Final idle/move, aim, spit, hit/death, glob, and puddle art pending Batch B |
+| Functional placeholder | Blast Mite | Kamikaze | Armed flashing tell, detonation on contact or death | Small sheet: chase gait, armed flash, detonation burst — awaiting art |
+| Functional placeholder | Warp Flanker | Teleporting harasser | Telegraphed arrival ring and materialise window | Sheet: stalk, dissolve, arrival ring, materialise shimmer — awaiting art |
 | Web MVP | Ripper | Melee bruiser | Long claw reach after wind-up | Move, sweep tell, active sweep, recovery, hit/death |
 | Web MVP | Razor Scuttler | Interceptor | Fast commit followed by punishable miss | Fast gait, leap/charge tell, miss recovery, death |
 | Web MVP | Brood Tender | Support | Speeds eggs and retreats | Move, channel, interrupted, hit/death |
@@ -260,10 +301,10 @@ Future boss seeds such as a Mire Sovereign or Choir Mind remain names only until
 
 | Object | Purpose | Rule | Initial scope |
 | --- | --- | --- | --- |
-| Weapon chest | Adds or replaces a weapon | Presents 2–3 weapon choices after combat; no unusable duplicates | Vertical slice |
+| Weapon chest | Adds or replaces a weapon | Presents 2–3 weapon choices after combat; no unusable duplicates | Vertical slice — implemented 16 July 2026 (after waves 1 and 3; falls back to upgrades when all weapons are owned) |
 | Upgrade chest | Improves the current build | Elite version guarantees higher-impact options | Vertical slice |
 | Ordnance cache | Temporary combat power | Replaces ammo boxes; grants rapid cycling, explosive shots, or drone support briefly | Web MVP |
-| Supply depot | Between-wave recovery decision | Choose one: heal, reroll, or repair/refresh; limited uses | Vertical slice signature interaction candidate |
+| Supply depot | Between-wave recovery decision | Choose one: heal, reroll, or repair/refresh; limited uses | Vertical slice — implemented 16 July 2026 (after waves 2 and 4: Patch Up heal, Field Armoury upgrade, or Aegis Lattice shield) |
 | Supply drop | In-combat optional objective | Telegraphs landing, then requires holding or clearing a small zone | Web MVP |
 | Powerup | Short-lived immediate effect | Four types maximum: Overcharge, Aegis, Magnet Pulse, Adrenaline | Web MVP after pickup timers exist |
 | Collectible | Feeds an implemented economy | XP and health now; Scrap only when a same-run shop exists | As supporting system exists |
@@ -275,10 +316,12 @@ Traditional ammunition is not tracked. “Ammo boxes” become **Ordnance Caches
 
 ### Powerup set
 
-- **Overcharge:** faster weapon cycling briefly; orange lightning icon.
-- **Aegis:** absorbs one hit or grants a brief shield pool; cyan hexagonal icon.
-- **Magnet Pulse:** attracts nearby XP and temporarily expands pickup range; blue-white field icon.
-- **Adrenaline:** movement and evasive recovery boost without changing invulnerability duration; red chevron icon.
+Implemented 16 July 2026 with placeholder diamond pickups: one seeded powerup spawns per wave from wave 2, lasts 12 seconds on the ground, and shows an active-buff timer on the HUD. Production pickup art and HUD icons are outstanding.
+
+- **Overcharge:** 60% faster weapon cycling for 6 seconds; orange lightning icon.
+- **Aegis:** grants a 25-point shield pool absorbed before health; cyan hexagonal icon.
+- **Magnet Pulse:** attracts nearby XP and expands pickup range for 6 seconds; blue-white field icon.
+- **Adrenaline:** 35% movement boost for 5 seconds without changing invulnerability duration; red chevron icon.
 
 ### First relic set
 
@@ -319,6 +362,8 @@ Treasure chests are reward presentation, not a separate currency. Relic fragment
 - Siege Crusher body, charge/sweep/recovery states, boss portrait/bar, debris shockwave, and obstacle-damage effects.
 
 ### Batch C — rewards and battlefield interaction
+
+The reward state model (weapon chest, Supply Depot, powerup timers) now exists in code, so Batch C is unblocked. Also required from this batch: Blast Mite and Warp Flanker sprite sheets plus status-effect overlays (Blaze, Overload, Freeze, Corrode tints/particles).
 
 - Weapon and upgrade chest closed/open/claimed states.
 - Supply depot idle/available/used/damaged states and three choice icons.

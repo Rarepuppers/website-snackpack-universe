@@ -11,8 +11,10 @@ import {
   type CombatScenario,
   type ProjectileSnapshot,
   type CombatEvent,
+  type PendingDecision,
+  type PowerupPickupSnapshot,
+  type PowerupType,
 } from "../combat/CombatSimulation";
-import type { UpgradeDefinition } from "../content/upgradeCatalog";
 import type { EquippedWeapon } from "../equipment/WeaponLoadout";
 import { clampWeaponCount } from "../equipment/WeaponLoadout";
 import { calculateWeaponRingLayout } from "../equipment/WeaponRingLayout";
@@ -74,10 +76,12 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly eliteArmorViews = new Map<number, Phaser.GameObjects.Triangle>();
   private readonly eliteRewardViews = new Map<number, EliteRewardView>();
   private readonly miniBossTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
+  private readonly warpTelegraphs = new Map<number, Phaser.GameObjects.Arc>();
   private readonly pickupViews = new Map<number, PickupView>();
+  private readonly powerupViews = new Map<number, Phaser.GameObjects.Rectangle>();
   private readonly weaponViews = new Map<number, WeaponView>();
-  private upgradeOverlay: Phaser.GameObjects.Container | null = null;
-  private visibleUpgradeKey = "";
+  private decisionOverlay: Phaser.GameObjects.Container | null = null;
+  private visibleDecisionKey = "";
   private isPaused = false;
   private lastAimAngle = 0;
   private marineFacingColumn = 0;
@@ -143,7 +147,7 @@ export class PrototypeScene extends Phaser.Scene {
       return;
     }
 
-    if (intent.pausePressed && this.lastSnapshot.pendingUpgradeChoices.length === 0) {
+    if (intent.pausePressed && this.lastSnapshot.pendingDecision === null) {
       this.isPaused = !this.isPaused;
     }
 
@@ -198,9 +202,11 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncEliteArmor(snapshot.enemies);
     this.syncEliteRewards(snapshot.eliteRewards);
     this.syncMiniBossTelegraphs(snapshot.enemies);
+    this.syncWarpTelegraphs(snapshot.enemies);
     this.syncObstacleDamage(snapshot.damagedObstacleIds, snapshot.destroyedObstacleIds);
     this.syncPickups(snapshot.pickups);
-    this.syncUpgradeOverlay(snapshot.pendingUpgradeChoices);
+    this.syncPowerups(snapshot.powerups);
+    this.syncDecisionOverlay(snapshot.pendingDecision);
     this.hud.update(snapshot, this.isPaused, this.effectPool.activeCount);
     const marineTint = snapshot.playerSlowed ? 0xb9ef62 : 0xffffff;
     snapshot.playerSlowed ? this.marineSprite?.setTint(marineTint) : this.marineSprite?.clearTint();
@@ -230,9 +236,9 @@ export class PrototypeScene extends Phaser.Scene {
     this.simulation = createSimulation(this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario);
     this.lastSnapshot = this.simulation.snapshot();
     this.isPaused = false;
-    this.visibleUpgradeKey = "";
-    this.upgradeOverlay?.destroy(true);
-    this.upgradeOverlay = null;
+    this.visibleDecisionKey = "";
+    this.decisionOverlay?.destroy(true);
+    this.decisionOverlay = null;
 
     for (const views of [
       this.enemyViews,
@@ -243,7 +249,9 @@ export class PrototypeScene extends Phaser.Scene {
       this.eliteArmorViews,
       this.eliteRewardViews,
       this.miniBossTelegraphs,
+      this.warpTelegraphs,
       this.pickupViews,
+      this.powerupViews,
     ]) {
       for (const view of views.values()) {
         view.destroy();
@@ -341,6 +349,15 @@ export class PrototypeScene extends Phaser.Scene {
           break;
         case "mini-boss-reward-dropped":
           this.flashCircle(event.position, 30, 0xffd36b, 520, 3.2, true);
+          break;
+        case "status-applied":
+          this.flashCircle(event.position, 14, statusColor(event.status), 260, 1.8, true);
+          break;
+        case "powerup-collected":
+          this.flashCircle(event.position, 20, powerupColor(event.powerupType), 360, 2.4, true);
+          break;
+        case "warp-arrival":
+          this.flashCircle(event.position, 18, 0xd65cff, 240, 2, true);
           break;
       }
     }
@@ -485,6 +502,13 @@ export class PrototypeScene extends Phaser.Scene {
       return createManifestSprite(this, "carapace-scuttler-v1");
     }
     switch (enemy.type) {
+      // Blast Mite and Warp Flanker use placeholder shapes in both render
+      // modes until their production sprite sheets are generated.
+      case "blast-mite":
+        return this.add.circle(0, 0, 11, 0xff8a3d).setStrokeStyle(3, 0x7a2f12);
+      case "warp-flanker":
+        return this.add.triangle(0, 0, 0, -15, 13, 12, -13, 12, 0xd65cff)
+          .setStrokeStyle(3, 0x4d1a66);
       case "egg-cluster":
         if (this.useMarineArt) {
           return createManifestSprite(this, "egg-cluster-v1");
@@ -517,7 +541,24 @@ export class PrototypeScene extends Phaser.Scene {
   private styleEnemyView(view: EnemyView, enemy: EnemySnapshot): void {
     if (view instanceof Phaser.GameObjects.Sprite) {
       view.setScale(enemy.rank === "elite" && !enemy.eliteKind ? 1.3 : 1);
-      view.clearTint();
+      const status = enemy.statuses[0];
+      if (status) view.setTint(statusColor(status));
+      else view.clearTint();
+      return;
+    }
+
+    if (enemy.type === "blast-mite" && view instanceof Phaser.GameObjects.Arc) {
+      const armed = enemy.mitePhase === "armed";
+      view.setFillStyle(armed && Math.floor(this.time.now / 80) % 2 === 0 ? 0xffffff : 0xff8a3d);
+      view.setScale(armed ? 1.25 : 1);
+      view.setAlpha(1);
+      return;
+    }
+
+    if (enemy.type === "warp-flanker") {
+      view.setAlpha(enemy.warpPhase === "warp-windup" ? 0.3
+        : enemy.warpPhase === "materialize" ? 0.65 : 1);
+      view.setScale(1);
       return;
     }
 
@@ -767,6 +808,39 @@ export class PrototypeScene extends Phaser.Scene {
     }
   }
 
+  private syncWarpTelegraphs(enemies: readonly EnemySnapshot[]): void {
+    const active = enemies.filter((enemy) => enemy.warpPhase === "warp-windup" && enemy.warpTarget);
+    const liveIds = new Set(active.map((enemy) => enemy.id));
+    this.destroyMissing(this.warpTelegraphs, liveIds);
+    for (const enemy of active) {
+      let view = this.warpTelegraphs.get(enemy.id);
+      if (!view) {
+        view = this.add.circle(0, 0, 17, 0x000000, 0)
+          .setStrokeStyle(3, 0xd65cff, 0.9).setDepth(61);
+        this.warpTelegraphs.set(enemy.id, view);
+      }
+      view.setPosition(enemy.warpTarget!.x * PIXELS_PER_METRE, enemy.warpTarget!.y * PIXELS_PER_METRE)
+        .setScale(0.8 + Math.sin(this.time.now / 60) * 0.15);
+    }
+  }
+
+  private syncPowerups(powerups: readonly PowerupPickupSnapshot[]): void {
+    const liveIds = new Set(powerups.map((powerup) => powerup.id));
+    this.destroyMissing(this.powerupViews, liveIds);
+    for (const powerup of powerups) {
+      let view = this.powerupViews.get(powerup.id);
+      if (!view) {
+        view = this.add.rectangle(0, 0, 16, 16, powerupColor(powerup.type))
+          .setRotation(Math.PI / 4).setStrokeStyle(2, 0xffffff);
+        this.powerupViews.set(powerup.id, view);
+      }
+      view.setPosition(powerup.position.x * PIXELS_PER_METRE, powerup.position.y * PIXELS_PER_METRE)
+        .setDepth(worldDepth(powerup.position.y) - 2)
+        .setScale(1 + Math.sin(this.time.now / 140) * 0.12)
+        .setAlpha(powerup.remainingSeconds < 3 && Math.floor(this.time.now / 160) % 2 === 0 ? 0.4 : 1);
+    }
+  }
+
   private syncObstacleDamage(damagedIds: readonly string[], destroyedIds: readonly string[]): void {
     const damaged = new Set(damagedIds);
     const destroyed = new Set(destroyedIds);
@@ -808,17 +882,19 @@ export class PrototypeScene extends Phaser.Scene {
     }
   }
 
-  private syncUpgradeOverlay(choices: readonly UpgradeDefinition[]): void {
-    const nextKey = choices.map((choice) => choice.id).join("|");
-    if (nextKey === this.visibleUpgradeKey) {
+  private syncDecisionOverlay(decision: PendingDecision | null): void {
+    const nextKey = decision
+      ? `${decision.kind}|${decision.options.map((option) => option.id).join("|")}`
+      : "";
+    if (nextKey === this.visibleDecisionKey) {
       return;
     }
 
-    this.upgradeOverlay?.destroy(true);
-    this.upgradeOverlay = null;
-    this.visibleUpgradeKey = nextKey;
+    this.decisionOverlay?.destroy(true);
+    this.decisionOverlay = null;
+    this.visibleDecisionKey = nextKey;
 
-    if (choices.length === 0) {
+    if (!decision) {
       return;
     }
 
@@ -827,13 +903,13 @@ export class PrototypeScene extends Phaser.Scene {
     children.push(this.useMarineArt
       ? this.add.image(0, 0, "hud-panels-v1", 4).setDisplaySize(760, 330)
       : this.add.rectangle(0, 0, 760, 330, 0x101722, 0.96).setStrokeStyle(3, 0x68e4e8));
-    children.push(this.add.text(0, -125, "LEVEL UP — CHOOSE AN UPGRADE", {
+    children.push(this.add.text(0, -125, decision.title, {
       color: "#ffffff",
       fontFamily: "monospace",
       fontSize: "22px",
     }).setOrigin(0.5));
 
-    choices.forEach((choice, index) => {
+    decision.options.forEach((choice, index) => {
       const y = -60 + index * 86;
       const button = this.useMarineArt
         ? this.add.image(0, y, "hud-panels-v1", 3).setDisplaySize(670, 66)
@@ -848,11 +924,11 @@ export class PrototypeScene extends Phaser.Scene {
       });
       button.on("pointerover", () => button.setAlpha(0.82));
       button.on("pointerout", () => button.setAlpha(1));
-      button.on("pointerdown", () => this.simulation.chooseUpgrade(choice.id));
+      button.on("pointerdown", () => this.simulation.chooseOption(choice.id));
       children.push(button, label);
     });
 
-    this.upgradeOverlay = this.add.container(width / 2, height / 2, children).setDepth(2200);
+    this.decisionOverlay = this.add.container(width / 2, height / 2, children).setDepth(2200);
   }
 
   private destroyMissing<T extends Phaser.GameObjects.GameObject>(
@@ -922,6 +998,25 @@ function createSimulation(
     stressProfile: stressProfile ?? undefined,
     scenario: scenario ?? undefined,
   });
+}
+
+function statusColor(status: string): number {
+  switch (status) {
+    case "blaze": return 0xff9a52;
+    case "overload": return 0x9be8ff;
+    case "freeze": return 0x9ad9ff;
+    case "corrode": return 0xb9ef62;
+    default: return 0xffffff;
+  }
+}
+
+function powerupColor(type: PowerupType): number {
+  switch (type) {
+    case "overcharge": return 0xffa31a;
+    case "aegis": return 0x68e4e8;
+    case "adrenaline": return 0xff5f5f;
+    case "magnet-pulse": return 0x8fb8ff;
+  }
 }
 
 function weaponColor(weaponId: WeaponId): number {

@@ -190,6 +190,19 @@ Invulnerability duration must be zero or greater and may not exceed the total mo
 
 The prototype currently adds a universal 0.75-second recovery after an evasive move. Recovery is a shared prototype rule, not a fourth hero secondary stat. It may be revised or promoted into a modifiable system only after playtesting demonstrates the need.
 
+### Defensive and offensive statistics
+
+Heroes and enemies share one data-driven stat model (implemented 16 July 2026):
+
+- **Health** plus a **shield** pool absorbed before armour and health; shields recharge after a no-damage delay.
+- Two armour stats by design: **Armour** is percentage reduction with diminishing returns (`armour / (armour + 15)`, ~6% per early point, Warcraft/Brotato style, always worth stacking on large health pools); **flat damage reduction** subtracts after the percentage step with a 1-damage floor and is deliberately rarer — reserved for specific builds and units.
+- **Slow resistance**, **attack speed multiplier**, and **hit invulnerability duration** (the post-hit protection window, e.g. Marine 0.65 s) are per-hero stats.
+- **Weapon proficiencies** (light/medium/heavy/unique classes) and **mineral find %** are reserved schema fields; they activate only when the weapon catalogue and a currency loop respectively make them meaningful.
+
+### Damage types
+
+Five damage types — Physical, Fire, Shock, Cryo, Toxic — where each elemental type builds a status effect (Blaze, Overload, Freeze, Corrode) at a buildup threshold instead of introducing a second named damage tier. Enemies carry per-type resistance multipliers. Mini-bosses resist hard control but not damage-over-time statuses. Chaos/space is not a damage type; exotic behaviour is the signature of Unique weapons. Details live in `last-bastion-content.md`.
+
 Initial upgrade families may include:
 
 - Piercing rounds
@@ -227,7 +240,7 @@ The functional mini-boss is the Siege Crusher. Its four-direction production she
 - Elite variants
 - One final boss
 
-Flying, shielding, exploding, psychic, summoning, and giant tank enemies remain future content.
+The exploding archetype (Blast Mite) and a teleporting flanker (Warp Flanker) were pulled forward and implemented functionally on 16 July 2026 for waves 3–5; their production art is outstanding. Flying, shielding, psychic, summoning, and giant tank enemies remain future content.
 
 ## Encounter direction
 

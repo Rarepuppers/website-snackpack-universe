@@ -102,7 +102,13 @@ export class CombatHud {
       : snapshot.stressProfile
         ? `STRESS ${snapshot.stressProfile}`
         : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}`);
-    this.statsText.setText(`LV ${snapshot.level}  HP ${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}\nXP ${snapshot.experience}/${snapshot.experienceForNextLevel}${snapshot.playerSlowed ? "  SLOWED" : ""}`);
+    const shieldLabel = snapshot.playerShield > 0 ? `  SH ${Math.ceil(snapshot.playerShield)}` : "";
+    const buffLabel = snapshot.activeBuffs.length > 0
+      ? `\n${snapshot.activeBuffs
+        .map((buff) => `${buff.type.toUpperCase()} ${buff.remainingSeconds.toFixed(1)}s`)
+        .join("  ")}`
+      : "";
+    this.statsText.setText(`LV ${snapshot.level}  HP ${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}\nXP ${snapshot.experience}/${snapshot.experienceForNextLevel}${snapshot.playerSlowed ? "  SLOWED" : ""}${buffLabel}`);
     this.rollText.setText(snapshot.evasiveReady
       ? "READY — SPACE"
       : `${snapshot.evasiveCooldownRemainingSeconds.toFixed(2)}s`);

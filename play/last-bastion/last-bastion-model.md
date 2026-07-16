@@ -22,7 +22,7 @@ An item is not completed merely because code or an asset exists. It must meet it
 
 **Milestone status:** In progress
 
-**Current objective:** tune the five-wave vertical slice and reward cadence now that Production Asset B is integrated.
+**Current objective:** playtest and tune the implemented five-wave vertical slice (rewards, stats, damage types, powerups, new enemies), then generate Production Asset Batch C, which is now unblocked.
 
 ## Completed
 
@@ -161,6 +161,29 @@ An item is not completed merely because code or an asset exists. It must meet it
 - Connected Brain Blob frames directly to its simulation phase and rotated the east-authored attack toward the player.
 - Added portable visual-state mapping helpers with five focused tests.
 - Expanded verification to 35 passing tests across seven test files.
+
+### Defensive statistics and damage-type foundation
+
+**Status:** Completed — 16 July 2026; balance tuning pending playtest
+
+- Added a shared `DefenceProfile` stat schema (`dev/src/game/stats/DefenceStats.ts`) used by heroes and enemies.
+- Implemented dual armour by design: percentage armour with diminishing returns (`armour / (armour + 15)`, ~6.25% for the first point) plus a rarer flat per-hit reduction applied after the percentage step with a 1-damage floor.
+- Implemented shields absorbed before armour and health, with recharge delay/rate; Aegis overshield persists but does not recharge.
+- Promoted hit invulnerability (0.65 s), attack speed, and slow resistance to hero stats; reserved weapon proficiency (light/medium/heavy/unique) and mineral-find fields until they can matter.
+- Added five damage types (Physical, Fire, Shock, Cryo, Toxic) on weapons, per-enemy resistance multipliers, and status buildup (threshold 40) triggering Blaze, Overload, Freeze, and Corrode with authored rules; mini-bosses resist hard control only.
+- Weapons now declare displayName, description, weapon class, and damage type (Arc Carbine is the first Shock weapon).
+
+### Five-wave vertical slice, rewards, powerups, and new enemies
+
+**Status:** Completed — 16 July 2026; encounter tuning and creator playtest pending
+
+- Expanded the run to five seeded waves: wave 3 adds Blast Mites, wave 4 adds Warp Flankers plus the Carapace elite, wave 5 is the Siege Crusher finale with escorts.
+- Added a generic pending-decision flow (upgrade / weapon chest / supply depot) sharing one overlay; the simulation pauses during any decision.
+- Weapon Chest after waves 1 and 3 offers unowned catalogue weapons and falls back to an upgrade choice when everything is owned.
+- Supply Depot after waves 2 and 4 offers Patch Up (heal 45), Field Armoury (immediate upgrade choice), or Aegis Lattice (25 shield).
+- Implemented the timed powerup system: one seeded pickup per wave from wave 2 (Overcharge, Magnet Pulse, Adrenaline, Aegis cycle), 12-second ground lifetime, HUD buff timers and shield readout.
+- Implemented the Blast Mite (kamikaze: armed flashing tell, detonation on proximity or death) and Warp Flanker (stalk, telegraphed arrival ring, teleport, materialise window) with placeholder shapes; sprite sheets are an outstanding Batch C art task.
+- Verification evidence: TypeScript check, 81 tests across twelve files (up from 63), production build, and the HTTP smoke pass with 19 asset checks and 11 review routes.
 
 ## In progress
 
@@ -386,10 +409,8 @@ Do not queue Production Asset Batch C until critical readability corrections and
 - Completed: four-second slowing puddles with visible decay, five-puddle fairness cap, 55% ordinary-movement multiplier, and unaffected evasive displacement.
 - Completed: reusable standard/elite rank metadata, Carapace directional armour/facing rules, charge phases, and guaranteed elite upgrade-cache rewards.
 - Completed: reusable mini-boss rank, Siege Crusher phase/health presentation, attack telegraphs, destructible-cover state, and guaranteed arsenal reward.
-- Pending: seeded five-wave encounter-budget integration and intermission placement.
-- Expand three waves to a seeded five-wave encounter with intermission rewards.
-- Add weapon acquisition/replacement, duplicate handling, reward choices, and a simple between-wave supply decision.
-- Add gamepad input, settings persistence, and representative audio hooks required by Gate 2.
+- Completed 16 July 2026: seeded five-wave encounter with intermission rewards (weapon chest and Supply Depot), weapon acquisition with duplicate exclusion, defensive statistics, damage types/statuses, powerups, Blast Mite, and Warp Flanker (see the dedicated completed entries above).
+- Remaining for Gate 2: gamepad input, settings persistence, and representative audio hooks.
 
 Acceptance criterion: Scattergun, Arc Carbine, Slime Spitter, Carapace Scuttler, and Siege Crusher function with state-authored production art and automated rules tests before encounter-budget expansion.
 
@@ -449,19 +470,21 @@ Completion evidence:
 
 ### Vertical-slice reward and interaction loop
 
-**Status:** Pending
+**Status:** Mostly completed — 16 July 2026
 
-- Implement separate Weapon Chest and Upgrade Chest reward models.
-- Implement one Supply Depot with heal, reroll, and refresh/repair choices.
-- Implement pickup timers and HUD indicators for temporary powerups.
-- Decide the same-run shop currency before enabling Scrap; do not award unusable currency.
-- Validate that reward choice time improves build planning without repeatedly interrupting combat.
+- Completed: Weapon Chest reward decision (upgrade chest behaviour continues via elite caches and the chest's upgrade fallback).
+- Completed: one Supply Depot decision with heal, immediate upgrade, and shield choices.
+- Completed: pickup timers and HUD indicators for temporary powerups.
+- Pending: decide the same-run shop currency before enabling Scrap; do not award unusable currency (mineral-find stat stays inert until then).
+- Pending: validate through playtest that reward choice time improves build planning without repeatedly interrupting combat.
 
-### Production Asset Batch C: rewards and battlefield interaction
+### Production Asset Batch C: rewards, battlefield interaction, and new combat art
 
-**Status:** Pending — blocked by reward state model, not started
+**Status:** Unblocked — 16 July 2026; generation not started. All items below are art-only tasks; their gameplay contracts already exist in code.
 
-- Weapon/upgrade chests, Supply Depot, Supply Drop, four powerups, six Relics, three Artifacts, and three Shrines.
+- Weapon/upgrade chests, Supply Depot, Supply Drop, four powerup pickups and HUD icons, six Relics, three Artifacts, and three Shrines.
+- Blast Mite sprite sheet (chase gait, armed flash, detonation burst) and Warp Flanker sheet (stalk, dissolve, arrival ring, materialise shimmer).
+- Status-effect presentation: Blaze, Overload, Freeze, and Corrode tints/particles, plus a shield-hit shimmer for the player.
 - Closed, available, opening/activation, claimed/used, and disabled states wherever gameplay distinguishes them.
 - Reward icons, interaction prompts, HUD timers, choice panels, and gallery contracts without baked text.
 
@@ -493,7 +516,7 @@ Completion evidence:
 5. Implement elite armour/reward rules and placeholder Carapace Scuttler. **Completed.**
 6. Implement mini-boss encounter support and placeholder Siege Crusher. **Completed.**
 7. Generate, normalize, integrate, gallery-test, and verify Production Asset Batch B. **Completed.**
-8. Expand to a tuned five-wave vertical slice with weapon/upgrade rewards and one Supply Depot decision. **Next.**
-9. Implement reward/interactable state contracts, then generate Production Asset Batch C.
+8. Expand to a five-wave vertical slice with weapon/upgrade rewards and one Supply Depot decision. **Completed 16 July 2026** (with defensive stats, damage types/statuses, powerups, Blast Mite, and Warp Flanker); tuning playtest still open.
+9. Generate Production Asset Batch C (now unblocked: reward, powerup, new-enemy, and status-effect state contracts exist in code).
 10. External-playtest the vertical slice; proceed to route, relic, Artifact, shop/rest, and boss systems only if Gate 2 succeeds.
 11. Implement and verify The Bastion Eater with placeholders before generating Production Asset Batch D.
