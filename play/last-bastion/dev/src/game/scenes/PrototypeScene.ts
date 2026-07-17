@@ -32,6 +32,7 @@ import { loadGameAssets } from "../assets/PhaserAssetLoader";
 import { GAME_ASSETS, type GameAssetId } from "../assets/GameAssetManifest";
 import { renderArena } from "../rendering/ArenaRenderer";
 import { arenaThemeById, pickArenaTheme } from "../rendering/arenaThemes";
+import { uiTextResolution } from "../rendering/DisplayScaling";
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { cueForEvent, EVASIVE_MOVE_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
 import { WebAudioSynth } from "../audio/WebAudioSynth";
@@ -175,7 +176,7 @@ export class PrototypeScene extends Phaser.Scene {
       color: "#9fb3c8",
       fontFamily: "monospace",
       fontSize: "10px",
-    }).setOrigin(0, 1).setDepth(2000).setScrollFactor(0).setResolution(2);
+    }).setOrigin(0, 1).setDepth(2000).setScrollFactor(0).setResolution(uiTextResolution());
 
     this.hud = new CombatHud(this, this.showDebug, this.useMarineArt);
     this.createFenceViews();
@@ -1902,7 +1903,7 @@ export class PrototypeScene extends Phaser.Scene {
       fontStyle: "bold",
       stroke: "#081018",
       strokeThickness: 4,
-    }).setOrigin(0.5).setResolution(2);
+    }).setOrigin(0.5).setResolution(uiTextResolution());
     children.push(title);
     if (this.useMarineArt) {
       const decisionFrame = decision.kind === "weapon-chest" ? 1 : decision.kind === "supply-depot" ? 4 : 12;
@@ -1918,7 +1919,7 @@ export class PrototypeScene extends Phaser.Scene {
         fontFamily: "Consolas, Courier New, monospace",
         fontSize: "15px",
         lineSpacing: 5,
-      }).setResolution(2);
+      }).setResolution(uiTextResolution());
       button.on("pointerover", () => {
         this.decisionSelectionIndex = index;
         this.updateDecisionSelectionHighlight();
@@ -1935,7 +1936,7 @@ export class PrototypeScene extends Phaser.Scene {
       color: "#9fb3c8",
       fontFamily: "Consolas, Courier New, monospace",
       fontSize: "11px",
-    }).setOrigin(0.5).setResolution(2);
+    }).setOrigin(0.5).setResolution(uiTextResolution());
     children.push(hint);
 
     this.decisionOverlay = this.add.container(0, 0, children).setDepth(2200);

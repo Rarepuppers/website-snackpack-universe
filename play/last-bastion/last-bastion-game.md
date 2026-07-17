@@ -10,6 +10,8 @@ Current supporting documents:
 
 - `last-bastion-art-bible.md` — visual rules and animation architecture
 - `last-bastion-content.md` — draft enemy and weapon catalogue
+- `wave_balance.md` — encounter numbers: spawn budgets, monster stats and scaling, damage, XP, Scrap, and items
+- `last-bastion-codex.html` — the playable knowledge hub: every hero, weapon, monster, upgrade, relic and damage type as a browsable tile gallery, and the source of the shared tile ids the game reuses in character select and the shop
 
 ## Vision
 
@@ -94,6 +96,7 @@ A card grid over a dimmed title backdrop:
 - **EXPEDITION** (hero card, largest): starts character select. Sub-line shows the current rules chip: "20 NODES • ONE LIFE".
 - **HOW TO PLAY**: paged guide.
 - **SETTINGS**: audio and comfort.
+- **CODEX**: opens `last-bastion-codex.html` — the encyclopedia, and the in-fiction reward for discovery via the Monsterdex.
 - **LAB**: the existing gallery and scenario review routes, surfaced in-game instead of URL-only.
 - **RECORDS** (small card): persisted progress from the save store — runs finished, victories, best wave/node.
 - A "CONTINUE EXPEDITION" card appears only when a mid-run autosave exists.
@@ -104,7 +107,31 @@ Three to four pages, each one diagram plus short code-rendered captions: (1) mov
 
 ### Settings
 
-Backed by the existing versioned save store: sound on/off (later music/SFX sliders), screen shake, and a bindings view (display first, remapping later). Changes persist immediately; the URL parameters remain as overrides for review routes.
+Backed by the existing versioned save store; every change persists immediately and the URL parameters remain as review overrides. Grouped into four tabs so the list never becomes a wall:
+
+**Gameplay**
+
+| Setting | Options | Default | Notes |
+| --- | --- | --- | --- |
+| Firing | Auto-fire / Manual | **Auto-fire** | Auto-fire holds the trigger whenever a valid target is in range; the aim stick/cursor still chooses direction. A **toggle hotkey** (`T`, pad R3) flips modes mid-run without opening menus, because some weapons (Bolt Carbine, Grenade Tube) reward deliberate shots while the Service Rifle does not. |
+| Skills | Auto-use / Manual | **Manual** | Auto-use fires the ultimate and consumable kit on sensible triggers (ultimate when ≥4 enemies are inside its radius; kit when a mini-boss is engaged or health drops below 40%). Manual keeps every activation on the player, which is the intended skill expression. |
+| Auto-aim assist | Off / Light / Strong | **Light** | Light applies a small angular snap on cursor/stick aim; Strong targets the nearest enemy. Required for eventual touch play; keep off the default desktop experience beyond Light. |
+| Pause on decision | On / Off | **On** | Off lets combat continue during upgrade choices for players who find the pause jarring. |
+
+**Display**
+
+| Setting | Options | Default | Notes |
+| --- | --- | --- | --- |
+| Game size | Fit (default) / 100% / 150% / 200% / 250% / 300% | **Fit** | Drives `planDisplayScale`. Every option still snaps to whole physical pixels — the percentage picks the target size and the engine chooses the nearest exact device scale, so no option can reintroduce fractional blur. Fit uses the largest exact scale the window allows. |
+| Screen shake | On / Off | On | Already implemented. |
+| Damage numbers | On / Off | On | See `wave_balance.md`; floating numbers are how the player reads damage growth. |
+| Show FPS | On / Off | Off | Debug overlay for performance reports. |
+
+**Audio** — Master / Music / SFX sliders (0–100), replacing today's single sound toggle once production audio lands.
+
+**Controls** — binding list per device with remapping, gamepad deadzone (the mapper already exposes it), and vibration on/off.
+
+**Accessibility** (recommended additions, not yet designed in detail): colour-blind-safe telegraph palette, reduced-flash mode (caps camera flashes and combustion bursts), high-contrast HUD, and hold-vs-tap for the evasive move. These are cheap to honour now and expensive to retrofit later.
 
 ### Character select
 
@@ -194,9 +221,55 @@ The Medic is the second planned hero for the web MVP. The Medic must produce a m
 
 Additional heroes are future content: Assault, Tactician, Scout, and Sniper.
 
+### Hero level-up growth
+
+Designed 17 July 2026. Every level-up grants an **automatic stat package** in addition to the upgrade choice. The choice is the interesting decision; the package is the hero's quiet identity — it means two heroes who take identical upgrades still play differently by wave 10, and it stops early levels feeling like "one small upgrade and nothing else".
+
+Growth is expressed in primary stats and **weapon-class proficiency** (the `weaponProficiencies` field already reserved in `HeroDefinition`, which becomes live with this system). Proficiency is a percentage damage bonus to weapons of that class: `+1 proficiency = +4% damage with that class`.
+
+| Hero | Per-level package | Identity |
+| --- | --- | --- |
+| **Marine** | +1 to every primary stat (health, armour, damage, speed) and **+1 Light proficiency** | Balanced; nothing spikes, nothing lags. The Light lean rewards the flexible starting rack |
+| **Assault** | +2 damage, +1 health, **+2 Medium / +1 Heavy proficiency** | Offensive slope; thinner defensively |
+| **Medic** | +2 health, +1 armour, **+2 Light proficiency**, +1 support effect | Sustains rather than out-damages |
+| **Tactician** | +1 health, +1 armour, **+1 Unique proficiency**, +1 to a rotating stat by level parity | Late-blooming; leans on a Unique weapon |
+| **Scout** | +2 speed, +1 damage, **+1 Light proficiency** | Mobility identity, fragile |
+
+Where a "+1" lands on a stat, the concrete magnitude is defined in `wave_balance.md` (for example +1 health = +4 max HP, +1 damage = +2% weapon damage) so the tuning pass can move the whole curve from one table. Packages are hero data, not code branches, so a new hero is a data row.
+
+The level-up panel shows the package alongside the three upgrade cards ("+1 ALL STATS · +1 LIGHT"), so growth is visible rather than silent.
+
 ## Weapons and upgrades
 
 The combat prototype starts with one assault rifle. The vertical slice expands to several simultaneous weapons only after shooting and enemy reactions feel good.
+
+### Weapon tiles, slots, and inventory
+
+Designed 17 July 2026. Weapons become **physical tiles the player handles**, in the spirit of Brotato's loadout grid but tied to Last Bastion's slot classes. Acquiring a weapon is a decision, not an automatic upgrade: every new tile forces a placement, a swap, or a refusal.
+
+**Weapon slot classes.** The hero's rack is a row of typed slots, and a weapon may only sit in a slot that accepts its class:
+
+| Slot | Accepts | Notes |
+| --- | --- | --- |
+| Light | Light weapons only | Fast, low per-hit (Machine Pistol, Arc Carbine) |
+| Medium | Medium only | The Service Rifle's home |
+| Heavy | Heavy only | Scattergun, Bulwark, Grenade Tube |
+| Unique | Unique only | Event Horizon and later run-defining weapons; a Unique may never occupy a general slot |
+| All | Any class | The flexible slot; deliberately scarce |
+
+The hero definition owns the starting rack, which is the second half of hero identity alongside the upgrade-slot profile (`upgradeSlots`, already implemented). Proposed starts: **Marine** 1 Light / 1 Medium / 1 Heavy / 1 All (balanced); **Assault** 2 Medium / 1 Heavy / 1 All; **Medic** 2 Light / 1 All plus an extra Support upgrade slot. Rack growth is a rare reward (Shrine of Steel, late Requisition, or a shop purchase), never a level-up freebie — the run's weapon count should climb slowly toward the twelve-slot architectural cap without ever assuming it.
+
+**Inventory.** A small stash (proposed **4 slots**, class-agnostic) holds tiles the player wants but cannot equip yet — a Heavy found before a Heavy slot exists, or a duplicate saved for a merge. Inventory weapons do not fire and do not appear on the ring. Full inventory plus full rack means the acquisition screen offers only *swap* or *discard*.
+
+**Acquisition flow.** Buying at a shop, picking a Weapon Cache reward, or a world pickup all route to the same **placement modal**: the incoming tile is presented with its stat card, and the player drags it onto a legal rack slot (highlighted), an inventory slot, or the discard bin. Illegal slots grey out with the reason ("Heavy weapon — needs a Heavy or All slot"). Dropping onto an occupied slot swaps, sending the displaced tile to inventory or, if the stash is full, back to the placement modal so nothing vanishes silently. **Keyboard and gamepad parity is mandatory** — drag-and-drop is a mouse affordance layered over a navigate-and-confirm model (move with arrows/stick, `Enter` to pick up, again to place, `X`/pad-X to discard), never the only way to play.
+
+**Selling.** Shops buy tiles back at a fixed fraction (proposed 50% of purchase price, rounded down; found weapons use a catalogue base price). Selling is the pressure valve that makes the limited rack a decision rather than a wall.
+
+**Merging.** Two identical weapons of the same tier combine into one of the next tier: **two Tier I Service Rifles → one Tier II Service Rifle**, freeing a slot in the process. The merged weapon keeps the family's identity and improves its headline numbers plus one behavioural step (a Tier II Service Rifle gains a small pierce; a Tier II Scattergun gains a pellet). Merging is available at shops and at Supply Depots, and the acquisition modal flags a possible merge when a duplicate arrives. Rules: only identical ids and identical tiers merge, tiers cap at III, and merging never crosses hero-specific or Unique boundaries.
+
+This system also gives duplicate rewards a purpose, which the content catalogue previously listed as an open question ("duplicate weapons are allowed only if copies can diverge meaningfully") — merging is that answer.
+
+Tile art, slot frames, and the placement-modal surfaces are briefed for Codex in `last-bastion-content.md` (Batch I). Every number above is a proposal for the tuning pass in `wave_balance.md`.
 
 ### Visible weapon ring
 

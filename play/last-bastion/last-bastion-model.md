@@ -306,6 +306,61 @@ An item is not completed merely because code or an asset exists. It must meet it
 - Snapshot exposes per-category used/capacity for the future dossier, HUD, and run-summary screens.
 - Verification evidence: 169 tests across 20 files (six new slot rules), TypeScript validation, production build, HTTP smoke, and a clean browser boot.
 
+### Codex knowledge hub (`last-bastion-codex.html`)
+
+**Status:** Completed — 17 July 2026; content grows as systems land
+
+- Built the encyclopedia at `play/last-bastion/last-bastion-codex.html`: a self-contained static page (no build step, ships on GitHub Pages immediately) using the game's palette rather than the cream site theme, because tiles must read here exactly as they do in the shop and character select.
+- Ten tabs: Characters, Weapons, Monsterdex, Upgrades, Perks, Powerups & Shrines, Relics & Artifacts, Ammo, Damage Types, Damage Over Time. Search across everything, per-tab filters, and deep links (`#weapons`).
+- **The tile contract is the point.** Every entry renders `game-assets/tiles/<id>-v1.png` over a procedural placeholder and removes the image if it 404s, so Codex art upgrades the page with zero code change — and the same stable ids serve the game's character select, shop, and placement modal. Each tile prints its id, so the page doubles as the generation worklist.
+- **Monsterdex** is a real dex: aliens read `??????` until encountered and hide their stats until 10 kills, driven by the game's own save (`last-bastion-save` on the same origin). The game does not record a bestiary yet — see the pending item below — so today everything reads undiscovered and "Reveal all" is the design view.
+- Entries carry a status badge (live / designed / concept), which makes the codex double as a content tracker: 7 heroes, 32 weapons across 7 classes/families, 22 monsters, 17 upgrades, 7 perks, 10 powerups/shrines, 9 relics/artifacts, 8 ammo kits, 8 damage types, 6 damage-over-time effects.
+- Two design decisions recorded on the page: **Alien/Energy/Void are weapon *families*, not slot classes** (they cut across Light/Medium/Heavy so the five-slot rack design survives), and **all weapon names are original** — the archetypes requested (Glock, AK47) are live trademarks, and the project's own rule already forbids close resemblance to existing franchises, so they became the SP-9 Sidearm and Marauder AR.
+- Verified in the browser on the published path: all ten tabs render, no console errors, monsters hidden by default, filters and the placeholder fallback working.
+
+**Pending follow-ups this creates:**
+
+- Add a `progress.bestiary` map (`{ [enemyType]: killCount }`) to the save schema so the Monsterdex fills in from real play. Small change to `LocalSaveStore` plus a kill hook in the scene.
+- Link the codex from the game's main menu (step 37) and from the arcade hub.
+- Generate the tile batch (see "The tile contract" in `last-bastion-content.md`).
+
+### Weapon tiles, precision, and wave-balance design pass
+
+**Status:** Design completed — 17 July 2026; all of it is proposal, none implemented
+
+- **Weapon tiles, slots, and inventory** (`last-bastion-game.md`): weapons become tiles placed into typed rack slots (Light/Medium/Heavy/Unique/All) via a placement modal on every buy, pickup, or reward; a 4-slot inventory holds what cannot be equipped; discard is always available; shops sell tiles back at 50%; two identical same-tier tiles merge into the next tier (+60% damage plus one behavioural step, freeing a slot). Drag-and-drop is layered over a navigate-and-confirm model so keyboard and gamepad reach parity. Hero rack profiles join `upgradeSlots` as the second half of hero identity. This also answers the catalogue's long-standing "what do duplicate weapons do" question.
+- **Numeric precision** (`wave_balance.md`): calculate in full float, display one decimal, debug at three; the mitigation floor drops from 1 to 0.1. This is what makes percentage upgrades meaningful at a 2-damage baseline.
+- **Fractional projectiles**: a deterministic per-weapon-instance accumulator turns 1.5 projectiles into the sequence 1, 2, 1, 2 with no RNG, so items, relics, and downgrades can move counts in half-steps and seeded runs stay reproducible.
+- **Speed tiers and the zergling rule**: explicit Rush/Standard/Slow/Static/Burst tiers; rush-tier enemies must outrun the Marine *and* die to one bullet. Adds the **Swarm Scuttler** (4.2 m/s, 2 HP, packs of 8–12) plus three fast/elite variants (**Razorlord**, **Blightspitter**, **Quillback Matriarch**), capped at one fast elite per wave.
+- **Unique attacks and telegraphs**: ground slam (expanding ring), rain of spines (impact reticles), sweeping arc (clockwise fill), line beam, radial pulse — with a fairness contract (≥0.7 s tell above 20 damage, decals under actors, max two big telegraphs, edge markers for off-screen attackers, rain never covering >35% of the arena).
+- **Hero level packages** (`last-bastion-game.md` + magnitudes in `wave_balance.md`): every level-up grants an automatic stat package per hero — the Marine gets +1 to all primaries and +1 Light proficiency — which finally activates the reserved `weaponProficiencies` field (+1 = +4% class damage). The package is the floor; upgrade choices remain the build.
+- **The per-wave squeeze** is now stated explicitly: monsters gain ~28% health, periodic armour, and ~15% contact damage per wave while the player gains one package plus their choices, so no single axis (damage, survival, breadth, economy) can solve a run.
+- Added verification rules 8–15 and a 10-step implementation order so the rescale lands as one deliberate pass rather than piecemeal.
+- Codex briefs queued: **Batch I** (weapon tiles, five slot-class frames, tier borders, discard bin, merge indicator, placement modal, shop surfaces) and **Batch J** (Swarm Scuttler, Razorlord, Blightspitter, Quillback Matriarch bodies plus the telegraph decal atlas).
+
+### Physical-pixel display scaling and settings design
+
+**Status:** Completed — 17 July 2026 (scaling); settings screen remains a step 37 build item
+
+- Diagnosed the residual softness: snapping the Phaser zoom to a whole number is not enough, because a display with a fractional `devicePixelRatio` (Windows at 125% reports 1.25) turned a CSS zoom of 2 into **2.5 physical pixels per canvas texel**, and the browser resampled the remainder.
+- Added `rendering/DisplayScaling.ts`: choose a whole **device-pixel** scale N and derive the CSS zoom (`zoom = N / dpr`), so one texel always covers exactly N × N physical pixels. Verified live at dpr 1.25: canvas 1536 × 864 CSS = 1920 × 1080 physical = exactly 2.0 device pixels per texel.
+- Text now rasterises at `uiTextResolution()` (the active device scale) instead of a hardcoded 2, so glyph textures are authored at physical-pixel density rather than upscaled by the pixel-art filter.
+- `devicePixelRatio` is not stable — it can settle after boot and changes when a window moves between monitors with different scaling. The scale is therefore applied at `postBoot`, re-applied once on the next frame and shortly after, on every resize, and on a `matchMedia` resolution-change watcher.
+- `?size=100..300` previews the planned game-size setting ahead of the settings screen.
+- Designed the settings screen in `last-bastion-game.md`: Gameplay (auto-fire default with a mid-run toggle hotkey, auto-use skills off by default, aim assist, pause-on-decision), Display (game size 100–300% snapping to exact device scales, screen shake, damage numbers, FPS), Audio (master/music/SFX), Controls (rebinding, deadzone, vibration), and recommended Accessibility options (colour-blind telegraphs, reduced flash, high-contrast HUD, hold-vs-tap dodge).
+- Verification evidence: 245 tests across 23 files (11 new scaling rules), TypeScript, production build, HTTP smoke, and a live browser measurement confirming whole-device-pixel mapping.
+
+### Expedition map generator (step 38 core)
+
+**Status:** Completed — 17 July 2026; map screen, save schema v2, and node→encounter wiring remain
+
+- Added the pure, Phaser-free seeded generator (`dev/src/game/expedition/ExpeditionMap.ts`): 20 nodes across 8 columns and 3 lanes, one drop site, one Bastion Eater terminus, and edges that only reach the next column straight or one lane up/down, so no route doubles back.
+- Node-type budget per map: 2 Elite, 2 Mini-boss, 2 Supply Depot, 2 Weapon Cache, remainder Combat. Each node carries a seeded theme id from the arena pool, so background variety is half-procedural exactly as designed.
+- Fairness rules enforced and tested across seven seeds: columns 0–1 stay ordinary combat; a Supply Depot is always reachable before any Mini-boss; Mini-bosses never appear before column 3; no path steps directly from one Elite/Mini-boss into another; every node is reachable; no route dead-ends; every route reaches the boss in exactly 8 encounters.
+- Added `reachableNodes`, `traversableNodeIds`, `expeditionNodeById`, and `routeLengthRange` helpers for the map screen and future save/restore.
+- The rules tests immediately caught a placement-order defect (Mini-boss legality depends on an already-placed Supply Depot, but the danger-first sort placed Mini-bosses before any depot existed, silently dropping them from every map). Fixed by anchoring the first Supply Depot in the earliest assignable column before dangerous placements run.
+- Verification evidence: 238 tests across 22 files (66 new map rules), TypeScript validation, production build, 51 asset checks, and 36 review routes.
+
 ### Decision-menu input, crisp integer scaling, and arena theme pool
 
 **Status:** Completed — 17 July 2026; creator visual check on a high-resolution monitor pending
@@ -483,10 +538,10 @@ The XP curve (`level × 4`), wave enemy counts, and intermission cadence were tu
 
 33. **Consolidated creator review session.** One sitting through the queued review routes with a written pass/fail per item: normal run, `stress=4`, mini-boss labs (`siege-crusher`, `brood-warden`), enemy labs (`ripper`, `quillback`, `spinewheel`, `tether-bloom`, `razor-scuttler`), weapon labs (`patrol`, `bolt`, `bulwark`, `grenade`), `bastion-eater`, and the F1–F4 galleries. Output: an approved list and a rejected/retune list.
 34. **Content-enablement pass.** **Completed 17 July 2026.** The Weapon Chest now draws a seeded three-option subset from `WEAPON_CHEST_POOL` (all seven implemented weapons; `VERTICAL_SLICE_WEAPON_IDS` remains for the `?loadout=vertical` review route). Waves 3–5 now field the behavior-gated roster: wave 3 adds one Quillback and one Ripper; wave 4 adds two Razor Scuttlers, one Tether Bloom, one Spinewheel, and one Ripper alongside the Carapace elite; wave 5 escorts the pooled mini-boss with Razor Scuttlers and a Quillback. Counts are deliberately conservative pending the step 35 tuning pass, and the creator review (step 33) can still strike any item from the pool or waves as a one-line data change. Verification: 158 tests across 18 files, TypeScript, production build, 51 asset checks, 36 review routes, clean browser boot.
-35. **Single tuning pass with measurable targets:** 10–15 minute run length, at least three recognisably different builds, no unavoidable damage in waves 1–3, death causes readable, wave-5 mini-boss fight 45–90 seconds. Revisit XP curve, wave counts on the larger arena, and reward cadence together.
+35. **Single tuning pass with measurable targets:** 10–15 minute run length, at least three recognisably different builds, no unavoidable damage in waves 1–3, death causes readable, wave-5 mini-boss fight 45–90 seconds. Revisit XP curve, wave counts on the larger arena, and reward cadence together. **The numeric design now lives in `wave_balance.md` (draft v1, 17 July 2026):** starter rifle rescaled to 2 damage per bullet with all enemy health rescaled to match, authored per-wave health/armour/shield/speed growth, threat-budget spawning with simultaneous caps and Brotato-style overwhelm from wave 3, a steeper XP curve targeting 9–12 levels per run, damage numbers, the Scrap economy (still gated behind the Shop node), and item classes. Its seven verification rules become tests during this pass.
 36. **Rift Stalker behavior gate** to complete the three-entry mini-boss pool (cloaked stalk, marked pounce, close slash, final-20% frenzy), then its production batch.
 37. **Front-end shell behavior gate.** Title, main menu, How to Play, Settings, and character-select screens as a code-native screen-flow state machine with placeholder panels, per the "Front-end shell and expedition structure" design added to `last-bastion-game.md` on 17 July 2026. Settings bind to the existing `LocalSaveStore`; the Lab card surfaces the existing review routes in-game.
-38. **Expedition map behavior gate.** Pure seeded 20-node horizontal map generator (3 lanes, ~8 columns, node-type budget, adjacency fairness rules) with unit tests, plus the map screen with code-native medallions and route lines. Save schema v2 carries mid-run state (map seed, cleared nodes, build, health) with autosave on returning to the map.
+38. **Expedition map behavior gate.** Generator **completed 17 July 2026** (see the dedicated entry above): pure seeded 20-node chart with budget and fairness rules under test. Remaining: the map screen with code-native medallions and route lines, plus save schema v2 carrying mid-run state (map seed, cleared nodes, build, health) with autosave on returning to the map.
 39. **Node → encounter wiring.** Combat/Elite/Mini-boss nodes drive the existing arena with budgets by node type and depth; Supply Depot and Weapon Cache reuse the existing decision overlays as full-screen nodes; the Boss node runs the Bastion Eater. The five-wave arcade run remains as "Quick Drop" until the map replaces it.
 40. **Production Asset Batch G1/G2** (title, menu, dossier, starchart, medallions — briefs in `last-bastion-content.md`) only after steps 37–38 pass creator review with placeholders.
 41. **Event Horizon behavior gate** (existing step 32), so the first Unique lands in an already-tuned game.

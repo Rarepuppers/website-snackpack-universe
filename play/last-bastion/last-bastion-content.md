@@ -540,6 +540,99 @@ Batch C, D1, D2, and the Bastion Eater D3 set are complete. Remaining Web MVP en
 - The backdrop must not fight node readability: peak backdrop contrast stays below medallion contrast.
 - Gallery route `?mode=gallery&batch=g1` / `g2` must display every asset and state before menu integration replaces placeholders.
 
+## The tile contract (codex ⇄ game)
+
+**Status:** Live — 17 July 2026. `last-bastion-codex.html` is the encyclopedia and the tile gallery: characters, weapons, monsters, upgrades, perks, powerups, shrines, relics, artifacts, ammo, damage types, and damage-over-time effects all render from one data set.
+
+Every entry declares a **stable tile id** and the page renders:
+
+```html
+<img src="game-assets/tiles/<id>-v1.png" onerror="this.remove()">
+```
+
+over a procedural placeholder (glyph + family tint). **When Codex drops a real tile into `game-assets/tiles/`, the codex upgrades itself with no code change** — and the same id is what the game's character select, shop, and weapon-placement modal request. One asset, every surface.
+
+Tile contract:
+
+- **96 × 96** logical cell, transparent background, centred subject with safe padding.
+- Nearest-neighbour normalization and retained ≥4× masters, exactly like every other batch.
+- **No baked text, numbers, bindings, cooldown shadows, rarity frames, or selection states** — all code-drawn overlays.
+- Id prefixes: `hero-`, `wpn-`, `mon-`, `upg-`, `perk-`, `pow-`, `rel-`/`art-`, `ammo-`. The codex prints each id under its tile, so generating art is a matter of reading the page.
+- One extra id: `unknown-v1.png` — the Monsterdex silhouette shown for undiscovered aliens.
+
+Priority order for generation: heroes (7) → live weapons (7) → live monsters (12) → upgrades (12) → everything else.
+
+## Batch I — weapon tiles, slots, and inventory UI (queued for Codex)
+
+**Status:** Design brief — 17 July 2026. Do not generate until the tile/inventory behavior gate passes with code-native placeholders. The system is designed in `last-bastion-game.md` ("Weapon tiles, slots, and inventory"); prices and merge rules are in `wave_balance.md`. The full weapon roster with ids, classes, families, and stats is browsable in `last-bastion-codex.html`. Standard contract applies: no baked text, numbers, bindings, or selection states — those are code-drawn overlays. Retain ≥4× masters.
+
+### I1 — weapon tiles
+
+One **96 × 96** tile per weapon (the existing 64 × 64 cadence motifs stay for the HUD strip; these are the larger loadout/shop tiles). Each tile shows the weapon's signature silhouette on a neutral plate, using the same material palette as its ring sprite so a player links tile to gun instantly.
+
+| Tile | Motif |
+| --- | --- |
+| Bastion Service Rifle | Straight rifle profile, ivory rails, three orange chamber ticks |
+| Machine Pistol | Compact charcoal receiver at a diagonal, burgundy grip |
+| Scattergun | Wide twin-barrel face, brass shell collar |
+| Patrol Blade | Curved ivory blade crossing a quarter-circle arc |
+| Bolt Carbine | Luminous cyan bolt passing through two offset plates |
+| Arc Carbine | Forked coil with a cyan arc leaping between tines |
+| Grenade Tube | Round grenade above a shallow arc |
+| Guard Drone | Triangular drone eye inside three fins |
+| Bulwark Rotary Cannon | Six-barrel face with a segmented bronze heat ring |
+| Event Horizon | Black core eclipsing a broken cyan ring |
+
+### I2 — slot frames and tier treatment
+
+| Asset | Description |
+| --- | --- |
+| Slot frames (5 × 112 × 112) | Empty rack frames per class, each with a distinct corner cut and colour key: **Light** teal thin frame, **Medium** ivory standard, **Heavy** bronze heavy-cornered, **Unique** violet with a broken-ring motif, **All** neutral steel with all four corner styles blended. Each needs empty / hover / legal-drop / illegal-drop / occupied variants |
+| Tier borders (3 × 112 × 112 overlays) | Tier I plain steel, Tier II bronze with one notch, Tier III gold with two notches and a subtle inner glow. Overlays composite onto any tile |
+| Inventory slot (112 × 112) | Smaller, dimmer stash frame — visually subordinate to rack slots |
+| Discard bin (128 × 128) | Open disposal chute, 3 states: idle, hover-armed (orange), consumed |
+| Merge indicator (64 × 64) | Two chevrons converging into one, plus a "merge available" pulse ring |
+| Drag ghost (overlay) | Soft teal glow + drop shadow applied under a lifted tile |
+
+### I3 — placement and shop surfaces
+
+| Asset | Description |
+| --- | --- |
+| Placement modal frame (900 × 560) | Charcoal panel with ivory header zone, a left tile-presentation well, a right rack/inventory grid area, and a discard corner. Diagonal-cut Last Bastion styling |
+| Weapon stat card (320 × 420) | Card back for the incoming weapon: art well at top, empty rows for code-drawn stats, class ribbon zone |
+| Shop counter backdrop (1200 × 700) | Salvage-depot interior: crates, a scarred workbench, hanging lamps, an empty central zone for tiles |
+| Sell / buy / merge glyphs (3 × 48 × 48) | Scrap coin with a down arrow; coin with an up arrow; two-into-one chevrons |
+
+**Acceptance:** each weapon tile is identifiable at 96, 64, and 48 px, in grayscale, and beneath a 50% cooldown shadow; slot frames are distinguishable by silhouette alone (not colour alone) for colour-blind players; legal/illegal drop states differ in shape, not just hue.
+
+## Batch J — new enemies and telegraph decals (queued for Codex)
+
+**Status:** Design brief — 17 July 2026. Behavior gates first, per the working rules. Stats and telegraph timings are in `wave_balance.md`. **All telegraph geometry remains code-drawn and authoritative** — these decals reinforce warnings, never define them.
+
+### J1 — new enemy bodies
+
+| Enemy | Sheet | Description |
+| --- | --- | --- |
+| **Swarm Scuttler** | 4 × 2 @ 64 × 64 | Smaller, leaner Scuttler cousin built for speed: stretched low body, four long sprinting legs, thin coral shell, hot-yellow sensory streak. Must read as *fragile and fast* beside the standard Scuttler at a glance — thinner silhouette, brighter accent |
+| **Razorlord** (fast elite) | 4 × 4 @ 96 × 96 | Razor Scuttler with elongated blade-limbs, a scarred carapace crest, and violet emissive joints; pursuit / wind-up / dash / recovery rows |
+| **Blightspitter** (fast elite) | 4 × 3 @ 96 × 96 | Slime Spitter with an over-sized pressurised gland sac and running posture rather than a squat one; positioning / wind-up / recovery |
+| **Quillback Matriarch** (elite) | 4 × 4 @ 128 × 128 | Larger Quillback with a raised spine crown that fans open for the rain attack; positioning / crown-charge / launch / recovery |
+
+### J2 — telegraph decal atlas (64 × 64 cells unless noted)
+
+| Decal | Description |
+| --- | --- |
+| Ground-slam ring (128 × 128, 4 frames) | Hostile-warm expanding ring, filling from centre; frames show 25/50/75/100% charge |
+| Rain-of-spines reticle (4 frames) | Small shrinking crosshair marking one impact point; frames = countdown |
+| Rain impact burst | Spine striking ground with a dust ring |
+| Sweeping-arc fill (128 × 128, 4 frames) | Arc segment filling clockwise so the safe side is legible |
+| Line-beam tell (3 frames) | Thin line thickening to full width |
+| Radial pulse (3 frames) | Circle outline contracting inward |
+| Edge warning marker (48 × 48) | Screen-boundary chevron for off-screen attackers, with a direction notch |
+| Danger fill texture (tileable) | Low-contrast hatch used inside any warning zone |
+
+**Acceptance:** every decal must be legible under a crowd of 30+ enemies, in grayscale, and against all five arena themes; warm hostile palette only (never the player's teal/cyan family); no decal may imply a radius different from the code-driven one.
+
 ## Batch H — world background themes (queued for Codex)
 
 **Status:** Design brief — 17 July 2026. The runtime already supports per-arena themes (`dev/src/game/rendering/arenaThemes.ts`): five seeded tint/backdrop variations over the shared Batch A floor, boundary, and obstacle atlases, previewable with `?theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay`. Tints prove the pipeline; authored world sets replace them one world at a time once the expedition map assigns node themes.

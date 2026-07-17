@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Last Bastion Codex — Characters, Weapons, Monsterdex | SnackPack</title>
+<meta name="description" content="The Last Bastion codex: every hero, weapon, monster, relic, upgrade and damage type in the expedition. A living knowledge hub for the SnackPack Universe roguelite.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/last-bastion/last-bastion-codex.html">
+<meta name="theme-color" content="#111722">
+<link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png">
+<meta property="og:title" content="Last Bastion Codex">
+<meta property="og:description" content="Every hero, weapon, monster, relic and damage type in Last Bastion.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/last-bastion/last-bastion-codex.html">
+<style>
+  /*
+    Last Bastion codex — deliberately uses the GAME's palette rather than the
+    cream site theme: tiles must read here exactly as they read in the shop and
+    character select, so the backdrop has to match the game.
+
+    Tile contract: every entry renders <img src="game-assets/tiles/<id>-v1.png">
+    over a procedural placeholder. When Codex drops real art into that folder
+    the page upgrades itself with no code change. Until then the placeholder
+    (glyph + family tint) stands in — and the same tile ids are what the game's
+    character select, shop, and placement modal will request.
+  */
+  :root {
+    --navy: #111722;
+    --navy-deep: #0b121c;
+    --panel: #172536;
+    --panel-2: #1b2d42;
+    --line: #2d4considerable;
+    --line: #2d4257;
+    --ivory: #edf4ff;
+    --muted: #9fb3c8;
+    --teal: #68e4e8;
+    --orange: #ffa31a;
+    --violet: #d696ff;
+    --green: #b9ef62;
+    --red: #ff6654;
+    --mono: "Consolas", "SF Mono", "Roboto Mono", ui-monospace, monospace;
+    --sans: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(circle at 50% -10%, rgb(41 72 101 / 55%), transparent 60%),
+      var(--navy);
+    color: var(--ivory);
+    font-family: var(--sans);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  a { color: var(--teal); }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 18px 64px; }
+
+  /* ── Header ─────────────────────────────── */
+  header.codex-head {
+    border-bottom: 2px solid var(--line);
+    background: linear-gradient(180deg, rgb(11 18 28 / 92%), rgb(17 23 34 / 70%));
+    padding: 26px 0 18px;
+    margin-bottom: 22px;
+  }
+  .brandline {
+    display: flex; flex-wrap: wrap; gap: 10px 18px;
+    align-items: baseline; justify-content: space-between;
+  }
+  h1 {
+    margin: 0; font-size: clamp(28px, 4vw, 44px); letter-spacing: 0.02em;
+    font-style: italic; font-weight: 700; text-transform: uppercase;
+  }
+  h1 .sub {
+    font-style: normal; font-weight: 500; font-size: 0.42em; letter-spacing: 0.22em;
+    background: var(--teal); color: var(--navy-deep); padding: 3px 9px;
+    margin-left: 8px; vertical-align: middle; border-radius: 3px;
+  }
+  .tagline { color: var(--muted); font-size: 14px; margin: 8px 0 0; max-width: 70ch; }
+  .headlinks { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; }
+  .headlinks a { margin-left: 14px; text-decoration: none; }
+  .headlinks a:hover { text-decoration: underline; }
+
+  /* ── Tabs ───────────────────────────────── */
+  nav.tabs {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 18px;
+    position: sticky; top: 0; z-index: 5;
+    background: linear-gradient(180deg, var(--navy) 70%, rgb(17 23 34 / 82%));
+    padding-top: 10px;
+  }
+  .tab {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase;
+    background: var(--panel); color: var(--muted);
+    border: 1px solid var(--line); border-radius: 4px;
+    padding: 8px 13px; cursor: pointer; transition: all .12s;
+  }
+  .tab:hover { color: var(--ivory); border-color: #46688a; }
+  .tab[aria-selected="true"] {
+    background: var(--teal); color: var(--navy-deep); border-color: var(--teal); font-weight: 700;
+  }
+
+  /* ── Toolbar ────────────────────────────── */
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    margin-bottom: 16px;
+  }
+  .search {
+    flex: 1 1 220px; min-width: 180px;
+    background: var(--navy-deep); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--ivory); font-family: var(--mono); font-size: 13px; padding: 9px 11px;
+  }
+  .search:focus { outline: 2px solid var(--teal); outline-offset: -1px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--panel-2); color: var(--ivory); border-color: var(--teal); }
+  .toggle {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--muted); display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  }
+
+  /* ── Section intro ──────────────────────── */
+  .intro {
+    background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--teal);
+    border-radius: 4px; padding: 12px 15px; margin-bottom: 18px;
+    font-size: 14px; color: #cfe0f2;
+  }
+  .intro strong { color: var(--ivory); }
+
+  /* ── Grid + cards ───────────────────────── */
+  .grid {
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+  .card {
+    background: linear-gradient(180deg, var(--panel), var(--navy-deep));
+    border: 1px solid var(--line); border-radius: 6px; padding: 13px;
+    display: grid; grid-template-columns: 72px 1fr; gap: 12px;
+    align-items: start;
+  }
+  .card.locked { opacity: .72; }
+  .card h3 { margin: 0 0 2px; font-size: 15px; letter-spacing: .01em; }
+  .card .kicker {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 4px;
+  }
+  .card p { margin: 6px 0 0; font-size: 13px; color: #c3d4e6; }
+
+  /* ── Tiles (placeholder → real art) ─────── */
+  .tile {
+    width: 72px; height: 72px; position: relative; border-radius: 5px;
+    background:
+      linear-gradient(145deg, color-mix(in srgb, var(--tint) 34%, #16202e), #0e1621);
+    border: 1px solid color-mix(in srgb, var(--tint) 55%, var(--line));
+    display: grid; place-items: center; overflow: hidden;
+    box-shadow: inset 0 0 18px rgb(0 0 0 / 45%);
+  }
+  .tile::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(rgb(255 255 255 / 6%) 1px, transparent 1px);
+    background-size: 100% 4px; pointer-events: none;
+  }
+  .tile img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; position: relative; z-index: 2; }
+  .tile .glyph {
+    font-family: var(--mono); font-size: 26px; font-weight: 700;
+    color: color-mix(in srgb, var(--tint) 80%, #ffffff);
+    text-shadow: 0 2px 0 rgb(0 0 0 / 55%); z-index: 1;
+  }
+  .tile.big { width: 96px; height: 96px; }
+  .tile-note {
+    font-family: var(--mono); font-size: 9px; color: #6d829a; text-align: center;
+    margin-top: 3px; letter-spacing: .04em;
+  }
+
+  /* ── Stat rows ──────────────────────────── */
+  .stats { margin: 8px 0 0; display: grid; gap: 3px; }
+  .stat {
+    display: flex; justify-content: space-between; gap: 10px;
+    font-family: var(--mono); font-size: 11px; color: var(--muted);
+    border-bottom: 1px dotted #24374d; padding-bottom: 2px;
+  }
+  .stat b { color: var(--ivory); font-weight: 600; }
+
+  /* ── Badges ─────────────────────────────── */
+  .badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
+  .badge {
+    font-family: var(--mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 3px; border: 1px solid;
+  }
+  .b-live { color: var(--green); border-color: color-mix(in srgb, var(--green) 45%, transparent); background: color-mix(in srgb, var(--green) 12%, transparent); }
+  .b-designed { color: var(--teal); border-color: color-mix(in srgb, var(--teal) 40%, transparent); background: color-mix(in srgb, var(--teal) 10%, transparent); }
+  .b-concept { color: var(--muted); border-color: var(--line); }
+  .b-class { color: var(--orange); border-color: color-mix(in srgb, var(--orange) 40%, transparent); }
+  .b-family { color: var(--violet); border-color: color-mix(in srgb, var(--violet) 40%, transparent); }
+
+  /* ── Tables ─────────────────────────────── */
+  .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 13px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid #22344a; }
+  th {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted); background: var(--navy-deep); position: sticky; top: 0;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 7px; vertical-align: -1px; }
+  code {
+    font-family: var(--mono); font-size: 12px; background: var(--navy-deep);
+    border: 1px solid var(--line); border-radius: 3px; padding: 1px 5px; color: var(--teal);
+  }
+
+  h2.sect { font-size: 18px; margin: 26px 0 12px; letter-spacing: .01em; }
+  h2.sect:first-of-type { margin-top: 4px; }
+  .empty { color: var(--muted); font-family: var(--mono); font-size: 13px; padding: 26px 0; }
+  footer.codex-foot {
+    border-top: 1px solid var(--line); margin-top: 40px; padding-top: 16px;
+    color: #6d829a; font-size: 12px; font-family: var(--mono);
+  }
+  [hidden] { display: none !important; }
+  @media (max-width: 620px) {
+    .card { grid-template-columns: 56px 1fr; }
+    .tile { width: 56px; height: 56px; }
+    .tile .glyph { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<header class="codex-head">
+  <div class="wrap">
+    <div class="brandline">
+      <h1>Last Bastion<span class="sub">Codex</span></h1>
+      <div class="headlinks">
+        <a href="./">▶ Play</a>
+        <a href="../">Arcade</a>
+        <a href="../../">SnackPack</a>
+      </div>
+    </div>
+    <p class="tagline">
+      The expedition's knowledge hub: every hero, weapon, monster, relic, upgrade and damage type.
+      Tiles shown here are the same assets the game uses in character select, the shop, and the
+      weapon placement screen — placeholders stand in until the art batch lands.
+    </p>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" id="tabs" role="tablist"></nav>
+
+  <div class="toolbar">
+    <input class="search" id="search" type="search" placeholder="Search the codex…" autocomplete="off" aria-label="Search the codex">
+    <div class="filters" id="filters"></div>
+    <label class="toggle"><input type="checkbox" id="revealAll"> Reveal all (design view)</label>
+  </div>
+
+  <main id="panel"></main>
+
+  <footer class="codex-foot">
+    Last Bastion is in development — entries marked <span class="badge b-live">live</span> are in the
+    playable build, <span class="badge b-designed">designed</span> are specified in the plans, and
+    <span class="badge b-concept">concept</span> are seeds. Numbers follow
+    <code>wave_balance.md</code> and may change during tuning.
+  </footer>
+</div>
+
+<script>
+/* ──────────────────────────────────────────────────────────────
+   DATA
+   Every entry: id (also the tile asset id), name, glyph + tint for
+   the placeholder tile, status, and category-specific fields.
+   Tile art drops into game-assets/tiles/<id>-v1.png to replace the
+   placeholder automatically.
+   ────────────────────────────────────────────────────────────── */
+
+const TINT = {
+  light: "#68e4e8", medium: "#e9e3cf", heavy: "#ffa31a", alien: "#b9ef62",
+  energy: "#8fd8ff", void: "#d696ff", unique: "#ff5fa2",
+  hero: "#5fa8ff", monster: "#ff8a6b", elite: "#ffd36b", boss: "#ff5f5f",
+  perk: "#7ee0a8", relic: "#ffc45e", upgrade: "#9ad9ff", ammo: "#d9f36a",
+  power: "#ff9a52",
+};
+
+const HEROES = [
+  { id: "hero-marine", name: "Marine", glyph: "M", tint: TINT.hero, status: "live",
+    role: "Durable all-round ranged fighter",
+    weapon: "Bastion Service Rifle (Medium)",
+    passive: "Entrenched — hold position 1s for +3 armour until you move",
+    ultimate: "Bastion Barrage — 12-projectile radial explosive volley, 24s",
+    rack: "1 Light / 1 Medium / 1 Heavy / 1 All",
+    slots: "3 Offensive / 2 Defensive / 1 Support / 1 Scavenger",
+    level: "+1 all primaries, +1 Light proficiency",
+    stats: { Health: "100", Armour: "0", Speed: "5.25 m/s", Roll: "0.55s / 4m / 0.25s i-frames" },
+    text: "The baseline every other number is tuned against. Balanced rack, balanced slots, no weakness and no spike." },
+  { id: "hero-assault", name: "Assault", glyph: "A", tint: TINT.hero, status: "designed",
+    role: "Aggressive mid-range specialist",
+    weapon: "Marauder AR (Medium)",
+    passive: "Momentum — consecutive hits on one target ramp damage",
+    ultimate: "Breach & Clear — forward cone of suppressing fire",
+    rack: "2 Medium / 1 Heavy / 1 All",
+    slots: "4 Offensive / 1 Defensive / 1 Support / 1 Scavenger",
+    level: "+2 damage, +1 health, +2 Medium / +1 Heavy proficiency",
+    stats: { Health: "90", Armour: "0", Speed: "5.4 m/s", Roll: "0.5s / 4m" },
+    text: "Trades the Marine's cushion for a steeper damage slope. Dies faster, kills faster." },
+  { id: "hero-heavy", name: "Heavy", glyph: "H", tint: TINT.hero, status: "concept",
+    role: "Slow fortress",
+    weapon: "Bulwark Rotary Cannon (Heavy)",
+    passive: "Bulwark — standing still builds stacking damage reduction",
+    ultimate: "Dig In — brief immobile invulnerability with doubled fire rate",
+    rack: "2 Heavy / 1 Medium / 1 All",
+    slots: "2 Offensive / 4 Defensive / 1 Support",
+    level: "+3 health, +1 armour, +2 Heavy proficiency",
+    stats: { Health: "150", Armour: "2", Speed: "4.2 m/s", Roll: "0.7s / 3m (shoulder charge)" },
+    text: "The anti-Scout: cannot outrun a Swarm Scuttler, so must out-armour it. Entirely a positioning hero." },
+  { id: "hero-medic", name: "Medic", glyph: "+", tint: TINT.hero, status: "designed",
+    role: "Sustain and support",
+    weapon: "Injector Carbine (Light)",
+    passive: "Triage — healing overflow becomes a temporary shield",
+    ultimate: "Field Hospital — a zone that heals and cleanses status",
+    rack: "2 Light / 1 All",
+    slots: "2 Offensive / 2 Defensive / 3 Support",
+    level: "+2 health, +1 armour, +2 Light proficiency, +1 support effect",
+    stats: { Health: "95", Armour: "1", Speed: "5.1 m/s", Roll: "0.5s / 4.2m (slide)" },
+    text: "Must play differently, not just heal more. Support slots are where the Medic's build lives." },
+  { id: "hero-tactician", name: "Tactician", glyph: "T", tint: TINT.hero, status: "concept",
+    role: "Battlefield controller",
+    weapon: "Guard Drone (Light)",
+    passive: "Uplink — battlefield interactables recharge faster",
+    ultimate: "Overwatch — deploys two autonomous turrets",
+    rack: "1 Light / 1 Medium / 1 Unique / 1 All",
+    slots: "2 Offensive / 2 Defensive / 2 Support / 1 Scavenger",
+    level: "+1 health, +1 armour, +1 Unique proficiency, +1 rotating stat",
+    stats: { Health: "95", Armour: "0", Speed: "5.25 m/s", Roll: "0.55s / 4m" },
+    text: "The only hero with a starting Unique slot — built around finding one run-defining weapon early." },
+  { id: "hero-scout", name: "Scout", glyph: "S", tint: TINT.hero, status: "concept",
+    role: "Fast, fragile skirmisher",
+    weapon: "Machine Pistol (Light)",
+    passive: "Slipstream — brief speed burst after a roll",
+    ultimate: "Ghost Step — short phase-through-everything window",
+    rack: "3 Light / 1 All",
+    slots: "3 Offensive / 1 Defensive / 1 Support / 2 Scavenger",
+    level: "+2 speed, +1 damage, +1 Light proficiency",
+    stats: { Health: "75", Armour: "0", Speed: "6.1 m/s", Roll: "0.45s / 5m / 0.3s i-frames" },
+    text: "Outruns everything including rush-tier monsters. The scavenger lean makes economy builds real." },
+  { id: "hero-sniper", name: "Sniper", glyph: "|", tint: TINT.hero, status: "concept",
+    role: "Extreme range, punishing cadence",
+    weapon: "Vigil Long Rifle (Medium)",
+    passive: "Steady — accuracy and damage climb while stationary",
+    ultimate: "Piercing Shot — one arena-length round through everything",
+    rack: "2 Medium / 1 Light / 1 All",
+    slots: "3 Offensive / 1 Defensive / 2 Support / 1 Scavenger",
+    level: "+2 damage, +1 speed, +2 Medium proficiency",
+    stats: { Health: "80", Armour: "0", Speed: "5.0 m/s", Roll: "0.55s / 4m" },
+    text: "Every shot is a commitment. The hero that most wants the Entrenched-style stand-still tension." },
+];
+
+const WEAPONS = [
+  /* ── Light ─────────────────────────────── */
+  { id: "wpn-machine-pistol", name: "Machine Pistol", glyph: "⌐", cls: "light", family: "ballistic", status: "designed", tier: "I",
+    stats: { Damage: "0.8", Cadence: "0.10s", Range: "9m", Type: "Physical" },
+    text: "Mobile bullet hose. Blooms into poor accuracy during long bursts, then settles fast." },
+  { id: "wpn-sp9-sidearm", name: "SP-9 Sidearm", glyph: "⌐", cls: "light", family: "ballistic", status: "concept", tier: "I",
+    stats: { Damage: "1.6", Cadence: "0.28s", Range: "11m", Type: "Physical" },
+    text: "The standard-issue pistol every colonist can strip blindfolded. Reliable, unexciting, never jams." },
+  { id: "wpn-arc-carbine", name: "Arc Carbine", glyph: "⚡", cls: "light", family: "energy", status: "live", tier: "II",
+    stats: { Damage: "3", Cadence: "0.62s", Range: "10m", Type: "Shock", Chains: "1 (×0.7 decay)" },
+    text: "Auto-targets the nearest alien and arcs onward. The first weapon that builds Overload." },
+  { id: "wpn-patrol-blade", name: "Patrol Blade", glyph: "◗", cls: "light", family: "melee", status: "live", tier: "I",
+    stats: { Damage: "4", Cadence: "2.5s", Range: "2.2m arc", Type: "Physical" },
+    text: "Orbit-mounted mono-blade that sweeps the nearest flank automatically. Strong crowd peel, no reach." },
+  { id: "wpn-laser-pistol", name: "Laser Pistol", glyph: "→", cls: "light", family: "energy", status: "concept", tier: "I",
+    stats: { Damage: "1.4", Cadence: "0.22s", Range: "13m", Type: "Fire (low buildup)" },
+    text: "Hitscan pinpoint bolts. No travel time, no drop, but heat forces short bursts." },
+  { id: "wpn-injector-carbine", name: "Injector Carbine", glyph: "†", cls: "light", family: "bio", status: "concept", tier: "I",
+    stats: { Damage: "1.2", Cadence: "0.3s", Range: "10m", Type: "Toxic" },
+    text: "Medic-specific. Needles build a mark that later triggers a restorative effect." },
+
+  /* ── Medium ────────────────────────────── */
+  { id: "wpn-bastion-service-rifle", name: "Bastion Service Rifle", glyph: "═", cls: "medium", family: "ballistic", status: "live", tier: "I",
+    stats: { Damage: "2", Cadence: "0.14s", Range: "22m", Type: "Physical" },
+    text: "The starter. Every number in the game is tuned so this kills a wave-1 Scuttler in two rounds." },
+  { id: "wpn-marauder-ar", name: "Marauder AR", glyph: "╪", cls: "medium", family: "ballistic", status: "concept", tier: "II",
+    stats: { Damage: "2.6", Cadence: "0.12s", Range: "20m", Type: "Physical" },
+    text: "Salvaged pattern rifle — heavier round, harsher climb, refuses to die. The workhorse upgrade." },
+  { id: "wpn-bolt-carbine", name: "Bolt Carbine", glyph: "↠", cls: "medium", family: "energy", status: "live", tier: "I",
+    stats: { Damage: "5", Cadence: "1.8s", Range: "18m", Type: "Physical", Pierce: "2 targets" },
+    text: "Slow precision bolt that pierces exactly one enemy into a second. Missing costs the full cadence." },
+  { id: "wpn-vigil-long-rifle", name: "Vigil Long Rifle", glyph: "┼", cls: "medium", family: "ballistic", status: "concept", tier: "II",
+    stats: { Damage: "9", Cadence: "2.4s", Range: "30m", Type: "Physical", Crit: "×2 weak point" },
+    text: "Arena-length reach. Rewards standing still, which is exactly what the arena punishes." },
+  { id: "wpn-suppression-rifle", name: "Suppression Rifle", glyph: "≡", cls: "medium", family: "ballistic", status: "concept", tier: "I",
+    stats: { Damage: "1.8", Cadence: "0.11s", Range: "18m", Type: "Physical" },
+    text: "Marine-specific. Sustained fire builds stagger against the same target group." },
+  { id: "wpn-guard-drone", name: "Guard Drone", glyph: "◈", cls: "medium", family: "energy", status: "designed", tier: "II",
+    stats: { Damage: "1.5", Cadence: "0.5s", Range: "12m", Type: "Physical", Redeploy: "8s" },
+    text: "Occupies a slot but flies free, covering the side you aren't watching." },
+
+  /* ── Heavy ─────────────────────────────── */
+  { id: "wpn-scattergun", name: "Scattergun", glyph: "※", cls: "heavy", family: "ballistic", status: "live", tier: "I",
+    stats: { Damage: "1 × 5 pellets", Cadence: "0.72s", Range: "7m", Type: "Physical", Knockback: "0.55m" },
+    text: "Close-range fan with real shove. The answer to a Swarm Scuttler pack in your face." },
+  { id: "wpn-bulwark-rotary-cannon", name: "Bulwark Rotary Cannon", glyph: "◉", cls: "heavy", family: "ballistic", status: "live", tier: "II",
+    stats: { Damage: "2", Cadence: "0.08s spun up", Range: "16m", Type: "Physical", Spin: "0.9s" },
+    text: "Marine signature. Deliberate spin-up becomes sustained suppression — while slowing your movement." },
+  { id: "wpn-grenade-tube", name: "Grenade Tube", glyph: "◍", cls: "heavy", family: "explosive", status: "live", tier: "II",
+    stats: { Damage: "4 + 2 splash", Cadence: "4s", Range: "14m", Type: "Physical", Radius: "2.2m" },
+    text: "Arcing area denial with an awkward minimum range. Excels into packs, embarrasses you point-blank." },
+  { id: "wpn-cinder-projector", name: "Cinder Projector", glyph: "≈", cls: "heavy", family: "elemental", status: "concept", tier: "II",
+    stats: { Damage: "0.6 / tick", Cadence: "continuous", Range: "6m cone", Type: "Fire (high buildup)" },
+    text: "Flamethrower. Low per-tick damage, enormous Blaze buildup — the fastest route to combustion chains." },
+  { id: "wpn-rail-lance", name: "Rail Lance", glyph: "⌁", cls: "heavy", family: "energy", status: "concept", tier: "III",
+    stats: { Damage: "18", Cadence: "3.2s", Range: "arena", Type: "Physical", Pierce: "unlimited" },
+    text: "Long wind-up line shot with extreme penetration. Lines up the whole lane or wastes three seconds." },
+  { id: "wpn-siege-rocket-rack", name: "Siege Rocket Rack", glyph: "▲", cls: "heavy", family: "explosive", status: "concept", tier: "III",
+    stats: { Damage: "6 × 3 rockets", Cadence: "5s", Range: "18m", Type: "Physical", Radius: "1.8m each" },
+    text: "Salvo of guided rockets at marked or high-priority targets. Slow, loud, decisive." },
+  { id: "wpn-thunder-coil", name: "Thunder Coil", glyph: "⁂", cls: "heavy", family: "energy", status: "concept", tier: "III",
+    stats: { Damage: "3", Cadence: "1.6s", Range: "5m radial", Type: "Shock" },
+    text: "Periodic radial discharge, strongest when enemies crowd you. Rewards the exact position you fear." },
+
+  /* ── Alien ─────────────────────────────── */
+  { id: "wpn-gland-launcher", name: "Spitter Gland Launcher", glyph: "◔", cls: "heavy", family: "alien", status: "concept", tier: "II",
+    stats: { Damage: "3 + puddle", Cadence: "1.4s", Range: "12m", Type: "Toxic" },
+    text: "Harvested from a Slime Spitter and strapped to a frame. Leaves your own slowing puddles." },
+  { id: "wpn-quill-repeater", name: "Quill Repeater", glyph: "⋔", cls: "medium", family: "alien", status: "concept", tier: "II",
+    stats: { Damage: "1.4 × 3 fan", Cadence: "0.9s", Range: "11m", Type: "Physical" },
+    text: "A Quillback's spine crown, motorised. Fires the same 64° fan the enemy uses against you." },
+  { id: "wpn-carapace-shredder", name: "Carapace Shredder", glyph: "⩕", cls: "heavy", family: "alien", status: "concept", tier: "III",
+    stats: { Damage: "5", Cadence: "0.8s", Range: "8m", Type: "Physical", vsArmour: "ignores 50% armour" },
+    text: "Chitin blades spun on a salvaged motor. The dedicated answer to armoured waves." },
+  { id: "wpn-brood-lash", name: "Brood Lash", glyph: "∾", cls: "light", family: "alien", status: "concept", tier: "II",
+    stats: { Damage: "2.5", Cadence: "1.1s", Range: "5m", Type: "Toxic", Pull: "0.8m" },
+    text: "A Tether Bloom's tendril turned around — drags an enemy toward you instead." },
+
+  /* ── Void ──────────────────────────────── */
+  { id: "wpn-void-lance", name: "Void Lance", glyph: "◇", cls: "medium", family: "void", status: "concept", tier: "III",
+    stats: { Damage: "7", Cadence: "1.5s", Range: "16m", Type: "Void", Pierce: "1" },
+    text: "Fires a sliver of nothing. Void damage ignores shields entirely but is halved by armour." },
+  { id: "wpn-rift-splitter", name: "Rift Splitter", glyph: "⋈", cls: "heavy", family: "void", status: "concept", tier: "III",
+    stats: { Damage: "4 ×2 echoes", Cadence: "2.2s", Range: "13m", Type: "Void" },
+    text: "Every shot arrives twice: once here, once a half-second later from where the target was." },
+  { id: "wpn-null-emitter", name: "Null Field Emitter", glyph: "◌", cls: "light", family: "void", status: "concept", tier: "II",
+    stats: { Damage: "1", Cadence: "1s", Range: "4m aura", Type: "Void", Effect: "strips enemy shields" },
+    text: "Projects a small field where alien technology simply stops working." },
+  { id: "wpn-singularity-charge", name: "Singularity Charge", glyph: "●", cls: "heavy", family: "void", status: "concept", tier: "III",
+    stats: { Damage: "10 implosion", Cadence: "6s", Range: "12m", Type: "Void", Radius: "3m pull" },
+    text: "Thrown charge that pulls a crowd into one point, then removes that point." },
+
+  /* ── Unique ────────────────────────────── */
+  { id: "wpn-event-horizon", name: "Event Horizon", glyph: "◉", cls: "unique", family: "void", status: "designed", tier: "★",
+    stats: { Damage: "12 implosion", Cadence: "16s", Range: "14m", Type: "Void", Radius: "3.5m" },
+    text: "Slow gravitic orbs pull enemies inward before bursting. Devastating into a crowd, wasted on an empty lane." },
+  { id: "wpn-nestbreaker", name: "Nestbreaker", glyph: "⊘", cls: "unique", family: "explosive", status: "concept", tier: "★",
+    stats: { Damage: "3 (×6 vs nests)", Cadence: "1s", Range: "12m", Type: "Fire" },
+    text: "Exceptional against eggs, spawners and biomass — destroyed nests detonate. A build that hunts objectives." },
+  { id: "wpn-choir-of-static", name: "Choir of Static", glyph: "≋", cls: "unique", family: "energy", status: "concept", tier: "★",
+    stats: { Damage: "2 per note", Cadence: "0.9s", Range: "9m", Type: "Shock" },
+    text: "Every distinct lightning source you own adds another note to a repeating chain sequence." },
+  { id: "wpn-last-light", name: "Last Light", glyph: "☀", cls: "unique", family: "energy", status: "concept", tier: "★",
+    stats: { Damage: "2 → 14", Cadence: "continuous", Range: "11m", Type: "Fire" },
+    text: "A narrow beam that grows stronger as your health falls. A deliberate, terrible risk build." },
+  { id: "wpn-echo-arsenal", name: "Echo Arsenal", glyph: "◫", cls: "unique", family: "void", status: "concept", tier: "★",
+    stats: { Damage: "60% of source", Cadence: "mirrors", Range: "—", Type: "Copies source" },
+    text: "Repeats your last non-Unique attack at reduced strength after a delay. Rewards one perfected weapon." },
+];
+
+const MONSTERS = [
+  { id: "mon-scuttler", name: "Scuttler", glyph: "▲", tint: TINT.monster, status: "live", rank: "standard", tier: "Rush-adjacent",
+    stats: { Health: "4", Armour: "0", Speed: "2.35 m/s", Damage: "5 contact", XP: "1" },
+    text: "The unit every other number is judged against. Runs straight at you and teaches movement." },
+  { id: "mon-swarm-scuttler", name: "Swarm Scuttler", glyph: "▴", tint: TINT.monster, status: "designed", rank: "standard", tier: "Rush",
+    stats: { Health: "2", Armour: "0", Speed: "4.2 m/s", Damage: "3 contact", XP: "1" },
+    text: "Outruns you and dies to a single bullet. Arrives in packs of 8–12 — the enemy that punishes pure backpedalling." },
+  { id: "mon-blast-mite", name: "Blast Mite", glyph: "✳", tint: TINT.monster, status: "live", rank: "standard", tier: "Rush",
+    stats: { Health: "2", Armour: "0", Speed: "3.6 m/s", Damage: "16 detonation", XP: "1" },
+    text: "Kamikaze. Arms with a flashing tell at close range and explodes — on contact or on death." },
+  { id: "mon-razor-scuttler", name: "Razor Scuttler", glyph: "≫", tint: TINT.monster, status: "live", rank: "standard", tier: "Rush",
+    stats: { Health: "3", Armour: "0", Speed: "3.35 / 9.5 dash", Damage: "12 dash", XP: "2" },
+    text: "Locks a lane for 0.48s then commits at 9.5 m/s. One hit only, then a punishable recovery." },
+  { id: "mon-brain-blob", name: "Brain Blob", glyph: "◍", tint: TINT.monster, status: "live", rank: "standard", tier: "Slow",
+    stats: { Health: "6", Armour: "0", Speed: "0.9 m/s", Damage: "7 lunge", XP: "2" },
+    text: "Drifts, telegraphs in yellow, lunges. The tutorial for reading wind-ups." },
+  { id: "mon-slime-spitter", name: "Slime Spitter", glyph: "◔", tint: TINT.monster, status: "live", rank: "standard", tier: "Slow",
+    stats: { Health: "7", Armour: "0", Speed: "1.15 m/s", Damage: "7 glob", XP: "3" },
+    text: "Locks a ground target, fires an arcing glob, leaves a 4-second slowing puddle. Capped at 5 puddles." },
+  { id: "mon-quillback", name: "Quillback", glyph: "⋔", tint: TINT.monster, status: "live", rank: "standard", tier: "Slow",
+    stats: { Health: "9", Armour: "1", Speed: "1.4 m/s", Damage: "6 per spike", XP: "4" },
+    text: "Volleys escalate 1 → 3 → 5 spikes across a 64° fan with deliberate gaps. Retreats if you close." },
+  { id: "mon-spinewheel", name: "Spinewheel", glyph: "◎", tint: TINT.monster, status: "live", rank: "standard", tier: "Burst",
+    stats: { Health: "12", Armour: "1", Speed: "7.0 rolling", Damage: "10 rolling", XP: "4" },
+    text: "Locks a heading, rolls, and ricochets off walls and cover exactly twice. Read the angle, not the wheel." },
+  { id: "mon-warp-flanker", name: "Warp Flanker", glyph: "◈", tint: TINT.monster, status: "live", rank: "standard", tier: "Standard",
+    stats: { Health: "5", Armour: "0", Speed: "1.4 m/s", Damage: "6 contact", XP: "2" },
+    text: "Stalks, marks an arrival ring, teleports beside you. Teaches 360° awareness." },
+  { id: "mon-tether-bloom", name: "Tether Bloom", glyph: "❋", tint: TINT.monster, status: "live", rank: "standard", tier: "Static",
+    stats: { Health: "10", Armour: "0", Speed: "0", Damage: "0 (control)", XP: "3" },
+    text: "Never damages you — it drags you. Roll breaks it instantly; 28 damage severs it. Cover blocks acquisition." },
+  { id: "mon-ripper", name: "Ripper", glyph: "⩔", tint: TINT.monster, status: "live", rank: "standard", tier: "Slow",
+    stats: { Health: "14", Armour: "2", Speed: "1.6 m/s", Damage: "15 sweep", XP: "6" },
+    text: "Locks direction, sweeps a 2.55m frontal cone, then stands exposed for 1.1 seconds. Walk behind it." },
+  { id: "mon-egg-cluster", name: "Egg Cluster", glyph: "◓", tint: TINT.monster, status: "live", rank: "standard", tier: "Static",
+    stats: { Health: "7", Armour: "0", Speed: "0", Damage: "0", XP: "2" },
+    text: "Hatches two Scuttlers after six seconds. Four visible stages — prevention is a target-priority lesson." },
+
+  { id: "mon-carapace-scuttler", name: "Carapace Scuttler", glyph: "◭", tint: TINT.elite, status: "live", rank: "elite", tier: "Slow",
+    stats: { Health: "45", Armour: "3 frontal", Speed: "1.85 m/s", Damage: "7 contact", XP: "25" },
+    text: "Frontal armour cuts direct hits to 25%. Flank it, or punish the post-charge recovery. Always drops a Requisition." },
+  { id: "mon-razorlord", name: "Razorlord", glyph: "⩚", tint: TINT.elite, status: "designed", rank: "elite", tier: "Rush",
+    stats: { Health: "30", Armour: "1", Speed: "4.6 / 11 dash", Damage: "16 dash", XP: "30" },
+    text: "A fast elite you cannot outrun. Dodge it or kill it — there is no third option. Max one fast elite per wave." },
+  { id: "mon-blightspitter", name: "Blightspitter", glyph: "◕", tint: TINT.elite, status: "designed", rank: "elite", tier: "Standard",
+    stats: { Health: "40", Armour: "1", Speed: "2.4 m/s", Damage: "8 × 3 fan", XP: "30" },
+    text: "Twice its family's speed, three globs per volley. You cannot camp one lane against it." },
+  { id: "mon-quillback-matriarch", name: "Quillback Matriarch", glyph: "⋕", tint: TINT.elite, status: "designed", rank: "elite", tier: "Slow",
+    stats: { Health: "50", Armour: "2", Speed: "1.4 m/s", Damage: "6 per spine", XP: "30" },
+    text: "Rain of spines: a cluster of reticles marks the ground 1.2s before impact. The first 'watch your feet' elite." },
+  { id: "mon-synapse-brain", name: "Synapse Brain", glyph: "◉", tint: TINT.elite, status: "concept", rank: "elite", tier: "Slow",
+    stats: { Health: "38", Armour: "0", Speed: "0.9 m/s", Damage: "14 zone", XP: "25" },
+    text: "Marks a delayed danger zone during its wind-up and shields nearby Brain Blobs." },
+  { id: "mon-broodguard", name: "Broodguard", glyph: "◒", tint: TINT.elite, status: "concept", rank: "elite", tier: "Standard",
+    stats: { Health: "42", Armour: "2", Speed: "1.8 m/s", Damage: "9 contact", XP: "25" },
+    text: "Shields one nearby egg until interrupted. Forces you to choose between the guard and the hatch." },
+
+  { id: "mon-siege-crusher", name: "Siege Crusher", glyph: "⬢", tint: TINT.boss, status: "live", rank: "mini-boss", tier: "Burst",
+    stats: { Health: "600", Armour: "2 flat", Speed: "1.25 / 8.4 charge", Damage: "24 sweep / 22 charge", Fight: "45–90s" },
+    text: "Breaks the arena itself: charges destroy cover in two hits. Enrages at 50%, frenzies in the final 20%." },
+  { id: "mon-brood-warden", name: "Brood Warden", glyph: "⬣", tint: TINT.boss, status: "live", rank: "mini-boss", tier: "Standard",
+    stats: { Health: "540", Armour: "2 flat", Speed: "1.4 m/s", Damage: "18 cleave / 8 acid", Fight: "45–90s" },
+    text: "Four moves: guarding cleave, acid fan, egg placement, and a one-time swarm rush at half health." },
+  { id: "mon-rift-stalker", name: "Rift Stalker", glyph: "⬡", tint: TINT.boss, status: "designed", rank: "mini-boss", tier: "Burst",
+    stats: { Health: "480", Armour: "1", Speed: "2.2 / blink", Damage: "20 pounce", Fight: "45–90s" },
+    text: "Cloaked hunter, visible only as distortion until it marks its pounce. Decloaks when hit. Frenzies below 20%." },
+
+  { id: "mon-bastion-eater", name: "The Bastion Eater", glyph: "☠", tint: TINT.boss, status: "live", rank: "boss", tier: "Authored",
+    stats: { Health: "2400", Armour: "shutters", Speed: "—", Damage: "26 claw", Fight: "3–5 min" },
+    text: "Three phases: Breach (claw lanes, cover-breaking charges), Brood (tendril sweep, capped eggs), Last Stand (faster combinations, targeted breach zones). Never an unavoidable full-arena attack." },
+];
+
+const DAMAGE_TYPES = [
+  { name: "Physical", colour: "#e9e3cf", status: "live", status_effect: "Stagger", reduced: "Armour + flat", text: "The baseline. Knockback and stagger come from weapon values rather than a status." },
+  { name: "Fire", colour: "#ff9a52", status: "live", status_effect: "Blaze", reduced: "Armour + flat", text: "Buildup ignites: damage over time. At Incendiary III, burning corpses detonate and spread." },
+  { name: "Cold / Cryo", colour: "#9ad9ff", status: "live", status_effect: "Freeze", reduced: "Armour + flat", text: "Buildup slows hard, then nearly halts. Control that trades damage for safety." },
+  { name: "Lightning / Shock", colour: "#68e4e8", status: "live", status_effect: "Overload", reduced: "Armour + flat", text: "Buildup stuns briefly. Chains between targets with 0.7× decay per hop." },
+  { name: "Poison / Toxic", colour: "#b9ef62", status: "live", status_effect: "Corrode", reduced: "Armour + flat", text: "Damage over time plus temporary armour shred — the answer to armoured waves." },
+  { name: "Void", colour: "#d696ff", status: "designed", status_effect: "Unmake", reduced: "Armour ×2 effective", text: "Ignores shields entirely, but armour counts double against it. Anti-technology, poor into chitin." },
+  { name: "Pure", colour: "#ffffff", status: "designed", status_effect: "—", reduced: "Nothing", text: "Untouched by resistances, armour, shields, or your own damage bonuses. Exactly what it says, always — the rarest and most honest number in the game." },
+  { name: "Chaos", colour: "#ff5fa2", status: "concept", status_effect: "Rotates", reduced: "Varies per hit", text: "Each hit rolls a different element from the seeded run RNG. High variance by design; a build for gamblers." },
+];
+
+const DOT_EFFECTS = [
+  { name: "Blaze", type: "Fire", dps: "7 (+4 at Incendiary II)", tick: "0.25s", perTick: "1.75", dur: "3.0s", stack: "Refresh", text: "Kills after the shot lands, which is what makes combustion chains possible." },
+  { name: "Corrode", type: "Toxic", dps: "4", tick: "0.25s", perTick: "1.0", dur: "4.0s", stack: "Refresh + armour −3", text: "The damage is secondary; the armour shred is the point." },
+  { name: "Overload", type: "Shock", dps: "0", tick: "—", perTick: "—", dur: "0.8s", stack: "Refresh", text: "Hard control, not damage. Mini-bosses and bosses are immune." },
+  { name: "Freeze", type: "Cryo", dps: "0", tick: "—", perTick: "—", dur: "2.2s (+0.8 at Cryo III)", stack: "Refresh", text: "Speed ×0.35, or ×0.15 at Cryo III. Bosses immune." },
+  { name: "Unmake", type: "Void", dps: "6", tick: "0.5s", perTick: "3.0", dur: "2.0s", stack: "Stacks ×3", text: "Designed: the only DoT that stacks rather than refreshes — rewards sustained void fire." },
+  { name: "Slime", type: "Hazard", dps: "0", tick: "—", perTick: "—", dur: "4.0s puddle", stack: "Cap 5 puddles", text: "Enemy-side. Slows ordinary movement to 55%, never the evasive roll." },
+];
+
+const UPGRADES = [
+  { id: "upg-rapid-cycling", name: "Rapid Cycling", glyph: "»", cat: "Offensive", status: "live", max: "III",
+    path: ["Fire 15% faster", "A further 15%", "A further 15%"], text: "The flat, safe pick. Compounds with everything." },
+  { id: "upg-twin-shot", name: "Twin Shot", glyph: "⑃", cat: "Offensive", status: "live", max: "II",
+    path: ["+1 projectile with spread", "+1 more projectile"], text: "Multiplies every on-hit effect you own, not just damage." },
+  { id: "upg-piercing-rounds", name: "Piercing Rounds", glyph: "→", cat: "Offensive", status: "live", max: "III",
+    path: ["Pierce 1 more", "Pierce 2", "Pierce 3"], text: "Lines matter: the Swarm Scuttler rush arrives conveniently single-file." },
+  { id: "upg-explosive-payload", name: "Explosive Payload", glyph: "✺", cat: "Offensive", status: "live", max: "III",
+    path: ["Explode for 50% nearby", "Bigger, 60%", "Bigger, 70%"], text: "Turns single-target weapons into crowd control." },
+  { id: "upg-heavy-calibre", name: "Heavy Calibre", glyph: "▮", cat: "Offensive", status: "live", max: "III",
+    path: ["+35% damage, −10% rate", "Again", "Again"], text: "The armour answer. Big numbers beat flat reduction." },
+  { id: "upg-incendiary-rounds", name: "Incendiary Rounds", glyph: "🔥", cat: "Offensive", status: "live", max: "III", exclusive: "Locks Cryo Coating",
+    path: ["All weapons deal Fire", "Ignite 20% more often, hotter Blaze", "Blazing aliens detonate on death"], text: "Path A. Level III turns a dense wave into a chain reaction." },
+  { id: "upg-cryo-coating", name: "Cryo Coating", glyph: "❄", cat: "Offensive", status: "live", max: "III", exclusive: "Locks Incendiary",
+    path: ["All weapons deal Cryo", "Freeze 20% more often, slows harder", "Longer freeze, near-total halt"], text: "Path B. Control instead of clear — the survival elemental." },
+  { id: "upg-chain-lightning", name: "Chain Lightning", glyph: "⚡", cat: "Offensive", status: "live", max: "III",
+    path: ["+1 arc (0.7× decay)", "+1 arc, shock builds 10% faster", "+1 arc, +10% again"], text: "Each bounce carries less energy: wider coverage, softer hits." },
+  { id: "upg-adrenal-servos", name: "Adrenal Servos", glyph: "≫", cat: "Support", status: "live", max: "III",
+    path: ["+12% move speed", "+12% more", "+12% more"], text: "Speed is survival once rush-tier enemies arrive." },
+  { id: "upg-composite-plating", name: "Composite Plating", glyph: "▣", cat: "Defensive", status: "live", max: "IV",
+    path: ["+3 armour", "+3", "+3", "+3"], text: "Diminishing returns by design — still the best value against swarms of small hits." },
+  { id: "upg-shield-capacitor", name: "Shield Capacitor", glyph: "◇", cat: "Defensive", status: "live", max: "III",
+    path: ["+15 recharging shield", "+15 more", "+15 more"], text: "Absorbs before armour. Recharges out of combat — rewards disengaging." },
+  { id: "upg-field-magnet", name: "Field Magnet", glyph: "◎", cat: "Scavenger", status: "live", max: "III",
+    path: ["+XP attraction", "More", "More"], text: "The only Scavenger upgrade so far. Collecting under pressure is a real cost." },
+  { id: "upg-salvage-protocol", name: "Salvage Protocol", glyph: "$", cat: "Scavenger", status: "concept", max: "III",
+    path: ["+15% Mineral Find", "+15%", "+15%"], text: "Designed: activates the reserved Mineral Find stat once Scrap exists." },
+  { id: "upg-last-stand", name: "Last Stand", glyph: "!", cat: "Defensive", status: "concept", max: "I", unique: true,
+    path: ["Survive one fatal hit per wave at 1 HP"], text: "Unique choice — one per run, never offered twice." },
+  { id: "upg-overclock", name: "Overclock", glyph: "⚙", cat: "Offensive", status: "concept", max: "I", unique: true,
+    path: ["+40% fire rate; take 15% more damage"], text: "Unique choice — a true trade, not a bonus." },
+  { id: "upg-entrench-mastery", name: "Entrenchment Mastery", glyph: "M", cat: "Defensive", status: "concept", max: "II", hero: "Marine",
+    path: ["Entrenched engages in 0.5s", "Entrenched also grants +10% damage"], text: "Marine-specific: deepens the hero passive rather than adding a generic stat." },
+  { id: "upg-triage-protocol", name: "Triage Protocol", glyph: "+", cat: "Support", status: "concept", max: "II", hero: "Medic",
+    path: ["Healing overflow → shield", "Overflow shield lasts the wave"], text: "Medic-specific." },
+];
+
+const PERKS = [
+  { id: "perk-veteran", name: "Veteran", glyph: "★", status: "concept", text: "Start each run at level 2. Chosen before the drop, from a small pool unlocked by past runs." },
+  { id: "perk-scrapper", name: "Scrapper", glyph: "$", status: "concept", text: "Weapons sell for 75% instead of 50%. Turns the shop into a rotating armoury." },
+  { id: "perk-quartermaster", name: "Quartermaster", glyph: "▤", status: "concept", text: "+2 inventory slots. Hoard merge candidates without paying rack space." },
+  { id: "perk-fast-learner", name: "Fast Learner", glyph: "↑", status: "concept", text: "+15% XP for the first three waves, none after. Front-loads your build." },
+  { id: "perk-gunsmith", name: "Gunsmith", glyph: "⚒", status: "concept", text: "Merging also grants +1 weapon tier bonus damage. Rewards duplicate hunting." },
+  { id: "perk-survivor", name: "Survivor", glyph: "♥", status: "concept", text: "Below 30% health, gain 25% damage reduction. The comeback perk." },
+  { id: "perk-pathfinder", name: "Pathfinder", glyph: "⋔", status: "concept", text: "See one extra column of the expedition map. Turns the route into a plan." },
+];
+
+const POWERUPS = [
+  { id: "pow-overcharge", name: "Overcharge", glyph: "⚡", tint: TINT.power, status: "live", kind: "Powerup", dur: "6s", text: "+60% weapon cycling. Orange lightning icon." },
+  { id: "pow-aegis", name: "Aegis", glyph: "◇", tint: TINT.power, status: "live", kind: "Powerup", dur: "—", text: "Grants a 25-point shield absorbed before health." },
+  { id: "pow-magnet-pulse", name: "Magnet Pulse", glyph: "◎", tint: TINT.power, status: "live", kind: "Powerup", dur: "6s", text: "Attracts nearby XP and expands pickup range." },
+  { id: "pow-adrenaline", name: "Adrenaline", glyph: "≫", tint: TINT.power, status: "live", kind: "Powerup", dur: "5s", text: "+35% movement. Does not change invulnerability." },
+  { id: "pow-supply-depot", name: "Supply Depot", glyph: "▣", tint: TINT.power, status: "live", kind: "Interactable", dur: "—", text: "Between-wave choice: Patch Up (heal 45), Field Armoury (an upgrade), or Aegis Lattice (25 shield)." },
+  { id: "pow-supply-drop", name: "Supply Drop", glyph: "▼", tint: TINT.power, status: "designed", kind: "Objective", dur: "—", text: "Telegraphs a landing, then demands you hold or clear a small zone to open it." },
+  { id: "pow-shrine-steel", name: "Shrine of Steel", glyph: "⚒", tint: TINT.power, status: "designed", kind: "Shrine", dur: "—", text: "Lose maximum health to gain a weapon slot or strengthen an owned weapon." },
+  { id: "pow-shrine-hunt", name: "Shrine of the Hunt", glyph: "☠", tint: TINT.power, status: "designed", kind: "Shrine", dur: "—", text: "Add an elite to the next encounter for a guaranteed relic." },
+  { id: "pow-shrine-echoes", name: "Shrine of Echoes", glyph: "◫", tint: TINT.power, status: "designed", kind: "Shrine", dur: "—", text: "Duplicate an ordinary upgrade, but add a visible cooldown penalty to that family." },
+  { id: "pow-electric-fence", name: "Electric Fence", glyph: "⌇", tint: TINT.power, status: "live", kind: "Interactable", dur: "6s / 18s cd", text: "The signature battlefield interaction: press E at the switch to electrify the line. Shock damage builds Overload." },
+];
+
+const RELICS = [
+  { id: "rel-stabiliser-gyro", name: "Stabiliser Gyro", glyph: "◍", status: "designed", kind: "Relic", text: "Spread narrows while moving. Rewards the kiting the arena demands." },
+  { id: "rel-salvaged-capacitor", name: "Salvaged Capacitor", glyph: "⚡", status: "designed", kind: "Relic", text: "Every fifth non-melee attack gains a small chain arc." },
+  { id: "rel-blast-baffle", name: "Blast Baffle", glyph: "✺", status: "designed", kind: "Relic", text: "Reduced self/explosive damage; slightly larger explosions." },
+  { id: "rel-hunters-beacon", name: "Hunter's Beacon", glyph: "◉", status: "designed", kind: "Relic", text: "Elites are marked earlier and take bonus damage after telegraphed misses." },
+  { id: "rel-field-lattice", name: "Field Lattice", glyph: "◇", status: "designed", kind: "Relic", text: "Picking up health creates a short slowing pulse." },
+  { id: "rel-kinetic-greaves", name: "Kinetic Greaves", glyph: "≫", status: "designed", kind: "Relic", text: "Longer evasive distance, slightly longer recovery." },
+  { id: "art-event-horizon-core", name: "Event Horizon Core", glyph: "●", status: "designed", kind: "Artifact", text: "Periodically turns the next projectile impact into a pull-and-implode event." },
+  { id: "art-broodbreaker-seal", name: "Broodbreaker Seal", glyph: "⊘", status: "designed", kind: "Artifact", text: "Destroyed eggs damage nearby aliens and cannot hatch during their final crack window." },
+  { id: "art-last-bastion-protocol", name: "Last Bastion Protocol", glyph: "▣", status: "designed", kind: "Artifact", text: "At critical health, weapons brace into a tighter, faster formation. Long cooldown." },
+];
+
+const AMMO = [
+  { id: "ammo-uranium-core", name: "Uranium-Core Rounds", glyph: "⋮", tint: TINT.ammo, status: "live", dur: "12s", text: "+25% direct ring-weapon damage. Refreshes rather than stacking; excludes ultimate, chains, explosions, and environmental damage." },
+  { id: "ammo-incendiary", name: "Incendiary Cells", glyph: "🔥", tint: TINT.ammo, status: "concept", dur: "20s", text: "All weapons deal Fire and build Blaze — a temporary version of the Incendiary path." },
+  { id: "ammo-cryo-coating", name: "Cryo Sleeves", glyph: "❄", tint: TINT.ammo, status: "concept", dur: "20s", text: "All weapons deal Cryo. Stacks with nothing — it replaces your damage type." },
+  { id: "ammo-overclocked-coils", name: "Overclocked Coils", glyph: "≋", tint: TINT.ammo, status: "concept", dur: "15s", text: "+1 chain arc on everything. Turns a storm build briefly absurd." },
+  { id: "ammo-armour-piercing", name: "Armour-Piercing Slugs", glyph: "▮", tint: TINT.ammo, status: "concept", dur: "15s", text: "Ignore 50% of enemy armour. The emergency answer to a late armoured wave." },
+  { id: "ammo-void-tipped", name: "Void-Tipped Rounds", glyph: "◇", tint: TINT.ammo, status: "concept", dur: "12s", text: "Convert to Void: strips shields, halved by armour." },
+  { id: "ammo-siege-loader", name: "Siege Loader", glyph: "⚙", tint: TINT.ammo, status: "concept", dur: "10s", text: "Slow weapons cycle 30% faster. Nothing for a Machine Pistol; everything for a Rail Lance." },
+  { id: "ammo-phase-jacket", name: "Phase Jacket", glyph: "◌", tint: TINT.ammo, status: "concept", dur: "8s", text: "The first hit taken is ignored, then the effect ends." },
+];
+
+/* ──────────────────────────────────────────────────────────────
+   DISCOVERY — the Monsterdex reads the game's own save.
+   Same origin (/play/last-bastion/), so localStorage is shared.
+   The game does not record a bestiary yet; until it does, every
+   monster reads as undiscovered and "Reveal all" is the design view.
+   ────────────────────────────────────────────────────────────── */
+const SAVE_KEY = "last-bastion-save";
+const KILLS_TO_REVEAL = 10;
+
+function readBestiary() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return {};
+    const save = JSON.parse(raw);
+    return (save && save.progress && save.progress.bestiary) || {};
+  } catch { return {}; }
+}
+
+function discoveryOf(id, bestiary) {
+  const kills = Number(bestiary[id] || 0);
+  if (kills >= KILLS_TO_REVEAL) return "full";
+  if (kills > 0) return "seen";
+  return "unknown";
+}
+
+/* ──────────────────────────────────────────────────────────────
+   RENDER
+   ────────────────────────────────────────────────────────────── */
+const state = { tab: "heroes", query: "", filter: "all", revealAll: false };
+
+const TABS = [
+  { id: "heroes",   label: "Characters" },
+  { id: "weapons",  label: "Weapons" },
+  { id: "monsters", label: "Monsterdex" },
+  { id: "upgrades", label: "Upgrades" },
+  { id: "perks",    label: "Perks" },
+  { id: "powerups", label: "Powerups & Shrines" },
+  { id: "relics",   label: "Relics & Artifacts" },
+  { id: "ammo",     label: "Ammo" },
+  { id: "damage",   label: "Damage Types" },
+  { id: "dots",     label: "Damage Over Time" },
+];
+
+const FILTERS = {
+  weapons: ["all", "light", "medium", "heavy", "alien", "energy", "void", "unique"],
+  monsters: ["all", "standard", "elite", "mini-boss", "boss"],
+  upgrades: ["all", "Offensive", "Defensive", "Support", "Scavenger", "unique", "hero"],
+};
+
+const badge = (s) => `<span class="badge b-${s}">${s}</span>`;
+
+function tile(id, glyph, tint, big) {
+  return `<div>
+    <div class="tile${big ? " big" : ""}" style="--tint:${tint}">
+      <span class="glyph">${glyph}</span>
+      <img src="game-assets/tiles/${id}-v1.png" alt="" loading="lazy" onerror="this.remove()">
+    </div>
+    <div class="tile-note">${id}</div>
+  </div>`;
+}
+
+function statRows(stats) {
+  return `<div class="stats">${Object.entries(stats)
+    .map(([k, v]) => `<div class="stat"><span>${k}</span><b>${v}</b></div>`).join("")}</div>`;
+}
+
+function heroCard(h) {
+  return `<article class="card">
+    ${tile(h.id, h.glyph, h.tint)}
+    <div>
+      <div class="kicker">${h.role}</div>
+      <h3>${h.name}</h3>
+      <div class="badges">${badge(h.status)}</div>
+      ${statRows(h.stats)}
+      ${statRows({ "Starting weapon": h.weapon, "Weapon rack": h.rack, "Upgrade slots": h.slots, "Per level": h.level })}
+      <p><b>Passive:</b> ${h.passive}<br><b>Ultimate:</b> ${h.ultimate}</p>
+      <p>${h.text}</p>
+    </div>
+  </article>`;
+}
+
+function weaponCard(w) {
+  return `<article class="card">
+    ${tile(w.id, w.glyph, TINT[w.cls] || TINT.medium)}
+    <div>
+      <div class="kicker">Tier ${w.tier}</div>
+      <h3>${w.name}</h3>
+      <div class="badges">
+        ${badge(w.status)}
+        <span class="badge b-class">${w.cls}</span>
+        <span class="badge b-family">${w.family}</span>
+      </div>
+      ${statRows(w.stats)}
+      <p>${w.text}</p>
+    </div>
+  </article>`;
+}
+
+function monsterCard(m, disc) {
+  const revealed = state.revealAll || disc === "full";
+  const seen = state.revealAll || disc !== "unknown";
+  if (!seen) {
+    return `<article class="card locked">
+      ${tile("unknown", "?", "#3b4d63")}
+      <div>
+        <div class="kicker">${m.rank}</div>
+        <h3>??????</h3>
+        <div class="badges"><span class="badge b-concept">undiscovered</span></div>
+        <p>Encounter this alien in the field to add it to the dex.</p>
+      </div>
+    </article>`;
+  }
+  const stats = revealed ? m.stats
+    : Object.fromEntries(Object.keys(m.stats).map((k) => [k, "?"]));
+  return `<article class="card${revealed ? "" : " locked"}">
+    ${tile(m.id, m.glyph, m.tint)}
+    <div>
+      <div class="kicker">${m.rank} · ${m.tier} tier</div>
+      <h3>${m.name}</h3>
+      <div class="badges">
+        ${badge(m.status)}
+        ${revealed ? "" : `<span class="badge b-concept">${KILLS_TO_REVEAL} kills to reveal stats</span>`}
+      </div>
+      ${statRows(stats)}
+      ${revealed ? `<p>${m.text}</p>` : ""}
+    </div>
+  </article>`;
+}
+
+function simpleCard(e, kicker) {
+  return `<article class="card">
+    ${tile(e.id, e.glyph, e.tint || TINT.perk)}
+    <div>
+      ${kicker ? `<div class="kicker">${kicker}</div>` : ""}
+      <h3>${e.name}</h3>
+      <div class="badges">${badge(e.status)}${e.dur && e.dur !== "—" ? `<span class="badge b-class">${e.dur}</span>` : ""}</div>
+      <p>${e.text}</p>
+    </div>
+  </article>`;
+}
+
+function upgradeCard(u) {
+  const path = u.path.map((p, i) => `<div class="stat"><span>${["I","II","III","IV"][i]}</span><b>${p}</b></div>`).join("");
+  return `<article class="card">
+    ${tile(u.id, u.glyph, TINT.upgrade)}
+    <div>
+      <div class="kicker">${u.cat} slot · max ${u.max}</div>
+      <h3>${u.name}</h3>
+      <div class="badges">
+        ${badge(u.status)}
+        ${u.unique ? `<span class="badge b-family">unique — 1 per run</span>` : ""}
+        ${u.hero ? `<span class="badge b-class">${u.hero} only</span>` : ""}
+        ${u.exclusive ? `<span class="badge b-class">${u.exclusive}</span>` : ""}
+      </div>
+      <div class="stats">${path}</div>
+      <p>${u.text}</p>
+    </div>
+  </article>`;
+}
+
+function matches(text) {
+  return !state.query || text.toLowerCase().includes(state.query);
+}
+
+function render() {
+  const panel = document.getElementById("panel");
+  const bestiary = readBestiary();
+  let html = "";
+
+  if (state.tab === "heroes") {
+    html += `<div class="intro"><strong>Seven heroes planned; the Marine is playable.</strong>
+      A hero is defined by four things: the weapon rack (which slot classes they start with),
+      the upgrade-slot profile (how wide a build they can hold), the per-level stat package,
+      and their passive/ultimate pair. Only the Marine's numbers are tuned.</div>`;
+    const list = HEROES.filter((h) => matches(h.name + h.role + h.text));
+    html += `<div class="grid">${list.map(heroCard).join("")}</div>`;
+  }
+
+  if (state.tab === "weapons") {
+    html += `<div class="intro"><strong>Weapons are tiles you place into typed rack slots.</strong>
+      <em>Light / Medium / Heavy / Unique</em> are slot classes — a weapon only fits a matching slot
+      (or an "All" slot). <em>Alien / Energy / Void / Ballistic / Explosive</em> are families:
+      flavour and behaviour that cut across the weight classes. Two identical same-tier weapons
+      merge into the next tier.</div>`;
+    const f = state.filter;
+    const list = WEAPONS.filter((w) =>
+      (f === "all" || w.cls === f || w.family === f) && matches(w.name + w.family + w.cls + w.text));
+    html += list.length
+      ? `<div class="grid">${list.map(weaponCard).join("")}</div>`
+      : `<p class="empty">No weapons match.</p>`;
+  }
+
+  if (state.tab === "monsters") {
+    const known = MONSTERS.filter((m) => discoveryOf(m.id, bestiary) !== "unknown").length;
+    html += `<div class="intro"><strong>Monsterdex — ${state.revealAll ? MONSTERS.length : known}/${MONSTERS.length} discovered.</strong>
+      Aliens appear as <code>??????</code> until you meet them in the field, and their stats stay hidden
+      until you have killed ${KILLS_TO_REVEAL}. The dex reads your local save, so it fills in as you play.
+      Use <em>Reveal all</em> for the design view.</div>`;
+    for (const rank of ["standard", "elite", "mini-boss", "boss"]) {
+      if (state.filter !== "all" && state.filter !== rank) continue;
+      const list = MONSTERS.filter((m) => m.rank === rank && matches(m.name + m.text));
+      if (!list.length) continue;
+      const titles = { standard: "Standard aliens", elite: "Elite aliens", "mini-boss": "Mini-bosses", boss: "Final boss" };
+      html += `<h2 class="sect">${titles[rank]}</h2>
+        <div class="grid">${list.map((m) => monsterCard(m, discoveryOf(m.id, bestiary))).join("")}</div>`;
+    }
+  }
+
+  if (state.tab === "upgrades") {
+    html += `<div class="intro"><strong>Upgrades are leveled and slot-limited.</strong>
+      Taking a <em>new</em> upgrade consumes a slot in its category; leveling one you already own never does.
+      Full category means no new offers from it — you deepen instead of widening. Incendiary and Cryo are
+      mutually exclusive: choosing an elemental identity is the run's central decision.</div>`;
+    const f = state.filter;
+    const list = UPGRADES.filter((u) => {
+      if (f === "unique") return u.unique;
+      if (f === "hero") return Boolean(u.hero);
+      return (f === "all" || u.cat === f) && matches(u.name + u.cat + u.text);
+    }).filter((u) => matches(u.name + u.cat + u.text));
+    html += `<div class="grid">${list.map(upgradeCard).join("")}</div>`;
+  }
+
+  if (state.tab === "perks") {
+    html += `<div class="intro"><strong>Perks are chosen before the drop, not during the run.</strong>
+      They shape a run's rules rather than its numbers, and are unlocked by past expeditions.
+      All are concepts — perks land after the meta-progression loop exists.</div>`;
+    const list = PERKS.filter((p) => matches(p.name + p.text));
+    html += `<div class="grid">${list.map((p) => simpleCard({ ...p, tint: TINT.perk })).join("")}</div>`;
+  }
+
+  if (state.tab === "powerups") {
+    html += `<div class="intro"><strong>Temporary power, world objects, and risk/reward choices.</strong>
+      Powerups drop in-wave and run on the top-left timer tray; shrines and depots are route decisions
+      that show their cost before you commit.</div>`;
+    const list = POWERUPS.filter((p) => matches(p.name + p.kind + p.text));
+    html += `<div class="grid">${list.map((p) => simpleCard(p, p.kind)).join("")}</div>`;
+  }
+
+  if (state.tab === "relics") {
+    html += `<div class="intro"><strong>Relics change a rule for the whole run; you may hold several.
+      Artifacts are run-defining and you may equip exactly one.</strong>
+      Both are route rewards — neither is required to survive a wave.</div>`;
+    for (const kind of ["Relic", "Artifact"]) {
+      const list = RELICS.filter((r) => r.kind === kind && matches(r.name + r.text));
+      if (!list.length) continue;
+      html += `<h2 class="sect">${kind}s</h2>
+        <div class="grid">${list.map((r) => simpleCard({ ...r, tint: TINT.relic }, r.kind)).join("")}</div>`;
+    }
+  }
+
+  if (state.tab === "ammo") {
+    html += `<div class="intro"><strong>Special ammunition is a timed kit, not a permanent choice.</strong>
+      Kits sit on the action bar until used (<code>Q</code>), then run on the top-left tray.
+      Re-acquiring refreshes the timer rather than stacking.</div>`;
+    const list = AMMO.filter((a) => matches(a.name + a.text));
+    html += `<div class="grid">${list.map((a) => simpleCard(a, "Kit")).join("")}</div>`;
+  }
+
+  if (state.tab === "damage") {
+    html += `<div class="intro"><strong>Five types are live; three more are designed or concept.</strong>
+      Each elemental type builds a status at a threshold rather than having a separate "tier two" damage.
+      Enemies carry per-type resistance multipliers, and mini-bosses resist hard control but never
+      damage over time.</div>
+      <div class="tablewrap"><table>
+      <thead><tr><th>Type</th><th>Status</th><th>Builds</th><th>Reduced by</th><th>Notes</th></tr></thead><tbody>
+      ${DAMAGE_TYPES.filter((d) => matches(d.name + d.text)).map((d) => `<tr>
+        <td><span class="swatch" style="background:${d.colour}"></span><b>${d.name}</b></td>
+        <td>${badge(d.status)}</td>
+        <td><code>${d.status_effect}</code></td>
+        <td>${d.reduced}</td>
+        <td>${d.text}</td>
+      </tr>`).join("")}
+      </tbody></table></div>`;
+  }
+
+  if (state.tab === "dots") {
+    html += `<div class="intro"><strong>Damage over time ticks on a fixed clock.</strong>
+      Buildup reaches its threshold (40 post-mitigation damage of that type), the status applies for its
+      duration, and damage lands per tick. Most statuses <em>refresh</em> rather than stack — only Unmake
+      stacks, deliberately.</div>
+      <div class="tablewrap"><table>
+      <thead><tr><th>Effect</th><th>Type</th><th>DPS</th><th>Tick rate</th><th>Per tick</th><th>Duration</th><th>Stacking</th><th>Notes</th></tr></thead><tbody>
+      ${DOT_EFFECTS.filter((d) => matches(d.name + d.text)).map((d) => `<tr>
+        <td><b>${d.name}</b></td><td>${d.type}</td><td>${d.dps}</td><td>${d.tick}</td>
+        <td>${d.perTick}</td><td>${d.dur}</td><td>${d.stack}</td><td>${d.text}</td>
+      </tr>`).join("")}
+      </tbody></table></div>`;
+  }
+
+  panel.innerHTML = html;
+}
+
+function renderTabs() {
+  document.getElementById("tabs").innerHTML = TABS.map((t) =>
+    `<button class="tab" role="tab" data-tab="${t.id}" aria-selected="${t.id === state.tab}">${t.label}</button>`
+  ).join("");
+}
+
+function renderFilters() {
+  const box = document.getElementById("filters");
+  const set = FILTERS[state.tab];
+  box.innerHTML = !set ? "" : set.map((f) =>
+    `<button class="chip" data-filter="${f}" aria-pressed="${f === state.filter}">${f}</button>`
+  ).join("");
+}
+
+document.getElementById("tabs").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-tab]");
+  if (!b) return;
+  state.tab = b.dataset.tab;
+  state.filter = "all";
+  renderTabs(); renderFilters(); render();
+  history.replaceState(null, "", "#" + state.tab);
+});
+
+document.getElementById("filters").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-filter]");
+  if (!b) return;
+  state.filter = b.dataset.filter;
+  renderFilters(); render();
+});
+
+document.getElementById("search").addEventListener("input", (e) => {
+  state.query = e.target.value.trim().toLowerCase();
+  render();
+});
+
+document.getElementById("revealAll").addEventListener("change", (e) => {
+  state.revealAll = e.target.checked;
+  render();
+});
+
+const hash = location.hash.replace("#", "");
+if (TABS.some((t) => t.id === hash)) state.tab = hash;
+renderTabs(); renderFilters(); render();
+</script>
+</body>
+</html>

@@ -47,6 +47,15 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - Add `debug=1` to the normal or stress route for collision labels and live entity/effect counts.
 - Add `theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay` to pin an arena background theme; without it each load draws one from the pool.
 - Decision overlays support arrows/WASD/left-stick navigation, Enter/Space/pad-A confirm, and digits 1–3 quick pick.
+- Add `size=100..300` to preview the planned game-size setting; the canvas always snaps to whole physical pixels.
+
+## Codex
+
+`/play/last-bastion/last-bastion-codex.html` is the encyclopedia and tile gallery (characters, weapons,
+Monsterdex, upgrades, perks, powerups, relics, ammo, damage types, DoT). It is a static page outside the
+Vite app — serve the website root to view it, not the dev server. Every entry requests
+`game-assets/tiles/<id>-v1.png` and falls back to a placeholder, so dropping tile art in upgrades both
+the codex and the game's future character-select/shop screens.
 
 ## Architecture
 

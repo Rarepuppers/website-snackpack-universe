@@ -8,6 +8,7 @@ import {
   formatCooldownSeconds,
   weaponTileAbbreviation,
 } from "./CooldownPresentation";
+import { uiTextResolution } from "../rendering/DisplayScaling";
 
 interface CooldownTileView {
   readonly background: Phaser.GameObjects.Rectangle;
@@ -156,7 +157,7 @@ export class CombatHud {
         if (child.depth < 2000) continue;
         child.setScrollFactor(0);
       }
-      if (child instanceof Phaser.GameObjects.Text) child.setResolution(2);
+      if (child instanceof Phaser.GameObjects.Text) child.setResolution(uiTextResolution());
     }
   }
 
