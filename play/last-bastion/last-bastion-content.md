@@ -539,3 +539,18 @@ Batch C, D1, D2, and the Bastion Eater D3 set are complete. Remaining Web MVP en
 - Every medallion type must be distinguishable at 48 px in grayscale and under common colour-vision simulations.
 - The backdrop must not fight node readability: peak backdrop contrast stays below medallion contrast.
 - Gallery route `?mode=gallery&batch=g1` / `g2` must display every asset and state before menu integration replaces placeholders.
+
+## Batch H — world background themes (queued for Codex)
+
+**Status:** Design brief — 17 July 2026. The runtime already supports per-arena themes (`dev/src/game/rendering/arenaThemes.ts`): five seeded tint/backdrop variations over the shared Batch A floor, boundary, and obstacle atlases, previewable with `?theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay`. Tints prove the pipeline; authored world sets replace them one world at a time once the expedition map assigns node themes.
+
+Per world, generate as one batch (reusing the Batch A tile contract: stable IDs, 64 px logical floor tiles, nearest-neighbour normalization, retained ≥4× masters, no baked text):
+
+| Asset | Notes for imagegen |
+| --- | --- |
+| Floor atlas (6 frames) | Clean base, two subtle variants, seam, damaged panel, contamination edge — in the world's material language (ember-scorched plating, overgrown toxic biomass, void-touched stone, frost-crusted alloy) |
+| Boundary atlas (8 frames) | Same silhouettes as Batch A so collision reads identically; world materials and lighting only |
+| Obstacle re-dress (4 frames, optional per world) | Barricade/crate/conduit/biomass in world materials; collision footprints unchanged |
+| Backdrop accent decals (4–6 sprites) | Large soft ground stains, glow pools, crack clusters laid under gameplay at low contrast |
+
+Acceptance: enemy, projectile, pickup, and telegraph readability must beat the backdrop in every theme (peak backdrop contrast below actor contrast), verified in the gallery against the Wave 4 mixed roster. The theme pool per world is intentionally larger than one authored set so node backgrounds stay half-procedural: same world, seeded variant.

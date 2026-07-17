@@ -1,5 +1,12 @@
 import Phaser from "phaser";
 import "./style.css";
-import { gameConfig } from "./game/config";
+import { gameConfig, integerZoomFor } from "./game/config";
 
-new Phaser.Game(gameConfig);
+const game = new Phaser.Game(gameConfig);
+
+function applyIntegerZoom(): void {
+  game.scale.setZoom(integerZoomFor(window.innerWidth, window.innerHeight));
+}
+
+game.events.once(Phaser.Core.Events.READY, applyIntegerZoom);
+window.addEventListener("resize", applyIntegerZoom);

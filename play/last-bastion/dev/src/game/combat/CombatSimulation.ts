@@ -21,8 +21,11 @@ import {
 import { calculateWeaponRingLayout } from "../equipment/WeaponRingLayout";
 import {
   UPGRADE_CATALOG,
+  UPGRADE_CATEGORY_LABELS,
   UPGRADE_ORDER,
+  UPGRADE_SLOT_HARD_CAP,
   upgradeLevelName,
+  type UpgradeCategory,
   type UpgradeDefinition,
   type UpgradeId,
 } from "../content/upgradeCatalog";
@@ -75,7 +78,13 @@ export type BroodWardenPhase =
   | "rush-windup" | "swarm-rush" | "recovery";
 export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds";
-export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot";
+export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition";
+
+export interface UpgradeSlotSnapshot {
+  category: UpgradeCategory;
+  used: number;
+  capacity: number;
+}
 
 export interface DecisionOption {
   id: string;
@@ -286,6 +295,7 @@ export interface CombatSnapshot {
   experienceForNextLevel: number;
   pendingUpgradeChoices: readonly UpgradeDefinition[];
   upgradeLevels: readonly { id: UpgradeId; level: number }[];
+  upgradeSlots: readonly UpgradeSlotSnapshot[];
   pendingDecision: PendingDecision | null;
   enemies: readonly EnemySnapshot[];
   projectiles: readonly ProjectileSnapshot[];
@@ -541,6 +551,7 @@ export class CombatSimulation {
   private defence = { ...MARINE.defence };
   private moveSpeedMultiplier = 1;
   private readonly upgradeLevels = new Map<UpgradeId, number>();
+  private readonly upgradeSlotCapacity: Record<UpgradeCategory, number> = { ...MARINE.upgradeSlots };
   private explosionSplashMultiplier = 0.5;
   /** Player-side elemental tuning advanced by upgrade path levels. */
   private readonly statusTuning = {
@@ -909,6 +920,13 @@ export class CombatSimulation {
       case "supply-depot":
         this.applySupplyChoice(optionId);
         break;
+      case "slot-requisition": {
+        const category = optionId.replace("slot-", "") as UpgradeCategory;
+        if (category in this.upgradeSlotCapacity && this.totalSlotCapacity() < UPGRADE_SLOT_HARD_CAP) {
+          this.upgradeSlotCapacity[category] += 1;
+        }
+        break;
+      }
     }
     this.checkForLevelUp();
     return true;
@@ -947,6 +965,11 @@ export class CombatSimulation {
         ? decision.options.map((option) => UPGRADE_CATALOG[option.id as UpgradeId])
         : [],
       upgradeLevels: [...this.upgradeLevels.entries()].map(([id, level]) => ({ id, level })),
+      upgradeSlots: (Object.keys(this.upgradeSlotCapacity) as UpgradeCategory[]).map((category) => ({
+        category,
+        used: this.usedUpgradeSlots(category),
+        capacity: this.upgradeSlotCapacity[category],
+      })),
       pendingDecision: decision
         ? { kind: decision.kind, title: decision.title, options: decision.options.map((option) => ({ ...option })) }
         : null,
@@ -1151,7 +1174,8 @@ export class CombatSimulation {
       options.push({
         id,
         name: upgradeLevelName(id, nextLevel),
-        description: UPGRADE_CATALOG[id].levelDescriptions[nextLevel - 1]!,
+        description: `[${UPGRADE_CATEGORY_LABELS[UPGRADE_CATALOG[id].category]}] `
+          + UPGRADE_CATALOG[id].levelDescriptions[nextLevel - 1]!,
       });
     }
     if (options.length === 0) {
@@ -1166,10 +1190,62 @@ export class CombatSimulation {
 
   private isUpgradeEligible(id: UpgradeId): boolean {
     const definition = UPGRADE_CATALOG[id];
-    if ((this.upgradeLevels.get(id) ?? 0) >= definition.maxLevel) {
+    const ownedLevel = this.upgradeLevels.get(id) ?? 0;
+    if (ownedLevel >= definition.maxLevel) {
       return false;
     }
-    return !definition.excludes.some((excluded) => (this.upgradeLevels.get(excluded) ?? 0) > 0);
+    if (definition.excludes.some((excluded) => (this.upgradeLevels.get(excluded) ?? 0) > 0)) {
+      return false;
+    }
+    // Breadth is slot-limited: a NEW upgrade needs a free slot in its
+    // category, while leveling an owned upgrade never consumes one.
+    return ownedLevel > 0
+      || this.usedUpgradeSlots(definition.category) < this.upgradeSlotCapacity[definition.category];
+  }
+
+  private usedUpgradeSlots(category: UpgradeCategory): number {
+    let used = 0;
+    for (const [id, level] of this.upgradeLevels) {
+      if (level > 0 && UPGRADE_CATALOG[id].category === category) {
+        used += 1;
+      }
+    }
+    return used;
+  }
+
+  private totalSlotCapacity(): number {
+    return Object.values(this.upgradeSlotCapacity).reduce((sum, capacity) => sum + capacity, 0);
+  }
+
+  /**
+   * Elite reward: choose which category gains one more upgrade slot. Returns
+   * null once the shared hard cap is reached.
+   */
+  private buildSlotRequisitionDecision(): PendingDecision | null {
+    if (this.totalSlotCapacity() >= UPGRADE_SLOT_HARD_CAP) {
+      return null;
+    }
+    const categories = Object.keys(this.upgradeSlotCapacity) as UpgradeCategory[];
+    const options: DecisionOption[] = categories.map((category) => ({
+      id: `slot-${category}`,
+      name: `${UPGRADE_CATEGORY_LABELS[category]} Slot`,
+      description: `Unlock one more ${UPGRADE_CATEGORY_LABELS[category]} upgrade slot `
+        + `(now ${this.usedUpgradeSlots(category)}/${this.upgradeSlotCapacity[category]}).`,
+    }));
+    // Keep the overlay at three options: drop a seeded entry when all four
+    // categories still have room.
+    while (options.length > 3) {
+      const dropIndex = Math.min(
+        Math.floor(this.random() * options.length),
+        options.length - 1,
+      );
+      options.splice(dropIndex, 1);
+    }
+    return {
+      kind: "slot-requisition",
+      title: "REQUISITION — UNLOCK AN UPGRADE SLOT",
+      options,
+    };
   }
 
   private buildWeaponChestDecision(): PendingDecision | null {
@@ -3122,7 +3198,14 @@ export class CombatSimulation {
         this.playerHealth = Math.min(PLAYER_MAX_HEALTH, this.playerHealth + 30);
         this.addExperience(this.experienceThreshold() * 2);
       } else {
-        this.addExperience(this.experienceThreshold());
+        // Elite caches are the run's slot income: choose which category
+        // grows. Once the hard cap is reached they fall back to experience.
+        const requisition = this.buildSlotRequisitionDecision();
+        if (requisition) {
+          this.decisionQueue.push(requisition);
+        } else {
+          this.addExperience(this.experienceThreshold());
+        }
       }
       break;
     }

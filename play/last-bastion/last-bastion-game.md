@@ -322,7 +322,15 @@ Implemented 17 July 2026. Every upgrade is leveled: choosing it again advances i
 
 This gives three recognisable archetype families out of one pool — burn-spread, freeze-control, and storm-chain — on top of the physical stat builds, which is the variety-and-skill requirement the level-up screen must satisfy.
 
-Weapon-slot counts, quick-slot inventories beyond the single kit, and rarity tiers are deferred until the game has enough content to justify them.
+### Categorized upgrade slots
+
+Implemented 17 July 2026. Builds are constrained by breadth, not just offer luck:
+
+- Every upgrade belongs to a **category**: Offensive, Defensive, Support, or Scavenger (Logistics and further categories join when the catalogue can populate them). Offer cards show the category.
+- Each hero starts with **6–8 slots** distributed by identity. The Marine is balanced: 3 Offensive, 2 Defensive, 1 Support, 1 Scavenger (7 total). The Medic will lean Support and the Assault Offensive when they arrive.
+- A **new** upgrade consumes a slot in its category; **leveling an owned upgrade never does**. Once a category is full, no new upgrades from it are offered — you can no longer simply take the best thing on every card, you deepen what you committed to.
+- Slots are earned in-run: **elite upgrade caches now open a Requisition choice** (+1 slot in one of up to three offered categories), making elites the run's slot income. A hard cap of **12 total slots** bounds late-game breadth; at the cap, caches fall back to experience.
+- The snapshot exposes used/capacity per category for the HUD, character dossier, and run summary.
 
 The web MVP may introduce Common, Uncommon, and Rare rewards, but rarity must communicate a real difference in behaviour or value.
 

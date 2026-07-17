@@ -1,5 +1,6 @@
 import type { EvasiveMoveProfile } from "./EvasiveMove";
 import type { DefenceProfile } from "../stats/DefenceStats";
+import type { UpgradeCategory } from "../content/upgradeCatalog";
 
 export type WeaponClass = "light" | "medium" | "heavy" | "unique";
 
@@ -31,6 +32,13 @@ export interface HeroDefinition {
   defence: DefenceProfile;
   passive: HeroPassiveProfile;
   ultimate: HeroUltimateProfile;
+  /**
+   * Starting upgrade slots per category. New upgrades consume a slot in
+   * their category; leveling an owned upgrade never does. Slot rewards can
+   * raise these up to the shared hard cap. Hero identity lives here: the
+   * Marine is balanced, the Medic will lean support, Assault offensive.
+   */
+  upgradeSlots: Readonly<Record<UpgradeCategory, number>>;
   /** Reserved: per-class damage bonuses activate once the catalogue is wide enough to matter. */
   weaponProficiencies: Readonly<Record<WeaponClass, number>>;
 }

@@ -344,7 +344,9 @@ describe("CombatSimulation", () => {
       observedDrop ||= snapshot.events.some((event) => event.type === "elite-reward-dropped");
     }
     expect(observedDrop).toBe(true);
-    expect(snapshot.eliteRewards.length > 0 || snapshot.pendingUpgradeChoices.length > 0).toBe(true);
+    // The cache either still lies on the ground or, once collected, opens the
+    // slot-requisition choice (or an upgrade choice at the slot hard cap).
+    expect(snapshot.eliteRewards.length > 0 || snapshot.pendingDecision !== null).toBe(true);
   });
 
   it("cycles the Siege Crusher through telegraphed mini-boss attacks", () => {

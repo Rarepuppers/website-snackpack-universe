@@ -35,6 +35,12 @@ export const MARINE = Object.freeze({
     stationarySecondsRequired: 1,
     bonusArmour: 3,
   },
+  upgradeSlots: {
+    offensive: 3,
+    defensive: 2,
+    support: 1,
+    scavenger: 1,
+  },
   ultimate: {
     id: "bastion-barrage",
     name: "Bastion Barrage",

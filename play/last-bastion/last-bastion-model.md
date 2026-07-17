@@ -295,6 +295,27 @@ An item is not completed merely because code or an asset exists. It must meet it
 - The simulation gained a player-side status-tuning layer (buildup-rate multipliers per damage type, Blaze bonus damage, freeze speed/duration overrides, combustion-on-death) that future relics and hero passives can also drive.
 - Snapshot exposes owned upgrade levels for future HUD/run-summary use; the offer draw preserves the original deterministic spread and skips ineligible entries.
 
+### Categorized upgrade slots and Requisition rewards
+
+**Status:** Completed — 17 July 2026; slot counts and elite cadence pending the step 35 tuning pass
+
+- Every upgrade carries a category (Offensive/Defensive/Support/Scavenger); offer cards display it. Logistics and further categories are reserved until the catalogue can populate them.
+- The Marine starts balanced at 3/2/1/1 (7 slots); hero definitions own the distribution so the Medic can lean Support and the Assault Offensive.
+- New upgrades consume a slot in their category; leveling owned upgrades never does. Full categories stop offering new entries, forcing breadth-versus-depth build decisions.
+- Elite upgrade caches now open a Requisition decision: +1 slot in one of up to three seeded category options. A shared hard cap of 12 total slots applies; capped caches fall back to experience.
+- Snapshot exposes per-category used/capacity for the future dossier, HUD, and run-summary screens.
+- Verification evidence: 169 tests across 20 files (six new slot rules), TypeScript validation, production build, HTTP smoke, and a clean browser boot.
+
+### Decision-menu input, crisp integer scaling, and arena theme pool
+
+**Status:** Completed — 17 July 2026; creator visual check on a high-resolution monitor pending
+
+- Decision overlays (upgrades, weapon chest, supply depot, requisition) are now fully keyboard/gamepad navigable: arrows or WASD or the left stick move the highlight, Enter / Space / pad-A confirms, digits 1–3 quick-pick, and an on-panel hint documents it. Mouse hover and the selection highlight share one state.
+- Fixed the pointer-mismatch bug: the overlay previously used `scrollFactor(0)`, but Phaser hit-tests interactive objects in world space, so hover/click zones drifted once the follow camera scrolled. The overlay now tracks the camera's world-view centre each frame, keeping panel and hit areas identical.
+- Replaced fractional `Scale.FIT` stretching with `Scale.NONE` plus an integer zoom snapped to the window (1×, 2×, 3×…): fractional upscales smear pixel art even with `image-rendering: pixelated`, which was the blur reported on high-resolution Firefox. Letterboxing at odd window sizes is the accepted trade; a native-resolution presentation pass (hi-res canvas, zoomed world camera, separate UI layer) remains future work if smoother text is wanted — this is a configuration matter, not an engine limitation.
+- Added the arena theme pool (`rendering/arenaThemes.ts`): five seeded tint/backdrop themes (Bastion Perimeter, Emberfall Ruin, Toxic Bloom, Void Approach, Arctic Relay) over the shared floor/boundary/obstacle atlases, drawn per page load and pinnable with `?theme=<id>`. This is the first half-procedural step of the expedition map's per-node background variety; authored per-world floor sets are a queued Codex batch.
+- Themes are presentation-only and never touch simulation state.
+
 ### Razor Scuttler interceptor behavior gate
 
 **Status:** Completed — 17 July 2026; Production Asset Batch D4 integrated and creator timing/readability review queued

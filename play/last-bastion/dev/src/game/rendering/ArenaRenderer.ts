@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import type { ArenaDefinition, ArenaObstacleKind } from "../arena/ArenaDefinition";
 import { worldDepth } from "./WorldDepth";
+import { ARENA_THEMES, type ArenaTheme } from "./arenaThemes";
 
 const OBSTACLE_FRAMES: Readonly<Record<ArenaObstacleKind, number>> = {
   barricade: 0,
@@ -22,6 +23,7 @@ export function renderArena(
   pixelsPerMetre: number,
   debugCollision = false,
   productionArt = true,
+  theme: ArenaTheme = ARENA_THEMES[0]!,
 ): void {
   const columns = Math.ceil(arena.widthMetres / arena.tileSizeMetres);
   const rows = Math.ceil(arena.heightMetres / arena.tileSizeMetres);
@@ -29,13 +31,13 @@ export function renderArena(
   const widthPixels = arena.widthMetres * pixelsPerMetre;
   const heightPixels = arena.heightMetres * pixelsPerMetre;
 
-  scene.add.rectangle(widthPixels / 2, heightPixels / 2, widthPixels, heightPixels, 0x111a25)
+  scene.add.rectangle(widthPixels / 2, heightPixels / 2, widthPixels, heightPixels, theme.backdropColor)
     .setDepth(-30);
 
   if (productionArt) {
-    renderAuthoredFloor(scene, columns, rows, tilePixels);
-    renderAuthoredBoundaries(scene, columns, rows, tilePixels, widthPixels, heightPixels);
-    renderAuthoredObstacles(scene, arena, pixelsPerMetre, debugCollision);
+    renderAuthoredFloor(scene, columns, rows, tilePixels, theme);
+    renderAuthoredBoundaries(scene, columns, rows, tilePixels, widthPixels, heightPixels, theme);
+    renderAuthoredObstacles(scene, arena, pixelsPerMetre, debugCollision, theme);
     return;
   }
 
@@ -47,13 +49,14 @@ function renderAuthoredFloor(
   columns: number,
   rows: number,
   tilePixels: number,
+  theme: ArenaTheme,
 ): void {
   for (let row = 0; row < rows; row += 1) {
     for (let column = 0; column < columns; column += 1) {
       const seed = (column * 17 + row * 31) % 23;
       const frame = seed === 0 ? 4 : seed === 1 ? 3 : seed < 6 ? 1 + (seed % 2) : 0;
       scene.add.sprite((column + 0.5) * tilePixels, (row + 0.5) * tilePixels, "arena-floor-v1", frame)
-        .setDisplaySize(tilePixels, tilePixels).setDepth(-20);
+        .setDisplaySize(tilePixels, tilePixels).setDepth(-20).setTint(theme.floorTint);
     }
   }
 }
@@ -65,22 +68,26 @@ function renderAuthoredBoundaries(
   tilePixels: number,
   widthPixels: number,
   heightPixels: number,
+  theme: ArenaTheme,
 ): void {
   for (let column = 0; column < columns; column += 1) {
     const x = (column + 0.5) * tilePixels;
     const topFrame = column === Math.floor(columns / 2) ? 6 : 0;
     const bottomFrame = column === Math.floor(columns * 0.72) ? 7 : 1;
     scene.add.sprite(x, tilePixels * 0.32, "arena-boundary-v1", topFrame)
-      .setDisplaySize(tilePixels, tilePixels).setDepth(80);
+      .setDisplaySize(tilePixels, tilePixels).setDepth(80).setTint(theme.boundaryTint);
     scene.add.sprite(x, heightPixels - tilePixels * 0.32, "arena-boundary-v1", bottomFrame)
-      .setDisplaySize(tilePixels, tilePixels).setDepth(worldDepth(heightPixels / tilePixels) + 20);
+      .setDisplaySize(tilePixels, tilePixels).setDepth(worldDepth(heightPixels / tilePixels) + 20)
+      .setTint(theme.boundaryTint);
   }
   for (let row = 1; row < rows - 1; row += 1) {
     const y = (row + 0.5) * tilePixels;
     scene.add.sprite(tilePixels * 0.32, y, "arena-boundary-v1", 2)
-      .setDisplaySize(tilePixels, tilePixels).setDepth(worldDepth(y / tilePixels) + 10);
+      .setDisplaySize(tilePixels, tilePixels).setDepth(worldDepth(y / tilePixels) + 10)
+      .setTint(theme.boundaryTint);
     scene.add.sprite(widthPixels - tilePixels * 0.32, y, "arena-boundary-v1", 3)
-      .setDisplaySize(tilePixels, tilePixels).setDepth(worldDepth(y / tilePixels) + 10);
+      .setDisplaySize(tilePixels, tilePixels).setDepth(worldDepth(y / tilePixels) + 10)
+      .setTint(theme.boundaryTint);
   }
 }
 
@@ -89,6 +96,7 @@ function renderAuthoredObstacles(
   arena: ArenaDefinition,
   pixelsPerMetre: number,
   debugCollision: boolean,
+  theme: ArenaTheme,
 ): void {
   for (const obstacle of arena.obstacles) {
     const x = (obstacle.x + obstacle.width / 2) * pixelsPerMetre;
@@ -98,7 +106,8 @@ function renderAuthoredObstacles(
     const view = scene.add.sprite(x, y, "arena-obstacle-v1", OBSTACLE_FRAMES[obstacle.kind])
       .setName(`arena-obstacle:${obstacle.id}`)
       .setDisplaySize(width, height)
-      .setDepth(worldDepth(obstacle.y + obstacle.height));
+      .setDepth(worldDepth(obstacle.y + obstacle.height))
+      .setTint(theme.obstacleTint);
     if (debugCollision) {
       scene.add.rectangle(x, y, width, height, 0x000000, 0)
         .setStrokeStyle(3, 0xff3d55).setDepth(view.depth + 1);

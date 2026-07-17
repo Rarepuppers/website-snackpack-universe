@@ -45,6 +45,8 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?mode=gallery&batch=f1` — Patrol Blade, action-bar, and timed-status Production Asset Batch F1
 - `/play/last-bastion/?mode=gallery&batch=f2`, `f3`, or `f4` — Bolt Carbine, Bulwark Rotary Cannon, or Grenade Tube production families
 - Add `debug=1` to the normal or stress route for collision labels and live entity/effect counts.
+- Add `theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay` to pin an arena background theme; without it each load draws one from the pool.
+- Decision overlays support arrows/WASD/left-stick navigation, Enter/Space/pad-A confirm, and digits 1–3 quick pick.
 
 ## Architecture
 

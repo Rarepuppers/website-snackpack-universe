@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { KeyboardMouseInput } from "../input/KeyboardMouseInput";
+import type { PlayerIntent } from "../input/PlayerIntent";
 import {
   CombatSimulation,
   RAZOR_SCUTTLER_DASH_SECONDS,
@@ -30,6 +31,7 @@ import {
 import { loadGameAssets } from "../assets/PhaserAssetLoader";
 import { GAME_ASSETS, type GameAssetId } from "../assets/GameAssetManifest";
 import { renderArena } from "../rendering/ArenaRenderer";
+import { arenaThemeById, pickArenaTheme } from "../rendering/arenaThemes";
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { cueForEvent, EVASIVE_MOVE_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
 import { WebAudioSynth } from "../audio/WebAudioSynth";
@@ -97,6 +99,19 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly powerupViews = new Map<number, PickupView>();
   private readonly weaponViews = new Map<number, WeaponView>();
   private decisionOverlay: Phaser.GameObjects.Container | null = null;
+  private decisionButtons: { rect: Phaser.GameObjects.Rectangle; choiceId: string }[] = [];
+  private decisionSelectionIndex = 0;
+  private menuStickReady = true;
+  private menuKeys: {
+    up: Phaser.Input.Keyboard.Key;
+    down: Phaser.Input.Keyboard.Key;
+    w: Phaser.Input.Keyboard.Key;
+    s: Phaser.Input.Keyboard.Key;
+    confirm: Phaser.Input.Keyboard.Key;
+    one: Phaser.Input.Keyboard.Key;
+    two: Phaser.Input.Keyboard.Key;
+    three: Phaser.Input.Keyboard.Key;
+  } | null = null;
   private visibleDecisionKey = "";
   private isPaused = false;
   private lastAimAngle = 0;
@@ -106,6 +121,7 @@ export class PrototypeScene extends Phaser.Scene {
   private fenceLine: Phaser.GameObjects.Line | Phaser.GameObjects.Image | null = null;
   private fenceSwitch: Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite | null = null;
   private fencePrompt: Phaser.GameObjects.Text | null = null;
+  private readonly arenaTheme = resolveArenaTheme();
   private readonly saveStore = createSaveStore();
   private settings = applySettingOverrides(this.saveStore);
   private readonly synth = new WebAudioSynth(this.settings.soundEnabled);
@@ -122,7 +138,7 @@ export class PrototypeScene extends Phaser.Scene {
 
   create(): void {
     const { width, height } = this.scale;
-    renderArena(this, this.simulation.arena, PIXELS_PER_METRE, this.showDebug, this.useMarineArt);
+    renderArena(this, this.simulation.arena, PIXELS_PER_METRE, this.showDebug, this.useMarineArt, this.arenaTheme);
     this.effectPool = new VisualEffectPool(this, this.stressProfile === 12 ? 192 : 96);
 
     const shadow = this.useMarineArt
@@ -165,6 +181,18 @@ export class PrototypeScene extends Phaser.Scene {
     this.createFenceViews();
 
     this.controls = new KeyboardMouseInput(this);
+    // Separate Key instances from the combat adapter so menu navigation gets
+    // its own JustDown edges without stealing the gameplay bindings.
+    this.menuKeys = this.input.keyboard!.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.UP,
+      down: Phaser.Input.Keyboard.KeyCodes.DOWN,
+      w: Phaser.Input.Keyboard.KeyCodes.W,
+      s: Phaser.Input.Keyboard.KeyCodes.S,
+      confirm: Phaser.Input.Keyboard.KeyCodes.ENTER,
+      one: Phaser.Input.Keyboard.KeyCodes.ONE,
+      two: Phaser.Input.Keyboard.KeyCodes.TWO,
+      three: Phaser.Input.Keyboard.KeyCodes.THREE,
+    }) as unknown as NonNullable<typeof this.menuKeys>;
     this.lastSnapshot = this.simulation.snapshot();
     this.renderSnapshot(this.lastSnapshot, false);
   }
@@ -172,6 +200,10 @@ export class PrototypeScene extends Phaser.Scene {
   update(_time: number, deltaMilliseconds: number): void {
     const deltaSeconds = Math.min(deltaMilliseconds / 1000, 0.05);
     const intent = this.controls.read(this.player);
+
+    if (this.lastSnapshot.pendingDecision) {
+      this.handleDecisionNavigation(intent);
+    }
 
     if (
       intent.restartPressed
@@ -1758,16 +1790,100 @@ export class PrototypeScene extends Phaser.Scene {
     this.fencePrompt.setVisible(fence.ready && fence.playerNearSwitch && !fence.active);
   }
 
+  /**
+   * Arrow keys / WASD / left stick move the highlight, Enter / Space / pad A
+   * confirms, and digits 1–3 pick directly. Runs before the simulation step
+   * so a confirm applies on the same frame.
+   */
+  private handleDecisionNavigation(intent: PlayerIntent): void {
+    if (!this.menuKeys || this.decisionButtons.length === 0) {
+      return;
+    }
+
+    let delta = 0;
+    if (Phaser.Input.Keyboard.JustDown(this.menuKeys.up) || Phaser.Input.Keyboard.JustDown(this.menuKeys.w)) {
+      delta -= 1;
+    }
+    if (Phaser.Input.Keyboard.JustDown(this.menuKeys.down) || Phaser.Input.Keyboard.JustDown(this.menuKeys.s)) {
+      delta += 1;
+    }
+    // Gamepad stick: one step per push, re-armed once the stick recentres.
+    if (Math.abs(intent.move.y) < 0.35) {
+      this.menuStickReady = true;
+    } else if (this.menuStickReady && Math.abs(intent.move.y) > 0.6) {
+      delta += intent.move.y > 0 ? 1 : -1;
+      this.menuStickReady = false;
+    }
+    if (delta !== 0) {
+      const count = this.decisionButtons.length;
+      this.decisionSelectionIndex = (this.decisionSelectionIndex + delta + count) % count;
+      this.updateDecisionSelectionHighlight();
+    }
+
+    const digits = [this.menuKeys.one, this.menuKeys.two, this.menuKeys.three];
+    for (let index = 0; index < this.decisionButtons.length; index += 1) {
+      if (digits[index] && Phaser.Input.Keyboard.JustDown(digits[index]!)) {
+        this.decisionSelectionIndex = index;
+        this.confirmDecisionSelection();
+        return;
+      }
+    }
+
+    if (Phaser.Input.Keyboard.JustDown(this.menuKeys.confirm) || intent.evasiveMovePressed) {
+      this.confirmDecisionSelection();
+    }
+  }
+
+  private confirmDecisionSelection(): void {
+    const selected = this.decisionButtons[this.decisionSelectionIndex];
+    if (!selected) {
+      return;
+    }
+    this.synth.play(UI_CONFIRM_CUE);
+    this.simulation.chooseOption(selected.choiceId);
+  }
+
+  private updateDecisionSelectionHighlight(): void {
+    this.decisionButtons.forEach(({ rect }, index) => {
+      if (index === this.decisionSelectionIndex) {
+        rect.setFillStyle(0x294865).setStrokeStyle(3, 0x68e4e8);
+      } else {
+        rect.setFillStyle(0x1b2d42).setStrokeStyle(2, 0x5d7892);
+      }
+    });
+  }
+
+  /**
+   * The overlay deliberately does NOT use scrollFactor(0): Phaser hit-tests
+   * interactive objects in world space, so a screen-fixed container drifts
+   * away from its own hover/click zones once the camera scrolls. Instead the
+   * container follows the camera's world-view centre every frame, keeping
+   * the drawn panel and its hit areas identical.
+   */
+  private positionDecisionOverlay(): void {
+    if (!this.decisionOverlay) {
+      return;
+    }
+    const camera = this.cameras.main;
+    this.decisionOverlay.setPosition(
+      camera.scrollX + camera.width / 2,
+      camera.scrollY + camera.height / 2,
+    );
+  }
+
   private syncDecisionOverlay(decision: PendingDecision | null): void {
     const nextKey = decision
       ? `${decision.kind}|${decision.options.map((option) => option.id).join("|")}`
       : "";
     if (nextKey === this.visibleDecisionKey) {
+      this.positionDecisionOverlay();
       return;
     }
 
     this.decisionOverlay?.destroy(true);
     this.decisionOverlay = null;
+    this.decisionButtons = [];
+    this.decisionSelectionIndex = 0;
     this.spinewheelTrailTimes.clear();
     this.tetherBloomAccentTimes.clear();
     this.visibleDecisionKey = nextKey;
@@ -1776,7 +1892,6 @@ export class PrototypeScene extends Phaser.Scene {
       return;
     }
 
-    const { width, height } = this.scale;
     const children: Phaser.GameObjects.GameObject[] = [];
     children.push(this.add.rectangle(0, 0, 760, 330, 0x0b121c, 0.985).setStrokeStyle(4, 0x68e4e8));
     children.push(this.add.rectangle(0, 0, 742, 312, 0x172536, 0.72).setStrokeStyle(1, 0x4d6a83));
@@ -1804,17 +1919,28 @@ export class PrototypeScene extends Phaser.Scene {
         fontSize: "15px",
         lineSpacing: 5,
       }).setResolution(2);
-      button.on("pointerover", () => button.setFillStyle(0x294865).setStrokeStyle(3, 0x68e4e8));
-      button.on("pointerout", () => button.setFillStyle(0x1b2d42).setStrokeStyle(2, 0x5d7892));
-      button.on("pointerdown", () => {
-        this.synth.play(UI_CONFIRM_CUE);
-        this.simulation.chooseOption(choice.id);
+      button.on("pointerover", () => {
+        this.decisionSelectionIndex = index;
+        this.updateDecisionSelectionHighlight();
       });
+      button.on("pointerdown", () => {
+        this.decisionSelectionIndex = index;
+        this.confirmDecisionSelection();
+      });
+      this.decisionButtons.push({ rect: button, choiceId: choice.id });
       children.push(button, label);
     });
 
-    this.decisionOverlay = this.add.container(width / 2, height / 2, children)
-      .setDepth(2200).setScrollFactor(0);
+    const hint = this.add.text(0, 138, "↑↓ SELECT   •   ENTER CONFIRM   •   1-3 QUICK PICK", {
+      color: "#9fb3c8",
+      fontFamily: "Consolas, Courier New, monospace",
+      fontSize: "11px",
+    }).setOrigin(0.5).setResolution(2);
+    children.push(hint);
+
+    this.decisionOverlay = this.add.container(0, 0, children).setDepth(2200);
+    this.updateDecisionSelectionHighlight();
+    this.positionDecisionOverlay();
   }
 
   private destroyMissing<T extends Phaser.GameObjects.GameObject>(
@@ -1882,6 +2008,19 @@ function readUraniumLab(): { kit: boolean; active: boolean } {
     kit: params.get("kit") === "uranium",
     active: params.get("buff") === "uranium",
   };
+}
+
+/**
+ * `?theme=<id>` pins a specific arena theme for review; otherwise each page
+ * load draws one from the pool, previewing the expedition map's per-node
+ * background variety.
+ */
+function resolveArenaTheme() {
+  const requested = arenaThemeById(new URLSearchParams(window.location.search).get("theme"));
+  if (requested) {
+    return requested;
+  }
+  return pickArenaTheme(Math.floor(Math.random() * 1024));
 }
 
 function createSaveStore(): LocalSaveStore {
