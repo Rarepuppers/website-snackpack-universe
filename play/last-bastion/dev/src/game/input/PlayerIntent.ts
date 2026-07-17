@@ -7,6 +7,7 @@ export interface PlayerIntent {
   evasiveMovePressed: boolean;
   interactPressed: boolean;
   ultimatePressed: boolean;
+  kitPressed: boolean;
   pausePressed: boolean;
   restartPressed: boolean;
 }

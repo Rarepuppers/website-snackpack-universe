@@ -50,8 +50,8 @@ type EnemyView =
   | Phaser.GameObjects.Rectangle
   | Phaser.GameObjects.Triangle
   | Phaser.GameObjects.Sprite;
-type WeaponView = Phaser.GameObjects.Rectangle | Phaser.GameObjects.Image;
-type ProjectileView = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
+type WeaponView = Phaser.GameObjects.Rectangle | Phaser.GameObjects.Triangle | Phaser.GameObjects.Image | Phaser.GameObjects.Sprite;
+type ProjectileView = Phaser.GameObjects.Arc | Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite;
 type EnemyProjectileView = Phaser.GameObjects.Arc | Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite;
 type HazardView = Phaser.GameObjects.Ellipse | Phaser.GameObjects.Sprite;
 type TelegraphView = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
@@ -72,7 +72,10 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly useMarineArt = readMarineArtPreview();
   private readonly useMarineHelmet = this.useMarineArt && readMarineHelmetPreview();
   private readonly showDebug = readDebugMode();
-  private simulation = createSimulation(this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario);
+  private readonly uraniumLab = readUraniumLab();
+  private simulation = createSimulation(
+    this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
+  );
   private readonly enemyViews = new Map<number, EnemyView>();
   private readonly projectileViews = new Map<number, ProjectileView>();
   private readonly enemyProjectileViews = new Map<number, EnemyProjectileView>();
@@ -152,11 +155,11 @@ export class PrototypeScene extends Phaser.Scene {
       .startFollow(this.player, true, 0.12, 0.12)
       .setDeadzone(210, 130);
 
-    this.add.text(width / 2, height - 14, "WASD MOVE   •   MOUSE AIM / FIRE   •   SPACE ROLL   •   R ULTIMATE   •   E INTERACT   •   ESC PAUSE", {
+    this.add.text(18, height - 8, "WASD MOVE  •  MOUSE AIM / FIRE  •  ESC PAUSE", {
       color: "#9fb3c8",
       fontFamily: "monospace",
       fontSize: "10px",
-    }).setOrigin(0.5, 1).setDepth(2000).setScrollFactor(0).setResolution(2);
+    }).setOrigin(0, 1).setDepth(2000).setScrollFactor(0).setResolution(2);
 
     this.hud = new CombatHud(this, this.showDebug, this.useMarineArt);
     this.createFenceViews();
@@ -276,7 +279,9 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   private restartRun(): void {
-    this.simulation = createSimulation(this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario);
+    this.simulation = createSimulation(
+      this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
+    );
     this.lastSnapshot = this.simulation.snapshot();
     this.isPaused = false;
     this.runOutcomeRecorded = false;
@@ -342,6 +347,21 @@ export class PrototypeScene extends Phaser.Scene {
       switch (event.type) {
         case "weapon-fired":
           this.pulseWeapon(event.weaponInstanceId);
+          this.animateProductionWeapon(event.weaponInstanceId, event.weaponId);
+          if (event.weaponId === "patrol-blade") {
+            this.animatePatrolBlade(event.weaponInstanceId);
+            this.drawPatrolBladeSweep(event.position, event.direction);
+            break;
+          }
+          if (event.weaponId === "bolt-carbine") {
+            this.emitAuthoredEffect(0, event.position, 110, 0.5, 0.92, Math.atan2(event.direction.y, event.direction.x), "bolt-carbine-effects-v1");
+            break;
+          }
+          if (event.weaponId === "bulwark-rotary-cannon") {
+            this.emitAuthoredEffect(2, event.position, 80, 0.45, 0.82, Math.atan2(event.direction.y, event.direction.x), "bulwark-rotary-effects-v1");
+            break;
+          }
+          if (event.weaponId === "grenade-tube") break;
           this.emitAuthoredEffect(
             event.weaponId === "scattergun" ? 0 : event.weaponId === "arc-carbine" ? 5 : 5,
             event.position,
@@ -357,6 +377,22 @@ export class PrototypeScene extends Phaser.Scene {
           break;
         case "enemy-hit":
           this.emitAuthoredEffect(7, event.position, 110, 0.55, 0.95);
+          break;
+        case "bolt-impact":
+          this.emitAuthoredEffect(
+            event.hitIndex === 1 ? 3 : 5,
+            event.position,
+            event.hitIndex === 1 ? 150 : 210,
+            event.hitIndex === 1 ? 0.65 : 0.82,
+            event.hitIndex === 1 ? 1.25 : 1.65,
+            0,
+            "bolt-carbine-effects-v1",
+          );
+          break;
+        case "projectile-impact":
+          if (event.weaponId === "bulwark-rotary-cannon") {
+            this.emitAuthoredEffect(4, event.position, 120, 0.48, 0.9, 0, "bulwark-rotary-effects-v1");
+          }
           break;
         case "enemy-defeated":
           if (event.enemyType === "siege-crusher") {
@@ -384,7 +420,12 @@ export class PrototypeScene extends Phaser.Scene {
           }
           break;
         case "explosion":
-          this.emitAuthoredEffect(9, event.position, 240, event.radiusMetres, event.radiusMetres * 1.5);
+          if (event.weaponId === "grenade-tube") {
+            this.emitAuthoredEffect(5, event.position, 320, event.radiusMetres * 0.55, event.radiusMetres * 1.15, 0, "grenade-tube-effects-v1");
+            this.shakeCamera(100, 0.004);
+          } else {
+            this.emitAuthoredEffect(9, event.position, 240, event.radiusMetres, event.radiusMetres * 1.5);
+          }
           break;
         case "player-hit":
           this.shakeCamera(120, 0.006);
@@ -409,7 +450,15 @@ export class PrototypeScene extends Phaser.Scene {
           this.shakeCamera(90, 0.0025);
           break;
         case "projectile-blocked":
-          this.emitAuthoredEffect(7, event.position, 130, 0.5, 0.95);
+          if (event.weaponId === "bolt-carbine") {
+            this.emitAuthoredEffect(6, event.position, 150, 0.58, 1.05, 0, "bolt-carbine-effects-v1");
+          } else if (event.weaponId === "bulwark-rotary-cannon") {
+            this.emitAuthoredEffect(5, event.position, 120, 0.48, 0.9, 0, "bulwark-rotary-effects-v1");
+          } else if (event.weaponId === "grenade-tube") {
+            this.emitAuthoredEffect(6, event.position, 180, 0.65, 1.15, 0, "grenade-tube-effects-v1");
+          } else {
+            this.emitAuthoredEffect(7, event.position, 130, 0.5, 0.95);
+          }
           break;
         case "slime-spit-windup":
           this.emitAuthoredEffect(12, event.target, 260, 0.65, 0.9, 0, "batch-b-effects-v1");
@@ -607,6 +656,33 @@ export class PrototypeScene extends Phaser.Scene {
     }
   }
 
+  private drawPatrolBladeSweep(
+    position: { x: number; y: number },
+    direction: { x: number; y: number },
+  ): void {
+    const angle = Math.atan2(direction.y, direction.x);
+    if (this.useMarineArt) {
+      this.emitAuthoredEffect(1, position, 190, 0.82, 1.18, angle, "patrol-blade-effects-v1");
+      return;
+    }
+    const x = position.x * PIXELS_PER_METRE;
+    const y = position.y * PIXELS_PER_METRE;
+    const sweep = this.add.graphics().setDepth(905);
+    sweep.lineStyle(8, 0xffd08a, 0.92).beginPath()
+      .arc(x, y, 62, angle - Math.PI * 0.36, angle + Math.PI * 0.36)
+      .strokePath();
+    sweep.lineStyle(2, 0x68e4e8, 0.9).beginPath()
+      .arc(x, y, 54, angle - Math.PI * 0.34, angle + Math.PI * 0.34)
+      .strokePath();
+    this.tweens.add({
+      targets: sweep,
+      alpha: 0,
+      duration: 180,
+      ease: "Quad.easeOut",
+      onComplete: () => sweep.destroy(),
+    });
+  }
+
   private drawChainArc(from: { x: number; y: number }, to: { x: number; y: number }): void {
     const line = this.add.line(
       0,
@@ -629,7 +705,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -674,7 +750,15 @@ export class PrototypeScene extends Phaser.Scene {
       let view = this.weaponViews.get(weapon.instanceId);
       if (!view) {
         const assetId = weaponAssetId(weapon.weaponId);
-        view = this.useMarineArt
+        view = weapon.weaponId === "patrol-blade" && this.useMarineArt
+          ? this.add.sprite(0, 0, "patrol-blade-v1", 1).setDisplaySize(58, 58)
+          : weapon.weaponId === "patrol-blade"
+            ? this.add.triangle(0, 0, -18, -5, 18, 0, -18, 5, 0xffd08a)
+              .setOrigin(0.2, 0.5).setStrokeStyle(2, 0x4f2f20)
+          : this.useMarineArt && isProductionWeaponSheet(weapon.weaponId)
+          ? this.add.sprite(0, 0, assetId, 1).setDisplaySize(66, 66)
+            .setOrigin(GAME_ASSETS[assetId].pivot.x, GAME_ASSETS[assetId].pivot.y)
+          : this.useMarineArt
           ? this.add.image(0, 0, assetId)
             .setOrigin(GAME_ASSETS[assetId].pivot.x, GAME_ASSETS[assetId].pivot.y)
           : this.add.rectangle(0, 0, 34, 8, 0xe9e3cf)
@@ -691,6 +775,8 @@ export class PrototypeScene extends Phaser.Scene {
       view.setRotation(this.lastAimAngle);
       view.setDepth(worldDepth(playerPosition.y) + slot.depthOffset * 2);
       if (view instanceof Phaser.GameObjects.Rectangle) {
+        view.setFillStyle(firing ? 0xffffff : weaponColor(weapon.weaponId));
+      } else if (view instanceof Phaser.GameObjects.Triangle) {
         view.setFillStyle(firing ? 0xffffff : weaponColor(weapon.weaponId));
       } else {
         if (firing) view.setTint(0xffffff);
@@ -712,6 +798,33 @@ export class PrototypeScene extends Phaser.Scene {
       scaleY: 1,
       duration: 70,
       ease: "Quad.easeOut",
+    });
+  }
+
+  private animatePatrolBlade(instanceId: number): void {
+    const weapon = this.weaponViews.get(instanceId);
+    if (!(weapon instanceof Phaser.GameObjects.Sprite) || weapon.texture.key !== "patrol-blade-v1") return;
+    weapon.setFrame(2);
+    this.time.delayedCall(90, () => {
+      if (weapon.active) weapon.setFrame(3);
+    });
+    this.time.delayedCall(190, () => {
+      if (weapon.active) weapon.setFrame(1);
+    });
+  }
+
+  private animateProductionWeapon(instanceId: number, weaponId: WeaponId): void {
+    if (!isProductionWeaponSheet(weaponId)) return;
+    const weapon = this.weaponViews.get(instanceId);
+    if (!(weapon instanceof Phaser.GameObjects.Sprite)) return;
+    weapon.setFrame(2);
+    const recoverDelay = weaponId === "grenade-tube" ? 150 : weaponId === "bolt-carbine" ? 110 : 55;
+    const readyDelay = weaponId === "grenade-tube" ? 520 : weaponId === "bolt-carbine" ? 300 : 120;
+    this.time.delayedCall(recoverDelay, () => {
+      if (weapon.active) weapon.setFrame(3);
+    });
+    this.time.delayedCall(readyDelay, () => {
+      if (weapon.active) weapon.setFrame(1);
     });
   }
 
@@ -1171,11 +1284,17 @@ export class PrototypeScene extends Phaser.Scene {
     for (const projectile of projectiles) {
       let view = this.projectileViews.get(projectile.id);
       if (!view) {
-        const authoredProjectile = projectile.weaponId === "scattergun"
-          ? { texture: "batch-b-effects-v1", frame: 1 }
+        const authoredProjectile = projectile.weaponId === "bolt-carbine"
+          ? { texture: "bolt-carbine-effects-v1", frame: 1, scale: 0.58 }
+          : projectile.weaponId === "bulwark-rotary-cannon"
+            ? { texture: "bulwark-rotary-effects-v1", frame: 1, scale: 0.34 }
+            : projectile.weaponId === "grenade-tube"
+              ? { texture: "grenade-tube-effects-v1", frame: 0, scale: 0.48 }
+          : projectile.weaponId === "scattergun"
+          ? { texture: "batch-b-effects-v1", frame: 1, scale: 0.24 }
           : projectile.weaponId === "arc-carbine"
-            ? { texture: "batch-b-effects-v1", frame: 6 }
-            : { texture: "combat-effects-v1", frame: 6 };
+            ? { texture: "batch-b-effects-v1", frame: 6, scale: 0.3 }
+            : { texture: "combat-effects-v1", frame: 6, scale: 0.3 };
         view = this.useMarineArt
           ? this.add.sprite(0, 0, authoredProjectile.texture, authoredProjectile.frame)
           : this.add.circle(0, 0, 4, 0xffd36b).setStrokeStyle(1, 0xffffff);
@@ -1188,7 +1307,10 @@ export class PrototypeScene extends Phaser.Scene {
       );
       view.setRotation(projectile.rotationRadians);
       if (view instanceof Phaser.GameObjects.Sprite) {
-        view.setScale(projectile.weaponId === "scattergun" ? 0.24 : projectile.weaponId === "arc-carbine" ? 0.3 : 0.3);
+        view.setScale(projectile.weaponId === "bolt-carbine" ? 0.58
+          : projectile.weaponId === "bulwark-rotary-cannon" ? 0.34
+            : projectile.weaponId === "grenade-tube" ? 0.48
+              : projectile.weaponId === "scattergun" ? 0.24 : 0.3);
         view.clearTint();
       } else {
         view.setFillStyle(weaponColor(projectile.weaponId));
@@ -1721,6 +1843,10 @@ function readStartingWeaponIds(): readonly WeaponId[] | null {
   const raw = new URLSearchParams(window.location.search).get("loadout")?.trim().toLowerCase();
   if (!raw) return null;
   if (raw === "vertical") return VERTICAL_SLICE_WEAPON_IDS;
+  if (raw === "patrol") return ["patrol-blade"];
+  if (raw === "bolt") return ["bolt-carbine"];
+  if (raw === "bulwark") return ["bulwark-rotary-cannon"];
+  if (raw === "grenade") return ["grenade-tube"];
   const ids = raw.split(",").map((value) => value.trim())
     .filter((value): value is WeaponId => value in WEAPON_CATALOG);
   return ids.length > 0 ? ids.slice(0, 12) : null;
@@ -1748,6 +1874,14 @@ function readScenario(): CombatScenario | null {
 
 function readDebugMode(): boolean {
   return new URLSearchParams(window.location.search).get("debug") === "1";
+}
+
+function readUraniumLab(): { kit: boolean; active: boolean } {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    kit: params.get("kit") === "uranium",
+    active: params.get("buff") === "uranium",
+  };
 }
 
 function createSaveStore(): LocalSaveStore {
@@ -1779,12 +1913,15 @@ function createSimulation(
   stressProfile: 4 | 12 | null,
   startingWeaponIds: readonly WeaponId[] | null,
   scenario: CombatScenario | null,
+  uraniumLab: { kit: boolean; active: boolean },
 ): CombatSimulation {
   return new CombatSimulation({
     startingWeaponCount,
     startingWeaponIds: startingWeaponIds ?? undefined,
     stressProfile: stressProfile ?? undefined,
     scenario: scenario ?? undefined,
+    startingUraniumKit: uraniumLab.kit,
+    startWithUraniumBuff: uraniumLab.active,
   });
 }
 
@@ -1804,6 +1941,7 @@ function powerupColor(type: PowerupType): number {
     case "aegis": return 0x68e4e8;
     case "adrenaline": return 0xff5f5f;
     case "magnet-pulse": return 0x8fb8ff;
+    case "uranium-core-rounds": return 0xb9ef62;
   }
 }
 
@@ -1823,6 +1961,7 @@ function powerupRewardFrame(type: PowerupType): number {
     case "aegis": return 9;
     case "magnet-pulse": return 10;
     case "adrenaline": return 11;
+    case "uranium-core-rounds": return 8;
   }
 }
 
@@ -1830,14 +1969,26 @@ function weaponColor(weaponId: WeaponId): number {
   switch (weaponId) {
     case "scattergun": return 0xff9a72;
     case "arc-carbine": return 0x68e4e8;
+    case "patrol-blade": return 0xffd08a;
+    case "bolt-carbine": return 0x94efff;
+    case "bulwark-rotary-cannon": return 0xff9b42;
+    case "grenade-tube": return 0xffb23f;
     default: return 0xe9e3cf;
   }
 }
 
-function weaponAssetId(weaponId: WeaponId): "service-rifle-v1" | "scattergun-v1" | "arc-carbine-v1" {
+function weaponAssetId(weaponId: WeaponId): "service-rifle-v1" | "scattergun-v1" | "arc-carbine-v1" | "patrol-blade-v1" | "bolt-carbine-v1" | "bulwark-rotary-cannon-v1" | "grenade-tube-v1" {
   if (weaponId === "scattergun") return "scattergun-v1";
   if (weaponId === "arc-carbine") return "arc-carbine-v1";
+  if (weaponId === "patrol-blade") return "patrol-blade-v1";
+  if (weaponId === "bolt-carbine") return "bolt-carbine-v1";
+  if (weaponId === "bulwark-rotary-cannon") return "bulwark-rotary-cannon-v1";
+  if (weaponId === "grenade-tube") return "grenade-tube-v1";
   return "service-rifle-v1";
+}
+
+function isProductionWeaponSheet(weaponId: WeaponId): weaponId is "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" {
+  return weaponId === "bolt-carbine" || weaponId === "bulwark-rotary-cannon" || weaponId === "grenade-tube";
 }
 
 function applyManifestOrigin(

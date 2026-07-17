@@ -73,7 +73,7 @@ export type BroodWardenPhase =
   | "acid-windup" | "acid-volley" | "egg-windup" | "egg-lay"
   | "rush-windup" | "swarm-rush" | "recovery";
 export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater";
-export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse";
+export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot";
 
 export interface DecisionOption {
@@ -97,14 +97,16 @@ export type CombatEvent =
     direction: Vector2Data;
   }
   | { type: "enemy-hit"; position: Vector2Data }
+  | { type: "bolt-impact"; position: Vector2Data; hitIndex: 1 | 2 }
+  | { type: "projectile-impact"; position: Vector2Data; weaponId: WeaponId }
   | { type: "enemy-defeated"; position: Vector2Data; enemyType: EnemyType }
-  | { type: "explosion"; position: Vector2Data; radiusMetres: number }
+  | { type: "explosion"; position: Vector2Data; radiusMetres: number; weaponId?: WeaponId }
   | { type: "player-hit"; position: Vector2Data; damage: number }
   | { type: "xp-collected"; position: Vector2Data; value: number }
   | { type: "level-up"; level: number }
   | { type: "enemy-spawned"; position: Vector2Data; enemyType: EnemyType }
   | { type: "egg-hatched"; position: Vector2Data }
-  | { type: "projectile-blocked"; position: Vector2Data }
+  | { type: "projectile-blocked"; position: Vector2Data; weaponId?: WeaponId }
   | { type: "chain-arc"; from: Vector2Data; to: Vector2Data; weaponId: WeaponId }
   | { type: "slime-spit-windup"; position: Vector2Data; target: Vector2Data }
   | { type: "slime-glob-fired"; position: Vector2Data; target: Vector2Data }
@@ -124,6 +126,7 @@ export type CombatEvent =
   | { type: "mini-boss-reward-dropped"; position: Vector2Data; miniBossKind: MiniBossKind }
   | { type: "status-applied"; position: Vector2Data; status: StatusEffectType }
   | { type: "powerup-collected"; position: Vector2Data; powerupType: PowerupType }
+  | { type: "kit-activated"; position: Vector2Data; powerupType: "uranium-core-rounds" }
   | { type: "warp-arrival"; position: Vector2Data }
   | { type: "ripper-sweep"; position: Vector2Data; direction: Vector2Data; reachMetres: number }
   | { type: "razor-scuttler-warning"; position: Vector2Data; direction: Vector2Data }
@@ -219,6 +222,7 @@ export interface PowerupPickupSnapshot {
 export interface ActiveBuffSnapshot {
   type: PowerupType;
   remainingSeconds: number;
+  durationSeconds: number;
 }
 
 export interface FenceSnapshot {
@@ -254,6 +258,11 @@ export interface EliteRewardSnapshot {
   position: Vector2Data;
 }
 
+export interface EquippedWeaponSnapshot extends EquippedWeapon {
+  cooldownRemainingSeconds: number;
+  cooldownDurationSeconds: number;
+}
+
 export interface CombatSnapshot {
   status: EncounterStatus;
   waveNumber: number;
@@ -284,8 +293,9 @@ export interface CombatSnapshot {
   pickups: readonly ExperiencePickupSnapshot[];
   powerups: readonly PowerupPickupSnapshot[];
   activeBuffs: readonly ActiveBuffSnapshot[];
+  uraniumKitAvailable: boolean;
   weapon: Readonly<WeaponRuntimeStats>;
-  equippedWeapons: readonly Readonly<EquippedWeapon>[];
+  equippedWeapons: readonly Readonly<EquippedWeaponSnapshot>[];
   events: readonly CombatEvent[];
   arena: Readonly<ArenaDefinition>;
   stressProfile: 4 | 12 | null;
@@ -372,6 +382,7 @@ interface ProjectileState {
   position: Vector2Data;
   velocity: Vector2Data;
   damage: number;
+  uraniumEligible: boolean;
   remainingSeconds: number;
   pierceRemaining: number;
   explosionRadiusMetres: number;
@@ -441,10 +452,13 @@ export interface CombatSimulationOptions {
   arena?: ArenaDefinition;
   stressProfile?: 4 | 12;
   scenario?: CombatScenario;
+  startingUraniumKit?: boolean;
+  startWithUraniumBuff?: boolean;
 }
 
 interface EquippedWeaponState extends EquippedWeapon {
   cooldownSeconds: number;
+  cooldownDurationSeconds: number;
 }
 
 const TOTAL_WAVES = 5;
@@ -488,6 +502,8 @@ const OVERCHARGE_ATTACK_SPEED_MULTIPLIER = 1.6;
 const ADRENALINE_MOVE_MULTIPLIER = 1.35;
 const MAGNET_PULSE_MULTIPLIER = 2.5;
 const AEGIS_SHIELD_AMOUNT = 25;
+export const URANIUM_CORE_ROUNDS_DURATION_SECONDS = 12;
+export const URANIUM_CORE_ROUNDS_DAMAGE_MULTIPLIER = 1.25;
 const BLAST_MITE_EXPLOSION_RADIUS_METRES = 1.6;
 const BLAST_MITE_EXPLOSION_DAMAGE = 16;
 const SUPPLY_DEPOT_HEAL = 45;
@@ -505,6 +521,7 @@ const POWERUP_DURATION_SECONDS: Readonly<Record<PowerupType, number>> = Object.f
   aegis: 0,
   adrenaline: 5,
   "magnet-pulse": 6,
+  "uranium-core-rounds": URANIUM_CORE_ROUNDS_DURATION_SECONDS,
 });
 
 const POWERUP_WAVE_CYCLE: readonly PowerupType[] = Object.freeze([
@@ -542,6 +559,7 @@ export class CombatSimulation {
   private eliteRewards: EliteRewardState[] = [];
   private powerups: PowerupPickupState[] = [];
   private readonly activeBuffs = new Map<PowerupType, number>();
+  private uraniumKitAvailable: boolean;
   private readonly obstacleDamage = new Map<string, number>();
   private pickups: ExperiencePickupState[] = [];
   private nextEntityId = 1;
@@ -571,13 +589,21 @@ export class CombatSimulation {
     this.randomState = options.seed ?? 0x5a17b45;
     this.stressProfile = options.stressProfile ?? null;
     this.scenario = options.scenario ?? null;
+    this.uraniumKitAvailable = options.startingUraniumKit ?? false;
+    if (options.startWithUraniumBuff) {
+      this.activeBuffs.set("uranium-core-rounds", URANIUM_CORE_ROUNDS_DURATION_SECONDS);
+    }
     this.wavesEnabled = options.autoStartWaves !== false
       && this.stressProfile === null
       && this.scenario === null;
     const initialLoadout = options.startingWeaponIds
       ? createWeaponLoadout(options.startingWeaponIds)
       : createServiceRifleLoadout(clampWeaponCount(options.startingWeaponCount ?? 1));
-    this.equippedWeapons = initialLoadout.map((weapon) => ({ ...weapon, cooldownSeconds: 0 }));
+    this.equippedWeapons = initialLoadout.map((weapon) => ({
+      ...weapon,
+      cooldownSeconds: 0,
+      cooldownDurationSeconds: 0,
+    }));
 
     if (this.stressProfile !== null) {
       this.populateStressScenario(this.stressProfile);
@@ -646,6 +672,15 @@ export class CombatSimulation {
     if (intent.ultimatePressed && this.ultimateCooldownRemainingSeconds <= 0) {
       this.fireUltimate();
     }
+    if (intent.kitPressed && this.uraniumKitAvailable) {
+      this.uraniumKitAvailable = false;
+      this.applyPowerup("uranium-core-rounds");
+      this.frameEvents.push({
+        type: "kit-activated",
+        position: { ...this.playerPosition },
+        powerupType: "uranium-core-rounds",
+      });
+    }
     const previousPlayerPosition = { ...this.playerPosition };
     this.playerPosition = resolveCircleMovement(
       previousPlayerPosition,
@@ -661,15 +696,14 @@ export class CombatSimulation {
       this.lastAimDirection = normalizeVector(intent.aim);
     }
 
-    if (intent.fireHeld) {
-      const attackSpeed = this.currentAttackSpeedMultiplier();
-      for (const weapon of this.equippedWeapons) {
-        if (weapon.cooldownSeconds <= 0) {
-          const fireDirection = this.resolveWeaponAimDirection(weapon, this.lastAimDirection);
-          if (fireDirection) {
-            this.fireWeapon(weapon, fireDirection);
-            weapon.cooldownSeconds = weapon.stats.fireIntervalSeconds / attackSpeed;
-          }
+    const attackSpeed = this.currentAttackSpeedMultiplier();
+    for (const weapon of this.equippedWeapons) {
+      if ((intent.fireHeld || weapon.stats.firesAutomatically) && weapon.cooldownSeconds <= 0) {
+        const fireDirection = this.resolveWeaponAimDirection(weapon, this.lastAimDirection);
+        if (fireDirection) {
+          this.fireWeapon(weapon, fireDirection);
+          weapon.cooldownDurationSeconds = weapon.stats.fireIntervalSeconds / attackSpeed;
+          weapon.cooldownSeconds = weapon.cooldownDurationSeconds;
         }
       }
     }
@@ -937,12 +971,16 @@ export class CombatSimulation {
       activeBuffs: [...this.activeBuffs.entries()].map(([type, remainingSeconds]) => ({
         type,
         remainingSeconds,
+        durationSeconds: POWERUP_DURATION_SECONDS[type],
       })),
+      uraniumKitAvailable: this.uraniumKitAvailable,
       weapon: { ...(this.equippedWeapons[0]?.stats ?? BASTION_SERVICE_RIFLE) },
       equippedWeapons: this.equippedWeapons.map((weapon) => ({
         instanceId: weapon.instanceId,
         weaponId: weapon.weaponId,
         stats: { ...weapon.stats },
+        cooldownRemainingSeconds: weapon.cooldownSeconds,
+        cooldownDurationSeconds: weapon.cooldownDurationSeconds || weapon.stats.fireIntervalSeconds,
       })),
       events: this.frameEvents.map((event) => ({ ...event })),
       arena: this.arena,
@@ -1023,6 +1061,7 @@ export class CombatSimulation {
       weaponId,
       stats: { ...WEAPON_CATALOG[weaponId] },
       cooldownSeconds: 0,
+      cooldownDurationSeconds: 0,
     });
   }
 
@@ -1115,6 +1154,11 @@ export class CombatSimulation {
       y: this.playerPosition.y + slot.y,
     };
 
+    if (weapon.stats.attackPattern === "melee-sweep") {
+      this.fireMeleeSweep(weapon, anchor, aimDirection);
+      return;
+    }
+
     for (let index = 0; index < weapon.stats.projectileCount; index += 1) {
       const angle = baseAngle + (index - centre) * weapon.stats.spreadRadians;
       const direction = { x: Math.cos(angle), y: Math.sin(angle) };
@@ -1133,6 +1177,7 @@ export class CombatSimulation {
           y: direction.y * weapon.stats.projectileSpeedMetresPerSecond,
         },
         damage: weapon.stats.projectileDamage,
+        uraniumEligible: true,
         remainingSeconds: weapon.stats.projectileLifetimeSeconds,
         pierceRemaining: weapon.stats.pierceCount,
         explosionRadiusMetres: weapon.stats.explosionRadiusMetres,
@@ -1151,6 +1196,46 @@ export class CombatSimulation {
         direction,
       });
     }
+  }
+
+  private fireMeleeSweep(
+    weapon: EquippedWeaponState,
+    anchor: Vector2Data,
+    direction: Vector2Data,
+  ): void {
+    const facing = normalizeVector(direction);
+    const halfArc = weapon.stats.meleeArcRadians / 2;
+    for (const enemy of this.enemies) {
+      if (
+        enemy.dead
+        || !pointInsideRipperSweep(anchor, facing, enemy.position, weapon.stats.rangeMetres, halfArc)
+        || segmentHitsArenaObstacle(anchor, enemy.position, this.activeObstacles())
+      ) continue;
+      this.damageEnemy(
+        enemy,
+        weapon.stats.projectileDamage * this.currentRingWeaponDamageMultiplier(),
+        weapon.stats.damageType,
+      );
+      if (!enemy.dead && weapon.stats.knockbackMetres > 0) {
+        const definition = ENEMY_CATALOG[enemy.type];
+        enemy.position = resolveCircleMovement(
+          enemy.position,
+          {
+            x: enemy.position.x + facing.x * weapon.stats.knockbackMetres,
+            y: enemy.position.y + facing.y * weapon.stats.knockbackMetres,
+          },
+          definition.radiusMetres,
+          this.collisionArena(),
+        );
+      }
+    }
+    this.frameEvents.push({
+      type: "weapon-fired",
+      weaponInstanceId: weapon.instanceId,
+      weaponId: weapon.weaponId,
+      position: { ...anchor },
+      direction: { ...facing },
+    });
   }
 
   private resolveWeaponAimDirection(
@@ -1208,6 +1293,7 @@ export class CombatSimulation {
           y: direction.y * ULTIMATE_PROJECTILE_SPEED,
         },
         damage: ultimate.projectileDamage,
+        uraniumEligible: false,
         remainingSeconds: ULTIMATE_PROJECTILE_LIFETIME_SECONDS,
         pierceRemaining: 0,
         explosionRadiusMetres: ultimate.explosionRadiusMetres,
@@ -1278,6 +1364,10 @@ export class CombatSimulation {
       * (this.isBuffActive("overcharge") ? OVERCHARGE_ATTACK_SPEED_MULTIPLIER : 1);
   }
 
+  private currentRingWeaponDamageMultiplier(): number {
+    return this.isBuffActive("uranium-core-rounds") ? URANIUM_CORE_ROUNDS_DAMAGE_MULTIPLIER : 1;
+  }
+
   private isBuffActive(type: PowerupType): boolean {
     return (this.activeBuffs.get(type) ?? 0) > 0;
   }
@@ -1316,9 +1406,14 @@ export class CombatSimulation {
       projectile.position.y += projectile.velocity.y * deltaSeconds;
       projectile.remainingSeconds -= deltaSeconds;
 
+      if (projectile.remainingSeconds <= 0) {
+        this.explodeProjectile(projectile, projectile.position);
+        projectile.dead = true;
+        continue;
+      }
+
       if (
-        projectile.remainingSeconds <= 0
-        || projectile.position.x < 0
+        projectile.position.x < 0
         || projectile.position.y < 0
         || projectile.position.x > this.widthMetres
         || projectile.position.y > this.heightMetres
@@ -1328,10 +1423,12 @@ export class CombatSimulation {
       }
 
       if (pointHitsObstacle(projectile.position, this.activeObstacles())) {
+        this.explodeProjectile(projectile, projectile.position);
         projectile.dead = true;
         this.frameEvents.push({
           type: "projectile-blocked",
           position: { ...projectile.position },
+          weaponId: projectile.weaponId,
         });
         continue;
       }
@@ -1347,27 +1444,30 @@ export class CombatSimulation {
         }
 
         projectile.hitEnemyIds.add(enemy.id);
+        this.frameEvents.push({
+          type: "projectile-impact",
+          position: { ...enemy.position },
+          weaponId: projectile.weaponId,
+        });
+        if (projectile.weaponId === "bolt-carbine") {
+          this.frameEvents.push({
+            type: "bolt-impact",
+            position: { ...enemy.position },
+            hitIndex: projectile.hitEnemyIds.size === 1 ? 1 : 2,
+          });
+        }
         const damageMultiplier = this.projectileDamageMultiplier(projectile, enemy);
-        this.damageEnemy(enemy, projectile.damage * damageMultiplier, projectile.damageType);
+        this.damageEnemy(
+          enemy,
+          projectile.damage * damageMultiplier * (
+            projectile.uraniumEligible ? this.currentRingWeaponDamageMultiplier() : 1
+          ),
+          projectile.damageType,
+        );
         if (damageMultiplier >= 1) this.applyProjectileKnockback(projectile, enemy);
         this.resolveProjectileChain(projectile, enemy);
 
-        if (projectile.explosionRadiusMetres > 0) {
-          this.frameEvents.push({
-            type: "explosion",
-            position: { ...enemy.position },
-            radiusMetres: projectile.explosionRadiusMetres,
-          });
-          for (const nearby of this.enemies) {
-            if (
-              nearby.id !== enemy.id
-              && !nearby.dead
-              && distance(nearby.position, enemy.position) <= projectile.explosionRadiusMetres
-            ) {
-              this.damageEnemy(nearby, projectile.damage * 0.5, projectile.damageType);
-            }
-          }
-        }
+        this.explodeProjectile(projectile, enemy.position, enemy.id);
 
         if (projectile.pierceRemaining > 0) {
           projectile.pierceRemaining -= 1;
@@ -1375,6 +1475,29 @@ export class CombatSimulation {
           projectile.dead = true;
           break;
         }
+      }
+    }
+  }
+
+  private explodeProjectile(
+    projectile: ProjectileState,
+    position: Vector2Data,
+    directEnemyId?: number,
+  ): void {
+    if (projectile.explosionRadiusMetres <= 0) return;
+    this.frameEvents.push({
+      type: "explosion",
+      position: { ...position },
+      radiusMetres: projectile.explosionRadiusMetres,
+      weaponId: projectile.weaponId,
+    });
+    for (const nearby of this.enemies) {
+      if (
+        nearby.id !== directEnemyId
+        && !nearby.dead
+        && distance(nearby.position, position) <= projectile.explosionRadiusMetres
+      ) {
+        this.damageEnemy(nearby, projectile.damage * 0.5, projectile.damageType);
       }
     }
   }

@@ -231,17 +231,53 @@ Content enters production in three gates so every new asset proves a gameplay ro
 | Functional placeholder | Scattergun | Neutral I | Close spread and knockback | Final wide-barrel ring sprite, pellet burst, impact fan pending Batch B |
 | Functional placeholder | Arc Carbine | Neutral II | Automatic targeting and chaining | Final forked-coil sprite, bolt, chain arc, conductive hit pending Batch B |
 | Web MVP | Machine Pistol | Neutral I | High cadence and short effective range | Compact silhouette and restrained muzzle effect |
-| Web MVP | Patrol Blade | Neutral I | Orbit-position melee sweep | Four readable sweep poses and crescent trail |
-| Web MVP | Bolt Carbine | Neutral I | Slow piercing line projectile | Long receiver, bright bolt, penetration wake |
-| Web MVP | Grenade Tube | Neutral II | Arcing area damage | Stub launcher, grenade, warning marker, blast |
+| Implemented | Patrol Blade | Neutral I | Automatic nearest-target orbit-position melee sweep every 2.5 s | Batch F1 folded/ready/sweep/recovery ring poses, crescent/impact family, and cadence tile integrated |
+| Implemented + Batch F2 | Bolt Carbine | Neutral I | Slow two-target piercing line projectile | Four-state long receiver, bright bolt, penetration wakes, first/terminal impacts, cadence tile |
+| Implemented + Batch F4 | Grenade Tube | Neutral II | Compact projectile and area damage | Four-state drum launcher, grenade, fuse/bounce/warning family, blast and cover impact |
 | Web MVP | Guard Drone | Neutral II | Autonomous targeting | Folded/deployed poses, targeting line, drone shot |
-| Web MVP | Bulwark Rotary Cannon | Marine II | Hero identity, spin-up, movement trade-off | Approved concept converted to idle/spin/fire ring states |
+| Functional + Batch F3 | Bulwark Rotary Cannon | Marine II | Hero identity and rapid suppression; final heat trade-off pending | Approved concept converted to idle/spin/fire/heat states with reusable tracer and impact family |
 | Web MVP rare | Event Horizon | Unique | Pull-and-implode build | Approved concept, gravitic projectile, pull field, implosion |
 | Later | Remaining catalogue | Mixed | Expansion after MVP evidence | Generate only when its behaviour is scheduled |
 
 The vertical slice contains three weapons total: Service Rifle, Scattergun, and Arc Carbine. The Web MVP target is nine ordinary/hero weapons plus one Unique. Twelve visible slots remain technical capacity, not the expected inventory size.
 
 Weapon implementation precedes final art for each family. Shared data must define targeting mode, attack pattern, range, cooldown or heat, projectile/hit shape, muzzle anchor, effect IDs, audio IDs, and upgrade tags. Duplicate weapons are allowed only if copies can diverge meaningfully; otherwise a duplicate reward upgrades the owned copy.
+
+### High-quality weapon design standard
+
+A production-worthy weapon needs more than a different damage number. Before art production, every weapon brief must lock:
+
+- one readable combat promise and one meaningful limitation;
+- targeting mode, cadence/heat/charge behaviour, range, hit geometry, damage type, and upgrade hooks;
+- ring silhouette at gameplay scale plus idle, anticipation, firing, recoil/recovery, and exceptional states;
+- muzzle, projectile or trace, trail, enemy impact, cover impact, signature proc, and audio family;
+- a square tile motif that remains identifiable beneath a cooldown shadow at 48–64 pixels;
+- whether it belongs on the active action bar, passive cadence strip, or neither.
+
+### First premium weapon design slate
+
+These designs refine the approved Web MVP roster. Names remain functional until gameplay approval; art is generated only after each behaviour contract exists.
+
+| Weapon | Combat identity and limitation | Timing/UI | Production visual brief |
+| --- | --- | --- | --- |
+| Machine Pistol | Mobile close-range bullet hose; blooms into poor accuracy during long bursts, then rapidly settles | Automatic, ~0.10 s shots; no cadence sweep unless overheated | Compact charcoal receiver, ivory muzzle block, burgundy grip, orange chamber ticks; tight muzzle needle, small brass-white tracers, restrained impacts; tile motif is a diagonal compact receiver with three orange cadence marks |
+| Patrol Blade | Orbit-mounted mono-blade that sweeps the nearest flank; strong crowd peel but cannot hit beyond its short arc | Automatic 2.5 s sweep; passive cadence tile | Broad ivory cutting edge on a burgundy/bronze pivot, visible folded and extended poses; crescent anticipation line, clean cyan-white cut, sparks on armour; tile motif is one curved blade crossing a quarter-circle arc |
+| Bolt Carbine | Slow precision bolt pierces one enemy and rewards lining targets; punishing when fired into empty space | Cursor-aimed or aim-locked 1.8 s shot; compact cadence tile | Long narrow receiver with cyan capacitor spine and ivory rails; bright core projectile, narrow penetration wake, distinct first/second impact; tile motif is a luminous bolt passing through two offset plates |
+| Grenade Tube | Arcing area denial with a minimum comfortable range; excels at groups but is awkward point-blank | Automatic target selection, 4 s cycle; passive cadence tile with landing/no-target state | Short heavy drum launcher, amber range lamp, separate lobbed grenade; landing reticle, bounce tick, expanding orange/ivory blast; tile motif is a round grenade above a shallow arc |
+| Guard Drone | Deploys from the ring and independently covers an exposed side; lower direct damage and vulnerable during redeploy | Automatic fire; 8 s redeploy if displaced/destroyed; passive status tile | Folded shield-like pod opening into a compact three-fin drone; cyan target ray, disciplined single shots, return trail; tile motif is a triangular drone eye inside three fins |
+| Bulwark Rotary Cannon | Marine signature heavy weapon: deliberate spin-up becomes sustained suppression but reduces movement and generates heat | Hold-to-fire active weapon or automatic doctrine choice; active tile shows spin/heat rather than ordinary cooldown | Approved heavy multi-barrel silhouette with obsidian body, bronze armour collar, ivory barrel tips, orange heat vents; staged spin sparks, dense tracer rhythm, heat shimmer; tile motif is a six-barrel face with a segmented heat ring |
+| Event Horizon | Unique slow gravitic orb pulls enemies inward and implodes; low frequency and dangerous if aimed where no enemies remain | Aim-and-activate, 16 s cooldown; premium active tile | Approved asymmetric gravitic weapon with cyan-violet containment core; lensing projectile, thin orbit lines, dark pull field, white-violet implosion; tile motif is a black core eclipsing a broken cyan ring |
+
+Recommended behavior-first order is **Patrol Blade → Bolt Carbine → Grenade Tube → Bulwark Rotary Cannon → Event Horizon**. Patrol Blade proves timed melee and the passive cadence strip; Bolt Carbine proves piercing readability; Grenade Tube proves arcs and landing warnings; the Rotary Cannon proves heat/hold UI; Event Horizon then combines aiming, long cooldown, field control, and premium presentation.
+
+### Weapon and action-tile art batch contract
+
+Do not generate a generic icon sheet before the behavior prototypes decide which states are real. When a weapon passes its lab, produce its gameplay asset family and tile together:
+
+- **Gameplay set:** ring weapon states plus projectile/trace and effect mini-atlas.
+- **Tile set:** 64 × 64 authored icon, rarity/class frame variant only when needed, and optional charge/disabled overlay motifs. Cooldown shadows, numbers, key labels, charge pips, selection borders, and ready pulses remain code-driven.
+- **Consistency:** tiles use the same material palette and signature shape as the visible ring weapon, but simplify detail and strengthen negative space for small-size recognition.
+- **Review:** show tiles at 64, 48, and 36 pixels, with 0%, 50%, and 85% cooldown coverage, grayscale, and common colour-vision simulations before acceptance.
 
 ### Standard monster production plan
 
@@ -369,12 +405,35 @@ Traditional ammunition is not tracked. “Ammo boxes” become **Ordnance Caches
 
 ### Powerup set
 
-Implemented 16 July 2026 with placeholder diamond pickups: one seeded powerup spawns per wave from wave 2, lasts 12 seconds on the ground, and shows an active-buff timer on the HUD. Production pickup art and HUD icons are outstanding.
+Implemented 16 July 2026: one seeded powerup spawns per wave from wave 2, lasts 12 seconds on the ground, and shows an active-buff timer on the HUD. Production pickup art and basic HUD icons are integrated; the next HUD pass adds the circular remaining-time component and tooltip/inspection states.
 
 - **Overcharge:** 60% faster weapon cycling for 6 seconds; orange lightning icon.
 - **Aegis:** grants a 25-point shield pool absorbed before health; cyan hexagonal icon.
 - **Magnet Pulse:** attracts nearby XP and expands pickup range for 6 seconds; blue-white field icon.
 - **Adrenaline:** 35% movement boost for 5 seconds without changing invulnerability duration; red chevron icon.
+
+### Temporary kit and shrine effects
+
+Use the same top-left timed-status contract for short powerups regardless of whether they came from a world pickup, activated kit, ordnance cache, or shrine. Source affects acquisition, not how active duration is communicated.
+
+First proposed special kit:
+
+- **Uranium-Core Rounds:** all equipped ring weapons deal 25% more direct weapon damage for 12 seconds. It does not multiply Bastion Barrage, ground hazards, status damage-over-time, companion damage, or environmental effects. Re-acquiring it refreshes the timer to 12 seconds rather than stacking to 50% or extending beyond 12 seconds.
+- **World presentation:** sealed black-and-bronze ammunition case with three luminous chartreuse penetrator tips and a clear pickup glow. Do not use text or a realistic regulatory radiation label on the world object.
+- **HUD icon:** three converging chartreuse/ivory bullet tips over a dark armour plate. The triangular grouping remains recognizable under a 75% radial shadow; the circular timer ring and number are runtime UI.
+- **Feedback:** one brief weapon-ring pulse on activation, a restrained green-white tracer accent while active, and a soft final-three-second warning. Preserve each weapon's original damage-type colour so the buff does not falsely imply Toxic conversion.
+
+Suggested timed effect families for later review:
+
+| Effect | Source | Duration | Rule | Icon motif |
+| --- | --- | ---: | --- | --- |
+| Uranium-Core Rounds | Special ammunition kit / ordnance cache | 12 s | +25% direct ring-weapon damage; refresh only | Three luminous penetrator tips |
+| Siege Loader | Heavy ordnance kit | 10 s | Slow weapons cycle 30% faster; no movement bonus | Bronze loader claw around a shell |
+| Phase Jacket | Shrine blessing / rare pickup | 8 s | First hit is ignored, then the effect ends | Split cyan armour plate |
+| Hunter Optics | Recon kit | 15 s | Elites are marked and take +15% direct weak-point damage | Amber reticle over a horned silhouette |
+| Last Stand Stimulant | Emergency kit | 6 s | Movement and firing speed increase, but no invulnerability change | Red-white injector chevrons |
+
+Timed effects should change a decision or create a brief power window. Avoid maintaining a large list of minor `+5%` timers that forces the player to read the HUD instead of the arena.
 
 ### First relic set
 

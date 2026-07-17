@@ -17,6 +17,9 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?weapons=1`, `4`, `6`, or `12` — selected weapon-ring count
 - `/play/last-bastion/?loadout=vertical` — Service Rifle, Scattergun, and Arc Carbine production-art loadout
 - `/play/last-bastion/?loadout=scattergun` or `?loadout=arc-carbine` — isolate one new weapon behaviour
+- `/play/last-bastion/?loadout=bolt` — Bolt Carbine two-target penetration, terminal impact, and missed-shot cadence lab
+- `/play/last-bastion/?loadout=bulwark` — Bulwark Rotary Cannon rapid-tracer and heavy-weapon presentation lab
+- `/play/last-bastion/?loadout=grenade` — Grenade Tube projectile, fuse-expiry, direct-hit, splash, and explosion lab
 - `/play/last-bastion/?scenario=slime-spitter&loadout=vertical` — hostile-glob, slowing-puddle, and three-weapon review lab
 - `/play/last-bastion/?scenario=carapace-elite&loadout=vertical` — directional armour, charge recovery, and guaranteed elite-reward lab
 - `/play/last-bastion/?scenario=siege-crusher&loadout=vertical` — mini-boss phases, cover destruction, boss bar, and arsenal-cache lab
@@ -39,6 +42,8 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?mode=gallery&batch=e1` — all 20 Quillback Production Asset Batch E1 visuals
 - `/play/last-bastion/?mode=gallery&batch=e2` — all 24 Spinewheel Production Asset Batch E2 visuals
 - `/play/last-bastion/?mode=gallery&batch=e3` — all 24 Tether Bloom Production Asset Batch E3 visuals
+- `/play/last-bastion/?mode=gallery&batch=f1` — Patrol Blade, action-bar, and timed-status Production Asset Batch F1
+- `/play/last-bastion/?mode=gallery&batch=f2`, `f3`, or `f4` — Bolt Carbine, Bulwark Rotary Cannon, or Grenade Tube production families
 - Add `debug=1` to the normal or stress route for collision labels and live entity/effect counts.
 
 ## Architecture

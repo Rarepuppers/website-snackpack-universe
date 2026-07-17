@@ -37,6 +37,24 @@ describe("WeaponLoadout", () => {
     expect(loadout[2]!.stats.projectileDamage).not.toBe(999);
   });
 
+  it("creates a standalone Patrol Blade behavior-lab loadout", () => {
+    const loadout = createWeaponLoadout(["patrol-blade"]);
+    expect(loadout[0]?.stats.attackPattern).toBe("melee-sweep");
+    expect(loadout[0]?.stats.firesAutomatically).toBe(true);
+  });
+
+  it("creates a standalone Bolt Carbine behavior-lab loadout", () => {
+    const loadout = createWeaponLoadout(["bolt-carbine"]);
+    expect(loadout[0]?.stats.pierceCount).toBe(1);
+    expect(loadout[0]?.stats.firesAutomatically).toBe(false);
+  });
+
+  it("creates production behavior-lab loadouts for rotary and explosive weapons", () => {
+    const loadout = createWeaponLoadout(["bulwark-rotary-cannon", "grenade-tube"]);
+    expect(loadout[0]?.stats.fireIntervalSeconds).toBeLessThan(0.1);
+    expect(loadout[1]?.stats.explosionRadiusMetres).toBeGreaterThan(2);
+  });
+
   it("clamps review parameters to the supported range", () => {
     expect(clampWeaponCount(-4)).toBe(0);
     expect(clampWeaponCount(99)).toBe(12);

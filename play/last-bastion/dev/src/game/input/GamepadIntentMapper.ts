@@ -19,6 +19,8 @@ export interface GamepadStateSnapshot {
   westPressed: boolean;
   /** Top face button (Y / Triangle). */
   northPressed: boolean;
+  /** Right face button (B / Circle). */
+  eastPressed: boolean;
   startPressed: boolean;
 }
 
@@ -34,6 +36,7 @@ export const DISCONNECTED_GAMEPAD: Readonly<GamepadStateSnapshot> = Object.freez
   southPressed: false,
   westPressed: false,
   northPressed: false,
+  eastPressed: false,
   startPressed: false,
 });
 
@@ -58,23 +61,27 @@ export class GamepadIntentMapper {
   private previousSouth = false;
   private previousWest = false;
   private previousNorth = false;
+  private previousEast = false;
   private previousStart = false;
 
   update(state: GamepadStateSnapshot): PlayerIntent {
     const south = state.connected && state.southPressed;
     const west = state.connected && state.westPressed;
     const north = state.connected && state.northPressed;
+    const east = state.connected && state.eastPressed;
     const start = state.connected && state.startPressed;
     const intent = buildIntent(state, {
       evasiveMovePressed: south && !this.previousSouth,
       interactPressed: west && !this.previousWest,
       ultimatePressed: north && !this.previousNorth,
+      kitPressed: east && !this.previousEast,
       pausePressed: start && !this.previousStart,
       restartPressed: south && !this.previousSouth,
     });
     this.previousSouth = south;
     this.previousWest = west;
     this.previousNorth = north;
+    this.previousEast = east;
     this.previousStart = start;
     return intent;
   }
@@ -83,7 +90,7 @@ export class GamepadIntentMapper {
 function buildIntent(
   state: GamepadStateSnapshot,
   pressed: Pick<PlayerIntent,
-    "evasiveMovePressed" | "interactPressed" | "ultimatePressed" | "pausePressed" | "restartPressed">,
+    "evasiveMovePressed" | "interactPressed" | "ultimatePressed" | "kitPressed" | "pausePressed" | "restartPressed">,
 ): PlayerIntent {
   if (!state.connected) {
     return {
@@ -93,6 +100,7 @@ function buildIntent(
       evasiveMovePressed: false,
       interactPressed: false,
       ultimatePressed: false,
+      kitPressed: false,
       pausePressed: false,
       restartPressed: false,
     };
@@ -125,6 +133,7 @@ export function mergeIntents(keyboardMouse: PlayerIntent, gamepad: PlayerIntent)
     evasiveMovePressed: keyboardMouse.evasiveMovePressed || gamepad.evasiveMovePressed,
     interactPressed: keyboardMouse.interactPressed || gamepad.interactPressed,
     ultimatePressed: keyboardMouse.ultimatePressed || gamepad.ultimatePressed,
+    kitPressed: keyboardMouse.kitPressed || gamepad.kitPressed,
     pausePressed: keyboardMouse.pausePressed || gamepad.pausePressed,
     restartPressed: keyboardMouse.restartPressed || gamepad.restartPressed,
   };

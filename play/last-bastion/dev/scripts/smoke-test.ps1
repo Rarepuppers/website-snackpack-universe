@@ -76,7 +76,18 @@ try {
     'bastion-eater-node-overlay-v1-192.png',
     'bastion-eater-effect-atlas-v1-96.png',
     'bastion-eater-environment-atlas-v1-96.png',
-    'bastion-eater-portrait-v1-256.png'
+    'bastion-eater-portrait-v1-256.png',
+    'patrol-blade-spritesheet-v1-96.png',
+    'patrol-blade-effect-atlas-v1-64.png',
+    'action-tile-atlas-v1-64.png',
+    'uranium-core-rounds-status-v1-64.png',
+    'bolt-carbine-spritesheet-v1-96.png',
+    'bolt-carbine-effect-atlas-v1-64.png',
+    'weapon-tile-atlas-v1-64.png',
+    'bulwark-rotary-cannon-spritesheet-v1-96.png',
+    'bulwark-rotary-cannon-effect-atlas-v1-64.png',
+    'grenade-tube-spritesheet-v1-96.png',
+    'grenade-tube-effect-atlas-v1-64.png'
   )
 
   foreach ($artAssetName in $requiredArtAssets) {
@@ -101,7 +112,17 @@ try {
     '/play/last-bastion/?mode=gallery&batch=e1',
     '/play/last-bastion/?mode=gallery&batch=e2',
     '/play/last-bastion/?mode=gallery&batch=e3',
+    '/play/last-bastion/?mode=gallery&batch=f1',
+    '/play/last-bastion/?mode=gallery&batch=f2',
+    '/play/last-bastion/?mode=gallery&batch=f3',
+    '/play/last-bastion/?mode=gallery&batch=f4',
     '/play/last-bastion/?loadout=vertical',
+    '/play/last-bastion/?loadout=patrol',
+    '/play/last-bastion/?loadout=bolt',
+    '/play/last-bastion/?loadout=bulwark',
+    '/play/last-bastion/?loadout=grenade',
+    '/play/last-bastion/?loadout=patrol&kit=uranium',
+    '/play/last-bastion/?loadout=patrol&buff=uranium',
     '/play/last-bastion/?scenario=slime-spitter&loadout=vertical',
     '/play/last-bastion/?scenario=carapace-elite&loadout=vertical',
     '/play/last-bastion/?scenario=siege-crusher&loadout=vertical',

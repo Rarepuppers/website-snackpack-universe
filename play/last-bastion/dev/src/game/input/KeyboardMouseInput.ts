@@ -20,6 +20,7 @@ interface ControlKeys {
   evade: Phaser.Input.Keyboard.Key;
   interact: Phaser.Input.Keyboard.Key;
   ultimate: Phaser.Input.Keyboard.Key;
+  kit: Phaser.Input.Keyboard.Key;
   pause: Phaser.Input.Keyboard.Key;
   restart: Phaser.Input.Keyboard.Key;
 }
@@ -47,6 +48,7 @@ export class KeyboardMouseInput {
       evade: Phaser.Input.Keyboard.KeyCodes.SPACE,
       interact: Phaser.Input.Keyboard.KeyCodes.E,
       ultimate: Phaser.Input.Keyboard.KeyCodes.R,
+      kit: Phaser.Input.Keyboard.KeyCodes.Q,
       pause: Phaser.Input.Keyboard.KeyCodes.ESC,
       restart: Phaser.Input.Keyboard.KeyCodes.ENTER,
     }) as unknown as ControlKeys;
@@ -69,6 +71,7 @@ export class KeyboardMouseInput {
       evasiveMovePressed: Phaser.Input.Keyboard.JustDown(this.keys.evade),
       interactPressed: Phaser.Input.Keyboard.JustDown(this.keys.interact),
       ultimatePressed: Phaser.Input.Keyboard.JustDown(this.keys.ultimate),
+      kitPressed: Phaser.Input.Keyboard.JustDown(this.keys.kit),
       pausePressed: Phaser.Input.Keyboard.JustDown(this.keys.pause),
       restartPressed: Phaser.Input.Keyboard.JustDown(this.keys.restart),
     };
@@ -89,6 +92,7 @@ export class KeyboardMouseInput {
       southPressed: pad.A,
       westPressed: pad.X,
       northPressed: pad.Y,
+      eastPressed: pad.B,
       startPressed: Boolean(pad.buttons[9]?.pressed),
     };
   }

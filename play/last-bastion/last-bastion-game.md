@@ -158,7 +158,54 @@ The placeholder implementation now supports zero to twelve independently firing 
 
 The functional vertical-slice loadout is available with `?loadout=vertical`: the Service Rifle remains cursor-aimed, the Scattergun fires a short-lived five-pellet spread with knockback, and the Arc Carbine automatically selects a nearby enemy and chains from its first impact. Weapon definitions own targeting, attack pattern, range, projectile, knockback, and chain rules. Production Asset Batch B supplies distinct ring sprites, projectiles, muzzle flashes, impacts, and chain effects for the two new families.
 
+The Bolt Carbine behavior lab is available with `?loadout=bolt`. It is a manual cursor-aimed precision weapon with a 1.8-second commitment: one slow readable bolt damages the first target, penetrates it, damages the second with stronger terminal feedback, and then stops. A missed shot still consumes the full cadence. This exact two-target contract must remain code-driven when Production Asset Batch F2 replaces the placeholder weapon, bolt, wake, impacts, and cadence tile.
+
+Production weapon labs also expose `?loadout=bulwark` and `?loadout=grenade`. The Bulwark uses a compact reusable ballistic tracer and family-specific muzzle/impact presentation; its final spin-up, heat, and movement penalty remain a future tuning gate. The Grenade Tube uses a bespoke visible shell and detonates on enemies, cover, or fuse expiry with direct and splash damage. Its retained projectile, fuse, bounce, warning, explosion, and cover assets are suitable for a later arcing/minimum-range refinement without regeneration.
+
 Individual weapons may use different behaviours while sharing the visible ring. Examples include cursor-aimed weapons, automatic target-seeking weapons, orbiting contact weapons, and cooldown-driven support devices. The firing rules must remain understandable; adding more visible guns must not turn player choices into unreadable noise.
+
+### Bottom action bar and cadence strip
+
+Use a compact bottom-centre HUD inspired by action bars, but separate **things the player activates** from **automatic weapon timing**. Showing every auto-firing weapon as a hotkey would falsely imply manual control and would become noisy at high weapon counts.
+
+The bottom HUD has two coordinated bands:
+
+1. **Active action bar — up to four large tiles.** Reserved for the evasive move, hero ultimate, consumable, and an active perk/relic or manual heavy weapon. Default keyboard bindings are `Space`, `R`, `Q`, and `E`; gamepad bindings use face/shoulder controls and always replace the displayed keyboard legend when a controller is active.
+2. **Passive cadence strip — compact weapon tiles.** Shows slow automatic attacks, charge cycles, heat, reloads, and periodic perks without assigning a hotkey. Weapons below roughly a 1.5-second base cadence normally omit the sweep and show only exceptional states such as overheated, blocked, or no target. Slow attacks at 2.5, 4, or 16 seconds show a clear recharge sweep so the next volley can be anticipated.
+
+Every cooldown tile uses the same information hierarchy:
+
+- Authored icon and family-colour frame identify the action.
+- A clockwise dark radial or vertical shadow sweep shows remaining fraction without hiding the silhouette completely.
+- Numeric time appears when more than one second remains: whole seconds at 10 seconds or more, one decimal below 10 seconds. The final second uses a bright rim chase rather than rapidly changing decimals.
+- A ready tile removes the shadow, raises contrast, and gives one restrained pulse. It does not continuously flash.
+- Charges appear as two or three discrete pips. A disabled/no-target state uses a distinct crossed or desaturated treatment rather than looking like cooldown.
+- The binding is live text rendered above the tile, never baked into the art. Hold/toggle/automatic behaviour is communicated with a small runtime glyph.
+
+The bar must remain usable at 1280×720 and safe-area aware. Four active tiles at 56–64 logical pixels plus a compact cadence strip fit without competing with combat. At high weapon counts, the cadence strip groups identical weapons and shows the nearest meaningful fire event rather than rendering twelve large tiles.
+
+Accessibility requirements: cooldown cannot rely on darkness or colour alone; numeric time, edge motion, charge pips, and ready sound/haptics provide redundant cues. Provide settings for numeric cooldowns, ready pulses, weapon-cadence strip visibility, and reduced HUD motion.
+
+### Top-left temporary-status tray
+
+Temporary effects that are already active belong in a compact tray beneath or beside the top-left health/status panel. They are not actions and must not occupy hotkey slots.
+
+- Each effect uses a 36–44 pixel authored icon inside a code-rendered circular timer ring.
+- A dark clockwise radial wipe communicates elapsed fraction while leaving the centre motif readable. A bright outer arc shows remaining fraction for high-contrast and colour-blind readability.
+- Remaining time is centred on or immediately below the icon. Timers under 20 seconds show one decimal (`15.4`); longer timers show whole seconds. The number disappears at expiry rather than displaying a lingering `0.0`.
+- At three seconds remaining, the rim changes to a restrained warning pulse and the timer gains contrast. Reduced-motion mode changes only the rim colour/weight and never pulses.
+- Hover, focus, or controller inspection shows the effect name, exact modifier, source, and stacking rule. The normal combat view shows icon plus time only.
+- New effects append left-to-right, then wrap to a second row. Identical effects occupy one slot; they never create duplicate icons.
+- Positive buffs and negative conditions use separate frame treatments so a helpful pickup cannot be confused with poison, slow, or a boss mark.
+
+Source behavior is explicit:
+
+- An instant pickup becomes a top-left timed icon immediately.
+- A consumable kit remains on the bottom active bar until used, then its activated effect moves to the top-left tray.
+- A timed shrine blessing uses the top-left tray. A wave-long effect may show `WAVE` instead of seconds. A run-long relic, permanent loadout modifier, or shrine bargain belongs in the passive build/inventory presentation and does not pretend to be temporary.
+- Picking up the same non-stacking buff refreshes its timer to at least the full base duration; it does not add duration or magnitude unless the effect explicitly says it stacks. Separate compatible buffs may run simultaneously.
+
+The prototype now implements this contract: temporary effects occupy a six-slot top-left tray with authored icons, code-rendered circular remaining-time rings, tenths-of-a-second countdowns, final-three-second urgency, wrapping, and clean expiry. `?loadout=patrol&kit=uranium` exposes the ready consumable; `?loadout=patrol&buff=uranium` exposes the active timed state.
 
 ### Modular equipment appearance
 

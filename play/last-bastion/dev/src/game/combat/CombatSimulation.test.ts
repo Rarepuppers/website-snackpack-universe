@@ -22,6 +22,7 @@ function intent(overrides: Partial<PlayerIntent> = {}): PlayerIntent {
     evasiveMovePressed: false,
     interactPressed: false,
     ultimatePressed: false,
+    kitPressed: false,
     pausePressed: false,
     restartPressed: false,
     ...overrides,
@@ -41,6 +42,142 @@ describe("CombatSimulation", () => {
     const snapshot = simulation.snapshot();
     expect(snapshot.enemies).toHaveLength(0);
     expect(snapshot.pickups).toHaveLength(1);
+  });
+
+  it("automatically sweeps nearby enemies with Patrol Blade and exposes its cadence", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      startingWeaponIds: ["patrol-blade"],
+    });
+    const player = simulation.snapshot().playerPosition;
+    const frontId = simulation.spawnEnemy("brain-blob", { x: player.x + 1.7, y: player.y });
+    const backId = simulation.spawnEnemy("brain-blob", { x: player.x - 1.9, y: player.y });
+
+    const snapshot = simulation.step(intent(), 0.05);
+    const front = snapshot.enemies.find((enemy) => enemy.id === frontId)!;
+    const back = snapshot.enemies.find((enemy) => enemy.id === backId)!;
+    const blade = snapshot.equippedWeapons[0]!;
+
+    expect(snapshot.events.some((event) => (
+      event.type === "weapon-fired" && event.weaponId === "patrol-blade"
+    ))).toBe(true);
+    expect(front.health).toBeLessThan(front.maxHealth);
+    expect(back.health).toBe(back.maxHealth);
+    expect(blade.cooldownRemainingSeconds).toBeGreaterThan(2.4);
+    expect(blade.cooldownDurationSeconds).toBe(2.5);
+  });
+
+  it("does not swing Patrol Blade without a target in range", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      startingWeaponIds: ["patrol-blade"],
+    });
+    const snapshot = simulation.step(intent(), 0.05);
+    expect(snapshot.events.some((event) => event.type === "weapon-fired")).toBe(false);
+    expect(snapshot.equippedWeapons[0]?.cooldownRemainingSeconds).toBe(0);
+  });
+
+  it("fires a Bolt Carbine through exactly two aligned targets with distinct impacts", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      startingWeaponIds: ["bolt-carbine"],
+    });
+    const player = simulation.snapshot().playerPosition;
+    const firstId = simulation.spawnEnemy("egg-cluster", { x: player.x + 2, y: player.y });
+    const secondId = simulation.spawnEnemy("egg-cluster", { x: player.x + 4, y: player.y });
+    const thirdId = simulation.spawnEnemy("egg-cluster", { x: player.x + 6, y: player.y });
+    const impactIndices: number[] = [];
+
+    let snapshot = simulation.step(intent({ fireHeld: true }), 0.05);
+    expect(snapshot.equippedWeapons[0]?.cooldownDurationSeconds).toBe(1.8);
+    expect(snapshot.equippedWeapons[0]?.cooldownRemainingSeconds).toBeGreaterThan(1.7);
+    impactIndices.push(...snapshot.events
+      .filter((event) => event.type === "bolt-impact")
+      .map((event) => event.hitIndex));
+    for (let frame = 0; frame < 12; frame += 1) {
+      snapshot = simulation.step(intent(), 0.05);
+      impactIndices.push(...snapshot.events
+        .filter((event) => event.type === "bolt-impact")
+        .map((event) => event.hitIndex));
+    }
+
+    const first = snapshot.enemies.find((enemy) => enemy.id === firstId)!;
+    const second = snapshot.enemies.find((enemy) => enemy.id === secondId)!;
+    const third = snapshot.enemies.find((enemy) => enemy.id === thirdId)!;
+    expect(first.maxHealth - first.health).toBe(22);
+    expect(second.maxHealth - second.health).toBe(22);
+    expect(third.health).toBe(third.maxHealth);
+    expect(impactIndices).toEqual([1, 2]);
+  });
+
+  it("spends the Bolt Carbine cadence when fired into empty space", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      startingWeaponIds: ["bolt-carbine"],
+    });
+    const snapshot = simulation.step(intent({ fireHeld: true }), 0.05);
+    expect(snapshot.events.some((event) => (
+      event.type === "weapon-fired" && event.weaponId === "bolt-carbine"
+    ))).toBe(true);
+    expect(snapshot.equippedWeapons[0]?.cooldownRemainingSeconds).toBeGreaterThan(1.7);
+  });
+
+  it("fires reusable fast tracers from the Bulwark Rotary Cannon", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      startingWeaponIds: ["bulwark-rotary-cannon"],
+    });
+    const player = simulation.snapshot().playerPosition;
+    const targetId = simulation.spawnEnemy("egg-cluster", { x: player.x + 3, y: player.y });
+    let snapshot = simulation.step(intent({ fireHeld: true }), 0.05);
+    expect(snapshot.events.some((event) => (
+      event.type === "weapon-fired" && event.weaponId === "bulwark-rotary-cannon"
+    ))).toBe(true);
+    for (let frame = 0; frame < 6; frame += 1) snapshot = simulation.step(intent(), 0.05);
+    const target = snapshot.enemies.find((enemy) => enemy.id === targetId)!;
+    expect(target.maxHealth - target.health).toBe(6);
+  });
+
+  it("detonates a Grenade Tube shell with direct and splash damage", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      startingWeaponIds: ["grenade-tube"],
+    });
+    const player = simulation.snapshot().playerPosition;
+    const directId = simulation.spawnEnemy("egg-cluster", { x: player.x + 3, y: player.y });
+    const splashId = simulation.spawnEnemy("egg-cluster", { x: player.x + 3, y: player.y + 1.4 });
+    const safeId = simulation.spawnEnemy("egg-cluster", { x: player.x + 3, y: player.y + 4 });
+    let observedExplosion = false;
+    let snapshot = simulation.step(intent({ fireHeld: true }), 0.05);
+    for (let frame = 0; frame < 12; frame += 1) {
+      snapshot = simulation.step(intent(), 0.05);
+      observedExplosion ||= snapshot.events.some((event) => (
+        event.type === "explosion" && event.weaponId === "grenade-tube"
+      ));
+    }
+    const direct = snapshot.enemies.find((enemy) => enemy.id === directId)!;
+    const splash = snapshot.enemies.find((enemy) => enemy.id === splashId)!;
+    const safe = snapshot.enemies.find((enemy) => enemy.id === safeId)!;
+    expect(observedExplosion).toBe(true);
+    expect(direct.maxHealth - direct.health).toBe(28);
+    expect(splash.maxHealth - splash.health).toBe(14);
+    expect(safe.health).toBe(safe.maxHealth);
+  });
+
+  it("detonates a missed Grenade Tube shell when its fuse expires", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      startingWeaponIds: ["grenade-tube"],
+    });
+    let observedExplosion = false;
+    simulation.step(intent({ fireHeld: true }), 0.05);
+    for (let frame = 0; frame < 28; frame += 1) {
+      const snapshot = simulation.step(intent(), 0.05);
+      observedExplosion ||= snapshot.events.some((event) => (
+        event.type === "explosion" && event.weaponId === "grenade-tube"
+      ));
+    }
+    expect(observedExplosion).toBe(true);
   });
 
   it("hatches an Egg Cluster into two Scuttlers", () => {

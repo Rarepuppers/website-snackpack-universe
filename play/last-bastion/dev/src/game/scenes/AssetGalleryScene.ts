@@ -15,6 +15,22 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "f4") {
+      this.createWeaponBatchGallery("GRENADE TUBE", "F4", "grenade-tube-v1", "grenade-tube-effects-v1", 2, "?loadout=grenade");
+      return;
+    }
+    if (batch === "f3") {
+      this.createWeaponBatchGallery("BULWARK ROTARY CANNON", "F3", "bulwark-rotary-cannon-v1", "bulwark-rotary-effects-v1", 1, "?loadout=bulwark");
+      return;
+    }
+    if (batch === "f2") {
+      this.createWeaponBatchGallery("BOLT CARBINE", "F2", "bolt-carbine-v1", "bolt-carbine-effects-v1", 0, "?loadout=bolt");
+      return;
+    }
+    if (batch === "f1") {
+      this.createBatchF1Gallery();
+      return;
+    }
     if (batch === "d4") {
       this.createBatchD4Gallery();
       return;
@@ -435,6 +451,67 @@ export class AssetGalleryScene extends Phaser.Scene {
 
     this.add.text(480, 478, "The authored accent rides the live line; LOS, target, range, pull, cover, dodge, and damage breaks remain authoritative code", style("#d8b7ff", "9px")).setOrigin(0.5);
     this.add.text(480, 518, "Review: ?mode=gallery&batch=e3 • Encounter: ?scenario=tether-bloom&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchF1Gallery(): void {
+    this.add.text(20, 14, "LAST BASTION — PATROL BLADE + ACTION UI — BATCH F1", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Steam-ready edit masters • deterministic runtime atlases • code-driven timing and geometry", style("#8fb2c9", "11px"));
+
+    this.add.text(20, 72, "PATROL BLADE — folded / ready / sweep / recovery", style("#ffd08a", "11px"));
+    for (let frame = 0; frame < 4; frame += 1) {
+      const x = 120 + frame * 230;
+      this.add.sprite(x, 140, "patrol-blade-v1", frame).setScale(1.25);
+      this.drawPivot(x, 140);
+      this.add.text(x, 194, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 220, "MELEE EFFECTS — anticipation / active / flesh / armour / cover / ready", style("#68e4e8", "11px"));
+    for (let frame = 0; frame < 6; frame += 1) {
+      const x = 88 + frame * 156;
+      this.add.sprite(x, 280, "patrol-blade-effects-v1", frame).setScale(1.05);
+      this.add.text(x, 322, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 348, "ACTION MOTIFS — roll / ultimate / blade / uranium kit / empty kit / empty active", style("#b9ef62", "11px"));
+    for (let frame = 0; frame < 6; frame += 1) {
+      const x = 80 + frame * 128;
+      this.add.sprite(x, 410, "action-tiles-v1", frame).setScale(0.9);
+      this.add.text(x, 450, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.image(872, 408, "uranium-status-v1").setScale(0.9);
+    this.add.text(872, 450, "STATUS", style("#b9ef62", "8px")).setOrigin(0.5);
+
+    this.add.text(480, 490, "Art remains legible under radial cooldown shadow; bindings, seconds, rings, states, and hit tests stay authoritative code", style("#ffcf7a", "9px")).setOrigin(0.5);
+    this.add.text(480, 518, "Review: ?mode=gallery&batch=f1 • Lab: ?loadout=patrol&kit=uranium", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createWeaponBatchGallery(
+    weaponName: string,
+    batchName: string,
+    weaponTexture: "bolt-carbine-v1" | "bulwark-rotary-cannon-v1" | "grenade-tube-v1",
+    effectTexture: "bolt-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1",
+    tileFrame: number,
+    labRoute: string,
+  ): void {
+    this.add.text(20, 14, `LAST BASTION — ${weaponName} — BATCH ${batchName}`, style("#ffffff", "17px"));
+    this.add.text(20, 38, "Retained Steam-quality masters • deterministic runtime atlases • code-authoritative combat", style("#8fb2c9", "11px"));
+    this.add.text(20, 72, "WEAPON STATES — idle / charge or spin / fire / recover", style("#ffcf7a", "11px"));
+    for (let frame = 0; frame < 4; frame += 1) {
+      const x = 120 + frame * 230;
+      this.add.sprite(x, 142, weaponTexture, frame).setScale(1.18);
+      this.drawPivot(x, 142);
+      this.add.text(x, 196, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(20, 224, "PROJECTILE + EFFECT FAMILY — eight isolated gameplay reads", style("#68e4e8", "11px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 66 + frame * 116;
+      this.add.sprite(x, 300, effectTexture, frame).setScale(1.02);
+      this.add.text(x, 344, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(20, 380, "COOLDOWN / WEAPON MOTIF", style("#b9ef62", "11px"));
+    this.add.sprite(110, 438, "weapon-tiles-v1", tileFrame).setScale(0.9);
+    this.add.text(200, 432, "Runtime bindings, cooldown shadow, numeric time, hit geometry, trajectory and damage remain code-driven.", style("#b7c9d8", "9px"));
+    this.add.text(480, 518, `Review: ?mode=gallery&batch=${batchName.toLowerCase()} • Lab: ${labRoute}`, style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private drawWeaponRing(x: number, y: number, count: number, scale: number): void {

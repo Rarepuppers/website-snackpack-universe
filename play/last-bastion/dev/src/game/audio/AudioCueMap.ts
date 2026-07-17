@@ -19,6 +19,7 @@ export interface AudioCue {
 const CUES: Readonly<Partial<Record<CombatEvent["type"], AudioCue>>> = Object.freeze({
   "weapon-fired": cue("rifle-fire", 720, 0.05, 0.05, "square", 520),
   "enemy-hit": cue("impact", 300, 0.05, 0.06, "triangle"),
+  "bolt-impact": cue("bolt-impact", 470, 0.07, 0.07, "square", 240),
   "enemy-defeated": cue("alien-death", 240, 0.18, 0.09, "sawtooth", 90),
   explosion: cue("explosion", 130, 0.3, 0.12, "sawtooth", 45),
   "player-hit": cue("player-hit", 180, 0.22, 0.14, "square", 110),

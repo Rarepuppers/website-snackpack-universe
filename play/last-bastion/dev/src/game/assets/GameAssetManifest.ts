@@ -40,6 +40,17 @@ import bastionEaterNodeSheetUrl from "../../../../art/production-tests/batch-d3/
 import bastionEaterEffectSheetUrl from "../../../../art/production-tests/batch-d3/bastion-eater-effect-atlas-v1-96.png";
 import bastionEaterEnvironmentSheetUrl from "../../../../art/production-tests/batch-d3/bastion-eater-environment-atlas-v1-96.png";
 import bastionEaterPortraitUrl from "../../../../art/production-tests/batch-d3/bastion-eater-portrait-v1-256.png";
+import patrolBladeSheetUrl from "../../../../art/production-tests/batch-f1/patrol-blade-spritesheet-v1-96.png";
+import patrolBladeEffectSheetUrl from "../../../../art/production-tests/batch-f1/patrol-blade-effect-atlas-v1-64.png";
+import actionTileSheetUrl from "../../../../art/production-tests/batch-f1/action-tile-atlas-v1-64.png";
+import uraniumStatusUrl from "../../../../art/production-tests/batch-f1/uranium-core-rounds-status-v1-64.png";
+import boltCarbineSheetUrl from "../../../../art/production-tests/batch-f2/bolt-carbine-spritesheet-v1-96.png";
+import boltCarbineEffectUrl from "../../../../art/production-tests/batch-f2/bolt-carbine-effect-atlas-v1-64.png";
+import weaponTileSheetUrl from "../../../../art/production-tests/batch-f2/weapon-tile-atlas-v1-64.png";
+import bulwarkRotarySheetUrl from "../../../../art/production-tests/batch-f3/bulwark-rotary-cannon-spritesheet-v1-96.png";
+import bulwarkRotaryEffectUrl from "../../../../art/production-tests/batch-f3/bulwark-rotary-cannon-effect-atlas-v1-64.png";
+import grenadeTubeSheetUrl from "../../../../art/production-tests/batch-f4/grenade-tube-spritesheet-v1-96.png";
+import grenadeTubeEffectUrl from "../../../../art/production-tests/batch-f4/grenade-tube-effect-atlas-v1-64.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -83,7 +94,18 @@ export type GameAssetId =
   | "bastion-eater-nodes-v1"
   | "bastion-eater-effects-v1"
   | "bastion-eater-environment-v1"
-  | "bastion-eater-portrait-v1";
+  | "bastion-eater-portrait-v1"
+  | "patrol-blade-v1"
+  | "patrol-blade-effects-v1"
+  | "action-tiles-v1"
+  | "uranium-status-v1"
+  | "bolt-carbine-v1"
+  | "bolt-carbine-effects-v1"
+  | "weapon-tiles-v1"
+  | "bulwark-rotary-cannon-v1"
+  | "bulwark-rotary-effects-v1"
+  | "grenade-tube-v1"
+  | "grenade-tube-effects-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -149,6 +171,17 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("bastion-eater-effects-v1", bastionEaterEffectSheetUrl, 96, 96, 12, 0.5, 0.5),
   sheet("bastion-eater-environment-v1", bastionEaterEnvironmentSheetUrl, 96, 96, 8, 0.5, 0.5),
   image("bastion-eater-portrait-v1", bastionEaterPortraitUrl, 256, 256, 0.5, 0.5),
+  sheet("patrol-blade-v1", patrolBladeSheetUrl, 96, 96, 4, 0.5, 0.5),
+  sheet("patrol-blade-effects-v1", patrolBladeEffectSheetUrl, 64, 64, 6, 0.5, 0.5),
+  sheet("action-tiles-v1", actionTileSheetUrl, 64, 64, 6, 0.5, 0.5),
+  image("uranium-status-v1", uraniumStatusUrl, 64, 64, 0.5, 0.5),
+  sheet("bolt-carbine-v1", boltCarbineSheetUrl, 96, 96, 4, 0.18, 0.5),
+  sheet("bolt-carbine-effects-v1", boltCarbineEffectUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("weapon-tiles-v1", weaponTileSheetUrl, 64, 64, 3, 0.5, 0.5),
+  sheet("bulwark-rotary-cannon-v1", bulwarkRotarySheetUrl, 96, 96, 4, 0.18, 0.5),
+  sheet("bulwark-rotary-effects-v1", bulwarkRotaryEffectUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("grenade-tube-v1", grenadeTubeSheetUrl, 96, 96, 4, 0.18, 0.5),
+  sheet("grenade-tube-effects-v1", grenadeTubeEffectUrl, 64, 64, 8, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(

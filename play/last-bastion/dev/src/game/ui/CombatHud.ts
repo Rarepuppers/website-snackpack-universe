@@ -2,6 +2,32 @@ import Phaser from "phaser";
 import type { CombatSnapshot, PowerupType } from "../combat/CombatSimulation";
 import { MARINE } from "../hero/marine";
 import { PROTOTYPE_EVASIVE_RECOVERY_SECONDS } from "../hero/HeroMotionController";
+import {
+  cadenceWeapons,
+  cooldownRemainingFraction,
+  formatCooldownSeconds,
+  weaponTileAbbreviation,
+} from "./CooldownPresentation";
+
+interface CooldownTileView {
+  readonly background: Phaser.GameObjects.Rectangle;
+  readonly label: Phaser.GameObjects.Text;
+  readonly binding: Phaser.GameObjects.Text;
+  readonly timer: Phaser.GameObjects.Text;
+  readonly overlay: Phaser.GameObjects.Graphics;
+  readonly icon: Phaser.GameObjects.Image | null;
+  centreX: number;
+  centreY: number;
+  readonly size: number;
+}
+
+interface StatusTrayView {
+  readonly background: Phaser.GameObjects.Arc;
+  readonly iconText: Phaser.GameObjects.Text;
+  readonly image: Phaser.GameObjects.Image | null;
+  readonly timer: Phaser.GameObjects.Text;
+  readonly ring: Phaser.GameObjects.Graphics;
+}
 
 export class CombatHud {
   private readonly healthFill: Phaser.GameObjects.Rectangle;
@@ -20,7 +46,9 @@ export class CombatHud {
   private readonly bossPortrait: Phaser.GameObjects.Image;
   private readonly bossFallback: Phaser.GameObjects.Arc;
   private readonly productionArt: boolean;
-  private readonly powerupIcons = new Map<PowerupType, Phaser.GameObjects.Image>();
+  private readonly statusTray: StatusTrayView[] = [];
+  private readonly actionTiles: CooldownTileView[] = [];
+  private readonly cadenceTiles: CooldownTileView[] = [];
 
   constructor(scene: Phaser.Scene, showDebug: boolean, productionArt = true) {
     this.productionArt = productionArt;
@@ -43,11 +71,8 @@ export class CombatHud {
     this.waveText = scene.add.text(productionArt ? 480 : 268, 26, "", hudText("#ffffff", "13px"))
       .setOrigin(productionArt ? 0.5 : 0, 0).setDepth(2001);
     this.statsText = scene.add.text(268, 50, "", hudText("#9fb3c8", "11px")).setDepth(2001);
-    if (productionArt) {
-      (["overcharge", "aegis", "magnet-pulse", "adrenaline"] as const).forEach((type, index) => {
-        this.powerupIcons.set(type, scene.add.image(420 + index * 40, 102, "batch-c-rewards-v1", 12 + index)
-          .setDisplaySize(26, 26).setDepth(2001).setVisible(false));
-      });
+    for (let index = 0; index < 6; index += 1) {
+      this.statusTray.push(createStatusTrayView(scene, 42 + index * 48, 145, productionArt));
     }
 
     const rollPanel = productionArt
@@ -62,6 +87,30 @@ export class CombatHud {
     for (let index = 0; index < 12; index += 1) {
       this.weaponPips.push(scene.add.rectangle(724 + index * 16, 94, 11, 8, 0x273747)
         .setStrokeStyle(1, 0x4f6e8d).setDepth(2001));
+    }
+
+    const actionDefinitions = [
+      { label: "ROLL", binding: "SPACE", color: 0x68e4e8, frame: 0 },
+      { label: "ULT", binding: "R", color: 0xffa31a, frame: 1 },
+      { label: "KIT", binding: "Q", color: 0x9f7aea, frame: 3 },
+      { label: "ACT", binding: "E", color: 0xb9ef62, frame: 5 },
+    ] as const;
+    actionDefinitions.forEach((definition, index) => {
+      this.actionTiles.push(createCooldownTile(
+        scene,
+        378 + index * 68,
+        503,
+        54,
+        definition.label,
+        definition.binding,
+        definition.color,
+        productionArt ? definition.frame : undefined,
+      ));
+    });
+    for (let index = 0; index < 6; index += 1) {
+      const tile = createCooldownTile(scene, 480, 451, 34, "", "AUTO", 0xffb982, productionArt ? 2 : undefined);
+      setCooldownTileVisible(tile, false);
+      this.cadenceTiles.push(tile);
     }
 
     const stateBackground = productionArt
@@ -93,7 +142,7 @@ export class CombatHud {
     this.bossFill = scene.add.rectangle(-153, 12, 336, 8, 0xff6b3d)
       .setOrigin(0, 0.5);
     this.bossText = scene.add.text(15, -15, "", hudText("#fff1dc", "13px")).setOrigin(0.5);
-    this.bossPanel = scene.add.container(480, 466, [bossBackground, this.bossPortrait, this.bossFallback, bossBar, this.bossFill, this.bossText])
+    this.bossPanel = scene.add.container(480, 398, [bossBackground, this.bossPortrait, this.bossFallback, bossBar, this.bossFill, this.bossText])
       .setDepth(2050).setVisible(false);
 
     for (const child of scene.children.list) {
@@ -102,6 +151,7 @@ export class CombatHud {
         || child instanceof Phaser.GameObjects.Rectangle
         || child instanceof Phaser.GameObjects.Image
         || child instanceof Phaser.GameObjects.Container
+        || child instanceof Phaser.GameObjects.Graphics
       ) {
         if (child.depth < 2000) continue;
         child.setScrollFactor(0);
@@ -133,22 +183,65 @@ export class CombatHud {
         ? `STRESS ${snapshot.stressProfile}`
         : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}`);
     const shieldLabel = snapshot.playerShield > 0 ? `  SH ${Math.ceil(snapshot.playerShield)}` : "";
-    const buffLabel = snapshot.activeBuffs.length > 0
-      ? `\n${snapshot.activeBuffs
-        .map((buff) => `${buff.type.toUpperCase()} ${buff.remainingSeconds.toFixed(1)}s`)
-        .join("  ")}`
-      : "";
-    const activeBuffTypes = new Set(snapshot.activeBuffs.map((buff) => buff.type));
-    for (const [type, icon] of this.powerupIcons) {
-      icon.setVisible(type === "aegis" ? snapshot.playerShield > 0 : activeBuffTypes.has(type));
-    }
-    this.statsText.setText(`LV ${snapshot.level}  HP ${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}\nXP ${snapshot.experience}/${snapshot.experienceForNextLevel}${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerTethered ? "  TETHERED" : ""}${snapshot.playerEntrenched ? "  ENTRENCHED" : ""}${buffLabel}`);
+    this.statsText.setText(`LV ${snapshot.level}  HP ${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}\nXP ${snapshot.experience}/${snapshot.experienceForNextLevel}${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerTethered ? "  TETHERED" : ""}${snapshot.playerEntrenched ? "  ENTRENCHED" : ""}`);
+    this.statusTray.forEach((view, index) => {
+      const buff = snapshot.activeBuffs[index];
+      if (!buff) {
+        setStatusTrayVisible(view, false);
+        return;
+      }
+      setStatusTrayVisible(view, true);
+      updateStatusTrayView(view, buff.type, buff.remainingSeconds, buff.durationSeconds);
+    });
     const ultimateLabel = snapshot.ultimateReady
       ? "ULT READY — R"
       : `ULT ${snapshot.ultimateCooldownRemainingSeconds.toFixed(1)}s`;
     this.rollText.setText(`${snapshot.evasiveReady
       ? "READY — SPACE"
       : `${snapshot.evasiveCooldownRemainingSeconds.toFixed(2)}s`}   ${ultimateLabel}`);
+    updateCooldownTile(
+      this.actionTiles[0]!, snapshot.evasiveCooldownRemainingSeconds,
+      totalRollTime, snapshot.evasiveReady, false,
+    );
+    updateCooldownTile(
+      this.actionTiles[1]!, snapshot.ultimateCooldownRemainingSeconds,
+      MARINE.ultimate.cooldownSeconds, snapshot.ultimateReady, false,
+    );
+    this.actionTiles[2]!.label.setText(
+      this.actionTiles[2]!.icon ? "" : snapshot.uraniumKitAvailable ? "U-25" : "KIT",
+    );
+    this.actionTiles[2]!.icon?.setFrame(snapshot.uraniumKitAvailable ? 3 : 4);
+    updateCooldownTile(
+      this.actionTiles[2]!, 0, 1, snapshot.uraniumKitAvailable, !snapshot.uraniumKitAvailable,
+    );
+    updateCooldownTile(this.actionTiles[3]!, 0, 1, false, true);
+
+    const slowWeapons = cadenceWeapons(snapshot.equippedWeapons).slice(0, this.cadenceTiles.length);
+    this.cadenceTiles.forEach((tile, index) => {
+      const weapon = slowWeapons[index];
+      if (!weapon) {
+        setCooldownTileVisible(tile, false);
+        return;
+      }
+      moveCooldownTile(tile, 480 + (index - (slowWeapons.length - 1) / 2) * 42, 451);
+      setCooldownTileVisible(tile, true);
+      tile.label.setText(tile.icon ? "" : weaponTileAbbreviation(weapon.weaponId));
+      if (tile.icon) {
+        if (weapon.weaponId === "patrol-blade") tile.icon.setTexture("action-tiles-v1", 2).setVisible(true);
+        else if (weapon.weaponId === "bolt-carbine") tile.icon.setTexture("weapon-tiles-v1", 0).setVisible(true);
+        else if (weapon.weaponId === "bulwark-rotary-cannon") tile.icon.setTexture("weapon-tiles-v1", 1).setVisible(true);
+        else if (weapon.weaponId === "grenade-tube") tile.icon.setTexture("weapon-tiles-v1", 2).setVisible(true);
+        else tile.icon.setVisible(false);
+      }
+      tile.binding.setText(weapon.stats.firesAutomatically ? "AUTO" : "FIRE");
+      updateCooldownTile(
+        tile,
+        weapon.cooldownRemainingSeconds,
+        weapon.cooldownDurationSeconds,
+        weapon.cooldownRemainingSeconds <= 0,
+        false,
+      );
+    });
     this.weaponPips.forEach((pip, index) => {
       const weapon = snapshot.equippedWeapons[index];
       pip.setFillStyle(weapon ? weaponPipColor(weapon.weaponId) : 0x273747);
@@ -184,10 +277,185 @@ export class CombatHud {
   }
 }
 
+function createStatusTrayView(scene: Phaser.Scene, x: number, y: number, productionArt: boolean): StatusTrayView {
+  const background = scene.add.circle(x, y, 19, 0x101923, 0.98)
+    .setStrokeStyle(2, 0x52677b).setDepth(2020).setVisible(false);
+  const iconText = scene.add.text(x, y - 3, "", hudText("#ffffff", "10px"))
+    .setOrigin(0.5).setDepth(2021).setVisible(false);
+  const image = productionArt
+    ? scene.add.image(x, y - 2, "uranium-status-v1").setDisplaySize(30, 30).setDepth(2021).setVisible(false)
+    : null;
+  const timer = scene.add.text(x, y + 11, "", hudText("#ffffff", "8px"))
+    .setOrigin(0.5).setDepth(2023).setVisible(false);
+  const ring = scene.add.graphics().setDepth(2022).setVisible(false);
+  return { background, iconText, image, timer, ring };
+}
+
+function setStatusTrayVisible(view: StatusTrayView, visible: boolean): void {
+  view.background.setVisible(visible);
+  view.iconText.setVisible(visible && view.image === null);
+  view.image?.setVisible(visible);
+  view.timer.setVisible(visible);
+  view.ring.setVisible(visible);
+  if (!visible) view.ring.clear();
+}
+
+function updateStatusTrayView(
+  view: StatusTrayView,
+  type: PowerupType,
+  remainingSeconds: number,
+  durationSeconds: number,
+): void {
+  const x = view.background.x;
+  const y = view.background.y;
+  const fraction = Math.max(0, Math.min(remainingSeconds / Math.max(durationSeconds, 0.001), 1));
+  const urgent = remainingSeconds <= 3;
+  view.background.setFillStyle(statusColor(type), 0.3)
+    .setStrokeStyle(2, urgent ? 0xffc35a : statusColor(type), 0.95);
+  view.iconText.setText(statusAbbreviation(type));
+  if (view.image) {
+    if (type === "uranium-core-rounds") view.image.setTexture("uranium-status-v1");
+    else view.image.setTexture("batch-c-rewards-v1", statusRewardFrame(type));
+  }
+  view.timer.setText(remainingSeconds.toFixed(1)).setColor(urgent ? "#ffd36b" : "#ffffff");
+  view.ring.clear();
+  view.ring.lineStyle(4, 0x071018, 0.88).beginPath()
+    .arc(x, y, 21, -Math.PI / 2, Math.PI * 1.5, false).strokePath();
+  if (fraction > 0) {
+    view.ring.lineStyle(3, urgent ? 0xffc35a : statusColor(type), 1).beginPath()
+      .arc(x, y, 21, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * fraction, false).strokePath();
+  }
+}
+
+function statusAbbreviation(type: PowerupType): string {
+  switch (type) {
+    case "overcharge": return "OC";
+    case "adrenaline": return "AD";
+    case "magnet-pulse": return "MP";
+    case "uranium-core-rounds": return "U25";
+    default: return "SH";
+  }
+}
+
+function statusColor(type: PowerupType): number {
+  switch (type) {
+    case "overcharge": return 0xffa347;
+    case "adrenaline": return 0xff6a70;
+    case "magnet-pulse": return 0x70dce8;
+    case "uranium-core-rounds": return 0xb9ef62;
+    default: return 0x9f7aea;
+  }
+}
+
+function statusRewardFrame(type: PowerupType): number {
+  switch (type) {
+    case "overcharge": return 12;
+    case "magnet-pulse": return 14;
+    case "adrenaline": return 15;
+    default: return 13;
+  }
+}
+
 function weaponPipColor(weaponId: string): number {
   if (weaponId === "scattergun") return 0xff9a72;
   if (weaponId === "arc-carbine") return 0x68e4e8;
+  if (weaponId === "patrol-blade") return 0xffd08a;
+  if (weaponId === "bolt-carbine") return 0x94efff;
+  if (weaponId === "bulwark-rotary-cannon") return 0xff9b42;
+  if (weaponId === "grenade-tube") return 0xffb23f;
   return 0xffa31a;
+}
+
+function createCooldownTile(
+  scene: Phaser.Scene,
+  centreX: number,
+  centreY: number,
+  size: number,
+  label: string,
+  binding: string,
+  color: number,
+  iconFrame?: number,
+): CooldownTileView {
+  const background = scene.add.rectangle(centreX, centreY, size, size, 0x111a25, 0.96)
+    .setStrokeStyle(2, color, 0.95).setDepth(2020);
+  const labelText = scene.add.text(centreX, centreY - 5, iconFrame === undefined ? label : "", hudText("#edf4ff", size >= 50 ? "11px" : "9px"))
+    .setOrigin(0.5).setDepth(2022);
+  const icon = iconFrame === undefined
+    ? null
+    : scene.add.image(centreX, centreY, "action-tiles-v1", iconFrame)
+      .setDisplaySize(size - 6, size - 6).setDepth(2021);
+  const bindingText = scene.add.text(centreX, centreY - size / 2 - 8, binding, hudText("#9fb3c8", "8px"))
+    .setOrigin(0.5).setDepth(2022);
+  const timer = scene.add.text(centreX, centreY + size * 0.24, "", hudText("#ffffff", size >= 50 ? "11px" : "9px"))
+    .setOrigin(0.5).setDepth(2023);
+  const overlay = scene.add.graphics().setDepth(2021);
+  return { background, label: labelText, binding: bindingText, timer, overlay, icon, centreX, centreY, size };
+}
+
+function updateCooldownTile(
+  tile: CooldownTileView,
+  remainingSeconds: number,
+  durationSeconds: number,
+  ready: boolean,
+  disabled: boolean,
+): void {
+  tile.overlay.clear();
+  if (disabled) {
+    tile.background.setFillStyle(0x10151c, 0.92).setStrokeStyle(2, 0x394754, 0.72);
+    tile.label.setColor("#657482");
+    tile.icon?.setAlpha(0.34);
+    tile.timer.setText("—").setColor("#657482");
+    return;
+  }
+  tile.background.setFillStyle(0x111a25, 0.96)
+    .setStrokeStyle(ready ? 3 : 2, ready ? 0xeaf8ff : 0x587087, ready ? 1 : 0.9);
+  tile.label.setColor(ready ? "#ffffff" : "#c8d4df");
+  tile.icon?.setAlpha(ready ? 1 : 0.68);
+  tile.timer.setColor(remainingSeconds <= 1 && remainingSeconds > 0 ? "#ffd36b" : "#ffffff")
+    .setText(formatCooldownSeconds(remainingSeconds));
+  const fraction = cooldownRemainingFraction(remainingSeconds, durationSeconds);
+  if (fraction > 0) {
+    drawCooldownWedge(tile.overlay, tile.centreX, tile.centreY, tile.size * 0.47, fraction);
+  }
+}
+
+function drawCooldownWedge(
+  graphics: Phaser.GameObjects.Graphics,
+  centreX: number,
+  centreY: number,
+  radius: number,
+  fraction: number,
+): void {
+  const start = -Math.PI / 2;
+  const segments = Math.max(4, Math.ceil(28 * fraction));
+  graphics.fillStyle(0x02070c, 0.7).beginPath().moveTo(centreX, centreY);
+  for (let index = 0; index <= segments; index += 1) {
+    const angle = start + Math.PI * 2 * fraction * index / segments;
+    graphics.lineTo(centreX + Math.cos(angle) * radius, centreY + Math.sin(angle) * radius);
+  }
+  graphics.closePath().fillPath();
+}
+
+function moveCooldownTile(tile: CooldownTileView, x: number, y: number): void {
+  const dx = x - tile.centreX;
+  const dy = y - tile.centreY;
+  tile.centreX = x;
+  tile.centreY = y;
+  tile.background.setPosition(x, y);
+  tile.label.setPosition(tile.label.x + dx, tile.label.y + dy);
+  tile.binding.setPosition(tile.binding.x + dx, tile.binding.y + dy);
+  tile.timer.setPosition(tile.timer.x + dx, tile.timer.y + dy);
+  tile.icon?.setPosition(tile.icon.x + dx, tile.icon.y + dy);
+}
+
+function setCooldownTileVisible(tile: CooldownTileView, visible: boolean): void {
+  tile.background.setVisible(visible);
+  tile.label.setVisible(visible);
+  tile.binding.setVisible(visible);
+  tile.timer.setVisible(visible);
+  tile.overlay.setVisible(visible);
+  tile.icon?.setVisible(visible);
+  if (!visible) tile.overlay.clear();
 }
 
 function hudText(color: string, fontSize: string): Phaser.Types.GameObjects.Text.TextStyle {

@@ -11,6 +11,7 @@ function intent(overrides: Partial<PlayerIntent> = {}): PlayerIntent {
     evasiveMovePressed: false,
     interactPressed: false,
     ultimatePressed: false,
+    kitPressed: false,
     pausePressed: false,
     restartPressed: false,
     ...overrides,

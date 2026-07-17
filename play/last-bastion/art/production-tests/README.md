@@ -8,7 +8,7 @@ Production Asset Batch B (weapons, Spitter, Carapace elite, Siege Crusher, portr
 
 The gameplay-critical portion of Production Asset Batch C is documented in [`batch-c/README.md`](batch-c/README.md). Blast Mite, Warp Flanker, rewards, powerups, statuses, the electric fence, and Bastion Barrage presentation are integrated; Relic, Artifact, and Shrine art remains deferred until those systems exist.
 
-Production Asset Batch D1 is documented in [`batch-d/README.md`](batch-d/README.md) and contains the integrated Brood Warden set. Production Asset Batch D2 is documented in [`batch-d2/README.md`](batch-d2/README.md) and contains the integrated Ripper body and melee effects. Production Asset Batch D4 is documented in [`batch-d4/README.md`](batch-d4/README.md) and contains the integrated Razor Scuttler body and interceptor effects.
+Production Asset Batch D1 is documented in [`batch-d/README.md`](batch-d/README.md) and contains the integrated Brood Warden set. Production Asset Batch D2 is documented in [`batch-d2/README.md`](batch-d2/README.md) and contains the integrated Ripper body and melee effects. Production Asset Batch D4 is documented in [`batch-d4/README.md`](batch-d4/README.md) and contains the integrated Razor Scuttler body and interceptor effects. Production Asset Batch F1 is documented in [`batch-f1/README.md`](batch-f1/README.md) and contains the integrated Patrol Blade, action-tile, and Uranium-Core Rounds family.
 
 Production Asset Batch E1 is documented in [`batch-e1/README.md`](batch-e1/README.md) and contains the integrated Quillback body, individual spike projectile, launch accents, impacts, hit, and defeat effects.
 
@@ -76,6 +76,6 @@ The retained `*-chroma.png` files record the generated source before background 
 
 ## Review switches
 
-Production art is enabled by default. Use `?art=placeholder` for the code-shape comparison renderer. The helmet is enabled by default; add `?helmet=0` to verify the unchanged base body without it. The existing `weapons=` parameter may be combined with either view. Use `?mode=gallery` for character/enemy/equipment frames and `?mode=gallery&batch=a|b|c|d|d2|d3|d4|e1|e2|e3` for each production batch; D is the Brood Warden set, D2 is the Ripper set, D3 is the Bastion Eater set, D4 is the Razor Scuttler set, E1 is the Quillback set, E2 is the Spinewheel set, and E3 is the Tether Bloom set.
+Production art is enabled by default. Use `?art=placeholder` for the code-shape comparison renderer. The helmet is enabled by default; add `?helmet=0` to verify the unchanged base body without it. The existing `weapons=` parameter may be combined with either view. Use `?mode=gallery` for character/enemy/equipment frames and `?mode=gallery&batch=a|b|c|d|d2|d3|d4|e1|e2|e3|f1|f2|f3|f4` for each production batch. F1 is Patrol Blade/action UI, F2 is Bolt Carbine, F3 is Bulwark Rotary Cannon, and F4 is Grenade Tube.
 
-The in-app browser runtime could not initialise in the current environment, so creator visual acceptance remains a manual review step. Automated type, unit, build, asset-HTTP, and route-HTTP validation is complete.
+Automated type, unit, build, asset-HTTP, and route-HTTP validation is complete. Full-resolution transparent masters and exact-resolution runtime atlases were visually inspected; creator gameplay-scale acceptance remains available through the deterministic gallery and loadout routes.

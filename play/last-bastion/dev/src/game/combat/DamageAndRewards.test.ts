@@ -10,6 +10,7 @@ function intent(overrides: Partial<PlayerIntent> = {}): PlayerIntent {
     evasiveMovePressed: false,
     interactPressed: false,
     ultimatePressed: false,
+    kitPressed: false,
     pausePressed: false,
     restartPressed: false,
     ...overrides,
@@ -129,6 +130,55 @@ describe("powerups and timed buffs", () => {
     }
     expect(snapshot.powerups).toHaveLength(0);
     expect(snapshot.activeBuffs).toHaveLength(0);
+  });
+
+  it("activates Uranium-Core Rounds from the kit slot and expires after twelve seconds", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, startingUraniumKit: true });
+    let snapshot = simulation.step(intent({ kitPressed: true }), 0.05);
+
+    expect(snapshot.uraniumKitAvailable).toBe(false);
+    expect(snapshot.events.some((event) => event.type === "kit-activated")).toBe(true);
+    const uranium = snapshot.activeBuffs.find((buff) => buff.type === "uranium-core-rounds");
+    expect(uranium?.durationSeconds).toBe(12);
+    expect(uranium?.remainingSeconds).toBeGreaterThan(11.9);
+
+    for (let frame = 0; frame < 245; frame += 1) snapshot = simulation.step(intent(), 0.05);
+    expect(snapshot.activeBuffs.some((buff) => buff.type === "uranium-core-rounds")).toBe(false);
+  });
+
+  it("refreshes Uranium-Core Rounds without stacking duration or magnitude", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, startWithUraniumBuff: true });
+    for (let frame = 0; frame < 80; frame += 1) simulation.step(intent(), 0.05);
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnPowerup("uranium-core-rounds", player);
+    const snapshot = simulation.step(intent(), 0.05);
+    const uranium = snapshot.activeBuffs.find((buff) => buff.type === "uranium-core-rounds");
+    expect(uranium?.remainingSeconds).toBeGreaterThan(11.9);
+    expect(uranium?.remainingSeconds).toBeLessThanOrEqual(12);
+  });
+
+  it("adds twenty-five percent damage to direct ring-weapon hits", () => {
+    const baseline = new CombatSimulation({
+      autoStartWaves: false,
+      startingWeaponIds: ["patrol-blade"],
+    });
+    const boosted = new CombatSimulation({
+      autoStartWaves: false,
+      startingWeaponIds: ["patrol-blade"],
+      startWithUraniumBuff: true,
+    });
+    const basePlayer = baseline.snapshot().playerPosition;
+    const boostPlayer = boosted.snapshot().playerPosition;
+    baseline.spawnEnemy("egg-cluster", { x: basePlayer.x + 1.4, y: basePlayer.y });
+    boosted.spawnEnemy("egg-cluster", { x: boostPlayer.x + 1.4, y: boostPlayer.y });
+
+    const baseBefore = baseline.snapshot().enemies[0]!.health;
+    const boostBefore = boosted.snapshot().enemies[0]!.health;
+    const baseAfter = baseline.step(intent(), 0.05).enemies[0]!.health;
+    const boostAfter = boosted.step(intent(), 0.05).enemies[0]!.health;
+    const baseDamage = baseBefore - baseAfter;
+    const boostedDamage = boostBefore - boostAfter;
+    expect(boostedDamage).toBeCloseTo(baseDamage * 1.25);
   });
 });
 

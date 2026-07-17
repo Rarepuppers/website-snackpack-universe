@@ -22,7 +22,7 @@ An item is not completed merely because code or an asset exists. It must meet it
 
 **Milestone status:** In progress
 
-**Current objective:** creator-playtest and tune the implemented five-wave vertical slice with its gameplay-critical Batch C presentation.
+**Current objective:** behavior-prototype Event Horizon's aim, pull-field, implosion, and 16-second active-tile contract before generating its Unique production family.
 
 ## Completed
 
@@ -694,6 +694,15 @@ Completion evidence:
 21. Implement and verify The Bastion Eater with placeholders before generating Production Asset Batch D3. **Completed 17 July 2026; production art integrated in the same behavior-first pass.**
 22. Implement and rules-test the Razor Scuttler interceptor behavior gate. **Completed 17 July 2026; creator timing/readability review queued.**
 23. Generate and integrate Production Asset Batch D4 for the Razor Scuttler after behavior approval. **Completed 17 July 2026; creator gameplay-scale review queued.**
+24. Define the bottom active-action bar, passive weapon-cadence strip, cooldown-shadow rules, accessibility treatment, and the first premium weapon briefs. **Completed 17 July 2026; behavior prototypes and UI wireframe next.**
+25. Implement the action-bar/cadence-strip behavior gate with code-native placeholder tiles, then prototype Patrol Blade timing before generating the first weapon-and-tile art batch. **Completed 17 July 2026; creator timing/layout review queued.**
+26. Upgrade the existing temporary-buff HUD into a top-left circular-timer tray and add a deterministic Uranium-Core Rounds kit lab before producing timed-status icon art. **Completed 17 July 2026; creator timing/layout review queued.**
+27. Generate and integrate Production Asset Batch F1 for Patrol Blade, action tiles, and Uranium-Core Rounds after Tasks 25–26 pass creator review. **Completed 17 July 2026; creator gameplay-scale review queued.**
+28. Implement and rules-test the Bolt Carbine piercing/readability behavior gate before generating Production Asset Batch F2. **Completed 17 July 2026; creator timing/readability review queued.**
+29. Generate, normalize, integrate, gallery-test, and verify Production Asset Batch F2 for the Bolt Carbine after behavior approval. **Completed 17 July 2026.**
+30. Produce and integrate Production Asset Batch F3 for the Bulwark Rotary Cannon, including reusable ballistic tracers and impacts. **Completed 17 July 2026; final spin-up/heat tuning remains a behavior pass.**
+31. Produce and integrate Production Asset Batch F4 for the Bastion Grenade Tube, including projectile, fuse, bounce, warning, blast, and cover-impact presentation. **Completed 17 July 2026; future arcing/minimum-range tuning remains behavior work.**
+32. Implement and rules-test Event Horizon's pull-field and implosion behavior before producing its Unique weapon family.
 
 ### Production Asset Batch D4: Razor Scuttler interceptor
 
@@ -702,3 +711,90 @@ Completion evidence:
 - Completed one 4 × 4 directional/state body sheet at 96 × 96 cells: pursuit, compressed wind-up, committed dash, and exhausted/crash recovery across south, north, east, and west.
 - Completed one 4 × 2 effect atlas at 64 × 64 cells: lane-warning accent, launch burst, speed trail, Marine impact, cover crash, miss skid, recovery stagger, and defeat.
 - Kept the exact dash lane, distance, collision, and hit test code-driven. Chroma provenance, large transparent masters, stable pivot/scale, prompts, frame map, clean alpha, and deterministic normalization are retained under `art/production-tests/batch-d4/`.
+
+### Weapon action bar and premium design pass
+
+**Status:** Behavior gate completed — 17 July 2026; creator timing/layout review queued
+
+- Use four large bottom-centre active tiles for dodge, ultimate, consumable, and active perk/relic or manual heavy weapon.
+- Add a separate compact passive cadence strip for slow automatic weapons and periodic perks; do not label automatic attacks with misleading hotkeys.
+- Render cooldown shadow, numeric time, charge pips, binding text, disabled/no-target treatment, and ready pulse in code so one tile master supports keyboard and gamepad.
+- Start behavior production with Patrol Blade, then Bolt Carbine, Grenade Tube, Bulwark Rotary Cannon, and Event Horizon.
+- Generate each approved weapon's ring states, projectile/effects, and matching 64 × 64 tile as one production batch only after its behavior lab passes.
+- Implemented a four-slot bottom action bar with keyboard bindings, disabled empty slots, code-rendered radial cooldown shadow, and numeric cooldown labels.
+- Implemented a compact passive cadence strip that includes automatic weapons at or above the 1.5-second threshold without assigning false hotkeys.
+- Implemented Patrol Blade as a 2.5-second automatic nearest-target melee sweep with a short forward arc, cover blocking, physical damage, and knockback; `?loadout=patrol` is the deterministic behavior-review route.
+- Verification evidence: 144 tests across 18 files, TypeScript validation, production build, 40 runtime asset checks, 27 review routes, and browser review at 960 × 540 with no console errors.
+
+### Temporary powerup and kit tray
+
+**Status:** Behavior gate completed — 17 July 2026; creator timing/layout review queued
+
+- Place active temporary effects in a top-left tray with circular remaining-time ring, radial shadow, and numeric countdown.
+- Keep unused activatable kits on the bottom action bar; move their effect to the top-left tray only after activation.
+- Reuse the tray for timed shrine blessings and wave-long effects, but keep permanent/run-long modifiers out of it.
+- Prototype Uranium-Core Rounds as a 12-second, +25% direct ring-weapon-damage window with refresh-not-stack behavior and explicit exclusions.
+- Create high-quality status icons only after the timer, stacking, inspection, wrapping, expiry, and accessibility states pass the code-native UI lab.
+- Implemented a reusable six-slot top-left status tray with authored icons, code-rendered circular remaining-time rings, numeric tenths, urgent final-three-second treatment, wrapping, and clean expiry.
+- Implemented Uranium-Core Rounds as a consumable `Q`/B-Circle kit, a 12-second +25% direct ring-weapon damage effect, and refresh-not-stack timed buff; secondary chain, explosion, ultimate, and environmental damage remain excluded.
+- Added deterministic review routes: `?loadout=patrol&kit=uranium` for the ready kit and `?loadout=patrol&buff=uranium` for the active tray state.
+
+### Production Asset Batch F1: Patrol Blade, action tiles, and timed status
+
+**Status:** Completed — 17 July 2026; creator gameplay-scale review queued
+
+- Completed one Patrol Blade ring sheet at 96 × 96 cells: folded idle, ready/anticipation, active sweep, and recovery. The east-authored runtime frames rotate with the weapon ring.
+- One Patrol Blade effect atlas at 64 × 64 cells: anticipation arc, active crescent, flesh hit, armour hit, cover sparks, and ready glint. Hit geometry and cooldown remain code-driven.
+- One action-tile atlas at 64 × 64 cells: combat roll, Bastion ultimate, Patrol Blade cadence, Uranium-Core Rounds kit, empty consumable, and empty active slot. Bindings, cooldown shadow, time text, charges, disabled state, and ready pulse remain code-driven overlays.
+- One Uranium-Core Rounds status icon master at 64 × 64 with a clean circular silhouette suitable for the 36–44 pixel top-left tray. The circular timer, radial shadow, countdown, refresh feedback, and expiry flash remain code-driven.
+- Acceptance: each motif is identifiable at gameplay scale beneath a 50% cooldown shadow, maintains clean alpha and safe padding, and has a deterministic gallery/review route before replacing placeholders.
+- Retained four large chroma provenance sources and four full-resolution transparent edit masters, each roughly 16–25 times larger than its runtime cell, for future higher-resolution Steam rendering and revision.
+- Deterministic normalization, connected-component cleanup, exact frame maps, prompt contracts, and source/runtime separation are documented under `art/production-tests/batch-f1/`.
+- Integrated the blade states, active crescent, action motifs, uranium kit/status art, and `?mode=gallery&batch=f1` review route while preserving code-authoritative cooldowns, rings, bindings, timing, geometry, and damage.
+- Verification evidence: 149 tests across 18 files, TypeScript validation, production build, 44 runtime art checks, 30 review routes, and browser review of the gallery/ready/active states at 1280 × 720 with no console warnings or errors.
+
+### Bolt Carbine piercing/readability behavior gate
+
+**Status:** Completed — 17 July 2026; creator timing/readability review queued
+
+- Implemented a manual cursor-aimed precision carbine with a deliberate 1.8-second cadence, 18-metre reach, 12 metres/second bolt speed, and 22 physical damage per target.
+- Each bolt penetrates exactly one enemy: the first and second contacts receive damage and distinct impact events, while a third aligned target remains untouched.
+- Firing into an empty lane still commits the full cooldown, preserving the intended high-stakes aim contract.
+- Added separate code-native first-hit and terminal second-hit flashes, a long cyan bolt silhouette, a distinct weapon-ring placeholder, and a dedicated synthesized impact cue without borrowing final F2 art.
+- Added the deterministic `?loadout=bolt` behavior-review route and smoke coverage.
+- Verification evidence: 152 tests across 18 files, TypeScript validation, production build, 44 runtime art checks, 31 review routes, and a live `?loadout=bolt` canvas review passed.
+
+### Production Asset Batch F2: Bolt Carbine precision family
+
+**Status:** Completed — 17 July 2026; creator gameplay-scale review queued
+
+- One 4 × 1 Bolt Carbine ring sheet at 96 × 96 cells: idle, charge/aim settle, fire/recoil, and recover/vent.
+- One 4 × 2 projectile/effect atlas at 64 × 64 cells: charge glint, precision bolt, travel wake, first-target impact, penetration wake, terminal second-target impact, cover strike, and ready glint.
+- One 64 × 64 Bolt Carbine cadence tile built to remain identifiable beneath a 50% cooldown shadow.
+- Keep trajectory, hit ordering, penetration count, cooldown, damage, and timer overlays code-authoritative; the batch supplies presentation only.
+- Integrated all four weapon states, the authored bolt projectile, first and terminal impacts, cover strike, dedicated cadence motif, `?mode=gallery&batch=f2`, and `?loadout=bolt`.
+
+### Production Asset Batch F3: Bulwark Rotary Cannon
+
+**Status:** Completed — 17 July 2026; creator gameplay-scale review queued
+
+- Preserved the approved heavy six-barrel concept across idle, spin-up, firing, and heated-recovery ring states.
+- Added an eight-frame effect atlas containing a spin ring, reusable ballistic tracer, muzzle flash, casing, soft-target impact, armour ricochet, vent heat, and ready glint.
+- Integrated a functional rapid-fire heavy-cannon lab at `?loadout=bulwark` and a deterministic `?mode=gallery&batch=f3` presentation review.
+- Fire rate, damage, collision, knockback, and cooldown remain code-authoritative. A later behavior pass must decide the final spin-up, heat, and movement trade-off before balance lock.
+
+### Production Asset Batch F4: Bastion Grenade Tube
+
+**Status:** Completed — 17 July 2026; creator gameplay-scale review queued
+
+- Created an original compact revolver grenade launcher with idle, armed, firing, and open-cylinder reload states.
+- Added a dedicated grenade projectile, fuse trail, bounce spark, warning pulse, explosion core, blast ring, cover strike, and ready glint.
+- Implemented direct-hit and splash damage, fuse-expiry detonation, cover detonation, compact knockback, `?loadout=grenade`, and `?mode=gallery&batch=f4`.
+- Projectile flight, explosion radius, hit exclusion, splash multiplier, damage, knockback, and cooldown remain code-authoritative. Future arcing/minimum-range tuning can reuse the retained art without regeneration.
+
+### F2–F4 Steam-port asset retention
+
+- Retained seven large chroma provenance sources, seven full-resolution transparent edit masters, seven normalized runtime atlases, exact frame maps, prompt contracts, and one deterministic rebuild script.
+- Runtime delivery totals 12 weapon-state frames, 24 projectile/effect frames, and three cooldown motifs. Generic ballistic tracers are reusable; the Bolt and Grenade families use bespoke projectile sprites.
+- Built-in image generation used the established Last Bastion weapon, action-tile, and approved Bulwark concept art as strict references. No text, bindings, cooldown masks, collision geometry, or gameplay timing is baked into the artwork.
+- Verification evidence: 157 tests across 18 files, TypeScript validation, production build, 51 explicit runtime-art HTTP checks, 36 deterministic review routes, transparent-master inspection, and exact-resolution runtime-atlas inspection passed.

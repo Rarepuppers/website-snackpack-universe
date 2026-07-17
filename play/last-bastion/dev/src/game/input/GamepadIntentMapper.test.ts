@@ -24,6 +24,7 @@ function keyboardIntent(overrides: Partial<PlayerIntent> = {}): PlayerIntent {
     evasiveMovePressed: false,
     interactPressed: false,
     ultimatePressed: false,
+    kitPressed: false,
     pausePressed: false,
     restartPressed: false,
     ...overrides,
@@ -64,6 +65,12 @@ describe("GamepadIntentMapper", () => {
     expect(held.evasiveMovePressed).toBe(false);
     expect(released.evasiveMovePressed).toBe(false);
     expect(again.evasiveMovePressed).toBe(true);
+  });
+
+  it("maps the east face button to the consumable kit", () => {
+    const mapper = new GamepadIntentMapper();
+    expect(mapper.update(padState({ eastPressed: true })).kitPressed).toBe(true);
+    expect(mapper.update(padState({ eastPressed: true })).kitPressed).toBe(false);
   });
 
   it("produces a neutral intent while disconnected", () => {

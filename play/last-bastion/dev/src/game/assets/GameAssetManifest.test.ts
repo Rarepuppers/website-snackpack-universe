@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(42);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(53);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -150,5 +150,34 @@ describe("GameAssetManifest", () => {
     if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(12);
     if (environment.kind === "spritesheet") expect(environment.frameCount).toBe(8);
     expect(GAME_ASSETS["bastion-eater-portrait-v1"].kind).toBe("image");
+  });
+
+  it("locks Production Batch F1 weapon and UI contracts", () => {
+    const blade = GAME_ASSETS["patrol-blade-v1"];
+    const effects = GAME_ASSETS["patrol-blade-effects-v1"];
+    const tiles = GAME_ASSETS["action-tiles-v1"];
+    expect(blade.kind).toBe("spritesheet");
+    expect(effects.kind).toBe("spritesheet");
+    expect(tiles.kind).toBe("spritesheet");
+    if (blade.kind === "spritesheet") expect(blade.frameCount).toBe(4);
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(6);
+    if (tiles.kind === "spritesheet") expect(tiles.frameCount).toBe(6);
+    expect(GAME_ASSETS["uranium-status-v1"].kind).toBe("image");
+  });
+
+  it("locks Production Batches F2-F4 weapon, projectile, and tile contracts", () => {
+    for (const id of ["bolt-carbine-v1", "bulwark-rotary-cannon-v1", "grenade-tube-v1"] as const) {
+      const asset = GAME_ASSETS[id];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(4);
+    }
+    for (const id of ["bolt-carbine-effects-v1", "bulwark-rotary-effects-v1", "grenade-tube-effects-v1"] as const) {
+      const asset = GAME_ASSETS[id];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(8);
+    }
+    const tiles = GAME_ASSETS["weapon-tiles-v1"];
+    expect(tiles.kind).toBe("spritesheet");
+    if (tiles.kind === "spritesheet") expect(tiles.frameCount).toBe(3);
   });
 });
