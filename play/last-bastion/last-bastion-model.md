@@ -286,30 +286,29 @@ An item is not completed merely because code or an asset exists. It must meet it
 
 ### Razor Scuttler interceptor behavior gate
 
-**Status:** Completed — 17 July 2026; Production Asset Batch D4 and creator timing/readability review queued
+**Status:** Completed — 17 July 2026; Production Asset Batch D4 integrated and creator timing/readability review queued
 
 - Added a fragile 16-health interceptor with 3.35 m/s positioning speed, no ordinary contact damage, and modest Cryo vulnerability.
 - Implemented a locked 0.48-second lane warning followed by a 9.5 m/s, 0.55-second committed dash. The Razor must first reach the 2.6–7.5 metre acquisition band, preventing point-blank instant launches.
 - The dash can damage the Marine only once. A player hit, wall/cover crash, or clean miss immediately enters a stationary recovery; cover crashes use the longest 1.4-second punish window.
-- Added typed warning, dash, and reason-specific impact events; synthesized audio; code-driven lane rendering; phase-colour placeholder presentation; `RAZOR LAB` identity; and deterministic `scenario=razor-scuttler` route.
+- Added typed warning, dash, and reason-specific impact events; synthesized audio; code-driven lane rendering; `RAZOR LAB` identity; and deterministic `scenario=razor-scuttler` route.
+- Replaced the behavior-gate triangle with Production Asset Batch D4: sixteen directional pursuit/wind-up/dash/recovery bodies plus authored lane accent, launch, speed trail, Marine impact, cover crash, miss skid, stagger, and defeat effects.
 - Rules coverage locks warning direction, verifies miss recovery, verifies cover interruption, and proves one-hit dash safety through recovery.
 - Kept the Razor out of normal waves until its warning length, speed, collision read, and recovery punish window pass creator review.
-- Verification target: 137 tests across 17 files, TypeScript validation, production build, 40 runtime asset checks, and 25 review routes.
+- Verification evidence: 138 tests across 17 files, TypeScript validation, production build, 40 runtime art assets, and 26 review routes.
 
 ## In progress
 
 ### Technical scaffold
 
-**Status:** In progress — build and HTTP smoke verified; visual browser smoke pending
+**Status:** Completed — build, HTTP smoke, D4 gallery, and live combat-canvas browser checks verified
 
 - Created an isolated Phaser 4.1, TypeScript, Vite, and Vitest project under `dev/`.
 - Added development, typecheck, test, build, smoke, and combined verify commands.
 - Configured production output for the exact `/play/last-bastion/` GitHub Pages route without deleting design documents or concept art.
 - Built the tracked `index.html` and hashed `game-assets/` output.
 - Verified the route, game root, and compiled JavaScript asset return HTTP 200.
-- The in-app browser runtime could not initialise in the current environment, so visual canvas execution remains to be checked manually or in a later browser session.
-
-Acceptance criterion remaining: visually load the canvas and confirm there are no runtime console errors.
+- Visually verified the D4 gallery and live Razor Scuttler combat canvas in the in-app browser with no console errors.
 
 ### Art bible version 1
 
@@ -694,12 +693,12 @@ Completion evidence:
 20. External-playtest the vertical slice; proceed to route, relic, Artifact, shop/rest, and boss systems only if Gate 2 succeeds. **Creator approval received 17 July 2026.**
 21. Implement and verify The Bastion Eater with placeholders before generating Production Asset Batch D3. **Completed 17 July 2026; production art integrated in the same behavior-first pass.**
 22. Implement and rules-test the Razor Scuttler interceptor behavior gate. **Completed 17 July 2026; creator timing/readability review queued.**
-23. Generate and integrate Production Asset Batch D4 for the Razor Scuttler after behavior approval.
+23. Generate and integrate Production Asset Batch D4 for the Razor Scuttler after behavior approval. **Completed 17 July 2026; creator gameplay-scale review queued.**
 
 ### Production Asset Batch D4: Razor Scuttler interceptor
 
-**Status:** Pending creator approval of the functional behavior lab
+**Status:** Completed — 17 July 2026; creator gameplay-scale review queued
 
-- Queue one 4 × 4 directional/state body sheet at 96 × 96 cells: pursuit, compressed wind-up, committed dash, and exhausted/crash recovery across south, north, east, and west.
-- Queue one 4 × 2 effect atlas at 64 × 64 cells: lane-warning accent, launch burst, speed trail, Marine impact, cover crash, miss skid, recovery stagger, and defeat.
-- Keep the exact dash lane, distance, collision, and hit test code-driven. Retain chroma provenance, large transparent masters, stable pivot/scale, prompts, frame map, clean alpha, and deterministic normalization.
+- Completed one 4 × 4 directional/state body sheet at 96 × 96 cells: pursuit, compressed wind-up, committed dash, and exhausted/crash recovery across south, north, east, and west.
+- Completed one 4 × 2 effect atlas at 64 × 64 cells: lane-warning accent, launch burst, speed trail, Marine impact, cover crash, miss skid, recovery stagger, and defeat.
+- Kept the exact dash lane, distance, collision, and hit test code-driven. Chroma provenance, large transparent masters, stable pivot/scale, prompts, frame map, clean alpha, and deterministic normalization are retained under `art/production-tests/batch-d4/`.

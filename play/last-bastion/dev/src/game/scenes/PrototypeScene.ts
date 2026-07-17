@@ -87,6 +87,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly spinewheelTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly tetherBloomTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly spinewheelTrailTimes = new Map<number, number>();
+  private readonly razorScuttlerTrailTimes = new Map<number, number>();
   private readonly tetherBloomAccentTimes = new Map<number, number>();
   private readonly warpTelegraphs = new Map<number, TelegraphView>();
   private readonly pickupViews = new Map<number, PickupView>();
@@ -368,6 +369,8 @@ export class PrototypeScene extends Phaser.Scene {
             this.emitAuthoredEffect(18, event.position, 260, 0.6, 1.2, 0, "batch-c-effects-v1");
           } else if (event.enemyType === "ripper") {
             this.emitAuthoredEffect(7, event.position, 340, 0.72, 1.5, 0, "ripper-effects-v1");
+          } else if (event.enemyType === "razor-scuttler") {
+            this.emitAuthoredEffect(7, event.position, 320, 0.72, 1.5, 0, "razor-scuttler-effects-v1");
           } else if (event.enemyType === "quillback") {
             this.emitAuthoredEffect(7, event.position, 360, 0.75, 1.55, 0, "quillback-effects-v1");
           } else if (event.enemyType === "spinewheel") {
@@ -473,18 +476,25 @@ export class PrototypeScene extends Phaser.Scene {
           );
           break;
         case "razor-scuttler-warning":
+          this.emitAuthoredEffect(
+            0, event.position, 300, 0.56, 0.92,
+            Math.atan2(event.direction.y, event.direction.x), "razor-scuttler-effects-v1",
+          );
           this.flashCircle(event.position, 12, 0xffd36b, 260, 1.5, true);
           break;
         case "razor-scuttler-dash":
-          this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xff5d72, 5);
+          this.emitAuthoredEffect(
+            1, event.position, 180, 0.62, 1.05,
+            Math.atan2(event.direction.y, event.direction.x), "razor-scuttler-effects-v1",
+          );
           break;
         case "razor-scuttler-impact":
-          this.effectPool.emitBurst(
-            event.position.x * PIXELS_PER_METRE,
-            event.position.y * PIXELS_PER_METRE,
-            event.reason === "player" ? 0xff5a42 : event.reason === "cover" ? 0xffd36b : 0x71848d,
-            event.reason === "player" ? 7 : 5,
+          this.emitAuthoredEffect(
+            event.reason === "player" ? 3 : event.reason === "cover" ? 4 : 5,
+            event.position, event.reason === "cover" ? 280 : 220, 0.68, event.reason === "cover" ? 1.35 : 1.16,
+            0, "razor-scuttler-effects-v1",
           );
+          this.emitAuthoredEffect(6, event.position, 360, 0.5, 1.05, 0, "razor-scuttler-effects-v1");
           if (event.reason !== "miss") this.shakeCamera(80, 0.0035);
           break;
         case "quillback-volley":
@@ -619,7 +629,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -760,6 +770,9 @@ export class PrototypeScene extends Phaser.Scene {
         return this.add.triangle(0, 0, -28, -18, 30, 0, -28, 18, 0xc9475f)
           .setStrokeStyle(4, 0xffc27a);
       case "razor-scuttler":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "razor-scuttler-v1");
+        }
         return this.add.triangle(0, 0, 24, 0, -16, -11, -16, 11, 0xd93652)
           .setStrokeStyle(3, 0xffd5aa);
       case "quillback":
@@ -989,6 +1002,27 @@ export class PrototypeScene extends Phaser.Scene {
         const phase = enemy.ripperPhase ?? "pursuit";
         const row = phase === "windup" ? 1 : phase === "sweep" ? 2 : phase === "recovery" ? 3 : 0;
         view.setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
+      case "razor-scuttler": {
+        const phase = enemy.razorScuttlerPhase ?? "pursuit";
+        const direction = phase === "pursuit"
+          ? enemy.facingDirection
+          : enemy.razorScuttlerDirection ?? enemy.facingDirection;
+        const target = { x: enemy.position.x + direction.x, y: enemy.position.y + direction.y };
+        const facingColumn = cardinalFacingColumn(enemy.position, target);
+        const row = phase === "windup" ? 1 : phase === "dash" ? 2 : phase === "recovery" ? 3 : 0;
+        view.setTexture("razor-scuttler-v1").setFrame(row * 4 + facingColumn).setRotation(0);
+        if (phase === "dash") {
+          const previousTrail = this.razorScuttlerTrailTimes.get(enemy.id) ?? -1000;
+          if (this.time.now - previousTrail >= 85) {
+            this.razorScuttlerTrailTimes.set(enemy.id, this.time.now);
+            this.emitAuthoredEffect(
+              2, enemy.position, 130, 0.5, 0.82,
+              Math.atan2(direction.y, direction.x), "razor-scuttler-effects-v1",
+            );
+          }
+        }
         return;
       }
       case "quillback": {
@@ -1816,7 +1850,7 @@ function applyManifestOrigin(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

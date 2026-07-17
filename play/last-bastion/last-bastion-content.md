@@ -254,7 +254,7 @@ Weapon implementation precedes final art for each family. Shared data must defin
 | Vertical slice | Blast Mite | Kamikaze | Armed flashing tell, detonation on contact or death | Production sheet: chase gait, armed flash, detonation burst |
 | Vertical slice | Warp Flanker | Teleporting harasser | Telegraphed arrival ring and materialise window | Production sheet: stalk, dissolve, arrival ring, materialise shimmer |
 | Production lab | Ripper | Melee bruiser | Locked 2.55 m frontal claw cone after 0.62 s wind-up; 1.1 s punish window | Production 4 × 4 pursuit/wind-up/sweep/recovery sheet and dedicated 4 × 2 effects integrated in Batch D2 |
-| Behavior lab | Razor Scuttler | Interceptor | 2.6–7.5 m acquisition, locked 0.48 s tell, 9.5 m/s committed dash, then punishable recovery | Placeholder phase silhouette and exact code lane; Production Batch D4 pending |
+| Production lab | Razor Scuttler | Interceptor | 2.6–7.5 m acquisition, locked 0.48 s tell, 9.5 m/s committed dash, then punishable recovery | Production D4 directional body, warning accent, dash trail, reason-specific impacts, stagger, and defeat; exact code lane remains authoritative |
 | Web MVP | Brood Tender | Support | Speeds eggs and retreats | Move, channel, interrupted, hit/death |
 | Later | Mireback | Mobile denial | Wide trail but slow turning | Deferred until slime coverage proves fair |
 
@@ -262,9 +262,29 @@ Egg Clusters remain encounter objects rather than a moving archetype. The vertic
 
 The functional Ripper behavior gate uses 72 health, 8 armour, 1.7 m/s pursuit, low contact damage, and an 18-damage frontal sweep. Direction locks when the tell begins, allowing the Marine to dodge behind or beyond the cone. The Ripper remains stationary through its active sweep and recovery, creating a deliberate damage window. It stays out of normal waves until its review lab passes gameplay-scale readability.
 
-The Razor Scuttler behavior gate uses 16 health and fast 3.35 m/s positioning but deals no ordinary contact damage. It can begin a dash only from 2.6–7.5 metres, locks one lane through a 0.48-second warning, then commits at 9.5 m/s for at most 0.55 seconds. A dash deals one impact only. Hitting the Marine, crashing into walls/cover, or missing produces a stationary recovery; cover crashes create the longest punish window. It remains excluded from ordinary waves until the placeholder lab passes timing and lane-readability review.
+The Razor Scuttler behavior gate uses 16 health and fast 3.35 m/s positioning but deals no ordinary contact damage. It can begin a dash only from 2.6–7.5 metres, locks one lane through a 0.48-second warning, then commits at 9.5 m/s for at most 0.55 seconds. A dash deals one impact only. Hitting the Marine, crashing into walls/cover, or missing produces a stationary recovery; cover crashes create the longest punish window. Production Batch D4 now supplies directional pursuit, wind-up, dash, and recovery frames plus authored warning, launch, trail, player-hit, cover-crash, miss-skid, stagger, and defeat effects. It remains excluded from ordinary waves until the production lab passes timing and lane-readability review.
 
 Projectile-enemy coverage currently exists through the Slime Spitter: it fires a visible hostile glob that can strike the Marine or cover and produces a bounded puddle. Future ranged enemies must receive separate projectile, warning, impact, and optional trail sprites; do not bake shots into body frames. **Codex asset note:** when a new projectile enemy is implemented, queue its body sheet and projectile/effect mini-atlas together so gameplay never ships with an invisible or generic enemy shot.
+
+### Projectile visual contract
+
+Projectile presentation exists on both sides of combat and must stay mechanically truthful.
+
+- **Enemy shots:** the Slime Spitter has a glob, target warning, cover/player impact, and puddle lifecycle; the Brood Warden has acid fan projectiles and impact; the Quillback has a separate rotation-neutral spike, fan accents, and distinct cover/flesh impacts. Any knife thrower must likewise ship with a readable knife projectile, throw tell, optional motion glint, cover spark, and Marine impact in the same production batch.
+- **Marine weapons:** the Service Rifle has muzzle, tracer/projectile, normal/critical impact, and explosive impact; Scattergun pellets and Arc Carbine bolts/chains use distinct authored families. Each future weapon definition must name muzzle, projectile or hitscan trace, trail if needed, target impact, cover impact, and signature proc effect IDs. Hitscan weapons still need a short-lived line/tracer and endpoint response so a miss is legible.
+- **Fairness:** hostile projectiles use a warmer danger outline and readable wind-up; friendly projectiles use the weapon-family palette. Projectile art never changes collision radius, speed, pierce, homing, or fan geometry, which remain simulation-owned.
+
+### Corrupted human outbreak family — post-Web-MVP candidate
+
+This family introduces recognisable human silhouettes corrupted by the same biomass without replacing the alien roster. Keep silhouettes tragic and threatening rather than gory; torn kit, asymmetry, black-red growth, and sick cyan infection light carry the corruption.
+
+| Unit | Role | Core behaviour | Readability and production needs |
+| --- | --- | --- | --- |
+| Infected Survivor | Fast swarm common | Erratic short sprints, brief hesitation before a group rush, low health, no ranged attack | Two gait phases, crouched rush tell, stumble/recovery, defeat; capped pack size and spawn cadence prevent body-block walls |
+| Corrupted Marine | Ranged skirmisher | Repositions around cover, raises one arm for a locked knife throw, throws a slow visible blade, then must retrieve/reform it or endure a long cooldown | Directional body states plus separate knife, hand glint, throw arc accent, cover/player impacts, and disarm/stagger; never fires from off-screen without an edge warning |
+| Abomination | Large elite tank | A swollen composite humanoid assembled from several infected bodies; slow shamble, telegraphed body slam, short biomass grab lane, and a vulnerable recovery after overcommitting | Large 128–160 px body, clear limb grouping, attack tells that extend beyond the mass, cover impact, stagger, and non-gory collapse; use as an elite before any boss version |
+
+The future **Abomination Prime** mini-boss may build on the elite only after the base Abomination is playtested. It should add one arena-scale move—such as tearing off and throwing a regenerating biomass chunk—plus phase timing and a boss portrait, rather than only increasing health and size. The thrown chunk requires its own warning, projectile, landing impact, lingering hazard state, and expiry art.
 
 ### Later biome enemy families
 

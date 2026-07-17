@@ -97,6 +97,7 @@ try {
     '/play/last-bastion/?mode=gallery&batch=d',
     '/play/last-bastion/?mode=gallery&batch=d2',
     '/play/last-bastion/?mode=gallery&batch=d3',
+    '/play/last-bastion/?mode=gallery&batch=d4',
     '/play/last-bastion/?mode=gallery&batch=e1',
     '/play/last-bastion/?mode=gallery&batch=e2',
     '/play/last-bastion/?mode=gallery&batch=e3',

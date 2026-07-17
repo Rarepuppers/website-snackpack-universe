@@ -15,6 +15,10 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "d4") {
+      this.createBatchD4Gallery();
+      return;
+    }
     if (batch === "e3") {
       this.createBatchE3Gallery();
       return;
@@ -320,6 +324,31 @@ export class AssetGalleryScene extends Phaser.Scene {
       this.add.sprite(x, y, "bastion-eater-environment-v1", frame).setScale(0.72);
     }
     this.add.text(480, 522, "Review: ?mode=gallery&batch=d3 • Encounter: ?scenario=bastion-eater&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchD4Gallery(): void {
+    this.add.text(20, 14, "LAST BASTION — RAZOR SCUTTLER PRODUCTION ASSET BATCH D4", style("#ffffff", "17px"));
+    this.add.text(20, 38, "24 runtime visuals • retained Steam-quality masters • exact code-driven dash geometry", style("#8fb2c9", "11px"));
+
+    this.add.text(20, 70, "RAZOR SCUTTLER — pursuit / compressed wind-up / committed dash / recovery × S N E W", style("#ff9a72", "11px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const x = 66 + (frame % 8) * 116;
+      const y = 130 + Math.floor(frame / 8) * 116;
+      this.add.sprite(x, y, "razor-scuttler-v1", frame).setScale(0.82);
+      this.drawPivot(x, y);
+      this.add.text(x, y + 46, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 318, "EFFECTS — lane accent / launch / trail / Marine hit / cover crash / miss skid / stagger / defeat", style("#68e4e8", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 64 + frame * 118;
+      this.add.sprite(x, 390, "razor-scuttler-effects-v1", frame).setScale(1.12);
+      this.drawPivot(x, 390);
+      this.add.text(x, 434, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(480, 486, "Authored accents reinforce warning and outcome; lane, distance, collision, and hit test remain authoritative code", style("#ffb982", "9px")).setOrigin(0.5);
+    this.add.text(480, 518, "Review: ?mode=gallery&batch=d4 • Encounter: ?scenario=razor-scuttler&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createBatchE1Gallery(): void {

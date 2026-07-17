@@ -232,6 +232,15 @@ Directional columns remain south, north, east, west. State rows are simulation-a
 
 Blast Mite rows are chase, armed, and detonation; Warp Flanker rows are stalk, dissolve, and materialise. Both retain the south/north/east/west column order. Reward and effect frames map to implemented decisions, pickups, buffs, statuses, fence state, ultimate events, and the two new enemies. Relic, Artifact, Shrine, and Supply Drop art is not part of the locked subset because those consuming systems do not yet exist.
 
+## Production Asset Batch D4 contracts
+
+| Stable ID | Grid | Logical cell | Frame count |
+| --- | ---: | ---: | ---: |
+| `razor-scuttler-v1` | 4×4 | 96×96 | 16 |
+| `razor-scuttler-effects-v1` | 4×2 | 64×64 | 8 |
+
+Razor body columns remain south, north, east, west; rows are pursuit, compressed wind-up, committed dash, and exhausted/crash recovery. Effects are lane-warning accent, launch, trail, Marine impact, cover crash, miss skid, recovery stagger, and defeat. The lane accent is supporting art only: exact warning length, dash direction, collision, distance, and hit test remain live geometry.
+
 The first production-test sheets use a four-column by three-row grid with 96 × 96 logical cells. Body and headgear layers must use identical canvas dimensions, cell order, pivots, and frame indices so equipment can toggle without moving or replacing the body.
 
 ## Approval still required
