@@ -284,6 +284,18 @@ An item is not completed merely because code or an asset exists. It must meet it
 - Kept the Bloom out of ordinary waves until creator review confirms the pull feels threatening without feeling like input theft.
 - Verification evidence: 129 tests across 17 files, TypeScript validation, production build, 35 runtime asset checks, and 22 review routes.
 
+### Razor Scuttler interceptor behavior gate
+
+**Status:** Completed — 17 July 2026; Production Asset Batch D4 and creator timing/readability review queued
+
+- Added a fragile 16-health interceptor with 3.35 m/s positioning speed, no ordinary contact damage, and modest Cryo vulnerability.
+- Implemented a locked 0.48-second lane warning followed by a 9.5 m/s, 0.55-second committed dash. The Razor must first reach the 2.6–7.5 metre acquisition band, preventing point-blank instant launches.
+- The dash can damage the Marine only once. A player hit, wall/cover crash, or clean miss immediately enters a stationary recovery; cover crashes use the longest 1.4-second punish window.
+- Added typed warning, dash, and reason-specific impact events; synthesized audio; code-driven lane rendering; phase-colour placeholder presentation; `RAZOR LAB` identity; and deterministic `scenario=razor-scuttler` route.
+- Rules coverage locks warning direction, verifies miss recovery, verifies cover interruption, and proves one-hit dash safety through recovery.
+- Kept the Razor out of normal waves until its warning length, speed, collision read, and recovery punish window pass creator review.
+- Verification target: 137 tests across 17 files, TypeScript validation, production build, 40 runtime asset checks, and 25 review routes.
+
 ## In progress
 
 ### Technical scaffold
@@ -620,14 +632,15 @@ Completion evidence:
 - Preserved the final prompts, chroma sources, transparent review masters, deterministic normalizer, pivots, frame map, and nearest-neighbour runtime outputs. The body sheet has no baked shadow, telegraph, text, or UI.
 - Integrated stable manifest IDs, gameplay bindings, `batch=d2` gallery coverage, asset-contract tests, production build output, and HTTP smoke checks.
 
-### Production Asset Batch D3: remaining Web MVP enemies and final boss
+### Production Asset Batch D3: Bastion Eater final boss
 
-**Status:** Deferred until the five-wave vertical slice and Siege Crusher pass playtesting
+**Status:** Bastion Eater subset completed and integrated — 17 July 2026; creator boss-scale/timing review queued
 
-- Remaining Web MVP standard/elite monster sheets and effects after the Ripper.
-- Brood Warden and Ripper are split into D1 and D2; D3 must not duplicate them.
-- The Bastion Eater layered body, damage nodes, attacks, phase damage states, breach decals, portrait/banner, boss HUD, entrance, defeat, and reward vault.
+- Completed the Bastion Eater deterministic behavior gate: Breach claw/charge cycle, Brood tendril/egg cycle, accelerated Last Stand combinations, locked warnings, cover damage, capped eggs, safe inner tendril pocket, targeted breach zones, exposed-node damage windows, and victory transition.
+- Completed 12 body frames, eight node states, 12 effects, eight breach/vault objects, and one portrait with retained chroma/transparent masters, prompt provenance, deterministic normalization, manifest contracts, gameplay bindings, gallery, and smoke routes.
+- Brood Warden and Ripper remain in D1 and D2; D3 does not duplicate them. Remaining Web MVP standard/elite monsters are deferred to behavior-first batches.
 - Do not generate second-biome bosses during the Web MVP.
+- Verification evidence: 133 tests across 17 files, TypeScript validation, production build, 40 runtime asset checks, and 24 review routes.
 
 ### Production Asset Batch E1: Quillback ranged enemy
 
@@ -678,5 +691,15 @@ Completion evidence:
 17. Generate and integrate Production Asset Batch E2 for Spinewheel. **Completed 17 July 2026; creator gameplay-scale review queued.**
 18. Implement and rules-test the Tether Bloom forced-movement behavior gate. **Completed 17 July 2026; creator control/readability review queued.**
 19. Generate and integrate Production Asset Batch E3 for Tether Bloom after behavior approval. **Completed 17 July 2026; creator gameplay-scale review queued.**
-20. External-playtest the vertical slice; proceed to route, relic, Artifact, shop/rest, and boss systems only if Gate 2 succeeds.
-21. Implement and verify The Bastion Eater with placeholders before generating Production Asset Batch D3.
+20. External-playtest the vertical slice; proceed to route, relic, Artifact, shop/rest, and boss systems only if Gate 2 succeeds. **Creator approval received 17 July 2026.**
+21. Implement and verify The Bastion Eater with placeholders before generating Production Asset Batch D3. **Completed 17 July 2026; production art integrated in the same behavior-first pass.**
+22. Implement and rules-test the Razor Scuttler interceptor behavior gate. **Completed 17 July 2026; creator timing/readability review queued.**
+23. Generate and integrate Production Asset Batch D4 for the Razor Scuttler after behavior approval.
+
+### Production Asset Batch D4: Razor Scuttler interceptor
+
+**Status:** Pending creator approval of the functional behavior lab
+
+- Queue one 4 × 4 directional/state body sheet at 96 × 96 cells: pursuit, compressed wind-up, committed dash, and exhausted/crash recovery across south, north, east, and west.
+- Queue one 4 × 2 effect atlas at 64 × 64 cells: lane-warning accent, launch burst, speed trail, Marine impact, cover crash, miss skid, recovery stagger, and defeat.
+- Keep the exact dash lane, distance, collision, and hit test code-driven. Retain chroma provenance, large transparent masters, stable pivot/scale, prompts, frame map, clean alpha, and deterministic normalization.

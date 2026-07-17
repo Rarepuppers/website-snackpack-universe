@@ -71,7 +71,12 @@ try {
     'spinewheel-shell-spin-v1-96.png',
     'spinewheel-effect-atlas-v1-64.png',
     'tether-bloom-spritesheet-v1-96.png',
-    'tether-bloom-effect-atlas-v1-64.png'
+    'tether-bloom-effect-atlas-v1-64.png',
+    'bastion-eater-spritesheet-v1-192.png',
+    'bastion-eater-node-overlay-v1-192.png',
+    'bastion-eater-effect-atlas-v1-96.png',
+    'bastion-eater-environment-atlas-v1-96.png',
+    'bastion-eater-portrait-v1-256.png'
   )
 
   foreach ($artAssetName in $requiredArtAssets) {
@@ -91,6 +96,7 @@ try {
     '/play/last-bastion/?mode=gallery&batch=c',
     '/play/last-bastion/?mode=gallery&batch=d',
     '/play/last-bastion/?mode=gallery&batch=d2',
+    '/play/last-bastion/?mode=gallery&batch=d3',
     '/play/last-bastion/?mode=gallery&batch=e1',
     '/play/last-bastion/?mode=gallery&batch=e2',
     '/play/last-bastion/?mode=gallery&batch=e3',
@@ -100,9 +106,11 @@ try {
     '/play/last-bastion/?scenario=siege-crusher&loadout=vertical',
     '/play/last-bastion/?scenario=brood-warden&loadout=vertical',
     '/play/last-bastion/?scenario=ripper&loadout=vertical',
+    '/play/last-bastion/?scenario=razor-scuttler&loadout=vertical',
     '/play/last-bastion/?scenario=quillback&loadout=vertical',
     '/play/last-bastion/?scenario=spinewheel&loadout=vertical',
     '/play/last-bastion/?scenario=tether-bloom&loadout=vertical',
+    '/play/last-bastion/?scenario=bastion-eater&loadout=vertical',
     '/play/last-bastion/?stress=4',
     '/play/last-bastion/?stress=12'
   )

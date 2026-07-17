@@ -51,7 +51,7 @@ The first Brain Blob production test uses a violet cerebral mass in a dark coral
 | Enemy | Role | Behaviour | Primary change |
 | --- | --- | --- | --- |
 | Ripper | Large melee bruiser | Slower approach followed by a long claw sweep | Larger size and reach |
-| Razor Scuttler | Fragile interceptor | Very fast approach with low health and a short recovery after missing | Speed |
+| Razor Scuttler | Fragile interceptor | Locked 0.48 s lane tell, very fast committed dash, then recovery after hit, collision, or miss | Speed |
 | Slime Spitter | Ranged pressure | Fires a telegraphed slime glob that creates a temporary puddle | Ranged attack |
 | Blast Mite | Kamikaze | Very fast and fragile; arms with a flashing tell at close range and detonates, also exploding on death | Corpse denial and kiting |
 | Warp Flanker | Teleporting harasser | Stalks, marks a telegraphed arrival ring near the player, teleports there, and materialises briefly before attacking | 360° awareness |
@@ -254,13 +254,15 @@ Weapon implementation precedes final art for each family. Shared data must defin
 | Vertical slice | Blast Mite | Kamikaze | Armed flashing tell, detonation on contact or death | Production sheet: chase gait, armed flash, detonation burst |
 | Vertical slice | Warp Flanker | Teleporting harasser | Telegraphed arrival ring and materialise window | Production sheet: stalk, dissolve, arrival ring, materialise shimmer |
 | Production lab | Ripper | Melee bruiser | Locked 2.55 m frontal claw cone after 0.62 s wind-up; 1.1 s punish window | Production 4 × 4 pursuit/wind-up/sweep/recovery sheet and dedicated 4 × 2 effects integrated in Batch D2 |
-| Web MVP | Razor Scuttler | Interceptor | Fast commit followed by punishable miss | Fast gait, leap/charge tell, miss recovery, death |
+| Behavior lab | Razor Scuttler | Interceptor | 2.6–7.5 m acquisition, locked 0.48 s tell, 9.5 m/s committed dash, then punishable recovery | Placeholder phase silhouette and exact code lane; Production Batch D4 pending |
 | Web MVP | Brood Tender | Support | Speeds eggs and retreats | Move, channel, interrupted, hit/death |
 | Later | Mireback | Mobile denial | Wide trail but slow turning | Deferred until slime coverage proves fair |
 
 Egg Clusters remain encounter objects rather than a moving archetype. The vertical slice has three moving enemies (Scuttler, Brain Blob, Slime Spitter) plus eggs. The Web MVP adds Ripper, Razor Scuttler, and Brood Tender as encounter-budget options; not every wave uses all of them.
 
 The functional Ripper behavior gate uses 72 health, 8 armour, 1.7 m/s pursuit, low contact damage, and an 18-damage frontal sweep. Direction locks when the tell begins, allowing the Marine to dodge behind or beyond the cone. The Ripper remains stationary through its active sweep and recovery, creating a deliberate damage window. It stays out of normal waves until its review lab passes gameplay-scale readability.
+
+The Razor Scuttler behavior gate uses 16 health and fast 3.35 m/s positioning but deals no ordinary contact damage. It can begin a dash only from 2.6–7.5 metres, locks one lane through a 0.48-second warning, then commits at 9.5 m/s for at most 0.55 seconds. A dash deals one impact only. Hitting the Marine, crashing into walls/cover, or missing produces a stationary recovery; cover crashes create the longest punish window. It remains excluded from ordinary waves until the placeholder lab passes timing and lane-readability review.
 
 Projectile-enemy coverage currently exists through the Slime Spitter: it fires a visible hostile glob that can strike the Marine or cover and produces a bounded puddle. Future ranged enemies must receive separate projectile, warning, impact, and optional trail sprites; do not bake shots into body frames. **Codex asset note:** when a new projectile enemy is implemented, queue its body sheet and projectile/effect mini-atlas together so gameplay never ships with an invisible or generic enemy shot.
 
@@ -323,6 +325,8 @@ The Web MVP ships with one final boss: **The Bastion Eater**, a giant alien sieg
 3. **Last stand:** fewer summons, faster readable combinations, and expanding breach zones; never an unavoidable full-arena attack.
 
 The fight targets 3–5 minutes and ends the run in victory. It may unlock an Artifact for future runs, but must not award an unusable current-run item after the final fight. Required art includes a 192–256 pixel logical body, separate damageable head/node overlays, phase damage states, claw/tendril attacks, breach decals, portrait/banner, boss bar treatment, entrance, defeat, and victory-vault presentation.
+
+The deterministic `scenario=bastion-eater` production lab now implements the three-phase contract. Breach alternates locked claw lanes and cover-breaking charges; Brood anchors for a safe-inner-ring tendril sweep and capped egg growth; Last Stand uses faster combinations and targeted breach zones without a full-arena hit. The boss's armour shutters reduce incoming damage outside recovery, while exposed-node recovery is the full-damage window. Defeat ends the encounter in victory and presents the authored vault rather than a current-run reward.
 
 Future boss seeds such as a Mire Sovereign or Choir Mind remain names only until a second biome is justified. They are not part of the MVP art batch.
 
@@ -410,12 +414,13 @@ The gameplay-critical Batch C subset was completed on 16 July 2026: Blast Mite a
 - Completed: 4 × 4 directional/state body sheet at 96 × 96 logical cells and a dedicated 4 × 2 melee-effect atlas at 64 × 64 logical cells.
 - Completed: retained ≥4× masters, prompt provenance, transparent review assets, deterministic normalization, pivots, frame maps, manifest contracts, gameplay bindings, and D2 gallery.
 
-### Batch D3 — remaining Web MVP enemies and final boss
+### Batch D3 — Bastion Eater final boss
 
-- Razor Scuttler, Brood Tender, approved elite attachments, and telegraphs/effects.
-- The Bastion Eater body layers, attack overlays, phase damage states, arena breach assets, entrance/defeat presentation, and boss reward vault.
+- Completed: 12-frame 192 × 192 phase body, eight 192 × 192 closed/exposed node states, 12 boss effects, eight breach/vault objects, and a 256 × 256 portrait.
+- Completed: deterministic Breach, Brood, and Last Stand behavior; locked warnings; cover damage; safe-inner-ring tendril; capped eggs; targeted breach zones; exposed-node damage windows; victory transition; gallery and review route.
+- Razor Scuttler, Brood Tender, and additional elite attachments remain separate future batches gated by their own implemented behaviors.
 
-Batch C, Batch D1, and Batch D2 are complete. D3 remains gated behind the vertical-slice creator playtest and placeholder final-boss implementation.
+Batch C, D1, D2, and the Bastion Eater D3 set are complete. Remaining Web MVP enemies still require behavior gates before art.
 
 ### Batch E1 — Quillback production set
 

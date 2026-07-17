@@ -126,7 +126,9 @@ export class CombatHud {
             : snapshot.scenario === "ripper" ? "RIPPER LAB"
               : snapshot.scenario === "quillback" ? "QUILLBACK LAB"
                 : snapshot.scenario === "spinewheel" ? "SPINEWHEEL LAB"
-                  : snapshot.scenario === "tether-bloom" ? "TETHER LAB" : "CRUSHER LAB"
+                  : snapshot.scenario === "tether-bloom" ? "TETHER LAB"
+                    : snapshot.scenario === "bastion-eater" ? "FINAL BOSS LAB"
+                      : snapshot.scenario === "razor-scuttler" ? "RAZOR LAB" : "CRUSHER LAB"
       : snapshot.stressProfile
         ? `STRESS ${snapshot.stressProfile}`
         : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}`);
@@ -154,20 +156,21 @@ export class CombatHud {
     this.debugText.setText(
       `state=${snapshot.heroState} enemies=${snapshot.enemies.length} friendly=${snapshot.projectiles.length} hostile=${snapshot.enemyProjectiles.length} hazards=${snapshot.groundHazards.length} rewards=${snapshot.eliteRewards.length} effects=${activeEffectCount}`,
     );
-    const boss = snapshot.enemies.find((enemy) => enemy.rank === "mini-boss");
+    const boss = snapshot.enemies.find((enemy) => enemy.rank === "boss" || enemy.rank === "mini-boss");
     this.bossPanel.setVisible(Boolean(boss));
     if (boss) {
       this.bossFill.setScale(Math.max(boss.health / boss.maxHealth, 0.001), 1);
       const healthRatio = boss.health / boss.maxHealth;
       const enrage = healthRatio <= 0.2 ? "  •  FRENZY" : healthRatio <= 0.5 ? "  •  ENRAGED" : "";
       const isBrood = boss.miniBossKind === "brood-warden";
+      const isFinalBoss = boss.type === "bastion-eater";
       this.bossPortrait.setVisible(this.productionArt)
-        .setTexture(isBrood ? "brood-warden-portrait-v1" : "siege-crusher-portrait-v1");
+        .setTexture(isFinalBoss ? "bastion-eater-portrait-v1" : isBrood ? "brood-warden-portrait-v1" : "siege-crusher-portrait-v1");
       this.bossFallback.setVisible(!this.productionArt)
-        .setFillStyle(isBrood ? 0x68408b : 0x8b4937)
-        .setStrokeStyle(2, isBrood ? 0xb9f35b : 0xffb15c);
-      const name = isBrood ? "BROOD WARDEN" : "SIEGE CRUSHER";
-      const phase = isBrood ? boss.broodWardenPhase : boss.siegeCrusherPhase;
+        .setFillStyle(isFinalBoss ? 0x273153 : isBrood ? 0x68408b : 0x8b4937)
+        .setStrokeStyle(2, isFinalBoss ? 0x56d9e8 : isBrood ? 0xb9f35b : 0xffb15c);
+      const name = isFinalBoss ? "THE BASTION EATER" : isBrood ? "BROOD WARDEN" : "SIEGE CRUSHER";
+      const phase = isFinalBoss ? boss.bastionEaterPhase : isBrood ? boss.broodWardenPhase : boss.siegeCrusherPhase;
       this.bossText.setText(`${name}  •  ${(phase ?? "stalk").toUpperCase()}${enrage}`);
     }
 

@@ -27,6 +27,10 @@ export class AssetGalleryScene extends Phaser.Scene {
       this.createBatchE1Gallery();
       return;
     }
+    if (batch === "d3") {
+      this.createBatchD3Gallery();
+      return;
+    }
     if (batch === "d2") {
       this.createBatchD2Gallery();
       return;
@@ -280,6 +284,42 @@ export class AssetGalleryScene extends Phaser.Scene {
 
     this.add.text(480, 492, "Coral telegraph → ivory active strike → cracked-thorax punish window", style("#ffb982", "11px")).setOrigin(0.5);
     this.add.text(480, 518, "Review: ?mode=gallery&batch=d2 • Encounter: ?scenario=ripper&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchD3Gallery(): void {
+    this.add.text(20, 14, "LAST BASTION — BASTION EATER PRODUCTION ASSET BATCH D3", style("#ffffff", "17px"));
+    this.add.text(20, 38, "41 final-boss visuals • layered node windows • three combat phases • reusable victory set", style("#8fb2c9", "11px"));
+
+    this.add.text(20, 68, "PORTRAIT", style("#56d9e8", "10px"));
+    this.add.image(88, 154, "bastion-eater-portrait-v1").setDisplaySize(128, 128);
+    this.add.text(174, 68, "BODY — breach / brood / last stand × four animation phases", style("#d7a760", "10px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const x = 222 + (frame % 6) * 140;
+      const y = 120 + Math.floor(frame / 6) * 116;
+      this.add.sprite(x, y, "bastion-eater-v1", frame).setScale(0.5);
+      this.drawPivot(x, y);
+    }
+
+    this.add.text(20, 260, "NODE STATES — closed / exposed", style("#56d9e8", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 74 + frame * 116;
+      this.add.sprite(x, 304, "bastion-eater-nodes-v1", frame).setScale(0.42);
+    }
+
+    this.add.text(20, 350, "BOSS EFFECTS 4×3", style("#d7a760", "10px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const x = 48 + (frame % 6) * 78;
+      const y = 396 + Math.floor(frame / 6) * 70;
+      this.add.sprite(x, y, "bastion-eater-effects-v1", frame).setScale(0.62);
+    }
+
+    this.add.text(526, 350, "BREACH + VICTORY OBJECTS 4×2", style("#56d9e8", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 566 + (frame % 4) * 108;
+      const y = 400 + Math.floor(frame / 4) * 78;
+      this.add.sprite(x, y, "bastion-eater-environment-v1", frame).setScale(0.72);
+    }
+    this.add.text(480, 522, "Review: ?mode=gallery&batch=d3 • Encounter: ?scenario=bastion-eater&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createBatchE1Gallery(): void {

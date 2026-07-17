@@ -698,6 +698,119 @@ describe("CombatSimulation", () => {
     expect(snapshot.playerTethered).toBe(false);
     expect(snapshot.enemies[0]?.tetherBloomPhase).toBe("recovery");
   });
+
+  it("transitions the Bastion Eater through breach, brood, and last stand", () => {
+    const simulation = new CombatSimulation({ scenario: "bastion-eater", autoStartWaves: false });
+    let boss = simulation.snapshot().enemies.find((enemy) => enemy.type === "bastion-eater")!;
+    expect(boss.rank).toBe("boss");
+    expect(boss.bastionEaterPhase).toBe("breach");
+
+    simulation.dealDamage(boss.id, 18_000);
+    let snapshot = simulation.step(intent(), 0.05);
+    boss = snapshot.enemies.find((enemy) => enemy.type === "bastion-eater")!;
+    expect(boss.bastionEaterPhase).toBe("brood");
+    expect(snapshot.events.some((event) => event.type === "bastion-eater-phase" && event.phase === "brood")).toBe(true);
+
+    simulation.dealDamage(boss.id, 14_500);
+    snapshot = simulation.step(intent(), 0.05);
+    boss = snapshot.enemies.find((enemy) => enemy.type === "bastion-eater")!;
+    expect(boss.bastionEaterPhase).toBe("last-stand");
+    expect(snapshot.events.some((event) => event.type === "bastion-eater-phase" && event.phase === "last-stand")).toBe(true);
+  });
+
+  it("locks the Razor Scuttler dash direction throughout its warning", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("razor-scuttler", { x: player.x - 5, y: player.y });
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 30; frame += 1) {
+      snapshot = simulation.step(intent(), 0.05);
+      if (snapshot.enemies[0]?.razorScuttlerPhase === "windup") break;
+    }
+    const locked = snapshot.enemies[0]!.razorScuttlerDirection!;
+    for (let frame = 0; frame < 6; frame += 1) {
+      snapshot = simulation.step(intent({ move: { x: 0, y: 1 } }), 0.05);
+    }
+    expect(snapshot.enemies[0]?.razorScuttlerDirection?.x).toBeCloseTo(locked.x, 5);
+    expect(snapshot.enemies[0]?.razorScuttlerDirection?.y).toBeCloseTo(locked.y, 5);
+  });
+
+  it("gives a Razor Scuttler a stationary recovery after missing", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("razor-scuttler", { x: player.x - 5, y: player.y });
+    let observedMiss = false;
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 60 && !observedMiss; frame += 1) {
+      snapshot = simulation.step(intent({ move: { x: 0, y: 1 } }), 0.05);
+      observedMiss ||= snapshot.events.some((event) => event.type === "razor-scuttler-impact" && event.reason === "miss");
+    }
+    expect(observedMiss).toBe(true);
+    expect(snapshot.enemies[0]?.razorScuttlerPhase).toBe("recovery");
+    expect(snapshot.playerHealth).toBe(snapshot.playerMaxHealth);
+  });
+
+  it("crashes a Razor Scuttler into cover and prevents repeated dash damage", () => {
+    const arena = arenaWithObstacle(12, 7.4, 1.2, 2);
+    const simulation = new CombatSimulation({ autoStartWaves: false, arena });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("razor-scuttler", { x: 9, y: player.y });
+    let observedCoverCrash = false;
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 60 && !observedCoverCrash; frame += 1) {
+      snapshot = simulation.step(intent(), 0.05);
+      observedCoverCrash ||= snapshot.events.some((event) => event.type === "razor-scuttler-impact" && event.reason === "cover");
+    }
+    expect(observedCoverCrash).toBe(true);
+    expect(snapshot.enemies[0]?.razorScuttlerPhase).toBe("recovery");
+    expect(snapshot.playerHealth).toBe(snapshot.playerMaxHealth);
+  });
+
+  it("applies exactly one Razor Scuttler impact hit before recovery", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("razor-scuttler", { x: player.x - 4, y: player.y });
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 60 && snapshot.playerHealth === snapshot.playerMaxHealth; frame += 1) {
+      snapshot = simulation.step(intent(), 0.05);
+    }
+    const impactDamage = snapshot.playerMaxHealth - snapshot.playerHealth;
+    expect(impactDamage).toBeCloseTo(12.5, 5);
+    expect(snapshot.enemies[0]?.razorScuttlerPhase).toBe("recovery");
+    for (let frame = 0; frame < 10; frame += 1) snapshot = simulation.step(intent(), 0.05);
+    expect(snapshot.playerMaxHealth - snapshot.playerHealth).toBeCloseTo(impactDamage, 5);
+  });
+
+  it("makes exposed-node recovery the Bastion Eater's full-damage window", () => {
+    const simulation = new CombatSimulation({ scenario: "bastion-eater", autoStartWaves: false });
+    let boss = simulation.snapshot().enemies.find((enemy) => enemy.type === "bastion-eater")!;
+    const initialHealth = boss.health;
+    simulation.dealDamage(boss.id, 100);
+    boss = simulation.snapshot().enemies.find((enemy) => enemy.type === "bastion-eater")!;
+    const armouredLoss = initialHealth - boss.health;
+
+    for (let frame = 0; frame < 100 && boss.bastionEaterAction !== "recovery"; frame += 1) {
+      boss = simulation.step(intent(), 0.05).enemies.find((enemy) => enemy.type === "bastion-eater")!;
+    }
+    expect(boss.bastionEaterNodeExposed).toBe(true);
+    const exposedHealth = boss.health;
+    simulation.dealDamage(boss.id, 100);
+    boss = simulation.snapshot().enemies.find((enemy) => enemy.type === "bastion-eater")!;
+    expect(exposedHealth - boss.health).toBeGreaterThan(armouredLoss * 2);
+  });
+
+  it("emits the Bastion Eater claw warning before its locked strike", () => {
+    const simulation = new CombatSimulation({ scenario: "bastion-eater", autoStartWaves: false });
+    let warningFrame = -1;
+    let strikeFrame = -1;
+    for (let frame = 0; frame < 100 && strikeFrame < 0; frame += 1) {
+      const snapshot = simulation.step(intent(), 0.05);
+      if (snapshot.events.some((event) => event.type === "bastion-eater-claw-warning")) warningFrame = frame;
+      if (snapshot.events.some((event) => event.type === "bastion-eater-claw-strike")) strikeFrame = frame;
+    }
+    expect(warningFrame).toBeGreaterThanOrEqual(0);
+    expect(strikeFrame).toBeGreaterThan(warningFrame);
+  });
 });
 
 function arenaWithObstacle(x: number, y: number, width: number, height: number): ArenaDefinition {

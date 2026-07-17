@@ -8,11 +8,13 @@ export type EnemyType =
   | "blast-mite"
   | "warp-flanker"
   | "ripper"
+  | "razor-scuttler"
   | "quillback"
   | "spinewheel"
   | "tether-bloom"
   | "siege-crusher"
-  | "brood-warden";
+  | "brood-warden"
+  | "bastion-eater";
 
 export interface EnemyDefinition {
   id: EnemyType;
@@ -92,6 +94,15 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     experienceValue: 4,
     armour: 8,
   }),
+  "razor-scuttler": enemy({
+    id: "razor-scuttler",
+    maxHealth: 16,
+    radiusMetres: 0.42,
+    movementSpeedMetresPerSecond: 3.35,
+    contactDamage: 0,
+    experienceValue: 3,
+    resistances: { cryo: 1.25 },
+  }),
   quillback: enemy({
     id: "quillback",
     maxHealth: 46,
@@ -137,6 +148,17 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     experienceValue: 0,
     flatDamageReduction: 1,
     resistances: { toxic: 0.35 },
+  }),
+  "bastion-eater": enemy({
+    id: "bastion-eater",
+    maxHealth: 9000,
+    radiusMetres: 1.8,
+    movementSpeedMetresPerSecond: 0.95,
+    contactDamage: 26,
+    experienceValue: 0,
+    armour: 12,
+    flatDamageReduction: 4,
+    resistances: { toxic: 0.5, cryo: 0.8 },
   }),
 });
 

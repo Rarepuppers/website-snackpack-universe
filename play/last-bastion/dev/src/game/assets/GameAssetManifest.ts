@@ -33,6 +33,11 @@ import spinewheelShellSheetUrl from "../../../../art/production-tests/batch-e2/s
 import spinewheelEffectSheetUrl from "../../../../art/production-tests/batch-e2/spinewheel-effect-atlas-v1-64.png";
 import tetherBloomSheetUrl from "../../../../art/production-tests/batch-e3/tether-bloom-spritesheet-v1-96.png";
 import tetherBloomEffectSheetUrl from "../../../../art/production-tests/batch-e3/tether-bloom-effect-atlas-v1-64.png";
+import bastionEaterSheetUrl from "../../../../art/production-tests/batch-d3/bastion-eater-spritesheet-v1-192.png";
+import bastionEaterNodeSheetUrl from "../../../../art/production-tests/batch-d3/bastion-eater-node-overlay-v1-192.png";
+import bastionEaterEffectSheetUrl from "../../../../art/production-tests/batch-d3/bastion-eater-effect-atlas-v1-96.png";
+import bastionEaterEnvironmentSheetUrl from "../../../../art/production-tests/batch-d3/bastion-eater-environment-atlas-v1-96.png";
+import bastionEaterPortraitUrl from "../../../../art/production-tests/batch-d3/bastion-eater-portrait-v1-256.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -69,7 +74,12 @@ export type GameAssetId =
   | "spinewheel-shell-v1"
   | "spinewheel-effects-v1"
   | "tether-bloom-v1"
-  | "tether-bloom-effects-v1";
+  | "tether-bloom-effects-v1"
+  | "bastion-eater-v1"
+  | "bastion-eater-nodes-v1"
+  | "bastion-eater-effects-v1"
+  | "bastion-eater-environment-v1"
+  | "bastion-eater-portrait-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -128,6 +138,11 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("spinewheel-effects-v1", spinewheelEffectSheetUrl, 64, 64, 8, 0.5, 0.5),
   sheet("tether-bloom-v1", tetherBloomSheetUrl, 96, 96, 16, 0.5, 0.5),
   sheet("tether-bloom-effects-v1", tetherBloomEffectSheetUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("bastion-eater-v1", bastionEaterSheetUrl, 192, 192, 12, 0.5, 0.5),
+  sheet("bastion-eater-nodes-v1", bastionEaterNodeSheetUrl, 192, 192, 8, 0.5, 0.5),
+  sheet("bastion-eater-effects-v1", bastionEaterEffectSheetUrl, 96, 96, 12, 0.5, 0.5),
+  sheet("bastion-eater-environment-v1", bastionEaterEnvironmentSheetUrl, 96, 96, 8, 0.5, 0.5),
+  image("bastion-eater-portrait-v1", bastionEaterPortraitUrl, 256, 256, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(

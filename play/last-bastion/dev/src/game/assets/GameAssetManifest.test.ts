@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(35);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(40);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -125,5 +125,21 @@ describe("GameAssetManifest", () => {
     expect(effects.kind).toBe("spritesheet");
     if (body.kind === "spritesheet") expect(body.frameCount).toBe(16);
     if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
+  });
+
+  it("locks Production Batch D3 Bastion Eater contracts", () => {
+    const body = GAME_ASSETS["bastion-eater-v1"];
+    const nodes = GAME_ASSETS["bastion-eater-nodes-v1"];
+    const effects = GAME_ASSETS["bastion-eater-effects-v1"];
+    const environment = GAME_ASSETS["bastion-eater-environment-v1"];
+    expect(body.kind).toBe("spritesheet");
+    expect(nodes.kind).toBe("spritesheet");
+    expect(effects.kind).toBe("spritesheet");
+    expect(environment.kind).toBe("spritesheet");
+    if (body.kind === "spritesheet") expect(body.frameCount).toBe(12);
+    if (nodes.kind === "spritesheet") expect(nodes.frameCount).toBe(8);
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(12);
+    if (environment.kind === "spritesheet") expect(environment.frameCount).toBe(8);
+    expect(GAME_ASSETS["bastion-eater-portrait-v1"].kind).toBe("image");
   });
 });

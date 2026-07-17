@@ -52,10 +52,16 @@ export type SlimeSpitterPhase = "positioning" | "windup" | "recover";
 export type BlastMitePhase = "chase" | "armed";
 export type WarpFlankerPhase = "stalk" | "warp-windup" | "materialize";
 export type RipperPhase = "pursuit" | "windup" | "sweep" | "recovery";
+export type RazorScuttlerPhase = "pursuit" | "windup" | "dash" | "recovery";
 export type QuillbackPhase = "positioning" | "windup" | "recover";
 export type SpinewheelPhase = "positioning" | "windup" | "rolling" | "recovery";
 export type TetherBloomPhase = "idle" | "windup" | "tethering" | "recovery";
-export type EnemyRank = "standard" | "elite" | "mini-boss";
+export type BastionEaterPhase = "breach" | "brood" | "last-stand";
+export type BastionEaterAction =
+  | "entrance" | "stalk" | "claw-windup" | "claw" | "charge-windup" | "charge"
+  | "tendril-windup" | "tendril" | "egg-windup" | "eggs"
+  | "breach-windup" | "breach" | "recovery";
+export type EnemyRank = "standard" | "elite" | "mini-boss" | "boss";
 export type EliteKind = "carapace-scuttler";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
 export type MiniBossKind = "siege-crusher" | "brood-warden";
@@ -66,7 +72,7 @@ export type BroodWardenPhase =
   | "entrance" | "stalk" | "cleave-windup" | "cleave"
   | "acid-windup" | "acid-volley" | "egg-windup" | "egg-lay"
   | "rush-windup" | "swarm-rush" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "quillback" | "spinewheel" | "tether-bloom";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot";
 
@@ -120,6 +126,9 @@ export type CombatEvent =
   | { type: "powerup-collected"; position: Vector2Data; powerupType: PowerupType }
   | { type: "warp-arrival"; position: Vector2Data }
   | { type: "ripper-sweep"; position: Vector2Data; direction: Vector2Data; reachMetres: number }
+  | { type: "razor-scuttler-warning"; position: Vector2Data; direction: Vector2Data }
+  | { type: "razor-scuttler-dash"; position: Vector2Data; direction: Vector2Data }
+  | { type: "razor-scuttler-impact"; position: Vector2Data; reason: "player" | "cover" | "miss" }
   | { type: "quillback-windup"; position: Vector2Data; direction: Vector2Data; count: 1 | 3 | 5 }
   | { type: "quillback-volley"; position: Vector2Data; direction: Vector2Data; count: 1 | 3 | 5 }
   | { type: "quillback-spike-impact"; position: Vector2Data; hitPlayer: boolean }
@@ -131,6 +140,14 @@ export type CombatEvent =
   | { type: "tether-bloom-latched"; position: Vector2Data }
   | { type: "tether-bloom-broken"; position: Vector2Data; reason: "evasive" | "damage" | "range" }
   | { type: "tether-bloom-released"; position: Vector2Data }
+  | { type: "bastion-eater-phase"; position: Vector2Data; phase: BastionEaterPhase }
+  | { type: "bastion-eater-claw-warning"; position: Vector2Data; direction: Vector2Data }
+  | { type: "bastion-eater-claw-strike"; position: Vector2Data; direction: Vector2Data }
+  | { type: "bastion-eater-charge"; position: Vector2Data; direction: Vector2Data }
+  | { type: "bastion-eater-tendril"; position: Vector2Data; radiusMetres: number; warning: boolean }
+  | { type: "bastion-eater-eggs"; position: Vector2Data; count: number }
+  | { type: "bastion-eater-breach"; position: Vector2Data; radiusMetres: number; warning: boolean }
+  | { type: "bastion-eater-vault"; position: Vector2Data }
   | { type: "ultimate-fired"; position: Vector2Data }
   | { type: "fence-activated"; from: Vector2Data; to: Vector2Data };
 
@@ -150,6 +167,8 @@ export interface EnemySnapshot {
   warpTarget?: Vector2Data;
   ripperPhase?: RipperPhase;
   ripperDirection?: Vector2Data;
+  razorScuttlerPhase?: RazorScuttlerPhase;
+  razorScuttlerDirection?: Vector2Data;
   quillbackPhase?: QuillbackPhase;
   quillbackDirection?: Vector2Data;
   quillbackShotCount?: 1 | 3 | 5;
@@ -160,6 +179,11 @@ export interface EnemySnapshot {
   tetherBloomPhase?: TetherBloomPhase;
   tetherBloomTarget?: Vector2Data;
   tetherBloomBreakDamage?: number;
+  bastionEaterPhase?: BastionEaterPhase;
+  bastionEaterAction?: BastionEaterAction;
+  bastionEaterDirection?: Vector2Data;
+  bastionEaterTarget?: Vector2Data;
+  bastionEaterNodeExposed?: boolean;
   rank: EnemyRank;
   eliteKind?: EliteKind;
   carapacePhase?: CarapacePhase;
@@ -296,6 +320,10 @@ interface EnemyState {
   ripperPhase: RipperPhase;
   ripperPhaseRemainingSeconds: number;
   ripperDirection: Vector2Data;
+  razorScuttlerPhase: RazorScuttlerPhase;
+  razorScuttlerPhaseRemainingSeconds: number;
+  razorScuttlerDirection: Vector2Data;
+  razorScuttlerHitPlayer: boolean;
   quillbackPhase: QuillbackPhase;
   quillbackPhaseRemainingSeconds: number;
   quillbackDirection: Vector2Data;
@@ -311,6 +339,12 @@ interface EnemyState {
   tetherBloomPhaseRemainingSeconds: number;
   tetherBloomTarget: Vector2Data;
   tetherBloomDamageDuringGrab: number;
+  bastionEaterPhase: BastionEaterPhase;
+  bastionEaterAction: BastionEaterAction;
+  bastionEaterActionRemainingSeconds: number;
+  bastionEaterDirection: Vector2Data;
+  bastionEaterTarget: Vector2Data;
+  bastionEaterAttackCount: number;
   rank: EnemyRank;
   eliteKind?: EliteKind;
   carapacePhase: CarapacePhase;
@@ -426,6 +460,13 @@ const QUILLBACK_SPIKE_DAMAGE = 7;
 const QUILLBACK_PROJECTILE_SPEED = 7.5;
 const QUILLBACK_PROJECTILE_RANGE_METRES = 11;
 const QUILLBACK_FAN_ARC_RADIANS = Math.PI * 64 / 180;
+export const RAZOR_SCUTTLER_WINDUP_SECONDS = 0.48;
+export const RAZOR_SCUTTLER_DASH_SPEED = 9.5;
+export const RAZOR_SCUTTLER_DASH_SECONDS = 0.55;
+export const RAZOR_SCUTTLER_RECOVERY_SECONDS = 1.15;
+const RAZOR_SCUTTLER_DASH_DAMAGE = 15;
+const RAZOR_SCUTTLER_MIN_DASH_RANGE = 2.6;
+const RAZOR_SCUTTLER_MAX_DASH_RANGE = 7.5;
 export const SPINEWHEEL_BASE_ROLL_SPEED = 7;
 export const SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER = 0.85;
 export const SPINEWHEEL_MAX_REBOUNDS = 2;
@@ -550,12 +591,16 @@ export class CombatSimulation {
       this.populateBroodWardenScenario();
     } else if (this.scenario === "ripper") {
       this.populateRipperScenario();
+    } else if (this.scenario === "razor-scuttler") {
+      this.populateRazorScuttlerScenario();
     } else if (this.scenario === "quillback") {
       this.populateQuillbackScenario();
     } else if (this.scenario === "spinewheel") {
       this.populateSpinewheelScenario();
     } else if (this.scenario === "tether-bloom") {
       this.populateTetherBloomScenario();
+    } else if (this.scenario === "bastion-eater") {
+      this.populateBastionEaterScenario();
     } else if (this.wavesEnabled) {
       this.beginWave(0);
     }
@@ -678,6 +723,13 @@ export class CombatSimulation {
       ripperPhase: "pursuit",
       ripperPhaseRemainingSeconds: type === "ripper" ? 0.35 : 0,
       ripperDirection: { x: 0, y: 0 },
+      razorScuttlerPhase: "pursuit",
+      razorScuttlerPhaseRemainingSeconds: type === "razor-scuttler" ? 0.65 : 0,
+      razorScuttlerDirection: normalizeVector({
+        x: this.playerPosition.x - spawnPosition.x,
+        y: this.playerPosition.y - spawnPosition.y,
+      }),
+      razorScuttlerHitPlayer: false,
       quillbackPhase: "positioning",
       quillbackPhaseRemainingSeconds: type === "quillback" ? 0.55 : 0,
       quillbackDirection: { x: 0, y: 0 },
@@ -696,6 +748,15 @@ export class CombatSimulation {
       tetherBloomPhaseRemainingSeconds: type === "tether-bloom" ? 0.5 : 0,
       tetherBloomTarget: { ...this.playerPosition },
       tetherBloomDamageDuringGrab: 0,
+      bastionEaterPhase: "breach",
+      bastionEaterAction: "entrance",
+      bastionEaterActionRemainingSeconds: type === "bastion-eater" ? 1.2 : 0,
+      bastionEaterDirection: normalizeVector({
+        x: this.playerPosition.x - spawnPosition.x,
+        y: this.playerPosition.y - spawnPosition.y,
+      }),
+      bastionEaterTarget: { ...this.playerPosition },
+      bastionEaterAttackCount: 0,
       rank: "standard",
       carapacePhase: "pursuit",
       carapacePhaseRemainingSeconds: 0,
@@ -1410,6 +1471,9 @@ export class CombatSimulation {
         case "ripper":
           this.updateRipper(enemy, deltaSeconds);
           break;
+        case "razor-scuttler":
+          this.updateRazorScuttler(enemy, deltaSeconds);
+          break;
         case "quillback":
           this.updateQuillback(enemy, deltaSeconds);
           break;
@@ -1424,6 +1488,9 @@ export class CombatSimulation {
           break;
         case "brood-warden":
           this.updateBroodWarden(enemy, deltaSeconds);
+          break;
+        case "bastion-eater":
+          this.updateBastionEater(enemy, deltaSeconds);
           break;
       }
     }
@@ -1687,6 +1754,96 @@ export class CombatSimulation {
         }
         break;
     }
+  }
+
+  private updateRazorScuttler(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.razorScuttlerPhaseRemainingSeconds -= deltaSeconds;
+    const playerDistance = distance(enemy.position, this.playerPosition);
+    switch (enemy.razorScuttlerPhase) {
+      case "pursuit": {
+        const towardPlayer = normalizeVector({
+          x: this.playerPosition.x - enemy.position.x,
+          y: this.playerPosition.y - enemy.position.y,
+        });
+        enemy.facingDirection = towardPlayer;
+        if (playerDistance < RAZOR_SCUTTLER_MIN_DASH_RANGE) {
+          this.moveEnemy(enemy, { x: -towardPlayer.x, y: -towardPlayer.y }, ENEMY_CATALOG["razor-scuttler"].movementSpeedMetresPerSecond, deltaSeconds);
+        } else if (playerDistance > RAZOR_SCUTTLER_MAX_DASH_RANGE) {
+          this.moveEnemy(enemy, towardPlayer, ENEMY_CATALOG["razor-scuttler"].movementSpeedMetresPerSecond, deltaSeconds);
+        }
+        if (
+          enemy.razorScuttlerPhaseRemainingSeconds <= 0
+          && playerDistance >= RAZOR_SCUTTLER_MIN_DASH_RANGE
+          && playerDistance <= RAZOR_SCUTTLER_MAX_DASH_RANGE
+        ) {
+          enemy.razorScuttlerDirection = { ...towardPlayer };
+          enemy.razorScuttlerPhase = "windup";
+          enemy.razorScuttlerPhaseRemainingSeconds = RAZOR_SCUTTLER_WINDUP_SECONDS;
+          enemy.razorScuttlerHitPlayer = false;
+          this.frameEvents.push({
+            type: "razor-scuttler-warning",
+            position: { ...enemy.position },
+            direction: { ...enemy.razorScuttlerDirection },
+          });
+        }
+        break;
+      }
+      case "windup":
+        if (enemy.razorScuttlerPhaseRemainingSeconds <= 0) {
+          enemy.razorScuttlerPhase = "dash";
+          enemy.razorScuttlerPhaseRemainingSeconds = RAZOR_SCUTTLER_DASH_SECONDS;
+          this.frameEvents.push({
+            type: "razor-scuttler-dash",
+            position: { ...enemy.position },
+            direction: { ...enemy.razorScuttlerDirection },
+          });
+        }
+        break;
+      case "dash": {
+        const radius = ENEMY_CATALOG["razor-scuttler"].radiusMetres;
+        const desired = {
+          x: enemy.position.x + enemy.razorScuttlerDirection.x * RAZOR_SCUTTLER_DASH_SPEED * deltaSeconds,
+          y: enemy.position.y + enemy.razorScuttlerDirection.y * RAZOR_SCUTTLER_DASH_SPEED * deltaSeconds,
+        };
+        const hitBoundary = desired.x <= radius || desired.x >= this.widthMetres - radius
+          || desired.y <= radius || desired.y >= this.heightMetres - radius;
+        const hitCover = this.firstCollidingObstacle(desired, radius);
+        if (hitBoundary || hitCover) {
+          this.enterRazorScuttlerRecovery(enemy, "cover", 1.4);
+          break;
+        }
+        this.moveEnemy(enemy, enemy.razorScuttlerDirection, RAZOR_SCUTTLER_DASH_SPEED, deltaSeconds);
+        if (
+          !enemy.razorScuttlerHitPlayer
+          && distance(enemy.position, this.playerPosition) <= radius + PLAYER_RADIUS_METRES + 0.12
+        ) {
+          enemy.razorScuttlerHitPlayer = true;
+          this.damagePlayer(RAZOR_SCUTTLER_DASH_DAMAGE);
+          this.enterRazorScuttlerRecovery(enemy, "player", 1);
+          break;
+        }
+        if (enemy.razorScuttlerPhaseRemainingSeconds <= 0) {
+          this.enterRazorScuttlerRecovery(enemy, "miss", RAZOR_SCUTTLER_RECOVERY_SECONDS);
+        }
+        break;
+      }
+      case "recovery":
+        if (enemy.razorScuttlerPhaseRemainingSeconds <= 0) {
+          enemy.razorScuttlerPhase = "pursuit";
+          enemy.razorScuttlerPhaseRemainingSeconds = 0.55;
+        }
+        break;
+    }
+  }
+
+  private enterRazorScuttlerRecovery(
+    enemy: EnemyState,
+    reason: "player" | "cover" | "miss",
+    durationSeconds: number,
+  ): void {
+    enemy.razorScuttlerPhase = "recovery";
+    enemy.razorScuttlerPhaseRemainingSeconds = durationSeconds;
+    this.frameEvents.push({ type: "razor-scuttler-impact", position: { ...enemy.position }, reason });
   }
 
   private updateSiegeCrusher(enemy: EnemyState, deltaSeconds: number): void {
@@ -1960,6 +2117,162 @@ export class CombatSimulation {
       });
     }
     this.frameEvents.push({ type: "brood-swarm-rush", position: { ...enemy.position }, count });
+  }
+
+  private updateBastionEater(enemy: EnemyState, deltaSeconds: number): void {
+    const healthRatio = enemy.health / enemy.maxHealth;
+    const phase: BastionEaterPhase = healthRatio <= 0.33
+      ? "last-stand"
+      : healthRatio <= 0.66 ? "brood" : "breach";
+    if (phase !== enemy.bastionEaterPhase) {
+      enemy.bastionEaterPhase = phase;
+      enemy.bastionEaterAction = "entrance";
+      enemy.bastionEaterActionRemainingSeconds = 0.8;
+      this.frameEvents.push({ type: "bastion-eater-phase", position: { ...enemy.position }, phase });
+      return;
+    }
+
+    enemy.bastionEaterActionRemainingSeconds -= deltaSeconds;
+    const action = enemy.bastionEaterAction;
+    const recoverySeconds = phase === "last-stand" ? 0.55 : phase === "brood" ? 0.78 : 1;
+    switch (action) {
+      case "entrance":
+        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
+          enemy.bastionEaterAction = "stalk";
+          enemy.bastionEaterActionRemainingSeconds = phase === "last-stand" ? 0.38 : 0.65;
+        }
+        break;
+      case "stalk": {
+        enemy.facingDirection = normalizeVector({
+          x: this.playerPosition.x - enemy.position.x,
+          y: this.playerPosition.y - enemy.position.y,
+        });
+        if (phase !== "brood") {
+          this.moveEnemy(
+            enemy,
+            enemy.facingDirection,
+            phase === "last-stand" ? 1.25 : ENEMY_CATALOG["bastion-eater"].movementSpeedMetresPerSecond,
+            deltaSeconds,
+          );
+        }
+        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
+          enemy.bastionEaterAttackCount += 1;
+          if (phase === "breach") {
+            this.beginBastionEaterAction(enemy, enemy.bastionEaterAttackCount % 2 === 0 ? "charge-windup" : "claw-windup");
+          } else if (phase === "brood") {
+            this.beginBastionEaterAction(enemy, enemy.bastionEaterAttackCount % 2 === 0 ? "egg-windup" : "tendril-windup");
+          } else {
+            const cycle = enemy.bastionEaterAttackCount % 3;
+            this.beginBastionEaterAction(enemy, cycle === 0 ? "breach-windup" : cycle === 1 ? "claw-windup" : "tendril-windup");
+          }
+        }
+        break;
+      }
+      case "claw-windup":
+        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
+          enemy.bastionEaterAction = "claw";
+          enemy.bastionEaterActionRemainingSeconds = 0.28;
+          this.frameEvents.push({
+            type: "bastion-eater-claw-strike",
+            position: { ...enemy.position },
+            direction: { ...enemy.bastionEaterDirection },
+          });
+          if (pointInsideRipperSweep(enemy.position, enemy.bastionEaterDirection, this.playerPosition, 4.4)) {
+            this.damagePlayer(phase === "last-stand" ? 34 : 27);
+          }
+        }
+        break;
+      case "charge-windup":
+        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
+          enemy.bastionEaterAction = "charge";
+          enemy.bastionEaterActionRemainingSeconds = 0.85;
+          this.frameEvents.push({ type: "bastion-eater-charge", position: { ...enemy.position }, direction: { ...enemy.bastionEaterDirection } });
+        }
+        break;
+      case "charge": {
+        const speed = phase === "last-stand" ? 9.2 : 7.8;
+        const desired = {
+          x: enemy.position.x + enemy.bastionEaterDirection.x * speed * deltaSeconds,
+          y: enemy.position.y + enemy.bastionEaterDirection.y * speed * deltaSeconds,
+        };
+        const obstacle = this.firstCollidingObstacle(desired, ENEMY_CATALOG["bastion-eater"].radiusMetres);
+        if (obstacle) {
+          this.damageObstacle(obstacle.id, { x: obstacle.x + obstacle.width / 2, y: obstacle.y + obstacle.height / 2 });
+          this.damageObstacle(obstacle.id, { x: obstacle.x + obstacle.width / 2, y: obstacle.y + obstacle.height / 2 });
+          this.finishBastionEaterAction(enemy, recoverySeconds);
+        } else {
+          this.moveEnemy(enemy, enemy.bastionEaterDirection, speed, deltaSeconds);
+          if (enemy.bastionEaterActionRemainingSeconds <= 0) this.finishBastionEaterAction(enemy, recoverySeconds);
+        }
+        break;
+      }
+      case "tendril-windup":
+        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
+          enemy.bastionEaterAction = "tendril";
+          enemy.bastionEaterActionRemainingSeconds = 0.32;
+          const radiusMetres = phase === "last-stand" ? 5.6 : 5;
+          this.frameEvents.push({ type: "bastion-eater-tendril", position: { ...enemy.position }, radiusMetres, warning: false });
+          const playerDistance = distance(enemy.position, this.playerPosition);
+          if (playerDistance >= 2.25 && playerDistance <= radiusMetres + PLAYER_RADIUS_METRES) {
+            this.damagePlayer(phase === "last-stand" ? 30 : 23);
+          }
+        }
+        break;
+      case "egg-windup":
+        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
+          enemy.bastionEaterAction = "eggs";
+          enemy.bastionEaterActionRemainingSeconds = 0.35;
+          const before = this.enemies.filter((candidate) => !candidate.dead && candidate.type === "egg-cluster").length;
+          this.layBroodEggs(enemy, phase === "last-stand" ? 1 : 2);
+          const after = this.enemies.filter((candidate) => !candidate.dead && candidate.type === "egg-cluster").length;
+          this.frameEvents.push({ type: "bastion-eater-eggs", position: { ...enemy.position }, count: after - before });
+        }
+        break;
+      case "breach-windup":
+        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
+          enemy.bastionEaterAction = "breach";
+          enemy.bastionEaterActionRemainingSeconds = 0.3;
+          const radiusMetres = 2.15;
+          this.frameEvents.push({ type: "bastion-eater-breach", position: { ...enemy.bastionEaterTarget }, radiusMetres, warning: false });
+          if (distance(enemy.bastionEaterTarget, this.playerPosition) <= radiusMetres + PLAYER_RADIUS_METRES) this.damagePlayer(32);
+        }
+        break;
+      case "claw":
+      case "tendril":
+      case "eggs":
+      case "breach":
+        if (enemy.bastionEaterActionRemainingSeconds <= 0) this.finishBastionEaterAction(enemy, recoverySeconds);
+        break;
+      case "recovery":
+        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
+          enemy.bastionEaterAction = "stalk";
+          enemy.bastionEaterActionRemainingSeconds = phase === "last-stand" ? 0.32 : 0.58;
+        }
+        break;
+    }
+  }
+
+  private beginBastionEaterAction(enemy: EnemyState, action: BastionEaterAction): void {
+    enemy.bastionEaterAction = action;
+    enemy.bastionEaterDirection = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
+    enemy.bastionEaterTarget = { ...this.playerPosition };
+    const lastStand = enemy.bastionEaterPhase === "last-stand";
+    enemy.bastionEaterActionRemainingSeconds = lastStand ? 0.5 : 0.72;
+    if (action === "claw-windup") {
+      this.frameEvents.push({ type: "bastion-eater-claw-warning", position: { ...enemy.position }, direction: { ...enemy.bastionEaterDirection } });
+    } else if (action === "tendril-windup") {
+      this.frameEvents.push({ type: "bastion-eater-tendril", position: { ...enemy.position }, radiusMetres: lastStand ? 5.6 : 5, warning: true });
+    } else if (action === "breach-windup") {
+      this.frameEvents.push({ type: "bastion-eater-breach", position: { ...enemy.bastionEaterTarget }, radiusMetres: 2.15, warning: true });
+    }
+  }
+
+  private finishBastionEaterAction(enemy: EnemyState, recoverySeconds: number): void {
+    enemy.bastionEaterAction = "recovery";
+    enemy.bastionEaterActionRemainingSeconds = recoverySeconds;
   }
 
   private firstCollidingObstacle(position: Vector2Data, radius: number) {
@@ -2611,11 +2924,14 @@ export class CombatSimulation {
       definition.armour - (corrodeActive ? STATUS_RULES.corrode.armourReduction : 0),
       0,
     );
-    const mitigated = mitigateDamage(
+    let mitigated = mitigateDamage(
       rawDamage * resistanceMultiplier,
       effectiveArmour,
       definition.flatDamageReduction,
     );
+    if (enemy.type === "bastion-eater" && enemy.bastionEaterAction !== "recovery") {
+      mitigated *= 0.35;
+    }
 
     const status = STATUS_BY_DAMAGE_TYPE[damageType];
     if (status && this.canStatusApply(enemy, status)) {
@@ -2644,7 +2960,7 @@ export class CombatSimulation {
   }
 
   private canStatusApply(enemy: EnemyState, status: StatusEffectType): boolean {
-    if (enemy.rank !== "mini-boss") {
+    if (enemy.rank !== "mini-boss" && enemy.rank !== "boss") {
       return true;
     }
     return !STATUS_RULES[status].stunned && STATUS_RULES[status].speedMultiplier >= 1;
@@ -2667,6 +2983,10 @@ export class CombatSimulation {
       position: { ...enemy.position },
       enemyType: enemy.type,
     });
+    if (enemy.type === "bastion-eater") {
+      this.status = "victory";
+      this.frameEvents.push({ type: "bastion-eater-vault", position: { ...enemy.position } });
+    }
     if (enemy.type === "blast-mite") {
       this.frameEvents.push({
         type: "explosion",
@@ -2832,6 +3152,13 @@ export class CombatSimulation {
     this.spawnEnemy("scuttler", { x: centre.x + 6, y: centre.y + 3.5 });
   }
 
+  private populateRazorScuttlerScenario(): void {
+    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+    this.spawnEnemy("razor-scuttler", { x: centre.x - 6.2, y: centre.y });
+    this.spawnEnemy("razor-scuttler", { x: centre.x + 5.6, y: centre.y - 3.4 });
+    this.spawnEnemy("scuttler", { x: centre.x + 4.8, y: centre.y + 4.2 });
+  }
+
   private populateQuillbackScenario(): void {
     const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
     this.spawnEnemy("quillback", { x: centre.x + 7.5, y: centre.y });
@@ -2851,6 +3178,15 @@ export class CombatSimulation {
     this.spawnEnemy("tether-bloom", { x: centre.x - 3.2, y: centre.y });
     this.spawnEnemy("tether-bloom", { x: centre.x + 4.6, y: centre.y - 2.8 });
     this.spawnEnemy("scuttler", { x: centre.x + 5.5, y: centre.y + 3.8 });
+  }
+
+  private populateBastionEaterScenario(): void {
+    const id = this.spawnEnemy("bastion-eater", { x: this.widthMetres / 2 - 7, y: this.heightMetres / 2 });
+    const boss = this.enemies.find((enemy) => enemy.id === id)!;
+    boss.rank = "boss";
+    boss.bastionEaterPhase = "breach";
+    boss.bastionEaterAction = "entrance";
+    boss.bastionEaterActionRemainingSeconds = 1.2;
   }
 
   private pickMiniBoss(): MiniBossKind {
@@ -2901,6 +3237,8 @@ export class CombatSimulation {
         : undefined,
       ripperPhase: enemy.type === "ripper" ? enemy.ripperPhase : undefined,
       ripperDirection: enemy.type === "ripper" ? { ...enemy.ripperDirection } : undefined,
+      razorScuttlerPhase: enemy.type === "razor-scuttler" ? enemy.razorScuttlerPhase : undefined,
+      razorScuttlerDirection: enemy.type === "razor-scuttler" ? { ...enemy.razorScuttlerDirection } : undefined,
       quillbackPhase: enemy.type === "quillback" ? enemy.quillbackPhase : undefined,
       quillbackDirection: enemy.type === "quillback" ? { ...enemy.quillbackDirection } : undefined,
       quillbackShotCount: enemy.type === "quillback" ? enemy.quillbackShotCount : undefined,
@@ -2917,6 +3255,11 @@ export class CombatSimulation {
       tetherBloomBreakDamage: enemy.type === "tether-bloom"
         ? enemy.tetherBloomDamageDuringGrab
         : undefined,
+      bastionEaterPhase: enemy.type === "bastion-eater" ? enemy.bastionEaterPhase : undefined,
+      bastionEaterAction: enemy.type === "bastion-eater" ? enemy.bastionEaterAction : undefined,
+      bastionEaterDirection: enemy.type === "bastion-eater" ? { ...enemy.bastionEaterDirection } : undefined,
+      bastionEaterTarget: enemy.type === "bastion-eater" ? { ...enemy.bastionEaterTarget } : undefined,
+      bastionEaterNodeExposed: enemy.type === "bastion-eater" ? enemy.bastionEaterAction === "recovery" : undefined,
       rank: enemy.rank,
       eliteKind: enemy.eliteKind,
       carapacePhase: enemy.eliteKind === "carapace-scuttler" ? enemy.carapacePhase : undefined,
