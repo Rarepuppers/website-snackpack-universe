@@ -7,7 +7,7 @@ import { ENEMY_CATALOG, type EnemyType } from "../content/enemyCatalog";
 import {
   BASTION_SERVICE_RIFLE,
   WEAPON_CATALOG,
-  VERTICAL_SLICE_WEAPON_IDS,
+  WEAPON_CHEST_POOL,
   type WeaponId,
   type WeaponRuntimeStats,
 } from "../content/weaponCatalog";
@@ -22,6 +22,7 @@ import { calculateWeaponRingLayout } from "../equipment/WeaponRingLayout";
 import {
   UPGRADE_CATALOG,
   UPGRADE_ORDER,
+  upgradeLevelName,
   type UpgradeDefinition,
   type UpgradeId,
 } from "../content/upgradeCatalog";
@@ -284,6 +285,7 @@ export interface CombatSnapshot {
   experience: number;
   experienceForNextLevel: number;
   pendingUpgradeChoices: readonly UpgradeDefinition[];
+  upgradeLevels: readonly { id: UpgradeId; level: number }[];
   pendingDecision: PendingDecision | null;
   enemies: readonly EnemySnapshot[];
   projectiles: readonly ProjectileSnapshot[];
@@ -506,6 +508,8 @@ export const URANIUM_CORE_ROUNDS_DURATION_SECONDS = 12;
 export const URANIUM_CORE_ROUNDS_DAMAGE_MULTIPLIER = 1.25;
 const BLAST_MITE_EXPLOSION_RADIUS_METRES = 1.6;
 const BLAST_MITE_EXPLOSION_DAMAGE = 16;
+const COMBUSTION_RADIUS_METRES = 1.3;
+const COMBUSTION_DAMAGE = 12;
 const SUPPLY_DEPOT_HEAL = 45;
 const FENCE_ACTIVE_SECONDS = 6;
 const FENCE_COOLDOWN_SECONDS = 18;
@@ -536,6 +540,16 @@ export class CombatSimulation {
   private readonly heroMotion = new HeroMotionController(MARINE);
   private defence = { ...MARINE.defence };
   private moveSpeedMultiplier = 1;
+  private readonly upgradeLevels = new Map<UpgradeId, number>();
+  private explosionSplashMultiplier = 0.5;
+  /** Player-side elemental tuning advanced by upgrade path levels. */
+  private readonly statusTuning = {
+    buildupMultiplier: {} as Partial<Record<DamageType, number>>,
+    blazeBonusDamagePerSecond: 0,
+    freezeSpeedMultiplierOverride: null as number | null,
+    freezeDurationBonusSeconds: 0,
+    combustionOnDeath: false,
+  };
   private stationarySeconds = 0;
   private ultimateCooldownRemainingSeconds = 0;
   private fenceActiveRemainingSeconds = 0;
@@ -882,9 +896,13 @@ export class CombatSimulation {
 
     this.decisionQueue.shift();
     switch (decision.kind) {
-      case "upgrade":
-        this.applyUpgrade(optionId as UpgradeId);
+      case "upgrade": {
+        const upgradeId = optionId as UpgradeId;
+        const nextLevel = (this.upgradeLevels.get(upgradeId) ?? 0) + 1;
+        this.upgradeLevels.set(upgradeId, nextLevel);
+        this.applyUpgrade(upgradeId, nextLevel);
         break;
+      }
       case "weapon-chest":
         this.addWeapon(optionId as WeaponId);
         break;
@@ -928,6 +946,7 @@ export class CombatSimulation {
       pendingUpgradeChoices: decision?.kind === "upgrade"
         ? decision.options.map((option) => UPGRADE_CATALOG[option.id as UpgradeId])
         : [],
+      upgradeLevels: [...this.upgradeLevels.entries()].map(([id, level]) => ({ id, level })),
       pendingDecision: decision
         ? { kind: decision.kind, title: decision.title, options: decision.options.map((option) => ({ ...option })) }
         : null,
@@ -998,10 +1017,11 @@ export class CombatSimulation {
     };
   }
 
-  private applyUpgrade(upgradeId: UpgradeId): void {
+  /** Applies the effect of buying the given 1-based level of an upgrade. */
+  private applyUpgrade(upgradeId: UpgradeId, level: number): void {
     switch (upgradeId) {
       case "rapid-cycling":
-        this.modifyAllWeapons((weapon) => { weapon.fireIntervalSeconds *= 0.8; });
+        this.modifyAllWeapons((weapon) => { weapon.fireIntervalSeconds *= 0.85; });
         break;
       case "twin-shot":
         this.modifyAllWeapons((weapon) => {
@@ -1012,14 +1032,17 @@ export class CombatSimulation {
       case "piercing-rounds":
         this.modifyAllWeapons((weapon) => { weapon.pierceCount += 1; });
         break;
-      case "explosive-payload":
+      case "explosive-payload": {
+        const radius = level === 1 ? 1.4 : level === 2 ? 1.8 : 2.2;
         this.modifyAllWeapons((weapon) => {
-          weapon.explosionRadiusMetres = Math.max(weapon.explosionRadiusMetres, 1.4);
+          weapon.explosionRadiusMetres = Math.max(weapon.explosionRadiusMetres, radius);
         });
+        this.explosionSplashMultiplier = Math.max(this.explosionSplashMultiplier, 0.4 + level * 0.1);
         break;
+      }
       case "heavy-calibre":
         this.modifyAllWeapons((weapon) => {
-          weapon.projectileDamage *= 1.4;
+          weapon.projectileDamage *= 1.35;
           weapon.fireIntervalSeconds *= 1.1;
         });
         break;
@@ -1027,16 +1050,37 @@ export class CombatSimulation {
         this.magnetMultiplier *= 1.5;
         break;
       case "incendiary-rounds":
-        this.modifyAllWeapons((weapon) => { weapon.damageType = "fire"; });
+        if (level === 1) {
+          this.modifyAllWeapons((weapon) => { weapon.damageType = "fire"; });
+        } else if (level === 2) {
+          this.statusTuning.buildupMultiplier.fire = 1.2;
+          this.statusTuning.blazeBonusDamagePerSecond = 4;
+        } else {
+          this.statusTuning.combustionOnDeath = true;
+        }
         break;
       case "cryo-coating":
-        this.modifyAllWeapons((weapon) => { weapon.damageType = "cryo"; });
+        if (level === 1) {
+          this.modifyAllWeapons((weapon) => { weapon.damageType = "cryo"; });
+        } else if (level === 2) {
+          this.statusTuning.buildupMultiplier.cryo = 1.2;
+          this.statusTuning.freezeSpeedMultiplierOverride = 0.22;
+        } else {
+          this.statusTuning.freezeDurationBonusSeconds = 0.8;
+          this.statusTuning.freezeSpeedMultiplierOverride = 0.15;
+        }
         break;
       case "chain-lightning":
+        // Each level adds one bounce (bounces decay per hop) plus a small
+        // shock-buildup rate bonus from level 2 — both, in lesser amounts.
         this.modifyAllWeapons((weapon) => {
           weapon.chainCount += 1;
-          weapon.chainRadiusMetres = Math.max(weapon.chainRadiusMetres, 2.5);
+          weapon.chainRadiusMetres = Math.max(weapon.chainRadiusMetres, 2.1 + level * 0.4);
         });
+        if (level >= 2) {
+          this.statusTuning.buildupMultiplier.shock =
+            (this.statusTuning.buildupMultiplier.shock ?? 1) + 0.1;
+        }
         break;
       case "adrenal-servos":
         this.moveSpeedMultiplier *= 1.12;
@@ -1070,31 +1114,62 @@ export class CombatSimulation {
       case "patch-up":
         this.playerHealth = Math.min(PLAYER_MAX_HEALTH, this.playerHealth + SUPPLY_DEPOT_HEAL);
         break;
-      case "field-armoury":
-        this.decisionQueue.unshift(this.buildUpgradeDecision());
+      case "field-armoury": {
+        const armoury = this.buildUpgradeDecision();
+        if (armoury) {
+          this.decisionQueue.unshift(armoury);
+        } else {
+          // Everything is maxed; fall back to the heal so the choice
+          // is never wasted.
+          this.playerHealth = Math.min(PLAYER_MAX_HEALTH, this.playerHealth + SUPPLY_DEPOT_HEAL);
+        }
         break;
+      }
       case "aegis-lattice":
         this.playerShield += AEGIS_SHIELD_AMOUNT;
         break;
     }
   }
 
-  private buildUpgradeDecision(): PendingDecision {
+  /**
+   * Deterministic three-option draw that skips maxed-out upgrades and locked
+   * elemental paths. Returns null only when every upgrade is exhausted.
+   */
+  private buildUpgradeDecision(): PendingDecision | null {
     const start = (this.level - 2 + UPGRADE_ORDER.length * 2) % UPGRADE_ORDER.length;
-    const ids = [
-      UPGRADE_ORDER[start]!,
-      UPGRADE_ORDER[(start + 2) % UPGRADE_ORDER.length]!,
-      UPGRADE_ORDER[(start + 4) % UPGRADE_ORDER.length]!,
-    ];
+    // Preserve the original spread-by-two offer pattern, then fall back to
+    // the remaining slots so eligibility filtering can always fill options.
+    const scanOffsets = [0, 2, 4, 6, 8, 10, 1, 3, 5, 7, 9, 11];
+    const options: DecisionOption[] = [];
+    for (const offset of scanOffsets) {
+      if (options.length >= 3) break;
+      const id = UPGRADE_ORDER[(start + offset) % UPGRADE_ORDER.length]!;
+      if (options.some((option) => option.id === id) || !this.isUpgradeEligible(id)) {
+        continue;
+      }
+      const nextLevel = (this.upgradeLevels.get(id) ?? 0) + 1;
+      options.push({
+        id,
+        name: upgradeLevelName(id, nextLevel),
+        description: UPGRADE_CATALOG[id].levelDescriptions[nextLevel - 1]!,
+      });
+    }
+    if (options.length === 0) {
+      return null;
+    }
     return {
       kind: "upgrade",
       title: "LEVEL UP — CHOOSE AN UPGRADE",
-      options: ids.map((id) => ({
-        id,
-        name: UPGRADE_CATALOG[id].name,
-        description: UPGRADE_CATALOG[id].description,
-      })),
+      options,
     };
+  }
+
+  private isUpgradeEligible(id: UpgradeId): boolean {
+    const definition = UPGRADE_CATALOG[id];
+    if ((this.upgradeLevels.get(id) ?? 0) >= definition.maxLevel) {
+      return false;
+    }
+    return !definition.excludes.some((excluded) => (this.upgradeLevels.get(excluded) ?? 0) > 0);
   }
 
   private buildWeaponChestDecision(): PendingDecision | null {
@@ -1102,15 +1177,25 @@ export class CombatSimulation {
       return null;
     }
     const ownedIds = new Set(this.equippedWeapons.map((weapon) => weapon.weaponId));
-    const options = VERTICAL_SLICE_WEAPON_IDS
-      .filter((weaponId) => !ownedIds.has(weaponId))
-      .map((weaponId) => ({
+    const unowned = WEAPON_CHEST_POOL.filter((weaponId) => !ownedIds.has(weaponId));
+    if (unowned.length === 0) {
+      return null;
+    }
+    // Seeded draw of up to three distinct unowned weapons so the decision
+    // overlay stays readable and successive runs offer different chests.
+    const candidates = [...unowned];
+    const options: DecisionOption[] = [];
+    while (options.length < 3 && candidates.length > 0) {
+      const index = Math.min(
+        Math.floor(this.random() * candidates.length),
+        candidates.length - 1,
+      );
+      const weaponId = candidates.splice(index, 1)[0]!;
+      options.push({
         id: weaponId,
         name: WEAPON_CATALOG[weaponId].displayName,
         description: WEAPON_CATALOG[weaponId].description,
-      }));
-    if (options.length === 0) {
-      return null;
+      });
     }
     return {
       kind: "weapon-chest",
@@ -1497,7 +1582,7 @@ export class CombatSimulation {
         && !nearby.dead
         && distance(nearby.position, position) <= projectile.explosionRadiusMetres
       ) {
-        this.damageEnemy(nearby, projectile.damage * 0.5, projectile.damageType);
+        this.damageEnemy(nearby, projectile.damage * this.explosionSplashMultiplier, projectile.damageType);
       }
     }
   }
@@ -1533,6 +1618,7 @@ export class CombatSimulation {
 
   private resolveProjectileChain(projectile: ProjectileState, source: EnemyState): void {
     let from = source;
+    let hop = 0;
     while (projectile.chainRemaining > 0) {
       let target: EnemyState | null = null;
       let nearestDistance = projectile.chainRadiusMetres;
@@ -1547,13 +1633,15 @@ export class CombatSimulation {
       if (!target) return;
       projectile.hitEnemyIds.add(target.id);
       projectile.chainRemaining -= 1;
+      hop += 1;
       this.frameEvents.push({
         type: "chain-arc",
         from: { ...from.position },
         to: { ...target.position },
         weaponId: projectile.weaponId,
       });
-      this.damageEnemy(target, projectile.damage * 0.7, projectile.damageType);
+      // Each additional bounce carries less energy: 70%, 49%, 34%…
+      this.damageEnemy(target, projectile.damage * Math.pow(0.7, hop), projectile.damageType);
       from = target;
     }
   }
@@ -1627,8 +1715,10 @@ export class CombatSimulation {
         continue;
       }
       const rule = STATUS_RULES[status];
-      if (rule.damagePerSecond > 0) {
-        this.applyRawDamage(enemy, rule.damagePerSecond * deltaSeconds);
+      const damagePerSecond = rule.damagePerSecond
+        + (status === "blaze" ? this.statusTuning.blazeBonusDamagePerSecond : 0);
+      if (damagePerSecond > 0) {
+        this.applyRawDamage(enemy, damagePerSecond * deltaSeconds);
         if (enemy.dead) return;
       }
       const next = remaining - deltaSeconds;
@@ -1648,7 +1738,10 @@ export class CombatSimulation {
   private enemyStatusSpeedMultiplier(enemy: EnemyState): number {
     let multiplier = 1;
     for (const status of Object.keys(enemy.statusTimers) as StatusEffectType[]) {
-      multiplier = Math.min(multiplier, STATUS_RULES[status].speedMultiplier);
+      const ruleMultiplier = status === "freeze" && this.statusTuning.freezeSpeedMultiplierOverride !== null
+        ? this.statusTuning.freezeSpeedMultiplierOverride
+        : STATUS_RULES[status].speedMultiplier;
+      multiplier = Math.min(multiplier, ruleMultiplier);
     }
     return multiplier;
   }
@@ -3058,10 +3151,12 @@ export class CombatSimulation {
 
     const status = STATUS_BY_DAMAGE_TYPE[damageType];
     if (status && this.canStatusApply(enemy, status)) {
-      const buildup = (enemy.statusBuildup[status] ?? 0) + mitigated;
+      const buildupRate = this.statusTuning.buildupMultiplier[damageType] ?? 1;
+      const buildup = (enemy.statusBuildup[status] ?? 0) + mitigated * buildupRate;
       if (buildup >= STATUS_BUILDUP_THRESHOLD) {
         enemy.statusBuildup[status] = 0;
-        enemy.statusTimers[status] = STATUS_RULES[status].durationSeconds;
+        enemy.statusTimers[status] = STATUS_RULES[status].durationSeconds
+          + (status === "freeze" ? this.statusTuning.freezeDurationBonusSeconds : 0);
         this.frameEvents.push({
           type: "status-applied",
           position: { ...enemy.position },
@@ -3106,6 +3201,22 @@ export class CombatSimulation {
       position: { ...enemy.position },
       enemyType: enemy.type,
     });
+    if (this.statusTuning.combustionOnDeath && (enemy.statusTimers.blaze ?? 0) > 0) {
+      this.frameEvents.push({
+        type: "explosion",
+        position: { ...enemy.position },
+        radiusMetres: COMBUSTION_RADIUS_METRES,
+      });
+      for (const nearby of this.enemies) {
+        if (
+          nearby.id !== enemy.id
+          && !nearby.dead
+          && distance(nearby.position, enemy.position) <= COMBUSTION_RADIUS_METRES
+        ) {
+          this.damageEnemy(nearby, COMBUSTION_DAMAGE, "fire");
+        }
+      }
+    }
     if (enemy.type === "bastion-eater") {
       this.status = "victory";
       this.frameEvents.push({ type: "bastion-eater-vault", position: { ...enemy.position } });
@@ -3211,8 +3322,10 @@ export class CombatSimulation {
 
   private queueIntermissionReward(): void {
     if (this.waveIndex === 0 || this.waveIndex === 2) {
-      const chest = this.buildWeaponChestDecision();
-      this.decisionQueue.push(chest ?? this.buildUpgradeDecision());
+      const reward = this.buildWeaponChestDecision() ?? this.buildUpgradeDecision();
+      if (reward) {
+        this.decisionQueue.push(reward);
+      }
     } else if (this.waveIndex === 1 || this.waveIndex === 3) {
       this.decisionQueue.push(this.buildSupplyDepotDecision());
     }
@@ -3329,7 +3442,10 @@ export class CombatSimulation {
     this.experience -= threshold;
     this.level += 1;
     this.frameEvents.push({ type: "level-up", level: this.level });
-    this.decisionQueue.push(this.buildUpgradeDecision());
+    const decision = this.buildUpgradeDecision();
+    if (decision) {
+      this.decisionQueue.push(decision);
+    }
   }
 
   private experienceThreshold(): number {
@@ -3464,12 +3580,18 @@ function buildWave(index: number): SpawnPlan[] {
       add("brain-blob", 3, 1.2, 1.6);
       add("slime-spitter", 2, 2.4, 2.8);
       add("blast-mite", 3, 3, 1.4);
+      add("quillback", 1, 4, 1);
+      add("ripper", 1, 5.2, 1);
       break;
     case 3:
       add("scuttler", 8, 0.2, 0.6);
       add("blast-mite", 4, 1, 1.2);
       add("slime-spitter", 2, 2, 2.6);
       add("warp-flanker", 3, 2.5, 1.8);
+      add("razor-scuttler", 2, 3.2, 2.2);
+      add("tether-bloom", 1, 3.8, 1);
+      add("spinewheel", 1, 4.6, 1);
+      add("ripper", 1, 5.4, 1);
       add("scuttler", 1, 6, 1, "elite");
       break;
     default:
@@ -3477,6 +3599,8 @@ function buildWave(index: number): SpawnPlan[] {
       add("scuttler", 6, 2, 2.2);
       add("blast-mite", 4, 4, 2.4);
       add("warp-flanker", 3, 6, 3);
+      add("razor-scuttler", 2, 7, 2.6);
+      add("quillback", 1, 8.5, 1);
       break;
   }
 

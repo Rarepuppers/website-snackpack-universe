@@ -22,7 +22,7 @@ An item is not completed merely because code or an asset exists. It must meet it
 
 **Milestone status:** In progress
 
-**Current objective:** behavior-prototype Event Horizon's aim, pull-field, implosion, and 16-second active-tile contract before generating its Unique production family.
+**Current objective:** run the consolidated creator playtest (see "Plan review — 17 July 2026"), then execute the content-enablement pass that folds already-approved weapons and enemies into the normal run, then behavior-prototype Event Horizon's aim, pull-field, implosion, and 16-second active-tile contract before generating its Unique production family.
 
 ## Completed
 
@@ -284,6 +284,17 @@ An item is not completed merely because code or an asset exists. It must meet it
 - Kept the Bloom out of ordinary waves until creator review confirms the pull feels threatening without feeling like input theft.
 - Verification evidence: 129 tests across 17 files, TypeScript validation, production build, 35 runtime asset checks, and 22 review routes.
 
+### Leveled upgrade system with elemental paths
+
+**Status:** Completed — 17 July 2026; balance numbers pending the step 35 tuning pass
+
+- Every upgrade is now leveled with per-level effects and capped maximums; offer cards display the level being bought ("Chain Lightning II") with that level's description, and maxed upgrades leave the offer pool.
+- Incendiary and Cryo Coating are mutually exclusive elemental paths. Incendiary: convert → hotter/more frequent Blaze → blazing aliens detonate on death (fire chain reactions). Cryo: convert → harder/more frequent Freeze → longer, near-total freezes.
+- Chain Lightning levels add one arc plus a shock-buildup bonus, with per-bounce damage decay (70%, 49%, 34%…) so extra bounces trade depth for coverage.
+- Explosive Payload levels grow both radius and splash percentage; the remaining upgrades stack their stated effect per level.
+- The simulation gained a player-side status-tuning layer (buildup-rate multipliers per damage type, Blaze bonus damage, freeze speed/duration overrides, combustion-on-death) that future relics and hero passives can also drive.
+- Snapshot exposes owned upgrade levels for future HUD/run-summary use; the offer draw preserves the original deterministic spread and skips ineligible entries.
+
 ### Razor Scuttler interceptor behavior gate
 
 **Status:** Completed — 17 July 2026; Production Asset Batch D4 integrated and creator timing/readability review queued
@@ -352,38 +363,21 @@ Review criteria:
 
 ### Combat prototype: movement, aim, and Marine roll
 
-**Status:** In progress
+**Status:** Implementation superseded and absorbed — 17 July 2026
 
-- Added responsive eight-direction placeholder movement.
-- Added mouse aim through the shared intent layer.
-- Added an independently rotating placeholder Service Rifle.
-- Added the Marine's provisional 0.55-second, 4-metre roll with 0.25 seconds of invulnerability.
-- Added arena boundaries and an on-screen state/stat readout.
+The placeholder movement/aim/roll prototype has long been replaced by the production movement, camera-follow arena, gamepad merge, and Batch A–F presentation. The only live remainder — creator feel feedback on movement, roll, firing, pressure, and readability — is tracked in the consolidated creator playtest below.
 
-Remaining before completion: visual runtime check and creator playtest feedback on movement, roll, firing, pressure, and readability.
+### Early enemies and wave encounter
 
-### Early enemies and three-wave encounter
+**Status:** Implementation superseded and absorbed — 17 July 2026
 
-**Status:** In progress — implementation complete; balance and fairness playtest pending
-
-- Wave 1 introduces Scuttlers.
-- Wave 2 adds Egg Clusters that hatch into two Scuttlers after six seconds.
-- Wave 3 adds Brain Blobs with visible colour-state telegraphs before lunging and two Slime Spitters with locked-target glob tells.
-- Seeded spawn positions make test runs reproducible.
-- Contact damage respects the Marine's resolved invulnerability window.
-
-Acceptance criterion remaining: confirm through playtesting that combinations create movement decisions without unavoidable damage.
+The original three-wave encounter grew into the seeded five-wave vertical slice with intermission rewards, elites, and the mini-boss pool (see the dedicated completed entries). The fairness playtest remainder is tracked in the consolidated creator playtest below.
 
 ### XP and upgrade choices
 
-**Status:** In progress — implementation complete; build-diversity playtest pending
+**Status:** Implementation superseded and absorbed — 17 July 2026
 
-- XP pickups attract and collect using a modifiable magnet radius.
-- Level-up pauses the simulation and presents three clickable choices.
-- Six upgrade definitions modify real weapon or pickup behaviour.
-- Upgrade application is data-addressed with stable IDs.
-
-Acceptance criterion remaining: demonstrate at least three recognisably different short-run builds in playtesting.
+Six upgrades grew into the twelve-upgrade rotation exercising damage types and defensive stats. The build-diversity playtest remainder ("three recognisably different short-run builds") is tracked in the consolidated creator playtest below.
 
 ## Pending
 
@@ -439,19 +433,44 @@ The following remain deferred until their preceding scope gates succeed:
 - Update this tracker whenever an item moves between Pending, In progress, Completed, Deferred, or Blocked.
 - Record completion dates and the evidence used to accept each item.
 
-## Immediate sequence
+## Plan review — 17 July 2026
 
-1. Complete Art Bible version 1 from the approved Marine direction.
-2. Review the three weapon art-direction samples and record the accepted direction.
-3. Specify modular base-body, helmet, weapon-ring, preview, and dodge-animation layers.
-4. Scaffold the web project and verify nested GitHub Pages output.
-5. Implement the input-intent layer and shared hero state machine.
-6. Build placeholder movement, Marine roll, and shooting with one visible modular weapon.
-7. Add Scuttlers, Egg Clusters, Brain Blobs, waves, XP, and upgrades.
-8. Implement the zero-to-twelve weapon-ring foundation and independent weapon firing. **Completed.**
-9. Implement styled arena, HUD, pooled effects, gallery, and four-/twelve-weapon stress routes. **Completed.**
-10. Run the combat-prototype playtest gate and representative gameplay art pipeline.
-11. Decide whether to proceed to the vertical slice and higher weapon counts.
+A full review of the three planning documents against the implemented code (157 tests, 36 review routes, art batches A–F4) found the plans broadly accurate but surfaced one structural problem and several gaps. The original eleven-step "Immediate sequence" was fully superseded by the Revised implementation order and has been removed.
+
+### Finding 1 — finished content is not reachable in a normal run (highest priority)
+
+The repository now contains seven weapons and roughly twelve enemy behaviours with production art, but an ordinary player run still experiences only the original three weapons and seven enemies:
+
+- The Weapon Chest pool is still `VERTICAL_SLICE_WEAPON_IDS` (Service Rifle, Scattergun, Arc Carbine). Patrol Blade, Bolt Carbine, Bulwark Rotary Cannon, and Grenade Tube exist only behind `?loadout=` labs.
+- Ripper, Quillback, Spinewheel, Tether Bloom, and Razor Scuttler are complete with art but appear in no ordinary wave.
+- The Bastion Eater exists only behind `?scenario=bastion-eater`.
+
+This is correct gate discipline individually, but collectively it has produced a review pile-up: roughly fifteen items are "queued for creator review" and everything waits behind them. The fix is one consolidated session, not fifteen separate gates.
+
+### Finding 2 — balance debt concentrated in one place
+
+The XP curve (`level × 4`), wave enemy counts, and intermission cadence were tuned for a three-wave, one-screen prototype. The arena is now 1.5× the viewport (lower enemy density), there are twelve upgrades, and reward decisions interrupt more often. No number has been revisited since. Tuning should happen once, after the enablement pass, against measurable targets rather than per-feature.
+
+### Finding 3 — missing small systems the docs imply
+
+- No main menu, character select, or in-game settings surface exists; settings changes require URL parameters even though the versioned save store already persists them.
+- Production audio is still the placeholder synthesizer.
+- The mini-boss pool holds two of the intended three entries (Rift Stalker remains design-only).
+- Weapon proficiency and mineral-find stats remain intentionally inert — correct, no action.
+
+### Proposed next steps (extends the Revised implementation order)
+
+33. **Consolidated creator review session.** One sitting through the queued review routes with a written pass/fail per item: normal run, `stress=4`, mini-boss labs (`siege-crusher`, `brood-warden`), enemy labs (`ripper`, `quillback`, `spinewheel`, `tether-bloom`, `razor-scuttler`), weapon labs (`patrol`, `bolt`, `bulwark`, `grenade`), `bastion-eater`, and the F1–F4 galleries. Output: an approved list and a rejected/retune list.
+34. **Content-enablement pass.** **Completed 17 July 2026.** The Weapon Chest now draws a seeded three-option subset from `WEAPON_CHEST_POOL` (all seven implemented weapons; `VERTICAL_SLICE_WEAPON_IDS` remains for the `?loadout=vertical` review route). Waves 3–5 now field the behavior-gated roster: wave 3 adds one Quillback and one Ripper; wave 4 adds two Razor Scuttlers, one Tether Bloom, one Spinewheel, and one Ripper alongside the Carapace elite; wave 5 escorts the pooled mini-boss with Razor Scuttlers and a Quillback. Counts are deliberately conservative pending the step 35 tuning pass, and the creator review (step 33) can still strike any item from the pool or waves as a one-line data change. Verification: 158 tests across 18 files, TypeScript, production build, 51 asset checks, 36 review routes, clean browser boot.
+35. **Single tuning pass with measurable targets:** 10–15 minute run length, at least three recognisably different builds, no unavoidable damage in waves 1–3, death causes readable, wave-5 mini-boss fight 45–90 seconds. Revisit XP curve, wave counts on the larger arena, and reward cadence together.
+36. **Rift Stalker behavior gate** to complete the three-entry mini-boss pool (cloaked stalk, marked pounce, close slash, final-20% frenzy), then its production batch.
+37. **Front-end shell behavior gate.** Title, main menu, How to Play, Settings, and character-select screens as a code-native screen-flow state machine with placeholder panels, per the "Front-end shell and expedition structure" design added to `last-bastion-game.md` on 17 July 2026. Settings bind to the existing `LocalSaveStore`; the Lab card surfaces the existing review routes in-game.
+38. **Expedition map behavior gate.** Pure seeded 20-node horizontal map generator (3 lanes, ~8 columns, node-type budget, adjacency fairness rules) with unit tests, plus the map screen with code-native medallions and route lines. Save schema v2 carries mid-run state (map seed, cleared nodes, build, health) with autosave on returning to the map.
+39. **Node → encounter wiring.** Combat/Elite/Mini-boss nodes drive the existing arena with budgets by node type and depth; Supply Depot and Weapon Cache reuse the existing decision overlays as full-screen nodes; the Boss node runs the Bastion Eater. The five-wave arcade run remains as "Quick Drop" until the map replaces it.
+40. **Production Asset Batch G1/G2** (title, menu, dossier, starchart, medallions — briefs in `last-bastion-content.md`) only after steps 37–38 pass creator review with placeholders.
+41. **Event Horizon behavior gate** (existing step 32), so the first Unique lands in an already-tuned game.
+
+Recommendation for a later documentation pass: move the completed checkpoint entries (now the majority of this file) into a separate `last-bastion-log.md` archive so this tracker reads as a plan again. Not done in this pass to avoid disrupting in-flight references.
 
 ## Production batch status
 

@@ -72,6 +72,64 @@ The long-term run structure is:
 
 The prototype and vertical slice intentionally implement only parts of this loop.
 
+## Front-end shell and expedition structure
+
+Designed 17 July 2026. The game gains a proper front door and replaces "start in the arena" with a run map. The reference feel is a modern card-tile menu (bold diagonal panels, oversized italic type, code-rendered text) executed in the Last Bastion palette: deep navy/charcoal fields, ivory panels, teal equipment light, restrained orange alarm accents. Every screen works with keyboard, mouse, and gamepad, and every label is code-rendered so one art master serves all bindings and languages.
+
+Screen flow:
+
+```text
+Title → Main menu → { How to Play | Settings | Lab } 
+Main menu → Character select → Expedition map → Encounter ⇄ Map → Final boss → Run summary → Main menu
+```
+
+### Title screen
+
+Full-screen backdrop: a lone Marine silhouette on a ridge, weapon ring faintly glowing, facing a horizon crawling with alien silhouettes beneath the last fortified city's search beams. Slow parallax spore drift and a periodic teal scanline sweep keep it alive. Centre: the LAST BASTION logotype; below it a single prompt panel ("PRESS ENTER" / "PRESS START", auto-swapping by last input device); footer strip: "SOLO EXPEDITION • KEYBOARD & CONTROLLER • AUTOSAVES BETWEEN NODES".
+
+### Main menu
+
+A card grid over a dimmed title backdrop:
+
+- **EXPEDITION** (hero card, largest): starts character select. Sub-line shows the current rules chip: "20 NODES • ONE LIFE".
+- **HOW TO PLAY**: paged guide.
+- **SETTINGS**: audio and comfort.
+- **LAB**: the existing gallery and scenario review routes, surfaced in-game instead of URL-only.
+- **RECORDS** (small card): persisted progress from the save store — runs finished, victories, best wave/node.
+- A "CONTINUE EXPEDITION" card appears only when a mid-run autosave exists.
+
+### How to Play
+
+Three to four pages, each one diagram plus short code-rendered captions: (1) movement, aim, roll invulnerability, Entrenched; (2) ultimate, consumable kit, action bar and cadence strip; (3) damage types and status buildup with the four status icons; (4) the map — node types, one-life rule, autosave.
+
+### Settings
+
+Backed by the existing versioned save store: sound on/off (later music/SFX sliders), screen shake, and a bindings view (display first, remapping later). Changes persist immediately; the URL parameters remain as overrides for review routes.
+
+### Character select
+
+Solo, so this is a hero dossier rather than a versus grid:
+
+- Left: large hero render (the Marine's modular base + helmet layers, live-assembled — the same sprites as gameplay, oversized).
+- Right: dossier panel — role line, three stat bars (health/armour/speed), passive and ultimate cards with icons, starting weapon with its ring sprite, and the helmet on/off toggle the engine already supports.
+- Roster rail below: Marine (playable), Medic ("IN DEVELOPMENT" lock treatment), and three darkened silhouette slots (Assault, Tactician, Scout) that communicate future breadth without promising dates.
+- Confirm advances to the expedition map.
+
+### Expedition map — the 20-node run
+
+Replaces stage select entirely. A horizontal, left-to-right starchart in the spirit of FTL's sector map crossed with Slay the Spire's branching lanes:
+
+- **Topology:** 20 nodes in ~8 columns across 3 lanes. Node 1 is the drop site; node 20 is the Bastion Eater. Edges connect only to the next column (straight or one lane up/down), so every route is 8–11 encounters — a player sees roughly half the map per run, which fuels replay.
+- **Node types and budget per map:** Combat (majority), Elite ×2 (guaranteed cache), Mini-boss ×1–2 (drawn from the seeded pool), Supply Depot ×2 (the existing heal/armoury/shield decision as a safe node), Weapon Cache ×2 (the existing chest as a node), and the Boss terminus. Shrine and Event nodes are reserved future types and render as design placeholders until their systems exist.
+- **Generation rules (seeded, pure, unit-tested):** no two Elite/Mini-boss nodes adjacent on any path; at least one Supply Depot reachable before the first Mini-boss; every lane rejoins before the boss; the seed reproduces the exact map for bug reports.
+- **Presentation:** current node pulses; reachable next nodes glow teal with connecting route lines; visited nodes dim with a claw-mark "cleared" stamp; unreachable branches grey out. Hovering/selecting a node shows a small intel card (type, threat hint, reward hint). A small dropship token animates along the chosen edge.
+- **Persistence:** the save schema versions up to carry mid-run state (map seed, cleared nodes, hero build, health/shield); autosave happens on returning to the map, honouring the existing "browser storage is not cloud storage" rule.
+- **Encounter mapping:** Combat/Elite/Mini-boss nodes run the existing arena simulation with encounter budgets chosen by node type and column depth; Supply Depot and Weapon Cache reuse the existing decision overlays full-screen; the Boss node runs the Bastion Eater scenario.
+
+### Implementation phasing
+
+Behavior-first, matching the working rules: (1) a screen-flow state machine with code-native placeholder panels for every screen; (2) the pure seeded map generator with rules tests; (3) save schema v2 and node→encounter wiring; (4) only then the Batch G art families (briefs in `last-bastion-content.md`). The five-wave arcade run remains available as a "Quick Drop" until the map fully replaces it, then becomes a lab route.
+
 ## Combat rules
 
 ### Desktop controls
@@ -250,16 +308,21 @@ Heroes and enemies share one data-driven stat model (implemented 16 July 2026):
 
 Five damage types — Physical, Fire, Shock, Cryo, Toxic — where each elemental type builds a status effect (Blaze, Overload, Freeze, Corrode) at a buildup threshold instead of introducing a second named damage tier. Enemies carry per-type resistance multipliers. Mini-bosses resist hard control but not damage-over-time statuses. Chaos/space is not a damage type; exotic behaviour is the signature of Unique weapons. Details live in `last-bastion-content.md`.
 
-Initial upgrade families may include:
+### Upgrade levels and elemental paths
 
-- Piercing rounds
-- Ricochet rounds
-- Explosive impact
-- Chain lightning
-- Faster firing with an accuracy or heat trade-off
-- Dodge decoy or damaging dodge trail
+Implemented 17 July 2026. Every upgrade is leveled: choosing it again advances it to the next level with a defined effect, so a repeated offer is always a real choice, and the offer card shows the level being bought ("Chain Lightning II") with that level's description. Rules:
 
-Weapon-slot counts, quick-slot inventories, consumables, and rarity tiers are deferred until the game has enough content to justify them.
+- Upgrades stop being offered at their maximum level (most cap at 2–4).
+- The two damage-conversion paths are **mutually exclusive**: committing to Incendiary locks out Cryo Coating for the run and vice versa. Choosing an elemental identity is the core build decision.
+- Elemental levels advance the *mechanic*, not just a number:
+  - **Incendiary Rounds** — I: weapons convert to Fire; II: ignite 20% more often and Blaze burns hotter; III: blazing aliens detonate on death, spreading fire (chain-reaction clears).
+  - **Cryo Coating** — I: weapons convert to Cryo; II: freeze 20% more often and freeze slows harder; III: freezes last longer and nearly halt aliens.
+  - **Chain Lightning** — each level adds one arc *and* a small shock-buildup bonus from level II; every additional bounce carries less energy (70%, 49%, 34%…), so more bounces means wider but softer coverage.
+- The nine remaining upgrades stack their stated effect per level (fire rate, projectiles, pierce, explosion size and splash, damage trade-off, magnet, move speed, armour, shield).
+
+This gives three recognisable archetype families out of one pool — burn-spread, freeze-control, and storm-chain — on top of the physical stat builds, which is the variety-and-skill requirement the level-up screen must satisfy.
+
+Weapon-slot counts, quick-slot inventories beyond the single kit, and rarity tiers are deferred until the game has enough content to justify them.
 
 The web MVP may introduce Common, Uncommon, and Rare rewards, but rarity must communicate a real difference in behaviour or value.
 

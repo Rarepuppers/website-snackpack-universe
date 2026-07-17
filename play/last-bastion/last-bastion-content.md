@@ -506,3 +506,36 @@ Batch C, D1, D2, and the Bastion Eater D3 set are complete. Remaining Web MVP en
 - Completed: 4 × 3 directional positioning/wind-up/recovery body sheet at 96 × 96 logical cells.
 - Completed: dedicated 4 × 2 atlas at 64 × 64 logical cells for the separate spike projectile, charge/fan accents, cover/flesh impacts, hit, and defeat.
 - Code remains authoritative for the exact 64° fan paths and telegraph lines; generated effects must support rather than replace those fairness contracts.
+
+## Batch G — front-end shell and expedition map asset briefs
+
+**Status:** Design brief only — 17 July 2026. Do not generate until the screen-flow and map-generator behavior gates pass with code-native placeholders. The screen design lives in `last-bastion-game.md` ("Front-end shell and expedition structure"). All text, bindings, numbers, timers, and selection states remain code-rendered; artwork must contain no baked text. Retain ≥4× masters per the Steam-quality floor.
+
+### Batch G1 — title, menu, and character select
+
+| Asset | Placeholder until generated | Description for imagegen |
+| --- | --- | --- |
+| Title backdrop (1920 × 1080 master) | Flat navy gradient + code vignette | Lone Marine silhouette on a dark ridge, faint teal weapon-ring glow, horizon crawling with low alien silhouettes beneath ivory search beams from a distant fortified city; deep navy/charcoal sky, restrained orange alarm lights; painterly pixel-art finish matching the approved Marine palette |
+| LAST BASTION logotype (transparent master) | Code-rendered bold italic text | Heavy condensed italic wordmark, ivory face with charcoal outline and teal underline sweep; separate small "SNACKPACK UNIVERSE" byline lockup; no other text |
+| Menu card set (6 backgrounds, 512 × 320 masters) | Flat colour rectangles with code labels | Diagonal-cut panel faces in six family colours (navy hero card, teal, magenta, green, violet, orange) with subtle grid texture, worn edge highlights, and one corner glyph zone kept empty for code-drawn icons |
+| Menu corner glyphs (6, 64 × 64) | Code shapes | Single-weight ivory glyphs: play chevron, question mark, gear, flask, medal, dropship — readable at 32 px |
+| Hero dossier frame (960 × 720 master) | Code rectangle panel | Ivory-edged charcoal dossier board with teal blueprint grid, riveted corners, and clear zones for the live-assembled Marine sprite, stat bars, and passive/ultimate cards |
+| Passive/ultimate/kit card icons (Entrenched, Bastion Barrage, Uranium-Core reuse) | Existing tile art + code shapes | Entrenched: boots planted on a braced hex plate; Bastion Barrage: twelve-ray radial burst over a shoulder rig; keep the established 64 × 64 tile language identifiable under a 50% cooldown shadow |
+| Locked-hero silhouettes (Medic + 3 slots, 256 × 512) | Darkened rectangles | Back-lit charcoal silhouettes with one teal rim light each: Medic (angular pack + injector staff), Assault (broad pauldrons), Tactician (antenna array), Scout (light hood, long optic); clearly non-final, no faces |
+
+### Batch G2 — expedition map
+
+| Asset | Placeholder until generated | Description for imagegen |
+| --- | --- | --- |
+| Starchart backdrop (2400 × 1080 master, scrolls horizontally) | Dark panel + code grid | Wide alien-terrain survey chart from orbit: navy-black ground haze, faint contour lines, biomass stains growing denser toward the right edge where the Bastion Eater nests; left edge shows the last city's light halo |
+| Node medallions (8 types × 4 states, 96 × 96) | Code circles with letters | Round brass-and-ivory medallions with distinct silhouettes: crossed rifles (Combat), horned skull (Elite), large claw (Mini-boss), medical cross crate (Supply Depot), open weapon case (Weapon Cache), alien monolith (Shrine — future), question glyph (Event — future), devouring maw (Boss). States: dormant/grey, reachable/teal ring, current/pulsing ivory, cleared/dimmed with claw-mark stamp. Stamp and rings may be separate overlays |
+| Route line set | Code lines | Dashed ivory route segments, a brighter teal "chosen path" variant, and a small directional chevron; tileable |
+| Dropship traveler token (64 × 64, 4 frames) | Code triangle | Compact teal-and-ivory dropship seen from above with a two-frame engine flicker and a landing variant |
+| Node intel card frame (320 × 180) | Code rectangle | Small charcoal intel card with ivory header bar and a torn-corner note aesthetic; body zone left empty for code text |
+| Run-summary board (1200 × 800 master) | Code panel | Debrief board: charcoal field, large ivory header zone, three stat plaques, and separate victory laurel / defeat cracked-visor emblems |
+
+### Batch G acceptance rules
+
+- Every medallion type must be distinguishable at 48 px in grayscale and under common colour-vision simulations.
+- The backdrop must not fight node readability: peak backdrop contrast stays below medallion contrast.
+- Gallery route `?mode=gallery&batch=g1` / `g2` must display every asset and state before menu integration replaces placeholders.

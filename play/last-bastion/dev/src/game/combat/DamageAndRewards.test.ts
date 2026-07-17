@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { PlayerIntent } from "../input/PlayerIntent";
 import { CombatSimulation, type CombatSnapshot } from "./CombatSimulation";
+import { WEAPON_CHEST_POOL } from "../content/weaponCatalog";
 
 function intent(overrides: Partial<PlayerIntent> = {}): PlayerIntent {
   return {
@@ -233,31 +234,49 @@ describe("five-wave run and intermission rewards", () => {
     expect(simulation.snapshot().totalWaves).toBe(5);
   });
 
-  it("offers a weapon chest after wave one and a Supply Depot after wave two", () => {
+  it("offers a seeded weapon chest after wave one and a Supply Depot after wave two", () => {
     const simulation = new CombatSimulation({ seed: 21 });
 
     const chest = runUntilDecision(simulation, 260);
     expect(chest.pendingDecision?.kind).toBe("weapon-chest");
     const optionIds = chest.pendingDecision!.options.map((option) => option.id);
-    expect(optionIds).toContain("scattergun");
-    expect(optionIds).toContain("arc-carbine");
+    expect(optionIds).toHaveLength(3);
+    expect(new Set(optionIds).size).toBe(3);
+    for (const optionId of optionIds) {
+      expect(WEAPON_CHEST_POOL).toContain(optionId);
+    }
     expect(optionIds).not.toContain("bastion-service-rifle");
 
-    expect(simulation.chooseOption("scattergun")).toBe(true);
+    const chosen = optionIds[0]!;
+    expect(simulation.chooseOption(chosen)).toBe(true);
     expect(simulation.snapshot().equippedWeapons.map((weapon) => weapon.weaponId))
-      .toEqual(["bastion-service-rifle", "scattergun"]);
+      .toEqual(["bastion-service-rifle", chosen]);
 
-    const depot = runUntilDecision(simulation, 500);
+    const depot = runUntilDecision(simulation, 700);
     expect(depot.pendingDecision?.kind).toBe("supply-depot");
     expect(simulation.chooseOption("aegis-lattice")).toBe(true);
     expect(simulation.snapshot().playerShield).toBe(25);
+  });
+
+  it("draws different chests for different seeds from the full pool", () => {
+    const offered = new Set<string>();
+    for (const seed of [3, 21, 55, 89, 144]) {
+      const simulation = new CombatSimulation({ seed });
+      const chest = runUntilDecision(simulation, 300);
+      expect(chest.pendingDecision?.kind).toBe("weapon-chest");
+      for (const option of chest.pendingDecision!.options) {
+        offered.add(option.id);
+      }
+    }
+    // Across several seeds the chest must reach beyond the original trio.
+    expect(offered.size).toBeGreaterThan(3);
   });
 
   it("spawns a wave powerup from wave two onward", () => {
     const simulation = new CombatSimulation({ seed: 21 });
     const chest = runUntilDecision(simulation, 260);
     expect(chest.pendingDecision?.kind).toBe("weapon-chest");
-    simulation.chooseOption("arc-carbine");
+    simulation.chooseOption(chest.pendingDecision!.options[0]!.id);
 
     let snapshot = simulation.snapshot();
     for (let frame = 0; frame < 60 && snapshot.powerups.length === 0; frame += 1) {

@@ -162,6 +162,20 @@ export const VERTICAL_SLICE_WEAPON_IDS: readonly WeaponId[] = Object.freeze([
   "arc-carbine",
 ]);
 
+/**
+ * Weapons the in-run Weapon Chest may offer (content-enablement pass,
+ * 17 July 2026). The chest draws a seeded subset of unowned entries.
+ */
+export const WEAPON_CHEST_POOL: readonly WeaponId[] = Object.freeze([
+  "bastion-service-rifle",
+  "scattergun",
+  "arc-carbine",
+  "patrol-blade",
+  "bolt-carbine",
+  "bulwark-rotary-cannon",
+  "grenade-tube",
+]);
+
 function weapon(
   definition: Pick<WeaponRuntimeStats,
     | "id" | "displayName" | "description" | "weaponClass" | "damageType"
