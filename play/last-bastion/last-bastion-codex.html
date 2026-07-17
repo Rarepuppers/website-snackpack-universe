@@ -642,8 +642,14 @@ const AMMO = [
 /* ──────────────────────────────────────────────────────────────
    DISCOVERY — the Monsterdex reads the game's own save.
    Same origin (/play/last-bastion/), so localStorage is shared.
-   The game does not record a bestiary yet; until it does, every
-   monster reads as undiscovered and "Reveal all" is the design view.
+
+   The game writes progress.bestiary as { [key]: { seen, kills } },
+   keyed by elite kind, mini-boss kind, or enemy type. Codex entry
+   ids are mon-<key>, so stripping the prefix gives the save key —
+   that contract is guarded by a test in the game's suite.
+
+   Encountering an alien reveals its name; KILLS_TO_REVEAL kills
+   reveal its stats.
    ────────────────────────────────────────────────────────────── */
 const SAVE_KEY = "last-bastion-save";
 const KILLS_TO_REVEAL = 10;
@@ -653,15 +659,27 @@ function readBestiary() {
     const raw = localStorage.getItem(SAVE_KEY);
     if (!raw) return {};
     const save = JSON.parse(raw);
-    return (save && save.progress && save.progress.bestiary) || {};
+    const bestiary = save && save.progress && save.progress.bestiary;
+    return bestiary && typeof bestiary === "object" ? bestiary : {};
   } catch { return {}; }
 }
 
+function bestiaryKeyOf(id) {
+  return id.replace(/^mon-/, "");
+}
+
 function discoveryOf(id, bestiary) {
-  const kills = Number(bestiary[id] || 0);
+  const entry = bestiary[bestiaryKeyOf(id)] || {};
+  const kills = Number(entry.kills) || 0;
+  const seen = Number(entry.seen) || 0;
   if (kills >= KILLS_TO_REVEAL) return "full";
-  if (kills > 0) return "seen";
+  if (seen > 0 || kills > 0) return "seen";
   return "unknown";
+}
+
+function killsOf(id, bestiary) {
+  const entry = bestiary[bestiaryKeyOf(id)] || {};
+  return Number(entry.kills) || 0;
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -737,7 +755,7 @@ function weaponCard(w) {
   </article>`;
 }
 
-function monsterCard(m, disc) {
+function monsterCard(m, disc, kills) {
   const revealed = state.revealAll || disc === "full";
   const seen = state.revealAll || disc !== "unknown";
   if (!seen) {
@@ -760,7 +778,9 @@ function monsterCard(m, disc) {
       <h3>${m.name}</h3>
       <div class="badges">
         ${badge(m.status)}
-        ${revealed ? "" : `<span class="badge b-concept">${KILLS_TO_REVEAL} kills to reveal stats</span>`}
+        ${revealed
+          ? (kills > 0 ? `<span class="badge b-class">${kills} killed</span>` : "")
+          : `<span class="badge b-concept">${kills}/${KILLS_TO_REVEAL} kills to reveal stats</span>`}
       </div>
       ${statRows(stats)}
       ${revealed ? `<p>${m.text}</p>` : ""}
@@ -843,7 +863,8 @@ function render() {
       if (!list.length) continue;
       const titles = { standard: "Standard aliens", elite: "Elite aliens", "mini-boss": "Mini-bosses", boss: "Final boss" };
       html += `<h2 class="sect">${titles[rank]}</h2>
-        <div class="grid">${list.map((m) => monsterCard(m, discoveryOf(m.id, bestiary))).join("")}</div>`;
+        <div class="grid">${list.map((m) =>
+          monsterCard(m, discoveryOf(m.id, bestiary), killsOf(m.id, bestiary))).join("")}</div>`;
     }
   }
 

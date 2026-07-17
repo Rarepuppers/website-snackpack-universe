@@ -128,6 +128,9 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly synth = new WebAudioSynth(this.settings.soundEnabled);
   private runOutcomeRecorded = false;
   private previousHeroState = "idle";
+  /** Dex counts accumulated this wave, flushed on wave change and run end. */
+  private readonly pendingBestiary = new Map<string, { seen: number; kills: number }>();
+  private lastFlushedWaveNumber = 1;
 
   constructor() {
     super("prototype");
@@ -225,6 +228,7 @@ export class PrototypeScene extends Phaser.Scene {
 
     const snapshot = this.simulation.step(intent, deltaSeconds);
     this.lastSnapshot = snapshot;
+    this.collectBestiary(snapshot);
     this.recordRunOutcome(snapshot);
     this.updateMarineFrame(snapshot.heroState, intent.move);
 
@@ -315,10 +319,12 @@ export class PrototypeScene extends Phaser.Scene {
     this.simulation = createSimulation(
       this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
     );
+    this.flushBestiary();
     this.lastSnapshot = this.simulation.snapshot();
     this.isPaused = false;
     this.runOutcomeRecorded = false;
     this.previousHeroState = "idle";
+    this.lastFlushedWaveNumber = 1;
     this.visibleDecisionKey = "";
     this.decisionOverlay?.destroy(true);
     this.decisionOverlay = null;
@@ -356,13 +362,48 @@ export class PrototypeScene extends Phaser.Scene {
     }
     if (snapshot.status === "victory" || snapshot.status === "defeat") {
       this.runOutcomeRecorded = true;
-      if (snapshot.stressProfile === null && snapshot.scenario === null) {
+      if (this.isRecordableRun(snapshot)) {
         this.saveStore.recordRunEnd({
           victory: snapshot.status === "victory",
           waveReached: snapshot.waveNumber,
         });
       }
+      this.flushBestiary();
     }
+  }
+
+  /** Lab and stress routes are review tools; they never touch player progress. */
+  private isRecordableRun(snapshot: CombatSnapshot): boolean {
+    return snapshot.stressProfile === null && snapshot.scenario === null;
+  }
+
+  private collectBestiary(snapshot: CombatSnapshot): void {
+    if (!this.isRecordableRun(snapshot)) {
+      return;
+    }
+    for (const event of snapshot.events) {
+      if (event.type !== "enemy-spawned" && event.type !== "enemy-defeated") {
+        continue;
+      }
+      const entry = this.pendingBestiary.get(event.bestiaryKey) ?? { seen: 0, kills: 0 };
+      if (event.type === "enemy-spawned") entry.seen += 1;
+      else entry.kills += 1;
+      this.pendingBestiary.set(event.bestiaryKey, entry);
+    }
+    // Flush once per wave rather than per kill: a busy wave produces hundreds
+    // of events and localStorage writes are synchronous.
+    if (snapshot.waveNumber !== this.lastFlushedWaveNumber) {
+      this.lastFlushedWaveNumber = snapshot.waveNumber;
+      this.flushBestiary();
+    }
+  }
+
+  private flushBestiary(): void {
+    if (this.pendingBestiary.size === 0) {
+      return;
+    }
+    this.saveStore.recordBestiary(Object.fromEntries(this.pendingBestiary));
+    this.pendingBestiary.clear();
   }
 
   private shakeCamera(durationMilliseconds: number, intensity: number): void {

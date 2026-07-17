@@ -109,12 +109,12 @@ export type CombatEvent =
   | { type: "enemy-hit"; position: Vector2Data }
   | { type: "bolt-impact"; position: Vector2Data; hitIndex: 1 | 2 }
   | { type: "projectile-impact"; position: Vector2Data; weaponId: WeaponId }
-  | { type: "enemy-defeated"; position: Vector2Data; enemyType: EnemyType }
+  | { type: "enemy-defeated"; position: Vector2Data; enemyType: EnemyType; bestiaryKey: string }
   | { type: "explosion"; position: Vector2Data; radiusMetres: number; weaponId?: WeaponId }
   | { type: "player-hit"; position: Vector2Data; damage: number }
   | { type: "xp-collected"; position: Vector2Data; value: number }
   | { type: "level-up"; level: number }
-  | { type: "enemy-spawned"; position: Vector2Data; enemyType: EnemyType }
+  | { type: "enemy-spawned"; position: Vector2Data; enemyType: EnemyType; bestiaryKey: string }
   | { type: "egg-hatched"; position: Vector2Data }
   | { type: "projectile-blocked"; position: Vector2Data; weaponId?: WeaponId }
   | { type: "chain-arc"; from: Vector2Data; to: Vector2Data; weaponId: WeaponId }
@@ -839,9 +839,30 @@ export class CombatSimulation {
       type: "enemy-spawned",
       position: { ...spawnPosition },
       enemyType: type,
+      bestiaryKey: type,
     });
 
     return id;
+  }
+
+  /** Dex identity: an elite or mini-boss is its own entry, not its base family. */
+  private bestiaryKeyOf(enemy: EnemyState): string {
+    return enemy.eliteKind ?? enemy.miniBossKind ?? enemy.type;
+  }
+
+  /**
+   * `spawnEnemy` emits the spawn event before `spawnElite`/`spawnMiniBoss`
+   * apply their rank, so those paths re-tag the event they just caused.
+   * Without this a Carapace Scuttler would register as an ordinary Scuttler.
+   */
+  private retagLastSpawn(bestiaryKey: string): void {
+    for (let index = this.frameEvents.length - 1; index >= 0; index -= 1) {
+      const event = this.frameEvents[index]!;
+      if (event.type === "enemy-spawned") {
+        event.bestiaryKey = bestiaryKey;
+        return;
+      }
+    }
   }
 
   spawnElite(eliteKind: EliteKind, position?: Vector2Data): number {
@@ -849,6 +870,7 @@ export class CombatSimulation {
     const enemy = this.enemies.find((candidate) => candidate.id === id)!;
     enemy.rank = "elite";
     enemy.eliteKind = eliteKind;
+    this.retagLastSpawn(eliteKind);
     enemy.maxHealth = ENEMY_CATALOG.scuttler.maxHealth * 3.5;
     enemy.health = enemy.maxHealth;
     enemy.carapacePhase = "pursuit";
@@ -861,6 +883,7 @@ export class CombatSimulation {
     const enemy = this.enemies.find((candidate) => candidate.id === id)!;
     enemy.rank = "mini-boss";
     enemy.miniBossKind = miniBossKind;
+    this.retagLastSpawn(miniBossKind);
     enemy.siegeCrusherPhase = "entrance";
     enemy.siegeCrusherPhaseRemainingSeconds = 0.9;
     enemy.broodWardenPhase = "entrance";
@@ -3283,6 +3306,7 @@ export class CombatSimulation {
       type: "enemy-defeated",
       position: { ...enemy.position },
       enemyType: enemy.type,
+      bestiaryKey: this.bestiaryKeyOf(enemy),
     });
     if (this.statusTuning.combustionOnDeath && (enemy.statusTimers.blaze ?? 0) > 0) {
       this.frameEvents.push({

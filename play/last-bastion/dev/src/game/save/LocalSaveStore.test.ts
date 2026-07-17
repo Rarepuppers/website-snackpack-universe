@@ -51,6 +51,80 @@ describe("LocalSaveStore", () => {
     expect(reloaded.progress.bestWaveReached).toBe(5);
   });
 
+  it("accumulates dex sightings and kills across batches and instances", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+
+    store.recordBestiary({ scuttler: { seen: 8, kills: 6 }, "brain-blob": { seen: 2 } });
+    store.recordBestiary({ scuttler: { seen: 4, kills: 5 } });
+
+    const progress = store.load().progress;
+    expect(progress.bestiary.scuttler).toEqual({ seen: 12, kills: 11 });
+    expect(progress.bestiary["brain-blob"]).toEqual({ seen: 2, kills: 0 });
+
+    const reloaded = new LocalSaveStore(storage).load();
+    expect(reloaded.progress.bestiary.scuttler).toEqual({ seen: 12, kills: 11 });
+  });
+
+  it("ignores empty dex batches without touching storage", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    store.recordBestiary({});
+    store.recordBestiary({ scuttler: { seen: 0, kills: 0 } });
+    expect(store.load().progress.bestiary).toEqual({});
+    expect(storage.dump().size).toBe(0);
+  });
+
+  it("keeps the dex when recording a run outcome", () => {
+    const store = new LocalSaveStore(fakeStorage());
+    store.recordBestiary({ ripper: { seen: 1, kills: 1 } });
+    const after = store.recordRunEnd({ victory: true, waveReached: 5 });
+    expect(after.progress.bestiary.ripper).toEqual({ seen: 1, kills: 1 });
+    expect(after.progress.victories).toBe(1);
+  });
+
+  it("reads a pre-dex save without discarding it", () => {
+    const storage = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        version: 1,
+        settings: { screenShakeEnabled: false, soundEnabled: true },
+        progress: { runsFinished: 3, victories: 1, bestWaveReached: 4 },
+      }),
+    });
+    const loaded = new LocalSaveStore(storage).load();
+    expect(loaded.progress.runsFinished).toBe(3);
+    expect(loaded.settings.screenShakeEnabled).toBe(false);
+    expect(loaded.progress.bestiary).toEqual({});
+  });
+
+  it("drops malformed dex rows rather than the whole save", () => {
+    const storage = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        version: 1,
+        settings: {},
+        progress: {
+          runsFinished: 2,
+          bestiary: {
+            scuttler: { seen: 5, kills: 3 },
+            broken: "not an object",
+            negative: { seen: -4, kills: Number.NaN },
+          },
+        },
+      }),
+    });
+    const loaded = new LocalSaveStore(storage).load();
+    expect(loaded.progress.runsFinished).toBe(2);
+    expect(loaded.progress.bestiary).toEqual({ scuttler: { seen: 5, kills: 3 } });
+  });
+
+  it("returns an isolated dex copy that callers cannot mutate", () => {
+    const store = new LocalSaveStore(fakeStorage());
+    store.recordBestiary({ scuttler: { seen: 1, kills: 1 } });
+    const first = store.load();
+    first.progress.bestiary.scuttler!.kills = 999;
+    expect(store.load().progress.bestiary.scuttler).toEqual({ seen: 1, kills: 1 });
+  });
+
   it("sanitizes malformed numeric progress fields", () => {
     const storage = fakeStorage({
       [SAVE_STORAGE_KEY]: JSON.stringify({

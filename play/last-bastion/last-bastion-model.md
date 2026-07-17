@@ -313,16 +313,27 @@ An item is not completed merely because code or an asset exists. It must meet it
 - Built the encyclopedia at `play/last-bastion/last-bastion-codex.html`: a self-contained static page (no build step, ships on GitHub Pages immediately) using the game's palette rather than the cream site theme, because tiles must read here exactly as they do in the shop and character select.
 - Ten tabs: Characters, Weapons, Monsterdex, Upgrades, Perks, Powerups & Shrines, Relics & Artifacts, Ammo, Damage Types, Damage Over Time. Search across everything, per-tab filters, and deep links (`#weapons`).
 - **The tile contract is the point.** Every entry renders `game-assets/tiles/<id>-v1.png` over a procedural placeholder and removes the image if it 404s, so Codex art upgrades the page with zero code change — and the same stable ids serve the game's character select, shop, and placement modal. Each tile prints its id, so the page doubles as the generation worklist.
-- **Monsterdex** is a real dex: aliens read `??????` until encountered and hide their stats until 10 kills, driven by the game's own save (`last-bastion-save` on the same origin). The game does not record a bestiary yet — see the pending item below — so today everything reads undiscovered and "Reveal all" is the design view.
+- **Monsterdex** is a real dex: aliens read `??????` until encountered and hide their stats until 10 kills, driven by the game's own save (`last-bastion-save` on the same origin). The bestiary is now recorded by the game (see the dedicated entry below), so the dex fills in from real play.
 - Entries carry a status badge (live / designed / concept), which makes the codex double as a content tracker: 7 heroes, 32 weapons across 7 classes/families, 22 monsters, 17 upgrades, 7 perks, 10 powerups/shrines, 9 relics/artifacts, 8 ammo kits, 8 damage types, 6 damage-over-time effects.
 - Two design decisions recorded on the page: **Alien/Energy/Void are weapon *families*, not slot classes** (they cut across Light/Medium/Heavy so the five-slot rack design survives), and **all weapon names are original** — the archetypes requested (Glock, AK47) are live trademarks, and the project's own rule already forbids close resemblance to existing franchises, so they became the SP-9 Sidearm and Marauder AR.
 - Verified in the browser on the published path: all ten tabs render, no console errors, monsters hidden by default, filters and the placeholder fallback working.
 
 **Pending follow-ups this creates:**
 
-- Add a `progress.bestiary` map (`{ [enemyType]: killCount }`) to the save schema so the Monsterdex fills in from real play. Small change to `LocalSaveStore` plus a kill hook in the scene.
 - Link the codex from the game's main menu (step 37) and from the arcade hub.
 - Generate the tile batch (see "The tile contract" in `last-bastion-content.md`).
+
+### Bestiary recording (Monsterdex data)
+
+**Status:** Completed — 17 July 2026
+
+- Extended `progress` with `bestiary: Record<string, { seen, kills }>`, keyed by **bestiary key** — elite kind, mini-boss kind, or enemy type — so a Carapace Scuttler is its own dex entry rather than an ordinary Scuttler. `seen` reveals an alien's name; `kills` reveal its stats at 10.
+- No schema version bump: the field is additive and `normalizeSave` treats a missing or malformed bestiary as an empty dex, so **pre-dex saves keep their run history** instead of being discarded. Malformed individual rows are dropped without losing the save.
+- `enemy-spawned` and `enemy-defeated` now carry `bestiaryKey`. Because `spawnEnemy` emits the spawn event *before* `spawnElite`/`spawnMiniBoss` apply their rank, those paths re-tag the event they just caused — without this a Carapace Scuttler registered as a plain Scuttler on sight. A rules test guards it.
+- The scene accumulates counts in memory and flushes once per wave and at run end, rather than writing to localStorage on every kill — a busy wave produces hundreds of events and storage writes are synchronous.
+- Lab and stress routes never record, matching the existing rule for run outcomes: review tools do not touch player progress.
+- The codex derives the save key from its own entry ids (`mon-<key>`), a contract guarded by a test in the game suite; it also shows kill progress (`3/10 kills to reveal stats`) so the dex reads as a goal.
+- Verification evidence: 256 tests across 24 files (11 new dex rules), TypeScript, production build, HTTP smoke.
 
 ### Weapon tiles, precision, and wave-balance design pass
 

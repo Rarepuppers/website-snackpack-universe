@@ -10,10 +10,22 @@ export interface GameSettings {
   soundEnabled: boolean;
 }
 
+/**
+ * One Monsterdex row. `seen` reveals the alien's name and silhouette; `kills`
+ * reveals its stats once the threshold is met. Keyed by bestiary key
+ * (elite kind, mini-boss kind, or enemy type) so a Carapace Scuttler is a
+ * distinct dex entry from an ordinary Scuttler.
+ */
+export interface BestiaryEntry {
+  seen: number;
+  kills: number;
+}
+
 export interface GameProgress {
   runsFinished: number;
   victories: number;
   bestWaveReached: number;
+  bestiary: Record<string, BestiaryEntry>;
 }
 
 export interface SaveData {
@@ -23,6 +35,9 @@ export interface SaveData {
 }
 
 export const SAVE_STORAGE_KEY = "last-bastion-save";
+
+/** Kills required before a dex entry reveals its stats. Mirrored in the codex page. */
+export const BESTIARY_KILLS_TO_REVEAL = 10;
 
 export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
   version: 1,
@@ -34,6 +49,7 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     runsFinished: 0,
     victories: 0,
     bestWaveReached: 0,
+    bestiary: Object.freeze({}) as Record<string, BestiaryEntry>,
   }),
 });
 
@@ -62,10 +78,39 @@ export class LocalSaveStore {
     return this.load();
   }
 
+  /**
+   * Merges a batch of dex sightings and kills. Called with accumulated counts
+   * rather than per kill, so a busy wave does not write to storage 200 times.
+   */
+  recordBestiary(batch: Readonly<Record<string, Partial<BestiaryEntry>>>): SaveData {
+    const bestiary: Record<string, BestiaryEntry> = { ...this.cached.progress.bestiary };
+    let changed = false;
+    for (const [key, delta] of Object.entries(batch)) {
+      const seen = Math.max(0, Math.floor(delta.seen ?? 0));
+      const kills = Math.max(0, Math.floor(delta.kills ?? 0));
+      if (seen === 0 && kills === 0) {
+        continue;
+      }
+      const current = bestiary[key] ?? { seen: 0, kills: 0 };
+      bestiary[key] = { seen: current.seen + seen, kills: current.kills + kills };
+      changed = true;
+    }
+    if (!changed) {
+      return this.load();
+    }
+    this.cached = {
+      ...this.cached,
+      progress: { ...this.cached.progress, bestiary },
+    };
+    this.writeToStorage();
+    return this.load();
+  }
+
   recordRunEnd(outcome: { victory: boolean; waveReached: number }): SaveData {
     this.cached = {
       ...this.cached,
       progress: {
+        ...this.cached.progress,
         runsFinished: this.cached.progress.runsFinished + 1,
         victories: this.cached.progress.victories + (outcome.victory ? 1 : 0),
         bestWaveReached: Math.max(
@@ -124,8 +169,32 @@ function normalizeSave(parsed: unknown): SaveData {
       runsFinished: readCount(candidate.progress?.runsFinished),
       victories: readCount(candidate.progress?.victories),
       bestWaveReached: readCount(candidate.progress?.bestWaveReached),
+      bestiary: readBestiary(candidate.progress?.bestiary),
     },
   };
+}
+
+/**
+ * Saves written before the dex existed simply have no bestiary, so a missing
+ * or malformed map degrades to an empty dex rather than discarding the save.
+ */
+function readBestiary(value: unknown): Record<string, BestiaryEntry> {
+  if (typeof value !== "object" || value === null) {
+    return {};
+  }
+  const bestiary: Record<string, BestiaryEntry> = {};
+  for (const [key, entry] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof entry !== "object" || entry === null) {
+      continue;
+    }
+    const candidate = entry as Partial<BestiaryEntry>;
+    const seen = readCount(candidate.seen);
+    const kills = readCount(candidate.kills);
+    if (seen > 0 || kills > 0) {
+      bestiary[key] = { seen, kills };
+    }
+  }
+  return bestiary;
 }
 
 function readBoolean(value: unknown, fallback: boolean): boolean {
@@ -139,9 +208,13 @@ function readCount(value: unknown): number {
 }
 
 function cloneSave(save: SaveData): SaveData {
+  const bestiary: Record<string, BestiaryEntry> = {};
+  for (const [key, entry] of Object.entries(save.progress.bestiary ?? {})) {
+    bestiary[key] = { ...entry };
+  }
   return {
     version: save.version,
     settings: { ...save.settings },
-    progress: { ...save.progress },
+    progress: { ...save.progress, bestiary },
   };
 }
