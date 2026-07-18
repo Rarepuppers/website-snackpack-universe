@@ -4,7 +4,7 @@
 
 This is the numeric design for encounter pressure: what spawns, how tough it is, what it pays, and how all of that grows wave over wave. The durable design lives in `last-bastion-game.md`; implementation status lives in `last-bastion-model.md`. Numbers here are **proposals for the step 35 tuning pass** unless a row is marked implemented.
 
-**Status:** Draft v2 — 18 July 2026 (v1 17 July). Precision/display, the combat rescale, per-wave scaling, timed threat budgets, and fractional projectiles are implemented. Baseline regeneration, level packages, later-wave elite cadence, speed tiers, and XP tuning remain open. v2 adds the short-timed-wave pacing model, starting-health rule, elite cadence, and the weapon acquisition schedule.
+**Status:** Draft v2 — 18 July 2026 (v1 17 July). Precision/display, combat rescaling, ten-wave scaling and threat budgets, fractional projectiles, baseline regeneration, level packages, speed tiers, elite cadence, code-authoritative telegraphs, and the measured XP reference run are implemented. Batch J art and creator feel/readability review remain open.
 
 ## Design intent
 
@@ -178,7 +178,7 @@ These are the concrete values behind the `+1` notation in the hero growth table 
 | +1 proficiency (class) | +4% damage with that weapon class | Light +36% |
 | +1 support effect | +5% healing/shield from all sources | — |
 
-Sanity check on the Marine: by wave 10 the package alone yields ~136 HP, 4.5 armour, +18% damage and +36% with Light weapons — meaningful, but far less than a focused upgrade path (Composite Plating IV alone is +12 armour). **That ratio is deliberate: the package is the floor, the choices are the build.**
+Sanity check on the Marine: by wave 10 the package alone yields 19 HP, 4.5 armour, +18% damage and +36% with Light weapons — meaningful, but far less than a focused upgrade path (Composite Plating IV alone is +12 armour). **That ratio is deliberate: the package is the floor, the choices are the build.**
 
 ## Monster damage to the player
 
@@ -260,7 +260,7 @@ The v1 threat budgets and enemy stat tables stand; what changes is how fast they
 
 The arena should feel like a horde pressing inward, not a collection of specialists waiting for turns. Composition and steering follow these rules:
 
-**Implementation status (18 July 2026):** completed for the current five-wave prototype. Normal waves now use enforced 18/24/32/42/46 live caps and deterministic pursuit-led spawn plans. Enemy definitions select one of eight shared steering profiles; Slime Spitters and Quillbacks use their authored range bands, ordinary ranged attacks are limited to two simultaneous wind-ups and six live hostile projectiles, and dead friendly/hostile simulation projectiles are pooled for reuse. `?scenario=density-capacity&debug=1` pins a non-lethal 56-enemy representative roster and exposes live/peak count, queue pressure, hostile projectile occupancy, and cap-blocked time. The future 52/56 caps remain authored targets for waves 6–9.
+**Implementation status (18 July 2026):** completed across the ten-wave Quick Drop run. Waves now use enforced 18/24/32/42/46/52/52/56/56/56 live caps and deterministic pursuit-led plans. Waves 6–9 guarantee the authored elite cadence with at most one fast elite; wave 10 is the Bastion Eater. Enemy definitions select one of eight shared steering profiles; ranged wind-ups and hostile projectile pressure remain bounded. `?scenario=density-capacity&debug=1` pins the non-lethal 56-enemy acceptance roster and exposes live/peak count, queue pressure, projectile occupancy, and cap-blocked time.
 
 - **65–75% of ordinary threat is pursuit pressure.** Scuttlers, swarmers, infected survivors, and other commons take a direct or lightly separated route toward the Marine. Simple chase is desirable here: the mass itself is the puzzle.
 - **15–25% is ranged or standoff pressure.** A standoff shooter maintains a minimum/preferred/maximum range band, retreats when crowded, advances when too far away, and commits only after a readable wind-up. A chase-and-fire shooter keeps advancing and fires on cadence. Artillery repositions to long range and never shoots from an unseen edge without a marker.
@@ -429,12 +429,12 @@ This is a large, cross-cutting change. Suggested sequencing so nothing lands hal
 
 1. **Precision + display** (`formatStat`, 0.1 floor, damage numbers) — visible immediately, unblocks judging every later number. **Implemented 18 July 2026** (see `last-bastion-log.md`): shared `formatStat` round-half-up helper, mitigation floor lowered 1 → 0.1, and pooled floating damage numbers with the confirmed type colours and a `damageNumbersEnabled` setting (`?damage=0|1`).
 2. **Rescale weapons and enemies** to the 2-damage baseline in one data pass; keep existing rules tests passing by updating expected values together. **Implemented 18 July 2026:** all seven weapons, the live enemy roster, elite/mini-boss/boss durability, status magnitudes and buildup, Marine health, hostile attacks, shields, healing, ultimate damage, and combat hazards now share the 2-damage / 10-health scale. Dedicated rules tests lock the two-bullet Scuttler and five-damage hit ceiling.
-3. **Per-wave scaling** table + threat-budget spawner with caps and the timer-based wave end. **Implemented 18 July 2026:** ordinary enemies receive authored non-compounding health, armour, eligible shield, speed, and capped damage scaling at spawn; mini-bosses remain authored. The five-wave director spends exact 30/45/65/90/120 budgets in 2.5-second pulses under 18/24/32/42/46 caps. Waves 3–4 are timer-owned at 30/35 seconds and cannot end early; wave 5 remains kill-owned. HUD/debug telemetry exposes time, budget, spend, queue, cap pressure, and projectile occupancy.
+3. **Per-wave scaling** table + threat-budget spawner with caps and the timer-based wave end. **Implemented 18 July 2026:** ordinary enemies receive authored non-compounding health, armour, eligible shield, speed, and capped damage scaling at spawn; mini-bosses remain authored. The ten-wave director spends exact authored budgets in 2.5-second pulses under the full cap ladder. Waves 3–4 and 6–9 are timer-owned; waves 5 and 10 remain kill-owned. HUD/debug telemetry exposes time, budget, spend, queue, cap pressure, and projectile occupancy.
 4. **Fractional projectiles** helper (shared accumulator). **Implemented 18 July 2026:** one deterministic shared resolver persists carry per weapon instance, seeded by `instanceId × 0.37 mod 1`. Tests lock 1.5 → 1/2/1/2, the canonical 2.75 → 2/3/3/3 accumulator rhythm, independent duplicate-weapon phases, and the positive-weapon one-projectile floor.
-5. **Level packages** + live `weaponProficiencies`.
-6. **Speed tiers**: Swarm Scuttler, fast elites.
-7. **New telegraphs**: ground slam, rain of spines, sweeping arc (code-drawn first, Batch J art after).
-8. **XP curve** re-tune, then measure the reference run.
+5. **Level packages** + live `weaponProficiencies`. **Implemented 18 July 2026:** Marine health/armour/damage/speed/proficiency growth, 0.2 HP/s baseline regeneration on visible three-second ticks, and support-effect scaling share one tested package contract.
+6. **Speed tiers**: Swarm Scuttler, fast elites. **Implemented 18 July 2026:** the wave-two Swarm pack and all four elite identities run live family behavior; waves 6–9 enforce the guaranteed cadence and one-fast-elite cap.
+7. **New telegraphs**: ground slam, rain of spines, sweeping arc (code-drawn first, Batch J art after). **Implemented 18 July 2026:** simulation snapshots own geometry and timing for slam, rain, arc, beam, radial pulse, and edge warnings; two-major-warning and rain-coverage limits are tested.
+8. **XP curve** re-tune, then measure the reference run. **Implemented 18 July 2026:** quadratic thresholds, rank-aware XP, and a deterministic per-wave capture trace land inside the level 9–12 target.
 9. **Weapon tiles/inventory/merge** — the biggest UI piece; needs the shop node, so it lands with the map's Shop work.
 10. **Scrap**, only once the shop exists. **Completed 18 July 2026 for the five-wave prototype; expedition-node placement remains future map work.**
 

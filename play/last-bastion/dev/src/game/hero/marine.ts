@@ -23,10 +23,18 @@ export const MARINE = Object.freeze({
     mineralFindPercent: 100,
   },
   weaponProficiencies: {
-    light: 1,
-    medium: 1,
-    heavy: 1,
-    unique: 1,
+    light: 0,
+    medium: 0,
+    heavy: 0,
+    unique: 0,
+  },
+  levelGrowth: {
+    health: 1,
+    armour: 1,
+    damage: 1,
+    speed: 1,
+    supportEffect: 0,
+    proficiency: { light: 1 },
   },
   passive: {
     id: "entrenched",

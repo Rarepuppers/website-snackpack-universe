@@ -26,8 +26,8 @@ const IDLE_INTENT: PlayerIntent = {
 
 describe("density director v3", () => {
   it("uses the accepted live-cap ladder", () => {
-    expect(DENSITY_LIVE_CAPS).toEqual([18, 24, 32, 42, 46]);
-    expect(Array.from({ length: 5 }, (_, index) => buildDensityWave(index).liveCap)).toEqual(DENSITY_LIVE_CAPS);
+    expect(DENSITY_LIVE_CAPS).toEqual([18, 24, 32, 42, 46, 52, 52, 56, 56, 56]);
+    expect(Array.from({ length: 10 }, (_, index) => buildDensityWave(index).liveCap)).toEqual(DENSITY_LIVE_CAPS);
   });
 
   it("keeps ordinary mixed waves pursuit-led with bounded ranged pressure", () => {
@@ -56,14 +56,31 @@ describe("density director v3", () => {
     expect(first.every((plan, index) => index === 0 || plan.atSeconds >= first[index - 1]!.atSeconds)).toBe(true);
   });
 
+  it("deploys the wave-two swarm as one readable speed pulse", () => {
+    const swarm = buildDensityWave(1).plans.filter((plan) => plan.type === "swarm-scuttler");
+    expect(swarm).toHaveLength(10);
+    expect(new Set(swarm.map((plan) => plan.atSeconds))).toEqual(new Set([5.2]));
+  });
+
   it("spends each authored threat budget in readable pulses", () => {
     for (let index = 0; index < WAVE_THREAT_BUDGETS.length; index += 1) {
       const wave = buildDensityWave(index);
       expect(wave.threatBudget).toBe(WAVE_THREAT_BUDGETS[index]);
       expect(wave.durationSeconds).toBe(WAVE_DURATIONS_SECONDS[index]);
       expect(wave.plans.reduce((sum, plan) => sum + plan.threatCost, 0)).toBe(wave.threatBudget);
-      expect(new Set(wave.plans.map((plan) => plan.atSeconds)).size).toBeLessThan(wave.plans.length);
+      if (wave.plans.length > 1) {
+        expect(new Set(wave.plans.map((plan) => plan.atSeconds)).size).toBeLessThan(wave.plans.length);
+      }
     }
+  });
+
+  it("carries the authored elite cadence into waves six through nine", () => {
+    for (let index = 5; index <= 8; index += 1) {
+      const elites = buildDensityWave(index).plans.filter((plan) => plan.rank === "elite");
+      expect(elites.length).toBe(index >= 7 ? 2 : 1);
+      expect(elites.filter((plan) => plan.threatCost === 18).length).toBeLessThanOrEqual(1);
+    }
+    expect(buildDensityWave(9).plans).toMatchObject([{ type: "bastion-eater", rank: "boss" }]);
   });
 
   it("keeps the capacity lab pinned at 56 while enforcing hostile projectile pressure", () => {

@@ -228,10 +228,10 @@ describe("new enemies", () => {
   });
 });
 
-describe("five-wave run and intermission rewards", () => {
-  it("runs five total waves", () => {
+describe("ten-wave run and intermission rewards", () => {
+  it("runs ten total waves", () => {
     const simulation = new CombatSimulation({ seed: 11 });
-    expect(simulation.snapshot().totalWaves).toBe(5);
+    expect(simulation.snapshot().totalWaves).toBe(10);
   });
 
   it("offers a seeded weapon chest after wave one and a Supply Depot after wave two", () => {

@@ -11,7 +11,7 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 
 ## Review routes
 
-- `/play/last-bastion/` — styled normal five-wave run with seeded mini-boss selection
+- `/play/last-bastion/` — styled normal ten-wave run with authored elite cadence, seeded mini-boss selection, and the Bastion Eater finale
 - `/play/last-bastion/?art=placeholder` — code-shape comparison renderer
 - `/play/last-bastion/?helmet=0` — styled Marine without the removable helmet
 - `/play/last-bastion/?weapons=1`, `4`, `6`, or `12` — selected weapon-ring count

@@ -1,13 +1,15 @@
 import type { EnemyType } from "../content/enemyCatalog";
+import { eliteKindsForWave, isFastElite, type EliteKind } from "./EliteCadence";
 
 export type EnemyPressureRole = "pursuit" | "ranged" | "specialist" | "boss";
-export type DirectorSpawnRank = "elite" | "mini-boss";
+export type DirectorSpawnRank = "elite" | "mini-boss" | "boss";
 
 export interface DirectorSpawnPlan {
   atSeconds: number;
   type: EnemyType;
   threatCost: number;
   rank?: DirectorSpawnRank;
+  eliteKind?: EliteKind;
 }
 
 export interface DensityWaveDefinition {
@@ -18,15 +20,16 @@ export interface DensityWaveDefinition {
   plans: readonly DirectorSpawnPlan[];
 }
 
-export const DENSITY_LIVE_CAPS = Object.freeze([18, 24, 32, 42, 46] as const);
-export const WAVE_THREAT_BUDGETS = Object.freeze([30, 45, 65, 90, 120] as const);
-export const WAVE_DURATIONS_SECONDS = Object.freeze([20, 20, 30, 35, null] as const);
+export const DENSITY_LIVE_CAPS = Object.freeze([18, 24, 32, 42, 46, 52, 52, 56, 56, 56] as const);
+export const WAVE_THREAT_BUDGETS = Object.freeze([30, 45, 65, 90, 120, 120, 150, 180, 210, 40] as const);
+export const WAVE_DURATIONS_SECONDS = Object.freeze([20, 20, 30, 35, null, 40, 45, 50, 60, null] as const);
 export const ENEMY_PROJECTILE_BUDGET = 6;
 export const MAX_RANGED_WINDUPS = 2;
 export const DENSITY_CAPACITY_ENEMY_COUNT = 56;
 
 const ROLE: Readonly<Record<EnemyType, EnemyPressureRole>> = Object.freeze({
   scuttler: "pursuit",
+  "swarm-scuttler": "pursuit",
   "egg-cluster": "specialist",
   "brain-blob": "pursuit",
   "slime-spitter": "ranged",
@@ -45,6 +48,7 @@ const ROLE: Readonly<Record<EnemyType, EnemyPressureRole>> = Object.freeze({
 
 export const ENEMY_THREAT_COST: Readonly<Record<EnemyType, number>> = Object.freeze({
   scuttler: 1,
+  "swarm-scuttler": 1,
   "egg-cluster": 2,
   "brain-blob": 2,
   "slime-spitter": 3,
@@ -68,10 +72,14 @@ export function pressureRoleOf(type: EnemyType): EnemyPressureRole {
 export function buildDensityWave(index: number): DensityWaveDefinition {
   const waveIndex = Math.max(0, Math.min(index, WAVE_THREAT_BUDGETS.length - 1));
   const durationSeconds: number | null = WAVE_DURATIONS_SECONDS[waveIndex] ?? null;
-  const composition: Array<{ type: EnemyType; count: number; rank?: DirectorSpawnRank }> = waveIndex === 0
+  const composition: Array<{ type: EnemyType; count: number; rank?: DirectorSpawnRank; eliteKind?: EliteKind }> = waveIndex === 0
     ? [{ type: "scuttler", count: 30 }]
     : waveIndex === 1
-      ? [{ type: "scuttler", count: 37 }, { type: "egg-cluster", count: 4 }]
+      ? [
+        { type: "scuttler", count: 27 },
+        { type: "swarm-scuttler", count: 10 },
+        { type: "egg-cluster", count: 4 },
+      ]
       : waveIndex === 2
         ? [
           { type: "scuttler", count: 28 }, { type: "brain-blob", count: 6 },
@@ -86,17 +94,28 @@ export function buildDensityWave(index: number): DensityWaveDefinition {
             { type: "ripper", count: 1 }, { type: "slime-spitter", count: 3 },
             { type: "quillback", count: 1 }, { type: "warp-flanker", count: 1 },
             { type: "egg-cluster", count: 1 }, { type: "tether-bloom", count: 1 },
-            { type: "spinewheel", count: 1 }, { type: "scuttler", count: 1, rank: "elite" },
+            { type: "spinewheel", count: 1 },
+            { type: "scuttler", count: 1, rank: "elite", eliteKind: "carapace-scuttler" },
           ]
-          : [
+          : waveIndex === 4
+            ? [
             { type: "siege-crusher", count: 1, rank: "mini-boss" },
             { type: "scuttler", count: 27 }, { type: "brain-blob", count: 5 },
             { type: "blast-mite", count: 6 }, { type: "razor-scuttler", count: 4 },
             { type: "ripper", count: 1 }, { type: "slime-spitter", count: 3 },
             { type: "quillback", count: 1 }, { type: "warp-flanker", count: 2 },
             { type: "tether-bloom", count: 1 }, { type: "spinewheel", count: 1 },
-          ];
+            ]
+            : waveIndex >= 5 && waveIndex <= 8
+              ? lateWaveComposition(waveIndex + 1)
+              : [{ type: "bastion-eater", count: 1, rank: "boss" }];
   const plans = scheduleInPulses(composition, durationSeconds ?? 30);
+  if (waveIndex === 1) {
+    for (const plan of plans) {
+      if (plan.type === "swarm-scuttler") plan.atSeconds = 5.2;
+    }
+    plans.sort((left, right) => left.atSeconds - right.atSeconds);
+  }
   const threatBudget = WAVE_THREAT_BUDGETS[waveIndex]!;
   const plannedThreat = plans.reduce((sum, plan) => sum + plan.threatCost, 0);
   if (plannedThreat !== threatBudget) {
@@ -113,7 +132,7 @@ export function buildDensityWave(index: number): DensityWaveDefinition {
 }
 
 function scheduleInPulses(
-  composition: readonly { type: EnemyType; count: number; rank?: DirectorSpawnRank }[],
+  composition: readonly { type: EnemyType; count: number; rank?: DirectorSpawnRank; eliteKind?: EliteKind }[],
   durationSeconds: number,
 ): DirectorSpawnPlan[] {
   const unscheduled: Omit<DirectorSpawnPlan, "atSeconds">[] = [];
@@ -125,7 +144,10 @@ function scheduleInPulses(
       unscheduled.push({
         type: entry.type,
         rank: entry.rank,
-        threatCost: entry.rank === "elite" ? 15 : entry.rank === "mini-boss" ? 40 : ENEMY_THREAT_COST[entry.type],
+        eliteKind: entry.eliteKind,
+        threatCost: entry.rank === "elite"
+          ? (entry.eliteKind && isFastElite(entry.eliteKind) ? 18 : 15)
+          : entry.rank === "mini-boss" || entry.rank === "boss" ? 40 : ENEMY_THREAT_COST[entry.type],
       });
     }
     remaining = remaining.filter((entry) => entry.count > 0);
@@ -135,6 +157,43 @@ function scheduleInPulses(
     ...plan,
     atSeconds: 0.2 + Math.floor(item * pulseCount / unscheduled.length) * 2.5,
   })).sort((left, right) => left.atSeconds - right.atSeconds);
+}
+
+function lateWaveComposition(
+  waveNumber: number,
+): Array<{ type: EnemyType; count: number; rank?: DirectorSpawnRank; eliteKind?: EliteKind }> {
+  const elites = eliteKindsForWave(waveNumber, waveNumber % 2 === 0 ? 0.25 : 0.75).map((eliteKind) => ({
+    type: eliteKind === "carapace-scuttler" ? "scuttler" as const
+      : eliteKind === "razorlord" ? "razor-scuttler" as const
+        : eliteKind === "blightspitter" ? "slime-spitter" as const : "quillback" as const,
+    count: 1,
+    rank: "elite" as const,
+    eliteKind,
+  }));
+  const ordinary = waveNumber === 6
+    ? [
+      entry("scuttler", 39), entry("swarm-scuttler", 10), entry("blast-mite", 8), entry("razor-scuttler", 8),
+      entry("slime-spitter", 6), entry("quillback", 1), entry("tether-bloom", 2), entry("warp-flanker", 2),
+    ]
+    : waveNumber === 7
+      ? [
+        entry("scuttler", 50), entry("swarm-scuttler", 10), entry("blast-mite", 8), entry("razor-scuttler", 12),
+        entry("slime-spitter", 6), entry("quillback", 2), entry("tether-bloom", 2), entry("warp-flanker", 2), entry("spinewheel", 1),
+      ]
+      : waveNumber === 8
+        ? [
+          entry("scuttler", 57), entry("swarm-scuttler", 10), entry("blast-mite", 10), entry("razor-scuttler", 13),
+          entry("slime-spitter", 7), entry("quillback", 2), entry("tether-bloom", 1), entry("warp-flanker", 2), entry("spinewheel", 2),
+        ]
+        : [
+          entry("scuttler", 70), entry("swarm-scuttler", 10), entry("blast-mite", 12), entry("razor-scuttler", 16),
+          entry("slime-spitter", 9), entry("quillback", 2), entry("tether-bloom", 2), entry("warp-flanker", 2), entry("spinewheel", 2),
+        ];
+  return [...ordinary, ...elites];
+}
+
+function entry(type: EnemyType, count: number): { type: EnemyType; count: number } {
+  return { type, count };
 }
 
 export function buildDensityCapacityRoster(): readonly EnemyType[] {
@@ -150,14 +209,16 @@ export function buildDensityCapacityRoster(): readonly EnemyType[] {
   ];
 }
 
-export function pressureShares(plans: readonly Pick<DirectorSpawnPlan, "type" | "rank">[]) {
+export function pressureShares(
+  plans: readonly Pick<DirectorSpawnPlan, "type" | "rank" | "eliteKind" | "threatCost">[],
+) {
   const counts: Record<EnemyPressureRole, number> = { pursuit: 0, ranged: 0, specialist: 0, boss: 0 };
   const ordinaryCounts: Record<"pursuit" | "ranged" | "specialist", number> = {
     pursuit: 0, ranged: 0, specialist: 0,
   };
   for (const plan of plans) {
-    const role = plan.rank ? (plan.rank === "mini-boss" ? "boss" : "specialist") : pressureRoleOf(plan.type);
-    const cost = plan.rank === "elite" ? 15 : plan.rank === "mini-boss" ? 40 : ENEMY_THREAT_COST[plan.type];
+    const role = plan.rank ? (plan.rank === "mini-boss" || plan.rank === "boss" ? "boss" : "specialist") : pressureRoleOf(plan.type);
+    const cost = plan.rank === "elite" ? plan.threatCost ?? 15 : plan.rank === "mini-boss" || plan.rank === "boss" ? 40 : ENEMY_THREAT_COST[plan.type];
     counts[role] += cost;
     if (!plan.rank && role !== "boss") ordinaryCounts[role] += cost;
   }

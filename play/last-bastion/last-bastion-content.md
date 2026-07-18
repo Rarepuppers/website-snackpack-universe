@@ -657,7 +657,7 @@ One **128 × 128** tile per weapon. Existing 64 × 64 cadence motifs are legacy 
 
 ## Batch J — new enemies and telegraph decals (queued for Codex)
 
-**Status:** Design brief — 17 July 2026. Behavior gates first, per the working rules. Stats and telegraph timings are in `wave_balance.md`. **All telegraph geometry remains code-drawn and authoritative** — these decals reinforce warnings, never define them.
+**Status:** Ready for generation — behavior gates completed 18 July 2026. J1 body contracts now map to tested live family behavior and the full wave cadence; J2 timing, radius, arc, coverage, layering, major-warning, and off-screen contracts are simulation-owned and tested. **All telegraph geometry remains code-drawn and authoritative** — these decals reinforce warnings, never define them.
 
 ### J1 — new enemy bodies
 

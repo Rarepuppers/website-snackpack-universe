@@ -3,6 +3,8 @@ import type { Vector2Data } from "../math/Vector2Data";
 import { normalizeVector } from "../math/Vector2Data";
 import { HeroMotionController } from "../hero/HeroMotionController";
 import { MARINE } from "../hero/marine";
+import { experienceThreshold, marineGrowthAtLevel } from "../hero/LevelGrowth";
+import type { WeaponClass } from "../hero/HeroDefinition";
 import { ENEMY_CATALOG, type EnemyType } from "../content/enemyCatalog";
 import {
   BASTION_SERVICE_RIFLE,
@@ -83,6 +85,21 @@ import {
 } from "./AurumHoarder";
 import { initialProjectileCarry, resolveFractionalProjectiles } from "./FractionalProjectiles";
 import { scaleEnemyHealth, scaleEnemyHit, waveScaling } from "./WaveScaling";
+import type { EliteKind } from "./EliteCadence";
+export type { EliteKind } from "./EliteCadence";
+import {
+  buildRainOfSpinesTargets,
+  GROUND_SLAM_RECOVERY_SECONDS,
+  GROUND_SLAM_TELL_SECONDS,
+  limitMajorTelegraphs,
+  pointInsideTelegraphedArc,
+  RADIAL_PULSE_TELL_SECONDS,
+  rainRadiusMetres,
+  RAIN_OF_SPINES_TELL_SECONDS,
+  SWEEPING_ARC_TELL_SECONDS,
+  type CombatTelegraphSnapshot,
+} from "./TelegraphRules";
+export type { CombatTelegraphSnapshot } from "./TelegraphRules";
 
 export type EncounterStatus = "combat" | "intermission" | "victory" | "defeat";
 export type BrainPhase = "drift" | "windup" | "lunge" | "recover";
@@ -101,7 +118,6 @@ export type BastionEaterAction =
   | "tendril-windup" | "tendril" | "egg-windup" | "eggs"
   | "breach-windup" | "breach" | "recovery";
 export type EnemyRank = "standard" | "treasure" | "elite" | "mini-boss" | "boss";
-export type EliteKind = "carapace-scuttler";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
 export type MiniBossKind = "siege-crusher" | "brood-warden";
 export type SiegeCrusherPhase =
@@ -151,6 +167,7 @@ export type CombatEvent =
   | { type: "enemy-defeated"; position: Vector2Data; enemyType: EnemyType; bestiaryKey: string }
   | { type: "explosion"; position: Vector2Data; radiusMetres: number; weaponId?: WeaponId }
   | { type: "player-hit"; position: Vector2Data; damage: number }
+  | { type: "player-healed"; position: Vector2Data; amount: number }
   | { type: "xp-collected"; position: Vector2Data; value: number }
   | { type: "level-up"; level: number }
   | { type: "enemy-spawned"; position: Vector2Data; enemyType: EnemyType; bestiaryKey: string }
@@ -367,6 +384,9 @@ export interface CombatSnapshot {
   playerShield: number;
   playerMaxShield: number;
   playerArmour: number;
+  playerDamageMultiplier: number;
+  playerMoveSpeedMultiplier: number;
+  weaponProficiencies: Readonly<Record<WeaponClass, number>>;
   playerInvulnerable: boolean;
   playerEntrenched: boolean;
   evasiveReady: boolean;
@@ -386,6 +406,7 @@ export interface CombatSnapshot {
   projectiles: readonly ProjectileSnapshot[];
   enemyProjectiles: readonly EnemyProjectileSnapshot[];
   groundHazards: readonly GroundHazardSnapshot[];
+  combatTelegraphs: readonly CombatTelegraphSnapshot[];
   eliteRewards: readonly EliteRewardSnapshot[];
   pickups: readonly ExperiencePickupSnapshot[];
   powerups: readonly PowerupPickupSnapshot[];
@@ -539,6 +560,14 @@ interface GroundHazardState {
   durationSeconds: number;
 }
 
+interface RainOfSpinesState {
+  id: number;
+  ownerId: number;
+  targets: readonly Vector2Data[];
+  remainingSeconds: number;
+  damage: number;
+}
+
 interface EliteRewardState {
   id: number;
   type: "elite-upgrade-cache" | "mini-boss-arsenal-cache" | "aurum-supply-cache";
@@ -567,8 +596,10 @@ interface EquippedWeaponState extends EquippedWeapon {
   projectileCarry: number;
 }
 
-const TOTAL_WAVES = 5;
+const TOTAL_WAVES = 10;
 export const PLAYER_MAX_HEALTH = 10;
+export const PLAYER_REGEN_INTERVAL_SECONDS = 3;
+export const PLAYER_REGEN_PER_SECOND = 0.2;
 /** Authored raw hits against the Marine; exported so the no-one-shot rule is testable. */
 export const PLAYER_ATTACK_DAMAGE_BASELINES = Object.freeze({
   slimeGlob: 1.5,
@@ -677,6 +708,10 @@ export class CombatSimulation {
   private readonly heroMotion = new HeroMotionController(MARINE);
   private defence = { ...MARINE.defence };
   private moveSpeedMultiplier = 1;
+  private levelDamageMultiplier = 1;
+  private levelSpeedMultiplier = 1;
+  private supportEffectMultiplier = 1;
+  private weaponProficiencies: Record<WeaponClass, number> = { ...MARINE.weaponProficiencies };
   private readonly upgradeLevels = new Map<UpgradeId, number>();
   private readonly upgradeSlotCapacity: Record<UpgradeCategory, number> = { ...MARINE.upgradeSlots };
   private explosionSplashMultiplier = 0.5;
@@ -694,6 +729,8 @@ export class CombatSimulation {
   private fenceCooldownRemainingSeconds = 0;
   private playerPosition: Vector2Data;
   private playerHealth = PLAYER_MAX_HEALTH;
+  private playerMaxHealth = PLAYER_MAX_HEALTH;
+  private regenerationRemainingSeconds = PLAYER_REGEN_INTERVAL_SECONDS;
   private playerShield = MARINE.defence.maxShield;
   private shieldRechargeCooldownSeconds = 0;
   private playerInvulnerable = false;
@@ -711,6 +748,7 @@ export class CombatSimulation {
   private readonly friendlyProjectilePool: ProjectileState[] = [];
   private readonly hostileProjectilePool: EnemyProjectileState[] = [];
   private groundHazards: GroundHazardState[] = [];
+  private rainOfSpines: RainOfSpinesState[] = [];
   private eliteRewards: EliteRewardState[] = [];
   private powerups: PowerupPickupState[] = [];
   private readonly activeBuffs = new Map<PowerupType, number>();
@@ -836,6 +874,7 @@ export class CombatSimulation {
     this.playerHurtCooldownSeconds = Math.max(0, this.playerHurtCooldownSeconds - delta);
     this.ultimateCooldownRemainingSeconds = Math.max(0, this.ultimateCooldownRemainingSeconds - delta);
     this.updateBuffs(delta);
+    this.updateRegeneration(delta);
     this.updateShieldRecharge(delta);
     this.updateFence(intent, delta);
 
@@ -853,7 +892,7 @@ export class CombatSimulation {
       ? resolveSlowedMultiplier(SLIME_MOVEMENT_MULTIPLIER, this.defence.slowResistance)
       : 1;
     if (motionFrame.state !== "evading") {
-      movementMultiplier *= this.moveSpeedMultiplier;
+      movementMultiplier *= this.moveSpeedMultiplier * this.levelSpeedMultiplier;
       if (this.isBuffActive("adrenaline")) {
         movementMultiplier *= ADRENALINE_MOVE_MULTIPLIER;
       }
@@ -905,6 +944,7 @@ export class CombatSimulation {
     this.updateEnemies(delta);
     this.updateProjectiles(delta);
     this.updateEnemyProjectiles(delta);
+    this.updateRainOfSpines(delta);
     this.updateGroundHazards(delta);
     this.updateExperiencePickups(delta);
     this.updatePowerups(delta);
@@ -1064,21 +1104,42 @@ export class CombatSimulation {
   }
 
   spawnElite(eliteKind: EliteKind, position?: Vector2Data): number {
-    const id = this.spawnEnemy("scuttler", position);
+    const baseType: EnemyType = eliteKind === "carapace-scuttler"
+      ? "scuttler"
+      : eliteKind === "razorlord"
+        ? "razor-scuttler"
+        : eliteKind === "blightspitter"
+          ? "slime-spitter"
+          : "quillback";
+    const id = this.spawnEnemy(baseType, position);
     const enemy = this.enemies.find((candidate) => candidate.id === id)!;
     enemy.rank = "elite";
     enemy.eliteKind = eliteKind;
     this.retagLastSpawn(eliteKind);
     const scaling = waveScaling(this.waveIndex + 1, enemy.type, { elite: true });
-    enemy.maxHealth = scaleEnemyHealth(45, scaling);
+    const authoredHealth: Record<EliteKind, number> = {
+      "carapace-scuttler": 45,
+      razorlord: 30,
+      blightspitter: 40,
+      "quillback-matriarch": 50,
+    };
+    const authoredArmour: Record<EliteKind, number> = {
+      "carapace-scuttler": ENEMY_CATALOG.scuttler.armour,
+      razorlord: 1,
+      blightspitter: 1,
+      "quillback-matriarch": 2,
+    };
+    enemy.maxHealth = scaleEnemyHealth(authoredHealth[eliteKind], scaling);
     enemy.health = enemy.maxHealth;
-    enemy.armour = ENEMY_CATALOG.scuttler.armour + scaling.armourBonus;
+    enemy.armour = authoredArmour[eliteKind] + scaling.armourBonus;
     enemy.maxShield = scaling.maxShield;
     enemy.shield = scaling.maxShield;
     enemy.movementSpeedMultiplier = scaling.speedMultiplier;
     enemy.damageMultiplier = scaling.damageMultiplier;
-    enemy.carapacePhase = "pursuit";
-    enemy.carapacePhaseRemainingSeconds = 1.25;
+    if (eliteKind === "carapace-scuttler") {
+      enemy.carapacePhase = "pursuit";
+      enemy.carapacePhaseRemainingSeconds = 1.25;
+    }
     return id;
   }
 
@@ -1205,10 +1266,13 @@ export class CombatSimulation {
       totalWaves: TOTAL_WAVES,
       playerPosition: { ...this.playerPosition },
       playerHealth: this.playerHealth,
-      playerMaxHealth: PLAYER_MAX_HEALTH,
+      playerMaxHealth: this.playerMaxHealth,
       playerShield: this.playerShield,
       playerMaxShield: this.defence.maxShield,
       playerArmour: this.defence.armour,
+      playerDamageMultiplier: this.levelDamageMultiplier,
+      playerMoveSpeedMultiplier: this.levelSpeedMultiplier,
+      weaponProficiencies: { ...this.weaponProficiencies },
       playerInvulnerable: this.playerInvulnerable || this.playerHurtCooldownSeconds > 0,
       playerEntrenched: this.isPlayerEntrenched(),
       evasiveReady: this.evasiveReady,
@@ -1253,6 +1317,7 @@ export class CombatSimulation {
         remainingSeconds: hazard.remainingSeconds,
         durationSeconds: hazard.durationSeconds,
       })),
+      combatTelegraphs: this.combatTelegraphSnapshots(),
       eliteRewards: this.eliteRewards.filter((reward) => !reward.collected).map((reward) => ({
         id: reward.id,
         type: reward.type,
@@ -1436,7 +1501,7 @@ export class CombatSimulation {
   private applySupplyChoice(optionId: string): void {
     switch (optionId) {
       case "patch-up":
-        this.playerHealth = Math.min(PLAYER_MAX_HEALTH, this.playerHealth + SUPPLY_DEPOT_HEAL);
+        this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + SUPPLY_DEPOT_HEAL * this.supportEffectMultiplier);
         break;
       case "field-armoury": {
         const armoury = this.buildUpgradeDecision();
@@ -1445,12 +1510,12 @@ export class CombatSimulation {
         } else {
           // Everything is maxed; fall back to the heal so the choice
           // is never wasted.
-          this.playerHealth = Math.min(PLAYER_MAX_HEALTH, this.playerHealth + SUPPLY_DEPOT_HEAL);
+          this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + SUPPLY_DEPOT_HEAL * this.supportEffectMultiplier);
         }
         break;
       }
       case "aegis-lattice":
-        this.playerShield += AEGIS_SHIELD_AMOUNT;
+        this.playerShield += AEGIS_SHIELD_AMOUNT * this.supportEffectMultiplier;
         break;
     }
   }
@@ -1657,7 +1722,7 @@ export class CombatSimulation {
       candidates.push({ ...option, affordable: option.cost <= this.securedScrap });
     };
 
-    if (this.playerHealth < PLAYER_MAX_HEALTH) {
+    if (this.playerHealth < this.playerMaxHealth) {
       add({
         id: "shop-repair",
         name: "Field Repair",
@@ -1732,7 +1797,7 @@ export class CombatSimulation {
 
   private applyScrapShopPurchase(optionId: string): void {
     if (optionId === "shop-repair") {
-      this.playerHealth = Math.min(PLAYER_MAX_HEALTH, this.playerHealth + SCRAP_SHOP_REPAIR);
+      this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + SCRAP_SHOP_REPAIR * this.supportEffectMultiplier);
       return;
     }
     if (optionId === "shop-uranium-kit") {
@@ -1794,7 +1859,7 @@ export class CombatSimulation {
           x: direction.x * weapon.stats.projectileSpeedMetresPerSecond,
           y: direction.y * weapon.stats.projectileSpeedMetresPerSecond,
         },
-        damage: weapon.stats.projectileDamage,
+        damage: weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats.weaponClass),
         uraniumEligible: true,
         remainingSeconds: weapon.stats.projectileLifetimeSeconds,
         pierceRemaining: weapon.stats.pierceCount,
@@ -1830,7 +1895,8 @@ export class CombatSimulation {
       ) continue;
       this.damageEnemy(
         enemy,
-        weapon.stats.projectileDamage * this.currentRingWeaponDamageMultiplier(),
+        weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats.weaponClass)
+          * this.currentPowerupDamageMultiplier(),
         weapon.stats.damageType,
       );
       if (!enemy.dead && weapon.stats.knockbackMetres > 0) {
@@ -1979,8 +2045,12 @@ export class CombatSimulation {
       * (this.isBuffActive("overcharge") ? OVERCHARGE_ATTACK_SPEED_MULTIPLIER : 1);
   }
 
-  private currentRingWeaponDamageMultiplier(): number {
+  private currentPowerupDamageMultiplier(): number {
     return this.isBuffActive("uranium-core-rounds") ? URANIUM_CORE_ROUNDS_DAMAGE_MULTIPLIER : 1;
+  }
+
+  private weaponDamageMultiplier(weaponClass: WeaponClass): number {
+    return this.levelDamageMultiplier * (1 + this.weaponProficiencies[weaponClass] * 0.04);
   }
 
   private isBuffActive(type: PowerupType): boolean {
@@ -1996,6 +2066,19 @@ export class CombatSimulation {
         this.activeBuffs.set(type, next);
       }
     }
+  }
+
+  private updateRegeneration(deltaSeconds: number): void {
+    this.regenerationRemainingSeconds -= deltaSeconds;
+    if (this.regenerationRemainingSeconds > 0) return;
+    this.regenerationRemainingSeconds += PLAYER_REGEN_INTERVAL_SECONDS;
+    if (this.playerHealth >= this.playerMaxHealth) return;
+    const amount = Math.min(
+      PLAYER_REGEN_PER_SECOND * PLAYER_REGEN_INTERVAL_SECONDS * this.supportEffectMultiplier,
+      this.playerMaxHealth - this.playerHealth,
+    );
+    this.playerHealth += amount;
+    this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount });
   }
 
   private updateShieldRecharge(deltaSeconds: number): void {
@@ -2075,7 +2158,7 @@ export class CombatSimulation {
         this.damageEnemy(
           enemy,
           projectile.damage * damageMultiplier * (
-            projectile.uraniumEligible ? this.currentRingWeaponDamageMultiplier() : 1
+            projectile.uraniumEligible ? this.currentPowerupDamageMultiplier() : 1
           ),
           projectile.damageType,
         );
@@ -2198,6 +2281,9 @@ export class CombatSimulation {
         case "scuttler":
           if (enemy.eliteKind === "carapace-scuttler") this.updateCarapaceScuttler(enemy, deltaSeconds);
           else this.moveEnemyTowardPlayer(enemy, ENEMY_CATALOG.scuttler.movementSpeedMetresPerSecond, deltaSeconds);
+          break;
+        case "swarm-scuttler":
+          this.moveEnemyTowardPlayer(enemy, ENEMY_CATALOG["swarm-scuttler"].movementSpeedMetresPerSecond, deltaSeconds);
           break;
         case "egg-cluster":
           this.updateEggCluster(enemy, deltaSeconds);
@@ -2561,6 +2647,10 @@ export class CombatSimulation {
   private updateRazorScuttler(enemy: EnemyState, deltaSeconds: number): void {
     enemy.razorScuttlerPhaseRemainingSeconds -= deltaSeconds;
     const playerDistance = distance(enemy.position, this.playerPosition);
+    const pursuitSpeed = enemy.eliteKind === "razorlord"
+      ? 4.6
+      : ENEMY_CATALOG["razor-scuttler"].movementSpeedMetresPerSecond;
+    const dashSpeed = enemy.eliteKind === "razorlord" ? 11 : RAZOR_SCUTTLER_DASH_SPEED;
     switch (enemy.razorScuttlerPhase) {
       case "pursuit": {
         const towardPlayer = normalizeVector({
@@ -2569,9 +2659,9 @@ export class CombatSimulation {
         });
         enemy.facingDirection = towardPlayer;
         if (playerDistance < RAZOR_SCUTTLER_MIN_DASH_RANGE) {
-          this.moveEnemy(enemy, { x: -towardPlayer.x, y: -towardPlayer.y }, ENEMY_CATALOG["razor-scuttler"].movementSpeedMetresPerSecond, deltaSeconds);
+          this.moveEnemy(enemy, { x: -towardPlayer.x, y: -towardPlayer.y }, pursuitSpeed, deltaSeconds);
         } else if (playerDistance > RAZOR_SCUTTLER_MAX_DASH_RANGE) {
-          this.moveEnemy(enemy, towardPlayer, ENEMY_CATALOG["razor-scuttler"].movementSpeedMetresPerSecond, deltaSeconds);
+          this.moveEnemy(enemy, towardPlayer, pursuitSpeed, deltaSeconds);
         }
         if (
           enemy.razorScuttlerPhaseRemainingSeconds <= 0
@@ -2604,8 +2694,8 @@ export class CombatSimulation {
       case "dash": {
         const radius = ENEMY_CATALOG["razor-scuttler"].radiusMetres;
         const desired = {
-          x: enemy.position.x + enemy.razorScuttlerDirection.x * RAZOR_SCUTTLER_DASH_SPEED * deltaSeconds,
-          y: enemy.position.y + enemy.razorScuttlerDirection.y * RAZOR_SCUTTLER_DASH_SPEED * deltaSeconds,
+          x: enemy.position.x + enemy.razorScuttlerDirection.x * dashSpeed * deltaSeconds,
+          y: enemy.position.y + enemy.razorScuttlerDirection.y * dashSpeed * deltaSeconds,
         };
         const hitBoundary = desired.x <= radius || desired.x >= this.widthMetres - radius
           || desired.y <= radius || desired.y >= this.heightMetres - radius;
@@ -2614,7 +2704,7 @@ export class CombatSimulation {
           this.enterRazorScuttlerRecovery(enemy, "cover", 1.4);
           break;
         }
-        this.moveEnemy(enemy, enemy.razorScuttlerDirection, RAZOR_SCUTTLER_DASH_SPEED, deltaSeconds);
+        this.moveEnemy(enemy, enemy.razorScuttlerDirection, dashSpeed, deltaSeconds);
         if (
           !enemy.razorScuttlerHitPlayer
           && distance(enemy.position, this.playerPosition) <= radius + PLAYER_RADIUS_METRES + 0.12
@@ -2673,7 +2763,7 @@ export class CombatSimulation {
           const slamFrequency = enrageTier === 2 ? 2 : 3;
           if (enrageTier >= 1 && enemy.siegeCrusherAttackCount % slamFrequency === 0) {
             enemy.siegeCrusherPhase = "slam-windup";
-            enemy.siegeCrusherPhaseRemainingSeconds = enrageTier === 2 ? 0.42 : 0.58;
+            enemy.siegeCrusherPhaseRemainingSeconds = GROUND_SLAM_TELL_SECONDS;
           } else if (playerDistance > 3.4) {
             enemy.siegeCrusherDirection = { ...enemy.facingDirection };
             enemy.siegeCrusherPhase = "charge-windup";
@@ -2755,7 +2845,7 @@ export class CombatSimulation {
       case "slam":
         if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
           enemy.siegeCrusherPhase = "recovery";
-          enemy.siegeCrusherPhaseRemainingSeconds = recoverySeconds;
+          enemy.siegeCrusherPhaseRemainingSeconds = GROUND_SLAM_RECOVERY_SECONDS;
         }
         break;
       case "recovery":
@@ -2798,8 +2888,9 @@ export class CombatSimulation {
             enemy.broodWardenPhase = "rush-windup";
             enemy.broodWardenPhaseRemainingSeconds = enrageTier === 2 ? 0.4 : 0.55;
           } else if (playerDistance <= 2.8 && enemy.broodWardenAttackCount % 3 === 1) {
+            enemy.broodWardenDirection = { ...enemy.facingDirection };
             enemy.broodWardenPhase = "cleave-windup";
-            enemy.broodWardenPhaseRemainingSeconds = [0.58, 0.48, 0.38][enrageTier]!;
+            enemy.broodWardenPhaseRemainingSeconds = SWEEPING_ARC_TELL_SECONDS;
           } else if (enemy.broodWardenAttackCount % 3 === 2) {
             enemy.broodWardenPhase = "acid-windup";
             enemy.broodWardenPhaseRemainingSeconds = [0.7, 0.58, 0.46][enrageTier]!;
@@ -2815,7 +2906,13 @@ export class CombatSimulation {
           enemy.broodWardenPhase = "cleave";
           enemy.broodWardenPhaseRemainingSeconds = 0.25;
           this.frameEvents.push({ type: "brood-cleave", position: { ...enemy.position }, radiusMetres });
-          if (playerDistance <= radiusMetres + PLAYER_RADIUS_METRES) {
+          if (pointInsideTelegraphedArc(
+            enemy.position,
+            enemy.broodWardenDirection,
+            this.playerPosition,
+            radiusMetres + PLAYER_RADIUS_METRES,
+            Math.PI / 3,
+          )) {
             this.damagePlayer(this.scaledEnemyDamage(enemy, [
               PLAYER_ATTACK_DAMAGE_BASELINES.broodCleave,
               PLAYER_ATTACK_DAMAGE_BASELINES.broodCleaveEnraged,
@@ -3194,7 +3291,8 @@ export class CombatSimulation {
         break;
       case "windup":
         if (enemy.quillbackPhaseRemainingSeconds <= 0) {
-          this.launchQuillbackVolley(enemy);
+          if (enemy.eliteKind === "quillback-matriarch") this.beginRainOfSpines(enemy);
+          else this.launchQuillbackVolley(enemy);
           enemy.quillbackAttackCount += 1;
           enemy.quillbackPhase = "recover";
           enemy.quillbackPhaseRemainingSeconds = enemy.quillbackShotCount === 1
@@ -3544,6 +3642,90 @@ export class CombatSimulation {
     this.groundHazards = this.groundHazards.filter((hazard) => hazard.remainingSeconds > 0);
   }
 
+  private beginRainOfSpines(enemy: EnemyState): void {
+    this.rainOfSpines.push({
+      id: this.nextId(),
+      ownerId: enemy.id,
+      targets: buildRainOfSpinesTargets(this.playerPosition, this.widthMetres, this.heightMetres),
+      remainingSeconds: RAIN_OF_SPINES_TELL_SECONDS,
+      damage: this.scaledEnemyDamage(enemy, PLAYER_ATTACK_DAMAGE_BASELINES.quillbackSpike * 1.5),
+    });
+  }
+
+  private updateRainOfSpines(deltaSeconds: number): void {
+    for (const rain of this.rainOfSpines) {
+      rain.remainingSeconds -= deltaSeconds;
+      if (rain.remainingSeconds > 0) continue;
+      if (rain.targets.some((target) => distance(target, this.playerPosition) <= rainRadiusMetres() + PLAYER_RADIUS_METRES)) {
+        this.damagePlayer(rain.damage);
+      }
+      this.frameEvents.push({
+        type: "mini-boss-shockwave",
+        position: { ...rain.targets[0]! },
+        radiusMetres: rainRadiusMetres(),
+      });
+    }
+    this.rainOfSpines = this.rainOfSpines.filter((rain) => rain.remainingSeconds > 0);
+  }
+
+  private combatTelegraphSnapshots(): readonly CombatTelegraphSnapshot[] {
+    const telegraphs: CombatTelegraphSnapshot[] = [];
+    for (const enemy of this.enemies) {
+      if (enemy.dead) continue;
+      if (enemy.siegeCrusherPhase === "slam-windup") {
+        telegraphs.push({
+          id: `slam-${enemy.id}`,
+          groupId: `slam-${enemy.id}`,
+          kind: "ground-slam",
+          origin: { ...enemy.position },
+          radiusMetres: enemy.health / enemy.maxHealth <= 0.2 ? 4 : 3.4,
+          remainingSeconds: enemy.siegeCrusherPhaseRemainingSeconds,
+          durationSeconds: GROUND_SLAM_TELL_SECONDS,
+          major: true,
+        });
+      }
+      if (enemy.broodWardenPhase === "cleave-windup") {
+        telegraphs.push({
+          id: `cleave-${enemy.id}`,
+          groupId: `cleave-${enemy.id}`,
+          kind: "sweeping-arc",
+          origin: { ...enemy.position },
+          direction: { ...enemy.broodWardenDirection },
+          radiusMetres: enemy.health / enemy.maxHealth <= 0.2 ? 3 : enemy.health / enemy.maxHealth <= 0.55 ? 2.75 : 2.5,
+          halfArcRadians: Math.PI / 3,
+          remainingSeconds: enemy.broodWardenPhaseRemainingSeconds,
+          durationSeconds: SWEEPING_ARC_TELL_SECONDS,
+          major: true,
+        });
+      }
+      if (enemy.type === "brain-blob" && enemy.brainPhase === "windup") {
+        telegraphs.push({
+          id: `pulse-${enemy.id}`,
+          groupId: `pulse-${enemy.id}`,
+          kind: "radial-pulse",
+          origin: { ...enemy.position },
+          radiusMetres: 1.15,
+          remainingSeconds: enemy.brainPhaseRemainingSeconds,
+          durationSeconds: RADIAL_PULSE_TELL_SECONDS,
+          major: false,
+        });
+      }
+    }
+    for (const rain of this.rainOfSpines) {
+      rain.targets.forEach((target, index) => telegraphs.push({
+        id: `rain-${rain.id}-${index}`,
+        groupId: `rain-${rain.id}`,
+        kind: "rain-of-spines",
+        origin: { ...target },
+        radiusMetres: rainRadiusMetres(),
+        remainingSeconds: rain.remainingSeconds,
+        durationSeconds: RAIN_OF_SPINES_TELL_SECONDS,
+        major: true,
+      }));
+    }
+    return limitMajorTelegraphs(telegraphs);
+  }
+
   private isPlayerSlowed(): boolean {
     return this.groundHazards.some((hazard) => (
       distance(hazard.position, this.playerPosition) <= hazard.radiusMetres + PLAYER_RADIUS_METRES * 0.35
@@ -3576,7 +3758,13 @@ export class CombatSimulation {
       ? towardPlayer
       : { x: -towardPlayer.x, y: -towardPlayer.y };
     const direction = blendSteering(desired, this.enemySeparation(enemy), profile.separationWeight);
-    this.moveEnemy(enemy, direction, definition.movementSpeedMetresPerSecond * (intent < 0 ? 1.15 : 1), deltaSeconds);
+    this.moveEnemy(enemy, direction, this.baseEnemyMovementSpeed(enemy) * (intent < 0 ? 1.15 : 1), deltaSeconds);
+  }
+
+  private baseEnemyMovementSpeed(enemy: EnemyState): number {
+    if (enemy.eliteKind === "razorlord") return 4.6;
+    if (enemy.eliteKind === "blightspitter") return 2.4;
+    return ENEMY_CATALOG[enemy.type].movementSpeedMetresPerSecond;
   }
 
   private enemySeparation(enemy: EnemyState): Vector2Data {
@@ -3744,7 +3932,7 @@ export class CombatSimulation {
 
   private applyPowerup(type: PowerupType): void {
     if (type === "aegis") {
-      this.playerShield += AEGIS_SHIELD_AMOUNT;
+      this.playerShield += AEGIS_SHIELD_AMOUNT * this.supportEffectMultiplier;
       return;
     }
     this.activeBuffs.set(
@@ -3776,7 +3964,7 @@ export class CombatSimulation {
         const decision = this.buildSupplyDepotDecision();
         this.decisionQueue.push({ ...decision, title: "AURUM SUPPLY CACHE — CHOOSE ONE" });
       } else if (reward.type === "mini-boss-arsenal-cache") {
-        this.playerHealth = Math.min(PLAYER_MAX_HEALTH, this.playerHealth + 3);
+        this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + 3 * this.supportEffectMultiplier);
         this.addExperience(this.experienceThreshold() * 2);
       } else {
         // Elite caches are the run's slot income: choose which category
@@ -3974,7 +4162,9 @@ export class CombatSimulation {
         miniBossKind: enemy.miniBossKind,
       });
     }
-    const experienceValue = ENEMY_CATALOG[enemy.type].experienceValue;
+    const experienceValue = enemy.eliteKind
+      ? (enemy.eliteKind === "razorlord" || enemy.eliteKind === "blightspitter" ? 30 : 25)
+      : enemy.miniBossKind ? 60 : ENEMY_CATALOG[enemy.type].experienceValue;
     if (experienceValue > 0) {
       this.pickups.push({
         id: this.nextId(),
@@ -4037,9 +4227,11 @@ export class CombatSimulation {
       }
       const spawn = this.spawnQueue.shift()!;
       if (spawn.rank === "elite") {
-        this.spawnElite("carapace-scuttler");
+        this.spawnElite(spawn.eliteKind ?? "carapace-scuttler");
       } else if (spawn.rank === "mini-boss") {
         this.spawnMiniBoss(this.pickMiniBoss());
+      } else if (spawn.rank === "boss") {
+        this.spawnBastionEater();
       } else {
         this.spawnEnemy(spawn.type);
       }
@@ -4051,7 +4243,7 @@ export class CombatSimulation {
     spawn: Pick<DirectorSpawnPlan, "type" | "rank"> & Partial<Pick<DirectorSpawnPlan, "threatCost">>,
   ): void {
     const role: EnemyPressureRole = spawn.rank
-      ? (spawn.rank === "mini-boss" ? "boss" : "specialist")
+      ? (spawn.rank === "mini-boss" || spawn.rank === "boss" ? "boss" : "specialist")
       : pressureRoleOf(spawn.type);
     this.densitySpawnedThisWave += 1;
     this.waveThreatSpawned += spawn.threatCost ?? 0;
@@ -4120,12 +4312,12 @@ export class CombatSimulation {
   }
 
   private queueIntermissionReward(): void {
-    if (this.waveIndex === 0 || this.waveIndex === 2) {
+    if (this.waveIndex % 2 === 0) {
       const reward = this.buildWeaponChestDecision() ?? this.buildUpgradeDecision();
       if (reward) {
         this.decisionQueue.push(reward);
       }
-    } else if (this.waveIndex === 1 || this.waveIndex === 3) {
+    } else {
       this.decisionQueue.push(this.buildSupplyDepotDecision());
       this.decisionQueue.push(this.buildScrapShopDecision());
     }
@@ -4198,7 +4390,7 @@ export class CombatSimulation {
   }
 
   private populateScrapShopScenario(): void {
-    this.playerHealth = 55;
+    this.playerHealth = 5.5;
     this.decisionQueue.push(this.buildScrapShopDecision());
   }
 
@@ -4280,12 +4472,17 @@ export class CombatSimulation {
   }
 
   private populateBastionEaterScenario(): void {
-    const id = this.spawnEnemy("bastion-eater", { x: this.widthMetres / 2 - 7, y: this.heightMetres / 2 });
+    this.spawnBastionEater({ x: this.widthMetres / 2 - 7, y: this.heightMetres / 2 });
+  }
+
+  private spawnBastionEater(position?: Vector2Data): number {
+    const id = this.spawnEnemy("bastion-eater", position);
     const boss = this.enemies.find((enemy) => enemy.id === id)!;
     boss.rank = "boss";
     boss.bastionEaterPhase = "breach";
     boss.bastionEaterAction = "entrance";
     boss.bastionEaterActionRemainingSeconds = 1.2;
+    return id;
   }
 
   private pickMiniBoss(): MiniBossKind {
@@ -4304,6 +4501,7 @@ export class CombatSimulation {
 
     this.experience -= threshold;
     this.level += 1;
+    this.applyLevelGrowth();
     this.frameEvents.push({ type: "level-up", level: this.level });
     const decision = this.buildUpgradeDecision();
     if (decision) {
@@ -4311,8 +4509,24 @@ export class CombatSimulation {
     }
   }
 
+  private applyLevelGrowth(): void {
+    const current = marineGrowthAtLevel(this.level);
+    const previous = marineGrowthAtLevel(this.level - 1);
+    const healthGain = current.maxHealthBonus - previous.maxHealthBonus;
+    this.playerMaxHealth = PLAYER_MAX_HEALTH + current.maxHealthBonus;
+    this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + healthGain);
+    this.defence.armour += current.armourBonus - previous.armourBonus;
+    this.levelDamageMultiplier = current.damageMultiplier;
+    this.levelSpeedMultiplier = current.speedMultiplier;
+    this.supportEffectMultiplier = current.supportMultiplier;
+    for (const weaponClass of Object.keys(this.weaponProficiencies) as WeaponClass[]) {
+      this.weaponProficiencies[weaponClass] =
+        Math.round(((current.proficiencyMultiplier[weaponClass] - 1) / 0.04) * 1_000) / 1_000;
+    }
+  }
+
   private experienceThreshold(): number {
-    return this.level * 4;
+    return experienceThreshold(this.level);
   }
 
   private enemySnapshot(enemy: EnemyState): EnemySnapshot {

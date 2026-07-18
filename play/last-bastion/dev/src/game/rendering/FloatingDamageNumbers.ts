@@ -123,6 +123,27 @@ export class FloatingDamageNumbers {
     });
   }
 
+  reportHealing(amount: number, xPx: number, yPx: number, nowMs: number): void {
+    if (!(amount > 0)) return;
+    const text = this.acquire(nowMs);
+    text
+      .setText(`+${formatStat(amount)}`)
+      .setPosition(xPx, yPx)
+      .setColor("#7ed957")
+      .setScale(0.9)
+      .setAlpha(1)
+      .setVisible(true)
+      .setActive(true);
+    const record: ActiveNumber = {
+      text, enemyId: -1, spawnedAtMs: nowMs, total: amount, type: "toxic",
+    };
+    this.active.push(record);
+    this.scene.tweens.add({
+      targets: text, y: yPx - RISE_PIXELS, alpha: 0, duration: LIFETIME_MS,
+      ease: "Quad.easeOut", onComplete: () => this.release(record),
+    });
+  }
+
   private acquire(nowMs: number): Phaser.GameObjects.Text {
     const reused = this.free.pop();
     if (reused) return reused;

@@ -14,10 +14,12 @@ import {
   type CombatScenario,
   type ProjectileSnapshot,
   type CombatEvent,
+  type CombatTelegraphSnapshot,
   type PendingDecision,
   type PowerupPickupSnapshot,
   type PowerupType,
 } from "../combat/CombatSimulation";
+import { offscreenWarningPosition } from "../combat/TelegraphRules";
 import type { EquippedWeapon } from "../equipment/WeaponLoadout";
 import { clampWeaponCount } from "../equipment/WeaponLoadout";
 import { calculateWeaponRingLayout } from "../equipment/WeaponRingLayout";
@@ -90,6 +92,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly eliteArmorViews = new Map<number, Phaser.GameObjects.Triangle>();
   private readonly eliteRewardViews = new Map<number, EliteRewardView>();
   private readonly miniBossTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
+  private readonly combatTelegraphViews = new Map<string, Phaser.GameObjects.Graphics>();
   private readonly ripperTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly razorScuttlerTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly quillbackTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
@@ -288,6 +291,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncEliteArmor(snapshot.enemies);
     this.syncEliteRewards(snapshot.eliteRewards);
     this.syncMiniBossTelegraphs(snapshot.enemies);
+    this.syncCombatTelegraphs(snapshot.combatTelegraphs);
     this.syncRipperTelegraphs(snapshot.enemies);
     this.syncRazorScuttlerTelegraphs(snapshot.enemies);
     this.syncQuillbackTelegraphs(snapshot.enemies);
@@ -532,6 +536,16 @@ export class PrototypeScene extends Phaser.Scene {
         case "player-hit":
           this.shakeCamera(120, 0.006);
           this.emitAuthoredEffect(3, event.position, 180, 0.85, 1.4);
+          break;
+        case "player-healed":
+          if (this.settings.damageNumbersEnabled) {
+            this.damageNumbers.reportHealing(
+              event.amount,
+              event.position.x * PIXELS_PER_METRE,
+              event.position.y * PIXELS_PER_METRE,
+              this.time.now,
+            );
+          }
           break;
         case "xp-collected":
           this.emitAuthoredEffect(19, event.position, 130, 0.4, 0.8);
@@ -1110,12 +1124,17 @@ export class PrototypeScene extends Phaser.Scene {
 
   private styleEnemyView(view: EnemyView, enemy: EnemySnapshot): void {
     if (view instanceof Phaser.GameObjects.Sprite) {
-      view.setScale(enemy.type === "aurum-hoarder" ? 0.9 : enemy.rank === "elite" && !enemy.eliteKind ? 1.3 : 1);
+      const eliteScale = enemy.eliteKind === "quillback-matriarch" ? 1.35 : enemy.eliteKind ? 1.18 : 1;
+      view.setScale(enemy.type === "aurum-hoarder" ? 0.9 : enemy.type === "swarm-scuttler" ? 0.72 : eliteScale);
       view.setAlpha(enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup" ? 0.72 : 1);
       const status = enemy.statuses[0];
       if (enemy.type === "blast-mite" && enemy.mitePhase === "armed" && Math.floor(this.time.now / 80) % 2 === 0) {
         view.setTint(0xffffff);
       } else if (status) view.setTint(statusColor(status));
+      else if (enemy.eliteKind === "razorlord") view.setTint(0xd696ff);
+      else if (enemy.eliteKind === "blightspitter") view.setTint(0xb9f35b);
+      else if (enemy.eliteKind === "quillback-matriarch") view.setTint(0xff9a72);
+      else if (enemy.type === "swarm-scuttler") view.setTint(0xffd36b);
       else view.clearTint();
       return;
     }
@@ -1154,7 +1173,7 @@ export class PrototypeScene extends Phaser.Scene {
         : enemy.razorScuttlerDirection ?? enemy.facingDirection;
       view.setFillStyle(colors[phase])
         .setRotation(Math.atan2(direction.y, direction.x))
-        .setScale(phase === "windup" ? 1.18 : phase === "recovery" ? 0.82 : 1)
+        .setScale((phase === "windup" ? 1.18 : phase === "recovery" ? 0.82 : 1) * (enemy.eliteKind ? 1.18 : 1))
         .setAlpha(phase === "recovery" ? 0.78 : 1);
       return;
     }
@@ -1163,7 +1182,8 @@ export class PrototypeScene extends Phaser.Scene {
       const direction = enemy.quillbackDirection ?? enemy.facingDirection;
       view.setFillStyle(phaseColors[enemy.quillbackPhase ?? "positioning"])
         .setRotation(Math.atan2(direction.y, direction.x))
-        .setScale(enemy.quillbackPhase === "windup" ? 1.18 : enemy.quillbackPhase === "recover" ? 0.92 : 1);
+        .setScale((enemy.quillbackPhase === "windup" ? 1.18 : enemy.quillbackPhase === "recover" ? 0.92 : 1)
+          * (enemy.eliteKind === "quillback-matriarch" ? 1.35 : 1));
       return;
     }
     if (enemy.type === "spinewheel" && view instanceof Phaser.GameObjects.Triangle) {
@@ -1227,7 +1247,8 @@ export class PrototypeScene extends Phaser.Scene {
     if (enemy.type === "slime-spitter" && view instanceof Phaser.GameObjects.Ellipse) {
       const colors = { positioning: 0x7cab38, windup: 0xe7f36a, recover: 0x55752d } as const;
       view.setFillStyle(colors[enemy.spitterPhase ?? "positioning"]);
-      view.setScale(enemy.spitterPhase === "windup" ? healthScale * 1.12 : healthScale);
+      view.setScale((enemy.spitterPhase === "windup" ? healthScale * 1.12 : healthScale)
+        * (enemy.eliteKind === "blightspitter" ? 1.18 : 1));
     }
     if (enemy.type === "siege-crusher" && view instanceof Phaser.GameObjects.Rectangle) {
       const phaseColors: Record<string, number> = {
@@ -1660,9 +1681,7 @@ export class PrototypeScene extends Phaser.Scene {
       const y = boss.position.y * PIXELS_PER_METRE;
       if (boss.miniBossKind === "brood-warden") {
         const phase = boss.broodWardenPhase;
-        if (phase === "cleave-windup") {
-          view.lineStyle(5, 0xb9f35b, 0.82).strokeCircle(x, y, 2.5 * PIXELS_PER_METRE);
-        } else if (phase === "acid-windup") {
+        if (phase === "acid-windup") {
           const direction = boss.broodWardenDirection ?? boss.facingDirection;
           view.lineStyle(4, 0xa9e34b, 0.72);
           for (const offset of [-0.3, 0, 0.3]) {
@@ -1686,10 +1705,57 @@ export class PrototypeScene extends Phaser.Scene {
       } else if (boss.siegeCrusherPhase === "sweep-windup") {
         view.lineStyle(5, 0xff8a4c, 0.78);
         view.strokeCircle(x, y, 2.7 * PIXELS_PER_METRE);
-      } else if (boss.siegeCrusherPhase === "slam-windup") {
-        const radius = boss.health / boss.maxHealth <= 0.2 ? 4 : 3.4;
-        view.lineStyle(6, 0xffd36b, 0.82);
-        view.strokeCircle(x, y, radius * PIXELS_PER_METRE);
+      }
+    }
+  }
+
+  private syncCombatTelegraphs(telegraphs: readonly CombatTelegraphSnapshot[]): void {
+    const liveIds = new Set(telegraphs.map((telegraph) => telegraph.id));
+    this.destroyMissing(this.combatTelegraphViews, liveIds);
+    for (const telegraph of telegraphs) {
+      let view = this.combatTelegraphViews.get(telegraph.id);
+      if (!view) {
+        view = this.add.graphics().setDepth(63);
+        this.combatTelegraphViews.set(telegraph.id, view);
+      }
+      view.clear();
+      const progress = 1 - telegraph.remainingSeconds / telegraph.durationSeconds;
+      const x = telegraph.origin.x * PIXELS_PER_METRE;
+      const y = telegraph.origin.y * PIXELS_PER_METRE;
+      const radius = (telegraph.radiusMetres ?? 1) * PIXELS_PER_METRE;
+      const colour = telegraph.kind === "rain-of-spines" ? 0xff6b52
+        : telegraph.kind === "radial-pulse" ? 0xff9a72
+          : telegraph.kind === "sweeping-arc" ? 0xffc45e : 0xffd36b;
+      view.lineStyle(3 + progress * 3, colour, 0.55 + progress * 0.35);
+      if (telegraph.kind === "sweeping-arc" && telegraph.direction) {
+        const angle = Math.atan2(telegraph.direction.y, telegraph.direction.x);
+        const halfArc = telegraph.halfArcRadians ?? Math.PI / 3;
+        view.beginPath();
+        view.arc(x, y, radius, angle - halfArc, angle + halfArc, false);
+        view.strokePath();
+        view.lineBetween(x, y, x + Math.cos(angle - halfArc) * radius, y + Math.sin(angle - halfArc) * radius);
+        view.lineBetween(x, y, x + Math.cos(angle + halfArc) * radius, y + Math.sin(angle + halfArc) * radius);
+      } else if (telegraph.kind === "beam" && telegraph.direction) {
+        const length = (telegraph.lengthMetres ?? 1) * PIXELS_PER_METRE;
+        view.lineBetween(x, y, x + telegraph.direction.x * length, y + telegraph.direction.y * length);
+      } else {
+        view.strokeCircle(x, y, radius * (0.8 + progress * 0.2));
+      }
+
+      const camera = this.cameras.main.worldView;
+      const edge = offscreenWarningPosition(
+        telegraph.origin,
+        {
+          x: camera.x / PIXELS_PER_METRE,
+          y: camera.y / PIXELS_PER_METRE,
+          width: camera.width / PIXELS_PER_METRE,
+          height: camera.height / PIXELS_PER_METRE,
+        },
+      );
+      if (edge) {
+        const edgeX = edge.x * PIXELS_PER_METRE;
+        const edgeY = edge.y * PIXELS_PER_METRE;
+        view.fillStyle(colour, 0.92).fillTriangle(edgeX, edgeY - 9, edgeX + 8, edgeY + 8, edgeX - 8, edgeY + 8);
       }
     }
   }

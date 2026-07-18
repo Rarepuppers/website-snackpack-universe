@@ -3,6 +3,7 @@ import type { EnemySteeringProfileId } from "../combat/EnemySteeringProfiles";
 
 export type EnemyType =
   | "scuttler"
+  | "swarm-scuttler"
   | "egg-cluster"
   | "brain-blob"
   | "slime-spitter"
@@ -43,6 +44,15 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     movementSpeedMetresPerSecond: 2.35,
     contactDamage: 1,
     experienceValue: 1,
+  }),
+  "swarm-scuttler": enemy({
+    id: "swarm-scuttler",
+    maxHealth: 2,
+    radiusMetres: 0.34,
+    movementSpeedMetresPerSecond: 4.2,
+    contactDamage: 1,
+    experienceValue: 1,
+    steeringProfile: "rushPack",
   }),
   "egg-cluster": enemy({
     id: "egg-cluster",
@@ -100,7 +110,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     radiusMetres: 0.72,
     movementSpeedMetresPerSecond: 1.7,
     contactDamage: 1,
-    experienceValue: 4,
+    experienceValue: 6,
     armour: 2,
     steeringProfile: "pursuer",
   }),

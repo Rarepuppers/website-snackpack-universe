@@ -93,7 +93,7 @@ describe("categorized upgrade slots", () => {
 
   it("labels upgrade offers with their slot category", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false });
-    simulation.addExperience(4);
+    simulation.addExperience(10);
     const decision = simulation.snapshot().pendingDecision;
     expect(decision?.kind).toBe("upgrade");
     for (const option of decision!.options) {

@@ -195,13 +195,34 @@ describe("CombatSimulation", () => {
 
   it("offers and applies deterministic upgrade choices", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false });
-    simulation.addExperience(4);
+    simulation.addExperience(10);
 
     const choices = simulation.snapshot().pendingUpgradeChoices;
     expect(choices).toHaveLength(3);
+    expect(simulation.snapshot()).toMatchObject({
+      level: 2,
+      playerMaxHealth: 11,
+      playerArmour: 0.5,
+      playerDamageMultiplier: 1.02,
+      weaponProficiencies: { light: 1, medium: 0, heavy: 0, unique: 0 },
+    });
     expect(simulation.chooseUpgrade(choices[0]!.id)).toBe(true);
     expect(simulation.snapshot().level).toBe(2);
     expect(simulation.snapshot().pendingUpgradeChoices).toHaveLength(0);
+  });
+
+  it("regenerates baseline health on a visible three-second tick", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("blast-mite", player);
+    for (let frame = 0; frame < 12; frame += 1) simulation.step(intent(), 0.05);
+    const damagedHealth = simulation.snapshot().playerHealth;
+    let healed = false;
+    for (let frame = 0; frame < 65; frame += 1) {
+      healed ||= simulation.step(intent(), 0.05).events.some((event) => event.type === "player-healed");
+    }
+    expect(healed).toBe(true);
+    expect(simulation.snapshot().playerHealth).toBeGreaterThan(damagedHealth);
   });
 
   it("starts the deterministic first wave with Scuttlers", () => {

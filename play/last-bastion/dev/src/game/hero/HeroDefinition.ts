@@ -41,4 +41,12 @@ export interface HeroDefinition {
   upgradeSlots: Readonly<Record<UpgradeCategory, number>>;
   /** Reserved: per-class damage bonuses activate once the catalogue is wide enough to matter. */
   weaponProficiencies: Readonly<Record<WeaponClass, number>>;
+  levelGrowth: {
+    health: number;
+    armour: number;
+    damage: number;
+    speed: number;
+    supportEffect: number;
+    proficiency: Readonly<Partial<Record<WeaponClass, number>>>;
+  };
 }

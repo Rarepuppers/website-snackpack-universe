@@ -511,3 +511,13 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Added a shared fractional-projectile resolver with deterministic carry rather than random rounding. Every equipped weapon instance owns its carry, initialized from its stable instance id, including newly acquired and newly placed rack weapons.
 - Projectile firing uses the resolved integer count for centered spread while stat cards retain the authored fractional value. Positive weapons retain a one-projectile floor unless a future mechanic explicitly enables skipped shots.
 - Tests lock canonical fractional rhythms and prove duplicate weapon instances do not share a firing phase.
+
+### Task 35 — player growth, speed tiers, telegraphs, and ten-wave XP gate
+
+**Status:** Completed — 18 July 2026; Batch J1/J2 ready for generation
+
+- Added 0.2 HP/s baseline regeneration on visible three-second ticks, the complete Marine per-level health/armour/damage/speed/support package, and live class proficiency multipliers shared by projectile and melee damage.
+- Added the wave-two Swarm Scuttler pack plus live Carapace, Razorlord, Blightspitter, and Quillback Matriarch factories. Expanded Quick Drop to ten authored waves with 52/56 late caps, guaranteed wave 6–9 elites, no more than one fast elite, and the Bastion Eater finale.
+- Added code-authoritative ground-slam, rain-of-spines, sweeping-arc, beam, radial-pulse, and off-screen-warning contracts. Crusher and Warden timing/hit geometry now match their warnings; Matriarch rain uses a measured five-reticle layout below the 35% arena ceiling.
+- Retuned the quadratic XP path with rank-aware XP and a deterministic ten-wave reference trace constrained to the level 9–12 target.
+- Verification at implementation checkpoint: TypeScript and 328 tests across 41 files passed; full production build and HTTP smoke followed in the final gate.
