@@ -484,3 +484,13 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - The circular cooldown shadow remains enabled regardless of timer visibility; `?timers=0` hides numeric tile timers while preserving the radial cooldown state.
 - Retained three chroma sources, three transparent masters, prompt provenance, exact frame maps, and `normalize_event_horizon.py` under `art/production-tests/batch-l/`.
 - Acceptance evidence: transparent-alpha inspection and exact-resolution runtime-art inspection passed. The behavior gate owns aim, pull, implosion, damage, collision, and cooldown acceptance.
+
+### Task 35 — 2-damage combat rescale
+
+**Status:** Completed — 18 July 2026; per-wave scaling and timed pacing remain next
+
+- Rescaled all seven implemented weapons around the 2-damage Service Rifle anchor, including five 1-damage Scattergun pellets, decayed 3-damage Arc chains, the 5-damage Bolt, 4/2 Grenade direct/splash, 2-damage Bulwark cadence, and 4-damage Patrol Blade.
+- Moved the full live enemy roster to the authored health/armour/speed table, including 4-health Scuttlers, the 45-health Carapace elite, 600/540-health mini-bosses, and the 2,400-health Bastion Eater with simulation-owned shutters.
+- Rescaled the Marine to 10 health and converted hostile contact, ranged, detonation, elite, mini-boss, and boss attacks to the 1–5 range. Shields, heals, ultimate damage, fence damage, combustion, status buildup, Blaze, and Corrode moved in the same pass so no old-scale combat subsystem remained hidden.
+- Added a centralized hostile-attack baseline and rules tests for exactly two starter bullets per Scuttler, the five-damage one-hit ceiling, and status magnitude/buildup. Updated behavior expectations without removing their state, reward, resistance, mitigation, or timing assertions.
+- Verification: 308 tests across 34 files passed before the full production verify run.

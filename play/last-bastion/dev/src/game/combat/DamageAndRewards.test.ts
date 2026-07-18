@@ -38,10 +38,10 @@ describe("damage types, resistances, and armour", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false });
     const eggId = simulation.spawnEnemy("egg-cluster", { x: 3, y: 3 });
 
-    simulation.dealDamage(eggId, 10, "fire");
+    simulation.dealDamage(eggId, 2, "fire");
 
     const egg = simulation.snapshot().enemies.find((enemy) => enemy.id === eggId);
-    expect(egg?.health).toBeCloseTo(35 - 15);
+    expect(egg?.health).toBeCloseTo(7 - 3);
   });
 
   it("applies rare flat damage reduction per hit", () => {
@@ -51,7 +51,7 @@ describe("damage types, resistances, and armour", () => {
     simulation.dealDamage(bossId, 10, "physical");
 
     const boss = simulation.snapshot().enemies.find((enemy) => enemy.id === bossId);
-    expect(boss?.health).toBeCloseTo(3000 - 8);
+    expect(boss?.health).toBeCloseTo(600 - 8);
   });
 
   it("builds up and applies an Overload stun from shock damage", () => {
@@ -59,7 +59,7 @@ describe("damage types, resistances, and armour", () => {
     const player = simulation.snapshot().playerPosition;
     const eliteId = simulation.spawnElite("carapace-scuttler", { x: player.x + 6, y: player.y });
 
-    simulation.dealDamage(eliteId, 45, "shock");
+    simulation.dealDamage(eliteId, 8, "shock");
     const applied = simulation.snapshot();
     const elite = applied.enemies.find((enemy) => enemy.id === eliteId);
     expect(applied.events.some((event) => event.type === "status-applied" && event.status === "overload")).toBe(true);
@@ -76,7 +76,7 @@ describe("damage types, resistances, and armour", () => {
     const player = simulation.snapshot().playerPosition;
     const eliteId = simulation.spawnElite("carapace-scuttler", { x: player.x + 6, y: player.y });
 
-    simulation.dealDamage(eliteId, 42, "fire");
+    simulation.dealDamage(eliteId, 8, "fire");
     const burning = simulation.snapshot().enemies.find((enemy) => enemy.id === eliteId);
     expect(burning?.statuses).toContain("blaze");
 
@@ -96,14 +96,14 @@ describe("player shields", () => {
     const player = simulation.snapshot().playerPosition;
     simulation.spawnPowerup("aegis", { x: player.x, y: player.y });
     let snapshot = simulation.step(intent(), 0.05);
-    expect(snapshot.playerShield).toBe(25);
+    expect(snapshot.playerShield).toBe(2.5);
 
     simulation.spawnEnemy("scuttler", { x: player.x, y: player.y });
     for (let frame = 0; frame < 10; frame += 1) {
       snapshot = simulation.step(intent(), 0.05);
     }
     expect(snapshot.playerHealth).toBe(snapshot.playerMaxHealth);
-    expect(snapshot.playerShield).toBeLessThan(25);
+    expect(snapshot.playerShield).toBeLessThan(2.5);
   });
 });
 
@@ -255,7 +255,7 @@ describe("five-wave run and intermission rewards", () => {
     const depot = runUntilDecision(simulation, 700);
     expect(depot.pendingDecision?.kind).toBe("supply-depot");
     expect(simulation.chooseOption("aegis-lattice")).toBe(true);
-    expect(simulation.snapshot().playerShield).toBe(25);
+    expect(simulation.snapshot().playerShield).toBe(2.5);
     expect(simulation.snapshot().pendingDecision?.kind).toBe("scrap-shop");
     expect(simulation.chooseOption("shop-leave")).toBe(true);
   });

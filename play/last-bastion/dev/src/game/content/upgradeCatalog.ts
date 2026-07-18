@@ -103,9 +103,9 @@ export const UPGRADE_CATALOG: Readonly<Record<UpgradeId, UpgradeDefinition>> = O
     "Gain 3 more armour.",
   ]),
   "shield-capacitor": upgrade("shield-capacitor", "Shield Capacitor", "defensive", [
-    "Gain a 15-point shield that recharges out of combat.",
-    "Gain 15 more maximum shield.",
-    "Gain 15 more maximum shield.",
+    "Gain a 1.5-point shield that recharges out of combat.",
+    "Gain 1.5 more maximum shield.",
+    "Gain 1.5 more maximum shield.",
   ]),
 });
 

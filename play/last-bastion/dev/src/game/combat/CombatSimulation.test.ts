@@ -104,8 +104,8 @@ describe("CombatSimulation", () => {
     const first = snapshot.enemies.find((enemy) => enemy.id === firstId)!;
     const second = snapshot.enemies.find((enemy) => enemy.id === secondId)!;
     const third = snapshot.enemies.find((enemy) => enemy.id === thirdId)!;
-    expect(first.maxHealth - first.health).toBe(22);
-    expect(second.maxHealth - second.health).toBe(22);
+    expect(first.maxHealth - first.health).toBe(5);
+    expect(second.maxHealth - second.health).toBe(5);
     expect(third.health).toBe(third.maxHealth);
     expect(impactIndices).toEqual([1, 2]);
   });
@@ -135,7 +135,7 @@ describe("CombatSimulation", () => {
     ))).toBe(true);
     for (let frame = 0; frame < 6; frame += 1) snapshot = simulation.step(intent(), 0.05);
     const target = snapshot.enemies.find((enemy) => enemy.id === targetId)!;
-    expect(target.maxHealth - target.health).toBe(6);
+    expect(target.maxHealth - target.health).toBe(2);
   });
 
   it("detonates a Grenade Tube shell with direct and splash damage", () => {
@@ -159,8 +159,8 @@ describe("CombatSimulation", () => {
     const splash = snapshot.enemies.find((enemy) => enemy.id === splashId)!;
     const safe = snapshot.enemies.find((enemy) => enemy.id === safeId)!;
     expect(observedExplosion).toBe(true);
-    expect(direct.maxHealth - direct.health).toBe(28);
-    expect(splash.maxHealth - splash.health).toBe(14);
+    expect(direct.maxHealth - direct.health).toBe(4);
+    expect(splash.maxHealth - splash.health).toBe(2);
     expect(safe.health).toBe(safe.maxHealth);
   });
 
@@ -303,7 +303,7 @@ describe("CombatSimulation", () => {
     const elite = simulation.snapshot().enemies.find((enemy) => enemy.rank === "elite");
 
     expect(elite?.eliteKind).toBe("carapace-scuttler");
-    expect(elite?.maxHealth).toBe(70);
+    expect(elite?.maxHealth).toBe(45);
     const observed = new Set<string>();
     for (let frame = 0; frame < 80; frame += 1) {
       const current = simulation.step(intent(), 0.05).enemies
@@ -327,7 +327,7 @@ describe("CombatSimulation", () => {
     }
     const elite = snapshot.enemies.find((enemy) => enemy.eliteKind === "carapace-scuttler");
     expect(observedArmourHit).toBe(true);
-    expect(elite?.health).toBeCloseTo(67.5);
+    expect(elite?.health).toBeCloseTo(44.5);
   });
 
   it("guarantees an upgrade cache when an elite is defeated", () => {
@@ -336,9 +336,10 @@ describe("CombatSimulation", () => {
       startingWeaponCount: 12,
     });
     const player = simulation.snapshot().playerPosition;
-    simulation.spawnElite("carapace-scuttler", { x: player.x + 5, y: player.y });
-    let observedDrop = false;
+    const eliteId = simulation.spawnElite("carapace-scuttler", { x: player.x + 5, y: player.y });
+    simulation.dealDamage(eliteId, 1_000);
     let snapshot = simulation.snapshot();
+    let observedDrop = snapshot.events.some((event) => event.type === "elite-reward-dropped");
     for (let frame = 0; frame < 100 && !observedDrop; frame += 1) {
       snapshot = simulation.step(intent({ fireHeld: true }), 0.05);
       observedDrop ||= snapshot.events.some((event) => event.type === "elite-reward-dropped");
@@ -521,9 +522,10 @@ describe("CombatSimulation", () => {
   it("guarantees an arsenal cache when the Siege Crusher is defeated", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false, startingWeaponCount: 12 });
     const player = simulation.snapshot().playerPosition;
-    simulation.spawnMiniBoss("siege-crusher", { x: player.x + 5, y: player.y });
-    let observedDrop = false;
+    const bossId = simulation.spawnMiniBoss("siege-crusher", { x: player.x + 5, y: player.y });
+    simulation.dealDamage(bossId, 10_000);
     let snapshot = simulation.snapshot();
+    let observedDrop = snapshot.events.some((event) => event.type === "mini-boss-reward-dropped");
     for (let frame = 0; frame < 240 && !observedDrop; frame += 1) {
       const boss = snapshot.enemies.find((enemy) => enemy.miniBossKind === "siege-crusher");
       const dx = (boss?.position.x ?? player.x + 1) - snapshot.playerPosition.x;
@@ -844,13 +846,13 @@ describe("CombatSimulation", () => {
     expect(boss.rank).toBe("boss");
     expect(boss.bastionEaterPhase).toBe("breach");
 
-    simulation.dealDamage(boss.id, 18_000);
+    simulation.dealDamage(boss.id, 3_000);
     let snapshot = simulation.step(intent(), 0.05);
     boss = snapshot.enemies.find((enemy) => enemy.type === "bastion-eater")!;
     expect(boss.bastionEaterPhase).toBe("brood");
     expect(snapshot.events.some((event) => event.type === "bastion-eater-phase" && event.phase === "brood")).toBe(true);
 
-    simulation.dealDamage(boss.id, 14_500);
+    simulation.dealDamage(boss.id, 2_500);
     snapshot = simulation.step(intent(), 0.05);
     boss = snapshot.enemies.find((enemy) => enemy.type === "bastion-eater")!;
     expect(boss.bastionEaterPhase).toBe("last-stand");
@@ -914,7 +916,7 @@ describe("CombatSimulation", () => {
       snapshot = simulation.step(intent(), 0.05);
     }
     const impactDamage = snapshot.playerMaxHealth - snapshot.playerHealth;
-    expect(impactDamage).toBeCloseTo(12.5, 5);
+    expect(impactDamage).toBeCloseTo(2.083333, 5);
     expect(snapshot.enemies[0]?.razorScuttlerPhase).toBe("recovery");
     for (let frame = 0; frame < 10; frame += 1) snapshot = simulation.step(intent(), 0.05);
     expect(snapshot.playerMaxHealth - snapshot.playerHealth).toBeCloseTo(impactDamage, 5);

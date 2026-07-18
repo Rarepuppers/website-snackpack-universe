@@ -16,7 +16,7 @@ export const MARINE = Object.freeze({
     flatDamageReduction: 0,
     maxShield: 0,
     shieldRechargeDelaySeconds: 3,
-    shieldRechargePerSecond: 8,
+    shieldRechargePerSecond: 0.8,
     slowResistance: 0,
     attackSpeedMultiplier: 1,
     hitInvulnerabilitySeconds: 0.65,
@@ -47,7 +47,7 @@ export const MARINE = Object.freeze({
     description: "Launch an explosive volley in every direction.",
     cooldownSeconds: 24,
     projectileCount: 12,
-    projectileDamage: 18,
+    projectileDamage: 4,
     explosionRadiusMetres: 1.4,
   },
 } satisfies HeroDefinition);

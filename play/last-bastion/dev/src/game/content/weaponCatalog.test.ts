@@ -21,9 +21,10 @@ describe("weaponCatalog", () => {
     expect(WEAPON_CATALOG["bolt-carbine"].targetingMode).toBe("cursor");
     expect(WEAPON_CATALOG["bolt-carbine"].pierceCount).toBe(1);
     expect(WEAPON_CATALOG["bolt-carbine"].fireIntervalSeconds).toBe(1.8);
-    expect(WEAPON_CATALOG["bulwark-rotary-cannon"].fireIntervalSeconds).toBe(0.09);
+    expect(WEAPON_CATALOG["bulwark-rotary-cannon"].fireIntervalSeconds).toBe(0.08);
     expect(WEAPON_CATALOG["bulwark-rotary-cannon"].weaponClass).toBe("heavy");
     expect(WEAPON_CATALOG["grenade-tube"].explosionRadiusMetres).toBe(2.2);
     expect(WEAPON_CATALOG["grenade-tube"].projectileSpeedMetresPerSecond).toBe(8);
+    expect(WEAPON_CATALOG["grenade-tube"].fireIntervalSeconds).toBe(4);
   });
 });

@@ -59,7 +59,7 @@ describe("expanded upgrade catalogue", () => {
   it("grants a recharging shield with Shield Capacitor", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false });
     expect(chooseUpgradeWhenOffered(simulation, "shield-capacitor")).toBe(true);
-    expect(simulation.snapshot().playerMaxShield).toBe(15);
+    expect(simulation.snapshot().playerMaxShield).toBe(1.5);
     let snapshot = simulation.snapshot();
     for (let frame = 0; frame < 60; frame += 1) {
       snapshot = simulation.step(intent(), 0.05);
@@ -90,8 +90,8 @@ describe("Marine passive: Entrenched", () => {
       snapshot = entrenchedRun.step(intent(), 0.05);
     }
     // 10 contact damage at +3 armour → 10 × (1 − 3/18) ≈ 8.33.
-    expect(snapshot.playerHealth).toBeGreaterThan(91);
-    expect(snapshot.playerHealth).toBeLessThan(92);
+    expect(snapshot.playerHealth).toBeGreaterThan(9.1);
+    expect(snapshot.playerHealth).toBeLessThan(9.2);
   });
 
   it("disengages the moment the Marine moves", () => {

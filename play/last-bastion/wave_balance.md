@@ -4,7 +4,7 @@
 
 This is the numeric design for encounter pressure: what spawns, how tough it is, what it pays, and how all of that grows wave over wave. The durable design lives in `last-bastion-game.md`; implementation status lives in `last-bastion-model.md`. Numbers here are **proposals for the step 35 tuning pass** unless a row is marked implemented.
 
-**Status:** Draft v2 — 18 July 2026 (v1 17 July). Nothing in this document is implemented yet; the current build still uses prototype numbers (Service Rifle 10 damage, ~8–20 enemies per wave, `level × 4` XP thresholds). v2 adds the short-timed-wave pacing model, starting-health rule, elite cadence, and the weapon acquisition schedule.
+**Status:** Draft v2 — 18 July 2026 (v1 17 July). Precision/display and the single-pass combat rescale are implemented. Per-wave scaling, timed threat budgets, baseline regeneration, level packages, fractional projectiles, and XP tuning remain open. v2 adds the short-timed-wave pacing model, starting-health rule, elite cadence, and the weapon acquisition schedule.
 
 ## Design intent
 
@@ -428,7 +428,7 @@ A player who only takes damage dies to wave 7 contact volume; a player who only 
 This is a large, cross-cutting change. Suggested sequencing so nothing lands half-done:
 
 1. **Precision + display** (`formatStat`, 0.1 floor, damage numbers) — visible immediately, unblocks judging every later number. **Implemented 18 July 2026** (see `last-bastion-log.md`): shared `formatStat` round-half-up helper, mitigation floor lowered 1 → 0.1, and pooled floating damage numbers with the confirmed type colours and a `damageNumbersEnabled` setting (`?damage=0|1`).
-2. **Rescale weapons and enemies** to the 2-damage baseline in one data pass; keep existing rules tests passing by updating expected values together.
+2. **Rescale weapons and enemies** to the 2-damage baseline in one data pass; keep existing rules tests passing by updating expected values together. **Implemented 18 July 2026:** all seven weapons, the live enemy roster, elite/mini-boss/boss durability, status magnitudes and buildup, Marine health, hostile attacks, shields, healing, ultimate damage, and combat hazards now share the 2-damage / 10-health scale. Dedicated rules tests lock the two-bullet Scuttler and five-damage hit ceiling.
 3. **Per-wave scaling** table + threat-budget spawner with caps and the timer-based wave end.
 4. **Fractional projectiles** helper (shared accumulator).
 5. **Level packages** + live `weaponProficiencies`.

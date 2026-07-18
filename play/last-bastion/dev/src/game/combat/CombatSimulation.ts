@@ -549,15 +549,38 @@ interface EquippedWeaponState extends EquippedWeapon {
 }
 
 const TOTAL_WAVES = 5;
-const PLAYER_MAX_HEALTH = 100;
+export const PLAYER_MAX_HEALTH = 10;
+/** Authored raw hits against the Marine; exported so the no-one-shot rule is testable. */
+export const PLAYER_ATTACK_DAMAGE_BASELINES = Object.freeze({
+  slimeGlob: 1.5,
+  quillbackSpike: 1.2,
+  razorDash: 2.5,
+  spinewheelRoll: 2.8,
+  blastMiteExplosion: 3,
+  ripperSweep: 3,
+  crusherCharge: 3.5,
+  crusherSweep: 4,
+  crusherSweepEnraged: 4.5,
+  crusherSweepLastStand: 5,
+  crusherSlam: 4.4,
+  crusherSlamLastStand: 5,
+  broodCleave: 3,
+  broodCleaveEnraged: 4,
+  broodCleaveLastStand: 5,
+  broodAcid: 1.6,
+  bastionEaterClaw: 5,
+  bastionEaterTendril: 4,
+  bastionEaterTendrilLastStand: 5,
+  bastionEaterBreach: 5,
+} as const);
 const PLAYER_RADIUS_METRES = 0.55;
 const INTERMISSION_SECONDS = 2;
 const MAX_SLOWING_PUDDLES = 5;
 const SLOWING_PUDDLE_DURATION_SECONDS = 4;
 const SLOWING_PUDDLE_RADIUS_METRES = 1.25;
 const SLIME_MOVEMENT_MULTIPLIER = 0.55;
-const SLIME_GLOB_DAMAGE = 8;
-const QUILLBACK_SPIKE_DAMAGE = 7;
+const SLIME_GLOB_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.slimeGlob;
+const QUILLBACK_SPIKE_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.quillbackSpike;
 const QUILLBACK_PROJECTILE_SPEED = 7.5;
 const QUILLBACK_PROJECTILE_RANGE_METRES = 11;
 const QUILLBACK_FAN_ARC_RADIANS = Math.PI * 64 / 180;
@@ -565,20 +588,20 @@ export const RAZOR_SCUTTLER_WINDUP_SECONDS = 0.48;
 export const RAZOR_SCUTTLER_DASH_SPEED = 9.5;
 export const RAZOR_SCUTTLER_DASH_SECONDS = 0.55;
 export const RAZOR_SCUTTLER_RECOVERY_SECONDS = 1.15;
-const RAZOR_SCUTTLER_DASH_DAMAGE = 15;
+const RAZOR_SCUTTLER_DASH_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.razorDash;
 const RAZOR_SCUTTLER_MIN_DASH_RANGE = 2.6;
 const RAZOR_SCUTTLER_MAX_DASH_RANGE = 7.5;
 export const SPINEWHEEL_BASE_ROLL_SPEED = 7;
 export const SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER = 0.85;
 export const SPINEWHEEL_MAX_REBOUNDS = 2;
 export const SPINEWHEEL_REPEAT_HIT_LOCKOUT_SECONDS = 0.75;
-const SPINEWHEEL_ROLL_DAMAGE = 14;
+const SPINEWHEEL_ROLL_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.spinewheelRoll;
 const SPINEWHEEL_WINDUP_SECONDS = 0.7;
 const SPINEWHEEL_MAX_ROLL_SECONDS = 3.2;
 const SPINEWHEEL_RECOVERY_SECONDS = 1.5;
 export const TETHER_BLOOM_ACQUISITION_RANGE_METRES = 3.5;
 export const TETHER_BLOOM_HARD_RANGE_METRES = 5;
-export const TETHER_BLOOM_BREAK_DAMAGE = 28;
+export const TETHER_BLOOM_BREAK_DAMAGE = 6;
 const TETHER_BLOOM_WINDUP_SECONDS = 0.7;
 const TETHER_BLOOM_DURATION_SECONDS = 1.8;
 const TETHER_BLOOM_PULL_SPEED_METRES_PER_SECOND = 1.15;
@@ -588,14 +611,14 @@ const POWERUP_COLLECT_RADIUS_METRES = 0.7;
 const OVERCHARGE_ATTACK_SPEED_MULTIPLIER = 1.6;
 const ADRENALINE_MOVE_MULTIPLIER = 1.35;
 const MAGNET_PULSE_MULTIPLIER = 2.5;
-const AEGIS_SHIELD_AMOUNT = 25;
+const AEGIS_SHIELD_AMOUNT = 2.5;
 export const URANIUM_CORE_ROUNDS_DURATION_SECONDS = 12;
 export const URANIUM_CORE_ROUNDS_DAMAGE_MULTIPLIER = 1.25;
 const BLAST_MITE_EXPLOSION_RADIUS_METRES = 1.6;
-const BLAST_MITE_EXPLOSION_DAMAGE = 16;
+const BLAST_MITE_EXPLOSION_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.blastMiteExplosion;
 const COMBUSTION_RADIUS_METRES = 1.3;
-const COMBUSTION_DAMAGE = 12;
-const SUPPLY_DEPOT_HEAL = 45;
+const COMBUSTION_DAMAGE = 2.5;
+const SUPPLY_DEPOT_HEAL = 4.5;
 export const SCRAP_SHOP_PRICES = Object.freeze({
   uraniumKit: 35,
   fieldRepair: 40,
@@ -603,12 +626,12 @@ export const SCRAP_SHOP_PRICES = Object.freeze({
   armourRetrofit: 50,
   weapon: 60,
 } as const);
-const SCRAP_SHOP_REPAIR = 35;
+const SCRAP_SHOP_REPAIR = 3.5;
 const SCRAP_SHOP_ARMOUR = 3;
 const ORDINARY_SCRAP_DROP_CHANCE = 0.25;
 const FENCE_ACTIVE_SECONDS = 6;
 const FENCE_COOLDOWN_SECONDS = 18;
-const FENCE_DAMAGE_PER_SECOND = 22;
+const FENCE_DAMAGE_PER_SECOND = 4.4;
 const FENCE_CONTACT_RANGE_METRES = 0.6;
 const FENCE_SWITCH_RANGE_METRES = 1.4;
 const ULTIMATE_PROJECTILE_SPEED = 12;
@@ -1013,7 +1036,7 @@ export class CombatSimulation {
     enemy.rank = "elite";
     enemy.eliteKind = eliteKind;
     this.retagLastSpawn(eliteKind);
-    enemy.maxHealth = ENEMY_CATALOG.scuttler.maxHealth * 3.5;
+    enemy.maxHealth = 45;
     enemy.health = enemy.maxHealth;
     enemy.carapacePhase = "pursuit";
     enemy.carapacePhaseRemainingSeconds = 1.25;
@@ -1287,7 +1310,7 @@ export class CombatSimulation {
           this.modifyAllWeapons((weapon) => { weapon.damageType = "fire"; });
         } else if (level === 2) {
           this.statusTuning.buildupMultiplier.fire = 1.2;
-          this.statusTuning.blazeBonusDamagePerSecond = 4;
+          this.statusTuning.blazeBonusDamagePerSecond = 0.3;
         } else {
           this.statusTuning.combustionOnDeath = true;
         }
@@ -1322,7 +1345,7 @@ export class CombatSimulation {
         this.defence.armour += 3;
         break;
       case "shield-capacitor":
-        this.defence.maxShield += 15;
+        this.defence.maxShield += 1.5;
         break;
     }
   }
@@ -2453,7 +2476,7 @@ export class CombatSimulation {
             this.playerPosition,
             reachMetres + PLAYER_RADIUS_METRES,
           )) {
-            this.damagePlayer(18);
+            this.damagePlayer(PLAYER_ATTACK_DAMAGE_BASELINES.ripperSweep);
           }
         }
         break;
@@ -2639,7 +2662,11 @@ export class CombatSimulation {
             radiusMetres,
           });
           if (playerDistance <= radiusMetres + PLAYER_RADIUS_METRES) {
-            this.damagePlayer([24, 28, 34][enrageTier]!);
+            this.damagePlayer([
+              PLAYER_ATTACK_DAMAGE_BASELINES.crusherSweep,
+              PLAYER_ATTACK_DAMAGE_BASELINES.crusherSweepEnraged,
+              PLAYER_ATTACK_DAMAGE_BASELINES.crusherSweepLastStand,
+            ][enrageTier]!);
           }
         }
         break;
@@ -2656,7 +2683,9 @@ export class CombatSimulation {
           this.emitCrusherShockwave(
             enemy.position,
             enrageTier === 2 ? 4 : 3.4,
-            enrageTier === 2 ? 30 : 22,
+            enrageTier === 2
+              ? PLAYER_ATTACK_DAMAGE_BASELINES.crusherSlamLastStand
+              : PLAYER_ATTACK_DAMAGE_BASELINES.crusherSlam,
           );
         }
         break;
@@ -2724,7 +2753,11 @@ export class CombatSimulation {
           enemy.broodWardenPhaseRemainingSeconds = 0.25;
           this.frameEvents.push({ type: "brood-cleave", position: { ...enemy.position }, radiusMetres });
           if (playerDistance <= radiusMetres + PLAYER_RADIUS_METRES) {
-            this.damagePlayer([20, 25, 31][enrageTier]!);
+            this.damagePlayer([
+              PLAYER_ATTACK_DAMAGE_BASELINES.broodCleave,
+              PLAYER_ATTACK_DAMAGE_BASELINES.broodCleaveEnraged,
+              PLAYER_ATTACK_DAMAGE_BASELINES.broodCleaveLastStand,
+            ][enrageTier]!);
           }
         }
         break;
@@ -2797,7 +2830,7 @@ export class CombatSimulation {
         velocity: { x: direction.x * speed, y: direction.y * speed },
         target: projectileTarget,
         remainingSeconds: distance(start, projectileTarget) / speed,
-        damage: 11,
+        damage: PLAYER_ATTACK_DAMAGE_BASELINES.broodAcid,
         createsPuddle: false,
       });
     }
@@ -2895,7 +2928,7 @@ export class CombatSimulation {
             direction: { ...enemy.bastionEaterDirection },
           });
           if (pointInsideRipperSweep(enemy.position, enemy.bastionEaterDirection, this.playerPosition, 4.4)) {
-            this.damagePlayer(phase === "last-stand" ? 34 : 27);
+            this.damagePlayer(PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterClaw);
           }
         }
         break;
@@ -2931,7 +2964,9 @@ export class CombatSimulation {
           this.frameEvents.push({ type: "bastion-eater-tendril", position: { ...enemy.position }, radiusMetres, warning: false });
           const playerDistance = distance(enemy.position, this.playerPosition);
           if (playerDistance >= 2.25 && playerDistance <= radiusMetres + PLAYER_RADIUS_METRES) {
-            this.damagePlayer(phase === "last-stand" ? 30 : 23);
+            this.damagePlayer(phase === "last-stand"
+              ? PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterTendrilLastStand
+              : PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterTendril);
           }
         }
         break;
@@ -2951,7 +2986,9 @@ export class CombatSimulation {
           enemy.bastionEaterActionRemainingSeconds = 0.3;
           const radiusMetres = 2.15;
           this.frameEvents.push({ type: "bastion-eater-breach", position: { ...enemy.bastionEaterTarget }, radiusMetres, warning: false });
-          if (distance(enemy.bastionEaterTarget, this.playerPosition) <= radiusMetres + PLAYER_RADIUS_METRES) this.damagePlayer(32);
+          if (distance(enemy.bastionEaterTarget, this.playerPosition) <= radiusMetres + PLAYER_RADIUS_METRES) {
+            this.damagePlayer(PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterBreach);
+          }
         }
         break;
       case "claw":
@@ -3011,7 +3048,11 @@ export class CombatSimulation {
     });
   }
 
-  private emitCrusherShockwave(position: Vector2Data, radiusMetres = 2.2, damage = 16): void {
+  private emitCrusherShockwave(
+    position: Vector2Data,
+    radiusMetres = 2.2,
+    damage: number = PLAYER_ATTACK_DAMAGE_BASELINES.crusherCharge,
+  ): void {
     this.frameEvents.push({ type: "mini-boss-shockwave", position: { ...position }, radiusMetres });
     if (distance(position, this.playerPosition) <= radiusMetres + PLAYER_RADIUS_METRES) {
       this.damagePlayer(damage);
@@ -3667,7 +3708,7 @@ export class CombatSimulation {
         const decision = this.buildSupplyDepotDecision();
         this.decisionQueue.push({ ...decision, title: "AURUM SUPPLY CACHE — CHOOSE ONE" });
       } else if (reward.type === "mini-boss-arsenal-cache") {
-        this.playerHealth = Math.min(PLAYER_MAX_HEALTH, this.playerHealth + 30);
+        this.playerHealth = Math.min(PLAYER_MAX_HEALTH, this.playerHealth + 3);
         this.addExperience(this.experienceThreshold() * 2);
       } else {
         // Elite caches are the run's slot income: choose which category

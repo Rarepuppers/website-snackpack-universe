@@ -107,9 +107,9 @@ describe("leveled upgrade system", () => {
     }
 
     const health = (id: number) => snapshot.enemies.find((enemy) => enemy.id === id)!.health;
-    const directLoss = 35 - health(firstId);
-    const firstBounceLoss = 35 - health(secondId);
-    const secondBounceLoss = 35 - health(thirdId);
+    const directLoss = 7 - health(firstId);
+    const firstBounceLoss = 7 - health(secondId);
+    const secondBounceLoss = 7 - health(thirdId);
     expect(directLoss).toBeGreaterThan(firstBounceLoss);
     expect(firstBounceLoss).toBeGreaterThan(secondBounceLoss);
     expect(secondBounceLoss).toBeGreaterThan(0);
@@ -129,7 +129,7 @@ describe("leveled upgrade system", () => {
     const snapshot = simulation.snapshot();
     expect(snapshot.events.filter((event) => event.type === "explosion").length).toBeGreaterThan(0);
     const bystander = snapshot.enemies.find((enemy) => enemy.id === bystanderId);
-    expect(bystander!.health).toBeLessThan(35);
+    expect(bystander!.health).toBeLessThan(7);
   });
 
   it("freezes harder and longer at Cryo Coating level three", () => {
@@ -138,7 +138,7 @@ describe("leveled upgrade system", () => {
 
     const player = simulation.snapshot().playerPosition;
     const eliteId = simulation.spawnElite("carapace-scuttler", { x: player.x + 8, y: player.y });
-    simulation.dealDamage(eliteId, 45, "cryo");
+    simulation.dealDamage(eliteId, 8, "cryo");
     const frozen = simulation.snapshot().enemies.find((enemy) => enemy.id === eliteId);
     expect(frozen?.statuses).toContain("freeze");
 

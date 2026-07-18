@@ -31,12 +31,12 @@ export const STATUS_BY_DAMAGE_TYPE: Readonly<Partial<Record<DamageType, StatusEf
   toxic: "corrode",
 });
 
-export const STATUS_BUILDUP_THRESHOLD = 40;
+export const STATUS_BUILDUP_THRESHOLD = 8;
 
 export const STATUS_RULES: Readonly<Record<StatusEffectType, Readonly<StatusEffectRule>>> = Object.freeze({
   blaze: Object.freeze({
     durationSeconds: 3,
-    damagePerSecond: 7,
+    damagePerSecond: 0.5,
     speedMultiplier: 1,
     stunned: false,
     armourReduction: 0,
@@ -57,7 +57,7 @@ export const STATUS_RULES: Readonly<Record<StatusEffectType, Readonly<StatusEffe
   }),
   corrode: Object.freeze({
     durationSeconds: 4,
-    damagePerSecond: 4,
+    damagePerSecond: 0.8,
     speedMultiplier: 1,
     stunned: false,
     armourReduction: 3,

@@ -41,7 +41,7 @@ export const BASTION_SERVICE_RIFLE: Readonly<WeaponRuntimeStats> = weapon({
   fireIntervalSeconds: 0.14,
   projectileSpeedMetresPerSecond: 19,
   projectileLifetimeSeconds: 1.15,
-  projectileDamage: 10,
+  projectileDamage: 2,
 });
 
 export const SCATTERGUN: Readonly<WeaponRuntimeStats> = weapon({
@@ -56,7 +56,7 @@ export const SCATTERGUN: Readonly<WeaponRuntimeStats> = weapon({
   fireIntervalSeconds: 0.72,
   projectileSpeedMetresPerSecond: 16,
   projectileLifetimeSeconds: 0.42,
-  projectileDamage: 7,
+  projectileDamage: 1,
   projectileCount: 5,
   spreadRadians: 0.13,
   knockbackMetres: 0.55,
@@ -74,7 +74,7 @@ export const ARC_CARBINE: Readonly<WeaponRuntimeStats> = weapon({
   fireIntervalSeconds: 0.62,
   projectileSpeedMetresPerSecond: 14,
   projectileLifetimeSeconds: 0.75,
-  projectileDamage: 12,
+  projectileDamage: 3,
   chainCount: 1,
   chainRadiusMetres: 3.2,
 });
@@ -91,7 +91,7 @@ export const PATROL_BLADE: Readonly<WeaponRuntimeStats> = weapon({
   fireIntervalSeconds: 2.5,
   projectileSpeedMetresPerSecond: 0,
   projectileLifetimeSeconds: 0,
-  projectileDamage: 24,
+  projectileDamage: 4,
   knockbackMetres: 0.35,
   meleeArcRadians: Math.PI * 0.72,
   firesAutomatically: true,
@@ -109,7 +109,7 @@ export const BOLT_CARBINE: Readonly<WeaponRuntimeStats> = weapon({
   fireIntervalSeconds: 1.8,
   projectileSpeedMetresPerSecond: 12,
   projectileLifetimeSeconds: 1.5,
-  projectileDamage: 22,
+  projectileDamage: 5,
   pierceCount: 1,
 });
 
@@ -122,10 +122,10 @@ export const BULWARK_ROTARY_CANNON: Readonly<WeaponRuntimeStats> = weapon({
   targetingMode: "cursor",
   attackPattern: "projectile",
   rangeMetres: 14,
-  fireIntervalSeconds: 0.09,
+  fireIntervalSeconds: 0.08,
   projectileSpeedMetresPerSecond: 24,
   projectileLifetimeSeconds: 0.58,
-  projectileDamage: 6,
+  projectileDamage: 2,
   knockbackMetres: 0.08,
 });
 
@@ -138,10 +138,10 @@ export const GRENADE_TUBE: Readonly<WeaponRuntimeStats> = weapon({
   targetingMode: "cursor",
   attackPattern: "projectile",
   rangeMetres: 10,
-  fireIntervalSeconds: 1.6,
+  fireIntervalSeconds: 4,
   projectileSpeedMetresPerSecond: 8,
   projectileLifetimeSeconds: 1.15,
-  projectileDamage: 28,
+  projectileDamage: 4,
   explosionRadiusMetres: 2.2,
   knockbackMetres: 0.45,
 });
