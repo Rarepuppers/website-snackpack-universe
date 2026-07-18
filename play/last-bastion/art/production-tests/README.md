@@ -12,6 +12,8 @@ Production Asset Batch D1 is documented in [`batch-d/README.md`](batch-d/README.
 
 Production Asset Batch E1 is documented in [`batch-e1/README.md`](batch-e1/README.md) and contains the integrated Quillback body, individual spike projectile, launch accents, impacts, hit, and defeat effects.
 
+Production Asset Batch K is documented in [`batch-k/README.md`](batch-k/README.md) and contains the integrated persistent Blaze, Overload, Corrode, and Freeze status-overlay atlas.
+
 ## Marine base body v1
 
 - Source sheet: `marine-base-spritesheet-v1.png`
@@ -76,6 +78,6 @@ The retained `*-chroma.png` files record the generated source before background 
 
 ## Review switches
 
-Production art is enabled by default. Use `?art=placeholder` for the code-shape comparison renderer. The helmet is enabled by default; add `?helmet=0` to verify the unchanged base body without it. The existing `weapons=` parameter may be combined with either view. Use `?mode=gallery` for character/enemy/equipment frames and `?mode=gallery&batch=a|b|c|d|d2|d3|d4|e1|e2|e3|f1|f2|f3|f4` for each production batch. F1 is Patrol Blade/action UI, F2 is Bolt Carbine, F3 is Bulwark Rotary Cannon, and F4 is Grenade Tube.
+Production art is enabled by default. Use `?art=placeholder` for the code-shape comparison renderer. The helmet is enabled by default; add `?helmet=0` to verify the unchanged base body without it. The existing `weapons=` parameter may be combined with either view. Use `?mode=gallery` for character/enemy/equipment frames and `?mode=gallery&batch=a|b|c|d|d2|d3|d4|e1|e2|e3|f1|f2|f3|f4|k` for each production batch. F1 is Patrol Blade/action UI, F2 is Bolt Carbine, F3 is Bulwark Rotary Cannon, F4 is Grenade Tube, and K is the shared status-overlay family.
 
 Automated type, unit, build, asset-HTTP, and route-HTTP validation is complete. Full-resolution transparent masters and exact-resolution runtime atlases were visually inspected; creator gameplay-scale acceptance remains available through the deterministic gallery and loadout routes.

@@ -82,6 +82,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
   );
   private readonly enemyViews = new Map<number, EnemyView>();
+  private readonly enemyStatusViews = new Map<string, Phaser.GameObjects.Sprite>();
   private readonly projectileViews = new Map<number, ProjectileView>();
   private readonly enemyProjectileViews = new Map<number, EnemyProjectileView>();
   private readonly hazardViews = new Map<number, HazardView>();
@@ -275,6 +276,7 @@ export class PrototypeScene extends Phaser.Scene {
 
     this.syncWeapons(snapshot.equippedWeapons, snapshot.playerPosition, firing);
     this.syncEnemies(snapshot.enemies, snapshot.playerPosition);
+    this.syncEnemyStatusOverlays(snapshot.enemies);
     this.syncProjectiles(snapshot.projectiles);
     this.syncEnemyProjectiles(snapshot.enemyProjectiles);
     this.syncGroundHazards(snapshot.groundHazards);
@@ -334,6 +336,7 @@ export class PrototypeScene extends Phaser.Scene {
 
     for (const views of [
       this.enemyViews,
+      this.enemyStatusViews,
       this.projectileViews,
       this.enemyProjectileViews,
       this.hazardViews,
@@ -1030,6 +1033,32 @@ export class PrototypeScene extends Phaser.Scene {
         return this.add.triangle(0, 0, 0, -17, 15, 13, -15, 13, 0xff6654)
           .setStrokeStyle(3, 0x6f1d24);
     }
+  }
+
+  private syncEnemyStatusOverlays(enemies: readonly EnemySnapshot[]): void {
+    const activeKeys = new Set<string>();
+    if (!this.useMarineArt) {
+      this.destroyMissing(this.enemyStatusViews, activeKeys);
+      return;
+    }
+
+    for (const enemy of enemies) {
+      enemy.statuses.forEach((status, layer) => {
+        const key = `${enemy.id}:${status}`;
+        activeKeys.add(key);
+        let overlay = this.enemyStatusViews.get(key);
+        if (!overlay) {
+          overlay = createManifestSprite(this, "status-overlays-v1").setAlpha(0.94);
+          this.enemyStatusViews.set(key, overlay);
+        }
+        overlay
+          .setFrame(statusOverlayFrame(status, this.time.now))
+          .setPosition(enemy.position.x * PIXELS_PER_METRE, enemy.position.y * PIXELS_PER_METRE)
+          .setDepth(worldDepth(enemy.position.y) + 0.4 + layer * 0.02)
+          .setScale(Math.min(3.4, Math.max(0.88, enemy.radiusMetres * 1.8)));
+      });
+    }
+    this.destroyMissing(this.enemyStatusViews, activeKeys);
   }
 
   private styleEnemyView(view: EnemyView, enemy: EnemySnapshot): void {
@@ -1998,9 +2027,9 @@ export class PrototypeScene extends Phaser.Scene {
     this.positionDecisionOverlay();
   }
 
-  private destroyMissing<T extends Phaser.GameObjects.GameObject>(
-    views: Map<number, T>,
-    liveIds: ReadonlySet<number>,
+  private destroyMissing<K, T extends Phaser.GameObjects.GameObject>(
+    views: Map<K, T>,
+    liveIds: ReadonlySet<K>,
   ): void {
     for (const [id, view] of views) {
       if (!liveIds.has(id)) {
@@ -2132,6 +2161,16 @@ function statusColor(status: string): number {
   }
 }
 
+function statusOverlayFrame(status: string, nowMilliseconds: number): number {
+  switch (status) {
+    case "blaze": return Math.floor(nowMilliseconds / 90) % 4;
+    case "overload": return 4 + Math.floor(nowMilliseconds / 72) % 4;
+    case "corrode": return 8 + Math.floor(nowMilliseconds / 260) % 4;
+    case "freeze": return 12 + Math.floor(nowMilliseconds / 420) % 3;
+    default: return 15;
+  }
+}
+
 function powerupColor(type: PowerupType): number {
   switch (type) {
     case "overcharge": return 0xffa31a;
@@ -2198,7 +2237,7 @@ function applyManifestOrigin(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

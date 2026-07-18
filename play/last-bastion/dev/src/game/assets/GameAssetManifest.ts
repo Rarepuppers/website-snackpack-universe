@@ -51,6 +51,7 @@ import bulwarkRotarySheetUrl from "../../../../art/production-tests/batch-f3/bul
 import bulwarkRotaryEffectUrl from "../../../../art/production-tests/batch-f3/bulwark-rotary-cannon-effect-atlas-v1-64.png";
 import grenadeTubeSheetUrl from "../../../../art/production-tests/batch-f4/grenade-tube-spritesheet-v1-96.png";
 import grenadeTubeEffectUrl from "../../../../art/production-tests/batch-f4/grenade-tube-effect-atlas-v1-64.png";
+import statusOverlaySheetUrl from "../../../../art/production-tests/batch-k/status-effect-overlay-atlas-v1-48.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -105,7 +106,8 @@ export type GameAssetId =
   | "bulwark-rotary-cannon-v1"
   | "bulwark-rotary-effects-v1"
   | "grenade-tube-v1"
-  | "grenade-tube-effects-v1";
+  | "grenade-tube-effects-v1"
+  | "status-overlays-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -182,6 +184,7 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("bulwark-rotary-effects-v1", bulwarkRotaryEffectUrl, 64, 64, 8, 0.5, 0.5),
   sheet("grenade-tube-v1", grenadeTubeSheetUrl, 96, 96, 4, 0.18, 0.5),
   sheet("grenade-tube-effects-v1", grenadeTubeEffectUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("status-overlays-v1", statusOverlaySheetUrl, 48, 48, 16, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(

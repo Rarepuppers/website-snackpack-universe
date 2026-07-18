@@ -398,3 +398,13 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - **Floating damage numbers** (`dev/src/game/rendering/FloatingDamageNumbers.ts`): pooled Phaser text, ~40 live cap with oldest-recycled, and a per-enemy 100 ms merge window so a multi-projectile burst reads as one growing total instead of burying the arena in text. The merge/cap decision is the pure, unit-tested `findMergeIndex` helper; the `enemy-hit` frame event now carries `damage`, `damageType`, and `enemyId` to drive it.
 - **Setting + toggle** (`LocalSaveStore`): `damageNumbersEnabled` (default on) with a `?damage=0|1` lab override until the Settings screen exists.
 - **Verification:** 268 tests across 26 files pass (formatStat, mitigation-floor, merge-helper, and save-default cases added); `tsc --noEmit` clean; production build clean; the game boots and runs live firing at `?stress=4&damage=1` with zero console/runtime errors. On-screen colour/legibility of the numbers remains the standing manual review gate (automated canvas capture is unavailable in this environment).
+
+### Production Asset Batch K: persistent status overlays
+
+**Status:** Completed — 18 July 2026; creator crowd/readability review queued
+
+- Generated independent Steam-retained animation strips for Blaze, Overload, Corrode, and Freeze, using the established Batch C effects as the style reference. Retained four chroma provenance sources, four full-resolution transparent edit masters, exact prompts, and deterministic normalization.
+- Built the stable 192 x 192 `status-overlays-v1` runtime atlas: 15 authored 48 x 48 frames plus one transparent reserved cell. The four loops retain deliberately different rhythms: flicker, strobe/dark beat, lazy bubbles, and near-static shimmer.
+- Integrated one persistent overlay layer per active enemy status, including simultaneous-status support and proportional elite/boss scaling. Simulation buildup, timing, stacking, immunity, damage, tint, hitboxes, and telegraphs remain authoritative.
+- Added a deterministic `?mode=gallery&batch=k` review route showing frame order, animated 64 px reads, and elite scaling; updated the content brief, production tracker, asset manifest contract, HTTP smoke coverage, and source documentation.
+- Verification: 269 tests across 26 files, clean TypeScript, production build, 52 explicit runtime-art HTTP checks, 37 review routes, transparent-atlas inspection, and live Phaser gallery review with zero browser warnings or errors.

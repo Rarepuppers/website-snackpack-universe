@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(53);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(54);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -179,5 +179,13 @@ describe("GameAssetManifest", () => {
     const tiles = GAME_ASSETS["weapon-tiles-v1"];
     expect(tiles.kind).toBe("spritesheet");
     if (tiles.kind === "spritesheet") expect(tiles.frameCount).toBe(3);
+  });
+
+  it("locks Production Batch K's shared status-overlay contract", () => {
+    const overlays = GAME_ASSETS["status-overlays-v1"];
+    expect(overlays.kind).toBe("spritesheet");
+    expect(overlays.logicalWidth).toBe(48);
+    expect(overlays.logicalHeight).toBe(48);
+    if (overlays.kind === "spritesheet") expect(overlays.frameCount).toBe(16);
   });
 });

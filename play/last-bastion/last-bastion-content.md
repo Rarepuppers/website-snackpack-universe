@@ -644,9 +644,9 @@ One **96 × 96** tile per weapon (the existing 64 × 64 cadence motifs stay for 
 
 **Acceptance:** every decal must be legible under a crowd of 30+ enemies, in grayscale, and against all five arena themes; warm hostile palette only (never the player's teal/cyan family); no decal may imply a radius different from the code-driven one.
 
-## Batch K — status-effect overlay animations (queued for Codex)
+## Batch K — status-effect overlay animations
 
-**Status:** Design brief — 18 July 2026. Enemies (and the Marine, where statuses apply to the player) need an at-a-glance animated overlay for each active status, matching the damage-number colour language in `wave_balance.md`: **red fire, teal lightning/shock, green poison/toxic, blue slowed/frozen**. Code owns status logic, timing, and tinting; this batch supplies small looping overlay sprites drawn above the afflicted body. Each overlay must read on a 64 px enemy in a 30+ crowd and never obscure the enemy's own attack tells.
+**Status:** Production assets generated, normalized, and integrated — 18 July 2026; creator crowd/readability review queued. Enemies (and the Marine, where statuses apply to the player) need an at-a-glance animated overlay for each active status, matching the damage-number colour language in `wave_balance.md`: **red fire, teal lightning/shock, green poison/toxic, blue slowed/frozen**. Code owns status logic, timing, and tinting; this batch supplies small looping overlay sprites drawn above the afflicted body. Each overlay must read on a 64 px enemy in a 30+ crowd and never obscure the enemy's own attack tells.
 
 | Overlay | Loop | Description for imagegen |
 | --- | --- | --- |
@@ -656,6 +656,8 @@ One **96 × 96** tile per weapon (the existing 64 × 64 cadence motifs stay for 
 | **Slowed/Frozen (Freeze)** | 3 frames @ 48 × 48 | Pale-blue crystalline rime creeping from the ground contact upward with tiny glinting facets; mostly static with a subtle shimmer — cold should feel *still*, opposed to fire's flicker |
 
 Acceptance: one shared atlas with stable IDs; transparent backgrounds and clean alpha; each overlay identifiable in grayscale by motion rhythm alone (flicker / strobe / lazy bubble / near-still shimmer); scales to 96–160 px elites and bosses without redraw (render larger or tile, do not stretch blur); combined with code tint on the body sprite (warm for Blaze, desaturated blue for Freeze) rather than replacing it. Status durations, stacking, and immunity remain simulation-owned.
+
+Delivered as the stable 4 x 4 `status-overlays-v1` atlas: Blaze frames 0-3, Overload 4-7, Corrode 8-11, Freeze 12-14, and transparent reserved frame 15. Full-resolution transparent masters, chroma provenance, prompt contracts, and deterministic normalization are retained under `art/production-tests/batch-k/`; `?mode=gallery&batch=k` previews frame order, live animation rhythm, normal-enemy scale, and elite scale.
 
 ## Batch H — world background themes (queued for Codex)
 

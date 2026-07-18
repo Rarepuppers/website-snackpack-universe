@@ -87,7 +87,8 @@ try {
     'bulwark-rotary-cannon-spritesheet-v1-96.png',
     'bulwark-rotary-cannon-effect-atlas-v1-64.png',
     'grenade-tube-spritesheet-v1-96.png',
-    'grenade-tube-effect-atlas-v1-64.png'
+    'grenade-tube-effect-atlas-v1-64.png',
+    'status-effect-overlay-atlas-v1-48.png'
   )
 
   foreach ($artAssetName in $requiredArtAssets) {
@@ -116,6 +117,7 @@ try {
     '/play/last-bastion/?mode=gallery&batch=f2',
     '/play/last-bastion/?mode=gallery&batch=f3',
     '/play/last-bastion/?mode=gallery&batch=f4',
+    '/play/last-bastion/?mode=gallery&batch=k',
     '/play/last-bastion/?loadout=vertical',
     '/play/last-bastion/?loadout=patrol',
     '/play/last-bastion/?loadout=bolt',

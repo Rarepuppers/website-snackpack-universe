@@ -15,6 +15,10 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "k") {
+      this.createBatchKGallery();
+      return;
+    }
     if (batch === "f4") {
       this.createWeaponBatchGallery("GRENADE TUBE", "F4", "grenade-tube-v1", "grenade-tube-effects-v1", 2, "?loadout=grenade");
       return;
@@ -512,6 +516,43 @@ export class AssetGalleryScene extends Phaser.Scene {
     this.add.sprite(110, 438, "weapon-tiles-v1", tileFrame).setScale(0.9);
     this.add.text(200, 432, "Runtime bindings, cooldown shadow, numeric time, hit geometry, trajectory and damage remain code-driven.", style("#b7c9d8", "9px"));
     this.add.text(480, 518, `Review: ?mode=gallery&batch=${batchName.toLowerCase()} • Lab: ${labRoute}`, style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchKGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - STATUS OVERLAY PRODUCTION ASSET BATCH K", style("#ffffff", "17px"));
+    this.add.text(20, 38, "15 authored frames + one reserved transparent cell / stable 4x4 runtime contract", style("#8fb2c9", "11px"));
+    const rows = [
+      { name: "BLAZE - asymmetric 90 ms flicker", color: "#ff6b3d", start: 0, count: 4 },
+      { name: "OVERLOAD - 72 ms strobe + dark beat", color: "#68e4e8", start: 4, count: 4 },
+      { name: "CORRODE - lazy 260 ms bubble drift", color: "#b9ef62", start: 8, count: 4 },
+      { name: "FREEZE - near-still 420 ms shimmer", color: "#9ad9ff", start: 12, count: 3 },
+    ] as const;
+
+    rows.forEach((row, rowIndex) => {
+      const y = 104 + rowIndex * 102;
+      this.add.text(30, y - 35, row.name, style(row.color, "11px"));
+      for (let index = 0; index < row.count; index += 1) {
+        const x = 86 + index * 106;
+        this.add.circle(x, y, 34, 0x26303b).setStrokeStyle(1, 0x53677b);
+        this.add.sprite(x, y, "status-overlays-v1", row.start + index).setScale(1.25);
+        this.add.text(x, y + 38, String(row.start + index), style("#728ba1", "8px")).setOrigin(0.5);
+      }
+      const previewX = 700;
+      this.add.sprite(previewX, y, "scuttler-v1", rowIndex % 8).setScale(1.15);
+      const preview = this.add.sprite(previewX, y, "status-overlays-v1", row.start).setScale(1.35);
+      this.tweens.addCounter({
+        from: 0,
+        to: row.count,
+        duration: row.count * (rowIndex === 0 ? 90 : rowIndex === 1 ? 72 : rowIndex === 2 ? 260 : 420),
+        repeat: -1,
+        onUpdate: (tween) => preview.setFrame(row.start + Math.min(row.count - 1, Math.floor(tween.getValue() ?? 0))),
+      });
+      this.add.sprite(830, y, "siege-crusher-v1", rowIndex % 12).setScale(0.62);
+      this.add.sprite(830, y, "status-overlays-v1", row.start + (rowIndex % row.count)).setScale(2.1);
+    });
+
+    this.add.text(480, 510, "Left: frame contract / centre: 64 px enemy / right: elite scaling / timing and tint remain simulation-owned", style("#b7c9d8", "9px")).setOrigin(0.5);
+    this.add.text(480, 528, "Review: ?mode=gallery&batch=k / live overlays appear whenever typed buildup triggers a status", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private drawWeaponRing(x: number, y: number, count: number, scale: number): void {
