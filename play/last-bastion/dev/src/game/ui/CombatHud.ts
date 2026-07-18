@@ -178,6 +178,11 @@ export class CombatHud {
       : 1 - Math.min(snapshot.evasiveCooldownRemainingSeconds / totalRollTime, 1);
     this.rollFill.setScale(Math.max(readiness, 0.001), 1)
       .setFillStyle(snapshot.evasiveReady ? 0x68e4e8 : 0xffa31a);
+    const timedWaveSuffix = snapshot.density.timerEndsWave
+      && snapshot.density.waveDurationSeconds !== null
+      && snapshot.status === "combat"
+      ? `  •  ${Math.max(0, Math.ceil(snapshot.density.waveDurationSeconds - snapshot.density.waveElapsedSeconds))}s`
+      : "";
     this.waveText.setText(snapshot.scenario
       ? snapshot.scenario === "slime-spitter" ? "SPITTER LAB"
         : snapshot.scenario === "carapace-elite" ? "ELITE LAB"
@@ -193,7 +198,7 @@ export class CombatHud {
                       : snapshot.scenario === "razor-scuttler" ? "RAZOR LAB" : "CRUSHER LAB"
       : snapshot.stressProfile
         ? `STRESS ${snapshot.stressProfile}`
-        : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}`);
+        : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}${timedWaveSuffix}`);
     const shieldLabel = snapshot.playerShield > 0 ? `  SH ${Math.ceil(snapshot.playerShield)}` : "";
     this.statsText.setText(`LV ${snapshot.level}  HP ${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}\nXP ${snapshot.experience}/${snapshot.experienceForNextLevel}${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerTethered ? "  TETHERED" : ""}${snapshot.playerEntrenched ? "  ENTRENCHED" : ""}`);
     const scrapVisible = snapshot.securedScrap > 0 || snapshot.scenario === "scrap-shop";
@@ -268,7 +273,7 @@ export class CombatHud {
       pip.setFillStyle(weapon ? weaponPipColor(weapon.weaponId) : 0x273747);
     });
     this.debugText.setText(
-      `state=${snapshot.heroState} enemies=${snapshot.enemies.length}/${snapshot.density.liveCap || "-"} peak=${snapshot.density.peakLiveEnemies} queue=${snapshot.density.queuedSpawns} hostile=${snapshot.enemyProjectiles.length}/${snapshot.density.projectileBudget} pPeak=${snapshot.density.peakEnemyProjectiles} blocked=${snapshot.density.spawnCapBlockedSeconds.toFixed(1)}s effects=${activeEffectCount}`,
+      `state=${snapshot.heroState} enemies=${snapshot.enemies.length}/${snapshot.density.liveCap || "-"} peak=${snapshot.density.peakLiveEnemies} threat=${snapshot.density.threatSpawned}/${snapshot.density.threatBudget} queue=${snapshot.density.queuedSpawns} hostile=${snapshot.enemyProjectiles.length}/${snapshot.density.projectileBudget} pPeak=${snapshot.density.peakEnemyProjectiles} blocked=${snapshot.density.spawnCapBlockedSeconds.toFixed(1)}s effects=${activeEffectCount}`,
     );
     const boss = snapshot.enemies.find((enemy) => enemy.rank === "boss" || enemy.rank === "mini-boss");
     this.bossPanel.setVisible(Boolean(boss));

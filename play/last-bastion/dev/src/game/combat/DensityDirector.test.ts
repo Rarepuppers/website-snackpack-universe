@@ -4,7 +4,10 @@ import {
   buildDensityWave,
   DENSITY_CAPACITY_ENEMY_COUNT,
   DENSITY_LIVE_CAPS,
+  pressureRoleOf,
   pressureShares,
+  WAVE_DURATIONS_SECONDS,
+  WAVE_THREAT_BUDGETS,
 } from "./DensityDirector";
 import { CombatSimulation } from "./CombatSimulation";
 import type { PlayerIntent } from "../input/PlayerIntent";
@@ -40,9 +43,10 @@ describe("density director v3", () => {
   it("builds an exact deterministic 56-enemy capacity roster", () => {
     const roster = buildDensityCapacityRoster();
     expect(roster).toHaveLength(DENSITY_CAPACITY_ENEMY_COUNT);
-    const shares = pressureShares(roster.map((type) => ({ type })));
-    expect(shares.pursuitShare).toBeGreaterThanOrEqual(0.65);
-    expect(shares.rangedShare).toBeLessThanOrEqual(0.25);
+    const pursuitCount = roster.filter((type) => pressureRoleOf(type) === "pursuit").length;
+    const rangedCount = roster.filter((type) => pressureRoleOf(type) === "ranged").length;
+    expect(pursuitCount / roster.length).toBeGreaterThanOrEqual(0.65);
+    expect(rangedCount / roster.length).toBeLessThanOrEqual(0.25);
   });
 
   it("produces stable sorted wave plans", () => {
@@ -50,6 +54,16 @@ describe("density director v3", () => {
     const second = buildDensityWave(3).plans;
     expect(first).toEqual(second);
     expect(first.every((plan, index) => index === 0 || plan.atSeconds >= first[index - 1]!.atSeconds)).toBe(true);
+  });
+
+  it("spends each authored threat budget in readable pulses", () => {
+    for (let index = 0; index < WAVE_THREAT_BUDGETS.length; index += 1) {
+      const wave = buildDensityWave(index);
+      expect(wave.threatBudget).toBe(WAVE_THREAT_BUDGETS[index]);
+      expect(wave.durationSeconds).toBe(WAVE_DURATIONS_SECONDS[index]);
+      expect(wave.plans.reduce((sum, plan) => sum + plan.threatCost, 0)).toBe(wave.threatBudget);
+      expect(new Set(wave.plans.map((plan) => plan.atSeconds)).size).toBeLessThan(wave.plans.length);
+    }
   });
 
   it("keeps the capacity lab pinned at 56 while enforcing hostile projectile pressure", () => {

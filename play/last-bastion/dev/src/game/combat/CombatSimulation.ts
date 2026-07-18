@@ -81,6 +81,8 @@ import {
   selectAurumExit,
   shouldSpawnAurumHoarder,
 } from "./AurumHoarder";
+import { initialProjectileCarry, resolveFractionalProjectiles } from "./FractionalProjectiles";
+import { scaleEnemyHealth, scaleEnemyHit, waveScaling } from "./WaveScaling";
 
 export type EncounterStatus = "combat" | "intermission" | "victory" | "defeat";
 export type BrainPhase = "drift" | "windup" | "lunge" | "recover";
@@ -214,6 +216,11 @@ export interface EnemySnapshot {
   position: Vector2Data;
   health: number;
   maxHealth: number;
+  shield: number;
+  maxShield: number;
+  armour: number;
+  movementSpeedMultiplier: number;
+  damageMultiplier: number;
   radiusMetres: number;
   hatchProgress: number;
   brainPhase?: BrainPhase;
@@ -263,6 +270,11 @@ export interface DensityTelemetrySnapshot {
   currentLiveEnemies: number;
   peakLiveEnemies: number;
   spawnedThisWave: number;
+  threatBudget: number;
+  threatSpawned: number;
+  waveElapsedSeconds: number;
+  waveDurationSeconds: number | null;
+  timerEndsWave: boolean;
   queuedSpawns: number;
   spawnCapBlockedSeconds: number;
   pressureSpawned: Readonly<Record<EnemyPressureRole, number>>;
@@ -453,6 +465,12 @@ interface EnemyState {
   carapacePhaseRemainingSeconds: number;
   facingDirection: Vector2Data;
   maxHealth: number;
+  shield: number;
+  maxShield: number;
+  armour: number;
+  flatDamageReduction: number;
+  movementSpeedMultiplier: number;
+  damageMultiplier: number;
   miniBossKind?: MiniBossKind;
   siegeCrusherPhase: SiegeCrusherPhase;
   siegeCrusherPhaseRemainingSeconds: number;
@@ -546,6 +564,7 @@ export interface CombatSimulationOptions {
 interface EquippedWeaponState extends EquippedWeapon {
   cooldownSeconds: number;
   cooldownDurationSeconds: number;
+  projectileCarry: number;
 }
 
 const TOTAL_WAVES = 5;
@@ -705,6 +724,10 @@ export class CombatSimulation {
   private intermissionRemainingSeconds = 0;
   private spawnQueue: DirectorSpawnPlan[] = [];
   private waveLiveCap = 0;
+  private waveThreatBudget = 0;
+  private waveThreatSpawned = 0;
+  private waveDurationSeconds: number | null = null;
+  private waveEndsOnTimer = false;
   private densityPeakLiveEnemies = 0;
   private densitySpawnedThisWave = 0;
   private densitySpawnCapBlockedSeconds = 0;
@@ -753,6 +776,7 @@ export class CombatSimulation {
       ...weapon,
       cooldownSeconds: 0,
       cooldownDurationSeconds: 0,
+      projectileCarry: initialProjectileCarry(weapon.instanceId),
     }));
     const rackClasses: ("light" | "medium" | "heavy" | "unique" | "all")[] = ["light", "medium", "heavy", "all"];
     while (rackClasses.length < this.equippedWeapons.length) rackClasses.push("all");
@@ -898,6 +922,9 @@ export class CombatSimulation {
 
   spawnEnemy(type: EnemyType, position?: Vector2Data): number {
     const definition = ENEMY_CATALOG[type];
+    const authoredBoss = type === "siege-crusher" || type === "brood-warden" || type === "bastion-eater";
+    const scaling = waveScaling(this.waveIndex + 1, type, { boss: authoredBoss });
+    const scaledMaxHealth = scaleEnemyHealth(definition.maxHealth, scaling);
     const spawnPosition = position ? { ...position } : this.nextEdgeSpawn(definition.radiusMetres);
     const id = this.nextId();
 
@@ -905,8 +932,14 @@ export class CombatSimulation {
       id,
       type,
       position: spawnPosition,
-      health: definition.maxHealth,
-      maxHealth: definition.maxHealth,
+      health: scaledMaxHealth,
+      maxHealth: scaledMaxHealth,
+      shield: scaling.maxShield,
+      maxShield: scaling.maxShield,
+      armour: definition.armour + scaling.armourBonus,
+      flatDamageReduction: definition.flatDamageReduction,
+      movementSpeedMultiplier: scaling.speedMultiplier,
+      damageMultiplier: scaling.damageMultiplier,
       attackCooldownSeconds: 0,
       dead: false,
       hatchRemainingSeconds: type === "egg-cluster" ? 6 : 0,
@@ -1036,8 +1069,14 @@ export class CombatSimulation {
     enemy.rank = "elite";
     enemy.eliteKind = eliteKind;
     this.retagLastSpawn(eliteKind);
-    enemy.maxHealth = 45;
+    const scaling = waveScaling(this.waveIndex + 1, enemy.type, { elite: true });
+    enemy.maxHealth = scaleEnemyHealth(45, scaling);
     enemy.health = enemy.maxHealth;
+    enemy.armour = ENEMY_CATALOG.scuttler.armour + scaling.armourBonus;
+    enemy.maxShield = scaling.maxShield;
+    enemy.shield = scaling.maxShield;
+    enemy.movementSpeedMultiplier = scaling.speedMultiplier;
+    enemy.damageMultiplier = scaling.damageMultiplier;
     enemy.carapacePhase = "pursuit";
     enemy.carapacePhaseRemainingSeconds = 1.25;
     return id;
@@ -1048,6 +1087,15 @@ export class CombatSimulation {
     const enemy = this.enemies.find((candidate) => candidate.id === id)!;
     enemy.rank = "mini-boss";
     enemy.miniBossKind = miniBossKind;
+    const definition = ENEMY_CATALOG[miniBossKind];
+    enemy.maxHealth = definition.maxHealth;
+    enemy.health = definition.maxHealth;
+    enemy.armour = definition.armour;
+    enemy.flatDamageReduction = definition.flatDamageReduction;
+    enemy.maxShield = 0;
+    enemy.shield = 0;
+    enemy.movementSpeedMultiplier = 1;
+    enemy.damageMultiplier = 1;
     this.retagLastSpawn(miniBossKind);
     enemy.siegeCrusherPhase = "entrance";
     enemy.siegeCrusherPhaseRemainingSeconds = 0.9;
@@ -1263,6 +1311,11 @@ export class CombatSimulation {
         currentLiveEnemies: this.enemies.filter((enemy) => !enemy.dead).length,
         peakLiveEnemies: this.densityPeakLiveEnemies,
         spawnedThisWave: this.densitySpawnedThisWave,
+        threatBudget: this.waveThreatBudget,
+        threatSpawned: this.waveThreatSpawned,
+        waveElapsedSeconds: this.waveElapsedSeconds,
+        waveDurationSeconds: this.waveDurationSeconds,
+        timerEndsWave: this.waveEndsOnTimer,
         queuedSpawns: this.spawnQueue.length,
         spawnCapBlockedSeconds: this.densitySpawnCapBlockedSeconds,
         pressureSpawned: { ...this.densityPressureSpawned },
@@ -1372,6 +1425,7 @@ export class CombatSimulation {
         stats: { ...WEAPON_CATALOG[weaponId] },
         cooldownSeconds: 0,
         cooldownDurationSeconds: 0,
+        projectileCarry: initialProjectileCarry(nextInstanceId),
       });
     } else {
       const emptyStash = this.weaponInventory.stash.findIndex((candidate) => candidate === null);
@@ -1552,7 +1606,14 @@ export class CombatSimulation {
     if (!result.ok) return;
     this.weaponInventory = result.state;
     if (target.kind === "rack" && result.state.rack.find((slot) => slot.id === target.slotId)?.tile?.instanceId === tile.instanceId) {
-      this.equippedWeapons.push({ instanceId: tile.instanceId, weaponId: tile.weaponId, stats: { ...WEAPON_CATALOG[tile.weaponId] }, cooldownSeconds: 0, cooldownDurationSeconds: 0 });
+      this.equippedWeapons.push({
+        instanceId: tile.instanceId,
+        weaponId: tile.weaponId,
+        stats: { ...WEAPON_CATALOG[tile.weaponId] },
+        cooldownSeconds: 0,
+        cooldownDurationSeconds: 0,
+        projectileCarry: initialProjectileCarry(tile.instanceId),
+      });
     }
     if (result.merged && target.kind === "merge" && target.slotId) {
       const weaponIndex = this.equippedWeapons.findIndex((weapon) => weapon.instanceId === tile.instanceId);
@@ -1700,7 +1761,6 @@ export class CombatSimulation {
   }
 
   private fireWeapon(weapon: EquippedWeaponState, aimDirection: Vector2Data): void {
-    const centre = (weapon.stats.projectileCount - 1) / 2;
     const baseAngle = Math.atan2(aimDirection.y, aimDirection.x);
     const slot = calculateWeaponRingLayout(this.equippedWeapons.length, baseAngle)[
       this.equippedWeapons.indexOf(weapon)
@@ -1715,7 +1775,10 @@ export class CombatSimulation {
       return;
     }
 
-    for (let index = 0; index < weapon.stats.projectileCount; index += 1) {
+    const resolution = resolveFractionalProjectiles(weapon.stats.projectileCount, weapon.projectileCarry);
+    weapon.projectileCarry = resolution.carry;
+    const centre = (resolution.count - 1) / 2;
+    for (let index = 0; index < resolution.count; index += 1) {
       const angle = baseAngle + (index - centre) * weapon.stats.spreadRadians;
       const direction = { x: Math.cos(angle), y: Math.sin(angle) };
       const muzzlePosition = {
@@ -2476,7 +2539,7 @@ export class CombatSimulation {
             this.playerPosition,
             reachMetres + PLAYER_RADIUS_METRES,
           )) {
-            this.damagePlayer(PLAYER_ATTACK_DAMAGE_BASELINES.ripperSweep);
+            this.damagePlayer(this.scaledEnemyDamage(enemy, PLAYER_ATTACK_DAMAGE_BASELINES.ripperSweep));
           }
         }
         break;
@@ -2557,7 +2620,7 @@ export class CombatSimulation {
           && distance(enemy.position, this.playerPosition) <= radius + PLAYER_RADIUS_METRES + 0.12
         ) {
           enemy.razorScuttlerHitPlayer = true;
-          this.damagePlayer(RAZOR_SCUTTLER_DASH_DAMAGE);
+          this.damagePlayer(this.scaledEnemyDamage(enemy, RAZOR_SCUTTLER_DASH_DAMAGE));
           this.enterRazorScuttlerRecovery(enemy, "player", 1);
           break;
         }
@@ -2662,11 +2725,11 @@ export class CombatSimulation {
             radiusMetres,
           });
           if (playerDistance <= radiusMetres + PLAYER_RADIUS_METRES) {
-            this.damagePlayer([
+            this.damagePlayer(this.scaledEnemyDamage(enemy, [
               PLAYER_ATTACK_DAMAGE_BASELINES.crusherSweep,
               PLAYER_ATTACK_DAMAGE_BASELINES.crusherSweepEnraged,
               PLAYER_ATTACK_DAMAGE_BASELINES.crusherSweepLastStand,
-            ][enrageTier]!);
+            ][enrageTier]!));
           }
         }
         break;
@@ -2753,11 +2816,11 @@ export class CombatSimulation {
           enemy.broodWardenPhaseRemainingSeconds = 0.25;
           this.frameEvents.push({ type: "brood-cleave", position: { ...enemy.position }, radiusMetres });
           if (playerDistance <= radiusMetres + PLAYER_RADIUS_METRES) {
-            this.damagePlayer([
+            this.damagePlayer(this.scaledEnemyDamage(enemy, [
               PLAYER_ATTACK_DAMAGE_BASELINES.broodCleave,
               PLAYER_ATTACK_DAMAGE_BASELINES.broodCleaveEnraged,
               PLAYER_ATTACK_DAMAGE_BASELINES.broodCleaveLastStand,
-            ][enrageTier]!);
+            ][enrageTier]!));
           }
         }
         break;
@@ -2830,7 +2893,7 @@ export class CombatSimulation {
         velocity: { x: direction.x * speed, y: direction.y * speed },
         target: projectileTarget,
         remainingSeconds: distance(start, projectileTarget) / speed,
-        damage: PLAYER_ATTACK_DAMAGE_BASELINES.broodAcid,
+        damage: this.scaledEnemyDamage(enemy, PLAYER_ATTACK_DAMAGE_BASELINES.broodAcid),
         createsPuddle: false,
       });
     }
@@ -3172,7 +3235,7 @@ export class CombatSimulation {
         },
         target,
         remainingSeconds: QUILLBACK_PROJECTILE_RANGE_METRES / QUILLBACK_PROJECTILE_SPEED,
-        damage: QUILLBACK_SPIKE_DAMAGE,
+        damage: this.scaledEnemyDamage(enemy, QUILLBACK_SPIKE_DAMAGE),
         createsPuddle: false,
       });
     }
@@ -3262,7 +3325,7 @@ export class CombatSimulation {
           && !this.playerInvulnerable
           && this.playerHurtCooldownSeconds <= 0
         ) {
-          this.damagePlayer(SPINEWHEEL_ROLL_DAMAGE);
+          this.damagePlayer(this.scaledEnemyDamage(enemy, SPINEWHEEL_ROLL_DAMAGE));
           enemy.spinewheelPlayerHitCooldownSeconds = SPINEWHEEL_REPEAT_HIT_LOCKOUT_SECONDS;
           this.frameEvents.push({ type: "spinewheel-hit", position: { ...this.playerPosition } });
         }
@@ -3413,7 +3476,7 @@ export class CombatSimulation {
       velocity: { x: direction.x * speed, y: direction.y * speed },
       target: { ...enemy.spitterTarget },
       remainingSeconds: Math.max(0.12, distance(start, enemy.spitterTarget) / speed),
-      damage: SLIME_GLOB_DAMAGE,
+      damage: this.scaledEnemyDamage(enemy, SLIME_GLOB_DAMAGE),
       createsPuddle: true,
     });
     this.frameEvents.push({
@@ -3556,7 +3619,7 @@ export class CombatSimulation {
     deltaSeconds: number,
   ): void {
     const radius = ENEMY_CATALOG[enemy.type].radiusMetres;
-    const effectiveSpeed = speed * this.enemyStatusSpeedMultiplier(enemy);
+    const effectiveSpeed = speed * enemy.movementSpeedMultiplier * this.enemyStatusSpeedMultiplier(enemy);
     enemy.position = resolveCircleMovement(
       enemy.position,
       {
@@ -3582,9 +3645,10 @@ export class CombatSimulation {
       if (enemy.type === "spinewheel" && enemy.spinewheelPhase === "rolling") {
         continue;
       }
-      const contactDamage = enemy.rank === "elite"
-        ? Math.round(definition.contactDamage * 1.4)
-        : definition.contactDamage;
+      const contactDamage = this.scaledEnemyDamage(
+        enemy,
+        enemy.rank === "elite" ? definition.contactDamage * 1.4 : definition.contactDamage,
+      );
       if (
         contactDamage > 0
         && enemy.attackCooldownSeconds <= 0
@@ -3619,6 +3683,10 @@ export class CombatSimulation {
       damage: rawDamage,
     });
     if (this.playerHealth <= 0) this.status = "defeat";
+  }
+
+  private scaledEnemyDamage(enemy: EnemyState, baseDamage: number): number {
+    return scaleEnemyHit(baseDamage, { damageMultiplier: enemy.damageMultiplier });
   }
 
   private updateExperiencePickups(deltaSeconds: number): void {
@@ -3734,13 +3802,15 @@ export class CombatSimulation {
     const corrodeActive = (enemy.statusTimers.corrode ?? 0) > 0;
     const aurumArmourBreak = enemy.type === "aurum-hoarder" ? enemy.aurumArmourBreaksPaid * 3 : 0;
     const effectiveArmour = Math.max(
-      definition.armour - aurumArmourBreak - (corrodeActive ? STATUS_RULES.corrode.armourReduction : 0),
+      enemy.armour - aurumArmourBreak - (corrodeActive ? STATUS_RULES.corrode.armourReduction : 0),
       0,
     );
+    const absorption = absorbWithShield(enemy.shield, rawDamage * resistanceMultiplier);
+    enemy.shield = absorption.remainingShield;
     let mitigated = mitigateDamage(
-      rawDamage * resistanceMultiplier,
+      absorption.remainingDamage,
       effectiveArmour,
-      definition.flatDamageReduction,
+      enemy.flatDamageReduction,
     );
     if (enemy.type === "bastion-eater" && enemy.bastionEaterAction !== "recovery") {
       mitigated *= 0.35;
@@ -3875,7 +3945,7 @@ export class CombatSimulation {
         distance(enemy.position, this.playerPosition)
         <= BLAST_MITE_EXPLOSION_RADIUS_METRES + PLAYER_RADIUS_METRES
       ) {
-        this.damagePlayer(BLAST_MITE_EXPLOSION_DAMAGE);
+        this.damagePlayer(this.scaledEnemyDamage(enemy, BLAST_MITE_EXPLOSION_DAMAGE));
       }
     }
     if (enemy.eliteKind) {
@@ -3977,11 +4047,14 @@ export class CombatSimulation {
     }
   }
 
-  private recordDensitySpawn(spawn: Pick<DirectorSpawnPlan, "type" | "rank">): void {
+  private recordDensitySpawn(
+    spawn: Pick<DirectorSpawnPlan, "type" | "rank"> & Partial<Pick<DirectorSpawnPlan, "threatCost">>,
+  ): void {
     const role: EnemyPressureRole = spawn.rank
       ? (spawn.rank === "mini-boss" ? "boss" : "specialist")
       : pressureRoleOf(spawn.type);
     this.densitySpawnedThisWave += 1;
+    this.waveThreatSpawned += spawn.threatCost ?? 0;
     this.densityPressureSpawned[role] += 1;
     this.densityPeakLiveEnemies = Math.max(this.densityPeakLiveEnemies, this.enemies.length);
   }
@@ -3997,21 +4070,21 @@ export class CombatSimulation {
     const hasBlockingEnemy = this.enemies.some((enemy) => !enemy.dead && enemy.rank !== "treasure");
     if (
       this.status === "combat"
+      && this.waveEndsOnTimer
+      && this.waveDurationSeconds !== null
+      && this.waveElapsedSeconds >= this.waveDurationSeconds
+    ) {
+      this.finishWave(livingTreasure, true);
+      return;
+    }
+    if (
+      this.status === "combat"
+      && !this.waveEndsOnTimer
       && this.spawnQueue.length === 0
       && !hasBlockingEnemy
       && this.enemyProjectiles.length === 0
     ) {
-      for (const enemy of livingTreasure) this.escapeAurumHoarder(enemy);
-      if (this.wavesEnabled) {
-        this.secureScrap(10 + 5 * (this.waveIndex + 1), "wave-clear", this.playerPosition);
-      }
-      if (this.waveIndex >= TOTAL_WAVES - 1) {
-        this.status = "victory";
-      } else {
-        this.status = "intermission";
-        this.intermissionRemainingSeconds = INTERMISSION_SECONDS;
-        this.queueIntermissionReward();
-      }
+      this.finishWave(livingTreasure, false);
       return;
     }
 
@@ -4020,6 +4093,29 @@ export class CombatSimulation {
       if (this.intermissionRemainingSeconds <= 0) {
         this.beginWave(this.waveIndex + 1);
       }
+    }
+  }
+
+  private finishWave(livingTreasure: readonly EnemyState[], timed: boolean): void {
+    for (const enemy of livingTreasure) this.escapeAurumHoarder(enemy);
+    if (timed) {
+      this.spawnQueue = [];
+      this.enemies = [];
+      this.activeTetherEnemyId = null;
+      for (const projectile of this.enemyProjectiles) {
+        projectile.dead = true;
+        this.hostileProjectilePool.push(projectile);
+      }
+      this.enemyProjectiles = [];
+      this.groundHazards = [];
+    }
+    this.secureScrap(10 + 5 * (this.waveIndex + 1), "wave-clear", this.playerPosition);
+    if (this.waveIndex >= TOTAL_WAVES - 1) {
+      this.status = "victory";
+    } else {
+      this.status = "intermission";
+      this.intermissionRemainingSeconds = INTERMISSION_SECONDS;
+      this.queueIntermissionReward();
     }
   }
 
@@ -4043,6 +4139,10 @@ export class CombatSimulation {
     const wave = buildDensityWave(index);
     this.spawnQueue = [...wave.plans];
     this.waveLiveCap = wave.liveCap;
+    this.waveThreatBudget = wave.threatBudget;
+    this.waveThreatSpawned = 0;
+    this.waveDurationSeconds = wave.durationSeconds;
+    this.waveEndsOnTimer = wave.timerEndsWave;
     this.densityPeakLiveEnemies = this.enemies.length;
     this.densitySpawnedThisWave = 0;
     this.densitySpawnCapBlockedSeconds = 0;
@@ -4223,6 +4323,11 @@ export class CombatSimulation {
       position: { ...enemy.position },
       health: enemy.health,
       maxHealth: enemy.maxHealth,
+      shield: enemy.shield,
+      maxShield: enemy.maxShield,
+      armour: enemy.armour,
+      movementSpeedMultiplier: enemy.movementSpeedMultiplier,
+      damageMultiplier: enemy.damageMultiplier,
       radiusMetres: definition.radiusMetres,
       hatchProgress: enemy.hatchDurationSeconds > 0
         ? 1 - enemy.hatchRemainingSeconds / enemy.hatchDurationSeconds

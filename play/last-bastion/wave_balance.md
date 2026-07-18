@@ -4,7 +4,7 @@
 
 This is the numeric design for encounter pressure: what spawns, how tough it is, what it pays, and how all of that grows wave over wave. The durable design lives in `last-bastion-game.md`; implementation status lives in `last-bastion-model.md`. Numbers here are **proposals for the step 35 tuning pass** unless a row is marked implemented.
 
-**Status:** Draft v2 — 18 July 2026 (v1 17 July). Precision/display and the single-pass combat rescale are implemented. Per-wave scaling, timed threat budgets, baseline regeneration, level packages, fractional projectiles, and XP tuning remain open. v2 adds the short-timed-wave pacing model, starting-health rule, elite cadence, and the weapon acquisition schedule.
+**Status:** Draft v2 — 18 July 2026 (v1 17 July). Precision/display, the combat rescale, per-wave scaling, timed threat budgets, and fractional projectiles are implemented. Baseline regeneration, level packages, later-wave elite cadence, speed tiers, and XP tuning remain open. v2 adds the short-timed-wave pacing model, starting-health rule, elite cadence, and the weapon acquisition schedule.
 
 ## Design intent
 
@@ -429,8 +429,8 @@ This is a large, cross-cutting change. Suggested sequencing so nothing lands hal
 
 1. **Precision + display** (`formatStat`, 0.1 floor, damage numbers) — visible immediately, unblocks judging every later number. **Implemented 18 July 2026** (see `last-bastion-log.md`): shared `formatStat` round-half-up helper, mitigation floor lowered 1 → 0.1, and pooled floating damage numbers with the confirmed type colours and a `damageNumbersEnabled` setting (`?damage=0|1`).
 2. **Rescale weapons and enemies** to the 2-damage baseline in one data pass; keep existing rules tests passing by updating expected values together. **Implemented 18 July 2026:** all seven weapons, the live enemy roster, elite/mini-boss/boss durability, status magnitudes and buildup, Marine health, hostile attacks, shields, healing, ultimate damage, and combat hazards now share the 2-damage / 10-health scale. Dedicated rules tests lock the two-bullet Scuttler and five-damage hit ceiling.
-3. **Per-wave scaling** table + threat-budget spawner with caps and the timer-based wave end.
-4. **Fractional projectiles** helper (shared accumulator).
+3. **Per-wave scaling** table + threat-budget spawner with caps and the timer-based wave end. **Implemented 18 July 2026:** ordinary enemies receive authored non-compounding health, armour, eligible shield, speed, and capped damage scaling at spawn; mini-bosses remain authored. The five-wave director spends exact 30/45/65/90/120 budgets in 2.5-second pulses under 18/24/32/42/46 caps. Waves 3–4 are timer-owned at 30/35 seconds and cannot end early; wave 5 remains kill-owned. HUD/debug telemetry exposes time, budget, spend, queue, cap pressure, and projectile occupancy.
+4. **Fractional projectiles** helper (shared accumulator). **Implemented 18 July 2026:** one deterministic shared resolver persists carry per weapon instance, seeded by `instanceId × 0.37 mod 1`. Tests lock 1.5 → 1/2/1/2, the canonical 2.75 → 2/3/3/3 accumulator rhythm, independent duplicate-weapon phases, and the positive-weapon one-projectile floor.
 5. **Level packages** + live `weaponProficiencies`.
 6. **Speed tiers**: Swarm Scuttler, fast elites.
 7. **New telegraphs**: ground slam, rain of spines, sweeping arc (code-drawn first, Batch J art after).

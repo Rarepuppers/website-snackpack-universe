@@ -494,3 +494,20 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Rescaled the Marine to 10 health and converted hostile contact, ranged, detonation, elite, mini-boss, and boss attacks to the 1–5 range. Shields, heals, ultimate damage, fence damage, combustion, status buildup, Blaze, and Corrode moved in the same pass so no old-scale combat subsystem remained hidden.
 - Added a centralized hostile-attack baseline and rules tests for exactly two starter bullets per Scuttler, the five-damage one-hit ceiling, and status magnitude/buildup. Updated behavior expectations without removing their state, reward, resistance, mitigation, or timing assertions.
 - Verification: 308 tests across 34 files passed before the full production verify run.
+
+### Task 35 — per-wave scaling and timed threat director
+
+**Status:** Completed — 18 July 2026; later-wave cadence remains future ten-wave expansion
+
+- Added one tested non-compounding scaling contract for ordinary enemy health, armour, eligible shields, movement speed, and outgoing damage. Values are materialized onto each enemy at spawn; elite scaling is reapplied after rank assignment, while mini-bosses and the Bastion Eater remain authored encounters.
+- Rebuilt the five-wave director around exact threat costs and budgets of 30/45/65/90/120, distributed in readable 2.5-second pulses under the existing 18/24/32/42/46 live caps and pursuit-led ordinary-threat quotas.
+- Waves 3 and 4 now remain active for their full 30/35-second timers even when the arena is briefly empty, then retreat leftovers without kill rewards. Waves 1–2 remain teaching clears and wave 5 remains an untimed mini-boss kill.
+- Added enemy shield absorption, per-enemy scaled speed/damage state, timer and threat telemetry, a visible timed-wave countdown, and debug budget/spend output. Rules tests lock exact budgets, pulse scheduling, scaling formulas, boss exclusions, the five-damage cap, and timer-owned completion.
+
+### Task 35 — deterministic fractional projectiles
+
+**Status:** Completed — 18 July 2026
+
+- Added a shared fractional-projectile resolver with deterministic carry rather than random rounding. Every equipped weapon instance owns its carry, initialized from its stable instance id, including newly acquired and newly placed rack weapons.
+- Projectile firing uses the resolved integer count for centered spread while stat cards retain the authored fractional value. Positive weapons retain a one-projectile floor unless a future mechanic explicitly enables skipped shots.
+- Tests lock canonical fractional rhythms and prove duplicate weapon instances do not share a firing phase.

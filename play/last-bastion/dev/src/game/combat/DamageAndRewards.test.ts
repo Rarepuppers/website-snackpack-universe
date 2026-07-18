@@ -237,7 +237,7 @@ describe("five-wave run and intermission rewards", () => {
   it("offers a seeded weapon chest after wave one and a Supply Depot after wave two", () => {
     const simulation = new CombatSimulation({ seed: 21 });
 
-    const chest = runUntilDecision(simulation, 260);
+    const chest = runUntilDecision(simulation, 500);
     expect(chest.pendingDecision?.kind).toBe("weapon-chest");
     const optionIds = chest.pendingDecision!.options.map((option) => option.id);
     expect(optionIds).toHaveLength(3);
@@ -264,7 +264,7 @@ describe("five-wave run and intermission rewards", () => {
     const offered = new Set<string>();
     for (const seed of [3, 21, 55, 89, 144]) {
       const simulation = new CombatSimulation({ seed });
-      const chest = runUntilDecision(simulation, 300);
+      const chest = runUntilDecision(simulation, 500);
       expect(chest.pendingDecision?.kind).toBe("weapon-chest");
       for (const option of chest.pendingDecision!.options) {
         offered.add(option.id);
@@ -276,7 +276,7 @@ describe("five-wave run and intermission rewards", () => {
 
   it("spawns a wave powerup from wave two onward", () => {
     const simulation = new CombatSimulation({ seed: 21 });
-    const chest = runUntilDecision(simulation, 260);
+    const chest = runUntilDecision(simulation, 500);
     expect(chest.pendingDecision?.kind).toBe("weapon-chest");
     simulation.chooseOption(chest.pendingDecision!.options[0]!.id);
 
