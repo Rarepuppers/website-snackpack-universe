@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { eliteKindsForWave, isFastElite } from "./EliteCadence";
 import { CombatSimulation } from "./CombatSimulation";
+import type { PlayerIntent } from "../input/PlayerIntent";
+
+const IDLE: PlayerIntent = {
+  move: { x: 0, y: 0 }, aim: { x: 1, y: 0 }, fireHeld: false,
+  evasiveMovePressed: false, interactPressed: false, ultimatePressed: false,
+  kitPressed: false, pausePressed: false, restartPressed: false,
+};
 
 describe("elite cadence", () => {
   it("starts at wave four and guarantees elites from wave six", () => {
@@ -29,5 +36,21 @@ describe("elite cadence", () => {
       { type: "slime-spitter", eliteKind: "blightspitter", rank: "elite" },
       { type: "quillback", eliteKind: "quillback-matriarch", rank: "elite" },
     ]);
+  });
+
+  it("drives the Matriarch launch row and code-owned rain impacts", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, seed: 44 });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnElite("quillback-matriarch", { x: player.x + 7, y: player.y });
+    let sawLaunch = false;
+    let sawRain = false;
+    let sawImpact = false;
+    for (let frame = 0; frame < 180; frame += 1) {
+      const snapshot = simulation.step(IDLE, 0.05);
+      sawLaunch ||= snapshot.enemies[0]?.quillbackPhase === "launch";
+      sawRain ||= snapshot.combatTelegraphs.some((telegraph) => telegraph.kind === "rain-of-spines");
+      sawImpact ||= snapshot.events.some((event) => event.type === "rain-of-spines-impact");
+    }
+    expect({ sawLaunch, sawRain, sawImpact }).toEqual({ sawLaunch: true, sawRain: true, sawImpact: true });
   });
 });

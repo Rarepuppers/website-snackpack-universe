@@ -521,3 +521,13 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Added code-authoritative ground-slam, rain-of-spines, sweeping-arc, beam, radial-pulse, and off-screen-warning contracts. Crusher and Warden timing/hit geometry now match their warnings; Matriarch rain uses a measured five-reticle layout below the 35% arena ceiling.
 - Retuned the quadratic XP path with rank-aware XP and a deterministic ten-wave reference trace constrained to the level 9–12 target.
 - Verification at implementation checkpoint: TypeScript and 328 tests across 41 files passed; full production build and HTTP smoke followed in the final gate.
+
+### Production Asset Batch J — Swarm, elites, and hostile telegraph decals
+
+**Status:** Completed — 18 July 2026; creator gameplay-scale review queued
+
+- Generated and retained chroma-key sources plus clean-alpha masters for the Swarm Scuttler, Razorlord, Blightspitter, Quillback Matriarch, large hostile warnings, small warning/effect decals, and danger-fill variants. Rejected the first sweeping-arc source because its full-circle composition could imply danger outside the authored 120-degree sector; the accepted v2 source keeps a legible safe side.
+- Added deterministic normalization into seven runtime atlases totaling 76 frames, stable manifest IDs, exact sheet-contract tests, J1/J2 galleries, smoke routes, and a deterministic `?scenario=batch-j&loadout=vertical` live review lab.
+- Integrated all four body families with simulation-owned state mapping. Added an explicit Matriarch launch phase and rain-impact event so presentation follows behavior rather than decorative clocks.
+- Layered J2 decals beneath code-authoritative ground-slam, sweep, rain, radial, beam, and edge-warning geometry. The placeholder-art switch removes raster decals while leaving functional warnings intact, preserving a portable simulation/presentation boundary for a future Steam renderer.
+- Verification: TypeScript and 332 tests across 41 files passed before the final production verify run. Retained sources, prompt history, frame maps, and the normalizer live under `art/production-tests/batch-j/`.

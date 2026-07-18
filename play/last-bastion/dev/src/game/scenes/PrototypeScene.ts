@@ -93,6 +93,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly eliteRewardViews = new Map<number, EliteRewardView>();
   private readonly miniBossTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly combatTelegraphViews = new Map<string, Phaser.GameObjects.Graphics>();
+  private readonly combatTelegraphArtViews = new Map<string, Phaser.GameObjects.Sprite>();
   private readonly ripperTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly razorScuttlerTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly quillbackTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
@@ -292,6 +293,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncEliteRewards(snapshot.eliteRewards);
     this.syncMiniBossTelegraphs(snapshot.enemies);
     this.syncCombatTelegraphs(snapshot.combatTelegraphs);
+    this.syncCombatTelegraphArt(snapshot.combatTelegraphs);
     this.syncRipperTelegraphs(snapshot.enemies);
     this.syncRazorScuttlerTelegraphs(snapshot.enemies);
     this.syncQuillbackTelegraphs(snapshot.enemies);
@@ -601,6 +603,9 @@ export class PrototypeScene extends Phaser.Scene {
           this.emitAuthoredEffect(17, event.position, 360, event.radiusMetres * 0.5, event.radiusMetres, 0, "batch-b-effects-v1");
           this.shakeCamera(150, 0.006);
           break;
+        case "rain-of-spines-impact":
+          this.emitAuthoredEffect(11, event.position, 190, 0.8, 1, 0, "telegraph-small-v1");
+          break;
         case "brood-cleave":
           this.emitAuthoredEffect(5, event.position, 300, event.radiusMetres * 0.5, event.radiusMetres, 0, "brood-warden-effects-v1");
           break;
@@ -844,7 +849,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" | "telegraph-small-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -1006,6 +1011,18 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   private createEnemyView(enemy: EnemySnapshot): EnemyView {
+    if (this.useMarineArt && enemy.type === "swarm-scuttler") {
+      return createManifestSprite(this, "swarm-scuttler-v1");
+    }
+    if (this.useMarineArt && enemy.eliteKind === "razorlord") {
+      return createManifestSprite(this, "razorlord-v1");
+    }
+    if (this.useMarineArt && enemy.eliteKind === "blightspitter") {
+      return createManifestSprite(this, "blightspitter-v1");
+    }
+    if (this.useMarineArt && enemy.eliteKind === "quillback-matriarch") {
+      return createManifestSprite(this, "quillback-matriarch-v1");
+    }
     if (this.useMarineArt && enemy.eliteKind === "carapace-scuttler") {
       return createManifestSprite(this, "carapace-scuttler-v1");
     }
@@ -1124,17 +1141,20 @@ export class PrototypeScene extends Phaser.Scene {
 
   private styleEnemyView(view: EnemyView, enemy: EnemySnapshot): void {
     if (view instanceof Phaser.GameObjects.Sprite) {
+      const batchJScale = view.texture.key === "quillback-matriarch-v1" ? 0.9
+        : view.texture.key === "blightspitter-v1" ? 1.05
+          : view.texture.key === "razorlord-v1" ? 1 : null;
       const eliteScale = enemy.eliteKind === "quillback-matriarch" ? 1.35 : enemy.eliteKind ? 1.18 : 1;
-      view.setScale(enemy.type === "aurum-hoarder" ? 0.9 : enemy.type === "swarm-scuttler" ? 0.72 : eliteScale);
+      view.setScale(batchJScale ?? (enemy.type === "aurum-hoarder" ? 0.9 : enemy.type === "swarm-scuttler" ? 0.72 : eliteScale));
       view.setAlpha(enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup" ? 0.72 : 1);
       const status = enemy.statuses[0];
       if (enemy.type === "blast-mite" && enemy.mitePhase === "armed" && Math.floor(this.time.now / 80) % 2 === 0) {
         view.setTint(0xffffff);
       } else if (status) view.setTint(statusColor(status));
-      else if (enemy.eliteKind === "razorlord") view.setTint(0xd696ff);
-      else if (enemy.eliteKind === "blightspitter") view.setTint(0xb9f35b);
-      else if (enemy.eliteKind === "quillback-matriarch") view.setTint(0xff9a72);
-      else if (enemy.type === "swarm-scuttler") view.setTint(0xffd36b);
+      else if (enemy.eliteKind === "razorlord" && view.texture.key !== "razorlord-v1") view.setTint(0xd696ff);
+      else if (enemy.eliteKind === "blightspitter" && view.texture.key !== "blightspitter-v1") view.setTint(0xb9f35b);
+      else if (enemy.eliteKind === "quillback-matriarch" && view.texture.key !== "quillback-matriarch-v1") view.setTint(0xff9a72);
+      else if (enemy.type === "swarm-scuttler" && view.texture.key !== "swarm-scuttler-v1") view.setTint(0xffd36b);
       else view.clearTint();
       return;
     }
@@ -1178,7 +1198,7 @@ export class PrototypeScene extends Phaser.Scene {
       return;
     }
     if (enemy.type === "quillback" && view instanceof Phaser.GameObjects.Triangle) {
-      const phaseColors = { positioning: 0x6d3645, windup: 0xff9a52, recover: 0x514552 } as const;
+      const phaseColors = { positioning: 0x6d3645, windup: 0xff9a52, launch: 0xff6b3d, recover: 0x514552 } as const;
       const direction = enemy.quillbackDirection ?? enemy.facingDirection;
       view.setFillStyle(phaseColors[enemy.quillbackPhase ?? "positioning"])
         .setRotation(Math.atan2(direction.y, direction.x))
@@ -1318,7 +1338,14 @@ export class PrototypeScene extends Phaser.Scene {
         const target = { x: enemy.position.x + direction.x, y: enemy.position.y + direction.y };
         const facingColumn = cardinalFacingColumn(enemy.position, target);
         const row = phase === "windup" ? 1 : phase === "dash" ? 2 : phase === "recovery" ? 3 : 0;
-        view.setTexture("razor-scuttler-v1").setFrame(row * 4 + facingColumn).setRotation(0);
+        if (enemy.eliteKind === "razorlord") {
+          const beat = (Math.floor(this.time.now / 115) + enemy.id) % 4;
+          view.setTexture("razorlord-v1")
+            .setFrame(row * 4 + beat)
+            .setRotation(Math.atan2(direction.y, direction.x));
+        } else {
+          view.setTexture("razor-scuttler-v1").setFrame(row * 4 + facingColumn).setRotation(0);
+        }
         if (phase === "dash") {
           const previousTrail = this.razorScuttlerTrailTimes.get(enemy.id) ?? -1000;
           if (this.time.now - previousTrail >= 85) {
@@ -1359,8 +1386,16 @@ export class PrototypeScene extends Phaser.Scene {
         };
         const facingColumn = cardinalFacingColumn(enemy.position, target);
         const phase = enemy.quillbackPhase ?? "positioning";
-        const row = phase === "windup" ? 1 : phase === "recover" ? 2 : 0;
-        view.setFrame(row * 4 + facingColumn).setRotation(0);
+        if (enemy.eliteKind === "quillback-matriarch") {
+          const row = phase === "windup" ? 1 : phase === "launch" ? 2 : phase === "recover" ? 3 : 0;
+          const beat = (Math.floor(this.time.now / 130) + enemy.id) % 4;
+          view.setTexture("quillback-matriarch-v1")
+            .setFrame(row * 4 + beat)
+            .setRotation(Math.atan2(direction.y, direction.x));
+        } else {
+          const row = phase === "windup" || phase === "launch" ? 1 : phase === "recover" ? 2 : 0;
+          view.setFrame(row * 4 + facingColumn).setRotation(0);
+        }
         return;
       }
       case "spinewheel": {
@@ -1437,6 +1472,14 @@ export class PrototypeScene extends Phaser.Scene {
         view.setRotation(angleToward(enemy.position, playerPosition));
         return;
       case "slime-spitter": {
+        if (enemy.eliteKind === "blightspitter") {
+          const row = enemy.spitterPhase === "windup" ? 1 : enemy.spitterPhase === "recover" ? 2 : 0;
+          const beat = (Math.floor(this.time.now / 125) + enemy.id) % 4;
+          view.setTexture("blightspitter-v1")
+            .setFrame(row * 4 + beat)
+            .setRotation(Math.atan2(enemy.facingDirection.y, enemy.facingDirection.x));
+          return;
+        }
         const facingColumn = cardinalFacingColumn(enemy.position, playerPosition);
         const row = enemy.spitterPhase === "windup" ? 1 : enemy.spitterPhase === "recover" ? 2 : 0;
         view.setFrame(row * 4 + facingColumn).setRotation(0);
@@ -1470,6 +1513,14 @@ export class PrototypeScene extends Phaser.Scene {
         return;
       }
       default: {
+        if (enemy.type === "swarm-scuttler") {
+          const direction = enemy.facingDirection;
+          const target = { x: enemy.position.x + direction.x, y: enemy.position.y + direction.y };
+          const facingColumn = cardinalFacingColumn(enemy.position, target);
+          const row = offsetGaitRow(this.time.now, enemy.id);
+          view.setTexture("swarm-scuttler-v1").setFrame(row * 4 + facingColumn).setRotation(0);
+          return;
+        }
         const facingTarget = enemy.eliteKind === "carapace-scuttler"
           ? {
             x: enemy.position.x + enemy.facingDirection.x,
@@ -1756,6 +1807,61 @@ export class PrototypeScene extends Phaser.Scene {
         const edgeX = edge.x * PIXELS_PER_METRE;
         const edgeY = edge.y * PIXELS_PER_METRE;
         view.fillStyle(colour, 0.92).fillTriangle(edgeX, edgeY - 9, edgeX + 8, edgeY + 8, edgeX - 8, edgeY + 8);
+      }
+    }
+  }
+
+  private syncCombatTelegraphArt(telegraphs: readonly CombatTelegraphSnapshot[]): void {
+    if (!this.useMarineArt) {
+      this.destroyMissing(this.combatTelegraphArtViews, new Set<string>());
+      return;
+    }
+    const liveIds = new Set(telegraphs.map((telegraph) => telegraph.id));
+    this.destroyMissing(this.combatTelegraphArtViews, liveIds);
+    for (const telegraph of telegraphs) {
+      let view = this.combatTelegraphArtViews.get(telegraph.id);
+      if (!view) {
+        view = this.add.sprite(0, 0, "telegraph-small-v1", 0).setDepth(62.5);
+        this.combatTelegraphArtViews.set(telegraph.id, view);
+      }
+      const camera = this.cameras.main.worldView;
+      const edge = offscreenWarningPosition(
+        telegraph.origin,
+        {
+          x: camera.x / PIXELS_PER_METRE,
+          y: camera.y / PIXELS_PER_METRE,
+          width: camera.width / PIXELS_PER_METRE,
+          height: camera.height / PIXELS_PER_METRE,
+        },
+      );
+      if (edge) {
+        const direction = Math.atan2(telegraph.origin.y - edge.y, telegraph.origin.x - edge.x);
+        view.setTexture("telegraph-small-v1").setFrame(7)
+          .setPosition(edge.x * PIXELS_PER_METRE, edge.y * PIXELS_PER_METRE)
+          .setDisplaySize(48, 48).setRotation(direction - Math.PI).setAlpha(0.9).setVisible(true);
+        continue;
+      }
+
+      const progress = Math.min(0.999, Math.max(0, 1 - telegraph.remainingSeconds / telegraph.durationSeconds));
+      const x = telegraph.origin.x * PIXELS_PER_METRE;
+      const y = telegraph.origin.y * PIXELS_PER_METRE;
+      const diameter = (telegraph.radiusMetres ?? 1) * PIXELS_PER_METRE * 2;
+      view.setPosition(x, y).setRotation(0).setAlpha(0.58).setVisible(true);
+      if (telegraph.kind === "ground-slam") {
+        view.setTexture("telegraph-large-v1").setFrame(Math.floor(progress * 4)).setDisplaySize(diameter, diameter);
+      } else if (telegraph.kind === "sweeping-arc" && telegraph.direction) {
+        view.setTexture("telegraph-large-v1").setFrame(4 + Math.floor(progress * 4)).setDisplaySize(diameter, diameter)
+          .setRotation(Math.atan2(telegraph.direction.y, telegraph.direction.x));
+      } else if (telegraph.kind === "rain-of-spines") {
+        view.setTexture("telegraph-small-v1").setFrame(Math.floor(progress * 4)).setDisplaySize(diameter, diameter);
+      } else if (telegraph.kind === "radial-pulse") {
+        view.setTexture("telegraph-small-v1").setFrame(4 + Math.min(2, Math.floor(progress * 3))).setDisplaySize(diameter, diameter);
+      } else if (telegraph.kind === "beam" && telegraph.direction) {
+        const length = (telegraph.lengthMetres ?? 1) * PIXELS_PER_METRE;
+        view.setTexture("telegraph-small-v1").setFrame(8 + Math.min(2, Math.floor(progress * 3)))
+          .setDisplaySize(length, 64).setRotation(Math.atan2(telegraph.direction.y, telegraph.direction.x));
+      } else {
+        view.setVisible(false);
       }
     }
   }
@@ -2288,7 +2394,7 @@ function readStressProfile(): 4 | 12 | null {
 
 function readScenario(): CombatScenario | null {
   const scenario = new URLSearchParams(window.location.search).get("scenario");
-  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop" || scenario === "weapon-gate"
+  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop" || scenario === "weapon-gate" || scenario === "batch-j"
     ? scenario
     : null;
 }
@@ -2484,7 +2590,7 @@ function applyManifestOrigin(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1" | "aurum-hoarder-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1" | "aurum-hoarder-v1" | "swarm-scuttler-v1" | "razorlord-v1" | "blightspitter-v1" | "quillback-matriarch-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

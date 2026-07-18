@@ -15,6 +15,14 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "j2") {
+      this.createBatchJ2Gallery();
+      return;
+    }
+    if (batch === "j1") {
+      this.createBatchJ1Gallery();
+      return;
+    }
     if (batch === "i3") {
       this.createBatchI3Gallery();
       return;
@@ -489,6 +497,71 @@ export class AssetGalleryScene extends Phaser.Scene {
     }
 
     this.add.text(480, 500, "Review: ?mode=gallery&batch=n • Encounter: ?scenario=aurum-hoarder&loadout=bulwark", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchJ1Gallery(): void {
+    this.add.text(20, 14, "LAST BASTION — PRODUCTION BATCH J1 SPEED-TIER ENEMIES", style("#ffffff", "17px"));
+    this.add.text(20, 38, "52 runtime body frames • simulation-owned movement, attacks, timing, collision, and cadence", style("#8fb2c9", "11px"));
+
+    this.add.text(20, 66, "SWARM SCUTTLER — pursuit / pack rush × S N E W", style("#ff9a72", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 48 + frame * 57;
+      this.add.sprite(x, 112, "swarm-scuttler-v1", frame).setScale(0.65);
+      this.add.text(x, 146, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(500, 66, "RAZORLORD — pursuit / wind-up / dash / recovery", style("#d696ff", "10px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const x = 524 + (frame % 8) * 54;
+      const y = 105 + Math.floor(frame / 8) * 62;
+      this.add.sprite(x, y, "razorlord-v1", frame).setScale(0.46);
+    }
+
+    this.add.text(20, 205, "BLIGHTSPITTER — running position / gland wind-up / recovery", style("#b9f35b", "10px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const x = 52 + (frame % 6) * 75;
+      const y = 258 + Math.floor(frame / 6) * 74;
+      this.add.sprite(x, y, "blightspitter-v1", frame).setScale(0.56);
+    }
+
+    this.add.text(500, 205, "QUILLBACK MATRIARCH — position / crown / launch / recovery", style("#ffb982", "10px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const x = 530 + (frame % 4) * 105;
+      const y = 263 + Math.floor(frame / 4) * 64;
+      this.add.sprite(x, y, "quillback-matriarch-v1", frame).setScale(0.43);
+    }
+    this.add.text(480, 520, "Review: ?mode=gallery&batch=j1 • Live identities enter waves 2 and 4–9", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchJ2Gallery(): void {
+    this.add.text(20, 14, "LAST BASTION — PRODUCTION BATCH J2 TELEGRAPH DECALS", style("#ffffff", "17px"));
+    this.add.text(20, 38, "24 hostile-warm frames • code geometry remains visible and authoritative beneath every raster accent", style("#8fb2c9", "11px"));
+    this.add.text(20, 66, "LARGE — slam 25/50/75/100 • 120° sweep 25/50/75/100", style("#ffb982", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 70 + frame * 118;
+      this.add.sprite(x, 138, "telegraph-large-v1", frame).setScale(0.65).setAlpha(0.9);
+    }
+    this.add.text(20, 214, "SMALL — rain reticle • radial pulse • edge marker • beam • spine impact", style("#ff9a72", "10px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const x = 52 + frame * 78;
+      this.add.sprite(x, 266, "telegraph-small-v1", frame).setScale(0.82);
+    }
+    this.add.text(20, 320, "FIVE-ARENA CONTRAST STRIP — base / Emberfall / Toxic Bloom / Void Approach / Arctic Relay", style("#ffd36b", "10px"));
+    const themes = [
+      { color: 0x263443, texture: "arena-floor-v1" },
+      { color: 0x4a2821, texture: "emberfall-floor-v1" },
+      { color: 0x263b28, texture: "toxic-bloom-floor-v1" },
+      { color: 0x24213d, texture: "void-approach-floor-v1" },
+      { color: 0x304352, texture: "arctic-relay-floor-v1" },
+    ] as const;
+    themes.forEach((theme, index) => {
+      const x = 108 + index * 185;
+      this.add.rectangle(x, 410, 164, 118, theme.color).setStrokeStyle(2, 0x728ba1);
+      this.add.sprite(x - 42, 410, theme.texture, index % 6).setScale(1.7).setAlpha(0.65);
+      this.add.sprite(x, 410, "telegraph-large-v1", index % 4).setScale(0.62).setAlpha(0.82);
+      this.add.sprite(x + 47, 410, "telegraph-small-v1", index % 8).setScale(0.72).setAlpha(0.9);
+    });
+    this.add.text(480, 508, "Review: ?mode=gallery&batch=j2 • decals never replace code radius, arc, beam, target, or edge clipping", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createScrapShopGallery(): void {

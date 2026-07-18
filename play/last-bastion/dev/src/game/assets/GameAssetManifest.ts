@@ -89,6 +89,13 @@ import batchIPlacementModalUrl from "../../../../art/production-tests/batch-i/pl
 import batchIWeaponStatCardUrl from "../../../../art/production-tests/batch-i/weapon-stat-card-v1-320x420.png";
 import batchIShopCounterUrl from "../../../../art/production-tests/batch-i/shop-counter-backdrop-v1-1200x700.png";
 import batchIShopGlyphUrl from "../../../../art/production-tests/batch-i/shop-action-glyph-atlas-v1-48.png";
+import swarmScuttlerSheetUrl from "../../../../art/production-tests/batch-j/swarm-scuttler-spritesheet-v1-64.png";
+import razorlordSheetUrl from "../../../../art/production-tests/batch-j/razorlord-spritesheet-v1-96.png";
+import blightspitterSheetUrl from "../../../../art/production-tests/batch-j/blightspitter-spritesheet-v1-96.png";
+import quillbackMatriarchSheetUrl from "../../../../art/production-tests/batch-j/quillback-matriarch-spritesheet-v1-128.png";
+import telegraphLargeSheetUrl from "../../../../art/production-tests/batch-j/telegraph-large-atlas-v1-128.png";
+import telegraphSmallSheetUrl from "../../../../art/production-tests/batch-j/telegraph-small-atlas-v1-64.png";
+import telegraphDangerFillUrl from "../../../../art/production-tests/batch-j/telegraph-danger-fill-v1-64.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -181,7 +188,14 @@ export type GameAssetId =
   | "batch-i-placement-modal-v1"
   | "batch-i-weapon-stat-card-v1"
   | "batch-i-shop-counter-v1"
-  | "batch-i-shop-glyphs-v1";
+  | "batch-i-shop-glyphs-v1"
+  | "swarm-scuttler-v1"
+  | "razorlord-v1"
+  | "blightspitter-v1"
+  | "quillback-matriarch-v1"
+  | "telegraph-large-v1"
+  | "telegraph-small-v1"
+  | "telegraph-danger-fill-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -296,6 +310,13 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   image("batch-i-weapon-stat-card-v1", batchIWeaponStatCardUrl, 320, 420, 0.5, 0.5),
   image("batch-i-shop-counter-v1", batchIShopCounterUrl, 1200, 700, 0.5, 0.5),
   sheet("batch-i-shop-glyphs-v1", batchIShopGlyphUrl, 48, 48, 3, 0.5, 0.5),
+  sheet("swarm-scuttler-v1", swarmScuttlerSheetUrl, 64, 64, 8, 0.5, 0.55),
+  sheet("razorlord-v1", razorlordSheetUrl, 96, 96, 16, 0.5, 0.55),
+  sheet("blightspitter-v1", blightspitterSheetUrl, 96, 96, 12, 0.5, 0.55),
+  sheet("quillback-matriarch-v1", quillbackMatriarchSheetUrl, 128, 128, 16, 0.5, 0.58),
+  sheet("telegraph-large-v1", telegraphLargeSheetUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("telegraph-small-v1", telegraphSmallSheetUrl, 64, 64, 12, 0.5, 0.5),
+  sheet("telegraph-danger-fill-v1", telegraphDangerFillUrl, 64, 64, 4, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(

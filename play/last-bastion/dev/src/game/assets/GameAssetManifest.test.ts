@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(91);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(98);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -314,5 +314,26 @@ describe("GameAssetManifest", () => {
     expect(GAME_ASSETS["batch-i-placement-modal-v1"].logicalHeight).toBe(560);
     expect(GAME_ASSETS["batch-i-weapon-stat-card-v1"].logicalWidth).toBe(320);
     expect(GAME_ASSETS["batch-i-shop-counter-v1"].logicalWidth).toBe(1200);
+  });
+
+  it("locks the production Batch J1 and J2 contracts", () => {
+    const expected = {
+      "swarm-scuttler-v1": [64, 8],
+      "razorlord-v1": [96, 16],
+      "blightspitter-v1": [96, 12],
+      "quillback-matriarch-v1": [128, 16],
+      "telegraph-large-v1": [128, 8],
+      "telegraph-small-v1": [64, 12],
+      "telegraph-danger-fill-v1": [64, 4],
+    } as const;
+    for (const [id, [size, frames]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") {
+        expect(asset.logicalWidth).toBe(size);
+        expect(asset.logicalHeight).toBe(size);
+        expect(asset.frameCount).toBe(frames);
+      }
+    }
   });
 });

@@ -4,7 +4,7 @@
 
 This is the numeric design for encounter pressure: what spawns, how tough it is, what it pays, and how all of that grows wave over wave. The durable design lives in `last-bastion-game.md`; implementation status lives in `last-bastion-model.md`. Numbers here are **proposals for the step 35 tuning pass** unless a row is marked implemented.
 
-**Status:** Draft v2 — 18 July 2026 (v1 17 July). Precision/display, combat rescaling, ten-wave scaling and threat budgets, fractional projectiles, baseline regeneration, level packages, speed tiers, elite cadence, code-authoritative telegraphs, and the measured XP reference run are implemented. Batch J art and creator feel/readability review remain open.
+**Status:** Draft v2 — 18 July 2026 (v1 17 July). Precision/display, combat rescaling, ten-wave scaling and threat budgets, fractional projectiles, baseline regeneration, level packages, speed tiers, elite cadence, code-authoritative telegraphs, the measured XP reference run, and Batch J presentation are implemented. Creator feel/readability review remains open.
 
 ## Design intent
 

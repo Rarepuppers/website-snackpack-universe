@@ -53,9 +53,12 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?scenario=aurum-hoarder&loadout=bulwark` — Aurum Hoarder forage/flee lab with armour-break Scrap, edge-exit marker, and guaranteed supply-cache reward
 - `/play/last-bastion/?scenario=scrap-shop&loadout=vertical` — seeded four-row Scrap Shop lab with three live offers, affordability states, repeat purchasing, and explicit leave/bank action
 - `/play/last-bastion/?scenario=weapon-gate` — code-native weapon placement lab with typed rack slots, four-slot stash, swap refusal, discard, and merge targets
+- `/play/last-bastion/?scenario=batch-j&loadout=vertical` — deterministic J1/J2 live-art lab with the swarm body, three elite bodies, attack cadence, and layered telegraphs
 
 - `/play/last-bastion/?mode=gallery&batch=n` — Task 36 Aurum body/effects/cache family and eight 128 px runtime tiles
 - `/play/last-bastion/?mode=gallery&batch=n2` — production Scrap Shop panel, six 128 px offer tiles, and four 128 px Scrap HUD/effect frames
+- `/play/last-bastion/?mode=gallery&batch=j1` — Swarm Scuttler and elite body state sheets
+- `/play/last-bastion/?mode=gallery&batch=j2` — code-backed hostile telegraph decals and five-arena contrast strip
 - `/play/last-bastion/?mode=gallery&batch=i` — promoted Batch I1 weapon, perk, and hotkey/action 128 px runtime tile atlases
 - `/play/last-bastion/?mode=gallery&batch=i2` — Batch I2 rack-class, stash, tier, discard, merge, and drag surfaces
 - `/play/last-bastion/?mode=gallery&batch=i3` — Batch I3 placement modal, stat card, salvage counter, and shop glyphs

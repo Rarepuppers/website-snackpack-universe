@@ -263,6 +263,22 @@ Hoarder columns are south, north, east, west; rows are intact forage, armour-bro
 
 Offer frames are Field Repair, Uranium-Core Kit, Armour Retrofit, Upgrade Calibration, Weapon Requisition, and Sold/Locked. HUD frames are neutral Scrap, secured pulse, spent transfer, and banked cassette. The terminal panel deliberately keeps its centre empty so prices, descriptions, affordability, selection, quantity, key labels, and localization remain code-owned. Retained chroma sources, transparent masters, exact prompts, frame maps, and deterministic normalization live under `art/production-tests/batch-n2/`.
 
+## Production Asset Batch J contracts
+
+| Stable ID | Grid | Logical cell | Frame count |
+| --- | ---: | ---: | ---: |
+| `swarm-scuttler-v1` | 4×2 | 64×64 | 8 |
+| `razorlord-v1` | 4×4 | 96×96 | 16 |
+| `blightspitter-v1` | 4×3 | 96×96 | 12 |
+| `quillback-matriarch-v1` | 4×4 | 128×128 | 16 |
+| `telegraph-large-v1` | 4×2 | 128×128 | 8 |
+| `telegraph-small-v1` | 4×3 | 64×64 | 12 |
+| `telegraph-danger-fill-v1` | 4×1 | 64×64 | 4 |
+
+Swarm rows are sprint and attack/recoil. Razorlord rows are pursuit, wind-up, committed dash, and recovery. Blightspitter rows are positioning, wind-up, and recovery. Matriarch rows are positioning, crown charge, launch, and recovery. Body columns are animation beats for east-facing art rotated or mirrored by runtime direction; no frame controls collision.
+
+Large telegraph frames are four ground-slam stages followed by four 120-degree sweep stages. Small frames are four rain reticles, three radial pulses, one edge warning, three beam widths, and one impact burst. Danger fills are supporting hatch variants only. Runtime code remains the sole authority for shape, radius, direction, timing, hit tests, warning caps, and off-screen placement; decals sit below the code geometry and must never replace it.
+
 ## Approval still required
 
 - Whether the tested 96 × 96 logical cell remains final after gameplay-scale review

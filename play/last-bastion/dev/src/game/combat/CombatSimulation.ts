@@ -108,7 +108,7 @@ export type BlastMitePhase = "chase" | "armed";
 export type WarpFlankerPhase = "stalk" | "warp-windup" | "materialize";
 export type RipperPhase = "pursuit" | "windup" | "sweep" | "recovery";
 export type RazorScuttlerPhase = "pursuit" | "windup" | "dash" | "recovery";
-export type QuillbackPhase = "positioning" | "windup" | "recover";
+export type QuillbackPhase = "positioning" | "windup" | "launch" | "recover";
 export type SpinewheelPhase = "positioning" | "windup" | "rolling" | "recovery";
 export type TetherBloomPhase = "idle" | "windup" | "tethering" | "recovery";
 export type AurumHoarderPhase = "forage" | "flee";
@@ -127,7 +127,7 @@ export type BroodWardenPhase =
   | "entrance" | "stalk" | "cleave-windup" | "cleave"
   | "acid-windup" | "acid-volley" | "egg-windup" | "egg-lay"
   | "rush-windup" | "swarm-rush" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
 export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat";
@@ -182,6 +182,7 @@ export type CombatEvent =
   | { type: "elite-reward-collected"; position: Vector2Data }
   | { type: "mini-boss-sweep"; position: Vector2Data; radiusMetres: number }
   | { type: "mini-boss-shockwave"; position: Vector2Data; radiusMetres: number }
+  | { type: "rain-of-spines-impact"; position: Vector2Data }
   | { type: "brood-cleave"; position: Vector2Data; radiusMetres: number }
   | { type: "brood-acid-volley"; position: Vector2Data; target: Vector2Data; count: number }
   | { type: "brood-acid-impact"; position: Vector2Data }
@@ -855,6 +856,8 @@ export class CombatSimulation {
       this.populateScrapShopScenario();
     } else if (this.scenario === "weapon-gate") {
       this.populateWeaponGateScenario();
+    } else if (this.scenario === "batch-j") {
+      this.populateBatchJScenario();
     } else if (this.wavesEnabled) {
       this.beginWave(0);
     }
@@ -3291,13 +3294,25 @@ export class CombatSimulation {
         break;
       case "windup":
         if (enemy.quillbackPhaseRemainingSeconds <= 0) {
-          if (enemy.eliteKind === "quillback-matriarch") this.beginRainOfSpines(enemy);
-          else this.launchQuillbackVolley(enemy);
+          if (enemy.eliteKind === "quillback-matriarch") {
+            this.beginRainOfSpines(enemy);
+            enemy.quillbackAttackCount += 1;
+            enemy.quillbackPhase = "launch";
+            enemy.quillbackPhaseRemainingSeconds = 0.22;
+            break;
+          }
+          this.launchQuillbackVolley(enemy);
           enemy.quillbackAttackCount += 1;
           enemy.quillbackPhase = "recover";
           enemy.quillbackPhaseRemainingSeconds = enemy.quillbackShotCount === 1
             ? 1.15
             : enemy.quillbackShotCount === 3 ? 1.45 : 1.75;
+        }
+        break;
+      case "launch":
+        if (enemy.quillbackPhaseRemainingSeconds <= 0) {
+          enemy.quillbackPhase = "recover";
+          enemy.quillbackPhaseRemainingSeconds = 1.55;
         }
         break;
       case "recover":
@@ -3659,11 +3674,9 @@ export class CombatSimulation {
       if (rain.targets.some((target) => distance(target, this.playerPosition) <= rainRadiusMetres() + PLAYER_RADIUS_METRES)) {
         this.damagePlayer(rain.damage);
       }
-      this.frameEvents.push({
-        type: "mini-boss-shockwave",
-        position: { ...rain.targets[0]! },
-        radiusMetres: rainRadiusMetres(),
-      });
+      for (const target of rain.targets) {
+        this.frameEvents.push({ type: "rain-of-spines-impact", position: { ...target } });
+      }
     }
     this.rainOfSpines = this.rainOfSpines.filter((rain) => rain.remainingSeconds > 0);
   }
@@ -4404,6 +4417,15 @@ export class CombatSimulation {
     };
     this.pendingWeaponTile = incoming;
     this.decisionQueue.push(this.buildWeaponPlacementDecision(incoming));
+  }
+
+  /** Stable live-art lab for Batch J body silhouettes, cadence, and telegraphs. */
+  private populateBatchJScenario(): void {
+    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+    this.spawnEnemy("swarm-scuttler", { x: centre.x - 7.5, y: centre.y - 4.5 });
+    this.spawnElite("razorlord", { x: centre.x + 7, y: centre.y - 4 });
+    this.spawnElite("blightspitter", { x: centre.x + 7.5, y: centre.y + 4 });
+    this.spawnElite("quillback-matriarch", { x: centre.x - 7, y: centre.y + 4.5 });
   }
 
   private populateSlimeSpitterScenario(): void {

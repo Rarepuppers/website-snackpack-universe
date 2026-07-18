@@ -655,9 +655,9 @@ One **128 × 128** tile per weapon. Existing 64 × 64 cadence motifs are legacy 
 
 **Acceptance:** each weapon tile is identifiable at 128, 96, 64, 48, and 36 px, in grayscale, and beneath a 50% cooldown shadow; slot frames are distinguishable by silhouette alone (not colour alone) for colour-blind players; legal/illegal drop states differ in shape, not just hue.
 
-## Batch J — new enemies and telegraph decals (queued for Codex)
+## Batch J — new enemies and telegraph decals
 
-**Status:** Ready for generation — behavior gates completed 18 July 2026. J1 body contracts now map to tested live family behavior and the full wave cadence; J2 timing, radius, arc, coverage, layering, major-warning, and off-screen contracts are simulation-owned and tested. **All telegraph geometry remains code-drawn and authoritative** — these decals reinforce warnings, never define them.
+**Status:** Production assets generated, normalized, manifest-locked, and integrated — 18 July 2026; creator gameplay-scale review queued. J1 supplies 52 body frames across the Swarm Scuttler and three elite families. J2 supplies 24 supporting decal frames. **All telegraph geometry remains code-drawn and authoritative** — the raster decals reinforce warnings, never define them.
 
 ### J1 — new enemy bodies
 
@@ -682,6 +682,8 @@ One **128 × 128** tile per weapon. Existing 64 × 64 cadence motifs are legacy 
 | Danger fill texture (tileable) | Low-contrast hatch used inside any warning zone |
 
 **Acceptance:** every decal must be legible under a crowd of 30+ enemies, in grayscale, and against all five arena themes; warm hostile palette only (never the player's teal/cyan family); no decal may imply a radius different from the code-driven one.
+
+Delivered as seven stable manifest assets: `swarm-scuttler-v1`, `razorlord-v1`, `blightspitter-v1`, `quillback-matriarch-v1`, `telegraph-large-v1`, `telegraph-small-v1`, and `telegraph-danger-fill-v1`. The live renderer layers decals below the authoritative code geometry, preserves the placeholder-art switch, and maps Matriarch launch/impact events explicitly. Review frame order at `?mode=gallery&batch=j1` and `?mode=gallery&batch=j2`; review all four live bodies and active telegraphs at `?scenario=batch-j&loadout=vertical`. Retained chroma sources, transparent masters, prompt provenance, and deterministic normalization live under `art/production-tests/batch-j/`.
 
 ## Batch K — status-effect overlay animations
 

@@ -22,7 +22,7 @@ An item is not completed merely because code or an asset exists. It must meet it
 
 **Milestone status:** In progress
 
-**Current objective:** generate and integrate Batch J1 enemy bodies, then Batch J2 telegraph decals, against the completed behavior and timing contracts. The consolidated creator playtest remains the tuning gate before Event Horizon production promotion.
+**Current objective:** run the consolidated creator review, including the completed Batch J galleries and deterministic live-art lab, then begin Task 36: the Rift Stalker behavior gate. Event Horizon remains held until its own behavior gate.
 
 ## Completed
 
