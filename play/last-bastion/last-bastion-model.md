@@ -574,3 +574,6 @@ Completion evidence:
 - Toxic Bloom is now also retained as a parallel four-atlas variant (`?mode=gallery&batch=tb`) with unchanged footprints; keep both themes held until creator contrast review approves the family.
 - Void Approach is also retained as a parallel four-atlas variant (`?mode=gallery&batch=va`); keep all world themes held until the contrast review approves a consistent environment language.
 - Arctic Relay is now also retained as a parallel four-atlas variant (`?mode=gallery&batch=ar`); all four world themes remain held pending creator review.
+### Weapon placement, inventory, and merge behavior gate
+
+**Completed 18 July 2026.** `dev/src/game/equipment/WeaponInventory.ts` is the portable rules boundary for typed rack legality, four-slot class-agnostic stash storage, non-destructive swaps, discard, and identical same-tier merges capped at Tier III. `CombatSimulation` exposes rack/stash state in every snapshot and the deterministic `?scenario=weapon-gate` route drives the same keyboard/controller-compatible decision surface used by other intermissions. Phaser remains presentation-only so a future Steam client can replace the modal without rewriting the state contract or rules tests. Production Batch I art remains held until creator review approves the code-native behavior.

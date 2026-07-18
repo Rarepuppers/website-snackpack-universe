@@ -18,6 +18,14 @@ import {
   MAX_EQUIPPED_WEAPONS,
   type EquippedWeapon,
 } from "../equipment/WeaponLoadout";
+import {
+  createWeaponInventory,
+  findMergePair,
+  placeWeapon,
+  type WeaponInventoryState,
+  type WeaponPlacementTarget,
+  type WeaponTile,
+} from "../equipment/WeaponInventory";
 import { calculateWeaponRingLayout } from "../equipment/WeaponRingLayout";
 import {
   UPGRADE_CATALOG,
@@ -101,9 +109,9 @@ export type BroodWardenPhase =
   | "entrance" | "stalk" | "cleave-windup" | "cleave"
   | "acid-windup" | "acid-volley" | "egg-windup" | "egg-lay"
   | "rush-windup" | "swarm-rush" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds";
-export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop";
+export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
 export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat";
 
 export interface UpgradeSlotSnapshot {
@@ -124,6 +132,7 @@ export interface PendingDecision {
   kind: DecisionKind;
   title: string;
   options: readonly DecisionOption[];
+  weaponId?: WeaponId;
 }
 
 export type CombatEvent =
@@ -326,6 +335,16 @@ export interface EquippedWeaponSnapshot extends EquippedWeapon {
   cooldownDurationSeconds: number;
 }
 
+export interface WeaponInventorySnapshot {
+  rack: readonly {
+    id: string;
+    weaponClass: "light" | "medium" | "heavy" | "unique" | "all";
+    tile: WeaponTile | null;
+  }[];
+  stash: readonly (WeaponTile | null)[];
+  capacity: number;
+}
+
 export interface CombatSnapshot {
   status: EncounterStatus;
   waveNumber: number;
@@ -363,6 +382,7 @@ export interface CombatSnapshot {
   securedScrap: number;
   weapon: Readonly<WeaponRuntimeStats>;
   equippedWeapons: readonly Readonly<EquippedWeaponSnapshot>[];
+  weaponInventory: WeaponInventorySnapshot;
   events: readonly CombatEvent[];
   arena: Readonly<ArenaDefinition>;
   stressProfile: 4 | 12 | null;
@@ -640,6 +660,7 @@ export class CombatSimulation {
   private evasiveReady = true;
   private evasiveCooldownRemainingSeconds = 0;
   private readonly equippedWeapons: EquippedWeaponState[];
+  private weaponInventory: WeaponInventoryState;
   private magnetMultiplier = 1;
   private lastAimDirection: Vector2Data = { x: 1, y: 0 };
   private enemies: EnemyState[] = [];
@@ -679,6 +700,7 @@ export class CombatSimulation {
   private readonly stressProfile: 4 | 12 | null;
   private readonly scenario: CombatScenario | null;
   private activeTetherEnemyId: number | null = null;
+  private pendingWeaponTile: WeaponTile | null = null;
 
   constructor(options: CombatSimulationOptions = {}) {
     this.arena = options.arena ?? BASTION_ARENA;
@@ -709,6 +731,14 @@ export class CombatSimulation {
       cooldownSeconds: 0,
       cooldownDurationSeconds: 0,
     }));
+    const rackClasses: ("light" | "medium" | "heavy" | "unique" | "all")[] = ["light", "medium", "heavy", "all"];
+    while (rackClasses.length < this.equippedWeapons.length) rackClasses.push("all");
+    this.weaponInventory = createWeaponInventory(rackClasses, this.equippedWeapons.map((weapon) => ({
+      instanceId: weapon.instanceId,
+      weaponId: weapon.weaponId,
+      weaponClass: weapon.stats.weaponClass,
+      tier: 1,
+    })));
 
     if (this.stressProfile !== null) {
       this.populateStressScenario(this.stressProfile);
@@ -738,6 +768,8 @@ export class CombatSimulation {
       this.populateAurumHoarderScenario();
     } else if (this.scenario === "scrap-shop") {
       this.populateScrapShopScenario();
+    } else if (this.scenario === "weapon-gate") {
+      this.populateWeaponGateScenario();
     } else if (this.wavesEnabled) {
       this.beginWave(0);
     }
@@ -1079,6 +1111,9 @@ export class CombatSimulation {
           this.decisionQueue.unshift(this.buildScrapShopDecision());
         }
         break;
+      case "weapon-placement":
+        this.applyWeaponPlacementChoice(optionId);
+        break;
     }
     this.checkForLevelUp();
     return true;
@@ -1124,7 +1159,7 @@ export class CombatSimulation {
         capacity: this.upgradeSlotCapacity[category],
       })),
       pendingDecision: decision
-        ? { kind: decision.kind, title: decision.title, options: decision.options.map((option) => ({ ...option })) }
+        ? { kind: decision.kind, title: decision.title, options: decision.options.map((option) => ({ ...option })), weaponId: decision.weaponId }
         : null,
       enemies: this.enemies.filter((enemy) => !enemy.dead).map((enemy) => this.enemySnapshot(enemy)),
       projectiles: this.projectiles.filter((projectile) => !projectile.dead).map((projectile) => ({
@@ -1178,6 +1213,15 @@ export class CombatSimulation {
         cooldownRemainingSeconds: weapon.cooldownSeconds,
         cooldownDurationSeconds: weapon.cooldownDurationSeconds || weapon.stats.fireIntervalSeconds,
       })),
+      weaponInventory: {
+        rack: this.weaponInventory.rack.map((slot) => ({
+          id: slot.id,
+          weaponClass: slot.weaponClass,
+          tile: slot.tile ? { ...slot.tile } : null,
+        })),
+        stash: this.weaponInventory.stash.map((tile) => tile ? { ...tile } : null),
+        capacity: this.weaponInventory.stash.length,
+      },
       events: this.frameEvents.map((event) => ({ ...event })),
       arena: this.arena,
       stressProfile: this.stressProfile,
@@ -1287,15 +1331,29 @@ export class CombatSimulation {
     if (this.equippedWeapons.length >= MAX_EQUIPPED_WEAPONS) {
       return;
     }
-    const nextInstanceId = this.equippedWeapons
-      .reduce((maximum, weapon) => Math.max(maximum, weapon.instanceId), 0) + 1;
-    this.equippedWeapons.push({
+    const nextInstanceId = this.weaponInventory.nextInstanceId++;
+    const tile: WeaponTile = {
       instanceId: nextInstanceId,
       weaponId,
-      stats: { ...WEAPON_CATALOG[weaponId] },
-      cooldownSeconds: 0,
-      cooldownDurationSeconds: 0,
-    });
+      weaponClass: WEAPON_CATALOG[weaponId].weaponClass,
+      tier: 1,
+    };
+    const emptySlot = this.weaponInventory.rack.find((slot) => (
+      slot.tile === null && (slot.weaponClass === "all" || slot.weaponClass === tile.weaponClass)
+    ));
+    if (emptySlot) {
+      emptySlot.tile = tile;
+      this.equippedWeapons.push({
+        instanceId: nextInstanceId,
+        weaponId,
+        stats: { ...WEAPON_CATALOG[weaponId] },
+        cooldownSeconds: 0,
+        cooldownDurationSeconds: 0,
+      });
+    } else {
+      const emptyStash = this.weaponInventory.stash.findIndex((candidate) => candidate === null);
+      if (emptyStash >= 0) this.weaponInventory.stash[emptyStash] = tile;
+    }
   }
 
   private applySupplyChoice(optionId: string): void {
@@ -1444,6 +1502,40 @@ export class CombatSimulation {
       title: "WEAPON CHEST — CHOOSE A WEAPON",
       options,
     };
+  }
+
+  private buildWeaponPlacementDecision(tile: WeaponTile): PendingDecision {
+    const options: DecisionOption[] = [];
+    for (const slot of this.weaponInventory.rack) {
+      if (slot.tile === null && (slot.weaponClass === "all" || slot.weaponClass === tile.weaponClass)) {
+        options.push({ id: `place:rack:${slot.id}`, name: `Equip in ${slot.weaponClass.toUpperCase()} slot`, description: "Add to the firing rack." });
+      }
+    }
+    this.weaponInventory.stash.forEach((candidate, index) => {
+      if (candidate === null) options.push({ id: `place:inventory:${index}`, name: `Store in stash ${index + 1}`, description: "Hold for a later swap or merge. It does not fire." });
+    });
+    const merge = findMergePair(this.weaponInventory, tile);
+    if (merge) options.push({ id: placementTargetId(merge), name: "Merge duplicate", description: "Combine identical tiles into the next tier and free one tile." });
+    options.push({ id: "place:discard", name: "Discard", description: "Refuse this tile. Nothing else changes." });
+    return { kind: "weapon-placement", title: `PLACE WEAPON — ${WEAPON_CATALOG[tile.weaponId].displayName}`, options, weaponId: tile.weaponId };
+  }
+
+  private applyWeaponPlacementChoice(optionId: string): void {
+    const tile = this.pendingWeaponTile;
+    if (!tile) return;
+    const target = parsePlacementTarget(optionId);
+    if (!target) return;
+    const result = placeWeapon(this.weaponInventory, tile, target);
+    if (!result.ok) return;
+    this.weaponInventory = result.state;
+    if (target.kind === "rack" && result.state.rack.find((slot) => slot.id === target.slotId)?.tile?.instanceId === tile.instanceId) {
+      this.equippedWeapons.push({ instanceId: tile.instanceId, weaponId: tile.weaponId, stats: { ...WEAPON_CATALOG[tile.weaponId] }, cooldownSeconds: 0, cooldownDurationSeconds: 0 });
+    }
+    if (result.merged && target.kind === "merge" && target.slotId) {
+      const weaponIndex = this.equippedWeapons.findIndex((weapon) => weapon.instanceId === tile.instanceId);
+      if (weaponIndex >= 0) this.equippedWeapons.splice(weaponIndex, 1);
+    }
+    this.pendingWeaponTile = null;
   }
 
   private buildSupplyDepotDecision(): PendingDecision {
@@ -3969,6 +4061,18 @@ export class CombatSimulation {
     this.decisionQueue.push(this.buildScrapShopDecision());
   }
 
+  /** Deterministic review lab for the tile placement, stash, and merge contract. */
+  private populateWeaponGateScenario(): void {
+    const incoming: WeaponTile = {
+      instanceId: this.weaponInventory.nextInstanceId++,
+      weaponId: "scattergun",
+      weaponClass: "heavy",
+      tier: 1,
+    };
+    this.pendingWeaponTile = incoming;
+    this.decisionQueue.push(this.buildWeaponPlacementDecision(incoming));
+  }
+
   private populateSlimeSpitterScenario(): void {
     const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
     for (const offset of [
@@ -4284,4 +4388,24 @@ function distanceToSegment(point: Vector2Data, from: Vector2Data, to: Vector2Dat
 
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(Math.max(value, minimum), maximum);
+}
+
+function placementTargetId(target: WeaponPlacementTarget): string {
+  if (target.kind === "merge") {
+    return target.slotId ? `place:merge:rack:${target.slotId}` : `place:merge:inventory:${target.inventoryIndex}`;
+  }
+  return target.kind === "discard" ? "place:discard" : target.kind === "rack"
+    ? `place:rack:${target.slotId}` : `place:inventory:${target.slotIndex}`;
+}
+
+function parsePlacementTarget(id: string): WeaponPlacementTarget | null {
+  if (id === "place:discard") return { kind: "discard" };
+  const [, action, area, value] = id.split(":");
+  if (action === "rack" && area) return { kind: "rack", slotId: area };
+  if (action === "inventory" && area !== undefined && Number.isInteger(Number(area))) {
+    return { kind: "inventory", slotIndex: Number(area) };
+  }
+  if (action === "merge" && area === "rack" && value) return { kind: "merge", slotId: value, inventoryIndex: null };
+  if (action === "merge" && area === "inventory" && value !== undefined) return { kind: "merge", slotId: null, inventoryIndex: Number(value) };
+  return null;
 }

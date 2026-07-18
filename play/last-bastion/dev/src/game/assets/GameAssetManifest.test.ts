@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(83);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(86);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -286,5 +286,17 @@ describe("GameAssetManifest", () => {
     if (hud.kind === "spritesheet") expect(hud.frameCount).toBe(4);
     expect(panel.logicalWidth).toBe(1024);
     expect(panel.logicalHeight).toBe(576);
+  });
+
+  it("locks the promoted Batch I 128 px tile contracts", () => {
+    for (const id of ["batch-i-weapon-tiles-v1", "batch-i-perk-tiles-v1", "batch-i-hotkey-tiles-v1"] as const) {
+      const asset = GAME_ASSETS[id];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") {
+        expect(asset.frameCount).toBe(8);
+        expect(asset.logicalWidth).toBe(128);
+        expect(asset.logicalHeight).toBe(128);
+      }
+    }
   });
 });

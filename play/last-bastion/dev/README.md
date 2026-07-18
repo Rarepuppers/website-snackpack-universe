@@ -52,9 +52,11 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 
 - `/play/last-bastion/?scenario=aurum-hoarder&loadout=bulwark` — Aurum Hoarder forage/flee lab with armour-break Scrap, edge-exit marker, and guaranteed supply-cache reward
 - `/play/last-bastion/?scenario=scrap-shop&loadout=vertical` — seeded four-row Scrap Shop lab with three live offers, affordability states, repeat purchasing, and explicit leave/bank action
+- `/play/last-bastion/?scenario=weapon-gate` — code-native weapon placement lab with typed rack slots, four-slot stash, swap refusal, discard, and merge targets
 
 - `/play/last-bastion/?mode=gallery&batch=n` — Task 36 Aurum body/effects/cache family and eight 128 px runtime tiles
 - `/play/last-bastion/?mode=gallery&batch=n2` — production Scrap Shop panel, six 128 px offer tiles, and four 128 px Scrap HUD/effect frames
+- `/play/last-bastion/?mode=gallery&batch=i` — promoted Batch I1 weapon, perk, and hotkey/action 128 px runtime tile atlases
 
 ## Codex
 
@@ -72,6 +74,7 @@ the codex and the game's future character-select/shop screens.
 - `effects/` owns pooled transient rendering.
 - `rendering/` maps portable state to Phaser presentation.
 - `ui/` owns the camera-safe HUD and run-state panels.
+- `equipment/WeaponInventory.ts` owns the portable weapon-tile contract: typed rack legality, four-slot stash placement, non-destructive swaps, discard, and identical same-tier merges capped at Tier III. Combat snapshots expose this state so a future Steam client can replace the Phaser modal without rewriting the rules.
 - `scenes/AssetGalleryScene.ts` is the production-art validation surface.
 
 Placeholder rendering remains available as a comparison tool, but styled production-test art is the default renderer.

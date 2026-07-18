@@ -15,6 +15,10 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "i") {
+      this.createBatchIGallery();
+      return;
+    }
     if (batch === "n2") {
       this.createScrapShopGallery();
       return;
@@ -156,6 +160,24 @@ export class AssetGalleryScene extends Phaser.Scene {
     this.add.text(42, 414, lines.slice(0, 3).join("\n"), style("#aebed0", "10px"));
     this.add.text(500, 414, lines.slice(3).join("\n"), style("#aebed0", "10px"));
     this.add.text(480, 516, "Debug cross = runtime pivot • ?stress=4 normal readability • ?stress=12 capacity", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchIGallery(): void {
+    this.add.text(20, 18, "PRODUCTION BATCH I1 — 128 PX TILE PROMOTION", style("#f4dfb8", "18px"));
+    this.add.text(20, 46, "Transparent runtime atlases • code-owned text, cooldowns, bindings, tiers, and selection", style("#8fb2c9", "11px"));
+    const families = [
+      { id: "batch-i-weapon-tiles-v1", label: "WEAPONS" },
+      { id: "batch-i-perk-tiles-v1", label: "PERKS" },
+      { id: "batch-i-hotkey-tiles-v1", label: "HOTKEY / ACTION" },
+    ] as const;
+    families.forEach((family, row) => {
+      const y = 128 + row * 156;
+      this.add.text(20, y - 54, family.label, style("#68e4e8", "11px"));
+      for (let frame = 0; frame < 8; frame += 1) {
+        this.add.sprite(92 + frame * 108, y, family.id, frame).setDisplaySize(92, 92);
+      }
+    });
+    this.add.text(480, 522, "Review: ?mode=gallery&batch=i • Live placement: ?scenario=weapon-gate", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createBatchAGallery(): void {

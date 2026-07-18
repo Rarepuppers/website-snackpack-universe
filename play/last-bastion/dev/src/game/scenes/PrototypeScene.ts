@@ -2085,15 +2085,17 @@ export class PrototypeScene extends Phaser.Scene {
     }
 
     const isShop = decision.kind === "scrap-shop";
-    const panelHeight = isShop ? 420 : 330;
+    const isPlacement = decision.kind === "weapon-placement";
+    const panelWidth = isPlacement ? 860 : 760;
+    const panelHeight = isShop ? 420 : isPlacement ? 520 : 330;
     const children: Phaser.GameObjects.GameObject[] = [];
     if (isShop && this.useMarineArt) {
       children.push(this.add.image(0, 0, "scrap-shop-panel-v1").setDisplaySize(760, 428));
     } else {
-      children.push(this.add.rectangle(0, 0, 760, panelHeight, 0x0b121c, 0.985).setStrokeStyle(4, isShop ? 0xdca652 : 0x68e4e8));
-      children.push(this.add.rectangle(0, 0, 742, panelHeight - 18, 0x172536, 0.72).setStrokeStyle(1, 0x4d6a83));
+      children.push(this.add.rectangle(0, 0, panelWidth, panelHeight, 0x0b121c, 0.985).setStrokeStyle(4, isShop ? 0xdca652 : 0x68e4e8));
+      children.push(this.add.rectangle(0, 0, panelWidth - 18, panelHeight - 18, 0x172536, 0.72).setStrokeStyle(1, 0x4d6a83));
     }
-    const titleY = isShop ? -170 : -125;
+    const titleY = isShop ? -170 : isPlacement ? -220 : -125;
     const title = this.add.text(0, titleY, decision.title, {
       color: "#ffffff",
       fontFamily: "Consolas, Courier New, monospace",
@@ -2106,16 +2108,25 @@ export class PrototypeScene extends Phaser.Scene {
     if (this.useMarineArt) {
       if (isShop) {
         children.push(this.add.image(-325, titleY, "scrap-shop-hud-v1", 0).setDisplaySize(54, 54));
-      } else {
+      } else if (!isPlacement) {
         const decisionFrame = decision.kind === "weapon-chest" ? 1 : decision.kind === "supply-depot" ? 4 : 12;
         children.push(this.add.image(-325, titleY, "batch-c-rewards-v1", decisionFrame).setScale(0.62));
       }
     }
 
+    if (isPlacement && decision.weaponId) {
+      children.push(this.add.rectangle(-340, -75, 154, 154, 0x091019, 0.94).setStrokeStyle(2, 0xd9c69c));
+      children.push(this.add.image(-340, -75, "batch-i-weapon-tiles-v1", batchIWeaponTileFrame(decision.weaponId)).setDisplaySize(128, 128));
+      children.push(this.add.text(-340, 25, "RACK / STASH / MERGE", {
+        color: "#9fb3c8", fontFamily: "Consolas, Courier New, monospace", fontSize: "11px",
+      }).setOrigin(0.5).setResolution(uiTextResolution()));
+    }
+
     decision.options.forEach((choice, index) => {
-      const y = (isShop ? -100 : -60) + index * (isShop ? 78 : 86);
+      const x = isPlacement ? -70 + (index % 2) * 330 : 0;
+      const y = isPlacement ? -125 + Math.floor(index / 2) * 98 : (isShop ? -100 : -60) + index * (isShop ? 78 : 86);
       const enabled = choice.affordable !== false;
-      const button = this.add.rectangle(0, y, 670, 66, 0x1b2d42, 0.98)
+      const button = this.add.rectangle(x, y, isPlacement ? 300 : 670, isPlacement ? 78 : 66, 0x1b2d42, 0.98)
         .setStrokeStyle(2, 0x5d7892).setInteractive({ useHandCursor: enabled });
       const price = choice.cost && choice.cost > 0 ? ` — ${choice.cost} SCRAP${enabled ? "" : " (SHORT)"}` : "";
       children.push(button);
@@ -2123,10 +2134,11 @@ export class PrototypeScene extends Phaser.Scene {
         children.push(this.add.image(-292, y, "scrap-shop-offer-tiles-v1", scrapShopOfferFrame(choice.id))
           .setDisplaySize(56, 56).setAlpha(enabled ? 1 : 0.42));
       }
-      const label = this.add.text(isShop ? -252 : -310, y - 18, `${index + 1}. ${choice.name}${price}\n${choice.description}`, {
+      const label = this.add.text(isPlacement ? x - 136 : isShop ? -252 : -310, y - (isPlacement ? 26 : 18), `${index + 1}. ${choice.name}${price}\n${choice.description}`, {
         color: enabled ? "#edf4ff" : "#758493",
         fontFamily: "Consolas, Courier New, monospace",
-        fontSize: "15px",
+        fontSize: isPlacement ? "13px" : "15px",
+        wordWrap: isPlacement ? { width: 272 } : undefined,
         lineSpacing: 5,
       }).setResolution(uiTextResolution());
       button.on("pointerover", () => {
@@ -2141,7 +2153,7 @@ export class PrototypeScene extends Phaser.Scene {
       children.push(label);
     });
 
-    const hint = this.add.text(0, isShop ? 188 : 138, `↑↓ SELECT   •   ENTER CONFIRM   •   1-${decision.options.length} QUICK PICK`, {
+    const hint = this.add.text(0, isShop ? 188 : isPlacement ? 225 : 138, `↑↓ SELECT   •   ENTER CONFIRM   •   1-${decision.options.length} QUICK PICK`, {
       color: "#9fb3c8",
       fontFamily: "Consolas, Courier New, monospace",
       fontSize: "11px",
@@ -2203,7 +2215,7 @@ function readStressProfile(): 4 | 12 | null {
 
 function readScenario(): CombatScenario | null {
   const scenario = new URLSearchParams(window.location.search).get("scenario");
-  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop"
+  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop" || scenario === "weapon-gate"
     ? scenario
     : null;
 }
@@ -2316,6 +2328,19 @@ function scrapShopOfferFrame(optionId: string): number {
   if (optionId.startsWith("shop-upgrade:")) return 3;
   if (optionId.startsWith("shop-weapon:")) return 4;
   return 5;
+}
+
+/** Batch I master order, locked here so every placement surface uses one canonical tile. */
+function batchIWeaponTileFrame(weaponId: WeaponId): number {
+  switch (weaponId) {
+    case "scattergun": return 0;
+    case "patrol-blade": return 1;
+    case "bolt-carbine": return 2;
+    case "grenade-tube": return 3;
+    case "arc-carbine": return 4;
+    case "bulwark-rotary-cannon": return 5;
+    case "bastion-service-rifle": return 7;
+  }
 }
 
 function statusEffectFrame(status: string): number {
