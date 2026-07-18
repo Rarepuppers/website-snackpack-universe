@@ -510,7 +510,7 @@ The golden-goblin role becomes the **Aurum Hoarder**, a squat alien salvage carr
 - A kill grants a large Scrap payout plus one guaranteed **supply cache** drawn from an explicit loot table. Gold is visual language only; do not add a second currency while Scrap already owns the shop loop.
 - Maximum one per eligible wave; excluded from tutorials, boss introductions, and layouts without a safe pursuit route. Initial tuning: eligible from wave 3, 8–12% chance per ordinary wave, with run-level bad-luck protection considered only after telemetry.
 - Drops are magnetized or banked at wave end so the reward cannot vanish under a despawn transition. Its loot table never contains an item the current build cannot use.
-- Production family: 4 × 4 directional 128 px body sheet (scurry, hit/plate break, flee tell, defeat), separate gold-cyan trail and exit marker, 128 px Codex tile, 128 px supply-cache tile/world prop, coin/Scrap burst, and non-gory collapse. Behaviour and reward lab precedes art generation.
+- Production family completed in Task 36: 4 × 3 directional/state body sheet at 96 px logical cells (intact forage, armour-broken forage, flee across south/north/east/west), eight-frame 64 px gold-cyan event/effect atlas, and eight 128 px Codex/shop/event/reward tiles including the supply cache. Defeat, Scrap burst, trail, and escape presentation are non-gory; timing and reward rules remain code-owned.
 
 ## Visual production batches after Batch A
 
@@ -643,6 +643,8 @@ One **128 × 128** tile per weapon. Existing 64 × 64 cadence motifs are legacy 
 | Drag ghost (overlay) | Soft teal glow + drop shadow applied under a lifted tile |
 
 ### I3 — placement and shop surfaces
+
+**Shop subset status — completed 18 July 2026:** Batch N2 supplies the live Scrap Shop's empty 1024×576 terminal panel, six canonical 128 px offer tiles, and four 128 px Scrap HUD/effect states. The larger expedition counter backdrop, placement modal, weapon stat card, sell/buy/merge glyphs, and full inventory/merge interaction remain queued for their behavior gate.
 
 | Asset | Description |
 | --- | --- |

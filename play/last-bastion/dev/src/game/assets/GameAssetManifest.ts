@@ -75,6 +75,12 @@ import arcticRelayFloorUrl from "../../../../art/production-tests/batch-h/arctic
 import arcticRelayBoundaryUrl from "../../../../art/production-tests/batch-h/arctic-relay/arctic-relay-boundary-atlas-v1-64.png";
 import arcticRelayObstacleUrl from "../../../../art/production-tests/batch-h/arctic-relay/arctic-relay-obstacle-atlas-v1-96.png";
 import arcticRelayDecalUrl from "../../../../art/production-tests/batch-h/arctic-relay/arctic-relay-decal-atlas-v1-64.png";
+import aurumHoarderSheetUrl from "../../../../art/production-tests/batch-n/aurum-hoarder-spritesheet-v1-96.png";
+import aurumHoarderEffectUrl from "../../../../art/production-tests/batch-n/aurum-hoarder-effect-atlas-v1-64.png";
+import aurumTileSheetUrl from "../../../../art/production-tests/batch-n/aurum-tile-atlas-v1-128.png";
+import scrapShopOfferTileUrl from "../../../../art/production-tests/batch-n2/scrap-shop-offer-tile-atlas-v1-128.png";
+import scrapShopHudUrl from "../../../../art/production-tests/batch-n2/scrap-shop-hud-atlas-v1-128.png";
+import scrapShopPanelUrl from "../../../../art/production-tests/batch-n2/scrap-shop-panel-v1-1024x576.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -153,7 +159,13 @@ export type GameAssetId =
   | "arctic-relay-floor-v1"
   | "arctic-relay-boundary-v1"
   | "arctic-relay-obstacles-v1"
-  | "arctic-relay-decals-v1";
+  | "arctic-relay-decals-v1"
+  | "aurum-hoarder-v1"
+  | "aurum-hoarder-effects-v1"
+  | "aurum-tiles-v1"
+  | "scrap-shop-offer-tiles-v1"
+  | "scrap-shop-hud-v1"
+  | "scrap-shop-panel-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -254,6 +266,12 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("arctic-relay-boundary-v1", arcticRelayBoundaryUrl, 64, 64, 8, 0.5, 0.5),
   sheet("arctic-relay-obstacles-v1", arcticRelayObstacleUrl, 96, 96, 4, 0.5, 0.5),
   sheet("arctic-relay-decals-v1", arcticRelayDecalUrl, 64, 64, 6, 0.5, 0.5),
+  sheet("aurum-hoarder-v1", aurumHoarderSheetUrl, 96, 96, 12, 0.5, 0.55),
+  sheet("aurum-hoarder-effects-v1", aurumHoarderEffectUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("aurum-tiles-v1", aurumTileSheetUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("scrap-shop-offer-tiles-v1", scrapShopOfferTileUrl, 128, 128, 6, 0.5, 0.5),
+  sheet("scrap-shop-hud-v1", scrapShopHudUrl, 128, 128, 4, 0.5, 0.5),
+  image("scrap-shop-panel-v1", scrapShopPanelUrl, 1024, 576, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(

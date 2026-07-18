@@ -112,6 +112,13 @@ try {
     'arctic-relay-boundary-atlas-v1-64.png',
     'arctic-relay-obstacle-atlas-v1-96.png',
     'arctic-relay-decal-atlas-v1-64.png'
+    'aurum-hoarder-spritesheet-v1-96.png'
+    'aurum-hoarder-effect-atlas-v1-64.png'
+    'aurum-tile-atlas-v1-128.png'
+    'tiles/mon-aurum-hoarder-v1.png'
+    'scrap-shop-offer-tile-atlas-v1-128.png'
+    'scrap-shop-hud-atlas-v1-128.png'
+    'scrap-shop-panel-v1-1024x576.png'
   )
 
   foreach ($artAssetName in $requiredArtAssets) {
@@ -147,6 +154,8 @@ try {
     '/play/last-bastion/?mode=gallery&batch=tb',
     '/play/last-bastion/?mode=gallery&batch=va',
     '/play/last-bastion/?mode=gallery&batch=ar',
+    '/play/last-bastion/?mode=gallery&batch=n',
+    '/play/last-bastion/?mode=gallery&batch=n2',
     '/play/last-bastion/?loadout=vertical',
     '/play/last-bastion/?loadout=patrol',
     '/play/last-bastion/?loadout=bolt',
@@ -165,6 +174,8 @@ try {
     '/play/last-bastion/?scenario=tether-bloom&loadout=vertical',
     '/play/last-bastion/?scenario=bastion-eater&loadout=vertical',
     '/play/last-bastion/?scenario=density-capacity&debug=1',
+    '/play/last-bastion/?scenario=aurum-hoarder&loadout=bulwark',
+    '/play/last-bastion/?scenario=scrap-shop&loadout=vertical',
     '/play/last-bastion/?stress=4',
     '/play/last-bastion/?stress=12'
   )

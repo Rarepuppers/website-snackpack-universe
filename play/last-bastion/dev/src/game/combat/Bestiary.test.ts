@@ -63,6 +63,7 @@ describe("bestiary tagging", () => {
     const cases: [string, () => number][] = [
       ["scuttler", () => simulation.spawnEnemy("scuttler", { x: 3, y: 3 })],
       ["siege-crusher", () => simulation.spawnMiniBoss("siege-crusher", { x: 12, y: 6 })],
+      ["aurum-hoarder", () => simulation.spawnAurumHoarder({ x: 16, y: 8 })!],
     ];
     for (const [expected, spawn] of cases) {
       spawn();

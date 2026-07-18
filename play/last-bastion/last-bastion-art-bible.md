@@ -243,6 +243,26 @@ Razor body columns remain south, north, east, west; rows are pursuit, compressed
 
 The first production-test sheets use a four-column by three-row grid with 96 × 96 logical cells. Body and headgear layers must use identical canvas dimensions, cell order, pivots, and frame indices so equipment can toggle without moving or replacing the body.
 
+## Task 36 Aurum and 128 px tile contracts
+
+| Stable ID | Grid | Logical cell | Frame count |
+| --- | ---: | ---: | ---: |
+| `aurum-hoarder-v1` | 4×3 | 96×96 | 12 |
+| `aurum-hoarder-effects-v1` | 4×2 | 64×64 | 8 |
+| `aurum-tiles-v1` | 4×2 | 128×128 | 8 |
+
+Hoarder columns are south, north, east, west; rows are intact forage, armour-broken forage, and flee. Effects map directly to arrival, armour break, Scrap secured, flee activation/trail, edge escape, defeat, and supply-cache drop. The tile family is the first implementation of the 128 px runtime / 512 px retained-source contract. Tile language, numbers, bindings, cooldown shadows, selection, prices, and lock behavior remain live UI.
+
+## Production Scrap Shop UI Batch N2
+
+| Stable ID | Grid | Logical cell | Frame count |
+| --- | ---: | ---: | ---: |
+| `scrap-shop-offer-tiles-v1` | 3×2 | 128×128 | 6 |
+| `scrap-shop-hud-v1` | 2×2 | 128×128 | 4 |
+| `scrap-shop-panel-v1` | single image | 1024×576 | 1 |
+
+Offer frames are Field Repair, Uranium-Core Kit, Armour Retrofit, Upgrade Calibration, Weapon Requisition, and Sold/Locked. HUD frames are neutral Scrap, secured pulse, spent transfer, and banked cassette. The terminal panel deliberately keeps its centre empty so prices, descriptions, affordability, selection, quantity, key labels, and localization remain code-owned. Retained chroma sources, transparent masters, exact prompts, frame maps, and deterministic normalization live under `art/production-tests/batch-n2/`.
+
 ## Approval still required
 
 - Whether the tested 96 × 96 logical cell remains final after gameplay-scale review

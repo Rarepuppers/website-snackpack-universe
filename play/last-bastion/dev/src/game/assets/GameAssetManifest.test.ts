@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(77);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(83);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -256,5 +256,35 @@ describe("GameAssetManifest", () => {
     expect(GAME_ASSETS["arctic-relay-boundary-v1"].kind).toBe("spritesheet");
     expect(GAME_ASSETS["arctic-relay-obstacles-v1"].kind).toBe("spritesheet");
     expect(GAME_ASSETS["arctic-relay-decals-v1"].kind).toBe("spritesheet");
+  });
+
+  it("locks Task 36 Aurum and 128 px tile contracts", () => {
+    const body = GAME_ASSETS["aurum-hoarder-v1"];
+    const effects = GAME_ASSETS["aurum-hoarder-effects-v1"];
+    const tiles = GAME_ASSETS["aurum-tiles-v1"];
+    for (const asset of [body, effects, tiles]) expect(asset.kind).toBe("spritesheet");
+    if (body.kind === "spritesheet") expect(body.frameCount).toBe(12);
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
+    if (tiles.kind === "spritesheet") {
+      expect(tiles.frameCount).toBe(8);
+      expect(tiles.logicalWidth).toBe(128);
+      expect(tiles.logicalHeight).toBe(128);
+    }
+  });
+
+  it("locks the production Scrap Shop Batch N2 contracts", () => {
+    const offers = GAME_ASSETS["scrap-shop-offer-tiles-v1"];
+    const hud = GAME_ASSETS["scrap-shop-hud-v1"];
+    const panel = GAME_ASSETS["scrap-shop-panel-v1"];
+    expect(offers.kind).toBe("spritesheet");
+    expect(hud.kind).toBe("spritesheet");
+    expect(panel.kind).toBe("image");
+    if (offers.kind === "spritesheet") {
+      expect(offers.frameCount).toBe(6);
+      expect(offers.logicalWidth).toBe(128);
+    }
+    if (hud.kind === "spritesheet") expect(hud.frameCount).toBe(4);
+    expect(panel.logicalWidth).toBe(1024);
+    expect(panel.logicalHeight).toBe(576);
   });
 });

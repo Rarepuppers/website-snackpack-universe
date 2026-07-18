@@ -95,15 +95,17 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly quillbackTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly spinewheelTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly tetherBloomTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
+  private readonly aurumExitMarkers = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly spinewheelTrailTimes = new Map<number, number>();
   private readonly razorScuttlerTrailTimes = new Map<number, number>();
+  private readonly aurumTrailTimes = new Map<number, number>();
   private readonly tetherBloomAccentTimes = new Map<number, number>();
   private readonly warpTelegraphs = new Map<number, TelegraphView>();
   private readonly pickupViews = new Map<number, PickupView>();
   private readonly powerupViews = new Map<number, PickupView>();
   private readonly weaponViews = new Map<number, WeaponView>();
   private decisionOverlay: Phaser.GameObjects.Container | null = null;
-  private decisionButtons: { rect: Phaser.GameObjects.Rectangle; choiceId: string }[] = [];
+  private decisionButtons: { rect: Phaser.GameObjects.Rectangle; choiceId: string; enabled: boolean }[] = [];
   private decisionSelectionIndex = 0;
   private menuStickReady = true;
   private menuKeys: {
@@ -115,6 +117,7 @@ export class PrototypeScene extends Phaser.Scene {
     one: Phaser.Input.Keyboard.Key;
     two: Phaser.Input.Keyboard.Key;
     three: Phaser.Input.Keyboard.Key;
+    four: Phaser.Input.Keyboard.Key;
   } | null = null;
   private visibleDecisionKey = "";
   private isPaused = false;
@@ -200,6 +203,7 @@ export class PrototypeScene extends Phaser.Scene {
       one: Phaser.Input.Keyboard.KeyCodes.ONE,
       two: Phaser.Input.Keyboard.KeyCodes.TWO,
       three: Phaser.Input.Keyboard.KeyCodes.THREE,
+      four: Phaser.Input.Keyboard.KeyCodes.FOUR,
     }) as unknown as NonNullable<typeof this.menuKeys>;
     this.lastSnapshot = this.simulation.snapshot();
     this.renderSnapshot(this.lastSnapshot, false);
@@ -289,6 +293,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncQuillbackTelegraphs(snapshot.enemies);
     this.syncSpinewheelTelegraphs(snapshot.enemies);
     this.syncTetherBloomTelegraphs(snapshot.enemies, snapshot.playerPosition);
+    this.syncAurumExitMarkers(snapshot.enemies);
     this.syncWarpTelegraphs(snapshot.enemies);
     this.syncObstacleDamage(snapshot.damagedObstacleIds, snapshot.destroyedObstacleIds);
     this.syncPickups(snapshot.pickups);
@@ -349,6 +354,7 @@ export class PrototypeScene extends Phaser.Scene {
       this.quillbackTelegraphs,
       this.spinewheelTelegraphs,
       this.tetherBloomTelegraphs,
+      this.aurumExitMarkers,
       this.warpTelegraphs,
       this.pickupViews,
       this.powerupViews,
@@ -358,6 +364,10 @@ export class PrototypeScene extends Phaser.Scene {
       }
       views.clear();
     }
+    this.razorScuttlerTrailTimes.clear();
+    this.spinewheelTrailTimes.clear();
+    this.aurumTrailTimes.clear();
+    this.tetherBloomAccentTimes.clear();
 
     this.renderSnapshot(this.lastSnapshot, false);
   }
@@ -485,7 +495,9 @@ export class PrototypeScene extends Phaser.Scene {
           }
           break;
         case "enemy-defeated":
-          if (event.enemyType === "siege-crusher") {
+          if (event.enemyType === "aurum-hoarder") {
+            this.emitAuthoredEffect(6, event.position, 460, 0.75, 1.65, 0, "aurum-hoarder-effects-v1");
+          } else if (event.enemyType === "siege-crusher") {
             this.emitAuthoredEffect(19, event.position, 420, 0.8, 2.1, 0, "batch-b-effects-v1");
           } else if (event.enemyType === "brood-warden") {
             this.emitAuthoredEffect(9, event.position, 460, 0.9, 2.3, 0, "brood-warden-effects-v1");
@@ -686,6 +698,29 @@ export class PrototypeScene extends Phaser.Scene {
         case "tether-bloom-released":
           this.emitAuthoredEffect(6, event.position, 340, 0.62, 1.18, 0, "tether-bloom-effects-v1");
           break;
+        case "aurum-arrived":
+          this.emitAuthoredEffect(0, event.position, 420, 0.65, 1.4, 0, "aurum-hoarder-effects-v1");
+          this.flashCircle(event.position, 28, 0xffd36b, 520, 2.8, true);
+          break;
+        case "aurum-fleeing":
+          this.emitAuthoredEffect(3, event.position, 260, 0.62, 1.25, 0, "aurum-hoarder-effects-v1");
+          this.flashCircle(event.target, 34, 0x68e4e8, 620, 2.2, true);
+          break;
+        case "aurum-armour-broken":
+          this.flashCircle(event.position, 22, 0xffd36b, 260, 1.9, true);
+          this.emitAuthoredEffect(1, event.position, 260, 0.68, 1.35, 0, "aurum-hoarder-effects-v1");
+          break;
+        case "scrap-secured":
+          this.emitAuthoredEffect(2, event.position, 220, 0.52, 1.05, 0, "aurum-hoarder-effects-v1");
+          break;
+        case "aurum-escaped":
+          this.emitAuthoredEffect(5, event.position, 380, 0.65, 1.4, 0, "aurum-hoarder-effects-v1");
+          this.flashCircle(event.position, 24, 0x68e4e8, 380, 2.1, true);
+          break;
+        case "aurum-supply-cache-dropped":
+          this.emitAuthoredEffect(7, event.position, 520, 0.72, 1.5, 0, "aurum-hoarder-effects-v1");
+          this.flashCircle(event.position, 30, 0xffd36b, 560, 3, true);
+          break;
         case "bastion-eater-phase":
           this.emitAuthoredEffect(9, event.position, 520, 0.9, 1.8, 0, "bastion-eater-effects-v1");
           this.shakeCamera(180, 0.008);
@@ -795,7 +830,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -927,6 +962,12 @@ export class PrototypeScene extends Phaser.Scene {
     for (const id of this.spinewheelTrailTimes.keys()) {
       if (!liveIds.has(id)) this.spinewheelTrailTimes.delete(id);
     }
+    for (const id of this.razorScuttlerTrailTimes.keys()) {
+      if (!liveIds.has(id)) this.razorScuttlerTrailTimes.delete(id);
+    }
+    for (const id of this.aurumTrailTimes.keys()) {
+      if (!liveIds.has(id)) this.aurumTrailTimes.delete(id);
+    }
     for (const id of this.tetherBloomAccentTimes.keys()) {
       if (!liveIds.has(id)) this.tetherBloomAccentTimes.delete(id);
     }
@@ -996,6 +1037,12 @@ export class PrototypeScene extends Phaser.Scene {
         }
         return this.add.ellipse(0, 0, 46, 56, 0x536c38)
           .setStrokeStyle(5, 0xc4e66a);
+      case "aurum-hoarder":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "aurum-hoarder-v1");
+        }
+        return this.add.ellipse(0, 0, 58, 44, 0xb7862f)
+          .setStrokeStyle(5, 0x68e4e8);
       case "bastion-eater":
         if (this.useMarineArt) {
           return createManifestSprite(this, "bastion-eater-v1");
@@ -1063,7 +1110,7 @@ export class PrototypeScene extends Phaser.Scene {
 
   private styleEnemyView(view: EnemyView, enemy: EnemySnapshot): void {
     if (view instanceof Phaser.GameObjects.Sprite) {
-      view.setScale(enemy.rank === "elite" && !enemy.eliteKind ? 1.3 : 1);
+      view.setScale(enemy.type === "aurum-hoarder" ? 0.9 : enemy.rank === "elite" && !enemy.eliteKind ? 1.3 : 1);
       view.setAlpha(enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup" ? 0.72 : 1);
       const status = enemy.statuses[0];
       if (enemy.type === "blast-mite" && enemy.mitePhase === "armed" && Math.floor(this.time.now / 80) % 2 === 0) {
@@ -1148,6 +1195,15 @@ export class PrototypeScene extends Phaser.Scene {
         .setStrokeStyle(5, phase === "tethering" ? 0xd696ff : phase === "windup" ? 0xe7f58a : 0x91ad55)
         .setScale(phase === "windup" ? 1.12 : phase === "recovery" ? 0.86 : 1)
         .setAlpha(phase === "recovery" ? 0.72 : 1);
+      return;
+    }
+    if (enemy.type === "aurum-hoarder" && view instanceof Phaser.GameObjects.Ellipse) {
+      const fleeing = enemy.aurumPhase === "flee";
+      const pulse = 1 + Math.sin(this.time.now / (fleeing ? 70 : 130)) * (fleeing ? 0.1 : 0.04);
+      view.setFillStyle(fleeing ? 0xe1a63a : 0xb7862f)
+        .setStrokeStyle(5, fleeing ? 0xffef9c : 0x68e4e8)
+        .setRotation(Math.atan2(enemy.facingDirection.y, enemy.facingDirection.x))
+        .setScale(pulse);
       return;
     }
 
@@ -1249,6 +1305,24 @@ export class PrototypeScene extends Phaser.Scene {
             this.emitAuthoredEffect(
               2, enemy.position, 130, 0.5, 0.82,
               Math.atan2(direction.y, direction.x), "razor-scuttler-effects-v1",
+            );
+          }
+        }
+        return;
+      }
+      case "aurum-hoarder": {
+        const direction = enemy.facingDirection;
+        const target = { x: enemy.position.x + direction.x, y: enemy.position.y + direction.y };
+        const facingColumn = cardinalFacingColumn(enemy.position, target);
+        const row = enemy.aurumPhase === "flee" ? 2 : (enemy.aurumArmourBreaksPaid ?? 0) > 0 ? 1 : 0;
+        view.setTexture("aurum-hoarder-v1").setFrame(row * 4 + facingColumn).setRotation(0);
+        if (enemy.aurumPhase === "flee") {
+          const previousTrail = this.aurumTrailTimes.get(enemy.id) ?? -1000;
+          if (this.time.now - previousTrail >= 115) {
+            this.aurumTrailTimes.set(enemy.id, this.time.now);
+            this.emitAuthoredEffect(
+              4, enemy.position, 150, 0.55, 0.9,
+              Math.atan2(direction.y, direction.x), "aurum-hoarder-effects-v1",
             );
           }
         }
@@ -1532,17 +1606,42 @@ export class PrototypeScene extends Phaser.Scene {
       let view = this.eliteRewardViews.get(reward.id);
       if (!view) {
         view = this.useMarineArt
-          ? this.add.sprite(0, 0, "pickups-v1", 3).setScale(0.72)
+          ? reward.type === "aurum-supply-cache"
+            ? this.add.sprite(0, 0, "aurum-hoarder-effects-v1", 7).setScale(0.82)
+            : this.add.sprite(0, 0, "pickups-v1", 3).setScale(0.72)
           : this.add.rectangle(0, 0, 18, 18, 0xd696ff).setRotation(Math.PI / 4)
             .setStrokeStyle(3, 0xffd36b);
         this.eliteRewardViews.set(reward.id, view);
       }
       view.setPosition(reward.position.x * PIXELS_PER_METRE, reward.position.y * PIXELS_PER_METRE)
         .setDepth(worldDepth(reward.position.y) - 2)
-        .setScale((reward.type === "mini-boss-arsenal-cache" ? 0.86 : 0.68) + Math.sin(this.time.now / 120) * 0.08);
+        .setScale((reward.type === "mini-boss-arsenal-cache" ? 0.86 : reward.type === "aurum-supply-cache" ? 0.92 : 0.68) + Math.sin(this.time.now / 120) * 0.08);
       if (view instanceof Phaser.GameObjects.Sprite) {
-        view.setTint(reward.type === "mini-boss-arsenal-cache" ? 0xffd36b : 0xd696ff);
+        if (reward.type === "aurum-supply-cache") view.clearTint();
+        else view.setTint(reward.type === "mini-boss-arsenal-cache" ? 0xffd36b : 0xd696ff);
       }
+    }
+  }
+
+  private syncAurumExitMarkers(enemies: readonly EnemySnapshot[]): void {
+    const fleeing = enemies.filter((enemy) => enemy.type === "aurum-hoarder" && enemy.aurumPhase === "flee");
+    const liveIds = new Set(fleeing.map((enemy) => enemy.id));
+    this.destroyMissing(this.aurumExitMarkers, liveIds);
+    for (const enemy of fleeing) {
+      if (!enemy.aurumExitTarget) continue;
+      let marker = this.aurumExitMarkers.get(enemy.id);
+      if (!marker) {
+        marker = this.add.graphics();
+        this.aurumExitMarkers.set(enemy.id, marker);
+      }
+      const pulse = 18 + Math.sin(this.time.now / 90) * 4;
+      marker.clear()
+        .lineStyle(4, 0x68e4e8, 0.9)
+        .strokeCircle(0, 0, pulse)
+        .lineStyle(2, 0xffd36b, 0.95)
+        .strokeCircle(0, 0, pulse - 7)
+        .setPosition(enemy.aurumExitTarget.x * PIXELS_PER_METRE, enemy.aurumExitTarget.y * PIXELS_PER_METRE)
+        .setDepth(690);
     }
   }
 
@@ -1900,11 +1999,14 @@ export class PrototypeScene extends Phaser.Scene {
     }
     if (delta !== 0) {
       const count = this.decisionButtons.length;
-      this.decisionSelectionIndex = (this.decisionSelectionIndex + delta + count) % count;
+      for (let step = 0; step < count; step += 1) {
+        this.decisionSelectionIndex = (this.decisionSelectionIndex + delta + count) % count;
+        if (this.decisionButtons[this.decisionSelectionIndex]?.enabled) break;
+      }
       this.updateDecisionSelectionHighlight();
     }
 
-    const digits = [this.menuKeys.one, this.menuKeys.two, this.menuKeys.three];
+    const digits = [this.menuKeys.one, this.menuKeys.two, this.menuKeys.three, this.menuKeys.four];
     for (let index = 0; index < this.decisionButtons.length; index += 1) {
       if (digits[index] && Phaser.Input.Keyboard.JustDown(digits[index]!)) {
         this.decisionSelectionIndex = index;
@@ -1920,15 +2022,21 @@ export class PrototypeScene extends Phaser.Scene {
 
   private confirmDecisionSelection(): void {
     const selected = this.decisionButtons[this.decisionSelectionIndex];
-    if (!selected) {
+    if (!selected?.enabled) {
       return;
     }
-    this.synth.play(UI_CONFIRM_CUE);
-    this.simulation.chooseOption(selected.choiceId);
+    if (this.simulation.chooseOption(selected.choiceId)) {
+      this.synth.play(UI_CONFIRM_CUE);
+    }
   }
 
   private updateDecisionSelectionHighlight(): void {
-    this.decisionButtons.forEach(({ rect }, index) => {
+    this.decisionButtons.forEach(({ rect, enabled }, index) => {
+      if (!enabled) {
+        rect.setFillStyle(0x141b24).setStrokeStyle(2, 0x394756).setAlpha(0.72);
+        return;
+      }
+      rect.setAlpha(1);
       if (index === this.decisionSelectionIndex) {
         rect.setFillStyle(0x294865).setStrokeStyle(3, 0x68e4e8);
       } else {
@@ -1957,7 +2065,7 @@ export class PrototypeScene extends Phaser.Scene {
 
   private syncDecisionOverlay(decision: PendingDecision | null): void {
     const nextKey = decision
-      ? `${decision.kind}|${decision.options.map((option) => option.id).join("|")}`
+      ? `${decision.kind}|${decision.title}|${decision.options.map((option) => `${option.id}:${option.affordable ?? true}`).join("|")}`
       : "";
     if (nextKey === this.visibleDecisionKey) {
       this.positionDecisionOverlay();
@@ -1976,10 +2084,17 @@ export class PrototypeScene extends Phaser.Scene {
       return;
     }
 
+    const isShop = decision.kind === "scrap-shop";
+    const panelHeight = isShop ? 420 : 330;
     const children: Phaser.GameObjects.GameObject[] = [];
-    children.push(this.add.rectangle(0, 0, 760, 330, 0x0b121c, 0.985).setStrokeStyle(4, 0x68e4e8));
-    children.push(this.add.rectangle(0, 0, 742, 312, 0x172536, 0.72).setStrokeStyle(1, 0x4d6a83));
-    const title = this.add.text(0, -125, decision.title, {
+    if (isShop && this.useMarineArt) {
+      children.push(this.add.image(0, 0, "scrap-shop-panel-v1").setDisplaySize(760, 428));
+    } else {
+      children.push(this.add.rectangle(0, 0, 760, panelHeight, 0x0b121c, 0.985).setStrokeStyle(4, isShop ? 0xdca652 : 0x68e4e8));
+      children.push(this.add.rectangle(0, 0, 742, panelHeight - 18, 0x172536, 0.72).setStrokeStyle(1, 0x4d6a83));
+    }
+    const titleY = isShop ? -170 : -125;
+    const title = this.add.text(0, titleY, decision.title, {
       color: "#ffffff",
       fontFamily: "Consolas, Courier New, monospace",
       fontSize: "22px",
@@ -1989,16 +2104,27 @@ export class PrototypeScene extends Phaser.Scene {
     }).setOrigin(0.5).setResolution(uiTextResolution());
     children.push(title);
     if (this.useMarineArt) {
-      const decisionFrame = decision.kind === "weapon-chest" ? 1 : decision.kind === "supply-depot" ? 4 : 12;
-      children.push(this.add.image(-325, -125, "batch-c-rewards-v1", decisionFrame).setScale(0.62));
+      if (isShop) {
+        children.push(this.add.image(-325, titleY, "scrap-shop-hud-v1", 0).setDisplaySize(54, 54));
+      } else {
+        const decisionFrame = decision.kind === "weapon-chest" ? 1 : decision.kind === "supply-depot" ? 4 : 12;
+        children.push(this.add.image(-325, titleY, "batch-c-rewards-v1", decisionFrame).setScale(0.62));
+      }
     }
 
     decision.options.forEach((choice, index) => {
-      const y = -60 + index * 86;
+      const y = (isShop ? -100 : -60) + index * (isShop ? 78 : 86);
+      const enabled = choice.affordable !== false;
       const button = this.add.rectangle(0, y, 670, 66, 0x1b2d42, 0.98)
-        .setStrokeStyle(2, 0x5d7892).setInteractive({ useHandCursor: true });
-      const label = this.add.text(-310, y - 18, `${index + 1}. ${choice.name}\n${choice.description}`, {
-        color: "#edf4ff",
+        .setStrokeStyle(2, 0x5d7892).setInteractive({ useHandCursor: enabled });
+      const price = choice.cost && choice.cost > 0 ? ` — ${choice.cost} SCRAP${enabled ? "" : " (SHORT)"}` : "";
+      children.push(button);
+      if (isShop && this.useMarineArt) {
+        children.push(this.add.image(-292, y, "scrap-shop-offer-tiles-v1", scrapShopOfferFrame(choice.id))
+          .setDisplaySize(56, 56).setAlpha(enabled ? 1 : 0.42));
+      }
+      const label = this.add.text(isShop ? -252 : -310, y - 18, `${index + 1}. ${choice.name}${price}\n${choice.description}`, {
+        color: enabled ? "#edf4ff" : "#758493",
         fontFamily: "Consolas, Courier New, monospace",
         fontSize: "15px",
         lineSpacing: 5,
@@ -2011,11 +2137,11 @@ export class PrototypeScene extends Phaser.Scene {
         this.decisionSelectionIndex = index;
         this.confirmDecisionSelection();
       });
-      this.decisionButtons.push({ rect: button, choiceId: choice.id });
-      children.push(button, label);
+      this.decisionButtons.push({ rect: button, choiceId: choice.id, enabled });
+      children.push(label);
     });
 
-    const hint = this.add.text(0, 138, "↑↓ SELECT   •   ENTER CONFIRM   •   1-3 QUICK PICK", {
+    const hint = this.add.text(0, isShop ? 188 : 138, `↑↓ SELECT   •   ENTER CONFIRM   •   1-${decision.options.length} QUICK PICK`, {
       color: "#9fb3c8",
       fontFamily: "Consolas, Courier New, monospace",
       fontSize: "11px",
@@ -2077,7 +2203,7 @@ function readStressProfile(): 4 | 12 | null {
 
 function readScenario(): CombatScenario | null {
   const scenario = new URLSearchParams(window.location.search).get("scenario");
-  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "bastion-eater" || scenario === "density-capacity"
+  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop"
     ? scenario
     : null;
 }
@@ -2183,6 +2309,15 @@ function powerupColor(type: PowerupType): number {
   }
 }
 
+function scrapShopOfferFrame(optionId: string): number {
+  if (optionId === "shop-repair") return 0;
+  if (optionId === "shop-uranium-kit") return 1;
+  if (optionId === "shop-armour-retrofit") return 2;
+  if (optionId.startsWith("shop-upgrade:")) return 3;
+  if (optionId.startsWith("shop-weapon:")) return 4;
+  return 5;
+}
+
 function statusEffectFrame(status: string): number {
   switch (status) {
     case "blaze": return 0;
@@ -2239,7 +2374,7 @@ function applyManifestOrigin(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1" | "aurum-hoarder-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

@@ -31,6 +31,7 @@ const ROLE: Readonly<Record<EnemyType, EnemyPressureRole>> = Object.freeze({
   quillback: "ranged",
   spinewheel: "specialist",
   "tether-bloom": "specialist",
+  "aurum-hoarder": "specialist",
   "siege-crusher": "boss",
   "brood-warden": "boss",
   "bastion-eater": "boss",

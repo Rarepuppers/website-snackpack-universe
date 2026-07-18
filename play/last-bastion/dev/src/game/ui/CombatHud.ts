@@ -36,6 +36,8 @@ export class CombatHud {
   private readonly rollFill: Phaser.GameObjects.Rectangle;
   private readonly waveText: Phaser.GameObjects.Text;
   private readonly statsText: Phaser.GameObjects.Text;
+  private readonly scrapIcon: Phaser.GameObjects.Image;
+  private readonly scrapText: Phaser.GameObjects.Text;
   private readonly rollText: Phaser.GameObjects.Text;
   private readonly weaponPips: Phaser.GameObjects.Rectangle[] = [];
   private readonly statePanel: Phaser.GameObjects.Container;
@@ -74,6 +76,10 @@ export class CombatHud {
     this.waveText = scene.add.text(productionArt ? 480 : 268, 26, "", hudText("#ffffff", "13px"))
       .setOrigin(productionArt ? 0.5 : 0, 0).setDepth(2001);
     this.statsText = scene.add.text(268, 50, "", hudText("#9fb3c8", "11px")).setDepth(2001);
+    this.scrapIcon = scene.add.image(278, 91, "scrap-shop-hud-v1", 0)
+      .setDisplaySize(30, 30).setDepth(2002).setVisible(false);
+    this.scrapText = scene.add.text(298, 84, "", hudText("#ffd36b", "11px"))
+      .setDepth(2002).setVisible(false);
     for (let index = 0; index < 6; index += 1) {
       this.statusTray.push(createStatusTrayView(scene, 42 + index * 48, 145, productionArt));
     }
@@ -182,12 +188,19 @@ export class CombatHud {
                   : snapshot.scenario === "tether-bloom" ? "TETHER LAB"
                     : snapshot.scenario === "bastion-eater" ? "FINAL BOSS LAB"
                       : snapshot.scenario === "density-capacity" ? "DENSITY 56 LAB"
+                        : snapshot.scenario === "aurum-hoarder" ? "AURUM LAB"
+                          : snapshot.scenario === "scrap-shop" ? "SCRAP SHOP LAB"
                       : snapshot.scenario === "razor-scuttler" ? "RAZOR LAB" : "CRUSHER LAB"
       : snapshot.stressProfile
         ? `STRESS ${snapshot.stressProfile}`
         : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}`);
     const shieldLabel = snapshot.playerShield > 0 ? `  SH ${Math.ceil(snapshot.playerShield)}` : "";
     this.statsText.setText(`LV ${snapshot.level}  HP ${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}\nXP ${snapshot.experience}/${snapshot.experienceForNextLevel}${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerTethered ? "  TETHERED" : ""}${snapshot.playerEntrenched ? "  ENTRENCHED" : ""}`);
+    const scrapVisible = snapshot.securedScrap > 0 || snapshot.scenario === "scrap-shop";
+    const secured = snapshot.events.some((event) => event.type === "scrap-secured");
+    const spent = snapshot.events.some((event) => event.type === "scrap-spent");
+    this.scrapIcon.setVisible(scrapVisible).setFrame(spent ? 2 : secured ? 1 : 0);
+    this.scrapText.setVisible(scrapVisible).setText(`SCRAP ${snapshot.securedScrap}`);
     this.statusTray.forEach((view, index) => {
       const buff = snapshot.activeBuffs[index];
       if (!buff) {

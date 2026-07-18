@@ -431,6 +431,46 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Added Void Approach under `art/production-tests/batch-h/void-approach/`, with four normalized runtime atlases, manifest contracts, and `?mode=gallery&batch=va`; theme assignment remains unchanged.
 - Integrated Arctic Relay under `art/production-tests/batch-h/arctic-relay/`, with four normalized runtime atlases, manifest contracts, and `?mode=gallery&batch=ar`; theme assignment remains unchanged.
 
+### Task 35 — Aurum Hoarder behavior gate
+
+**Status:** Completed — 18 July 2026; Production Asset Batch Task 36 completed
+
+- Added the treasure-rank Aurum Hoarder with a three-second forage read, deterministic far-safe edge selection, nine-second flee clock, visible exit marker, negligible contact threat, and one-per-wave enforcement.
+- Armour breaks at 75%, 50%, and 25% health each secure 10 Scrap; a defeat secures another 30 and drops exactly one Aurum Supply Cache backed by the existing valid three-choice Supply Depot decision.
+- Escape emits no defeat, experience, Scrap, or cache event. Treasure rank is excluded from wave-clear blockers, and a lingering Hoarder is cleanly dismissed before intermission.
+- Added explicit spawn eligibility for wave 3 onward with tutorial/final-boss/objective/cap/duplicate exclusions. The later Scrap Shop behavior gate enabled the same contract for seeded ordinary-wave arrivals.
+- Added the `?scenario=aurum-hoarder&loadout=bulwark` acceptance route, code-drawn gold/cyan placeholder, flee pulse, armour-break and cache flashes, HUD Scrap readout, Codex/Bestiary event identity, and HTTP smoke coverage.
+- Rules coverage locks deterministic eligibility and safe exit selection, one-per-wave, non-rewarding escape, all three partial payouts, 60 total kill payout, unique cache contents, and Bestiary identity.
+
+### Task 36 — Aurum Hoarder production art and 128 px tiles
+
+**Status:** Completed — 18 July 2026; Scrap Shop behavior gate completed
+
+- Generated and alpha-cleaned retained production masters for the Hoarder's intact, armour-broken, and directional flee body states; arrival, plate break, Scrap burst, flee, trail, escape, defeat, and cache effects; and eight 128 px Codex/shop/event/reward tiles.
+- Deterministically normalized the masters into a 12-frame 96 px body sheet, eight-frame 64 px effects atlas, eight-frame 128 px tile atlas, and individual 128 px source tiles. Prompts, chroma sources, transparent masters, frame maps, and the normalization script remain in `art/production-tests/batch-n/`.
+- Registered all three atlases in the manifest and bound the authored body/effect frames to the Task 35 simulation events without moving timing, collision, escape geometry, rewards, cooldowns, or text into raster art.
+- Added `?mode=gallery&batch=n`, HTTP smoke coverage, the required static Codex tile, and manifest contract tests. The 1080p gallery passed visual review; the 4K route at 150% loaded without console warnings or missing assets.
+- Initially kept ordinary-wave Aurum spawning disabled until Scrap had a visible spend loop; the completed Scrap Shop follow-on now enables seeded eligible arrivals while retaining the forced behavior lab.
+
+### Scrap Shop behavior gate
+
+**Status:** Completed — 18 July 2026; expedition Shop-node migration remains future map work
+
+- Activated same-run Scrap from 25% ordinary drops, guaranteed specialist payouts, elite and mini-boss rewards, wave-clear bonuses, and the existing Aurum armour/defeat rewards.
+- Added a deterministic intermission Shop after wave-two and wave-four Supply Depots. It presents three distinct live offers—repair, carried Uranium kit, armour, an eligible upgrade, or an unowned weapon—plus an explicit leave action that banks the balance for the next terminal.
+- Purchases validate affordability before mutation, deduct the exact displayed price, apply immediately, emit a spend event, and refresh the rack. Unaffordable rows are visibly disabled and skipped by keyboard/controller navigation; mouse and digits 1–4 remain supported.
+- Enabled maximum-one seeded Aurum Hoarder arrivals during eligible ordinary waves 3–4 now that every earned Scrap unit has a visible spend path. Tutorials, objectives, full-cap states, duplicates, and the final wave remain excluded.
+- Added the `?scenario=scrap-shop&loadout=vertical` acceptance route using the authored 128 px Shop tile, updated HTTP smoke coverage, and locked the economy with five behavior/integration tests.
+
+### Production Scrap Shop UI Batch N2
+
+**Status:** Completed — 18 July 2026; integrated and gameplay-scale reviewed
+
+- Generated and alpha-cleaned six 128 px offer tiles, four 128 px Scrap HUD/effect states, and an empty 1024×576 salvage-terminal panel. The high-resolution chroma sources, transparent masters, exact prompts, frame maps, and deterministic normalizer remain in `art/production-tests/batch-n2/`.
+- Registered all three runtime assets in the manifest and integrated them into the live Shop overlay and Combat HUD. The renderer continues to own offer names, descriptions, prices, affordability, selection, input hints, balance, and event timing.
+- Added `?mode=gallery&batch=n2`, manifest contracts, required-file smoke coverage, and the review route to the developer guide.
+- The 1920×1080 live Shop review caught and fixed an offer-icon draw-order defect. The corrected overlay and gallery passed visual inspection with readable text, clean alpha, distinct silhouettes, and no clipped Shop content.
+
 ### Codex/perk/hotkey tile preflight (Batch I)
 
 - Generated three high-quality held tile families under `art/production-tests/batch-i/`: eight 96px Codex weapon tiles, eight 64px perk tiles, and eight 64px hotkey/action tiles.

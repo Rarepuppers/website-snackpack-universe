@@ -47,8 +47,14 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?mode=gallery&batch=f2`, `f3`, or `f4` — Bolt Carbine, Bulwark Rotary Cannon, or Grenade Tube production families
 - Add `debug=1` to the normal or stress route for collision labels and live entity/effect counts.
 - Add `theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay` to pin an arena background theme; without it each load draws one from the pool.
-- Decision overlays support arrows/WASD/left-stick navigation, Enter/Space/pad-A confirm, and digits 1–3 quick pick.
+- Decision overlays support arrows/WASD/left-stick navigation, Enter/Space/pad-A confirm, and digits 1–4 quick pick; disabled Shop rows are skipped and cannot be confirmed.
 - Add `size=100..300` to preview the planned game-size setting; the canvas always snaps to whole physical pixels.
+
+- `/play/last-bastion/?scenario=aurum-hoarder&loadout=bulwark` — Aurum Hoarder forage/flee lab with armour-break Scrap, edge-exit marker, and guaranteed supply-cache reward
+- `/play/last-bastion/?scenario=scrap-shop&loadout=vertical` — seeded four-row Scrap Shop lab with three live offers, affordability states, repeat purchasing, and explicit leave/bank action
+
+- `/play/last-bastion/?mode=gallery&batch=n` — Task 36 Aurum body/effects/cache family and eight 128 px runtime tiles
+- `/play/last-bastion/?mode=gallery&batch=n2` — production Scrap Shop panel, six 128 px offer tiles, and four 128 px Scrap HUD/effect frames
 
 ## Codex
 

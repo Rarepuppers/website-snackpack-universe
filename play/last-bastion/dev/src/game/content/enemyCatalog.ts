@@ -13,6 +13,7 @@ export type EnemyType =
   | "quillback"
   | "spinewheel"
   | "tether-bloom"
+  | "aurum-hoarder"
   | "siege-crusher"
   | "brood-warden"
   | "bastion-eater";
@@ -142,6 +143,16 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     experienceValue: 4,
     resistances: { toxic: 0.4 },
     steeringProfile: "supportAnchor",
+  }),
+  "aurum-hoarder": enemy({
+    id: "aurum-hoarder",
+    maxHealth: 120,
+    radiusMetres: 0.65,
+    movementSpeedMetresPerSecond: 3,
+    contactDamage: 0,
+    experienceValue: 0,
+    armour: 10,
+    steeringProfile: "treasureFlee",
   }),
   "siege-crusher": enemy({
     id: "siege-crusher",

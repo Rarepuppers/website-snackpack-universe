@@ -15,6 +15,14 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "n2") {
+      this.createScrapShopGallery();
+      return;
+    }
+    if (batch === "n") {
+      this.createBatchNGallery();
+      return;
+    }
     if (batch === "k") {
       this.createBatchKGallery();
       return;
@@ -393,6 +401,62 @@ export class AssetGalleryScene extends Phaser.Scene {
 
     this.add.text(480, 486, "Authored accents reinforce warning and outcome; lane, distance, collision, and hit test remain authoritative code", style("#ffb982", "9px")).setOrigin(0.5);
     this.add.text(480, 518, "Review: ?mode=gallery&batch=d4 • Encounter: ?scenario=razor-scuttler&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchNGallery(): void {
+    this.add.text(20, 14, "LAST BASTION — TASK 36 AURUM + 128 PX TILE BATCH", style("#ffffff", "17px"));
+    this.add.text(20, 38, "28 runtime visuals • retained generation masters • code-owned economy, timers, bindings, and escape geometry", style("#8fb2c9", "11px"));
+
+    this.add.text(20, 68, "AURUM HOARDER — intact forage / armour-broken forage / flee × S N E W", style("#ffd36b", "11px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const x = 78 + frame * 73;
+      this.add.sprite(x, 126, "aurum-hoarder-v1", frame).setScale(0.68);
+      this.drawPivot(x, 126);
+      this.add.text(x, 166, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 198, "EVENT EFFECTS — arrival / break / Scrap / flee / trail / escape / defeat / cache", style("#68e4e8", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 64 + frame * 118;
+      this.add.sprite(x, 254, "aurum-hoarder-effects-v1", frame).setScale(1.05);
+      this.drawPivot(x, 254);
+      this.add.text(x, 296, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 328, "128 PX TILES — Scrap / cache / Codex / event / break / escape / Shop / locked", style("#ffb982", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 64 + frame * 118;
+      this.add.sprite(x, 410, "aurum-tiles-v1", frame).setScale(0.58);
+      this.drawPivot(x, 410);
+      this.add.text(x, 456, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(480, 500, "Review: ?mode=gallery&batch=n • Encounter: ?scenario=aurum-hoarder&loadout=bulwark", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createScrapShopGallery(): void {
+    this.add.text(20, 14, "LAST BASTION — PRODUCTION SCRAP SHOP UI BATCH N2", style("#ffffff", "17px"));
+    this.add.text(20, 38, "11 runtime visuals • 128 px offer/HUD contract • 1024×576 empty panel • all language and state code-owned", style("#8fb2c9", "11px"));
+
+    this.add.image(390, 218, "scrap-shop-panel-v1").setDisplaySize(690, 388);
+    this.add.text(390, 72, "EMPTY SHOP TERMINAL PANEL", style("#68e4e8", "10px")).setOrigin(0.5);
+
+    this.add.text(825, 72, "HUD FRAMES", style("#ffd36b", "10px")).setOrigin(0.5);
+    for (let frame = 0; frame < 4; frame += 1) {
+      const x = 790 + (frame % 2) * 80;
+      const y = 125 + Math.floor(frame / 2) * 84;
+      this.add.sprite(x, y, "scrap-shop-hud-v1", frame).setScale(0.5);
+      this.add.text(x, y + 35, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(480, 388, "128 PX OFFERS — repair / uranium / armour / upgrade / weapon / sold-locked", style("#ffb982", "10px")).setOrigin(0.5);
+    for (let frame = 0; frame < 6; frame += 1) {
+      const x = 150 + frame * 132;
+      this.add.sprite(x, 455, "scrap-shop-offer-tiles-v1", frame).setScale(0.56);
+      this.add.text(x, 497, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(480, 522, "Review: ?mode=gallery&batch=n2 • Live Shop: ?scenario=scrap-shop&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createBatchE1Gallery(): void {

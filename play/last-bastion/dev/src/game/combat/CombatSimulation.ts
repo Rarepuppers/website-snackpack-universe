@@ -64,6 +64,15 @@ import {
   rangeBandIntent,
   type EnemySteeringProfileId,
 } from "./EnemySteeringProfiles";
+import {
+  AURUM_HOARDER_BREAK_SCRAP,
+  AURUM_HOARDER_ESCAPE_SECONDS,
+  AURUM_HOARDER_FORAGE_SECONDS,
+  AURUM_HOARDER_KILL_SCRAP,
+  crossedAurumThresholds,
+  selectAurumExit,
+  shouldSpawnAurumHoarder,
+} from "./AurumHoarder";
 
 export type EncounterStatus = "combat" | "intermission" | "victory" | "defeat";
 export type BrainPhase = "drift" | "windup" | "lunge" | "recover";
@@ -75,12 +84,13 @@ export type RazorScuttlerPhase = "pursuit" | "windup" | "dash" | "recovery";
 export type QuillbackPhase = "positioning" | "windup" | "recover";
 export type SpinewheelPhase = "positioning" | "windup" | "rolling" | "recovery";
 export type TetherBloomPhase = "idle" | "windup" | "tethering" | "recovery";
+export type AurumHoarderPhase = "forage" | "flee";
 export type BastionEaterPhase = "breach" | "brood" | "last-stand";
 export type BastionEaterAction =
   | "entrance" | "stalk" | "claw-windup" | "claw" | "charge-windup" | "charge"
   | "tendril-windup" | "tendril" | "egg-windup" | "eggs"
   | "breach-windup" | "breach" | "recovery";
-export type EnemyRank = "standard" | "elite" | "mini-boss" | "boss";
+export type EnemyRank = "standard" | "treasure" | "elite" | "mini-boss" | "boss";
 export type EliteKind = "carapace-scuttler";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
 export type MiniBossKind = "siege-crusher" | "brood-warden";
@@ -91,9 +101,10 @@ export type BroodWardenPhase =
   | "entrance" | "stalk" | "cleave-windup" | "cleave"
   | "acid-windup" | "acid-volley" | "egg-windup" | "egg-lay"
   | "rush-windup" | "swarm-rush" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds";
-export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition";
+export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop";
+export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat";
 
 export interface UpgradeSlotSnapshot {
   category: UpgradeCategory;
@@ -105,6 +116,8 @@ export interface DecisionOption {
   id: string;
   name: string;
   description: string;
+  cost?: number;
+  affordable?: boolean;
 }
 
 export interface PendingDecision {
@@ -168,6 +181,13 @@ export type CombatEvent =
   | { type: "tether-bloom-latched"; position: Vector2Data }
   | { type: "tether-bloom-broken"; position: Vector2Data; reason: "evasive" | "damage" | "range" }
   | { type: "tether-bloom-released"; position: Vector2Data }
+  | { type: "aurum-arrived"; position: Vector2Data }
+  | { type: "aurum-fleeing"; position: Vector2Data; target: Vector2Data; remainingSeconds: number }
+  | { type: "aurum-armour-broken"; position: Vector2Data; threshold: number; scrap: number; totalScrap: number }
+  | { type: "aurum-escaped"; position: Vector2Data }
+  | { type: "aurum-supply-cache-dropped"; position: Vector2Data }
+  | { type: "scrap-secured"; position: Vector2Data; amount: number; total: number; source: ScrapSource }
+  | { type: "scrap-spent"; amount: number; remaining: number; offerId: string }
   | { type: "bastion-eater-phase"; position: Vector2Data; phase: BastionEaterPhase }
   | { type: "bastion-eater-claw-warning"; position: Vector2Data; direction: Vector2Data }
   | { type: "bastion-eater-claw-strike"; position: Vector2Data; direction: Vector2Data }
@@ -207,6 +227,10 @@ export interface EnemySnapshot {
   tetherBloomPhase?: TetherBloomPhase;
   tetherBloomTarget?: Vector2Data;
   tetherBloomBreakDamage?: number;
+  aurumPhase?: AurumHoarderPhase;
+  aurumExitTarget?: Vector2Data;
+  aurumEscapeRemainingSeconds?: number;
+  aurumArmourBreaksPaid?: number;
   bastionEaterPhase?: BastionEaterPhase;
   bastionEaterAction?: BastionEaterAction;
   bastionEaterDirection?: Vector2Data;
@@ -293,7 +317,7 @@ export interface GroundHazardSnapshot {
 
 export interface EliteRewardSnapshot {
   id: number;
-  type: "elite-upgrade-cache" | "mini-boss-arsenal-cache";
+  type: "elite-upgrade-cache" | "mini-boss-arsenal-cache" | "aurum-supply-cache";
   position: Vector2Data;
 }
 
@@ -311,6 +335,7 @@ export interface CombatSnapshot {
   playerMaxHealth: number;
   playerShield: number;
   playerMaxShield: number;
+  playerArmour: number;
   playerInvulnerable: boolean;
   playerEntrenched: boolean;
   evasiveReady: boolean;
@@ -335,6 +360,7 @@ export interface CombatSnapshot {
   powerups: readonly PowerupPickupSnapshot[];
   activeBuffs: readonly ActiveBuffSnapshot[];
   uraniumKitAvailable: boolean;
+  securedScrap: number;
   weapon: Readonly<WeaponRuntimeStats>;
   equippedWeapons: readonly Readonly<EquippedWeaponSnapshot>[];
   events: readonly CombatEvent[];
@@ -391,6 +417,10 @@ interface EnemyState {
   tetherBloomPhaseRemainingSeconds: number;
   tetherBloomTarget: Vector2Data;
   tetherBloomDamageDuringGrab: number;
+  aurumPhase: AurumHoarderPhase;
+  aurumPhaseRemainingSeconds: number;
+  aurumExitTarget: Vector2Data;
+  aurumArmourBreaksPaid: number;
   bastionEaterPhase: BastionEaterPhase;
   bastionEaterAction: BastionEaterAction;
   bastionEaterActionRemainingSeconds: number;
@@ -473,7 +503,7 @@ interface GroundHazardState {
 
 interface EliteRewardState {
   id: number;
-  type: "elite-upgrade-cache" | "mini-boss-arsenal-cache";
+  type: "elite-upgrade-cache" | "mini-boss-arsenal-cache" | "aurum-supply-cache";
   position: Vector2Data;
   collected: boolean;
 }
@@ -490,6 +520,7 @@ export interface CombatSimulationOptions {
   scenario?: CombatScenario;
   startingUraniumKit?: boolean;
   startWithUraniumBuff?: boolean;
+  startingScrap?: number;
 }
 
 interface EquippedWeaponState extends EquippedWeapon {
@@ -545,6 +576,16 @@ const BLAST_MITE_EXPLOSION_DAMAGE = 16;
 const COMBUSTION_RADIUS_METRES = 1.3;
 const COMBUSTION_DAMAGE = 12;
 const SUPPLY_DEPOT_HEAL = 45;
+export const SCRAP_SHOP_PRICES = Object.freeze({
+  uraniumKit: 35,
+  fieldRepair: 40,
+  upgrade: 45,
+  armourRetrofit: 50,
+  weapon: 60,
+} as const);
+const SCRAP_SHOP_REPAIR = 35;
+const SCRAP_SHOP_ARMOUR = 3;
+const ORDINARY_SCRAP_DROP_CHANCE = 0.25;
 const FENCE_ACTIVE_SECONDS = 6;
 const FENCE_COOLDOWN_SECONDS = 18;
 const FENCE_DAMAGE_PER_SECOND = 22;
@@ -627,6 +668,8 @@ export class CombatSimulation {
   private densityPressureSpawned: Record<EnemyPressureRole, number> = {
     pursuit: 0, ranged: 0, specialist: 0, boss: 0,
   };
+  private securedScrap = 0;
+  private aurumSpawnedThisWave = false;
   private level = 1;
   private experience = 0;
   private decisionQueue: PendingDecision[] = [];
@@ -648,6 +691,9 @@ export class CombatSimulation {
     this.randomState = options.seed ?? 0x5a17b45;
     this.stressProfile = options.stressProfile ?? null;
     this.scenario = options.scenario ?? null;
+    this.securedScrap = Math.max(0, Math.floor(
+      options.startingScrap ?? (this.scenario === "scrap-shop" ? 150 : 0),
+    ));
     this.uraniumKitAvailable = options.startingUraniumKit ?? false;
     if (options.startWithUraniumBuff) {
       this.activeBuffs.set("uranium-core-rounds", URANIUM_CORE_ROUNDS_DURATION_SECONDS);
@@ -688,6 +734,10 @@ export class CombatSimulation {
       this.populateBastionEaterScenario();
     } else if (this.scenario === "density-capacity") {
       this.populateDensityCapacityScenario();
+    } else if (this.scenario === "aurum-hoarder") {
+      this.populateAurumHoarderScenario();
+    } else if (this.scenario === "scrap-shop") {
+      this.populateScrapShopScenario();
     } else if (this.wavesEnabled) {
       this.beginWave(0);
     }
@@ -845,6 +895,15 @@ export class CombatSimulation {
       tetherBloomPhaseRemainingSeconds: type === "tether-bloom" ? 0.5 : 0,
       tetherBloomTarget: { ...this.playerPosition },
       tetherBloomDamageDuringGrab: 0,
+      aurumPhase: "forage",
+      aurumPhaseRemainingSeconds: type === "aurum-hoarder" ? AURUM_HOARDER_FORAGE_SECONDS : 0,
+      aurumExitTarget: selectAurumExit(
+        spawnPosition,
+        this.playerPosition,
+        this.widthMetres,
+        this.heightMetres,
+      ),
+      aurumArmourBreaksPaid: 0,
       bastionEaterPhase: "breach",
       bastionEaterAction: "entrance",
       bastionEaterActionRemainingSeconds: type === "bastion-eater" ? 1.2 : 0,
@@ -880,6 +939,19 @@ export class CombatSimulation {
       bestiaryKey: type,
     });
 
+    return id;
+  }
+
+  /** Forced event entry point for the behavior lab and future seeded director hook. */
+  spawnAurumHoarder(position?: Vector2Data): number | null {
+    if (this.aurumSpawnedThisWave || this.enemies.some((enemy) => !enemy.dead && enemy.type === "aurum-hoarder")) {
+      return null;
+    }
+    const id = this.spawnEnemy("aurum-hoarder", position);
+    const enemy = this.enemies.find((candidate) => candidate.id === id)!;
+    enemy.rank = "treasure";
+    this.aurumSpawnedThisWave = true;
+    this.frameEvents.push({ type: "aurum-arrived", position: { ...enemy.position } });
     return id;
   }
 
@@ -962,7 +1034,8 @@ export class CombatSimulation {
 
   chooseOption(optionId: string): boolean {
     const decision = this.decisionQueue[0];
-    if (!decision || !decision.options.some((option) => option.id === optionId)) {
+    const option = decision?.options.find((candidate) => candidate.id === optionId);
+    if (!decision || !option || option.affordable === false) {
       return false;
     }
 
@@ -988,6 +1061,24 @@ export class CombatSimulation {
         }
         break;
       }
+      case "scrap-shop":
+        if (optionId !== "shop-leave") {
+          const cost = Math.max(0, option.cost ?? 0);
+          if (cost > this.securedScrap) {
+            this.decisionQueue.unshift(decision);
+            return false;
+          }
+          this.securedScrap -= cost;
+          this.applyScrapShopPurchase(optionId);
+          this.frameEvents.push({
+            type: "scrap-spent",
+            amount: cost,
+            remaining: this.securedScrap,
+            offerId: optionId,
+          });
+          this.decisionQueue.unshift(this.buildScrapShopDecision());
+        }
+        break;
     }
     this.checkForLevelUp();
     return true;
@@ -1011,6 +1102,7 @@ export class CombatSimulation {
       playerMaxHealth: PLAYER_MAX_HEALTH,
       playerShield: this.playerShield,
       playerMaxShield: this.defence.maxShield,
+      playerArmour: this.defence.armour,
       playerInvulnerable: this.playerInvulnerable || this.playerHurtCooldownSeconds > 0,
       playerEntrenched: this.isPlayerEntrenched(),
       evasiveReady: this.evasiveReady,
@@ -1077,6 +1169,7 @@ export class CombatSimulation {
         durationSeconds: POWERUP_DURATION_SECONDS[type],
       })),
       uraniumKitAvailable: this.uraniumKitAvailable,
+      securedScrap: this.securedScrap,
       weapon: { ...(this.equippedWeapons[0]?.stats ?? BASTION_SERVICE_RIFLE) },
       equippedWeapons: this.equippedWeapons.map((weapon) => ({
         instanceId: weapon.instanceId,
@@ -1375,6 +1468,120 @@ export class CombatSimulation {
         },
       ],
     };
+  }
+
+  /**
+   * Same-run shop: three seeded, immediately usable offers plus an explicit
+   * leave action. Purchases refresh the rack so a player may spend repeatedly;
+   * there is no hidden reroll fee or persistent meta-currency.
+   */
+  private buildScrapShopDecision(): PendingDecision {
+    const candidates: DecisionOption[] = [];
+    const add = (option: Omit<DecisionOption, "affordable"> & { cost: number }): void => {
+      candidates.push({ ...option, affordable: option.cost <= this.securedScrap });
+    };
+
+    if (this.playerHealth < PLAYER_MAX_HEALTH) {
+      add({
+        id: "shop-repair",
+        name: "Field Repair",
+        description: `Restore ${SCRAP_SHOP_REPAIR} health.`,
+        cost: SCRAP_SHOP_PRICES.fieldRepair,
+      });
+    }
+    if (!this.uraniumKitAvailable) {
+      add({
+        id: "shop-uranium-kit",
+        name: "Uranium-Core Kit",
+        description: "Carry one activatable 12-second +25% damage kit.",
+        cost: SCRAP_SHOP_PRICES.uraniumKit,
+      });
+    }
+    add({
+      id: "shop-armour-retrofit",
+      name: "Armour Retrofit",
+      description: `Gain ${SCRAP_SHOP_ARMOUR} armour for this run.`,
+      cost: SCRAP_SHOP_PRICES.armourRetrofit,
+    });
+
+    const eligibleUpgrades = UPGRADE_ORDER.filter((id) => this.isUpgradeEligible(id));
+    if (eligibleUpgrades.length > 0) {
+      const upgradeId = eligibleUpgrades[
+        Math.min(Math.floor(this.random() * eligibleUpgrades.length), eligibleUpgrades.length - 1)
+      ]!;
+      const nextLevel = (this.upgradeLevels.get(upgradeId) ?? 0) + 1;
+      add({
+        id: `shop-upgrade:${upgradeId}`,
+        name: upgradeLevelName(upgradeId, nextLevel),
+        description: `Install immediately. ${UPGRADE_CATALOG[upgradeId].levelDescriptions[nextLevel - 1]!}`,
+        cost: SCRAP_SHOP_PRICES.upgrade,
+      });
+    }
+
+    if (this.equippedWeapons.length < MAX_EQUIPPED_WEAPONS) {
+      const owned = new Set(this.equippedWeapons.map((weapon) => weapon.weaponId));
+      const availableWeapons = WEAPON_CHEST_POOL.filter((id) => !owned.has(id));
+      if (availableWeapons.length > 0) {
+        const weaponId = availableWeapons[
+          Math.min(Math.floor(this.random() * availableWeapons.length), availableWeapons.length - 1)
+        ]!;
+        add({
+          id: `shop-weapon:${weaponId}`,
+          name: WEAPON_CATALOG[weaponId].displayName,
+          description: `Add this Tier I weapon to the active rack. ${WEAPON_CATALOG[weaponId].description}`,
+          cost: SCRAP_SHOP_PRICES.weapon,
+        });
+      }
+    }
+
+    const offers: DecisionOption[] = [];
+    while (offers.length < 3 && candidates.length > 0) {
+      const index = Math.min(Math.floor(this.random() * candidates.length), candidates.length - 1);
+      offers.push(candidates.splice(index, 1)[0]!);
+    }
+    offers.sort((left, right) => Number(right.affordable) - Number(left.affordable));
+    offers.push({
+      id: "shop-leave",
+      name: "Leave Shop",
+      description: "Bank remaining Scrap for the next terminal.",
+      cost: 0,
+      affordable: true,
+    });
+    return {
+      kind: "scrap-shop",
+      title: `SCRAP SHOP — ${this.securedScrap} SCRAP`,
+      options: offers,
+    };
+  }
+
+  private applyScrapShopPurchase(optionId: string): void {
+    if (optionId === "shop-repair") {
+      this.playerHealth = Math.min(PLAYER_MAX_HEALTH, this.playerHealth + SCRAP_SHOP_REPAIR);
+      return;
+    }
+    if (optionId === "shop-uranium-kit") {
+      this.uraniumKitAvailable = true;
+      return;
+    }
+    if (optionId === "shop-armour-retrofit") {
+      this.defence.armour += SCRAP_SHOP_ARMOUR;
+      return;
+    }
+    if (optionId.startsWith("shop-upgrade:")) {
+      const upgradeId = optionId.slice("shop-upgrade:".length) as UpgradeId;
+      if (upgradeId in UPGRADE_CATALOG && this.isUpgradeEligible(upgradeId)) {
+        const nextLevel = (this.upgradeLevels.get(upgradeId) ?? 0) + 1;
+        this.upgradeLevels.set(upgradeId, nextLevel);
+        this.applyUpgrade(upgradeId, nextLevel);
+      }
+      return;
+    }
+    if (optionId.startsWith("shop-weapon:")) {
+      const weaponId = optionId.slice("shop-weapon:".length) as WeaponId;
+      if (weaponId in WEAPON_CATALOG) {
+        this.addWeapon(weaponId);
+      }
+    }
   }
 
   private fireWeapon(weapon: EquippedWeaponState, aimDirection: Vector2Data): void {
@@ -1798,9 +2005,14 @@ export class CombatSimulation {
       }
 
       this.tickEnemyStatuses(enemy, deltaSeconds);
-      if (enemy.dead || this.isEnemyStunned(enemy)) {
+      if (enemy.dead) {
         continue;
       }
+      if (enemy.type === "aurum-hoarder") {
+        this.updateAurumHoarder(enemy, deltaSeconds);
+        continue;
+      }
+      if (this.isEnemyStunned(enemy)) continue;
 
       enemy.attackCooldownSeconds = Math.max(0, enemy.attackCooldownSeconds - deltaSeconds);
 
@@ -1894,6 +2106,55 @@ export class CombatSimulation {
   private activeStatuses(enemy: EnemyState): StatusEffectType[] {
     return (Object.keys(enemy.statusTimers) as StatusEffectType[])
       .filter((status) => (enemy.statusTimers[status] ?? 0) > 0);
+  }
+
+  private updateAurumHoarder(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.aurumPhaseRemainingSeconds -= deltaSeconds;
+    if (enemy.aurumPhase === "forage") {
+      const away = normalizeVector({
+        x: enemy.position.x - this.playerPosition.x,
+        y: enemy.position.y - this.playerPosition.y,
+      });
+      const wobble = Math.sin((AURUM_HOARDER_FORAGE_SECONDS - enemy.aurumPhaseRemainingSeconds) * 5) * 0.35;
+      const direction = normalizeVector({ x: away.x - away.y * wobble, y: away.y + away.x * wobble });
+      enemy.facingDirection = direction;
+      this.moveEnemy(enemy, direction, 1.35, deltaSeconds);
+      if (enemy.aurumPhaseRemainingSeconds <= 0) {
+        enemy.aurumPhase = "flee";
+        enemy.aurumPhaseRemainingSeconds = AURUM_HOARDER_ESCAPE_SECONDS;
+        enemy.aurumExitTarget = selectAurumExit(
+          enemy.position,
+          this.playerPosition,
+          this.widthMetres,
+          this.heightMetres,
+        );
+        this.frameEvents.push({
+          type: "aurum-fleeing",
+          position: { ...enemy.position },
+          target: { ...enemy.aurumExitTarget },
+          remainingSeconds: AURUM_HOARDER_ESCAPE_SECONDS,
+        });
+      }
+      return;
+    }
+
+    const toExit = normalizeVector({
+      x: enemy.aurumExitTarget.x - enemy.position.x,
+      y: enemy.aurumExitTarget.y - enemy.position.y,
+    });
+    const wobble = Math.sin((AURUM_HOARDER_ESCAPE_SECONDS - enemy.aurumPhaseRemainingSeconds) * 7) * 0.18;
+    const direction = normalizeVector({ x: toExit.x - toExit.y * wobble, y: toExit.y + toExit.x * wobble });
+    enemy.facingDirection = direction;
+    this.moveEnemy(enemy, direction, ENEMY_CATALOG["aurum-hoarder"].movementSpeedMetresPerSecond, deltaSeconds);
+    if (distance(enemy.position, enemy.aurumExitTarget) <= 0.22 || enemy.aurumPhaseRemainingSeconds <= 0) {
+      this.escapeAurumHoarder(enemy);
+    }
+  }
+
+  private escapeAurumHoarder(enemy: EnemyState): void {
+    if (enemy.dead) return;
+    enemy.dead = true;
+    this.frameEvents.push({ type: "aurum-escaped", position: { ...enemy.position } });
   }
 
   private updateEggCluster(enemy: EnemyState, deltaSeconds: number): void {
@@ -3310,7 +3571,10 @@ export class CombatSimulation {
       if (reward.collected || distance(reward.position, this.playerPosition) > 0.8) continue;
       reward.collected = true;
       this.frameEvents.push({ type: "elite-reward-collected", position: { ...reward.position } });
-      if (reward.type === "mini-boss-arsenal-cache") {
+      if (reward.type === "aurum-supply-cache") {
+        const decision = this.buildSupplyDepotDecision();
+        this.decisionQueue.push({ ...decision, title: "AURUM SUPPLY CACHE — CHOOSE ONE" });
+      } else if (reward.type === "mini-boss-arsenal-cache") {
         this.playerHealth = Math.min(PLAYER_MAX_HEALTH, this.playerHealth + 30);
         this.addExperience(this.experienceThreshold() * 2);
       } else {
@@ -3335,8 +3599,9 @@ export class CombatSimulation {
     const definition = ENEMY_CATALOG[enemy.type];
     const resistanceMultiplier = definition.resistances[damageType] ?? 1;
     const corrodeActive = (enemy.statusTimers.corrode ?? 0) > 0;
+    const aurumArmourBreak = enemy.type === "aurum-hoarder" ? enemy.aurumArmourBreaksPaid * 3 : 0;
     const effectiveArmour = Math.max(
-      definition.armour - (corrodeActive ? STATUS_RULES.corrode.armourReduction : 0),
+      definition.armour - aurumArmourBreak - (corrodeActive ? STATUS_RULES.corrode.armourReduction : 0),
       0,
     );
     let mitigated = mitigateDamage(
@@ -3398,7 +3663,26 @@ export class CombatSimulation {
       return;
     }
 
+    const previousHealth = enemy.health;
     enemy.health -= damage;
+    if (enemy.type === "aurum-hoarder") {
+      for (const threshold of crossedAurumThresholds(
+        previousHealth,
+        Math.max(0, enemy.health),
+        enemy.maxHealth,
+        enemy.aurumArmourBreaksPaid,
+      )) {
+        enemy.aurumArmourBreaksPaid += 1;
+        this.secureScrap(AURUM_HOARDER_BREAK_SCRAP, "aurum-armour", enemy.position);
+        this.frameEvents.push({
+          type: "aurum-armour-broken",
+          position: { ...enemy.position },
+          threshold,
+          scrap: AURUM_HOARDER_BREAK_SCRAP,
+          totalScrap: this.securedScrap,
+        });
+      }
+    }
     if (enemy.health > 0) {
       return;
     }
@@ -3410,6 +3694,24 @@ export class CombatSimulation {
       enemyType: enemy.type,
       bestiaryKey: this.bestiaryKeyOf(enemy),
     });
+    if (enemy.type === "aurum-hoarder") {
+      this.secureScrap(AURUM_HOARDER_KILL_SCRAP, "aurum-defeat", enemy.position);
+      this.eliteRewards.push({
+        id: this.nextId(),
+        type: "aurum-supply-cache",
+        position: { ...enemy.position },
+        collected: false,
+      });
+      this.frameEvents.push({ type: "aurum-supply-cache-dropped", position: { ...enemy.position } });
+    } else if (enemy.miniBossKind) {
+      this.secureScrap(40, "mini-boss-defeat", enemy.position);
+    } else if (enemy.eliteKind) {
+      this.secureScrap(15, "elite-defeat", enemy.position);
+    } else if (enemy.type === "quillback" || enemy.type === "spinewheel" || enemy.type === "ripper") {
+      this.secureScrap(2, "specialist-defeat", enemy.position);
+    } else if (enemy.rank === "standard" && this.random() < ORDINARY_SCRAP_DROP_CHANCE) {
+      this.secureScrap(1, "ordinary-drop", enemy.position);
+    }
     if (this.statusTuning.combustionOnDeath && (enemy.statusTimers.blaze ?? 0) > 0) {
       this.frameEvents.push({
         type: "explosion",
@@ -3480,6 +3782,21 @@ export class CombatSimulation {
     }
   }
 
+  private secureScrap(
+    amount: number,
+    source: ScrapSource,
+    position: Vector2Data,
+  ): void {
+    this.securedScrap += amount;
+    this.frameEvents.push({
+      type: "scrap-secured",
+      position: { ...position },
+      amount,
+      total: this.securedScrap,
+      source,
+    });
+  }
+
   private removeDeadEntities(): void {
     this.enemies = this.enemies.filter((enemy) => !enemy.dead);
     for (const projectile of this.projectiles) {
@@ -3543,12 +3860,18 @@ export class CombatSimulation {
   }
 
   private updateEncounterProgress(deltaSeconds: number): void {
+    const livingTreasure = this.enemies.filter((enemy) => !enemy.dead && enemy.rank === "treasure");
+    const hasBlockingEnemy = this.enemies.some((enemy) => !enemy.dead && enemy.rank !== "treasure");
     if (
       this.status === "combat"
       && this.spawnQueue.length === 0
-      && this.enemies.length === 0
+      && !hasBlockingEnemy
       && this.enemyProjectiles.length === 0
     ) {
+      for (const enemy of livingTreasure) this.escapeAurumHoarder(enemy);
+      if (this.wavesEnabled) {
+        this.secureScrap(10 + 5 * (this.waveIndex + 1), "wave-clear", this.playerPosition);
+      }
       if (this.waveIndex >= TOTAL_WAVES - 1) {
         this.status = "victory";
       } else {
@@ -3575,6 +3898,7 @@ export class CombatSimulation {
       }
     } else if (this.waveIndex === 1 || this.waveIndex === 3) {
       this.decisionQueue.push(this.buildSupplyDepotDecision());
+      this.decisionQueue.push(this.buildScrapShopDecision());
     }
   }
 
@@ -3582,6 +3906,7 @@ export class CombatSimulation {
     this.waveIndex = index;
     this.waveElapsedSeconds = 0;
     this.status = "combat";
+    this.aurumSpawnedThisWave = false;
     const wave = buildDensityWave(index);
     this.spawnQueue = [...wave.plans];
     this.waveLiveCap = wave.liveCap;
@@ -3592,6 +3917,22 @@ export class CombatSimulation {
     this.densityPressureSpawned = { pursuit: 0, ranged: 0, specialist: 0, boss: 0 };
     if (index >= 1) {
       this.spawnPowerup(POWERUP_WAVE_CYCLE[(index - 1) % POWERUP_WAVE_CYCLE.length]!);
+    }
+    if (
+      index >= 2
+      && index < TOTAL_WAVES - 1
+      && shouldSpawnAurumHoarder({
+        waveNumber: index + 1,
+        totalWaves: TOTAL_WAVES,
+        roll: this.random(),
+        liveEnemies: this.enemies.filter((enemy) => !enemy.dead).length,
+        liveCap: this.waveLiveCap,
+        alreadySpawned: this.aurumSpawnedThisWave,
+        objectiveActive: false,
+        rewardEconomyEnabled: true,
+      })
+    ) {
+      this.spawnAurumHoarder();
     }
   }
 
@@ -3614,6 +3955,18 @@ export class CombatSimulation {
       this.spawnEnemy(type);
       this.recordDensitySpawn({ type });
     }
+  }
+
+  private populateAurumHoarderScenario(): void {
+    this.spawnAurumHoarder({
+      x: this.widthMetres / 2 + 5,
+      y: this.heightMetres / 2,
+    });
+  }
+
+  private populateScrapShopScenario(): void {
+    this.playerHealth = 55;
+    this.decisionQueue.push(this.buildScrapShopDecision());
   }
 
   private populateSlimeSpitterScenario(): void {
@@ -3759,6 +4112,12 @@ export class CombatSimulation {
       tetherBloomBreakDamage: enemy.type === "tether-bloom"
         ? enemy.tetherBloomDamageDuringGrab
         : undefined,
+      aurumPhase: enemy.type === "aurum-hoarder" ? enemy.aurumPhase : undefined,
+      aurumExitTarget: enemy.type === "aurum-hoarder" ? { ...enemy.aurumExitTarget } : undefined,
+      aurumEscapeRemainingSeconds: enemy.type === "aurum-hoarder" && enemy.aurumPhase === "flee"
+        ? Math.max(0, enemy.aurumPhaseRemainingSeconds)
+        : undefined,
+      aurumArmourBreaksPaid: enemy.type === "aurum-hoarder" ? enemy.aurumArmourBreaksPaid : undefined,
       bastionEaterPhase: enemy.type === "bastion-eater" ? enemy.bastionEaterPhase : undefined,
       bastionEaterAction: enemy.type === "bastion-eater" ? enemy.bastionEaterAction : undefined,
       bastionEaterDirection: enemy.type === "bastion-eater" ? { ...enemy.bastionEaterDirection } : undefined,

@@ -256,6 +256,8 @@ describe("five-wave run and intermission rewards", () => {
     expect(depot.pendingDecision?.kind).toBe("supply-depot");
     expect(simulation.chooseOption("aegis-lattice")).toBe(true);
     expect(simulation.snapshot().playerShield).toBe(25);
+    expect(simulation.snapshot().pendingDecision?.kind).toBe("scrap-shop");
+    expect(simulation.chooseOption("shop-leave")).toBe(true);
   });
 
   it("draws different chests for different seeds from the full pool", () => {

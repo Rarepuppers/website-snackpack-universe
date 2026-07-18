@@ -275,6 +275,8 @@ AI profiles are data, not bespoke branches per species: `pursuer`, `rushPack`, `
 
 ### Aurum Hoarder reward event
 
+**Behavior and economy gates completed 18 July 2026.** The deterministic `scenario=aurum-hoarder` lab still owns focused acceptance, while maximum-one seeded arrivals are now enabled in eligible ordinary waves 3–4 because the verified same-run Shop gives Scrap an immediate spend path.
+
 The Aurum Hoarder is a rare optional treasure creature, paid from an event reserve rather than the normal threat budget. It does not count toward the simultaneous combat cap or wave clear, but the director must defer its arrival if adding it would exceed the tested entity ceiling.
 
 - Eligibility begins at wave 3; maximum one per eligible ordinary wave; never during a tutorial, mini-boss, final boss, or forced objective.
@@ -344,7 +346,7 @@ XP shards drop at the kill point, attract within the magnet radius, and **persis
 
 ## Scrap (money)
 
-Scrap is the same-run shop currency. **It stays disabled until the Shop node exists** — the working rule against awarding unusable currency still holds. When enabled:
+Scrap is the same-run shop currency. **Enabled 18 July 2026 through a portable intermission Shop behavior gate;** the same component can move into the expedition Shop node later without changing its economy contract:
 
 | Source | Scrap |
 | --- | ---: |
@@ -398,7 +400,7 @@ Each of these is a rules test, not a vibe:
 4. **Budget respected:** live enemy count never exceeds the simultaneous cap; the budget is spent within ±10%.
 5. **Fair spawns:** no spawn within 6 m of the player or inside an obstacle, across many seeds.
 6. **Levelling target:** a scripted reference run reaches level 9–12 by wave 10.
-7. **Scrap stays off** until a shop exists (guard test).
+7. **Scrap requires a usable Shop** (guard satisfied 18 July 2026; affordability and immediate-application tests now lock it).
 8. **Precision:** `2.1` damage against `4.3` health leaves exactly `2.2` (3-decimal assertion); mitigation floors at 0.1, never 1.
 9. **Fractional projectiles:** a weapon at 1.5 emits the deterministic sequence 1, 2, 1, 2 across four shots; two instances of the same weapon do not share a rhythm.
 10. **Rush rule:** every rush-tier enemy dies to one bullet from any wave-1 weapon and moves faster than the Marine.
@@ -434,7 +436,7 @@ This is a large, cross-cutting change. Suggested sequencing so nothing lands hal
 7. **New telegraphs**: ground slam, rain of spines, sweeping arc (code-drawn first, Batch J art after).
 8. **XP curve** re-tune, then measure the reference run.
 9. **Weapon tiles/inventory/merge** — the biggest UI piece; needs the shop node, so it lands with the map's Shop work.
-10. **Scrap**, only once the shop exists.
+10. **Scrap**, only once the shop exists. **Completed 18 July 2026 for the five-wave prototype; expedition-node placement remains future map work.**
 
 ## Open questions for the tuning pass
 
