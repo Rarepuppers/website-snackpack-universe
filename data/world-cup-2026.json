@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-16T04:06:02.855Z",
+  "updatedAt": "2026-07-18T21:10:57.043Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1440,9 +1440,11 @@
       "awayLabel": "L 102",
       "home": "France",
       "away": "England",
-      "time": "Upcoming",
-      "statusShort": "Scheduled",
-      "winner": null
+      "time": "Live",
+      "statusShort": "LIVE",
+      "winner": null,
+      "lhs": 0,
+      "las": 1
     },
     {
       "n": 104,
