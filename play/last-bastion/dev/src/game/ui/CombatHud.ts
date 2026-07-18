@@ -47,12 +47,14 @@ export class CombatHud {
   private readonly bossPortrait: Phaser.GameObjects.Image;
   private readonly bossFallback: Phaser.GameObjects.Arc;
   private readonly productionArt: boolean;
+  private readonly cooldownTimersEnabled: boolean;
   private readonly statusTray: StatusTrayView[] = [];
   private readonly actionTiles: CooldownTileView[] = [];
   private readonly cadenceTiles: CooldownTileView[] = [];
 
-  constructor(scene: Phaser.Scene, showDebug: boolean, productionArt = true) {
+  constructor(scene: Phaser.Scene, showDebug: boolean, productionArt = true, cooldownTimersEnabled = true) {
     this.productionArt = productionArt;
+    this.cooldownTimersEnabled = cooldownTimersEnabled;
     const panel = productionArt
       ? scene.add.image(18, 14, "hud-panels-v1", 0).setOrigin(0).setDisplaySize(382, 104).setDepth(2000)
       : scene.add.rectangle(18, 14, 382, 104, 0x0b121c, 0.94)
@@ -179,6 +181,7 @@ export class CombatHud {
                 : snapshot.scenario === "spinewheel" ? "SPINEWHEEL LAB"
                   : snapshot.scenario === "tether-bloom" ? "TETHER LAB"
                     : snapshot.scenario === "bastion-eater" ? "FINAL BOSS LAB"
+                      : snapshot.scenario === "density-capacity" ? "DENSITY 56 LAB"
                       : snapshot.scenario === "razor-scuttler" ? "RAZOR LAB" : "CRUSHER LAB"
       : snapshot.stressProfile
         ? `STRESS ${snapshot.stressProfile}`
@@ -203,10 +206,12 @@ export class CombatHud {
     updateCooldownTile(
       this.actionTiles[0]!, snapshot.evasiveCooldownRemainingSeconds,
       totalRollTime, snapshot.evasiveReady, false,
+      this.cooldownTimersEnabled,
     );
     updateCooldownTile(
       this.actionTiles[1]!, snapshot.ultimateCooldownRemainingSeconds,
       MARINE.ultimate.cooldownSeconds, snapshot.ultimateReady, false,
+      this.cooldownTimersEnabled,
     );
     this.actionTiles[2]!.label.setText(
       this.actionTiles[2]!.icon ? "" : snapshot.uraniumKitAvailable ? "U-25" : "KIT",
@@ -214,8 +219,9 @@ export class CombatHud {
     this.actionTiles[2]!.icon?.setFrame(snapshot.uraniumKitAvailable ? 3 : 4);
     updateCooldownTile(
       this.actionTiles[2]!, 0, 1, snapshot.uraniumKitAvailable, !snapshot.uraniumKitAvailable,
+      this.cooldownTimersEnabled,
     );
-    updateCooldownTile(this.actionTiles[3]!, 0, 1, false, true);
+    updateCooldownTile(this.actionTiles[3]!, 0, 1, false, true, this.cooldownTimersEnabled);
 
     const slowWeapons = cadenceWeapons(snapshot.equippedWeapons).slice(0, this.cadenceTiles.length);
     this.cadenceTiles.forEach((tile, index) => {
@@ -241,6 +247,7 @@ export class CombatHud {
         weapon.cooldownDurationSeconds,
         weapon.cooldownRemainingSeconds <= 0,
         false,
+        this.cooldownTimersEnabled,
       );
     });
     this.weaponPips.forEach((pip, index) => {
@@ -248,7 +255,7 @@ export class CombatHud {
       pip.setFillStyle(weapon ? weaponPipColor(weapon.weaponId) : 0x273747);
     });
     this.debugText.setText(
-      `state=${snapshot.heroState} enemies=${snapshot.enemies.length} friendly=${snapshot.projectiles.length} hostile=${snapshot.enemyProjectiles.length} hazards=${snapshot.groundHazards.length} rewards=${snapshot.eliteRewards.length} effects=${activeEffectCount}`,
+      `state=${snapshot.heroState} enemies=${snapshot.enemies.length}/${snapshot.density.liveCap || "-"} peak=${snapshot.density.peakLiveEnemies} queue=${snapshot.density.queuedSpawns} hostile=${snapshot.enemyProjectiles.length}/${snapshot.density.projectileBudget} pPeak=${snapshot.density.peakEnemyProjectiles} blocked=${snapshot.density.spawnCapBlockedSeconds.toFixed(1)}s effects=${activeEffectCount}`,
     );
     const boss = snapshot.enemies.find((enemy) => enemy.rank === "boss" || enemy.rank === "mini-boss");
     this.bossPanel.setVisible(Boolean(boss));
@@ -399,6 +406,7 @@ function updateCooldownTile(
   durationSeconds: number,
   ready: boolean,
   disabled: boolean,
+  cooldownTimersEnabled: boolean,
 ): void {
   tile.overlay.clear();
   if (disabled) {
@@ -412,6 +420,7 @@ function updateCooldownTile(
     .setStrokeStyle(ready ? 3 : 2, ready ? 0xeaf8ff : 0x587087, ready ? 1 : 0.9);
   tile.label.setColor(ready ? "#ffffff" : "#c8d4df");
   tile.icon?.setAlpha(ready ? 1 : 0.68);
+  tile.timer.setVisible(cooldownTimersEnabled);
   tile.timer.setColor(remainingSeconds <= 1 && remainingSeconds > 0 ? "#ffd36b" : "#ffffff")
     .setText(formatCooldownSeconds(remainingSeconds));
   const fraction = cooldownRemainingFraction(remainingSeconds, durationSeconds);

@@ -185,7 +185,7 @@ export class PrototypeScene extends Phaser.Scene {
       fontSize: "10px",
     }).setOrigin(0, 1).setDepth(2000).setScrollFactor(0).setResolution(uiTextResolution());
 
-    this.hud = new CombatHud(this, this.showDebug, this.useMarineArt);
+    this.hud = new CombatHud(this, this.showDebug, this.useMarineArt, this.settings.cooldownTimersEnabled);
     this.createFenceViews();
 
     this.controls = new KeyboardMouseInput(this);
@@ -2077,7 +2077,7 @@ function readStressProfile(): 4 | 12 | null {
 
 function readScenario(): CombatScenario | null {
   const scenario = new URLSearchParams(window.location.search).get("scenario");
-  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "bastion-eater"
+  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "bastion-eater" || scenario === "density-capacity"
     ? scenario
     : null;
 }
@@ -2116,19 +2116,21 @@ function createSaveStore(): LocalSaveStore {
 }
 
 /**
- * `?shake=0|1`, `?sound=0|1`, and `?damage=0|1` persist into local settings
+ * `?shake=0|1`, `?sound=0|1`, `?damage=0|1`, and `?timers=0|1` persist into local settings
  * until a proper settings screen exists; absent parameters leave stored values
  * untouched.
  */
 function applySettingOverrides(store: LocalSaveStore) {
   const params = new URLSearchParams(window.location.search);
-  const overrides: { screenShakeEnabled?: boolean; soundEnabled?: boolean; damageNumbersEnabled?: boolean } = {};
+  const overrides: { screenShakeEnabled?: boolean; soundEnabled?: boolean; damageNumbersEnabled?: boolean; cooldownTimersEnabled?: boolean } = {};
   const shake = params.get("shake");
   if (shake === "0" || shake === "1") overrides.screenShakeEnabled = shake === "1";
   const sound = params.get("sound");
   if (sound === "0" || sound === "1") overrides.soundEnabled = sound === "1";
   const damage = params.get("damage");
   if (damage === "0" || damage === "1") overrides.damageNumbersEnabled = damage === "1";
+  const timers = params.get("timers");
+  if (timers === "0" || timers === "1") overrides.cooldownTimersEnabled = timers === "1";
   return Object.keys(overrides).length > 0
     ? store.updateSettings(overrides).settings
     : store.load().settings;

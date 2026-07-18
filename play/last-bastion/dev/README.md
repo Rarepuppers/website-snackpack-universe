@@ -32,6 +32,7 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?scenario=bastion-eater&loadout=vertical` — three-phase final-boss, exposed-node damage windows, cover breach, tendril, egg, and last-stand lab
 - `/play/last-bastion/?stress=4` — normal four-weapon mixed-enemy readability stress scene
 - `/play/last-bastion/?stress=12` — twelve-weapon capacity/performance stress scene
+- `/play/last-bastion/?scenario=density-capacity&debug=1` — deterministic Density Director v3 scene with 56 live enemies, bounded ranged wind-ups/projectiles, and live capacity telemetry
 - `/play/last-bastion/?mode=gallery` — production art frame, pivot, scale, state, and equipment gallery
 - `/play/last-bastion/?mode=gallery&batch=a` — all 52 Production Asset Batch A runtime frames
 - `/play/last-bastion/?mode=gallery&batch=b` — all 63 Production Asset Batch B runtime visuals

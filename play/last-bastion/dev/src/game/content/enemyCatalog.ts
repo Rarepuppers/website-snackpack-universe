@@ -1,4 +1,5 @@
 import type { DamageType } from "../combat/damageTypes";
+import type { EnemySteeringProfileId } from "../combat/EnemySteeringProfiles";
 
 export type EnemyType =
   | "scuttler"
@@ -29,6 +30,8 @@ export interface EnemyDefinition {
   flatDamageReduction: number;
   /** Incoming damage multipliers per type; unlisted types take 1×. */
   resistances: Readonly<Partial<Record<DamageType, number>>>;
+  /** Shared movement intent; bespoke attack phases may temporarily override it. */
+  steeringProfile: EnemySteeringProfileId;
 }
 
 export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Object.freeze({
@@ -48,6 +51,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 0,
     experienceValue: 2,
     resistances: { fire: 1.5 },
+    steeringProfile: "supportAnchor",
   }),
   "brain-blob": enemy({
     id: "brain-blob",
@@ -57,6 +61,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 14,
     experienceValue: 2,
     resistances: { shock: 1.3 },
+    steeringProfile: "pursuer",
   }),
   "slime-spitter": enemy({
     id: "slime-spitter",
@@ -66,6 +71,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 8,
     experienceValue: 3,
     resistances: { fire: 1.5, toxic: 0.25 },
+    steeringProfile: "standoffShooter",
   }),
   "blast-mite": enemy({
     id: "blast-mite",
@@ -75,6 +81,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 0,
     experienceValue: 1,
     resistances: { fire: 1.4 },
+    steeringProfile: "rushPack",
   }),
   "warp-flanker": enemy({
     id: "warp-flanker",
@@ -84,6 +91,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 12,
     experienceValue: 2,
     resistances: { cryo: 1.3 },
+    steeringProfile: "flanker",
   }),
   ripper: enemy({
     id: "ripper",
@@ -93,6 +101,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 8,
     experienceValue: 4,
     armour: 8,
+    steeringProfile: "pursuer",
   }),
   "razor-scuttler": enemy({
     id: "razor-scuttler",
@@ -102,6 +111,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 0,
     experienceValue: 3,
     resistances: { cryo: 1.25 },
+    steeringProfile: "rushPack",
   }),
   quillback: enemy({
     id: "quillback",
@@ -111,6 +121,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 6,
     experienceValue: 4,
     armour: 4,
+    steeringProfile: "artillery",
   }),
   spinewheel: enemy({
     id: "spinewheel",
@@ -120,6 +131,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 7,
     experienceValue: 4,
     armour: 6,
+    steeringProfile: "flanker",
   }),
   "tether-bloom": enemy({
     id: "tether-bloom",
@@ -129,6 +141,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 0,
     experienceValue: 4,
     resistances: { toxic: 0.4 },
+    steeringProfile: "supportAnchor",
   }),
   "siege-crusher": enemy({
     id: "siege-crusher",
@@ -138,6 +151,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 22,
     experienceValue: 0,
     flatDamageReduction: 2,
+    steeringProfile: "pursuer",
   }),
   "brood-warden": enemy({
     id: "brood-warden",
@@ -148,6 +162,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     experienceValue: 0,
     flatDamageReduction: 1,
     resistances: { toxic: 0.35 },
+    steeringProfile: "supportAnchor",
   }),
   "bastion-eater": enemy({
     id: "bastion-eater",
@@ -159,6 +174,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     armour: 12,
     flatDamageReduction: 4,
     resistances: { toxic: 0.5, cryo: 0.8 },
+    steeringProfile: "supportAnchor",
   }),
 });
 
@@ -172,6 +188,7 @@ function enemy(
     armour: 0,
     flatDamageReduction: 0,
     resistances: {},
+    steeringProfile: "pursuer",
     ...definition,
   };
 }

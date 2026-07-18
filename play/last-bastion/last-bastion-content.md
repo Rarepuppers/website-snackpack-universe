@@ -277,9 +277,9 @@ Recommended behavior-first order is **Patrol Blade → Bolt Carbine → Grenade 
 Do not generate a generic icon sheet before the behavior prototypes decide which states are real. When a weapon passes its lab, produce its gameplay asset family and tile together:
 
 - **Gameplay set:** ring weapon states plus projectile/trace and effect mini-atlas.
-- **Tile set:** 64 × 64 authored icon, rarity/class frame variant only when needed, and optional charge/disabled overlay motifs. Cooldown shadows, numbers, key labels, charge pips, selection borders, and ready pulses remain code-driven.
+- **Tile set:** one canonical **128 × 128 runtime tile** for Codex, shop, loadout, hotkey, perk, consumable, status, and HUD use. Compact HUD surfaces render that same asset at 64, 48, or 36 logical pixels; do not author a lower-resolution replacement. Rarity/class frames and optional charge/disabled motifs are separate overlays. Cooldown shadows, numbers, key labels, charge pips, selection borders, and ready pulses remain code-driven.
 - **Consistency:** tiles use the same material palette and signature shape as the visible ring weapon, but simplify detail and strengthen negative space for small-size recognition.
-- **Review:** show tiles at 64, 48, and 36 pixels, with 0%, 50%, and 85% cooldown coverage, grayscale, and common colour-vision simulations before acceptance.
+- **Review:** show tiles at 128, 96, 64, 48, and 36 pixels, with 0%, 50%, and 85% cooldown coverage, grayscale, and common colour-vision simulations before acceptance.
 
 ### Standard monster production plan
 
@@ -311,6 +311,30 @@ Projectile presentation exists on both sides of combat and must stay mechanicall
 - **Enemy shots:** the Slime Spitter has a glob, target warning, cover/player impact, and puddle lifecycle; the Brood Warden has acid fan projectiles and impact; the Quillback has a separate rotation-neutral spike, fan accents, and distinct cover/flesh impacts. Any knife thrower must likewise ship with a readable knife projectile, throw tell, optional motion glint, cover spark, and Marine impact in the same production batch.
 - **Marine weapons:** the Service Rifle has muzzle, tracer/projectile, normal/critical impact, and explosive impact; Scattergun pellets and Arc Carbine bolts/chains use distinct authored families. Each future weapon definition must name muzzle, projectile or hitscan trace, trail if needed, target impact, cover impact, and signature proc effect IDs. Hitscan weapons still need a short-lived line/tracer and endpoint response so a miss is legible.
 - **Fairness:** hostile projectiles use a warmer danger outline and readable wind-up; friendly projectiles use the weapon-family palette. Projectile art never changes collision radius, speed, pierce, homing, or fan geometry, which remain simulation-owned.
+
+### Steam-ready asset resolution contract
+
+Every size below is a **logical runtime cell**, not the generation size. Retain a clean layered or transparent edit master at **4× each logical dimension** (for example, a 128 px tile keeps a 512 px master). Generate oversized, normalize deterministically, preserve pivots and safe padding, and downscale with nearest-neighbour sampling. A 4K display changes camera/UI scale; it does not justify scaling a 64 px source beyond its intended logical footprint.
+
+| Asset family | Canonical logical size | Retained master | Notes |
+| --- | ---: | ---: | --- |
+| Codex, shop, loadout, perk, hotkey, consumable, status, and HUD tile | **128 × 128** | 512 × 512 | One source for every surface; compact HUD draws it at 36–64 px. No text, cooldown, binding, rarity, or timer baked in |
+| Ring weapon state | 128 × 128 | 512 × 512 | Use 160–192 only for intentionally oversized Heavy/Unique silhouettes; stable muzzle and pivot anchors across states |
+| Standard bullet/tracer or knife | 32 × 32 or 64 × 32 | 128 × 128 or 256 × 128 | Keep long traces in a rectangular cell; rotation-neutral projectile art is preferred |
+| Distinct energy bolt, glob, shard, or turret round | 64 × 64 | 256 × 256 | Includes readable core and team-colour/danger edge; collision stays smaller and code-owned |
+| Grenade, rocket, mine, heavy or boss projectile | 96 × 96; boss signature 128 × 128 | 384 × 384; 512 × 512 | Preserve empty padding so rotation and trails do not clip |
+| Muzzle, trail segment, hit, cover impact | 64 × 64 standard; 96 × 96 signature | 256 × 256; 384 × 384 | Boss/arena impacts may use 128–192 px, split into overlays when possible |
+| Turret or deployable | 128 × 128 | 512 × 512 | Large emplacement 160–192 px; barrel/head may be a separate rotating layer |
+| Trap or world pickup | 96 × 96 small; 128 × 128 standard | 384 × 384; 512 × 512 | Arena-scale trap/hazard anchor 192 px; warning radius remains code-drawn |
+| Swarmer / tiny monster | 64 × 64 | 256 × 256 | Must remain readable in packs without excessive emissive noise |
+| Common monster | 96 × 96; large common 128 × 128 | 384 × 384; 512 × 512 | Prefer a shared family grid and stable ground contact |
+| Elite | 128–160 px square | 512–640 px square | Requires silhouette addition and telegraph, not only scale/palette |
+| Mini-boss | 192 × 192 | 768 × 768 | Separate portrait at 512 × 512; split weapons/limbs if animation benefits |
+| Boss | 256 × 256; final/arena boss 320–384 px | 1024 × 1024; 1280–1536 px | Modular body, damage states, attacks, and shadows avoid wasteful giant sheets |
+| Status/body overlay | 64 × 64 common; 128 px elite; 192–256 px boss | 4× logical | Prefer reusable tiled/composited flames, frost, shock, poison, and void layers |
+| Telegraph/decal | 128 px local; 256 px arena-scale | 512 px; 1024 px | Geometry, fill percentage, radius, timing, and safe zone remain code-authoritative |
+
+Atlas guidance: align cells to 16 px, group by one actor or effect family, and target 2048 × 2048 atlases for web with 4096 × 4096 allowed for the future desktop build after GPU-memory testing. Never place the entire roster in one atlas. Each manifest records logical size, master scale, pivot, muzzle/foot anchors, safe padding, filter mode, frame names, and intended draw-size range.
 
 ### Corrupted human outbreak family — post-Web-MVP candidate
 
@@ -411,6 +435,7 @@ Future boss seeds such as a Mire Sovereign or Choir Mind remain names only until
 | Relic | Run-long passive modifier | One copy unless stated; changes a rule or build tag | Web MVP route rewards |
 | Artifact | Named run-defining reward | One equipped; earned before the final fight from a mini-boss, rare shrine, or major event | Web MVP |
 | Shrine | Explicit risk/reward choice | Shows cost and result before confirmation; one use | Web MVP route/interactable |
+| Aurum Hoarder | Optional in-wave treasure creature | Rare durable scavenger tries to escape; killing it awards Scrap and a guaranteed supply cache | Post-density-gate encounter event |
 
 Traditional ammunition is not tracked. “Ammo boxes” become **Ordnance Caches**, preserving the military fantasy without adding reload inventory bookkeeping.
 
@@ -475,6 +500,18 @@ Timed effects should change a decision or create a brief power window. Avoid mai
 
 Treasure chests are reward presentation, not a separate currency. Relic fragments, Scrap, keys, and meta-currency remain disabled until their spend/use loop exists and is visible.
 
+### Aurum Hoarder — themed treasure creature
+
+The golden-goblin role becomes the **Aurum Hoarder**, a squat alien salvage carrier plated in scavenged brass-gold armour with an overfilled cyan credit core and supply canisters. It belongs to Last Bastion's military science-fantasy language rather than appearing as a literal fantasy goblin.
+
+- It is an optional **treasure** encounter and never counts toward wave completion. A distinctive arrival sting, edge marker, gold-cyan shimmer, and escape bar make the opportunity readable in a crowd.
+- It has roughly **4–6× the durability of a same-wave common**, moderate armour, little or no contact damage, and evasive zig-zag/flee steering. It moves quickly enough to demand pursuit but remains catchable without a movement build.
+- After a short forage phase it chooses a visible exit edge. Damage breaks armour plates at thresholds and drops small partial Scrap rewards, so an escape is disappointing rather than all-or-nothing.
+- A kill grants a large Scrap payout plus one guaranteed **supply cache** drawn from an explicit loot table. Gold is visual language only; do not add a second currency while Scrap already owns the shop loop.
+- Maximum one per eligible wave; excluded from tutorials, boss introductions, and layouts without a safe pursuit route. Initial tuning: eligible from wave 3, 8–12% chance per ordinary wave, with run-level bad-luck protection considered only after telemetry.
+- Drops are magnetized or banked at wave end so the reward cannot vanish under a despawn transition. Its loot table never contains an item the current build cannot use.
+- Production family: 4 × 4 directional 128 px body sheet (scurry, hit/plate break, flee tell, defeat), separate gold-cyan trail and exit marker, 128 px Codex tile, 128 px supply-cache tile/world prop, coin/Scrap burst, and non-gory collapse. Behaviour and reward lab precedes art generation.
+
 ## Visual production batches after Batch A
 
 ### Batch B — vertical-slice combat roster
@@ -531,7 +568,7 @@ Batch C, D1, D2, and the Bastion Eater D3 set are complete. Remaining Web MVP en
 | Menu card set (6 backgrounds, 512 × 320 masters) | Flat colour rectangles with code labels | Diagonal-cut panel faces in six family colours (navy hero card, teal, magenta, green, violet, orange) with subtle grid texture, worn edge highlights, and one corner glyph zone kept empty for code-drawn icons |
 | Menu corner glyphs (6, 64 × 64) | Code shapes | Single-weight ivory glyphs: play chevron, question mark, gear, flask, medal, dropship — readable at 32 px |
 | Hero dossier frame (960 × 720 master) | Code rectangle panel | Ivory-edged charcoal dossier board with teal blueprint grid, riveted corners, and clear zones for the live-assembled Marine sprite, stat bars, and passive/ultimate cards |
-| Passive/ultimate/kit card icons (Entrenched, Bastion Barrage, Uranium-Core reuse) | Existing tile art + code shapes | Entrenched: boots planted on a braced hex plate; Bastion Barrage: twelve-ray radial burst over a shoulder rig; keep the established 64 × 64 tile language identifiable under a 50% cooldown shadow |
+| Passive/ultimate/kit card icons (Entrenched, Bastion Barrage, Uranium-Core reuse) | Existing tile art + code shapes | Entrenched: boots planted on a braced hex plate; Bastion Barrage: twelve-ray radial burst over a shoulder rig; use the canonical 128 × 128 tile contract and keep it identifiable at 64/48/36 px under a 50% cooldown shadow |
 | Locked-hero silhouettes (Medic + 3 slots, 256 × 512) | Darkened rectangles | Back-lit charcoal silhouettes with one teal rim light each: Medic (angular pack + injector staff), Assault (broad pauldrons), Tactician (antenna array), Scout (light hood, long optic); clearly non-final, no faces |
 
 ### Batch G2 — expedition map
@@ -565,8 +602,8 @@ over a procedural placeholder (glyph + family tint). **When Codex drops a real t
 
 Tile contract:
 
-- **96 × 96** logical cell, transparent background, centred subject with safe padding.
-- Nearest-neighbour normalization and retained ≥4× masters, exactly like every other batch.
+- **128 × 128 canonical runtime cell**, transparent background, centred subject with safe padding. Codex, shop, loadout, hotkey, perk, consumable, status, and HUD surfaces all request this asset and may draw it smaller.
+- Nearest-neighbour normalization and retained **512 × 512 (≥4×) masters**, exactly like every other batch. Existing accepted 64/96 px production art remains valid historical output, but every future tile batch and any regenerated legacy tile uses the 128 px contract.
 - **No baked text, numbers, bindings, cooldown shadows, rarity frames, or selection states** — all code-drawn overlays.
 - Id prefixes: `hero-`, `wpn-`, `mon-`, `upg-`, `perk-`, `pow-`, `rel-`/`art-`, `ammo-`. The codex prints each id under its tile, so generating art is a matter of reading the page.
 - One extra id: `unknown-v1.png` — the Monsterdex silhouette shown for undiscovered aliens.
@@ -579,7 +616,7 @@ Priority order for generation: heroes (7) → live weapons (7) → live monsters
 
 ### I1 — weapon tiles
 
-One **96 × 96** tile per weapon (the existing 64 × 64 cadence motifs stay for the HUD strip; these are the larger loadout/shop tiles). Each tile shows the weapon's signature silhouette on a neutral plate, using the same material palette as its ring sprite so a player links tile to gun instantly.
+One **128 × 128** tile per weapon. Existing 64 × 64 cadence motifs are legacy assets and should be regenerated from the new 512 px master when their family is revisited; meanwhile they may remain integrated. Each canonical tile shows the weapon's signature silhouette on a neutral plate, using the same material palette as its ring sprite so a player links tile to gun instantly.
 
 | Tile | Motif |
 | --- | --- |
@@ -614,7 +651,7 @@ One **96 × 96** tile per weapon (the existing 64 × 64 cadence motifs stay for 
 | Shop counter backdrop (1200 × 700) | Salvage-depot interior: crates, a scarred workbench, hanging lamps, an empty central zone for tiles |
 | Sell / buy / merge glyphs (3 × 48 × 48) | Scrap coin with a down arrow; coin with an up arrow; two-into-one chevrons |
 
-**Acceptance:** each weapon tile is identifiable at 96, 64, and 48 px, in grayscale, and beneath a 50% cooldown shadow; slot frames are distinguishable by silhouette alone (not colour alone) for colour-blind players; legal/illegal drop states differ in shape, not just hue.
+**Acceptance:** each weapon tile is identifiable at 128, 96, 64, 48, and 36 px, in grayscale, and beneath a 50% cooldown shadow; slot frames are distinguishable by silhouette alone (not colour alone) for colour-blind players; legal/illegal drop states differ in shape, not just hue.
 
 ## Batch J — new enemies and telegraph decals (queued for Codex)
 
@@ -659,6 +696,20 @@ Acceptance: one shared atlas with stable IDs; transparent backgrounds and clean 
 
 Delivered as the stable 4 x 4 `status-overlays-v1` atlas: Blaze frames 0-3, Overload 4-7, Corrode 8-11, Freeze 12-14, and transparent reserved frame 15. Full-resolution transparent masters, chroma provenance, prompt contracts, and deterministic normalization are retained under `art/production-tests/batch-k/`; `?mode=gallery&batch=k` previews frame order, live animation rhythm, normal-enemy scale, and elite scale.
 
+## Batch L - Event Horizon Unique art preflight
+
+**Status:** Art preflight generated and gallery-integrated - 18 July 2026; held from normal gameplay until the Event Horizon behavior gate passes.
+
+The approved Event Horizon concept now has a retained production family: a four-state east-facing 96 x 96 ring weapon sheet, an eight-frame 64 x 64 gravitic projectile/effect atlas, and a 64 x 64 active tile. The frame map is ready for the behavior prototype: ready, charge, fire, recover; gravitic orb, travel wake, field seed, active field, implosion charge, implosion burst, distortion impact, ready glint; and the black-core/broken-ring tile motif.
+
+## Batch M - Corrupted Human outbreak art preflight
+
+**Status:** Art preflight generated and gallery-integrated - 18 July 2026; held from live spawning until the Infected Survivor, Corrupted Marine, and Abomination behavior gates pass.
+
+The family now has retained production art for an Infected Survivor fast-swarm body, a Corrupted Marine knife-thrower body, a large Abomination elite body, and a dedicated eight-frame knife/projectile/telegraph/impact atlas. Projectile travel, throw timing, cover/player collision, stagger, slam/grab lanes, and defeat timing remain simulation-owned. The review route is `?mode=gallery&batch=m`; Abomination Prime remains a future mini-boss expansion.
+
+The preflight is intentionally presentation-only. Aim, projectile speed, pull-field radius/strength, implosion timing, collision, damage, 16-second cooldown, and active-tile state remain unimplemented and code-authoritative when the behavior gate begins. Review at `?mode=gallery&batch=eh`; do not add the Unique to the Weapon Chest or normal waves.
+
 ## Batch H — world background themes (queued for Codex)
 
 **Status:** Design brief — 17 July 2026. The runtime already supports per-arena themes (`dev/src/game/rendering/arenaThemes.ts`): five seeded tint/backdrop variations over the shared Batch A floor, boundary, and obstacle atlases, previewable with `?theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay`. Tints prove the pipeline; authored world sets replace them one world at a time once the expedition map assigns node themes.
@@ -673,3 +724,15 @@ Per world, generate as one batch (reusing the Batch A tile contract: stable IDs,
 | Backdrop accent decals (4–6 sprites) | Large soft ground stains, glow pools, crack clusters laid under gameplay at low contrast |
 
 Acceptance: enemy, projectile, pickup, and telegraph readability must beat the backdrop in every theme (peak backdrop contrast below actor contrast), verified in the gallery against the Wave 4 mixed roster. The theme pool per world is intentionally larger than one authored set so node backgrounds stay half-procedural: same world, seeded variant.
+
+### Emberfall world-theme art preflight
+
+**Status:** Art preflight generated and gallery-integrated - 18 July 2026; held from default theme assignment pending creator contrast review.
+
+The first world set now has a 3 × 2 floor atlas, 4 × 2 boundary atlas, 2 × 2 obstacle re-dress, and 3 × 2 low-contrast decal atlas. Batch A collision silhouettes and footprints remain unchanged. Review at `?mode=gallery&batch=h`; theme assignment, draw order, and contrast thresholds remain code-owned.
+
+The Toxic Bloom variant now mirrors the same four contracts with dark teal alloy, muted violet growth, restrained lime bioluminescence, and six subdued underlays. Review it at `?mode=gallery&batch=tb`; it remains held from theme assignment until grayscale/telegraph contrast approval.
+
+Void Approach now mirrors the contracts with void-touched slate, indigo fractures, restrained cyan light, and violet anomaly accents. Review at `?mode=gallery&batch=va`; it remains held from theme assignment.
+
+Arctic Relay now mirrors the contracts with frost-crusted alloy, pale cyan ice, restrained blue relay light, and snow/ice underlays. Review at `?mode=gallery&batch=ar`; it remains held from theme assignment.

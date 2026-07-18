@@ -444,6 +444,10 @@ Completion evidence:
 30. Produce and integrate Production Asset Batch F3 for the Bulwark Rotary Cannon, including reusable ballistic tracers and impacts. **Completed 17 July 2026; final spin-up/heat tuning remains a behavior pass.**
 31. Produce and integrate Production Asset Batch F4 for the Bastion Grenade Tube, including projectile, fuse, bounce, warning, blast, and cover-impact presentation. **Completed 17 July 2026; future arcing/minimum-range tuning remains behavior work.**
 32. Implement and rules-test Event Horizon's pull-field and implosion behavior before producing its Unique weapon family.
+33. Consolidate every future Codex, shop, loadout, perk, hotkey, consumable, status, and HUD tile on the 128 × 128 runtime / 512 × 512 master contract; regenerate legacy 64/96 px tiles only as their families are revisited.
+34. Implement the density-director v3 lab: data-driven pursuit/standoff/chase-and-fire profiles, 65–75% pursuit composition, raised 18/24/32/42/46/52/56 live caps, projectile-pressure budget, pooling, and seeded capacity telemetry.
+35. Implement and rules-test the Aurum Hoarder with placeholder art, non-blocking escape, partial armour-break Scrap, a guaranteed valid supply-cache reward, Codex discovery, and boss/tutorial exclusions.
+36. After Tasks 33–35 pass, generate the next 128 px tile batch and the Aurum Hoarder body/effect/cache family from retained 4× masters; review at 1080p, 1440p, and 4K with 75–150% UI scale.
 
 ### Production Asset Batch D4: Razor Scuttler interceptor
 
@@ -461,7 +465,8 @@ Completion evidence:
 - Add a separate compact passive cadence strip for slow automatic weapons and periodic perks; do not label automatic attacks with misleading hotkeys.
 - Render cooldown shadow, numeric time, charge pips, binding text, disabled/no-target treatment, and ready pulse in code so one tile master supports keyboard and gamepad.
 - Start behavior production with Patrol Blade, then Bolt Carbine, Grenade Tube, Bulwark Rotary Cannon, and Event Horizon.
-- Generate each approved weapon's ring states, projectile/effects, and matching 64 × 64 tile as one production batch only after its behavior lab passes.
+- Generate each approved weapon's ring states, projectile/effects, and matching canonical 128 × 128 tile as one production batch only after its behavior lab passes.
+- **Superseding resolution decision (18 July 2026):** future and regenerated tiles use one 128 × 128 runtime asset with a 512 × 512 retained master; existing 64 × 64 tiles remain historical accepted output and render until their family is revisited.
 - Implemented a four-slot bottom action bar with keyboard bindings, disabled empty slots, code-rendered radial cooldown shadow, and numeric cooldown labels.
 - Implemented a compact passive cadence strip that includes automatic weapons at or above the 1.5-second threshold without assigning false hotkeys.
 - Implemented Patrol Blade as a 2.5-second automatic nearest-target melee sweep with a short forward arc, cover blocking, physical damage, and knockback; `?loadout=patrol` is the deterministic behavior-review route.
@@ -539,3 +544,29 @@ Completion evidence:
 - Runtime delivery totals 12 weapon-state frames, 24 projectile/effect frames, and three cooldown motifs. Generic ballistic tracers are reusable; the Bolt and Grenade families use bespoke projectile sprites.
 - Built-in image generation used the established Last Bastion weapon, action-tile, and approved Bulwark concept art as strict references. No text, bindings, cooldown masks, collision geometry, or gameplay timing is baked into the artwork.
 - Verification evidence: 157 tests across 18 files, TypeScript validation, production build, 51 explicit runtime-art HTTP checks, 36 deterministic review routes, transparent-master inspection, and exact-resolution runtime-atlas inspection passed.
+
+### Event Horizon Unique art preflight (Batch L)
+
+**Status:** Art preflight generated and held from gameplay - 18 July 2026; behavior gate remains step 32
+
+- Retained a four-state 96 x 96 east-facing ring weapon sheet, an eight-frame 64 x 64 gravitic projectile/effect atlas, and a 64 x 64 active tile based on the approved Event Horizon concept.
+
+- Integrated stable manifest IDs and a dedicated `?mode=gallery&batch=eh` review route so the art can be judged at gameplay scale before behavior implementation.
+- Kept the family out of the Weapon Chest, normal waves, loadout parsing, and combat renderer. Pull strength, field radius, implosion timing, collision, damage, and cooldown remain unapproved simulation contracts.
+- Retained chroma provenance, transparent masters, prompts, exact frame map, and deterministic nearest-neighbour normalizer under `art/production-tests/batch-l/` for future Steam reuse.
+
+### Corrupted Human outbreak art preflight (Batch M)
+
+- Generated and retained Steam-quality body sheets for Infected Survivor (4 × 2 / 96 px), Corrupted Marine (4 × 3 / 96 px), and Abomination (4 × 3 / 128 px), plus an eight-frame 64 px Marine knife/projectile/effect atlas.
+- Integrated the four held contracts into the manifest and `?mode=gallery&batch=m`; no live enemy catalog or wave binding is present.
+- Next behavior gates are survivor sprint/swarm steering, marine telegraph → slow knife projectile → cover/player impact → recover/cooldown, and abomination slam/grab → vulnerable recovery → collapse. Keep Abomination Prime as a later mini-boss variant.
+
+### Emberfall world-theme art preflight (Batch H)
+
+- Generated and retained four environment atlases: six floor tiles, eight boundary connectors, four obstacle re-dresses, and six subdued Emberfall decals.
+- Preserved Batch A collision silhouettes/footprints and integrated held manifest IDs with `?mode=gallery&batch=h`; no default theme assignment or gameplay draw-order change is present.
+- Next gate is creator grayscale/contrast review against the mixed Wave 4 roster before adding Toxic Bloom, Void Approach, Arctic Relay, or other world variants.
+
+- Toxic Bloom is now also retained as a parallel four-atlas variant (`?mode=gallery&batch=tb`) with unchanged footprints; keep both themes held until creator contrast review approves the family.
+- Void Approach is also retained as a parallel four-atlas variant (`?mode=gallery&batch=va`); keep all world themes held until the contrast review approves a consistent environment language.
+- Arctic Relay is now also retained as a parallel four-atlas variant (`?mode=gallery&batch=ar`); all four world themes remain held pending creator review.

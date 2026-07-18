@@ -19,6 +19,30 @@ export class AssetGalleryScene extends Phaser.Scene {
       this.createBatchKGallery();
       return;
     }
+    if (batch === "eh") {
+      this.createEventHorizonGallery();
+      return;
+    }
+    if (batch === "m") {
+      this.createCorruptedHumanGallery();
+      return;
+    }
+    if (batch === "h") {
+      this.createEmberfallGallery();
+      return;
+    }
+    if (batch === "tb") {
+      this.createToxicBloomGallery();
+      return;
+    }
+    if (batch === "va") {
+      this.createWorldVariantGallery("VOID APPROACH", "void-approach-floor-v1", "void-approach-boundary-v1", "void-approach-obstacles-v1", "void-approach-decals-v1", "#9d8cff");
+      return;
+    }
+    if (batch === "ar") {
+      this.createWorldVariantGallery("ARCTIC RELAY", "arctic-relay-floor-v1", "arctic-relay-boundary-v1", "arctic-relay-obstacles-v1", "arctic-relay-decals-v1", "#bfe9ff");
+      return;
+    }
     if (batch === "f4") {
       this.createWeaponBatchGallery("GRENADE TUBE", "F4", "grenade-tube-v1", "grenade-tube-effects-v1", 2, "?loadout=grenade");
       return;
@@ -553,6 +577,129 @@ export class AssetGalleryScene extends Phaser.Scene {
 
     this.add.text(480, 510, "Left: frame contract / centre: 64 px enemy / right: elite scaling / timing and tint remain simulation-owned", style("#b7c9d8", "9px")).setOrigin(0.5);
     this.add.text(480, 528, "Review: ?mode=gallery&batch=k / live overlays appear whenever typed buildup triggers a status", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createEventHorizonGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - EVENT HORIZON UNIQUE ART PREFLIGHT", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Held from live gameplay until the pull-field / implosion behavior gate passes", style("#d696ff", "11px"));
+    this.add.text(20, 72, "RING WEAPON STATES - ready / charge / fire / recover", style("#ffcf7a", "11px"));
+    for (let frame = 0; frame < 4; frame += 1) {
+      const x = 120 + frame * 205;
+      this.add.sprite(x, 142, "event-horizon-v1", frame).setScale(1.08);
+      this.add.text(x, 198, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(20, 226, "GRAVITIC PROJECTILE + EFFECT FAMILY - stable eight-frame map", style("#68e4e8", "11px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 60 + (frame % 8) * 116;
+      this.add.sprite(x, 300, "event-horizon-effects-v1", frame).setScale(1.05);
+      this.add.text(x, 344, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(20, 386, "UNIQUE ACTIVE TILE", style("#d696ff", "11px"));
+    this.add.sprite(100, 448, "event-horizon-tile-v1").setScale(1.15);
+    this.add.text(200, 442, "Black core eclipsing a broken cyan ring. Cooldown ring, seconds, key label, charge, and selection states remain code-rendered.", style("#b7c9d8", "9px"));
+    this.add.text(480, 518, "Review: ?mode=gallery&batch=eh - no normal-run binding until behavior approval", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createCorruptedHumanGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - CORRUPTED HUMAN OUTBREAK PREFLIGHT", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Held post-Web-MVP: body art and knife effects are ready; behavior gates remain simulation-owned", style("#ff9a72", "11px"));
+    this.add.text(20, 70, "INFECTED SURVIVOR - gait rows / S N E W", style("#ffcf7a", "11px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 62 + (frame % 4) * 82;
+      const y = 122 + Math.floor(frame / 4) * 104;
+      this.add.sprite(x, y, "corrupted-survivor-v1", frame).setScale(0.78);
+      this.add.text(x, y + 48, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(390, 70, "CORRUPTED MARINE - guard / throw wind-up / stagger", style("#ff9a72", "11px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const x = 440 + (frame % 4) * 82;
+      const y = 122 + Math.floor(frame / 4) * 82;
+      this.add.sprite(x, y, "corrupted-marine-v1", frame).setScale(0.68);
+      this.add.text(x, y + 43, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(20, 346, "ABOMINATION ELITE - shamble / slam wind-up / recovery-collapse", style("#d696ff", "11px"));
+    for (let frame = 0; frame < 12; frame += 1) {
+      const x = 72 + (frame % 4) * 116;
+      const y = 414 + Math.floor(frame / 4) * 84;
+      this.add.sprite(x, y, "abomination-v1", frame).setScale(0.48);
+      this.add.text(x, y + 58, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(560, 346, "MARINE KNIFE / TELEGRAPH / IMPACT ATLAS", style("#68e4e8", "11px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 620 + (frame % 4) * 78;
+      const y = 408 + Math.floor(frame / 4) * 78;
+      this.add.sprite(x, y, "corrupted-marine-effects-v1", frame).setScale(1.0);
+      this.add.text(x, y + 36, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(480, 528, "Review: ?mode=gallery&batch=m - no live spawning until survivor, knife throw, and abomination gates pass", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createEmberfallGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - EMBERFALL WORLD THEME PREFLIGHT", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Collision silhouettes match Batch A; contrast is intentionally below actor and telegraph contrast", style("#ff9a72", "11px"));
+    this.add.text(20, 70, "FLOOR TILES - clean / variants / hatch / cracked / ember edge", style("#ffcf7a", "11px"));
+    for (let frame = 0; frame < 6; frame += 1) {
+      const x = 58 + (frame % 6) * 78;
+      this.add.sprite(x, 126, "emberfall-floor-v1", frame).setScale(1.05);
+    }
+    this.add.text(20, 202, "BOUNDARY CONNECTIONS - straight / corners / junctions / damaged / gate", style("#68e4e8", "11px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 58 + (frame % 8) * 108;
+      this.add.sprite(x, 258, "emberfall-boundary-v1", frame).setScale(1.18);
+    }
+    this.add.text(20, 342, "OBSTACLE RE-DRESS - footprints preserved", style("#d696ff", "11px"));
+    for (let frame = 0; frame < 4; frame += 1) {
+      const x = 90 + frame * 145;
+      this.add.sprite(x, 416, "emberfall-obstacles-v1", frame).setScale(0.62);
+    }
+    this.add.text(530, 342, "LOW-CONTRAST DECALS - placed under gameplay", style("#ffcf7a", "11px"));
+    for (let frame = 0; frame < 6; frame += 1) {
+      const x = 580 + (frame % 3) * 104;
+      const y = 400 + Math.floor(frame / 3) * 74;
+      this.add.sprite(x, y, "emberfall-decals-v1", frame).setScale(1.15);
+    }
+    this.add.text(480, 528, "Review: ?mode=gallery&batch=h - art preflight only; theme assignment and draw order remain code-owned", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createToxicBloomGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - TOXIC BLOOM WORLD THEME PREFLIGHT", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Batch H variant: collision contracts match Batch A; restrained lime is reserved for toxic accents", style("#b9ef62", "11px"));
+    this.add.text(20, 70, "FLOOR TILES", style("#68e4e8", "11px"));
+    for (let frame = 0; frame < 6; frame += 1) {
+      const x = 58 + (frame % 6) * 78;
+      this.add.sprite(x, 126, "toxic-bloom-floor-v1", frame).setScale(1.05);
+    }
+    this.add.text(20, 202, "BOUNDARY CONNECTIONS", style("#b9ef62", "11px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 58 + (frame % 8) * 108;
+      this.add.sprite(x, 258, "toxic-bloom-boundary-v1", frame).setScale(1.18);
+    }
+    this.add.text(20, 342, "OBSTACLE RE-DRESS", style("#d696ff", "11px"));
+    for (let frame = 0; frame < 4; frame += 1) {
+      const x = 90 + frame * 145;
+      this.add.sprite(x, 416, "toxic-bloom-obstacles-v1", frame).setScale(0.62);
+    }
+    this.add.text(530, 342, "LOW-CONTRAST DECALS", style("#b9ef62", "11px"));
+    for (let frame = 0; frame < 6; frame += 1) {
+      const x = 580 + (frame % 3) * 104;
+      const y = 400 + Math.floor(frame / 3) * 74;
+      this.add.sprite(x, y, "toxic-bloom-decals-v1", frame).setScale(1.15);
+    }
+    this.add.text(480, 528, "Review: ?mode=gallery&batch=tb - held until grayscale/telegraph contrast approval", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createWorldVariantGallery(title: string, floor: string, boundary: string, obstacles: string, decals: string, accent: string): void {
+    this.add.text(20, 14, `LAST BASTION - ${title} WORLD THEME PREFLIGHT`, style("#ffffff", "17px"));
+    this.add.text(20, 38, "Batch H variant: Batch A collision contracts preserved; held for grayscale and telegraph review", style(accent, "11px"));
+    this.add.text(20, 70, "FLOOR TILES", style(accent, "11px"));
+    for (let frame = 0; frame < 6; frame += 1) this.add.sprite(58 + frame * 78, 126, floor, frame).setScale(1.05);
+    this.add.text(20, 202, "BOUNDARY CONNECTIONS", style(accent, "11px"));
+    for (let frame = 0; frame < 8; frame += 1) this.add.sprite(58 + frame * 108, 258, boundary, frame).setScale(1.18);
+    this.add.text(20, 342, "OBSTACLE RE-DRESS", style(accent, "11px"));
+    for (let frame = 0; frame < 4; frame += 1) this.add.sprite(90 + frame * 145, 416, obstacles, frame).setScale(0.62);
+    this.add.text(530, 342, "LOW-CONTRAST DECALS", style(accent, "11px"));
+    for (let frame = 0; frame < 6; frame += 1) this.add.sprite(580 + (frame % 3) * 104, 400 + Math.floor(frame / 3) * 74, decals, frame).setScale(1.15);
+    this.add.text(480, 528, "Review: ?mode=gallery&batch=va - held until grayscale/telegraph contrast approval", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private drawWeaponRing(x: number, y: number, count: number, scale: number): void {

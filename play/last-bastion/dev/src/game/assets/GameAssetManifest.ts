@@ -52,6 +52,29 @@ import bulwarkRotaryEffectUrl from "../../../../art/production-tests/batch-f3/bu
 import grenadeTubeSheetUrl from "../../../../art/production-tests/batch-f4/grenade-tube-spritesheet-v1-96.png";
 import grenadeTubeEffectUrl from "../../../../art/production-tests/batch-f4/grenade-tube-effect-atlas-v1-64.png";
 import statusOverlaySheetUrl from "../../../../art/production-tests/batch-k/status-effect-overlay-atlas-v1-48.png";
+import eventHorizonSheetUrl from "../../../../art/production-tests/batch-l/event-horizon-spritesheet-v1-96.png";
+import eventHorizonEffectUrl from "../../../../art/production-tests/batch-l/event-horizon-effect-atlas-v1-64.png";
+import eventHorizonTileUrl from "../../../../art/production-tests/batch-l/event-horizon-tile-v1-64.png";
+import corruptedSurvivorSheetUrl from "../../../../art/production-tests/batch-m/corrupted-human-survivor-spritesheet-v1-96.png";
+import corruptedMarineSheetUrl from "../../../../art/production-tests/batch-m/corrupted-marine-spritesheet-v1-96.png";
+import abominationSheetUrl from "../../../../art/production-tests/batch-m/abomination-spritesheet-v1-128.png";
+import corruptedMarineEffectUrl from "../../../../art/production-tests/batch-m/corrupted-marine-effect-atlas-v1-64.png";
+import emberfallFloorUrl from "../../../../art/production-tests/batch-h/emberfall-floor-atlas-v1-64.png";
+import emberfallBoundaryUrl from "../../../../art/production-tests/batch-h/emberfall-boundary-atlas-v1-64.png";
+import emberfallObstacleUrl from "../../../../art/production-tests/batch-h/emberfall-obstacle-atlas-v1-96.png";
+import emberfallDecalUrl from "../../../../art/production-tests/batch-h/emberfall-decal-atlas-v1-64.png";
+import toxicBloomFloorUrl from "../../../../art/production-tests/batch-h/toxic-bloom/toxic-bloom-floor-atlas-v1-64.png";
+import toxicBloomBoundaryUrl from "../../../../art/production-tests/batch-h/toxic-bloom/toxic-bloom-boundary-atlas-v1-64.png";
+import toxicBloomObstacleUrl from "../../../../art/production-tests/batch-h/toxic-bloom/toxic-bloom-obstacle-atlas-v1-96.png";
+import toxicBloomDecalUrl from "../../../../art/production-tests/batch-h/toxic-bloom/toxic-bloom-decal-atlas-v1-64.png";
+import voidApproachFloorUrl from "../../../../art/production-tests/batch-h/void-approach/void-approach-floor-atlas-v1-64.png";
+import voidApproachBoundaryUrl from "../../../../art/production-tests/batch-h/void-approach/void-approach-boundary-atlas-v1-64.png";
+import voidApproachObstacleUrl from "../../../../art/production-tests/batch-h/void-approach/void-approach-obstacle-atlas-v1-96.png";
+import voidApproachDecalUrl from "../../../../art/production-tests/batch-h/void-approach/void-approach-decal-atlas-v1-64.png";
+import arcticRelayFloorUrl from "../../../../art/production-tests/batch-h/arctic-relay/arctic-relay-floor-atlas-v1-64.png";
+import arcticRelayBoundaryUrl from "../../../../art/production-tests/batch-h/arctic-relay/arctic-relay-boundary-atlas-v1-64.png";
+import arcticRelayObstacleUrl from "../../../../art/production-tests/batch-h/arctic-relay/arctic-relay-obstacle-atlas-v1-96.png";
+import arcticRelayDecalUrl from "../../../../art/production-tests/batch-h/arctic-relay/arctic-relay-decal-atlas-v1-64.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -107,7 +130,30 @@ export type GameAssetId =
   | "bulwark-rotary-effects-v1"
   | "grenade-tube-v1"
   | "grenade-tube-effects-v1"
-  | "status-overlays-v1";
+  | "status-overlays-v1"
+  | "event-horizon-v1"
+  | "event-horizon-effects-v1"
+  | "event-horizon-tile-v1"
+  | "corrupted-survivor-v1"
+  | "corrupted-marine-v1"
+  | "abomination-v1"
+  | "corrupted-marine-effects-v1"
+  | "emberfall-floor-v1"
+  | "emberfall-boundary-v1"
+  | "emberfall-obstacles-v1"
+  | "emberfall-decals-v1"
+  | "toxic-bloom-floor-v1"
+  | "toxic-bloom-boundary-v1"
+  | "toxic-bloom-obstacles-v1"
+  | "toxic-bloom-decals-v1"
+  | "void-approach-floor-v1"
+  | "void-approach-boundary-v1"
+  | "void-approach-obstacles-v1"
+  | "void-approach-decals-v1"
+  | "arctic-relay-floor-v1"
+  | "arctic-relay-boundary-v1"
+  | "arctic-relay-obstacles-v1"
+  | "arctic-relay-decals-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -185,6 +231,29 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("grenade-tube-v1", grenadeTubeSheetUrl, 96, 96, 4, 0.18, 0.5),
   sheet("grenade-tube-effects-v1", grenadeTubeEffectUrl, 64, 64, 8, 0.5, 0.5),
   sheet("status-overlays-v1", statusOverlaySheetUrl, 48, 48, 16, 0.5, 0.5),
+  sheet("event-horizon-v1", eventHorizonSheetUrl, 96, 96, 4, 0.18, 0.5),
+  sheet("event-horizon-effects-v1", eventHorizonEffectUrl, 64, 64, 8, 0.5, 0.5),
+  image("event-horizon-tile-v1", eventHorizonTileUrl, 64, 64, 0.5, 0.5),
+  sheet("corrupted-survivor-v1", corruptedSurvivorSheetUrl, 96, 96, 8, 0.5, 0.5),
+  sheet("corrupted-marine-v1", corruptedMarineSheetUrl, 96, 96, 12, 0.5, 0.5),
+  sheet("abomination-v1", abominationSheetUrl, 128, 128, 12, 0.5, 0.5),
+  sheet("corrupted-marine-effects-v1", corruptedMarineEffectUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("emberfall-floor-v1", emberfallFloorUrl, 64, 64, 6, 0.5, 0.5),
+  sheet("emberfall-boundary-v1", emberfallBoundaryUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("emberfall-obstacles-v1", emberfallObstacleUrl, 96, 96, 4, 0.5, 0.5),
+  sheet("emberfall-decals-v1", emberfallDecalUrl, 64, 64, 6, 0.5, 0.5),
+  sheet("toxic-bloom-floor-v1", toxicBloomFloorUrl, 64, 64, 6, 0.5, 0.5),
+  sheet("toxic-bloom-boundary-v1", toxicBloomBoundaryUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("toxic-bloom-obstacles-v1", toxicBloomObstacleUrl, 96, 96, 4, 0.5, 0.5),
+  sheet("toxic-bloom-decals-v1", toxicBloomDecalUrl, 64, 64, 6, 0.5, 0.5),
+  sheet("void-approach-floor-v1", voidApproachFloorUrl, 64, 64, 6, 0.5, 0.5),
+  sheet("void-approach-boundary-v1", voidApproachBoundaryUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("void-approach-obstacles-v1", voidApproachObstacleUrl, 96, 96, 4, 0.5, 0.5),
+  sheet("void-approach-decals-v1", voidApproachDecalUrl, 64, 64, 6, 0.5, 0.5),
+  sheet("arctic-relay-floor-v1", arcticRelayFloorUrl, 64, 64, 6, 0.5, 0.5),
+  sheet("arctic-relay-boundary-v1", arcticRelayBoundaryUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("arctic-relay-obstacles-v1", arcticRelayObstacleUrl, 96, 96, 4, 0.5, 0.5),
+  sheet("arctic-relay-decals-v1", arcticRelayDecalUrl, 64, 64, 6, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(

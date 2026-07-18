@@ -408,3 +408,37 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Integrated one persistent overlay layer per active enemy status, including simultaneous-status support and proportional elite/boss scaling. Simulation buildup, timing, stacking, immunity, damage, tint, hitboxes, and telegraphs remain authoritative.
 - Added a deterministic `?mode=gallery&batch=k` review route showing frame order, animated 64 px reads, and elite scaling; updated the content brief, production tracker, asset manifest contract, HTTP smoke coverage, and source documentation.
 - Verification: 269 tests across 26 files, clean TypeScript, production build, 52 explicit runtime-art HTTP checks, 37 review routes, transparent-atlas inspection, and live Phaser gallery review with zero browser warnings or errors.
+
+### Event Horizon Unique art preflight (Batch L)
+
+**Status:** Completed as a held presentation preflight - 18 July 2026; behavior gate still required
+
+- Generated and extracted a four-state 96 x 96 Event Horizon ring weapon sheet, an eight-frame 64 x 64 gravitic projectile/effect atlas, and a 64 x 64 active tile from the approved concept reference.
+- Added stable manifest contracts and the `?mode=gallery&batch=eh` review route, while deliberately excluding Event Horizon from normal gameplay and weapon acquisition until step 32.
+
+### Corrupted Human outbreak art preflight (Batch M)
+
+- Generated high-quality held art for the Infected Survivor, Corrupted Marine, Abomination elite, and the Marine knife/projectile/telegraph/impact family using built-in image generation with retained magenta-key sources and prompts.
+- Extracted transparent masters and deterministic nearest-neighbour runtime atlases in `art/production-tests/batch-m/`; integrated four manifest contracts and `?mode=gallery&batch=m`.
+- Kept all three enemies out of live spawning. Promotion waits on behavior gates for sprint/swarm, knife telegraph/projectile/cooldown, and slam/grab/recovery; Abomination Prime remains future scope.
+
+### Emberfall world-theme art preflight (Batch H)
+
+- Generated high-quality Emberfall floor, boundary, obstacle, and low-contrast decal atlases from the Batch A layout/collision contracts using built-in image generation.
+- Extracted transparent masters and deterministic nearest-neighbour runtime atlases in `art/production-tests/batch-h/`; integrated four held manifest contracts and `?mode=gallery&batch=h`.
+- Kept theme assignment and draw order unchanged. Creator grayscale/contrast review is required before expanding to Toxic Bloom, Void Approach, or Arctic Relay sets.
+- Added the Toxic Bloom variant under `art/production-tests/batch-h/toxic-bloom/`, with four normalized runtime atlases, manifest contracts, and `?mode=gallery&batch=tb`; theme assignment remains unchanged.
+- Added Void Approach under `art/production-tests/batch-h/void-approach/`, with four normalized runtime atlases, manifest contracts, and `?mode=gallery&batch=va`; theme assignment remains unchanged.
+- Integrated Arctic Relay under `art/production-tests/batch-h/arctic-relay/`, with four normalized runtime atlases, manifest contracts, and `?mode=gallery&batch=ar`; theme assignment remains unchanged.
+
+### Codex/perk/hotkey tile preflight (Batch I)
+
+- Generated three high-quality held tile families under `art/production-tests/batch-i/`: eight 96px Codex weapon tiles, eight 64px perk tiles, and eight 64px hotkey/action tiles.
+- Retained magenta-key masters and prompt contract; runtime normalization and manifest integration wait for the tile/inventory behavior gate so cooldown shadows, bindings, numbers, selection, and disabled states remain code-authoritative.
+
+### Cooldown timer visibility option
+
+- Added persisted `cooldownTimersEnabled` setting, defaulting to `true`, with the existing settings override hook `?timers=0|1`.
+- The circular cooldown shadow remains enabled regardless of timer visibility; `?timers=0` hides numeric tile timers while preserving the radial cooldown state.
+- Retained three chroma sources, three transparent masters, prompt provenance, exact frame maps, and `normalize_event_horizon.py` under `art/production-tests/batch-l/`.
+- Acceptance evidence: transparent-alpha inspection and exact-resolution runtime-art inspection passed. The behavior gate owns aim, pull, implosion, damage, collision, and cooldown acceptance.

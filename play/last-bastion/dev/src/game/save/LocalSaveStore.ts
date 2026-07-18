@@ -9,6 +9,7 @@ export interface GameSettings {
   screenShakeEnabled: boolean;
   soundEnabled: boolean;
   damageNumbersEnabled: boolean;
+  cooldownTimersEnabled: boolean;
 }
 
 /**
@@ -46,6 +47,7 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     screenShakeEnabled: true,
     soundEnabled: true,
     damageNumbersEnabled: true,
+    cooldownTimersEnabled: true,
   }),
   progress: Object.freeze({
     runsFinished: 0,
@@ -167,6 +169,7 @@ function normalizeSave(parsed: unknown): SaveData {
       screenShakeEnabled: readBoolean(candidate.settings?.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
       soundEnabled: readBoolean(candidate.settings?.soundEnabled, DEFAULT_SAVE.settings.soundEnabled),
       damageNumbersEnabled: readBoolean(candidate.settings?.damageNumbersEnabled, DEFAULT_SAVE.settings.damageNumbersEnabled),
+      cooldownTimersEnabled: readBoolean(candidate.settings?.cooldownTimersEnabled, DEFAULT_SAVE.settings.cooldownTimersEnabled),
     },
     progress: {
       runsFinished: readCount(candidate.progress?.runsFinished),

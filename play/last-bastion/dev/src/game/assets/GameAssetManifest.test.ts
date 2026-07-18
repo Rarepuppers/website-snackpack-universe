@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(54);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(77);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -187,5 +187,74 @@ describe("GameAssetManifest", () => {
     expect(overlays.logicalWidth).toBe(48);
     expect(overlays.logicalHeight).toBe(48);
     if (overlays.kind === "spritesheet") expect(overlays.frameCount).toBe(16);
+  });
+
+  it("locks the held Event Horizon art-preflight contracts", () => {
+    const weapon = GAME_ASSETS["event-horizon-v1"];
+    const effects = GAME_ASSETS["event-horizon-effects-v1"];
+    const tile = GAME_ASSETS["event-horizon-tile-v1"];
+    expect(weapon.kind).toBe("spritesheet");
+    expect(effects.kind).toBe("spritesheet");
+    expect(tile.kind).toBe("image");
+    if (weapon.kind === "spritesheet") expect(weapon.frameCount).toBe(4);
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
+    expect(tile.logicalWidth).toBe(64);
+    expect(tile.logicalHeight).toBe(64);
+  });
+
+  it("locks the held Batch M Corrupted Human outbreak preflight contracts", () => {
+    const survivor = GAME_ASSETS["corrupted-survivor-v1"];
+    const marine = GAME_ASSETS["corrupted-marine-v1"];
+    const abomination = GAME_ASSETS["abomination-v1"];
+    const effects = GAME_ASSETS["corrupted-marine-effects-v1"];
+    for (const asset of [survivor, marine, abomination, effects]) expect(asset.kind).toBe("spritesheet");
+    if (survivor.kind === "spritesheet") expect(survivor.frameCount).toBe(8);
+    if (marine.kind === "spritesheet") expect(marine.frameCount).toBe(12);
+    if (abomination.kind === "spritesheet") {
+      expect(abomination.frameCount).toBe(12);
+      expect(abomination.logicalWidth).toBe(128);
+    }
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
+  });
+
+  it("locks the held Batch H Emberfall world-theme contracts", () => {
+    const floor = GAME_ASSETS["emberfall-floor-v1"];
+    const boundary = GAME_ASSETS["emberfall-boundary-v1"];
+    const obstacles = GAME_ASSETS["emberfall-obstacles-v1"];
+    const decals = GAME_ASSETS["emberfall-decals-v1"];
+    for (const asset of [floor, boundary, obstacles, decals]) expect(asset.kind).toBe("spritesheet");
+    if (floor.kind === "spritesheet") expect(floor.frameCount).toBe(6);
+    if (boundary.kind === "spritesheet") expect(boundary.frameCount).toBe(8);
+    if (obstacles.kind === "spritesheet") {
+      expect(obstacles.frameCount).toBe(4);
+      expect(obstacles.logicalWidth).toBe(96);
+    }
+    if (decals.kind === "spritesheet") expect(decals.frameCount).toBe(6);
+  });
+
+  it("locks the held Toxic Bloom Batch H variant contracts", () => {
+    const floor = GAME_ASSETS["toxic-bloom-floor-v1"];
+    const boundary = GAME_ASSETS["toxic-bloom-boundary-v1"];
+    const obstacles = GAME_ASSETS["toxic-bloom-obstacles-v1"];
+    const decals = GAME_ASSETS["toxic-bloom-decals-v1"];
+    for (const asset of [floor, boundary, obstacles, decals]) expect(asset.kind).toBe("spritesheet");
+    if (floor.kind === "spritesheet") expect(floor.frameCount).toBe(6);
+    if (boundary.kind === "spritesheet") expect(boundary.frameCount).toBe(8);
+    if (obstacles.kind === "spritesheet") expect(obstacles.frameCount).toBe(4);
+    if (decals.kind === "spritesheet") expect(decals.frameCount).toBe(6);
+  });
+
+  it("locks the held Void Approach Batch H variant contracts", () => {
+    expect(GAME_ASSETS["void-approach-floor-v1"].kind).toBe("spritesheet");
+    expect(GAME_ASSETS["void-approach-boundary-v1"].kind).toBe("spritesheet");
+    expect(GAME_ASSETS["void-approach-obstacles-v1"].kind).toBe("spritesheet");
+    expect(GAME_ASSETS["void-approach-decals-v1"].kind).toBe("spritesheet");
+  });
+
+  it("locks the held Arctic Relay Batch H variant contracts", () => {
+    expect(GAME_ASSETS["arctic-relay-floor-v1"].kind).toBe("spritesheet");
+    expect(GAME_ASSETS["arctic-relay-boundary-v1"].kind).toBe("spritesheet");
+    expect(GAME_ASSETS["arctic-relay-obstacles-v1"].kind).toBe("spritesheet");
+    expect(GAME_ASSETS["arctic-relay-decals-v1"].kind).toBe("spritesheet");
   });
 });

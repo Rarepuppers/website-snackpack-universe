@@ -49,6 +49,21 @@ import {
   resolveSlowedMultiplier,
 } from "../stats/DefenceStats";
 import { stepSpinewheelReflection } from "./SpinewheelPhysics";
+import {
+  buildDensityCapacityRoster,
+  buildDensityWave,
+  ENEMY_PROJECTILE_BUDGET,
+  MAX_RANGED_WINDUPS,
+  pressureRoleOf,
+  type DirectorSpawnPlan,
+  type EnemyPressureRole,
+} from "./DensityDirector";
+import {
+  blendSteering,
+  ENEMY_STEERING_PROFILES,
+  rangeBandIntent,
+  type EnemySteeringProfileId,
+} from "./EnemySteeringProfiles";
 
 export type EncounterStatus = "combat" | "intermission" | "victory" | "defeat";
 export type BrainPhase = "drift" | "windup" | "lunge" | "recover";
@@ -76,7 +91,7 @@ export type BroodWardenPhase =
   | "entrance" | "stalk" | "cleave-windup" | "cleave"
   | "acid-windup" | "acid-volley" | "egg-windup" | "egg-lay"
   | "rush-windup" | "swarm-rush" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition";
 
@@ -207,6 +222,20 @@ export interface EnemySnapshot {
   broodWardenDirection?: Vector2Data;
   facingDirection: Vector2Data;
   statuses: readonly StatusEffectType[];
+  steeringProfile: EnemySteeringProfileId;
+}
+
+export interface DensityTelemetrySnapshot {
+  liveCap: number;
+  currentLiveEnemies: number;
+  peakLiveEnemies: number;
+  spawnedThisWave: number;
+  queuedSpawns: number;
+  spawnCapBlockedSeconds: number;
+  pressureSpawned: Readonly<Record<EnemyPressureRole, number>>;
+  activeEnemyProjectiles: number;
+  peakEnemyProjectiles: number;
+  projectileBudget: number;
 }
 
 export interface ProjectileSnapshot {
@@ -317,6 +346,7 @@ export interface CombatSnapshot {
   destroyedObstacleIds: readonly string[];
   playerTethered: boolean;
   activeTetherEnemyId: number | null;
+  density: DensityTelemetrySnapshot;
 }
 
 interface EnemyState {
@@ -446,12 +476,6 @@ interface EliteRewardState {
   type: "elite-upgrade-cache" | "mini-boss-arsenal-cache";
   position: Vector2Data;
   collected: boolean;
-}
-
-interface SpawnPlan {
-  atSeconds: number;
-  type: EnemyType;
-  rank?: "elite" | "mini-boss";
 }
 
 export interface CombatSimulationOptions {
@@ -592,7 +616,15 @@ export class CombatSimulation {
   private waveIndex = 0;
   private waveElapsedSeconds = 0;
   private intermissionRemainingSeconds = 0;
-  private spawnQueue: SpawnPlan[] = [];
+  private spawnQueue: DirectorSpawnPlan[] = [];
+  private waveLiveCap = 0;
+  private densityPeakLiveEnemies = 0;
+  private densitySpawnedThisWave = 0;
+  private densitySpawnCapBlockedSeconds = 0;
+  private densityPeakEnemyProjectiles = 0;
+  private densityPressureSpawned: Record<EnemyPressureRole, number> = {
+    pursuit: 0, ranged: 0, specialist: 0, boss: 0,
+  };
   private level = 1;
   private experience = 0;
   private decisionQueue: PendingDecision[] = [];
@@ -652,6 +684,8 @@ export class CombatSimulation {
       this.populateTetherBloomScenario();
     } else if (this.scenario === "bastion-eater") {
       this.populateBastionEaterScenario();
+    } else if (this.scenario === "density-capacity") {
+      this.populateDensityCapacityScenario();
     } else if (this.wavesEnabled) {
       this.beginWave(0);
     }
@@ -746,6 +780,8 @@ export class CombatSimulation {
     this.updateEliteRewards();
     this.resolveEnemyContactDamage();
     this.removeDeadEntities();
+    this.densityPeakLiveEnemies = Math.max(this.densityPeakLiveEnemies, this.enemies.length);
+    this.densityPeakEnemyProjectiles = Math.max(this.densityPeakEnemyProjectiles, this.enemyProjectiles.length);
     if (this.wavesEnabled) {
       this.updateEncounterProgress(delta);
     }
@@ -1060,6 +1096,18 @@ export class CombatSimulation {
         !enemy.dead && enemy.id === this.activeTetherEnemyId && enemy.tetherBloomPhase === "tethering"
       )),
       activeTetherEnemyId: this.activeTetherEnemyId,
+      density: {
+        liveCap: this.waveLiveCap,
+        currentLiveEnemies: this.enemies.filter((enemy) => !enemy.dead).length,
+        peakLiveEnemies: this.densityPeakLiveEnemies,
+        spawnedThisWave: this.densitySpawnedThisWave,
+        queuedSpawns: this.spawnQueue.length,
+        spawnCapBlockedSeconds: this.densitySpawnCapBlockedSeconds,
+        pressureSpawned: { ...this.densityPressureSpawned },
+        activeEnemyProjectiles: this.enemyProjectiles.filter((projectile) => !projectile.dead).length,
+        peakEnemyProjectiles: this.densityPeakEnemyProjectiles,
+        projectileBudget: ENEMY_PROJECTILE_BUDGET,
+      },
     };
   }
 
@@ -2622,16 +2670,13 @@ export class CombatSimulation {
 
     switch (enemy.spitterPhase) {
       case "positioning":
-        if (playerDistance > 8) {
-          this.moveEnemyTowardPlayer(enemy, ENEMY_CATALOG["slime-spitter"].movementSpeedMetresPerSecond, deltaSeconds);
-        } else if (playerDistance < 5) {
-          const away = normalizeVector({
-            x: enemy.position.x - this.playerPosition.x,
-            y: enemy.position.y - this.playerPosition.y,
-          });
-          this.moveEnemy(enemy, away, ENEMY_CATALOG["slime-spitter"].movementSpeedMetresPerSecond, deltaSeconds);
-        }
-        if (enemy.spitterPhaseRemainingSeconds <= 0 && playerDistance <= 10) {
+        this.moveEnemyForRangeBand(enemy, deltaSeconds);
+        if (
+          enemy.spitterPhaseRemainingSeconds <= 0
+          && playerDistance <= 10
+          && this.canBeginRangedWindup()
+          && this.availableEnemyProjectileSlots() >= 1
+        ) {
           enemy.spitterPhase = "windup";
           enemy.spitterPhaseRemainingSeconds = 0.65;
           enemy.spitterTarget = { ...this.playerPosition };
@@ -2668,19 +2713,14 @@ export class CombatSimulation {
 
     switch (enemy.quillbackPhase) {
       case "positioning":
-        if (playerDistance < 4.5) {
-          this.moveEnemy(
-            enemy,
-            { x: -towardPlayer.x, y: -towardPlayer.y },
-            ENEMY_CATALOG.quillback.movementSpeedMetresPerSecond * 1.15,
-            deltaSeconds,
-          );
-        } else if (playerDistance > 9.5) {
-          this.moveEnemy(enemy, towardPlayer, ENEMY_CATALOG.quillback.movementSpeedMetresPerSecond, deltaSeconds);
-        } else {
-          enemy.facingDirection = towardPlayer;
-        }
-        if (enemy.quillbackPhaseRemainingSeconds <= 0 && playerDistance >= 4.75 && playerDistance <= 10.5) {
+        this.moveEnemyForRangeBand(enemy, deltaSeconds);
+        if (
+          enemy.quillbackPhaseRemainingSeconds <= 0
+          && playerDistance >= 4.75
+          && playerDistance <= 10.5
+          && this.canBeginRangedWindup()
+          && this.availableEnemyProjectileSlots() >= quillbackVolleyCount(enemy.quillbackAttackCount)
+        ) {
           enemy.quillbackPhase = "windup";
           enemy.quillbackShotCount = quillbackVolleyCount(enemy.quillbackAttackCount);
           enemy.quillbackPhaseRemainingSeconds = 0.62 + (enemy.quillbackShotCount - 1) * 0.055;
@@ -2718,7 +2758,7 @@ export class CombatSimulation {
       enemy.quillbackDirection,
       enemy.quillbackShotCount,
       QUILLBACK_FAN_ARC_RADIANS,
-    );
+    ).slice(0, this.availableEnemyProjectileSlots());
     for (const direction of directions) {
       const start = {
         x: enemy.position.x + direction.x * 0.72,
@@ -2964,6 +3004,7 @@ export class CombatSimulation {
   }
 
   private launchSlimeGlob(enemy: EnemyState): void {
+    if (this.availableEnemyProjectileSlots() <= 0) return;
     const direction = normalizeVector({
       x: enemy.spitterTarget.x - enemy.position.x,
       y: enemy.spitterTarget.y - enemy.position.y,
@@ -3056,11 +3097,65 @@ export class CombatSimulation {
   }
 
   private moveEnemyTowardPlayer(enemy: EnemyState, speed: number, deltaSeconds: number): void {
-    const direction = normalizeVector({
+    const desired = normalizeVector({
       x: this.playerPosition.x - enemy.position.x,
       y: this.playerPosition.y - enemy.position.y,
     });
+    const profile = ENEMY_STEERING_PROFILES[ENEMY_CATALOG[enemy.type].steeringProfile];
+    const direction = blendSteering(desired, this.enemySeparation(enemy), profile.separationWeight);
     this.moveEnemy(enemy, direction, speed, deltaSeconds);
+  }
+
+  private moveEnemyForRangeBand(enemy: EnemyState, deltaSeconds: number): void {
+    const definition = ENEMY_CATALOG[enemy.type];
+    const profile = ENEMY_STEERING_PROFILES[definition.steeringProfile];
+    const towardPlayer = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
+    const intent = rangeBandIntent(distance(enemy.position, this.playerPosition), profile.id);
+    if (intent === 0) {
+      enemy.facingDirection = towardPlayer;
+      return;
+    }
+    const desired = intent > 0
+      ? towardPlayer
+      : { x: -towardPlayer.x, y: -towardPlayer.y };
+    const direction = blendSteering(desired, this.enemySeparation(enemy), profile.separationWeight);
+    this.moveEnemy(enemy, direction, definition.movementSpeedMetresPerSecond * (intent < 0 ? 1.15 : 1), deltaSeconds);
+  }
+
+  private enemySeparation(enemy: EnemyState): Vector2Data {
+    const separation = { x: 0, y: 0 };
+    const neighbourRadius = ENEMY_CATALOG[enemy.type].radiusMetres + 0.9;
+    for (const other of this.enemies) {
+      if (other.id === enemy.id || other.dead) continue;
+      const offset = { x: enemy.position.x - other.position.x, y: enemy.position.y - other.position.y };
+      const magnitude = Math.hypot(offset.x, offset.y);
+      if (magnitude <= 0.001 || magnitude >= neighbourRadius) continue;
+      const strength = 1 - magnitude / neighbourRadius;
+      separation.x += offset.x / magnitude * strength;
+      separation.y += offset.y / magnitude * strength;
+    }
+    return normalizeVector(separation);
+  }
+
+  private canBeginRangedWindup(): boolean {
+    let count = 0;
+    for (const enemy of this.enemies) {
+      if (
+        (enemy.type === "slime-spitter" && enemy.spitterPhase === "windup")
+        || (enemy.type === "quillback" && enemy.quillbackPhase === "windup")
+      ) {
+        count += 1;
+      }
+    }
+    return count < MAX_RANGED_WINDUPS;
+  }
+
+  private availableEnemyProjectileSlots(): number {
+    const live = this.enemyProjectiles.filter((projectile) => !projectile.dead).length;
+    return Math.max(0, ENEMY_PROJECTILE_BUDGET - live);
   }
 
   private moveEnemy(
@@ -3397,6 +3492,10 @@ export class CombatSimulation {
     this.waveElapsedSeconds += deltaSeconds;
 
     while (this.spawnQueue.length > 0 && this.spawnQueue[0]!.atSeconds <= this.waveElapsedSeconds) {
+      if (this.enemies.length >= this.waveLiveCap) {
+        this.densitySpawnCapBlockedSeconds += deltaSeconds;
+        break;
+      }
       const spawn = this.spawnQueue.shift()!;
       if (spawn.rank === "elite") {
         this.spawnElite("carapace-scuttler");
@@ -3405,7 +3504,17 @@ export class CombatSimulation {
       } else {
         this.spawnEnemy(spawn.type);
       }
+      this.recordDensitySpawn(spawn);
     }
+  }
+
+  private recordDensitySpawn(spawn: Pick<DirectorSpawnPlan, "type" | "rank">): void {
+    const role: EnemyPressureRole = spawn.rank
+      ? (spawn.rank === "mini-boss" ? "boss" : "specialist")
+      : pressureRoleOf(spawn.type);
+    this.densitySpawnedThisWave += 1;
+    this.densityPressureSpawned[role] += 1;
+    this.densityPeakLiveEnemies = Math.max(this.densityPeakLiveEnemies, this.enemies.length);
   }
 
   private updateEncounterProgress(deltaSeconds: number): void {
@@ -3448,7 +3557,14 @@ export class CombatSimulation {
     this.waveIndex = index;
     this.waveElapsedSeconds = 0;
     this.status = "combat";
-    this.spawnQueue = buildWave(index);
+    const wave = buildDensityWave(index);
+    this.spawnQueue = [...wave.plans];
+    this.waveLiveCap = wave.liveCap;
+    this.densityPeakLiveEnemies = this.enemies.length;
+    this.densitySpawnedThisWave = 0;
+    this.densitySpawnCapBlockedSeconds = 0;
+    this.densityPeakEnemyProjectiles = this.enemyProjectiles.length;
+    this.densityPressureSpawned = { pursuit: 0, ranged: 0, specialist: 0, boss: 0 };
     if (index >= 1) {
       this.spawnPowerup(POWERUP_WAVE_CYCLE[(index - 1) % POWERUP_WAVE_CYCLE.length]!);
     }
@@ -3462,6 +3578,17 @@ export class CombatSimulation {
     for (let index = 0; index < counts.scuttler; index += 1) this.spawnEnemy("scuttler");
     for (let index = 0; index < counts.egg; index += 1) this.spawnEnemy("egg-cluster");
     for (let index = 0; index < counts.brain; index += 1) this.spawnEnemy("brain-blob");
+  }
+
+  private populateDensityCapacityScenario(): void {
+    this.waveLiveCap = buildDensityCapacityRoster().length;
+    this.densityPeakLiveEnemies = 0;
+    this.densitySpawnedThisWave = 0;
+    this.densityPressureSpawned = { pursuit: 0, ranged: 0, specialist: 0, boss: 0 };
+    for (const type of buildDensityCapacityRoster()) {
+      this.spawnEnemy(type);
+      this.recordDensitySpawn({ type });
+    }
   }
 
   private populateSlimeSpitterScenario(): void {
@@ -3626,6 +3753,7 @@ export class CombatSimulation {
         : undefined,
       facingDirection: { ...enemy.facingDirection },
       statuses: this.activeStatuses(enemy),
+      steeringProfile: definition.steeringProfile,
     };
   }
 
@@ -3664,60 +3792,6 @@ export class CombatSimulation {
     this.randomState = (Math.imul(this.randomState, 1664525) + 1013904223) >>> 0;
     return this.randomState / 0x100000000;
   }
-}
-
-function buildWave(index: number): SpawnPlan[] {
-  const plans: SpawnPlan[] = [];
-  const add = (
-    type: EnemyType,
-    count: number,
-    start: number,
-    interval: number,
-    rank?: SpawnPlan["rank"],
-  ): void => {
-    for (let item = 0; item < count; item += 1) {
-      plans.push({ type, atSeconds: start + item * interval, rank });
-    }
-  };
-
-  switch (index) {
-    case 0:
-      add("scuttler", 8, 0.2, 0.75);
-      break;
-    case 1:
-      add("scuttler", 8, 0.2, 0.65);
-      add("egg-cluster", 3, 1.4, 1.8);
-      break;
-    case 2:
-      add("scuttler", 8, 0.2, 0.6);
-      add("brain-blob", 3, 1.2, 1.6);
-      add("slime-spitter", 2, 2.4, 2.8);
-      add("blast-mite", 3, 3, 1.4);
-      add("quillback", 1, 4, 1);
-      add("ripper", 1, 5.2, 1);
-      break;
-    case 3:
-      add("scuttler", 8, 0.2, 0.6);
-      add("blast-mite", 4, 1, 1.2);
-      add("slime-spitter", 2, 2, 2.6);
-      add("warp-flanker", 3, 2.5, 1.8);
-      add("razor-scuttler", 2, 3.2, 2.2);
-      add("tether-bloom", 1, 3.8, 1);
-      add("spinewheel", 1, 4.6, 1);
-      add("ripper", 1, 5.4, 1);
-      add("scuttler", 1, 6, 1, "elite");
-      break;
-    default:
-      add("siege-crusher", 1, 0.5, 1, "mini-boss");
-      add("scuttler", 6, 2, 2.2);
-      add("blast-mite", 4, 4, 2.4);
-      add("warp-flanker", 3, 6, 3);
-      add("razor-scuttler", 2, 7, 2.6);
-      add("quillback", 1, 8.5, 1);
-      break;
-  }
-
-  return plans.sort((left, right) => left.atSeconds - right.atSeconds);
 }
 
 function distance(left: Vector2Data, right: Vector2Data): number {

@@ -276,7 +276,7 @@
 const TINT = {
   light: "#68e4e8", medium: "#e9e3cf", heavy: "#ffa31a", alien: "#b9ef62",
   energy: "#8fd8ff", void: "#d696ff", unique: "#ff5fa2",
-  hero: "#5fa8ff", monster: "#ff8a6b", elite: "#ffd36b", boss: "#ff5f5f",
+  hero: "#5fa8ff", monster: "#ff8a6b", treasure: "#ffd36b", elite: "#ffd36b", boss: "#ff5f5f",
   perk: "#7ee0a8", relic: "#ffc45e", upgrade: "#9ad9ff", ammo: "#d9f36a",
   power: "#ff9a52",
 };
@@ -505,6 +505,10 @@ const MONSTERS = [
     stats: { Health: "11", Armour: "1", Speed: "1.8 / 3.2 ripple", Damage: "1.5 contact / 2.5 eruption (→ 0.9 edge)", XP: "5" },
     text: "Fights normally, then digs in every ~9s: untargetable, charges as a visible ground ripple, erupts under a locked 0.7s ring. Capped 3s underground, long recovery after — the floor attacks, but always fairly." },
 
+  { id: "mon-aurum-hoarder", name: "Aurum Hoarder", glyph: "◆", tint: TINT.treasure, status: "designed", rank: "treasure", tier: "Optional",
+    stats: { Health: "4–6× same-wave common", Armour: "moderate / breakable", Speed: "catchable flee", Damage: "negligible", Reward: "Scrap + supply cache" },
+    text: "A brass-gold alien salvage carrier that zig-zags toward a marked exit. It never blocks wave clear; armour breaks pay partial Scrap, while a kill guarantees a valid supply cache. Gold is presentation, not a second currency." },
+
   { id: "mon-carapace-scuttler", name: "Carapace Scuttler", glyph: "◭", tint: TINT.elite, status: "live", rank: "elite", tier: "Slow",
     stats: { Health: "45", Armour: "3 frontal", Speed: "1.85 m/s", Damage: "1.4 contact", XP: "25" },
     text: "Frontal armour cuts direct hits to 25%. Flank it, or punish the post-charge recovery. Always drops a Requisition." },
@@ -708,7 +712,7 @@ const TABS = [
 
 const FILTERS = {
   weapons: ["all", "light", "medium", "heavy", "alien", "energy", "void", "unique"],
-  monsters: ["all", "standard", "elite", "mini-boss", "boss"],
+  monsters: ["all", "standard", "treasure", "elite", "mini-boss", "boss"],
   upgrades: ["all", "Offensive", "Defensive", "Support", "Scavenger", "unique", "hero"],
 };
 
@@ -863,11 +867,11 @@ function render() {
       Aliens appear as <code>??????</code> until you meet them in the field, and their stats stay hidden
       until you have killed ${KILLS_TO_REVEAL}. The dex reads your local save, so it fills in as you play.
       Use <em>Reveal all</em> for the design view.</div>`;
-    for (const rank of ["standard", "elite", "mini-boss", "boss"]) {
+    for (const rank of ["standard", "treasure", "elite", "mini-boss", "boss"]) {
       if (state.filter !== "all" && state.filter !== rank) continue;
       const list = MONSTERS.filter((m) => m.rank === rank && matches(m.name + m.text));
       if (!list.length) continue;
-      const titles = { standard: "Standard aliens", elite: "Elite aliens", "mini-boss": "Mini-bosses", boss: "Final boss" };
+      const titles = { standard: "Standard aliens", treasure: "Treasure encounters", elite: "Elite aliens", "mini-boss": "Mini-bosses", boss: "Final boss" };
       html += `<h2 class="sect">${titles[rank]}</h2>
         <div class="grid">${list.map((m) =>
           monsterCard(m, discoveryOf(m.id, bestiary), killsOf(m.id, bestiary))).join("")}</div>`;

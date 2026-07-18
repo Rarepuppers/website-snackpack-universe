@@ -252,9 +252,34 @@ The v1 threat budgets and enemy stat tables stand; what changes is how fast they
 
 - **Spend rate:** the director targets threat-per-second = wave budget ÷ wave duration. The same budget landing in a third of the time yields roughly **2–3× the v1 density** — this is the requested "more monsters, faster" and it comes from the timer, not from new budget numbers. If a wave still feels thin, raise its budget; never stretch its duration back out.
 - **Spawn cadence:** spawn in small pulses every 2–3 seconds rather than a per-frame drip, so arrivals read as events; Swarm Scuttler pack rules are unchanged.
-- **Simultaneous caps rise** to carry the density: wave 1 → 16, wave 2 → 20, wave 3 → 26, wave 4 → 32, wave 5 → 36, waves 6–9 → 44. A new deterministic 44-live-enemy capacity scene must prove frame rate and readability before the caps are trusted.
+- **Simultaneous caps rise** to carry the density. The next implementation lab targets wave 1 → 18, wave 2 → 24, wave 3 → 32, wave 4 → 42, wave 5 → 46, waves 6–7 → 52, waves 8–9 → 56. These are director ceilings, not guaranteed instant crowds; average occupancy across waves 3+ should remain at least 70% of the relevant cap. The old 44-entity capacity scene becomes a 56-entity web acceptance scene.
 - **Elite cadence:** first elite at wave 4 (unchanged); one elite **guaranteed** every wave from wave 6; two elites (at most one fast) from wave 8. The one-fast-elite-per-wave cap is unchanged and non-negotiable.
 - **Speed and health:** the v1 stat tables and per-wave scaling formulas are deliberately untouched. Short waves raise pressure through density; raising stats *and* density in the same pass would make cause and effect unreadable in playtests. Revisit stats only after the density change is felt.
+
+### Density director v3 — pursuit majority and smarter ranged units
+
+The arena should feel like a horde pressing inward, not a collection of specialists waiting for turns. Composition and steering follow these rules:
+
+- **65–75% of ordinary threat is pursuit pressure.** Scuttlers, swarmers, infected survivors, and other commons take a direct or lightly separated route toward the Marine. Simple chase is desirable here: the mass itself is the puzzle.
+- **15–25% is ranged or standoff pressure.** A standoff shooter maintains a minimum/preferred/maximum range band, retreats when crowded, advances when too far away, and commits only after a readable wind-up. A chase-and-fire shooter keeps advancing and fires on cadence. Artillery repositions to long range and never shoots from an unseen edge without a marker.
+- **5–10% is support, control, or elite pressure.** Spawners, tethers, flankers, and elites change target priority, but they do not replace the pursuit body of the wave.
+- Direct pursuers receive light local separation and obstacle routing so a pack flows around cover rather than forming an immovable collision wall. Separation must not create a perfect ring around the player.
+- The director uses **composition quotas plus threat cost**, preventing a seed from spending the whole wave on ranged units. At most two hostile shooters may be in wind-up and at most six ordinary hostile projectiles may be active initially; capacity tests may raise the projectile budget separately from the monster cap.
+- Spawn pulses alternate edges and lanes, with occasional authored pack events. Never materialize inside 6 m, inside cover, in the player's immediate travel vector, or behind an opaque edge without a warning.
+- The next tuning pass raises ordinary-wave threat budgets by **25% as a starting candidate**, then records spawned count, average live count, ranged share, projectile occupancy, time at cap, damage taken, and frame time. Keep the increase only if waves 3+ feel crowded without hiding telegraphs or breaking the frame-time target.
+- Web acceptance is stable 60 fps on the named reference machine at 56 live enemies, 100 pooled projectiles/effects, and representative drops. The future Steam stretch target is 80–96 live commons with 180 pooled projectiles/effects; it is a performance gate, not a promise to fill every wave to that number.
+
+AI profiles are data, not bespoke branches per species: `pursuer`, `rushPack`, `chaseAndFire`, `standoffShooter`, `artillery`, `flanker`, `supportAnchor`, and `treasureFlee`. Each profile exposes preferred range, retreat range, lead amount, repath cadence, line-of-sight rule, and attack commitment state. Enemy definitions choose and tune a profile while their special attacks remain separate state machines.
+
+### Aurum Hoarder reward event
+
+The Aurum Hoarder is a rare optional treasure creature, paid from an event reserve rather than the normal threat budget. It does not count toward the simultaneous combat cap or wave clear, but the director must defer its arrival if adding it would exceed the tested entity ceiling.
+
+- Eligibility begins at wave 3; maximum one per eligible ordinary wave; never during a tutorial, mini-boss, final boss, or forced objective.
+- Initial durability target is 4–6× a same-wave common with moderate armour, negligible contact damage, and a catchable `treasureFlee` profile. Threshold armour breaks pay partial Scrap before escape.
+- A kill awards a large Scrap bundle plus one guaranteed supply cache. Use Scrap rather than introducing “gold”; the creature's gold-brass plating communicates rarity without fragmenting the economy.
+- It exits through a telegraphed arena edge after a short forage window and never blocks wave completion. Drops are banked or magnetized before the transition.
+- Required tests cover seeded spawn eligibility, one-per-wave, boss/tutorial exclusion, non-blocking wave end, partial rewards, valid cache loot, safe exit selection, and deterministic save/Codex discovery.
 
 ### Starting player health and regeneration
 
@@ -291,10 +316,10 @@ The v1 threat budgets and enemy stat tables stand; what changes is how fast they
 ### Verification additions (extends the numbered plan above)
 
 16. **Durations:** each wave matches the authored duration table; from wave 3 the timer, not extermination, ends the wave.
-17. **Density:** live enemy count averages ≥70% of the simultaneous cap across waves 3+ on a reference seed, and never exceeds the cap.
+17. **Density:** live enemy count averages ≥70% of the simultaneous cap across waves 3+ on a reference seed, and never exceeds the cap; pursuit threat remains 65–75% and ranged threat remains within its quota.
 18. **Elite cadence:** elites appear exactly per schedule across many seeds; no wave ever holds two fast elites.
 19. **First pick guaranteed:** wave 1 always ends in a three-option Tier I weapon offer, and the pool respects the wave-band table.
-20. **Capacity:** the 44-enemy capacity scene holds the frame-time budget on reference low-end hardware.
+20. **Capacity:** the 56-enemy web capacity scene holds the frame-time budget on named reference hardware; the separate Steam stretch scene proves 80–96 only before those caps are enabled.
 
 ## Experience and levelling
 
