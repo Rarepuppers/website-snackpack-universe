@@ -15,6 +15,14 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "i3") {
+      this.createBatchI3Gallery();
+      return;
+    }
+    if (batch === "i2") {
+      this.createBatchI2Gallery();
+      return;
+    }
     if (batch === "i") {
       this.createBatchIGallery();
       return;
@@ -178,6 +186,33 @@ export class AssetGalleryScene extends Phaser.Scene {
       }
     });
     this.add.text(480, 522, "Review: ?mode=gallery&batch=i • Live placement: ?scenario=weapon-gate", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchI2Gallery(): void {
+    this.add.text(20, 18, "PRODUCTION BATCH I2 — SLOT / TIER / MERGE", style("#f4dfb8", "18px"));
+    this.add.text(20, 46, "Class identity survives grayscale • interaction overlays remain code-owned", style("#8fb2c9", "11px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const column = frame % 8;
+      const row = Math.floor(frame / 8);
+      const x = 82 + column * 114;
+      const y = 150 + row * 190;
+      this.add.sprite(x, y, "batch-i-slot-tier-ui-v1", frame).setDisplaySize(104, 104);
+      this.add.text(x, y + 66, String(frame), style("#8fb2c9", "9px")).setOrigin(0.5);
+    }
+    this.add.text(480, 520, "0–4 rack classes • 5 stash • 6–8 tiers • 9–11 discard • 12–14 merge/drag", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchI3Gallery(): void {
+    this.add.text(20, 18, "PRODUCTION BATCH I3 — PLACEMENT / SHOP SURFACES", style("#f4dfb8", "18px"));
+    this.add.image(260, 185, "batch-i-placement-modal-v1").setDisplaySize(450, 280);
+    this.add.image(565, 180, "batch-i-weapon-stat-card-v1").setDisplaySize(160, 210);
+    this.add.image(755, 342, "batch-i-shop-counter-v1").setDisplaySize(360, 210);
+    for (let frame = 0; frame < 3; frame += 1) {
+      this.add.sprite(520 + frame * 62, 330, "batch-i-shop-glyphs-v1", frame).setDisplaySize(48, 48);
+    }
+    this.add.text(20, 350, "LIVE PLACEMENT", style("#68e4e8", "11px"));
+    this.add.text(20, 372, "?scenario=weapon-gate", style("#dce8f2", "13px"));
+    this.add.text(480, 520, "All labels, stats, prices, bindings, selection, and legality render from code", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createBatchAGallery(): void {

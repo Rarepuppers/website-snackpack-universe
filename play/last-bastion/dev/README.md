@@ -57,6 +57,8 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?mode=gallery&batch=n` — Task 36 Aurum body/effects/cache family and eight 128 px runtime tiles
 - `/play/last-bastion/?mode=gallery&batch=n2` — production Scrap Shop panel, six 128 px offer tiles, and four 128 px Scrap HUD/effect frames
 - `/play/last-bastion/?mode=gallery&batch=i` — promoted Batch I1 weapon, perk, and hotkey/action 128 px runtime tile atlases
+- `/play/last-bastion/?mode=gallery&batch=i2` — Batch I2 rack-class, stash, tier, discard, merge, and drag surfaces
+- `/play/last-bastion/?mode=gallery&batch=i3` — Batch I3 placement modal, stat card, salvage counter, and shop glyphs
 
 ## Codex
 

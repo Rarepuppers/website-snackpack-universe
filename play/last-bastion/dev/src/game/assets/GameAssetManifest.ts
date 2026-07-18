@@ -84,6 +84,11 @@ import scrapShopPanelUrl from "../../../../art/production-tests/batch-n2/scrap-s
 import batchIWeaponTileUrl from "../../../../art/production-tests/batch-i/codex-weapon-tile-atlas-v1-128.png";
 import batchIPerkTileUrl from "../../../../art/production-tests/batch-i/perk-tile-atlas-v1-128.png";
 import batchIHotkeyTileUrl from "../../../../art/production-tests/batch-i/hotkey-action-tile-atlas-v1-128.png";
+import batchISlotTierUiUrl from "../../../../art/production-tests/batch-i/slot-tier-ui-atlas-v1-128.png";
+import batchIPlacementModalUrl from "../../../../art/production-tests/batch-i/placement-modal-frame-v1-900x560.png";
+import batchIWeaponStatCardUrl from "../../../../art/production-tests/batch-i/weapon-stat-card-v1-320x420.png";
+import batchIShopCounterUrl from "../../../../art/production-tests/batch-i/shop-counter-backdrop-v1-1200x700.png";
+import batchIShopGlyphUrl from "../../../../art/production-tests/batch-i/shop-action-glyph-atlas-v1-48.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -171,7 +176,12 @@ export type GameAssetId =
   | "scrap-shop-panel-v1"
   | "batch-i-weapon-tiles-v1"
   | "batch-i-perk-tiles-v1"
-  | "batch-i-hotkey-tiles-v1";
+  | "batch-i-hotkey-tiles-v1"
+  | "batch-i-slot-tier-ui-v1"
+  | "batch-i-placement-modal-v1"
+  | "batch-i-weapon-stat-card-v1"
+  | "batch-i-shop-counter-v1"
+  | "batch-i-shop-glyphs-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -281,6 +291,11 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("batch-i-weapon-tiles-v1", batchIWeaponTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("batch-i-perk-tiles-v1", batchIPerkTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("batch-i-hotkey-tiles-v1", batchIHotkeyTileUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("batch-i-slot-tier-ui-v1", batchISlotTierUiUrl, 128, 128, 16, 0.5, 0.5),
+  image("batch-i-placement-modal-v1", batchIPlacementModalUrl, 900, 560, 0.5, 0.5),
+  image("batch-i-weapon-stat-card-v1", batchIWeaponStatCardUrl, 320, 420, 0.5, 0.5),
+  image("batch-i-shop-counter-v1", batchIShopCounterUrl, 1200, 700, 0.5, 0.5),
+  sheet("batch-i-shop-glyphs-v1", batchIShopGlyphUrl, 48, 48, 3, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(

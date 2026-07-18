@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(86);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(91);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -298,5 +298,21 @@ describe("GameAssetManifest", () => {
         expect(asset.logicalHeight).toBe(128);
       }
     }
+  });
+
+  it("locks the production Batch I2 and I3 contracts", () => {
+    const slots = GAME_ASSETS["batch-i-slot-tier-ui-v1"];
+    const glyphs = GAME_ASSETS["batch-i-shop-glyphs-v1"];
+    expect(slots.kind).toBe("spritesheet");
+    expect(glyphs.kind).toBe("spritesheet");
+    if (slots.kind === "spritesheet") {
+      expect(slots.frameCount).toBe(16);
+      expect(slots.logicalWidth).toBe(128);
+    }
+    if (glyphs.kind === "spritesheet") expect(glyphs.frameCount).toBe(3);
+    expect(GAME_ASSETS["batch-i-placement-modal-v1"].logicalWidth).toBe(900);
+    expect(GAME_ASSETS["batch-i-placement-modal-v1"].logicalHeight).toBe(560);
+    expect(GAME_ASSETS["batch-i-weapon-stat-card-v1"].logicalWidth).toBe(320);
+    expect(GAME_ASSETS["batch-i-shop-counter-v1"].logicalWidth).toBe(1200);
   });
 });

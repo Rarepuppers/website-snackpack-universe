@@ -2091,6 +2091,8 @@ export class PrototypeScene extends Phaser.Scene {
     const children: Phaser.GameObjects.GameObject[] = [];
     if (isShop && this.useMarineArt) {
       children.push(this.add.image(0, 0, "scrap-shop-panel-v1").setDisplaySize(760, 428));
+    } else if (isPlacement && this.useMarineArt) {
+      children.push(this.add.image(0, 0, "batch-i-placement-modal-v1").setDisplaySize(panelWidth, panelHeight));
     } else {
       children.push(this.add.rectangle(0, 0, panelWidth, panelHeight, 0x0b121c, 0.985).setStrokeStyle(4, isShop ? 0xdca652 : 0x68e4e8));
       children.push(this.add.rectangle(0, 0, panelWidth - 18, panelHeight - 18, 0x172536, 0.72).setStrokeStyle(1, 0x4d6a83));
@@ -2115,10 +2117,11 @@ export class PrototypeScene extends Phaser.Scene {
     }
 
     if (isPlacement && decision.weaponId) {
-      children.push(this.add.rectangle(-340, -75, 154, 154, 0x091019, 0.94).setStrokeStyle(2, 0xd9c69c));
-      children.push(this.add.image(-340, -75, "batch-i-weapon-tiles-v1", batchIWeaponTileFrame(decision.weaponId)).setDisplaySize(128, 128));
-      children.push(this.add.text(-340, 25, "RACK / STASH / MERGE", {
-        color: "#9fb3c8", fontFamily: "Consolas, Courier New, monospace", fontSize: "11px",
+      const stats = WEAPON_CATALOG[decision.weaponId];
+      if (this.useMarineArt) children.push(this.add.image(-335, -20, "batch-i-weapon-stat-card-v1").setDisplaySize(206, 270));
+      children.push(this.add.image(-335, -90, "batch-i-weapon-tiles-v1", batchIWeaponTileFrame(decision.weaponId)).setDisplaySize(112, 112));
+      children.push(this.add.text(-335, 8, `${stats.weaponClass.toUpperCase()} • TIER I\nDMG ${stats.projectileDamage}   CADENCE ${stats.fireIntervalSeconds.toFixed(2)}s`, {
+        color: "#dce8f2", fontFamily: "Consolas, Courier New, monospace", fontSize: "11px", align: "center", lineSpacing: 5,
       }).setOrigin(0.5).setResolution(uiTextResolution()));
     }
 
@@ -2134,11 +2137,15 @@ export class PrototypeScene extends Phaser.Scene {
         children.push(this.add.image(-292, y, "scrap-shop-offer-tiles-v1", scrapShopOfferFrame(choice.id))
           .setDisplaySize(56, 56).setAlpha(enabled ? 1 : 0.42));
       }
-      const label = this.add.text(isPlacement ? x - 136 : isShop ? -252 : -310, y - (isPlacement ? 26 : 18), `${index + 1}. ${choice.name}${price}\n${choice.description}`, {
+      if (isPlacement && this.useMarineArt) {
+        children.push(this.add.image(x - 116, y, "batch-i-slot-tier-ui-v1", placementOptionFrame(choice.id, choice.name))
+          .setDisplaySize(58, 58).setAlpha(enabled ? 1 : 0.42));
+      }
+      const label = this.add.text(isPlacement ? x - 78 : isShop ? -252 : -310, y - (isPlacement ? 26 : 18), `${index + 1}. ${choice.name}${price}\n${choice.description}`, {
         color: enabled ? "#edf4ff" : "#758493",
         fontFamily: "Consolas, Courier New, monospace",
         fontSize: isPlacement ? "13px" : "15px",
-        wordWrap: isPlacement ? { width: 272 } : undefined,
+        wordWrap: isPlacement ? { width: 202 } : undefined,
         lineSpacing: 5,
       }).setResolution(uiTextResolution());
       button.on("pointerover", () => {
@@ -2341,6 +2348,18 @@ function batchIWeaponTileFrame(weaponId: WeaponId): number {
     case "bulwark-rotary-cannon": return 5;
     case "bastion-service-rifle": return 7;
   }
+}
+
+function placementOptionFrame(optionId: string, name: string): number {
+  if (optionId.startsWith("place:inventory:")) return 5;
+  if (optionId.startsWith("place:merge:")) return 12;
+  if (optionId === "place:discard") return 9;
+  if (name.includes("LIGHT")) return 0;
+  if (name.includes("MEDIUM")) return 1;
+  if (name.includes("HEAVY")) return 2;
+  if (name.includes("UNIQUE")) return 3;
+  if (name.includes("ALL")) return 4;
+  return 15;
 }
 
 function statusEffectFrame(status: string): number {

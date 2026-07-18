@@ -612,7 +612,7 @@ Priority order for generation: heroes (7) → live weapons (7) → live monsters
 
 ## Batch I — weapon tiles, slots, and inventory UI (queued for Codex)
 
-**Status:** I1 runtime promotion completed 18 July 2026; I2 slot/tier treatments and I3 placement/shop surfaces remain queued. The passed tile/inventory behavior gate now consumes the deterministic transparent 8 × 128 weapon atlas in its live placement modal, while the perk and hotkey/action atlases are gallery-integrated for later consumers. The system is designed in `last-bastion-game.md` ("Weapon tiles, slots, and inventory"); prices and merge rules are in `wave_balance.md`. Standard contract still applies: no baked text, numbers, bindings, cooldowns, or selection states — those remain code-drawn overlays. Retained chroma masters and the reproducible normalizer live under `art/production-tests/batch-i/`.
+**Status:** I1–I3 production completed 18 July 2026. The passed tile/inventory behavior gate consumes the deterministic transparent weapon atlas, typed slot/stash/discard/merge surfaces, placement modal, and stat card. Perk/hotkey atlases, salvage-counter backdrop, and shop glyphs are gallery-integrated for their later consumers. The system is designed in `last-bastion-game.md` ("Weapon tiles, slots, and inventory"); prices and merge rules are in `wave_balance.md`. Text, numbers, bindings, cooldowns, prices, selection, and legality remain code-drawn overlays. Retained chroma masters and the reproducible normalizer live under `art/production-tests/batch-i/`.
 
 ### I1 — weapon tiles
 

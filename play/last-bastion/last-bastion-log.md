@@ -473,7 +473,7 @@ First implementation slice of the v2 balance model — the layer that makes ever
 
 ### Codex/perk/hotkey tile preflight (Batch I)
 
-**Runtime promotion completed 18 July 2026 (I1).** The retained chroma masters now emit three deterministic transparent 8 × 128 atlases through `normalize_batch_i.py`. All 24 frames are manifest-locked and gallery-integrated at `?mode=gallery&batch=i`; the canonical weapon family is also live in `?scenario=weapon-gate`. Text, bindings, cooldowns, tiers, legal/illegal state, and selection remain code-owned. I2 and I3 remain separate follow-ons.
+**Production completed 18 July 2026 (I1–I3).** Retained chroma masters now emit three deterministic tile atlases, a 16-frame slot/tier/discard/merge atlas, 900 × 560 placement panel, 320 × 420 stat card, 1200 × 700 salvage counter, and three action glyphs through `normalize_batch_i.py`. All contracts are manifest-locked and gallery-integrated at `?mode=gallery&batch=i|i2|i3`; the placement panel, weapon tile, stat card, and destination frames are live in `?scenario=weapon-gate`. A 1280 × 720 browser review passed with no runtime warnings. Text, bindings, stats, prices, cooldowns, legal/illegal state, and selection remain code-owned.
 
 - Generated three high-quality held tile families under `art/production-tests/batch-i/`: eight 96px Codex weapon tiles, eight 64px perk tiles, and eight 64px hotkey/action tiles.
 - Retained magenta-key masters and prompt contract; runtime normalization and manifest integration wait for the tile/inventory behavior gate so cooldown shadows, bindings, numbers, selection, and disabled states remain code-authoritative.

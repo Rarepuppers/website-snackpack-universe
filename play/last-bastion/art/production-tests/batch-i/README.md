@@ -1,6 +1,6 @@
 # Codex, perk, and hotkey tile art preflight (Batch I)
 
-Batch I1 is promoted to runtime after the weapon placement behavior gate passed on 18 July 2026. The retained chroma masters now produce deterministic transparent 8 × 128 atlases for weapons, perks, and hotkey/action motifs. Cooldown shadows, key labels, inventory slots, tiers, selection, and legality remain code-owned.
+Batch I1–I3 are production-complete after the weapon placement behavior gate passed on 18 July 2026. Retained chroma masters produce deterministic transparent weapon/perk/hotkey atlases, the complete slot/tier/discard/merge family, and placement/shop surfaces. Cooldown shadows, key labels, stats, prices, tiers, selection, and legality remain code-owned.
 
 ## Generated families
 
@@ -15,4 +15,5 @@ All masters use the established Last Bastion tile language, flat magenta chroma,
 - Run `normalize_batch_i.py` with Pillow to regenerate all three atlases.
 - Review all 24 frames at `?mode=gallery&batch=i`.
 - Review the weapon atlas in context at `?scenario=weapon-gate`.
-- I2 slot/tier/discard/merge surfaces and I3 placement/shop surfaces remain separate follow-on tasks.
+- Review I2 at `?mode=gallery&batch=i2` and I3 at `?mode=gallery&batch=i3`.
+- The I3 salvage counter is retained for the expedition Shop node; the verified five-wave Scrap Shop keeps its N2 terminal panel.
