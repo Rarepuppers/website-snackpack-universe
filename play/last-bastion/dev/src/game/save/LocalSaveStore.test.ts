@@ -33,6 +33,15 @@ describe("LocalSaveStore", () => {
     const reloaded = new LocalSaveStore(storage).load();
     expect(reloaded.settings.screenShakeEnabled).toBe(false);
     expect(reloaded.settings.soundEnabled).toBe(true);
+    // Untouched settings keep their defaults.
+    expect(reloaded.settings.damageNumbersEnabled).toBe(true);
+  });
+
+  it("defaults damage numbers on and lets them be turned off", () => {
+    expect(DEFAULT_SAVE.settings.damageNumbersEnabled).toBe(true);
+    const storage = fakeStorage();
+    new LocalSaveStore(storage).updateSettings({ damageNumbersEnabled: false });
+    expect(new LocalSaveStore(storage).load().settings.damageNumbersEnabled).toBe(false);
   });
 
   it("records run outcomes and keeps the best wave reached", () => {

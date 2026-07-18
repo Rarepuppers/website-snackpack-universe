@@ -27,8 +27,10 @@ describe("DefenceStats", () => {
     expect(mitigateDamage(20, 15, 3)).toBeCloseTo(7);
   });
 
-  it("never reduces a positive hit below 1 damage", () => {
-    expect(mitigateDamage(4, 15, 10)).toBe(1);
+  it("never reduces a positive hit below the 0.1 mitigation floor", () => {
+    // 4 raw → 50% armour → 2 → flat 10 → floored at 0.1 (not zeroed out).
+    expect(mitigateDamage(4, 15, 10)).toBe(0.1);
+    // A genuinely zero/negative hit stays zero — the floor is only for positive hits.
     expect(mitigateDamage(0, 15, 10)).toBe(0);
   });
 

@@ -106,7 +106,7 @@ export type CombatEvent =
     position: Vector2Data;
     direction: Vector2Data;
   }
-  | { type: "enemy-hit"; position: Vector2Data }
+  | { type: "enemy-hit"; position: Vector2Data; damage: number; damageType: DamageType; enemyId: number }
   | { type: "bolt-impact"; position: Vector2Data; hitIndex: 1 | 2 }
   | { type: "projectile-impact"; position: Vector2Data; weaponId: WeaponId }
   | { type: "enemy-defeated"; position: Vector2Data; enemyType: EnemyType; bestiaryKey: string }
@@ -3273,7 +3273,13 @@ export class CombatSimulation {
       }
     }
 
-    this.frameEvents.push({ type: "enemy-hit", position: { ...enemy.position } });
+    this.frameEvents.push({
+      type: "enemy-hit",
+      position: { ...enemy.position },
+      damage: mitigated,
+      damageType,
+      enemyId: enemy.id,
+    });
     if (enemy.type === "tether-bloom" && enemy.tetherBloomPhase === "tethering") {
       enemy.tetherBloomDamageDuringGrab += mitigated;
       if (enemy.tetherBloomDamageDuringGrab >= TETHER_BLOOM_BREAK_DAMAGE) {

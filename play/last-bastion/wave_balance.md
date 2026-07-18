@@ -4,7 +4,7 @@
 
 This is the numeric design for encounter pressure: what spawns, how tough it is, what it pays, and how all of that grows wave over wave. The durable design lives in `last-bastion-game.md`; implementation status lives in `last-bastion-model.md`. Numbers here are **proposals for the step 35 tuning pass** unless a row is marked implemented.
 
-**Status:** Draft v1 — 17 July 2026. Nothing in this document is implemented yet; the current build still uses prototype numbers (Service Rifle 10 damage, ~8–20 enemies per wave, `level × 4` XP thresholds).
+**Status:** Draft v2 — 18 July 2026 (v1 17 July). Nothing in this document is implemented yet; the current build still uses prototype numbers (Service Rifle 10 damage, ~8–20 enemies per wave, `level × 4` XP thresholds). v2 adds the short-timed-wave pacing model, starting-health rule, elite cadence, and the weapon acquisition schedule.
 
 ## Design intent
 
@@ -72,9 +72,9 @@ The starter weapon anchors the whole scale.
 | Bulwark Rotary Cannon | 2 | 0.08 s spun up | ~25 while stationary |
 | Patrol Blade | 4 | 2.5 s | ~1.6 automatic |
 
-Rescaling rule: every existing weapon's damage is divided by ~5 from today's values and enemy health follows, so relative balance is preserved while the readable range starts at 2. Multi-hit weapons keep low per-hit numbers on purpose — a Scattergun blast reading `1 1 1 1 1` communicates "five pellets landed" better than one `7`.
+Rescaling rule: every existing weapon's damage is divided by ~5 from today's values and enemy health follows, so relative balance is preserved while the readable range starts at 2. Status magnitudes rescale in the same pass (e.g. Blaze 7/s → **0.5/s for 3 s**; the durations and the Freeze slow percentage are unchanged), and enemy-to-player damage rescales to the 10-health model in the table below. Telegraph damage thresholds rescale with it. Multi-hit weapons keep low per-hit numbers on purpose — a Scattergun blast reading `1 1 1 1 1` communicates "five pellets landed" better than one `7`.
 
-**Damage numbers:** small floating numerals at the impact point, damage-type coloured (physical ivory, fire orange, shock cyan, cryo pale blue, toxic green), crits/weak points larger. Pooled like existing effects, capped (~40 concurrent) with overflow merged into a single number per enemy per 100 ms so a twelve-weapon build cannot bury the arena in text. Setting: Damage numbers On/Off.
+**Damage numbers (confirmed 18 July 2026):** small floating numerals at the impact point, damage-type coloured — **standard ivory/white for normal/physical, red for fire, blue for frozen/cryo, teal for lightning/shock, green for poison/toxic** — crits/weak points larger, healing ticks small green with a `+`. Pooled like existing effects, capped (~40 concurrent) with overflow merged into a single number per enemy per 100 ms so a twelve-weapon build cannot bury the arena in text. Setting: Damage numbers On/Off.
 
 ## Monster health, armour, and speed
 
@@ -143,7 +143,7 @@ At most **one fast elite per wave** — two simultaneously removes the player's 
 
 ## Unique attacks and on-screen telegraphs
 
-Every attack that can take more than ~10 damage must announce itself on the ground, in world space, at its true geometry. The rule from the projectile contract holds: **art reinforces the warning, code owns it.**
+Every attack that can take more than ~1 damage (a tenth of a fresh Marine) must announce itself on the ground, in world space, at its true geometry. The rule from the projectile contract holds: **art reinforces the warning, code owns it.**
 
 | Attack | Owner | Telegraph shown on screen | Timing |
 | --- | --- | --- | --- |
@@ -160,7 +160,7 @@ Telegraph rules (fairness contract):
 
 - Colour is **hostile-warm** (orange→red as the tell completes) and never reuses the player's teal/cyan family.
 - Decals are drawn **under actors**, above the floor, so a crowd never hides the warning.
-- Minimum tell for anything over 20 damage is **0.7 s**; the player's roll is 0.55 s with 0.25 s invulnerability, so every big attack is dodgeable by reacting to the tell.
+- Minimum tell for anything over 2.5 damage (a quarter of a fresh Marine) is **0.7 s**; the player's roll is 0.55 s with 0.25 s invulnerability, so every big attack is dodgeable by reacting to the tell.
 - **Off-screen attackers must not hit an unwarned player.** With the scrolling arena, any telegraph originating outside the camera view shows an edge marker at the screen boundary.
 - Simultaneous big telegraphs are capped at **2**; the encounter director delays a third rather than stacking three unreadable overlays.
 - Rain-type attacks never cover more than ~35% of the arena's traversable area, guaranteeing a safe route.
@@ -171,7 +171,7 @@ These are the concrete values behind the `+1` notation in the hero growth table 
 
 | Notation | Concrete effect | Marine at level 10 |
 | --- | --- | ---: |
-| +1 health | +4 max health | +36 → 136 HP |
+| +1 health | +1 max health | +9 → 19 HP |
 | +1 armour | +0.5 armour | +4.5 → 4.5 armour (≈23% reduction) |
 | +1 damage | +2% weapon damage (additive) | +18% |
 | +1 speed | +1.5% movement speed | +13.5% |
@@ -182,17 +182,21 @@ Sanity check on the Marine: by wave 10 the package alone yields ~136 HP, 4.5 arm
 
 ## Monster damage to the player
 
-The Marine has 100 health. Damage is split by delivery so avoidance is always the answer:
+**Rescaled 18 July 2026 to the Brotato-style 10-health model** (see "Starting player health" in Wave pacing v2). Early enemies deal 1–3 and scale up; damage is split by delivery so avoidance is always the answer:
 
 | Attack class | Wave 1 damage | Examples | Rule |
 | --- | ---: | --- | --- |
-| Contact (melee body) | 4–8 | Scuttler 5, Brain Blob 7, Razor 0 (dash only) | Cheap and frequent; the hit-invulnerability window prevents stacking |
-| Committed melee (telegraphed) | 12–18 | Ripper sweep 15, Razor dash 12 | Punishes bad positioning; always has a tell and a recovery |
-| Ranged | 6–10 | Spitter glob 7, Quillback spike 6, Warden acid 8 | Dodgeable in flight; may be blocked by cover |
-| Detonation | 14–18 | Blast Mite 16 | Radius damage with an armed tell |
-| Big/boss attacks | 20–28 | Crusher sweep 24, charge 22, Eater claw 26 | Never unavoidable; caps at ~28 so no single hit exceeds ~30% of a fresh Marine |
+| Contact (melee body) | 1–2 | Swarm Scuttler 1, Scuttler 1, Brain Blob 1.5, Razor 0 (dash only) | Cheap and frequent; the hit-invulnerability window prevents stacking |
+| Committed melee (telegraphed) | 2–3 | Ripper sweep 3, Razor dash 2.5 | Punishes bad positioning; always has a tell and a recovery |
+| Ranged | 1–1.6 | Spitter glob 1.5, Quillback spike 1.2, Warden acid 1.6 | Dodgeable in flight; may be blocked by cover |
+| Detonation | 3 | Blast Mite 3 | Radius damage with an armed tell; uses the explosion falloff rule |
+| Big/boss attacks | 3–5 | Crusher sweep 4, charge 3.5, Eater claw 5 | Never unavoidable; caps at 5 so no single hit exceeds 50% of a fresh Marine |
 
-Wave scaling multiplies these by the contact-damage row above, capped at ×3. A wave-10 Scuttler therefore does ~11, not 40: **the wave should kill you through volume and mistakes, not through one-shot spikes.**
+Wave scaling multiplies these by the contact-damage row above, capped at ×3. A wave-10 Scuttler therefore does ~2.3, not 4+: **the wave should kill you through volume and mistakes, not through one-shot spikes.** Fractional damage is exact under the precision rule (a 1.5 hit on 10 health leaves 8.5, displayed as `8.5`).
+
+### Explosion falloff (new rule, both sides of combat)
+
+Every radius attack — Blast Mite detonation, Grenade Tube blast, explosive weapon impacts, boss slams — deals its **full listed damage inside the inner 40% of the blast radius, falling off linearly to 35% of listed at the outer edge**. Both numbers are stated wherever the attack is documented (e.g. Grenade Tube blast: 2 centre / 0.7 edge), and the codex must list centre and edge damage separately. Falloff is simulation-owned; blast art never implies a different radius.
 
 ## Monster spawn budgets
 
@@ -213,9 +217,84 @@ Rules:
 - **Threat budget** is spent on enemy costs (Swarm Scuttler 1, Scuttler 1, Blast Mite 1, Razor 2, Brain Blob 2, Spitter 3, Bloom 3, Quillback 4, Spinewheel 4, Ripper 5, elite 15, fast elite 18, mini-boss 40), so composition can vary at equal pressure.
 - **Swarm Scuttlers spawn as packs**, not trickled singles: 8–12 from one edge with a shared arrival tell, so the rush reads as an event.
 - **Simultaneous cap** protects performance and readability; the spawner queues the excess rather than dropping it.
-- **Continuous trickle**, not front-loaded dumps: the director spawns to keep live pressure near the cap for the wave's duration (target 60–90 s per wave).
+- **Continuous trickle**, not front-loaded dumps: the director spawns to keep live pressure near the cap for the wave's duration (v1 targeted 60–90 s per wave — **superseded by the short timed waves in "Wave pacing v2" below**).
 - **Fairness invariants:** never spawn within 6 m of the player or inside cover; no more than 2 ranged attackers may hold a wind-up simultaneously; the slime-puddle cap (5) already exists; the arena must always retain a traversable route.
 - **Wave end** is a timer, not extermination, from wave 3 onward — leftovers despawn at the boundary with a retreat tell. This is the mechanical statement of "you can't kill them all."
+
+## Wave pacing v2 — short timed waves (18 July 2026)
+
+Decision from the 18 July planning pass, following Brotato's proven model: waves are **short, timed, and dense from the first minute**. This answers "should waves be 20 s (waves 1–2) and 30 s (wave 3+) for faster testing?" with *yes — and they should ship that way, not only test that way.* Brotato's precedent (20 s opening waves growing to a 60 s cap) shows short waves are the correct release pacing for this genre, so one duration curve serves both fast iteration and the real game. A run becomes ~10 waves × 20–60 s plus intermissions ≈ 8–12 minutes, matching the step 35 run-length target.
+
+### Wave duration curve
+
+| Wave | Duration | Notes |
+| ---: | ---: | --- |
+| 1 | 20 s | Scuttlers only — teach movement |
+| 2 | 20 s | Eggs plus the first Swarm Scuttler pack |
+| 3 | 30 s | Overwhelm begins; timer-end rule active from here |
+| 4 | 35 s | Full mixed roster plus first elite |
+| 5 | untimed | Mini-boss wave: ends on the kill (45–90 s fight target unchanged) |
+| 6 | 40 s | |
+| 7 | 45 s | Second elite enters the rotation |
+| 8 | 50 s | |
+| 9 | 60 s | Endurance peak |
+| 10 | untimed | Bastion Eater, authored 3–5 minutes |
+
+Rules:
+
+- The curve is **+5 s per wave from wave 3, capped at 60 s**, stored as authored per-wave data — a bad wave length is a one-line data fix.
+- The wave timer is always visible on the HUD; from wave 3 the timer ends the wave (leftovers retreat/despawn per the spawn-budget rules), while full extermination may end waves 1–2 early.
+- Durations stay data-driven so a `pace=` review route can halve or double every timer for testing without touching balance numbers.
+
+### Spawn rate, density, and elite cadence
+
+The v1 threat budgets and enemy stat tables stand; what changes is how fast they are spent.
+
+- **Spend rate:** the director targets threat-per-second = wave budget ÷ wave duration. The same budget landing in a third of the time yields roughly **2–3× the v1 density** — this is the requested "more monsters, faster" and it comes from the timer, not from new budget numbers. If a wave still feels thin, raise its budget; never stretch its duration back out.
+- **Spawn cadence:** spawn in small pulses every 2–3 seconds rather than a per-frame drip, so arrivals read as events; Swarm Scuttler pack rules are unchanged.
+- **Simultaneous caps rise** to carry the density: wave 1 → 16, wave 2 → 20, wave 3 → 26, wave 4 → 32, wave 5 → 36, waves 6–9 → 44. A new deterministic 44-live-enemy capacity scene must prove frame rate and readability before the caps are trusted.
+- **Elite cadence:** first elite at wave 4 (unchanged); one elite **guaranteed** every wave from wave 6; two elites (at most one fast) from wave 8. The one-fast-elite-per-wave cap is unchanged and non-negotiable.
+- **Speed and health:** the v1 stat tables and per-wave scaling formulas are deliberately untouched. Short waves raise pressure through density; raising stats *and* density in the same pass would make cause and effect unreadable in playtests. Revisit stats only after the density change is felt.
+
+### Starting player health and regeneration
+
+**Rescaled 18 July 2026 to Brotato-style numbers.** The Marine starts at **10 health**; early enemies deal 1–3 damage and scale up. This puts player health on the same readable scale as the 2-damage starter rifle and 4-health Scuttler — every number in the game now lives in the same single-digit-to-tens range.
+
+- **Regeneration:** the Marine's baseline is **0.2 health per second, applied as one 0.6 tick every 3 seconds**. Regen never pauses in combat; its slowness is the balance. The `+1 support effect` package point and future Regeneration upgrades raise the per-second amount, never the tick rate — the 3-second cadence is a design constant so healing always reads as discrete visible ticks (small green `+0.6` floating text, same pipeline as damage numbers).
+- Health is still balanced in **hits endured**:
+
+| Wave | Typical contact hit | Hits a fresh unupgraded Marine endures |
+| ---: | ---: | ---: |
+| 1 | 1 | 10 |
+| 5 | ~1.6 | ~8 (with level-package health gains) |
+| 9 | ~2.2 | ~6–7 |
+
+- **Floor rule:** a levelled-but-undefended Marine must never drop below ~5 endured contact hits, and no single attack exceeds **5 damage (50% of a fresh Marine)** — and anything above 2.5 must carry the full 0.7 s telegraph.
+- If 20-second opening waves feel too safe, cut the wave 1–2 budgets rather than player health — the first forty seconds are the hook, and dying in them teaches nothing.
+- Future heroes differentiate by health and regen baseline (a tanky hero might start at 13–15 with the same regen; the Medic seed below 10 but with stronger support scaling). The Marine's 10 health / 0.2 regen is the tuning yardstick and does not move during this pass.
+
+### Starting weapons and the acquisition schedule
+
+- **Starting loadout:** Bastion Service Rifle only (2 damage per bullet — the anchor of the whole damage scale), one occupied rack slot, all others empty.
+- **Guaranteed first pick:** the wave 1 intermission always offers a Weapon Cache — pick one of three seeded Tier I tiles from the early pool. This is the genre's "second weapon by minute one" moment and the first build decision.
+- **Pool by wave band:**
+
+| Wave band | Cache/shop weapon pool |
+| --- | --- |
+| After wave 1, waves 2–3 | Tier I: Scattergun, Patrol Blade, Arc Carbine — low-complexity horde tools |
+| Waves 4–6 | + Bolt Carbine, Grenade Tube; Tier II tiles may appear from wave 5 |
+| Waves 7–9 | + Bulwark Rotary Cannon; Tier II common, Tier III by merge only |
+| Any wave | Hero-specific weapons appear only for their hero at +25% tier price; **Uniques (Event Horizon) are never pool items** — mini-boss vault or Artifact only |
+
+- Rationale: the early pool is what a panicking new player can use without aiming discipline; precision (Bolt) and commitment (Grenade, Bulwark) weapons arrive once armour, elites, and crowds exist to justify them. Weapon prices are unchanged from the tile-economy table.
+
+### Verification additions (extends the numbered plan above)
+
+16. **Durations:** each wave matches the authored duration table; from wave 3 the timer, not extermination, ends the wave.
+17. **Density:** live enemy count averages ≥70% of the simultaneous cap across waves 3+ on a reference seed, and never exceeds the cap.
+18. **Elite cadence:** elites appear exactly per schedule across many seeds; no wave ever holds two fast elites.
+19. **First pick guaranteed:** wave 1 always ends in a three-option Tier I weapon offer, and the pool respects the wave-band table.
+20. **Capacity:** the 44-enemy capacity scene holds the frame-time budget on reference low-end hardware.
 
 ## Experience and levelling
 
@@ -287,7 +366,7 @@ Item drops must never be *required* to survive a wave — they raise the ceiling
 Each of these is a rules test, not a vibe:
 
 1. **Starter clarity:** a wave-1 Scuttler dies to exactly 2 Service Rifle bullets.
-2. **No one-shots:** no single wave-10 attack exceeds 30 damage to a base Marine.
+2. **No one-shots:** no single attack at any wave exceeds 5 damage (50% of a fresh 10-health Marine) after all scaling.
 3. **Overwhelm curve:** from wave 3, total spawned health exceeds a reference build's damage output for the wave duration (the player cannot clear it).
 4. **Budget respected:** live enemy count never exceeds the simultaneous cap; the budget is spent within ±10%.
 5. **Fair spawns:** no spawn within 6 m of the player or inside an obstacle, across many seeds.
@@ -319,7 +398,7 @@ A player who only takes damage dies to wave 7 contact volume; a player who only 
 
 This is a large, cross-cutting change. Suggested sequencing so nothing lands half-done:
 
-1. **Precision + display** (`formatStat`, 0.1 floor, damage numbers) — visible immediately, unblocks judging every later number.
+1. **Precision + display** (`formatStat`, 0.1 floor, damage numbers) — visible immediately, unblocks judging every later number. **Implemented 18 July 2026** (see `last-bastion-log.md`): shared `formatStat` round-half-up helper, mitigation floor lowered 1 → 0.1, and pooled floating damage numbers with the confirmed type colours and a `damageNumbersEnabled` setting (`?damage=0|1`).
 2. **Rescale weapons and enemies** to the 2-damage baseline in one data pass; keep existing rules tests passing by updating expected values together.
 3. **Per-wave scaling** table + threat-budget spawner with caps and the timer-based wave end.
 4. **Fractional projectiles** helper (shared accumulator).
@@ -332,7 +411,7 @@ This is a large, cross-cutting change. Suggested sequencing so nothing lands hal
 
 ## Open questions for the tuning pass
 
-- Does wave duration (60–90 s) hold on the 45 × 25 m arena, or does the bigger space need a higher simultaneous cap to feel dense?
+- ~~Does wave duration (60–90 s) hold on the 45 × 25 m arena, or does the bigger space need a higher simultaneous cap to feel dense?~~ **Resolved 18 July 2026:** short timed waves (20/20/30 + 5 s per wave, capped 60) with raised caps — see "Wave pacing v2". The open part is now empirical: do the raised caps hold frame rate (verification 20)?
 - Should elites scale with the wave, or stay authored like mini-bosses? Current proposal scales them; playtest may disagree.
 - ~~Is 2 damage per bullet too granular once Heavy Calibre III lands?~~ **Resolved 17 July 2026:** the precision rule (calculate in float, display 1 decimal) makes `2 → 4.9` correct and readable rather than a rounding problem.
 - Do fractional projectiles below 1 (skipped shots) ever feel good, or should the floor always be 1?

@@ -38,6 +38,7 @@ import { cueForEvent, EVASIVE_MOVE_CUE, UI_CONFIRM_CUE } from "../audio/AudioCue
 import { WebAudioSynth } from "../audio/WebAudioSynth";
 import { worldDepth } from "../rendering/WorldDepth";
 import { VisualEffectPool } from "../effects/VisualEffectPool";
+import { FloatingDamageNumbers } from "../rendering/FloatingDamageNumbers";
 import { CombatHud } from "../ui/CombatHud";
 import {
   VERTICAL_SLICE_WEAPON_IDS,
@@ -68,6 +69,7 @@ export class PrototypeScene extends Phaser.Scene {
   private controls!: KeyboardMouseInput;
   private hud!: CombatHud;
   private effectPool!: VisualEffectPool;
+  private damageNumbers!: FloatingDamageNumbers;
   private readonly stressProfile = readStressProfile();
   private readonly scenario = readScenario();
   private readonly startingWeaponIds = this.stressProfile === null ? readStartingWeaponIds() : null;
@@ -144,6 +146,7 @@ export class PrototypeScene extends Phaser.Scene {
     const { width, height } = this.scale;
     renderArena(this, this.simulation.arena, PIXELS_PER_METRE, this.showDebug, this.useMarineArt, this.arenaTheme);
     this.effectPool = new VisualEffectPool(this, this.stressProfile === 12 ? 192 : 96);
+    this.damageNumbers = new FloatingDamageNumbers(this);
 
     const shadow = this.useMarineArt
       ? this.add.sprite(0, 10, "combat-effects-v1", 0).setScale(0.62)
@@ -451,6 +454,16 @@ export class PrototypeScene extends Phaser.Scene {
           break;
         case "enemy-hit":
           this.emitAuthoredEffect(7, event.position, 110, 0.55, 0.95);
+          if (this.settings.damageNumbersEnabled) {
+            this.damageNumbers.report(
+              event.enemyId,
+              event.damage,
+              event.damageType,
+              event.position.x * PIXELS_PER_METRE,
+              event.position.y * PIXELS_PER_METRE,
+              this.time.now,
+            );
+          }
           break;
         case "bolt-impact":
           this.emitAuthoredEffect(
@@ -2074,16 +2087,19 @@ function createSaveStore(): LocalSaveStore {
 }
 
 /**
- * `?shake=0|1` and `?sound=0|1` persist into local settings until a proper
- * settings screen exists; absent parameters leave stored values untouched.
+ * `?shake=0|1`, `?sound=0|1`, and `?damage=0|1` persist into local settings
+ * until a proper settings screen exists; absent parameters leave stored values
+ * untouched.
  */
 function applySettingOverrides(store: LocalSaveStore) {
   const params = new URLSearchParams(window.location.search);
-  const overrides: { screenShakeEnabled?: boolean; soundEnabled?: boolean } = {};
+  const overrides: { screenShakeEnabled?: boolean; soundEnabled?: boolean; damageNumbersEnabled?: boolean } = {};
   const shake = params.get("shake");
   if (shake === "0" || shake === "1") overrides.screenShakeEnabled = shake === "1";
   const sound = params.get("sound");
   if (sound === "0" || sound === "1") overrides.soundEnabled = sound === "1";
+  const damage = params.get("damage");
+  if (damage === "0" || damage === "1") overrides.damageNumbersEnabled = damage === "1";
   return Object.keys(overrides).length > 0
     ? store.updateSettings(overrides).settings
     : store.load().settings;

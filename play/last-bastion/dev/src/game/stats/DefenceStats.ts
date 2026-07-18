@@ -9,7 +9,9 @@
  * - `flatDamageReduction`: subtracted from every hit after the percentage
  *   step. Deliberately rarer — reserved for specific builds and units.
  *
- * Mitigation never reduces a positive hit below 1 damage.
+ * Mitigation never reduces a positive hit below 0.1 damage. At the 2-damage
+ * baseline (wave_balance.md) a 1-damage floor would erase small-calibre weapons
+ * against heavy armour entirely, so the floor scales down with the numbers.
  */
 export interface DefenceProfile {
   armour: number;
@@ -28,6 +30,9 @@ export interface DefenceProfile {
 
 export const ARMOUR_SOFT_CAP = 15;
 
+/** Smallest damage a positive hit can be reduced to. Scaled to the 2-damage baseline. */
+export const MITIGATION_FLOOR = 0.1;
+
 export function armourDamageMultiplier(armour: number): number {
   const effective = Math.max(armour, 0);
   return 1 - effective / (effective + ARMOUR_SOFT_CAP);
@@ -43,7 +48,7 @@ export function mitigateDamage(
   }
   const afterArmour = rawDamage * armourDamageMultiplier(armour);
   const afterFlat = afterArmour - Math.max(flatDamageReduction, 0);
-  return Math.max(afterFlat, 1);
+  return Math.max(afterFlat, MITIGATION_FLOOR);
 }
 
 /** Applies slow resistance to a slow movement multiplier, pulling it back toward 1. */

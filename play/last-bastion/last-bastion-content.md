@@ -98,6 +98,8 @@ Implemented 16 July 2026. Five damage types exist; four of them build a status e
 | Fire | Blaze | Damage over time (7/s for 3 s) |
 | Shock | Overload | Brief stun (0.8 s) |
 | Cryo | Freeze | Heavy slow (35% speed for 2.2 s) |
+
+Presentation contract (18 July 2026): damage numbers and status overlays share one colour language — standard ivory/white physical, **red** fire, **teal** shock/lightning, **blue** cryo/frozen, **green** toxic/poison. Floating damage numbers are toggleable in Settings; the animated status overlays are specified in Batch K below. Magnitudes rescale with the v2 balance pass in `wave_balance.md` (e.g. Blaze 7/s → 0.5/s at the 2-damage baseline).
 | Toxic | Corrode | Damage over time plus temporary armour reduction |
 
 Rules:
@@ -331,6 +333,10 @@ Elemental and malevolent entities are viable if translated into Last Bastion's s
 | Magma breach | Cinder Grub, Magma Spitter | Obsidian Brute | Molten Behemoth | Slow lava lanes, delayed eruptions, armour that cracks under sustained damage; fire zones must be capped and visibly expire |
 | Cryo incursion | Rime Skitter, Cryo Elemental | Glacier Warden | Frost Giant | Chill buildup, shard lanes, temporary ice cover, heavy telegraphed slams; ordinary chill slows but never chain-freezes the player |
 | Void dominion | Null Wisp, Umbral Stalker | Dread Archon | Malevolent Archon | Marks, projectile fans, short warps, temporary vision/space pressure; avoids unavoidable darkness or control loss |
+| Luminar Ascendancy | Shard Sentinel, Beam Acolyte | Aegis Warden | Radiant Sovereign | Advanced-technology alien race: rechargeable energy shields that must be broken before health damage, thin precision beam lanes with long visible charge, disciplined two- or three-unit formations; shields always show their state and never regenerate mid-fight without a readable recharge tell |
+| Machine uprising | Scrap Skitterer, Turret Crawler | Sentinel Hulk | Foundry Mind | Robots/cyborgs/rogue AI: predictable mechanical patterns the player can learn exactly, deployable stationary turrets with capped count and visible arcs, armour-heavy bodies weak to Shock/Overload; a destroyed machine may leave briefly hazardous sparking wreckage but never an invisible hazard |
+
+The Luminar Ascendancy and Machine uprising are the faction seeds for the future sector campaign described in `last-bastion-game.md` ("Sector campaign — future multi-map structure"); the Corrupted human outbreak family above is the third campaign faction that already has a full design.
 
 Recommended order after the Web MVP is **Magma breach → Cryo incursion → Void dominion**. Magma reuses the established hazard and armour systems, Cryo adds controlled terrain/status depth, and Void is reserved until teleport/projectile readability is proven. Each family should start with two standards and one elite; only then should its mini-boss enter the seeded pool.
 
@@ -341,6 +347,11 @@ Recommended order after the Web MVP is **Magma breach → Cryo incursion → Voi
 | Spinewheel — production lab | Ricochet disruptor | Locks one heading during a 0.70 s warning, curls into a spinning shell, then reflects from walls and surviving cover | Base gate rolls at 7 m/s, makes two rebounds with 15% speed loss each, then exposes a 1.50 s recovery; later encounters may raise speed and allow three or four | Production E2 body/shell/effects integrated; 0.75 s per-enemy repeat-hit lockout; never spawns already rolling beside the player; excluded from waves pending review |
 | Quillback — production lab | Ranged lane controller | Locks aim during a visible charge and fires slow readable spikes | Starts with one aimed spike, graduates to three, then five across a fixed 64° arc | Production E1 body/projectile/effects integrated; wind-up/recovery increase with count; retreats inside 4.5 m and cannot charge below 4.75 m; fans never home |
 | Tether Bloom — production lab | Non-damaging control plant | Clear-line acquisition within 3.5 m, locked 0.70 s warning, then a 1.15 m/s additive pull for up to 1.8 s | Later encounters may modestly raise acquisition range but never exceed the hard 5 m tether cap or extend pull duration | Production E3 body/effects integrated; player retains movement/fire; cover, 5 m separation, dodge/roll, or 28 post-mitigation damage breaks it; one reserving/controlling Bloom maximum; 3.2 s recovery |
+| Burrower — design | Underground ambusher | Fights as an ordinary melee creature on the surface, but on a repeating cycle it digs in (visible dig tell), becomes untargetable, charges toward the player as a readable moving ground ripple, then erupts under a locked warning ring for area damage before resuming normal melee | Base gate: one burrow cycle roughly every 9 s with a single eruption; later encounters may shorten the cycle, speed the ripple, or add one feint stop before the real eruption — never an eruption without its locked ring | Ripple is always visible and slightly slower than the Marine's run speed so walking away works; the eruption ring locks its position ~0.7 s before impact, so a dodge or a normal walk-out escapes it; underground time is capped (~3 s) with forced surfacing at the cap; it cannot dig under boundary walls, only open floor; long post-eruption recovery is the punish window; at most one active ripple per wave until readability is proven in a crowd |
+
+The Burrower teaches "the floor itself can attack" without unfair damage: every phase — dig-in, travel, eruption — has its own tell, and the eruption uses the same locked-position rule as the Ripper sweep and Razor Scuttler lane. Recommended entry point is the Web MVP wave pool or the first post-MVP biome, after Tether Bloom's forced-movement lessons are accepted. If the sector campaign proceeds, the Burrower is the recommended **signature unit of the Evolved Brood sector** — it gives "same faction, harder" a visibly new mechanic rather than only bigger numbers. Suggested elite: **Sink Maw** (digs a short-lived collapse zone at its eruption site that slows anyone standing in it — never a pit, never loss of control).
+
+**Codex asset note (Burrower, art only after its behavior gate passes):** one directional body sheet covering surface pursuit, dig-in, underground-to-eruption burst, melee attack, recovery, stagger, and defeat, plus a ground-effects mini-atlas in the same batch: dig-in dust burst, looping mound/ripple trail (3–4 frames, readable against all five arena themes), eruption dirt burst, and a fading collapsed-hole decal. The eruption warning ring itself reuses the code-drawn telegraph plus the J2 radial-pulse decal; art never defines the radius. Suggested imagegen direction: a heavy chitinous digger in the established coral-and-violet alien language — broad shovel-blade foreclaws, low armoured wedge head, dirt-caked carapace ridge, hot-yellow sensory markings; silhouette must read as "digger" beside the Scuttler's "runner" and the Ripper's "bruiser".
 
 These are stronger as complementary roles than as raw-stat variants. Recommended implementation order is **Quillback → Spinewheel → Tether Bloom**: Quillback reuses the hostile-projectile system, Spinewheel adds reusable reflection physics, and Tether Bloom comes last because forced movement needs the most careful input and accessibility testing. Suggested elites are Thorn Crown (denser but slower fan), Siege Wheel (one cover-breaking rebound and pronounced rest), and Anchor Bloom (two target candidates but still one tether per player).
 
@@ -632,6 +643,19 @@ One **96 × 96** tile per weapon (the existing 64 × 64 cadence motifs stay for 
 | Danger fill texture (tileable) | Low-contrast hatch used inside any warning zone |
 
 **Acceptance:** every decal must be legible under a crowd of 30+ enemies, in grayscale, and against all five arena themes; warm hostile palette only (never the player's teal/cyan family); no decal may imply a radius different from the code-driven one.
+
+## Batch K — status-effect overlay animations (queued for Codex)
+
+**Status:** Design brief — 18 July 2026. Enemies (and the Marine, where statuses apply to the player) need an at-a-glance animated overlay for each active status, matching the damage-number colour language in `wave_balance.md`: **red fire, teal lightning/shock, green poison/toxic, blue slowed/frozen**. Code owns status logic, timing, and tinting; this batch supplies small looping overlay sprites drawn above the afflicted body. Each overlay must read on a 64 px enemy in a 30+ crowd and never obscure the enemy's own attack tells.
+
+| Overlay | Loop | Description for imagegen |
+| --- | --- | --- |
+| **Burning (Blaze)** | 4 frames @ 48 × 48 | Small licking flame tongues with rising ember flecks, red-orange core with a warm glow edge; anchored to the body's upper half, flickering asymmetrically so it reads as fire and not a static icon |
+| **Shock (Overload)** | 4 frames @ 48 × 48 | Teal-white jagged arc filaments crawling over the silhouette with brief bright pops; one frame nearly dark so the crackle strobes; pairs with the code-driven stun pose |
+| **Poisoned/Toxic** | 4 frames @ 48 × 48 | Sickly green rising bubbles and a thin dripping film, slow lazy loop, clearly slower rhythm than fire so the two never read alike in grayscale |
+| **Slowed/Frozen (Freeze)** | 3 frames @ 48 × 48 | Pale-blue crystalline rime creeping from the ground contact upward with tiny glinting facets; mostly static with a subtle shimmer — cold should feel *still*, opposed to fire's flicker |
+
+Acceptance: one shared atlas with stable IDs; transparent backgrounds and clean alpha; each overlay identifiable in grayscale by motion rhythm alone (flicker / strobe / lazy bubble / near-still shimmer); scales to 96–160 px elites and bosses without redraw (render larger or tile, do not stretch blur); combined with code tint on the body sprite (warm for Blaze, desaturated blue for Freeze) rather than replacing it. Status durations, stacking, and immunity remain simulation-owned.
 
 ## Batch H — world background themes (queued for Codex)
 

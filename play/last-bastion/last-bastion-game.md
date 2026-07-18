@@ -153,6 +153,28 @@ Replaces stage select entirely. A horizontal, left-to-right starchart in the spi
 - **Persistence:** the save schema versions up to carry mid-run state (map seed, cleared nodes, hero build, health/shield); autosave happens on returning to the map, honouring the existing "browser storage is not cloud storage" rule.
 - **Encounter mapping:** Combat/Elite/Mini-boss nodes run the existing arena simulation with encounter budgets chosen by node type and column depth; Supply Depot and Weapon Cache reuse the existing decision overlays full-screen; the Boss node runs the Bastion Eater scenario.
 
+### Sector campaign — future multi-map structure
+
+Post-MVP direction, recorded 18 July 2026. The single 20-node expedition map is Sector 1; a full campaign becomes a chain of sector maps, each owned by one enemy faction. This section is design intent only — nothing here enters production until the single-sector Web MVP succeeds.
+
+- **Sector 1 — always the Brood (beginner).** Every campaign opens against the current alien roster at introductory difficulty. Variation comes only from the node path taken (nodes 1–20), the seeded mini-boss pool, and arena themes — never from a different faction. This keeps the first hour teachable and makes Sector 1 the shared baseline for balance.
+- **Sector 2 — player-chosen faction.** After beating Sector 1, the player picks the next sector from a small set of faction charts. Each faction is a complete content family with its own standards, elite, mini-boss, boss, and Batch H world backdrop:
+  - **Evolved Brood** — the alien roster's Tier 2/3 pressure variants and elites at full strength (working shorthand: evolved zerg-style swarm).
+  - **Corrupted humans** — the existing "Corrupted human outbreak" family in `last-bastion-content.md` (mutated humans/zombies).
+  - **Elemental breach** — the existing Magma breach and Cryo incursion families, plus rock/energy-being seeds (elementals).
+  - **Void dominion** — the existing Void dominion family (horror/void monsters).
+  - **Luminar Ascendancy** — a new advanced-technology alien race: energy shields, precision beams, disciplined formations (working shorthand: protoss-style tech race). Family seed in `last-bastion-content.md`.
+  - **Machine uprising** — a new robots/cyborgs/rogue-AI family. Family seed in `last-bastion-content.md`.
+- **Sector 3 — advanced factions and the finale.** Advanced charts for the Brood, Ascendancy, Elementals, Machines, or a hostile advanced human faction, plus the **Deep Void** — the cosmic-horror terminus sector reserved for the campaign's true final boss.
+
+Rules for the sector campaign:
+
+- A faction ships only as a complete package: at least two standards, one elite, one mini-boss, one boss, its telegraph decals, and its world backdrop — mirroring the "Later biome enemy families" entry rule. No faction appears on the sector-select screen before its package passes review.
+- Difficulty scales by sector index, not by silently inflating Sector 1; wave budgets and stat packages per sector live in `wave_balance.md` when this is green-lit.
+- Working shorthand names (zerg/protoss) never appear in shipped text or art; all shipped names and silhouettes stay original per the enemy design rules.
+- The map generator, node types, and save schema are already faction-agnostic; a sector is a map seed plus a faction spawn table plus a theme pool, so the engine cost is content, not architecture.
+- Recommended build order: Evolved Brood (pure content reuse) → Corrupted humans (family already designed) → one wholly new faction (Machines or Ascendancy) only after the choice screen proves players replay for it.
+
 ### Implementation phasing
 
 Behavior-first, matching the working rules: (1) a screen-flow state machine with code-native placeholder panels for every screen; (2) the pure seeded map generator with rules tests; (3) save schema v2 and node→encounter wiring; (4) only then the Batch G art families (briefs in `last-bastion-content.md`). The five-wave arcade run remains available as a "Quick Drop" until the map fully replaces it, then becomes a lab route.
@@ -594,7 +616,7 @@ Exit criterion: the complete web loop produces a reliable "one more run" respons
 
 ## Future roadmap
 
-Possible post-MVP systems include additional heroes and biomes, environmental status combinations, companions, mutations, curses, active items, extensive relics, base management, more route nodes, statistics, achievements, leaderboards, and additional bosses.
+Possible post-MVP systems include the sector campaign (see "Sector campaign — future multi-map structure"), additional heroes and biomes, environmental status combinations, companions, mutations, curses, active items, extensive relics, base management, more route nodes, statistics, achievements, leaderboards, and additional bosses.
 
 These are backlog items, not promises. They enter production only when the preceding scope gate succeeds.
 
