@@ -604,6 +604,8 @@ export class CombatSimulation {
   private enemies: EnemyState[] = [];
   private projectiles: ProjectileState[] = [];
   private enemyProjectiles: EnemyProjectileState[] = [];
+  private readonly friendlyProjectilePool: ProjectileState[] = [];
+  private readonly hostileProjectilePool: EnemyProjectileState[] = [];
   private groundHazards: GroundHazardState[] = [];
   private eliteRewards: EliteRewardState[] = [];
   private powerups: PowerupPickupState[] = [];
@@ -1399,8 +1401,7 @@ export class CombatSimulation {
         y: anchor.y + direction.y * 0.55,
       };
 
-      this.projectiles.push({
-        id: this.nextId(),
+      this.spawnFriendlyProjectile({
         weaponId: weapon.weaponId,
         damageType: weapon.stats.damageType,
         position: { ...muzzlePosition },
@@ -1417,7 +1418,6 @@ export class CombatSimulation {
         chainRemaining: weapon.stats.chainCount,
         chainRadiusMetres: weapon.stats.chainRadiusMetres,
         hitEnemyIds: new Set<number>(),
-        dead: false,
       });
 
       this.frameEvents.push({
@@ -1512,8 +1512,7 @@ export class CombatSimulation {
     for (let index = 0; index < ultimate.projectileCount; index += 1) {
       const angle = (index / ultimate.projectileCount) * Math.PI * 2;
       const direction = { x: Math.cos(angle), y: Math.sin(angle) };
-      this.projectiles.push({
-        id: this.nextId(),
+      this.spawnFriendlyProjectile({
         weaponId: "bastion-service-rifle",
         damageType: "physical",
         position: {
@@ -1533,7 +1532,6 @@ export class CombatSimulation {
         chainRemaining: 0,
         chainRadiusMetres: 0,
         hitEnemyIds: new Set<number>(),
-        dead: false,
       });
     }
     this.frameEvents.push({ type: "ultimate-fired", position: { ...this.playerPosition } });
@@ -1908,11 +1906,13 @@ export class CombatSimulation {
     enemy.dead = true;
     if (this.activeTetherEnemyId === enemy.id) this.activeTetherEnemyId = null;
     this.frameEvents.push({ type: "egg-hatched", position: { ...enemy.position } });
-    for (const offset of [-0.45, 0.45]) {
+    const offsets = [-0.45, 0.45].slice(0, this.availableDirectorEnemySlots());
+    for (const offset of offsets) {
       this.spawnEnemy("scuttler", {
         x: clamp(enemy.position.x + offset, 0.5, this.widthMetres - 0.5),
         y: clamp(enemy.position.y + 0.2, 0.5, this.heightMetres - 0.5),
       });
+      if (this.wavesEnabled) this.recordDensitySpawn({ type: "scuttler" });
     }
   }
 
@@ -2438,8 +2438,7 @@ export class CombatSimulation {
         x: clamp(start.x + direction.x * 10, 0.3, this.widthMetres - 0.3),
         y: clamp(start.y + direction.y * 10, 0.3, this.heightMetres - 0.3),
       };
-      this.enemyProjectiles.push({
-        id: this.nextId(),
+      this.spawnHostileProjectile({
         type: "brood-acid",
         position: start,
         velocity: { x: direction.x * speed, y: direction.y * speed },
@@ -2447,7 +2446,6 @@ export class CombatSimulation {
         remainingSeconds: distance(start, projectileTarget) / speed,
         damage: 11,
         createsPuddle: false,
-        dead: false,
       });
     }
     this.frameEvents.push({
@@ -2460,26 +2458,29 @@ export class CombatSimulation {
 
   private layBroodEggs(enemy: EnemyState, requestedCount: number): void {
     const liveEggs = this.enemies.filter((candidate) => !candidate.dead && candidate.type === "egg-cluster").length;
-    const count = Math.max(0, Math.min(requestedCount, 6 - liveEggs));
+    const count = Math.max(0, Math.min(requestedCount, 6 - liveEggs, this.availableDirectorEnemySlots()));
     for (let index = 0; index < count; index += 1) {
       const angle = (index / Math.max(count, 1)) * Math.PI * 2 + this.random() * 0.45;
       this.spawnEnemy("egg-cluster", {
         x: clamp(enemy.position.x + Math.cos(angle) * 2.2, 0.8, this.widthMetres - 0.8),
         y: clamp(enemy.position.y + Math.sin(angle) * 2.2, 0.8, this.heightMetres - 0.8),
       });
+      if (this.wavesEnabled) this.recordDensitySpawn({ type: "egg-cluster" });
     }
     this.frameEvents.push({ type: "brood-eggs-laid", position: { ...enemy.position }, count });
   }
 
   private spawnBroodSwarm(enemy: EnemyState, count: number): void {
-    for (let index = 0; index < count; index += 1) {
-      const angle = (index / count) * Math.PI * 2;
+    const allowedCount = Math.min(count, this.availableDirectorEnemySlots());
+    for (let index = 0; index < allowedCount; index += 1) {
+      const angle = (index / Math.max(allowedCount, 1)) * Math.PI * 2;
       this.spawnEnemy("scuttler", {
         x: clamp(enemy.position.x + Math.cos(angle) * 1.7, 0.6, this.widthMetres - 0.6),
         y: clamp(enemy.position.y + Math.sin(angle) * 1.7, 0.6, this.heightMetres - 0.6),
       });
+      if (this.wavesEnabled) this.recordDensitySpawn({ type: "scuttler" });
     }
-    this.frameEvents.push({ type: "brood-swarm-rush", position: { ...enemy.position }, count });
+    this.frameEvents.push({ type: "brood-swarm-rush", position: { ...enemy.position }, count: allowedCount });
   }
 
   private updateBastionEater(enemy: EnemyState, deltaSeconds: number): void {
@@ -2768,8 +2769,7 @@ export class CombatSimulation {
         x: start.x + direction.x * QUILLBACK_PROJECTILE_RANGE_METRES,
         y: start.y + direction.y * QUILLBACK_PROJECTILE_RANGE_METRES,
       };
-      this.enemyProjectiles.push({
-        id: this.nextId(),
+      this.spawnHostileProjectile({
         type: "quill-spike",
         position: start,
         velocity: {
@@ -2780,7 +2780,6 @@ export class CombatSimulation {
         remainingSeconds: QUILLBACK_PROJECTILE_RANGE_METRES / QUILLBACK_PROJECTILE_SPEED,
         damage: QUILLBACK_SPIKE_DAMAGE,
         createsPuddle: false,
-        dead: false,
       });
     }
     this.frameEvents.push({
@@ -3014,8 +3013,7 @@ export class CombatSimulation {
       x: enemy.position.x + direction.x * 0.7,
       y: enemy.position.y + direction.y * 0.7,
     };
-    this.enemyProjectiles.push({
-      id: this.nextId(),
+    this.spawnHostileProjectile({
       type: "slime-glob",
       position: start,
       velocity: { x: direction.x * speed, y: direction.y * speed },
@@ -3023,7 +3021,6 @@ export class CombatSimulation {
       remainingSeconds: Math.max(0.12, distance(start, enemy.spitterTarget) / speed),
       damage: SLIME_GLOB_DAMAGE,
       createsPuddle: true,
-      dead: false,
     });
     this.frameEvents.push({
       type: "slime-glob-fired",
@@ -3207,6 +3204,7 @@ export class CombatSimulation {
   }
 
   private damagePlayer(rawDamage: number): void {
+    if (this.scenario === "density-capacity") return;
     if (rawDamage <= 0 || this.playerInvulnerable || this.playerHurtCooldownSeconds > 0) return;
     const absorption = absorbWithShield(this.playerShield, rawDamage);
     this.playerShield = absorption.remainingShield;
@@ -3375,6 +3373,9 @@ export class CombatSimulation {
       damageType,
       enemyId: enemy.id,
     });
+    if (this.scenario === "density-capacity") {
+      return;
+    }
     if (enemy.type === "tether-bloom" && enemy.tetherBloomPhase === "tethering") {
       enemy.tetherBloomDamageDuringGrab += mitigated;
       if (enemy.tetherBloomDamageDuringGrab >= TETHER_BLOOM_BREAK_DAMAGE) {
@@ -3481,11 +3482,29 @@ export class CombatSimulation {
 
   private removeDeadEntities(): void {
     this.enemies = this.enemies.filter((enemy) => !enemy.dead);
+    for (const projectile of this.projectiles) {
+      if (projectile.dead) this.friendlyProjectilePool.push(projectile);
+    }
     this.projectiles = this.projectiles.filter((projectile) => !projectile.dead);
+    for (const projectile of this.enemyProjectiles) {
+      if (projectile.dead) this.hostileProjectilePool.push(projectile);
+    }
     this.enemyProjectiles = this.enemyProjectiles.filter((projectile) => !projectile.dead);
     this.pickups = this.pickups.filter((pickup) => !pickup.collected);
     this.powerups = this.powerups.filter((powerup) => !powerup.collected);
     this.eliteRewards = this.eliteRewards.filter((reward) => !reward.collected);
+  }
+
+  private spawnFriendlyProjectile(data: Omit<ProjectileState, "id" | "dead">): void {
+    const projectile = this.friendlyProjectilePool.pop() ?? ({} as ProjectileState);
+    Object.assign(projectile, data, { id: this.nextId(), dead: false });
+    this.projectiles.push(projectile);
+  }
+
+  private spawnHostileProjectile(data: Omit<EnemyProjectileState, "id" | "dead">): void {
+    const projectile = this.hostileProjectilePool.pop() ?? ({} as EnemyProjectileState);
+    Object.assign(projectile, data, { id: this.nextId(), dead: false });
+    this.enemyProjectiles.push(projectile);
   }
 
   private updateWaveSpawns(deltaSeconds: number): void {
@@ -3515,6 +3534,12 @@ export class CombatSimulation {
     this.densitySpawnedThisWave += 1;
     this.densityPressureSpawned[role] += 1;
     this.densityPeakLiveEnemies = Math.max(this.densityPeakLiveEnemies, this.enemies.length);
+  }
+
+  private availableDirectorEnemySlots(): number {
+    if (!this.wavesEnabled || this.waveLiveCap <= 0) return Number.POSITIVE_INFINITY;
+    const liveEnemies = this.enemies.reduce((count, enemy) => count + (enemy.dead ? 0 : 1), 0);
+    return Math.max(0, this.waveLiveCap - liveEnemies);
   }
 
   private updateEncounterProgress(deltaSeconds: number): void {

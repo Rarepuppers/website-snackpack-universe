@@ -260,6 +260,8 @@ The v1 threat budgets and enemy stat tables stand; what changes is how fast they
 
 The arena should feel like a horde pressing inward, not a collection of specialists waiting for turns. Composition and steering follow these rules:
 
+**Implementation status (18 July 2026):** completed for the current five-wave prototype. Normal waves now use enforced 18/24/32/42/46 live caps and deterministic pursuit-led spawn plans. Enemy definitions select one of eight shared steering profiles; Slime Spitters and Quillbacks use their authored range bands, ordinary ranged attacks are limited to two simultaneous wind-ups and six live hostile projectiles, and dead friendly/hostile simulation projectiles are pooled for reuse. `?scenario=density-capacity&debug=1` pins a non-lethal 56-enemy representative roster and exposes live/peak count, queue pressure, hostile projectile occupancy, and cap-blocked time. The future 52/56 caps remain authored targets for waves 6–9.
+
 - **65–75% of ordinary threat is pursuit pressure.** Scuttlers, swarmers, infected survivors, and other commons take a direct or lightly separated route toward the Marine. Simple chase is desirable here: the mass itself is the puzzle.
 - **15–25% is ranged or standoff pressure.** A standoff shooter maintains a minimum/preferred/maximum range band, retreats when crowded, advances when too far away, and commits only after a readable wind-up. A chase-and-fire shooter keeps advancing and fires on cadence. Artillery repositions to long range and never shoots from an unseen edge without a marker.
 - **5–10% is support, control, or elite pressure.** Spawners, tethers, flankers, and elites change target priority, but they do not replace the pursuit body of the wave.

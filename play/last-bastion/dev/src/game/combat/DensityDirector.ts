@@ -110,16 +110,14 @@ export function buildDensityWave(index: number): DensityWaveDefinition {
 
 export function buildDensityCapacityRoster(): readonly EnemyType[] {
   return [
-    ...Array<EnemyType>(29).fill("scuttler"),
+    ...Array<EnemyType>(34).fill("scuttler"),
     ...Array<EnemyType>(5).fill("brain-blob"),
-    ...Array<EnemyType>(5).fill("blast-mite"),
     ...Array<EnemyType>(1).fill("ripper"),
     ...Array<EnemyType>(5).fill("slime-spitter"),
     ...Array<EnemyType>(3).fill("quillback"),
-    ...Array<EnemyType>(3).fill("warp-flanker"),
+    ...Array<EnemyType>(4).fill("warp-flanker"),
     ...Array<EnemyType>(2).fill("tether-bloom"),
     ...Array<EnemyType>(2).fill("spinewheel"),
-    ...Array<EnemyType>(1).fill("egg-cluster"),
   ];
 }
 

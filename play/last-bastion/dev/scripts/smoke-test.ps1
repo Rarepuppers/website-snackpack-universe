@@ -164,6 +164,7 @@ try {
     '/play/last-bastion/?scenario=spinewheel&loadout=vertical',
     '/play/last-bastion/?scenario=tether-bloom&loadout=vertical',
     '/play/last-bastion/?scenario=bastion-eater&loadout=vertical',
+    '/play/last-bastion/?scenario=density-capacity&debug=1',
     '/play/last-bastion/?stress=4',
     '/play/last-bastion/?stress=12'
   )
