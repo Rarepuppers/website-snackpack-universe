@@ -669,3 +669,32 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Locked presentation-only body scales to 1.34, 1.30, and 1.25 respectively. Collision radii, telegraph geometry, and damage checks remain simulation-owned.
 - Kept windups, attack directions, warp marks, dodge lanes, and punishable recoveries stationary/locked. Regression testing exposed an over-wide Brood Warden orbit that skipped its cleave branch; its preferred band was corrected before completion.
 - Added pure steering, deterministic handedness, opening lateral-travel, and scale-band contracts. Live encounter review covered Emberfall, Toxic Bloom, and Void Approach with the existing sheets; no art extension was necessary.
+
+### Task 58 — Infected Survivor movement
+
+**Status:** Completed — 20 July 2026; dedicated behavior lab live, normal-wave promotion held for family completion
+
+- Promoted the Batch M Infected Survivor body into `?scenario=infected-survivor` with an authored eight-unit pack while leaving Quick Drop and expedition compositions unchanged.
+- Added 1.2 seconds of sprint stamina, 5.15 m/s peak speed, frame-rate-independent 11 m/s² acceleration, 14 m/s² deceleration, staggered hesitation, and finite recovery. The two production gait rows animate from simulation-owned velocity and phase.
+- Added forward-floored pack separation: local avoidance may fan the group, but every steering vector retains at least 55% pursuit intent so survivors cannot settle into an orbiting crowd ring. Pack-cap and angular-gap tests preserve a broad escape lane.
+- Split controller radial dead zones by role: 0.18 movement for low-speed steering and 0.25 aim for drift resistance, with continuous rescaling outside both zones.
+- Browser review confirmed clean pack/cover traversal and readable silhouettes in Emberfall, Toxic Bloom, and Void Approach. The canvas remained internally 960×540 and scaled exactly to 1920×1080 and 3840×2160 without page overflow.
+
+### Task 59 — Corrupted Marine knife lifecycle
+
+**Status:** Completed — 20 July 2026; dedicated behavior lab live, normal-wave promotion held for Task 62
+
+- Added `?scenario=corrupted-marine` with two Batch M Marines using their authored guard, knife-windup, and recovery rows plus the complete knife/effect atlas.
+- Locked the combat sequence to 0.72s line-and-ring tell → 6 m/s non-homing knife → player, cover, or expiry impact → 0.65s recovery → 2.8s cooldown. Projectile-budget pressure extends the tell instead of silently dropping the attack.
+- Added source-Marine impact telemetry with actual player damage. Cover and expiry events explicitly report zero player damage, while the ordinary damage event remains the single source of health loss.
+- Added deterministic stationary-hit, perpendicular-dodge, cover-intercept, projectile-speed, phase-cycle, and repeat-cooldown tests. Full-HD browser review confirmed readable body states, locked lines, target rings, impact feedback, and no presentation overlap.
+- Added Task 62 as the family-completion gate for Abomination behavior, off-screen Marine warnings, mixed-wave tuning, and eventual normal-run promotion; Abomination Prime remains deferred.
+
+### Enemy-roster expansion plan — summoners, rogue science, and machines
+
+**Status:** Designed — 20 July 2026; behavior gates precede production art and wave promotion
+
+- Added Task 63 for the Nest Weaver, a mobile alien summoner that lays destructible timed egg pods. Pods and hatchlings consume reserved threat/live slots, cannot chain-spawn, and remain under hard per-owner and encounter caps.
+- Added Task 64 for the Storm Savant, a mad xenotechnician whose coil/psionic apparatus presents as magic-lightning while using locked conductive-node paths, destructible counters, finite hops, colour-independent geometry, and vulnerable overload recovery.
+- Added Task 65 for a Machine uprising roster: Scrap Skitterer, Arc Warden, Cyborg Reclaimer, and the finite-charge Foundry Fabricator summoner. Repair/fabrication channels are interruptible and machine children never recurse.
+- Added Task 66 to expand the mini-boss pool only from proven families: Synapse Herald, Assembly Prime, Storm Regent, then Abomination Prime. Every candidate retains the existing behavior-lab, no-immediate-repeat, reward, warning, recovery, and 45–90 second gates.

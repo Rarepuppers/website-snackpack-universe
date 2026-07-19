@@ -917,7 +917,7 @@ export class AssetGalleryScene extends Phaser.Scene {
 
   private createCorruptedHumanGallery(): void {
     this.add.text(20, 14, "LAST BASTION - CORRUPTED HUMAN OUTBREAK PREFLIGHT", style("#ffffff", "17px"));
-    this.add.text(20, 38, "Held post-Web-MVP: body art and knife effects are ready; behavior gates remain simulation-owned", style("#ff9a72", "11px"));
+    this.add.text(20, 38, "Survivor + Marine behavior labs live; Abomination and mixed-wave promotion remain held", style("#ff9a72", "11px"));
     this.add.text(20, 70, "INFECTED SURVIVOR - gait rows / S N E W", style("#ffcf7a", "11px"));
     for (let frame = 0; frame < 8; frame += 1) {
       const x = 62 + (frame % 4) * 82;
@@ -946,7 +946,7 @@ export class AssetGalleryScene extends Phaser.Scene {
       this.add.sprite(x, y, "corrupted-marine-effects-v1", frame).setScale(1.0);
       this.add.text(x, y + 36, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
     }
-    this.add.text(480, 528, "Review: ?mode=gallery&batch=m - no live spawning until survivor, knife throw, and abomination gates pass", style("#8fb2c9", "10px")).setOrigin(0.5);
+    this.add.text(480, 528, "Labs: ?scenario=infected-survivor / corrupted-marine - normal waves wait for Task 62", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createEmberfallGallery(): void {

@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   applyDeadzone,
   DISCONNECTED_GAMEPAD,
+  GAMEPAD_AIM_DEADZONE,
+  GAMEPAD_MOVE_DEADZONE,
   GamepadIntentMapper,
   mergeIntents,
   type GamepadStateSnapshot,
@@ -39,6 +41,23 @@ describe("GamepadIntentMapper", () => {
     const partial = applyDeadzone({ x: 0.625, y: 0 });
     expect(partial.x).toBeGreaterThan(0);
     expect(partial.x).toBeLessThan(0.625);
+  });
+
+  it("uses a more responsive movement deadzone while keeping aim drift guarded", () => {
+    expect(GAMEPAD_MOVE_DEADZONE).toBeLessThan(GAMEPAD_AIM_DEADZONE);
+    const mapper = new GamepadIntentMapper();
+    const intent = mapper.update(padState({
+      leftStick: { x: 0.21, y: 0 },
+      rightStick: { x: 0.21, y: 0 },
+    }));
+    expect(intent.move.x).toBeGreaterThan(0);
+    expect(intent.aim).toEqual({ x: 0, y: 0 });
+  });
+
+  it("keeps diagonal magnitude radial and clamps invalid deadzone values", () => {
+    const diagonal = applyDeadzone({ x: 0.8, y: 0.8 }, GAMEPAD_MOVE_DEADZONE);
+    expect(Math.hypot(diagonal.x, diagonal.y)).toBeCloseTo(1);
+    expect(applyDeadzone({ x: 0.1, y: 0 }, 2)).toEqual({ x: 0, y: 0 });
   });
 
   it("keeps right-stick aiming independent from the manual-fire trigger", () => {

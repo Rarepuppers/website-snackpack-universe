@@ -114,6 +114,8 @@ export type EncounterStatus = "combat" | "intermission" | "victory" | "defeat";
 export type BrainPhase = "drift" | "windup" | "lunge" | "recover";
 export type SlimeSpitterPhase = "positioning" | "windup" | "recover";
 export type BlastMitePhase = "chase" | "armed";
+export type InfectedSurvivorPhase = "hesitate" | "sprint" | "recover";
+export type CorruptedMarinePhase = "positioning" | "windup" | "throw" | "recovery";
 export type WarpFlankerPhase = "stalk" | "warp-windup" | "materialize";
 export type RipperPhase = "pursuit" | "windup" | "sweep" | "recovery";
 export type RazorScuttlerPhase = "pursuit" | "windup" | "dash" | "recovery";
@@ -139,7 +141,7 @@ export type BroodWardenPhase =
 export type RiftStalkerPhase =
   | "entrance" | "cloak" | "mark" | "warp" | "pounce"
   | "slash-windup" | "slash" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "infected-survivor" | "corrupted-marine" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit";
 export type SupplyChestVariant = "sealed" | "armored";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
@@ -215,6 +217,9 @@ export type CombatEvent =
   | { type: "brood-acid-impact"; position: Vector2Data }
   | { type: "brood-eggs-laid"; position: Vector2Data; count: number }
   | { type: "brood-swarm-rush"; position: Vector2Data; count: number }
+  | { type: "corrupted-marine-warning"; position: Vector2Data; target: Vector2Data; enemyId: number }
+  | { type: "corrupted-marine-knife-fired"; position: Vector2Data; direction: Vector2Data; enemyId: number }
+  | { type: "corrupted-marine-knife-impact"; position: Vector2Data; reason: "player" | "cover" | "expired"; damage: number; enemyId: number }
   | { type: "rift-stalker-mark"; position: Vector2Data; target: Vector2Data }
   | { type: "rift-stalker-warp-out"; position: Vector2Data }
   | { type: "rift-stalker-pounce"; position: Vector2Data; radiusMetres: number; hitPlayer: boolean }
@@ -284,6 +289,11 @@ export interface EnemySnapshot {
   spitterPhase?: SlimeSpitterPhase;
   spitterTarget?: Vector2Data;
   mitePhase?: BlastMitePhase;
+  survivorPhase?: InfectedSurvivorPhase;
+  survivorStaminaSeconds?: number;
+  survivorVelocity?: Vector2Data;
+  corruptedMarinePhase?: CorruptedMarinePhase;
+  corruptedMarineTarget?: Vector2Data;
   warpPhase?: WarpFlankerPhase;
   warpTarget?: Vector2Data;
   ripperPhase?: RipperPhase;
@@ -392,7 +402,7 @@ export interface FenceSnapshot {
 
 export interface EnemyProjectileSnapshot {
   id: number;
-  type: "slime-glob" | "brood-acid" | "quill-spike";
+  type: "slime-glob" | "brood-acid" | "quill-spike" | "corrupted-knife";
   position: Vector2Data;
   rotationRadians: number;
 }
@@ -511,6 +521,13 @@ interface EnemyState {
   spitterTarget: Vector2Data;
   mitePhase: BlastMitePhase;
   mitePhaseRemainingSeconds: number;
+  survivorPhase: InfectedSurvivorPhase;
+  survivorPhaseRemainingSeconds: number;
+  survivorStaminaSeconds: number;
+  survivorVelocity: Vector2Data;
+  corruptedMarinePhase: CorruptedMarinePhase;
+  corruptedMarinePhaseRemainingSeconds: number;
+  corruptedMarineTarget: Vector2Data;
   warpPhase: WarpFlankerPhase;
   warpPhaseRemainingSeconds: number;
   warpTarget: Vector2Data;
@@ -621,7 +638,8 @@ interface SupplyChestState {
 
 interface EnemyProjectileState {
   id: number;
-  type: "slime-glob" | "brood-acid" | "quill-spike";
+  type: "slime-glob" | "brood-acid" | "quill-spike" | "corrupted-knife";
+  sourceEnemyId?: number;
   position: Vector2Data;
   velocity: Vector2Data;
   target: Vector2Data;
@@ -731,6 +749,19 @@ export const RAZOR_SCUTTLER_RECOVERY_SECONDS = 1.15;
 const RAZOR_SCUTTLER_DASH_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.razorDash;
 const RAZOR_SCUTTLER_MIN_DASH_RANGE = 2.6;
 const RAZOR_SCUTTLER_MAX_DASH_RANGE = 7.5;
+export const INFECTED_SURVIVOR_MAX_STAMINA_SECONDS = 1.2;
+export const INFECTED_SURVIVOR_SPRINT_SPEED = 5.15;
+export const INFECTED_SURVIVOR_ACCELERATION = 11;
+export const INFECTED_SURVIVOR_DECELERATION = 14;
+export const INFECTED_SURVIVOR_PACK_CAP = 8;
+const INFECTED_SURVIVOR_RECOVERY_SECONDS = 0.68;
+const INFECTED_SURVIVOR_STAMINA_RECOVERY_PER_SECOND = 1.8;
+export const CORRUPTED_MARINE_WINDUP_SECONDS = 0.72;
+export const CORRUPTED_MARINE_KNIFE_SPEED = 6;
+export const CORRUPTED_MARINE_KNIFE_DAMAGE = 1.8;
+export const CORRUPTED_MARINE_RECOVERY_SECONDS = 0.65;
+export const CORRUPTED_MARINE_COOLDOWN_SECONDS = 2.8;
+const CORRUPTED_MARINE_RANGE_METRES = 11;
 export const SPINEWHEEL_BASE_ROLL_SPEED = 7;
 export const SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER = 0.85;
 export const SPINEWHEEL_MAX_REBOUNDS = 2;
@@ -1005,6 +1036,10 @@ export class CombatSimulation {
       this.populateBroodWardenScenario();
     } else if (this.scenario === "rift-stalker") {
       this.populateRiftStalkerScenario();
+    } else if (this.scenario === "infected-survivor") {
+      this.populateInfectedSurvivorScenario();
+    } else if (this.scenario === "corrupted-marine") {
+      this.populateCorruptedMarineScenario();
     } else if (this.scenario === "ripper") {
       this.populateRipperScenario();
     } else if (this.scenario === "razor-scuttler") {
@@ -1170,6 +1205,13 @@ export class CombatSimulation {
       spitterTarget: { ...this.playerPosition },
       mitePhase: "chase",
       mitePhaseRemainingSeconds: 0,
+      survivorPhase: "hesitate",
+      survivorPhaseRemainingSeconds: type === "infected-survivor" ? 0.3 + (id % 3) * 0.12 : 0,
+      survivorStaminaSeconds: type === "infected-survivor" ? INFECTED_SURVIVOR_MAX_STAMINA_SECONDS : 0,
+      survivorVelocity: { x: 0, y: 0 },
+      corruptedMarinePhase: "positioning",
+      corruptedMarinePhaseRemainingSeconds: type === "corrupted-marine" ? 0.55 + (id % 2) * 0.2 : 0,
+      corruptedMarineTarget: { ...this.playerPosition },
       warpPhase: "stalk",
       warpPhaseRemainingSeconds: type === "warp-flanker" ? 1.2 : 0,
       warpTarget: { x: 0, y: 0 },
@@ -2897,6 +2939,12 @@ export class CombatSimulation {
         case "swarm-scuttler":
           this.moveEnemyTowardPlayer(enemy, ENEMY_CATALOG["swarm-scuttler"].movementSpeedMetresPerSecond, deltaSeconds);
           break;
+        case "infected-survivor":
+          this.updateInfectedSurvivor(enemy, deltaSeconds);
+          break;
+        case "corrupted-marine":
+          this.updateCorruptedMarine(enemy, deltaSeconds);
+          break;
         case "egg-cluster":
           this.updateEggCluster(enemy, deltaSeconds);
           break;
@@ -2985,6 +3033,149 @@ export class CombatSimulation {
   private activeStatuses(enemy: EnemyState): StatusEffectType[] {
     return (Object.keys(enemy.statusTimers) as StatusEffectType[])
       .filter((status) => (enemy.statusTimers[status] ?? 0) > 0);
+  }
+
+  private updateInfectedSurvivor(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.survivorPhaseRemainingSeconds -= deltaSeconds;
+    const towardPlayer = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
+    const laneBias = ((enemy.id % 5) - 2) * 0.08;
+    const sprintDirection = infectedSurvivorSteeringDirection(
+      towardPlayer,
+      this.enemySeparation(enemy),
+      laneBias,
+    );
+
+    if (enemy.survivorPhase === "sprint") {
+      enemy.survivorStaminaSeconds = Math.max(0, enemy.survivorStaminaSeconds - deltaSeconds);
+      enemy.survivorVelocity = approachVelocity(
+        enemy.survivorVelocity,
+        {
+          x: sprintDirection.x * INFECTED_SURVIVOR_SPRINT_SPEED,
+          y: sprintDirection.y * INFECTED_SURVIVOR_SPRINT_SPEED,
+        },
+        INFECTED_SURVIVOR_ACCELERATION * deltaSeconds,
+      );
+      if (enemy.survivorStaminaSeconds <= 0) {
+        enemy.survivorPhase = "recover";
+        enemy.survivorPhaseRemainingSeconds = INFECTED_SURVIVOR_RECOVERY_SECONDS;
+      }
+    } else {
+      enemy.survivorStaminaSeconds = Math.min(
+        INFECTED_SURVIVOR_MAX_STAMINA_SECONDS,
+        enemy.survivorStaminaSeconds + INFECTED_SURVIVOR_STAMINA_RECOVERY_PER_SECOND * deltaSeconds,
+      );
+      enemy.survivorVelocity = approachVelocity(
+        enemy.survivorVelocity,
+        { x: 0, y: 0 },
+        INFECTED_SURVIVOR_DECELERATION * deltaSeconds,
+      );
+      if (enemy.survivorPhaseRemainingSeconds <= 0 && enemy.survivorStaminaSeconds >= 0.55) {
+        enemy.survivorPhase = "sprint";
+        enemy.survivorPhaseRemainingSeconds = enemy.survivorStaminaSeconds;
+      }
+    }
+
+    const speed = Math.hypot(enemy.survivorVelocity.x, enemy.survivorVelocity.y);
+    enemy.facingDirection = speed > 0.08
+      ? normalizeVector(enemy.survivorVelocity)
+      : towardPlayer;
+    if (speed > 0) {
+      this.moveEnemy(enemy, enemy.facingDirection, speed, deltaSeconds);
+    }
+  }
+
+  private updateCorruptedMarine(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.corruptedMarinePhaseRemainingSeconds -= deltaSeconds;
+    const towardPlayer = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
+    enemy.facingDirection = towardPlayer;
+
+    switch (enemy.corruptedMarinePhase) {
+      case "positioning": {
+        this.moveEnemyForRangeBand(enemy, deltaSeconds);
+        if (
+          enemy.attackCooldownSeconds <= 0
+          && distance(enemy.position, this.playerPosition) <= CORRUPTED_MARINE_RANGE_METRES
+        ) {
+          enemy.corruptedMarineTarget = { ...this.playerPosition };
+          enemy.facingDirection = normalizeVector({
+            x: enemy.corruptedMarineTarget.x - enemy.position.x,
+            y: enemy.corruptedMarineTarget.y - enemy.position.y,
+          });
+          enemy.corruptedMarinePhase = "windup";
+          enemy.corruptedMarinePhaseRemainingSeconds = CORRUPTED_MARINE_WINDUP_SECONDS;
+          this.frameEvents.push({
+            type: "corrupted-marine-warning",
+            position: { ...enemy.position },
+            target: { ...enemy.corruptedMarineTarget },
+            enemyId: enemy.id,
+          });
+        }
+        break;
+      }
+      case "windup":
+        if (enemy.corruptedMarinePhaseRemainingSeconds <= 0) {
+          if (this.availableEnemyProjectileSlots() <= 0) {
+            enemy.corruptedMarinePhaseRemainingSeconds = 0.1;
+            break;
+          }
+          this.launchCorruptedMarineKnife(enemy);
+          enemy.corruptedMarinePhase = "throw";
+          enemy.corruptedMarinePhaseRemainingSeconds = 0.12;
+          enemy.attackCooldownSeconds = CORRUPTED_MARINE_COOLDOWN_SECONDS;
+        }
+        break;
+      case "throw":
+        if (enemy.corruptedMarinePhaseRemainingSeconds <= 0) {
+          enemy.corruptedMarinePhase = "recovery";
+          enemy.corruptedMarinePhaseRemainingSeconds = CORRUPTED_MARINE_RECOVERY_SECONDS;
+        }
+        break;
+      case "recovery":
+        if (enemy.corruptedMarinePhaseRemainingSeconds <= 0) {
+          enemy.corruptedMarinePhase = "positioning";
+          enemy.corruptedMarinePhaseRemainingSeconds = 0;
+        }
+        break;
+    }
+  }
+
+  private launchCorruptedMarineKnife(enemy: EnemyState): void {
+    const direction = normalizeVector({
+      x: enemy.corruptedMarineTarget.x - enemy.position.x,
+      y: enemy.corruptedMarineTarget.y - enemy.position.y,
+    });
+    const start = {
+      x: enemy.position.x + direction.x * 0.65,
+      y: enemy.position.y + direction.y * 0.65,
+    };
+    this.spawnHostileProjectile({
+      type: "corrupted-knife",
+      sourceEnemyId: enemy.id,
+      position: start,
+      velocity: {
+        x: direction.x * CORRUPTED_MARINE_KNIFE_SPEED,
+        y: direction.y * CORRUPTED_MARINE_KNIFE_SPEED,
+      },
+      target: { ...enemy.corruptedMarineTarget },
+      remainingSeconds: Math.max(
+        0.12,
+        distance(start, enemy.corruptedMarineTarget) / CORRUPTED_MARINE_KNIFE_SPEED,
+      ),
+      damage: this.scaledEnemyDamage(enemy, CORRUPTED_MARINE_KNIFE_DAMAGE),
+      createsPuddle: false,
+    });
+    this.frameEvents.push({
+      type: "corrupted-marine-knife-fired",
+      position: { ...start },
+      direction: { ...direction },
+      enemyId: enemy.id,
+    });
   }
 
   private updateAurumHoarder(enemy: EnemyState, deltaSeconds: number): void {
@@ -4426,23 +4617,36 @@ export class CombatSimulation {
 
       const obstacle = this.activeObstacles().find((candidate) => pointHitsObstacle(projectile.position, [candidate]));
       if (obstacle) {
-        this.damageObstacle(obstacle.id, projectile.damage, projectile.position, "mini-boss-impact");
+        if (projectile.type !== "corrupted-knife") {
+          this.damageObstacle(obstacle.id, projectile.damage, projectile.position, "mini-boss-impact");
+        }
         projectile.position = previous;
-        this.resolveEnemyProjectileImpact(projectile);
+        this.resolveEnemyProjectileImpact(projectile, "cover");
       } else if (distanceToSegment(this.playerPosition, previous, projectile.position) <= PLAYER_RADIUS_METRES + 0.3) {
-        this.resolveEnemyProjectileImpact(projectile);
+        this.resolveEnemyProjectileImpact(projectile, "player");
       } else if (projectile.remainingSeconds <= 0) {
         projectile.position = { ...projectile.target };
-        this.resolveEnemyProjectileImpact(projectile);
+        this.resolveEnemyProjectileImpact(projectile, "expired");
       }
     }
   }
 
-  private resolveEnemyProjectileImpact(projectile: EnemyProjectileState): void {
+  private resolveEnemyProjectileImpact(
+    projectile: EnemyProjectileState,
+    impactReason: "player" | "cover" | "expired",
+  ): void {
     projectile.dead = true;
     const createdPuddle = projectile.createsPuddle && this.createSlowingPuddle(projectile.position);
     const hitPlayer = distance(projectile.position, this.playerPosition) <= PLAYER_RADIUS_METRES + 0.45;
-    if (projectile.type === "brood-acid") {
+    if (projectile.type === "corrupted-knife") {
+      this.frameEvents.push({
+        type: "corrupted-marine-knife-impact",
+        position: { ...projectile.position },
+        reason: hitPlayer ? "player" : impactReason,
+        damage: hitPlayer ? projectile.damage : 0,
+        enemyId: projectile.sourceEnemyId ?? -1,
+      });
+    } else if (projectile.type === "brood-acid") {
       this.frameEvents.push({ type: "brood-acid-impact", position: { ...projectile.position } });
     } else if (projectile.type === "quill-spike") {
       this.frameEvents.push({ type: "quillback-spike-impact", position: { ...projectile.position }, hitPlayer });
@@ -5107,7 +5311,7 @@ export class CombatSimulation {
 
   private spawnHostileProjectile(data: Omit<EnemyProjectileState, "id" | "dead">): void {
     const projectile = this.hostileProjectilePool.pop() ?? ({} as EnemyProjectileState);
-    Object.assign(projectile, data, { id: this.nextId(), dead: false });
+    Object.assign(projectile, { sourceEnemyId: undefined }, data, { id: this.nextId(), dead: false });
     this.enemyProjectiles.push(projectile);
   }
 
@@ -5487,6 +5691,23 @@ export class CombatSimulation {
     this.spawnEnemy("scuttler", { x: this.widthMetres - 8, y: 4 });
   }
 
+  private populateInfectedSurvivorScenario(): void {
+    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+    const positions = Array.from({ length: INFECTED_SURVIVOR_PACK_CAP }, (_, index) => ({
+      x: centre.x - 8.5 - (index % 2) * 0.9,
+      y: centre.y - 4.2 + index * 1.2,
+    }));
+    for (const position of positions) {
+      this.spawnEnemy("infected-survivor", position);
+    }
+  }
+
+  private populateCorruptedMarineScenario(): void {
+    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+    this.spawnEnemy("corrupted-marine", { x: centre.x - 7.5, y: centre.y - 2.8 });
+    this.spawnEnemy("corrupted-marine", { x: centre.x + 7.2, y: centre.y + 3.4 });
+  }
+
   private populateRipperScenario(): void {
     const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
     this.spawnEnemy("ripper", { x: centre.x + 4.5, y: centre.y - 2.5 });
@@ -5603,6 +5824,19 @@ export class CombatSimulation {
         ? { ...enemy.spitterTarget }
         : undefined,
       mitePhase: enemy.type === "blast-mite" ? enemy.mitePhase : undefined,
+      survivorPhase: enemy.type === "infected-survivor" ? enemy.survivorPhase : undefined,
+      survivorStaminaSeconds: enemy.type === "infected-survivor"
+        ? enemy.survivorStaminaSeconds
+        : undefined,
+      survivorVelocity: enemy.type === "infected-survivor"
+        ? { ...enemy.survivorVelocity }
+        : undefined,
+      corruptedMarinePhase: enemy.type === "corrupted-marine"
+        ? enemy.corruptedMarinePhase
+        : undefined,
+      corruptedMarineTarget: enemy.type === "corrupted-marine"
+        ? { ...enemy.corruptedMarineTarget }
+        : undefined,
       warpPhase: enemy.type === "warp-flanker" ? enemy.warpPhase : undefined,
       warpTarget: enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup"
         ? { ...enemy.warpTarget }
@@ -5790,6 +6024,50 @@ export function miniBossRepositionDirection(
     x: towardPlayer.x * radialIntent + tangent.x * 0.82,
     y: towardPlayer.y * radialIntent + tangent.y * 0.82,
   });
+}
+
+/** Accelerates toward a target velocity without frame-rate-dependent overshoot. */
+export function approachVelocity(
+  current: Vector2Data,
+  target: Vector2Data,
+  maximumDelta: number,
+): Vector2Data {
+  const delta = { x: target.x - current.x, y: target.y - current.y };
+  const magnitude = Math.hypot(delta.x, delta.y);
+  if (magnitude <= Math.max(0, maximumDelta) || magnitude === 0) return { ...target };
+  const scale = Math.max(0, maximumDelta) / magnitude;
+  return { x: current.x + delta.x * scale, y: current.y + delta.y * scale };
+}
+
+/**
+ * Pack steering with a guaranteed pursuit component. Separation opens gaps,
+ * while the forward floor prevents an evenly spaced crowd ring from forming.
+ */
+export function infectedSurvivorSteeringDirection(
+  towardPlayer: Vector2Data,
+  separation: Vector2Data,
+  laneBias: number,
+): Vector2Data {
+  const forward = normalizeVector(towardPlayer);
+  if (forward.x === 0 && forward.y === 0) return { x: 0, y: 0 };
+  const tangent = { x: -forward.y, y: forward.x };
+  const candidate = normalizeVector({
+    x: forward.x + separation.x * 0.72 + tangent.x * laneBias,
+    y: forward.y + separation.y * 0.72 + tangent.y * laneBias,
+  });
+  const dot = candidate.x * forward.x + candidate.y * forward.y;
+  const forwardFloor = 0.55;
+  if (dot >= forwardFloor) return candidate;
+  const lateral = {
+    x: candidate.x - forward.x * dot,
+    y: candidate.y - forward.y * dot,
+  };
+  const lateralDirection = normalizeVector(lateral);
+  const lateralMagnitude = Math.sqrt(1 - forwardFloor * forwardFloor);
+  return {
+    x: forward.x * forwardFloor + lateralDirection.x * lateralMagnitude,
+    y: forward.y * forwardFloor + lateralDirection.y * lateralMagnitude,
+  };
 }
 
 export function pointInsideRipperSweep(

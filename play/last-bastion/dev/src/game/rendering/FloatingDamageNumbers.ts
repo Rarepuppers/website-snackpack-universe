@@ -24,8 +24,8 @@ export interface MergeableNumber {
 /** Window during which further hits on one enemy fold into the same number. */
 export const MERGE_WINDOW_MS = 100;
 
-/** Maximum live labels before the oldest is recycled. */
-export const MAX_ACTIVE_NUMBERS = 40;
+/** Maximum live labels before low-priority enemy text is recycled or dropped. */
+export const MAX_ACTIVE_NUMBERS = 24;
 
 const RISE_PIXELS = 26;
 const LIFETIME_MS = 620;
@@ -57,6 +57,27 @@ export function findMergeIndex(
     }
   }
   return best;
+}
+
+/**
+ * Select the oldest recyclable label. Enemy hits are disposable; incoming
+ * player damage and healing (negative ids) remain legible under crowd load.
+ */
+export function findRecycleIndex(
+  active: readonly MergeableNumber[],
+  allowPriorityRecycle: boolean,
+): number {
+  let oldestIndex = -1;
+  let oldestSpawn = Infinity;
+  for (let index = 0; index < active.length; index += 1) {
+    const entry = active[index];
+    if (!entry || (!allowPriorityRecycle && entry.enemyId < 0)) continue;
+    if (entry.spawnedAtMs < oldestSpawn) {
+      oldestSpawn = entry.spawnedAtMs;
+      oldestIndex = index;
+    }
+  }
+  return oldestIndex;
 }
 
 interface ActiveNumber extends MergeableNumber {
@@ -104,7 +125,8 @@ export class FloatingDamageNumbers {
       return;
     }
 
-    const text = this.acquire(nowMs);
+    const text = this.acquire(false);
+    if (!text) return;
     text
       .setText(formatStat(damage))
       .setPosition(xPx, yPx)
@@ -131,7 +153,8 @@ export class FloatingDamageNumbers {
 
   reportHealing(amount: number, xPx: number, yPx: number, nowMs: number): void {
     if (!(amount > 0)) return;
-    const text = this.acquire(nowMs);
+    const text = this.acquire(true);
+    if (!text) return;
     text
       .setText(`+${formatStat(amount)}`)
       .setPosition(xPx, yPx)
@@ -154,7 +177,8 @@ export class FloatingDamageNumbers {
 
   reportPlayerDamage(amount: number, xPx: number, yPx: number, nowMs: number): void {
     if (!(amount > 0)) return;
-    const text = this.acquire(nowMs);
+    const text = this.acquire(true);
+    if (!text) return;
     text
       .setText(playerDamageLabel(amount))
       .setPosition(xPx, yPx - 10)
@@ -175,21 +199,16 @@ export class FloatingDamageNumbers {
     });
   }
 
-  private acquire(nowMs: number): Phaser.GameObjects.Text {
+  private acquire(priority: boolean): Phaser.GameObjects.Text | null {
     const reused = this.free.pop();
     if (reused) return reused;
 
     if (this.active.length >= this.maxActive) {
-      // Recycle the oldest live label so the pool never grows without bound.
-      let oldestIndex = 0;
-      let oldestSpawn = this.active[0]?.spawnedAtMs ?? nowMs;
-      for (let index = 1; index < this.active.length; index += 1) {
-        const spawn = this.active[index]?.spawnedAtMs ?? nowMs;
-        if (spawn < oldestSpawn) {
-          oldestSpawn = spawn;
-          oldestIndex = index;
-        }
-      }
+      // Priority feedback displaces ordinary hits first. Ordinary hits never
+      // erase a player-damage/heal label just to add more arena noise.
+      let oldestIndex = findRecycleIndex(this.active, false);
+      if (oldestIndex < 0 && priority) oldestIndex = findRecycleIndex(this.active, true);
+      if (oldestIndex < 0) return null;
       const [oldest] = this.active.splice(oldestIndex, 1);
       if (oldest) {
         this.scene.tweens.killTweensOf(oldest.text);

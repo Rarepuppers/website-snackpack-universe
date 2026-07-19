@@ -4,6 +4,7 @@ import {
   BASE_WIDTH,
   planDisplayScale,
   setUiDeviceScale,
+  uiSafeArea,
   uiTextResolution,
 } from "./DisplayScaling";
 
@@ -23,6 +24,12 @@ describe("planDisplayScale", () => {
     const plan = planDisplayScale(1920, 1080, 1);
     expect(plan.deviceScale).toBe(2);
     expect(plan.zoom).toBe(2);
+  });
+
+  it("locks the 960x540 simulation canvas to exact Full HD and 4K multiples", () => {
+    expect([BASE_WIDTH, BASE_HEIGHT]).toEqual([960, 540]);
+    expect(planDisplayScale(1920, 1080, 1)).toEqual({ deviceScale: 2, zoom: 2 });
+    expect(planDisplayScale(3840, 2160, 1)).toEqual({ deviceScale: 4, zoom: 4 });
   });
 
   it("uses the extra room on a HiDPI display", () => {
@@ -51,6 +58,20 @@ describe("planDisplayScale", () => {
 
   it("tolerates a missing device pixel ratio", () => {
     expect(planDisplayScale(1920, 1080, 0).zoom).toBe(2);
+  });
+});
+
+describe("uiSafeArea", () => {
+  it("keeps every HUD edge inside a symmetric 960x540 title-safe rectangle", () => {
+    expect(uiSafeArea()).toEqual({
+      left: 19, top: 11, right: 941, bottom: 529, centreX: 480, centreY: 270,
+    });
+  });
+
+  it("projects to exact proportional margins at Full HD and 4K", () => {
+    const safe = uiSafeArea();
+    expect([safe.left * 2, safe.top * 2, (BASE_WIDTH - safe.right) * 2]).toEqual([38, 22, 38]);
+    expect([safe.left * 4, safe.top * 4, (BASE_HEIGHT - safe.bottom) * 4]).toEqual([76, 44, 44]);
   });
 });
 

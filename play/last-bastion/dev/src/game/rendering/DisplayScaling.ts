@@ -24,6 +24,38 @@ export interface DisplayScalePlan {
   deviceScale: number;
 }
 
+export interface UiSafeArea {
+  readonly left: number;
+  readonly top: number;
+  readonly right: number;
+  readonly bottom: number;
+  readonly centreX: number;
+  readonly centreY: number;
+}
+
+/**
+ * Title-safe HUD rectangle in simulation pixels. Keeping this contract in the
+ * 960×540 coordinate space means exact Full HD and 4K zooms preserve the same
+ * physical margin without presentation-specific branches.
+ */
+export function uiSafeArea(
+  width = BASE_WIDTH,
+  height = BASE_HEIGHT,
+  horizontalFraction = 0.02,
+  verticalFraction = 0.02,
+): UiSafeArea {
+  const horizontalInset = Math.max(12, Math.round(width * horizontalFraction));
+  const verticalInset = Math.max(8, Math.round(height * verticalFraction));
+  return {
+    left: horizontalInset,
+    top: verticalInset,
+    right: width - horizontalInset,
+    bottom: height - verticalInset,
+    centreX: width / 2,
+    centreY: height / 2,
+  };
+}
+
 /**
  * Largest whole device-pixel scale whose canvas still fits the window.
  * `sizeMultiplier` is the player's game-size preference (1 = fit the window);

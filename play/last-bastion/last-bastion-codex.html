@@ -470,6 +470,12 @@ const WEAPONS = [
 ];
 
 const MONSTERS = [
+  { id: "mon-corrupted-marine", name: "Corrupted Marine", glyph: "CM", tint: TINT.monster, status: "live", rank: "standard", tier: "Lab",
+    stats: { Health: "10", Armour: "1", Speed: "1.65 m/s", Damage: "1.8 knife", Tell: "0.72s" },
+    text: "Task 59 behavior lab: locks your position, throws a slow visible knife that cover can intercept, then recovers and waits out a cooldown. Normal-wave promotion remains held for Task 62." },
+  { id: "mon-infected-survivor", name: "Infected Survivor", glyph: "IS", tint: TINT.monster, status: "live", rank: "standard", tier: "Lab",
+    stats: { Health: "3", Armour: "0", Speed: "2.1 / 5.15 sprint", Damage: "1 contact", Stamina: "1.2s" },
+    text: "Task 58 behavior lab: staggered stamina sprints, acceleration and forward-biased pack separation preserve an escape lane. Production art is live; normal waves remain held until its Corrupted Human family is complete." },
   { id: "mon-scuttler", name: "Scuttler", glyph: "▲", tint: TINT.monster, status: "live", rank: "standard", tier: "Rush-adjacent",
     stats: { Health: "4", Armour: "0", Speed: "2.35 m/s", Damage: "1 contact", XP: "1" },
     text: "The unit every other number is judged against. Runs straight at you and teaches movement." },
@@ -509,6 +515,24 @@ const MONSTERS = [
   { id: "mon-burrower", name: "Burrower", glyph: "◮", tint: TINT.monster, status: "designed", rank: "standard", tier: "Slow",
     stats: { Health: "11", Armour: "1", Speed: "1.8 / 3.2 ripple", Damage: "1.5 contact / 2.5 eruption (→ 0.9 edge)", XP: "5" },
     text: "Fights normally, then digs in every ~9s: untargetable, charges as a visible ground ripple, erupts under a locked 0.7s ring. Capped 3s underground, long recovery after — the floor attacks, but always fairly." },
+  { id: "mon-nest-weaver", name: "Nest Weaver", glyph: "NW", tint: TINT.monster, status: "designed", rank: "standard", tier: "Summoner",
+    stats: { Pods: "2 live max", Charges: "finite", Hatch: "visible countdown", Threat: "reserved" },
+    text: "Mobile alien summoner. Locks a placement point, lays a destructible timed egg, then remains exposed. Eggs and their fixed hatch payload consume reserved threat/live slots; offspring never chain-spawn." },
+  { id: "mon-storm-savant", name: "Storm Savant", glyph: "SS", tint: TINT.monster, status: "designed", rank: "standard", tier: "Ranged",
+    stats: { Attack: "locked lightning chain", Nodes: "destructible", Hops: "capped", Recovery: "overload" },
+    text: "A rogue xenotechnician whose coil and psionic apparatus reads like magic. Conductive nodes mark fixed chain segments with shape, pulse, and audio cues; the discharge never retargets after lock." },
+  { id: "mon-scrap-skitterer", name: "Scrap Skitterer", glyph: "SK", tint: TINT.monster, status: "concept", rank: "standard", tier: "Rush",
+    stats: { Family: "Machine", Weakness: "Shock", Attack: "told rush", Hazard: "visible wreck" },
+    text: "Predictable android common that announces its acceleration. Its sparking wreck is brief and visible, never a hidden death hazard." },
+  { id: "mon-arc-warden", name: "Arc Warden", glyph: "AW", tint: TINT.monster, status: "concept", rank: "standard", tier: "Ranged",
+    stats: { Family: "Machine", Weakness: "Shock", Attack: "fixed beam lane", Cover: "intercepts" },
+    text: "Charges a narrow electrical lane with an endpoint marker, fires once along the locked direction, then repositions." },
+  { id: "mon-cyborg-reclaimer", name: "Cyborg Reclaimer", glyph: "CR", tint: TINT.monster, status: "concept", rank: "standard", tier: "Support",
+    stats: { Family: "Machine", Link: "1 active", Targets: "machine only", Channel: "interruptible" },
+    text: "Support bruiser that repairs one damaged machine through a visible tether. It cannot repair itself, bosses, or another Reclaimer." },
+  { id: "mon-foundry-fabricator", name: "Foundry Fabricator", glyph: "FF", tint: TINT.monster, status: "designed", rank: "standard", tier: "Summoner",
+    stats: { Charges: "finite", Children: "hard capped", Threat: "reserved", Channel: "interruptible" },
+    text: "Android summoner that channels at a visible output pad. Drones and turrets consume reserved slots, cannot fabricate, and power down when their owner exits." },
 
   { id: "mon-aurum-hoarder", name: "Aurum Hoarder", glyph: "◆", tint: TINT.treasure, status: "live", rank: "treasure", tier: "Optional",
     stats: { Health: "4–6× same-wave common", Armour: "moderate / breakable", Speed: "catchable flee", Damage: "negligible", Reward: "Scrap + supply cache" },
@@ -545,6 +569,18 @@ const MONSTERS = [
   { id: "mon-rift-stalker", name: "Rift Stalker", glyph: "⬡", tint: TINT.boss, status: "live", rank: "mini-boss", tier: "Burst",
     stats: { Health: "520", Armour: "2 flat", Speed: "2.1 m/s / warp", Damage: "3.5 pounce / 3 slash", Fight: "45–90s" },
     text: "Production-art cloaked hunter with a marked warp pounce, rift-spike fan, close slash, and chained-warp frenzy below 20%." },
+  { id: "mon-synapse-herald", name: "Synapse Herald", glyph: "SH", tint: TINT.boss, status: "concept", rank: "mini-boss", tier: "Telegraph",
+    stats: { Identity: "marked zones", Pool: "future", Fight: "45–90s", Reward: "guaranteed" },
+    text: "Lower-risk fourth-pool candidate built around lunge chains, delayed danger zones, and a temporary Brain Blob link." },
+  { id: "mon-assembly-prime", name: "Assembly Prime", glyph: "AP", tint: TINT.boss, status: "concept", rank: "mini-boss", tier: "Summoner",
+    stats: { Identity: "fabrication", Pool: "future", Caps: "unchanged in frenzy", Fight: "45–90s" },
+    text: "Machine-family apex with interruptible fabrication, rotating turret lanes, and one finite drone recall. Held until the Fabricator family is proven." },
+  { id: "mon-storm-regent", name: "Storm Regent", glyph: "SR", tint: TINT.boss, status: "concept", rank: "mini-boss", tier: "Control",
+    stats: { Identity: "lightning nodes", Pool: "future", Retarget: "never after tell", Fight: "45–90s" },
+    text: "Conductive arena puzzle with destructible nodes, locked chain lanes, and a close coil burst. Held until Storm Savant accessibility tests pass." },
+  { id: "mon-abomination-prime", name: "Abomination Prime", glyph: "AP", tint: TINT.boss, status: "concept", rank: "mini-boss", tier: "Slow",
+    stats: { Identity: "corrupted apex", Pool: "future", Attack: "thrown biomass", Fight: "45–90s" },
+    text: "Deferred corrupted-human apex. Adds one fully telegraphed biomass throw only after the base Abomination's slam, grab, and recovery are accepted." },
 
   { id: "mon-bastion-eater", name: "The Bastion Eater", glyph: "☠", tint: TINT.boss, status: "live", rank: "boss", tier: "Authored",
     stats: { Health: "2400", Armour: "shutters", Speed: "—", Damage: "5 claw", Fight: "3–5 min" },
@@ -1028,6 +1064,10 @@ function render() {
       <tr><td><b>Destructible battlefield terrain</b></td><td>${badge("live")}</td><td>Numeric durability, conditional HP bars, route-safe destruction, and Batch R's 28 production prop states are live</td></tr>
       <tr><td><b>Player-hit accessibility</b></td><td>${badge("live")}</td><td>Larger outlined negative damage, a persisted reduced-flash fallback, and an opt-in actor-rim/projectile-halo comparison lab</td></tr>
       <tr><td><b>Mini-boss mobility pass</b></td><td>${badge("live")}</td><td>Range-aware lateral setup movement and larger threat silhouettes for all three mini-bosses, preserving tells and recovery windows</td></tr>
+      <tr><td><b>Infected Survivor movement</b></td><td>${badge("live")}</td><td>Batch M production body, finite sprint stamina, acceleration/deceleration, capped pack steering and route-safe behavior lab; normal-wave promotion remains held</td></tr>
+      <tr><td><b>Corrupted Marine knife lifecycle</b></td><td>${badge("live")}</td><td>Locked tell, slow visible knife, cover/player/expiry telemetry, recovery and cooldown are live in the Batch M behavior lab</td></tr>
+      <tr><td><b>Summoner and machine enemy expansion</b></td><td>${badge("designed")}</td><td>Nest Weaver timed eggs, Storm Savant locked lightning paths, and a capped android/cyborg family culminating in Foundry Fabricator</td></tr>
+      <tr><td><b>Expanded mini-boss pool</b></td><td>${badge("concept")}</td><td>Synapse Herald, Assembly Prime, Storm Regent, and Abomination Prime follow only after their standard-family behavior gates</td></tr>
       <tr><td><b>Sector campaign</b></td><td>${badge("concept")}</td><td>Multiple faction-owned sector maps after the first expedition is proven</td></tr>
       </tbody></table></div>`;
   }

@@ -30,6 +30,8 @@ export const DENSITY_CAPACITY_ENEMY_COUNT = 56;
 const ROLE: Readonly<Record<EnemyType, EnemyPressureRole>> = Object.freeze({
   scuttler: "pursuit",
   "swarm-scuttler": "pursuit",
+  "infected-survivor": "pursuit",
+  "corrupted-marine": "ranged",
   "egg-cluster": "specialist",
   "brain-blob": "pursuit",
   "slime-spitter": "ranged",
@@ -50,6 +52,8 @@ const ROLE: Readonly<Record<EnemyType, EnemyPressureRole>> = Object.freeze({
 export const ENEMY_THREAT_COST: Readonly<Record<EnemyType, number>> = Object.freeze({
   scuttler: 1,
   "swarm-scuttler": 1,
+  "infected-survivor": 1,
+  "corrupted-marine": 4,
   "egg-cluster": 2,
   "brain-blob": 2,
   "slime-spitter": 3,

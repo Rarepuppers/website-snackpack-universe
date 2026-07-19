@@ -132,6 +132,7 @@
           <div class="game-readout">
             <span class="readout-chip"><span>Time</span><b id="sol-time">0:00</b></span>
             <span class="readout-chip"><span>Moves</span><b id="sol-moves">0</b></span>
+            <span class="readout-chip"><span>Deal</span><b id="sol-deal">1</b></span>
           </div>
           <div class="game-controls">
             <div class="seg" role="group" aria-label="Draw mode">
@@ -265,11 +266,18 @@
   }
   function pushHistory() { history.push(snapshot()); if (history.length > 200) history.shift(); }
 
-  function makeDeck() {
+  var currentDealSeed = Math.floor(Math.random() * 2147483647) || 1;
+
+  function makeDeck(seed) {
     var d = [];
     for (var s = 0; s < 4; s++) for (var r = 1; r <= 13; r++) d.push({ r: r, s: s, up: false });
+    var value = (seed >>> 0) || 1;
+    function random() {
+      value = (value * 1664525 + 1013904223) >>> 0;
+      return value / 4294967296;
+    }
     for (var i = d.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
+      var j = Math.floor(random() * (i + 1));
       var t = d[i]; d[i] = d[j]; d[j] = t;
     }
     return d;
@@ -533,12 +541,28 @@
 
   function dealSolvableDeck(drawMode) {
     var lastAttempt = null;
+    var seed = currentDealSeed;
     for (var attempt = 0; attempt < SOLVER_MAX_ATTEMPTS; attempt++) {
-      var dealt = dealFromDeck(makeDeck());
+      var dealt = dealFromDeck(makeDeck(seed));
       lastAttempt = dealt;
-      if (solverIsSolvable(dealt, drawMode)) return dealt;
+      if (solverIsSolvable(dealt, drawMode)) { currentDealSeed = seed; return dealt; }
+      seed = seed >= 2147483647 ? 1 : seed + 1;
     }
-    return lastAttempt; // couldn't prove one in budget — deal the last shuffle rather than stall New Game
+    // A bounded search may fail to prove a random deal in time. Fall back to
+    // a deterministic, foundation-ordered deal rather than showing an
+    // unverified shuffle.
+    var safe = [[], [], [], [], [], [], []], used = {};
+    for (var col = 0; col < 7; col++) {
+      var suit = (seed + col) % 4, rank = col < 4 ? 1 : 2;
+      safe[col].push({ r: rank, s: suit, up: true });
+      used[rank + "-" + suit] = true;
+    }
+    var safeStock = [];
+    for (var r = 1; r <= 13; r++) for (var s = 0; s < 4; s++) {
+      if (!used[r + "-" + s]) safeStock.push({ r: r, s: s, up: false });
+    }
+    currentDealSeed = seed;
+    return { tableau: safe, stock: safeStock.reverse() };
   }
 
   // Dealing runs a bounded solver search before committing to a deal, which
@@ -556,6 +580,7 @@
     render();
     setTimeout(function () {
       var dealt = dealSolvableDeck(drawN);
+      document.getElementById("sol-deal").textContent = String(currentDealSeed);
       tableau = dealt.tableau;
       stock = dealt.stock;
       statusEl.textContent = "Click a card to select it, then click where it should go.";
@@ -954,13 +979,14 @@
     render();
   });
 
-  newBtn.addEventListener("click", function () { deal(); });
+  newBtn.addEventListener("click", function () { currentDealSeed = currentDealSeed >= 2147483647 ? 1 : currentDealSeed + 1; deal(); });
   document.querySelectorAll(".seg [data-draw]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       drawN = +btn.dataset.draw;
       document.querySelectorAll(".seg [data-draw]").forEach(function (b) {
         b.setAttribute("aria-pressed", String(b === btn));
       });
+      currentDealSeed = currentDealSeed >= 2147483647 ? 1 : currentDealSeed + 1;
       deal();
     });
   });

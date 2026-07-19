@@ -342,11 +342,13 @@ This family introduces recognisable human silhouettes corrupted by the same biom
 
 | Unit | Role | Core behaviour | Readability and production needs |
 | --- | --- | --- | --- |
-| Infected Survivor | Fast swarm common | Erratic short sprints, brief hesitation before a group rush, low health, no ranged attack | Two gait phases, crouched rush tell, stumble/recovery, defeat; capped pack size and spawn cadence prevent body-block walls |
-| Corrupted Marine | Ranged skirmisher | Repositions around cover, raises one arm for a locked knife throw, throws a slow visible blade, then must retrieve/reform it or endure a long cooldown | Directional body states plus separate knife, hand glint, throw arc accent, cover/player impacts, and disarm/stagger; never fires from off-screen without an edge warning |
+| Infected Survivor | Fast swarm common | Erratic stamina-limited sprints, brief staggered hesitation before a group rush, low health, no ranged attack | **Task 58 lab live:** two gait phases, 1.2s stamina, 5.15 m/s peak, acceleration/deceleration, eight-unit cap, forward-floored separation, and tested escape lanes; normal waves held until family completion |
+| Corrupted Marine | Ranged skirmisher | **Task 59 lab live:** 0.72s locked tell → visible 6 m/s knife → cover/player/expiry impact → 0.65s recovery and 2.8s cooldown | Batch M directional body and all eight knife effects integrated with source telemetry and deterministic dodge tests; normal waves held for off-screen warnings and family completion |
 | Abomination | Large elite tank | A swollen composite humanoid assembled from several infected bodies; slow shamble, telegraphed body slam, short biomass grab lane, and a vulnerable recovery after overcommitting | Large 128–160 px body, clear limb grouping, attack tells that extend beyond the mass, cover impact, stagger, and non-gory collapse; use as an elite before any boss version |
 
 The future **Abomination Prime** mini-boss may build on the elite only after the base Abomination is playtested. It should add one arena-scale move—such as tearing off and throwing a regenerating biomass chunk—plus phase timing and a boss portrait, rather than only increasing health and size. The thrown chunk requires its own warning, projectile, landing impact, lingering hazard state, and expiry art.
+
+Controller movement and aim use separate scaled radial dead zones: 0.18 for movement, preserving low-speed steering, and 0.25 for aim, suppressing reticle drift. Values inside the dead zone resolve to zero; the remaining magnitude is rescaled continuously to 0–1. These are input rules, not enemy tuning, and must remain testable without Phaser.
 
 ### Later biome enemy families
 
@@ -361,6 +363,21 @@ Elemental and malevolent entities are viable if translated into Last Bastion's s
 | Machine uprising | Scrap Skitterer, Turret Crawler | Sentinel Hulk | Foundry Mind | Robots/cyborgs/rogue AI: predictable mechanical patterns the player can learn exactly, deployable stationary turrets with capped count and visible arcs, armour-heavy bodies weak to Shock/Overload; a destroyed machine may leave briefly hazardous sparking wreckage but never an invisible hazard |
 
 The Luminar Ascendancy and Machine uprising are the faction seeds for the future sector campaign described in `last-bastion-game.md` ("Sector campaign — future multi-map structure"); the Corrupted human outbreak family above is the third campaign faction that already has a full design.
+
+### Summoners, rogue science, and machine uprising expansion
+
+Summons are encounter pressure reserved in advance, never free extra threat. A summoner owns a finite charge count, a hard live-child cap, an interruptible or punishable creation phase, and a cleanup rule. Summoned units cannot summon again. Director tests must prove the advertised live-unit and threat ceilings still hold after every hatch or fabrication.
+
+| Unit | Rank/role | Behavior gate | Counterplay and production hold |
+| --- | --- | --- | --- |
+| Nest Weaver | Alien standard/specialist summoner | Mobile breeder locks a placement point, lays a destructible egg pod, then remains exposed; an egg that survives its visible countdown hatches a small fixed payload | Maximum two live pods per Weaver and one Weaver in an early encounter; eggs and offspring consume reserved threat/live slots; no chain spawning; art requires carry, lay, exhausted recovery, egg countdown, hatch, interrupted hatch, and defeat states only after route/cap tests pass |
+| Storm Savant | Rogue scientist ranged specialist | Experimental coil and psionic technology reads as magic/lightning: it plants visible conductive nodes, locks a finite chain path, then discharges along those exact segments | Nodes are destructible, locked chains never retarget, hops and simultaneous paths are capped, cover interaction is explicit, and at least one walkable escape lane remains; line shape, node glyph, pulse cadence, and audio communicate danger without relying on cyan colour |
+| Scrap Skitterer | Android common | Small predictable rush drone with a brief acceleration tell and Shock vulnerability | No death explosion by default; sparking wreck expires visibly and cannot hide under crowds |
+| Arc Warden | Android ranged specialist | Charges a narrow fixed electrical lane, then fires once and repositions | Long charge, fixed aim, endpoint marker, and cover interception; never chains from the player to an unseen target |
+| Cyborg Reclaimer | Cyborg support bruiser | Walks to one damaged machine and channels a capped repair or armour patch | Bright tether and interruptible channel; cannot heal itself, bosses, or another Reclaimer; one active repair link per encounter |
+| Foundry Fabricator | Android summoner | Channels at a visible fabrication pad to deploy a finite-charge drone or stationary turret | Spawn consumes reserved threat/live slots; pad can be interrupted; turrets show their fire arc; owner exit destroys or safely powers down children; no recursive fabrication |
+
+The recommended first new mini-bosses are **Assembly Prime** (interruptible fabrication plus rotating lane control) and **Storm Regent** (a larger but still finite conductive-node puzzle). They remain design-only until their standard-family mechanics survive mixed-wave testing. Synapse Herald remains the lower-risk fourth-pool candidate; Abomination Prime remains last because grab, thrown biomass, and crowd-scale body readability need the most bespoke validation.
 
 Recommended order after the Web MVP is **Magma breach → Cryo incursion → Void dominion**. Magma reuses the established hazard and armour systems, Cryo adds controlled terrain/status depth, and Void is reserved until teleport/projectile readability is proven. Each family should start with two standards and one elite; only then should its mini-boss enter the seeded pool.
 
@@ -402,6 +419,9 @@ Mini-bosses use bespoke silhouettes, two to four attacks, a short entrance, a bo
 | Brood Warden — vertical-slice pool | Spawn-priority test | Egg placement, guarding cleave, acid volley; 50% swarm rush; faster/larger frenzy at 20% | Production Batch D1 and Task 57 mobility pass integrated |
 | Rift Stalker | Mobility/projectile test | Warp strike, projectile fan, decoy mark; 20% chained warp | Production Batch O and Task 57 mobility pass integrated |
 | Synapse Herald | Telegraph mastery | Lunge chain, marked danger zones, temporary Brain Blob link | Later pool expansion |
+| Assembly Prime | Machine-summoner mastery | Interruptible fabrication, rotating turret lanes, one finite drone recall; final-20% faster assembly but unchanged caps | Only after Foundry Fabricator and mixed machine-family gates |
+| Storm Regent | Conductive arena puzzle | Destructible lightning nodes, locked chain lanes, close-range coil burst; no retarget after tell | Only after Storm Savant colour-independent chain tests |
+| Abomination Prime | Corrupted-human apex | Slam/grab foundation plus one telegraphed thrown-biomass move | Only after the base Abomination and mixed-family promotion |
 
 The initial random pool should grow only through fully implemented bosses, with no immediate repeat when run history is available. The eligible pool now contains all three entries: Siege Crusher, Brood Warden, and Rift Stalker (behavior gate and Production Batch O completed 19 July 2026 — cloaked stalk, decoy-mark warp pounce, rift-spike fan, close slash, final-20% chained-warp frenzy). Codex must implement and rules-test each complete move set before generating its production sprites.
 

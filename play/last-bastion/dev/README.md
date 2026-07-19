@@ -14,6 +14,8 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/` — the front-end shell: Title → Menu → How to Play / Settings / Lab / Character select (Task 37 behavior gate; code-native placeholder panels until Batch G). `?screen=title` forces the shell; any review parameter below skips it.
 - `/play/last-bastion/?screen=game` — styled normal ten-wave run with authored elite cadence, seeded mini-boss selection, and the Bastion Eater finale
 - `/play/last-bastion/?scenario=batch-j&rims=1` — Task 56 actor-rim and projectile-halo A/B lab (`rims=0` is the control; add `flash=0` for reduced-flash feedback)
+- `/play/last-bastion/?scenario=infected-survivor&loadout=vertical` — Task 58 sprint-stamina, acceleration, and pack-steering lab (Batch M survivor art)
+- `/play/last-bastion/?scenario=corrupted-marine&loadout=vertical` — Task 59 locked knife telegraph, slow projectile, cover/player impact, and cooldown lab
 - `/play/last-bastion/?screen=map` — the tuned playable 20-node expedition (Tasks 38–39, 48–49): selecting a route autosaves a pending node and deploys into depth-budgeted multi-wave Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, or Bastion Eater encounters; every route crosses two campaign shops, and final victory commits the carried build and returns to the map. `&mapseed=N` reviews a deterministic fresh chart
 - `/play/last-bastion/?screen=summary&summarydemo=1` — deterministic populated Task 50 run-summary review without changing the local save
 - `/play/last-bastion/?screen=game&autofire=0` — Task 53 Manual-fire HUD/input review (`autofire=1` restores the default; both persist)

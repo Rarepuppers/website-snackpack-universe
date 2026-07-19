@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { findMergeIndex, MERGE_WINDOW_MS, playerDamageLabel, type MergeableNumber } from "./FloatingDamageNumbers";
+import {
+  findMergeIndex,
+  findRecycleIndex,
+  MAX_ACTIVE_NUMBERS,
+  MERGE_WINDOW_MS,
+  playerDamageLabel,
+  type MergeableNumber,
+} from "./FloatingDamageNumbers";
 
 describe("findMergeIndex", () => {
   it("formats player damage as a distinct leading-minus label", () => {
@@ -32,5 +39,27 @@ describe("findMergeIndex", () => {
 
   it("returns -1 for an empty set", () => {
     expect(findMergeIndex([], 1, 0)).toBe(-1);
+  });
+});
+
+describe("damage-number density", () => {
+  const active: MergeableNumber[] = [
+    { enemyId: -2, spawnedAtMs: 100 },
+    { enemyId: 7, spawnedAtMs: 200 },
+    { enemyId: -1, spawnedAtMs: 50 },
+    { enemyId: 8, spawnedAtMs: 150 },
+  ];
+
+  it("uses a readable 24-label ceiling", () => {
+    expect(MAX_ACTIVE_NUMBERS).toBe(24);
+  });
+
+  it("recycles the oldest ordinary enemy number before priority feedback", () => {
+    expect(findRecycleIndex(active, false)).toBe(3);
+  });
+
+  it("can select priority feedback only when a priority label must be admitted", () => {
+    expect(findRecycleIndex(active, true)).toBe(2);
+    expect(findRecycleIndex(active.filter((entry) => entry.enemyId < 0), false)).toBe(-1);
   });
 });

@@ -31,6 +31,26 @@ export const RADIAL_PULSE_TELL_SECONDS = 0.45;
 export const MAX_MAJOR_TELEGRAPH_GROUPS = 2;
 export const MAX_RAIN_ARENA_COVERAGE = 0.35;
 
+export interface TelegraphShapeCue {
+  /** Stable non-colour identity used by both code and authored decals. */
+  readonly signature: "ring-cross" | "reticle" | "wedge" | "double-rail" | "concentric" | "edge-chevron";
+  readonly edgeWeight: number;
+  readonly markerCount: number;
+}
+
+const TELEGRAPH_SHAPE_CUES: Readonly<Record<CombatTelegraphKind, TelegraphShapeCue>> = Object.freeze({
+  "ground-slam": { signature: "ring-cross", edgeWeight: 4, markerCount: 4 },
+  "rain-of-spines": { signature: "reticle", edgeWeight: 3, markerCount: 4 },
+  "sweeping-arc": { signature: "wedge", edgeWeight: 5, markerCount: 2 },
+  beam: { signature: "double-rail", edgeWeight: 4, markerCount: 2 },
+  "radial-pulse": { signature: "concentric", edgeWeight: 3, markerCount: 8 },
+  "offscreen-warning": { signature: "edge-chevron", edgeWeight: 4, markerCount: 1 },
+});
+
+export function telegraphShapeCue(kind: CombatTelegraphKind): TelegraphShapeCue {
+  return TELEGRAPH_SHAPE_CUES[kind];
+}
+
 const RAIN_RADIUS_METRES = 0.82;
 const RAIN_OFFSETS: readonly Vector2Data[] = Object.freeze([
   { x: 0, y: 0 },

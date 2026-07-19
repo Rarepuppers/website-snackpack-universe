@@ -4,6 +4,8 @@ import type { EnemySteeringProfileId } from "../combat/EnemySteeringProfiles";
 export type EnemyType =
   | "scuttler"
   | "swarm-scuttler"
+  | "infected-survivor"
+  | "corrupted-marine"
   | "egg-cluster"
   | "brain-blob"
   | "slime-spitter"
@@ -54,6 +56,25 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 1,
     experienceValue: 1,
     steeringProfile: "rushPack",
+  }),
+  "infected-survivor": enemy({
+    id: "infected-survivor",
+    maxHealth: 3,
+    radiusMetres: 0.38,
+    movementSpeedMetresPerSecond: 2.1,
+    contactDamage: 1,
+    experienceValue: 1,
+    steeringProfile: "rushPack",
+  }),
+  "corrupted-marine": enemy({
+    id: "corrupted-marine",
+    maxHealth: 10,
+    radiusMetres: 0.5,
+    movementSpeedMetresPerSecond: 1.65,
+    contactDamage: 0.5,
+    experienceValue: 4,
+    armour: 1,
+    steeringProfile: "chaseAndFire",
   }),
   "egg-cluster": enemy({
     id: "egg-cluster",

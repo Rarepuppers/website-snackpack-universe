@@ -26,7 +26,10 @@ export interface GamepadStateSnapshot {
   rightStickPressed: boolean;
 }
 
-export const GAMEPAD_DEADZONE = 0.25;
+export const GAMEPAD_MOVE_DEADZONE = 0.18;
+export const GAMEPAD_AIM_DEADZONE = 0.25;
+/** Backward-compatible default for callers that do not distinguish the stick role. */
+export const GAMEPAD_DEADZONE = GAMEPAD_AIM_DEADZONE;
 export const DISCONNECTED_GAMEPAD: Readonly<GamepadStateSnapshot> = Object.freeze({
   connected: false,
   leftStick: { x: 0, y: 0 },
@@ -42,11 +45,12 @@ export const DISCONNECTED_GAMEPAD: Readonly<GamepadStateSnapshot> = Object.freez
 
 /** Scaled radial deadzone: dead centre is ignored, the rest rescales to 0..1. */
 export function applyDeadzone(stick: Vector2Data, deadzone = GAMEPAD_DEADZONE): Vector2Data {
+  const safeDeadzone = Math.min(0.95, Math.max(0, deadzone));
   const magnitude = Math.hypot(stick.x, stick.y);
-  if (magnitude <= deadzone) {
+  if (magnitude <= safeDeadzone) {
     return { x: 0, y: 0 };
   }
-  const scaled = Math.min((magnitude - deadzone) / (1 - deadzone), 1);
+  const scaled = Math.min((magnitude - safeDeadzone) / (1 - safeDeadzone), 1);
   return {
     x: (stick.x / magnitude) * scaled,
     y: (stick.y / magnitude) * scaled,
@@ -110,8 +114,8 @@ function buildIntent(
     };
   }
 
-  const move = applyDeadzone(state.leftStick);
-  const aimStick = applyDeadzone(state.rightStick);
+  const move = applyDeadzone(state.leftStick, GAMEPAD_MOVE_DEADZONE);
+  const aimStick = applyDeadzone(state.rightStick, GAMEPAD_AIM_DEADZONE);
   const aimMagnitude = Math.hypot(aimStick.x, aimStick.y);
 
   return {

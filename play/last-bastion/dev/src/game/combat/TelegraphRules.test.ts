@@ -8,6 +8,7 @@ import {
   offscreenWarningPosition,
   pointInsideTelegraphedArc,
   rainCoverageFraction,
+  telegraphShapeCue,
 } from "./TelegraphRules";
 
 describe("code-authoritative telegraph rules", () => {
@@ -32,5 +33,13 @@ describe("code-authoritative telegraph rules", () => {
     const viewport = { x: 0, y: 0, width: 10, height: 6 };
     expect(offscreenWarningPosition({ x: 4, y: 3 }, viewport)).toBeNull();
     expect(offscreenWarningPosition({ x: 14, y: -2 }, viewport)).toEqual({ x: 9.5, y: 0.5 });
+  });
+
+  it("gives every danger family a unique colour-independent shape signature", () => {
+    const kinds = ["ground-slam", "rain-of-spines", "sweeping-arc", "beam", "radial-pulse", "offscreen-warning"] as const;
+    const cues = kinds.map(telegraphShapeCue);
+    expect(new Set(cues.map((cue) => cue.signature)).size).toBe(kinds.length);
+    expect(cues.every((cue) => cue.edgeWeight >= 3 && cue.markerCount >= 1)).toBe(true);
+    expect(cues.every((cue) => !("colour" in cue))).toBe(true);
   });
 });

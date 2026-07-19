@@ -8,7 +8,7 @@ import {
   formatCooldownSeconds,
   weaponTileAbbreviation,
 } from "./CooldownPresentation";
-import { uiTextResolution } from "../rendering/DisplayScaling";
+import { uiSafeArea, uiTextResolution } from "../rendering/DisplayScaling";
 
 interface CooldownTileView {
   readonly background: Phaser.GameObjects.Rectangle;
@@ -57,35 +57,38 @@ export class CombatHud {
   private readonly statusTray: StatusTrayView[] = [];
   private readonly actionTiles: CooldownTileView[] = [];
   private readonly cadenceTiles: CooldownTileView[] = [];
+  private readonly radarCentre: Readonly<{ x: number; y: number }>;
 
   constructor(scene: Phaser.Scene, showDebug: boolean, productionArt = true, cooldownTimersEnabled = true) {
     this.productionArt = productionArt;
     this.cooldownTimersEnabled = cooldownTimersEnabled;
+    const safe = uiSafeArea(scene.scale.width, scene.scale.height);
+    this.radarCentre = { x: safe.right - 24, y: safe.top + 24 };
 
     // Slim top-left dock: identity, HP, XP, Scrap. Code-drawn flat panel by
     // creator direction (18 Jul review) — minimal chrome, maximum play space.
     const dockWidth = 246;
-    scene.add.rectangle(10, 8, dockWidth, 54, 0x0b121c, 0.82).setOrigin(0)
+    scene.add.rectangle(safe.left, safe.top, dockWidth, 54, 0x0b121c, 0.82).setOrigin(0)
       .setStrokeStyle(1, 0x334a60).setDepth(2000);
-    this.statsText = scene.add.text(20, 13, "", hudText("#c7d6e4", "10px")).setDepth(2001);
-    scene.add.rectangle(20, 30, 148, 7, 0x24131a).setOrigin(0, 0.5)
+    this.statsText = scene.add.text(safe.left + 10, safe.top + 5, "", hudText("#c7d6e4", "10px")).setDepth(2001);
+    scene.add.rectangle(safe.left + 10, safe.top + 22, 148, 7, 0x24131a).setOrigin(0, 0.5)
       .setStrokeStyle(1, 0x6e3442).setDepth(2001);
-    this.healthFill = scene.add.rectangle(21, 30, 146, 5, 0xe55a67).setOrigin(0, 0.5).setDepth(2002);
-    this.healthText = scene.add.text(174, 25, "", hudText("#e8929a", "10px")).setDepth(2001);
-    scene.add.rectangle(20, 42, 148, 6, 0x102b31).setOrigin(0, 0.5)
+    this.healthFill = scene.add.rectangle(safe.left + 11, safe.top + 22, 146, 5, 0xe55a67).setOrigin(0, 0.5).setDepth(2002);
+    this.healthText = scene.add.text(safe.left + 164, safe.top + 17, "", hudText("#e8929a", "10px")).setDepth(2001);
+    scene.add.rectangle(safe.left + 10, safe.top + 34, 148, 6, 0x102b31).setOrigin(0, 0.5)
       .setStrokeStyle(1, 0x346d76).setDepth(2001);
-    this.xpFill = scene.add.rectangle(21, 42, 146, 4, 0x5de2e7).setOrigin(0, 0.5).setDepth(2002);
-    this.xpText = scene.add.text(174, 37, "", hudText("#7fd6da", "10px")).setDepth(2001);
-    this.scrapIcon = scene.add.image(21, 50, "scrap-shop-hud-v1", 0)
+    this.xpFill = scene.add.rectangle(safe.left + 11, safe.top + 34, 146, 4, 0x5de2e7).setOrigin(0, 0.5).setDepth(2002);
+    this.xpText = scene.add.text(safe.left + 164, safe.top + 29, "", hudText("#7fd6da", "10px")).setDepth(2001);
+    this.scrapIcon = scene.add.image(safe.left + 11, safe.top + 42, "scrap-shop-hud-v1", 0)
       .setDisplaySize(16, 16).setOrigin(0, 0.5).setDepth(2002).setVisible(false);
-    this.scrapText = scene.add.text(34, 45, "", hudText("#ffd36b", "10px"))
+    this.scrapText = scene.add.text(safe.left + 24, safe.top + 37, "", hudText("#ffd36b", "10px"))
       .setDepth(2002).setVisible(false);
     for (let index = 0; index < 12; index += 1) {
-      this.weaponPips.push(scene.add.rectangle(150 + index * 9, 50, 7, 5, 0x273747)
+      this.weaponPips.push(scene.add.rectangle(safe.left + 140 + index * 9, safe.top + 42, 7, 5, 0x273747)
         .setStrokeStyle(1, 0x4f6e8d).setDepth(2001));
     }
     for (let index = 0; index < 6; index += 1) {
-      this.statusTray.push(createStatusTrayView(scene, 32 + index * 44, 90, productionArt));
+      this.statusTray.push(createStatusTrayView(scene, safe.left + 22 + index * 44, safe.top + 82, productionArt));
     }
 
     // Top-centre: wave and timer only. Roll/ultimate readiness already lives
@@ -97,11 +100,11 @@ export class CombatHud {
 
     // Top-right: minimal radar placeholder. No live contacts yet — this
     // reserves the corner for a future minimap rather than a blank panel.
-    scene.add.circle(925, 32, 24, 0x0b121c, 0.82).setStrokeStyle(1, 0x334a60).setDepth(2000);
-    this.radarDot = scene.add.circle(925, 32, 3, 0x68e4e8).setDepth(2002);
-    this.fireModePanel = scene.add.rectangle(916, 68, 80, 18, 0x0b121c, 0.88)
+    scene.add.circle(this.radarCentre.x, this.radarCentre.y, 24, 0x0b121c, 0.82).setStrokeStyle(1, 0x334a60).setDepth(2000);
+    this.radarDot = scene.add.circle(this.radarCentre.x, this.radarCentre.y, 3, 0x68e4e8).setDepth(2002);
+    this.fireModePanel = scene.add.rectangle(safe.right - 40, safe.top + 60, 80, 18, 0x0b121c, 0.88)
       .setStrokeStyle(1, 0x68e4e8).setDepth(2000);
-    this.fireModeText = scene.add.text(916, 68, "", hudText("#68e4e8", "9px"))
+    this.fireModeText = scene.add.text(safe.right - 40, safe.top + 60, "", hudText("#68e4e8", "9px"))
       .setOrigin(0.5).setDepth(2001);
 
     const actionDefinitions = [
@@ -114,7 +117,7 @@ export class CombatHud {
       this.actionTiles.push(createCooldownTile(
         scene,
         378 + index * 68,
-        503,
+        safe.bottom - 26,
         54,
         definition.label,
         definition.binding,
@@ -140,7 +143,7 @@ export class CombatHud {
     this.statePanel = scene.add.container(480, 270, [stateBackground, this.stateText])
       .setDepth(2100).setVisible(false);
 
-    this.debugText = scene.add.text(18, 506, "", {
+    this.debugText = scene.add.text(safe.left, safe.bottom - 23, "", {
       ...hudText("#8fb2c9", "10px"),
       backgroundColor: "#0b121ccc",
       padding: { x: 5, y: 3 },
@@ -204,8 +207,8 @@ export class CombatHud {
     this.scrapIcon.setVisible(scrapVisible).setFrame(spent ? 2 : secured ? 1 : 0);
     this.scrapText.setVisible(scrapVisible).setText(`${snapshot.securedScrap}`);
     this.radarDot.setPosition(
-      925 + (snapshot.playerPosition.x / snapshot.arena.widthMetres - 0.5) * 40,
-      32 + (snapshot.playerPosition.y / snapshot.arena.heightMetres - 0.5) * 40,
+      this.radarCentre.x + (snapshot.playerPosition.x / snapshot.arena.widthMetres - 0.5) * 40,
+      this.radarCentre.y + (snapshot.playerPosition.y / snapshot.arena.heightMetres - 0.5) * 40,
     );
     this.fireModePanel.setStrokeStyle(1, snapshot.autoFireEnabled ? 0x68e4e8 : 0xffb15c);
     this.fireModeText
@@ -495,6 +498,8 @@ const SCENARIO_LABELS: Readonly<Record<CombatScenario, string>> = Object.freeze(
   "siege-crusher": "CRUSHER LAB",
   "brood-warden": "BROOD LAB",
   "rift-stalker": "RIFT LAB",
+  "infected-survivor": "SURVIVOR LAB",
+  "corrupted-marine": "MARINE LAB",
   ripper: "RIPPER LAB",
   "razor-scuttler": "RAZOR LAB",
   quillback: "QUILLBACK LAB",
