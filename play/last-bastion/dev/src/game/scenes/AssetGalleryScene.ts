@@ -15,6 +15,10 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "o") {
+      this.createBatchOGallery();
+      return;
+    }
     if (batch === "j2") {
       this.createBatchJ2Gallery();
       return;
@@ -497,6 +501,33 @@ export class AssetGalleryScene extends Phaser.Scene {
     }
 
     this.add.text(480, 500, "Review: ?mode=gallery&batch=n • Encounter: ?scenario=aurum-hoarder&loadout=bulwark", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchOGallery(): void {
+    this.add.text(20, 14, "LAST BASTION — RIFT STALKER PRODUCTION ASSET BATCH O", style("#ffffff", "17px"));
+    this.add.text(20, 38, "25 runtime visuals • retained Steam-quality masters • simulation-owned cloak, warp, hit geometry, and timing", style("#8fb2c9", "11px"));
+
+    this.add.text(20, 68, "BODY — cloak / marked wind-up / warp strike / exhausted frenzy × S N E W", style("#d696ff", "11px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const x = 62 + (frame % 8) * 119;
+      const y = 132 + Math.floor(frame / 8) * 112;
+      this.add.sprite(x, y, "rift-stalker-v1", frame).setScale(0.72);
+      this.drawPivot(x, y);
+      this.add.text(x, y + 44, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 300, "EVENT EFFECTS — warp-out / warp-in / mark / pounce / slash / frenzy / defeat / afterglow", style("#68e4e8", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 64 + frame * 118;
+      this.add.sprite(x, 364, "rift-stalker-effects-v1", frame).setScale(1.08);
+      this.drawPivot(x, 364);
+      this.add.text(x, 408, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+
+    this.add.image(128, 468, "rift-stalker-portrait-v1").setScale(0.55);
+    this.add.text(204, 448, "PORTRAIT", style("#d696ff", "10px"));
+    this.add.text(204, 470, "128 px runtime • 1254 px retained master", style("#8fb2c9", "9px"));
+    this.add.text(480, 518, "Review: ?mode=gallery&batch=o • Encounter: ?scenario=rift-stalker&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createBatchJ1Gallery(): void {

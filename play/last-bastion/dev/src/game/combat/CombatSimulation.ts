@@ -87,6 +87,8 @@ import { initialProjectileCarry, resolveFractionalProjectiles } from "./Fraction
 import { scaleEnemyHealth, scaleEnemyHit, waveScaling } from "./WaveScaling";
 import type { EliteKind } from "./EliteCadence";
 export type { EliteKind } from "./EliteCadence";
+import type { ExpeditionBuildSnapshot } from "../expedition/ExpeditionRun";
+import type { ExpeditionEncounterDescriptor } from "../expedition/ExpeditionEncounter";
 import {
   buildRainOfSpinesTargets,
   GROUND_SLAM_RECOVERY_SECONDS,
@@ -630,6 +632,8 @@ export interface CombatSimulationOptions {
   startingUraniumKit?: boolean;
   startWithUraniumBuff?: boolean;
   startingScrap?: number;
+  expeditionEncounter?: ExpeditionEncounterDescriptor;
+  startingBuild?: ExpeditionBuildSnapshot | null;
 }
 
 interface EquippedWeaponState extends EquippedWeapon {
@@ -850,6 +854,7 @@ export class CombatSimulation {
   private frameEvents: CombatEvent[] = [];
   private readonly stressProfile: 4 | 12 | null;
   private readonly scenario: CombatScenario | null;
+  private readonly expeditionEncounter: ExpeditionEncounterDescriptor | null;
   private activeTetherEnemyId: number | null = null;
   private pendingWeaponTile: WeaponTile | null = null;
 
@@ -864,8 +869,9 @@ export class CombatSimulation {
     this.randomState = options.seed ?? 0x5a17b45;
     this.stressProfile = options.stressProfile ?? null;
     this.scenario = options.scenario ?? null;
+    this.expeditionEncounter = options.expeditionEncounter ?? null;
     this.securedScrap = Math.max(0, Math.floor(
-      options.startingScrap ?? (this.scenario === "scrap-shop" ? 150 : 0),
+      options.startingBuild?.scrap ?? options.startingScrap ?? (this.scenario === "scrap-shop" ? 150 : 0),
     ));
     this.uraniumKitAvailable = options.startingUraniumKit ?? false;
     if (options.startWithUraniumBuff) {
@@ -873,8 +879,14 @@ export class CombatSimulation {
     }
     this.wavesEnabled = options.autoStartWaves !== false
       && this.stressProfile === null
-      && this.scenario === null;
-    const initialLoadout = options.startingWeaponIds
+      && this.scenario === null
+      && this.expeditionEncounter === null;
+    const carriedWeaponIds = options.startingBuild?.weapons
+      .map((weapon) => weapon.weaponId)
+      .filter((weaponId): weaponId is WeaponId => weaponId in WEAPON_CATALOG);
+    const initialLoadout = carriedWeaponIds && carriedWeaponIds.length > 0
+      ? createWeaponLoadout(carriedWeaponIds)
+      : options.startingWeaponIds
       ? createWeaponLoadout(options.startingWeaponIds)
       : createServiceRifleLoadout(clampWeaponCount(options.startingWeaponCount ?? 1));
     this.equippedWeapons = initialLoadout.map((weapon) => ({
@@ -892,7 +904,13 @@ export class CombatSimulation {
       tier: 1,
     })));
 
-    if (this.stressProfile !== null) {
+    if (options.startingBuild) {
+      this.restoreExpeditionBuild(options.startingBuild);
+    }
+
+    if (this.expeditionEncounter !== null) {
+      this.populateExpeditionEncounter(this.expeditionEncounter);
+    } else if (this.stressProfile !== null) {
       this.populateStressScenario(this.stressProfile);
     } else if (this.scenario === "slime-spitter") {
       this.populateSlimeSpitterScenario();
@@ -1008,7 +1026,7 @@ export class CombatSimulation {
       }
     }
 
-    if (this.wavesEnabled && this.status === "combat") {
+    if ((this.wavesEnabled || this.expeditionEncounter !== null) && this.status === "combat") {
       this.updateWaveSpawns(delta);
     }
 
@@ -1025,7 +1043,7 @@ export class CombatSimulation {
     this.removeDeadEntities();
     this.densityPeakLiveEnemies = Math.max(this.densityPeakLiveEnemies, this.enemies.length);
     this.densityPeakEnemyProjectiles = Math.max(this.densityPeakEnemyProjectiles, this.enemyProjectiles.length);
-    if (this.wavesEnabled) {
+    if (this.wavesEnabled || this.expeditionEncounter !== null) {
       this.updateEncounterProgress(delta);
     }
 
@@ -1580,6 +1598,49 @@ export class CombatSimulation {
         this.defence.maxShield += 1.5;
         break;
     }
+  }
+
+  private restoreExpeditionBuild(build: ExpeditionBuildSnapshot): void {
+    this.level = Math.max(1, Math.floor(build.level));
+    this.experience = Math.max(0, Math.floor(build.experience));
+    const growth = marineGrowthAtLevel(this.level);
+    this.playerMaxHealth = PLAYER_MAX_HEALTH + growth.maxHealthBonus;
+    this.defence.armour = MARINE.defence.armour + growth.armourBonus;
+    this.levelDamageMultiplier = growth.damageMultiplier;
+    this.levelSpeedMultiplier = growth.speedMultiplier;
+    this.supportEffectMultiplier = growth.supportMultiplier;
+    for (const weaponClass of Object.keys(this.weaponProficiencies) as WeaponClass[]) {
+      this.weaponProficiencies[weaponClass] =
+        Math.round(((growth.proficiencyMultiplier[weaponClass] - 1) / 0.04) * 1_000) / 1_000;
+    }
+
+    for (const carried of build.upgrades) {
+      if (!(carried.upgradeId in UPGRADE_CATALOG)) continue;
+      const id = carried.upgradeId as UpgradeId;
+      const targetLevel = Math.min(
+        UPGRADE_CATALOG[id].maxLevel,
+        Math.max(0, Math.floor(carried.level)),
+      );
+      for (let level = 1; level <= targetLevel; level += 1) {
+        this.applyUpgrade(id, level);
+      }
+      if (targetLevel > 0) this.upgradeLevels.set(id, targetLevel);
+    }
+
+    const tiers = build.weapons.map((weapon) => Math.max(1, Math.min(3, Math.floor(weapon.tier))));
+    let carriedIndex = 0;
+    this.weaponInventory.rack.forEach((slot) => {
+      if (!slot.tile) return;
+      slot.tile.tier = (tiers[carriedIndex] ?? 1) as 1 | 2 | 3;
+      carriedIndex += 1;
+    });
+    this.equippedWeapons.forEach((weapon, index) => {
+      const tier = tiers[index] ?? 1;
+      weapon.stats.projectileDamage *= tier === 1 ? 1 : tier === 2 ? 1.6 : 2.56;
+    });
+
+    this.playerHealth = Math.max(0.1, Math.min(this.playerMaxHealth, build.health));
+    this.playerShield = Math.max(0, build.shield);
   }
 
   private addWeapon(weaponId: WeaponId): void {
@@ -4669,6 +4730,19 @@ export class CombatSimulation {
   private updateEncounterProgress(deltaSeconds: number): void {
     const livingTreasure = this.enemies.filter((enemy) => !enemy.dead && enemy.rank === "treasure");
     const hasBlockingEnemy = this.enemies.some((enemy) => !enemy.dead && enemy.rank !== "treasure");
+    if (this.expeditionEncounter !== null && this.status === "combat") {
+      const timedComplete = this.waveEndsOnTimer
+        && this.waveDurationSeconds !== null
+        && this.waveElapsedSeconds >= this.waveDurationSeconds;
+      const cleared = !this.waveEndsOnTimer
+        && this.spawnQueue.length === 0
+        && !hasBlockingEnemy
+        && this.enemyProjectiles.length === 0;
+      if (timedComplete || cleared) {
+        this.finishExpeditionEncounter(livingTreasure, timedComplete);
+      }
+      return;
+    }
     if (
       this.status === "combat"
       && this.waveEndsOnTimer
@@ -4695,6 +4769,25 @@ export class CombatSimulation {
         this.beginWave(this.waveIndex + 1);
       }
     }
+  }
+
+  private finishExpeditionEncounter(livingTreasure: readonly EnemyState[], timed: boolean): void {
+    for (const enemy of livingTreasure) this.escapeAurumHoarder(enemy);
+    if (timed) {
+      this.spawnQueue = [];
+      this.enemies = [];
+      this.activeTetherEnemyId = null;
+      for (const projectile of this.enemyProjectiles) {
+        projectile.dead = true;
+        this.hostileProjectilePool.push(projectile);
+      }
+      this.enemyProjectiles = [];
+      this.groundHazards = [];
+    }
+    if (this.expeditionEncounter?.kind === "combat" || this.expeditionEncounter?.kind === "elite") {
+      this.secureScrap(10 + 5 * (this.expeditionEncounter.column + 1), "wave-clear", this.playerPosition);
+    }
+    this.status = "victory";
   }
 
   private finishWave(livingTreasure: readonly EnemyState[], timed: boolean): void {
@@ -4787,6 +4880,43 @@ export class CombatSimulation {
     for (let index = 0; index < counts.scuttler; index += 1) this.spawnEnemy("scuttler");
     for (let index = 0; index < counts.egg; index += 1) this.spawnEnemy("egg-cluster");
     for (let index = 0; index < counts.brain; index += 1) this.spawnEnemy("brain-blob");
+  }
+
+  private populateExpeditionEncounter(encounter: ExpeditionEncounterDescriptor): void {
+    this.waveIndex = encounter.directorWaveIndex;
+    this.waveThreatBudget = encounter.threatBudget;
+    switch (encounter.kind) {
+      case "combat":
+      case "elite": {
+        const wave = buildDensityWave(encounter.directorWaveIndex);
+        this.spawnQueue = [...wave.plans];
+        this.waveLiveCap = wave.liveCap;
+        this.waveDurationSeconds = wave.durationSeconds;
+        // Ordinary Combat may end on its authored timer; Elite nodes are
+        // always kill-owned so the guaranteed target/cache cannot be skipped.
+        this.waveEndsOnTimer = encounter.kind === "combat" && wave.timerEndsWave;
+        if (encounter.kind === "elite") {
+          this.spawnElite(encounter.eliteKind ?? "carapace-scuttler");
+        }
+        break;
+      }
+      case "mini-boss":
+        this.spawnMiniBoss(encounter.miniBossKind ?? "siege-crusher");
+        this.spawnEnemy("scuttler");
+        this.spawnEnemy(encounter.column >= 4 ? "razor-scuttler" : "brain-blob");
+        break;
+      case "supply-depot":
+        this.decisionQueue.push(this.buildSupplyDepotDecision());
+        break;
+      case "weapon-cache": {
+        const decision = this.buildWeaponChestDecision() ?? this.buildUpgradeDecision();
+        if (decision) this.decisionQueue.push(decision);
+        break;
+      }
+      case "boss":
+        this.spawnBastionEater({ x: this.widthMetres / 2 - 7, y: this.heightMetres / 2 });
+        break;
+    }
   }
 
   private populateDensityCapacityScenario(): void {

@@ -538,8 +538,8 @@ const MONSTERS = [
     stats: { Health: "540", Armour: "2 flat", Speed: "1.4 m/s", Damage: "3.5 cleave / 1.6 acid", Fight: "45–90s" },
     text: "Four moves: guarding cleave, acid fan, egg placement, and a one-time swarm rush at half health." },
   { id: "mon-rift-stalker", name: "Rift Stalker", glyph: "⬡", tint: TINT.boss, status: "live", rank: "mini-boss", tier: "Burst",
-    stats: { Health: "480", Armour: "1", Speed: "2.2 / blink", Damage: "4 pounce", Fight: "45–90s" },
-    text: "Cloaked hunter, visible only as distortion until it marks its pounce. Decloaks when hit. Frenzies below 20%." },
+    stats: { Health: "520", Armour: "2 flat", Speed: "2.1 m/s / warp", Damage: "3.5 pounce / 3 slash", Fight: "45–90s" },
+    text: "Production-art cloaked hunter with a marked warp pounce, rift-spike fan, close slash, and chained-warp frenzy below 20%." },
 
   { id: "mon-bastion-eater", name: "The Bastion Eater", glyph: "☠", tint: TINT.boss, status: "live", rank: "boss", tier: "Authored",
     stats: { Health: "2400", Armour: "shutters", Speed: "—", Damage: "5 claw", Fight: "3–5 min" },
@@ -997,10 +997,10 @@ function render() {
       <div class="tablewrap"><table>
       <thead><tr><th>Milestone</th><th>Status</th><th>What it adds for players</th></tr></thead><tbody>
       <tr><td><b>Ten-wave Quick Drop</b></td><td>${badge("live")}</td><td>Timed waves, elites, mini-bosses, the Bastion Eater finale, Scrap Shop, weapon rack &amp; merging</td></tr>
-      <tr><td><b>Third mini-boss — Rift Stalker</b></td><td>${badge("live")}</td><td>Cloaked stalk, marked warp-pounces, rift-spike fans, and a chained-warp frenzy — now in the mini-boss pool (placeholder art until its production batch)</td></tr>
+      <tr><td><b>Third mini-boss — Rift Stalker</b></td><td>${badge("live")}</td><td>Cloaked stalk, marked warp-pounces, rift-spike fans, chained-warp frenzy, and the integrated Production Batch O body/effect/portrait set</td></tr>
       <tr><td><b>Front-end shell</b></td><td>${badge("live")}</td><td>Title screen, main menu, How to Play, Settings, Lab, and character select — placeholder panels until the Batch G art pass</td></tr>
-      <tr><td><b>Expedition map — 20 nodes</b></td><td>${badge("designed")}</td><td>The branching starchart screen is playable in scout mode with autosave and resume; combat, elite, mini-boss, depot, and cache encounters wire into its nodes next</td></tr>
-      <tr><td><b>World themes</b></td><td>${badge("designed")}</td><td>Emberfall, Toxic Bloom, Void Approach, and Arctic Relay arenas (art complete, readability review pending)</td></tr>
+      <tr><td><b>Expedition map — 20 nodes</b></td><td>${badge("live")}</td><td>The branching starchart now deploys into Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, and Bastion Eater nodes; health, shield, level, XP, Scrap, weapon tiers, and upgrades persist between victories</td></tr>
+      <tr><td><b>World themes</b></td><td>${badge("live")}</td><td>Bastion Perimeter, Emberfall, Toxic Bloom, Void Approach, and Arctic Relay now use authored terrain families with seeded lighting variants and gameplay-first contrast washes</td></tr>
       <tr><td><b>Shop keepers &amp; economy v2</b></td><td>${badge("designed")}</td><td>The between-wave Scrap Shop gains rerolls, offer locks, weapon selling, and a rotating cast of shop keepers — with keeper specialties to come</td></tr>
       <tr><td><b>Perk system</b></td><td>${badge("designed")}</td><td>Pre-drop run modifiers unlocked by your past expeditions</td></tr>
       <tr><td><b>Second hero — Medic</b></td><td>${badge("designed")}</td><td>A sustain-focused playstyle with its own weapons and growth</td></tr>

@@ -34,7 +34,7 @@ import {
 import { loadGameAssets } from "../assets/PhaserAssetLoader";
 import { GAME_ASSETS, type GameAssetId } from "../assets/GameAssetManifest";
 import { renderArena } from "../rendering/ArenaRenderer";
-import { arenaThemeById, pickArenaTheme } from "../rendering/arenaThemes";
+import { arenaThemeById, arenaThemeVariant, pickArenaTheme } from "../rendering/arenaThemes";
 import { uiTextResolution } from "../rendering/DisplayScaling";
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { cueForEvent, EVASIVE_MOVE_CUE, MEDKIT_HEAL_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
@@ -48,6 +48,17 @@ import {
   WEAPON_CATALOG,
   type WeaponId,
 } from "../content/weaponCatalog";
+import { expeditionNodeById } from "../expedition/ExpeditionMap";
+import {
+  completeCurrentNode,
+  resumeExpeditionRun,
+  type ExpeditionBuildSnapshot,
+  type ExpeditionRun,
+} from "../expedition/ExpeditionRun";
+import {
+  expeditionEncounterForNode,
+  type ExpeditionEncounterDescriptor,
+} from "../expedition/ExpeditionEncounter";
 
 const PIXELS_PER_METRE = 32;
 
@@ -81,8 +92,11 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly useMarineHelmet = this.useMarineArt && readMarineHelmetPreview();
   private readonly showDebug = readDebugMode();
   private readonly uraniumLab = readUraniumLab();
+  private readonly saveStore = createSaveStore();
+  private readonly expeditionContext = readExpeditionContext(this.saveStore);
   private simulation = createSimulation(
     this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
+    this.expeditionContext,
   );
   private readonly enemyViews = new Map<number, EnemyView>();
   private readonly enemyStatusViews = new Map<string, Phaser.GameObjects.Sprite>();
@@ -135,7 +149,6 @@ export class PrototypeScene extends Phaser.Scene {
   private fenceSwitch: Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite | null = null;
   private fencePrompt: Phaser.GameObjects.Text | null = null;
   private readonly arenaTheme = resolveArenaTheme();
-  private readonly saveStore = createSaveStore();
   private settings = applySettingOverrides(this.saveStore);
   private readonly synth = new WebAudioSynth(this.settings.soundEnabled);
   private runOutcomeRecorded = false;
@@ -153,6 +166,10 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   create(): void {
+    if (new URLSearchParams(window.location.search).get("expedition") === "1" && !this.expeditionContext) {
+      window.location.href = "?screen=map";
+      return;
+    }
     const { width, height } = this.scale;
     renderArena(this, this.simulation.arena, PIXELS_PER_METRE, this.showDebug, this.useMarineArt, this.arenaTheme);
     this.effectPool = new VisualEffectPool(this, this.stressProfile === 12 ? 192 : 96);
@@ -227,6 +244,10 @@ export class PrototypeScene extends Phaser.Scene {
       intent.restartPressed
       && (this.lastSnapshot.status === "victory" || this.lastSnapshot.status === "defeat")
     ) {
+      if (this.expeditionContext) {
+        window.location.href = this.lastSnapshot.status === "victory" ? "?screen=map" : "?screen=title";
+        return;
+      }
       this.restartRun();
       return;
     }
@@ -337,6 +358,7 @@ export class PrototypeScene extends Phaser.Scene {
   private restartRun(): void {
     this.simulation = createSimulation(
       this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
+      this.expeditionContext,
     );
     this.flushBestiary();
     this.lastSnapshot = this.simulation.snapshot();
@@ -387,6 +409,11 @@ export class PrototypeScene extends Phaser.Scene {
     }
     if (snapshot.status === "victory" || snapshot.status === "defeat") {
       this.runOutcomeRecorded = true;
+      if (this.expeditionContext) {
+        this.resolveExpeditionOutcome(snapshot);
+        this.flushBestiary();
+        return;
+      }
       if (this.isRecordableRun(snapshot)) {
         this.saveStore.recordRunEnd({
           victory: snapshot.status === "victory",
@@ -399,7 +426,32 @@ export class PrototypeScene extends Phaser.Scene {
 
   /** Lab and stress routes are review tools; they never touch player progress. */
   private isRecordableRun(snapshot: CombatSnapshot): boolean {
-    return snapshot.stressProfile === null && snapshot.scenario === null;
+    return this.expeditionContext !== null
+      || (snapshot.stressProfile === null && snapshot.scenario === null);
+  }
+
+  private resolveExpeditionOutcome(snapshot: CombatSnapshot): void {
+    if (!this.expeditionContext) return;
+    if (snapshot.status === "defeat") {
+      this.saveStore.clearExpedition();
+      this.saveStore.recordRunEnd({ victory: false, waveReached: this.expeditionContext.encounter.column + 1 });
+      return;
+    }
+    const completed = completeCurrentNode(this.expeditionContext.run, expeditionBuildFromSnapshot(snapshot));
+    this.saveStore.saveExpedition({
+      mapSeed: completed.state.mapSeed,
+      currentNodeId: completed.state.currentNodeId,
+      clearedNodeIds: [...completed.state.clearedNodeIds],
+      build: completed.state.build ? {
+        ...completed.state.build,
+        weapons: completed.state.build.weapons.map((weapon) => ({ ...weapon })),
+        upgrades: completed.state.build.upgrades.map((upgrade) => ({ ...upgrade })),
+      } : null,
+    });
+    if (completed.state.currentNodeId === completed.map.bossNodeId) {
+      this.saveStore.recordRunEnd({ victory: true, waveReached: completed.map.columns });
+    }
+    window.setTimeout(() => { window.location.href = "?screen=map"; }, 900);
   }
 
   private collectBestiary(snapshot: CombatSnapshot): void {
@@ -510,6 +562,9 @@ export class PrototypeScene extends Phaser.Scene {
             this.emitAuthoredEffect(19, event.position, 420, 0.8, 2.1, 0, "batch-b-effects-v1");
           } else if (event.enemyType === "brood-warden") {
             this.emitAuthoredEffect(9, event.position, 460, 0.9, 2.3, 0, "brood-warden-effects-v1");
+          } else if (event.enemyType === "rift-stalker") {
+            this.emitAuthoredEffect(6, event.position, 520, 0.82, 2.15, 0, "rift-stalker-effects-v1");
+            this.emitAuthoredEffect(7, event.position, 680, 0.7, 2.4, 0, "rift-stalker-effects-v1");
           } else if (event.enemyType === "blast-mite") {
             this.emitAuthoredEffect(16, event.position, 300, 0.65, 1.35, 0, "batch-c-effects-v1");
           } else if (event.enemyType === "warp-flanker") {
@@ -624,6 +679,30 @@ export class PrototypeScene extends Phaser.Scene {
         case "brood-swarm-rush":
           this.emitAuthoredEffect(7, event.position, 350, 0.8, 1.9, 0, "brood-warden-effects-v1");
           this.shakeCamera(120, 0.004);
+          break;
+        case "rift-stalker-mark":
+          this.emitAuthoredEffect(2, event.target, 520, 0.68, 1.5, 0, "rift-stalker-effects-v1");
+          break;
+        case "rift-stalker-warp-out":
+          this.emitAuthoredEffect(0, event.position, 280, 0.72, 1.35, 0, "rift-stalker-effects-v1");
+          this.emitAuthoredEffect(7, event.position, 460, 0.5, 1.2, 0, "rift-stalker-effects-v1");
+          break;
+        case "rift-stalker-pounce":
+          this.emitAuthoredEffect(1, event.position, 170, 0.72, 1.28, 0, "rift-stalker-effects-v1");
+          this.emitAuthoredEffect(3, event.position, 300, 0.78, event.radiusMetres * 0.88, 0, "rift-stalker-effects-v1");
+          if (event.hitPlayer) this.shakeCamera(110, 0.005);
+          break;
+        case "rift-stalker-fan":
+          this.emitAuthoredEffect(
+            5, event.position, 300, 0.68, event.count === 5 ? 1.45 : 1.15,
+            Math.atan2(event.direction.y, event.direction.x), "rift-stalker-effects-v1",
+          );
+          break;
+        case "rift-stalker-slash":
+          this.emitAuthoredEffect(
+            4, event.position, 230, 0.9, event.reachMetres * 0.72,
+            Math.atan2(event.direction.y, event.direction.x), "rift-stalker-effects-v1",
+          );
           break;
         case "ripper-sweep":
           this.emitAuthoredEffect(
@@ -857,7 +936,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" | "telegraph-small-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" | "telegraph-small-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -1113,7 +1192,9 @@ export class PrototypeScene extends Phaser.Scene {
         }
         return this.add.ellipse(0, 0, 76, 58, 0x68408b).setStrokeStyle(5, 0xb9f35b);
       case "rift-stalker":
-        // Behavior-gate placeholder: Batch O production art lands after creator review.
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "rift-stalker-v1");
+        }
         return this.add.ellipse(0, 0, 66, 50, 0x2c2f3d).setStrokeStyle(5, 0x9a6cff);
       default:
         if (this.useMarineArt) {
@@ -1156,8 +1237,10 @@ export class PrototypeScene extends Phaser.Scene {
         : view.texture.key === "blightspitter-v1" ? 1.05
           : view.texture.key === "razorlord-v1" ? 1 : null;
       const eliteScale = enemy.eliteKind === "quillback-matriarch" ? 1.35 : enemy.eliteKind ? 1.18 : 1;
-      view.setScale(batchJScale ?? (enemy.type === "aurum-hoarder" ? 0.9 : enemy.type === "swarm-scuttler" ? 0.72 : eliteScale));
-      view.setAlpha(enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup" ? 0.72 : 1);
+      view.setScale(batchJScale ?? (enemy.type === "rift-stalker" ? 1.08 : enemy.type === "aurum-hoarder" ? 0.9 : enemy.type === "swarm-scuttler" ? 0.72 : eliteScale));
+      view.setAlpha(enemy.type === "rift-stalker"
+        ? enemy.riftStalkerPhase === "warp" ? 0.12 : enemy.riftStalkerPhase === "cloak" ? 0.38 : 1
+        : enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup" ? 0.72 : 1);
       const status = enemy.statuses[0];
       if (enemy.type === "blast-mite" && enemy.mitePhase === "armed" && Math.floor(this.time.now / 80) % 2 === 0) {
         view.setTint(0xffffff);
@@ -1531,6 +1614,17 @@ export class PrototypeScene extends Phaser.Scene {
           || phase === "egg-lay" || phase === "swarm-rush";
         const row = enemy.health / enemy.maxHealth <= 0.2 ? 2 : attacking ? 1 : 0;
         view.setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
+      case "rift-stalker": {
+        const direction = enemy.riftStalkerDirection ?? enemy.facingDirection;
+        const target = { x: enemy.position.x + direction.x, y: enemy.position.y + direction.y };
+        const facingColumn = cardinalFacingColumn(enemy.position, target);
+        const phase = enemy.riftStalkerPhase ?? "cloak";
+        const row = phase === "mark" || phase === "slash-windup" ? 1
+          : phase === "warp" || phase === "pounce" || phase === "slash" ? 2
+            : phase === "recovery" || enemy.health / enemy.maxHealth <= 0.2 ? 3 : 0;
+        view.setTexture("rift-stalker-v1").setFrame(row * 4 + facingColumn).setRotation(0);
         return;
       }
       default: {
@@ -2471,9 +2565,11 @@ function readUraniumLab(): { kit: boolean; active: boolean } {
  * background variety.
  */
 function resolveArenaTheme() {
-  const requested = arenaThemeById(new URLSearchParams(window.location.search).get("theme"));
+  const params = new URLSearchParams(window.location.search);
+  const requested = arenaThemeById(params.get("theme"));
   if (requested) {
-    return requested;
+    const worldSeed = Number(params.get("worldseed"));
+    return Number.isFinite(worldSeed) ? arenaThemeVariant(requested, worldSeed) : requested;
   }
   return pickArenaTheme(Math.floor(Math.random() * 1024));
 }
@@ -2484,6 +2580,45 @@ function createSaveStore(): LocalSaveStore {
   } catch {
     return new LocalSaveStore(null);
   }
+}
+
+interface ExpeditionCombatContext {
+  run: ExpeditionRun;
+  encounter: ExpeditionEncounterDescriptor;
+}
+
+function readExpeditionContext(store: LocalSaveStore): ExpeditionCombatContext | null {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("expedition") !== "1") return null;
+  const nodeId = Number(params.get("node"));
+  const saved = store.load().expedition;
+  if (!saved || !Number.isInteger(nodeId) || saved.currentNodeId !== nodeId) return null;
+  const run = resumeExpeditionRun({
+    mapSeed: saved.mapSeed,
+    currentNodeId: saved.currentNodeId,
+    clearedNodeIds: saved.clearedNodeIds,
+    build: saved.build,
+  });
+  if (!run || run.state.clearedNodeIds.includes(nodeId)) return null;
+  const node = expeditionNodeById(run.map, nodeId);
+  return node ? { run, encounter: expeditionEncounterForNode(run.state.mapSeed, node) } : null;
+}
+
+function expeditionBuildFromSnapshot(snapshot: CombatSnapshot): ExpeditionBuildSnapshot {
+  return {
+    health: snapshot.playerHealth,
+    shield: snapshot.playerShield,
+    level: snapshot.level,
+    experience: snapshot.experience,
+    scrap: snapshot.securedScrap,
+    weapons: snapshot.weaponInventory.rack.flatMap((slot) => slot.tile
+      ? [{ weaponId: slot.tile.weaponId, tier: slot.tile.tier }]
+      : []),
+    upgrades: snapshot.upgradeLevels.map((upgrade) => ({
+      upgradeId: upgrade.id,
+      level: upgrade.level,
+    })),
+  };
 }
 
 /**
@@ -2513,6 +2648,7 @@ function createSimulation(
   startingWeaponIds: readonly WeaponId[] | null,
   scenario: CombatScenario | null,
   uraniumLab: { kit: boolean; active: boolean },
+  expeditionContext: ExpeditionCombatContext | null,
 ): CombatSimulation {
   return new CombatSimulation({
     startingWeaponCount,
@@ -2521,6 +2657,9 @@ function createSimulation(
     scenario: scenario ?? undefined,
     startingUraniumKit: uraniumLab.kit,
     startWithUraniumBuff: uraniumLab.active,
+    seed: expeditionContext?.encounter.seed,
+    expeditionEncounter: expeditionContext?.encounter,
+    startingBuild: expeditionContext?.run.state.build,
   });
 }
 
@@ -2647,7 +2786,7 @@ function applyManifestOrigin(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1" | "aurum-hoarder-v1" | "swarm-scuttler-v1" | "razorlord-v1" | "blightspitter-v1" | "quillback-matriarch-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "rift-stalker-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1" | "aurum-hoarder-v1" | "swarm-scuttler-v1" | "razorlord-v1" | "blightspitter-v1" | "quillback-matriarch-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

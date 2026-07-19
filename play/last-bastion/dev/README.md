@@ -13,7 +13,7 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 
 - `/play/last-bastion/` — the front-end shell: Title → Menu → How to Play / Settings / Lab / Character select (Task 37 behavior gate; code-native placeholder panels until Batch G). `?screen=title` forces the shell; any review parameter below skips it.
 - `/play/last-bastion/?screen=game` — styled normal ten-wave run with authored elite cadence, seeded mini-boss selection, and the Bastion Eater finale
-- `/play/last-bastion/?screen=map` — the 20-node expedition starchart (Task 38 behavior gate): code-native medallions and route lines, dropship travel in scout mode, schema-v2 autosave on every arrival, and resume-on-load. `&mapseed=N` reviews a deterministic fresh chart
+- `/play/last-bastion/?screen=map` — the playable 20-node expedition (Tasks 38–39): selecting a route autosaves a pending node and deploys into its Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, or Bastion Eater encounter; victory commits the carried build and returns to the map. `&mapseed=N` reviews a deterministic fresh chart
 - `/play/last-bastion/?art=placeholder` — code-shape comparison renderer
 - `/play/last-bastion/?helmet=0` — styled Marine without the removable helmet
 - `/play/last-bastion/?weapons=1`, `4`, `6`, or `12` — selected weapon-ring count
@@ -26,7 +26,7 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?scenario=carapace-elite&loadout=vertical` — directional armour, charge recovery, and guaranteed elite-reward lab
 - `/play/last-bastion/?scenario=siege-crusher&loadout=vertical` — mini-boss phases, cover destruction, boss bar, and arsenal-cache lab
 - `/play/last-bastion/?scenario=brood-warden&loadout=vertical` — four-move Brood Warden, egg priority, acid fan, enrage, and swarm-rush lab
-- `/play/last-bastion/?scenario=rift-stalker&loadout=vertical` — cloaked stalk, decoy-mark warp pounce, rift-spike fan, close slash, and final-20% chained-warp frenzy lab (placeholder body until Batch O)
+- `/play/last-bastion/?scenario=rift-stalker&loadout=vertical` — production Batch O body/effects, cloaked stalk, decoy-mark warp pounce, rift-spike fan, close slash, and final-20% chained-warp frenzy lab
 - `/play/last-bastion/?scenario=ripper&loadout=vertical` — long-reach melee cone, locked wind-up, dodge-behind, and recovery-punish lab
 - `/play/last-bastion/?scenario=razor-scuttler&loadout=vertical` — locked dash lane, cover crash, one-hit safety, and miss-recovery lab
 - `/play/last-bastion/?scenario=quillback&loadout=vertical` — locked 1/3/5 spike fans, close-range retreat, and dodge-gap readability lab
@@ -49,7 +49,7 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?mode=gallery&batch=f1` — Patrol Blade, action-bar, and timed-status Production Asset Batch F1
 - `/play/last-bastion/?mode=gallery&batch=f2`, `f3`, or `f4` — Bolt Carbine, Bulwark Rotary Cannon, or Grenade Tube production families
 - Add `debug=1` to the normal or stress route for collision labels and live entity/effect counts.
-- Add `theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay` to pin an arena background theme; without it each load draws one from the pool.
+- Add `theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay` to pin one of the five live authored arena families. Expedition nodes add a deterministic `worldseed` for one of three restrained lighting variants; terrain decals stay beneath gameplay and a per-world neutral wash protects actor/telegraph contrast.
 - Decision overlays support arrows/WASD/left-stick navigation, Enter/Space/pad-A confirm, and digits 1–4 quick pick; disabled Shop rows are skipped and cannot be confirmed.
 - Add `size=100..300` to preview the planned game-size setting; the canvas always snaps to whole physical pixels.
 
@@ -60,6 +60,7 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 
 - `/play/last-bastion/?mode=gallery&batch=n` — Task 36 Aurum body/effects/cache family and eight 128 px runtime tiles
 - `/play/last-bastion/?mode=gallery&batch=n2` — production Scrap Shop panel, six 128 px offer tiles, and four 128 px Scrap HUD/effect frames
+- `/play/last-bastion/?mode=gallery&batch=o` — Rift Stalker body states, encounter effects, and portrait from Production Asset Batch O
 - `/play/last-bastion/?mode=gallery&batch=j1` — Swarm Scuttler and elite body state sheets
 - `/play/last-bastion/?mode=gallery&batch=j2` — code-backed hostile telegraph decals and five-arena contrast strip
 - `/play/last-bastion/?mode=gallery&batch=i` — promoted Batch I1 weapon, perk, and hotkey/action 128 px runtime tile atlases
@@ -86,6 +87,7 @@ the codex and the game's future character-select/shop screens.
 - `arena/` owns portable arena geometry and collision resolution.
 - `assets/` owns stable asset IDs, logical sizes, frame contracts, and pivots.
 - `combat/` owns deterministic gameplay state and events.
+- `expedition/ExpeditionEncounter.ts` owns the pure node-to-encounter mapping; arrivals remain pending until combat or a safe-node decision succeeds, and mutable build state stays in the schema-v2 save rather than URL parameters.
 - `effects/` owns pooled transient rendering.
 - `rendering/` maps portable state to Phaser presentation.
 - `ui/` owns the camera-safe HUD and run-state panels.

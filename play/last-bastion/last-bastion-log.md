@@ -534,12 +534,12 @@ First implementation slice of the v2 balance model — the layer that makes ever
 
 ### Rift Stalker behavior gate (Task 36)
 
-**Status:** Completed — 19 July 2026; creator timing/readability review queued; production art deferred to Batch O
+**Status:** Completed — 19 July 2026; creator timing/readability review queued; Production Batch O integrated later the same day
 
 - Implemented the third mini-boss as a pure simulation state machine: cloaked stalk (55% incoming damage while cloaked or warping), decoy-mark warp pounce (the mark records the Marine's position at tell start, so moving escapes the strike), a 3-spike rift fan on arrival (5 in frenzy, reusing the hostile quill-spike projectile contract), a telegraphed 50°-half-arc close slash, and a final-20% frenzy that chains one extra warp per cycle with faster tells.
 - Damage baselines joined the authored hostile table (pounce 3.5, slash 3/4, spike 1.4) under the five-damage ceiling; 520 health, flat reduction 2, cryo resistance 0.75, flanker steering.
 - The mark renders as a major radial-pulse telegraph at the marked point and the slash as a major sweeping-arc, both through the existing code-authoritative telegraph channel; landing on an obstacle safely cancels the teleport.
-- Seeded the three-entry mini-boss pool (`selectMiniBossForRoll` now maps thirds) and the 40-threat boss cost; `?scenario=rift-stalker&loadout=vertical` is the deterministic review route with a placeholder charcoal/violet body, cloak alpha states, and boss-bar fallback swatch until Batch O.
+- Seeded the three-entry mini-boss pool (`selectMiniBossForRoll` now maps thirds) and the 40-threat boss cost; `?scenario=rift-stalker&loadout=vertical` began as the deterministic placeholder-art route and now carries Batch O production presentation.
 - Verification: TypeScript clean, 338 tests across 42 files (6 new Rift Stalker rules tests covering pool membership, the full phase cycle, marked-point escape, cloak mitigation vs recovery punish, frenzy-only chained warps, and the 5-spike frenzy fan), production build, HTTP smoke (51 review routes), and a live browser boot of the scenario with no console errors. The ten-wave reference trace passed unchanged.
 
 ### Task 33 — consolidated review, mechanical sweep
@@ -569,3 +569,32 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Built `ExpeditionScene` (`?screen=map`): code-native starchart with route lines, per-type medallion glyphs, pulsing current node, teal reachable glow, dimmed cleared stamps, greyed unreachable branches, an intel card (node type, region theme, threat hint, column), a dropship flight token, keyboard/mouse traversal, and an expedition-complete panel. `&mapseed=N` reviews a deterministic fresh chart; without it the scene resumes the autosave or rolls a new seed. Travel is "scout mode" until encounters wire in.
 - Autosave writes on every arrival and clears on completion. A hidden-tab check during verification exposed a boundary flaw — state advance living inside a render-loop tween — which was corrected: the run state and autosave now advance immediately on the wall clock and the dropship flight is pure decoration, honouring the simulation/presentation split.
 - Verification: TypeScript clean, 355 tests across 44 files (6 ExpeditionRun rules tests, 3 schema-v2 save tests, existing v1 fixtures passing through migration untouched), production build, HTTP smoke, and a live browser walkthrough on seed 2026: three-hop traversal with per-arrival autosave confirmed in localStorage, resume from a bare `?screen=map` at the exact position, full traversal to the Bastion Eater node in 8 hops, and autosave cleanup on completion — with zero console errors, all while the tab was background-paused.
+
+### Task 39 — node to encounter wiring
+
+**Status:** Completed — 19 July 2026; campaign multi-wave director remains Task 48
+
+- Added the pure `ExpeditionEncounter` contract: every chart node deterministically resolves to an existing Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, or Bastion Eater encounter, with theme, seed, depth index, and node-type threat budget kept out of Phaser presentation.
+- Changed traversal from “arrival equals clear” to a crash-safe pending-node lifecycle. The map autosaves before deployment; reload resumes the unresolved encounter; only victory appends the node to `clearedNodeIds`; defeat clears the run. Invalid or edited encounter URLs cannot create a free Quick Drop or skip a node.
+- Restored and recommitted health, shield, level, XP, Scrap, equipped weapon tiers, and upgrade levels through schema v2. Tier II/III carried weapons retain their 1.6×/2.56× damage steps, and upgrade effects are deterministically replayed before the next encounter begins.
+- Combat/Elite nodes bridge to the existing depth-indexed density plans, Mini-boss nodes draw deterministically from Siege Crusher, Brood Warden, and Rift Stalker, safe nodes resolve through the existing full-screen decisions, and the terminus runs the Bastion Eater. Quick Drop remains unchanged at `?screen=game`; Task 48 owns multi-wave node pacing.
+- Added lifecycle, deterministic mapping, build-restoration, safe-node, and depth-budget tests; updated the Codex roadmap from designed to live.
+
+### Task 44 — world-theme enablement
+
+**Status:** Completed — 19 July 2026; all five authored world families live
+
+- Promoted Emberfall, Toxic Bloom, Void Approach, and Arctic Relay from gallery-only preflights into the arena renderer. Each theme now selects its authored six-frame floor, eight-frame boundary, four-frame obstacle, and six-frame low-contrast decal atlas while retaining Batch A collision footprints.
+- Added deterministic three-variant lighting per world through the expedition encounter seed. URLs carry `worldseed` separately from mutable build state; the same node always receives the same presentation.
+- Placed sparse decals below gameplay and added per-world neutral readability washes. Arctic Relay receives the strongest wash and darker terrain tint because its frost alloy has the highest grayscale luminance.
+- Reviewed the Batch J mixed roster, projectiles, HUD, obstacles, and warnings in all five worlds, then deployed seed 4418 from the map into its assigned Emberfall variant. Every route loaded without console warnings and actor/projectile silhouettes remained readable.
+- Added theme-family, variant, and expedition-route contracts. Collision, hit tests, telegraph geometry, and simulation remain unchanged.
+
+### Production Asset Batch O — Rift Stalker
+
+**Status:** Completed — 19 July 2026; creator gameplay-scale review queued
+
+- Generated a cohesive 16-frame body sheet, eight-frame combat-effect atlas, and dossier portrait using the established Last Bastion mini-boss art direction. The faceless forward crest, four blade legs, charcoal chitin, violet rift seams, and pale-cyan glints remain consistent across all three masters.
+- Preserved untouched green-key generation sources and full-resolution clean-alpha masters. The effect and portrait sources exceed the 4× runtime floor; the body retains the maximum built-in sheet resolution and is never reconstructed from its 128 px derivative.
+- Added deterministic nearest-neighbour normalization, stable manifest IDs, exact contract tests, a complete `?mode=gallery&batch=o` route, directional/state-driven body mapping, runtime-owned cloak alpha, and authored mark/warp/pounce/slash/frenzy/defeat effects.
+- Combat timing, warning geometry, projectiles, collision, and damage remain simulation-owned. Placeholder rendering remains available with `&art=placeholder` for comparison.

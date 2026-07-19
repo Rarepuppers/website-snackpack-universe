@@ -400,10 +400,10 @@ Mini-bosses use bespoke silhouettes, two to four attacks, a short entrance, a bo
 | --- | --- | --- | --- |
 | Siege Crusher — vertical slice | Arena-geometry breaker | Charge, claw sweep, cover shockwave; gains radial slam at 50%, faster/wider frenzy at 20% | Production art integrated; tuning open |
 | Brood Warden — vertical-slice pool | Spawn-priority test | Egg placement, guarding cleave, acid volley; 50% swarm rush; faster/larger frenzy at 20% | Production encounter and Batch D1 art integrated; tuning review open |
-| Rift Stalker | Mobility/projectile test | Warp strike, projectile fan, decoy mark; 20% chained warp | Web MVP candidate |
+| Rift Stalker | Mobility/projectile test | Warp strike, projectile fan, decoy mark; 20% chained warp | Production encounter and Batch O art integrated; tuning review open |
 | Synapse Herald | Telegraph mastery | Lunge chain, marked danger zones, temporary Brain Blob link | Later pool expansion |
 
-The initial random pool should grow only through fully implemented bosses, with no immediate repeat when run history is available. The eligible pool now contains all three entries: Siege Crusher, Brood Warden, and Rift Stalker (behavior gate completed 19 July 2026 — cloaked stalk, decoy-mark warp pounce, rift-spike fan, close slash, final-20% chained-warp frenzy; production art is Batch O, held for the behavior review). Codex must implement and rules-test each complete move set before generating its production sprites.
+The initial random pool should grow only through fully implemented bosses, with no immediate repeat when run history is available. The eligible pool now contains all three entries: Siege Crusher, Brood Warden, and Rift Stalker (behavior gate and Production Batch O completed 19 July 2026 — cloaked stalk, decoy-mark warp pounce, rift-spike fan, close slash, final-20% chained-warp frenzy). Codex must implement and rules-test each complete move set before generating its production sprites.
 
 Brood Warden implementation contract: 2,700 health, 1.55 m/s base pursuit, guarding cleave at close range, a three-shot acid fan, two-egg placement capped at six live eggs, and a one-time four-add swarm rush unlocked at 50% health. Its final 20% uses shorter tells/recovery, higher movement, a wider/harder cleave, five acid shots, three eggs, and a six-add/faster rush. All attacks retain visible windups.
 
@@ -716,7 +716,7 @@ The preflight is intentionally presentation-only. Aim, projectile speed, pull-fi
 
 ## Batch H — world background themes (queued for Codex)
 
-**Status:** Design brief — 17 July 2026. The runtime already supports per-arena themes (`dev/src/game/rendering/arenaThemes.ts`): five seeded tint/backdrop variations over the shared Batch A floor, boundary, and obstacle atlases, previewable with `?theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay`. Tints prove the pipeline; authored world sets replace them one world at a time once the expedition map assigns node themes.
+**Status:** Production-enabled — 19 July 2026. All five arena families now render their authored floor, boundary, obstacle, and decal atlases in combat, previewable with `?theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay`. Expedition nodes supply a deterministic `worldseed` for three restrained lighting variants per world. Low-opacity decals render beneath gameplay and a neutral world-specific wash protects actor and telegraph contrast.
 
 Per world, generate as one batch (reusing the Batch A tile contract: stable IDs, 64 px logical floor tiles, nearest-neighbour normalization, retained ≥4× masters, no baked text):
 
@@ -731,17 +731,17 @@ Acceptance: enemy, projectile, pickup, and telegraph readability must beat the b
 
 ### Emberfall world-theme art preflight
 
-**Status:** Art preflight generated and gallery-integrated - 18 July 2026; held from default theme assignment pending creator contrast review.
+**Status:** Generated, gallery-integrated, and live in expedition assignment — 19 July 2026.
 
-The first world set now has a 3 × 2 floor atlas, 4 × 2 boundary atlas, 2 × 2 obstacle re-dress, and 3 × 2 low-contrast decal atlas. Batch A collision silhouettes and footprints remain unchanged. Review at `?mode=gallery&batch=h`; theme assignment, draw order, and contrast thresholds remain code-owned.
+The first world set now has a 3 × 2 floor atlas, 4 × 2 boundary atlas, 2 × 2 obstacle re-dress, and 3 × 2 low-contrast decal atlas. Batch A collision silhouettes and footprints remain unchanged. Review at `?mode=gallery&batch=h`; live assignment, draw order, lighting variation, and contrast washes remain code-owned.
 
-The Toxic Bloom variant now mirrors the same four contracts with dark teal alloy, muted violet growth, restrained lime bioluminescence, and six subdued underlays. Review it at `?mode=gallery&batch=tb`; it remains held from theme assignment until grayscale/telegraph contrast approval.
+The Toxic Bloom variant mirrors the same four contracts with dark teal alloy, muted violet growth, restrained lime bioluminescence, and six subdued underlays. It passed live mixed-roster review and is enabled; review remains at `?mode=gallery&batch=tb`.
 
-Void Approach now mirrors the contracts with void-touched slate, indigo fractures, restrained cyan light, and violet anomaly accents. Review at `?mode=gallery&batch=va`; it remains held from theme assignment.
+Void Approach mirrors the contracts with void-touched slate, indigo fractures, restrained cyan light, and violet anomaly accents. It passed live mixed-roster review and is enabled; review remains at `?mode=gallery&batch=va`.
 
-Arctic Relay now mirrors the contracts with frost-crusted alloy, pale cyan ice, restrained blue relay light, and snow/ice underlays. Review at `?mode=gallery&batch=ar`; it remains held from theme assignment.
+Arctic Relay mirrors the contracts with frost-crusted alloy, pale cyan ice, restrained blue relay light, and snow/ice underlays. It is enabled with a stronger neutral wash and darker terrain tint after the live contrast pass; review remains at `?mode=gallery&batch=ar`.
 
-## Batch O — Rift Stalker production set (queued for Codex; generate only after the Task 36 behavior gate passes)
+## Batch O — Rift Stalker production set (generated, normalized, and integrated 19 July 2026)
 
 Reuses the mini-boss contracts proven by Siege Crusher and Brood Warden (chroma sources, ≥4× retained masters, deterministic normalization, no baked text; all timing and hit geometry stay code-owned).
 
@@ -783,6 +783,20 @@ Shared contract: each keeper is one 4-frame idle loop at **128 × 256** (chroma 
 | **The Gunsmith** | Weapons | Wiry human with a jeweller's loupe headset, disassembled rifle parts laid in a neat row, brass accent |
 | **VND-R** | Kits and ammo | Boxy service android with a rounded vendor-unit torso, fold-out tray arms, soft cyan face display that blinks a price glyph |
 | **The Clinician** | Cyborg upgrades / augments | Tall cyborg surgeon, one chromed articulated arm, clean ivory coat, green cross-circuit accent |
+
+## Batch R — destructible battlefield props (generate after Task 54)
+
+Behavior-first production family for numeric-health terrain. Retain 4× masters, preserve collision footprints, and keep health bars, damage values, targeting, and destruction rules code-owned.
+
+| Prop | Runtime contract | Required states |
+| --- | --- | --- |
+| Brittle fence | 96×64 directional segment | intact, cracked, critical, broken gap, debris burst |
+| Cargo crate | 96×96 | intact, dented, critical, collapsed, neutral debris |
+| Rock / boulder | 128×128 | intact, fractured, critical, rubble; four material tint variants |
+| Reinforced barricade | 128×96 | intact, armour stripped, critical, breached |
+| Shared impacts | 4×2 atlas at 64×64 | bullet chip, melee spark, acid hiss, frost crack, explosive fracture, heavy collapse, dust settle, salvage glint |
+
+The next raster priority is **Batch Q Quartermaster/shopkeeper presentation after Task 45 locks the economy behavior**, followed by Batch P after the Medic gate. Batch R follows only after destructible-terrain health and bar behavior pass. Player-damage numbers, auto-fire state, actor outlines, projectile halos, and terrain HP bars are code-rendered and require no image generation.
 | **The Medic-Sister** | Healing centre | Calm figure in Medic-adjacent ivory armour with teal chevrons (visually related to the Batch P Medic, clearly not the hero), injector cylinders racked behind |
 | **The Curator** | Relics and Artifacts | Slender robed figure with a floating monocle drone, violet accent, one shrouded relic case on the counter |
 | **The Fence** | Black market | Hooded reptilian-silhouetted alien in a patched long coat, glinting eyes, red accent, goods half-hidden under the counter cloth |

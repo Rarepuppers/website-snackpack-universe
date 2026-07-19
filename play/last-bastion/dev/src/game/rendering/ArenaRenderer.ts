@@ -36,6 +36,11 @@ export function renderArena(
 
   if (productionArt) {
     renderAuthoredFloor(scene, columns, rows, tilePixels, theme);
+    renderAmbientDecals(scene, columns, rows, tilePixels, theme);
+    if (theme.readabilityWashAlpha > 0) {
+      scene.add.rectangle(widthPixels / 2, heightPixels / 2, widthPixels, heightPixels, 0x071019, theme.readabilityWashAlpha)
+        .setDepth(-16);
+    }
     renderAuthoredBoundaries(scene, columns, rows, tilePixels, widthPixels, heightPixels, theme);
     renderAuthoredObstacles(scene, arena, pixelsPerMetre, debugCollision, theme);
     return;
@@ -55,8 +60,32 @@ function renderAuthoredFloor(
     for (let column = 0; column < columns; column += 1) {
       const seed = (column * 17 + row * 31) % 23;
       const frame = seed === 0 ? 4 : seed === 1 ? 3 : seed < 6 ? 1 + (seed % 2) : 0;
-      scene.add.sprite((column + 0.5) * tilePixels, (row + 0.5) * tilePixels, "arena-floor-v1", frame)
+      scene.add.sprite((column + 0.5) * tilePixels, (row + 0.5) * tilePixels, theme.floorTexture, frame)
         .setDisplaySize(tilePixels, tilePixels).setDepth(-20).setTint(theme.floorTint);
+    }
+  }
+}
+
+function renderAmbientDecals(
+  scene: Phaser.Scene,
+  columns: number,
+  rows: number,
+  tilePixels: number,
+  theme: ArenaTheme,
+): void {
+  if (!theme.decalTexture) return;
+  for (let row = 1; row < rows - 1; row += 1) {
+    for (let column = 1; column < columns - 1; column += 1) {
+      const seed = (column * 37 + row * 53) % 29;
+      if (seed > 3) continue;
+      scene.add.sprite(
+        (column + 0.5) * tilePixels,
+        (row + 0.5) * tilePixels,
+        theme.decalTexture,
+        seed % 6,
+      ).setDisplaySize(tilePixels * 1.35, tilePixels * 1.35)
+        .setAlpha(0.34)
+        .setDepth(-18);
     }
   }
 }
@@ -74,18 +103,18 @@ function renderAuthoredBoundaries(
     const x = (column + 0.5) * tilePixels;
     const topFrame = column === Math.floor(columns / 2) ? 6 : 0;
     const bottomFrame = column === Math.floor(columns * 0.72) ? 7 : 1;
-    scene.add.sprite(x, tilePixels * 0.32, "arena-boundary-v1", topFrame)
+    scene.add.sprite(x, tilePixels * 0.32, theme.boundaryTexture, topFrame)
       .setDisplaySize(tilePixels, tilePixels).setDepth(80).setTint(theme.boundaryTint);
-    scene.add.sprite(x, heightPixels - tilePixels * 0.32, "arena-boundary-v1", bottomFrame)
+    scene.add.sprite(x, heightPixels - tilePixels * 0.32, theme.boundaryTexture, bottomFrame)
       .setDisplaySize(tilePixels, tilePixels).setDepth(worldDepth(heightPixels / tilePixels) + 20)
       .setTint(theme.boundaryTint);
   }
   for (let row = 1; row < rows - 1; row += 1) {
     const y = (row + 0.5) * tilePixels;
-    scene.add.sprite(tilePixels * 0.32, y, "arena-boundary-v1", 2)
+    scene.add.sprite(tilePixels * 0.32, y, theme.boundaryTexture, 2)
       .setDisplaySize(tilePixels, tilePixels).setDepth(worldDepth(y / tilePixels) + 10)
       .setTint(theme.boundaryTint);
-    scene.add.sprite(widthPixels - tilePixels * 0.32, y, "arena-boundary-v1", 3)
+    scene.add.sprite(widthPixels - tilePixels * 0.32, y, theme.boundaryTexture, 3)
       .setDisplaySize(tilePixels, tilePixels).setDepth(worldDepth(y / tilePixels) + 10)
       .setTint(theme.boundaryTint);
   }
@@ -103,7 +132,7 @@ function renderAuthoredObstacles(
     const y = (obstacle.y + obstacle.height / 2) * pixelsPerMetre;
     const width = obstacle.width * pixelsPerMetre;
     const height = obstacle.height * pixelsPerMetre;
-    const view = scene.add.sprite(x, y, "arena-obstacle-v1", OBSTACLE_FRAMES[obstacle.kind])
+    const view = scene.add.sprite(x, y, theme.obstacleTexture, OBSTACLE_FRAMES[obstacle.kind])
       .setName(`arena-obstacle:${obstacle.id}`)
       .setDisplaySize(width, height)
       .setDepth(worldDepth(obstacle.y + obstacle.height))

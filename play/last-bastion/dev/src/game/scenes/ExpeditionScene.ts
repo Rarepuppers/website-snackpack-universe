@@ -7,6 +7,7 @@ import {
   type ExpeditionNodeType,
 } from "../expedition/ExpeditionMap";
 import {
+  hasPendingEncounter,
   isExpeditionComplete,
   moveToNode,
   nodePresentation,
@@ -15,6 +16,10 @@ import {
   startExpeditionRun,
   type ExpeditionRun,
 } from "../expedition/ExpeditionRun";
+import {
+  expeditionEncounterForNode,
+  expeditionEncounterUrl,
+} from "../expedition/ExpeditionEncounter";
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -76,6 +81,11 @@ export class ExpeditionScene extends Phaser.Scene {
     window.addEventListener("keydown", this.handleKey);
     this.events.once("shutdown", () => window.removeEventListener("keydown", this.handleKey));
     this.render();
+    if (isExpeditionComplete(this.run)) {
+      this.saveStore.clearExpedition();
+    } else if (hasPendingEncounter(this.run)) {
+      window.setTimeout(() => this.launchCurrentEncounter(), 0);
+    }
   }
 
   override update(_time: number, delta: number): void {
@@ -173,7 +183,16 @@ export class ExpeditionScene extends Phaser.Scene {
         token.destroy();
       }
       this.travelling = false;
+      this.launchCurrentEncounter();
     }, 450);
+  }
+
+  private launchCurrentEncounter(): void {
+    const node = expeditionNodeById(this.run.map, this.run.state.currentNodeId);
+    if (!node || !hasPendingEncounter(this.run)) return;
+    window.location.href = expeditionEncounterUrl(
+      expeditionEncounterForNode(this.run.state.mapSeed, node),
+    );
   }
 
   /** Autosave on every arrival back at the map, per the persistence design. */
@@ -224,7 +243,7 @@ export class ExpeditionScene extends Phaser.Scene {
       this.root.add(this.text(
         70,
         HEIGHT - 30,
-        "ARROWS CYCLE ROUTES  •  ENTER TRAVEL (scout mode until encounters wire in)  •  ESC TITLE",
+        "ARROWS CYCLE ROUTES  •  ENTER DEPLOY  •  ESC TITLE",
         MUTED,
         "12px",
       ));

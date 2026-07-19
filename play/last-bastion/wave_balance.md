@@ -461,3 +461,17 @@ When the expedition map replaces the fixed ten-wave script, the timed threat dir
 | Boss (node 20) | authored | — | The Bastion Eater, unchanged |
 
 Rules carried over unchanged: 2.5-second spend pulses, pursuit-led quotas, one-fast-elite cap, guaranteed elite cadence in late columns, kill-owned boss/mini-boss waves, timer-owned ordinary waves. Per-node enemy scaling keys off column depth using the existing non-compounding per-wave table (column ≈ wave for scaling purposes). Scrap and XP totals across an 8–11 node route must land within ±15% of today's ten-wave reference trace so the shop and level 9–12 targets survive the migration.
+
+## Proposed destructible-terrain durability and damage feedback
+
+The current two-stage boss-only obstacle break becomes numeric health in its behavior gate. Values must stay legible against the game's 2-damage weapon baseline; `10,000 HP` is reserved for an objective-scale structure, not an ordinary rock.
+
+| Terrain | Proposed HP | Gameplay role |
+| --- | ---: | --- |
+| Brittle fence / corrupted growth | 40–60 | Quickly opens or closes a lane |
+| Cargo crate | 80–120 | Temporary projectile cover; small debris response |
+| Barricade | 180–300 | Reliable cover that sustained fire can remove |
+| Boulder / reinforced conduit | 350–650 | Long-lived routing anchor |
+| Objective wall / boss structure | 1,500–10,000 | Scripted encounter target only |
+
+Terrain bars use the same one-decimal formatter as combat stats, appear after the first hit, remain for 1.5 seconds after the last hit, and hide at full health. Player damage numbers are 25–35% larger than ordinary outgoing numbers, show a leading minus sign, last 0.85–1.05 seconds, and never merge with green healing ticks.

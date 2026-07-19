@@ -279,6 +279,20 @@ Swarm rows are sprint and attack/recoil. Razorlord rows are pursuit, wind-up, co
 
 Large telegraph frames are four ground-slam stages followed by four 120-degree sweep stages. Small frames are four rain reticles, three radial pulses, one edge warning, three beam widths, and one impact burst. Danger fills are supporting hatch variants only. Runtime code remains the sole authority for shape, radius, direction, timing, hit tests, warning caps, and off-screen placement; decals sit below the code geometry and must never replace it.
 
+## Runtime silhouette and projectile-rim preflight
+
+Do not bake a universal heavy outline into source sprites. Task 55 tests a code-rendered one-to-two-pixel dark enemy rim and a restrained ivory/teal Marine rim against all five world themes. The rim must follow alpha, remain subordinate to hit/status flashes, and switch off cleanly for screenshots and accessibility comparison. Projectiles use family-specific contrast halos: warm dark edge for fire/blast, cool dark edge for cryo/laser, violet-black edge for void, and neutral charcoal for physical spikes or knives. Large roars, shockwaves, and area fills keep their authored transparent falloff rather than receiving a sticker-like contour.
+
+## Production Asset Batch O contracts
+
+| Stable ID | Grid | Logical cell | Frame count |
+| --- | ---: | ---: | ---: |
+| `rift-stalker-v1` | 4×4 | 128×128 | 16 |
+| `rift-stalker-effects-v1` | 4×2 | 64×64 | 8 |
+| `rift-stalker-portrait-v1` | image | 128×128 | 1 |
+
+Body columns remain south, north, east, west. Rows are cloaked stalk, marked wind-up, committed warp strike, and exhausted frenzy/recovery. Cloak transparency is runtime-owned; retained source frames stay opaque. Effect order is warp-out, warp-in, decoy mark, pounce impact, blade slash, frenzy tick, defeat collapse, and afterglow.
+
 ## Approval still required
 
 - Whether the tested 96 × 96 logical cell remains final after gameplay-scale review

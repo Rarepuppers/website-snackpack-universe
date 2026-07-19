@@ -66,7 +66,12 @@ export function resumeExpeditionRun(state: ExpeditionRunState): ExpeditionRun | 
   if (!state.clearedNodeIds.every((id) => validIds.has(id))) {
     return null;
   }
-  if (!state.clearedNodeIds.includes(state.currentNodeId)) {
+  const cleared = new Set(state.clearedNodeIds);
+  const currentIsCleared = cleared.has(state.currentNodeId);
+  const currentIsPending = map.nodes.some((node) => (
+    cleared.has(node.id) && node.next.includes(state.currentNodeId)
+  ));
+  if (!currentIsCleared && !currentIsPending) {
     return null;
   }
   return { map, state: { ...state, clearedNodeIds: [...state.clearedNodeIds] } };
@@ -74,6 +79,9 @@ export function resumeExpeditionRun(state: ExpeditionRunState): ExpeditionRun | 
 
 /** Nodes the dropship may travel to from its current position. */
 export function selectableNodeIds(run: ExpeditionRun): readonly number[] {
+  if (!run.state.clearedNodeIds.includes(run.state.currentNodeId)) {
+    return [];
+  }
   return reachableNodes(run.map, run.state.currentNodeId).map((node) => node.id);
 }
 
@@ -90,9 +98,31 @@ export function moveToNode(run: ExpeditionRun, nodeId: number): ExpeditionRun | 
     state: {
       ...run.state,
       currentNodeId: nodeId,
-      clearedNodeIds: [...run.state.clearedNodeIds, nodeId],
+      clearedNodeIds: [...run.state.clearedNodeIds],
     },
   };
+}
+
+/** Commits a successful node and the build that leaves it. Idempotent. */
+export function completeCurrentNode(
+  run: ExpeditionRun,
+  build: ExpeditionBuildSnapshot,
+): ExpeditionRun {
+  const clearedNodeIds = run.state.clearedNodeIds.includes(run.state.currentNodeId)
+    ? [...run.state.clearedNodeIds]
+    : [...run.state.clearedNodeIds, run.state.currentNodeId];
+  return {
+    map: run.map,
+    state: {
+      ...run.state,
+      clearedNodeIds,
+      build: cloneBuild(build),
+    },
+  };
+}
+
+export function hasPendingEncounter(run: ExpeditionRun): boolean {
+  return !run.state.clearedNodeIds.includes(run.state.currentNodeId);
 }
 
 /** The run completes when the boss node has been cleared. */
@@ -135,4 +165,12 @@ function forwardNodeIds(run: ExpeditionRun): ReadonlySet<number> {
     }
   }
   return seen;
+}
+
+function cloneBuild(build: ExpeditionBuildSnapshot): ExpeditionBuildSnapshot {
+  return {
+    ...build,
+    weapons: build.weapons.map((weapon) => ({ ...weapon })),
+    upgrades: build.upgrades.map((upgrade) => ({ ...upgrade })),
+  };
 }

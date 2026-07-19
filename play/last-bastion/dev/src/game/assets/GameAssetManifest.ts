@@ -78,6 +78,9 @@ import arcticRelayDecalUrl from "../../../../art/production-tests/batch-h/arctic
 import aurumHoarderSheetUrl from "../../../../art/production-tests/batch-n/aurum-hoarder-spritesheet-v1-96.png";
 import aurumHoarderEffectUrl from "../../../../art/production-tests/batch-n/aurum-hoarder-effect-atlas-v1-64.png";
 import aurumTileSheetUrl from "../../../../art/production-tests/batch-n/aurum-tile-atlas-v1-128.png";
+import riftStalkerSheetUrl from "../../../../art/production-tests/batch-o/rift-stalker-spritesheet-v1-128.png";
+import riftStalkerEffectUrl from "../../../../art/production-tests/batch-o/rift-stalker-effect-atlas-v1-64.png";
+import riftStalkerPortraitUrl from "../../../../art/production-tests/batch-o/rift-stalker-portrait-v1-128.png";
 import scrapShopOfferTileUrl from "../../../../art/production-tests/batch-n2/scrap-shop-offer-tile-atlas-v1-128.png";
 import scrapShopHudUrl from "../../../../art/production-tests/batch-n2/scrap-shop-hud-atlas-v1-128.png";
 import scrapShopPanelUrl from "../../../../art/production-tests/batch-n2/scrap-shop-panel-v1-1024x576.png";
@@ -178,6 +181,9 @@ export type GameAssetId =
   | "aurum-hoarder-v1"
   | "aurum-hoarder-effects-v1"
   | "aurum-tiles-v1"
+  | "rift-stalker-v1"
+  | "rift-stalker-effects-v1"
+  | "rift-stalker-portrait-v1"
   | "scrap-shop-offer-tiles-v1"
   | "scrap-shop-hud-v1"
   | "scrap-shop-panel-v1"
@@ -299,6 +305,9 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("aurum-hoarder-v1", aurumHoarderSheetUrl, 96, 96, 12, 0.5, 0.55),
   sheet("aurum-hoarder-effects-v1", aurumHoarderEffectUrl, 64, 64, 8, 0.5, 0.5),
   sheet("aurum-tiles-v1", aurumTileSheetUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("rift-stalker-v1", riftStalkerSheetUrl, 128, 128, 16, 0.5, 0.55),
+  sheet("rift-stalker-effects-v1", riftStalkerEffectUrl, 64, 64, 8, 0.5, 0.5),
+  image("rift-stalker-portrait-v1", riftStalkerPortraitUrl, 128, 128, 0.5, 0.5),
   sheet("scrap-shop-offer-tiles-v1", scrapShopOfferTileUrl, 128, 128, 6, 0.5, 0.5),
   sheet("scrap-shop-hud-v1", scrapShopHudUrl, 128, 128, 4, 0.5, 0.5),
   image("scrap-shop-panel-v1", scrapShopPanelUrl, 1024, 576, 0.5, 0.5),

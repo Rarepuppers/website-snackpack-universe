@@ -133,6 +133,14 @@ Backed by the existing versioned save store; every change persists immediately a
 
 **Accessibility** (recommended additions, not yet designed in detail): colour-blind-safe telegraph palette, reduced-flash mode (caps camera flashes and combustion bursts), high-contrast HUD, and hold-vs-tap for the evasive move. These are cheap to honour now and expensive to retrofit later.
 
+### Combat readability and battlefield interaction additions
+
+- **Fire control:** the existing Gameplay setting above is the locked direction: Auto-fire is the default, Manual requires the trigger, and aiming remains independent in both modes. `T` / pad R3 toggles it during a run. Automatic orbit/support devices ignore Manual because they are cadence systems rather than trigger weapons.
+- **Player damage:** a damaging hit produces a larger `-4.3` style number near the Marine for roughly one second, red with a dark outline and a brief ivory inner edge for readability. It is visually stronger than enemy damage numbers, never merges with healing, and respects the Damage Numbers setting. A short Marine flash and restrained directional screen-edge pulse remain available when numbers are disabled.
+- **Actor separation:** test a one-to-two-pixel dark silhouette rim around enemies and an ivory/teal rim around the Marine. Projectiles use a small contrasting halo keyed to damage family instead of forcing every slime glob, spike, laser, blast, or sonic wave into one outline colour. Telegraph geometry stays code-owned and must remain brighter than terrain.
+- **Destructible cover:** only authored battlefield objects are destructible; floor and boundary art are not. Fences, cargo crates, brittle biomass, rocks/boulders, and reinforced barricades carry numeric health. Their compact HP bar appears only after damage or while targeted, preventing eight permanent bars from cluttering the arena. Destruction must preserve at least one traversable route and may open a shortcut, remove protection, or trigger a small material-specific response.
+- **Mini-boss presence:** mini-bosses render around 1.25–1.45× an elite's gameplay silhouette and actively reposition between attacks. Each keeps committed tells and punishable recovery, but no mini-boss should behave like a stationary health turret; survival should require circling, dodging lanes, and reading its movement pattern.
+
 ### Character select
 
 Solo, so this is a hero dossier rather than a versus grid:
@@ -151,7 +159,7 @@ Replaces stage select entirely. A horizontal, left-to-right starchart in the spi
 - **Generation rules (seeded, pure, unit-tested):** no two Elite/Mini-boss nodes adjacent on any path; at least one Supply Depot reachable before the first Mini-boss; every lane rejoins before the boss; the seed reproduces the exact map for bug reports.
 - **Presentation:** current node pulses; reachable next nodes glow teal with connecting route lines; visited nodes dim with a claw-mark "cleared" stamp; unreachable branches grey out. Hovering/selecting a node shows a small intel card (type, threat hint, reward hint). A small dropship token animates along the chosen edge.
 - **Persistence:** the save schema versions up to carry mid-run state (map seed, cleared nodes, hero build, health/shield); autosave happens on returning to the map, honouring the existing "browser storage is not cloud storage" rule.
-- **Encounter mapping:** Combat/Elite/Mini-boss nodes run the existing arena simulation with encounter budgets chosen by node type and column depth; Supply Depot and Weapon Cache reuse the existing decision overlays full-screen; the Boss node runs the Bastion Eater scenario.
+- **Encounter mapping (Task 39 live):** Combat/Elite/Mini-boss nodes run the existing arena simulation with encounter budgets chosen by node type and column depth; Supply Depot and Weapon Cache reuse the existing decision overlays full-screen; the Boss node runs the Bastion Eater scenario. Node arrival is pending until victory, then health, shield, level, XP, Scrap, weapon tiers, and upgrades return to the map save. Task 48 expands the one-budget bridge into the final multi-wave node director.
 
 ### Sector campaign — future multi-map structure
 

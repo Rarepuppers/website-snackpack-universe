@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(98);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(101);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -270,6 +270,20 @@ describe("GameAssetManifest", () => {
       expect(tiles.logicalWidth).toBe(128);
       expect(tiles.logicalHeight).toBe(128);
     }
+  });
+
+  it("locks Production Batch O Rift Stalker contracts", () => {
+    const body = GAME_ASSETS["rift-stalker-v1"];
+    const effects = GAME_ASSETS["rift-stalker-effects-v1"];
+    const portrait = GAME_ASSETS["rift-stalker-portrait-v1"];
+    expect(body.kind).toBe("spritesheet");
+    expect(effects.kind).toBe("spritesheet");
+    expect(portrait.kind).toBe("image");
+    if (body.kind === "spritesheet") {
+      expect(body.frameCount).toBe(16);
+      expect(body.logicalWidth).toBe(128);
+    }
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
   });
 
   it("locks the production Scrap Shop Batch N2 contracts", () => {
