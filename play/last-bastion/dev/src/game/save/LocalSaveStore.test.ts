@@ -36,6 +36,14 @@ describe("LocalSaveStore", () => {
     expect(reloaded.settings.soundEnabled).toBe(true);
     // Untouched settings keep their defaults.
     expect(reloaded.settings.damageNumbersEnabled).toBe(true);
+    expect(reloaded.settings.autoFireEnabled).toBe(true);
+  });
+
+  it("defaults Auto-fire on and persists Manual mode", () => {
+    const storage = fakeStorage();
+    expect(new LocalSaveStore(storage).load().settings.autoFireEnabled).toBe(true);
+    new LocalSaveStore(storage).updateSettings({ autoFireEnabled: false });
+    expect(new LocalSaveStore(storage).load().settings.autoFireEnabled).toBe(false);
   });
 
   it("persists the selected hero and perk for the next deployment", () => {
@@ -201,9 +209,10 @@ describe("Save schema v2 — expedition autosave", () => {
       }),
     });
     const save = new LocalSaveStore(storage).load();
-    expect(save.version).toBe(4);
+    expect(save.version).toBe(5);
     expect(save.settings.screenShakeEnabled).toBe(false);
     expect(save.settings.cooldownTimersEnabled).toBe(false);
+    expect(save.settings.autoFireEnabled).toBe(true);
     expect(save.progress.runsFinished).toBe(4);
     expect(save.progress.bestiary.scuttler).toEqual({ seen: 3, kills: 12 });
     expect(save.expedition).toBeNull();

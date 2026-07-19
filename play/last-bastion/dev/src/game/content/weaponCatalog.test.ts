@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { VERTICAL_SLICE_WEAPON_IDS, WEAPON_CATALOG } from "./weaponCatalog";
+import { shouldWeaponFire, VERTICAL_SLICE_WEAPON_IDS, WEAPON_CATALOG } from "./weaponCatalog";
 
 describe("weaponCatalog", () => {
   it("locks the three vertical-slice weapon families", () => {
@@ -15,6 +15,7 @@ describe("weaponCatalog", () => {
     expect(WEAPON_CATALOG.scattergun.knockbackMetres).toBeGreaterThan(0);
     expect(WEAPON_CATALOG["arc-carbine"].targetingMode).toBe("nearest-enemy");
     expect(WEAPON_CATALOG["arc-carbine"].chainCount).toBe(1);
+    expect(WEAPON_CATALOG["arc-carbine"].firesAutomatically).toBe(true);
     expect(WEAPON_CATALOG["patrol-blade"].attackPattern).toBe("melee-sweep");
     expect(WEAPON_CATALOG["patrol-blade"].firesAutomatically).toBe(true);
     expect(WEAPON_CATALOG["patrol-blade"].fireIntervalSeconds).toBe(2.5);
@@ -26,5 +27,14 @@ describe("weaponCatalog", () => {
     expect(WEAPON_CATALOG["grenade-tube"].explosionRadiusMetres).toBe(2.2);
     expect(WEAPON_CATALOG["grenade-tube"].projectileSpeedMetresPerSecond).toBe(8);
     expect(WEAPON_CATALOG["grenade-tube"].fireIntervalSeconds).toBe(4);
+  });
+
+  it("makes Manual mode trigger-owned except for autonomous support weapons", () => {
+    const rifle = WEAPON_CATALOG["bastion-service-rifle"];
+    const arc = WEAPON_CATALOG["arc-carbine"];
+    expect(shouldWeaponFire(rifle, true, false)).toBe(true);
+    expect(shouldWeaponFire(rifle, false, false)).toBe(false);
+    expect(shouldWeaponFire(rifle, false, true)).toBe(true);
+    expect(shouldWeaponFire(arc, false, false)).toBe(true);
   });
 });

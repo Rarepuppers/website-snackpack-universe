@@ -119,7 +119,7 @@ Backed by the existing versioned save store; every change persists immediately a
 
 | Setting | Options | Default | Notes |
 | --- | --- | --- | --- |
-| Firing | Auto-fire / Manual | **Auto-fire** | Auto-fire holds the trigger whenever a valid target is in range; the aim stick/cursor still chooses direction. A **toggle hotkey** (`T`, pad R3) flips modes mid-run without opening menus, because some weapons (Bolt Carbine, Grenade Tube) reward deliberate shots while the Service Rifle does not. |
+| Firing | Auto-fire / Manual | **Auto-fire** | **Live in Task 53.** Auto-fire holds the trigger while Manual requires mouse/trigger fire; aim stays independent. `T` / pad R3 flips modes immediately. The auto-targeting Arc Carbine and cadence-owned Patrol Blade remain autonomous in both modes. |
 | Skills | Auto-use / Manual | **Manual** | Auto-use fires the ultimate and consumable kit on sensible triggers (ultimate when ≥4 enemies are inside its radius; kit when a mini-boss is engaged or health drops below 40%). Manual keeps every activation on the player, which is the intended skill expression. |
 | Auto-aim assist | Off / Light / Strong | **Light** | Light applies a small angular snap on cursor/stick aim; Strong targets the nearest enemy. Required for eventual touch play; keep off the default desktop experience beyond Light. |
 | Pause on decision | On / Off | **On** | Off lets combat continue during upgrade choices for players who find the pause jarring. |
@@ -141,7 +141,7 @@ Backed by the existing versioned save store; every change persists immediately a
 
 ### Combat readability and battlefield interaction additions
 
-- **Fire control:** the existing Gameplay setting above is the locked direction: Auto-fire is the default, Manual requires the trigger, and aiming remains independent in both modes. `T` / pad R3 toggles it during a run. Automatic orbit/support devices ignore Manual because they are cadence systems rather than trigger weapons.
+- **Fire control (live):** Auto-fire is the default, Manual requires the trigger, and aiming remains independent in both modes. `T` / pad R3 toggles it during a run. The Arc Carbine and Patrol Blade ignore Manual because they are autonomous support/cadence systems rather than trigger weapons.
 - **Player damage:** a damaging hit produces a larger `-4.3` style number near the Marine for roughly one second, red with a dark outline and a brief ivory inner edge for readability. It is visually stronger than enemy damage numbers, never merges with healing, and respects the Damage Numbers setting. A short Marine flash and restrained directional screen-edge pulse remain available when numbers are disabled.
 - **Actor separation:** test a one-to-two-pixel dark silhouette rim around enemies and an ivory/teal rim around the Marine. Projectiles use a small contrasting halo keyed to damage family instead of forcing every slime glob, spike, laser, blast, or sonic wave into one outline colour. Telegraph geometry stays code-owned and must remain brighter than terrain.
 - **Destructible cover:** only authored battlefield objects are destructible; floor and boundary art are not. Fences, cargo crates, brittle biomass, rocks/boulders, and reinforced barricades carry numeric health. Their compact HP bar appears only after damage or while targeted, preventing eight permanent bars from cluttering the arena. Destruction must preserve at least one traversable route and may open a shortcut, remove protection, or trigger a small material-specific response.

@@ -9,6 +9,7 @@ import type { HeroDefinition, WeaponClass } from "../hero/HeroDefinition";
 import { ENEMY_CATALOG, type EnemyType } from "../content/enemyCatalog";
 import {
   BASTION_SERVICE_RIFLE,
+  shouldWeaponFire,
   WEAPON_CATALOG,
   WEAPON_CHEST_POOL,
   type WeaponId,
@@ -417,6 +418,7 @@ export interface WeaponInventorySnapshot {
 
 export interface CombatSnapshot {
   status: EncounterStatus;
+  autoFireEnabled: boolean;
   heroId: HeroDefinition["id"];
   activePerkId: PerkId | null;
   waveNumber: number;
@@ -658,6 +660,8 @@ export interface CombatSimulationOptions {
   startingBuild?: ExpeditionBuildSnapshot | null;
   perkId?: PerkId | null;
   heroId?: HeroDefinition["id"];
+  /** Scene-owned persisted accessibility setting; false keeps pure harnesses explicit. */
+  autoFireEnabled?: boolean;
 }
 
 interface EquippedWeaponState extends EquippedWeapon {
@@ -903,8 +907,10 @@ export class CombatSimulation {
   private expeditionPostEncounterShopQueued = false;
   private activeTetherEnemyId: number | null = null;
   private pendingWeaponTile: WeaponTile | null = null;
+  private autoFireEnabled: boolean;
 
   constructor(options: CombatSimulationOptions = {}) {
+    this.autoFireEnabled = options.autoFireEnabled ?? false;
     this.hero = options.heroId === "medic" ? MEDIC : MARINE;
     this.heroMotion = new HeroMotionController(this.hero);
     this.defence = { ...this.hero.defence };
@@ -1080,7 +1086,7 @@ export class CombatSimulation {
 
     const attackSpeed = this.currentAttackSpeedMultiplier();
     for (const weapon of this.equippedWeapons) {
-      if ((intent.fireHeld || weapon.stats.firesAutomatically) && weapon.cooldownSeconds <= 0) {
+      if (shouldWeaponFire(weapon.stats, this.autoFireEnabled, intent.fireHeld) && weapon.cooldownSeconds <= 0) {
         const fireDirection = this.resolveWeaponAimDirection(weapon, this.lastAimDirection);
         if (fireDirection) {
           this.fireWeapon(weapon, fireDirection);
@@ -1485,10 +1491,15 @@ export class CombatSimulation {
     return this.chooseOption(upgradeId);
   }
 
+  setAutoFireEnabled(enabled: boolean): void {
+    this.autoFireEnabled = enabled;
+  }
+
   snapshot(): CombatSnapshot {
     const decision = this.decisionQueue[0] ?? null;
     return {
       status: this.status,
+      autoFireEnabled: this.autoFireEnabled,
       heroId: this.hero.id,
       activePerkId: this.activePerkId,
       waveNumber: this.expeditionEncounter ? this.expeditionWaveIndex + 1 : this.waveIndex + 1,

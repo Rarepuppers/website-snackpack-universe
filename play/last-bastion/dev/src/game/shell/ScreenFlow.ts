@@ -47,7 +47,7 @@ export const HOW_TO_PLAY_PAGES: readonly { title: string; body: string }[] = Obj
   },
   {
     title: "YOUR ARSENAL",
-    body: "Weapons on your ring fire automatically at what you aim at.\nR fires the ultimate. Q uses your carried kit.\nSlow weapons show their recharge on the bottom cadence strip.",
+    body: "Weapons follow your Auto-fire / Manual setting; T or pad-R3 toggles it in combat.\nR fires the ultimate. Q uses your carried kit.\nAutonomous support weapons keep their own cadence in either mode.",
   },
   {
     title: "DAMAGE AND STATUS",
@@ -69,6 +69,7 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { key: "soundEnabled", label: "Sound" },
   { key: "damageNumbersEnabled", label: "Damage numbers" },
   { key: "cooldownTimersEnabled", label: "Cooldown timers" },
+  { key: "autoFireEnabled", label: "Auto-fire" },
 ]);
 
 export interface RosterEntry {

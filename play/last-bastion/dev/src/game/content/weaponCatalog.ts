@@ -5,6 +5,15 @@ export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | 
 export type WeaponTargetingMode = "cursor" | "nearest-enemy";
 export type WeaponAttackPattern = "projectile" | "scatter" | "chain-projectile" | "melee-sweep";
 
+/** Autonomous support/cadence weapons ignore the global trigger mode. */
+export function shouldWeaponFire(
+  weapon: Pick<WeaponRuntimeStats, "firesAutomatically">,
+  autoFireEnabled: boolean,
+  triggerHeld: boolean,
+): boolean {
+  return weapon.firesAutomatically || autoFireEnabled || triggerHeld;
+}
+
 export interface WeaponRuntimeStats {
   id: WeaponId;
   displayName: string;
@@ -77,6 +86,7 @@ export const ARC_CARBINE: Readonly<WeaponRuntimeStats> = weapon({
   projectileDamage: 3,
   chainCount: 1,
   chainRadiusMetres: 3.2,
+  firesAutomatically: true,
 });
 
 export const PATROL_BLADE: Readonly<WeaponRuntimeStats> = weapon({

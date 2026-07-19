@@ -42,6 +42,8 @@ export class CombatHud {
   private readonly weaponPips: Phaser.GameObjects.Rectangle[] = [];
   /** Reserved for future live contacts; today the radar shows only the player dot. */
   private readonly radarDot: Phaser.GameObjects.Arc;
+  private readonly fireModePanel: Phaser.GameObjects.Rectangle;
+  private readonly fireModeText: Phaser.GameObjects.Text;
   private readonly statePanel: Phaser.GameObjects.Container;
   private readonly stateText: Phaser.GameObjects.Text;
   private readonly debugText: Phaser.GameObjects.Text;
@@ -97,6 +99,10 @@ export class CombatHud {
     // reserves the corner for a future minimap rather than a blank panel.
     scene.add.circle(925, 32, 24, 0x0b121c, 0.82).setStrokeStyle(1, 0x334a60).setDepth(2000);
     this.radarDot = scene.add.circle(925, 32, 3, 0x68e4e8).setDepth(2002);
+    this.fireModePanel = scene.add.rectangle(916, 68, 80, 18, 0x0b121c, 0.88)
+      .setStrokeStyle(1, 0x68e4e8).setDepth(2000);
+    this.fireModeText = scene.add.text(916, 68, "", hudText("#68e4e8", "9px"))
+      .setOrigin(0.5).setDepth(2001);
 
     const actionDefinitions = [
       { label: "ROLL", binding: "SPACE", color: 0x68e4e8, frame: 0 },
@@ -201,6 +207,10 @@ export class CombatHud {
       925 + (snapshot.playerPosition.x / snapshot.arena.widthMetres - 0.5) * 40,
       32 + (snapshot.playerPosition.y / snapshot.arena.heightMetres - 0.5) * 40,
     );
+    this.fireModePanel.setStrokeStyle(1, snapshot.autoFireEnabled ? 0x68e4e8 : 0xffb15c);
+    this.fireModeText
+      .setText(snapshot.autoFireEnabled ? "T/R3  AUTO" : "T/R3  MANUAL")
+      .setColor(snapshot.autoFireEnabled ? "#68e4e8" : "#ffb15c");
     this.statusTray.forEach((view, index) => {
       const buff = snapshot.activeBuffs[index];
       if (!buff) {
@@ -247,7 +257,7 @@ export class CombatHud {
         else if (weapon.weaponId === "grenade-tube") tile.icon.setTexture("weapon-tiles-v1", 2).setVisible(true);
         else tile.icon.setVisible(false);
       }
-      tile.binding.setText(weapon.stats.firesAutomatically ? "AUTO" : "FIRE");
+      tile.binding.setText(weapon.stats.firesAutomatically ? "SYNC" : snapshot.autoFireEnabled ? "AUTO" : "FIRE");
       updateCooldownTile(
         tile,
         weapon.cooldownRemainingSeconds,

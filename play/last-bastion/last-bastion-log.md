@@ -632,3 +632,12 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Added the victory/defeat debrief with hero, level, progress, kills, Scrap, per-weapon damage, final weapon tiers, upgrade levels, and newly unlocked perks. The deterministic `?screen=summary&summarydemo=1` route previews a populated result without modifying the save.
 - Migrated local persistence to schema v4 and added lifetime runs, victories, best expedition depth, kills, damage, and Scrap. The main-menu Records card now opens the full ledger instead of acting as a label.
 - Kept the summary and Records presentation code-native for resolution-independent 1080p/4K output. Browser review at 1280×720 found no clipping, overlaps, or console errors.
+
+### Task 53 — fire-control accessibility gate
+
+**Status:** Completed — 19 July 2026; creator controller-feel review remains welcome
+
+- Migrated local persistence to schema v5 with Auto-fire enabled by default and a first-class Settings row. Older saves inherit the accessible default without losing progress or expedition state.
+- Added the in-run `T` / pad-R3 toggle and a compact top-right Auto/Manual HUD chip. Mouse/cursor and right-stick aim remain independent from click/trigger fire in Manual mode.
+- Locked autonomous exceptions to the auto-targeting Arc Carbine and cadence-owned Patrol Blade. Every cursor weapon follows Auto-fire or requires its trigger in Manual mode.
+- Added input-edge, weapon-policy, simulation-mode, save migration, and persistence coverage. Browser review confirmed both HUD states at gameplay scale with zero console errors.

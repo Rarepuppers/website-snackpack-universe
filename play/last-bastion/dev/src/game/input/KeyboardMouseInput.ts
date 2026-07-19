@@ -23,6 +23,7 @@ interface ControlKeys {
   kit: Phaser.Input.Keyboard.Key;
   pause: Phaser.Input.Keyboard.Key;
   restart: Phaser.Input.Keyboard.Key;
+  toggleFireMode: Phaser.Input.Keyboard.Key;
 }
 
 export class KeyboardMouseInput {
@@ -51,6 +52,7 @@ export class KeyboardMouseInput {
       kit: Phaser.Input.Keyboard.KeyCodes.Q,
       pause: Phaser.Input.Keyboard.KeyCodes.ESC,
       restart: Phaser.Input.Keyboard.KeyCodes.ENTER,
+      toggleFireMode: Phaser.Input.Keyboard.KeyCodes.T,
     }) as unknown as ControlKeys;
   }
 
@@ -68,6 +70,7 @@ export class KeyboardMouseInput {
         y: pointer.worldY - playerPosition.y,
       }),
       fireHeld: pointer.leftButtonDown(),
+      toggleFireModePressed: Phaser.Input.Keyboard.JustDown(this.keys.toggleFireMode),
       evasiveMovePressed: Phaser.Input.Keyboard.JustDown(this.keys.evade),
       interactPressed: Phaser.Input.Keyboard.JustDown(this.keys.interact),
       ultimatePressed: Phaser.Input.Keyboard.JustDown(this.keys.ultimate),
@@ -94,6 +97,7 @@ export class KeyboardMouseInput {
       northPressed: pad.Y,
       eastPressed: pad.B,
       startPressed: Boolean(pad.buttons[9]?.pressed),
+      rightStickPressed: Boolean(pad.buttons[11]?.pressed),
     };
   }
 }

@@ -22,12 +22,11 @@ export interface GamepadStateSnapshot {
   /** Right face button (B / Circle). */
   eastPressed: boolean;
   startPressed: boolean;
+  /** Right-stick click (R3), used for the fire-mode accessibility toggle. */
+  rightStickPressed: boolean;
 }
 
 export const GAMEPAD_DEADZONE = 0.25;
-/** Right-stick magnitude beyond which aiming also fires (twin-stick convention). */
-export const GAMEPAD_FIRE_THRESHOLD = 0.5;
-
 export const DISCONNECTED_GAMEPAD: Readonly<GamepadStateSnapshot> = Object.freeze({
   connected: false,
   leftStick: { x: 0, y: 0 },
@@ -38,6 +37,7 @@ export const DISCONNECTED_GAMEPAD: Readonly<GamepadStateSnapshot> = Object.freez
   northPressed: false,
   eastPressed: false,
   startPressed: false,
+  rightStickPressed: false,
 });
 
 /** Scaled radial deadzone: dead centre is ignored, the rest rescales to 0..1. */
@@ -63,6 +63,7 @@ export class GamepadIntentMapper {
   private previousNorth = false;
   private previousEast = false;
   private previousStart = false;
+  private previousRightStick = false;
 
   update(state: GamepadStateSnapshot): PlayerIntent {
     const south = state.connected && state.southPressed;
@@ -70,6 +71,7 @@ export class GamepadIntentMapper {
     const north = state.connected && state.northPressed;
     const east = state.connected && state.eastPressed;
     const start = state.connected && state.startPressed;
+    const rightStick = state.connected && state.rightStickPressed;
     const intent = buildIntent(state, {
       evasiveMovePressed: south && !this.previousSouth,
       interactPressed: west && !this.previousWest,
@@ -77,12 +79,14 @@ export class GamepadIntentMapper {
       kitPressed: east && !this.previousEast,
       pausePressed: start && !this.previousStart,
       restartPressed: south && !this.previousSouth,
+      toggleFireModePressed: rightStick && !this.previousRightStick,
     });
     this.previousSouth = south;
     this.previousWest = west;
     this.previousNorth = north;
     this.previousEast = east;
     this.previousStart = start;
+    this.previousRightStick = rightStick;
     return intent;
   }
 }
@@ -90,7 +94,7 @@ export class GamepadIntentMapper {
 function buildIntent(
   state: GamepadStateSnapshot,
   pressed: Pick<PlayerIntent,
-    "evasiveMovePressed" | "interactPressed" | "ultimatePressed" | "kitPressed" | "pausePressed" | "restartPressed">,
+    "evasiveMovePressed" | "interactPressed" | "ultimatePressed" | "kitPressed" | "pausePressed" | "restartPressed" | "toggleFireModePressed">,
 ): PlayerIntent {
   if (!state.connected) {
     return {
@@ -107,14 +111,15 @@ function buildIntent(
   }
 
   const move = applyDeadzone(state.leftStick);
-  const rawAimMagnitude = Math.hypot(state.rightStick.x, state.rightStick.y);
   const aimStick = applyDeadzone(state.rightStick);
   const aimMagnitude = Math.hypot(aimStick.x, aimStick.y);
 
   return {
     move,
     aim: aimMagnitude > 0 ? normalizeVector(aimStick) : { x: 0, y: 0 },
-    fireHeld: state.fireHeld || rawAimMagnitude >= GAMEPAD_FIRE_THRESHOLD,
+    // Aim and trigger remain independent. Auto-fire is a simulation setting;
+    // Manual mode therefore requires RT/R1 even while the right stick aims.
+    fireHeld: state.fireHeld,
     ...pressed,
   };
 }
@@ -130,6 +135,7 @@ export function mergeIntents(keyboardMouse: PlayerIntent, gamepad: PlayerIntent)
     move: gamepadMoving ? gamepad.move : keyboardMouse.move,
     aim: gamepadAiming ? gamepad.aim : keyboardMouse.aim,
     fireHeld: keyboardMouse.fireHeld || gamepad.fireHeld,
+    toggleFireModePressed: Boolean(keyboardMouse.toggleFireModePressed || gamepad.toggleFireModePressed),
     evasiveMovePressed: keyboardMouse.evasiveMovePressed || gamepad.evasiveMovePressed,
     interactPressed: keyboardMouse.interactPressed || gamepad.interactPressed,
     ultimatePressed: keyboardMouse.ultimatePressed || gamepad.ultimatePressed,

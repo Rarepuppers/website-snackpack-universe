@@ -46,6 +46,21 @@ describe("CombatSimulation", () => {
     expect(snapshot.runMetrics.damageByWeapon["bastion-service-rifle"]).toBeCloseTo(4);
   });
 
+  it("applies Auto-fire immediately and allows switching back to Manual", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, autoFireEnabled: true });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("egg-cluster", { x: player.x + 4, y: player.y });
+
+    let snapshot = simulation.step(intent(), 0.05);
+    expect(snapshot.autoFireEnabled).toBe(true);
+    expect(snapshot.events.some((event) => event.type === "weapon-fired")).toBe(true);
+
+    simulation.setAutoFireEnabled(false);
+    for (let frame = 0; frame < 4; frame += 1) snapshot = simulation.step(intent(), 0.05);
+    expect(snapshot.autoFireEnabled).toBe(false);
+    expect(snapshot.events.some((event) => event.type === "weapon-fired")).toBe(false);
+  });
+
   it("automatically sweeps nearby enemies with Patrol Blade and exposes its cadence", () => {
     const simulation = new CombatSimulation({
       autoStartWaves: false,

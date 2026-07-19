@@ -19,6 +19,7 @@ export interface GameSettings {
   soundEnabled: boolean;
   damageNumbersEnabled: boolean;
   cooldownTimersEnabled: boolean;
+  autoFireEnabled: boolean;
 }
 
 /**
@@ -67,7 +68,7 @@ export interface ExpeditionSave {
 }
 
 export interface SaveData {
-  version: 4;
+  version: 5;
   settings: GameSettings;
   progress: GameProgress;
   expedition: ExpeditionSave | null;
@@ -82,12 +83,13 @@ export const SAVE_STORAGE_KEY = "last-bastion-save";
 export const BESTIARY_KILLS_TO_REVEAL = 10;
 
 export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
-  version: 4,
+  version: 5,
   settings: Object.freeze({
     screenShakeEnabled: true,
     soundEnabled: true,
     damageNumbersEnabled: true,
     cooldownTimersEnabled: true,
+    autoFireEnabled: true,
   }),
   progress: Object.freeze({
     runsFinished: 0,
@@ -268,18 +270,20 @@ function normalizeSave(parsed: unknown): SaveData {
     return cloneSave(DEFAULT_SAVE);
   }
   const candidate = parsed as Omit<Partial<SaveData>, "version"> & { version?: number };
+  const version = candidate.version ?? -1;
   // Versions 1–3 migrate cleanly into schema v4. Anything else is foreign and
   // degrades to defaults.
-  if (candidate.version !== 1 && candidate.version !== 2 && candidate.version !== 3 && candidate.version !== 4) {
+  if (![1, 2, 3, 4, 5].includes(version)) {
     return cloneSave(DEFAULT_SAVE);
   }
   return {
-    version: 4,
+    version: 5,
     settings: {
       screenShakeEnabled: readBoolean(candidate.settings?.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
       soundEnabled: readBoolean(candidate.settings?.soundEnabled, DEFAULT_SAVE.settings.soundEnabled),
       damageNumbersEnabled: readBoolean(candidate.settings?.damageNumbersEnabled, DEFAULT_SAVE.settings.damageNumbersEnabled),
       cooldownTimersEnabled: readBoolean(candidate.settings?.cooldownTimersEnabled, DEFAULT_SAVE.settings.cooldownTimersEnabled),
+      autoFireEnabled: readBoolean(candidate.settings?.autoFireEnabled, DEFAULT_SAVE.settings.autoFireEnabled),
     },
     progress: {
       runsFinished: readCount(candidate.progress?.runsFinished),
@@ -292,12 +296,12 @@ function normalizeSave(parsed: unknown): SaveData {
       totalScrapEarned: readFiniteNonNegative(candidate.progress?.totalScrapEarned),
       bestiary: readBestiary(candidate.progress?.bestiary),
     },
-    expedition: candidate.version >= 2 ? readExpedition(candidate.expedition) : null,
-    selectedPerkId: candidate.version >= 3 && isPerkId(candidate.selectedPerkId)
+    expedition: version >= 2 ? readExpedition(candidate.expedition) : null,
+    selectedPerkId: version >= 3 && isPerkId(candidate.selectedPerkId)
       ? candidate.selectedPerkId
       : "perk-veteran",
-    selectedHeroId: candidate.version >= 3 && candidate.selectedHeroId === "medic" ? "medic" : "marine",
-    lastRunSummary: candidate.version >= 4 ? readRunSummary(candidate.lastRunSummary) : null,
+    selectedHeroId: version >= 3 && candidate.selectedHeroId === "medic" ? "medic" : "marine",
+    lastRunSummary: version >= 4 ? readRunSummary(candidate.lastRunSummary) : null,
   };
 }
 

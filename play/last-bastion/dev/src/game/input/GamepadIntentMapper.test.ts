@@ -41,17 +41,14 @@ describe("GamepadIntentMapper", () => {
     expect(partial.x).toBeLessThan(0.625);
   });
 
-  it("fires while the right stick is pushed past the twin-stick threshold", () => {
+  it("keeps right-stick aiming independent from the manual-fire trigger", () => {
     const mapper = new GamepadIntentMapper();
     const intent = mapper.update(padState({ rightStick: { x: 0.9, y: 0 } }));
-    expect(intent.fireHeld).toBe(true);
+    expect(intent.fireHeld).toBe(false);
     expect(intent.aim.x).toBeCloseTo(1);
 
-    const boundary = mapper.update(padState({ rightStick: { x: 0.5, y: 0 } }));
-    expect(boundary.fireHeld).toBe(true);
-
-    const idle = mapper.update(padState({ rightStick: { x: 0.28, y: 0 } }));
-    expect(idle.fireHeld).toBe(false);
+    const firing = mapper.update(padState({ rightStick: { x: 0.9, y: 0 }, fireHeld: true }));
+    expect(firing.fireHeld).toBe(true);
   });
 
   it("edge-triggers pressed buttons like keyboard JustDown", () => {
@@ -73,6 +70,14 @@ describe("GamepadIntentMapper", () => {
     expect(mapper.update(padState({ eastPressed: true })).kitPressed).toBe(false);
   });
 
+  it("edge-triggers the R3 fire-mode toggle", () => {
+    const mapper = new GamepadIntentMapper();
+    expect(mapper.update(padState({ rightStickPressed: true })).toggleFireModePressed).toBe(true);
+    expect(mapper.update(padState({ rightStickPressed: true })).toggleFireModePressed).toBe(false);
+    mapper.update(padState());
+    expect(mapper.update(padState({ rightStickPressed: true })).toggleFireModePressed).toBe(true);
+  });
+
   it("produces a neutral intent while disconnected", () => {
     const mapper = new GamepadIntentMapper();
     const intent = mapper.update(DISCONNECTED_GAMEPAD);
@@ -90,7 +95,7 @@ describe("GamepadIntentMapper", () => {
     const merged = mergeIntents(keyboardIntent(), gamepad);
     expect(merged.move.y).toBeCloseTo(1);
     expect(merged.aim.y).toBeCloseTo(-1);
-    expect(merged.fireHeld).toBe(true);
+    expect(merged.fireHeld).toBe(false);
 
     const idlePad = mapper.update(padState());
     const keyboardWins = mergeIntents(keyboardIntent({ move: { x: -1, y: 0 }, fireHeld: true }), idlePad);

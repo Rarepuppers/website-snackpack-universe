@@ -95,10 +95,12 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly showDebug = readDebugMode();
   private readonly uraniumLab = readUraniumLab();
   private readonly saveStore = createSaveStore();
+  private settings = applySettingOverrides(this.saveStore);
   private readonly expeditionContext = readExpeditionContext(this.saveStore);
   private simulation = createSimulation(
     this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
     this.expeditionContext, this.saveStore.load().selectedPerkId, this.saveStore.load().selectedHeroId,
+    this.settings.autoFireEnabled,
   );
   private readonly enemyViews = new Map<number, EnemyView>();
   private readonly enemyStatusViews = new Map<string, Phaser.GameObjects.Sprite>();
@@ -156,7 +158,6 @@ export class PrototypeScene extends Phaser.Scene {
   private fenceSwitch: Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite | null = null;
   private fencePrompt: Phaser.GameObjects.Text | null = null;
   private readonly arenaTheme = resolveArenaTheme();
-  private settings = applySettingOverrides(this.saveStore);
   private readonly synth = new WebAudioSynth(this.settings.soundEnabled);
   private runOutcomeRecorded = false;
   private previousHeroState = "idle";
@@ -214,7 +215,7 @@ export class PrototypeScene extends Phaser.Scene {
       .startFollow(this.player, true, 0.12, 0.12)
       .setDeadzone(210, 130);
 
-    this.add.text(18, height - 8, "WASD MOVE  •  MOUSE AIM / FIRE  •  ESC PAUSE", {
+    this.add.text(18, height - 8, "WASD MOVE  •  MOUSE AIM / FIRE  •  T FIRE MODE  •  ESC PAUSE", {
       color: "#9fb3c8",
       fontFamily: "monospace",
       fontSize: "10px",
@@ -252,6 +253,13 @@ export class PrototypeScene extends Phaser.Scene {
 
     if (this.lastSnapshot.pendingDecision) {
       this.handleDecisionNavigation(intent);
+    }
+
+    if (intent.toggleFireModePressed && this.lastSnapshot.pendingDecision === null) {
+      this.settings = this.saveStore.updateSettings({
+        autoFireEnabled: !this.settings.autoFireEnabled,
+      }).settings;
+      this.simulation.setAutoFireEnabled(this.settings.autoFireEnabled);
     }
 
     if (
@@ -374,6 +382,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.simulation = createSimulation(
       this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
       this.expeditionContext, this.saveStore.load().selectedPerkId, this.saveStore.load().selectedHeroId,
+      this.settings.autoFireEnabled,
     );
     this.flushBestiary();
     this.lastSnapshot = this.simulation.snapshot();
@@ -2750,13 +2759,13 @@ function expeditionBuildFromSnapshot(snapshot: CombatSnapshot): ExpeditionBuildS
 }
 
 /**
- * `?shake=0|1`, `?sound=0|1`, `?damage=0|1`, and `?timers=0|1` persist into local settings
+ * URL overrides for shake, sound, damage, timers, and autofire persist into local settings
  * until a proper settings screen exists; absent parameters leave stored values
  * untouched.
  */
 function applySettingOverrides(store: LocalSaveStore) {
   const params = new URLSearchParams(window.location.search);
-  const overrides: { screenShakeEnabled?: boolean; soundEnabled?: boolean; damageNumbersEnabled?: boolean; cooldownTimersEnabled?: boolean } = {};
+  const overrides: { screenShakeEnabled?: boolean; soundEnabled?: boolean; damageNumbersEnabled?: boolean; cooldownTimersEnabled?: boolean; autoFireEnabled?: boolean } = {};
   const shake = params.get("shake");
   if (shake === "0" || shake === "1") overrides.screenShakeEnabled = shake === "1";
   const sound = params.get("sound");
@@ -2765,6 +2774,8 @@ function applySettingOverrides(store: LocalSaveStore) {
   if (damage === "0" || damage === "1") overrides.damageNumbersEnabled = damage === "1";
   const timers = params.get("timers");
   if (timers === "0" || timers === "1") overrides.cooldownTimersEnabled = timers === "1";
+  const autoFire = params.get("autofire");
+  if (autoFire === "0" || autoFire === "1") overrides.autoFireEnabled = autoFire === "1";
   return Object.keys(overrides).length > 0
     ? store.updateSettings(overrides).settings
     : store.load().settings;
@@ -2779,6 +2790,7 @@ function createSimulation(
   expeditionContext: ExpeditionCombatContext | null,
   perkId: PerkId | null,
   heroId: "marine" | "medic",
+  autoFireEnabled: boolean,
 ): CombatSimulation {
   return new CombatSimulation({
     startingWeaponCount,
@@ -2792,6 +2804,7 @@ function createSimulation(
     startingBuild: expeditionContext?.run.state.build,
     perkId,
     heroId,
+    autoFireEnabled,
   });
 }
 
