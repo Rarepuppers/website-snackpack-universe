@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-19T22:01:43.640Z",
+  "updatedAt": "2026-07-19T22:55:52.391Z",
   "source": "ESPN scoreboard (unofficial)",
   "groups": {
     "A": [
@@ -1456,11 +1456,11 @@
       "awayLabel": "W 102",
       "home": "Spain",
       "away": "Argentina",
-      "time": "Live",
-      "statusShort": "LIVE",
-      "winner": null,
-      "lhs": 1,
-      "las": 0
+      "time": "FT",
+      "statusShort": "AET",
+      "winner": "Spain",
+      "hs": 1,
+      "as": 0
     }
   ]
 }
