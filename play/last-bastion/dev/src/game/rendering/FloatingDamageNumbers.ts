@@ -31,6 +31,10 @@ const RISE_PIXELS = 26;
 const LIFETIME_MS = 620;
 const DEPTH = 1200;
 
+export function playerDamageLabel(damage: number): string {
+  return `−${formatStat(Math.max(0, damage))}`;
+}
+
 /**
  * Index of the number a new hit should merge into, or -1 for a fresh label.
  * A hit merges into the most recent still-young number for the same enemy.
@@ -105,6 +109,8 @@ export class FloatingDamageNumbers {
       .setText(formatStat(damage))
       .setPosition(xPx, yPx)
       .setColor(hexToCss(DAMAGE_TYPE_COLOURS[type]))
+      .setFontSize(13)
+      .setStroke("#0a0f16", 3)
       .setScale(1)
       .setAlpha(1)
       .setVisible(true)
@@ -130,6 +136,8 @@ export class FloatingDamageNumbers {
       .setText(`+${formatStat(amount)}`)
       .setPosition(xPx, yPx)
       .setColor("#7ed957")
+      .setFontSize(13)
+      .setStroke("#0a0f16", 3)
       .setScale(0.9)
       .setAlpha(1)
       .setVisible(true)
@@ -141,6 +149,29 @@ export class FloatingDamageNumbers {
     this.scene.tweens.add({
       targets: text, y: yPx - RISE_PIXELS, alpha: 0, duration: LIFETIME_MS,
       ease: "Quad.easeOut", onComplete: () => this.release(record),
+    });
+  }
+
+  reportPlayerDamage(amount: number, xPx: number, yPx: number, nowMs: number): void {
+    if (!(amount > 0)) return;
+    const text = this.acquire(nowMs);
+    text
+      .setText(playerDamageLabel(amount))
+      .setPosition(xPx, yPx - 10)
+      .setColor("#fff1dc")
+      .setFontSize(18)
+      .setStroke("#641f29", 5)
+      .setScale(1.12)
+      .setAlpha(1)
+      .setVisible(true)
+      .setActive(true);
+    const record: ActiveNumber = {
+      text, enemyId: -2, spawnedAtMs: nowMs, total: amount, type: "physical",
+    };
+    this.active.push(record);
+    this.scene.tweens.add({
+      targets: text, y: yPx - RISE_PIXELS - 12, alpha: 0, scale: 1,
+      duration: 950, ease: "Quad.easeOut", onComplete: () => this.release(record),
     });
   }
 

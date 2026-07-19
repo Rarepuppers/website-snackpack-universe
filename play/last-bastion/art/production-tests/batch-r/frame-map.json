@@ -1,0 +1,16 @@
+{
+  "destructible-terrain-v1": {
+    "grid": "4x7",
+    "cell": [128, 128],
+    "origin": [0.5, 0.92],
+    "columns": ["intact", "damaged", "critical", "destroyed"],
+    "rows": ["fence", "cargo-crate", "barricade", "boulder", "power-conduit", "reinforced-cover", "biomass"],
+    "thresholds": { "damagedBelow": 0.75, "criticalBelow": 0.35, "destroyedAt": 0 }
+  },
+  "destructible-terrain-effects-v1": {
+    "grid": "4x2",
+    "cell": [64, 64],
+    "origin": [0.5, 0.5],
+    "frames": ["bullet-chip", "melee-spark", "acid-hiss", "frost-crack", "explosive-fracture", "heavy-collapse", "dust-settle", "salvage-glint"]
+  }
+}

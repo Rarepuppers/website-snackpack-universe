@@ -745,6 +745,48 @@ describe("CombatSimulation", () => {
     expect(simulation.snapshot().projectiles).toHaveLength(0);
   });
 
+  it("uses typed terrain durability and exposes conditional hit-bar state", () => {
+    const arena: ArenaDefinition = {
+      id: "durability-arena",
+      widthMetres: 30,
+      heightMetres: 16.875,
+      tileSizeMetres: 1,
+      obstacles: [{ id: "boulder", kind: "boulder", x: 18, y: 7.4, width: 1, height: 2 }],
+    };
+    const simulation = new CombatSimulation({ autoStartWaves: false, arena });
+    const initial = simulation.snapshot().terrain[0]!;
+    expect(initial.maxHealth).toBe(500);
+    expect(initial.health).toBe(500);
+    expect(initial.hitRemainingSeconds).toBe(0);
+
+    let hit = simulation.step(intent({ fireHeld: true }), 0.05);
+    for (let frame = 0; frame < 10 && hit.terrain[0]!.health === hit.terrain[0]!.maxHealth; frame += 1) {
+      hit = simulation.step(intent(), 0.05);
+    }
+    const damaged = hit.terrain[0]!;
+    expect(damaged.health).toBeLessThan(damaged.maxHealth);
+    expect(damaged.hitRemainingSeconds).toBeGreaterThan(0);
+    expect(hit.events.some((event) => event.type === "obstacle-damaged" && event.source === "player-projectile")).toBe(true);
+  });
+
+  it("preserves a traversable route after a player opens a destructible lane", () => {
+    const arena: ArenaDefinition = {
+      id: "route-preservation-arena",
+      widthMetres: 30,
+      heightMetres: 16.875,
+      tileSizeMetres: 1,
+      obstacles: [{ id: "lane-fence", kind: "fence", x: 18, y: 7.4, width: 1, height: 2, maxDurability: 1 }],
+    };
+    const simulation = new CombatSimulation({ autoStartWaves: false, arena });
+    for (let frame = 0; frame < 8; frame += 1) simulation.step(intent({ fireHeld: frame === 0 }), 0.05);
+    expect(simulation.snapshot().destroyedObstacleIds).toContain("lane-fence");
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 120; frame += 1) {
+      snapshot = simulation.step(intent({ move: { x: 1, y: 0 } }), 0.05);
+    }
+    expect(snapshot.playerPosition.x).toBeGreaterThan(18.5);
+  });
+
   it("locks the Spinewheel heading during its warning instead of tracking the player", () => {
     const arena: ArenaDefinition = {
       id: "heading-lock-arena",

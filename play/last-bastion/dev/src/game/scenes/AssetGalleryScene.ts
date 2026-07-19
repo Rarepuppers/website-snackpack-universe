@@ -15,6 +15,10 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "r") {
+      this.createBatchRGallery();
+      return;
+    }
     if (batch === "p") {
       this.createBatchPGallery();
       return;
@@ -555,6 +559,36 @@ export class AssetGalleryScene extends Phaser.Scene {
       ...style("#edf4ff", "11px"), align: "center",
     }).setOrigin(0.5).setDepth(4);
     this.add.text(480, 518, "Review: ?mode=gallery&batch=q • Live shop: ?scenario=scrap-shop", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchRGallery(): void {
+    this.add.text(20, 14, "LAST BASTION — DESTRUCTIBLE TERRAIN PRODUCTION ASSET BATCH R", style("#ffffff", "17px"));
+    this.add.text(20, 38, "28 prop states • 8 material effects • durability, thresholds, collision, tint, and HP bars remain code-owned", style("#8fb2c9", "11px"));
+    const rowNames = ["FENCE", "CRATE", "BARRICADE", "BOULDER", "CONDUIT", "REINFORCED", "BIOMASS"];
+    const columnNames = ["INTACT", "DAMAGED <75%", "CRITICAL <35%", "DESTROYED"];
+    columnNames.forEach((name, column) => {
+      this.add.text(200 + column * 112, 66, name, style(column === 3 ? "#ff9a72" : "#68e4e8", "8px")).setOrigin(0.5);
+    });
+    rowNames.forEach((name, row) => {
+      const y = 112 + row * 58;
+      this.add.text(18, y, name, style("#ffd08a", "9px")).setOrigin(0, 0.5);
+      for (let column = 0; column < 4; column += 1) {
+        this.add.sprite(200 + column * 112, y, "destructible-terrain-v1", row * 4 + column).setScale(0.44).setOrigin(0.5, 0.92);
+      }
+    });
+    this.add.rectangle(748, 252, 370, 356, 0x0b121c, 0.92).setStrokeStyle(2, 0x405a72);
+    this.add.text(748, 88, "MATERIAL IMPACTS", style("#68e4e8", "11px")).setOrigin(0.5);
+    const effectNames = ["BULLET", "MELEE", "ACID", "FROST", "EXPLOSIVE", "COLLAPSE", "DUST", "SALVAGE"];
+    effectNames.forEach((name, frame) => {
+      const x = 624 + (frame % 4) * 82;
+      const y = 142 + Math.floor(frame / 4) * 116;
+      this.add.sprite(x, y, "destructible-terrain-effects-v1", frame).setScale(0.9);
+      this.add.text(x, y + 42, name, style("#8fb2c9", "8px")).setOrigin(0.5);
+    });
+    this.add.text(748, 372, "Destroyed art remains as low decoration.\nSimulation removes collision and projectile blocking.", {
+      ...style("#edf4ff", "10px"), align: "center",
+    }).setOrigin(0.5);
+    this.add.text(480, 518, "Review: ?mode=gallery&batch=r • Live terrain: ?screen=game", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createBatchJ1Gallery(): void {

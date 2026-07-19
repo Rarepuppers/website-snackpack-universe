@@ -1,6 +1,8 @@
 import type { Vector2Data } from "../math/Vector2Data";
 
-export type ArenaObstacleKind = "barricade" | "cargo-crate" | "power-conduit" | "biomass";
+export type ArenaObstacleKind =
+  | "barricade" | "cargo-crate" | "power-conduit" | "biomass"
+  | "fence" | "boulder" | "reinforced-cover";
 
 export interface ArenaObstacle {
   id: string;
@@ -9,6 +11,22 @@ export interface ArenaObstacle {
   y: number;
   width: number;
   height: number;
+  /** Numeric durability. Legacy/custom arenas may omit this and use the kind default. */
+  maxDurability?: number;
+}
+
+export const ARENA_OBSTACLE_DURABILITY: Readonly<Record<ArenaObstacleKind, number>> = Object.freeze({
+  fence: 50,
+  biomass: 55,
+  "cargo-crate": 100,
+  barricade: 240,
+  "power-conduit": 500,
+  boulder: 500,
+  "reinforced-cover": 420,
+});
+
+export function obstacleMaxDurability(obstacle: Pick<ArenaObstacle, "kind" | "maxDurability">): number {
+  return Math.max(1, obstacle.maxDurability ?? ARENA_OBSTACLE_DURABILITY[obstacle.kind]);
 }
 
 /** Signature battlefield interaction: a switch that energizes a fence line. */
@@ -109,8 +127,9 @@ function obstacle(
   y: number,
   width: number,
   height: number,
+  maxDurability?: number,
 ): ArenaObstacle {
-  return Object.freeze({ id, kind, x, y, width, height });
+  return Object.freeze({ id, kind, x, y, width, height, maxDurability });
 }
 
 function clamp(value: number, minimum: number, maximum: number): number {

@@ -16,6 +16,7 @@ import {
  */
 export interface GameSettings {
   screenShakeEnabled: boolean;
+  reducedFlashEnabled: boolean;
   soundEnabled: boolean;
   damageNumbersEnabled: boolean;
   cooldownTimersEnabled: boolean;
@@ -68,7 +69,7 @@ export interface ExpeditionSave {
 }
 
 export interface SaveData {
-  version: 5;
+  version: 6;
   settings: GameSettings;
   progress: GameProgress;
   expedition: ExpeditionSave | null;
@@ -83,9 +84,10 @@ export const SAVE_STORAGE_KEY = "last-bastion-save";
 export const BESTIARY_KILLS_TO_REVEAL = 10;
 
 export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
-  version: 5,
+  version: 6,
   settings: Object.freeze({
     screenShakeEnabled: true,
+    reducedFlashEnabled: false,
     soundEnabled: true,
     damageNumbersEnabled: true,
     cooldownTimersEnabled: true,
@@ -271,15 +273,16 @@ function normalizeSave(parsed: unknown): SaveData {
   }
   const candidate = parsed as Omit<Partial<SaveData>, "version"> & { version?: number };
   const version = candidate.version ?? -1;
-  // Versions 1–3 migrate cleanly into schema v4. Anything else is foreign and
-  // degrades to defaults.
-  if (![1, 2, 3, 4, 5].includes(version)) {
+  // Versions 1–6 migrate into the current schema. Missing fields inherit the
+  // accessible defaults; unknown future versions degrade safely to defaults.
+  if (![1, 2, 3, 4, 5, 6].includes(version)) {
     return cloneSave(DEFAULT_SAVE);
   }
   return {
-    version: 5,
+    version: 6,
     settings: {
       screenShakeEnabled: readBoolean(candidate.settings?.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
+      reducedFlashEnabled: readBoolean(candidate.settings?.reducedFlashEnabled, DEFAULT_SAVE.settings.reducedFlashEnabled),
       soundEnabled: readBoolean(candidate.settings?.soundEnabled, DEFAULT_SAVE.settings.soundEnabled),
       damageNumbersEnabled: readBoolean(candidate.settings?.damageNumbersEnabled, DEFAULT_SAVE.settings.damageNumbersEnabled),
       cooldownTimersEnabled: readBoolean(candidate.settings?.cooldownTimersEnabled, DEFAULT_SAVE.settings.cooldownTimersEnabled),

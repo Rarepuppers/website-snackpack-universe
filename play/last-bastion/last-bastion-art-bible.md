@@ -281,7 +281,7 @@ Large telegraph frames are four ground-slam stages followed by four 120-degree s
 
 ## Runtime silhouette and projectile-rim preflight
 
-Do not bake a universal heavy outline into source sprites. Task 55 tests a code-rendered one-to-two-pixel dark enemy rim and a restrained ivory/teal Marine rim against all five world themes. The rim must follow alpha, remain subordinate to hit/status flashes, and switch off cleanly for screenshots and accessibility comparison. Projectiles use family-specific contrast halos: warm dark edge for fire/blast, cool dark edge for cryo/laser, violet-black edge for void, and neutral charcoal for physical spikes or knives. Large roars, shockwaves, and area fills keep their authored transparent falloff rather than receiving a sticker-like contour.
+Do not bake a universal heavy outline into source sprites. Task 56's code-rendered one-to-two-pixel actor rims and damage-family projectile halos remain an opt-in A/B lab (`?scenario=batch-j&rims=1`): the Full-HD comparison was clean but the grayscale/crowd-readability gain was too modest to justify a global default. Keep authored silhouettes unchanged and use the lab when evaluating a new world or actor family. The rim must follow alpha, remain subordinate to hit/status flashes, and switch off cleanly. Projectile halos use a warm dark edge for fire/blast, cool dark edge for cryo/laser, violet-black edge for void, and neutral charcoal for physical spikes or knives. Large roars, shockwaves, and area fills keep their authored transparent falloff rather than receiving a sticker-like contour.
 
 ## Production Asset Batch O contracts
 

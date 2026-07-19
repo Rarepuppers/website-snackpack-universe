@@ -35,6 +35,8 @@ import {
 import { loadGameAssets } from "../assets/PhaserAssetLoader";
 import { GAME_ASSETS, type GameAssetId } from "../assets/GameAssetManifest";
 import { renderArena } from "../rendering/ArenaRenderer";
+import { terrainFrameIndex } from "../rendering/TerrainVisualState";
+import { miniBossSpriteScale } from "../rendering/MiniBossPresentation";
 import { arenaThemeById, arenaThemeVariant, pickArenaTheme } from "../rendering/arenaThemes";
 import { uiTextResolution } from "../rendering/DisplayScaling";
 import { LocalSaveStore } from "../save/LocalSaveStore";
@@ -82,6 +84,7 @@ export class PrototypeScene extends Phaser.Scene {
   private player!: Phaser.GameObjects.Container;
   private marineSprite: Phaser.GameObjects.Sprite | null = null;
   private marineHelmetSprite: Phaser.GameObjects.Sprite | null = null;
+  private marineRimSprite: Phaser.GameObjects.Sprite | null = null;
   private controls!: KeyboardMouseInput;
   private hud!: CombatHud;
   private effectPool!: VisualEffectPool;
@@ -92,6 +95,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly startingWeaponCount = this.stressProfile ?? this.startingWeaponIds?.length ?? readStartingWeaponCount();
   private readonly useMarineArt = readMarineArtPreview();
   private readonly useMarineHelmet = this.useMarineArt && readMarineHelmetPreview();
+  private readonly readabilityRims = readReadabilityRims();
   private readonly showDebug = readDebugMode();
   private readonly uraniumLab = readUraniumLab();
   private readonly saveStore = createSaveStore();
@@ -103,8 +107,10 @@ export class PrototypeScene extends Phaser.Scene {
     this.settings.autoFireEnabled,
   );
   private readonly enemyViews = new Map<number, EnemyView>();
+  private readonly enemyRimViews = new Map<number, Phaser.GameObjects.Sprite>();
   private readonly enemyStatusViews = new Map<string, Phaser.GameObjects.Sprite>();
   private readonly projectileViews = new Map<number, ProjectileView>();
+  private readonly projectileHaloViews = new Map<number, Phaser.GameObjects.Arc>();
   private readonly enemyProjectileViews = new Map<number, EnemyProjectileView>();
   private readonly hazardViews = new Map<number, HazardView>();
   private readonly spitterTelegraphs = new Map<number, TelegraphView>();
@@ -190,6 +196,12 @@ export class PrototypeScene extends Phaser.Scene {
     if (this.useMarineArt) {
       const heroBodyAsset = this.simulation.snapshot().heroId === "medic" ? "medic-base-v1" : "marine-base-v1";
       const heroHelmetAsset = this.simulation.snapshot().heroId === "medic" ? "medic-helmet-v1" : "marine-helmet-v1";
+      if (this.readabilityRims) {
+        const rim = this.add.sprite(0, 0, heroBodyAsset, 0).setTint(0x18202b).setScale(1.07);
+        this.marineRimSprite = rim;
+        applyManifestOrigin(rim, heroBodyAsset);
+        playerLayers.push(rim);
+      }
       this.marineSprite = this.add.sprite(0, 0, heroBodyAsset, 0);
       applyManifestOrigin(this.marineSprite, heroBodyAsset);
       playerLayers.push(this.marineSprite);
@@ -347,7 +359,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncTetherBloomTelegraphs(snapshot.enemies, snapshot.playerPosition);
     this.syncAurumExitMarkers(snapshot.enemies);
     this.syncWarpTelegraphs(snapshot.enemies);
-    this.syncObstacleDamage(snapshot.damagedObstacleIds, snapshot.destroyedObstacleIds);
+    this.syncObstacleDamage(snapshot.terrain, snapshot.damagedObstacleIds, snapshot.destroyedObstacleIds);
     this.syncPickups(snapshot.pickups);
     this.syncPowerups(snapshot.powerups);
     this.syncSupplyChests(snapshot.supplyChests);
@@ -376,6 +388,7 @@ export class PrototypeScene extends Phaser.Scene {
     const frame = row * 4 + this.marineFacingColumn;
     this.marineSprite.setFrame(frame);
     this.marineHelmetSprite?.setFrame(frame);
+    this.marineRimSprite?.setFrame(frame);
   }
 
   private restartRun(): void {
@@ -396,8 +409,10 @@ export class PrototypeScene extends Phaser.Scene {
 
     for (const views of [
       this.enemyViews,
+      this.enemyRimViews,
       this.enemyStatusViews,
       this.projectileViews,
+      this.projectileHaloViews,
       this.enemyProjectileViews,
       this.hazardViews,
       this.spitterTelegraphs,
@@ -690,7 +705,19 @@ export class PrototypeScene extends Phaser.Scene {
           break;
         case "player-hit":
           this.shakeCamera(120, 0.006);
-          this.emitAuthoredEffect(3, event.position, 180, 0.85, 1.4);
+          if (this.settings.damageNumbersEnabled) {
+            this.damageNumbers.reportPlayerDamage(
+              event.damage,
+              event.position.x * PIXELS_PER_METRE,
+              event.position.y * PIXELS_PER_METRE,
+              this.time.now,
+            );
+          }
+          if (this.settings.reducedFlashEnabled) {
+            this.flashCircle(event.position, 15, 0xffe2b8, 260, 1.8, true);
+          } else {
+            this.emitAuthoredEffect(3, event.position, 180, 0.85, 1.4);
+          }
           break;
         case "player-healed":
           if (this.settings.damageNumbersEnabled) {
@@ -718,7 +745,8 @@ export class PrototypeScene extends Phaser.Scene {
           this.emitAuthoredEffect(19, event.position, 130, 0.4, 0.8);
           break;
         case "level-up":
-          this.cameras.main.flash(160, 104, 228, 232);
+          if (!this.settings.reducedFlashEnabled) this.cameras.main.flash(160, 104, 228, 232);
+          else this.flashCircle(this.lastSnapshot.playerPosition, 22, 0x68e4e8, 420, 2.4, true);
           this.emitAuthoredEffect(2, this.lastSnapshot.playerPosition, 420, 0.9, 2.2);
           break;
         case "enemy-spawned":
@@ -958,10 +986,11 @@ export class PrototypeScene extends Phaser.Scene {
           break;
         case "obstacle-damaged":
           this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xffd36b, 5);
+          this.emitAuthoredEffect(event.source === "player-melee" ? 1 : event.source.startsWith("mini-boss") ? 4 : 0, event.position, 260, 0.72, 1.05, 0, "destructible-terrain-effects-v1");
           break;
         case "obstacle-destroyed":
           this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xff6654, 8);
-          this.emitAuthoredEffect(17, event.position, 300, 0.55, 1.25, 0, "batch-b-effects-v1");
+          this.emitAuthoredEffect(5, event.position, 420, 0.72, 1.25, 0, "destructible-terrain-effects-v1");
           this.shakeCamera(180, 0.008);
           break;
         case "mini-boss-reward-dropped":
@@ -982,7 +1011,8 @@ export class PrototypeScene extends Phaser.Scene {
           this.emitAuthoredEffect(17, event.position, 280, 0.62, 1.2, 0, "batch-c-effects-v1");
           break;
         case "ultimate-fired":
-          this.cameras.main.flash(140, 255, 214, 107);
+          if (!this.settings.reducedFlashEnabled) this.cameras.main.flash(140, 255, 214, 107);
+          else this.flashCircle(event.position, 28, 0xffd66b, 420, 2.8, true);
           this.emitAuthoredEffect(10, event.position, 420, 0.7, 2.2, 0, "batch-c-effects-v1");
           this.emitAuthoredEffect(14, event.position, 460, 0.75, 2.4, 0, "batch-c-effects-v1");
           break;
@@ -1043,7 +1073,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" | "telegraph-small-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" | "telegraph-small-v1" | "destructible-terrain-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -1172,6 +1202,7 @@ export class PrototypeScene extends Phaser.Scene {
   ): void {
     const liveIds = new Set(enemies.map((enemy) => enemy.id));
     this.destroyMissing(this.enemyViews, liveIds);
+    this.destroyMissing(this.enemyRimViews, liveIds);
     for (const id of this.spinewheelTrailTimes.keys()) {
       if (!liveIds.has(id)) this.spinewheelTrailTimes.delete(id);
     }
@@ -1200,8 +1231,26 @@ export class PrototypeScene extends Phaser.Scene {
       this.styleEnemyView(view, enemy);
       if (view instanceof Phaser.GameObjects.Sprite) {
         this.updateEnemySprite(view, enemy, playerPosition);
+        this.syncEnemyRim(enemy.id, view);
       }
     }
+  }
+
+  private syncEnemyRim(enemyId: number, view: Phaser.GameObjects.Sprite): void {
+    if (!this.readabilityRims) return;
+    let rim = this.enemyRimViews.get(enemyId);
+    if (!rim) {
+      rim = this.add.sprite(0, 0, view.texture.key, view.frame.name).setTint(0x151a22);
+      this.enemyRimViews.set(enemyId, rim);
+    }
+    rim.setTexture(view.texture.key, view.frame.name)
+      .setPosition(view.x, view.y)
+      .setOrigin(view.originX, view.originY)
+      .setRotation(view.rotation)
+      .setScale(view.scaleX * 1.065, view.scaleY * 1.065)
+      .setAlpha(Math.min(0.9, view.alpha))
+      .setDepth(view.depth - 0.1)
+      .setVisible(view.visible);
   }
 
   private createEnemyView(enemy: EnemySnapshot): EnemyView {
@@ -1344,7 +1393,10 @@ export class PrototypeScene extends Phaser.Scene {
         : view.texture.key === "blightspitter-v1" ? 1.05
           : view.texture.key === "razorlord-v1" ? 1 : null;
       const eliteScale = enemy.eliteKind === "quillback-matriarch" ? 1.35 : enemy.eliteKind ? 1.18 : 1;
-      view.setScale(batchJScale ?? (enemy.type === "rift-stalker" ? 1.08 : enemy.type === "aurum-hoarder" ? 0.9 : enemy.type === "swarm-scuttler" ? 0.72 : eliteScale));
+      const authoredMiniBossScale = enemy.miniBossKind
+        ? miniBossSpriteScale(enemy.miniBossKind)
+        : null;
+      view.setScale(batchJScale ?? authoredMiniBossScale ?? (enemy.type === "aurum-hoarder" ? 0.9 : enemy.type === "swarm-scuttler" ? 0.72 : eliteScale));
       view.setAlpha(enemy.type === "rift-stalker"
         ? enemy.riftStalkerPhase === "warp" ? 0.12 : enemy.riftStalkerPhase === "cloak" ? 0.38 : 1
         : enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup" ? 0.72 : 1);
@@ -1764,6 +1816,7 @@ export class PrototypeScene extends Phaser.Scene {
   private syncProjectiles(projectiles: readonly ProjectileSnapshot[]): void {
     const liveIds = new Set(projectiles.map((projectile) => projectile.id));
     this.destroyMissing(this.projectileViews, liveIds);
+    this.destroyMissing(this.projectileHaloViews, liveIds);
 
     for (const projectile of projectiles) {
       let view = this.projectileViews.get(projectile.id);
@@ -1801,6 +1854,17 @@ export class PrototypeScene extends Phaser.Scene {
         view.clearTint();
       } else {
         view.setFillStyle(weaponColor(projectile.weaponId));
+      }
+      if (this.readabilityRims) {
+        let halo = this.projectileHaloViews.get(projectile.id);
+        if (!halo) {
+          halo = this.add.circle(0, 0, 5, projectileHaloColor(projectile.weaponId), 0.32).setDepth(699);
+          this.projectileHaloViews.set(projectile.id, halo);
+        }
+        halo.setPosition(view.x, view.y)
+          .setRadius(projectile.weaponId === "grenade-tube" ? 8 : projectile.weaponId === "bolt-carbine" ? 6 : 4.5)
+          .setFillStyle(projectileHaloColor(projectile.weaponId), 0.32)
+          .setVisible(view.visible);
       }
     }
   }
@@ -2307,20 +2371,36 @@ export class PrototypeScene extends Phaser.Scene {
     }
   }
 
-  private syncObstacleDamage(damagedIds: readonly string[], destroyedIds: readonly string[]): void {
+  private syncObstacleDamage(
+    terrain: readonly { id: string; health: number; maxHealth: number; hitRemainingSeconds: number }[],
+    damagedIds: readonly string[],
+    destroyedIds: readonly string[],
+  ): void {
     const damaged = new Set(damagedIds);
     const destroyed = new Set(destroyedIds);
     for (const obstacle of this.simulation.arena.obstacles) {
       const view = this.children.getByName(`arena-obstacle:${obstacle.id}`);
       if (!(view instanceof Phaser.GameObjects.Sprite) && !(view instanceof Phaser.GameObjects.Rectangle)) continue;
-      view.setVisible(!destroyed.has(obstacle.id));
+      view.setVisible(true);
       if (view instanceof Phaser.GameObjects.Sprite) {
-        const current = Number(view.frame.name);
-        const baseFrame = Number.isFinite(current) ? current % 4 : 0;
-        view.setFrame(damaged.has(obstacle.id) ? baseFrame + 4 : baseFrame).setAlpha(1);
+        const state = terrain.find((candidate) => candidate.id === obstacle.id);
+        if (state) view.setFrame(terrainFrameIndex(obstacle.kind, state.health, state.maxHealth)).setAlpha(state.health <= 0 ? 0.78 : 1);
       } else if (view instanceof Phaser.GameObjects.Rectangle) {
-        view.setAlpha(damaged.has(obstacle.id) ? 0.48 : 1);
+        view.setVisible(!destroyed.has(obstacle.id)).setAlpha(damaged.has(obstacle.id) ? 0.48 : 1);
       }
+      const state = terrain.find((candidate) => candidate.id === obstacle.id);
+      if (!state) continue;
+      let bar = this.children.getByName(`arena-obstacle-health:${obstacle.id}`) as Phaser.GameObjects.Rectangle | null;
+      if (!bar) {
+        bar = this.add.rectangle(0, 0, 30, 3, 0xe5493a).setOrigin(0, 0.5)
+          .setDepth(worldDepth(obstacle.y) + 2)
+          .setName(`arena-obstacle-health:${obstacle.id}`);
+      }
+      const ratio = state.maxHealth > 0 ? Math.max(0, state.health / state.maxHealth) : 0;
+      bar.setPosition(obstacle.x * PIXELS_PER_METRE, (obstacle.y - 0.16) * PIXELS_PER_METRE)
+        .setScale(Math.max(ratio, 0.001), 1)
+        .setVisible(state.health < state.maxHealth && state.hitRemainingSeconds > 0 && state.health > 0)
+        .setFillStyle(ratio <= 0.25 ? 0xff8a3d : 0xe5493a);
     }
   }
 
@@ -2671,6 +2751,10 @@ function readMarineHelmetPreview(): boolean {
   return new URLSearchParams(window.location.search).get("helmet") !== "0";
 }
 
+function readReadabilityRims(): boolean {
+  return new URLSearchParams(window.location.search).get("rims") === "1";
+}
+
 function readStressProfile(): 4 | 12 | null {
   const stress = Number(new URLSearchParams(window.location.search).get("stress"));
   return stress === 4 || stress === 12 ? stress : null;
@@ -2765,9 +2849,11 @@ function expeditionBuildFromSnapshot(snapshot: CombatSnapshot): ExpeditionBuildS
  */
 function applySettingOverrides(store: LocalSaveStore) {
   const params = new URLSearchParams(window.location.search);
-  const overrides: { screenShakeEnabled?: boolean; soundEnabled?: boolean; damageNumbersEnabled?: boolean; cooldownTimersEnabled?: boolean; autoFireEnabled?: boolean } = {};
+  const overrides: { screenShakeEnabled?: boolean; reducedFlashEnabled?: boolean; soundEnabled?: boolean; damageNumbersEnabled?: boolean; cooldownTimersEnabled?: boolean; autoFireEnabled?: boolean } = {};
   const shake = params.get("shake");
   if (shake === "0" || shake === "1") overrides.screenShakeEnabled = shake === "1";
+  const flash = params.get("flash");
+  if (flash === "0" || flash === "1") overrides.reducedFlashEnabled = flash === "0";
   const sound = params.get("sound");
   if (sound === "0" || sound === "1") overrides.soundEnabled = sound === "1";
   const damage = params.get("damage");
@@ -2907,6 +2993,15 @@ function weaponColor(weaponId: WeaponId): number {
     case "grenade-tube": return 0xffb23f;
     default: return 0xe9e3cf;
   }
+}
+
+function projectileHaloColor(weaponId: WeaponId): number {
+  const damageType = WEAPON_CATALOG[weaponId].damageType;
+  if (damageType === "fire") return 0x5b2415;
+  if (damageType === "cryo") return 0x173b52;
+  if (damageType === "shock") return 0x251d4b;
+  if (damageType === "toxic") return 0x263d1c;
+  return 0x171b22;
 }
 
 function weaponAssetId(weaponId: WeaponId): "service-rifle-v1" | "scattergun-v1" | "arc-carbine-v1" | "patrol-blade-v1" | "bolt-carbine-v1" | "injector-carbine-v1" | "bulwark-rotary-cannon-v1" | "grenade-tube-v1" {

@@ -641,3 +641,31 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Added the in-run `T` / pad-R3 toggle and a compact top-right Auto/Manual HUD chip. Mouse/cursor and right-stick aim remain independent from click/trigger fire in Manual mode.
 - Locked autonomous exceptions to the auto-targeting Arc Carbine and cadence-owned Patrol Blade. Every cursor weapon follows Auto-fire or requires its trigger in Manual mode.
 - Added input-edge, weapon-policy, simulation-mode, save migration, and persistence coverage. Browser review confirmed both HUD states at gameplay scale with zero console errors.
+
+### Tasks 54–55 — numeric destructible terrain and Production Batch R
+
+**Status:** Completed — 19 July 2026; creator combat-feel review remains welcome
+
+- Replaced the two-hit obstacle counter with typed 50–500 durability, source-authored player projectile/melee and hostile projectile/mini-boss damage, remaining-health events, 1.5-second conditional bars, collision removal at zero, and route-preservation coverage.
+- Locked code-owned terrain presentation thresholds at full / below 75% / below 35% / zero and mapped all seven obstacle kinds to stable intact, damaged, critical, and destroyed frames.
+- Generated and retained Batch R's exact 4×7 prop family plus 4×2 material-effect family. Untouched chroma sources, clean alpha masters, normalized 4× retained masters, deterministic nearest-neighbour outputs, frame map, prompts, and contact-sheet QA live under `art/production-tests/batch-r/`.
+- Integrated bottom-centre terrain pivots, material hit/collapse effects, persistent low destroyed rubble, manifest contracts, gallery coverage, and Codex live status. Collision, HP, thresholds, world tint, hit flash, debris timing, and bars remain simulation/runtime-owned.
+- Verification: 407 tests across 54 files, TypeScript, no console warnings in the live Siege Crusher lab or Batch R gallery, and clean 960×540, 1920×1080, and 3840×2160 presentation passes.
+
+### Task 56 — combat silhouette and player-hit feedback
+
+**Status:** Completed — 19 July 2026; rims and projectile halos retained as opt-in review instrumentation
+
+- Added a distinct larger ivory negative-damage number with a dark-red outline for damage received by the player. It uses its own merge identity so incoming hits cannot collapse into enemy damage totals.
+- Migrated persistence to schema v6 and added a first-class Reduced flash setting. Level-up, ultimate, and player-hit camera flashes become restrained code-native outline pulses; screen shake remains an independent preference.
+- Added `?scenario=batch-j&rims=1` for thin sprite-following actor rims and damage-family projectile halos, `rims=0` for the control, and `flash=0` for deterministic reduced-flash review.
+- Full-HD A/B review found no silhouette mud or console warnings, but the readability improvement was modest. The experiment remains opt-in and no authored sprite was changed or given a baked universal outline.
+
+### Task 57 — mini-boss mobility and threat
+
+**Status:** Completed — 19 July 2026; existing production sheets approved at gameplay scale
+
+- Replaced straight-line setup pursuit with a deterministic range-aware orbit shared by Siege Crusher, Brood Warden, and Rift Stalker. The bosses close from long range, peel away when crowded, and add lateral arena traversal between attacks.
+- Locked presentation-only body scales to 1.34, 1.30, and 1.25 respectively. Collision radii, telegraph geometry, and damage checks remain simulation-owned.
+- Kept windups, attack directions, warp marks, dodge lanes, and punishable recoveries stationary/locked. Regression testing exposed an over-wide Brood Warden orbit that skipped its cleave branch; its preferred band was corrected before completion.
+- Added pure steering, deterministic handedness, opening lateral-travel, and scale-band contracts. Live encounter review covered Emberfall, Toxic Bloom, and Void Approach with the existing sheets; no art extension was necessary.

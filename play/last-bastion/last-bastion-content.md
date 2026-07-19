@@ -398,12 +398,14 @@ Mini-bosses use bespoke silhouettes, two to four attacks, a short entrance, a bo
 
 | Mini-boss | Encounter identity | Attacks | Production gate |
 | --- | --- | --- | --- |
-| Siege Crusher — vertical slice | Arena-geometry breaker | Charge, claw sweep, cover shockwave; gains radial slam at 50%, faster/wider frenzy at 20% | Production art integrated; tuning open |
-| Brood Warden — vertical-slice pool | Spawn-priority test | Egg placement, guarding cleave, acid volley; 50% swarm rush; faster/larger frenzy at 20% | Production encounter and Batch D1 art integrated; tuning review open |
-| Rift Stalker | Mobility/projectile test | Warp strike, projectile fan, decoy mark; 20% chained warp | Production encounter and Batch O art integrated; tuning review open |
+| Siege Crusher — vertical slice | Arena-geometry breaker | Charge, claw sweep, cover shockwave; gains radial slam at 50%, faster/wider frenzy at 20% | Production art and Task 57 mobility pass integrated |
+| Brood Warden — vertical-slice pool | Spawn-priority test | Egg placement, guarding cleave, acid volley; 50% swarm rush; faster/larger frenzy at 20% | Production Batch D1 and Task 57 mobility pass integrated |
+| Rift Stalker | Mobility/projectile test | Warp strike, projectile fan, decoy mark; 20% chained warp | Production Batch O and Task 57 mobility pass integrated |
 | Synapse Herald | Telegraph mastery | Lunge chain, marked danger zones, temporary Brain Blob link | Later pool expansion |
 
 The initial random pool should grow only through fully implemented bosses, with no immediate repeat when run history is available. The eligible pool now contains all three entries: Siege Crusher, Brood Warden, and Rift Stalker (behavior gate and Production Batch O completed 19 July 2026 — cloaked stalk, decoy-mark warp pounce, rift-spike fan, close slash, final-20% chained-warp frenzy). Codex must implement and rules-test each complete move set before generating its production sprites.
+
+Task 57 locks the shared movement contract: setup phases use deterministic range-aware orbiting instead of direct pursuit, but authored attack windups, locked directions, impact geometry, and recoveries never inherit that steering. Runtime sprite scales are Siege Crusher 1.34, Brood Warden 1.30, and Rift Stalker 1.25; these are presentation values only and must not alter collision radii or dodge lanes.
 
 Brood Warden implementation contract: 2,700 health, 1.55 m/s base pursuit, guarding cleave at close range, a three-shot acid fan, two-egg placement capped at six live eggs, and a one-time four-add swarm rush unlocked at 50% health. Its final 20% uses shorter tells/recovery, higher movement, a wider/harder cleave, five acid shots, three eggs, and a six-add/faster rush. All attacks retain visible windups.
 
@@ -791,19 +793,27 @@ Shared contract: each keeper is one 4-frame idle loop at **128 × 256** (chroma 
 
 The Quartermaster presentation gate is live: four idle frames plus two transaction-nod frames at 128×256, with 1536×1024 chroma and alpha masters retained in `art/production-tests/batch-q/`. The remaining seven keepers stay queued until their specialty mechanics are ready; they are not blockers for the base shop.
 
-## Batch R — destructible battlefield props (generate after Task 54)
+## Batch R — destructible battlefield props (Task 55 completed 19 July 2026)
 
-Behavior-first production family for numeric-health terrain. Retain 4× masters, preserve collision footprints, and keep health bars, damage values, targeting, and destruction rules code-owned.
+Batch R is a neutral, reusable prop family for the numeric-health terrain system. It may receive restrained world tinting at runtime, but silhouettes and material identity must survive unchanged across all five themes. The canonical atlas is `destructible-terrain-v1`: **4 columns × 7 rows, 128×128 logical cells, 28 frames**. Columns are always **intact, damaged, critical, destroyed**. Rows are always **brittle fence, cargo crate, barricade, boulder, power conduit, reinforced cover, brittle biomass**. Stable ordering is mandatory because gameplay binds by frame index.
 
-| Prop | Runtime contract | Required states |
-| --- | --- | --- |
-| Brittle fence | 96×64 directional segment | intact, cracked, critical, broken gap, debris burst |
-| Cargo crate | 96×96 | intact, dented, critical, collapsed, neutral debris |
-| Rock / boulder | 128×128 | intact, fractured, critical, rubble; four material tint variants |
-| Reinforced barricade | 128×96 | intact, armour stripped, critical, breached |
-| Shared impacts | 4×2 atlas at 64×64 | bullet chip, melee spark, acid hiss, frost crack, explosive fracture, heavy collapse, dust settle, salvage glint |
+| Row | Durability | World-space footprint | Visual state requirements |
+| --- | ---: | --- | --- |
+| Brittle fence | 50 | 3.0×0.55 m | intact rails; one snapped rail; mostly severed with a readable gap; low non-blocking wreckage |
+| Cargo crate | 100 | 1.7×1.7 m | square sealed crate; dented corner; split panels; compact collapsed pile |
+| Barricade | 240 | 3.2×0.8 m | low defensive wall; chipped face; exposed supports; breached centre with flattened ends |
+| Boulder | 500 | 2.2×1.8 m | solid asymmetrical rock; first fracture; deep structural split; low rubble footprint |
+| Power conduit | 500 | 1.2×2.6 m | insulated industrial unit; cracked casing; exposed dead cabling; collapsed inert chassis |
+| Reinforced cover | 420 | 3.0×1.0 m | plated firing cover; armour stripped; buckled frame; clear central breach |
+| Brittle biomass | 55 | 2.4×1.4 m | fibrous alien mound; torn membrane; failing core; flattened dry remains, no gore spray |
 
-The next raster priority is **Batch R only after Task 54 completes the destructible-terrain health and bar gate**. Before that, Tasks 53, 55, and 56 are behavior/UI work and should not trigger speculative raster production. Player-damage numbers, auto-fire state, actor outlines, projectile halos, and terrain HP bars are code-rendered and require no image generation.
+Damage-state selection is code-owned: intact at full health, damaged below 75%, critical below 35%, destroyed at 0. Art must not imply a narrower collision shape before destruction. The destroyed frame must sit below knee height and read as non-blocking; it may remain visible as decoration while collision is removed. Every row shares a bottom-centre pivot and a documented visual baseline. No cast shadow extends beyond the cell; runtime supplies the common contact shadow, hit flash, HP bar, tint, debris motion, and fade.
+
+Supporting atlas `destructible-terrain-effects-v1` is **4×2 at 64×64**: bullet chip, melee spark, acid hiss, frost crack, explosive fracture, heavy collapse, dust settle, salvage glint. Effects are material feedback only and never define hit geometry. Bullet/melee/elemental damage may reuse one prop state; damage type must not multiply the 28-frame terrain contract.
+
+Production package under `art/production-tests/batch-r/` must contain exact final prompts, untouched chroma sources, transparent ≥4× alpha masters, deterministic normalizer, frame map with indices/pivots/baselines, `destructible-terrain-v1-128.png`, `destructible-terrain-effects-v1-64.png`, contact-sheet QA, and a README recording generation mode and approvals. Chroma removal must leave transparent corners and no fringe. Runtime outputs use nearest-neighbour downsampling with no smoothing.
+
+Acceptance: each state is recognisable at gameplay zoom in a mixed crowd; damaged and critical remain the same prop identity; destroyed frames cannot be mistaken for active cover; HP bars do not overlap the sprite at any footprint; no frame clips its cell; grayscale silhouettes remain distinct; and screenshots pass at internal 960×540 plus presentation 1920×1080 and 3840×2160. Add `?mode=gallery&batch=r`, asset-contract tests, gameplay binding tests, production build, and HTTP asset smoke checks. Player-damage numbers, auto-fire state, actor outlines, projectile halos, terrain HP bars, collision, and durability remain code-rendered and require no raster variants.
 
 Batch Q2 (later, with the speciality system): one 128 × 128 speciality sign tile per keeper for the shop header, same canonical tile contract as Batch I.
 

@@ -39,12 +39,22 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(108);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(110);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
       if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
     }
+  });
+
+  it("locks Production Batch R terrain contracts", () => {
+    const terrain = GAME_ASSETS["destructible-terrain-v1"];
+    const effects = GAME_ASSETS["destructible-terrain-effects-v1"];
+    expect(terrain.kind).toBe("spritesheet");
+    expect(effects.kind).toBe("spritesheet");
+    if (terrain.kind === "spritesheet") expect(terrain.frameCount).toBe(28);
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
+    expect(terrain.pivot).toEqual({ x: 0.5, y: 0.92 });
   });
 
   it("locks Production Batch B frame contracts", () => {

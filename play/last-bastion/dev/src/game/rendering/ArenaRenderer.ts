@@ -2,19 +2,16 @@ import Phaser from "phaser";
 import type { ArenaDefinition, ArenaObstacleKind } from "../arena/ArenaDefinition";
 import { worldDepth } from "./WorldDepth";
 import { ARENA_THEMES, type ArenaTheme } from "./arenaThemes";
-
-const OBSTACLE_FRAMES: Readonly<Record<ArenaObstacleKind, number>> = {
-  barricade: 0,
-  "cargo-crate": 1,
-  "power-conduit": 2,
-  biomass: 3,
-};
+import { terrainFrameIndex } from "./TerrainVisualState";
 
 const OBSTACLE_COLORS: Readonly<Record<ArenaObstacleKind, { body: number; edge: number }>> = {
   barricade: { body: 0x52677c, edge: 0xb8cad8 },
   "cargo-crate": { body: 0x785a35, edge: 0xd6a75c },
   "power-conduit": { body: 0x315c68, edge: 0x63d9df },
   biomass: { body: 0x65395f, edge: 0xd367b8 },
+  fence: { body: 0x56745f, edge: 0xcdea72 },
+  boulder: { body: 0x58616a, edge: 0xb8cad8 },
+  "reinforced-cover": { body: 0x4d5263, edge: 0xd696ff },
 };
 
 export function renderArena(
@@ -129,18 +126,20 @@ function renderAuthoredObstacles(
 ): void {
   for (const obstacle of arena.obstacles) {
     const x = (obstacle.x + obstacle.width / 2) * pixelsPerMetre;
-    const y = (obstacle.y + obstacle.height / 2) * pixelsPerMetre;
+    const collisionY = (obstacle.y + obstacle.height / 2) * pixelsPerMetre;
+    const y = (obstacle.y + obstacle.height) * pixelsPerMetre;
     const width = obstacle.width * pixelsPerMetre;
     const height = obstacle.height * pixelsPerMetre;
-    const view = scene.add.sprite(x, y, theme.obstacleTexture, OBSTACLE_FRAMES[obstacle.kind])
+    const view = scene.add.sprite(x, y, "destructible-terrain-v1", terrainFrameIndex(obstacle.kind, 1, 1))
       .setName(`arena-obstacle:${obstacle.id}`)
       .setDisplaySize(width, height)
       .setDepth(worldDepth(obstacle.y + obstacle.height))
-      .setTint(theme.obstacleTint);
+      .setTint(theme.obstacleTint)
+      .setOrigin(0.5, 0.92);
     if (debugCollision) {
-      scene.add.rectangle(x, y, width, height, 0x000000, 0)
+      scene.add.rectangle(x, collisionY, width, height, 0x000000, 0)
         .setStrokeStyle(3, 0xff3d55).setDepth(view.depth + 1);
-      scene.add.text(x, y, obstacle.id, {
+      scene.add.text(x, collisionY, obstacle.id, {
         color: "#ffffff", fontFamily: "monospace", fontSize: "9px", backgroundColor: "#111722",
       }).setOrigin(0.5).setDepth(view.depth + 2);
     }

@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { findMergeIndex, MERGE_WINDOW_MS, type MergeableNumber } from "./FloatingDamageNumbers";
+import { findMergeIndex, MERGE_WINDOW_MS, playerDamageLabel, type MergeableNumber } from "./FloatingDamageNumbers";
 
 describe("findMergeIndex", () => {
+  it("formats player damage as a distinct leading-minus label", () => {
+    expect(playerDamageLabel(2.5)).toBe("−2.5");
+  });
   const active: MergeableNumber[] = [
     { enemyId: 1, spawnedAtMs: 1000 },
     { enemyId: 2, spawnedAtMs: 1040 },

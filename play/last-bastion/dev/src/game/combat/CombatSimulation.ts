@@ -44,6 +44,7 @@ import {
 import {
   BASTION_ARENA,
   pointHitsObstacle,
+  obstacleMaxDurability,
   resolveCircleMovement,
   type ArenaDefinition,
   type ArenaObstacle,
@@ -144,6 +145,16 @@ export type SupplyChestVariant = "sealed" | "armored";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
 export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat" | "supply-chest";
 
+export type TerrainDamageSource = "player-projectile" | "player-melee" | "mini-boss-charge" | "mini-boss-impact";
+
+export interface TerrainSnapshot {
+  id: string;
+  kind: ArenaObstacle["kind"];
+  health: number;
+  maxHealth: number;
+  hitRemainingSeconds: number;
+}
+
 export interface UpgradeSlotSnapshot {
   category: UpgradeCategory;
   used: number;
@@ -209,8 +220,8 @@ export type CombatEvent =
   | { type: "rift-stalker-pounce"; position: Vector2Data; radiusMetres: number; hitPlayer: boolean }
   | { type: "rift-stalker-fan"; position: Vector2Data; direction: Vector2Data; count: number }
   | { type: "rift-stalker-slash"; position: Vector2Data; direction: Vector2Data; reachMetres: number }
-  | { type: "obstacle-damaged"; obstacleId: string; position: Vector2Data }
-  | { type: "obstacle-destroyed"; obstacleId: string; position: Vector2Data }
+  | { type: "obstacle-damaged"; obstacleId: string; position: Vector2Data; damage: number; remainingHealth: number; source: TerrainDamageSource }
+  | { type: "obstacle-destroyed"; obstacleId: string; position: Vector2Data; damage: number; remainingHealth: 0; source: TerrainDamageSource }
   | { type: "mini-boss-reward-dropped"; position: Vector2Data; miniBossKind: MiniBossKind }
   | { type: "status-applied"; position: Vector2Data; status: StatusEffectType }
   | { type: "powerup-collected"; position: Vector2Data; powerupType: PowerupType }
@@ -469,6 +480,7 @@ export interface CombatSnapshot {
   playerSlowed: boolean;
   damagedObstacleIds: readonly string[];
   destroyedObstacleIds: readonly string[];
+  terrain: readonly TerrainSnapshot[];
   playerTethered: boolean;
   activeTetherEnemyId: number | null;
   density: DensityTelemetrySnapshot;
@@ -864,7 +876,8 @@ export class CombatSimulation {
   private supplyChests: SupplyChestState[] = [];
   private readonly activeBuffs = new Map<PowerupType, number>();
   private uraniumKitAvailable: boolean;
-  private readonly obstacleDamage = new Map<string, number>();
+  private readonly obstacleHealth = new Map<string, number>();
+  private readonly obstacleHitRemainingSeconds = new Map<string, number>();
   private pickups: ExperiencePickupState[] = [];
   private nextEntityId = 1;
   private status: EncounterStatus = "combat";
@@ -1022,6 +1035,11 @@ export class CombatSimulation {
   step(intent: PlayerIntent, deltaSeconds: number): CombatSnapshot {
     const delta = Math.min(Math.max(deltaSeconds, 0), 0.05);
     this.frameEvents = [];
+    for (const [id, remaining] of this.obstacleHitRemainingSeconds) {
+      const next = Math.max(0, remaining - delta);
+      if (next === 0) this.obstacleHitRemainingSeconds.delete(id);
+      else this.obstacleHitRemainingSeconds.set(id, next);
+    }
 
     if (this.status === "defeat" || this.status === "victory" || this.decisionQueue.length > 0) {
       return this.snapshot();
@@ -1612,10 +1630,22 @@ export class CombatSimulation {
       stressProfile: this.stressProfile,
       scenario: this.scenario,
       playerSlowed: this.isPlayerSlowed(),
-      damagedObstacleIds: [...this.obstacleDamage.entries()]
-        .filter(([, damage]) => damage === 1).map(([id]) => id),
-      destroyedObstacleIds: [...this.obstacleDamage.entries()]
-        .filter(([, damage]) => damage >= 2).map(([id]) => id),
+      terrain: this.arena.obstacles.map((obstacle) => {
+        const maxHealth = obstacleMaxDurability(obstacle);
+        return {
+          id: obstacle.id,
+          kind: obstacle.kind,
+          health: this.obstacleHealth.get(obstacle.id) ?? maxHealth,
+          maxHealth,
+          hitRemainingSeconds: this.obstacleHitRemainingSeconds.get(obstacle.id) ?? 0,
+        };
+      }),
+      damagedObstacleIds: this.arena.obstacles
+        .filter((obstacle) => (this.obstacleHealth.get(obstacle.id) ?? obstacleMaxDurability(obstacle)) < obstacleMaxDurability(obstacle))
+        .map(({ id }) => id),
+      destroyedObstacleIds: this.arena.obstacles
+        .filter((obstacle) => (this.obstacleHealth.get(obstacle.id) ?? obstacleMaxDurability(obstacle)) <= 0)
+        .map(({ id }) => id),
       playerTethered: this.enemies.some((enemy) => (
         !enemy.dead && enemy.id === this.activeTetherEnemyId && enemy.tetherBloomPhase === "tethering"
       )),
@@ -2328,6 +2358,20 @@ export class CombatSimulation {
     direction: Vector2Data,
   ): void {
     const facing = normalizeVector(direction);
+    const cover = this.activeObstacles().find((obstacle) =>
+      segmentIntersectsRectangle(anchor, {
+        x: anchor.x + facing.x * weapon.stats.rangeMetres,
+        y: anchor.y + facing.y * weapon.stats.rangeMetres,
+      }, obstacle));
+    if (cover) {
+      this.damageObstacle(
+        cover.id,
+        weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats.weaponClass)
+          * this.currentPowerupDamageMultiplier(),
+        { x: cover.x + cover.width / 2, y: cover.y + cover.height / 2 },
+        "player-melee",
+      );
+    }
     const halfArc = weapon.stats.meleeArcRadians / 2;
     for (const enemy of this.enemies) {
       if (
@@ -2658,7 +2702,9 @@ export class CombatSimulation {
         continue;
       }
 
-      if (pointHitsObstacle(projectile.position, this.activeObstacles())) {
+      const obstacle = this.activeObstacles().find((candidate) => pointHitsObstacle(projectile.position, [candidate]));
+      if (obstacle) {
+        this.damageObstacle(obstacle.id, projectile.damage, projectile.position, "player-projectile");
         this.explodeProjectile(projectile, projectile.position);
         projectile.dead = true;
         this.frameEvents.push({
@@ -3326,7 +3372,17 @@ export class CombatSimulation {
           x: this.playerPosition.x - enemy.position.x,
           y: this.playerPosition.y - enemy.position.y,
         });
-        this.moveEnemy(enemy, enemy.facingDirection, stalkSpeed, deltaSeconds);
+        this.moveEnemy(
+          enemy,
+          miniBossRepositionDirection(
+            enemy.position,
+            this.playerPosition,
+            4.8,
+            (enemy.id + enemy.siegeCrusherAttackCount) % 2 === 0 ? 1 : -1,
+          ),
+          stalkSpeed,
+          deltaSeconds,
+        );
         if (enemy.siegeCrusherPhaseRemainingSeconds <= 0) {
           enemy.siegeCrusherAttackCount += 1;
           const slamFrequency = enrageTier === 2 ? 2 : 3;
@@ -3357,10 +3413,10 @@ export class CombatSimulation {
         };
         const obstacle = this.firstCollidingObstacle(desired, ENEMY_CATALOG["siege-crusher"].radiusMetres);
         if (obstacle) {
-          this.damageObstacle(obstacle.id, {
+          this.damageObstacle(obstacle.id, PLAYER_ATTACK_DAMAGE_BASELINES.crusherCharge * 40, {
             x: obstacle.x + obstacle.width / 2,
             y: obstacle.y + obstacle.height / 2,
-          });
+          }, "mini-boss-charge");
           this.emitCrusherShockwave(enemy.position);
           enemy.siegeCrusherPhase = "recovery";
           enemy.siegeCrusherPhaseRemainingSeconds = recoverySeconds;
@@ -3446,7 +3502,12 @@ export class CombatSimulation {
       case "stalk":
         this.moveEnemy(
           enemy,
-          enemy.facingDirection,
+          miniBossRepositionDirection(
+            enemy.position,
+            this.playerPosition,
+            2.6,
+            (enemy.id + enemy.broodWardenAttackCount) % 2 === 0 ? 1 : -1,
+          ),
           [1.55, 1.82, 2.08][enrageTier]!,
           deltaSeconds,
         );
@@ -3617,7 +3678,17 @@ export class CombatSimulation {
         }
         break;
       case "cloak":
-        this.moveEnemyTowardPlayer(enemy, [2.1, 2.45, 2.8][tier]!, deltaSeconds);
+        this.moveEnemy(
+          enemy,
+          miniBossRepositionDirection(
+            enemy.position,
+            this.playerPosition,
+            3.8,
+            (enemy.id + (enemy.riftStalkerChainedThisCycle ? 1 : 0)) % 2 === 0 ? 1 : -1,
+          ),
+          [2.1, 2.45, 2.8][tier]!,
+          deltaSeconds,
+        );
         if (enemy.riftStalkerPhaseRemainingSeconds <= 0) {
           this.beginRiftStalkerMark(enemy, [0.85, 0.72, 0.55][tier]!);
         }
@@ -3844,8 +3915,9 @@ export class CombatSimulation {
         };
         const obstacle = this.firstCollidingObstacle(desired, ENEMY_CATALOG["bastion-eater"].radiusMetres);
         if (obstacle) {
-          this.damageObstacle(obstacle.id, { x: obstacle.x + obstacle.width / 2, y: obstacle.y + obstacle.height / 2 });
-          this.damageObstacle(obstacle.id, { x: obstacle.x + obstacle.width / 2, y: obstacle.y + obstacle.height / 2 });
+          const impact = { x: obstacle.x + obstacle.width / 2, y: obstacle.y + obstacle.height / 2 };
+          this.damageObstacle(obstacle.id, 450, impact, "mini-boss-charge");
+          this.damageObstacle(obstacle.id, 450, impact, "mini-boss-charge");
           this.finishBastionEaterAction(enemy, recoverySeconds);
         } else {
           this.moveEnemy(enemy, enemy.bastionEaterDirection, speed, deltaSeconds);
@@ -3935,14 +4007,25 @@ export class CombatSimulation {
     ));
   }
 
-  private damageObstacle(obstacleId: string, position: Vector2Data): void {
-    const damage = Math.min((this.obstacleDamage.get(obstacleId) ?? 0) + 1, 2);
-    this.obstacleDamage.set(obstacleId, damage);
-    this.frameEvents.push({
-      type: damage >= 2 ? "obstacle-destroyed" : "obstacle-damaged",
-      obstacleId,
-      position: { ...position },
-    });
+  private damageObstacle(
+    obstacleId: string,
+    rawDamage: number,
+    position: Vector2Data,
+    source: TerrainDamageSource,
+  ): void {
+    const obstacle = this.arena.obstacles.find((candidate) => candidate.id === obstacleId);
+    if (!obstacle) return;
+    const current = this.obstacleHealth.get(obstacleId) ?? obstacleMaxDurability(obstacle);
+    if (current <= 0) return;
+    const damage = Math.max(0, rawDamage);
+    const remainingHealth = Math.max(0, current - damage);
+    this.obstacleHealth.set(obstacleId, remainingHealth);
+    this.obstacleHitRemainingSeconds.set(obstacleId, 1.5);
+    if (remainingHealth <= 0) {
+      this.frameEvents.push({ type: "obstacle-destroyed", obstacleId, position: { ...position }, damage, remainingHealth: 0, source });
+    } else {
+      this.frameEvents.push({ type: "obstacle-damaged", obstacleId, position: { ...position }, damage, remainingHealth, source });
+    }
   }
 
   private emitCrusherShockwave(
@@ -4341,7 +4424,9 @@ export class CombatSimulation {
       projectile.position.y += projectile.velocity.y * deltaSeconds;
       projectile.remainingSeconds -= deltaSeconds;
 
-      if (pointHitsObstacle(projectile.position, this.activeObstacles())) {
+      const obstacle = this.activeObstacles().find((candidate) => pointHitsObstacle(projectile.position, [candidate]));
+      if (obstacle) {
+        this.damageObstacle(obstacle.id, projectile.damage, projectile.position, "mini-boss-impact");
         projectile.position = previous;
         this.resolveEnemyProjectileImpact(projectile);
       } else if (distanceToSegment(this.playerPosition, previous, projectile.position) <= PLAYER_RADIUS_METRES + 0.3) {
@@ -5596,7 +5681,9 @@ export class CombatSimulation {
   }
 
   private activeObstacles(): ArenaDefinition["obstacles"] {
-    return this.arena.obstacles.filter((obstacle) => (this.obstacleDamage.get(obstacle.id) ?? 0) < 2);
+    return this.arena.obstacles.filter((obstacle) => (
+      this.obstacleHealth.get(obstacle.id) ?? obstacleMaxDurability(obstacle)
+    ) > 0);
   }
 
   private collisionArena(): ArenaDefinition {
@@ -5671,6 +5758,38 @@ export function riftStalkerFrenzyTier(health: number, maxHealth: number): 0 | 1 
 export function selectMiniBossForRoll(roll: number): MiniBossKind {
   const index = Math.min(Math.floor(clamp(roll, 0, 0.999999) * MINI_BOSS_POOL.length), MINI_BOSS_POOL.length - 1);
   return MINI_BOSS_POOL[index]!;
+}
+
+/**
+ * Gives mini-boss setup movement a readable orbit instead of another direct
+ * pursuit line. Far bosses close the gap, crowded bosses peel away, and the
+ * tangent component keeps them traversing the arena between locked attacks.
+ */
+export function miniBossRepositionDirection(
+  position: Vector2Data,
+  playerPosition: Vector2Data,
+  preferredDistanceMetres: number,
+  orbitSign: -1 | 1,
+): Vector2Data {
+  const offset = {
+    x: playerPosition.x - position.x,
+    y: playerPosition.y - position.y,
+  };
+  const currentDistance = Math.hypot(offset.x, offset.y);
+  const towardPlayer = normalizeVector(offset);
+  const radialIntent = clamp(
+    (currentDistance - preferredDistanceMetres) / Math.max(1.5, preferredDistanceMetres * 0.45),
+    -1,
+    1,
+  );
+  const tangent = {
+    x: -towardPlayer.y * orbitSign,
+    y: towardPlayer.x * orbitSign,
+  };
+  return normalizeVector({
+    x: towardPlayer.x * radialIntent + tangent.x * 0.82,
+    y: towardPlayer.y * radialIntent + tangent.y * 0.82,
+  });
 }
 
 export function pointInsideRipperSweep(

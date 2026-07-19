@@ -66,6 +66,7 @@ export interface SettingsRow {
 
 export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { key: "screenShakeEnabled", label: "Screen shake" },
+  { key: "reducedFlashEnabled", label: "Reduced flash" },
   { key: "soundEnabled", label: "Sound" },
   { key: "damageNumbersEnabled", label: "Damage numbers" },
   { key: "cooldownTimersEnabled", label: "Cooldown timers" },

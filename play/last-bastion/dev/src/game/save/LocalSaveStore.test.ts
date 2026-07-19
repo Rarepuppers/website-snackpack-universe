@@ -29,10 +29,14 @@ describe("LocalSaveStore", () => {
 
   it("persists settings updates across store instances", () => {
     const storage = fakeStorage();
-    new LocalSaveStore(storage).updateSettings({ screenShakeEnabled: false });
+    new LocalSaveStore(storage).updateSettings({
+      screenShakeEnabled: false,
+      reducedFlashEnabled: true,
+    });
 
     const reloaded = new LocalSaveStore(storage).load();
     expect(reloaded.settings.screenShakeEnabled).toBe(false);
+    expect(reloaded.settings.reducedFlashEnabled).toBe(true);
     expect(reloaded.settings.soundEnabled).toBe(true);
     // Untouched settings keep their defaults.
     expect(reloaded.settings.damageNumbersEnabled).toBe(true);
@@ -44,6 +48,13 @@ describe("LocalSaveStore", () => {
     expect(new LocalSaveStore(storage).load().settings.autoFireEnabled).toBe(true);
     new LocalSaveStore(storage).updateSettings({ autoFireEnabled: false });
     expect(new LocalSaveStore(storage).load().settings.autoFireEnabled).toBe(false);
+  });
+
+  it("defaults reduced flash off and persists the accessibility preference", () => {
+    const storage = fakeStorage();
+    expect(DEFAULT_SAVE.settings.reducedFlashEnabled).toBe(false);
+    new LocalSaveStore(storage).updateSettings({ reducedFlashEnabled: true });
+    expect(new LocalSaveStore(storage).load().settings.reducedFlashEnabled).toBe(true);
   });
 
   it("persists the selected hero and perk for the next deployment", () => {
@@ -209,10 +220,11 @@ describe("Save schema v2 — expedition autosave", () => {
       }),
     });
     const save = new LocalSaveStore(storage).load();
-    expect(save.version).toBe(5);
+    expect(save.version).toBe(6);
     expect(save.settings.screenShakeEnabled).toBe(false);
     expect(save.settings.cooldownTimersEnabled).toBe(false);
     expect(save.settings.autoFireEnabled).toBe(true);
+    expect(save.settings.reducedFlashEnabled).toBe(false);
     expect(save.progress.runsFinished).toBe(4);
     expect(save.progress.bestiary.scuttler).toEqual({ seen: 3, kills: 12 });
     expect(save.expedition).toBeNull();

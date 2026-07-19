@@ -85,6 +85,8 @@ import scrapShopOfferTileUrl from "../../../../art/production-tests/batch-n2/scr
 import scrapShopHudUrl from "../../../../art/production-tests/batch-n2/scrap-shop-hud-atlas-v1-128.png";
 import scrapShopPanelUrl from "../../../../art/production-tests/batch-n2/scrap-shop-panel-v1-1024x576.png";
 import quartermasterSheetUrl from "../../../../art/production-tests/batch-q/quartermaster-atlas-v1-384x512.png";
+import destructibleTerrainUrl from "../../../../art/production-tests/batch-r/destructible-terrain-v1-128.png";
+import destructibleTerrainEffectsUrl from "../../../../art/production-tests/batch-r/destructible-terrain-effects-v1-64.png";
 import batchIWeaponTileUrl from "../../../../art/production-tests/batch-i/codex-weapon-tile-atlas-v1-128.png";
 import batchIPerkTileUrl from "../../../../art/production-tests/batch-i/perk-tile-atlas-v1-128.png";
 import canonicalPerkTileUrl from "../../../../art/production-tests/batch-i/canonical-perk-tile-atlas-v2-128.png";
@@ -117,6 +119,8 @@ export type GameAssetId =
   | "arena-floor-v1"
   | "arena-boundary-v1"
   | "arena-obstacle-v1"
+  | "destructible-terrain-v1"
+  | "destructible-terrain-effects-v1"
   | "combat-effects-v1"
   | "pickups-v1"
   | "hud-panels-v1"
@@ -326,6 +330,8 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("scrap-shop-hud-v1", scrapShopHudUrl, 128, 128, 4, 0.5, 0.5),
   image("scrap-shop-panel-v1", scrapShopPanelUrl, 1024, 576, 0.5, 0.5),
   sheet("quartermaster-v1", quartermasterSheetUrl, 128, 256, 6, 0.5, 1),
+  sheet("destructible-terrain-v1", destructibleTerrainUrl, 128, 128, 28, 0.5, 0.92),
+  sheet("destructible-terrain-effects-v1", destructibleTerrainEffectsUrl, 64, 64, 8, 0.5, 0.5),
   sheet("batch-i-weapon-tiles-v1", batchIWeaponTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("batch-i-perk-tiles-v1", batchIPerkTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("canonical-perk-tiles-v2", canonicalPerkTileUrl, 128, 128, 8, 0.5, 0.5),
