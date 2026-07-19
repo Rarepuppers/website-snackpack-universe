@@ -698,3 +698,13 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Added Task 64 for the Storm Savant, a mad xenotechnician whose coil/psionic apparatus presents as magic-lightning while using locked conductive-node paths, destructible counters, finite hops, colour-independent geometry, and vulnerable overload recovery.
 - Added Task 65 for a Machine uprising roster: Scrap Skitterer, Arc Warden, Cyborg Reclaimer, and the finite-charge Foundry Fabricator summoner. Repair/fabrication channels are interruptible and machine children never recurse.
 - Added Task 66 to expand the mini-boss pool only from proven families: Synapse Herald, Assembly Prime, Storm Regent, then Abomination Prime. Every candidate retains the existing behavior-lab, no-immediate-repeat, reward, warning, recovery, and 45–90 second gates.
+
+### Task 60A — accessibility and display foundations
+
+**Status:** Implemented — 20 July 2026; per-action keyboard/controller remapping remains before Task 60 completion
+
+- Added a pure simulation-space UI safe-area contract and moved the combat HUD's major edge anchors inside it. Exact projection tests cover the 960×540 base, 1920×1080 Full HD, and 3840×2160 4K.
+- Added lifecycle-safe window-blur/document-hidden listeners. Losing focus always pauses and returning focus never resumes automatically; scene shutdown removes both listeners.
+- Added one unique geometry signature for each major telegraph family and used its edge weight/markers in code-drawn warnings, so danger identity does not rely on hue.
+- Reduced floating combat text from 40 to 24 concurrent labels. Ordinary outgoing numbers recycle first, while player-damage and healing feedback are preserved; same-enemy 100 ms merging remains active.
+- Verification: TypeScript clean, 435 tests across 59 files, production build green, and exact no-overflow Full HD/4K browser measurements. Existing Vite output-directory and large-chunk warnings remain unchanged.
