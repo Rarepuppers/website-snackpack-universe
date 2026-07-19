@@ -138,6 +138,11 @@ export class PrototypeScene extends Phaser.Scene {
     two: Phaser.Input.Keyboard.Key;
     three: Phaser.Input.Keyboard.Key;
     four: Phaser.Input.Keyboard.Key;
+    five: Phaser.Input.Keyboard.Key;
+    six: Phaser.Input.Keyboard.Key;
+    seven: Phaser.Input.Keyboard.Key;
+    eight: Phaser.Input.Keyboard.Key;
+    nine: Phaser.Input.Keyboard.Key;
   } | null = null;
   private visibleDecisionKey = "";
   private isPaused = false;
@@ -227,6 +232,11 @@ export class PrototypeScene extends Phaser.Scene {
       two: Phaser.Input.Keyboard.KeyCodes.TWO,
       three: Phaser.Input.Keyboard.KeyCodes.THREE,
       four: Phaser.Input.Keyboard.KeyCodes.FOUR,
+      five: Phaser.Input.Keyboard.KeyCodes.FIVE,
+      six: Phaser.Input.Keyboard.KeyCodes.SIX,
+      seven: Phaser.Input.Keyboard.KeyCodes.SEVEN,
+      eight: Phaser.Input.Keyboard.KeyCodes.EIGHT,
+      nine: Phaser.Input.Keyboard.KeyCodes.NINE,
     }) as unknown as NonNullable<typeof this.menuKeys>;
     this.lastSnapshot = this.simulation.snapshot();
     this.renderSnapshot(this.lastSnapshot, false);
@@ -2326,7 +2336,11 @@ export class PrototypeScene extends Phaser.Scene {
       this.updateDecisionSelectionHighlight();
     }
 
-    const digits = [this.menuKeys.one, this.menuKeys.two, this.menuKeys.three, this.menuKeys.four];
+    const digits = [
+      this.menuKeys.one, this.menuKeys.two, this.menuKeys.three,
+      this.menuKeys.four, this.menuKeys.five, this.menuKeys.six,
+      this.menuKeys.seven, this.menuKeys.eight, this.menuKeys.nine,
+    ];
     for (let index = 0; index < this.decisionButtons.length; index += 1) {
       if (digits[index] && Phaser.Input.Keyboard.JustDown(digits[index]!)) {
         this.decisionSelectionIndex = index;
@@ -2406,18 +2420,35 @@ export class PrototypeScene extends Phaser.Scene {
 
     const isShop = decision.kind === "scrap-shop";
     const isPlacement = decision.kind === "weapon-placement";
-    const panelWidth = isPlacement ? 860 : 760;
-    const panelHeight = isShop ? 420 : isPlacement ? 520 : 330;
+    const shopColumns = isShop && decision.options.length > 7 ? 2 : 1;
+    const shopRows = isShop ? Math.ceil(decision.options.length / shopColumns) : 0;
+    const panelWidth = isPlacement ? 860 : shopColumns === 2 ? 980 : 760;
+    const panelHeight = isShop ? Math.max(520, 190 + shopRows * 70) : isPlacement ? 520 : 330;
     const children: Phaser.GameObjects.GameObject[] = [];
     if (isShop && this.useMarineArt) {
-      children.push(this.add.image(0, 0, "scrap-shop-panel-v1").setDisplaySize(760, 428));
+      children.push(this.add.image(0, 0, "scrap-shop-panel-v1").setDisplaySize(panelWidth, panelHeight));
     } else if (isPlacement && this.useMarineArt) {
       children.push(this.add.image(0, 0, "batch-i-placement-modal-v1").setDisplaySize(panelWidth, panelHeight));
     } else {
       children.push(this.add.rectangle(0, 0, panelWidth, panelHeight, 0x0b121c, 0.985).setStrokeStyle(4, isShop ? 0xdca652 : 0x68e4e8));
       children.push(this.add.rectangle(0, 0, panelWidth - 18, panelHeight - 18, 0x172536, 0.72).setStrokeStyle(1, 0x4d6a83));
     }
-    const titleY = isShop ? -170 : isPlacement ? -220 : -125;
+    const titleY = isShop ? -panelHeight / 2 + 40 : isPlacement ? -220 : -125;
+    if (isShop && this.useMarineArt && shopColumns === 1) {
+      if (!this.anims.exists("quartermaster-idle-v1")) {
+        this.anims.create({
+          key: "quartermaster-idle-v1",
+          frames: this.anims.generateFrameNumbers("quartermaster-v1", { start: 0, end: 3 }),
+          frameRate: 2,
+          repeat: -1,
+        });
+      }
+      const keeper = this.add.sprite(270, panelHeight / 2 - 18, "quartermaster-v1", 0)
+        .setDisplaySize(128, 256)
+        .setOrigin(0.5, 1)
+        .play("quartermaster-idle-v1");
+      children.push(keeper);
+    }
     const title = this.add.text(0, titleY, decision.title, {
       color: "#ffffff",
       fontFamily: "Consolas, Courier New, monospace",
@@ -2446,27 +2477,31 @@ export class PrototypeScene extends Phaser.Scene {
     }
 
     decision.options.forEach((choice, index) => {
-      const x = isPlacement ? -70 + (index % 2) * 330 : 0;
-      const y = isPlacement ? -125 + Math.floor(index / 2) * 98 : (isShop ? -100 : -60) + index * (isShop ? 78 : 86);
+      const shopColumn = shopColumns === 2 ? index % 2 : 0;
+      const shopRow = shopColumns === 2 ? Math.floor(index / 2) : index;
+      const x = isPlacement ? -70 + (index % 2) * 330 : isShop && shopColumns === 2 ? -238 + shopColumn * 476 : isShop ? -78 : 0;
+      const y = isPlacement ? -125 + Math.floor(index / 2) * 98 : isShop ? titleY + 78 + shopRow * 70 : -60 + index * 86;
       const enabled = choice.affordable !== false;
-      const button = this.add.rectangle(x, y, isPlacement ? 300 : 670, isPlacement ? 78 : 66, 0x1b2d42, 0.98)
+      const shopButtonWidth = shopColumns === 2 ? 444 : 500;
+      const button = this.add.rectangle(x, y, isPlacement ? 300 : isShop ? shopButtonWidth : 670, isPlacement ? 78 : isShop ? 62 : 66, 0x1b2d42, 0.98)
         .setStrokeStyle(2, 0x5d7892).setInteractive({ useHandCursor: enabled });
       const price = choice.cost && choice.cost > 0 ? ` — ${choice.cost} SCRAP${enabled ? "" : " (SHORT)"}` : "";
       children.push(button);
       if (isShop && this.useMarineArt) {
-        children.push(this.add.image(-292, y, "scrap-shop-offer-tiles-v1", scrapShopOfferFrame(choice.id))
-          .setDisplaySize(56, 56).setAlpha(enabled ? 1 : 0.42));
+        children.push(this.add.image(x - shopButtonWidth / 2 + 34, y, "scrap-shop-offer-tiles-v1", scrapShopOfferFrame(choice.id))
+          .setDisplaySize(48, 48).setAlpha(enabled ? 1 : 0.42));
       }
       if (isPlacement && this.useMarineArt) {
         children.push(this.add.image(x - 116, y, "batch-i-slot-tier-ui-v1", placementOptionFrame(choice.id, choice.name))
           .setDisplaySize(58, 58).setAlpha(enabled ? 1 : 0.42));
       }
-      const label = this.add.text(isPlacement ? x - 78 : isShop ? -252 : -310, y - (isPlacement ? 26 : 18), `${index + 1}. ${choice.name}${price}\n${choice.description}`, {
+      const quickKey = index < 9 ? `${index + 1}. ` : "";
+      const label = this.add.text(isPlacement ? x - 78 : isShop ? x - shopButtonWidth / 2 + 76 : -310, y - (isPlacement ? 26 : isShop ? 15 : 18), `${quickKey}${choice.name}${price}\n${choice.description}`, {
         color: enabled ? "#edf4ff" : "#758493",
         fontFamily: "Consolas, Courier New, monospace",
-        fontSize: isPlacement ? "13px" : "15px",
-        wordWrap: isPlacement ? { width: 202 } : undefined,
-        lineSpacing: 5,
+        fontSize: isPlacement ? "13px" : isShop ? "13px" : "15px",
+        wordWrap: isPlacement ? { width: 202 } : isShop ? { width: shopButtonWidth - 92 } : undefined,
+        lineSpacing: isShop ? 2 : 5,
       }).setResolution(uiTextResolution());
       button.on("pointerover", () => {
         this.decisionSelectionIndex = index;
@@ -2480,7 +2515,8 @@ export class PrototypeScene extends Phaser.Scene {
       children.push(label);
     });
 
-    const hint = this.add.text(0, isShop ? 188 : isPlacement ? 225 : 138, `↑↓ SELECT   •   ENTER CONFIRM   •   1-${decision.options.length} QUICK PICK`, {
+    const quickPickCount = Math.min(9, decision.options.length);
+    const hint = this.add.text(0, isShop ? titleY + 38 : isPlacement ? 225 : 138, `↑↓ SELECT   •   ENTER CONFIRM   •   1-${quickPickCount} QUICK PICK`, {
       color: "#9fb3c8",
       fontFamily: "Consolas, Courier New, monospace",
       fontSize: "11px",

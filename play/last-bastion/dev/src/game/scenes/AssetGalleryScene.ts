@@ -15,6 +15,10 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "q") {
+      this.createBatchQGallery();
+      return;
+    }
     if (batch === "o") {
       this.createBatchOGallery();
       return;
@@ -528,6 +532,25 @@ export class AssetGalleryScene extends Phaser.Scene {
     this.add.text(204, 448, "PORTRAIT", style("#d696ff", "10px"));
     this.add.text(204, 470, "128 px runtime • 1254 px retained master", style("#8fb2c9", "9px"));
     this.add.text(480, 518, "Review: ?mode=gallery&batch=o • Encounter: ?scenario=rift-stalker&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchQGallery(): void {
+    this.add.text(20, 14, "LAST BASTION — SHOPKEEPER PRODUCTION ASSET BATCH Q", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Quartermaster presentation gate • 6 transparent runtime frames • 1536 px retained chroma/alpha masters", style("#8fb2c9", "11px"));
+
+    this.add.image(480, 318, "batch-i-shop-counter-v1").setDisplaySize(920, 515).setAlpha(0.72);
+    for (let frame = 0; frame < 6; frame += 1) {
+      const x = 110 + frame * 148;
+      const keeper = this.add.sprite(x, 342, "quartermaster-v1", frame).setScale(0.7).setOrigin(0.5, 1);
+      this.drawPivot(x, 342);
+      this.add.text(x, 365, frame < 4 ? `IDLE ${frame + 1}` : `NOD ${frame - 3}`, style("#68e4e8", "9px")).setOrigin(0.5);
+      keeper.setDepth(2);
+    }
+    this.add.rectangle(480, 420, 920, 88, 0x172536, 0.96).setStrokeStyle(2, 0x5d7892).setDepth(3);
+    this.add.text(480, 420, "COUNTER / OFFER ROW OCCLUSION TEST\nSilhouette remains readable at 50% scale; text, price, lock, reroll, and sale state remain code-owned.", {
+      ...style("#edf4ff", "11px"), align: "center",
+    }).setOrigin(0.5).setDepth(4);
+    this.add.text(480, 518, "Review: ?mode=gallery&batch=q • Live shop: ?scenario=scrap-shop", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createBatchJ1Gallery(): void {

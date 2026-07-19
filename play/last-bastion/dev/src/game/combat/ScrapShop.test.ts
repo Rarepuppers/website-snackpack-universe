@@ -36,25 +36,26 @@ function reachesWaveThreeWithAurum(seed: number): boolean {
 }
 
 describe("Scrap Shop behavior gate", () => {
-  it("draws three distinct seeded offers plus an explicit leave action", () => {
+  it("draws three distinct seeded offers plus management and leave actions", () => {
     const first = new CombatSimulation({ scenario: "scrap-shop", seed: 37 }).snapshot();
     const second = new CombatSimulation({ scenario: "scrap-shop", seed: 37 }).snapshot();
 
     expect(first.pendingDecision?.kind).toBe("scrap-shop");
     expect(first.pendingDecision?.title).toBe("SCRAP SHOP — 150 SCRAP");
-    expect(first.pendingDecision?.options).toHaveLength(4);
+    expect(first.pendingDecision?.options).toHaveLength(5);
     expect(first.pendingDecision?.options.map((option) => option.id))
       .toEqual(second.pendingDecision?.options.map((option) => option.id));
     const offers = first.pendingDecision!.options.slice(0, 3);
     expect(new Set(offers.map((offer) => offer.id)).size).toBe(3);
     expect(offers.every((offer) => (offer.cost ?? 0) > 0 && offer.affordable)).toBe(true);
-    expect(first.pendingDecision?.options[3]?.id).toBe("shop-leave");
+    expect(first.pendingDecision?.options[3]?.id).toBe("shop-manage");
+    expect(first.pendingDecision?.options[4]?.id).toBe("shop-leave");
   });
 
   it("rejects unaffordable purchases without closing or mutating the shop", () => {
     const simulation = new CombatSimulation({ scenario: "scrap-shop", startingScrap: 0, seed: 8 });
     const before = simulation.snapshot();
-    const blocked = before.pendingDecision!.options.find((option) => option.id !== "shop-leave")!;
+    const blocked = before.pendingDecision!.options.find((option) => (option.cost ?? 0) > 0)!;
 
     expect(blocked.affordable).toBe(false);
     expect(simulation.chooseOption(blocked.id)).toBe(false);
@@ -68,7 +69,7 @@ describe("Scrap Shop behavior gate", () => {
   it("spends the exact price, applies the purchase immediately, and refreshes the rack", () => {
     const simulation = new CombatSimulation({ scenario: "scrap-shop", seed: 37 });
     const before = simulation.snapshot();
-    const offer = before.pendingDecision!.options.find((option) => option.id !== "shop-leave")!;
+    const offer = before.pendingDecision!.options.find((option) => (option.cost ?? 0) > 0)!;
     const weaponCount = before.equippedWeapons.length;
     const upgradeCount = before.upgradeLevels.length;
 
@@ -89,6 +90,45 @@ describe("Scrap Shop behavior gate", () => {
     if (offer.id === "shop-armour-retrofit") expect(after.playerArmour).toBe(before.playerArmour + 3);
     if (offer.id.startsWith("shop-weapon:")) expect(after.equippedWeapons).toHaveLength(weaponCount + 1);
     if (offer.id.startsWith("shop-upgrade:")) expect(after.upgradeLevels).toHaveLength(upgradeCount + 1);
+  });
+
+  it("locks one offer through the visit's single paid depth-scaled reroll", () => {
+    const simulation = new CombatSimulation({ scenario: "scrap-shop", seed: 37 });
+    const initial = simulation.snapshot().pendingDecision!;
+    const locked = initial.options[0]!;
+
+    expect(simulation.chooseOption("shop-manage")).toBe(true);
+    expect(simulation.chooseOption(`shop-lock:${locked.id}`)).toBe(true);
+    const management = simulation.snapshot().pendingDecision!;
+    const reroll = management.options.find((option) => option.id === "shop-reroll")!;
+    expect(reroll.cost).toBe(15);
+    expect(simulation.chooseOption("shop-reroll")).toBe(true);
+
+    const rerolled = simulation.snapshot().pendingDecision!;
+    expect(rerolled.options.some((option) => option.id === locked.id)).toBe(true);
+    expect(rerolled.shopRerollUsed).toBe(true);
+    expect(simulation.snapshot().securedScrap).toBe(135);
+    expect(simulation.chooseOption("shop-manage")).toBe(true);
+    expect(simulation.snapshot().pendingDecision?.options.find((option) => option.id === "shop-reroll")?.affordable).toBe(false);
+  });
+
+  it("sells a weapon for half value but preserves one active weapon", () => {
+    const protectedSimulation = new CombatSimulation({ scenario: "scrap-shop", seed: 12 });
+    expect(protectedSimulation.chooseOption("shop-manage")).toBe(true);
+    expect(protectedSimulation.chooseOption("shop-sell-menu")).toBe(true);
+    const protectedWeapon = protectedSimulation.snapshot().pendingDecision!.options.find((option) => option.id.startsWith("shop-sell:"))!;
+    expect(protectedWeapon.affordable).toBe(false);
+    expect(protectedSimulation.chooseOption(protectedWeapon.id)).toBe(false);
+
+    const simulation = new CombatSimulation({ scenario: "scrap-shop", seed: 12, startingWeaponCount: 2 });
+    expect(simulation.chooseOption("shop-manage")).toBe(true);
+    expect(simulation.chooseOption("shop-sell-menu")).toBe(true);
+    const sale = simulation.snapshot().pendingDecision!.options.find((option) => option.id.startsWith("shop-sell:"))!;
+    expect(simulation.chooseOption(sale.id)).toBe(true);
+    const after = simulation.snapshot();
+    expect(after.equippedWeapons).toHaveLength(1);
+    expect(after.securedScrap).toBe(180);
+    expect(after.events).toContainEqual(expect.objectContaining({ type: "weapon-sold", amount: 30 }));
   });
 
   it("banks wave-clear and kill Scrap before the first reward decision", () => {

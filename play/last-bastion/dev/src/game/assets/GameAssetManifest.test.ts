@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(101);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(102);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -300,6 +300,14 @@ describe("GameAssetManifest", () => {
     if (hud.kind === "spritesheet") expect(hud.frameCount).toBe(4);
     expect(panel.logicalWidth).toBe(1024);
     expect(panel.logicalHeight).toBe(576);
+  });
+
+  it("locks the Batch Q Quartermaster presentation contract", () => {
+    const keeper = GAME_ASSETS["quartermaster-v1"];
+    expect(keeper.kind).toBe("spritesheet");
+    expect(keeper.logicalWidth).toBe(128);
+    expect(keeper.logicalHeight).toBe(256);
+    if (keeper.kind === "spritesheet") expect(keeper.frameCount).toBe(6);
   });
 
   it("locks the promoted Batch I 128 px tile contracts", () => {

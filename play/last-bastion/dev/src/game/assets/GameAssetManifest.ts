@@ -84,6 +84,7 @@ import riftStalkerPortraitUrl from "../../../../art/production-tests/batch-o/rif
 import scrapShopOfferTileUrl from "../../../../art/production-tests/batch-n2/scrap-shop-offer-tile-atlas-v1-128.png";
 import scrapShopHudUrl from "../../../../art/production-tests/batch-n2/scrap-shop-hud-atlas-v1-128.png";
 import scrapShopPanelUrl from "../../../../art/production-tests/batch-n2/scrap-shop-panel-v1-1024x576.png";
+import quartermasterSheetUrl from "../../../../art/production-tests/batch-q/quartermaster-atlas-v1-384x512.png";
 import batchIWeaponTileUrl from "../../../../art/production-tests/batch-i/codex-weapon-tile-atlas-v1-128.png";
 import batchIPerkTileUrl from "../../../../art/production-tests/batch-i/perk-tile-atlas-v1-128.png";
 import batchIHotkeyTileUrl from "../../../../art/production-tests/batch-i/hotkey-action-tile-atlas-v1-128.png";
@@ -187,6 +188,7 @@ export type GameAssetId =
   | "scrap-shop-offer-tiles-v1"
   | "scrap-shop-hud-v1"
   | "scrap-shop-panel-v1"
+  | "quartermaster-v1"
   | "batch-i-weapon-tiles-v1"
   | "batch-i-perk-tiles-v1"
   | "batch-i-hotkey-tiles-v1"
@@ -311,6 +313,7 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("scrap-shop-offer-tiles-v1", scrapShopOfferTileUrl, 128, 128, 6, 0.5, 0.5),
   sheet("scrap-shop-hud-v1", scrapShopHudUrl, 128, 128, 4, 0.5, 0.5),
   image("scrap-shop-panel-v1", scrapShopPanelUrl, 1024, 576, 0.5, 0.5),
+  sheet("quartermaster-v1", quartermasterSheetUrl, 128, 256, 6, 0.5, 1),
   sheet("batch-i-weapon-tiles-v1", batchIWeaponTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("batch-i-perk-tiles-v1", batchIPerkTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("batch-i-hotkey-tiles-v1", batchIHotkeyTileUrl, 128, 128, 8, 0.5, 0.5),

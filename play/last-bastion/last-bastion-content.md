@@ -770,7 +770,7 @@ Batch I produced eight generic perk motifs. When the Task 46 perk gate opens, re
 
 The expedition map's node medallion set (Batch G2) gains one entry: a **Shop node medallion** matching the existing medallion contract — circular bronze-ivory token with the salvage-terminal silhouette (counter + hanging tools) and a teal rim when reachable. No text.
 
-## Batch Q — shop keepers and shop dressing (queued for Codex)
+## Batch Q — shop keepers and shop dressing (Quartermaster complete 19 July 2026)
 
 The Scrap Shop stays a between-wave intermission (decision 19 July 2026). This batch gives it a face: a keeper character standing behind the existing Batch N2 salvage counter, drawn from a small pool so repeat visits feel varied. Keepers are pure presentation — prices, offers, rerolls, and legality remain code-owned — but each keeper's design should foreshadow the future speciality system.
 
@@ -783,6 +783,11 @@ Shared contract: each keeper is one 4-frame idle loop at **128 × 256** (chroma 
 | **The Gunsmith** | Weapons | Wiry human with a jeweller's loupe headset, disassembled rifle parts laid in a neat row, brass accent |
 | **VND-R** | Kits and ammo | Boxy service android with a rounded vendor-unit torso, fold-out tray arms, soft cyan face display that blinks a price glyph |
 | **The Clinician** | Cyborg upgrades / augments | Tall cyborg surgeon, one chromed articulated arm, clean ivory coat, green cross-circuit accent |
+| **The Medic-Sister** | Healing centre | Calm figure in Medic-adjacent ivory armour with teal chevrons (visually related to the Batch P Medic, clearly not the hero), injector cylinders racked behind |
+| **The Curator** | Relics and Artifacts | Slender robed figure with a floating monocle drone, violet accent, one shrouded relic case on the counter |
+| **The Fence** | Black market | Hooded reptilian-silhouetted alien in a patched long coat, glinting eyes, red accent, goods half-hidden under the counter cloth |
+
+The Quartermaster presentation gate is live: four idle frames plus two transaction-nod frames at 128×256, with 1536×1024 chroma and alpha masters retained in `art/production-tests/batch-q/`. The remaining seven keepers stay queued until their specialty mechanics are ready; they are not blockers for the base shop.
 
 ## Batch R — destructible battlefield props (generate after Task 54)
 
@@ -796,10 +801,7 @@ Behavior-first production family for numeric-health terrain. Retain 4× masters,
 | Reinforced barricade | 128×96 | intact, armour stripped, critical, breached |
 | Shared impacts | 4×2 atlas at 64×64 | bullet chip, melee spark, acid hiss, frost crack, explosive fracture, heavy collapse, dust settle, salvage glint |
 
-The next raster priority is **Batch Q Quartermaster/shopkeeper presentation after Task 45 locks the economy behavior**, followed by Batch P after the Medic gate. Batch R follows only after destructible-terrain health and bar behavior pass. Player-damage numbers, auto-fire state, actor outlines, projectile halos, and terrain HP bars are code-rendered and require no image generation.
-| **The Medic-Sister** | Healing centre | Calm figure in Medic-adjacent ivory armour with teal chevrons (visually related to the Batch P Medic, clearly not the hero), injector cylinders racked behind |
-| **The Curator** | Relics and Artifacts | Slender robed figure with a floating monocle drone, violet accent, one shrouded relic case on the counter |
-| **The Fence** | Black market | Hooded reptilian-silhouetted alien in a patched long coat, glinting eyes, red accent, goods half-hidden under the counter cloth |
+The next raster priority is **Batch P after Task 47 locks the Medic behavior**, followed by Batch R only after the Task 54 destructible-terrain health and bar gate. Player-damage numbers, auto-fire state, actor outlines, projectile halos, and terrain HP bars are code-rendered and require no image generation.
 
 Batch Q2 (later, with the speciality system): one 128 × 128 speciality sign tile per keeper for the shop header, same canonical tile contract as Batch I.
 

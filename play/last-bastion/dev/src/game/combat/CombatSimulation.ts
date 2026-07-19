@@ -157,6 +157,10 @@ export interface PendingDecision {
   title: string;
   options: readonly DecisionOption[];
   weaponId?: WeaponId;
+  shopMode?: "offers" | "manage" | "sell";
+  shopLockedOfferId?: string | null;
+  shopRerollUsed?: boolean;
+  shopRerollCost?: number;
 }
 
 export type CombatEvent =
@@ -228,6 +232,7 @@ export type CombatEvent =
   | { type: "aurum-supply-cache-dropped"; position: Vector2Data }
   | { type: "scrap-secured"; position: Vector2Data; amount: number; total: number; source: ScrapSource }
   | { type: "scrap-spent"; amount: number; remaining: number; offerId: string }
+  | { type: "weapon-sold"; weaponId: WeaponId; amount: number; total: number }
   | { type: "bastion-eater-phase"; position: Vector2Data; phase: BastionEaterPhase }
   | { type: "bastion-eater-claw-warning"; position: Vector2Data; direction: Vector2Data }
   | { type: "bastion-eater-claw-strike"; position: Vector2Data; direction: Vector2Data }
@@ -737,6 +742,13 @@ export const SCRAP_SHOP_PRICES = Object.freeze({
   armourRetrofit: 50,
   weapon: 60,
 } as const);
+export function scrapShopRerollCost(depth: number): number {
+  return 10 + Math.max(1, Math.floor(depth)) * 5;
+}
+
+export function scrapShopWeaponSaleValue(tier: 1 | 2 | 3): number {
+  return Math.floor(SCRAP_SHOP_PRICES.weapon * (2 ** (tier - 1)) * 0.5);
+}
 const SCRAP_SHOP_REPAIR = 3.5;
 const SCRAP_SHOP_ARMOUR = 3;
 const ORDINARY_SCRAP_DROP_CHANCE = 0.25;
@@ -849,6 +861,10 @@ export class CombatSimulation {
   private level = 1;
   private experience = 0;
   private decisionQueue: PendingDecision[] = [];
+  private shopOffers: DecisionOption[] | null = null;
+  private shopLockedOfferId: string | null = null;
+  private shopRerollUsed = false;
+  private shopMode: "offers" | "manage" | "sell" = "offers";
   private randomState: number;
   private readonly wavesEnabled: boolean;
   private frameEvents: CombatEvent[] = [];
@@ -1349,7 +1365,39 @@ export class CombatSimulation {
         break;
       }
       case "scrap-shop":
-        if (optionId !== "shop-leave") {
+        if (optionId === "shop-manage") {
+          this.shopMode = "manage";
+          this.decisionQueue.unshift(this.buildScrapShopDecision());
+        } else if (optionId === "shop-back") {
+          this.shopMode = "offers";
+          this.decisionQueue.unshift(this.buildScrapShopDecision());
+        } else if (optionId === "shop-sell-menu") {
+          this.shopMode = "sell";
+          this.decisionQueue.unshift(this.buildScrapShopDecision());
+        } else if (optionId.startsWith("shop-lock:")) {
+          const offerId = optionId.slice("shop-lock:".length);
+          this.shopLockedOfferId = this.shopLockedOfferId === offerId ? null : offerId;
+          this.decisionQueue.unshift(this.buildScrapShopDecision());
+        } else if (optionId === "shop-reroll") {
+          const cost = this.currentShopRerollCost();
+          if (this.shopRerollUsed || cost > this.securedScrap) {
+            this.decisionQueue.unshift(decision);
+            return false;
+          }
+          this.securedScrap -= cost;
+          this.shopRerollUsed = true;
+          this.rerollScrapShopOffers();
+          this.frameEvents.push({ type: "scrap-spent", amount: cost, remaining: this.securedScrap, offerId: optionId });
+          this.shopMode = "offers";
+          this.decisionQueue.unshift(this.buildScrapShopDecision());
+        } else if (optionId.startsWith("shop-sell:")) {
+          const instanceId = Number(optionId.slice("shop-sell:".length));
+          if (!this.sellWeapon(instanceId)) {
+            this.decisionQueue.unshift(decision);
+            return false;
+          }
+          this.decisionQueue.unshift(this.buildScrapShopDecision());
+        } else if (optionId !== "shop-leave") {
           const cost = Math.max(0, option.cost ?? 0);
           if (cost > this.securedScrap) {
             this.decisionQueue.unshift(decision);
@@ -1363,7 +1411,11 @@ export class CombatSimulation {
             remaining: this.securedScrap,
             offerId: optionId,
           });
+          if (this.shopLockedOfferId === optionId) this.shopLockedOfferId = null;
+          this.shopOffers = null;
           this.decisionQueue.unshift(this.buildScrapShopDecision());
+        } else {
+          this.resetScrapShopVisit();
         }
         break;
       case "weapon-placement":
@@ -1417,7 +1469,7 @@ export class CombatSimulation {
         capacity: this.upgradeSlotCapacity[category],
       })),
       pendingDecision: decision
-        ? { kind: decision.kind, title: decision.title, options: decision.options.map((option) => ({ ...option })), weaponId: decision.weaponId }
+        ? { ...decision, options: decision.options.map((option) => ({ ...option })) }
         : null,
       enemies: this.enemies.filter((enemy) => !enemy.dead).map((enemy) => this.enemySnapshot(enemy)),
       projectiles: this.projectiles.filter((projectile) => !projectile.dead).map((projectile) => ({
@@ -1886,12 +1938,8 @@ export class CombatSimulation {
     };
   }
 
-  /**
-   * Same-run shop: three seeded, immediately usable offers plus an explicit
-   * leave action. Purchases refresh the rack so a player may spend repeatedly;
-   * there is no hidden reroll fee or persistent meta-currency.
-   */
-  private buildScrapShopDecision(): PendingDecision {
+  /** Same-run economy v2: stock, one depth-priced reroll, one protected offer, and 50% weapon resale. */
+  private buildScrapShopCandidates(): DecisionOption[] {
     const candidates: DecisionOption[] = [];
     const add = (option: Omit<DecisionOption, "affordable"> & { cost: number }): void => {
       candidates.push({ ...option, affordable: option.cost <= this.securedScrap });
@@ -1921,10 +1969,7 @@ export class CombatSimulation {
     });
 
     const eligibleUpgrades = UPGRADE_ORDER.filter((id) => this.isUpgradeEligible(id));
-    if (eligibleUpgrades.length > 0) {
-      const upgradeId = eligibleUpgrades[
-        Math.min(Math.floor(this.random() * eligibleUpgrades.length), eligibleUpgrades.length - 1)
-      ]!;
+    for (const upgradeId of eligibleUpgrades) {
       const nextLevel = (this.upgradeLevels.get(upgradeId) ?? 0) + 1;
       add({
         id: `shop-upgrade:${upgradeId}`,
@@ -1937,10 +1982,7 @@ export class CombatSimulation {
     if (this.equippedWeapons.length < MAX_EQUIPPED_WEAPONS) {
       const owned = new Set(this.equippedWeapons.map((weapon) => weapon.weaponId));
       const availableWeapons = WEAPON_CHEST_POOL.filter((id) => !owned.has(id));
-      if (availableWeapons.length > 0) {
-        const weaponId = availableWeapons[
-          Math.min(Math.floor(this.random() * availableWeapons.length), availableWeapons.length - 1)
-        ]!;
+      for (const weaponId of availableWeapons) {
         add({
           id: `shop-weapon:${weaponId}`,
           name: WEAPON_CATALOG[weaponId].displayName,
@@ -1950,12 +1992,41 @@ export class CombatSimulation {
       }
     }
 
+    return candidates;
+  }
+
+  private drawScrapShopOffers(excludedIds: ReadonlySet<string> = new Set()): DecisionOption[] {
+    const candidates = this.buildScrapShopCandidates().filter((candidate) => !excludedIds.has(candidate.id));
     const offers: DecisionOption[] = [];
     while (offers.length < 3 && candidates.length > 0) {
       const index = Math.min(Math.floor(this.random() * candidates.length), candidates.length - 1);
       offers.push(candidates.splice(index, 1)[0]!);
     }
     offers.sort((left, right) => Number(right.affordable) - Number(left.affordable));
+    return offers;
+  }
+
+  private buildScrapShopDecision(): PendingDecision {
+    if (this.shopOffers === null) this.shopOffers = this.drawScrapShopOffers();
+    this.shopOffers = this.shopOffers.map((offer) => ({
+      ...offer,
+      affordable: (offer.cost ?? 0) <= this.securedScrap,
+    }));
+
+    if (this.shopMode === "manage") return this.buildScrapShopManagementDecision();
+    if (this.shopMode === "sell") return this.buildScrapShopSellDecision();
+
+    const offers = this.shopOffers.map((offer) => ({
+      ...offer,
+      name: offer.id === this.shopLockedOfferId ? `${offer.name} [LOCKED]` : offer.name,
+    }));
+    offers.push({
+      id: "shop-manage",
+      name: "Manage Stock",
+      description: "Lock an offer, use this visit's reroll, or sell a weapon.",
+      cost: 0,
+      affordable: true,
+    });
     offers.push({
       id: "shop-leave",
       name: "Leave Shop",
@@ -1967,7 +2038,116 @@ export class CombatSimulation {
       kind: "scrap-shop",
       title: `SCRAP SHOP — ${this.securedScrap} SCRAP`,
       options: offers,
+      shopMode: "offers",
+      shopLockedOfferId: this.shopLockedOfferId,
+      shopRerollUsed: this.shopRerollUsed,
+      shopRerollCost: this.currentShopRerollCost(),
     };
+  }
+
+  private buildScrapShopManagementDecision(): PendingDecision {
+    const options: DecisionOption[] = this.shopOffers!.map((offer, index) => ({
+      id: `shop-lock:${offer.id}`,
+      name: offer.id === this.shopLockedOfferId ? `Unlock Offer ${index + 1}` : `Lock Offer ${index + 1}`,
+      description: `${offer.name}: ${offer.id === this.shopLockedOfferId ? "will reroll normally" : "survives the paid reroll"}.`,
+      affordable: true,
+    }));
+    const rerollCost = this.currentShopRerollCost();
+    const canReroll = this.canRerollScrapShop();
+    options.push({
+      id: "shop-reroll",
+      name: this.shopRerollUsed ? "Reroll Used" : "Reroll Unlocked Stock",
+      description: this.shopRerollUsed
+        ? "Only one reroll is available per visit."
+        : canReroll ? "Replace every offer except the locked one." : "No complete replacement rack is available.",
+      cost: rerollCost,
+      affordable: !this.shopRerollUsed && canReroll && rerollCost <= this.securedScrap,
+    });
+    options.push({ id: "shop-sell-menu", name: "Sell Weapon", description: "Recover 50% of its total shop value.", affordable: true });
+    options.push({ id: "shop-back", name: "Back to Offers", description: "Return to the salvage counter.", affordable: true });
+    return {
+      kind: "scrap-shop",
+      title: `MANAGE STOCK — ${this.securedScrap} SCRAP`,
+      options,
+      shopMode: "manage",
+      shopLockedOfferId: this.shopLockedOfferId,
+      shopRerollUsed: this.shopRerollUsed,
+      shopRerollCost: rerollCost,
+    };
+  }
+
+  private buildScrapShopSellDecision(): PendingDecision {
+    const tiles = [
+      ...this.weaponInventory.rack.flatMap((slot) => slot.tile ? [slot.tile] : []),
+      ...this.weaponInventory.stash.flatMap((tile) => tile ? [tile] : []),
+    ];
+    const options: DecisionOption[] = tiles.map((tile) => {
+      const active = this.equippedWeapons.some((weapon) => weapon.instanceId === tile.instanceId);
+      const canSell = !active || this.equippedWeapons.length > 1;
+      const value = scrapShopWeaponSaleValue(tile.tier);
+      return {
+        id: `shop-sell:${tile.instanceId}`,
+        name: `${WEAPON_CATALOG[tile.weaponId].displayName} — Tier ${tile.tier}`,
+        description: canSell ? `Sell for ${value} Scrap.` : "Keep at least one active weapon.",
+        affordable: canSell,
+      };
+    });
+    options.push({ id: "shop-back", name: "Back to Stock", description: "Return without selling.", affordable: true });
+    return {
+      kind: "scrap-shop",
+      title: `SELL WEAPON — ${this.securedScrap} SCRAP`,
+      options,
+      shopMode: "sell",
+      shopLockedOfferId: this.shopLockedOfferId,
+      shopRerollUsed: this.shopRerollUsed,
+      shopRerollCost: this.currentShopRerollCost(),
+    };
+  }
+
+  private currentShopRerollCost(): number {
+    return scrapShopRerollCost(this.waveIndex + 1);
+  }
+
+  private rerollScrapShopOffers(): void {
+    const locked = this.shopOffers?.find((offer) => offer.id === this.shopLockedOfferId) ?? null;
+    const excluded = new Set(this.shopOffers?.map((offer) => offer.id) ?? []);
+    const replacements = this.drawScrapShopOffers(excluded).slice(0, locked ? 2 : 3);
+    this.shopOffers = locked ? [locked, ...replacements] : replacements;
+  }
+
+  private canRerollScrapShop(): boolean {
+    if (!this.shopOffers) return false;
+    const excluded = new Set(this.shopOffers.map((offer) => offer.id));
+    const unlockedCount = this.shopOffers.length - (this.shopLockedOfferId ? 1 : 0);
+    return this.buildScrapShopCandidates().filter((candidate) => !excluded.has(candidate.id)).length >= unlockedCount;
+  }
+
+  private sellWeapon(instanceId: number): boolean {
+    const rackSlot = this.weaponInventory.rack.find((slot) => slot.tile?.instanceId === instanceId);
+    const stashIndex = this.weaponInventory.stash.findIndex((tile) => tile?.instanceId === instanceId);
+    const tile = rackSlot?.tile ?? (stashIndex >= 0 ? this.weaponInventory.stash[stashIndex] : null);
+    if (!tile) return false;
+    const activeIndex = this.equippedWeapons.findIndex((weapon) => weapon.instanceId === instanceId);
+    if (activeIndex >= 0 && this.equippedWeapons.length <= 1) return false;
+    if (rackSlot) rackSlot.tile = null;
+    if (stashIndex >= 0) this.weaponInventory.stash[stashIndex] = null;
+    if (activeIndex >= 0) this.equippedWeapons.splice(activeIndex, 1);
+    const amount = scrapShopWeaponSaleValue(tile.tier);
+    this.securedScrap += amount;
+    this.frameEvents.push({ type: "weapon-sold", weaponId: tile.weaponId, amount, total: this.securedScrap });
+    return true;
+  }
+
+  private resetScrapShopVisit(): void {
+    this.shopOffers = null;
+    this.shopLockedOfferId = null;
+    this.shopRerollUsed = false;
+    this.shopMode = "offers";
+  }
+
+  private openScrapShopVisit(): PendingDecision {
+    this.resetScrapShopVisit();
+    return this.buildScrapShopDecision();
   }
 
   private applyScrapShopPurchase(optionId: string): void {
@@ -4821,7 +5001,7 @@ export class CombatSimulation {
       }
     } else {
       this.decisionQueue.push(this.buildSupplyDepotDecision());
-      this.decisionQueue.push(this.buildScrapShopDecision());
+      this.decisionQueue.push(this.openScrapShopVisit());
     }
   }
 
@@ -4939,7 +5119,7 @@ export class CombatSimulation {
 
   private populateScrapShopScenario(): void {
     this.playerHealth = 5.5;
-    this.decisionQueue.push(this.buildScrapShopDecision());
+    this.decisionQueue.push(this.openScrapShopVisit());
   }
 
   /** Deterministic review lab for the tile placement, stash, and merge contract. */
