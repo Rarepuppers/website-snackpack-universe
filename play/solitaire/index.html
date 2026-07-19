@@ -58,6 +58,8 @@
 .sol-foundation { display: grid; place-items: center; color: rgba(31,143,119,0.5); font-size: calc(var(--cw) * 0.5); border: 1.5px dashed rgba(31,143,119,0.4); background: rgba(31,143,119,0.05); }
 .sol-foundation .card-suit-icon { width: calc(var(--cw) * 0.46); opacity: 0.55; }
 .sol-tableau { min-height: var(--ch); }
+.sol-pile.drop-ok { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: calc(var(--cw) * 0.13); }
+.btn-game:disabled { opacity: 0.4; cursor: default; }
 </style>
 <script type="application/ld+json">
 {
@@ -133,6 +135,7 @@
             <span class="readout-chip"><span>Time</span><b id="sol-time">0:00</b></span>
             <span class="readout-chip"><span>Moves</span><b id="sol-moves">0</b></span>
             <span class="readout-chip"><span>Deal</span><b id="sol-deal">1</b></span>
+            <span class="readout-chip"><span>Best</span><b id="sol-best">–</b></span>
           </div>
           <div class="game-controls">
             <div class="seg" role="group" aria-label="Draw mode">
@@ -252,13 +255,31 @@
   var statusEl = document.getElementById("sol-status");
   var timeEl = document.getElementById("sol-time");
   var movesEl = document.getElementById("sol-moves");
+  var bestEl = document.getElementById("sol-best");
   var newBtn = document.getElementById("sol-new");
   var undoBtn = document.getElementById("sol-undo");
 
   var stock, waste, foundations, tableau;
   var drawN = 1, moves, solved, sel = null, timer, seconds, started;
   var history = [];
-  var dragInfo = null, dragGhost = null, justDragged = false;
+
+  // ── Best-time (per draw mode, saved locally) ──────
+  function bestKey() { return "sp-solitaire-best-d" + drawN; }
+  function loadBest() { try { return JSON.parse(localStorage.getItem(bestKey())); } catch (e) { return null; } }
+  function renderBest() {
+    var b = loadBest();
+    bestEl.textContent = b ? (Math.floor(b.seconds / 60) + ":" + (b.seconds % 60 < 10 ? "0" : "") + (b.seconds % 60) + " / " + b.moves + "mv") : "–";
+  }
+  function maybeSaveBest() {
+    var b = loadBest();
+    if (!b || seconds < b.seconds || (seconds === b.seconds && moves < b.moves)) {
+      try { localStorage.setItem(bestKey(), JSON.stringify({ seconds: seconds, moves: moves })); } catch (e) {}
+      renderBest();
+      return true;
+    }
+    return false;
+  }
+  var dragInfo = null, dragGhost = null, justDragged = false, dragHoverEl = null;
   var DRAG_THRESHOLD = 6;
 
   // Keep the stock/waste/foundation row visible under the sticky site header
@@ -580,6 +601,7 @@
     clearInterval(timer); seconds = 0; renderTime();
     statusEl.className = "game-status";
     statusEl.textContent = "Shuffling a solvable deal…";
+    renderBest();
     render();
     setTimeout(function () {
       var dealt = dealSolvableDeck(drawN);
@@ -695,6 +717,7 @@
     }
 
     movesEl.textContent = moves;
+    undoBtn.disabled = !history.length;
     applySel();
   }
 
@@ -796,18 +819,54 @@
     checkWin();
   }
 
+  // True once there is no legal move anywhere: no waste/tableau card can
+  // reach a foundation, no card or run can restack elsewhere, and the
+  // stock/waste can no longer be drawn or recycled. A genuine dead end.
+  function hasAnyMove() {
+    if (stock.length || waste.length > 1) return true; // more to draw/cycle through
+    if (waste.length === 1 && foundations.some(function (f, pi) { return canToFoundation(waste[0], pi); })) return true;
+    for (var col = 0; col < 7; col++) {
+      var pile = tableau[col];
+      if (!pile.length) continue;
+      var top = pile[pile.length - 1];
+      if (!top.up) continue;
+      if (foundations.some(function (f, pi) { return canToFoundation(top, pi); })) return true;
+      for (var dc = 0; dc < 7; dc++) {
+        if (dc === col) continue;
+        if (canStackTableau([top], dc)) return true;
+      }
+      // A longer face-up run might restack even if its own front card can't.
+      for (var ci = 0; ci < pile.length - 1; ci++) {
+        if (!pile[ci].up) continue;
+        var ok = true;
+        for (var k = ci; k < pile.length - 1; k++) {
+          if (!(pile[k].r === pile[k + 1].r + 1 && isRed(pile[k].s) !== isRed(pile[k + 1].s))) { ok = false; break; }
+        }
+        if (!ok) continue;
+        for (var dc2 = 0; dc2 < 7; dc2++) {
+          if (dc2 === col) continue;
+          if (canStackTableau([pile[ci]], dc2)) return true;
+        }
+      }
+    }
+    return false;
+  }
+
   function checkWin() {
     var totalF = foundations.reduce(function (a, f) { return a + f.length; }, 0);
     if (totalF === 52) {
       solved = true;
       clearInterval(timer);
-      statusEl.textContent = "You won in " + timeEl.textContent + " and " + moves + " moves! 🎉";
+      var isBest = maybeSaveBest();
+      statusEl.textContent = "You won in " + timeEl.textContent + " and " + moves + " moves!" + (isBest ? " New best! 🎉" : " 🎉");
       statusEl.className = "game-status";
       if (window.SnackPack) window.SnackPack.celebrate({
         title: "You cleared the board! 🎉",
         body: "Beautifully played — solved in " + timeEl.textContent + ". We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app to play Solitaire offline with saved best times."
       });
+      return;
     }
+    statusEl.textContent = hasAnyMove() ? "Click a card to select it, then click where it should go." : "No legal moves left — try Undo or start a New Game.";
   }
 
   // ── Stock / waste ────────────────────────────────
@@ -816,13 +875,13 @@
     pushHistory();
     var n = Math.min(drawN, stock.length);
     for (var i = 0; i < n; i++) { var c = stock.pop(); c.up = true; waste.push(c); }
-    sel = null; startTimer(); render();
+    sel = null; startTimer(); render(); checkWin();
   }
   function recycle() {
     if (stock.length || !waste.length) return;
     pushHistory();
     while (waste.length) { var c = waste.pop(); c.up = false; stock.push(c); }
-    sel = null; render();
+    sel = null; render(); checkWin();
   }
 
   // ── Input ────────────────────────────────────────
@@ -915,6 +974,23 @@
     g.style.width = r0.width + "px";
     return g;
   }
+  function wouldAccept(pileEl) {
+    // sel is already set to the drag source while dragging, so getMoving()
+    // reflects exactly what the drop would carry.
+    var moving = getMoving();
+    if (!moving || !moving.length) return false;
+    var destPile = pileEl.dataset.pile;
+    if (destPile === "foundation") return moving.length === 1 && canToFoundation(moving[0], +pileEl.dataset.pi);
+    if (destPile === "tableau") {
+      var destCol = +pileEl.dataset.pi;
+      if (sel.pile === "tableau" && sel.pi === destCol) return false;
+      for (var k = 0; k < moving.length - 1; k++) {
+        if (!(moving[k].r === moving[k + 1].r + 1 && isRed(moving[k].s) !== isRed(moving[k + 1].s))) return false;
+      }
+      return canStackTableau(moving, destCol);
+    }
+    return false;
+  }
 
   tableEl.addEventListener("pointerdown", function (e) {
     justDragged = false;
@@ -940,12 +1016,17 @@
     e.preventDefault();
     dragGhost.style.left = (e.clientX - dragInfo.offX) + "px";
     dragGhost.style.top = (e.clientY - dragInfo.offY) + "px";
+    var overEl = document.elementFromPoint(e.clientX, e.clientY);
+    var overPile = overEl ? overEl.closest("[data-pile]") : null;
+    if (dragHoverEl && dragHoverEl !== overPile) { dragHoverEl.classList.remove("drop-ok"); dragHoverEl = null; }
+    if (overPile && wouldAccept(overPile)) { overPile.classList.add("drop-ok"); dragHoverEl = overPile; }
   }, { passive: false });
 
   window.addEventListener("pointerup", function (e) {
     if (!dragInfo) return;
     var info = dragInfo; dragInfo = null;
     if (dragGhost) { dragGhost.remove(); dragGhost = null; }
+    if (dragHoverEl) { dragHoverEl.classList.remove("drop-ok"); dragHoverEl = null; }
     if (!info.dragging) return; // a tap — leave it to the click handler
     justDragged = true;
     var target = document.elementFromPoint(e.clientX, e.clientY);
@@ -979,7 +1060,7 @@
     var s = JSON.parse(history.pop());
     stock = s.stock; waste = s.waste; foundations = s.foundations; tableau = s.tableau; moves = s.moves;
     sel = null; solved = false; statusEl.className = "game-status";
-    render();
+    render(); checkWin();
   });
 
   newBtn.addEventListener("click", function () { currentDealSeed = currentDealSeed >= 2147483647 ? 1 : currentDealSeed + 1; deal(); });
