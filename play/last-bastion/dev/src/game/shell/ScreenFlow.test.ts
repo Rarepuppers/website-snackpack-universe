@@ -46,7 +46,7 @@ describe("Shell screen flow", () => {
     }
   });
 
-  it("opens the codex as an external page and keeps records inert", () => {
+  it("opens the codex externally and Records as a real screen", () => {
     const codexIndex = MENU_CARDS.findIndex((card) => card.id === "codex");
     const codex = stepShell({ ...boot("menu"), menuIndex: codexIndex }, "confirm");
     expect(codex.effects).toEqual([{ type: "open-url", url: "last-bastion-codex.html" }]);
@@ -55,7 +55,8 @@ describe("Shell screen flow", () => {
     const recordsIndex = MENU_CARDS.findIndex((card) => card.id === "records");
     const records = stepShell({ ...boot("menu"), menuIndex: recordsIndex }, "confirm");
     expect(records.effects).toEqual([]);
-    expect(records.state.screen).toBe("menu");
+    expect(records.state.screen).toBe("records");
+    expect(stepShell(records.state, "back").state.screen).toBe("menu");
   });
 
   it("pages How to Play within bounds and closes from the last page", () => {
@@ -101,7 +102,7 @@ describe("Shell screen flow", () => {
   });
 
   it("returns from every sub-screen to the menu with back", () => {
-    for (const screen of ["how-to-play", "settings", "lab", "character-select"] as const) {
+    for (const screen of ["how-to-play", "settings", "lab", "records", "character-select"] as const) {
       expect(stepShell(boot(screen), "back").state.screen).toBe("menu");
     }
   });

@@ -16,6 +16,7 @@ export type ShellScreen =
   | "how-to-play"
   | "settings"
   | "lab"
+  | "records"
   | "character-select";
 
 export type ShellIntent = "up" | "down" | "left" | "right" | "confirm" | "back";
@@ -119,7 +120,11 @@ export interface ShellState {
 export function createShellState(
   settings: GameSettings,
   screen: ShellScreen = "title",
-  progress: GameProgress = { runsFinished: 0, victories: 0, bestWaveReached: 0, nodesCleared: 0, bestiary: {} },
+  progress: GameProgress = {
+    runsFinished: 0, victories: 0, bestWaveReached: 0, nodesCleared: 0,
+    bestNodesCleared: 0, totalKills: 0, totalDamage: 0, totalScrapEarned: 0,
+    bestiary: {},
+  },
   selectedPerkId: PerkId | null = "perk-veteran",
   selectedHeroId: "marine" | "medic" = "marine",
 ): ShellState {
@@ -158,6 +163,10 @@ export function stepShell(state: ShellState, intent: ShellIntent): ShellStepResu
       return stepSettings(state, intent);
     case "lab":
       return stepLab(state, intent);
+    case "records":
+      return intent === "back" || intent === "confirm"
+        ? { state: { ...state, screen: "menu" }, effects: [] }
+        : { state, effects: [] };
     case "character-select":
       return stepCharacterSelect(state, intent);
   }
@@ -187,8 +196,7 @@ function stepMenu(state: ShellState, intent: ShellIntent): ShellStepResult {
       case "lab":
         return { state: { ...state, screen: "lab", labIndex: 0 }, effects: [] };
       case "records":
-        // Display-only card; totals render on the card itself.
-        return { state, effects: [] };
+        return { state: { ...state, screen: "records" }, effects: [] };
     }
   }
   return { state, effects: [] };

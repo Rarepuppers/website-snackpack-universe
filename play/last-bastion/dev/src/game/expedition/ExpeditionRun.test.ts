@@ -48,12 +48,21 @@ describe("Expedition run state", () => {
     expect(hasPendingEncounter(run)).toBe(true);
     expect(selectableNodeIds(run)).toEqual([]);
     expect(run.state.clearedNodeIds).toEqual([run.map.startNodeId]);
-    run = completeCurrentNode(run, {
-      health: 8, shield: 1, level: 2, experience: 3, scrap: 20,
-      weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }], upgrades: [],
-    });
+    run = completeCurrentNode(
+      run,
+      {
+        health: 8, shield: 1, level: 2, experience: 3, scrap: 20,
+        weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }], upgrades: [],
+      },
+      { kills: 9, scrapEarned: 20, damageByWeapon: { "bastion-service-rifle": 36 } },
+    );
     expect(hasPendingEncounter(run)).toBe(false);
     expect(run.state.build?.scrap).toBe(20);
+    expect(run.state.metrics).toEqual({
+      kills: 9,
+      scrapEarned: 20,
+      damageByWeapon: { "bastion-service-rifle": 36 },
+    });
     expect(selectableNodeIds(run).length).toBeGreaterThan(0);
   });
 

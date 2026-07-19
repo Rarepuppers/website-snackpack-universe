@@ -113,6 +113,7 @@ export class ShellScene extends Phaser.Scene {
       case "how-to-play": this.renderHowToPlay(); break;
       case "settings": this.renderSettings(); break;
       case "lab": this.renderLab(); break;
+      case "records": this.renderRecords(); break;
       case "character-select": this.renderCharacterSelect(); break;
     }
   }
@@ -224,6 +225,32 @@ export class ShellScene extends Phaser.Scene {
       });
     });
     this.root.add(this.text(70, HEIGHT - 34, "UP/DOWN SELECT  •  ENTER LAUNCH  •  ESC BACK", MUTED, "12px"));
+  }
+
+  private renderRecords(): void {
+    const progress = this.saveStore.load().progress;
+    this.root.add(this.text(70, 48, "RECORDS", IVORY, "28px"));
+    this.root.add(this.add.rectangle(WIDTH / 2, 278, 820, 350, PANEL).setStrokeStyle(1, 0x3b4d63));
+    const rows: readonly [string, string][] = [
+      ["RUNS FINISHED", String(progress.runsFinished)],
+      ["VICTORIES", String(progress.victories)],
+      ["BEST WAVE / COLUMN", String(progress.bestWaveReached)],
+      ["BEST EXPEDITION NODES", String(progress.bestNodesCleared)],
+      ["LIFETIME NODES CLEARED", String(progress.nodesCleared)],
+      ["ENEMIES DEFEATED", String(progress.totalKills)],
+      ["TOTAL DAMAGE", formatRecord(progress.totalDamage)],
+      ["SCRAP EARNED", formatRecord(progress.totalScrapEarned)],
+    ];
+    rows.forEach(([label, value], index) => {
+      const column = index % 2;
+      const row = Math.floor(index / 2);
+      const x = 110 + column * 400;
+      const y = 130 + row * 72;
+      this.root.add(this.text(x, y, label, MUTED, "11px"));
+      this.root.add(this.text(x, y + 24, value, index < 2 ? TEAL : IVORY, "22px"));
+    });
+    this.root.add(this.text(WIDTH / 2, 480, "ENTER / ESC  BACK", MUTED, "12px", true));
+    this.clickZone(0, 450, WIDTH, 90, () => this.apply("back"));
   }
 
   private renderCharacterSelect(): void {
@@ -340,7 +367,11 @@ export class ShellScene extends Phaser.Scene {
 }
 
 function recordsLine(progress: GameProgress): string {
-  return `Runs ${progress.runsFinished}  •  Victories ${progress.victories}  •  Best wave ${progress.bestWaveReached}`;
+  return `Runs ${progress.runsFinished}  •  Victories ${progress.victories}  •  Kills ${progress.totalKills}`;
+}
+
+function formatRecord(value: number): string {
+  return value.toFixed(1).replace(/\.0$/, "");
 }
 
 function keyToIntent(code: string): ShellIntent | null {

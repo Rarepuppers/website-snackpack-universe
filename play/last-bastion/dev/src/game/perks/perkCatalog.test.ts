@@ -3,7 +3,11 @@ import { PERK_CATALOG, resolvePerkModifiers, unlockedPerkIds } from "./perkCatal
 import type { GameProgress } from "../save/LocalSaveStore";
 
 function progress(overrides: Partial<GameProgress> = {}): GameProgress {
-  return { runsFinished: 0, victories: 0, bestWaveReached: 0, nodesCleared: 0, bestiary: {}, ...overrides };
+  return {
+    runsFinished: 0, victories: 0, bestWaveReached: 0, nodesCleared: 0,
+    bestNodesCleared: 0, totalKills: 0, totalDamage: 0, totalScrapEarned: 0,
+    bestiary: {}, ...overrides,
+  };
 }
 
 describe("perk behavior gate", () => {

@@ -60,6 +60,7 @@ import {
   expeditionEncounterForNode,
   type ExpeditionEncounterDescriptor,
 } from "../expedition/ExpeditionEncounter";
+import { createRunSummary, mergeRunMetrics, type RunMetrics } from "../run/RunSummary";
 
 const PIXELS_PER_METRE = 32;
 
@@ -258,10 +259,11 @@ export class PrototypeScene extends Phaser.Scene {
       && (this.lastSnapshot.status === "victory" || this.lastSnapshot.status === "defeat")
     ) {
       if (this.expeditionContext) {
-        window.location.href = this.lastSnapshot.status === "victory" ? "?screen=map" : "?screen=title";
+        const bossNode = this.expeditionContext.encounter.nodeId === this.expeditionContext.run.map.bossNodeId;
+        window.location.href = this.lastSnapshot.status === "victory" && !bossNode ? "?screen=map" : "?screen=summary";
         return;
       }
-      this.restartRun();
+      window.location.href = "?screen=summary";
       return;
     }
 
@@ -428,10 +430,13 @@ export class PrototypeScene extends Phaser.Scene {
         return;
       }
       if (this.isRecordableRun(snapshot)) {
+        const summary = this.summaryFromSnapshot(snapshot, "quick-drop", 0, snapshot.runMetrics);
         this.saveStore.recordRunEnd({
           victory: snapshot.status === "victory",
           waveReached: snapshot.waveNumber,
+          summary,
         });
+        window.setTimeout(() => { window.location.href = "?screen=summary"; }, 900);
       }
       this.flushBestiary();
     }
@@ -445,12 +450,29 @@ export class PrototypeScene extends Phaser.Scene {
 
   private resolveExpeditionOutcome(snapshot: CombatSnapshot): void {
     if (!this.expeditionContext) return;
+    const combinedMetrics = mergeRunMetrics(this.expeditionContext.run.state.metrics, snapshot.runMetrics);
+    const completedBeforeEncounter = Math.max(0, this.expeditionContext.run.state.clearedNodeIds.length - 1);
     if (snapshot.status === "defeat") {
       this.saveStore.clearExpedition();
-      this.saveStore.recordRunEnd({ victory: false, waveReached: this.expeditionContext.encounter.column + 1 });
+      const summary = this.summaryFromSnapshot(
+        snapshot,
+        "expedition",
+        completedBeforeEncounter,
+        combinedMetrics,
+      );
+      this.saveStore.recordRunEnd({
+        victory: false,
+        waveReached: this.expeditionContext.encounter.column + 1,
+        summary,
+      });
+      window.setTimeout(() => { window.location.href = "?screen=summary"; }, 900);
       return;
     }
-    const completed = completeCurrentNode(this.expeditionContext.run, expeditionBuildFromSnapshot(snapshot));
+    const completed = completeCurrentNode(
+      this.expeditionContext.run,
+      expeditionBuildFromSnapshot(snapshot),
+      snapshot.runMetrics,
+    );
     this.saveStore.recordNodeCleared();
     this.saveStore.saveExpedition({
       mapSeed: completed.state.mapSeed,
@@ -461,11 +483,55 @@ export class PrototypeScene extends Phaser.Scene {
         weapons: completed.state.build.weapons.map((weapon) => ({ ...weapon })),
         upgrades: completed.state.build.upgrades.map((upgrade) => ({ ...upgrade })),
       } : null,
+      metrics: completed.state.metrics,
     });
     if (completed.state.currentNodeId === completed.map.bossNodeId) {
-      this.saveStore.recordRunEnd({ victory: true, waveReached: completed.map.columns });
+      const summary = this.summaryFromSnapshot(
+        snapshot,
+        "expedition",
+        Math.max(0, completed.state.clearedNodeIds.length - 1),
+        completed.state.metrics,
+      );
+      this.saveStore.recordRunEnd({
+        victory: true,
+        waveReached: completed.map.columns,
+        summary,
+      });
+      this.saveStore.clearExpedition();
+      window.setTimeout(() => { window.location.href = "?screen=summary"; }, 900);
+      return;
     }
     window.setTimeout(() => { window.location.href = "?screen=map"; }, 900);
+  }
+
+  private summaryFromSnapshot(
+    snapshot: CombatSnapshot,
+    mode: "quick-drop" | "expedition",
+    nodesCleared: number,
+    metrics: RunMetrics,
+  ) {
+    return createRunSummary({
+      mode,
+      outcome: snapshot.status === "victory" ? "victory" : "defeat",
+      heroId: snapshot.heroId,
+      perkId: snapshot.activePerkId,
+      waveReached: mode === "expedition"
+        ? (this.expeditionContext?.encounter.column ?? 0) + 1
+        : snapshot.waveNumber,
+      nodesCleared,
+      kills: metrics.kills,
+      scrapEarned: metrics.scrapEarned,
+      scrapBanked: snapshot.securedScrap,
+      level: snapshot.level,
+      damageByWeapon: metrics.damageByWeapon,
+      weapons: snapshot.weaponInventory.rack.flatMap((slot) => slot.tile
+        ? [{ weaponId: slot.tile.weaponId, tier: slot.tile.tier }]
+        : []),
+      upgrades: snapshot.upgradeLevels.map((upgrade) => ({
+        upgradeId: upgrade.id,
+        level: upgrade.level,
+      })),
+    });
   }
 
   private collectBestiary(snapshot: CombatSnapshot): void {
@@ -2659,6 +2725,7 @@ function readExpeditionContext(store: LocalSaveStore): ExpeditionCombatContext |
     currentNodeId: saved.currentNodeId,
     clearedNodeIds: saved.clearedNodeIds,
     build: saved.build,
+    metrics: saved.metrics,
   });
   if (!run || run.state.clearedNodeIds.includes(nodeId)) return null;
   const node = expeditionNodeById(run.map, nodeId);

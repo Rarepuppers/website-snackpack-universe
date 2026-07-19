@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { DEFAULT_SAVE, LocalSaveStore, SAVE_STORAGE_KEY } from "./LocalSaveStore";
+import { createRunSummary } from "../run/RunSummary";
 
 function fakeStorage(initial: Record<string, string> = {}) {
   const data = new Map<string, string>(Object.entries(initial));
@@ -68,6 +69,36 @@ describe("LocalSaveStore", () => {
 
     const reloaded = new LocalSaveStore(storage).load();
     expect(reloaded.progress.bestWaveReached).toBe(5);
+  });
+
+  it("persists the final summary, lifetime records, and newly unlocked perks", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    store.recordNodeCleared(7);
+    const summary = createRunSummary({
+      mode: "expedition",
+      outcome: "victory",
+      heroId: "marine",
+      perkId: "perk-veteran",
+      waveReached: 8,
+      nodesCleared: 7,
+      kills: 123,
+      scrapEarned: 88.5,
+      scrapBanked: 20,
+      level: 14,
+      damageByWeapon: { "bastion-service-rifle": 700, scattergun: 300.5 },
+      weapons: [{ weaponId: "bastion-service-rifle", tier: 2 }],
+      upgrades: [{ upgradeId: "rapid-cycling", level: 2 }],
+    });
+    const saved = store.recordRunEnd({ victory: true, waveReached: 8, summary });
+    expect(saved.progress.totalKills).toBe(123);
+    expect(saved.progress.totalDamage).toBeCloseTo(1000.5);
+    expect(saved.progress.totalScrapEarned).toBeCloseTo(88.5);
+    expect(saved.progress.bestNodesCleared).toBe(7);
+    expect(saved.lastRunSummary?.newlyUnlockedPerkIds).toEqual([
+      "perk-scrapper", "perk-quartermaster", "perk-fast-learner", "perk-gunsmith",
+    ]);
+    expect(new LocalSaveStore(storage).load().lastRunSummary).toEqual(saved.lastRunSummary);
   });
 
   it("accumulates dex sightings and kills across batches and instances", () => {
@@ -170,7 +201,7 @@ describe("Save schema v2 — expedition autosave", () => {
       }),
     });
     const save = new LocalSaveStore(storage).load();
-    expect(save.version).toBe(3);
+    expect(save.version).toBe(4);
     expect(save.settings.screenShakeEnabled).toBe(false);
     expect(save.settings.cooldownTimersEnabled).toBe(false);
     expect(save.progress.runsFinished).toBe(4);
@@ -190,6 +221,7 @@ describe("Save schema v2 — expedition autosave", () => {
         weapons: [{ weaponId: "bastion-service-rifle", tier: 2 }],
         upgrades: [{ upgradeId: "rapid-cycling", level: 3 }],
       },
+      metrics: { kills: 12, scrapEarned: 44, damageByWeapon: { "bastion-service-rifle": 88 } },
     });
     const reloaded = new LocalSaveStore(storage).load();
     expect(reloaded.expedition?.mapSeed).toBe(2026);

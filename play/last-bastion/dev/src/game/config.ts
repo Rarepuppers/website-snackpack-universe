@@ -3,10 +3,12 @@ import { PrototypeScene } from "./scenes/PrototypeScene";
 import { AssetGalleryScene } from "./scenes/AssetGalleryScene";
 import { ExpeditionScene } from "./scenes/ExpeditionScene";
 import { ShellScene } from "./shell/ShellScene";
+import { RunSummaryScene } from "./scenes/RunSummaryScene";
 
 const params = new URLSearchParams(window.location.search);
 const galleryMode = params.get("mode") === "gallery";
 const mapMode = params.get("screen") === "map";
+const summaryMode = params.get("screen") === "summary";
 
 /**
  * The shell is the front door: a bare URL boots Title → Menu. Any review
@@ -20,6 +22,7 @@ const REVIEW_PARAMS = [
 ] as const;
 const shellMode = !galleryMode
   && !mapMode
+  && !summaryMode
   && params.get("screen") !== "game"
   && (params.get("screen") === "title" || !REVIEW_PARAMS.some((key) => params.has(key)));
 
@@ -46,6 +49,8 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
   // so no cross-scene start is required.
   scene: galleryMode
     ? [AssetGalleryScene]
+    : summaryMode
+      ? [RunSummaryScene]
     : mapMode
       ? [ExpeditionScene]
       : shellMode

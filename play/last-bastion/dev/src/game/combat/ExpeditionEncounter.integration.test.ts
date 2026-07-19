@@ -61,15 +61,41 @@ describe("Expedition encounter integration", () => {
   });
 
   it("resolves safe nodes only after their full-screen decision is chosen", () => {
-    const simulation = new CombatSimulation({ expeditionEncounter: encounter("supply-depot") });
+    const simulation = new CombatSimulation({ expeditionEncounter: encounter("supply-depot", 2) });
     expect(simulation.snapshot().pendingDecision?.kind).toBe("supply-depot");
     expect(simulation.snapshot().status).toBe("combat");
+    expect(simulation.step(IDLE, 0.016).status).toBe("combat");
+    expect(simulation.snapshot().pendingDecision?.kind).toBe("supply-depot");
     expect(simulation.chooseOption("patch-up")).toBe(true);
     expect(simulation.step({
       move: { x: 0, y: 0 }, aim: { x: 0, y: 0 }, fireHeld: false,
       evasiveMovePressed: false, ultimatePressed: false, kitPressed: false, interactPressed: false,
       pausePressed: false, restartPressed: false,
     }, 0.016).status).toBe("victory");
+  });
+
+  it("opens a depth-priced campaign shop after a mid-route safe node", () => {
+    const simulation = new CombatSimulation({
+      expeditionEncounter: encounter("supply-depot", 3),
+      startingBuild: {
+        health: 5,
+        shield: 0,
+        level: 1,
+        experience: 0,
+        scrap: 35,
+        weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }],
+        upgrades: [],
+      },
+    });
+    expect(simulation.chooseOption("patch-up")).toBe(true);
+    simulation.step(IDLE, 0.016);
+    const shop = simulation.snapshot();
+    expect(shop.pendingDecision?.kind).toBe("scrap-shop");
+    expect(shop.pendingDecision?.shopRerollCost).toBe(30);
+    expect(shop.pendingDecision?.options.some((option) => option.id === "shop-repair")).toBe(true);
+    expect(shop.securedScrap).toBe(45);
+    expect(simulation.chooseOption("shop-leave")).toBe(true);
+    expect(simulation.step(IDLE, 0.016).status).toBe("victory");
   });
 
   it("uses the node-depth budget sequence for combat nodes", () => {

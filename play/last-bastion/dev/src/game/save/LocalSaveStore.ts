@@ -1,5 +1,11 @@
-import { isPerkId, type PerkId } from "../perks/perkCatalog";
+import { isPerkId, unlockedPerkIds, type PerkId } from "../perks/perkCatalog";
 import type { HeroDefinition } from "../hero/HeroDefinition";
+import {
+  createRunSummary,
+  totalRunDamage,
+  type RunMetrics,
+  type RunSummary,
+} from "../run/RunSummary";
 
 /**
  * Versioned local persistence for settings and basic run progress.
@@ -31,11 +37,15 @@ export interface GameProgress {
   victories: number;
   bestWaveReached: number;
   nodesCleared: number;
+  bestNodesCleared: number;
+  totalKills: number;
+  totalDamage: number;
+  totalScrapEarned: number;
   bestiary: Record<string, BestiaryEntry>;
 }
 
 /**
- * Mid-run expedition autosave (schema v2, Task 38). Written when the dropship
+ * Mid-run expedition autosave (schema v2, extended with Task 50 metrics in v4). Written when the dropship
  * returns to the map, cleared when the run ends. Shapes mirror
  * `expedition/ExpeditionRun.ts`; kept structural here so the save layer never
  * imports game logic.
@@ -53,15 +63,17 @@ export interface ExpeditionSave {
     weapons: { weaponId: string; tier: number }[];
     upgrades: { upgradeId: string; level: number }[];
   } | null;
+  metrics: RunMetrics;
 }
 
 export interface SaveData {
-  version: 3;
+  version: 4;
   settings: GameSettings;
   progress: GameProgress;
   expedition: ExpeditionSave | null;
   selectedPerkId: PerkId | null;
   selectedHeroId: HeroDefinition["id"];
+  lastRunSummary: RunSummary | null;
 }
 
 export const SAVE_STORAGE_KEY = "last-bastion-save";
@@ -70,7 +82,7 @@ export const SAVE_STORAGE_KEY = "last-bastion-save";
 export const BESTIARY_KILLS_TO_REVEAL = 10;
 
 export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
-  version: 3,
+  version: 4,
   settings: Object.freeze({
     screenShakeEnabled: true,
     soundEnabled: true,
@@ -82,11 +94,16 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     victories: 0,
     bestWaveReached: 0,
     nodesCleared: 0,
+    bestNodesCleared: 0,
+    totalKills: 0,
+    totalDamage: 0,
+    totalScrapEarned: 0,
     bestiary: Object.freeze({}) as Record<string, BestiaryEntry>,
   }),
   expedition: null,
   selectedPerkId: "perk-veteran",
   selectedHeroId: "marine",
+  lastRunSummary: null,
 });
 
 type StorageLike = Pick<Storage, "getItem" | "setItem">;
@@ -180,18 +197,39 @@ export class LocalSaveStore {
     return this.load();
   }
 
-  recordRunEnd(outcome: { victory: boolean; waveReached: number }): SaveData {
+  recordRunEnd(outcome: { victory: boolean; waveReached: number; summary?: RunSummary }): SaveData {
+    const summary = outcome.summary;
+    // Expedition nodes are committed as they are cleared. Rewind this run's
+    // contribution when comparing unlocks so the debrief still announces a
+    // Quartermaster/Pathfinder milestone crossed earlier on the route.
+    const runStartProgress: GameProgress = {
+      ...this.cached.progress,
+      nodesCleared: Math.max(0, this.cached.progress.nodesCleared - (summary?.nodesCleared ?? 0)),
+    };
+    const beforeUnlocks = new Set(unlockedPerkIds(runStartProgress));
+    const nextProgress: GameProgress = {
+      ...this.cached.progress,
+      runsFinished: this.cached.progress.runsFinished + 1,
+      victories: this.cached.progress.victories + (outcome.victory ? 1 : 0),
+      bestWaveReached: Math.max(
+        this.cached.progress.bestWaveReached,
+        Math.max(0, Math.floor(outcome.waveReached)),
+      ),
+      bestNodesCleared: Math.max(
+        this.cached.progress.bestNodesCleared,
+        summary?.nodesCleared ?? 0,
+      ),
+      totalKills: this.cached.progress.totalKills + (summary?.kills ?? 0),
+      totalDamage: this.cached.progress.totalDamage + (summary ? totalRunDamage(summary) : 0),
+      totalScrapEarned: this.cached.progress.totalScrapEarned + (summary?.scrapEarned ?? 0),
+    };
+    const newlyUnlockedPerkIds = unlockedPerkIds(nextProgress).filter((id) => !beforeUnlocks.has(id));
     this.cached = {
       ...this.cached,
-      progress: {
-        ...this.cached.progress,
-        runsFinished: this.cached.progress.runsFinished + 1,
-        victories: this.cached.progress.victories + (outcome.victory ? 1 : 0),
-        bestWaveReached: Math.max(
-          this.cached.progress.bestWaveReached,
-          Math.max(0, Math.floor(outcome.waveReached)),
-        ),
-      },
+      progress: nextProgress,
+      lastRunSummary: summary
+        ? createRunSummary({ ...summary, newlyUnlockedPerkIds })
+        : this.cached.lastRunSummary,
     };
     this.writeToStorage();
     return this.load();
@@ -230,13 +268,13 @@ function normalizeSave(parsed: unknown): SaveData {
     return cloneSave(DEFAULT_SAVE);
   }
   const candidate = parsed as Omit<Partial<SaveData>, "version"> & { version?: number };
-  // Version 1 saves migrate cleanly: same settings and progress, no mid-run
-  // expedition. Anything else is foreign and degrades to defaults.
-  if (candidate.version !== 1 && candidate.version !== 2 && candidate.version !== 3) {
+  // Versions 1–3 migrate cleanly into schema v4. Anything else is foreign and
+  // degrades to defaults.
+  if (candidate.version !== 1 && candidate.version !== 2 && candidate.version !== 3 && candidate.version !== 4) {
     return cloneSave(DEFAULT_SAVE);
   }
   return {
-    version: 3,
+    version: 4,
     settings: {
       screenShakeEnabled: readBoolean(candidate.settings?.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
       soundEnabled: readBoolean(candidate.settings?.soundEnabled, DEFAULT_SAVE.settings.soundEnabled),
@@ -248,6 +286,10 @@ function normalizeSave(parsed: unknown): SaveData {
       victories: readCount(candidate.progress?.victories),
       bestWaveReached: readCount(candidate.progress?.bestWaveReached),
       nodesCleared: readCount(candidate.progress?.nodesCleared),
+      bestNodesCleared: readCount(candidate.progress?.bestNodesCleared),
+      totalKills: readCount(candidate.progress?.totalKills),
+      totalDamage: readFiniteNonNegative(candidate.progress?.totalDamage),
+      totalScrapEarned: readFiniteNonNegative(candidate.progress?.totalScrapEarned),
       bestiary: readBestiary(candidate.progress?.bestiary),
     },
     expedition: candidate.version >= 2 ? readExpedition(candidate.expedition) : null,
@@ -255,6 +297,7 @@ function normalizeSave(parsed: unknown): SaveData {
       ? candidate.selectedPerkId
       : "perk-veteran",
     selectedHeroId: candidate.version >= 3 && candidate.selectedHeroId === "medic" ? "medic" : "marine",
+    lastRunSummary: candidate.version >= 4 ? readRunSummary(candidate.lastRunSummary) : null,
   };
 }
 
@@ -277,6 +320,7 @@ function readExpedition(value: unknown): ExpeditionSave | null {
     currentNodeId: Math.floor(candidate.currentNodeId),
     clearedNodeIds: candidate.clearedNodeIds.map((id) => Math.floor(id)),
     build: readBuild(candidate.build),
+    metrics: readRunMetrics(candidate.metrics),
   });
 }
 
@@ -316,6 +360,11 @@ function cloneExpedition(expedition: ExpeditionSave): ExpeditionSave {
       weapons: expedition.build.weapons.map((weapon) => ({ ...weapon })),
       upgrades: expedition.build.upgrades.map((upgrade) => ({ ...upgrade })),
     },
+    metrics: {
+      kills: expedition.metrics.kills,
+      scrapEarned: expedition.metrics.scrapEarned,
+      damageByWeapon: { ...expedition.metrics.damageByWeapon },
+    },
   };
 }
 
@@ -352,6 +401,64 @@ function readCount(value: unknown): number {
     : 0;
 }
 
+function readFiniteNonNegative(value: unknown): number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : 0;
+}
+
+function readRunMetrics(value: unknown): RunMetrics {
+  if (typeof value !== "object" || value === null) {
+    return { kills: 0, scrapEarned: 0, damageByWeapon: {} };
+  }
+  const candidate = value as Partial<RunMetrics>;
+  const damageByWeapon: Record<string, number> = {};
+  if (typeof candidate.damageByWeapon === "object" && candidate.damageByWeapon !== null) {
+    for (const [weaponId, damage] of Object.entries(candidate.damageByWeapon)) {
+      const safe = readFiniteNonNegative(damage);
+      if (safe > 0) damageByWeapon[weaponId] = safe;
+    }
+  }
+  return {
+    kills: readCount(candidate.kills),
+    scrapEarned: readFiniteNonNegative(candidate.scrapEarned),
+    damageByWeapon,
+  };
+}
+
+function readRunSummary(value: unknown): RunSummary | null {
+  if (typeof value !== "object" || value === null) return null;
+  const candidate = value as Partial<RunSummary>;
+  if (
+    (candidate.mode !== "quick-drop" && candidate.mode !== "expedition")
+    || (candidate.outcome !== "victory" && candidate.outcome !== "defeat")
+    || typeof candidate.heroId !== "string"
+    || !Array.isArray(candidate.weapons)
+    || !Array.isArray(candidate.upgrades)
+  ) return null;
+  const metrics = readRunMetrics(candidate);
+  return createRunSummary({
+    mode: candidate.mode,
+    outcome: candidate.outcome,
+    heroId: candidate.heroId,
+    perkId: isPerkId(candidate.perkId) ? candidate.perkId : null,
+    waveReached: readCount(candidate.waveReached),
+    nodesCleared: readCount(candidate.nodesCleared),
+    kills: metrics.kills,
+    scrapEarned: metrics.scrapEarned,
+    scrapBanked: readFiniteNonNegative(candidate.scrapBanked),
+    level: readCount(candidate.level) || 1,
+    damageByWeapon: metrics.damageByWeapon,
+    weapons: candidate.weapons
+      .filter((weapon) => typeof weapon?.weaponId === "string")
+      .map((weapon) => ({ weaponId: weapon.weaponId, tier: readCount(weapon.tier) || 1 })),
+    upgrades: candidate.upgrades
+      .filter((upgrade) => typeof upgrade?.upgradeId === "string")
+      .map((upgrade) => ({ upgradeId: upgrade.upgradeId, level: readCount(upgrade.level) || 1 })),
+    newlyUnlockedPerkIds: Array.isArray(candidate.newlyUnlockedPerkIds)
+      ? candidate.newlyUnlockedPerkIds.filter(isPerkId)
+      : [],
+  });
+}
+
 function cloneSave(save: SaveData): SaveData {
   const bestiary: Record<string, BestiaryEntry> = {};
   for (const [key, entry] of Object.entries(save.progress.bestiary ?? {})) {
@@ -364,5 +471,6 @@ function cloneSave(save: SaveData): SaveData {
     expedition: save.expedition === null ? null : cloneExpedition(save.expedition),
     selectedPerkId: save.selectedPerkId,
     selectedHeroId: save.selectedHeroId,
+    lastRunSummary: save.lastRunSummary ? createRunSummary(save.lastRunSummary) : null,
   };
 }

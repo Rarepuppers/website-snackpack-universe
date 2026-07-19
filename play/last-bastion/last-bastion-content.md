@@ -803,7 +803,7 @@ Behavior-first production family for numeric-health terrain. Retain 4× masters,
 | Reinforced barricade | 128×96 | intact, armour stripped, critical, breached |
 | Shared impacts | 4×2 atlas at 64×64 | bullet chip, melee spark, acid hiss, frost crack, explosive fracture, heavy collapse, dust settle, salvage glint |
 
-The next raster priority is **Batch R only after Task 54 completes the destructible-terrain health and bar gate**. Before that, Tasks 49, 50, 53, 55, and 56 are behavior/UI work and should not trigger speculative raster production. Player-damage numbers, auto-fire state, actor outlines, projectile halos, and terrain HP bars are code-rendered and require no image generation.
+The next raster priority is **Batch R only after Task 54 completes the destructible-terrain health and bar gate**. Before that, Tasks 53, 55, and 56 are behavior/UI work and should not trigger speculative raster production. Player-damage numbers, auto-fire state, actor outlines, projectile halos, and terrain HP bars are code-rendered and require no image generation.
 
 Batch Q2 (later, with the speciality system): one 128 × 128 speciality sign tile per keeper for the shop header, same canonical tile contract as Batch I.
 

@@ -110,6 +110,7 @@ export class ExpeditionScene extends Phaser.Scene {
         currentNodeId: saved.currentNodeId,
         clearedNodeIds: saved.clearedNodeIds,
         build: saved.build,
+        metrics: saved.metrics,
       });
       if (resumed) {
         return resumed;
@@ -213,6 +214,7 @@ export class ExpeditionScene extends Phaser.Scene {
         weapons: this.run.state.build.weapons.map((weapon) => ({ ...weapon })),
         upgrades: this.run.state.build.upgrades.map((upgrade) => ({ ...upgrade })),
       },
+      metrics: this.run.state.metrics,
     });
   }
 

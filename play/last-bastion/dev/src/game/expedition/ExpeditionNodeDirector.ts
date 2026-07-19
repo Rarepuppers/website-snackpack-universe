@@ -18,7 +18,8 @@ export interface ExpeditionWavePlan {
 export function combatNodeBudgets(column: number): readonly number[] {
   const depth = Math.max(0, Math.min(7, Math.floor(column)));
   if (depth <= 1) return Object.freeze([30, 45, 65]);
-  if (depth === 2) return Object.freeze([65, 90, 120]);
+  // Task 49 protects the final onboarding column before mid-run shops begin.
+  if (depth === 2) return Object.freeze([45, 65, 90]);
   if (depth <= 5) return Object.freeze([65, 90, 120, 140]);
   return Object.freeze([120, 140, 160, 180]);
 }

@@ -447,22 +447,23 @@ This is a large, cross-cutting change. Suggested sequencing so nothing lands hal
 - Is a 4-slot inventory the right size once six or more weapons are in the pool?
 - Should merging be free (tempo cost only) or cost Scrap? Current proposal: free, because the slot opportunity cost is already the price.
 
-## Node budgets by column depth (Task 48 live 19 July 2026; Task 49 tuning pending)
+## Node budgets by column depth (Tasks 48–49 live 19 July 2026)
 
-When the expedition map replaces the fixed ten-wave script, the timed threat director is parameterized per node instead of per wave number. First proposal, to be tuned in the Task 49 campaign pass:
+The expedition director is parameterized per node rather than borrowing the Quick Drop wave number. Task 49 approved this measured curve:
 
 | Node type | Waves in node | Threat budget per wave | Notes |
 | --- | --- | --- | --- |
 | Combat, columns 1–2 | 3 | 30 / 45 / 65 | Teaching pace; matches today's waves 1–3 |
-| Combat, columns 3–5 | 3–4 | 65 / 90 / 120 (+140) | Fourth wave appears from column 4 |
-| Combat, columns 6–7 | 4 | 120 / 140 / 160 / 180 | Late caps 52/56 apply |
+| Combat, column 3 | 3 | 45 / 65 / 90 | Protected final onboarding column |
+| Combat, columns 4–6 | 4 | 65 / 90 / 120 / 140 | Four-wave midgame; shops follow columns 4 and 6 |
+| Combat, column 7 | 4 | 120 / 140 / 160 / 180 | Final approach; late caps 52/56 apply |
 | Elite | 2 + elite wave | column budget × 0.8, then elite spawn | Guaranteed upgrade cache on clear |
 | Mini-boss | 1 arena wave + authored fight | column budget × 0.6 | Pool: Siege Crusher, Brood Warden, Rift Stalker (after Task 36) |
 | Boss (node 20) | authored | — | The Bastion Eater, unchanged |
 
-Rules carried over unchanged: 2.5-second spend pulses, pursuit-led quotas, one-fast-elite cap, guaranteed elite cadence in late columns, kill-owned boss/mini-boss waves, timer-owned ordinary waves. Per-node enemy scaling keys off column depth using the existing non-compounding per-wave table (column ≈ wave for scaling purposes). Scrap and XP totals across an 8–11 node route must land within ±15% of today's ten-wave reference trace so the shop and level 9–12 targets survive the migration.
+Rules carried over unchanged: 2.5-second spend pulses, pursuit-led quotas, one-fast-elite cap, guaranteed elite cadence in late columns, kill-owned boss/mini-boss waves, timer-owned ordinary waves. Per-node enemy scaling keys off column depth using the existing non-compounding per-wave table. Every eight-node route crosses two shop columns, has at least two recovery opportunities and 55 guaranteed Scrap before random drops; the 70%-timed-clear reference projects level 9–20 at boss entry depending on route danger/reward choices.
 
-Implementation note: the pure `ExpeditionNodeDirector` owns wave counts and budgets; `buildBudgetDensityWave` adapts the nearest proven Quick Drop pressure mix to an exact budget without importing boss ranks. Elite and Mini-boss authored fights are separate kill-owned terminal waves. Node-clear Scrap is apportioned across internal waves so Task 48 does not silently multiply the economy before Task 49 measures the full route.
+Implementation note: the pure `ExpeditionNodeDirector` owns wave counts and budgets; `buildBudgetDensityWave` adapts the nearest proven Quick Drop pressure mix to an exact budget without importing boss ranks. `CampaignTuning` enumerates every seeded route, models XP and guaranteed economy, and benchmarks three boss builds. Node-clear Scrap remains apportioned across internal waves.
 
 ## Proposed destructible-terrain durability and damage feedback
 

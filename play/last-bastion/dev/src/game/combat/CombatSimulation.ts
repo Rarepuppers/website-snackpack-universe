@@ -93,6 +93,7 @@ import type { ExpeditionBuildSnapshot } from "../expedition/ExpeditionRun";
 import { resolvePerkModifiers, type PerkId, type PerkRunModifiers } from "../perks/perkCatalog";
 import type { ExpeditionEncounterDescriptor } from "../expedition/ExpeditionEncounter";
 import type { ExpeditionWavePlan } from "../expedition/ExpeditionNodeDirector";
+import { campaignNodeClearScrap, campaignOffersShop } from "../expedition/CampaignTuning";
 import {
   buildRainOfSpinesTargets,
   GROUND_SLAM_RECOVERY_SECONDS,
@@ -470,6 +471,13 @@ export interface CombatSnapshot {
   activeTetherEnemyId: number | null;
   density: DensityTelemetrySnapshot;
   medicTriageHits: number;
+  runMetrics: CombatRunMetricsSnapshot;
+}
+
+export interface CombatRunMetricsSnapshot {
+  kills: number;
+  scrapEarned: number;
+  damageByWeapon: Readonly<Partial<Record<WeaponId, number>>>;
 }
 
 interface EnemyState {
@@ -873,6 +881,9 @@ export class CombatSimulation {
     pursuit: 0, ranged: 0, specialist: 0, boss: 0,
   };
   private securedScrap = 0;
+  private runKills = 0;
+  private runScrapEarned = 0;
+  private readonly runDamageByWeapon: Partial<Record<WeaponId, number>> = {};
   private aurumSpawnedThisWave = false;
   private level = 1;
   private experience = 0;
@@ -888,6 +899,8 @@ export class CombatSimulation {
   private readonly scenario: CombatScenario | null;
   private readonly expeditionEncounter: ExpeditionEncounterDescriptor | null;
   private expeditionWaveIndex = 0;
+  private readonly expeditionRewardedWaves = new Set<number>();
+  private expeditionPostEncounterShopQueued = false;
   private activeTetherEnemyId: number | null = null;
   private pendingWeaponTile: WeaponTile | null = null;
 
@@ -1614,6 +1627,11 @@ export class CombatSimulation {
         projectileBudget: ENEMY_PROJECTILE_BUDGET,
       },
       medicTriageHits: this.medicTriageHits,
+      runMetrics: {
+        kills: this.runKills,
+        scrapEarned: this.runScrapEarned,
+        damageByWeapon: { ...this.runDamageByWeapon },
+      },
     };
   }
 
@@ -2045,8 +2063,17 @@ export class CombatSimulation {
   }
 
   private drawScrapShopOffers(excludedIds: ReadonlySet<string> = new Set()): DecisionOption[] {
-    const candidates = this.buildScrapShopCandidates().filter((candidate) => !excludedIds.has(candidate.id));
+    const allCandidates = this.buildScrapShopCandidates();
     const offers: DecisionOption[] = [];
+    const campaignRepair = this.expeditionEncounter !== null
+      && this.playerHealth < this.playerMaxHealth
+      && this.shopLockedOfferId !== "shop-repair"
+      ? allCandidates.find((candidate) => candidate.id === "shop-repair")
+      : undefined;
+    if (campaignRepair) offers.push(campaignRepair);
+    const candidates = allCandidates.filter((candidate) => (
+      candidate.id !== campaignRepair?.id && !excludedIds.has(candidate.id)
+    ));
     while (offers.length < 3 && candidates.length > 0) {
       const index = Math.min(Math.floor(this.random() * candidates.length), candidates.length - 1);
       offers.push(candidates.splice(index, 1)[0]!);
@@ -2302,6 +2329,7 @@ export class CombatSimulation {
         weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats.weaponClass)
           * this.currentPowerupDamageMultiplier(),
         weapon.stats.damageType,
+        weapon.weaponId,
       );
       if (!enemy.dead && weapon.stats.knockbackMetres > 0) {
         const definition = ENEMY_CATALOG[enemy.type];
@@ -2676,6 +2704,7 @@ export class CombatSimulation {
             projectile.uraniumEligible ? this.currentPowerupDamageMultiplier() : 1
           ),
           projectile.damageType,
+          projectile.weaponId,
         );
         if (projectile.weaponId === "injector-carbine") this.registerInjectorHit();
         if (damageMultiplier >= 1) this.applyProjectileKnockback(projectile, enemy);
@@ -2711,7 +2740,12 @@ export class CombatSimulation {
         && !nearby.dead
         && distance(nearby.position, position) <= projectile.explosionRadiusMetres
       ) {
-        this.damageEnemy(nearby, projectile.damage * this.explosionSplashMultiplier, projectile.damageType);
+        this.damageEnemy(
+          nearby,
+          projectile.damage * this.explosionSplashMultiplier,
+          projectile.damageType,
+          projectile.weaponId,
+        );
       }
     }
   }
@@ -2770,7 +2804,12 @@ export class CombatSimulation {
         weaponId: projectile.weaponId,
       });
       // Each additional bounce carries less energy: 70%, 49%, 34%…
-      this.damageEnemy(target, projectile.damage * Math.pow(0.7, hop), projectile.damageType);
+      this.damageEnemy(
+        target,
+        projectile.damage * Math.pow(0.7, hop),
+        projectile.damageType,
+        projectile.weaponId,
+      );
       from = target;
     }
   }
@@ -4717,7 +4756,12 @@ export class CombatSimulation {
     }
   }
 
-  private damageEnemy(enemy: EnemyState, rawDamage: number, damageType: DamageType = "physical"): void {
+  private damageEnemy(
+    enemy: EnemyState,
+    rawDamage: number,
+    damageType: DamageType = "physical",
+    sourceWeaponId?: WeaponId,
+  ): void {
     if (enemy.dead || rawDamage <= 0) {
       return;
     }
@@ -4730,6 +4774,7 @@ export class CombatSimulation {
       enemy.armour - aurumArmourBreak - (corrodeActive ? STATUS_RULES.corrode.armourReduction : 0),
       0,
     );
+    const shieldBefore = enemy.shield;
     const absorption = absorbWithShield(enemy.shield, rawDamage * resistanceMultiplier);
     enemy.shield = absorption.remainingShield;
     let mitigated = mitigateDamage(
@@ -4774,6 +4819,10 @@ export class CombatSimulation {
     });
     if (this.scenario === "density-capacity") {
       return;
+    }
+    if (sourceWeaponId) {
+      const applied = Math.max(0, shieldBefore - enemy.shield) + Math.min(enemy.health, mitigated);
+      this.runDamageByWeapon[sourceWeaponId] = (this.runDamageByWeapon[sourceWeaponId] ?? 0) + applied;
     }
     if (enemy.type === "tether-bloom" && enemy.tetherBloomPhase === "tethering") {
       enemy.tetherBloomDamageDuringGrab += mitigated;
@@ -4822,6 +4871,7 @@ export class CombatSimulation {
     }
 
     enemy.dead = true;
+    this.runKills += 1;
     this.frameEvents.push({
       type: "enemy-defeated",
       position: { ...enemy.position },
@@ -4927,6 +4977,7 @@ export class CombatSimulation {
     position: Vector2Data,
   ): void {
     this.securedScrap += amount;
+    this.runScrapEarned += Math.max(0, amount);
     this.frameEvents.push({
       type: "scrap-secured",
       position: { ...position },
@@ -5015,7 +5066,8 @@ export class CombatSimulation {
         && this.spawnQueue.length === 0
         && !hasBlockingEnemy
         && this.enemyProjectiles.length === 0
-        && this.eliteRewards.every((reward) => reward.collected);
+        && this.eliteRewards.every((reward) => reward.collected)
+        && this.decisionQueue.length === 0;
       if (timedComplete || cleared) {
         this.finishExpeditionWave(livingTreasure, timedComplete);
       }
@@ -5051,6 +5103,7 @@ export class CombatSimulation {
   }
 
   private finishExpeditionWave(livingTreasure: readonly EnemyState[], timed: boolean): void {
+    const encounter = this.expeditionEncounter!;
     for (const enemy of livingTreasure) this.escapeAurumHoarder(enemy);
     if (timed) {
       this.spawnQueue = [];
@@ -5063,18 +5116,27 @@ export class CombatSimulation {
       this.enemyProjectiles = [];
       this.groundHazards = [];
     }
-    if (this.expeditionEncounter?.kind === "combat" || this.expeditionEncounter?.kind === "elite") {
-      const nodeReward = 10 + 5 * (this.expeditionEncounter.column + 1);
-      const waveCount = Math.max(1, this.expeditionEncounter.waves.length);
+    if (!this.expeditionRewardedWaves.has(this.expeditionWaveIndex)) {
+      this.expeditionRewardedWaves.add(this.expeditionWaveIndex);
+      const nodeReward = campaignNodeClearScrap(
+        encounter.kind,
+        encounter.column,
+      );
+      const waveCount = Math.max(1, encounter.waves.length);
       const baseShare = Math.floor(nodeReward / waveCount);
       const remainder = nodeReward % waveCount;
-      this.secureScrap(
-        baseShare + (this.expeditionWaveIndex < remainder ? 1 : 0),
-        "wave-clear",
-        this.playerPosition,
-      );
+      const share = baseShare + (this.expeditionWaveIndex < remainder ? 1 : 0);
+      if (share > 0) this.secureScrap(share, "wave-clear", this.playerPosition);
     }
-    if (this.expeditionWaveIndex >= this.expeditionEncounter!.waves.length - 1) {
+    if (this.expeditionWaveIndex >= encounter.waves.length - 1) {
+      if (
+        campaignOffersShop(encounter.column)
+        && !this.expeditionPostEncounterShopQueued
+      ) {
+        this.expeditionPostEncounterShopQueued = true;
+        this.decisionQueue.push(this.openScrapShopVisit());
+        return;
+      }
       this.status = "victory";
     } else {
       this.status = "intermission";
@@ -5175,6 +5237,8 @@ export class CombatSimulation {
   }
 
   private populateExpeditionEncounter(encounter: ExpeditionEncounterDescriptor): void {
+    // Safe nodes also use campaign depth for shop reroll pricing.
+    this.waveIndex = encounter.directorWaveIndex;
     switch (encounter.kind) {
       case "combat":
       case "elite":

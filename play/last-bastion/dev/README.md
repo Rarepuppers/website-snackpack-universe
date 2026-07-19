@@ -13,7 +13,8 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 
 - `/play/last-bastion/` — the front-end shell: Title → Menu → How to Play / Settings / Lab / Character select (Task 37 behavior gate; code-native placeholder panels until Batch G). `?screen=title` forces the shell; any review parameter below skips it.
 - `/play/last-bastion/?screen=game` — styled normal ten-wave run with authored elite cadence, seeded mini-boss selection, and the Bastion Eater finale
-- `/play/last-bastion/?screen=map` — the playable 20-node expedition (Tasks 38–39, 48): selecting a route autosaves a pending node and deploys into depth-budgeted multi-wave Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, or Bastion Eater encounters; final victory commits the carried build and returns to the map. `&mapseed=N` reviews a deterministic fresh chart
+- `/play/last-bastion/?screen=map` — the tuned playable 20-node expedition (Tasks 38–39, 48–49): selecting a route autosaves a pending node and deploys into depth-budgeted multi-wave Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, or Bastion Eater encounters; every route crosses two campaign shops, and final victory commits the carried build and returns to the map. `&mapseed=N` reviews a deterministic fresh chart
+- `/play/last-bastion/?screen=summary&summarydemo=1` — deterministic populated Task 50 run-summary review without changing the local save
 - `/play/last-bastion/?art=placeholder` — code-shape comparison renderer
 - `/play/last-bastion/?helmet=0` — styled Marine without the removable helmet
 - `/play/last-bastion/?weapons=1`, `4`, `6`, or `12` — selected weapon-ring count

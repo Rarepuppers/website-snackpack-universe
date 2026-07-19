@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest";
 import { buildBudgetDensityWave } from "../combat/DensityDirector";
 import { buildExpeditionWavePlan, combatNodeBudgets } from "./ExpeditionNodeDirector";
 
-describe("Task 48 expedition node director", () => {
+describe("Task 48 expedition node director with Task 49 tuning", () => {
   it("locks the campaign budget curve and fourth-wave threshold", () => {
     expect(combatNodeBudgets(0)).toEqual([30, 45, 65]);
-    expect(combatNodeBudgets(2)).toEqual([65, 90, 120]);
+    expect(combatNodeBudgets(2)).toEqual([45, 65, 90]);
     expect(combatNodeBudgets(3)).toEqual([65, 90, 120, 140]);
     expect(combatNodeBudgets(7)).toEqual([120, 140, 160, 180]);
   });

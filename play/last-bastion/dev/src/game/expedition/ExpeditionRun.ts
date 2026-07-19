@@ -4,6 +4,7 @@ import {
   reachableNodes,
   type ExpeditionMapData,
 } from "./ExpeditionMap";
+import { EMPTY_RUN_METRICS, mergeRunMetrics, type RunMetrics } from "../run/RunSummary";
 
 /**
  * Mid-run expedition state (Task 38): which chart the run is on, where the
@@ -31,6 +32,7 @@ export interface ExpeditionRunState {
   currentNodeId: number;
   clearedNodeIds: readonly number[];
   build: ExpeditionBuildSnapshot | null;
+  metrics: RunMetrics;
 }
 
 export interface ExpeditionRun {
@@ -47,6 +49,7 @@ export function startExpeditionRun(mapSeed: number): ExpeditionRun {
       currentNodeId: map.startNodeId,
       clearedNodeIds: [map.startNodeId],
       build: null,
+      metrics: cloneMetrics(EMPTY_RUN_METRICS),
     },
   };
 }
@@ -74,7 +77,14 @@ export function resumeExpeditionRun(state: ExpeditionRunState): ExpeditionRun | 
   if (!currentIsCleared && !currentIsPending) {
     return null;
   }
-  return { map, state: { ...state, clearedNodeIds: [...state.clearedNodeIds] } };
+  return {
+    map,
+    state: {
+      ...state,
+      clearedNodeIds: [...state.clearedNodeIds],
+      metrics: cloneMetrics(state.metrics ?? EMPTY_RUN_METRICS),
+    },
+  };
 }
 
 /** Nodes the dropship may travel to from its current position. */
@@ -107,6 +117,7 @@ export function moveToNode(run: ExpeditionRun, nodeId: number): ExpeditionRun | 
 export function completeCurrentNode(
   run: ExpeditionRun,
   build: ExpeditionBuildSnapshot,
+  encounterMetrics: RunMetrics = EMPTY_RUN_METRICS,
 ): ExpeditionRun {
   const clearedNodeIds = run.state.clearedNodeIds.includes(run.state.currentNodeId)
     ? [...run.state.clearedNodeIds]
@@ -117,6 +128,7 @@ export function completeCurrentNode(
       ...run.state,
       clearedNodeIds,
       build: cloneBuild(build),
+      metrics: mergeRunMetrics(run.state.metrics, encounterMetrics),
     },
   };
 }
@@ -172,5 +184,13 @@ function cloneBuild(build: ExpeditionBuildSnapshot): ExpeditionBuildSnapshot {
     ...build,
     weapons: build.weapons.map((weapon) => ({ ...weapon })),
     upgrades: build.upgrades.map((upgrade) => ({ ...upgrade })),
+  };
+}
+
+function cloneMetrics(metrics: RunMetrics): RunMetrics {
+  return {
+    kills: metrics.kills,
+    scrapEarned: metrics.scrapEarned,
+    damageByWeapon: { ...metrics.damageByWeapon },
   };
 }

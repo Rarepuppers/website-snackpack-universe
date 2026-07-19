@@ -42,6 +42,8 @@ describe("CombatSimulation", () => {
     const snapshot = simulation.snapshot();
     expect(snapshot.enemies).toHaveLength(0);
     expect(snapshot.pickups).toHaveLength(1);
+    expect(snapshot.runMetrics.kills).toBe(1);
+    expect(snapshot.runMetrics.damageByWeapon["bastion-service-rifle"]).toBeCloseTo(4);
   });
 
   it("automatically sweeps nearby enemies with Patrol Blade and exposes its cadence", () => {
