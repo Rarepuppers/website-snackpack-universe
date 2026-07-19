@@ -468,7 +468,7 @@ const MONSTERS = [
   { id: "mon-scuttler", name: "Scuttler", glyph: "▲", tint: TINT.monster, status: "live", rank: "standard", tier: "Rush-adjacent",
     stats: { Health: "4", Armour: "0", Speed: "2.35 m/s", Damage: "1 contact", XP: "1" },
     text: "The unit every other number is judged against. Runs straight at you and teaches movement." },
-  { id: "mon-swarm-scuttler", name: "Swarm Scuttler", glyph: "▴", tint: TINT.monster, status: "designed", rank: "standard", tier: "Rush",
+  { id: "mon-swarm-scuttler", name: "Swarm Scuttler", glyph: "▴", tint: TINT.monster, status: "live", rank: "standard", tier: "Rush",
     stats: { Health: "2", Armour: "0", Speed: "4.2 m/s", Damage: "1 contact", XP: "1" },
     text: "Outruns you and dies to a single bullet. Arrives in packs of 8–12 — the enemy that punishes pure backpedalling." },
   { id: "mon-blast-mite", name: "Blast Mite", glyph: "✳", tint: TINT.monster, status: "live", rank: "standard", tier: "Rush",
@@ -505,20 +505,20 @@ const MONSTERS = [
     stats: { Health: "11", Armour: "1", Speed: "1.8 / 3.2 ripple", Damage: "1.5 contact / 2.5 eruption (→ 0.9 edge)", XP: "5" },
     text: "Fights normally, then digs in every ~9s: untargetable, charges as a visible ground ripple, erupts under a locked 0.7s ring. Capped 3s underground, long recovery after — the floor attacks, but always fairly." },
 
-  { id: "mon-aurum-hoarder", name: "Aurum Hoarder", glyph: "◆", tint: TINT.treasure, status: "designed", rank: "treasure", tier: "Optional",
+  { id: "mon-aurum-hoarder", name: "Aurum Hoarder", glyph: "◆", tint: TINT.treasure, status: "live", rank: "treasure", tier: "Optional",
     stats: { Health: "4–6× same-wave common", Armour: "moderate / breakable", Speed: "catchable flee", Damage: "negligible", Reward: "Scrap + supply cache" },
     text: "A brass-gold alien salvage carrier that zig-zags toward a marked exit. It never blocks wave clear; armour breaks pay partial Scrap, while a kill guarantees a valid supply cache. Gold is presentation, not a second currency." },
 
   { id: "mon-carapace-scuttler", name: "Carapace Scuttler", glyph: "◭", tint: TINT.elite, status: "live", rank: "elite", tier: "Slow",
     stats: { Health: "45", Armour: "3 frontal", Speed: "1.85 m/s", Damage: "1.4 contact", XP: "25" },
     text: "Frontal armour cuts direct hits to 25%. Flank it, or punish the post-charge recovery. Always drops a Requisition." },
-  { id: "mon-razorlord", name: "Razorlord", glyph: "⩚", tint: TINT.elite, status: "designed", rank: "elite", tier: "Rush",
+  { id: "mon-razorlord", name: "Razorlord", glyph: "⩚", tint: TINT.elite, status: "live", rank: "elite", tier: "Rush",
     stats: { Health: "30", Armour: "1", Speed: "4.6 / 11 dash", Damage: "3 dash", XP: "30" },
     text: "A fast elite you cannot outrun. Dodge it or kill it — there is no third option. Max one fast elite per wave." },
-  { id: "mon-blightspitter", name: "Blightspitter", glyph: "◕", tint: TINT.elite, status: "designed", rank: "elite", tier: "Standard",
+  { id: "mon-blightspitter", name: "Blightspitter", glyph: "◕", tint: TINT.elite, status: "live", rank: "elite", tier: "Standard",
     stats: { Health: "40", Armour: "1", Speed: "2.4 m/s", Damage: "1.6 × 3 fan", XP: "30" },
     text: "Twice its family's speed, three globs per volley. You cannot camp one lane against it." },
-  { id: "mon-quillback-matriarch", name: "Quillback Matriarch", glyph: "⋕", tint: TINT.elite, status: "designed", rank: "elite", tier: "Slow",
+  { id: "mon-quillback-matriarch", name: "Quillback Matriarch", glyph: "⋕", tint: TINT.elite, status: "live", rank: "elite", tier: "Slow",
     stats: { Health: "50", Armour: "2", Speed: "1.4 m/s", Damage: "1.2 per spine", XP: "30" },
     text: "Rain of spines: a cluster of reticles marks the ground 1.2s before impact. The first 'watch your feet' elite." },
   { id: "mon-synapse-brain", name: "Synapse Brain", glyph: "◉", tint: TINT.elite, status: "concept", rank: "elite", tier: "Slow",
@@ -537,7 +537,7 @@ const MONSTERS = [
   { id: "mon-brood-warden", name: "Brood Warden", glyph: "⬣", tint: TINT.boss, status: "live", rank: "mini-boss", tier: "Standard",
     stats: { Health: "540", Armour: "2 flat", Speed: "1.4 m/s", Damage: "3.5 cleave / 1.6 acid", Fight: "45–90s" },
     text: "Four moves: guarding cleave, acid fan, egg placement, and a one-time swarm rush at half health." },
-  { id: "mon-rift-stalker", name: "Rift Stalker", glyph: "⬡", tint: TINT.boss, status: "designed", rank: "mini-boss", tier: "Burst",
+  { id: "mon-rift-stalker", name: "Rift Stalker", glyph: "⬡", tint: TINT.boss, status: "live", rank: "mini-boss", tier: "Burst",
     stats: { Health: "480", Armour: "1", Speed: "2.2 / blink", Damage: "4 pounce", Fight: "45–90s" },
     text: "Cloaked hunter, visible only as distortion until it marks its pounce. Decloaks when hit. Frenzies below 20%." },
 
@@ -708,6 +708,7 @@ const TABS = [
   { id: "ammo",     label: "Ammo" },
   { id: "damage",   label: "Damage Types" },
   { id: "dots",     label: "Damage Over Time" },
+  { id: "roadmap",  label: "Roadmap" },
 ];
 
 const FILTERS = {
@@ -956,6 +957,56 @@ function render() {
         <td><b>${d.name}</b></td><td>${d.type}</td><td>${d.dps}</td><td>${d.tick}</td>
         <td>${d.perTick}</td><td>${d.dur}</td><td>${d.stack}</td><td>${d.text}</td>
       </tr>`).join("")}
+      </tbody></table></div>`;
+  }
+
+  if (state.tab === "roadmap") {
+    const count = (arr) => {
+      const c = { live: 0, designed: 0, concept: 0 };
+      for (const e of arr) c[e.status] = (c[e.status] || 0) + 1;
+      return c;
+    };
+    const row = (name, arr) => {
+      const c = count(arr);
+      const total = arr.length;
+      const pct = Math.round((c.live / total) * 100);
+      return `<tr><td><b>${name}</b></td>
+        <td><span class="badge b-live">${c.live} live</span></td>
+        <td><span class="badge b-designed">${c.designed} designed</span></td>
+        <td><span class="badge b-concept">${c.concept} concept</span></td>
+        <td><b>${pct}%</b> of ${total}</td></tr>`;
+    };
+    html += `<div class="intro"><strong>Where the game is, and what lands next.</strong>
+      Counts below are computed from this codex's own data, so they update the moment an entry
+      goes live. The build order lives in <code>last-bastion-model.md</code>; this page is the
+      player-visible summary. Current playable build: the ten-wave <em>Quick Drop</em> run
+      (Marine, 7 weapons, 17 alien behaviours, elites, mini-bosses, the Bastion Eater, Scrap Shop).</div>`;
+    html += `<h2 class="sect">Content status</h2>
+      <div class="tablewrap"><table>
+      <thead><tr><th>System</th><th>Live</th><th>Designed</th><th>Concept</th><th>Playable</th></tr></thead><tbody>
+      ${row("Characters", HEROES)}
+      ${row("Weapons", WEAPONS)}
+      ${row("Monsters", MONSTERS)}
+      ${row("Upgrades", UPGRADES)}
+      ${row("Perks", PERKS)}
+      ${row("Powerups & Shrines", POWERUPS)}
+      ${row("Relics & Artifacts", RELICS)}
+      ${row("Ammo kits", AMMO)}
+      </tbody></table></div>`;
+    html += `<h2 class="sect">The road to the full expedition</h2>
+      <div class="tablewrap"><table>
+      <thead><tr><th>Milestone</th><th>Status</th><th>What it adds for players</th></tr></thead><tbody>
+      <tr><td><b>Ten-wave Quick Drop</b></td><td>${badge("live")}</td><td>Timed waves, elites, mini-bosses, the Bastion Eater finale, Scrap Shop, weapon rack &amp; merging</td></tr>
+      <tr><td><b>Third mini-boss — Rift Stalker</b></td><td>${badge("live")}</td><td>Cloaked stalk, marked warp-pounces, rift-spike fans, and a chained-warp frenzy — now in the mini-boss pool (placeholder art until its production batch)</td></tr>
+      <tr><td><b>Front-end shell</b></td><td>${badge("designed")}</td><td>Title screen, main menu, How to Play, Settings, character select</td></tr>
+      <tr><td><b>Expedition map — 20 nodes</b></td><td>${badge("designed")}</td><td>A branching 20-node starchart run: combat, elite, mini-boss, depot, and cache nodes, one life, autosave between nodes</td></tr>
+      <tr><td><b>World themes</b></td><td>${badge("designed")}</td><td>Emberfall, Toxic Bloom, Void Approach, and Arctic Relay arenas (art complete, readability review pending)</td></tr>
+      <tr><td><b>Shop keepers &amp; economy v2</b></td><td>${badge("designed")}</td><td>The between-wave Scrap Shop gains rerolls, offer locks, weapon selling, and a rotating cast of shop keepers — with keeper specialties to come</td></tr>
+      <tr><td><b>Perk system</b></td><td>${badge("designed")}</td><td>Pre-drop run modifiers unlocked by your past expeditions</td></tr>
+      <tr><td><b>Second hero — Medic</b></td><td>${badge("designed")}</td><td>A sustain-focused playstyle with its own weapons and growth</td></tr>
+      <tr><td><b>Unique weapon — Event Horizon</b></td><td>${badge("designed")}</td><td>The first ★ weapon: gravity fields and implosions</td></tr>
+      <tr><td><b>Run summary &amp; Records</b></td><td>${badge("concept")}</td><td>End-of-run recap and persistent stats that drive perk unlocks</td></tr>
+      <tr><td><b>Sector campaign</b></td><td>${badge("concept")}</td><td>Multiple faction-owned sector maps after the first expedition is proven</td></tr>
       </tbody></table></div>`;
   }
 

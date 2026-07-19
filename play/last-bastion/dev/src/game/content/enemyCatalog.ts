@@ -17,6 +17,7 @@ export type EnemyType =
   | "aurum-hoarder"
   | "siege-crusher"
   | "brood-warden"
+  | "rift-stalker"
   | "bastion-eater";
 
 export interface EnemyDefinition {
@@ -184,6 +185,17 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     flatDamageReduction: 2,
     resistances: { toxic: 0.35 },
     steeringProfile: "supportAnchor",
+  }),
+  "rift-stalker": enemy({
+    id: "rift-stalker",
+    maxHealth: 520,
+    radiusMetres: 0.95,
+    movementSpeedMetresPerSecond: 2.1,
+    contactDamage: 1.4,
+    experienceValue: 0,
+    flatDamageReduction: 2,
+    resistances: { cryo: 0.75 },
+    steeringProfile: "flanker",
   }),
   "bastion-eater": enemy({
     id: "bastion-eater",

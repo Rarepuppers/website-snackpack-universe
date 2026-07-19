@@ -390,9 +390,11 @@ describe("CombatSimulation", () => {
 
   it("maps seeded mini-boss rolls only to mechanically complete pool entries", () => {
     expect(selectMiniBossForRoll(0)).toBe("siege-crusher");
-    expect(selectMiniBossForRoll(0.499)).toBe("siege-crusher");
-    expect(selectMiniBossForRoll(0.5)).toBe("brood-warden");
-    expect(selectMiniBossForRoll(0.999)).toBe("brood-warden");
+    expect(selectMiniBossForRoll(0.32)).toBe("siege-crusher");
+    expect(selectMiniBossForRoll(0.34)).toBe("brood-warden");
+    expect(selectMiniBossForRoll(0.65)).toBe("brood-warden");
+    expect(selectMiniBossForRoll(0.67)).toBe("rift-stalker");
+    expect(selectMiniBossForRoll(0.999)).toBe("rift-stalker");
   });
 
   it("uses the Brood Warden's half-health and final-20-percent enrage tiers", () => {

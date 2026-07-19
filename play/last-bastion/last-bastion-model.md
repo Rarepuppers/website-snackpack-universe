@@ -18,11 +18,11 @@ An item is not completed merely because code or an asset exists. It must meet it
 
 ## Current milestone
 
-**Milestone:** Pre-production and combat prototype
+**Milestone:** Road to the playable 20-node expedition (Web MVP)
 
-**Milestone status:** In progress
+**Milestone status:** In progress — plan consolidated 19 July 2026 (see "Plan review — 19 July 2026" below)
 
-**Current objective:** run the consolidated creator review, including the completed Batch J galleries and deterministic live-art lab, then begin Task 36: the Rift Stalker behavior gate. Event Horizon remains held until its own behavior gate.
+**Current objective:** run the consolidated creator review (Task 33) — now including the Rift Stalker behavior lab (`?scenario=rift-stalker`, completed 19 July 2026) — then work the 19 July sequence in order: front-end shell (37) → expedition map screen (38) → node wiring (39) → the new Tasks 44–52. Event Horizon remains held until its own behavior gate; Rift Stalker production art is Batch O and waits for its behavior review.
 
 ## Completed
 
@@ -577,3 +577,34 @@ Completion evidence:
 ### Weapon placement, inventory, and merge behavior gate
 
 **Completed 18 July 2026.** `dev/src/game/equipment/WeaponInventory.ts` is the portable rules boundary for typed rack legality, four-slot class-agnostic stash storage, non-destructive swaps, discard, and identical same-tier merges capped at Tier III. `CombatSimulation` exposes rack/stash state in every snapshot and the deterministic `?scenario=weapon-gate` route drives the same keyboard/controller-compatible decision surface used by other intermissions. Phaser remains presentation-only so a future Steam client can replace the modal without rewriting the state contract or rules tests. Production Batch I1–I3 is now integrated: canonical tiles, typed slots, tier/discard/merge surfaces, placement panel, stat card, salvage counter, and action glyphs all retain code-owned functional overlays.
+
+## Plan review — 19 July 2026: road to the playable 20-node expedition
+
+This review consolidates everything still required for a complete playable game — working map, characters, weapons, perks, upgrades, shop, waves, and the full 20-node expedition ("20 levels": every node on the chart playable, a run traversing 8–11 of them). It extends the numbered order; Tasks 33–43 keep their meaning, and the earlier of them (33, 36–41, 43) remain the immediate queue. Art stays with Codex/imagegen throughout — behavior gates use placeholders and every new art need has a brief in `last-bastion-content.md` before generation.
+
+State of each pillar as of this review:
+
+| Pillar | State | Gap to "playable game" |
+| --- | --- | --- |
+| Map | Generator complete and tested; no screen, no save schema v2, no node wiring | Tasks 38–39 |
+| Characters | Marine live with growth packages; Medic designed only | Task 47 |
+| Weapons | 7 live in chest pool + Event Horizon art held | Tasks 41, plus review of chest weighting in 49 |
+| Perks | 7 designed in the codex, tiles produced (Batch I), no system | Task 46 |
+| Upgrades | 12 live with slots/paths; 5 codex entries concept | Concept entries land opportunistically in 49 |
+| Shop | Intermission Scrap Shop live with production UI | Shop-node migration + reroll/lock, Task 45 |
+| Waves/rounds | Ten-wave Quick Drop with timed director, budgets, elites, Bastion Eater finale | Node-budget variant of the director, Task 48 |
+| Worlds | Five themes: one live tint set, four authored atlases held | Contrast review + node assignment, Task 44 |
+
+Numbered steps (continuing from 43):
+
+44. **World-theme enablement.** Run the creator grayscale/contrast review of the four held world atlases (`batch=h|tb|va|ar`) against the mixed Wave 4+ roster, fix any readability failures, then let the expedition map assign a theme pool per node (same world, seeded variant). Exit: all five worlds render live under a node, telegraphs and actors beat every backdrop.
+45. **Shop keepers and economy v2 (decision 19 July 2026: the shop stays an intermission, not a map node).** The between-wave Scrap Shop is the right fit for the bullet-hell pacing — keep it appearing as an intermission after designated waves/encounters on every route. Economy v2 adds one paid reroll per visit (price scales with depth), an offer lock that survives the reroll, and weapon selling at 50% (Scrapper perk raises it). Presentation v2 adds a **shop keeper**: a varied character behind the salvage counter (art brief Batch Q in `last-bastion-content.md`; behavior gate uses the existing keeper-less panel). Future direction, design-only for now: **shop specialties** — each visit's keeper implies a side speciality with one or two bonus offers of a matching category (Blacksmith → merge/tier services, Gunsmith → weapons, Android vendor → kit/ammo, Cyborg clinic → upgrade/augment, Healing centre → repair/regen, Curator → relics/Artifacts, Black market → high-tier offers at a markup with a downside). Specialties enter production only after relics/Artifacts exist, since half the categories depend on them.
+46. **Perk system behavior gate.** Pre-drop perk selection on the character-select screen: one perk slot at first, unlocked through Records milestones (runs finished, victories, nodes cleared) persisted in the existing save store. Implement the seven codex perks (`perk-veteran` … `perk-pathfinder`) as pure run-rule modifiers resolved at run start; Pathfinder needs map-screen support (extra visible column) so it lands with or after Task 38. Batch I perk tiles are already produced — no new art required.
+47. **Medic hero gate.** Second playable hero: +2 health/+1 armour/+2 Light growth package (already authored in `last-bastion-game.md`), a support-flavoured passive and ultimate, and the Injector Carbine or Remedy Drone as the starting weapon behavior. Hero data is a data row; the gate is the new weapon behavior plus dossier wiring. Production art brief is Batch P in `last-bastion-content.md`.
+48. **Node-budget encounter director.** Parameterize the existing timed threat director by node type and column depth instead of the fixed ten-wave script: Combat nodes run 3–4 timed waves, Elite nodes guarantee the elite cache, Mini-boss nodes draw from the three-entry pool, the Boss node runs the Bastion Eater. Quick Drop keeps the ten-wave script as a lab/arcade route. Budget tables live in `wave_balance.md` ("Node budgets by column depth", added this date).
+49. **Campaign tuning pass — the 20-node difficulty curve.** One consolidated pass against measurable targets: a first-run player should clear columns 1–3, mid columns should force shop/depot decisions, and the boss should be beatable by two of three recognisably different builds. Tune node budgets, XP, Scrap flow, chest weighting (all seven live weapons plus any approved since), and heal availability together, not per feature.
+50. **Run summary and Records.** End-of-run summary screen (victory or defeat): nodes cleared, kills, damage by weapon, build recap, Scrap earned, perk-unlock progress. Records card on the main menu reads the same persisted totals. This is the meta-progression spine the perk unlocks hang from.
+51. **Production Asset Batch O — Rift Stalker set**, only after Task 36's behavior gate passes creator review (brief in `last-bastion-content.md`).
+52. **Codex live-sync rule (standing).** Whenever a gate flips content from designed to live (or new content enters design), update `last-bastion-codex.html` statuses and its Roadmap tab in the same commit. The codex is the public progress tracker; it must never lag the shipped game by more than one commit.
+
+Sequencing note: 44–46 depend on the map screen (38–39); 47–48 can start in parallel once 39's encounter contract exists; 49 runs once, last, before the Web MVP gate. The Corrupted Human family (Batch M) and sector campaign stay deferred until the single-sector MVP succeeds.

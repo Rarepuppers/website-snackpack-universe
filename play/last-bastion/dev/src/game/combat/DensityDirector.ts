@@ -43,6 +43,7 @@ const ROLE: Readonly<Record<EnemyType, EnemyPressureRole>> = Object.freeze({
   "aurum-hoarder": "specialist",
   "siege-crusher": "boss",
   "brood-warden": "boss",
+  "rift-stalker": "boss",
   "bastion-eater": "boss",
 });
 
@@ -62,6 +63,7 @@ export const ENEMY_THREAT_COST: Readonly<Record<EnemyType, number>> = Object.fre
   "aurum-hoarder": 0,
   "siege-crusher": 40,
   "brood-warden": 40,
+  "rift-stalker": 40,
   "bastion-eater": 40,
 });
 

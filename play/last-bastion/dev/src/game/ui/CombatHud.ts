@@ -282,14 +282,16 @@ export class CombatHud {
       const healthRatio = boss.health / boss.maxHealth;
       const enrage = healthRatio <= 0.2 ? "  •  FRENZY" : healthRatio <= 0.5 ? "  •  ENRAGED" : "";
       const isBrood = boss.miniBossKind === "brood-warden";
+      const isRift = boss.miniBossKind === "rift-stalker";
       const isFinalBoss = boss.type === "bastion-eater";
-      this.bossPortrait.setVisible(this.productionArt)
+      // The Rift Stalker has no portrait until Batch O; it always uses the fallback swatch.
+      this.bossPortrait.setVisible(this.productionArt && !isRift)
         .setTexture(isFinalBoss ? "bastion-eater-portrait-v1" : isBrood ? "brood-warden-portrait-v1" : "siege-crusher-portrait-v1");
-      this.bossFallback.setVisible(!this.productionArt)
-        .setFillStyle(isFinalBoss ? 0x273153 : isBrood ? 0x68408b : 0x8b4937)
-        .setStrokeStyle(2, isFinalBoss ? 0x56d9e8 : isBrood ? 0xb9f35b : 0xffb15c);
-      const name = isFinalBoss ? "THE BASTION EATER" : isBrood ? "BROOD WARDEN" : "SIEGE CRUSHER";
-      const phase = isFinalBoss ? boss.bastionEaterPhase : isBrood ? boss.broodWardenPhase : boss.siegeCrusherPhase;
+      this.bossFallback.setVisible(!this.productionArt || isRift)
+        .setFillStyle(isFinalBoss ? 0x273153 : isBrood ? 0x68408b : isRift ? 0x2c2f3d : 0x8b4937)
+        .setStrokeStyle(2, isFinalBoss ? 0x56d9e8 : isBrood ? 0xb9f35b : isRift ? 0x9a6cff : 0xffb15c);
+      const name = isFinalBoss ? "THE BASTION EATER" : isBrood ? "BROOD WARDEN" : isRift ? "RIFT STALKER" : "SIEGE CRUSHER";
+      const phase = isFinalBoss ? boss.bastionEaterPhase : isBrood ? boss.broodWardenPhase : isRift ? boss.riftStalkerPhase : boss.siegeCrusherPhase;
       this.bossText.setText(`${name}  •  ${(phase ?? "stalk").toUpperCase()}${enrage}`);
     }
 

@@ -1104,6 +1104,9 @@ export class PrototypeScene extends Phaser.Scene {
           return createManifestSprite(this, "brood-warden-v1");
         }
         return this.add.ellipse(0, 0, 76, 58, 0x68408b).setStrokeStyle(5, 0xb9f35b);
+      case "rift-stalker":
+        // Behavior-gate placeholder: Batch O production art lands after creator review.
+        return this.add.ellipse(0, 0, 66, 50, 0x2c2f3d).setStrokeStyle(5, 0x9a6cff);
       default:
         if (this.useMarineArt) {
           return createManifestSprite(this, "scuttler-v1");
@@ -1291,6 +1294,16 @@ export class PrototypeScene extends Phaser.Scene {
         .setStrokeStyle(5, warning ? 0xffd36b : 0xb9f35b)
         .setRotation(Math.atan2(enemy.facingDirection.y, enemy.facingDirection.x))
         .setScale(warning ? healthScale * 1.08 : healthScale);
+    }
+    if (enemy.type === "rift-stalker" && view instanceof Phaser.GameObjects.Ellipse) {
+      const phase = enemy.riftStalkerPhase ?? "cloak";
+      const cloaked = phase === "cloak" || phase === "warp";
+      const warning = phase === "mark" || phase === "slash-windup";
+      view.setFillStyle(warning ? 0x6d3a8f : phase === "recovery" ? 0x3a3f52 : 0x2c2f3d)
+        .setStrokeStyle(5, warning ? 0xd696ff : 0x9a6cff)
+        .setRotation(Math.atan2(enemy.facingDirection.y, enemy.facingDirection.x))
+        .setScale(phase === "pounce" || phase === "slash" ? healthScale * 1.12 : healthScale)
+        .setAlpha(phase === "warp" ? 0.12 : cloaked ? 0.38 : 1);
     }
   }
 
@@ -2394,7 +2407,7 @@ function readStressProfile(): 4 | 12 | null {
 
 function readScenario(): CombatScenario | null {
   const scenario = new URLSearchParams(window.location.search).get("scenario");
-  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop" || scenario === "weapon-gate" || scenario === "batch-j"
+  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "rift-stalker" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop" || scenario === "weapon-gate" || scenario === "batch-j"
     ? scenario
     : null;
 }

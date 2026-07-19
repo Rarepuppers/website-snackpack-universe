@@ -119,7 +119,7 @@ export type BastionEaterAction =
   | "breach-windup" | "breach" | "recovery";
 export type EnemyRank = "standard" | "treasure" | "elite" | "mini-boss" | "boss";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
-export type MiniBossKind = "siege-crusher" | "brood-warden";
+export type MiniBossKind = "siege-crusher" | "brood-warden" | "rift-stalker";
 export type SiegeCrusherPhase =
   | "entrance" | "stalk" | "charge-windup" | "charge"
   | "sweep-windup" | "sweep" | "slam-windup" | "slam" | "recovery";
@@ -127,7 +127,10 @@ export type BroodWardenPhase =
   | "entrance" | "stalk" | "cleave-windup" | "cleave"
   | "acid-windup" | "acid-volley" | "egg-windup" | "egg-lay"
   | "rush-windup" | "swarm-rush" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
+export type RiftStalkerPhase =
+  | "entrance" | "cloak" | "mark" | "warp" | "pounce"
+  | "slash-windup" | "slash" | "recovery";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
 export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat";
@@ -188,6 +191,11 @@ export type CombatEvent =
   | { type: "brood-acid-impact"; position: Vector2Data }
   | { type: "brood-eggs-laid"; position: Vector2Data; count: number }
   | { type: "brood-swarm-rush"; position: Vector2Data; count: number }
+  | { type: "rift-stalker-mark"; position: Vector2Data; target: Vector2Data }
+  | { type: "rift-stalker-warp-out"; position: Vector2Data }
+  | { type: "rift-stalker-pounce"; position: Vector2Data; radiusMetres: number; hitPlayer: boolean }
+  | { type: "rift-stalker-fan"; position: Vector2Data; direction: Vector2Data; count: number }
+  | { type: "rift-stalker-slash"; position: Vector2Data; direction: Vector2Data; reachMetres: number }
   | { type: "obstacle-damaged"; obstacleId: string; position: Vector2Data }
   | { type: "obstacle-destroyed"; obstacleId: string; position: Vector2Data }
   | { type: "mini-boss-reward-dropped"; position: Vector2Data; miniBossKind: MiniBossKind }
@@ -278,6 +286,9 @@ export interface EnemySnapshot {
   siegeCrusherDirection?: Vector2Data;
   broodWardenPhase?: BroodWardenPhase;
   broodWardenDirection?: Vector2Data;
+  riftStalkerPhase?: RiftStalkerPhase;
+  riftStalkerMarkTarget?: Vector2Data;
+  riftStalkerDirection?: Vector2Data;
   facingDirection: Vector2Data;
   statuses: readonly StatusEffectType[];
   steeringProfile: EnemySteeringProfileId;
@@ -503,6 +514,11 @@ interface EnemyState {
   broodWardenDirection: Vector2Data;
   broodWardenAttackCount: number;
   broodWardenRushUsed: boolean;
+  riftStalkerPhase: RiftStalkerPhase;
+  riftStalkerPhaseRemainingSeconds: number;
+  riftStalkerMarkTarget: Vector2Data;
+  riftStalkerDirection: Vector2Data;
+  riftStalkerChainedThisCycle: boolean;
   statusBuildup: Partial<Record<StatusEffectType, number>>;
   statusTimers: Partial<Record<StatusEffectType, number>>;
 }
@@ -619,6 +635,10 @@ export const PLAYER_ATTACK_DAMAGE_BASELINES = Object.freeze({
   broodCleaveEnraged: 4,
   broodCleaveLastStand: 5,
   broodAcid: 1.6,
+  riftPounce: 3.5,
+  riftSlash: 3,
+  riftSlashFrenzy: 4,
+  riftSpike: 1.4,
   bastionEaterClaw: 5,
   bastionEaterTendril: 4,
   bastionEaterTendrilLastStand: 5,
@@ -687,7 +707,15 @@ const FENCE_CONTACT_RANGE_METRES = 0.6;
 const FENCE_SWITCH_RANGE_METRES = 1.4;
 const ULTIMATE_PROJECTILE_SPEED = 12;
 const ULTIMATE_PROJECTILE_LIFETIME_SECONDS = 0.9;
-export const MINI_BOSS_POOL: readonly MiniBossKind[] = Object.freeze(["siege-crusher", "brood-warden"]);
+export const MINI_BOSS_POOL: readonly MiniBossKind[] = Object.freeze(["siege-crusher", "brood-warden", "rift-stalker"]);
+export const RIFT_STALKER_POUNCE_RADIUS_METRES = 1.6;
+export const RIFT_STALKER_SLASH_REACH_METRES = 2.3;
+export const RIFT_STALKER_WARP_SECONDS = 0.35;
+/** Cloaked stalk and warp travel take reduced damage; every other phase is a punish window. */
+export const RIFT_STALKER_CLOAK_DAMAGE_MULTIPLIER = 0.55;
+const RIFT_STALKER_SLASH_HALF_ARC_RADIANS = Math.PI * 50 / 180;
+const RIFT_STALKER_SPIKE_SPEED = 8;
+const RIFT_STALKER_SPIKE_RANGE_METRES = 9;
 
 const POWERUP_DURATION_SECONDS: Readonly<Record<PowerupType, number>> = Object.freeze({
   overcharge: 6,
@@ -836,6 +864,8 @@ export class CombatSimulation {
       this.populateSiegeCrusherScenario();
     } else if (this.scenario === "brood-warden") {
       this.populateBroodWardenScenario();
+    } else if (this.scenario === "rift-stalker") {
+      this.populateRiftStalkerScenario();
     } else if (this.scenario === "ripper") {
       this.populateRipperScenario();
     } else if (this.scenario === "razor-scuttler") {
@@ -965,7 +995,7 @@ export class CombatSimulation {
 
   spawnEnemy(type: EnemyType, position?: Vector2Data): number {
     const definition = ENEMY_CATALOG[type];
-    const authoredBoss = type === "siege-crusher" || type === "brood-warden" || type === "bastion-eater";
+    const authoredBoss = type === "siege-crusher" || type === "brood-warden" || type === "rift-stalker" || type === "bastion-eater";
     const scaling = waveScaling(this.waveIndex + 1, type, { boss: authoredBoss });
     const scaledMaxHealth = scaleEnemyHealth(definition.maxHealth, scaling);
     const spawnPosition = position ? { ...position } : this.nextEdgeSpawn(definition.radiusMetres);
@@ -1060,6 +1090,14 @@ export class CombatSimulation {
       broodWardenDirection: { x: 0, y: 0 },
       broodWardenAttackCount: 0,
       broodWardenRushUsed: false,
+      riftStalkerPhase: "entrance",
+      riftStalkerPhaseRemainingSeconds: type === "rift-stalker" ? 0.9 : 0,
+      riftStalkerMarkTarget: { ...this.playerPosition },
+      riftStalkerDirection: normalizeVector({
+        x: this.playerPosition.x - spawnPosition.x,
+        y: this.playerPosition.y - spawnPosition.y,
+      }),
+      riftStalkerChainedThisCycle: false,
       statusBuildup: {},
       statusTimers: {},
     });
@@ -1165,6 +1203,8 @@ export class CombatSimulation {
     enemy.siegeCrusherPhaseRemainingSeconds = 0.9;
     enemy.broodWardenPhase = "entrance";
     enemy.broodWardenPhaseRemainingSeconds = 0.9;
+    enemy.riftStalkerPhase = "entrance";
+    enemy.riftStalkerPhaseRemainingSeconds = 0.9;
     enemy.facingDirection = normalizeVector({
       x: this.playerPosition.x - enemy.position.x,
       y: this.playerPosition.y - enemy.position.y,
@@ -2324,6 +2364,9 @@ export class CombatSimulation {
         case "brood-warden":
           this.updateBroodWarden(enemy, deltaSeconds);
           break;
+        case "rift-stalker":
+          this.updateRiftStalker(enemy, deltaSeconds);
+          break;
         case "bastion-eater":
           this.updateBastionEater(enemy, deltaSeconds);
           break;
@@ -3032,6 +3075,174 @@ export class CombatSimulation {
     this.frameEvents.push({ type: "brood-swarm-rush", position: { ...enemy.position }, count: allowedCount });
   }
 
+  private updateRiftStalker(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.riftStalkerPhaseRemainingSeconds -= deltaSeconds;
+    const tier = riftStalkerFrenzyTier(enemy.health, enemy.maxHealth);
+    const playerDistance = distance(enemy.position, this.playerPosition);
+    if (enemy.riftStalkerPhase !== "warp") {
+      enemy.facingDirection = normalizeVector({
+        x: this.playerPosition.x - enemy.position.x,
+        y: this.playerPosition.y - enemy.position.y,
+      });
+    }
+
+    switch (enemy.riftStalkerPhase) {
+      case "entrance":
+        if (enemy.riftStalkerPhaseRemainingSeconds <= 0) {
+          enemy.riftStalkerPhase = "cloak";
+          enemy.riftStalkerPhaseRemainingSeconds = [1.5, 1.2, 0.9][tier]!;
+        }
+        break;
+      case "cloak":
+        this.moveEnemyTowardPlayer(enemy, [2.1, 2.45, 2.8][tier]!, deltaSeconds);
+        if (enemy.riftStalkerPhaseRemainingSeconds <= 0) {
+          this.beginRiftStalkerMark(enemy, [0.85, 0.72, 0.55][tier]!);
+        }
+        break;
+      case "mark":
+        if (enemy.riftStalkerPhaseRemainingSeconds <= 0) {
+          enemy.riftStalkerPhase = "warp";
+          enemy.riftStalkerPhaseRemainingSeconds = RIFT_STALKER_WARP_SECONDS;
+          this.frameEvents.push({ type: "rift-stalker-warp-out", position: { ...enemy.position } });
+        }
+        break;
+      case "warp":
+        if (enemy.riftStalkerPhaseRemainingSeconds <= 0) {
+          this.resolveRiftStalkerPounce(enemy, tier);
+        }
+        break;
+      case "pounce":
+        if (enemy.riftStalkerPhaseRemainingSeconds <= 0) {
+          if (tier === 2 && !enemy.riftStalkerChainedThisCycle) {
+            enemy.riftStalkerChainedThisCycle = true;
+            this.beginRiftStalkerMark(enemy, 0.5);
+          } else if (playerDistance <= RIFT_STALKER_SLASH_REACH_METRES) {
+            enemy.riftStalkerDirection = { ...enemy.facingDirection };
+            enemy.riftStalkerPhase = "slash-windup";
+            enemy.riftStalkerPhaseRemainingSeconds = SWEEPING_ARC_TELL_SECONDS;
+          } else {
+            enemy.riftStalkerPhase = "recovery";
+            enemy.riftStalkerPhaseRemainingSeconds = [1.15, 0.95, 0.7][tier]!;
+          }
+        }
+        break;
+      case "slash-windup":
+        if (enemy.riftStalkerPhaseRemainingSeconds <= 0) {
+          enemy.riftStalkerPhase = "slash";
+          enemy.riftStalkerPhaseRemainingSeconds = 0.25;
+          this.frameEvents.push({
+            type: "rift-stalker-slash",
+            position: { ...enemy.position },
+            direction: { ...enemy.riftStalkerDirection },
+            reachMetres: RIFT_STALKER_SLASH_REACH_METRES,
+          });
+          if (pointInsideTelegraphedArc(
+            enemy.position,
+            enemy.riftStalkerDirection,
+            this.playerPosition,
+            RIFT_STALKER_SLASH_REACH_METRES + PLAYER_RADIUS_METRES,
+            RIFT_STALKER_SLASH_HALF_ARC_RADIANS,
+          )) {
+            this.damagePlayer(this.scaledEnemyDamage(enemy, tier === 2
+              ? PLAYER_ATTACK_DAMAGE_BASELINES.riftSlashFrenzy
+              : PLAYER_ATTACK_DAMAGE_BASELINES.riftSlash));
+          }
+        }
+        break;
+      case "slash":
+        if (enemy.riftStalkerPhaseRemainingSeconds <= 0) {
+          enemy.riftStalkerPhase = "recovery";
+          enemy.riftStalkerPhaseRemainingSeconds = [1.15, 0.95, 0.7][tier]!;
+        }
+        break;
+      case "recovery":
+        enemy.riftStalkerChainedThisCycle = false;
+        if (enemy.riftStalkerPhaseRemainingSeconds <= 0) {
+          enemy.riftStalkerPhase = "cloak";
+          enemy.riftStalkerPhaseRemainingSeconds = [1.5, 1.2, 0.9][tier]!;
+        }
+        break;
+    }
+  }
+
+  private beginRiftStalkerMark(enemy: EnemyState, tellSeconds: number): void {
+    enemy.riftStalkerMarkTarget = { ...this.playerPosition };
+    enemy.riftStalkerPhase = "mark";
+    enemy.riftStalkerPhaseRemainingSeconds = tellSeconds;
+    this.frameEvents.push({
+      type: "rift-stalker-mark",
+      position: { ...enemy.position },
+      target: { ...enemy.riftStalkerMarkTarget },
+    });
+  }
+
+  /** Warp completion: land on the marked point, strike it, and release the rift-spike fan. */
+  private resolveRiftStalkerPounce(enemy: EnemyState, tier: 0 | 1 | 2): void {
+    const landing = {
+      x: clamp(enemy.riftStalkerMarkTarget.x, 0.9, this.widthMetres - 0.9),
+      y: clamp(enemy.riftStalkerMarkTarget.y, 0.9, this.heightMetres - 0.9),
+    };
+    if (!pointHitsObstacle(landing, this.activeObstacles())) {
+      enemy.position = landing;
+    }
+    this.frameEvents.push({ type: "warp-arrival", position: { ...enemy.position } });
+    enemy.facingDirection = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
+    const hitPlayer = distance(this.playerPosition, enemy.position)
+      <= RIFT_STALKER_POUNCE_RADIUS_METRES + PLAYER_RADIUS_METRES;
+    if (hitPlayer) {
+      this.damagePlayer(this.scaledEnemyDamage(enemy, PLAYER_ATTACK_DAMAGE_BASELINES.riftPounce));
+    }
+    this.frameEvents.push({
+      type: "rift-stalker-pounce",
+      position: { ...enemy.position },
+      radiusMetres: RIFT_STALKER_POUNCE_RADIUS_METRES,
+      hitPlayer,
+    });
+    this.launchRiftSpikeFan(enemy, tier === 2 ? 5 : 3);
+    enemy.riftStalkerPhase = "pounce";
+    enemy.riftStalkerPhaseRemainingSeconds = 0.28;
+  }
+
+  private launchRiftSpikeFan(enemy: EnemyState, requestedCount: number): void {
+    const count = Math.min(requestedCount, this.availableEnemyProjectileSlots());
+    if (count <= 0) return;
+    const base = Math.atan2(
+      this.playerPosition.y - enemy.position.y,
+      this.playerPosition.x - enemy.position.x,
+    );
+    const spread = Math.PI / 6;
+    for (let index = 0; index < count; index += 1) {
+      const offset = count === 1 ? 0 : (index / (count - 1) - 0.5) * spread * 2;
+      const direction = { x: Math.cos(base + offset), y: Math.sin(base + offset) };
+      const start = {
+        x: enemy.position.x + direction.x * 0.8,
+        y: enemy.position.y + direction.y * 0.8,
+      };
+      const target = {
+        x: clamp(start.x + direction.x * RIFT_STALKER_SPIKE_RANGE_METRES, 0.3, this.widthMetres - 0.3),
+        y: clamp(start.y + direction.y * RIFT_STALKER_SPIKE_RANGE_METRES, 0.3, this.heightMetres - 0.3),
+      };
+      this.spawnHostileProjectile({
+        type: "quill-spike",
+        position: start,
+        velocity: { x: direction.x * RIFT_STALKER_SPIKE_SPEED, y: direction.y * RIFT_STALKER_SPIKE_SPEED },
+        target,
+        remainingSeconds: distance(start, target) / RIFT_STALKER_SPIKE_SPEED,
+        damage: this.scaledEnemyDamage(enemy, PLAYER_ATTACK_DAMAGE_BASELINES.riftSpike),
+        createsPuddle: false,
+      });
+    }
+    this.frameEvents.push({
+      type: "rift-stalker-fan",
+      position: { ...enemy.position },
+      direction: { ...enemy.facingDirection },
+      count,
+    });
+  }
+
   private updateBastionEater(enemy: EnemyState, deltaSeconds: number): void {
     const healthRatio = enemy.health / enemy.maxHealth;
     const phase: BastionEaterPhase = healthRatio <= 0.33
@@ -3711,6 +3922,32 @@ export class CombatSimulation {
           major: true,
         });
       }
+      if (enemy.type === "rift-stalker" && enemy.riftStalkerPhase === "mark") {
+        telegraphs.push({
+          id: `rift-mark-${enemy.id}`,
+          groupId: `rift-mark-${enemy.id}`,
+          kind: "radial-pulse",
+          origin: { ...enemy.riftStalkerMarkTarget },
+          radiusMetres: RIFT_STALKER_POUNCE_RADIUS_METRES,
+          remainingSeconds: enemy.riftStalkerPhaseRemainingSeconds,
+          durationSeconds: 0.85,
+          major: true,
+        });
+      }
+      if (enemy.type === "rift-stalker" && enemy.riftStalkerPhase === "slash-windup") {
+        telegraphs.push({
+          id: `rift-slash-${enemy.id}`,
+          groupId: `rift-slash-${enemy.id}`,
+          kind: "sweeping-arc",
+          origin: { ...enemy.position },
+          direction: { ...enemy.riftStalkerDirection },
+          radiusMetres: RIFT_STALKER_SLASH_REACH_METRES,
+          halfArcRadians: RIFT_STALKER_SLASH_HALF_ARC_RADIANS,
+          remainingSeconds: enemy.riftStalkerPhaseRemainingSeconds,
+          durationSeconds: SWEEPING_ARC_TELL_SECONDS,
+          major: true,
+        });
+      }
       if (enemy.type === "brain-blob" && enemy.brainPhase === "windup") {
         telegraphs.push({
           id: `pulse-${enemy.id}`,
@@ -4015,6 +4252,12 @@ export class CombatSimulation {
     );
     if (enemy.type === "bastion-eater" && enemy.bastionEaterAction !== "recovery") {
       mitigated *= 0.35;
+    }
+    if (
+      enemy.type === "rift-stalker"
+      && (enemy.riftStalkerPhase === "cloak" || enemy.riftStalkerPhase === "warp")
+    ) {
+      mitigated *= RIFT_STALKER_CLOAK_DAMAGE_MULTIPLIER;
     }
 
     const status = STATUS_BY_DAMAGE_TYPE[damageType];
@@ -4458,6 +4701,11 @@ export class CombatSimulation {
     this.spawnEnemy("egg-cluster", { x: this.widthMetres - 8, y: 4 });
   }
 
+  private populateRiftStalkerScenario(): void {
+    this.spawnMiniBoss("rift-stalker", { x: 7, y: this.heightMetres / 2 });
+    this.spawnEnemy("scuttler", { x: this.widthMetres - 8, y: 4 });
+  }
+
   private populateRipperScenario(): void {
     const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
     this.spawnEnemy("ripper", { x: centre.x + 4.5, y: centre.y - 2.5 });
@@ -4621,6 +4869,13 @@ export class CombatSimulation {
       broodWardenDirection: enemy.miniBossKind === "brood-warden"
         ? { ...enemy.broodWardenDirection }
         : undefined,
+      riftStalkerPhase: enemy.miniBossKind === "rift-stalker" ? enemy.riftStalkerPhase : undefined,
+      riftStalkerMarkTarget: enemy.miniBossKind === "rift-stalker"
+        ? { ...enemy.riftStalkerMarkTarget }
+        : undefined,
+      riftStalkerDirection: enemy.miniBossKind === "rift-stalker"
+        ? { ...enemy.riftStalkerDirection }
+        : undefined,
       facingDirection: { ...enemy.facingDirection },
       statuses: this.activeStatuses(enemy),
       steeringProfile: definition.steeringProfile,
@@ -4709,6 +4964,11 @@ export function siegeCrusherEnrageTier(health: number, maxHealth: number): 0 | 1
 }
 
 export function broodWardenEnrageTier(health: number, maxHealth: number): 0 | 1 | 2 {
+  return siegeCrusherEnrageTier(health, maxHealth);
+}
+
+/** Tier 2 (final 20%) is the Rift Stalker's frenzy: chained warps and faster tells. */
+export function riftStalkerFrenzyTier(health: number, maxHealth: number): 0 | 1 | 2 {
   return siegeCrusherEnrageTier(health, maxHealth);
 }
 

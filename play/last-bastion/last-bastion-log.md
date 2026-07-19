@@ -531,3 +531,13 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Integrated all four body families with simulation-owned state mapping. Added an explicit Matriarch launch phase and rain-impact event so presentation follows behavior rather than decorative clocks.
 - Layered J2 decals beneath code-authoritative ground-slam, sweep, rain, radial, beam, and edge-warning geometry. The placeholder-art switch removes raster decals while leaving functional warnings intact, preserving a portable simulation/presentation boundary for a future Steam renderer.
 - Verification: TypeScript and 332 tests across 41 files passed before the final production verify run. Retained sources, prompt history, frame maps, and the normalizer live under `art/production-tests/batch-j/`.
+
+### Rift Stalker behavior gate (Task 36)
+
+**Status:** Completed — 19 July 2026; creator timing/readability review queued; production art deferred to Batch O
+
+- Implemented the third mini-boss as a pure simulation state machine: cloaked stalk (55% incoming damage while cloaked or warping), decoy-mark warp pounce (the mark records the Marine's position at tell start, so moving escapes the strike), a 3-spike rift fan on arrival (5 in frenzy, reusing the hostile quill-spike projectile contract), a telegraphed 50°-half-arc close slash, and a final-20% frenzy that chains one extra warp per cycle with faster tells.
+- Damage baselines joined the authored hostile table (pounce 3.5, slash 3/4, spike 1.4) under the five-damage ceiling; 520 health, flat reduction 2, cryo resistance 0.75, flanker steering.
+- The mark renders as a major radial-pulse telegraph at the marked point and the slash as a major sweeping-arc, both through the existing code-authoritative telegraph channel; landing on an obstacle safely cancels the teleport.
+- Seeded the three-entry mini-boss pool (`selectMiniBossForRoll` now maps thirds) and the 40-threat boss cost; `?scenario=rift-stalker&loadout=vertical` is the deterministic review route with a placeholder charcoal/violet body, cloak alpha states, and boss-bar fallback swatch until Batch O.
+- Verification: TypeScript clean, 338 tests across 42 files (6 new Rift Stalker rules tests covering pool membership, the full phase cycle, marked-point escape, cloak mitigation vs recovery punish, frenzy-only chained warps, and the 5-spike frenzy fan), production build, HTTP smoke (51 review routes), and a live browser boot of the scenario with no console errors. The ten-wave reference trace passed unchanged.

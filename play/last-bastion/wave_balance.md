@@ -446,3 +446,18 @@ This is a large, cross-cutting change. Suggested sequencing so nothing lands hal
 - Do fractional projectiles below 1 (skipped shots) ever feel good, or should the floor always be 1?
 - Is a 4-slot inventory the right size once six or more weapons are in the pool?
 - Should merging be free (tempo cost only) or cost Scrap? Current proposal: free, because the slot opportunity cost is already the price.
+
+## Node budgets by column depth (added 19 July 2026 — pending Task 48)
+
+When the expedition map replaces the fixed ten-wave script, the timed threat director is parameterized per node instead of per wave number. First proposal, to be tuned in the Task 49 campaign pass:
+
+| Node type | Waves in node | Threat budget per wave | Notes |
+| --- | --- | --- | --- |
+| Combat, columns 1–2 | 3 | 30 / 45 / 65 | Teaching pace; matches today's waves 1–3 |
+| Combat, columns 3–5 | 3–4 | 65 / 90 / 120 (+140) | Fourth wave appears from column 4 |
+| Combat, columns 6–7 | 4 | 120 / 140 / 160 / 180 | Late caps 52/56 apply |
+| Elite | 2 + elite wave | column budget × 0.8, then elite spawn | Guaranteed upgrade cache on clear |
+| Mini-boss | 1 arena wave + authored fight | column budget × 0.6 | Pool: Siege Crusher, Brood Warden, Rift Stalker (after Task 36) |
+| Boss (node 20) | authored | — | The Bastion Eater, unchanged |
+
+Rules carried over unchanged: 2.5-second spend pulses, pursuit-led quotas, one-fast-elite cap, guaranteed elite cadence in late columns, kill-owned boss/mini-boss waves, timer-owned ordinary waves. Per-node enemy scaling keys off column depth using the existing non-compounding per-wave table (column ≈ wave for scaling purposes). Scrap and XP totals across an 8–11 node route must land within ±15% of today's ten-wave reference trace so the shop and level 9–12 targets survive the migration.

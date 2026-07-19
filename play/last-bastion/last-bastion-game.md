@@ -147,7 +147,7 @@ Solo, so this is a hero dossier rather than a versus grid:
 Replaces stage select entirely. A horizontal, left-to-right starchart in the spirit of FTL's sector map crossed with Slay the Spire's branching lanes:
 
 - **Topology:** 20 nodes in ~8 columns across 3 lanes. Node 1 is the drop site; node 20 is the Bastion Eater. Edges connect only to the next column (straight or one lane up/down), so every route is 8–11 encounters — a player sees roughly half the map per run, which fuels replay.
-- **Node types and budget per map:** Combat (majority), Elite ×2 (guaranteed cache), Mini-boss ×1–2 (drawn from the seeded pool), Supply Depot ×2 (the existing heal/armoury/shield decision as a safe node), Weapon Cache ×2 (the existing chest as a node), and the Boss terminus. Shrine and Event nodes are reserved future types and render as design placeholders until their systems exist.
+- **Node types and budget per map:** Combat (majority), Elite ×2 (guaranteed cache), Mini-boss ×1–2 (drawn from the seeded pool), Supply Depot ×2 (the existing heal/armoury/shield decision as a safe node), Weapon Cache ×2 (the existing chest as a node), and the Boss terminus. The Scrap Shop is deliberately **not** a node type: it remains a between-wave intermission inside encounters (decision 19 July 2026 — it fits the bullet-hell pacing), fronted by varied shop keepers and, in the future, keeper specialties (see Task 45 in `last-bastion-model.md`). Shrine and Event nodes are reserved future types and render as design placeholders until their systems exist.
 - **Generation rules (seeded, pure, unit-tested):** no two Elite/Mini-boss nodes adjacent on any path; at least one Supply Depot reachable before the first Mini-boss; every lane rejoins before the boss; the seed reproduces the exact map for bug reports.
 - **Presentation:** current node pulses; reachable next nodes glow teal with connecting route lines; visited nodes dim with a claw-mark "cleared" stamp; unreachable branches grey out. Hovering/selecting a node shows a small intel card (type, threat hint, reward hint). A small dropship token animates along the chosen edge.
 - **Persistence:** the save schema versions up to carry mid-run state (map seed, cleared nodes, hero build, health/shield); autosave happens on returning to the map, honouring the existing "browser storage is not cloud storage" rule.
@@ -513,6 +513,19 @@ Enemies provide XP. Level-ups pause or safely slow combat and present a small nu
 Persistent currency and relics are deferred until there is something meaningful to spend or unlock. The web MVP must not award purposeless meta-currency.
 
 Future persistent progression may unlock heroes, starting weapons, upgrade families, and new encounter possibilities without making early runs permanently trivial.
+
+### Perks — pre-drop run modifiers
+
+Designed 19 July 2026; catalog lives in the codex (`perk-` entries) and the seven tiles are already produced under the Batch I contract.
+
+Perks are the between-runs progression layer, distinct from the three in-run layers (upgrades = level-up choices, relics/Artifacts = route rewards, powerups/kits = timed effects):
+
+- **Chosen before the drop**, on the character-select screen, never during a run. One perk slot initially; a second slot is a possible late meta-unlock, not part of the MVP.
+- **Rule-shaping, not stat-stacking.** A perk changes how the run works (sell price, inventory width, map visibility, starting level) rather than adding percentages that blur into the upgrade pool. Anything that reads like an upgrade belongs in the upgrade catalog instead.
+- **Unlocked by play**, through Records milestones persisted in the local save store (runs finished, victories, total nodes cleared, elites killed). Each perk states its unlock condition on its locked card, so the perk rail doubles as a goal list.
+- **Resolved once at run start** into the same modifier pipeline heroes and items use; no perk may require mid-run special-casing in combat code.
+
+The initial seven: Veteran (start at level 2), Scrapper (75% sell price), Quartermaster (+2 inventory slots), Fast Learner (+15% XP, waves/nodes early only), Gunsmith (merge grants bonus damage), Survivor (damage reduction below 30% health), Pathfinder (see one extra map column). Balance magnitudes live in `wave_balance.md` once the system's behavior gate opens (Task 46 in `last-bastion-model.md`).
 
 ## Saving
 

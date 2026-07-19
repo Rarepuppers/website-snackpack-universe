@@ -24,6 +24,7 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?scenario=carapace-elite&loadout=vertical` — directional armour, charge recovery, and guaranteed elite-reward lab
 - `/play/last-bastion/?scenario=siege-crusher&loadout=vertical` — mini-boss phases, cover destruction, boss bar, and arsenal-cache lab
 - `/play/last-bastion/?scenario=brood-warden&loadout=vertical` — four-move Brood Warden, egg priority, acid fan, enrage, and swarm-rush lab
+- `/play/last-bastion/?scenario=rift-stalker&loadout=vertical` — cloaked stalk, decoy-mark warp pounce, rift-spike fan, close slash, and final-20% chained-warp frenzy lab (placeholder body until Batch O)
 - `/play/last-bastion/?scenario=ripper&loadout=vertical` — long-reach melee cone, locked wind-up, dodge-behind, and recovery-punish lab
 - `/play/last-bastion/?scenario=razor-scuttler&loadout=vertical` — locked dash lane, cover crash, one-hit safety, and miss-recovery lab
 - `/play/last-bastion/?scenario=quillback&loadout=vertical` — locked 1/3/5 spike fans, close-range retreat, and dodge-gap readability lab

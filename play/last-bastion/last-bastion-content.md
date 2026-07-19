@@ -403,7 +403,7 @@ Mini-bosses use bespoke silhouettes, two to four attacks, a short entrance, a bo
 | Rift Stalker | Mobility/projectile test | Warp strike, projectile fan, decoy mark; 20% chained warp | Web MVP candidate |
 | Synapse Herald | Telegraph mastery | Lunge chain, marked danger zones, temporary Brain Blob link | Later pool expansion |
 
-The initial random pool should grow only through fully implemented bosses, with no immediate repeat when run history is available. The eligible five-wave pool now contains Siege Crusher and Brood Warden; Rift Stalker remains excluded until its complete behavior and rules tests exist. Codex must implement and rules-test each complete move set before generating its production sprites.
+The initial random pool should grow only through fully implemented bosses, with no immediate repeat when run history is available. The eligible pool now contains all three entries: Siege Crusher, Brood Warden, and Rift Stalker (behavior gate completed 19 July 2026 — cloaked stalk, decoy-mark warp pounce, rift-spike fan, close slash, final-20% chained-warp frenzy; production art is Batch O, held for the behavior review). Codex must implement and rules-test each complete move set before generating its production sprites.
 
 Brood Warden implementation contract: 2,700 health, 1.55 m/s base pursuit, guarding cleave at close range, a three-shot acid fan, two-egg placement capped at six live eggs, and a one-time four-add swarm rush unlocked at 50% health. Its final 20% uses shorter tells/recovery, higher movement, a wider/harder cleave, five acid shots, three eggs, and a six-add/faster rush. All attacks retain visible windups.
 
@@ -740,3 +740,53 @@ The Toxic Bloom variant now mirrors the same four contracts with dark teal alloy
 Void Approach now mirrors the contracts with void-touched slate, indigo fractures, restrained cyan light, and violet anomaly accents. Review at `?mode=gallery&batch=va`; it remains held from theme assignment.
 
 Arctic Relay now mirrors the contracts with frost-crusted alloy, pale cyan ice, restrained blue relay light, and snow/ice underlays. Review at `?mode=gallery&batch=ar`; it remains held from theme assignment.
+
+## Batch O — Rift Stalker production set (queued for Codex; generate only after the Task 36 behavior gate passes)
+
+Reuses the mini-boss contracts proven by Siege Crusher and Brood Warden (chroma sources, ≥4× retained masters, deterministic normalization, no baked text; all timing and hit geometry stay code-owned).
+
+| Asset | Sheet | Description for imagegen |
+| --- | --- | --- |
+| Body sheet | 4 × 4 @ 128 × 128 | A tall, blade-legged void-touched stalker: matte charcoal chitin split by thin violet rift-light seams, long forward-raked skull crest, four stilt legs ending in single points. Rows: cloaked stalk (semi-translucent, low posture), marked pounce wind-up (crest flares, seams brighten), committed warp strike (stretched motion silhouette), exhausted frenzy (seams overbright, posture ragged) |
+| Effect atlas | 4 × 2 @ 64 × 64 | Warp-out shimmer, warp-in burst, decoy mark glyph, pounce impact, blade-slash arc, frenzy aura tick, defeat collapse, rift afterglow |
+| Portrait | 128 × 128 | Head-and-crest three-quarter portrait with one violet rim light, matching the Siege Crusher/Brood Warden portrait treatment |
+
+## Batch P — Medic hero production set (queued for Codex; generate only after the Task 47 behavior gate passes)
+
+Mirrors the Marine's modular contract exactly: same base-body sheet dimensions, animation state rows, attachment points, and helmet-overlay system, so all headgear and ring weapons remain shared.
+
+| Asset | Description for imagegen |
+| --- | --- |
+| Medic base-body sheet | Marine-proportioned figure in lighter composite armour, ivory panels with teal medical chevrons, angular backpack with two visible injector cylinders; identical row/state layout to the Marine sheet (idle, move, dodge, hit, defeat, all facings) |
+| Medic helmet overlay | Closed visor with a horizontal teal sensor slit and a small chevron crest; aligned to the shared attachment points in every facing |
+| Injector Carbine ring weapon | Slim carbine with an under-slung vial magazine glowing soft green; ready/fire/recover states at the shared 96 px ring-weapon contract |
+| Portrait | 128 × 128 dossier portrait matching the Marine portrait treatment |
+
+## Perk tile completion note
+
+Batch I produced eight generic perk motifs. When the Task 46 perk gate opens, regenerate a matched set of seven canonical 128 × 128 tiles (512 × 512 masters) keyed to the codex ids `perk-veteran`, `perk-scrapper`, `perk-quartermaster`, `perk-fast-learner`, `perk-gunsmith`, `perk-survivor`, `perk-pathfinder`, one motif each (star chevron, scrap coin, pack grid, rising arrow, crossed hammers, heart shield, branching path). Locked-state dimming, unlock text, and selection remain code-owned.
+
+## Batch G2 addendum — Shop node medallion
+
+The expedition map's node medallion set (Batch G2) gains one entry: a **Shop node medallion** matching the existing medallion contract — circular bronze-ivory token with the salvage-terminal silhouette (counter + hanging tools) and a teal rim when reachable. No text.
+
+## Batch Q — shop keepers and shop dressing (queued for Codex)
+
+The Scrap Shop stays a between-wave intermission (decision 19 July 2026). This batch gives it a face: a keeper character standing behind the existing Batch N2 salvage counter, drawn from a small pool so repeat visits feel varied. Keepers are pure presentation — prices, offers, rerolls, and legality remain code-owned — but each keeper's design should foreshadow the future speciality system.
+
+Shared contract: each keeper is one 4-frame idle loop at **128 × 256** (chroma source, ≥4× retained master, transparent runtime extraction, no baked text), composed to sit behind the counter line of `scrap-shop-panel-v1` without covering the offer row. One optional 2-frame "transaction nod" adds acknowledgement on purchase. Palette: deep navy/charcoal clothing with one signature accent per keeper; silhouettes must stay distinct at 50% scale.
+
+| Keeper | Future speciality | Description for imagegen |
+| --- | --- | --- |
+| **The Quartermaster** | General stock (default keeper) | Stocky human veteran in a worn bastion supply vest, magnetic tally board under one arm, teal service stripes; friendly but tired posture |
+| **The Blacksmith** | Merge/tier services | Broad figure in a scorched apron over powered armour arms, compact forge-torch on the counter, ember-orange accent glow |
+| **The Gunsmith** | Weapons | Wiry human with a jeweller's loupe headset, disassembled rifle parts laid in a neat row, brass accent |
+| **VND-R** | Kits and ammo | Boxy service android with a rounded vendor-unit torso, fold-out tray arms, soft cyan face display that blinks a price glyph |
+| **The Clinician** | Cyborg upgrades / augments | Tall cyborg surgeon, one chromed articulated arm, clean ivory coat, green cross-circuit accent |
+| **The Medic-Sister** | Healing centre | Calm figure in Medic-adjacent ivory armour with teal chevrons (visually related to the Batch P Medic, clearly not the hero), injector cylinders racked behind |
+| **The Curator** | Relics and Artifacts | Slender robed figure with a floating monocle drone, violet accent, one shrouded relic case on the counter |
+| **The Fence** | Black market | Hooded reptilian-silhouetted alien in a patched long coat, glinting eyes, red accent, goods half-hidden under the counter cloth |
+
+Batch Q2 (later, with the speciality system): one 128 × 128 speciality sign tile per keeper for the shop header, same canonical tile contract as Batch I.
+
+Acceptance: all eight keepers read as distinct silhouettes behind the counter at gameplay scale; none of them clash with the offer tiles' readability; the Quartermaster ships first and alone is sufficient for the presentation gate.
