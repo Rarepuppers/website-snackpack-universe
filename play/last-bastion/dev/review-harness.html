@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Last Bastion review harness</title>
+<style>
+  body { font: 13px monospace; background: #151e2b; color: #dfe8f2; margin: 16px; }
+  #frame-host iframe { width: 960px; height: 540px; border: 1px solid #3b4d63; }
+  .ok { color: #7fe07f; } .bad { color: #ff7f7f; }
+</style>
+</head>
+<body>
+<h1>Review-route sweep</h1>
+<div id="status">booting…</div>
+<div id="frame-host"></div>
+<pre id="log"></pre>
+<script>
+// Dev-only Task 33 helper: boots every review route in an iframe, records
+// window errors, console.error calls, canvas presence, and a render-activity
+// pixel sample. Results land in window.__results and the on-page log.
+const PLAY_WAIT_MS = 4000;
+const GALLERY_WAIT_MS = 2500;
+const ROUTES = [
+  "/play/last-bastion/?screen=title",
+  "/play/last-bastion/?loadout=vertical",
+  "/play/last-bastion/?art=placeholder",
+  "/play/last-bastion/?helmet=0",
+  "/play/last-bastion/?weapons=12",
+  "/play/last-bastion/?loadout=scattergun",
+  "/play/last-bastion/?loadout=arc-carbine",
+  "/play/last-bastion/?loadout=patrol",
+  "/play/last-bastion/?loadout=patrol&kit=uranium",
+  "/play/last-bastion/?loadout=patrol&buff=uranium",
+  "/play/last-bastion/?loadout=bolt",
+  "/play/last-bastion/?loadout=bulwark",
+  "/play/last-bastion/?loadout=grenade",
+  "/play/last-bastion/?scenario=slime-spitter&loadout=vertical",
+  "/play/last-bastion/?scenario=carapace-elite&loadout=vertical",
+  "/play/last-bastion/?scenario=siege-crusher&loadout=vertical",
+  "/play/last-bastion/?scenario=brood-warden&loadout=vertical",
+  "/play/last-bastion/?scenario=rift-stalker&loadout=vertical",
+  "/play/last-bastion/?scenario=ripper&loadout=vertical",
+  "/play/last-bastion/?scenario=razor-scuttler&loadout=vertical",
+  "/play/last-bastion/?scenario=quillback&loadout=vertical",
+  "/play/last-bastion/?scenario=spinewheel&loadout=vertical",
+  "/play/last-bastion/?scenario=tether-bloom&loadout=vertical",
+  "/play/last-bastion/?scenario=bastion-eater&loadout=vertical",
+  "/play/last-bastion/?stress=4",
+  "/play/last-bastion/?stress=12&debug=1",
+  "/play/last-bastion/?scenario=density-capacity&debug=1",
+  "/play/last-bastion/?scenario=aurum-hoarder&loadout=bulwark",
+  "/play/last-bastion/?scenario=scrap-shop&loadout=vertical",
+  "/play/last-bastion/?scenario=weapon-gate",
+  "/play/last-bastion/?scenario=batch-j&loadout=vertical",
+  "/play/last-bastion/?theme=emberfall&loadout=vertical",
+  "/play/last-bastion/?theme=arctic-relay&loadout=vertical",
+  "/play/last-bastion/?mode=gallery",
+  "/play/last-bastion/?mode=gallery&batch=a",
+  "/play/last-bastion/?mode=gallery&batch=b",
+  "/play/last-bastion/?mode=gallery&batch=c",
+  "/play/last-bastion/?mode=gallery&batch=d",
+  "/play/last-bastion/?mode=gallery&batch=d2",
+  "/play/last-bastion/?mode=gallery&batch=d3",
+  "/play/last-bastion/?mode=gallery&batch=d4",
+  "/play/last-bastion/?mode=gallery&batch=e1",
+  "/play/last-bastion/?mode=gallery&batch=e2",
+  "/play/last-bastion/?mode=gallery&batch=e3",
+  "/play/last-bastion/?mode=gallery&batch=f1",
+  "/play/last-bastion/?mode=gallery&batch=f2",
+  "/play/last-bastion/?mode=gallery&batch=f3",
+  "/play/last-bastion/?mode=gallery&batch=f4",
+  "/play/last-bastion/?mode=gallery&batch=h",
+  "/play/last-bastion/?mode=gallery&batch=tb",
+  "/play/last-bastion/?mode=gallery&batch=va",
+  "/play/last-bastion/?mode=gallery&batch=ar",
+  "/play/last-bastion/?mode=gallery&batch=i",
+  "/play/last-bastion/?mode=gallery&batch=i2",
+  "/play/last-bastion/?mode=gallery&batch=i3",
+  "/play/last-bastion/?mode=gallery&batch=j1",
+  "/play/last-bastion/?mode=gallery&batch=j2",
+  "/play/last-bastion/?mode=gallery&batch=k",
+  "/play/last-bastion/?mode=gallery&batch=m",
+  "/play/last-bastion/?mode=gallery&batch=eh",
+  "/play/last-bastion/?mode=gallery&batch=n",
+  "/play/last-bastion/?mode=gallery&batch=n2",
+];
+
+const results = [];
+window.__results = null;
+const statusLine = document.getElementById("status");
+const host = document.getElementById("frame-host");
+const log = document.getElementById("log");
+
+function sample(canvas) {
+  try {
+    const off = document.createElement("canvas");
+    off.width = canvas.width; off.height = canvas.height;
+    const context = off.getContext("2d");
+    context.drawImage(canvas, 0, 0);
+    const data = context.getImageData(0, 0, off.width, off.height).data;
+    let nonBackground = 0, sampled = 0;
+    for (let index = 0; index < data.length; index += 397 * 4) {
+      sampled += 1;
+      if (!(data[index] === 21 && data[index + 1] === 30 && data[index + 2] === 43)) nonBackground += 1;
+    }
+    return { sampled, nonBackground };
+  } catch (error) {
+    return { sampled: 0, nonBackground: -1, note: String(error) };
+  }
+}
+
+async function run() {
+  for (let index = 0; index < ROUTES.length; index += 1) {
+    const route = ROUTES[index];
+    statusLine.textContent = `(${index + 1}/${ROUTES.length}) ${route}`;
+    const errors = [];
+    const iframe = document.createElement("iframe");
+    host.replaceChildren(iframe);
+    await new Promise((resolve) => {
+      iframe.addEventListener("load", () => {
+        try {
+          iframe.contentWindow.addEventListener("error", (event) => {
+            errors.push(String(event.message || event.error));
+          });
+          iframe.contentWindow.addEventListener("unhandledrejection", (event) => {
+            errors.push("rejection: " + String(event.reason));
+          });
+          const original = iframe.contentWindow.console.error;
+          iframe.contentWindow.console.error = (...parts) => {
+            errors.push(parts.map(String).join(" "));
+            original.apply(iframe.contentWindow.console, parts);
+          };
+        } catch (error) {
+          errors.push("hook failed: " + String(error));
+        }
+        resolve();
+      });
+      iframe.src = route;
+    });
+    await new Promise((resolve) => setTimeout(resolve, route.includes("mode=gallery") ? GALLERY_WAIT_MS : PLAY_WAIT_MS));
+    let canvas = null;
+    try { canvas = iframe.contentDocument.querySelector("canvas"); } catch { /* cross-origin never expected */ }
+    const pixels = canvas ? sample(canvas) : { sampled: 0, nonBackground: -1 };
+    const entry = {
+      route,
+      hasCanvas: Boolean(canvas),
+      errors,
+      renderSamples: pixels.sampled,
+      activeSamples: pixels.nonBackground,
+    };
+    results.push(entry);
+    const passed = entry.hasCanvas && errors.length === 0;
+    log.textContent += `${passed ? "PASS" : "FAIL"}  ${route}  canvas=${entry.hasCanvas} errors=${errors.length} active=${entry.activeSamples}\n`;
+    host.replaceChildren();
+  }
+  window.__results = results;
+  statusLine.textContent = `done: ${results.length} routes`;
+  document.title = "harness-done";
+}
+
+run();
+</script>
+</body>
+</html>

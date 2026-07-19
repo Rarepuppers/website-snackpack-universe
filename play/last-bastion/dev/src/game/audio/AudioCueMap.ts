@@ -24,6 +24,9 @@ const CUES: Readonly<Partial<Record<CombatEvent["type"], AudioCue>>> = Object.fr
   explosion: cue("explosion", 130, 0.3, 0.12, "sawtooth", 45),
   "player-hit": cue("player-hit", 180, 0.22, 0.14, "square", 110),
   "xp-collected": cue("xp", 900, 0.06, 0.05, "sine", 1250),
+  "supply-chest-hit": cue("chest-hit", 340, 0.06, 0.07, "square", 220),
+  "supply-chest-opened": cue("chest-open", 480, 0.22, 0.1, "sine", 880),
+  "supply-chest-destroyed": cue("chest-destroyed", 220, 0.24, 0.11, "sawtooth", 90),
   "level-up": cue("level-up", 620, 0.34, 0.11, "sine", 1150),
   "egg-hatched": cue("hatch", 380, 0.2, 0.08, "triangle", 200),
   "slime-glob-fired": cue("glob", 420, 0.1, 0.06, "sine", 260),
@@ -69,6 +72,12 @@ const CUES: Readonly<Partial<Record<CombatEvent["type"], AudioCue>>> = Object.fr
 
 /** Roll/dodge feedback is driven by hero state, not a combat event. */
 export const EVASIVE_MOVE_CUE: Readonly<AudioCue> = cue("dodge", 460, 0.1, 0.06, "sine", 700);
+/**
+ * Medkit/chest heal feedback. Not wired through `cueForEvent`: `player-healed`
+ * also fires on every passive regen tick, and that must stay silent so the
+ * cue reads as "you picked something up", not a metronome.
+ */
+export const MEDKIT_HEAL_CUE: Readonly<AudioCue> = cue("heal", 560, 0.16, 0.09, "sine", 940);
 /** UI confirm for decision buttons. */
 export const UI_CONFIRM_CUE: Readonly<AudioCue> = cue("ui-confirm", 660, 0.09, 0.07, "sine", 880);
 

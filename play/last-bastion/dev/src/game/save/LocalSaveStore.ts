@@ -30,10 +30,32 @@ export interface GameProgress {
   bestiary: Record<string, BestiaryEntry>;
 }
 
+/**
+ * Mid-run expedition autosave (schema v2, Task 38). Written when the dropship
+ * returns to the map, cleared when the run ends. Shapes mirror
+ * `expedition/ExpeditionRun.ts`; kept structural here so the save layer never
+ * imports game logic.
+ */
+export interface ExpeditionSave {
+  mapSeed: number;
+  currentNodeId: number;
+  clearedNodeIds: number[];
+  build: {
+    health: number;
+    shield: number;
+    level: number;
+    experience: number;
+    scrap: number;
+    weapons: { weaponId: string; tier: number }[];
+    upgrades: { upgradeId: string; level: number }[];
+  } | null;
+}
+
 export interface SaveData {
-  version: 1;
+  version: 2;
   settings: GameSettings;
   progress: GameProgress;
+  expedition: ExpeditionSave | null;
 }
 
 export const SAVE_STORAGE_KEY = "last-bastion-save";
@@ -42,7 +64,7 @@ export const SAVE_STORAGE_KEY = "last-bastion-save";
 export const BESTIARY_KILLS_TO_REVEAL = 10;
 
 export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
-  version: 1,
+  version: 2,
   settings: Object.freeze({
     screenShakeEnabled: true,
     soundEnabled: true,
@@ -55,6 +77,7 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     bestWaveReached: 0,
     bestiary: Object.freeze({}) as Record<string, BestiaryEntry>,
   }),
+  expedition: null,
 });
 
 type StorageLike = Pick<Storage, "getItem" | "setItem">;
@@ -110,6 +133,20 @@ export class LocalSaveStore {
     return this.load();
   }
 
+  /** Autosaves the mid-run expedition state; called when returning to the map. */
+  saveExpedition(expedition: ExpeditionSave): SaveData {
+    this.cached = { ...this.cached, expedition: cloneExpedition(expedition) };
+    this.writeToStorage();
+    return this.load();
+  }
+
+  /** Ends the mid-run autosave; the "Continue expedition" card disappears. */
+  clearExpedition(): SaveData {
+    this.cached = { ...this.cached, expedition: null };
+    this.writeToStorage();
+    return this.load();
+  }
+
   recordRunEnd(outcome: { victory: boolean; waveReached: number }): SaveData {
     this.cached = {
       ...this.cached,
@@ -159,12 +196,14 @@ function normalizeSave(parsed: unknown): SaveData {
   if (typeof parsed !== "object" || parsed === null) {
     return cloneSave(DEFAULT_SAVE);
   }
-  const candidate = parsed as Partial<SaveData>;
-  if (candidate.version !== 1) {
+  const candidate = parsed as Omit<Partial<SaveData>, "version"> & { version?: number };
+  // Version 1 saves migrate cleanly: same settings and progress, no mid-run
+  // expedition. Anything else is foreign and degrades to defaults.
+  if (candidate.version !== 1 && candidate.version !== 2) {
     return cloneSave(DEFAULT_SAVE);
   }
   return {
-    version: 1,
+    version: 2,
     settings: {
       screenShakeEnabled: readBoolean(candidate.settings?.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
       soundEnabled: readBoolean(candidate.settings?.soundEnabled, DEFAULT_SAVE.settings.soundEnabled),
@@ -176,6 +215,68 @@ function normalizeSave(parsed: unknown): SaveData {
       victories: readCount(candidate.progress?.victories),
       bestWaveReached: readCount(candidate.progress?.bestWaveReached),
       bestiary: readBestiary(candidate.progress?.bestiary),
+    },
+    expedition: candidate.version === 2 ? readExpedition(candidate.expedition) : null,
+  };
+}
+
+/** A malformed mid-run save degrades to "no run in progress", never a crash. */
+function readExpedition(value: unknown): ExpeditionSave | null {
+  if (typeof value !== "object" || value === null) {
+    return null;
+  }
+  const candidate = value as Partial<ExpeditionSave>;
+  if (
+    typeof candidate.mapSeed !== "number" || !Number.isFinite(candidate.mapSeed)
+    || typeof candidate.currentNodeId !== "number"
+    || !Array.isArray(candidate.clearedNodeIds)
+    || !candidate.clearedNodeIds.every((id) => typeof id === "number")
+  ) {
+    return null;
+  }
+  return cloneExpedition({
+    mapSeed: Math.floor(candidate.mapSeed),
+    currentNodeId: Math.floor(candidate.currentNodeId),
+    clearedNodeIds: candidate.clearedNodeIds.map((id) => Math.floor(id)),
+    build: readBuild(candidate.build),
+  });
+}
+
+function readBuild(value: unknown): ExpeditionSave["build"] {
+  if (typeof value !== "object" || value === null) {
+    return null;
+  }
+  const candidate = value as NonNullable<ExpeditionSave["build"]>;
+  if (
+    typeof candidate.health !== "number" || !Array.isArray(candidate.weapons)
+    || !Array.isArray(candidate.upgrades)
+  ) {
+    return null;
+  }
+  return {
+    health: candidate.health,
+    shield: typeof candidate.shield === "number" ? candidate.shield : 0,
+    level: readCount(candidate.level),
+    experience: readCount(candidate.experience),
+    scrap: readCount(candidate.scrap),
+    weapons: candidate.weapons
+      .filter((weapon) => typeof weapon?.weaponId === "string")
+      .map((weapon) => ({ weaponId: weapon.weaponId, tier: readCount(weapon.tier) || 1 })),
+    upgrades: candidate.upgrades
+      .filter((upgrade) => typeof upgrade?.upgradeId === "string")
+      .map((upgrade) => ({ upgradeId: upgrade.upgradeId, level: readCount(upgrade.level) || 1 })),
+  };
+}
+
+function cloneExpedition(expedition: ExpeditionSave): ExpeditionSave {
+  return {
+    mapSeed: expedition.mapSeed,
+    currentNodeId: expedition.currentNodeId,
+    clearedNodeIds: [...expedition.clearedNodeIds],
+    build: expedition.build === null ? null : {
+      ...expedition.build,
+      weapons: expedition.build.weapons.map((weapon) => ({ ...weapon })),
+      upgrades: expedition.build.upgrades.map((upgrade) => ({ ...upgrade })),
     },
   };
 }
@@ -222,5 +323,6 @@ function cloneSave(save: SaveData): SaveData {
     version: save.version,
     settings: { ...save.settings },
     progress: { ...save.progress, bestiary },
+    expedition: save.expedition === null ? null : cloneExpedition(save.expedition),
   };
 }

@@ -541,3 +541,31 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - The mark renders as a major radial-pulse telegraph at the marked point and the slash as a major sweeping-arc, both through the existing code-authoritative telegraph channel; landing on an obstacle safely cancels the teleport.
 - Seeded the three-entry mini-boss pool (`selectMiniBossForRoll` now maps thirds) and the 40-threat boss cost; `?scenario=rift-stalker&loadout=vertical` is the deterministic review route with a placeholder charcoal/violet body, cloak alpha states, and boss-bar fallback swatch until Batch O.
 - Verification: TypeScript clean, 338 tests across 42 files (6 new Rift Stalker rules tests covering pool membership, the full phase cycle, marked-point escape, cloak mitigation vs recovery punish, frenzy-only chained warps, and the 5-spike frenzy fan), production build, HTTP smoke (51 review routes), and a live browser boot of the scenario with no console errors. The ten-wave reference trace passed unchanged.
+
+### Task 33 — consolidated review, mechanical sweep
+
+**Status:** Automated layer completed — 19 July 2026; creator visual/feel judgement remains the open gate
+
+- Built `dev/review-harness.html`: a same-origin dev-server page that boots every documented review route sequentially in an iframe, hooking window errors, unhandled rejections, and console.error, then sampling the canvas for render activity.
+- Swept all 61 routes — every combat lab, weapon lab, stress scene, world theme, and production-art gallery: **61/61 passed** with a live canvas, active rendering, and zero runtime errors.
+- The creator sitting now only owes the subjective half (readability, timing, feel) with a written approve/retune list per item; no route is mechanically broken.
+
+### Task 37 — front-end shell behavior gate
+
+**Status:** Completed — 19 July 2026; creator layout/copy review queued; Batch G art held until then
+
+- Implemented the code-native screen flow as a pure, unit-tested state machine (`dev/src/game/shell/ScreenFlow.ts`): Title → Menu → How to Play (4 pages) / Settings / Lab / Character select, with keyboard, mouse, and standard-mapping gamepad intents and side effects returned as data.
+- `ShellScene` renders placeholder panels in the Last Bastion palette: title with breathing prompt and footer strip, six-card menu grid (EXPEDITION rules chip, RECORDS totals from the save store), paged How to Play with diagram placeholders, Settings rows bound live to `LocalSaveStore` (persist immediately, URL overrides intact), a Lab card surfacing ten review routes in-game, and a hero dossier with the Marine's real passive/ultimate/growth data plus locked Medic and three silhouette slots.
+- The bare URL is now the front door; every review parameter still boots straight into combat, `?screen=game` forces a direct run, and `?screen=title` forces the shell. Deploy and Lab hand off by navigating to the target route — each mode boots exactly one scene, which sidesteps a Phaser 4 scene-manager queue stall found during verification and stays correct once the expedition map carries run state through the save store.
+- Fixed a real input defect found in browser verification: the Phaser keyboard plugin can deliver capture-list keys twice (immediate + frame queue), double-stepping menus; the shell now owns a single window keydown listener removed on shutdown.
+- Verification: TypeScript clean, 346 tests across 43 files (8 new ScreenFlow rules tests), production build, HTTP smoke, and a live browser walkthrough: title → menu → settings toggle persisted to localStorage and restored → locked-Medic confirm refused → Marine deploy into the running ten-wave combat route, with zero console errors.
+
+### Task 38 — expedition map screen and save schema v2
+
+**Status:** Completed — 19 July 2026; creator layout review queued; Batch G2 medallion art held until then; node → encounter wiring is Task 39
+
+- Added `expedition/ExpeditionRun.ts`: pure mid-run state over the tested chart generator — traversal legality (`moveTo` refuses any node not directly reachable), cleared-node accumulation, boss completion, presentation classification (current / reachable / cleared / open / unreachable), and resume validation that degrades tampered or foreign state to "no run in progress".
+- Extended `LocalSaveStore` to schema version 2: an `expedition` slot carrying map seed, current node, cleared nodes, and a typed build snapshot (health, shield, level, XP, Scrap, weapon tiers, upgrade levels) reserved for Task 39. Version-1 saves migrate in place, preserving settings, progress, and the Monsterdex; malformed expedition data degrades safely; the codex's bestiary reader is version-agnostic and unaffected.
+- Built `ExpeditionScene` (`?screen=map`): code-native starchart with route lines, per-type medallion glyphs, pulsing current node, teal reachable glow, dimmed cleared stamps, greyed unreachable branches, an intel card (node type, region theme, threat hint, column), a dropship flight token, keyboard/mouse traversal, and an expedition-complete panel. `&mapseed=N` reviews a deterministic fresh chart; without it the scene resumes the autosave or rolls a new seed. Travel is "scout mode" until encounters wire in.
+- Autosave writes on every arrival and clears on completion. A hidden-tab check during verification exposed a boundary flaw — state advance living inside a render-loop tween — which was corrected: the run state and autosave now advance immediately on the wall clock and the dropship flight is pure decoration, honouring the simulation/presentation split.
+- Verification: TypeScript clean, 355 tests across 44 files (6 ExpeditionRun rules tests, 3 schema-v2 save tests, existing v1 fixtures passing through migration untouched), production build, HTTP smoke, and a live browser walkthrough on seed 2026: three-hop traversal with per-arrival autosave confirmed in localStorage, resume from a bare `?screen=map` at the exact position, full traversal to the Bastion Eater node in 8 hops, and autosave cleanup on completion — with zero console errors, all while the tab was background-paused.

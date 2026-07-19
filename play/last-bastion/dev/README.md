@@ -11,7 +11,9 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 
 ## Review routes
 
-- `/play/last-bastion/` — styled normal ten-wave run with authored elite cadence, seeded mini-boss selection, and the Bastion Eater finale
+- `/play/last-bastion/` — the front-end shell: Title → Menu → How to Play / Settings / Lab / Character select (Task 37 behavior gate; code-native placeholder panels until Batch G). `?screen=title` forces the shell; any review parameter below skips it.
+- `/play/last-bastion/?screen=game` — styled normal ten-wave run with authored elite cadence, seeded mini-boss selection, and the Bastion Eater finale
+- `/play/last-bastion/?screen=map` — the 20-node expedition starchart (Task 38 behavior gate): code-native medallions and route lines, dropship travel in scout mode, schema-v2 autosave on every arrival, and resume-on-load. `&mapseed=N` reviews a deterministic fresh chart
 - `/play/last-bastion/?art=placeholder` — code-shape comparison renderer
 - `/play/last-bastion/?helmet=0` — styled Marine without the removable helmet
 - `/play/last-bastion/?weapons=1`, `4`, `6`, or `12` — selected weapon-ring count
@@ -63,6 +65,13 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?mode=gallery&batch=i` — promoted Batch I1 weapon, perk, and hotkey/action 128 px runtime tile atlases
 - `/play/last-bastion/?mode=gallery&batch=i2` — Batch I2 rack-class, stash, tier, discard, merge, and drag surfaces
 - `/play/last-bastion/?mode=gallery&batch=i3` — Batch I3 placement modal, stat card, salvage counter, and shop glyphs
+
+## Review harness
+
+`/play/last-bastion/review-harness.html` (dev server only) boots every review route above in
+sequence inside an iframe, recording runtime errors, console errors, canvas presence, and a
+render-activity sample per route. Results appear on the page and in `window.__results` — the
+mechanical layer of a consolidated creator review, leaving only visual/feel judgement to do by hand.
 
 ## Codex
 

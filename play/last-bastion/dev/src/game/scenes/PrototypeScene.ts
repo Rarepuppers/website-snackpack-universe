@@ -17,6 +17,7 @@ import {
   type CombatTelegraphSnapshot,
   type PendingDecision,
   type PowerupPickupSnapshot,
+  type SupplyChestSnapshot,
   type PowerupType,
 } from "../combat/CombatSimulation";
 import { offscreenWarningPosition } from "../combat/TelegraphRules";
@@ -36,7 +37,7 @@ import { renderArena } from "../rendering/ArenaRenderer";
 import { arenaThemeById, pickArenaTheme } from "../rendering/arenaThemes";
 import { uiTextResolution } from "../rendering/DisplayScaling";
 import { LocalSaveStore } from "../save/LocalSaveStore";
-import { cueForEvent, EVASIVE_MOVE_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
+import { cueForEvent, EVASIVE_MOVE_CUE, MEDKIT_HEAL_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
 import { WebAudioSynth } from "../audio/WebAudioSynth";
 import { worldDepth } from "../rendering/WorldDepth";
 import { VisualEffectPool } from "../effects/VisualEffectPool";
@@ -107,6 +108,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly warpTelegraphs = new Map<number, TelegraphView>();
   private readonly pickupViews = new Map<number, PickupView>();
   private readonly powerupViews = new Map<number, PickupView>();
+  private readonly supplyChestViews = new Map<number, Phaser.GameObjects.Container>();
   private readonly weaponViews = new Map<number, WeaponView>();
   private decisionOverlay: Phaser.GameObjects.Container | null = null;
   private decisionButtons: { rect: Phaser.GameObjects.Rectangle; choiceId: string; enabled: boolean }[] = [];
@@ -304,6 +306,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncObstacleDamage(snapshot.damagedObstacleIds, snapshot.destroyedObstacleIds);
     this.syncPickups(snapshot.pickups);
     this.syncPowerups(snapshot.powerups);
+    this.syncSupplyChests(snapshot.supplyChests);
     this.syncFence(snapshot);
     this.syncDecisionOverlay(snapshot.pendingDecision);
     this.hud.update(snapshot, this.isPaused, this.effectPool.activeCount);
@@ -782,7 +785,12 @@ export class PrototypeScene extends Phaser.Scene {
           this.emitAuthoredEffect(statusEffectFrame(event.status), event.position, 320, 0.58, 1.12, 0, "batch-c-effects-v1");
           break;
         case "powerup-collected":
-          this.emitAuthoredEffect(powerupRewardFrame(event.powerupType), event.position, 360, 0.6, 1.3, 0, "batch-c-rewards-v1");
+          if (event.powerupType === "medkit") {
+            this.synth.play(MEDKIT_HEAL_CUE);
+            this.emitAuthoredEffect(2, event.position, 320, 0.5, 1.1, 0, "combat-effects-v1");
+          } else {
+            this.emitAuthoredEffect(powerupRewardFrame(event.powerupType), event.position, 360, 0.6, 1.3, 0, "batch-c-rewards-v1");
+          }
           break;
         case "warp-arrival":
           this.emitAuthoredEffect(17, event.position, 280, 0.62, 1.2, 0, "batch-c-effects-v1");
@@ -2048,15 +2056,50 @@ export class PrototypeScene extends Phaser.Scene {
       let view = this.powerupViews.get(powerup.id);
       if (!view) {
         view = this.useMarineArt
-          ? this.add.sprite(0, 0, "batch-c-rewards-v1", powerupRewardFrame(powerup.type)).setScale(0.72)
+          ? powerup.type === "medkit"
+            ? this.add.sprite(0, 0, "pickups-v1", 2)
+            : this.add.sprite(0, 0, "batch-c-rewards-v1", powerupRewardFrame(powerup.type))
           : this.add.rectangle(0, 0, 16, 16, powerupColor(powerup.type))
             .setRotation(Math.PI / 4).setStrokeStyle(2, 0xffffff);
         this.powerupViews.set(powerup.id, view);
       }
+      const baseScale = powerup.type === "medkit" ? 0.5 : 1;
       view.setPosition(powerup.position.x * PIXELS_PER_METRE, powerup.position.y * PIXELS_PER_METRE)
         .setDepth(worldDepth(powerup.position.y) - 2)
-        .setScale(1 + Math.sin(this.time.now / 140) * 0.12)
+        .setScale(baseScale * (1 + Math.sin(this.time.now / 140) * 0.12))
         .setAlpha(powerup.remainingSeconds < 3 && Math.floor(this.time.now / 160) % 2 === 0 ? 0.4 : 1);
+    }
+  }
+
+  /** Placeholder crates until a future art batch: bronze armored, teal-trim sealed. */
+  private syncSupplyChests(chests: readonly SupplyChestSnapshot[]): void {
+    const liveIds = new Set(chests.map((chest) => chest.id));
+    this.destroyMissing(this.supplyChestViews, liveIds);
+    for (const chest of chests) {
+      let view = this.supplyChestViews.get(chest.id);
+      if (!view) {
+        const armored = chest.variant === "armored";
+        const body = this.add.rectangle(0, 0, 28, 20, armored ? 0x6b4a26 : 0x3d4a5c)
+          .setStrokeStyle(2, armored ? 0x8a6a3a : 0x68e4e8);
+        const lid = this.add.rectangle(0, -7, 28, 5, armored ? 0x8a6a3a : 0x4f6e8d);
+        const prompt = this.add.text(0, -24, armored ? "" : "E", {
+          fontFamily: "Consolas, monospace", fontSize: "12px", color: "#68e4e8",
+        }).setOrigin(0.5).setName("prompt").setVisible(false);
+        const healthBar = this.add.rectangle(-14, -16, 28, 3, 0xff6b3d)
+          .setOrigin(0, 0.5).setName("chest-health").setVisible(false);
+        view = this.add.container(0, 0, [body, lid, prompt, healthBar]);
+        this.supplyChestViews.set(chest.id, view);
+      }
+      view.setPosition(chest.position.x * PIXELS_PER_METRE, chest.position.y * PIXELS_PER_METRE)
+        .setDepth(worldDepth(chest.position.y) - 1);
+      const prompt = view.getByName("prompt") as Phaser.GameObjects.Text | null;
+      prompt?.setVisible(chest.playerInRange)
+        .setAlpha(0.6 + Math.sin(this.time.now / 220) * 0.4);
+      const healthBar = view.getByName("chest-health") as Phaser.GameObjects.Rectangle | null;
+      if (healthBar && chest.maxHealth > 0) {
+        healthBar.setVisible(chest.health < chest.maxHealth)
+          .setScale(Math.max(chest.health / chest.maxHealth, 0.02), 1);
+      }
     }
   }
 
@@ -2084,9 +2127,10 @@ export class PrototypeScene extends Phaser.Scene {
     for (const pickup of pickups) {
       let view = this.pickupViews.get(pickup.id);
       if (!view) {
+        // Static and small by creator direction: no shimmer flashing.
         view = this.useMarineArt
-          ? this.add.sprite(0, 0, "pickups-v1", 0).setScale(0.55)
-          : this.add.rectangle(0, 0, 10, 10, 0x58e6ef).setRotation(Math.PI / 4).setStrokeStyle(2, 0xffffff);
+          ? this.add.sprite(0, 0, "pickups-v1", 0).setScale(0.42)
+          : this.add.rectangle(0, 0, 8, 8, 0x58e6ef).setRotation(Math.PI / 4).setStrokeStyle(1, 0xffffff);
         view.setDepth(worldDepth(pickup.position.y) - 3);
         this.pickupViews.set(pickup.id, view);
       }
@@ -2095,9 +2139,6 @@ export class PrototypeScene extends Phaser.Scene {
         pickup.position.y * PIXELS_PER_METRE,
       );
       view.setDepth(worldDepth(pickup.position.y) - 3);
-      if (view instanceof Phaser.GameObjects.Sprite) {
-        view.setFrame((Math.floor(this.time.now / 180) + pickup.id) % 2);
-      }
     }
   }
 
@@ -2510,6 +2551,7 @@ function powerupColor(type: PowerupType): number {
     case "adrenaline": return 0xff5f5f;
     case "magnet-pulse": return 0x8fb8ff;
     case "uranium-core-rounds": return 0xb9ef62;
+    case "medkit": return 0xff6b7d;
   }
 }
 
@@ -2564,6 +2606,8 @@ function powerupRewardFrame(type: PowerupType): number {
     case "magnet-pulse": return 10;
     case "adrenaline": return 11;
     case "uranium-core-rounds": return 8;
+    // Medkits render from the Batch A pickup atlas instead; see syncPowerups.
+    case "medkit": return 9;
   }
 }
 

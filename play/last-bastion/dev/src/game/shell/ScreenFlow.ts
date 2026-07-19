@@ -1,0 +1,261 @@
+import type { GameSettings } from "../save/LocalSaveStore";
+
+/**
+ * Front-end shell screen flow (Task 37 behavior gate).
+ *
+ * A pure, unit-testable state machine: the Phaser shell scene feeds it
+ * navigation intents and renders whatever state it reports. Side effects
+ * (persisting a setting, starting the run, opening an external page) are
+ * returned as effects so presentation and rules stay separate, matching the
+ * simulation/presentation boundary used by combat.
+ */
+export type ShellScreen =
+  | "title"
+  | "menu"
+  | "how-to-play"
+  | "settings"
+  | "lab"
+  | "character-select";
+
+export type ShellIntent = "up" | "down" | "left" | "right" | "confirm" | "back";
+
+export type ShellEffect =
+  | { type: "start-run" }
+  | { type: "open-url"; url: string }
+  | { type: "set-setting"; key: keyof GameSettings; value: boolean };
+
+export interface MenuCard {
+  id: "expedition" | "how-to-play" | "settings" | "codex" | "lab" | "records";
+  label: string;
+}
+
+export const MENU_CARDS: readonly MenuCard[] = Object.freeze([
+  { id: "expedition", label: "EXPEDITION" },
+  { id: "how-to-play", label: "HOW TO PLAY" },
+  { id: "settings", label: "SETTINGS" },
+  { id: "codex", label: "CODEX" },
+  { id: "lab", label: "LAB" },
+  { id: "records", label: "RECORDS" },
+]);
+
+export const HOW_TO_PLAY_PAGES: readonly { title: string; body: string }[] = Object.freeze([
+  {
+    title: "MOVE AND SURVIVE",
+    body: "WASD or left stick moves. Mouse or right stick aims.\nSPACE rolls with a short invulnerability window.\nHold position for one second to Entrench for bonus armour.",
+  },
+  {
+    title: "YOUR ARSENAL",
+    body: "Weapons on your ring fire automatically at what you aim at.\nR fires the ultimate. Q uses your carried kit.\nSlow weapons show their recharge on the bottom cadence strip.",
+  },
+  {
+    title: "DAMAGE AND STATUS",
+    body: "Fire builds Blaze. Shock builds Overload. Cryo builds Freeze.\nToxic builds Corrode. Buildup at the threshold applies the status.\nDamage numbers share the same colour language.",
+  },
+  {
+    title: "THE EXPEDITION",
+    body: "One life. Clear waves, choose upgrades, spend Scrap at the shop.\nElites drop caches. Mini-bosses guard arsenal rewards.\nThe run autosaves between encounters - not mid-fight.",
+  },
+]);
+
+export interface SettingsRow {
+  key: keyof GameSettings;
+  label: string;
+}
+
+export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
+  { key: "screenShakeEnabled", label: "Screen shake" },
+  { key: "soundEnabled", label: "Sound" },
+  { key: "damageNumbersEnabled", label: "Damage numbers" },
+  { key: "cooldownTimersEnabled", label: "Cooldown timers" },
+]);
+
+export interface RosterEntry {
+  id: string;
+  name: string;
+  status: "playable" | "in-development" | "silhouette";
+}
+
+export const ROSTER: readonly RosterEntry[] = Object.freeze([
+  { id: "marine", name: "MARINE", status: "playable" },
+  { id: "medic", name: "MEDIC", status: "in-development" },
+  { id: "assault", name: "ASSAULT", status: "silhouette" },
+  { id: "tactician", name: "TACTICIAN", status: "silhouette" },
+  { id: "scout", name: "SCOUT", status: "silhouette" },
+]);
+
+export interface LabRoute {
+  label: string;
+  url: string;
+}
+
+/** Surfaced review routes; the full list stays in dev/README.md. */
+export const LAB_ROUTES: readonly LabRoute[] = Object.freeze([
+  { label: "Normal ten-wave run", url: "?screen=game" },
+  { label: "Expedition map (scout mode)", url: "?screen=map" },
+  { label: "Readability stress (4 weapons)", url: "?stress=4" },
+  { label: "Capacity stress (12 weapons)", url: "?stress=12" },
+  { label: "Siege Crusher lab", url: "?scenario=siege-crusher&loadout=vertical" },
+  { label: "Brood Warden lab", url: "?scenario=brood-warden&loadout=vertical" },
+  { label: "Rift Stalker lab", url: "?scenario=rift-stalker&loadout=vertical" },
+  { label: "Bastion Eater lab", url: "?scenario=bastion-eater&loadout=vertical" },
+  { label: "Scrap Shop lab", url: "?scenario=scrap-shop&loadout=vertical" },
+  { label: "Weapon placement lab", url: "?scenario=weapon-gate" },
+  { label: "Production art gallery", url: "?mode=gallery" },
+]);
+
+export interface ShellState {
+  screen: ShellScreen;
+  menuIndex: number;
+  howToPlayPage: number;
+  settingsIndex: number;
+  labIndex: number;
+  rosterIndex: number;
+  settings: GameSettings;
+}
+
+export function createShellState(settings: GameSettings, screen: ShellScreen = "title"): ShellState {
+  return {
+    screen,
+    menuIndex: 0,
+    howToPlayPage: 0,
+    settingsIndex: 0,
+    labIndex: 0,
+    rosterIndex: 0,
+    settings: { ...settings },
+  };
+}
+
+export interface ShellStepResult {
+  state: ShellState;
+  effects: readonly ShellEffect[];
+}
+
+export function stepShell(state: ShellState, intent: ShellIntent): ShellStepResult {
+  switch (state.screen) {
+    case "title":
+      if (intent === "confirm") {
+        return { state: { ...state, screen: "menu" }, effects: [] };
+      }
+      return { state, effects: [] };
+    case "menu":
+      return stepMenu(state, intent);
+    case "how-to-play":
+      return stepHowToPlay(state, intent);
+    case "settings":
+      return stepSettings(state, intent);
+    case "lab":
+      return stepLab(state, intent);
+    case "character-select":
+      return stepCharacterSelect(state, intent);
+  }
+}
+
+function stepMenu(state: ShellState, intent: ShellIntent): ShellStepResult {
+  if (intent === "back") {
+    return { state: { ...state, screen: "title" }, effects: [] };
+  }
+  if (intent === "up" || intent === "left") {
+    return { state: { ...state, menuIndex: wrap(state.menuIndex - 1, MENU_CARDS.length) }, effects: [] };
+  }
+  if (intent === "down" || intent === "right") {
+    return { state: { ...state, menuIndex: wrap(state.menuIndex + 1, MENU_CARDS.length) }, effects: [] };
+  }
+  if (intent === "confirm") {
+    const card = MENU_CARDS[state.menuIndex]!;
+    switch (card.id) {
+      case "expedition":
+        return { state: { ...state, screen: "character-select", rosterIndex: 0 }, effects: [] };
+      case "how-to-play":
+        return { state: { ...state, screen: "how-to-play", howToPlayPage: 0 }, effects: [] };
+      case "settings":
+        return { state: { ...state, screen: "settings", settingsIndex: 0 }, effects: [] };
+      case "codex":
+        return { state, effects: [{ type: "open-url", url: "last-bastion-codex.html" }] };
+      case "lab":
+        return { state: { ...state, screen: "lab", labIndex: 0 }, effects: [] };
+      case "records":
+        // Display-only card; totals render on the card itself.
+        return { state, effects: [] };
+    }
+  }
+  return { state, effects: [] };
+}
+
+function stepHowToPlay(state: ShellState, intent: ShellIntent): ShellStepResult {
+  if (intent === "back") {
+    return { state: { ...state, screen: "menu" }, effects: [] };
+  }
+  if (intent === "left") {
+    return { state: { ...state, howToPlayPage: Math.max(0, state.howToPlayPage - 1) }, effects: [] };
+  }
+  if (intent === "right" || intent === "confirm") {
+    if (state.howToPlayPage >= HOW_TO_PLAY_PAGES.length - 1) {
+      return intent === "confirm"
+        ? { state: { ...state, screen: "menu" }, effects: [] }
+        : { state, effects: [] };
+    }
+    return { state: { ...state, howToPlayPage: state.howToPlayPage + 1 }, effects: [] };
+  }
+  return { state, effects: [] };
+}
+
+function stepSettings(state: ShellState, intent: ShellIntent): ShellStepResult {
+  if (intent === "back") {
+    return { state: { ...state, screen: "menu" }, effects: [] };
+  }
+  if (intent === "up") {
+    return { state: { ...state, settingsIndex: wrap(state.settingsIndex - 1, SETTINGS_ROWS.length) }, effects: [] };
+  }
+  if (intent === "down") {
+    return { state: { ...state, settingsIndex: wrap(state.settingsIndex + 1, SETTINGS_ROWS.length) }, effects: [] };
+  }
+  if (intent === "left" || intent === "right" || intent === "confirm") {
+    const row = SETTINGS_ROWS[state.settingsIndex]!;
+    const value = !state.settings[row.key];
+    return {
+      state: { ...state, settings: { ...state.settings, [row.key]: value } },
+      effects: [{ type: "set-setting", key: row.key, value }],
+    };
+  }
+  return { state, effects: [] };
+}
+
+function stepLab(state: ShellState, intent: ShellIntent): ShellStepResult {
+  if (intent === "back") {
+    return { state: { ...state, screen: "menu" }, effects: [] };
+  }
+  if (intent === "up") {
+    return { state: { ...state, labIndex: wrap(state.labIndex - 1, LAB_ROUTES.length) }, effects: [] };
+  }
+  if (intent === "down") {
+    return { state: { ...state, labIndex: wrap(state.labIndex + 1, LAB_ROUTES.length) }, effects: [] };
+  }
+  if (intent === "confirm") {
+    return { state, effects: [{ type: "open-url", url: LAB_ROUTES[state.labIndex]!.url }] };
+  }
+  return { state, effects: [] };
+}
+
+function stepCharacterSelect(state: ShellState, intent: ShellIntent): ShellStepResult {
+  if (intent === "back") {
+    return { state: { ...state, screen: "menu" }, effects: [] };
+  }
+  if (intent === "left") {
+    return { state: { ...state, rosterIndex: wrap(state.rosterIndex - 1, ROSTER.length) }, effects: [] };
+  }
+  if (intent === "right") {
+    return { state: { ...state, rosterIndex: wrap(state.rosterIndex + 1, ROSTER.length) }, effects: [] };
+  }
+  if (intent === "confirm") {
+    const hero = ROSTER[state.rosterIndex]!;
+    if (hero.status !== "playable") {
+      return { state, effects: [] };
+    }
+    return { state, effects: [{ type: "start-run" }] };
+  }
+  return { state, effects: [] };
+}
+
+function wrap(index: number, length: number): number {
+  return (index + length) % length;
+}

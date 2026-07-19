@@ -1,8 +1,27 @@
 import Phaser from "phaser";
 import { PrototypeScene } from "./scenes/PrototypeScene";
 import { AssetGalleryScene } from "./scenes/AssetGalleryScene";
+import { ExpeditionScene } from "./scenes/ExpeditionScene";
+import { ShellScene } from "./shell/ShellScene";
 
-const galleryMode = new URLSearchParams(window.location.search).get("mode") === "gallery";
+const params = new URLSearchParams(window.location.search);
+const galleryMode = params.get("mode") === "gallery";
+const mapMode = params.get("screen") === "map";
+
+/**
+ * The shell is the front door: a bare URL boots Title → Menu. Any review
+ * parameter (scenario, stress, loadout, …) still boots straight into combat so
+ * every documented lab route keeps working, and `?screen=game` forces a direct
+ * run while `?screen=title` forces the shell.
+ */
+const REVIEW_PARAMS = [
+  "scenario", "stress", "loadout", "weapons", "kit", "buff", "art",
+  "helmet", "theme", "debug", "timers", "damage", "size", "shake", "sound",
+] as const;
+const shellMode = !galleryMode
+  && !mapMode
+  && params.get("screen") !== "game"
+  && (params.get("screen") === "title" || !REVIEW_PARAMS.some((key) => params.has(key)));
 
 export const gameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -23,5 +42,13 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
     mode: Phaser.Scale.NONE,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: galleryMode ? [AssetGalleryScene] : [PrototypeScene],
+  // Each mode boots exactly one scene; hand-offs navigate to the target route,
+  // so no cross-scene start is required.
+  scene: galleryMode
+    ? [AssetGalleryScene]
+    : mapMode
+      ? [ExpeditionScene]
+      : shellMode
+        ? [ShellScene]
+        : [PrototypeScene],
 };

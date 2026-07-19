@@ -131,9 +131,10 @@ export type RiftStalkerPhase =
   | "entrance" | "cloak" | "mark" | "warp" | "pounce"
   | "slash-windup" | "slash" | "recovery";
 export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
-export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds";
+export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit";
+export type SupplyChestVariant = "sealed" | "armored";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
-export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat";
+export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat" | "supply-chest";
 
 export interface UpgradeSlotSnapshot {
   category: UpgradeCategory;
@@ -234,7 +235,11 @@ export type CombatEvent =
   | { type: "bastion-eater-breach"; position: Vector2Data; radiusMetres: number; warning: boolean }
   | { type: "bastion-eater-vault"; position: Vector2Data }
   | { type: "ultimate-fired"; position: Vector2Data }
-  | { type: "fence-activated"; from: Vector2Data; to: Vector2Data };
+  | { type: "fence-activated"; from: Vector2Data; to: Vector2Data }
+  | { type: "supply-chest-spawned"; position: Vector2Data; variant: SupplyChestVariant }
+  | { type: "supply-chest-hit"; position: Vector2Data; remainingHealth: number }
+  | { type: "supply-chest-opened"; position: Vector2Data }
+  | { type: "supply-chest-destroyed"; position: Vector2Data };
 
 export interface EnemySnapshot {
   id: number;
@@ -332,6 +337,16 @@ export interface PowerupPickupSnapshot {
   remainingSeconds: number;
 }
 
+export interface SupplyChestSnapshot {
+  id: number;
+  variant: SupplyChestVariant;
+  position: Vector2Data;
+  health: number;
+  maxHealth: number;
+  /** True when the Marine stands close enough to open a sealed chest. */
+  playerInRange: boolean;
+}
+
 export interface ActiveBuffSnapshot {
   type: PowerupType;
   remainingSeconds: number;
@@ -422,6 +437,7 @@ export interface CombatSnapshot {
   eliteRewards: readonly EliteRewardSnapshot[];
   pickups: readonly ExperiencePickupSnapshot[];
   powerups: readonly PowerupPickupSnapshot[];
+  supplyChests: readonly SupplyChestSnapshot[];
   activeBuffs: readonly ActiveBuffSnapshot[];
   uraniumKitAvailable: boolean;
   securedScrap: number;
@@ -556,6 +572,15 @@ interface PowerupPickupState {
   collected: boolean;
 }
 
+interface SupplyChestState {
+  id: number;
+  variant: SupplyChestVariant;
+  position: Vector2Data;
+  health: number;
+  maxHealth: number;
+  resolved: boolean;
+}
+
 interface EnemyProjectileState {
   id: number;
   type: "slime-glob" | "brood-acid" | "quill-spike";
@@ -679,6 +704,17 @@ const TETHER_BLOOM_PULL_SPEED_METRES_PER_SECOND = 1.15;
 const TETHER_BLOOM_RECOVERY_SECONDS = 3.2;
 const POWERUP_LIFETIME_SECONDS = 12;
 const POWERUP_COLLECT_RADIUS_METRES = 0.7;
+export const MEDKIT_HEAL_AMOUNT = 2.5;
+/** Ordinary enemies only; specialists and above pay in Scrap instead. */
+export const MEDKIT_DROP_CHANCE = 0.06;
+/** Medkits linger longer than timed powerups so a hard wave can bank one. */
+const MEDKIT_LIFETIME_SECONDS = 25;
+export const SUPPLY_CHEST_BASE_HEALTH = 50;
+export const SUPPLY_CHEST_HEALTH_PER_WAVE = 8;
+const SUPPLY_CHEST_SPAWN_CHANCE = 0.4;
+const SUPPLY_CHEST_RADIUS_METRES = 0.6;
+const SUPPLY_CHEST_OPEN_RANGE_METRES = 1.4;
+const SUPPLY_CHEST_SCRAP = 10;
 const OVERCHARGE_ATTACK_SPEED_MULTIPLIER = 1.6;
 const ADRENALINE_MOVE_MULTIPLIER = 1.35;
 const MAGNET_PULSE_MULTIPLIER = 2.5;
@@ -723,6 +759,7 @@ const POWERUP_DURATION_SECONDS: Readonly<Record<PowerupType, number>> = Object.f
   adrenaline: 5,
   "magnet-pulse": 6,
   "uranium-core-rounds": URANIUM_CORE_ROUNDS_DURATION_SECONDS,
+  medkit: 0,
 });
 
 const POWERUP_WAVE_CYCLE: readonly PowerupType[] = Object.freeze([
@@ -780,6 +817,7 @@ export class CombatSimulation {
   private rainOfSpines: RainOfSpinesState[] = [];
   private eliteRewards: EliteRewardState[] = [];
   private powerups: PowerupPickupState[] = [];
+  private supplyChests: SupplyChestState[] = [];
   private readonly activeBuffs = new Map<PowerupType, number>();
   private uraniumKitAvailable: boolean;
   private readonly obstacleDamage = new Map<string, number>();
@@ -975,6 +1013,7 @@ export class CombatSimulation {
     }
 
     this.updateEnemies(delta);
+    this.updateSupplyChests(intent);
     this.updateProjectiles(delta);
     this.updateEnemyProjectiles(delta);
     this.updateRainOfSpines(delta);
@@ -1218,8 +1257,31 @@ export class CombatSimulation {
       id,
       type,
       position: position ? { ...position } : this.nextPowerupPosition(),
-      remainingSeconds: POWERUP_LIFETIME_SECONDS,
+      remainingSeconds: type === "medkit" ? MEDKIT_LIFETIME_SECONDS : POWERUP_LIFETIME_SECONDS,
       collected: false,
+    });
+    return id;
+  }
+
+  /** Forced entry point for labs and rules tests; ordinary spawns are seeded per wave. */
+  spawnSupplyChest(variant: SupplyChestVariant, position?: Vector2Data): number {
+    const id = this.nextId();
+    const health = variant === "armored"
+      ? SUPPLY_CHEST_BASE_HEALTH + SUPPLY_CHEST_HEALTH_PER_WAVE * this.waveIndex
+      : 0;
+    const chestPosition = position ? { ...position } : this.nextPowerupPosition();
+    this.supplyChests.push({
+      id,
+      variant,
+      position: chestPosition,
+      health,
+      maxHealth: health,
+      resolved: false,
+    });
+    this.frameEvents.push({
+      type: "supply-chest-spawned",
+      position: { ...chestPosition },
+      variant,
     });
     return id;
   }
@@ -1376,6 +1438,15 @@ export class CombatSimulation {
         type: powerup.type,
         position: { ...powerup.position },
         remainingSeconds: powerup.remainingSeconds,
+      })),
+      supplyChests: this.supplyChests.filter((chest) => !chest.resolved).map((chest) => ({
+        id: chest.id,
+        variant: chest.variant,
+        position: { ...chest.position },
+        health: chest.health,
+        maxHealth: chest.maxHealth,
+        playerInRange: chest.variant === "sealed"
+          && distance(chest.position, this.playerPosition) <= SUPPLY_CHEST_OPEN_RANGE_METRES,
       })),
       activeBuffs: [...this.activeBuffs.entries()].map(([type, remainingSeconds]) => ({
         type,
@@ -2137,6 +2208,57 @@ export class CombatSimulation {
     }
   }
 
+  /** Sealed chests open with the interact key; armored chests only break to gunfire. */
+  private updateSupplyChests(intent: PlayerIntent): void {
+    if (!intent.interactPressed) {
+      return;
+    }
+    for (const chest of this.supplyChests) {
+      if (
+        chest.resolved
+        || chest.variant !== "sealed"
+        || distance(chest.position, this.playerPosition) > SUPPLY_CHEST_OPEN_RANGE_METRES
+      ) {
+        continue;
+      }
+      chest.resolved = true;
+      this.frameEvents.push({ type: "supply-chest-opened", position: { ...chest.position } });
+      this.dropSupplyChestRewards(chest);
+      return;
+    }
+  }
+
+  private damageSupplyChest(chest: SupplyChestState, damage: number): void {
+    chest.health = Math.max(0, chest.health - damage);
+    if (chest.health > 0) {
+      this.frameEvents.push({
+        type: "supply-chest-hit",
+        position: { ...chest.position },
+        remainingHealth: chest.health,
+      });
+      return;
+    }
+    chest.resolved = true;
+    this.frameEvents.push({ type: "supply-chest-destroyed", position: { ...chest.position } });
+    this.dropSupplyChestRewards(chest);
+  }
+
+  private dropSupplyChestRewards(chest: SupplyChestState): void {
+    const offset = () => (this.random() - 0.5) * 1.2;
+    this.spawnPowerup("medkit", {
+      x: clamp(chest.position.x + offset(), 0.6, this.widthMetres - 0.6),
+      y: clamp(chest.position.y + offset(), 0.6, this.heightMetres - 0.6),
+    });
+    if (chest.variant === "armored") {
+      this.spawnPowerup("medkit", {
+        x: clamp(chest.position.x + offset(), 0.6, this.widthMetres - 0.6),
+        y: clamp(chest.position.y + offset(), 0.6, this.heightMetres - 0.6),
+      });
+    } else {
+      this.secureScrap(SUPPLY_CHEST_SCRAP, "supply-chest", chest.position);
+    }
+  }
+
   private updateProjectiles(deltaSeconds: number): void {
     for (const projectile of this.projectiles) {
       if (projectile.dead) {
@@ -2171,6 +2293,22 @@ export class CombatSimulation {
           position: { ...projectile.position },
           weaponId: projectile.weaponId,
         });
+        continue;
+      }
+
+      for (const chest of this.supplyChests) {
+        if (
+          chest.resolved
+          || chest.variant !== "armored"
+          || distance(projectile.position, chest.position) > SUPPLY_CHEST_RADIUS_METRES
+        ) {
+          continue;
+        }
+        this.damageSupplyChest(chest, projectile.damage);
+        projectile.dead = true;
+        break;
+      }
+      if (projectile.dead) {
         continue;
       }
 
@@ -4185,6 +4323,17 @@ export class CombatSimulation {
       this.playerShield += AEGIS_SHIELD_AMOUNT * this.supportEffectMultiplier;
       return;
     }
+    if (type === "medkit") {
+      const amount = Math.min(
+        MEDKIT_HEAL_AMOUNT * this.supportEffectMultiplier,
+        this.playerMaxHealth - this.playerHealth,
+      );
+      if (amount > 0) {
+        this.playerHealth += amount;
+        this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount });
+      }
+      return;
+    }
     this.activeBuffs.set(
       type,
       Math.max(this.activeBuffs.get(type) ?? 0, POWERUP_DURATION_SECONDS[type]),
@@ -4359,6 +4508,9 @@ export class CombatSimulation {
     } else if (enemy.rank === "standard" && this.random() < ORDINARY_SCRAP_DROP_CHANCE) {
       this.secureScrap(1, "ordinary-drop", enemy.position);
     }
+    if (enemy.rank === "standard" && this.random() < MEDKIT_DROP_CHANCE) {
+      this.spawnPowerup("medkit", { ...enemy.position });
+    }
     if (this.statusTuning.combustionOnDeath && (enemy.statusTimers.blaze ?? 0) > 0) {
       this.frameEvents.push({
         type: "explosion",
@@ -4459,6 +4611,7 @@ export class CombatSimulation {
     this.pickups = this.pickups.filter((pickup) => !pickup.collected);
     this.powerups = this.powerups.filter((powerup) => !powerup.collected);
     this.eliteRewards = this.eliteRewards.filter((reward) => !reward.collected);
+    this.supplyChests = this.supplyChests.filter((chest) => !chest.resolved);
   }
 
   private spawnFriendlyProjectile(data: Omit<ProjectileState, "id" | "dead">): void {
@@ -4598,6 +4751,15 @@ export class CombatSimulation {
     this.densityPressureSpawned = { pursuit: 0, ranged: 0, specialist: 0, boss: 0 };
     if (index >= 1) {
       this.spawnPowerup(POWERUP_WAVE_CYCLE[(index - 1) % POWERUP_WAVE_CYCLE.length]!);
+    }
+    // Seeded supply chest: at most one alive, never on the teaching or boss waves.
+    if (
+      index >= 2
+      && index < TOTAL_WAVES - 1
+      && this.supplyChests.every((chest) => chest.resolved)
+      && this.random() < SUPPLY_CHEST_SPAWN_CHANCE
+    ) {
+      this.spawnSupplyChest(this.random() < 0.5 ? "sealed" : "armored");
     }
     if (
       index >= 2

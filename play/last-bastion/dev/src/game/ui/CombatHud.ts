@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import type { CombatSnapshot, PowerupType } from "../combat/CombatSimulation";
+import type { CombatScenario, CombatSnapshot, PowerupType } from "../combat/CombatSimulation";
 import { MARINE } from "../hero/marine";
 import { PROTOTYPE_EVASIVE_RECOVERY_SECONDS } from "../hero/HeroMotionController";
 import {
@@ -32,22 +32,24 @@ interface StatusTrayView {
 
 export class CombatHud {
   private readonly healthFill: Phaser.GameObjects.Rectangle;
+  private readonly healthText: Phaser.GameObjects.Text;
   private readonly xpFill: Phaser.GameObjects.Rectangle;
-  private readonly rollFill: Phaser.GameObjects.Rectangle;
+  private readonly xpText: Phaser.GameObjects.Text;
   private readonly waveText: Phaser.GameObjects.Text;
   private readonly statsText: Phaser.GameObjects.Text;
   private readonly scrapIcon: Phaser.GameObjects.Image;
   private readonly scrapText: Phaser.GameObjects.Text;
-  private readonly rollText: Phaser.GameObjects.Text;
   private readonly weaponPips: Phaser.GameObjects.Rectangle[] = [];
+  /** Reserved for future live contacts; today the radar shows only the player dot. */
+  private readonly radarDot: Phaser.GameObjects.Arc;
   private readonly statePanel: Phaser.GameObjects.Container;
   private readonly stateText: Phaser.GameObjects.Text;
   private readonly debugText: Phaser.GameObjects.Text;
   private readonly bossPanel: Phaser.GameObjects.Container;
   private readonly bossFill: Phaser.GameObjects.Rectangle;
-  private readonly bossText: Phaser.GameObjects.Text;
-  private readonly bossPortrait: Phaser.GameObjects.Image;
-  private readonly bossFallback: Phaser.GameObjects.Arc;
+  private readonly bossNumberText: Phaser.GameObjects.Text;
+  private readonly bossNameText: Phaser.GameObjects.Text;
+  private readonly bossPhaseText: Phaser.GameObjects.Text;
   private readonly productionArt: boolean;
   private readonly cooldownTimersEnabled: boolean;
   private readonly statusTray: StatusTrayView[] = [];
@@ -57,46 +59,44 @@ export class CombatHud {
   constructor(scene: Phaser.Scene, showDebug: boolean, productionArt = true, cooldownTimersEnabled = true) {
     this.productionArt = productionArt;
     this.cooldownTimersEnabled = cooldownTimersEnabled;
-    const panel = productionArt
-      ? scene.add.image(18, 14, "hud-panels-v1", 0).setOrigin(0).setDisplaySize(382, 104).setDepth(2000)
-      : scene.add.rectangle(18, 14, 382, 104, 0x0b121c, 0.94)
-        .setOrigin(0).setStrokeStyle(2, 0x4d6a83).setDepth(2000);
-    scene.add.text(30, 22, "MARINE", hudText("#edf4ff", "14px")).setDepth(2001);
-    scene.add.text(30, 43, "HP", hudText("#9fb3c8", "11px")).setDepth(2001);
-    scene.add.rectangle(61, 50, 190, 12, 0x24131a).setOrigin(0, 0.5)
-      .setStrokeStyle(1, 0x6e3442).setDepth(2001);
-    this.healthFill = scene.add.rectangle(63, 50, 186, 8, 0xe55a67).setOrigin(0, 0.5).setDepth(2002);
-    scene.add.text(30, 67, "XP", hudText("#9fb3c8", "11px")).setDepth(2001);
-    scene.add.rectangle(61, 74, 190, 10, 0x102b31).setOrigin(0, 0.5)
-      .setStrokeStyle(1, 0x346d76).setDepth(2001);
-    this.xpFill = scene.add.rectangle(63, 74, 186, 6, 0x5de2e7).setOrigin(0, 0.5).setDepth(2002);
-    if (productionArt) {
-      scene.add.image(480, 14, "hud-panels-v1", 2).setOrigin(0.5, 0).setDisplaySize(250, 74).setDepth(2000);
-    }
-    this.waveText = scene.add.text(productionArt ? 480 : 268, 26, "", hudText("#ffffff", "13px"))
-      .setOrigin(productionArt ? 0.5 : 0, 0).setDepth(2001);
-    this.statsText = scene.add.text(268, 50, "", hudText("#9fb3c8", "11px")).setDepth(2001);
-    this.scrapIcon = scene.add.image(278, 91, "scrap-shop-hud-v1", 0)
-      .setDisplaySize(30, 30).setDepth(2002).setVisible(false);
-    this.scrapText = scene.add.text(298, 84, "", hudText("#ffd36b", "11px"))
-      .setDepth(2002).setVisible(false);
-    for (let index = 0; index < 6; index += 1) {
-      this.statusTray.push(createStatusTrayView(scene, 42 + index * 48, 145, productionArt));
-    }
 
-    const rollPanel = productionArt
-      ? scene.add.image(708, 14, "hud-panels-v1", 1).setOrigin(0).setDisplaySize(234, 104).setDepth(2000)
-      : scene.add.rectangle(708, 14, 234, 104, 0x0b121c, 0.94)
-        .setOrigin(0).setStrokeStyle(2, 0x4d6a83).setDepth(2000);
-    scene.add.text(720, 22, "COMBAT ROLL", hudText("#edf4ff", "13px")).setDepth(2001);
-    scene.add.rectangle(720, 50, 206, 12, 0x15222d).setOrigin(0, 0.5)
-      .setStrokeStyle(1, 0x4f6e8d).setDepth(2001);
-    this.rollFill = scene.add.rectangle(722, 50, 202, 8, 0x68e4e8).setOrigin(0, 0.5).setDepth(2002);
-    this.rollText = scene.add.text(720, 64, "", hudText("#9fb3c8", "11px")).setDepth(2001);
+    // Slim top-left dock: identity, HP, XP, Scrap. Code-drawn flat panel by
+    // creator direction (18 Jul review) — minimal chrome, maximum play space.
+    const dockWidth = 246;
+    scene.add.rectangle(10, 8, dockWidth, 54, 0x0b121c, 0.82).setOrigin(0)
+      .setStrokeStyle(1, 0x334a60).setDepth(2000);
+    this.statsText = scene.add.text(20, 13, "", hudText("#c7d6e4", "10px")).setDepth(2001);
+    scene.add.rectangle(20, 30, 148, 7, 0x24131a).setOrigin(0, 0.5)
+      .setStrokeStyle(1, 0x6e3442).setDepth(2001);
+    this.healthFill = scene.add.rectangle(21, 30, 146, 5, 0xe55a67).setOrigin(0, 0.5).setDepth(2002);
+    this.healthText = scene.add.text(174, 25, "", hudText("#e8929a", "10px")).setDepth(2001);
+    scene.add.rectangle(20, 42, 148, 6, 0x102b31).setOrigin(0, 0.5)
+      .setStrokeStyle(1, 0x346d76).setDepth(2001);
+    this.xpFill = scene.add.rectangle(21, 42, 146, 4, 0x5de2e7).setOrigin(0, 0.5).setDepth(2002);
+    this.xpText = scene.add.text(174, 37, "", hudText("#7fd6da", "10px")).setDepth(2001);
+    this.scrapIcon = scene.add.image(21, 50, "scrap-shop-hud-v1", 0)
+      .setDisplaySize(16, 16).setOrigin(0, 0.5).setDepth(2002).setVisible(false);
+    this.scrapText = scene.add.text(34, 45, "", hudText("#ffd36b", "10px"))
+      .setDepth(2002).setVisible(false);
     for (let index = 0; index < 12; index += 1) {
-      this.weaponPips.push(scene.add.rectangle(724 + index * 16, 94, 11, 8, 0x273747)
+      this.weaponPips.push(scene.add.rectangle(150 + index * 9, 50, 7, 5, 0x273747)
         .setStrokeStyle(1, 0x4f6e8d).setDepth(2001));
     }
+    for (let index = 0; index < 6; index += 1) {
+      this.statusTray.push(createStatusTrayView(scene, 32 + index * 44, 90, productionArt));
+    }
+
+    // Top-centre: wave and timer only. Roll/ultimate readiness already lives
+    // on the bottom action bar, so the old dedicated panel is redundant.
+    scene.add.rectangle(480, 10, 190, 26, 0x0b121c, 0.82).setOrigin(0.5, 0)
+      .setStrokeStyle(1, 0x334a60).setDepth(2000);
+    this.waveText = scene.add.text(480, 15, "", hudText("#ffffff", "13px"))
+      .setOrigin(0.5, 0).setDepth(2001);
+
+    // Top-right: minimal radar placeholder. No live contacts yet — this
+    // reserves the corner for a future minimap rather than a blank panel.
+    scene.add.circle(925, 32, 24, 0x0b121c, 0.82).setStrokeStyle(1, 0x334a60).setDepth(2000);
+    this.radarDot = scene.add.circle(925, 32, 3, 0x68e4e8).setDepth(2002);
 
     const actionDefinitions = [
       { label: "ROLL", binding: "SPACE", color: 0x68e4e8, frame: 0 },
@@ -140,18 +140,21 @@ export class CombatHud {
       padding: { x: 5, y: 3 },
     }).setDepth(2000).setVisible(showDebug);
 
-    const bossBackground = scene.add.rectangle(0, 0, 430, 54, 0x0b121c, 0.94)
-      .setStrokeStyle(3, 0xffb15c);
-    this.bossPortrait = scene.add.image(-187, 0, "siege-crusher-portrait-v1")
-      .setDisplaySize(48, 48).setVisible(productionArt);
-    this.bossFallback = scene.add.circle(-187, 0, 21, 0x8b4937)
-      .setStrokeStyle(2, 0xffb15c).setVisible(!productionArt);
-    const bossBar = scene.add.rectangle(-155, 12, 340, 12, 0x2b1714)
-      .setOrigin(0, 0.5).setStrokeStyle(1, 0x75382d);
-    this.bossFill = scene.add.rectangle(-153, 12, 336, 8, 0xff6b3d)
+    // Minimal boss readout (18 Jul creator direction): name above a single
+    // horizontal bar, with the health number set inside the bar itself. No
+    // portrait — the name and phase already identify the threat.
+    this.bossNameText = scene.add.text(0, -18, "", hudText("#ffb15c", "13px")).setOrigin(0.5);
+    const bossBar = scene.add.rectangle(0, 2, 460, 16, 0x2b1714)
+      .setOrigin(0.5).setStrokeStyle(1, 0x75382d);
+    this.bossFill = scene.add.rectangle(-228, 2, 456, 12, 0xe5493a)
       .setOrigin(0, 0.5);
-    this.bossText = scene.add.text(15, -15, "", hudText("#fff1dc", "13px")).setOrigin(0.5);
-    this.bossPanel = scene.add.container(480, 398, [bossBackground, this.bossPortrait, this.bossFallback, bossBar, this.bossFill, this.bossText])
+    this.bossNumberText = scene.add.text(0, 2, "", {
+      ...hudText("#fff1dc", "11px"),
+      stroke: "#2b1714",
+      strokeThickness: 3,
+    }).setOrigin(0.5);
+    this.bossPhaseText = scene.add.text(0, 16, "", hudText("#c48f6c", "9px")).setOrigin(0.5);
+    this.bossPanel = scene.add.container(480, 60, [bossBar, this.bossFill, this.bossNameText, this.bossNumberText, this.bossPhaseText])
       .setDepth(2050).setVisible(false);
 
     for (const child of scene.children.list) {
@@ -161,6 +164,7 @@ export class CombatHud {
         || child instanceof Phaser.GameObjects.Image
         || child instanceof Phaser.GameObjects.Container
         || child instanceof Phaser.GameObjects.Graphics
+        || child instanceof Phaser.GameObjects.Arc
       ) {
         if (child.depth < 2000) continue;
         child.setScrollFactor(0);
@@ -173,39 +177,30 @@ export class CombatHud {
     this.healthFill.setScale(Math.max(snapshot.playerHealth / snapshot.playerMaxHealth, 0.001), 1);
     this.xpFill.setScale(Math.max(snapshot.experience / snapshot.experienceForNextLevel, 0.001), 1);
     const totalRollTime = MARINE.evasiveMove.durationSeconds + PROTOTYPE_EVASIVE_RECOVERY_SECONDS;
-    const readiness = snapshot.evasiveReady
-      ? 1
-      : 1 - Math.min(snapshot.evasiveCooldownRemainingSeconds / totalRollTime, 1);
-    this.rollFill.setScale(Math.max(readiness, 0.001), 1)
-      .setFillStyle(snapshot.evasiveReady ? 0x68e4e8 : 0xffa31a);
     const timedWaveSuffix = snapshot.density.timerEndsWave
       && snapshot.density.waveDurationSeconds !== null
       && snapshot.status === "combat"
       ? `  •  ${Math.max(0, Math.ceil(snapshot.density.waveDurationSeconds - snapshot.density.waveElapsedSeconds))}s`
       : "";
     this.waveText.setText(snapshot.scenario
-      ? snapshot.scenario === "slime-spitter" ? "SPITTER LAB"
-        : snapshot.scenario === "carapace-elite" ? "ELITE LAB"
-          : snapshot.scenario === "brood-warden" ? "BROOD LAB"
-            : snapshot.scenario === "ripper" ? "RIPPER LAB"
-              : snapshot.scenario === "quillback" ? "QUILLBACK LAB"
-                : snapshot.scenario === "spinewheel" ? "SPINEWHEEL LAB"
-                  : snapshot.scenario === "tether-bloom" ? "TETHER LAB"
-                    : snapshot.scenario === "bastion-eater" ? "FINAL BOSS LAB"
-                      : snapshot.scenario === "density-capacity" ? "DENSITY 56 LAB"
-                        : snapshot.scenario === "aurum-hoarder" ? "AURUM LAB"
-                          : snapshot.scenario === "scrap-shop" ? "SCRAP SHOP LAB"
-                      : snapshot.scenario === "razor-scuttler" ? "RAZOR LAB" : "CRUSHER LAB"
+      ? SCENARIO_LABELS[snapshot.scenario]
       : snapshot.stressProfile
         ? `STRESS ${snapshot.stressProfile}`
         : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}${timedWaveSuffix}`);
-    const shieldLabel = snapshot.playerShield > 0 ? `  SH ${Math.ceil(snapshot.playerShield)}` : "";
-    this.statsText.setText(`LV ${snapshot.level}  HP ${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}\nXP ${snapshot.experience}/${snapshot.experienceForNextLevel}${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerTethered ? "  TETHERED" : ""}${snapshot.playerEntrenched ? "  ENTRENCHED" : ""}`);
+    const shieldLabel = snapshot.playerShield > 0 ? `  +SH${Math.ceil(snapshot.playerShield)}` : "";
+    const flags = `${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerTethered ? "  TETHERED" : ""}${snapshot.playerEntrenched ? "  ENTRENCHED" : ""}`;
+    this.statsText.setText(`MARINE  •  LV ${snapshot.level}${flags}`);
+    this.healthText.setText(`${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}`);
+    this.xpText.setText(`${snapshot.experience}/${snapshot.experienceForNextLevel}`);
     const scrapVisible = snapshot.securedScrap > 0 || snapshot.scenario === "scrap-shop";
     const secured = snapshot.events.some((event) => event.type === "scrap-secured");
     const spent = snapshot.events.some((event) => event.type === "scrap-spent");
     this.scrapIcon.setVisible(scrapVisible).setFrame(spent ? 2 : secured ? 1 : 0);
-    this.scrapText.setVisible(scrapVisible).setText(`SCRAP ${snapshot.securedScrap}`);
+    this.scrapText.setVisible(scrapVisible).setText(`${snapshot.securedScrap}`);
+    this.radarDot.setPosition(
+      925 + (snapshot.playerPosition.x / snapshot.arena.widthMetres - 0.5) * 40,
+      32 + (snapshot.playerPosition.y / snapshot.arena.heightMetres - 0.5) * 40,
+    );
     this.statusTray.forEach((view, index) => {
       const buff = snapshot.activeBuffs[index];
       if (!buff) {
@@ -215,12 +210,6 @@ export class CombatHud {
       setStatusTrayVisible(view, true);
       updateStatusTrayView(view, buff.type, buff.remainingSeconds, buff.durationSeconds);
     });
-    const ultimateLabel = snapshot.ultimateReady
-      ? "ULT READY — R"
-      : `ULT ${snapshot.ultimateCooldownRemainingSeconds.toFixed(1)}s`;
-    this.rollText.setText(`${snapshot.evasiveReady
-      ? "READY — SPACE"
-      : `${snapshot.evasiveCooldownRemainingSeconds.toFixed(2)}s`}   ${ultimateLabel}`);
     updateCooldownTile(
       this.actionTiles[0]!, snapshot.evasiveCooldownRemainingSeconds,
       totalRollTime, snapshot.evasiveReady, false,
@@ -278,21 +267,18 @@ export class CombatHud {
     const boss = snapshot.enemies.find((enemy) => enemy.rank === "boss" || enemy.rank === "mini-boss");
     this.bossPanel.setVisible(Boolean(boss));
     if (boss) {
-      this.bossFill.setScale(Math.max(boss.health / boss.maxHealth, 0.001), 1);
       const healthRatio = boss.health / boss.maxHealth;
-      const enrage = healthRatio <= 0.2 ? "  •  FRENZY" : healthRatio <= 0.5 ? "  •  ENRAGED" : "";
+      this.bossFill.setScale(Math.max(healthRatio, 0.001), 1)
+        .setFillStyle(healthRatio <= 0.2 ? 0xff8a3d : 0xe5493a);
+      const enrage = healthRatio <= 0.2 ? "FRENZY" : healthRatio <= 0.5 ? "ENRAGED" : "";
       const isBrood = boss.miniBossKind === "brood-warden";
       const isRift = boss.miniBossKind === "rift-stalker";
       const isFinalBoss = boss.type === "bastion-eater";
-      // The Rift Stalker has no portrait until Batch O; it always uses the fallback swatch.
-      this.bossPortrait.setVisible(this.productionArt && !isRift)
-        .setTexture(isFinalBoss ? "bastion-eater-portrait-v1" : isBrood ? "brood-warden-portrait-v1" : "siege-crusher-portrait-v1");
-      this.bossFallback.setVisible(!this.productionArt || isRift)
-        .setFillStyle(isFinalBoss ? 0x273153 : isBrood ? 0x68408b : isRift ? 0x2c2f3d : 0x8b4937)
-        .setStrokeStyle(2, isFinalBoss ? 0x56d9e8 : isBrood ? 0xb9f35b : isRift ? 0x9a6cff : 0xffb15c);
       const name = isFinalBoss ? "THE BASTION EATER" : isBrood ? "BROOD WARDEN" : isRift ? "RIFT STALKER" : "SIEGE CRUSHER";
       const phase = isFinalBoss ? boss.bastionEaterPhase : isBrood ? boss.broodWardenPhase : isRift ? boss.riftStalkerPhase : boss.siegeCrusherPhase;
-      this.bossText.setText(`${name}  •  ${(phase ?? "stalk").toUpperCase()}${enrage}`);
+      this.bossNameText.setText(name);
+      this.bossNumberText.setText(`${Math.ceil(boss.health)} / ${boss.maxHealth}`);
+      this.bossPhaseText.setText(`${(phase ?? "stalk").toUpperCase()}${enrage ? `  •  ${enrage}` : ""}`);
     }
 
     let message = "";
@@ -487,6 +473,30 @@ function setCooldownTileVisible(tile: CooldownTileView, visible: boolean): void 
   tile.icon?.setVisible(visible);
   if (!visible) tile.overlay.clear();
 }
+
+/**
+ * Exhaustive by construction (`Record<CombatScenario, string>`): a new
+ * scenario id that forgets a label fails to compile instead of silently
+ * falling through to a stale name, as `rift-stalker` briefly did.
+ */
+const SCENARIO_LABELS: Readonly<Record<CombatScenario, string>> = Object.freeze({
+  "slime-spitter": "SPITTER LAB",
+  "carapace-elite": "ELITE LAB",
+  "siege-crusher": "CRUSHER LAB",
+  "brood-warden": "BROOD LAB",
+  "rift-stalker": "RIFT LAB",
+  ripper: "RIPPER LAB",
+  "razor-scuttler": "RAZOR LAB",
+  quillback: "QUILLBACK LAB",
+  spinewheel: "SPINEWHEEL LAB",
+  "tether-bloom": "TETHER LAB",
+  "bastion-eater": "FINAL BOSS LAB",
+  "density-capacity": "DENSITY 56 LAB",
+  "aurum-hoarder": "AURUM LAB",
+  "scrap-shop": "SCRAP SHOP LAB",
+  "weapon-gate": "WEAPON GATE LAB",
+  "batch-j": "BATCH J LAB",
+});
 
 function hudText(color: string, fontSize: string): Phaser.Types.GameObjects.Text.TextStyle {
   return {

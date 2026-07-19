@@ -149,3 +149,60 @@ describe("LocalSaveStore", () => {
     expect(loaded.progress.bestWaveReached).toBe(3);
   });
 });
+
+describe("Save schema v2 — expedition autosave", () => {
+  it("migrates a version-1 payload, preserving settings and progress with no run in progress", () => {
+    const storage = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        version: 1,
+        settings: { screenShakeEnabled: false, soundEnabled: true, damageNumbersEnabled: true, cooldownTimersEnabled: false },
+        progress: { runsFinished: 4, victories: 2, bestWaveReached: 7, bestiary: { scuttler: { seen: 3, kills: 12 } } },
+      }),
+    });
+    const save = new LocalSaveStore(storage).load();
+    expect(save.version).toBe(2);
+    expect(save.settings.screenShakeEnabled).toBe(false);
+    expect(save.settings.cooldownTimersEnabled).toBe(false);
+    expect(save.progress.runsFinished).toBe(4);
+    expect(save.progress.bestiary.scuttler).toEqual({ seen: 3, kills: 12 });
+    expect(save.expedition).toBeNull();
+  });
+
+  it("round-trips a mid-run expedition autosave through storage", () => {
+    const storage = fakeStorage({});
+    const store = new LocalSaveStore(storage);
+    store.saveExpedition({
+      mapSeed: 2026,
+      currentNodeId: 5,
+      clearedNodeIds: [1, 3, 5],
+      build: {
+        health: 7.4, shield: 1, level: 4, experience: 12, scrap: 55,
+        weapons: [{ weaponId: "bastion-service-rifle", tier: 2 }],
+        upgrades: [{ upgradeId: "rapid-cycling", level: 3 }],
+      },
+    });
+    const reloaded = new LocalSaveStore(storage).load();
+    expect(reloaded.expedition?.mapSeed).toBe(2026);
+    expect(reloaded.expedition?.clearedNodeIds).toEqual([1, 3, 5]);
+    expect(reloaded.expedition?.build?.health).toBeCloseTo(7.4, 5);
+    expect(reloaded.expedition?.build?.weapons).toEqual([{ weaponId: "bastion-service-rifle", tier: 2 }]);
+    const cleared = new LocalSaveStore(storage).clearExpedition();
+    expect(cleared.expedition).toBeNull();
+    expect(new LocalSaveStore(storage).load().expedition).toBeNull();
+  });
+
+  it("degrades a malformed expedition to no-run without touching settings", () => {
+    const storage = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        version: 2,
+        settings: { screenShakeEnabled: false, soundEnabled: true, damageNumbersEnabled: true, cooldownTimersEnabled: true },
+        progress: { runsFinished: 1, victories: 0, bestWaveReached: 3, bestiary: {} },
+        expedition: { mapSeed: "corrupt", clearedNodeIds: "nope" },
+      }),
+    });
+    const save = new LocalSaveStore(storage).load();
+    expect(save.expedition).toBeNull();
+    expect(save.settings.screenShakeEnabled).toBe(false);
+    expect(save.progress.bestWaveReached).toBe(3);
+  });
+});
