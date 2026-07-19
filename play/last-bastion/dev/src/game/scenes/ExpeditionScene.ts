@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { ARENA_THEMES } from "../rendering/arenaThemes";
+import { resolvePerkModifiers } from "../perks/perkCatalog";
 import {
   expeditionNodeById,
   type ExpeditionNode,
@@ -67,6 +68,7 @@ export class ExpeditionScene extends Phaser.Scene {
   private focusIndex = 0;
   private travelling = false;
   private pulseTime = 0;
+  private mapRevealBonusColumns = 0;
 
   constructor() {
     super("expedition");
@@ -76,6 +78,7 @@ export class ExpeditionScene extends Phaser.Scene {
     this.saveStore = new LocalSaveStore(
       typeof window !== "undefined" ? window.localStorage : null,
     );
+    this.mapRevealBonusColumns = resolvePerkModifiers(this.saveStore.load().selectedPerkId).mapRevealBonusColumns;
     this.run = this.restoreOrStartRun();
     this.root = this.add.container(0, 0);
     window.addEventListener("keydown", this.handleKey);
@@ -259,7 +262,8 @@ export class ExpeditionScene extends Phaser.Scene {
         const to = this.nodePosition(target);
         const activeEdge = node.id === this.run.state.currentNodeId
           && selectableNodeIds(this.run).includes(nextId);
-        lines.lineStyle(activeEdge ? 3 : 1.5, activeEdge ? TEAL_HEX : 0x33475e, activeEdge ? 0.95 : 0.7);
+        const visible = this.isInsideIntelHorizon(target);
+        lines.lineStyle(activeEdge ? 3 : 1.5, activeEdge ? TEAL_HEX : 0x33475e, activeEdge ? 0.95 : visible ? 0.7 : 0.08);
         lines.lineBetween(from.x, from.y, to.x, to.y);
       }
     }
@@ -272,6 +276,7 @@ export class ExpeditionScene extends Phaser.Scene {
     for (const node of this.run.map.nodes) {
       const { x, y } = this.nodePosition(node);
       const presentation = nodePresentation(this.run, node.id);
+      const intelVisible = this.isInsideIntelHorizon(node);
       const focused = node.id === focusedId;
       const fill = presentation === "current" ? 0x24506b
         : presentation === "reachable" ? 0x24384f
@@ -284,14 +289,14 @@ export class ExpeditionScene extends Phaser.Scene {
       const medallion = this.add.circle(x, y, radius, fill)
         .setStrokeStyle(focused ? 3 : 2, stroke)
         .setDepth(10)
-        .setAlpha(presentation === "unreachable" ? 0.35 : presentation === "cleared" ? 0.55 : 1);
+        .setAlpha(!intelVisible ? 0.1 : presentation === "unreachable" ? 0.35 : presentation === "cleared" ? 0.55 : 1);
       this.root.add(medallion);
       const glyphColor = presentation === "current" || presentation === "reachable" || focused
         ? (node.type === "boss" ? ORANGE : TEAL)
         : MUTED;
-      this.root.add(this.text(x, y - 1, NODE_GLYPHS[node.type], glyphColor, "16px", true)
+      this.root.add(this.text(x, y - 1, intelVisible ? NODE_GLYPHS[node.type] : "?", glyphColor, "16px", true)
         .setDepth(11)
-        .setAlpha(presentation === "unreachable" ? 0.4 : 1));
+        .setAlpha(!intelVisible ? 0.12 : presentation === "unreachable" ? 0.4 : 1));
       if (presentation === "cleared") {
         this.root.add(this.text(x + radius - 4, y - radius + 2, "✓", TEAL, "11px", true).setDepth(12).setAlpha(0.8));
       }
@@ -306,6 +311,11 @@ export class ExpeditionScene extends Phaser.Scene {
         this.root.add(zone);
       }
     }
+  }
+
+  private isInsideIntelHorizon(node: ExpeditionNode): boolean {
+    const current = expeditionNodeById(this.run.map, this.run.state.currentNodeId)!;
+    return node.column <= current.column + 2 + this.mapRevealBonusColumns;
   }
 
   private renderIntelCard(): void {

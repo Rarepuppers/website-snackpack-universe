@@ -89,9 +89,12 @@ describe("Shell screen flow", () => {
   it("starts a run only for a playable hero", () => {
     const state = boot("character-select");
     expect(ROSTER[0]!.status).toBe("playable");
-    expect(stepShell(state, "confirm").effects).toEqual([{ type: "start-run" }]);
+    expect(stepShell(state, "confirm").effects).toEqual([{ type: "start-run", heroId: "marine", perkId: "perk-veteran" }]);
 
-    const locked = stepShell(state, "right").state;
+    const medic = stepShell(state, "right").state;
+    expect(stepShell(medic, "confirm").effects).toEqual([{ type: "start-run", heroId: "medic", perkId: "perk-veteran" }]);
+
+    const locked = stepShell(medic, "right").state;
     expect(ROSTER[locked.rosterIndex]!.status).not.toBe("playable");
     expect(stepShell(locked, "confirm").effects).toEqual([]);
     expect(stepShell(locked, "confirm").state.screen).toBe("character-select");

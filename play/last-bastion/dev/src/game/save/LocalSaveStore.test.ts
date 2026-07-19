@@ -37,6 +37,16 @@ describe("LocalSaveStore", () => {
     expect(reloaded.settings.damageNumbersEnabled).toBe(true);
   });
 
+  it("persists the selected hero and perk for the next deployment", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    store.selectHero("medic");
+    store.selectPerk("perk-scrapper");
+    const reloaded = new LocalSaveStore(storage).load();
+    expect(reloaded.selectedHeroId).toBe("medic");
+    expect(reloaded.selectedPerkId).toBe("perk-scrapper");
+  });
+
   it("defaults damage numbers on and lets them be turned off", () => {
     expect(DEFAULT_SAVE.settings.damageNumbersEnabled).toBe(true);
     const storage = fakeStorage();
@@ -160,7 +170,7 @@ describe("Save schema v2 — expedition autosave", () => {
       }),
     });
     const save = new LocalSaveStore(storage).load();
-    expect(save.version).toBe(2);
+    expect(save.version).toBe(3);
     expect(save.settings.screenShakeEnabled).toBe(false);
     expect(save.settings.cooldownTimersEnabled).toBe(false);
     expect(save.progress.runsFinished).toBe(4);

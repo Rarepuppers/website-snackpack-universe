@@ -312,11 +312,11 @@ const HEROES = [
     level: "+3 health, +1 armour, +2 Heavy proficiency",
     stats: { Health: "15", Regen: "0.25/s", Armour: "2", Speed: "4.2 m/s", Roll: "0.7s / 3m (shoulder charge)" },
     text: "The anti-Scout: cannot outrun a Swarm Scuttler, so must out-armour it. Entirely a positioning hero." },
-  { id: "hero-medic", name: "Medic", glyph: "+", tint: TINT.hero, status: "designed",
+  { id: "hero-medic", name: "Medic", glyph: "+", tint: TINT.hero, status: "live",
     role: "Sustain and support",
     weapon: "Injector Carbine (Light)",
-    passive: "Triage — healing overflow becomes a temporary shield",
-    ultimate: "Field Hospital — a zone that heals and cleanses status",
+    passive: "Triage Loop — every sixth Injector hit heals; overflow becomes shield",
+    ultimate: "Emergency Surge — restore 4 health and gain 2 shield",
     rack: "2 Light / 1 All",
     slots: "2 Offensive / 2 Defensive / 3 Support",
     level: "+2 health, +1 armour, +2 Light proficiency, +1 support effect",
@@ -371,9 +371,9 @@ const WEAPONS = [
   { id: "wpn-laser-pistol", name: "Laser Pistol", glyph: "→", cls: "light", family: "energy", status: "concept", tier: "I",
     stats: { Damage: "1.4", Cadence: "0.22s", Range: "13m", Type: "Fire (low buildup)" },
     text: "Hitscan pinpoint bolts. No travel time, no drop, but heat forces short bursts." },
-  { id: "wpn-injector-carbine", name: "Injector Carbine", glyph: "†", cls: "light", family: "bio", status: "concept", tier: "I",
-    stats: { Damage: "1.2", Cadence: "0.3s", Range: "10m", Type: "Toxic" },
-    text: "Medic-specific. Needles build a mark that later triggers a restorative effect." },
+  { id: "wpn-injector-carbine", name: "Injector Carbine", glyph: "†", cls: "light", family: "bio", status: "live", tier: "I",
+    stats: { Damage: "1.6", Cadence: "0.32s", Range: "15m", Type: "Toxic" },
+    text: "Medic starter. Every sixth confirmed Injector hit triggers Triage Loop." },
 
   /* ── Medium ────────────────────────────── */
   { id: "wpn-bastion-service-rifle", name: "Bastion Service Rifle", glyph: "═", cls: "medium", family: "ballistic", status: "live", tier: "I",
@@ -604,13 +604,13 @@ const UPGRADES = [
 ];
 
 const PERKS = [
-  { id: "perk-veteran", name: "Veteran", glyph: "★", status: "concept", text: "Start each run at level 2. Chosen before the drop, from a small pool unlocked by past runs." },
-  { id: "perk-scrapper", name: "Scrapper", glyph: "$", status: "concept", text: "Weapons sell for 75% instead of 50%. Turns the shop into a rotating armoury." },
-  { id: "perk-quartermaster", name: "Quartermaster", glyph: "▤", status: "concept", text: "+2 inventory slots. Hoard merge candidates without paying rack space." },
-  { id: "perk-fast-learner", name: "Fast Learner", glyph: "↑", status: "concept", text: "+15% XP for the first three waves, none after. Front-loads your build." },
-  { id: "perk-gunsmith", name: "Gunsmith", glyph: "⚒", status: "concept", text: "Merging also grants +1 weapon tier bonus damage. Rewards duplicate hunting." },
-  { id: "perk-survivor", name: "Survivor", glyph: "♥", status: "concept", text: "Below 30% health, gain 25% damage reduction. The comeback perk." },
-  { id: "perk-pathfinder", name: "Pathfinder", glyph: "⋔", status: "concept", text: "See one extra column of the expedition map. Turns the route into a plan." },
+  { id: "perk-veteran", name: "Veteran", glyph: "★", status: "live", text: "Start each run at level 2. Chosen before the drop, from a pool unlocked by past runs." },
+  { id: "perk-scrapper", name: "Scrapper", glyph: "$", status: "live", text: "Weapons sell for 75% instead of 50%. Turns the shop into a rotating armoury." },
+  { id: "perk-quartermaster", name: "Quartermaster", glyph: "▤", status: "live", text: "+2 inventory slots. Hoard merge candidates without paying rack space." },
+  { id: "perk-fast-learner", name: "Fast Learner", glyph: "↑", status: "live", text: "+15% XP through the opening three waves/nodes. Front-loads your build." },
+  { id: "perk-gunsmith", name: "Gunsmith", glyph: "⚒", status: "live", text: "Merging grants 10% bonus damage to the merged weapon. Rewards duplicate hunting." },
+  { id: "perk-survivor", name: "Survivor", glyph: "♥", status: "live", text: "Below 30% health, gain 25% damage reduction. The comeback perk." },
+  { id: "perk-pathfinder", name: "Pathfinder", glyph: "⋔", status: "live", text: "See one extra column of the expedition map. Turns the route into a plan." },
 ];
 
 const POWERUPS = [
@@ -1002,8 +1002,8 @@ function render() {
       <tr><td><b>Expedition map — 20 nodes</b></td><td>${badge("live")}</td><td>The branching starchart now deploys into Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, and Bastion Eater nodes; health, shield, level, XP, Scrap, weapon tiers, and upgrades persist between victories</td></tr>
       <tr><td><b>World themes</b></td><td>${badge("live")}</td><td>Bastion Perimeter, Emberfall, Toxic Bloom, Void Approach, and Arctic Relay now use authored terrain families with seeded lighting variants and gameplay-first contrast washes</td></tr>
       <tr><td><b>Shop keeper &amp; economy v2</b></td><td>${badge("live")}</td><td>The between-wave Scrap Shop now has one depth-priced reroll, an offer lock, 50% weapon resale, and the production Quartermaster; specialist keepers remain future content</td></tr>
-      <tr><td><b>Perk system</b></td><td>${badge("designed")}</td><td>Pre-drop run modifiers unlocked by your past expeditions</td></tr>
-      <tr><td><b>Second hero — Medic</b></td><td>${badge("designed")}</td><td>A sustain-focused playstyle with its own weapons and growth</td></tr>
+      <tr><td><b>Perk system</b></td><td>${badge("live")}</td><td>Seven persisted pre-drop modifiers unlocked by expedition milestones</td></tr>
+      <tr><td><b>Second hero — Medic</b></td><td>${badge("live")}</td><td>Injector Carbine, Triage Loop, Emergency Surge, unique rack and growth</td></tr>
       <tr><td><b>Unique weapon — Event Horizon</b></td><td>${badge("designed")}</td><td>The first ★ weapon: gravity fields and implosions</td></tr>
       <tr><td><b>Run summary &amp; Records</b></td><td>${badge("concept")}</td><td>End-of-run recap and persistent stats that drive perk unlocks</td></tr>
       <tr><td><b>Sector campaign</b></td><td>${badge("concept")}</td><td>Multiple faction-owned sector maps after the first expedition is proven</td></tr>

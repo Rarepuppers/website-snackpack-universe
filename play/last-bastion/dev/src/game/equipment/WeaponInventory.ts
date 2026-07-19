@@ -43,6 +43,7 @@ export type WeaponPlacementResult =
 export function createWeaponInventory(
   rackClasses: readonly (WeaponClass | "all")[],
   equipped: readonly WeaponTile[] = [],
+  stashCapacity = WEAPON_INVENTORY_CAPACITY,
 ): WeaponInventoryState {
   const rack: WeaponRackSlot[] = rackClasses.map((weaponClass, index) => ({
     id: `rack-${index + 1}`,
@@ -50,7 +51,7 @@ export function createWeaponInventory(
     tile: null,
   }));
   const stash: Array<WeaponTile | null> = Array.from(
-    { length: WEAPON_INVENTORY_CAPACITY },
+    { length: Math.max(0, Math.floor(stashCapacity)) },
     () => null,
   );
   for (const tile of equipped) {

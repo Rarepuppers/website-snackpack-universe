@@ -1,7 +1,7 @@
 import type { DamageType } from "../combat/damageTypes";
 import type { WeaponClass } from "../hero/HeroDefinition";
 
-export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube";
+export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine";
 export type WeaponTargetingMode = "cursor" | "nearest-enemy";
 export type WeaponAttackPattern = "projectile" | "scatter" | "chain-projectile" | "melee-sweep";
 
@@ -146,6 +146,22 @@ export const GRENADE_TUBE: Readonly<WeaponRuntimeStats> = weapon({
   knockbackMetres: 0.45,
 });
 
+export const INJECTOR_CARBINE: Readonly<WeaponRuntimeStats> = weapon({
+  id: "injector-carbine",
+  displayName: "Injector Carbine",
+  description: "Light toxic flechettes; every sixth Medic hit triggers Triage Loop.",
+  weaponClass: "light",
+  damageType: "toxic",
+  targetingMode: "cursor",
+  attackPattern: "projectile",
+  rangeMetres: 15,
+  fireIntervalSeconds: 0.32,
+  projectileSpeedMetresPerSecond: 18,
+  projectileLifetimeSeconds: 0.85,
+  projectileDamage: 1.6,
+  pierceCount: 0,
+});
+
 export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeStats>>> = Object.freeze({
   "bastion-service-rifle": BASTION_SERVICE_RIFLE,
   scattergun: SCATTERGUN,
@@ -154,6 +170,7 @@ export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeSta
   "bolt-carbine": BOLT_CARBINE,
   "bulwark-rotary-cannon": BULWARK_ROTARY_CANNON,
   "grenade-tube": GRENADE_TUBE,
+  "injector-carbine": INJECTOR_CARBINE,
 });
 
 export const VERTICAL_SLICE_WEAPON_IDS: readonly WeaponId[] = Object.freeze([
@@ -174,6 +191,7 @@ export const WEAPON_CHEST_POOL: readonly WeaponId[] = Object.freeze([
   "bolt-carbine",
   "bulwark-rotary-cannon",
   "grenade-tube",
+  "injector-carbine",
 ]);
 
 function weapon(

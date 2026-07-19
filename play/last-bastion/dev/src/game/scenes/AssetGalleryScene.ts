@@ -15,6 +15,10 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "p") {
+      this.createBatchPGallery();
+      return;
+    }
     if (batch === "q") {
       this.createBatchQGallery();
       return;
@@ -759,6 +763,35 @@ export class AssetGalleryScene extends Phaser.Scene {
 
     this.add.text(480, 490, "Art remains legible under radial cooldown shadow; bindings, seconds, rings, states, and hit tests stay authoritative code", style("#ffcf7a", "9px")).setOrigin(0.5);
     this.add.text(480, 518, "Review: ?mode=gallery&batch=f1 • Lab: ?loadout=patrol&kit=uranium", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchPGallery(): void {
+    this.add.text(20, 14, "LAST BASTION — FIELD MEDIC PRODUCTION ASSET BATCH P", style("#ffffff", "17px"));
+    this.add.text(20, 38, "20 directional hero frames + modular helmet + Injector Carbine + support VFX", style("#8fb2c9", "11px"));
+
+    this.add.image(84, 120, "medic-portrait-v1").setScale(0.76);
+    this.add.text(84, 176, "DOSSIER", style("#68e4e8", "8px")).setOrigin(0.5);
+    for (let frame = 0; frame < 20; frame += 1) {
+      const x = 190 + (frame % 10) * 74;
+      const y = 96 + Math.floor(frame / 10) * 92;
+      this.add.sprite(x, y, "medic-base-v1", frame).setScale(0.64);
+      this.add.sprite(x, y, "medic-helmet-v1", frame).setScale(0.64);
+      this.add.text(x, y + 33, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 218, "INJECTOR CARBINE — ready / pressure / fire / recover", style("#cdea72", "10px"));
+    for (let frame = 0; frame < 4; frame += 1) {
+      const x = 130 + frame * 190;
+      this.add.sprite(x, 278, "injector-carbine-v1", frame).setScale(0.9);
+    }
+    this.add.text(20, 334, "PROJECTILE + SUPPORT EFFECTS", style("#68e4e8", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 70 + frame * 116;
+      this.add.sprite(x, 394, "injector-carbine-effects-v1", frame).setScale(0.92);
+      this.add.text(x, 434, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.text(480, 480, "Triage cadence, healing, overflow shield, cooldown, damage, projectile speed and hit geometry remain authoritative code", style("#d8f7e5", "9px")).setOrigin(0.5);
+    this.add.text(480, 518, "Review: ?mode=gallery&batch=p • Live hero: Character Select → Medic", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createWeaponBatchGallery(

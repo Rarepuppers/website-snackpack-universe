@@ -21,10 +21,12 @@ export interface HeroUltimateProfile {
   projectileCount: number;
   projectileDamage: number;
   explosionRadiusMetres: number;
+  healAmount?: number;
+  shieldAmount?: number;
 }
 
 export interface HeroDefinition {
-  id: string;
+  id: "marine" | "medic";
   displayName: string;
   movementSpeedMetresPerSecond: number;
   collisionRadiusMetres: number;

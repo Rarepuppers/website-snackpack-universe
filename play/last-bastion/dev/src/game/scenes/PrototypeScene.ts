@@ -22,6 +22,7 @@ import {
 } from "../combat/CombatSimulation";
 import { offscreenWarningPosition } from "../combat/TelegraphRules";
 import type { EquippedWeapon } from "../equipment/WeaponLoadout";
+import type { PerkId } from "../perks/perkCatalog";
 import { clampWeaponCount } from "../equipment/WeaponLoadout";
 import { calculateWeaponRingLayout } from "../equipment/WeaponRingLayout";
 import {
@@ -96,7 +97,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly expeditionContext = readExpeditionContext(this.saveStore);
   private simulation = createSimulation(
     this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
-    this.expeditionContext,
+    this.expeditionContext, this.saveStore.load().selectedPerkId, this.saveStore.load().selectedHeroId,
   );
   private readonly enemyViews = new Map<number, EnemyView>();
   private readonly enemyStatusViews = new Map<string, Phaser.GameObjects.Sprite>();
@@ -185,12 +186,14 @@ export class PrototypeScene extends Phaser.Scene {
       : this.add.ellipse(0, 10, 34, 16, 0x05080c, 0.55);
     const playerLayers: Phaser.GameObjects.GameObject[] = [shadow];
     if (this.useMarineArt) {
-      this.marineSprite = this.add.sprite(0, 0, "marine-base-v1", 0);
-      applyManifestOrigin(this.marineSprite, "marine-base-v1");
+      const heroBodyAsset = this.simulation.snapshot().heroId === "medic" ? "medic-base-v1" : "marine-base-v1";
+      const heroHelmetAsset = this.simulation.snapshot().heroId === "medic" ? "medic-helmet-v1" : "marine-helmet-v1";
+      this.marineSprite = this.add.sprite(0, 0, heroBodyAsset, 0);
+      applyManifestOrigin(this.marineSprite, heroBodyAsset);
       playerLayers.push(this.marineSprite);
       if (this.useMarineHelmet) {
-        this.marineHelmetSprite = this.add.sprite(0, 0, "marine-helmet-v1", 0);
-        applyManifestOrigin(this.marineHelmetSprite, "marine-helmet-v1");
+        this.marineHelmetSprite = this.add.sprite(0, 0, heroHelmetAsset, 0);
+        applyManifestOrigin(this.marineHelmetSprite, heroHelmetAsset);
         playerLayers.push(this.marineHelmetSprite);
       }
     } else {
@@ -368,7 +371,7 @@ export class PrototypeScene extends Phaser.Scene {
   private restartRun(): void {
     this.simulation = createSimulation(
       this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
-      this.expeditionContext,
+      this.expeditionContext, this.saveStore.load().selectedPerkId, this.saveStore.load().selectedHeroId,
     );
     this.flushBestiary();
     this.lastSnapshot = this.simulation.snapshot();
@@ -448,6 +451,7 @@ export class PrototypeScene extends Phaser.Scene {
       return;
     }
     const completed = completeCurrentNode(this.expeditionContext.run, expeditionBuildFromSnapshot(snapshot));
+    this.saveStore.recordNodeCleared();
     this.saveStore.saveExpedition({
       mapSeed: completed.state.mapSeed,
       currentNodeId: completed.state.currentNodeId,
@@ -518,6 +522,10 @@ export class PrototypeScene extends Phaser.Scene {
             this.emitAuthoredEffect(0, event.position, 110, 0.5, 0.92, Math.atan2(event.direction.y, event.direction.x), "bolt-carbine-effects-v1");
             break;
           }
+          if (event.weaponId === "injector-carbine") {
+            this.emitAuthoredEffect(1, event.position, 100, 0.45, 0.9, Math.atan2(event.direction.y, event.direction.x), "injector-carbine-effects-v1");
+            break;
+          }
           if (event.weaponId === "bulwark-rotary-cannon") {
             this.emitAuthoredEffect(2, event.position, 80, 0.45, 0.82, Math.atan2(event.direction.y, event.direction.x), "bulwark-rotary-effects-v1");
             break;
@@ -561,7 +569,9 @@ export class PrototypeScene extends Phaser.Scene {
           );
           break;
         case "projectile-impact":
-          if (event.weaponId === "bulwark-rotary-cannon") {
+          if (event.weaponId === "injector-carbine") {
+            this.emitAuthoredEffect(2, event.position, 150, 0.52, 1.05, 0, "injector-carbine-effects-v1");
+          } else if (event.weaponId === "bulwark-rotary-cannon") {
             this.emitAuthoredEffect(4, event.position, 120, 0.48, 0.9, 0, "bulwark-rotary-effects-v1");
           }
           break;
@@ -615,6 +625,18 @@ export class PrototypeScene extends Phaser.Scene {
               event.position.y * PIXELS_PER_METRE,
               this.time.now,
             );
+          }
+          break;
+        case "medic-triage":
+          this.emitAuthoredEffect(4, event.position, 360, 0.65, 1.35, 0, "injector-carbine-effects-v1");
+          if (event.healed > 0 || event.shieldGained > 0) {
+            this.emitAuthoredEffect(5, event.position, 300, 0.55, 1.2, 0, "injector-carbine-effects-v1");
+          }
+          break;
+        case "medic-surge":
+          this.emitAuthoredEffect(6, event.position, 520, 0.9, 2.2, 0, "injector-carbine-effects-v1");
+          if (event.shieldGained > 0) {
+            this.emitAuthoredEffect(7, event.position, 650, 0.75, 1.65, 0, "injector-carbine-effects-v1");
           }
           break;
         case "xp-collected":
@@ -946,7 +968,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" | "telegraph-small-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" | "telegraph-small-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -1673,6 +1695,8 @@ export class PrototypeScene extends Phaser.Scene {
       if (!view) {
         const authoredProjectile = projectile.weaponId === "bolt-carbine"
           ? { texture: "bolt-carbine-effects-v1", frame: 1, scale: 0.58 }
+          : projectile.weaponId === "injector-carbine"
+            ? { texture: "injector-carbine-effects-v1", frame: 0, scale: 0.5 }
           : projectile.weaponId === "bulwark-rotary-cannon"
             ? { texture: "bulwark-rotary-effects-v1", frame: 1, scale: 0.34 }
             : projectile.weaponId === "grenade-tube"
@@ -1695,6 +1719,7 @@ export class PrototypeScene extends Phaser.Scene {
       view.setRotation(projectile.rotationRadians);
       if (view instanceof Phaser.GameObjects.Sprite) {
         view.setScale(projectile.weaponId === "bolt-carbine" ? 0.58
+          : projectile.weaponId === "injector-carbine" ? 0.5
           : projectile.weaponId === "bulwark-rotary-cannon" ? 0.34
             : projectile.weaponId === "grenade-tube" ? 0.48
               : projectile.weaponId === "scattergun" ? 0.24 : 0.3);
@@ -2685,6 +2710,8 @@ function createSimulation(
   scenario: CombatScenario | null,
   uraniumLab: { kit: boolean; active: boolean },
   expeditionContext: ExpeditionCombatContext | null,
+  perkId: PerkId | null,
+  heroId: "marine" | "medic",
 ): CombatSimulation {
   return new CombatSimulation({
     startingWeaponCount,
@@ -2696,6 +2723,8 @@ function createSimulation(
     seed: expeditionContext?.encounter.seed,
     expeditionEncounter: expeditionContext?.encounter,
     startingBuild: expeditionContext?.run.state.build,
+    perkId,
+    heroId,
   });
 }
 
@@ -2748,6 +2777,7 @@ function batchIWeaponTileFrame(weaponId: WeaponId): number {
     case "grenade-tube": return 3;
     case "arc-carbine": return 4;
     case "bulwark-rotary-cannon": return 5;
+    case "injector-carbine": return 6;
     case "bastion-service-rifle": return 7;
   }
 }
@@ -2792,24 +2822,26 @@ function weaponColor(weaponId: WeaponId): number {
     case "arc-carbine": return 0x68e4e8;
     case "patrol-blade": return 0xffd08a;
     case "bolt-carbine": return 0x94efff;
+    case "injector-carbine": return 0x78f0b0;
     case "bulwark-rotary-cannon": return 0xff9b42;
     case "grenade-tube": return 0xffb23f;
     default: return 0xe9e3cf;
   }
 }
 
-function weaponAssetId(weaponId: WeaponId): "service-rifle-v1" | "scattergun-v1" | "arc-carbine-v1" | "patrol-blade-v1" | "bolt-carbine-v1" | "bulwark-rotary-cannon-v1" | "grenade-tube-v1" {
+function weaponAssetId(weaponId: WeaponId): "service-rifle-v1" | "scattergun-v1" | "arc-carbine-v1" | "patrol-blade-v1" | "bolt-carbine-v1" | "injector-carbine-v1" | "bulwark-rotary-cannon-v1" | "grenade-tube-v1" {
   if (weaponId === "scattergun") return "scattergun-v1";
   if (weaponId === "arc-carbine") return "arc-carbine-v1";
   if (weaponId === "patrol-blade") return "patrol-blade-v1";
   if (weaponId === "bolt-carbine") return "bolt-carbine-v1";
+  if (weaponId === "injector-carbine") return "injector-carbine-v1";
   if (weaponId === "bulwark-rotary-cannon") return "bulwark-rotary-cannon-v1";
   if (weaponId === "grenade-tube") return "grenade-tube-v1";
   return "service-rifle-v1";
 }
 
-function isProductionWeaponSheet(weaponId: WeaponId): weaponId is "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" {
-  return weaponId === "bolt-carbine" || weaponId === "bulwark-rotary-cannon" || weaponId === "grenade-tube";
+function isProductionWeaponSheet(weaponId: WeaponId): weaponId is "bolt-carbine" | "injector-carbine" | "bulwark-rotary-cannon" | "grenade-tube" {
+  return weaponId === "bolt-carbine" || weaponId === "injector-carbine" || weaponId === "bulwark-rotary-cannon" || weaponId === "grenade-tube";
 }
 
 function applyManifestOrigin(

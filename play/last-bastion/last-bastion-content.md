@@ -751,7 +751,7 @@ Reuses the mini-boss contracts proven by Siege Crusher and Brood Warden (chroma 
 | Effect atlas | 4 × 2 @ 64 × 64 | Warp-out shimmer, warp-in burst, decoy mark glyph, pounce impact, blade-slash arc, frenzy aura tick, defeat collapse, rift afterglow |
 | Portrait | 128 × 128 | Head-and-crest three-quarter portrait with one violet rim light, matching the Siege Crusher/Brood Warden portrait treatment |
 
-## Batch P — Medic hero production set (queued for Codex; generate only after the Task 47 behavior gate passes)
+## Batch P — Medic hero production set (generated, normalized, and integrated 19 July 2026)
 
 Mirrors the Marine's modular contract exactly: same base-body sheet dimensions, animation state rows, attachment points, and helmet-overlay system, so all headgear and ring weapons remain shared.
 
@@ -761,6 +761,8 @@ Mirrors the Marine's modular contract exactly: same base-body sheet dimensions, 
 | Medic helmet overlay | Closed visor with a horizontal teal sensor slit and a small chevron crest; aligned to the shared attachment points in every facing |
 | Injector Carbine ring weapon | Slim carbine with an under-slung vial magazine glowing soft green; ready/fire/recover states at the shared 96 px ring-weapon contract |
 | Portrait | 128 × 128 dossier portrait matching the Marine portrait treatment |
+
+The retained family lives under `art/production-tests/batch-p/`: 20-frame 4×5 body and aligned helmet masters/runtime sheets, a four-state 96px Injector Carbine, eight 64px projectile/support effects, and a 128px dossier portrait. Chroma sources and transparent alpha masters are retained for future 4K reprocessing; `normalize_batch_p.py` deterministically produces the web atlases. Live review: `?mode=gallery&batch=p` or deploy the Medic from Character Select. Triage cadence, healing, shield overflow, damage, cooldown, projectile geometry, text, and HUD remain code-owned.
 
 ## Perk tile completion note
 
@@ -801,7 +803,7 @@ Behavior-first production family for numeric-health terrain. Retain 4× masters,
 | Reinforced barricade | 128×96 | intact, armour stripped, critical, breached |
 | Shared impacts | 4×2 atlas at 64×64 | bullet chip, melee spark, acid hiss, frost crack, explosive fracture, heavy collapse, dust settle, salvage glint |
 
-The next raster priority is **Batch P after Task 47 locks the Medic behavior**, followed by Batch R only after the Task 54 destructible-terrain health and bar gate. Player-damage numbers, auto-fire state, actor outlines, projectile halos, and terrain HP bars are code-rendered and require no image generation.
+The next raster priority is **Batch R only after Task 54 completes the destructible-terrain health and bar gate**. Before that, Tasks 48, 49, 50, 53, 55, and 56 are behavior/UI work and should not trigger speculative raster production. Player-damage numbers, auto-fire state, actor outlines, projectile halos, and terrain HP bars are code-rendered and require no image generation.
 
 Batch Q2 (later, with the speciality system): one 128 × 128 speciality sign tile per keeper for the shop header, same canonical tile contract as Batch I.
 

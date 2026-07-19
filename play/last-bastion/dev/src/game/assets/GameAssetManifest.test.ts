@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(102);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(107);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -62,6 +62,19 @@ describe("GameAssetManifest", () => {
     expect(GAME_ASSETS["scattergun-v1"].kind).toBe("image");
     expect(GAME_ASSETS["arc-carbine-v1"].kind).toBe("image");
     expect(GAME_ASSETS["siege-crusher-portrait-v1"].kind).toBe("image");
+  });
+
+  it("locks Production Batch P Field Medic contracts", () => {
+    const body = GAME_ASSETS["medic-base-v1"];
+    const helmet = GAME_ASSETS["medic-helmet-v1"];
+    const weapon = GAME_ASSETS["injector-carbine-v1"];
+    const effects = GAME_ASSETS["injector-carbine-effects-v1"];
+    for (const asset of [body, helmet, weapon, effects]) expect(asset.kind).toBe("spritesheet");
+    if (body.kind === "spritesheet") expect(body.frameCount).toBe(20);
+    if (helmet.kind === "spritesheet") expect(helmet.frameCount).toBe(20);
+    if (weapon.kind === "spritesheet") expect(weapon.frameCount).toBe(4);
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
+    expect(GAME_ASSETS["medic-portrait-v1"].kind).toBe("image");
   });
 
   it("locks the gameplay-critical Production Batch C contracts", () => {

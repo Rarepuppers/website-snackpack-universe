@@ -100,6 +100,11 @@ import quillbackMatriarchSheetUrl from "../../../../art/production-tests/batch-j
 import telegraphLargeSheetUrl from "../../../../art/production-tests/batch-j/telegraph-large-atlas-v1-128.png";
 import telegraphSmallSheetUrl from "../../../../art/production-tests/batch-j/telegraph-small-atlas-v1-64.png";
 import telegraphDangerFillUrl from "../../../../art/production-tests/batch-j/telegraph-danger-fill-v1-64.png";
+import medicBaseSheetUrl from "../../../../art/production-tests/batch-p/medic-base-spritesheet-v1-96.png";
+import medicHelmetSheetUrl from "../../../../art/production-tests/batch-p/medic-helmet-overlay-v1-96.png";
+import injectorCarbineSheetUrl from "../../../../art/production-tests/batch-p/injector-carbine-spritesheet-v1-96.png";
+import injectorCarbineEffectUrl from "../../../../art/production-tests/batch-p/injector-carbine-effect-atlas-v1-64.png";
+import medicPortraitUrl from "../../../../art/production-tests/batch-p/medic-portrait-v1-128.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -203,7 +208,12 @@ export type GameAssetId =
   | "quillback-matriarch-v1"
   | "telegraph-large-v1"
   | "telegraph-small-v1"
-  | "telegraph-danger-fill-v1";
+  | "telegraph-danger-fill-v1"
+  | "medic-base-v1"
+  | "medic-helmet-v1"
+  | "injector-carbine-v1"
+  | "injector-carbine-effects-v1"
+  | "medic-portrait-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -329,6 +339,11 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("telegraph-large-v1", telegraphLargeSheetUrl, 128, 128, 8, 0.5, 0.5),
   sheet("telegraph-small-v1", telegraphSmallSheetUrl, 64, 64, 12, 0.5, 0.5),
   sheet("telegraph-danger-fill-v1", telegraphDangerFillUrl, 64, 64, 4, 0.5, 0.5),
+  sheet("medic-base-v1", medicBaseSheetUrl, 96, 96, 20, 0.5, 0.68),
+  sheet("medic-helmet-v1", medicHelmetSheetUrl, 96, 96, 20, 0.5, 0.68),
+  sheet("injector-carbine-v1", injectorCarbineSheetUrl, 96, 96, 4, 0.25, 0.5),
+  sheet("injector-carbine-effects-v1", injectorCarbineEffectUrl, 64, 64, 8, 0.5, 0.5),
+  image("medic-portrait-v1", medicPortraitUrl, 128, 128, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(

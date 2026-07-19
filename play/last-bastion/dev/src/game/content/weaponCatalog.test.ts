@@ -6,7 +6,7 @@ describe("weaponCatalog", () => {
     expect(VERTICAL_SLICE_WEAPON_IDS).toEqual([
       "bastion-service-rifle", "scattergun", "arc-carbine",
     ]);
-    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(7);
+    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(8);
   });
 
   it("gives each family a distinct attack contract", () => {

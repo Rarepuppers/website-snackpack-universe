@@ -1,3 +1,6 @@
+import { isPerkId, type PerkId } from "../perks/perkCatalog";
+import type { HeroDefinition } from "../hero/HeroDefinition";
+
 /**
  * Versioned local persistence for settings and basic run progress.
  *
@@ -27,6 +30,7 @@ export interface GameProgress {
   runsFinished: number;
   victories: number;
   bestWaveReached: number;
+  nodesCleared: number;
   bestiary: Record<string, BestiaryEntry>;
 }
 
@@ -52,10 +56,12 @@ export interface ExpeditionSave {
 }
 
 export interface SaveData {
-  version: 2;
+  version: 3;
   settings: GameSettings;
   progress: GameProgress;
   expedition: ExpeditionSave | null;
+  selectedPerkId: PerkId | null;
+  selectedHeroId: HeroDefinition["id"];
 }
 
 export const SAVE_STORAGE_KEY = "last-bastion-save";
@@ -64,7 +70,7 @@ export const SAVE_STORAGE_KEY = "last-bastion-save";
 export const BESTIARY_KILLS_TO_REVEAL = 10;
 
 export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
-  version: 2,
+  version: 3,
   settings: Object.freeze({
     screenShakeEnabled: true,
     soundEnabled: true,
@@ -75,9 +81,12 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     runsFinished: 0,
     victories: 0,
     bestWaveReached: 0,
+    nodesCleared: 0,
     bestiary: Object.freeze({}) as Record<string, BestiaryEntry>,
   }),
   expedition: null,
+  selectedPerkId: "perk-veteran",
+  selectedHeroId: "marine",
 });
 
 type StorageLike = Pick<Storage, "getItem" | "setItem">;
@@ -100,6 +109,30 @@ export class LocalSaveStore {
     this.cached = {
       ...this.cached,
       settings: { ...this.cached.settings, ...partial },
+    };
+    this.writeToStorage();
+    return this.load();
+  }
+
+  selectPerk(perkId: PerkId | null): SaveData {
+    this.cached = { ...this.cached, selectedPerkId: perkId };
+    this.writeToStorage();
+    return this.load();
+  }
+
+  selectHero(heroId: HeroDefinition["id"]): SaveData {
+    this.cached = { ...this.cached, selectedHeroId: heroId };
+    this.writeToStorage();
+    return this.load();
+  }
+
+  recordNodeCleared(count = 1): SaveData {
+    this.cached = {
+      ...this.cached,
+      progress: {
+        ...this.cached.progress,
+        nodesCleared: this.cached.progress.nodesCleared + Math.max(0, Math.floor(count)),
+      },
     };
     this.writeToStorage();
     return this.load();
@@ -199,11 +232,11 @@ function normalizeSave(parsed: unknown): SaveData {
   const candidate = parsed as Omit<Partial<SaveData>, "version"> & { version?: number };
   // Version 1 saves migrate cleanly: same settings and progress, no mid-run
   // expedition. Anything else is foreign and degrades to defaults.
-  if (candidate.version !== 1 && candidate.version !== 2) {
+  if (candidate.version !== 1 && candidate.version !== 2 && candidate.version !== 3) {
     return cloneSave(DEFAULT_SAVE);
   }
   return {
-    version: 2,
+    version: 3,
     settings: {
       screenShakeEnabled: readBoolean(candidate.settings?.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
       soundEnabled: readBoolean(candidate.settings?.soundEnabled, DEFAULT_SAVE.settings.soundEnabled),
@@ -214,9 +247,14 @@ function normalizeSave(parsed: unknown): SaveData {
       runsFinished: readCount(candidate.progress?.runsFinished),
       victories: readCount(candidate.progress?.victories),
       bestWaveReached: readCount(candidate.progress?.bestWaveReached),
+      nodesCleared: readCount(candidate.progress?.nodesCleared),
       bestiary: readBestiary(candidate.progress?.bestiary),
     },
-    expedition: candidate.version === 2 ? readExpedition(candidate.expedition) : null,
+    expedition: candidate.version >= 2 ? readExpedition(candidate.expedition) : null,
+    selectedPerkId: candidate.version >= 3 && isPerkId(candidate.selectedPerkId)
+      ? candidate.selectedPerkId
+      : "perk-veteran",
+    selectedHeroId: candidate.version >= 3 && candidate.selectedHeroId === "medic" ? "medic" : "marine",
   };
 }
 
@@ -324,5 +362,7 @@ function cloneSave(save: SaveData): SaveData {
     settings: { ...save.settings },
     progress: { ...save.progress, bestiary },
     expedition: save.expedition === null ? null : cloneExpedition(save.expedition),
+    selectedPerkId: save.selectedPerkId,
+    selectedHeroId: save.selectedHeroId,
   };
 }

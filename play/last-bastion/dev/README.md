@@ -27,6 +27,7 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?scenario=siege-crusher&loadout=vertical` — mini-boss phases, cover destruction, boss bar, and arsenal-cache lab
 - `/play/last-bastion/?scenario=brood-warden&loadout=vertical` — four-move Brood Warden, egg priority, acid fan, enrage, and swarm-rush lab
 - `/play/last-bastion/?scenario=rift-stalker&loadout=vertical` — production Batch O body/effects, cloaked stalk, decoy-mark warp pounce, rift-spike fan, close slash, and final-20% chained-warp frenzy lab
+- `/play/last-bastion/` → Expedition → New expedition — select the live Field Medic, a pre-drop perk, and deploy with the Injector Carbine
 - `/play/last-bastion/?scenario=ripper&loadout=vertical` — long-reach melee cone, locked wind-up, dodge-behind, and recovery-punish lab
 - `/play/last-bastion/?scenario=razor-scuttler&loadout=vertical` — locked dash lane, cover crash, one-hit safety, and miss-recovery lab
 - `/play/last-bastion/?scenario=quillback&loadout=vertical` — locked 1/3/5 spike fans, close-range retreat, and dodge-gap readability lab
@@ -61,6 +62,8 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?mode=gallery&batch=n` — Task 36 Aurum body/effects/cache family and eight 128 px runtime tiles
 - `/play/last-bastion/?mode=gallery&batch=n2` — production Scrap Shop panel, six 128 px offer tiles, and four 128 px Scrap HUD/effect frames
 - `/play/last-bastion/?mode=gallery&batch=o` — Rift Stalker body states, encounter effects, and portrait from Production Asset Batch O
+- `/play/last-bastion/?mode=gallery&batch=p` — Field Medic body/helmet states, Injector Carbine, support effects, and portrait from Production Asset Batch P
+- `/play/last-bastion/?mode=gallery&batch=q` — Quartermaster idle/transaction presentation from Production Asset Batch Q
 - `/play/last-bastion/?mode=gallery&batch=j1` — Swarm Scuttler and elite body state sheets
 - `/play/last-bastion/?mode=gallery&batch=j2` — code-backed hostile telegraph decals and five-arena contrast strip
 - `/play/last-bastion/?mode=gallery&batch=i` — promoted Batch I1 weapon, perk, and hotkey/action 128 px runtime tile atlases

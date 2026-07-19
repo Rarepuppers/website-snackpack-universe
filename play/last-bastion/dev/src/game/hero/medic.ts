@@ -1,0 +1,53 @@
+import type { HeroDefinition } from "./HeroDefinition";
+
+export const MEDIC = Object.freeze({
+  id: "medic",
+  displayName: "Medic",
+  movementSpeedMetresPerSecond: 5.1,
+  collisionRadiusMetres: 0.52,
+  evasiveMove: {
+    presentation: "slide",
+    durationSeconds: 0.48,
+    distanceMetres: 3.8,
+    invulnerabilitySeconds: 0.28,
+  },
+  defence: {
+    armour: 1,
+    flatDamageReduction: 0,
+    maxShield: 1,
+    shieldRechargeDelaySeconds: 2.6,
+    shieldRechargePerSecond: 1,
+    slowResistance: 0.1,
+    attackSpeedMultiplier: 1,
+    hitInvulnerabilitySeconds: 0.65,
+    mineralFindPercent: 100,
+  },
+  weaponProficiencies: { light: 0, medium: 0, heavy: 0, unique: 0 },
+  levelGrowth: {
+    health: 2,
+    armour: 1,
+    damage: 0,
+    speed: 0,
+    supportEffect: 1,
+    proficiency: { light: 2 },
+  },
+  passive: {
+    id: "triage-loop",
+    name: "Triage Loop",
+    description: "Every sixth Injector hit restores 0.75 health; overflow becomes shield.",
+    stationarySecondsRequired: 0,
+    bonusArmour: 0,
+  },
+  upgradeSlots: { offensive: 2, defensive: 2, support: 2, scavenger: 1 },
+  ultimate: {
+    id: "emergency-surge",
+    name: "Emergency Surge",
+    description: "Restore 4 health and gain 2 shield; excess healing becomes shield.",
+    cooldownSeconds: 20,
+    projectileCount: 0,
+    projectileDamage: 0,
+    explosionRadiusMetres: 0,
+    healAmount: 4,
+    shieldAmount: 2,
+  },
+} satisfies HeroDefinition);

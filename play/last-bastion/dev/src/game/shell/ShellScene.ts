@@ -1,6 +1,9 @@
 import Phaser from "phaser";
 import { LocalSaveStore, type GameProgress } from "../save/LocalSaveStore";
 import { MARINE } from "../hero/marine";
+import { MEDIC } from "../hero/medic";
+import { loadGameAssets } from "../assets/PhaserAssetLoader";
+import { PERK_CATALOG } from "../perks/perkCatalog";
 import {
   createShellState,
   HOW_TO_PLAY_PAGES,
@@ -38,11 +41,16 @@ export class ShellScene extends Phaser.Scene {
     super("shell");
   }
 
+  preload(): void {
+    loadGameAssets(this);
+  }
+
   create(): void {
     this.saveStore = new LocalSaveStore(
       typeof window !== "undefined" ? window.localStorage : null,
     );
-    this.state = createShellState(this.saveStore.load().settings);
+    const save = this.saveStore.load();
+    this.state = createShellState(save.settings, "title", save.progress, save.selectedPerkId, save.selectedHeroId);
     this.root = this.add.container(0, 0);
 
     // One direct window listener instead of the Phaser keyboard plugin: the
@@ -82,10 +90,9 @@ export class ShellScene extends Phaser.Scene {
       if (effect.type === "set-setting") {
         this.saveStore.updateSettings({ [effect.key]: effect.value });
       } else if (effect.type === "start-run") {
-        // Deploy via the direct-run route: each mode boots its own scene set,
-        // and the future expedition map will carry run state through the save
-        // store, so a reload-based transition stays correct.
-        window.location.href = "?screen=game";
+        this.saveStore.selectPerk(effect.perkId);
+        this.saveStore.selectHero(effect.heroId === "medic" ? "medic" : "marine");
+        window.location.href = `?screen=map&hero=${effect.heroId}`;
         return;
       } else if (effect.type === "open-url") {
         window.location.href = effect.url;
@@ -222,6 +229,8 @@ export class ShellScene extends Phaser.Scene {
   private renderCharacterSelect(): void {
     this.root.add(this.text(70, 48, "CHARACTER SELECT", IVORY, "28px"));
     const hero = ROSTER[this.state.rosterIndex]!;
+    const perk = PERK_CATALOG[this.state.perkIndex]!;
+    const perkUnlocked = this.state.unlockedPerkIds.includes(perk.id);
 
     // Left: oversized hero placeholder.
     this.root.add(this.add.rectangle(250, 250, 300, 300, PANEL).setStrokeStyle(1, 0x3b4d63));
@@ -234,17 +243,20 @@ export class ShellScene extends Phaser.Scene {
     // Right: dossier.
     this.root.add(this.add.rectangle(660, 250, 440, 300, PANEL).setStrokeStyle(1, 0x3b4d63));
     if (hero.status === "playable") {
+      const definition = hero.id === "medic" ? MEDIC : MARINE;
       const dossier = [
-        "ROLE  Durable all-round ranged fighter",
+        hero.id === "medic" ? "ROLE  Mobile combat sustain specialist" : "ROLE  Durable all-round ranged fighter",
         "",
-        `PASSIVE  ${MARINE.passive.name}`,
-        MARINE.passive.description,
+        `PASSIVE  ${definition.passive.name}`,
+        definition.passive.description,
         "",
-        `ULTIMATE  ${MARINE.ultimate.name}`,
-        MARINE.ultimate.description,
+        `ULTIMATE  ${definition.ultimate.name}`,
+        definition.ultimate.description,
         "",
-        "STARTING WEAPON  Bastion Service Rifle",
-        "PER LEVEL  +1 ALL STATS  •  +1 LIGHT PROFICIENCY",
+        hero.id === "medic" ? "STARTING WEAPON  Injector Carbine" : "STARTING WEAPON  Bastion Service Rifle",
+        hero.id === "medic"
+          ? "PER LEVEL  +2 HEALTH / +1 ARMOUR / +2 LIGHT / +1 SUPPORT"
+          : "PER LEVEL  +1 ALL STATS / +1 LIGHT PROFICIENCY",
       ].join("\n");
       this.root.add(this.text(470, 130, dossier, IVORY, "13px"));
     } else {
@@ -252,6 +264,25 @@ export class ShellScene extends Phaser.Scene {
         ? "Dossier sealed.\nThe Medic deploys with the Web MVP."
         : "Signal lost.\nFuture hero slot.", MUTED, "14px", true));
     }
+
+    this.root.add(this.text(470, 338, `PERK  ${perkUnlocked ? perk.name.toUpperCase() : "LOCKED"}`, perkUnlocked ? TEAL : ORANGE, "14px"));
+    this.root.add(this.text(470, 360, perkUnlocked ? perk.description : perk.unlockText, perkUnlocked ? IVORY : MUTED, "11px"));
+    PERK_CATALOG.forEach((entry, index) => {
+      const x = 492 + index * 55;
+      const selected = index === this.state.perkIndex;
+      const unlocked = this.state.unlockedPerkIds.includes(entry.id);
+      this.root.add(this.add.sprite(x, 410, "batch-i-perk-tiles-v1", index)
+        .setDisplaySize(46, 46)
+        .setAlpha(unlocked ? 1 : 0.3)
+        .setTint(selected ? 0xffffff : 0xb7c2cf));
+      if (selected) {
+        this.root.add(this.add.rectangle(x, 410, 50, 50).setStrokeStyle(3, perkUnlocked ? TEAL_HEX : 0xff9a52));
+      }
+      this.clickZone(x - 25, 385, 50, 50, () => {
+        this.state = { ...this.state, perkIndex: index };
+        this.render();
+      });
+    });
 
     // Roster rail.
     ROSTER.forEach((entry, index) => {
@@ -270,7 +301,7 @@ export class ShellScene extends Phaser.Scene {
         }
       });
     });
-    this.root.add(this.text(70, HEIGHT - 24, "LEFT/RIGHT SELECT  •  ENTER DEPLOY  •  ESC BACK", MUTED, "12px"));
+    this.root.add(this.text(70, HEIGHT - 24, "LEFT/RIGHT HERO  •  UP/DOWN PERK  •  ENTER DEPLOY  •  ESC BACK", MUTED, "12px"));
   }
 
   private text(

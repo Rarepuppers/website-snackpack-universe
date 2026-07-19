@@ -3,8 +3,9 @@ import type { Vector2Data } from "../math/Vector2Data";
 import { normalizeVector } from "../math/Vector2Data";
 import { HeroMotionController } from "../hero/HeroMotionController";
 import { MARINE } from "../hero/marine";
-import { experienceThreshold, marineGrowthAtLevel } from "../hero/LevelGrowth";
-import type { WeaponClass } from "../hero/HeroDefinition";
+import { MEDIC } from "../hero/medic";
+import { experienceThreshold, heroGrowthAtLevel } from "../hero/LevelGrowth";
+import type { HeroDefinition, WeaponClass } from "../hero/HeroDefinition";
 import { ENEMY_CATALOG, type EnemyType } from "../content/enemyCatalog";
 import {
   BASTION_SERVICE_RIFLE,
@@ -88,6 +89,7 @@ import { scaleEnemyHealth, scaleEnemyHit, waveScaling } from "./WaveScaling";
 import type { EliteKind } from "./EliteCadence";
 export type { EliteKind } from "./EliteCadence";
 import type { ExpeditionBuildSnapshot } from "../expedition/ExpeditionRun";
+import { resolvePerkModifiers, type PerkId, type PerkRunModifiers } from "../perks/perkCatalog";
 import type { ExpeditionEncounterDescriptor } from "../expedition/ExpeditionEncounter";
 import {
   buildRainOfSpinesTargets,
@@ -242,6 +244,8 @@ export type CombatEvent =
   | { type: "bastion-eater-breach"; position: Vector2Data; radiusMetres: number; warning: boolean }
   | { type: "bastion-eater-vault"; position: Vector2Data }
   | { type: "ultimate-fired"; position: Vector2Data }
+  | { type: "medic-triage"; position: Vector2Data; healed: number; shieldGained: number }
+  | { type: "medic-surge"; position: Vector2Data; healed: number; shieldGained: number }
   | { type: "fence-activated"; from: Vector2Data; to: Vector2Data }
   | { type: "supply-chest-spawned"; position: Vector2Data; variant: SupplyChestVariant }
   | { type: "supply-chest-hit"; position: Vector2Data; remainingHealth: number }
@@ -410,6 +414,8 @@ export interface WeaponInventorySnapshot {
 
 export interface CombatSnapshot {
   status: EncounterStatus;
+  heroId: HeroDefinition["id"];
+  activePerkId: PerkId | null;
   waveNumber: number;
   totalWaves: number;
   playerPosition: Vector2Data;
@@ -461,6 +467,7 @@ export interface CombatSnapshot {
   playerTethered: boolean;
   activeTetherEnemyId: number | null;
   density: DensityTelemetrySnapshot;
+  medicTriageHits: number;
 }
 
 interface EnemyState {
@@ -639,6 +646,8 @@ export interface CombatSimulationOptions {
   startingScrap?: number;
   expeditionEncounter?: ExpeditionEncounterDescriptor;
   startingBuild?: ExpeditionBuildSnapshot | null;
+  perkId?: PerkId | null;
+  heroId?: HeroDefinition["id"];
 }
 
 interface EquippedWeaponState extends EquippedWeapon {
@@ -746,8 +755,8 @@ export function scrapShopRerollCost(depth: number): number {
   return 10 + Math.max(1, Math.floor(depth)) * 5;
 }
 
-export function scrapShopWeaponSaleValue(tier: 1 | 2 | 3): number {
-  return Math.floor(SCRAP_SHOP_PRICES.weapon * (2 ** (tier - 1)) * 0.5);
+export function scrapShopWeaponSaleValue(tier: 1 | 2 | 3, fraction = 0.5): number {
+  return Math.floor(SCRAP_SHOP_PRICES.weapon * (2 ** (tier - 1)) * fraction);
 }
 const SCRAP_SHOP_REPAIR = 3.5;
 const SCRAP_SHOP_ARMOUR = 3;
@@ -787,15 +796,16 @@ export class CombatSimulation {
   readonly heightMetres: number;
   readonly arena: Readonly<ArenaDefinition>;
 
-  private readonly heroMotion = new HeroMotionController(MARINE);
-  private defence = { ...MARINE.defence };
+  private readonly hero: HeroDefinition;
+  private readonly heroMotion: HeroMotionController;
+  private defence: HeroDefinition["defence"];
   private moveSpeedMultiplier = 1;
   private levelDamageMultiplier = 1;
   private levelSpeedMultiplier = 1;
   private supportEffectMultiplier = 1;
-  private weaponProficiencies: Record<WeaponClass, number> = { ...MARINE.weaponProficiencies };
+  private weaponProficiencies: Record<WeaponClass, number>;
   private readonly upgradeLevels = new Map<UpgradeId, number>();
-  private readonly upgradeSlotCapacity: Record<UpgradeCategory, number> = { ...MARINE.upgradeSlots };
+  private readonly upgradeSlotCapacity: Record<UpgradeCategory, number>;
   private explosionSplashMultiplier = 0.5;
   /** Player-side elemental tuning advanced by upgrade path levels. */
   private readonly statusTuning = {
@@ -813,7 +823,8 @@ export class CombatSimulation {
   private playerHealth = PLAYER_MAX_HEALTH;
   private playerMaxHealth = PLAYER_MAX_HEALTH;
   private regenerationRemainingSeconds = PLAYER_REGEN_INTERVAL_SECONDS;
-  private playerShield = MARINE.defence.maxShield;
+  private playerShield: number;
+  private medicTriageHits = 0;
   private shieldRechargeCooldownSeconds = 0;
   private playerInvulnerable = false;
   private heroState = "idle";
@@ -822,6 +833,9 @@ export class CombatSimulation {
   private evasiveCooldownRemainingSeconds = 0;
   private readonly equippedWeapons: EquippedWeaponState[];
   private weaponInventory: WeaponInventoryState;
+  private readonly perkModifiers: PerkRunModifiers;
+  private readonly activePerkId: PerkId | null;
+  private experienceCarry = 0;
   private magnetMultiplier = 1;
   private lastAimDirection: Vector2Data = { x: 1, y: 0 };
   private enemies: EnemyState[] = [];
@@ -875,6 +889,12 @@ export class CombatSimulation {
   private pendingWeaponTile: WeaponTile | null = null;
 
   constructor(options: CombatSimulationOptions = {}) {
+    this.hero = options.heroId === "medic" ? MEDIC : MARINE;
+    this.heroMotion = new HeroMotionController(this.hero);
+    this.defence = { ...this.hero.defence };
+    this.weaponProficiencies = { ...this.hero.weaponProficiencies };
+    this.upgradeSlotCapacity = { ...this.hero.upgradeSlots };
+    this.playerShield = this.hero.defence.maxShield;
     this.arena = options.arena ?? BASTION_ARENA;
     this.widthMetres = options.widthMetres ?? this.arena.widthMetres;
     this.heightMetres = options.heightMetres ?? this.arena.heightMetres;
@@ -886,6 +906,8 @@ export class CombatSimulation {
     this.stressProfile = options.stressProfile ?? null;
     this.scenario = options.scenario ?? null;
     this.expeditionEncounter = options.expeditionEncounter ?? null;
+    this.activePerkId = options.perkId ?? null;
+    this.perkModifiers = resolvePerkModifiers(this.activePerkId);
     this.securedScrap = Math.max(0, Math.floor(
       options.startingBuild?.scrap ?? options.startingScrap ?? (this.scenario === "scrap-shop" ? 150 : 0),
     ));
@@ -904,6 +926,11 @@ export class CombatSimulation {
       ? createWeaponLoadout(carriedWeaponIds)
       : options.startingWeaponIds
       ? createWeaponLoadout(options.startingWeaponIds)
+      : this.hero.id === "medic"
+      ? createWeaponLoadout(Array.from(
+        { length: clampWeaponCount(options.startingWeaponCount ?? 1) },
+        () => "injector-carbine" as const,
+      ))
       : createServiceRifleLoadout(clampWeaponCount(options.startingWeaponCount ?? 1));
     this.equippedWeapons = initialLoadout.map((weapon) => ({
       ...weapon,
@@ -911,17 +938,22 @@ export class CombatSimulation {
       cooldownDurationSeconds: 0,
       projectileCarry: initialProjectileCarry(weapon.instanceId),
     }));
-    const rackClasses: ("light" | "medium" | "heavy" | "unique" | "all")[] = ["light", "medium", "heavy", "all"];
+    const rackClasses: ("light" | "medium" | "heavy" | "unique" | "all")[] = this.hero.id === "medic"
+      ? ["light", "light", "all"]
+      : ["light", "medium", "heavy", "all"];
     while (rackClasses.length < this.equippedWeapons.length) rackClasses.push("all");
     this.weaponInventory = createWeaponInventory(rackClasses, this.equippedWeapons.map((weapon) => ({
       instanceId: weapon.instanceId,
       weaponId: weapon.weaponId,
       weaponClass: weapon.stats.weaponClass,
       tier: 1,
-    })));
+    })), 4 + this.perkModifiers.inventoryBonusSlots);
 
     if (options.startingBuild) {
       this.restoreExpeditionBuild(options.startingBuild);
+    } else if (this.perkModifiers.startingLevel > 1) {
+      this.level = this.perkModifiers.startingLevel;
+      this.applyLevelGrowth();
     }
 
     if (this.expeditionEncounter !== null) {
@@ -1321,7 +1353,11 @@ export class CombatSimulation {
   }
 
   addExperience(amount: number): void {
-    this.experience += Math.max(0, Math.floor(amount));
+    const multiplier = this.waveIndex < 3 ? this.perkModifiers.earlyExperienceMultiplier : 1;
+    const scaled = Math.max(0, amount) * multiplier + this.experienceCarry;
+    const whole = Math.floor(scaled);
+    this.experienceCarry = scaled - whole;
+    this.experience += whole;
     this.checkForLevelUp();
   }
 
@@ -1437,6 +1473,8 @@ export class CombatSimulation {
     const decision = this.decisionQueue[0] ?? null;
     return {
       status: this.status,
+      heroId: this.hero.id,
+      activePerkId: this.activePerkId,
       waveNumber: this.waveIndex + 1,
       totalWaves: TOTAL_WAVES,
       playerPosition: { ...this.playerPosition },
@@ -1572,6 +1610,7 @@ export class CombatSimulation {
         peakEnemyProjectiles: this.densityPeakEnemyProjectiles,
         projectileBudget: ENEMY_PROJECTILE_BUDGET,
       },
+      medicTriageHits: this.medicTriageHits,
     };
   }
 
@@ -1655,9 +1694,9 @@ export class CombatSimulation {
   private restoreExpeditionBuild(build: ExpeditionBuildSnapshot): void {
     this.level = Math.max(1, Math.floor(build.level));
     this.experience = Math.max(0, Math.floor(build.experience));
-    const growth = marineGrowthAtLevel(this.level);
+    const growth = heroGrowthAtLevel(this.hero, this.level);
     this.playerMaxHealth = PLAYER_MAX_HEALTH + growth.maxHealthBonus;
-    this.defence.armour = MARINE.defence.armour + growth.armourBonus;
+    this.defence.armour = this.hero.defence.armour + growth.armourBonus;
     this.levelDamageMultiplier = growth.damageMultiplier;
     this.levelSpeedMultiplier = growth.speedMultiplier;
     this.supportEffectMultiplier = growth.supportMultiplier;
@@ -1894,6 +1933,9 @@ export class CombatSimulation {
     if (!tile) return;
     const target = parsePlacementTarget(optionId);
     if (!target) return;
+    const mergeInstanceId = target.kind === "merge" && target.slotId
+      ? this.weaponInventory.rack.find((slot) => slot.id === target.slotId)?.tile?.instanceId ?? null
+      : null;
     const result = placeWeapon(this.weaponInventory, tile, target);
     if (!result.ok) return;
     this.weaponInventory = result.state;
@@ -1908,8 +1950,12 @@ export class CombatSimulation {
       });
     }
     if (result.merged && target.kind === "merge" && target.slotId) {
-      const weaponIndex = this.equippedWeapons.findIndex((weapon) => weapon.instanceId === tile.instanceId);
-      if (weaponIndex >= 0) this.equippedWeapons.splice(weaponIndex, 1);
+      const slot = this.weaponInventory.rack.find((candidate) => candidate.id === target.slotId);
+      const weapon = this.equippedWeapons.find((candidate) => candidate.instanceId === mergeInstanceId);
+      if (slot?.tile && weapon && mergeInstanceId !== null) {
+        slot.tile.instanceId = mergeInstanceId;
+        weapon.stats.projectileDamage *= 1.6 * this.perkModifiers.mergeDamageMultiplier;
+      }
     }
     this.pendingWeaponTile = null;
   }
@@ -2084,7 +2130,7 @@ export class CombatSimulation {
     const options: DecisionOption[] = tiles.map((tile) => {
       const active = this.equippedWeapons.some((weapon) => weapon.instanceId === tile.instanceId);
       const canSell = !active || this.equippedWeapons.length > 1;
-      const value = scrapShopWeaponSaleValue(tile.tier);
+      const value = scrapShopWeaponSaleValue(tile.tier, this.perkModifiers.weaponSaleFraction);
       return {
         id: `shop-sell:${tile.instanceId}`,
         name: `${WEAPON_CATALOG[tile.weaponId].displayName} — Tier ${tile.tier}`,
@@ -2132,7 +2178,7 @@ export class CombatSimulation {
     if (rackSlot) rackSlot.tile = null;
     if (stashIndex >= 0) this.weaponInventory.stash[stashIndex] = null;
     if (activeIndex >= 0) this.equippedWeapons.splice(activeIndex, 1);
-    const amount = scrapShopWeaponSaleValue(tile.tier);
+    const amount = scrapShopWeaponSaleValue(tile.tier, this.perkModifiers.weaponSaleFraction);
     this.securedScrap += amount;
     this.frameEvents.push({ type: "weapon-sold", weaponId: tile.weaponId, amount, total: this.securedScrap });
     return true;
@@ -2309,12 +2355,26 @@ export class CombatSimulation {
   }
 
   private isPlayerEntrenched(): boolean {
-    return this.stationarySeconds >= MARINE.passive.stationarySecondsRequired;
+    return this.hero.id === "marine"
+      && this.stationarySeconds >= this.hero.passive.stationarySecondsRequired;
   }
 
   private fireUltimate(): void {
-    const ultimate = MARINE.ultimate;
+    const ultimate = this.hero.ultimate;
     this.ultimateCooldownRemainingSeconds = ultimate.cooldownSeconds;
+    if (this.hero.id === "medic") {
+      const result = this.applyMedicHealing(
+        (ultimate.healAmount ?? 0) * this.supportEffectMultiplier,
+        (ultimate.shieldAmount ?? 0) * this.supportEffectMultiplier,
+      );
+      this.frameEvents.push({
+        type: "medic-surge",
+        position: { ...this.playerPosition },
+        healed: result.healed,
+        shieldGained: result.shieldGained,
+      });
+      return;
+    }
     for (let index = 0; index < ultimate.projectileCount; index += 1) {
       const angle = (index / ultimate.projectileCount) * Math.PI * 2;
       const direction = { x: Math.cos(angle), y: Math.sin(angle) };
@@ -2341,6 +2401,36 @@ export class CombatSimulation {
       });
     }
     this.frameEvents.push({ type: "ultimate-fired", position: { ...this.playerPosition } });
+  }
+
+  private applyMedicHealing(amount: number, bonusShield = 0): { healed: number; shieldGained: number } {
+    const missingHealth = Math.max(0, this.playerMaxHealth - this.playerHealth);
+    const healed = Math.min(missingHealth, Math.max(0, amount));
+    this.playerHealth += healed;
+    const shieldBefore = this.playerShield;
+    const overflow = Math.max(0, amount - healed);
+    this.playerShield = Math.min(
+      this.defence.maxShield + 2 * this.supportEffectMultiplier,
+      this.playerShield + overflow + Math.max(0, bonusShield),
+    );
+    if (healed > 0) {
+      this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount: healed });
+    }
+    return { healed, shieldGained: this.playerShield - shieldBefore };
+  }
+
+  private registerInjectorHit(): void {
+    if (this.hero.id !== "medic") return;
+    this.medicTriageHits += 1;
+    if (this.medicTriageHits < 6) return;
+    this.medicTriageHits = 0;
+    const result = this.applyMedicHealing(0.75 * this.supportEffectMultiplier);
+    this.frameEvents.push({
+      type: "medic-triage",
+      position: { ...this.playerPosition },
+      healed: result.healed,
+      shieldGained: result.shieldGained,
+    });
   }
 
   private updateFence(intent: PlayerIntent, deltaSeconds: number): void {
@@ -2584,6 +2674,7 @@ export class CombatSimulation {
           ),
           projectile.damageType,
         );
+        if (projectile.weaponId === "injector-carbine") this.registerInjectorHit();
         if (damageMultiplier >= 1) this.applyProjectileKnockback(projectile, enemy);
         this.resolveProjectileChain(projectile, enemy);
 
@@ -4485,12 +4576,15 @@ export class CombatSimulation {
     this.playerShield = absorption.remainingShield;
     this.shieldRechargeCooldownSeconds = this.defence.shieldRechargeDelaySeconds;
     if (absorption.remainingDamage > 0) {
-      const entrenchedBonus = this.isPlayerEntrenched() ? MARINE.passive.bonusArmour : 0;
-      const mitigated = mitigateDamage(
+      const entrenchedBonus = this.isPlayerEntrenched() ? this.hero.passive.bonusArmour : 0;
+      let mitigated = mitigateDamage(
         absorption.remainingDamage,
         this.defence.armour + entrenchedBonus,
         this.defence.flatDamageReduction,
       );
+      if (this.playerHealth / this.playerMaxHealth < 0.3) {
+        mitigated *= this.perkModifiers.lowHealthDamageMultiplier;
+      }
       this.playerHealth = Math.max(0, this.playerHealth - mitigated);
     }
     this.playerHurtCooldownSeconds = this.defence.hitInvulnerabilitySeconds;
@@ -5252,8 +5346,8 @@ export class CombatSimulation {
   }
 
   private applyLevelGrowth(): void {
-    const current = marineGrowthAtLevel(this.level);
-    const previous = marineGrowthAtLevel(this.level - 1);
+    const current = heroGrowthAtLevel(this.hero, this.level);
+    const previous = heroGrowthAtLevel(this.hero, this.level - 1);
     const healthGain = current.maxHealthBonus - previous.maxHealthBonus;
     this.playerMaxHealth = PLAYER_MAX_HEALTH + current.maxHealthBonus;
     this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + healthGain);

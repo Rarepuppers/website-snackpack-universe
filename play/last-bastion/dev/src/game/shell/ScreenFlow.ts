@@ -1,4 +1,5 @@
-import type { GameSettings } from "../save/LocalSaveStore";
+import type { GameProgress, GameSettings } from "../save/LocalSaveStore";
+import { PERK_CATALOG, unlockedPerkIds, type PerkId } from "../perks/perkCatalog";
 
 /**
  * Front-end shell screen flow (Task 37 behavior gate).
@@ -20,7 +21,7 @@ export type ShellScreen =
 export type ShellIntent = "up" | "down" | "left" | "right" | "confirm" | "back";
 
 export type ShellEffect =
-  | { type: "start-run" }
+  | { type: "start-run"; heroId: string; perkId: PerkId }
   | { type: "open-url"; url: string }
   | { type: "set-setting"; key: keyof GameSettings; value: boolean };
 
@@ -77,7 +78,7 @@ export interface RosterEntry {
 
 export const ROSTER: readonly RosterEntry[] = Object.freeze([
   { id: "marine", name: "MARINE", status: "playable" },
-  { id: "medic", name: "MEDIC", status: "in-development" },
+  { id: "medic", name: "MEDIC", status: "playable" },
   { id: "assault", name: "ASSAULT", status: "silhouette" },
   { id: "tactician", name: "TACTICIAN", status: "silhouette" },
   { id: "scout", name: "SCOUT", status: "silhouette" },
@@ -110,17 +111,29 @@ export interface ShellState {
   settingsIndex: number;
   labIndex: number;
   rosterIndex: number;
+  perkIndex: number;
+  unlockedPerkIds: readonly PerkId[];
   settings: GameSettings;
 }
 
-export function createShellState(settings: GameSettings, screen: ShellScreen = "title"): ShellState {
+export function createShellState(
+  settings: GameSettings,
+  screen: ShellScreen = "title",
+  progress: GameProgress = { runsFinished: 0, victories: 0, bestWaveReached: 0, nodesCleared: 0, bestiary: {} },
+  selectedPerkId: PerkId | null = "perk-veteran",
+  selectedHeroId: "marine" | "medic" = "marine",
+): ShellState {
+  const unlocked = unlockedPerkIds(progress);
+  const selectedIndex = Math.max(0, PERK_CATALOG.findIndex((perk) => perk.id === selectedPerkId));
   return {
     screen,
     menuIndex: 0,
     howToPlayPage: 0,
     settingsIndex: 0,
     labIndex: 0,
-    rosterIndex: 0,
+    rosterIndex: Math.max(0, ROSTER.findIndex((hero) => hero.id === selectedHeroId)),
+    perkIndex: selectedIndex,
+    unlockedPerkIds: unlocked,
     settings: { ...settings },
   };
 }
@@ -246,12 +259,19 @@ function stepCharacterSelect(state: ShellState, intent: ShellIntent): ShellStepR
   if (intent === "right") {
     return { state: { ...state, rosterIndex: wrap(state.rosterIndex + 1, ROSTER.length) }, effects: [] };
   }
+  if (intent === "up") {
+    return { state: { ...state, perkIndex: wrap(state.perkIndex - 1, PERK_CATALOG.length) }, effects: [] };
+  }
+  if (intent === "down") {
+    return { state: { ...state, perkIndex: wrap(state.perkIndex + 1, PERK_CATALOG.length) }, effects: [] };
+  }
   if (intent === "confirm") {
     const hero = ROSTER[state.rosterIndex]!;
-    if (hero.status !== "playable") {
+    const perk = PERK_CATALOG[state.perkIndex]!;
+    if (hero.status !== "playable" || !state.unlockedPerkIds.includes(perk.id)) {
       return { state, effects: [] };
     }
-    return { state, effects: [{ type: "start-run" }] };
+    return { state, effects: [{ type: "start-run", heroId: hero.id, perkId: perk.id }] };
   }
   return { state, effects: [] };
 }
