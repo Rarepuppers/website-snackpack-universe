@@ -764,9 +764,9 @@ Mirrors the Marine's modular contract exactly: same base-body sheet dimensions, 
 
 The retained family lives under `art/production-tests/batch-p/`: 20-frame 4×5 body and aligned helmet masters/runtime sheets, a four-state 96px Injector Carbine, eight 64px projectile/support effects, and a 128px dossier portrait. Chroma sources and transparent alpha masters are retained for future 4K reprocessing; `normalize_batch_p.py` deterministically produces the web atlases. Live review: `?mode=gallery&batch=p` or deploy the Medic from Character Select. Triage cadence, healing, shield overflow, damage, cooldown, projectile geometry, text, and HUD remain code-owned.
 
-## Perk tile completion note
+## Canonical perk tile completion (generated and integrated 19 July 2026)
 
-Batch I produced eight generic perk motifs. When the Task 46 perk gate opens, regenerate a matched set of seven canonical 128 × 128 tiles (512 × 512 masters) keyed to the codex ids `perk-veteran`, `perk-scrapper`, `perk-quartermaster`, `perk-fast-learner`, `perk-gunsmith`, `perk-survivor`, `perk-pathfinder`, one motif each (star chevron, scrap coin, pack grid, rising arrow, crossed hammers, heart shield, branching path). Locked-state dimming, unlock text, and selection remain code-owned.
+The Task 46 refresh replaces generic Character Select motifs with seven canonical 128 × 128 tiles keyed in codex order: Veteran star/chevron, Scrapper salvage coin, Quartermaster pack grid, Fast Learner rising arrow, Gunsmith crossed hammers, Survivor heart/shield, and Pathfinder branching route. A high-resolution chroma master, transparent alpha master, deterministic normalizer, prompt provenance, and an eighth reserved transparent runtime cell live under `art/production-tests/batch-i/`. The original generic strip remains retained for provenance; live Character Select and `?mode=gallery&batch=i` use `canonical-perk-tiles-v2`. Locked-state dimming, unlock text, selection, and milestone progress remain code-owned.
 
 ## Batch G2 addendum — Shop node medallion
 
@@ -803,7 +803,7 @@ Behavior-first production family for numeric-health terrain. Retain 4× masters,
 | Reinforced barricade | 128×96 | intact, armour stripped, critical, breached |
 | Shared impacts | 4×2 atlas at 64×64 | bullet chip, melee spark, acid hiss, frost crack, explosive fracture, heavy collapse, dust settle, salvage glint |
 
-The next raster priority is **Batch R only after Task 54 completes the destructible-terrain health and bar gate**. Before that, Tasks 48, 49, 50, 53, 55, and 56 are behavior/UI work and should not trigger speculative raster production. Player-damage numbers, auto-fire state, actor outlines, projectile halos, and terrain HP bars are code-rendered and require no image generation.
+The next raster priority is **Batch R only after Task 54 completes the destructible-terrain health and bar gate**. Before that, Tasks 49, 50, 53, 55, and 56 are behavior/UI work and should not trigger speculative raster production. Player-damage numbers, auto-fire state, actor outlines, projectile halos, and terrain HP bars are code-rendered and require no image generation.
 
 Batch Q2 (later, with the speciality system): one 128 × 128 speciality sign tile per keeper for the shop header, same canonical tile contract as Batch I.
 

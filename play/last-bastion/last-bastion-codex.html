@@ -169,6 +169,11 @@
     color: color-mix(in srgb, var(--tint) 80%, #ffffff);
     text-shadow: 0 2px 0 rgb(0 0 0 / 55%); z-index: 1;
   }
+  .tile .perk-art {
+    position: absolute; inset: 0; z-index: 2;
+    background-image: url("game-assets/canonical-perk-tile-atlas-v2-128.png");
+    background-size: 400% 200%; background-repeat: no-repeat;
+  }
   .tile.big { width: 96px; height: 96px; }
   .tile-note {
     font-family: var(--mono); font-size: 9px; color: #6d829a; text-align: center;
@@ -719,10 +724,22 @@ const FILTERS = {
 
 const badge = (s) => `<span class="badge b-${s}">${s}</span>`;
 
+const PERK_TILE_POSITIONS = {
+  "perk-veteran": "0% 0%",
+  "perk-scrapper": "33.333% 0%",
+  "perk-quartermaster": "66.667% 0%",
+  "perk-fast-learner": "100% 0%",
+  "perk-gunsmith": "0% 100%",
+  "perk-survivor": "33.333% 100%",
+  "perk-pathfinder": "66.667% 100%",
+};
+
 function tile(id, glyph, tint, big) {
+  const perkPosition = PERK_TILE_POSITIONS[id];
   return `<div>
     <div class="tile${big ? " big" : ""}" style="--tint:${tint}">
       <span class="glyph">${glyph}</span>
+      ${perkPosition ? `<span class="perk-art" style="background-position:${perkPosition}" aria-hidden="true"></span>` : ""}
       <img src="game-assets/tiles/${id}-v1.png" alt="" loading="lazy" onerror="this.remove()">
     </div>
     <div class="tile-note">${id}</div>
@@ -896,7 +913,7 @@ function render() {
   if (state.tab === "perks") {
     html += `<div class="intro"><strong>Perks are chosen before the drop, not during the run.</strong>
       They shape a run's rules rather than its numbers, and are unlocked by past expeditions.
-      All are concepts — perks land after the meta-progression loop exists.</div>`;
+      All seven are live, persisted, and represented by the canonical 128 px production tile set.</div>`;
     const list = PERKS.filter((p) => matches(p.name + p.text));
     html += `<div class="grid">${list.map((p) => simpleCard({ ...p, tint: TINT.perk })).join("")}</div>`;
   }
@@ -999,7 +1016,7 @@ function render() {
       <tr><td><b>Ten-wave Quick Drop</b></td><td>${badge("live")}</td><td>Timed waves, elites, mini-bosses, the Bastion Eater finale, Scrap Shop, weapon rack &amp; merging</td></tr>
       <tr><td><b>Third mini-boss — Rift Stalker</b></td><td>${badge("live")}</td><td>Cloaked stalk, marked warp-pounces, rift-spike fans, chained-warp frenzy, and the integrated Production Batch O body/effect/portrait set</td></tr>
       <tr><td><b>Front-end shell</b></td><td>${badge("live")}</td><td>Title screen, main menu, How to Play, Settings, Lab, and character select — placeholder panels until the Batch G art pass</td></tr>
-      <tr><td><b>Expedition map — 20 nodes</b></td><td>${badge("live")}</td><td>The branching starchart now deploys into Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, and Bastion Eater nodes; health, shield, level, XP, Scrap, weapon tiers, and upgrades persist between victories</td></tr>
+      <tr><td><b>Expedition map — 20 nodes</b></td><td>${badge("live")}</td><td>The starchart deploys into depth-budgeted multi-wave Combat, Elite, and Mini-boss encounters plus safe nodes and Bastion Eater; the carried build persists between victories</td></tr>
       <tr><td><b>World themes</b></td><td>${badge("live")}</td><td>Bastion Perimeter, Emberfall, Toxic Bloom, Void Approach, and Arctic Relay now use authored terrain families with seeded lighting variants and gameplay-first contrast washes</td></tr>
       <tr><td><b>Shop keeper &amp; economy v2</b></td><td>${badge("live")}</td><td>The between-wave Scrap Shop now has one depth-priced reroll, an offer lock, 50% weapon resale, and the production Quartermaster; specialist keepers remain future content</td></tr>
       <tr><td><b>Perk system</b></td><td>${badge("live")}</td><td>Seven persisted pre-drop modifiers unlocked by expedition milestones</td></tr>

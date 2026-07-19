@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(107);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(108);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -324,7 +324,7 @@ describe("GameAssetManifest", () => {
   });
 
   it("locks the promoted Batch I 128 px tile contracts", () => {
-    for (const id of ["batch-i-weapon-tiles-v1", "batch-i-perk-tiles-v1", "batch-i-hotkey-tiles-v1"] as const) {
+    for (const id of ["batch-i-weapon-tiles-v1", "batch-i-perk-tiles-v1", "canonical-perk-tiles-v2", "batch-i-hotkey-tiles-v1"] as const) {
       const asset = GAME_ASSETS[id];
       expect(asset.kind).toBe("spritesheet");
       if (asset.kind === "spritesheet") {

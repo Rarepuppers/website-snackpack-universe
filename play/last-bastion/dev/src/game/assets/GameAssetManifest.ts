@@ -87,6 +87,7 @@ import scrapShopPanelUrl from "../../../../art/production-tests/batch-n2/scrap-s
 import quartermasterSheetUrl from "../../../../art/production-tests/batch-q/quartermaster-atlas-v1-384x512.png";
 import batchIWeaponTileUrl from "../../../../art/production-tests/batch-i/codex-weapon-tile-atlas-v1-128.png";
 import batchIPerkTileUrl from "../../../../art/production-tests/batch-i/perk-tile-atlas-v1-128.png";
+import canonicalPerkTileUrl from "../../../../art/production-tests/batch-i/canonical-perk-tile-atlas-v2-128.png";
 import batchIHotkeyTileUrl from "../../../../art/production-tests/batch-i/hotkey-action-tile-atlas-v1-128.png";
 import batchISlotTierUiUrl from "../../../../art/production-tests/batch-i/slot-tier-ui-atlas-v1-128.png";
 import batchIPlacementModalUrl from "../../../../art/production-tests/batch-i/placement-modal-frame-v1-900x560.png";
@@ -196,6 +197,7 @@ export type GameAssetId =
   | "quartermaster-v1"
   | "batch-i-weapon-tiles-v1"
   | "batch-i-perk-tiles-v1"
+  | "canonical-perk-tiles-v2"
   | "batch-i-hotkey-tiles-v1"
   | "batch-i-slot-tier-ui-v1"
   | "batch-i-placement-modal-v1"
@@ -326,6 +328,7 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("quartermaster-v1", quartermasterSheetUrl, 128, 256, 6, 0.5, 1),
   sheet("batch-i-weapon-tiles-v1", batchIWeaponTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("batch-i-perk-tiles-v1", batchIPerkTileUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("canonical-perk-tiles-v2", canonicalPerkTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("batch-i-hotkey-tiles-v1", batchIHotkeyTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("batch-i-slot-tier-ui-v1", batchISlotTierUiUrl, 128, 128, 16, 0.5, 0.5),
   image("batch-i-placement-modal-v1", batchIPlacementModalUrl, 900, 560, 0.5, 0.5),

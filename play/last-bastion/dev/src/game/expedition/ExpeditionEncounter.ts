@@ -1,6 +1,7 @@
 import type { EliteKind } from "../combat/EliteCadence";
 import type { MiniBossKind } from "../combat/CombatSimulation";
 import type { ExpeditionNode } from "./ExpeditionMap";
+import { buildExpeditionWavePlan, type ExpeditionWavePlan } from "./ExpeditionNodeDirector";
 
 export type ExpeditionEncounterKind =
   | "combat"
@@ -21,6 +22,7 @@ export interface ExpeditionEncounterDescriptor {
   threatBudget: number;
   eliteKind: EliteKind | null;
   miniBossKind: MiniBossKind | null;
+  waves: readonly ExpeditionWavePlan[];
 }
 
 const ELITES: readonly EliteKind[] = [
@@ -41,6 +43,9 @@ export function expeditionEncounterForNode(
     : node.type === "elite" ? Math.round(baseBudget * 0.8) + 15
       : node.type === "mini-boss" ? Math.round(baseBudget * 0.6) + 40
         : node.type === "boss" ? 40 : 0;
+  const eliteKind = node.type === "elite" ? ELITES[seed % ELITES.length]! : null;
+  const miniBossKind = node.type === "mini-boss" ? MINI_BOSSES[seed % MINI_BOSSES.length]! : null;
+  const waves = buildExpeditionWavePlan(node.type, node.column, eliteKind, miniBossKind);
   return {
     nodeId: node.id,
     kind: node.type,
@@ -48,9 +53,10 @@ export function expeditionEncounterForNode(
     themeId: node.themeId,
     seed,
     directorWaveIndex: Math.max(0, Math.min(8, node.column)),
-    threatBudget,
-    eliteKind: node.type === "elite" ? ELITES[seed % ELITES.length]! : null,
-    miniBossKind: node.type === "mini-boss" ? MINI_BOSSES[seed % MINI_BOSSES.length]! : null,
+    threatBudget: waves[0]?.threatBudget ?? threatBudget,
+    eliteKind,
+    miniBossKind,
+    waves,
   };
 }
 

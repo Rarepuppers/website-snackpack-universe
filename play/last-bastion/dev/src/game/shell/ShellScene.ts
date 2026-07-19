@@ -271,7 +271,7 @@ export class ShellScene extends Phaser.Scene {
       const x = 492 + index * 55;
       const selected = index === this.state.perkIndex;
       const unlocked = this.state.unlockedPerkIds.includes(entry.id);
-      this.root.add(this.add.sprite(x, 410, "batch-i-perk-tiles-v1", index)
+      this.root.add(this.add.sprite(x, 410, "canonical-perk-tiles-v2", index)
         .setDisplaySize(46, 46)
         .setAlpha(unlocked ? 1 : 0.3)
         .setTint(selected ? 0xffffff : 0xb7c2cf));

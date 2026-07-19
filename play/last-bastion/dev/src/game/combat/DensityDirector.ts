@@ -133,6 +133,62 @@ export function buildDensityWave(index: number): DensityWaveDefinition {
   };
 }
 
+/**
+ * Task 48 node-wave adapter. It preserves the authored pressure mix from the
+ * nearest Quick Drop wave while fitting an exact campaign budget. Quick Drop
+ * itself continues to call `buildDensityWave` unchanged.
+ */
+export function buildBudgetDensityWave(
+  threatBudget: number,
+  depthIndex: number,
+  timerEndsWave: boolean,
+  allowAmbientElite = true,
+): DensityWaveDefinition {
+  const budget = Math.max(1, Math.floor(threatBudget));
+  const templateIndex = budget <= 30 ? 0
+    : budget <= 45 ? 1
+      : budget <= 65 ? 2
+        : budget <= 90 ? 3
+          : budget <= 120 ? 5
+            : budget <= 160 ? 6 : 7;
+  const template = buildDensityWave(templateIndex);
+  const candidates = template.plans.filter((plan) => (
+    plan.rank !== "mini-boss"
+    && plan.rank !== "boss"
+    && (allowAmbientElite || plan.rank !== "elite")
+  ));
+  const selected: DirectorSpawnPlan[] = [];
+  let spent = 0;
+  for (const candidate of candidates) {
+    if (spent + candidate.threatCost > budget) continue;
+    selected.push({ ...candidate });
+    spent += candidate.threatCost;
+  }
+  while (spent < budget) {
+    selected.push({ atSeconds: 0, type: "scuttler", threatCost: 1 });
+    spent += 1;
+  }
+  const durationSeconds = budget <= 45 ? 20
+    : budget <= 65 ? 30
+      : budget <= 90 ? 35
+        : budget <= 120 ? 40
+          : budget <= 140 ? 45
+            : budget <= 160 ? 50 : 55;
+  const pulseCount = Math.max(1, Math.floor((durationSeconds - 0.5) / 2.5) + 1);
+  selected.forEach((plan, index) => {
+    plan.atSeconds = 0.2 + Math.floor(index * pulseCount / selected.length) * 2.5;
+  });
+  selected.sort((left, right) => left.atSeconds - right.atSeconds);
+  const depth = Math.max(0, Math.min(8, Math.floor(depthIndex)));
+  return {
+    liveCap: DENSITY_LIVE_CAPS[depth]!,
+    threatBudget: budget,
+    durationSeconds,
+    timerEndsWave,
+    plans: selected,
+  };
+}
+
 function scheduleInPulses(
   composition: readonly { type: EnemyType; count: number; rank?: DirectorSpawnRank; eliteKind?: EliteKind }[],
   durationSeconds: number,

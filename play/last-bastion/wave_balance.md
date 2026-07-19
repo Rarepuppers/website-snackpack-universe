@@ -447,7 +447,7 @@ This is a large, cross-cutting change. Suggested sequencing so nothing lands hal
 - Is a 4-slot inventory the right size once six or more weapons are in the pool?
 - Should merging be free (tempo cost only) or cost Scrap? Current proposal: free, because the slot opportunity cost is already the price.
 
-## Node budgets by column depth (added 19 July 2026 — pending Task 48)
+## Node budgets by column depth (Task 48 live 19 July 2026; Task 49 tuning pending)
 
 When the expedition map replaces the fixed ten-wave script, the timed threat director is parameterized per node instead of per wave number. First proposal, to be tuned in the Task 49 campaign pass:
 
@@ -461,6 +461,8 @@ When the expedition map replaces the fixed ten-wave script, the timed threat dir
 | Boss (node 20) | authored | — | The Bastion Eater, unchanged |
 
 Rules carried over unchanged: 2.5-second spend pulses, pursuit-led quotas, one-fast-elite cap, guaranteed elite cadence in late columns, kill-owned boss/mini-boss waves, timer-owned ordinary waves. Per-node enemy scaling keys off column depth using the existing non-compounding per-wave table (column ≈ wave for scaling purposes). Scrap and XP totals across an 8–11 node route must land within ±15% of today's ten-wave reference trace so the shop and level 9–12 targets survive the migration.
+
+Implementation note: the pure `ExpeditionNodeDirector` owns wave counts and budgets; `buildBudgetDensityWave` adapts the nearest proven Quick Drop pressure mix to an exact budget without importing boss ranks. Elite and Mini-boss authored fights are separate kill-owned terminal waves. Node-clear Scrap is apportioned across internal waves so Task 48 does not silently multiply the economy before Task 49 measures the full route.
 
 ## Proposed destructible-terrain durability and damage feedback
 

@@ -13,7 +13,7 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 
 - `/play/last-bastion/` — the front-end shell: Title → Menu → How to Play / Settings / Lab / Character select (Task 37 behavior gate; code-native placeholder panels until Batch G). `?screen=title` forces the shell; any review parameter below skips it.
 - `/play/last-bastion/?screen=game` — styled normal ten-wave run with authored elite cadence, seeded mini-boss selection, and the Bastion Eater finale
-- `/play/last-bastion/?screen=map` — the playable 20-node expedition (Tasks 38–39): selecting a route autosaves a pending node and deploys into its Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, or Bastion Eater encounter; victory commits the carried build and returns to the map. `&mapseed=N` reviews a deterministic fresh chart
+- `/play/last-bastion/?screen=map` — the playable 20-node expedition (Tasks 38–39, 48): selecting a route autosaves a pending node and deploys into depth-budgeted multi-wave Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, or Bastion Eater encounters; final victory commits the carried build and returns to the map. `&mapseed=N` reviews a deterministic fresh chart
 - `/play/last-bastion/?art=placeholder` — code-shape comparison renderer
 - `/play/last-bastion/?helmet=0` — styled Marine without the removable helmet
 - `/play/last-bastion/?weapons=1`, `4`, `6`, or `12` — selected weapon-ring count
@@ -66,7 +66,7 @@ The production build is emitted to the parent `/play/last-bastion/` route.
 - `/play/last-bastion/?mode=gallery&batch=q` — Quartermaster idle/transaction presentation from Production Asset Batch Q
 - `/play/last-bastion/?mode=gallery&batch=j1` — Swarm Scuttler and elite body state sheets
 - `/play/last-bastion/?mode=gallery&batch=j2` — code-backed hostile telegraph decals and five-arena contrast strip
-- `/play/last-bastion/?mode=gallery&batch=i` — promoted Batch I1 weapon, perk, and hotkey/action 128 px runtime tile atlases
+- `/play/last-bastion/?mode=gallery&batch=i` — promoted Batch I weapon and hotkey atlases plus the seven canonical Task 46 perk tiles at 128 px
 - `/play/last-bastion/?mode=gallery&batch=i2` — Batch I2 rack-class, stash, tier, discard, merge, and drag surfaces
 - `/play/last-bastion/?mode=gallery&batch=i3` — Batch I3 placement modal, stat card, salvage counter, and shop glyphs
 

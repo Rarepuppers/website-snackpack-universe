@@ -572,12 +572,12 @@ First implementation slice of the v2 balance model — the layer that makes ever
 
 ### Task 39 — node to encounter wiring
 
-**Status:** Completed — 19 July 2026; campaign multi-wave director remains Task 48
+**Status:** Completed — 19 July 2026; campaign multi-wave director completed in Task 48
 
 - Added the pure `ExpeditionEncounter` contract: every chart node deterministically resolves to an existing Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, or Bastion Eater encounter, with theme, seed, depth index, and node-type threat budget kept out of Phaser presentation.
 - Changed traversal from “arrival equals clear” to a crash-safe pending-node lifecycle. The map autosaves before deployment; reload resumes the unresolved encounter; only victory appends the node to `clearedNodeIds`; defeat clears the run. Invalid or edited encounter URLs cannot create a free Quick Drop or skip a node.
 - Restored and recommitted health, shield, level, XP, Scrap, equipped weapon tiers, and upgrade levels through schema v2. Tier II/III carried weapons retain their 1.6×/2.56× damage steps, and upgrade effects are deterministically replayed before the next encounter begins.
-- Combat/Elite nodes bridge to the existing depth-indexed density plans, Mini-boss nodes draw deterministically from Siege Crusher, Brood Warden, and Rift Stalker, safe nodes resolve through the existing full-screen decisions, and the terminus runs the Bastion Eater. Quick Drop remains unchanged at `?screen=game`; Task 48 owns multi-wave node pacing.
+- Combat/Elite nodes bridge to the existing depth-indexed density plans, Mini-boss nodes draw deterministically from Siege Crusher, Brood Warden, and Rift Stalker, safe nodes resolve through the existing full-screen decisions, and the terminus runs the Bastion Eater. Quick Drop remains unchanged at `?screen=game`; Task 48 now supplies the live multi-wave node pacing.
 - Added lifecycle, deterministic mapping, build-restoration, safe-node, and depth-budget tests; updated the Codex roadmap from designed to live.
 
 ### Task 44 — world-theme enablement
@@ -598,3 +598,19 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Preserved untouched green-key generation sources and full-resolution clean-alpha masters. The effect and portrait sources exceed the 4× runtime floor; the body retains the maximum built-in sheet resolution and is never reconstructed from its 128 px derivative.
 - Added deterministic nearest-neighbour normalization, stable manifest IDs, exact contract tests, a complete `?mode=gallery&batch=o` route, directional/state-driven body mapping, runtime-owned cloak alpha, and authored mark/warp/pounce/slash/frenzy/defeat effects.
 - Combat timing, warning geometry, projectiles, collision, and damage remain simulation-owned. Placeholder rendering remains available with `&art=placeholder` for comparison.
+
+### Task 48 — expedition node-budget encounter director
+
+**Status:** Completed — 19 July 2026; full-route balance observation moves to Task 49
+
+- Added a pure zero-based column contract for 3/3/4/4-wave node budgets: 30/45/65, 65/90/120, 65/90/120/140, then 120/140/160/180 in the final approach.
+- Ordinary expedition waves adapt proven Quick Drop pressure compositions to exact budgets without importing mini-boss or boss ranks. Elite and Mini-boss nodes reserve their authored target for a separate kill-owned terminal wave; Boss nodes remain a single authored fight.
+- Internal waves receive short intermissions and one shared node reward apportioned across the encounter, preventing the new wave count from multiplying Scrap. Safe nodes remain decision-owned and Quick Drop remains unchanged.
+- Rules and integration coverage lock the budget curve, exact spending, rank exclusions, special terminal waves, and elite-node progression through reward collection.
+
+### Canonical perk tile refresh — Batch I v2
+
+**Status:** Completed — 19 July 2026; creator 1080p/4K scale review queued
+
+- Generated seven distinct 128 px production tiles for Veteran, Scrapper, Quartermaster, Fast Learner, Gunsmith, Survivor, and Pathfinder, retaining the chroma master, clean-alpha master, prompt, and deterministic normalizer.
+- Integrated the atlas into character selection, the Batch I gallery, the manifest contract, and the browser Codex. The eighth atlas cell is intentionally reserved for future expansion.

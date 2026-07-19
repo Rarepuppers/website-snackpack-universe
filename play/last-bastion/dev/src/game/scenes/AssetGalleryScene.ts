@@ -195,7 +195,7 @@ export class AssetGalleryScene extends Phaser.Scene {
     this.add.text(20, 46, "Transparent runtime atlases • code-owned text, cooldowns, bindings, tiers, and selection", style("#8fb2c9", "11px"));
     const families = [
       { id: "batch-i-weapon-tiles-v1", label: "WEAPONS" },
-      { id: "batch-i-perk-tiles-v1", label: "PERKS" },
+      { id: "canonical-perk-tiles-v2", label: "CANONICAL PERKS" },
       { id: "batch-i-hotkey-tiles-v1", label: "HOTKEY / ACTION" },
     ] as const;
     families.forEach((family, row) => {

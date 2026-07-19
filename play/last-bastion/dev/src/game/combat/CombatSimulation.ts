@@ -62,6 +62,7 @@ import {
 import { stepSpinewheelReflection } from "./SpinewheelPhysics";
 import {
   buildDensityCapacityRoster,
+  buildBudgetDensityWave,
   buildDensityWave,
   ENEMY_PROJECTILE_BUDGET,
   MAX_RANGED_WINDUPS,
@@ -91,6 +92,7 @@ export type { EliteKind } from "./EliteCadence";
 import type { ExpeditionBuildSnapshot } from "../expedition/ExpeditionRun";
 import { resolvePerkModifiers, type PerkId, type PerkRunModifiers } from "../perks/perkCatalog";
 import type { ExpeditionEncounterDescriptor } from "../expedition/ExpeditionEncounter";
+import type { ExpeditionWavePlan } from "../expedition/ExpeditionNodeDirector";
 import {
   buildRainOfSpinesTargets,
   GROUND_SLAM_RECOVERY_SECONDS,
@@ -885,6 +887,7 @@ export class CombatSimulation {
   private readonly stressProfile: 4 | 12 | null;
   private readonly scenario: CombatScenario | null;
   private readonly expeditionEncounter: ExpeditionEncounterDescriptor | null;
+  private expeditionWaveIndex = 0;
   private activeTetherEnemyId: number | null = null;
   private pendingWeaponTile: WeaponTile | null = null;
 
@@ -1475,8 +1478,8 @@ export class CombatSimulation {
       status: this.status,
       heroId: this.hero.id,
       activePerkId: this.activePerkId,
-      waveNumber: this.waveIndex + 1,
-      totalWaves: TOTAL_WAVES,
+      waveNumber: this.expeditionEncounter ? this.expeditionWaveIndex + 1 : this.waveIndex + 1,
+      totalWaves: this.expeditionEncounter ? Math.max(1, this.expeditionEncounter.waves.length) : TOTAL_WAVES,
       playerPosition: { ...this.playerPosition },
       playerHealth: this.playerHealth,
       playerMaxHealth: this.playerMaxHealth,
@@ -5011,9 +5014,10 @@ export class CombatSimulation {
       const cleared = !this.waveEndsOnTimer
         && this.spawnQueue.length === 0
         && !hasBlockingEnemy
-        && this.enemyProjectiles.length === 0;
+        && this.enemyProjectiles.length === 0
+        && this.eliteRewards.every((reward) => reward.collected);
       if (timedComplete || cleared) {
-        this.finishExpeditionEncounter(livingTreasure, timedComplete);
+        this.finishExpeditionWave(livingTreasure, timedComplete);
       }
       return;
     }
@@ -5040,12 +5044,13 @@ export class CombatSimulation {
     if (this.status === "intermission") {
       this.intermissionRemainingSeconds -= deltaSeconds;
       if (this.intermissionRemainingSeconds <= 0) {
-        this.beginWave(this.waveIndex + 1);
+        if (this.expeditionEncounter) this.beginExpeditionWave(this.expeditionWaveIndex + 1);
+        else this.beginWave(this.waveIndex + 1);
       }
     }
   }
 
-  private finishExpeditionEncounter(livingTreasure: readonly EnemyState[], timed: boolean): void {
+  private finishExpeditionWave(livingTreasure: readonly EnemyState[], timed: boolean): void {
     for (const enemy of livingTreasure) this.escapeAurumHoarder(enemy);
     if (timed) {
       this.spawnQueue = [];
@@ -5059,9 +5064,22 @@ export class CombatSimulation {
       this.groundHazards = [];
     }
     if (this.expeditionEncounter?.kind === "combat" || this.expeditionEncounter?.kind === "elite") {
-      this.secureScrap(10 + 5 * (this.expeditionEncounter.column + 1), "wave-clear", this.playerPosition);
+      const nodeReward = 10 + 5 * (this.expeditionEncounter.column + 1);
+      const waveCount = Math.max(1, this.expeditionEncounter.waves.length);
+      const baseShare = Math.floor(nodeReward / waveCount);
+      const remainder = nodeReward % waveCount;
+      this.secureScrap(
+        baseShare + (this.expeditionWaveIndex < remainder ? 1 : 0),
+        "wave-clear",
+        this.playerPosition,
+      );
     }
-    this.status = "victory";
+    if (this.expeditionWaveIndex >= this.expeditionEncounter!.waves.length - 1) {
+      this.status = "victory";
+    } else {
+      this.status = "intermission";
+      this.intermissionRemainingSeconds = INTERMISSION_SECONDS;
+    }
   }
 
   private finishWave(livingTreasure: readonly EnemyState[], timed: boolean): void {
@@ -5157,28 +5175,14 @@ export class CombatSimulation {
   }
 
   private populateExpeditionEncounter(encounter: ExpeditionEncounterDescriptor): void {
-    this.waveIndex = encounter.directorWaveIndex;
-    this.waveThreatBudget = encounter.threatBudget;
     switch (encounter.kind) {
       case "combat":
-      case "elite": {
-        const wave = buildDensityWave(encounter.directorWaveIndex);
-        this.spawnQueue = [...wave.plans];
-        this.waveLiveCap = wave.liveCap;
-        this.waveDurationSeconds = wave.durationSeconds;
-        // Ordinary Combat may end on its authored timer; Elite nodes are
-        // always kill-owned so the guaranteed target/cache cannot be skipped.
-        this.waveEndsOnTimer = encounter.kind === "combat" && wave.timerEndsWave;
-        if (encounter.kind === "elite") {
-          this.spawnElite(encounter.eliteKind ?? "carapace-scuttler");
-        }
+      case "elite":
+      case "mini-boss":
+      case "boss": {
+        this.beginExpeditionWave(0);
         break;
       }
-      case "mini-boss":
-        this.spawnMiniBoss(encounter.miniBossKind ?? "siege-crusher");
-        this.spawnEnemy("scuttler");
-        this.spawnEnemy(encounter.column >= 4 ? "razor-scuttler" : "brain-blob");
-        break;
       case "supply-depot":
         this.decisionQueue.push(this.buildSupplyDepotDecision());
         break;
@@ -5187,9 +5191,60 @@ export class CombatSimulation {
         if (decision) this.decisionQueue.push(decision);
         break;
       }
-      case "boss":
-        this.spawnBastionEater({ x: this.widthMetres / 2 - 7, y: this.heightMetres / 2 });
-        break;
+    }
+  }
+
+  private beginExpeditionWave(index: number): void {
+    const encounter = this.expeditionEncounter;
+    const plan: ExpeditionWavePlan | undefined = encounter?.waves[index];
+    if (!encounter || !plan) {
+      this.status = "victory";
+      return;
+    }
+    this.expeditionWaveIndex = index;
+    this.waveIndex = plan.directorWaveIndex;
+    this.waveElapsedSeconds = 0;
+    this.status = "combat";
+    this.aurumSpawnedThisWave = false;
+    this.waveThreatSpawned = 0;
+    this.densityPeakLiveEnemies = this.enemies.length;
+    this.densitySpawnedThisWave = 0;
+    this.densitySpawnCapBlockedSeconds = 0;
+    this.densityPeakEnemyProjectiles = this.enemyProjectiles.length;
+    this.densityPressureSpawned = { pursuit: 0, ranged: 0, specialist: 0, boss: 0 };
+
+    if (plan.kind === "ordinary") {
+      const wave = buildBudgetDensityWave(
+        plan.threatBudget,
+        plan.directorWaveIndex,
+        plan.timerEndsWave,
+        encounter.kind === "combat",
+      );
+      this.spawnQueue = [...wave.plans];
+      this.waveLiveCap = wave.liveCap;
+      this.waveThreatBudget = wave.threatBudget;
+      this.waveDurationSeconds = wave.durationSeconds;
+      this.waveEndsOnTimer = wave.timerEndsWave;
+      return;
+    }
+
+    this.spawnQueue = [];
+    this.waveLiveCap = Math.max(18, this.enemies.length + 4);
+    this.waveDurationSeconds = null;
+    this.waveEndsOnTimer = false;
+    if (plan.kind === "elite") {
+      const eliteKind = plan.eliteKind ?? encounter.eliteKind ?? "carapace-scuttler";
+      this.spawnElite(eliteKind);
+      this.waveThreatBudget = eliteKind === "razorlord" || eliteKind === "blightspitter" ? 18 : 15;
+      this.recordDensitySpawn({ type: "scuttler", rank: "elite", threatCost: this.waveThreatBudget });
+    } else if (plan.kind === "mini-boss") {
+      this.spawnMiniBoss(plan.miniBossKind ?? encounter.miniBossKind ?? "siege-crusher");
+      this.waveThreatBudget = 40;
+      this.recordDensitySpawn({ type: "siege-crusher", rank: "mini-boss", threatCost: 40 });
+    } else {
+      this.spawnBastionEater({ x: this.widthMetres / 2 - 7, y: this.heightMetres / 2 });
+      this.waveThreatBudget = 40;
+      this.recordDensitySpawn({ type: "bastion-eater", rank: "boss", threatCost: 40 });
     }
   }
 
