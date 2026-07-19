@@ -7,21 +7,37 @@
 <link rel="canonical" href="https://www.snackpackuniverse.com/play/freecell/">
 <link rel="icon" type="image/png" href="../../snackpack-favicon-transparent.png"><link rel="stylesheet" href="../../site.css"><link rel="stylesheet" href="../play.css">
 <style>
-.fc-table{--cw:clamp(34px,9.2vw,62px);--ch:calc(var(--cw)*1.4);--gap:clamp(2px,1vw,9px);margin:auto;width:fit-content;max-width:100%;color:#fff}.fc-row{display:grid;grid-template-columns:repeat(8,var(--cw));gap:var(--gap)}.fc-top{margin-bottom:calc(var(--ch)*.28)}.fc-slot,.fc-pile{width:var(--cw);height:var(--ch);border-radius:calc(var(--cw)*.13)}.fc-pile{position:relative}.fc-empty{border:1.5px dashed rgba(255,255,255,.4);background:rgba(255,255,255,.08);display:grid;place-items:center;color:rgba(255,255,255,.5);font-size:calc(var(--cw)*.42)}.fc-card{position:absolute;left:0;width:var(--cw);height:var(--ch);border-radius:calc(var(--cw)*.13);background:#fff;border:1px solid #d4d4d4;box-shadow:0 2px 5px #102f2488;font:700 calc(var(--cw)*.3)/1 var(--sans);cursor:pointer;user-select:none;overflow:hidden}.fc-card .r{position:absolute;top:4px;left:5px}.fc-card .s{position:absolute;bottom:4px;right:5px;font-size:calc(var(--cw)*.37)}.fc-card .big{position:absolute;inset:0;display:grid;place-items:center;font-size:calc(var(--cw)*.58);opacity:.9}.fc-card.red{color:#c0392b}.fc-card.black{color:#201713}.fc-card.selected{outline:3px solid var(--gold);outline-offset:-1px;transform:translateY(-3px)}.fc-board{background:linear-gradient(135deg,#247a55,#14523a);border-radius:18px;padding:clamp(12px,3vw,28px);box-shadow:0 18px 42px #20171324;overflow:auto}.fc-foundation{display:grid;place-items:center;border:1.5px dashed rgba(255,255,255,.4);color:rgba(255,255,255,.6);font-size:calc(var(--cw)*.4)}.fc-tableau{min-height:var(--ch)}.fc-status{min-height:1.5em}.fc-toolbar{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}.fc-readout{display:flex;gap:8px;flex-wrap:wrap}.fc-readout span{background:rgba(255,255,255,.12);padding:7px 10px;border-radius:999px;font-size:.8rem}.fc-readout b{margin-left:5px}.fc-actions{display:flex;gap:8px;flex-wrap:wrap}.fc-actions button{border:1px solid rgba(255,255,255,.25);background:#fff;color:#14523a;border-radius:999px;padding:8px 13px;font-weight:700;cursor:pointer}.fc-actions .primary{background:#f3d27a;border-color:#f3d27a}.fc-hint{color:rgba(255,255,255,.78);font-size:.82rem}.fc-pile.drop-ok{outline:3px solid var(--gold);outline-offset:2px}.fc-drag{position:fixed;z-index:80;pointer-events:none;opacity:.92;filter:drop-shadow(0 8px 16px rgba(16,47,36,.4))}.fc-drag .fc-card{box-shadow:none}.fc-actions button:disabled{opacity:.4;cursor:default}
+.fc-table{--cw:clamp(34px,9.2vw,62px);--ch:calc(var(--cw)*1.4);--gap:clamp(2px,1vw,9px);margin:auto;width:fit-content;max-width:100%;color:#fff}.fc-row{display:grid;grid-template-columns:repeat(8,var(--cw));gap:var(--gap)}.fc-top{margin-bottom:calc(var(--ch)*.28)}.fc-slot,.fc-pile{width:var(--cw);height:var(--ch);border-radius:calc(var(--cw)*.13)}.fc-pile{position:relative}.fc-empty{border:1.5px dashed rgba(255,255,255,.4);background:rgba(255,255,255,.08);display:grid;place-items:center;color:rgba(255,255,255,.5);font-size:calc(var(--cw)*.42)}.fc-card{position:absolute;left:0;width:var(--cw);height:var(--ch);border-radius:calc(var(--cw)*.13);background:#fff;border:1px solid #d4d4d4;box-shadow:0 2px 5px #102f2488;font:700 calc(var(--cw)*.3)/1 var(--sans);cursor:pointer;user-select:none;overflow:hidden}.fc-card .r{position:absolute;top:4px;left:5px}.fc-card .s{position:absolute;bottom:4px;right:5px;font-size:calc(var(--cw)*.37)}.fc-card .big{position:absolute;inset:0;display:grid;place-items:center;font-size:calc(var(--cw)*.58);opacity:.9}.fc-card.red{color:#c0392b}.fc-card.black{color:#201713}.fc-card.selected{outline:3px solid var(--gold);outline-offset:-1px;transform:translateY(-3px)}.fc-board{background:linear-gradient(135deg,#247a55,#14523a);border-radius:18px;padding:clamp(12px,3vw,28px);box-shadow:0 18px 42px #20171324;overflow:auto}.fc-foundation{display:grid;place-items:center;border:1.5px dashed rgba(255,255,255,.4);color:rgba(255,255,255,.6);font-size:calc(var(--cw)*.4)}.fc-tableau{min-height:var(--ch)}.fc-status{min-height:1.5em}.fc-toolbar{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}.fc-readout{display:flex;gap:8px;flex-wrap:wrap}.fc-readout span{background:rgba(255,255,255,.12);padding:7px 10px;border-radius:999px;font-size:.8rem}.fc-readout b{margin-left:5px}.fc-actions{display:flex;gap:8px;flex-wrap:wrap}.fc-actions button{border:1px solid rgba(255,255,255,.25);background:#fff;color:#14523a;border-radius:999px;padding:8px 13px;font-weight:700;cursor:pointer}.fc-actions .primary{background:#f3d27a;border-color:#f3d27a}.fc-hint{color:rgba(255,255,255,.78);font-size:.82rem}.fc-pile.drop-ok{outline:3px solid var(--gold);outline-offset:2px}.fc-drag{position:fixed;z-index:80;pointer-events:none;opacity:.92;filter:drop-shadow(0 8px 16px rgba(16,47,36,.4))}.fc-drag .fc-card{box-shadow:none}.fc-actions button:disabled{opacity:.4;cursor:default}.fc-actions button[aria-pressed="true"]{background:#14523a;color:#fff;border-color:#14523a}
 </style>
 </head>
 <body>
 <header class="topbar"><div class="shell topbar-inner"><a class="brand" href="../../"><img class="brand-mark" src="../../snackpack-favicon-transparent.png" alt="SnackPack Studios"><span class="brand-copy"><span class="brand-title">SnackPack Studios</span><span class="brand-subtitle">FreeCell</span></span></a><nav aria-label="Primary"><ul class="nav-links"><li><a href="/apps/">Apps</a></li><li><a href="/play/">Play</a></li><li><a href="/guides/">Guides</a></li><li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li></ul></nav></div></header>
 <main><section class="page-hero"><div class="shell"><div class="page-hero-card" style="text-align:center"><span class="eyebrow">Free · No download · Checked deals</span><h1>FreeCell</h1><p class="lead" style="max-width:600px;margin:0 auto">Plan every move in a numbered deal. Four free cells, eight cascades, and a full deck that is guaranteed to be winnable.</p></div></div></section>
-<section><div class="shell"><div class="game-stage" style="max-width:900px"><div class="fc-toolbar"><div class="fc-readout"><span>Time <b id="fc-time">0:00</b></span><span>Moves <b id="fc-moves">0</b></span><span>Deal <b id="fc-deal">1</b></span><span>Best <b id="fc-best">–</b></span></div><div class="fc-actions"><button id="fc-undo">Undo</button><button id="fc-redo">Redo</button><button id="fc-hint">Hint</button><button class="primary" id="fc-new">New deal</button></div></div><p class="game-status fc-status" id="fc-status" aria-live="polite">Select a card, then select its destination.</p><div class="fc-board"><div class="fc-table"><div class="fc-row fc-top" id="fc-top"></div><div class="fc-row" id="fc-cascades"></div></div></div><p class="fc-hint">Drag a card to move it — or click a card then its destination. Double-click sends a card straight to its foundation. Valid runs move together; empty cells and columns increase your supermove capacity.</p></div></div></section>
+<section><div class="shell"><div class="game-stage" style="max-width:900px"><div class="fc-toolbar"><div class="fc-readout"><span>Time <b id="fc-time">0:00</b></span><span>Moves <b id="fc-moves">0</b></span><span>Deal <b id="fc-deal">1</b></span><span>Best <b id="fc-best">–</b></span></div><div class="fc-actions"><button id="fc-undo">Undo</button><button id="fc-redo">Redo</button><button id="fc-hint">Hint</button><button id="fc-auto" title="Finish the game automatically if it's fully solvable from here">Auto</button><button id="fc-large" aria-pressed="false" title="Bigger cards for wide screens">⤢ Large cards</button><button class="primary" id="fc-new">New deal</button></div></div><p class="game-status fc-status" id="fc-status" aria-live="polite">Select a card, then select its destination.</p><div class="fc-board"><div class="fc-table" id="fc-table"><div class="fc-row fc-top" id="fc-top"></div><div class="fc-row" id="fc-cascades"></div></div></div><p class="fc-hint">Drag a card to move it — or click a card then its destination. Double-click sends a card straight to its foundation. Auto finishes the game for you once it's fully solvable from here. Valid runs move together; empty cells and columns increase your supermove capacity.</p></div></div></section>
 <section><div class="shell seo-prose"><h2>How to play FreeCell</h2><p>Move all 52 cards to the four foundations, building each suit from Ace through King. Unlike Klondike, every card starts face up, so the puzzle is about planning. Build cascades downward in alternating colours, use the four free cells as temporary parking spaces, and preserve empty columns whenever you can.</p><p>Every web deal comes from the app’s pre-verified numbered deal pool, so New Deal gives you a fair puzzle instead of a dead shuffle. <a class="text-link" href="../../apps/snackpack-brain-games/" style="color:var(--accent)">Take the full Brain Games collection offline on Android.</a></p><p><a class="text-link" href="../" style="color:var(--accent);font-weight:700">← Back to the arcade</a></p></div></section></main>
 <script src="../funnel.js"></script><script>
 (function(){'use strict';
 var SUITS=['♠','♥','♦','♣'], RED=[false,true,true,false], RANK=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 var CHECKED=[1,2,3,4,5,7,8,9,10,11,12,13,14,16,17,21,23,24,25,26,28,30,31,32,33,35,36,37,38,39,41,42,43,45,46,48,49,50,51,52,53,54,55,56,57,59,60,61,63,64,69,70,71,74,75,76,78,81,82,83,84,86,87,89,90,91,92,94,96,97,98,99,100];
 var topEl=document.getElementById('fc-top'), casEl=document.getElementById('fc-cascades'), statusEl=document.getElementById('fc-status'), timeEl=document.getElementById('fc-time'), movesEl=document.getElementById('fc-moves'), dealEl=document.getElementById('fc-deal'), bestEl=document.getElementById('fc-best');
-var boardEl=document.querySelector('.fc-board');
-var undoBtn=document.getElementById('fc-undo'), redoBtn=document.getElementById('fc-redo');
+var boardEl=document.querySelector('.fc-board'), fcTableEl=document.getElementById('fc-table');
+var undoBtn=document.getElementById('fc-undo'), redoBtn=document.getElementById('fc-redo'), largeBtn=document.getElementById('fc-large');
+
+// ── Large-card mode (desktop/landscape) — shared preference with the
+// other card games on this site, so it sticks across pages.
+var CARD_SIZE_KEY='sp-cards-large';
+function applyCardSize(){
+  var large=localStorage.getItem(CARD_SIZE_KEY)==='1';
+  fcTableEl.style.setProperty('--cw',large?'clamp(40px,11vw,88px)':'');
+  largeBtn.setAttribute('aria-pressed',String(large));
+}
+largeBtn.addEventListener('click',function(){
+  var large=localStorage.getItem(CARD_SIZE_KEY)==='1';
+  try{localStorage.setItem(CARD_SIZE_KEY,large?'0':'1')}catch(e){}
+  applyCardSize();
+  if(cascades.length)render();
+});
+applyCardSize();
 var cascades=[],free=[],found=[],selected=null,history=[],redoStack=[],moves=0,seconds=0,timer=null,dealIndex=Math.floor(Math.random()*CHECKED.length);
 var dragInfo=null,dragGhost=null,justDragged=false,hoverEl=null;
 var DRAG_THRESHOLD=6;
@@ -89,6 +105,28 @@ function move(src,dest){
 // keeps the auto-mover from stranding a card another card still needs.
 function autoSafe(c){var oppMin=Math.min.apply(null,SUITS.map(function(_,s){return RED[s]===RED[c.s]?99:found[s].length}));return found[c.s].length===c.r-1&&(c.r<=2||oppMin>=c.r-1)}
 function autoFoundationStep(){for(var i=0;i<8;i++){var top=cascades[i].at(-1);if(top&&autoSafe(top)){found[top.s].push(cascades[i].pop());moves++;return true}}for(var i=0;i<4;i++){var c=free[i];if(c&&autoSafe(c)){found[c.s].push(c);free[i]=null;moves++;return true}}return false}
+
+// Dry-run the exact same safe-autoplay rule against a scratch copy of the
+// board, without touching real state. Only tells you whether the game is
+// fully solvable from here this way — never partially moves anything.
+function canAutoFinish(){
+  var c=cascades.map(function(p){return p.slice()});
+  var f=free.slice();
+  var o=found.map(function(p){return p.slice()});
+  function safe(card){
+    var oppMin=Math.min.apply(null,SUITS.map(function(_,s){return RED[s]===RED[card.s]?99:o[s].length}));
+    return o[card.s].length===card.r-1&&(card.r<=2||oppMin>=card.r-1);
+  }
+  var moved=true;
+  while(moved){
+    moved=false;
+    for(var i=0;i<8;i++){var top=c[i][c[i].length-1];if(top&&safe(top)){o[top.s].push(c[i].pop());moved=true}}
+    for(var i=0;i<4;i++){var card=f[i];if(card&&safe(card)){o[card.s].push(card);f[i]=null;moved=true}}
+  }
+  return o.reduce(function(a,p){return a+p.length},0)===52;
+}
+// Only ever called once canAutoFinish() has confirmed this exact rule
+// clears the whole board, so it's safe to run for real and know it'll win.
 function autoFinish(){var did=false;while(autoFoundationStep())did=true;if(did){selected=null;render();finishMoveEffects()}return did}
 
 // True once no legal action remains anywhere on the board (a genuine
@@ -111,8 +149,16 @@ function finishMoveEffects(){
     if(window.SnackPack)window.SnackPack.celebrate({title:'You cleared the board! 🎉',body:'Beautifully played — solved in '+timeEl.textContent+'. We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app to play FreeCell offline with saved best times.'});
     return;
   }
-  if(autoFinish())return;
   statusEl.textContent=hasAnyMove()?'Select a card, then select its destination.':'No legal moves left — try Undo or start a New Deal.';
+}
+
+function autoBtnClick(){
+  if(canAutoFinish()){
+    history.push(copy());redoStack=[];
+    autoFinish();
+  }else{
+    statusEl.textContent='Not fully solvable yet from here — keep playing.';
+  }
 }
 
 function cardEl(c,sel){var e=document.createElement('div');e.className='fc-card '+(red(c)?'red':'black')+(sel?' selected':'');e.innerHTML='<span class="r">'+RANK[c.r]+'</span><span class="s">'+SUITS[c.s]+'</span><span class="big">'+SUITS[c.s]+'</span>';return e}
@@ -272,6 +318,7 @@ boardEl.addEventListener('dblclick',dblclick);
 undoBtn.onclick=undo;
 redoBtn.onclick=redo;
 document.getElementById('fc-hint').onclick=hint;
+document.getElementById('fc-auto').onclick=autoBtnClick;
 document.getElementById('fc-new').onclick=function(){dealIndex=(dealIndex+1)%CHECKED.length;deal(CHECKED[dealIndex])};
 deal(CHECKED[dealIndex]);
 })();</script>

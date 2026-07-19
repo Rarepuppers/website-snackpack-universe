@@ -60,6 +60,7 @@
 .sol-tableau { min-height: var(--ch); }
 .sol-pile.drop-ok { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: calc(var(--cw) * 0.13); }
 .btn-game:disabled { opacity: 0.4; cursor: default; }
+.btn-game[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
 </style>
 <script type="application/ld+json">
 {
@@ -143,6 +144,7 @@
               <button type="button" data-draw="3" aria-pressed="false">Draw 3</button>
             </div>
             <button class="btn-game" id="sol-undo" type="button">Undo</button>
+            <button class="btn-game" id="sol-large" type="button" aria-pressed="false" title="Bigger cards for wide screens">⤢ Large cards</button>
             <button class="btn-game btn-game--primary" id="sol-new" type="button">New game</button>
           </div>
         </div>
@@ -258,10 +260,30 @@
   var bestEl = document.getElementById("sol-best");
   var newBtn = document.getElementById("sol-new");
   var undoBtn = document.getElementById("sol-undo");
+  var largeBtn = document.getElementById("sol-large");
+
+  // ── Large-card mode (desktop/landscape) ───────────
+  // Shared across the card games on this site so the preference sticks
+  // whichever one you open next. Just widens the --cw ceiling; the 7-column
+  // grid still comfortably fits the 680px stage at this size.
+  var CARD_SIZE_KEY = "sp-cards-large";
+  function applyCardSize() {
+    var large = localStorage.getItem(CARD_SIZE_KEY) === "1";
+    tableEl.style.setProperty("--cw", large ? "clamp(46px, 13vw, 76px)" : "");
+    largeBtn.setAttribute("aria-pressed", String(large));
+  }
+  largeBtn.addEventListener("click", function () {
+    var large = localStorage.getItem(CARD_SIZE_KEY) === "1";
+    try { localStorage.setItem(CARD_SIZE_KEY, large ? "0" : "1"); } catch (e) {}
+    applyCardSize();
+    if (tableau) render(); // re-measure offsets against the new card size
+  });
+  applyCardSize();
 
   var stock, waste, foundations, tableau;
   var drawN = 1, moves, solved, sel = null, timer, seconds, started;
   var history = [];
+  var maxTableHeightPx = 0;
 
   // ── Best-time (per draw mode, saved locally) ──────
   function bestKey() { return "sp-solitaire-best-d" + drawN; }
@@ -598,6 +620,7 @@
     stock = []; waste = [];
     foundations = [[], [], [], []];
     moves = 0; solved = false; sel = null; started = false; history = [];
+    maxTableHeightPx = 0;
     clearInterval(timer); seconds = 0; renderTime();
     statusEl.className = "game-status";
     statusEl.textContent = "Shuffling a solvable deal…";
@@ -695,6 +718,7 @@
     tableauRow.innerHTML = "";
     var offset = Math.max(12, chPx * 0.26);
     var downOffset = offset * 0.5;
+    var tallestCol = 0;
     for (var col = 0; col < 7; col++) {
       var colEl = document.createElement("div");
       colEl.className = "sol-pile sol-tableau";
@@ -712,9 +736,19 @@
         colEl.appendChild(el);
         y += card.up ? offset : downOffset;
       }
-      colEl.style.height = (y + chPx) + "px";
+      var colHeight = y + chPx;
+      colEl.style.height = colHeight + "px";
+      if (colHeight > tallestCol) tallestCol = colHeight;
       tableauRow.appendChild(colEl);
     }
+    // A sticky .sol-top only stays stuck within its parent's bounds. If a
+    // column later gets shorter (e.g. its face-up run clears to the
+    // foundations), that bound would shrink and — if you're scrolled past
+    // the new, shorter edge — the sticky row snaps back into normal flow
+    // above the current viewport and appears to vanish. Never letting this
+    // container shrink below its tallest point in the game avoids that.
+    maxTableHeightPx = Math.max(maxTableHeightPx, tallestCol);
+    tableauRow.style.minHeight = maxTableHeightPx + "px";
 
     movesEl.textContent = moves;
     undoBtn.disabled = !history.length;
