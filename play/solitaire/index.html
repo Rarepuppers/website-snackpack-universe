@@ -25,9 +25,13 @@
 /* Klondike Solitaire (local styles). */
 .sol-table { --cw: clamp(40px, 12vw, 62px); --ch: calc(var(--cw) * 1.4); --gap: clamp(5px, 1.6vw, 12px); margin: 0 auto; width: fit-content; max-width: 100%; }
 .sol-row { display: grid; grid-template-columns: repeat(7, var(--cw)); gap: var(--gap); }
-.sol-top { margin-bottom: calc(var(--ch) * 0.28); position: sticky; z-index: 10; background: var(--surface-strong); padding: 6px 0; }
+.sol-top { margin-bottom: calc(var(--ch) * 0.28); }
 .sol-slot { width: var(--cw); height: var(--ch); border-radius: calc(var(--cw) * 0.13); }
-.sol-pile { position: relative; width: var(--cw); }
+/* Cards are absolutely positioned, so a pile holding only cards contributes
+   no height. Without this floor the whole top row collapses the moment every
+   pile has a card on it (e.g. the 4th ace fills the last empty foundation),
+   and the cards spill down over the tableau. */
+.sol-pile { position: relative; width: var(--cw); min-height: var(--ch); }
 .sol-empty { border: 1.5px dashed var(--line-strong); background: rgba(32,23,19,0.03); display: grid; place-items: center; color: var(--line-strong); font-size: calc(var(--cw) * 0.5); }
 .sol-empty.recycle { cursor: pointer; color: var(--accent); border-color: rgba(31,143,119,0.4); }
 .sol-card {
@@ -283,7 +287,6 @@
   var stock, waste, foundations, tableau;
   var drawN = 1, moves, solved, sel = null, timer, seconds, started;
   var history = [];
-  var maxTableHeightPx = 0;
 
   // ── Best-time (per draw mode, saved locally) ──────
   function bestKey() { return "sp-solitaire-best-d" + drawN; }
@@ -304,25 +307,12 @@
   var dragInfo = null, dragGhost = null, justDragged = false, dragHoverEl = null;
   var DRAG_THRESHOLD = 6;
 
-  // Keep the stock/waste/foundation row visible under the sticky site header
-  // as the tableau grows tall — otherwise it scrolls out of view mid-game
-  // and there's no way to check foundation progress or draw a card without
-  // scrolling back up. The site topbar's height varies across breakpoints,
-  // so measure it live instead of hardcoding an offset.
-  var solTopEl = document.querySelector(".sol-top");
-  var siteTopbarEl = document.querySelector(".topbar");
-  function syncStickyOffset() {
-    solTopEl.style.top = (siteTopbarEl ? siteTopbarEl.getBoundingClientRect().height : 0) + "px";
-  }
-  syncStickyOffset();
-  window.addEventListener("resize", syncStickyOffset);
-
   function snapshot() {
     return JSON.stringify({ stock: stock, waste: waste, foundations: foundations, tableau: tableau, moves: moves });
   }
   function pushHistory() { history.push(snapshot()); if (history.length > 200) history.shift(); }
 
-  var currentDealSeed = Math.floor(Math.random() * 2147483647) || 1;
+  var currentDealSeed = null; // set by pickVerifiedDeal()
 
   function makeDeck(seed) {
     var d = [];
@@ -352,289 +342,42 @@
     return { tableau: t, stock: st };
   }
 
-  // ── Solver-backed deal guarantee ──────────────────
-  // We know the whole shuffled deck (a real player doesn't), which makes
-  // checking solvability tractable: a move-ordered, bounded DFS over a
-  // lightweight clone of the board, with a safe-autoplay heuristic to skip
-  // the "always fine" foundation moves instead of branching on them. It's
-  // not a perfect prover (full Klondike solving is expensive) — if it can't
-  // find a winning line within its budget the deal is reshuffled and tried
-  // again, up to a capped number of attempts, so New Game never spins forever.
-  var SOLVER_MAX_ATTEMPTS = 8;
-  var SOLVER_NODE_BUDGET = 150000;
-  var SOLVER_TIME_BUDGET_MS = 450;
-  var SOLVER_MAX_RECYCLES = 8;
-  var SOLVER_VISITED_CAP = 260000;
+  // ── Verified deal pool ────────────────────────────
+  // Klondike solvability cannot be proven in interactive time. The old
+  // on-device search timed out on ~86% of deals (and on every single
+  // Draw 3 deal), then shipped an unverified — sometimes unwinnable —
+  // shuffle anyway, after making the player wait ~2s for it.
+  //
+  // These seeds were verified offline instead, each one solved under BOTH
+  // Draw 1 and Draw 3, so every deal below is winnable in either mode and
+  // dealing is instant. Regenerate with scripts/mine-solitaire-seeds.js.
+  var VERIFIED_SEEDS = [1,2,4,9,10,13,14,22,23,24,26,27,29,30,31,33,34,35,39,42,45,46,48,49,52,55,56,59,60,61,65,68,69,72,75,77,80,81,84,88,89,92,96,103,108,109,110,114,117,120,126,128,132,133,134,137,139,141,144,149,154,156,161,171,174,175,183,184,185,186,187,191,198,199,200,201,202,208,209,210,212,217,218,219,222,224,227,228,229,230,233,244,247,251,253,256,258,259,266,271,272,276,281,283,287,288,291,293,295,297,299,301,313,316,318,322,324,325,329,331,332,337,347,348,352,354,360,368,369,370,372,374,377,378,379,380,382,387,389,393,394,395,398,400,401,404,405,413,414,416,419,420,422,423,424,426,427,428,431,437,438,451,455,457,459,460,462,467,470,473,479,484,485,486,487,488,490,495,496,498,506,509,510,513,518,523,524,526,529,530,531,534,536,537,538,542,546,547,548,551,552,555,560,561,563,565,566,568,569,570,571,576,577,581,582,585,586,587,594,596,600,601,602,604,605,607,608,610,612,613,614,615,619,620,623,628,629,630,631,633,637,641,645,647,650,652,656,657,660,661,662,665,667,669,672,674,676,677,678,681,682,689,692,694,697,698,700,702,704,709,715,717,718,721,724,728,738,740,742,743,749,752,754,755,756,759,761,765,770,771,775,778,781,785,792,796,797,798,804,806,807,812,814,815,816,817,819,821,823,826,827,830,831,833,836,839,844,848,852,854,855,860,861,862,863,865,871,872,873,876,882,883,884,890,891,892,895,897,898,904,907,908,914,919,921,932,933,935,939,943,948,957,958,960,961,962,963,964,967,972,974,975,983,986,987,990,991,992,993,995,998,1000,1002,1005,1006,1007,1010,1017,1022,1023,1024,1028,1029,1031,1036,1037,1039,1042,1049,1050,1052,1061,1062,1064,1065,1069,1070,1075,1076,1081,1084,1087,1088,1092,1094,1095,1096,1098,1099,1100,1101,1102,1104,1108,1110,1121,1123,1125,1128,1130,1131,1132,1138,1140,1141,1143,1147,1150,1152,1154,1163,1165,1166,1167,1168,1174,1176,1177,1180,1182,1183,1185,1186,1187,1189,1190,1194,1195,1203,1204,1206,1207,1212,1215,1216,1217,1218,1219,1222,1223,1224,1229,1232,1234,1235,1236,1237,1239,1242,1243,1244,1245,1246,1253,1256,1259,1263,1266,1267,1269,1276,1277,1278,1279,1282,1283,1284,1285,1290,1291,1292,1293,1294,1296,1299,1304,1305,1313,1315,1316,1320,1321,1325,1329,1331,1333,1334,1336,1339,1340,1341,1344,1345,1352,1353,1358,1363,1365,1368,1369,1370,1373,1375,1377,1378,1381,1384,1385,1388,1390,1397,1398,1399,1400,1404,1407,1410,1414,1415,1417,1421,1427,1430,1431,1434,1435,1437,1438,1440,1441,1443,1446,1449,1455,1456,1458,1459,1461,1468,1472,1474,1475,1476,1479,1482,1485,1487,1489,1490,1495,1496,1498,1505,1508,1510,1513,1515,1518,1524,1525,1528,1530,1532,1534,1540,1546,1547,1548,1549,1562,1568,1571,1572,1577,1580,1581,1582,1612,1613,1615,1616,1618,1621,1627,1632,1633,1635,1636,1638,1643,1645,1656,1658,1660,1669,1673,1683,1685,1697,1700,1707,1709,1710,1711,1713,1714,1721,1722,1726,1729,1732,1737,1739,1741,1742,1744,1748,1749,1751,1752,1758,1765,1767,1768,1774,1777,1780,1782,1784,1785,1786,1787,1790,1792,1793,1794,1795,1800,1802,1808,1810,1811,1812,1815,1816,1820,1822,1823,1824,1825,1829,1830,1831,1832,1833,1834,1839,1842,1851,1853,1855,1864,1865,1868,1869,1874,1876,1877,1881,1884,1886,1887,1891,1892,1895,1897,1898,1902,1905,1907,1910,1917,1922,1931,1939,1941,1942,1946,1948,1949,1951,1957,1959,1960,1962,1963,1964,1966,1973,1974,1978,1980,1981,1984,1985,1986,1988,1989,1991,1993,1994,1996,1998,2000,2001,2005,2006,2007,2010,2011,2013,2014,2022,2025,2027,2029,2033,2034,2036,2042,2048,2054,2059,2061,2065,2069,2073,2080,2085,2090,2092,2093,2098,2109,2117,2119,2120,2126,2128,2133,2137,2140,2143,2149,2150,2160,2161,2164,2167,2168,2170,2176,2179,2185,2192,2195,2196,2202,2203,2204,2205,2208,2210,2211,2213,2215,2217,2227,2228,2230,2237,2239,2241,2242,2245,2249,2250,2251,2254,2258,2259,2276,2277,2278,2279,2283,2285,2287,2289,2292,2303,2305,2306,2307,2308,2311,2318,2319,2325,2327,2328,2329,2332,2333,2340,2341,2344,2345,2348,2352,2354,2356,2358,2360,2365,2369,2372,2373,2378,2379,2381,2382,2384,2387,2388,2391,2394,2396,2400,2402,2405,2406,2409,2410,2419,2420,2425,2426,2427,2429,2432,2434,2435,2438,2443,2444,2448,2450,2452,2453,2454,2455,2457,2460,2465,2467,2468,2472,2475,2477,2478,2483,2486,2487,2488,2489,2494,2496,2498,2499,2501,2502,2503,2504,2517,2518,2519,2521,2524,2525,2527,2534,2536,2541,2543,2544,2548,2558,2559,2561,2569,2571,2572,2576,2578,2584,2586,2588,2591,2594,2599,2600,2602,2606,2608,2611,2619,2622,2627,2629,2631,2632,2633,2636,2637,2638,2641,2642,2644,2645,2647,2648,2651,2654,2657,2664,2665,2666,2667,2668,2670,2673,2676,2679,2686,2689,2693,2695,2696,2697,2699,2702,2704,2709,2713,2714,2715,2716,2717,2718,2719,2721,2724,2730,2733,2734,2737,2739,2742,2743,2744,2748,2749,2755,2756,2763,2764,2767,2769,2773];
 
-  function solverIsRed(s) { return s === 1 || s === 2; }
-
-  function solverCloneState(s) {
-    return {
-      tableau: s.tableau.map(function (p) { return p.map(function (c) { return { r: c.r, s: c.s, up: c.up }; }); }),
-      stock: s.stock.map(function (c) { return { r: c.r, s: c.s }; }),
-      waste: s.waste.map(function (c) { return { r: c.r, s: c.s }; }),
-      found: s.found.slice(),
-      recycles: s.recycles
-    };
-  }
-
-  function solverEncode(s) {
-    return s.found.join(",") + "#" +
-      s.stock.map(function (c) { return c.r + "-" + c.s; }).join("") + "#" +
-      s.waste.map(function (c) { return c.r + "-" + c.s; }).join("") + "#" +
-      s.tableau.map(function (p) { return p.map(function (c) { return c.r + "-" + c.s + (c.up ? "u" : "d"); }).join(","); }).join("|");
-  }
-
-  function solverIsWon(s) { return s.found[0] === 13 && s.found[1] === 13 && s.found[2] === 13 && s.found[3] === 13; }
-
-  function solverCanFoundation(s, card) { return s.found[card.s] === card.r - 1; }
-
-  function solverCanStack(s, card, destCol) {
-    var pile = s.tableau[destCol];
-    if (!pile.length) return card.r === 13;
-    var top = pile[pile.length - 1];
-    return top.up && top.r === card.r + 1 && solverIsRed(top.s) !== solverIsRed(card.s);
-  }
-
-  function solverIsSafeAutoplay(s, card) {
-    if (card.r <= 2) return true;
-    var oppMin = 13;
-    for (var suit = 0; suit < 4; suit++) {
-      if (solverIsRed(suit) !== solverIsRed(card.s)) oppMin = Math.min(oppMin, s.found[suit]);
+  function pickVerifiedDeal() {
+    var seed = VERIFIED_SEEDS[Math.floor(Math.random() * VERIFIED_SEEDS.length)];
+    // Don't hand out the same deal twice in a row.
+    while (VERIFIED_SEEDS.length > 1 && seed === currentDealSeed) {
+      seed = VERIFIED_SEEDS[Math.floor(Math.random() * VERIFIED_SEEDS.length)];
     }
-    return oppMin >= card.r - 1;
-  }
-
-  // Repeatedly send provably-safe cards to their foundations. Safe here
-  // means no future tableau move could ever need this card back, so doing
-  // it can never cost us a line the solver would otherwise have found.
-  function solverAutoSafe(s) {
-    var changed = true;
-    while (changed) {
-      changed = false;
-      if (s.waste.length) {
-        var w = s.waste[s.waste.length - 1];
-        if (solverIsSafeAutoplay(s, w)) { s.waste.pop(); s.found[w.s] = w.r; changed = true; continue; }
-      }
-      for (var i = 0; i < 7; i++) {
-        var pile = s.tableau[i];
-        if (!pile.length) continue;
-        var top = pile[pile.length - 1];
-        if (top.up && solverIsSafeAutoplay(s, top)) {
-          pile.pop(); s.found[top.s] = top.r;
-          if (pile.length && !pile[pile.length - 1].up) pile[pile.length - 1].up = true;
-          changed = true;
-        }
-      }
-    }
-  }
-
-  function solverMovePriority(s, m) {
-    if (m.kind === "tabFound" || m.kind === "wasteFound") return 100;
-    if (m.kind === "tabTab") {
-      var p = s.tableau[m.from];
-      return (m.idx > 0 && !p[m.idx - 1].up) ? 80 : 40;
-    }
-    if (m.kind === "wasteTab") return 60;
-    if (m.kind === "draw") return 10;
-    return 5; // recycle
-  }
-
-  function solverGenerateMoves(s, drawMode) {
-    var moves = [], c, pile, top;
-    for (c = 0; c < 7; c++) {
-      pile = s.tableau[c];
-      if (!pile.length) continue;
-      top = pile[pile.length - 1];
-      if (top.up && solverCanFoundation(s, top)) moves.push({ kind: "tabFound", col: c });
-    }
-    if (s.waste.length && solverCanFoundation(s, s.waste[s.waste.length - 1])) moves.push({ kind: "wasteFound" });
-
-    for (c = 0; c < 7; c++) {
-      pile = s.tableau[c];
-      if (!pile.length) continue;
-      var maxStart = pile.length - 1;
-      while (maxStart > 0 && pile[maxStart - 1].up &&
-             pile[maxStart - 1].r === pile[maxStart].r + 1 &&
-             solverIsRed(pile[maxStart - 1].s) !== solverIsRed(pile[maxStart].s)) maxStart--;
-      if (!pile[maxStart].up) continue;
-      var starts = maxStart === pile.length - 1 ? [maxStart] : [maxStart, pile.length - 1];
-      for (var si = 0; si < starts.length; si++) {
-        var startIdx = starts[si], moving = pile[startIdx];
-        for (var d = 0; d < 7; d++) {
-          if (d === c) continue;
-          if (solverCanStack(s, moving, d)) moves.push({ kind: "tabTab", from: c, idx: startIdx, to: d });
-        }
-      }
-    }
-
-    if (s.waste.length) {
-      var w = s.waste[s.waste.length - 1];
-      for (c = 0; c < 7; c++) if (solverCanStack(s, w, c)) moves.push({ kind: "wasteTab", col: c });
-    }
-
-    if (s.stock.length) moves.push({ kind: "draw" });
-    else if (s.waste.length && s.recycles < SOLVER_MAX_RECYCLES) moves.push({ kind: "recycle" });
-
-    moves.sort(function (a, b) { return solverMovePriority(s, b) - solverMovePriority(s, a); });
-    return moves;
-  }
-
-  function solverApplyMove(s, move, drawMode) {
-    if (move.kind === "tabFound") {
-      var pile = s.tableau[move.col], card = pile.pop();
-      s.found[card.s] = card.r;
-      if (pile.length && !pile[pile.length - 1].up) pile[pile.length - 1].up = true;
-    } else if (move.kind === "wasteFound") {
-      var w = s.waste.pop(); s.found[w.s] = w.r;
-    } else if (move.kind === "tabTab") {
-      var src = s.tableau[move.from];
-      var moving = src.splice(move.idx);
-      s.tableau[move.to] = s.tableau[move.to].concat(moving);
-      if (src.length && !src[src.length - 1].up) src[src.length - 1].up = true;
-    } else if (move.kind === "wasteTab") {
-      s.tableau[move.col].push(s.waste.pop());
-    } else if (move.kind === "draw") {
-      var n = Math.min(drawMode, s.stock.length);
-      for (var i = 0; i < n; i++) s.waste.push(s.stock.pop());
-    } else if (move.kind === "recycle") {
-      s.recycles++;
-      while (s.waste.length) s.stock.push(s.waste.pop());
-    }
-    return s;
-  }
-
-  // Minimal binary min-heap keyed by .cost — lower cost pops first.
-  function SolverHeap() { this.a = []; }
-  SolverHeap.prototype.push = function (item) {
-    var a = this.a; a.push(item);
-    var i = a.length - 1;
-    while (i > 0) {
-      var p = (i - 1) >> 1;
-      if (a[p].cost <= a[i].cost) break;
-      var t = a[p]; a[p] = a[i]; a[i] = t; i = p;
-    }
-  };
-  SolverHeap.prototype.pop = function () {
-    var a = this.a, top = a[0], last = a.pop();
-    if (a.length) {
-      a[0] = last;
-      var i = 0, n = a.length;
-      while (true) {
-        var l = i * 2 + 1, r = i * 2 + 2, m = i;
-        if (l < n && a[l].cost < a[m].cost) m = l;
-        if (r < n && a[r].cost < a[m].cost) m = r;
-        if (m === i) break;
-        var t = a[i]; a[i] = a[m]; a[m] = t; i = m;
-      }
-    }
-    return top;
-  };
-
-  function solverCost(s, depth) {
-    var foundationCount = s.found[0] + s.found[1] + s.found[2] + s.found[3];
-    var hidden = 0, emptyCols = 0;
-    for (var i = 0; i < 7; i++) {
-      if (!s.tableau[i].length) emptyCols++;
-      for (var c = 0; c < s.tableau[i].length; c++) if (!s.tableau[i][c].up) hidden++;
-    }
-    // Lower is better. Flipping hidden cards is the real bottleneck in
-    // Klondike, so it outweighs foundation progress; empty columns (a King
-    // parking spot) are valuable too. Depth/recycles only break ties.
-    return -foundationCount * 20 - (21 - hidden) * 30 - emptyCols * 15 + s.recycles * 6 + depth * 0.05;
-  }
-
-  // Greedy best-first search: always expand the most-progressed board first
-  // (priority queue on solverCost), which finds a winning line far more
-  // often within a small budget than plain DFS. Returns true only if it
-  // actually found a winning line; false means "couldn't prove it in
-  // budget", not "impossible".
-  function solverIsSolvable(dealt, drawMode) {
-    var startTime = (typeof performance !== "undefined" ? performance.now() : Date.now());
-    var nodes = 0;
-    var visited = new Set();
-    var root = {
-      tableau: dealt.tableau.map(function (p) { return p.map(function (c) { return { r: c.r, s: c.s, up: c.up }; }); }),
-      stock: dealt.stock.map(function (c) { return { r: c.r, s: c.s }; }),
-      waste: [],
-      found: [0, 0, 0, 0],
-      recycles: 0
-    };
-    solverAutoSafe(root);
-    if (solverIsWon(root)) return true;
-
-    var heap = new SolverHeap();
-    heap.push({ state: root, cost: solverCost(root, 0), depth: 0, inv: null });
-    while (heap.a.length) {
-      nodes++;
-      if (nodes > SOLVER_NODE_BUDGET) return false;
-      if (nodes % 200 === 0) {
-        var now = (typeof performance !== "undefined" ? performance.now() : Date.now());
-        if (now - startTime > SOLVER_TIME_BUDGET_MS) return false;
-      }
-      var cur = heap.pop();
-      var key = solverEncode(cur.state);
-      if (visited.has(key)) continue;
-      visited.add(key);
-      if (visited.size > SOLVER_VISITED_CAP) return false;
-
-      var moves = solverGenerateMoves(cur.state, drawMode);
-      for (var i = 0; i < moves.length; i++) {
-        var m = moves[i];
-        // Skip immediately undoing the move that produced this node (e.g.
-        // shuffling a run A->B then straight back B->A) — pure busywork
-        // that only inflates the frontier without any real progress.
-        if (cur.inv && m.kind === "tabTab" && m.from === cur.inv.to && m.to === cur.inv.from) continue;
-        var next = solverApplyMove(solverCloneState(cur.state), m, drawMode);
-        solverAutoSafe(next);
-        if (solverIsWon(next)) return true;
-        var inv = m.kind === "tabTab" ? { from: m.from, to: m.to } : null;
-        heap.push({ state: next, cost: solverCost(next, cur.depth + 1), depth: cur.depth + 1, inv: inv });
-      }
-    }
-    return false;
-  }
-
-  function dealSolvableDeck(drawMode) {
-    var seed = currentDealSeed;
-    for (var attempt = 0; attempt < SOLVER_MAX_ATTEMPTS; attempt++) {
-      var dealt = dealFromDeck(makeDeck(seed));
-      if (solverIsSolvable(dealt, drawMode)) { currentDealSeed = seed; return dealt; }
-      seed = seed >= 2147483647 ? 1 : seed + 1;
-    }
-    // A bounded search may fail to prove a random deal solvable within its
-    // budget. Deal an honest shuffle anyway instead of the old fallback,
-    // which always dealt the same rigged, foundation-primed layout (every
-    // column pre-loaded with an ace or two) — technically solvable but a
-    // pointless, predictable game.
     currentDealSeed = seed;
     return dealFromDeck(makeDeck(seed));
   }
 
-  // Dealing runs a bounded solver search before committing to a deal, which
-  // can take up to a couple of seconds — deferred a tick so the "Shuffling…"
-  // status actually paints before the (synchronous) search blocks the thread,
-  // instead of the page just looking frozen.
-  function deal(onReady) {
-    tableau = [[], [], [], [], [], [], []];
-    stock = []; waste = [];
+  // Picking from the pre-verified pool is instant, so this can stay
+  // synchronous — no "Shuffling…" placeholder needed any more.
+  function deal() {
+    var dealt = pickVerifiedDeal();
+    tableau = dealt.tableau;
+    stock = dealt.stock;
+    waste = [];
     foundations = [[], [], [], []];
     moves = 0; solved = false; sel = null; started = false; history = [];
-    maxTableHeightPx = 0;
     clearInterval(timer); seconds = 0; renderTime();
+    document.getElementById("sol-deal").textContent = String(currentDealSeed);
     statusEl.className = "game-status";
-    statusEl.textContent = "Shuffling a solvable deal…";
+    statusEl.textContent = "Click a card to select it, then click where it should go.";
     renderBest();
     render();
-    setTimeout(function () {
-      var dealt = dealSolvableDeck(drawN);
-      document.getElementById("sol-deal").textContent = String(currentDealSeed);
-      tableau = dealt.tableau;
-      stock = dealt.stock;
-      statusEl.textContent = "Click a card to select it, then click where it should go.";
-      render();
-      if (onReady) onReady();
-    }, 20);
   }
 
   function startTimer() {
@@ -718,7 +461,6 @@
     tableauRow.innerHTML = "";
     var offset = Math.max(12, chPx * 0.26);
     var downOffset = offset * 0.5;
-    var tallestCol = 0;
     for (var col = 0; col < 7; col++) {
       var colEl = document.createElement("div");
       colEl.className = "sol-pile sol-tableau";
@@ -736,19 +478,9 @@
         colEl.appendChild(el);
         y += card.up ? offset : downOffset;
       }
-      var colHeight = y + chPx;
-      colEl.style.height = colHeight + "px";
-      if (colHeight > tallestCol) tallestCol = colHeight;
+      colEl.style.height = (y + chPx) + "px";
       tableauRow.appendChild(colEl);
     }
-    // A sticky .sol-top only stays stuck within its parent's bounds. If a
-    // column later gets shorter (e.g. its face-up run clears to the
-    // foundations), that bound would shrink and — if you're scrolled past
-    // the new, shorter edge — the sticky row snaps back into normal flow
-    // above the current viewport and appears to vanish. Never letting this
-    // container shrink below its tallest point in the game avoids that.
-    maxTableHeightPx = Math.max(maxTableHeightPx, tallestCol);
-    tableauRow.style.minHeight = maxTableHeightPx + "px";
 
     movesEl.textContent = moves;
     undoBtn.disabled = !history.length;
@@ -1097,14 +829,16 @@
     render(); checkWin();
   });
 
-  newBtn.addEventListener("click", function () { currentDealSeed = currentDealSeed >= 2147483647 ? 1 : currentDealSeed + 1; deal(); });
+  newBtn.addEventListener("click", function () { deal(); });
   document.querySelectorAll(".seg [data-draw]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       drawN = +btn.dataset.draw;
       document.querySelectorAll(".seg [data-draw]").forEach(function (b) {
         b.setAttribute("aria-pressed", String(b === btn));
       });
-      currentDealSeed = currentDealSeed >= 2147483647 ? 1 : currentDealSeed + 1;
+      // Every pooled deal is verified for both draw modes, so switching
+      // mode can keep the current deal rather than forcing a new one.
+      renderBest();
       deal();
     });
   });
