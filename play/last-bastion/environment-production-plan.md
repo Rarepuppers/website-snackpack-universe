@@ -38,31 +38,41 @@ Science laboratory, lab testing, cryostasis, surgery/alien testing, bio upgrades
 
 Generated, normalized, gallery-bound, and live-theme accepted at native, mixed-density, Full HD 2×, and 4K 4× presentation.
 
-### 2. Bastion Logistics and Defence — Batch AE preflight complete
+### 2. Bastion Logistics and Defence — Batch AE accepted
 
 Army supply depot, supply room, armoury, weapon racks, shop rooms, high-tech blacksmith, medic outpost, tower-defence command room, barracks, briefing room, loading bay, and emergency bunker.
 
-Generated, normalized, and gallery-bound. Live-theme and mixed-density multi-resolution acceptance remains before promotion.
+Generated, normalized, gallery-bound, and live-theme accepted at native, density-capacity, Full HD 2×, and 4K 3× presentation.
 
-### 3. Machine Foundry — Batch AF
+### 3. Machine Foundry — Batch AF accepted
 
 Factory, cyborg assembly line, foundry, mining/ore processing, smelter, coolant works, generator hall, conveyor junction, robotics maintenance, scrap compactor, and machine command floor.
 
-### 4. Alien Hive and Infestation — Batch AG
+Generated, normalized, gallery-bound, and live-theme accepted at native, density-capacity, Full HD 2×, and 4K 3× presentation.
+
+### 4. Alien Hive and Infestation — Batch AG accepted
 
 Alien nest, slime chamber, nursery, egg room, hatchery, biomass tunnel, spore garden, feeding pit, queen approach, corrupted laboratory, and organic ship interior.
 
-### 5. Surface and Planetary Frontiers — Batch AH
+Generated, normalized, gallery-bound, and live-theme accepted at native, density-capacity, Full HD 2×, and 4K 3× presentation.
+
+### 5. Surface and Planetary Frontiers - Batch AH accepted
 
 Cracked earth, earth trail, forest, caves, alien planet, ash waste, frozen ground, toxic marsh, ruined settlement, canyon, meteor scar, and demonic ground. Natural kits use irregular edge masks and larger macro-variation so they do not read as square indoor panels.
 
-### 6. Starship, Void, and Transit — Batch AI
+Generated, normalized, gallery-bound, and live-theme accepted. Each room deterministically selects one of 16 named terrain frames; rotation/mirroring reduces repeated motifs without mixing terrain identities. Future 4K close-camera polish should add macro-variation to frozen ground and other fine-grain natural surfaces.
+
+### 6. Starship, Void, and Transit - Batch AI accepted
 
 Spaceship corridors, hangar, airlock, cargo deck, bridge, observation room, space-void platform, teleporter room, stargate chamber, hyperspace machinery, and derelict ship. The playable surface always remains readable; space/void vistas sit below it and never become collision ambiguity.
 
-### 7. Containment and Underworld — Batch AJ
+Generated, normalized, gallery-bound, and live-theme accepted. Four deterministic floor families - operational, command, energy transit, and derelict - prevent ornate single-frame repetition while keeping space-vista imagery bounded inside readable architecture.
+
+### 7. Containment and Underworld - Batch AJ accepted
 
 Prison, brig, quarantine, dungeon, containment vault, specimen cages, execution chamber, abandoned bunker, cult chamber, and corrupted demonic facility.
+
+Generated, normalized, gallery-bound, and live-theme accepted as institutional wing, containment vault, dungeon depths, and infernal facility families. All four pass density, native, 2x, and 3x readability review.
 
 ### 8. Boss arenas and Colosseum — Batch AK
 
@@ -78,6 +88,10 @@ Build arenas after their boss mechanics are locked. Required layouts: circular C
 - Elite ambush rooms and destructible-cover rooms.
 - Transition rooms that visually blend two adjacent kits.
 
+## Theme objects, hazards, and interactions
+
+The environment system now requires a second layer above floors: theme-filtered obstacles, hazards, and interactables. The canonical 24-object contract and production rules are in `world-object-production-plan.md`. Produce structural/destructible art first, then hazard transitions, then multi-state interaction art. Prove these standard-room tactics before Batch AK boss arenas.
+
 ## Production order and gates
 
 1. Batch AD Science Wing establishes the contract and gallery preflight.
@@ -88,6 +102,8 @@ Build arenas after their boss mechanics are locked. Required layouts: circular C
 6. Batch AH natural/planetary kits prove irregular outdoor tiling.
 7. Batch AI starship/void/transit proves layered playable-ground versus vista readability.
 8. Batch AJ containment/underworld adds prison and demonic variants.
+
+Object Batch O1 now provides the first cross-theme tactical-prop layer above these floors: 12 structural families and 48 intact-to-destroyed frames. The environment kits remain responsible for room identity; O1 objects provide reusable cover and route-changing silhouettes without baking gameplay state into the floor art.
 9. Batch AK boss arenas follows accepted 45–90-second boss fights.
 10. Run physical-controller, colour-vision, maximum-density audio, seam, repetition, and performance reviews before Steam packaging.
 

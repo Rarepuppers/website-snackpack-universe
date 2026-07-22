@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { DEFAULT_SAVE, LocalSaveStore, SAVE_STORAGE_KEY } from "./LocalSaveStore";
 import { createRunSummary } from "../run/RunSummary";
 import { rebindGamepad, rebindKeyboard } from "../input/ControlBindings";
+import { applyTransformationChoice, createTransformationAffinityState } from "../transformations/TransformationAffinity";
 
 function fakeStorage(initial: Record<string, string> = {}) {
   const data = new Map<string, string>(Object.entries(initial));
@@ -10,6 +11,16 @@ function fakeStorage(initial: Record<string, string> = {}) {
     setItem: (key: string, value: string) => { data.set(key, value); },
     dump: () => data,
   };
+}
+
+function committedCyberState() {
+  let state = createTransformationAffinityState();
+  for (const choice of ["targeting-suite", "targeting-suite", "shield-lattice"] as const) {
+    const result = applyTransformationChoice(state, "cybernetic-ascension", choice);
+    if (!result.ok) throw new Error(result.reason);
+    state = result.state;
+  }
+  return state;
 }
 
 describe("LocalSaveStore", () => {
@@ -49,7 +60,7 @@ describe("LocalSaveStore", () => {
       [SAVE_STORAGE_KEY]: JSON.stringify({ ...DEFAULT_SAVE, version: 6, controls: undefined }),
     });
     const migrated = new LocalSaveStore(storage);
-    expect(migrated.load().version).toBe(7);
+    expect(migrated.load().version).toBe(8);
     expect(migrated.load().controls.keyboard.evade).toBe("Space");
     const keyboard = rebindKeyboard(migrated.load().controls, "evade", "KeyF");
     const remapped = rebindGamepad(keyboard, "kit", "north");
@@ -236,7 +247,7 @@ describe("Save schema v2 — expedition autosave", () => {
       }),
     });
     const save = new LocalSaveStore(storage).load();
-    expect(save.version).toBe(7);
+    expect(save.version).toBe(8);
     expect(save.settings.screenShakeEnabled).toBe(false);
     expect(save.settings.cooldownTimersEnabled).toBe(false);
     expect(save.settings.autoFireEnabled).toBe(true);
@@ -257,6 +268,7 @@ describe("Save schema v2 — expedition autosave", () => {
         health: 7.4, shield: 1, level: 4, experience: 12, scrap: 55,
         weapons: [{ weaponId: "bastion-service-rifle", tier: 2 }],
         upgrades: [{ upgradeId: "rapid-cycling", level: 3 }],
+        transformation: committedCyberState(),
       },
       metrics: { kills: 12, scrapEarned: 44, damageByWeapon: { "bastion-service-rifle": 88 } },
     });
@@ -265,9 +277,42 @@ describe("Save schema v2 — expedition autosave", () => {
     expect(reloaded.expedition?.clearedNodeIds).toEqual([1, 3, 5]);
     expect(reloaded.expedition?.build?.health).toBeCloseTo(7.4, 5);
     expect(reloaded.expedition?.build?.weapons).toEqual([{ weaponId: "bastion-service-rifle", tier: 2 }]);
+    expect(reloaded.expedition?.build?.transformation?.committedPathId).toBe("cybernetic-ascension");
     const cleared = new LocalSaveStore(storage).clearExpedition();
     expect(cleared.expedition).toBeNull();
     expect(new LocalSaveStore(storage).load().expedition).toBeNull();
+  });
+
+  it("migrates pre-transformation builds to an empty safe state and sanitizes malformed v8 data", () => {
+    const legacyStorage = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        ...DEFAULT_SAVE,
+        version: 7,
+        expedition: {
+          mapSeed: 9, currentNodeId: 1, clearedNodeIds: [1],
+          build: { health: 10, shield: 0, level: 2, experience: 0, scrap: 0, weapons: [], upgrades: [] },
+          metrics: { kills: 0, scrapEarned: 0, damageByWeapon: {} },
+        },
+      }),
+    });
+    expect(new LocalSaveStore(legacyStorage).load().expedition?.build?.transformation)
+      .toEqual(createTransformationAffinityState());
+
+    const malformed = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        ...DEFAULT_SAVE,
+        expedition: {
+          mapSeed: 9, currentNodeId: 1, clearedNodeIds: [1],
+          build: {
+            health: 10, shield: 0, level: 2, experience: 0, scrap: 0, weapons: [], upgrades: [],
+            transformation: { committedPathId: "church", paths: [{ pathId: "church", choiceIds: ["zealot"] }] },
+          },
+          metrics: { kills: 0, scrapEarned: 0, damageByWeapon: {} },
+        },
+      }),
+    });
+    expect(new LocalSaveStore(malformed).load().expedition?.build?.transformation)
+      .toEqual(createTransformationAffinityState());
   });
 
   it("degrades a malformed expedition to no-run without touching settings", () => {

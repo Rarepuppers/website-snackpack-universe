@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createRunSummary, mergeRunMetrics, totalRunDamage } from "./RunSummary";
+import { applyTransformationChoice, createTransformationAffinityState } from "../transformations/TransformationAffinity";
 
 describe("Task 50 run-summary contract", () => {
   it("merges cross-node metrics without losing weapon attribution", () => {
@@ -16,6 +17,8 @@ describe("Task 50 run-summary contract", () => {
   });
 
   it("normalizes a serializable final-build recap", () => {
+    const exposure = applyTransformationChoice(createTransformationAffinityState(), "psionic-operative", "psionic-sniper");
+    if (!exposure.ok) throw new Error(exposure.reason);
     const summary = createRunSummary({
       mode: "expedition",
       outcome: "victory",
@@ -30,9 +33,11 @@ describe("Task 50 run-summary contract", () => {
       damageByWeapon: { "bastion-service-rifle": 900.25 },
       weapons: [{ weaponId: "bastion-service-rifle", tier: 2 }],
       upgrades: [{ upgradeId: "rapid-cycling", level: 3 }],
+      transformation: exposure.state,
     });
     expect(summary.newlyUnlockedPerkIds).toEqual([]);
     expect(summary.weapons).toEqual([{ weaponId: "bastion-service-rifle", tier: 2 }]);
     expect(summary.damageByWeapon["bastion-service-rifle"]).toBeCloseTo(900.25);
+    expect(summary.transformation.paths[0]).toMatchObject({ pathId: "psionic-operative", affinity: 1 });
   });
 });

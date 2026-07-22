@@ -15,6 +15,30 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "o1") {
+      this.createObjectBatchO1Gallery();
+      return;
+    }
+    if (batch === "aj") {
+      this.createBatchAJGallery();
+      return;
+    }
+    if (batch === "ai") {
+      this.createBatchAIGallery();
+      return;
+    }
+    if (batch === "ah") {
+      this.createBatchAHGallery();
+      return;
+    }
+    if (batch === "ag") {
+      this.createBatchAGGallery();
+      return;
+    }
+    if (batch === "af") {
+      this.createBatchAFGallery();
+      return;
+    }
     if (batch === "ae") {
       this.createBatchAEGallery();
       return;
@@ -732,7 +756,7 @@ export class AssetGalleryScene extends Phaser.Scene {
 
   private createBatchAEGallery(): void {
     this.add.text(20, 14, "LAST BASTION - BASTION LOGISTICS AND DEFENCE BATCH AE", style("#ffffff", "17px"));
-    this.add.text(20, 38, "Supply / armoury / shop / forge / medic / command / loading / bunker - 44 runtime visuals", style("#8fb2c9", "10px"));
+    this.add.text(20, 38, "Supply / armoury / shop / forge / medic / command / loading / bunker - 40 runtime visuals", style("#8fb2c9", "10px"));
     this.add.text(20, 62, "FLOORS - heavy deck / cargo / armoury / shop / forge / medic / command / loading", style("#ffcf7a", "9px"));
     for (let frame = 0; frame < 16; frame += 1) {
       const x = 58 + (frame % 4) * 75;
@@ -761,6 +785,198 @@ export class AssetGalleryScene extends Phaser.Scene {
       this.add.sprite(x, y, "bastion-logistics-decals-v1", frame).setScale(0.43);
     }
     this.add.text(480, 528, "Preflight only: shops, healing, cover, inventory, interaction, collision, and objectives remain code-owned", style("#8fb2c9", "9px")).setOrigin(0.5);
+  }
+
+  private createBatchAFGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - MACHINE FOUNDRY BATCH AF", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Factory / ore / foundry / cyborg assembly / coolant / generator / scrap - 40 runtime visuals", style("#8fb2c9", "10px"));
+    this.add.text(20, 62, "FLOORS - iron / factory / assembly / ore / heat / coolant / generator / damage", style("#ff9f55", "9px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const x = 58 + (frame % 4) * 75;
+      const y = 103 + Math.floor(frame / 4) * 75;
+      this.add.sprite(x, y, "machine-foundry-floor-v1", frame).setScale(0.52);
+      this.add.text(x + 25, y + 24, String(frame), style("#93abc0", "7px")).setOrigin(0.5);
+    }
+    this.add.text(365, 62, "BOUNDARIES - cardinal / corners / blast gate / molten breach", style("#ff9f55", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 118 + Math.floor(frame / 4) * 92;
+      this.add.sprite(x, y, "machine-foundry-boundary-v1", frame).setScale(0.55);
+    }
+    this.add.text(365, 262, "FIXTURES - conveyor / crusher / smelter / arm / pump / generator / compactor / bench", style("#68e4e8", "8px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 355 + Math.floor(frame / 4) * 112;
+      this.add.sprite(x, y, "machine-foundry-fixtures-v1", frame).setScale(0.43).setOrigin(0.5, 0.92);
+      this.drawPivot(x, y);
+    }
+    this.add.text(20, 400, "LOW-CONTRAST DECALS", style("#d6a8ff", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 48 + (frame % 4) * 75;
+      const y = 448 + Math.floor(frame / 4) * 63;
+      this.add.sprite(x, y, "machine-foundry-floor-v1", frame % 4).setScale(0.43).setAlpha(0.65);
+      this.add.sprite(x, y, "machine-foundry-decals-v1", frame).setScale(0.43);
+    }
+    this.add.text(480, 528, "Preflight only: collision, conveyor motion, hazards, machinery, glow, interaction, and objectives remain code-owned", style("#8fb2c9", "9px")).setOrigin(0.5);
+  }
+
+  private createBatchAGGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - ALIEN HIVE AND INFESTATION BATCH AG", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Nest / slime / nursery / eggs / hatchery / spores / feeding / queen / organic ship - 40 runtime visuals", style("#8fb2c9", "10px"));
+    this.add.text(20, 62, "FLOORS - chitin / biomass / nest / nursery / hatchery / spores / queen / organic ship", style("#c98fc7", "9px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const x = 58 + (frame % 4) * 75;
+      const y = 103 + Math.floor(frame / 4) * 75;
+      this.add.sprite(x, y, "alien-hive-floor-v1", frame).setScale(0.52);
+      this.add.text(x + 25, y + 24, String(frame), style("#93abc0", "7px")).setOrigin(0.5);
+    }
+    this.add.text(365, 62, "BOUNDARIES - cardinal / corners / sphincter gate / breach", style("#c98fc7", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 118 + Math.floor(frame / 4) * 92;
+      this.add.sprite(x, y, "alien-hive-boundary-v1", frame).setScale(0.55);
+    }
+    this.add.text(365, 262, "FIXTURES - pillar / slime / eggs / incubator / spores / feeding / sentinel / specimen", style("#68e4e8", "8px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 355 + Math.floor(frame / 4) * 112;
+      this.add.sprite(x, y, "alien-hive-fixtures-v1", frame).setScale(0.43).setOrigin(0.5, 0.92);
+      this.drawPivot(x, y);
+    }
+    this.add.text(20, 400, "LOW-CONTRAST DECALS", style("#d6a8ff", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 48 + (frame % 4) * 75;
+      const y = 448 + Math.floor(frame / 4) * 63;
+      this.add.sprite(x, y, "alien-hive-floor-v1", frame % 4).setScale(0.43).setAlpha(0.65);
+      this.add.sprite(x, y, "alien-hive-decals-v1", frame).setScale(0.43);
+    }
+    this.add.text(480, 528, "Preflight only: collision, hazard geometry, spawning, animation, glow, interaction, and objectives remain code-owned", style("#8fb2c9", "9px")).setOrigin(0.5);
+  }
+
+  private createBatchAHGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - SURFACE AND PLANETARY FRONTIERS BATCH AH", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Sixteen named terrain rooms - Earth / hostile planet / war-torn / additional frontier - 40 runtime visuals", style("#8fb2c9", "10px"));
+    this.add.text(20, 62, "FLOORS - one named terrain frame per room", style("#d8b27b", "9px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const x = 58 + (frame % 4) * 75;
+      const y = 103 + Math.floor(frame / 4) * 75;
+      this.add.sprite(x, y, "surface-frontier-floor-v1", frame).setScale(0.52);
+      this.add.text(x + 25, y + 24, String(frame), style("#93abc0", "7px")).setOrigin(0.5);
+    }
+    this.add.text(365, 62, "BOUNDARIES - cardinal ridges / corners / bunker / meteor breach", style("#d8b27b", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 118 + Math.floor(frame / 4) * 92;
+      this.add.sprite(x, y, "surface-frontier-boundary-v1", frame).setScale(0.55);
+    }
+    this.add.text(365, 262, "FIXTURES - tree / cave / shelter / crystal / ice / fungus / meteor / obelisk", style("#68e4e8", "8px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 355 + Math.floor(frame / 4) * 112;
+      this.add.sprite(x, y, "surface-frontier-fixtures-v1", frame).setScale(0.43).setOrigin(0.5, 0.92);
+      this.drawPivot(x, y);
+    }
+    this.add.text(20, 400, "LOW-CONTRAST DECALS", style("#d6a8ff", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 48 + (frame % 4) * 75;
+      const y = 448 + Math.floor(frame / 4) * 63;
+      this.add.sprite(x, y, "surface-frontier-floor-v1", frame % 4).setScale(0.43).setAlpha(0.65);
+      this.add.sprite(x, y, "surface-frontier-decals-v1", frame).setScale(0.43);
+    }
+    this.add.text(480, 528, "Terrain selection, collision, hazards, weather, interaction, and objectives remain code-owned", style("#8fb2c9", "9px")).setOrigin(0.5);
+  }
+
+  private createBatchAIGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - STARSHIP / VOID / TRANSIT BATCH AI", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Ship decks, transit machinery, void-safe platforms, and derelict variants - 40 runtime visuals", style("#8fb2c9", "10px"));
+    this.add.text(20, 62, "FLOORS - ship / void / transit", style("#6fdde8", "9px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const x = 58 + (frame % 4) * 75;
+      const y = 103 + Math.floor(frame / 4) * 75;
+      this.add.sprite(x, y, "starship-transit-floor-v1", frame).setScale(0.52);
+      this.add.text(x + 25, y + 24, String(frame), style("#93abc0", "7px")).setOrigin(0.5);
+    }
+    this.add.text(365, 62, "BOUNDARIES - hull walls / corners / airlock / breach", style("#6fdde8", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 118 + Math.floor(frame / 4) * 92;
+      this.add.sprite(x, y, "starship-transit-boundary-v1", frame).setScale(0.55);
+    }
+    this.add.text(365, 262, "FIXTURES - cargo / airlock / bridge / observation / teleporter / gate / drive / pod", style("#68e4e8", "8px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 355 + Math.floor(frame / 4) * 112;
+      this.add.sprite(x, y, "starship-transit-fixtures-v1", frame).setScale(0.43).setOrigin(0.5, 0.92);
+      this.drawPivot(x, y);
+    }
+    this.add.text(20, 400, "LOW-CONTRAST DECALS", style("#d6a8ff", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 48 + (frame % 4) * 75;
+      const y = 448 + Math.floor(frame / 4) * 63;
+      this.add.sprite(x, y, "starship-transit-floor-v1", frame).setScale(0.43).setAlpha(0.65);
+      this.add.sprite(x, y, "starship-transit-decals-v1", frame).setScale(0.43);
+    }
+    this.add.text(480, 528, "Preflight only: room identity, collision, vacuum, hazards, interaction, and objectives remain code-owned", style("#8fb2c9", "9px")).setOrigin(0.5);
+  }
+
+  private createBatchAJGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - CONTAINMENT / UNDERWORLD BATCH AJ", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Prison, quarantine, containment, bunker, dungeon, ritual, and infernal rooms - 40 runtime visuals", style("#8fb2c9", "10px"));
+    this.add.text(20, 62, "FLOORS - institutional / containment / dungeon / infernal", style("#e17b68", "9px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const x = 58 + (frame % 4) * 75;
+      const y = 103 + Math.floor(frame / 4) * 75;
+      this.add.sprite(x, y, "containment-underworld-floor-v1", frame).setScale(0.52);
+      this.add.text(x + 25, y + 24, String(frame), style("#93abc0", "7px")).setOrigin(0.5);
+    }
+    this.add.text(365, 62, "BOUNDARIES - prison / containment / gates / infernal breach", style("#e17b68", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 118 + Math.floor(frame / 4) * 92;
+      this.add.sprite(x, y, "containment-underworld-boundary-v1", frame).setScale(0.55);
+    }
+    this.add.text(365, 262, "FIXTURES - cages / pod / console / restraint / brazier / obelisk / bunker", style("#68e4e8", "8px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 355 + Math.floor(frame / 4) * 112;
+      this.add.sprite(x, y, "containment-underworld-fixtures-v1", frame).setScale(0.43).setOrigin(0.5, 0.92);
+      this.drawPivot(x, y);
+    }
+    this.add.text(20, 400, "LOW-CONTRAST DECALS", style("#d6a8ff", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 48 + (frame % 4) * 75;
+      const y = 448 + Math.floor(frame / 4) * 63;
+      this.add.sprite(x, y, "containment-underworld-floor-v1", frame).setScale(0.43).setAlpha(0.65);
+      this.add.sprite(x, y, "containment-underworld-decals-v1", frame).setScale(0.43);
+    }
+    this.add.text(480, 528, "Preflight only: room identity, collision, hazards, interaction, and objectives remain code-owned", style("#8fb2c9", "9px")).setOrigin(0.5);
+  }
+
+  private createObjectBatchO1Gallery(): void {
+    this.add.text(20, 14, "LAST BASTION - WORLD OBJECT BATCH O1", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Structural destructibles - 12 families / 48 transparent damage-state frames", style("#8fb2c9", "10px"));
+    const groups = [
+      { x: 20, title: "MILITARY", asset: "world-objects-military-v1", colour: "#e1a568", rows: ["Broken wall", "Weapon rack", "Locker", "Reinforced gate"] },
+      { x: 330, title: "NATURAL", asset: "world-objects-natural-v1", colour: "#9bc77e", rows: ["Boulder", "Earth mound", "Tree", "Ice block"] },
+      { x: 640, title: "ORGANIC / ALIEN", asset: "world-objects-organic-v1", colour: "#bf91df", rows: ["Overgrowth", "Web mass", "Biomass node", "Alien crystal"] },
+    ] as const;
+    for (const group of groups) {
+      this.add.rectangle(group.x + 145, 286, 292, 440, 0x172536, 0.78).setStrokeStyle(1, 0x344b61);
+      this.add.text(group.x + 8, 67, group.title, style(group.colour, "11px"));
+      for (let column = 0; column < 4; column += 1) {
+        this.add.text(group.x + 78 + column * 58, 88, ["INTACT", "DMG", "CRIT", "DOWN"][column]!, style("#8fb2c9", "7px")).setOrigin(0.5);
+      }
+      for (let row = 0; row < 4; row += 1) {
+        const y = 136 + row * 94;
+        this.add.text(group.x + 8, y - 35, group.rows[row]!, style("#c9d8e5", "8px"));
+        for (let column = 0; column < 4; column += 1) {
+          const x = group.x + 78 + column * 58;
+          this.add.sprite(x, y, group.asset, row * 4 + column).setScale(0.28).setOrigin(0.5, 0.92);
+          this.drawPivot(x, y);
+        }
+      }
+    }
+    this.add.text(480, 520, "Columns are intact / damaged / critical / destroyed. HP thresholds, collision, cover, interaction, and drops remain code-owned.", style("#8fb2c9", "9px")).setOrigin(0.5);
   }
 
   private createBatchQGallery(): void {

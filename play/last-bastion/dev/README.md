@@ -38,6 +38,7 @@ Gameplay bindings can be remapped under **Main Menu → Settings → Control bin
 - `/play/last-bastion/?scenario=abomination-prime&loadout=scattergun&autofire=0` — Task 66D corrupted-human apex gate: locked slam, breakable grab, lobbed biomass, and one finite lingering hazard
 - `/play/last-bastion/?screen=map` — the tuned playable 20-node expedition (Tasks 38–39, 48–49): selecting a route autosaves a pending node and deploys into depth-budgeted multi-wave Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, or Bastion Eater encounters; every route crosses two campaign shops, and final victory commits the carried build and returns to the map. `&mapseed=N` reviews a deterministic fresh chart
 - `/play/last-bastion/?screen=summary&summarydemo=1` — deterministic populated Task 50 run-summary review without changing the local save
+- `/play/last-bastion/?screen=transformation-lab` — isolated in-memory transformation warning/hold/commit/purge lab; starts with Cybernetic at 2/3 and never applies stats or writes a save
 - `/play/last-bastion/?screen=game&autofire=0` — Task 53 Manual-fire HUD/input review (`autofire=1` restores the default; both persist)
 - `/play/last-bastion/?art=placeholder` — code-shape comparison renderer
 - `/play/last-bastion/?helmet=0` — styled Marine without the removable helmet
@@ -75,9 +76,15 @@ Gameplay bindings can be remapped under **Main Menu → Settings → Control bin
 - `/play/last-bastion/?mode=gallery&batch=f1` — Patrol Blade, action-bar, and timed-status Production Asset Batch F1
 - `/play/last-bastion/?mode=gallery&batch=f2`, `f3`, or `f4` — Bolt Carbine, Bulwark Rotary Cannon, or Grenade Tube production families
 - Add `debug=1` to the normal or stress route for collision labels and live entity/effect counts.
-- Add `theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay|science-wing` to pin a live authored arena family. Expedition nodes add a deterministic `worldseed` for one of three restrained lighting variants; terrain decals stay beneath gameplay and a per-world neutral wash protects actor/telegraph contrast.
+- Add `theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay|science-wing|bastion-logistics|machine-foundry|alien-hive|surface-frontier|starship-transit|containment-underworld` to pin a live authored arena family. Expedition nodes add a deterministic `worldseed`; Surface Frontier accepts `biome=<terrain-id>`. Starship and Containment themes accept their documented `room=<family-id>`. Terrain decals stay beneath gameplay and a neutral wash protects actor/telegraph contrast.
 - `/play/last-bastion/?mode=gallery&batch=ad` — Batch AD Science Wing floors, boundaries, fixtures, and decals. Use `?theme=science-wing&worldseed=0&scenario=density-capacity` for the deterministic live contrast route.
-- `/play/last-bastion/?mode=gallery&batch=ae` — Batch AE Bastion Logistics and Defence floors, boundaries, supply/armoury/shop/forge/medic/command fixtures, and decals; live theme promotion remains held for multi-resolution acceptance.
+- `/play/last-bastion/?mode=gallery&batch=ae` — Batch AE Bastion Logistics and Defence floors, boundaries, supply/armoury/shop/forge/medic/command fixtures, and decals. Use `?theme=bastion-logistics&worldseed=0&scenario=density-capacity` for the deterministic live contrast route.
+- `/play/last-bastion/?mode=gallery&batch=af` — Batch AF Machine Foundry floors, boundaries, conveyor/ore/smelter/assembly/coolant/generator fixtures, and decals. Use `?theme=machine-foundry&worldseed=0&scenario=density-capacity` for the deterministic live contrast route.
+- `/play/last-bastion/?mode=gallery&batch=ag` — Batch AG Alien Hive and Infestation floors, boundaries, biomass/slime/egg/hatchery/spore/feeding/queen fixtures, and decals. Use `?theme=alien-hive&worldseed=0&scenario=density-capacity` for the deterministic live contrast route.
+- `/play/last-bastion/?mode=gallery&batch=ah` — Batch AH Surface and Planetary Frontiers with 16 named terrain rooms plus natural boundaries, fixtures, and decals. Use `?theme=surface-frontier&biome=cracked-earth&worldseed=0&scenario=density-capacity` and substitute any frame-map terrain id for deterministic live review.
+- `/play/last-bastion/?mode=gallery&batch=ai` - Batch AI Starship, Void, and Transit preflight with 16 ship/void floor identities plus hull boundaries, transit fixtures, and restrained decals.
+- `/play/last-bastion/?mode=gallery&batch=aj` - Batch AJ Containment and Underworld preflight with prison, containment, bunker, dungeon, ritual, and infernal families.
+- `/play/last-bastion/?mode=gallery&batch=o1` - Object Batch O1 structural destructibles with military, natural, and organic intact-to-destroyed states.
 - Decision overlays support arrows/WASD/left-stick navigation, Enter/Space/pad-A confirm, and digits 1–4 quick pick; disabled Shop rows are skipped and cannot be confirmed.
 - Add `size=100..300` to preview the planned game-size setting; the canvas always snaps to whole physical pixels.
 

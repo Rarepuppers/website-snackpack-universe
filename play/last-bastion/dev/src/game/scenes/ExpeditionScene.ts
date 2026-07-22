@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { cloneTransformationAffinityState } from "../transformations/TransformationAffinity";
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { ARENA_THEMES } from "../rendering/arenaThemes";
 import { resolvePerkModifiers } from "../perks/perkCatalog";
@@ -213,6 +214,7 @@ export class ExpeditionScene extends Phaser.Scene {
         ...this.run.state.build,
         weapons: this.run.state.build.weapons.map((weapon) => ({ ...weapon })),
         upgrades: this.run.state.build.upgrades.map((upgrade) => ({ ...upgrade })),
+        transformation: cloneTransformationAffinityState(this.run.state.build.transformation),
       },
       metrics: this.run.state.metrics,
     });

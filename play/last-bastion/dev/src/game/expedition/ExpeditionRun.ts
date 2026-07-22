@@ -5,6 +5,10 @@ import {
   type ExpeditionMapData,
 } from "./ExpeditionMap";
 import { EMPTY_RUN_METRICS, mergeRunMetrics, type RunMetrics } from "../run/RunSummary";
+import {
+  cloneTransformationAffinityState,
+  type TransformationAffinityState,
+} from "../transformations/TransformationAffinity";
 
 /**
  * Mid-run expedition state (Task 38): which chart the run is on, where the
@@ -25,6 +29,8 @@ export interface ExpeditionBuildSnapshot {
   weapons: readonly { weaponId: string; tier: number }[];
   /** Taken upgrade ids with levels. */
   upgrades: readonly { upgradeId: string; level: number }[];
+  /** Optional only for migration compatibility; every newly completed node writes it. */
+  transformation?: TransformationAffinityState;
 }
 
 export interface ExpeditionRunState {
@@ -184,6 +190,7 @@ function cloneBuild(build: ExpeditionBuildSnapshot): ExpeditionBuildSnapshot {
     ...build,
     weapons: build.weapons.map((weapon) => ({ ...weapon })),
     upgrades: build.upgrades.map((upgrade) => ({ ...upgrade })),
+    transformation: cloneTransformationAffinityState(build.transformation),
   };
 }
 

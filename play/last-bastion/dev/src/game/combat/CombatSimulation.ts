@@ -187,6 +187,11 @@ import { scaleEnemyHealth, scaleEnemyHit, waveScaling } from "./WaveScaling";
 import type { EliteKind } from "./EliteCadence";
 export type { EliteKind } from "./EliteCadence";
 import type { ExpeditionBuildSnapshot } from "../expedition/ExpeditionRun";
+import {
+  cloneTransformationAffinityState,
+  createTransformationAffinityState,
+  type TransformationAffinityState,
+} from "../transformations/TransformationAffinity";
 import { resolvePerkModifiers, type PerkId, type PerkRunModifiers } from "../perks/perkCatalog";
 import type { ExpeditionEncounterDescriptor } from "../expedition/ExpeditionEncounter";
 import type { ExpeditionWavePlan } from "../expedition/ExpeditionNodeDirector";
@@ -630,6 +635,7 @@ export interface CombatSnapshot {
   autoFireEnabled: boolean;
   heroId: HeroDefinition["id"];
   activePerkId: PerkId | null;
+  transformation: TransformationAffinityState;
   waveNumber: number;
   totalWaves: number;
   playerPosition: Vector2Data;
@@ -1124,6 +1130,7 @@ export class CombatSimulation {
   private weaponInventory: WeaponInventoryState;
   private readonly perkModifiers: PerkRunModifiers;
   private readonly activePerkId: PerkId | null;
+  private readonly transformation: TransformationAffinityState;
   private experienceCarry = 0;
   private magnetMultiplier = 1;
   private lastAimDirection: Vector2Data = { x: 1, y: 0 };
@@ -1209,6 +1216,9 @@ export class CombatSimulation {
     this.scenario = options.scenario ?? null;
     this.expeditionEncounter = options.expeditionEncounter ?? null;
     this.activePerkId = options.perkId ?? null;
+    this.transformation = options.startingBuild?.transformation
+      ? cloneTransformationAffinityState(options.startingBuild.transformation)
+      : createTransformationAffinityState();
     this.perkModifiers = resolvePerkModifiers(this.activePerkId);
     this.securedScrap = Math.max(0, Math.floor(
       options.startingBuild?.scrap ?? options.startingScrap ?? (this.scenario === "scrap-shop" ? 150 : 0),
@@ -1909,6 +1919,7 @@ export class CombatSimulation {
       autoFireEnabled: this.autoFireEnabled,
       heroId: this.hero.id,
       activePerkId: this.activePerkId,
+      transformation: cloneTransformationAffinityState(this.transformation),
       waveNumber: this.expeditionEncounter ? this.expeditionWaveIndex + 1 : this.waveIndex + 1,
       totalWaves: this.expeditionEncounter ? Math.max(1, this.expeditionEncounter.waves.length) : TOTAL_WAVES,
       playerPosition: { ...this.playerPosition },

@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(150);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(173);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -432,6 +432,97 @@ describe("GameAssetManifest", () => {
       expect(asset.logicalWidth).toBe(logicalWidth);
       expect(asset.pivot.y).toBe(pivotY);
       if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
+    }
+  });
+
+  it("locks Production Batch AF Machine Foundry contracts", () => {
+    const expected = {
+      "machine-foundry-floor-v1": [16, 128, 0.5],
+      "machine-foundry-boundary-v1": [8, 128, 0.5],
+      "machine-foundry-fixtures-v1": [8, 192, 0.92],
+      "machine-foundry-decals-v1": [8, 128, 0.5],
+    } as const;
+    for (const [id, [frameCount, logicalWidth, pivotY]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      expect(asset.logicalWidth).toBe(logicalWidth);
+      expect(asset.pivot.y).toBe(pivotY);
+      if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
+    }
+  });
+
+  it("locks Production Batch AG Alien Hive contracts", () => {
+    const expected = {
+      "alien-hive-floor-v1": [16, 128, 0.5],
+      "alien-hive-boundary-v1": [8, 128, 0.5],
+      "alien-hive-fixtures-v1": [8, 192, 0.92],
+      "alien-hive-decals-v1": [8, 128, 0.5],
+    } as const;
+    for (const [id, [frameCount, logicalWidth, pivotY]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      expect(asset.logicalWidth).toBe(logicalWidth);
+      expect(asset.pivot.y).toBe(pivotY);
+      if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
+    }
+  });
+
+  it("locks Production Batch AH Surface Frontier contracts", () => {
+    const expected = {
+      "surface-frontier-floor-v1": [16, 128, 0.5],
+      "surface-frontier-boundary-v1": [8, 128, 0.5],
+      "surface-frontier-fixtures-v1": [8, 192, 0.92],
+      "surface-frontier-decals-v1": [8, 128, 0.5],
+    } as const;
+    for (const [id, [frameCount, logicalWidth, pivotY]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      expect(asset.logicalWidth).toBe(logicalWidth);
+      expect(asset.pivot.y).toBe(pivotY);
+      if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
+    }
+  });
+
+  it("locks Production Batch AI Starship, Void, and Transit contracts", () => {
+    const expected = {
+      "starship-transit-floor-v1": [16, 128, 0.5],
+      "starship-transit-boundary-v1": [8, 128, 0.5],
+      "starship-transit-fixtures-v1": [8, 192, 0.92],
+      "starship-transit-decals-v1": [8, 128, 0.5],
+    } as const;
+    for (const [id, [frameCount, logicalWidth, pivotY]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      expect(asset.logicalWidth).toBe(logicalWidth);
+      expect(asset.pivot.y).toBe(pivotY);
+      if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
+    }
+  });
+
+  it("locks Production Batch AJ Containment and Underworld contracts", () => {
+    const expected = {
+      "containment-underworld-floor-v1": [16, 128, 0.5],
+      "containment-underworld-boundary-v1": [8, 128, 0.5],
+      "containment-underworld-fixtures-v1": [8, 192, 0.92],
+      "containment-underworld-decals-v1": [8, 128, 0.5],
+    } as const;
+    for (const [id, [frameCount, logicalWidth, pivotY]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      expect(asset.logicalWidth).toBe(logicalWidth);
+      expect(asset.pivot.y).toBe(pivotY);
+      if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
+    }
+  });
+
+  it("locks Object Batch O1 structural damage-state contracts", () => {
+    for (const id of ["world-objects-military-v1", "world-objects-natural-v1", "world-objects-organic-v1"] as const) {
+      const asset = GAME_ASSETS[id];
+      expect(asset.kind).toBe("spritesheet");
+      expect(asset.logicalWidth).toBe(192);
+      expect(asset.logicalHeight).toBe(192);
+      expect(asset.pivot.y).toBe(0.92);
+      if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(16);
     }
   });
 

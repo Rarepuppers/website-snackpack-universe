@@ -40,7 +40,7 @@ import { GAME_ASSETS, type GameAssetId } from "../assets/GameAssetManifest";
 import { renderArena } from "../rendering/ArenaRenderer";
 import { terrainFrameIndex } from "../rendering/TerrainVisualState";
 import { miniBossSpriteScale } from "../rendering/MiniBossPresentation";
-import { arenaThemeById, arenaThemeVariant, pickArenaTheme } from "../rendering/arenaThemes";
+import { arenaThemeById, arenaThemeVariant, containmentUnderworldTheme, pickArenaTheme, starshipTransitTheme, surfaceFrontierTheme } from "../rendering/arenaThemes";
 import { uiSafeArea, uiTextResolution } from "../rendering/DisplayScaling";
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { cueForCombatEvent, EVASIVE_MOVE_CUE, MEDKIT_HEAL_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
@@ -49,6 +49,7 @@ import { worldDepth } from "../rendering/WorldDepth";
 import { VisualEffectPool } from "../effects/VisualEffectPool";
 import { FloatingDamageNumbers } from "../rendering/FloatingDamageNumbers";
 import { CombatHud } from "../ui/CombatHud";
+import { canonicalWeaponTileFrame } from "../ui/WeaponTileFrames";
 import {
   VERTICAL_SLICE_WEAPON_IDS,
   WEAPON_CATALOG,
@@ -66,6 +67,7 @@ import {
   type ExpeditionEncounterDescriptor,
 } from "../expedition/ExpeditionEncounter";
 import { createRunSummary, mergeRunMetrics, type RunMetrics } from "../run/RunSummary";
+import { cloneTransformationAffinityState } from "../transformations/TransformationAffinity";
 
 const PIXELS_PER_METRE = 32;
 
@@ -554,6 +556,7 @@ export class PrototypeScene extends Phaser.Scene {
         ...completed.state.build,
         weapons: completed.state.build.weapons.map((weapon) => ({ ...weapon })),
         upgrades: completed.state.build.upgrades.map((upgrade) => ({ ...upgrade })),
+        transformation: cloneTransformationAffinityState(completed.state.build.transformation),
       } : null,
       metrics: completed.state.metrics,
     });
@@ -603,6 +606,7 @@ export class PrototypeScene extends Phaser.Scene {
         upgradeId: upgrade.id,
         level: upgrade.level,
       })),
+      transformation: snapshot.transformation,
     });
   }
 
@@ -3924,7 +3928,7 @@ export class PrototypeScene extends Phaser.Scene {
     if (isPlacement && decision.weaponId) {
       const stats = WEAPON_CATALOG[decision.weaponId];
       if (this.useMarineArt) children.push(this.add.image(-335, -20, "batch-i-weapon-stat-card-v1").setDisplaySize(206, 270));
-      children.push(this.add.image(-335, -90, "batch-i-weapon-tiles-v1", batchIWeaponTileFrame(decision.weaponId)).setDisplaySize(112, 112));
+      children.push(this.add.image(-335, -90, "batch-i-weapon-tiles-v1", canonicalWeaponTileFrame(decision.weaponId)).setDisplaySize(112, 112));
       children.push(this.add.text(-335, 8, `${stats.weaponClass.toUpperCase()} • TIER I\nDMG ${stats.projectileDamage}   CADENCE ${stats.fireIntervalSeconds.toFixed(2)}s`, {
         color: "#dce8f2", fontFamily: "Consolas, Courier New, monospace", fontSize: "11px", align: "center", lineSpacing: 5,
       }).setOrigin(0.5).setResolution(uiTextResolution()));
@@ -4068,7 +4072,11 @@ function resolveArenaTheme() {
   const requested = arenaThemeById(params.get("theme"));
   if (requested) {
     const worldSeed = Number(params.get("worldseed"));
-    return Number.isFinite(worldSeed) ? arenaThemeVariant(requested, worldSeed) : requested;
+    const seed = Number.isFinite(worldSeed) ? worldSeed : 0;
+    const surfaceSelected = surfaceFrontierTheme(requested, seed, params.get("biome"));
+    const starshipSelected = starshipTransitTheme(surfaceSelected, seed, params.get("room"));
+    const selected = containmentUnderworldTheme(starshipSelected, seed, params.get("room"));
+    return Number.isFinite(worldSeed) ? arenaThemeVariant(selected, worldSeed) : selected;
   }
   return pickArenaTheme(Math.floor(Math.random() * 1024));
 }
@@ -4118,6 +4126,7 @@ function expeditionBuildFromSnapshot(snapshot: CombatSnapshot): ExpeditionBuildS
       upgradeId: upgrade.id,
       level: upgrade.level,
     })),
+    transformation: cloneTransformationAffinityState(snapshot.transformation),
   };
 }
 
@@ -4211,20 +4220,6 @@ function scrapShopOfferFrame(optionId: string): number {
   if (optionId.startsWith("shop-upgrade:")) return 3;
   if (optionId.startsWith("shop-weapon:")) return 4;
   return 5;
-}
-
-/** Batch I master order, locked here so every placement surface uses one canonical tile. */
-function batchIWeaponTileFrame(weaponId: WeaponId): number {
-  switch (weaponId) {
-    case "scattergun": return 0;
-    case "patrol-blade": return 1;
-    case "bolt-carbine": return 2;
-    case "grenade-tube": return 3;
-    case "arc-carbine": return 4;
-    case "bulwark-rotary-cannon": return 5;
-    case "injector-carbine": return 6;
-    case "bastion-service-rifle": return 7;
-  }
 }
 
 function placementOptionFrame(optionId: string, name: string): number {

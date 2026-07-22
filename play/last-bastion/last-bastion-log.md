@@ -1134,7 +1134,7 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Audited the existing display and asset contracts for a future Full HD/4K Steam port. Exact whole-pixel 2×/4× scaling is already correct; the environment problem is limited variants, repetition, and weak room identity rather than blur. Batch A and Batch H environment families are scheduled for authored replacement, early 64 px combat/UI motifs upgrade when their family is revisited, and recent 128/192 px production families remain accepted unless a specific review fails.
 - Added `environment-production-plan.md` and `environment-prompts.md`. Eight modular kit groups cover the Science Wing, Bastion Logistics, Machine Foundry, Alien Hive, Surface/Planetary, Starship/Void, Containment/Underworld, and boss arenas/Colosseum while avoiding a separate incompatible tileset for every room name.
 - Generated Batch AD through four built-in image-generation calls: a 16-tile Science Wing floor, eight cardinal/corner/gate/breach boundaries, eight lab/cryo/reactor/control/specimen/surgery/camera/teleporter fixtures, and eight restrained under-floor decals. Retained 256/384 px masters and 128/192 px runtime derivatives, chroma/alpha provenance, exact prompts, deterministic normalizer, contact sheet, and seam mosaic under `art/production-tests/batch-ad/`.
-- Registered all 44 frames and added `?mode=gallery&batch=ad`; collision, interaction, destructibility, hazards, adjacency, objectives, lighting, and timing remain code-owned. Exact dimensions/alpha, repeated-tile visual review, 590 tests, TypeScript, production build, 93-asset HTTP smoke, 52 review routes, and 194-reference offline audit pass.
+- Registered all 40 frames and added `?mode=gallery&batch=ad`; collision, interaction, destructibility, hazards, adjacency, objectives, lighting, and timing remain code-owned. Exact dimensions/alpha, repeated-tile visual review, 590 tests, TypeScript, production build, 93-asset HTTP smoke, 52 review routes, and 194-reference offline audit pass.
 - Next environment package after Science Wing live/multi-resolution acceptance: Batch AE Bastion Logistics and Defence, replacing the generic starting environment with supply depot, armoury, weapon racks, shop/blacksmith, medic, command, loading-bay, and bunker identities.
 
 ### Science Wing live acceptance and Production Asset Batch AE
@@ -1143,5 +1143,102 @@ First implementation slice of the v2 balance model — the layer that makes ever
 
 - Promoted Batch AD to the deterministic `science-wing` arena theme and reviewed ordinary and density-capacity combat at native, Full HD 2×, and 4K 4× presentation. Floor rhythm, low-contrast decals, actors, projectiles, pickups, and title-safe HUD remain distinct. Focused theme/manifest tests pass.
 - Generated Batch AE through four built-in image calls: 16 Logistics floors, eight reinforced cardinal/corner/gate/breach boundaries, eight supply/weapon/shop/forge/medic/command/loading/bunker fixtures, and eight sparse operational decals.
-- Retained untouched source/chroma files, clean alpha, 256/384 px masters, 128/192 px runtime atlases, deterministic normalizer, seam mosaic, prompts, and contact sheet under `art/production-tests/batch-ae/`. All 44 frames are manifest-registered and exposed at `?mode=gallery&batch=ae` while gameplay ownership stays in code.
+- Retained untouched source/chroma files, clean alpha, 256/384 px masters, 128/192 px runtime atlases, deterministic normalizer, seam mosaic, prompts, and contact sheet under `art/production-tests/batch-ae/`. All 40 frames are manifest-registered and exposed at `?mode=gallery&batch=ae` while gameplay ownership stays in code.
 - Next: promote Logistics to a deterministic live theme and run mixed-density native/Full HD/4K acceptance. Batch AF Machine Foundry follows only after that gate.
+
+### Bastion Logistics live acceptance and Production Asset Batch AF
+
+**Completed:** 22 July 2026
+
+- Promoted Batch AE to the deterministic `bastion-logistics` arena theme and reviewed ordinary combat, density-capacity, Full HD 2×, and 4K 3× presentation. The authored floor rhythm remains subordinate to actors, projectiles, danger colours, pickups, and HUD while preserving crisp whole-pixel detail.
+- Generated Batch AF through four built-in image calls: 16 Machine Foundry floors, eight cardinal/corner/gate/breach boundaries, eight conveyor/ore/smelter/assembly/coolant/generator/scrap/maintenance fixtures, and eight restrained industrial decals.
+- Tightened chroma extraction after contact-sheet QA exposed 4K-visible magenta edge spill. Retained untouched source/chroma files, clean alpha, 256/384 px masters, 128/192 px runtime atlases, deterministic normalizer, seam mosaic, prompt provenance, and contact sheet under `art/production-tests/batch-af/`.
+- Registered all 40 Batch AF frames and added `?mode=gallery&batch=af`; collision, conveyor motion, machinery animation, hazards, glow, interaction, objectives, and timing remain code-owned.
+- Next: promote Machine Foundry to a deterministic live theme and run its mixed-density native/Full HD/4K gate. Batch AG Alien Hive follows only after acceptance.
+
+### Machine Foundry live acceptance and Production Asset Batch AG
+
+**Completed:** 22 July 2026
+
+- Promoted Batch AF to the deterministic `machine-foundry` arena theme and reviewed ordinary combat, density-capacity, Full HD 2×, and 4K 3× presentation. Dark iron detail and muted coolant stains remain subordinate to actors, projectiles, pickups, danger colours, and HUD.
+- Generated Batch AG through four built-in image calls: 16 Alien Hive floors, eight cardinal/corner/gate/breach boundaries, eight biomass/slime/egg/hatchery/spore/feeding/queen/specimen fixtures, and eight restrained organic decals.
+- Used flat yellow chroma to preserve the purple/teal subject palette, then applied the installed image-generation helper with border sampling, soft matte, and despill. Retained source/chroma, clean alpha, 256/384 px masters, 128/192 px runtime atlases, deterministic normalizer, seam mosaic, prompts, and contact sheet under `art/production-tests/batch-ag/`.
+- Registered all 40 Batch AG frames and added `?mode=gallery&batch=ag`; collision, hazard geometry, spawning, machinery/organic animation, glow, interaction, objectives, and timing remain code-owned.
+- Next: promote Alien Hive to a deterministic live theme and run its mixed-density native/Full HD/4K gate. Batch AH Surface and Planetary Frontiers follows only after acceptance.
+
+### Alien Hive live acceptance and Production Asset Batch AH
+
+**Completed:** 22 July 2026
+
+- Promoted Batch AG to the deterministic `alien-hive` arena theme and reviewed ordinary combat, density-capacity, Full HD 2×, and 4K 3× presentation. The neutral wash keeps organic burgundy/violet texture beneath enemies, shots, pickups, and HUD.
+- Generated Batch AH through four built-in image calls: 16 Surface Frontier floors partitioned into four biome rows, eight natural ridge/corner/gate/breach boundaries, eight multi-biome landmarks, and eight restrained ground decals.
+- Used magenta chroma for boundaries/decals and yellow chroma for multi-colour fixtures, then applied the installed image-generation helper with border sampling, soft matte, and despill. Retained source/chroma, clean alpha, 256/384 px masters, 128/192 px runtime atlases, deterministic normalizer, seam mosaic, prompts, and contact sheet under `art/production-tests/batch-ah/`.
+- Registered all 40 Batch AH frames and added `?mode=gallery&batch=ah`. The four floor rows are explicit biome groups; live promotion remains blocked until row-aware selection prevents snow, marsh, forest, desert, and demonic terrain from random-mixing inside one room.
+- Next: implement deterministic biome-row selection, promote Surface Frontier, and run its native/Full HD/4K gate. Batch AI Starship, Void, and Transit follows only after acceptance.
+## 22 July 2026 - Surface Frontier acceptance and Batch AI preflight
+
+- Rejected the initial four-row Surface Frontier selector after live density review exposed cross-biome checkerboarding.
+- Replaced it with 16 deterministic named terrain rooms and deterministic floor transforms; focused renderer/theme tests and the production build pass.
+- Accepted Surface Frontier at intended gameplay scale. Logged frozen-ground macro-repetition at extreme 3x close-camera zoom for a future 4K macro-texture upgrade.
+- Generated, chroma-cleaned, normalized, and registered Batch AI Starship/Void/Transit: 16 floors, 8 boundaries, 8 fixtures, and 8 decals.
+- Retained built-in generation sources, exact prompt provenance, 256/384 px masters, 128/192 px runtime sheets, seam mosaic, contact sheet, manifest contract, and `batch=ai` gallery route.
+# 22 July 2026 - Starship live acceptance and Batch AJ preflight
+
+- Rejected the first single-frame Starship live binding because ornate room tiles repeated as an obvious panel grid.
+- Promoted four deterministic four-frame families: operational deck, command deck, energy transit, and derelict deck. Directional architecture remains unrotated.
+- Accepted Starship Transit after density, native, 2x, and 3x visual review.
+- Generated and normalized Batch AJ Containment/Underworld: 16 floors, 8 boundaries, 8 fixtures, and 8 decals.
+- Caught incorrect decal border-key sampling and rebuilt the alpha sheet with explicit yellow chroma before manifest binding.
+
+## 22 July 2026 - Batch AJ live acceptance and world-object contract
+
+- Promoted Containment/Underworld as four deterministic live families and passed density, native, 2x, and 3x visual review.
+- Added a 24-object theme-aware catalog covering structural cover, destructibles, hazards, gates, chests, teleporters, stargates, consoles, traps, cryogenics, and weapon upgrading.
+- Locked collision, projectile blocking, HP/indestructibility, hazard strength, footprints, placement caps, interaction times, and the selected-weapon-only 45-second upgrade downtime in code and tests.
+- Added the structural -> hazard -> interaction art order and room-safety gates to `world-object-production-plan.md`.
+
+## 22 July 2026 - World Object Production Batch O1
+
+- Generated military, natural, and organic/alien 4x4 structural-object sheets with fixed intact, damaged, critical, and destroyed columns.
+- Removed chroma, retained 384 px masters, derived 192 px runtime atlases, copied the runtime files to `game-assets/`, and built a combined QA contact sheet.
+- Registered 48 frames in the asset manifest and exposed `?mode=gallery&batch=o1`.
+- Bound twelve exact object rows in `WorldObjectCatalog.ts`; added biomass node and alien crystal as formal tactical obstacles.
+- Preserved source provenance, full art-direction prompts, deterministic normalization, and gameplay/code ownership notes under `art/production-tests/object-batch-o1/`.
+- Next: Object Batch O2 hazard surfaces and transitions, then Object Batch O3 multi-state interactables.
+
+## 22 July 2026 - Transformation Affinity foundation
+
+- Added the six active transformation-family design contract and separated Psionic discipline from Void corruption.
+- Implemented a pure 0-7 Affinity model: exposure at one, warning/adaptation at two, commitment at three, Ascended at five, and Apex at seven.
+- Repeated aligned perk levels count; the first family to reach three locks the run while minor off-path exposure remains recorded.
+- Added reversible pre-commitment purge, permanent post-commitment lock, path exclusion, invalid-choice, and Apex-cap rules.
+- Recorded the Church of the Designed Arrival as a future-only Zealot/Cultist family with possible doctrines; no runtime or catalog implementation was added.
+- Deferred concrete effects, saves, UI, rooms, art, audio, and enemy-evolution work to later behavior gates.
+
+## 22 July 2026 - Transformation paired-choice numeric preflight
+
+- Added 18 inert paired choices: three branches for each of the six active transformation paths.
+- Defined three total-value ranks per boon and scar so repeated selections replace the previous rank rather than compounding it.
+- Added typed effect metrics, operations, units, trigger-rate rules, rank lookup, and rank-I balance budgets.
+- Locked catalog uniqueness, exact three-branch coverage, monotonic rank growth, meaningful scar ratios, representative numeric values, and future-Church exclusion in tests.
+- Recorded the complete numeric preflight table in `transformation-path-production-plan.md`.
+- No statistics are applied in combat; expedition persistence and snapshot contracts are the next gate.
+
+## 22 July 2026 - Transformation persistence and snapshot gate
+
+- Advanced local persistence to schema v8 and added transformation state to expedition builds, combat carry-through snapshots, node completion, autosaves, cloud validation, and run summaries.
+- Added migration and sanitization that derives Affinity from valid choice history and safely drops malformed, cross-family, over-ranked, over-cap, duplicate, or future-Church data.
+- Added a stable Codex/debrief snapshot containing path names, stage, commitment, Affinity, choice names, and ranks.
+- Updated the populated run-summary demo to exercise a committed Cybernetic build.
+- Kept every boon and scar inert: no combat statistic, offer, room, interaction, art, or audio resolver exists.
+- Next gate: isolated code-native warning, hold-to-confirm, purge, commitment, and closed-path decision presentation.
+
+## 23 July 2026 - Item/UI audit and transformation decision lab
+
+- Audited the live catalogs against production atlases: eight weapons, seven pre-run perks, six powerup types, one activatable Uranium kit, the current six shop-offer motifs, hotkeys, rack/stash/tier/merge/discard UI, and status presentation are covered.
+- Confirmed that conventional ammunition, wearable armour, non-weapon equipment slots, and a general consumable inventory do not exist. Their art remains mechanics-gated instead of becoming misleading inventory filler.
+- Added `item-ui-asset-production-plan.md`: first consolidate existing canonical weapon tiles, then consider a six-powerup family, renew only Service Rifle/Scattergun/Arc VFX, and hold transformation/relic/equipment art behind behavior gates.
+- Added the Phaser-free transformation decision state machine and tests for standard/commitment/purge holds, hold reset, mutation-free cancellation, and committed-path purge refusal.
+- Added `?screen=transformation-lab`, an in-memory keyboard/controller/pointer presentation for all six paths and 18 choices. It starts with Cybernetic at 2/3 to expose the irreversible third-choice warning and never writes a save or applies a boon/scar.
+- Consolidated the cadence HUD and weapon-placement surface onto one tested Batch I frame map, so all eight live weapons now use their accepted canonical 128 px tile instead of mixed legacy 64 px art or missing-icon fallbacks.
+- Next: implement the Cybernetic placeholder-only behavior pilot. Object Batch O2 remains the next authorized environment-art package.

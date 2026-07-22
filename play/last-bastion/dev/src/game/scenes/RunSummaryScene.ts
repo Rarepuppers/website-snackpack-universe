@@ -4,6 +4,8 @@ import { UPGRADE_CATALOG, type UpgradeId } from "../content/upgradeCatalog";
 import { PERK_CATALOG } from "../perks/perkCatalog";
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { createRunSummary } from "../run/RunSummary";
+import { createTransformationCodexSnapshot } from "../transformations/TransformationSnapshot";
+import { normalizeTransformationAffinityState } from "../transformations/TransformationAffinity";
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -78,6 +80,16 @@ export class RunSummaryScene extends Phaser.Scene {
       return `${name}  ${upgrade.level}`;
     });
     this.text(672, 252, upgradeLines.length > 0 ? upgradeLines.join("\n") : "No upgrades", MUTED, "10px");
+    const transformation = createTransformationCodexSnapshot(summary.transformation);
+    const committed = transformation.paths.find(({ committed }) => committed);
+    const exposed = transformation.paths.filter(({ committed: isCommitted }) => !isCommitted);
+    const transformationLine = committed
+      ? `${committed.name}  ${committed.stage.toUpperCase()}  ${committed.affinity}/7`
+      : exposed.length > 0
+        ? exposed.map((path) => `${path.name} ${path.affinity}/3`).join("  •  ")
+        : "No transformation exposure";
+    this.text(672, 374, "TRANSFORMATION", IVORY, "11px");
+    this.text(672, 394, transformationLine, committed ? TEAL : MUTED, "9px");
 
     if (summary.newlyUnlockedPerkIds.length > 0) {
       const names = summary.newlyUnlockedPerkIds.map((id) => (
@@ -157,6 +169,10 @@ function demoSummary() {
       { upgradeId: "heavy-calibre", level: 2 },
       { upgradeId: "armour-plating", level: 2 },
     ],
+    transformation: normalizeTransformationAffinityState({
+      committedPathId: "cybernetic-ascension",
+      paths: [{ pathId: "cybernetic-ascension", choiceIds: ["targeting-suite", "targeting-suite", "shield-lattice"] }],
+    }),
     newlyUnlockedPerkIds: ["perk-gunsmith"],
   });
 }

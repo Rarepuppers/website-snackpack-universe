@@ -4,11 +4,13 @@ import { AssetGalleryScene } from "./scenes/AssetGalleryScene";
 import { ExpeditionScene } from "./scenes/ExpeditionScene";
 import { ShellScene } from "./shell/ShellScene";
 import { RunSummaryScene } from "./scenes/RunSummaryScene";
+import { TransformationDecisionScene } from "./scenes/TransformationDecisionScene";
 
 const params = new URLSearchParams(window.location.search);
 const galleryMode = params.get("mode") === "gallery";
 const mapMode = params.get("screen") === "map";
 const summaryMode = params.get("screen") === "summary";
+const transformationMode = params.get("screen") === "transformation-lab";
 
 /**
  * The shell is the front door: a bare URL boots Title → Menu. Any review
@@ -23,6 +25,7 @@ const REVIEW_PARAMS = [
 const shellMode = !galleryMode
   && !mapMode
   && !summaryMode
+  && !transformationMode
   && params.get("screen") !== "game"
   && (params.get("screen") === "title" || !REVIEW_PARAMS.some((key) => params.has(key)));
 
@@ -51,6 +54,8 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
     ? [AssetGalleryScene]
     : summaryMode
       ? [RunSummaryScene]
+    : transformationMode
+      ? [TransformationDecisionScene]
     : mapMode
       ? [ExpeditionScene]
       : shellMode

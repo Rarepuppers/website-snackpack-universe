@@ -35,7 +35,7 @@ describe("cloud-save conflict policy", () => {
 
   it("rejects unknown schemas rather than corrupting them", () => {
     const envelope: CloudSaveEnvelope = { deviceId: "a", revision: 1, updatedAtMs: 1, save: save() };
-    expect(() => resolveCloudSaveConflict(envelope, { ...envelope, save: { ...save(), version: 99 as 7 } }))
+    expect(() => resolveCloudSaveConflict(envelope, { ...envelope, save: { ...save(), version: 99 as 8 } }))
       .toThrow("unsupported");
   });
 });

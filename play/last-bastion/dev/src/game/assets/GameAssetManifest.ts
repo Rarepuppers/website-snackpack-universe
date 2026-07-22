@@ -148,6 +148,29 @@ import bastionLogisticsFloorUrl from "../../../../art/production-tests/batch-ae/
 import bastionLogisticsBoundaryUrl from "../../../../art/production-tests/batch-ae/bastion-logistics-boundary-v1-128.png";
 import bastionLogisticsFixturesUrl from "../../../../art/production-tests/batch-ae/bastion-logistics-fixtures-v1-192.png";
 import bastionLogisticsDecalsUrl from "../../../../art/production-tests/batch-ae/bastion-logistics-decals-v1-128.png";
+import machineFoundryFloorUrl from "../../../../art/production-tests/batch-af/machine-foundry-floor-v1-128.png";
+import machineFoundryBoundaryUrl from "../../../../art/production-tests/batch-af/machine-foundry-boundary-v1-128.png";
+import machineFoundryFixturesUrl from "../../../../art/production-tests/batch-af/machine-foundry-fixtures-v1-192.png";
+import machineFoundryDecalsUrl from "../../../../art/production-tests/batch-af/machine-foundry-decals-v1-128.png";
+import alienHiveFloorUrl from "../../../../art/production-tests/batch-ag/alien-hive-floor-v1-128.png";
+import alienHiveBoundaryUrl from "../../../../art/production-tests/batch-ag/alien-hive-boundary-v1-128.png";
+import alienHiveFixturesUrl from "../../../../art/production-tests/batch-ag/alien-hive-fixtures-v1-192.png";
+import alienHiveDecalsUrl from "../../../../art/production-tests/batch-ag/alien-hive-decals-v1-128.png";
+import surfaceFrontierFloorUrl from "../../../../art/production-tests/batch-ah/surface-frontier-floor-v1-128.png";
+import surfaceFrontierBoundaryUrl from "../../../../art/production-tests/batch-ah/surface-frontier-boundary-v1-128.png";
+import surfaceFrontierFixturesUrl from "../../../../art/production-tests/batch-ah/surface-frontier-fixtures-v1-192.png";
+import surfaceFrontierDecalsUrl from "../../../../art/production-tests/batch-ah/surface-frontier-decals-v1-128.png";
+import starshipTransitFloorUrl from "../../../../art/production-tests/batch-ai/starship-transit-floor-v1-128.png";
+import starshipTransitBoundaryUrl from "../../../../art/production-tests/batch-ai/starship-transit-boundary-v1-128.png";
+import starshipTransitFixturesUrl from "../../../../art/production-tests/batch-ai/starship-transit-fixtures-v1-192.png";
+import starshipTransitDecalsUrl from "../../../../art/production-tests/batch-ai/starship-transit-decals-v1-128.png";
+import containmentUnderworldFloorUrl from "../../../../art/production-tests/batch-aj/containment-underworld-floor-v1-128.png";
+import containmentUnderworldBoundaryUrl from "../../../../art/production-tests/batch-aj/containment-underworld-boundary-v1-128.png";
+import containmentUnderworldFixturesUrl from "../../../../art/production-tests/batch-aj/containment-underworld-fixtures-v1-192.png";
+import containmentUnderworldDecalsUrl from "../../../../art/production-tests/batch-aj/containment-underworld-decals-v1-128.png";
+import worldObjectsMilitaryUrl from "../../../../art/production-tests/object-batch-o1/world-objects-military-v1-192.png";
+import worldObjectsNaturalUrl from "../../../../art/production-tests/object-batch-o1/world-objects-natural-v1-192.png";
+import worldObjectsOrganicUrl from "../../../../art/production-tests/object-batch-o1/world-objects-organic-v1-192.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -253,6 +276,29 @@ export type GameAssetId =
   | "bastion-logistics-boundary-v1"
   | "bastion-logistics-fixtures-v1"
   | "bastion-logistics-decals-v1"
+  | "machine-foundry-floor-v1"
+  | "machine-foundry-boundary-v1"
+  | "machine-foundry-fixtures-v1"
+  | "machine-foundry-decals-v1"
+  | "alien-hive-floor-v1"
+  | "alien-hive-boundary-v1"
+  | "alien-hive-fixtures-v1"
+  | "alien-hive-decals-v1"
+  | "surface-frontier-floor-v1"
+  | "surface-frontier-boundary-v1"
+  | "surface-frontier-fixtures-v1"
+  | "surface-frontier-decals-v1"
+  | "starship-transit-floor-v1"
+  | "starship-transit-boundary-v1"
+  | "starship-transit-fixtures-v1"
+  | "starship-transit-decals-v1"
+  | "containment-underworld-floor-v1"
+  | "containment-underworld-boundary-v1"
+  | "containment-underworld-fixtures-v1"
+  | "containment-underworld-decals-v1"
+  | "world-objects-military-v1"
+  | "world-objects-natural-v1"
+  | "world-objects-organic-v1"
   | "emberfall-floor-v1"
   | "emberfall-boundary-v1"
   | "emberfall-obstacles-v1"
@@ -424,6 +470,29 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("bastion-logistics-boundary-v1", bastionLogisticsBoundaryUrl, 128, 128, 8, 0.5, 0.5),
   sheet("bastion-logistics-fixtures-v1", bastionLogisticsFixturesUrl, 192, 192, 8, 0.5, 0.92),
   sheet("bastion-logistics-decals-v1", bastionLogisticsDecalsUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("machine-foundry-floor-v1", machineFoundryFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("machine-foundry-boundary-v1", machineFoundryBoundaryUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("machine-foundry-fixtures-v1", machineFoundryFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("machine-foundry-decals-v1", machineFoundryDecalsUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("alien-hive-floor-v1", alienHiveFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("alien-hive-boundary-v1", alienHiveBoundaryUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("alien-hive-fixtures-v1", alienHiveFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("alien-hive-decals-v1", alienHiveDecalsUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("surface-frontier-floor-v1", surfaceFrontierFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("surface-frontier-boundary-v1", surfaceFrontierBoundaryUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("surface-frontier-fixtures-v1", surfaceFrontierFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("surface-frontier-decals-v1", surfaceFrontierDecalsUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("starship-transit-floor-v1", starshipTransitFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("starship-transit-boundary-v1", starshipTransitBoundaryUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("starship-transit-fixtures-v1", starshipTransitFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("starship-transit-decals-v1", starshipTransitDecalsUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("containment-underworld-floor-v1", containmentUnderworldFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("containment-underworld-boundary-v1", containmentUnderworldBoundaryUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("containment-underworld-fixtures-v1", containmentUnderworldFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("containment-underworld-decals-v1", containmentUnderworldDecalsUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("world-objects-military-v1", worldObjectsMilitaryUrl, 192, 192, 16, 0.5, 0.92),
+  sheet("world-objects-natural-v1", worldObjectsNaturalUrl, 192, 192, 16, 0.5, 0.92),
+  sheet("world-objects-organic-v1", worldObjectsOrganicUrl, 192, 192, 16, 0.5, 0.92),
   sheet("emberfall-floor-v1", emberfallFloorUrl, 64, 64, 6, 0.5, 0.5),
   sheet("emberfall-boundary-v1", emberfallBoundaryUrl, 64, 64, 8, 0.5, 0.5),
   sheet("emberfall-obstacles-v1", emberfallObstacleUrl, 96, 96, 4, 0.5, 0.5),

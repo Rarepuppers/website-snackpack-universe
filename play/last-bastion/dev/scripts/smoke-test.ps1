@@ -134,6 +134,29 @@ try {
     'bastion-logistics-boundary-v1-128.png'
     'bastion-logistics-fixtures-v1-192.png'
     'bastion-logistics-decals-v1-128.png'
+    'machine-foundry-floor-v1-128.png'
+    'machine-foundry-boundary-v1-128.png'
+    'machine-foundry-fixtures-v1-192.png'
+    'machine-foundry-decals-v1-128.png'
+    'alien-hive-floor-v1-128.png'
+    'alien-hive-boundary-v1-128.png'
+    'alien-hive-fixtures-v1-192.png'
+    'alien-hive-decals-v1-128.png'
+    'surface-frontier-floor-v1-128.png'
+    'surface-frontier-boundary-v1-128.png'
+    'surface-frontier-fixtures-v1-192.png'
+    'surface-frontier-decals-v1-128.png'
+    'starship-transit-floor-v1-128.png'
+    'starship-transit-boundary-v1-128.png'
+    'starship-transit-fixtures-v1-192.png'
+    'starship-transit-decals-v1-128.png'
+    'containment-underworld-floor-v1-128.png'
+    'containment-underworld-boundary-v1-128.png'
+    'containment-underworld-fixtures-v1-192.png'
+    'containment-underworld-decals-v1-128.png'
+    'world-objects-military-v1-192.png'
+    'world-objects-natural-v1-192.png'
+    'world-objects-organic-v1-192.png'
   )
 
   foreach ($artAssetName in $requiredArtAssets) {
@@ -175,7 +198,29 @@ try {
     '/play/last-bastion/?mode=gallery&batch=j2',
     '/play/last-bastion/?mode=gallery&batch=ad',
     '/play/last-bastion/?mode=gallery&batch=ae',
+    '/play/last-bastion/?mode=gallery&batch=af',
+    '/play/last-bastion/?mode=gallery&batch=ag',
+    '/play/last-bastion/?mode=gallery&batch=ah',
+    '/play/last-bastion/?mode=gallery&batch=ai',
+    '/play/last-bastion/?mode=gallery&batch=aj',
+    '/play/last-bastion/?mode=gallery&batch=o1',
+    '/play/last-bastion/?screen=transformation-lab',
     '/play/last-bastion/?theme=science-wing&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=bastion-logistics&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=machine-foundry&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=alien-hive&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=surface-frontier&biome=cracked-earth&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=surface-frontier&biome=frozen-ground&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=surface-frontier&biome=ruined-settlement&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=surface-frontier&biome=crystal-badlands&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=starship-transit&room=operational-deck&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=starship-transit&room=command-deck&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=starship-transit&room=energy-transit&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=starship-transit&room=derelict-deck&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=containment-underworld&room=institutional-wing&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=containment-underworld&room=containment-vault&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=containment-underworld&room=dungeon-depths&worldseed=0&scenario=density-capacity',
+    '/play/last-bastion/?theme=containment-underworld&room=infernal-facility&worldseed=0&scenario=density-capacity',
     '/play/last-bastion/?loadout=vertical',
     '/play/last-bastion/?loadout=patrol',
     '/play/last-bastion/?loadout=bolt',

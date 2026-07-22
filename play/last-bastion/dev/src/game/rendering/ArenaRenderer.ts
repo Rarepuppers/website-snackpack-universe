@@ -3,6 +3,7 @@ import type { ArenaDefinition, ArenaObstacleKind } from "../arena/ArenaDefinitio
 import { worldDepth } from "./WorldDepth";
 import { ARENA_THEMES, type ArenaTheme } from "./arenaThemes";
 import { terrainFrameIndex } from "./TerrainVisualState";
+import { authoredDecalFrame, authoredFloorFrame, authoredFloorTransform } from "./ArenaFrameSelection";
 
 const OBSTACLE_COLORS: Readonly<Record<ArenaObstacleKind, { body: number; edge: number }>> = {
   barricade: { body: 0x52677c, edge: 0xb8cad8 },
@@ -55,10 +56,16 @@ function renderAuthoredFloor(
 ): void {
   for (let row = 0; row < rows; row += 1) {
     for (let column = 0; column < columns; column += 1) {
-      const seed = (column * 17 + row * 31) % 23;
-      const frame = seed === 0 ? 4 : seed === 1 ? 3 : seed < 6 ? 1 + (seed % 2) : 0;
+      const frame = authoredFloorFrame(theme, column, row);
+      const transform = theme.floorTransformMode === "rotate-mirror"
+        ? authoredFloorTransform(column, row)
+        : { angle: 0 as const, flipX: false };
       scene.add.sprite((column + 0.5) * tilePixels, (row + 0.5) * tilePixels, theme.floorTexture, frame)
-        .setDisplaySize(tilePixels, tilePixels).setDepth(-20).setTint(theme.floorTint);
+        .setDisplaySize(tilePixels, tilePixels)
+        .setAngle(transform.angle)
+        .setFlipX(transform.flipX)
+        .setDepth(-20)
+        .setTint(theme.floorTint);
     }
   }
 }
@@ -73,13 +80,13 @@ function renderAmbientDecals(
   if (!theme.decalTexture) return;
   for (let row = 1; row < rows - 1; row += 1) {
     for (let column = 1; column < columns - 1; column += 1) {
-      const seed = (column * 37 + row * 53) % 29;
-      if (seed > 3) continue;
+      const frame = authoredDecalFrame(theme, column, row);
+      if (frame === null) continue;
       scene.add.sprite(
         (column + 0.5) * tilePixels,
         (row + 0.5) * tilePixels,
         theme.decalTexture,
-        seed % 6,
+        frame,
       ).setDisplaySize(tilePixels * 1.35, tilePixels * 1.35)
         .setAlpha(0.34)
         .setDepth(-18);

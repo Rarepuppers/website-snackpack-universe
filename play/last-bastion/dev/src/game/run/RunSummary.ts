@@ -1,4 +1,8 @@
 import type { PerkId } from "../perks/perkCatalog";
+import {
+  cloneTransformationAffinityState,
+  type TransformationAffinityState,
+} from "../transformations/TransformationAffinity";
 
 export interface RunMetrics {
   kills: number;
@@ -20,6 +24,7 @@ export interface RunSummary {
   damageByWeapon: Readonly<Record<string, number>>;
   weapons: readonly { weaponId: string; tier: number }[];
   upgrades: readonly { upgradeId: string; level: number }[];
+  transformation: TransformationAffinityState;
   newlyUnlockedPerkIds: readonly PerkId[];
 }
 
@@ -46,7 +51,10 @@ export function totalRunDamage(metrics: Pick<RunMetrics, "damageByWeapon">): num
 }
 
 export function createRunSummary(
-  input: Omit<RunSummary, "newlyUnlockedPerkIds"> & { newlyUnlockedPerkIds?: readonly PerkId[] },
+  input: Omit<RunSummary, "newlyUnlockedPerkIds" | "transformation"> & {
+    newlyUnlockedPerkIds?: readonly PerkId[];
+    transformation?: TransformationAffinityState;
+  },
 ): RunSummary {
   return {
     ...input,
@@ -59,6 +67,7 @@ export function createRunSummary(
     damageByWeapon: { ...input.damageByWeapon },
     weapons: input.weapons.map((weapon) => ({ ...weapon })),
     upgrades: input.upgrades.map((upgrade) => ({ ...upgrade })),
+    transformation: cloneTransformationAffinityState(input.transformation),
     newlyUnlockedPerkIds: [...(input.newlyUnlockedPerkIds ?? [])],
   };
 }

@@ -11,6 +11,11 @@ import {
   type RunMetrics,
   type RunSummary,
 } from "../run/RunSummary";
+import {
+  cloneTransformationAffinityState,
+  normalizeTransformationAffinityState,
+  type TransformationAffinityState,
+} from "../transformations/TransformationAffinity";
 
 /**
  * Versioned local persistence for settings and basic run progress.
@@ -52,7 +57,7 @@ export interface GameProgress {
 }
 
 /**
- * Mid-run expedition autosave (schema v2, extended with Task 50 metrics in v4). Written when the dropship
+ * Mid-run expedition autosave (schema v2, metrics in v4, inert transformation state in v8). Written when the dropship
  * returns to the map, cleared when the run ends. Shapes mirror
  * `expedition/ExpeditionRun.ts`; kept structural here so the save layer never
  * imports game logic.
@@ -69,12 +74,13 @@ export interface ExpeditionSave {
     scrap: number;
     weapons: { weaponId: string; tier: number }[];
     upgrades: { upgradeId: string; level: number }[];
+    transformation?: TransformationAffinityState;
   } | null;
   metrics: RunMetrics;
 }
 
 export interface SaveData {
-  version: 7;
+  version: 8;
   settings: GameSettings;
   controls: ControlBindings;
   progress: GameProgress;
@@ -90,7 +96,7 @@ export const SAVE_STORAGE_KEY = "last-bastion-save";
 export const BESTIARY_KILLS_TO_REVEAL = 10;
 
 export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
-  version: 7,
+  version: 8,
   settings: Object.freeze({
     screenShakeEnabled: true,
     reducedFlashEnabled: false,
@@ -288,11 +294,11 @@ function normalizeSave(parsed: unknown): SaveData {
   const version = candidate.version ?? -1;
   // Versions 1–7 migrate into the current schema. Missing fields inherit the
   // accessible defaults; unknown future versions degrade safely to defaults.
-  if (![1, 2, 3, 4, 5, 6, 7].includes(version)) {
+  if (![1, 2, 3, 4, 5, 6, 7, 8].includes(version)) {
     return cloneSave(DEFAULT_SAVE);
   }
   return {
-    version: 7,
+    version: 8,
     settings: {
       screenShakeEnabled: readBoolean(candidate.settings?.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
       reducedFlashEnabled: readBoolean(candidate.settings?.reducedFlashEnabled, DEFAULT_SAVE.settings.reducedFlashEnabled),
@@ -370,6 +376,7 @@ function readBuild(value: unknown): ExpeditionSave["build"] {
     upgrades: candidate.upgrades
       .filter((upgrade) => typeof upgrade?.upgradeId === "string")
       .map((upgrade) => ({ upgradeId: upgrade.upgradeId, level: readCount(upgrade.level) || 1 })),
+    transformation: normalizeTransformationAffinityState(candidate.transformation),
   };
 }
 
@@ -382,6 +389,7 @@ function cloneExpedition(expedition: ExpeditionSave): ExpeditionSave {
       ...expedition.build,
       weapons: expedition.build.weapons.map((weapon) => ({ ...weapon })),
       upgrades: expedition.build.upgrades.map((upgrade) => ({ ...upgrade })),
+      transformation: cloneTransformationAffinityState(expedition.build.transformation),
     },
     metrics: {
       kills: expedition.metrics.kills,
@@ -476,6 +484,7 @@ function readRunSummary(value: unknown): RunSummary | null {
     upgrades: candidate.upgrades
       .filter((upgrade) => typeof upgrade?.upgradeId === "string")
       .map((upgrade) => ({ upgradeId: upgrade.upgradeId, level: readCount(upgrade.level) || 1 })),
+    transformation: normalizeTransformationAffinityState(candidate.transformation),
     newlyUnlockedPerkIds: Array.isArray(candidate.newlyUnlockedPerkIds)
       ? candidate.newlyUnlockedPerkIds.filter(isPerkId)
       : [],

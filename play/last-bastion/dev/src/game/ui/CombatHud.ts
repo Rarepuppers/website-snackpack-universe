@@ -15,6 +15,7 @@ import {
   keyboardBindingLabel,
   type ControlBindings,
 } from "../input/ControlBindings";
+import { canonicalWeaponTileFrame } from "./WeaponTileFrames";
 
 interface CooldownTileView {
   readonly background: Phaser.GameObjects.Rectangle;
@@ -268,11 +269,8 @@ export class CombatHud {
       setCooldownTileVisible(tile, true);
       tile.label.setText(tile.icon ? "" : weaponTileAbbreviation(weapon.weaponId));
       if (tile.icon) {
-        if (weapon.weaponId === "patrol-blade") tile.icon.setTexture("action-tiles-v1", 2).setVisible(true);
-        else if (weapon.weaponId === "bolt-carbine") tile.icon.setTexture("weapon-tiles-v1", 0).setVisible(true);
-        else if (weapon.weaponId === "bulwark-rotary-cannon") tile.icon.setTexture("weapon-tiles-v1", 1).setVisible(true);
-        else if (weapon.weaponId === "grenade-tube") tile.icon.setTexture("weapon-tiles-v1", 2).setVisible(true);
-        else tile.icon.setVisible(false);
+        tile.icon.setTexture("batch-i-weapon-tiles-v1", canonicalWeaponTileFrame(weapon.weaponId))
+          .setVisible(true);
       }
       tile.binding.setText(weapon.stats.firesAutomatically ? "SYNC" : snapshot.autoFireEnabled ? "AUTO" : "FIRE");
       updateCooldownTile(
