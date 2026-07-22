@@ -7,4 +7,4 @@
 
 Untouched chroma sources, clean-alpha masters, deterministic nearest-neighbour derivatives, prompts, normalizer, and contact-sheet QA are retained here. Prime reuses the completed Foundry drone and turret bodies. Lane rails/beads/endpoints, pad rings/progress, recall tether/ring, reservations, collision, damage, health bars, warnings, and timing remain code-owned.
 
-Runtime review will be available at `?mode=gallery&batch=aa` and `?scenario=assembly-prime&loadout=vertical`. Random-pool promotion remains blocked until mixed-machine review at 960x540, Full HD, and 4K plus representative 45-90-second seeded fight acceptance.
+Runtime review is available at `?mode=gallery&batch=aa` and `?scenario=assembly-prime&loadout=vertical`. Random-pool promotion remains blocked until mixed-machine review at 960x540, Full HD, and 4K plus representative 45-90-second seeded fight acceptance.

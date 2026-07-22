@@ -75,7 +75,8 @@ Gameplay bindings can be remapped under **Main Menu → Settings → Control bin
 - `/play/last-bastion/?mode=gallery&batch=f1` — Patrol Blade, action-bar, and timed-status Production Asset Batch F1
 - `/play/last-bastion/?mode=gallery&batch=f2`, `f3`, or `f4` — Bolt Carbine, Bulwark Rotary Cannon, or Grenade Tube production families
 - Add `debug=1` to the normal or stress route for collision labels and live entity/effect counts.
-- Add `theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay` to pin one of the five live authored arena families. Expedition nodes add a deterministic `worldseed` for one of three restrained lighting variants; terrain decals stay beneath gameplay and a per-world neutral wash protects actor/telegraph contrast.
+- Add `theme=bastion-standard|emberfall|toxic-bloom|void-approach|arctic-relay|science-wing` to pin a live authored arena family. Expedition nodes add a deterministic `worldseed` for one of three restrained lighting variants; terrain decals stay beneath gameplay and a per-world neutral wash protects actor/telegraph contrast.
+- `/play/last-bastion/?mode=gallery&batch=ad` — Batch AD Science Wing floors, boundaries, fixtures, and decals. Use `?theme=science-wing&worldseed=0&scenario=density-capacity` for the deterministic live contrast route.
 - Decision overlays support arrows/WASD/left-stick navigation, Enter/Space/pad-A confirm, and digits 1–4 quick pick; disabled Shop rows are skipped and cannot be confirmed.
 - Add `size=100..300` to preview the planned game-size setting; the canvas always snaps to whole physical pixels.
 

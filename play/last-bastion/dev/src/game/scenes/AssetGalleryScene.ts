@@ -15,6 +15,22 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "ad") {
+      this.createBatchADGallery();
+      return;
+    }
+    if (batch === "ac") {
+      this.createBatchACGallery();
+      return;
+    }
+    if (batch === "ab") {
+      this.createBatchABGallery();
+      return;
+    }
+    if (batch === "aa") {
+      this.createBatchAAGallery();
+      return;
+    }
     if (batch === "z") {
       this.createBatchZGallery();
       return;
@@ -589,6 +605,125 @@ export class AssetGalleryScene extends Phaser.Scene {
     this.add.image(852, 466, "synapse-herald-portrait-v1").setScale(0.27);
     this.add.text(852, 519, "PORTRAIT", style("#e5a4ff", "8px")).setOrigin(0.5);
     this.add.text(480, 532, "?mode=gallery&batch=z - ?scenario=synapse-herald&loadout=vertical", style("#8fb2c9", "9px")).setOrigin(0.5);
+  }
+
+  private createBatchAAGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - ASSEMBLY PRIME PRODUCTION ASSET BATCH AA", style("#ffffff", "17px"));
+    this.add.text(20, 38, "59 runtime visuals - body/pad/effects/portrait; Foundry children and all gameplay geometry remain shared/code-owned", style("#8fb2c9", "10px"));
+    this.add.text(20, 64, "BODY - entrance / orbit A+B / lane lock+fire / pad deploy / fabricate / recall / recovery / hurt / defeat", style("#ffb84d", "9px"));
+    for (let frame = 0; frame < 44; frame += 1) {
+      const x = 38 + (frame % 11) * 78;
+      const y = 132 + Math.floor(frame / 11) * 86;
+      this.add.sprite(x, y, "assembly-prime-v1", frame).setScale(0.33).setOrigin(0.5, 0.92);
+      this.drawPivot(x, y);
+      this.add.text(x, y + 18, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.text(20, 420, "COMMAND PAD - deploy / early / mid / late / disrupted / completed", style("#68e4e8", "9px"));
+    for (let frame = 0; frame < 6; frame += 1) {
+      const x = 54 + frame * 75;
+      this.add.sprite(x, 468, "assembly-prime-pad-v1", frame).setScale(0.48).setOrigin(0.5, 0.78);
+      this.add.text(x, 500, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.text(500, 420, "LOCAL EFFECTS - lock / completion / recall / shutdown x onset+dissipate", style("#ffb84d", "8px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 510 + frame * 49;
+      this.add.sprite(x, 468, "assembly-prime-effects-v1", frame).setScale(0.36);
+      this.add.text(x, 500, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.image(914, 458, "assembly-prime-portrait-v1").setScale(0.25);
+    this.add.text(914, 500, "PORTRAIT", style("#ffb84d", "7px")).setOrigin(0.5);
+    this.add.text(480, 528, "?mode=gallery&batch=aa - ?scenario=assembly-prime&loadout=vertical", style("#8fb2c9", "9px")).setOrigin(0.5);
+  }
+
+  private createBatchABGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - STORM REGENT PRODUCTION ASSET BATCH AB", style("#ffffff", "17px"));
+    this.add.text(20, 38, "59 runtime visuals - body/node/effects/portrait; chain, rings, cover stops, damage, and timing remain code-owned", style("#8fb2c9", "10px"));
+    this.add.text(20, 64, "BODY - entrance / orbit A+B / chain lock+fire / node channel / coil charge+fire / recovery / hurt / defeat", style("#8de7ff", "9px"));
+    for (let frame = 0; frame < 44; frame += 1) {
+      const x = 38 + (frame % 11) * 78;
+      const y = 132 + Math.floor(frame / 11) * 86;
+      this.add.sprite(x, y, "storm-regent-v1", frame).setScale(0.33).setOrigin(0.5, 0.92);
+      this.drawPivot(x, y);
+      this.add.text(x, y + 18, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.text(20, 420, "CONDUCTIVE NODE - dormant / armed / relay / warning / critical / destroyed", style("#68e4e8", "9px"));
+    for (let frame = 0; frame < 6; frame += 1) {
+      const x = 54 + frame * 75;
+      this.add.sprite(x, 468, "storm-conductive-node-v1", frame).setScale(0.48).setOrigin(0.5, 0.88);
+      this.add.text(x, 500, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.text(500, 420, "LOCAL EFFECTS - chain / overcharge / coil / interrupt x onset+dissipate", style("#ffd36b", "8px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 510 + frame * 49;
+      this.add.sprite(x, 468, "storm-regent-effects-v1", frame).setScale(0.36);
+      this.add.text(x, 500, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.image(914, 458, "storm-regent-portrait-v1").setScale(0.25);
+    this.add.text(914, 500, "PORTRAIT", style("#8de7ff", "7px")).setOrigin(0.5);
+    this.add.text(480, 528, "?mode=gallery&batch=ab - ?scenario=storm-regent&loadout=vertical", style("#8fb2c9", "9px")).setOrigin(0.5);
+  }
+
+  private createBatchACGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - ABOMINATION PRIME PRODUCTION ASSET BATCH AC", style("#ffffff", "17px"));
+    this.add.text(20, 38, "69 runtime visuals - body/biomass/effects/portrait; radii, tether, landing blocks, damage, and timing remain code-owned", style("#8fb2c9", "10px"));
+    this.add.text(20, 62, "BODY - entrance / shamble A+B / slam / grab / break / tear / throw / recovery / hurt / defeat", style("#ff9a72", "9px"));
+    for (let frame = 0; frame < 52; frame += 1) {
+      const x = 32 + (frame % 13) * 67;
+      const y = 112 + Math.floor(frame / 13) * 76;
+      this.add.sprite(x, y, "abomination-prime-v1", frame).setScale(0.3).setOrigin(0.5, 0.92);
+      this.drawPivot(x, y);
+      this.add.text(x, y + 17, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.text(20, 382, "BIOMASS - launch / flight A+B / landing / fresh / pulse / collapse / residue", style("#d7df67", "8px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 38 + frame * 46;
+      this.add.sprite(x, 442, "abomination-prime-biomass-v1", frame).setScale(0.38).setOrigin(0.5, 0.72);
+      this.add.text(x, 478, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.text(440, 382, "LOCAL EFFECTS - slam / grab / tear / recovery x onset+dissipate", style("#ffb06f", "8px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 454 + frame * 47;
+      this.add.sprite(x, 442, "abomination-prime-effects-v1", frame).setScale(0.36);
+      this.add.text(x, 478, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.image(914, 438, "abomination-prime-portrait-v1").setScale(0.25);
+    this.add.text(914, 478, "PORTRAIT", style("#ff9a72", "7px")).setOrigin(0.5);
+    this.add.text(480, 528, "?mode=gallery&batch=ac - ?scenario=abomination-prime&loadout=vertical", style("#8fb2c9", "9px")).setOrigin(0.5);
+  }
+
+  private createBatchADGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - BASTION SCIENCE WING ENVIRONMENT BATCH AD", style("#ffffff", "17px"));
+    this.add.text(20, 38, "16 floors / 8 boundaries / 8 fixtures / 8 decals - 128/192 px runtime, 256/384 px retained masters", style("#8fb2c9", "10px"));
+    this.add.text(20, 62, "FLOORS - lab / cryo / surgery / bio / reactor / energy / control / teleporter", style("#68e4e8", "9px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const x = 58 + (frame % 4) * 75;
+      const y = 103 + Math.floor(frame / 4) * 75;
+      this.add.sprite(x, y, "science-wing-floor-v1", frame).setScale(0.52);
+      this.add.text(x + 25, y + 24, String(frame), style("#93abc0", "7px")).setOrigin(0.5);
+    }
+    this.add.text(365, 62, "BOUNDARIES - cardinal / corners / gate / breach", style("#68e4e8", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 118 + Math.floor(frame / 4) * 92;
+      this.add.sprite(x, y, "science-wing-boundary-v1", frame).setScale(0.55);
+      this.add.text(x, y + 39, String(frame), style("#93abc0", "7px")).setOrigin(0.5);
+    }
+    this.add.text(365, 262, "FIXTURES - bench / cryo / reactor / control / specimen / surgery / cameras / gate", style("#ffcf7a", "8px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 355 + Math.floor(frame / 4) * 112;
+      this.add.sprite(x, y, "science-wing-fixtures-v1", frame).setScale(0.43).setOrigin(0.5, 0.92);
+      this.drawPivot(x, y);
+      this.add.text(x + 36, y - 3, String(frame), style("#93abc0", "7px")).setOrigin(0.5);
+    }
+    this.add.text(20, 400, "LOW-CONTRAST DECALS", style("#d6a8ff", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 48 + (frame % 4) * 75;
+      const y = 448 + Math.floor(frame / 4) * 63;
+      this.add.sprite(x, y, "science-wing-floor-v1", frame % 4).setScale(0.43).setAlpha(0.65);
+      this.add.sprite(x, y, "science-wing-decals-v1", frame).setScale(0.43);
+    }
+    this.add.text(480, 528, "Preflight only: code owns room layout, collision, interactions, hazards, lighting, and adjacency", style("#8fb2c9", "9px")).setOrigin(0.5);
   }
 
   private createBatchQGallery(): void {

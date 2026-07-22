@@ -1096,3 +1096,43 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Bound entrance, alternating orbit, lunge wind-up/commit, marked-zone channel, synapse-link channel, and recovery presentation to live simulation state. Lunge-origin, zone-eruption, link-lock, and link-break effects play as onset/dissipate pairs; the portrait and every runtime frame are exposed in `?mode=gallery&batch=z`.
 - Preserved code ownership of lunge paths, marked-zone circles and timing marks, link tether/rings, target locking, damage mitigation, collision, health bars, warnings, and phase timing. The Herald remains excluded from random mini-boss promotion pending mixed ordinary Brain Blob silhouette review and representative 45-90-second seeded fights.
 - Manifest contracts, TypeScript, focused Herald behavior tests, and production build validation pass. Next production package: Assembly Prime body, local effects, child-compatible accents, and portrait.
+
+### Production Asset Batch AA - Assembly Prime complete
+
+**Completed:** 22 July 2026
+
+- Generated the exact 44-frame directional/state command chassis, six-state reinforced pad, eight local onset/dissipate effects, and 256 px portrait through the built-in image workflow. Retained untouched chroma sources, clean-alpha masters, deterministic derivatives, prompt provenance, source-aware normalizer, and contact-sheet QA under `art/production-tests/batch-aa/`.
+- Contact-sheet review rejected equal-height body slicing before integration; the retained master uses a regular authored cadence with beams and smoke bridging some gutters, so the normalizer now locks verified source row boundaries and emits all 44 intact cells.
+- Bound entrance/orbit, lane lock/fire, pad deployment, fabrication, recall, and recovery states. The reinforced pad advances from simulation-derived channel progress; lock, completion, recall, and shutdown effects play as onset/dissipate pairs. Existing Foundry drone and turret bodies remain shared.
+- Preserved code ownership of lane rails/beads/endpoints, cover clipping, pad targeting/progress rings, recall tether/ring, reservations, collision, damage, health bars, warnings, and timing. Native 960x540 gallery and mixed-machine lab review passed without console warnings.
+- TypeScript and 50 focused manifest/behavior/combat tests pass. Random-pool promotion remains blocked pending 960x540/Full HD/4K mixed review and representative 45-90-second seeded fights. Next production package: Storm Regent body, conductive nodes, local effects, and portrait.
+
+### Production Asset Batch AB - Storm Regent complete
+
+**Completed:** 22 July 2026
+
+- Generated the exact 44-frame directional/state command body, six-state Regent-specific conductive node, eight local onset/dissipate effects, and 256 px portrait through the built-in image workflow. Retained untouched chroma sources, clean-alpha masters, deterministic derivatives, prompt provenance, verified irregular-row normalizer, and contact-sheet QA under `art/production-tests/batch-ab/`.
+- Contact-sheet review caught equal-height body slicing before integration; the generator authored deeper entrance/energized rows and compact recovery/defeat rows, so the normalizer now locks verified alpha boundaries and emits all 44 intact cells.
+- Bound entrance/orbit, chain lock/discharge, node-overcharge channel, coil charge/discharge, and recovery states. Regent-owned nodes now use their separate dormant/armed/relay/warning/critical/destroyed atlas, while Savant nodes retain Batch U art. Chain-origin, node-overcharge, coil-discharge, and node-interruption effects play as onset/dissipate pairs at simulation event positions.
+- Preserved code ownership of chain rails/hops/endpoints, cover-stop squares, node target/overcharge rings, coil circumference/ticks, owner linkage, collision, damage, health bars, warnings, and timing. `?mode=gallery&batch=ab` exposes every runtime frame and `?scenario=storm-regent&loadout=vertical` remains the live acceptance route.
+- Random-pool promotion remains blocked pending mixed-wave review at 960x540, Full HD, and 4K plus three representative 45-90-second seeded fights. Next production package: Abomination Prime body, biomass projectile/hazard, local effects, and portrait.
+
+### Production Asset Batch AC - Abomination Prime complete
+
+**Completed:** 22 July 2026
+
+- Generated the 52-frame directional/state apex body, eight-frame biomass projectile/hazard lifecycle, eight local onset/dissipate effects, and 256 px portrait through the built-in image workflow. Retained chroma sources, clean-alpha masters, deterministic derivatives, prompt provenance, normalizer, and contact-sheet QA under `art/production-tests/batch-ac/`.
+- Rejected the first body output because it authored only eleven rows. The replacement included every requested pose plus one redundant late hurt/recovery band; both sources remain retained, and the documented normalizer selects the exact ordered 13-row contract plus final collapsed defeat without merging gameplay states.
+- Bound entrance/shamble, slam, grab, break recoil, biomass tear/throw, and recovery phases. The real biomass projectile now alternates directional flight frames under simulation rotation; fresh/pulsing/collapsing hazard art sits above the existing code-native radius outline. Slam rupture, grab latch/break, biomass tear, landing compression, and defeat effects are event-driven.
+- Preserved code ownership of slam/throw circumferences and timing marks, landing blocks, grab tether/ring, projectile trajectory, hazard radius/timing, collision, terrain damage, forced movement, conditional health bars, and scheduler timing. `?mode=gallery&batch=ac` exposes every runtime frame and `?scenario=abomination-prime&loadout=vertical` remains the acceptance route.
+- Random-pool promotion remains blocked pending mixed Corrupted Human review at 960x540, Full HD, and 4K plus three representative 45-90-second seeded fights. All currently authorized expanded mini-boss artwork is now complete.
+
+### Environment renewal plan and Production Asset Batch AD - Science Wing
+
+**Completed:** 22 July 2026
+
+- Audited the existing display and asset contracts for a future Full HD/4K Steam port. Exact whole-pixel 2×/4× scaling is already correct; the environment problem is limited variants, repetition, and weak room identity rather than blur. Batch A and Batch H environment families are scheduled for authored replacement, early 64 px combat/UI motifs upgrade when their family is revisited, and recent 128/192 px production families remain accepted unless a specific review fails.
+- Added `environment-production-plan.md` and `environment-prompts.md`. Eight modular kit groups cover the Science Wing, Bastion Logistics, Machine Foundry, Alien Hive, Surface/Planetary, Starship/Void, Containment/Underworld, and boss arenas/Colosseum while avoiding a separate incompatible tileset for every room name.
+- Generated Batch AD through four built-in image-generation calls: a 16-tile Science Wing floor, eight cardinal/corner/gate/breach boundaries, eight lab/cryo/reactor/control/specimen/surgery/camera/teleporter fixtures, and eight restrained under-floor decals. Retained 256/384 px masters and 128/192 px runtime derivatives, chroma/alpha provenance, exact prompts, deterministic normalizer, contact sheet, and seam mosaic under `art/production-tests/batch-ad/`.
+- Registered all 44 frames and added `?mode=gallery&batch=ad`; collision, interaction, destructibility, hazards, adjacency, objectives, lighting, and timing remain code-owned. Exact dimensions/alpha, repeated-tile visual review, 590 tests, TypeScript, production build, 93-asset HTTP smoke, 52 review routes, and 194-reference offline audit pass.
+- Next environment package after Science Wing live/multi-resolution acceptance: Batch AE Bastion Logistics and Defence, replacing the generic starting environment with supply depot, armoury, weapon racks, shop/blacksmith, medic, command, loading-bay, and bunker identities.

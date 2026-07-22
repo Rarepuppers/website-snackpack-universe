@@ -116,6 +116,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly projectileHaloViews = new Map<number, Phaser.GameObjects.Arc>();
   private readonly enemyProjectileViews = new Map<number, EnemyProjectileView>();
   private readonly hazardViews = new Map<number, HazardView>();
+  private readonly hazardArtViews = new Map<number, Phaser.GameObjects.Sprite>();
   private readonly spitterTelegraphs = new Map<number, TelegraphView>();
   private readonly eliteArmorViews = new Map<number, Phaser.GameObjects.Triangle>();
   private readonly eliteRewardViews = new Map<number, EliteRewardView>();
@@ -453,6 +454,7 @@ export class PrototypeScene extends Phaser.Scene {
       this.projectileHaloViews,
       this.enemyProjectileViews,
       this.hazardViews,
+      this.hazardArtViews,
       this.spitterTelegraphs,
       this.eliteArmorViews,
       this.eliteRewardViews,
@@ -718,6 +720,10 @@ export class PrototypeScene extends Phaser.Scene {
             this.emitAuthoredEffect(19, event.position, 420, 0.8, 2.1, 0, "batch-b-effects-v1");
           } else if (event.enemyType === "brood-warden") {
             this.emitAuthoredEffect(9, event.position, 460, 0.9, 2.3, 0, "brood-warden-effects-v1");
+          } else if (event.enemyType === "assembly-prime") {
+            this.emitAssemblyPrimeEffect(3, event.position, 620, 0.92, 2.3);
+          } else if (event.enemyType === "abomination-prime") {
+            this.emitAbominationPrimeEffect(3, event.position, 680, 0.96, 2.45);
           } else if (event.enemyType === "rift-stalker") {
             this.emitAuthoredEffect(6, event.position, 520, 0.82, 2.15, 0, "rift-stalker-effects-v1");
             this.emitAuthoredEffect(7, event.position, 680, 0.7, 2.4, 0, "rift-stalker-effects-v1");
@@ -891,6 +897,49 @@ export class PrototypeScene extends Phaser.Scene {
           break;
         case "synapse-herald-link-broken":
           this.emitSynapseHeraldEffect(3, event.position, 300, 0.58, 1.14);
+          break;
+        case "assembly-prime-warning":
+          if (event.move === "rotating-lanes") this.emitAssemblyPrimeEffect(0, event.position, 300, 0.56, 1.08);
+          break;
+        case "assembly-prime-fabrication-completed":
+          this.emitAssemblyPrimeEffect(1, event.position, 360, 0.64, 1.24);
+          break;
+        case "assembly-prime-fabrication-interrupted":
+          this.emitFoundryEffect(2, event.position, 300, 0.58, 1.12);
+          break;
+        case "assembly-prime-drone-recalled":
+          this.emitAssemblyPrimeEffect(2, event.position, 320, 0.6, 1.18);
+          break;
+        case "storm-regent-warning":
+          if (event.move === "chain-strike") this.emitStormRegentEffect(0, event.position, 280, 0.54, 1.06);
+          break;
+        case "storm-regent-discharged":
+          if (event.move === "chain-strike") {
+            this.emitStormRegentEffect(0, event.position, 220, 0.58, 1.14);
+          } else if (event.move === "node-overcharge") {
+            this.emitStormRegentEffect(1, event.centre ?? event.position, 340, 0.68, 1.28);
+          } else {
+            this.emitStormRegentEffect(2, event.centre ?? event.position, 300, 0.64, 1.22);
+          }
+          break;
+        case "storm-regent-interrupted":
+          this.emitStormRegentEffect(3, event.nodePosition ?? event.position, 320, 0.6, 1.18);
+          break;
+        case "abomination-prime-slam":
+          this.emitAbominationPrimeEffect(0, event.position, 380, 0.72, 1.42);
+          if (event.hitPlayer) this.shakeCamera(150, 0.006);
+          break;
+        case "abomination-prime-grab-latched":
+          this.emitAbominationPrimeEffect(1, event.position, 280, 0.62, 1.16);
+          break;
+        case "abomination-prime-grab-broken":
+          this.emitAbominationPrimeEffect(1, event.position, 320, 0.58, 1.22);
+          break;
+        case "abomination-prime-biomass-thrown":
+          this.emitAbominationPrimeEffect(2, event.position, 300, 0.64, 1.18);
+          break;
+        case "abomination-prime-biomass-landed":
+          this.emitAuthoredEffect(3, event.position, 300, 0.62, 1.04, 0, "abomination-prime-biomass-v1");
           break;
         case "projectile-blocked":
           if (event.weaponId === "bolt-carbine") {
@@ -1221,7 +1270,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "synapse-herald-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" | "corrupted-marine-effects-v1" | "nest-effects-v1" | "storm-effects-v1" | "machine-scrap-skitterer-effects-v1" | "machine-arc-warden-effects-v1" | "machine-cyborg-reclaimer-effects-v1" | "machine-foundry-effects-v1" | "telegraph-small-v1" | "destructible-terrain-effects-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "synapse-herald-effects-v1" | "assembly-prime-effects-v1" | "storm-regent-effects-v1" | "abomination-prime-biomass-v1" | "abomination-prime-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" | "corrupted-marine-effects-v1" | "nest-effects-v1" | "storm-effects-v1" | "machine-scrap-skitterer-effects-v1" | "machine-arc-warden-effects-v1" | "machine-cyborg-reclaimer-effects-v1" | "machine-foundry-effects-v1" | "telegraph-small-v1" | "destructible-terrain-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -1324,6 +1373,45 @@ export class PrototypeScene extends Phaser.Scene {
     this.emitAuthoredEffect(column, position, duration, scale, targetScale, 0, "synapse-herald-effects-v1");
     this.time.delayedCall(Math.round(duration * 0.48), () => {
       this.emitAuthoredEffect(column + 4, position, Math.round(duration * 0.68), scale * 0.9, targetScale * 1.04, 0, "synapse-herald-effects-v1");
+    });
+  }
+
+  private emitAssemblyPrimeEffect(
+    column: 0 | 1 | 2 | 3,
+    position: { x: number; y: number },
+    duration: number,
+    scale: number,
+    targetScale: number,
+  ): void {
+    this.emitAuthoredEffect(column, position, duration, scale, targetScale, 0, "assembly-prime-effects-v1");
+    this.time.delayedCall(Math.round(duration * 0.48), () => {
+      this.emitAuthoredEffect(column + 4, position, Math.round(duration * 0.68), scale * 0.9, targetScale * 1.04, 0, "assembly-prime-effects-v1");
+    });
+  }
+
+  private emitStormRegentEffect(
+    column: 0 | 1 | 2 | 3,
+    position: { x: number; y: number },
+    duration: number,
+    scale: number,
+    targetScale: number,
+  ): void {
+    this.emitAuthoredEffect(column, position, duration, scale, targetScale, 0, "storm-regent-effects-v1");
+    this.time.delayedCall(Math.round(duration * 0.48), () => {
+      this.emitAuthoredEffect(column + 4, position, Math.round(duration * 0.68), scale * 0.9, targetScale * 1.04, 0, "storm-regent-effects-v1");
+    });
+  }
+
+  private emitAbominationPrimeEffect(
+    column: 0 | 1 | 2 | 3,
+    position: { x: number; y: number },
+    duration: number,
+    scale: number,
+    targetScale: number,
+  ): void {
+    this.emitAuthoredEffect(column, position, duration, scale, targetScale, 0, "abomination-prime-effects-v1");
+    this.time.delayedCall(Math.round(duration * 0.48), () => {
+      this.emitAuthoredEffect(column + 4, position, Math.round(duration * 0.68), scale * 0.9, targetScale * 1.04, 0, "abomination-prime-effects-v1");
     });
   }
 
@@ -1676,10 +1764,13 @@ export class PrototypeScene extends Phaser.Scene {
         }
         return this.add.ellipse(0, 0, 74, 58, 0x49345f).setStrokeStyle(6, 0xe5a4ff);
       case "assembly-prime":
+        if (this.useMarineArt) return createManifestSprite(this, "assembly-prime-v1");
         return this.add.rectangle(0, 0, 82, 68, 0x35485f).setStrokeStyle(6, 0xffb84d);
       case "storm-regent":
+        if (this.useMarineArt) return createManifestSprite(this, "storm-regent-v1");
         return this.add.ellipse(0, 0, 80, 66, 0x263b54).setStrokeStyle(6, 0x8de7ff);
       case "abomination-prime":
+        if (this.useMarineArt) return createManifestSprite(this, "abomination-prime-v1");
         return this.add.ellipse(0, 0, 92, 76, 0x4d2731).setStrokeStyle(7, 0xff8a62);
       default:
         if (this.useMarineArt) {
@@ -1718,7 +1809,8 @@ export class PrototypeScene extends Phaser.Scene {
 
   private styleEnemyView(view: EnemyView, enemy: EnemySnapshot): void {
     if (view instanceof Phaser.GameObjects.Sprite) {
-      const batchJScale = view.texture.key === "synapse-herald-v1" ? 0.62
+      const batchJScale = view.texture.key === "abomination-prime-v1" ? 0.72
+        : view.texture.key === "synapse-herald-v1" || view.texture.key === "assembly-prime-v1" || view.texture.key === "storm-regent-v1" ? 0.62
         : view.texture.key === "quillback-matriarch-v1" ? 0.9
         : view.texture.key === "blightspitter-v1" ? 1.05
           : view.texture.key === "razorlord-v1" ? 1 : null;
@@ -2032,8 +2124,24 @@ export class PrototypeScene extends Phaser.Scene {
         return;
       }
       case "storm-node": {
-        const frame = enemy.health <= 0 ? 5 : enemy.health <= 2 ? 3 : 1 + (Math.floor(this.time.now / 180) % 2);
-        view.setTexture("storm-node-v1").setFrame(frame).setRotation(0).setScale(0.5);
+        const owner = this.lastSnapshot.enemies.find((candidate) => candidate.id === enemy.stormNodeOwnerId);
+        if (owner?.type === "storm-regent") {
+          const phase = owner.stormRegentPhase ?? "entrance";
+          const committed = phase === "windup" || phase === "action";
+          const isRelay = (owner.stormRegentSegments ?? []).some((segment) => (
+            Math.hypot(segment.to.x - enemy.position.x, segment.to.y - enemy.position.y) < 0.08
+            || Math.hypot(segment.from.x - enemy.position.x, segment.from.y - enemy.position.y) < 0.08
+          ));
+          const frame = enemy.health <= 0 ? 5
+            : enemy.health <= 2 ? 4
+              : committed && owner.stormRegentMove === "node-overcharge" && owner.stormRegentNodeId === enemy.id ? 3
+                : committed && owner.stormRegentMove === "chain-strike" && isRelay ? 2
+                  : phase === "entrance" || phase === "setup" ? 0 : 1;
+          view.setTexture("storm-conductive-node-v1").setFrame(frame).setRotation(0).setScale(0.5);
+        } else {
+          const frame = enemy.health <= 0 ? 5 : enemy.health <= 2 ? 3 : 1 + (Math.floor(this.time.now / 180) % 2);
+          view.setTexture("storm-node-v1").setFrame(frame).setRotation(0).setScale(0.5);
+        }
         return;
       }
       case "scrap-skitterer": {
@@ -2082,9 +2190,17 @@ export class PrototypeScene extends Phaser.Scene {
         view.setTexture("machine-foundry-fabricator-v1").setFrame(row * 4 + facingColumn).setRotation(0).setScale(0.48);
         return;
       }
-      case "foundry-pad":
-        view.setTexture("machine-foundry-pad-v1").setFrame(1).setRotation(0).setScale(0.5);
+      case "foundry-pad": {
+        const owner = this.lastSnapshot.enemies.find((candidate) => candidate.id === enemy.foundryOwnerId);
+        if (owner?.type === "assembly-prime") {
+          const progress = owner.assemblyPrimeProgress ?? 0;
+          const frame = progress >= 0.72 ? 3 : progress >= 0.34 ? 2 : progress > 0 ? 1 : 0;
+          view.setTexture("assembly-prime-pad-v1").setFrame(frame).setRotation(0).setScale(0.5);
+        } else {
+          view.setTexture("machine-foundry-pad-v1").setFrame(1).setRotation(0).setScale(0.5);
+        }
         return;
+      }
       case "foundry-drone": {
         const canonicalColumn = cardinalFacingColumn(enemy.position, { x: enemy.position.x + enemy.facingDirection.x, y: enemy.position.y + enemy.facingDirection.y });
         const facingColumn = [0, 3, 2, 1][canonicalColumn] ?? 0;
@@ -2336,6 +2452,49 @@ export class PrototypeScene extends Phaser.Scene {
         view.setTexture("synapse-herald-v1").setFrame(row * 4 + facingColumn).setRotation(0);
         return;
       }
+      case "assembly-prime": {
+        const target = { x: enemy.position.x + enemy.facingDirection.x, y: enemy.position.y + enemy.facingDirection.y };
+        const canonicalColumn = cardinalFacingColumn(enemy.position, target);
+        const facingColumn = [0, 3, 2, 1][canonicalColumn] ?? 0;
+        const phase = enemy.assemblyPrimePhase ?? "entrance";
+        const move = enemy.assemblyPrimeMove;
+        const row = phase === "entrance" ? 0
+          : phase === "setup" ? 1 + ((Math.floor(this.time.now / 190) + enemy.id) % 2)
+            : phase === "windup" ? move === "rotating-lanes" ? 3
+              : move === "fabrication" ? (enemy.assemblyPrimeProgress ?? 0) < 0.2 ? 5 : 6 : 7
+              : phase === "action" ? move === "rotating-lanes" ? 4 : move === "fabrication" ? 6 : 7
+                : 8;
+        view.setTexture("assembly-prime-v1").setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
+      case "storm-regent": {
+        const target = { x: enemy.position.x + enemy.facingDirection.x, y: enemy.position.y + enemy.facingDirection.y };
+        const canonicalColumn = cardinalFacingColumn(enemy.position, target);
+        const facingColumn = [0, 3, 2, 1][canonicalColumn] ?? 0;
+        const phase = enemy.stormRegentPhase ?? "entrance";
+        const move = enemy.stormRegentMove;
+        const row = phase === "entrance" ? 0
+          : phase === "setup" ? 1 + ((Math.floor(this.time.now / 220) + enemy.id) % 2)
+            : phase === "windup" ? move === "chain-strike" ? 3 : move === "node-overcharge" ? 5 : 6
+              : phase === "action" ? move === "chain-strike" ? 4 : move === "node-overcharge" ? 5 : 7
+                : 8;
+        view.setTexture("storm-regent-v1").setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
+      case "abomination-prime": {
+        const target = { x: enemy.position.x + enemy.facingDirection.x, y: enemy.position.y + enemy.facingDirection.y };
+        const canonicalColumn = cardinalFacingColumn(enemy.position, target);
+        const facingColumn = [0, 3, 2, 1][canonicalColumn] ?? 0;
+        const phase = enemy.abominationPrimePhase ?? "entrance";
+        const move = enemy.abominationPrimeMove;
+        const row = phase === "entrance" ? 0
+          : phase === "setup" ? 1 + ((Math.floor(this.time.now / 240) + enemy.id) % 2)
+            : phase === "windup" ? move === "ground-slam" ? 3 : move === "biomass-grab" ? 5 : 8
+              : phase === "action" ? move === "ground-slam" ? 4 : move === "biomass-grab" ? 6 : 9
+                : move === "biomass-grab" ? 7 : 10;
+        view.setTexture("abomination-prime-v1").setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
       default: {
         if (enemy.type === "corrupted-marine") {
           const target = {
@@ -2465,7 +2624,9 @@ export class PrototypeScene extends Phaser.Scene {
     for (const projectile of projectiles) {
       let view = this.enemyProjectileViews.get(projectile.id);
       if (!view) {
-        view = projectile.type === "prime-biomass"
+        view = projectile.type === "prime-biomass" && this.useMarineArt
+          ? this.add.sprite(0, 0, "abomination-prime-biomass-v1", 1).setDisplaySize(54, 38).setDepth(710)
+          : projectile.type === "prime-biomass"
           ? this.add.rectangle(0, 0, 24, 14, 0x762f3b).setStrokeStyle(3, 0xff9a62).setDepth(710)
           : projectile.type === "corrupted-knife" && this.useMarineArt
           ? this.add.sprite(0, 0, "corrupted-marine-effects-v1", 0).setScale(0.58).setDepth(710)
@@ -2489,6 +2650,9 @@ export class PrototypeScene extends Phaser.Scene {
         .setRotation(projectile.rotationRadians);
       if (view instanceof Phaser.GameObjects.Sprite) {
         view.clearTint();
+        if (projectile.type === "prime-biomass") {
+          view.setFrame(1 + ((Math.floor(this.time.now / 120) + projectile.id) % 2)).setDisplaySize(54, 38);
+        }
       } else if (view instanceof Phaser.GameObjects.Rectangle) {
         view.setFillStyle(projectile.type === "prime-biomass" ? 0x762f3b : projectile.type === "corrupted-knife" ? 0xd9edf2 : 0xffd08a)
           .setStrokeStyle(projectile.type === "prime-biomass" ? 3 : 2, projectile.type === "prime-biomass" ? 0xff9a62 : projectile.type === "corrupted-knife" ? 0x6b2533 : 0xff6b52);
@@ -2501,6 +2665,7 @@ export class PrototypeScene extends Phaser.Scene {
   private syncGroundHazards(hazards: readonly GroundHazardSnapshot[]): void {
     const liveIds = new Set(hazards.map((hazard) => hazard.id));
     this.destroyMissing(this.hazardViews, liveIds);
+    this.destroyMissing(this.hazardArtViews, liveIds);
     for (const hazard of hazards) {
       let view = this.hazardViews.get(hazard.id);
       if (!view) {
@@ -2531,6 +2696,19 @@ export class PrototypeScene extends Phaser.Scene {
       }
       if (hazard.type === "prime-biomass" && view instanceof Phaser.GameObjects.Ellipse) {
         view.setStrokeStyle(4, Math.floor(this.time.now / 120) % 2 === 0 ? 0xff8a62 : 0xffd36b, 0.94);
+      }
+      if (hazard.type === "prime-biomass" && this.useMarineArt) {
+        let art = this.hazardArtViews.get(hazard.id);
+        if (!art) {
+          art = this.add.sprite(0, 0, "abomination-prime-biomass-v1", 4).setDepth(46).setOrigin(0.5, 0.72);
+          this.hazardArtViews.set(hazard.id, art);
+        }
+        const frame = lifetime < 0.2 ? 6 : lifetime > 0.84 ? 4
+          : 4 + ((Math.floor(this.time.now / 180) + hazard.id) % 2);
+        art.setPosition(hazard.position.x * PIXELS_PER_METRE, hazard.position.y * PIXELS_PER_METRE)
+          .setFrame(frame)
+          .setDisplaySize(diameter * 0.72, diameter * 0.5)
+          .setAlpha(0.7 + lifetime * 0.25);
       }
       if (hazard.type === "machine-wreck" && view instanceof Phaser.GameObjects.Ellipse) {
         view.setRotation(-0.25 + Math.sin(hazard.id) * 0.35)
@@ -4130,7 +4308,7 @@ function applyManifestOrigin(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "rift-stalker-v1" | "synapse-herald-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1" | "aurum-hoarder-v1" | "swarm-scuttler-v1" | "corrupted-survivor-v1" | "corrupted-marine-v1" | "abomination-v1" | "nest-weaver-v1" | "nest-pod-v1" | "storm-savant-v1" | "storm-node-v1" | "machine-scrap-skitterer-v1" | "machine-arc-warden-v1" | "machine-cyborg-reclaimer-v1" | "machine-foundry-fabricator-v1" | "machine-foundry-pad-v1" | "machine-foundry-drone-v1" | "machine-foundry-turret-v1" | "razorlord-v1" | "blightspitter-v1" | "quillback-matriarch-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "rift-stalker-v1" | "synapse-herald-v1" | "assembly-prime-v1" | "storm-regent-v1" | "abomination-prime-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1" | "aurum-hoarder-v1" | "swarm-scuttler-v1" | "corrupted-survivor-v1" | "corrupted-marine-v1" | "abomination-v1" | "nest-weaver-v1" | "nest-pod-v1" | "storm-savant-v1" | "storm-node-v1" | "machine-scrap-skitterer-v1" | "machine-arc-warden-v1" | "machine-cyborg-reclaimer-v1" | "machine-foundry-fabricator-v1" | "machine-foundry-pad-v1" | "machine-foundry-drone-v1" | "machine-foundry-turret-v1" | "razorlord-v1" | "blightspitter-v1" | "quillback-matriarch-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

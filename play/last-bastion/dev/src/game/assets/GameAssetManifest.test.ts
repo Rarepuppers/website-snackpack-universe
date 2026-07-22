@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(134);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(146);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -360,6 +360,63 @@ describe("GameAssetManifest", () => {
     if (pad.kind === "spritesheet") expect(pad.frameCount).toBe(6);
     if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
     expect(portrait.logicalWidth).toBe(256);
+  });
+
+  it("locks Production Batch AB Storm Regent contracts", () => {
+    const body = GAME_ASSETS["storm-regent-v1"];
+    const node = GAME_ASSETS["storm-conductive-node-v1"];
+    const effects = GAME_ASSETS["storm-regent-effects-v1"];
+    const portrait = GAME_ASSETS["storm-regent-portrait-v1"];
+    for (const asset of [body, node, effects]) expect(asset.kind).toBe("spritesheet");
+    expect(portrait.kind).toBe("image");
+    if (body.kind === "spritesheet") {
+      expect(body.frameCount).toBe(44);
+      expect(body.logicalWidth).toBe(192);
+      expect(body.pivot.y).toBe(0.92);
+    }
+    if (node.kind === "spritesheet") {
+      expect(node.frameCount).toBe(6);
+      expect(node.logicalWidth).toBe(128);
+      expect(node.pivot.y).toBe(0.88);
+    }
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
+    expect(portrait.logicalWidth).toBe(256);
+  });
+
+  it("locks Production Batch AC Abomination Prime contracts", () => {
+    const body = GAME_ASSETS["abomination-prime-v1"];
+    const biomass = GAME_ASSETS["abomination-prime-biomass-v1"];
+    const effects = GAME_ASSETS["abomination-prime-effects-v1"];
+    const portrait = GAME_ASSETS["abomination-prime-portrait-v1"];
+    for (const asset of [body, biomass, effects]) expect(asset.kind).toBe("spritesheet");
+    expect(portrait.kind).toBe("image");
+    if (body.kind === "spritesheet") {
+      expect(body.frameCount).toBe(52);
+      expect(body.logicalWidth).toBe(192);
+      expect(body.pivot.y).toBe(0.92);
+    }
+    if (biomass.kind === "spritesheet") {
+      expect(biomass.frameCount).toBe(8);
+      expect(biomass.logicalWidth).toBe(128);
+    }
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
+    expect(portrait.logicalWidth).toBe(256);
+  });
+
+  it("locks Production Batch AD Science Wing contracts", () => {
+    const expected = {
+      "science-wing-floor-v1": [16, 128, 0.5],
+      "science-wing-boundary-v1": [8, 128, 0.5],
+      "science-wing-fixtures-v1": [8, 192, 0.92],
+      "science-wing-decals-v1": [8, 128, 0.5],
+    } as const;
+    for (const [id, [frameCount, logicalWidth, pivotY]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      expect(asset.logicalWidth).toBe(logicalWidth);
+      expect(asset.pivot.y).toBe(pivotY);
+      if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
+    }
   });
 
   it("locks the production Scrap Shop Batch N2 contracts", () => {

@@ -132,6 +132,18 @@ import assemblyPrimeSheetUrl from "../../../../art/production-tests/batch-aa/ass
 import assemblyPrimePadUrl from "../../../../art/production-tests/batch-aa/assembly-prime-pad-v1-128.png";
 import assemblyPrimeEffectsUrl from "../../../../art/production-tests/batch-aa/assembly-prime-effects-v1-128.png";
 import assemblyPrimePortraitUrl from "../../../../art/production-tests/batch-aa/assembly-prime-portrait-v1-256.png";
+import stormRegentSheetUrl from "../../../../art/production-tests/batch-ab/storm-regent-v1-192.png";
+import stormConductiveNodeUrl from "../../../../art/production-tests/batch-ab/storm-conductive-node-v1-128.png";
+import stormRegentEffectsUrl from "../../../../art/production-tests/batch-ab/storm-regent-effects-v1-128.png";
+import stormRegentPortraitUrl from "../../../../art/production-tests/batch-ab/storm-regent-portrait-v1-256.png";
+import abominationPrimeSheetUrl from "../../../../art/production-tests/batch-ac/abomination-prime-v1-192.png";
+import abominationPrimeBiomassUrl from "../../../../art/production-tests/batch-ac/abomination-prime-biomass-v1-128.png";
+import abominationPrimeEffectsUrl from "../../../../art/production-tests/batch-ac/abomination-prime-effects-v1-128.png";
+import abominationPrimePortraitUrl from "../../../../art/production-tests/batch-ac/abomination-prime-portrait-v1-256.png";
+import scienceWingFloorUrl from "../../../../art/production-tests/batch-ad/science-wing-floor-v1-128.png";
+import scienceWingBoundaryUrl from "../../../../art/production-tests/batch-ad/science-wing-boundary-v1-128.png";
+import scienceWingFixturesUrl from "../../../../art/production-tests/batch-ad/science-wing-fixtures-v1-192.png";
+import scienceWingDecalsUrl from "../../../../art/production-tests/batch-ad/science-wing-decals-v1-128.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -221,6 +233,18 @@ export type GameAssetId =
   | "assembly-prime-pad-v1"
   | "assembly-prime-effects-v1"
   | "assembly-prime-portrait-v1"
+  | "storm-regent-v1"
+  | "storm-conductive-node-v1"
+  | "storm-regent-effects-v1"
+  | "storm-regent-portrait-v1"
+  | "abomination-prime-v1"
+  | "abomination-prime-biomass-v1"
+  | "abomination-prime-effects-v1"
+  | "abomination-prime-portrait-v1"
+  | "science-wing-floor-v1"
+  | "science-wing-boundary-v1"
+  | "science-wing-fixtures-v1"
+  | "science-wing-decals-v1"
   | "emberfall-floor-v1"
   | "emberfall-boundary-v1"
   | "emberfall-obstacles-v1"
@@ -376,6 +400,18 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("assembly-prime-pad-v1", assemblyPrimePadUrl, 128, 128, 6, 0.5, 0.78),
   sheet("assembly-prime-effects-v1", assemblyPrimeEffectsUrl, 128, 128, 8, 0.5, 0.5),
   image("assembly-prime-portrait-v1", assemblyPrimePortraitUrl, 256, 256, 0.5, 0.5),
+  sheet("storm-regent-v1", stormRegentSheetUrl, 192, 192, 44, 0.5, 0.92),
+  sheet("storm-conductive-node-v1", stormConductiveNodeUrl, 128, 128, 6, 0.5, 0.88),
+  sheet("storm-regent-effects-v1", stormRegentEffectsUrl, 128, 128, 8, 0.5, 0.5),
+  image("storm-regent-portrait-v1", stormRegentPortraitUrl, 256, 256, 0.5, 0.5),
+  sheet("abomination-prime-v1", abominationPrimeSheetUrl, 192, 192, 52, 0.5, 0.92),
+  sheet("abomination-prime-biomass-v1", abominationPrimeBiomassUrl, 128, 128, 8, 0.5, 0.72),
+  sheet("abomination-prime-effects-v1", abominationPrimeEffectsUrl, 128, 128, 8, 0.5, 0.5),
+  image("abomination-prime-portrait-v1", abominationPrimePortraitUrl, 256, 256, 0.5, 0.5),
+  sheet("science-wing-floor-v1", scienceWingFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("science-wing-boundary-v1", scienceWingBoundaryUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("science-wing-fixtures-v1", scienceWingFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("science-wing-decals-v1", scienceWingDecalsUrl, 128, 128, 8, 0.5, 0.5),
   sheet("emberfall-floor-v1", emberfallFloorUrl, 64, 64, 6, 0.5, 0.5),
   sheet("emberfall-boundary-v1", emberfallBoundaryUrl, 64, 64, 8, 0.5, 0.5),
   sheet("emberfall-obstacles-v1", emberfallObstacleUrl, 96, 96, 4, 0.5, 0.5),

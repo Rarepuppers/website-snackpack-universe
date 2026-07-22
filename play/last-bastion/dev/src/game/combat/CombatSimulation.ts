@@ -348,8 +348,8 @@ export type CombatEvent =
   | { type: "assembly-prime-fabrication-interrupted"; position: Vector2Data; enemyId: number; reason: "owner-damage" | "pad-destroyed" }
   | { type: "assembly-prime-drone-recalled"; position: Vector2Data; enemyId: number; childId: number }
   | { type: "storm-regent-warning"; position: Vector2Data; enemyId: number; move: StormRegentMove; segments: StormChainState["segments"]; centre?: Vector2Data; radiusMetres?: number; nodeId?: number }
-  | { type: "storm-regent-discharged"; position: Vector2Data; enemyId: number; move: StormRegentMove; hitPlayer: boolean; damage: number }
-  | { type: "storm-regent-interrupted"; position: Vector2Data; enemyId: number; move: StormRegentMove }
+  | { type: "storm-regent-discharged"; position: Vector2Data; enemyId: number; move: StormRegentMove; hitPlayer: boolean; damage: number; centre?: Vector2Data }
+  | { type: "storm-regent-interrupted"; position: Vector2Data; enemyId: number; move: StormRegentMove; nodePosition?: Vector2Data }
   | { type: "abomination-prime-warning"; position: Vector2Data; enemyId: number; move: AbominationPrimeMove; target: Vector2Data; radiusMetres?: number }
   | { type: "abomination-prime-slam"; position: Vector2Data; enemyId: number; hitPlayer: boolean; damage: number; radiusMetres: number }
   | { type: "abomination-prime-grab-latched"; position: Vector2Data; enemyId: number; damage: number }
@@ -4713,15 +4713,18 @@ export class CombatSimulation {
       });
     }
     if (result.interrupted && result.moveResolved) {
+      const interruptedNode = previous.nodes.find((candidate) => candidate.id === previous.overchargeNodeId);
       this.frameEvents.push({
         type: "storm-regent-interrupted",
         position: { ...enemy.position },
         enemyId: enemy.id,
         move: result.moveResolved,
+        nodePosition: interruptedNode ? { ...interruptedNode.position } : undefined,
       });
     }
     if (result.actionStarted) {
       let hitPlayer = false;
+      let effectCentre: Vector2Data | undefined;
       if (result.actionStarted === "chain-strike") {
         hitPlayer = pointInsideStormChain(
           this.playerPosition,
@@ -4731,6 +4734,7 @@ export class CombatSimulation {
       } else {
         const node = result.state.nodes.find((candidate) => candidate.id === result.state.overchargeNodeId);
         const centre = result.actionStarted === "coil-burst" ? result.state.coilCentre : node?.position;
+        effectCentre = centre ? { ...centre } : undefined;
         const radius = result.actionStarted === "coil-burst"
           ? STORM_REGENT_COIL_RADIUS_METRES
           : STORM_REGENT_NODE_OVERCHARGE_RADIUS_METRES;
@@ -4746,6 +4750,7 @@ export class CombatSimulation {
         move: result.actionStarted,
         hitPlayer,
         damage,
+        centre: effectCentre,
       });
     }
 

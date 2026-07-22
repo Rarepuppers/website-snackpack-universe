@@ -10,6 +10,7 @@ describe("arenaThemes", () => {
 
   it("resolves themes by id and rejects unknown ids", () => {
     expect(arenaThemeById("emberfall")?.name).toBe("Emberfall Ruin");
+    expect(arenaThemeById("science-wing")?.name).toBe("Bastion Science Wing");
     expect(arenaThemeById("not-a-theme")).toBeNull();
     expect(arenaThemeById(null)).toBeNull();
   });
@@ -18,7 +19,7 @@ describe("arenaThemes", () => {
     for (const seed of [0, 1, 7, 1023, -5]) {
       expect(pickArenaTheme(seed)).toBe(pickArenaTheme(seed));
     }
-    const picks = new Set([0, 1, 2, 3, 4].map((seed) => pickArenaTheme(seed).id));
+    const picks = new Set(ARENA_THEMES.map((_, seed) => pickArenaTheme(seed).id));
     expect(picks.size).toBe(ARENA_THEMES.length);
   });
 
@@ -26,11 +27,23 @@ describe("arenaThemes", () => {
     for (const theme of ARENA_THEMES) {
       expect(theme.floorTexture).toBe(theme.id === "bastion-standard" ? "arena-floor-v1" : `${theme.id}-floor-v1`);
       expect(theme.boundaryTexture).toBe(theme.id === "bastion-standard" ? "arena-boundary-v1" : `${theme.id}-boundary-v1`);
-      expect(theme.obstacleTexture).toBe(theme.id === "bastion-standard" ? "arena-obstacle-v1" : `${theme.id}-obstacles-v1`);
+      const expectedObstacles = theme.id === "bastion-standard"
+        ? "arena-obstacle-v1"
+        : theme.id === "science-wing" ? "science-wing-fixtures-v1" : `${theme.id}-obstacles-v1`;
+      expect(theme.obstacleTexture).toBe(expectedObstacles);
       expect(theme.decalTexture).toBe(theme.id === "bastion-standard" ? null : `${theme.id}-decals-v1`);
       expect(theme.readabilityWashAlpha).toBeGreaterThanOrEqual(0);
       expect(theme.readabilityWashAlpha).toBeLessThanOrEqual(0.2);
     }
+  });
+
+  it("keeps the Science Wing on high-resolution modular contracts", () => {
+    const theme = arenaThemeById("science-wing")!;
+    expect(theme.floorTexture).toBe("science-wing-floor-v1");
+    expect(theme.boundaryTexture).toBe("science-wing-boundary-v1");
+    expect(theme.obstacleTexture).toBe("science-wing-fixtures-v1");
+    expect(theme.decalTexture).toBe("science-wing-decals-v1");
+    expect(theme.readabilityWashAlpha).toBeLessThanOrEqual(0.1);
   });
 
   it("produces deterministic restrained lighting variants without changing assets", () => {

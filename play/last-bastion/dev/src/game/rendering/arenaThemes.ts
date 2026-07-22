@@ -87,6 +87,19 @@ export const ARENA_THEMES: readonly ArenaTheme[] = Object.freeze([
     decalTexture: "arctic-relay-decals-v1",
     readabilityWashAlpha: 0.2,
   }),
+  Object.freeze({
+    id: "science-wing",
+    name: "Bastion Science Wing",
+    backdropColor: 0x0c151f,
+    floorTint: 0xffffff,
+    boundaryTint: 0xffffff,
+    obstacleTint: 0xa9bbc8,
+    floorTexture: "science-wing-floor-v1",
+    boundaryTexture: "science-wing-boundary-v1",
+    obstacleTexture: "science-wing-fixtures-v1",
+    decalTexture: "science-wing-decals-v1",
+    readabilityWashAlpha: 0.08,
+  }),
 ]);
 
 export function arenaThemeById(id: string | null | undefined): ArenaTheme | null {
