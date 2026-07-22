@@ -130,6 +130,10 @@ try {
     'science-wing-boundary-v1-128.png'
     'science-wing-fixtures-v1-192.png'
     'science-wing-decals-v1-128.png'
+    'bastion-logistics-floor-v1-128.png'
+    'bastion-logistics-boundary-v1-128.png'
+    'bastion-logistics-fixtures-v1-192.png'
+    'bastion-logistics-decals-v1-128.png'
   )
 
   foreach ($artAssetName in $requiredArtAssets) {
@@ -170,6 +174,7 @@ try {
     '/play/last-bastion/?mode=gallery&batch=j1',
     '/play/last-bastion/?mode=gallery&batch=j2',
     '/play/last-bastion/?mode=gallery&batch=ad',
+    '/play/last-bastion/?mode=gallery&batch=ae',
     '/play/last-bastion/?theme=science-wing&worldseed=0&scenario=density-capacity',
     '/play/last-bastion/?loadout=vertical',
     '/play/last-bastion/?loadout=patrol',

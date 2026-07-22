@@ -1136,3 +1136,12 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Generated Batch AD through four built-in image-generation calls: a 16-tile Science Wing floor, eight cardinal/corner/gate/breach boundaries, eight lab/cryo/reactor/control/specimen/surgery/camera/teleporter fixtures, and eight restrained under-floor decals. Retained 256/384 px masters and 128/192 px runtime derivatives, chroma/alpha provenance, exact prompts, deterministic normalizer, contact sheet, and seam mosaic under `art/production-tests/batch-ad/`.
 - Registered all 44 frames and added `?mode=gallery&batch=ad`; collision, interaction, destructibility, hazards, adjacency, objectives, lighting, and timing remain code-owned. Exact dimensions/alpha, repeated-tile visual review, 590 tests, TypeScript, production build, 93-asset HTTP smoke, 52 review routes, and 194-reference offline audit pass.
 - Next environment package after Science Wing live/multi-resolution acceptance: Batch AE Bastion Logistics and Defence, replacing the generic starting environment with supply depot, armoury, weapon racks, shop/blacksmith, medic, command, loading-bay, and bunker identities.
+
+### Science Wing live acceptance and Production Asset Batch AE
+
+**Completed:** 22 July 2026
+
+- Promoted Batch AD to the deterministic `science-wing` arena theme and reviewed ordinary and density-capacity combat at native, Full HD 2×, and 4K 4× presentation. Floor rhythm, low-contrast decals, actors, projectiles, pickups, and title-safe HUD remain distinct. Focused theme/manifest tests pass.
+- Generated Batch AE through four built-in image calls: 16 Logistics floors, eight reinforced cardinal/corner/gate/breach boundaries, eight supply/weapon/shop/forge/medic/command/loading/bunker fixtures, and eight sparse operational decals.
+- Retained untouched source/chroma files, clean alpha, 256/384 px masters, 128/192 px runtime atlases, deterministic normalizer, seam mosaic, prompts, and contact sheet under `art/production-tests/batch-ae/`. All 44 frames are manifest-registered and exposed at `?mode=gallery&batch=ae` while gameplay ownership stays in code.
+- Next: promote Logistics to a deterministic live theme and run mixed-density native/Full HD/4K acceptance. Batch AF Machine Foundry follows only after that gate.

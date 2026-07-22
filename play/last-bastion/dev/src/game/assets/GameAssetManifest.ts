@@ -144,6 +144,10 @@ import scienceWingFloorUrl from "../../../../art/production-tests/batch-ad/scien
 import scienceWingBoundaryUrl from "../../../../art/production-tests/batch-ad/science-wing-boundary-v1-128.png";
 import scienceWingFixturesUrl from "../../../../art/production-tests/batch-ad/science-wing-fixtures-v1-192.png";
 import scienceWingDecalsUrl from "../../../../art/production-tests/batch-ad/science-wing-decals-v1-128.png";
+import bastionLogisticsFloorUrl from "../../../../art/production-tests/batch-ae/bastion-logistics-floor-v1-128.png";
+import bastionLogisticsBoundaryUrl from "../../../../art/production-tests/batch-ae/bastion-logistics-boundary-v1-128.png";
+import bastionLogisticsFixturesUrl from "../../../../art/production-tests/batch-ae/bastion-logistics-fixtures-v1-192.png";
+import bastionLogisticsDecalsUrl from "../../../../art/production-tests/batch-ae/bastion-logistics-decals-v1-128.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -245,6 +249,10 @@ export type GameAssetId =
   | "science-wing-boundary-v1"
   | "science-wing-fixtures-v1"
   | "science-wing-decals-v1"
+  | "bastion-logistics-floor-v1"
+  | "bastion-logistics-boundary-v1"
+  | "bastion-logistics-fixtures-v1"
+  | "bastion-logistics-decals-v1"
   | "emberfall-floor-v1"
   | "emberfall-boundary-v1"
   | "emberfall-obstacles-v1"
@@ -412,6 +420,10 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("science-wing-boundary-v1", scienceWingBoundaryUrl, 128, 128, 8, 0.5, 0.5),
   sheet("science-wing-fixtures-v1", scienceWingFixturesUrl, 192, 192, 8, 0.5, 0.92),
   sheet("science-wing-decals-v1", scienceWingDecalsUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("bastion-logistics-floor-v1", bastionLogisticsFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("bastion-logistics-boundary-v1", bastionLogisticsBoundaryUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("bastion-logistics-fixtures-v1", bastionLogisticsFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("bastion-logistics-decals-v1", bastionLogisticsDecalsUrl, 128, 128, 8, 0.5, 0.5),
   sheet("emberfall-floor-v1", emberfallFloorUrl, 64, 64, 6, 0.5, 0.5),
   sheet("emberfall-boundary-v1", emberfallBoundaryUrl, 64, 64, 8, 0.5, 0.5),
   sheet("emberfall-obstacles-v1", emberfallObstacleUrl, 96, 96, 4, 0.5, 0.5),

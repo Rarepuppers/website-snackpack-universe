@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(146);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(150);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -409,6 +409,22 @@ describe("GameAssetManifest", () => {
       "science-wing-boundary-v1": [8, 128, 0.5],
       "science-wing-fixtures-v1": [8, 192, 0.92],
       "science-wing-decals-v1": [8, 128, 0.5],
+    } as const;
+    for (const [id, [frameCount, logicalWidth, pivotY]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      expect(asset.logicalWidth).toBe(logicalWidth);
+      expect(asset.pivot.y).toBe(pivotY);
+      if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
+    }
+  });
+
+  it("locks Production Batch AE Bastion Logistics contracts", () => {
+    const expected = {
+      "bastion-logistics-floor-v1": [16, 128, 0.5],
+      "bastion-logistics-boundary-v1": [8, 128, 0.5],
+      "bastion-logistics-fixtures-v1": [8, 192, 0.92],
+      "bastion-logistics-decals-v1": [8, 128, 0.5],
     } as const;
     for (const [id, [frameCount, logicalWidth, pivotY]] of Object.entries(expected)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];

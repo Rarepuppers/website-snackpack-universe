@@ -32,13 +32,17 @@ Art never owns collision, damage, cover, room adjacency, objective state, hazard
 
 Rooms share a kit wherever their construction material is the same. Identity comes from floor variants, fixtures, decals, lighting tint, encounters, and audio—not a separate incompatible tileset for every room name.
 
-### 1. Bastion Science Wing — Batch AD
+### 1. Bastion Science Wing — Batch AD accepted
 
 Science laboratory, lab testing, cryostasis, surgery/alien testing, bio upgrades, chimera experiment, reactor, energy, control/camera, teleporter, and sterile medical research rooms.
 
-### 2. Bastion Logistics and Defence — Batch AE
+Generated, normalized, gallery-bound, and live-theme accepted at native, mixed-density, Full HD 2×, and 4K 4× presentation.
+
+### 2. Bastion Logistics and Defence — Batch AE preflight complete
 
 Army supply depot, supply room, armoury, weapon racks, shop rooms, high-tech blacksmith, medic outpost, tower-defence command room, barracks, briefing room, loading bay, and emergency bunker.
+
+Generated, normalized, and gallery-bound. Live-theme and mixed-density multi-resolution acceptance remains before promotion.
 
 ### 3. Machine Foundry — Batch AF
 

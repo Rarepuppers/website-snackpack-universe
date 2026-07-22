@@ -15,6 +15,10 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "ae") {
+      this.createBatchAEGallery();
+      return;
+    }
     if (batch === "ad") {
       this.createBatchADGallery();
       return;
@@ -724,6 +728,39 @@ export class AssetGalleryScene extends Phaser.Scene {
       this.add.sprite(x, y, "science-wing-decals-v1", frame).setScale(0.43);
     }
     this.add.text(480, 528, "Preflight only: code owns room layout, collision, interactions, hazards, lighting, and adjacency", style("#8fb2c9", "9px")).setOrigin(0.5);
+  }
+
+  private createBatchAEGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - BASTION LOGISTICS AND DEFENCE BATCH AE", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Supply / armoury / shop / forge / medic / command / loading / bunker - 44 runtime visuals", style("#8fb2c9", "10px"));
+    this.add.text(20, 62, "FLOORS - heavy deck / cargo / armoury / shop / forge / medic / command / loading", style("#ffcf7a", "9px"));
+    for (let frame = 0; frame < 16; frame += 1) {
+      const x = 58 + (frame % 4) * 75;
+      const y = 103 + Math.floor(frame / 4) * 75;
+      this.add.sprite(x, y, "bastion-logistics-floor-v1", frame).setScale(0.52);
+      this.add.text(x + 25, y + 24, String(frame), style("#93abc0", "7px")).setOrigin(0.5);
+    }
+    this.add.text(365, 62, "BOUNDARIES - cardinal / corners / cargo gate / breach", style("#ffcf7a", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 118 + Math.floor(frame / 4) * 92;
+      this.add.sprite(x, y, "bastion-logistics-boundary-v1", frame).setScale(0.55);
+    }
+    this.add.text(365, 262, "FIXTURES - supplies / rack / counter / forge / medic / command / loader / ammunition", style("#68e4e8", "8px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 418 + (frame % 4) * 132;
+      const y = 355 + Math.floor(frame / 4) * 112;
+      this.add.sprite(x, y, "bastion-logistics-fixtures-v1", frame).setScale(0.43).setOrigin(0.5, 0.92);
+      this.drawPivot(x, y);
+    }
+    this.add.text(20, 400, "LOW-CONTRAST DECALS", style("#d6a8ff", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 48 + (frame % 4) * 75;
+      const y = 448 + Math.floor(frame / 4) * 63;
+      this.add.sprite(x, y, "bastion-logistics-floor-v1", frame % 4).setScale(0.43).setAlpha(0.65);
+      this.add.sprite(x, y, "bastion-logistics-decals-v1", frame).setScale(0.43);
+    }
+    this.add.text(480, 528, "Preflight only: shops, healing, cover, inventory, interaction, collision, and objectives remain code-owned", style("#8fb2c9", "9px")).setOrigin(0.5);
   }
 
   private createBatchQGallery(): void {

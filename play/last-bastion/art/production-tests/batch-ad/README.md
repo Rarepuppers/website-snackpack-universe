@@ -1,6 +1,6 @@
 # Production Asset Batch AD — Bastion Science Wing
 
-**Status:** Generated and normalized — 22 July 2026; gallery and live-theme acceptance pending.
+**Status:** Generated, normalized, gallery-bound, and live-theme accepted — 22 July 2026.
 
 Batch AD establishes the Full HD/4K modular environment contract and covers laboratory, testing, cryostasis, surgery, bio-upgrade, reactor, energy, control, camera, and teleporter room identities without baking room logic into art.
 
@@ -37,3 +37,5 @@ Art owns appearance only. Code owns room selection, adjacency, collision, destru
 - Grayscale actor, pickup, projectile, and telegraph contrast.
 - Native 960×540, Full HD, and 4K gallery/live review.
 - Maximum-density performance and offline build verification.
+
+The deterministic `?theme=science-wing&worldseed=0&scenario=density-capacity` route passed native, high-density, Full HD 2×, and 4K 4× review. Actors, bullets, pickups, and HUD retain contrast; panel repetition reads as deliberate deck rhythm; no special floor variant is permitted to own collision or damage.
