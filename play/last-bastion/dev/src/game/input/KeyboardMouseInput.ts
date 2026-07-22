@@ -7,6 +7,11 @@ import {
   mergeIntents,
   type GamepadStateSnapshot,
 } from "./GamepadIntentMapper";
+import {
+  DEFAULT_CONTROL_BINDINGS,
+  keyboardCodeNumber,
+  type ControlBindings,
+} from "./ControlBindings";
 
 interface ControlKeys {
   up: Phaser.Input.Keyboard.Key;
@@ -28,31 +33,32 @@ interface ControlKeys {
 
 export class KeyboardMouseInput {
   private readonly keys: ControlKeys;
-  private readonly gamepadMapper = new GamepadIntentMapper();
+  private readonly gamepadMapper: GamepadIntentMapper;
 
-  constructor(private readonly scene: Phaser.Scene) {
+  constructor(private readonly scene: Phaser.Scene, bindings: ControlBindings = DEFAULT_CONTROL_BINDINGS) {
     const keyboard = scene.input.keyboard;
 
     if (!keyboard) {
       throw new Error("Keyboard input is unavailable in this browser.");
     }
 
+    this.gamepadMapper = new GamepadIntentMapper(bindings.gamepad);
     this.keys = keyboard.addKeys({
-      up: Phaser.Input.Keyboard.KeyCodes.W,
-      down: Phaser.Input.Keyboard.KeyCodes.S,
-      left: Phaser.Input.Keyboard.KeyCodes.A,
-      right: Phaser.Input.Keyboard.KeyCodes.D,
+      up: keyboardCodeNumber(bindings.keyboard.moveUp),
+      down: keyboardCodeNumber(bindings.keyboard.moveDown),
+      left: keyboardCodeNumber(bindings.keyboard.moveLeft),
+      right: keyboardCodeNumber(bindings.keyboard.moveRight),
       upAlt: Phaser.Input.Keyboard.KeyCodes.UP,
       downAlt: Phaser.Input.Keyboard.KeyCodes.DOWN,
       leftAlt: Phaser.Input.Keyboard.KeyCodes.LEFT,
       rightAlt: Phaser.Input.Keyboard.KeyCodes.RIGHT,
-      evade: Phaser.Input.Keyboard.KeyCodes.SPACE,
-      interact: Phaser.Input.Keyboard.KeyCodes.E,
-      ultimate: Phaser.Input.Keyboard.KeyCodes.R,
-      kit: Phaser.Input.Keyboard.KeyCodes.Q,
-      pause: Phaser.Input.Keyboard.KeyCodes.ESC,
+      evade: keyboardCodeNumber(bindings.keyboard.evade),
+      interact: keyboardCodeNumber(bindings.keyboard.interact),
+      ultimate: keyboardCodeNumber(bindings.keyboard.ultimate),
+      kit: keyboardCodeNumber(bindings.keyboard.kit),
+      pause: keyboardCodeNumber(bindings.keyboard.pause),
       restart: Phaser.Input.Keyboard.KeyCodes.ENTER,
-      toggleFireMode: Phaser.Input.Keyboard.KeyCodes.T,
+      toggleFireMode: keyboardCodeNumber(bindings.keyboard.toggleFireMode),
     }) as unknown as ControlKeys;
   }
 

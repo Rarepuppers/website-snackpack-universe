@@ -1,5 +1,15 @@
 import type { GameProgress, GameSettings } from "../save/LocalSaveStore";
 import { PERK_CATALOG, unlockedPerkIds, type PerkId } from "../perks/perkCatalog";
+import {
+  DEFAULT_CONTROL_BINDINGS,
+  GAMEPAD_BINDABLE_ACTIONS,
+  KEYBOARD_BINDABLE_ACTIONS,
+  gamepadBindingLabel,
+  keyboardBindingLabel,
+  type ControlBindings,
+  type GamepadBindableAction,
+  type KeyboardBindableAction,
+} from "../input/ControlBindings";
 
 /**
  * Front-end shell screen flow (Task 37 behavior gate).
@@ -15,6 +25,7 @@ export type ShellScreen =
   | "menu"
   | "how-to-play"
   | "settings"
+  | "controls"
   | "lab"
   | "records"
   | "character-select";
@@ -24,7 +35,8 @@ export type ShellIntent = "up" | "down" | "left" | "right" | "confirm" | "back";
 export type ShellEffect =
   | { type: "start-run"; heroId: string; perkId: PerkId }
   | { type: "open-url"; url: string }
-  | { type: "set-setting"; key: keyof GameSettings; value: boolean };
+  | { type: "set-setting"; key: keyof GameSettings; value: boolean }
+  | { type: "capture-binding"; device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction };
 
 export interface MenuCard {
   id: "expedition" | "how-to-play" | "settings" | "codex" | "lab" | "records";
@@ -59,8 +71,18 @@ export const HOW_TO_PLAY_PAGES: readonly { title: string; body: string }[] = Obj
   },
 ]);
 
+export function howToPlayPages(bindings: ControlBindings): readonly { title: string; body: string }[] {
+  const move = [bindings.keyboard.moveUp, bindings.keyboard.moveLeft, bindings.keyboard.moveDown, bindings.keyboard.moveRight]
+    .map(keyboardBindingLabel).join("");
+  return [
+    { title: "MOVE AND SURVIVE", body: `${move} or left stick moves. Mouse or right stick aims.\n${keyboardBindingLabel(bindings.keyboard.evade)} / ${gamepadBindingLabel(bindings.gamepad.evade)} rolls with a short invulnerability window.\nHold position for one second to Entrench for bonus armour.` },
+    { title: "YOUR ARSENAL", body: `Weapons follow Auto-fire / Manual; ${keyboardBindingLabel(bindings.keyboard.toggleFireMode)} / ${gamepadBindingLabel(bindings.gamepad.toggleFireMode)} toggles it.\n${keyboardBindingLabel(bindings.keyboard.ultimate)} / ${gamepadBindingLabel(bindings.gamepad.ultimate)} fires the ultimate. ${keyboardBindingLabel(bindings.keyboard.kit)} / ${gamepadBindingLabel(bindings.gamepad.kit)} uses your carried kit.\nAutonomous support weapons keep their own cadence in either mode.` },
+    ...HOW_TO_PLAY_PAGES.slice(2),
+  ];
+}
+
 export interface SettingsRow {
-  key: keyof GameSettings;
+  key: keyof GameSettings | "controls";
   label: string;
 }
 
@@ -71,6 +93,7 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { key: "damageNumbersEnabled", label: "Damage numbers" },
   { key: "cooldownTimersEnabled", label: "Cooldown timers" },
   { key: "autoFireEnabled", label: "Auto-fire" },
+  { key: "controls", label: "Control bindings" },
 ]);
 
 export interface RosterEntry {
@@ -119,6 +142,9 @@ export interface ShellState {
   perkIndex: number;
   unlockedPerkIds: readonly PerkId[];
   settings: GameSettings;
+  controls: ControlBindings;
+  controlIndex: number;
+  controlDevice: "keyboard" | "gamepad";
 }
 
 export function createShellState(
@@ -131,6 +157,7 @@ export function createShellState(
   },
   selectedPerkId: PerkId | null = "perk-veteran",
   selectedHeroId: "marine" | "medic" = "marine",
+  controls: ControlBindings = DEFAULT_CONTROL_BINDINGS,
 ): ShellState {
   const unlocked = unlockedPerkIds(progress);
   const selectedIndex = Math.max(0, PERK_CATALOG.findIndex((perk) => perk.id === selectedPerkId));
@@ -144,6 +171,9 @@ export function createShellState(
     perkIndex: selectedIndex,
     unlockedPerkIds: unlocked,
     settings: { ...settings },
+    controls: { keyboard: { ...controls.keyboard }, gamepad: { ...controls.gamepad } },
+    controlIndex: 0,
+    controlDevice: "keyboard",
   };
 }
 
@@ -165,6 +195,8 @@ export function stepShell(state: ShellState, intent: ShellIntent): ShellStepResu
       return stepHowToPlay(state, intent);
     case "settings":
       return stepSettings(state, intent);
+    case "controls":
+      return stepControls(state, intent);
     case "lab":
       return stepLab(state, intent);
     case "records":
@@ -236,11 +268,31 @@ function stepSettings(state: ShellState, intent: ShellIntent): ShellStepResult {
   }
   if (intent === "left" || intent === "right" || intent === "confirm") {
     const row = SETTINGS_ROWS[state.settingsIndex]!;
+    if (row.key === "controls") {
+      return { state: { ...state, screen: "controls", controlIndex: 0 }, effects: [] };
+    }
     const value = !state.settings[row.key];
     return {
       state: { ...state, settings: { ...state.settings, [row.key]: value } },
       effects: [{ type: "set-setting", key: row.key, value }],
     };
+  }
+  return { state, effects: [] };
+}
+
+function stepControls(state: ShellState, intent: ShellIntent): ShellStepResult {
+  if (intent === "back") return { state: { ...state, screen: "settings" }, effects: [] };
+  if (intent === "up") return { state: { ...state, controlIndex: wrap(state.controlIndex - 1, KEYBOARD_BINDABLE_ACTIONS.length) }, effects: [] };
+  if (intent === "down") return { state: { ...state, controlIndex: wrap(state.controlIndex + 1, KEYBOARD_BINDABLE_ACTIONS.length) }, effects: [] };
+  if (intent === "left" || intent === "right") {
+    return { state: { ...state, controlDevice: state.controlDevice === "keyboard" ? "gamepad" : "keyboard" }, effects: [] };
+  }
+  if (intent === "confirm") {
+    const action = KEYBOARD_BINDABLE_ACTIONS[state.controlIndex]!;
+    if (state.controlDevice === "gamepad" && !GAMEPAD_BINDABLE_ACTIONS.includes(action as GamepadBindableAction)) {
+      return { state, effects: [] };
+    }
+    return { state, effects: [{ type: "capture-binding", device: state.controlDevice, action }] };
   }
   return { state, effects: [] };
 }

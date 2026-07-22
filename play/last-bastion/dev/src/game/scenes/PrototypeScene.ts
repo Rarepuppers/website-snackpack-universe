@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { KeyboardMouseInput } from "../input/KeyboardMouseInput";
 import { focusLossRequestsPause } from "../input/FocusPause";
+import { keyboardBindingLabel } from "../input/ControlBindings";
 import type { PlayerIntent } from "../input/PlayerIntent";
 import {
   CombatSimulation,
@@ -194,6 +195,7 @@ export class PrototypeScene extends Phaser.Scene {
     }
     const { width, height } = this.scale;
     const safe = uiSafeArea(width, height);
+    const controls = this.saveStore.load().controls;
     renderArena(this, this.simulation.arena, PIXELS_PER_METRE, this.showDebug, this.useMarineArt, this.arenaTheme);
     this.effectPool = new VisualEffectPool(this, this.stressProfile === 12 ? 192 : 96);
     this.damageNumbers = new FloatingDamageNumbers(this);
@@ -236,16 +238,18 @@ export class PrototypeScene extends Phaser.Scene {
       .startFollow(this.player, true, 0.12, 0.12)
       .setDeadzone(210, 130);
 
-    this.add.text(safe.left, safe.bottom, "WASD MOVE  •  MOUSE AIM / FIRE  •  T FIRE MODE  •  ESC PAUSE", {
+    const movement = [controls.keyboard.moveUp, controls.keyboard.moveLeft, controls.keyboard.moveDown, controls.keyboard.moveRight]
+      .map(keyboardBindingLabel).join("");
+    this.add.text(safe.left, safe.bottom, `${movement} MOVE  •  MOUSE AIM/FIRE  •  ${keyboardBindingLabel(controls.keyboard.toggleFireMode)} FIRE MODE  •  ${keyboardBindingLabel(controls.keyboard.pause)} PAUSE`, {
       color: "#9fb3c8",
       fontFamily: "monospace",
       fontSize: "10px",
     }).setOrigin(0, 1).setDepth(2000).setScrollFactor(0).setResolution(uiTextResolution());
 
-    this.hud = new CombatHud(this, this.showDebug, this.useMarineArt, this.settings.cooldownTimersEnabled);
+    this.hud = new CombatHud(this, this.showDebug, this.useMarineArt, this.settings.cooldownTimersEnabled, controls);
     this.createFenceViews();
 
-    this.controls = new KeyboardMouseInput(this);
+    this.controls = new KeyboardMouseInput(this, controls);
     // Separate Key instances from the combat adapter so menu navigation gets
     // its own JustDown edges without stealing the gameplay bindings.
     this.menuKeys = this.input.keyboard!.addKeys({

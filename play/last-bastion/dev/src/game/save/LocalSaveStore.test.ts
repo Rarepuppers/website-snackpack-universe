@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { DEFAULT_SAVE, LocalSaveStore, SAVE_STORAGE_KEY } from "./LocalSaveStore";
 import { createRunSummary } from "../run/RunSummary";
+import { rebindGamepad, rebindKeyboard } from "../input/ControlBindings";
 
 function fakeStorage(initial: Record<string, string> = {}) {
   const data = new Map<string, string>(Object.entries(initial));
@@ -41,6 +42,21 @@ describe("LocalSaveStore", () => {
     // Untouched settings keep their defaults.
     expect(reloaded.settings.damageNumbersEnabled).toBe(true);
     expect(reloaded.settings.autoFireEnabled).toBe(true);
+  });
+
+  it("migrates old saves to default controls and persists remapped controls", () => {
+    const storage = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({ ...DEFAULT_SAVE, version: 6, controls: undefined }),
+    });
+    const migrated = new LocalSaveStore(storage);
+    expect(migrated.load().version).toBe(7);
+    expect(migrated.load().controls.keyboard.evade).toBe("Space");
+    const keyboard = rebindKeyboard(migrated.load().controls, "evade", "KeyF");
+    const remapped = rebindGamepad(keyboard, "kit", "north");
+    migrated.updateControlBindings(remapped);
+    const loaded = new LocalSaveStore(storage).load();
+    expect(loaded.controls.keyboard.evade).toBe("KeyF");
+    expect(loaded.controls.gamepad.kit).toBe("north");
   });
 
   it("defaults Auto-fire on and persists Manual mode", () => {
@@ -220,7 +236,7 @@ describe("Save schema v2 — expedition autosave", () => {
       }),
     });
     const save = new LocalSaveStore(storage).load();
-    expect(save.version).toBe(6);
+    expect(save.version).toBe(7);
     expect(save.settings.screenShakeEnabled).toBe(false);
     expect(save.settings.cooldownTimersEnabled).toBe(false);
     expect(save.settings.autoFireEnabled).toBe(true);

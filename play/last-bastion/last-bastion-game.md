@@ -135,7 +135,7 @@ Backed by the existing versioned save store; every change persists immediately a
 
 **Audio** — Master / Music / SFX sliders (0–100), replacing today's single sound toggle once production audio lands.
 
-**Controls** — binding list per device with remapping, gamepad deadzone (the mapper already exposes it), and vibration on/off.
+**Controls** — **Task 60 live:** binding list per device with capture-based remapping for ten keyboard and six standard-gamepad actions, duplicate-assignment swaps, binding-aware HUD/help labels, and separate 0.18 movement / 0.25 aim radial dead zones. Vibration on/off remains future native-platform scope.
 
 **Accessibility** (recommended additions, not yet designed in detail): colour-blind-safe telegraph palette, reduced-flash mode (caps camera flashes and combustion bursts), high-contrast HUD, and hold-vs-tap for the evasive move. These are cheap to honour now and expensive to retrofit later.
 

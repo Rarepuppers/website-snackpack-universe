@@ -1,6 +1,11 @@
 import type { Vector2Data } from "../math/Vector2Data";
 import { normalizeVector } from "../math/Vector2Data";
 import type { PlayerIntent } from "./PlayerIntent";
+import {
+  DEFAULT_CONTROL_BINDINGS,
+  type GamepadButton,
+  type GamepadBindableAction,
+} from "./ControlBindings";
 
 /**
  * Device-independent snapshot of a twin-stick gamepad. The Phaser adapter
@@ -62,35 +67,37 @@ export function applyDeadzone(stick: Vector2Data, deadzone = GAMEPAD_DEADZONE): 
  * "pressed" intents fire on the edge only, matching keyboard JustDown.
  */
 export class GamepadIntentMapper {
-  private previousSouth = false;
-  private previousWest = false;
-  private previousNorth = false;
-  private previousEast = false;
-  private previousStart = false;
-  private previousRightStick = false;
+  private previous: Record<GamepadButton, boolean> = {
+    south: false, east: false, west: false, north: false, start: false, rightStick: false,
+  };
+
+  constructor(
+    private readonly bindings: Readonly<Record<GamepadBindableAction, GamepadButton>> = DEFAULT_CONTROL_BINDINGS.gamepad,
+  ) {}
 
   update(state: GamepadStateSnapshot): PlayerIntent {
-    const south = state.connected && state.southPressed;
-    const west = state.connected && state.westPressed;
-    const north = state.connected && state.northPressed;
-    const east = state.connected && state.eastPressed;
-    const start = state.connected && state.startPressed;
-    const rightStick = state.connected && state.rightStickPressed;
+    const current: Record<GamepadButton, boolean> = {
+      south: state.connected && state.southPressed,
+      east: state.connected && state.eastPressed,
+      west: state.connected && state.westPressed,
+      north: state.connected && state.northPressed,
+      start: state.connected && state.startPressed,
+      rightStick: state.connected && state.rightStickPressed,
+    };
+    const pressed = (action: GamepadBindableAction): boolean => {
+      const button = this.bindings[action];
+      return current[button] && !this.previous[button];
+    };
     const intent = buildIntent(state, {
-      evasiveMovePressed: south && !this.previousSouth,
-      interactPressed: west && !this.previousWest,
-      ultimatePressed: north && !this.previousNorth,
-      kitPressed: east && !this.previousEast,
-      pausePressed: start && !this.previousStart,
-      restartPressed: south && !this.previousSouth,
-      toggleFireModePressed: rightStick && !this.previousRightStick,
+      evasiveMovePressed: pressed("evade"),
+      interactPressed: pressed("interact"),
+      ultimatePressed: pressed("ultimate"),
+      kitPressed: pressed("kit"),
+      pausePressed: pressed("pause"),
+      restartPressed: current.south && !this.previous.south,
+      toggleFireModePressed: pressed("toggleFireMode"),
     });
-    this.previousSouth = south;
-    this.previousWest = west;
-    this.previousNorth = north;
-    this.previousEast = east;
-    this.previousStart = start;
-    this.previousRightStick = rightStick;
+    this.previous = current;
     return intent;
   }
 }

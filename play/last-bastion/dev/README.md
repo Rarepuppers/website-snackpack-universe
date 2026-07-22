@@ -9,6 +9,10 @@ npm.cmd run verify
 
 The production build is emitted to the parent `/play/last-bastion/` route.
 
+## Control remapping
+
+Gameplay bindings can be remapped under **Main Menu → Settings → Control bindings**. Keyboard and standard-gamepad assignments persist in save schema v7; duplicate assignments swap automatically. Combat action tiles, the fire-mode chip, footer, and How to Play copy reflect the active mapping.
+
 ## Review routes
 
 - `/play/last-bastion/` — the front-end shell: Title → Menu → How to Play / Settings / Lab / Character select (Task 37 behavior gate; code-native placeholder panels until Batch G). `?screen=title` forces the shell; any review parameter below skips it.

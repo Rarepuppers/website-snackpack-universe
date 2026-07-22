@@ -6,7 +6,7 @@ import { loadGameAssets } from "../assets/PhaserAssetLoader";
 import { PERK_CATALOG } from "../perks/perkCatalog";
 import {
   createShellState,
-  HOW_TO_PLAY_PAGES,
+  howToPlayPages,
   LAB_ROUTES,
   MENU_CARDS,
   ROSTER,
@@ -15,6 +15,20 @@ import {
   type ShellIntent,
   type ShellState,
 } from "./ScreenFlow";
+import {
+  GAMEPAD_BINDABLE_ACTIONS,
+  KEYBOARD_BINDABLE_ACTIONS,
+  DEFAULT_CONTROL_BINDINGS,
+  gamepadBindingLabel,
+  keyboardBindingLabel,
+  isBindableKeyboardCode,
+  normalizeControlBindings,
+  rebindGamepad,
+  rebindKeyboard,
+  type GamepadBindableAction,
+  type GamepadButton,
+  type KeyboardBindableAction,
+} from "../input/ControlBindings";
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -36,6 +50,7 @@ export class ShellScene extends Phaser.Scene {
   private state!: ShellState;
   private root!: Phaser.GameObjects.Container;
   private titlePulse = 0;
+  private bindingCapture: { device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction } | null = null;
 
   constructor() {
     super("shell");
@@ -50,7 +65,7 @@ export class ShellScene extends Phaser.Scene {
       typeof window !== "undefined" ? window.localStorage : null,
     );
     const save = this.saveStore.load();
-    this.state = createShellState(save.settings, "title", save.progress, save.selectedPerkId, save.selectedHeroId);
+    this.state = createShellState(save.settings, "title", save.progress, save.selectedPerkId, save.selectedHeroId, save.controls);
     this.root = this.add.container(0, 0);
 
     // One direct window listener instead of the Phaser keyboard plugin: the
@@ -59,6 +74,11 @@ export class ShellScene extends Phaser.Scene {
     window.addEventListener("keydown", this.handleKey);
     this.events.once("shutdown", () => window.removeEventListener("keydown", this.handleKey));
     this.input.gamepad?.on("down", (_pad: unknown, button: { index: number }) => {
+      if (this.bindingCapture?.device === "gamepad") {
+        const mapped = gamepadButtonFromIndex(button.index);
+        if (mapped) this.commitGamepadBinding(mapped);
+        return;
+      }
       const intent = padButtonToIntent(button.index);
       if (intent) this.apply(intent);
     });
@@ -76,6 +96,24 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private readonly handleKey = (event: KeyboardEvent): void => {
+    if (this.bindingCapture?.device === "keyboard") {
+      event.preventDefault();
+      if (event.code === "Escape") {
+        this.bindingCapture = null;
+        this.render();
+        return;
+      }
+      this.commitKeyboardBinding(event.code);
+      return;
+    }
+    if (this.state.screen === "controls" && event.code === "Delete") {
+      event.preventDefault();
+      const controls = normalizeControlBindings(DEFAULT_CONTROL_BINDINGS);
+      this.saveStore.updateControlBindings(controls);
+      this.state = { ...this.state, controls };
+      this.render();
+      return;
+    }
     const intent = keyToIntent(event.code);
     if (intent) {
       event.preventDefault();
@@ -97,6 +135,8 @@ export class ShellScene extends Phaser.Scene {
       } else if (effect.type === "open-url") {
         window.location.href = effect.url;
         return;
+      } else if (effect.type === "capture-binding") {
+        this.bindingCapture = { device: effect.device, action: effect.action };
       }
     }
     this.render();
@@ -112,6 +152,7 @@ export class ShellScene extends Phaser.Scene {
       case "menu": this.renderMenu(); break;
       case "how-to-play": this.renderHowToPlay(); break;
       case "settings": this.renderSettings(); break;
+      case "controls": this.renderControls(); break;
       case "lab": this.renderLab(); break;
       case "records": this.renderRecords(); break;
       case "character-select": this.renderCharacterSelect(); break;
@@ -171,7 +212,8 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private renderHowToPlay(): void {
-    const page = HOW_TO_PLAY_PAGES[this.state.howToPlayPage]!;
+    const pages = howToPlayPages(this.state.controls);
+    const page = pages[this.state.howToPlayPage]!;
     this.root.add(this.text(70, 48, "HOW TO PLAY", IVORY, "28px"));
     this.root.add(this.add.rectangle(WIDTH / 2, 290, 760, 320, PANEL).setStrokeStyle(1, 0x3b4d63));
     // Diagram placeholder: Batch G supplies the real illustration per page.
@@ -182,7 +224,7 @@ export class ShellScene extends Phaser.Scene {
     this.root.add(this.text(
       WIDTH / 2,
       470,
-      `PAGE ${this.state.howToPlayPage + 1}/${HOW_TO_PLAY_PAGES.length}  •  LEFT/RIGHT TO TURN  •  ESC BACK`,
+      `PAGE ${this.state.howToPlayPage + 1}/${pages.length}  •  LEFT/RIGHT TO TURN  •  ESC BACK`,
       MUTED,
       "12px",
       true,
@@ -195,19 +237,70 @@ export class ShellScene extends Phaser.Scene {
     this.root.add(this.text(70, 48, "SETTINGS", IVORY, "28px"));
     this.root.add(this.text(70, 84, "Changes persist immediately. URL parameters remain as review overrides.", MUTED, "12px"));
     SETTINGS_ROWS.forEach((row, index) => {
-      const y = 140 + index * 64;
+      const y = 126 + index * 55;
       const focused = index === this.state.settingsIndex;
       this.root.add(this.add.rectangle(WIDTH / 2, y + 22, 640, 52, focused ? 0x24384f : PANEL)
         .setStrokeStyle(focused ? 3 : 1, focused ? TEAL_HEX : 0x3b4d63));
       this.root.add(this.text(190, y + 8, row.label, focused ? TEAL : IVORY, "17px"));
-      const enabled = this.state.settings[row.key];
-      this.root.add(this.text(690, y + 8, enabled ? "ON" : "OFF", enabled ? TEAL : ORANGE, "17px"));
+      const controlsRow = row.key === "controls";
+      const enabled = controlsRow ? true : this.state.settings[row.key as keyof import("../save/LocalSaveStore").GameSettings];
+      this.root.add(this.text(690, y + 8, controlsRow ? "OPEN  ›" : enabled ? "ON" : "OFF", enabled ? TEAL : ORANGE, "17px"));
       this.clickZone(160, y - 4, 640, 52, () => {
         this.state = { ...this.state, settingsIndex: index };
         this.apply("confirm");
       });
     });
     this.root.add(this.text(70, HEIGHT - 34, "UP/DOWN SELECT  •  ENTER/LEFT/RIGHT TOGGLE  •  ESC BACK", MUTED, "12px"));
+  }
+
+  private renderControls(): void {
+    this.root.add(this.text(70, 42, "CONTROL BINDINGS", IVORY, "27px"));
+    this.root.add(this.text(70, 76, "LEFT/RIGHT DEVICE  •  ENTER REBIND  •  DELETE RESET ALL  •  ESC CANCEL/BACK", MUTED, "11px"));
+    this.root.add(this.text(700, 42, this.state.controlDevice === "keyboard" ? "KEYBOARD" : "CONTROLLER", TEAL, "16px", true));
+    KEYBOARD_BINDABLE_ACTIONS.forEach((action, index) => {
+      const column = index < 5 ? 0 : 1;
+      const row = index % 5;
+      const x = 80 + column * 420;
+      const y = 112 + row * 72;
+      const focused = index === this.state.controlIndex;
+      const gamepadAction = GAMEPAD_BINDABLE_ACTIONS.includes(action as GamepadBindableAction);
+      const unavailable = this.state.controlDevice === "gamepad" && !gamepadAction;
+      this.root.add(this.add.rectangle(x + 190, y + 23, 380, 54, focused ? 0x24384f : PANEL)
+        .setStrokeStyle(focused ? 3 : 1, focused ? TEAL_HEX : 0x3b4d63));
+      this.root.add(this.text(x + 16, y + 10, controlActionLabel(action), unavailable ? MUTED : focused ? TEAL : IVORY, "15px"));
+      const binding = this.state.controlDevice === "keyboard"
+        ? keyboardBindingLabel(this.state.controls.keyboard[action])
+        : gamepadAction ? gamepadBindingLabel(this.state.controls.gamepad[action as GamepadBindableAction]) : "LEFT STICK";
+      this.root.add(this.text(x + 330, y + 10, binding, unavailable ? MUTED : TEAL, "15px", true));
+      this.clickZone(x, y - 4, 380, 54, () => {
+        this.state = { ...this.state, controlIndex: index };
+        this.apply("confirm");
+      });
+    });
+    if (this.bindingCapture) {
+      this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, 570, 120, 0x0b121c, 0.97).setStrokeStyle(3, TEAL_HEX));
+      this.root.add(this.text(WIDTH / 2, HEIGHT / 2 - 18, `PRESS A ${this.bindingCapture.device === "keyboard" ? "KEY" : "CONTROLLER BUTTON"}`, IVORY, "20px", true));
+      this.root.add(this.text(WIDTH / 2, HEIGHT / 2 + 22, "Duplicate assignments swap automatically  •  ESC cancels keyboard capture", MUTED, "10px", true));
+    }
+  }
+
+  private commitKeyboardBinding(code: string): void {
+    if (!this.bindingCapture || this.bindingCapture.device !== "keyboard") return;
+    if (!isBindableKeyboardCode(code)) return;
+    const controls = rebindKeyboard(this.state.controls, this.bindingCapture.action as KeyboardBindableAction, code);
+    this.saveStore.updateControlBindings(controls);
+    this.state = { ...this.state, controls };
+    this.bindingCapture = null;
+    this.render();
+  }
+
+  private commitGamepadBinding(button: GamepadButton): void {
+    if (!this.bindingCapture || this.bindingCapture.device !== "gamepad") return;
+    const controls = rebindGamepad(this.state.controls, this.bindingCapture.action as GamepadBindableAction, button);
+    this.saveStore.updateControlBindings(controls);
+    this.state = { ...this.state, controls };
+    this.bindingCapture = null;
+    this.render();
   }
 
   private renderLab(): void {
@@ -397,4 +490,16 @@ function padButtonToIntent(index: number): ShellIntent | null {
     case 1: return "back";
     default: return null;
   }
+}
+
+function gamepadButtonFromIndex(index: number): GamepadButton | null {
+  return ({ 0: "south", 1: "east", 2: "west", 3: "north", 9: "start", 11: "rightStick" } as Record<number, GamepadButton>)[index] ?? null;
+}
+
+function controlActionLabel(action: KeyboardBindableAction): string {
+  return ({
+    moveUp: "MOVE UP", moveDown: "MOVE DOWN", moveLeft: "MOVE LEFT", moveRight: "MOVE RIGHT",
+    evade: "ROLL / EVADE", interact: "INTERACT", ultimate: "ULTIMATE", kit: "USE KIT",
+    toggleFireMode: "FIRE MODE", pause: "PAUSE",
+  })[action];
 }

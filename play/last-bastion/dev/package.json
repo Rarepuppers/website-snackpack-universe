@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-test.ps1",
-    "verify": "npm run typecheck && npm run test && npm run build && npm run smoke"
+    "offline": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/offline-boot-test.ps1",
+    "verify": "npm run typecheck && npm run test && npm run build && npm run smoke && npm run offline"
   },
   "dependencies": {
     "phaser": "^4.1.0"

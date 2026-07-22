@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { DEFAULT_SAVE } from "../save/LocalSaveStore";
 import {
   createShellState,
+  howToPlayPages,
   HOW_TO_PLAY_PAGES,
   LAB_ROUTES,
   MENU_CARDS,
@@ -11,6 +12,7 @@ import {
   type ShellIntent,
   type ShellState,
 } from "./ScreenFlow";
+import { rebindGamepad, rebindKeyboard } from "../input/ControlBindings";
 
 function boot(screen: Parameters<typeof createShellState>[1] = "title"): ShellState {
   return createShellState(DEFAULT_SAVE.settings, screen);
@@ -74,11 +76,32 @@ describe("Shell screen flow", () => {
   it("toggles a setting, mirrors it in state, and emits the persistence effect", () => {
     const state = boot("settings");
     const row = SETTINGS_ROWS[0]!;
+    if (row.key === "controls") throw new Error("Expected a boolean settings row");
     const result = stepShell(state, "confirm");
     expect(result.state.settings[row.key]).toBe(!DEFAULT_SAVE.settings[row.key]);
     expect(result.effects).toEqual([{ type: "set-setting", key: row.key, value: !DEFAULT_SAVE.settings[row.key] }]);
     const reverted = stepShell(result.state, "left");
     expect(reverted.state.settings[row.key]).toBe(DEFAULT_SAVE.settings[row.key]);
+  });
+
+  it("opens control bindings and requests capture per selected device/action", () => {
+    const controlsIndex = SETTINGS_ROWS.findIndex((row) => row.key === "controls");
+    const controls = stepShell({ ...boot("settings"), settingsIndex: controlsIndex }, "confirm").state;
+    expect(controls.screen).toBe("controls");
+    const keyboardCapture = stepShell({ ...controls, controlIndex: 4 }, "confirm");
+    expect(keyboardCapture.effects).toEqual([{ type: "capture-binding", device: "keyboard", action: "evade" }]);
+    const gamepad = stepShell(controls, "right").state;
+    expect(stepShell({ ...gamepad, controlIndex: 4 }, "confirm").effects)
+      .toEqual([{ type: "capture-binding", device: "gamepad", action: "evade" }]);
+    expect(stepShell(gamepad, "confirm").effects).toEqual([]);
+    expect(stepShell(gamepad, "back").state.screen).toBe("settings");
+  });
+
+  it("builds help copy from the active bindings", () => {
+    let controls = rebindKeyboard(DEFAULT_SAVE.controls, "evade", "KeyF");
+    controls = rebindGamepad(controls, "evade", "north");
+    const pages = howToPlayPages(controls);
+    expect(pages[0]!.body).toContain("F / Y/△ rolls");
   });
 
   it("launches lab routes as URL effects", () => {
@@ -105,5 +128,6 @@ describe("Shell screen flow", () => {
     for (const screen of ["how-to-play", "settings", "lab", "records", "character-select"] as const) {
       expect(stepShell(boot(screen), "back").state.screen).toBe("menu");
     }
+    expect(stepShell(boot("controls"), "back").state.screen).toBe("settings");
   });
 });

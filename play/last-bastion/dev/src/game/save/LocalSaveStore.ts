@@ -1,6 +1,11 @@
 import { isPerkId, unlockedPerkIds, type PerkId } from "../perks/perkCatalog";
 import type { HeroDefinition } from "../hero/HeroDefinition";
 import {
+  DEFAULT_CONTROL_BINDINGS,
+  normalizeControlBindings,
+  type ControlBindings,
+} from "../input/ControlBindings";
+import {
   createRunSummary,
   totalRunDamage,
   type RunMetrics,
@@ -69,8 +74,9 @@ export interface ExpeditionSave {
 }
 
 export interface SaveData {
-  version: 6;
+  version: 7;
   settings: GameSettings;
+  controls: ControlBindings;
   progress: GameProgress;
   expedition: ExpeditionSave | null;
   selectedPerkId: PerkId | null;
@@ -84,7 +90,7 @@ export const SAVE_STORAGE_KEY = "last-bastion-save";
 export const BESTIARY_KILLS_TO_REVEAL = 10;
 
 export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
-  version: 6,
+  version: 7,
   settings: Object.freeze({
     screenShakeEnabled: true,
     reducedFlashEnabled: false,
@@ -93,6 +99,7 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     cooldownTimersEnabled: true,
     autoFireEnabled: true,
   }),
+  controls: DEFAULT_CONTROL_BINDINGS,
   progress: Object.freeze({
     runsFinished: 0,
     victories: 0,
@@ -131,6 +138,12 @@ export class LocalSaveStore {
       ...this.cached,
       settings: { ...this.cached.settings, ...partial },
     };
+    this.writeToStorage();
+    return this.load();
+  }
+
+  updateControlBindings(controls: ControlBindings): SaveData {
+    this.cached = { ...this.cached, controls: normalizeControlBindings(controls) };
     this.writeToStorage();
     return this.load();
   }
@@ -273,13 +286,13 @@ function normalizeSave(parsed: unknown): SaveData {
   }
   const candidate = parsed as Omit<Partial<SaveData>, "version"> & { version?: number };
   const version = candidate.version ?? -1;
-  // Versions 1–6 migrate into the current schema. Missing fields inherit the
+  // Versions 1–7 migrate into the current schema. Missing fields inherit the
   // accessible defaults; unknown future versions degrade safely to defaults.
-  if (![1, 2, 3, 4, 5, 6].includes(version)) {
+  if (![1, 2, 3, 4, 5, 6, 7].includes(version)) {
     return cloneSave(DEFAULT_SAVE);
   }
   return {
-    version: 6,
+    version: 7,
     settings: {
       screenShakeEnabled: readBoolean(candidate.settings?.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
       reducedFlashEnabled: readBoolean(candidate.settings?.reducedFlashEnabled, DEFAULT_SAVE.settings.reducedFlashEnabled),
@@ -288,6 +301,9 @@ function normalizeSave(parsed: unknown): SaveData {
       cooldownTimersEnabled: readBoolean(candidate.settings?.cooldownTimersEnabled, DEFAULT_SAVE.settings.cooldownTimersEnabled),
       autoFireEnabled: readBoolean(candidate.settings?.autoFireEnabled, DEFAULT_SAVE.settings.autoFireEnabled),
     },
+    controls: version >= 7
+      ? normalizeControlBindings(candidate.controls)
+      : normalizeControlBindings(DEFAULT_CONTROL_BINDINGS),
     progress: {
       runsFinished: readCount(candidate.progress?.runsFinished),
       victories: readCount(candidate.progress?.victories),
@@ -474,6 +490,7 @@ function cloneSave(save: SaveData): SaveData {
   return {
     version: save.version,
     settings: { ...save.settings },
+    controls: normalizeControlBindings(save.controls),
     progress: { ...save.progress, bestiary },
     expedition: save.expedition === null ? null : cloneExpedition(save.expedition),
     selectedPerkId: save.selectedPerkId,

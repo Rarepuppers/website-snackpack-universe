@@ -708,3 +708,21 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Added one unique geometry signature for each major telegraph family and used its edge weight/markers in code-drawn warnings, so danger identity does not rely on hue.
 - Reduced floating combat text from 40 to 24 concurrent labels. Ordinary outgoing numbers recycle first, while player-damage and healing feedback are preserved; same-enemy 100 ms merging remains active.
 - Verification: TypeScript clean, 435 tests across 59 files, production build green, and exact no-overflow Full HD/4K browser measurements. Existing Vite output-directory and large-chunk warnings remain unchanged.
+
+### Task 60B — persisted control remapping
+
+**Status:** Completed — 22 July 2026; Task 60 accessibility/display gate closed
+
+- Added one portable control-binding contract based on stable browser key codes and standard gamepad button names rather than Phaser-specific save values. Ten keyboard actions and six controller actions are independently remappable.
+- Added a two-column Control Bindings screen under Settings with keyboard/controller switching, capture overlays, Escape cancellation, and automatic collision swaps so one physical input never silently triggers two gameplay actions.
+- Migrated saves to schema v7. Versions 1–6 inherit accessible defaults; malformed individual bindings fall back safely while valid custom assignments persist.
+- Routed active bindings through `KeyboardMouseInput`, `GamepadIntentMapper`, action tiles, fire-mode chip, combat footer, and How to Play copy. Controller edge triggering, separate movement/aim dead zones, mouse aim/fire, and fixed menu navigation remain unchanged.
+- Verification: TypeScript clean, 442 tests across 60 files, production build and smoke test green. Full-HD browser QA covered Settings navigation, capture overlay, persistence into combat labels, exact no-overflow presentation on a 1.25 DPR display, default restoration, and zero console warnings.
+
+### Task 61A — fixed-step replay and compatibility contract
+
+**Status:** Implemented — 22 July 2026; Task 61 remains in progress
+
+- Added replay format v1 with an explicit simulation-compatibility version, safe-integer world seed, canonical 1/60-second step, and compact repeated-input spans. Replay code depends on `CombatSimulation` and `PlayerIntent`, never Phaser presentation.
+- Added strict rejection for unknown replay formats, changed simulation-rule versions, noncanonical timesteps, invalid seeds, and invalid frame spans instead of attempting unsafe best-effort playback.
+- Added a deterministic Corrupted Marine fixture covering movement, sustained fire, and a one-frame evade edge. Its 210-frame canonical snapshot hashes to committed digest `c65746fc`; seed or input divergence produces a different digest.

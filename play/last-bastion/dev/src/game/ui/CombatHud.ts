@@ -9,6 +9,12 @@ import {
   weaponTileAbbreviation,
 } from "./CooldownPresentation";
 import { uiSafeArea, uiTextResolution } from "../rendering/DisplayScaling";
+import {
+  DEFAULT_CONTROL_BINDINGS,
+  gamepadBindingLabel,
+  keyboardBindingLabel,
+  type ControlBindings,
+} from "../input/ControlBindings";
 
 interface CooldownTileView {
   readonly background: Phaser.GameObjects.Rectangle;
@@ -58,12 +64,20 @@ export class CombatHud {
   private readonly actionTiles: CooldownTileView[] = [];
   private readonly cadenceTiles: CooldownTileView[] = [];
   private readonly radarCentre: Readonly<{ x: number; y: number }>;
+  private readonly fireModeBindingLabel: string;
 
-  constructor(scene: Phaser.Scene, showDebug: boolean, productionArt = true, cooldownTimersEnabled = true) {
+  constructor(
+    scene: Phaser.Scene,
+    showDebug: boolean,
+    productionArt = true,
+    cooldownTimersEnabled = true,
+    bindings: ControlBindings = DEFAULT_CONTROL_BINDINGS,
+  ) {
     this.productionArt = productionArt;
     this.cooldownTimersEnabled = cooldownTimersEnabled;
     const safe = uiSafeArea(scene.scale.width, scene.scale.height);
     this.radarCentre = { x: safe.right - 24, y: safe.top + 24 };
+    this.fireModeBindingLabel = `${keyboardBindingLabel(bindings.keyboard.toggleFireMode)}/${gamepadBindingLabel(bindings.gamepad.toggleFireMode)}`;
 
     // Slim top-left dock: identity, HP, XP, Scrap. Code-drawn flat panel by
     // creator direction (18 Jul review) — minimal chrome, maximum play space.
@@ -108,10 +122,10 @@ export class CombatHud {
       .setOrigin(0.5).setDepth(2001);
 
     const actionDefinitions = [
-      { label: "ROLL", binding: "SPACE", color: 0x68e4e8, frame: 0 },
-      { label: "ULT", binding: "R", color: 0xffa31a, frame: 1 },
-      { label: "KIT", binding: "Q", color: 0x9f7aea, frame: 3 },
-      { label: "ACT", binding: "E", color: 0xb9ef62, frame: 5 },
+      { label: "ROLL", binding: bindingPair(bindings, "evade"), color: 0x68e4e8, frame: 0 },
+      { label: "ULT", binding: bindingPair(bindings, "ultimate"), color: 0xffa31a, frame: 1 },
+      { label: "KIT", binding: bindingPair(bindings, "kit"), color: 0x9f7aea, frame: 3 },
+      { label: "ACT", binding: bindingPair(bindings, "interact"), color: 0xb9ef62, frame: 5 },
     ] as const;
     actionDefinitions.forEach((definition, index) => {
       this.actionTiles.push(createCooldownTile(
@@ -212,7 +226,7 @@ export class CombatHud {
     );
     this.fireModePanel.setStrokeStyle(1, snapshot.autoFireEnabled ? 0x68e4e8 : 0xffb15c);
     this.fireModeText
-      .setText(snapshot.autoFireEnabled ? "T/R3  AUTO" : "T/R3  MANUAL")
+      .setText(snapshot.autoFireEnabled ? `${this.fireModeBindingLabel} AUTO` : `${this.fireModeBindingLabel} MANUAL`)
       .setColor(snapshot.autoFireEnabled ? "#68e4e8" : "#ffb15c");
     this.statusTray.forEach((view, index) => {
       const buff = snapshot.activeBuffs[index];
@@ -302,6 +316,13 @@ export class CombatHud {
     this.stateText.setText(message);
     this.statePanel.setVisible(message.length > 0);
   }
+}
+
+function bindingPair(
+  bindings: ControlBindings,
+  action: "evade" | "interact" | "ultimate" | "kit",
+): string {
+  return `${keyboardBindingLabel(bindings.keyboard[action])}/${gamepadBindingLabel(bindings.gamepad[action])}`;
 }
 
 function createStatusTrayView(scene: Phaser.Scene, x: number, y: number, productionArt: boolean): StatusTrayView {

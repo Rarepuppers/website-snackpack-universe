@@ -9,6 +9,7 @@ import {
   type GamepadStateSnapshot,
 } from "./GamepadIntentMapper";
 import type { PlayerIntent } from "./PlayerIntent";
+import { rebindGamepad, normalizeControlBindings, DEFAULT_CONTROL_BINDINGS } from "./ControlBindings";
 
 function padState(overrides: Partial<GamepadStateSnapshot> = {}): GamepadStateSnapshot {
   return {
@@ -87,6 +88,15 @@ describe("GamepadIntentMapper", () => {
     const mapper = new GamepadIntentMapper();
     expect(mapper.update(padState({ eastPressed: true })).kitPressed).toBe(true);
     expect(mapper.update(padState({ eastPressed: true })).kitPressed).toBe(false);
+  });
+
+  it("honours per-action remapping and preserves edge triggering", () => {
+    const bindings = rebindGamepad(normalizeControlBindings(DEFAULT_CONTROL_BINDINGS), "evade", "north");
+    const mapper = new GamepadIntentMapper(bindings.gamepad);
+    expect(mapper.update(padState({ northPressed: true })).evasiveMovePressed).toBe(true);
+    expect(mapper.update(padState({ northPressed: true })).evasiveMovePressed).toBe(false);
+    mapper.update(padState());
+    expect(mapper.update(padState({ southPressed: true })).ultimatePressed).toBe(true);
   });
 
   it("edge-triggers the R3 fire-mode toggle", () => {
