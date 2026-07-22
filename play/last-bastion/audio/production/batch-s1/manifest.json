@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "sourceFormat": { "sampleRateHz": 48000, "bitDepth": 24, "channels": 1, "maximumPeakDbfs": -1 },
+  "families": [
+    { "weaponId": "bastion-service-rifle", "triggerCueId": "service-rifle-fire", "priority": "high", "maxVoices": 4, "minimumRetriggerMs": 55, "assets": [
+      { "id": "service-rifle-fire-a", "fileStem": "service-rifle-fire-a", "role": "one-shot", "durationMs": [70, 130] },
+      { "id": "service-rifle-fire-b", "fileStem": "service-rifle-fire-b", "role": "one-shot", "durationMs": [70, 130] },
+      { "id": "service-rifle-fire-c", "fileStem": "service-rifle-fire-c", "role": "one-shot", "durationMs": [70, 130] }
+    ] },
+    { "weaponId": "scattergun", "triggerCueId": "scattergun-fire", "priority": "critical", "maxVoices": 2, "minimumRetriggerMs": 100, "assets": [
+      { "id": "scattergun-fire-a", "fileStem": "scattergun-fire-a", "role": "one-shot", "durationMs": [180, 320] },
+      { "id": "scattergun-fire-b", "fileStem": "scattergun-fire-b", "role": "one-shot", "durationMs": [180, 320] },
+      { "id": "scattergun-fire-c", "fileStem": "scattergun-fire-c", "role": "one-shot", "durationMs": [180, 320] }
+    ] },
+    { "weaponId": "arc-carbine", "triggerCueId": "arc-carbine-fire", "priority": "high", "maxVoices": 3, "minimumRetriggerMs": 70, "assets": [
+      { "id": "arc-carbine-fire-a", "fileStem": "arc-carbine-fire-a", "role": "one-shot", "durationMs": [100, 180] },
+      { "id": "arc-carbine-fire-b", "fileStem": "arc-carbine-fire-b", "role": "one-shot", "durationMs": [100, 180] },
+      { "id": "arc-carbine-fire-c", "fileStem": "arc-carbine-fire-c", "role": "one-shot", "durationMs": [100, 180] }
+    ] },
+    { "weaponId": "patrol-blade", "triggerCueId": "patrol-blade-swing", "priority": "high", "maxVoices": 2, "minimumRetriggerMs": 100, "assets": [
+      { "id": "patrol-blade-swing-a", "fileStem": "patrol-blade-swing-a", "role": "one-shot", "durationMs": [120, 240] },
+      { "id": "patrol-blade-swing-b", "fileStem": "patrol-blade-swing-b", "role": "one-shot", "durationMs": [120, 240] },
+      { "id": "patrol-blade-swing-c", "fileStem": "patrol-blade-swing-c", "role": "one-shot", "durationMs": [120, 240] }
+    ] },
+    { "weaponId": "bolt-carbine", "triggerCueId": "bolt-carbine-fire", "priority": "high", "maxVoices": 3, "minimumRetriggerMs": 90, "assets": [
+      { "id": "bolt-carbine-fire-a", "fileStem": "bolt-carbine-fire-a", "role": "one-shot", "durationMs": [130, 220] },
+      { "id": "bolt-carbine-fire-b", "fileStem": "bolt-carbine-fire-b", "role": "one-shot", "durationMs": [130, 220] },
+      { "id": "bolt-carbine-fire-c", "fileStem": "bolt-carbine-fire-c", "role": "one-shot", "durationMs": [130, 220] }
+    ] },
+    { "weaponId": "bulwark-rotary-cannon", "triggerCueId": "bulwark-rotary-fire", "priority": "critical", "maxVoices": 2, "minimumRetriggerMs": 35, "assets": [
+      { "id": "bulwark-rotary-start", "fileStem": "bulwark-rotary-start", "role": "loop-start", "durationMs": [160, 260] },
+      { "id": "bulwark-rotary-loop", "fileStem": "bulwark-rotary-loop", "role": "loop", "durationMs": [350, 650], "seamlessLoop": true },
+      { "id": "bulwark-rotary-end", "fileStem": "bulwark-rotary-end", "role": "loop-end", "durationMs": [180, 320] }
+    ] },
+    { "weaponId": "grenade-tube", "triggerCueId": "grenade-tube-fire", "priority": "critical", "maxVoices": 2, "minimumRetriggerMs": 130, "assets": [
+      { "id": "grenade-tube-launch-a", "fileStem": "grenade-tube-launch-a", "role": "one-shot", "durationMs": [160, 280] },
+      { "id": "grenade-tube-launch-b", "fileStem": "grenade-tube-launch-b", "role": "one-shot", "durationMs": [160, 280] },
+      { "id": "grenade-tube-launch-c", "fileStem": "grenade-tube-launch-c", "role": "one-shot", "durationMs": [160, 280] }
+    ] },
+    { "weaponId": "injector-carbine", "triggerCueId": "injector-carbine-fire", "priority": "standard", "maxVoices": 3, "minimumRetriggerMs": 65, "assets": [
+      { "id": "injector-carbine-fire-a", "fileStem": "injector-carbine-fire-a", "role": "one-shot", "durationMs": [90, 160] },
+      { "id": "injector-carbine-fire-b", "fileStem": "injector-carbine-fire-b", "role": "one-shot", "durationMs": [90, 160] },
+      { "id": "injector-carbine-fire-c", "fileStem": "injector-carbine-fire-c", "role": "one-shot", "durationMs": [90, 160] }
+    ] }
+  ]
+}

@@ -923,7 +923,7 @@ First implementation slice of the v2 balance model — the layer that makes ever
 
 ### Task 66B — Assembly Prime live behavior integration
 
-**Status:** Implemented — 22 July 2026; Full HD/4K presentation acceptance pending
+**Status:** Implemented — 22 July 2026; presentation accepted below
 
 - Integrated the 720-health, three-flat-reduction Shock-weak mini-boss with standard rank, guaranteed arsenal-cache reward, HUD/Lab/parser route, ten-unit ceiling, and no random-pool promotion.
 - Live fabrication reserves the same global slot/threat telemetry as Foundry, exposes a real ten-health pad, refunds exactly on pad/owner interruption, and consumes into one owner-tagged finite non-recursive drone or turret. Owner defeat releases pending pressure and removes its pad/children.
@@ -949,3 +949,71 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Node overcharge locks one live node and a 1.6-metre danger radius. Destroying its committed node or any committed chain node cancels before discharge and forces exposed recovery. Nodes are never replaced or healed by the scheduler.
 - The 2.8-metre close coil burst locks to Regent's position at windup. Chain, overcharge, and coil availability all require at least one sampled player-radius escape point; final-20% pressure shortens windup/recovery only and cannot add nodes, hops, radius, or simultaneous patterns.
 - Seven focused Regent tests plus six inherited Savant tests cover deterministic finite placement, no-repeat waiting, target locking, two-hop bounds, cover stops, destruction cancellation, overcharge ownership, escape lanes, and frenzy invariants. Full verification passes TypeScript, 552 tests across 84 files, production build, HTTP smoke, and offline audit. Task 66C live integration is next; all Regent art/audio remains blocked.
+
+### Task 66C — Storm Regent live behavior integration
+
+**Status:** Implemented — 22 July 2026; Full HD/4K presentation acceptance pending
+
+- Integrated the 760-health, two-flat-reduction Shock-resistant mini-boss with three real owner-tagged six-health Storm node entities, standard rank and guaranteed arsenal-cache reward, HUD/Lab/parser route, ten-unit ceiling, and no random-pool promotion.
+- Live state synchronizes node damage/destruction into the pure scheduler before every step. Destroying a committed chain or overcharge node cancels before discharge into exposed recovery; defeating Regent removes only its owned live nodes.
+- Chain strike uses the locked cover-clipped segments and player-radius geometry. Node overcharge uses its committed node and 1.6-metre radius; coil burst uses Regent's locked windup position and 2.8-metre radius. Each committed action emits exactly one warning and one discharge/interruption event.
+- Code-native presentation exposes dark-backed cyan chain rails, three white square timing beads per segment, circular live-node endpoints, amber square cover stops, and dark-backed radial rings with eight non-colour ticks for overcharge/coil. Node health bars remain conditional and gameplay-owned.
+- Five live tests plus the pure and shared mobility suites cover exact targetable node ownership, immediate interruption, one-resolution-per-pattern, safe coil damage geometry, owner cleanup, reward/pool preservation, and the ten-unit route. Full verification passes TypeScript, 558 tests across 85 files, production build, HTTP smoke, and offline audit.
+
+### Task 66C — Storm Regent presentation acceptance and production authorization
+
+**Status:** Completed — 22 July 2026; random-pool promotion deliberately held
+
+- Reviewed the deterministic Storm Regent Lab in the in-app browser at 1920×1080 and 3840×2160. The boss HUD, conditional node bars, dark-backed cyan chain language, white timing beads, endpoint circles, amber cover stops, node-overcharge ring, and coil ring/radial ticks remain readable over the arena without clipping or console warnings.
+- Authorized exactly four retained-master visual families: the directional Regent body, six-state conductive node, two-frame impact/effect family, and portrait. Chain rails, hops, cover stops, target/radius rings, timing ticks, collision, health, damage, and phase timing remain code-owned; no projectile atlas is permitted.
+- Authorized event-driven Regent audio after Batch S1: chain escalation/discharge, node warning/discharge/interruption/destruction, coil charge/burst, recovery, hurt, entrance/reward, and defeat cues. Loops must stop immediately on interruption and may not encode variable simulation timing.
+- Random-pool promotion remains blocked until production assets pass 960×540/Full HD/4K mixed-enemy readability and a representative intended loadout records a 45–90-second kill across at least three seeded fights. Task 66D Abomination Prime pure behavior is next.
+
+### Task 66D — Abomination Prime pure behavior boundary
+
+**Status:** Implemented — 22 July 2026; live integration and all production authorization pending
+
+- Added a deterministic entrance/setup/windup/action/recovery scheduler for locked ground slam, breakable biomass grab, and regenerating thrown biomass. Legal moves never immediately repeat; when only the previous move remains legal, Prime waits instead of bypassing the rule.
+- Ground slam locks one 1.8-metre target. Grab acquires within 4.6 metres, hard-breaks beyond 5.5 metres, and enters exposed recovery on dodge, cover/line loss, range loss, or 32 post-mitigation active-grab damage.
+- Thrown biomass locks one collision-safe landing point, creates at most one 2.1-metre hazard for 4.5 seconds, and restores throw availability only after the 5.5-second regeneration clock. Hazard expiry and regeneration are deterministic simulation state rather than animation timing.
+- All three moves require sampled player-radius escape space. Final-20% pressure shortens tells/recovery only and cannot change radii, grab threshold, hazard lifetime, regeneration, simultaneous-hazard count, or move count.
+- Seven focused Prime tests plus the inherited base Abomination tests pass. Full verification passes TypeScript, 565 tests across 86 files, production build, HTTP smoke, and offline audit. Task 66D live integration is next; all Prime art/audio remains blocked.
+
+### Task 66D — Abomination Prime live behavior integration
+
+**Status:** Implemented — 22 July 2026; Full HD/4K presentation acceptance pending
+
+- Integrated the 920-health, three-flat-reduction, Toxic-resistant mini-boss with a 1.25 m/s setup orbit, standard mini-boss rank and arsenal-cache reward, HUD/Lab/parser route, ten-unit ceiling, and no random-pool promotion.
+- Ground slam locks its warning point, deals 4.2 base player damage plus 180 numeric terrain damage, resolves once, and enters recovery. Grab shares the global forced-movement reservation, deals 1.6 base latch damage, pulls at 1.25 m/s, and breaks on evade, cover, hard range, expiry, or 32 post-mitigation damage.
+- Thrown biomass now exists as a real lobbed enemy projectile before landing. It deals 3.1 base impact damage plus 160 terrain damage, creates exactly one owner-bound 2.1-metre/4.5-second hazard, and ticks for 1.1 base damage every 0.8 seconds. Defeating Prime removes its active grab, projectile, and hazard without touching unrelated entities.
+- Added code-native placeholder presentation: a large distinct body silhouette, dark-backed slam/throw circles with eight non-colour timing ticks, a dark-backed grab tether/target ring, a visible biomass projectile, and a pulsing finite hazard. Exact production assets remain blocked.
+- Five live tests plus the seven pure tests and shared mobility suite cover proposed durability, flat reduction, one-resolution slam and terrain impact, grab pull/damage interruption, real projectile-to-hazard transition, owner cleanup, reward/pool preservation, and the four-unit route under its ten-unit ceiling. Full verification passes TypeScript, 571 tests across 87 files, production build, HTTP smoke, and offline audit. Presentation review is next.
+
+### Task 66D — Abomination Prime presentation acceptance
+
+**Status:** Completed — 22 July 2026; random-pool promotion deliberately held
+
+- Reviewed the deterministic Abomination Prime Lab at 1920×1080 and native 3840×2160. The boss HUD, conditional health presentation, grab tether/target, directional biomass projectile, finite hazard, and title-safe layout remain readable without clipping or browser console warnings.
+- The review caught a colour-only overlap between slam and throw circles. Slam now owns inward radial timing ticks while throw owns eight white perimeter landing blocks; grab retains its dark-backed tether and target ring. The projectile is now a directional rectangle rather than a generic circular bullet, preserving non-colour move recognition before production art.
+- Authorized exactly four retained-master visual families: the directional Prime body, projectile/hazard biomass family, event effects, and portrait. All target/radius/timing geometry, trajectories, collision, terrain damage, forced movement, hazard lifetime, health bars, and phase timing remain code-owned.
+- Authorized event-driven Prime audio after Batch S1, prioritizing slam warning/impact, grab acquire/latch/break variants, and throw/landing/hazard expiry. Loops must cut immediately on interruption, owner defeat, or expiry and may not encode variable simulation timing.
+- Random-pool promotion remains blocked until production assets pass mixed Corrupted Human review at 960×540, Full HD, and 4K and a representative intended loadout records a 45–90-second kill across at least three seeded fights. With all Task 66 behavior/presentation gates complete, Production Audio Batch S1 is the next implementation priority; authorized mini-boss art packages may proceed independently.
+
+### Task 67 S1 — production weapon-audio preflight
+
+**Status:** Contract implemented — 22 July 2026; production recording and sample binding pending
+
+- Added a typed Batch S1 production catalog covering all eight implemented weapons through their existing simulation cue IDs. It locks 24 unique master stems: three dry variants for each non-rotary weapon plus exact Bulwark Rotary start, seamless loop, and cancellation-safe end assets.
+- Locked per-family duration envelopes, criticality, maximum simultaneous voices, and minimum retrigger intervals. The existing WebAudio fallback now enforces the same voice/retrigger policy, reducing rapid-fire stacking and preserving headroom before samples arrive.
+- Added automated coverage for all eight cue bindings, unique stems, duration bounds, concurrency/retrigger decisions, and rotary topology. Added the canonical 48 kHz / 24-bit mono source, OGG/MP3 derivative, ≤ −1 dBTP, dry-mix, loop-seam, and maximum-density acceptance handoff under `audio/production/batch-s1/README.md`.
+- No synthetic placeholder was relabelled as production audio and no missing runtime file was referenced. Next is generating/recording the 24 masters, running automated waveform validation, then binding only complete approved families behind synth fallback.
+- Moved the production contract into a shared versioned JSON manifest consumed by both runtime policy and tooling. Added `npm run audio:validate:s1` with RIFF/WAVE parsing, PCM/channel/sample-rate/bit-depth checks, duration envelopes, −1 dBFS peak enforcement, unexpected-file rejection, and a −42 dBFS Bulwark loop-seam discontinuity limit. Synthetic fixtures verify compliant, malformed, stereo, over-duration, over-peak, and broken-loop cases. Candidate masters are still absent by design, so production recording remains next.
+
+### Task 68 — Production Asset Batch T: Nest Weaver
+
+**Status:** Completed — 22 July 2026
+
+- Generated three retained production families through the built-in image generator: the exact 4×8 directional/state Weaver sheet, six-state pod sheet, and 4×2 onset/dissipate effects atlas. Preserved untouched chroma output and clean-alpha masters, then emitted deterministic 192×192/128×128 nearest-neighbour runtime atlases plus prompt provenance, normalizer, frame contract, and contact sheet under `art/production-tests/batch-t/`.
+- Integrated stable `nest-weaver-v1`, `nest-pod-v1`, and `nest-effects-v1` manifest contracts. Live presentation maps facing and phase to the authored body, maps hatch progress to stable pod states, and pairs every lay, hatch, interruption, and defeat onset with its matching dissipate frame. Placement lines/rings, countdown pips, conditional pod HP bars, reservations, collision, timing, and hatch payload remain code-owned.
+- Added a complete `?mode=gallery&batch=t` review route and manifest regression coverage. Presentation review at native 960×540, 1920×1080, and 3840×2160 caught and corrected one gallery heading collision; final gallery and live lab retain title-safe HUD placement, readable mixed-family silhouettes, clear pod/bar separation, and no browser warnings or errors.
+- Hatchlings continue to reuse `swarm-scuttler-v1`; a distinct hatchling body stays evidence-gated. Production Audio Batch S1 remains the primary next task. The independent visual order is Storm Savant, Scrap Skitterer, then the remaining machine family before mini-boss cosmetics.

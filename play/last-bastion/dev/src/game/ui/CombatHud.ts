@@ -302,9 +302,11 @@ export class CombatHud {
       const isRift = boss.miniBossKind === "rift-stalker";
       const isSynapse = boss.miniBossKind === "synapse-herald";
       const isAssembly = boss.miniBossKind === "assembly-prime";
+      const isRegent = boss.miniBossKind === "storm-regent";
+      const isAbominationPrime = boss.miniBossKind === "abomination-prime";
       const isFinalBoss = boss.type === "bastion-eater";
-      const name = isFinalBoss ? "THE BASTION EATER" : isBrood ? "BROOD WARDEN" : isRift ? "RIFT STALKER" : isSynapse ? "SYNAPSE HERALD" : isAssembly ? "ASSEMBLY PRIME" : "SIEGE CRUSHER";
-      const phase = isFinalBoss ? boss.bastionEaterPhase : isBrood ? boss.broodWardenPhase : isRift ? boss.riftStalkerPhase : isSynapse ? boss.synapseHeraldPhase : isAssembly ? boss.assemblyPrimePhase : boss.siegeCrusherPhase;
+      const name = isFinalBoss ? "THE BASTION EATER" : isBrood ? "BROOD WARDEN" : isRift ? "RIFT STALKER" : isSynapse ? "SYNAPSE HERALD" : isAssembly ? "ASSEMBLY PRIME" : isRegent ? "STORM REGENT" : isAbominationPrime ? "ABOMINATION PRIME" : "SIEGE CRUSHER";
+      const phase = isFinalBoss ? boss.bastionEaterPhase : isBrood ? boss.broodWardenPhase : isRift ? boss.riftStalkerPhase : isSynapse ? boss.synapseHeraldPhase : isAssembly ? boss.assemblyPrimePhase : isRegent ? boss.stormRegentPhase : isAbominationPrime ? boss.abominationPrimePhase : boss.siegeCrusherPhase;
       this.bossNameText.setText(name);
       this.bossNumberText.setText(`${Math.ceil(boss.health)} / ${boss.maxHealth}`);
       this.bossPhaseText.setText(`${(phase ?? "stalk").toUpperCase()}${enrage ? `  •  ${enrage}` : ""}`);
@@ -523,6 +525,8 @@ const SCENARIO_LABELS: Readonly<Record<CombatScenario, string>> = Object.freeze(
   "rift-stalker": "RIFT LAB",
   "synapse-herald": "SYNAPSE HERALD LAB",
   "assembly-prime": "ASSEMBLY PRIME LAB",
+  "storm-regent": "STORM REGENT LAB",
+  "abomination-prime": "ABOMINATION PRIME LAB",
   "infected-survivor": "SURVIVOR LAB",
   "corrupted-marine": "MARINE LAB",
   abomination: "ABOMINATION LAB",

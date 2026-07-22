@@ -163,6 +163,26 @@ import {
   type AssemblyPrimeMove,
   type AssemblyPrimeState,
 } from "./AssemblyPrimeBehavior";
+import {
+  createStormRegentBehavior,
+  stepStormRegentBehavior,
+  STORM_REGENT_COIL_RADIUS_METRES,
+  STORM_REGENT_NODE_OVERCHARGE_RADIUS_METRES,
+  type StormRegentMove,
+  type StormRegentState,
+} from "./StormRegentBehavior";
+import {
+  ABOMINATION_PRIME_GRAB_BREAK_DAMAGE,
+  ABOMINATION_PRIME_GRAB_HARD_RANGE_METRES,
+  ABOMINATION_PRIME_HAZARD_SECONDS,
+  ABOMINATION_PRIME_SLAM_RADIUS_METRES,
+  ABOMINATION_PRIME_THROW_RADIUS_METRES,
+  createAbominationPrimeBehavior,
+  damageAbominationPrimeGrab,
+  stepAbominationPrimeBehavior,
+  type AbominationPrimeMove,
+  type AbominationPrimeState,
+} from "./AbominationPrimeBehavior";
 import { scaleEnemyHealth, scaleEnemyHit, waveScaling } from "./WaveScaling";
 import type { EliteKind } from "./EliteCadence";
 export type { EliteKind } from "./EliteCadence";
@@ -206,7 +226,7 @@ export type BastionEaterAction =
   | "breach-windup" | "breach" | "recovery";
 export type EnemyRank = "standard" | "treasure" | "elite" | "mini-boss" | "boss";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
-export type MiniBossKind = "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime";
+export type MiniBossKind = "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime";
 export type SiegeCrusherPhase =
   | "entrance" | "stalk" | "charge-windup" | "charge"
   | "sweep-windup" | "sweep" | "slam-windup" | "slam" | "recovery";
@@ -217,13 +237,13 @@ export type BroodWardenPhase =
 export type RiftStalkerPhase =
   | "entrance" | "cloak" | "mark" | "warp" | "pounce"
   | "slash-windup" | "slash" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit";
 export type SupplyChestVariant = "sealed" | "armored";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
 export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat" | "supply-chest";
 
-export type TerrainDamageSource = "player-projectile" | "player-melee" | "mini-boss-charge" | "mini-boss-impact" | "enemy-slam";
+export type TerrainDamageSource = "player-projectile" | "player-melee" | "mini-boss-charge" | "mini-boss-impact" | "enemy-slam" | "enemy-biomass";
 
 export interface TerrainSnapshot {
   id: string;
@@ -327,6 +347,16 @@ export type CombatEvent =
   | { type: "assembly-prime-fabrication-completed"; position: Vector2Data; enemyId: number; childId: number; childType: FoundryChildType }
   | { type: "assembly-prime-fabrication-interrupted"; position: Vector2Data; enemyId: number; reason: "owner-damage" | "pad-destroyed" }
   | { type: "assembly-prime-drone-recalled"; position: Vector2Data; enemyId: number; childId: number }
+  | { type: "storm-regent-warning"; position: Vector2Data; enemyId: number; move: StormRegentMove; segments: StormChainState["segments"]; centre?: Vector2Data; radiusMetres?: number; nodeId?: number }
+  | { type: "storm-regent-discharged"; position: Vector2Data; enemyId: number; move: StormRegentMove; hitPlayer: boolean; damage: number }
+  | { type: "storm-regent-interrupted"; position: Vector2Data; enemyId: number; move: StormRegentMove }
+  | { type: "abomination-prime-warning"; position: Vector2Data; enemyId: number; move: AbominationPrimeMove; target: Vector2Data; radiusMetres?: number }
+  | { type: "abomination-prime-slam"; position: Vector2Data; enemyId: number; hitPlayer: boolean; damage: number; radiusMetres: number }
+  | { type: "abomination-prime-grab-latched"; position: Vector2Data; enemyId: number; damage: number }
+  | { type: "abomination-prime-grab-broken"; position: Vector2Data; enemyId: number; reason: "evasive" | "damage" | "range" | "cover" | "expired" }
+  | { type: "abomination-prime-biomass-thrown"; position: Vector2Data; enemyId: number; target: Vector2Data }
+  | { type: "abomination-prime-biomass-landed"; position: Vector2Data; enemyId: number; hitPlayer: boolean; damage: number; radiusMetres: number }
+  | { type: "abomination-prime-hazard-tick"; position: Vector2Data; enemyId: number; damage: number }
   | { type: "reclaimer-link-started"; position: Vector2Data; target: Vector2Data; enemyId: number; targetId: number }
   | { type: "reclaimer-repair-completed"; position: Vector2Data; target: Vector2Data; enemyId: number; targetId: number; amount: number }
   | { type: "reclaimer-link-interrupted"; position: Vector2Data; enemyId: number; targetId: number | null; reason: "damage" | "target" }
@@ -474,6 +504,17 @@ export interface EnemySnapshot {
   assemblyPrimeLanes?: readonly AssemblyPrimeLane[];
   assemblyPrimeTarget?: Vector2Data;
   assemblyPrimeRecallTargetId?: number;
+  stormRegentPhase?: StormRegentState["phase"];
+  stormRegentMove?: StormRegentMove;
+  stormRegentSegments?: StormChainState["segments"];
+  stormRegentCentre?: Vector2Data;
+  stormRegentRadiusMetres?: number;
+  stormRegentNodeId?: number;
+  abominationPrimePhase?: AbominationPrimeState["phase"];
+  abominationPrimeMove?: AbominationPrimeMove;
+  abominationPrimeTarget?: Vector2Data;
+  abominationPrimeHazard?: AbominationPrimeState["hazard"];
+  abominationPrimeGrabDamage?: number;
   facingDirection: Vector2Data;
   statuses: readonly StatusEffectType[];
   steeringProfile: EnemySteeringProfileId;
@@ -548,14 +589,14 @@ export interface FenceSnapshot {
 
 export interface EnemyProjectileSnapshot {
   id: number;
-  type: "slime-glob" | "brood-acid" | "quill-spike" | "corrupted-knife";
+  type: "slime-glob" | "brood-acid" | "quill-spike" | "corrupted-knife" | "prime-biomass";
   position: Vector2Data;
   rotationRadians: number;
 }
 
 export interface GroundHazardSnapshot {
   id: number;
-  type: "slowing-slime" | "machine-wreck";
+  type: "slowing-slime" | "machine-wreck" | "prime-biomass";
   position: Vector2Data;
   radiusMetres: number;
   remainingSeconds: number;
@@ -768,6 +809,8 @@ interface EnemyState {
   assemblyPrimeDamagedSinceLastStep: boolean;
   assemblyPrimeLaneIndex: number;
   assemblyPrimeLaneCooldownSeconds: number;
+  stormRegentBehavior: StormRegentState;
+  abominationPrimeBehavior: AbominationPrimeState;
   statusBuildup: Partial<Record<StatusEffectType, number>>;
   statusTimers: Partial<Record<StatusEffectType, number>>;
 }
@@ -816,7 +859,7 @@ interface SupplyChestState {
 
 interface EnemyProjectileState {
   id: number;
-  type: "slime-glob" | "brood-acid" | "quill-spike" | "corrupted-knife";
+  type: "slime-glob" | "brood-acid" | "quill-spike" | "corrupted-knife" | "prime-biomass";
   sourceEnemyId?: number;
   position: Vector2Data;
   velocity: Vector2Data;
@@ -829,11 +872,13 @@ interface EnemyProjectileState {
 
 interface GroundHazardState {
   id: number;
-  type: "slowing-slime" | "machine-wreck";
+  type: "slowing-slime" | "machine-wreck" | "prime-biomass";
   position: Vector2Data;
   radiusMetres: number;
   remainingSeconds: number;
   durationSeconds: number;
+  ownerId?: number;
+  damageCooldownSeconds?: number;
 }
 
 interface RainOfSpinesState {
@@ -1230,6 +1275,10 @@ export class CombatSimulation {
       this.populateSynapseHeraldScenario();
     } else if (this.scenario === "assembly-prime") {
       this.populateAssemblyPrimeScenario();
+    } else if (this.scenario === "storm-regent") {
+      this.populateStormRegentScenario();
+    } else if (this.scenario === "abomination-prime") {
+      this.populateAbominationPrimeScenario();
     } else if (this.scenario === "infected-survivor") {
       this.populateInfectedSurvivorScenario();
     } else if (this.scenario === "corrupted-marine") {
@@ -1388,7 +1437,7 @@ export class CombatSimulation {
 
   spawnEnemy(type: EnemyType, position?: Vector2Data): number {
     const definition = ENEMY_CATALOG[type];
-    const authoredBoss = type === "siege-crusher" || type === "brood-warden" || type === "rift-stalker" || type === "bastion-eater";
+    const authoredBoss = type === "siege-crusher" || type === "brood-warden" || type === "rift-stalker" || type === "abomination-prime" || type === "bastion-eater";
     const scaling = waveScaling(this.waveIndex + 1, type, { boss: authoredBoss });
     const scaledMaxHealth = scaleEnemyHealth(definition.maxHealth, scaling);
     const spawnPosition = position ? { ...position } : this.nextEdgeSpawn(definition.radiusMetres);
@@ -1530,6 +1579,24 @@ export class CombatSimulation {
       assemblyPrimeDamagedSinceLastStep: false,
       assemblyPrimeLaneIndex: 0,
       assemblyPrimeLaneCooldownSeconds: 0,
+      stormRegentBehavior: createStormRegentBehavior(id, {
+        ownerPosition: spawnPosition,
+        playerPosition: this.playerPosition,
+        ownerHealth: scaledMaxHealth,
+        ownerMaxHealth: scaledMaxHealth,
+        arena: this.collisionArena(),
+        playerRadiusMetres: PLAYER_RADIUS_METRES,
+      }, this.nextEntityId),
+      abominationPrimeBehavior: createAbominationPrimeBehavior(id, {
+        ownerPosition: spawnPosition,
+        playerPosition: this.playerPosition,
+        ownerHealth: scaledMaxHealth,
+        ownerMaxHealth: scaledMaxHealth,
+        arena: this.collisionArena(),
+        playerRadiusMetres: PLAYER_RADIUS_METRES,
+        grabLineClear: true,
+        playerDodged: false,
+      }),
       statusBuildup: {},
       statusTimers: {},
     });
@@ -1639,11 +1706,43 @@ export class CombatSimulation {
     enemy.riftStalkerPhaseRemainingSeconds = 0.9;
     enemy.synapseHeraldBehavior = createSynapseHeraldBehavior(id);
     enemy.assemblyPrimeBehavior = createAssemblyPrimeBehavior(id);
+    enemy.stormRegentBehavior = createStormRegentBehavior(id, {
+      ownerPosition: enemy.position,
+      playerPosition: this.playerPosition,
+      ownerHealth: enemy.health,
+      ownerMaxHealth: enemy.maxHealth,
+      arena: this.collisionArena(),
+      playerRadiusMetres: PLAYER_RADIUS_METRES,
+    }, this.nextEntityId);
+    enemy.abominationPrimeBehavior = createAbominationPrimeBehavior(id, {
+      ownerPosition: enemy.position,
+      playerPosition: this.playerPosition,
+      ownerHealth: enemy.health,
+      ownerMaxHealth: enemy.maxHealth,
+      arena: this.collisionArena(),
+      playerRadiusMetres: PLAYER_RADIUS_METRES,
+      grabLineClear: true,
+      playerDodged: false,
+    });
+    if (miniBossKind === "storm-regent") this.spawnStormRegentNodes(enemy);
     enemy.facingDirection = normalizeVector({
       x: this.playerPosition.x - enemy.position.x,
       y: this.playerPosition.y - enemy.position.y,
     });
     return id;
+  }
+
+  private spawnStormRegentNodes(owner: EnemyState): void {
+    const nodes = owner.stormRegentBehavior.nodes.map((planned) => {
+      const id = this.spawnEnemy("storm-node", planned.position);
+      const nodeEnemy = this.enemies.find((candidate) => candidate.id === id)!;
+      nodeEnemy.conductiveNode = createConductiveNode(id, planned.position);
+      nodeEnemy.stormNodeOwnerId = owner.id;
+      nodeEnemy.health = nodeEnemy.conductiveNode.health;
+      nodeEnemy.maxHealth = nodeEnemy.conductiveNode.health;
+      return nodeEnemy.conductiveNode;
+    });
+    owner.stormRegentBehavior = { ...owner.stormRegentBehavior, nodes };
   }
 
   spawnPowerup(type: PowerupType, position?: Vector2Data): number {
@@ -1936,7 +2035,12 @@ export class CombatSimulation {
         .filter((obstacle) => (this.obstacleHealth.get(obstacle.id) ?? obstacleMaxDurability(obstacle)) <= 0)
         .map(({ id }) => id),
       playerTethered: this.enemies.some((enemy) => (
-        !enemy.dead && enemy.id === this.activeTetherEnemyId && enemy.tetherBloomPhase === "tethering"
+        !enemy.dead
+        && enemy.id === this.activeTetherEnemyId
+        && (enemy.tetherBloomPhase === "tethering"
+          || (enemy.type === "abomination-prime"
+            && enemy.abominationPrimeBehavior.phase === "action"
+            && enemy.abominationPrimeBehavior.move === "biomass-grab"))
       )),
       activeTetherEnemyId: this.activeTetherEnemyId,
       density: {
@@ -3276,6 +3380,12 @@ export class CombatSimulation {
         case "assembly-prime":
           this.updateAssemblyPrime(enemy, deltaSeconds);
           break;
+        case "storm-regent":
+          this.updateStormRegent(enemy, deltaSeconds);
+          break;
+        case "abomination-prime":
+          this.updateAbominationPrime(enemy, deltaSeconds);
+          break;
         case "bastion-eater":
           this.updateBastionEater(enemy, deltaSeconds);
           break;
@@ -4562,6 +4672,275 @@ export class CombatSimulation {
     this.frameEvents.push({ type: "razor-scuttler-impact", position: { ...enemy.position }, reason });
   }
 
+  private updateStormRegent(enemy: EnemyState, deltaSeconds: number): void {
+    const liveNodeStates = this.enemies.filter((candidate) => (
+      candidate.type === "storm-node"
+      && candidate.stormNodeOwnerId === enemy.id
+      && candidate.conductiveNode
+    )).map((candidate) => candidate.conductiveNode!).sort((left, right) => left.id - right.id);
+    const previous = { ...enemy.stormRegentBehavior, nodes: liveNodeStates };
+    const context = {
+      ownerPosition: { ...enemy.position },
+      playerPosition: { ...this.playerPosition },
+      ownerHealth: enemy.health,
+      ownerMaxHealth: enemy.maxHealth,
+      arena: this.collisionArena(),
+      playerRadiusMetres: PLAYER_RADIUS_METRES,
+    };
+    const result = stepStormRegentBehavior(previous, deltaSeconds, context);
+    enemy.stormRegentBehavior = result.state;
+
+    if (result.moveStarted) {
+      const node = result.state.nodes.find((candidate) => candidate.id === result.state.overchargeNodeId);
+      const centre = result.moveStarted === "coil-burst"
+        ? result.state.coilCentre
+        : result.moveStarted === "node-overcharge" ? node?.position ?? null : null;
+      const radiusMetres = result.moveStarted === "coil-burst"
+        ? STORM_REGENT_COIL_RADIUS_METRES
+        : result.moveStarted === "node-overcharge" ? STORM_REGENT_NODE_OVERCHARGE_RADIUS_METRES : undefined;
+      this.frameEvents.push({
+        type: "storm-regent-warning",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        move: result.moveStarted,
+        segments: result.state.lockedChain?.segments.map((segment) => ({
+          ...segment, from: { ...segment.from }, to: { ...segment.to },
+        })) ?? [],
+        centre: centre ? { ...centre } : undefined,
+        radiusMetres,
+        nodeId: result.state.overchargeNodeId ?? undefined,
+      });
+    }
+    if (result.interrupted && result.moveResolved) {
+      this.frameEvents.push({
+        type: "storm-regent-interrupted",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        move: result.moveResolved,
+      });
+    }
+    if (result.actionStarted) {
+      let hitPlayer = false;
+      if (result.actionStarted === "chain-strike") {
+        hitPlayer = pointInsideStormChain(
+          this.playerPosition,
+          result.state.lockedChain?.segments ?? [],
+          PLAYER_RADIUS_METRES,
+        );
+      } else {
+        const node = result.state.nodes.find((candidate) => candidate.id === result.state.overchargeNodeId);
+        const centre = result.actionStarted === "coil-burst" ? result.state.coilCentre : node?.position;
+        const radius = result.actionStarted === "coil-burst"
+          ? STORM_REGENT_COIL_RADIUS_METRES
+          : STORM_REGENT_NODE_OVERCHARGE_RADIUS_METRES;
+        hitPlayer = Boolean(centre && distance(centre, this.playerPosition) <= radius + PLAYER_RADIUS_METRES);
+      }
+      const baseDamage = result.actionStarted === "coil-burst" ? 2.6 : result.actionStarted === "node-overcharge" ? 2.8 : 3.2;
+      const damage = hitPlayer ? this.scaledEnemyDamage(enemy, baseDamage) : 0;
+      if (damage > 0) this.damagePlayer(damage);
+      this.frameEvents.push({
+        type: "storm-regent-discharged",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        move: result.actionStarted,
+        hitPlayer,
+        damage,
+      });
+    }
+
+    const state = enemy.stormRegentBehavior;
+    if (state.phase === "setup") {
+      const direction = miniBossRepositionDirection(
+        enemy.position,
+        this.playerPosition,
+        6.4,
+        (enemy.id + state.attackIndex) % 2 === 0 ? 1 : -1,
+      );
+      enemy.facingDirection = direction;
+      this.moveEnemy(enemy, direction, ENEMY_CATALOG[enemy.type].movementSpeedMetresPerSecond, deltaSeconds);
+    } else if (state.coilCentre) {
+      enemy.facingDirection = normalizeVector({
+        x: this.playerPosition.x - enemy.position.x,
+        y: this.playerPosition.y - enemy.position.y,
+      });
+    }
+  }
+
+  private updateAbominationPrime(enemy: EnemyState, deltaSeconds: number): void {
+    const previous = enemy.abominationPrimeBehavior;
+    const playerDistance = distance(enemy.position, this.playerPosition);
+    const geometricLineClear = !segmentHitsArenaObstacle(
+      enemy.position,
+      this.playerPosition,
+      this.activeObstacles(),
+    );
+    const context = {
+      ownerPosition: { ...enemy.position },
+      playerPosition: { ...this.playerPosition },
+      ownerHealth: enemy.health,
+      ownerMaxHealth: enemy.maxHealth,
+      arena: this.collisionArena(),
+      playerRadiusMetres: PLAYER_RADIUS_METRES,
+      grabLineClear: geometricLineClear
+        && (this.activeTetherEnemyId === null || this.activeTetherEnemyId === enemy.id),
+      playerDodged: this.heroState === "evading",
+    };
+    const result = stepAbominationPrimeBehavior(previous, deltaSeconds, context);
+    enemy.abominationPrimeBehavior = result.state;
+
+    if (result.moveStarted && result.state.lockedTarget) {
+      if (result.moveStarted === "biomass-grab") this.activeTetherEnemyId = enemy.id;
+      this.frameEvents.push({
+        type: "abomination-prime-warning",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        move: result.moveStarted,
+        target: { ...result.state.lockedTarget },
+        radiusMetres: result.moveStarted === "ground-slam"
+          ? ABOMINATION_PRIME_SLAM_RADIUS_METRES
+          : result.moveStarted === "thrown-biomass" ? ABOMINATION_PRIME_THROW_RADIUS_METRES : undefined,
+      });
+    }
+
+    if (result.grabBroken) {
+      const reason = this.heroState === "evading"
+        ? "evasive"
+        : previous.grabDamageTaken >= ABOMINATION_PRIME_GRAB_BREAK_DAMAGE
+          ? "damage"
+          : !geometricLineClear ? "cover" : "range";
+      this.frameEvents.push({
+        type: "abomination-prime-grab-broken",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        reason,
+      });
+    }
+
+    if (result.actionStarted === "ground-slam" && result.state.lockedTarget) {
+      const centre = result.state.lockedTarget;
+      const hitPlayer = distance(this.playerPosition, centre)
+        <= ABOMINATION_PRIME_SLAM_RADIUS_METRES + PLAYER_RADIUS_METRES;
+      const damage = hitPlayer ? this.scaledEnemyDamage(enemy, 4.2) : 0;
+      if (hitPlayer) this.damagePlayer(damage);
+      this.damageTerrainInRadius(centre, ABOMINATION_PRIME_SLAM_RADIUS_METRES, 180, "enemy-slam");
+      this.frameEvents.push({
+        type: "abomination-prime-slam",
+        position: { ...centre },
+        enemyId: enemy.id,
+        hitPlayer,
+        damage,
+        radiusMetres: ABOMINATION_PRIME_SLAM_RADIUS_METRES,
+      });
+    } else if (result.actionStarted === "biomass-grab") {
+      const damage = this.scaledEnemyDamage(enemy, 1.6);
+      this.damagePlayer(damage);
+      this.frameEvents.push({
+        type: "abomination-prime-grab-latched",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        damage,
+      });
+    } else if (result.actionStarted === "thrown-biomass" && result.state.lockedTarget) {
+      const target = result.state.lockedTarget;
+      const travelSeconds = Math.max(0.12, result.state.phaseRemainingSeconds);
+      const direction = normalizeVector({ x: target.x - enemy.position.x, y: target.y - enemy.position.y });
+      const speed = distance(enemy.position, target) / travelSeconds;
+      this.spawnHostileProjectile({
+        type: "prime-biomass",
+        sourceEnemyId: enemy.id,
+        position: { ...enemy.position },
+        velocity: { x: direction.x * speed, y: direction.y * speed },
+        target: { ...target },
+        remainingSeconds: travelSeconds,
+        damage: 0,
+        createsPuddle: false,
+      });
+      this.frameEvents.push({
+        type: "abomination-prime-biomass-thrown",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        target: { ...target },
+      });
+    }
+
+    if (result.hazardCreated) {
+      const centre = result.hazardCreated.centre;
+      const hitPlayer = distance(this.playerPosition, centre)
+        <= ABOMINATION_PRIME_THROW_RADIUS_METRES + PLAYER_RADIUS_METRES;
+      const damage = hitPlayer ? this.scaledEnemyDamage(enemy, 3.1) : 0;
+      if (hitPlayer) this.damagePlayer(damage);
+      this.damageTerrainInRadius(centre, ABOMINATION_PRIME_THROW_RADIUS_METRES, 160, "enemy-biomass");
+      this.groundHazards.push({
+        id: this.nextId(),
+        type: "prime-biomass",
+        ownerId: enemy.id,
+        position: { ...centre },
+        radiusMetres: ABOMINATION_PRIME_THROW_RADIUS_METRES,
+        remainingSeconds: ABOMINATION_PRIME_HAZARD_SECONDS,
+        durationSeconds: ABOMINATION_PRIME_HAZARD_SECONDS,
+        damageCooldownSeconds: 0.8,
+      });
+      this.frameEvents.push({
+        type: "abomination-prime-biomass-landed",
+        position: { ...centre },
+        enemyId: enemy.id,
+        hitPlayer,
+        damage,
+        radiusMetres: ABOMINATION_PRIME_THROW_RADIUS_METRES,
+      });
+    }
+
+    if (previous.move === "biomass-grab" && result.moveResolved === "biomass-grab"
+      && this.activeTetherEnemyId === enemy.id) {
+      this.activeTetherEnemyId = null;
+      if (!result.grabBroken) {
+        this.frameEvents.push({
+          type: "abomination-prime-grab-broken",
+          position: { ...enemy.position },
+          enemyId: enemy.id,
+          reason: "expired",
+        });
+      }
+    }
+
+    const state = enemy.abominationPrimeBehavior;
+    if (state.phase === "action" && state.move === "biomass-grab" && this.activeTetherEnemyId === enemy.id) {
+      const minimumDistance = ENEMY_CATALOG[enemy.type].radiusMetres + PLAYER_RADIUS_METRES + 0.2;
+      const pullDistance = Math.min(1.25 * deltaSeconds, Math.max(0, playerDistance - minimumDistance));
+      if (pullDistance > 0) {
+        const direction = normalizeVector({
+          x: enemy.position.x - this.playerPosition.x,
+          y: enemy.position.y - this.playerPosition.y,
+        });
+        this.playerPosition = resolveCircleMovement(
+          this.playerPosition,
+          {
+            x: this.playerPosition.x + direction.x * pullDistance,
+            y: this.playerPosition.y + direction.y * pullDistance,
+          },
+          PLAYER_RADIUS_METRES,
+          this.collisionArena(),
+        );
+      }
+    }
+
+    if (state.phase === "setup") {
+      const direction = miniBossRepositionDirection(
+        enemy.position,
+        this.playerPosition,
+        3.8,
+        (enemy.id + state.attackIndex) % 2 === 0 ? 1 : -1,
+      );
+      enemy.facingDirection = direction;
+      this.moveEnemy(enemy, direction, ENEMY_CATALOG[enemy.type].movementSpeedMetresPerSecond, deltaSeconds);
+    } else {
+      enemy.facingDirection = normalizeVector({
+        x: this.playerPosition.x - enemy.position.x,
+        y: this.playerPosition.y - enemy.position.y,
+      });
+    }
+  }
+
   private updateAssemblyPrime(enemy: EnemyState, deltaSeconds: number): void {
     const previous = enemy.assemblyPrimeBehavior;
     const ownerWasDamaged = enemy.assemblyPrimeDamagedSinceLastStep;
@@ -5504,6 +5883,23 @@ export class CombatSimulation {
     }
   }
 
+  private damageTerrainInRadius(
+    centre: Vector2Data,
+    radiusMetres: number,
+    damage: number,
+    source: TerrainDamageSource,
+  ): void {
+    for (const obstacle of this.activeObstacles()) {
+      const closest = {
+        x: Math.max(obstacle.x, Math.min(centre.x, obstacle.x + obstacle.width)),
+        y: Math.max(obstacle.y, Math.min(centre.y, obstacle.y + obstacle.height)),
+      };
+      if (distance(closest, centre) <= radiusMetres) {
+        this.damageObstacle(obstacle.id, damage, closest, source);
+      }
+    }
+  }
+
   private emitCrusherShockwave(
     position: Vector2Data,
     radiusMetres = 2.2,
@@ -5900,7 +6296,9 @@ export class CombatSimulation {
       projectile.position.y += projectile.velocity.y * deltaSeconds;
       projectile.remainingSeconds -= deltaSeconds;
 
-      const obstacle = this.activeObstacles().find((candidate) => pointHitsObstacle(projectile.position, [candidate]));
+      const obstacle = projectile.type === "prime-biomass"
+        ? undefined
+        : this.activeObstacles().find((candidate) => pointHitsObstacle(projectile.position, [candidate]));
       if (obstacle) {
         if (projectile.type !== "corrupted-knife") {
           this.damageObstacle(obstacle.id, projectile.damage, projectile.position, "mini-boss-impact");
@@ -5923,6 +6321,9 @@ export class CombatSimulation {
     projectile.dead = true;
     const createdPuddle = projectile.createsPuddle && this.createSlowingPuddle(projectile.position);
     const hitPlayer = distance(projectile.position, this.playerPosition) <= PLAYER_RADIUS_METRES + 0.45;
+    if (projectile.type === "prime-biomass") {
+      return;
+    }
     if (projectile.type === "corrupted-knife") {
       this.frameEvents.push({
         type: "corrupted-marine-knife-impact",
@@ -5965,7 +6366,26 @@ export class CombatSimulation {
   }
 
   private updateGroundHazards(deltaSeconds: number): void {
-    for (const hazard of this.groundHazards) hazard.remainingSeconds -= deltaSeconds;
+    for (const hazard of this.groundHazards) {
+      hazard.remainingSeconds -= deltaSeconds;
+      if (hazard.type !== "prime-biomass") continue;
+      hazard.damageCooldownSeconds = Math.max(0, (hazard.damageCooldownSeconds ?? 0) - deltaSeconds);
+      if (
+        hazard.damageCooldownSeconds <= 0
+        && distance(hazard.position, this.playerPosition) <= hazard.radiusMetres + PLAYER_RADIUS_METRES * 0.35
+      ) {
+        const owner = this.enemies.find((enemy) => enemy.id === hazard.ownerId && !enemy.dead);
+        const damage = owner ? this.scaledEnemyDamage(owner, 1.1) : 1.1;
+        this.damagePlayer(damage);
+        hazard.damageCooldownSeconds = 0.8;
+        this.frameEvents.push({
+          type: "abomination-prime-hazard-tick",
+          position: { ...hazard.position },
+          enemyId: hazard.ownerId ?? -1,
+          damage,
+        });
+      }
+    }
     this.groundHazards = this.groundHazards.filter((hazard) => hazard.remainingSeconds > 0);
   }
 
@@ -6433,6 +6853,16 @@ export class CombatSimulation {
         this.breakTetherBloom(enemy, "damage");
       }
     }
+    if (
+      enemy.type === "abomination-prime"
+      && enemy.abominationPrimeBehavior.phase === "action"
+      && enemy.abominationPrimeBehavior.move === "biomass-grab"
+    ) {
+      enemy.abominationPrimeBehavior = damageAbominationPrimeGrab(
+        enemy.abominationPrimeBehavior,
+        mitigated,
+      );
+    }
     this.applyRawDamage(enemy, mitigated);
   }
 
@@ -6561,6 +6991,22 @@ export class CombatSimulation {
       this.removeFoundryPad(enemy.id);
       for (const child of this.enemies) {
         if (!child.dead && child.foundryChildOwnerId === enemy.id) child.dead = true;
+      }
+    }
+    if (enemy.type === "storm-regent") {
+      for (const node of this.enemies) {
+        if (!node.dead && node.type === "storm-node" && node.stormNodeOwnerId === enemy.id) {
+          node.dead = true;
+        }
+      }
+    }
+    if (enemy.type === "abomination-prime") {
+      if (this.activeTetherEnemyId === enemy.id) this.activeTetherEnemyId = null;
+      this.groundHazards = this.groundHazards.filter((hazard) => (
+        hazard.type !== "prime-biomass" || hazard.ownerId !== enemy.id
+      ));
+      for (const projectile of this.enemyProjectiles) {
+        if (projectile.type === "prime-biomass" && projectile.sourceEnemyId === enemy.id) projectile.dead = true;
       }
     }
     this.runKills += 1;
@@ -7104,6 +7550,25 @@ export class CombatSimulation {
     this.spawnEnemy("scrap-skitterer", { x: centre.x - 3.2, y: centre.y + 4 });
   }
 
+  private populateStormRegentScenario(): void {
+    const centre = { ...this.playerPosition };
+    this.waveLiveCap = 10;
+    this.waveThreatBudget = 44;
+    this.spawnMiniBoss("storm-regent", { x: centre.x - 7.2, y: centre.y - 3.6 });
+    this.spawnEnemy("scuttler", { x: centre.x + 6.8, y: centre.y - 3.4 });
+    this.spawnEnemy("scuttler", { x: centre.x + 5.8, y: centre.y + 3.8 });
+  }
+
+  private populateAbominationPrimeScenario(): void {
+    const centre = { ...this.playerPosition };
+    this.waveLiveCap = 10;
+    this.waveThreatBudget = 48;
+    this.spawnMiniBoss("abomination-prime", { x: centre.x - 5.4, y: centre.y - 2.4 });
+    this.spawnEnemy("corrupted-marine", { x: centre.x + 6.2, y: centre.y - 3.4 });
+    this.spawnEnemy("infected-survivor", { x: centre.x + 5.2, y: centre.y + 2.6 });
+    this.spawnEnemy("infected-survivor", { x: centre.x - 3.8, y: centre.y + 4.1 });
+  }
+
   private populateInfectedSurvivorScenario(): void {
     const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
     const positions = Array.from({ length: INFECTED_SURVIVOR_PACK_CAP }, (_, index) => ({
@@ -7493,6 +7958,47 @@ export class CombatSimulation {
         : undefined,
       assemblyPrimeRecallTargetId: enemy.miniBossKind === "assembly-prime"
         ? enemy.assemblyPrimeBehavior.recallTargetId ?? undefined
+        : undefined,
+      stormRegentPhase: enemy.miniBossKind === "storm-regent"
+        ? enemy.stormRegentBehavior.phase
+        : undefined,
+      stormRegentMove: enemy.miniBossKind === "storm-regent"
+        ? enemy.stormRegentBehavior.move ?? undefined
+        : undefined,
+      stormRegentSegments: enemy.miniBossKind === "storm-regent"
+        ? enemy.stormRegentBehavior.lockedChain?.segments.map((segment) => ({
+            ...segment, from: { ...segment.from }, to: { ...segment.to },
+          }))
+        : undefined,
+      stormRegentCentre: enemy.miniBossKind === "storm-regent"
+        ? (enemy.stormRegentBehavior.coilCentre
+            ?? enemy.stormRegentBehavior.nodes.find((node) => (
+              node.id === enemy.stormRegentBehavior.overchargeNodeId
+            ))?.position)
+        : undefined,
+      stormRegentRadiusMetres: enemy.miniBossKind === "storm-regent"
+        ? (enemy.stormRegentBehavior.move === "coil-burst"
+            ? STORM_REGENT_COIL_RADIUS_METRES
+            : enemy.stormRegentBehavior.move === "node-overcharge"
+              ? STORM_REGENT_NODE_OVERCHARGE_RADIUS_METRES : undefined)
+        : undefined,
+      stormRegentNodeId: enemy.miniBossKind === "storm-regent"
+        ? enemy.stormRegentBehavior.overchargeNodeId ?? undefined
+        : undefined,
+      abominationPrimePhase: enemy.miniBossKind === "abomination-prime"
+        ? enemy.abominationPrimeBehavior.phase
+        : undefined,
+      abominationPrimeMove: enemy.miniBossKind === "abomination-prime"
+        ? enemy.abominationPrimeBehavior.move ?? undefined
+        : undefined,
+      abominationPrimeTarget: enemy.miniBossKind === "abomination-prime"
+        ? enemy.abominationPrimeBehavior.lockedTarget ?? undefined
+        : undefined,
+      abominationPrimeHazard: enemy.miniBossKind === "abomination-prime"
+        ? enemy.abominationPrimeBehavior.hazard
+        : undefined,
+      abominationPrimeGrabDamage: enemy.miniBossKind === "abomination-prime"
+        ? enemy.abominationPrimeBehavior.grabDamageTaken
         : undefined,
       facingDirection: { ...enemy.facingDirection },
       statuses: this.activeStatuses(enemy),

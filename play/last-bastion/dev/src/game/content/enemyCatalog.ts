@@ -35,6 +35,8 @@ export type EnemyType =
   | "rift-stalker"
   | "synapse-herald"
   | "assembly-prime"
+  | "storm-regent"
+  | "abomination-prime"
   | "bastion-eater";
 
 export interface EnemyDefinition {
@@ -388,6 +390,28 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     flatDamageReduction: 3,
     resistances: { shock: 0.75 },
     steeringProfile: "supportAnchor",
+  }),
+  "storm-regent": enemy({
+    id: "storm-regent",
+    maxHealth: 760,
+    radiusMetres: 1.18,
+    movementSpeedMetresPerSecond: 1.3,
+    contactDamage: 1.4,
+    experienceValue: 0,
+    flatDamageReduction: 2,
+    resistances: { shock: 0.7 },
+    steeringProfile: "supportAnchor",
+  }),
+  "abomination-prime": enemy({
+    id: "abomination-prime",
+    maxHealth: 920,
+    radiusMetres: 1.28,
+    movementSpeedMetresPerSecond: 1.25,
+    contactDamage: 1.6,
+    experienceValue: 0,
+    flatDamageReduction: 3,
+    resistances: { toxic: 0.65 },
+    steeringProfile: "pursuer",
   }),
   "bastion-eater": enemy({
     id: "bastion-eater",

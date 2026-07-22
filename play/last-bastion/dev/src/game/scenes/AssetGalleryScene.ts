@@ -15,6 +15,10 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "t") {
+      this.createBatchTGallery();
+      return;
+    }
     if (batch === "r") {
       this.createBatchRGallery();
       return;
@@ -947,6 +951,35 @@ export class AssetGalleryScene extends Phaser.Scene {
       this.add.text(x, y + 36, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
     }
     this.add.text(480, 528, "Labs: infected-survivor / corrupted-marine / abomination - mixed waves remain held", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchTGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - BATCH T NEST WEAVER PRODUCTION", style("#ffffff", "17px"));
+    this.add.text(20, 38, "32 directional behavior frames + six pod states + eight event effects", style("#9ff0b8", "11px"));
+    this.add.text(20, 62, "WEAVER  columns: down / left / right / up", style("#d6a8ff", "9px"));
+    this.add.text(20, 76, "rows: carry / gait / lay / recovery / hurt / defeat", style("#d6a8ff", "8px"));
+    for (let frame = 0; frame < 32; frame += 1) {
+      const x = 62 + (frame % 4) * 96;
+      const y = 102 + Math.floor(frame / 4) * 52;
+      this.add.sprite(x, y, "nest-weaver-v1", frame).setScale(0.25);
+      this.add.text(x + 28, y + 14, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.text(440, 64, "POD  fresh / count / critical / hatch", style("#9ff0b8", "9px"));
+    this.add.text(440, 78, "interrupt / destroyed", style("#9ff0b8", "8px"));
+    for (let frame = 0; frame < 6; frame += 1) {
+      const x = 480 + (frame % 3) * 145;
+      const y = 130 + Math.floor(frame / 3) * 102;
+      this.add.sprite(x, y, "nest-pod-v1", frame).setScale(0.55);
+      this.add.text(x, y + 48, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(440, 282, "EVENT EFFECTS  onset / dissipate", style("#ffcf7a", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 490 + (frame % 4) * 115;
+      const y = 342 + Math.floor(frame / 4) * 108;
+      this.add.sprite(x, y, "nest-effects-v1", frame).setScale(0.62);
+      this.add.text(x, y + 48, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(480, 526, "Review: ?mode=gallery&batch=t • Live lab: ?scenario=nest-weaver&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createEmberfallGallery(): void {

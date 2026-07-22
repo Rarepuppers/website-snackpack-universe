@@ -520,7 +520,7 @@ const MONSTERS = [
     text: "Fights normally, then digs in every ~9s: untargetable, charges as a visible ground ripple, erupts under a locked 0.7s ring. Capped 3s underground, long recovery after — the floor attacks, but always fairly." },
   { id: "mon-nest-weaver", name: "Nest Weaver", glyph: "NW", tint: TINT.monster, status: "live", rank: "standard", tier: "Summoner",
     stats: { Health: "18", Pods: "2 live max", Charges: "3", Hatch: "6s / 3 children" },
-    text: "Live behavior lab. Locks a placement point for 0.85s, lays a destructible nine-health egg, then remains exposed for 1.4s. Pods reserve all three future slots/threat; offspring never chain-spawn." },
+    text: "Production Batch T live. Locks a placement point for 0.85s, lays a destructible nine-health egg, then remains exposed for 1.4s. Pods reserve all three future slots/threat; offspring never chain-spawn." },
   { id: "mon-storm-savant", name: "Storm Savant", glyph: "SS", tint: TINT.monster, status: "live", rank: "standard", tier: "Ranged",
     stats: { Health: "16", Nodes: "2 × 6 health", Tell: "1.15s / 2 hops", Damage: "2.5 chain" },
     text: "Live behavior lab. Two destructible nodes lock fixed ladder-shaped rails; cover clips the chain and node destruction cancels it. Survive or interrupt the tell, then punish its 1.7-second overload collapse." },
@@ -578,12 +578,12 @@ const MONSTERS = [
   { id: "mon-assembly-prime", name: "Assembly Prime", glyph: "AP", tint: TINT.boss, status: "live", rank: "mini-boss", tier: "Summoner",
     stats: { Health: "720", Reduction: "3 flat", Boundary: "live lab", Pool: "blocked" },
     text: "Three warned rotating lanes, three interruptible Foundry-compatible fabrications, and one same-entity drone recall are live. Full HD/4K presentation passes and production art is authorized; pool promotion awaits production silhouette and fight-duration acceptance." },
-  { id: "mon-storm-regent", name: "Storm Regent", glyph: "SR", tint: TINT.boss, status: "concept", rank: "mini-boss", tier: "Control",
-    stats: { Identity: "lightning nodes", Boundary: "tested", Nodes: "3 finite", Pool: "blocked" },
-    text: "Pure scheduler is live: fixed two-hop chains, one-node overcharge, and a locked coil burst all preserve sampled escape space. Live route and presentation remain required before art or pool promotion." },
-  { id: "mon-abomination-prime", name: "Abomination Prime", glyph: "AP", tint: TINT.boss, status: "concept", rank: "mini-boss", tier: "Slow",
-    stats: { Identity: "corrupted apex", Pool: "future", Attack: "thrown biomass", Fight: "45–90s" },
-    text: "Deferred corrupted-human apex. Adds one fully telegraphed biomass throw only after the base Abomination's slam, grab, and recovery are accepted." },
+  { id: "mon-storm-regent", name: "Storm Regent", glyph: "SR", tint: TINT.boss, status: "live", rank: "mini-boss", tier: "Control",
+    stats: { Health: "760", Reduction: "2 flat", Nodes: "3 finite", Pool: "blocked" },
+    text: "Fixed two-hop chains, one-node overcharge, and a locked coil burst are live with targetable finite nodes and sampled escape space. Full HD/4K presentation passes and production art is authorized; pool promotion awaits production silhouette and fight-duration acceptance." },
+  { id: "mon-abomination-prime", name: "Abomination Prime", glyph: "AP", tint: TINT.boss, status: "live", rank: "mini-boss", tier: "Slow",
+    stats: { Health: "920", Reduction: "3 flat", Moves: "3 locked", Pool: "blocked", Fight: "45–90s" },
+    text: "Terrain-damaging slam, breakable forced-movement grab, and regenerating lobbed biomass with one finite hazard are live. Full HD/4K presentation passes and production art is authorized; pool promotion awaits production silhouette and fight-duration acceptance." },
 
   { id: "mon-bastion-eater", name: "The Bastion Eater", glyph: "☠", tint: TINT.boss, status: "live", rank: "boss", tier: "Authored",
     stats: { Health: "2400", Armour: "shutters", Speed: "—", Damage: "5 claw", Fight: "3–5 min" },
@@ -1071,12 +1071,12 @@ function render() {
       <tr><td><b>Corrupted Marine knife lifecycle</b></td><td>${badge("live")}</td><td>Locked tell, slow visible knife, cover/player/expiry telemetry, recovery and cooldown are live in the Batch M behavior lab</td></tr>
       <tr><td><b>Accessibility/display gate</b></td><td>${badge("live")}</td><td>Title-safe Full HD/4K HUD, focus-loss pause, reduced flash, shape-coded tells, priority-aware combat text, and persisted per-action keyboard/controller remapping with binding-aware help and HUD labels</td></tr>
       <tr><td><b>Corrupted Human family</b></td><td>${badge("live")}</td><td>Survivor, Marine, Abomination, mixed-wave, off-screen warnings, and conservative budget-neutral normal/expedition promotion are live</td></tr>
-      <tr><td><b>Production audio Batch S</b></td><td>${badge("designed")}</td><td>Weapon-first sample replacement: eight distinct weapon families, Corrupted Human warnings/impacts, then shared combat/UI feedback</td></tr>
+      <tr><td><b>Production audio Batch S</b></td><td>${badge("designed")}</td><td>S1 preflight and validator are live: eight stable weapon families, 24 exact stems, playback limits, WAV/peak/duration checks, and rotary seam enforcement; recording and sample binding are next</td></tr>
       <tr><td><b>Steam readiness foundations</b></td><td>${badge("live")}</td><td>Chained 1/60 replay fixtures, offline-build audit, retry-safe achievements, deterministic cloud conflicts, and an injected Steamworks achievement/cloud bridge are live</td></tr>
-      <tr><td><b>Nest Weaver summoner</b></td><td>${badge("live")}</td><td>Finite charges, locked placement, exposed recovery, reserved slots/threat, destructible timed pods, non-recursive hatch payload, and route-cap tests are live; production art is authorized</td></tr>
+      <tr><td><b>Nest Weaver summoner</b></td><td>${badge("live")}</td><td>Finite charges, locked placement, exposed recovery, reserved slots/threat, destructible timed pods, non-recursive hatch payload, and Batch T production body/pod/effects are live at 960×540 through 4K</td></tr>
       <tr><td><b>Storm Savant</b></td><td>${badge("live")}</td><td>Deterministic destructible nodes, fixed two-hop rails, cover clipping, escape-lane validation, interruption, overload recovery, and Full HD route gate are live; production art is authorized</td></tr>
       <tr><td><b>Machine uprising</b></td><td>${badge("live")}</td><td>Scrap Skitterer, Arc Warden, Cyborg Reclaimer, and finite-charge Foundry Fabricator behavior labs are live and production-authorized</td></tr>
-      <tr><td><b>Expanded mini-boss pool</b></td><td>${badge("live")}</td><td>Synapse Herald behavior/presentation is live and production-authorized, with pool promotion held for art and 45–90s fight acceptance; Assembly Prime is the next behavior lab, then Storm Regent and Abomination Prime</td></tr>
+      <tr><td><b>Expanded mini-boss pool</b></td><td>${badge("live")}</td><td>Synapse Herald, Assembly Prime, Storm Regent, and Abomination Prime behavior/presentation labs are live and production-authorized; each pool promotion is held for mixed-resolution silhouette and 45–90s fight acceptance</td></tr>
       <tr><td><b>Sector campaign</b></td><td>${badge("concept")}</td><td>Multiple faction-owned sector maps after the first expedition is proven</td></tr>
       </tbody></table></div>`;
   }

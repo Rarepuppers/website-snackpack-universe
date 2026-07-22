@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(110);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(113);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -55,6 +55,21 @@ describe("GameAssetManifest", () => {
     if (terrain.kind === "spritesheet") expect(terrain.frameCount).toBe(28);
     if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
     expect(terrain.pivot).toEqual({ x: 0.5, y: 0.92 });
+  });
+
+  it("locks Production Batch T Nest Weaver contracts", () => {
+    const expectedFrames = {
+      "nest-weaver-v1": 32,
+      "nest-pod-v1": 6,
+      "nest-effects-v1": 8,
+    } as const;
+    for (const [id, frameCount] of Object.entries(expectedFrames)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
+    }
+    expect(GAME_ASSETS["nest-weaver-v1"].pivot).toEqual({ x: 0.5, y: 0.92 });
+    expect(GAME_ASSETS["nest-pod-v1"].pivot).toEqual({ x: 0.5, y: 0.92 });
   });
 
   it("locks Production Batch B frame contracts", () => {

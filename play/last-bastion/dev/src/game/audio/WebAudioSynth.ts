@@ -1,4 +1,5 @@
 import type { AudioCue } from "./AudioCueMap";
+import { canStartProductionAudioVoice } from "./ProductionAudioCatalog";
 
 /**
  * Minimal WebAudio placeholder synthesizer. Browsers block audio until a user
@@ -9,6 +10,8 @@ export class WebAudioSynth {
   private context: AudioContext | null = null;
   private contextFailed = false;
   private readonly playedThisFrame = new Set<string>();
+  private readonly lastStartedMs = new Map<string, number>();
+  private readonly activeVoices = new Map<string, number>();
 
   constructor(public enabled: boolean) {}
 
@@ -30,9 +33,16 @@ export class WebAudioSynth {
     }
     this.playedThisFrame.add(cue.id);
 
+    const now = context.currentTime;
+    const nowMs = now * 1_000;
+    const activeVoices = this.activeVoices.get(cue.id) ?? 0;
+    if (!canStartProductionAudioVoice(cue.id, nowMs, this.lastStartedMs.get(cue.id), activeVoices)) {
+      return;
+    }
+    this.lastStartedMs.set(cue.id, nowMs);
+    this.activeVoices.set(cue.id, activeVoices + 1);
     const oscillator = context.createOscillator();
     const gain = context.createGain();
-    const now = context.currentTime;
 
     oscillator.type = cue.oscillator;
     oscillator.frequency.setValueAtTime(cue.frequencyHz, now);
@@ -50,6 +60,9 @@ export class WebAudioSynth {
     oscillator.start(now);
     oscillator.stop(now + cue.durationSeconds + 0.02);
     oscillator.addEventListener("ended", () => {
+      const remainingVoices = Math.max(0, (this.activeVoices.get(cue.id) ?? 1) - 1);
+      if (remainingVoices === 0) this.activeVoices.delete(cue.id);
+      else this.activeVoices.set(cue.id, remainingVoices);
       oscillator.disconnect();
       gain.disconnect();
     });

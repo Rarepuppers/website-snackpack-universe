@@ -108,6 +108,9 @@ import medicHelmetSheetUrl from "../../../../art/production-tests/batch-p/medic-
 import injectorCarbineSheetUrl from "../../../../art/production-tests/batch-p/injector-carbine-spritesheet-v1-96.png";
 import injectorCarbineEffectUrl from "../../../../art/production-tests/batch-p/injector-carbine-effect-atlas-v1-64.png";
 import medicPortraitUrl from "../../../../art/production-tests/batch-p/medic-portrait-v1-128.png";
+import nestWeaverSheetUrl from "../../../../art/production-tests/batch-t/nest-weaver-spritesheet-v1-192.png";
+import nestPodSheetUrl from "../../../../art/production-tests/batch-t/nest-pod-spritesheet-v1-128.png";
+import nestEffectsUrl from "../../../../art/production-tests/batch-t/nest-effects-atlas-v1-128.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -173,6 +176,9 @@ export type GameAssetId =
   | "corrupted-marine-v1"
   | "abomination-v1"
   | "corrupted-marine-effects-v1"
+  | "nest-weaver-v1"
+  | "nest-pod-v1"
+  | "nest-effects-v1"
   | "emberfall-floor-v1"
   | "emberfall-boundary-v1"
   | "emberfall-obstacles-v1"
@@ -304,6 +310,9 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("corrupted-marine-v1", corruptedMarineSheetUrl, 96, 96, 12, 0.5, 0.5),
   sheet("abomination-v1", abominationSheetUrl, 128, 128, 12, 0.5, 0.5),
   sheet("corrupted-marine-effects-v1", corruptedMarineEffectUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("nest-weaver-v1", nestWeaverSheetUrl, 192, 192, 32, 0.5, 0.92),
+  sheet("nest-pod-v1", nestPodSheetUrl, 128, 128, 6, 0.5, 0.92),
+  sheet("nest-effects-v1", nestEffectsUrl, 128, 128, 8, 0.5, 0.72),
   sheet("emberfall-floor-v1", emberfallFloorUrl, 64, 64, 6, 0.5, 0.5),
   sheet("emberfall-boundary-v1", emberfallBoundaryUrl, 64, 64, 8, 0.5, 0.5),
   sheet("emberfall-obstacles-v1", emberfallObstacleUrl, 96, 96, 4, 0.5, 0.5),

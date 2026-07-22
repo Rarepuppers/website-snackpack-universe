@@ -10,6 +10,7 @@
     "test": "vitest run",
     "smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-test.ps1",
     "offline": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/offline-boot-test.ps1",
+    "audio:validate:s1": "node scripts/validate-production-audio.mjs",
     "verify": "npm run typecheck && npm run test && npm run build && npm run smoke && npm run offline"
   },
   "dependencies": {

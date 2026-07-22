@@ -6,6 +6,8 @@ const MINI_BOSS_SPRITE_SCALES: Readonly<Record<MiniBossKind, number>> = Object.f
   "rift-stalker": 1.25,
   "synapse-herald": 1.28,
   "assembly-prime": 1.32,
+  "storm-regent": 1.3,
+  "abomination-prime": 1.34,
 });
 
 /** Gameplay-scale silhouette contract; collision radii remain simulation-owned. */

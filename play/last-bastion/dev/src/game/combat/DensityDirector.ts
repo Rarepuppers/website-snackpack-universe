@@ -61,6 +61,8 @@ const ROLE: Readonly<Record<EnemyType, EnemyPressureRole>> = Object.freeze({
   "rift-stalker": "boss",
   "synapse-herald": "boss",
   "assembly-prime": "boss",
+  "storm-regent": "boss",
+  "abomination-prime": "boss",
   "bastion-eater": "boss",
 });
 
@@ -101,6 +103,8 @@ export const ENEMY_THREAT_COST: Readonly<Record<EnemyType, number>> = Object.fre
   "rift-stalker": 40,
   "synapse-herald": 40,
   "assembly-prime": 40,
+  "storm-regent": 40,
+  "abomination-prime": 40,
   "bastion-eater": 40,
 });
 
