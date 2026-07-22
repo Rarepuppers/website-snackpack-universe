@@ -94,6 +94,75 @@ import {
   type AbominationBehaviorState,
   type AbominationPhase,
 } from "./AbominationBehavior";
+import {
+  createNestPod,
+  damageNestPod,
+  NEST_HATCHLING_COUNT,
+  NEST_POD_HATCH_SECONDS,
+  NEST_WEAVER_PLACEMENT_CHARGES,
+  stepNestPod,
+  tryReserveNestPod,
+  type NestPodReservation,
+  type NestPodState,
+} from "./NestWeaverLifecycle";
+import {
+  createConductiveNode,
+  createIdleStormChain,
+  clipStormChainToCover,
+  damageConductiveNode,
+  lockStormChain,
+  planStormNodePlacement,
+  pointInsideStormChain,
+  stepStormChain,
+  type ConductiveNodeState,
+  type StormChainState,
+} from "./StormSavantLightning";
+import {
+  brakeScrapSkitterer,
+  createScrapSkittererBehavior,
+  SCRAP_SKITTERER_WRECK_SECONDS,
+  stepScrapSkittererBehavior,
+  type ScrapSkittererState,
+} from "./ScrapSkittererBehavior";
+import {
+  ARC_WARDEN_CHARGE_SECONDS,
+  createArcWardenBehavior,
+  lockArcWardenLane,
+  pointInsideArcWardenLane,
+  stepArcWardenBehavior,
+  type ArcWardenState,
+} from "./ArcWardenBeam";
+import {
+  createReclaimerRepairBehavior,
+  stepReclaimerRepair,
+  tryBeginReclaimerRepair,
+  type ReclaimerRepairState,
+  type ReclaimerRepairTarget,
+} from "./CyborgReclaimerRepair";
+import {
+  beginFoundryFabrication,
+  createFoundryFabricatorBehavior,
+  damageFoundryPad,
+  FOUNDRY_MAX_LIVE_CHILDREN,
+  stepFoundryFabrication,
+  tryReserveFoundryChild,
+  type FoundryChildType,
+  type FoundryFabricatorState,
+} from "./FoundryFabricatorLifecycle";
+import {
+  createSynapseHeraldBehavior,
+  stepSynapseHeraldBehavior,
+  type SynapseHeraldMove,
+  type SynapseHeraldState,
+} from "./SynapseHeraldBehavior";
+import {
+  createAssemblyPrimeBehavior,
+  damageAssemblyPrimePad,
+  stepAssemblyPrimeBehavior,
+  type AssemblyPrimeLane,
+  type AssemblyPrimeMove,
+  type AssemblyPrimeState,
+} from "./AssemblyPrimeBehavior";
 import { scaleEnemyHealth, scaleEnemyHit, waveScaling } from "./WaveScaling";
 import type { EliteKind } from "./EliteCadence";
 export type { EliteKind } from "./EliteCadence";
@@ -122,6 +191,7 @@ export type SlimeSpitterPhase = "positioning" | "windup" | "recover";
 export type BlastMitePhase = "chase" | "armed";
 export type InfectedSurvivorPhase = "hesitate" | "sprint" | "recover";
 export type CorruptedMarinePhase = "positioning" | "windup" | "throw" | "recovery";
+export type NestWeaverPhase = "positioning" | "placement-windup" | "recovery";
 export type WarpFlankerPhase = "stalk" | "warp-windup" | "materialize";
 export type RipperPhase = "pursuit" | "windup" | "sweep" | "recovery";
 export type RazorScuttlerPhase = "pursuit" | "windup" | "dash" | "recovery";
@@ -136,7 +206,7 @@ export type BastionEaterAction =
   | "breach-windup" | "breach" | "recovery";
 export type EnemyRank = "standard" | "treasure" | "elite" | "mini-boss" | "boss";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
-export type MiniBossKind = "siege-crusher" | "brood-warden" | "rift-stalker";
+export type MiniBossKind = "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime";
 export type SiegeCrusherPhase =
   | "entrance" | "stalk" | "charge-windup" | "charge"
   | "sweep-windup" | "sweep" | "slam-windup" | "slam" | "recovery";
@@ -147,7 +217,7 @@ export type BroodWardenPhase =
 export type RiftStalkerPhase =
   | "entrance" | "cloak" | "mark" | "warp" | "pounce"
   | "slash-windup" | "slash" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "infected-survivor" | "corrupted-marine" | "abomination" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit";
 export type SupplyChestVariant = "sealed" | "armored";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
@@ -228,6 +298,38 @@ export type CombatEvent =
   | { type: "corrupted-marine-knife-impact"; position: Vector2Data; reason: "player" | "cover" | "expired"; damage: number; enemyId: number }
   | { type: "abomination-slam-warning"; position: Vector2Data; target: Vector2Data; radiusMetres: number; enemyId: number }
   | { type: "abomination-slam-impact"; position: Vector2Data; radiusMetres: number; damage: number; hitPlayer: boolean; enemyId: number }
+  | { type: "nest-weaver-placement-warning"; position: Vector2Data; target: Vector2Data; enemyId: number }
+  | { type: "nest-pod-laid"; position: Vector2Data; ownerId: number; podId: number; hatchSeconds: number }
+  | { type: "nest-pod-hatched"; position: Vector2Data; podId: number; count: number }
+  | { type: "nest-pod-destroyed"; position: Vector2Data; podId: number }
+  | { type: "storm-chain-warning"; position: Vector2Data; enemyId: number; segments: StormChainState["segments"] }
+  | { type: "storm-chain-discharged"; position: Vector2Data; enemyId: number; hitPlayer: boolean; damage: number }
+  | { type: "storm-chain-interrupted"; position: Vector2Data; enemyId: number }
+  | { type: "scrap-skitterer-warning"; position: Vector2Data; direction: Vector2Data; enemyId: number }
+  | { type: "scrap-skitterer-rush"; position: Vector2Data; direction: Vector2Data; enemyId: number }
+  | { type: "scrap-skitterer-impact"; position: Vector2Data; reason: "player" | "cover" | "miss"; enemyId: number }
+  | { type: "scrap-skitterer-wreck"; position: Vector2Data; wreckId: number; durationSeconds: number }
+  | { type: "arc-warden-warning"; position: Vector2Data; enemyId: number; lane: NonNullable<ArcWardenState["lockedLane"]> }
+  | { type: "arc-warden-discharged"; position: Vector2Data; endpoint: Vector2Data; enemyId: number; hitPlayer: boolean; damage: number; blockedByObstacleId?: string }
+  | { type: "foundry-fabrication-started"; position: Vector2Data; enemyId: number; padId: number; childType: FoundryChildType }
+  | { type: "foundry-fabrication-completed"; position: Vector2Data; enemyId: number; childId: number; childType: FoundryChildType }
+  | { type: "foundry-fabrication-interrupted"; position: Vector2Data; enemyId: number; reason: "owner-damage" | "pad-destroyed" }
+  | { type: "foundry-turret-warning"; position: Vector2Data; target: Vector2Data; enemyId: number }
+  | { type: "foundry-turret-fired"; position: Vector2Data; target: Vector2Data; enemyId: number; damage: number; hitPlayer: boolean }
+  | { type: "foundry-child-powered-down"; position: Vector2Data; enemyId: number; ownerId: number; reason: "expired" | "owner-defeated" }
+  | { type: "synapse-herald-warning"; position: Vector2Data; enemyId: number; move: SynapseHeraldMove; targets: readonly Vector2Data[]; linkTargetId?: number }
+  | { type: "synapse-herald-lunge"; position: Vector2Data; enemyId: number; target: Vector2Data; chainIndex: number }
+  | { type: "synapse-herald-zones-erupted"; position: Vector2Data; enemyId: number; zones: readonly Vector2Data[]; hitPlayer: boolean }
+  | { type: "synapse-herald-link-started"; position: Vector2Data; enemyId: number; targetId: number }
+  | { type: "synapse-herald-link-broken"; position: Vector2Data; enemyId: number; targetId: number; reason: "target" | "expired" }
+  | { type: "assembly-prime-warning"; position: Vector2Data; enemyId: number; move: AssemblyPrimeMove; lanes: readonly AssemblyPrimeLane[]; target?: Vector2Data; recallTargetId?: number }
+  | { type: "assembly-prime-lane-fired"; position: Vector2Data; enemyId: number; laneIndex: number; endpoint: Vector2Data; hitPlayer: boolean; damage: number }
+  | { type: "assembly-prime-fabrication-completed"; position: Vector2Data; enemyId: number; childId: number; childType: FoundryChildType }
+  | { type: "assembly-prime-fabrication-interrupted"; position: Vector2Data; enemyId: number; reason: "owner-damage" | "pad-destroyed" }
+  | { type: "assembly-prime-drone-recalled"; position: Vector2Data; enemyId: number; childId: number }
+  | { type: "reclaimer-link-started"; position: Vector2Data; target: Vector2Data; enemyId: number; targetId: number }
+  | { type: "reclaimer-repair-completed"; position: Vector2Data; target: Vector2Data; enemyId: number; targetId: number; amount: number }
+  | { type: "reclaimer-link-interrupted"; position: Vector2Data; enemyId: number; targetId: number | null; reason: "damage" | "target" }
   | { type: "rift-stalker-mark"; position: Vector2Data; target: Vector2Data }
   | { type: "rift-stalker-warp-out"; position: Vector2Data }
   | { type: "rift-stalker-pounce"; position: Vector2Data; radiusMetres: number; hitPlayer: boolean }
@@ -304,6 +406,29 @@ export interface EnemySnapshot {
   corruptedMarineTarget?: Vector2Data;
   abominationPhase?: AbominationPhase;
   abominationTarget?: Vector2Data;
+  nestWeaverPhase?: NestWeaverPhase;
+  nestWeaverTarget?: Vector2Data;
+  nestWeaverChargesRemaining?: number;
+  nestPodRemainingSeconds?: number;
+  nestPodOwnerId?: number;
+  stormPhase?: StormChainState["phase"];
+  stormSegments?: StormChainState["segments"];
+  stormNodeOwnerId?: number;
+  scrapSkittererPhase?: ScrapSkittererState["phase"];
+  scrapSkittererDirection?: Vector2Data;
+  arcWardenPhase?: ArcWardenState["phase"];
+  arcWardenLane?: ArcWardenState["lockedLane"];
+  reclaimerPhase?: ReclaimerRepairState["phase"];
+  reclaimerTargetId?: number;
+  reclaimerChargesRemaining?: number;
+  foundryPhase?: FoundryFabricatorState["phase"];
+  foundryTarget?: Vector2Data;
+  foundryChargesRemaining?: number;
+  foundryPadHealth?: number;
+  foundryOwnerId?: number;
+  foundryRemainingSeconds?: number;
+  foundryTurretPhase?: "tracking" | "warning" | "recovery";
+  foundryTurretTarget?: Vector2Data;
   warpPhase?: WarpFlankerPhase;
   warpTarget?: Vector2Data;
   ripperPhase?: RipperPhase;
@@ -340,6 +465,15 @@ export interface EnemySnapshot {
   riftStalkerPhase?: RiftStalkerPhase;
   riftStalkerMarkTarget?: Vector2Data;
   riftStalkerDirection?: Vector2Data;
+  synapseHeraldPhase?: SynapseHeraldState["phase"];
+  synapseHeraldMove?: SynapseHeraldMove;
+  synapseHeraldTargets?: readonly Vector2Data[];
+  synapseHeraldLinkTargetId?: number;
+  assemblyPrimePhase?: AssemblyPrimeState["phase"];
+  assemblyPrimeMove?: AssemblyPrimeMove;
+  assemblyPrimeLanes?: readonly AssemblyPrimeLane[];
+  assemblyPrimeTarget?: Vector2Data;
+  assemblyPrimeRecallTargetId?: number;
   facingDirection: Vector2Data;
   statuses: readonly StatusEffectType[];
   steeringProfile: EnemySteeringProfileId;
@@ -352,6 +486,8 @@ export interface DensityTelemetrySnapshot {
   spawnedThisWave: number;
   threatBudget: number;
   threatSpawned: number;
+  reservedLiveSlots: number;
+  reservedThreat: number;
   waveElapsedSeconds: number;
   waveDurationSeconds: number | null;
   timerEndsWave: boolean;
@@ -419,7 +555,7 @@ export interface EnemyProjectileSnapshot {
 
 export interface GroundHazardSnapshot {
   id: number;
-  type: "slowing-slime";
+  type: "slowing-slime" | "machine-wreck";
   position: Vector2Data;
   radiusMetres: number;
   remainingSeconds: number;
@@ -539,6 +675,30 @@ interface EnemyState {
   corruptedMarinePhaseRemainingSeconds: number;
   corruptedMarineTarget: Vector2Data;
   abominationBehavior: AbominationBehaviorState;
+  nestWeaverPhase: NestWeaverPhase;
+  nestWeaverPhaseRemainingSeconds: number;
+  nestWeaverTarget: Vector2Data;
+  nestWeaverChargesRemaining: number;
+  nestWeaverThreatRemaining: number;
+  nestPendingReservation: NestPodReservation | null;
+  nestPod: NestPodState | null;
+  stormChain: StormChainState;
+  stormCooldownSeconds: number;
+  stormNodeOwnerId: number | null;
+  conductiveNode: ConductiveNodeState | null;
+  scrapSkittererBehavior: ScrapSkittererState;
+  arcWardenBehavior: ArcWardenState;
+  reclaimerBehavior: ReclaimerRepairState;
+  reclaimerDamagedSinceLastStep: boolean;
+  foundryBehavior: FoundryFabricatorState;
+  foundryDamagedSinceLastStep: boolean;
+  foundryThreatRemaining: number;
+  foundryPadOwnerId: number | null;
+  foundryChildOwnerId: number | null;
+  foundryChildRemainingSeconds: number;
+  foundryTurretPhase: "tracking" | "warning" | "recovery";
+  foundryTurretPhaseRemainingSeconds: number;
+  foundryTurretTarget: Vector2Data;
   warpPhase: WarpFlankerPhase;
   warpPhaseRemainingSeconds: number;
   warpTarget: Vector2Data;
@@ -601,6 +761,13 @@ interface EnemyState {
   riftStalkerMarkTarget: Vector2Data;
   riftStalkerDirection: Vector2Data;
   riftStalkerChainedThisCycle: boolean;
+  synapseHeraldBehavior: SynapseHeraldState;
+  synapseHeraldLungeIndex: number;
+  synapseHeraldHitThisLunge: boolean;
+  assemblyPrimeBehavior: AssemblyPrimeState;
+  assemblyPrimeDamagedSinceLastStep: boolean;
+  assemblyPrimeLaneIndex: number;
+  assemblyPrimeLaneCooldownSeconds: number;
   statusBuildup: Partial<Record<StatusEffectType, number>>;
   statusTimers: Partial<Record<StatusEffectType, number>>;
 }
@@ -662,7 +829,7 @@ interface EnemyProjectileState {
 
 interface GroundHazardState {
   id: number;
-  type: "slowing-slime";
+  type: "slowing-slime" | "machine-wreck";
   position: Vector2Data;
   radiusMetres: number;
   remainingSeconds: number;
@@ -741,6 +908,9 @@ export const PLAYER_ATTACK_DAMAGE_BASELINES = Object.freeze({
   bastionEaterTendril: 4,
   bastionEaterTendrilLastStand: 5,
   bastionEaterBreach: 5,
+  stormChain: 2.5,
+  scrapSkittererRush: 2.2,
+  arcWardenBeam: 2.6,
 } as const);
 const PLAYER_RADIUS_METRES = 0.55;
 const INTERMISSION_SECONDS = 2;
@@ -765,6 +935,8 @@ export const INFECTED_SURVIVOR_SPRINT_SPEED = 5.15;
 export const INFECTED_SURVIVOR_ACCELERATION = 11;
 export const INFECTED_SURVIVOR_DECELERATION = 14;
 export const INFECTED_SURVIVOR_PACK_CAP = 8;
+export const SCRAP_SKITTERER_PACK_CAP = 8;
+export const ARC_WARDEN_LAB_CAP = 2;
 const INFECTED_SURVIVOR_RECOVERY_SECONDS = 0.68;
 const INFECTED_SURVIVOR_STAMINA_RECOVERY_PER_SECOND = 1.8;
 export const CORRUPTED_MARINE_WINDUP_SECONDS = 0.72;
@@ -964,6 +1136,10 @@ export class CombatSimulation {
   private readonly expeditionRewardedWaves = new Set<number>();
   private expeditionPostEncounterShopQueued = false;
   private activeTetherEnemyId: number | null = null;
+  private nestReservedLiveSlots = 0;
+  private nestReservedThreat = 0;
+  private foundryReservedLiveSlots = 0;
+  private foundryReservedThreat = 0;
   private pendingWeaponTile: WeaponTile | null = null;
   private autoFireEnabled: boolean;
 
@@ -1050,12 +1226,30 @@ export class CombatSimulation {
       this.populateBroodWardenScenario();
     } else if (this.scenario === "rift-stalker") {
       this.populateRiftStalkerScenario();
+    } else if (this.scenario === "synapse-herald") {
+      this.populateSynapseHeraldScenario();
+    } else if (this.scenario === "assembly-prime") {
+      this.populateAssemblyPrimeScenario();
     } else if (this.scenario === "infected-survivor") {
       this.populateInfectedSurvivorScenario();
     } else if (this.scenario === "corrupted-marine") {
       this.populateCorruptedMarineScenario();
     } else if (this.scenario === "abomination") {
       this.populateAbominationScenario();
+    } else if (this.scenario === "corrupted-human") {
+      this.populateCorruptedHumanScenario();
+    } else if (this.scenario === "nest-weaver") {
+      this.populateNestWeaverScenario();
+    } else if (this.scenario === "storm-savant") {
+      this.populateStormSavantScenario();
+    } else if (this.scenario === "scrap-skitterer") {
+      this.populateScrapSkittererScenario();
+    } else if (this.scenario === "arc-warden") {
+      this.populateArcWardenScenario();
+    } else if (this.scenario === "cyborg-reclaimer") {
+      this.populateCyborgReclaimerScenario();
+    } else if (this.scenario === "foundry-fabricator") {
+      this.populateFoundryFabricatorScenario();
     } else if (this.scenario === "ripper") {
       this.populateRipperScenario();
     } else if (this.scenario === "razor-scuttler") {
@@ -1180,7 +1374,10 @@ export class CombatSimulation {
     this.updateEliteRewards();
     this.resolveEnemyContactDamage();
     this.removeDeadEntities();
-    this.densityPeakLiveEnemies = Math.max(this.densityPeakLiveEnemies, this.enemies.length);
+    this.densityPeakLiveEnemies = Math.max(
+      this.densityPeakLiveEnemies,
+      this.enemies.filter((enemy) => !enemy.dead && enemy.type !== "foundry-pad").length,
+    );
     this.densityPeakEnemyProjectiles = Math.max(this.densityPeakEnemyProjectiles, this.enemyProjectiles.length);
     if (this.wavesEnabled || this.expeditionEncounter !== null) {
       this.updateEncounterProgress(delta);
@@ -1229,6 +1426,30 @@ export class CombatSimulation {
       corruptedMarinePhaseRemainingSeconds: type === "corrupted-marine" ? 0.55 + (id % 2) * 0.2 : 0,
       corruptedMarineTarget: { ...this.playerPosition },
       abominationBehavior: createAbominationBehavior(),
+      nestWeaverPhase: "positioning",
+      nestWeaverPhaseRemainingSeconds: type === "nest-weaver" ? 0.8 : 0,
+      nestWeaverTarget: { ...spawnPosition },
+      nestWeaverChargesRemaining: type === "nest-weaver" ? NEST_WEAVER_PLACEMENT_CHARGES : 0,
+      nestWeaverThreatRemaining: type === "nest-weaver" ? 15 : 0,
+      nestPendingReservation: null,
+      nestPod: null,
+      stormChain: createIdleStormChain(),
+      stormCooldownSeconds: type === "storm-savant" ? 0.8 : 0,
+      stormNodeOwnerId: null,
+      conductiveNode: null,
+      scrapSkittererBehavior: createScrapSkittererBehavior(),
+      arcWardenBehavior: createArcWardenBehavior(),
+      reclaimerBehavior: createReclaimerRepairBehavior(),
+      reclaimerDamagedSinceLastStep: false,
+      foundryBehavior: createFoundryFabricatorBehavior(),
+      foundryDamagedSinceLastStep: false,
+      foundryThreatRemaining: type === "foundry-fabricator" ? 7 : 0,
+      foundryPadOwnerId: null,
+      foundryChildOwnerId: null,
+      foundryChildRemainingSeconds: 0,
+      foundryTurretPhase: "tracking",
+      foundryTurretPhaseRemainingSeconds: 0,
+      foundryTurretTarget: { ...this.playerPosition },
       warpPhase: "stalk",
       warpPhaseRemainingSeconds: type === "warp-flanker" ? 1.2 : 0,
       warpTarget: { x: 0, y: 0 },
@@ -1302,6 +1523,13 @@ export class CombatSimulation {
         y: this.playerPosition.y - spawnPosition.y,
       }),
       riftStalkerChainedThisCycle: false,
+      synapseHeraldBehavior: createSynapseHeraldBehavior(id),
+      synapseHeraldLungeIndex: 0,
+      synapseHeraldHitThisLunge: false,
+      assemblyPrimeBehavior: createAssemblyPrimeBehavior(id),
+      assemblyPrimeDamagedSinceLastStep: false,
+      assemblyPrimeLaneIndex: 0,
+      assemblyPrimeLaneCooldownSeconds: 0,
       statusBuildup: {},
       statusTimers: {},
     });
@@ -1409,6 +1637,8 @@ export class CombatSimulation {
     enemy.broodWardenPhaseRemainingSeconds = 0.9;
     enemy.riftStalkerPhase = "entrance";
     enemy.riftStalkerPhaseRemainingSeconds = 0.9;
+    enemy.synapseHeraldBehavior = createSynapseHeraldBehavior(id);
+    enemy.assemblyPrimeBehavior = createAssemblyPrimeBehavior(id);
     enemy.facingDirection = normalizeVector({
       x: this.playerPosition.x - enemy.position.x,
       y: this.playerPosition.y - enemy.position.y,
@@ -1711,11 +1941,13 @@ export class CombatSimulation {
       activeTetherEnemyId: this.activeTetherEnemyId,
       density: {
         liveCap: this.waveLiveCap,
-        currentLiveEnemies: this.enemies.filter((enemy) => !enemy.dead).length,
+        currentLiveEnemies: this.enemies.filter((enemy) => !enemy.dead && enemy.type !== "foundry-pad").length,
         peakLiveEnemies: this.densityPeakLiveEnemies,
         spawnedThisWave: this.densitySpawnedThisWave,
         threatBudget: this.waveThreatBudget,
         threatSpawned: this.waveThreatSpawned,
+        reservedLiveSlots: this.nestReservedLiveSlots + this.foundryReservedLiveSlots,
+        reservedThreat: this.nestReservedThreat + this.foundryReservedThreat,
         waveElapsedSeconds: this.waveElapsedSeconds,
         waveDurationSeconds: this.waveDurationSeconds,
         timerEndsWave: this.waveEndsOnTimer,
@@ -2965,6 +3197,40 @@ export class CombatSimulation {
         case "abomination":
           this.updateAbomination(enemy, deltaSeconds);
           break;
+        case "nest-weaver":
+          this.updateNestWeaver(enemy, deltaSeconds);
+          break;
+        case "nest-pod":
+          this.updateNestPod(enemy, deltaSeconds);
+          break;
+        case "nest-hatchling":
+          this.moveEnemyTowardPlayer(enemy, ENEMY_CATALOG["nest-hatchling"].movementSpeedMetresPerSecond, deltaSeconds);
+          break;
+        case "storm-savant":
+          this.updateStormSavant(enemy, deltaSeconds);
+          break;
+        case "storm-node":
+          break;
+        case "scrap-skitterer":
+          this.updateScrapSkitterer(enemy, deltaSeconds);
+          break;
+        case "arc-warden":
+          this.updateArcWarden(enemy, deltaSeconds);
+          break;
+        case "cyborg-reclaimer":
+          this.updateCyborgReclaimer(enemy, deltaSeconds);
+          break;
+        case "foundry-fabricator":
+          this.updateFoundryFabricator(enemy, deltaSeconds);
+          break;
+        case "foundry-pad":
+          break;
+        case "foundry-drone":
+          this.updateFoundryChild(enemy, deltaSeconds, true);
+          break;
+        case "foundry-turret":
+          this.updateFoundryChild(enemy, deltaSeconds, false);
+          break;
         case "egg-cluster":
           this.updateEggCluster(enemy, deltaSeconds);
           break;
@@ -3003,6 +3269,12 @@ export class CombatSimulation {
           break;
         case "rift-stalker":
           this.updateRiftStalker(enemy, deltaSeconds);
+          break;
+        case "synapse-herald":
+          this.updateSynapseHerald(enemy, deltaSeconds);
+          break;
+        case "assembly-prime":
+          this.updateAssemblyPrime(enemy, deltaSeconds);
           break;
         case "bastion-eater":
           this.updateBastionEater(enemy, deltaSeconds);
@@ -3323,6 +3595,676 @@ export class CombatSimulation {
     }
   }
 
+  private updateNestWeaver(enemy: EnemyState, deltaSeconds: number): void {
+    enemy.nestWeaverPhaseRemainingSeconds = Math.max(0, enemy.nestWeaverPhaseRemainingSeconds - deltaSeconds);
+    const towardPlayer = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
+    enemy.facingDirection = towardPlayer;
+
+    if (enemy.nestWeaverPhase === "placement-windup") {
+      if (enemy.nestWeaverPhaseRemainingSeconds <= 0 && enemy.nestPendingReservation) {
+        this.spawnNestPod(enemy, enemy.nestPendingReservation);
+        enemy.nestPendingReservation = null;
+        enemy.nestWeaverPhase = "recovery";
+        enemy.nestWeaverPhaseRemainingSeconds = 1.4;
+      }
+      return;
+    }
+    if (enemy.nestWeaverPhase === "recovery") {
+      if (enemy.nestWeaverPhaseRemainingSeconds <= 0) {
+        enemy.nestWeaverPhase = "positioning";
+        enemy.nestWeaverPhaseRemainingSeconds = 2.1;
+      }
+      return;
+    }
+
+    const playerDistance = distance(enemy.position, this.playerPosition);
+    if (playerDistance > 8.5) {
+      this.moveEnemy(enemy, towardPlayer, ENEMY_CATALOG["nest-weaver"].movementSpeedMetresPerSecond, deltaSeconds);
+    } else if (playerDistance < 4.5) {
+      this.moveEnemy(enemy, { x: -towardPlayer.x, y: -towardPlayer.y }, ENEMY_CATALOG["nest-weaver"].movementSpeedMetresPerSecond, deltaSeconds);
+    }
+    if (enemy.nestWeaverPhaseRemainingSeconds > 0) return;
+
+    const reservation = tryReserveNestPod({
+      activePodsForOwner: this.enemies.filter((candidate) => (
+        !candidate.dead && candidate.type === "nest-pod" && candidate.nestPod?.ownerId === enemy.id
+      )).length,
+      ownerChargesRemaining: enemy.nestWeaverChargesRemaining,
+      liveUnits: this.enemies.filter((candidate) => !candidate.dead).length,
+      reservedLiveSlots: this.nestReservedLiveSlots,
+      liveCap: this.waveLiveCap > 0 ? this.waveLiveCap : 56,
+      remainingThreat: enemy.nestWeaverThreatRemaining,
+    });
+    if (!reservation.accepted) {
+      enemy.nestWeaverPhaseRemainingSeconds = 0.5;
+      return;
+    }
+
+    const awayFromPlayer = normalizeVector({
+      x: enemy.position.x - this.playerPosition.x,
+      y: enemy.position.y - this.playerPosition.y,
+    });
+    const side = enemy.id % 2 === 0 ? 1 : -1;
+    enemy.nestWeaverTarget = {
+      x: clamp(enemy.position.x + awayFromPlayer.x * 1.25 - awayFromPlayer.y * 0.55 * side, 0.75, this.widthMetres - 0.75),
+      y: clamp(enemy.position.y + awayFromPlayer.y * 1.25 + awayFromPlayer.x * 0.55 * side, 0.75, this.heightMetres - 0.75),
+    };
+    enemy.nestWeaverChargesRemaining -= 1;
+    enemy.nestWeaverThreatRemaining -= reservation.reservation.immediatePodThreat
+      + reservation.reservation.reservedHatchlingThreat;
+    enemy.nestPendingReservation = reservation.reservation;
+    this.nestReservedLiveSlots += reservation.reservation.reservedHatchlingSlots;
+    this.nestReservedThreat += reservation.reservation.reservedHatchlingThreat;
+    enemy.nestWeaverPhase = "placement-windup";
+    enemy.nestWeaverPhaseRemainingSeconds = 0.85;
+    this.frameEvents.push({
+      type: "nest-weaver-placement-warning",
+      position: { ...enemy.position },
+      target: { ...enemy.nestWeaverTarget },
+      enemyId: enemy.id,
+    });
+  }
+
+  private spawnNestPod(owner: EnemyState, reservation: NestPodReservation): void {
+    const podId = this.spawnEnemy("nest-pod", owner.nestWeaverTarget);
+    const podEnemy = this.enemies.find((candidate) => candidate.id === podId)!;
+    podEnemy.nestPod = createNestPod(podId, owner.id, owner.nestWeaverTarget, reservation);
+    podEnemy.health = podEnemy.nestPod.health;
+    podEnemy.maxHealth = podEnemy.nestPod.health;
+    podEnemy.hatchRemainingSeconds = NEST_POD_HATCH_SECONDS;
+    podEnemy.hatchDurationSeconds = NEST_POD_HATCH_SECONDS;
+    this.frameEvents.push({
+      type: "nest-pod-laid",
+      position: { ...podEnemy.position },
+      ownerId: owner.id,
+      podId,
+      hatchSeconds: NEST_POD_HATCH_SECONDS,
+    });
+  }
+
+  private updateNestPod(enemy: EnemyState, deltaSeconds: number): void {
+    if (!enemy.nestPod) return;
+    const result = stepNestPod(enemy.nestPod, deltaSeconds);
+    enemy.nestPod = result.pod;
+    enemy.hatchRemainingSeconds = result.pod.remainingSeconds;
+    if (result.hatchlingCount <= 0) return;
+
+    this.nestReservedLiveSlots = Math.max(0, this.nestReservedLiveSlots - result.consumedReservedSlots);
+    this.nestReservedThreat = Math.max(0, this.nestReservedThreat - result.consumedReservedThreat);
+    enemy.dead = true;
+    const offsets = [
+      { x: -0.48, y: 0.12 },
+      { x: 0.48, y: 0.12 },
+      { x: 0, y: -0.46 },
+    ].slice(0, result.hatchlingCount);
+    for (const offset of offsets) {
+      this.spawnEnemy("nest-hatchling", {
+        x: clamp(enemy.position.x + offset.x, 0.4, this.widthMetres - 0.4),
+        y: clamp(enemy.position.y + offset.y, 0.4, this.heightMetres - 0.4),
+      });
+    }
+    this.frameEvents.push({
+      type: "nest-pod-hatched",
+      position: { ...enemy.position },
+      podId: enemy.id,
+      count: NEST_HATCHLING_COUNT,
+    });
+  }
+
+  private updateStormSavant(enemy: EnemyState, deltaSeconds: number): void {
+    const towardPlayer = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
+    enemy.facingDirection = towardPlayer;
+    if (enemy.stormChain.phase === "idle") {
+      enemy.stormCooldownSeconds = Math.max(0, enemy.stormCooldownSeconds - deltaSeconds);
+      const playerDistance = distance(enemy.position, this.playerPosition);
+      if (playerDistance > 9) {
+        this.moveEnemy(enemy, towardPlayer, ENEMY_CATALOG["storm-savant"].movementSpeedMetresPerSecond, deltaSeconds);
+      } else if (playerDistance < 5) {
+        this.moveEnemy(enemy, { x: -towardPlayer.x, y: -towardPlayer.y }, ENEMY_CATALOG["storm-savant"].movementSpeedMetresPerSecond, deltaSeconds);
+      }
+      if (enemy.stormCooldownSeconds <= 0) this.beginStormChain(enemy);
+      return;
+    }
+
+    const previousPhase = enemy.stormChain.phase;
+    const nodes = this.enemies.filter((candidate) => (
+      !candidate.dead
+      && candidate.type === "storm-node"
+      && candidate.stormNodeOwnerId === enemy.id
+      && candidate.conductiveNode
+    )).map((candidate) => candidate.conductiveNode!);
+    const result = stepStormChain(enemy.stormChain, deltaSeconds, nodes);
+    enemy.stormChain = result.state;
+    if (previousPhase === "tell" && result.state.phase === "overload-recovery") {
+      this.frameEvents.push({ type: "storm-chain-interrupted", position: { ...enemy.position }, enemyId: enemy.id });
+    }
+    if (result.discharged) {
+      const hitPlayer = pointInsideStormChain(this.playerPosition, result.state.segments, PLAYER_RADIUS_METRES);
+      const damage = hitPlayer
+        ? this.scaledEnemyDamage(enemy, PLAYER_ATTACK_DAMAGE_BASELINES.stormChain)
+        : 0;
+      if (damage > 0) this.damagePlayer(damage);
+      this.frameEvents.push({
+        type: "storm-chain-discharged",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        hitPlayer,
+        damage,
+      });
+    }
+    if (previousPhase === "overload-recovery" && result.state.phase === "idle") {
+      enemy.stormCooldownSeconds = 2.4;
+    }
+  }
+
+  private beginStormChain(enemy: EnemyState): void {
+    const nodeEnemies = this.enemies.filter((candidate) => (
+      !candidate.dead
+      && candidate.type === "storm-node"
+      && candidate.stormNodeOwnerId === enemy.id
+      && candidate.conductiveNode
+    ));
+    let chain: StormChainState | null = null;
+    if (nodeEnemies.length > 0) {
+      const locked = lockStormChain(enemy.position, nodeEnemies.map((candidate) => candidate.conductiveNode!));
+      chain = locked ? { ...locked, segments: clipStormChainToCover(locked.segments, this.activeObstacles()) } : null;
+    } else {
+      const plan = planStormNodePlacement(
+        enemy.position,
+        this.playerPosition,
+        this.collisionArena(),
+        this.nextEntityId,
+        PLAYER_RADIUS_METRES,
+      );
+      if (plan) {
+        for (const plannedNode of plan.nodes) {
+          const id = this.spawnEnemy("storm-node", plannedNode.position);
+          const nodeEnemy = this.enemies.find((candidate) => candidate.id === id)!;
+          nodeEnemy.conductiveNode = createConductiveNode(id, plannedNode.position);
+          nodeEnemy.stormNodeOwnerId = enemy.id;
+          nodeEnemy.health = nodeEnemy.conductiveNode.health;
+          nodeEnemy.maxHealth = nodeEnemy.conductiveNode.health;
+        }
+        chain = plan.chain;
+      }
+    }
+    if (!chain) {
+      enemy.stormCooldownSeconds = 0.5;
+      return;
+    }
+    enemy.stormChain = chain;
+    this.frameEvents.push({
+      type: "storm-chain-warning",
+      position: { ...enemy.position },
+      enemyId: enemy.id,
+      segments: chain.segments,
+    });
+  }
+
+  private updateScrapSkitterer(enemy: EnemyState, deltaSeconds: number): void {
+    const previousPhase = enemy.scrapSkittererBehavior.phase;
+    const result = stepScrapSkittererBehavior(
+      enemy.scrapSkittererBehavior,
+      deltaSeconds,
+      enemy.position,
+      this.playerPosition,
+    );
+    enemy.scrapSkittererBehavior = result.state;
+    enemy.facingDirection = result.state.phase === "approach"
+      ? result.movementDirection
+      : result.state.lockedDirection;
+    if (previousPhase === "approach" && result.state.phase === "rush-windup") {
+      this.frameEvents.push({
+        type: "scrap-skitterer-warning",
+        position: { ...enemy.position },
+        direction: { ...result.state.lockedDirection },
+        enemyId: enemy.id,
+      });
+    }
+    if (result.rushStarted) {
+      this.frameEvents.push({
+        type: "scrap-skitterer-rush",
+        position: { ...enemy.position },
+        direction: { ...result.state.lockedDirection },
+        enemyId: enemy.id,
+      });
+    }
+    if (result.movementSpeedMetresPerSecond <= 0) {
+      if (previousPhase === "rush" && result.state.phase === "brake") {
+        this.frameEvents.push({
+          type: "scrap-skitterer-impact",
+          position: { ...enemy.position },
+          reason: "miss",
+          enemyId: enemy.id,
+        });
+      }
+      return;
+    }
+
+    const before = { ...enemy.position };
+    this.moveEnemy(enemy, result.movementDirection, result.movementSpeedMetresPerSecond, deltaSeconds);
+    if (result.state.phase !== "rush") return;
+    const expectedDistance = result.movementSpeedMetresPerSecond
+      * enemy.movementSpeedMultiplier
+      * this.enemyStatusSpeedMultiplier(enemy)
+      * deltaSeconds;
+    const actualDistance = distance(before, enemy.position);
+    if (actualDistance < expectedDistance * 0.45) {
+      enemy.scrapSkittererBehavior = brakeScrapSkitterer(enemy.scrapSkittererBehavior);
+      this.frameEvents.push({
+        type: "scrap-skitterer-impact",
+        position: { ...enemy.position },
+        reason: "cover",
+        enemyId: enemy.id,
+      });
+      return;
+    }
+    if (
+      distance(enemy.position, this.playerPosition)
+      <= ENEMY_CATALOG["scrap-skitterer"].radiusMetres + PLAYER_RADIUS_METRES
+    ) {
+      const damage = this.scaledEnemyDamage(enemy, PLAYER_ATTACK_DAMAGE_BASELINES.scrapSkittererRush);
+      this.damagePlayer(damage);
+      enemy.scrapSkittererBehavior = brakeScrapSkitterer(enemy.scrapSkittererBehavior);
+      this.frameEvents.push({
+        type: "scrap-skitterer-impact",
+        position: { ...enemy.position },
+        reason: "player",
+        enemyId: enemy.id,
+      });
+      return;
+    }
+  }
+
+  private updateArcWarden(enemy: EnemyState, deltaSeconds: number): void {
+    const previousPhase = enemy.arcWardenBehavior.phase;
+    const result = stepArcWardenBehavior(
+      enemy.arcWardenBehavior,
+      deltaSeconds,
+      enemy.position,
+      this.playerPosition,
+      this.activeObstacles(),
+    );
+    enemy.arcWardenBehavior = result.state;
+
+    if (result.state.lockedLane) enemy.facingDirection = { ...result.state.lockedLane.direction };
+    if (previousPhase === "reposition" && result.state.phase === "charge" && result.state.lockedLane) {
+      this.frameEvents.push({
+        type: "arc-warden-warning",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        lane: result.state.lockedLane,
+      });
+    }
+    if (result.discharged && result.state.lockedLane) {
+      const hitPlayer = pointInsideArcWardenLane(
+        this.playerPosition,
+        result.state.lockedLane,
+        PLAYER_RADIUS_METRES,
+      );
+      const damage = hitPlayer
+        ? this.scaledEnemyDamage(enemy, PLAYER_ATTACK_DAMAGE_BASELINES.arcWardenBeam)
+        : 0;
+      if (damage > 0) this.damagePlayer(damage);
+      this.frameEvents.push({
+        type: "arc-warden-discharged",
+        position: { ...enemy.position },
+        endpoint: { ...result.state.lockedLane.to },
+        enemyId: enemy.id,
+        hitPlayer,
+        damage,
+        ...(result.state.lockedLane.blockedByObstacleId
+          ? { blockedByObstacleId: result.state.lockedLane.blockedByObstacleId }
+          : {}),
+      });
+    }
+
+    if (result.state.phase !== "reposition") return;
+    const towardPlayer = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
+    enemy.facingDirection = towardPlayer;
+    const playerDistance = distance(enemy.position, this.playerPosition);
+    const direction = playerDistance > 8
+      ? towardPlayer
+      : playerDistance < 4.5
+        ? { x: -towardPlayer.x, y: -towardPlayer.y }
+        : enemy.id % 2 === 0
+          ? { x: -towardPlayer.y, y: towardPlayer.x }
+          : { x: towardPlayer.y, y: -towardPlayer.x };
+    this.moveEnemy(enemy, direction, ENEMY_CATALOG["arc-warden"].movementSpeedMetresPerSecond, deltaSeconds);
+  }
+
+  private updateCyborgReclaimer(enemy: EnemyState, deltaSeconds: number): void {
+    const previousTargetId = enemy.reclaimerBehavior.targetId;
+    const lockedTarget = previousTargetId === null
+      ? null
+      : this.enemies.find((candidate) => candidate.id === previousTargetId && !candidate.dead) ?? null;
+    const wasDamaged = enemy.reclaimerDamagedSinceLastStep;
+    enemy.reclaimerDamagedSinceLastStep = false;
+    const result = stepReclaimerRepair(
+      enemy.reclaimerBehavior,
+      deltaSeconds,
+      enemy.position,
+      lockedTarget ? this.reclaimerRepairTarget(lockedTarget) : null,
+      wasDamaged,
+    );
+    enemy.reclaimerBehavior = result.state;
+
+    if (result.interrupted) {
+      this.frameEvents.push({
+        type: "reclaimer-link-interrupted",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        targetId: previousTargetId,
+        reason: wasDamaged ? "damage" : "target",
+      });
+    }
+    if (result.completedRepair) {
+      const target = this.enemies.find((candidate) => (
+        candidate.id === result.completedRepair!.targetId && !candidate.dead
+      ));
+      if (target) {
+        const before = target.health;
+        target.health = Math.min(target.maxHealth, target.health + result.completedRepair.amount);
+        const amount = target.health - before;
+        this.frameEvents.push({
+          type: "reclaimer-repair-completed",
+          position: { ...enemy.position },
+          target: { ...target.position },
+          enemyId: enemy.id,
+          targetId: target.id,
+          amount,
+        });
+      }
+    }
+
+    if (enemy.reclaimerBehavior.phase === "channel") {
+      const target = this.enemies.find((candidate) => candidate.id === enemy.reclaimerBehavior.targetId);
+      if (target) enemy.facingDirection = normalizeVector({
+        x: target.position.x - enemy.position.x,
+        y: target.position.y - enemy.position.y,
+      });
+      return;
+    }
+    if (enemy.reclaimerBehavior.phase === "recovery") return;
+
+    const repairTargets = this.enemies
+      .filter((candidate) => !candidate.dead)
+      .map((candidate) => this.reclaimerRepairTarget(candidate));
+    const activeLinkOwnerId = this.enemies.find((candidate) => (
+      !candidate.dead
+      && candidate.type === "cyborg-reclaimer"
+      && candidate.id !== enemy.id
+      && candidate.reclaimerBehavior.phase === "channel"
+    ))?.id ?? null;
+    const begun = tryBeginReclaimerRepair(
+      enemy.reclaimerBehavior,
+      enemy.id,
+      enemy.position,
+      repairTargets,
+      activeLinkOwnerId,
+    );
+    if (begun.phase === "channel" && begun.targetId !== null) {
+      enemy.reclaimerBehavior = begun;
+      const target = this.enemies.find((candidate) => candidate.id === begun.targetId)!;
+      enemy.facingDirection = normalizeVector({
+        x: target.position.x - enemy.position.x,
+        y: target.position.y - enemy.position.y,
+      });
+      this.frameEvents.push({
+        type: "reclaimer-link-started",
+        position: { ...enemy.position },
+        target: { ...target.position },
+        enemyId: enemy.id,
+        targetId: target.id,
+      });
+      return;
+    }
+
+    const nearestDamagedMachine = this.enemies.filter((candidate) => (
+      !candidate.dead
+      && candidate.id !== enemy.id
+      && this.isRepairableMachine(candidate)
+      && candidate.health > 0
+      && candidate.health < candidate.maxHealth
+      && candidate.rank !== "mini-boss"
+      && candidate.rank !== "boss"
+    )).sort((left, right) => (
+      distance(enemy.position, left.position) - distance(enemy.position, right.position)
+      || left.id - right.id
+    ))[0];
+    const targetPosition = nearestDamagedMachine?.position ?? this.playerPosition;
+    const direction = normalizeVector({
+      x: targetPosition.x - enemy.position.x,
+      y: targetPosition.y - enemy.position.y,
+    });
+    enemy.facingDirection = direction;
+    this.moveEnemy(
+      enemy,
+      direction,
+      ENEMY_CATALOG["cyborg-reclaimer"].movementSpeedMetresPerSecond,
+      deltaSeconds,
+    );
+  }
+
+  private reclaimerRepairTarget(enemy: EnemyState): ReclaimerRepairTarget {
+    return {
+      id: enemy.id,
+      type: enemy.type,
+      position: { ...enemy.position },
+      health: enemy.health,
+      maxHealth: enemy.maxHealth,
+      dead: enemy.dead,
+      machine: this.isRepairableMachine(enemy),
+      rank: enemy.rank === "elite" || enemy.rank === "mini-boss" || enemy.rank === "boss"
+        ? enemy.rank
+        : "standard",
+    };
+  }
+
+  private isRepairableMachine(enemy: EnemyState): boolean {
+    return enemy.type === "scrap-skitterer"
+      || enemy.type === "arc-warden"
+      || enemy.type === "cyborg-reclaimer"
+      || enemy.type === "foundry-fabricator"
+      || enemy.type === "assembly-prime"
+      || enemy.type === "foundry-drone"
+      || enemy.type === "foundry-turret";
+  }
+
+  private updateFoundryFabricator(enemy: EnemyState, deltaSeconds: number): void {
+    const previousPhase = enemy.foundryBehavior.phase;
+    const ownerWasDamaged = enemy.foundryDamagedSinceLastStep;
+    enemy.foundryDamagedSinceLastStep = false;
+    const result = stepFoundryFabrication(enemy.foundryBehavior, deltaSeconds, ownerWasDamaged);
+    enemy.foundryBehavior = result.state;
+
+    if (result.releasedReservation) {
+      this.foundryReservedLiveSlots = Math.max(
+        0,
+        this.foundryReservedLiveSlots - result.releasedReservation.reservedLiveSlots,
+      );
+      this.foundryReservedThreat = Math.max(
+        0,
+        this.foundryReservedThreat - result.releasedReservation.reservedThreat,
+      );
+      enemy.foundryThreatRemaining += result.releasedReservation.reservedThreat;
+      this.removeFoundryPad(enemy.id);
+      this.frameEvents.push({
+        type: "foundry-fabrication-interrupted",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        reason: ownerWasDamaged ? "owner-damage" : "pad-destroyed",
+      });
+    }
+
+    if (result.spawnedChild) {
+      this.foundryReservedLiveSlots = Math.max(0, this.foundryReservedLiveSlots - 1);
+      this.foundryReservedThreat = Math.max(
+        0,
+        this.foundryReservedThreat - (result.spawnedChild.type === "foundry-drone" ? 2 : 3),
+      );
+      this.removeFoundryPad(enemy.id);
+      const childId = this.spawnEnemy(result.spawnedChild.type, result.spawnedChild.position);
+      const child = this.enemies.find((candidate) => candidate.id === childId)!;
+      child.foundryChildOwnerId = enemy.id;
+      child.foundryChildRemainingSeconds = result.spawnedChild.remainingSeconds;
+      this.frameEvents.push({
+        type: "foundry-fabrication-completed",
+        position: { ...result.spawnedChild.position },
+        enemyId: enemy.id,
+        childId,
+        childType: result.spawnedChild.type,
+      });
+    }
+
+    if (previousPhase !== "positioning" || enemy.foundryBehavior.phase !== "positioning") return;
+    const activeChildren = this.enemies.filter((candidate) => (
+      !candidate.dead
+      && candidate.foundryChildOwnerId === enemy.id
+      && (candidate.type === "foundry-drone" || candidate.type === "foundry-turret")
+    )).length;
+    const childType: FoundryChildType = enemy.foundryBehavior.chargesRemaining === 2
+      ? "foundry-turret"
+      : "foundry-drone";
+    const reservation = tryReserveFoundryChild({
+      childType,
+      activeChildrenForOwner: activeChildren,
+      ownerChargesRemaining: enemy.foundryBehavior.chargesRemaining,
+      liveUnits: this.enemies.filter((candidate) => !candidate.dead && candidate.type !== "foundry-pad").length,
+      reservedLiveSlots: this.nestReservedLiveSlots + this.foundryReservedLiveSlots,
+      liveCap: this.waveLiveCap > 0 ? this.waveLiveCap : 56,
+      remainingThreat: enemy.foundryThreatRemaining,
+    });
+    if (!reservation.accepted) {
+      const direction = normalizeVector({
+        x: this.playerPosition.x - enemy.position.x,
+        y: this.playerPosition.y - enemy.position.y,
+      });
+      enemy.facingDirection = direction;
+      if (distance(enemy.position, this.playerPosition) > 7.5) {
+        this.moveEnemy(enemy, direction, ENEMY_CATALOG[enemy.type].movementSpeedMetresPerSecond, deltaSeconds);
+      }
+      return;
+    }
+
+    const side = enemy.foundryBehavior.chargesRemaining % 2 === 0 ? -1 : 1;
+    const target = {
+      x: clamp(enemy.position.x + side * 2.2, 0.7, this.widthMetres - 0.7),
+      y: clamp(enemy.position.y + 0.9, 0.7, this.heightMetres - 0.7),
+    };
+    enemy.foundryBehavior = beginFoundryFabrication(enemy.foundryBehavior, target, reservation.reservation);
+    enemy.foundryThreatRemaining -= reservation.reservation.reservedThreat;
+    this.foundryReservedLiveSlots += reservation.reservation.reservedLiveSlots;
+    this.foundryReservedThreat += reservation.reservation.reservedThreat;
+    const padId = this.spawnEnemy("foundry-pad", target);
+    const pad = this.enemies.find((candidate) => candidate.id === padId)!;
+    pad.foundryPadOwnerId = enemy.id;
+    this.frameEvents.push({
+      type: "foundry-fabrication-started",
+      position: { ...target },
+      enemyId: enemy.id,
+      padId,
+      childType,
+    });
+  }
+
+  private removeFoundryPad(ownerId: number): void {
+    for (const pad of this.enemies) {
+      if (!pad.dead && pad.type === "foundry-pad" && pad.foundryPadOwnerId === ownerId) pad.dead = true;
+    }
+  }
+
+  private updateFoundryChild(enemy: EnemyState, deltaSeconds: number, mobile: boolean): void {
+    const ownerId = enemy.foundryChildOwnerId;
+    const ownerAlive = ownerId !== null && this.enemies.some((candidate) => (
+      candidate.id === ownerId && !candidate.dead
+      && (candidate.type === "foundry-fabricator" || candidate.type === "assembly-prime")
+    ));
+    enemy.foundryChildRemainingSeconds = Math.max(0, enemy.foundryChildRemainingSeconds - deltaSeconds);
+    if (!ownerAlive || enemy.foundryChildRemainingSeconds <= 0) {
+      enemy.dead = true;
+      this.frameEvents.push({
+        type: "foundry-child-powered-down",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        ownerId: ownerId ?? -1,
+        reason: ownerAlive ? "expired" : "owner-defeated",
+      });
+      return;
+    }
+    const direction = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
+    enemy.facingDirection = direction;
+    if (mobile) {
+      this.moveEnemy(enemy, direction, ENEMY_CATALOG[enemy.type].movementSpeedMetresPerSecond, deltaSeconds);
+      return;
+    }
+    if (enemy.foundryTurretPhase === "warning") {
+      enemy.foundryTurretPhaseRemainingSeconds = Math.max(
+        0,
+        enemy.foundryTurretPhaseRemainingSeconds - deltaSeconds,
+      );
+      enemy.facingDirection = normalizeVector({
+        x: enemy.foundryTurretTarget.x - enemy.position.x,
+        y: enemy.foundryTurretTarget.y - enemy.position.y,
+      });
+      if (enemy.foundryTurretPhaseRemainingSeconds > 0) return;
+      const damage = this.scaledEnemyDamage(enemy, 1.1);
+      const hitPlayer = !segmentHitsArenaObstacle(
+        enemy.position,
+        enemy.foundryTurretTarget,
+        this.activeObstacles(),
+      ) && distanceToSegment(
+        this.playerPosition,
+        enemy.position,
+        enemy.foundryTurretTarget,
+      ) <= 0.25 + PLAYER_RADIUS_METRES;
+      if (hitPlayer) this.damagePlayer(damage);
+      enemy.foundryTurretPhase = "recovery";
+      enemy.foundryTurretPhaseRemainingSeconds = 0.5;
+      enemy.attackCooldownSeconds = 1.2;
+      this.frameEvents.push({
+        type: "foundry-turret-fired",
+        position: { ...enemy.position },
+        target: { ...enemy.foundryTurretTarget },
+        enemyId: enemy.id,
+        damage,
+        hitPlayer,
+      });
+      return;
+    }
+    if (enemy.foundryTurretPhase === "recovery") {
+      enemy.foundryTurretPhaseRemainingSeconds = Math.max(
+        0,
+        enemy.foundryTurretPhaseRemainingSeconds - deltaSeconds,
+      );
+      if (enemy.foundryTurretPhaseRemainingSeconds <= 0) enemy.foundryTurretPhase = "tracking";
+      return;
+    }
+    if (enemy.attackCooldownSeconds <= 0 && distance(enemy.position, this.playerPosition) <= 9.5) {
+      enemy.foundryTurretPhase = "warning";
+      enemy.foundryTurretPhaseRemainingSeconds = 0.55;
+      enemy.foundryTurretTarget = { ...this.playerPosition };
+      this.frameEvents.push({
+        type: "foundry-turret-warning",
+        position: { ...enemy.position },
+        target: { ...enemy.foundryTurretTarget },
+        enemyId: enemy.id,
+      });
+    }
+  }
+
   private updateBrainBlob(enemy: EnemyState, deltaSeconds: number): void {
     enemy.brainPhaseRemainingSeconds -= deltaSeconds;
 
@@ -3618,6 +4560,273 @@ export class CombatSimulation {
     enemy.razorScuttlerPhase = "recovery";
     enemy.razorScuttlerPhaseRemainingSeconds = durationSeconds;
     this.frameEvents.push({ type: "razor-scuttler-impact", position: { ...enemy.position }, reason });
+  }
+
+  private updateAssemblyPrime(enemy: EnemyState, deltaSeconds: number): void {
+    const previous = enemy.assemblyPrimeBehavior;
+    const ownerWasDamaged = enemy.assemblyPrimeDamagedSinceLastStep;
+    enemy.assemblyPrimeDamagedSinceLastStep = false;
+    const children = this.enemies.filter((candidate) => (
+      candidate.foundryChildOwnerId === enemy.id
+      && (candidate.type === "foundry-drone" || candidate.type === "foundry-turret")
+    )).map((candidate) => ({
+      id: candidate.id,
+      ownerId: enemy.id,
+      type: candidate.type as FoundryChildType,
+      position: { ...candidate.position },
+      remainingSeconds: candidate.foundryChildRemainingSeconds,
+      dead: candidate.dead,
+    }));
+    const result = stepAssemblyPrimeBehavior(previous, deltaSeconds, {
+      ownerId: enemy.id,
+      ownerPosition: { ...enemy.position },
+      playerPosition: { ...this.playerPosition },
+      ownerHealth: enemy.health,
+      ownerMaxHealth: enemy.maxHealth,
+      liveUnits: this.enemies.filter((candidate) => !candidate.dead && candidate.type !== "foundry-pad").length,
+      reservedLiveSlots: this.nestReservedLiveSlots + this.foundryReservedLiveSlots,
+      liveCap: this.waveLiveCap > 0 ? this.waveLiveCap : 56,
+      remainingThreat: enemy.foundryThreatRemaining,
+      children,
+      ownerWasDamaged,
+    });
+    enemy.assemblyPrimeBehavior = result.state;
+
+    if (result.moveStarted) {
+      if (result.moveStarted === "fabrication" && result.state.pendingReservation && result.state.fabricationTarget) {
+        const reservation = result.state.pendingReservation;
+        enemy.foundryThreatRemaining -= reservation.reservedThreat;
+        this.foundryReservedLiveSlots += reservation.reservedLiveSlots;
+        this.foundryReservedThreat += reservation.reservedThreat;
+        const padId = this.spawnEnemy("foundry-pad", result.state.fabricationTarget);
+        const pad = this.enemies.find((candidate) => candidate.id === padId)!;
+        pad.foundryPadOwnerId = enemy.id;
+        pad.maxHealth = result.state.padHealth;
+        pad.health = result.state.padHealth;
+      }
+      this.frameEvents.push({
+        type: "assembly-prime-warning",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        move: result.moveStarted,
+        lanes: result.state.lockedLanes.map((lane) => ({
+          origin: { ...lane.origin },
+          direction: { ...lane.direction },
+        })),
+        target: result.state.fabricationTarget ? { ...result.state.fabricationTarget } : undefined,
+        recallTargetId: result.state.recallTargetId ?? undefined,
+      });
+    }
+    if (result.releasedReservation) {
+      this.foundryReservedLiveSlots = Math.max(0, this.foundryReservedLiveSlots - 1);
+      this.foundryReservedThreat = Math.max(0, this.foundryReservedThreat - result.releasedReservation.reservedThreat);
+      enemy.foundryThreatRemaining += result.releasedReservation.reservedThreat;
+      this.removeFoundryPad(enemy.id);
+      this.frameEvents.push({
+        type: "assembly-prime-fabrication-interrupted",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        reason: ownerWasDamaged ? "owner-damage" : "pad-destroyed",
+      });
+    }
+    if (result.spawnedChild) {
+      this.foundryReservedLiveSlots = Math.max(0, this.foundryReservedLiveSlots - 1);
+      const threat = result.spawnedChild.type === "foundry-drone" ? 2 : 3;
+      this.foundryReservedThreat = Math.max(0, this.foundryReservedThreat - threat);
+      this.removeFoundryPad(enemy.id);
+      const childId = this.spawnEnemy(result.spawnedChild.type, result.spawnedChild.position);
+      const child = this.enemies.find((candidate) => candidate.id === childId)!;
+      child.foundryChildOwnerId = enemy.id;
+      child.foundryChildRemainingSeconds = result.spawnedChild.remainingSeconds;
+      this.frameEvents.push({
+        type: "assembly-prime-fabrication-completed",
+        position: { ...child.position },
+        enemyId: enemy.id,
+        childId,
+        childType: result.spawnedChild.type,
+      });
+    }
+    if (result.recalledChildId !== null) {
+      const child = this.enemies.find((candidate) => candidate.id === result.recalledChildId && !candidate.dead);
+      if (child) {
+        child.position = { ...enemy.position };
+        child.facingDirection = normalizeVector({
+          x: this.playerPosition.x - child.position.x,
+          y: this.playerPosition.y - child.position.y,
+        });
+        this.frameEvents.push({
+          type: "assembly-prime-drone-recalled",
+          position: { ...enemy.position },
+          enemyId: enemy.id,
+          childId: child.id,
+        });
+      }
+    }
+
+    const state = enemy.assemblyPrimeBehavior;
+    if (state.phase === "setup") {
+      const direction = miniBossRepositionDirection(enemy.position, this.playerPosition, 6.8, enemy.id % 2 ? 1 : -1);
+      enemy.facingDirection = direction;
+      this.moveEnemy(enemy, direction, ENEMY_CATALOG[enemy.type].movementSpeedMetresPerSecond, deltaSeconds);
+      return;
+    }
+    if (result.actionStarted === "rotating-lanes") {
+      enemy.assemblyPrimeLaneIndex = 0;
+      enemy.assemblyPrimeLaneCooldownSeconds = 0;
+    }
+    if (state.phase !== "action" || state.move !== "rotating-lanes") return;
+    enemy.assemblyPrimeLaneCooldownSeconds -= deltaSeconds;
+    if (enemy.assemblyPrimeLaneCooldownSeconds > 0) return;
+    const lane = state.lockedLanes[enemy.assemblyPrimeLaneIndex];
+    if (!lane) return;
+    const endpoint = {
+      x: lane.origin.x + lane.direction.x * 11,
+      y: lane.origin.y + lane.direction.y * 11,
+    };
+    const hitPlayer = !segmentHitsArenaObstacle(lane.origin, endpoint, this.activeObstacles())
+      && distanceToSegment(this.playerPosition, lane.origin, endpoint) <= 0.28 + PLAYER_RADIUS_METRES;
+    const damage = this.scaledEnemyDamage(enemy, 2.1);
+    if (hitPlayer) this.damagePlayer(damage);
+    this.frameEvents.push({
+      type: "assembly-prime-lane-fired",
+      position: { ...lane.origin },
+      enemyId: enemy.id,
+      laneIndex: enemy.assemblyPrimeLaneIndex,
+      endpoint,
+      hitPlayer,
+      damage,
+    });
+    enemy.assemblyPrimeLaneIndex += 1;
+    enemy.assemblyPrimeLaneCooldownSeconds = 0.3;
+  }
+
+  private updateSynapseHerald(enemy: EnemyState, deltaSeconds: number): void {
+    const previous = enemy.synapseHeraldBehavior;
+    const previousLinkTargetId = previous.linkTargetId;
+    const context = {
+      ownerPosition: { ...enemy.position },
+      playerPosition: { ...this.playerPosition },
+      ownerHealth: enemy.health,
+      ownerMaxHealth: enemy.maxHealth,
+      arenaWidthMetres: this.widthMetres,
+      arenaHeightMetres: this.heightMetres,
+      brainBlobs: this.enemies.filter((candidate) => candidate.type === "brain-blob").map((candidate) => ({
+        id: candidate.id,
+        position: { ...candidate.position },
+        dead: candidate.dead,
+        rank: candidate.rank === "elite" || candidate.rank === "mini-boss" || candidate.rank === "boss"
+          ? candidate.rank
+          : "standard" as const,
+      })),
+    };
+    const result = stepSynapseHeraldBehavior(previous, deltaSeconds, context);
+    enemy.synapseHeraldBehavior = result.state;
+
+    if (result.moveStarted) {
+      const targets = result.moveStarted === "lunge-chain"
+        ? result.state.lungeTargets
+        : result.moveStarted === "marked-zones"
+          ? result.state.markedZones
+          : [];
+      this.frameEvents.push({
+        type: "synapse-herald-warning",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        move: result.moveStarted,
+        targets: targets.map((target) => ({ ...target })),
+        linkTargetId: result.state.linkTargetId ?? undefined,
+      });
+    }
+    if (result.actionStarted === "lunge-chain") {
+      enemy.synapseHeraldLungeIndex = 0;
+      enemy.synapseHeraldHitThisLunge = false;
+      const target = result.state.lungeTargets[0];
+      if (target) this.frameEvents.push({
+        type: "synapse-herald-lunge",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        target: { ...target },
+        chainIndex: 0,
+      });
+    } else if (result.actionStarted === "marked-zones") {
+      const hitPlayer = result.state.markedZones.some((zone) => (
+        distance(zone, this.playerPosition) <= 1.35 + PLAYER_RADIUS_METRES
+      ));
+      if (hitPlayer) this.damagePlayer(this.scaledEnemyDamage(enemy, 3));
+      this.frameEvents.push({
+        type: "synapse-herald-zones-erupted",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        zones: result.state.markedZones.map((zone) => ({ ...zone })),
+        hitPlayer,
+      });
+    } else if (result.actionStarted === "synapse-link" && result.state.linkTargetId !== null) {
+      this.frameEvents.push({
+        type: "synapse-herald-link-started",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        targetId: result.state.linkTargetId,
+      });
+    }
+    if (result.linkBroken && previousLinkTargetId !== null) {
+      this.frameEvents.push({
+        type: "synapse-herald-link-broken",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        targetId: previousLinkTargetId,
+        reason: "target",
+      });
+    } else if (result.moveResolved === "synapse-link" && previousLinkTargetId !== null) {
+      this.frameEvents.push({
+        type: "synapse-herald-link-broken",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        targetId: previousLinkTargetId,
+        reason: "expired",
+      });
+    }
+
+    const state = enemy.synapseHeraldBehavior;
+    if (state.phase === "setup") {
+      const direction = miniBossRepositionDirection(
+        enemy.position,
+        this.playerPosition,
+        5.2,
+        (enemy.id + state.attackIndex) % 2 === 0 ? 1 : -1,
+      );
+      enemy.facingDirection = direction;
+      this.moveEnemy(enemy, direction, ENEMY_CATALOG[enemy.type].movementSpeedMetresPerSecond, deltaSeconds);
+      return;
+    }
+    if (state.lockedPlayerTarget) enemy.facingDirection = normalizeVector({
+      x: state.lockedPlayerTarget.x - enemy.position.x,
+      y: state.lockedPlayerTarget.y - enemy.position.y,
+    });
+    if (state.phase !== "action" || state.move !== "lunge-chain") return;
+    const target = state.lungeTargets[enemy.synapseHeraldLungeIndex];
+    if (!target) return;
+    const direction = normalizeVector({ x: target.x - enemy.position.x, y: target.y - enemy.position.y });
+    enemy.facingDirection = direction;
+    this.moveEnemy(enemy, direction, 9.2, deltaSeconds);
+    if (
+      !enemy.synapseHeraldHitThisLunge
+      && distance(enemy.position, this.playerPosition) <= ENEMY_CATALOG[enemy.type].radiusMetres + PLAYER_RADIUS_METRES
+    ) {
+      enemy.synapseHeraldHitThisLunge = true;
+      this.damagePlayer(this.scaledEnemyDamage(enemy, 2.4));
+    }
+    if (distance(enemy.position, target) <= 0.35) {
+      enemy.synapseHeraldLungeIndex += 1;
+      enemy.synapseHeraldHitThisLunge = false;
+      const nextTarget = state.lungeTargets[enemy.synapseHeraldLungeIndex];
+      if (nextTarget) this.frameEvents.push({
+        type: "synapse-herald-lunge",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+        target: { ...nextTarget },
+        chainIndex: enemy.synapseHeraldLungeIndex,
+      });
+    }
   }
 
   private updateSiegeCrusher(enemy: EnemyState, deltaSeconds: number): void {
@@ -4747,7 +5956,11 @@ export class CombatSimulation {
       remainingSeconds: SLOWING_PUDDLE_DURATION_SECONDS,
       durationSeconds: SLOWING_PUDDLE_DURATION_SECONDS,
     });
-    while (this.groundHazards.length > MAX_SLOWING_PUDDLES) this.groundHazards.shift();
+    while (this.groundHazards.filter((hazard) => hazard.type === "slowing-slime").length > MAX_SLOWING_PUDDLES) {
+      const oldestPuddle = this.groundHazards.findIndex((hazard) => hazard.type === "slowing-slime");
+      if (oldestPuddle < 0) break;
+      this.groundHazards.splice(oldestPuddle, 1);
+    }
     return true;
   }
 
@@ -4866,7 +6079,8 @@ export class CombatSimulation {
 
   private isPlayerSlowed(): boolean {
     return this.groundHazards.some((hazard) => (
-      distance(hazard.position, this.playerPosition) <= hazard.radiusMetres + PLAYER_RADIUS_METRES * 0.35
+      hazard.type === "slowing-slime"
+      && distance(hazard.position, this.playerPosition) <= hazard.radiusMetres + PLAYER_RADIUS_METRES * 0.35
     ));
   }
 
@@ -5167,6 +6381,19 @@ export class CombatSimulation {
     ) {
       mitigated *= RIFT_STALKER_CLOAK_DAMAGE_MULTIPLIER;
     }
+    if (
+      enemy.type === "synapse-herald"
+      && enemy.synapseHeraldBehavior.phase === "action"
+      && enemy.synapseHeraldBehavior.move === "synapse-link"
+      && enemy.synapseHeraldBehavior.linkTargetId !== null
+      && this.enemies.some((candidate) => (
+        candidate.id === enemy.synapseHeraldBehavior.linkTargetId
+        && !candidate.dead
+        && candidate.type === "brain-blob"
+      ))
+    ) {
+      mitigated *= 0.55;
+    }
 
     const status = STATUS_BY_DAMAGE_TYPE[damageType];
     if (status && this.canStatusApply(enemy, status)) {
@@ -5223,7 +6450,32 @@ export class CombatSimulation {
     }
 
     const previousHealth = enemy.health;
-    enemy.health -= damage;
+    if (enemy.type === "cyborg-reclaimer") enemy.reclaimerDamagedSinceLastStep = true;
+    if (enemy.type === "foundry-fabricator") enemy.foundryDamagedSinceLastStep = true;
+    if (enemy.type === "assembly-prime") enemy.assemblyPrimeDamagedSinceLastStep = true;
+    if (enemy.type === "foundry-pad") {
+      enemy.health = Math.max(0, enemy.health - damage);
+      const owner = this.enemies.find((candidate) => candidate.id === enemy.foundryPadOwnerId && !candidate.dead);
+      if (owner?.type === "foundry-fabricator") owner.foundryBehavior = damageFoundryPad(owner.foundryBehavior, damage);
+      if (owner?.type === "assembly-prime") owner.assemblyPrimeBehavior = damageAssemblyPrimePad(owner.assemblyPrimeBehavior, damage);
+      if (enemy.health <= 0) enemy.dead = true;
+      return;
+    }
+    if (enemy.type === "storm-node" && enemy.conductiveNode) {
+      enemy.conductiveNode = damageConductiveNode(enemy.conductiveNode, damage);
+      enemy.health = enemy.conductiveNode.health;
+    } else if (enemy.type === "nest-pod" && enemy.nestPod) {
+      const result = damageNestPod(enemy.nestPod, damage);
+      enemy.nestPod = result.pod;
+      enemy.health = result.pod.health;
+      if (result.releasedReservedSlots > 0) {
+        this.nestReservedLiveSlots = Math.max(0, this.nestReservedLiveSlots - result.releasedReservedSlots);
+        this.nestReservedThreat = Math.max(0, this.nestReservedThreat - result.releasedReservedThreat);
+        this.frameEvents.push({ type: "nest-pod-destroyed", position: { ...enemy.position }, podId: enemy.id });
+      }
+    } else {
+      enemy.health -= damage;
+    }
     if (enemy.type === "aurum-hoarder") {
       for (const threshold of crossedAurumThresholds(
         previousHealth,
@@ -5247,6 +6499,70 @@ export class CombatSimulation {
     }
 
     enemy.dead = true;
+    if (enemy.type === "scrap-skitterer") {
+      const wreckId = this.nextId();
+      this.groundHazards.push({
+        id: wreckId,
+        type: "machine-wreck",
+        position: { ...enemy.position },
+        radiusMetres: 0.48,
+        remainingSeconds: SCRAP_SKITTERER_WRECK_SECONDS,
+        durationSeconds: SCRAP_SKITTERER_WRECK_SECONDS,
+      });
+      this.frameEvents.push({
+        type: "scrap-skitterer-wreck",
+        position: { ...enemy.position },
+        wreckId,
+        durationSeconds: SCRAP_SKITTERER_WRECK_SECONDS,
+      });
+    }
+    if (enemy.type === "nest-weaver" && enemy.nestPendingReservation) {
+      this.nestReservedLiveSlots = Math.max(
+        0,
+        this.nestReservedLiveSlots - enemy.nestPendingReservation.reservedHatchlingSlots,
+      );
+      this.nestReservedThreat = Math.max(
+        0,
+        this.nestReservedThreat - enemy.nestPendingReservation.reservedHatchlingThreat,
+      );
+      enemy.nestPendingReservation = null;
+    }
+    if (enemy.type === "foundry-fabricator") {
+      const pending = enemy.foundryBehavior.pendingReservation;
+      if (pending) {
+        this.foundryReservedLiveSlots = Math.max(0, this.foundryReservedLiveSlots - pending.reservedLiveSlots);
+        this.foundryReservedThreat = Math.max(0, this.foundryReservedThreat - pending.reservedThreat);
+        enemy.foundryBehavior = { ...enemy.foundryBehavior, pendingReservation: null };
+      }
+      this.removeFoundryPad(enemy.id);
+      for (const child of this.enemies) {
+        if (
+          !child.dead
+          && child.foundryChildOwnerId === enemy.id
+          && (child.type === "foundry-drone" || child.type === "foundry-turret")
+        ) {
+          child.dead = true;
+          this.frameEvents.push({
+            type: "foundry-child-powered-down",
+            position: { ...child.position },
+            enemyId: child.id,
+            ownerId: enemy.id,
+            reason: "owner-defeated",
+          });
+        }
+      }
+    }
+    if (enemy.type === "assembly-prime") {
+      const pending = enemy.assemblyPrimeBehavior.pendingReservation;
+      if (pending) {
+        this.foundryReservedLiveSlots = Math.max(0, this.foundryReservedLiveSlots - pending.reservedLiveSlots);
+        this.foundryReservedThreat = Math.max(0, this.foundryReservedThreat - pending.reservedThreat);
+      }
+      this.removeFoundryPad(enemy.id);
+      for (const child of this.enemies) {
+        if (!child.dead && child.foundryChildOwnerId === enemy.id) child.dead = true;
+      }
+    }
     this.runKills += 1;
     this.frameEvents.push({
       type: "enemy-defeated",
@@ -5767,6 +7083,27 @@ export class CombatSimulation {
     this.spawnEnemy("scuttler", { x: this.widthMetres - 8, y: 4 });
   }
 
+  private populateSynapseHeraldScenario(): void {
+    const centre = { ...this.playerPosition };
+    this.waveLiveCap = 10;
+    this.waveThreatBudget = 44;
+    this.spawnMiniBoss("synapse-herald", { x: centre.x - 6.5, y: centre.y - 1.5 });
+    this.spawnEnemy("brain-blob", { x: centre.x - 3.8, y: centre.y + 2.7 });
+    this.spawnEnemy("brain-blob", { x: centre.x + 4.2, y: centre.y - 3.2 });
+  }
+
+  private populateAssemblyPrimeScenario(): void {
+    const centre = { ...this.playerPosition };
+    this.waveLiveCap = 10;
+    this.waveThreatBudget = 51;
+    const id = this.spawnMiniBoss("assembly-prime", { x: centre.x - 7, y: centre.y - 4 });
+    const prime = this.enemies.find((enemy) => enemy.id === id)!;
+    prime.foundryThreatRemaining = 7;
+    this.spawnEnemy("arc-warden", { x: centre.x + 6.8, y: centre.y - 3.2 });
+    this.spawnEnemy("scrap-skitterer", { x: centre.x + 5.2, y: centre.y + 2.5 });
+    this.spawnEnemy("scrap-skitterer", { x: centre.x - 3.2, y: centre.y + 4 });
+  }
+
   private populateInfectedSurvivorScenario(): void {
     const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
     const positions = Array.from({ length: INFECTED_SURVIVOR_PACK_CAP }, (_, index) => ({
@@ -5789,6 +7126,109 @@ export class CombatSimulation {
     this.spawnEnemy("abomination", { x: centre.x - 2.1, y: centre.y });
     this.spawnEnemy("infected-survivor", { x: centre.x + 6.5, y: centre.y - 3.2 });
     this.spawnEnemy("corrupted-marine", { x: centre.x + 7.5, y: centre.y + 3.4 });
+  }
+
+  private populateCorruptedHumanScenario(): void {
+    const centre = { ...this.playerPosition };
+    const survivorOffsets = [
+      [-8, -4], [-8.8, -1.5], [-8.4, 2], [7, -4.4], [8.2, -1.2], [7.6, 3.2],
+    ] as const;
+    for (const [x, y] of survivorOffsets) {
+      this.spawnEnemy("infected-survivor", { x: centre.x + x, y: centre.y + y });
+    }
+    this.spawnEnemy("corrupted-marine", { x: centre.x - 12, y: centre.y - 5.5 });
+    this.spawnEnemy("corrupted-marine", { x: centre.x + 2, y: centre.y + 9.5 });
+    this.spawnEnemy("abomination", { x: centre.x - 5.2, y: centre.y + 0.5 });
+  }
+
+  private populateNestWeaverScenario(): void {
+    const centre = { ...this.playerPosition };
+    // The lab uses wave-one capacity so reservations are exercised, not bypassed.
+    this.waveLiveCap = 18;
+    this.waveThreatBudget = 25;
+    this.spawnEnemy("nest-weaver", { x: centre.x - 7.2, y: centre.y - 1.8 });
+    this.spawnEnemy("infected-survivor", { x: centre.x + 6.5, y: centre.y - 3.4 });
+    this.spawnEnemy("infected-survivor", { x: centre.x + 7.3, y: centre.y + 2.8 });
+  }
+
+  private populateStormSavantScenario(): void {
+    const centre = { ...this.playerPosition };
+    this.waveLiveCap = 18;
+    this.waveThreatBudget = 18;
+    this.spawnEnemy("storm-savant", { x: centre.x - 8, y: centre.y });
+    this.spawnEnemy("infected-survivor", { x: centre.x + 7, y: centre.y - 3.5 });
+  }
+
+  private populateScrapSkittererScenario(): void {
+    const centre = { ...this.playerPosition };
+    this.waveLiveCap = 18;
+    this.waveThreatBudget = SCRAP_SKITTERER_PACK_CAP;
+    for (let index = 0; index < SCRAP_SKITTERER_PACK_CAP; index += 1) {
+      const side = index % 2 === 0 ? -1 : 1;
+      const row = Math.floor(index / 2);
+      this.spawnEnemy("scrap-skitterer", {
+        x: centre.x + side * (5.2 + row * 0.65),
+        y: centre.y - 4.5 + row * 2.8,
+      });
+    }
+  }
+
+  private populateArcWardenScenario(): void {
+    const centre = { ...this.playerPosition };
+    this.waveLiveCap = 12;
+    this.waveThreatBudget = ARC_WARDEN_LAB_CAP * 4;
+    // The west Warden begins with an authored long pre-cover lane so the lab
+    // always demonstrates the square cover-stop language beside a free lane.
+    // Ordinary Warden acquisition still obeys the pure 3.4–9.5 m range gate.
+    const coverWardenId = this.spawnEnemy("arc-warden", { x: centre.x - 12.5, y: centre.y + 0.75 });
+    const coverWarden = this.enemies.find((enemy) => enemy.id === coverWardenId)!;
+    const coverLane = lockArcWardenLane(
+      coverWarden.position,
+      this.playerPosition,
+      this.activeObstacles(),
+    );
+    if (coverLane) {
+      coverWarden.arcWardenBehavior = {
+        phase: "charge",
+        phaseRemainingSeconds: ARC_WARDEN_CHARGE_SECONDS,
+        cooldownSeconds: 0,
+        lockedLane: coverLane,
+      };
+      coverWarden.facingDirection = { ...coverLane.direction };
+    }
+    this.spawnEnemy("arc-warden", { x: centre.x + 8, y: centre.y + 2.2 });
+  }
+
+  private populateCyborgReclaimerScenario(): void {
+    const centre = { ...this.playerPosition };
+    this.waveLiveCap = 12;
+    this.waveThreatBudget = 14;
+    const reclaimerId = this.spawnEnemy("cyborg-reclaimer", { x: centre.x - 5.3, y: centre.y - 2.2 });
+    const arcId = this.spawnEnemy("arc-warden", { x: centre.x - 1.8, y: centre.y - 3.2 });
+    const skittererIds = [
+      this.spawnEnemy("scrap-skitterer", { x: centre.x - 2.8, y: centre.y + 1.2 }),
+      this.spawnEnemy("scrap-skitterer", { x: centre.x + 3.5, y: centre.y - 2.5 }),
+      this.spawnEnemy("scrap-skitterer", { x: centre.x + 4.4, y: centre.y + 0.4 }),
+      this.spawnEnemy("scrap-skitterer", { x: centre.x + 2.8, y: centre.y + 3.1 }),
+    ];
+    const reclaimer = this.enemies.find((enemy) => enemy.id === reclaimerId)!;
+    reclaimer.reclaimerBehavior = { ...reclaimer.reclaimerBehavior, cooldownSeconds: 0 };
+    const arc = this.enemies.find((enemy) => enemy.id === arcId)!;
+    arc.health = Math.max(1, arc.maxHealth - 4);
+    for (const id of skittererIds.slice(0, 2)) {
+      const skitterer = this.enemies.find((enemy) => enemy.id === id)!;
+      skitterer.health = Math.max(1, skitterer.maxHealth - 2);
+    }
+  }
+
+  private populateFoundryFabricatorScenario(): void {
+    const centre = { ...this.playerPosition };
+    this.waveLiveCap = 8;
+    this.waveThreatBudget = 19;
+    this.spawnEnemy("foundry-fabricator", { x: centre.x - 5.2, y: centre.y - 1.4 });
+    this.spawnEnemy("arc-warden", { x: centre.x + 6.2, y: centre.y - 2.8 });
+    this.spawnEnemy("scrap-skitterer", { x: centre.x + 4.4, y: centre.y + 2.8 });
+    this.spawnEnemy("scrap-skitterer", { x: centre.x - 3.8, y: centre.y + 3.5 });
   }
 
   private populateRipperScenario(): void {
@@ -5924,6 +7364,51 @@ export class CombatSimulation {
       abominationTarget: enemy.type === "abomination" && enemy.abominationBehavior.lockedTarget
         ? { ...enemy.abominationBehavior.lockedTarget }
         : undefined,
+      nestWeaverPhase: enemy.type === "nest-weaver" ? enemy.nestWeaverPhase : undefined,
+      nestWeaverTarget: enemy.type === "nest-weaver" ? { ...enemy.nestWeaverTarget } : undefined,
+      nestWeaverChargesRemaining: enemy.type === "nest-weaver"
+        ? enemy.nestWeaverChargesRemaining
+        : undefined,
+      nestPodRemainingSeconds: enemy.type === "nest-pod" && enemy.nestPod
+        ? enemy.nestPod.remainingSeconds
+        : undefined,
+      nestPodOwnerId: enemy.type === "nest-pod" ? enemy.nestPod?.ownerId : undefined,
+      stormPhase: enemy.type === "storm-savant" ? enemy.stormChain.phase : undefined,
+      stormSegments: enemy.type === "storm-savant" ? enemy.stormChain.segments : undefined,
+      stormNodeOwnerId: enemy.type === "storm-node" ? enemy.stormNodeOwnerId ?? undefined : undefined,
+      scrapSkittererPhase: enemy.type === "scrap-skitterer"
+        ? enemy.scrapSkittererBehavior.phase
+        : undefined,
+      scrapSkittererDirection: enemy.type === "scrap-skitterer"
+        ? { ...enemy.scrapSkittererBehavior.lockedDirection }
+        : undefined,
+      arcWardenPhase: enemy.type === "arc-warden" ? enemy.arcWardenBehavior.phase : undefined,
+      arcWardenLane: enemy.type === "arc-warden" ? enemy.arcWardenBehavior.lockedLane : undefined,
+      reclaimerPhase: enemy.type === "cyborg-reclaimer" ? enemy.reclaimerBehavior.phase : undefined,
+      reclaimerTargetId: enemy.type === "cyborg-reclaimer"
+        ? enemy.reclaimerBehavior.targetId ?? undefined
+        : undefined,
+      reclaimerChargesRemaining: enemy.type === "cyborg-reclaimer"
+        ? enemy.reclaimerBehavior.chargesRemaining
+        : undefined,
+      foundryPhase: enemy.type === "foundry-fabricator" ? enemy.foundryBehavior.phase : undefined,
+      foundryTarget: enemy.type === "foundry-fabricator" && enemy.foundryBehavior.target
+        ? { ...enemy.foundryBehavior.target }
+        : undefined,
+      foundryChargesRemaining: enemy.type === "foundry-fabricator"
+        ? enemy.foundryBehavior.chargesRemaining
+        : undefined,
+      foundryPadHealth: enemy.type === "foundry-fabricator"
+        ? enemy.foundryBehavior.padHealth
+        : undefined,
+      foundryOwnerId: enemy.type === "foundry-pad"
+        ? enemy.foundryPadOwnerId ?? undefined
+        : enemy.foundryChildOwnerId ?? undefined,
+      foundryRemainingSeconds: enemy.type === "foundry-drone" || enemy.type === "foundry-turret"
+        ? enemy.foundryChildRemainingSeconds
+        : undefined,
+      foundryTurretPhase: enemy.type === "foundry-turret" ? enemy.foundryTurretPhase : undefined,
+      foundryTurretTarget: enemy.type === "foundry-turret" ? { ...enemy.foundryTurretTarget } : undefined,
       warpPhase: enemy.type === "warp-flanker" ? enemy.warpPhase : undefined,
       warpTarget: enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup"
         ? { ...enemy.warpTarget }
@@ -5977,6 +7462,37 @@ export class CombatSimulation {
         : undefined,
       riftStalkerDirection: enemy.miniBossKind === "rift-stalker"
         ? { ...enemy.riftStalkerDirection }
+        : undefined,
+      synapseHeraldPhase: enemy.miniBossKind === "synapse-herald"
+        ? enemy.synapseHeraldBehavior.phase
+        : undefined,
+      synapseHeraldMove: enemy.miniBossKind === "synapse-herald"
+        ? enemy.synapseHeraldBehavior.move ?? undefined
+        : undefined,
+      synapseHeraldTargets: enemy.miniBossKind === "synapse-herald"
+        ? (enemy.synapseHeraldBehavior.move === "lunge-chain"
+            ? enemy.synapseHeraldBehavior.lungeTargets.map((target) => ({ ...target }))
+            : enemy.synapseHeraldBehavior.markedZones.map((zone) => ({ ...zone })))
+        : undefined,
+      synapseHeraldLinkTargetId: enemy.miniBossKind === "synapse-herald"
+        ? enemy.synapseHeraldBehavior.linkTargetId ?? undefined
+        : undefined,
+      assemblyPrimePhase: enemy.miniBossKind === "assembly-prime"
+        ? enemy.assemblyPrimeBehavior.phase
+        : undefined,
+      assemblyPrimeMove: enemy.miniBossKind === "assembly-prime"
+        ? enemy.assemblyPrimeBehavior.move ?? undefined
+        : undefined,
+      assemblyPrimeLanes: enemy.miniBossKind === "assembly-prime"
+        ? enemy.assemblyPrimeBehavior.lockedLanes.map((lane) => ({
+            origin: { ...lane.origin }, direction: { ...lane.direction },
+          }))
+        : undefined,
+      assemblyPrimeTarget: enemy.miniBossKind === "assembly-prime"
+        ? enemy.assemblyPrimeBehavior.fabricationTarget ?? undefined
+        : undefined,
+      assemblyPrimeRecallTargetId: enemy.miniBossKind === "assembly-prime"
+        ? enemy.assemblyPrimeBehavior.recallTargetId ?? undefined
         : undefined,
       facingDirection: { ...enemy.facingDirection },
       statuses: this.activeStatuses(enemy),

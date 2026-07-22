@@ -768,3 +768,184 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Routed slam overlap into Task 54 numeric terrain durability as the distinct `enemy-slam` source for five damage. The impact never retargets after warning lock.
 - Wired shamble, attack, and recovery phases to all three authored body rows, added the lab route and HUD label, and added stationary-hit, perpendicular-dodge, single-impact, recovery, and terrain-damage regression coverage.
 - Full HD browser review confirmed a readable shape-coded marker, clean family silhouettes, exact 960 × 540 to 1920 × 1080 scaling, and zero console warnings. The 4K pass scaled exactly to 3840 × 2160 with no overflow or warnings.
+
+### Task 62C — mixed outbreak and off-screen Marine warnings
+
+**Status:** Implemented — 22 July 2026; normal/expedition promotion remains
+
+- Added canonical introduction, crossfire, and overrun plans at 10/22/32 threat. Their 8/10/12 live caps admit no more than two Marines, introduce the Abomination only after the first role-pair wave, and contain no foreign family or recursive-spawn path.
+- Added `?scenario=corrupted-human` with six Survivors, two Marines, and one Abomination. One Marine begins outside the camera while inside its legal attack range, exercising the same locked knife lifecycle as the isolated lab.
+- Added a warm ring-and-directional-chevron edge marker for off-screen Marine windups while retaining the world-space knife line and target ring. Full HD browser review showed the marker clearly at the lower edge with readable mixed silhouettes and no warnings; 4K had no overflow or console warnings.
+- Added event-aware placeholder audio IDs for all eight implemented weapons and the Marine/Abomination threat sequence. These IDs are the stable replacement seam for Production Audio Batch S.
+
+### Asset-generation audit — next production order
+
+**Status:** Planned — 22 July 2026
+
+- Do not generate more Task 62 sprites or projectiles: Batch M already covers every live body row, knife projectile/travel wake, warning accent, and cover/player impact. Keep Abomination slam radius, Marine line, countdowns, and edge markers code-native.
+- Generate Production Audio Batch S next: S1 eight weapon attack families (Bulwark Rotary uses start/loop/end), S2 Corrupted Human warning/throw/impact/recovery cues, then S3 shared impacts, pickups, progression, UI, and boss stingers.
+- After Task 63 egg lifecycle tests pass, generate Nest Weaver bodies plus pod/hatch effects as one visual batch. No free-flying projectile is required; placement target and hatch clock remain code-native. Storm Savant art follows its locked-node behavior test and uses code-drawn lightning paths rather than rasterized hit geometry.
+
+### Task 62D — conservative normal and expedition promotion
+
+**Status:** Completed — 22 July 2026; Task 62 closed
+
+- Promoted the family through equal-threat substitutions rather than additive difficulty. Survivors replace Scuttlers, Marines replace four-threat Quillbacks, and Abominations replace eight-threat specialist packages, preserving every existing wave budget and ordinary pressure share.
+- Quick Drop introduces six Survivors in Wave 3, one Marine in Wave 4, and the first Abomination in Wave 7. Late waves never exceed 12 Survivors, two Marines, or two Abominations; the final boss wave remains untouched.
+- Expedition generation inherits the same authored templates: budget 65 introduces Survivors, 90 introduces a Marine, and 140 introduces the first Abomination. Node budgets, route topology, terminal elite/mini-boss/boss waves, and exact-budget filling remain unchanged.
+- Added deterministic wave-by-wave family counts, pursuit/ranged-share bounds, enemy caps, exact threat totals, expedition thresholds, and route-budget preservation tests. Production Audio Batch S remains the parallel asset track; Task 63 Nest Weaver is the next gameplay gate.
+
+### Task 63A — Nest Weaver reservation and pod lifecycle
+
+**Status:** Implemented — 22 July 2026; Task 63 remains in progress
+
+- Added a pure code-first summoner contract with three finite placement charges and a hard two-live-pod cap per owner.
+- Placement reserves the pod's immediate two threat plus three future one-threat hatchlings and all three future live slots before a pod may be created. Insufficient charges, owner capacity, encounter live capacity, or threat budget rejects placement explicitly.
+- Added nine-health destructible pods with a visible-contract six-second countdown. Surviving pods hatch one fixed three-unit payload exactly once; hatchlings carry `canSummon: false`, preventing recursive chains.
+- Destroying a pod before hatch releases all reserved future slots and threat. Live simulation, placement telegraph, recovery, pod HUD, and route/cap integration remain before the Nest Weaver visual batch is authorized.
+
+### Task 63B — Nest Weaver live behavior and route gate
+
+**Status:** Completed — 22 July 2026; Task 63 closed
+
+- Integrated a mobile support-range Weaver with a locked 0.85-second placement point, finite three-charge package budget, hard two-pod owner cap, and 1.4-second stationary recovery. Killing a Weaver during windup refunds its pending child reservation.
+- Added ordinary destructible nine-health pods, visible six-pip countdowns, exact three-child hatches, and small non-recursive rush hatchlings. Pod destruction refunds the three reserved future slots/threat; successful hatch consumes them once.
+- Added the deterministic `?scenario=nest-weaver&loadout=vertical` route with an 18-unit cap, code-native placement/countdown geometry, exhaustive catalog/director mappings, and 1080p review. The route showed readable locked placement and countdown language with no console warnings.
+- Verification: TypeScript and 477 tests across 69 files pass, including live placement/recovery, destruction interruption, exact hatch payload, recursion prevention, and reserved-footprint cap coverage. The exact production body/pod/effect/audio package is now authorized; distinct hatchling art remains conditional.
+
+### Task 64A — Storm Savant locked-chain boundary
+
+**Status:** Implemented — 22 July 2026; Task 64 in progress
+
+- Added pure six-health conductive nodes and a locked chain contract with a 1.15-second tell, maximum two hops, one discharge edge, and 1.7-second vulnerable overload recovery.
+- Committed segments retain their original coordinates even if nodes move; no discharge-time homing or retargeting exists. Destroying any locked node cancels the attack and immediately forces overload recovery.
+- Added player-radius segment geometry and sampled escape-lane validation. Focused TypeScript and four deterministic chain, cancellation, geometry, and lane tests pass.
+
+### Task 64B–C — cover-aware placement and live Storm Savant route
+
+**Status:** Completed — 22 July 2026; Task 64 closed
+
+- Added deterministic collision-free two-node placement that refuses layouts without a player-sized sampled escape lane. Each node has six health and existing conditional enemy-health presentation.
+- Intact cover clips the first intersecting chain segment at its exact entry point and prevents downstream propagation. Locked coordinates remain fixed through the warning and one discharge; destroying either node cancels the attack into 1.7 seconds of overload recovery.
+- Integrated the 16-health Shock-resistant Savant, nodes, 2.5-damage chain, interruption telemetry, code-native double-rail ladder/rungs, circular node markers, square cover-stop markers, and dedicated `?scenario=storm-savant&loadout=vertical` route.
+- Focused live and pure coverage passes nine tests. Full HD browser review caught a low-contrast rail and prompted the final outlined ladder signature; the revised route is readable without colour and reports no console warnings. Production Savant/node/effect/audio assets are now authorized; raster lightning remains prohibited.
+
+### Task 65A — Scrap Skitterer movement boundary
+
+**Status:** Implemented — 22 July 2026; Task 65 in progress
+
+- Added the first machine-family pure behavior: a stationary 0.55-second acceleration tell locks direction before a finite 0.65-second 6.8 m/s rush. Player movement cannot retarget a committed rush.
+- Rush completion forces 0.9 seconds of hard braking and a 2.3-second repeat cooldown before ordinary approach resumes.
+- Added a 1.8-second visible wreck contract with `damagesPlayer: false`; no hidden death explosion or damaging corpse is permitted. TypeScript, three focused cadence/locking/wreck tests, and diff hygiene pass.
+
+### Task 65B — Scrap Skitterer live route gate
+
+**Status:** Completed — 22 July 2026; Task 65 continues with Arc Warden
+
+- Integrated the four-health Shock-weak machine common with collision-safe committed rushes. Player contact deals 2.2 damage once; cover obstruction and natural rush expiry terminate safely into the same hard-brake recovery.
+- Added an exact eight-unit lab cap, source-authored warning/rush/impact telemetry, code-native directional warning rails, phase-readable bodies, and 1.8-second machine wrecks. Wrecks remain visible but cannot damage or slow the player and expire independently from slowing-slime caps.
+- Focused pure/live coverage passes eight tests for direction locking, cadence, cover/player/miss braking, 50% Shock weakness, harmless wreck lifetime, and route cap. TypeScript and the 494-test suite pass; Full HD browser review preserves clear play space and HUD readability with no console warnings.
+- The exact Scrap Skitterer body/effect/audio package is now authorized in `last-bastion-content.md`. Arc Warden is next; no other machine-family artwork is authorized yet.
+
+### Task 65C — Arc Warden fixed-beam implementation
+
+**Status:** Implemented — 22 July 2026; presentation acceptance and production-art authorization pending
+
+- Added the Shock-weak, armour-two ranged specialist with standoff repositioning and committed stationary attack phases: 1.05-second charge, one 0.12-second discharge, 0.85-second recovery, and 2.4-second repeat cooldown.
+- The narrow 8.5-metre lane stores its origin, direction, and endpoint at charge start. Player movement cannot retarget it; the first intact cover intersection becomes a terminal square stop and no downstream chain exists.
+- Added source-authored warning/discharge/hit telemetry, player-radius beam geometry, a two-Warden route, code-native double rails and timing rungs, diamond free endpoint, square cover endpoint, phase-readable placeholder body, HUD title, Lab entry, and review-route documentation.
+- Verification passes TypeScript, 502 tests across 75 files, production build, HTTP smoke, and offline audit with 89 art assets, 51 routes, 110 local references, and zero remote startup dependencies. Full HD/4K route review remains the behavior gate before Arc Warden art/audio is authorized.
+
+### Task 65D — Arc Warden presentation acceptance
+
+**Status:** Completed — 22 July 2026; Arc Warden production package authorized
+
+- Full HD and 4K review accepted the dark-backed cyan double rails, non-colour timing rungs, diamond free endpoint, phase-readable rectangular Warden silhouette, and stable HUD/title-safe scaling under simultaneous weapon effects.
+- Strengthened the lab so one Warden begins with a long authored lane into intact west biomass while the second demonstrates a free endpoint. The square cover stop is now guaranteed, visibly terminates before the player, and cannot be confused with the free diamond.
+- Normal Warden acquisition still obeys the 3.4–9.5 metre behavior range; the prelocked long lane is isolated to presentation QA. Production body/effect/audio requirements are now authorized in `last-bastion-content.md`; beam rails and endpoints remain code-native.
+
+### Task 65E — Cyborg Reclaimer repair boundary
+
+**Status:** Implemented — 22 July 2026; live integration and production-art authorization pending
+
+- Added a pure finite support contract with three four-health patches, a 1.25-second locked channel, 1-second exposed recovery, 3.2-second repeat cooldown, 6.5-metre acquisition range, and 7.5-metre hard tether break.
+- Deterministic targeting prioritizes lowest health ratio, then distance, then stable entity ID. Self, another Reclaimer, non-machines, dead/full-health units, mini-bosses, and bosses are rejected before channel acquisition.
+- The encounter supplies the active-link owner, preventing multiple simultaneous repair tethers. Incoming Reclaimer damage, invalidation, death, full healing, or excessive range interrupts without consuming a patch; successful completion caps at missing health and consumes exactly one charge.
+- Five focused selection, exclusivity, no-overheal, interruption, range, and exhaustion tests pass. Full verification now passes TypeScript and 507 tests across 76 files plus production build, HTTP smoke, and offline audit. Live movement/tether/route integration remains before production assets are authorized.
+
+### Task 65F — Cyborg Reclaimer live and presentation gate
+
+**Status:** Completed — 22 July 2026; Reclaimer production package authorized
+
+- Integrated the 18-health, armour-three, Shock-weak support bruiser. Seeking movement closes on damaged ordinary machines; channel and recovery are stationary. Actual incoming mitigated damage marks the live channel for interruption before its next repair tick.
+- Successful completion applies capped health directly to the locked live target and emits source/target/amount telemetry. Damage and invalid/range breaks emit distinct interruption reasons without spending a patch; multiple live Reclaimers still yield at most one channel.
+- Added one Reclaimer, one Arc Warden, and four Scrap Skitterers to a deterministic six-unit lab with three pre-damaged allies. The HUD/Lab/parser route and code-native rounded body, dark-backed green tether, four yellow progress beads, and circle-plus target signature are live.
+- Nine focused pure/live tests and the full 511-test suite across 77 files pass, along with TypeScript, production build, HTTP smoke, and offline audit. Full HD/4K review found the support relationship readable beside beam lanes and rush arrows. Exact Reclaimer body/effect/audio assets are now authorized; Foundry Fabricator is next.
+
+### Task 65G — Foundry Fabricator reservation lifecycle
+
+**Status:** Implemented — 22 July 2026; live integration and production-art authorization pending
+
+- Added three finite fabrication charges and a hard two-live-child owner cap. A drone reserves one live slot plus two threat; a turret reserves one live slot plus three threat before channel start. Charges, owner cap, encounter live cap, and remaining threat reject with explicit reasons.
+- A locked 1.6-second fabrication channel owns a visible-contract six-health pad. Owner damage or pad destruction interrupts into 1.4 seconds of recovery, spends no charge, creates no child, and returns the complete reservation exactly once.
+- Successful completion consumes one charge and creates exactly one non-fabricating payload: a 12-second drone or 16-second turret. Re-stepping cannot duplicate it. Owner-exit cleanup identifies only that owner's children for safe power-down.
+- Five focused reservation, cap, completion, recursion, interruption/refund, and cleanup tests pass. Full verification passes TypeScript and 516 tests across 78 files plus production build, HTTP smoke, and offline audit. Live pad/child/accounting/route integration remains before art or audio authorization.
+
+### Task 65H — Foundry Fabricator live and presentation gate
+
+**Status:** Completed — 22 July 2026; Task 65 Machine uprising complete
+
+- Integrated the 22-health armour-three Shock-weak Fabricator, targetable six-health pad, 12-second pursuit drone, and 16-second stationary turret. Live reservation telemetry tracks slots and threat independently from existing Nest reservations; pad destruction and owner damage refund exactly once without spending a charge.
+- Successful fabrication consumes the reservation into one owner-tagged non-recursive child. Children expire safely, and owner defeat removes pending pads, releases pending reservations, and powers down only owned children. Pads remain targetable but do not consume encounter live-unit capacity.
+- Replaced the turret's initial instant hit with a locked 0.55-second colour-independent double-rail warning, timing rungs, and endpoint circle. The shot cannot retarget after warning, uses player-radius line geometry, stops dealing damage through intact cover, and enters a visible recovery.
+- Added the dedicated mixed-machine route, HUD/Lab/parser entry, code-native Fabricator/pad/drone/turret silhouettes, reservation/cap snapshots, and five live tests covering pad HP/refund, owner interruption, alternating children, non-recursion, turret warning/discharge, cleanup, and the eight-unit ceiling.
+- Full verification passes TypeScript, 521 tests across 79 files, production build, HTTP smoke, and offline audit. Full HD review caught and corrected an over-close pad offset; the widened placement and final turret lane pass Full HD/4K with no new console errors. Exact five-family Foundry art and event-audio requirements are now authorized in `last-bastion-content.md`. Task 66A Synapse Herald is next.
+
+### Task 66A — Synapse Herald behavior and presentation gate
+
+**Status:** Behavior/presentation completed — 22 July 2026; production package authorized, random-pool promotion held
+
+- Added a pure seeded scheduler with entrance/setup/windup/action/recovery phases, no immediate move repeats, unavailable-link skipping, and target locking at windup. Normal lunge chains lock two targets and final-20% chains add exactly one third; marked zones always lock exactly three arena-clamped positions with no frenzy coverage growth.
+- The four-second synapse link deterministically selects the nearest ordinary Brain Blob with a stable-ID tie break, excludes elites/bosses, grants the Herald 45% incoming-damage mitigation, and breaks immediately on death, invalidation, or seven-metre separation. Fifty- and twenty-percent thresholds shorten tells/recoveries without adding hazards.
+- Integrated the 560-health, armour-two mini-boss, standard rank/reward/status contracts, setup orbit, one-hit-per-step lunge collision, three-zone eruption, link lifecycle telemetry, off-screen warnings, HUD/Lab/parser route, ten-unit scenario ceiling, and snapshot diagnostics. The initial three-member random mini-boss pool is intentionally unchanged.
+- Added code-native colour-independent danger circles/plus signs, dark-backed alternating lunge path and endpoint rings, and dark-backed link line/target ring. Full HD and 4K review found all three move families readable with no console errors; gameplay geometry remains code-owned.
+- Full verification passes TypeScript, 533 tests across 81 files, production build, HTTP smoke, and offline audit. Exact Herald body/effect/portrait and event-audio requirements are authorized in `last-bastion-content.md`. Pool promotion waits for production-silhouette mixed-wave review and a representative 45–90-second fight; Task 66B Assembly Prime is next.
+
+### Task 66B — Assembly Prime pure behavior boundary
+
+**Status:** Implemented — 22 July 2026; live integration and production-art authorization pending
+
+- Added a seeded entrance/setup/windup/action/recovery scheduler for rotating lanes, fabrication, and a one-use drone recall. Legal moves never immediately repeat; if every alternative is cap- or resource-blocked, Prime waits instead of silently repeating an attack.
+- Rotating lane control locks and exposes exactly three origins/directions at windup and never retargets after warning. Fifty- and twenty-percent thresholds shorten tells, lane execution, and recovery without adding lanes or pressure.
+- Fabrication calls the proven Foundry reservation boundary for exact one-slot/two-threat drone or one-slot/three-threat turret accounting. Three finite charges, two owned children, live cap, reserved slots, and remaining threat are enforced before the ten-health pad appears. Owner damage or pad destruction refunds the complete reservation without spending a charge.
+- Successful assembly creates exactly one finite 12-second drone or 16-second turret with `canFabricate: false`. The one recall deterministically chooses the lowest-lifetime owned live drone, then stable ID, and creates/reserves nothing. Live integration must relaunch that same entity without healing or extending its lifetime.
+- Six focused tests cover deterministic selection/waiting, lane target lock, exact reservations, single-spawn ownership, pad/owner interruption, recall ownership and tie-breaking, frenzy invariants, and child-cap blocking. Full verification passes TypeScript, 539 tests across 82 files, production build, HTTP smoke, and offline audit. Assembly Prime remains outside the pool and all production art/audio remains blocked until its live behavior and presentation gate passes.
+
+### Task 66B — Assembly Prime live behavior integration
+
+**Status:** Implemented — 22 July 2026; Full HD/4K presentation acceptance pending
+
+- Integrated the 720-health, three-flat-reduction Shock-weak mini-boss with standard rank, guaranteed arsenal-cache reward, HUD/Lab/parser route, ten-unit ceiling, and no random-pool promotion.
+- Live fabrication reserves the same global slot/threat telemetry as Foundry, exposes a real ten-health pad, refunds exactly on pad/owner interruption, and consumes into one owner-tagged finite non-recursive drone or turret. Owner defeat releases pending pressure and removes its pad/children.
+- The one recall moves the same lowest-lifetime owned drone entity to Prime and relaunches it toward the player without cloning, healing, extending lifetime, or changing reservation telemetry.
+- Rotating-lane windup exposes all three fixed directions before action. Each lane discharges exactly once, respects intact-cover blocking, uses player-radius segment collision, and final-20% timing adds no lane. Code-native dark backing, alternating amber/cyan rails, and non-colour timing beads are wired for presentation review.
+- The full gate passes TypeScript, 545 tests across 83 files, production build, HTTP smoke, and offline audit. A shared mobility regression caught the first spawn pressing into west biomass; relocating the authored lab spawn restores a readable opening orbit without weakening the movement threshold. Art/audio authorization remains blocked until Full HD/4K review.
+
+### Task 66B — Assembly Prime presentation acceptance
+
+**Status:** Completed — 22 July 2026; production package authorized, random-pool promotion held
+
+- Full HD and 4K review accepted the broad placeholder silhouette, stable boss HUD, targetable reinforced pad, and same-entity recall relationship under concurrent Arc Warden, Scrap Skitterer, weapon, damage-number, and obstacle pressure. No browser console warnings or errors occurred.
+- All three lane directions remain visible before discharge through dark backing, alternating amber/cyan rails, and three white non-colour timing beads per lane. The rails remain individually traceable through mixed-machine silhouettes and do not obscure the boss bar.
+- The recall tether remains readable when the drone reaches the player cluster, while the pad target ring and body remain distinguishable near terrain. Production art must preserve those anchors rather than rasterizing gameplay geometry.
+- Exact Prime body, reinforced pad, effects, portrait, and event-audio requirements are authorized in `last-bastion-content.md`. Existing Foundry drone/turret bodies and sounds are reused; no projectile atlas or Prime-only child family is permitted. Pool promotion waits for production mixed-machine review and a representative 45–90-second fight. Task 66C Storm Regent is next.
+
+### Task 66C — Storm Regent pure behavior boundary
+
+**Status:** Implemented — 22 July 2026; live integration and production-art authorization pending
+
+- Added a deterministic entrance/setup/windup/action/recovery scheduler for chain strike, node overcharge, and close coil burst. Legal moves never immediately repeat; after all node counters are destroyed, Regent waits rather than repeating its only remaining coil pattern.
+- Regent owns exactly three deterministic finite six-health conductive nodes in the standard open layout. Chain strike selects live nodes deterministically, locks no more than the existing two-hop cap, clips permanently at first intact cover, and never retargets after warning.
+- Node overcharge locks one live node and a 1.6-metre danger radius. Destroying its committed node or any committed chain node cancels before discharge and forces exposed recovery. Nodes are never replaced or healed by the scheduler.
+- The 2.8-metre close coil burst locks to Regent's position at windup. Chain, overcharge, and coil availability all require at least one sampled player-radius escape point; final-20% pressure shortens windup/recovery only and cannot add nodes, hops, radius, or simultaneous patterns.
+- Seven focused Regent tests plus six inherited Savant tests cover deterministic finite placement, no-repeat waiting, target locking, two-hop bounds, cover stops, destruction cancellation, overcharge ownership, escape lanes, and frenzy invariants. Full verification passes TypeScript, 552 tests across 84 files, production build, HTTP smoke, and offline audit. Task 66C live integration is next; all Regent art/audio remains blocked.

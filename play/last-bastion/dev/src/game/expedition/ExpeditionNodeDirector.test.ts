@@ -31,4 +31,18 @@ describe("Task 48 expedition node director with Task 49 tuning", () => {
     expect(buildExpeditionWavePlan("boss", 7, null, null).map((wave) => wave.kind)).toEqual(["boss"]);
     expect(buildExpeditionWavePlan("supply-depot", 4, null, null)).toEqual([]);
   });
+
+  it("inherits the conservative Corrupted Human depth curve without changing node routes", () => {
+    const family = (budget: number) => buildBudgetDensityWave(budget, 6, true).plans
+      .filter((spawn) => ["infected-survivor", "corrupted-marine", "abomination"].includes(spawn.type))
+      .map((spawn) => spawn.type);
+    expect(family(45)).toEqual([]);
+    expect(family(65)).toContain("infected-survivor");
+    expect(family(65)).not.toContain("corrupted-marine");
+    expect(family(90)).toContain("corrupted-marine");
+    expect(family(120)).not.toContain("abomination");
+    expect(family(140)).toContain("abomination");
+    expect(combatNodeBudgets(0)).toEqual([30, 45, 65]);
+    expect(combatNodeBudgets(7)).toEqual([120, 140, 160, 180]);
+  });
 });

@@ -1,6 +1,6 @@
 # Corrupted Human outbreak art preflight (Batch M)
 
-Batch M is a Steam-quality held preflight for the post-Web-MVP human outbreak family. The Infected Survivor and Corrupted Marine behavior gates are live in dedicated Task 58–59 labs; normal-wave spawning remains held for Abomination and mixed-family review.
+Batch M is the Steam-quality Corrupted Human family. Infected Survivor, Corrupted Marine, and Abomination behavior gates are live in dedicated labs, `?scenario=corrupted-human` provides the mixed-family/off-screen-warning review, and Task 62's conservative normal/expedition promotion is live.
 
 ## Runtime contracts
 
@@ -9,7 +9,7 @@ Batch M is a Steam-quality held preflight for the post-Web-MVP human outbreak fa
 - `abomination-v1`: 4 × 3 128 px elite sheet, shamble, slam wind-up, and recovery/collapse rows.
 - `corrupted-marine-effects-v1`: 4 × 2 64 px atlas: knife projectile, hand glint, throw arc, travel wake, cover impact, player impact, disarm burst, ready glint.
 
-The art does not define sprint speed, swarm steering, knife damage, projectile travel, telegraph timing, cover collision, slam/grab lanes, stagger duration, defeat timing, or elite health. Those remain simulation-owned. Review the atlas at `?mode=gallery&batch=m`, Survivor at `?scenario=infected-survivor`, and Marine at `?scenario=corrupted-marine`; no normal-run binding is added yet.
+The art does not define sprint speed, swarm steering, knife damage, projectile travel, telegraph timing, cover collision, slam geometry, stagger duration, defeat timing, or specialist health. Those remain simulation-owned. Review the atlas at `?mode=gallery&batch=m`, the isolated labs at `?scenario=infected-survivor`, `corrupted-marine`, and `abomination`, and the complete family at `?scenario=corrupted-human`.
 
 ## Source retention and rebuild
 

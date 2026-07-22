@@ -4,6 +4,8 @@ const MINI_BOSS_SPRITE_SCALES: Readonly<Record<MiniBossKind, number>> = Object.f
   "siege-crusher": 1.34,
   "brood-warden": 1.3,
   "rift-stalker": 1.25,
+  "synapse-herald": 1.28,
+  "assembly-prime": 1.32,
 });
 
 /** Gameplay-scale silhouette contract; collision radii remain simulation-owned. */

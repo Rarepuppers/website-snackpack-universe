@@ -31,6 +31,8 @@ describe("mini-boss setup movement", () => {
     ["siege-crusher", "siege-crusher"],
     ["brood-warden", "brood-warden"],
     ["rift-stalker", "rift-stalker"],
+    ["synapse-herald", "synapse-herald"],
+    ["assembly-prime", "assembly-prime"],
   ] as const)("moves %s laterally during its opening setup", (scenario, kind) => {
     const simulation = new CombatSimulation({ autoStartWaves: false, scenario, seed: 57 });
     const start = bossPosition(simulation, kind);

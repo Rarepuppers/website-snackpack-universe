@@ -33,6 +33,18 @@ const ROLE: Readonly<Record<EnemyType, EnemyPressureRole>> = Object.freeze({
   "infected-survivor": "pursuit",
   "corrupted-marine": "ranged",
   abomination: "specialist",
+  "nest-weaver": "specialist",
+  "nest-pod": "specialist",
+  "nest-hatchling": "pursuit",
+  "storm-savant": "ranged",
+  "storm-node": "specialist",
+  "scrap-skitterer": "pursuit",
+  "arc-warden": "ranged",
+  "cyborg-reclaimer": "specialist",
+  "foundry-fabricator": "specialist",
+  "foundry-pad": "specialist",
+  "foundry-drone": "pursuit",
+  "foundry-turret": "ranged",
   "egg-cluster": "specialist",
   "brain-blob": "pursuit",
   "slime-spitter": "ranged",
@@ -47,6 +59,8 @@ const ROLE: Readonly<Record<EnemyType, EnemyPressureRole>> = Object.freeze({
   "siege-crusher": "boss",
   "brood-warden": "boss",
   "rift-stalker": "boss",
+  "synapse-herald": "boss",
+  "assembly-prime": "boss",
   "bastion-eater": "boss",
 });
 
@@ -56,6 +70,21 @@ export const ENEMY_THREAT_COST: Readonly<Record<EnemyType, number>> = Object.fre
   "infected-survivor": 1,
   "corrupted-marine": 4,
   abomination: 8,
+  // Includes three complete pod payloads (pod + three hatchlings) up front.
+  "nest-weaver": 25,
+  "nest-pod": 2,
+  "nest-hatchling": 1,
+  // Package cost includes two destructible conductive nodes.
+  "storm-savant": 18,
+  "storm-node": 2,
+  "scrap-skitterer": 1,
+  "arc-warden": 4,
+  "cyborg-reclaimer": 6,
+  // Includes the complete three-charge child package up front.
+  "foundry-fabricator": 15,
+  "foundry-pad": 0,
+  "foundry-drone": 2,
+  "foundry-turret": 3,
   "egg-cluster": 2,
   "brain-blob": 2,
   "slime-spitter": 3,
@@ -70,6 +99,8 @@ export const ENEMY_THREAT_COST: Readonly<Record<EnemyType, number>> = Object.fre
   "siege-crusher": 40,
   "brood-warden": 40,
   "rift-stalker": 40,
+  "synapse-herald": 40,
+  "assembly-prime": 40,
   "bastion-eater": 40,
 });
 
@@ -90,17 +121,17 @@ export function buildDensityWave(index: number): DensityWaveDefinition {
       ]
       : waveIndex === 2
         ? [
-          { type: "scuttler", count: 28 }, { type: "brain-blob", count: 6 },
+          { type: "scuttler", count: 22 }, { type: "infected-survivor", count: 6 }, { type: "brain-blob", count: 6 },
           { type: "blast-mite", count: 6 }, { type: "slime-spitter", count: 3 },
           { type: "quillback", count: 1 }, { type: "egg-cluster", count: 2 },
           { type: "warp-flanker", count: 1 },
         ]
         : waveIndex === 3
           ? [
-            { type: "scuttler", count: 22 }, { type: "brain-blob", count: 4 },
+            { type: "scuttler", count: 16 }, { type: "infected-survivor", count: 6 }, { type: "brain-blob", count: 4 },
             { type: "blast-mite", count: 6 }, { type: "razor-scuttler", count: 5 },
             { type: "ripper", count: 1 }, { type: "slime-spitter", count: 3 },
-            { type: "quillback", count: 1 }, { type: "warp-flanker", count: 1 },
+            { type: "corrupted-marine", count: 1 }, { type: "warp-flanker", count: 1 },
             { type: "egg-cluster", count: 1 }, { type: "tether-bloom", count: 1 },
             { type: "spinewheel", count: 1 },
             { type: "scuttler", count: 1, rank: "elite", eliteKind: "carapace-scuttler" },
@@ -108,10 +139,10 @@ export function buildDensityWave(index: number): DensityWaveDefinition {
           : waveIndex === 4
             ? [
             { type: "siege-crusher", count: 1, rank: "mini-boss" },
-            { type: "scuttler", count: 27 }, { type: "brain-blob", count: 5 },
+            { type: "scuttler", count: 21 }, { type: "infected-survivor", count: 6 }, { type: "brain-blob", count: 5 },
             { type: "blast-mite", count: 6 }, { type: "razor-scuttler", count: 4 },
             { type: "ripper", count: 1 }, { type: "slime-spitter", count: 3 },
-            { type: "quillback", count: 1 }, { type: "warp-flanker", count: 2 },
+            { type: "corrupted-marine", count: 1 }, { type: "warp-flanker", count: 2 },
             { type: "tether-bloom", count: 1 }, { type: "spinewheel", count: 1 },
             ]
             : waveIndex >= 5 && waveIndex <= 8
@@ -236,22 +267,22 @@ function lateWaveComposition(
   }));
   const ordinary = waveNumber === 6
     ? [
-      entry("scuttler", 39), entry("swarm-scuttler", 10), entry("blast-mite", 8), entry("razor-scuttler", 8),
-      entry("slime-spitter", 6), entry("quillback", 1), entry("tether-bloom", 2), entry("warp-flanker", 2),
+      entry("scuttler", 31), entry("infected-survivor", 8), entry("swarm-scuttler", 10), entry("blast-mite", 8), entry("razor-scuttler", 8),
+      entry("slime-spitter", 6), entry("corrupted-marine", 1), entry("tether-bloom", 2), entry("warp-flanker", 2),
     ]
     : waveNumber === 7
       ? [
-        entry("scuttler", 50), entry("swarm-scuttler", 10), entry("blast-mite", 8), entry("razor-scuttler", 12),
-        entry("slime-spitter", 6), entry("quillback", 2), entry("tether-bloom", 2), entry("warp-flanker", 2), entry("spinewheel", 1),
+        entry("scuttler", 40), entry("infected-survivor", 10), entry("swarm-scuttler", 10), entry("blast-mite", 8), entry("razor-scuttler", 12),
+        entry("slime-spitter", 6), entry("corrupted-marine", 1), entry("quillback", 1), entry("abomination", 1), entry("warp-flanker", 1), entry("spinewheel", 1),
       ]
       : waveNumber === 8
         ? [
-          entry("scuttler", 57), entry("swarm-scuttler", 10), entry("blast-mite", 10), entry("razor-scuttler", 13),
-          entry("slime-spitter", 7), entry("quillback", 2), entry("tether-bloom", 1), entry("warp-flanker", 2), entry("spinewheel", 2),
+          entry("scuttler", 47), entry("infected-survivor", 10), entry("swarm-scuttler", 10), entry("blast-mite", 10), entry("razor-scuttler", 13),
+          entry("slime-spitter", 7), entry("corrupted-marine", 2), entry("tether-bloom", 1), entry("warp-flanker", 2), entry("abomination", 1),
         ]
         : [
-          entry("scuttler", 70), entry("swarm-scuttler", 10), entry("blast-mite", 12), entry("razor-scuttler", 16),
-          entry("slime-spitter", 9), entry("quillback", 2), entry("tether-bloom", 2), entry("warp-flanker", 2), entry("spinewheel", 2),
+          entry("scuttler", 58), entry("infected-survivor", 12), entry("swarm-scuttler", 10), entry("blast-mite", 12), entry("razor-scuttler", 16),
+          entry("slime-spitter", 9), entry("corrupted-marine", 2), entry("abomination", 2), entry("warp-flanker", 1),
         ];
   return [...ordinary, ...elites];
 }

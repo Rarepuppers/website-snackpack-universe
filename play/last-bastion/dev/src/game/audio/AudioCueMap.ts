@@ -1,4 +1,5 @@
 import type { CombatEvent } from "../combat/CombatSimulation";
+import type { WeaponId } from "../content/weaponCatalog";
 
 /**
  * Representative audio cues for combat events. Each cue currently describes a
@@ -40,6 +41,11 @@ const CUES: Readonly<Partial<Record<CombatEvent["type"], AudioCue>>> = Object.fr
   "brood-acid-volley": cue("brood-acid", 520, 0.14, 0.08, "sine", 250),
   "brood-eggs-laid": cue("brood-eggs", 310, 0.2, 0.08, "triangle", 180),
   "brood-swarm-rush": cue("brood-rush", 240, 0.34, 0.12, "sawtooth", 480),
+  "corrupted-marine-warning": cue("marine-knife-warning", 540, 0.22, 0.07, "triangle", 760),
+  "corrupted-marine-knife-fired": cue("marine-knife-throw", 880, 0.1, 0.07, "sawtooth", 330),
+  "corrupted-marine-knife-impact": cue("marine-knife-impact", 260, 0.1, 0.08, "square", 120),
+  "abomination-slam-warning": cue("abomination-slam-warning", 150, 0.38, 0.09, "triangle", 85),
+  "abomination-slam-impact": cue("abomination-slam-impact", 85, 0.34, 0.13, "sawtooth", 35),
   "ripper-sweep": cue("ripper-sweep", 210, 0.22, 0.1, "sawtooth", 80),
   "razor-scuttler-warning": cue("razor-warning", 520, 0.16, 0.07, "triangle", 760),
   "razor-scuttler-dash": cue("razor-dash", 680, 0.14, 0.08, "sawtooth", 240),
@@ -83,6 +89,21 @@ export const UI_CONFIRM_CUE: Readonly<AudioCue> = cue("ui-confirm", 660, 0.09, 0
 
 export function cueForEvent(eventType: CombatEvent["type"]): AudioCue | null {
   return CUES[eventType] ?? null;
+}
+
+const WEAPON_CUES: Readonly<Record<WeaponId, AudioCue>> = Object.freeze({
+  "bastion-service-rifle": cue("service-rifle-fire", 720, 0.05, 0.05, "square", 520),
+  scattergun: cue("scattergun-fire", 210, 0.12, 0.09, "sawtooth", 95),
+  "arc-carbine": cue("arc-carbine-fire", 1250, 0.08, 0.06, "sawtooth", 620),
+  "patrol-blade": cue("patrol-blade-swing", 440, 0.14, 0.07, "triangle", 120),
+  "bolt-carbine": cue("bolt-carbine-fire", 880, 0.11, 0.08, "square", 360),
+  "bulwark-rotary-cannon": cue("bulwark-rotary-fire", 190, 0.045, 0.045, "square", 145),
+  "grenade-tube": cue("grenade-tube-fire", 170, 0.16, 0.08, "triangle", 80),
+  "injector-carbine": cue("injector-carbine-fire", 630, 0.07, 0.05, "square", 410),
+});
+
+export function cueForCombatEvent(event: CombatEvent): AudioCue | null {
+  return event.type === "weapon-fired" ? WEAPON_CUES[event.weaponId] : cueForEvent(event.type);
 }
 
 function cue(

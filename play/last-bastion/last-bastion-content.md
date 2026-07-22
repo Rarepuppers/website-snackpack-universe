@@ -336,15 +336,15 @@ Every size below is a **logical runtime cell**, not the generation size. Retain 
 
 Atlas guidance: align cells to 16 px, group by one actor or effect family, and target 2048 × 2048 atlases for web with 4096 × 4096 allowed for the future desktop build after GPU-memory testing. Never place the entire roster in one atlas. Each manifest records logical size, master scale, pivot, muzzle/foot anchors, safe padding, filter mode, frame names, and intended draw-size range.
 
-### Corrupted human outbreak family — post-Web-MVP candidate
+### Corrupted human outbreak family — promoted in Task 62
 
 This family introduces recognisable human silhouettes corrupted by the same biomass without replacing the alien roster. Keep silhouettes tragic and threatening rather than gory; torn kit, asymmetry, black-red growth, and sick cyan infection light carry the corruption.
 
 | Unit | Role | Core behaviour | Readability and production needs |
 | --- | --- | --- | --- |
-| Infected Survivor | Fast swarm common | Erratic stamina-limited sprints, brief staggered hesitation before a group rush, low health, no ranged attack | **Task 58 lab live:** two gait phases, 1.2s stamina, 5.15 m/s peak, acceleration/deceleration, eight-unit cap, forward-floored separation, and tested escape lanes; normal waves held until family completion |
-| Corrupted Marine | Ranged skirmisher | **Task 59 lab live:** 0.72s locked tell → visible 6 m/s knife → cover/player/expiry impact → 0.65s recovery and 2.8s cooldown | Batch M directional body and all eight knife effects integrated with source telemetry and deterministic dodge tests; normal waves held for off-screen warnings and family completion |
-| Abomination | Large elite tank | A swollen composite humanoid assembled from several infected bodies; slow shamble, telegraphed body slam, short biomass grab lane, and a vulnerable recovery after overcommitting | Large 128–160 px body, clear limb grouping, attack tells that extend beyond the mass, cover impact, stagger, and non-gory collapse; use as an elite before any boss version |
+| Infected Survivor | Fast swarm common | Erratic stamina-limited sprints, brief staggered hesitation before a group rush, low health, no ranged attack | **Task 62 promoted:** six replace equal-cost Scuttlers in Wave 3; later waves rise to 8–12 without changing pursuit pressure share |
+| Corrupted Marine | Ranged skirmisher | 0.72s locked tell → visible 6 m/s knife → cover/player/expiry impact → 0.65s recovery and 2.8s cooldown | **Task 62 promoted:** one replaces an equal-cost Quillback from Wave 4; late waves cap at two, with off-screen ring/chevron warnings and the global ranged-windup cap |
+| Abomination | Large specialist tank | Slow shamble → locked 0.9s / 1.55m terrain-damaging slam → 1.35s vulnerable recovery → repeat cooldown | **Task 62 promoted:** first appears in Wave 7 and expedition budget 140; one to two replace equal-cost specialist packages, preserving threat and pressure shares |
 
 The future **Abomination Prime** mini-boss may build on the elite only after the base Abomination is playtested. It should add one arena-scale move—such as tearing off and throwing a regenerating biomass chunk—plus phase timing and a boss portrait, rather than only increasing health and size. The thrown chunk requires its own warning, projectile, landing impact, lingering hazard state, and expiry art.
 
@@ -374,10 +374,10 @@ Summons are encounter pressure reserved in advance, never free extra threat. A s
 | Storm Savant | Rogue scientist ranged specialist | Experimental coil and psionic technology reads as magic/lightning: it plants visible conductive nodes, locks a finite chain path, then discharges along those exact segments | Nodes are destructible, locked chains never retarget, hops and simultaneous paths are capped, cover interaction is explicit, and at least one walkable escape lane remains; line shape, node glyph, pulse cadence, and audio communicate danger without relying on cyan colour |
 | Scrap Skitterer | Android common | Small predictable rush drone with a brief acceleration tell and Shock vulnerability | No death explosion by default; sparking wreck expires visibly and cannot hide under crowds |
 | Arc Warden | Android ranged specialist | Charges a narrow fixed electrical lane, then fires once and repositions | Long charge, fixed aim, endpoint marker, and cover interception; never chains from the player to an unseen target |
-| Cyborg Reclaimer | Cyborg support bruiser | Walks to one damaged machine and channels a capped repair or armour patch | Bright tether and interruptible channel; cannot heal itself, bosses, or another Reclaimer; one active repair link per encounter |
-| Foundry Fabricator | Android summoner | Channels at a visible fabrication pad to deploy a finite-charge drone or stationary turret | Spawn consumes reserved threat/live slots; pad can be interrupted; turrets show their fire arc; owner exit destroys or safely powers down children; no recursive fabrication |
+| Cyborg Reclaimer | Cyborg support bruiser | Three finite four-health patches; deterministically walks to the most damaged eligible machine, locks a 1.25-second channel, then enters exposed recovery | Bright single encounter-wide tether; owner damage or 7.5 m separation interrupts without spending the patch; cannot heal itself, another Reclaimer, non-machines, dead/full units, mini-bosses, or bosses; never overheals |
+| Foundry Fabricator | Android summoner | Three charges, two live children max; locks a 1.6s six-health pad to create one 12s drone or 16s stationary turret | Drone reserves one slot/2 threat and turret one slot/3 threat before channel; owner or pad interruption refunds exactly; children cannot fabricate; owner exit safely powers down only owned children; turret locks a 0.55s code-native lane out to 9.5m and intact cover blocks its shot |
 
-The recommended first new mini-bosses are **Assembly Prime** (interruptible fabrication plus rotating lane control) and **Storm Regent** (a larger but still finite conductive-node puzzle). They remain design-only until their standard-family mechanics survive mixed-wave testing. Synapse Herald remains the lower-risk fourth-pool candidate; Abomination Prime remains last because grab, thrown biomass, and crowd-scale body readability need the most bespoke validation.
+The recommended next new mini-boss is **Assembly Prime** (interruptible fabrication plus rotating lane control), followed by **Storm Regent** (a larger but still finite conductive-node puzzle). Their standard-family foundations are proven, but each remains design-only until its own behavior lab passes. Synapse Herald's isolated behavior and presentation gate is complete and its production package is authorized; random-pool promotion remains held for production-silhouette and 45–90-second fight-duration acceptance. Abomination Prime remains last because grab, thrown biomass, and crowd-scale body readability need the most bespoke validation.
 
 Recommended order after the Web MVP is **Magma breach → Cryo incursion → Void dominion**. Magma reuses the established hazard and armour systems, Cryo adds controlled terrain/status depth, and Void is reserved until teleport/projectile readability is proven. Each family should start with two standards and one elite; only then should its mini-boss enter the seeded pool.
 
@@ -418,9 +418,9 @@ Mini-bosses use bespoke silhouettes, two to four attacks, a short entrance, a bo
 | Siege Crusher — vertical slice | Arena-geometry breaker | Charge, claw sweep, cover shockwave; gains radial slam at 50%, faster/wider frenzy at 20% | Production art and Task 57 mobility pass integrated |
 | Brood Warden — vertical-slice pool | Spawn-priority test | Egg placement, guarding cleave, acid volley; 50% swarm rush; faster/larger frenzy at 20% | Production Batch D1 and Task 57 mobility pass integrated |
 | Rift Stalker | Mobility/projectile test | Warp strike, projectile fan, decoy mark; 20% chained warp | Production Batch O and Task 57 mobility pass integrated |
-| Synapse Herald | Telegraph mastery | Lunge chain, marked danger zones, temporary Brain Blob link | Later pool expansion |
-| Assembly Prime | Machine-summoner mastery | Interruptible fabrication, rotating turret lanes, one finite drone recall; final-20% faster assembly but unchanged caps | Only after Foundry Fabricator and mixed machine-family gates |
-| Storm Regent | Conductive arena puzzle | Destructible lightning nodes, locked chain lanes, close-range coil burst; no retarget after tell | Only after Storm Savant colour-independent chain tests |
+| Synapse Herald | Telegraph mastery | 560 HP/2 armour; exactly three locked danger zones; two-target lunge chain plus exactly one final-20% target; nearest ordinary Brain Blob link grants 45% mitigation for at most 4s/7m and breaks on invalidation | Behavior/presentation accepted; art authorized; random pool held for production silhouette and 45–90s fight gate |
+| Assembly Prime | Machine-summoner mastery | 720 HP/3 flat reduction; three fully warned locked rotating lanes; three Foundry-compatible finite fabrications through a 10-health interruptible pad; maximum two owned children; one deterministic one-use recall of the lowest-lifetime owned drone; final-20% faster timing with unchanged lane/charge/child/slot/threat caps | Behavior/presentation accepted and production package authorized; pool held for production silhouette and 45–90s fight gate |
+| Storm Regent | Conductive arena puzzle | Pure gate: three finite six-health nodes; one fixed cover-clipped chain with at most two hops, one destructible-node overcharge, or one locked 2.8m coil burst; every pattern requires sampled player-radius escape space; committed node destruction cancels; final-20% changes timing only | Pure scheduler/locking/destruction/cover/escape tests pass; live route, damage, reward/cap, and presentation gates required before art or pool promotion |
 | Abomination Prime | Corrupted-human apex | Slam/grab foundation plus one telegraphed thrown-biomass move | Only after the base Abomination and mixed-family promotion |
 
 The initial random pool should grow only through fully implemented bosses, with no immediate repeat when run history is available. The eligible pool now contains all three entries: Siege Crusher, Brood Warden, and Rift Stalker (behavior gate and Production Batch O completed 19 July 2026 — cloaked stalk, decoy-mark warp pounce, rift-spike fan, close slash, final-20% chained-warp frenzy). Codex must implement and rules-test each complete move set before generating its production sprites.
@@ -838,3 +838,130 @@ Acceptance: each state is recognisable at gameplay zoom in a mixed crowd; damage
 Batch Q2 (later, with the speciality system): one 128 × 128 speciality sign tile per keeper for the shop header, same canonical tile contract as Batch I.
 
 Acceptance: all eight keepers read as distinct silhouettes behind the counter at gameplay scale; none of them clash with the offer tiles' readability; the Quartermaster ships first and alone is sufficient for the presentation gate.
+
+## Production Audio Batch S — next asset priority
+
+No additional Task 62 body, weapon, projectile, or attack atlas is required. Batch M already supplies the three Corrupted Human bodies and the Marine's knife, travel wake, throw accents, and cover/player impacts. The Abomination slam zone, Marine locked line, off-screen direction marker, collision radius, and terrain overlap remain code-native so art cannot disagree with damage.
+
+### S1 — implemented weapon identity
+
+Generate dry, transient-forward **48 kHz / 24-bit WAV masters** with peak-safe normalized OGG derivatives for web and retained WAV/OGG options for Steam. Keep tails short, remove baked arena reverb, and avoid limiting that destroys layering headroom.
+
+| Family | Required production cues |
+| --- | --- |
+| Service Rifle | single shot with compact mechanical tail |
+| Scattergun | heavy blast plus short action clack; no long cinematic boom |
+| Arc Carbine | electrical launch distinct from chain-arc impact |
+| Patrol Blade | powered swing/air cut, without a guaranteed flesh hit baked in |
+| Bolt Carbine | charged precision launch, separate from first/terminal impacts |
+| Bulwark Rotary Cannon | spin/start, seamless sustain loop, release/end; cadence must layer without clipping |
+| Grenade Tube | mechanical thump; explosion remains a separate impact cue |
+| Injector Carbine | light pneumatic/energy report distinct from Service Rifle |
+
+### S2 — Corrupted Human threat language
+
+Generate Marine knife warning, throw/whoosh, cover impact, and armour/flesh impact; Abomination low windup, heavy slam, and exhausted recovery; and one restrained Survivor pack-rush cue. Warning cues must be audible but shorter/quieter than impact cues, remain identifiable in mono, and never encode timing that differs from simulation. Avoid constant individual zombie barks in six-to-eight-unit packs.
+
+### S3 — shared feedback
+
+Generate a small material library for flesh, armour, shield, brittle cover, reinforced cover, pickup/XP, level-up, chest/shop confirmation, player damage, and boss/reward stingers. Use two or three tightly matched variants only where repetition is frequent. UI and progression cues may be stereo; positional combat cues should remain mono-ready for future Steam spatial mixing.
+
+### Next visual batch after audio — Nest Weaver
+
+**Authorized 22 July 2026:** Task 63's reservation, interruption, hatch, route-cap, and Full HD presentation gates pass. Produce exactly three retained-master families:
+
+- `nest-weaver-v1`: 4 columns (down, left, right, up) × 8 rows (carry idle, carry stride A, carry stride B, lay windup, lay release, exhausted recovery, hurt, defeat), 32 logical 192×192 cells. Preserve one unambiguous forward head/mandible direction, a visibly carried egg mass only in rows 1–5, empty/open forelimbs in recovery, and a bottom-centre ground pivot. Lay windup and release must not enlarge gameplay range.
+- `nest-pod-v1`: 6 columns × 1 row, 128×128 cells in stable order: fresh, counting, critical, hatch-open, interrupted-collapse, destroyed. Fresh/counting/critical retain the same footprint and centre; critical damage must read through silhouette cracks as well as colour. Hatch-open is an animation state, not a collision expansion. Interrupted and destroyed must be visually distinct at 960×540.
+- `nest-effects-v1`: 4 columns × 2 rows, 128×128 cells. Columns are lay secretion, hatch burst, interruption, Weaver defeat; rows are onset and dissipate. Effects may cross cell bounds only inside transparent padding and may not contain target circles, countdown marks, damage areas, text, or baked shadows.
+
+Retain untouched generator output, clean-alpha masters, deterministic runtime derivatives, prompt/source notes, frame map, and a contact sheet. Reuse `swarm-scuttler-v1` for the hatchling initially; authorize a distinct two-row hatchling body only if 960×540 mixed-wave review shows target-priority confusion. Placement point, connecting line, countdown ring/pips, conditional health bar, reservation marker, and hatch radius stay code-native. No projectile atlas is required.
+
+Nest Weaver production audio is also authorized, after Audio Batch S1: one placement lock, one wet/mechanical lay, three sparse countdown escalation notes (not six repetitive ticks), hatch, pod destroyed/interrupted, and exhausted recovery. Every cue must map to an existing simulation event and remain mono-readable.
+
+### Authorized visual follow-up — Storm Savant
+
+**Authorized 22 July 2026:** deterministic placement, cover interception, node destruction, fixed-hit geometry, escape-lane, route-cap, and Full HD presentation gates pass. Produce exactly three retained-master families:
+
+- `storm-savant-v1`: 4 columns (down, left, right, up) × 9 rows (idle, stride A, stride B, node deploy, chain charge, discharge recoil, overload collapse, hurt, defeat), 36 logical 192×192 cells. The coil/psionic apparatus must read as dangerous science rather than a wizard staff. Charge and discharge may brighten or open the apparatus but cannot enlarge the gameplay footprint. Overload must visibly collapse the silhouette in every facing.
+- `storm-node-v1`: 6 columns × 1 row, 128×128 cells in stable order: deploying, idle, charged, critical, disrupted, destroyed. Charged and critical need silhouette differences independent of colour. Every live state shares one centre and collision footprint; disruption/destruction cannot resemble a still-active endpoint.
+- `storm-effects-v1`: 4 columns × 2 rows, 128×128 cells. Columns are node deploy spark, Savant coil charge, discharge origin flash, overload vent; rows are onset and dissipate. Do not include lightning paths, target rails, endpoint circles, cover-stop squares, hit widths, text, baked shadows, or projectile shapes.
+
+Retain untouched generator output, clean-alpha masters, deterministic runtime derivatives, prompt/source notes, frame map, and contact-sheet QA. The double-rail ladder, timing rungs, cover clipping, circular endpoint, square stop marker, collision, and damage remain code-native. No projectile atlas is required.
+
+Storm Savant audio is authorized after Batch S1 and the Nest Weaver cues: node deploy, a three-stage escalating chain tell, one discharge crack, node hit, node destroyed/interruption, and overload recovery. Timing accents must follow simulation events and remain distinct in mono; do not bake the 1.15-second duration into an inflexible recording.
+
+### Authorized visual follow-up — Scrap Skitterer
+
+**Authorized 22 July 2026:** committed-rush collision, player/cover/miss termination, Shock weakness, harmless wreck lifetime, eight-unit cap, dedicated-route, and Full HD presentation gates pass. Produce exactly two retained-master families:
+
+- `machine-scrap-skitterer-v1`: 4 columns (down, left, right, up) × 8 rows (idle, scuttle A, scuttle B, acceleration tell, committed rush, hard brake, hurt, defeat), 32 logical 128×128 cells. Use a low triangular android silhouette with a clearly readable forward sensor/wedge. Acceleration may compress and brighten the chassis but cannot change collision width; committed rush must lean along the facing; hard brake must throw the mass backward. Defeat ends in a compact low wreck silhouette that cannot resemble a live rushing unit.
+- `machine-scrap-skitterer-effects-v1`: 4 columns × 2 rows, 128×128 cells. Columns are acceleration sparks, rush wake, cover/player impact, wreck spark; rows are onset and dissipate. Effects contain no warning rails, target arrows, damage areas, text, baked shadows, or collision outlines. The wreck-spark loop must remain sparse enough for eight simultaneous deaths and must never imply a damaging explosion.
+
+Retain untouched generator output, clean-alpha ≥4× masters, deterministic nearest-neighbour runtime derivatives, prompt/source notes, frame map, pivots/baselines, and contact-sheet QA. Locked direction, tell/rush/brake timing, warning lane, collision, damage, Shock multiplier, wreck duration, and harmless/non-slowing rules remain code-owned. No projectile atlas is required. Do not generate Arc Warden, Reclaimer, Fabricator, turret, or Assembly Prime assets until their own behavior gates pass.
+
+Scrap Skitterer audio is authorized after Batch S1, Nest Weaver, and Storm Savant: one restrained pack-scuttle loop, acceleration tell, rush pass, cover impact, player/armour impact, defeat clatter, and sparse wreck crackle. Cues must map to existing warning/rush/impact/wreck events, remain mono-readable, and avoid eight fully layered scuttle loops; the mixer should select or group nearby pack motion.
+
+### Authorized visual follow-up — Arc Warden
+
+**Authorized 22 July 2026:** fixed-aim locking, first-cover termination, single-discharge ownership, narrow player-radius geometry, Shock weakness, two-specialist cap, deterministic free/cover endpoint demonstrations, and Full HD/4K presentation gates pass. Produce exactly two retained-master families:
+
+- `machine-arc-warden-v1`: 4 columns (down, left, right, up) × 8 rows (idle, stride A, stride B, lane charge, discharge recoil, vented recovery, hurt, defeat), 32 logical 128×128 cells. Use a disciplined rectangular android silhouette with a narrow forward emitter and two asymmetric shoulder insulators so facing survives without colour. Charge may brace/open the emitter but cannot widen the collision footprint; recovery must visibly sag or vent in every facing. Do not bake a beam, endpoint, target reticle, or cover marker into the body.
+- `machine-arc-warden-effects-v1`: 4 columns × 2 rows, 128×128 cells. Columns are emitter charge, discharge-origin flash, cover/player impact spark, recovery vent; rows are onset and dissipate. No frame may include lane rails, timing rungs, a target diamond, cover square, damage width, text, baked shadow, or projectile travel shape.
+
+Retain untouched generator output, clean-alpha ≥4× masters, deterministic nearest-neighbour runtime derivatives, prompt/source notes, frame map, pivots/baselines, and contact-sheet QA. Aim lock, beam length/width, timing, cover clipping, damage, endpoint geometry, Shock multiplier, recovery, and cooldown remain code-owned. No projectile atlas is required. Do not generate Reclaimer, Fabricator, turret, or Assembly Prime assets until their own behavior gates pass.
+
+Arc Warden audio is authorized after Batch S1 and the previously authorized enemy cue packages: one restrained reposition servo, a three-stage charge escalation, one discharge crack, separate cover and player/armour impacts, recovery vent, and defeat shutdown. Timing accents follow existing warning/discharge events; do not bake the 1.05-second duration into an inflexible recording, and keep positional combat cues mono-readable.
+
+### Authorized visual follow-up — Cyborg Reclaimer
+
+**Authorized 22 July 2026:** deterministic target choice, finite patches, single-link exclusivity, live health restoration, damage/range interruption, no-overheal and forbidden-target rules, mixed-machine cap, and Full HD/4K presentation gates pass. Produce exactly two retained-master families:
+
+- `machine-cyborg-reclaimer-v1`: 4 columns (down, left, right, up) × 9 rows (idle, stride A, stride B, target acquisition, repair channel, interrupted recoil, exhausted recovery, hurt, defeat), 36 logical 192×192 cells. Use a broad rounded cyborg silhouette combining an organic armoured torso with one unmistakably mechanical repair arm and asymmetric backpack reservoir. Acquisition points the repair arm without extending gameplay range; channel braces both feet; interruption snaps the arm/tether housing back; recovery visibly vents or slumps. Do not bake a tether, target ring, health symbol, text, or healing area into the body.
+- `machine-cyborg-reclaimer-effects-v1`: 4 columns × 2 rows, 128×128 cells. Columns are tether-origin lock, repair-completion pulse, interrupted-link spark, recovery vent; rows are onset and dissipate. No frame may include the connecting tether, progress beads, target circle-plus, damage radius, health bar, numbers, baked shadow, or projectile travel shape.
+
+Retain untouched generator output, clean-alpha ≥4× masters, deterministic nearest-neighbour runtime derivatives, prompt/source notes, frame map, pivots/baselines, and contact-sheet QA. Target eligibility, selection order, acquisition/break range, channel/recovery/cooldown timing, active-link ownership, repair amount, patch count, health mutation, interruption, and tether geometry remain code-owned. No projectile atlas is required. Do not generate Fabricator, drone, turret, Assembly Prime, or Foundry Mind art until their own behavior gates pass.
+
+Cyborg Reclaimer audio is authorized after Batch S1 and the previously authorized enemy cue packages: one heavy servo step family, target lock, a short loopable repair-channel bed, patch completion, link interruption snap, recovery vent, hurt, and defeat shutdown. The channel bed must loop/cut cleanly so simulation interruption remains immediate; do not bake the 1.25-second duration into a fixed cue. Keep tether and interruption cues mono-readable and sparse enough for mixed-machine encounters.
+
+### Authorized visual follow-up — Foundry Fabricator package
+
+**Authorized 22 July 2026:** finite charges, exact slot/threat reservation and refund, destructible pad interruption, non-recursive timed children, owner cleanup, fixed turret tell/cover blocking, eight-unit mixed route, and Full HD/4K presentation gates pass. Produce exactly five retained-master families:
+
+- `machine-foundry-fabricator-v1`: 4 columns (down, left, right, up) × 9 rows (idle, stride A, stride B, pad placement, fabrication channel, interrupted recoil, recovery vent, hurt, defeat), 36 logical 192×192 cells. Use a heavy industrial android silhouette with asymmetric manipulator arms and a visible but compact internal forge. Placement/channel poses may deploy tools without extending collision or implying a larger pad. Do not bake the pad, countdown, turret lane, child, text, or health bar into the body.
+- `machine-foundry-pad-v1`: 6 columns × 1 row, 128×128 cells in stable order: deploy, early channel, mid channel, late channel, disrupted, completed. Every live state shares one low circular footprint and centre. Progress must read by silhouette/mechanical extension as well as colour; disrupted/completed frames cannot resemble a targetable live pad.
+- `machine-foundry-drone-v1`: 4 columns × 7 rows (idle hover, flight A, flight B, contact attack, hurt, timed power-down, destroyed), 28 logical 128×128 cells. Preserve a small forward-pointing silhouette distinct from the lower Scrap Skitterer. Timed shutdown must fold inward without looking explosive or leaving a damaging wreck.
+- `machine-foundry-turret-v1`: 4 columns × 8 rows (deploy, tracking, lane charge, fire recoil, recovery, hurt, timed power-down, destroyed), 32 logical 128×128 cells. Use a compact square base and directional barrel/emitter readable without colour. Rotation cannot enlarge collision. Do not bake warning rails, rungs, endpoint circles, range, or hit width into the body.
+- `machine-foundry-effects-v1`: 4 columns × 2 rows, 128×128 cells. Columns are pad-deploy sparks, fabrication completion, interruption shatter, and turret muzzle flash; rows are onset and dissipate. No frame may contain pad countdown geometry, turret rails/rungs, target circles, damage width, projectile travel, text, health bars, or baked shadows.
+
+Retain untouched generator output, clean-alpha ≥4× masters, deterministic nearest-neighbour runtime derivatives, prompt/source notes, frame map, pivots/baselines, and contact-sheet QA. Charges, reservations, pad HP/placement/progress, child owner/lifetime/caps, turret target lock, 0.55-second timing, 9.5m acquisition, cover blocking, damage, and warning-lane geometry remain code-owned. No projectile atlas is required. Assembly Prime and Foundry Mind artwork remains blocked until their own mini-boss behavior gates pass.
+
+Foundry audio is authorized after Batch S1 and the previously authorized machine packages: Fabricator servo/forge idle, pad placement clamp, short loopable fabrication channel, completion stamp, owner-hit interruption, pad-destroyed interruption, drone hover/contact/power-down, turret lock escalation, single discharge, recovery servo, child destruction, Fabricator hurt, and Fabricator shutdown. Channel and warning beds must loop or cut immediately on simulation events; do not bake the 1.6-second or 0.55-second timings into fixed recordings. Prioritize the pad warning, interruption split, turret lock, and turret discharge before movement ambience.
+
+### Authorized visual follow-up — Synapse Herald package
+
+**Authorized 22 July 2026:** deterministic no-repeat selection, locked-target rules, exact three-zone coverage, normal/frenzy lunge counts, ordinary-Blob-only link selection and break conditions, damage mitigation, ten-unit route cap, reward/rank preservation, and Full HD/4K presentation gates pass. Produce exactly three retained-master families:
+
+- `synapse-herald-v1`: 4 columns (down, left, right, up) × 10 rows (entrance, orbit A, orbit B, lunge windup, committed lunge, marked-zone channel, synapse-link channel, exposed recovery, hurt, defeat), 40 logical 192×192 cells. Use a tall asymmetric psychic-alien silhouette with one unmistakable forward crown/emitter and a distinct trailing mantle. Lunge and channel poses may stretch internally but cannot enlarge collision, attack range, or zone coverage. Do not bake target paths, zones, link lines, endpoint rings, text, or health bars into the body.
+- `synapse-herald-effects-v1`: 4 columns × 2 rows, 128×128 cells. Columns are lunge-origin flare, marked-zone eruption, synapse-link lock, and link-break snap; rows are onset and dissipate. Effects contain no chain path, target ring, plus marker, danger-zone circumference, link tether, timing marks, damage width, text, or baked shadow.
+- `synapse-herald-portrait-v1`: one clean 256×256 square portrait with the crown/emitter and asymmetric mantle readable at 64×64. Keep the face/crown inside the centre safe area and omit title text, frame, boss bar, target reticle, and background telegraph geometry.
+
+Retain untouched generator output, clean-alpha ≥4× masters, deterministic nearest-neighbour runtime derivatives, prompt/source notes, frame map, pivots/baselines, and contact-sheet QA. The three circles and plus signs, lunge chain/path and endpoint rings, link line/target ring, target locking, hit geometry, mitigation, phase timing, off-screen warnings, and conditional boss/target health bars remain code-owned. Reuse the existing Brain Blob body; do not generate a special linked-Blob variant unless mixed-wave review proves the code-native ring insufficient. No projectile atlas is required.
+
+Synapse Herald audio is authorized after Batch S1 and the previously authorized enemy cue packages: entrance stinger, restrained orbit movement, three-stage lunge escalation with individual dash accents, marked-zone warning and eruption, link lock, a short loopable link bed, target/range break snaps, exposed recovery, hurt, and defeat/reward stingers. Link and warning beds must cut immediately when simulation events break them; do not bake the 0.9-second entrance, 4-second link, or variable frenzy timings into fixed recordings. Prioritize lunge warnings, zone eruption, link lock/break, and recovery before movement ambience.
+
+Random-pool promotion remains blocked until the production body/effects pass a mixed ordinary-Brain-Blob encounter at 960×540, Full HD, and 4K, and a representative intended loadout records a 45–90-second kill without unreadable no-repeat scheduler sequences. Assembly Prime's behavior and presentation gates now pass; its separately scoped production package is authorized below.
+
+### Authorized visual follow-up — Assembly Prime package
+
+**Authorized 22 July 2026:** deterministic no-repeat scheduling, exact Foundry-compatible reservations/refunds, targetable pad interruption, finite non-recursive child creation, same-entity recall, owner cleanup, three locked cover-blocked lane discharges, ten-unit route, mini-boss reward/rank preservation, mobility, and Full HD/4K presentation gates pass. Produce exactly four retained-master families:
+
+- `assembly-prime-v1`: 4 columns (down, left, right, up) × 11 rows (entrance, orbit A, orbit B, lane lock, sequential lane fire/recoil, pad deploy, fabrication channel, drone recall channel, exposed recovery, hurt, defeat), 44 logical 192×192 cells. Use a broad industrial command chassis with an asymmetric forge shoulder, three distinct emitter vanes, and one articulated recall arm. Lane and channel poses may deploy internal machinery but cannot enlarge collision, lane width, fabrication range, or recall range. Do not bake pads, children, rails, timing beads, tethers, target rings, text, or health bars into the body.
+- `assembly-prime-pad-v1`: 6 columns × 1 row, 128×128 cells in stable order: deploy, early channel, mid channel, late channel, disrupted, completed. It must read as a reinforced command pad distinct from the six-health Foundry pad while preserving the same low centre and collision footprint across all live states. Ten-health durability must read through silhouette armour loss as well as colour; disrupted/completed states cannot resemble a targetable live pad.
+- `assembly-prime-effects-v1`: 4 columns × 2 rows, 128×128 cells. Columns are three-emitter lock origin, fabrication completion stamp, recall lock/snap, and Prime shutdown; rows are onset and dissipate. No frame may contain lane rails, timing beads, endpoints, pad progress rings, recall tether, target circle, damage width, text, health bars, or baked shadows.
+- `assembly-prime-portrait-v1`: one clean 256×256 portrait with the forge shoulder, emitter vanes, and recall arm readable at 64×64. Keep the command face inside the centre safe area and omit title text, frame, boss bar, child silhouettes, and telegraph geometry.
+
+Retain untouched generator output, clean-alpha ≥4× masters, deterministic nearest-neighbour runtime derivatives, prompt/source notes, frame map, pivots/baselines, and contact-sheet QA. Reuse `machine-foundry-drone-v1` and `machine-foundry-turret-v1`; do not create Prime-only child bodies. The three dark-backed alternating amber/cyan rails, white timing beads, cover clipping, hit width, pad target ring/tether, recall tether/ring, reservations, conditional health bars, and all phase timing remain code-owned. No projectile atlas is required.
+
+Assembly Prime audio is authorized after Batch S1 and the previously authorized machine packages: entrance/reward stingers, restrained heavy orbit servo, three-stage lane lock escalation, three individually indexed emitter discharges, pad deploy clamp, short loopable fabrication bed, completion stamp, separate owner-hit and pad-destroyed interruption snaps, recall lock, recall pull/relaunch, exposed recovery vent, hurt, and shutdown. Reuse Foundry drone/turret movement and attack cues. Channel and warning beds must cut immediately on simulation interruption; do not bake the 1.6-second fabrication, variable lane timing, or recall duration into fixed recordings.
+
+Random-pool promotion remains blocked until the production Prime/pad/effects pass mixed-machine review at 960×540, Full HD, and 4K and a representative intended loadout records a 45–90-second kill. The acceptance run must confirm the production body never hides a pad, child, lane origin, or recall target and that no-repeat selection remains legible across at least three seeded fights.

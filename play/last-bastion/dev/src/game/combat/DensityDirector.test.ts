@@ -83,6 +83,27 @@ describe("density director v3", () => {
     expect(buildDensityWave(9).plans).toMatchObject([{ type: "bastion-eater", rank: "boss" }]);
   });
 
+  it("promotes Corrupted Humans gradually without changing threat or pressure shares", () => {
+    const expected = [
+      [0, 0, 0], [0, 0, 0], [6, 0, 0], [6, 1, 0], [6, 1, 0],
+      [8, 1, 0], [10, 1, 1], [10, 2, 1], [12, 2, 2], [0, 0, 0],
+    ] as const;
+    for (let index = 0; index < expected.length; index += 1) {
+      const wave = buildDensityWave(index);
+      const counts = ["infected-survivor", "corrupted-marine", "abomination"].map((type) => (
+        wave.plans.filter((plan) => plan.type === type).length
+      ));
+      expect(counts, `wave ${index + 1}`).toEqual(expected[index]);
+      if (index >= 2 && index <= 8) {
+        const shares = pressureShares(wave.plans);
+        expect(shares.pursuitShare).toBeGreaterThanOrEqual(0.65);
+        expect(shares.rangedShare).toBeLessThanOrEqual(0.25);
+        expect(wave.plans.filter((plan) => plan.type === "corrupted-marine").length).toBeLessThanOrEqual(2);
+        expect(wave.plans.filter((plan) => plan.type === "abomination").length).toBeLessThanOrEqual(2);
+      }
+    }
+  });
+
   it("keeps the capacity lab pinned at 56 while enforcing hostile projectile pressure", () => {
     const simulation = new CombatSimulation({ scenario: "density-capacity", seed: 734 });
     for (let frame = 0; frame < 600; frame += 1) {

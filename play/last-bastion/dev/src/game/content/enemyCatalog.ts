@@ -7,6 +7,18 @@ export type EnemyType =
   | "infected-survivor"
   | "corrupted-marine"
   | "abomination"
+  | "nest-weaver"
+  | "nest-pod"
+  | "nest-hatchling"
+  | "storm-savant"
+  | "storm-node"
+  | "scrap-skitterer"
+  | "arc-warden"
+  | "cyborg-reclaimer"
+  | "foundry-fabricator"
+  | "foundry-pad"
+  | "foundry-drone"
+  | "foundry-turret"
   | "egg-cluster"
   | "brain-blob"
   | "slime-spitter"
@@ -21,6 +33,8 @@ export type EnemyType =
   | "siege-crusher"
   | "brood-warden"
   | "rift-stalker"
+  | "synapse-herald"
+  | "assembly-prime"
   | "bastion-eater";
 
 export interface EnemyDefinition {
@@ -86,6 +100,130 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     experienceValue: 8,
     armour: 2,
     steeringProfile: "pursuer",
+  }),
+  "nest-weaver": enemy({
+    id: "nest-weaver",
+    maxHealth: 18,
+    radiusMetres: 0.62,
+    movementSpeedMetresPerSecond: 1.3,
+    contactDamage: 0.5,
+    experienceValue: 6,
+    armour: 1,
+    steeringProfile: "supportAnchor",
+  }),
+  "nest-pod": enemy({
+    id: "nest-pod",
+    maxHealth: 9,
+    radiusMetres: 0.62,
+    movementSpeedMetresPerSecond: 0,
+    contactDamage: 0,
+    experienceValue: 0,
+    resistances: { fire: 1.35 },
+    steeringProfile: "supportAnchor",
+  }),
+  "nest-hatchling": enemy({
+    id: "nest-hatchling",
+    maxHealth: 2,
+    radiusMetres: 0.3,
+    movementSpeedMetresPerSecond: 3.9,
+    contactDamage: 0.75,
+    experienceValue: 1,
+    steeringProfile: "rushPack",
+  }),
+  "storm-savant": enemy({
+    id: "storm-savant",
+    maxHealth: 16,
+    radiusMetres: 0.58,
+    movementSpeedMetresPerSecond: 1.4,
+    contactDamage: 0.5,
+    experienceValue: 6,
+    armour: 1,
+    resistances: { shock: 0.45 },
+    steeringProfile: "standoffShooter",
+  }),
+  "storm-node": enemy({
+    id: "storm-node",
+    maxHealth: 6,
+    radiusMetres: 0.42,
+    movementSpeedMetresPerSecond: 0,
+    contactDamage: 0,
+    experienceValue: 0,
+    resistances: { shock: 0.5 },
+    steeringProfile: "supportAnchor",
+  }),
+  "scrap-skitterer": enemy({
+    id: "scrap-skitterer",
+    maxHealth: 4,
+    radiusMetres: 0.38,
+    movementSpeedMetresPerSecond: 2.15,
+    contactDamage: 0,
+    experienceValue: 1,
+    resistances: { shock: 1.5 },
+    steeringProfile: "rushPack",
+  }),
+  "arc-warden": enemy({
+    id: "arc-warden",
+    maxHealth: 12,
+    radiusMetres: 0.52,
+    movementSpeedMetresPerSecond: 1.55,
+    contactDamage: 0.5,
+    experienceValue: 4,
+    armour: 2,
+    resistances: { shock: 1.5 },
+    steeringProfile: "standoffShooter",
+  }),
+  "cyborg-reclaimer": enemy({
+    id: "cyborg-reclaimer",
+    maxHealth: 18,
+    radiusMetres: 0.64,
+    movementSpeedMetresPerSecond: 1.35,
+    contactDamage: 0.8,
+    experienceValue: 6,
+    armour: 3,
+    resistances: { shock: 1.4 },
+    steeringProfile: "supportAnchor",
+  }),
+  "foundry-fabricator": enemy({
+    id: "foundry-fabricator",
+    maxHealth: 22,
+    radiusMetres: 0.7,
+    movementSpeedMetresPerSecond: 1.15,
+    contactDamage: 0.6,
+    experienceValue: 7,
+    armour: 3,
+    resistances: { shock: 1.4 },
+    steeringProfile: "supportAnchor",
+  }),
+  "foundry-pad": enemy({
+    id: "foundry-pad",
+    maxHealth: 6,
+    radiusMetres: 0.52,
+    movementSpeedMetresPerSecond: 0,
+    contactDamage: 0,
+    experienceValue: 0,
+    resistances: { shock: 1.4 },
+    steeringProfile: "supportAnchor",
+  }),
+  "foundry-drone": enemy({
+    id: "foundry-drone",
+    maxHealth: 4,
+    radiusMetres: 0.34,
+    movementSpeedMetresPerSecond: 3.1,
+    contactDamage: 0.75,
+    experienceValue: 0,
+    resistances: { shock: 1.5 },
+    steeringProfile: "rushPack",
+  }),
+  "foundry-turret": enemy({
+    id: "foundry-turret",
+    maxHealth: 6,
+    radiusMetres: 0.46,
+    movementSpeedMetresPerSecond: 0,
+    contactDamage: 0,
+    experienceValue: 0,
+    armour: 1,
+    resistances: { shock: 1.5 },
+    steeringProfile: "standoffShooter",
   }),
   "egg-cluster": enemy({
     id: "egg-cluster",
@@ -228,6 +366,28 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     flatDamageReduction: 2,
     resistances: { cryo: 0.75 },
     steeringProfile: "flanker",
+  }),
+  "synapse-herald": enemy({
+    id: "synapse-herald",
+    maxHealth: 560,
+    radiusMetres: 1.02,
+    movementSpeedMetresPerSecond: 1.55,
+    contactDamage: 1.2,
+    experienceValue: 0,
+    flatDamageReduction: 2,
+    resistances: { shock: 0.8 },
+    steeringProfile: "flanker",
+  }),
+  "assembly-prime": enemy({
+    id: "assembly-prime",
+    maxHealth: 720,
+    radiusMetres: 1.16,
+    movementSpeedMetresPerSecond: 1.25,
+    contactDamage: 1.5,
+    experienceValue: 0,
+    flatDamageReduction: 3,
+    resistances: { shock: 0.75 },
+    steeringProfile: "supportAnchor",
   }),
   "bastion-eater": enemy({
     id: "bastion-eater",

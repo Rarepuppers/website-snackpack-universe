@@ -300,9 +300,11 @@ export class CombatHud {
       const enrage = healthRatio <= 0.2 ? "FRENZY" : healthRatio <= 0.5 ? "ENRAGED" : "";
       const isBrood = boss.miniBossKind === "brood-warden";
       const isRift = boss.miniBossKind === "rift-stalker";
+      const isSynapse = boss.miniBossKind === "synapse-herald";
+      const isAssembly = boss.miniBossKind === "assembly-prime";
       const isFinalBoss = boss.type === "bastion-eater";
-      const name = isFinalBoss ? "THE BASTION EATER" : isBrood ? "BROOD WARDEN" : isRift ? "RIFT STALKER" : "SIEGE CRUSHER";
-      const phase = isFinalBoss ? boss.bastionEaterPhase : isBrood ? boss.broodWardenPhase : isRift ? boss.riftStalkerPhase : boss.siegeCrusherPhase;
+      const name = isFinalBoss ? "THE BASTION EATER" : isBrood ? "BROOD WARDEN" : isRift ? "RIFT STALKER" : isSynapse ? "SYNAPSE HERALD" : isAssembly ? "ASSEMBLY PRIME" : "SIEGE CRUSHER";
+      const phase = isFinalBoss ? boss.bastionEaterPhase : isBrood ? boss.broodWardenPhase : isRift ? boss.riftStalkerPhase : isSynapse ? boss.synapseHeraldPhase : isAssembly ? boss.assemblyPrimePhase : boss.siegeCrusherPhase;
       this.bossNameText.setText(name);
       this.bossNumberText.setText(`${Math.ceil(boss.health)} / ${boss.maxHealth}`);
       this.bossPhaseText.setText(`${(phase ?? "stalk").toUpperCase()}${enrage ? `  •  ${enrage}` : ""}`);
@@ -519,9 +521,18 @@ const SCENARIO_LABELS: Readonly<Record<CombatScenario, string>> = Object.freeze(
   "siege-crusher": "CRUSHER LAB",
   "brood-warden": "BROOD LAB",
   "rift-stalker": "RIFT LAB",
+  "synapse-herald": "SYNAPSE HERALD LAB",
+  "assembly-prime": "ASSEMBLY PRIME LAB",
   "infected-survivor": "SURVIVOR LAB",
   "corrupted-marine": "MARINE LAB",
   abomination: "ABOMINATION LAB",
+  "corrupted-human": "OUTBREAK LAB",
+  "nest-weaver": "NEST WEAVER LAB",
+  "storm-savant": "STORM SAVANT LAB",
+  "scrap-skitterer": "SCRAP SKITTERER LAB",
+  "arc-warden": "ARC WARDEN LAB",
+  "cyborg-reclaimer": "CYBORG RECLAIMER LAB",
+  "foundry-fabricator": "FOUNDRY FABRICATOR LAB",
   ripper: "RIPPER LAB",
   "razor-scuttler": "RAZOR LAB",
   quillback: "QUILLBACK LAB",
