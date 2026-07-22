@@ -15,8 +15,11 @@ export function achievementUnlockEvents(
   before: GameProgress,
   after: GameProgress,
   summary: RunSummary | null,
+  alreadyUnlocked: readonly AchievementId[] = [],
 ): readonly AchievementUnlockEvent[] {
-  return ACHIEVEMENT_IDS.filter((id) => !isAchievementEarned(id, before, null) && isAchievementEarned(id, after, summary))
+  return ACHIEVEMENT_IDS.filter((id) => !alreadyUnlocked.includes(id)
+      && !isAchievementEarned(id, before, null)
+      && isAchievementEarned(id, after, summary))
     .map((id) => ({ type: "achievement-unlocked" as const, id }));
 }
 

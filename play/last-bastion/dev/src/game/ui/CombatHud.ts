@@ -521,6 +521,7 @@ const SCENARIO_LABELS: Readonly<Record<CombatScenario, string>> = Object.freeze(
   "rift-stalker": "RIFT LAB",
   "infected-survivor": "SURVIVOR LAB",
   "corrupted-marine": "MARINE LAB",
+  abomination: "ABOMINATION LAB",
   ripper: "RIPPER LAB",
   "razor-scuttler": "RAZOR LAB",
   quillback: "QUILLBACK LAB",

@@ -946,7 +946,7 @@ export class AssetGalleryScene extends Phaser.Scene {
       this.add.sprite(x, y, "corrupted-marine-effects-v1", frame).setScale(1.0);
       this.add.text(x, y + 36, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
     }
-    this.add.text(480, 528, "Labs: ?scenario=infected-survivor / corrupted-marine - normal waves wait for Task 62", style("#8fb2c9", "10px")).setOrigin(0.5);
+    this.add.text(480, 528, "Labs: infected-survivor / corrupted-marine / abomination - mixed waves remain held", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createEmberfallGallery(): void {

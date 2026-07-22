@@ -126,6 +126,7 @@ export const LAB_ROUTES: readonly LabRoute[] = Object.freeze([
   { label: "Rift Stalker lab", url: "?scenario=rift-stalker&loadout=vertical" },
   { label: "Infected Survivor lab", url: "?scenario=infected-survivor&loadout=vertical" },
   { label: "Corrupted Marine lab", url: "?scenario=corrupted-marine&loadout=vertical" },
+  { label: "Abomination lab", url: "?scenario=abomination&loadout=vertical" },
   { label: "Bastion Eater lab", url: "?scenario=bastion-eater&loadout=vertical" },
   { label: "Scrap Shop lab", url: "?scenario=scrap-shop&loadout=vertical" },
   { label: "Weapon placement lab", url: "?scenario=weapon-gate" },

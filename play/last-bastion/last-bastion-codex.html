@@ -476,6 +476,9 @@ const MONSTERS = [
   { id: "mon-infected-survivor", name: "Infected Survivor", glyph: "IS", tint: TINT.monster, status: "live", rank: "standard", tier: "Lab",
     stats: { Health: "3", Armour: "0", Speed: "2.1 / 5.15 sprint", Damage: "1 contact", Stamina: "1.2s" },
     text: "Task 58 behavior lab: staggered stamina sprints, acceleration and forward-biased pack separation preserve an escape lane. Production art is live; normal waves remain held until its Corrupted Human family is complete." },
+  { id: "mon-abomination", name: "Abomination", glyph: "AB", tint: TINT.monster, status: "live", rank: "specialist", tier: "Lab",
+    stats: { Health: "34", Armour: "2", Speed: "1.2 m/s", Damage: "2.6 slam", Tell: "0.9s" },
+    text: "Task 62 behavior lab: locks a large shape-coded slam zone, commits one impact that can damage terrain, then exposes a long recovery. Normal-wave promotion waits for family wave tuning." },
   { id: "mon-scuttler", name: "Scuttler", glyph: "▲", tint: TINT.monster, status: "live", rank: "standard", tier: "Rush-adjacent",
     stats: { Health: "4", Armour: "0", Speed: "2.35 m/s", Damage: "1 contact", XP: "1" },
     text: "The unit every other number is judged against. Runs straight at you and teaches movement." },
@@ -1067,7 +1070,8 @@ function render() {
       <tr><td><b>Infected Survivor movement</b></td><td>${badge("live")}</td><td>Batch M production body, finite sprint stamina, acceleration/deceleration, capped pack steering and route-safe behavior lab; normal-wave promotion remains held</td></tr>
       <tr><td><b>Corrupted Marine knife lifecycle</b></td><td>${badge("live")}</td><td>Locked tell, slow visible knife, cover/player/expiry telemetry, recovery and cooldown are live in the Batch M behavior lab</td></tr>
       <tr><td><b>Accessibility/display gate</b></td><td>${badge("live")}</td><td>Title-safe Full HD/4K HUD, focus-loss pause, reduced flash, shape-coded tells, priority-aware combat text, and persisted per-action keyboard/controller remapping with binding-aware help and HUD labels</td></tr>
-      <tr><td><b>Steam readiness foundations</b></td><td>${badge("designed")}</td><td>Versioned 1/60 fixed-step replay fixture and deterministic digest are live; offline boot, achievements, cloud-save policy, Steam Input, and SDK integration remain</td></tr>
+      <tr><td><b>Corrupted Human family</b></td><td>${badge("designed")}</td><td>Survivor, Marine, and Abomination behavior labs are live with Batch M art; Marine off-screen warnings and mixed-wave promotion remain</td></tr>
+      <tr><td><b>Steam readiness foundations</b></td><td>${badge("live")}</td><td>Chained 1/60 replay fixtures, offline-build audit, retry-safe achievements, deterministic cloud conflicts, and an injected Steamworks achievement/cloud bridge are live</td></tr>
       <tr><td><b>Summoner and machine enemy expansion</b></td><td>${badge("designed")}</td><td>Nest Weaver timed eggs, Storm Savant locked lightning paths, and a capped android/cyborg family culminating in Foundry Fabricator</td></tr>
       <tr><td><b>Expanded mini-boss pool</b></td><td>${badge("concept")}</td><td>Synapse Herald, Assembly Prime, Storm Regent, and Abomination Prime follow only after their standard-family behavior gates</td></tr>
       <tr><td><b>Sector campaign</b></td><td>${badge("concept")}</td><td>Multiple faction-owned sector maps after the first expedition is proven</td></tr>

@@ -725,4 +725,46 @@ First implementation slice of the v2 balance model — the layer that makes ever
 
 - Added replay format v1 with an explicit simulation-compatibility version, safe-integer world seed, canonical 1/60-second step, and compact repeated-input spans. Replay code depends on `CombatSimulation` and `PlayerIntent`, never Phaser presentation.
 - Added strict rejection for unknown replay formats, changed simulation-rule versions, noncanonical timesteps, invalid seeds, and invalid frame spans instead of attempting unsafe best-effort playback.
-- Added a deterministic Corrupted Marine fixture covering movement, sustained fire, and a one-frame evade edge. Its 210-frame canonical snapshot hashes to committed digest `c65746fc`; seed or input divergence produces a different digest.
+- Added a deterministic Corrupted Marine fixture covering movement, sustained fire, and a one-frame evade edge. Its canonical snapshot hashes to committed digest `346f7115`; seed or input divergence produces a different digest.
+
+### Task 61B — decision-aware replay and offline boot contract
+
+**Status:** Implemented — 22 July 2026; Task 61 remains in progress
+
+- Extended replay format v1 with one-frame decision choices and an optional seeded expedition encounter descriptor. Canonical digests now include pending decisions and equipped weapon state; fixtures cover weapon placement and expedition combat setup.
+- Added an executable production-build audit that rejects external document resources, remote imports/assets, and remote startup calls, then verifies every referenced `/game-assets/` file exists locally. The current build resolves 110 local asset references with zero missing or remote startup dependencies.
+- Wired the audit into `npm run verify` after build and smoke verification so offline regressions fail the normal gate.
+
+### Task 61C — platform progress and cloud conflict policy
+
+**Status:** Implemented — 22 July 2026; Task 61 remains in progress
+
+- Added stable platform-neutral achievement IDs and pure unlock events for first run, first victory, wave ten, expedition victory, 100 kills, and 1,000 kills. Callers pass acknowledged IDs so platform retries remain idempotent.
+- Added a deterministic schema-v7 cloud-save resolver. Revision, timestamp, and device ID provide a total ordering; preferences and active-run state follow the preferred envelope while monotonic career and bestiary values merge by maxima to avoid duplicate-run inflation.
+- Divergent simultaneous expeditions are explicitly reported for future UI handling, and unknown save schemas fail closed. Steam Input/Steamworks transport and acknowledgement adapters remain the final Task 61 integration spike.
+
+### Task 61D — Steamworks bridge and chained replay spike
+
+**Status:** Completed — 22 July 2026; Task 61 closed
+
+- Added an injected Steamworks bridge for canonical achievement queries/unlocks, one batch stats commit, and the versioned `last-bastion-save-v7.json` cloud slot. Failed commits acknowledge nothing and remain safe to retry; duplicate and already-unlocked events are suppressed.
+- Added strict cloud-envelope parsing before platform data reaches conflict resolution. Malformed JSON, invalid revisions/timestamps/device IDs, and unsupported save schemas fail closed.
+- Added an order-sensitive three-encounter expedition replay chain covering 720 fixed frames and committed digest `592fb73a`. Reversing encounter order changes the chain digest.
+- Kept all bridge calls behind injected interfaces, so the web build has no Steam SDK dependency. Real SDK initialization and packaging can be selected with the desktop wrapper without changing simulation, progress, or cloud rules.
+
+### Task 62A — Abomination phase contract
+
+**Status:** Implemented — 22 July 2026; Task 62 remains in progress
+
+- Added a pure deterministic Abomination phase machine: shamble outside range, lock the target on a 0.9-second slam windup, emit exactly one committed impact, hold a 1.35-second vulnerable recovery, then enforce a repeat cooldown.
+- Movement is disabled through tell, impact, and recovery; the locked impact point never follows later player movement. Combat integration, authored Batch M row selection, Marine off-screen warnings, and mixed-wave promotion remain next.
+
+### Task 62B — live Abomination slam lab
+
+**Status:** Implemented — 22 July 2026; Task 62 remains in progress
+
+- Added the Abomination as an eight-threat specialist with 34 health, two armour, a 1.2 m/s shamble, and the retained 4 × 3 / 128 px Batch M body sheet.
+- Integrated the pure phase contract into `CombatSimulation`. The dedicated lab locks a persistent nested-ring/cardinal-bracket target for 0.9 seconds, commits exactly one 1.55 m slam for 2.6 base damage, then exposes the authored 1.35-second recovery and repeat cooldown.
+- Routed slam overlap into Task 54 numeric terrain durability as the distinct `enemy-slam` source for five damage. The impact never retargets after warning lock.
+- Wired shamble, attack, and recovery phases to all three authored body rows, added the lab route and HUD label, and added stationary-hit, perpendicular-dodge, single-impact, recovery, and terrain-damage regression coverage.
+- Full HD browser review confirmed a readable shape-coded marker, clean family silhouettes, exact 960 × 540 to 1920 × 1080 scaling, and zero console warnings. The 4K pass scaled exactly to 3840 × 2160 with no overflow or warnings.

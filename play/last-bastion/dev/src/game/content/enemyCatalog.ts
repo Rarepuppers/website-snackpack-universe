@@ -6,6 +6,7 @@ export type EnemyType =
   | "swarm-scuttler"
   | "infected-survivor"
   | "corrupted-marine"
+  | "abomination"
   | "egg-cluster"
   | "brain-blob"
   | "slime-spitter"
@@ -75,6 +76,16 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     experienceValue: 4,
     armour: 1,
     steeringProfile: "chaseAndFire",
+  }),
+  abomination: enemy({
+    id: "abomination",
+    maxHealth: 34,
+    radiusMetres: 0.82,
+    movementSpeedMetresPerSecond: 1.2,
+    contactDamage: 1.2,
+    experienceValue: 8,
+    armour: 2,
+    steeringProfile: "pursuer",
   }),
   "egg-cluster": enemy({
     id: "egg-cluster",

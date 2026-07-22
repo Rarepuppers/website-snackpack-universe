@@ -88,6 +88,12 @@ import {
   shouldSpawnAurumHoarder,
 } from "./AurumHoarder";
 import { initialProjectileCarry, resolveFractionalProjectiles } from "./FractionalProjectiles";
+import {
+  createAbominationBehavior,
+  stepAbominationBehavior,
+  type AbominationBehaviorState,
+  type AbominationPhase,
+} from "./AbominationBehavior";
 import { scaleEnemyHealth, scaleEnemyHit, waveScaling } from "./WaveScaling";
 import type { EliteKind } from "./EliteCadence";
 export type { EliteKind } from "./EliteCadence";
@@ -141,13 +147,13 @@ export type BroodWardenPhase =
 export type RiftStalkerPhase =
   | "entrance" | "cloak" | "mark" | "warp" | "pounce"
   | "slash-windup" | "slash" | "recovery";
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "infected-survivor" | "corrupted-marine" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "infected-survivor" | "corrupted-marine" | "abomination" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit";
 export type SupplyChestVariant = "sealed" | "armored";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
 export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat" | "supply-chest";
 
-export type TerrainDamageSource = "player-projectile" | "player-melee" | "mini-boss-charge" | "mini-boss-impact";
+export type TerrainDamageSource = "player-projectile" | "player-melee" | "mini-boss-charge" | "mini-boss-impact" | "enemy-slam";
 
 export interface TerrainSnapshot {
   id: string;
@@ -220,6 +226,8 @@ export type CombatEvent =
   | { type: "corrupted-marine-warning"; position: Vector2Data; target: Vector2Data; enemyId: number }
   | { type: "corrupted-marine-knife-fired"; position: Vector2Data; direction: Vector2Data; enemyId: number }
   | { type: "corrupted-marine-knife-impact"; position: Vector2Data; reason: "player" | "cover" | "expired"; damage: number; enemyId: number }
+  | { type: "abomination-slam-warning"; position: Vector2Data; target: Vector2Data; radiusMetres: number; enemyId: number }
+  | { type: "abomination-slam-impact"; position: Vector2Data; radiusMetres: number; damage: number; hitPlayer: boolean; enemyId: number }
   | { type: "rift-stalker-mark"; position: Vector2Data; target: Vector2Data }
   | { type: "rift-stalker-warp-out"; position: Vector2Data }
   | { type: "rift-stalker-pounce"; position: Vector2Data; radiusMetres: number; hitPlayer: boolean }
@@ -294,6 +302,8 @@ export interface EnemySnapshot {
   survivorVelocity?: Vector2Data;
   corruptedMarinePhase?: CorruptedMarinePhase;
   corruptedMarineTarget?: Vector2Data;
+  abominationPhase?: AbominationPhase;
+  abominationTarget?: Vector2Data;
   warpPhase?: WarpFlankerPhase;
   warpTarget?: Vector2Data;
   ripperPhase?: RipperPhase;
@@ -528,6 +538,7 @@ interface EnemyState {
   corruptedMarinePhase: CorruptedMarinePhase;
   corruptedMarinePhaseRemainingSeconds: number;
   corruptedMarineTarget: Vector2Data;
+  abominationBehavior: AbominationBehaviorState;
   warpPhase: WarpFlankerPhase;
   warpPhaseRemainingSeconds: number;
   warpTarget: Vector2Data;
@@ -762,6 +773,9 @@ export const CORRUPTED_MARINE_KNIFE_DAMAGE = 1.8;
 export const CORRUPTED_MARINE_RECOVERY_SECONDS = 0.65;
 export const CORRUPTED_MARINE_COOLDOWN_SECONDS = 2.8;
 const CORRUPTED_MARINE_RANGE_METRES = 11;
+export const ABOMINATION_SLAM_RADIUS_METRES = 1.55;
+export const ABOMINATION_SLAM_DAMAGE = 2.6;
+export const ABOMINATION_SLAM_TERRAIN_DAMAGE = 5;
 export const SPINEWHEEL_BASE_ROLL_SPEED = 7;
 export const SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER = 0.85;
 export const SPINEWHEEL_MAX_REBOUNDS = 2;
@@ -1040,6 +1054,8 @@ export class CombatSimulation {
       this.populateInfectedSurvivorScenario();
     } else if (this.scenario === "corrupted-marine") {
       this.populateCorruptedMarineScenario();
+    } else if (this.scenario === "abomination") {
+      this.populateAbominationScenario();
     } else if (this.scenario === "ripper") {
       this.populateRipperScenario();
     } else if (this.scenario === "razor-scuttler") {
@@ -1212,6 +1228,7 @@ export class CombatSimulation {
       corruptedMarinePhase: "positioning",
       corruptedMarinePhaseRemainingSeconds: type === "corrupted-marine" ? 0.55 + (id % 2) * 0.2 : 0,
       corruptedMarineTarget: { ...this.playerPosition },
+      abominationBehavior: createAbominationBehavior(),
       warpPhase: "stalk",
       warpPhaseRemainingSeconds: type === "warp-flanker" ? 1.2 : 0,
       warpTarget: { x: 0, y: 0 },
@@ -2945,6 +2962,9 @@ export class CombatSimulation {
         case "corrupted-marine":
           this.updateCorruptedMarine(enemy, deltaSeconds);
           break;
+        case "abomination":
+          this.updateAbomination(enemy, deltaSeconds);
+          break;
         case "egg-cluster":
           this.updateEggCluster(enemy, deltaSeconds);
           break;
@@ -3176,6 +3196,62 @@ export class CombatSimulation {
       direction: { ...direction },
       enemyId: enemy.id,
     });
+  }
+
+  private updateAbomination(enemy: EnemyState, deltaSeconds: number): void {
+    const towardPlayer = normalizeVector({
+      x: this.playerPosition.x - enemy.position.x,
+      y: this.playerPosition.y - enemy.position.y,
+    });
+    enemy.facingDirection = towardPlayer;
+    const previousPhase = enemy.abominationBehavior.phase;
+    const result = stepAbominationBehavior(
+      enemy.abominationBehavior,
+      deltaSeconds,
+      distance(enemy.position, this.playerPosition),
+      this.playerPosition,
+    );
+    enemy.abominationBehavior = result.state;
+    if (previousPhase === "shamble" && result.state.phase === "slam-windup" && result.state.lockedTarget) {
+      this.frameEvents.push({
+        type: "abomination-slam-warning",
+        position: { ...enemy.position },
+        target: { ...result.state.lockedTarget },
+        radiusMetres: ABOMINATION_SLAM_RADIUS_METRES,
+        enemyId: enemy.id,
+      });
+    }
+    if (result.slamTriggered && result.state.lockedTarget) {
+      const hitPlayer = distance(this.playerPosition, result.state.lockedTarget)
+        <= ABOMINATION_SLAM_RADIUS_METRES + PLAYER_RADIUS_METRES;
+      const damage = hitPlayer ? this.scaledEnemyDamage(enemy, ABOMINATION_SLAM_DAMAGE) : 0;
+      if (hitPlayer) this.damagePlayer(damage);
+      for (const obstacle of this.activeObstacles()) {
+        const closest = {
+          x: Math.max(obstacle.x, Math.min(result.state.lockedTarget.x, obstacle.x + obstacle.width)),
+          y: Math.max(obstacle.y, Math.min(result.state.lockedTarget.y, obstacle.y + obstacle.height)),
+        };
+        if (distance(closest, result.state.lockedTarget) <= ABOMINATION_SLAM_RADIUS_METRES) {
+          this.damageObstacle(obstacle.id, ABOMINATION_SLAM_TERRAIN_DAMAGE, closest, "enemy-slam");
+        }
+      }
+      this.frameEvents.push({
+        type: "abomination-slam-impact",
+        position: { ...result.state.lockedTarget },
+        radiusMetres: ABOMINATION_SLAM_RADIUS_METRES,
+        damage,
+        hitPlayer,
+        enemyId: enemy.id,
+      });
+    }
+    if (result.movementScale > 0) {
+      this.moveEnemy(
+        enemy,
+        towardPlayer,
+        ENEMY_CATALOG.abomination.movementSpeedMetresPerSecond * result.movementScale,
+        deltaSeconds,
+      );
+    }
   }
 
   private updateAurumHoarder(enemy: EnemyState, deltaSeconds: number): void {
@@ -5708,6 +5784,13 @@ export class CombatSimulation {
     this.spawnEnemy("corrupted-marine", { x: centre.x + 7.2, y: centre.y + 3.4 });
   }
 
+  private populateAbominationScenario(): void {
+    const centre = { ...this.playerPosition };
+    this.spawnEnemy("abomination", { x: centre.x - 2.1, y: centre.y });
+    this.spawnEnemy("infected-survivor", { x: centre.x + 6.5, y: centre.y - 3.2 });
+    this.spawnEnemy("corrupted-marine", { x: centre.x + 7.5, y: centre.y + 3.4 });
+  }
+
   private populateRipperScenario(): void {
     const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
     this.spawnEnemy("ripper", { x: centre.x + 4.5, y: centre.y - 2.5 });
@@ -5836,6 +5919,10 @@ export class CombatSimulation {
         : undefined,
       corruptedMarineTarget: enemy.type === "corrupted-marine"
         ? { ...enemy.corruptedMarineTarget }
+        : undefined,
+      abominationPhase: enemy.type === "abomination" ? enemy.abominationBehavior.phase : undefined,
+      abominationTarget: enemy.type === "abomination" && enemy.abominationBehavior.lockedTarget
+        ? { ...enemy.abominationBehavior.lockedTarget }
         : undefined,
       warpPhase: enemy.type === "warp-flanker" ? enemy.warpPhase : undefined,
       warpTarget: enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup"

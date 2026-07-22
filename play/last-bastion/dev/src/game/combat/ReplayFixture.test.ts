@@ -4,6 +4,7 @@ import {
   REPLAY_FORMAT_VERSION,
   SIMULATION_COMPATIBILITY_VERSION,
   runCombatReplay,
+  runCombatReplaySequence,
   type CombatReplayFixture,
 } from "./ReplayFixture";
 import { generateExpeditionMap } from "../expedition/ExpeditionMap";
@@ -72,5 +73,32 @@ describe("versioned fixed-step replay fixture", () => {
     const second = runCombatReplay(expeditionFixture);
     expect(first.snapshot.totalWaves).toBe(encounter.waves.length);
     expect(first.digest).toBe(second.digest);
+  });
+
+  it("guards a longer ordered expedition encounter chain", () => {
+    const map = generateExpeditionMap(88421);
+    const nodes = map.nodes.filter((node) => node.type === "combat" || node.type === "elite").slice(0, 3);
+    expect(nodes).toHaveLength(3);
+    const fixtures = nodes.map((node, index): CombatReplayFixture => {
+      const encounter = expeditionEncounterForNode(map.seed, node);
+      return {
+        ...FIXTURE,
+        seed: encounter.seed,
+        scenario: "density-capacity",
+        expeditionEncounter: encounter,
+        inputSpans: [
+          { frames: 180, move: { x: index % 2 === 0 ? 1 : -1, y: 0 }, aim: { x: 0, y: -1 }, fireHeld: true },
+          { frames: 60, move: { x: 0, y: 1 }, aim: { x: 1, y: 0 }, fireHeld: true },
+        ],
+      };
+    });
+    const first = runCombatReplaySequence(fixtures);
+    const second = runCombatReplaySequence(fixtures);
+    expect(first).toEqual(second);
+    expect(first.encountersRun).toBe(3);
+    expect(first.framesRun).toBe(720);
+    expect(first.digest).toBe("592fb73a");
+    expect(runCombatReplaySequence([...fixtures].reverse()).digest).not.toBe(first.digest);
+    expect(() => runCombatReplaySequence([])).toThrow("at least one encounter");
   });
 });

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { createRunSummary } from "../run/RunSummary";
 import { DEFAULT_SAVE } from "../save/LocalSaveStore";
 import { achievementUnlockEvents } from "./PlatformProgress";
 
@@ -13,8 +14,18 @@ describe("platform achievement events", () => {
 
   it("keeps expedition victory distinct from ordinary victory", () => {
     const progress = { ...DEFAULT_SAVE.progress, runsFinished: 1, victories: 1 };
-    const summary = { mode: "expedition", outcome: "victory" } as const;
-    expect(achievementUnlockEvents(DEFAULT_SAVE.progress, progress, summary).map((event) => event.id))
-      .toContain("expedition-victory");
+    const summary = createRunSummary({
+      mode: "expedition", outcome: "victory", heroId: "marine", perkId: null,
+      waveReached: 10, nodesCleared: 6, kills: 100, scrapEarned: 20, scrapBanked: 20,
+      level: 5, damageByWeapon: {}, weapons: [], upgrades: [],
+    });
+    const firstEvents = achievementUnlockEvents(DEFAULT_SAVE.progress, progress, summary);
+    expect(firstEvents.map((event) => event.id)).toContain("expedition-victory");
+    expect(achievementUnlockEvents(
+      DEFAULT_SAVE.progress,
+      progress,
+      summary,
+      firstEvents.map((event) => event.id),
+    )).toEqual([]);
   });
 });

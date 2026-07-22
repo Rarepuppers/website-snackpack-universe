@@ -32,6 +32,13 @@ export interface ReplayResult {
   readonly snapshot: CombatSnapshot;
 }
 
+export interface ReplaySequenceResult {
+  readonly encountersRun: number;
+  readonly framesRun: number;
+  readonly digest: string;
+  readonly encounterDigests: readonly string[];
+}
+
 const NEUTRAL: PlayerIntent = {
   move: { x: 0, y: 0 }, aim: { x: 1, y: 0 }, fireHeld: false,
   toggleFireModePressed: false, evasiveMovePressed: false, interactPressed: false,
@@ -67,6 +74,23 @@ export function runCombatReplay(fixture: CombatReplayFixture): ReplayResult {
   return { framesRun, digest: replaySnapshotDigest(snapshot, fixture.seed), snapshot };
 }
 
+/** Runs an ordered set of encounter fixtures and fingerprints their order as well as each result. */
+export function runCombatReplaySequence(fixtures: readonly CombatReplayFixture[]): ReplaySequenceResult {
+  if (fixtures.length === 0) throw new Error("Replay sequence requires at least one encounter");
+  const results = fixtures.map(runCombatReplay);
+  const encounterDigests = results.map((result) => result.digest);
+  return {
+    encountersRun: results.length,
+    framesRun: results.reduce((total, result) => total + result.framesRun, 0),
+    digest: fnvDigest(JSON.stringify(fixtures.map((fixture, index) => ({
+      seed: fixture.seed,
+      encounterSeed: fixture.expeditionEncounter?.seed ?? null,
+      digest: encounterDigests[index],
+    })))),
+    encounterDigests,
+  };
+}
+
 export function validateReplayFixture(fixture: CombatReplayFixture): void {
   if (fixture.formatVersion !== REPLAY_FORMAT_VERSION) throw new Error(`Unsupported replay format ${fixture.formatVersion}`);
   if (fixture.simulationVersion !== SIMULATION_COMPATIBILITY_VERSION) throw new Error(`Unsupported simulation version ${fixture.simulationVersion}`);
@@ -93,9 +117,13 @@ export function replaySnapshotDigest(snapshot: CombatSnapshot, seed = 0): string
       projectile.id, projectile.weaponId, round(projectile.position.x), round(projectile.position.y), round(projectile.rotationRadians),
     ]),
   });
+  return fnvDigest(canonical);
+}
+
+function fnvDigest(value: string): string {
   let hash = 0x811c9dc5;
-  for (let index = 0; index < canonical.length; index += 1) {
-    hash ^= canonical.charCodeAt(index);
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
     hash = Math.imul(hash, 0x01000193);
   }
   return (hash >>> 0).toString(16).padStart(8, "0");

@@ -5,9 +5,12 @@
 ```powershell
 npm.cmd run dev
 npm.cmd run verify
+npm.cmd run offline
 ```
 
 The production build is emitted to the parent `/play/last-bastion/` route.
+
+`npm.cmd run offline` audits that built route for remote startup dependencies and verifies every referenced local game asset. Run it after `npm.cmd run build`; the full `verify` command already includes both steps.
 
 ## Control remapping
 
@@ -20,6 +23,7 @@ Gameplay bindings can be remapped under **Main Menu → Settings → Control bin
 - `/play/last-bastion/?scenario=batch-j&rims=1` — Task 56 actor-rim and projectile-halo A/B lab (`rims=0` is the control; add `flash=0` for reduced-flash feedback)
 - `/play/last-bastion/?scenario=infected-survivor&loadout=vertical` — Task 58 sprint-stamina, acceleration, and pack-steering lab (Batch M survivor art)
 - `/play/last-bastion/?scenario=corrupted-marine&loadout=vertical` — Task 59 locked knife telegraph, slow projectile, cover/player impact, and cooldown lab
+- `/play/last-bastion/?scenario=abomination&loadout=vertical` — Task 62 locked slam marker, committed hit/dodge geometry, terrain damage, vulnerable recovery, and complete Batch M family lab
 - `/play/last-bastion/?screen=map` — the tuned playable 20-node expedition (Tasks 38–39, 48–49): selecting a route autosaves a pending node and deploys into depth-budgeted multi-wave Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, or Bastion Eater encounters; every route crosses two campaign shops, and final victory commits the carried build and returns to the map. `&mapseed=N` reviews a deterministic fresh chart
 - `/play/last-bastion/?screen=summary&summarydemo=1` — deterministic populated Task 50 run-summary review without changing the local save
 - `/play/last-bastion/?screen=game&autofire=0` — Task 53 Manual-fire HUD/input review (`autofire=1` restores the default; both persist)
@@ -104,6 +108,9 @@ the codex and the game's future character-select/shop screens.
 - `rendering/` maps portable state to Phaser presentation.
 - `ui/` owns the camera-safe HUD and run-state panels.
 - `equipment/WeaponInventory.ts` owns the portable weapon-tile contract: typed rack legality, four-slot stash placement, non-destructive swaps, discard, and identical same-tier merges capped at Tier III. Combat snapshots expose this state so a future Steam client can replace the Phaser modal without rewriting the rules.
+- `platform/PlatformProgress.ts` emits platform-neutral, retry-safe achievement unlock events; a future Steamworks adapter acknowledges IDs only after the platform accepts them.
+- `platform/CloudSavePolicy.ts` deterministically resolves save envelopes, preserves the newest preferences/active run, and merges monotonic career and bestiary fields by maxima without double-counting a replayed run.
+- `platform/PlatformAdapter.ts` is the injected Steamworks bridge for achievement acknowledgement, stats commit, and the versioned cloud slot. The browser build imports no Steam SDK package.
 - `scenes/AssetGalleryScene.ts` is the production-art validation surface.
 
 Placeholder rendering remains available as a comparison tool, but styled production-test art is the default renderer.
