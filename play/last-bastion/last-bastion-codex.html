@@ -523,19 +523,19 @@ const MONSTERS = [
     text: "Production Batch T live. Locks a placement point for 0.85s, lays a destructible nine-health egg, then remains exposed for 1.4s. Pods reserve all three future slots/threat; offspring never chain-spawn." },
   { id: "mon-storm-savant", name: "Storm Savant", glyph: "SS", tint: TINT.monster, status: "live", rank: "standard", tier: "Ranged",
     stats: { Health: "16", Nodes: "2 × 6 health", Tell: "1.15s / 2 hops", Damage: "2.5 chain" },
-    text: "Live behavior lab. Two destructible nodes lock fixed ladder-shaped rails; cover clips the chain and node destruction cancels it. Survive or interrupt the tell, then punish its 1.7-second overload collapse." },
+    text: "Production Batch U body, conductive nodes, and non-lightning effects are live. Two destructible nodes lock fixed ladder-shaped rails; cover clips the code-owned chain and node destruction cancels it." },
   { id: "mon-scrap-skitterer", name: "Scrap Skitterer", glyph: "SK", tint: TINT.monster, status: "live", rank: "standard", tier: "Rush",
     stats: { Health: "4", Weakness: "Shock ×1.5", Attack: "0.55s tell / 0.65s rush", Hazard: "harmless 1.8s wreck" },
-    text: "Live eight-unit behavior lab. It locks one acceleration lane, rushes without retargeting, and brakes on player, cover, or miss. The visible wreck cannot damage or slow the player." },
+    text: "Production Batch V body and effects are live. It locks one code-owned acceleration lane, rushes without retargeting, and brakes on player, cover, or miss. The visible wreck cannot damage or slow the player." },
   { id: "mon-arc-warden", name: "Arc Warden", glyph: "AW", tint: TINT.monster, status: "live", rank: "standard", tier: "Ranged",
     stats: { Health: "12 / Armour 2", Weakness: "Shock ×1.5", Attack: "1.05s fixed beam", Recovery: "0.85s" },
-    text: "Live two-unit behavior lab. Charges one narrow locked lane, stops at first cover, discharges once, then remains exposed before repositioning. Full HD/4K presentation passes and production art is authorized." },
+    text: "Production Batch W body and non-beam effects are live. It charges one narrow code-owned lane, stops at first cover, discharges once, then remains exposed before repositioning." },
   { id: "mon-cyborg-reclaimer", name: "Cyborg Reclaimer", glyph: "CR", tint: TINT.monster, status: "live", rank: "standard", tier: "Support",
     stats: { Patches: "3 × 4 health", Link: "1 active", Channel: "1.25s interruptible", Range: "6.5m / break 7.5m" },
-    text: "Live mixed-machine behavior lab. Locks the most damaged eligible ordinary machine through one encounter-wide tether; damage or range breaks interrupt, and it cannot repair itself, Reclaimers, mini-bosses, or bosses. Production art is authorized." },
+    text: "Production Batch X body and local repair effects are live. It locks the most damaged eligible ordinary machine through one code-owned encounter-wide tether; damage or range breaks interrupt, and forbidden targets remain excluded." },
   { id: "mon-foundry-fabricator", name: "Foundry Fabricator", glyph: "FF", tint: TINT.monster, status: "live", rank: "standard", tier: "Summoner",
     stats: { Charges: "3", Children: "2 live max", Channel: "1.6s / pad 6 health", Lifetimes: "drone 12s / turret 16s" },
-    text: "Live mixed-machine behavior lab. Drones reserve one slot/two threat and turrets one slot/three threat before the interruptible pad starts. Children cannot fabricate, owned units power down on owner exit, and turrets use a fixed code-native warning lane blocked by cover. Production art is authorized." },
+    text: "Production Batch Y Fabricator, pad, drone, turret, and local effects are live. Reservations, interruptions, child lifetimes, and the cover-blocked turret warning lane remain code-owned." },
 
   { id: "mon-aurum-hoarder", name: "Aurum Hoarder", glyph: "◆", tint: TINT.treasure, status: "live", rank: "treasure", tier: "Optional",
     stats: { Health: "4–6× same-wave common", Armour: "moderate / breakable", Speed: "catchable flee", Damage: "negligible", Reward: "Scrap + supply cache" },
@@ -574,7 +574,7 @@ const MONSTERS = [
     text: "Production-art cloaked hunter with a marked warp pounce, rift-spike fan, close slash, and chained-warp frenzy below 20%." },
   { id: "mon-synapse-herald", name: "Synapse Herald", glyph: "SH", tint: TINT.boss, status: "live", rank: "mini-boss", tier: "Telegraph",
     stats: { Health: "560", Armour: "2 flat", Moves: "3 locked", Pool: "acceptance hold", Reward: "guaranteed" },
-    text: "Three marked zones, a two-step lunge that gains one final-frenzy step, and a breakable four-second link to one ordinary Brain Blob. Production art is authorized; random-pool promotion awaits silhouette and fight-duration acceptance." },
+    text: "Production Batch Z body, local effects, and portrait are live. Three marked zones, a two-step lunge that gains one final-frenzy step, and a breakable four-second link to one ordinary Brain Blob remain simulation-owned; random-pool promotion awaits mixed silhouette and fight-duration acceptance." },
   { id: "mon-assembly-prime", name: "Assembly Prime", glyph: "AP", tint: TINT.boss, status: "live", rank: "mini-boss", tier: "Summoner",
     stats: { Health: "720", Reduction: "3 flat", Boundary: "live lab", Pool: "blocked" },
     text: "Three warned rotating lanes, three interruptible Foundry-compatible fabrications, and one same-entity drone recall are live. Full HD/4K presentation passes and production art is authorized; pool promotion awaits production silhouette and fight-duration acceptance." },
@@ -1071,12 +1071,12 @@ function render() {
       <tr><td><b>Corrupted Marine knife lifecycle</b></td><td>${badge("live")}</td><td>Locked tell, slow visible knife, cover/player/expiry telemetry, recovery and cooldown are live in the Batch M behavior lab</td></tr>
       <tr><td><b>Accessibility/display gate</b></td><td>${badge("live")}</td><td>Title-safe Full HD/4K HUD, focus-loss pause, reduced flash, shape-coded tells, priority-aware combat text, and persisted per-action keyboard/controller remapping with binding-aware help and HUD labels</td></tr>
       <tr><td><b>Corrupted Human family</b></td><td>${badge("live")}</td><td>Survivor, Marine, Abomination, mixed-wave, off-screen warnings, and conservative budget-neutral normal/expedition promotion are live</td></tr>
-      <tr><td><b>Production audio Batch S</b></td><td>${badge("designed")}</td><td>S1 preflight and validator are live: eight stable weapon families, 24 exact stems, playback limits, WAV/peak/duration checks, and rotary seam enforcement; recording and sample binding are next</td></tr>
+      <tr><td><b>Production audio Batch S</b></td><td>${badge("live")}</td><td>S1 ships 24 validated 48 kHz/24-bit masters plus OGG/MP3 derivatives across all eight weapon families, including cancellation-safe Bulwark start/loop/end playback</td></tr>
       <tr><td><b>Steam readiness foundations</b></td><td>${badge("live")}</td><td>Chained 1/60 replay fixtures, offline-build audit, retry-safe achievements, deterministic cloud conflicts, and an injected Steamworks achievement/cloud bridge are live</td></tr>
       <tr><td><b>Nest Weaver summoner</b></td><td>${badge("live")}</td><td>Finite charges, locked placement, exposed recovery, reserved slots/threat, destructible timed pods, non-recursive hatch payload, and Batch T production body/pod/effects are live at 960×540 through 4K</td></tr>
-      <tr><td><b>Storm Savant</b></td><td>${badge("live")}</td><td>Deterministic destructible nodes, fixed two-hop rails, cover clipping, escape-lane validation, interruption, overload recovery, and Full HD route gate are live; production art is authorized</td></tr>
-      <tr><td><b>Machine uprising</b></td><td>${badge("live")}</td><td>Scrap Skitterer, Arc Warden, Cyborg Reclaimer, and finite-charge Foundry Fabricator behavior labs are live and production-authorized</td></tr>
-      <tr><td><b>Expanded mini-boss pool</b></td><td>${badge("live")}</td><td>Synapse Herald, Assembly Prime, Storm Regent, and Abomination Prime behavior/presentation labs are live and production-authorized; each pool promotion is held for mixed-resolution silhouette and 45–90s fight acceptance</td></tr>
+      <tr><td><b>Storm Savant</b></td><td>${badge("live")}</td><td>Deterministic destructible nodes, fixed two-hop rails, cover clipping, interruption, overload recovery, and Batch U production body/node/effects are live</td></tr>
+      <tr><td><b>Machine uprising</b></td><td>${badge("live")}</td><td>Batches V/W/X/Y complete the full production family; mixed live combat passes at 960×540, Full HD, and 4K with distinct roles, readable pads/children, and clear code-native tether/lane origins</td></tr>
+      <tr><td><b>Expanded mini-boss pool</b></td><td>${badge("live")}</td><td>Standard-enemy silhouette prerequisite passed and Synapse Herald Batch Z production art is live; Assembly Prime, Storm Regent, and Abomination Prime follow. Pool promotion still requires mixed-wave silhouette and 45–90s fight acceptance</td></tr>
       <tr><td><b>Sector campaign</b></td><td>${badge("concept")}</td><td>Multiple faction-owned sector maps after the first expedition is proven</td></tr>
       </tbody></table></div>`;
   }

@@ -15,6 +15,26 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "z") {
+      this.createBatchZGallery();
+      return;
+    }
+    if (batch === "y") {
+      this.createBatchYGallery();
+      return;
+    }
+    if (batch === "x") {
+      this.createBatchXGallery();
+      return;
+    }
+    if (batch === "w") {
+      this.createBatchWGallery();
+      return;
+    }
+    if (batch === "v") {
+      this.createBatchVGallery();
+      return;
+    }
     if (batch === "t") {
       this.createBatchTGallery();
       return;
@@ -546,6 +566,31 @@ export class AssetGalleryScene extends Phaser.Scene {
     this.add.text(480, 518, "Review: ?mode=gallery&batch=o • Encounter: ?scenario=rift-stalker&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
+  private createBatchZGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - SYNAPSE HERALD PRODUCTION ASSET BATCH Z", style("#ffffff", "17px"));
+    this.add.text(20, 38, "49 runtime visuals - body/effects/portrait only; paths, zones, links, damage, and timing remain code-owned", style("#8fb2c9", "10px"));
+
+    this.add.text(20, 64, "BODY - entrance / orbit A+B / lunge tell+commit / zones / link / recovery / hurt / defeat x DOWN LEFT RIGHT UP", style("#e5a4ff", "9px"));
+    for (let frame = 0; frame < 40; frame += 1) {
+      const x = 42 + (frame % 10) * 89;
+      const y = 132 + Math.floor(frame / 10) * 88;
+      this.add.sprite(x, y, "synapse-herald-v1", frame).setScale(0.34).setOrigin(0.5, 0.92);
+      this.drawPivot(x, y);
+      this.add.text(x, y + 20, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+
+    this.add.text(20, 422, "LOCAL EFFECTS - lunge origin / zone eruption / link lock / link break x onset+dissipate", style("#68e4e8", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 42 + frame * 82;
+      this.add.sprite(x, 468, "synapse-herald-effects-v1", frame).setScale(0.5);
+      this.drawPivot(x, 468);
+      this.add.text(x, 498, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.image(852, 466, "synapse-herald-portrait-v1").setScale(0.27);
+    this.add.text(852, 519, "PORTRAIT", style("#e5a4ff", "8px")).setOrigin(0.5);
+    this.add.text(480, 532, "?mode=gallery&batch=z - ?scenario=synapse-herald&loadout=vertical", style("#8fb2c9", "9px")).setOrigin(0.5);
+  }
+
   private createBatchQGallery(): void {
     this.add.text(20, 14, "LAST BASTION — SHOPKEEPER PRODUCTION ASSET BATCH Q", style("#ffffff", "17px"));
     this.add.text(20, 38, "Quartermaster presentation gate • 6 transparent runtime frames • 1536 px retained chroma/alpha masters", style("#8fb2c9", "11px"));
@@ -980,6 +1025,95 @@ export class AssetGalleryScene extends Phaser.Scene {
       this.add.text(x, y + 48, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
     }
     this.add.text(480, 526, "Review: ?mode=gallery&batch=t • Live lab: ?scenario=nest-weaver&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchVGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - BATCH V SCRAP SKITTERER PRODUCTION", style("#ffffff", "17px"));
+    this.add.text(20, 38, "32 directional behavior frames + eight restrained event effects", style("#ffd36b", "11px"));
+    this.add.text(20, 62, "BODY  columns: down / left / right / up", style("#68e4e8", "9px"));
+    this.add.text(20, 76, "rows: idle / scuttle / acceleration / rush / brake / hurt / wreck", style("#b7c9d8", "8px"));
+    for (let frame = 0; frame < 32; frame += 1) {
+      const x = 62 + (frame % 4) * 96;
+      const y = 102 + Math.floor(frame / 4) * 50;
+      this.add.sprite(x, y, "machine-scrap-skitterer-v1", frame).setScale(0.42);
+      this.add.text(x + 26, y + 15, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.text(440, 64, "EFFECTS  acceleration / wake / impact / wreck", style("#ffd36b", "10px"));
+    this.add.text(440, 78, "onset above dissipate", style("#b7c9d8", "8px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 490 + (frame % 4) * 115;
+      const y = 148 + Math.floor(frame / 4) * 130;
+      this.add.sprite(x, y, "machine-scrap-skitterer-effects-v1", frame).setScale(0.7);
+      this.add.text(x, y + 52, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(480, 526, "Review: ?mode=gallery&batch=v • Live lab: ?scenario=scrap-skitterer&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchWGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - BATCH W ARC WARDEN PRODUCTION", style("#ffffff", "17px"));
+    this.add.text(20, 38, "32 directional behavior frames + eight fixed-lane event effects", style("#8de7ff", "11px"));
+    this.add.text(20, 62, "BODY  columns: down / left / right / up", style("#68e4e8", "9px"));
+    this.add.text(20, 76, "rows: idle / stride / charge / recoil / recovery / hurt / shutdown", style("#b7c9d8", "8px"));
+    for (let frame = 0; frame < 32; frame += 1) {
+      const x = 62 + (frame % 4) * 96;
+      const y = 102 + Math.floor(frame / 4) * 50;
+      this.add.sprite(x, y, "machine-arc-warden-v1", frame).setScale(0.42);
+      this.add.text(x + 26, y + 15, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.text(440, 64, "EFFECTS  charge / origin / impact / vent", style("#ffcf7a", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 490 + (frame % 4) * 115;
+      const y = 148 + Math.floor(frame / 4) * 130;
+      this.add.sprite(x, y, "machine-arc-warden-effects-v1", frame).setScale(0.7);
+      this.add.text(x, y + 52, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(480, 526, "Review: ?mode=gallery&batch=w • Live lab: ?scenario=arc-warden&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchXGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - BATCH X CYBORG RECLAIMER PRODUCTION", style("#ffffff", "17px"));
+    this.add.text(20, 38, "36 directional behavior frames + eight repair event effects", style("#8ff0ae", "11px"));
+    this.add.text(20, 62, "BODY  columns: down / left / right / up", style("#68e4e8", "9px"));
+    this.add.text(20, 76, "rows: idle / stride / acquire / channel / interrupt / recovery / hurt / defeat", style("#b7c9d8", "8px"));
+    for (let frame = 0; frame < 36; frame += 1) {
+      const x = 62 + (frame % 4) * 96;
+      const y = 100 + Math.floor(frame / 4) * 47;
+      this.add.sprite(x, y, "machine-cyborg-reclaimer-v1", frame).setScale(0.25);
+      this.add.text(x + 27, y + 15, String(frame), style("#728ba1", "7px")).setOrigin(0.5);
+    }
+    this.add.text(440, 64, "EFFECTS  lock / repair / interrupt / vent", style("#ffcf7a", "10px"));
+    this.add.text(440, 78, "onset above dissipate", style("#b7c9d8", "8px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 490 + (frame % 4) * 115;
+      const y = 148 + Math.floor(frame / 4) * 130;
+      this.add.sprite(x, y, "machine-cyborg-reclaimer-effects-v1", frame).setScale(0.7);
+      this.add.text(x, y + 52, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(480, 526, "Review: ?mode=gallery&batch=x • Live lab: ?scenario=cyborg-reclaimer&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createBatchYGallery(): void {
+    this.add.text(20, 14, "LAST BASTION - BATCH Y FOUNDRY FAMILY PRODUCTION", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Fabricator / pad / drone / turret / local event effects", style("#ffb85c", "11px"));
+    this.add.text(20, 62, "FABRICATOR  4 x 9", style("#ffcf7a", "9px"));
+    for (let frame = 0; frame < 36; frame += 1) {
+      const x = 48 + (frame % 4) * 78;
+      const y = 90 + Math.floor(frame / 4) * 43;
+      this.add.sprite(x, y, "machine-foundry-fabricator-v1", frame).setScale(0.22);
+    }
+    this.add.text(350, 62, "PAD  deploy / early / mid / late / disrupted / complete", style("#ffcf7a", "9px"));
+    for (let frame = 0; frame < 6; frame += 1) this.add.sprite(390 + frame * 88, 105, "machine-foundry-pad-v1", frame).setScale(0.46);
+    this.add.text(350, 154, "DRONE  4 x 7", style("#68e4e8", "9px"));
+    for (let frame = 0; frame < 28; frame += 1) {
+      this.add.sprite(390 + (frame % 4) * 72, 180 + Math.floor(frame / 4) * 42, "machine-foundry-drone-v1", frame).setScale(0.3);
+    }
+    this.add.text(665, 154, "TURRET  4 x 8", style("#68e4e8", "9px"));
+    for (let frame = 0; frame < 32; frame += 1) {
+      this.add.sprite(705 + (frame % 4) * 62, 180 + Math.floor(frame / 4) * 38, "machine-foundry-turret-v1", frame).setScale(0.27);
+    }
+    this.add.text(350, 476, "EFFECTS", style("#ffcf7a", "9px"));
+    for (let frame = 0; frame < 8; frame += 1) this.add.sprite(420 + frame * 66, 500, "machine-foundry-effects-v1", frame).setScale(0.34);
+    this.add.text(480, 530, "?mode=gallery&batch=y • ?scenario=foundry-fabricator&loadout=vertical", style("#8fb2c9", "9px")).setOrigin(0.5);
   }
 
   private createEmberfallGallery(): void {

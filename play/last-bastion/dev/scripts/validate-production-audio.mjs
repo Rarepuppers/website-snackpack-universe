@@ -1,8 +1,10 @@
 import { readFile, readdir } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 
 const batchRoot = fileURLToPath(new URL("../../audio/production/batch-s1/", import.meta.url));
+const runtimeRoot = fileURLToPath(new URL("../src/game/audio/runtime/batch-s1/", import.meta.url));
 
 export function parsePcmWav(bytes) {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
@@ -55,6 +57,7 @@ export function validateMaster(bytes, asset, sourceFormat) {
     errors.push(`duration ${durationMs.toFixed(1)} ms outside ${asset.durationMs[0]}–${asset.durationMs[1]} ms`);
   }
   let peak = 0;
+  let edgePeak = 0;
   let seam = 0;
   if (wav.audioFormat === 1 && wav.bitDepth === 24) {
     const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
@@ -72,6 +75,10 @@ export function validateMaster(bytes, asset, sourceFormat) {
         last = sample;
       }
       peak = Math.max(peak, Math.abs(sample));
+      const frameIndex = Math.floor(sampleIndex / wav.channels);
+      if (frameIndex < wav.sampleRateHz * 0.003 || frameIndex >= wav.frameCount - wav.sampleRateHz * 0.003) {
+        edgePeak = Math.max(edgePeak, Math.abs(sample));
+      }
     }
     if (asset.seamlessLoop && wav.channels === 1 && wav.frameCount >= 3) {
       const valueJump = Math.abs(last - first);
@@ -85,7 +92,11 @@ export function validateMaster(bytes, asset, sourceFormat) {
   if (peakDbfs > sourceFormat.maximumPeakDbfs) {
     errors.push(`sample peak ${peakDbfs.toFixed(2)} dBFS exceeds ${sourceFormat.maximumPeakDbfs} dBFS`);
   }
-  return { errors, durationMs, peakDbfs, seamDbfs: asset.seamlessLoop ? amplitudeDbfs(seam) : null };
+  const edgePeakDbfs = amplitudeDbfs(edgePeak);
+  if (!asset.seamlessLoop && edgePeakDbfs > -36) {
+    errors.push(`3 ms edge peak ${edgePeakDbfs.toFixed(1)} dBFS exceeds -36 dBFS`);
+  }
+  return { errors, durationMs, peakDbfs, edgePeakDbfs, seamDbfs: asset.seamlessLoop ? amplitudeDbfs(seam) : null };
 }
 
 function amplitudeDbfs(amplitude) {
@@ -101,6 +112,7 @@ async function main() {
   const existing = new Set(await readdir(mastersDir).catch(() => []));
   const failures = [];
   const missing = [];
+  const contentHashes = new Map();
   for (const asset of expected) {
     const filename = `${asset.fileStem}.wav`;
     if (!existing.has(filename)) {
@@ -110,6 +122,10 @@ async function main() {
     try {
       const bytes = await readFile(path.join(mastersDir, filename));
       const result = validateMaster(bytes, asset, manifest.sourceFormat);
+      const hash = createHash("sha256").update(bytes).digest("hex");
+      const duplicate = contentHashes.get(hash);
+      if (duplicate) result.errors.push(`audio-identical to ${duplicate}`);
+      else contentHashes.set(hash, filename);
       if (result.errors.length) failures.push(`${filename}: ${result.errors.join("; ")}`);
       else console.log(`PASS ${filename}  ${result.durationMs.toFixed(1)} ms  ${result.peakDbfs.toFixed(2)} dBFS`);
     } catch (error) {
@@ -118,6 +134,22 @@ async function main() {
   }
   const unexpectedWavs = [...existing].filter((name) => name.toLowerCase().endsWith(".wav") && !expected.some((asset) => `${asset.fileStem}.wav` === name));
   if (unexpectedWavs.length) failures.push(`unexpected WAV files: ${unexpectedWavs.join(", ")}`);
+  if (!process.argv.includes("--masters-only")) {
+    for (const asset of expected) {
+      for (const extension of ["ogg", "mp3"]) {
+        const filename = `${asset.fileStem}.${extension}`;
+        try {
+          const bytes = await readFile(path.join(runtimeRoot, filename));
+          const validMagic = extension === "ogg"
+            ? bytes.subarray(0, 4).toString("ascii") === "OggS"
+            : bytes.subarray(0, 3).toString("ascii") === "ID3" || (bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0);
+          if (!validMagic || bytes.byteLength < 512) failures.push(`${filename}: malformed or empty runtime derivative`);
+        } catch {
+          failures.push(`${filename}: missing runtime derivative`);
+        }
+      }
+    }
+  }
   if (missing.length) console.log(`MISSING ${missing.length}/${expected.length}: ${missing.join(", ")}`);
   if (failures.length) {
     for (const failure of failures) console.error(`FAIL ${failure}`);

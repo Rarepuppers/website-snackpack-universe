@@ -800,6 +800,8 @@ export class PrototypeScene extends Phaser.Scene {
         case "enemy-spawned":
           if (event.enemyType === "ripper") {
             this.emitAuthoredEffect(5, event.position, 260, 0.72, 1.3, 0, "ripper-effects-v1");
+          } else if (event.enemyType === "storm-node") {
+            this.emitStormEffect(0, event.position, 220, 0.42, 0.84);
           } else {
             this.emitAuthoredEffect(event.enemyType === "egg-cluster" ? 12 : event.enemyType === "scuttler" ? 10 : 19, event.position, 230, 0.65, 1.25);
           }
@@ -820,6 +822,75 @@ export class PrototypeScene extends Phaser.Scene {
           break;
         case "nest-pod-destroyed":
           this.emitNestEffect(2, event.position, 320, 0.58, 1.1);
+          break;
+        case "storm-chain-warning":
+          this.emitStormEffect(1, event.position, 240, 0.46, 0.9);
+          break;
+        case "storm-chain-discharged":
+          this.emitStormEffect(2, event.position, 180, 0.52, 1.02);
+          break;
+        case "storm-chain-interrupted":
+          this.emitStormEffect(3, event.position, 320, 0.48, 0.96);
+          break;
+        case "scrap-skitterer-warning":
+          this.emitSkittererEffect(0, event.position, 190, 0.4, 0.78, Math.atan2(event.direction.y, event.direction.x));
+          break;
+        case "scrap-skitterer-rush":
+          this.emitSkittererEffect(1, event.position, 180, 0.44, 0.9, Math.atan2(event.direction.y, event.direction.x));
+          break;
+        case "scrap-skitterer-impact":
+          this.emitSkittererEffect(2, event.position, 220, 0.52, 0.98);
+          break;
+        case "scrap-skitterer-wreck":
+          this.emitSkittererEffect(3, event.position, 360, 0.42, 0.84);
+          break;
+        case "arc-warden-warning":
+          this.emitArcWardenEffect(0, event.position, 240, 0.45, 0.9);
+          break;
+        case "arc-warden-discharged":
+          this.emitArcWardenEffect(1, event.position, 170, 0.5, 1);
+          this.emitArcWardenEffect(2, event.endpoint, 210, 0.48, 0.94);
+          this.time.delayedCall(190, () => this.emitArcWardenEffect(3, event.position, 300, 0.44, 0.88));
+          break;
+        case "reclaimer-link-started":
+          this.emitReclaimerEffect(0, event.position, 240, 0.48, 0.9);
+          break;
+        case "reclaimer-repair-completed":
+          this.emitReclaimerEffect(1, event.target, 300, 0.55, 1.08);
+          this.time.delayedCall(180, () => this.emitReclaimerEffect(3, event.position, 320, 0.46, 0.9));
+          break;
+        case "reclaimer-link-interrupted":
+          this.emitReclaimerEffect(2, event.position, 260, 0.52, 1.02);
+          this.time.delayedCall(150, () => this.emitReclaimerEffect(3, event.position, 320, 0.44, 0.86));
+          break;
+        case "foundry-fabrication-started":
+          this.emitFoundryEffect(0, event.position, 280, 0.5, 0.96);
+          break;
+        case "foundry-fabrication-completed":
+          this.emitFoundryEffect(1, event.position, 340, 0.62, 1.18);
+          break;
+        case "foundry-fabrication-interrupted":
+          this.emitFoundryEffect(2, event.position, 300, 0.58, 1.12);
+          break;
+        case "foundry-turret-fired":
+          this.emitFoundryEffect(3, event.position, 190, 0.52, 0.96, Math.atan2(event.target.y - event.position.y, event.target.x - event.position.x));
+          break;
+        case "synapse-herald-warning":
+          if (event.move === "lunge-chain") {
+            this.emitSynapseHeraldEffect(0, event.position, 260, 0.5, 0.98);
+          }
+          break;
+        case "synapse-herald-lunge":
+          this.emitSynapseHeraldEffect(0, event.position, 190, 0.52, 1.04);
+          break;
+        case "synapse-herald-zones-erupted":
+          for (const zone of event.zones) this.emitSynapseHeraldEffect(1, zone, 320, 0.62, 1.2);
+          break;
+        case "synapse-herald-link-started":
+          this.emitSynapseHeraldEffect(2, event.position, 280, 0.55, 1.08);
+          break;
+        case "synapse-herald-link-broken":
+          this.emitSynapseHeraldEffect(3, event.position, 300, 0.58, 1.14);
           break;
         case "projectile-blocked":
           if (event.weaponId === "bolt-carbine") {
@@ -1150,7 +1221,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" | "corrupted-marine-effects-v1" | "nest-effects-v1" | "telegraph-small-v1" | "destructible-terrain-effects-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "synapse-herald-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" | "corrupted-marine-effects-v1" | "nest-effects-v1" | "storm-effects-v1" | "machine-scrap-skitterer-effects-v1" | "machine-arc-warden-effects-v1" | "machine-cyborg-reclaimer-effects-v1" | "machine-foundry-effects-v1" | "telegraph-small-v1" | "destructible-terrain-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -1173,6 +1244,86 @@ export class PrototypeScene extends Phaser.Scene {
     this.emitAuthoredEffect(column, position, duration, scale, targetScale, 0, "nest-effects-v1");
     this.time.delayedCall(Math.round(duration * 0.48), () => {
       this.emitAuthoredEffect(column + 4, position, Math.round(duration * 0.7), scale * 0.92, targetScale * 1.08, 0, "nest-effects-v1");
+    });
+  }
+
+  private emitSkittererEffect(
+    column: 0 | 1 | 2 | 3,
+    position: { x: number; y: number },
+    duration: number,
+    scale: number,
+    targetScale: number,
+    rotation = 0,
+  ): void {
+    this.emitAuthoredEffect(column, position, duration, scale, targetScale, rotation, "machine-scrap-skitterer-effects-v1");
+    this.time.delayedCall(Math.round(duration * 0.48), () => {
+      this.emitAuthoredEffect(column + 4, position, Math.round(duration * 0.68), scale * 0.9, targetScale * 1.04, rotation, "machine-scrap-skitterer-effects-v1");
+    });
+  }
+
+  private emitStormEffect(
+    column: 0 | 1 | 2 | 3,
+    position: { x: number; y: number },
+    duration: number,
+    scale: number,
+    targetScale: number,
+  ): void {
+    this.emitAuthoredEffect(column, position, duration, scale, targetScale, 0, "storm-effects-v1");
+    this.time.delayedCall(Math.round(duration * 0.48), () => {
+      this.emitAuthoredEffect(column + 4, position, Math.round(duration * 0.68), scale * 0.9, targetScale * 1.04, 0, "storm-effects-v1");
+    });
+  }
+
+  private emitArcWardenEffect(
+    column: 0 | 1 | 2 | 3,
+    position: { x: number; y: number },
+    duration: number,
+    scale: number,
+    targetScale: number,
+  ): void {
+    this.emitAuthoredEffect(column, position, duration, scale, targetScale, 0, "machine-arc-warden-effects-v1");
+    this.time.delayedCall(Math.round(duration * 0.48), () => {
+      this.emitAuthoredEffect(column + 4, position, Math.round(duration * 0.68), scale * 0.9, targetScale * 1.04, 0, "machine-arc-warden-effects-v1");
+    });
+  }
+
+  private emitReclaimerEffect(
+    column: 0 | 1 | 2 | 3,
+    position: { x: number; y: number },
+    duration: number,
+    scale: number,
+    targetScale: number,
+  ): void {
+    this.emitAuthoredEffect(column, position, duration, scale, targetScale, 0, "machine-cyborg-reclaimer-effects-v1");
+    this.time.delayedCall(Math.round(duration * 0.48), () => {
+      this.emitAuthoredEffect(column + 4, position, Math.round(duration * 0.68), scale * 0.9, targetScale * 1.04, 0, "machine-cyborg-reclaimer-effects-v1");
+    });
+  }
+
+  private emitFoundryEffect(
+    column: 0 | 1 | 2 | 3,
+    position: { x: number; y: number },
+    duration: number,
+    scale: number,
+    targetScale: number,
+    rotation = 0,
+  ): void {
+    this.emitAuthoredEffect(column, position, duration, scale, targetScale, rotation, "machine-foundry-effects-v1");
+    this.time.delayedCall(Math.round(duration * 0.48), () => {
+      this.emitAuthoredEffect(column + 4, position, Math.round(duration * 0.68), scale * 0.9, targetScale * 1.04, rotation, "machine-foundry-effects-v1");
+    });
+  }
+
+  private emitSynapseHeraldEffect(
+    column: 0 | 1 | 2 | 3,
+    position: { x: number; y: number },
+    duration: number,
+    scale: number,
+    targetScale: number,
+  ): void {
+    this.emitAuthoredEffect(column, position, duration, scale, targetScale, 0, "synapse-herald-effects-v1");
+    this.time.delayedCall(Math.round(duration * 0.48), () => {
+      this.emitAuthoredEffect(column + 4, position, Math.round(duration * 0.68), scale * 0.9, targetScale * 1.04, 0, "synapse-herald-effects-v1");
     });
   }
 
@@ -1393,29 +1544,48 @@ export class PrototypeScene extends Phaser.Scene {
         return this.add.triangle(0, 0, 18, 0, -12, -9, -12, 9, 0x6e54a3)
           .setStrokeStyle(2, 0x7fe7d9);
       case "storm-savant":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "storm-savant-v1");
+        }
         return this.add.triangle(0, 0, -23, -20, 28, 0, -23, 20, 0x34536f)
           .setStrokeStyle(4, 0x8de7ff);
       case "storm-node":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "storm-node-v1");
+        }
         return this.add.circle(0, 0, 14, 0x263b51).setStrokeStyle(4, 0xffe47a);
       case "scrap-skitterer":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "machine-scrap-skitterer-v1");
+        }
         return this.add.triangle(0, 0, 20, 0, -14, -11, -14, 11, 0x59636b)
           .setStrokeStyle(3, 0xffd36b);
       case "arc-warden":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "machine-arc-warden-v1");
+        }
         return this.add.rectangle(0, 0, 30, 42, 0x344754)
           .setStrokeStyle(4, 0x8de7ff);
       case "cyborg-reclaimer":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "machine-cyborg-reclaimer-v1");
+        }
         return this.add.ellipse(0, 0, 40, 48, 0x42505a)
           .setStrokeStyle(5, 0x8ff0ae);
       case "foundry-fabricator":
+        if (this.useMarineArt) return createManifestSprite(this, "machine-foundry-fabricator-v1");
         return this.add.rectangle(0, 0, 46, 50, 0x3f4650)
           .setStrokeStyle(5, 0xffb85c);
       case "foundry-pad":
+        if (this.useMarineArt) return createManifestSprite(this, "machine-foundry-pad-v1");
         return this.add.ellipse(0, 0, 44, 28, 0x4a3828)
           .setStrokeStyle(5, 0xffd36b);
       case "foundry-drone":
+        if (this.useMarineArt) return createManifestSprite(this, "machine-foundry-drone-v1");
         return this.add.triangle(0, 0, 18, 0, -13, -10, -13, 10, 0x68727c)
           .setStrokeStyle(3, 0xffb85c);
       case "foundry-turret":
+        if (this.useMarineArt) return createManifestSprite(this, "machine-foundry-turret-v1");
         return this.add.rectangle(0, 0, 30, 30, 0x4b5661)
           .setStrokeStyle(4, 0x8de7ff);
       case "blast-mite":
@@ -1501,6 +1671,9 @@ export class PrototypeScene extends Phaser.Scene {
         }
         return this.add.ellipse(0, 0, 66, 50, 0x2c2f3d).setStrokeStyle(5, 0x9a6cff);
       case "synapse-herald":
+        if (this.useMarineArt) {
+          return createManifestSprite(this, "synapse-herald-v1");
+        }
         return this.add.ellipse(0, 0, 74, 58, 0x49345f).setStrokeStyle(6, 0xe5a4ff);
       case "assembly-prime":
         return this.add.rectangle(0, 0, 82, 68, 0x35485f).setStrokeStyle(6, 0xffb84d);
@@ -1545,7 +1718,8 @@ export class PrototypeScene extends Phaser.Scene {
 
   private styleEnemyView(view: EnemyView, enemy: EnemySnapshot): void {
     if (view instanceof Phaser.GameObjects.Sprite) {
-      const batchJScale = view.texture.key === "quillback-matriarch-v1" ? 0.9
+      const batchJScale = view.texture.key === "synapse-herald-v1" ? 0.62
+        : view.texture.key === "quillback-matriarch-v1" ? 0.9
         : view.texture.key === "blightspitter-v1" ? 1.05
           : view.texture.key === "razorlord-v1" ? 1 : null;
       const eliteScale = enemy.eliteKind === "quillback-matriarch" ? 1.35 : enemy.eliteKind ? 1.18 : 1;
@@ -1846,6 +2020,86 @@ export class PrototypeScene extends Phaser.Scene {
         view.setTexture("nest-weaver-v1").setFrame(row * 4 + facingColumn).setRotation(0);
         return;
       }
+      case "storm-savant": {
+        const canonicalColumn = cardinalFacingColumn(enemy.position, {
+          x: enemy.position.x + enemy.facingDirection.x,
+          y: enemy.position.y + enemy.facingDirection.y,
+        });
+        const facingColumn = [0, 3, 2, 1][canonicalColumn] ?? 0;
+        const phase = enemy.stormPhase ?? "idle";
+        const row = phase === "tell" ? 4 : phase === "discharge" ? 5 : phase === "overload-recovery" ? 6 : 1 + ((Math.floor(this.time.now / 180) + enemy.id) % 2);
+        view.setTexture("storm-savant-v1").setFrame(row * 4 + facingColumn).setRotation(0).setScale(0.58);
+        return;
+      }
+      case "storm-node": {
+        const frame = enemy.health <= 0 ? 5 : enemy.health <= 2 ? 3 : 1 + (Math.floor(this.time.now / 180) % 2);
+        view.setTexture("storm-node-v1").setFrame(frame).setRotation(0).setScale(0.5);
+        return;
+      }
+      case "scrap-skitterer": {
+        const direction = enemy.scrapSkittererPhase === "approach"
+          ? enemy.facingDirection
+          : enemy.scrapSkittererDirection ?? enemy.facingDirection;
+        const canonicalColumn = cardinalFacingColumn(enemy.position, {
+          x: enemy.position.x + direction.x,
+          y: enemy.position.y + direction.y,
+        });
+        const facingColumn = [0, 3, 2, 1][canonicalColumn] ?? 0;
+        const phase = enemy.scrapSkittererPhase ?? "approach";
+        const row = phase === "rush-windup" ? 3 : phase === "rush" ? 4 : phase === "brake" ? 5 : 1 + ((Math.floor(this.time.now / 140) + enemy.id) % 2);
+        view.setTexture("machine-scrap-skitterer-v1").setFrame(row * 4 + facingColumn).setRotation(0).setScale(0.62);
+        return;
+      }
+      case "arc-warden": {
+        const canonicalColumn = cardinalFacingColumn(enemy.position, {
+          x: enemy.position.x + enemy.facingDirection.x,
+          y: enemy.position.y + enemy.facingDirection.y,
+        });
+        const facingColumn = [0, 3, 2, 1][canonicalColumn] ?? 0;
+        const phase = enemy.arcWardenPhase ?? "reposition";
+        const row = phase === "charge" ? 3 : phase === "discharge" ? 4 : phase === "recovery" ? 5 : 1 + ((Math.floor(this.time.now / 170) + enemy.id) % 2);
+        view.setTexture("machine-arc-warden-v1").setFrame(row * 4 + facingColumn).setRotation(0).setScale(0.58);
+        return;
+      }
+      case "cyborg-reclaimer": {
+        const canonicalColumn = cardinalFacingColumn(enemy.position, {
+          x: enemy.position.x + enemy.facingDirection.x,
+          y: enemy.position.y + enemy.facingDirection.y,
+        });
+        const facingColumn = [0, 3, 2, 1][canonicalColumn] ?? 0;
+        const phase = enemy.reclaimerPhase ?? "seeking";
+        const row = phase === "channel"
+          ? 4
+          : phase === "recovery" ? 6 : 1 + ((Math.floor(this.time.now / 190) + enemy.id) % 2);
+        view.setTexture("machine-cyborg-reclaimer-v1").setFrame(row * 4 + facingColumn).setRotation(0).setScale(0.48);
+        return;
+      }
+      case "foundry-fabricator": {
+        const canonicalColumn = cardinalFacingColumn(enemy.position, { x: enemy.position.x + enemy.facingDirection.x, y: enemy.position.y + enemy.facingDirection.y });
+        const facingColumn = [0, 3, 2, 1][canonicalColumn] ?? 0;
+        const phase = enemy.foundryPhase ?? "positioning";
+        const row = phase === "channel" ? 4 : phase === "recovery" ? 6 : 1 + ((Math.floor(this.time.now / 190) + enemy.id) % 2);
+        view.setTexture("machine-foundry-fabricator-v1").setFrame(row * 4 + facingColumn).setRotation(0).setScale(0.48);
+        return;
+      }
+      case "foundry-pad":
+        view.setTexture("machine-foundry-pad-v1").setFrame(1).setRotation(0).setScale(0.5);
+        return;
+      case "foundry-drone": {
+        const canonicalColumn = cardinalFacingColumn(enemy.position, { x: enemy.position.x + enemy.facingDirection.x, y: enemy.position.y + enemy.facingDirection.y });
+        const facingColumn = [0, 3, 2, 1][canonicalColumn] ?? 0;
+        const row = (enemy.foundryRemainingSeconds ?? 1) <= 0.5 ? 5 : 1 + ((Math.floor(this.time.now / 130) + enemy.id) % 2);
+        view.setTexture("machine-foundry-drone-v1").setFrame(row * 4 + facingColumn).setRotation(0).setScale(0.48);
+        return;
+      }
+      case "foundry-turret": {
+        const canonicalColumn = cardinalFacingColumn(enemy.position, { x: enemy.position.x + enemy.facingDirection.x, y: enemy.position.y + enemy.facingDirection.y });
+        const facingColumn = [0, 3, 2, 1][canonicalColumn] ?? 0;
+        const phase = enemy.foundryTurretPhase ?? "tracking";
+        const row = (enemy.foundryRemainingSeconds ?? 1) <= 0.5 ? 6 : phase === "warning" ? 2 : phase === "recovery" ? 4 : 1;
+        view.setTexture("machine-foundry-turret-v1").setFrame(row * 4 + facingColumn).setRotation(0).setScale(0.5);
+        return;
+      }
       case "blast-mite": {
         const facingColumn = cardinalFacingColumn(enemy.position, playerPosition);
         const row = enemy.mitePhase === "armed" ? 1 : 0;
@@ -2065,6 +2319,23 @@ export class PrototypeScene extends Phaser.Scene {
         view.setTexture("rift-stalker-v1").setFrame(row * 4 + facingColumn).setRotation(0);
         return;
       }
+      case "synapse-herald": {
+        const target = {
+          x: enemy.position.x + enemy.facingDirection.x,
+          y: enemy.position.y + enemy.facingDirection.y,
+        };
+        const canonicalColumn = cardinalFacingColumn(enemy.position, target);
+        const facingColumn = [0, 3, 2, 1][canonicalColumn] ?? 0;
+        const phase = enemy.synapseHeraldPhase ?? "entrance";
+        const move = enemy.synapseHeraldMove;
+        const row = phase === "entrance" ? 0
+          : phase === "windup" ? move === "lunge-chain" ? 3 : move === "marked-zones" ? 5 : 6
+            : phase === "action" ? move === "lunge-chain" ? 4 : move === "marked-zones" ? 5 : 6
+              : phase === "recovery" ? 7
+                : 1 + ((Math.floor(this.time.now / 180) + enemy.id) % 2);
+        view.setTexture("synapse-herald-v1").setFrame(row * 4 + facingColumn).setRotation(0);
+        return;
+      }
       default: {
         if (enemy.type === "corrupted-marine") {
           const target = {
@@ -2234,8 +2505,10 @@ export class PrototypeScene extends Phaser.Scene {
       let view = this.hazardViews.get(hazard.id);
       if (!view) {
         view = hazard.type === "machine-wreck"
-          ? this.add.ellipse(0, 0, 1, 1, 0x30383f, 0.88)
-            .setStrokeStyle(3, 0xffd36b, 0.9).setDepth(45)
+          ? this.useMarineArt
+            ? this.add.sprite(0, 0, "machine-scrap-skitterer-v1", 28).setDepth(45)
+            : this.add.ellipse(0, 0, 1, 1, 0x30383f, 0.88)
+              .setStrokeStyle(3, 0xffd36b, 0.9).setDepth(45)
           : hazard.type === "prime-biomass"
             ? this.add.ellipse(0, 0, 1, 1, 0x5c2632, 0.62)
               .setStrokeStyle(4, 0xff8a62, 0.94).setDepth(45)
@@ -2253,7 +2526,9 @@ export class PrototypeScene extends Phaser.Scene {
           diameter * (hazard.type === "machine-wreck" ? 0.55 : 0.62 * (0.72 + lifetime * 0.28)),
         )
         .setAlpha(hazard.type === "machine-wreck" ? lifetime * 0.9 : 0.22 + lifetime * 0.55);
-      if (view instanceof Phaser.GameObjects.Sprite) view.setFrame(lifetime < 0.3 ? 14 : 13);
+      if (view instanceof Phaser.GameObjects.Sprite) {
+        view.setFrame(hazard.type === "machine-wreck" ? 28 : lifetime < 0.3 ? 14 : 13);
+      }
       if (hazard.type === "prime-biomass" && view instanceof Phaser.GameObjects.Ellipse) {
         view.setStrokeStyle(4, Math.floor(this.time.now / 120) % 2 === 0 ? 0xff8a62 : 0xffd36b, 0.94);
       }
@@ -3855,7 +4130,7 @@ function applyManifestOrigin(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "rift-stalker-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1" | "aurum-hoarder-v1" | "swarm-scuttler-v1" | "corrupted-survivor-v1" | "corrupted-marine-v1" | "abomination-v1" | "nest-weaver-v1" | "nest-pod-v1" | "razorlord-v1" | "blightspitter-v1" | "quillback-matriarch-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "rift-stalker-v1" | "synapse-herald-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1" | "aurum-hoarder-v1" | "swarm-scuttler-v1" | "corrupted-survivor-v1" | "corrupted-marine-v1" | "abomination-v1" | "nest-weaver-v1" | "nest-pod-v1" | "storm-savant-v1" | "storm-node-v1" | "machine-scrap-skitterer-v1" | "machine-arc-warden-v1" | "machine-cyborg-reclaimer-v1" | "machine-foundry-fabricator-v1" | "machine-foundry-pad-v1" | "machine-foundry-drone-v1" | "machine-foundry-turret-v1" | "razorlord-v1" | "blightspitter-v1" | "quillback-matriarch-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

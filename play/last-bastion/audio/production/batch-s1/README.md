@@ -1,6 +1,8 @@
 # Production Audio Batch S1
 
-Task 67 S1 replaces the eight implemented weapon synth families. Do not add runtime imports until the complete family passes loudness, loop, and overlap review; the existing event-addressed synth remains the fallback.
+Task 67 S1 replaces the eight implemented weapon synth families. The complete generated family is bound through OGG with MP3 decode fallback; the existing event-addressed synth remains the fallback while assets load or when both formats fail.
+
+The deterministic source recipe is `dev/scripts/generate-production-audio-s1.mjs`. Pass `--ffmpeg=<path>` (or set `FFMPEG_PATH`) to rebuild the 24 masters and both runtime formats. Fixed seeds keep revisions reviewable and reproducible.
 
 ## Delivery contract
 
@@ -28,6 +30,8 @@ Task 67 S1 replaces the eight implemented weapon synth families. Do not add runt
 2. Review isolated A/B/C variants, then a 60-second stationary-fire route for every weapon.
 3. Review maximum-density combat at 960×540, Full HD, and 4K with player-hit and boss-warning cues active.
 4. Confirm rapid fire obeys the catalogued retrigger/voice limits without flanging, machine-gun buildup, clipping, or missing critical warnings.
-5. Only then bind approved OGG/MP3 derivatives into the production sample player. Keep synth fallback for unavailable or failed decodes.
+5. Bind approved OGG/MP3 derivatives into the production sample player. Keep synth fallback for unavailable or failed decodes.
+
+The validator also rejects audio-identical masters, hot three-millisecond edges, and missing or malformed OGG/MP3 derivatives. Pass `--masters-only` while authoring before encoding.
 
 Place candidate masters in `masters/` and run `npm run audio:validate:s1` from `dev/`. The validator fails on missing or unexpected WAVs, malformed RIFF data, non-PCM encoding, wrong channel/rate/depth, out-of-envelope duration, peaks above −1 dBFS, or a Bulwark loop seam discontinuity above −42 dBFS. Use `node scripts/validate-production-audio.mjs --allow-missing` only to audit an intentionally incomplete delivery; it never marks missing files as accepted.

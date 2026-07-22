@@ -4,7 +4,7 @@ import { parsePcmWav, validateMaster } from "./validate-production-audio.mjs";
 const sourceFormat = { sampleRateHz: 48_000, bitDepth: 24, channels: 1, maximumPeakDbfs: -1 };
 const asset = { durationMs: [90, 110], seamlessLoop: false };
 
-function wav24({ durationMs = 100, amplitude = 1_000_000, channels = 1, sampleRateHz = 48_000, bitDepth = 24 } = {}) {
+function wav24({ durationMs = 100, amplitude = 1_000_000, channels = 1, sampleRateHz = 48_000, bitDepth = 24, cleanEdges = true } = {}) {
   const frames = Math.round(sampleRateHz * durationMs / 1_000);
   const bytesPerSample = bitDepth / 8;
   const dataSize = frames * channels * bytesPerSample;
@@ -18,7 +18,10 @@ function wav24({ durationMs = 100, amplitude = 1_000_000, channels = 1, sampleRa
   view.setUint16(32, channels * bytesPerSample, true); view.setUint16(34, bitDepth, true);
   writeText(36, "data"); view.setUint32(40, dataSize, true);
   if (bitDepth === 24) for (let frame = 0; frame < frames; frame += 1) {
-    const sample = Math.round(Math.sin(frame / 12) * amplitude);
+    const edgeFrames = Math.round(sampleRateHz * 0.003);
+    const sample = cleanEdges && (frame < edgeFrames || frame >= frames - edgeFrames)
+      ? 0
+      : Math.round(Math.sin(frame / 12) * amplitude);
     const encoded = sample < 0 ? sample + 0x1000000 : sample;
     for (let channel = 0; channel < channels; channel += 1) {
       const offset = 44 + (frame * channels + channel) * 3;
@@ -46,7 +49,7 @@ describe("production audio WAV validator", () => {
 
   it("rejects malformed input and discontinuous loop seams", () => {
     expect(() => parsePcmWav(new Uint8Array(12))).toThrow("not a RIFF/WAVE file");
-    const result = validateMaster(wav24(), { durationMs: [90, 110], seamlessLoop: true }, sourceFormat);
+    const result = validateMaster(wav24({ cleanEdges: false }), { durationMs: [90, 110], seamlessLoop: true }, sourceFormat);
     expect(result.errors.some((error) => error.includes("loop seam"))).toBe(true);
   });
 });

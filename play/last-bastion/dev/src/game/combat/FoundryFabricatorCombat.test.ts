@@ -110,6 +110,8 @@ describe("Foundry Fabricator live gate", () => {
     const simulation = new CombatSimulation({ scenario: "foundry-fabricator", seed: 65068 });
     expect(simulation.snapshot().enemies.filter((enemy) => enemy.type === "foundry-fabricator"))
       .toHaveLength(1);
+    expect(simulation.snapshot().enemies.filter((enemy) => enemy.type === "cyborg-reclaimer"))
+      .toHaveLength(1);
     collect(simulation, 5.2);
     const snapshot = simulation.snapshot();
     expect(snapshot.enemies.filter((enemy) => enemy.type === "foundry-drone" || enemy.type === "foundry-turret"))

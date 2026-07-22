@@ -39,7 +39,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(113);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(134);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -324,6 +324,44 @@ describe("GameAssetManifest", () => {
     if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
   });
 
+  it("locks Production Batch Z Synapse Herald contracts", () => {
+    const body = GAME_ASSETS["synapse-herald-v1"];
+    const effects = GAME_ASSETS["synapse-herald-effects-v1"];
+    const portrait = GAME_ASSETS["synapse-herald-portrait-v1"];
+    expect(body.kind).toBe("spritesheet");
+    expect(effects.kind).toBe("spritesheet");
+    expect(portrait.kind).toBe("image");
+    if (body.kind === "spritesheet") {
+      expect(body.frameCount).toBe(40);
+      expect(body.logicalWidth).toBe(192);
+      expect(body.logicalHeight).toBe(192);
+      expect(body.pivot.y).toBe(0.92);
+    }
+    if (effects.kind === "spritesheet") {
+      expect(effects.frameCount).toBe(8);
+      expect(effects.logicalWidth).toBe(128);
+    }
+    expect(portrait.logicalWidth).toBe(256);
+    expect(portrait.logicalHeight).toBe(256);
+  });
+
+  it("locks Production Batch AA Assembly Prime contracts", () => {
+    const body = GAME_ASSETS["assembly-prime-v1"];
+    const pad = GAME_ASSETS["assembly-prime-pad-v1"];
+    const effects = GAME_ASSETS["assembly-prime-effects-v1"];
+    const portrait = GAME_ASSETS["assembly-prime-portrait-v1"];
+    for (const asset of [body, pad, effects]) expect(asset.kind).toBe("spritesheet");
+    expect(portrait.kind).toBe("image");
+    if (body.kind === "spritesheet") {
+      expect(body.frameCount).toBe(44);
+      expect(body.logicalWidth).toBe(192);
+      expect(body.pivot.y).toBe(0.92);
+    }
+    if (pad.kind === "spritesheet") expect(pad.frameCount).toBe(6);
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(8);
+    expect(portrait.logicalWidth).toBe(256);
+  });
+
   it("locks the production Scrap Shop Batch N2 contracts", () => {
     const offers = GAME_ASSETS["scrap-shop-offer-tiles-v1"];
     const hud = GAME_ASSETS["scrap-shop-hud-v1"];
@@ -385,6 +423,90 @@ describe("GameAssetManifest", () => {
       "telegraph-large-v1": [128, 8],
       "telegraph-small-v1": [64, 12],
       "telegraph-danger-fill-v1": [64, 4],
+    } as const;
+    for (const [id, [size, frames]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") {
+        expect(asset.logicalWidth).toBe(size);
+        expect(asset.logicalHeight).toBe(size);
+        expect(asset.frameCount).toBe(frames);
+      }
+    }
+  });
+
+  it("locks the production Batch U Storm Savant contracts", () => {
+    const expected = {
+      "storm-savant-v1": [192, 36],
+      "storm-node-v1": [128, 6],
+      "storm-effects-v1": [128, 8],
+    } as const;
+    for (const [id, [size, frames]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") {
+        expect(asset.logicalWidth).toBe(size);
+        expect(asset.logicalHeight).toBe(size);
+        expect(asset.frameCount).toBe(frames);
+      }
+    }
+  });
+
+  it("locks the production Batch V Scrap Skitterer contracts", () => {
+    const expected = {
+      "machine-scrap-skitterer-v1": [128, 32],
+      "machine-scrap-skitterer-effects-v1": [128, 8],
+    } as const;
+    for (const [id, [size, frames]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") {
+        expect(asset.logicalWidth).toBe(size);
+        expect(asset.logicalHeight).toBe(size);
+        expect(asset.frameCount).toBe(frames);
+      }
+    }
+  });
+
+  it("locks the production Batch W Arc Warden contracts", () => {
+    const expected = {
+      "machine-arc-warden-v1": [128, 32],
+      "machine-arc-warden-effects-v1": [128, 8],
+    } as const;
+    for (const [id, [size, frames]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") {
+        expect(asset.logicalWidth).toBe(size);
+        expect(asset.logicalHeight).toBe(size);
+        expect(asset.frameCount).toBe(frames);
+      }
+    }
+  });
+
+  it("locks the production Batch X Cyborg Reclaimer contracts", () => {
+    const expected = {
+      "machine-cyborg-reclaimer-v1": [192, 36],
+      "machine-cyborg-reclaimer-effects-v1": [128, 8],
+    } as const;
+    for (const [id, [size, frames]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") {
+        expect(asset.logicalWidth).toBe(size);
+        expect(asset.logicalHeight).toBe(size);
+        expect(asset.frameCount).toBe(frames);
+      }
+    }
+  });
+
+  it("locks the production Batch Y Foundry family contracts", () => {
+    const expected = {
+      "machine-foundry-fabricator-v1": [192, 36],
+      "machine-foundry-pad-v1": [128, 6],
+      "machine-foundry-drone-v1": [128, 28],
+      "machine-foundry-turret-v1": [128, 32],
+      "machine-foundry-effects-v1": [128, 8],
     } as const;
     for (const [id, [size, frames]] of Object.entries(expected)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];

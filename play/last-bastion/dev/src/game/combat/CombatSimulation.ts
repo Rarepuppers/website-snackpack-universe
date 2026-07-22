@@ -501,6 +501,7 @@ export interface EnemySnapshot {
   synapseHeraldLinkTargetId?: number;
   assemblyPrimePhase?: AssemblyPrimeState["phase"];
   assemblyPrimeMove?: AssemblyPrimeMove;
+  assemblyPrimeProgress?: number;
   assemblyPrimeLanes?: readonly AssemblyPrimeLane[];
   assemblyPrimeTarget?: Vector2Data;
   assemblyPrimeRecallTargetId?: number;
@@ -7691,9 +7692,12 @@ export class CombatSimulation {
     this.waveLiveCap = 8;
     this.waveThreatBudget = 19;
     this.spawnEnemy("foundry-fabricator", { x: centre.x - 5.2, y: centre.y - 1.4 });
-    this.spawnEnemy("arc-warden", { x: centre.x + 6.2, y: centre.y - 2.8 });
+    const arcId = this.spawnEnemy("arc-warden", { x: centre.x + 6.2, y: centre.y - 2.8 });
+    this.spawnEnemy("cyborg-reclaimer", { x: centre.x - 1.8, y: centre.y - 3.4 });
     this.spawnEnemy("scrap-skitterer", { x: centre.x + 4.4, y: centre.y + 2.8 });
     this.spawnEnemy("scrap-skitterer", { x: centre.x - 3.8, y: centre.y + 3.5 });
+    const arc = this.enemies.find((enemy) => enemy.id === arcId)!;
+    arc.health = Math.max(1, arc.maxHealth - 4);
   }
 
   private populateRipperScenario(): void {
@@ -7947,6 +7951,11 @@ export class CombatSimulation {
         : undefined,
       assemblyPrimeMove: enemy.miniBossKind === "assembly-prime"
         ? enemy.assemblyPrimeBehavior.move ?? undefined
+        : undefined,
+      assemblyPrimeProgress: enemy.miniBossKind === "assembly-prime"
+        && enemy.assemblyPrimeBehavior.move === "fabrication"
+        && enemy.assemblyPrimeBehavior.phase === "windup"
+        ? Math.max(0, Math.min(1, 1 - enemy.assemblyPrimeBehavior.phaseRemainingSeconds / 1.6))
         : undefined,
       assemblyPrimeLanes: enemy.miniBossKind === "assembly-prime"
         ? enemy.assemblyPrimeBehavior.lockedLanes.map((lane) => ({

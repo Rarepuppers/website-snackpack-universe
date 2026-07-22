@@ -111,6 +111,27 @@ import medicPortraitUrl from "../../../../art/production-tests/batch-p/medic-por
 import nestWeaverSheetUrl from "../../../../art/production-tests/batch-t/nest-weaver-spritesheet-v1-192.png";
 import nestPodSheetUrl from "../../../../art/production-tests/batch-t/nest-pod-spritesheet-v1-128.png";
 import nestEffectsUrl from "../../../../art/production-tests/batch-t/nest-effects-atlas-v1-128.png";
+import stormSavantSheetUrl from "../../../../art/production-tests/batch-u/storm-savant-v1-192.png";
+import stormNodeSheetUrl from "../../../../art/production-tests/batch-u/storm-node-v1-128.png";
+import stormEffectsUrl from "../../../../art/production-tests/batch-u/storm-effects-v1-128.png";
+import scrapSkittererSheetUrl from "../../../../art/production-tests/batch-v/machine-scrap-skitterer-v1-128.png";
+import scrapSkittererEffectsUrl from "../../../../art/production-tests/batch-v/machine-scrap-skitterer-effects-v1-128.png";
+import arcWardenSheetUrl from "../../../../art/production-tests/batch-w/machine-arc-warden-v1-128.png";
+import arcWardenEffectsUrl from "../../../../art/production-tests/batch-w/machine-arc-warden-effects-v1-128.png";
+import cyborgReclaimerSheetUrl from "../../../../art/production-tests/batch-x/machine-cyborg-reclaimer-v1-192.png";
+import cyborgReclaimerEffectsUrl from "../../../../art/production-tests/batch-x/machine-cyborg-reclaimer-effects-v1-128.png";
+import foundryFabricatorSheetUrl from "../../../../art/production-tests/batch-y/machine-foundry-fabricator-v1-192.png";
+import foundryPadSheetUrl from "../../../../art/production-tests/batch-y/machine-foundry-pad-v1-128.png";
+import foundryDroneSheetUrl from "../../../../art/production-tests/batch-y/machine-foundry-drone-v1-128.png";
+import foundryTurretSheetUrl from "../../../../art/production-tests/batch-y/machine-foundry-turret-v1-128.png";
+import foundryEffectsUrl from "../../../../art/production-tests/batch-y/machine-foundry-effects-v1-128.png";
+import synapseHeraldSheetUrl from "../../../../art/production-tests/batch-z/synapse-herald-v1-192.png";
+import synapseHeraldEffectsUrl from "../../../../art/production-tests/batch-z/synapse-herald-effects-v1-128.png";
+import synapseHeraldPortraitUrl from "../../../../art/production-tests/batch-z/synapse-herald-portrait-v1-256.png";
+import assemblyPrimeSheetUrl from "../../../../art/production-tests/batch-aa/assembly-prime-v1-192.png";
+import assemblyPrimePadUrl from "../../../../art/production-tests/batch-aa/assembly-prime-pad-v1-128.png";
+import assemblyPrimeEffectsUrl from "../../../../art/production-tests/batch-aa/assembly-prime-effects-v1-128.png";
+import assemblyPrimePortraitUrl from "../../../../art/production-tests/batch-aa/assembly-prime-portrait-v1-256.png";
 
 export type GameAssetId =
   | "marine-base-v1"
@@ -179,6 +200,27 @@ export type GameAssetId =
   | "nest-weaver-v1"
   | "nest-pod-v1"
   | "nest-effects-v1"
+  | "storm-savant-v1"
+  | "storm-node-v1"
+  | "storm-effects-v1"
+  | "machine-scrap-skitterer-v1"
+  | "machine-scrap-skitterer-effects-v1"
+  | "machine-arc-warden-v1"
+  | "machine-arc-warden-effects-v1"
+  | "machine-cyborg-reclaimer-v1"
+  | "machine-cyborg-reclaimer-effects-v1"
+  | "machine-foundry-fabricator-v1"
+  | "machine-foundry-pad-v1"
+  | "machine-foundry-drone-v1"
+  | "machine-foundry-turret-v1"
+  | "machine-foundry-effects-v1"
+  | "synapse-herald-v1"
+  | "synapse-herald-effects-v1"
+  | "synapse-herald-portrait-v1"
+  | "assembly-prime-v1"
+  | "assembly-prime-pad-v1"
+  | "assembly-prime-effects-v1"
+  | "assembly-prime-portrait-v1"
   | "emberfall-floor-v1"
   | "emberfall-boundary-v1"
   | "emberfall-obstacles-v1"
@@ -313,6 +355,27 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("nest-weaver-v1", nestWeaverSheetUrl, 192, 192, 32, 0.5, 0.92),
   sheet("nest-pod-v1", nestPodSheetUrl, 128, 128, 6, 0.5, 0.92),
   sheet("nest-effects-v1", nestEffectsUrl, 128, 128, 8, 0.5, 0.72),
+  sheet("storm-savant-v1", stormSavantSheetUrl, 192, 192, 36, 0.5, 0.92),
+  sheet("storm-node-v1", stormNodeSheetUrl, 128, 128, 6, 0.5, 0.92),
+  sheet("storm-effects-v1", stormEffectsUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("machine-scrap-skitterer-v1", scrapSkittererSheetUrl, 128, 128, 32, 0.5, 0.92),
+  sheet("machine-scrap-skitterer-effects-v1", scrapSkittererEffectsUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("machine-arc-warden-v1", arcWardenSheetUrl, 128, 128, 32, 0.5, 0.92),
+  sheet("machine-arc-warden-effects-v1", arcWardenEffectsUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("machine-cyborg-reclaimer-v1", cyborgReclaimerSheetUrl, 192, 192, 36, 0.5, 0.92),
+  sheet("machine-cyborg-reclaimer-effects-v1", cyborgReclaimerEffectsUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("machine-foundry-fabricator-v1", foundryFabricatorSheetUrl, 192, 192, 36, 0.5, 0.92),
+  sheet("machine-foundry-pad-v1", foundryPadSheetUrl, 128, 128, 6, 0.5, 0.78),
+  sheet("machine-foundry-drone-v1", foundryDroneSheetUrl, 128, 128, 28, 0.5, 0.75),
+  sheet("machine-foundry-turret-v1", foundryTurretSheetUrl, 128, 128, 32, 0.5, 0.88),
+  sheet("machine-foundry-effects-v1", foundryEffectsUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("synapse-herald-v1", synapseHeraldSheetUrl, 192, 192, 40, 0.5, 0.92),
+  sheet("synapse-herald-effects-v1", synapseHeraldEffectsUrl, 128, 128, 8, 0.5, 0.5),
+  image("synapse-herald-portrait-v1", synapseHeraldPortraitUrl, 256, 256, 0.5, 0.5),
+  sheet("assembly-prime-v1", assemblyPrimeSheetUrl, 192, 192, 44, 0.5, 0.92),
+  sheet("assembly-prime-pad-v1", assemblyPrimePadUrl, 128, 128, 6, 0.5, 0.78),
+  sheet("assembly-prime-effects-v1", assemblyPrimeEffectsUrl, 128, 128, 8, 0.5, 0.5),
+  image("assembly-prime-portrait-v1", assemblyPrimePortraitUrl, 256, 256, 0.5, 0.5),
   sheet("emberfall-floor-v1", emberfallFloorUrl, 64, 64, 6, 0.5, 0.5),
   sheet("emberfall-boundary-v1", emberfallBoundaryUrl, 64, 64, 8, 0.5, 0.5),
   sheet("emberfall-obstacles-v1", emberfallObstacleUrl, 96, 96, 4, 0.5, 0.5),

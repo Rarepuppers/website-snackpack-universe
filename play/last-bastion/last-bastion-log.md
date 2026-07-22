@@ -1017,3 +1017,82 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Integrated stable `nest-weaver-v1`, `nest-pod-v1`, and `nest-effects-v1` manifest contracts. Live presentation maps facing and phase to the authored body, maps hatch progress to stable pod states, and pairs every lay, hatch, interruption, and defeat onset with its matching dissipate frame. Placement lines/rings, countdown pips, conditional pod HP bars, reservations, collision, timing, and hatch payload remain code-owned.
 - Added a complete `?mode=gallery&batch=t` review route and manifest regression coverage. Presentation review at native 960×540, 1920×1080, and 3840×2160 caught and corrected one gallery heading collision; final gallery and live lab retain title-safe HUD placement, readable mixed-family silhouettes, clear pod/bar separation, and no browser warnings or errors.
 - Hatchlings continue to reuse `swarm-scuttler-v1`; a distinct hatchling body stays evidence-gated. Production Audio Batch S1 remains the primary next task. The independent visual order is Storm Savant, Scrap Skitterer, then the remaining machine family before mini-boss cosmetics.
+
+### Task 67 S1 — production weapon audio complete
+
+**Completed:** 22 July 2026
+
+- Generated all 24 dry, mono 48 kHz / 24-bit PCM weapon masters from fixed, reviewable recipes: three mechanically interchangeable variants for each standard weapon and distinct Bulwark start, seamless loop, and cancellation-safe end stems.
+- Derived all 24 OGG and all 24 MP3 runtime assets. The production player prefers OGG, falls back to MP3 on decode failure, and retains the existing oscillator cue when neither production format is ready.
+- Bound all seven one-shot families with deterministic A/B/C rotation behind the catalogued retrigger and voice limits. Bulwark now holds one loop across repeated fire events and transitions through its end stem after firing stops.
+- Expanded `audio:validate:s1` to reject missing/malformed derivatives, duplicate masters, hot three-millisecond edges, invalid PCM format/rate/depth/channel count, duration violations, unsafe peaks, and rotary seam discontinuities. The gate passes 24/24.
+- Full TypeScript/build and a live browser weapon-gate boot completed without console warnings or errors. The final maximum-density listening and accessibility review remains grouped with the physical-controller, colour-vision, and fight-duration pass before Steam packaging, as planned.
+- Next: Production Asset Batch U — Storm Savant body, conductive nodes, and non-lightning effects. Do not rasterize the code-owned lightning rails or cover-stop geometry.
+
+### Production Asset Batch U — Storm Savant complete
+
+**Completed:** 22 July 2026
+
+- Generated and retained the exact 4×9 Storm Savant body, 6×1 conductive-node lifecycle, and 4×2 non-lightning effects families with untouched chroma sources, clean-alpha masters, deterministic runtime atlases, prompts, normalizer, and contact-sheet QA.
+- Bound the Savant and node atlases to live simulation states. Charge, discharge, overload collapse, movement facings, node charge/critical states, and inert destruction now use production silhouettes; `storm-effects-v1` is registered for event presentation.
+- Kept lightning rails, timing rungs, circular endpoints, square cover stops, hit widths, collision, damage, and projectiles out of the raster package as required.
+- Manifest contracts, 581 tests, typecheck, and production build pass.
+- Next: Scrap Skitterer production body/effects.
+
+### Production Asset Batch V — Scrap Skitterer complete
+
+**Completed:** 22 July 2026
+
+- Generated the exact 4×8 low triangular android body and 4×2 restrained mechanical-effects package through the built-in image workflow. Retained untouched chroma sources, clean-alpha masters, deterministic runtime atlases, prompts, adaptive row normalizer, and contact-sheet QA under `art/production-tests/batch-v/`.
+- QA caught the generator's non-uniform vertical row spacing before integration; normalization now detects authored alpha row bands, preventing split legs or orphaned fragments while retaining the untouched source.
+- Bound approach/scuttle, acceleration, committed rush, hard brake, inert wreck, and all four onset/dissipate effect pairs. The warning lane, target direction, collision, damage, Shock weakness, wreck lifetime, and harmless behavior remain code-owned.
+- Added `?mode=gallery&batch=v`; manifest contracts, 582 tests, typecheck, production build, smoke, offline boot, and Batch S1 audio validation pass.
+- Next: normal machine-family art begins with Arc Warden, then Cyborg Reclaimer, then Foundry Fabricator/pad/drone/turret.
+
+### Production Asset Batch W — Arc Warden complete
+
+**Completed:** 22 July 2026
+
+- Generated the exact 4×8 directional/state Arc Warden body and 4×2 restrained electrical/mechanical effects package through the built-in image workflow. Retained untouched chroma sources, clean-alpha masters, deterministic 128×128 runtime atlases, prompts, normalizer, and contact-sheet QA under `art/production-tests/batch-w/`.
+- Bound idle/stride, lane charge, discharge recoil, vented recovery, hurt, and defeat body states to the live Arc Warden. Charge, discharge-origin, cover/player impact, and recovery vent effects play as onset/dissipate pairs from simulation events.
+- Preserved code ownership of the warning lane, timing rungs, target/cover-stop geometry, projectile and hit width, collision, damage, Shock weakness, facing, and phase timing. No beam geometry is rasterized into the authored package.
+- Added `?mode=gallery&batch=w`; manifest contracts, 583 tests, typecheck, and production build pass.
+- Next: Cyborg Reclaimer production body and non-gameplay-geometry effects, followed by Foundry Fabricator/pad/drone/turret.
+
+### Production Asset Batch X — Cyborg Reclaimer complete
+
+**Completed:** 22 July 2026
+
+- Generated the exact 4×9 broad cyborg body and 4×2 local repair-effects package through the built-in image workflow. Retained untouched chroma sources, clean-alpha masters, deterministic 192×192/128×128 runtime atlases, prompts, adaptive-row normalizer, and contact-sheet QA under `art/production-tests/batch-x/`.
+- Bound walking, repair-channel bracing, exhausted recovery, target-lock origin, repair completion, interrupted-link spark, and recovery vent presentation to the live simulation. Effect families play as onset/dissipate pairs.
+- Preserved code ownership of target eligibility and selection, encounter-wide tether geometry, acquisition/break range, active-link exclusivity, repair amount, patch count, health mutation, interruption, collision, timing, and Shock weakness.
+- Added `?mode=gallery&batch=x`; manifest contracts, 584 tests, typecheck, and production build pass.
+- Next: Foundry Fabricator production body, pad, drone, turret, and local effects.
+
+### Production Asset Batch Y — Foundry Fabricator family complete
+
+**Completed:** 22 July 2026
+
+- Generated all five authorized retained-master families: 36-frame Fabricator, six-state pad, 28-frame drone, 32-frame turret, and eight onset/dissipate local effects. Preserved untouched chroma sources, alpha masters, deterministic runtime atlases, prompts, adaptive normalizer, and contact-sheet QA under `art/production-tests/batch-y/`.
+- Bound Fabricator movement/channel/recovery, stable live pad, drone flight/power-down, turret tracking/warning/recovery, fabrication start/completion/interruption, and turret muzzle presentation to simulation state and events.
+- Kept reservations, pad health/placement/progress, charges, child ownership/lifetimes/caps, target locks, turret lane/range, cover blocking, collision, damage, and timing code-owned. No projectile or warning geometry was rasterized.
+- Added `?mode=gallery&batch=y`; manifest contracts, 585 tests, typecheck, and production build pass.
+- Next: mixed standard-machine silhouette review at 960×540, Full HD, and 4K before any expanded mini-boss artwork.
+
+### Standard machine-family mixed-wave silhouette acceptance
+
+**Completed:** 22 July 2026
+
+- Extended the deterministic Foundry Fabricator lab to include a Cyborg Reclaimer and a damaged Arc Warden alongside the Fabricator and two Scrap Skitterers. Fabrication still supplies the pad, airborne drone, and square-base turret beneath the existing eight-live-unit cap.
+- Reviewed the live authored family at native 960×540, 1920×1080, and true 3840×2160 canvas presentation with manual fire enabled to preserve the encounter. Fabricator height/asymmetry, Reclaimer breadth/organic torso, Warden rectangular emitter, Skitterer low rush profile, pad footprint, drone elevation, and turret base/barrel remain distinguishable in motion.
+- Repair tether and turret/Arc warning origins remain readable without relying on body colour. Pads and children remain visible beside both heavy bodies, HUD/title-safe edges remain intact, and all three browser passes produced no warnings or errors.
+- The standard-enemy prerequisite for expanded mini-boss artwork now passes. Next production package: Synapse Herald body, local effects, and portrait. Random-pool promotion still waits for representative 45–90-second seeded fight acceptance.
+
+### Production Asset Batch Z - Synapse Herald complete
+
+**Completed:** 22 July 2026
+
+- Generated the exact 40-frame directional/state Herald body, eight local onset/dissipate effects, and 256 px dossier portrait through the built-in image workflow. Retained untouched chroma sources, clean-alpha masters, deterministic 192 px/128 px/256 px derivatives, prompts, normalizer, and contact-sheet QA under `art/production-tests/batch-z/`.
+- Bound entrance, alternating orbit, lunge wind-up/commit, marked-zone channel, synapse-link channel, and recovery presentation to live simulation state. Lunge-origin, zone-eruption, link-lock, and link-break effects play as onset/dissipate pairs; the portrait and every runtime frame are exposed in `?mode=gallery&batch=z`.
+- Preserved code ownership of lunge paths, marked-zone circles and timing marks, link tether/rings, target locking, damage mitigation, collision, health bars, warnings, and phase timing. The Herald remains excluded from random mini-boss promotion pending mixed ordinary Brain Blob silhouette review and representative 45-90-second seeded fights.
+- Manifest contracts, TypeScript, focused Herald behavior tests, and production build validation pass. Next production package: Assembly Prime body, local effects, child-compatible accents, and portrait.
