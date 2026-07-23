@@ -28,9 +28,30 @@ export interface ExpeditionEncounterDescriptor {
 const ELITES: readonly EliteKind[] = [
   "carapace-scuttler", "razorlord", "blightspitter", "quillback-matriarch",
 ];
-const MINI_BOSSES: readonly MiniBossKind[] = [
+
+/**
+ * Mini-boss pool, tiered by depth so the difficulty curve holds after the
+ * 23 July 2026 acceptance-backlog promotion. The original three (lighter,
+ * 300–460 health) cover the earliest mini-boss nodes; the four apex bosses
+ * promoted from the held pool (Synapse Herald, Assembly Prime, Storm Regent,
+ * Abomination Prime, 560–920 health) only join from the late columns where a
+ * built-up rack can answer them. Their 45–90-second fight feel remains a
+ * playtest confirmation, but they are now reachable in an ordinary run.
+ */
+const EARLY_MINI_BOSSES: readonly MiniBossKind[] = [
   "siege-crusher", "brood-warden", "rift-stalker",
 ];
+const APEX_MINI_BOSSES: readonly MiniBossKind[] = [
+  "synapse-herald", "assembly-prime", "storm-regent", "abomination-prime",
+];
+/** Column at or beyond which the heavier apex bosses become eligible. */
+const APEX_MINI_BOSS_COLUMN = 5;
+
+function miniBossPoolForColumn(column: number): readonly MiniBossKind[] {
+  return column >= APEX_MINI_BOSS_COLUMN
+    ? [...EARLY_MINI_BOSSES, ...APEX_MINI_BOSSES]
+    : EARLY_MINI_BOSSES;
+}
 
 /** Deterministic bridge from one chart node to an existing encounter family. */
 export function expeditionEncounterForNode(
@@ -44,7 +65,8 @@ export function expeditionEncounterForNode(
       : node.type === "mini-boss" ? Math.round(baseBudget * 0.6) + 40
         : node.type === "boss" ? 40 : 0;
   const eliteKind = node.type === "elite" ? ELITES[seed % ELITES.length]! : null;
-  const miniBossKind = node.type === "mini-boss" ? MINI_BOSSES[seed % MINI_BOSSES.length]! : null;
+  const miniBossPool = miniBossPoolForColumn(node.column);
+  const miniBossKind = node.type === "mini-boss" ? miniBossPool[seed % miniBossPool.length]! : null;
   const waves = buildExpeditionWavePlan(node.type, node.column, eliteKind, miniBossKind);
   return {
     nodeId: node.id,

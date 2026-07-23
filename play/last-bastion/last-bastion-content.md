@@ -1001,3 +1001,52 @@ Retain untouched generator output, clean-alpha ≥4× masters, deterministic nea
 Abomination Prime audio is authorized after Batch S1 and the previously authorized enemy packages: entrance/reward stingers, restrained heavy shamble, slam warning and impact, grab acquire, short loopable latch, distinct dodge/damage/cover-or-range break snaps, biomass tear and throw, brief flight whoosh, landing impact, hazard loop/pulse/expiry, exposed recovery, hurt, and defeat. Warning, latch, and hazard beds must loop or cut immediately on simulation interruption, owner defeat, or expiry; do not bake variable frenzy timing, 4.5-second hazard lifetime, or 5.5-second regeneration into fixed recordings. Prioritize slam warning/impact, grab lock/latch/break, and throw/landing/hazard-expiry readability before movement ambience.
 
 Random-pool promotion remains blocked until the production Prime/biomass/effects pass mixed Corrupted Human review at 960×540, Full HD, and 4K and a representative intended loadout records a 45–90-second kill. The acceptance run must confirm the large body never hides the grab target, slam/throw signature, airborne biomass, hazard edge, cover, or ordinary-family silhouette and that all three moves remain distinguishable without relying on colour across at least three seeded fights.
+
+## Briefs added by the 23 July 2026 plan review
+
+These support Tasks 92 and 94 in `last-bastion-model.md`. Same rules as every batch: no baked text/numbers/bindings/rings; all timers, prices, and selection states are code-drawn; retain ≥4× masters; nearest-neighbour runtime normalization. **Generate only after the dependent behavior gate passes** — the Shrine/Event node systems (Task 94) and the transformation decision (Task 93) must be live-or-cut first.
+
+### Audio Batch S4 — music and ambience (Task 92)
+
+The Batch S SFX plan (S1–S3) deliberately excludes music and ambience; this batch fills that gap and is treated as a shippability requirement, not polish. Deliver loopable **OGG** web derivatives from retained lossless masters (WAV/FLAC), seamless loop points marked, −14 LUFS integrated target for music beds and −18 LUFS for ambience so combat SFX stay on top. Everything must duck cleanly under the S1–S3 cues; music never masks a boss-warning or player-hit cue. Keep loops short enough to stream on first load (≤ ~90 s bodies) and mixable — no baked-in one-shots inside a loop.
+
+| Cue | Role | Notes |
+| --- | --- | --- |
+| Menu / title theme | Slow, ominous-but-hopeful synth-orchestral bed under the title and menus | One 60–90 s loop; a quieter variant for the character-select/dossier screen |
+| Expedition-map theme | Sparse, tense "planning between drops" bed | One loop; lower energy than combat, reads as a breather |
+| **Combat bed — adaptive two-layer** | Per-world driving loop split into a **calm layer** (low enemy pressure) and a **swarm layer** (added percussion/bass/lead) the engine crossfades on live enemy count / wave-timer pressure | Author both layers on the same grid and tempo so they sum without phase issues. One shared pair can serve all worlds initially; per-world timbre swaps (Science Wing = cold synth, Alien Hive = organic percussion, Machine Foundry = industrial metallic) are a later enrichment |
+| Boss theme | Higher-stakes loop for Bastion Eater and promoted mini-bosses | One loop with a short non-looping intro sting; a faster "final phase / frenzy" variant |
+| Victory sting | ~4–6 s non-looping resolve on the debrief victory board | Pairs with the code-native laurel emblem |
+| Defeat sting | ~4–6 s non-looping fall on the debrief defeat board | Restrained, not comedic |
+| Per-world ambience beds (×5) | Very low, non-melodic room tone under the combat bed: Science Wing hum, Logistics dull machinery, Machine Foundry forge roar, Alien Hive wet organic pulse, Surface wind | Mono-ready for future spatial mixing; must not encode combat timing |
+
+Acceptance: the calm↔swarm crossfade is inaudible as a seam and rises/falls with pressure; music is intelligible under a 60-second maximum-density SFX mix without burying player-hit, shield-break, boss-warning, or reward cues; every loop is gapless.
+
+### Expedition decision-node art (Task 94)
+
+Adds the two reserved node types and their reward pool to the live map. Node medallions extend the Batch G2 contract (round brass-and-ivory, 96 × 96, four states: dormant/grey, reachable/teal ring, current/pulsing ivory, cleared/dimmed claw-stamp; distinguishable at 48 px in grayscale and under colour-vision simulation).
+
+| Asset | Motif |
+| --- | --- |
+| Shrine node medallion | Alien monolith / standing stone with a single lit rune slot — reads as "bargain" not "combat" |
+| Event node medallion | Question glyph over a torn survey-note corner — reads as "unknown / choose" |
+| Shrine card frame (960 × 540 master) | Charcoal ritual-alcove interior with an empty central plinth zone for the code-drawn cost/result panel; restrained violet rim light. Diagonal-cut Last Bastion styling |
+| Event card frame (960 × 540 master) | Charcoal field-report board, ivory header bar, torn-corner note aesthetic, empty body zone for code text and choice buttons |
+
+### Relic and Artifact tiles (Task 94 reward pool)
+
+Canonical **128 × 128** tile contract (`rel-`/`art-` id prefixes, transparent, centred subject, neutral plate, no rarity frame — that is a code overlay). Each must read at 128/96/64/48/36 px, in grayscale, and under a 50% shadow. Motifs follow the existing designs in "First relic set" / "First Artifact set" above.
+
+| Tile | Motif |
+| --- | --- |
+| Stabiliser Gyro | Gimballed gyroscope ring, ivory rails, faint motion-blur arc |
+| Salvaged Capacitor | Scarred cylindrical capacitor with a cyan arc leaping between two terminals |
+| Blast Baffle | Angled vented baffle plate deflecting an orange blast wedge |
+| Hunter's Beacon | Amber reticle ring over a small horned elite silhouette |
+| Field Lattice | Hexagonal green-white med-lattice with a soft outward pulse ring |
+| Kinetic Greaves | Armoured boot with a teal motion streak trailing the heel |
+| Event Horizon Core (artifact) | Black sphere eclipsing a broken cyan accretion ring — matches the Event Horizon weapon family |
+| Broodbreaker Seal (artifact) | Cracked violet egg bisected by an ivory bastion sigil |
+| Last Bastion Protocol (artifact) | A tight ivory weapon-ring formation snapping inward around a red core |
+
+Acceptance: relic/artifact tiles are silhouette-distinct from weapon tiles (no gun profiles), and each artifact tile visually ties to the run-defining effect it grants.
