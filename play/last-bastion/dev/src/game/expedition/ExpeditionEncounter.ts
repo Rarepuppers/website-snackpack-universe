@@ -2,6 +2,7 @@ import type { EliteKind } from "../combat/EliteCadence";
 import type { MiniBossKind } from "../combat/CombatSimulation";
 import type { ExpeditionNode } from "./ExpeditionMap";
 import { buildExpeditionWavePlan, type ExpeditionWavePlan } from "./ExpeditionNodeDirector";
+import { selectEncounterEvent, type EncounterEventKind } from "./EncounterEventCatalog";
 
 export type ExpeditionEncounterKind =
   | "combat"
@@ -9,6 +10,8 @@ export type ExpeditionEncounterKind =
   | "mini-boss"
   | "supply-depot"
   | "weapon-cache"
+  | "shrine"
+  | "event"
   | "boss";
 
 export interface ExpeditionEncounterDescriptor {
@@ -22,6 +25,8 @@ export interface ExpeditionEncounterDescriptor {
   threatBudget: number;
   eliteKind: EliteKind | null;
   miniBossKind: MiniBossKind | null;
+  /** Shrine/Event nodes resolve to a specific catalogue card; null otherwise. */
+  eventId: string | null;
   waves: readonly ExpeditionWavePlan[];
 }
 
@@ -67,6 +72,9 @@ export function expeditionEncounterForNode(
   const eliteKind = node.type === "elite" ? ELITES[seed % ELITES.length]! : null;
   const miniBossPool = miniBossPoolForColumn(node.column);
   const miniBossKind = node.type === "mini-boss" ? miniBossPool[seed % miniBossPool.length]! : null;
+  const eventId = node.type === "shrine" || node.type === "event"
+    ? selectEncounterEvent(node.type as EncounterEventKind, seed, node.column)?.id ?? null
+    : null;
   const waves = buildExpeditionWavePlan(node.type, node.column, eliteKind, miniBossKind);
   return {
     nodeId: node.id,
@@ -78,6 +86,7 @@ export function expeditionEncounterForNode(
     threatBudget: waves[0]?.threatBudget ?? threatBudget,
     eliteKind,
     miniBossKind,
+    eventId,
     waves,
   };
 }

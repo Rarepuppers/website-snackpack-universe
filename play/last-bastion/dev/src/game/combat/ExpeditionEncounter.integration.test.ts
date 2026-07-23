@@ -31,6 +31,7 @@ function encounter(
     threatBudget: waves[0]?.threatBudget ?? WAVE_THREAT_BUDGETS[column]!,
     eliteKind,
     miniBossKind,
+    eventId: null,
     waves,
   };
 }

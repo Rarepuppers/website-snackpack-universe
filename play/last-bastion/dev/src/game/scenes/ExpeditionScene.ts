@@ -43,6 +43,8 @@ const NODE_GLYPHS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze(
   "mini-boss": "⬢",
   "supply-depot": "+",
   "weapon-cache": "▣",
+  shrine: "⛨",
+  event: "?",
   boss: "☠",
 });
 
@@ -52,6 +54,8 @@ const NODE_LABELS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze(
   "mini-boss": "MINI-BOSS — arsenal reward",
   "supply-depot": "SUPPLY DEPOT — safe",
   "weapon-cache": "WEAPON CACHE — safe",
+  shrine: "SHRINE — a bargain",
+  event: "EVENT — unknown",
   boss: "THE BASTION EATER",
 });
 
@@ -333,7 +337,9 @@ export class ExpeditionScene extends Phaser.Scene {
     const threat = node.type === "boss" ? "EXTREME"
       : node.type === "mini-boss" ? "SEVERE"
         : node.type === "elite" ? "HIGH"
-          : node.type === "combat" ? (node.column >= 5 ? "ELEVATED" : "MODERATE") : "NONE";
+          : node.type === "event" ? "UNKNOWN"
+            : node.type === "shrine" ? "CHOICE"
+              : node.type === "combat" ? (node.column >= 5 ? "ELEVATED" : "MODERATE") : "NONE";
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT - 78, 620, 58, PANEL).setStrokeStyle(1, 0x3b4d63).setDepth(20));
     this.root.add(this.text(WIDTH / 2, HEIGHT - 90, NODE_LABELS[node.type], TEAL, "15px", true).setDepth(21));
     this.root.add(this.text(

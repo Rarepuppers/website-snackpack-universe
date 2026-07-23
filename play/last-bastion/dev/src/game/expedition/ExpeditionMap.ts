@@ -16,6 +16,8 @@ export type ExpeditionNodeType =
   | "mini-boss"
   | "supply-depot"
   | "weapon-cache"
+  | "shrine"
+  | "event"
   | "boss";
 
 export interface ExpeditionNode {
@@ -42,14 +44,24 @@ export const EXPEDITION_NODE_COUNT = 20;
 export const EXPEDITION_COLUMNS = 8;
 export const EXPEDITION_LANES = 3;
 
-/** Node-type budget for one map, excluding the fixed start and boss nodes. */
-const TYPE_BUDGET: Readonly<Record<"elite" | "mini-boss" | "supply-depot" | "weapon-cache", number>> =
-  Object.freeze({
-    elite: 2,
-    "mini-boss": 2,
-    "supply-depot": 2,
-    "weapon-cache": 2,
-  });
+/**
+ * Node-type budget for one map, excluding the fixed start and boss nodes.
+ *
+ * Shrine and Event are defined types with a full tested catalogue, resolver,
+ * and review lab (`?screen=event-lab`), but they are intentionally NOT placed
+ * on live charts yet: resolving one in a real run needs an in-run decision
+ * scene plus the relic / weapon-slot / max-health systems several of their
+ * outcomes grant, and placing unresolvable nodes would break a run. They move
+ * into this budget (proposed shrine 1, event 2) the moment that gate lands.
+ */
+const TYPE_BUDGET: Readonly<
+  Record<"elite" | "mini-boss" | "supply-depot" | "weapon-cache", number>
+> = Object.freeze({
+  elite: 2,
+  "mini-boss": 2,
+  "supply-depot": 2,
+  "weapon-cache": 2,
+});
 
 /** Columns whose nodes may never be dangerous specials — the run must open calmly. */
 const EARLY_COLUMN_LIMIT = 1;

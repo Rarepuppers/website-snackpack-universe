@@ -1,5 +1,8 @@
 import type { EliteKind } from "../combat/EliteCadence";
 import type { ExpeditionBuildSnapshot } from "./ExpeditionRun";
+import { RELIC_IDS, type ArtifactId, type RelicId } from "../content/relicCatalog";
+
+export type { ArtifactId, RelicId } from "../content/relicCatalog";
 
 /**
  * Shrine and Event content for the expedition map (Task 94), in the spirit of
@@ -21,33 +24,10 @@ import type { ExpeditionBuildSnapshot } from "./ExpeditionRun";
 
 export type EncounterEventKind = "shrine" | "event";
 
-/** Relic ids seeded from `last-bastion-content.md` ("First relic set"). */
-export type RelicId =
-  | "rel-stabiliser-gyro"
-  | "rel-salvaged-capacitor"
-  | "rel-blast-baffle"
-  | "rel-hunters-beacon"
-  | "rel-field-lattice"
-  | "rel-kinetic-greaves";
-
-/** Artifact ids seeded from `last-bastion-content.md` ("First Artifact set"). */
-export type ArtifactId =
-  | "art-event-horizon-core"
-  | "art-broodbreaker-seal"
-  | "art-last-bastion-protocol";
-
-export const RELIC_IDS: readonly RelicId[] = Object.freeze([
-  "rel-stabiliser-gyro",
-  "rel-salvaged-capacitor",
-  "rel-blast-baffle",
-  "rel-hunters-beacon",
-  "rel-field-lattice",
-  "rel-kinetic-greaves",
-]);
-
 /**
  * A single effect of a choice. Health/shield/scrap/experience/weapon effects
  * mutate the build snapshot; the rest become side effects the run applies.
+ * Relic/Artifact ids come from `relicCatalog`, the single source of truth.
  */
 export type EventOutcome =
   | { type: "heal"; amount: number }

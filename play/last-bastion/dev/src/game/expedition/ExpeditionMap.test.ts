@@ -116,6 +116,10 @@ describe("generateExpeditionMap", () => {
     expect(nodesOfType(map, "supply-depot")).toHaveLength(2);
     expect(nodesOfType(map, "weapon-cache")).toHaveLength(2);
     expect(nodesOfType(map, "combat").length).toBeGreaterThan(0);
+    // Shrine/Event are defined types but not yet placed on live charts (Task 94
+    // review lab only), so they never appear in a generated map today.
+    expect(nodesOfType(map, "shrine")).toHaveLength(0);
+    expect(nodesOfType(map, "event")).toHaveLength(0);
   });
 
   it.each(SEEDS)("opens calmly with ordinary combat for seed %i", (seed) => {
