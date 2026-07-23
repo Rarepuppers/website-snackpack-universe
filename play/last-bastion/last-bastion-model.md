@@ -722,3 +722,20 @@ Batch G1/G2 (title, menu, hero dossier, starchart backdrop, node medallions, dro
 97. **Optional map texture — lane modifiers.** A pure, seeded per-lane flag (hazardous / lucrative) surfaced on the starchart, adding route-decision variety without new nodes or art. Only after Task 94 proves the decision layer lands.
 
 Sequencing intent: **finish before adding.** Tasks 90–92 make the current build reviewable and sensory-complete; 93–94 close the two designed-but-inert layers; 95–96 are the presentation and feel polish that make it a product; 97 is the only genuinely new content and is explicitly last. The sector campaign, additional heroes, and biomes remain deferred until the single-sector MVP earns a "one more run" verdict from external testers.
+
+## Content-expansion plan — 23 July 2026 (creator-directed)
+
+Direction set by the creator on 23 July 2026: expand the event catalogue to ~40+ new cards with Slay the Spire / FTL DNA and a Last Bastion twist; make regeneration much weaker so healing matters; make consumables more common; expand artifacts and weapons; and build a **Blood Market** where the currency is HP / max HP, trading the body for items, perks, and **transformation into cyborg / alien / cultist / etc.** Two decisions were taken: **(1) wire the inert transformation system LIVE** (definite, not deferred); **(2) start with the Tuning + Events phase.** Full event/artifact/weapon design list lives in `last-bastion-content.md` ("Content-expansion design — 23 July 2026").
+
+Phased execution (each phase is behavior-first + tested, art briefs to Codex/imagegen):
+
+98. **Phase 1 — Tuning + items-only events (start here).**
+    - **Regen nerf:** baseline drops to **0.5 HP per 10-second tick (0.05 HP/s)** from 0.6/3s (~4× weaker); support-effect and Regeneration upgrades still scale the per-tick amount, not the cadence. Update `CombatSimulation` + `wave_balance.md`.
+    - **Consumables more common:** powerups spawn from wave 1 (~1.3/wave late); make the four designed-but-unbuilt kits live (Siege Loader, Phase Jacket, Hunter Optics, Last Stand Stimulant); events/caches grant kits freely.
+    - **New artifacts (~9):** slot into the existing `RelicRunModifiers` bag (cheap): Overclock Core, Aegis Reactor, Scavenger's Manifest, Berserker's Chip, Chrono Capacitor, Symbiote Heart, Bastion Beacon, Null Field, Warp Anchor.
+    - **~25 items-only events:** the merchant / shrine / rescue / machine / discovery families (no new outcome systems required beyond the cheap tier). All HP costs calibrated to the real 10–19 HP scale; every card keeps the mandatory Leave; pure data + tests.
+99. **Phase 2 — Enabler outcome types.** Add `grantConsumable`, `pickUpgradeFromSet`, `fullCleanse`, `transmogrifyWeapon`, `duplicateWeapon`/`duplicateRelic`, `removeUpgrade`/`purifyRelic`, `swapStat`, `grantLifesteal`. Unlocks the trickier events (Forge of the Fallen, Duplication Vat, Purifier, Rogue Server, Chimera Experiment, etc.).
+100. **Phase 3 — Blood Market + transformations LIVE (the marquee).** Wire the six-path transformation boon/scar resolvers into `CombatSimulation` (the largest engineering item; my Task 93 audit item, now committed). Add a `grantTransformationAffinity(pathId, points)` outcome and the Affinity events (Fleshcraft Vat = Alien, Cybernetics Bay = Cyborg, The Designed Arrival = Cultist/Church, Void Rift = Void, Super-Soldier Serum, Mutagen Pool, Vampire Coven = lifesteal). Reaching 3 Affinity commits a path and applies its combat effects. The Blood Market node trades current HP for items and max HP for Affinity — the body-as-currency loop.
+101. **Phase 4 — Weapon expansion (art-gated, last).** Behavior gates + Codex/imagegen art batches for ~6 new weapons (Railspike, Seeker Swarm, Cryo Lance, Tesla Coil, Flamethrower, Sawblade) and finishing the held **Event Horizon** Unique.
+
+Sequencing intent: cheap felt-impact first (regen, consumables, artifacts, broad events), then the enablers, then the big transformation wiring, then the slow art-gated weapons. The regen nerf is the highest impact-per-effort change and lands first.
