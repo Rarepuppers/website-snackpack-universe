@@ -22,10 +22,10 @@ const GREEN = "#8fd66a";
 const MUTED = "#8fa1b3";
 
 /** Demo hero used by the lab; the run supplies the real snapshot in production. */
-const DEMO_MAX_HEALTH = 60;
+const DEMO_MAX_HEALTH = 18;
 function demoBuild(): ExpeditionBuildSnapshot {
   return {
-    health: 42,
+    health: 14,
     shield: 0,
     level: 6,
     experience: 120,

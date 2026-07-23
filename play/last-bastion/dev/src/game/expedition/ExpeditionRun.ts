@@ -9,6 +9,7 @@ import {
   cloneTransformationAffinityState,
   type TransformationAffinityState,
 } from "../transformations/TransformationAffinity";
+import { isArtifactId, isRelicId, type ArtifactId, type RelicId } from "../content/relicCatalog";
 
 /**
  * Mid-run expedition state (Task 38): which chart the run is on, where the
@@ -31,6 +32,17 @@ export interface ExpeditionBuildSnapshot {
   upgrades: readonly { upgradeId: string; level: number }[];
   /** Optional only for migration compatibility; every newly completed node writes it. */
   transformation?: TransformationAffinityState;
+  /**
+   * Run-long reward items granted by Shrine/Event nodes (Task 94). Optional for
+   * migration compatibility; resolved into combat effects via
+   * `resolveRelicModifiers`. Relics accumulate; one artifact is equipped.
+   */
+  relicIds?: readonly RelicId[];
+  equippedArtifactId?: ArtifactId | null;
+  /** Accumulated max-health delta from shrines (e.g. Shrine of Steel's cost). */
+  maxHealthBonus?: number;
+  /** Weapon rack slots granted by events, applied on top of the hero base. */
+  weaponSlotBonus?: number;
 }
 
 export interface ExpeditionRunState {
@@ -191,7 +203,25 @@ function cloneBuild(build: ExpeditionBuildSnapshot): ExpeditionBuildSnapshot {
     weapons: build.weapons.map((weapon) => ({ ...weapon })),
     upgrades: build.upgrades.map((upgrade) => ({ ...upgrade })),
     transformation: cloneTransformationAffinityState(build.transformation),
+    ...(build.relicIds ? { relicIds: [...build.relicIds] } : {}),
   };
+}
+
+/**
+ * Sanitizes the reward-item carrier on a build: drops unknown relic/artifact
+ * ids and floors the numeric bonuses, so edited or foreign save data degrades
+ * to a safe carrier rather than propagating junk into combat.
+ */
+export function sanitizeBuildRewards(build: ExpeditionBuildSnapshot): ExpeditionBuildSnapshot {
+  const relicIds = (build.relicIds ?? []).filter(isRelicId);
+  const equippedArtifactId = build.equippedArtifactId && isArtifactId(build.equippedArtifactId)
+    ? build.equippedArtifactId
+    : null;
+  const maxHealthBonus = Number.isFinite(build.maxHealthBonus) ? build.maxHealthBonus! : 0;
+  const weaponSlotBonus = Number.isFinite(build.weaponSlotBonus) && build.weaponSlotBonus! > 0
+    ? Math.floor(build.weaponSlotBonus!)
+    : 0;
+  return { ...build, relicIds, equippedArtifactId, maxHealthBonus, weaponSlotBonus };
 }
 
 function cloneMetrics(metrics: RunMetrics): RunMetrics {

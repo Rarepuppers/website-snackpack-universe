@@ -193,6 +193,12 @@ import {
   type TransformationAffinityState,
 } from "../transformations/TransformationAffinity";
 import { resolvePerkModifiers, type PerkId, type PerkRunModifiers } from "../perks/perkCatalog";
+import {
+  resolveRelicModifiers,
+  type ArtifactId,
+  type RelicId,
+  type RelicRunModifiers,
+} from "../content/relicCatalog";
 import type { ExpeditionEncounterDescriptor } from "../expedition/ExpeditionEncounter";
 import type { ExpeditionWavePlan } from "../expedition/ExpeditionNodeDirector";
 import { campaignNodeClearScrap, campaignOffersShop } from "../expedition/CampaignTuning";
@@ -636,6 +642,11 @@ export interface CombatSnapshot {
   heroId: HeroDefinition["id"];
   activePerkId: PerkId | null;
   transformation: TransformationAffinityState;
+  /** Run-long reward items carried through combat so they survive a node. */
+  relicIds: readonly RelicId[];
+  equippedArtifactId: ArtifactId | null;
+  rewardMaxHealthBonus: number;
+  rewardWeaponSlotBonus: number;
   waveNumber: number;
   totalWaves: number;
   playerPosition: Vector2Data;
@@ -1131,6 +1142,12 @@ export class CombatSimulation {
   private readonly perkModifiers: PerkRunModifiers;
   private readonly activePerkId: PerkId | null;
   private readonly transformation: TransformationAffinityState;
+  /** Run-long reward items (Task 94), resolved into combat effects and carried through the snapshot. */
+  private readonly relicModifiers: RelicRunModifiers;
+  private readonly ownedRelicIds: readonly RelicId[];
+  private readonly equippedArtifactId: ArtifactId | null;
+  private readonly rewardMaxHealthBonus: number;
+  private readonly rewardWeaponSlotBonus: number;
   private experienceCarry = 0;
   private magnetMultiplier = 1;
   private lastAimDirection: Vector2Data = { x: 1, y: 0 };
@@ -1220,6 +1237,13 @@ export class CombatSimulation {
       ? cloneTransformationAffinityState(options.startingBuild.transformation)
       : createTransformationAffinityState();
     this.perkModifiers = resolvePerkModifiers(this.activePerkId);
+    this.ownedRelicIds = options.startingBuild?.relicIds ? [...options.startingBuild.relicIds] : [];
+    this.equippedArtifactId = options.startingBuild?.equippedArtifactId ?? null;
+    this.rewardMaxHealthBonus = Number.isFinite(options.startingBuild?.maxHealthBonus)
+      ? options.startingBuild!.maxHealthBonus!
+      : 0;
+    this.rewardWeaponSlotBonus = Math.max(0, Math.floor(options.startingBuild?.weaponSlotBonus ?? 0));
+    this.relicModifiers = resolveRelicModifiers(this.ownedRelicIds, this.equippedArtifactId);
     this.securedScrap = Math.max(0, Math.floor(
       options.startingBuild?.scrap ?? options.startingScrap ?? (this.scenario === "scrap-shop" ? 150 : 0),
     ));
@@ -1254,6 +1278,8 @@ export class CombatSimulation {
       ? ["light", "light", "all"]
       : ["light", "medium", "heavy", "all"];
     while (rackClasses.length < this.equippedWeapons.length) rackClasses.push("all");
+    // Weapon slots granted by Shrine/Event rewards are flexible "all" mounts.
+    for (let slot = 0; slot < this.rewardWeaponSlotBonus; slot += 1) rackClasses.push("all");
     this.weaponInventory = createWeaponInventory(rackClasses, this.equippedWeapons.map((weapon) => ({
       instanceId: weapon.instanceId,
       weaponId: weapon.weaponId,
@@ -1920,6 +1946,10 @@ export class CombatSimulation {
       heroId: this.hero.id,
       activePerkId: this.activePerkId,
       transformation: cloneTransformationAffinityState(this.transformation),
+      relicIds: [...this.ownedRelicIds],
+      equippedArtifactId: this.equippedArtifactId,
+      rewardMaxHealthBonus: this.rewardMaxHealthBonus,
+      rewardWeaponSlotBonus: this.rewardWeaponSlotBonus,
       waveNumber: this.expeditionEncounter ? this.expeditionWaveIndex + 1 : this.waveIndex + 1,
       totalWaves: this.expeditionEncounter ? Math.max(1, this.expeditionEncounter.waves.length) : TOTAL_WAVES,
       playerPosition: { ...this.playerPosition },
@@ -2160,11 +2190,19 @@ export class CombatSimulation {
     }
   }
 
+  /**
+   * Base + level growth + Shrine/Event max-health reward, floored so a costly
+   * shrine bargain can never drop the hero to an unplayable ceiling.
+   */
+  private rewardAdjustedMaxHealth(growthBonus: number): number {
+    return Math.max(3, PLAYER_MAX_HEALTH + growthBonus + this.rewardMaxHealthBonus);
+  }
+
   private restoreExpeditionBuild(build: ExpeditionBuildSnapshot): void {
     this.level = Math.max(1, Math.floor(build.level));
     this.experience = Math.max(0, Math.floor(build.experience));
     const growth = heroGrowthAtLevel(this.hero, this.level);
-    this.playerMaxHealth = PLAYER_MAX_HEALTH + growth.maxHealthBonus;
+    this.playerMaxHealth = this.rewardAdjustedMaxHealth(growth.maxHealthBonus);
     this.defence.armour = this.hero.defence.armour + growth.armourBonus;
     this.levelDamageMultiplier = growth.damageMultiplier;
     this.levelSpeedMultiplier = growth.speedMultiplier;
@@ -2742,7 +2780,8 @@ export class CombatSimulation {
         uraniumEligible: true,
         remainingSeconds: weapon.stats.projectileLifetimeSeconds,
         pierceRemaining: weapon.stats.pierceCount,
-        explosionRadiusMetres: weapon.stats.explosionRadiusMetres,
+        // Blast Baffle relic slightly enlarges the hero's own explosions.
+        explosionRadiusMetres: weapon.stats.explosionRadiusMetres * this.relicModifiers.explosionRadiusMultiplier,
         knockbackMetres: weapon.stats.knockbackMetres,
         chainRemaining: weapon.stats.chainCount,
         chainRadiusMetres: weapon.stats.chainRadiusMetres,
@@ -7793,7 +7832,7 @@ export class CombatSimulation {
     const current = heroGrowthAtLevel(this.hero, this.level);
     const previous = heroGrowthAtLevel(this.hero, this.level - 1);
     const healthGain = current.maxHealthBonus - previous.maxHealthBonus;
-    this.playerMaxHealth = PLAYER_MAX_HEALTH + current.maxHealthBonus;
+    this.playerMaxHealth = this.rewardAdjustedMaxHealth(current.maxHealthBonus);
     this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + healthGain);
     this.defence.armour += current.armourBonus - previous.armourBonus;
     this.levelDamageMultiplier = current.damageMultiplier;

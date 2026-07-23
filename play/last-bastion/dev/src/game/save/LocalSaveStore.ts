@@ -16,6 +16,7 @@ import {
   normalizeTransformationAffinityState,
   type TransformationAffinityState,
 } from "../transformations/TransformationAffinity";
+import { isArtifactId, isRelicId, type ArtifactId, type RelicId } from "../content/relicCatalog";
 
 /**
  * Versioned local persistence for settings and basic run progress.
@@ -57,7 +58,8 @@ export interface GameProgress {
 }
 
 /**
- * Mid-run expedition autosave (schema v2, metrics in v4, inert transformation state in v8). Written when the dropship
+ * Mid-run expedition autosave (schema v2, metrics in v4, inert transformation
+ * state in v8, Shrine/Event reward carrier in v9). Written when the dropship
  * returns to the map, cleared when the run ends. Shapes mirror
  * `expedition/ExpeditionRun.ts`; kept structural here so the save layer never
  * imports game logic.
@@ -75,12 +77,16 @@ export interface ExpeditionSave {
     weapons: { weaponId: string; tier: number }[];
     upgrades: { upgradeId: string; level: number }[];
     transformation?: TransformationAffinityState;
+    relicIds?: readonly RelicId[];
+    equippedArtifactId?: ArtifactId | null;
+    maxHealthBonus?: number;
+    weaponSlotBonus?: number;
   } | null;
   metrics: RunMetrics;
 }
 
 export interface SaveData {
-  version: 8;
+  version: 9;
   settings: GameSettings;
   controls: ControlBindings;
   progress: GameProgress;
@@ -96,7 +102,7 @@ export const SAVE_STORAGE_KEY = "last-bastion-save";
 export const BESTIARY_KILLS_TO_REVEAL = 10;
 
 export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
-  version: 8,
+  version: 9,
   settings: Object.freeze({
     screenShakeEnabled: true,
     reducedFlashEnabled: false,
@@ -292,13 +298,13 @@ function normalizeSave(parsed: unknown): SaveData {
   }
   const candidate = parsed as Omit<Partial<SaveData>, "version"> & { version?: number };
   const version = candidate.version ?? -1;
-  // Versions 1–7 migrate into the current schema. Missing fields inherit the
+  // Versions 1–8 migrate into the current schema. Missing fields inherit the
   // accessible defaults; unknown future versions degrade safely to defaults.
-  if (![1, 2, 3, 4, 5, 6, 7, 8].includes(version)) {
+  if (![1, 2, 3, 4, 5, 6, 7, 8, 9].includes(version)) {
     return cloneSave(DEFAULT_SAVE);
   }
   return {
-    version: 8,
+    version: 9,
     settings: {
       screenShakeEnabled: readBoolean(candidate.settings?.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
       reducedFlashEnabled: readBoolean(candidate.settings?.reducedFlashEnabled, DEFAULT_SAVE.settings.reducedFlashEnabled),
@@ -377,7 +383,34 @@ function readBuild(value: unknown): ExpeditionSave["build"] {
       .filter((upgrade) => typeof upgrade?.upgradeId === "string")
       .map((upgrade) => ({ upgradeId: upgrade.upgradeId, level: readCount(upgrade.level) || 1 })),
     transformation: normalizeTransformationAffinityState(candidate.transformation),
+    ...readBuildRewards(candidate),
   };
+}
+
+/**
+ * Sanitizes the schema-v9 Shrine/Event reward carrier: unknown relic/artifact
+ * ids are dropped, bonuses coerce to finite numbers, and absent fields are
+ * simply omitted so pre-v9 saves round-trip unchanged.
+ */
+function readBuildRewards(candidate: {
+  relicIds?: unknown;
+  equippedArtifactId?: unknown;
+  maxHealthBonus?: unknown;
+  weaponSlotBonus?: unknown;
+}): Pick<NonNullable<ExpeditionSave["build"]>, "relicIds" | "equippedArtifactId" | "maxHealthBonus" | "weaponSlotBonus"> {
+  const relicIds = Array.isArray(candidate.relicIds)
+    ? candidate.relicIds.filter(isRelicId)
+    : [];
+  const equippedArtifactId = isArtifactId(candidate.equippedArtifactId)
+    ? candidate.equippedArtifactId
+    : null;
+  const maxHealthBonus = typeof candidate.maxHealthBonus === "number" && Number.isFinite(candidate.maxHealthBonus)
+    ? candidate.maxHealthBonus
+    : 0;
+  const weaponSlotBonus = typeof candidate.weaponSlotBonus === "number" && Number.isFinite(candidate.weaponSlotBonus) && candidate.weaponSlotBonus > 0
+    ? Math.floor(candidate.weaponSlotBonus)
+    : 0;
+  return { relicIds, equippedArtifactId, maxHealthBonus, weaponSlotBonus };
 }
 
 function cloneExpedition(expedition: ExpeditionSave): ExpeditionSave {
@@ -390,6 +423,7 @@ function cloneExpedition(expedition: ExpeditionSave): ExpeditionSave {
       weapons: expedition.build.weapons.map((weapon) => ({ ...weapon })),
       upgrades: expedition.build.upgrades.map((upgrade) => ({ ...upgrade })),
       transformation: cloneTransformationAffinityState(expedition.build.transformation),
+      ...(expedition.build.relicIds ? { relicIds: [...expedition.build.relicIds] } : {}),
     },
     metrics: {
       kills: expedition.metrics.kills,

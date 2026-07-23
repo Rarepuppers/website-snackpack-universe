@@ -63,6 +63,7 @@ import {
   type ExpeditionRun,
 } from "../expedition/ExpeditionRun";
 import {
+  ambushEncounterForNode,
   expeditionEncounterForNode,
   type ExpeditionEncounterDescriptor,
 } from "../expedition/ExpeditionEncounter";
@@ -4109,7 +4110,13 @@ function readExpeditionContext(store: LocalSaveStore): ExpeditionCombatContext |
   });
   if (!run || run.state.clearedNodeIds.includes(nodeId)) return null;
   const node = expeditionNodeById(run.map, nodeId);
-  return node ? { run, encounter: expeditionEncounterForNode(run.state.mapSeed, node) } : null;
+  if (!node) return null;
+  // An Event node's ambush outcome routes here as a synthesized one-wave combat.
+  const ambush = Number(params.get("ambush"));
+  if ((node.type === "event" || node.type === "shrine") && Number.isFinite(ambush) && ambush > 0) {
+    return { run, encounter: ambushEncounterForNode(run.state.mapSeed, node, ambush) };
+  }
+  return { run, encounter: expeditionEncounterForNode(run.state.mapSeed, node) };
 }
 
 function expeditionBuildFromSnapshot(snapshot: CombatSnapshot): ExpeditionBuildSnapshot {
@@ -4127,6 +4134,10 @@ function expeditionBuildFromSnapshot(snapshot: CombatSnapshot): ExpeditionBuildS
       level: upgrade.level,
     })),
     transformation: cloneTransformationAffinityState(snapshot.transformation),
+    relicIds: [...snapshot.relicIds],
+    equippedArtifactId: snapshot.equippedArtifactId,
+    maxHealthBonus: snapshot.rewardMaxHealthBonus,
+    weaponSlotBonus: snapshot.rewardWeaponSlotBonus,
   };
 }
 

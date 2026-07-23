@@ -199,6 +199,12 @@ export class ExpeditionScene extends Phaser.Scene {
   private launchCurrentEncounter(): void {
     const node = expeditionNodeById(this.run.map, this.run.state.currentNodeId);
     if (!node || !hasPendingEncounter(this.run)) return;
+    // Shrine/Event nodes resolve on their own decision screen, which commits the
+    // node or routes an ambush into combat; everything else is a combat encounter.
+    if (node.type === "shrine" || node.type === "event") {
+      window.location.href = `?screen=event&expedition=1&node=${node.id}`;
+      return;
+    }
     window.location.href = expeditionEncounterUrl(
       expeditionEncounterForNode(this.run.state.mapSeed, node),
     );

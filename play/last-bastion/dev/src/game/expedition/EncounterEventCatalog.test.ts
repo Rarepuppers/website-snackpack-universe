@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ExpeditionBuildSnapshot } from "./ExpeditionRun";
 import {
+  applyEventResolutionToBuild,
   ENCOUNTER_EVENT_CATALOG,
   eligibleEvents,
   emptySideEffects,
@@ -11,6 +12,7 @@ import {
   selectEncounterEvent,
   type EncounterEventDefinition,
   type EventChoice,
+  type EventResolution,
 } from "./EncounterEventCatalog";
 
 function build(overrides: Partial<ExpeditionBuildSnapshot> = {}): ExpeditionBuildSnapshot {
@@ -98,16 +100,16 @@ describe("requirement gating", () => {
 
   it("hides a max-health cost that would drop the player below the floor", () => {
     const steel = encounterEventById("shrine-steel")!;
-    const slot = choiceById(steel, "forge-slot"); // -20 max, floor 40
-    expect(isChoiceAvailable(build(), 60, slot)).toBe(true);
-    expect(isChoiceAvailable(build(), 59, slot)).toBe(false);
+    const slot = choiceById(steel, "forge-slot"); // -4 max, floor 10 → needs max >= 14
+    expect(isChoiceAvailable(build(), 14, slot)).toBe(true);
+    expect(isChoiceAvailable(build(), 13, slot)).toBe(false);
   });
 
   it("hides a health cost the player cannot pay", () => {
     const merchant = encounterEventById("event-star-merchant")!;
-    const sell = choiceById(merchant, "sell-blood"); // needs health >= 15
-    expect(isChoiceAvailable(build({ health: 15 }), 60, sell)).toBe(true);
-    expect(isChoiceAvailable(build({ health: 14 }), 60, sell)).toBe(false);
+    const sell = choiceById(merchant, "sell-blood"); // needs health >= 5
+    expect(isChoiceAvailable(build({ health: 5 }), 18, sell)).toBe(true);
+    expect(isChoiceAvailable(build({ health: 4 }), 18, sell)).toBe(false);
   });
 
   it("treats the leave choice as always available", () => {
@@ -122,24 +124,24 @@ describe("deterministic resolution", () => {
   it("applies a max-health cost and grants a weapon slot, trimming current health to the new ceiling", () => {
     const steel = encounterEventById("shrine-steel")!;
     const slot = choiceById(steel, "forge-slot");
-    const result = resolveEventChoice(build({ health: 60 }), 60, slot, 0);
-    expect(result.effects.maxHealthDelta).toBe(-20);
+    const result = resolveEventChoice(build({ health: 18 }), 18, slot, 0);
+    expect(result.effects.maxHealthDelta).toBe(-4);
     expect(result.effects.weaponSlotsGranted).toBe(1);
-    expect(result.build.health).toBe(40); // clamped to 60 - 20
+    expect(result.build.health).toBe(14); // clamped to 18 - 4
   });
 
   it("heals to full against the current max and never overshoots", () => {
     const altar = encounterEventById("shrine-fleshwright")!;
-    const graft = choiceById(altar, "accept-graft"); // -15, heal full, +15 shield
-    const result = resolveEventChoice(build({ health: 30 }), 50, graft, 0);
-    expect(result.build.health).toBe(50);
-    expect(result.build.shield).toBe(15);
+    const graft = choiceById(altar, "accept-graft"); // -4, heal full, +5 shield
+    const result = resolveEventChoice(build({ health: 10 }), 18, graft, 0);
+    expect(result.build.health).toBe(18);
+    expect(result.build.shield).toBe(5);
   });
 
   it("floors damage at 1 and scrap at 0", () => {
     const bloom = encounterEventById("event-spore-bloom")!;
-    const push = choiceById(bloom, "push-through"); // -12 health, +40 scrap
-    const result = resolveEventChoice(build({ health: 5, scrap: 0 }), 50, push, 0);
+    const push = choiceById(bloom, "push-through"); // -4 health, +40 scrap
+    const result = resolveEventChoice(build({ health: 2, scrap: 0 }), 18, push, 0);
     expect(result.build.health).toBe(1);
     expect(result.build.scrap).toBe(40);
   });
@@ -205,5 +207,55 @@ describe("weighted gamble resolution", () => {
     expect(pickWeightedBranch(branches, 0.69).resultText).toBe("b");
     expect(pickWeightedBranch(branches, 0.7).resultText).toBe("c");
     expect(pickWeightedBranch(branches, 0.999).resultText).toBe("c");
+  });
+});
+
+describe("applyEventResolutionToBuild", () => {
+  function resolution(effects: Partial<EventResolution["effects"]>, buildOverrides: Partial<ReturnType<typeof build>> = {}): EventResolution {
+    return {
+      build: build(buildOverrides),
+      effects: { ...emptySideEffects(), ...effects },
+      resultText: "",
+    };
+  }
+
+  it("accumulates granted relics onto any already owned", () => {
+    const merged = applyEventResolutionToBuild(resolution(
+      { relicIds: ["rel-blast-baffle"] },
+      { relicIds: ["rel-field-lattice"] },
+    ));
+    expect(merged.relicIds).toEqual(["rel-field-lattice", "rel-blast-baffle"]);
+  });
+
+  it("equips the last granted artifact, replacing any prior", () => {
+    const merged = applyEventResolutionToBuild(resolution(
+      { artifactIds: ["art-broodbreaker-seal"] },
+      { equippedArtifactId: "art-event-horizon-core" },
+    ));
+    expect(merged.equippedArtifactId).toBe("art-broodbreaker-seal");
+  });
+
+  it("keeps the prior artifact when none is granted", () => {
+    const merged = applyEventResolutionToBuild(resolution({}, { equippedArtifactId: "art-last-bastion-protocol" }));
+    expect(merged.equippedArtifactId).toBe("art-last-bastion-protocol");
+  });
+
+  it("adds max-health and weapon-slot bonuses on top of existing carriers", () => {
+    const merged = applyEventResolutionToBuild(resolution(
+      { maxHealthDelta: -20, weaponSlotsGranted: 1 },
+      { maxHealthBonus: -12, weaponSlotBonus: 1 },
+    ));
+    expect(merged.maxHealthBonus).toBe(-32);
+    expect(merged.weaponSlotBonus).toBe(2);
+  });
+
+  it("carries a real Shrine of Steel resolution end to end", () => {
+    const steel = encounterEventById("shrine-steel")!;
+    const slot = choiceById(steel, "forge-slot");
+    const resolved = resolveEventChoice(build({ health: 18 }), 18, slot, 0);
+    const merged = applyEventResolutionToBuild(resolved);
+    expect(merged.maxHealthBonus).toBe(-4);
+    expect(merged.weaponSlotBonus).toBe(1);
+    expect(merged.health).toBe(14);
   });
 });

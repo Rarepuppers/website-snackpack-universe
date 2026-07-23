@@ -115,11 +115,17 @@ describe("generateExpeditionMap", () => {
     expect(nodesOfType(map, "mini-boss")).toHaveLength(2);
     expect(nodesOfType(map, "supply-depot")).toHaveLength(2);
     expect(nodesOfType(map, "weapon-cache")).toHaveLength(2);
+    expect(nodesOfType(map, "shrine")).toHaveLength(1);
+    expect(nodesOfType(map, "event")).toHaveLength(2);
     expect(nodesOfType(map, "combat").length).toBeGreaterThan(0);
-    // Shrine/Event are defined types but not yet placed on live charts (Task 94
-    // review lab only), so they never appear in a generated map today.
-    expect(nodesOfType(map, "shrine")).toHaveLength(0);
-    expect(nodesOfType(map, "event")).toHaveLength(0);
+  });
+
+  it.each(SEEDS)("keeps shrine and event nodes out of the calm opening for seed %i", (seed) => {
+    const map = generateExpeditionMap(seed);
+    for (const node of [...nodesOfType(map, "shrine"), ...nodesOfType(map, "event")]) {
+      expect(node.column).toBeGreaterThan(1);
+      expect(node.column).toBeLessThan(EXPEDITION_COLUMNS - 1);
+    }
   });
 
   it.each(SEEDS)("opens calmly with ordinary combat for seed %i", (seed) => {

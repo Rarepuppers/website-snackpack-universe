@@ -112,17 +112,17 @@ const SHRINES: readonly EncounterEventDefinition[] = Object.freeze([
       {
         id: "forge-slot",
         label: "Bleed for a weapon slot",
-        detail: "-20 max health → +1 weapon slot",
-        requirement: { minMaxHealthAfterCost: 40 },
-        outcomes: [{ type: "maxHealth", delta: -20 }, { type: "grantWeaponSlot" }],
+        detail: "-4 max health → +1 weapon slot",
+        requirement: { minMaxHealthAfterCost: 10 },
+        outcomes: [{ type: "maxHealth", delta: -4 }, { type: "grantWeaponSlot" }],
         resultText: "The slab carves a new mount into your rig. You feel lighter, and less alive.",
       },
       {
         id: "forge-weapon",
         label: "Temper a weapon",
-        detail: "-12 max health → strengthen an owned weapon",
-        requirement: { minMaxHealthAfterCost: 40, minWeapons: 1 },
-        outcomes: [{ type: "maxHealth", delta: -12 }, { type: "strengthenWeapon", tiers: 1 }],
+        detail: "-3 max health → strengthen an owned weapon",
+        requirement: { minMaxHealthAfterCost: 10, minWeapons: 1 },
+        outcomes: [{ type: "maxHealth", delta: -3 }, { type: "strengthenWeapon", tiers: 1 }],
         resultText: "Your gun drinks the heat and comes back meaner.",
       },
       LEAVE_CHOICE,
@@ -172,9 +172,9 @@ const SHRINES: readonly EncounterEventDefinition[] = Object.freeze([
       {
         id: "accept-graft",
         label: "Let it feed",
-        detail: "-15 health now → heal to full and gain 15 shield",
-        requirement: { minHealth: 16 },
-        outcomes: [{ type: "damage", amount: 15 }, { type: "healToFull" }, { type: "grantShield", amount: 15 }],
+        detail: "-4 health now → heal to full and gain 5 shield",
+        requirement: { minHealth: 5 },
+        outcomes: [{ type: "damage", amount: 4 }, { type: "healToFull" }, { type: "grantShield", amount: 5 }],
         resultText: "It bites deep, then seals you whole under a film of living plate.",
       },
       LEAVE_CHOICE,
@@ -264,11 +264,11 @@ const EVENTS: readonly EncounterEventDefinition[] = Object.freeze([
       {
         id: "share-supplies",
         label: "Share your supplies",
-        detail: "-10 health → they mark a cache for you",
-        requirement: { minHealth: 11 },
+        detail: "-3 health → they mark a cache for you",
+        requirement: { minHealth: 4 },
         randomOutcomes: [
-          { weight: 3, resultText: "Grateful, they hand you a relic pulled from the wreck.", outcomes: [{ type: "damage", amount: 10 }, { type: "grantRelic" }] },
-          { weight: 2, resultText: "They point you to a scrap stash before slipping away.", outcomes: [{ type: "damage", amount: 10 }, { type: "scrap", delta: 40 }] },
+          { weight: 3, resultText: "Grateful, they hand you a relic pulled from the wreck.", outcomes: [{ type: "damage", amount: 3 }, { type: "grantRelic" }] },
+          { weight: 2, resultText: "They point you to a scrap stash before slipping away.", outcomes: [{ type: "damage", amount: 3 }, { type: "scrap", delta: 40 }] },
         ],
       },
       {
@@ -293,7 +293,7 @@ const EVENTS: readonly EncounterEventDefinition[] = Object.freeze([
         label: "Trace the beacon",
         randomOutcomes: [
           { weight: 3, resultText: "A dead operative's kit — you recover their relic.", outcomes: [{ type: "grantRelic" }] },
-          { weight: 2, resultText: "A supply drop, untouched.", outcomes: [{ type: "scrap", delta: 35 }, { type: "heal", amount: 6 }] },
+          { weight: 2, resultText: "A supply drop, untouched.", outcomes: [{ type: "scrap", delta: 35 }, { type: "heal", amount: 3 }] },
           { weight: 3, resultText: "The beacon was a lure. They close in fast.", outcomes: [{ type: "ambush", threatBudget: 65 }] },
         ],
       },
@@ -313,8 +313,8 @@ const EVENTS: readonly EncounterEventDefinition[] = Object.freeze([
         detail: "Reprogram the forge — risky",
         randomOutcomes: [
           { weight: 3, resultText: "The forge stamps you a fresh weapon mount before dying.", outcomes: [{ type: "grantWeaponSlot" }] },
-          { weight: 2, resultText: "It bleeds its reserve into your rig.", outcomes: [{ type: "grantShield", amount: 20 }] },
-          { weight: 3, resultText: "A feedback surge arcs through your armour.", outcomes: [{ type: "damage", amount: 14 }] },
+          { weight: 2, resultText: "It bleeds its reserve into your rig.", outcomes: [{ type: "grantShield", amount: 6 }] },
+          { weight: 3, resultText: "A feedback surge arcs through your armour.", outcomes: [{ type: "damage", amount: 4 }] },
         ],
       },
       {
@@ -337,9 +337,9 @@ const EVENTS: readonly EncounterEventDefinition[] = Object.freeze([
       {
         id: "push-through",
         label: "Push through the bloom",
-        detail: "-12 health → reach the glint",
-        requirement: { minHealth: 13 },
-        outcomes: [{ type: "damage", amount: 12 }, { type: "scrap", delta: 40 }],
+        detail: "-4 health → reach the glint",
+        requirement: { minHealth: 5 },
+        outcomes: [{ type: "damage", amount: 4 }, { type: "scrap", delta: 40 }],
         resultText: "You wade through, coughing, and pry loose a cache on the far side.",
       },
       {
@@ -365,7 +365,7 @@ const EVENTS: readonly EncounterEventDefinition[] = Object.freeze([
         randomOutcomes: [
           { weight: 4, resultText: "You haul out a working weapon and its mount.", outcomes: [{ type: "grantWeaponSlot" }] },
           { weight: 3, resultText: "A relic in a sealed field case.", outcomes: [{ type: "grantRelic" }] },
-          { weight: 2, resultText: "The stack was booby-trapped.", outcomes: [{ type: "damage", amount: 10 }] },
+          { weight: 2, resultText: "The stack was booby-trapped.", outcomes: [{ type: "damage", amount: 3 }] },
         ],
       },
       {
@@ -390,8 +390,8 @@ const EVENTS: readonly EncounterEventDefinition[] = Object.freeze([
         label: "Trust the autodoc",
         detail: "Heal, but the medicine is tainted",
         randomOutcomes: [
-          { weight: 3, resultText: "It patches you clean and deep.", outcomes: [{ type: "heal", amount: 20 }] },
-          { weight: 2, resultText: "It heals — and something takes hold under your skin.", outcomes: [{ type: "heal", amount: 24 }, { type: "damage", amount: 6 }] },
+          { weight: 3, resultText: "It patches you clean and deep.", outcomes: [{ type: "heal", amount: 6 }] },
+          { weight: 2, resultText: "It heals — and something takes hold under your skin.", outcomes: [{ type: "heal", amount: 7 }, { type: "damage", amount: 2 }] },
         ],
       },
       {
@@ -422,9 +422,9 @@ const EVENTS: readonly EncounterEventDefinition[] = Object.freeze([
       {
         id: "sell-blood",
         label: "Sell them a favour",
-        detail: "-14 health → +45 scrap",
-        requirement: { minHealth: 15 },
-        outcomes: [{ type: "damage", amount: 14 }, { type: "scrap", delta: 45 }],
+        detail: "-4 health → +45 scrap",
+        requirement: { minHealth: 5 },
+        outcomes: [{ type: "damage", amount: 4 }, { type: "scrap", delta: 45 }],
         resultText: "You do the dangerous errand; they pay in hard scrap.",
       },
       LEAVE_CHOICE,
@@ -658,6 +658,29 @@ function pickRelic(pool: readonly RelicId[], roll: number, already: readonly Rel
   const choices = available.length > 0 ? available : pool;
   const index = Math.min(choices.length - 1, Math.floor(roll * choices.length));
   return choices[index]!;
+}
+
+/**
+ * Folds a resolution's carried side-effects into the run build: relics
+ * accumulate, the last granted artifact becomes equipped, and the max-health
+ * and weapon-slot bonuses add on. `resolution.build` already holds the applied
+ * health/shield/scrap/experience/weapon changes; this layers the reward-item
+ * carrier on top so the in-run event screen can commit one snapshot. Ambush and
+ * next-node modifiers are handled by the run, not the build.
+ */
+export function applyEventResolutionToBuild(resolution: EventResolution): ExpeditionBuildSnapshot {
+  const { build, effects } = resolution;
+  const relicIds = [...(build.relicIds ?? []), ...effects.relicIds];
+  const equippedArtifactId = effects.artifactIds.length > 0
+    ? effects.artifactIds[effects.artifactIds.length - 1]!
+    : build.equippedArtifactId ?? null;
+  return {
+    ...build,
+    relicIds,
+    equippedArtifactId,
+    maxHealthBonus: (build.maxHealthBonus ?? 0) + effects.maxHealthDelta,
+    weaponSlotBonus: (build.weaponSlotBonus ?? 0) + effects.weaponSlotsGranted,
+  };
 }
 
 /**

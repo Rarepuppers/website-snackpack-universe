@@ -86,7 +86,7 @@ function assertCloudEnvelope(value: unknown): asserts value is CloudSaveEnvelope
   if (typeof envelope.deviceId !== "string" || envelope.deviceId.length === 0
     || !Number.isSafeInteger(envelope.revision) || (envelope.revision ?? -1) < 0
     || !Number.isFinite(envelope.updatedAtMs) || (envelope.updatedAtMs ?? -1) < 0
-    || !envelope.save || envelope.save.version !== 8) {
+    || !envelope.save || envelope.save.version !== 9) {
     throw new Error("Cloud save envelope is invalid");
   }
 }

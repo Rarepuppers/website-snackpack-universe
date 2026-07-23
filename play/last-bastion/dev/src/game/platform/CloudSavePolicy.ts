@@ -19,7 +19,7 @@ export interface CloudSaveResolution {
  * User preferences and the active run come from the deterministic newer side.
  */
 export function resolveCloudSaveConflict(local: CloudSaveEnvelope, remote: CloudSaveEnvelope): CloudSaveResolution {
-  if (local.save.version !== 8 || remote.save.version !== 8) throw new Error("Cloud save schema is unsupported");
+  if (local.save.version !== 9 || remote.save.version !== 9) throw new Error("Cloud save schema is unsupported");
   const remotePreferred = compareEnvelope(remote, local) > 0;
   const preferred = remotePreferred ? remote : local;
   const secondary = remotePreferred ? local : remote;
@@ -33,7 +33,7 @@ export function resolveCloudSaveConflict(local: CloudSaveEnvelope, remote: Cloud
     preference: remotePreferred ? "remote" : "local",
     divergentActiveRuns,
     save: {
-      version: 8,
+      version: 9,
       settings: { ...preferred.save.settings },
       controls: normalizeControlBindings(preferred.save.controls),
       progress: {

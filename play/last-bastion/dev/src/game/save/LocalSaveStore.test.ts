@@ -60,7 +60,7 @@ describe("LocalSaveStore", () => {
       [SAVE_STORAGE_KEY]: JSON.stringify({ ...DEFAULT_SAVE, version: 6, controls: undefined }),
     });
     const migrated = new LocalSaveStore(storage);
-    expect(migrated.load().version).toBe(8);
+    expect(migrated.load().version).toBe(9);
     expect(migrated.load().controls.keyboard.evade).toBe("Space");
     const keyboard = rebindKeyboard(migrated.load().controls, "evade", "KeyF");
     const remapped = rebindGamepad(keyboard, "kit", "north");
@@ -247,7 +247,7 @@ describe("Save schema v2 — expedition autosave", () => {
       }),
     });
     const save = new LocalSaveStore(storage).load();
-    expect(save.version).toBe(8);
+    expect(save.version).toBe(9);
     expect(save.settings.screenShakeEnabled).toBe(false);
     expect(save.settings.cooldownTimersEnabled).toBe(false);
     expect(save.settings.autoFireEnabled).toBe(true);
@@ -281,6 +281,67 @@ describe("Save schema v2 — expedition autosave", () => {
     const cleared = new LocalSaveStore(storage).clearExpedition();
     expect(cleared.expedition).toBeNull();
     expect(new LocalSaveStore(storage).load().expedition).toBeNull();
+  });
+
+  it("round-trips the schema-v9 Shrine/Event reward carrier and sanitizes junk", () => {
+    const storage = fakeStorage({});
+    new LocalSaveStore(storage).saveExpedition({
+      mapSeed: 7, currentNodeId: 5, clearedNodeIds: [1, 5],
+      build: {
+        health: 30, shield: 0, level: 5, experience: 0, scrap: 40,
+        weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }],
+        upgrades: [],
+        relicIds: ["rel-blast-baffle", "rel-field-lattice"],
+        equippedArtifactId: "art-event-horizon-core",
+        maxHealthBonus: -20,
+        weaponSlotBonus: 1,
+      },
+      metrics: { kills: 0, scrapEarned: 0, damageByWeapon: {} },
+    });
+    const reloaded = new LocalSaveStore(storage).load();
+    expect(reloaded.version).toBe(9);
+    expect(reloaded.expedition?.build?.relicIds).toEqual(["rel-blast-baffle", "rel-field-lattice"]);
+    expect(reloaded.expedition?.build?.equippedArtifactId).toBe("art-event-horizon-core");
+    expect(reloaded.expedition?.build?.maxHealthBonus).toBe(-20);
+    expect(reloaded.expedition?.build?.weaponSlotBonus).toBe(1);
+
+    const junk = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        ...DEFAULT_SAVE,
+        expedition: {
+          mapSeed: 7, currentNodeId: 1, clearedNodeIds: [1],
+          build: {
+            health: 10, shield: 0, level: 2, experience: 0, scrap: 0, weapons: [], upgrades: [],
+            relicIds: ["rel-blast-baffle", "not-a-relic", "art-event-horizon-core"],
+            equippedArtifactId: "not-an-artifact",
+            maxHealthBonus: "oops", weaponSlotBonus: -3,
+          },
+          metrics: { kills: 0, scrapEarned: 0, damageByWeapon: {} },
+        },
+      }),
+    });
+    const cleaned = new LocalSaveStore(junk).load().expedition?.build;
+    expect(cleaned?.relicIds).toEqual(["rel-blast-baffle"]);
+    expect(cleaned?.equippedArtifactId).toBeNull();
+    expect(cleaned?.maxHealthBonus).toBe(0);
+    expect(cleaned?.weaponSlotBonus).toBe(0);
+  });
+
+  it("leaves a pre-v9 build without a reward carrier as empty defaults", () => {
+    const legacy = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        ...DEFAULT_SAVE, version: 8,
+        expedition: {
+          mapSeed: 9, currentNodeId: 1, clearedNodeIds: [1],
+          build: { health: 10, shield: 0, level: 2, experience: 0, scrap: 0, weapons: [], upgrades: [] },
+          metrics: { kills: 0, scrapEarned: 0, damageByWeapon: {} },
+        },
+      }),
+    });
+    const build = new LocalSaveStore(legacy).load().expedition?.build;
+    expect(build?.relicIds).toEqual([]);
+    expect(build?.equippedArtifactId).toBeNull();
+    expect(build?.maxHealthBonus).toBe(0);
   });
 
   it("migrates pre-transformation builds to an empty safe state and sanitizes malformed v8 data", () => {

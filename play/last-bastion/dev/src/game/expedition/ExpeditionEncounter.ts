@@ -91,6 +91,40 @@ export function expeditionEncounterForNode(
   };
 }
 
+/**
+ * A one-wave combat encounter synthesized for an Event node's `ambush` outcome
+ * (Task 94). The node stays pending until this combat is won, so a failed
+ * ambush ends the run exactly like any other lost fight.
+ */
+export function ambushEncounterForNode(
+  mapSeed: number,
+  node: ExpeditionNode,
+  threatBudget: number,
+): ExpeditionEncounterDescriptor {
+  const seed = mixSeed(mapSeed, node.id, node.column);
+  const budget = Math.max(20, Math.floor(threatBudget));
+  return {
+    nodeId: node.id,
+    kind: "combat",
+    column: node.column,
+    themeId: node.themeId,
+    seed,
+    directorWaveIndex: Math.max(0, Math.min(8, node.column)),
+    threatBudget: budget,
+    eliteKind: null,
+    miniBossKind: null,
+    eventId: null,
+    waves: Object.freeze([{
+      kind: "ordinary" as const,
+      directorWaveIndex: Math.max(0, Math.min(8, node.column)),
+      threatBudget: budget,
+      timerEndsWave: true,
+      eliteKind: null,
+      miniBossKind: null,
+    }]),
+  };
+}
+
 /** Route hand-off keeps the node id explicit while the save remains authority. */
 export function expeditionEncounterUrl(descriptor: ExpeditionEncounterDescriptor): string {
   const params = new URLSearchParams({
