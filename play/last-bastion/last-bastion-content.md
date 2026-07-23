@@ -1050,3 +1050,93 @@ Canonical **128 × 128** tile contract (`rel-`/`art-` id prefixes, transparent, 
 | Last Bastion Protocol (artifact) | A tight ivory weapon-ring formation snapping inward around a red core |
 
 Acceptance: relic/artifact tiles are silhouette-distinct from weapon tiles (no gun profiles), and each artifact tile visually ties to the run-defining effect it grants.
+
+## Content-expansion design — 23 July 2026 (creator-directed)
+
+Expansion brief: ~44 new events (Slay the Spire / FTL inspiration, Last Bastion twist), ~9 new artifacts, ~6 new weapons, and a Blood Market that trades HP / max HP for items and transformation. Execution phases and decisions are in `last-bastion-model.md` ("Content-expansion plan — 23 July 2026"). All events ship as pure data + tests in `EncounterEventCatalog.ts`, keep the mandatory Leave choice, and calibrate HP costs to the real 10-19 HP scale (base 10, +1/level). Cheap outcome types exist today; medium/big ones are added in Phases 2-3.
+
+### New events (44), grouped by family
+
+**Merchant / trade** (FTL beacons, StS Merchant)
+- Black Market Fence - buy a black-market relic/artifact at a premium, or sell one.
+- Weapon Smuggler - trade 2 weapons -> 1 of the next tier (Phase 2 transmogrify).
+- Ammo Runner - cheap consumable kits, bulk discount.
+- Scrap Broker - convert HP <-> scrap (blood-market lite).
+
+**Shrine / altar** (StS Golden Shrine, Transmogrifier, Duplicator, Purifier, Upgrade Shrine)
+- Altar of Ash - pray for scrap, or desecrate for a relic + a curse.
+- Cryo Shrine - cleanse one scar/curse/corruption (Phase 2).
+- Whispering Monolith - answer 3 questions, escalating risk/reward (Knowing Skull).
+- Forge of the Fallen - sacrifice a weapon -> random higher-tier weapon (Phase 2).
+- Duplication Vat - copy a weapon or relic (Phase 2).
+- Purifier Station - remove an unwanted upgrade or relic (Phase 2).
+- Requisition Terminal - upgrade one weapon a tier, free.
+
+**Rescue / survivor / NPC** (FTL distress, StS Cleric/Beggar/Dead Adventurer)
+- Stranded Squad - rescue -> reward, or a trap -> ambush.
+- Deserter's Cache - loot a corpse; risk reanimation ambush.
+- The Field Chaplain - pay scrap to heal/purify (Cleric).
+- Old Sergeant - give scrap -> a lasting blessing (Beggar).
+- Trapped Engineer - free them -> weapon upgrade, or betrayal.
+- Refugee Column - escort (ambush) for a relic, or wave them past.
+
+**Machine / tech** (StS Library/Living Wall/Bonfire, FTL automated scout, Scrap Ooze)
+- Rogue Server - download data: pick 1 upgrade from several (Library, Phase 2).
+- Assembly Line - mass-produce a chosen consumable x3.
+- Overloaded Power Grid - bleed it for scrap; risk shock damage.
+- Sentry Standoff - hack / fight / flee a turret.
+- Salvage Drone Swarm - fight tiny drones, scrap per kill.
+- EMP Cache - disable one weapon 45s (existing weapon-station object) -> big reward.
+
+**Void / cosmic / weird** (FTL sun hazard, StS Wheel/Falling/N'loth/Mind Bloom/Sensory Stone)
+- Star's Edge - cross a hazard for a shortcut + reward, taking chip damage.
+- Wheel of Fates - spin for one of six outcomes (Wheel of Change).
+- The Devourer's Dream - choose a vision: fight elite / relic / heal (Mind Bloom).
+- Gravity Well - lose a held item or take damage (Falling).
+- Whispering Cargo - trade a relic for a random better one (N'loth, Phase 2).
+- Anomaly Reading - free XP / insight (Sensory Stone).
+
+**Discovery / utility** (StS Fountain/Idol/Joust/Lab/Match-and-Keep/Wing Statue)
+- Field Hospital - full heal + one cleanse (Divine Fountain).
+- Golden Idol - grab treasure, spring a trap (damage/ambush).
+- The Joust - bet scrap on a coin-flip duel.
+- Abandoned Lab - grab 2-3 consumables.
+- Supply Cache Lockout - luck minigame -> keep items (Match and Keep).
+- Beacon of the Lost - heal, but pick up a curse; or leave (Wing Statue).
+
+**Blood Market / Transformation** (StS Vampires/Face Trader + creator brief; Phase 3, needs live transformations)
+- Blood Market - recurring node: trade current HP for scrap/consumables/relics.
+- Vampire Coven - pay max HP -> lifesteal (Alien Symbiosis feeding).
+- Fleshcraft Vat - pay max HP -> Alien Affinity + mutation boon.
+- Cybernetics Bay - pay max HP or a weapon -> Cyborg Affinity + augment.
+- The Designed Arrival - pay HP/a relic -> Cultist Affinity + doctrine (Church of the Designed Arrival).
+- Void Rift - step through -> Void Affinity + a scar.
+- Super-Soldier Serum - pay scrap + HP -> Bastion Super-Soldier Affinity.
+- Mutagen Pool - bathe -> Mutagenic Affinity + random stat swing.
+- Chimera Experiment - swap one stat for another (Face Trader).
+
+### New artifacts (9) - slot into RelicRunModifiers (Phase 1, cheap)
+
+| Artifact | Effect |
+| --- | --- |
+| Overclock Core | Fire rate ramps as you kill, resets when you stop firing |
+| Aegis Reactor | Shield recharges faster and starts sooner after damage |
+| Scavenger's Manifest | Doubles Scrap gained |
+| Berserker's Chip | Rising damage as health drops (max at critical) |
+| Chrono Capacitor | The evasive move also refunds a short cooldown |
+| Symbiote Heart | Small lifesteal on kills |
+| Bastion Beacon | Revive once per run at low health |
+| Null Field | Ignore the first hit of each wave |
+| Warp Anchor | Taking a big hit blinks you a short distance and drops a decoy |
+
+### New weapons (6 + Event Horizon) - behavior gates + art batches (Phase 4, art-gated)
+
+| Weapon | Class | Concept |
+| --- | --- | --- |
+| Railspike | Heavy/Unique | Slow charged piercing lance through a whole lane |
+| Seeker Swarm | Light | Volley of homing micro-missiles |
+| Cryo Lance | Medium | Sustained freeze beam building Freeze |
+| Tesla Coil | Light | Orbiting coil that arcs Shock to nearby enemies |
+| Flamethrower | Heavy | Short fire cone building Blaze |
+| Sawblade | Medium | Orbiting contact blade (physical) |
+| Event Horizon | Unique | Held preflight art - pull-and-implode gravitic field (finish the behavior gate) |

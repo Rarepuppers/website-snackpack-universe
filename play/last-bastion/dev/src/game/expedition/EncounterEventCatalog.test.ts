@@ -70,6 +70,21 @@ describe("catalog integrity", () => {
     expect(encounterEventById("event-derelict-dropship")?.kind).toBe("event");
     expect(encounterEventById("nope")).toBeNull();
   });
+
+  it("holds the expanded catalogue (11 shrines + 27 events)", () => {
+    const shrines = ENCOUNTER_EVENT_CATALOG.filter((event) => event.kind === "shrine");
+    const events = ENCOUNTER_EVENT_CATALOG.filter((event) => event.kind === "event");
+    expect(shrines).toHaveLength(11);
+    expect(events).toHaveLength(27);
+  });
+
+  it("resolves a new escort event into an ambush plus a relic", () => {
+    const refugee = encounterEventById("event-refugee-column")!;
+    const escort = refugee.choices.find((choice) => choice.id === "escort")!;
+    const result = resolveEventChoice(build(), 18, escort, 0);
+    expect(result.effects.ambush).not.toBeNull();
+    expect(result.effects.relicIds.length).toBe(1);
+  });
 });
 
 describe("column eligibility and selection", () => {

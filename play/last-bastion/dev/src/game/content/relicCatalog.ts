@@ -26,7 +26,11 @@ export type RelicId =
 export type ArtifactId =
   | "art-event-horizon-core"
   | "art-broodbreaker-seal"
-  | "art-last-bastion-protocol";
+  | "art-last-bastion-protocol"
+  | "art-scavengers-manifest"
+  | "art-symbiote-heart"
+  | "art-berserkers-chip"
+  | "art-aegis-reactor";
 
 export interface RelicDefinition {
   id: RelicId;
@@ -54,6 +58,10 @@ export const ARTIFACT_CATALOG: readonly ArtifactDefinition[] = Object.freeze([
   { id: "art-event-horizon-core", name: "Event Horizon Core", description: "Periodically turns your next projectile impact into a pull-and-implode event." },
   { id: "art-broodbreaker-seal", name: "Broodbreaker Seal", description: "Destroyed eggs damage nearby aliens and cannot hatch during their final crack window." },
   { id: "art-last-bastion-protocol", name: "Last Bastion Protocol", description: "At critical health your weapons brace into a tighter, faster formation; long cooldown." },
+  { id: "art-scavengers-manifest", name: "Scavenger's Manifest", description: "Doubles the Scrap you collect." },
+  { id: "art-symbiote-heart", name: "Symbiote Heart", description: "Killing an enemy restores a sliver of health." },
+  { id: "art-berserkers-chip", name: "Berserker's Chip", description: "The lower your health, the more damage you deal — up to +50% at critical." },
+  { id: "art-aegis-reactor", name: "Aegis Reactor", description: "Your shield recharges faster and starts sooner after taking damage." },
 ]);
 
 export const RELIC_IDS: readonly RelicId[] = Object.freeze(RELIC_CATALOG.map((relic) => relic.id));
@@ -95,6 +103,16 @@ export interface RelicRunModifiers {
   preventHatchDuringCrack: boolean;
   /** Last Bastion Protocol: brace the weapon ring at critical health. */
   criticalHealthBraceFormation: boolean;
+  /** Scavenger's Manifest: multiplier on all Scrap collected. */
+  scrapMultiplier: number;
+  /** Symbiote Heart: health restored per enemy kill. */
+  lifestealPerKill: number;
+  /** Berserker's Chip: extra outgoing-damage fraction at 0 health, scaling with missing health. */
+  berserkerMaxBonusDamage: number;
+  /** Aegis Reactor: multiplier on shield recharge rate (>1 is faster). */
+  shieldRechargeMultiplier: number;
+  /** Aegis Reactor: multiplier on the post-damage shield recharge delay (<1 is sooner). */
+  shieldRechargeDelayMultiplier: number;
 }
 
 export const NO_RELIC_MODIFIERS: Readonly<RelicRunModifiers> = Object.freeze({
@@ -113,6 +131,11 @@ export const NO_RELIC_MODIFIERS: Readonly<RelicRunModifiers> = Object.freeze({
   eggDeathDamage: 0,
   preventHatchDuringCrack: false,
   criticalHealthBraceFormation: false,
+  scrapMultiplier: 1,
+  lifestealPerKill: 0,
+  berserkerMaxBonusDamage: 0,
+  shieldRechargeMultiplier: 1,
+  shieldRechargeDelayMultiplier: 1,
 });
 
 export function isRelicId(value: unknown): value is RelicId {
@@ -179,6 +202,19 @@ export function resolveRelicModifiers(
         break;
       case "art-last-bastion-protocol":
         modifiers.criticalHealthBraceFormation = true;
+        break;
+      case "art-scavengers-manifest":
+        modifiers.scrapMultiplier = 2;
+        break;
+      case "art-symbiote-heart":
+        modifiers.lifestealPerKill = 0.15;
+        break;
+      case "art-berserkers-chip":
+        modifiers.berserkerMaxBonusDamage = 0.5;
+        break;
+      case "art-aegis-reactor":
+        modifiers.shieldRechargeMultiplier = 1.6;
+        modifiers.shieldRechargeDelayMultiplier = 0.5;
         break;
     }
   }

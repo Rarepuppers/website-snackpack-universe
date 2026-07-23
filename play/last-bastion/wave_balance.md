@@ -290,7 +290,7 @@ The Aurum Hoarder is a rare optional treasure creature, paid from an event reser
 
 **Rescaled 18 July 2026 to Brotato-style numbers.** The Marine starts at **10 health**; early enemies deal 1–3 damage and scale up. This puts player health on the same readable scale as the 2-damage starter rifle and 4-health Scuttler — every number in the game now lives in the same single-digit-to-tens range.
 
-- **Regeneration:** the Marine's baseline is **0.2 health per second, applied as one 0.6 tick every 3 seconds**. Regen never pauses in combat; its slowness is the balance. The `+1 support effect` package point and future Regeneration upgrades raise the per-second amount, never the tick rate — the 3-second cadence is a design constant so healing always reads as discrete visible ticks (small green `+0.6` floating text, same pipeline as damage numbers).
+- **Regeneration (nerfed 23 July 2026 so active healing matters):** the Marine's baseline is **0.05 health per second, applied as one 0.5 tick every 10 seconds** (was 0.2/s as 0.6 per 3 s — a ~4× cut). Passive regen is now a slow trickle, so Supply Depots, healing shrines/events, the Medic, and lifesteal are worth seeking out rather than a formality. The `+1 support effect` package point and future Regeneration upgrades raise the per-tick amount, never the 10-second cadence — the cadence is a design constant so healing always reads as discrete visible ticks (small green `+0.5` floating text, same pipeline as damage numbers).
 - Health is still balanced in **hits endured**:
 
 | Wave | Typical contact hit | Hits a fresh unupgraded Marine endures |
@@ -301,7 +301,7 @@ The Aurum Hoarder is a rare optional treasure creature, paid from an event reser
 
 - **Floor rule:** a levelled-but-undefended Marine must never drop below ~5 endured contact hits, and no single attack exceeds **5 damage (50% of a fresh Marine)** — and anything above 2.5 must carry the full 0.7 s telegraph.
 - If 20-second opening waves feel too safe, cut the wave 1–2 budgets rather than player health — the first forty seconds are the hook, and dying in them teaches nothing.
-- Future heroes differentiate by health and regen baseline (a tanky hero might start at 13–15 with the same regen; the Medic seed below 10 but with stronger support scaling). The Marine's 10 health / 0.2 regen is the tuning yardstick and does not move during this pass.
+- Future heroes differentiate by health and regen baseline (a tanky hero might start at 13–15 with the same regen; the Medic seed below 10 but with stronger support scaling). The Marine's 10 health / 0.05 regen is the tuning yardstick.
 
 ### Starting weapons and the acquisition schedule
 

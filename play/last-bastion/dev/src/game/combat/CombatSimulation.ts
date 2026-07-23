@@ -943,8 +943,12 @@ interface EquippedWeaponState extends EquippedWeapon {
 
 const TOTAL_WAVES = 10;
 export const PLAYER_MAX_HEALTH = 10;
-export const PLAYER_REGEN_INTERVAL_SECONDS = 3;
-export const PLAYER_REGEN_PER_SECOND = 0.2;
+// Deliberately weak passive regen (0.5 HP per 10s tick = 0.05 HP/s) so active
+// healing — Supply Depots, healing shrines/events, the Medic — is worth
+// seeking out. Support-effect and Regeneration upgrades scale the per-tick
+// amount, never the 10s cadence, so healing always reads as discrete ticks.
+export const PLAYER_REGEN_INTERVAL_SECONDS = 10;
+export const PLAYER_REGEN_PER_SECOND = 0.05;
 /** Authored raw hits against the Marine; exported so the no-one-shot rule is testable. */
 export const PLAYER_ATTACK_DAMAGE_BASELINES = Object.freeze({
   slimeGlob: 1.5,
@@ -3027,7 +3031,16 @@ export class CombatSimulation {
   }
 
   private weaponDamageMultiplier(weaponClass: WeaponClass): number {
-    return this.levelDamageMultiplier * (1 + this.weaponProficiencies[weaponClass] * 0.04);
+    return this.levelDamageMultiplier
+      * (1 + this.weaponProficiencies[weaponClass] * 0.04)
+      * this.berserkerDamageMultiplier();
+  }
+
+  /** Berserker's Chip artifact: outgoing damage rises as missing health grows. */
+  private berserkerDamageMultiplier(): number {
+    if (this.relicModifiers.berserkerMaxBonusDamage <= 0 || this.playerMaxHealth <= 0) return 1;
+    const missingFraction = Math.max(0, 1 - this.playerHealth / this.playerMaxHealth);
+    return 1 + this.relicModifiers.berserkerMaxBonusDamage * missingFraction;
   }
 
   private isBuffActive(type: PowerupType): boolean {
@@ -3066,7 +3079,8 @@ export class CombatSimulation {
     ) {
       this.playerShield = Math.min(
         this.defence.maxShield,
-        this.playerShield + this.defence.shieldRechargePerSecond * deltaSeconds,
+        // Aegis Reactor artifact speeds the recharge rate.
+        this.playerShield + this.defence.shieldRechargePerSecond * this.relicModifiers.shieldRechargeMultiplier * deltaSeconds,
       );
     }
   }
@@ -6682,7 +6696,8 @@ export class CombatSimulation {
     if (rawDamage <= 0 || this.playerInvulnerable || this.playerHurtCooldownSeconds > 0) return;
     const absorption = absorbWithShield(this.playerShield, rawDamage);
     this.playerShield = absorption.remainingShield;
-    this.shieldRechargeCooldownSeconds = this.defence.shieldRechargeDelaySeconds;
+    // Aegis Reactor artifact shortens the delay before the shield recharges.
+    this.shieldRechargeCooldownSeconds = this.defence.shieldRechargeDelaySeconds * this.relicModifiers.shieldRechargeDelayMultiplier;
     if (absorption.remainingDamage > 0) {
       const entrenchedBonus = this.isPlayerEntrenched() ? this.hero.passive.bonusArmour : 0;
       let mitigated = mitigateDamage(
@@ -7072,6 +7087,12 @@ export class CombatSimulation {
       enemyType: enemy.type,
       bestiaryKey: this.bestiaryKeyOf(enemy),
     });
+    // Symbiote Heart artifact: kills restore a sliver of health.
+    if (this.relicModifiers.lifestealPerKill > 0 && this.playerHealth < this.playerMaxHealth) {
+      const healed = Math.min(this.relicModifiers.lifestealPerKill, this.playerMaxHealth - this.playerHealth);
+      this.playerHealth += healed;
+      this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount: healed });
+    }
     if (enemy.type === "aurum-hoarder") {
       this.secureScrap(AURUM_HOARDER_KILL_SCRAP, "aurum-defeat", enemy.position);
       this.eliteRewards.push({
@@ -7170,12 +7191,14 @@ export class CombatSimulation {
     source: ScrapSource,
     position: Vector2Data,
   ): void {
-    this.securedScrap += amount;
-    this.runScrapEarned += Math.max(0, amount);
+    // Scavenger's Manifest artifact multiplies combat Scrap gains.
+    const scaled = amount * this.relicModifiers.scrapMultiplier;
+    this.securedScrap += scaled;
+    this.runScrapEarned += Math.max(0, scaled);
     this.frameEvents.push({
       type: "scrap-secured",
       position: { ...position },
-      amount,
+      amount: scaled,
       total: this.securedScrap,
       source,
     });
@@ -7390,9 +7413,8 @@ export class CombatSimulation {
     this.densitySpawnCapBlockedSeconds = 0;
     this.densityPeakEnemyProjectiles = this.enemyProjectiles.length;
     this.densityPressureSpawned = { pursuit: 0, ranged: 0, specialist: 0, boss: 0 };
-    if (index >= 1) {
-      this.spawnPowerup(POWERUP_WAVE_CYCLE[(index - 1) % POWERUP_WAVE_CYCLE.length]!);
-    }
+    // Powerups from the first wave (was wave 2) — consumables should be common.
+    this.spawnPowerup(POWERUP_WAVE_CYCLE[index % POWERUP_WAVE_CYCLE.length]!);
     // Seeded supply chest: at most one alive, never on the teaching or boss waves.
     if (
       index >= 2
@@ -7483,6 +7505,8 @@ export class CombatSimulation {
       this.waveThreatBudget = wave.threatBudget;
       this.waveDurationSeconds = wave.durationSeconds;
       this.waveEndsOnTimer = wave.timerEndsWave;
+      // Expedition combat now drops one powerup per wave too (previously none).
+      this.spawnPowerup(POWERUP_WAVE_CYCLE[index % POWERUP_WAVE_CYCLE.length]!);
       return;
     }
 

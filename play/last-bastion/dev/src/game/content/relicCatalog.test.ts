@@ -13,11 +13,11 @@ import {
 } from "./relicCatalog";
 
 describe("relic/artifact catalog integrity", () => {
-  it("has six relics and three artifacts with unique ids and copy", () => {
+  it("has six relics and seven artifacts with unique ids and copy", () => {
     expect(RELIC_CATALOG).toHaveLength(6);
-    expect(ARTIFACT_CATALOG).toHaveLength(3);
+    expect(ARTIFACT_CATALOG).toHaveLength(7);
     expect(new Set(RELIC_IDS).size).toBe(6);
-    expect(new Set(ARTIFACT_IDS).size).toBe(3);
+    expect(new Set(ARTIFACT_IDS).size).toBe(7);
     for (const relic of RELIC_CATALOG) {
       expect(relic.id.startsWith("rel-")).toBe(true);
       expect(relic.name.length).toBeGreaterThan(0);
@@ -97,5 +97,17 @@ describe("resolveRelicModifiers", () => {
     const bag = resolveRelicModifiers(["rel-salvaged-capacitor"], "art-last-bastion-protocol");
     expect(bag.chainArcEveryNthAttack).toBe(5);
     expect(bag.criticalHealthBraceFormation).toBe(true);
+  });
+
+  it("resolves the four wired artifacts to their combat modifiers", () => {
+    expect(resolveRelicModifiers([], "art-scavengers-manifest").scrapMultiplier).toBe(2);
+    expect(resolveRelicModifiers([], "art-symbiote-heart").lifestealPerKill).toBeGreaterThan(0);
+    expect(resolveRelicModifiers([], "art-berserkers-chip").berserkerMaxBonusDamage).toBe(0.5);
+    const aegis = resolveRelicModifiers([], "art-aegis-reactor");
+    expect(aegis.shieldRechargeMultiplier).toBeGreaterThan(1);
+    expect(aegis.shieldRechargeDelayMultiplier).toBeLessThan(1);
+    // The neutral bag leaves them all inert.
+    expect(NO_RELIC_MODIFIERS.scrapMultiplier).toBe(1);
+    expect(NO_RELIC_MODIFIERS.lifestealPerKill).toBe(0);
   });
 });

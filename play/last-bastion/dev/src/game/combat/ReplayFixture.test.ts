@@ -97,7 +97,9 @@ describe("versioned fixed-step replay fixture", () => {
     expect(first).toEqual(second);
     expect(first.encountersRun).toBe(3);
     expect(first.framesRun).toBe(720);
-    expect(first.digest).toBe("592fb73a");
+    // Golden digest updated 23 July 2026: expedition waves now spawn one
+    // powerup each (consumables-more-common pass), a deterministic sim change.
+    expect(first.digest).toBe("84fc796d");
     expect(runCombatReplaySequence([...fixtures].reverse()).digest).not.toBe(first.digest);
     expect(() => runCombatReplaySequence([])).toThrow("at least one encounter");
   });

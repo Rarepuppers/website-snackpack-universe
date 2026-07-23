@@ -53,6 +53,13 @@ describe("combat relic/reward integration (Task 94 step 2)", () => {
     expect(snapshot.rewardWeaponSlotBonus).toBe(1);
   });
 
+  it("constructs cleanly with each wired artifact equipped", () => {
+    for (const artifact of ["art-scavengers-manifest", "art-symbiote-heart", "art-berserkers-chip", "art-aegis-reactor"] as const) {
+      const sim = new CombatSimulation({ autoStartWaves: false, startingBuild: build({ equippedArtifactId: artifact }) });
+      expect(sim.snapshot().equippedArtifactId).toBe(artifact);
+    }
+  });
+
   it("leaves a run with no reward carrier at neutral defaults", () => {
     const sim = new CombatSimulation({ autoStartWaves: false, startingBuild: build() });
     const snapshot = sim.snapshot();

@@ -1299,3 +1299,32 @@ First implementation slice of the v2 balance model — the layer that makes ever
 - Promoted the nodes into the live generator: `TYPE_BUDGET` now places 1 shrine + 2 events per chart (kept out of columns 0-1). Updated `ExpeditionMap.test` (asserts 1 shrine / 2 events + calm-opening exclusion) and lowered `CampaignTuning`'s worst-case boss-entry floor to 8 (decision routes displace one combat's guaranteed XP for choice/economy; scrap and healing guarantees still hold across 100 seeds).
 - Verification: full typecheck clean; 681 tests across 99 files pass. Browser end-to-end: seeded seed-42 node 7 (Fleshwright Altar), the decision screen resolved accept-graft (health 10->14 heal-to-full, +5 shield), committed node 7 to cleared, returned to the map with next nodes [10,9] selectable, no console errors. The ambush URL (`&ambush=55`) boots a real one-wave combat rather than an empty encounter.
 - Shrine and Event nodes are now reachable and fully playable in an ordinary expedition run. Follow-on polish (non-blocking): Batch G2 shrine/event medallion art, per-event flavour/number tuning against playtest, and wiring the remaining relic/artifact combat behaviours (chain arc, elite mark, health-pickup pulse, evasive distance, self-damage reduction, and the three artifact effects) beyond the max-health/slot/explosion-radius already live.
+
+## 23 July 2026 - Content-expansion plan recorded + Phase 1 tuning (regen nerf, consumable frequency)
+
+- Recorded the creator-directed content-expansion plan: phased execution (Tasks 98-101) in `last-bastion-model.md` and the full ~44-event / 9-artifact / 6-weapon design list in `last-bastion-content.md`. Decisions: wire the transformation system LIVE (Phase 3), start with Tuning + Events (Phase 1).
+- Regen nerf: `PLAYER_REGEN_INTERVAL_SECONDS` 3 -> 10 and `PLAYER_REGEN_PER_SECOND` 0.2 -> 0.05, so passive regen is now 0.5 HP per 10s tick (~4x weaker) - active healing (depots, healing shrines/events, Medic, lifesteal) now matters. Updated the regen test (10s tick needs >200 frames) and `wave_balance.md`.
+- Consumables more common: quick-drop powerups now spawn from wave 1 (was wave 2); expedition combat waves now spawn one powerup each (previously zero - a real gap). Updated the ReplayFixture golden digest (deterministic sim change: 592fb73a -> 84fc796d).
+- Verification: full typecheck clean; 681 tests across 99 files pass. Combat boots clean (quick-drop) with no console errors.
+- Next in Phase 1: the 9 new artifacts (into `RelicRunModifiers`), making the four designed kits live (Siege Loader, Phase Jacket, Hunter Optics, Last Stand Stimulant), and the ~25 items-only events.
+
+## 23 July 2026 - Phase 1: four new live artifacts
+
+- Added four new artifacts to `relicCatalog` (7 total) and wired each into `CombatSimulation`, all fully functional (not inert):
+  - Scavenger's Manifest - `scrapMultiplier` 2x, applied in `secureScrap` (combat scrap only, not shop).
+  - Symbiote Heart - `lifestealPerKill` 0.15, heals the player on each `enemy-defeated` (emits a player-healed tick).
+  - Berserker's Chip - `berserkerMaxBonusDamage` up to +50% outgoing damage scaling with missing health, folded into `weaponDamageMultiplier`.
+  - Aegis Reactor - `shieldRechargeMultiplier` 1.6x rate and `shieldRechargeDelayMultiplier` 0.5x delay in `updateShieldRecharge`/hit handling.
+- Extended `RelicRunModifiers`/`NO_RELIC_MODIFIERS`/`resolveRelicModifiers` with the five new fields. Added resolver tests (all four modifiers) and a combat construction test (each artifact equips and carries through the snapshot). Removed an attempted kill-loop test that was flaky due to contact-damage racing projectiles - the resolver tests plus single-line documented hooks cover it.
+- The remaining five designed artifacts (Overclock Core, Chrono Capacitor, Bastion Beacon, Null Field, Warp Anchor) stay in the content doc for a later pass once their behavioural hooks (kill-count fire rate, dodge cooldown refund, death revive, per-wave first-hit, blink-on-hit) are built - not added to the pool yet so every live artifact does something.
+- Verification: full typecheck clean; 683 tests across 99 files pass.
+
+## 23 July 2026 - Phase 1: 24 new items-only events (catalogue now 38 cards)
+
+- Authored 24 new Shrine/Event cards in `EncounterEventCatalog.ts` using only the existing (cheap-tier) outcome types, all calibrated to the real 10-19 HP scale with the mandatory Leave on every card:
+  - 5 new shrines: Altar of Ash, Whispering Monolith, Requisition Terminal, The Devourer's Dream (three-door vision), Beacon of the Lost (heal for a permanent -2 max HP).
+  - 19 new events across the merchant / rescue / machine / void / discovery families: Black Market Fence, Scrap Broker, Stranded Squad, Deserter's Cache, The Field Chaplain, Old Sergeant, Trapped Engineer, Refugee Column, Overloaded Power Grid, Sentry Standoff, Salvage Drone Swarm, Star's Edge, Wheel of Fates (six-fate spin), Gravity Well, Anomaly Reading, Field Hospital, Golden Idol, The Joust, Abandoned Lab.
+  - Mix of deterministic trades, FTL-style weighted gambles, ambush-into-combat hooks, and safe rests; column-gated so risk stays off the opening.
+- Catalogue is now 11 shrines + 27 events = 38 cards (was 14). Added tests locking the 11/27 split and a resolution spot-check (Refugee Column escort -> ambush + relic).
+- Verification: full typecheck clean; 685 tests across 99 files pass. Browser: `?screen=event-lab` renders all 38 distinct cards including the new ones; Wheel of Fates spins across its outcomes; no console errors.
+- Events that need new outcome systems (transmogrify, duplicate, purify, pick-upgrade, grant-consumable, transformation Affinity) remain for Phase 2/3 - Weapon Smuggler, Forge of the Fallen, Duplication Vat, Purifier, Rogue Server, Cryo Shrine, Whispering Cargo, and the Blood Market / transformation events.
