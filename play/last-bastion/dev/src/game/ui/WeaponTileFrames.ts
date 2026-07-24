@@ -11,5 +11,8 @@ export function canonicalWeaponTileFrame(weaponId: WeaponId): number {
     case "bulwark-rotary-cannon": return 5;
     case "injector-carbine": return 6;
     case "bastion-service-rifle": return 7;
+    // Railspike has no Batch I tile yet (art pending, Phase 4); reuses the
+    // rifle's frame as a placeholder until its own atlas slot is produced.
+    case "railspike": return 7;
   }
 }

@@ -192,6 +192,12 @@ import {
   createTransformationAffinityState,
   type TransformationAffinityState,
 } from "../transformations/TransformationAffinity";
+import {
+  resolveTransformationModifiers,
+  TRANSFORMATION_CLOSE_RANGE_METRES,
+  TRANSFORMATION_LONG_RANGE_METRES,
+  type TransformationRunModifiers,
+} from "../transformations/TransformationRunModifiers";
 import { resolvePerkModifiers, type PerkId, type PerkRunModifiers } from "../perks/perkCatalog";
 import {
   resolveRelicModifiers,
@@ -1161,6 +1167,7 @@ export class CombatSimulation {
   private readonly perkModifiers: PerkRunModifiers;
   private readonly activePerkId: PerkId | null;
   private readonly transformation: TransformationAffinityState;
+  private readonly transformationModifiers: TransformationRunModifiers;
   /** Run-long reward items (Task 94), resolved into combat effects and carried through the snapshot. */
   private readonly relicModifiers: RelicRunModifiers;
   private readonly ownedRelicIds: readonly RelicId[];
@@ -1255,6 +1262,7 @@ export class CombatSimulation {
     this.transformation = options.startingBuild?.transformation
       ? cloneTransformationAffinityState(options.startingBuild.transformation)
       : createTransformationAffinityState();
+    this.transformationModifiers = resolveTransformationModifiers(this.transformation);
     this.perkModifiers = resolvePerkModifiers(this.activePerkId);
     this.ownedRelicIds = options.startingBuild?.relicIds ? [...options.startingBuild.relicIds] : [];
     this.equippedArtifactId = options.startingBuild?.equippedArtifactId ?? null;
@@ -1325,6 +1333,12 @@ export class CombatSimulation {
       this.level = this.perkModifiers.startingLevel;
       this.applyLevelGrowth();
     }
+    // Committed transformation path effects (Phase 3), applied once on top of
+    // whichever base defence/health the branch above resolved.
+    this.defence.armour += this.transformationModifiers.armourBonus;
+    this.defence.maxShield += this.transformationModifiers.maxShieldBonus;
+    this.playerMaxHealth = Math.max(3, Math.round(this.playerMaxHealth * this.transformationModifiers.maxHealthMultiplier));
+    this.playerHealth = Math.min(this.playerHealth, this.playerMaxHealth);
 
     if (this.expeditionEncounter !== null) {
       this.populateExpeditionEncounter(this.expeditionEncounter);
@@ -1439,6 +1453,7 @@ export class CombatSimulation {
       if (this.isBuffActive("last-stand-stimulant")) {
         movementMultiplier *= LAST_STAND_STIMULANT_MOVE_MULTIPLIER;
       }
+      movementMultiplier *= this.transformationModifiers.movementSpeedMultiplier;
     }
 
     if (intent.ultimatePressed && this.ultimateCooldownRemainingSeconds <= 0) {
@@ -2314,7 +2329,7 @@ export class CombatSimulation {
   private applySupplyChoice(optionId: string): void {
     switch (optionId) {
       case "patch-up":
-        this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + SUPPLY_DEPOT_HEAL * this.supportEffectMultiplier);
+        this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + SUPPLY_DEPOT_HEAL * this.supportEffectMultiplier * this.transformationModifiers.healingReceivedMultiplier);
         break;
       case "field-armoury": {
         const armoury = this.buildUpgradeDecision();
@@ -2323,7 +2338,7 @@ export class CombatSimulation {
         } else {
           // Everything is maxed; fall back to the heal so the choice
           // is never wasted.
-          this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + SUPPLY_DEPOT_HEAL * this.supportEffectMultiplier);
+          this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + SUPPLY_DEPOT_HEAL * this.supportEffectMultiplier * this.transformationModifiers.healingReceivedMultiplier);
         }
         break;
       }
@@ -2821,7 +2836,8 @@ export class CombatSimulation {
         remainingSeconds: weapon.stats.projectileLifetimeSeconds,
         pierceRemaining: weapon.stats.pierceCount,
         // Blast Baffle relic slightly enlarges the hero's own explosions.
-        explosionRadiusMetres: weapon.stats.explosionRadiusMetres * this.relicModifiers.explosionRadiusMultiplier,
+        explosionRadiusMetres: weapon.stats.explosionRadiusMetres
+          * this.relicModifiers.explosionRadiusMultiplier * this.transformationModifiers.explosionRadiusMultiplier,
         knockbackMetres: weapon.stats.knockbackMetres,
         chainRemaining: weapon.stats.chainCount,
         chainRadiusMetres: weapon.stats.chainRadiusMetres,
@@ -2868,7 +2884,8 @@ export class CombatSimulation {
       this.damageEnemy(
         enemy,
         weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats.weaponClass)
-          * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(enemy),
+          * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(enemy)
+          * this.transformationRangeDamageMultiplier(distance(anchor, enemy.position)),
         weapon.stats.damageType,
         weapon.weaponId,
       );
@@ -2933,7 +2950,7 @@ export class CombatSimulation {
 
   private fireUltimate(): void {
     const ultimate = this.hero.ultimate;
-    this.ultimateCooldownRemainingSeconds = ultimate.cooldownSeconds;
+    this.ultimateCooldownRemainingSeconds = ultimate.cooldownSeconds * this.transformationModifiers.ultimateCooldownMultiplier;
     if (this.hero.id === "medic") {
       const result = this.applyMedicHealing(
         (ultimate.healAmount ?? 0) * this.supportEffectMultiplier,
@@ -3060,7 +3077,8 @@ export class CombatSimulation {
   private currentAttackSpeedMultiplier(): number {
     return this.defence.attackSpeedMultiplier
       * (this.isBuffActive("overcharge") ? OVERCHARGE_ATTACK_SPEED_MULTIPLIER : 1)
-      * (this.isBuffActive("last-stand-stimulant") ? LAST_STAND_STIMULANT_ATTACK_SPEED_MULTIPLIER : 1);
+      * (this.isBuffActive("last-stand-stimulant") ? LAST_STAND_STIMULANT_ATTACK_SPEED_MULTIPLIER : 1)
+      * this.transformationModifiers.fireRateMultiplier;
   }
 
   private currentPowerupDamageMultiplier(): number {
@@ -3077,7 +3095,15 @@ export class CombatSimulation {
   private weaponDamageMultiplier(weaponClass: WeaponClass): number {
     return this.levelDamageMultiplier
       * (1 + this.weaponProficiencies[weaponClass] * 0.04)
-      * this.berserkerDamageMultiplier();
+      * this.berserkerDamageMultiplier()
+      * (weaponClass === "heavy" ? this.transformationModifiers.heavyWeaponDamageMultiplier : 1);
+  }
+
+  /** Psionic Sniper / Tunnel Focus-style transformation effects: damage scales with range to the target. */
+  private transformationRangeDamageMultiplier(distanceMetres: number): number {
+    if (distanceMetres > TRANSFORMATION_LONG_RANGE_METRES) return this.transformationModifiers.longRangeDamageMultiplier;
+    if (distanceMetres < TRANSFORMATION_CLOSE_RANGE_METRES) return this.transformationModifiers.closeRangeDamageMultiplier;
+    return 1;
   }
 
   /** Berserker's Chip artifact: outgoing damage rises as missing health grows. */
@@ -3107,10 +3133,13 @@ export class CombatSimulation {
     if (this.regenerationRemainingSeconds > 0) return;
     this.regenerationRemainingSeconds += PLAYER_REGEN_INTERVAL_SECONDS;
     if (this.playerHealth >= this.playerMaxHealth) return;
+    const perSecondRate = PLAYER_REGEN_PER_SECOND + this.transformationModifiers.regenerationPerSecondBonus;
     const amount = Math.min(
-      PLAYER_REGEN_PER_SECOND * PLAYER_REGEN_INTERVAL_SECONDS * this.supportEffectMultiplier,
+      Math.max(0, perSecondRate) * PLAYER_REGEN_INTERVAL_SECONDS
+        * this.supportEffectMultiplier * this.transformationModifiers.healingReceivedMultiplier,
       this.playerMaxHealth - this.playerHealth,
     );
+    if (amount <= 0) return;
     this.playerHealth += amount;
     this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount });
   }
@@ -3124,7 +3153,8 @@ export class CombatSimulation {
       this.playerShield = Math.min(
         this.defence.maxShield,
         // Aegis Reactor artifact speeds the recharge rate.
-        this.playerShield + this.defence.shieldRechargePerSecond * this.relicModifiers.shieldRechargeMultiplier * deltaSeconds,
+        this.playerShield + this.defence.shieldRechargePerSecond
+          * this.relicModifiers.shieldRechargeMultiplier * this.transformationModifiers.shieldRechargeMultiplier * deltaSeconds,
       );
     }
   }
@@ -3265,7 +3295,7 @@ export class CombatSimulation {
             projectile.uraniumEligible ? this.currentPowerupDamageMultiplier() : 1
           ) * (
             projectile.uraniumEligible ? this.eliteMarkDamageMultiplier(enemy) : 1
-          ),
+          ) * this.transformationRangeDamageMultiplier(distance(this.playerPosition, enemy.position)),
           projectile.damageType,
           projectile.weaponId,
         );
@@ -6779,8 +6809,8 @@ export class CombatSimulation {
 
   private updateExperiencePickups(deltaSeconds: number): void {
     const magnetBoost = this.isBuffActive("magnet-pulse") ? MAGNET_PULSE_MULTIPLIER : 1;
-    const attractionRadius = 2.2 * this.magnetMultiplier * magnetBoost;
-    const collectionRadius = 0.5 * this.magnetMultiplier * magnetBoost;
+    const attractionRadius = 2.2 * this.magnetMultiplier * magnetBoost * this.transformationModifiers.pickupRadiusMultiplier;
+    const collectionRadius = 0.5 * this.magnetMultiplier * magnetBoost * this.transformationModifiers.pickupRadiusMultiplier;
 
     for (const pickup of this.pickups) {
       if (pickup.collected) {
@@ -6837,7 +6867,7 @@ export class CombatSimulation {
     }
     if (type === "medkit") {
       const amount = Math.min(
-        MEDKIT_HEAL_AMOUNT * this.supportEffectMultiplier,
+        MEDKIT_HEAL_AMOUNT * this.supportEffectMultiplier * this.transformationModifiers.healingReceivedMultiplier,
         this.playerMaxHealth - this.playerHealth,
       );
       if (amount > 0) {

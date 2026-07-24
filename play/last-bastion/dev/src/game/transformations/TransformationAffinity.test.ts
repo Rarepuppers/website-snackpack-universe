@@ -10,7 +10,7 @@ import {
 import { TRANSFORMATION_PATH_CATALOG, transformationPathById } from "./TransformationPathCatalog";
 
 describe("Transformation Affinity", () => {
-  it("keeps the active catalog to the six approved paths", () => {
+  it("keeps the active catalog to the seven approved paths (24 July 2026: Church of the Designed Arrival joined the six)", () => {
     expect(TRANSFORMATION_PATH_CATALOG.map(({ id }) => id)).toEqual([
       "mutagenic-evolution",
       "alien-symbiosis",
@@ -18,9 +18,10 @@ describe("Transformation Affinity", () => {
       "void-initiation",
       "bastion-super-soldier",
       "psionic-operative",
+      "cultist-doctrine",
     ]);
     expect(transformationPathById("psionic-operative").branches).toContain("Telekinetic");
-    expect(TRANSFORMATION_PATH_CATALOG.some(({ id }) => String(id).includes("zealot"))).toBe(false);
+    expect(transformationPathById("cultist-doctrine").branches).toContain("Zealot");
   });
 
   it("moves through exposure and adaptation without committing", () => {

@@ -9,8 +9,8 @@ import { TRANSFORMATION_PATH_CATALOG } from "./TransformationPathCatalog";
 
 describe("Transformation choice catalog", () => {
   it("supplies exactly three distinct paired choices for every active path", () => {
-    expect(TRANSFORMATION_CHOICE_CATALOG).toHaveLength(18);
-    expect(new Set(TRANSFORMATION_CHOICE_CATALOG.map(({ id }) => id)).size).toBe(18);
+    expect(TRANSFORMATION_CHOICE_CATALOG).toHaveLength(21);
+    expect(new Set(TRANSFORMATION_CHOICE_CATALOG.map(({ id }) => id)).size).toBe(21);
     for (const path of TRANSFORMATION_PATH_CATALOG) {
       const choices = transformationChoicesForPath(path.id);
       expect(choices).toHaveLength(3);
@@ -44,13 +44,11 @@ describe("Transformation choice catalog", () => {
     }
   });
 
-  it("keeps the future Church path out of all active choices", () => {
-    for (const choice of TRANSFORMATION_CHOICE_CATALOG) {
-      const searchable = `${choice.id} ${choice.pathId} ${choice.branch} ${choice.boon.name} ${choice.scar.name}`.toLowerCase();
-      expect(searchable).not.toContain("zealot");
-      expect(searchable).not.toContain("cultist");
-      expect(searchable).not.toContain("church");
-    }
+  it("gives the Church of the Designed Arrival its own three choices (24 July 2026: the formerly-excluded 7th path)", () => {
+    const churchChoices = transformationChoicesForPath("cultist-doctrine");
+    expect(churchChoices).toHaveLength(3);
+    expect(new Set(churchChoices.map(({ branch }) => branch))).toEqual(new Set(["Zealot", "Martyr", "Oracle"]));
+    expect(churchChoices.every(({ id }) => id.length > 0)).toBe(true);
   });
 
   it("locks representative numeric contracts", () => {

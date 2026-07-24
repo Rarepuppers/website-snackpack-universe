@@ -71,11 +71,11 @@ describe("catalog integrity", () => {
     expect(encounterEventById("nope")).toBeNull();
   });
 
-  it("holds the expanded catalogue (15 shrines + 31 events)", () => {
+  it("holds the expanded catalogue (15 shrines + 39 events)", () => {
     const shrines = ENCOUNTER_EVENT_CATALOG.filter((event) => event.kind === "shrine");
     const events = ENCOUNTER_EVENT_CATALOG.filter((event) => event.kind === "event");
     expect(shrines).toHaveLength(15);
-    expect(events).toHaveLength(31);
+    expect(events).toHaveLength(39);
   });
 
   it("resolves a new escort event into an ambush plus a relic", () => {
@@ -392,6 +392,143 @@ describe("Phase 2 event cards", () => {
     expect(scrapForFlesh.build.scrap).toBe(0);
     expect(scrapForFlesh.effects.maxHealthDelta).toBe(20);
     expect(scrapForFlesh.build.health).toBe(38);
+  });
+});
+
+describe("Phase 3: grantTransformationAffinity", () => {
+  function choiceWith(outcomes: EventChoice["outcomes"]): EventChoice {
+    return { id: "test", label: "Test", outcomes };
+  }
+
+  it("applies one pick by default, tracked in the build's transformation state", () => {
+    const result = resolveEventChoice(build(), 60, choiceWith([
+      { type: "grantTransformationAffinity", choiceId: "dense-tissue" },
+    ]), 0);
+    expect(result.build.transformation?.paths).toEqual([
+      { pathId: "mutagenic-evolution", affinity: 1, choiceIds: ["dense-tissue"] },
+    ]);
+    expect(result.build.transformation?.committedPathId).toBeNull();
+  });
+
+  it("applies multiple picks via count, committing the path at 3 Affinity", () => {
+    const result = resolveEventChoice(build(), 60, choiceWith([
+      { type: "grantTransformationAffinity", choiceId: "dense-tissue", count: 3 },
+    ]), 0);
+    expect(result.build.transformation?.committedPathId).toBe("mutagenic-evolution");
+    expect(result.build.transformation?.paths[0]?.affinity).toBe(3);
+  });
+
+  it("stops early and no-ops the remainder once a path is locked to a different committed path", () => {
+    const locked = resolveEventChoice(
+      build({
+        transformation: {
+          committedPathId: "cultist-doctrine",
+          paths: [{ pathId: "cultist-doctrine", affinity: 3, choiceIds: ["zealous-fervor", "zealous-fervor", "zealous-fervor"] }],
+        },
+      }),
+      60,
+      choiceWith([{ type: "grantTransformationAffinity", choiceId: "dense-tissue", count: 3 }]),
+      0,
+    );
+    // The already-committed Church path is untouched; the attempted Mutagenic pick never lands.
+    expect(locked.build.transformation?.committedPathId).toBe("cultist-doctrine");
+    expect(locked.build.transformation?.paths.some((path) => path.pathId === "mutagenic-evolution")).toBe(false);
+  });
+
+  it("leaves the build's transformation field absent when the outcome never runs", () => {
+    const before = build();
+    const result = resolveEventChoice(before, 60, choiceWith([{ type: "nothing" }]), 0);
+    expect(result.build.transformation).toBeUndefined();
+  });
+
+  it("carries the granted affinity through applyEventResolutionToBuild", () => {
+    const result = resolveEventChoice(build(), 60, choiceWith([
+      { type: "grantTransformationAffinity", choiceId: "zealous-fervor" },
+    ]), 0);
+    const merged = applyEventResolutionToBuild(result);
+    expect(merged.transformation?.paths[0]?.pathId).toBe("cultist-doctrine");
+  });
+});
+
+describe("Phase 3 event cards", () => {
+  it("Blood Market trades health for scrap, a relic, or a random kit", () => {
+    const market = encounterEventById("event-blood-market")!;
+    const scrapResult = resolveEventChoice(build({ health: 10, scrap: 0 }), 10, choiceById(market, "sell-blood-scrap"), 0);
+    expect(scrapResult.build.health).toBe(4);
+    expect(scrapResult.build.scrap).toBe(35);
+
+    const relicResult = resolveEventChoice(build({ health: 12 }), 12, choiceById(market, "sell-blood-relic"), 0);
+    expect(relicResult.build.health).toBe(3);
+    expect(relicResult.effects.relicIds.length).toBe(1);
+
+    const kitChoice = choiceById(market, "sell-blood-kit");
+    const kitResult = resolveEventChoice(build({ health: 8 }), 8, kitChoice, 0);
+    expect(kitResult.build.health).toBe(4);
+    expect(kitResult.effects.consumables).toEqual(["siege-loader"]);
+  });
+
+  it("Vampire Coven pays max health for lifesteal", () => {
+    const coven = encounterEventById("event-vampire-coven")!;
+    const result = resolveEventChoice(build({ health: 18 }), 18, choiceById(coven, "join-feeding"), 0);
+    expect(result.effects.maxHealthDelta).toBe(-3);
+    expect(result.effects.bonusLifestealPerKill).toBeCloseTo(0.12);
+  });
+
+  it("Fleshcraft Vat pays max health for Alien Symbiosis Affinity", () => {
+    const vat = encounterEventById("event-fleshcraft-vat")!;
+    const result = resolveEventChoice(build({ health: 18 }), 18, choiceById(vat, "enter-vat"), 0);
+    expect(result.effects.maxHealthDelta).toBe(-3);
+    expect(result.build.transformation?.paths[0]).toEqual({
+      pathId: "alien-symbiosis",
+      affinity: 1,
+      choiceIds: ["feeding-tendrils"],
+    });
+  });
+
+  it("Cybernetics Bay grants Cybernetic Ascension Affinity either by max health or by a weapon", () => {
+    const bay = encounterEventById("event-cybernetics-bay")!;
+    const healthResult = resolveEventChoice(build({ health: 18 }), 18, choiceById(bay, "graft-implant"), 0);
+    expect(healthResult.effects.maxHealthDelta).toBe(-4);
+    expect(healthResult.build.transformation?.paths[0]?.choiceIds).toEqual(["targeting-suite"]);
+
+    const weaponResult = resolveEventChoice(build({ weapons: [{ weaponId: "scattergun", tier: 1 }] }), 18, choiceById(bay, "feed-weapon"), 0);
+    expect(weaponResult.build.weapons).toEqual([]);
+    expect(weaponResult.build.transformation?.paths[0]?.choiceIds).toEqual(["shield-lattice"]);
+  });
+
+  it("The Designed Arrival grants Church Affinity by health or by a relic", () => {
+    const arrival = encounterEventById("event-designed-arrival")!;
+    const markResult = resolveEventChoice(build({ health: 10 }), 10, choiceById(arrival, "take-the-mark"), 0);
+    expect(markResult.build.health).toBe(5);
+    expect(markResult.build.transformation?.paths[0]?.choiceIds).toEqual(["zealous-fervor"]);
+
+    const relicResult = resolveEventChoice(build({ relicIds: ["rel-blast-baffle"] }), 10, choiceById(arrival, "offer-relic"), 0);
+    expect(relicResult.build.relicIds).toEqual([]);
+    expect(relicResult.build.transformation?.paths[0]?.choiceIds).toEqual(["martyrs-resolve"]);
+  });
+
+  it("Void Rift grants Void Initiation Affinity for free (the scar is baked into the choice itself)", () => {
+    const rift = encounterEventById("event-void-rift")!;
+    const result = resolveEventChoice(build(), 10, choiceById(rift, "step-through"), 0);
+    expect(result.build.transformation?.paths[0]?.choiceIds).toEqual(["rift-step"]);
+    expect(result.build.health).toBe(build().health);
+  });
+
+  it("Super-Soldier Serum spends scrap and health for Bastion Super-Soldier Affinity", () => {
+    const serum = encounterEventById("event-super-soldier-serum")!;
+    const result = resolveEventChoice(build({ scrap: 30, health: 10 }), 10, choiceById(serum, "take-the-dose"), 0);
+    expect(result.build.scrap).toBe(0);
+    expect(result.build.health).toBe(7);
+    expect(result.build.transformation?.paths[0]?.choiceIds).toEqual(["heavy-gunner"]);
+  });
+
+  it("Mutagen Pool gambles between three Mutagenic Evolution choices", () => {
+    const pool = encounterEventById("event-mutagen-pool")!;
+    const bathe = choiceById(pool, "bathe");
+    const low = resolveEventChoice(build(), 10, bathe, 0);
+    const high = resolveEventChoice(build(), 10, bathe, 0.99);
+    expect(low.build.transformation?.paths[0]?.choiceIds).toEqual(["regenerative-glands"]);
+    expect(high.build.transformation?.paths[0]?.choiceIds).toEqual(["reactive-blood"]);
   });
 });
 

@@ -1104,16 +1104,25 @@ Expansion brief: ~44 new events (Slay the Spire / FTL inspiration, Last Bastion 
 - Supply Cache Lockout - luck minigame -> keep items (Match and Keep).
 - Beacon of the Lost - heal, but pick up a curse; or leave (Wing Statue).
 
-**Blood Market / Transformation** (StS Vampires/Face Trader + creator brief; Phase 3, needs live transformations)
-- Blood Market - recurring node: trade current HP for scrap/consumables/relics.
-- Vampire Coven - pay max HP -> lifesteal (Alien Symbiosis feeding).
-- Fleshcraft Vat - pay max HP -> Alien Affinity + mutation boon.
-- Cybernetics Bay - pay max HP or a weapon -> Cyborg Affinity + augment.
-- The Designed Arrival - pay HP/a relic -> Cultist Affinity + doctrine (Church of the Designed Arrival).
-- Void Rift - step through -> Void Affinity + a scar.
-- Super-Soldier Serum - pay scrap + HP -> Bastion Super-Soldier Affinity.
-- Mutagen Pool - bathe -> Mutagenic Affinity + random stat swing.
+**Blood Market / Transformation** (StS Vampires/Face Trader + creator brief; Phase 3 — all 8 cards below live 24 July 2026)
+- Blood Market - trade current HP for scrap/a relic/a random field kit. Live as `event-blood-market`; authored as a normal one-shot event, not an actual repeating map node — there is no "recurring node" mechanic in code.
+- Vampire Coven - pay max HP -> lifesteal (Alien Symbiosis feeding). Live as `event-vampire-coven` (`maxHealth` cost + the existing `grantLifesteal` outcome — no path/Affinity involved, matching this doc's own note that Vampire Coven isn't a real transformation path).
+- Fleshcraft Vat - pay max HP -> Alien Affinity + mutation boon. Live as `event-fleshcraft-vat` (`grantTransformationAffinity` into Alien Symbiosis's Predatory Tendrils).
+- Cybernetics Bay - pay max HP or a weapon -> Cyborg Affinity + augment. Live as `event-cybernetics-bay`, two choices (Targeting Suite via max HP, Shield Lattice via a sacrificed weapon).
+- The Designed Arrival - pay HP/a relic -> Cultist Affinity + doctrine (Church of the Designed Arrival). Live as `event-designed-arrival` — see "New seventh transformation path" below; this event grants the real path, not a placeholder.
+- Void Rift - step through -> Void Affinity + a scar. Live as `event-void-rift` (Rift Walker's own scar, built into the choice, is the cost — no extra outcome needed).
+- Super-Soldier Serum - pay scrap + HP -> Bastion Super-Soldier Affinity. Live as `event-super-soldier-serum` (Heavy Gunner).
+- Mutagen Pool - bathe -> Mutagenic Affinity + random stat swing. Live as `event-mutagen-pool`, a 3-way weighted gamble across Mutagenic Evolution's three choices, reusing the existing weighted-branch engine.
 - Chimera Experiment - swap one stat for another (Face Trader; `swapStat`; live 24 July 2026 as `event-chimera-experiment` — authored as a standalone event since the mechanic itself doesn't need the Blood Market infrastructure this family is otherwise gated behind).
+
+### New seventh transformation path: Church of the Designed Arrival (24 July 2026)
+
+The transformation system originally shipped with six paths and a test that explicitly excluded a "Church" path as future-only. The creator's call on 24 July 2026 was to build it for real rather than keep deferring it. `cultist-doctrine` joined `TransformationPathCatalog.ts` with three choices in `TransformationChoiceCatalog.ts`, all meeting the same balance-budget contract (scar ≥ 10, boon/scar ratio 1.45-2.0) as the other six paths' 18 choices:
+- **Zealot** (`zealous-fervor`) - boon: +6/10/14% fire rate. Scar: -1/2/3 armour.
+- **Martyr** (`martyrs-resolve`) - boon: +3/4/5 retaliation damage on taking a hit (same mechanic as Mutagenic Evolution's Reactive Organism). Scar: -10/15/20% healing received.
+- **Oracle** (`oracle-sight`) - boon: +15/25/35% pickup radius. Scar: -5/8/11% max health.
+
+`TransformationRunModifiers.ts` (new file, `dev/src/game/transformations/`) resolves whichever path is committed (3+ Affinity) into a flat modifier bag, the same shape as `RelicRunModifiers`. It is consumed in `CombatSimulation.ts` for max health, movement speed, armour, max shield, shield recharge rate, fire rate, blast radius, ultimate cooldown, healing received (regen/medkit/supply depot), pickup radius, passive regen-per-second, long/close-range damage, and heavy-weapon damage - 14 of the catalogue's 27 effect metrics. The rest (retaliation damage, nearby-kill healing, the three "received" elemental-buildup metrics - the player never takes status effects from enemies at all, so these have no hook to attach to - drone shot damage, gravity-pulse radius, telekinetic push distance, weapon spread, projectile speed, evasive distance/cooldown) are left unconsumed for now, on the same "carry now, wire later" basis over half of `RelicRunModifiers`'s own fields already use.
 
 ### New artifacts (9) - slot into RelicRunModifiers (Phase 1, cheap)
 
@@ -1131,9 +1140,11 @@ Expansion brief: ~44 new events (Slay the Spire / FTL inspiration, Last Bastion 
 
 ### New weapons (6 + Event Horizon) - behavior gates + art batches (Phase 4, art-gated)
 
+Scoping note (24 July 2026): "behavior gates" undersold this phase. Only Railspike reuses an existing attack pattern; the other five plus Event Horizon each need a genuinely new attack-pattern subsystem that doesn't exist in `CombatSimulation.ts` today - Sawblade needs a persistent orbiting hitbox (nothing "orbits" currently), Tesla Coil needs an orbiting passive chain-zap emitter (today's chain logic only fires off a travelling projectile), Cryo Lance needs a sustained beam with tick damage (everything today is discrete per-`fireIntervalSeconds` shots), Flamethrower needs a continuous damage-over-time cone (scatter is discrete pellets, not a held cone), Seeker Swarm needs in-flight retargeting (every projectile's velocity is fixed at spawn), and Event Horizon needs an aim-and-activate charge/pull-field/implosion state machine. See `last-bastion-log.md`'s Phase 4 entries for whichever of these have since landed.
+
 | Weapon | Class | Concept |
 | --- | --- | --- |
-| Railspike | Heavy/Unique | Slow charged piercing lance through a whole lane |
+| Railspike | Heavy (see note) | Slow charged piercing lance through a whole lane. **Behavior live 24 July 2026** as `railspike` (`weaponCatalog.ts`): reuses the existing pierce+projectile pattern (like Bolt Carbine, just slower/harder/pierces more), so no new attack-pattern engineering was needed. Classed `heavy` not `unique` — the doc's "Heavy/Unique" was ambiguous and `WeaponClass` only supports one slot; `unique` is reserved for a true one-off like Event Horizon. Held out of `WEAPON_CHEST_POOL`/Batch I tile art/production audio pending its own art and audio batches (fallback synth cue is wired; placeholder tile frame reuses the rifle's). |
 | Seeker Swarm | Light | Volley of homing micro-missiles |
 | Cryo Lance | Medium | Sustained freeze beam building Freeze |
 | Tesla Coil | Light | Orbiting coil that arcs Shock to nearby enemies |

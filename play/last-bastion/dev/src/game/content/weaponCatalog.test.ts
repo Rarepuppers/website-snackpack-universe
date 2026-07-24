@@ -1,12 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { shouldWeaponFire, VERTICAL_SLICE_WEAPON_IDS, WEAPON_CATALOG } from "./weaponCatalog";
+import { shouldWeaponFire, VERTICAL_SLICE_WEAPON_IDS, WEAPON_CATALOG, WEAPON_CHEST_POOL } from "./weaponCatalog";
 
 describe("weaponCatalog", () => {
   it("locks the three vertical-slice weapon families", () => {
     expect(VERTICAL_SLICE_WEAPON_IDS).toEqual([
       "bastion-service-rifle", "scattergun", "arc-carbine",
     ]);
-    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(8);
+    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(9);
+  });
+
+  it("holds Railspike out of the chest pool until its art batch lands (Phase 4, 24 July 2026)", () => {
+    expect(WEAPON_CATALOG.railspike).toBeDefined();
+    expect(WEAPON_CATALOG.railspike.pierceCount).toBeGreaterThanOrEqual(6);
+    expect(WEAPON_CHEST_POOL).not.toContain("railspike");
   });
 
   it("gives each family a distinct attack contract", () => {

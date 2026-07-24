@@ -2,6 +2,11 @@ import type { EliteKind } from "../combat/EliteCadence";
 import type { PowerupType } from "../combat/CombatSimulation";
 import type { ExpeditionBuildSnapshot } from "./ExpeditionRun";
 import { RELIC_IDS, type ArtifactId, type RelicId } from "../content/relicCatalog";
+import {
+  applyTransformationChoice,
+  createTransformationAffinityState,
+} from "../transformations/TransformationAffinity";
+import { transformationChoiceById, type TransformationChoiceId } from "../transformations/TransformationChoiceCatalog";
 
 export type { ArtifactId, RelicId } from "../content/relicCatalog";
 
@@ -74,7 +79,17 @@ export type EventOutcome =
   /** Converts an amount of one resource into another (Chimera Experiment). */
   | { type: "swapStat"; from: "scrap" | "health" | "experience"; to: "scrap" | "maxHealth" | "experience"; amount: number }
   /** Grants bonus lifesteal-per-kill on top of any relic/artifact source. */
-  | { type: "grantLifesteal"; amount: number };
+  | { type: "grantLifesteal"; amount: number }
+  // --- Phase 3 (24 July 2026) ---
+  /**
+   * Applies one aligned transformation choice `count` times (default 1), same
+   * as picking it in the transformation lab. Stops early and no-ops the
+   * remainder if a pick fails (path-locked to a different committed path,
+   * apex reached, or the choice is already at max rank) rather than throwing —
+   * Blood Market cards can request more points than are legal to grant and
+   * the player still gets whatever fits.
+   */
+  | { type: "grantTransformationAffinity"; choiceId: TransformationChoiceId; count?: number };
 
 /** One weighted arm of a random (FTL-style) result table. */
 export interface EventOutcomeBranch {
@@ -1154,6 +1169,186 @@ const EVENTS: readonly EncounterEventDefinition[] = Object.freeze([
       LEAVE_CHOICE,
     ],
   },
+  {
+    id: "event-blood-market",
+    kind: "event",
+    name: "Blood Market",
+    text: "A butcher's stall lit by a single red bulb. The currency here is never scrap — it's you.",
+    minColumn: 2,
+    choices: [
+      {
+        id: "sell-blood-scrap",
+        label: "Sell blood for scrap",
+        detail: "-6 health → +35 scrap",
+        requirement: { minHealth: 7 },
+        outcomes: [{ type: "damage", amount: 6 }, { type: "scrap", delta: 35 }],
+        resultText: "The butcher fills a vial and pays in salvage, no questions.",
+      },
+      {
+        id: "sell-blood-relic",
+        label: "Sell blood for a relic",
+        detail: "-9 health → a relic",
+        requirement: { minHealth: 10 },
+        outcomes: [{ type: "damage", amount: 9 }, { type: "grantRelic" }],
+        resultText: "The butcher takes a deeper cut and hands over something worth the pain.",
+      },
+      {
+        id: "sell-blood-kit",
+        label: "Sell blood for ordnance",
+        detail: "-4 health → a random field kit",
+        requirement: { minHealth: 5 },
+        randomOutcomes: [
+          { weight: 1, resultText: "The butcher hands you a Siege Loader.", outcomes: [{ type: "damage", amount: 4 }, { type: "grantConsumable", powerupType: "siege-loader" }] },
+          { weight: 1, resultText: "The butcher hands you a Phase Jacket.", outcomes: [{ type: "damage", amount: 4 }, { type: "grantConsumable", powerupType: "phase-jacket" }] },
+          { weight: 1, resultText: "The butcher hands you Hunter Optics.", outcomes: [{ type: "damage", amount: 4 }, { type: "grantConsumable", powerupType: "hunter-optics" }] },
+          { weight: 1, resultText: "The butcher hands you a Last Stand Stimulant.", outcomes: [{ type: "damage", amount: 4 }, { type: "grantConsumable", powerupType: "last-stand-stimulant" }] },
+        ],
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "event-vampire-coven",
+    kind: "event",
+    name: "Vampire Coven",
+    text: "Pale figures share a single bowl, passing it hand to hand. They offer you a taste of what feeds them.",
+    minColumn: 3,
+    choices: [
+      {
+        id: "join-feeding",
+        label: "Join the feeding",
+        detail: "-3 max health → gain lifesteal on every kill",
+        requirement: { minMaxHealthAfterCost: 10 },
+        outcomes: [{ type: "maxHealth", delta: -3 }, { type: "grantLifesteal", amount: 0.12 }],
+        resultText: "The bowl reaches you last. What you swallow doesn't feel like blood anymore.",
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "event-fleshcraft-vat",
+    kind: "event",
+    name: "Fleshcraft Vat",
+    text: "A tank of grey amniotic fluid holds something that isn't quite finished growing. It has room for one more part of you.",
+    minColumn: 3,
+    choices: [
+      {
+        id: "enter-vat",
+        label: "Give the vat a piece of you",
+        detail: "-3 max health → Alien Symbiosis Affinity (Predatory Tendrils)",
+        requirement: { minMaxHealthAfterCost: 10 },
+        outcomes: [{ type: "maxHealth", delta: -3 }, { type: "grantTransformationAffinity", choiceId: "feeding-tendrils" }],
+        resultText: "The fluid closes over the wound. Something in there recognises you now.",
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "event-cybernetics-bay",
+    kind: "event",
+    name: "Cybernetics Bay",
+    text: "A surgical cradle, still powered, waits for a donor limb or a willing patient.",
+    minColumn: 3,
+    choices: [
+      {
+        id: "graft-implant",
+        label: "Take the implant",
+        detail: "-4 max health → Cybernetic Ascension Affinity (Targeting Suite)",
+        requirement: { minMaxHealthAfterCost: 10 },
+        outcomes: [{ type: "maxHealth", delta: -4 }, { type: "grantTransformationAffinity", choiceId: "targeting-suite" }],
+        resultText: "The cradle hums, and something cold slots in behind your eyes.",
+      },
+      {
+        id: "feed-weapon",
+        label: "Feed it a weapon instead",
+        detail: "-1 weapon → Cybernetic Ascension Affinity (Shield Lattice)",
+        requirement: { minWeapons: 1 },
+        outcomes: [{ type: "loseWeapon" }, { type: "grantTransformationAffinity", choiceId: "shield-lattice" }],
+        resultText: "The cradle strips your weapon for parts and weaves them into your skin instead.",
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "event-designed-arrival",
+    kind: "event",
+    name: "The Designed Arrival",
+    text: "A congregation kneels before a cracked signal dish, murmuring in unison. They make room for you at the circle's edge.",
+    minColumn: 3,
+    choices: [
+      {
+        id: "take-the-mark",
+        label: "Take the mark",
+        detail: "-5 health → Church of the Designed Arrival Affinity (Zealot)",
+        requirement: { minHealth: 6 },
+        outcomes: [{ type: "damage", amount: 5 }, { type: "grantTransformationAffinity", choiceId: "zealous-fervor" }],
+        resultText: "The mark burns going in. The congregation makes room for you.",
+      },
+      {
+        id: "offer-relic",
+        label: "Offer up a relic",
+        detail: "Give up your most recently owned relic → Church of the Designed Arrival Affinity (Martyr)",
+        outcomes: [{ type: "purifyRelic" }, { type: "grantTransformationAffinity", choiceId: "martyrs-resolve" }],
+        resultText: "They take the relic without a word and welcome you as one of their own.",
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "event-void-rift",
+    kind: "event",
+    name: "Void Rift",
+    text: "A seam in the world, barely wider than a doorway, folding light the wrong way.",
+    minColumn: 4,
+    choices: [
+      {
+        id: "step-through",
+        label: "Step through",
+        detail: "Void Initiation Affinity (Rift Walker) — the rift takes something on the way",
+        outcomes: [{ type: "grantTransformationAffinity", choiceId: "rift-step" }],
+        resultText: "For a moment there is no floor, no gravity, no you. Then you're standing on the other side.",
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "event-super-soldier-serum",
+    kind: "event",
+    name: "Super-Soldier Serum",
+    text: "A Bastion medical case, three vials left. The label warns against a fourth dose. You don't have three.",
+    minColumn: 3,
+    choices: [
+      {
+        id: "take-the-dose",
+        label: "Take the dose",
+        detail: "-30 scrap, -3 health → Bastion Super-Soldier Affinity (Heavy Gunner)",
+        requirement: { minScrap: 30, minHealth: 4 },
+        outcomes: [{ type: "scrap", delta: -30 }, { type: "damage", amount: 3 }, { type: "grantTransformationAffinity", choiceId: "heavy-gunner" }],
+        resultText: "It burns going in, then your hands stop shaking. Everything feels lighter to carry.",
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "event-mutagen-pool",
+    kind: "event",
+    name: "Mutagen Pool",
+    text: "A stagnant pool, faintly luminous, ripples on its own. Something in it wants to be shared.",
+    minColumn: 3,
+    choices: [
+      {
+        id: "bathe",
+        label: "Bathe in it",
+        detail: "Mutagenic Evolution Affinity — a random stat swing",
+        randomOutcomes: [
+          { weight: 1, resultText: "Your wounds start closing on their own.", outcomes: [{ type: "grantTransformationAffinity", choiceId: "regenerative-glands" }] },
+          { weight: 1, resultText: "Your frame thickens, heavy and slow.", outcomes: [{ type: "grantTransformationAffinity", choiceId: "dense-tissue" }] },
+          { weight: 1, resultText: "Your blood turns caustic to the touch.", outcomes: [{ type: "grantTransformationAffinity", choiceId: "reactive-blood" }] },
+        ],
+      },
+      LEAVE_CHOICE,
+    ],
+  },
 ]);
 
 export const ENCOUNTER_EVENT_CATALOG: readonly EncounterEventDefinition[] =
@@ -1306,6 +1501,8 @@ export function resolveEventChoice(
   let weapons = build.weapons.map((weapon) => ({ ...weapon }));
   let upgrades = build.upgrades.map((upgrade) => ({ ...upgrade }));
   let relicIds = [...(build.relicIds ?? [])];
+  let transformation = build.transformation ?? createTransformationAffinityState();
+  const initialTransformation = transformation;
 
   for (const outcome of outcomes) {
     switch (outcome.type) {
@@ -1404,6 +1601,15 @@ export function resolveEventChoice(
       case "grantLifesteal":
         effects.bonusLifestealPerKill += outcome.amount;
         break;
+      case "grantTransformationAffinity": {
+        const pathId = transformationChoiceById(outcome.choiceId).pathId;
+        for (let pick = 0; pick < (outcome.count ?? 1); pick += 1) {
+          const result = applyTransformationChoice(transformation, pathId, outcome.choiceId);
+          if (!result.ok) break;
+          transformation = result.state;
+        }
+        break;
+      }
     }
   }
 
@@ -1411,9 +1617,11 @@ export function resolveEventChoice(
     build: {
       ...build,
       health, shield, scrap, experience, weapons, upgrades,
-      // Only surface `relicIds` when it existed already or this resolution touched
-      // it, so an untouched build (e.g. the Leave choice) round-trips unchanged.
+      // Only surface `relicIds`/`transformation` when they existed already or this
+      // resolution touched them, so an untouched build (e.g. the Leave choice)
+      // round-trips unchanged.
       ...(build.relicIds !== undefined || relicIds.length > 0 ? { relicIds } : {}),
+      ...(build.transformation !== undefined || transformation !== initialTransformation ? { transformation } : {}),
     },
     effects,
     resultText,

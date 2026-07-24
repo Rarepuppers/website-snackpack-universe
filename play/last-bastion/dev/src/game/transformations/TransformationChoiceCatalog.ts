@@ -6,7 +6,8 @@ export type TransformationChoiceId =
   | "targeting-suite" | "shield-lattice" | "auxiliary-drone"
   | "rift-step" | "gravity-adept" | "entropy-channeler"
   | "heavy-gunner" | "vanguard-conditioning" | "demolitions-doctrine"
-  | "psionic-sniper" | "telekinetic-focus" | "battle-seer";
+  | "psionic-sniper" | "telekinetic-focus" | "battle-seer"
+  | "zealous-fervor" | "martyrs-resolve" | "oracle-sight";
 
 export type TransformationEffectMetric =
   | "health-regeneration-per-second"
@@ -139,6 +140,16 @@ export const TRANSFORMATION_CHOICE_CATALOG: readonly TransformationChoiceDefinit
   choice("battle-seer", "psionic-operative", "Battle Seer",
     trait("Battle Seer", "Reduce evasive-move cooldown through danger prediction.", effect("evasive-cooldown", "decrease", "percent", ranks(10, 15, 20))),
     trait("Open Mind", "Reduce maximum shield.", effect("maximum-shield", "decrease", "points", ranks(0.5, 1, 1.5))), 18, 10),
+
+  choice("zealous-fervor", "cultist-doctrine", "Zealot",
+    trait("Zealous Fervor", "The Signal quickens the trigger hand. Increase weapon fire rate.", effect("fire-rate", "increase", "percent", ranks(6, 10, 14))),
+    trait("Reckless Devotion", "Doctrine forbids self-preservation. Reduce armour.", effect("armour", "decrease", "points", ranks(1, 2, 3))), 19, 11),
+  choice("martyrs-resolve", "cultist-doctrine", "Martyr",
+    trait("Martyr's Resolve", "A wound answers back with the Church's judgement.", effect("retaliation-damage", "increase", "damage", ranks(3, 4, 5), "At most once every 5 seconds within 1.5 metres.")),
+    trait("Welcomed Suffering", "Doctrine forbids easy relief. Receive less healing.", effect("healing-received", "decrease", "percent", ranks(10, 15, 20))), 17, 10),
+  choice("oracle-sight", "cultist-doctrine", "Oracle",
+    trait("Oracle Sight", "The Signal shows you what's worth taking. Increase pickup radius.", effect("pickup-radius", "increase", "percent", ranks(15, 25, 35))),
+    trait("Hollowed Faith", "The Signal empties what it fills. Reduce maximum health.", effect("maximum-health", "decrease", "percent", ranks(5, 8, 11))), 18, 11),
 ]);
 
 export function transformationChoicesForPath(pathId: TransformationPathId): readonly TransformationChoiceDefinition[] {

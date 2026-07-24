@@ -1,7 +1,7 @@
 import type { DamageType } from "../combat/damageTypes";
 import type { WeaponClass } from "../hero/HeroDefinition";
 
-export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine";
+export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine" | "railspike";
 export type WeaponTargetingMode = "cursor" | "nearest-enemy";
 export type WeaponAttackPattern = "projectile" | "scatter" | "chain-projectile" | "melee-sweep";
 
@@ -172,6 +172,23 @@ export const INJECTOR_CARBINE: Readonly<WeaponRuntimeStats> = weapon({
   pierceCount: 0,
 });
 
+export const RAILSPIKE: Readonly<WeaponRuntimeStats> = weapon({
+  id: "railspike",
+  displayName: "Railspike",
+  description: "Slow charged rail lance that pierces an entire lane of enemies.",
+  weaponClass: "heavy",
+  damageType: "physical",
+  targetingMode: "cursor",
+  attackPattern: "projectile",
+  rangeMetres: 20,
+  fireIntervalSeconds: 3.2,
+  projectileSpeedMetresPerSecond: 22,
+  projectileLifetimeSeconds: 0.95,
+  projectileDamage: 9,
+  pierceCount: 6,
+  knockbackMetres: 0.2,
+});
+
 export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeStats>>> = Object.freeze({
   "bastion-service-rifle": BASTION_SERVICE_RIFLE,
   scattergun: SCATTERGUN,
@@ -181,6 +198,7 @@ export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeSta
   "bulwark-rotary-cannon": BULWARK_ROTARY_CANNON,
   "grenade-tube": GRENADE_TUBE,
   "injector-carbine": INJECTOR_CARBINE,
+  railspike: RAILSPIKE,
 });
 
 export const VERTICAL_SLICE_WEAPON_IDS: readonly WeaponId[] = Object.freeze([

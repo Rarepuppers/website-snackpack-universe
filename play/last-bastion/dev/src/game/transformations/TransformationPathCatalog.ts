@@ -4,7 +4,8 @@ export type TransformationPathId =
   | "cybernetic-ascension"
   | "void-initiation"
   | "bastion-super-soldier"
-  | "psionic-operative";
+  | "psionic-operative"
+  | "cultist-doctrine";
 
 export interface TransformationPathDefinition {
   id: TransformationPathId;
@@ -26,6 +27,7 @@ export const TRANSFORMATION_PATH_CATALOG: readonly TransformationPathDefinition[
   path("void-initiation", "Void Initiation", "Unstable spatial power, gravity, warping, and entropy.", "Anomaly lens / forbidden circle", ["Rift Walker", "Gravity Adept", "Entropy Channeler"], "Reduced maximum health or accumulating instability."),
   path("bastion-super-soldier", "Bastion Super-Soldier", "Conventional military discipline pushed beyond safe human limits.", "Training centre / enhancement chair", ["Heavy Gunner", "Vanguard", "Demolitionist"], "Reduced exotic support or heavier movement."),
   path("psionic-operative", "Psionic Operative", "Disciplined neural power without void corruption.", "Psionic amplifier / focus chamber", ["Psionic Sniper", "Telekinetic", "Battle Seer"], "Mental strain, interrupted concentration, or reduced armour."),
+  path("cultist-doctrine", "Church of the Designed Arrival", "Zealous faith in a signal from beyond, trading clarity for devotion.", "Doctrine chapel / signal shrine", ["Zealot", "Martyr", "Oracle"], "Self-neglect in the name of the Signal — thinned defences or welcomed suffering."),
 ]);
 
 export function transformationPathById(id: TransformationPathId): TransformationPathDefinition {

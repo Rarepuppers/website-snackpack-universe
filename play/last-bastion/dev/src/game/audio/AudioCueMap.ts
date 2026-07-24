@@ -100,6 +100,7 @@ const WEAPON_CUES: Readonly<Record<WeaponId, AudioCue>> = Object.freeze({
   "bulwark-rotary-cannon": cue("bulwark-rotary-fire", 190, 0.045, 0.045, "square", 145),
   "grenade-tube": cue("grenade-tube-fire", 170, 0.16, 0.08, "triangle", 80),
   "injector-carbine": cue("injector-carbine-fire", 630, 0.07, 0.05, "square", 410),
+  railspike: cue("railspike-fire", 140, 0.26, 0.13, "sawtooth", 50),
 });
 
 export function cueForCombatEvent(event: CombatEvent): AudioCue | null {
