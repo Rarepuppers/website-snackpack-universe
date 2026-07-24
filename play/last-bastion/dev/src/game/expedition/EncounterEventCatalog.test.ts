@@ -71,11 +71,11 @@ describe("catalog integrity", () => {
     expect(encounterEventById("nope")).toBeNull();
   });
 
-  it("holds the expanded catalogue (11 shrines + 27 events)", () => {
+  it("holds the expanded catalogue (15 shrines + 31 events)", () => {
     const shrines = ENCOUNTER_EVENT_CATALOG.filter((event) => event.kind === "shrine");
     const events = ENCOUNTER_EVENT_CATALOG.filter((event) => event.kind === "event");
-    expect(shrines).toHaveLength(11);
-    expect(events).toHaveLength(27);
+    expect(shrines).toHaveLength(15);
+    expect(events).toHaveLength(31);
   });
 
   it("resolves a new escort event into an ambush plus a relic", () => {
@@ -191,6 +191,207 @@ describe("deterministic resolution", () => {
     const result = resolveEventChoice(before, 60, choiceById(dropship, "leave"), 0);
     expect(result.build).toEqual(before);
     expect(result.effects).toEqual(emptySideEffects());
+  });
+});
+
+describe("Phase 2 enabler outcomes", () => {
+  function choiceWith(outcomes: EventChoice["outcomes"]): EventChoice {
+    return { id: "test", label: "Test", outcomes };
+  }
+
+  it("grantConsumable carries a kit forward as a consumable side effect", () => {
+    const result = resolveEventChoice(build(), 60, choiceWith([
+      { type: "grantConsumable", powerupType: "siege-loader" },
+    ]), 0);
+    expect(result.effects.consumables).toEqual(["siege-loader"]);
+    const merged = applyEventResolutionToBuild(result);
+    expect(merged.carriedConsumables).toEqual(["siege-loader"]);
+  });
+
+  it("pickUpgradeFromSet deterministically draws one option by roll and levels an owned one", () => {
+    const fresh = resolveEventChoice(build(), 60, choiceWith([
+      { type: "pickUpgradeFromSet", upgradeIds: ["upg-a", "upg-b", "upg-c"] },
+    ]), 0.5);
+    expect(fresh.build.upgrades).toEqual([{ upgradeId: "upg-b", level: 1 }]);
+
+    const owned = resolveEventChoice(build({ upgrades: [{ upgradeId: "upg-b", level: 1 }] }), 60, choiceWith([
+      { type: "pickUpgradeFromSet", upgradeIds: ["upg-a", "upg-b", "upg-c"] },
+    ]), 0.5);
+    expect(owned.build.upgrades).toEqual([{ upgradeId: "upg-b", level: 2 }]);
+  });
+
+  it("removeUpgrade drops a level from the most recently taken upgrade, removing it at zero", () => {
+    const twoLevels = build({ upgrades: [{ upgradeId: "upg-a", level: 2 }] });
+    const stepDown = resolveEventChoice(twoLevels, 60, choiceWith([{ type: "removeUpgrade" }]), 0);
+    expect(stepDown.build.upgrades).toEqual([{ upgradeId: "upg-a", level: 1 }]);
+
+    const oneLevel = build({ upgrades: [{ upgradeId: "upg-a", level: 1 }] });
+    const removed = resolveEventChoice(oneLevel, 60, choiceWith([{ type: "removeUpgrade" }]), 0);
+    expect(removed.build.upgrades).toEqual([]);
+  });
+
+  it("purifyRelic removes a named relic, or the most recently owned one", () => {
+    const withTwo = build({ relicIds: ["rel-blast-baffle", "rel-field-lattice"] });
+    const named = resolveEventChoice(withTwo, 60, choiceWith([
+      { type: "purifyRelic", relicId: "rel-blast-baffle" },
+    ]), 0);
+    expect(named.build.relicIds).toEqual(["rel-field-lattice"]);
+
+    const unnamed = resolveEventChoice(withTwo, 60, choiceWith([{ type: "purifyRelic" }]), 0);
+    expect(unnamed.build.relicIds).toEqual(["rel-blast-baffle"]);
+  });
+
+  it("fullCleanse heals to full and undoes an accumulated negative max-health bonus", () => {
+    const scarred = build({ health: 10, maxHealthBonus: -8 });
+    const result = resolveEventChoice(scarred, 12, choiceWith([{ type: "fullCleanse" }]), 0);
+    expect(result.effects.maxHealthDelta).toBe(8);
+    expect(result.build.health).toBe(20); // 12 (current max) + 8 restored
+  });
+
+  it("transmogrifyWeapon consumes weapons off the rack and grants one result weapon", () => {
+    const twoWeapons = build({
+      weapons: [{ weaponId: "wpn-scattergun", tier: 1 }, { weaponId: "wpn-arc-carbine", tier: 2 }],
+    });
+    const result = resolveEventChoice(twoWeapons, 60, choiceWith([
+      { type: "transmogrifyWeapon", resultWeaponId: "wpn-railspike", resultTier: 2, consumeCount: 2 },
+    ]), 0);
+    expect(result.build.weapons).toEqual([{ weaponId: "wpn-railspike", tier: 2 }]);
+  });
+
+  it("duplicateWeapon adds a copy of the last-equipped weapon", () => {
+    const result = resolveEventChoice(build({ weapons: [{ weaponId: "wpn-scattergun", tier: 2 }] }), 60, choiceWith([
+      { type: "duplicateWeapon" },
+    ]), 0);
+    expect(result.build.weapons).toEqual([
+      { weaponId: "wpn-scattergun", tier: 2 },
+      { weaponId: "wpn-scattergun", tier: 2 },
+    ]);
+  });
+
+  it("duplicateRelic adds a second copy of a named or most-recently-owned relic id", () => {
+    const owned = build({ relicIds: ["rel-blast-baffle"] });
+    const result = resolveEventChoice(owned, 60, choiceWith([{ type: "duplicateRelic" }]), 0);
+    expect(result.build.relicIds).toEqual(["rel-blast-baffle", "rel-blast-baffle"]);
+  });
+
+  it("swapStat converts scrap into max health", () => {
+    const result = resolveEventChoice(build({ scrap: 50, health: 18 }), 18, choiceWith([
+      { type: "swapStat", from: "scrap", to: "maxHealth", amount: 20 },
+    ]), 0);
+    expect(result.build.scrap).toBe(30);
+    expect(result.effects.maxHealthDelta).toBe(20);
+    expect(result.build.health).toBe(38);
+  });
+
+  it("swapStat spends health for scrap without dropping below one", () => {
+    const result = resolveEventChoice(build({ scrap: 0, health: 5 }), 18, choiceWith([
+      { type: "swapStat", from: "health", to: "scrap", amount: 10 },
+    ]), 0);
+    expect(result.build.health).toBe(1);
+    expect(result.build.scrap).toBe(4);
+  });
+
+  it("grantLifesteal records a bonus lifesteal-per-kill side effect that carries onto the build", () => {
+    const result = resolveEventChoice(build(), 60, choiceWith([{ type: "grantLifesteal", amount: 0.1 }]), 0);
+    expect(result.effects.bonusLifestealPerKill).toBe(0.1);
+    const merged = applyEventResolutionToBuild(result);
+    expect(merged.bonusLifestealPerKill).toBe(0.1);
+  });
+});
+
+describe("Phase 2 event cards", () => {
+  it("Cryo Shrine cleanses via the real card", () => {
+    const cryo = encounterEventById("shrine-cryo")!;
+    const result = resolveEventChoice(build({ health: 10, maxHealthBonus: -6 }), 16, choiceById(cryo, "step-in"), 0);
+    expect(result.effects.maxHealthDelta).toBe(6);
+    expect(result.build.health).toBe(22);
+  });
+
+  it("Forge of the Fallen gambles a sacrificed weapon into one of three results", () => {
+    const forge = encounterEventById("shrine-forge-fallen")!;
+    const sacrifice = choiceById(forge, "sacrifice-weapon");
+    const withWeapon = build({ weapons: [{ weaponId: "scattergun", tier: 1 }] });
+    const low = resolveEventChoice(withWeapon, 60, sacrifice, 0);
+    const high = resolveEventChoice(withWeapon, 60, sacrifice, 0.99);
+    expect(low.build.weapons).toEqual([{ weaponId: "bulwark-rotary-cannon", tier: 2 }]);
+    expect(high.build.weapons).toEqual([{ weaponId: "arc-carbine", tier: 2 }]);
+  });
+
+  it("Duplication Vat duplicates a weapon or a relic via the real card", () => {
+    const vat = encounterEventById("shrine-duplication-vat")!;
+    const startWeapons = build({ weapons: [{ weaponId: "patrol-blade", tier: 1 }] });
+    const weaponResult = resolveEventChoice(startWeapons, 60, choiceById(vat, "duplicate-weapon"), 0);
+    expect(weaponResult.build.weapons).toEqual([
+      { weaponId: "patrol-blade", tier: 1 },
+      { weaponId: "patrol-blade", tier: 1 },
+    ]);
+
+    const startRelics = build({ relicIds: ["rel-kinetic-greaves"] });
+    const relicResult = resolveEventChoice(startRelics, 60, choiceById(vat, "duplicate-relic"), 0);
+    expect(relicResult.build.relicIds).toEqual(["rel-kinetic-greaves", "rel-kinetic-greaves"]);
+  });
+
+  it("Purifier Station purges an upgrade or a relic and pays scrap either way", () => {
+    const purifier = encounterEventById("shrine-purifier")!;
+    const upgradeResult = resolveEventChoice(
+      build({ upgrades: [{ upgradeId: "rapid-cycling", level: 2 }], scrap: 0 }),
+      60,
+      choiceById(purifier, "purge-upgrade"),
+      0,
+    );
+    expect(upgradeResult.build.upgrades).toEqual([{ upgradeId: "rapid-cycling", level: 1 }]);
+    expect(upgradeResult.build.scrap).toBe(20);
+
+    const relicResult = resolveEventChoice(
+      build({ relicIds: ["rel-hunters-beacon"], scrap: 0 }),
+      60,
+      choiceById(purifier, "purge-relic"),
+      0,
+    );
+    expect(relicResult.build.relicIds).toEqual([]);
+    expect(relicResult.build.scrap).toBe(20);
+  });
+
+  it("Weapon Smuggler trades two weapons for one heavier one", () => {
+    const smuggler = encounterEventById("event-weapon-smuggler")!;
+    const result = resolveEventChoice(
+      build({ weapons: [{ weaponId: "scattergun", tier: 1 }, { weaponId: "arc-carbine", tier: 1 }] }),
+      60,
+      choiceById(smuggler, "trade-up"),
+      0,
+    );
+    expect(result.build.weapons).toEqual([{ weaponId: "bulwark-rotary-cannon", tier: 2 }]);
+  });
+
+  it("Rogue Server draws one upgrade from the offered set by roll", () => {
+    const server = encounterEventById("event-rogue-server")!;
+    const download = choiceById(server, "download");
+    const first = resolveEventChoice(build(), 60, download, 0);
+    const last = resolveEventChoice(build(), 60, download, 0.99);
+    expect(first.build.upgrades).toEqual([{ upgradeId: "rapid-cycling", level: 1 }]);
+    expect(last.build.upgrades).toEqual([{ upgradeId: "composite-plating", level: 1 }]);
+  });
+
+  it("Whispering Cargo swaps out the most recently owned relic for a fresh one", () => {
+    const cargo = encounterEventById("event-whispering-cargo")!;
+    const result = resolveEventChoice(build({ relicIds: ["rel-blast-baffle"] }), 60, choiceById(cargo, "trade-relic"), 0.3);
+    expect(result.effects.relicIds.length).toBe(1);
+    const merged = applyEventResolutionToBuild(result);
+    // The old relic id was removed from the base and the new one appended.
+    expect(merged.relicIds).not.toContain("rel-blast-baffle");
+    expect(merged.relicIds!.length).toBe(1);
+  });
+
+  it("Chimera Experiment converts health to scrap or scrap to max health", () => {
+    const chimera = encounterEventById("event-chimera-experiment")!;
+    const fleshForScrap = resolveEventChoice(build({ health: 18, scrap: 0 }), 18, choiceById(chimera, "flesh-for-scrap"), 0);
+    expect(fleshForScrap.build.health).toBe(8);
+    expect(fleshForScrap.build.scrap).toBe(10);
+
+    const scrapForFlesh = resolveEventChoice(build({ health: 18, scrap: 20 }), 18, choiceById(chimera, "scrap-for-flesh"), 0);
+    expect(scrapForFlesh.build.scrap).toBe(0);
+    expect(scrapForFlesh.effects.maxHealthDelta).toBe(20);
+    expect(scrapForFlesh.build.health).toBe(38);
   });
 });
 

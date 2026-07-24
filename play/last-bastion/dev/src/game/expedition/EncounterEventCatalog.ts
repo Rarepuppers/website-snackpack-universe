@@ -1,4 +1,5 @@
 import type { EliteKind } from "../combat/EliteCadence";
+import type { PowerupType } from "../combat/CombatSimulation";
 import type { ExpeditionBuildSnapshot } from "./ExpeditionRun";
 import { RELIC_IDS, type ArtifactId, type RelicId } from "../content/relicCatalog";
 
@@ -46,7 +47,34 @@ export type EventOutcome =
   | { type: "duplicateUpgradeWithPenalty" }
   | { type: "guaranteedEliteRelicNextNode" }
   | { type: "ambush"; threatBudget: number; eliteKind?: EliteKind }
-  | { type: "nothing" };
+  | { type: "nothing" }
+  // --- Phase 2 enablers (24 July 2026) ---
+  /** Carries a field-drop kit into the next combat node's active-buff rotation. */
+  | { type: "grantConsumable"; powerupType: PowerupType }
+  /** Deterministically draws one upgrade from a small offered set (Rogue Server). */
+  | { type: "pickUpgradeFromSet"; upgradeIds: readonly string[] }
+  /** Drops the most recently taken upgrade's level by one, or a named one. */
+  | { type: "removeUpgrade"; upgradeId?: string }
+  /** Removes a relic (a named one, or the most recently owned) — Purifier Station. */
+  | { type: "purifyRelic"; relicId?: RelicId }
+  /** Heals to full and undoes any permanent max-health cost paid so far this run. */
+  | { type: "fullCleanse" }
+  /** Consumes weapons off the end of the rack and replaces them with one result weapon. */
+  | { type: "transmogrifyWeapon"; resultWeaponId: string; resultTier?: number; consumeCount?: number }
+  /** Adds a copy of the last-equipped weapon to the rack (Duplication Vat). */
+  | { type: "duplicateWeapon" }
+  /**
+   * Adds a second copy of an owned relic id (a named one, or the most recently
+   * owned). `resolveRelicModifiers` currently dedupes relic ids into a Set (by
+   * design, one copy applies unless stated), so this is authored now and takes
+   * full mechanical effect once relic stacking rules land — the same
+   * carry-now/wire-later shape as `duplicateUpgradeWithPenalty`.
+   */
+  | { type: "duplicateRelic"; relicId?: RelicId }
+  /** Converts an amount of one resource into another (Chimera Experiment). */
+  | { type: "swapStat"; from: "scrap" | "health" | "experience"; to: "scrap" | "maxHealth" | "experience"; amount: number }
+  /** Grants bonus lifesteal-per-kill on top of any relic/artifact source. */
+  | { type: "grantLifesteal"; amount: number };
 
 /** One weighted arm of a random (FTL-style) result table. */
 export interface EventOutcomeBranch {
@@ -338,6 +366,93 @@ const SHRINES: readonly EncounterEventDefinition[] = Object.freeze([
         detail: "Heal to full, but the dead mark you (-2 max health)",
         outcomes: [{ type: "healToFull" }, { type: "maxHealth", delta: -2 }],
         resultText: "Your wounds close as a cold weight settles permanently on your chest.",
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "shrine-cryo",
+    kind: "shrine",
+    name: "Cryo Shrine",
+    text: "A cracked stasis pod breathes frost across the floor. Step inside and it will burn every scar off you at once.",
+    minColumn: 3,
+    choices: [
+      {
+        id: "step-in",
+        label: "Step into the frost",
+        detail: "Heal to full and undo any permanent max-health cost paid so far",
+        outcomes: [{ type: "fullCleanse" }],
+        resultText: "The frost bites once, hard, then lifts — every old wound sealed over clean.",
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "shrine-forge-fallen",
+    kind: "shrine",
+    name: "Forge of the Fallen",
+    text: "A war-forge fed by the wrecks of a hundred dead Bastion units. Feed it a weapon and it remakes something stranger.",
+    minColumn: 3,
+    choices: [
+      {
+        id: "sacrifice-weapon",
+        label: "Feed the forge a weapon",
+        detail: "Sacrifice your last weapon for a random higher-tier replacement",
+        requirement: { minWeapons: 1 },
+        randomOutcomes: [
+          { weight: 1, resultText: "The forge spits out a rotary cannon, still glowing.", outcomes: [{ type: "transmogrifyWeapon", resultWeaponId: "bulwark-rotary-cannon", resultTier: 2, consumeCount: 1 }] },
+          { weight: 1, resultText: "The forge spits out a grenade tube, still glowing.", outcomes: [{ type: "transmogrifyWeapon", resultWeaponId: "grenade-tube", resultTier: 2, consumeCount: 1 }] },
+          { weight: 1, resultText: "The forge spits out an arc carbine, still glowing.", outcomes: [{ type: "transmogrifyWeapon", resultWeaponId: "arc-carbine", resultTier: 2, consumeCount: 1 }] },
+        ],
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "shrine-duplication-vat",
+    kind: "shrine",
+    name: "Duplication Vat",
+    text: "A cracked cloning tank, still humming. It only knows how to make one more of whatever you put in.",
+    minColumn: 3,
+    choices: [
+      {
+        id: "duplicate-weapon",
+        label: "Feed it a weapon",
+        detail: "Add a second copy of your last-equipped weapon",
+        requirement: { minWeapons: 1 },
+        outcomes: [{ type: "duplicateWeapon" }],
+        resultText: "The vat shudders and drops a twin of your weapon onto the rack.",
+      },
+      {
+        id: "duplicate-relic",
+        label: "Feed it a relic",
+        detail: "Add a second copy of your most recently owned relic",
+        outcomes: [{ type: "duplicateRelic" }],
+        resultText: "The vat copies the relic down to the last scratch.",
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "shrine-purifier",
+    kind: "shrine",
+    name: "Purifier Station",
+    text: "An old med-bay terminal offers to strip something out of you — for scrap, whatever you can spare.",
+    minColumn: 2,
+    choices: [
+      {
+        id: "purge-upgrade",
+        label: "Purge an upgrade",
+        detail: "Drop a level off your most recently taken upgrade → +20 scrap",
+        outcomes: [{ type: "removeUpgrade" }, { type: "scrap", delta: 20 }],
+        resultText: "The terminal draws the upgrade back out of you, and pays you for the trouble.",
+      },
+      {
+        id: "purge-relic",
+        label: "Purge a relic",
+        detail: "Remove your most recently owned relic → +20 scrap",
+        outcomes: [{ type: "purifyRelic" }, { type: "scrap", delta: 20 }],
+        resultText: "The terminal unpicks the relic's hooks and hands back the scrap.",
       },
       LEAVE_CHOICE,
     ],
@@ -961,6 +1076,84 @@ const EVENTS: readonly EncounterEventDefinition[] = Object.freeze([
       LEAVE_CHOICE,
     ],
   },
+  {
+    id: "event-weapon-smuggler",
+    kind: "event",
+    name: "Weapon Smuggler",
+    text: "A jury-rigged rover flags you down. Its owner deals in guns, not questions: two in, one better one out.",
+    minColumn: 3,
+    choices: [
+      {
+        id: "trade-up",
+        label: "Trade two weapons for one",
+        detail: "-2 weapons → 1 higher-tier rotary cannon",
+        requirement: { minWeapons: 2 },
+        outcomes: [{ type: "transmogrifyWeapon", resultWeaponId: "bulwark-rotary-cannon", resultTier: 2, consumeCount: 2 }],
+        resultText: "The smuggler strips your guns for parts and hands over something heavier.",
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "event-rogue-server",
+    kind: "event",
+    name: "Rogue Server",
+    text: "A live Bastion data node, cut off from command and still answering queries. It offers you a choice of doctrine.",
+    minColumn: 2,
+    choices: [
+      {
+        id: "download",
+        label: "Download the doctrine set",
+        detail: "Take one of three offered upgrades",
+        outcomes: [{ type: "pickUpgradeFromSet", upgradeIds: ["rapid-cycling", "heavy-calibre", "composite-plating"] }],
+        resultText: "The server picks one of its remaining doctrines and burns it into your gear.",
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "event-whispering-cargo",
+    kind: "event",
+    name: "Whispering Cargo",
+    text: "A drifting cargo pod murmurs in a language that isn't quite words. It wants to trade — something for something better.",
+    minColumn: 4,
+    choices: [
+      {
+        id: "trade-relic",
+        label: "Offer up a relic",
+        detail: "Give up your most recently owned relic for a different one",
+        outcomes: [{ type: "purifyRelic" }, { type: "grantRelic" }],
+        resultText: "The pod swallows your offering and returns something that wasn't there before.",
+      },
+      LEAVE_CHOICE,
+    ],
+  },
+  {
+    id: "event-chimera-experiment",
+    kind: "event",
+    name: "Chimera Experiment",
+    text: "A masked trader runs a stall of half-finished augments. \"Everything's a trade,\" they say. \"Pick your price.\"",
+    minColumn: 4,
+    choices: [
+      {
+        id: "flesh-for-scrap",
+        label: "Sell flesh for scrap",
+        detail: "-10 health → +10 scrap",
+        requirement: { minHealth: 11 },
+        outcomes: [{ type: "swapStat", from: "health", to: "scrap", amount: 10 }],
+        resultText: "The trader takes their cut in blood and pays out in salvage.",
+      },
+      {
+        id: "scrap-for-flesh",
+        label: "Buy flesh with scrap",
+        detail: "-20 scrap → +20 max health",
+        requirement: { minScrap: 20 },
+        outcomes: [{ type: "swapStat", from: "scrap", to: "maxHealth", amount: 20 }],
+        resultText: "The trader grafts something sturdier where the scrap used to be.",
+      },
+      LEAVE_CHOICE,
+    ],
+  },
 ]);
 
 export const ENCOUNTER_EVENT_CATALOG: readonly EncounterEventDefinition[] =
@@ -1012,6 +1205,10 @@ export interface EventSideEffects {
   guaranteedEliteRelicNextNode: boolean;
   duplicateUpgradeWithPenalty: boolean;
   ambush: { threatBudget: number; eliteKind: EliteKind | null } | null;
+  /** Field-drop kits (Phase 2) carried forward to the next combat node's rotation. */
+  consumables: PowerupType[];
+  /** Bonus lifesteal-per-kill (Phase 2) granted on top of any relic/artifact source. */
+  bonusLifestealPerKill: number;
 }
 
 export interface EventResolution {
@@ -1030,6 +1227,8 @@ export function emptySideEffects(): EventSideEffects {
     guaranteedEliteRelicNextNode: false,
     duplicateUpgradeWithPenalty: false,
     ambush: null,
+    consumables: [],
+    bonusLifestealPerKill: 0,
   };
 }
 
@@ -1105,6 +1304,8 @@ export function resolveEventChoice(
   let scrap = build.scrap;
   let experience = build.experience;
   let weapons = build.weapons.map((weapon) => ({ ...weapon }));
+  let upgrades = build.upgrades.map((upgrade) => ({ ...upgrade }));
+  let relicIds = [...(build.relicIds ?? [])];
 
   for (const outcome of outcomes) {
     switch (outcome.type) {
@@ -1160,14 +1361,134 @@ export function resolveEventChoice(
         break;
       case "nothing":
         break;
+      case "grantConsumable":
+        effects.consumables.push(outcome.powerupType);
+        break;
+      case "pickUpgradeFromSet":
+        upgrades = grantUpgrade(upgrades, pickUpgrade(outcome.upgradeIds, roll));
+        break;
+      case "removeUpgrade":
+        upgrades = removeUpgrade(upgrades, outcome.upgradeId);
+        break;
+      case "purifyRelic":
+        relicIds = removeRelic(relicIds, outcome.relicId);
+        break;
+      case "fullCleanse": {
+        const currentBonus = build.maxHealthBonus ?? 0;
+        if (currentBonus < 0) effects.maxHealthDelta -= currentBonus;
+        health = effectiveMax();
+        break;
+      }
+      case "transmogrifyWeapon":
+        weapons = weapons.slice(0, Math.max(0, weapons.length - (outcome.consumeCount ?? 1)));
+        weapons.push({ weaponId: outcome.resultWeaponId, tier: outcome.resultTier ?? 1 });
+        break;
+      case "duplicateWeapon":
+        if (weapons.length > 0) weapons.push({ ...weapons[weapons.length - 1]! });
+        break;
+      case "duplicateRelic": {
+        const source = outcome.relicId ?? relicIds[relicIds.length - 1];
+        if (source) relicIds = [...relicIds, source];
+        break;
+      }
+      case "swapStat":
+        ({ health, scrap, experience } = applyStatSwap(
+          { health, scrap, experience },
+          outcome.from,
+          outcome.to,
+          outcome.amount,
+          effectiveMax(),
+          effects,
+        ));
+        break;
+      case "grantLifesteal":
+        effects.bonusLifestealPerKill += outcome.amount;
+        break;
     }
   }
 
   return {
-    build: { ...build, health, shield, scrap, experience, weapons },
+    build: {
+      ...build,
+      health, shield, scrap, experience, weapons, upgrades,
+      // Only surface `relicIds` when it existed already or this resolution touched
+      // it, so an untouched build (e.g. the Leave choice) round-trips unchanged.
+      ...(build.relicIds !== undefined || relicIds.length > 0 ? { relicIds } : {}),
+    },
     effects,
     resultText,
   };
+}
+
+/** Picks one upgrade id from a small offered set, deterministic by roll. */
+function pickUpgrade(pool: readonly string[], roll: number): string {
+  const index = Math.min(pool.length - 1, Math.floor(roll * pool.length));
+  return pool[index]!;
+}
+
+/** Levels up an owned upgrade, or takes it fresh at level 1. */
+function grantUpgrade(
+  upgrades: { upgradeId: string; level: number }[],
+  upgradeId: string,
+): { upgradeId: string; level: number }[] {
+  const existing = upgrades.find((upgrade) => upgrade.upgradeId === upgradeId);
+  if (existing) {
+    existing.level += 1;
+    return upgrades;
+  }
+  return [...upgrades, { upgradeId, level: 1 }];
+}
+
+/** Drops one level off a named upgrade (or the most recently taken one), removing it at zero. */
+function removeUpgrade(
+  upgrades: { upgradeId: string; level: number }[],
+  upgradeId?: string,
+): { upgradeId: string; level: number }[] {
+  const index = upgradeId
+    ? upgrades.findIndex((upgrade) => upgrade.upgradeId === upgradeId)
+    : upgrades.length - 1;
+  if (index < 0) return upgrades;
+  const target = upgrades[index]!;
+  const next = [...upgrades];
+  if (target.level > 1) {
+    next[index] = { ...target, level: target.level - 1 };
+  } else {
+    next.splice(index, 1);
+  }
+  return next;
+}
+
+/** Removes a named relic id (or the most recently owned one) from the owned list. */
+function removeRelic(relicIds: RelicId[], relicId?: RelicId): RelicId[] {
+  const index = relicId ? relicIds.lastIndexOf(relicId) : relicIds.length - 1;
+  if (index < 0) return relicIds;
+  const next = [...relicIds];
+  next.splice(index, 1);
+  return next;
+}
+
+/** Converts `amount` of one resource into another; `to: "maxHealth"` folds into `effects`. */
+function applyStatSwap(
+  current: { health: number; scrap: number; experience: number },
+  from: "scrap" | "health" | "experience",
+  to: "scrap" | "maxHealth" | "experience",
+  amount: number,
+  effectiveMax: number,
+  effects: EventSideEffects,
+): { health: number; scrap: number; experience: number } {
+  const next = { ...current };
+  const spend = from === "health" ? Math.min(amount, Math.max(0, next.health - 1)) : amount;
+  if (from === "scrap") next.scrap = Math.max(0, next.scrap - spend);
+  else if (from === "health") next.health = Math.max(1, next.health - spend);
+  else if (from === "experience") next.experience = Math.max(0, next.experience - spend);
+
+  if (to === "scrap") next.scrap += spend;
+  else if (to === "experience") next.experience += spend;
+  else if (to === "maxHealth") {
+    effects.maxHealthDelta += spend;
+    next.health = Math.min(effectiveMax + spend, next.health + spend);
+  }
+  return next;
 }
 
 /** Increments the last equipped weapon's tier, capped at Tier III. */
@@ -1211,6 +1532,8 @@ export function applyEventResolutionToBuild(resolution: EventResolution): Expedi
     equippedArtifactId,
     maxHealthBonus: (build.maxHealthBonus ?? 0) + effects.maxHealthDelta,
     weaponSlotBonus: (build.weaponSlotBonus ?? 0) + effects.weaponSlotsGranted,
+    carriedConsumables: [...(build.carriedConsumables ?? []), ...effects.consumables],
+    bonusLifestealPerKill: (build.bonusLifestealPerKill ?? 0) + effects.bonusLifestealPerKill,
   };
 }
 

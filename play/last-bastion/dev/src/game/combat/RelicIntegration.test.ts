@@ -69,3 +69,37 @@ describe("combat relic/reward integration (Task 94 step 2)", () => {
     expect(snapshot.rewardWeaponSlotBonus).toBe(0);
   });
 });
+
+describe("Phase 2 enabler carry-in (grantConsumable / grantLifesteal)", () => {
+  it("activates a carried consumable kit as an immediate combat buff", () => {
+    const sim = new CombatSimulation({
+      autoStartWaves: false,
+      startingBuild: build({ carriedConsumables: ["siege-loader"] }),
+    });
+    const buff = sim.snapshot().activeBuffs.find((candidate) => candidate.type === "siege-loader");
+    expect(buff).toBeDefined();
+    expect(buff!.remainingSeconds).toBeCloseTo(10);
+  });
+
+  it("adds bonus lifesteal-per-kill on top of any relic source", () => {
+    const bonusOnly = new CombatSimulation({
+      autoStartWaves: false,
+      startingBuild: build({ health: 5, bonusLifestealPerKill: 0.1 }),
+    });
+    const stacked = new CombatSimulation({
+      autoStartWaves: false,
+      startingBuild: build({ health: 5, equippedArtifactId: "art-symbiote-heart", bonusLifestealPerKill: 0.1 }),
+    });
+
+    const bonusEggId = bonusOnly.spawnEnemy("egg-cluster", { x: 3, y: 3 });
+    bonusOnly.dealDamage(bonusEggId, 9999);
+    const bonusHeal = bonusOnly.snapshot().events.find((event) => event.type === "player-healed");
+    expect(bonusHeal && "amount" in bonusHeal ? bonusHeal.amount : 0).toBeCloseTo(0.1);
+
+    const stackedEggId = stacked.spawnEnemy("egg-cluster", { x: 3, y: 3 });
+    stacked.dealDamage(stackedEggId, 9999);
+    const stackedHeal = stacked.snapshot().events.find((event) => event.type === "player-healed");
+    // Symbiote Heart's own 0.15 plus the 0.1 event bonus = 0.25.
+    expect(stackedHeal && "amount" in stackedHeal ? stackedHeal.amount : 0).toBeCloseTo(0.25);
+  });
+});

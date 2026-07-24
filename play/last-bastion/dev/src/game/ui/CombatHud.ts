@@ -383,6 +383,10 @@ function statusAbbreviation(type: PowerupType): string {
     case "adrenaline": return "AD";
     case "magnet-pulse": return "MP";
     case "uranium-core-rounds": return "U25";
+    case "siege-loader": return "SGE";
+    case "phase-jacket": return "PHJ";
+    case "hunter-optics": return "OPT";
+    case "last-stand-stimulant": return "LSS";
     default: return "SH";
   }
 }
@@ -393,6 +397,10 @@ function statusColor(type: PowerupType): number {
     case "adrenaline": return 0xff6a70;
     case "magnet-pulse": return 0x70dce8;
     case "uranium-core-rounds": return 0xb9ef62;
+    case "siege-loader": return 0xc9862f;
+    case "phase-jacket": return 0x5adfe0;
+    case "hunter-optics": return 0xe8b24a;
+    case "last-stand-stimulant": return 0xff4d5e;
     default: return 0x9f7aea;
   }
 }
@@ -402,6 +410,12 @@ function statusRewardFrame(type: PowerupType): number {
     case "overcharge": return 12;
     case "magnet-pulse": return 14;
     case "adrenaline": return 15;
+    // Placeholder frames pending dedicated HUD icon art; colour + abbreviation
+    // are the primary visual distinction until then.
+    case "siege-loader": return 12;
+    case "phase-jacket": return 13;
+    case "hunter-optics": return 14;
+    case "last-stand-stimulant": return 15;
     default: return 13;
   }
 }

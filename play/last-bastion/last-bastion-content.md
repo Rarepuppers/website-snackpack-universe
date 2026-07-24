@@ -481,15 +481,15 @@ First proposed special kit:
 - **HUD icon:** three converging chartreuse/ivory bullet tips over a dark armour plate. The triangular grouping remains recognizable under a 75% radial shadow; the circular timer ring and number are runtime UI.
 - **Feedback:** one brief weapon-ring pulse on activation, a restrained green-white tracer accent while active, and a soft final-three-second warning. Preserve each weapon's original damage-type colour so the buff does not falsely imply Toxic conversion.
 
-Suggested timed effect families for later review:
+Implemented 24 July 2026: Siege Loader, Phase Jacket, Hunter Optics, and Last Stand Stimulant joined the seeded field-drop rotation alongside Overcharge/Magnet Pulse/Adrenaline/Aegis (`POWERUP_WAVE_CYCLE` in `CombatSimulation.ts`), so all four kits below are now live game rules, not proposals. World/HUD art for the three not yet illustrated (Hunter Optics, Last Stand Stimulant) is still outstanding — see `item-ui-asset-production-plan.md`.
 
 | Effect | Source | Duration | Rule | Icon motif |
 | --- | --- | ---: | --- | --- |
 | Uranium-Core Rounds | Special ammunition kit / ordnance cache | 12 s | +25% direct ring-weapon damage; refresh only | Three luminous penetrator tips |
-| Siege Loader | Heavy ordnance kit | 10 s | Slow weapons cycle 30% faster; no movement bonus | Bronze loader claw around a shell |
+| Siege Loader | Heavy ordnance kit | 10 s | Slow weapons (≥1s base cycle) fire 30% faster; no movement bonus | Bronze loader claw around a shell |
 | Phase Jacket | Shrine blessing / rare pickup | 8 s | First hit is ignored, then the effect ends | Split cyan armour plate |
 | Hunter Optics | Recon kit | 15 s | Elites are marked and take +15% direct weak-point damage | Amber reticle over a horned silhouette |
-| Last Stand Stimulant | Emergency kit | 6 s | Movement and firing speed increase, but no invulnerability change | Red-white injector chevrons |
+| Last Stand Stimulant | Emergency kit | 6 s | +25% movement and +25% firing speed; no invulnerability change | Red-white injector chevrons |
 
 Timed effects should change a decision or create a brief power window. Avoid maintaining a large list of minor `+5%` timers that forces the player to read the HUD instead of the arena.
 
@@ -1059,17 +1059,17 @@ Expansion brief: ~44 new events (Slay the Spire / FTL inspiration, Last Bastion 
 
 **Merchant / trade** (FTL beacons, StS Merchant)
 - Black Market Fence - buy a black-market relic/artifact at a premium, or sell one.
-- Weapon Smuggler - trade 2 weapons -> 1 of the next tier (Phase 2 transmogrify).
+- Weapon Smuggler - trade 2 weapons -> 1 of the next tier (`transmogrifyWeapon`; live 24 July 2026 as `event-weapon-smuggler`).
 - Ammo Runner - cheap consumable kits, bulk discount.
 - Scrap Broker - convert HP <-> scrap (blood-market lite).
 
 **Shrine / altar** (StS Golden Shrine, Transmogrifier, Duplicator, Purifier, Upgrade Shrine)
 - Altar of Ash - pray for scrap, or desecrate for a relic + a curse.
-- Cryo Shrine - cleanse one scar/curse/corruption (Phase 2).
+- Cryo Shrine - cleanse (`fullCleanse`; live 24 July 2026 as `shrine-cryo`). Scoped as "heal to full + undo any accumulated negative max-health cost" — there is no separate scar/curse/corruption state in code, so this reuses the real `maxHealthBonus` field rather than inventing one.
 - Whispering Monolith - answer 3 questions, escalating risk/reward (Knowing Skull).
-- Forge of the Fallen - sacrifice a weapon -> random higher-tier weapon (Phase 2).
-- Duplication Vat - copy a weapon or relic (Phase 2).
-- Purifier Station - remove an unwanted upgrade or relic (Phase 2).
+- Forge of the Fallen - sacrifice a weapon -> random higher-tier weapon (`transmogrifyWeapon`; live 24 July 2026 as `shrine-forge-fallen`, a 3-way weighted gamble between rotary cannon/grenade tube/arc carbine).
+- Duplication Vat - copy a weapon or relic (`duplicateWeapon`/`duplicateRelic`; live 24 July 2026 as `shrine-duplication-vat`; relic duplicates have no mechanical stacking bonus yet — see `last-bastion-log.md` 24 July entry).
+- Purifier Station - remove an unwanted upgrade or relic (`removeUpgrade`/`purifyRelic`; live 24 July 2026 as `shrine-purifier`, both options pay 20 scrap).
 - Requisition Terminal - upgrade one weapon a tier, free.
 
 **Rescue / survivor / NPC** (FTL distress, StS Cleric/Beggar/Dead Adventurer)
@@ -1081,7 +1081,7 @@ Expansion brief: ~44 new events (Slay the Spire / FTL inspiration, Last Bastion 
 - Refugee Column - escort (ambush) for a relic, or wave them past.
 
 **Machine / tech** (StS Library/Living Wall/Bonfire, FTL automated scout, Scrap Ooze)
-- Rogue Server - download data: pick 1 upgrade from several (Library, Phase 2).
+- Rogue Server - download data: pick 1 upgrade from several (Library; `pickUpgradeFromSet`; live 24 July 2026 as `event-rogue-server`).
 - Assembly Line - mass-produce a chosen consumable x3.
 - Overloaded Power Grid - bleed it for scrap; risk shock damage.
 - Sentry Standoff - hack / fight / flee a turret.
@@ -1093,7 +1093,7 @@ Expansion brief: ~44 new events (Slay the Spire / FTL inspiration, Last Bastion 
 - Wheel of Fates - spin for one of six outcomes (Wheel of Change).
 - The Devourer's Dream - choose a vision: fight elite / relic / heal (Mind Bloom).
 - Gravity Well - lose a held item or take damage (Falling).
-- Whispering Cargo - trade a relic for a random better one (N'loth, Phase 2).
+- Whispering Cargo - trade a relic for a random better one (N'loth; `purifyRelic` + `grantRelic` combined in one choice; live 24 July 2026 as `event-whispering-cargo`).
 - Anomaly Reading - free XP / insight (Sensory Stone).
 
 **Discovery / utility** (StS Fountain/Idol/Joust/Lab/Match-and-Keep/Wing Statue)
@@ -1113,7 +1113,7 @@ Expansion brief: ~44 new events (Slay the Spire / FTL inspiration, Last Bastion 
 - Void Rift - step through -> Void Affinity + a scar.
 - Super-Soldier Serum - pay scrap + HP -> Bastion Super-Soldier Affinity.
 - Mutagen Pool - bathe -> Mutagenic Affinity + random stat swing.
-- Chimera Experiment - swap one stat for another (Face Trader).
+- Chimera Experiment - swap one stat for another (Face Trader; `swapStat`; live 24 July 2026 as `event-chimera-experiment` — authored as a standalone event since the mechanic itself doesn't need the Blood Market infrastructure this family is otherwise gated behind).
 
 ### New artifacts (9) - slot into RelicRunModifiers (Phase 1, cheap)
 

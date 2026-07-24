@@ -4221,6 +4221,10 @@ function powerupColor(type: PowerupType): number {
     case "magnet-pulse": return 0x8fb8ff;
     case "uranium-core-rounds": return 0xb9ef62;
     case "medkit": return 0xff6b7d;
+    case "siege-loader": return 0xc9862f;
+    case "phase-jacket": return 0x5adfe0;
+    case "hunter-optics": return 0xe8b24a;
+    case "last-stand-stimulant": return 0xff4d5e;
   }
 }
 
@@ -4264,6 +4268,12 @@ function powerupRewardFrame(type: PowerupType): number {
     case "uranium-core-rounds": return 8;
     // Medkits render from the Batch A pickup atlas instead; see syncPowerups.
     case "medkit": return 9;
+    // Placeholder frames pending dedicated pickup art (item-ui-asset-production-plan.md);
+    // colour (see powerupColor) is the primary visual distinction until then.
+    case "siege-loader": return 8;
+    case "phase-jacket": return 9;
+    case "hunter-optics": return 10;
+    case "last-stand-stimulant": return 11;
   }
 }
 

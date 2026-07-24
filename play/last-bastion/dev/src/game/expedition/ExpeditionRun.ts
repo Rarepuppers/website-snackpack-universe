@@ -10,6 +10,7 @@ import {
   type TransformationAffinityState,
 } from "../transformations/TransformationAffinity";
 import { isArtifactId, isRelicId, type ArtifactId, type RelicId } from "../content/relicCatalog";
+import type { PowerupType } from "../combat/CombatSimulation";
 
 /**
  * Mid-run expedition state (Task 38): which chart the run is on, where the
@@ -43,6 +44,10 @@ export interface ExpeditionBuildSnapshot {
   maxHealthBonus?: number;
   /** Weapon rack slots granted by events, applied on top of the hero base. */
   weaponSlotBonus?: number;
+  /** Field-drop kits (Phase 2 enabler events) carried into the next combat node's rotation. */
+  carriedConsumables?: readonly PowerupType[];
+  /** Bonus lifesteal-per-kill (Phase 2 enabler events), additive on top of any relic/artifact source. */
+  bonusLifestealPerKill?: number;
 }
 
 export interface ExpeditionRunState {

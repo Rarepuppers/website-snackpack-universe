@@ -183,6 +183,89 @@ describe("powerups and timed buffs", () => {
   });
 });
 
+describe("the four Phase 1 consumable kits", () => {
+  // Powerups are collected after the weapon-fire step within a frame, so every
+  // test here spends one frame picking up the kit before measuring its effect.
+  it("Siege Loader speeds up a slow weapon's cycle by thirty percent but leaves fast weapons alone", () => {
+    const slow = new CombatSimulation({ autoStartWaves: false, startingWeaponIds: ["patrol-blade"] });
+    const fast = new CombatSimulation({ autoStartWaves: false, startingWeaponIds: ["bulwark-rotary-cannon"] });
+    const slowPlayer = slow.snapshot().playerPosition;
+    slow.spawnPowerup("siege-loader", { ...slowPlayer });
+    fast.spawnPowerup("siege-loader", { ...fast.snapshot().playerPosition });
+    slow.step(intent(), 0.05);
+    fast.step(intent(), 0.05);
+
+    slow.spawnEnemy("brain-blob", { x: slowPlayer.x + 1.7, y: slowPlayer.y });
+    const slowSnapshot = slow.step(intent(), 0.05);
+    const fastSnapshot = fast.step(intent({ fireHeld: true }), 0.05);
+
+    expect(slowSnapshot.events.some((event) => event.type === "weapon-fired")).toBe(true);
+    expect(fastSnapshot.events.some((event) => event.type === "weapon-fired")).toBe(true);
+    expect(slowSnapshot.equippedWeapons[0]?.cooldownDurationSeconds).toBeCloseTo(2.5 / 1.3);
+    expect(fastSnapshot.equippedWeapons[0]?.cooldownDurationSeconds).toBeCloseTo(0.08);
+  });
+
+  it("Phase Jacket ignores exactly one hit then expires", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnPowerup("phase-jacket", { ...player });
+    let snapshot = simulation.step(intent(), 0.05);
+    expect(snapshot.activeBuffs.some((buff) => buff.type === "phase-jacket")).toBe(true);
+
+    simulation.spawnEnemy("scuttler", { ...player });
+    for (let frame = 0; frame < 10; frame += 1) snapshot = simulation.step(intent(), 0.05);
+    expect(snapshot.playerHealth).toBe(snapshot.playerMaxHealth);
+    expect(snapshot.activeBuffs.some((buff) => buff.type === "phase-jacket")).toBe(false);
+
+    for (let frame = 0; frame < 10; frame += 1) snapshot = simulation.step(intent(), 0.05);
+    expect(snapshot.playerHealth).toBeLessThan(snapshot.playerMaxHealth);
+  });
+
+  it("Hunter Optics adds fifteen percent direct damage to elites only", () => {
+    const baseline = new CombatSimulation({ autoStartWaves: false, startingWeaponIds: ["patrol-blade"] });
+    const boosted = new CombatSimulation({ autoStartWaves: false, startingWeaponIds: ["patrol-blade"] });
+    const basePlayer = baseline.snapshot().playerPosition;
+    const boostPlayer = boosted.snapshot().playerPosition;
+    boosted.spawnPowerup("hunter-optics", { ...boostPlayer });
+    baseline.step(intent(), 0.05);
+    boosted.step(intent(), 0.05);
+
+    const baseEliteId = baseline.spawnElite("carapace-scuttler", { x: basePlayer.x + 1.4, y: basePlayer.y });
+    const boostEliteId = boosted.spawnElite("carapace-scuttler", { x: boostPlayer.x + 1.4, y: boostPlayer.y });
+
+    const baseBefore = baseline.snapshot().enemies.find((enemy) => enemy.id === baseEliteId)!.health;
+    const boostBefore = boosted.snapshot().enemies.find((enemy) => enemy.id === boostEliteId)!.health;
+    const baseAfter = baseline.step(intent(), 0.05).enemies.find((enemy) => enemy.id === baseEliteId)!.health;
+    const boostAfter = boosted.step(intent(), 0.05).enemies.find((enemy) => enemy.id === boostEliteId)!.health;
+
+    const baseDamage = baseBefore - baseAfter;
+    const boostedDamage = boostBefore - boostAfter;
+    expect(boostedDamage).toBeCloseTo(baseDamage * 1.15);
+  });
+
+  it("Last Stand Stimulant boosts both movement and fire rate for six seconds", () => {
+    const boosted = new CombatSimulation({ autoStartWaves: false, startingWeaponIds: ["bulwark-rotary-cannon"] });
+    const baseline = new CombatSimulation({ autoStartWaves: false, startingWeaponIds: ["bulwark-rotary-cannon"] });
+    const boostedPlayer = boosted.snapshot().playerPosition;
+    boosted.spawnPowerup("last-stand-stimulant", { ...boostedPlayer });
+    const collectSnapshot = boosted.step(intent(), 0.05);
+    baseline.step(intent(), 0.05);
+    const buff = collectSnapshot.activeBuffs.find((candidate) => candidate.type === "last-stand-stimulant");
+    expect(buff?.durationSeconds).toBe(6);
+
+    const basePlayerBefore = baseline.snapshot().playerPosition.x;
+    const boostPlayerBefore = boosted.snapshot().playerPosition.x;
+    const baseSnapshot = baseline.step(intent({ move: { x: 1, y: 0 }, fireHeld: true }), 0.05);
+    const boostedSnapshot = boosted.step(intent({ move: { x: 1, y: 0 }, fireHeld: true }), 0.05);
+
+    expect(boostedSnapshot.equippedWeapons[0]?.cooldownDurationSeconds).toBeCloseTo(0.08 / 1.25);
+    expect(baseSnapshot.equippedWeapons[0]?.cooldownDurationSeconds).toBeCloseTo(0.08);
+    const baseDisplacement = baseSnapshot.playerPosition.x - basePlayerBefore;
+    const boostDisplacement = boostedSnapshot.playerPosition.x - boostPlayerBefore;
+    expect(boostDisplacement).toBeCloseTo(baseDisplacement * 1.25, 3);
+  });
+});
+
 describe("new enemies", () => {
   it("detonates a Blast Mite near the player", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false });

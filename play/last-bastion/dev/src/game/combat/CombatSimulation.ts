@@ -249,7 +249,7 @@ export type RiftStalkerPhase =
   | "entrance" | "cloak" | "mark" | "warp" | "pounce"
   | "slash-windup" | "slash" | "recovery";
 export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
-export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit";
+export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit" | "siege-loader" | "phase-jacket" | "hunter-optics" | "last-stand-stimulant";
 export type SupplyChestVariant = "sealed" | "armored";
 export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
 export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat" | "supply-chest";
@@ -1049,6 +1049,16 @@ const MAGNET_PULSE_MULTIPLIER = 2.5;
 const AEGIS_SHIELD_AMOUNT = 2.5;
 export const URANIUM_CORE_ROUNDS_DURATION_SECONDS = 12;
 export const URANIUM_CORE_ROUNDS_DAMAGE_MULTIPLIER = 1.25;
+export const SIEGE_LOADER_DURATION_SECONDS = 10;
+export const SIEGE_LOADER_ATTACK_SPEED_MULTIPLIER = 1.3;
+/** A weapon counts as "slow" (and benefits from Siege Loader) once its base cycle is at least this long. */
+export const SIEGE_LOADER_SLOW_FIRE_INTERVAL_SECONDS = 1;
+export const PHASE_JACKET_DURATION_SECONDS = 8;
+export const HUNTER_OPTICS_DURATION_SECONDS = 15;
+export const HUNTER_OPTICS_ELITE_DAMAGE_MULTIPLIER = 1.15;
+export const LAST_STAND_STIMULANT_DURATION_SECONDS = 6;
+export const LAST_STAND_STIMULANT_MOVE_MULTIPLIER = 1.25;
+export const LAST_STAND_STIMULANT_ATTACK_SPEED_MULTIPLIER = 1.25;
 const BLAST_MITE_EXPLOSION_RADIUS_METRES = 1.6;
 const BLAST_MITE_EXPLOSION_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.blastMiteExplosion;
 const COMBUSTION_RADIUS_METRES = 1.3;
@@ -1095,10 +1105,15 @@ const POWERUP_DURATION_SECONDS: Readonly<Record<PowerupType, number>> = Object.f
   "magnet-pulse": 6,
   "uranium-core-rounds": URANIUM_CORE_ROUNDS_DURATION_SECONDS,
   medkit: 0,
+  "siege-loader": SIEGE_LOADER_DURATION_SECONDS,
+  "phase-jacket": PHASE_JACKET_DURATION_SECONDS,
+  "hunter-optics": HUNTER_OPTICS_DURATION_SECONDS,
+  "last-stand-stimulant": LAST_STAND_STIMULANT_DURATION_SECONDS,
 });
 
 const POWERUP_WAVE_CYCLE: readonly PowerupType[] = Object.freeze([
   "overcharge", "magnet-pulse", "adrenaline", "aegis",
+  "siege-loader", "phase-jacket", "hunter-optics", "last-stand-stimulant",
 ]);
 
 export class CombatSimulation {
@@ -1247,13 +1262,26 @@ export class CombatSimulation {
       ? options.startingBuild!.maxHealthBonus!
       : 0;
     this.rewardWeaponSlotBonus = Math.max(0, Math.floor(options.startingBuild?.weaponSlotBonus ?? 0));
-    this.relicModifiers = resolveRelicModifiers(this.ownedRelicIds, this.equippedArtifactId);
+    const resolvedRelicModifiers = resolveRelicModifiers(this.ownedRelicIds, this.equippedArtifactId);
+    const bonusLifestealPerKill = Math.max(0, options.startingBuild?.bonusLifestealPerKill ?? 0);
+    this.relicModifiers = bonusLifestealPerKill > 0
+      ? { ...resolvedRelicModifiers, lifestealPerKill: resolvedRelicModifiers.lifestealPerKill + bonusLifestealPerKill }
+      : resolvedRelicModifiers;
     this.securedScrap = Math.max(0, Math.floor(
       options.startingBuild?.scrap ?? options.startingScrap ?? (this.scenario === "scrap-shop" ? 150 : 0),
     ));
     this.uraniumKitAvailable = options.startingUraniumKit ?? false;
     if (options.startWithUraniumBuff) {
       this.activeBuffs.set("uranium-core-rounds", URANIUM_CORE_ROUNDS_DURATION_SECONDS);
+    }
+    // Kits carried in from a Shrine/Event's grantConsumable outcome (Phase 2) become
+    // immediately active for this combat; the next build snapshot naturally drops
+    // the field, so this is a one-fight grant, not a standing buff.
+    for (const carriedType of options.startingBuild?.carriedConsumables ?? []) {
+      this.activeBuffs.set(
+        carriedType,
+        Math.max(this.activeBuffs.get(carriedType) ?? 0, POWERUP_DURATION_SECONDS[carriedType]),
+      );
     }
     this.wavesEnabled = options.autoStartWaves !== false
       && this.stressProfile === null
@@ -1408,6 +1436,9 @@ export class CombatSimulation {
       if (this.isBuffActive("adrenaline")) {
         movementMultiplier *= ADRENALINE_MOVE_MULTIPLIER;
       }
+      if (this.isBuffActive("last-stand-stimulant")) {
+        movementMultiplier *= LAST_STAND_STIMULANT_MOVE_MULTIPLIER;
+      }
     }
 
     if (intent.ultimatePressed && this.ultimateCooldownRemainingSeconds <= 0) {
@@ -1438,12 +1469,17 @@ export class CombatSimulation {
     }
 
     const attackSpeed = this.currentAttackSpeedMultiplier();
+    const siegeLoaderActive = this.isBuffActive("siege-loader");
     for (const weapon of this.equippedWeapons) {
       if (shouldWeaponFire(weapon.stats, this.autoFireEnabled, intent.fireHeld) && weapon.cooldownSeconds <= 0) {
         const fireDirection = this.resolveWeaponAimDirection(weapon, this.lastAimDirection);
         if (fireDirection) {
           this.fireWeapon(weapon, fireDirection);
-          weapon.cooldownDurationSeconds = weapon.stats.fireIntervalSeconds / attackSpeed;
+          const weaponAttackSpeed = attackSpeed
+            * (siegeLoaderActive && weapon.stats.fireIntervalSeconds >= SIEGE_LOADER_SLOW_FIRE_INTERVAL_SECONDS
+              ? SIEGE_LOADER_ATTACK_SPEED_MULTIPLIER
+              : 1);
+          weapon.cooldownDurationSeconds = weapon.stats.fireIntervalSeconds / weaponAttackSpeed;
           weapon.cooldownSeconds = weapon.cooldownDurationSeconds;
         }
       }
@@ -2832,7 +2868,7 @@ export class CombatSimulation {
       this.damageEnemy(
         enemy,
         weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats.weaponClass)
-          * this.currentPowerupDamageMultiplier(),
+          * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(enemy),
         weapon.stats.damageType,
         weapon.weaponId,
       );
@@ -3023,11 +3059,19 @@ export class CombatSimulation {
 
   private currentAttackSpeedMultiplier(): number {
     return this.defence.attackSpeedMultiplier
-      * (this.isBuffActive("overcharge") ? OVERCHARGE_ATTACK_SPEED_MULTIPLIER : 1);
+      * (this.isBuffActive("overcharge") ? OVERCHARGE_ATTACK_SPEED_MULTIPLIER : 1)
+      * (this.isBuffActive("last-stand-stimulant") ? LAST_STAND_STIMULANT_ATTACK_SPEED_MULTIPLIER : 1);
   }
 
   private currentPowerupDamageMultiplier(): number {
     return this.isBuffActive("uranium-core-rounds") ? URANIUM_CORE_ROUNDS_DAMAGE_MULTIPLIER : 1;
+  }
+
+  /** Hunter Optics: elites are marked and take bonus direct/weak-point damage. */
+  private eliteMarkDamageMultiplier(enemy: EnemyState): number {
+    return this.isBuffActive("hunter-optics") && enemy.rank === "elite"
+      ? HUNTER_OPTICS_ELITE_DAMAGE_MULTIPLIER
+      : 1;
   }
 
   private weaponDamageMultiplier(weaponClass: WeaponClass): number {
@@ -3219,6 +3263,8 @@ export class CombatSimulation {
           enemy,
           projectile.damage * damageMultiplier * (
             projectile.uraniumEligible ? this.currentPowerupDamageMultiplier() : 1
+          ) * (
+            projectile.uraniumEligible ? this.eliteMarkDamageMultiplier(enemy) : 1
           ),
           projectile.damageType,
           projectile.weaponId,
@@ -6694,6 +6740,14 @@ export class CombatSimulation {
   private damagePlayer(rawDamage: number): void {
     if (this.scenario === "density-capacity") return;
     if (rawDamage <= 0 || this.playerInvulnerable || this.playerHurtCooldownSeconds > 0) return;
+    if (this.isBuffActive("phase-jacket")) {
+      this.activeBuffs.delete("phase-jacket");
+      this.frameEvents.push({
+        type: "projectile-blocked",
+        position: { ...this.playerPosition },
+      });
+      return;
+    }
     const absorption = absorbWithShield(this.playerShield, rawDamage);
     this.playerShield = absorption.remainingShield;
     // Aegis Reactor artifact shortens the delay before the shield recharges.
