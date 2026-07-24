@@ -198,6 +198,12 @@ import {
   TRANSFORMATION_LONG_RANGE_METRES,
   type TransformationRunModifiers,
 } from "../transformations/TransformationRunModifiers";
+import {
+  outgoingDamageMultiplier,
+  resolvePlayerStats,
+  type PlayerStatBlock,
+} from "../stats/PlayerStatBlock";
+import { foldItemStats, itemById, ITEM_CATALOG } from "../content/itemCatalog";
 import { resolvePerkModifiers, type PerkId, type PerkRunModifiers } from "../perks/perkCatalog";
 import {
   resolveRelicModifiers,
@@ -1202,6 +1208,8 @@ export class CombatSimulation {
   private readonly activePerkId: PerkId | null;
   private readonly transformation: TransformationAffinityState;
   private readonly transformationModifiers: TransformationRunModifiers;
+  /** Unified resolved player stat vector (Brotato overhaul); read for damage, crit, and economy. */
+  private readonly playerStats: PlayerStatBlock;
   /** Run-long reward items (Task 94), resolved into combat effects and carried through the snapshot. */
   private readonly relicModifiers: RelicRunModifiers;
   private readonly ownedRelicIds: readonly RelicId[];
@@ -1310,6 +1318,12 @@ export class CombatSimulation {
     this.relicModifiers = bonusLifestealPerKill > 0
       ? { ...resolvedRelicModifiers, lifestealPerKill: resolvedRelicModifiers.lifestealPerKill + bonusLifestealPerKill }
       : resolvedRelicModifiers;
+    this.playerStats = resolvePlayerStats({
+      perk: this.perkModifiers,
+      relic: this.relicModifiers,
+      transformation: this.transformationModifiers,
+      itemStats: options.startingBuild?.itemStats,
+    });
     this.securedScrap = Math.max(0, Math.floor(
       options.startingBuild?.scrap ?? options.startingScrap ?? (this.scenario === "scrap-shop" ? 150 : 0),
     ));
@@ -1369,9 +1383,11 @@ export class CombatSimulation {
       this.level = this.perkModifiers.startingLevel;
       this.applyLevelGrowth();
     }
-    // Committed transformation path effects (Phase 3), applied once on top of
-    // whichever base defence/health the branch above resolved.
-    this.defence.armour += this.transformationModifiers.armourBonus;
+    // Committed transformation path effects (Phase 3) + item armour (Brotato
+    // overhaul), applied once on top of whichever base defence/health the branch
+    // above resolved. `rewardAdjustedMaxHealth` already folded item max-HP stats
+    // into `playerMaxHealth`, so only the transformation multiplier lands here.
+    this.defence.armour += this.transformationModifiers.armourBonus + this.playerStats.armourFlat;
     this.defence.maxShield += this.transformationModifiers.maxShieldBonus;
     this.playerMaxHealth = Math.max(3, Math.round(this.playerMaxHealth * this.transformationModifiers.maxHealthMultiplier));
     this.playerHealth = Math.min(this.playerHealth, this.playerMaxHealth);
@@ -1490,6 +1506,7 @@ export class CombatSimulation {
         movementMultiplier *= LAST_STAND_STIMULANT_MOVE_MULTIPLIER;
       }
       movementMultiplier *= this.transformationModifiers.movementSpeedMultiplier;
+      movementMultiplier *= 1 + this.playerStats.moveSpeedPercent / 100;
     }
 
     if (intent.ultimatePressed && this.ultimateCooldownRemainingSeconds <= 0) {
@@ -2293,11 +2310,15 @@ export class CombatSimulation {
   }
 
   /**
-   * Base + level growth + Shrine/Event max-health reward, floored so a costly
-   * shrine bargain can never drop the hero to an unplayable ceiling.
+   * Base + level growth + Shrine/Event max-health reward + item max-HP stats,
+   * floored so a costly shrine bargain can never drop the hero to an unplayable
+   * ceiling. Item flat HP is added before the item percentage scales it (Brotato
+   * order); the transformation max-health multiplier still applies on top in the
+   * constructor.
    */
   private rewardAdjustedMaxHealth(growthBonus: number): number {
-    return Math.max(3, PLAYER_MAX_HEALTH + growthBonus + this.rewardMaxHealthBonus);
+    const base = PLAYER_MAX_HEALTH + growthBonus + this.rewardMaxHealthBonus + this.playerStats.maxHpFlat;
+    return Math.max(3, base * (1 + this.playerStats.maxHpPercent / 100));
   }
 
   private restoreExpeditionBuild(build: ExpeditionBuildSnapshot): void {
@@ -2895,7 +2916,7 @@ export class CombatSimulation {
           x: direction.x * weapon.stats.projectileSpeedMetresPerSecond,
           y: direction.y * weapon.stats.projectileSpeedMetresPerSecond,
         },
-        damage: weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats.weaponClass),
+        damage: weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats),
         uraniumEligible: true,
         remainingSeconds: weapon.stats.projectileLifetimeSeconds,
         pierceRemaining: weapon.stats.pierceCount,
@@ -2937,7 +2958,7 @@ export class CombatSimulation {
     if (cover) {
       this.damageObstacle(
         cover.id,
-        weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats.weaponClass)
+        weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats)
           * this.currentPowerupDamageMultiplier(),
         { x: cover.x + cover.width / 2, y: cover.y + cover.height / 2 },
         "player-melee",
@@ -2952,9 +2973,10 @@ export class CombatSimulation {
       ) continue;
       this.damageEnemy(
         enemy,
-        weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats.weaponClass)
+        weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats)
           * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(enemy)
-          * this.transformationRangeDamageMultiplier(distance(anchor, enemy.position)),
+          * this.transformationRangeDamageMultiplier(distance(anchor, enemy.position))
+          * this.rollCritMultiplier(),
         weapon.stats.damageType,
         weapon.weaponId,
       );
@@ -3002,9 +3024,10 @@ export class CombatSimulation {
       ) continue;
       this.damageEnemy(
         enemy,
-        weapon.stats.beamDamagePerSecond * deltaSeconds * this.weaponDamageMultiplier(weapon.stats.weaponClass)
+        weapon.stats.beamDamagePerSecond * deltaSeconds * this.weaponDamageMultiplier(weapon.stats)
           * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(enemy)
-          * this.transformationRangeDamageMultiplier(distance(anchor, enemy.position)),
+          * this.transformationRangeDamageMultiplier(distance(anchor, enemy.position))
+          * this.rollCritMultiplier(),
         weapon.stats.damageType,
         weapon.weaponId,
       );
@@ -3051,9 +3074,10 @@ export class CombatSimulation {
       });
       this.damageEnemy(
         current,
-        weapon.stats.projectileDamage * Math.pow(0.7, hop) * this.weaponDamageMultiplier(weapon.stats.weaponClass)
+        weapon.stats.projectileDamage * Math.pow(0.7, hop) * this.weaponDamageMultiplier(weapon.stats)
           * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(current)
-          * this.transformationRangeDamageMultiplier(distance(anchor, current.position)),
+          * this.transformationRangeDamageMultiplier(distance(anchor, current.position))
+          * this.rollCritMultiplier(),
         weapon.stats.damageType,
         weapon.weaponId,
       );
@@ -3100,9 +3124,10 @@ export class CombatSimulation {
       if (distance(bladePosition, enemy.position) > definition.radiusMetres + ORBIT_BLADE_CONTACT_RADIUS_METRES) continue;
       this.damageEnemy(
         enemy,
-        weapon.stats.beamDamagePerSecond * deltaSeconds * this.weaponDamageMultiplier(weapon.stats.weaponClass)
+        weapon.stats.beamDamagePerSecond * deltaSeconds * this.weaponDamageMultiplier(weapon.stats)
           * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(enemy)
-          * this.transformationRangeDamageMultiplier(distance(this.playerPosition, enemy.position)),
+          * this.transformationRangeDamageMultiplier(distance(this.playerPosition, enemy.position))
+          * this.rollCritMultiplier(),
         weapon.stats.damageType,
         weapon.weaponId,
       );
@@ -3288,7 +3313,8 @@ export class CombatSimulation {
     return this.defence.attackSpeedMultiplier
       * (this.isBuffActive("overcharge") ? OVERCHARGE_ATTACK_SPEED_MULTIPLIER : 1)
       * (this.isBuffActive("last-stand-stimulant") ? LAST_STAND_STIMULANT_ATTACK_SPEED_MULTIPLIER : 1)
-      * this.transformationModifiers.fireRateMultiplier;
+      * this.transformationModifiers.fireRateMultiplier
+      * Math.max(0.1, 1 + this.playerStats.attackSpeedPercent / 100);
   }
 
   private currentPowerupDamageMultiplier(): number {
@@ -3302,11 +3328,26 @@ export class CombatSimulation {
       : 1;
   }
 
-  private weaponDamageMultiplier(weaponClass: WeaponClass): number {
+  private weaponDamageMultiplier(stats: WeaponRuntimeStats): number {
+    const melee = stats.attackPattern === "melee-sweep" || stats.attackPattern === "orbit-blade";
+    const elemental = stats.damageType !== "physical";
     return this.levelDamageMultiplier
-      * (1 + this.weaponProficiencies[weaponClass] * 0.04)
+      * (1 + this.weaponProficiencies[stats.weaponClass] * 0.04)
       * this.berserkerDamageMultiplier()
-      * (weaponClass === "heavy" ? this.transformationModifiers.heavyWeaponDamageMultiplier : 1);
+      * (stats.weaponClass === "heavy" ? this.transformationModifiers.heavyWeaponDamageMultiplier : 1)
+      * outgoingDamageMultiplier(this.playerStats, { melee, elemental });
+  }
+
+  /**
+   * Per-hit crit roll for direct weapon damage (not status ticks or splash).
+   * Guarded so a zero crit chance draws no RNG at all — that keeps runs with no
+   * crit items byte-identical to today, so the deterministic `ReplayFixture`
+   * digest is unaffected until a crit source actually exists.
+   */
+  private rollCritMultiplier(): number {
+    const chance = this.playerStats.critChancePercent;
+    if (chance <= 0) return 1;
+    return this.random() < chance / 100 ? this.playerStats.critMultiplier : 1;
   }
 
   /** Psionic Sniper / Tunnel Focus-style transformation effects: damage scales with range to the target. */
@@ -3343,7 +3384,9 @@ export class CombatSimulation {
     if (this.regenerationRemainingSeconds > 0) return;
     this.regenerationRemainingSeconds += PLAYER_REGEN_INTERVAL_SECONDS;
     if (this.playerHealth >= this.playerMaxHealth) return;
-    const perSecondRate = PLAYER_REGEN_PER_SECOND + this.transformationModifiers.regenerationPerSecondBonus;
+    const perSecondRate = PLAYER_REGEN_PER_SECOND
+      + this.transformationModifiers.regenerationPerSecondBonus
+      + this.playerStats.hpRegenPerSecond;
     const amount = Math.min(
       Math.max(0, perSecondRate) * PLAYER_REGEN_INTERVAL_SECONDS
         * this.supportEffectMultiplier * this.transformationModifiers.healingReceivedMultiplier,
@@ -3517,7 +3560,8 @@ export class CombatSimulation {
             projectile.uraniumEligible ? this.currentPowerupDamageMultiplier() : 1
           ) * (
             projectile.uraniumEligible ? this.eliteMarkDamageMultiplier(enemy) : 1
-          ) * this.transformationRangeDamageMultiplier(distance(this.playerPosition, enemy.position)),
+          ) * this.transformationRangeDamageMultiplier(distance(this.playerPosition, enemy.position))
+          * this.rollCritMultiplier(),
           projectile.damageType,
           projectile.weaponId,
         );
@@ -7087,6 +7131,13 @@ export class CombatSimulation {
   private damagePlayer(rawDamage: number): void {
     if (this.scenario === "density-capacity") return;
     if (rawDamage <= 0 || this.playerInvulnerable || this.playerHurtCooldownSeconds > 0) return;
+    // Item dodge (Brotato overhaul): a chance to ignore the hit outright. Guarded
+    // so a zero dodge chance draws no RNG, keeping the deterministic replay digest
+    // stable for runs with no dodge items.
+    if (this.playerStats.dodgePercent > 0 && this.random() < this.playerStats.dodgePercent / 100) {
+      this.frameEvents.push({ type: "projectile-blocked", position: { ...this.playerPosition } });
+      return;
+    }
     if (this.isBuffActive("phase-jacket")) {
       this.activeBuffs.delete("phase-jacket");
       this.frameEvents.push({
@@ -7335,7 +7386,22 @@ export class CombatSimulation {
         mitigated,
       );
     }
+    const healthBeforeHit = enemy.health;
     this.applyRawDamage(enemy, mitigated);
+    // Item lifesteal (Brotato overhaul): heal a fraction of the damage this weapon
+    // hit actually removed (shield + health). Only weapon damage routes through
+    // `damageEnemy`; status/DoT ticks call `applyRawDamage` directly and don't leech.
+    if (this.playerStats.lifestealPercent > 0) {
+      const dealt = Math.max(0, shieldBefore - enemy.shield) + Math.max(0, healthBeforeHit - enemy.health);
+      const healed = Math.min(
+        dealt * this.playerStats.lifestealPercent / 100,
+        this.playerMaxHealth - this.playerHealth,
+      );
+      if (healed > 0) {
+        this.playerHealth += healed;
+        this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount: healed });
+      }
+    }
   }
 
   private canStatusApply(enemy: EnemyState, status: StatusEffectType): boolean {
@@ -7592,8 +7658,12 @@ export class CombatSimulation {
     source: ScrapSource,
     position: Vector2Data,
   ): void {
-    // Scavenger's Manifest artifact multiplies combat Scrap gains.
-    const scaled = amount * this.relicModifiers.scrapMultiplier;
+    // Scavenger's Manifest artifact + item harvesting (Brotato overhaul) multiply
+    // combat Scrap gains. Harvesting is the central economy stat: more scrap per
+    // kill/clear means more shop purchasing power.
+    const scaled = amount
+      * this.relicModifiers.scrapMultiplier
+      * (1 + this.playerStats.harvestingPercent / 100);
     this.securedScrap += scaled;
     this.runScrapEarned += Math.max(0, scaled);
     this.frameEvents.push({

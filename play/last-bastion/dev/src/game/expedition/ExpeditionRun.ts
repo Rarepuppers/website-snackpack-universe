@@ -11,6 +11,7 @@ import {
 } from "../transformations/TransformationAffinity";
 import { isArtifactId, isRelicId, type ArtifactId, type RelicId } from "../content/relicCatalog";
 import type { PowerupType } from "../combat/CombatSimulation";
+import type { PlayerStatBlock } from "../stats/PlayerStatBlock";
 
 /**
  * Mid-run expedition state (Task 38): which chart the run is on, where the
@@ -48,6 +49,20 @@ export interface ExpeditionBuildSnapshot {
   carriedConsumables?: readonly PowerupType[];
   /** Bonus lifesteal-per-kill (Phase 2 enabler events), additive on top of any relic/artifact source. */
   bonusLifestealPerKill?: number;
+  /**
+   * Raw non-item stat contributions (Brotato overhaul — see
+   * `last-bastion-shop-economy-plan.md`). A partial `PlayerStatBlock` folded into
+   * the resolved player stats at combat construction. Item purchases live in
+   * `ownedItemIds`; this hook is for stat grants that aren't catalogue items
+   * (e.g. a shrine handing out a raw stat) and for tests.
+   */
+  itemStats?: Partial<PlayerStatBlock>;
+  /**
+   * Owned shop item ids (Brotato overhaul). The source of truth for the item
+   * economy — folded into the resolved stats via `foldItemStats`, and the future
+   * home of sell/inventory. Duplicates are allowed (you can own two of an item).
+   */
+  ownedItemIds?: readonly string[];
 }
 
 export interface ExpeditionRunState {
