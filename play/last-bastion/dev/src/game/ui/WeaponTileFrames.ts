@@ -11,8 +11,13 @@ export function canonicalWeaponTileFrame(weaponId: WeaponId): number {
     case "bulwark-rotary-cannon": return 5;
     case "injector-carbine": return 6;
     case "bastion-service-rifle": return 7;
-    // Railspike has no Batch I tile yet (art pending, Phase 4); reuses the
-    // rifle's frame as a placeholder until its own atlas slot is produced.
+    // Railspike/Seeker Swarm have no Batch I tile yet (art pending, Phase 4);
+    // reuse the rifle's frame as a placeholder until their own slots exist.
     case "railspike": return 7;
+    case "seeker-swarm": return 7;
+    case "cryo-lance": return 7;
+    case "tesla-coil": return 7;
+    case "flamethrower": return 7;
+    case "sawblade": return 7;
   }
 }

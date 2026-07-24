@@ -1,9 +1,9 @@
 import type { DamageType } from "../combat/damageTypes";
 import type { WeaponClass } from "../hero/HeroDefinition";
 
-export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine" | "railspike";
+export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine" | "railspike" | "seeker-swarm" | "cryo-lance" | "tesla-coil" | "flamethrower" | "sawblade";
 export type WeaponTargetingMode = "cursor" | "nearest-enemy";
-export type WeaponAttackPattern = "projectile" | "scatter" | "chain-projectile" | "melee-sweep";
+export type WeaponAttackPattern = "projectile" | "scatter" | "chain-projectile" | "melee-sweep" | "beam" | "orbit" | "orbit-blade";
 
 /** Autonomous support/cadence weapons ignore the global trigger mode. */
 export function shouldWeaponFire(
@@ -36,6 +36,20 @@ export interface WeaponRuntimeStats {
   chainRadiusMetres: number;
   meleeArcRadians: number;
   firesAutomatically: boolean;
+  /** Non-zero turns fired projectiles toward the nearest live enemy each frame, at this many radians/second (Seeker Swarm). */
+  homingTurnRateRadiansPerSecond: number;
+  /**
+   * Non-zero makes this an `attackPattern: "beam"` weapon: continuous
+   * per-second tick damage to every enemy inside a forward cone sized by
+   * `meleeArcRadians`, for as long as it fires (Cryo Lance, Flamethrower).
+   * Also doubles as the contact damage-per-second for `attackPattern:
+   * "orbit-blade"` (Sawblade).
+   */
+  beamDamagePerSecond: number;
+  /** `attackPattern: "orbit-blade"`: distance the blade orbits from the player (Sawblade). */
+  orbitRadiusMetres: number;
+  /** `attackPattern: "orbit-blade"`: how fast the blade spins around the player (Sawblade). */
+  orbitAngularSpeedRadiansPerSecond: number;
 }
 
 export const BASTION_SERVICE_RIFLE: Readonly<WeaponRuntimeStats> = weapon({
@@ -189,6 +203,95 @@ export const RAILSPIKE: Readonly<WeaponRuntimeStats> = weapon({
   knockbackMetres: 0.2,
 });
 
+export const SEEKER_SWARM: Readonly<WeaponRuntimeStats> = weapon({
+  id: "seeker-swarm",
+  displayName: "Seeker Swarm",
+  description: "A volley of light micro-missiles that curve to chase the nearest target.",
+  weaponClass: "light",
+  damageType: "physical",
+  targetingMode: "cursor",
+  attackPattern: "projectile",
+  rangeMetres: 12,
+  fireIntervalSeconds: 1.1,
+  projectileSpeedMetresPerSecond: 9,
+  projectileLifetimeSeconds: 1.6,
+  projectileDamage: 1.4,
+  projectileCount: 3,
+  spreadRadians: 0.35,
+  homingTurnRateRadiansPerSecond: 5,
+});
+
+export const CRYO_LANCE: Readonly<WeaponRuntimeStats> = weapon({
+  id: "cryo-lance",
+  displayName: "Cryo Lance",
+  description: "A sustained beam that chills everything held in its narrow forward cone.",
+  weaponClass: "medium",
+  damageType: "cryo",
+  targetingMode: "cursor",
+  attackPattern: "beam",
+  rangeMetres: 6,
+  fireIntervalSeconds: 0,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 0,
+  beamDamagePerSecond: 3,
+  meleeArcRadians: 0.16,
+});
+
+export const TESLA_COIL: Readonly<WeaponRuntimeStats> = weapon({
+  id: "tesla-coil",
+  displayName: "Tesla Coil",
+  description: "A passive orbiting coil that periodically arcs Shock to the nearest enemies.",
+  weaponClass: "light",
+  damageType: "shock",
+  targetingMode: "nearest-enemy",
+  attackPattern: "orbit",
+  rangeMetres: 4,
+  fireIntervalSeconds: 0.9,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 2,
+  chainCount: 2,
+  chainRadiusMetres: 3,
+  firesAutomatically: true,
+});
+
+export const FLAMETHROWER: Readonly<WeaponRuntimeStats> = weapon({
+  id: "flamethrower",
+  displayName: "Flamethrower",
+  description: "A short, wide cone of sustained fire that builds Blaze on everything it touches.",
+  weaponClass: "heavy",
+  damageType: "fire",
+  targetingMode: "cursor",
+  attackPattern: "beam",
+  rangeMetres: 3.2,
+  fireIntervalSeconds: 0,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 0,
+  beamDamagePerSecond: 5,
+  meleeArcRadians: 0.9,
+});
+
+export const SAWBLADE: Readonly<WeaponRuntimeStats> = weapon({
+  id: "sawblade",
+  displayName: "Sawblade",
+  description: "A physical blade that spins in a tight orbit around you, biting anything it touches.",
+  weaponClass: "medium",
+  damageType: "physical",
+  targetingMode: "nearest-enemy",
+  attackPattern: "orbit-blade",
+  rangeMetres: 20,
+  fireIntervalSeconds: 0,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 0,
+  beamDamagePerSecond: 4,
+  orbitRadiusMetres: 1.1,
+  orbitAngularSpeedRadiansPerSecond: 4.5,
+  firesAutomatically: true,
+});
+
 export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeStats>>> = Object.freeze({
   "bastion-service-rifle": BASTION_SERVICE_RIFLE,
   scattergun: SCATTERGUN,
@@ -199,6 +302,11 @@ export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeSta
   "grenade-tube": GRENADE_TUBE,
   "injector-carbine": INJECTOR_CARBINE,
   railspike: RAILSPIKE,
+  "seeker-swarm": SEEKER_SWARM,
+  "cryo-lance": CRYO_LANCE,
+  "tesla-coil": TESLA_COIL,
+  flamethrower: FLAMETHROWER,
+  sawblade: SAWBLADE,
 });
 
 export const VERTICAL_SLICE_WEAPON_IDS: readonly WeaponId[] = Object.freeze([
@@ -240,6 +348,10 @@ function weapon(
     chainRadiusMetres: 0,
     meleeArcRadians: 0,
     firesAutomatically: false,
+    homingTurnRateRadiansPerSecond: 0,
+    beamDamagePerSecond: 0,
+    orbitRadiusMetres: 0,
+    orbitAngularSpeedRadiansPerSecond: 0,
     ...definition,
   });
 }

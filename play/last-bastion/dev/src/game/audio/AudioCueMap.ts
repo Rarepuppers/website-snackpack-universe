@@ -101,6 +101,11 @@ const WEAPON_CUES: Readonly<Record<WeaponId, AudioCue>> = Object.freeze({
   "grenade-tube": cue("grenade-tube-fire", 170, 0.16, 0.08, "triangle", 80),
   "injector-carbine": cue("injector-carbine-fire", 630, 0.07, 0.05, "square", 410),
   railspike: cue("railspike-fire", 140, 0.26, 0.13, "sawtooth", 50),
+  "seeker-swarm": cue("seeker-swarm-fire", 900, 0.09, 0.06, "sine", 1400),
+  "cryo-lance": cue("cryo-lance-beam", 320, 0.05, 0.05, "sine", 340),
+  "tesla-coil": cue("tesla-coil-arc", 1400, 0.07, 0.07, "sawtooth", 2200),
+  flamethrower: cue("flamethrower-jet", 130, 0.09, 0.08, "sawtooth", 90),
+  sawblade: cue("sawblade-spin", 210, 0.04, 0.05, "sawtooth", 240),
 });
 
 export function cueForCombatEvent(event: CombatEvent): AudioCue | null {

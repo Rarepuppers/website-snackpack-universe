@@ -855,6 +855,8 @@ interface ProjectileState {
   chainRadiusMetres: number;
   hitEnemyIds: Set<number>;
   dead: boolean;
+  /** Seeker Swarm: non-zero steers this projectile toward the nearest live enemy each frame. */
+  homingTurnRateRadiansPerSecond: number;
 }
 
 interface ExperiencePickupState {
@@ -945,6 +947,8 @@ interface EquippedWeaponState extends EquippedWeapon {
   cooldownSeconds: number;
   cooldownDurationSeconds: number;
   projectileCarry: number;
+  /** Sawblade: current orbit angle around the player, advanced every frame it's active. */
+  orbitAngleRadians: number;
 }
 
 const TOTAL_WAVES = 10;
@@ -1065,6 +1069,8 @@ export const HUNTER_OPTICS_ELITE_DAMAGE_MULTIPLIER = 1.15;
 export const LAST_STAND_STIMULANT_DURATION_SECONDS = 6;
 export const LAST_STAND_STIMULANT_MOVE_MULTIPLIER = 1.25;
 export const LAST_STAND_STIMULANT_ATTACK_SPEED_MULTIPLIER = 1.25;
+/** Sawblade: how close an enemy must be to the orbiting blade's current position to take contact damage. */
+const ORBIT_BLADE_CONTACT_RADIUS_METRES = 0.35;
 const BLAST_MITE_EXPLOSION_RADIUS_METRES = 1.6;
 const BLAST_MITE_EXPLOSION_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.blastMiteExplosion;
 const COMBUSTION_RADIUS_METRES = 1.3;
@@ -1313,6 +1319,7 @@ export class CombatSimulation {
       cooldownSeconds: 0,
       cooldownDurationSeconds: 0,
       projectileCarry: initialProjectileCarry(weapon.instanceId),
+      orbitAngleRadians: 0,
     }));
     const rackClasses: ("light" | "medium" | "heavy" | "unique" | "all")[] = this.hero.id === "medic"
       ? ["light", "light", "all"]
@@ -1489,13 +1496,16 @@ export class CombatSimulation {
       if (shouldWeaponFire(weapon.stats, this.autoFireEnabled, intent.fireHeld) && weapon.cooldownSeconds <= 0) {
         const fireDirection = this.resolveWeaponAimDirection(weapon, this.lastAimDirection);
         if (fireDirection) {
-          this.fireWeapon(weapon, fireDirection);
-          const weaponAttackSpeed = attackSpeed
-            * (siegeLoaderActive && weapon.stats.fireIntervalSeconds >= SIEGE_LOADER_SLOW_FIRE_INTERVAL_SECONDS
-              ? SIEGE_LOADER_ATTACK_SPEED_MULTIPLIER
-              : 1);
-          weapon.cooldownDurationSeconds = weapon.stats.fireIntervalSeconds / weaponAttackSpeed;
-          weapon.cooldownSeconds = weapon.cooldownDurationSeconds;
+          this.fireWeapon(weapon, fireDirection, delta);
+          // Beam and orbit-blade weapons tick continuously every active frame; they never go on cooldown.
+          if (weapon.stats.attackPattern !== "beam" && weapon.stats.attackPattern !== "orbit-blade") {
+            const weaponAttackSpeed = attackSpeed
+              * (siegeLoaderActive && weapon.stats.fireIntervalSeconds >= SIEGE_LOADER_SLOW_FIRE_INTERVAL_SECONDS
+                ? SIEGE_LOADER_ATTACK_SPEED_MULTIPLIER
+                : 1);
+            weapon.cooldownDurationSeconds = weapon.stats.fireIntervalSeconds / weaponAttackSpeed;
+            weapon.cooldownSeconds = weapon.cooldownDurationSeconds;
+          }
         }
       }
     }
@@ -2319,6 +2329,7 @@ export class CombatSimulation {
         cooldownSeconds: 0,
         cooldownDurationSeconds: 0,
         projectileCarry: initialProjectileCarry(nextInstanceId),
+        orbitAngleRadians: 0,
       });
     } else {
       const emptyStash = this.weaponInventory.stash.findIndex((candidate) => candidate === null);
@@ -2509,6 +2520,7 @@ export class CombatSimulation {
         cooldownSeconds: 0,
         cooldownDurationSeconds: 0,
         projectileCarry: initialProjectileCarry(tile.instanceId),
+        orbitAngleRadians: 0,
       });
     }
     if (result.merged && target.kind === "merge" && target.slotId) {
@@ -2797,7 +2809,7 @@ export class CombatSimulation {
     }
   }
 
-  private fireWeapon(weapon: EquippedWeaponState, aimDirection: Vector2Data): void {
+  private fireWeapon(weapon: EquippedWeaponState, aimDirection: Vector2Data, deltaSeconds: number): void {
     const baseAngle = Math.atan2(aimDirection.y, aimDirection.x);
     const slot = calculateWeaponRingLayout(this.equippedWeapons.length, baseAngle)[
       this.equippedWeapons.indexOf(weapon)
@@ -2809,6 +2821,21 @@ export class CombatSimulation {
 
     if (weapon.stats.attackPattern === "melee-sweep") {
       this.fireMeleeSweep(weapon, anchor, aimDirection);
+      return;
+    }
+
+    if (weapon.stats.attackPattern === "beam") {
+      this.fireBeam(weapon, anchor, aimDirection, deltaSeconds);
+      return;
+    }
+
+    if (weapon.stats.attackPattern === "orbit") {
+      this.fireOrbitZap(weapon, anchor);
+      return;
+    }
+
+    if (weapon.stats.attackPattern === "orbit-blade") {
+      this.fireOrbitBlade(weapon, deltaSeconds);
       return;
     }
 
@@ -2842,6 +2869,7 @@ export class CombatSimulation {
         chainRemaining: weapon.stats.chainCount,
         chainRadiusMetres: weapon.stats.chainRadiusMetres,
         hitEnemyIds: new Set<number>(),
+        homingTurnRateRadiansPerSecond: weapon.stats.homingTurnRateRadiansPerSecond,
       });
 
       this.frameEvents.push({
@@ -2908,6 +2936,142 @@ export class CombatSimulation {
       weaponId: weapon.weaponId,
       position: { ...anchor },
       direction: { ...facing },
+    });
+  }
+
+  /**
+   * Continuous per-second tick damage to every enemy in a forward cone (Cryo
+   * Lance's narrow beam, Flamethrower's wide cone — the same mechanic, just
+   * `meleeArcRadians` sized differently per weapon). Called every frame the
+   * weapon is held, not gated by a fire-interval cooldown — `deltaSeconds`
+   * scales the tick to the frame.
+   */
+  private fireBeam(
+    weapon: EquippedWeaponState,
+    anchor: Vector2Data,
+    direction: Vector2Data,
+    deltaSeconds: number,
+  ): void {
+    const facing = normalizeVector(direction);
+    for (const enemy of this.enemies) {
+      if (
+        enemy.dead
+        || !pointInsideRipperSweep(anchor, facing, enemy.position, weapon.stats.rangeMetres, weapon.stats.meleeArcRadians / 2)
+        || segmentHitsArenaObstacle(anchor, enemy.position, this.activeObstacles())
+      ) continue;
+      this.damageEnemy(
+        enemy,
+        weapon.stats.beamDamagePerSecond * deltaSeconds * this.weaponDamageMultiplier(weapon.stats.weaponClass)
+          * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(enemy)
+          * this.transformationRangeDamageMultiplier(distance(anchor, enemy.position)),
+        weapon.stats.damageType,
+        weapon.weaponId,
+      );
+    }
+    this.frameEvents.push({
+      type: "weapon-fired",
+      weaponInstanceId: weapon.instanceId,
+      weaponId: weapon.weaponId,
+      position: { ...anchor },
+      direction: { ...facing },
+    });
+  }
+
+  /**
+   * Passive orbiting emitter (Tesla Coil): no travelling projectile or aim
+   * direction — on each `fireIntervalSeconds` tick it zaps the nearest live
+   * enemy in range, then arcs to up to `chainCount` further nearby enemies,
+   * each hop carrying less energy (70%, 49%, 34%…), mirroring the falloff
+   * `resolveProjectileChain` already uses for a travelling projectile's chain.
+   */
+  private fireOrbitZap(weapon: EquippedWeaponState, anchor: Vector2Data): void {
+    let current: EnemyState | null = null;
+    let nearestDistance = weapon.stats.rangeMetres;
+    for (const enemy of this.enemies) {
+      if (enemy.dead) continue;
+      const candidateDistance = distance(anchor, enemy.position);
+      if (candidateDistance <= nearestDistance) {
+        current = enemy;
+        nearestDistance = candidateDistance;
+      }
+    }
+    if (!current) return;
+
+    const hitEnemyIds = new Set<number>();
+    let fromPosition = anchor;
+    const totalHops = 1 + weapon.stats.chainCount;
+    for (let hop = 0; hop < totalHops && current; hop += 1) {
+      hitEnemyIds.add(current.id);
+      this.frameEvents.push({
+        type: "chain-arc",
+        from: { ...fromPosition },
+        to: { ...current.position },
+        weaponId: weapon.weaponId,
+      });
+      this.damageEnemy(
+        current,
+        weapon.stats.projectileDamage * Math.pow(0.7, hop) * this.weaponDamageMultiplier(weapon.stats.weaponClass)
+          * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(current)
+          * this.transformationRangeDamageMultiplier(distance(anchor, current.position)),
+        weapon.stats.damageType,
+        weapon.weaponId,
+      );
+      fromPosition = current.position;
+
+      let next: EnemyState | null = null;
+      let nextDistance = weapon.stats.chainRadiusMetres;
+      for (const enemy of this.enemies) {
+        if (enemy.dead || hitEnemyIds.has(enemy.id)) continue;
+        const candidateDistance = distance(fromPosition, enemy.position);
+        if (candidateDistance <= nextDistance) {
+          next = enemy;
+          nextDistance = candidateDistance;
+        }
+      }
+      current = next;
+    }
+
+    this.frameEvents.push({
+      type: "weapon-fired",
+      weaponInstanceId: weapon.instanceId,
+      weaponId: weapon.weaponId,
+      position: { ...anchor },
+      direction: { x: 1, y: 0 },
+    });
+  }
+
+  /**
+   * Persistent orbiting contact hitbox (Sawblade): advances the weapon's own
+   * orbit angle every active frame and deals continuous per-second contact
+   * damage to any enemy the blade's current position touches. Unlike a beam
+   * or the orbit-zap emitter, this has no cone/proximity-to-player check at
+   * all — only proximity to the blade's own moving position.
+   */
+  private fireOrbitBlade(weapon: EquippedWeaponState, deltaSeconds: number): void {
+    weapon.orbitAngleRadians += weapon.stats.orbitAngularSpeedRadiansPerSecond * deltaSeconds;
+    const bladePosition = {
+      x: this.playerPosition.x + Math.cos(weapon.orbitAngleRadians) * weapon.stats.orbitRadiusMetres,
+      y: this.playerPosition.y + Math.sin(weapon.orbitAngleRadians) * weapon.stats.orbitRadiusMetres,
+    };
+    for (const enemy of this.enemies) {
+      if (enemy.dead) continue;
+      const definition = ENEMY_CATALOG[enemy.type];
+      if (distance(bladePosition, enemy.position) > definition.radiusMetres + ORBIT_BLADE_CONTACT_RADIUS_METRES) continue;
+      this.damageEnemy(
+        enemy,
+        weapon.stats.beamDamagePerSecond * deltaSeconds * this.weaponDamageMultiplier(weapon.stats.weaponClass)
+          * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(enemy)
+          * this.transformationRangeDamageMultiplier(distance(this.playerPosition, enemy.position)),
+        weapon.stats.damageType,
+        weapon.weaponId,
+      );
+    }
+    this.frameEvents.push({
+      type: "weapon-fired",
+      weaponInstanceId: weapon.instanceId,
+      weaponId: weapon.weaponId,
+      position: { ...bladePosition },
+      direction: { x: Math.cos(weapon.orbitAngleRadians), y: Math.sin(weapon.orbitAngleRadians) },
     });
   }
 
@@ -2987,6 +3151,7 @@ export class CombatSimulation {
         chainRemaining: 0,
         chainRadiusMetres: 0,
         hitEnemyIds: new Set<number>(),
+        homingTurnRateRadiansPerSecond: 0,
       });
     }
     this.frameEvents.push({ type: "ultimate-fired", position: { ...this.playerPosition } });
@@ -3216,6 +3381,9 @@ export class CombatSimulation {
         continue;
       }
 
+      if (projectile.homingTurnRateRadiansPerSecond > 0) {
+        this.steerProjectileTowardNearestEnemy(projectile, deltaSeconds);
+      }
       projectile.position.x += projectile.velocity.x * deltaSeconds;
       projectile.position.y += projectile.velocity.y * deltaSeconds;
       projectile.remainingSeconds -= deltaSeconds;
@@ -3313,6 +3481,36 @@ export class CombatSimulation {
         }
       }
     }
+  }
+
+  /** Seeker Swarm: turns a projectile's velocity toward the nearest live enemy, at most its turn rate per second. */
+  private steerProjectileTowardNearestEnemy(projectile: ProjectileState, deltaSeconds: number): void {
+    let nearest: EnemyState | null = null;
+    let nearestDistance = Infinity;
+    for (const enemy of this.enemies) {
+      if (enemy.dead) continue;
+      const candidateDistance = distance(projectile.position, enemy.position);
+      if (candidateDistance < nearestDistance) {
+        nearest = enemy;
+        nearestDistance = candidateDistance;
+      }
+    }
+    if (!nearest) return;
+
+    const speed = Math.hypot(projectile.velocity.x, projectile.velocity.y);
+    if (speed <= 0) return;
+    const currentAngle = Math.atan2(projectile.velocity.y, projectile.velocity.x);
+    const desiredAngle = Math.atan2(
+      nearest.position.y - projectile.position.y,
+      nearest.position.x - projectile.position.x,
+    );
+    let angleDiff = desiredAngle - currentAngle;
+    while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+    while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+    const maxTurn = projectile.homingTurnRateRadiansPerSecond * deltaSeconds;
+    const turn = Math.max(-maxTurn, Math.min(maxTurn, angleDiff));
+    const nextAngle = currentAngle + turn;
+    projectile.velocity = { x: Math.cos(nextAngle) * speed, y: Math.sin(nextAngle) * speed };
   }
 
   private explodeProjectile(

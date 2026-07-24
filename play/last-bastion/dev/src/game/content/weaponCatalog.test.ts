@@ -6,13 +6,37 @@ describe("weaponCatalog", () => {
     expect(VERTICAL_SLICE_WEAPON_IDS).toEqual([
       "bastion-service-rifle", "scattergun", "arc-carbine",
     ]);
-    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(9);
+    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(14);
   });
 
-  it("holds Railspike out of the chest pool until its art batch lands (Phase 4, 24 July 2026)", () => {
+  it("holds every Phase 4 weapon out of the chest pool until its art batch lands (24 July 2026)", () => {
     expect(WEAPON_CATALOG.railspike).toBeDefined();
     expect(WEAPON_CATALOG.railspike.pierceCount).toBeGreaterThanOrEqual(6);
     expect(WEAPON_CHEST_POOL).not.toContain("railspike");
+
+    expect(WEAPON_CATALOG["seeker-swarm"]).toBeDefined();
+    expect(WEAPON_CATALOG["seeker-swarm"].homingTurnRateRadiansPerSecond).toBeGreaterThan(0);
+    expect(WEAPON_CHEST_POOL).not.toContain("seeker-swarm");
+
+    expect(WEAPON_CATALOG["cryo-lance"]).toBeDefined();
+    expect(WEAPON_CATALOG["cryo-lance"].attackPattern).toBe("beam");
+    expect(WEAPON_CATALOG["cryo-lance"].beamDamagePerSecond).toBeGreaterThan(0);
+    expect(WEAPON_CHEST_POOL).not.toContain("cryo-lance");
+
+    expect(WEAPON_CATALOG["tesla-coil"]).toBeDefined();
+    expect(WEAPON_CATALOG["tesla-coil"].attackPattern).toBe("orbit");
+    expect(WEAPON_CATALOG["tesla-coil"].chainCount).toBeGreaterThan(0);
+    expect(WEAPON_CHEST_POOL).not.toContain("tesla-coil");
+
+    expect(WEAPON_CATALOG.flamethrower).toBeDefined();
+    expect(WEAPON_CATALOG.flamethrower.attackPattern).toBe("beam");
+    expect(WEAPON_CATALOG.flamethrower.meleeArcRadians).toBeGreaterThan(WEAPON_CATALOG["cryo-lance"].meleeArcRadians);
+    expect(WEAPON_CHEST_POOL).not.toContain("flamethrower");
+
+    expect(WEAPON_CATALOG.sawblade).toBeDefined();
+    expect(WEAPON_CATALOG.sawblade.attackPattern).toBe("orbit-blade");
+    expect(WEAPON_CATALOG.sawblade.orbitRadiusMetres).toBeGreaterThan(0);
+    expect(WEAPON_CHEST_POOL).not.toContain("sawblade");
   });
 
   it("gives each family a distinct attack contract", () => {
