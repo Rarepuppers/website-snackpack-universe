@@ -6,7 +6,7 @@ describe("weaponCatalog", () => {
     expect(VERTICAL_SLICE_WEAPON_IDS).toEqual([
       "bastion-service-rifle", "scattergun", "arc-carbine",
     ]);
-    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(14);
+    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(15);
   });
 
   it("holds every Phase 4 weapon out of the chest pool until its art batch lands (24 July 2026)", () => {
@@ -37,6 +37,11 @@ describe("weaponCatalog", () => {
     expect(WEAPON_CATALOG.sawblade.attackPattern).toBe("orbit-blade");
     expect(WEAPON_CATALOG.sawblade.orbitRadiusMetres).toBeGreaterThan(0);
     expect(WEAPON_CHEST_POOL).not.toContain("sawblade");
+
+    expect(WEAPON_CATALOG["event-horizon"]).toBeDefined();
+    expect(WEAPON_CATALOG["event-horizon"].weaponClass).toBe("unique");
+    expect(WEAPON_CATALOG["event-horizon"].spawnsGravityWellOnImpact).toBe(true);
+    expect(WEAPON_CHEST_POOL).not.toContain("event-horizon");
   });
 
   it("gives each family a distinct attack contract", () => {

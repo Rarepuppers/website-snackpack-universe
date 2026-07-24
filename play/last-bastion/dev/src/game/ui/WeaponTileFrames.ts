@@ -19,5 +19,10 @@ export function canonicalWeaponTileFrame(weaponId: WeaponId): number {
     case "tesla-coil": return 7;
     case "flamethrower": return 7;
     case "sawblade": return 7;
+    // Event Horizon has its own dedicated art (event-horizon-tile-v1, Batch L
+    // preflight) rather than a Batch I atlas slot — this shared-atlas mapping
+    // doesn't really apply to it. Returns a placeholder only so the switch
+    // stays exhaustive; real rendering should reach for its own asset id.
+    case "event-horizon": return 7;
   }
 }

@@ -1,7 +1,7 @@
 import type { DamageType } from "../combat/damageTypes";
 import type { WeaponClass } from "../hero/HeroDefinition";
 
-export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine" | "railspike" | "seeker-swarm" | "cryo-lance" | "tesla-coil" | "flamethrower" | "sawblade";
+export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine" | "railspike" | "seeker-swarm" | "cryo-lance" | "tesla-coil" | "flamethrower" | "sawblade" | "event-horizon";
 export type WeaponTargetingMode = "cursor" | "nearest-enemy";
 export type WeaponAttackPattern = "projectile" | "scatter" | "chain-projectile" | "melee-sweep" | "beam" | "orbit" | "orbit-blade";
 
@@ -50,6 +50,16 @@ export interface WeaponRuntimeStats {
   orbitRadiusMetres: number;
   /** `attackPattern: "orbit-blade"`: how fast the blade spins around the player (Sawblade). */
   orbitAngularSpeedRadiansPerSecond: number;
+  /**
+   * True trades this projectile's normal instant explosion for a delayed
+   * gravity-well field: on impact/expiry it pulls nearby enemies inward for
+   * `pullFieldDurationSeconds`, then implodes for `projectileDamage` in
+   * `explosionRadiusMetres` (Event Horizon, the Unique).
+   */
+  spawnsGravityWellOnImpact: boolean;
+  pullFieldDurationSeconds: number;
+  pullStrengthMetresPerSecond: number;
+  pullRadiusMetres: number;
 }
 
 export const BASTION_SERVICE_RIFLE: Readonly<WeaponRuntimeStats> = weapon({
@@ -292,6 +302,26 @@ export const SAWBLADE: Readonly<WeaponRuntimeStats> = weapon({
   firesAutomatically: true,
 });
 
+export const EVENT_HORIZON: Readonly<WeaponRuntimeStats> = weapon({
+  id: "event-horizon",
+  displayName: "Event Horizon",
+  description: "Unique: a slow gravitic orb that pulls enemies into itself before imploding.",
+  weaponClass: "unique",
+  damageType: "physical",
+  targetingMode: "cursor",
+  attackPattern: "projectile",
+  rangeMetres: 12,
+  fireIntervalSeconds: 16,
+  projectileSpeedMetresPerSecond: 3,
+  projectileLifetimeSeconds: 4,
+  projectileDamage: 14,
+  explosionRadiusMetres: 2.6,
+  spawnsGravityWellOnImpact: true,
+  pullFieldDurationSeconds: 1.4,
+  pullStrengthMetresPerSecond: 3.5,
+  pullRadiusMetres: 4.5,
+});
+
 export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeStats>>> = Object.freeze({
   "bastion-service-rifle": BASTION_SERVICE_RIFLE,
   scattergun: SCATTERGUN,
@@ -307,6 +337,7 @@ export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeSta
   "tesla-coil": TESLA_COIL,
   flamethrower: FLAMETHROWER,
   sawblade: SAWBLADE,
+  "event-horizon": EVENT_HORIZON,
 });
 
 export const VERTICAL_SLICE_WEAPON_IDS: readonly WeaponId[] = Object.freeze([
@@ -352,6 +383,10 @@ function weapon(
     beamDamagePerSecond: 0,
     orbitRadiusMetres: 0,
     orbitAngularSpeedRadiansPerSecond: 0,
+    spawnsGravityWellOnImpact: false,
+    pullFieldDurationSeconds: 0,
+    pullStrengthMetresPerSecond: 0,
+    pullRadiusMetres: 0,
     ...definition,
   });
 }

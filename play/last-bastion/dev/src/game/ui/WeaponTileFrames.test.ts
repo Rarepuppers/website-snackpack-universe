@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
 import { canonicalWeaponTileFrame } from "./WeaponTileFrames";
 
-const PENDING_ART_WEAPON_IDS: readonly WeaponId[] = ["railspike", "seeker-swarm", "cryo-lance", "tesla-coil", "flamethrower", "sawblade"];
+const PENDING_ART_WEAPON_IDS: readonly WeaponId[] = ["railspike", "seeker-swarm", "cryo-lance", "tesla-coil", "flamethrower", "sawblade", "event-horizon"];
 
 describe("canonical Batch I weapon tile mapping", () => {
   it("maps every Batch I weapon to one unique atlas frame", () => {

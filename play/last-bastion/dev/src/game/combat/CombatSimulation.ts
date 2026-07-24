@@ -683,6 +683,7 @@ export interface CombatSnapshot {
   projectiles: readonly ProjectileSnapshot[];
   enemyProjectiles: readonly EnemyProjectileSnapshot[];
   groundHazards: readonly GroundHazardSnapshot[];
+  eventHorizonFields: readonly EventHorizonFieldSnapshot[];
   combatTelegraphs: readonly CombatTelegraphSnapshot[];
   eliteRewards: readonly EliteRewardSnapshot[];
   pickups: readonly ExperiencePickupSnapshot[];
@@ -857,6 +858,33 @@ interface ProjectileState {
   dead: boolean;
   /** Seeker Swarm: non-zero steers this projectile toward the nearest live enemy each frame. */
   homingTurnRateRadiansPerSecond: number;
+  /** Event Horizon: true trades this projectile's instant explosion for a delayed pull-field + implosion. */
+  spawnsGravityWellOnImpact: boolean;
+  pullFieldDurationSeconds: number;
+  pullStrengthMetresPerSecond: number;
+  pullRadiusMetres: number;
+}
+
+/** Event Horizon: a delayed pull-then-implode field left behind by a spent gravity-well projectile. */
+interface EventHorizonFieldState {
+  id: number;
+  position: Vector2Data;
+  remainingSeconds: number;
+  durationSeconds: number;
+  pullStrengthMetresPerSecond: number;
+  pullRadiusMetres: number;
+  implosionRadiusMetres: number;
+  implosionDamage: number;
+  damageType: DamageType;
+  weaponId: WeaponId;
+}
+
+export interface EventHorizonFieldSnapshot {
+  id: number;
+  position: Vector2Data;
+  remainingSeconds: number;
+  durationSeconds: number;
+  pullRadiusMetres: number;
 }
 
 interface ExperiencePickupState {
@@ -1189,6 +1217,7 @@ export class CombatSimulation {
   private readonly friendlyProjectilePool: ProjectileState[] = [];
   private readonly hostileProjectilePool: EnemyProjectileState[] = [];
   private groundHazards: GroundHazardState[] = [];
+  private eventHorizonFields: EventHorizonFieldState[] = [];
   private rainOfSpines: RainOfSpinesState[] = [];
   private eliteRewards: EliteRewardState[] = [];
   private powerups: PowerupPickupState[] = [];
@@ -1520,6 +1549,7 @@ export class CombatSimulation {
     this.updateEnemyProjectiles(delta);
     this.updateRainOfSpines(delta);
     this.updateGroundHazards(delta);
+    this.updateEventHorizonFields(delta);
     this.updateExperiencePickups(delta);
     this.updatePowerups(delta);
     this.updateEliteRewards();
@@ -2069,6 +2099,13 @@ export class CombatSimulation {
         radiusMetres: hazard.radiusMetres,
         remainingSeconds: hazard.remainingSeconds,
         durationSeconds: hazard.durationSeconds,
+      })),
+      eventHorizonFields: this.eventHorizonFields.map((field) => ({
+        id: field.id,
+        position: { ...field.position },
+        remainingSeconds: field.remainingSeconds,
+        durationSeconds: field.durationSeconds,
+        pullRadiusMetres: field.pullRadiusMetres,
       })),
       combatTelegraphs: this.combatTelegraphSnapshots(),
       eliteRewards: this.eliteRewards.filter((reward) => !reward.collected).map((reward) => ({
@@ -2870,6 +2907,10 @@ export class CombatSimulation {
         chainRadiusMetres: weapon.stats.chainRadiusMetres,
         hitEnemyIds: new Set<number>(),
         homingTurnRateRadiansPerSecond: weapon.stats.homingTurnRateRadiansPerSecond,
+        spawnsGravityWellOnImpact: weapon.stats.spawnsGravityWellOnImpact,
+        pullFieldDurationSeconds: weapon.stats.pullFieldDurationSeconds,
+        pullStrengthMetresPerSecond: weapon.stats.pullStrengthMetresPerSecond,
+        pullRadiusMetres: weapon.stats.pullRadiusMetres,
       });
 
       this.frameEvents.push({
@@ -3152,6 +3193,10 @@ export class CombatSimulation {
         chainRadiusMetres: 0,
         hitEnemyIds: new Set<number>(),
         homingTurnRateRadiansPerSecond: 0,
+        spawnsGravityWellOnImpact: false,
+        pullFieldDurationSeconds: 0,
+        pullStrengthMetresPerSecond: 0,
+        pullRadiusMetres: 0,
       });
     }
     this.frameEvents.push({ type: "ultimate-fired", position: { ...this.playerPosition } });
@@ -3449,6 +3494,15 @@ export class CombatSimulation {
           position: { ...enemy.position },
           weaponId: projectile.weaponId,
         });
+
+        // Event Horizon's orb never deals a direct hit — touching an enemy just
+        // triggers its delayed pull-then-implode field at that position instead.
+        if (projectile.spawnsGravityWellOnImpact) {
+          this.explodeProjectile(projectile, enemy.position);
+          projectile.dead = true;
+          break;
+        }
+
         if (projectile.weaponId === "bolt-carbine") {
           this.frameEvents.push({
             type: "bolt-impact",
@@ -3518,6 +3572,10 @@ export class CombatSimulation {
     position: Vector2Data,
     directEnemyId?: number,
   ): void {
+    if (projectile.spawnsGravityWellOnImpact) {
+      this.spawnEventHorizonField(projectile, position);
+      return;
+    }
     if (projectile.explosionRadiusMetres <= 0) return;
     this.frameEvents.push({
       type: "explosion",
@@ -3539,6 +3597,67 @@ export class CombatSimulation {
         );
       }
     }
+  }
+
+  /** Event Horizon: a spent gravity-well projectile leaves a delayed pull-then-implode field instead of exploding instantly. */
+  private spawnEventHorizonField(projectile: ProjectileState, position: Vector2Data): void {
+    this.eventHorizonFields.push({
+      id: this.nextId(),
+      position: { ...position },
+      remainingSeconds: projectile.pullFieldDurationSeconds,
+      durationSeconds: projectile.pullFieldDurationSeconds,
+      pullStrengthMetresPerSecond: projectile.pullStrengthMetresPerSecond,
+      pullRadiusMetres: projectile.pullRadiusMetres,
+      implosionRadiusMetres: projectile.explosionRadiusMetres,
+      implosionDamage: projectile.damage,
+      damageType: projectile.damageType,
+      weaponId: projectile.weaponId,
+    });
+  }
+
+  /**
+   * Every active frame: drags live enemies within `pullRadiusMetres` toward
+   * the field's centre at `pullStrengthMetresPerSecond`, without overshooting
+   * past it. Once `remainingSeconds` runs out, the field implodes — one burst
+   * of damage to everything still within `implosionRadiusMetres` — and is
+   * removed.
+   */
+  private updateEventHorizonFields(deltaSeconds: number): void {
+    for (const field of this.eventHorizonFields) {
+      for (const enemy of this.enemies) {
+        if (enemy.dead) continue;
+        const toCentre = { x: field.position.x - enemy.position.x, y: field.position.y - enemy.position.y };
+        const gap = Math.hypot(toCentre.x, toCentre.y);
+        if (gap <= 0 || gap > field.pullRadiusMetres) continue;
+        const travel = Math.min(field.pullStrengthMetresPerSecond * deltaSeconds, gap);
+        const definition = ENEMY_CATALOG[enemy.type];
+        enemy.position = resolveCircleMovement(
+          enemy.position,
+          {
+            x: enemy.position.x + (toCentre.x / gap) * travel,
+            y: enemy.position.y + (toCentre.y / gap) * travel,
+          },
+          definition.radiusMetres,
+          this.collisionArena(),
+        );
+      }
+      field.remainingSeconds -= deltaSeconds;
+    }
+
+    const detonating = this.eventHorizonFields.filter((field) => field.remainingSeconds <= 0);
+    for (const field of detonating) {
+      this.frameEvents.push({
+        type: "explosion",
+        position: { ...field.position },
+        radiusMetres: field.implosionRadiusMetres,
+        weaponId: field.weaponId,
+      });
+      for (const enemy of this.enemies) {
+        if (enemy.dead || distance(enemy.position, field.position) > field.implosionRadiusMetres) continue;
+        this.damageEnemy(enemy, field.implosionDamage, field.damageType, field.weaponId);
+      }
+    }
+    this.eventHorizonFields = this.eventHorizonFields.filter((field) => field.remainingSeconds > 0);
   }
 
   private projectileDamageMultiplier(projectile: ProjectileState, enemy: EnemyState): number {
