@@ -5,20 +5,54 @@ import { experienceThreshold } from "../hero/LevelGrowth";
 import { expeditionEncounterForNode } from "./ExpeditionEncounter";
 import { expeditionNodeById, type ExpeditionMapData, type ExpeditionNode } from "./ExpeditionMap";
 
-/** Every route crosses these columns, so the campaign always exposes two spend decisions. */
-export const CAMPAIGN_SHOP_COLUMNS = Object.freeze([3, 5] as const);
-export const CAMPAIGN_SAFE_NODE_SCRAP = 10;
+
+
+export const CAMPAIGN_SAFE_NODE_SCRAP = 15;
 export const CAMPAIGN_TIMED_WAVE_KILL_FRACTION = 0.7;
 
-export function campaignOffersShop(column: number): boolean {
-  return CAMPAIGN_SHOP_COLUMNS.includes(Math.floor(column) as 3 | 5);
+/**
+ * A shop opens after every cleared encounter (Brotato overhaul Phase 3B) — the
+ * spend decision is the between-fight beat, so it is the rule rather than the
+ * exception. The boss is the one hold-out: clearing it ends the run straight
+ * into the summary screen, so a shop there would be dead UI.
+ *
+ * Takes the *encounter* kind, not the node type. An Event node's ambush outcome
+ * synthesizes a `"combat"` encounter and correctly earns a shop, while the same
+ * node resolved peacefully never reaches combat at all.
+ */
+export function campaignOffersShop(kind: ExpeditionNode["type"]): boolean {
+  return kind !== "boss";
 }
 
-/** Guaranteed node-clear income; random drops and treasure enemies remain upside. */
+/**
+ * Projection-side counterpart: which node types *always* resolve through combat
+ * and therefore guarantee a shop. Shrine/Event nodes usually resolve in the
+ * event scene without a fight, so counting them would overstate the run's spend
+ * opportunities.
+ */
+function campaignNodeAlwaysOffersShop(type: ExpeditionNode["type"]): boolean {
+  return type !== "boss" && type !== "shrine" && type !== "event";
+}
+
+/**
+ * Guaranteed node-clear income; random drops and treasure enemies remain upside.
+ * Re-tuned upward for Phase 3B: a shop after every node is only a decision if
+ * each visit can afford something, so the guaranteed floor has to cover a
+ * common-tier purchase per shop even on the poorest route.
+ */
 export function campaignNodeClearScrap(type: ExpeditionNode["type"], column: number): number {
-  if (type === "combat" || type === "elite") return 15 + 5 * Math.max(0, Math.floor(column));
+  if (type === "combat" || type === "elite") return 24 + 7 * Math.max(0, Math.floor(column));
   if (type === "supply-depot" || type === "weapon-cache") return CAMPAIGN_SAFE_NODE_SCRAP;
   return 0;
+}
+
+/**
+ * Depth-scaled payout for an elite / mini-boss / boss kill (Phase 5). Lives here
+ * so combat and the route projection cannot disagree — a flat reward made a
+ * column-7 mini-boss worth the same as the first one.
+ */
+export function rankDefeatScrap(base: number, depth: number): number {
+  return Math.round(base * (1 + 0.12 * Math.max(0, Math.floor(depth))));
 }
 
 export interface CampaignRouteProjection {
@@ -29,6 +63,12 @@ export interface CampaignRouteProjection {
   projectedBossEntryLevel: number;
   guaranteedScrap: number;
   shopVisits: number;
+  /**
+   * Guaranteed income divided by shop visits. With a shop after every node this
+   * is the number that decides whether a shop is a decision or a display case,
+   * so the campaign test holds a floor on it rather than trusting feel.
+   */
+  scrapPerShopVisit: number;
   depotVisits: number;
   weaponCaches: number;
   healingOpportunities: number;
@@ -52,9 +92,11 @@ export function projectCampaignRoutes(map: ExpeditionMapData): readonly Campaign
     for (const node of route) {
       const encounter = expeditionEncounterForNode(map.seed, node);
       guaranteedScrap += campaignNodeClearScrap(node.type, node.column);
-      if (node.type === "elite") guaranteedScrap += 15;
-      if (node.type === "mini-boss") guaranteedScrap += 40;
-      if (campaignOffersShop(node.column)) {
+      if (node.type === "elite") guaranteedScrap += rankDefeatScrap(15, node.column);
+      if (node.type === "mini-boss") guaranteedScrap += rankDefeatScrap(40, node.column);
+      if (campaignNodeAlwaysOffersShop(node.type)) {
+        // The shop forces field repair into offer slot 0 while the hero is hurt,
+        // so a shop visit is also a heal opportunity.
         shopVisits += 1;
         healingOpportunities += 1;
       }
@@ -98,6 +140,7 @@ export function projectCampaignRoutes(map: ExpeditionMapData): readonly Campaign
       projectedBossEntryLevel: levelAfterExperience(wholeExperience),
       guaranteedScrap,
       shopVisits,
+      scrapPerShopVisit: shopVisits === 0 ? 0 : guaranteedScrap / shopVisits,
       depotVisits,
       weaponCaches,
       healingOpportunities,

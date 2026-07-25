@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_SAVE, type SaveData } from "../save/LocalSaveStore";
+import { DEFAULT_SAVE, type SAVE_SCHEMA_VERSION, type SaveData } from "../save/LocalSaveStore";
 import { resolveCloudSaveConflict, type CloudSaveEnvelope } from "./CloudSavePolicy";
 
 function save(overrides: Partial<SaveData> = {}): SaveData {
@@ -35,7 +35,7 @@ describe("cloud-save conflict policy", () => {
 
   it("rejects unknown schemas rather than corrupting them", () => {
     const envelope: CloudSaveEnvelope = { deviceId: "a", revision: 1, updatedAtMs: 1, save: save() };
-    expect(() => resolveCloudSaveConflict(envelope, { ...envelope, save: { ...save(), version: 99 as 9 } }))
+    expect(() => resolveCloudSaveConflict(envelope, { ...envelope, save: { ...save(), version: 99 as typeof SAVE_SCHEMA_VERSION } }))
       .toThrow("unsupported");
   });
 });

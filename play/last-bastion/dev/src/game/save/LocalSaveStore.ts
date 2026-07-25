@@ -17,6 +17,8 @@ import {
   type TransformationAffinityState,
 } from "../transformations/TransformationAffinity";
 import { isArtifactId, isRelicId, type ArtifactId, type RelicId } from "../content/relicCatalog";
+import { ITEM_STAT_KEYS, isItemId } from "../content/itemCatalog";
+import type { PlayerStatBlock } from "../stats/PlayerStatBlock";
 
 /**
  * Versioned local persistence for settings and basic run progress.
@@ -59,10 +61,10 @@ export interface GameProgress {
 
 /**
  * Mid-run expedition autosave (schema v2, metrics in v4, inert transformation
- * state in v8, Shrine/Event reward carrier in v9). Written when the dropship
- * returns to the map, cleared when the run ends. Shapes mirror
- * `expedition/ExpeditionRun.ts`; kept structural here so the save layer never
- * imports game logic.
+ * state in v8, Shrine/Event reward carrier in v9, shop item carrier in v10).
+ * Written when the dropship returns to the map, cleared when the run ends.
+ * Shapes mirror `expedition/ExpeditionRun.ts`; kept structural here so the save
+ * layer never imports game logic.
  */
 export interface ExpeditionSave {
   mapSeed: number;
@@ -81,12 +83,24 @@ export interface ExpeditionSave {
     equippedArtifactId?: ArtifactId | null;
     maxHealthBonus?: number;
     weaponSlotBonus?: number;
+    /** Purchased catalogue items, duplicates allowed — they stack. */
+    ownedItemIds?: readonly string[];
+    /** Raw stat grants that are not catalogue items (level-up cards, event rewards). */
+    itemStats?: Partial<PlayerStatBlock>;
+    /** Shop stock banned for the rest of the run; the ban verb is run-long, not per-visit. */
+    bannedShopIds?: readonly string[];
   } | null;
   metrics: RunMetrics;
 }
 
+/**
+ * Current schema version. Single source of truth — the cloud-save policy and the
+ * platform adapter gate on it, so bumping it here is the only edit a migration needs.
+ */
+export const SAVE_SCHEMA_VERSION = 10;
+
 export interface SaveData {
-  version: 9;
+  version: typeof SAVE_SCHEMA_VERSION;
   settings: GameSettings;
   controls: ControlBindings;
   progress: GameProgress;
@@ -102,7 +116,7 @@ export const SAVE_STORAGE_KEY = "last-bastion-save";
 export const BESTIARY_KILLS_TO_REVEAL = 10;
 
 export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
-  version: 9,
+  version: SAVE_SCHEMA_VERSION,
   settings: Object.freeze({
     screenShakeEnabled: true,
     reducedFlashEnabled: false,
@@ -298,13 +312,13 @@ function normalizeSave(parsed: unknown): SaveData {
   }
   const candidate = parsed as Omit<Partial<SaveData>, "version"> & { version?: number };
   const version = candidate.version ?? -1;
-  // Versions 1–8 migrate into the current schema. Missing fields inherit the
+  // Versions 1–9 migrate into the current schema. Missing fields inherit the
   // accessible defaults; unknown future versions degrade safely to defaults.
-  if (![1, 2, 3, 4, 5, 6, 7, 8, 9].includes(version)) {
+  if (![1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(version)) {
     return cloneSave(DEFAULT_SAVE);
   }
   return {
-    version: 9,
+    version: SAVE_SCHEMA_VERSION,
     settings: {
       screenShakeEnabled: readBoolean(candidate.settings?.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
       reducedFlashEnabled: readBoolean(candidate.settings?.reducedFlashEnabled, DEFAULT_SAVE.settings.reducedFlashEnabled),
@@ -384,7 +398,36 @@ function readBuild(value: unknown): ExpeditionSave["build"] {
       .map((upgrade) => ({ upgradeId: upgrade.upgradeId, level: readCount(upgrade.level) || 1 })),
     transformation: normalizeTransformationAffinityState(candidate.transformation),
     ...readBuildRewards(candidate),
+    ...readBuildItems(candidate),
   };
+}
+
+/**
+ * Sanitizes the schema-v10 shop carrier. Without this the whole item economy is
+ * inert: every node transition is a full page load, so items bought at one shop
+ * were silently dropped before reaching the next node. Unknown item ids and
+ * stat keys outside the block are discarded rather than trusted.
+ */
+function readBuildItems(candidate: {
+  ownedItemIds?: unknown;
+  itemStats?: unknown;
+  bannedShopIds?: unknown;
+}): Pick<NonNullable<ExpeditionSave["build"]>, "ownedItemIds" | "itemStats" | "bannedShopIds"> {
+  const ownedItemIds = Array.isArray(candidate.ownedItemIds)
+    ? candidate.ownedItemIds.filter(isItemId)
+    : [];
+  const bannedShopIds = Array.isArray(candidate.bannedShopIds)
+    ? candidate.bannedShopIds.filter((id): id is string => typeof id === "string")
+    : [];
+  const itemStats: Partial<PlayerStatBlock> = {};
+  if (typeof candidate.itemStats === "object" && candidate.itemStats !== null) {
+    const source = candidate.itemStats as Partial<Record<keyof PlayerStatBlock, unknown>>;
+    for (const key of ITEM_STAT_KEYS) {
+      const value = source[key];
+      if (typeof value === "number" && Number.isFinite(value)) itemStats[key] = value;
+    }
+  }
+  return { ownedItemIds, itemStats, bannedShopIds };
 }
 
 /**
@@ -424,6 +467,9 @@ function cloneExpedition(expedition: ExpeditionSave): ExpeditionSave {
       upgrades: expedition.build.upgrades.map((upgrade) => ({ ...upgrade })),
       transformation: cloneTransformationAffinityState(expedition.build.transformation),
       ...(expedition.build.relicIds ? { relicIds: [...expedition.build.relicIds] } : {}),
+      ...(expedition.build.ownedItemIds ? { ownedItemIds: [...expedition.build.ownedItemIds] } : {}),
+      ...(expedition.build.itemStats ? { itemStats: { ...expedition.build.itemStats } } : {}),
+      ...(expedition.build.bannedShopIds ? { bannedShopIds: [...expedition.build.bannedShopIds] } : {}),
     },
     metrics: {
       kills: expedition.metrics.kills,

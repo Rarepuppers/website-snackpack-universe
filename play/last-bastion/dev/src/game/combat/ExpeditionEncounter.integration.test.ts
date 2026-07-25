@@ -68,11 +68,16 @@ describe("Expedition encounter integration", () => {
     expect(simulation.step(IDLE, 0.016).status).toBe("combat");
     expect(simulation.snapshot().pendingDecision?.kind).toBe("supply-depot");
     expect(simulation.chooseOption("patch-up")).toBe(true);
+    // Phase 3B: the node's own decision now hands off to the shop rather than
+    // straight to victory, so clearing the shop is what ends the node.
     expect(simulation.step({
       move: { x: 0, y: 0 }, aim: { x: 0, y: 0 }, fireHeld: false,
       evasiveMovePressed: false, ultimatePressed: false, kitPressed: false, interactPressed: false,
       pausePressed: false, restartPressed: false,
-    }, 0.016).status).toBe("victory");
+    }, 0.016).status).toBe("combat");
+    expect(simulation.snapshot().pendingDecision?.kind).toBe("scrap-shop");
+    expect(simulation.chooseOption("shop-leave")).toBe(true);
+    expect(simulation.step(IDLE, 0.016).status).toBe("victory");
   });
 
   it("opens a depth-priced campaign shop after a mid-route safe node", () => {
@@ -94,7 +99,7 @@ describe("Expedition encounter integration", () => {
     expect(shop.pendingDecision?.kind).toBe("scrap-shop");
     expect(shop.pendingDecision?.shopRerollCost).toBe(30);
     expect(shop.pendingDecision?.options.some((option) => option.id === "shop-repair")).toBe(true);
-    expect(shop.securedScrap).toBe(45);
+    expect(shop.securedScrap).toBe(50);
     expect(simulation.chooseOption("shop-leave")).toBe(true);
     expect(simulation.step(IDLE, 0.016).status).toBe("victory");
   });
@@ -109,7 +114,8 @@ describe("Expedition encounter integration", () => {
   it("stages Elite nodes as two lead waves followed by a kill-owned elite wave", () => {
     const simulation = new CombatSimulation({ expeditionEncounter: encounter("elite", 5) });
     expect(simulation.snapshot().totalWaves).toBe(3);
-    expect(simulation.snapshot().density.threatBudget).toBe(96);
+    // Phase 5 raised the elite escort fraction 0.8 -> 0.9.
+    expect(simulation.snapshot().density.threatBudget).toBe(108);
     expect(simulation.snapshot().enemies.some((enemy) => enemy.eliteKind)).toBe(false);
   });
 
@@ -132,7 +138,8 @@ describe("Expedition encounter integration", () => {
   it("stages Mini-boss nodes as one arena wave plus the authored fight", () => {
     const simulation = new CombatSimulation({ expeditionEncounter: encounter("mini-boss", 6) });
     expect(simulation.snapshot().totalWaves).toBe(2);
-    expect(simulation.snapshot().density.threatBudget).toBe(108);
+    // Phase 5 raised the mini-boss escort fraction 0.6 -> 0.75.
+    expect(simulation.snapshot().density.threatBudget).toBe(135);
     expect(simulation.snapshot().enemies.some((enemy) => enemy.miniBossKind)).toBe(false);
   });
 

@@ -1823,7 +1823,11 @@ export class PrototypeScene extends Phaser.Scene {
       const authoredMiniBossScale = enemy.miniBossKind
         ? miniBossSpriteScale(enemy.miniBossKind)
         : null;
-      view.setScale(batchJScale ?? authoredMiniBossScale ?? (enemy.type === "infected-survivor" ? 0.86 : enemy.type === "corrupted-marine" ? 0.88 : enemy.type === "abomination" ? 0.82 : enemy.type === "nest-weaver" ? 0.48 : enemy.type === "nest-pod" ? view.texture.key === "nest-pod-v1" ? 0.52 : 0.72 : enemy.type === "nest-hatchling" ? 0.62 : enemy.type === "aurum-hoarder" ? 0.9 : enemy.type === "swarm-scuttler" ? 0.72 : eliteScale));
+      // Sprite scale is authored independently of the collision radius, so a
+      // simulation-side size multiplier has to be applied here too or a
+      // wave-scaled mini-boss would hit from outside its own silhouette.
+      const baseScale = batchJScale ?? authoredMiniBossScale ?? (enemy.type === "infected-survivor" ? 0.86 : enemy.type === "corrupted-marine" ? 0.88 : enemy.type === "abomination" ? 0.82 : enemy.type === "nest-weaver" ? 0.48 : enemy.type === "nest-pod" ? view.texture.key === "nest-pod-v1" ? 0.52 : 0.72 : enemy.type === "nest-hatchling" ? 0.62 : enemy.type === "aurum-hoarder" ? 0.9 : enemy.type === "swarm-scuttler" ? 0.72 : eliteScale);
+      view.setScale(baseScale * (enemy.radiusScale ?? 1));
       view.setAlpha(enemy.type === "rift-stalker"
         ? enemy.riftStalkerPhase === "warp" ? 0.12 : enemy.riftStalkerPhase === "cloak" ? 0.38 : 1
         : enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup" ? 0.72 : 1);
@@ -3879,10 +3883,20 @@ export class PrototypeScene extends Phaser.Scene {
 
     const isShop = decision.kind === "scrap-shop";
     const isPlacement = decision.kind === "weapon-placement";
+    // Level-up stat cards read as a 2x2 grid of cards rather than a list of
+    // rows — closest existing shape is the shop's two-column offer layout.
+    const isStatCards = decision.kind === "level-stat";
+    const statCardRows = isStatCards ? Math.ceil(decision.options.length / 2) : 0;
     const shopColumns = isShop && decision.options.length > 7 ? 2 : 1;
     const shopRows = isShop ? Math.ceil(decision.options.length / shopColumns) : 0;
-    const panelWidth = isPlacement ? 860 : shopColumns === 2 ? 980 : 760;
-    const panelHeight = isShop ? Math.max(520, 190 + shopRows * 70) : isPlacement ? 520 : 330;
+    const panelWidth = isPlacement ? 860 : isStatCards ? 820 : shopColumns === 2 ? 980 : 760;
+    // The plain list grew a fourth row when level-ups started mixing in a stat
+    // card, so its height follows the option count instead of being pinned.
+    const panelHeight = isShop
+      ? Math.max(520, 190 + shopRows * 70)
+      : isPlacement ? 520
+        : isStatCards ? Math.max(330, 150 + statCardRows * 132)
+          : 330 + Math.max(0, decision.options.length - 3) * 86;
     const children: Phaser.GameObjects.GameObject[] = [];
     if (isShop && this.useMarineArt) {
       children.push(this.add.image(0, 0, "scrap-shop-panel-v1").setDisplaySize(panelWidth, panelHeight));
@@ -3892,7 +3906,7 @@ export class PrototypeScene extends Phaser.Scene {
       children.push(this.add.rectangle(0, 0, panelWidth, panelHeight, 0x0b121c, 0.985).setStrokeStyle(4, isShop ? 0xdca652 : 0x68e4e8));
       children.push(this.add.rectangle(0, 0, panelWidth - 18, panelHeight - 18, 0x172536, 0.72).setStrokeStyle(1, 0x4d6a83));
     }
-    const titleY = isShop ? -panelHeight / 2 + 40 : isPlacement ? -220 : -125;
+    const titleY = isPlacement ? -220 : -panelHeight / 2 + 40;
     if (isShop && this.useMarineArt && shopColumns === 1) {
       if (!this.anims.exists("quartermaster-idle-v1")) {
         this.anims.create({
@@ -3938,12 +3952,20 @@ export class PrototypeScene extends Phaser.Scene {
     decision.options.forEach((choice, index) => {
       const shopColumn = shopColumns === 2 ? index % 2 : 0;
       const shopRow = shopColumns === 2 ? Math.floor(index / 2) : index;
-      const x = isPlacement ? -70 + (index % 2) * 330 : isShop && shopColumns === 2 ? -238 + shopColumn * 476 : isShop ? -78 : 0;
-      const y = isPlacement ? -125 + Math.floor(index / 2) * 98 : isShop ? titleY + 78 + shopRow * 70 : -60 + index * 86;
+      const x = isPlacement ? -70 + (index % 2) * 330
+        : isStatCards ? -190 + (index % 2) * 380
+          : isShop && shopColumns === 2 ? -238 + shopColumn * 476 : isShop ? -78 : 0;
+      const y = isPlacement ? -125 + Math.floor(index / 2) * 98
+        : isStatCards ? titleY + 96 + Math.floor(index / 2) * 132
+          : isShop ? titleY + 78 + shopRow * 70 : titleY + 65 + index * 86;
       const enabled = choice.affordable !== false;
       const shopButtonWidth = shopColumns === 2 ? 444 : 500;
-      const button = this.add.rectangle(x, y, isPlacement ? 300 : isShop ? shopButtonWidth : 670, isPlacement ? 78 : isShop ? 62 : 66, 0x1b2d42, 0.98)
-        .setStrokeStyle(2, 0x5d7892).setInteractive({ useHandCursor: enabled });
+      const button = this.add.rectangle(
+        x, y,
+        isPlacement ? 300 : isStatCards ? 344 : isShop ? shopButtonWidth : 670,
+        isPlacement ? 78 : isStatCards ? 116 : isShop ? 62 : 66,
+        0x1b2d42, 0.98,
+      ).setStrokeStyle(2, isStatCards ? 0x68e4e8 : 0x5d7892).setInteractive({ useHandCursor: enabled });
       const price = choice.cost && choice.cost > 0 ? ` — ${choice.cost} SCRAP${enabled ? "" : " (SHORT)"}` : "";
       children.push(button);
       if (isShop && this.useMarineArt) {
@@ -3955,13 +3977,24 @@ export class PrototypeScene extends Phaser.Scene {
           .setDisplaySize(58, 58).setAlpha(enabled ? 1 : 0.42));
       }
       const quickKey = index < 9 ? `${index + 1}. ` : "";
-      const label = this.add.text(isPlacement ? x - 78 : isShop ? x - shopButtonWidth / 2 + 76 : -310, y - (isPlacement ? 26 : isShop ? 15 : 18), `${quickKey}${choice.name}${price}\n${choice.description}`, {
-        color: enabled ? "#edf4ff" : "#758493",
-        fontFamily: "Consolas, Courier New, monospace",
-        fontSize: isPlacement ? "13px" : isShop ? "13px" : "15px",
-        wordWrap: isPlacement ? { width: 202 } : isShop ? { width: shopButtonWidth - 92 } : undefined,
-        lineSpacing: isShop ? 2 : 5,
-      }).setResolution(uiTextResolution());
+      // A stat card leads with the grant, not the flavour name — the number is
+      // the decision, so it gets the weight and the card is centred around it.
+      const label = isStatCards
+        ? this.add.text(x, y, `${quickKey}${choice.name}\n\n${choice.description.toUpperCase()}`, {
+          color: "#edf4ff",
+          fontFamily: "Consolas, Courier New, monospace",
+          fontSize: "15px",
+          align: "center",
+          wordWrap: { width: 312 },
+          lineSpacing: 4,
+        }).setOrigin(0.5).setResolution(uiTextResolution())
+        : this.add.text(isPlacement ? x - 78 : isShop ? x - shopButtonWidth / 2 + 76 : -310, y - (isPlacement ? 26 : isShop ? 15 : 18), `${quickKey}${choice.name}${price}\n${choice.description}`, {
+          color: enabled ? "#edf4ff" : "#758493",
+          fontFamily: "Consolas, Courier New, monospace",
+          fontSize: isPlacement ? "13px" : isShop ? "13px" : "15px",
+          wordWrap: isPlacement ? { width: 202 } : isShop ? { width: shopButtonWidth - 92 } : undefined,
+          lineSpacing: isShop ? 2 : 5,
+        }).setResolution(uiTextResolution());
       button.on("pointerover", () => {
         this.decisionSelectionIndex = index;
         this.updateDecisionSelectionHighlight();
@@ -4136,6 +4169,8 @@ function expeditionBuildFromSnapshot(snapshot: CombatSnapshot): ExpeditionBuildS
     transformation: cloneTransformationAffinityState(snapshot.transformation),
     relicIds: [...snapshot.relicIds],
     ownedItemIds: [...snapshot.ownedItemIds],
+    itemStats: { ...snapshot.itemStats },
+    bannedShopIds: [...snapshot.bannedShopIds],
     equippedArtifactId: snapshot.equippedArtifactId,
     maxHealthBonus: snapshot.rewardMaxHealthBonus,
     weaponSlotBonus: snapshot.rewardWeaponSlotBonus,

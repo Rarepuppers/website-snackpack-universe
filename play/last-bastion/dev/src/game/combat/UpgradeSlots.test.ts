@@ -65,7 +65,9 @@ describe("categorized upgrade slots", () => {
       const offensiveCapacity = snapshot.upgradeSlots
         .find((slot) => slot.category === "offensive")!.capacity;
       for (const option of snapshot.pendingDecision.options) {
+        // The level-up draw mixes in a stat card, which is not an upgrade.
         const definition = UPGRADE_CATALOG[option.id as keyof typeof UPGRADE_CATALOG];
+        if (!definition) continue;
         if (
           definition.category === "offensive"
           && !ownedOffensive.has(option.id)
@@ -75,11 +77,11 @@ describe("categorized upgrade slots", () => {
         }
       }
       const newOffensive = snapshot.pendingDecision.options.find((option) => (
-        UPGRADE_CATALOG[option.id as keyof typeof UPGRADE_CATALOG].category === "offensive"
+        UPGRADE_CATALOG[option.id as keyof typeof UPGRADE_CATALOG]?.category === "offensive"
         && !ownedOffensive.has(option.id)
       ));
       const chosen = newOffensive ?? snapshot.pendingDecision.options[0]!;
-      if (UPGRADE_CATALOG[chosen.id as keyof typeof UPGRADE_CATALOG].category === "offensive") {
+      if (UPGRADE_CATALOG[chosen.id as keyof typeof UPGRADE_CATALOG]?.category === "offensive") {
         ownedOffensive.add(chosen.id);
       }
       simulation.chooseOption(chosen.id);

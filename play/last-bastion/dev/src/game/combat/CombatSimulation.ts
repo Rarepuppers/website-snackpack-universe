@@ -183,7 +183,13 @@ import {
   type AbominationPrimeMove,
   type AbominationPrimeState,
 } from "./AbominationPrimeBehavior";
-import { scaleEnemyHealth, scaleEnemyHit, waveScaling } from "./WaveScaling";
+import {
+  ENEMY_HIT_CAP,
+  RANKED_ENEMY_HIT_CAP,
+  scaleEnemyHealth,
+  scaleEnemyHit,
+  waveScaling,
+} from "./WaveScaling";
 import type { EliteKind } from "./EliteCadence";
 export type { EliteKind } from "./EliteCadence";
 import type { ExpeditionBuildSnapshot } from "../expedition/ExpeditionRun";
@@ -204,6 +210,12 @@ import {
   type PlayerStatBlock,
 } from "../stats/PlayerStatBlock";
 import { foldItemStats, itemById, ITEM_CATALOG } from "../content/itemCatalog";
+import {
+  LEVEL_STAT_ORDER,
+  isLevelStatCardId,
+  levelStatCardById,
+  levelStatCardDescription,
+} from "../content/levelStatCatalog";
 import { resolvePerkModifiers, type PerkId, type PerkRunModifiers } from "../perks/perkCatalog";
 import {
   resolveRelicModifiers,
@@ -213,7 +225,7 @@ import {
 } from "../content/relicCatalog";
 import type { ExpeditionEncounterDescriptor } from "../expedition/ExpeditionEncounter";
 import type { ExpeditionWavePlan } from "../expedition/ExpeditionNodeDirector";
-import { campaignNodeClearScrap, campaignOffersShop } from "../expedition/CampaignTuning";
+import { campaignNodeClearScrap, campaignOffersShop, rankDefeatScrap } from "../expedition/CampaignTuning";
 import {
   buildRainOfSpinesTargets,
   GROUND_SLAM_RECOVERY_SECONDS,
@@ -250,6 +262,26 @@ export type BastionEaterAction =
 export type EnemyRank = "standard" | "treasure" | "elite" | "mini-boss" | "boss";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
 export type MiniBossKind = "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime";
+
+/** Every mini-boss kind, so the spawn path can't drift out of sync with the union again. */
+export const MINI_BOSS_KINDS: readonly MiniBossKind[] = Object.freeze([
+  "siege-crusher", "brood-warden", "rift-stalker",
+  "synapse-herald", "assembly-prime", "storm-regent", "abomination-prime",
+]);
+
+export function isMiniBossKind(value: string): value is MiniBossKind {
+  return (MINI_BOSS_KINDS as readonly string[]).includes(value);
+}
+
+/**
+ * The one place a live enemy's body radius is resolved. `radiusMetres` lives on
+ * the frozen catalog, so a per-entity size multiplier has nowhere else to
+ * apply — routing every read through here keeps collision, separation, contact
+ * reach and the rendered silhouette in agreement.
+ */
+export function enemyRadius(enemy: { type: EnemyType; radiusScale?: number }): number {
+  return ENEMY_CATALOG[enemy.type].radiusMetres * (enemy.radiusScale ?? 1);
+}
 export type SiegeCrusherPhase =
   | "entrance" | "stalk" | "charge-windup" | "charge"
   | "sweep-windup" | "sweep" | "slam-windup" | "slam" | "recovery";
@@ -263,8 +295,8 @@ export type RiftStalkerPhase =
 export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit" | "siege-loader" | "phase-jacket" | "hunter-optics" | "last-stand-stimulant";
 export type SupplyChestVariant = "sealed" | "armored";
-export type DecisionKind = "upgrade" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
-export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat" | "supply-chest";
+export type DecisionKind = "upgrade" | "level-stat" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
+export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat" | "supply-chest";
 
 export type TerrainDamageSource = "player-projectile" | "player-melee" | "mini-boss-charge" | "mini-boss-impact" | "enemy-slam" | "enemy-biomass";
 
@@ -508,6 +540,12 @@ export interface EnemySnapshot {
   bastionEaterTarget?: Vector2Data;
   bastionEaterNodeExposed?: boolean;
   rank: EnemyRank;
+  /**
+   * Body-radius multiplier on top of the catalog `radiusMetres`. Only ranked
+   * enemies set it (see `spawnMiniBoss`); absent means 1. Read through
+   * `enemyRadius()` so hitbox, separation and rendering never disagree.
+   */
+  radiusScale?: number;
   eliteKind?: EliteKind;
   carapacePhase?: CarapacePhase;
   miniBossKind?: MiniBossKind;
@@ -658,6 +696,10 @@ export interface CombatSnapshot {
   relicIds: readonly RelicId[];
   /** Owned shop items (Brotato overhaul), carried so purchases survive a node. */
   ownedItemIds: readonly string[];
+  /** Raw non-catalogue stat grants (level-up cards, shrine grants), carried so they survive a node. */
+  itemStats: Partial<PlayerStatBlock>;
+  /** Shop stock banned this run; the ban verb is run-long, so it rides the snapshot across nodes. */
+  bannedShopIds: readonly string[];
   equippedArtifactId: ArtifactId | null;
   rewardMaxHealthBonus: number;
   rewardWeaponSlotBonus: number;
@@ -809,6 +851,12 @@ interface EnemyState {
   bastionEaterTarget: Vector2Data;
   bastionEaterAttackCount: number;
   rank: EnemyRank;
+  /**
+   * Body-radius multiplier on top of the catalog `radiusMetres`. Only ranked
+   * enemies set it (see `spawnMiniBoss`); absent means 1. Always read through
+   * `enemyRadius()` so hitbox, separation and silhouette never disagree.
+   */
+  radiusScale?: number;
   eliteKind?: EliteKind;
   carapacePhase: CarapacePhase;
   carapacePhaseRemainingSeconds: number;
@@ -1224,8 +1272,8 @@ export class CombatSimulation {
   private ownedItemIds: string[] = [];
   /** Item armour already added to `defence.armour`, so refreshes apply only the delta. */
   private appliedItemArmour = 0;
-  /** Raw non-item stat grants carried on the build (shrine grants, tests). */
-  private readonly baseItemStats: Partial<PlayerStatBlock>;
+  /** Raw non-item stat grants carried on the build (level-up cards, shrine grants, tests). */
+  private baseItemStats: Partial<PlayerStatBlock>;
   /** Run-long reward items (Task 94), resolved into combat effects and carried through the snapshot. */
   private readonly relicModifiers: RelicRunModifiers;
   private readonly ownedRelicIds: readonly RelicId[];
@@ -1338,6 +1386,9 @@ export class CombatSimulation {
       : resolvedRelicModifiers;
     this.baseItemStats = { ...(options.startingBuild?.itemStats ?? {}) };
     this.ownedItemIds = [...(options.startingBuild?.ownedItemIds ?? [])];
+    // The ban verb's contract is run-long, so bans arrive from the build rather
+    // than starting empty at every node.
+    for (const bannedId of options.startingBuild?.bannedShopIds ?? []) this.shopBannedIds.add(bannedId);
     this.playerStats = this.resolveCurrentPlayerStats();
     this.securedScrap = Math.max(0, Math.floor(
       options.startingBuild?.scrap ?? options.startingScrap ?? (this.scenario === "scrap-shop" ? 150 : 0),
@@ -1602,7 +1653,12 @@ export class CombatSimulation {
 
   spawnEnemy(type: EnemyType, position?: Vector2Data): number {
     const definition = ENEMY_CATALOG[type];
-    const authoredBoss = type === "siege-crusher" || type === "brood-warden" || type === "rift-stalker" || type === "abomination-prime" || type === "bastion-eater";
+    // Authored stat blocks own their own scaling: every mini-boss kind goes
+    // through `spawnMiniBoss`, and the boss through `spawnBastionEater`, so the
+    // generic path must not pre-scale them. This list previously omitted
+    // synapse-herald / assembly-prime / storm-regent, which briefly took real
+    // wave scaling here before being overwritten.
+    const authoredBoss = isMiniBossKind(type) || type === "bastion-eater";
     const scaling = waveScaling(this.waveIndex + 1, type, { boss: authoredBoss });
     const scaledMaxHealth = scaleEnemyHealth(definition.maxHealth, scaling);
     const spawnPosition = position ? { ...position } : this.nextEdgeSpawn(definition.radiusMetres);
@@ -1854,14 +1910,22 @@ export class CombatSimulation {
     enemy.rank = "mini-boss";
     enemy.miniBossKind = miniBossKind;
     const definition = ENEMY_CATALOG[miniBossKind];
-    enemy.maxHealth = definition.maxHealth;
-    enemy.health = definition.maxHealth;
-    enemy.armour = definition.armour;
+    // Phase 5: mini-bosses used to pin these to catalog values and `1`, which
+    // made them the *least* threatening thing in the late game — an elite at
+    // column 7 outscaled the mini-boss guarding it. They now scale like elites
+    // do, on a gentler curve so the fixed windup telegraphs stay readable.
+    // `spawnEnemy` already applied a boss-identity scaling, so this overwrites
+    // rather than compounds.
+    const scaling = waveScaling(this.waveIndex + 1, miniBossKind, { miniBoss: true });
+    enemy.maxHealth = scaleEnemyHealth(definition.maxHealth, scaling);
+    enemy.health = enemy.maxHealth;
+    enemy.armour = definition.armour + scaling.armourBonus;
     enemy.flatDamageReduction = definition.flatDamageReduction;
     enemy.maxShield = 0;
     enemy.shield = 0;
-    enemy.movementSpeedMultiplier = 1;
-    enemy.damageMultiplier = 1;
+    enemy.movementSpeedMultiplier = scaling.speedMultiplier;
+    enemy.damageMultiplier = scaling.damageMultiplier;
+    enemy.radiusScale = scaling.radiusMultiplier;
     this.retagLastSpawn(miniBossKind);
     enemy.siegeCrusherPhase = "entrance";
     enemy.siegeCrusherPhaseRemainingSeconds = 0.9;
@@ -1974,12 +2038,21 @@ export class CombatSimulation {
     this.decisionQueue.shift();
     switch (decision.kind) {
       case "upgrade": {
+        // The level-up draw mixes authored upgrades with one stat card, so the
+        // chosen id decides which system applies it.
+        if (isLevelStatCardId(optionId)) {
+          this.applyLevelStatCard(optionId);
+          break;
+        }
         const upgradeId = optionId as UpgradeId;
         const nextLevel = (this.upgradeLevels.get(upgradeId) ?? 0) + 1;
         this.upgradeLevels.set(upgradeId, nextLevel);
         this.applyUpgrade(upgradeId, nextLevel);
         break;
       }
+      case "level-stat":
+        this.applyLevelStatCard(optionId);
+        break;
       case "weapon-chest":
         this.addWeapon(optionId as WeaponId);
         break;
@@ -2088,6 +2161,8 @@ export class CombatSimulation {
       transformation: cloneTransformationAffinityState(this.transformation),
       relicIds: [...this.ownedRelicIds],
       ownedItemIds: [...this.ownedItemIds],
+      itemStats: { ...this.baseItemStats },
+      bannedShopIds: [...this.shopBannedIds],
       equippedArtifactId: this.equippedArtifactId,
       rewardMaxHealthBonus: this.rewardMaxHealthBonus,
       rewardWeaponSlotBonus: this.rewardWeaponSlotBonus,
@@ -2113,8 +2188,12 @@ export class CombatSimulation {
       level: this.level,
       experience: this.experience,
       experienceForNextLevel: this.experienceThreshold(),
+      // The level-up draw mixes in a stat card, which has no UpgradeDefinition —
+      // filter rather than map, or this surfaces an undefined entry.
       pendingUpgradeChoices: decision?.kind === "upgrade"
-        ? decision.options.map((option) => UPGRADE_CATALOG[option.id as UpgradeId])
+        ? decision.options.flatMap((option) => (
+          UPGRADE_CATALOG[option.id as UpgradeId] ? [UPGRADE_CATALOG[option.id as UpgradeId]] : []
+        ))
         : [],
       upgradeLevels: [...this.upgradeLevels.entries()].map(([id, level]) => ({ id, level })),
       upgradeSlots: (Object.keys(this.upgradeSlotCapacity) as UpgradeCategory[]).map((category) => ({
@@ -2502,7 +2581,11 @@ export class CombatSimulation {
 
   /**
    * Deterministic three-option draw that skips maxed-out upgrades and locked
-   * elemental paths. Returns null only when every upgrade is exhausted.
+   * elemental paths, plus one stat card from the shared `PlayerStatBlock`
+   * vocabulary (Phase 3C). Offering both in one decision keeps the authored
+   * upgrades arriving at their old rate — the player spends a level on stats
+   * only when they actually want to. Returns null only when every upgrade is
+   * exhausted, in which case the caller falls back to an all-stat draw.
    */
   private buildUpgradeDecision(): PendingDecision | null {
     const start = (this.level - 2 + UPGRADE_ORDER.length * 2) % UPGRADE_ORDER.length;
@@ -2527,11 +2610,68 @@ export class CombatSimulation {
     if (options.length === 0) {
       return null;
     }
+    const statCard = this.levelStatCardForLevel(0);
+    if (statCard) options.push(statCard);
     return {
       kind: "upgrade",
-      title: "LEVEL UP — CHOOSE AN UPGRADE",
+      title: "LEVEL UP — CHOOSE ONE",
       options,
     };
+  }
+
+  /**
+   * The stat card offered at this level, `slot` steps along the interleaved
+   * order. RNG-free on purpose: `this.random()` call order is part of the replay
+   * digest, so drawing here would invalidate every fixture. Luck-weighted draws
+   * are a deferred item.
+   */
+  private levelStatCardForLevel(slot: number): DecisionOption | null {
+    const length = LEVEL_STAT_ORDER.length;
+    const index = (this.level - 2 + slot * 4 + length * 2) % length;
+    const entry = levelStatCardById(LEVEL_STAT_ORDER[index]!);
+    if (!entry) return null;
+    return { id: entry.id, name: entry.name, description: levelStatCardDescription(entry) };
+  }
+
+  /**
+   * Deterministic four-card stat draw from the shared `PlayerStatBlock`
+   * vocabulary. Deliberately RNG-free, exactly like `buildUpgradeDecision`:
+   * `this.random()` call order is part of the replay digest, so drawing here
+   * would invalidate every fixture. Luck-weighted draws are a deferred item.
+   *
+   * The stride walks the interleaved `LEVEL_STAT_ORDER` so consecutive levels
+   * offer different cards, and every card is always eligible — a stat can be
+   * taken any number of times.
+   */
+  private buildLevelStatDecision(): PendingDecision {
+    const options: DecisionOption[] = [];
+    for (let slot = 0; slot < LEVEL_STAT_ORDER.length && options.length < 4; slot += 1) {
+      const option = this.levelStatCardForLevel(slot);
+      if (!option || options.some((existing) => existing.id === option.id)) continue;
+      options.push(option);
+    }
+    return {
+      kind: "level-stat",
+      title: "LEVEL UP — CHOOSE A STAT",
+      options,
+    };
+  }
+
+  /**
+   * Applies a level-up stat card. Grants land in `baseItemStats` — the same bag
+   * shop items fold into — so they persist on the run build and take effect
+   * through the one resolver. `refreshPlayerStats` is mandatory rather than
+   * optional: armour is reconciled by delta against `appliedItemArmour` and max
+   * HP is recomputed there, so a card touching either is inert without it.
+   */
+  private applyLevelStatCard(cardId: string): void {
+    const entry = levelStatCardById(cardId);
+    if (!entry) return;
+    this.baseItemStats = {
+      ...this.baseItemStats,
+      [entry.statKey]: (this.baseItemStats[entry.statKey] ?? 0) + entry.amount,
+    };
+    this.refreshPlayerStats();
   }
 
   private isUpgradeEligible(id: UpgradeId): boolean {
@@ -3106,7 +3246,7 @@ export class CombatSimulation {
             x: enemy.position.x + facing.x * weapon.stats.knockbackMetres,
             y: enemy.position.y + facing.y * weapon.stats.knockbackMetres,
           },
-          definition.radiusMetres,
+          enemyRadius(enemy),
           this.collisionArena(),
         );
       }
@@ -3239,7 +3379,7 @@ export class CombatSimulation {
     for (const enemy of this.enemies) {
       if (enemy.dead) continue;
       const definition = ENEMY_CATALOG[enemy.type];
-      if (distance(bladePosition, enemy.position) > definition.radiusMetres + ORBIT_BLADE_CONTACT_RADIUS_METRES) continue;
+      if (distance(bladePosition, enemy.position) > enemyRadius(enemy) + ORBIT_BLADE_CONTACT_RADIUS_METRES) continue;
       this.damageEnemy(
         enemy,
         weapon.stats.beamDamagePerSecond * deltaSeconds * this.weaponDamageMultiplier(weapon.stats)
@@ -3402,7 +3542,7 @@ export class CombatSimulation {
     }
     for (const enemy of this.enemies) {
       if (enemy.dead) continue;
-      const reach = FENCE_CONTACT_RANGE_METRES + ENEMY_CATALOG[enemy.type].radiusMetres * 0.5;
+      const reach = FENCE_CONTACT_RANGE_METRES + enemyRadius(enemy) * 0.5;
       if (distanceToSegment(enemy.position, fence.from, fence.to) <= reach) {
         this.damageEnemy(enemy, FENCE_DAMAGE_PER_SECOND * deltaSeconds, "shock");
       }
@@ -3645,7 +3785,7 @@ export class CombatSimulation {
         }
 
         const definition = ENEMY_CATALOG[enemy.type];
-        if (distance(projectile.position, enemy.position) > definition.radiusMetres + 0.14) {
+        if (distance(projectile.position, enemy.position) > enemyRadius(enemy) + 0.14) {
           continue;
         }
 
@@ -3799,7 +3939,7 @@ export class CombatSimulation {
             x: enemy.position.x + (toCentre.x / gap) * travel,
             y: enemy.position.y + (toCentre.y / gap) * travel,
           },
-          definition.radiusMetres,
+          enemyRadius(enemy),
           this.collisionArena(),
         );
       }
@@ -3846,7 +3986,7 @@ export class CombatSimulation {
         x: enemy.position.x + direction.x * projectile.knockbackMetres,
         y: enemy.position.y + direction.y * projectile.knockbackMetres,
       },
-      definition.radiusMetres,
+      enemyRadius(enemy),
       this.collisionArena(),
     );
   }
@@ -5530,7 +5670,7 @@ export class CombatSimulation {
 
     const state = enemy.abominationPrimeBehavior;
     if (state.phase === "action" && state.move === "biomass-grab" && this.activeTetherEnemyId === enemy.id) {
-      const minimumDistance = ENEMY_CATALOG[enemy.type].radiusMetres + PLAYER_RADIUS_METRES + 0.2;
+      const minimumDistance = enemyRadius(enemy) + PLAYER_RADIUS_METRES + 0.2;
       const pullDistance = Math.min(1.25 * deltaSeconds, Math.max(0, playerDistance - minimumDistance));
       if (pullDistance > 0) {
         const direction = normalizeVector({
@@ -5814,7 +5954,7 @@ export class CombatSimulation {
     this.moveEnemy(enemy, direction, 9.2, deltaSeconds);
     if (
       !enemy.synapseHeraldHitThisLunge
-      && distance(enemy.position, this.playerPosition) <= ENEMY_CATALOG[enemy.type].radiusMetres + PLAYER_RADIUS_METRES
+      && distance(enemy.position, this.playerPosition) <= enemyRadius(enemy) + PLAYER_RADIUS_METRES
     ) {
       enemy.synapseHeraldHitThisLunge = true;
       this.damagePlayer(this.scaledEnemyDamage(enemy, 2.4));
@@ -7166,7 +7306,7 @@ export class CombatSimulation {
 
   private enemySeparation(enemy: EnemyState): Vector2Data {
     const separation = { x: 0, y: 0 };
-    const neighbourRadius = ENEMY_CATALOG[enemy.type].radiusMetres + 0.9;
+    const neighbourRadius = enemyRadius(enemy) + 0.9;
     for (const other of this.enemies) {
       if (other.id === enemy.id || other.dead) continue;
       const offset = { x: enemy.position.x - other.position.x, y: enemy.position.y - other.position.y };
@@ -7203,7 +7343,7 @@ export class CombatSimulation {
     speed: number,
     deltaSeconds: number,
   ): void {
-    const radius = ENEMY_CATALOG[enemy.type].radiusMetres;
+    const radius = enemyRadius(enemy);
     const effectiveSpeed = speed * enemy.movementSpeedMultiplier * this.enemyStatusSpeedMultiplier(enemy);
     enemy.position = resolveCircleMovement(
       enemy.position,
@@ -7237,7 +7377,7 @@ export class CombatSimulation {
       if (
         contactDamage > 0
         && enemy.attackCooldownSeconds <= 0
-        && distance(enemy.position, this.playerPosition) <= definition.radiusMetres + PLAYER_RADIUS_METRES
+        && distance(enemy.position, this.playerPosition) <= enemyRadius(enemy) + PLAYER_RADIUS_METRES
       ) {
         this.damagePlayer(contactDamage);
         enemy.attackCooldownSeconds = 0.8;
@@ -7290,7 +7430,13 @@ export class CombatSimulation {
   }
 
   private scaledEnemyDamage(enemy: EnemyState, baseDamage: number): number {
-    return scaleEnemyHit(baseDamage, { damageMultiplier: enemy.damageMultiplier });
+    // Ranked enemies get a higher ceiling: several mini-boss move baselines
+    // already sit at 4.4-5, so under the standard cap their damage scaling
+    // would be almost entirely clamped away.
+    const cap = enemy.rank === "mini-boss" || enemy.rank === "boss"
+      ? RANKED_ENEMY_HIT_CAP
+      : ENEMY_HIT_CAP;
+    return scaleEnemyHit(baseDamage, { damageMultiplier: enemy.damageMultiplier }, cap);
   }
 
   private updateExperiencePickups(deltaSeconds: number): void {
@@ -7688,9 +7834,14 @@ export class CombatSimulation {
       });
       this.frameEvents.push({ type: "aurum-supply-cache-dropped", position: { ...enemy.position } });
     } else if (enemy.miniBossKind) {
-      this.secureScrap(40, "mini-boss-defeat", enemy.position);
+      // Phase 5: rank payouts scale with depth now that the fights do. Flat
+      // rewards made a late mini-boss worth the same as the first one.
+      this.secureScrap(rankDefeatScrap(40, this.waveIndex), "mini-boss-defeat", enemy.position);
     } else if (enemy.eliteKind) {
-      this.secureScrap(15, "elite-defeat", enemy.position);
+      this.secureScrap(rankDefeatScrap(15, this.waveIndex), "elite-defeat", enemy.position);
+    } else if (enemy.rank === "boss") {
+      // The boss previously fell through every reward branch and paid nothing.
+      this.secureScrap(rankDefeatScrap(80, this.waveIndex), "boss-defeat", enemy.position);
     } else if (enemy.type === "quillback" || enemy.type === "spinewheel" || enemy.type === "ripper") {
       this.secureScrap(2, "specialist-defeat", enemy.position);
     } else if (enemy.rank === "standard" && this.random() < ORDINARY_SCRAP_DROP_CHANCE) {
@@ -7936,7 +8087,7 @@ export class CombatSimulation {
     }
     if (this.expeditionWaveIndex >= encounter.waves.length - 1) {
       if (
-        campaignOffersShop(encounter.column)
+        campaignOffersShop(encounter.kind)
         && !this.expeditionPostEncounterShopQueued
       ) {
         this.expeditionPostEncounterShopQueued = true;
@@ -8100,7 +8251,10 @@ export class CombatSimulation {
     }
 
     this.spawnQueue = [];
-    this.waveLiveCap = Math.max(18, this.enemies.length + 4);
+    // Phase 5: the rank wave inherits the survivors of the escort wave, so the
+    // cap has to leave room for them rather than pinching the arena down to 18
+    // the moment the mini-boss lands.
+    this.waveLiveCap = Math.max(26, this.enemies.length + 8);
     this.waveDurationSeconds = null;
     this.waveEndsOnTimer = false;
     if (plan.kind === "elite") {
@@ -8435,7 +8589,10 @@ export class CombatSimulation {
     this.level += 1;
     this.applyLevelGrowth();
     this.frameEvents.push({ type: "level-up", level: this.level });
-    const decision = this.buildUpgradeDecision();
+    // Phase 3C: the upgrade draw now carries a stat card alongside the authored
+    // upgrades. The all-stat draw covers the case where every upgrade is maxed
+    // or locked out — that used to level the player up in complete silence.
+    const decision = this.buildUpgradeDecision() ?? this.buildLevelStatDecision();
     if (decision) {
       this.decisionQueue.push(decision);
     }
@@ -8474,7 +8631,8 @@ export class CombatSimulation {
       armour: enemy.armour,
       movementSpeedMultiplier: enemy.movementSpeedMultiplier,
       damageMultiplier: enemy.damageMultiplier,
-      radiusMetres: definition.radiusMetres,
+      radiusMetres: enemyRadius(enemy),
+      radiusScale: enemy.radiusScale ?? 1,
       hatchProgress: enemy.hatchDurationSeconds > 0
         ? 1 - enemy.hatchRemainingSeconds / enemy.hatchDurationSeconds
         : 0,

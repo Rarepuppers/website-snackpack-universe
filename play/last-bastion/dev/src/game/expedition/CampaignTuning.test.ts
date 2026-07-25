@@ -4,11 +4,11 @@ import { combatNodeBudgets } from "./ExpeditionNodeDirector";
 import { generateExpeditionMap } from "./ExpeditionMap";
 import {
   CAMPAIGN_REFERENCE_BUILDS,
-  CAMPAIGN_SHOP_COLUMNS,
   campaignNodeClearScrap,
   projectCampaignRoutes,
   referenceBuildBossSeconds,
 } from "./CampaignTuning";
+import { ITEM_RARITY_BASE_PRICE } from "../content/itemCatalog";
 
 describe("Task 49 campaign tuning", () => {
   it("protects the opening while preserving the late pressure ceiling", () => {
@@ -19,12 +19,20 @@ describe("Task 49 campaign tuning", () => {
     expect(combatNodeBudgets(7)).toEqual([120, 140, 160, 180]);
   });
 
-  it("gives every seeded route two shops, affordable recovery, and a boss-ready growth band", () => {
+  it("gives every seeded route a shop per fight, affordable recovery, and a boss-ready growth band", () => {
     for (let seed = 1; seed <= 100; seed += 1) {
       for (const route of projectCampaignRoutes(generateExpeditionMap(seed))) {
         expect(route.nodeIds).toHaveLength(8);
-        expect(route.shopVisits).toBe(CAMPAIGN_SHOP_COLUMNS.length);
-        expect(route.guaranteedScrap).toBeGreaterThanOrEqual(55);
+        // Phase 3B: every node except the boss (and the Shrine/Event nodes that
+        // resolve without a fight) ends in a shop, so a route of 8 nodes offers
+        // between 4 and 7 spend decisions depending on how many it spends on choice.
+        expect(route.shopVisits).toBeGreaterThanOrEqual(4);
+        expect(route.shopVisits).toBeLessThanOrEqual(7);
+        // A shop is only a decision if you can buy something at it. Guaranteed
+        // income alone must cover a common-tier item at every visit, on every
+        // route — kill drops and treasure enemies stay pure upside on top.
+        expect(route.scrapPerShopVisit).toBeGreaterThan(ITEM_RARITY_BASE_PRICE.common);
+        expect(route.guaranteedScrap).toBeGreaterThanOrEqual(85);
         expect(route.healingOpportunities).toBeGreaterThanOrEqual(2);
         // Shrine/Event nodes carry no waves, so a route that chooses the maximum
         // number of decision nodes trades one combat's guaranteed XP for choice,
@@ -39,8 +47,8 @@ describe("Task 49 campaign tuning", () => {
   it("keeps all live weapons in the chest pool and makes safe routes economically useful", () => {
     expect(WEAPON_CHEST_POOL).toHaveLength(8);
     expect(new Set(WEAPON_CHEST_POOL).size).toBe(WEAPON_CHEST_POOL.length);
-    expect(campaignNodeClearScrap("supply-depot", 3)).toBe(10);
-    expect(campaignNodeClearScrap("weapon-cache", 5)).toBe(10);
+    expect(campaignNodeClearScrap("supply-depot", 3)).toBe(15);
+    expect(campaignNodeClearScrap("weapon-cache", 5)).toBe(15);
   });
 
   it("keeps at least two distinct reference builds inside the authored boss window", () => {

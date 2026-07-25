@@ -43,7 +43,9 @@ export function buildExpeditionWavePlan(
 
   if (kind === "combat") return Object.freeze(combat.map(ordinary));
   if (kind === "elite") {
-    const lead = combat.slice(-2).map((budget) => ordinary(Math.round(budget * 0.8)));
+    // Phase 5: denser escorts. A rank fight should feel like a fight for the
+    // arena, not a duel with bystanders.
+    const lead = combat.slice(-2).map((budget) => ordinary(Math.round(budget * 0.9)));
     return Object.freeze([...lead, {
       kind: "elite",
       directorWaveIndex: depth,
@@ -55,7 +57,7 @@ export function buildExpeditionWavePlan(
   }
   if (kind === "mini-boss") {
     return Object.freeze([
-      ordinary(Math.round(combat[combat.length - 1]! * 0.6)),
+      ordinary(Math.round(combat[combat.length - 1]! * 0.75)),
       {
         kind: "mini-boss",
         directorWaveIndex: depth,

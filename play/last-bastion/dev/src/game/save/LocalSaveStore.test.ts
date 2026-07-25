@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_SAVE, LocalSaveStore, SAVE_STORAGE_KEY } from "./LocalSaveStore";
+import { DEFAULT_SAVE, LocalSaveStore, SAVE_SCHEMA_VERSION, SAVE_STORAGE_KEY } from "./LocalSaveStore";
 import { createRunSummary } from "../run/RunSummary";
 import { rebindGamepad, rebindKeyboard } from "../input/ControlBindings";
 import { applyTransformationChoice, createTransformationAffinityState } from "../transformations/TransformationAffinity";
@@ -60,7 +60,7 @@ describe("LocalSaveStore", () => {
       [SAVE_STORAGE_KEY]: JSON.stringify({ ...DEFAULT_SAVE, version: 6, controls: undefined }),
     });
     const migrated = new LocalSaveStore(storage);
-    expect(migrated.load().version).toBe(9);
+    expect(migrated.load().version).toBe(SAVE_SCHEMA_VERSION);
     expect(migrated.load().controls.keyboard.evade).toBe("Space");
     const keyboard = rebindKeyboard(migrated.load().controls, "evade", "KeyF");
     const remapped = rebindGamepad(keyboard, "kit", "north");
@@ -247,7 +247,7 @@ describe("Save schema v2 — expedition autosave", () => {
       }),
     });
     const save = new LocalSaveStore(storage).load();
-    expect(save.version).toBe(9);
+    expect(save.version).toBe(SAVE_SCHEMA_VERSION);
     expect(save.settings.screenShakeEnabled).toBe(false);
     expect(save.settings.cooldownTimersEnabled).toBe(false);
     expect(save.settings.autoFireEnabled).toBe(true);
@@ -299,7 +299,7 @@ describe("Save schema v2 — expedition autosave", () => {
       metrics: { kills: 0, scrapEarned: 0, damageByWeapon: {} },
     });
     const reloaded = new LocalSaveStore(storage).load();
-    expect(reloaded.version).toBe(9);
+    expect(reloaded.version).toBe(SAVE_SCHEMA_VERSION);
     expect(reloaded.expedition?.build?.relicIds).toEqual(["rel-blast-baffle", "rel-field-lattice"]);
     expect(reloaded.expedition?.build?.equippedArtifactId).toBe("art-event-horizon-core");
     expect(reloaded.expedition?.build?.maxHealthBonus).toBe(-20);
@@ -325,6 +325,28 @@ describe("Save schema v2 — expedition autosave", () => {
     expect(cleaned?.equippedArtifactId).toBeNull();
     expect(cleaned?.maxHealthBonus).toBe(0);
     expect(cleaned?.weaponSlotBonus).toBe(0);
+  });
+
+  it("round-trips the schema-v10 shop carrier so purchases survive a node transition", () => {
+    // Every node change is a full page load, so an item that does not survive
+    // this round trip does not exist as far as the run is concerned.
+    const storage = fakeStorage({});
+    new LocalSaveStore(storage).saveExpedition({
+      mapSeed: 11, currentNodeId: 3, clearedNodeIds: [1, 3],
+      build: {
+        health: 22, shield: 0, level: 4, experience: 0, scrap: 60,
+        weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }],
+        upgrades: [],
+        ownedItemIds: ["scrap-magnet", "scrap-magnet", "not-an-item"],
+        itemStats: { critChancePercent: 6, harvestingPercent: 10, notAStat: 99 } as never,
+        bannedShopIds: ["shop-item:glass-cannon"],
+      },
+      metrics: { kills: 0, scrapEarned: 0, damageByWeapon: {} },
+    });
+    const build = new LocalSaveStore(storage).load().expedition?.build;
+    expect(build?.ownedItemIds).toEqual(["scrap-magnet", "scrap-magnet"]);
+    expect(build?.itemStats).toEqual({ critChancePercent: 6, harvestingPercent: 10 });
+    expect(build?.bannedShopIds).toEqual(["shop-item:glass-cannon"]);
   });
 
   it("leaves a pre-v9 build without a reward carrier as empty defaults", () => {

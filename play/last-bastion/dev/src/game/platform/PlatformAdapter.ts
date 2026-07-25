@@ -1,5 +1,6 @@
 import { ACHIEVEMENT_IDS, type AchievementId, type AchievementUnlockEvent } from "./PlatformProgress";
 import type { CloudSaveEnvelope } from "./CloudSavePolicy";
+import { SAVE_SCHEMA_VERSION } from "../save/LocalSaveStore";
 
 export const CLOUD_SAVE_SLOT = "last-bastion-save-v7.json";
 
@@ -86,7 +87,7 @@ function assertCloudEnvelope(value: unknown): asserts value is CloudSaveEnvelope
   if (typeof envelope.deviceId !== "string" || envelope.deviceId.length === 0
     || !Number.isSafeInteger(envelope.revision) || (envelope.revision ?? -1) < 0
     || !Number.isFinite(envelope.updatedAtMs) || (envelope.updatedAtMs ?? -1) < 0
-    || !envelope.save || envelope.save.version !== 9) {
+    || !envelope.save || envelope.save.version !== SAVE_SCHEMA_VERSION) {
     throw new Error("Cloud save envelope is invalid");
   }
 }

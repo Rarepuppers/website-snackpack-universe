@@ -1,5 +1,5 @@
 import { normalizeControlBindings } from "../input/ControlBindings";
-import type { BestiaryEntry, SaveData } from "../save/LocalSaveStore";
+import { SAVE_SCHEMA_VERSION, type BestiaryEntry, type SaveData } from "../save/LocalSaveStore";
 
 export interface CloudSaveEnvelope {
   readonly deviceId: string;
@@ -19,7 +19,9 @@ export interface CloudSaveResolution {
  * User preferences and the active run come from the deterministic newer side.
  */
 export function resolveCloudSaveConflict(local: CloudSaveEnvelope, remote: CloudSaveEnvelope): CloudSaveResolution {
-  if (local.save.version !== 9 || remote.save.version !== 9) throw new Error("Cloud save schema is unsupported");
+  if (local.save.version !== SAVE_SCHEMA_VERSION || remote.save.version !== SAVE_SCHEMA_VERSION) {
+    throw new Error("Cloud save schema is unsupported");
+  }
   const remotePreferred = compareEnvelope(remote, local) > 0;
   const preferred = remotePreferred ? remote : local;
   const secondary = remotePreferred ? local : remote;
@@ -33,7 +35,7 @@ export function resolveCloudSaveConflict(local: CloudSaveEnvelope, remote: Cloud
     preference: remotePreferred ? "remote" : "local",
     divergentActiveRuns,
     save: {
-      version: 9,
+      version: SAVE_SCHEMA_VERSION,
       settings: { ...preferred.save.settings },
       controls: normalizeControlBindings(preferred.save.controls),
       progress: {

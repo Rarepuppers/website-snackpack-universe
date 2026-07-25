@@ -63,6 +63,11 @@ export interface ExpeditionBuildSnapshot {
    * home of sell/inventory. Duplicates are allowed (you can own two of an item).
    */
   ownedItemIds?: readonly string[];
+  /**
+   * Shop stock banned by the ban verb. The contract is run-long, so it rides the
+   * build across nodes rather than living on a single `CombatSimulation`.
+   */
+  bannedShopIds?: readonly string[];
 }
 
 export interface ExpeditionRunState {
