@@ -1,4 +1,9 @@
 import { ARENA_THEMES } from "../rendering/arenaThemes";
+import {
+  LIBERATION_SHOP_PROFILES,
+  liberationProfileForSeed,
+  type ShopProfileId,
+} from "../content/shopProfiles";
 
 /**
  * Seeded expedition map: a horizontal 20-node starchart in the spirit of FTL's
@@ -18,6 +23,7 @@ export type ExpeditionNodeType =
   | "weapon-cache"
   | "shrine"
   | "event"
+  | "liberation"
   | "boss";
 
 export interface ExpeditionNode {
@@ -29,6 +35,11 @@ export interface ExpeditionNode {
   next: readonly number[];
   /** Presentation-only theme id drawn from the arena pool. */
   themeId: string;
+  /**
+   * Which themed shop a `liberation` node opens once its fight is cleared
+   * (Phase 4). Absent on every other node type.
+   */
+  shopProfileId?: ShopProfileId;
 }
 
 export interface ExpeditionMapData {
@@ -52,7 +63,7 @@ export const EXPEDITION_LANES = 3;
  * routes an ambush into combat.
  */
 const TYPE_BUDGET: Readonly<
-  Record<"elite" | "mini-boss" | "supply-depot" | "weapon-cache" | "shrine" | "event", number>
+  Record<"elite" | "mini-boss" | "supply-depot" | "weapon-cache" | "shrine" | "event" | "liberation", number>
 > = Object.freeze({
   elite: 2,
   "mini-boss": 2,
@@ -60,6 +71,9 @@ const TYPE_BUDGET: Readonly<
   "weapon-cache": 2,
   shrine: 1,
   event: 2,
+  // Two per chart across three lanes, so a typical route meets about one and
+  // they stay an event rather than becoming the default shape of a run.
+  liberation: 2,
 });
 
 /** Columns whose nodes may never be dangerous specials — the run must open calmly. */
@@ -255,6 +269,26 @@ function assignTypes(nodes: MutableNode[], random: SeededRandom): void {
     }
     random.pick(candidates).type = type;
   }
+
+  assignLiberationProfiles(assignable, random);
+}
+
+/**
+ * Gives each liberation node its themed shop. Profiles are drawn without
+ * repetition while stock lasts, so a chart with two liberation nodes offers two
+ * different locations rather than the same shop twice.
+ */
+function assignLiberationProfiles(nodes: MutableNode[], random: SeededRandom): void {
+  const used = new Set<ShopProfileId>();
+  for (const node of nodes) {
+    if (node.type !== "liberation") continue;
+    let profileId = liberationProfileForSeed(random.int(1024) + node.id);
+    for (let attempt = 0; attempt < LIBERATION_SHOP_PROFILES.length && used.has(profileId); attempt += 1) {
+      profileId = liberationProfileForSeed(random.int(1024) + node.id + attempt);
+    }
+    used.add(profileId);
+    node.shopProfileId = profileId;
+  }
 }
 
 /**
@@ -271,6 +305,9 @@ function typePriority(type: ExpeditionNodeType): number {
   if (type === "mini-boss") return 3;
   if (type === "elite") return 2;
   if (type === "supply-depot") return 1;
+  // Liberation nodes have no adjacency rule (their fight is ordinary-strength),
+  // but they should still claim a slot ahead of the plain reward nodes.
+  if (type === "liberation") return 1;
   return 0;
 }
 

@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { CombatSimulation } from "./CombatSimulation";
-import { isLevelStatCardId } from "../content/levelStatCatalog";
+import {
+  LEVEL_STAT_ORDER,
+  isLevelStatCardId,
+  levelStatCardById,
+} from "../content/levelStatCatalog";
+import type { PlayerStatBlock } from "../stats/PlayerStatBlock";
 
 /**
  * Phase 3C: level-ups draw the authored weapon upgrades *and* one stat card from
@@ -29,6 +34,38 @@ describe("level-up stat cards", () => {
     // Grants land in the same carrier shop items use, so they persist on the run
     // build across a node transition rather than dying with the simulation.
     expect(simulation.snapshot().itemStats.damagePercent).toBe(5);
+  });
+
+  it("never offers a card whose stat nothing reads", () => {
+    // The bug this guards: `lvl-engineering` shipped inside LEVEL_STAT_ORDER
+    // while `engineering` had zero consumers, so a player could spend a level-up
+    // on literally no effect. A card is only honest if something reads its stat.
+    const CONSUMED_STATS = new Set<keyof PlayerStatBlock>([
+      "damagePercent", "meleeDamagePercent", "rangedDamagePercent", "elementalDamagePercent",
+      "critChancePercent", "critMultiplier", "attackSpeedPercent",
+      "maxHpFlat", "maxHpPercent", "armourFlat", "hpRegenPerSecond", "lifestealPercent",
+      "dodgePercent", "moveSpeedPercent", "harvestingPercent", "luck", "curse",
+    ]);
+    for (const id of LEVEL_STAT_ORDER) {
+      const card = levelStatCardById(id);
+      expect(card, `${id} is in LEVEL_STAT_ORDER but has no definition`).not.toBeNull();
+      expect(CONSUMED_STATS.has(card!.statKey), `${id} grants unread stat ${card!.statKey}`).toBe(true);
+    }
+  });
+
+  it("always offers four distinct cards regardless of level", () => {
+    // The draw strides LEVEL_STAT_ORDER by 4, so its length and the stride must
+    // not share a factor that starves the rack. Removing one card changed the
+    // length from 15 to 14, which is exactly the kind of edit that breaks this.
+    const simulation = new CombatSimulation({ autoStartWaves: false });
+    for (let level = 0; level < LEVEL_STAT_ORDER.length + 2; level += 1) {
+      levelUp(simulation);
+      const decision = simulation.snapshot().pendingDecision;
+      if (!decision) continue;
+      const statCards = decision.options.filter((option) => isLevelStatCardId(option.id));
+      expect(new Set(statCards.map((option) => option.id)).size).toBe(statCards.length);
+      simulation.chooseOption(decision.options[0]!.id);
+    }
   });
 
   it("routes a max-HP card through refreshPlayerStats so the bonus is live immediately", () => {

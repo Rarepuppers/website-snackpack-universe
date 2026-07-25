@@ -20,7 +20,6 @@ export const MARINE = Object.freeze({
     slowResistance: 0,
     attackSpeedMultiplier: 1,
     hitInvulnerabilitySeconds: 0.65,
-    mineralFindPercent: 100,
   },
   weaponProficiencies: {
     light: 0,

@@ -87,3 +87,15 @@ describe("itemById", () => {
     expect(itemById("nope")).toBeNull();
   });
 });
+
+describe("stat reachability", () => {
+  it("grants curse from somewhere, so the curse half of rarity weighting is reachable", () => {
+    // `curse` is read by the shop draw and the rank-kill grant, but for a while
+    // nothing in the game wrote it — the whole trade-off existed only in probes.
+    // A stat that is read but never granted is dead weight dressed as a system.
+    const granters = ITEM_CATALOG.filter((item) => (item.statModifiers.curse ?? 0) > 0);
+    expect(granters.length).toBeGreaterThan(0);
+    // It belongs on cursed stock: taking cheap power should sour what you're offered next.
+    expect(granters.every((item) => item.rarity === "cursed")).toBe(true);
+  });
+});

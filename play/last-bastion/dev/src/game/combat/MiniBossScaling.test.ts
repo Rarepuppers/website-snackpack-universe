@@ -4,6 +4,7 @@ import type { ExpeditionEncounterDescriptor } from "../expedition/ExpeditionEnco
 import { buildExpeditionWavePlan } from "../expedition/ExpeditionNodeDirector";
 import { rankDefeatScrap } from "../expedition/CampaignTuning";
 import { ENEMY_CATALOG } from "../content/enemyCatalog";
+import { itemById } from "../content/itemCatalog";
 import { waveScaling } from "./WaveScaling";
 
 /**
@@ -64,5 +65,20 @@ describe("mini-boss wave scaling", () => {
   it("pays out more for a deeper kill", () => {
     expect(rankDefeatScrap(40, 7)).toBeGreaterThan(rankDefeatScrap(40, 0));
     expect(rankDefeatScrap(40, 0)).toBe(40);
+  });
+
+  it("drops a guaranteed item as well as scrap", () => {
+    // Phase 5 scaled the scrap payout but not the drop; a mini-boss is the
+    // climax of a node and should hand over something you keep.
+    const simulation = new CombatSimulation({ autoStartWaves: false });
+    const id = simulation.spawnMiniBoss("brood-warden", { x: 8, y: 8 });
+    expect(simulation.snapshot().ownedItemIds).toHaveLength(0);
+
+    simulation.dealDamage(id, 99999);
+    const after = simulation.snapshot();
+    expect(after.ownedItemIds).toHaveLength(1);
+    expect(itemById(after.ownedItemIds[0]!)).not.toBeNull();
+    const granted = after.events.find((event) => event.type === "item-granted");
+    expect(granted).toBeDefined();
   });
 });

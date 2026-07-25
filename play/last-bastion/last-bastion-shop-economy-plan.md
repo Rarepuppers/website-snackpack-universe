@@ -279,6 +279,19 @@ Implementation shape, given what 3B establishes:
 - Black Market's HP-as-currency already exists as an event resolution in `EncounterEventCatalog.ts` —
   reuse that pricing path rather than a second implementation.
 
+**Status — Phase 4 complete 25 July 2026** (see `last-bastion-log.md`). Built as **one `"liberation"`
+node type carrying a `shopProfileId`**, not the six node types this table implies — six would have
+rippled through every type switch, budget table and presentation map for no gain, while one type plus a
+data-driven variant keeps the surface small. New `content/shopProfiles.ts` holds all six themed profiles
+(Blacksmith / Science Lab / Bio Lab / Church / Black Market / Special Merchant) as stock flags + item-tag
+filter + rarity floor + price multiplier; `buildScrapShopCandidates` reads the profile and filters, so a
+themed shop is a data row rather than a second shop. Two liberation nodes per chart, each drawing a
+distinct profile, placed with no adjacency rule (their fight is ordinary-strength) and paying combat-node
+scrap so you can actually afford the stock they open. **812 tests pass.** Deviations from the sketch
+above: the rarity floor and tag filter carry the "premium" weight rather than a guaranteed weapon
+tier-up, and Black Market is a discount-plus-rarity-floor profile rather than reusing the HP-as-currency
+event path — that pricing model stays with the event where it already works.
+
 ## Phase 5 — difficulty pass (elites / mini-bosses / boss)
 
 **This is the big one.** Mini-bosses are currently the *least* threatening late-game encounter, and the
@@ -333,7 +346,9 @@ That is the entire delta. And the depth signal is already correct at spawn time 
    scale with column and add a guaranteed item/relic grant via the existing `grantItem()` path
    (`:2341`). **The boss currently drops nothing at all** — it has no `miniBossKind`/`eliteKind`, so it
    falls through every reward branch and just sets `status = "victory"` (`:7718`). Mirror every number
-   in `CampaignTuning.ts:55-56` and `:84-88` or `projectCampaignRoutes` desyncs.
+   in `CampaignTuning.ts:55-56` and `:84-88` or `projectCampaignRoutes` desyncs. **Done 25 July 2026**,
+   including the guaranteed item drop: `grantWeightedItem()` fires on every mini-boss and boss kill,
+   rarity-weighted through the same `luck`/`curse` curve the shop uses.
 
 ### Explicit non-goal
 
@@ -359,20 +374,28 @@ authored flat — the shared `movementSpeedMultiplier` covers them, which was th
 
 ## Deferred
 
-- **`luck` / `curse` bending rarity draws.** The single spot is `drawScrapShopOffers`
-  (`CombatSimulation.ts:2790`): every candidate — repair, kit, retrofit, each upgrade, each weapon and
-  **all 27 items regardless of rarity** — sits in one flat array drawn uniformly. Rarity affects price
-  only, never appearance rate. Add a `rarityWeight(rarity, luck, curse)` table and a weighted pick
-  modelled on the working `pickWeightedBranch` (`expedition/EncounterEventCatalog.ts:1753`). Two
-  sibling draws deserve the same treatment: `buildWeaponChestDecision` (`:2597`) and
-  `buildSlotRequisitionDecision` (`:2570`). **This changes `this.random()` call order and will
-  invalidate `ReplayFixture` digests** — that is the reason it is deferred, not the weighting maths.
+- ~~**`luck` / `curse` bending rarity draws.**~~ **Done 25 July 2026.** The stated blocker — "this
+  changes `this.random()` call order and will invalidate `ReplayFixture` digests" — turned out not to
+  hold: the uniform draw spent **exactly one `random()` per offer**, and a cumulative-weight pick spends
+  one too. Changing *which* candidate is picked is safe; only changing *how many* draws happen is not.
+  `rarityDrawWeight(rarity, luck, curse)` + `NON_ITEM_DRAW_WEIGHT` live in `content/shopProfiles.ts`;
+  `shopOfferDrawWeight` maps an offer id to its weight. Measured over 400 seeded shops: neutral gives a
+  clean descending curve (394/205/76/9 common→legendary, where it was flat); luck 150 lifts legendaries
+  ~11x and rares ~3.7x while leaving commons untouched (luck is applied per rarity *rank*); curse 100
+  collapses good stock (legendary 9→0, rare 76→8) while raising cursed stock 24→40 — a genuine
+  trade-off knob. **The claim that `buildWeaponChestDecision` and `buildSlotRequisitionDecision`
+  "deserve the same treatment" is withdrawn** — it was written without checking the data. Weapons carry
+  no rarity, only `weaponClass`, and all 8 entries in `WEAPON_CHEST_POOL` are light/medium/heavy peers
+  with no `unique` among them; the slot draw picks between four upgrade *categories*. Neither has a
+  rarity dimension for luck to bend, so weighting them would mean inventing a distinction the data does
+  not have. They stay uniform deliberately.
 - **Behavioural (non-stat) items** — `ItemDefinition.effects` reusing the relic hook shape; no items
   use it yet.
 - **`rangePercent`** — still unwired, needs per-weapon range scaling.
 - **`engineering`** — wired as a stat but no turret/structure item exists to consume it.
-- **`mineralFindPercent`** (`stats/DefenceStats.ts:28`) is a dead duplicate of `harvestingPercent`
-  with zero read-sites; retire it rather than wiring a second scrap-gain path.
+- ~~**`mineralFindPercent`**~~ **Retired 25 July 2026** — removed from `DefenceProfile` and both hero
+  definitions. It had zero read-sites and duplicated `harvestingPercent`, which is the live scrap-gain
+  stat read in `secureScrap`.
 - **Legacy modifier cleanup** — the five pre-existing systems still resolve and read in parallel with
   the block; `resolvePlayerStats` treats `perk` / `relic` / `transformation` as inert no-op seams
   (`PlayerStatBlock.ts:115-129`). Folding their numerics onto the block is a later pass.

@@ -42,6 +42,9 @@ function campaignNodeAlwaysOffersShop(type: ExpeditionNode["type"]): boolean {
  */
 export function campaignNodeClearScrap(type: ExpeditionNode["type"], column: number): number {
   if (type === "combat" || type === "elite") return 24 + 7 * Math.max(0, Math.floor(column));
+  // A liberation fight pays like the combat node it replaces — you need the
+  // scrap in hand for the themed shop it opens.
+  if (type === "liberation") return 24 + 7 * Math.max(0, Math.floor(column));
   if (type === "supply-depot" || type === "weapon-cache") return CAMPAIGN_SAFE_NODE_SCRAP;
   return 0;
 }

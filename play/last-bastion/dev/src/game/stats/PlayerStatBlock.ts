@@ -57,7 +57,7 @@ export interface PlayerStatBlock {
   moveSpeedPercent: number;
 
   // --- Economy / meta ---
-  /** Scrap-gain bonus (additive %); folds into the reserved `mineralFindPercent`. */
+  /** Scrap-gain bonus (additive %). The single scrap-gain stat; read in `secureScrap`. */
   harvestingPercent: number;
   /** Bends shop rarity toward better stock. Reserved for the shop rework. */
   luck: number;

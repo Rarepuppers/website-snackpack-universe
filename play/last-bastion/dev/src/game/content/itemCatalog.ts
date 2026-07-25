@@ -83,8 +83,11 @@ export const ITEM_CATALOG: readonly ItemDefinition[] = Object.freeze([
   item("overclock-module", "Overclock Module", "legendary", ["offence", "risk"], { attackSpeedPercent: 30, maxHpPercent: -20 }, "+30% attack speed, -20% max HP."),
 
   // --- Cursed, huge power, harsh downside ---
-  item("cursed-idol", "Cursed Idol", "cursed", ["offence", "risk"], { damagePercent: 40, maxHpFlat: -25, armourFlat: -2 }, "+40% damage, -25 max HP, -2 armour."),
-  item("blood-pact", "Blood Pact", "cursed", ["offence", "sustain", "risk"], { lifestealPercent: 15, damagePercent: 20, maxHpPercent: -30 }, "+15% lifesteal, +20% damage, -30% max HP."),
+  // These are the only source of the `curse` stat, which drags future shop stock
+  // toward worse rarities (and cursed stock toward better odds). Without it the
+  // whole curse half of the rarity weighting is unreachable in a real run.
+  item("cursed-idol", "Cursed Idol", "cursed", ["offence", "risk"], { damagePercent: 40, maxHpFlat: -25, armourFlat: -2, curse: 20 }, "+40% damage, -25 max HP, -2 armour, +20 curse."),
+  item("blood-pact", "Blood Pact", "cursed", ["offence", "sustain", "risk"], { lifestealPercent: 15, damagePercent: 20, maxHpPercent: -30, curse: 15 }, "+15% lifesteal, +20% damage, -30% max HP, +15 curse."),
 ]);
 
 export const ITEM_IDS: readonly string[] = Object.freeze(ITEM_CATALOG.map((entry) => entry.id));

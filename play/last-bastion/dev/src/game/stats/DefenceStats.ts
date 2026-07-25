@@ -24,8 +24,6 @@ export interface DefenceProfile {
   attackSpeedMultiplier: number;
   /** Invulnerability window after taking a hit. */
   hitInvulnerabilitySeconds: number;
-  /** Reserved: no currency loop exists yet. 100 = baseline. */
-  mineralFindPercent: number;
 }
 
 export const ARMOUR_SOFT_CAP = 15;

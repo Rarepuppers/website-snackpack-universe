@@ -3,6 +3,7 @@ import type { MiniBossKind } from "../combat/CombatSimulation";
 import type { ExpeditionNode } from "./ExpeditionMap";
 import { buildExpeditionWavePlan, type ExpeditionWavePlan } from "./ExpeditionNodeDirector";
 import { selectEncounterEvent, type EncounterEventKind } from "./EncounterEventCatalog";
+import type { ShopProfileId } from "../content/shopProfiles";
 
 export type ExpeditionEncounterKind =
   | "combat"
@@ -12,6 +13,7 @@ export type ExpeditionEncounterKind =
   | "weapon-cache"
   | "shrine"
   | "event"
+  | "liberation"
   | "boss";
 
 export interface ExpeditionEncounterDescriptor {
@@ -27,6 +29,11 @@ export interface ExpeditionEncounterDescriptor {
   miniBossKind: MiniBossKind | null;
   /** Shrine/Event nodes resolve to a specific catalogue card; null otherwise. */
   eventId: string | null;
+  /**
+   * Themed stock opened after a `liberation` node's fight (Phase 4). Absent
+   * elsewhere, in which case the post-node shop is the plain scrap market.
+   */
+  shopProfileId?: ShopProfileId;
   waves: readonly ExpeditionWavePlan[];
 }
 
@@ -68,7 +75,10 @@ export function expeditionEncounterForNode(
   const threatBudget = node.type === "combat" ? baseBudget
     : node.type === "elite" ? Math.round(baseBudget * 0.8) + 15
       : node.type === "mini-boss" ? Math.round(baseBudget * 0.6) + 40
-        : node.type === "boss" ? 40 : 0;
+        // A liberation fight is the price of entry, not a boss: ordinary
+        // strength, deliberately shorter than a full combat node.
+        : node.type === "liberation" ? Math.round(baseBudget * 0.9)
+          : node.type === "boss" ? 40 : 0;
   const eliteKind = node.type === "elite" ? ELITES[seed % ELITES.length]! : null;
   const miniBossPool = miniBossPoolForColumn(node.column);
   const miniBossKind = node.type === "mini-boss" ? miniBossPool[seed % miniBossPool.length]! : null;
@@ -87,6 +97,7 @@ export function expeditionEncounterForNode(
     eliteKind,
     miniBossKind,
     eventId,
+    ...(node.shopProfileId ? { shopProfileId: node.shopProfileId } : {}),
     waves,
   };
 }

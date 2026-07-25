@@ -45,6 +45,7 @@ const NODE_GLYPHS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze(
   "weapon-cache": "▣",
   shrine: "⛨",
   event: "?",
+  liberation: "⚑",
   boss: "☠",
 });
 
@@ -56,6 +57,7 @@ const NODE_LABELS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze(
   "weapon-cache": "WEAPON CACHE — safe",
   shrine: "SHRINE — a bargain",
   event: "EVENT — unknown",
+  liberation: "OCCUPIED SITE — clear it to trade",
   boss: "THE BASTION EATER",
 });
 

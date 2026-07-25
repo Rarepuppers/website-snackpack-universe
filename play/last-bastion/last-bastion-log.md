@@ -1570,3 +1570,108 @@ Taken ahead of Phase 4 because it is self-contained and it was the live problem:
 Verification: full typecheck clean; **807 tests across 116 files pass** (was 803), including the deterministic `ReplayFixture` digest — none of this touches the combat RNG stream. New tests kept lean: `MiniBossScaling.test.ts` (3 cases — a deep mini-boss out-scales a shallow one on health/speed/damage/armour/size, the mini-boss curve stays under the elite curve on both telegraph-sensitive axes, and depth-scaled payout) plus two additions to the existing `WaveScaling.test.ts`. Four pre-existing assertions updated for the intended new numbers (escort budgets 96->108 and 108->135, and the `WaveScaling` shape gaining `radiusMultiplier`). Browser check: `?scenario=siege-crusher` boots with no console or server errors; screenshots unavailable this session, so the larger late-game silhouette is unverified visually.
 
 Remaining from the Phase 5 brief: the guaranteed item/relic grant on a rank kill (scrap scales, the drop doesn't yet). Next: **Phase 4** — special-shop liberation nodes.
+
+## 25 July 2026 - Brotato overhaul Phase 4: liberation nodes + themed shops
+
+The last phase of the overhaul. With Phases 3 and 5 done, all five are complete.
+
+**Design deviation from the plan, taken deliberately.** The plan's table implied six new `ExpeditionNodeType` values (Blacksmith, Science Lab, Bio Lab, Church, Black Market, Special Merchant). Built instead as **one `"liberation"` node type carrying a `shopProfileId`**. Six node types would have rippled through every type switch, the map budget table, `campaignNodeClearScrap`, `buildExpeditionWavePlan`, the route projection and the map presentation records — six times the surface for zero mechanical difference, since all six differ only in *stock*. One type plus a data-driven variant keeps every one of those sites to a single new case.
+
+- **New `content/shopProfiles.ts`**: `ShopProfile { stock: {repair, utility, upgrades, weapons, items}, itemTags?, minRarity?, priceMultiplier }` and all seven profiles (the six liberation shops plus the default `scrap-market`). Blacksmith is weapons + offence/melee/ranged/crit items; Science Lab is upgrades + crit/elemental/economy at x1.1; Bio Lab is sustain/defence/mobility/risk; Church is risk-tagged at rare-and-above for x0.9; Black Market is rare-and-above at **x0.75** with no repair; Special Merchant is rare-and-above at x1.25. Note `cursed` ranks *with* `rare` in the rarity floor rather than at the bottom — it is deliberately cheap for its power, not weak, so a "premium" shop should stock it.
+- **`buildScrapShopCandidates` now reads the profile** and gates each stock line, filters items through `profileStocksItem`, and scales every price. That is the entire shop-side change — themed shops are a data table, exactly as the plan intended.
+- **Map**: `TYPE_BUDGET.liberation = 2`, so a typical route meets about one and they stay an event. No adjacency rule (a liberation fight is ordinary-strength, unlike elite/mini-boss), priority 1 so they claim a slot ahead of plain reward nodes. `assignLiberationProfiles` draws without repetition, so a chart with two liberation nodes offers two *different* locations rather than the same shop twice.
+- **Encounter**: one ordinary wave at 0.9 of the node's top budget — a real fight, but short enough that the shop is the point of the node rather than the reward for a slog. Node-clear scrap matches a combat node, because you need scrap in hand for the stock it opens.
+
+**One real bug found by checking rather than by the type system.** `populateExpeditionEncounter`'s switch on `encounter.kind` has no exhaustiveness check, so `"liberation"` fell straight through it — the node would have started with no wave, resolved instantly, and handed over the premium stock for free. Added the case (alongside `combat`/`elite`/`mini-boss`/`boss`) plus explicit no-op cases for `shrine`/`event` documenting that those resolve in `ExpeditionEventScene`. Typecheck was clean the whole time this bug existed; it took reading the switch to find it.
+
+Tests: `content/shopProfiles.test.ts` (5 cases), kept lean per the creator's direction and aimed at the failures that are *silent*: every liberation profile must stock at least a full offer rack (a tag filter crossed with a rarity floor that matches nothing yields an empty shop, which reads as a broken node), the rarity floor and tag filter behave, unknown/absent profiles fall back to the plain market, and liberation nodes always carry both a profile and a real fight with a non-zero threat budget.
+
+Verification: full typecheck clean; **812 tests across 116 files pass** (was 807). Browser check: `?screen=map` boots with no console or server errors after the new node type joined the glyph/label records. Screenshots unavailable this session, so the new map glyph is unverified visually.
+
+**The Brotato overhaul is functionally complete across all five phases.** Remaining smaller items, all recorded in the plan's Deferred section: luck/curse bending rarity draws (deferred because it perturbs the `ReplayFixture` digest), behavioural non-stat items, `rangePercent` wiring, the guaranteed item/relic grant on a rank kill (Phase 5 scaled the scrap but not the drop), and folding the five legacy modifier systems onto the unified stat block.
+
+## 25 July 2026 - Deferred item cleared: luck / curse now bend the rarity draws
+
+**The stated blocker did not hold.** Both the plan and the earlier log entries deferred this on the grounds that "weighting the draw changes `this.random()` call order and will invalidate the `ReplayFixture` digest — that is the reason it is deferred, not the weighting maths." Reading the draw closely showed the premise was wrong: the uniform pick spent **exactly one `random()` per offer**, and a cumulative-weight pick spends exactly one too. Changing *which* candidate a draw selects is safe; only changing *how many* draws happen moves the stream. The digest passed untouched on the first run.
+
+- `rarityDrawWeight(rarity, luck, curse)` and `NON_ITEM_DRAW_WEIGHT` in `content/shopProfiles.ts`; `shopOfferDrawWeight(offerId, luck, curse)` in `CombatSimulation` maps an offer id back to its weight (item offers by rarity, every other stock line flat, so the 27-item catalogue doesn't crowd repair/kits/upgrades/weapons off the rack).
+- Base weights common 100 / uncommon 55 / rare 24 / legendary 8 / cursed 14. **Luck is applied per rarity rank**, so it barely moves commons and strongly moves legendaries. **Curse cuts both ways** — it drags the good tiers down *and* raises cursed stock, which is deliberately cheap for its power. That is the trade-off knob the stat block always described but never delivered.
+- Before this, rarity affected **price only**: a legendary was exactly as likely to appear as a common.
+
+Measured over 400 seeded shops (temporary probe, removed):
+
+| | common | uncommon | rare | legendary | cursed |
+| --- | --- | --- | --- | --- | --- |
+| neutral | 394 | 205 | 76 | 9 | 24 |
+| luck 150 | 591 | 291 | 279 | 103 | 19 |
+| curse 100 | 504 | 28 | 8 | 0 | 40 |
+
+Neutral is a clean descending curve where it used to be flat; luck lifts legendaries ~11x and rares ~3.7x while leaving commons alone; curse collapses good stock to near-zero and nearly doubles cursed stock (non-item stock fills the freed slots, which reads correctly as a shop with nothing good left).
+
+> **Correction (25 July 2026, later the same day).** The `curse 100` row above was measured by injecting
+> the stat directly in a probe, and this entry presented it as if it described the live game. It did not:
+> at the time of writing **nothing in the game granted `curse`** — not an item, card, relic or
+> transformation — so the entire curse half of this weighting was unreachable in a real run. The `luck`
+> row was always genuine (`lvl-luck` grants it). Fixed the same day by granting `curse` from the two
+> cursed items; see the content-debt entry below. Flagging rather than editing the table, because the
+> mistake was the claim, not the number.
+
+Tests: 5 added to `content/shopProfiles.test.ts` — base ordering, luck's per-rank lift, curse cutting both ways, non-item flat weighting, and an **end-to-end** check that draws 120 seeded shops at luck 150 vs neutral and asserts more rare/legendary stock actually reaches the rack (formula-only tests would not have caught a mis-wired `playerStats.luck`).
+
+Verification: full typecheck clean; **817 tests across 116 files pass** (was 812), `ReplayFixture` digest unchanged.
+
+Still deferred: the same weighting for `buildWeaponChestDecision` and `buildSlotRequisitionDecision` (both still uniform), behavioural non-stat items, `rangePercent`, `engineering` consumers, retiring the dead `mineralFindPercent`, the rank-kill item grant, and folding the five legacy modifier systems onto the unified block.
+
+## 25 July 2026 - Deferred cleanup: dead stat retired, rank kills drop items, one item withdrawn
+
+Three more items off the Deferred list, one of which turned out to be a mistake in the plan rather than work.
+
+**Withdrawn: weighting `buildWeaponChestDecision` / `buildSlotRequisitionDecision`.** The plan said these "deserve the same treatment" as the shop draw. That claim was written without checking the data, and it does not survive contact with it: weapons carry no rarity at all — only `weaponClass` (light/medium/heavy/unique) — and all **8** entries in `WEAPON_CHEST_POOL` are light/medium/heavy peers with no `unique` among them. The slot draw picks between four upgrade *categories*. Neither has a rarity dimension for `luck` to bend, so weighting them would mean inventing a distinction the data does not have, which is worse than leaving them uniform. Plan corrected, no code written.
+
+**Retired `mineralFindPercent`.** Removed from `DefenceProfile` and both hero definitions. It had **zero read-sites** across the whole tree and duplicated `harvestingPercent`, which is the live scrap-gain stat read in `secureScrap`. The `PlayerStatBlock` doc comment that pointed at it as harvesting's "future home" was corrected too — keeping a second, dead scrap-gain path around invites someone to wire the wrong one.
+
+**Rank kills now drop a guaranteed item.** This was the half of Phase 5's reward brief left undone: the scrap payout scaled with depth, the drop did not exist. `grantWeightedItem(position)` fires on every mini-boss and boss defeat, picking through the **same `luck`/`curse` rarity curve the shop uses** — so the two economy stats read consistently wherever the player meets them, rather than luck mattering only at the till. Emits a new `item-granted` frame event for the UI.
+
+⚠ **Honest caveat on the digest.** Unlike the shop weighting (which spent the same number of `random()` calls as the uniform draw it replaced), this genuinely **adds** a draw to the RNG stream on every mini-boss/boss death. The `ReplayFixture` digest still passes — but only because the fixture's scenario does not kill a ranked enemy. Any future fixture that does will shift, and that is expected rather than a regression.
+
+Tests: 1 added to `MiniBossScaling.test.ts` (a killed mini-boss yields exactly one owned item, a real catalogue entry, and an `item-granted` event). Kept to one case per the creator's lean-suite direction.
+
+Verification: full typecheck clean; **818 tests across 116 files pass** (was 817).
+
+Deferred list now: behavioural (non-stat) items via `ItemDefinition.effects`, `rangePercent` wiring (needs per-weapon range scaling), an `engineering` consumer (turret/structure items — the stat is wired but nothing reads it), and folding the five legacy modifier systems onto the unified block. Nothing in the Brotato overhaul brief itself remains.
+
+## 25 July 2026 - Doc audit + content-debt work started (P0 bugs, first relic hooks)
+
+Reviewed every project `.md` against `dev/src/game/`. New plan doc: `last-bastion-content-debt-plan.md`.
+
+**The audit found a pattern, not a list.** The recurring failure is content that is authored, shipped, granted to the player, and does nothing — a relic drops, its description promises an effect, `resolveRelicModifiers` sets the field, and no combat site ever reads it. The player cannot tell that apart from a working pickup, which is exactly why it survived. Eight pickups were in that state, plus a level-up card and a whole economy stat.
+
+### P0 — two bugs I shipped earlier the same day
+
+- **`lvl-engineering` was a live level-up card granting nothing.** It sat in `LEVEL_STAT_ORDER`, so it was genuinely offered, while `engineering` had zero read-sites — a player could spend a level-up on no effect at all. Removed from the order (definition kept, so re-enabling is one line once an engineering item exists). Added a guard test asserting **every id in `LEVEL_STAT_ORDER` grants a stat something reads** — the general form of the bug.
+- **The `curse` economy was unreachable.** Nothing in the game wrote `curse`: not an item, card, relic or transformation. The `cursed` *rarity* existed but granted no `curse` *stat*. So the entire curse half of yesterday's rarity weighting was dead, and the "curse 100" table in that log entry was measured by injecting the value in a probe while being presented as if it described the game. **Corrected the earlier entry in place** (flagged rather than rewritten — the mistake was the claim, not the number) and made curse reachable by granting it from Cursed Idol (+20) and Blood Pact (+15). Cursed stock now genuinely sours what the shop offers next, which is what the trade-off always claimed.
+
+### Track A — first four relic hooks
+
+Chosen track: make granted content real before building anything new on top of it.
+
+- **Stabiliser Gyro** — `movingSpreadMultiplier` now applied at the fire site, gated on `stationarySeconds === 0`.
+- **Hunter's Beacon** — `eliteMarkedEarlier` now marks elites without requiring the Hunter Optics buff.
+- **Field Lattice** — health pickups emit a chill pulse, reusing the existing `freeze` status rather than inventing a second slow, and respecting `canStatusApply` so it cannot stun-lock a mini-boss.
+- **Kinetic Greaves** — new `setEvasiveModifiers` on `HeroMotionController` scales dash distance and recovery. Had to be applied after the relic bag resolves, not at construction.
+
+**Two testing traps caught while writing the tests for these**, both worth recording because they are the same class of mistake as the bug being fixed:
+1. My first Stabiliser Gyro test asserted on the *modifier value* — which passed for the entire period the relic did nothing. Rewrote it to measure real projectile angles.
+2. That rewrite then **silently asserted nothing**: it measured spread on the starting rifle, which fires one projectile with no spread, so `angles.length >= 2` was never true and the whole comparison block was skipped behind an `if`. Switched it to the Scattergun (5 projectiles, 0.13 spread) and added `expect(movingWithout).toBeGreaterThan(0)` so the test cannot go vacuous again.
+
+Also added a catalogue-level guard: **every relic in the live pool must change at least one modifier** — the cheap check that would have caught all of this.
+
+### Finding that changed the plan
+
+**Blast Baffle is not implementable as written.** Its `selfExplosiveDamageMultiplier` has nothing to attach to: `explodeProjectile` only iterates `this.enemies`, and there is **no self-damage mechanic anywhere in the game**. But its description promises "Self *and explosive damage to you* is halved", and enemy explosive damage very much exists — so the honest fix is incoming-explosive mitigation, which needs a damage-source parameter threaded through `damagePlayer` (~15 call sites). Deferred to the next increment rather than faked. Its other field (`explosionRadiusMultiplier`) is live, so the relic is not a placebo today — just half-vestigial.
+
+Verification: full typecheck clean; **825 tests across 117 files pass** (was 818).
+
+### Remaining in Track A (next increment)
+
+Salvaged Capacitor's arc is wired but untested; Blast Baffle needs the `damagePlayer` source param; Hunter's Beacon's `eliteBonusDamageAfterMiss` needs telegraphed-miss tracking; the three dead artifacts (Event Horizon Core, Broodbreaker Seal, Last Bastion Protocol); the Duplication Vat relic branch that folds a duplicate through a `Set` and does nothing; and `EventRequirement` ownership gates so Purifier Station / Whispering Cargo stop offering silent no-ops.

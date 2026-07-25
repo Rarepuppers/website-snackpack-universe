@@ -211,6 +211,14 @@ import {
 } from "../stats/PlayerStatBlock";
 import { foldItemStats, itemById, ITEM_CATALOG } from "../content/itemCatalog";
 import {
+  DEFAULT_SHOP_PROFILE_ID,
+  NON_ITEM_DRAW_WEIGHT,
+  profileStocksItem,
+  rarityDrawWeight,
+  shopProfileById,
+  type ShopProfileId,
+} from "../content/shopProfiles";
+import {
   LEVEL_STAT_ORDER,
   isLevelStatCardId,
   levelStatCardById,
@@ -271,6 +279,18 @@ export const MINI_BOSS_KINDS: readonly MiniBossKind[] = Object.freeze([
 
 export function isMiniBossKind(value: string): value is MiniBossKind {
   return (MINI_BOSS_KINDS as readonly string[]).includes(value);
+}
+
+/**
+ * Draw weight for one shop offer. Item offers (`shop-item:<id>`) are weighted by
+ * rarity and bent by luck/curse; every other stock line (repair, kits,
+ * upgrades, weapons) takes the flat non-item weight so the rest of the shop
+ * isn't crowded out by the item catalogue's size.
+ */
+export function shopOfferDrawWeight(offerId: string, luck: number, curse: number): number {
+  if (!offerId.startsWith("shop-item:")) return NON_ITEM_DRAW_WEIGHT;
+  const definition = itemById(offerId.slice("shop-item:".length));
+  return definition ? rarityDrawWeight(definition.rarity, luck, curse) : NON_ITEM_DRAW_WEIGHT;
 }
 
 /**
@@ -423,6 +443,8 @@ export type CombatEvent =
   | { type: "obstacle-damaged"; obstacleId: string; position: Vector2Data; damage: number; remainingHealth: number; source: TerrainDamageSource }
   | { type: "obstacle-destroyed"; obstacleId: string; position: Vector2Data; damage: number; remainingHealth: 0; source: TerrainDamageSource }
   | { type: "mini-boss-reward-dropped"; position: Vector2Data; miniBossKind: MiniBossKind }
+  | { type: "item-granted"; position: Vector2Data; itemId: string }
+  | { type: "brace-formation"; position: Vector2Data }
   | { type: "status-applied"; position: Vector2Data; status: StatusEffectType }
   | { type: "powerup-collected"; position: Vector2Data; powerupType: PowerupType }
   | { type: "kit-activated"; position: Vector2Data; powerupType: "uranium-core-rounds" }
@@ -1079,6 +1101,25 @@ const MAX_SLOWING_PUDDLES = 5;
 const SLOWING_PUDDLE_DURATION_SECONDS = 4;
 const SLOWING_PUDDLE_RADIUS_METRES = 1.25;
 const SLIME_MOVEMENT_MULTIPLIER = 0.55;
+/** Field Lattice relic: radius of the chill pulse emitted on a health pickup. */
+const FIELD_LATTICE_PULSE_RADIUS_METRES = 3.5;
+/** Event Horizon Core artifact: shape of the implosion it arms periodically. */
+const ARTIFACT_IMPLOSION_DURATION_SECONDS = 1.1;
+const ARTIFACT_IMPLOSION_PULL_SPEED = 5.5;
+const ARTIFACT_IMPLOSION_PULL_RADIUS_METRES = 3.4;
+const ARTIFACT_IMPLOSION_RADIUS_METRES = 2.4;
+/** Broodbreaker Seal artifact: how long a cracking egg is held from hatching. */
+const BROODBREAKER_CRACK_SECONDS = 1.2;
+/** Broodbreaker Seal artifact: radius of the burst a destroyed egg leaves. */
+const BROODBREAKER_BURST_RADIUS_METRES = 2.2;
+/** Last Bastion Protocol artifact: brace threshold, duration and cooldown. */
+const BRACE_HEALTH_FRACTION = 0.3;
+const BRACE_DURATION_SECONDS = 6;
+const BRACE_COOLDOWN_SECONDS = 40;
+const BRACE_SPREAD_MULTIPLIER = 0.5;
+const BRACE_ATTACK_SPEED_MULTIPLIER = 1.35;
+/** Salvaged Capacitor relic: how far its every-Nth-hit arc can reach. */
+const RELIC_ARC_RADIUS_METRES = 3.2;
 const SLIME_GLOB_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.slimeGlob;
 const QUILLBACK_SPIKE_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.quillbackSpike;
 const QUILLBACK_PROJECTILE_SPEED = 7.5;
@@ -1272,6 +1313,14 @@ export class CombatSimulation {
   private ownedItemIds: string[] = [];
   /** Item armour already added to `defence.armour`, so refreshes apply only the delta. */
   private appliedItemArmour = 0;
+  /** Non-melee hit counter driving Salvaged Capacitor's every-Nth chain arc. */
+  private relicArcAttackCount = 0;
+  /** Event Horizon Core: seconds until the next impact is armed as an implosion. */
+  private eventHorizonCoreCooldownSeconds = 0;
+  private eventHorizonCoreArmed = false;
+  /** Last Bastion Protocol: brace window and its long cooldown. */
+  private braceRemainingSeconds = 0;
+  private braceCooldownSeconds = 0;
   /** Raw non-item stat grants carried on the build (level-up cards, shrine grants, tests). */
   private baseItemStats: Partial<PlayerStatBlock>;
   /** Run-long reward items (Task 94), resolved into combat effects and carried through the snapshot. */
@@ -1331,6 +1380,8 @@ export class CombatSimulation {
   private readonly shopBannedIds = new Set<string>();
   private shopRerollUsed = false;
   private shopMode: "offers" | "manage" | "sell" = "offers";
+  /** Which themed stock the open shop is drawing from (Phase 4 liberation nodes). */
+  private shopProfileId: ShopProfileId = DEFAULT_SHOP_PROFILE_ID;
   private randomState: number;
   private readonly wavesEnabled: boolean;
   private frameEvents: CombatEvent[] = [];
@@ -1384,6 +1435,12 @@ export class CombatSimulation {
     this.relicModifiers = bonusLifestealPerKill > 0
       ? { ...resolvedRelicModifiers, lifestealPerKill: resolvedRelicModifiers.lifestealPerKill + bonusLifestealPerKill }
       : resolvedRelicModifiers;
+    // Kinetic Greaves: further evasive travel, slightly longer recovery. Set
+    // here rather than at construction because the relic bag resolves above.
+    this.heroMotion.setEvasiveModifiers({
+      distanceMultiplier: this.relicModifiers.evasiveDistanceMultiplier,
+      recoveryMultiplier: this.relicModifiers.evasiveRecoveryMultiplier,
+    });
     this.baseItemStats = { ...(options.startingBuild?.itemStats ?? {}) };
     this.ownedItemIds = [...(options.startingBuild?.ownedItemIds ?? [])];
     // The ban verb's contract is run-long, so bans arrive from the build rather
@@ -1546,6 +1603,7 @@ export class CombatSimulation {
     }
     this.playerHurtCooldownSeconds = Math.max(0, this.playerHurtCooldownSeconds - delta);
     this.ultimateCooldownRemainingSeconds = Math.max(0, this.ultimateCooldownRemainingSeconds - delta);
+    this.updateArtifactTimers(delta);
     this.updateBuffs(delta);
     this.updateRegeneration(delta);
     this.updateShieldRecharge(delta);
@@ -2422,6 +2480,30 @@ export class CombatSimulation {
    * elite caches use to hand out items. Returns false for unknown ids. Stats take
    * effect immediately via `refreshPlayerStats`.
    */
+  /**
+   * Guaranteed item drop for a mini-boss or boss kill (Phase 5's reward half —
+   * the scrap payout scaled with depth from the start, the drop did not).
+   * Rarity-weighted through the same `luck`/`curse` curve the shop uses, so the
+   * two economy stats read consistently wherever the player meets them.
+   */
+  private grantWeightedItem(position: Vector2Data): string | null {
+    const luck = this.playerStats.luck;
+    const curse = this.playerStats.curse;
+    const weights = ITEM_CATALOG.map((entry) => rarityDrawWeight(entry.rarity, luck, curse));
+    const total = weights.reduce((sum, weight) => sum + weight, 0);
+    let roll = this.random() * total;
+    let index = 0;
+    while (index < ITEM_CATALOG.length - 1) {
+      roll -= weights[index]!;
+      if (roll <= 0) break;
+      index += 1;
+    }
+    const chosen = ITEM_CATALOG[index]!;
+    this.grantItem(chosen.id);
+    this.frameEvents.push({ type: "item-granted", position: { ...position }, itemId: chosen.id });
+    return chosen.id;
+  }
+
   grantItem(itemId: string): boolean {
     if (!itemById(itemId)) return false;
     this.ownedItemIds.push(itemId);
@@ -2842,47 +2924,57 @@ export class CombatSimulation {
   /** Same-run economy v2: stock, one depth-priced reroll, one protected offer, and 50% weapon resale. */
   private buildScrapShopCandidates(): DecisionOption[] {
     const candidates: DecisionOption[] = [];
+    // Liberation nodes (Phase 4) open a themed shop instead of the plain scrap
+    // market. The profile decides which stock lines exist, filters items by tag
+    // and rarity floor, and scales prices — so a themed shop is a data row, not
+    // a second shop implementation.
+    const profile = shopProfileById(this.shopProfileId);
+    const price = (base: number): number => Math.max(1, Math.round(base * profile.priceMultiplier));
     const add = (option: Omit<DecisionOption, "affordable"> & { cost: number }): void => {
       // Banned stock never returns for the rest of the run (Brotato's ban verb).
       if (this.shopBannedIds.has(option.id)) return;
       candidates.push({ ...option, affordable: option.cost <= this.securedScrap });
     };
 
-    if (this.playerHealth < this.playerMaxHealth) {
+    if (profile.stock.repair && this.playerHealth < this.playerMaxHealth) {
       add({
         id: "shop-repair",
         name: "Field Repair",
         description: `Restore ${SCRAP_SHOP_REPAIR} health.`,
-        cost: SCRAP_SHOP_PRICES.fieldRepair,
+        cost: price(SCRAP_SHOP_PRICES.fieldRepair),
       });
     }
-    if (!this.uraniumKitAvailable) {
+    if (profile.stock.utility && !this.uraniumKitAvailable) {
       add({
         id: "shop-uranium-kit",
         name: "Uranium-Core Kit",
         description: "Carry one activatable 12-second +25% damage kit.",
-        cost: SCRAP_SHOP_PRICES.uraniumKit,
+        cost: price(SCRAP_SHOP_PRICES.uraniumKit),
       });
     }
-    add({
-      id: "shop-armour-retrofit",
-      name: "Armour Retrofit",
-      description: `Gain ${SCRAP_SHOP_ARMOUR} armour for this run.`,
-      cost: SCRAP_SHOP_PRICES.armourRetrofit,
-    });
-
-    const eligibleUpgrades = UPGRADE_ORDER.filter((id) => this.isUpgradeEligible(id));
-    for (const upgradeId of eligibleUpgrades) {
-      const nextLevel = (this.upgradeLevels.get(upgradeId) ?? 0) + 1;
+    if (profile.stock.utility) {
       add({
-        id: `shop-upgrade:${upgradeId}`,
-        name: upgradeLevelName(upgradeId, nextLevel),
-        description: `Install immediately. ${UPGRADE_CATALOG[upgradeId].levelDescriptions[nextLevel - 1]!}`,
-        cost: SCRAP_SHOP_PRICES.upgrade,
+        id: "shop-armour-retrofit",
+        name: "Armour Retrofit",
+        description: `Gain ${SCRAP_SHOP_ARMOUR} armour for this run.`,
+        cost: price(SCRAP_SHOP_PRICES.armourRetrofit),
       });
     }
 
-    if (this.equippedWeapons.length < MAX_EQUIPPED_WEAPONS) {
+    if (profile.stock.upgrades) {
+      const eligibleUpgrades = UPGRADE_ORDER.filter((id) => this.isUpgradeEligible(id));
+      for (const upgradeId of eligibleUpgrades) {
+        const nextLevel = (this.upgradeLevels.get(upgradeId) ?? 0) + 1;
+        add({
+          id: `shop-upgrade:${upgradeId}`,
+          name: upgradeLevelName(upgradeId, nextLevel),
+          description: `Install immediately. ${UPGRADE_CATALOG[upgradeId].levelDescriptions[nextLevel - 1]!}`,
+          cost: price(SCRAP_SHOP_PRICES.upgrade),
+        });
+      }
+    }
+
+    if (profile.stock.weapons && this.equippedWeapons.length < MAX_EQUIPPED_WEAPONS) {
       const owned = new Set(this.equippedWeapons.map((weapon) => weapon.weaponId));
       const availableWeapons = WEAPON_CHEST_POOL.filter((id) => !owned.has(id));
       for (const weaponId of availableWeapons) {
@@ -2890,19 +2982,20 @@ export class CombatSimulation {
           id: `shop-weapon:${weaponId}`,
           name: WEAPON_CATALOG[weaponId].displayName,
           description: `Add this Tier I weapon to the active rack. ${WEAPON_CATALOG[weaponId].description}`,
-          cost: SCRAP_SHOP_PRICES.weapon,
+          cost: price(SCRAP_SHOP_PRICES.weapon),
         });
       }
     }
 
-    // Shop items (Brotato overhaul). Every catalogue item is a candidate — items
-    // stack, so nothing is filtered by ownership; rarity and price do the gating.
+    // Shop items (Brotato overhaul). Items stack, so nothing is filtered by
+    // ownership; the profile, rarity and price do the gating.
     for (const definition of ITEM_CATALOG) {
+      if (!profileStocksItem(profile, definition)) continue;
       add({
         id: `shop-item:${definition.id}`,
         name: definition.name,
         description: `${definition.description} (${definition.rarity})`,
-        cost: this.itemPrice(definition.basePrice),
+        cost: price(this.itemPrice(definition.basePrice)),
       });
     }
 
@@ -2926,8 +3019,23 @@ export class CombatSimulation {
     const candidates = allCandidates.filter((candidate) => (
       candidate.id !== campaignRepair?.id && !excludedIds.has(candidate.id)
     ));
+    // Rarity-weighted draw, bent by luck/curse. This deliberately spends
+    // exactly one `random()` per offer, like the uniform draw it replaces —
+    // the RNG stream position is part of the deterministic replay digest, so
+    // changing *which* candidate is picked is safe but changing *how many*
+    // draws happen is not.
+    const luck = this.playerStats.luck;
+    const curse = this.playerStats.curse;
     while (offers.length < SCRAP_SHOP_OFFER_COUNT && candidates.length > 0) {
-      const index = Math.min(Math.floor(this.random() * candidates.length), candidates.length - 1);
+      const weights = candidates.map((candidate) => shopOfferDrawWeight(candidate.id, luck, curse));
+      const total = weights.reduce((sum, weight) => sum + weight, 0);
+      let roll = this.random() * total;
+      let index = 0;
+      while (index < candidates.length - 1) {
+        roll -= weights[index]!;
+        if (roll <= 0) break;
+        index += 1;
+      }
       offers.push(candidates.splice(index, 1)[0]!);
     }
     offers.sort((left, right) => Number(right.affordable) - Number(left.affordable));
@@ -2964,7 +3072,7 @@ export class CombatSimulation {
     });
     return {
       kind: "scrap-shop",
-      title: `SCRAP SHOP — ${this.securedScrap} SCRAP`,
+      title: `${shopProfileById(this.shopProfileId).name.toUpperCase()} — ${this.securedScrap} SCRAP`,
       options: offers,
       shopMode: "offers",
       shopLockedOfferId: this.shopLockedOfferId,
@@ -3082,8 +3190,9 @@ export class CombatSimulation {
     this.shopMode = "offers";
   }
 
-  private openScrapShopVisit(): PendingDecision {
+  private openScrapShopVisit(profileId: ShopProfileId = DEFAULT_SHOP_PROFILE_ID): PendingDecision {
     this.resetScrapShopVisit();
+    this.shopProfileId = profileId;
     return this.buildScrapShopDecision();
   }
 
@@ -3158,8 +3267,9 @@ export class CombatSimulation {
     const resolution = resolveFractionalProjectiles(weapon.stats.projectileCount, weapon.projectileCarry);
     weapon.projectileCarry = resolution.carry;
     const centre = (resolution.count - 1) / 2;
+    const spreadRadians = weapon.stats.spreadRadians * this.movingSpreadFactor();
     for (let index = 0; index < resolution.count; index += 1) {
-      const angle = baseAngle + (index - centre) * weapon.stats.spreadRadians;
+      const angle = baseAngle + (index - centre) * spreadRadians;
       const direction = { x: Math.cos(angle), y: Math.sin(angle) };
       const muzzlePosition = {
         x: anchor.x + direction.x * 0.55,
@@ -3572,6 +3682,7 @@ export class CombatSimulation {
       * (this.isBuffActive("overcharge") ? OVERCHARGE_ATTACK_SPEED_MULTIPLIER : 1)
       * (this.isBuffActive("last-stand-stimulant") ? LAST_STAND_STIMULANT_ATTACK_SPEED_MULTIPLIER : 1)
       * this.transformationModifiers.fireRateMultiplier
+      * (this.isBraced() ? BRACE_ATTACK_SPEED_MULTIPLIER : 1)
       * Math.max(0.1, 1 + this.playerStats.attackSpeedPercent / 100);
   }
 
@@ -3579,11 +3690,138 @@ export class CombatSimulation {
     return this.isBuffActive("uranium-core-rounds") ? URANIUM_CORE_ROUNDS_DAMAGE_MULTIPLIER : 1;
   }
 
-  /** Hunter Optics: elites are marked and take bonus direct/weak-point damage. */
+  /**
+   * Drives the two timed artifacts. Both were granting their modifier to
+   * nothing before this existed.
+   *
+   * Event Horizon Core arms the next impact every `implosionEverySeconds`.
+   * Last Bastion Protocol braces the weapons when health drops to critical, then
+   * sits on a long cooldown so it reads as an emergency, not a passive.
+   */
+  private updateArtifactTimers(deltaSeconds: number): void {
+    const implosionEvery = this.relicModifiers.implosionEverySeconds;
+    if (implosionEvery !== null && implosionEvery > 0) {
+      if (this.eventHorizonCoreArmed) {
+        // Stay armed until it is spent on an impact.
+      } else {
+        this.eventHorizonCoreCooldownSeconds -= deltaSeconds;
+        if (this.eventHorizonCoreCooldownSeconds <= 0) {
+          this.eventHorizonCoreArmed = true;
+          this.eventHorizonCoreCooldownSeconds = implosionEvery;
+        }
+      }
+    }
+
+    if (!this.relicModifiers.criticalHealthBraceFormation) return;
+    this.braceCooldownSeconds = Math.max(0, this.braceCooldownSeconds - deltaSeconds);
+    if (this.braceRemainingSeconds > 0) {
+      this.braceRemainingSeconds = Math.max(0, this.braceRemainingSeconds - deltaSeconds);
+      return;
+    }
+    const critical = this.playerHealth / Math.max(1, this.playerMaxHealth) <= BRACE_HEALTH_FRACTION;
+    if (critical && this.braceCooldownSeconds <= 0) {
+      this.braceRemainingSeconds = BRACE_DURATION_SECONDS;
+      this.braceCooldownSeconds = BRACE_COOLDOWN_SECONDS;
+      this.frameEvents.push({ type: "brace-formation", position: { ...this.playerPosition } });
+    }
+  }
+
+  /** True while Last Bastion Protocol's brace window is open. */
+  private isBraced(): boolean {
+    return this.braceRemainingSeconds > 0;
+  }
+
+  /**
+   * Broodbreaker Seal: a destroyed egg bursts, damaging nearby aliens. Called
+   * from the defeat path so it fires when the player kills the egg, not when it
+   * hatches on its own.
+   */
+  private applyBroodbreakerBurst(egg: EnemyState): void {
+    const damage = this.relicModifiers.eggDeathDamage;
+    if (damage <= 0) return;
+    for (const nearby of this.enemies) {
+      if (nearby.dead || nearby.id === egg.id) continue;
+      if (distance(nearby.position, egg.position) > BROODBREAKER_BURST_RADIUS_METRES) continue;
+      this.damageEnemy(nearby, damage, "physical");
+    }
+    this.frameEvents.push({
+      type: "explosion",
+      position: { ...egg.position },
+      radiusMetres: BROODBREAKER_BURST_RADIUS_METRES,
+    });
+  }
+
+  /**
+   * Field Lattice: collecting health chills nearby aliens. Uses the existing
+   * `freeze` status (0.35x speed) rather than inventing a second slow, and
+   * respects `canStatusApply` so it can't stun-lock a mini-boss.
+   */
+  private applyHealthPickupSlowPulse(): void {
+    if (!this.relicModifiers.healthPickupSlowPulse) return;
+    for (const enemy of this.enemies) {
+      if (enemy.dead) continue;
+      if (distance(enemy.position, this.playerPosition) > FIELD_LATTICE_PULSE_RADIUS_METRES) continue;
+      if (!this.canStatusApply(enemy, "freeze")) continue;
+      enemy.statusTimers.freeze = STATUS_RULES.freeze.durationSeconds;
+      this.frameEvents.push({
+        type: "status-applied",
+        position: { ...enemy.position },
+        status: "freeze",
+      });
+    }
+  }
+
+  /**
+   * Salvaged Capacitor: every Nth non-melee hit arcs a small chain to another
+   * nearby alien. Reuses the `chain-arc` event the Tesla Coil already drives, so
+   * the effect is visible with no new rendering.
+   */
+  private tickSalvagedCapacitorArc(source: EnemyState, weaponId: WeaponId): void {
+    const every = this.relicModifiers.chainArcEveryNthAttack;
+    if (every === null || every <= 0) return;
+    this.relicArcAttackCount += 1;
+    if (this.relicArcAttackCount % every !== 0) return;
+
+    let nearest: EnemyState | null = null;
+    let nearestDistance = RELIC_ARC_RADIUS_METRES;
+    for (const candidate of this.enemies) {
+      if (candidate.dead || candidate.id === source.id) continue;
+      const candidateDistance = distance(source.position, candidate.position);
+      if (candidateDistance < nearestDistance) {
+        nearest = candidate;
+        nearestDistance = candidateDistance;
+      }
+    }
+    if (!nearest) return;
+    this.frameEvents.push({
+      type: "chain-arc",
+      from: { ...source.position },
+      to: { ...nearest.position },
+      weaponId,
+    });
+    this.damageEnemy(nearest, this.relicModifiers.chainArcDamage, "shock", weaponId);
+  }
+
+  /**
+   * Stabiliser Gyro: tighter weapon spread while the player is on the move.
+   * `stationarySeconds` resets to 0 on any frame with movement input, so it
+   * doubles as the "moving right now" signal.
+   */
+  private movingSpreadFactor(): number {
+    const moving = this.stationarySeconds === 0 ? this.relicModifiers.movingSpreadMultiplier : 1;
+    // Last Bastion Protocol braces the rack into a tighter formation.
+    return moving * (this.isBraced() ? BRACE_SPREAD_MULTIPLIER : 1);
+  }
+
+  /**
+   * Hunter Optics: elites are marked and take bonus direct/weak-point damage.
+   * Hunter's Beacon marks them without needing the buff active — that relic was
+   * granting `eliteMarkedEarlier` to nothing before this read it.
+   */
   private eliteMarkDamageMultiplier(enemy: EnemyState): number {
-    return this.isBuffActive("hunter-optics") && enemy.rank === "elite"
-      ? HUNTER_OPTICS_ELITE_DAMAGE_MULTIPLIER
-      : 1;
+    if (enemy.rank !== "elite") return 1;
+    const marked = this.isBuffActive("hunter-optics") || this.relicModifiers.eliteMarkedEarlier;
+    return marked ? HUNTER_OPTICS_ELITE_DAMAGE_MULTIPLIER : 1;
   }
 
   private weaponDamageMultiplier(stats: WeaponRuntimeStats): number {
@@ -3825,6 +4063,7 @@ export class CombatSimulation {
         );
         if (projectile.weaponId === "injector-carbine") this.registerInjectorHit();
         if (damageMultiplier >= 1) this.applyProjectileKnockback(projectile, enemy);
+        this.tickSalvagedCapacitorArc(enemy, projectile.weaponId);
         this.resolveProjectileChain(projectile, enemy);
 
         this.explodeProjectile(projectile, enemy.position, enemy.id);
@@ -3874,6 +4113,20 @@ export class CombatSimulation {
     position: Vector2Data,
     directEnemyId?: number,
   ): void {
+    // Event Horizon Core: every Nth second the next impact becomes a pull-and-
+    // implode event instead of an ordinary blast, reusing the weapon's own
+    // gravity-well machinery rather than a parallel implementation.
+    if (this.eventHorizonCoreArmed && !projectile.spawnsGravityWellOnImpact) {
+      this.eventHorizonCoreArmed = false;
+      this.spawnEventHorizonField({
+        ...projectile,
+        pullFieldDurationSeconds: ARTIFACT_IMPLOSION_DURATION_SECONDS,
+        pullStrengthMetresPerSecond: ARTIFACT_IMPLOSION_PULL_SPEED,
+        pullRadiusMetres: ARTIFACT_IMPLOSION_PULL_RADIUS_METRES,
+        explosionRadiusMetres: Math.max(projectile.explosionRadiusMetres, ARTIFACT_IMPLOSION_RADIUS_METRES),
+      }, position);
+      return;
+    }
     if (projectile.spawnsGravityWellOnImpact) {
       this.spawnEventHorizonField(projectile, position);
       return;
@@ -4447,6 +4700,18 @@ export class CombatSimulation {
 
   private updateEggCluster(enemy: EnemyState, deltaSeconds: number): void {
     enemy.hatchRemainingSeconds -= deltaSeconds;
+
+    // Broodbreaker Seal: the egg is held through one final crack window instead
+    // of hatching, giving the player a bounded chance to destroy it. One stall
+    // per egg, so it delays the hatch rather than preventing it forever.
+    if (
+      enemy.hatchRemainingSeconds <= 0
+      && this.relicModifiers.preventHatchDuringCrack
+      && !enemy.broodbreakerStalled
+    ) {
+      enemy.broodbreakerStalled = true;
+      enemy.hatchRemainingSeconds = BROODBREAKER_CRACK_SECONDS;
+    }
 
     if (enemy.hatchRemainingSeconds > 0) {
       return;
@@ -7506,6 +7771,7 @@ export class CombatSimulation {
         this.playerHealth += amount;
         this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount });
       }
+      this.applyHealthPickupSlowPulse();
       return;
     }
     this.activeBuffs.set(
@@ -7731,6 +7997,9 @@ export class CombatSimulation {
     }
 
     enemy.dead = true;
+    if (enemy.type === "egg-cluster") {
+      this.applyBroodbreakerBurst(enemy);
+    }
     if (enemy.type === "scrap-skitterer") {
       const wreckId = this.nextId();
       this.groundHazards.push({
@@ -7837,11 +8106,13 @@ export class CombatSimulation {
       // Phase 5: rank payouts scale with depth now that the fights do. Flat
       // rewards made a late mini-boss worth the same as the first one.
       this.secureScrap(rankDefeatScrap(40, this.waveIndex), "mini-boss-defeat", enemy.position);
+      this.grantWeightedItem(enemy.position);
     } else if (enemy.eliteKind) {
       this.secureScrap(rankDefeatScrap(15, this.waveIndex), "elite-defeat", enemy.position);
     } else if (enemy.rank === "boss") {
       // The boss previously fell through every reward branch and paid nothing.
       this.secureScrap(rankDefeatScrap(80, this.waveIndex), "boss-defeat", enemy.position);
+      this.grantWeightedItem(enemy.position);
     } else if (enemy.type === "quillback" || enemy.type === "spinewheel" || enemy.type === "ripper") {
       this.secureScrap(2, "specialist-defeat", enemy.position);
     } else if (enemy.rank === "standard" && this.random() < ORDINARY_SCRAP_DROP_CHANCE) {
@@ -8091,7 +8362,9 @@ export class CombatSimulation {
         && !this.expeditionPostEncounterShopQueued
       ) {
         this.expeditionPostEncounterShopQueued = true;
-        this.decisionQueue.push(this.openScrapShopVisit());
+        // A liberation node's fight was the price of entry — clearing it opens
+        // that location's themed stock instead of the plain scrap market.
+        this.decisionQueue.push(this.openScrapShopVisit(encounter.shopProfileId ?? DEFAULT_SHOP_PROFILE_ID));
         return;
       }
       this.status = "victory";
@@ -8199,6 +8472,10 @@ export class CombatSimulation {
       case "combat":
       case "elite":
       case "mini-boss":
+      // A liberation node is an ordinary fight that happens to open a themed
+      // shop when it is won — the fight has to actually start, or the node
+      // resolves for free.
+      case "liberation":
       case "boss": {
         this.beginExpeditionWave(0);
         break;
@@ -8211,6 +8488,11 @@ export class CombatSimulation {
         if (decision) this.decisionQueue.push(decision);
         break;
       }
+      case "shrine":
+      case "event":
+        // Resolved by `ExpeditionEventScene`; combat only sees these via the
+        // ambush outcome, which arrives as a synthesized `combat` encounter.
+        break;
     }
   }
 

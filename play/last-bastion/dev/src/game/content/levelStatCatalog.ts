@@ -56,6 +56,7 @@ export const LEVEL_STAT_CARDS: readonly LevelStatCard[] = Object.freeze([
   card("lvl-move-speed", "Servo Tuning", "moveSpeedPercent", 5, "percent", "utility"),
   card("lvl-harvesting", "Salvage Training", "harvestingPercent", 10, "percent", "utility"),
   card("lvl-luck", "Scavenger's Eye", "luck", 5, "flat", "utility"),
+  // Authored but deliberately NOT offered — see LEVEL_STAT_ORDER below.
   card("lvl-engineering", "Field Engineering", "engineering", 5, "flat", "utility"),
 ]);
 
@@ -63,13 +64,19 @@ export const LEVEL_STAT_CARDS: readonly LevelStatCard[] = Object.freeze([
  * The scan order level-ups walk. Interleaved across categories so consecutive
  * levels never offer three cards from the same group — the same trick
  * `UPGRADE_ORDER` uses.
+ *
+ * **Every id here must grant a stat something actually reads.** `lvl-engineering`
+ * is excluded for exactly that reason: `engineering` has no consumer in combat
+ * (the only structures in the game are Assembly Prime's enemy-side drones), so
+ * offering it let a player spend a level-up on nothing. Its definition stays
+ * above so re-enabling it is a one-line change once an engineering item exists.
  */
 export const LEVEL_STAT_ORDER: readonly string[] = Object.freeze([
   "lvl-damage", "lvl-max-hp", "lvl-move-speed",
   "lvl-crit-chance", "lvl-armour", "lvl-harvesting",
   "lvl-ranged", "lvl-dodge", "lvl-luck",
   "lvl-melee", "lvl-regen", "lvl-attack-speed",
-  "lvl-elemental", "lvl-lifesteal", "lvl-engineering",
+  "lvl-elemental", "lvl-lifesteal",
 ]);
 
 const CARD_BY_ID: ReadonlyMap<string, LevelStatCard> = new Map(

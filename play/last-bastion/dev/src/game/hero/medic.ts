@@ -20,7 +20,6 @@ export const MEDIC = Object.freeze({
     slowResistance: 0.1,
     attackSpeedMultiplier: 1,
     hitInvulnerabilitySeconds: 0.65,
-    mineralFindPercent: 100,
   },
   weaponProficiencies: { light: 0, medium: 0, heavy: 0, unique: 0 },
   levelGrowth: {

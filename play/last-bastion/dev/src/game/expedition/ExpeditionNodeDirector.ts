@@ -42,6 +42,12 @@ export function buildExpeditionWavePlan(
   });
 
   if (kind === "combat") return Object.freeze(combat.map(ordinary));
+  if (kind === "liberation") {
+    // Free the location, then trade. One ordinary wave at 0.9 of the node's top
+    // budget — enough to be a real fight, short enough that the shop is the
+    // point of the node rather than the reward for a slog.
+    return Object.freeze([ordinary(Math.round(combat[combat.length - 1]! * 0.9))]);
+  }
   if (kind === "elite") {
     // Phase 5: denser escorts. A rank fight should feel like a fight for the
     // arena, not a duel with bystanders.
