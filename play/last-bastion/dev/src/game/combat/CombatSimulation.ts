@@ -656,6 +656,8 @@ export interface CombatSnapshot {
   transformation: TransformationAffinityState;
   /** Run-long reward items carried through combat so they survive a node. */
   relicIds: readonly RelicId[];
+  /** Owned shop items (Brotato overhaul), carried so purchases survive a node. */
+  ownedItemIds: readonly string[];
   equippedArtifactId: ArtifactId | null;
   rewardMaxHealthBonus: number;
   rewardWeaponSlotBonus: number;
@@ -1117,6 +1119,9 @@ export const SCRAP_SHOP_PRICES = Object.freeze({
   armourRetrofit: 50,
   weapon: 60,
 } as const);
+/** Offers shown per shop visit (Brotato overhaul raised this from 3 to 4). */
+export const SCRAP_SHOP_OFFER_COUNT = 4;
+
 export function scrapShopRerollCost(depth: number): number {
   return 10 + Math.max(1, Math.floor(depth)) * 5;
 }
@@ -1209,7 +1214,18 @@ export class CombatSimulation {
   private readonly transformation: TransformationAffinityState;
   private readonly transformationModifiers: TransformationRunModifiers;
   /** Unified resolved player stat vector (Brotato overhaul); read for damage, crit, and economy. */
-  private readonly playerStats: PlayerStatBlock;
+  /**
+   * Unified resolved stat vector. Mutable because shop purchases change it
+   * mid-run: `refreshPlayerStats()` re-resolves it and reconciles the two stats
+   * that are applied once rather than read live (armour, max health).
+   */
+  private playerStats: PlayerStatBlock;
+  /** Owned shop item ids; the source of truth folded into `playerStats`. */
+  private ownedItemIds: string[] = [];
+  /** Item armour already added to `defence.armour`, so refreshes apply only the delta. */
+  private appliedItemArmour = 0;
+  /** Raw non-item stat grants carried on the build (shrine grants, tests). */
+  private readonly baseItemStats: Partial<PlayerStatBlock>;
   /** Run-long reward items (Task 94), resolved into combat effects and carried through the snapshot. */
   private readonly relicModifiers: RelicRunModifiers;
   private readonly ownedRelicIds: readonly RelicId[];
@@ -1263,6 +1279,8 @@ export class CombatSimulation {
   private decisionQueue: PendingDecision[] = [];
   private shopOffers: DecisionOption[] | null = null;
   private shopLockedOfferId: string | null = null;
+  /** Offers banned from restocking for the rest of the run (Brotato's ban verb). */
+  private readonly shopBannedIds = new Set<string>();
   private shopRerollUsed = false;
   private shopMode: "offers" | "manage" | "sell" = "offers";
   private randomState: number;
@@ -1318,12 +1336,9 @@ export class CombatSimulation {
     this.relicModifiers = bonusLifestealPerKill > 0
       ? { ...resolvedRelicModifiers, lifestealPerKill: resolvedRelicModifiers.lifestealPerKill + bonusLifestealPerKill }
       : resolvedRelicModifiers;
-    this.playerStats = resolvePlayerStats({
-      perk: this.perkModifiers,
-      relic: this.relicModifiers,
-      transformation: this.transformationModifiers,
-      itemStats: options.startingBuild?.itemStats,
-    });
+    this.baseItemStats = { ...(options.startingBuild?.itemStats ?? {}) };
+    this.ownedItemIds = [...(options.startingBuild?.ownedItemIds ?? [])];
+    this.playerStats = this.resolveCurrentPlayerStats();
     this.securedScrap = Math.max(0, Math.floor(
       options.startingBuild?.scrap ?? options.startingScrap ?? (this.scenario === "scrap-shop" ? 150 : 0),
     ));
@@ -1388,6 +1403,7 @@ export class CombatSimulation {
     // above resolved. `rewardAdjustedMaxHealth` already folded item max-HP stats
     // into `playerMaxHealth`, so only the transformation multiplier lands here.
     this.defence.armour += this.transformationModifiers.armourBonus + this.playerStats.armourFlat;
+    this.appliedItemArmour = this.playerStats.armourFlat;
     this.defence.maxShield += this.transformationModifiers.maxShieldBonus;
     this.playerMaxHealth = Math.max(3, Math.round(this.playerMaxHealth * this.transformationModifiers.maxHealthMultiplier));
     this.playerHealth = Math.min(this.playerHealth, this.playerMaxHealth);
@@ -1991,6 +2007,18 @@ export class CombatSimulation {
           const offerId = optionId.slice("shop-lock:".length);
           this.shopLockedOfferId = this.shopLockedOfferId === offerId ? null : offerId;
           this.decisionQueue.unshift(this.buildScrapShopDecision());
+        } else if (optionId.startsWith("shop-ban:")) {
+          const offerId = optionId.slice("shop-ban:".length);
+          this.shopBannedIds.add(offerId);
+          if (this.shopLockedOfferId === offerId) this.shopLockedOfferId = null;
+          // Replace the banned offer in the current rack immediately, free of charge.
+          const excluded = new Set(this.shopOffers?.map((offer) => offer.id) ?? []);
+          const replacement = this.drawScrapShopOffers(excluded)[0] ?? null;
+          this.shopOffers = (this.shopOffers ?? [])
+            .filter((offer) => offer.id !== offerId)
+            .concat(replacement ? [replacement] : []);
+          this.shopMode = "offers";
+          this.decisionQueue.unshift(this.buildScrapShopDecision());
         } else if (optionId === "shop-reroll") {
           const cost = this.currentShopRerollCost();
           if (this.shopRerollUsed || cost > this.securedScrap) {
@@ -2059,6 +2087,7 @@ export class CombatSimulation {
       activePerkId: this.activePerkId,
       transformation: cloneTransformationAffinityState(this.transformation),
       relicIds: [...this.ownedRelicIds],
+      ownedItemIds: [...this.ownedItemIds],
       equippedArtifactId: this.equippedArtifactId,
       rewardMaxHealthBonus: this.rewardMaxHealthBonus,
       rewardWeaponSlotBonus: this.rewardWeaponSlotBonus,
@@ -2307,6 +2336,60 @@ export class CombatSimulation {
         this.defence.maxShield += 1.5;
         break;
     }
+  }
+
+  /**
+   * Grants a catalogue item outside the shop — the path Shrine/Event rewards and
+   * elite caches use to hand out items. Returns false for unknown ids. Stats take
+   * effect immediately via `refreshPlayerStats`.
+   */
+  grantItem(itemId: string): boolean {
+    if (!itemById(itemId)) return false;
+    this.ownedItemIds.push(itemId);
+    this.refreshPlayerStats();
+    return true;
+  }
+
+  /** Folds the build's raw stat grants plus every owned shop item into one resolved vector. */
+  private resolveCurrentPlayerStats(): PlayerStatBlock {
+    const owned = foldItemStats(this.ownedItemIds);
+    const combined: Partial<PlayerStatBlock> = { ...this.baseItemStats };
+    for (const key of Object.keys(owned) as (keyof PlayerStatBlock)[]) {
+      const value = owned[key];
+      if (typeof value === "number") combined[key] = (combined[key] ?? 0) + value;
+    }
+    return resolvePlayerStats({
+      perk: this.perkModifiers,
+      relic: this.relicModifiers,
+      transformation: this.transformationModifiers,
+      itemStats: combined,
+    });
+  }
+
+  /**
+   * Re-resolves the stat vector after a mid-run purchase. Most stats are read
+   * live every frame, so re-resolving is enough — but armour and max health are
+   * applied once (constructor / level-up), so they are reconciled here: armour by
+   * its delta, max health by recomputing the ceiling. Gained max HP also heals for
+   * the same amount, so a +max-HP buy feels immediately useful.
+   */
+  private refreshPlayerStats(): void {
+    this.playerStats = this.resolveCurrentPlayerStats();
+
+    const armourDelta = this.playerStats.armourFlat - this.appliedItemArmour;
+    if (armourDelta !== 0) {
+      this.defence.armour = Math.max(0, this.defence.armour + armourDelta);
+      this.appliedItemArmour = this.playerStats.armourFlat;
+    }
+
+    const previousMax = this.playerMaxHealth;
+    const growth = heroGrowthAtLevel(this.hero, this.level);
+    this.playerMaxHealth = Math.max(3, Math.round(
+      this.rewardAdjustedMaxHealth(growth.maxHealthBonus) * this.transformationModifiers.maxHealthMultiplier,
+    ));
+    const gained = this.playerMaxHealth - previousMax;
+    if (gained > 0) this.playerHealth += gained;
+    this.playerHealth = Math.max(0.1, Math.min(this.playerHealth, this.playerMaxHealth));
   }
 
   /**
@@ -2620,6 +2703,8 @@ export class CombatSimulation {
   private buildScrapShopCandidates(): DecisionOption[] {
     const candidates: DecisionOption[] = [];
     const add = (option: Omit<DecisionOption, "affordable"> & { cost: number }): void => {
+      // Banned stock never returns for the rest of the run (Brotato's ban verb).
+      if (this.shopBannedIds.has(option.id)) return;
       candidates.push({ ...option, affordable: option.cost <= this.securedScrap });
     };
 
@@ -2670,7 +2755,23 @@ export class CombatSimulation {
       }
     }
 
+    // Shop items (Brotato overhaul). Every catalogue item is a candidate — items
+    // stack, so nothing is filtered by ownership; rarity and price do the gating.
+    for (const definition of ITEM_CATALOG) {
+      add({
+        id: `shop-item:${definition.id}`,
+        name: definition.name,
+        description: `${definition.description} (${definition.rarity})`,
+        cost: this.itemPrice(definition.basePrice),
+      });
+    }
+
     return candidates;
+  }
+
+  /** Item prices drift up with depth so late shops stay meaningful purchases. */
+  private itemPrice(basePrice: number): number {
+    return Math.round(basePrice * (1 + Math.max(0, this.waveIndex) * 0.08));
   }
 
   private drawScrapShopOffers(excludedIds: ReadonlySet<string> = new Set()): DecisionOption[] {
@@ -2685,7 +2786,7 @@ export class CombatSimulation {
     const candidates = allCandidates.filter((candidate) => (
       candidate.id !== campaignRepair?.id && !excludedIds.has(candidate.id)
     ));
-    while (offers.length < 3 && candidates.length > 0) {
+    while (offers.length < SCRAP_SHOP_OFFER_COUNT && candidates.length > 0) {
       const index = Math.min(Math.floor(this.random() * candidates.length), candidates.length - 1);
       offers.push(candidates.splice(index, 1)[0]!);
     }
@@ -2750,6 +2851,14 @@ export class CombatSimulation {
       cost: rerollCost,
       affordable: !this.shopRerollUsed && canReroll && rerollCost <= this.securedScrap,
     });
+    for (const [index, offer] of this.shopOffers!.entries()) {
+      options.push({
+        id: `shop-ban:${offer.id}`,
+        name: `Ban Offer ${index + 1}`,
+        description: `${offer.name}: never restocks for the rest of this run.`,
+        affordable: true,
+      });
+    }
     options.push({ id: "shop-sell-menu", name: "Sell Weapon", description: "Recover 50% of its total shop value.", affordable: true });
     options.push({ id: "shop-back", name: "Back to Offers", description: "Return to the salvage counter.", affordable: true });
     return {
@@ -2798,7 +2907,8 @@ export class CombatSimulation {
   private rerollScrapShopOffers(): void {
     const locked = this.shopOffers?.find((offer) => offer.id === this.shopLockedOfferId) ?? null;
     const excluded = new Set(this.shopOffers?.map((offer) => offer.id) ?? []);
-    const replacements = this.drawScrapShopOffers(excluded).slice(0, locked ? 2 : 3);
+    const replacements = this.drawScrapShopOffers(excluded)
+      .slice(0, locked ? SCRAP_SHOP_OFFER_COUNT - 1 : SCRAP_SHOP_OFFER_COUNT);
     this.shopOffers = locked ? [locked, ...replacements] : replacements;
   }
 
@@ -2863,6 +2973,14 @@ export class CombatSimulation {
       const weaponId = optionId.slice("shop-weapon:".length) as WeaponId;
       if (weaponId in WEAPON_CATALOG) {
         this.addWeapon(weaponId);
+      }
+      return;
+    }
+    if (optionId.startsWith("shop-item:")) {
+      const itemId = optionId.slice("shop-item:".length);
+      if (itemById(itemId)) {
+        this.ownedItemIds.push(itemId);
+        this.refreshPlayerStats();
       }
     }
   }

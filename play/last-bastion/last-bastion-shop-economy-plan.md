@@ -108,6 +108,16 @@ single source of truth for *new* stats today, not yet the *only* source for old 
   system already exists), sell/recycle for scrap.
 - Relics/artifacts become the rare behavioural tier of shop stock, mechanically unchanged.
 
+**Status — Phase 2 functionally complete 24 July 2026** (increments A + B, see log). Landed:
+`content/itemCatalog.ts` with **27 items** across 5 rarities (10 carrying real downsides — Glass Cannon,
+Sniper Scope, Bulwark Plating, Overclock Module, the cursed Blood Pact…), `foldItemStats`, purchasable
+`shop-item:<id>` offers priced by rarity and drifting +8%/wave of depth, `ownedItemIds` persisted on both
+the run build and combat snapshot, `refreshPlayerStats()` making purchases take effect mid-run (armour
+reconciled by **delta**, max HP recomputed and healing for the gain), `grantItem()` as the reward path for
+events/caches, offer count **3 → 4** (`SCRAP_SHOP_OFFER_COUNT`), and the **ban** verb completing
+lock/reroll/ban/sell parity. **800 tests pass.** Deferred: behavioural (non-stat) items, and luck/curse
+actually bending rarity draws — the rarity weighting itself is still uniform-random over candidates.
+
 ## Phase 3 — the loop + level-ups on the shared vocabulary
 
 - **Shop after every cleared node** (decision locked): after any combat node resolves, auto-open the

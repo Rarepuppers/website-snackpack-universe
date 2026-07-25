@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { PlayerIntent } from "../input/PlayerIntent";
-import { CombatSimulation } from "./CombatSimulation";
+import { CombatSimulation, SCRAP_SHOP_OFFER_COUNT } from "./CombatSimulation";
 
 const IDLE: PlayerIntent = {
   move: { x: 0, y: 0 },
@@ -36,20 +36,21 @@ function reachesWaveThreeWithAurum(seed: number): boolean {
 }
 
 describe("Scrap Shop behavior gate", () => {
-  it("draws three distinct seeded offers plus management and leave actions", () => {
+  it("draws four distinct seeded offers plus management and leave actions", () => {
     const first = new CombatSimulation({ scenario: "scrap-shop", seed: 37 }).snapshot();
     const second = new CombatSimulation({ scenario: "scrap-shop", seed: 37 }).snapshot();
 
     expect(first.pendingDecision?.kind).toBe("scrap-shop");
     expect(first.pendingDecision?.title).toBe("SCRAP SHOP — 150 SCRAP");
-    expect(first.pendingDecision?.options).toHaveLength(5);
+    // Brotato overhaul: 4 offers (was 3) + manage + leave.
+    expect(first.pendingDecision?.options).toHaveLength(SCRAP_SHOP_OFFER_COUNT + 2);
     expect(first.pendingDecision?.options.map((option) => option.id))
       .toEqual(second.pendingDecision?.options.map((option) => option.id));
-    const offers = first.pendingDecision!.options.slice(0, 3);
-    expect(new Set(offers.map((offer) => offer.id)).size).toBe(3);
+    const offers = first.pendingDecision!.options.slice(0, SCRAP_SHOP_OFFER_COUNT);
+    expect(new Set(offers.map((offer) => offer.id)).size).toBe(SCRAP_SHOP_OFFER_COUNT);
     expect(offers.every((offer) => (offer.cost ?? 0) > 0 && offer.affordable)).toBe(true);
-    expect(first.pendingDecision?.options[3]?.id).toBe("shop-manage");
-    expect(first.pendingDecision?.options[4]?.id).toBe("shop-leave");
+    expect(first.pendingDecision?.options[SCRAP_SHOP_OFFER_COUNT]?.id).toBe("shop-manage");
+    expect(first.pendingDecision?.options[SCRAP_SHOP_OFFER_COUNT + 1]?.id).toBe("shop-leave");
   });
 
   it("rejects unaffordable purchases without closing or mutating the shop", () => {

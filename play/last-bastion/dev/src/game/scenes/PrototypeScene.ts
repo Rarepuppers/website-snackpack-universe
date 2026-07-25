@@ -4135,6 +4135,7 @@ function expeditionBuildFromSnapshot(snapshot: CombatSnapshot): ExpeditionBuildS
     })),
     transformation: cloneTransformationAffinityState(snapshot.transformation),
     relicIds: [...snapshot.relicIds],
+    ownedItemIds: [...snapshot.ownedItemIds],
     equippedArtifactId: snapshot.equippedArtifactId,
     maxHealthBonus: snapshot.rewardMaxHealthBonus,
     weaponSlotBonus: snapshot.rewardWeaponSlotBonus,
@@ -4234,6 +4235,9 @@ function scrapShopOfferFrame(optionId: string): number {
   if (optionId === "shop-armour-retrofit") return 2;
   if (optionId.startsWith("shop-upgrade:")) return 3;
   if (optionId.startsWith("shop-weapon:")) return 4;
+  // Shop items (Brotato overhaul) share the generic frame 5 until per-rarity item
+  // tile art lands — the Batch atlas only has the six original offer frames.
+  if (optionId.startsWith("shop-item:")) return 5;
   return 5;
 }
 
