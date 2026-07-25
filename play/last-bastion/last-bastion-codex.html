@@ -452,7 +452,7 @@ const WEAPONS = [
     text: "Thrown charge that pulls a crowd into one point, then removes that point." },
 
   /* ── Unique ────────────────────────────── */
-  { id: "wpn-event-horizon", name: "Event Horizon", glyph: "◉", cls: "unique", family: "void", status: "designed", tier: "★",
+  { id: "wpn-event-horizon", name: "Event Horizon", glyph: "◉", cls: "unique", family: "void", status: "live", tier: "★",
     stats: { Damage: "12 implosion → 4.2 edge", Cadence: "16s", Range: "14m", Type: "Void", Radius: "3.5m" },
     text: "Slow gravitic orbs pull enemies inward before bursting. Devastating into a crowd, wasted on an empty lane." },
   { id: "wpn-nestbreaker", name: "Nestbreaker", glyph: "⊘", cls: "unique", family: "explosive", status: "concept", tier: "★",
@@ -671,16 +671,44 @@ const POWERUPS = [
 ];
 
 const RELICS = [
-  { id: "rel-stabiliser-gyro", name: "Stabiliser Gyro", glyph: "◍", status: "designed", kind: "Relic", text: "Spread narrows while moving. Rewards the kiting the arena demands." },
-  { id: "rel-salvaged-capacitor", name: "Salvaged Capacitor", glyph: "⚡", status: "designed", kind: "Relic", text: "Every fifth non-melee attack gains a small chain arc." },
-  { id: "rel-blast-baffle", name: "Blast Baffle", glyph: "✺", status: "designed", kind: "Relic", text: "Reduced self/explosive damage; slightly larger explosions." },
-  { id: "rel-hunters-beacon", name: "Hunter's Beacon", glyph: "◉", status: "designed", kind: "Relic", text: "Elites are marked earlier and take bonus damage after telegraphed misses." },
-  { id: "rel-field-lattice", name: "Field Lattice", glyph: "◇", status: "designed", kind: "Relic", text: "Picking up health creates a short slowing pulse." },
-  { id: "rel-kinetic-greaves", name: "Kinetic Greaves", glyph: "≫", status: "designed", kind: "Relic", text: "Longer evasive distance, slightly longer recovery." },
-  { id: "art-event-horizon-core", name: "Event Horizon Core", glyph: "●", status: "designed", kind: "Artifact", text: "Periodically turns the next projectile impact into a pull-and-implode event." },
-  { id: "art-broodbreaker-seal", name: "Broodbreaker Seal", glyph: "⊘", status: "designed", kind: "Artifact", text: "Destroyed eggs damage nearby aliens and cannot hatch during their final crack window." },
-  { id: "art-last-bastion-protocol", name: "Last Bastion Protocol", glyph: "▣", status: "designed", kind: "Artifact", text: "At critical health, weapons brace into a tighter, faster formation. Long cooldown." },
+  { id: "rel-stabiliser-gyro", name: "Stabiliser Gyro", glyph: "◍", status: "live", kind: "Relic", text: "Spread narrows while moving. Rewards the kiting the arena demands." },
+  { id: "rel-salvaged-capacitor", name: "Salvaged Capacitor", glyph: "⚡", status: "live", kind: "Relic", text: "Every fifth non-melee attack gains a small chain arc." },
+  { id: "rel-blast-baffle", name: "Blast Baffle", glyph: "✺", status: "live", kind: "Relic", text: "Reduced self/explosive damage; slightly larger explosions." },
+  { id: "rel-hunters-beacon", name: "Hunter's Beacon", glyph: "◉", status: "live", kind: "Relic", text: "Elites are marked earlier and take bonus damage after telegraphed misses." },
+  { id: "rel-field-lattice", name: "Field Lattice", glyph: "◇", status: "live", kind: "Relic", text: "Picking up health creates a short slowing pulse." },
+  { id: "rel-kinetic-greaves", name: "Kinetic Greaves", glyph: "≫", status: "live", kind: "Relic", text: "Longer evasive distance, slightly longer recovery." },
+  { id: "art-event-horizon-core", name: "Event Horizon Core", glyph: "●", status: "live", kind: "Artifact", text: "Periodically turns the next projectile impact into a pull-and-implode event." },
+  { id: "art-broodbreaker-seal", name: "Broodbreaker Seal", glyph: "⊘", status: "live", kind: "Artifact", text: "Destroyed eggs damage nearby aliens and cannot hatch during their final crack window." },
+  { id: "art-scavengers-manifest", name: "Scavenger's Manifest", glyph: "❖", status: "live", kind: "Artifact", text: "Doubles the Scrap you collect. The plainest artifact in the game and, with a shop after every node, quietly one of the strongest." },
+  { id: "art-symbiote-heart", name: "Symbiote Heart", glyph: "♥", status: "live", kind: "Artifact", text: "Every kill returns a sliver of health. Turns a crowded arena from a threat into a supply line." },
+  { id: "art-berserkers-chip", name: "Berserker's Chip", glyph: "▲", status: "live", kind: "Artifact", text: "The lower your health, the harder you hit — up to +50% at critical. Pairs with anything that keeps you alive at the bottom." },
+  { id: "art-aegis-reactor", name: "Aegis Reactor", glyph: "◈", status: "live", kind: "Artifact", text: "Your shield recharges faster and starts sooner after a hit. Rewards disengaging instead of trading." },
+  { id: "art-last-bastion-protocol", name: "Last Bastion Protocol", glyph: "▣", status: "live", kind: "Artifact", text: "At critical health, weapons brace into a tighter, faster formation. Long cooldown." },
 ];
+
+/* ── Phase 4 weapons: implemented and tested, held out of the drop pool
+      pending their art batch (flip HELD_WEAPONS_IN_POOL in weaponCatalog.ts). ── */
+const HELD_WEAPONS = [
+  { id: "wpn-railspike", name: "Railspike", glyph: "↑", cls: "heavy", family: "ballistic", status: "live", tier: "II",
+    stats: { Damage: "9", Cadence: "3.2s", Range: "20m", Type: "Physical", Pierce: "6" },
+    text: "A charged lance that spears an entire lane. One shot, one corridor, and a long wait to do it again." },
+  { id: "wpn-seeker-swarm", name: "Seeker Swarm", glyph: "∴", cls: "light", family: "explosive", status: "live", tier: "II",
+    stats: { Damage: "1.4 × 3", Cadence: "1.1s", Range: "12m", Type: "Physical", Homing: "5 rad/s" },
+    text: "Three micro-missiles that curve onto the nearest target. Aims itself, so it fires while you concentrate on not dying." },
+  { id: "wpn-cryo-lance", name: "Cryo Lance", glyph: "❄", cls: "medium", family: "elemental", status: "live", tier: "II",
+    stats: { Damage: "3/s beam", Cadence: "continuous", Range: "6m", Type: "Cryo", Cone: "0.16 rad" },
+    text: "A narrow sustained beam that freezes whatever it is held on. Precision at the cost of everything either side of it." },
+  { id: "wpn-tesla-coil", name: "Tesla Coil", glyph: "⚡", cls: "light", family: "energy", status: "live", tier: "II",
+    stats: { Damage: "2", Cadence: "0.9s", Range: "4m", Type: "Shock", Chains: "2" },
+    text: "A passive orbiting coil that arcs Shock on its own schedule. It fights while you reload, reposition, or panic." },
+  { id: "wpn-flamethrower", name: "Flamethrower", glyph: "≈", cls: "heavy", family: "elemental", status: "live", tier: "II",
+    stats: { Damage: "5/s beam", Cadence: "continuous", Range: "3.2m", Type: "Fire", Cone: "0.9 rad" },
+    text: "A wide, short cone that sets a whole doorway alight. Devastating at knife range and useless a step beyond it." },
+  { id: "wpn-sawblade", name: "Sawblade", glyph: "✳", cls: "medium", family: "ballistic", status: "live", tier: "II",
+    stats: { Damage: "4/s contact", Cadence: "continuous", Range: "1.1m orbit", Type: "Physical" },
+    text: "A blade on a tight orbit that grinds anything that closes. Pure bodyguard — it never points where you are aiming." },
+];
+WEAPONS.push(...HELD_WEAPONS);
 
 const AMMO = [
   { id: "ammo-uranium-core", name: "Uranium-Core Rounds", glyph: "⋮", tint: TINT.ammo, status: "live", dur: "12s", text: "+25% direct ring-weapon damage. Refreshes rather than stacking; excludes ultimate, chains, explosions, and environmental damage." },

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { shouldWeaponFire, VERTICAL_SLICE_WEAPON_IDS, WEAPON_CATALOG, WEAPON_CHEST_POOL } from "./weaponCatalog";
+import { HELD_WEAPONS_IN_POOL, shouldWeaponFire, VERTICAL_SLICE_WEAPON_IDS, WEAPON_CATALOG, WEAPON_CHEST_POOL } from "./weaponCatalog";
 
 describe("weaponCatalog", () => {
   it("locks the three vertical-slice weapon families", () => {
@@ -9,38 +9,46 @@ describe("weaponCatalog", () => {
     expect(Object.keys(WEAPON_CATALOG)).toHaveLength(15);
   });
 
-  it("holds every Phase 4 weapon out of the chest pool until its art batch lands (24 July 2026)", () => {
+  it("keeps each Phase 4 weapon's contract, and its pool membership in step with the art gate", () => {
+    // Flag-aware on purpose: this used to hard-assert "held", which meant art
+    // day required editing the test as well as the flag. Now the flip really is
+    // one constant, and the tripwire still fires if the pool drifts from it.
+    const expectPoolMembership = (id: Parameters<typeof WEAPON_CHEST_POOL.includes>[0]): void => {
+      if (HELD_WEAPONS_IN_POOL) expect(WEAPON_CHEST_POOL).toContain(id);
+      else expect(WEAPON_CHEST_POOL).not.toContain(id);
+    };
     expect(WEAPON_CATALOG.railspike).toBeDefined();
     expect(WEAPON_CATALOG.railspike.pierceCount).toBeGreaterThanOrEqual(6);
-    expect(WEAPON_CHEST_POOL).not.toContain("railspike");
+    expectPoolMembership("railspike");
 
     expect(WEAPON_CATALOG["seeker-swarm"]).toBeDefined();
     expect(WEAPON_CATALOG["seeker-swarm"].homingTurnRateRadiansPerSecond).toBeGreaterThan(0);
-    expect(WEAPON_CHEST_POOL).not.toContain("seeker-swarm");
+    expectPoolMembership("seeker-swarm");
 
     expect(WEAPON_CATALOG["cryo-lance"]).toBeDefined();
     expect(WEAPON_CATALOG["cryo-lance"].attackPattern).toBe("beam");
     expect(WEAPON_CATALOG["cryo-lance"].beamDamagePerSecond).toBeGreaterThan(0);
-    expect(WEAPON_CHEST_POOL).not.toContain("cryo-lance");
+    expectPoolMembership("cryo-lance");
 
     expect(WEAPON_CATALOG["tesla-coil"]).toBeDefined();
     expect(WEAPON_CATALOG["tesla-coil"].attackPattern).toBe("orbit");
     expect(WEAPON_CATALOG["tesla-coil"].chainCount).toBeGreaterThan(0);
-    expect(WEAPON_CHEST_POOL).not.toContain("tesla-coil");
+    expectPoolMembership("tesla-coil");
 
     expect(WEAPON_CATALOG.flamethrower).toBeDefined();
     expect(WEAPON_CATALOG.flamethrower.attackPattern).toBe("beam");
     expect(WEAPON_CATALOG.flamethrower.meleeArcRadians).toBeGreaterThan(WEAPON_CATALOG["cryo-lance"].meleeArcRadians);
-    expect(WEAPON_CHEST_POOL).not.toContain("flamethrower");
+    expectPoolMembership("flamethrower");
 
     expect(WEAPON_CATALOG.sawblade).toBeDefined();
     expect(WEAPON_CATALOG.sawblade.attackPattern).toBe("orbit-blade");
     expect(WEAPON_CATALOG.sawblade.orbitRadiusMetres).toBeGreaterThan(0);
-    expect(WEAPON_CHEST_POOL).not.toContain("sawblade");
+    expectPoolMembership("sawblade");
 
     expect(WEAPON_CATALOG["event-horizon"]).toBeDefined();
     expect(WEAPON_CATALOG["event-horizon"].weaponClass).toBe("unique");
     expect(WEAPON_CATALOG["event-horizon"].spawnsGravityWellOnImpact).toBe(true);
+    // Stays out in BOTH states: there is still no Unique-slot acquisition path.
     expect(WEAPON_CHEST_POOL).not.toContain("event-horizon");
   });
 

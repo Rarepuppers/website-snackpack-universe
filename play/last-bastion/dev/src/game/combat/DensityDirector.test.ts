@@ -4,6 +4,7 @@ import {
   buildDensityWave,
   DENSITY_CAPACITY_ENEMY_COUNT,
   DENSITY_LIVE_CAPS,
+  machineFactionThreatDelta,
   pressureRoleOf,
   pressureShares,
   WAVE_DURATIONS_SECONDS,
@@ -118,5 +119,29 @@ describe("density director v3", () => {
     expect(snapshot.density.pressureSpawned.pursuit).toBe(40);
     expect(snapshot.density.pressureSpawned.ranged).toBe(8);
     expect(snapshot.density.pressureSpawned.specialist).toBe(8);
+  });
+});
+
+/**
+ * The machine/summoner faction is built but held out of live waves pending art.
+ * These guard the *flip* rather than the current state: `buildDensityWave`
+ * throws unless planned threat exactly equals the budget, so a swap that is not
+ * threat-neutral would turn a one-line art-day change into a crash.
+ */
+describe("machine faction wave swaps", () => {
+  it("swaps exactly as much threat as they add, for every late wave", () => {
+    for (let waveNumber = 1; waveNumber <= 10; waveNumber += 1) {
+      expect(machineFactionThreatDelta(waveNumber), `wave ${waveNumber} is not threat-neutral`).toBe(0);
+    }
+  });
+
+  it("leaves every wave balanced against its budget today", () => {
+    // The invariant the flip must preserve — asserted here so the failure reads
+    // as "the swap unbalanced wave N" rather than a bare throw from the builder.
+    for (let index = 0; index < WAVE_THREAT_BUDGETS.length; index += 1) {
+      const wave = buildDensityWave(index);
+      const planned = wave.plans.reduce((sum, plan) => sum + plan.threatCost, 0);
+      expect(planned, `wave ${index + 1}`).toBe(WAVE_THREAT_BUDGETS[index]);
+    }
   });
 });

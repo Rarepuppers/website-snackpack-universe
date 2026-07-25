@@ -106,6 +106,14 @@ export interface EventRequirement {
   minMaxHealthAfterCost?: number;
   /** Needs a weapon to spare so a "sacrifice a gun" choice is legal. */
   minWeapons?: number;
+  /**
+   * Needs an owned relic, so a "purge a relic" / "duplicate a relic" choice is
+   * not offered to a player who has none. Without this those choices were
+   * selectable and silently did nothing.
+   */
+  minRelics?: number;
+  /** Same, for choices that consume or copy an upgrade. */
+  minUpgrades?: number;
 }
 
 export interface EventChoice {
@@ -199,6 +207,7 @@ const SHRINES: readonly EncounterEventDefinition[] = Object.freeze([
         id: "echo-upgrade",
         label: "Double an upgrade",
         detail: "Duplicate an owned upgrade; that family gains a cooldown penalty",
+        requirement: { minUpgrades: 1 },
         outcomes: [{ type: "duplicateUpgradeWithPenalty" }],
         resultText: "The echo lands. Your build speaks twice, and answers a beat slower.",
       },
@@ -442,6 +451,7 @@ const SHRINES: readonly EncounterEventDefinition[] = Object.freeze([
         id: "duplicate-relic",
         label: "Feed it a relic",
         detail: "Add a second copy of your most recently owned relic",
+        requirement: { minRelics: 1 },
         outcomes: [{ type: "duplicateRelic" }],
         resultText: "The vat copies the relic down to the last scratch.",
       },
@@ -459,6 +469,7 @@ const SHRINES: readonly EncounterEventDefinition[] = Object.freeze([
         id: "purge-upgrade",
         label: "Purge an upgrade",
         detail: "Drop a level off your most recently taken upgrade → +20 scrap",
+        requirement: { minUpgrades: 1 },
         outcomes: [{ type: "removeUpgrade" }, { type: "scrap", delta: 20 }],
         resultText: "The terminal draws the upgrade back out of you, and pays you for the trouble.",
       },
@@ -466,6 +477,7 @@ const SHRINES: readonly EncounterEventDefinition[] = Object.freeze([
         id: "purge-relic",
         label: "Purge a relic",
         detail: "Remove your most recently owned relic → +20 scrap",
+        requirement: { minRelics: 1 },
         outcomes: [{ type: "purifyRelic" }, { type: "scrap", delta: 20 }],
         resultText: "The terminal unpicks the relic's hooks and hands back the scrap.",
       },
@@ -1448,6 +1460,12 @@ export function isChoiceAvailable(
     return false;
   }
   if (requirement.minWeapons !== undefined && build.weapons.length < requirement.minWeapons) {
+    return false;
+  }
+  if (requirement.minRelics !== undefined && (build.relicIds?.length ?? 0) < requirement.minRelics) {
+    return false;
+  }
+  if (requirement.minUpgrades !== undefined && build.upgrades.length < requirement.minUpgrades) {
     return false;
   }
   if (requirement.minMaxHealthAfterCost !== undefined) {

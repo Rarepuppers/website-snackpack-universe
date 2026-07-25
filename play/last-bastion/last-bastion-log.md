@@ -1675,3 +1675,116 @@ Verification: full typecheck clean; **825 tests across 117 files pass** (was 818
 ### Remaining in Track A (next increment)
 
 Salvaged Capacitor's arc is wired but untested; Blast Baffle needs the `damagePlayer` source param; Hunter's Beacon's `eliteBonusDamageAfterMiss` needs telegraphed-miss tracking; the three dead artifacts (Event Horizon Core, Broodbreaker Seal, Last Bastion Protocol); the Duplication Vat relic branch that folds a duplicate through a `Set` and does nothing; and `EventRequirement` ownership gates so Purifier Station / Whispering Cargo stop offering silent no-ops.
+
+## 25 July 2026 - Track A complete: every placebo pickup now does something
+
+All thirteen relic/artifact modifier fields that had **zero** combat read-sites now have readers. Re-audited by grep at the end: every field that was `0` is now `>= 1`.
+
+### The remaining hooks
+
+- **Salvaged Capacitor** — a non-melee hit counter drives an every-5th arc to a nearby alien, reusing the `chain-arc` event the Tesla Coil already emits, so it renders with no new visual work.
+- **Hunter's Beacon (second half)** — `eliteBonusDamageAfterMiss` now hangs off the Carapace Scuttler's charge ending out of reach. That is the elite that actually telegraphs, so "bonus damage right after a telegraphed miss" has a real trigger rather than a synthetic one. New `missWindowRemainingSeconds` on `EnemyState`, ticked with the other per-enemy timers.
+- **Event Horizon Core** — arms every `implosionEverySeconds`; the next ordinary impact becomes a pull-and-implode field, reusing `spawnEventHorizonField` from the Event Horizon weapon rather than a parallel implementation.
+- **Broodbreaker Seal** — destroyed eggs burst for `eggDeathDamage` in a small radius, and `preventHatchDuringCrack` holds an egg through **one** crack window before hatching (a bounded stall, not a permanent block — one flag per egg, so it delays rather than prevents).
+- **Last Bastion Protocol** — at ≤30% health the rack braces for 6s (half spread, +35% attack speed) on a 40s cooldown, so it reads as an emergency rather than a passive. New `brace-formation` frame event.
+
+### Blast Baffle needed a design decision, not just a hook
+
+Its field is named `selfExplosiveDamageMultiplier`, and **the game has no self-damage mechanic at all** — `explodeProjectile` only iterates `this.enemies`. But its player-facing text promises "Self *and explosive damage to you* is halved", and enemy explosive damage certainly exists. Rather than invent self-damage to justify the field name, I implemented the half of the description that is real: added a `PlayerDamageSource` parameter to `damagePlayer` and tagged the six unambiguously explosive call sites (abomination slam ×2, Abomination Prime slam, Bastion Eater breach, mini-boss shockwave, Blast Mite detonation). Measured: 3 damage bare → 1.5 with the relic, exactly halved. The parameter is also the hook any future damage-type defence item will need.
+
+### Silent no-op choices closed
+
+`EventRequirement` gained `minRelics` / `minUpgrades` beside the existing `minWeapons`, and four choices now use them: Duplication Vat's "feed it a relic", Echo Well's "double an upgrade", and both Purifier Station purges. Previously a player with no relics could pick "feed it a relic" and watch nothing happen — the duplicate was folded through a `Set` and discarded.
+
+### Testing notes worth keeping
+
+New `combat/RelicEffects.test.ts` (10 cases), all **behavioural** — each drives a real `CombatSimulation` and compares owning the relic against not owning it. A modifier-level test would have passed throughout the entire period these did nothing, which is exactly how the bug survived.
+
+Three separate traps hit while writing them, all the same shape:
+1. First Stabiliser Gyro test asserted the modifier value — the very thing that hid the bug. Rewritten to measure real projectile angles.
+2. That rewrite then **asserted nothing**: it measured spread on the starting rifle, which fires one projectile with no spread, so `angles.length >= 2` was never true and the comparison sat behind a skipped `if`. Switched to the Scattergun and added an explicit `expect(movingWithout).toBeGreaterThan(0)`.
+3. The Blast Baffle test had the same vacuous `if (bare > 0)` guard; probed it (3 vs 1.5), then replaced the guard with a hard assertion.
+
+The Salvaged Capacitor test **failed first time and was right to** — two scuttlers die long before a 5-hit counter comes round, and the arc also needs a live neighbour to reach. Fixed the fixture (8 quillbacks) rather than the assertion.
+
+Verification: full typecheck clean; **831 tests across 117 files pass** (was 825).
+
+Next: the prepared-but-held content (7 weapons, 6 enemies) flips when the art lands; the largest remaining gap is the world-object catalogue, which is imported by nothing but its own test.
+
+## 25 July 2026 - Transformation payoff: committed paths are no longer cosmetic
+
+Same disease as the relics, treated the same way. Was **13 of 27** effect metrics with no combat hook; now **4**, each explicitly explained and guarded by a test.
+
+**Wired (8):** `retaliation-damage`, `nearby-kill-healing`, `evasive-cooldown`, `evasive-distance`, `weapon-spread`, `projectile-speed`, `corrode-buildup`, `telekinetic-push-distance`. Verified by grep at the end: every one has a `transformationModifiers.*` read-site in `combat/`.
+
+Two of these rescue **headline boons of committed paths** — Mutagenic's "Reactive Blood" and Psionic's "Telekinetic Focus" previously did nothing at all, so committing to those paths was decorative. Both now honour their authored rule text rather than an invented one: Reactive Blood fires at most once per 5s within 1.5m and only on *health* damage (a hit fully absorbed by shield provokes nothing); Feeding Tendrils heals kills within 2.5m capped at 1.5 health per rolling 10s; Telekinetic Focus shoves on every 10th qualifying hit and exempts ranked enemies, matching "elites and bosses use resistance".
+
+Two seams built earlier today paid off immediately: `HeroMotionController.setEvasiveModifiers` (added for Kinetic Greaves) took the evasive-distance/cooldown traits with no new plumbing, and `movingSpreadFactor` (added for Stabiliser Gyro) took weapon-spread the same way.
+
+### Two audit claims corrected
+
+1. **`corrode-buildup` was misfiled.** Both the doc comment in `TransformationRunModifiers.ts` and my own summary grouped it with the three "received" elemental metrics as unattachable. It is not — it is a **boon on Corrode buildup *dealt* by attacks**, and `statusTuning.buildupMultiplier` already existed to carry it. It was inert purely through misreading.
+2. **The recommendation to *cut* the unattachable metrics was wrong.** `fire-damage-received` and `shock-buildup-received` are **scars** — downsides. Deleting them would have made those paths strictly stronger, which is a balance change disguised as a cleanup. They stay, documented as deliberately unhonoured. This is worth remembering as a general rule: an inert *boon* cheats the player, an inert *scar* cheats the balance budget, and the fixes are opposite.
+
+### Remaining unconsumed (4), all deliberate
+
+`fire-damage-received` / `shock-buildup-received` (scars, player takes no typed elemental damage or status buildup); `drone-shot-damage` (needs a player-side drone entity — Assembly Prime's drones are enemy-side); `gravity-pulse-radius` (needs a periodic player pull pulse).
+
+### The guard earned its keep immediately
+
+New `transformations/TransformationEffects.test.ts` asserts every authored metric is either in an explicit `CONSUMED` list or an allow-list with a written reason — and cross-checks both directions, so an allow-listed metric that later gets wired, or a "consumed" metric nobody authors, both fail. **It caught `telekinetic-push-distance` on its first run**, which I had identified as attachable and then simply forgot to wire. That is exactly the failure mode the whole content-debt pass exists to stop, and it was caught by machine rather than by another audit.
+
+Verification: full typecheck clean; **838 tests across 118 files pass** (was 831).
+
+## 25 July 2026 - Held content prepared for the art drop (two flags, both verified)
+
+Creator decision was "scope now, flip on delivery". Both gates are now **one constant each**, and — the part that actually matters — I flipped them on, ran the suite, and flipped them back, so the flip is verified rather than merely commented.
+
+### Weapons: `HELD_WEAPONS_IN_POOL` (`content/weaponCatalog.ts`)
+
+`WEAPON_CHEST_POOL` is now composed from `LIVE_WEAPONS` + (`HELD_WEAPONS` when flagged). Six of the seven held weapons join on the flip. **Event Horizon does not** — it is `unique`-class and there is still no Unique-slot acquisition path, so it sits in its own `UNIQUE_SLOT_WEAPONS` constant and stays out in both states.
+
+The flip initially failed two tests, and both were **deliberate tripwires** asserting the weapons stay held — which meant art day would have needed three edits, not one. Made both flag-aware instead: the weapon-catalogue test now asserts pool membership *in step with the gate* (still failing if the pool drifts from the flag), and the campaign test derives the expected pool size from it. The "is still held" assertion I had just written was deleted for the same reason — the flag documents its own state, and the balance guards cover both.
+
+### Enemies: `MACHINE_FACTION_IN_WAVES` (`combat/DensityDirector.ts`)
+
+This one was **much more constrained than the audit implied**, and the constraint is worth recording.
+
+The audit said the flip was "composition rows plus a threat rebalance". In fact the threat costs already existed and were thoughtfully authored (Nest Weaver 25 bundling three pod payloads, Storm Savant 18 bundling two nodes, Foundry Fabricator 15 bundling its three-charge package). The real work was that **three separate invariants have to hold simultaneously**:
+
+1. `buildDensityWave` **throws** unless planned threat *exactly* equals the wave budget — so every addition needs an exact offset, not a fill-until-full.
+2. Late waves must keep `pursuitShare >= 0.65` and `rangedShare <= 0.25`. My first attempt paid for the machine units with scuttlers, which is threat-neutral but **not pressure-neutral** — pursuit share fell to 0.62 and the density test caught it. Reworked so every swap is paid for out of *non-pursuit* units.
+3. Wave 9's corrupted-marine and abomination counts are an **authored Corrupted Human promotion curve** with its own test, so those cannot be spent either. My second attempt spent them; caught again.
+
+Landing swaps (all threat-neutral, asserted by `machineFactionThreatDelta === 0` for every wave): wave 6 gains Scrap Skitterer + Arc Warden for a Tether Bloom and a Warp Flanker; wave 7 gains Cyborg Reclaimer + Arc Warden + 2 Scrap Skitterers for 2 Slime Spitters, a Quillback and a Warp Flanker; wave 8 gains Foundry Fabricator for 4 Slime Spitters and a Tether Bloom; wave 9 gains Storm Savant for 6 Slime Spitters.
+
+**Nest Weaver could not be placed and is documented as such** (`MACHINE_FACTION_UNPLACED`). At 25 threat it fits no late wave under all three constraints at once: wave 9's remaining non-pursuit threat tops out at 29 and is already spent on Storm Savant. Placing it needs either a budget change or a home in the expedition budget waves — a tuning decision better made with playtest data than with arithmetic, so I stopped rather than forcing it.
+
+Verification: typecheck clean and **840 tests pass in both flag states** — held (shipped) and flipped (simulated art day). Test count moved 841 → 840 because of the deleted tripwire.
+
+## 25 July 2026 - Codex: not a generator, a drift guard (plus the drift it found)
+
+**The plan said "build-time generator from the catalogs". That was the wrong shape and I did not build it.**
+
+Reading `last-bastion-codex.html` first showed why: it is a hand-authored **design bible**, not a code mirror. Of its 138 entries, 39 are `concept` and 20 are `designed` — content that does not exist in code at all and is documented deliberately. Generating the page from the catalogs would have silently deleted the entire design backlog. The actual failure mode is the opposite direction: shipped content that never gets an entry, and entries still labelled `designed` long after the thing was built.
+
+So the deliverable became a **drift guard** — `content/codexDrift.test.ts`, which cross-checks the codex against `WEAPON_CATALOG`, `UPGRADE_CATALOG`, `RELIC_CATALOG`, `ARTIFACT_CATALOG` and `ENEMY_CATALOG`. It uses Vite's `?raw` import rather than `node:fs` (no `@types/node` in this project; `vite/client` is already in tsconfig's `types`).
+
+### What it found
+
+- **6 of 15 weapons undocumented** — Railspike, Seeker Swarm, Cryo Lance, Tesla Coil, Flamethrower, Sawblade had no entry at all, and Event Horizon was still marked `designed` despite being fully implemented.
+- **4 of 7 artifacts undocumented** — and these were the *working* ones: Scavenger's Manifest, Symbiote Heart, Berserker's Chip, Aegis Reactor.
+- **All 9 authored relics/artifacts marked `designed`** — every one of them is wired as of today's Track A pass.
+- **The entire 26-item shop economy, 7 shop profiles and the liberation node type: absent.** The whole Brotato overhaul is undocumented.
+
+### What I fixed
+
+Added the 6 held weapons with stats read straight from `weaponCatalog.ts` (kept in their own `HELD_WEAPONS` block, pushed into `WEAPONS`, with a comment pointing at the `HELD_WEAPONS_IN_POOL` gate), added the 4 missing artifacts, promoted all 9 relic/artifact statuses and Event Horizon's to `live`.
+
+### What I deliberately did not fix
+
+The **item-economy section**. Adding 26 entries means a new tab, a new array and a new render branch, and — more to the point — 26 pieces of flavour text in the creator's voice. That is authoring, not wiring, and I would rather flag it than fake it. The guard pins it: a test asserts the gap still exists, so when the section is written the test fails and the entry gets removed.
+
+Also excluded, with a reason and its own honesty check: the 6 summoned child units (nest-pod, nest-hatchling, storm-node, foundry-pad, foundry-drone, foundry-turret) are payloads of a parent summoner whose threat cost already bundles them, so they belong in the parent's entry rather than their own.
+
+Verification: typecheck clean, **846 tests across 119 files pass** (was 840). Browser-verified against the static site server — the codex loads with no console errors, `WEAPONS` is 38 (was 32), `RELICS` is 13 (was 9), and the new weapon and artifact entries render on their tabs. (Note for future sessions: the codex lives outside Vite's root, so `last-bastion-dev` serves the SPA fallback for it — use the `website` server on 4179 instead.)

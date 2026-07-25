@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { WEAPON_CHEST_POOL } from "../content/weaponCatalog";
 import { combatNodeBudgets } from "./ExpeditionNodeDirector";
 import { generateExpeditionMap } from "./ExpeditionMap";
 import {
@@ -9,6 +8,7 @@ import {
   referenceBuildBossSeconds,
 } from "./CampaignTuning";
 import { ITEM_RARITY_BASE_PRICE } from "../content/itemCatalog";
+import { HELD_WEAPONS_IN_POOL, WEAPON_CHEST_POOL } from "../content/weaponCatalog";
 
 describe("Task 49 campaign tuning", () => {
   it("protects the opening while preserving the late pressure ceiling", () => {
@@ -45,7 +45,9 @@ describe("Task 49 campaign tuning", () => {
   });
 
   it("keeps all live weapons in the chest pool and makes safe routes economically useful", () => {
-    expect(WEAPON_CHEST_POOL).toHaveLength(8);
+    // Size follows the art gate rather than a literal, so art day stays a
+    // one-constant change; uniqueness is the part that must always hold.
+    expect(WEAPON_CHEST_POOL).toHaveLength(HELD_WEAPONS_IN_POOL ? 14 : 8);
     expect(new Set(WEAPON_CHEST_POOL).size).toBe(WEAPON_CHEST_POOL.length);
     expect(campaignNodeClearScrap("supply-depot", 3)).toBe(15);
     expect(campaignNodeClearScrap("weapon-cache", 5)).toBe(15);

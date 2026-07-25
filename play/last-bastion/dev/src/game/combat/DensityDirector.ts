@@ -258,6 +258,96 @@ function scheduleInPulses(
   })).sort((left, right) => left.atSeconds - right.atSeconds);
 }
 
+/**
+ * The machine / summoner faction — Scrap Skitterer, Arc Warden, Cyborg
+ * Reclaimer, Foundry Fabricator, Storm Savant, Nest Weaver — is fully built,
+ * costed and steering-aware, but reachable only via `?scenario=` because it is
+ * held out of live waves pending its art batch.
+ *
+ * **Flip this to `true` when the art lands.** The swaps below are threat-neutral
+ * by construction: each wave adds exactly as much threat as it removes, so
+ * `buildDensityWave`'s exact budget invariant holds in either state, and
+ * `machineFactionThreatDelta` is asserted to be zero for every wave.
+ */
+export const MACHINE_FACTION_IN_WAVES = false;
+
+interface MachineWaveSwap {
+  /** Machine-faction units introduced to this wave. */
+  add: readonly { type: EnemyType; count: number }[];
+  /** Existing units removed to pay for them, keyed by type. */
+  reduce: Readonly<Partial<Record<EnemyType, number>>>;
+}
+
+/**
+ * Introduces the faction from wave 6 and escalates: cheap harassers first, then
+ * a controller, then the two summoners whose costs already bundle their
+ * spawned children.
+ */
+const MACHINE_WAVE_SWAPS: Readonly<Record<number, MachineWaveSwap>> = Object.freeze({
+  6: {
+    add: [{ type: "scrap-skitterer", count: 1 }, { type: "arc-warden", count: 1 }],
+    reduce: { "tether-bloom": 1, "warp-flanker": 1 },
+  },
+  7: {
+    add: [
+      { type: "cyborg-reclaimer", count: 1 },
+      { type: "arc-warden", count: 1 },
+      { type: "scrap-skitterer", count: 2 },
+    ],
+    reduce: { "slime-spitter": 2, quillback: 1, "warp-flanker": 1 },
+  },
+  8: {
+    add: [{ type: "foundry-fabricator", count: 1 }],
+    reduce: { "slime-spitter": 4, "tether-bloom": 1 },
+  },
+  9: {
+    add: [{ type: "storm-savant", count: 1 }],
+    reduce: { "slime-spitter": 6 },
+  },
+});
+
+/**
+ * **Nest Weaver is deliberately absent from these swaps.** At 25 threat it does
+ * not fit any late wave under all three standing constraints at once:
+ * `buildDensityWave`'s exact-budget invariant, the ≥0.65 pursuit-share floor
+ * (so it cannot be paid for with scuttlers), and the authored Corrupted Human
+ * promotion curve (so it cannot be paid for with corrupted-marine/abomination).
+ * The remaining non-pursuit threat in wave 9 tops out at 29 and is already spent
+ * on Storm Savant. It needs either a budget change or a home in the expedition
+ * budget waves — a tuning decision, not a wiring one, and better made with
+ * playtest data than by arithmetic.
+ */
+export const MACHINE_FACTION_UNPLACED: readonly EnemyType[] = Object.freeze(["nest-weaver"]);
+
+/**
+ * Added threat minus removed threat for one wave's machine swap. Zero means the
+ * swap can be flipped on without touching any budget — which the density tests
+ * assert for every wave, so a future edit cannot silently unbalance the flip.
+ */
+export function machineFactionThreatDelta(waveNumber: number): number {
+  const swap = MACHINE_WAVE_SWAPS[waveNumber];
+  if (!swap) return 0;
+  const added = swap.add.reduce((sum, entry) => sum + ENEMY_THREAT_COST[entry.type] * entry.count, 0);
+  const removed = (Object.entries(swap.reduce) as [EnemyType, number][])
+    .reduce((sum, [type, count]) => sum + ENEMY_THREAT_COST[type] * count, 0);
+  return added - removed;
+}
+
+function applyMachineFaction(
+  waveNumber: number,
+  ordinary: Array<{ type: EnemyType; count: number }>,
+): Array<{ type: EnemyType; count: number }> {
+  const swap = MACHINE_WAVE_SWAPS[waveNumber];
+  if (!MACHINE_FACTION_IN_WAVES || !swap) return ordinary;
+  const adjusted = ordinary
+    .map((slot) => {
+      const reduction = swap.reduce[slot.type] ?? 0;
+      return reduction > 0 ? { ...slot, count: slot.count - reduction } : slot;
+    })
+    .filter((slot) => slot.count > 0);
+  return [...adjusted, ...swap.add.map((entry) => ({ ...entry }))];
+}
+
 function lateWaveComposition(
   waveNumber: number,
 ): Array<{ type: EnemyType; count: number; rank?: DirectorSpawnRank; eliteKind?: EliteKind }> {
@@ -288,7 +378,7 @@ function lateWaveComposition(
           entry("scuttler", 58), entry("infected-survivor", 12), entry("swarm-scuttler", 10), entry("blast-mite", 12), entry("razor-scuttler", 16),
           entry("slime-spitter", 9), entry("corrupted-marine", 2), entry("abomination", 2), entry("warp-flanker", 1),
         ];
-  return [...ordinary, ...elites];
+  return [...applyMachineFaction(waveNumber, ordinary), ...elites];
 }
 
 function entry(type: EnemyType, count: number): { type: EnemyType; count: number } {

@@ -79,6 +79,16 @@ Both were introduced by the Brotato overhaul work and both are live.
   pick a choice that silently no-ops when they own no relic/upgrade. Add `minRelics` / `minUpgrades`
   beside the existing `minWeapons`.
 
+**Status — Track A complete 25 July 2026** (see `last-bastion-log.md`). All thirteen previously-unread
+relic/artifact fields now have combat readers (each was 0 before). Blast Baffle needed a new
+`PlayerDamageSource` parameter on `damagePlayer` with six explosive call sites tagged — its original
+`selfExplosiveDamageMultiplier` framing was unimplementable (no self-damage mechanic exists), so it
+delivers the half of its description that is: incoming explosive damage halved, verified at exactly
+3 → 1.5. Hunter's Beacon's `eliteBonusDamageAfterMiss` hangs off the Carapace Scuttler charge ending
+out of reach. Duplication Vat, Echo Well and Purifier choices are now ownership-gated via new
+`minRelics`/`minUpgrades` requirements, so they can no longer be picked for a silent no-op.
+**831 tests pass.**
+
 **Order:** P0 → the four cheap `CombatSimulation` relic hooks → Blast Baffle → the three artifacts →
 Kinetic Greaves (touches `HeroMotionController`) → Duplication Vat → `EventRequirement`.
 
@@ -113,7 +123,14 @@ Creator decision 25 July: **scope now, flip on delivery.** No placeholder art sh
    interactable in the game is the power switch / electric fence. This is a stated design pillar in
    `last-bastion-game.md` and it is entirely dead code. Large: placement into `ArenaDefinition`,
    interaction-verb resolution, hazard ticks, HUD prompts. Art for 12 of them already shipped (Batch O1).
-2. **Transformation payoff** — 13 of 27 metrics have no hook. Martyr (Church) and Telekinetic (Psionic)
+2. ~~**Transformation payoff**~~ — **Done 25 July 2026.** Was 13 of 27 metrics unhooked; now 4, each
+   explicitly explained and guarded. Eight wired: retaliation-damage, nearby-kill-healing,
+   evasive-cooldown, evasive-distance, weapon-spread, projectile-speed, corrode-buildup and
+   telekinetic-push-distance. **Two audit claims were wrong and are corrected:** `corrode-buildup` is a
+   *boon on buildup dealt*, not a "received" scar — it was trivially wireable and had been misfiled; and
+   the recommendation to *cut* the unattachable metrics was wrong, because `fire-damage-received` and
+   `shock-buildup-received` are **scars**, so deleting them would strictly buff their paths. They stay,
+   documented. Original text follows for reference: 13 of 27 metrics have no hook. Martyr (Church) and Telekinetic (Psionic)
    have **inert headline boons**, so committing to those paths is cosmetic. Retaliation-damage and
    nearby-kill-healing are cheap and rescue two paths. The three "received elemental buildup" metrics
    are unattachable (the player never takes statuses) and should be **cut from the catalogue**, not
@@ -125,8 +142,14 @@ Creator decision 25 July: **scope now, flip on delivery.** No placeholder art sh
    range-item design axis. Multiply weapon range at the fire sites, then add 1–2 range items.
 5. **In-combat transformation HUD** — Affinity is debrief-only, so the player cannot see how close they
    are to the 3-Affinity commit threshold at the moment it matters.
-6. **Codex drift** — `last-bastion-codex.html` is hand-maintained and the code has moved well past it.
-   A build-time generator from the catalogs would retire the whole class of drift.
+6. ~~**Codex drift**~~ — **Guarded 25 July 2026, partially fixed.** The "build-time generator" idea was
+   **wrong and was not built**: the codex is a hand-authored design bible whose 39 `concept` + 20
+   `designed` entries describe content that does not exist in code, so generating it from the catalogs
+   would have deleted the design backlog. Built `content/codexDrift.test.ts` instead, which cross-checks
+   both directions. It found 6 undocumented weapons, 4 undocumented *working* artifacts, and 9
+   relic/artifact entries still marked `designed` after being wired — all now fixed. **Still open and
+   pinned by the guard: the 26-item shop economy, 7 shop profiles and the liberation node type have no
+   codex entries at all.** That is authoring in the creator's voice, not wiring.
 7. **Settings / accessibility gaps** — auto-aim assist (explicitly "required for eventual touch play"),
    audio sliders, colour-blind-safe telegraphs, pause-on-decision, FPS, display scale. `SETTINGS_ROWS`
    only handles booleans today, so non-boolean settings need new machinery first.

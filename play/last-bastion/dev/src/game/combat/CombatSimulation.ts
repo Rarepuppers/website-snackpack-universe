@@ -200,6 +200,12 @@ import {
 } from "../transformations/TransformationAffinity";
 import {
   resolveTransformationModifiers,
+  NEARBY_KILL_HEAL_RADIUS_METRES,
+  NEARBY_KILL_HEAL_WINDOW_CAP,
+  NEARBY_KILL_HEAL_WINDOW_SECONDS,
+  RETALIATION_COOLDOWN_SECONDS,
+  RETALIATION_RADIUS_METRES,
+  TELEKINETIC_PUSH_EVERY_NTH_ATTACK,
   TRANSFORMATION_CLOSE_RANGE_METRES,
   TRANSFORMATION_LONG_RANGE_METRES,
   type TransformationRunModifiers,
@@ -319,6 +325,9 @@ export type DecisionKind = "upgrade" | "level-stat" | "weapon-chest" | "supply-d
 export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat" | "supply-chest";
 
 export type TerrainDamageSource = "player-projectile" | "player-melee" | "mini-boss-charge" | "mini-boss-impact" | "enemy-slam" | "enemy-biomass";
+
+/** How the player took a hit. Blast Baffle mitigates the explosive kind. */
+export type PlayerDamageSource = "generic" | "explosive";
 
 export interface TerrainSnapshot {
   id: string;
@@ -879,6 +888,10 @@ interface EnemyState {
    * `enemyRadius()` so hitbox, separation and silhouette never disagree.
    */
   radiusScale?: number;
+  /** Broodbreaker Seal: this egg has already spent its one crack-window stall. */
+  broodbreakerStalled?: boolean;
+  /** Hunter's Beacon: seconds left in the punish window after a telegraphed miss. */
+  missWindowRemainingSeconds?: number;
   eliteKind?: EliteKind;
   carapacePhase: CarapacePhase;
   carapacePhaseRemainingSeconds: number;
@@ -1108,6 +1121,8 @@ const ARTIFACT_IMPLOSION_DURATION_SECONDS = 1.1;
 const ARTIFACT_IMPLOSION_PULL_SPEED = 5.5;
 const ARTIFACT_IMPLOSION_PULL_RADIUS_METRES = 3.4;
 const ARTIFACT_IMPLOSION_RADIUS_METRES = 2.4;
+/** Hunter's Beacon relic: punish window after an elite's telegraphed attack misses. */
+const ELITE_MISS_WINDOW_SECONDS = 1.5;
 /** Broodbreaker Seal artifact: how long a cracking egg is held from hatching. */
 const BROODBREAKER_CRACK_SECONDS = 1.2;
 /** Broodbreaker Seal artifact: radius of the burst a destroyed egg leaves. */
@@ -1321,6 +1336,13 @@ export class CombatSimulation {
   /** Last Bastion Protocol: brace window and its long cooldown. */
   private braceRemainingSeconds = 0;
   private braceCooldownSeconds = 0;
+  /** Psionic "Telekinetic Focus": qualifying-hit counter. */
+  private telekineticAttackCount = 0;
+  /** Mutagenic "Reactive Blood": retaliation burst cooldown. */
+  private retaliationCooldownSeconds = 0;
+  /** Alien "Feeding Tendrils": rolling heal window and the amount already paid in it. */
+  private nearbyKillHealWindowSeconds = 0;
+  private nearbyKillHealPaid = 0;
   /** Raw non-item stat grants carried on the build (level-up cards, shrine grants, tests). */
   private baseItemStats: Partial<PlayerStatBlock>;
   /** Run-long reward items (Task 94), resolved into combat effects and carried through the snapshot. */
@@ -1437,9 +1459,13 @@ export class CombatSimulation {
       : resolvedRelicModifiers;
     // Kinetic Greaves: further evasive travel, slightly longer recovery. Set
     // here rather than at construction because the relic bag resolves above.
+    // Kinetic Greaves and the Psionic "Rift Step" / Cybernetic "Rigid Shell"
+    // transformation traits both land here and compose multiplicatively.
     this.heroMotion.setEvasiveModifiers({
-      distanceMultiplier: this.relicModifiers.evasiveDistanceMultiplier,
-      recoveryMultiplier: this.relicModifiers.evasiveRecoveryMultiplier,
+      distanceMultiplier: this.relicModifiers.evasiveDistanceMultiplier
+        * this.transformationModifiers.evasiveDistanceMultiplier,
+      recoveryMultiplier: this.relicModifiers.evasiveRecoveryMultiplier
+        * this.transformationModifiers.evasiveCooldownMultiplier,
     });
     this.baseItemStats = { ...(options.startingBuild?.itemStats ?? {}) };
     this.ownedItemIds = [...(options.startingBuild?.ownedItemIds ?? [])];
@@ -3281,8 +3307,8 @@ export class CombatSimulation {
         damageType: weapon.stats.damageType,
         position: { ...muzzlePosition },
         velocity: {
-          x: direction.x * weapon.stats.projectileSpeedMetresPerSecond,
-          y: direction.y * weapon.stats.projectileSpeedMetresPerSecond,
+          x: direction.x * weapon.stats.projectileSpeedMetresPerSecond * this.transformationModifiers.projectileSpeedMultiplier,
+          y: direction.y * weapon.stats.projectileSpeedMetresPerSecond * this.transformationModifiers.projectileSpeedMultiplier,
         },
         damage: weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats),
         uraniumEligible: true,
@@ -3699,6 +3725,9 @@ export class CombatSimulation {
    * sits on a long cooldown so it reads as an emergency, not a passive.
    */
   private updateArtifactTimers(deltaSeconds: number): void {
+    this.retaliationCooldownSeconds = Math.max(0, this.retaliationCooldownSeconds - deltaSeconds);
+    this.nearbyKillHealWindowSeconds = Math.max(0, this.nearbyKillHealWindowSeconds - deltaSeconds);
+
     const implosionEvery = this.relicModifiers.implosionEverySeconds;
     if (implosionEvery !== null && implosionEvery > 0) {
       if (this.eventHorizonCoreArmed) {
@@ -3749,6 +3778,72 @@ export class CombatSimulation {
       position: { ...egg.position },
       radiusMetres: BROODBREAKER_BURST_RADIUS_METRES,
     });
+  }
+
+  /**
+   * Psionic "Telekinetic Focus": every Nth qualifying hit shoves an ordinary
+   * enemy back without stunning it. Ranked enemies are exempt, matching the
+   * trait's "elites and bosses use resistance" rule.
+   */
+  private tickTelekineticPush(enemy: EnemyState, projectile: ProjectileState): void {
+    const push = this.transformationModifiers.telekineticPushMetres;
+    if (push <= 0 || enemy.dead) return;
+    this.telekineticAttackCount += 1;
+    if (this.telekineticAttackCount % TELEKINETIC_PUSH_EVERY_NTH_ATTACK !== 0) return;
+    if (enemy.rank !== "standard" && enemy.rank !== "treasure") return;
+    const direction = normalizeVector(projectile.velocity);
+    enemy.position = resolveCircleMovement(
+      enemy.position,
+      { x: enemy.position.x + direction.x * push, y: enemy.position.y + direction.y * push },
+      enemyRadius(enemy),
+      this.collisionArena(),
+    );
+  }
+
+  /**
+   * Mutagenic "Reactive Blood": taking health damage releases a short acid
+   * retaliation. Rate-limited exactly as the trait's own rule text states —
+   * at most once every 5 seconds, within 1.5 metres.
+   */
+  private applyRetaliationBurst(): void {
+    const damage = this.transformationModifiers.retaliationDamage;
+    if (damage <= 0 || this.retaliationCooldownSeconds > 0) return;
+    this.retaliationCooldownSeconds = RETALIATION_COOLDOWN_SECONDS;
+    let hit = false;
+    for (const enemy of this.enemies) {
+      if (enemy.dead) continue;
+      if (distance(enemy.position, this.playerPosition) > RETALIATION_RADIUS_METRES) continue;
+      // "toxic" is the damage type; "corrode" is the status it builds.
+      this.damageEnemy(enemy, damage, "toxic");
+      hit = true;
+    }
+    if (hit) {
+      this.frameEvents.push({
+        type: "explosion",
+        position: { ...this.playerPosition },
+        radiusMetres: RETALIATION_RADIUS_METRES,
+      });
+    }
+  }
+
+  /**
+   * Alien "Feeding Tendrils": nearby kills restore a sliver of health, capped
+   * per rolling window by the trait's rule text (1.5 health per 10 seconds).
+   */
+  private applyNearbyKillHealing(position: Vector2Data): void {
+    const heal = this.transformationModifiers.nearbyKillHealing;
+    if (heal <= 0) return;
+    if (distance(position, this.playerPosition) > NEARBY_KILL_HEAL_RADIUS_METRES) return;
+    if (this.nearbyKillHealWindowSeconds <= 0) {
+      this.nearbyKillHealWindowSeconds = NEARBY_KILL_HEAL_WINDOW_SECONDS;
+      this.nearbyKillHealPaid = 0;
+    }
+    const allowance = Math.max(0, NEARBY_KILL_HEAL_WINDOW_CAP - this.nearbyKillHealPaid);
+    const amount = Math.min(heal, allowance, this.playerMaxHealth - this.playerHealth);
+    if (amount <= 0) return;
+    this.nearbyKillHealPaid += amount;
+    this.playerHealth += amount;
+    this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount });
   }
 
   /**
@@ -3809,8 +3904,11 @@ export class CombatSimulation {
    */
   private movingSpreadFactor(): number {
     const moving = this.stationarySeconds === 0 ? this.relicModifiers.movingSpreadMultiplier : 1;
-    // Last Bastion Protocol braces the rack into a tighter formation.
-    return moving * (this.isBraced() ? BRACE_SPREAD_MULTIPLIER : 1);
+    // Last Bastion Protocol braces the rack into a tighter formation; the
+    // Cybernetic targeting trait tightens it permanently.
+    return moving
+      * (this.isBraced() ? BRACE_SPREAD_MULTIPLIER : 1)
+      * this.transformationModifiers.weaponSpreadMultiplier;
   }
 
   /**
@@ -3821,7 +3919,11 @@ export class CombatSimulation {
   private eliteMarkDamageMultiplier(enemy: EnemyState): number {
     if (enemy.rank !== "elite") return 1;
     const marked = this.isBuffActive("hunter-optics") || this.relicModifiers.eliteMarkedEarlier;
-    return marked ? HUNTER_OPTICS_ELITE_DAMAGE_MULTIPLIER : 1;
+    // …and it punishes a telegraphed miss for a short window afterwards.
+    const missBonus = (enemy.missWindowRemainingSeconds ?? 0) > 0
+      ? this.relicModifiers.eliteBonusDamageAfterMiss
+      : 0;
+    return (marked ? HUNTER_OPTICS_ELITE_DAMAGE_MULTIPLIER : 1) * (1 + missBonus);
   }
 
   private weaponDamageMultiplier(stats: WeaponRuntimeStats): number {
@@ -4064,6 +4166,7 @@ export class CombatSimulation {
         if (projectile.weaponId === "injector-carbine") this.registerInjectorHit();
         if (damageMultiplier >= 1) this.applyProjectileKnockback(projectile, enemy);
         this.tickSalvagedCapacitorArc(enemy, projectile.weaponId);
+        this.tickTelekineticPush(enemy, projectile);
         this.resolveProjectileChain(projectile, enemy);
 
         this.explodeProjectile(projectile, enemy.position, enemy.id);
@@ -4296,6 +4399,9 @@ export class CombatSimulation {
       if (this.isEnemyStunned(enemy)) continue;
 
       enemy.attackCooldownSeconds = Math.max(0, enemy.attackCooldownSeconds - deltaSeconds);
+      if (enemy.missWindowRemainingSeconds !== undefined && enemy.missWindowRemainingSeconds > 0) {
+        enemy.missWindowRemainingSeconds = Math.max(0, enemy.missWindowRemainingSeconds - deltaSeconds);
+      }
 
       switch (enemy.type) {
         case "scuttler":
@@ -4620,7 +4726,7 @@ export class CombatSimulation {
       const hitPlayer = distance(this.playerPosition, result.state.lockedTarget)
         <= ABOMINATION_SLAM_RADIUS_METRES + PLAYER_RADIUS_METRES;
       const damage = hitPlayer ? this.scaledEnemyDamage(enemy, ABOMINATION_SLAM_DAMAGE) : 0;
-      if (hitPlayer) this.damagePlayer(damage);
+      if (hitPlayer) this.damagePlayer(damage, "explosive");
       for (const obstacle of this.activeObstacles()) {
         const closest = {
           x: Math.max(obstacle.x, Math.min(result.state.lockedTarget.x, obstacle.x + obstacle.width)),
@@ -5535,6 +5641,11 @@ export class CombatSimulation {
       case "charge":
         this.moveEnemy(enemy, enemy.facingDirection, 7.2, deltaSeconds);
         if (enemy.carapacePhaseRemainingSeconds <= 0) {
+          // Hunter's Beacon: a telegraphed charge that ended without reaching
+          // the player is a punishable miss.
+          if (distance(enemy.position, this.playerPosition) > enemyRadius(enemy) + PLAYER_RADIUS_METRES + 0.5) {
+            enemy.missWindowRemainingSeconds = ELITE_MISS_WINDOW_SECONDS;
+          }
           enemy.carapacePhase = "recovery";
           enemy.carapacePhaseRemainingSeconds = 1.05;
         }
@@ -5851,7 +5962,7 @@ export class CombatSimulation {
       const hitPlayer = distance(this.playerPosition, centre)
         <= ABOMINATION_PRIME_SLAM_RADIUS_METRES + PLAYER_RADIUS_METRES;
       const damage = hitPlayer ? this.scaledEnemyDamage(enemy, 4.2) : 0;
-      if (hitPlayer) this.damagePlayer(damage);
+      if (hitPlayer) this.damagePlayer(damage, "explosive");
       this.damageTerrainInRadius(centre, ABOMINATION_PRIME_SLAM_RADIUS_METRES, 180, "enemy-slam");
       this.frameEvents.push({
         type: "abomination-prime-slam",
@@ -5863,7 +5974,7 @@ export class CombatSimulation {
       });
     } else if (result.actionStarted === "biomass-grab") {
       const damage = this.scaledEnemyDamage(enemy, 1.6);
-      this.damagePlayer(damage);
+      this.damagePlayer(damage, "explosive");
       this.frameEvents.push({
         type: "abomination-prime-grab-latched",
         position: { ...enemy.position },
@@ -6841,7 +6952,7 @@ export class CombatSimulation {
           const radiusMetres = 2.15;
           this.frameEvents.push({ type: "bastion-eater-breach", position: { ...enemy.bastionEaterTarget }, radiusMetres, warning: false });
           if (distance(enemy.bastionEaterTarget, this.playerPosition) <= radiusMetres + PLAYER_RADIUS_METRES) {
-            this.damagePlayer(PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterBreach);
+            this.damagePlayer(PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterBreach, "explosive");
           }
         }
         break;
@@ -6937,7 +7048,7 @@ export class CombatSimulation {
   ): void {
     this.frameEvents.push({ type: "mini-boss-shockwave", position: { ...position }, radiusMetres });
     if (distance(position, this.playerPosition) <= radiusMetres + PLAYER_RADIUS_METRES) {
-      this.damagePlayer(damage);
+      this.damagePlayer(damage, "explosive");
     }
   }
 
@@ -7651,8 +7762,18 @@ export class CombatSimulation {
     }
   }
 
-  private damagePlayer(rawDamage: number): void {
+  /**
+   * `source` exists for Blast Baffle, which promises "explosive damage to you is
+   * halved". Blasts, slams and shockwaves pass `"explosive"`; everything else
+   * takes the default. (The relic's original field was named for *self*-inflicted
+   * damage, which the game has no mechanic for — this is the half of its
+   * description that is actually implementable.)
+   */
+  private damagePlayer(rawDamage: number, source: PlayerDamageSource = "generic"): void {
     if (this.scenario === "density-capacity") return;
+    if (source === "explosive") {
+      rawDamage *= this.relicModifiers.selfExplosiveDamageMultiplier;
+    }
     if (rawDamage <= 0 || this.playerInvulnerable || this.playerHurtCooldownSeconds > 0) return;
     // Item dodge (Brotato overhaul): a chance to ignore the hit outright. Guarded
     // so a zero dodge chance draws no RNG, keeping the deterministic replay digest
@@ -7684,6 +7805,9 @@ export class CombatSimulation {
         mitigated *= this.perkModifiers.lowHealthDamageMultiplier;
       }
       this.playerHealth = Math.max(0, this.playerHealth - mitigated);
+      // Reactive Blood answers *health* damage specifically, so it sits inside
+      // this branch — a hit fully absorbed by shield provokes nothing.
+      if (mitigated > 0) this.applyRetaliationBurst();
     }
     this.playerHurtCooldownSeconds = this.defence.hitInvulnerabilitySeconds;
     this.frameEvents.push({
@@ -7870,7 +7994,9 @@ export class CombatSimulation {
 
     const status = STATUS_BY_DAMAGE_TYPE[damageType];
     if (status && this.canStatusApply(enemy, status)) {
-      const buildupRate = this.statusTuning.buildupMultiplier[damageType] ?? 1;
+      // Mutagenic "Acidic Secretions" raises Corrode buildup dealt.
+      const corrodeBonus = status === "corrode" ? this.transformationModifiers.corrodeBuildupMultiplier : 1;
+      const buildupRate = (this.statusTuning.buildupMultiplier[damageType] ?? 1) * corrodeBonus;
       const buildup = (enemy.statusBuildup[status] ?? 0) + mitigated * buildupRate;
       if (buildup >= STATUS_BUILDUP_THRESHOLD) {
         enemy.statusBuildup[status] = 0;
@@ -8088,6 +8214,7 @@ export class CombatSimulation {
       bestiaryKey: this.bestiaryKeyOf(enemy),
     });
     // Symbiote Heart artifact: kills restore a sliver of health.
+    this.applyNearbyKillHealing(enemy.position);
     if (this.relicModifiers.lifestealPerKill > 0 && this.playerHealth < this.playerMaxHealth) {
       const healed = Math.min(this.relicModifiers.lifestealPerKill, this.playerMaxHealth - this.playerHealth);
       this.playerHealth += healed;
@@ -8151,7 +8278,7 @@ export class CombatSimulation {
         distance(enemy.position, this.playerPosition)
         <= BLAST_MITE_EXPLOSION_RADIUS_METRES + PLAYER_RADIUS_METRES
       ) {
-        this.damagePlayer(this.scaledEnemyDamage(enemy, BLAST_MITE_EXPLOSION_DAMAGE));
+        this.damagePlayer(this.scaledEnemyDamage(enemy, BLAST_MITE_EXPLOSION_DAMAGE), "explosive");
       }
     }
     if (enemy.eliteKind) {

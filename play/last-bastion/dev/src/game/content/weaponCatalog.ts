@@ -348,9 +348,11 @@ export const VERTICAL_SLICE_WEAPON_IDS: readonly WeaponId[] = Object.freeze([
 
 /**
  * Weapons the in-run Weapon Chest may offer (content-enablement pass,
- * 17 July 2026). The chest draws a seeded subset of unowned entries.
+ * 17 July 2026). The chest draws a seeded subset of unowned entries, and the
+ * scrap shop's weapon line reads the same constant — so anything absent here is
+ * unobtainable by any route.
  */
-export const WEAPON_CHEST_POOL: readonly WeaponId[] = Object.freeze([
+const LIVE_WEAPONS: readonly WeaponId[] = Object.freeze([
   "bastion-service-rifle",
   "scattergun",
   "arc-carbine",
@@ -360,6 +362,34 @@ export const WEAPON_CHEST_POOL: readonly WeaponId[] = Object.freeze([
   "grenade-tube",
   "injector-carbine",
 ]);
+
+/**
+ * Seven fully built, fully tested weapons — beam, orbit, orbit-blade, homing and
+ * gravity-well subsystems among them — held out of the live pool pending their
+ * art batch.
+ *
+ * **Flip `HELD_WEAPONS_IN_POOL` to `true` when the art lands.** Event Horizon is
+ * the one caveat: it is a `unique`-class weapon and there is still no
+ * Unique-slot acquisition path, so it is listed separately and stays out until
+ * that exists.
+ */
+export const HELD_WEAPONS_IN_POOL = false;
+
+const HELD_WEAPONS: readonly WeaponId[] = Object.freeze([
+  "railspike",
+  "seeker-swarm",
+  "cryo-lance",
+  "tesla-coil",
+  "flamethrower",
+  "sawblade",
+]);
+
+/** Needs a Unique-slot acquisition path before it can join the pool at all. */
+export const UNIQUE_SLOT_WEAPONS: readonly WeaponId[] = Object.freeze(["event-horizon"]);
+
+export const WEAPON_CHEST_POOL: readonly WeaponId[] = Object.freeze(
+  HELD_WEAPONS_IN_POOL ? [...LIVE_WEAPONS, ...HELD_WEAPONS] : [...LIVE_WEAPONS],
+);
 
 function weapon(
   definition: Pick<WeaponRuntimeStats,
