@@ -52,8 +52,8 @@ High durability is not the same as indestructible. Any object that can block the
 ## Recommended production order
 
 1. **Completed - Object Batch O1:** structural/destructible atlases for broken walls, racks, lockers, reinforced gates, boulders, mounds, trees, ice blocks, overgrowth, webs, biomass nodes, and alien crystals, each with intact/damaged/critical/destroyed states. Small rocks may reuse/scaledown the boulder row until density review proves a distinct silhouette is necessary.
-2. **Started 26 July 2026 - Object Batch O2:** persistent loop and transition candidates for slime, toxic, fire, and lava are retained under `art/production-tests/object-batch-o2/`. Web slow, ice fracture/degradation, recovery decals, mixed-floor review, colour-vision review, and runtime binding remain open.
-3. Interaction atlas: gates, buttons, control panels, monster teleporter, stargate, turret/trap consoles, cryogenic tube, and weapon-upgrade station with idle/ready/active/disabled/completed states.
+2. **Started 26 July 2026 - Object Batch O2:** persistent loop and transition candidates for slime, toxic, fire, and lava are retained under `art/production-tests/object-batch-o2/`. **O2B now adds web-slow, ice-fracture/degradation, and recovery decals under `art/production-tests/object-batch-o2b/`.** Mixed-floor review, colour-vision review, and runtime binding remain open.
+3. **Started 26 July 2026 - Object Batch O3A:** the small interaction atlas for supply chest, gate button, control panel, turret console, and trap console is retained under `art/production-tests/object-batch-o3a/` with idle/ready/active/disabled/completed-opened states. O3B still covers the larger objective anchors: monster teleporter, stargate, cryogenic tube, and weapon-upgrade station.
 4. Theme binding and deterministic placement recipes.
 5. Navigation, colour-vision, controller-interaction, maximum-density, and 45-90-second encounter reviews.
 
@@ -66,4 +66,4 @@ Boss-arena art remains gated. These standard-room tactical objects should be pro
 - Twelve catalog entries carry explicit asset/row bindings; the remaining catalog entries continue to use code-native or earlier fallback visuals until their batches exist.
 - Source/chroma, clean-alpha masters, prompts, deterministic normalizer, runtime copies, and a contact sheet are retained under `art/production-tests/object-batch-o1/`.
 - The asset gallery route is `?mode=gallery&batch=o1`.
-- Current production package: Object Batch O2 persistent hazards and transition/edge language. O2A loop/transition candidates exist; O2B control surfaces and all gameplay acceptance remain open. Runtime placement and state switching remain a separate implementation gate.
+- Current production package: Object Batch O2 persistent hazards and transition/edge language. O2A and O2B candidates exist; all gameplay acceptance remains open. Runtime placement and state switching remain a separate implementation gate.

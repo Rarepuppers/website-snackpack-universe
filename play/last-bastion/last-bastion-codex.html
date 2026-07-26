@@ -658,6 +658,8 @@ const PERKS = [
 ];
 
 const POWERUPS = [
+  { id: "pow-emp-charge", name: "EMP Charge", glyph: "◉", tint: TINT.power, status: "live", kind: "Powerup", dur: "instant", text: "Detonates on pickup and Overloads everything within 5 metres. The panic button the close-quarters rack wants when the doorway collapses." },
+  { id: "pow-butchers-serum", name: "Butcher's Serum", glyph: "✚", tint: TINT.power, status: "live", kind: "Powerup", dur: "8s", text: "+60% melee damage for eight seconds. Turns a knife fight you were losing into one you were planning." },
   { id: "pow-overcharge", name: "Overcharge", glyph: "⚡", tint: TINT.power, status: "live", kind: "Powerup", dur: "6s", text: "+60% weapon cycling. Orange lightning icon." },
   { id: "pow-aegis", name: "Aegis", glyph: "◇", tint: TINT.power, status: "live", kind: "Powerup", dur: "—", text: "Grants a 25-point shield absorbed before health." },
   { id: "pow-magnet-pulse", name: "Magnet Pulse", glyph: "◎", tint: TINT.power, status: "live", kind: "Powerup", dur: "6s", text: "Attracts nearby XP and expands pickup range." },
@@ -679,6 +681,14 @@ const RELICS = [
   { id: "rel-kinetic-greaves", name: "Kinetic Greaves", glyph: "≫", status: "live", kind: "Relic", text: "Longer evasive distance, slightly longer recovery." },
   { id: "art-event-horizon-core", name: "Event Horizon Core", glyph: "●", status: "live", kind: "Artifact", text: "Periodically turns the next projectile impact into a pull-and-implode event." },
   { id: "art-broodbreaker-seal", name: "Broodbreaker Seal", glyph: "⊘", status: "live", kind: "Artifact", text: "Destroyed eggs damage nearby aliens and cannot hatch during their final crack window." },
+  { id: "rel-butchers-rig", name: "Butcher's Rig", glyph: "⚒", status: "live", kind: "Relic", text: "Melee weapons hit considerably harder. The relic that makes committing to the close-quarters rack a plan rather than a panic." },
+  { id: "rel-riot-plating", name: "Riot Plating", glyph: "▤", status: "live", kind: "Relic", text: "Armour that only counts while something is inside arm's reach. Useless at range, excellent when the doorway collapses on you." },
+  { id: "rel-executioners-mark", name: "Executioner's Mark", glyph: "✖", status: "live", kind: "Relic", text: "Badly wounded enemies take far more damage. Turns the long tail of a fight into a short one." },
+  { id: "art-overclock-core", name: "Overclock Core", glyph: "◎", status: "live", kind: "Artifact", text: "Each kill stacks fire rate, and the stacks bleed away if you stop. Rewards never letting the room go quiet." },
+  { id: "art-chrono-capacitor", name: "Chrono Capacitor", glyph: "◷", status: "live", kind: "Artifact", text: "A successful dodge hands back half your evasive cooldown. Reads the dodge as a skill, not a resource." },
+  { id: "art-bastion-beacon", name: "Bastion Beacon", glyph: "▲", status: "live", kind: "Artifact", text: "The first death of a run leaves you standing on a sliver instead. Once only — and you will know exactly when you spent it." },
+  { id: "art-null-field", name: "Null Field", glyph: "○", status: "live", kind: "Artifact", text: "The opening hit of every wave simply does not land. Buys the first three seconds, which is usually the three that kill you." },
+  { id: "art-warp-anchor", name: "Warp Anchor", glyph: "⇢", status: "live", kind: "Artifact", text: "Being hit blinks you clear of whatever hit you. Sometimes the escape you needed; sometimes into the pack behind." },
   { id: "art-scavengers-manifest", name: "Scavenger's Manifest", glyph: "❖", status: "live", kind: "Artifact", text: "Doubles the Scrap you collect. The plainest artifact in the game and, with a shop after every node, quietly one of the strongest." },
   { id: "art-symbiote-heart", name: "Symbiote Heart", glyph: "♥", status: "live", kind: "Artifact", text: "Every kill returns a sliver of health. Turns a crowded arena from a threat into a supply line." },
   { id: "art-berserkers-chip", name: "Berserker's Chip", glyph: "▲", status: "live", kind: "Artifact", text: "The lower your health, the harder you hit — up to +50% at critical. Pairs with anything that keeps you alive at the bottom." },
@@ -709,6 +719,31 @@ const HELD_WEAPONS = [
     text: "A blade on a tight orbit that grinds anything that closes. Pure bodyguard — it never points where you are aiming." },
 ];
 WEAPONS.push(...HELD_WEAPONS);
+
+/* ── Close-quarters family (25 July 2026): the answer to "it is already on me".
+      Implemented and tested; tiles pending, sharing the Patrol Blade frame. ── */
+const MELEE_WEAPONS = [
+  { id: "wpn-combat-knife", name: "Combat Knife", glyph: "†", cls: "light", family: "melee", status: "live", tier: "I",
+    stats: { Damage: "2.5", Cadence: "0.38s", Reach: "1.8m", Type: "Physical", Arc: "0.35 rad (thrust)" },
+    text: "A forward thrust with almost no wind-up and almost no reach. The weapon you want when something is already inside your guard, and useless a step later." },
+  { id: "wpn-machete", name: "Machete", glyph: "/", cls: "light", family: "melee", status: "live", tier: "I",
+    stats: { Damage: "5", Cadence: "0.95s", Reach: "2.2m", Type: "Physical", Arc: "108° swing", Knockback: "0.3m" },
+    text: "A wide clearing swing that takes a whole doorway off you at once. Trades the knife's speed for everything either side of centre." },
+  { id: "wpn-fire-axe", name: "Fire Axe", glyph: "🜂", cls: "medium", family: "melee", status: "live", tier: "II",
+    stats: { Damage: "6", Cadence: "1.4s", Reach: "2.4m", Type: "Fire", Arc: "90°", Terrain: "×1.8" },
+    text: "A heavy incendiary chop. Everything it bites starts burning, so the swing keeps working after you have moved on." },
+  { id: "wpn-shock-baton", name: "Shock Baton", glyph: "ϟ", cls: "light", family: "melee", status: "live", tier: "II",
+    stats: { Damage: "3", Cadence: "0.7s", Reach: "2m", Type: "Shock", Arc: "0.5 rad", Chains: "1" },
+    text: "Short jabs that arc Overload into whatever is packed in behind. Rewards letting the crowd get tight before you swing." },
+  { id: "wpn-breaching-maul", name: "Breaching Maul", glyph: "⬛", cls: "heavy", family: "melee", status: "live", tier: "II",
+    stats: { Damage: "9", Cadence: "2.2s", Reach: "2.6m", Type: "Physical", Knockback: "1.6m", Terrain: "×4" },
+    text: "The space-maker. Nothing else in the rack shoves this hard, and nothing else takes cover apart in two swings — including cover you were relying on." },
+  { id: "wpn-plasma-saber", name: "Plasma Saber", glyph: "|", cls: "medium", family: "melee", status: "live", tier: "III",
+    stats: { Damage: "8", Cadence: "1.1s", Reach: "3m", Type: "Fire", Arc: "162°", Terrain: "×3" },
+    text: "A contained plasma edge that does not distinguish between bodies and bulkheads. The widest arc in the game, and it reshapes the arena while it swings." },
+];
+WEAPONS.push(...MELEE_WEAPONS);
+
 
 const AMMO = [
   { id: "ammo-uranium-core", name: "Uranium-Core Rounds", glyph: "⋮", tint: TINT.ammo, status: "live", dur: "12s", text: "+25% direct ring-weapon damage. Refreshes rather than stacking; excludes ultimate, chains, explosions, and environmental damage." },

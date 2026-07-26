@@ -107,6 +107,14 @@ const WEAPON_CUES: Readonly<Record<WeaponId, AudioCue>> = Object.freeze({
   flamethrower: cue("flamethrower-jet", 130, 0.09, 0.08, "sawtooth", 90),
   sawblade: cue("sawblade-spin", 210, 0.04, 0.05, "sawtooth", 240),
   "event-horizon": cue("event-horizon-charge", 90, 0.4, 0.16, "sine", 40),
+  // Close-quarters family: short, dry, percussive — they should read as
+  // contact rather than discharge.
+  "combat-knife": cue("combat-knife-thrust", 520, 0.06, 0.05, "triangle", 300),
+  machete: cue("machete-swing", 380, 0.13, 0.07, "triangle", 140),
+  "fire-axe": cue("fire-axe-chop", 240, 0.18, 0.09, "sawtooth", 110),
+  "shock-baton": cue("shock-baton-jab", 1100, 0.08, 0.06, "sawtooth", 1700),
+  "breaching-maul": cue("breaching-maul-slam", 110, 0.28, 0.14, "square", 60),
+  "plasma-saber": cue("plasma-saber-arc", 660, 0.12, 0.07, "sine", 900),
 });
 
 export function cueForCombatEvent(event: CombatEvent): AudioCue | null {

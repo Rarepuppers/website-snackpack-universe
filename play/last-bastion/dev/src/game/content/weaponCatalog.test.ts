@@ -6,7 +6,7 @@ describe("weaponCatalog", () => {
     expect(VERTICAL_SLICE_WEAPON_IDS).toEqual([
       "bastion-service-rifle", "scattergun", "arc-carbine",
     ]);
-    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(15);
+    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(21);
   });
 
   it("keeps each Phase 4 weapon's contract, and its pool membership in step with the art gate", () => {

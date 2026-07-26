@@ -14,8 +14,8 @@ The code and plans agree that the next production gate is world-object art, not 
 ## Priority queue
 
 1. **Object Batch O2A — persistent live hazards:** slime, toxic, fire, lava loop sheets and reusable transition pieces. Started in `art/production-tests/object-batch-o2/`.
-2. **Object Batch O2B — control surfaces:** web slow overlay, ice-fracture/degradation overlay, extinguished/scorched recovery decals, and neutral safe-edge masks. Generate only after O2A passes mixed-floor and colour-vision review.
-3. **Object Batch O3A — core interactions:** supply chest, gate button, control panel, turret console, trap console. Each needs idle/ready/active/disabled/completed or opened states without text.
+2. **Object Batch O2B — control surfaces:** web slow overlay, ice-fracture/degradation overlay, and extinguished/scorched recovery decals are now production candidates under `art/production-tests/object-batch-o2b/`. Safe-edge masks remain code-native geometry; mixed-floor and colour-vision acceptance remain open.
+3. **Object Batch O3A — core interactions:** the supply chest, gate button, control panel, turret console, and trap console atlas is now a production candidate under `art/production-tests/object-batch-o3a/`. Gameplay acceptance and code binding remain open; all states are text-free and physical.
 4. **Object Batch O3B — large objective anchors:** monster teleporter, stargate, cryogenic tube, weapon-upgrade station. Include preview/charge/cooldown layers but keep timing, radius, ownership, and prompts code-owned.
 5. **Held-weapon release art:** Railspike, Seeker Swarm, Cryo Lance, Tesla Coil, Flamethrower, Sawblade. Produce body/state/VFX/tile families, then flip `HELD_WEAPONS_IN_POOL`. Event Horizon waits for a Unique-slot acquisition path.
 6. **Held-enemy wave release review:** the machine-faction art exists, so this is primarily mixed-wave acceptance and tuning. Nest Weaver needs a placement/budget decision rather than more art.

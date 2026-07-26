@@ -319,7 +319,7 @@ export type RiftStalkerPhase =
   | "entrance" | "cloak" | "mark" | "warp" | "pounce"
   | "slash-windup" | "slash" | "recovery";
 export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
-export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit" | "siege-loader" | "phase-jacket" | "hunter-optics" | "last-stand-stimulant";
+export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit" | "siege-loader" | "phase-jacket" | "hunter-optics" | "last-stand-stimulant" | "emp-charge" | "butchers-serum";
 export type SupplyChestVariant = "sealed" | "armored";
 export type DecisionKind = "upgrade" | "level-stat" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
 export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat" | "supply-chest";
@@ -454,6 +454,7 @@ export type CombatEvent =
   | { type: "mini-boss-reward-dropped"; position: Vector2Data; miniBossKind: MiniBossKind }
   | { type: "item-granted"; position: Vector2Data; itemId: string }
   | { type: "brace-formation"; position: Vector2Data }
+  | { type: "player-revived"; position: Vector2Data }
   | { type: "status-applied"; position: Vector2Data; status: StatusEffectType }
   | { type: "powerup-collected"; position: Vector2Data; powerupType: PowerupType }
   | { type: "kit-activated"; position: Vector2Data; powerupType: "uranium-core-rounds" }
@@ -1121,6 +1122,17 @@ const ARTIFACT_IMPLOSION_DURATION_SECONDS = 1.1;
 const ARTIFACT_IMPLOSION_PULL_SPEED = 5.5;
 const ARTIFACT_IMPLOSION_PULL_RADIUS_METRES = 3.4;
 const ARTIFACT_IMPLOSION_RADIUS_METRES = 2.4;
+/** EMP Charge consumable: stun radius on pickup. */
+const EMP_CHARGE_RADIUS_METRES = 5;
+/** Butcher's Serum consumable: melee damage bonus and how long it lasts. */
+const BUTCHERS_SERUM_DURATION_SECONDS = 8;
+const BUTCHERS_SERUM_MELEE_MULTIPLIER = 1.6;
+/** Riot Plating relic: how close an enemy must be for its armour to count. */
+const RIOT_PLATING_RANGE_METRES = 2;
+/** Executioner's Mark relic: health fraction at or below which the bonus applies. */
+const EXECUTE_HEALTH_FRACTION = 0.3;
+/** Overclock Core artifact: seconds a kill stack survives without another kill. */
+const OVERCLOCK_STACK_DECAY_SECONDS = 3;
 /** Hunter's Beacon relic: punish window after an elite's telegraphed attack misses. */
 const ELITE_MISS_WINDOW_SECONDS = 1.5;
 /** Broodbreaker Seal artifact: how long a cracking egg is held from hatching. */
@@ -1264,6 +1276,9 @@ const POWERUP_DURATION_SECONDS: Readonly<Record<PowerupType, number>> = Object.f
   "phase-jacket": PHASE_JACKET_DURATION_SECONDS,
   "hunter-optics": HUNTER_OPTICS_DURATION_SECONDS,
   "last-stand-stimulant": LAST_STAND_STIMULANT_DURATION_SECONDS,
+  // Instant: detonates on pickup rather than running as a buff.
+  "emp-charge": 0,
+  "butchers-serum": BUTCHERS_SERUM_DURATION_SECONDS,
 });
 
 const POWERUP_WAVE_CYCLE: readonly PowerupType[] = Object.freeze([
@@ -1336,6 +1351,13 @@ export class CombatSimulation {
   /** Last Bastion Protocol: brace window and its long cooldown. */
   private braceRemainingSeconds = 0;
   private braceCooldownSeconds = 0;
+  /** Null Field: whether this wave's free hit has been spent. */
+  private nullFieldSpentThisWave = false;
+  /** Bastion Beacon: the one revive per run. */
+  private bastionBeaconSpent = false;
+  /** Overclock Core: current kill stacks and the decay timer. */
+  private overclockStacks = 0;
+  private overclockDecaySeconds = 0;
   /** Psionic "Telekinetic Focus": qualifying-hit counter. */
   private telekineticAttackCount = 0;
   /** Mutagenic "Reactive Blood": retaliation burst cooldown. */
@@ -3353,7 +3375,7 @@ export class CombatSimulation {
       this.damageObstacle(
         cover.id,
         weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats)
-          * this.currentPowerupDamageMultiplier(),
+          * this.currentPowerupDamageMultiplier() * weapon.stats.terrainDamageMultiplier,
         { x: cover.x + cover.width / 2, y: cover.y + cover.height / 2 },
         "player-melee",
       );
@@ -3709,6 +3731,7 @@ export class CombatSimulation {
       * (this.isBuffActive("last-stand-stimulant") ? LAST_STAND_STIMULANT_ATTACK_SPEED_MULTIPLIER : 1)
       * this.transformationModifiers.fireRateMultiplier
       * (this.isBraced() ? BRACE_ATTACK_SPEED_MULTIPLIER : 1)
+      * (1 + this.overclockStacks * this.relicModifiers.fireRatePerKill)
       * Math.max(0.1, 1 + this.playerStats.attackSpeedPercent / 100);
   }
 
@@ -3726,6 +3749,13 @@ export class CombatSimulation {
    */
   private updateArtifactTimers(deltaSeconds: number): void {
     this.retaliationCooldownSeconds = Math.max(0, this.retaliationCooldownSeconds - deltaSeconds);
+    if (this.overclockStacks > 0) {
+      this.overclockDecaySeconds -= deltaSeconds;
+      if (this.overclockDecaySeconds <= 0) {
+        this.overclockStacks -= 1;
+        this.overclockDecaySeconds = OVERCLOCK_STACK_DECAY_SECONDS;
+      }
+    }
     this.nearbyKillHealWindowSeconds = Math.max(0, this.nearbyKillHealWindowSeconds - deltaSeconds);
 
     const implosionEvery = this.relicModifiers.implosionEverySeconds;
@@ -3798,6 +3828,45 @@ export class CombatSimulation {
       enemyRadius(enemy),
       this.collisionArena(),
     );
+  }
+
+  /**
+   * Warp Anchor: a hit throws you clear of the nearest attacker. Uses the same
+   * collision resolution as every other displacement, so it cannot post you
+   * inside a wall.
+   */
+  private applyWarpAnchorBlink(): void {
+    const blink = this.relicModifiers.blinkOnHitMetres;
+    if (blink <= 0) return;
+    let nearest: EnemyState | null = null;
+    let nearestDistance = Infinity;
+    for (const enemy of this.enemies) {
+      if (enemy.dead) continue;
+      const candidate = distance(enemy.position, this.playerPosition);
+      if (candidate < nearestDistance) {
+        nearest = enemy;
+        nearestDistance = candidate;
+      }
+    }
+    if (!nearest) return;
+    const away = normalizeVector({
+      x: this.playerPosition.x - nearest.position.x,
+      y: this.playerPosition.y - nearest.position.y,
+    });
+    if (away.x === 0 && away.y === 0) return;
+    this.playerPosition = resolveCircleMovement(
+      this.playerPosition,
+      { x: this.playerPosition.x + away.x * blink, y: this.playerPosition.y + away.y * blink },
+      PLAYER_RADIUS_METRES,
+      this.collisionArena(),
+    );
+  }
+
+  /** Overclock Core: kills stack fire rate; the stacks decay if you stop killing. */
+  private addOverclockStack(): void {
+    if (this.relicModifiers.fireRateKillStackCap <= 0) return;
+    this.overclockStacks = Math.min(this.relicModifiers.fireRateKillStackCap, this.overclockStacks + 1);
+    this.overclockDecaySeconds = OVERCLOCK_STACK_DECAY_SECONDS;
   }
 
   /**
@@ -3933,6 +4002,10 @@ export class CombatSimulation {
       * (1 + this.weaponProficiencies[stats.weaponClass] * 0.04)
       * this.berserkerDamageMultiplier()
       * (stats.weaponClass === "heavy" ? this.transformationModifiers.heavyWeaponDamageMultiplier : 1)
+      // Butcher's Rig rewards committing to the close-quarters rack; the serum
+      // is its temporary, far louder version.
+      * (melee ? this.relicModifiers.meleeDamageMultiplier : 1)
+      * (melee && this.isBuffActive("butchers-serum") ? BUTCHERS_SERUM_MELEE_MULTIPLIER : 1)
       * outgoingDamageMultiplier(this.playerStats, { melee, elemental });
   }
 
@@ -4092,7 +4165,12 @@ export class CombatSimulation {
 
       const obstacle = this.activeObstacles().find((candidate) => pointHitsObstacle(projectile.position, [candidate]));
       if (obstacle) {
-        this.damageObstacle(obstacle.id, projectile.damage, projectile.position, "player-projectile");
+        this.damageObstacle(
+          obstacle.id,
+          projectile.damage * WEAPON_CATALOG[projectile.weaponId].terrainDamageMultiplier,
+          projectile.position,
+          "player-projectile",
+        );
         this.explodeProjectile(projectile, projectile.position);
         projectile.dead = true;
         this.frameEvents.push({
@@ -7778,7 +7856,15 @@ export class CombatSimulation {
     // Item dodge (Brotato overhaul): a chance to ignore the hit outright. Guarded
     // so a zero dodge chance draws no RNG, keeping the deterministic replay digest
     // stable for runs with no dodge items.
+    // Null Field: the first hit of each wave simply does not land.
+    if (this.relicModifiers.negatesFirstHitPerWave && !this.nullFieldSpentThisWave) {
+      this.nullFieldSpentThisWave = true;
+      this.frameEvents.push({ type: "projectile-blocked", position: { ...this.playerPosition } });
+      return;
+    }
     if (this.playerStats.dodgePercent > 0 && this.random() < this.playerStats.dodgePercent / 100) {
+      // Chrono Capacitor: a successful dodge refunds part of the evasive cooldown.
+      this.heroMotion.refundEvasiveCooldown(this.relicModifiers.evasiveRefundOnDodge);
       this.frameEvents.push({ type: "projectile-blocked", position: { ...this.playerPosition } });
       return;
     }
@@ -7796,9 +7882,15 @@ export class CombatSimulation {
     this.shieldRechargeCooldownSeconds = this.defence.shieldRechargeDelaySeconds * this.relicModifiers.shieldRechargeDelayMultiplier;
     if (absorption.remainingDamage > 0) {
       const entrenchedBonus = this.isPlayerEntrenched() ? this.hero.passive.bonusArmour : 0;
+      // Riot Plating: armour that only counts while something is in your face.
+      const closeQuartersBonus = this.relicModifiers.closeQuartersArmour > 0
+        && this.enemies.some((enemy) => !enemy.dead
+          && distance(enemy.position, this.playerPosition) <= RIOT_PLATING_RANGE_METRES)
+        ? this.relicModifiers.closeQuartersArmour
+        : 0;
       let mitigated = mitigateDamage(
         absorption.remainingDamage,
-        this.defence.armour + entrenchedBonus,
+        this.defence.armour + entrenchedBonus + closeQuartersBonus,
         this.defence.flatDamageReduction,
       );
       if (this.playerHealth / this.playerMaxHealth < 0.3) {
@@ -7815,7 +7907,19 @@ export class CombatSimulation {
       position: { ...this.playerPosition },
       damage: rawDamage,
     });
-    if (this.playerHealth <= 0) this.status = "defeat";
+    // Warp Anchor: being hit throws you clear of whatever hit you.
+    this.applyWarpAnchorBlink();
+    if (this.playerHealth <= 0) {
+      // Bastion Beacon: the first lethal hit of a run leaves you standing.
+      if (this.relicModifiers.revivesOnce && !this.bastionBeaconSpent) {
+        this.bastionBeaconSpent = true;
+        this.playerHealth = Math.max(1, this.playerMaxHealth * 0.15);
+        this.playerHurtCooldownSeconds = Math.max(this.playerHurtCooldownSeconds, 1.5);
+        this.frameEvents.push({ type: "player-revived", position: { ...this.playerPosition } });
+      } else {
+        this.status = "defeat";
+      }
+    }
   }
 
   private scaledEnemyDamage(enemy: EnemyState, baseDamage: number): number {
@@ -7896,6 +8000,23 @@ export class CombatSimulation {
         this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount });
       }
       this.applyHealthPickupSlowPulse();
+      return;
+    }
+    if (type === "emp-charge") {
+      // Instant crowd-breaker: Overload stuns everything in a wide ring, which
+      // is the panic button the close-quarters rack wants when it gets swamped.
+      for (const enemy of this.enemies) {
+        if (enemy.dead) continue;
+        if (distance(enemy.position, this.playerPosition) > EMP_CHARGE_RADIUS_METRES) continue;
+        if (!this.canStatusApply(enemy, "overload")) continue;
+        enemy.statusTimers.overload = STATUS_RULES.overload.durationSeconds;
+        this.frameEvents.push({ type: "status-applied", position: { ...enemy.position }, status: "overload" });
+      }
+      this.frameEvents.push({
+        type: "mini-boss-shockwave",
+        position: { ...this.playerPosition },
+        radiusMetres: EMP_CHARGE_RADIUS_METRES,
+      });
       return;
     }
     this.activeBuffs.set(
@@ -7990,6 +8111,14 @@ export class CombatSimulation {
       ))
     ) {
       mitigated *= 0.55;
+    }
+
+    // Executioner's Mark: finish wounded enemies faster.
+    if (
+      this.relicModifiers.executeBonusDamage > 0
+      && enemy.health / Math.max(1, enemy.maxHealth) <= EXECUTE_HEALTH_FRACTION
+    ) {
+      mitigated *= 1 + this.relicModifiers.executeBonusDamage;
     }
 
     const status = STATUS_BY_DAMAGE_TYPE[damageType];
@@ -8215,6 +8344,7 @@ export class CombatSimulation {
     });
     // Symbiote Heart artifact: kills restore a sliver of health.
     this.applyNearbyKillHealing(enemy.position);
+    this.addOverclockStack();
     if (this.relicModifiers.lifestealPerKill > 0 && this.playerHealth < this.playerMaxHealth) {
       const healed = Math.min(this.relicModifiers.lifestealPerKill, this.playerMaxHealth - this.playerHealth);
       this.playerHealth += healed;
@@ -8631,6 +8761,7 @@ export class CombatSimulation {
       return;
     }
     this.expeditionWaveIndex = index;
+    this.nullFieldSpentThisWave = false;
     this.waveIndex = plan.directorWaveIndex;
     this.waveElapsedSeconds = 0;
     this.status = "combat";

@@ -1519,6 +1519,8 @@ export function resolveEventChoice(
   let weapons = build.weapons.map((weapon) => ({ ...weapon }));
   let upgrades = build.upgrades.map((upgrade) => ({ ...upgrade }));
   let relicIds = [...(build.relicIds ?? [])];
+  /** Relics given up earlier in this resolution, so a trade cannot return them. */
+  const surrendered: RelicId[] = [];
   let transformation = build.transformation ?? createTransformationAffinityState();
   const initialTransformation = transformation;
 
@@ -1557,7 +1559,14 @@ export function resolveEventChoice(
         weapons = weapons.slice(0, -1);
         break;
       case "grantRelic":
-        effects.relicIds.push(outcome.relicId ?? pickRelic(RELIC_IDS, roll, effects.relicIds));
+        // Exclude what the player already owns *and* anything surrendered
+        // earlier in this same resolution. Whispering Cargo removes a relic and
+        // then grants one, so without the second exclusion the pod could hand
+        // back the exact relic you just traded away — which it did, as soon as
+        // the relic pool grew enough for the seeded roll to land on it.
+        effects.relicIds.push(
+          outcome.relicId ?? pickRelic(RELIC_IDS, roll, [...relicIds, ...surrendered, ...effects.relicIds]),
+        );
         break;
       case "grantArtifact":
         effects.artifactIds.push(outcome.artifactId);
@@ -1585,9 +1594,12 @@ export function resolveEventChoice(
       case "removeUpgrade":
         upgrades = removeUpgrade(upgrades, outcome.upgradeId);
         break;
-      case "purifyRelic":
+      case "purifyRelic": {
+        const removed = outcome.relicId ?? relicIds[relicIds.length - 1];
+        if (removed) surrendered.push(removed);
         relicIds = removeRelic(relicIds, outcome.relicId);
         break;
+      }
       case "fullCleanse": {
         const currentBonus = build.maxHealthBonus ?? 0;
         if (currentBonus < 0) effects.maxHealthDelta -= currentBonus;

@@ -21,7 +21,10 @@ export type RelicId =
   | "rel-blast-baffle"
   | "rel-hunters-beacon"
   | "rel-field-lattice"
-  | "rel-kinetic-greaves";
+  | "rel-kinetic-greaves"
+  | "rel-butchers-rig"
+  | "rel-riot-plating"
+  | "rel-executioners-mark";
 
 export type ArtifactId =
   | "art-event-horizon-core"
@@ -30,7 +33,12 @@ export type ArtifactId =
   | "art-scavengers-manifest"
   | "art-symbiote-heart"
   | "art-berserkers-chip"
-  | "art-aegis-reactor";
+  | "art-aegis-reactor"
+  | "art-overclock-core"
+  | "art-chrono-capacitor"
+  | "art-bastion-beacon"
+  | "art-null-field"
+  | "art-warp-anchor";
 
 export interface RelicDefinition {
   id: RelicId;
@@ -52,6 +60,9 @@ export const RELIC_CATALOG: readonly RelicDefinition[] = Object.freeze([
   { id: "rel-hunters-beacon", name: "Hunter's Beacon", description: "Elites are marked earlier and take bonus damage right after a telegraphed miss." },
   { id: "rel-field-lattice", name: "Field Lattice", description: "Picking up health emits a short slowing pulse around you." },
   { id: "rel-kinetic-greaves", name: "Kinetic Greaves", description: "Your evasive move travels further, but its recovery is slightly longer." },
+  { id: "rel-butchers-rig", name: "Butcher's Rig", description: "Melee weapons hit considerably harder." },
+  { id: "rel-riot-plating", name: "Riot Plating", description: "You gain armour while anything is inside arm's reach." },
+  { id: "rel-executioners-mark", name: "Executioner's Mark", description: "You deal bonus damage to badly wounded enemies." },
 ]);
 
 export const ARTIFACT_CATALOG: readonly ArtifactDefinition[] = Object.freeze([
@@ -62,6 +73,11 @@ export const ARTIFACT_CATALOG: readonly ArtifactDefinition[] = Object.freeze([
   { id: "art-symbiote-heart", name: "Symbiote Heart", description: "Killing an enemy restores a sliver of health." },
   { id: "art-berserkers-chip", name: "Berserker's Chip", description: "The lower your health, the more damage you deal — up to +50% at critical." },
   { id: "art-aegis-reactor", name: "Aegis Reactor", description: "Your shield recharges faster and starts sooner after taking damage." },
+  { id: "art-overclock-core", name: "Overclock Core", description: "Each kill briefly stacks fire rate; the stacks decay if you stop killing." },
+  { id: "art-chrono-capacitor", name: "Chrono Capacitor", description: "Dodging an attack refunds part of your evasive cooldown." },
+  { id: "art-bastion-beacon", name: "Bastion Beacon", description: "The first death in a run leaves you standing at a sliver of health. Once only." },
+  { id: "art-null-field", name: "Null Field", description: "The first hit you take each wave is negated entirely." },
+  { id: "art-warp-anchor", name: "Warp Anchor", description: "Taking a hit blinks you a short distance away from the attacker." },
 ]);
 
 export const RELIC_IDS: readonly RelicId[] = Object.freeze(RELIC_CATALOG.map((relic) => relic.id));
@@ -96,6 +112,23 @@ export interface RelicRunModifiers {
   /** The single equipped artifact, or null. */
   equippedArtifactId: ArtifactId | null;
   /** Event Horizon Core: seconds between implosion charges, or null. */
+  /** Butcher's Rig: multiplies melee-pattern weapon damage. */
+  meleeDamageMultiplier: number;
+  /** Riot Plating: extra armour while an enemy is within arm's reach. */
+  closeQuartersArmour: number;
+  /** Executioner's Mark: bonus damage fraction against badly wounded enemies. */
+  executeBonusDamage: number;
+  /** Overclock Core: fire-rate gained per kill stack, and how many stack. */
+  fireRatePerKill: number;
+  fireRateKillStackCap: number;
+  /** Chrono Capacitor: fraction of the evasive cooldown refunded on a dodge. */
+  evasiveRefundOnDodge: number;
+  /** Bastion Beacon: survive the first lethal hit of the run once. */
+  revivesOnce: boolean;
+  /** Null Field: negate the first hit taken each wave. */
+  negatesFirstHitPerWave: boolean;
+  /** Warp Anchor: metres blinked away from an attacker when hit. */
+  blinkOnHitMetres: number;
   implosionEverySeconds: number | null;
   /** Broodbreaker Seal: damage dealt to nearby aliens when an egg dies. */
   eggDeathDamage: number;
@@ -127,6 +160,15 @@ export const NO_RELIC_MODIFIERS: Readonly<RelicRunModifiers> = Object.freeze({
   evasiveDistanceMultiplier: 1,
   evasiveRecoveryMultiplier: 1,
   equippedArtifactId: null,
+  meleeDamageMultiplier: 1,
+  closeQuartersArmour: 0,
+  executeBonusDamage: 0,
+  fireRatePerKill: 0,
+  fireRateKillStackCap: 0,
+  evasiveRefundOnDodge: 0,
+  revivesOnce: false,
+  negatesFirstHitPerWave: false,
+  blinkOnHitMetres: 0,
   implosionEverySeconds: null,
   eggDeathDamage: 0,
   preventHatchDuringCrack: false,
@@ -185,6 +227,15 @@ export function resolveRelicModifiers(
   if (owned.has("rel-field-lattice")) {
     modifiers.healthPickupSlowPulse = true;
   }
+  if (owned.has("rel-butchers-rig")) {
+    modifiers.meleeDamageMultiplier = 1.25;
+  }
+  if (owned.has("rel-riot-plating")) {
+    modifiers.closeQuartersArmour = 4;
+  }
+  if (owned.has("rel-executioners-mark")) {
+    modifiers.executeBonusDamage = 0.5;
+  }
   if (owned.has("rel-kinetic-greaves")) {
     modifiers.evasiveDistanceMultiplier = 1.25;
     modifiers.evasiveRecoveryMultiplier = 1.2;
@@ -195,6 +246,22 @@ export function resolveRelicModifiers(
     switch (equippedArtifactId) {
       case "art-event-horizon-core":
         modifiers.implosionEverySeconds = 8;
+        break;
+      case "art-overclock-core":
+        modifiers.fireRatePerKill = 0.06;
+        modifiers.fireRateKillStackCap = 5;
+        break;
+      case "art-chrono-capacitor":
+        modifiers.evasiveRefundOnDodge = 0.5;
+        break;
+      case "art-bastion-beacon":
+        modifiers.revivesOnce = true;
+        break;
+      case "art-null-field":
+        modifiers.negatesFirstHitPerWave = true;
+        break;
+      case "art-warp-anchor":
+        modifiers.blinkOnHitMetres = 3;
         break;
       case "art-broodbreaker-seal":
         modifiers.eggDeathDamage = 4;

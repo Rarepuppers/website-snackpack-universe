@@ -184,6 +184,47 @@ describe("relic combat effects", () => {
     expect(arcs(["rel-salvaged-capacitor"])).toBeGreaterThan(0);
   });
 
+  it("Bastion Beacon converts the first lethal hit into a sliver of health", () => {
+    const survives = (artifactId: string | null): boolean => {
+      const simulation = new CombatSimulation({
+        autoStartWaves: false,
+        startingBuild: { ...build([]), health: 2, equippedArtifactId: artifactId as never },
+      });
+      const player = simulation.snapshot().playerPosition;
+      const mite = simulation.spawnEnemy("blast-mite", { x: player.x + 0.2, y: player.y });
+      simulation.dealDamage(mite, 9999);
+      for (let tick = 0; tick < 60; tick += 1) simulation.step(IDLE, 0.05);
+      return simulation.snapshot().status !== "defeat";
+    };
+    expect(survives("art-bastion-beacon")).toBe(true);
+  });
+
+  it("Null Field eats the first hit of the wave", () => {
+    const damageTaken = (artifactId: string | null): number => {
+      const simulation = new CombatSimulation({
+        autoStartWaves: false,
+        startingBuild: { ...build([]), equippedArtifactId: artifactId as never },
+      });
+      const before = simulation.snapshot().playerHealth;
+      const player = simulation.snapshot().playerPosition;
+      const mite = simulation.spawnEnemy("blast-mite", { x: player.x + 0.3, y: player.y });
+      simulation.dealDamage(mite, 9999);
+      for (let tick = 0; tick < 40; tick += 1) simulation.step(IDLE, 0.05);
+      return before - simulation.snapshot().playerHealth;
+    };
+    const bare = damageTaken(null);
+    expect(bare).toBeGreaterThan(0);
+    expect(damageTaken("art-null-field")).toBe(0);
+  });
+
+  it("Butcher's Rig only lifts melee, not the rifle", () => {
+    const modifiers = resolveRelicModifiers(["rel-butchers-rig"], null);
+    expect(modifiers.meleeDamageMultiplier).toBeGreaterThan(1);
+    // Ranged weapons must not inherit it — the relic is the melee commitment.
+    const neutral = resolveRelicModifiers([], null);
+    expect(neutral.meleeDamageMultiplier).toBe(1);
+  });
+
   it("every relic in the live pool sets at least one modifier that combat reads", () => {
     // A catalogue-level guard: a relic whose fields are all unread is a placebo
     // pickup, and the player cannot tell the difference.

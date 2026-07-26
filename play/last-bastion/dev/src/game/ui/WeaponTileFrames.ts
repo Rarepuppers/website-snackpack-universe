@@ -24,5 +24,14 @@ export function canonicalWeaponTileFrame(weaponId: WeaponId): number {
     // doesn't really apply to it. Returns a placeholder only so the switch
     // stays exhaustive; real rendering should reach for its own asset id.
     case "event-horizon": return 7;
+    // Close-quarters family (25 July 2026): no Batch I slots yet. The melee
+    // tools borrow the Patrol Blade's frame rather than the rifle's, so the
+    // placeholder at least reads as a blade.
+    case "combat-knife": return 1;
+    case "machete": return 1;
+    case "fire-axe": return 1;
+    case "shock-baton": return 1;
+    case "breaching-maul": return 1;
+    case "plasma-saber": return 1;
   }
 }

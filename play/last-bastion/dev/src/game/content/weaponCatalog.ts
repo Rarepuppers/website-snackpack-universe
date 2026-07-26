@@ -1,7 +1,8 @@
 import type { DamageType } from "../combat/damageTypes";
 import type { WeaponClass } from "../hero/HeroDefinition";
 
-export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine" | "railspike" | "seeker-swarm" | "cryo-lance" | "tesla-coil" | "flamethrower" | "sawblade" | "event-horizon";
+export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine" | "railspike" | "seeker-swarm" | "cryo-lance" | "tesla-coil" | "flamethrower" | "sawblade" | "event-horizon"
+  | "combat-knife" | "machete" | "fire-axe" | "shock-baton" | "breaching-maul" | "plasma-saber";
 export type WeaponTargetingMode = "cursor" | "nearest-enemy";
 export type WeaponAttackPattern = "projectile" | "scatter" | "chain-projectile" | "melee-sweep" | "beam" | "orbit" | "orbit-blade";
 
@@ -60,6 +61,11 @@ export interface WeaponRuntimeStats {
   pullFieldDurationSeconds: number;
   pullStrengthMetresPerSecond: number;
   pullRadiusMetres: number;
+  /**
+   * Multiplies damage dealt to arena obstacles. Breaching tools cut cover apart
+   * in a couple of swings; a knife barely scratches it. 1 = ordinary.
+   */
+  terrainDamageMultiplier: number;
 }
 
 export const BASTION_SERVICE_RIFLE: Readonly<WeaponRuntimeStats> = weapon({
@@ -322,6 +328,135 @@ export const EVENT_HORIZON: Readonly<WeaponRuntimeStats> = weapon({
   pullRadiusMetres: 4.5,
 });
 
+/* ──────────────────────────────────────────────────────────────────────────
+   Close-quarters family (25 July 2026)
+   ──────────────────────────────────────────────────────────────────────────
+   The rack had exactly one melee option (Patrol Blade) against an arena whose
+   whole pressure model is "things reach you". These six cover the archetypes
+   separately so the choice between them is real:
+
+     stab       narrow arc, fast, cheap    → Combat Knife
+     arc        wide swing, crowd peel     → Machete
+     ignite     fire proc on contact       → Fire Axe
+     chain      shock proc that jumps      → Shock Baton
+     knockback  space-clearing shove       → Breaching Maul
+     breaching  cuts cover apart           → Plasma Saber
+
+   Reactive tools auto-fire at the nearest body (you do not aim a knife when
+   something is already on you); the heavy, deliberate ones stay cursor-aimed.
+   ────────────────────────────────────────────────────────────────────────── */
+
+export const COMBAT_KNIFE: Readonly<WeaponRuntimeStats> = weapon({
+  id: "combat-knife",
+  displayName: "Combat Knife",
+  description: "Fast forward thrust. Almost no reach, almost no wind-up.",
+  weaponClass: "light",
+  damageType: "physical",
+  targetingMode: "nearest-enemy",
+  attackPattern: "melee-sweep",
+  rangeMetres: 1.8,
+  fireIntervalSeconds: 0.38,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 2.5,
+  // A thrust, not a swing: a narrow cone that only catches what is in front.
+  meleeArcRadians: 0.35,
+  firesAutomatically: true,
+  terrainDamageMultiplier: 0.3,
+});
+
+export const MACHETE: Readonly<WeaponRuntimeStats> = weapon({
+  id: "machete",
+  displayName: "Machete",
+  description: "Wide clearing swing that peels a whole doorway off you.",
+  weaponClass: "light",
+  damageType: "physical",
+  targetingMode: "nearest-enemy",
+  attackPattern: "melee-sweep",
+  rangeMetres: 2.2,
+  fireIntervalSeconds: 0.95,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 5,
+  meleeArcRadians: Math.PI * 0.6,
+  knockbackMetres: 0.3,
+  firesAutomatically: true,
+});
+
+export const FIRE_AXE: Readonly<WeaponRuntimeStats> = weapon({
+  id: "fire-axe",
+  displayName: "Fire Axe",
+  description: "Heavy incendiary chop. Everything it bites starts burning.",
+  weaponClass: "medium",
+  damageType: "fire",
+  targetingMode: "cursor",
+  attackPattern: "melee-sweep",
+  rangeMetres: 2.4,
+  fireIntervalSeconds: 1.4,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 6,
+  meleeArcRadians: Math.PI * 0.5,
+  knockbackMetres: 0.4,
+  terrainDamageMultiplier: 1.8,
+});
+
+export const SHOCK_BATON: Readonly<WeaponRuntimeStats> = weapon({
+  id: "shock-baton",
+  displayName: "Shock Baton",
+  description: "Short jabs that arc Overload into whatever is packed behind.",
+  weaponClass: "light",
+  damageType: "shock",
+  targetingMode: "nearest-enemy",
+  attackPattern: "melee-sweep",
+  rangeMetres: 2,
+  fireIntervalSeconds: 0.7,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 3,
+  meleeArcRadians: 0.5,
+  chainCount: 1,
+  chainRadiusMetres: 2.8,
+  firesAutomatically: true,
+  terrainDamageMultiplier: 0.4,
+});
+
+export const BREACHING_MAUL: Readonly<WeaponRuntimeStats> = weapon({
+  id: "breaching-maul",
+  displayName: "Breaching Maul",
+  description: "Slow two-handed swing that throws bodies and flattens cover.",
+  weaponClass: "heavy",
+  damageType: "physical",
+  targetingMode: "cursor",
+  attackPattern: "melee-sweep",
+  rangeMetres: 2.6,
+  fireIntervalSeconds: 2.2,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 9,
+  meleeArcRadians: Math.PI * 0.45,
+  // The space-maker: nothing else in the rack shoves this hard.
+  knockbackMetres: 1.6,
+  terrainDamageMultiplier: 4,
+});
+
+export const PLASMA_SABER: Readonly<WeaponRuntimeStats> = weapon({
+  id: "plasma-saber",
+  displayName: "Plasma Saber",
+  description: "A contained plasma edge. Cuts bodies and bulkheads alike.",
+  weaponClass: "medium",
+  damageType: "fire",
+  targetingMode: "cursor",
+  attackPattern: "melee-sweep",
+  rangeMetres: 3,
+  fireIntervalSeconds: 1.1,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 8,
+  meleeArcRadians: Math.PI * 0.9,
+  terrainDamageMultiplier: 3,
+});
+
 export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeStats>>> = Object.freeze({
   "bastion-service-rifle": BASTION_SERVICE_RIFLE,
   scattergun: SCATTERGUN,
@@ -338,6 +473,12 @@ export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeSta
   flamethrower: FLAMETHROWER,
   sawblade: SAWBLADE,
   "event-horizon": EVENT_HORIZON,
+  "combat-knife": COMBAT_KNIFE,
+  machete: MACHETE,
+  "fire-axe": FIRE_AXE,
+  "shock-baton": SHOCK_BATON,
+  "breaching-maul": BREACHING_MAUL,
+  "plasma-saber": PLASMA_SABER,
 });
 
 export const VERTICAL_SLICE_WEAPON_IDS: readonly WeaponId[] = Object.freeze([
@@ -382,6 +523,15 @@ const HELD_WEAPONS: readonly WeaponId[] = Object.freeze([
   "tesla-coil",
   "flamethrower",
   "sawblade",
+  // Close-quarters family (25 July 2026). Held on the same gate so the whole
+  // backlog becomes obtainable in one change; they borrow the Patrol Blade tile
+  // in the meantime, so flipping early only costs tile fidelity, not function.
+  "combat-knife",
+  "machete",
+  "fire-axe",
+  "shock-baton",
+  "breaching-maul",
+  "plasma-saber",
 ]);
 
 /** Needs a Unique-slot acquisition path before it can join the pool at all. */
@@ -417,6 +567,7 @@ function weapon(
     pullFieldDurationSeconds: 0,
     pullStrengthMetresPerSecond: 0,
     pullRadiusMetres: 0,
+    terrainDamageMultiplier: 1,
     ...definition,
   });
 }

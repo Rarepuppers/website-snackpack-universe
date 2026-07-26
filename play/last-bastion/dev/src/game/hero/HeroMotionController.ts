@@ -36,6 +36,16 @@ export class HeroMotionController {
 
   constructor(private readonly hero: HeroDefinition) {}
 
+  /**
+   * Chrono Capacitor: a successful dodge hands back part of the evasive
+   * cooldown. A no-op at zero, so the ordinary case is untouched.
+   */
+  refundEvasiveCooldown(fraction: number): void {
+    if (fraction <= 0 || this.evasiveCooldownRemainingSeconds <= 0) return;
+    const kept = 1 - Math.min(1, fraction);
+    this.evasiveCooldownRemainingSeconds *= kept;
+  }
+
   /** Applied by `CombatSimulation` once the run's relics are resolved. */
   setEvasiveModifiers(modifiers: EvasiveMoveModifiers): void {
     this.evasiveModifiers = {

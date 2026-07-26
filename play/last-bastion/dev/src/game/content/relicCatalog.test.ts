@@ -13,11 +13,11 @@ import {
 } from "./relicCatalog";
 
 describe("relic/artifact catalog integrity", () => {
-  it("has six relics and seven artifacts with unique ids and copy", () => {
-    expect(RELIC_CATALOG).toHaveLength(6);
-    expect(ARTIFACT_CATALOG).toHaveLength(7);
-    expect(new Set(RELIC_IDS).size).toBe(6);
-    expect(new Set(ARTIFACT_IDS).size).toBe(7);
+  it("has nine relics and twelve artifacts with unique ids and copy", () => {
+    expect(RELIC_CATALOG).toHaveLength(9);
+    expect(ARTIFACT_CATALOG).toHaveLength(12);
+    expect(new Set(RELIC_IDS).size).toBe(9);
+    expect(new Set(ARTIFACT_IDS).size).toBe(12);
     for (const relic of RELIC_CATALOG) {
       expect(relic.id.startsWith("rel-")).toBe(true);
       expect(relic.name.length).toBeGreaterThan(0);

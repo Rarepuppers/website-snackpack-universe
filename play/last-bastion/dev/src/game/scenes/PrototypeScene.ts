@@ -4261,6 +4261,8 @@ function powerupColor(type: PowerupType): number {
     case "phase-jacket": return 0x5adfe0;
     case "hunter-optics": return 0xe8b24a;
     case "last-stand-stimulant": return 0xff4d5e;
+    case "emp-charge": return 0x8fd8ff;
+    case "butchers-serum": return 0xff5f5f;
   }
 }
 
@@ -4313,6 +4315,8 @@ function powerupRewardFrame(type: PowerupType): number {
     case "phase-jacket": return 9;
     case "hunter-optics": return 10;
     case "last-stand-stimulant": return 11;
+    case "emp-charge": return 10;
+    case "butchers-serum": return 8;
   }
 }
 

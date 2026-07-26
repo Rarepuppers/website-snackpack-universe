@@ -1788,3 +1788,50 @@ The **item-economy section**. Adding 26 entries means a new tab, a new array and
 Also excluded, with a reason and its own honesty check: the 6 summoned child units (nest-pod, nest-hatchling, storm-node, foundry-pad, foundry-drone, foundry-turret) are payloads of a parent summoner whose threat cost already bundles them, so they belong in the parent's entry rather than their own.
 
 Verification: typecheck clean, **846 tests across 119 files pass** (was 840). Browser-verified against the static site server — the codex loads with no console errors, `WEAPONS` is 38 (was 32), `RELICS` is 13 (was 9), and the new weapon and artifact entries render on their tabs. (Note for future sessions: the codex lives outside Vite's root, so `last-bastion-dev` serves the SPA fallback for it — use the `website` server on 4179 instead.)
+
+## 25 July 2026 - Content expansion: melee family, 8 new pickups, 2 consumables
+
+Creator request: more weapons — especially melee for when things close the distance — plus more artifacts, relics and consumables.
+
+### The close-quarters family (6 weapons)
+
+The rack had exactly **one** melee option (Patrol Blade) against an arena whose entire pressure model is "things reach you". Six new weapons, each a distinct archetype so the choice between them is real rather than six flavours of swing:
+
+| Weapon | Archetype | Shape |
+| --- | --- | --- |
+| Combat Knife | stab | 0.35 rad thrust, 0.38s, reach 1.8m |
+| Machete | swinging arc | 108° swing, 0.95s |
+| Fire Axe | ignite | 90°, Fire damage type → Blaze buildup |
+| Shock Baton | chain | 0.5 rad jab, Shock, `chainCount: 1` |
+| Breaching Maul | knockback | 1.6m shove — hardest in the catalogue — 2.2s |
+| Plasma Saber | breaching | 162° arc, terrain ×3 |
+
+Reactive tools (knife, machete, baton) auto-fire at the nearest body, following the Patrol Blade precedent — you do not aim a knife at something already inside your guard. The heavy deliberate ones stay cursor-aimed.
+
+**One new engine knob:** `terrainDamageMultiplier` on `WeaponRuntimeStats`, applied at both the melee-sweep and projectile obstacle-damage sites. "Good at breaking walls" is now a real number (Maul ×4, Saber ×3, Knife ×0.3) rather than flavour text.
+
+The type system did most of the work here: adding six ids surfaced four separate registries that had to be completed — `WEAPON_CATALOG`, `AudioCueMap`, `WeaponTileFrames`, and the codex drift guard. Every one is an exhaustive `Record<WeaponId, …>` or a switch, so nothing could be half-added.
+
+### Relics (6 → 9) and artifacts (7 → 12)
+
+New relics all support the melee push: **Butcher's Rig** (+25% melee), **Riot Plating** (+4 armour while anything is within 2m), **Executioner's Mark** (+50% damage to enemies under 30% health).
+
+The five artifacts are the ones `last-bastion-model.md` designed and nobody ever authored: **Overclock Core** (kill-stacked fire rate, decaying), **Chrono Capacitor** (dodge refunds half the evasive cooldown), **Bastion Beacon** (survive the first lethal hit of a run once), **Null Field** (first hit of each wave negated), **Warp Anchor** (blink clear of whatever hit you).
+
+**Every one of the nine new modifier fields was wired before the entry shipped**, and verified by grep afterwards — 1–2 combat read-sites each, zero placebos. That was the entire point of the preceding three sessions and it would have been absurd to reintroduce the disease while adding content.
+
+### Consumables (10 → 12)
+
+**EMP Charge** — instant, Overloads everything within 5m on pickup. **Butcher's Serum** — +60% melee damage for 8s, the temporary loud version of Butcher's Rig.
+
+### A latent bug the new content exposed
+
+Adding relics broke `EncounterEventCatalog.test.ts`'s Whispering Cargo case, and it was **right to break**. The `trade-relic` choice resolves `purifyRelic` (remove) then `grantRelic` (add), but `grantRelic` computed its exclusion list from `effects.relicIds` — relics granted *in this same resolution* — so it excluded neither the player's owned relics nor the one just surrendered. **The pod could hand back the exact relic you traded away.** With 6 relics the seeded roll happened to miss; at 9 it landed. Fixed by tracking a `surrendered` list and excluding owned + surrendered + already-granted. A content addition surfacing a real logic bug is the good case — the test was load-bearing.
+
+### Held state
+
+All six melee weapons join the existing `HELD_WEAPONS_IN_POOL` gate rather than getting their own, so art day stays **one constant for the whole 12-weapon backlog**. They borrow the Patrol Blade tile meanwhile, so flipping early costs tile fidelity, not function. Verified in both flag states.
+
+Verification: typecheck clean, **854 tests across 121 files pass** (was 846), both flag states green. Codex updated for all 16 new entries (6 weapons, 3 relics, 5 artifacts, 2 consumables) — the drift guard demanded them, which is exactly what it was built for.
+
+**Unvalidated:** every number here is authored, not felt. The melee damage/cadence curve, the Maul's 1.6m shove, Overclock's 6%-per-stack and Riot Plating's 2m threshold all need next week's playtest.
