@@ -1922,6 +1922,7 @@ Verification: typecheck clean, **874 tests across 122 files pass** (was 854), pr
 - Verification: **899 tests across 125 files pass**, typecheck clean, production build clean.
 - Remaining: creator listening pass for loudness/transient balance, maximum-density overlap review, accessibility review, and contextual follow-up for stems whose final gameplay event resolver is not yet live (recovery, shield, and pack-rush cues).
 - Added `audio:loudness:s23`, a reproducible FFmpeg/EBU R128 scan for all 48 S2/S3 OGG and MP3 derivatives. It writes `audio/production/s23-loudness-audit.json`; contextual in-game listening and final approval remain creator-owned.
+- S2/S3 loudness scan completed: 48/48 derivatives report EBU metrics, all true peaks remain below -4.7 dBFS, and OGG/MP3 integrated loudness matches per cue. Some short impacts sit at the EBU floor near -70 LUFS, so creator listening remains the meaningful acceptance gate; the largest observed OGG/MP3 peak delta is 2.0 dB on reinforced-cover-impact.
 
 ## 26 July 2026 — Full post-audio verification
 
@@ -1947,6 +1948,7 @@ Verification: typecheck clean, **874 tests across 122 files pass** (was 854), pr
 - Added three more text-free 1536x1024 map backdrop plates for Science Wing, Void Approach, and Arctic Relay; six authored region plates are now registered, with procedural fallback retained for the remaining themes.
 - Corrected the production review audit so it reflects the live Marine/Medic full-height select portraits and six active map-region plates instead of the earlier placeholder-only state.
 - Steam footprint audit: the current runtime package contains 513 art/audio files at approximately 92.08 MB; the six new map plates are the largest runtime raster family at roughly 1.98–2.61 MB each. Source/provenance art remains separate from the runtime budget.
+- Browser review: `?worldobjects=alien-hive&theme=alien-hive&debug=1` boots the live combat scene with deterministic cover/hazard placements and no console errors. Stable debug IDs are visible for review; objective-anchor interactions remain intentionally excluded from ordinary placement.
 - Matching expedition themes now use the authored plates with a readability veil; all other regions retain the deterministic code-native fallback.
 - Node symbols, route lines, fog-of-war, labels, selection, and travel motion remain code-owned. Full HD/4K, grayscale, colour-vision, and dense-route promotion review remains open.
 
