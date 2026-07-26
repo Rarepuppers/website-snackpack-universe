@@ -52,7 +52,7 @@ High durability is not the same as indestructible. Any object that can block the
 ## Recommended production order
 
 1. **Completed - Object Batch O1:** structural/destructible atlases for broken walls, racks, lockers, reinforced gates, boulders, mounds, trees, ice blocks, overgrowth, webs, biomass nodes, and alien crystals, each with intact/damaged/critical/destroyed states. Small rocks may reuse/scaledown the boulder row until density review proves a distinct silhouette is necessary.
-2. Hazard atlas: slime, toxic, fire, lava, ice fracture, web slow, and their edge/transition frames.
+2. **Started 26 July 2026 - Object Batch O2:** persistent loop and transition candidates for slime, toxic, fire, and lava are retained under `art/production-tests/object-batch-o2/`. Web slow, ice fracture/degradation, recovery decals, mixed-floor review, colour-vision review, and runtime binding remain open.
 3. Interaction atlas: gates, buttons, control panels, monster teleporter, stargate, turret/trap consoles, cryogenic tube, and weapon-upgrade station with idle/ready/active/disabled/completed states.
 4. Theme binding and deterministic placement recipes.
 5. Navigation, colour-vision, controller-interaction, maximum-density, and 45-90-second encounter reviews.
@@ -66,4 +66,4 @@ Boss-arena art remains gated. These standard-room tactical objects should be pro
 - Twelve catalog entries carry explicit asset/row bindings; the remaining catalog entries continue to use code-native or earlier fallback visuals until their batches exist.
 - Source/chroma, clean-alpha masters, prompts, deterministic normalizer, runtime copies, and a contact sheet are retained under `art/production-tests/object-batch-o1/`.
 - The asset gallery route is `?mode=gallery&batch=o1`.
-- Next production package: Object Batch O2 persistent hazards and transition/edge language. Runtime placement and state switching remain a separate implementation gate.
+- Current production package: Object Batch O2 persistent hazards and transition/edge language. O2A loop/transition candidates exist; O2B control surfaces and all gameplay acceptance remain open. Runtime placement and state switching remain a separate implementation gate.
