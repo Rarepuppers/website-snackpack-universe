@@ -38,6 +38,18 @@ The code and plans agree that world-object art remains the current production ga
 
 18. **Object Batch O10 â€” fabrication + maintenance:** three 2Ã—2 atlases now stage transport/fabrication, maintenance fabrication, and hazard-neutral maintenance props under `art/production-tests/object-batch-o10/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
 
+19. **Object Batch O11 â€” architectural transitions:** three 2Ã—2 atlases now stage vertical transitions, railings/guardrails, and airlock frames under `art/production-tests/object-batch-o11/`. Keep walkability, collision, transitions, interaction, hazards, rewards, telegraphs, and placement code-owned.
+
+20. **Object Batch O12 â€” habitat + identity:** three 2Ã—2 atlases now stage habitat/life-support, communications/network, and storage identity props under `art/production-tests/object-batch-o12/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+21. **Object Batch O13 â€” faction dressing:** three 2Ã—2 atlases now stage machine-foundry, cryogenic-lab, and hive/void themed props under `art/production-tests/object-batch-o13/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+22. **Object Batch O14 â€” energy + ruins + flora:** three 2Ã—2 atlases now stage neutral energy anchors, ruin ornaments, and controlled flora growth under `art/production-tests/object-batch-o14/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+23. **Object Batch O15 â€” common + vehicle bay:** three 2Ã—2 atlases now stage crew/common-room, vehicle-bay, and recycling/waste props under `art/production-tests/object-batch-o15/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+24. **Object Batch O16 — medical + emergency + security:** three 2×2 atlases now stage medical-response, emergency-support, and security-support props under `art/production-tests/object-batch-o16/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
 ## Quality floor for every new raster asset
 
 - Keep untouched generated source, clean-alpha source, prompt provenance, deterministic normalizer, runtime derivative, frame map, and contact sheet.

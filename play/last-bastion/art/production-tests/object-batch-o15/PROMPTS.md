@@ -1,0 +1,3 @@
+# Object Batch O15 prompt provenance
+
+Generated with the built-in image generation tool on 2026-07-26. Three strict 2×2 atlas prompts were used for crew/common-room, vehicle-bay, and recycling/waste dressing. Each prompt required one isolated prop per quadrant, a perfectly flat `#00ff00` chroma-key background, orthographic three-quarter top-down framing, consistent lighting, no readable text, logos, watermark, characters, weapons, pickups, telegraphs, collision marks, or gameplay values. The local `remove_chroma_key.py` helper produced alpha sources; `normalize_object_batch_o15.py` restores source colors, validates every cell, emits 384/256/128 derivatives, builds the contact sheet, and copies runtime files.
