@@ -387,6 +387,7 @@ export type CombatEvent =
   | { type: "enemy-defeated"; position: Vector2Data; enemyType: EnemyType; bestiaryKey: string }
   | { type: "explosion"; position: Vector2Data; radiusMetres: number; weaponId?: WeaponId }
   | { type: "player-hit"; position: Vector2Data; damage: number }
+  | { type: "player-shield-hit"; position: Vector2Data; damage: number }
   | { type: "player-healed"; position: Vector2Data; amount: number }
   | { type: "xp-collected"; position: Vector2Data; value: number }
   | { type: "level-up"; level: number }
@@ -411,6 +412,8 @@ export type CombatEvent =
   | { type: "corrupted-marine-warning"; position: Vector2Data; target: Vector2Data; enemyId: number }
   | { type: "corrupted-marine-knife-fired"; position: Vector2Data; direction: Vector2Data; enemyId: number }
   | { type: "corrupted-marine-knife-impact"; position: Vector2Data; reason: "player" | "cover" | "expired"; damage: number; enemyId: number }
+  | { type: "infected-survivor-rush"; position: Vector2Data; enemyId: number }
+  | { type: "abomination-recovery"; position: Vector2Data; enemyId: number }
   | { type: "abomination-slam-warning"; position: Vector2Data; target: Vector2Data; radiusMetres: number; enemyId: number }
   | { type: "abomination-slam-impact"; position: Vector2Data; radiusMetres: number; damage: number; hitPlayer: boolean; enemyId: number }
   | { type: "nest-weaver-placement-warning"; position: Vector2Data; target: Vector2Data; enemyId: number }
@@ -4750,6 +4753,11 @@ export class CombatSimulation {
       if (enemy.survivorPhaseRemainingSeconds <= 0 && enemy.survivorStaminaSeconds >= 0.55) {
         enemy.survivorPhase = "sprint";
         enemy.survivorPhaseRemainingSeconds = enemy.survivorStaminaSeconds;
+        this.frameEvents.push({
+          type: "infected-survivor-rush",
+          position: { ...enemy.position },
+          enemyId: enemy.id,
+        });
       }
     }
 
@@ -4896,6 +4904,13 @@ export class CombatSimulation {
         radiusMetres: ABOMINATION_SLAM_RADIUS_METRES,
         damage,
         hitPlayer,
+        enemyId: enemy.id,
+      });
+    }
+    if (previousPhase !== "recovery" && result.state.phase === "recovery") {
+      this.frameEvents.push({
+        type: "abomination-recovery",
+        position: { ...enemy.position },
         enemyId: enemy.id,
       });
     }
@@ -8084,6 +8099,7 @@ export class CombatSimulation {
       return;
     }
     const absorption = absorbWithShield(this.playerShield, rawDamage);
+    const shieldDamage = this.playerShield - absorption.remainingShield;
     this.playerShield = absorption.remainingShield;
     // Aegis Reactor artifact shortens the delay before the shield recharges.
     this.shieldRechargeCooldownSeconds = this.defence.shieldRechargeDelaySeconds * this.relicModifiers.shieldRechargeDelayMultiplier;
@@ -8116,6 +8132,13 @@ export class CombatSimulation {
       position: { ...this.playerPosition },
       damage: rawDamage,
     });
+    if (shieldDamage > 0) {
+      this.frameEvents.push({
+        type: "player-shield-hit",
+        position: { ...this.playerPosition },
+        damage: shieldDamage,
+      });
+    }
     // Warp Anchor: being hit throws you clear of whatever hit you.
     this.applyWarpAnchorBlink();
     if (this.playerHealth <= 0) {

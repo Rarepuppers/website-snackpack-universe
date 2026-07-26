@@ -5,7 +5,7 @@ describe("AudioCueMap", () => {
   it("provides cues for the representative vertical-slice moments", () => {
     for (const eventType of [
       "weapon-fired", "enemy-hit", "enemy-defeated", "explosion",
-      "player-hit", "xp-collected", "level-up", "powerup-collected",
+      "player-hit", "player-shield-hit", "xp-collected", "level-up", "powerup-collected",
       "status-applied", "warp-arrival",
     ] as const) {
       const cue = cueForEvent(eventType);
@@ -41,6 +41,7 @@ describe("AudioCueMap", () => {
     expect(new Set(cueIds).size).toBe(weaponIds.length);
     for (const eventType of [
       "corrupted-marine-warning", "corrupted-marine-knife-fired", "corrupted-marine-knife-impact",
+      "infected-survivor-rush", "abomination-recovery",
       "abomination-slam-warning", "abomination-slam-impact",
     ] as const) expect(cueForEvent(eventType), eventType).not.toBeNull();
   });

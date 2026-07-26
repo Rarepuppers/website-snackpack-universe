@@ -10,6 +10,10 @@ The code and plans agree that world-object art remains the current production ga
 - The 24-entry `WorldObjectCatalog` is still imported only by its own test. Batch O1 supplies 12 structural families, but placement, interaction, and hazard behavior are not live.
 - Boss arenas remain gated until standard-room objects prove safe lanes, cover, transitions, and interaction language.
 - The density lab shows a deliberately crowded, dark top-down field. New ground art must remain lower contrast than actors, projectiles, pickups, and code-drawn telegraphs.
+- Steam target: preserve the 960x540 simulation contract, present it at exact 2x Full HD and 4x 4K where possible, and re-author only the assets that fail close-view review. Never upscale a runtime PNG as a final HD/4K source.
+- Character-select audit: Marine and Medic are the only playable hero definitions, and each has a complete gameplay sprite sheet plus a dedicated full-height select portrait. Assault, Tactician, and Scout remain silhouette placeholders.
+- Future secret-roster audit: Alien, Cultist, and Cyborg are not yet playable roster entries or hero definitions. Existing Alien Hive, Cultist transformation, and Cyborg Reclaimer content must not be reused as hero-select promises. Each future hero needs a gameplay contract, full-height select portrait, directional gameplay sheet, equipment/helmet overlays where applicable, and hero-specific UI/audio before appearing as selectable.
+- Expedition-map audit: node presentation remains code-native circles, ASCII-safe glyphs, route lines, and labels. Six authored 1536x1024 region plates now bind to matching themes; other themes retain the deterministic fallback. Act progression, fog-of-war, node state, and travel behavior remain code-owned.
 
 ## Priority queue
 
@@ -92,11 +96,17 @@ The code and plans agree that world-object art remains the current production ga
 
 45. **Item Batch P2 refresh — legacy weapon VFX:** Service Rifle, Scattergun, and Arc Carbine now have refreshed 2×2 onset/travel/result/recovery candidates under `art/production-tests/item-batch-p2-refresh/`. The Scattergun impact was regenerated to remove gore and use mechanical/armour/cover feedback only. Hit geometry, damage areas, chain paths, timing, and status buildup remain code-owned.
 
-46. **Audio Batch S1 validation:** the existing 24 production WAV masters now pass `npm.cmd run audio:validate:s1 -- --allow-missing` (24/24 present, format/peak/duration checks pass, Bulwark loop accepted). No audio generation was performed here; remaining audio work is S2/S3 threat and shared-feedback recording plus runtime binding review.
+46. **Audio Batch S1 validation:** the existing 24 production WAV masters pass format/peak/duration checks, with the Bulwark loop accepted. Runtime binding is complete; remaining work is qualitative mix approval only.
 
-47. **Audio Batch S2 preflight:** eight deterministic mono 48 kHz/24-bit WAV candidates now exist under `audio/production/batch-s2/masters/` for Marine knife warning/whoosh/impacts, Abomination windup/slam/recovery, and restrained Survivor pack-rush. FFmpeg is unavailable here, so OGG/MP3 runtime derivatives and final mastering remain pending.
+47. **Audio Batch S2 complete:** eight mono 48 kHz/24-bit WAV masters have approved OGG Vorbis and MP3 fallback derivatives under `dev/src/game/audio/runtime/batch-s2/` and `game-assets/`. The derivative-required audit passes; final listening and transient-edge review remain.
 
-48. **Audio Batch S3 preflight:** 16 deterministic mono 48 kHz/24-bit WAV candidates now exist under `audio/production/batch-s3/masters/` for material impacts, pickup/XP, level-up, chest/shop confirmation, player damage, and boss/reward feedback. FFmpeg/runtime encoding and final mix review remain pending.
+48. **Audio Batch S3 complete:** 16 mono 48 kHz/24-bit WAV masters have approved OGG Vorbis and MP3 fallback derivatives under `dev/src/game/audio/runtime/batch-s3/` and `game-assets/`. The derivative-required audit passes; final listening and transient-edge review remain.
+
+49. **Steam Full HD/4K readiness:** recent 128/192px enemy, machine, mini-boss, terrain, shop, and UI families are retained. The next selective upgrades are the generic/64px early environment and combat families only where 1080p/4K close-view review exposes repetition, weak silhouettes, seams, or insufficient detail. Keep the 960x540 world-unit, pivot, frame, and UI contracts unchanged.
+
+50. **Character-select showcase batch:** Marine and Medic now have paired full-height, text-free select portraits under `art/production-tests/batch-character-select/`, wired to the live character-select screen. Add Assault/Tactician/Scout only after their mechanics are real; reserve Alien/Cultist/Cyborg for a later secret-roster batch. Portraits are retained at 1024x1536 for Steam close-view use, with gameplay sheets remaining separate.
+
+51. **Expedition map presentation batch:** ASCII-safe node medallions cover all node states, and six authored 1536x1024 region plates now stage under `art/production-tests/batch-map-presentation/` for Bastion Logistics, Alien Hive, Machine Foundry, Science Wing, Void Approach, and Arctic Relay. Matching themes use the plates; other themes retain the seeded fallback. Keep route lines, selection, fog-of-war, cleared state, labels, and travel motion code-owned. Promotion still requires native, Full HD, 4K, grayscale, and colour-vision review.
 
 ## Quality floor for every new raster asset
 

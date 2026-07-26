@@ -25,7 +25,6 @@ import {
 
 const WIDTH = 960;
 const HEIGHT = 540;
-const NAVY = 0x151e2b;
 const PANEL = 0x1d2938;
 const IVORY = "#e8e2d4";
 const TEAL = "#68e4e8";
@@ -37,6 +36,15 @@ const MAP_RIGHT = WIDTH - 90;
 const LANE_TOP = 130;
 const LANE_GAP = 110;
 
+const MAP_BACKDROP_ASSETS: Readonly<Record<string, string>> = Object.freeze({
+  "bastion-logistics": "bastion-logistics-map-backdrop-v1",
+  "alien-hive": "alien-hive-map-backdrop-v1",
+  "machine-foundry": "machine-foundry-map-backdrop-v1",
+  "science-wing": "science-wing-map-backdrop-v1",
+  "void-approach": "void-approach-map-backdrop-v1",
+  "arctic-relay": "arctic-relay-map-backdrop-v1",
+});
+
 const NODE_GLYPHS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze({
   combat: "✕",
   elite: "◆",
@@ -47,6 +55,18 @@ const NODE_GLYPHS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze(
   event: "?",
   liberation: "⚑",
   boss: "☠",
+});
+
+const SAFE_NODE_GLYPHS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze({
+  combat: "*",
+  elite: "E",
+  "mini-boss": "M",
+  "supply-depot": "+",
+  "weapon-cache": "W",
+  shrine: "S",
+  event: "?",
+  liberation: "L",
+  boss: "B",
 });
 
 const NODE_LABELS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze({
@@ -246,7 +266,9 @@ export class ExpeditionScene extends Phaser.Scene {
       seed: this.run.state.mapSeed,
     };
     this.root.removeAll(true);
-    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY));
+    const currentNode = expeditionNodeById(this.run.map, this.run.state.currentNodeId)!;
+    const currentTheme = ARENA_THEMES.find((theme) => theme.id === currentNode.themeId) ?? ARENA_THEMES[0]!;
+    this.renderBackdrop(currentTheme);
     this.root.add(this.text(70, 32, "EXPEDITION MAP", IVORY, "24px"));
     this.root.add(this.text(WIDTH - 70, 38, `SEED ${this.run.state.mapSeed}`, MUTED, "12px").setOrigin(1, 0));
 
@@ -267,6 +289,27 @@ export class ExpeditionScene extends Phaser.Scene {
         "12px",
       ));
     }
+  }
+
+  /** Presentation-only region dressing; route state and node readability stay code-owned. */
+  private renderBackdrop(theme: (typeof ARENA_THEMES)[number]): void {
+    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, theme.backdropColor));
+    const backdropAsset = MAP_BACKDROP_ASSETS[theme.id];
+    if (backdropAsset) {
+      this.root.add(this.add.image(WIDTH / 2, HEIGHT / 2, backdropAsset)
+        .setDisplaySize(WIDTH, 640)
+        .setAlpha(0.72));
+    }
+    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2 + 10, WIDTH - 72, HEIGHT - 108, theme.backdropColor, 0.62)
+      .setStrokeStyle(1, theme.floorTint, 0.2));
+    const seed = this.run.state.mapSeed + this.run.state.currentNodeId * 17;
+    for (let index = 0; index < 9; index += 1) {
+      const x = 80 + ((seed * (index + 3) * 13) % 800);
+      const y = 88 + ((seed * (index + 5) * 7) % 360);
+      const width = 24 + ((index * 19) % 70);
+      this.root.add(this.add.rectangle(x, y, width, 2, theme.boundaryTint, 0.14).setAngle(index % 2 === 0 ? 0 : 90));
+    }
+    this.root.add(this.text(WIDTH - 70, HEIGHT - 30, theme.name.toUpperCase(), MUTED, "11px").setOrigin(1, 0));
   }
 
   private renderEdges(): void {
@@ -310,7 +353,7 @@ export class ExpeditionScene extends Phaser.Scene {
       const glyphColor = presentation === "current" || presentation === "reachable" || focused
         ? (node.type === "boss" ? ORANGE : TEAL)
         : MUTED;
-      this.root.add(this.text(x, y - 1, intelVisible ? NODE_GLYPHS[node.type] : "?", glyphColor, "16px", true)
+      this.root.add(this.text(x, y - 1, intelVisible ? SAFE_NODE_GLYPHS[node.type] : "?", glyphColor, "16px", true)
         .setDepth(11)
         .setAlpha(!intelVisible ? 0.12 : presentation === "unreachable" ? 0.4 : 1));
       if (presentation === "cleared") {

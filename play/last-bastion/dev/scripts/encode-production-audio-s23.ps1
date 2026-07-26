@@ -3,7 +3,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$projectRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
+$projectRoot = Resolve-Path (Join-Path $PSScriptRoot "../..")
 $batches = @("batch-s2", "batch-s3")
 $runtimeRoot = Join-Path $projectRoot "dev/src/game/audio/runtime"
 $gameAssets = Join-Path $projectRoot "game-assets"

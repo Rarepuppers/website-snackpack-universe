@@ -4,7 +4,8 @@ import {
   productionAudioFamilyForCue,
   PRODUCTION_AUDIO_S1_ASSETS,
 } from "./ProductionAudioCatalog";
-import { PRODUCTION_AUDIO_S1_URLS } from "./ProductionAudioAssets";
+import { productionFeedbackAssetIdsForCue, PRODUCTION_AUDIO_FEEDBACK_ASSETS } from "./ProductionAudioFeedback";
+import { PRODUCTION_AUDIO_FEEDBACK_URLS, PRODUCTION_AUDIO_S1_URLS } from "./ProductionAudioAssets";
 
 /**
  * Minimal WebAudio placeholder synthesizer. Browsers block audio until a user
@@ -94,6 +95,14 @@ export class WebAudioSynth {
         .then((buffer) => this.productionBuffers.set(asset.id, buffer))
         .catch(() => { /* Keep the oscillator fallback when both decoders fail. */ });
     }
+    for (const asset of PRODUCTION_AUDIO_FEEDBACK_ASSETS) {
+      const urls = PRODUCTION_AUDIO_FEEDBACK_URLS[asset.id];
+      if (!urls) continue;
+      void this.fetchAndDecode(context, urls.ogg)
+        .catch(() => this.fetchAndDecode(context, urls.mp3))
+        .then((buffer) => this.productionBuffers.set(asset.id, buffer))
+        .catch(() => { /* Keep the oscillator fallback when both decoders fail. */ });
+    }
   }
 
   private async fetchAndDecode(context: AudioContext, url: string): Promise<AudioBuffer> {
@@ -103,6 +112,20 @@ export class WebAudioSynth {
   }
 
   private playProductionCue(context: AudioContext, cue: AudioCue): boolean {
+    const feedbackIds = productionFeedbackAssetIdsForCue(cue.id);
+    if (feedbackIds.length > 0) {
+      const candidates = feedbackIds.filter((id) => this.productionBuffers.has(id));
+      if (candidates.length === feedbackIds.length) {
+        const variant = this.nextVariant.get(cue.id) ?? 0;
+        this.nextVariant.set(cue.id, (variant + 1) % candidates.length);
+        const selectedId = candidates[variant % candidates.length];
+        const buffer = selectedId ? this.productionBuffers.get(selectedId) : undefined;
+        if (buffer) {
+          this.startBuffer(context, cue.id, buffer, 0.72);
+          return true;
+        }
+      }
+    }
     const family = productionAudioFamilyForCue(cue.id);
     if (!family) return false;
     if (family.weaponId === "bulwark-rotary-cannon") {

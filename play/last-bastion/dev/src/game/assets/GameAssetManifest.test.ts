@@ -39,11 +39,37 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(173);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(181);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
       if (asset.kind === "spritesheet") expect(asset.frameCount).toBe(frameCount);
+    }
+  });
+
+  it("locks the playable hero select portrait contract", () => {
+    for (const id of ["marine-select-portrait-v1", "medic-select-portrait-v1"] as const) {
+      const asset = GAME_ASSETS[id];
+      expect(asset.kind).toBe("image");
+      expect(asset.logicalWidth).toBe(1024);
+      expect(asset.logicalHeight).toBe(1536);
+      expect(asset.pivot).toEqual({ x: 0.5, y: 0.9 });
+    }
+  });
+
+  it("locks the authored expedition map backdrop contract", () => {
+    for (const id of [
+      "bastion-logistics-map-backdrop-v1",
+      "alien-hive-map-backdrop-v1",
+      "machine-foundry-map-backdrop-v1",
+      "science-wing-map-backdrop-v1",
+      "void-approach-map-backdrop-v1",
+      "arctic-relay-map-backdrop-v1",
+    ] as const) {
+      const asset = GAME_ASSETS[id];
+      expect(asset.kind).toBe("image");
+      expect(asset.logicalWidth).toBe(1536);
+      expect(asset.logicalHeight).toBe(1024);
     }
   });
 

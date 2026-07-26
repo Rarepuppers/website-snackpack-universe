@@ -1,9 +1,10 @@
 {
-  "generatedAt": "2026-07-26T11:33:23.656Z",
-  "source": "WAV masters only",
+  "generatedAt": "2026-07-26T11:49:28.324Z",
+  "source": "WAV masters plus optional runtime derivatives",
   "batches": {
     "batch-s2": {
       "masterCount": 8,
+      "derivativeCount": 16,
       "files": {
         "abomination-exhausted-recovery.wav": {
           "channels": 1,
@@ -89,6 +90,7 @@
     },
     "batch-s3": {
       "masterCount": 16,
+      "derivativeCount": 32,
       "files": {
         "armour-impact-a.wav": {
           "channels": 1,

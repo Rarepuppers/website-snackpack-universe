@@ -108,6 +108,14 @@ import medicHelmetSheetUrl from "../../../../art/production-tests/batch-p/medic-
 import injectorCarbineSheetUrl from "../../../../art/production-tests/batch-p/injector-carbine-spritesheet-v1-96.png";
 import injectorCarbineEffectUrl from "../../../../art/production-tests/batch-p/injector-carbine-effect-atlas-v1-64.png";
 import medicPortraitUrl from "../../../../art/production-tests/batch-p/medic-portrait-v1-128.png";
+import marineSelectPortraitUrl from "../../../../art/production-tests/batch-character-select/marine-select-portrait-v1-1024x1536.png";
+import medicSelectPortraitUrl from "../../../../art/production-tests/batch-character-select/medic-select-portrait-v1-1024x1536.png";
+import bastionLogisticsMapBackdropUrl from "../../../../art/production-tests/batch-map-presentation/bastion-logistics-map-backdrop-v1-1536x1024.png";
+import alienHiveMapBackdropUrl from "../../../../art/production-tests/batch-map-presentation/alien-hive-map-backdrop-v1-1536x1024.png";
+import machineFoundryMapBackdropUrl from "../../../../art/production-tests/batch-map-presentation/machine-foundry-map-backdrop-v1-1536x1024.png";
+import scienceWingMapBackdropUrl from "../../../../art/production-tests/batch-map-presentation/science-wing-map-backdrop-v1-1536x1024.png";
+import voidApproachMapBackdropUrl from "../../../../art/production-tests/batch-map-presentation/void-approach-map-backdrop-v1-1536x1024.png";
+import arcticRelayMapBackdropUrl from "../../../../art/production-tests/batch-map-presentation/arctic-relay-map-backdrop-v1-1536x1024.png";
 import nestWeaverSheetUrl from "../../../../art/production-tests/batch-t/nest-weaver-spritesheet-v1-192.png";
 import nestPodSheetUrl from "../../../../art/production-tests/batch-t/nest-pod-spritesheet-v1-128.png";
 import nestEffectsUrl from "../../../../art/production-tests/batch-t/nest-effects-atlas-v1-128.png";
@@ -345,7 +353,15 @@ export type GameAssetId =
   | "medic-helmet-v1"
   | "injector-carbine-v1"
   | "injector-carbine-effects-v1"
-  | "medic-portrait-v1";
+  | "medic-portrait-v1"
+  | "marine-select-portrait-v1"
+  | "medic-select-portrait-v1"
+  | "bastion-logistics-map-backdrop-v1"
+  | "alien-hive-map-backdrop-v1"
+  | "machine-foundry-map-backdrop-v1"
+  | "science-wing-map-backdrop-v1"
+  | "void-approach-map-backdrop-v1"
+  | "arctic-relay-map-backdrop-v1";
 
 interface AssetBase {
   id: GameAssetId;
@@ -542,6 +558,14 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("injector-carbine-v1", injectorCarbineSheetUrl, 96, 96, 4, 0.25, 0.5),
   sheet("injector-carbine-effects-v1", injectorCarbineEffectUrl, 64, 64, 8, 0.5, 0.5),
   image("medic-portrait-v1", medicPortraitUrl, 128, 128, 0.5, 0.5),
+  image("marine-select-portrait-v1", marineSelectPortraitUrl, 1024, 1536, 0.5, 0.9),
+  image("medic-select-portrait-v1", medicSelectPortraitUrl, 1024, 1536, 0.5, 0.9),
+  image("bastion-logistics-map-backdrop-v1", bastionLogisticsMapBackdropUrl, 1536, 1024, 0.5, 0.5),
+  image("alien-hive-map-backdrop-v1", alienHiveMapBackdropUrl, 1536, 1024, 0.5, 0.5),
+  image("machine-foundry-map-backdrop-v1", machineFoundryMapBackdropUrl, 1536, 1024, 0.5, 0.5),
+  image("science-wing-map-backdrop-v1", scienceWingMapBackdropUrl, 1536, 1024, 0.5, 0.5),
+  image("void-approach-map-backdrop-v1", voidApproachMapBackdropUrl, 1536, 1024, 0.5, 0.5),
+  image("arctic-relay-map-backdrop-v1", arcticRelayMapBackdropUrl, 1536, 1024, 0.5, 0.5),
 ]);
 
 export const GAME_ASSETS = Object.freeze(Object.fromEntries(

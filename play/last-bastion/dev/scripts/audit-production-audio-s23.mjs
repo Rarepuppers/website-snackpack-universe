@@ -7,6 +7,7 @@ const projectRoot = fileURLToPath(new URL("../../", import.meta.url));
 const batches = ["batch-s2", "batch-s3"];
 const MAX_PEAK_DBFS = -1;
 const MAX_EDGE_DBFS = -36;
+const requireDerivatives = process.argv.includes("--require-derivatives");
 
 function dbfs(value) {
   return value <= 0 ? -Infinity : 20 * Math.log10(value / 0x7fffff);
@@ -43,11 +44,11 @@ function inspect(bytes) {
 async function main() {
   const failures = [];
   const warnings = [];
-  const report = { generatedAt: new Date().toISOString(), source: "WAV masters only", batches: {}, warnings: [] };
+  const report = { generatedAt: new Date().toISOString(), source: "WAV masters plus optional runtime derivatives", batches: {}, warnings: [] };
   for (const batch of batches) {
     const mastersDir = path.join(projectRoot, "audio", "production", batch, "masters");
     const files = (await readdir(mastersDir)).filter((name) => name.endsWith(".wav")).sort();
-    report.batches[batch] = { masterCount: files.length, files: {} };
+    report.batches[batch] = { masterCount: files.length, derivativeCount: 0, files: {} };
     for (const file of files) {
       const name = `${batch}/masters/${file}`;
       try {
@@ -69,6 +70,23 @@ async function main() {
         failures.push(`${name}: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
+    const runtimeDir = path.join(projectRoot, "dev", "src", "game", "audio", "runtime", batch);
+    for (const file of files) {
+      const stem = file.slice(0, -4);
+      for (const extension of ["ogg", "mp3"]) {
+        const derivative = `${stem}.${extension}`;
+        try {
+          const bytes = await readFile(path.join(runtimeDir, derivative));
+          const validMagic = extension === "ogg"
+            ? bytes.subarray(0, 4).toString("ascii") === "OggS"
+            : bytes.subarray(0, 3).toString("ascii") === "ID3" || (bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0);
+          if (!validMagic || bytes.byteLength < 512) failures.push(`${batch}/runtime/${derivative}: malformed or empty derivative`);
+          else report.batches[batch].derivativeCount += 1;
+        } catch {
+          if (requireDerivatives) failures.push(`${batch}/runtime/${derivative}: missing derivative`);
+        }
+      }
+    }
   }
   const reportPath = path.join(projectRoot, "audio", "production", "s23-master-audit.json");
   await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
@@ -79,7 +97,10 @@ async function main() {
     for (const failure of failures) console.error(`FAIL ${failure}`);
     process.exitCode = 1;
   } else {
-    console.log(`S2/S3 WAV master audit complete: ${Object.values(report.batches).reduce((sum, batch) => sum + batch.masterCount, 0)} masters passed.`);
+    const totalMasters = Object.values(report.batches).reduce((sum, batch) => sum + batch.masterCount, 0);
+    const totalDerivatives = Object.values(report.batches).reduce((sum, batch) => sum + batch.derivativeCount, 0);
+    console.log(`S2/S3 audio audit complete: ${totalMasters} masters passed; ${totalDerivatives}/48 runtime derivatives present.`);
+    if (!requireDerivatives && totalDerivatives < 48) console.log("Runtime derivatives are optional in this audit; use --require-derivatives after encoding.");
   }
 }
 

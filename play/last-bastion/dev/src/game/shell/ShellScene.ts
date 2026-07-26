@@ -352,11 +352,15 @@ export class ShellScene extends Phaser.Scene {
     const perk = PERK_CATALOG[this.state.perkIndex]!;
     const perkUnlocked = this.state.unlockedPerkIds.includes(perk.id);
 
-    // Left: oversized hero placeholder.
+    // Left: full-height select portrait; gameplay sheets remain separate.
     this.root.add(this.add.rectangle(250, 250, 300, 300, PANEL).setStrokeStyle(1, 0x3b4d63));
-    this.root.add(this.add.rectangle(250, 250, 120, 220,
-      hero.status === "playable" ? 0x3d5a75 : 0x232c3a)
-      .setStrokeStyle(2, hero.status === "playable" ? TEAL_HEX : 0x3b4d63));
+    if (hero.status === "playable") {
+      const portraitKey = hero.id === "medic" ? "medic-select-portrait-v1" : "marine-select-portrait-v1";
+      this.root.add(this.add.image(250, 258, portraitKey).setDisplaySize(196, 294));
+    } else {
+      this.root.add(this.add.rectangle(250, 250, 120, 220, 0x232c3a)
+        .setStrokeStyle(2, 0x3b4d63));
+    }
     this.root.add(this.text(250, 415, hero.status === "playable" ? hero.name
       : hero.status === "in-development" ? `${hero.name} — IN DEVELOPMENT` : "????", IVORY, "16px", true));
 

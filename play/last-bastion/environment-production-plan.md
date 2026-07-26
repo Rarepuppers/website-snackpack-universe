@@ -16,6 +16,10 @@ The current whole-physical-pixel display scaler already presents the 960×540 ca
 
 Nearest-neighbour enlargement is not a quality upgrade. A weak 64 px source must be re-authored or regenerated; a good 64 px source can remain until its presentation actually fails.
 
+### Steam Full HD/4K execution rule
+
+The Steam port should first use exact-pixel presentation of the 960x540 simulation canvas at 1920x1080 and 3840x2160. This preserves crisp pixel art and avoids changing gameplay scale. Asset work is selective: retain accepted 128/192px families, but re-author weak 64px families at the next approved runtime tier when close-view review demonstrates a problem. For every upgrade, retain the source master and generate 128px or larger runtime derivatives from it; do not upscale an existing runtime PNG.
+
 ## Modular environment contract
 
 Each major environment kit uses the same four-family baseline:

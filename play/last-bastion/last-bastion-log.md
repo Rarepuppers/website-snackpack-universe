@@ -1907,3 +1907,53 @@ Verification: typecheck clean, **874 tests across 122 files pass** (was 854), pr
 - FFmpeg 8.1.2 is present in the Winget package cache, but the current Codex process cannot execute the package payload because its install directory is permission-restricted and the refreshed PATH is not visible here. No derivatives were fabricated or partially copied.
 - Verification remains clean: 24-master source audit passes with 24 transient-edge warnings, typecheck passes, and **897 tests across 124 files pass**.
 - Next after restarting/refreshing the shell with FFmpeg access: run `npm.cmd run audio:encode:s23`, rerun the audit with derivative validation, bind approved S2/S3 cue families behind synth fallback, and perform the final listening/mix pass.
+
+## 26 July 2026 — S2/S3 encoder path corrected
+
+- Fixed the encoder root path: the script now resolves `last-bastion` correctly from `dev/scripts`, so it reads `audio/production/batch-s2|batch-s3/masters` rather than the nonexistent `dev/audio` path.
+- Extended `audio:audit:s23` with optional derivative checks. `npm.cmd run audio:audit:s23 -- --require-derivatives` now requires and validates all 48 OGG/MP3 runtime files after encoding.
+- Current source audit remains 24/24 masters passed, 0/48 derivatives present, with the existing 24 transient-edge mastering warnings. Typecheck passes.
+
+## 26 July 2026 — S2/S3 runtime audio encoded and bound
+
+- FFmpeg 8.1.2 encoded all 24 S2/S3 WAV masters to OGG Vorbis and MP3 fallback files. Runtime derivatives are present in `dev/src/game/audio/runtime/batch-s2|batch-s3/` and copied to `game-assets/`.
+- Added an explicit S2/S3 feedback catalog and cue-to-stem mapping. `WebAudioSynth` now loads both batches, prefers an approved production buffer when every mapped variant is available, rotates variants deterministically, and retains the oscillator fallback if loading/decoding fails.
+- Derivative-required audit passes: **24/24 masters and 48/48 runtime derivatives**. The 24 transient-edge warnings remain mastering-review notes, not file-integrity failures.
+- Verification: **899 tests across 125 files pass**, typecheck clean, production build clean.
+- Remaining: creator listening pass for loudness/transient balance, maximum-density overlap review, accessibility review, and contextual follow-up for stems whose final gameplay event resolver is not yet live (recovery, shield, and pack-rush cues).
+- Added `audio:loudness:s23`, a reproducible FFmpeg/EBU R128 scan for all 48 S2/S3 OGG and MP3 derivatives. It writes `audio/production/s23-loudness-audit.json`; contextual in-game listening and final approval remain creator-owned.
+
+## 26 July 2026 — Full post-audio verification
+
+- Ran the complete `npm run verify` workflow after runtime audio binding.
+- Passed: typecheck, **899 tests across 125 files**, production build, smoke boot (`200`, 120 art assets, 76 review routes), and offline boot (`0` remote imports, 269 local asset references, 0 missing local assets).
+- The remaining work is qualitative: creator listening/mix review and deciding whether recovery, shield, and pack-rush need live event resolvers before their already-encoded stems are exposed in gameplay.
+
+## 26 July 2026 — Character-select showcase batch
+
+- Added paired full-height Marine and Medic select portraits under `art/production-tests/batch-character-select/` and registered them as select-only assets.
+- Character Select now renders the portrait for each playable hero while keeping Assault, Tactician, and Scout as silhouettes. Alien, Cultist, and Cyborg remain future secret-roster concepts with no selectable promise.
+- Browser review passed for both Marine and Medic at the 960x540 layout with no console errors or warnings. Gameplay sprite sheets and hero contracts remain unchanged.
+
+## 26 July 2026 — Expedition map presentation batch
+
+- Added a deterministic map backdrop pass keyed to the current region theme, with restrained seeded technical dressing that stays below node and route readability.
+- Replaced the map's mojibake glyph dependency with ASCII-safe node symbols for combat, elite, mini-boss, supply, cache, shrine, event, liberation, and boss states.
+- Targeted map tests pass; route topology, node state, fog horizon, labels, and travel motion remain code-owned. Authored bitmap node medallions and act plates remain optional future art, not a current blocker.
+
+## 26 July 2026 — Expedition map backdrop batch
+
+- Added three text-free 1536x1024 map backdrop plates for Bastion Logistics, Alien Hive, and Machine Foundry under `art/production-tests/batch-map-presentation/`.
+- Added three more text-free 1536x1024 map backdrop plates for Science Wing, Void Approach, and Arctic Relay; six authored region plates are now registered, with procedural fallback retained for the remaining themes.
+- Corrected the production review audit so it reflects the live Marine/Medic full-height select portraits and six active map-region plates instead of the earlier placeholder-only state.
+- Steam footprint audit: the current runtime package contains 513 art/audio files at approximately 92.08 MB; the six new map plates are the largest runtime raster family at roughly 1.98–2.61 MB each. Source/provenance art remains separate from the runtime budget.
+- Matching expedition themes now use the authored plates with a readability veil; all other regions retain the deterministic code-native fallback.
+- Node symbols, route lines, fog-of-war, labels, selection, and travel motion remain code-owned. Full HD/4K, grayscale, colour-vision, and dense-route promotion review remains open.
+
+## 26 July 2026 — Final runtime review and event follow-through
+
+- Added live event resolvers for Abomination recovery, Infected Survivor rush, and shield absorption impacts. All three now resolve to the approved S2/S3 production stems with synth fallback preserved.
+- Re-ran the complete verification workflow after the event changes: **899 tests across 125 files pass**, typecheck/build clean, smoke boot `200`, and offline boot reports `0` remote imports and `0` missing local assets.
+- Browser regression passed for `?screen=transformation-lab` and `?scenario=weapon-release&loadout=vertical`; both rendered correctly after normal startup and reported no console errors or warnings.
+- FFmpeg derivative encoding and required-derivative audit were completed in the user’s refreshed PowerShell session: **24/24 masters and 48/48 runtime derivatives**. The standalone Codex shell cannot currently resolve the refreshed FFmpeg PATH, so no independent LUFS analyzer result is claimed here.
+- Remaining release gate: creator listening/mix approval for all 48 derivatives, with the existing 24 transient-edge warnings reviewed as intentional or remastered before release.
