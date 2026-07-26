@@ -68,12 +68,18 @@ export const ITEM_CATALOG: readonly ItemDefinition[] = Object.freeze([
   item("leech-rounds", "Leech Rounds", "uncommon", ["sustain"], { lifestealPercent: 5 }, "+5% lifesteal."),
   item("weighted-boots", "Weighted Boots", "uncommon", ["defence", "risk"], { armourFlat: 3, moveSpeedPercent: -8 }, "+3 armour, -8% move speed."),
   item("adrenaline-pump", "Adrenaline Pump", "uncommon", ["offence", "risk"], { attackSpeedPercent: 20, damagePercent: -8 }, "+20% attack speed, -8% damage."),
+  // Range axis, opened 26 July 2026. `rangePercent` had zero read sites and no
+  // granting item, so weapon reach was a stat the game claimed and never varied.
+  // Sawn-Off is the deliberate inverse: the close-quarters and scattergun enabler.
+  item("long-barrel", "Long Barrel", "uncommon", ["offence", "ranged"], { rangePercent: 20, attackSpeedPercent: -8 }, "+20% weapon range, -8% attack speed."),
+  item("sawn-off-stock", "Sawn-Off Stock", "uncommon", ["offence", "risk"], { rangePercent: -25, damagePercent: 25 }, "-25% weapon range, +25% damage."),
 
   // --- Rare, sharper trade-offs and multi-stat ---
   item("glass-cannon", "Glass Cannon", "rare", ["offence", "risk"], { damagePercent: 25, maxHpFlat: -15 }, "+25% damage, -15 max HP."),
   item("sniper-scope", "Sniper Scope", "rare", ["offence", "ranged", "risk"], { rangedDamagePercent: 30, attackSpeedPercent: -15 }, "+30% ranged damage, -15% attack speed."),
   item("berserkers-brand", "Berserker's Brand", "rare", ["offence", "melee", "risk"], { meleeDamagePercent: 25, rangedDamagePercent: -12 }, "+25% melee damage, -12% ranged damage."),
   item("focusing-lens", "Focusing Lens", "rare", ["crit"], { critChancePercent: 12, critMultiplier: 0.3 }, "+12% crit chance, +30% crit damage."),
+  item("reflex-sight", "Reflex Sight", "rare", ["offence", "ranged", "crit"], { rangePercent: 12, critChancePercent: 6 }, "+12% weapon range, +6% crit chance."),
   item("featherweight-frame", "Featherweight Frame", "rare", ["mobility", "risk"], { moveSpeedPercent: 18, armourFlat: -3 }, "+18% move speed, -3 armour."),
   item("bulwark-plating", "Bulwark Plating", "rare", ["defence", "risk"], { armourFlat: 6, attackSpeedPercent: -18 }, "+6 armour, -18% attack speed."),
 

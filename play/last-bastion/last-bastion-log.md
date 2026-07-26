@@ -1835,3 +1835,54 @@ All six melee weapons join the existing `HELD_WEAPONS_IN_POOL` gate rather than 
 Verification: typecheck clean, **854 tests across 121 files pass** (was 846), both flag states green. Codex updated for all 16 new entries (6 weapons, 3 relics, 5 artifacts, 2 consumables) — the drift guard demanded them, which is exactly what it was built for.
 
 **Unvalidated:** every number here is authored, not felt. The melee damage/cadence curve, the Maul's 1.6m shove, Overclock's 6%-per-stack and Riot Plating's 2m threshold all need next week's playtest.
+
+---
+
+## 26 July 2026 — the release session: every weapon playable, the machine faction fielded, range made real
+
+Creator direction: *"All six melee weapons went into the existing held gate — make all weapons playable."* The gate had been doing its job too well. Twelve fully built, fully tested weapons sat behind `HELD_WEAPONS_IN_POOL`, and Event Horizon behind no acquisition path at all. Thirteen of twenty-one weapons were unreachable in a real run.
+
+### The flip, and the two things it did not solve on its own
+
+`HELD_WEAPONS_IN_POOL = true`. Pool 8 → 20. That is genuinely one constant, because both acquisition routes — the Weapon Chest and the shop's weapon line — read the same list.
+
+**Event Horizon needed a real path.** It is `unique`-class, a 16-second gravity well; dropping it into the ordinary chest would have made it a wave-2 common. New `weaponPoolFor({ uniqueUnlocked })` is now the single source of truth both routes call — they previously each filtered `WEAPON_CHEST_POOL` themselves, which is exactly how two pools drift. The unlock is the run's **first ranked kill** (mini-boss or boss), deliberately a flag and not a draw: the RNG stream position is part of the replay digest. In the shop a Unique costs 3× a Tier I weapon, so it is a decision against a tier-up rather than another purchase.
+
+**The shop would have drowned in weapons.** `buildScrapShopCandidates` pushed one candidate per unowned weapon. At 8 that was ~7 entries; at 20 it is ~19, against ~26 items in a 5-offer rarity-weighted draw — the Brotato economy's whole texture, starved. Now a rotating window of 3, RNG-free on purpose: that method is also called by `canRerollScrapShop`, so a `random()` there would consume a variable number of draws and break every fixture. Same idiom the level-stat draw already uses.
+
+### Making them readable, which is the difference between obtainable and playable
+
+Flipping alone meant **thirteen weapons rendering as the Bastion Service Rifle** — `weaponAssetId` was an if-chain ending in a silent `return "service-rifle-v1"` — and sharing two of eight HUD tiles. A Flamethrower + Sawblade + Machete build would have shown three identical rifles. No new art was needed to fix most of it:
+
+- `weaponAssetId` is now an exhaustive `Record<WeaponId, …>` where every borrow is *chosen* and marked `PLACEHOLDER`. Adding weapon 22 without a decision is a type error.
+- Tile placeholders group by **attack pattern**, not one shared slot: contact and orbit-blade → the blade tile, sustained cones → the scattergun's spread tile, orbiting coil → arc carbine, explosive shells → grenade tube.
+- Weapon colour falls back to `DAMAGE_TYPE_COLOURS` instead of one shared ivory/amber, in both the ring and the HUD pips — fire/shock/cryo/toxic families separate on sight.
+- Every weapon gets an explicit two-letter cooldown code; the old `slice(0, 2)` default collapsed every `bastion-*` and `-carbine` family onto the same pair.
+- The melee sweep is drawn at the weapon's **real** arc and reach rather than the Patrol Blade's fixed 0.36 rad, so a Machete's clearing swing and a Combat Knife's thrust are distinguishable while they share a body sprite.
+
+### The machine faction, released with them
+
+Shipping twelve weapons against an unchanged enemy roster is a one-sided power spike, so `MACHINE_FACTION_IN_WAVES` flipped too. The swaps were already threat-neutral by construction and already tested for it, and the art already exists — the outstanding item was mixed-wave acceptance, not production. Scrap Skitterer, Arc Warden, Cyborg Reclaimer, Foundry Fabricator and Storm Savant now field in waves 6–9.
+
+**Nest Weaver deliberately stays out.** At 25 threat it does not fit any late wave under the exact-budget invariant, the ≥0.65 pursuit-share floor and the authored Corrupted Human promotion curve simultaneously. Paying for it means deleting wave 9's abominations *and* its remaining spitters — a composition change that wants playtest data, not arithmetic. `MACHINE_FACTION_UNPLACED` is now asserted, so it cannot be forgotten silently.
+
+### `rangePercent`, wired at last
+
+The stat had **zero read sites** and no granting item — weapon reach was something the game claimed and never varied, blocking the whole range axis. It now scales both `rangeMetres` (melee reach, beam cone, orbit zap, auto-target acquisition) and projectile lifetime, because a bullet's reach is speed × lifetime and scaling only the former would have left every cursor-aimed weapon untouched. Three items open the axis: **Long Barrel** (+20% range, −8% attack speed), **Reflex Sight** (+12% range, +6% crit), **Sawn-Off Stock** (−25% range, +25% damage — the close-quarters enabler).
+
+### Tests that assert outcomes, not constants
+
+The standing lesson from the placebo audit applied throughout: a test on the flag would have passed the entire time the content was unreachable.
+
+- Weapon release: the chest actually offers released weapons across 40 seeds; four weapons from four previously-unreachable subsystems (beam, orbit-blade, homing, close-quarters sweep) actually damage a target; the shop never exceeds its weapon cap, with a guard against the loop vacuously never reaching a shop.
+- Machine faction: each of the five released enemies genuinely appears in a wave.
+- Range: measured as **frames until a closing scuttler takes its first hit** — 120 baseline, 109 with one Long Barrel, 89 with three, 132 with a Sawn-Off. Monotonic, and it avoids knife-edge distances that depend on hitbox radii.
+- **Ranked-kill replay coverage closed.** The rank-kill item grant added a `random()` draw on mini-boss/boss death that no fixture ever reached. Now covered directly.
+
+### A generator quirk worth knowing
+
+Writing that ranked-kill test surfaced something real: the simulation's LCG (`state = state * 1664525 + 1013904223`) maps small, evenly-spaced seeds to a *tight band* of first outputs — seeds 11 through 88 all yield 0.24–0.27. A draw consumed on frame 0 therefore picks the same item for all of them. It only bites a draw taken before any other `random()` call, so it does not affect real play, and it is documented in the test rather than papered over. Not fixed here.
+
+Verification: typecheck clean, **874 tests across 122 files pass** (was 854), production build clean, smoke and offline-boot both green. Browser pass boots clean with no console errors on two loadouts covering all six formerly-held ranged weapons plus the close-quarters family.
+
+**Unvalidated:** no screenshots this session — the browser pane was not displayed, so the thirteen placeholder silhouettes have been verified as booting, not as *looking* distinguishable. That is the first thing to check next session. And the open creator decision is now acute: a 4-slot rack against a 21-weapon, 29-item pool.

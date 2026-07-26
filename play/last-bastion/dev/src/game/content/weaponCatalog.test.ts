@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { HELD_WEAPONS_IN_POOL, shouldWeaponFire, VERTICAL_SLICE_WEAPON_IDS, WEAPON_CATALOG, WEAPON_CHEST_POOL } from "./weaponCatalog";
+import { HELD_WEAPONS_IN_POOL, shouldWeaponFire, UNIQUE_SLOT_WEAPONS, VERTICAL_SLICE_WEAPON_IDS, WEAPON_CATALOG, WEAPON_CHEST_POOL, weaponPoolFor } from "./weaponCatalog";
 
 describe("weaponCatalog", () => {
   it("locks the three vertical-slice weapon families", () => {
@@ -48,8 +48,33 @@ describe("weaponCatalog", () => {
     expect(WEAPON_CATALOG["event-horizon"]).toBeDefined();
     expect(WEAPON_CATALOG["event-horizon"].weaponClass).toBe("unique");
     expect(WEAPON_CATALOG["event-horizon"].spawnsGravityWellOnImpact).toBe(true);
-    // Stays out in BOTH states: there is still no Unique-slot acquisition path.
+    // Never in the *base* pool — uniques are earned, see the weaponPoolFor block.
     expect(WEAPON_CHEST_POOL).not.toContain("event-horizon");
+  });
+
+  describe("weaponPoolFor — the single source of truth for both acquisition routes", () => {
+    it("withholds Unique-class weapons until the run has earned them", () => {
+      const locked = weaponPoolFor({ uniqueUnlocked: false });
+      expect(locked).not.toContain("event-horizon");
+      expect(locked).toEqual(WEAPON_CHEST_POOL);
+    });
+
+    it("admits them once unlocked, without disturbing the base pool", () => {
+      const unlocked = weaponPoolFor({ uniqueUnlocked: true });
+      expect(unlocked).toContain("event-horizon");
+      expect(unlocked).toHaveLength(WEAPON_CHEST_POOL.length + UNIQUE_SLOT_WEAPONS.length);
+      expect(new Set(unlocked).size).toBe(unlocked.length);
+    });
+
+    it("releases every non-unique weapon in the catalogue", () => {
+      // The 26 July release: the only thing a run cannot reach by any route is a
+      // Unique it has not earned. If a weapon is ever added and forgotten, this
+      // fails rather than shipping another unobtainable subsystem.
+      const reachable = new Set(weaponPoolFor({ uniqueUnlocked: true }));
+      for (const id of Object.keys(WEAPON_CATALOG) as (keyof typeof WEAPON_CATALOG)[]) {
+        expect(reachable.has(id)).toBe(true);
+      }
+    });
   });
 
   it("gives each family a distinct attack contract", () => {

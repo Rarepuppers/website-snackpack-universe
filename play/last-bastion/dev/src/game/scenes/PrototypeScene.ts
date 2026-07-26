@@ -55,6 +55,7 @@ import {
   WEAPON_CATALOG,
   type WeaponId,
 } from "../content/weaponCatalog";
+import { DAMAGE_TYPE_COLOURS } from "../combat/damageTypes";
 import { expeditionNodeById } from "../expedition/ExpeditionMap";
 import {
   completeCurrentNode,
@@ -656,9 +657,9 @@ export class PrototypeScene extends Phaser.Scene {
         case "weapon-fired":
           this.pulseWeapon(event.weaponInstanceId);
           this.animateProductionWeapon(event.weaponInstanceId, event.weaponId);
-          if (event.weaponId === "patrol-blade") {
+          if (usesBladeBody(event.weaponId)) {
             this.animatePatrolBlade(event.weaponInstanceId);
-            this.drawPatrolBladeSweep(event.position, event.direction);
+            this.drawPatrolBladeSweep(event.position, event.direction, event.weaponId);
             break;
           }
           if (event.weaponId === "bolt-carbine") {
@@ -1229,20 +1230,27 @@ export class PrototypeScene extends Phaser.Scene {
   private drawPatrolBladeSweep(
     position: { x: number; y: number },
     direction: { x: number; y: number },
+    weaponId: WeaponId = "patrol-blade",
   ): void {
     const angle = Math.atan2(direction.y, direction.x);
     if (this.useMarineArt) {
       this.emitAuthoredEffect(1, position, 190, 0.82, 1.18, angle, "patrol-blade-effects-v1");
       return;
     }
+    // The sweep is drawn at the weapon's real arc and reach rather than the
+    // Patrol Blade's fixed 0.36 rad, so a Machete's clearing swing and a Combat
+    // Knife's thrust are distinguishable even while they share a body sprite.
+    const stats = WEAPON_CATALOG[weaponId];
+    const halfArc = (stats.meleeArcRadians > 0 ? stats.meleeArcRadians : Math.PI * 0.72) / 2;
+    const reach = stats.rangeMetres * PIXELS_PER_METRE;
     const x = position.x * PIXELS_PER_METRE;
     const y = position.y * PIXELS_PER_METRE;
     const sweep = this.add.graphics().setDepth(905);
-    sweep.lineStyle(8, 0xffd08a, 0.92).beginPath()
-      .arc(x, y, 62, angle - Math.PI * 0.36, angle + Math.PI * 0.36)
+    sweep.lineStyle(8, weaponColor(weaponId), 0.92).beginPath()
+      .arc(x, y, reach, angle - halfArc, angle + halfArc)
       .strokePath();
     sweep.lineStyle(2, 0x68e4e8, 0.9).beginPath()
-      .arc(x, y, 54, angle - Math.PI * 0.34, angle + Math.PI * 0.34)
+      .arc(x, y, reach * 0.87, angle - halfArc * 0.94, angle + halfArc * 0.94)
       .strokePath();
     this.tweens.add({
       targets: sweep,
@@ -1452,10 +1460,10 @@ export class PrototypeScene extends Phaser.Scene {
       let view = this.weaponViews.get(weapon.instanceId);
       if (!view) {
         const assetId = weaponAssetId(weapon.weaponId);
-        view = weapon.weaponId === "patrol-blade" && this.useMarineArt
+        view = usesBladeBody(weapon.weaponId) && this.useMarineArt
           ? this.add.sprite(0, 0, "patrol-blade-v1", 1).setDisplaySize(58, 58)
-          : weapon.weaponId === "patrol-blade"
-            ? this.add.triangle(0, 0, -18, -5, 18, 0, -18, 5, 0xffd08a)
+          : usesBladeBody(weapon.weaponId)
+            ? this.add.triangle(0, 0, -18, -5, 18, 0, -18, 5, weaponColor(weapon.weaponId))
               .setOrigin(0.2, 0.5).setStrokeStyle(2, 0x4f2f20)
           : this.useMarineArt && isProductionWeaponSheet(weapon.weaponId)
           ? this.add.sprite(0, 0, assetId, 1).setDisplaySize(66, 66)
@@ -4329,7 +4337,10 @@ function weaponColor(weaponId: WeaponId): number {
     case "injector-carbine": return 0x78f0b0;
     case "bulwark-rotary-cannon": return 0xff9b42;
     case "grenade-tube": return 0xffb23f;
-    default: return 0xe9e3cf;
+    // Weapons released 26 July 2026 have no authored colour yet. Falling back
+    // to ivory made thirteen of twenty-one weapons render identically; their
+    // damage type at least separates fire/shock/cryo/toxic on sight.
+    default: return DAMAGE_TYPE_COLOURS[WEAPON_CATALOG[weaponId].damageType];
   }
 }
 
@@ -4342,15 +4353,55 @@ function projectileHaloColor(weaponId: WeaponId): number {
   return 0x171b22;
 }
 
-function weaponAssetId(weaponId: WeaponId): "service-rifle-v1" | "scattergun-v1" | "arc-carbine-v1" | "patrol-blade-v1" | "bolt-carbine-v1" | "injector-carbine-v1" | "bulwark-rotary-cannon-v1" | "grenade-tube-v1" {
-  if (weaponId === "scattergun") return "scattergun-v1";
-  if (weaponId === "arc-carbine") return "arc-carbine-v1";
-  if (weaponId === "patrol-blade") return "patrol-blade-v1";
-  if (weaponId === "bolt-carbine") return "bolt-carbine-v1";
-  if (weaponId === "injector-carbine") return "injector-carbine-v1";
-  if (weaponId === "bulwark-rotary-cannon") return "bulwark-rotary-cannon-v1";
-  if (weaponId === "grenade-tube") return "grenade-tube-v1";
-  return "service-rifle-v1";
+type WeaponBodyAssetId = "service-rifle-v1" | "scattergun-v1" | "arc-carbine-v1" | "patrol-blade-v1" | "bolt-carbine-v1" | "injector-carbine-v1" | "bulwark-rotary-cannon-v1" | "grenade-tube-v1";
+
+/**
+ * Body sprite for a weapon in the ring. Exhaustive on purpose: this was an
+ * if-chain with a silent `return "service-rifle-v1"` fallback, which meant every
+ * weapon added since Batch I quietly rendered as a rifle and nothing said so.
+ * Adding weapon 22 without a decision here is now a type error.
+ *
+ * The thirteen released on 26 July 2026 still borrow a body — but the borrow is
+ * *chosen* (blade tools take the Patrol Blade, shells take the Grenade Tube),
+ * and each `PLACEHOLDER` line is a standing note of what art is outstanding.
+ */
+const WEAPON_BODY_ASSETS: Readonly<Record<WeaponId, WeaponBodyAssetId>> = Object.freeze({
+  "bastion-service-rifle": "service-rifle-v1",
+  scattergun: "scattergun-v1",
+  "arc-carbine": "arc-carbine-v1",
+  "patrol-blade": "patrol-blade-v1",
+  "bolt-carbine": "bolt-carbine-v1",
+  "injector-carbine": "injector-carbine-v1",
+  "bulwark-rotary-cannon": "bulwark-rotary-cannon-v1",
+  "grenade-tube": "grenade-tube-v1",
+  // PLACEHOLDER — art pending. Long guns read as the rifle.
+  railspike: "service-rifle-v1",
+  "seeker-swarm": "service-rifle-v1",
+  "cryo-lance": "service-rifle-v1",
+  flamethrower: "service-rifle-v1",
+  // PLACEHOLDER — art pending. Shells and orbs read as the launcher.
+  "event-horizon": "grenade-tube-v1",
+  // PLACEHOLDER — art pending. Everything held at arm's length reads as a blade.
+  "tesla-coil": "arc-carbine-v1",
+  sawblade: "patrol-blade-v1",
+  "combat-knife": "patrol-blade-v1",
+  machete: "patrol-blade-v1",
+  "fire-axe": "patrol-blade-v1",
+  "shock-baton": "patrol-blade-v1",
+  "breaching-maul": "patrol-blade-v1",
+  "plasma-saber": "patrol-blade-v1",
+});
+
+function weaponAssetId(weaponId: WeaponId): WeaponBodyAssetId {
+  return WEAPON_BODY_ASSETS[weaponId];
+}
+
+/**
+ * Weapons drawn with the Patrol Blade body — and therefore its swing animation
+ * and arc sweep. Every close-quarters tool plus the Sawblade until each has art.
+ */
+function usesBladeBody(weaponId: WeaponId): boolean {
+  return WEAPON_BODY_ASSETS[weaponId] === "patrol-blade-v1";
 }
 
 function isProductionWeaponSheet(weaponId: WeaponId): weaponId is "bolt-carbine" | "injector-carbine" | "bulwark-rotary-cannon" | "grenade-tube" {

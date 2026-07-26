@@ -1,6 +1,16 @@
-import type { WeaponId } from "../content/weaponCatalog";
+import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
 
-/** Batch I master order, shared by every compact weapon presentation. */
+/**
+ * Batch I master order, shared by every compact weapon presentation.
+ *
+ * Eight weapons own a slot. The thirteen released on 26 July 2026 have no Batch
+ * I art yet, so rather than parking all of them on the rifle's frame they are
+ * grouped by **attack pattern** onto the closest existing motif: a Flamethrower
+ * reads as a blade-ish sweep sooner than it reads as a rifle, and two melee
+ * tools sitting on the same tile is far less confusing than a Sawblade and a
+ * Railspike sharing one. Same placeholder budget, better grouping. Replace each
+ * `case` with its own slot as the tiles land.
+ */
 export function canonicalWeaponTileFrame(weaponId: WeaponId): number {
   switch (weaponId) {
     case "scattergun": return 0;
@@ -11,27 +21,29 @@ export function canonicalWeaponTileFrame(weaponId: WeaponId): number {
     case "bulwark-rotary-cannon": return 5;
     case "injector-carbine": return 6;
     case "bastion-service-rifle": return 7;
-    // Railspike/Seeker Swarm have no Batch I tile yet (art pending, Phase 4);
-    // reuse the rifle's frame as a placeholder until their own slots exist.
-    case "railspike": return 7;
-    case "seeker-swarm": return 7;
-    case "cryo-lance": return 7;
-    case "tesla-coil": return 7;
-    case "flamethrower": return 7;
-    case "sawblade": return 7;
-    // Event Horizon has its own dedicated art (event-horizon-tile-v1, Batch L
-    // preflight) rather than a Batch I atlas slot — this shared-atlas mapping
-    // doesn't really apply to it. Returns a placeholder only so the switch
-    // stays exhaustive; real rendering should reach for its own asset id.
-    case "event-horizon": return 7;
-    // Close-quarters family (25 July 2026): no Batch I slots yet. The melee
-    // tools borrow the Patrol Blade's frame rather than the rifle's, so the
-    // placeholder at least reads as a blade.
-    case "combat-knife": return 1;
-    case "machete": return 1;
-    case "fire-axe": return 1;
-    case "shock-baton": return 1;
-    case "breaching-maul": return 1;
-    case "plasma-saber": return 1;
+    default: return placeholderFrameByPattern(weaponId);
+  }
+}
+
+/** Which owned tile a not-yet-authored weapon borrows, chosen by how it plays. */
+function placeholderFrameByPattern(weaponId: WeaponId): number {
+  const stats = WEAPON_CATALOG[weaponId];
+  switch (stats.attackPattern) {
+    // Contact weapons and the orbiting blade borrow the Patrol Blade.
+    case "melee-sweep":
+    case "orbit-blade":
+      return 1;
+    // Sustained cones borrow the Scattergun — the other spread-shaped tile.
+    case "beam":
+      return 0;
+    // The orbiting coil borrows the Arc Carbine, its own damage family.
+    case "orbit":
+      return 4;
+    case "chain-projectile":
+      return 4;
+    // Everything else is a projectile. Explosive/gravitic shells borrow the
+    // Grenade Tube; the rest borrow the rifle.
+    default:
+      return stats.explosionRadiusMetres > 0 ? 3 : 7;
   }
 }

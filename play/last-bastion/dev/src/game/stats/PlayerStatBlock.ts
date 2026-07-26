@@ -37,7 +37,12 @@ export interface PlayerStatBlock {
   critMultiplier: number;
   /** Global attack-speed bonus (additive %). */
   attackSpeedPercent: number;
-  /** Global weapon-range bonus (additive %). Reserved until range wiring lands. */
+  /**
+   * Global weapon-range bonus (additive %). Wired 26 July 2026: it scales both
+   * `rangeMetres` (melee reach, beam cone length, orbit-zap and auto-target
+   * acquisition) and projectile lifetime — a bullet's reach is speed × lifetime,
+   * so scaling only the former would leave every cursor-aimed weapon unaffected.
+   */
   rangePercent: number;
 
   // --- Defence / survival ---

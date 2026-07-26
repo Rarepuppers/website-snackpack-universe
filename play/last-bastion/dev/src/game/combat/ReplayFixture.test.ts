@@ -3,12 +3,21 @@ import {
   REPLAY_FIXED_DELTA_SECONDS,
   REPLAY_FORMAT_VERSION,
   SIMULATION_COMPATIBILITY_VERSION,
+  replaySnapshotDigest,
   runCombatReplay,
   runCombatReplaySequence,
   type CombatReplayFixture,
 } from "./ReplayFixture";
+import { CombatSimulation } from "./CombatSimulation";
+import type { PlayerIntent } from "../input/PlayerIntent";
 import { generateExpeditionMap } from "../expedition/ExpeditionMap";
 import { expeditionEncounterForNode } from "../expedition/ExpeditionEncounter";
+
+const NEUTRAL_INTENT: PlayerIntent = {
+  move: { x: 0, y: 0 }, aim: { x: 1, y: 0 }, fireHeld: false,
+  evasiveMovePressed: false, interactPressed: false,
+  ultimatePressed: false, kitPressed: false, pausePressed: false, restartPressed: false,
+};
 
 const FIXTURE: CombatReplayFixture = {
   formatVersion: REPLAY_FORMAT_VERSION,
@@ -102,5 +111,61 @@ describe("versioned fixed-step replay fixture", () => {
     expect(first.digest).toBe("84fc796d");
     expect(runCombatReplaySequence([...fixtures].reverse()).digest).not.toBe(first.digest);
     expect(() => runCombatReplaySequence([])).toThrow("at least one encounter");
+  });
+});
+
+/**
+ * Closing a coverage hole flagged in `last-bastion-content-debt-plan.md`: the
+ * rank-kill item grant added a `random()` draw on mini-boss/boss death, and no
+ * replay fixture ever kills a ranked enemy — so the digest passed while saying
+ * nothing about that branch of the stream. The gameplay fixtures cannot reach a
+ * mini-boss kill inside a few hundred frames, so this drives the same
+ * deterministic path directly and digests the result.
+ */
+describe("ranked-kill determinism (the branch no gameplay fixture reaches)", () => {
+  const rankedKillRun = (seed: number): { digest: string; items: readonly string[] } => {
+    const simulation = new CombatSimulation({ seed, autoStartWaves: false });
+    const miniBossId = simulation.spawnMiniBoss("siege-crusher", { x: 6, y: 6 });
+    simulation.dealDamage(miniBossId, 99_999);
+    for (let frame = 0; frame < 60; frame += 1) {
+      simulation.step(NEUTRAL_INTENT, REPLAY_FIXED_DELTA_SECONDS);
+    }
+    const snapshot = simulation.snapshot();
+    return { digest: replaySnapshotDigest(snapshot, seed), items: snapshot.ownedItemIds };
+  };
+
+  it("grants the same item and reaches the same state for the same seed", () => {
+    const first = rankedKillRun(4242);
+    const second = rankedKillRun(4242);
+    expect(first.digest).toBe(second.digest);
+    expect(first.items).toEqual(second.items);
+    // The draw really happened — this is the branch the fixtures never entered.
+    expect(first.items.length).toBeGreaterThan(0);
+  });
+
+  it("diverges by seed, so the draw is genuinely seeded and not constant", () => {
+    // Widely-spread seeds on purpose. The simulation's LCG
+    // (`state = state * 1664525 + 1013904223`) maps small, evenly-spaced seeds
+    // to a tight band of first outputs — seeds 11…88 all yield 0.24–0.27 — so a
+    // draw consumed on frame 0 picks the same item for all of them. That is a
+    // property of the generator, not of this branch, and it only bites a draw
+    // taken before any other `random()` call. Worth knowing; not fixed here.
+    const digests = new Set<string>();
+    const grants = new Set<string>();
+    for (const seed of [101, 7919, 104_729, 1_299_709, 15_485_863, 2_147_483_647, 999_999_937]) {
+      const run = rankedKillRun(seed);
+      digests.add(run.digest);
+      grants.add(run.items.join(","));
+    }
+    expect(digests.size).toBeGreaterThan(1);
+    expect(grants.size).toBeGreaterThan(1);
+  });
+
+  it("does not consume the draw for an ordinary kill", () => {
+    const simulation = new CombatSimulation({ seed: 4242, autoStartWaves: false });
+    const scuttlerId = simulation.spawnEnemy("scuttler", { x: 6, y: 6 });
+    simulation.dealDamage(scuttlerId, 9_999);
+    simulation.step(NEUTRAL_INTENT, REPLAY_FIXED_DELTA_SECONDS);
+    expect(simulation.snapshot().ownedItemIds).toEqual([]);
   });
 });

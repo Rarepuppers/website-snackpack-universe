@@ -53,7 +53,7 @@ High durability is not the same as indestructible. Any object that can block the
 
 1. **Completed - Object Batch O1:** structural/destructible atlases for broken walls, racks, lockers, reinforced gates, boulders, mounds, trees, ice blocks, overgrowth, webs, biomass nodes, and alien crystals, each with intact/damaged/critical/destroyed states. Small rocks may reuse/scaledown the boulder row until density review proves a distinct silhouette is necessary.
 2. **Started 26 July 2026 - Object Batch O2:** persistent loop and transition candidates for slime, toxic, fire, and lava are retained under `art/production-tests/object-batch-o2/`. **O2B now adds web-slow, ice-fracture/degradation, and recovery decals under `art/production-tests/object-batch-o2b/`.** Mixed-floor review, colour-vision review, and runtime binding remain open.
-3. **Started 26 July 2026 - Object Batch O3A:** the small interaction atlas for supply chest, gate button, control panel, turret console, and trap console is retained under `art/production-tests/object-batch-o3a/` with idle/ready/active/disabled/completed-opened states. O3B still covers the larger objective anchors: monster teleporter, stargate, cryogenic tube, and weapon-upgrade station.
+3. **Started 26 July 2026 - Object Batch O3A/O3B:** O3A supplies small control surfaces and O3B supplies the larger objective anchors under `art/production-tests/object-batch-o3a/` and `art/production-tests/object-batch-o3b/`. Both preserve idle/ready/active/disabled/completed state contracts; gameplay binding remains a separate gate.
 4. Theme binding and deterministic placement recipes.
 5. Navigation, colour-vision, controller-interaction, maximum-density, and 45-90-second encounter reviews.
 

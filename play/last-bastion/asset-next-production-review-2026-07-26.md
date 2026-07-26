@@ -2,7 +2,7 @@
 
 ## Audit result
 
-The code and plans agree that the next production gate is world-object art, not another character, weapon, environment, or boss batch.
+The code and plans agree that world-object art remains the current production gate; the next held-weapon release-art candidate is now staged for review without enabling its pool.
 
 - Environment room families AD–AJ and Object Batch O1 are accepted.
 - The live eight-weapon roster, perks, shop, and current item UI are covered; broad item generation would advertise mechanics that do not exist.
@@ -16,13 +16,13 @@ The code and plans agree that the next production gate is world-object art, not 
 1. **Object Batch O2A — persistent live hazards:** slime, toxic, fire, lava loop sheets and reusable transition pieces. Started in `art/production-tests/object-batch-o2/`.
 2. **Object Batch O2B — control surfaces:** web slow overlay, ice-fracture/degradation overlay, and extinguished/scorched recovery decals are now production candidates under `art/production-tests/object-batch-o2b/`. Safe-edge masks remain code-native geometry; mixed-floor and colour-vision acceptance remain open.
 3. **Object Batch O3A — core interactions:** the supply chest, gate button, control panel, turret console, and trap console atlas is now a production candidate under `art/production-tests/object-batch-o3a/`. Gameplay acceptance and code binding remain open; all states are text-free and physical.
-4. **Object Batch O3B — large objective anchors:** monster teleporter, stargate, cryogenic tube, weapon-upgrade station. Include preview/charge/cooldown layers but keep timing, radius, ownership, and prompts code-owned.
-5. **Held-weapon release art:** Railspike, Seeker Swarm, Cryo Lance, Tesla Coil, Flamethrower, Sawblade. Produce body/state/VFX/tile families, then flip `HELD_WEAPONS_IN_POOL`. Event Horizon waits for a Unique-slot acquisition path.
+4. **Object Batch O3B — large objective anchors:** the monster teleporter, stargate, cryogenic tube, and weapon-upgrade station atlas is now a production candidate under `art/production-tests/object-batch-o3b/`. Preview/charge/cooldown states are physical and text-free; timing, radius, ownership, destinations, and prompts remain code-owned.
+5. **Held-weapon release art:** Railspike, Seeker Swarm, Cryo Lance, Tesla Coil, Flamethrower, Sawblade. Batch H1 now stages body/state and behavior-matched VFX atlases under `art/production-tests/held-weapons-batch-h1/`, with the canonical tile atlas under `held-weapons-batch-h1-tiles/`; runtime derivatives are copied to `game-assets/`. Keep `HELD_WEAPONS_IN_POOL` off until close-view, audio, and in-game readability review pass. Event Horizon waits for a Unique-slot acquisition path.
 6. **Held-enemy wave release review:** the machine-faction art exists, so this is primarily mixed-wave acceptance and tuning. Nest Weaver needs a placement/budget decision rather than more art.
-7. **Item Batch P1:** consolidate the six live powerup/status motifs only if maximum-density review shows the mixed legacy atlas is unclear.
-8. **Item Batch P2:** renew Service Rifle, Scattergun, and Arc Carbine onset/travel/result/recovery VFX.
+7. **Item Batch P1:** a six-item consolidation candidate is now staged under `art/production-tests/item-batch-p1/`, including canonical tiles, pickup states, active-status motifs, and shared pickup/expiration effects. Keep it art-gated until the maximum-density and compact-size readability review passes.
+8. **Item Batch P2:** a three-row legacy VFX candidate is now staged under `art/production-tests/item-batch-p2/` for Service Rifle, Scattergun, and Arc Carbine. Keep existing bindings until compact-size and maximum-density review passes.
 9. **Transformation identity tiles:** blocked until the irreversible-choice comprehension gate and Cybernetic placeholder pilot pass.
-10. **Boss arenas (Batch AK):** generate after O2/O3 tactics pass 45–90-second encounters.
+10. **Boss arenas (Batch AK):** centerpiece art is staged under `art/production-tests/batch-ak/`, with modular boundary/fixture support under `batch-ak-support/`, a 4×4 floor candidate under `batch-ak-floor/`, low-contrast decals under `batch-ak-decals/`, optional atmosphere accents under `batch-ak-atmosphere/`, themed entrance gates under `batch-ak-gates/`, and non-playable vista plates under `batch-ak-vistas/`; full arena layouts remain gated behind seam, density, and 45–90-second tactics review.
 
 ## Quality floor for every new raster asset
 

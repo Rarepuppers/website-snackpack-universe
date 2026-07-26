@@ -1,0 +1,5 @@
+# Object Batch O3B generation prompt
+
+Generated with the built-in image-generation tool on 26 July 2026. Object Batch O1 supplied the environment-object material language and O3A supplied the interaction-state language.
+
+Create an exact 5×4 atlas on a flat `#FF00FF` chroma-key background. Rows top to bottom: alien-industrial monster teleporter ring with pylons; military-cosmic stargate arch with empty aperture; reinforced cryogenic tube with empty glass chamber; industrial weapon-upgrade station with recessed cradle and side power modules. Columns left to right: idle, ready, active/charging, disabled/cooldown, completed/settled. Preserve each row's footprint, camera, pivot, material, and lighting. Communicate state through physical pose and restrained cyan/violet/orange emissive accents only. No people, creatures, loot, weapons, readable text, UI, prompts, timers, radius rings, destinations, rewards, collision/damage state, floor scene, cast shadow, smoke, aura, watermark, or magenta inside objects.

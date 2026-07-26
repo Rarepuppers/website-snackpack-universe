@@ -11,7 +11,7 @@ import {
   BASTION_SERVICE_RIFLE,
   shouldWeaponFire,
   WEAPON_CATALOG,
-  WEAPON_CHEST_POOL,
+  weaponPoolFor,
   type WeaponId,
   type WeaponRuntimeStats,
 } from "../content/weaponCatalog";
@@ -1245,6 +1245,13 @@ export function scrapShopRerollCost(depth: number): number {
 export function scrapShopWeaponSaleValue(tier: 1 | 2 | 3, fraction = 0.5): number {
   return Math.floor(SCRAP_SHOP_PRICES.weapon * (2 ** (tier - 1)) * fraction);
 }
+/**
+ * How many weapon lines the shop may stock at once, out of everything unowned.
+ * Caps the weapon share of the offer draw now that the pool is 20 rather than 8.
+ */
+export const SHOP_WEAPON_CANDIDATE_COUNT = 3;
+/** A Unique is a real decision against a tier-up, not another Tier I purchase. */
+export const SHOP_UNIQUE_WEAPON_PRICE_MULTIPLIER = 3;
 const SCRAP_SHOP_REPAIR = 3.5;
 const SCRAP_SHOP_ARMOUR = 3;
 const ORDINARY_SCRAP_DROP_CHANCE = 0.25;
@@ -1389,6 +1396,13 @@ export class CombatSimulation {
   private supplyChests: SupplyChestState[] = [];
   private readonly activeBuffs = new Map<PowerupType, number>();
   private uraniumKitAvailable: boolean;
+  /**
+   * Unique-class weapons are earned, not drawn (`weaponPoolFor`). The first
+   * ranked kill of the run — mini-boss or boss — opens them to both the Weapon
+   * Chest and the shop's weapon line. Deliberately a flag rather than an extra
+   * `random()` draw: the RNG stream position is part of the replay digest.
+   */
+  private uniqueWeaponsUnlocked = false;
   private readonly obstacleHealth = new Map<string, number>();
   private readonly obstacleHitRemainingSeconds = new Map<string, number>();
   private pickups: ExperiencePickupState[] = [];
@@ -2534,6 +2548,15 @@ export class CombatSimulation {
    * Rarity-weighted through the same `luck`/`curse` curve the shop uses, so the
    * two economy stats read consistently wherever the player meets them.
    */
+  private unlockUniqueWeapons(): void {
+    this.uniqueWeaponsUnlocked = true;
+  }
+
+  /** Test/debug read: has this run earned access to Unique-class weapons yet. */
+  hasUnlockedUniqueWeapons(): boolean {
+    return this.uniqueWeaponsUnlocked;
+  }
+
   private grantWeightedItem(position: Vector2Data): string | null {
     const luck = this.playerStats.luck;
     const curse = this.playerStats.curse;
@@ -2864,12 +2887,17 @@ export class CombatSimulation {
     };
   }
 
+  /** Everything this run may still be offered, uniques included once earned. */
+  private offerableWeapons(): readonly WeaponId[] {
+    return weaponPoolFor({ uniqueUnlocked: this.uniqueWeaponsUnlocked });
+  }
+
   private buildWeaponChestDecision(): PendingDecision | null {
     if (this.equippedWeapons.length >= MAX_EQUIPPED_WEAPONS) {
       return null;
     }
     const ownedIds = new Set(this.equippedWeapons.map((weapon) => weapon.weaponId));
-    const unowned = WEAPON_CHEST_POOL.filter((weaponId) => !ownedIds.has(weaponId));
+    const unowned = this.offerableWeapons().filter((weaponId) => !ownedIds.has(weaponId));
     if (unowned.length === 0) {
       return null;
     }
@@ -3024,13 +3052,22 @@ export class CombatSimulation {
 
     if (profile.stock.weapons && this.equippedWeapons.length < MAX_EQUIPPED_WEAPONS) {
       const owned = new Set(this.equippedWeapons.map((weapon) => weapon.weaponId));
-      const availableWeapons = WEAPON_CHEST_POOL.filter((id) => !owned.has(id));
-      for (const weaponId of availableWeapons) {
+      const availableWeapons = this.offerableWeapons().filter((id) => !owned.has(id));
+      // The pool went 8 → 20 on the 26 July release. Every unowned weapon used to
+      // become a candidate, which at 20 would push ~19 weapon entries into a draw
+      // shared with ~26 items and visibly starve the item economy. Take a rotating
+      // window instead. RNG-free on purpose, exactly like the level-stat draw:
+      // this method is also called by `canRerollScrapShop`, so a `random()` here
+      // would consume a variable number of draws and break the replay digest.
+      for (const weaponId of rotatingWindow(availableWeapons, SHOP_WEAPON_CANDIDATE_COUNT, this.waveIndex)) {
+        const isUnique = WEAPON_CATALOG[weaponId].weaponClass === "unique";
         add({
           id: `shop-weapon:${weaponId}`,
           name: WEAPON_CATALOG[weaponId].displayName,
-          description: `Add this Tier I weapon to the active rack. ${WEAPON_CATALOG[weaponId].description}`,
-          cost: price(SCRAP_SHOP_PRICES.weapon),
+          description: isUnique
+            ? `Unique. ${WEAPON_CATALOG[weaponId].description}`
+            : `Add this Tier I weapon to the active rack. ${WEAPON_CATALOG[weaponId].description}`,
+          cost: price(SCRAP_SHOP_PRICES.weapon * (isUnique ? SHOP_UNIQUE_WEAPON_PRICE_MULTIPLIER : 1)),
         });
       }
     }
@@ -3334,7 +3371,7 @@ export class CombatSimulation {
         },
         damage: weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats),
         uraniumEligible: true,
-        remainingSeconds: weapon.stats.projectileLifetimeSeconds,
+        remainingSeconds: weapon.stats.projectileLifetimeSeconds * this.weaponRangeMultiplier(),
         pierceRemaining: weapon.stats.pierceCount,
         // Blast Baffle relic slightly enlarges the hero's own explosions.
         explosionRadiusMetres: weapon.stats.explosionRadiusMetres
@@ -3368,8 +3405,8 @@ export class CombatSimulation {
     const facing = normalizeVector(direction);
     const cover = this.activeObstacles().find((obstacle) =>
       segmentIntersectsRectangle(anchor, {
-        x: anchor.x + facing.x * weapon.stats.rangeMetres,
-        y: anchor.y + facing.y * weapon.stats.rangeMetres,
+        x: anchor.x + facing.x * this.weaponRange(weapon.stats),
+        y: anchor.y + facing.y * this.weaponRange(weapon.stats),
       }, obstacle));
     if (cover) {
       this.damageObstacle(
@@ -3384,7 +3421,7 @@ export class CombatSimulation {
     for (const enemy of this.enemies) {
       if (
         enemy.dead
-        || !pointInsideRipperSweep(anchor, facing, enemy.position, weapon.stats.rangeMetres, halfArc)
+        || !pointInsideRipperSweep(anchor, facing, enemy.position, this.weaponRange(weapon.stats), halfArc)
         || segmentHitsArenaObstacle(anchor, enemy.position, this.activeObstacles())
       ) continue;
       this.damageEnemy(
@@ -3435,7 +3472,7 @@ export class CombatSimulation {
     for (const enemy of this.enemies) {
       if (
         enemy.dead
-        || !pointInsideRipperSweep(anchor, facing, enemy.position, weapon.stats.rangeMetres, weapon.stats.meleeArcRadians / 2)
+        || !pointInsideRipperSweep(anchor, facing, enemy.position, this.weaponRange(weapon.stats), weapon.stats.meleeArcRadians / 2)
         || segmentHitsArenaObstacle(anchor, enemy.position, this.activeObstacles())
       ) continue;
       this.damageEnemy(
@@ -3466,7 +3503,7 @@ export class CombatSimulation {
    */
   private fireOrbitZap(weapon: EquippedWeaponState, anchor: Vector2Data): void {
     let current: EnemyState | null = null;
-    let nearestDistance = weapon.stats.rangeMetres;
+    let nearestDistance = this.weaponRange(weapon.stats);
     for (const enemy of this.enemies) {
       if (enemy.dead) continue;
       const candidateDistance = distance(anchor, enemy.position);
@@ -3566,7 +3603,7 @@ export class CombatSimulation {
     }
 
     let nearest: EnemyState | null = null;
-    let nearestDistance = weapon.stats.rangeMetres;
+    let nearestDistance = this.weaponRange(weapon.stats);
     for (const enemy of this.enemies) {
       if (enemy.dead) continue;
       const candidateDistance = distance(this.playerPosition, enemy.position);
@@ -3993,6 +4030,19 @@ export class CombatSimulation {
       ? this.relicModifiers.eliteBonusDamageAfterMiss
       : 0;
     return (marked ? HUNTER_OPTICS_ELITE_DAMAGE_MULTIPLIER : 1) * (1 + missBonus);
+  }
+
+  /**
+   * `rangePercent` as a multiplier. Wired 26 July 2026 — the stat existed with
+   * zero read sites, which blocked the whole range item axis.
+   */
+  private weaponRangeMultiplier(): number {
+    return Math.max(0.1, 1 + this.playerStats.rangePercent / 100);
+  }
+
+  /** A weapon's effective reach: melee arc, beam cone, and target acquisition. */
+  private weaponRange(stats: WeaponRuntimeStats): number {
+    return stats.rangeMetres * this.weaponRangeMultiplier();
   }
 
   private weaponDamageMultiplier(stats: WeaponRuntimeStats): number {
@@ -8363,12 +8413,14 @@ export class CombatSimulation {
       // Phase 5: rank payouts scale with depth now that the fights do. Flat
       // rewards made a late mini-boss worth the same as the first one.
       this.secureScrap(rankDefeatScrap(40, this.waveIndex), "mini-boss-defeat", enemy.position);
+      this.unlockUniqueWeapons();
       this.grantWeightedItem(enemy.position);
     } else if (enemy.eliteKind) {
       this.secureScrap(rankDefeatScrap(15, this.waveIndex), "elite-defeat", enemy.position);
     } else if (enemy.rank === "boss") {
       // The boss previously fell through every reward branch and paid nothing.
       this.secureScrap(rankDefeatScrap(80, this.waveIndex), "boss-defeat", enemy.position);
+      this.unlockUniqueWeapons();
       this.grantWeightedItem(enemy.position);
     } else if (enemy.type === "quillback" || enemy.type === "spinewheel" || enemy.type === "ripper") {
       this.secureScrap(2, "specialist-defeat", enemy.position);
@@ -9603,6 +9655,23 @@ function distanceToSegment(point: Vector2Data, from: Vector2Data, to: Vector2Dat
     0,
   ), 1);
   return distance(point, { x: from.x + segmentX * t, y: from.y + segmentY * t });
+}
+
+/**
+ * `size` entries starting at `offset`, wrapping around. Deterministic and
+ * RNG-free — the caller advances `offset` with something that already varies
+ * (the wave index), so successive visits show different stock without touching
+ * the replay-digest-bearing random stream.
+ */
+export function rotatingWindow<T>(entries: readonly T[], size: number, offset: number): readonly T[] {
+  if (entries.length === 0 || size <= 0) return [];
+  if (entries.length <= size) return entries;
+  const start = ((offset % entries.length) + entries.length) % entries.length;
+  const window: T[] = [];
+  for (let step = 0; step < size; step += 1) {
+    window.push(entries[(start + step) % entries.length]!);
+  }
+  return window;
 }
 
 function clamp(value: number, minimum: number, maximum: number): number {

@@ -53,9 +53,13 @@ describe("Task 49 campaign tuning", () => {
     expect(campaignNodeClearScrap("weapon-cache", 5)).toBe(15);
   });
 
-  it("keeps at least two distinct reference builds inside the authored boss window", () => {
+  it("keeps every distinct reference build inside the authored boss window", () => {
     const seconds = CAMPAIGN_REFERENCE_BUILDS.map(referenceBuildBossSeconds);
-    expect(seconds.filter((value) => value <= 120)).toHaveLength(3);
-    expect(new Set(CAMPAIGN_REFERENCE_BUILDS.map((build) => build.id)).size).toBe(3);
+    expect(seconds.filter((value) => value <= 120)).toHaveLength(4);
+    expect(new Set(CAMPAIGN_REFERENCE_BUILDS.map((build) => build.id)).size).toBe(4);
+    // The close-quarters build joined with the 26 July weapon release: half the
+    // rack is melee now, so projecting pacing from ranged builds alone would
+    // measure a game the player need not be playing.
+    expect(CAMPAIGN_REFERENCE_BUILDS.map((build) => build.id)).toContain("close-quarters");
   });
 });

@@ -4,6 +4,8 @@ import {
   buildDensityWave,
   DENSITY_CAPACITY_ENEMY_COUNT,
   DENSITY_LIVE_CAPS,
+  MACHINE_FACTION_IN_WAVES,
+  MACHINE_FACTION_UNPLACED,
   machineFactionThreatDelta,
   pressureRoleOf,
   pressureShares,
@@ -123,12 +125,29 @@ describe("density director v3", () => {
 });
 
 /**
- * The machine/summoner faction is built but held out of live waves pending art.
- * These guard the *flip* rather than the current state: `buildDensityWave`
- * throws unless planned threat exactly equals the budget, so a swap that is not
- * threat-neutral would turn a one-line art-day change into a crash.
+ * The machine/summoner faction went live 26 July 2026. `buildDensityWave` throws
+ * unless planned threat exactly equals the budget, so these guard both that the
+ * swaps stay threat-neutral and — the part that matters to a player — that the
+ * enemies genuinely reach a wave. Asserting the flag alone would have passed
+ * throughout the period they were unreachable.
  */
 describe("machine faction wave swaps", () => {
+  it("actually fields the released faction in live waves", () => {
+    expect(MACHINE_FACTION_IN_WAVES).toBe(true);
+    const fielded = new Set<string>();
+    for (let index = 0; index < WAVE_THREAT_BUDGETS.length; index += 1) {
+      for (const plan of buildDensityWave(index).plans) fielded.add(plan.type);
+    }
+    for (const type of ["scrap-skitterer", "arc-warden", "cyborg-reclaimer", "foundry-fabricator", "storm-savant"]) {
+      expect(fielded.has(type), `${type} appears in no wave`).toBe(true);
+    }
+    // Nest Weaver stays out by an explicit, documented tuning decision — it does
+    // not fit any late wave under the budget, pursuit-share and promotion-curve
+    // constraints at once. Listed so it cannot be forgotten silently.
+    expect(MACHINE_FACTION_UNPLACED).toEqual(["nest-weaver"]);
+    expect(fielded.has("nest-weaver")).toBe(false);
+  });
+
   it("swaps exactly as much threat as they add, for every late wave", () => {
     for (let waveNumber = 1; waveNumber <= 10; waveNumber += 1) {
       expect(machineFactionThreatDelta(waveNumber), `wave ${waveNumber} is not threat-neutral`).toBe(0);

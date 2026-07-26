@@ -264,12 +264,18 @@ function scheduleInPulses(
  * costed and steering-aware, but reachable only via `?scenario=` because it is
  * held out of live waves pending its art batch.
  *
- * **Flip this to `true` when the art lands.** The swaps below are threat-neutral
- * by construction: each wave adds exactly as much threat as it removes, so
- * `buildDensityWave`'s exact budget invariant holds in either state, and
- * `machineFactionThreatDelta` is asserted to be zero for every wave.
+ * **Released 26 July 2026**, alongside the weapon release. The machine-faction
+ * art already exists (the outstanding item was mixed-wave acceptance, not
+ * production), and shipping twelve new weapons against an unchanged enemy
+ * roster would have been a one-sided power spike.
+ *
+ * The swaps below are threat-neutral by construction: each wave adds exactly as
+ * much threat as it removes, so `buildDensityWave`'s exact budget invariant
+ * holds in either state, and `machineFactionThreatDelta` is asserted to be zero
+ * for every wave. The constant stays so the faction can be pulled back out for a
+ * balance probe without unpicking the swaps.
  */
-export const MACHINE_FACTION_IN_WAVES = false;
+export const MACHINE_FACTION_IN_WAVES = true;
 
 interface MachineWaveSwap {
   /** Machine-faction units introduced to this wave. */

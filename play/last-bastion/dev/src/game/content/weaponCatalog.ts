@@ -505,16 +505,18 @@ const LIVE_WEAPONS: readonly WeaponId[] = Object.freeze([
 ]);
 
 /**
- * Seven fully built, fully tested weapons — beam, orbit, orbit-blade, homing and
- * gravity-well subsystems among them — held out of the live pool pending their
- * art batch.
+ * Twelve fully built, fully tested weapons — beam, orbit, orbit-blade, homing
+ * and gravity-well subsystems among them, plus the whole close-quarters family.
  *
- * **Flip `HELD_WEAPONS_IN_POOL` to `true` when the art lands.** Event Horizon is
- * the one caveat: it is a `unique`-class weapon and there is still no
- * Unique-slot acquisition path, so it is listed separately and stays out until
- * that exists.
+ * **Released 26 July 2026 (creator decision).** The gate was originally "flip
+ * when the art batch lands"; the call instead was that thirteen unreachable
+ * combat subsystems cost more than placeholder tiles do. They borrow existing
+ * tiles and the rifle body sprite, differentiated by damage-type colour and
+ * attack-pattern tile grouping (`ui/WeaponTileFrames.ts`,
+ * `scenes/PrototypeScene.ts`) until their own art exists. The constant stays so
+ * the pool can be closed again for a balance probe.
  */
-export const HELD_WEAPONS_IN_POOL = false;
+export const HELD_WEAPONS_IN_POOL = true;
 
 const HELD_WEAPONS: readonly WeaponId[] = Object.freeze([
   "railspike",
@@ -534,12 +536,30 @@ const HELD_WEAPONS: readonly WeaponId[] = Object.freeze([
   "plasma-saber",
 ]);
 
-/** Needs a Unique-slot acquisition path before it can join the pool at all. */
+/**
+ * Unique-class weapons. These are *earned*, not drawn: Event Horizon is a
+ * 16-second gravity well, and dropping it into the ordinary chest would make it
+ * a wave-2 common. `weaponPoolFor({ uniqueUnlocked })` admits them only once the
+ * run has taken down its first ranked enemy (mini-boss or boss).
+ */
 export const UNIQUE_SLOT_WEAPONS: readonly WeaponId[] = Object.freeze(["event-horizon"]);
 
+/** The base pool: everything obtainable before a unique is unlocked. */
 export const WEAPON_CHEST_POOL: readonly WeaponId[] = Object.freeze(
   HELD_WEAPONS_IN_POOL ? [...LIVE_WEAPONS, ...HELD_WEAPONS] : [...LIVE_WEAPONS],
 );
+
+/**
+ * The single source of truth for "what can this run still be offered". Both
+ * acquisition routes — the Weapon Chest and the scrap shop's weapon line — read
+ * this, because they previously each filtered `WEAPON_CHEST_POOL` themselves and
+ * that is exactly how two pools drift apart.
+ */
+export function weaponPoolFor(options: { uniqueUnlocked: boolean }): readonly WeaponId[] {
+  return options.uniqueUnlocked
+    ? [...WEAPON_CHEST_POOL, ...UNIQUE_SLOT_WEAPONS]
+    : WEAPON_CHEST_POOL;
+}
 
 function weapon(
   definition: Pick<WeaponRuntimeStats,

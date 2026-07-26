@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import type { CombatScenario, CombatSnapshot, PowerupType } from "../combat/CombatSimulation";
 import { MARINE } from "../hero/marine";
+import { DAMAGE_TYPE_COLOURS } from "../combat/damageTypes";
+import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
 import { PROTOTYPE_EVASIVE_RECOVERY_SECONDS } from "../hero/HeroMotionController";
 import {
   cadenceWeapons,
@@ -427,7 +429,11 @@ function weaponPipColor(weaponId: string): number {
   if (weaponId === "bolt-carbine") return 0x94efff;
   if (weaponId === "bulwark-rotary-cannon") return 0xff9b42;
   if (weaponId === "grenade-tube") return 0xffb23f;
-  return 0xffa31a;
+  // Weapons without an authored pip colour fall back to their damage type
+  // rather than one shared amber, so the thirteen released on 26 July 2026
+  // separate into fire/shock/cryo/toxic families at a glance.
+  const stats = WEAPON_CATALOG[weaponId as WeaponId];
+  return stats ? DAMAGE_TYPE_COLOURS[stats.damageType] : 0xffa31a;
 }
 
 function createCooldownTile(

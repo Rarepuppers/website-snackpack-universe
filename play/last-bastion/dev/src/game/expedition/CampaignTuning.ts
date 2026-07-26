@@ -152,7 +152,7 @@ export function projectCampaignRoutes(map: ExpeditionMapData): readonly Campaign
 }
 
 export interface CampaignReferenceBuild {
-  id: "precision" | "suppression" | "tech-control";
+  id: "precision" | "suppression" | "tech-control" | "close-quarters";
   weapons: readonly { id: WeaponId; tier: 1 | 2 | 3 }[];
   damageMultiplier: number;
 }
@@ -184,6 +184,19 @@ export const CAMPAIGN_REFERENCE_BUILDS: readonly CampaignReferenceBuild[] = Obje
       { id: "grenade-tube" as const, tier: 2 as const },
     ]),
     damageMultiplier: 1.35,
+  }),
+  // Added with the 26 July 2026 weapon release. Half the rack is close-quarters
+  // now, and projecting campaign pacing from three ranged builds would keep
+  // measuring a game the player is no longer necessarily playing. The lower
+  // multiplier is the uptime cost: melee only deals damage while in contact.
+  Object.freeze({
+    id: "close-quarters" as const,
+    weapons: Object.freeze([
+      { id: "machete" as const, tier: 2 as const },
+      { id: "fire-axe" as const, tier: 2 as const },
+      { id: "plasma-saber" as const, tier: 1 as const },
+    ]),
+    damageMultiplier: 1.2,
   }),
 ]);
 
