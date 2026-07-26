@@ -50,6 +50,54 @@ The code and plans agree that world-object art remains the current production ga
 
 24. **Object Batch O16 — medical + emergency + security:** three 2×2 atlases now stage medical-response, emergency-support, and security-support props under `art/production-tests/object-batch-o16/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
 
+25. **Object Batch O17 — logistics + fabrication:** three 2×2 atlases now stage logistics-storage, fabrication-room, and power-fabrication props under `art/production-tests/object-batch-o17/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+26. **Object Batch O18 — habitation + recreation + communications:** three 2×2 atlases now stage habitation, recreation-common, and communications props under `art/production-tests/object-batch-o18/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+27. **Object Batch O19 — command + navigation + archive:** three 2×2 atlases now stage command-center, navigation-observation, and archive-records props under `art/production-tests/object-batch-o19/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+28. **Object Batch O20 — engineering + life support + exterior service:** three 2×2 atlases now stage engineering-control, life-support, and exterior-service props under `art/production-tests/object-batch-o20/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+29. **Object Batch O21 — transit + loading + security perimeter:** three 2×2 atlases now stage transit-access, loading-freight, and security-perimeter props under `art/production-tests/object-batch-o21/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+30. **Object Batch O22 — civic + agricultural + utility:** three 2×2 atlases now stage civic-community, agricultural-hydroponic, and utility-room props under `art/production-tests/object-batch-o22/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+31. **Object Batch O23 — laboratory + power + docking:** three 2×2 atlases now stage laboratory, power-distribution, and docking-service props under `art/production-tests/object-batch-o23/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+32. **Object Batch O24 — command support + crew care + emergency egress:** three 2×2 atlases now stage command-support, crew-care, and emergency-egress props under `art/production-tests/object-batch-o24/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+33. **Object Batch O25 — research + maintenance + weather utility:** three 2×2 atlases now stage research-support, maintenance-staging, and weather-utility props under `art/production-tests/object-batch-o25/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+34. **Object Batch O26 — fabrication safety + habitat commons + communications infrastructure:** three 2×2 atlases now stage fabrication-safety, habitat-commons, and communications-infrastructure props under `art/production-tests/object-batch-o26/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+35. **Object Batch O27 — civic market + memorial cultural + surface salvage:** three 2×2 atlases now stage civic-market, memorial-cultural, and surface-salvage props under `art/production-tests/object-batch-o27/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+36. **Object Batch O28 — robotics support + water treatment + expedition field gear:** three 2×2 atlases now stage robotics-support, water-treatment, and expedition-field-gear props under `art/production-tests/object-batch-o28/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+37. **Object Batch O29 — thermal climate + learning education + personal quarters:** three 2×2 atlases now stage thermal-climate, learning-education, and personal-quarters props under `art/production-tests/object-batch-o29/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+38. **Object Batch O30 — construction staging + geology survey + quiet recreation:** three 2×2 atlases now stage construction-staging, geology-survey, and quiet-recreation props under `art/production-tests/object-batch-o30/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+39. **Authorized Storm Savant follow-up — body + node + effects:** a 4×9 body sheet, 6-state node strip, and 4×2 effects atlas are now staged under `art/production-tests/batch-storm-savant/`. The remaining queue is behavior-gated enemy follow-ups (Scrap Skitterer, Arc Warden, Cyborg Reclaimer, Foundry Fabricator), seven specialty shop keepers, and conditional legacy weapon VFX/audio; gameplay geometry, timings, and ownership remain code-owned.
+
+40. **Authorized Scrap Skitterer follow-up — body + effects:** a 4×8 directional/state body sheet and 4×2 onset/dissipate effects atlas are now staged under `art/production-tests/batch-scrap-skitterer/`. The compact wreck, sparse effects, and non-explosive identity are preserved; rush timing, warning lane, collision, damage, Shock weakness, wreck lifetime, and cap remain code-owned.
+
+41. **Authorized Arc Warden follow-up — body + effects:** a 4×8 directional/state body sheet and 4×2 onset/dissipate effects atlas are now staged under `art/production-tests/batch-arc-warden/`. The narrow emitter, fixed footprint, and vented recovery remain readable; aim lock, beam geometry, endpoint, timing, cover clipping, damage, Shock weakness, and cooldown remain code-owned.
+
+42. **Authorized Cyborg Reclaimer follow-up — body + effects:** a 4×9 directional/state body sheet and 4×2 onset/dissipate repair effects atlas are now staged under `art/production-tests/batch-cyborg-reclaimer/`. The broad silhouette, repair arm, reservoir, and recovery states remain readable; target eligibility, tether, patch count, healing, interruption, and cooldown remain code-owned.
+
+43. **Authorized Foundry Fabricator follow-up — body + pad + drone + turret + effects:** the five-family package is staged under `art/production-tests/batch-foundry-fabricator/`: 4×9 Fabricator body, 6-state fabrication pad, 4×7 drone, 4×8 turret, and 4×2 shared effects. Charges, reservations/refunds, pad interruption, child cleanup, turret tells, cover blocking, timing, and collision remain code-owned.
+
+44. **Specialty shop keeper batch — seven presentation sheets:** Blacksmith, Gunsmith, VND-R, Clinician, Medic-Sister, Curator, and Fence now have four-frame 128×256 idle sheets under `art/production-tests/batch-shop-keepers/`. Prices, offers, specialty labels, counter layout, and transaction behavior remain code-rendered.
+
+45. **Item Batch P2 refresh — legacy weapon VFX:** Service Rifle, Scattergun, and Arc Carbine now have refreshed 2×2 onset/travel/result/recovery candidates under `art/production-tests/item-batch-p2-refresh/`. The Scattergun impact was regenerated to remove gore and use mechanical/armour/cover feedback only. Hit geometry, damage areas, chain paths, timing, and status buildup remain code-owned.
+
+46. **Audio Batch S1 validation:** the existing 24 production WAV masters now pass `npm.cmd run audio:validate:s1 -- --allow-missing` (24/24 present, format/peak/duration checks pass, Bulwark loop accepted). No audio generation was performed here; remaining audio work is S2/S3 threat and shared-feedback recording plus runtime binding review.
+
+47. **Audio Batch S2 preflight:** eight deterministic mono 48 kHz/24-bit WAV candidates now exist under `audio/production/batch-s2/masters/` for Marine knife warning/whoosh/impacts, Abomination windup/slam/recovery, and restrained Survivor pack-rush. FFmpeg is unavailable here, so OGG/MP3 runtime derivatives and final mastering remain pending.
+
+48. **Audio Batch S3 preflight:** 16 deterministic mono 48 kHz/24-bit WAV candidates now exist under `audio/production/batch-s3/masters/` for material impacts, pickup/XP, level-up, chest/shop confirmation, player damage, and boss/reward feedback. FFmpeg/runtime encoding and final mix review remain pending.
+
 ## Quality floor for every new raster asset
 
 - Keep untouched generated source, clean-alpha source, prompt provenance, deterministic normalizer, runtime derivative, frame map, and contact sheet.
