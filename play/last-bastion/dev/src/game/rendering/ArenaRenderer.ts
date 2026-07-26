@@ -40,12 +40,69 @@ export function renderArena(
         .setDepth(-16);
     }
     renderAuthoredBoundaries(scene, columns, rows, tilePixels, widthPixels, heightPixels, theme);
+    renderHazards(scene, arena, pixelsPerMetre);
     renderAuthoredObstacles(scene, arena, pixelsPerMetre, debugCollision, theme);
     return;
   }
 
   renderPlaceholderArena(scene, arena, pixelsPerMetre, debugCollision, columns, rows, tilePixels);
+  renderHazards(scene, arena, pixelsPerMetre);
 }
+
+/**
+ * Persistent floor hazards (26 July 2026). Code-drawn until Object Batch O2's
+ * loop sheets land and bind, because a hazard that damages you invisibly is
+ * strictly worse than no hazard at all.
+ *
+ * Deliberately readable without colour: each family gets its own hatch density
+ * and a dashed border whose thickness tracks severity, so slime, toxic, fire and
+ * lava stay distinguishable in greyscale and in common colour-vision modes —
+ * the requirement stated in `world-object-production-plan.md`. Drawn under
+ * actors and pickups so it never masks a body or a drop.
+ */
+function renderHazards(scene: Phaser.Scene, arena: ArenaDefinition, pixelsPerMetre: number): void {
+  const hazards = arena.hazards ?? [];
+  if (hazards.length === 0) return;
+
+  for (const hazard of hazards) {
+    const style = HAZARD_STYLES[hazardStyleKey(hazard)];
+    const x = hazard.x * pixelsPerMetre;
+    const y = hazard.y * pixelsPerMetre;
+    const width = hazard.width * pixelsPerMetre;
+    const height = hazard.height * pixelsPerMetre;
+
+    const graphics = scene.add.graphics().setDepth(-14);
+    graphics.fillStyle(style.fill, style.fillAlpha);
+    graphics.fillRect(x, y, width, height);
+
+    // Hatching: the shape cue that survives greyscale. Tighter spacing reads as
+    // more dangerous, independently of the fill colour.
+    graphics.lineStyle(2, style.hatch, 0.5);
+    for (let offset = -height; offset < width; offset += style.hatchSpacingPixels) {
+      graphics.beginPath();
+      graphics.moveTo(x + offset, y + height);
+      graphics.lineTo(x + offset + height, y);
+      graphics.strokePath();
+    }
+
+    graphics.lineStyle(style.borderPixels, style.hatch, 0.9);
+    graphics.strokeRect(x, y, width, height);
+  }
+}
+
+function hazardStyleKey(hazard: NonNullable<ArenaDefinition["hazards"]>[number]): keyof typeof HAZARD_STYLES {
+  if (hazard.effect.type === "slow") return "slow";
+  return hazard.effect.damageType;
+}
+
+const HAZARD_STYLES = {
+  // Slow: widest hatching, thinnest border — an inconvenience, not a threat.
+  slow: { fill: 0x4d7a3a, fillAlpha: 0.3, hatch: 0x9ede6a, hatchSpacingPixels: 26, borderPixels: 2 },
+  toxic: { fill: 0x2f5a20, fillAlpha: 0.36, hatch: 0x7ed957, hatchSpacingPixels: 18, borderPixels: 3 },
+  fire: { fill: 0x5b2415, fillAlpha: 0.4, hatch: 0xff9a52, hatchSpacingPixels: 12, borderPixels: 4 },
+  // Lava: tightest hatching and heaviest border, the strongest non-colour cue.
+  lava: { fill: 0x6b1c08, fillAlpha: 0.46, hatch: 0xffb23f, hatchSpacingPixels: 8, borderPixels: 6 },
+} as const;
 
 function renderAuthoredFloor(
   scene: Phaser.Scene,

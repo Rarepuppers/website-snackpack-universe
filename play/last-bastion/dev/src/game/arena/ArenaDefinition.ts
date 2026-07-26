@@ -1,4 +1,5 @@
 import type { Vector2Data } from "../math/Vector2Data";
+import type { HazardEffect } from "./WorldObjectCatalog";
 
 export type ArenaObstacleKind =
   | "barricade" | "cargo-crate" | "power-conduit" | "biomass"
@@ -13,6 +14,35 @@ export interface ArenaObstacle {
   height: number;
   /** Numeric durability. Legacy/custom arenas may omit this and use the kind default. */
   maxDurability?: number;
+  /**
+   * `WorldObjectCatalog` entry this obstacle was furnished from, when it came
+   * from `placeWorldObjects` rather than a hand-authored arena. Carries the
+   * behavioural contract — death effects, art bindings — that `kind` alone
+   * cannot express.
+   */
+  worldObjectId?: string;
+}
+
+/**
+ * A persistent floor hazard. Hazards are not obstacles: they never block
+ * movement or projectiles, they have no durability, and they are the only
+ * world objects that affect anything standing on them rather than in their way.
+ */
+export interface ArenaHazard {
+  id: string;
+  worldObjectId: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  effect: HazardEffect;
+}
+
+export function pointInsideHazard(point: Vector2Data, hazard: ArenaHazard): boolean {
+  return point.x >= hazard.x
+    && point.x <= hazard.x + hazard.width
+    && point.y >= hazard.y
+    && point.y <= hazard.y + hazard.height;
 }
 
 export const ARENA_OBSTACLE_DURABILITY: Readonly<Record<ArenaObstacleKind, number>> = Object.freeze({
@@ -43,6 +73,8 @@ export interface ArenaDefinition {
   tileSizeMetres: number;
   obstacles: readonly ArenaObstacle[];
   fence?: ArenaFenceDefinition;
+  /** Persistent floor hazards, usually furnished by `placeWorldObjects`. */
+  hazards?: readonly ArenaHazard[];
 }
 
 export const BASTION_ARENA: Readonly<ArenaDefinition> = Object.freeze({

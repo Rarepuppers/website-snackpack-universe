@@ -4063,6 +4063,15 @@ function readStartingWeaponIds(): readonly WeaponId[] | null {
   return ids.length > 0 ? ids.slice(0, 12) : null;
 }
 
+/**
+ * `?worldobjects=<arena-theme-id>` furnishes the Quick Drop yard from that
+ * theme's world-object family — the review route for placement, hazards and the
+ * Fuel Cell without walking an expedition to the right node.
+ */
+function readWorldObjectTheme(): string | undefined {
+  return new URLSearchParams(window.location.search).get("worldobjects")?.trim() || undefined;
+}
+
 function readMarineArtPreview(): boolean {
   return new URLSearchParams(window.location.search).get("art") !== "placeholder";
 }
@@ -4222,6 +4231,7 @@ function createSimulation(
   autoFireEnabled: boolean,
 ): CombatSimulation {
   return new CombatSimulation({
+    worldObjectTheme: readWorldObjectTheme(),
     startingWeaponCount,
     startingWeaponIds: startingWeaponIds ?? undefined,
     stressProfile: stressProfile ?? undefined,

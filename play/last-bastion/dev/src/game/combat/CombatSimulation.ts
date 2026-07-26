@@ -44,11 +44,15 @@ import {
 import {
   BASTION_ARENA,
   pointHitsObstacle,
+  pointInsideHazard,
   obstacleMaxDurability,
   resolveCircleMovement,
   type ArenaDefinition,
+  type ArenaHazard,
   type ArenaObstacle,
 } from "../arena/ArenaDefinition";
+import { worldObjectById } from "../arena/WorldObjectCatalog";
+import { placeWorldObjects, SPAWN_CLEARANCE_METRES } from "../arena/WorldObjectPlacement";
 import {
   STATUS_BY_DAMAGE_TYPE,
   STATUS_BUILDUP_THRESHOLD,
@@ -327,7 +331,14 @@ export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat"
 export type TerrainDamageSource = "player-projectile" | "player-melee" | "mini-boss-charge" | "mini-boss-impact" | "enemy-slam" | "enemy-biomass";
 
 /** How the player took a hit. Blast Baffle mitigates the explosive kind. */
-export type PlayerDamageSource = "generic" | "explosive";
+/**
+ * `hazard` is standing damage from a persistent floor hazard. It deliberately
+ * ignores the post-hit invulnerability window in both directions: a hazard tick
+ * neither waits for the window nor opens one. Otherwise standing in lava while a
+ * swarm chewed on you would deal *no* lava damage, and — worse — parking in fire
+ * would grant permanent i-frames against everything else.
+ */
+export type PlayerDamageSource = "generic" | "explosive" | "hazard";
 
 export interface TerrainSnapshot {
   id: string;
@@ -1061,6 +1072,12 @@ export interface CombatSimulationOptions {
   heroId?: HeroDefinition["id"];
   /** Scene-owned persisted accessibility setting; false keeps pure harnesses explicit. */
   autoFireEnabled?: boolean;
+  /**
+   * Furnish the arena with themed world objects instead of using the authored
+   * Bastion yard's props. Expedition encounters set this from their node theme
+   * automatically; passing it directly is the debug/harness route.
+   */
+  worldObjectTheme?: string;
 }
 
 interface EquippedWeaponState extends EquippedWeapon {
@@ -1404,6 +1421,8 @@ export class CombatSimulation {
    */
   private uniqueWeaponsUnlocked = false;
   private readonly obstacleHealth = new Map<string, number>();
+  /** Fractional carry so hazard damage-per-second lands in whole, readable ticks. */
+  private hazardDamageAccumulator = 0;
   private readonly obstacleHitRemainingSeconds = new Map<string, number>();
   private pickups: ExperiencePickupState[] = [];
   private nextEntityId = 1;
@@ -1465,7 +1484,7 @@ export class CombatSimulation {
     this.weaponProficiencies = { ...this.hero.weaponProficiencies };
     this.upgradeSlotCapacity = { ...this.hero.upgradeSlots };
     this.playerShield = this.hero.defence.maxShield;
-    this.arena = options.arena ?? BASTION_ARENA;
+    this.arena = options.arena ?? furnishArena(BASTION_ARENA, options);
     this.widthMetres = options.widthMetres ?? this.arena.widthMetres;
     this.heightMetres = options.heightMetres ?? this.arena.heightMetres;
     this.playerPosition = {
@@ -1670,6 +1689,7 @@ export class CombatSimulation {
     this.updateRegeneration(delta);
     this.updateShieldRecharge(delta);
     this.updateFence(intent, delta);
+    this.updateArenaHazards(delta);
 
     const motionFrame = this.heroMotion.update(intent, delta);
     this.heroState = motionFrame.state;
@@ -1685,6 +1705,12 @@ export class CombatSimulation {
       ? resolveSlowedMultiplier(SLIME_MOVEMENT_MULTIPLIER, this.defence.slowResistance)
       : 1;
     if (motionFrame.state !== "evading") {
+      // Arena slime slows you through the same resistance stat enemy slime uses;
+      // an evasive move still carries you clear of it.
+      const hazardSlow = this.arenaHazardMovementMultiplier();
+      if (hazardSlow < 1) {
+        movementMultiplier *= resolveSlowedMultiplier(hazardSlow, this.defence.slowResistance);
+      }
       movementMultiplier *= this.moveSpeedMultiplier * this.levelSpeedMultiplier;
       if (this.isBuffActive("adrenaline")) {
         movementMultiplier *= ADRENALINE_MOVE_MULTIPLIER;
@@ -7131,6 +7157,22 @@ export class CombatSimulation {
     ));
   }
 
+  /**
+   * Damages a world object directly, the way `dealDamage` and `spawnEnemy`
+   * expose enemies. Lets a test light a Fuel Cell without first arranging a
+   * weapon, an angle and a hundred frames of travel.
+   */
+  damageObstacleForTest(obstacleId: string, damage: number): void {
+    const obstacle = this.arena.obstacles.find((candidate) => candidate.id === obstacleId);
+    if (!obstacle) return;
+    this.damageObstacle(
+      obstacleId,
+      damage,
+      { x: obstacle.x + obstacle.width / 2, y: obstacle.y + obstacle.height / 2 },
+      "player-projectile",
+    );
+  }
+
   private damageObstacle(
     obstacleId: string,
     rawDamage: number,
@@ -7147,8 +7189,75 @@ export class CombatSimulation {
     this.obstacleHitRemainingSeconds.set(obstacleId, 1.5);
     if (remainingHealth <= 0) {
       this.frameEvents.push({ type: "obstacle-destroyed", obstacleId, position: { ...position }, damage, remainingHealth: 0, source });
+      this.detonateWorldObject(obstacle, source);
     } else {
       this.frameEvents.push({ type: "obstacle-damaged", obstacleId, position: { ...position }, damage, remainingHealth, source });
+    }
+  }
+
+  /**
+   * Fuel Cell and any future `onDestroyed: detonate` world object. Destruction
+   * is a weapon: the blast hurts enemies **and** the player, and it sets off
+   * neighbouring cells, so a line of them is a trap you can spring — on the
+   * swarm or on yourself.
+   *
+   * The chain runs breadth-first with an explicit visited set rather than by
+   * recursing through `damageObstacle`, because two adjacent cells would
+   * otherwise detonate each other forever.
+   */
+  private detonateWorldObject(origin: ArenaObstacle, source: TerrainDamageSource): void {
+    const originEffect = worldObjectById(origin.worldObjectId ?? "")?.onDestroyed;
+    if (!originEffect) return;
+
+    const detonated = new Set<string>([origin.id]);
+    let frontier: { obstacle: ArenaObstacle; effect: typeof originEffect }[] = [
+      { obstacle: origin, effect: originEffect },
+    ];
+
+    while (frontier.length > 0) {
+      const next: typeof frontier = [];
+      for (const { obstacle, effect } of frontier) {
+        const centre = {
+          x: obstacle.x + obstacle.width / 2,
+          y: obstacle.y + obstacle.height / 2,
+        };
+        this.frameEvents.push({ type: "explosion", position: { ...centre }, radiusMetres: effect.radiusMetres });
+
+        for (const enemy of this.enemies) {
+          if (enemy.dead) continue;
+          if (distance(enemy.position, centre) <= effect.radiusMetres + enemyRadius(enemy)) {
+            this.dealDamage(enemy.id, effect.damage, "fire");
+          }
+        }
+        if (distance(this.playerPosition, centre) <= effect.radiusMetres + PLAYER_RADIUS_METRES) {
+          this.damagePlayer(effect.damage, "explosive");
+        }
+
+        for (const candidate of this.arena.obstacles) {
+          if (detonated.has(candidate.id)) continue;
+          const candidateEffect = worldObjectById(candidate.worldObjectId ?? "")?.onDestroyed;
+          if (!candidateEffect) continue;
+          const candidateCentre = {
+            x: candidate.x + candidate.width / 2,
+            y: candidate.y + candidate.height / 2,
+          };
+          if (distance(candidateCentre, centre) > effect.chainRadiusMetres) continue;
+          detonated.add(candidate.id);
+          // The neighbour is consumed by the blast whether or not it had health
+          // left; its own explosion is what matters, not its remaining hit points.
+          this.obstacleHealth.set(candidate.id, 0);
+          this.frameEvents.push({
+            type: "obstacle-destroyed",
+            obstacleId: candidate.id,
+            position: { ...candidateCentre },
+            damage: effect.damage,
+            remainingHealth: 0,
+            source,
+          });
+          next.push({ obstacle: candidate, effect: candidateEffect });
+        }
+      }
+      frontier = next;
     }
   }
 
@@ -7766,6 +7875,52 @@ export class CombatSimulation {
     return limitMajorTelegraphs(telegraphs);
   }
 
+  /** Persistent arena hazards currently under the player's feet. */
+  private arenaHazardsUnderPlayer(): readonly ArenaHazard[] {
+    const hazards = this.arena.hazards;
+    if (!hazards || hazards.length === 0) return [];
+    return hazards.filter((hazard) => pointInsideHazard(this.playerPosition, hazard));
+  }
+
+  /**
+   * Damage-over-time from persistent floor hazards. Damage accumulates
+   * fractionally and lands in whole ticks so a toxic pool reads as "4 per
+   * second" rather than as a per-frame trickle whose size depends on frame rate.
+   * Only the strongest hazard underfoot applies — standing where a fire patch
+   * and a toxic pool overlap should not silently double the rate.
+   */
+  private updateArenaHazards(deltaSeconds: number): void {
+    const hazards = this.arenaHazardsUnderPlayer();
+    if (hazards.length === 0) {
+      this.hazardDamageAccumulator = 0;
+      return;
+    }
+    let worst = 0;
+    for (const hazard of hazards) {
+      if (hazard.effect.type === "damage") worst = Math.max(worst, hazard.effect.damagePerSecond);
+    }
+    if (worst <= 0) {
+      this.hazardDamageAccumulator = 0;
+      return;
+    }
+    this.hazardDamageAccumulator += worst * deltaSeconds;
+    if (this.hazardDamageAccumulator < 1) return;
+    const whole = Math.floor(this.hazardDamageAccumulator);
+    this.hazardDamageAccumulator -= whole;
+    this.damagePlayer(whole, "hazard");
+  }
+
+  /** Strongest slow underfoot, or 1. Slime slows; it never damages. */
+  private arenaHazardMovementMultiplier(): number {
+    let multiplier = 1;
+    for (const hazard of this.arenaHazardsUnderPlayer()) {
+      if (hazard.effect.type === "slow") {
+        multiplier = Math.min(multiplier, hazard.effect.movementMultiplier);
+      }
+    }
+    return multiplier;
+  }
+
   private isPlayerSlowed(): boolean {
     return this.groundHazards.some((hazard) => (
       hazard.type === "slowing-slime"
@@ -7902,7 +8057,9 @@ export class CombatSimulation {
     if (source === "explosive") {
       rawDamage *= this.relicModifiers.selfExplosiveDamageMultiplier;
     }
-    if (rawDamage <= 0 || this.playerInvulnerable || this.playerHurtCooldownSeconds > 0) return;
+    const ignoresHurtWindow = source === "hazard";
+    if (rawDamage <= 0 || this.playerInvulnerable) return;
+    if (!ignoresHurtWindow && this.playerHurtCooldownSeconds > 0) return;
     // Item dodge (Brotato overhaul): a chance to ignore the hit outright. Guarded
     // so a zero dodge chance draws no RNG, keeping the deterministic replay digest
     // stable for runs with no dodge items.
@@ -7951,7 +8108,9 @@ export class CombatSimulation {
       // this branch — a hit fully absorbed by shield provokes nothing.
       if (mitigated > 0) this.applyRetaliationBurst();
     }
-    this.playerHurtCooldownSeconds = this.defence.hitInvulnerabilitySeconds;
+    if (!ignoresHurtWindow) {
+      this.playerHurtCooldownSeconds = this.defence.hitInvulnerabilitySeconds;
+    }
     this.frameEvents.push({
       type: "player-hit",
       position: { ...this.playerPosition },
@@ -9663,6 +9822,52 @@ function distanceToSegment(point: Vector2Data, from: Vector2Data, to: Vector2Dat
  * (the wave index), so successive visits show different stock without touching
  * the replay-digest-bearing random stream.
  */
+/**
+ * Furnishes a room with themed world objects (26 July 2026).
+ *
+ * Quick Drop and every pure harness keep the hand-authored Bastion yard exactly
+ * as it was — no regression to the default experience, and existing fixtures and
+ * digests are untouched. An **expedition encounter** furnishes from its node's
+ * theme and seed instead, because that is where room variety was always meant to
+ * live and where a bastion barricade standing in an alien hive reads as a bug.
+ *
+ * The fence survives furnishing: it is the signature battlefield interaction and
+ * its switch is a fixed anchor, so it is kept and its geometry declared
+ * off-limits to placement.
+ */
+function furnishArena(base: ArenaDefinition, options: CombatSimulationOptions): ArenaDefinition {
+  const theme = options.worldObjectTheme ?? options.expeditionEncounter?.themeId;
+  if (!theme) return base;
+
+  const widthMetres = options.widthMetres ?? base.widthMetres;
+  const heightMetres = options.heightMetres ?? base.heightMetres;
+  const keepClear = [
+    { x: widthMetres / 2, y: heightMetres / 2, radiusMetres: SPAWN_CLEARANCE_METRES },
+  ];
+  if (base.fence) {
+    keepClear.push(
+      { x: base.fence.switchPosition.x, y: base.fence.switchPosition.y, radiusMetres: 2 },
+      { x: base.fence.from.x, y: base.fence.from.y, radiusMetres: 2 },
+      { x: base.fence.to.x, y: base.fence.to.y, radiusMetres: 2 },
+    );
+  }
+
+  const placement = placeWorldObjects({
+    theme,
+    widthMetres,
+    heightMetres,
+    // Derived from the encounter seed rather than equal to it, so a room's
+    // furniture and its wave rolls are not the same number.
+    seed: (options.expeditionEncounter?.seed ?? options.seed ?? 0) ^ 0x9e3779b9,
+    keepClear,
+  });
+  return {
+    ...base,
+    obstacles: placement.obstacles,
+    hazards: placement.hazards,
+  };
+}
+
 export function rotatingWindow<T>(entries: readonly T[], size: number, offset: number): readonly T[] {
   if (entries.length === 0 || size <= 0) return [];
   if (entries.length <= size) return entries;

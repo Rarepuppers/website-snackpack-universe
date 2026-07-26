@@ -21,6 +21,18 @@ export type InteractionEffect =
   | { type: "release-cryo" }
   | { type: "upgrade-weapon"; weaponDisabledSeconds: number };
 
+/**
+ * What happens when a destructible world object reaches zero durability. Most
+ * objects simply stop existing; a `detonate` object takes the room with it.
+ */
+export interface WorldObjectDeathEffect {
+  type: "detonate";
+  damage: number;
+  radiusMetres: number;
+  /** Detonating neighbours within this radius are set off in turn. */
+  chainRadiusMetres: number;
+}
+
 export interface WorldObjectDefinition {
   id: string;
   name: string;
@@ -37,6 +49,7 @@ export interface WorldObjectDefinition {
   footprintMetres: Readonly<{ width: number; height: number }>;
   hazard?: HazardEffect;
   interaction?: Readonly<{ seconds: number; effect: InteractionEffect }>;
+  onDestroyed?: Readonly<WorldObjectDeathEffect>;
   maxPerRoom: number;
   placement: "edge" | "cover" | "open-floor" | "objective-anchor";
 }
@@ -71,6 +84,16 @@ export const WORLD_OBJECT_CATALOG: readonly WorldObjectDefinition[] = Object.fre
   { id: "trap-console", name: "Trap Console", role: "interactable", themes: all("containment", "underworld"), blocksMovement: true, blocksProjectiles: false, durability: 100, footprintMetres: size(1.2, 0.7), interaction: { seconds: 0.8, effect: { type: "toggle-system", system: "traps" } }, maxPerRoom: 2, placement: "objective-anchor" },
   { id: "cryogenic-tube", name: "Cryogenic Tube", role: "hybrid", themes: all("science", "starship", "containment"), visualKind: "power-conduit", blocksMovement: true, blocksProjectiles: true, durability: 350, footprintMetres: size(1.4, 2.0), interaction: { seconds: 1.5, effect: { type: "release-cryo" } }, maxPerRoom: 4, placement: "edge" },
   { id: "weapon-upgrade-station", name: "Weapon Upgrade Station", role: "interactable", themes: all("science", "foundry", "starship"), blocksMovement: true, blocksProjectiles: true, durability: null, footprintMetres: size(2.0, 1.2), interaction: { seconds: 1.25, effect: { type: "upgrade-weapon", weaponDisabledSeconds: 45 } }, maxPerRoom: 1, placement: "objective-anchor" },
+  /*
+   * Fuel Cell (26 July 2026) — the first object that makes the battlefield fight
+   * back rather than merely stand in the way. Cheap to break, dangerous to stand
+   * next to, and it sets off its neighbours, so where cover sits becomes a
+   * tactical read instead of scenery. It needs no new interaction verb: the
+   * whole behaviour hangs off the destruction event the obstacle system already
+   * emits. Damage is symmetric — it will kill the player as readily as a swarm,
+   * which is the point.
+   */
+  { id: "fuel-cell", name: "Fuel Cell", role: "obstacle", themes: all("bastion", "logistics", "foundry", "starship", "containment"), visualKind: "power-conduit", blocksMovement: true, blocksProjectiles: true, durability: 60, footprintMetres: size(1.0, 1.0), onDestroyed: { type: "detonate", damage: 12, radiusMetres: 2.6, chainRadiusMetres: 3.0 }, maxPerRoom: 4, placement: "cover" },
 ]);
 
 export function worldObjectById(id: string): WorldObjectDefinition | null {
@@ -80,3 +103,33 @@ export function worldObjectById(id: string): WorldObjectDefinition | null {
 export function worldObjectsForTheme(theme: WorldThemeFamily): readonly WorldObjectDefinition[] {
   return WORLD_OBJECT_CATALOG.filter((object) => object.themes.includes(theme));
 }
+
+/**
+ * Presentation themes (`rendering/arenaThemes.ts`) to world-object families.
+ * The two vocabularies are deliberately separate — twelve authored room looks
+ * against nine tactical families — so this is the one place they meet. Every
+ * family is reachable: Emberfall carries the lava/underworld set, Arctic Relay
+ * shares the science set (its ice blocks live there), and Containment
+ * Underworld anchors containment.
+ */
+const ARENA_THEME_FAMILY: Readonly<Record<string, WorldThemeFamily>> = Object.freeze({
+  "bastion-standard": "bastion",
+  "bastion-logistics": "logistics",
+  "science-wing": "science",
+  "arctic-relay": "science",
+  "machine-foundry": "foundry",
+  "alien-hive": "hive",
+  "toxic-bloom": "hive",
+  "surface-frontier": "surface",
+  "starship-transit": "starship",
+  "void-approach": "starship",
+  "containment-underworld": "containment",
+  emberfall: "underworld",
+});
+
+/** Falls back to `bastion` so an unknown or absent theme still furnishes a room. */
+export function worldThemeFamilyForArenaTheme(themeId: string | null | undefined): WorldThemeFamily {
+  return (themeId && ARENA_THEME_FAMILY[themeId]) || "bastion";
+}
+
+export const ARENA_THEME_FAMILY_IDS: readonly string[] = Object.freeze(Object.keys(ARENA_THEME_FAMILY));

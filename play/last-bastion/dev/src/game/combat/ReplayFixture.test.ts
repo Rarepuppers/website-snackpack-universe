@@ -106,9 +106,12 @@ describe("versioned fixed-step replay fixture", () => {
     expect(first).toEqual(second);
     expect(first.encountersRun).toBe(3);
     expect(first.framesRun).toBe(720);
-    // Golden digest updated 23 July 2026: expedition waves now spawn one
-    // powerup each (consumables-more-common pass), a deterministic sim change.
-    expect(first.digest).toBe("84fc796d");
+    // Golden digest updated 26 July 2026: expedition encounters now furnish
+    // their room from the node theme (`placeWorldObjects`), so obstacle layout —
+    // and therefore movement and projectile paths — differs. A deterministic sim
+    // change: placement is seeded and pure, and never touches the simulation's
+    // RNG stream. Previous golden 84fc796d (23 July, one powerup per wave).
+    expect(first.digest).toBe("2cb124a9");
     expect(runCombatReplaySequence([...fixtures].reverse()).digest).not.toBe(first.digest);
     expect(() => runCombatReplaySequence([])).toThrow("at least one encounter");
   });

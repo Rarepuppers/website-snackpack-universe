@@ -22,7 +22,21 @@ The code and plans agree that world-object art remains the current production ga
 7. **Item Batch P1:** a six-item consolidation candidate is now staged under `art/production-tests/item-batch-p1/`, including canonical tiles, pickup states, active-status motifs, and shared pickup/expiration effects. Keep it art-gated until the maximum-density and compact-size readability review passes.
 8. **Item Batch P2:** a three-row legacy VFX candidate is now staged under `art/production-tests/item-batch-p2/` for Service Rifle, Scattergun, and Arc Carbine. Keep existing bindings until compact-size and maximum-density review passes.
 9. **Transformation identity tiles:** blocked until the irreversible-choice comprehension gate and Cybernetic placeholder pilot pass.
-10. **Boss arenas (Batch AK):** centerpiece art is staged under `art/production-tests/batch-ak/`, with modular boundary/fixture support under `batch-ak-support/`, a 4×4 floor candidate under `batch-ak-floor/`, low-contrast decals under `batch-ak-decals/`, optional atmosphere accents under `batch-ak-atmosphere/`, themed entrance gates under `batch-ak-gates/`, and non-playable vista plates under `batch-ak-vistas/`; full arena layouts remain gated behind seam, density, and 45–90-second tactics review.
+10. **Boss arenas (Batch AK):** centerpiece art is staged under `art/production-tests/batch-ak/`, with modular boundary/fixture support under `batch-ak-support/`, a 4×4 floor candidate under `batch-ak-floor/`, low-contrast decals under `batch-ak-decals/`, optional atmosphere accents under `batch-ak-atmosphere/`, themed entrance gates under `batch-ak-gates/`, non-playable vista plates under `batch-ak-vistas/`, a three-part follow-up support package under `batch-ak-followup-trio/`, and three HD/4K macro-material families under `batch-ak-macro-trio/`; full arena layouts remain gated behind seam, density, and 45–90-second tactics review.
+
+12. **Object Batch O4 â€” navigation + cover:** three 2Ã—2 atlases now stage low-profile cover anchors, bridge/threshold transitions, and boundary/doorway framing under `art/production-tests/object-batch-o4/`. Keep placement, collision, walkability, lane semantics, and interaction code-owned until standard-room seam, density, and compact-size review pass.
+
+13. **Object Batch O5 â€” room dressing:** three 2Ã—2 atlases now stage maintenance, medical/cryogenic, and hive dressing props under `art/production-tests/object-batch-o5/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+14. **Object Batch O6 â€” structural accents:** three 2Ã—2 atlases now stage ventilation/ductwork, storage/logistics, and power infrastructure dressing under `art/production-tests/object-batch-o6/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+15. **Object Batch O7 â€” composition accents:** three 2Ã—2 atlases now stage debris/rubble, floor-edge trim, and light-fixture dressing under `art/production-tests/object-batch-o7/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+16. **Object Batch O8 â€” access + utility:** three 2Ã—2 atlases now stage access hardware, neutral wayfinding lights, and ambient utility props under `art/production-tests/object-batch-o8/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+17. **Object Batch O9 â€” observation + research:** three 2Ã—2 atlases now stage security/observation, research-lab, and neutral environmental identity props under `art/production-tests/object-batch-o9/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
+
+18. **Object Batch O10 â€” fabrication + maintenance:** three 2Ã—2 atlases now stage transport/fabrication, maintenance fabrication, and hazard-neutral maintenance props under `art/production-tests/object-batch-o10/`. Keep them decorative and art-gated; interaction, collision, hazards, rewards, and placement remain code-owned.
 
 ## Quality floor for every new raster asset
 
