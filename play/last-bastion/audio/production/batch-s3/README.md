@@ -3,3 +3,7 @@
 Deterministic mono 48 kHz/24-bit WAV preflight masters for flesh, armour, shield, brittle/reinforced cover, pickup/XP, level-up, chest/shop confirmation, player damage, and boss/reward stingers. Frequent feedback has matched variants; positional and progression mix behavior remains code/mixer-owned.
 
 FFmpeg is unavailable in this environment, so OGG/MP3 runtime derivatives are intentionally pending external encoding and mastering.
+
+Source-only format/peak/edge/RMS screening is recorded in `../s23-master-audit.json` and can be refreshed with `npm.cmd run audio:audit:s23` from `dev/`. RMS is only a screening value; final LUFS and in-game mix review still require encoded runtime files and an approved listening pass.
+
+When FFmpeg is available, run `powershell -File dev/scripts/encode-production-audio-s23.ps1 -FfmpegPath <path-to-ffmpeg.exe>` from the Last Bastion project root. The script writes per-batch runtime derivatives under `dev/src/game/audio/runtime/` and copies the same files into `game-assets/`.

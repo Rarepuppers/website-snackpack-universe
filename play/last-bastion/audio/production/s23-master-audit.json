@@ -1,0 +1,282 @@
+{
+  "generatedAt": "2026-07-26T11:33:23.656Z",
+  "source": "WAV masters only",
+  "batches": {
+    "batch-s2": {
+      "masterCount": 8,
+      "files": {
+        "abomination-exhausted-recovery.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 460,
+          "peakDbfs": -7.38,
+          "edgePeakDbfs": -12.02,
+          "rmsDbfs": -24.85,
+          "crestDb": 17.47
+        },
+        "abomination-heavy-slam.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 340,
+          "peakDbfs": -5.8,
+          "edgePeakDbfs": -5.91,
+          "rmsDbfs": -22.81,
+          "crestDb": 17.01
+        },
+        "abomination-low-windup.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 720,
+          "peakDbfs": -6.98,
+          "edgePeakDbfs": -8.52,
+          "rmsDbfs": -21.47,
+          "crestDb": 14.48
+        },
+        "marine-armour-impact.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 190,
+          "peakDbfs": -6.74,
+          "edgePeakDbfs": -8.16,
+          "rmsDbfs": -24.32,
+          "crestDb": 17.58
+        },
+        "marine-cover-impact.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 160,
+          "peakDbfs": -6.69,
+          "edgePeakDbfs": -8.36,
+          "rmsDbfs": -24.08,
+          "crestDb": 17.39
+        },
+        "marine-knife-warning.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 220,
+          "peakDbfs": -8.34,
+          "edgePeakDbfs": -8.63,
+          "rmsDbfs": -25.5,
+          "crestDb": 17.16
+        },
+        "marine-knife-whoosh.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 190,
+          "peakDbfs": -7.68,
+          "edgePeakDbfs": -11.15,
+          "rmsDbfs": -24.36,
+          "crestDb": 16.68
+        },
+        "survivor-pack-rush.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 240,
+          "peakDbfs": -7.74,
+          "edgePeakDbfs": -7.74,
+          "rmsDbfs": -24.62,
+          "crestDb": 16.88
+        }
+      }
+    },
+    "batch-s3": {
+      "masterCount": 16,
+      "files": {
+        "armour-impact-a.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 140,
+          "peakDbfs": -7.54,
+          "edgePeakDbfs": -7.76,
+          "rmsDbfs": -25.28,
+          "crestDb": 17.74
+        },
+        "armour-impact-b.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 150,
+          "peakDbfs": -7.33,
+          "edgePeakDbfs": -7.33,
+          "rmsDbfs": -25.11,
+          "crestDb": 17.79
+        },
+        "boss-warning-stinger.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 520,
+          "peakDbfs": -7.93,
+          "edgePeakDbfs": -8.98,
+          "rmsDbfs": -22.45,
+          "crestDb": 14.53
+        },
+        "brittle-cover-impact.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 160,
+          "peakDbfs": -6.26,
+          "edgePeakDbfs": -7.42,
+          "rmsDbfs": -23.53,
+          "crestDb": 17.27
+        },
+        "chest-shop-confirm.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 300,
+          "peakDbfs": -8.48,
+          "edgePeakDbfs": -9.85,
+          "rmsDbfs": -25.78,
+          "crestDb": 17.3
+        },
+        "flesh-impact-a.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 120,
+          "peakDbfs": -7.7,
+          "edgePeakDbfs": -7.95,
+          "rmsDbfs": -24.31,
+          "crestDb": 16.6
+        },
+        "flesh-impact-b.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 130,
+          "peakDbfs": -8.1,
+          "edgePeakDbfs": -10.06,
+          "rmsDbfs": -24.97,
+          "crestDb": 16.87
+        },
+        "level-up-stinger.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 620,
+          "peakDbfs": -8.71,
+          "edgePeakDbfs": -10.03,
+          "rmsDbfs": -22.75,
+          "crestDb": 14.05
+        },
+        "pickup-confirm.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 220,
+          "peakDbfs": -8.71,
+          "edgePeakDbfs": -10.09,
+          "rmsDbfs": -26.02,
+          "crestDb": 17.31
+        },
+        "player-damage-a.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 160,
+          "peakDbfs": -6.77,
+          "edgePeakDbfs": -9.76,
+          "rmsDbfs": -24.52,
+          "crestDb": 17.75
+        },
+        "player-damage-b.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 170,
+          "peakDbfs": -7.5,
+          "edgePeakDbfs": -8.44,
+          "rmsDbfs": -24.88,
+          "crestDb": 17.38
+        },
+        "reinforced-cover-impact.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 200,
+          "peakDbfs": -7.56,
+          "edgePeakDbfs": -7.63,
+          "rmsDbfs": -24.6,
+          "crestDb": 17.04
+        },
+        "reward-stinger.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 580,
+          "peakDbfs": -8.69,
+          "edgePeakDbfs": -10.26,
+          "rmsDbfs": -22.79,
+          "crestDb": 14.1
+        },
+        "shield-impact-a.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 180,
+          "peakDbfs": -8.85,
+          "edgePeakDbfs": -9.74,
+          "rmsDbfs": -25.69,
+          "crestDb": 16.84
+        },
+        "shield-impact-b.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 190,
+          "peakDbfs": -8.93,
+          "edgePeakDbfs": -10.39,
+          "rmsDbfs": -25.91,
+          "crestDb": 16.98
+        },
+        "xp-tick.wav": {
+          "channels": 1,
+          "sampleRateHz": 48000,
+          "bitDepth": 24,
+          "durationMs": 140,
+          "peakDbfs": -10.27,
+          "edgePeakDbfs": -10.69,
+          "rmsDbfs": -26.39,
+          "crestDb": 16.12
+        }
+      }
+    }
+  },
+  "warnings": [
+    "batch-s2/masters/abomination-exhausted-recovery.wav: 3 ms edge peak -12.02 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s2/masters/abomination-heavy-slam.wav: 3 ms edge peak -5.91 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s2/masters/abomination-low-windup.wav: 3 ms edge peak -8.52 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s2/masters/marine-armour-impact.wav: 3 ms edge peak -8.16 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s2/masters/marine-cover-impact.wav: 3 ms edge peak -8.36 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s2/masters/marine-knife-warning.wav: 3 ms edge peak -8.63 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s2/masters/marine-knife-whoosh.wav: 3 ms edge peak -11.15 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s2/masters/survivor-pack-rush.wav: 3 ms edge peak -7.74 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/armour-impact-a.wav: 3 ms edge peak -7.76 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/armour-impact-b.wav: 3 ms edge peak -7.33 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/boss-warning-stinger.wav: 3 ms edge peak -8.98 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/brittle-cover-impact.wav: 3 ms edge peak -7.42 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/chest-shop-confirm.wav: 3 ms edge peak -9.85 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/flesh-impact-a.wav: 3 ms edge peak -7.95 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/flesh-impact-b.wav: 3 ms edge peak -10.06 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/level-up-stinger.wav: 3 ms edge peak -10.03 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/pickup-confirm.wav: 3 ms edge peak -10.09 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/player-damage-a.wav: 3 ms edge peak -9.76 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/player-damage-b.wav: 3 ms edge peak -8.44 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/reinforced-cover-impact.wav: 3 ms edge peak -7.63 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/reward-stinger.wav: 3 ms edge peak -10.26 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/shield-impact-a.wav: 3 ms edge peak -9.74 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/shield-impact-b.wav: 3 ms edge peak -10.39 dBFS exceeds -36 dBFS; final mastering review required",
+    "batch-s3/masters/xp-tick.wav: 3 ms edge peak -10.69 dBFS exceeds -36 dBFS; final mastering review required"
+  ]
+}

@@ -1886,3 +1886,24 @@ Writing that ranked-kill test surfaced something real: the simulation's LCG (`st
 Verification: typecheck clean, **874 tests across 122 files pass** (was 854), production build clean, smoke and offline-boot both green. Browser pass boots clean with no console errors on two loadouts covering all six formerly-held ranged weapons plus the close-quarters family.
 
 **Unvalidated:** no screenshots this session — the browser pane was not displayed, so the thirteen placeholder silhouettes have been verified as booting, not as *looking* distinguishable. That is the first thing to check next session. And the open creator decision is now acute: a 4-slot rack against a 21-weapon, 29-item pool.
+
+## 26 July 2026 — Audio S2/S3 source-only handoff audit
+
+- Added `audio:audit:s23`, a source-only WAV audit for the completed S2/S3 masters. It checks RIFF/PCM integrity, mono 48 kHz/24-bit format, sample peak, duration, 3 ms edge peak, RMS screening, and crest factor, then writes `audio/production/s23-master-audit.json`.
+- All 24 masters pass structural, format, duration, and sample-peak checks. All 24 are flagged for final transient/edge mastering because their 3 ms edge peaks exceed the conservative S1-style -36 dBFS review threshold; the audit records these as warnings, not as encoder-ready approval.
+- The audit explicitly does not claim LUFS, OGG/MP3 validity, or in-game mix acceptance. FFmpeg/runtime encoding and listening review remain external gates.
+- Verification: S2/S3 audit complete, typecheck clean, **897 tests across 124 files pass**, production build clean. The first test invocation used an unsupported `--runInBand` flag; the project-native `npm test` rerun passed.
+- Next: external mastering/encoding; validate OGG/MP3 derivatives; bind S2/S3 cue families behind the existing synth fallback; then run maximum-density, accessibility, and in-game mix review. Visual work remains behavior-gated transformation/UI art only.
+
+## 26 July 2026 — Browser review: transformation lab and released weapon route
+
+- Reviewed `?screen=transformation-lab` at the local app viewport. Cybernetic Ascension renders with the 2/7 seeded state, readable choice summaries/scars, purge exposure, and explicit in-memory/no-save/no-stats messaging. No visual blocker found for the code-native behavior gate; dedicated transformation art remains deferred.
+- Reviewed `?scenario=weapon-release&loadout=vertical`. The combat canvas, HUD, weapon rack, enemies, projectiles, and placeholder weapon silhouettes render after normal startup; no console errors or warnings were recorded. The first capture occurred during normal scene startup and was blank, then rendered correctly on the follow-up capture.
+- Next: creator close-view review of the released weapon placeholders, then external S2/S3 mastering/encoding and runtime mix validation.
+
+## 26 July 2026 — S2/S3 encoder handoff prepared
+
+- Added `dev/scripts/encode-production-audio-s23.ps1` and `npm run audio:encode:s23`. It encodes every S2/S3 WAV master to OGG Vorbis and MP3, writes per-batch runtime files under `dev/src/game/audio/runtime/`, and copies the same derivatives to `game-assets/`.
+- FFmpeg 8.1.2 is present in the Winget package cache, but the current Codex process cannot execute the package payload because its install directory is permission-restricted and the refreshed PATH is not visible here. No derivatives were fabricated or partially copied.
+- Verification remains clean: 24-master source audit passes with 24 transient-edge warnings, typecheck passes, and **897 tests across 124 files pass**.
+- Next after restarting/refreshing the shell with FFmpeg access: run `npm.cmd run audio:encode:s23`, rerun the audit with derivative validation, bind approved S2/S3 cue families behind synth fallback, and perform the final listening/mix pass.
