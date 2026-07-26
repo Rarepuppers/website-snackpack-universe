@@ -35,24 +35,28 @@ function Has-Metric([string]$Text, [string]$Pattern) {
   return [regex]::IsMatch($Text, $Pattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
 }
 
+$firstOutput = $null
 $results = foreach ($file in $files | Sort-Object FullName) {
   $stdoutPath = [IO.Path]::GetTempFileName()
   $stderrPath = [IO.Path]::GetTempFileName()
   try {
     $argumentList = @(
       "-hide_banner"
+      "-loglevel"
+      "info"
       "-nostats"
       "-i"
       ('"' + $file.FullName + '"')
       "-filter_complex"
-      '"ebur128=framelog=verbose"'
+      '"ebur128=framelog=verbose:peak=true"'
       "-f"
       "null"
-      "NUL"
+      "-"
     )
     $process = Start-Process -FilePath $FfmpegPath -ArgumentList $argumentList -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath -NoNewWindow -Wait -PassThru
     $exitCode = $process.ExitCode
     $output = (Get-Content -LiteralPath $stdoutPath -Raw) + (Get-Content -LiteralPath $stderrPath -Raw)
+    if ($null -eq $firstOutput) { $firstOutput = $output }
   } finally {
     Remove-Item -LiteralPath $stdoutPath -Force -ErrorAction SilentlyContinue
     Remove-Item -LiteralPath $stderrPath -Force -ErrorAction SilentlyContinue
@@ -62,11 +66,11 @@ $results = foreach ($file in $files | Sort-Object FullName) {
     batch = Split-Path (Split-Path $file.FullName -Parent) -Leaf
     name = $file.BaseName
     format = $file.Extension.TrimStart(".")
-    integratedLufs = Read-Metric $output "(?m)^\s*I:\s*([-+]?\d+(?:\.\d+)?)\s*LUFS"
-    integratedLufsReported = Has-Metric $output "(?m)^\s*I:\s*(?:[-+]?\d+(?:\.\d+)?|-inf)\s*LUFS"
-    loudnessRangeLu = Read-Metric $output "(?m)^\s*LRA:\s*([-+]?\d+(?:\.\d+)?)\s*LU"
-    truePeakDbfs = Read-Metric $output "(?m)^\s*Peak:\s*([-+]?\d+(?:\.\d+)?)\s*dBFS"
-    truePeakReported = Has-Metric $output "(?m)^\s*Peak:\s*[-+]?\d+(?:\.\d+)?\s*dBFS"
+    integratedLufs = Read-Metric $output "I:\s*([-+]?\d+(?:\.\d+)?)\s*LUFS"
+    integratedLufsReported = Has-Metric $output "I:\s*(?:[-+]?\d+(?:\.\d+)?|-inf)\s*LUFS"
+    loudnessRangeLu = Read-Metric $output "LRA:\s*([-+]?\d+(?:\.\d+)?)\s*LU"
+    truePeakDbfs = Read-Metric $output "Peak:\s*([-+]?\d+(?:\.\d+)?)\s*dBFS"
+    truePeakReported = Has-Metric $output "Peak:\s*[-+]?\d+(?:\.\d+)?\s*dBFS"
   }
 }
 
@@ -74,7 +78,15 @@ $reportPath = Join-Path (Join-Path $repoRoot "audio") (Join-Path "production" "s
 $results | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $reportPath -Encoding utf8
 
 $missing = @($results | Where-Object { -not $_.integratedLufsReported -or -not $_.truePeakReported })
-if ($missing.Count -gt 0) { throw "Missing EBU R128 metrics for $($missing.Count) derivatives." }
+if ($missing.Count -gt 0) {
+  $sample = $missing | Select-Object -First 1
+  $debugPath = Join-Path (Join-Path $repoRoot "audio") (Join-Path "production" "s23-loudness-debug.txt")
+  "First missing: $($sample.batch)/$($sample.name)" | Set-Content -LiteralPath $debugPath -Encoding utf8
+  "Parsed result: $($sample | ConvertTo-Json -Compress)" | Add-Content -LiteralPath $debugPath -Encoding utf8
+  "Raw FFmpeg output:" | Add-Content -LiteralPath $debugPath -Encoding utf8
+  $firstOutput | Add-Content -LiteralPath $debugPath -Encoding utf8
+  throw "Missing EBU R128 metrics for $($missing.Count) derivatives. First missing: $($sample.batch)/$($sample.name). Debug: $debugPath"
+}
 
 Write-Output "S2/S3 loudness audit complete: $($results.Count) derivatives."
 Write-Output "Wrote $reportPath"

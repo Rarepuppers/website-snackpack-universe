@@ -4,383 +4,479 @@
         "name":  "abomination-exhausted-recovery",
         "format":  "mp3",
         "integratedLufs":  -24.4,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -6.4,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "abomination-exhausted-recovery",
         "format":  "ogg",
         "integratedLufs":  -24.4,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -7,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "abomination-heavy-slam",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -4.7,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "abomination-heavy-slam",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -4.7,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "abomination-low-windup",
         "format":  "mp3",
         "integratedLufs":  -23.4,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -6.1,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "abomination-low-windup",
         "format":  "ogg",
         "integratedLufs":  -23.4,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -5.7,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "marine-armour-impact",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -5.6,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "marine-armour-impact",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -5.7,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "marine-cover-impact",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -5.6,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "marine-cover-impact",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -5.1,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "marine-knife-warning",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -8.1,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "marine-knife-warning",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -7.5,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "marine-knife-whoosh",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -6.9,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "marine-knife-whoosh",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -7.4,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "survivor-pack-rush",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -6.6,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s2",
         "name":  "survivor-pack-rush",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -6.9,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "armour-impact-a",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -6.8,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "armour-impact-a",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -6.4,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "armour-impact-b",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -7.1,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "armour-impact-b",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -6.6,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "boss-warning-stinger",
         "format":  "mp3",
         "integratedLufs":  -24.5,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -8.3,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "boss-warning-stinger",
         "format":  "ogg",
         "integratedLufs":  -24.5,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -7.6,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "brittle-cover-impact",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -5.2,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "brittle-cover-impact",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -5.6,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "chest-shop-confirm",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -7.9,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "chest-shop-confirm",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -8.4,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "flesh-impact-a",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -6.6,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "flesh-impact-a",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -7.6,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "flesh-impact-b",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -7.2,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "flesh-impact-b",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -7.2,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "level-up-stinger",
         "format":  "mp3",
         "integratedLufs":  -24.4,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -8.3,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "level-up-stinger",
         "format":  "ogg",
         "integratedLufs":  -24.4,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -8.9,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "pickup-confirm",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -8.7,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "pickup-confirm",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -9.2,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "player-damage-a",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -7,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "player-damage-a",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -6.8,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "player-damage-b",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -8,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "player-damage-b",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -7,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "reinforced-cover-impact",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -7,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "reinforced-cover-impact",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -5,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "reward-stinger",
         "format":  "mp3",
         "integratedLufs":  -23.4,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -8.5,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "reward-stinger",
         "format":  "ogg",
         "integratedLufs":  -23.4,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -8.7,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "shield-impact-a",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -8,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "shield-impact-a",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -7.1,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "shield-impact-b",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -9.1,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "shield-impact-b",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -9,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "xp-tick",
         "format":  "mp3",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -9.6,
+        "truePeakReported":  true
     },
     {
         "batch":  "batch-s3",
         "name":  "xp-tick",
         "format":  "ogg",
         "integratedLufs":  -70,
+        "integratedLufsReported":  true,
         "loudnessRangeLu":  0,
-        "truePeakDbfs":  null
+        "truePeakDbfs":  -9.8,
+        "truePeakReported":  true
     }
 ]

@@ -1,0 +1,32 @@
+﻿First missing: batch-s2/abomination-exhausted-recovery
+Parsed result: {"batch":"batch-s2","name":"abomination-exhausted-recovery","format":"mp3","integratedLufs":-24.4,"integratedLufsReported":true,"loudnessRangeLu":0,"truePeakDbfs":null,"truePeakReported":false}
+Raw FFmpeg output:
+Input #0, mp3, from 'C:\snackpack-universe\website-snackpack-universe\play\last-bastion\dev\src\game\audio\runtime\batch-s2\abomination-exhausted-recovery.mp3':
+  Metadata:
+    encoder         : Lavf62.12.102
+  Duration: 00:00:00.46, start: 0.023021, bitrate: 91 kb/s
+  Stream #0:0: Audio: mp3 (mp3float), 48000 Hz, mono, fltp, 83 kb/s, start 0.023021
+Stream mapping:
+  Stream #0:0 (mp3float) -> ebur128:default
+  ebur128:out0 -> Stream #0:0 (pcm_s16le)
+Press [q] to stop, [?] for help
+Output #0, null, to 'pipe:':
+  Metadata:
+    encoder         : Lavf62.12.102
+  Stream #0:0: Audio: pcm_s16le, 48000 Hz, mono, s16, 768 kb/s
+    Metadata:
+      encoder         : Lavc62.28.102 pcm_s16le
+[Parsed_ebur128_0 @ 000002b8d73308c0] Summary:
+
+  Integrated loudness:
+    I:         -24.4 LUFS
+    Threshold: -34.4 LUFS
+
+  Loudness range:
+    LRA:         0.0 LU
+    Threshold:   0.0 LUFS
+    LRA low:     0.0 LUFS
+    LRA high:    0.0 LUFS
+[out#0/null @ 000002b8d72b2200] video:0KiB audio:43KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+size=N/A time=00:00:00.46 bitrate=N/A speed=83.6x elapsed=0:00:00.00    
+
