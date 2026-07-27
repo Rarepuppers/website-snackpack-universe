@@ -1984,3 +1984,36 @@ Verification: typecheck clean, **874 tests across 122 files pass** (was 854), pr
 - Stable atlas frame counts, logical 64px cells, pivots, and UI/gameplay semantics are unchanged; Vite now bundles the higher-quality source atlases instead of the small runtime derivatives.
 - Existing 4K-preflight masters were reused, so no new behavior or art contract was introduced. The six-item Item Batch P1 remains art-gated because it changes the semantic item atlas rather than simply improving raster resolution.
 - Next selective target: remaining 64px combat/effect and telegraph atlases, after native-size readability review.
+
+## 27 July 2026 — Core combat effect atlas promotion
+
+- Promoted the retained high-resolution source atlases for core combat effects, Batch B effects, and Batch C effects into the live web manifest.
+- Stable 64x64 logical cells, frame counts, pivots, and effect timing remain unchanged; the browser now bundles the source-resolution atlases instead of the compact 64px derivatives.
+- Status overlays remain on their dedicated 48px runtime atlas because the retained strips are semantic variants, not a drop-in atlas replacement. Telegraph danger fill remains code-aligned until a matching high-resolution source is available.
+- Next selective target: older weapon-specific effect atlases and telegraph decals with matching source masters.
+
+## 27 July 2026 — Weapon-specific effect atlas promotion
+
+- Promoted the retained high-resolution effect atlases for Patrol Blade, Bolt Carbine, Bulwark Rotary, Grenade Tube, and Event Horizon.
+- Stable 64x64 logical cells, frame counts, pivots, effect timing, and weapon behavior remain unchanged; the web build now bundles each source-resolution atlas.
+- Event Horizon's acquisition path remains behavior-gated; this change only upgrades its already-staged effect raster.
+- Next target: matching high-resolution telegraph decals and the remaining weapon/status presentation atlases.
+
+## 27 July 2026 — Telegraph small atlas refresh
+
+- Replaced the small telegraph atlas with a regenerated transparent 256px-cell 4x3 sheet under `art/production-tests/telegraph-refresh/`.
+- Preserved the existing 12-frame, 64x64 logical contract, frame count, pivots, and code-owned timing/radius/direction semantics. The web manifest now bundles the higher-resolution atlas.
+- The large telegraph atlas and danger-fill atlas remain unchanged until matching source/semantic contracts are available.
+- Next target: telegraph decals and remaining status/weapon presentation atlases, followed by Full HD/4K browser review.
+
+## 27 July 2026 — Status overlay atlas promotion
+
+- Built a 4x4, 256px-cell status overlay atlas from the retained Burning, Overload, Corrode, and Freeze source strips at `art/production-tests/batch-k/status-effect-overlay-atlas-v2-256.png`.
+- Promoted it into the web manifest while preserving the existing 16-frame, 48x48 logical contract, frame grouping, pivots, body-scale behavior, and code-owned status semantics.
+- Verification remains required after the manifest promotion; visual review should focus on 30+ enemy density, grayscale rhythm, reduced-flash comfort, and elite/boss scaling.
+
+## 27 July 2026 — Browser acceptance pass
+
+- Started the local Vite web build and reviewed the maximum-density combat route plus the Batch K status gallery through the in-app browser.
+- Both routes loaded with the promoted assets and reported no browser console errors or warnings. The dev server remained at `http://127.0.0.1:5173/play/last-bastion/` for creator follow-up.
+- Final qualitative gates remain creator-owned: visual comfort for Overload, grayscale/colour-vision separation, and dense enemy/status readability at Full HD and 4K display scaling.
