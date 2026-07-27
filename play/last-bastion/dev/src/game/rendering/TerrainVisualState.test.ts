@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { terrainDamageState, terrainFrameIndex } from "./TerrainVisualState";
+import { obstacleFrameIndex, terrainDamageState, terrainFrameIndex, worldObjectArtAssetId } from "./TerrainVisualState";
 
 describe("TerrainVisualState", () => {
   it("locks the code-owned durability thresholds", () => {
@@ -21,5 +21,13 @@ describe("TerrainVisualState", () => {
         terrainFrameIndex(kind, 0, 100),
       ]).toEqual([row * 4, row * 4 + 1, row * 4 + 2, row * 4 + 3]);
     });
+  });
+
+  it("uses themed O1 rows for furnished obstacles and preserves legacy fallback", () => {
+    const furnished = { kind: "boulder", worldObjectId: "alien-crystal" } as const;
+    expect(worldObjectArtAssetId(furnished)).toBe("world-objects-organic-v1");
+    expect(obstacleFrameIndex(furnished, 100, 100)).toBe(12);
+    expect(obstacleFrameIndex(furnished, 20, 100)).toBe(14);
+    expect(obstacleFrameIndex({ kind: "boulder" }, 20, 100)).toBe(14);
   });
 });

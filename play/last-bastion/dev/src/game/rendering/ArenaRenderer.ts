@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import type { ArenaDefinition, ArenaObstacleKind } from "../arena/ArenaDefinition";
 import { worldDepth } from "./WorldDepth";
 import { ARENA_THEMES, type ArenaTheme } from "./arenaThemes";
-import { terrainFrameIndex } from "./TerrainVisualState";
+import { obstacleFrameIndex, worldObjectArtAssetId } from "./TerrainVisualState";
 import { authoredDecalFrame, authoredFloorFrame, authoredFloorTransform } from "./ArenaFrameSelection";
 
 const OBSTACLE_COLORS: Readonly<Record<ArenaObstacleKind, { body: number; edge: number }>> = {
@@ -194,7 +194,8 @@ function renderAuthoredObstacles(
     const y = (obstacle.y + obstacle.height) * pixelsPerMetre;
     const width = obstacle.width * pixelsPerMetre;
     const height = obstacle.height * pixelsPerMetre;
-    const view = scene.add.sprite(x, y, "destructible-terrain-v1", terrainFrameIndex(obstacle.kind, 1, 1))
+    const assetId = worldObjectArtAssetId(obstacle) ?? "destructible-terrain-v1";
+    const view = scene.add.sprite(x, y, assetId, obstacleFrameIndex(obstacle, 1, 1))
       .setName(`arena-obstacle:${obstacle.id}`)
       .setDisplaySize(width, height)
       .setDepth(worldDepth(obstacle.y + obstacle.height))

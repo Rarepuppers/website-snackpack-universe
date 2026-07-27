@@ -1949,6 +1949,9 @@ Verification: typecheck clean, **874 tests across 122 files pass** (was 854), pr
 - Corrected the production review audit so it reflects the live Marine/Medic full-height select portraits and six active map-region plates instead of the earlier placeholder-only state.
 - Steam footprint audit: the current runtime package contains 513 art/audio files at approximately 92.08 MB; the six new map plates are the largest runtime raster family at roughly 1.98–2.61 MB each. Source/provenance art remains separate from the runtime budget.
 - Browser review: `?worldobjects=alien-hive&theme=alien-hive&debug=1` boots the live combat scene with deterministic cover/hazard placements and no console errors. Stable debug IDs are visible for review; objective-anchor interactions remain intentionally excluded from ordinary placement.
+- Bound existing Object Batch O1 themed four-state rows to furnished world-object obstacles. Legacy/manual obstacles retain the generic terrain atlas, while placed objects now use their catalog art without changing collision, durability, hazards, or interaction behavior.
+- Re-reviewed `?worldobjects=alien-hive&theme=alien-hive&debug=1` after the art binding: the live route renders the furnished Alien Hive obstacles with no browser console errors; the debug IDs and collision outlines remain available for acceptance review.
+- Generated five transparent 1254px O3A Steam close-view candidates—Supply Chest, Gate Button, Control Panel, Turret Console, and Cryogenic Tube—under `art/production-tests/object-batch-o3a-steam-close/`. They are promotion candidates only; runtime interaction behavior remains gated.
 - Matching expedition themes now use the authored plates with a readability veil; all other regions retain the deterministic code-native fallback.
 - Node symbols, route lines, fog-of-war, labels, selection, and travel motion remain code-owned. Full HD/4K, grayscale, colour-vision, and dense-route promotion review remains open.
 
@@ -1959,3 +1962,25 @@ Verification: typecheck clean, **874 tests across 122 files pass** (was 854), pr
 - Browser regression passed for `?screen=transformation-lab` and `?scenario=weapon-release&loadout=vertical`; both rendered correctly after normal startup and reported no console errors or warnings.
 - FFmpeg derivative encoding and required-derivative audit were completed in the user’s refreshed PowerShell session: **24/24 masters and 48/48 runtime derivatives**. The standalone Codex shell cannot currently resolve the refreshed FFmpeg PATH, so no independent LUFS analyzer result is claimed here.
 - Remaining release gate: creator listening/mix approval for all 48 derivatives, with the existing 24 transient-edge warnings reviewed as intentional or remastered before release.
+
+## 27 July 2026 — Legacy weapon gameplay raster refresh
+
+- Replaced the three earliest low-resolution gameplay weapon bindings: Service Rifle, Scattergun, and Arc Carbine now use transparent 256x128 derivatives generated from retained 4K-ready sources under `art/production-tests/legacy-weapon-refresh/`.
+- Stable asset IDs, 64x32 logical dimensions, pivots, weapon geometry, and runtime behavior are unchanged; only the source raster was upgraded for Full HD/4K close-view quality.
+- Kept the separate `item-batch-p2-refresh` 2x2 VFX atlases art-gated because they contain muzzle/projectile/impact/recovery accents rather than direct weapon geometry.
+- Verification: focused manifest suite **51 tests passed**, typecheck clean, production build clean. Existing Vite outDir and chunk-size warnings remain non-blocking.
+- Next selective raster targets: generic Batch A floor/boundary/combat/pickup families and remaining early 64px enemy/effect silhouettes, after compact-size and seam review confirms they are visibly weaker than the newer 96/128/192px families.
+
+## 27 July 2026 — Legacy enemy raster refresh
+
+- Replaced the earliest low-resolution Scuttler, Egg Cluster, and Brain Blob gameplay sheets with transparent 256px-cell derivatives under `art/production-tests/legacy-enemy-refresh/`.
+- Preserved frame order, state counts, 64x64 logical frame sizes, pivots, footprints, and behavior contracts. The web manifest now imports the higher-resolution sheets directly, so Vite includes them in the browser bundle and Steam can reuse the same sources.
+- Verification: **902 tests across 125 files passed**, typecheck clean, production build clean, smoke boot `200`, and offline boot reports `0` remote imports and `0` missing local assets.
+- Existing Vite outDir and chunk-size warnings remain non-blocking. Next review target is the remaining early 64px effect/action families, promoted only where native-size readability or edge quality is materially weak.
+
+## 27 July 2026 — Legacy pickup and action atlas promotion
+
+- Promoted the retained high-resolution source atlases for the generic pickups, action tiles, and weapon tiles into the live web manifest.
+- Stable atlas frame counts, logical 64px cells, pivots, and UI/gameplay semantics are unchanged; Vite now bundles the higher-quality source atlases instead of the small runtime derivatives.
+- Existing 4K-preflight masters were reused, so no new behavior or art contract was introduced. The six-item Item Batch P1 remains art-gated because it changes the semantic item atlas rather than simply improving raster resolution.
+- Next selective target: remaining 64px combat/effect and telegraph atlases, after native-size readability review.

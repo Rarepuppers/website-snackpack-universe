@@ -1,4 +1,6 @@
-import type { ArenaObstacleKind } from "../arena/ArenaDefinition";
+import type { ArenaObstacle, ArenaObstacleKind } from "../arena/ArenaDefinition";
+import { worldObjectById } from "../arena/WorldObjectCatalog";
+import type { WorldObjectArtAssetId } from "../arena/WorldObjectCatalog";
 
 export type TerrainDamageState = "intact" | "damaged" | "critical" | "destroyed";
 
@@ -24,4 +26,22 @@ export function terrainFrameIndex(kind: ArenaObstacleKind, health: number, maxHe
   const state = terrainDamageState(health, maxHealth);
   const column = state === "intact" ? 0 : state === "damaged" ? 1 : state === "critical" ? 2 : 3;
   return TERRAIN_ROW[kind] * 4 + column;
+}
+
+/** Returns the existing themed O1 atlas binding for a furnished obstacle. */
+export function worldObjectArtAssetId(obstacle: Pick<ArenaObstacle, "worldObjectId">): WorldObjectArtAssetId | null {
+  return obstacle.worldObjectId ? worldObjectById(obstacle.worldObjectId)?.art?.assetId ?? null : null;
+}
+
+/** Uses the themed four-state row when available, preserving legacy terrain fallback. */
+export function obstacleFrameIndex(
+  obstacle: Pick<ArenaObstacle, "kind" | "worldObjectId">,
+  health: number,
+  maxHealth: number,
+): number {
+  const art = obstacle.worldObjectId ? worldObjectById(obstacle.worldObjectId)?.art : null;
+  if (!art) return terrainFrameIndex(obstacle.kind, health, maxHealth);
+  const state = terrainDamageState(health, maxHealth);
+  const column = state === "intact" ? 0 : state === "damaged" ? 1 : state === "critical" ? 2 : 3;
+  return art.row * 4 + column;
 }

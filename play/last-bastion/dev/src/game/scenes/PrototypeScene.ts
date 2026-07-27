@@ -38,7 +38,7 @@ import {
 import { loadGameAssets } from "../assets/PhaserAssetLoader";
 import { GAME_ASSETS, type GameAssetId } from "../assets/GameAssetManifest";
 import { renderArena } from "../rendering/ArenaRenderer";
-import { terrainFrameIndex } from "../rendering/TerrainVisualState";
+import { obstacleFrameIndex } from "../rendering/TerrainVisualState";
 import { miniBossSpriteScale } from "../rendering/MiniBossPresentation";
 import { arenaThemeById, arenaThemeVariant, containmentUnderworldTheme, pickArenaTheme, starshipTransitTheme, surfaceFrontierTheme } from "../rendering/arenaThemes";
 import { uiSafeArea, uiTextResolution } from "../rendering/DisplayScaling";
@@ -3675,7 +3675,7 @@ export class PrototypeScene extends Phaser.Scene {
       view.setVisible(true);
       if (view instanceof Phaser.GameObjects.Sprite) {
         const state = terrain.find((candidate) => candidate.id === obstacle.id);
-        if (state) view.setFrame(terrainFrameIndex(obstacle.kind, state.health, state.maxHealth)).setAlpha(state.health <= 0 ? 0.78 : 1);
+        if (state) view.setFrame(obstacleFrameIndex(obstacle, state.health, state.maxHealth)).setAlpha(state.health <= 0 ? 0.78 : 1);
       } else if (view instanceof Phaser.GameObjects.Rectangle) {
         view.setVisible(!destroyed.has(obstacle.id)).setAlpha(damaged.has(obstacle.id) ? 0.48 : 1);
       }
