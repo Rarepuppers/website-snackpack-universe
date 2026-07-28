@@ -7,6 +7,8 @@ import {
 } from "../input/ControlBindings";
 import {
   createRunSummary,
+  cloneRunMetrics,
+  EMPTY_RUN_METRICS,
   totalRunDamage,
   type RunMetrics,
   type RunSummary,
@@ -19,6 +21,7 @@ import {
 import { isArtifactId, isRelicId, type ArtifactId, type RelicId } from "../content/relicCatalog";
 import { ITEM_STAT_KEYS, isItemId } from "../content/itemCatalog";
 import type { PlayerStatBlock } from "../stats/PlayerStatBlock";
+import type { EffectQualityPreference } from "../performance/AdaptivePerformance";
 
 /**
  * Versioned local persistence for settings and basic run progress.
@@ -46,9 +49,13 @@ export interface GameSettings {
   gamepadMoveDeadzone: number;
   gamepadAimDeadzone: number;
   gamepadAimSensitivity: number;
+  gamepadVibrationStrength: number;
   aimAssistStrength: number;
   displaySizePercent: number;
   radarSize: 0.75 | 1 | 1.25;
+  offscreenThreatIndicators: "off" | "threats" | "all";
+  colorVisionMode: "standard" | "deuteranopia" | "protanopia" | "tritanopia";
+  effectQuality: EffectQualityPreference;
 }
 
 /**
@@ -151,9 +158,13 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     gamepadMoveDeadzone: 0.18,
     gamepadAimDeadzone: 0.25,
     gamepadAimSensitivity: 1,
+    gamepadVibrationStrength: 0.75,
     aimAssistStrength: 0,
     displaySizePercent: 100,
     radarSize: 1,
+    offscreenThreatIndicators: "all",
+    colorVisionMode: "standard",
+    effectQuality: "auto",
   }),
   controls: DEFAULT_CONTROL_BINDINGS,
   progress: Object.freeze({
@@ -273,6 +284,8 @@ export class LocalSaveStore {
 
   recordRunEnd(outcome: { victory: boolean; waveReached: number; summary?: RunSummary }): SaveData {
     const summary = outcome.summary;
+    const newBestWave = Math.max(0, Math.floor(outcome.waveReached)) > this.cached.progress.bestWaveReached;
+    const newBestNodes = (summary?.nodesCleared ?? 0) > this.cached.progress.bestNodesCleared;
     // Expedition nodes are committed as they are cleared. Rewind this run's
     // contribution when comparing unlocks so the debrief still announces a
     // Quartermaster/Pathfinder milestone crossed earlier on the route.
@@ -302,7 +315,7 @@ export class LocalSaveStore {
       ...this.cached,
       progress: nextProgress,
       lastRunSummary: summary
-        ? createRunSummary({ ...summary, newlyUnlockedPerkIds })
+        ? createRunSummary({ ...summary, newlyUnlockedPerkIds, newBestWave, newBestNodes })
         : this.cached.lastRunSummary,
     };
     this.writeToStorage();
@@ -385,9 +398,23 @@ function normalizeSettings(value: unknown): GameSettings {
     : {};
   const uiScale = candidate.uiScale === 0.8 || candidate.uiScale === 1.2 ? candidate.uiScale : 1;
   const radarSize = candidate.radarSize === 0.75 || candidate.radarSize === 1.25 ? candidate.radarSize : 1;
+  const offscreenThreatIndicators = candidate.offscreenThreatIndicators === "off"
+    || candidate.offscreenThreatIndicators === "threats"
+    ? candidate.offscreenThreatIndicators
+    : "all";
   const enemyHealthBars = candidate.enemyHealthBars === "off" || candidate.enemyHealthBars === "all"
     ? candidate.enemyHealthBars
     : "threats";
+  const colorVisionMode = candidate.colorVisionMode === "deuteranopia"
+    || candidate.colorVisionMode === "protanopia"
+    || candidate.colorVisionMode === "tritanopia"
+    ? candidate.colorVisionMode
+    : "standard";
+  const effectQuality = candidate.effectQuality === "high"
+    || candidate.effectQuality === "medium"
+    || candidate.effectQuality === "low"
+    ? candidate.effectQuality
+    : "auto";
   return {
     screenShakeEnabled: readBoolean(candidate.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
     reducedFlashEnabled: readBoolean(candidate.reducedFlashEnabled, DEFAULT_SAVE.settings.reducedFlashEnabled),
@@ -407,9 +434,13 @@ function normalizeSettings(value: unknown): GameSettings {
     gamepadMoveDeadzone: readBoundedNumber(candidate.gamepadMoveDeadzone, 0.18, 0, 1),
     gamepadAimDeadzone: readBoundedNumber(candidate.gamepadAimDeadzone, 0.25, 0, 1),
     gamepadAimSensitivity: readBoundedNumber(candidate.gamepadAimSensitivity, 1, 0.25, 3),
+    gamepadVibrationStrength: readBoundedNumber(candidate.gamepadVibrationStrength, 0.75, 0, 1),
     aimAssistStrength: readBoundedNumber(candidate.aimAssistStrength, 0, 0, 1),
     displaySizePercent: readBoundedNumber(candidate.displaySizePercent, 100, 50, 200),
     radarSize,
+    offscreenThreatIndicators,
+    colorVisionMode,
+    effectQuality,
   };
 }
 
@@ -534,11 +565,7 @@ function cloneExpedition(expedition: ExpeditionSave): ExpeditionSave {
       ...(expedition.build.itemStats ? { itemStats: { ...expedition.build.itemStats } } : {}),
       ...(expedition.build.bannedShopIds ? { bannedShopIds: [...expedition.build.bannedShopIds] } : {}),
     },
-    metrics: {
-      kills: expedition.metrics.kills,
-      scrapEarned: expedition.metrics.scrapEarned,
-      damageByWeapon: { ...expedition.metrics.damageByWeapon },
-    },
+    metrics: cloneRunMetrics(expedition.metrics),
   };
 }
 
@@ -581,7 +608,7 @@ function readFiniteNonNegative(value: unknown): number {
 
 function readRunMetrics(value: unknown): RunMetrics {
   if (typeof value !== "object" || value === null) {
-    return { kills: 0, scrapEarned: 0, damageByWeapon: {} };
+    return { ...EMPTY_RUN_METRICS, damageByWeapon: {}, damageBySecond: [] };
   }
   const candidate = value as Partial<RunMetrics>;
   const damageByWeapon: Record<string, number> = {};
@@ -591,10 +618,29 @@ function readRunMetrics(value: unknown): RunMetrics {
       if (safe > 0) damageByWeapon[weaponId] = safe;
     }
   }
+  const damageTakenBySource: Record<string, number> = {};
+  if (typeof candidate.damageTakenBySource === "object" && candidate.damageTakenBySource !== null) {
+    for (const [source, damage] of Object.entries(candidate.damageTakenBySource)) {
+      const safe = readFiniteNonNegative(damage);
+      if (safe > 0) damageTakenBySource[source] = safe;
+    }
+  }
+  const damageBySecond = Array.isArray(candidate.damageBySecond)
+    ? candidate.damageBySecond.slice(0, 6 * 60 * 60).map(readFiniteNonNegative)
+    : [];
   return {
     kills: readCount(candidate.kills),
     scrapEarned: readFiniteNonNegative(candidate.scrapEarned),
     damageByWeapon,
+    damageBySecond,
+    elapsedSeconds: readFiniteNonNegative(candidate.elapsedSeconds),
+    damageTaken: readFiniteNonNegative(candidate.damageTaken),
+    eliteKills: readCount(candidate.eliteKills),
+    bossDamage: readFiniteNonNegative(candidate.bossDamage),
+    highestHit: readFiniteNonNegative(candidate.highestHit),
+    criticalHits: readCount(candidate.criticalHits),
+    damageTakenBySource,
+    defeatCause: typeof candidate.defeatCause === "string" ? candidate.defeatCause : null,
   };
 }
 
@@ -621,6 +667,17 @@ function readRunSummary(value: unknown): RunSummary | null {
     scrapBanked: readFiniteNonNegative(candidate.scrapBanked),
     level: readCount(candidate.level) || 1,
     damageByWeapon: metrics.damageByWeapon,
+    damageBySecond: metrics.damageBySecond,
+    elapsedSeconds: metrics.elapsedSeconds,
+    damageTaken: metrics.damageTaken,
+    eliteKills: metrics.eliteKills,
+    bossDamage: metrics.bossDamage,
+    highestHit: metrics.highestHit,
+    criticalHits: metrics.criticalHits,
+    damageTakenBySource: metrics.damageTakenBySource,
+    defeatCause: metrics.defeatCause,
+    newBestWave: candidate.newBestWave === true,
+    newBestNodes: candidate.newBestNodes === true,
     weapons: candidate.weapons
       .filter((weapon) => typeof weapon?.weaponId === "string")
       .map((weapon) => ({ weaponId: weapon.weaponId, tier: readCount(weapon.tier) || 1 })),

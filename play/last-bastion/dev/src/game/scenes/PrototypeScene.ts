@@ -6,6 +6,7 @@ import type { PlayerIntent } from "../input/PlayerIntent";
 import {
   CombatSimulation,
   ABOMINATION_SLAM_RADIUS_METRES,
+  MEDKIT_HEAL_AMOUNT,
   RAZOR_SCUTTLER_DASH_SECONDS,
   RAZOR_SCUTTLER_DASH_SPEED,
   type CombatSnapshot,
@@ -42,7 +43,7 @@ import { obstacleFrameIndex } from "../rendering/TerrainVisualState";
 import { miniBossSpriteScale } from "../rendering/MiniBossPresentation";
 import { arenaThemeById, arenaThemeVariant, containmentUnderworldTheme, pickArenaTheme, starshipTransitTheme, surfaceFrontierTheme } from "../rendering/arenaThemes";
 import { uiSafeArea, uiTextResolution } from "../rendering/DisplayScaling";
-import { LocalSaveStore } from "../save/LocalSaveStore";
+import { LocalSaveStore, type GameSettings } from "../save/LocalSaveStore";
 import { cueForCombatEvent, EVASIVE_MOVE_CUE, MEDKIT_HEAL_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
 import { WebAudioSynth } from "../audio/WebAudioSynth";
 import { worldDepth } from "../rendering/WorldDepth";
@@ -50,6 +51,12 @@ import { VisualEffectPool } from "../effects/VisualEffectPool";
 import { FloatingDamageNumbers } from "../rendering/FloatingDamageNumbers";
 import { EnemyHealthBars } from "../rendering/EnemyHealthBars";
 import { CombatHud } from "../ui/CombatHud";
+import { CombatPauseOverlay } from "../ui/CombatPauseOverlay";
+import { CombatEventFeed } from "../ui/CombatEventFeed";
+import { combatPalette } from "../ui/CombatPalette";
+import { CombatHaptics } from "../ui/CombatHaptics";
+import { createBuildViewModel } from "../build/BuildViewModel";
+import { buildOverlayModel } from "../ui/BuildOverlay";
 import { FRIENDLY_PROJECTILE_SOFT_BUDGET } from "../combat/FriendlyProjectileBudget";
 import { canonicalWeaponTileFrame } from "../ui/WeaponTileFrames";
 import {
@@ -72,6 +79,10 @@ import {
 } from "../expedition/ExpeditionEncounter";
 import { createRunSummary, mergeRunMetrics, type RunMetrics } from "../run/RunSummary";
 import { cloneTransformationAffinityState } from "../transformations/TransformationAffinity";
+import {
+  AdaptivePerformanceGovernor,
+  combatEffectsBudget,
+} from "../performance/AdaptivePerformance";
 
 const PIXELS_PER_METRE = 32;
 
@@ -96,6 +107,8 @@ export class PrototypeScene extends Phaser.Scene {
   private marineRimSprite: Phaser.GameObjects.Sprite | null = null;
   private controls!: KeyboardMouseInput;
   private hud!: CombatHud;
+  private pauseOverlay!: CombatPauseOverlay;
+  private eventFeed!: CombatEventFeed;
   private effectPool!: VisualEffectPool;
   private damageNumbers!: FloatingDamageNumbers;
   private enemyHealthBars!: EnemyHealthBars;
@@ -110,6 +123,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly uraniumLab = readUraniumLab();
   private readonly saveStore = createSaveStore();
   private settings = applySettingOverrides(this.saveStore);
+  private readonly performanceGovernor = new AdaptivePerformanceGovernor(this.settings.effectQuality);
   private readonly expeditionContext = readExpeditionContext(this.saveStore);
   private simulation = createSimulation(
     this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
@@ -119,6 +133,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly enemyViews = new Map<number, EnemyView>();
   private readonly enemyRimViews = new Map<number, Phaser.GameObjects.Sprite>();
   private readonly enemyStatusViews = new Map<string, Phaser.GameObjects.Sprite>();
+  private readonly offscreenThreatViews = new Map<number, Phaser.GameObjects.Triangle>();
   private readonly projectileViews = new Map<number, ProjectileView>();
   private readonly projectileHaloViews = new Map<number, Phaser.GameObjects.Arc>();
   private readonly enemyProjectileViews = new Map<number, EnemyProjectileView>();
@@ -172,9 +187,15 @@ export class PrototypeScene extends Phaser.Scene {
     seven: Phaser.Input.Keyboard.Key;
     eight: Phaser.Input.Keyboard.Key;
     nine: Phaser.Input.Keyboard.Key;
+    abandon: Phaser.Input.Keyboard.Key;
+    left: Phaser.Input.Keyboard.Key;
+    right: Phaser.Input.Keyboard.Key;
+    a: Phaser.Input.Keyboard.Key;
+    d: Phaser.Input.Keyboard.Key;
   } | null = null;
   private visibleDecisionKey = "";
   private isPaused = false;
+  private pauseStickReady = true;
   private lastAimAngle = 0;
   private marineFacingColumn = 0;
   private lastRollTrailMilliseconds = -1000;
@@ -182,18 +203,24 @@ export class PrototypeScene extends Phaser.Scene {
   private fenceLine: Phaser.GameObjects.Line | Phaser.GameObjects.Image | null = null;
   private fenceSwitch: Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite | null = null;
   private fencePrompt: Phaser.GameObjects.Text | null = null;
+  private pickupBanner: Phaser.GameObjects.Container | null = null;
+  private pauseButton: Phaser.GameObjects.Rectangle | null = null;
+  private pauseLabel: Phaser.GameObjects.Text | null = null;
+  private damageDirectionIndicator: Phaser.GameObjects.Triangle | null = null;
+  private lowHealthFrame: Phaser.GameObjects.Graphics | null = null;
   private readonly arenaTheme = resolveArenaTheme();
   private readonly synth = new WebAudioSynth(this.settings.soundEnabled);
+  private haptics!: CombatHaptics;
   private runOutcomeRecorded = false;
   private previousHeroState = "idle";
   /** Dex counts accumulated this wave, flushed on wave change and run end. */
   private readonly pendingBestiary = new Map<string, { seen: number; kills: number }>();
   private lastFlushedWaveNumber = 1;
   private readonly onWindowBlur = (): void => {
-    if (focusLossRequestsPause("blur", document.hidden)) this.isPaused = true;
+    if (focusLossRequestsPause("blur", document.hidden)) this.openPauseMenu();
   };
   private readonly onVisibilityChange = (): void => {
-    if (focusLossRequestsPause("visibilitychange", document.hidden)) this.isPaused = true;
+    if (focusLossRequestsPause("visibilitychange", document.hidden)) this.openPauseMenu();
   };
 
   constructor() {
@@ -213,8 +240,9 @@ export class PrototypeScene extends Phaser.Scene {
     const safe = uiSafeArea(width, height);
     const controls = this.saveStore.load().controls;
     renderArena(this, this.simulation.arena, PIXELS_PER_METRE, this.showDebug, this.useMarineArt, this.arenaTheme);
-    this.effectPool = new VisualEffectPool(this, this.stressProfile === 12 ? 192 : 96);
+    this.effectPool = new VisualEffectPool(this, 192);
     this.damageNumbers = new FloatingDamageNumbers(this);
+    this.applyPerformanceBudget();
     this.enemyHealthBars = new EnemyHealthBars(this);
 
     const shadow = this.useMarineArt
@@ -270,7 +298,55 @@ export class PrototypeScene extends Phaser.Scene {
       this.settings.cooldownTimersEnabled,
       controls,
       this.settings.radarSize,
+      this.settings.uiScale,
+      this.settings.colorVisionMode,
     );
+    this.synth.setVolume(this.settings.masterVolume * this.settings.sfxVolume);
+    this.haptics = new CombatHaptics(
+      () => this.input.gamepad?.getAll().find((pad) => pad.vibration)?.vibration ?? null,
+      this.settings.gamepadVibrationStrength,
+    );
+    this.eventFeed = new CombatEventFeed(this);
+    this.damageDirectionIndicator = this.add.triangle(480, 270, 0, -12, -9, 9, 9, 9, 0xff7a5c, 0.96)
+      .setStrokeStyle(2, 0x250b0b, 0.95).setDepth(2600).setScrollFactor(0).setVisible(false);
+    this.lowHealthFrame = this.add.graphics().setDepth(2500).setScrollFactor(0);
+    this.pauseOverlay = new CombatPauseOverlay(this, {
+      getSettings: () => this.settings,
+      getBuild: () => buildOverlayModel(createBuildViewModel(this.lastSnapshot)),
+      onResume: () => this.resumeFromPause(),
+      onRestart: () => {
+        this.pauseOverlay.close();
+        this.isPaused = false;
+        this.restartRun();
+      },
+      onAbandon: () => this.abandonFromPause(),
+      onSettingsChanged: (partial) => this.applyInGameSettings(partial),
+    });
+    const pauseButton = this.add.rectangle(safe.right - 92, safe.top + 12, 54, 22, 0x101923, 0.92)
+      .setStrokeStyle(1, 0x52677b).setDepth(2050)
+      .setInteractive({ useHandCursor: true });
+    const pauseLabel = this.add.text(safe.right - 92, safe.top + 12, "II  MENU", {
+      color: "#c7d6e4",
+      fontFamily: "monospace",
+      fontSize: "9px",
+    }).setOrigin(0.5).setDepth(2051).setResolution(uiTextResolution());
+    this.pauseButton = pauseButton;
+    this.pauseLabel = pauseLabel;
+    pauseButton.on("pointerdown", () => this.openPauseMenu());
+    pauseButton.on("pointerover", () => {
+      pauseButton.setStrokeStyle(2, 0x68e4e8);
+      pauseLabel.setColor("#68e4e8");
+    });
+    pauseButton.on("pointerout", () => {
+      pauseButton.setStrokeStyle(1, 0x52677b);
+      pauseLabel.setColor("#c7d6e4");
+    });
+    const pausePreview = new URLSearchParams(window.location.search).get("pausepreview");
+    if (pausePreview === "1" || pausePreview === "settings" || pausePreview === "build") {
+      this.openPauseMenu();
+      if (pausePreview === "settings") this.pauseOverlay.showSettings();
+      if (pausePreview === "build") this.pauseOverlay.showBuild();
+    }
     this.createFenceViews();
 
     this.controls = new KeyboardMouseInput(this, controls);
@@ -291,6 +367,11 @@ export class PrototypeScene extends Phaser.Scene {
       seven: Phaser.Input.Keyboard.KeyCodes.SEVEN,
       eight: Phaser.Input.Keyboard.KeyCodes.EIGHT,
       nine: Phaser.Input.Keyboard.KeyCodes.NINE,
+      abandon: Phaser.Input.Keyboard.KeyCodes.X,
+      left: Phaser.Input.Keyboard.KeyCodes.LEFT,
+      right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
+      a: Phaser.Input.Keyboard.KeyCodes.A,
+      d: Phaser.Input.Keyboard.KeyCodes.D,
     }) as unknown as NonNullable<typeof this.menuKeys>;
     this.lastSnapshot = this.simulation.snapshot();
     this.renderSnapshot(this.lastSnapshot, false);
@@ -303,11 +384,124 @@ export class PrototypeScene extends Phaser.Scene {
   private removeFocusPauseListeners(): void {
     window.removeEventListener("blur", this.onWindowBlur);
     document.removeEventListener("visibilitychange", this.onVisibilityChange);
+    this.pauseOverlay?.destroy();
+    this.eventFeed?.destroy();
+  }
+
+  private openPauseMenu(): void {
+    if (this.lastSnapshot.pendingDecision || this.isPaused) return;
+    this.isPaused = true;
+    this.pauseStickReady = true;
+    this.pauseOverlay?.open();
+  }
+
+  private resumeFromPause(): void {
+    this.pauseOverlay.close();
+    this.isPaused = false;
+    this.pauseStickReady = true;
+  }
+
+  private abandonFromPause(): void {
+    this.pauseOverlay.close();
+    this.isPaused = false;
+    const snapshot = this.simulation.abandonRun();
+    this.lastSnapshot = snapshot;
+    this.recordRunOutcome(snapshot);
+    this.renderSnapshot(snapshot, false);
+  }
+
+  private applyInGameSettings(partial: Partial<GameSettings>): void {
+    const rebuildHud = partial.uiScale !== undefined
+      || partial.radarSize !== undefined
+      || partial.colorVisionMode !== undefined;
+    this.settings = this.saveStore.updateSettings(partial).settings;
+    this.synth.enabled = this.settings.soundEnabled;
+    this.synth.setVolume(this.settings.masterVolume * this.settings.sfxVolume);
+    this.haptics.setStrength(this.settings.gamepadVibrationStrength);
+    if (partial.effectQuality !== undefined) {
+      this.performanceGovernor.setPreference(this.settings.effectQuality);
+      this.applyPerformanceBudget();
+    }
+    if (partial.autoFireEnabled !== undefined) {
+      this.simulation.setAutoFireEnabled(this.settings.autoFireEnabled);
+    }
+    if (rebuildHud) {
+      this.hud.destroy();
+      const controls = this.saveStore.load().controls;
+      this.hud = new CombatHud(
+        this,
+        this.showDebug,
+        this.useMarineArt,
+        this.settings.cooldownTimersEnabled,
+        controls,
+        this.settings.radarSize,
+        this.settings.uiScale,
+        this.settings.colorVisionMode,
+      );
+    }
+    this.pauseOverlay.refresh();
+  }
+
+  private applyPerformanceBudget(): void {
+    const budget = combatEffectsBudget(this.performanceGovernor.snapshot().tier, this.stressProfile);
+    this.effectPool.setBudget(budget.maximumActiveEffects, budget.burstScale);
+    this.damageNumbers.setMaximumActive(budget.maximumDamageNumbers);
+  }
+
+  private handlePauseNavigation(intent: PlayerIntent): void {
+    if (!this.menuKeys) return;
+    if (
+      Phaser.Input.Keyboard.JustDown(this.menuKeys.up)
+      || Phaser.Input.Keyboard.JustDown(this.menuKeys.w)
+    ) {
+      this.pauseOverlay.move(-1);
+    }
+    if (
+      Phaser.Input.Keyboard.JustDown(this.menuKeys.down)
+      || Phaser.Input.Keyboard.JustDown(this.menuKeys.s)
+    ) {
+      this.pauseOverlay.move(1);
+    }
+    if (
+      Phaser.Input.Keyboard.JustDown(this.menuKeys.left)
+      || Phaser.Input.Keyboard.JustDown(this.menuKeys.a)
+    ) {
+      this.pauseOverlay.adjust(-1);
+    }
+    if (
+      Phaser.Input.Keyboard.JustDown(this.menuKeys.right)
+      || Phaser.Input.Keyboard.JustDown(this.menuKeys.d)
+    ) {
+      this.pauseOverlay.adjust(1);
+    }
+    if (
+      Phaser.Input.Keyboard.JustDown(this.menuKeys.confirm)
+      || intent.evasiveMovePressed
+    ) {
+      this.pauseOverlay.activate();
+    }
+
+    const vertical = intent.move.y;
+    const horizontal = intent.move.x;
+    if (Math.abs(vertical) < 0.35 && Math.abs(horizontal) < 0.35) {
+      this.pauseStickReady = true;
+    } else if (this.pauseStickReady) {
+      if (Math.abs(vertical) >= Math.abs(horizontal)) this.pauseOverlay.move(vertical < 0 ? -1 : 1);
+      else this.pauseOverlay.adjust(horizontal < 0 ? -1 : 1);
+      this.pauseStickReady = false;
+    }
   }
 
   update(_time: number, deltaMilliseconds: number): void {
     const deltaSeconds = Math.min(deltaMilliseconds / 1000, 0.05);
     const intent = this.controls.read(this.player);
+    const inputDevice = this.controls.activeInputDevice;
+    this.hud.setInputDevice(inputDevice);
+    this.pauseOverlay.setInputDevice(inputDevice);
+    this.eventFeed.update();
+    if (this.performanceGovernor.sample(deltaMilliseconds, this.isPaused || document.hidden)) {
+      this.applyPerformanceBudget();
+    }
 
     if (this.lastSnapshot.pendingDecision) {
       this.handleDecisionNavigation(intent);
@@ -334,10 +528,18 @@ export class PrototypeScene extends Phaser.Scene {
     }
 
     if (intent.pausePressed && this.lastSnapshot.pendingDecision === null) {
-      this.isPaused = !this.isPaused;
+      if (this.isPaused) this.pauseOverlay.back();
+      else this.openPauseMenu();
     }
 
     if (this.isPaused) {
+      if (this.controls.consumeGamepadBackPressed()) {
+        this.pauseOverlay.back();
+      }
+      if (this.menuKeys && Phaser.Input.Keyboard.JustDown(this.menuKeys.abandon)) {
+        this.pauseOverlay.showAbandonConfirmation();
+      }
+      this.handlePauseNavigation(intent);
       this.renderSnapshot(this.lastSnapshot, false);
       return;
     }
@@ -390,6 +592,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncEnemies(snapshot.enemies, snapshot.playerPosition);
     this.enemyHealthBars.sync(snapshot.enemies, this.settings.enemyHealthBars, this.settings.reducedMotionEnabled, PIXELS_PER_METRE);
     this.syncEnemyStatusOverlays(snapshot.enemies);
+    this.syncOffscreenThreats(snapshot.enemies);
     this.syncProjectiles(snapshot.projectiles);
     this.syncEnemyProjectiles(snapshot.enemyProjectiles);
     this.syncGroundHazards(snapshot.groundHazards);
@@ -420,10 +623,110 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncSupplyChests(snapshot.supplyChests);
     this.syncFence(snapshot);
     this.syncDecisionOverlay(snapshot.pendingDecision);
-    this.hud.update(snapshot, this.isPaused, this.effectPool.activeCount);
+    this.positionPauseControls();
+    const performance = this.performanceGovernor.snapshot();
+    this.hud.update(
+      snapshot,
+      false,
+      this.effectPool.activeCount,
+      `${performance.tier} ${performance.averageFrameMilliseconds.toFixed(1)}ms drop=${this.effectPool.suppressedCount}`,
+    );
+    this.updateLowHealthFrame(snapshot);
     const marineTint = snapshot.playerSlowed ? 0xb9ef62 : 0xffffff;
     snapshot.playerSlowed ? this.marineSprite?.setTint(marineTint) : this.marineSprite?.clearTint();
     snapshot.playerSlowed ? this.marineHelmetSprite?.setTint(marineTint) : this.marineHelmetSprite?.clearTint();
+  }
+
+  private positionPauseControls(): void {
+    const safe = uiSafeArea(this.scale.width, this.scale.height);
+    const camera = this.cameras.main;
+    this.pauseButton?.setPosition(camera.scrollX + safe.right - 92, camera.scrollY + safe.top + 12);
+    this.pauseLabel?.setPosition(camera.scrollX + safe.right - 92, camera.scrollY + safe.top + 12);
+    this.pauseOverlay?.position();
+  }
+
+  private syncOffscreenThreats(enemies: readonly EnemySnapshot[]): void {
+    if (this.settings.offscreenThreatIndicators === "off") {
+      this.destroyMissing(this.offscreenThreatViews, new Set<number>());
+      return;
+    }
+    const camera = this.cameras.main.worldView;
+    const viewport = {
+      x: camera.x / PIXELS_PER_METRE,
+      y: camera.y / PIXELS_PER_METRE,
+      width: camera.width / PIXELS_PER_METRE,
+      height: camera.height / PIXELS_PER_METRE,
+    };
+    const eligible = this.settings.offscreenThreatIndicators === "threats"
+      ? enemies.filter((enemy) => enemy.rank !== "standard")
+      : enemies;
+    const ranked = eligible
+      .map((enemy) => ({ enemy, edge: offscreenWarningPosition(enemy.position, viewport, 0.72) }))
+      .filter((entry): entry is { enemy: EnemySnapshot; edge: { x: number; y: number } } => entry.edge !== null)
+      .sort((left, right) => threatIndicatorWeight(right.enemy) - threatIndicatorWeight(left.enemy)
+        || distanceSquared(left.enemy.position, this.lastSnapshot.playerPosition)
+          - distanceSquared(right.enemy.position, this.lastSnapshot.playerPosition))
+      .slice(0, 8);
+    const liveIds = new Set(ranked.map(({ enemy }) => enemy.id));
+    this.destroyMissing(this.offscreenThreatViews, liveIds);
+    for (const { enemy, edge } of ranked) {
+      let view = this.offscreenThreatViews.get(enemy.id);
+      if (!view) {
+        view = this.add.triangle(0, 0, 0, -9, -7, 7, 7, 7, 0xe55a67, 0.9)
+          .setStrokeStyle(1, 0x0b121c, 0.95)
+          .setDepth(1985);
+        this.offscreenThreatViews.set(enemy.id, view);
+      }
+      const angle = Math.atan2(enemy.position.y - edge.y, enemy.position.x - edge.x);
+      const colour = enemy.rank === "boss" || enemy.rank === "mini-boss"
+        ? combatPalette(this.settings.colorVisionMode).bossThreat
+        : enemy.rank === "elite"
+          ? combatPalette(this.settings.colorVisionMode).eliteThreat
+          : combatPalette(this.settings.colorVisionMode).standardThreat;
+      view.setPosition(edge.x * PIXELS_PER_METRE, edge.y * PIXELS_PER_METRE)
+        .setRotation(angle + Math.PI / 2)
+        .setFillStyle(colour, 0.82 + Math.sin(this.time.now / 150 + enemy.id) * 0.12)
+        .setScale(enemy.rank === "boss" || enemy.rank === "mini-boss" ? 1.35 : enemy.rank === "elite" ? 1.15 : 0.85);
+    }
+  }
+
+  private updateLowHealthFrame(snapshot: CombatSnapshot): void {
+    if (!this.lowHealthFrame) return;
+    this.lowHealthFrame.clear();
+    const healthRatio = snapshot.playerHealth / Math.max(1, snapshot.playerMaxHealth);
+    if (healthRatio > 0.3 || snapshot.status !== "combat") return;
+    const pulse = this.settings.reducedMotionEnabled ? 0.52 : 0.42 + Math.sin(this.time.now / 180) * 0.14;
+    const inset = 7;
+    const palette = combatPalette(this.settings.colorVisionMode);
+    this.lowHealthFrame.lineStyle(8, palette.danger, pulse);
+    this.lowHealthFrame.strokeRect(inset, inset, this.scale.width - inset * 2, this.scale.height - inset * 2);
+    this.lowHealthFrame.lineStyle(2, palette.dangerBright, Math.min(0.9, pulse + 0.22));
+    this.lowHealthFrame.strokeRect(inset + 5, inset + 5, this.scale.width - (inset + 5) * 2, this.scale.height - (inset + 5) * 2);
+  }
+
+  private showDamageDirection(): void {
+    if (!this.damageDirectionIndicator || this.lastSnapshot.enemies.length === 0) return;
+    const player = this.lastSnapshot.playerPosition;
+    const source = [...this.lastSnapshot.enemies].sort(
+      (left, right) => distanceSquared(left.position, player) - distanceSquared(right.position, player),
+    )[0];
+    if (!source) return;
+    const angle = Math.atan2(source.position.y - player.y, source.position.x - player.x);
+    const radius = 82;
+    this.damageDirectionIndicator
+      .setPosition(480 + Math.cos(angle) * radius, 270 + Math.sin(angle) * radius)
+      .setRotation(angle + Math.PI / 2)
+      .setFillStyle(combatPalette(this.settings.colorVisionMode).dangerBright, 0.96)
+      .setAlpha(1)
+      .setVisible(true);
+    this.tweens.killTweensOf(this.damageDirectionIndicator);
+    this.tweens.add({
+      targets: this.damageDirectionIndicator,
+      alpha: 0,
+      duration: this.settings.reducedMotionEnabled ? 650 : 420,
+      ease: "Quad.easeOut",
+      onComplete: () => this.damageDirectionIndicator?.setVisible(false),
+    });
   }
 
   private updateMarineFrame(heroState: string, move: { x: number; y: number }): void {
@@ -466,6 +769,7 @@ export class PrototypeScene extends Phaser.Scene {
       this.enemyViews,
       this.enemyRimViews,
       this.enemyStatusViews,
+      this.offscreenThreatViews,
       this.projectileViews,
       this.projectileHaloViews,
       this.enemyProjectileViews,
@@ -613,6 +917,15 @@ export class PrototypeScene extends Phaser.Scene {
       scrapBanked: snapshot.securedScrap,
       level: snapshot.level,
       damageByWeapon: metrics.damageByWeapon,
+      damageBySecond: metrics.damageBySecond,
+      elapsedSeconds: metrics.elapsedSeconds,
+      damageTaken: metrics.damageTaken,
+      eliteKills: metrics.eliteKills,
+      bossDamage: metrics.bossDamage,
+      highestHit: metrics.highestHit,
+      criticalHits: metrics.criticalHits,
+      damageTakenBySource: metrics.damageTakenBySource,
+      defeatCause: metrics.defeatCause,
       weapons: snapshot.weaponInventory.rack.flatMap((slot) => slot.tile
         ? [{ weaponId: slot.tile.weaponId, tier: slot.tile.tier }]
         : []),
@@ -659,8 +972,40 @@ export class PrototypeScene extends Phaser.Scene {
     }
   }
 
+  private showPickupBanner(type: PowerupType): void {
+    this.pickupBanner?.destroy(true);
+    const buff = this.lastSnapshot.activeBuffs.find((candidate) => candidate.type === type);
+    const suffix = type === "medkit"
+      ? `+${MEDKIT_HEAL_AMOUNT.toFixed(1)} HP`
+      : buff ? `${Math.ceil(buff.durationSeconds)} SEC` : "ACTIVATED";
+    const label = this.add.text(0, 0, `${powerupDisplayName(type)}  •  ${suffix}`, {
+      color: "#e8e2d4",
+      fontFamily: "Consolas, monospace",
+      fontSize: "12px",
+      backgroundColor: "#0b121cee",
+      padding: { x: 14, y: 7 },
+      stroke: "#081018",
+      strokeThickness: 1,
+    }).setOrigin(0.5);
+    const accent = this.add.rectangle(-label.width / 2 - 3, 0, 4, label.height, powerupColor(type));
+    this.pickupBanner = this.add.container(480, 55, [label, accent]).setDepth(2250).setScrollFactor(0);
+    this.tweens.add({
+      targets: this.pickupBanner,
+      y: 68,
+      alpha: { from: 0, to: 1 },
+      duration: 140,
+      hold: 1050,
+      yoyo: true,
+      onComplete: () => {
+        this.pickupBanner?.destroy(true);
+        this.pickupBanner = null;
+      },
+    });
+  }
+
   private playCombatEvents(events: readonly CombatEvent[]): void {
     for (const event of events) {
+      this.haptics.playForEvent(event);
       const audioCue = cueForCombatEvent(event);
       if (audioCue) {
         this.synth.play(audioCue);
@@ -776,6 +1121,7 @@ export class PrototypeScene extends Phaser.Scene {
           }
           break;
         case "player-hit":
+          this.showDamageDirection();
           this.shakeCamera(120, 0.006);
           if (this.settings.damageNumbersEnabled) {
             this.damageNumbers.reportPlayerDamage(
@@ -790,6 +1136,9 @@ export class PrototypeScene extends Phaser.Scene {
           } else {
             this.emitAuthoredEffect(3, event.position, 180, 0.85, 1.4);
           }
+          break;
+        case "player-shield-hit":
+          this.showDamageDirection();
           break;
         case "player-healed":
           if (this.settings.damageNumbersEnabled) {
@@ -820,6 +1169,7 @@ export class PrototypeScene extends Phaser.Scene {
           if (!this.settings.reducedFlashEnabled) this.cameras.main.flash(160, 104, 228, 232);
           else this.flashCircle(this.lastSnapshot.playerPosition, 22, 0x68e4e8, 420, 2.4, true);
           this.emitAuthoredEffect(2, this.lastSnapshot.playerPosition, 420, 0.9, 2.2);
+          this.eventFeed.add(`LEVEL ${event.level}`, "#68e4e8");
           break;
         case "enemy-spawned":
           if (event.enemyType === "ripper") {
@@ -987,6 +1337,7 @@ export class PrototypeScene extends Phaser.Scene {
           break;
         case "elite-reward-collected":
           this.flashCircle(event.position, 24, 0xd696ff, 420, 2.8, true);
+          this.eventFeed.add("ELITE CACHE SECURED", "#d696ff");
           break;
         case "mini-boss-sweep":
           this.emitAuthoredEffect(16, event.position, 320, event.radiusMetres * 0.5, event.radiusMetres, 0, "batch-b-effects-v1");
@@ -1167,14 +1518,17 @@ export class PrototypeScene extends Phaser.Scene {
         case "aurum-escaped":
           this.emitAuthoredEffect(5, event.position, 380, 0.65, 1.4, 0, "aurum-hoarder-effects-v1");
           this.flashCircle(event.position, 24, 0x68e4e8, 380, 2.1, true);
+          this.eventFeed.add("AURUM TARGET ESCAPED", "#ff9b5f");
           break;
         case "aurum-supply-cache-dropped":
           this.emitAuthoredEffect(7, event.position, 520, 0.72, 1.5, 0, "aurum-hoarder-effects-v1");
           this.flashCircle(event.position, 30, 0xffd36b, 560, 3, true);
+          this.eventFeed.add("SUPPLY CACHE DROPPED", "#ffd36b");
           break;
         case "bastion-eater-phase":
           this.emitAuthoredEffect(9, event.position, 520, 0.9, 1.8, 0, "bastion-eater-effects-v1");
           this.shakeCamera(180, 0.008);
+          this.eventFeed.add(`BASTION EATER: ${event.phase.replace("-", " ").toUpperCase()}`, "#ff9b5f");
           break;
         case "bastion-eater-claw-warning":
           this.emitAuthoredEffect(0, event.position, 520, 0.85, 1.5, Math.atan2(event.direction.y, event.direction.x), "bastion-eater-effects-v1");
@@ -1210,17 +1564,35 @@ export class PrototypeScene extends Phaser.Scene {
           break;
         case "mini-boss-reward-dropped":
           this.flashCircle(event.position, 30, 0xffd36b, 520, 3.2, true);
+          this.eventFeed.add(
+            `${event.miniBossKind.replaceAll("-", " ").toUpperCase()} REWARD AVAILABLE`,
+            "#ffd36b",
+          );
+          break;
+        case "item-granted":
+          this.eventFeed.add(
+            `ITEM ACQUIRED: ${event.itemId.replaceAll("-", " ").toUpperCase()}`,
+            "#68e4e8",
+          );
+          break;
+        case "player-revived":
+          this.eventFeed.add("BASTION BEACON REVIVAL", "#68e4e8");
           break;
         case "status-applied":
           this.emitAuthoredEffect(statusEffectFrame(event.status), event.position, 320, 0.58, 1.12, 0, "batch-c-effects-v1");
           break;
         case "powerup-collected":
+          this.showPickupBanner(event.powerupType);
+          this.eventFeed.add(powerupDisplayName(event.powerupType).toUpperCase(), "#68e4e8");
           if (event.powerupType === "medkit") {
             this.synth.play(MEDKIT_HEAL_CUE);
             this.emitAuthoredEffect(2, event.position, 320, 0.5, 1.1, 0, "combat-effects-v1");
           } else {
             this.emitAuthoredEffect(powerupRewardFrame(event.powerupType), event.position, 360, 0.6, 1.3, 0, "batch-c-rewards-v1");
           }
+          break;
+        case "kit-activated":
+          this.eventFeed.add("U-25 CORE ROUNDS ACTIVE", "#ffd36b");
           break;
         case "warp-arrival":
           this.emitAuthoredEffect(17, event.position, 280, 0.62, 1.2, 0, "batch-c-effects-v1");
@@ -2637,24 +3009,26 @@ export class PrototypeScene extends Phaser.Scene {
       );
       view.setRotation(projectile.rotationRadians);
       if (view instanceof Phaser.GameObjects.Sprite) {
-        view.setScale(projectile.weaponId === "bolt-carbine" ? 0.58
+        const visibilityScale = this.settings.highContrastOutlinesEnabled ? 1.25 : 1;
+        view.setScale((projectile.weaponId === "bolt-carbine" ? 0.58
           : projectile.weaponId === "injector-carbine" ? 0.5
           : projectile.weaponId === "bulwark-rotary-cannon" ? 0.34
             : projectile.weaponId === "grenade-tube" ? 0.48
-              : projectile.weaponId === "scattergun" ? 0.24 : 0.3);
+              : projectile.weaponId === "scattergun" ? 0.24 : 0.3) * visibilityScale);
         view.clearTint();
       } else {
         view.setFillStyle(weaponColor(projectile.weaponId));
       }
-      if (this.readabilityRims) {
+      if (this.readabilityRims || this.settings.highContrastOutlinesEnabled) {
         let halo = this.projectileHaloViews.get(projectile.id);
         if (!halo) {
           halo = this.add.circle(0, 0, 5, projectileHaloColor(projectile.weaponId), 0.32).setDepth(699);
           this.projectileHaloViews.set(projectile.id, halo);
         }
         halo.setPosition(view.x, view.y)
-          .setRadius(projectile.weaponId === "grenade-tube" ? 8 : projectile.weaponId === "bolt-carbine" ? 6 : 4.5)
-          .setFillStyle(projectileHaloColor(projectile.weaponId), 0.32)
+          .setRadius((projectile.weaponId === "grenade-tube" ? 8 : projectile.weaponId === "bolt-carbine" ? 6 : 4.5)
+            * (this.settings.highContrastOutlinesEnabled ? 1.35 : 1))
+          .setFillStyle(projectileHaloColor(projectile.weaponId), this.settings.highContrastOutlinesEnabled ? 0.58 : 0.32)
           .setVisible(view.visible);
       }
     }
@@ -4226,7 +4600,7 @@ function expeditionBuildFromSnapshot(snapshot: CombatSnapshot): ExpeditionBuildS
  */
 function applySettingOverrides(store: LocalSaveStore) {
   const params = new URLSearchParams(window.location.search);
-  const overrides: { screenShakeEnabled?: boolean; reducedFlashEnabled?: boolean; soundEnabled?: boolean; damageNumbersEnabled?: boolean; cooldownTimersEnabled?: boolean; autoFireEnabled?: boolean } = {};
+  const overrides: Partial<GameSettings> = {};
   const shake = params.get("shake");
   if (shake === "0" || shake === "1") overrides.screenShakeEnabled = shake === "1";
   const flash = params.get("flash");
@@ -4239,6 +4613,32 @@ function applySettingOverrides(store: LocalSaveStore) {
   if (timers === "0" || timers === "1") overrides.cooldownTimersEnabled = timers === "1";
   const autoFire = params.get("autofire");
   if (autoFire === "0" || autoFire === "1") overrides.autoFireEnabled = autoFire === "1";
+  const uiScale = Number(params.get("uiscale"));
+  if (uiScale === 0.8 || uiScale === 1 || uiScale === 1.2) overrides.uiScale = uiScale;
+  const radarSize = Number(params.get("radarsize"));
+  if (radarSize === 0.75 || radarSize === 1 || radarSize === 1.25) overrides.radarSize = radarSize;
+  const threats = params.get("threats");
+  if (threats === "off" || threats === "threats" || threats === "all") {
+    overrides.offscreenThreatIndicators = threats;
+  }
+  const vibrationParameter = params.get("vibration");
+  const vibration = Number(vibrationParameter);
+  if (vibrationParameter !== null && Number.isFinite(vibration) && vibration >= 0 && vibration <= 1) {
+    overrides.gamepadVibrationStrength = vibration;
+  }
+  const palette = params.get("palette");
+  if (
+    palette === "standard"
+    || palette === "deuteranopia"
+    || palette === "protanopia"
+    || palette === "tritanopia"
+  ) {
+    overrides.colorVisionMode = palette;
+  }
+  const effects = params.get("effects");
+  if (effects === "auto" || effects === "high" || effects === "medium" || effects === "low") {
+    overrides.effectQuality = effects;
+  }
   return Object.keys(overrides).length > 0
     ? store.updateSettings(overrides).settings
     : store.load().settings;
@@ -4458,6 +4858,21 @@ function createManifestSprite(
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);
   return sprite;
+}
+
+function powerupDisplayName(type: PowerupType): string {
+  return type.split("-").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+}
+
+function threatIndicatorWeight(enemy: EnemySnapshot): number {
+  if (enemy.rank === "boss") return 5;
+  if (enemy.rank === "mini-boss") return 4;
+  if (enemy.rank === "elite") return 3;
+  return enemy.threatClass === "specialist" ? 2 : 1;
+}
+
+function distanceSquared(left: { x: number; y: number }, right: { x: number; y: number }): number {
+  return (left.x - right.x) ** 2 + (left.y - right.y) ** 2;
 }
 
 /**

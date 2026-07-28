@@ -97,7 +97,7 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "choice", key: "enemyHealthBars", label: "Enemy health bars", options: ["off", "threats", "all"] },
   { kind: "toggle", key: "reducedMotionEnabled", label: "Reduced motion" },
   { kind: "toggle", key: "highContrastOutlinesEnabled", label: "High-contrast outlines" },
-  { kind: "choice", key: "uiScale", label: "UI scale", options: ["0.8", "1", "1.2"] },
+  { kind: "choice", key: "uiScale", label: "HUD scale", options: ["0.8", "1", "1.2"] },
   { kind: "range", key: "masterVolume", label: "Master volume", min: 0, max: 1, step: 0.1 },
   { kind: "range", key: "sfxVolume", label: "SFX volume", min: 0, max: 1, step: 0.1 },
   { kind: "range", key: "uiVolume", label: "UI volume", min: 0, max: 1, step: 0.1 },
@@ -106,9 +106,13 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "range", key: "gamepadMoveDeadzone", label: "Move deadzone", min: 0, max: 1, step: 0.01 },
   { kind: "range", key: "gamepadAimDeadzone", label: "Aim deadzone", min: 0, max: 1, step: 0.01 },
   { kind: "range", key: "gamepadAimSensitivity", label: "Aim sensitivity", min: 0.25, max: 3, step: 0.05 },
+  { kind: "range", key: "gamepadVibrationStrength", label: "Controller vibration", min: 0, max: 1, step: 0.25 },
   { kind: "range", key: "aimAssistStrength", label: "Aim assist", min: 0, max: 1, step: 0.1 },
   { kind: "range", key: "displaySizePercent", label: "Display size", min: 50, max: 200, step: 5 },
   { kind: "choice", key: "radarSize", label: "Radar size", options: ["0.75", "1", "1.25"] },
+  { kind: "choice", key: "offscreenThreatIndicators", label: "Threat indicators", options: ["off", "threats", "all"] },
+  { kind: "choice", key: "colorVisionMode", label: "Colour-vision palette", options: ["standard", "deuteranopia", "protanopia", "tritanopia"] },
+  { kind: "choice", key: "effectQuality", label: "Combat effects", options: ["auto", "high", "medium", "low"] },
   { kind: "action", key: "controls", label: "Control bindings" },
 ]);
 

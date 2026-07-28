@@ -24,8 +24,13 @@ export class WebAudioSynth {
   private rotaryLoop: AudioBufferSourceNode | null = null;
   private rotaryLoopGain: GainNode | null = null;
   private rotaryStopTimer: ReturnType<typeof setTimeout> | null = null;
+  private outputVolume = 1;
 
   constructor(public enabled: boolean) {}
+
+  setVolume(volume: number): void {
+    this.outputVolume = Math.max(0, Math.min(1, volume));
+  }
 
   /** Call once per render frame so identical simultaneous cues play only once. */
   beginFrame(): void {
@@ -68,7 +73,7 @@ export class WebAudioSynth {
         now + cue.durationSeconds,
       );
     }
-    gain.gain.setValueAtTime(cue.volume, now);
+    gain.gain.setValueAtTime(cue.volume * this.outputVolume, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + cue.durationSeconds);
 
     oscillator.connect(gain);
@@ -155,7 +160,7 @@ export class WebAudioSynth {
       const gain = context.createGain();
       source.buffer = loop;
       source.loop = true;
-      gain.gain.value = 0.64;
+      gain.gain.value = 0.64 * this.outputVolume;
       source.connect(gain);
       gain.connect(context.destination);
       source.start(context.currentTime + Math.max(0.02, start.duration - 0.025));
@@ -185,7 +190,7 @@ export class WebAudioSynth {
     const source = context.createBufferSource();
     const gain = context.createGain();
     source.buffer = buffer;
-    gain.gain.value = volume;
+    gain.gain.value = volume * this.outputVolume;
     source.connect(gain);
     gain.connect(context.destination);
     source.start();

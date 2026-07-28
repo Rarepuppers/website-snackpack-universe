@@ -13,6 +13,14 @@ export default defineConfig({
         entryFileNames: "game-assets/game.js",
         chunkFileNames: "game-assets/[name].js",
         assetFileNames: "game-assets/[name][extname]",
+        codeSplitting: {
+          groups: [
+            {
+              name: "phaser",
+              test: /node_modules[\\/]phaser/,
+            },
+          ],
+        },
       },
     },
   },

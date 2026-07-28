@@ -84,6 +84,58 @@ describe("LocalSaveStore", () => {
     expect(new LocalSaveStore(storage).load().settings.reducedFlashEnabled).toBe(true);
   });
 
+  it("persists configurable off-screen threat indicator density", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    expect(store.load().settings.offscreenThreatIndicators).toBe("all");
+    store.updateSettings({ offscreenThreatIndicators: "threats" });
+    expect(new LocalSaveStore(storage).load().settings.offscreenThreatIndicators).toBe("threats");
+  });
+
+  it("persists and normalizes the colour-vision palette", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    expect(store.load().settings.colorVisionMode).toBe("standard");
+    store.updateSettings({ colorVisionMode: "deuteranopia" });
+    expect(new LocalSaveStore(storage).load().settings.colorVisionMode).toBe("deuteranopia");
+
+    const invalid = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        ...DEFAULT_SAVE,
+        settings: { ...DEFAULT_SAVE.settings, colorVisionMode: "infrared" },
+      }),
+    });
+    expect(new LocalSaveStore(invalid).load().settings.colorVisionMode).toBe("standard");
+  });
+
+  it("persists controller vibration strength and clamps malformed saves", () => {
+    const storage = fakeStorage();
+    new LocalSaveStore(storage).updateSettings({ gamepadVibrationStrength: 0.5 });
+    expect(new LocalSaveStore(storage).load().settings.gamepadVibrationStrength).toBe(0.5);
+
+    const invalid = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        ...DEFAULT_SAVE,
+        settings: { ...DEFAULT_SAVE.settings, gamepadVibrationStrength: 7 },
+      }),
+    });
+    expect(new LocalSaveStore(invalid).load().settings.gamepadVibrationStrength).toBe(1);
+  });
+
+  it("persists combat-effect quality and defaults malformed values to Auto", () => {
+    const storage = fakeStorage();
+    new LocalSaveStore(storage).updateSettings({ effectQuality: "low" });
+    expect(new LocalSaveStore(storage).load().settings.effectQuality).toBe("low");
+
+    const invalid = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        ...DEFAULT_SAVE,
+        settings: { ...DEFAULT_SAVE.settings, effectQuality: "ultra" },
+      }),
+    });
+    expect(new LocalSaveStore(invalid).load().settings.effectQuality).toBe("auto");
+  });
+
   it("persists the selected hero and perk for the next deployment", () => {
     const storage = fakeStorage();
     const store = new LocalSaveStore(storage);
@@ -141,6 +193,8 @@ describe("LocalSaveStore", () => {
     expect(saved.progress.totalDamage).toBeCloseTo(1000.5);
     expect(saved.progress.totalScrapEarned).toBeCloseTo(88.5);
     expect(saved.progress.bestNodesCleared).toBe(7);
+    expect(saved.lastRunSummary?.newBestWave).toBe(true);
+    expect(saved.lastRunSummary?.newBestNodes).toBe(true);
     expect(saved.lastRunSummary?.newlyUnlockedPerkIds).toEqual([
       "perk-scrapper", "perk-quartermaster", "perk-fast-learner", "perk-gunsmith",
     ]);
@@ -294,7 +348,20 @@ describe("Save schema v2 — expedition autosave", () => {
         upgrades: [{ upgradeId: "rapid-cycling", level: 3 }],
         transformation: committedCyberState(),
       },
-      metrics: { kills: 12, scrapEarned: 44, damageByWeapon: { "bastion-service-rifle": 88 } },
+      metrics: {
+        kills: 12,
+        scrapEarned: 44,
+        damageByWeapon: { "bastion-service-rifle": 88 },
+        damageBySecond: [40, 48],
+        elapsedSeconds: 2,
+        damageTaken: 9,
+        eliteKills: 1,
+        bossDamage: 12,
+        highestHit: 8,
+        criticalHits: 2,
+        damageTakenBySource: { projectile: 9 },
+        defeatCause: null,
+      },
     });
     const reloaded = new LocalSaveStore(storage).load();
     expect(reloaded.expedition?.mapSeed).toBe(2026);
@@ -302,6 +369,16 @@ describe("Save schema v2 — expedition autosave", () => {
     expect(reloaded.expedition?.build?.health).toBeCloseTo(7.4, 5);
     expect(reloaded.expedition?.build?.weapons).toEqual([{ weaponId: "bastion-service-rifle", tier: 2 }]);
     expect(reloaded.expedition?.build?.transformation?.committedPathId).toBe("cybernetic-ascension");
+    expect(reloaded.expedition?.metrics).toMatchObject({
+      damageBySecond: [40, 48],
+      elapsedSeconds: 2,
+      damageTaken: 9,
+      eliteKills: 1,
+      bossDamage: 12,
+      highestHit: 8,
+      criticalHits: 2,
+      damageTakenBySource: { projectile: 9 },
+    });
     const cleared = new LocalSaveStore(storage).clearExpedition();
     expect(cleared.expedition).toBeNull();
     expect(new LocalSaveStore(storage).load().expedition).toBeNull();

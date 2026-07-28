@@ -62,6 +62,15 @@ describe("Expedition run state", () => {
       kills: 9,
       scrapEarned: 20,
       damageByWeapon: { "bastion-service-rifle": 36 },
+      damageBySecond: [],
+      elapsedSeconds: 0,
+      damageTaken: 0,
+      damageTakenBySource: {},
+      eliteKills: 0,
+      bossDamage: 0,
+      highestHit: 0,
+      criticalHits: 0,
+      defeatCause: null,
     });
     expect(selectableNodeIds(run).length).toBeGreaterThan(0);
   });

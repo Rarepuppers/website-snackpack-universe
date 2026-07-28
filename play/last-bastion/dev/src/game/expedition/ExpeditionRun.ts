@@ -4,7 +4,12 @@ import {
   reachableNodes,
   type ExpeditionMapData,
 } from "./ExpeditionMap";
-import { EMPTY_RUN_METRICS, mergeRunMetrics, type RunMetrics } from "../run/RunSummary";
+import {
+  cloneRunMetrics,
+  EMPTY_RUN_METRICS,
+  mergeRunMetrics,
+  type RunMetrics,
+} from "../run/RunSummary";
 import {
   cloneTransformationAffinityState,
   type TransformationAffinityState,
@@ -92,7 +97,7 @@ export function startExpeditionRun(mapSeed: number): ExpeditionRun {
       currentNodeId: map.startNodeId,
       clearedNodeIds: [map.startNodeId],
       build: null,
-      metrics: cloneMetrics(EMPTY_RUN_METRICS),
+      metrics: cloneRunMetrics(EMPTY_RUN_METRICS),
     },
   };
 }
@@ -125,7 +130,7 @@ export function resumeExpeditionRun(state: ExpeditionRunState): ExpeditionRun | 
     state: {
       ...state,
       clearedNodeIds: [...state.clearedNodeIds],
-      metrics: cloneMetrics(state.metrics ?? EMPTY_RUN_METRICS),
+      metrics: cloneRunMetrics(state.metrics ?? EMPTY_RUN_METRICS),
     },
   };
 }
@@ -247,12 +252,4 @@ export function sanitizeBuildRewards(build: ExpeditionBuildSnapshot): Expedition
     ? Math.floor(build.weaponSlotBonus!)
     : 0;
   return { ...build, relicIds, equippedArtifactId, maxHealthBonus, weaponSlotBonus };
-}
-
-function cloneMetrics(metrics: RunMetrics): RunMetrics {
-  return {
-    kills: metrics.kills,
-    scrapEarned: metrics.scrapEarned,
-    damageByWeapon: { ...metrics.damageByWeapon },
-  };
 }

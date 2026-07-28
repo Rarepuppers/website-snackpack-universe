@@ -346,7 +346,7 @@ export type TerrainDamageSource = "player-projectile" | "player-melee" | "mini-b
  * swarm chewed on you would deal *no* lava damage, and — worse — parking in fire
  * would grant permanent i-frames against everything else.
  */
-export type PlayerDamageSource = "generic" | "explosive" | "hazard";
+export type PlayerDamageSource = "generic" | "contact" | "projectile" | "explosive" | "hazard";
 
 export interface TerrainSnapshot {
   id: string;
@@ -839,7 +839,16 @@ export interface CombatRunMetricsSnapshot {
   kills: number;
   scrapEarned: number;
   damageByWeapon: Readonly<Partial<Record<WeaponId, number>>>;
+  damageBySecond: readonly number[];
   suppressedProjectilesByWeapon: Readonly<Partial<Record<WeaponId, number>>>;
+  elapsedSeconds: number;
+  damageTaken: number;
+  eliteKills: number;
+  bossDamage: number;
+  highestHit: number;
+  criticalHits: number;
+  damageTakenBySource: Readonly<Record<string, number>>;
+  defeatCause: string | null;
 }
 
 interface EnemyState {
@@ -1487,6 +1496,21 @@ export class CombatSimulation {
   private runKills = 0;
   private runScrapEarned = 0;
   private readonly runDamageByWeapon: Partial<Record<WeaponId, number>> = {};
+  private readonly runDamageBySecond: number[] = [];
+  private runElapsedSeconds = 0;
+  private runDamageTaken = 0;
+  private runEliteKills = 0;
+  private runBossDamage = 0;
+  private runHighestHit = 0;
+  private runCriticalHits = 0;
+  private readonly runDamageTakenBySource: Record<PlayerDamageSource, number> = {
+    generic: 0,
+    contact: 0,
+    projectile: 0,
+    explosive: 0,
+    hazard: 0,
+  };
+  private runDefeatCause: string | null = null;
   private aurumSpawnedThisWave = false;
   private level = 1;
   private experience = 0;
@@ -1725,6 +1749,7 @@ export class CombatSimulation {
     if (this.status === "defeat" || this.status === "victory" || this.decisionQueue.length > 0) {
       return this.snapshot();
     }
+    this.runElapsedSeconds += delta;
 
     for (const weapon of this.equippedWeapons) {
       weapon.cooldownSeconds = Math.max(0, weapon.cooldownSeconds - delta);
@@ -2346,6 +2371,15 @@ export class CombatSimulation {
     this.autoFireEnabled = enabled;
   }
 
+  abandonRun(): CombatSnapshot {
+    if (this.status === "combat" || this.status === "intermission") {
+      this.status = "defeat";
+      this.runDefeatCause = "Run abandoned";
+      this.decisionQueue.length = 0;
+    }
+    return this.snapshot();
+  }
+
   snapshot(): CombatSnapshot {
     const decision = this.decisionQueue[0] ?? null;
     const heroPresentation: HeroCombatPresentation = {
@@ -2551,7 +2585,16 @@ export class CombatSimulation {
         kills: this.runKills,
         scrapEarned: this.runScrapEarned,
         damageByWeapon: { ...this.runDamageByWeapon },
+        damageBySecond: [...this.runDamageBySecond],
         suppressedProjectilesByWeapon: this.friendlyProjectileBudget.snapshot(),
+        elapsedSeconds: this.runElapsedSeconds,
+        damageTaken: this.runDamageTaken,
+        eliteKills: this.runEliteKills,
+        bossDamage: this.runBossDamage,
+        highestHit: this.runHighestHit,
+        criticalHits: this.runCriticalHits,
+        damageTakenBySource: { ...this.runDamageTakenBySource },
+        defeatCause: this.runDefeatCause,
       },
     };
   }
@@ -4172,7 +4215,11 @@ export class CombatSimulation {
   private rollCritMultiplier(): number {
     const chance = this.playerStats.critChancePercent;
     if (chance <= 0) return 1;
-    return this.random() < chance / 100 ? this.playerStats.critMultiplier : 1;
+    if (this.random() < chance / 100) {
+      this.runCriticalHits += 1;
+      return this.playerStats.critMultiplier;
+    }
+    return 1;
   }
 
   /** Psionic Sniper / Tunnel Focus-style transformation effects: damage scales with range to the target. */
@@ -7815,7 +7862,7 @@ export class CombatSimulation {
       });
     }
     if (hitPlayer) {
-      this.damagePlayer(projectile.damage);
+      this.damagePlayer(projectile.damage, "projectile");
     }
   }
 
@@ -8131,7 +8178,7 @@ export class CombatSimulation {
         && enemy.attackCooldownSeconds <= 0
         && distance(enemy.position, this.playerPosition) <= enemyRadius(enemy) + PLAYER_RADIUS_METRES
       ) {
-        this.damagePlayer(contactDamage);
+        this.damagePlayer(contactDamage, "contact");
         enemy.attackCooldownSeconds = 0.8;
         break;
       }
@@ -8176,6 +8223,7 @@ export class CombatSimulation {
       });
       return;
     }
+    const healthBeforeHit = this.playerHealth;
     const absorption = absorbWithShield(this.playerShield, rawDamage);
     const shieldDamage = this.playerShield - absorption.remainingShield;
     this.playerShield = absorption.remainingShield;
@@ -8217,6 +8265,9 @@ export class CombatSimulation {
         damage: shieldDamage,
       });
     }
+    const appliedDamage = shieldDamage + Math.max(0, healthBeforeHit - this.playerHealth);
+    this.runDamageTaken += appliedDamage;
+    this.runDamageTakenBySource[source] += appliedDamage;
     // Warp Anchor: being hit throws you clear of whatever hit you.
     this.applyWarpAnchorBlink();
     if (this.playerHealth <= 0) {
@@ -8227,6 +8278,7 @@ export class CombatSimulation {
         this.playerHurtCooldownSeconds = Math.max(this.playerHurtCooldownSeconds, 1.5);
         this.frameEvents.push({ type: "player-revived", position: { ...this.playerPosition } });
       } else {
+        this.runDefeatCause = playerDefeatCause(source);
         this.status = "defeat";
       }
     }
@@ -8461,9 +8513,15 @@ export class CombatSimulation {
     if (this.scenario === "density-capacity") {
       return;
     }
+    const applied = Math.max(0, shieldBefore - enemy.shield) + Math.min(enemy.health, mitigated);
+    this.runHighestHit = Math.max(this.runHighestHit, applied);
+    if (enemy.rank === "boss") {
+      this.runBossDamage += applied;
+    }
     if (sourceWeaponId) {
-      const applied = Math.max(0, shieldBefore - enemy.shield) + Math.min(enemy.health, mitigated);
       this.runDamageByWeapon[sourceWeaponId] = (this.runDamageByWeapon[sourceWeaponId] ?? 0) + applied;
+      const second = Math.min(6 * 60 * 60 - 1, Math.max(0, Math.floor(this.runElapsedSeconds)));
+      this.runDamageBySecond[second] = (this.runDamageBySecond[second] ?? 0) + applied;
     }
     if (enemy.type === "tether-bloom" && enemy.tetherBloomPhase === "tethering") {
       enemy.tetherBloomDamageDuringGrab += mitigated;
@@ -8659,6 +8717,7 @@ export class CombatSimulation {
       }
     }
     this.runKills += 1;
+    if (enemy.rank === "elite") this.runEliteKills += 1;
     this.frameEvents.push({
       type: "enemy-defeated",
       position: { ...enemy.position },
@@ -10033,6 +10092,16 @@ export function rotatingWindow<T>(entries: readonly T[], size: number, offset: n
 
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(Math.max(value, minimum), maximum);
+}
+
+function playerDefeatCause(source: PlayerDamageSource): string {
+  switch (source) {
+    case "contact": return "Overrun by enemy contact";
+    case "projectile": return "Struck by an enemy projectile";
+    case "explosive": return "Caught in an explosion";
+    case "hazard": return "Consumed by an arena hazard";
+    default: return "Felled by an enemy attack";
+  }
 }
 
 function placementTargetId(target: WeaponPlacementTarget): string {

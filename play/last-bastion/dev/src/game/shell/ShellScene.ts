@@ -65,7 +65,9 @@ export class ShellScene extends Phaser.Scene {
       typeof window !== "undefined" ? window.localStorage : null,
     );
     const save = this.saveStore.load();
-    this.state = createShellState(save.settings, "title", save.progress, save.selectedPerkId, save.selectedHeroId, save.controls);
+    const requestedFlow = new URLSearchParams(window.location.search).get("flow");
+    const initialScreen = requestedFlow === "character-select" ? "character-select" : "title";
+    this.state = createShellState(save.settings, initialScreen, save.progress, save.selectedPerkId, save.selectedHeroId, save.controls);
     this.root = this.add.container(0, 0);
 
     // One direct window listener instead of the Phaser keyboard plugin: the

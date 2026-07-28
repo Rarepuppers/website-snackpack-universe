@@ -27,14 +27,28 @@ export class VisualEffectPool {
   private readonly active: Phaser.GameObjects.Arc[] = [];
   private readonly freeSprites: Phaser.GameObjects.Sprite[] = [];
   private readonly activeSprites: Phaser.GameObjects.Sprite[] = [];
+  private activeBudget: number;
+  private burstScale = 1;
+  private suppressed = 0;
 
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly maximumSize = 96,
-  ) {}
+  ) {
+    this.activeBudget = maximumSize;
+  }
 
   get activeCount(): number {
     return this.active.length + this.activeSprites.length;
+  }
+
+  get suppressedCount(): number {
+    return this.suppressed;
+  }
+
+  setBudget(maximumActive: number, burstScale: number): void {
+    this.activeBudget = Math.max(1, Math.min(this.maximumSize, Math.floor(maximumActive)));
+    this.burstScale = Math.max(0.1, Math.min(1, burstScale));
   }
 
   emitSprite(effect: PooledSpriteEffect): void {
@@ -86,8 +100,9 @@ export class VisualEffectPool {
   }
 
   emitBurst(x: number, y: number, color: number, count = 4): void {
-    for (let index = 0; index < count; index += 1) {
-      const angle = index * Math.PI * 2 / count;
+    const renderedCount = Math.max(1, Math.round(count * this.burstScale));
+    for (let index = 0; index < renderedCount; index += 1) {
+      const angle = index * Math.PI * 2 / renderedCount;
       this.emit({
         x: x + Math.cos(angle) * 7,
         y: y + Math.sin(angle) * 7,
@@ -101,6 +116,10 @@ export class VisualEffectPool {
   }
 
   private acquire(): Phaser.GameObjects.Arc | null {
+    if (this.active.length + this.activeSprites.length >= this.activeBudget) {
+      this.suppressed += 1;
+      return null;
+    }
     const freeView = this.free.pop();
     if (freeView) {
       this.active.push(freeView);
@@ -108,11 +127,8 @@ export class VisualEffectPool {
     }
 
     if (this.active.length + this.activeSprites.length >= this.maximumSize) {
-      if (this.active.length === 0) return null;
-      const reused = this.active.shift()!;
-      this.scene.tweens.killTweensOf(reused);
-      this.active.push(reused);
-      return reused;
+      this.suppressed += 1;
+      return null;
     }
 
     const created = this.scene.add.circle(0, 0, 1, 0xffffff, 0).setVisible(false);
@@ -129,17 +145,18 @@ export class VisualEffectPool {
   }
 
   private acquireSprite(): Phaser.GameObjects.Sprite | null {
+    if (this.active.length + this.activeSprites.length >= this.activeBudget) {
+      this.suppressed += 1;
+      return null;
+    }
     const freeView = this.freeSprites.pop();
     if (freeView) {
       this.activeSprites.push(freeView);
       return freeView;
     }
     if (this.active.length + this.activeSprites.length >= this.maximumSize) {
-      if (this.activeSprites.length === 0) return null;
-      const reused = this.activeSprites.shift()!;
-      this.scene.tweens.killTweensOf(reused);
-      this.activeSprites.push(reused);
-      return reused;
+      this.suppressed += 1;
+      return null;
     }
     const created = this.scene.add.sprite(0, 0, "combat-effects-v1", 0).setVisible(false);
     this.activeSprites.push(created);

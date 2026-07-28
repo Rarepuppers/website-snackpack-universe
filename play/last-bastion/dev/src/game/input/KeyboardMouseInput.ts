@@ -34,6 +34,10 @@ interface ControlKeys {
 export class KeyboardMouseInput {
   private readonly keys: ControlKeys;
   private readonly gamepadMapper: GamepadIntentMapper;
+  private lastPointer = { x: Number.NaN, y: Number.NaN };
+  private activeDevice: "keyboard" | "gamepad" = "keyboard";
+  private previousGamepadEast = false;
+  private gamepadBackPressed = false;
 
   constructor(private readonly scene: Phaser.Scene, bindings: ControlBindings = DEFAULT_CONTROL_BINDINGS) {
     const keyboard = scene.input.keyboard;
@@ -64,6 +68,7 @@ export class KeyboardMouseInput {
 
   read(playerPosition: { x: number; y: number }): PlayerIntent {
     const pointer = this.scene.input.activePointer;
+    const gamepadState = this.readGamepadState();
     const horizontal = Number(this.keys.right.isDown || this.keys.rightAlt.isDown)
       - Number(this.keys.left.isDown || this.keys.leftAlt.isDown);
     const vertical = Number(this.keys.down.isDown || this.keys.downAlt.isDown)
@@ -86,7 +91,34 @@ export class KeyboardMouseInput {
       restartPressed: Phaser.Input.Keyboard.JustDown(this.keys.restart),
     };
 
-    return mergeIntents(keyboardMouse, this.gamepadMapper.update(this.readGamepadState()));
+    const pointerMoved = Number.isFinite(this.lastPointer.x)
+      && (Math.abs(pointer.x - this.lastPointer.x) > 1 || Math.abs(pointer.y - this.lastPointer.y) > 1);
+    this.lastPointer = { x: pointer.x, y: pointer.y };
+    const keyboardActive = horizontal !== 0 || vertical !== 0 || pointer.leftButtonDown() || pointerMoved
+      || keyboardMouse.evasiveMovePressed || keyboardMouse.interactPressed || keyboardMouse.ultimatePressed
+      || keyboardMouse.kitPressed || keyboardMouse.pausePressed || keyboardMouse.toggleFireModePressed;
+    const gamepadActive = gamepadState.connected && (
+      Math.hypot(gamepadState.leftStick.x, gamepadState.leftStick.y) > 0.25
+      || Math.hypot(gamepadState.rightStick.x, gamepadState.rightStick.y) > 0.25
+      || gamepadState.fireHeld || gamepadState.southPressed || gamepadState.eastPressed
+      || gamepadState.westPressed || gamepadState.northPressed || gamepadState.startPressed
+      || gamepadState.rightStickPressed
+    );
+    this.gamepadBackPressed = gamepadState.eastPressed && !this.previousGamepadEast;
+    this.previousGamepadEast = gamepadState.eastPressed;
+    if (gamepadActive) this.activeDevice = "gamepad";
+    else if (keyboardActive) this.activeDevice = "keyboard";
+    return mergeIntents(keyboardMouse, this.gamepadMapper.update(gamepadState));
+  }
+
+  get activeInputDevice(): "keyboard" | "gamepad" {
+    return this.activeDevice;
+  }
+
+  consumeGamepadBackPressed(): boolean {
+    const pressed = this.gamepadBackPressed;
+    this.gamepadBackPressed = false;
+    return pressed;
   }
 
   private readGamepadState(): GamepadStateSnapshot {

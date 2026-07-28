@@ -90,11 +90,14 @@ export class FloatingDamageNumbers {
   private readonly active: ActiveNumber[] = [];
   private readonly free: Phaser.GameObjects.Text[] = [];
   private suppressed = 0;
+  private maximumActive: number;
 
   constructor(
     private readonly scene: Phaser.Scene,
-    private readonly maxActive = MAX_ACTIVE_NUMBERS,
-  ) {}
+    maxActive = MAX_ACTIVE_NUMBERS,
+  ) {
+    this.maximumActive = Math.max(1, Math.floor(maxActive));
+  }
 
   get activeCount(): number {
     return this.active.length;
@@ -102,6 +105,10 @@ export class FloatingDamageNumbers {
 
   get suppressedCount(): number {
     return this.suppressed;
+  }
+
+  setMaximumActive(maximumActive: number): void {
+    this.maximumActive = Math.max(1, Math.min(MAX_ACTIVE_NUMBERS, Math.floor(maximumActive)));
   }
 
   /**
@@ -208,7 +215,7 @@ export class FloatingDamageNumbers {
     const reused = this.free.pop();
     if (reused) return reused;
 
-    if (this.active.length >= this.maxActive) {
+    if (this.active.length >= this.maximumActive) {
       // Priority feedback displaces ordinary hits first. Ordinary hits never
       // erase a player-damage/heal label just to add more arena noise.
       let oldestIndex = findRecycleIndex(this.active, false);

@@ -44,6 +44,7 @@ describe("CombatSimulation", () => {
     expect(snapshot.pickups).toHaveLength(1);
     expect(snapshot.runMetrics.kills).toBe(1);
     expect(snapshot.runMetrics.damageByWeapon["bastion-service-rifle"]).toBeCloseTo(4);
+    expect(snapshot.runMetrics.damageBySecond.reduce((sum, damage) => sum + damage, 0)).toBeCloseTo(4);
   });
 
   it("applies Auto-fire immediately and allows switching back to Manual", () => {
@@ -59,6 +60,17 @@ describe("CombatSimulation", () => {
     for (let frame = 0; frame < 4; frame += 1) snapshot = simulation.step(intent(), 0.05);
     expect(snapshot.autoFireEnabled).toBe(false);
     expect(snapshot.events.some((event) => event.type === "weapon-fired")).toBe(false);
+  });
+
+  it("ends an abandoned run with a debrief-safe cause", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false });
+    simulation.step(intent(), 2.5);
+
+    const snapshot = simulation.abandonRun();
+
+    expect(snapshot.status).toBe("defeat");
+    expect(snapshot.runMetrics.elapsedSeconds).toBeCloseTo(0.05);
+    expect(snapshot.runMetrics.defeatCause).toBe("Run abandoned");
   });
 
   it("automatically sweeps nearby enemies with Patrol Blade and exposes its cadence", () => {

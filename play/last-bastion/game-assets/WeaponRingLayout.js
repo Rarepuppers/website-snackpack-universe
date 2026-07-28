@@ -1,0 +1,1 @@
+function e(e,n=0){if(e<=0)return[];if(e===1)return[t(n,.82)];let r=.82+Math.max(0,e-4)*.045,i=-Math.PI/2;return Array.from({length:e},(n,a)=>t(i+a*Math.PI*2/e,r))}function t(e,t){let n=Math.sin(e)*t;return{x:Math.cos(e)*t,y:n,angleRadians:e,depthOffset:n<0?-1:1}}export{e as t};

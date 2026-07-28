@@ -1,8 +1,10 @@
 import Phaser from "phaser";
 import "./style.css";
-import { gameConfig } from "./game/config";
+import { createGameConfig } from "./game/config";
 import { planDisplayScale, setUiDeviceScale } from "./game/rendering/DisplayScaling";
 import { LocalSaveStore } from "./game/save/LocalSaveStore";
+import { resolveSceneRoute } from "./game/SceneRoute";
+import { loadInitialScene } from "./game/loadInitialScene";
 
 /**
  * Snaps the canvas to whole physical pixels. `?size=` previews the planned
@@ -43,22 +45,24 @@ function trackDevicePixelRatio(onChange: () => void): void {
   );
 }
 
-const game = new Phaser.Game({
-  ...gameConfig,
-  callbacks: {
-    // postBoot runs after Phaser's own scale setup, so our zoom survives.
-    postBoot: (booted) => {
-      const apply = () => applyDisplayScale(booted);
-      apply();
-      // Some browsers report a provisional devicePixelRatio during boot and
-      // settle on the real one a frame or two later, so re-apply once things
-      // have stabilised rather than trusting the boot-time value.
-      requestAnimationFrame(apply);
-      window.setTimeout(apply, 250);
-      trackDevicePixelRatio(apply);
-      window.addEventListener("resize", apply);
+async function boot(): Promise<Phaser.Game> {
+  const route = resolveSceneRoute(new URLSearchParams(window.location.search));
+  const initialScene = await loadInitialScene(route);
+  return new Phaser.Game({
+    ...createGameConfig(initialScene),
+    callbacks: {
+      // postBoot runs after Phaser's own scale setup, so our zoom survives.
+      postBoot: (booted) => {
+        const apply = () => applyDisplayScale(booted);
+        apply();
+        requestAnimationFrame(apply);
+        window.setTimeout(apply, 250);
+        trackDevicePixelRatio(apply);
+        window.addEventListener("resize", apply);
+      },
     },
-  },
-});
+  });
+}
 
+const game = boot();
 export default game;

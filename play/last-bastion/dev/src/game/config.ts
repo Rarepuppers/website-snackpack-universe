@@ -1,74 +1,27 @@
 import Phaser from "phaser";
-import { PrototypeScene } from "./scenes/PrototypeScene";
-import { AssetGalleryScene } from "./scenes/AssetGalleryScene";
-import { ExpeditionScene } from "./scenes/ExpeditionScene";
-import { ShellScene } from "./shell/ShellScene";
-import { RunSummaryScene } from "./scenes/RunSummaryScene";
-import { TransformationDecisionScene } from "./scenes/TransformationDecisionScene";
-import { EncounterEventScene } from "./scenes/EncounterEventScene";
-import { ExpeditionEventScene } from "./scenes/ExpeditionEventScene";
 
-const params = new URLSearchParams(window.location.search);
-const galleryMode = params.get("mode") === "gallery";
-const mapMode = params.get("screen") === "map";
-const summaryMode = params.get("screen") === "summary";
-const transformationMode = params.get("screen") === "transformation-lab";
-const eventLabMode = params.get("screen") === "event-lab";
-const expeditionEventMode = params.get("screen") === "event";
-
-/**
- * The shell is the front door: a bare URL boots Title → Menu. Any review
- * parameter (scenario, stress, loadout, …) still boots straight into combat so
- * every documented lab route keeps working, and `?screen=game` forces a direct
- * run while `?screen=title` forces the shell.
- */
-const REVIEW_PARAMS = [
-  "scenario", "stress", "loadout", "weapons", "kit", "buff", "art",
-  "helmet", "theme", "debug", "timers", "damage", "size", "shake", "sound",
-] as const;
-const shellMode = !galleryMode
-  && !mapMode
-  && !summaryMode
-  && !transformationMode
-  && !eventLabMode
-  && !expeditionEventMode
-  && params.get("screen") !== "game"
-  && (params.get("screen") === "title" || !REVIEW_PARAMS.some((key) => params.has(key)));
-
-export const gameConfig: Phaser.Types.Core.GameConfig = {
-  type: Phaser.AUTO,
-  parent: "game-root",
-  width: 960,
-  height: 540,
-  backgroundColor: "#151e2b",
-  pixelArt: true,
-  roundPixels: true,
-  input: {
-    gamepad: true,
-  },
-  scale: {
-    // NONE + a device-pixel-snapped zoom instead of FIT: FIT stretches the
-    // 960×540 canvas by fractional factors, which smears pixel art and text
-    // even with image-rendering: pixelated. See rendering/DisplayScaling.ts;
-    // main.ts owns the resize listener.
-    mode: Phaser.Scale.NONE,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
-  },
-  // Each mode boots exactly one scene; hand-offs navigate to the target route,
-  // so no cross-scene start is required.
-  scene: galleryMode
-    ? [AssetGalleryScene]
-    : summaryMode
-      ? [RunSummaryScene]
-    : transformationMode
-      ? [TransformationDecisionScene]
-    : eventLabMode
-      ? [EncounterEventScene]
-    : expeditionEventMode
-      ? [ExpeditionEventScene]
-    : mapMode
-      ? [ExpeditionScene]
-      : shellMode
-        ? [ShellScene]
-        : [PrototypeScene],
-};
+export function createGameConfig(
+  initialScene: Phaser.Types.Scenes.SceneType,
+): Phaser.Types.Core.GameConfig {
+  return {
+    type: Phaser.AUTO,
+    parent: "game-root",
+    width: 960,
+    height: 540,
+    backgroundColor: "#151e2b",
+    pixelArt: true,
+    roundPixels: true,
+    input: {
+      gamepad: true,
+    },
+    scale: {
+      // NONE + a device-pixel-snapped zoom instead of FIT: FIT stretches the
+      // 960x540 canvas by fractional factors, which smears pixel art and text.
+      mode: Phaser.Scale.NONE,
+      autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
+    // Every URL boots exactly one scene. Scene hand-offs navigate to another
+    // route, allowing Vite to keep unrelated screens in separate chunks.
+    scene: [initialScene],
+  };
+}
