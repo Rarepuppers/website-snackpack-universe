@@ -92,6 +92,7 @@ import {
   shouldSpawnAurumHoarder,
 } from "./AurumHoarder";
 import { initialProjectileCarry, resolveFractionalProjectiles } from "./FractionalProjectiles";
+import { FriendlyProjectileBudget } from "./FriendlyProjectileBudget";
 import {
   createAbominationBehavior,
   stepAbominationBehavior,
@@ -219,7 +220,14 @@ import {
   resolvePlayerStats,
   type PlayerStatBlock,
 } from "../stats/PlayerStatBlock";
+import {
+  applyPlayerStatLimits,
+  finalAttackSpeedFactor,
+  PLAYER_STAT_LIMITS,
+  type EffectivePlayerStats,
+} from "../stats/PlayerStatLimits";
 import { foldItemStats, itemById, ITEM_CATALOG } from "../content/itemCatalog";
+import type { EnemyThreatClass } from "../rendering/EnemyHealthBars";
 import {
   DEFAULT_SHOP_PROFILE_ID,
   NON_ITEM_DRAW_WEIGHT,
@@ -586,6 +594,10 @@ export interface EnemySnapshot {
   bastionEaterTarget?: Vector2Data;
   bastionEaterNodeExposed?: boolean;
   rank: EnemyRank;
+  threatClass: EnemyThreatClass;
+  recentDamageRemainingSeconds: number;
+  hasActiveStatus: boolean;
+  majorAttackWindup: boolean;
   /**
    * Body-radius multiplier on top of the catalog `radiusMetres`. Only ranked
    * enemies set it (see `spawnMiniBoss`); absent means 1. Read through
@@ -646,6 +658,9 @@ export interface DensityTelemetrySnapshot {
   activeEnemyProjectiles: number;
   peakEnemyProjectiles: number;
   projectileBudget: number;
+  activeFriendlyProjectiles: number;
+  peakFriendlyProjectiles: number;
+  friendlyProjectileBudget: number;
 }
 
 export interface ProjectileSnapshot {
@@ -722,6 +737,18 @@ export interface EquippedWeaponSnapshot extends EquippedWeapon {
   cooldownDurationSeconds: number;
 }
 
+export interface HeroCombatPresentation {
+  id: HeroDefinition["id"];
+  displayName: string;
+  passiveId: string;
+  passiveName: string;
+  evasiveName: "Roll" | "Slide";
+  evasiveDurationSeconds: number;
+  evasiveRecoverySeconds: number;
+  ultimateName: string;
+  ultimateCooldownSeconds: number;
+}
+
 export interface WeaponInventorySnapshot {
   rack: readonly {
     id: string;
@@ -736,6 +763,7 @@ export interface CombatSnapshot {
   status: EncounterStatus;
   autoFireEnabled: boolean;
   heroId: HeroDefinition["id"];
+  heroPresentation: HeroCombatPresentation;
   activePerkId: PerkId | null;
   transformation: TransformationAffinityState;
   /** Run-long reward items carried through combat so they survive a node. */
@@ -744,6 +772,7 @@ export interface CombatSnapshot {
   ownedItemIds: readonly string[];
   /** Raw non-catalogue stat grants (level-up cards, shrine grants), carried so they survive a node. */
   itemStats: Partial<PlayerStatBlock>;
+  playerStats: EffectivePlayerStats;
   /** Shop stock banned this run; the ban verb is run-long, so it rides the snapshot across nodes. */
   bannedShopIds: readonly string[];
   equippedArtifactId: ArtifactId | null;
@@ -810,6 +839,7 @@ export interface CombatRunMetricsSnapshot {
   kills: number;
   scrapEarned: number;
   damageByWeapon: Readonly<Partial<Record<WeaponId, number>>>;
+  suppressedProjectilesByWeapon: Readonly<Partial<Record<WeaponId, number>>>;
 }
 
 interface EnemyState {
@@ -819,6 +849,7 @@ interface EnemyState {
   health: number;
   attackCooldownSeconds: number;
   dead: boolean;
+  recentDamageRemainingSeconds: number;
   hatchRemainingSeconds: number;
   hatchDurationSeconds: number;
   brainPhase: BrainPhase;
@@ -1366,6 +1397,10 @@ export class CombatSimulation {
    * that are applied once rather than read live (armour, max health).
    */
   private playerStats: PlayerStatBlock;
+  private rawPlayerStats: PlayerStatBlock;
+  private cappedPlayerStatKeys: readonly (keyof PlayerStatBlock)[] = [];
+  private lifestealWindowRemainingSeconds = 0;
+  private lifestealWindowPaid = 0;
   /** Owned shop item ids; the source of truth folded into `playerStats`. */
   private ownedItemIds: string[] = [];
   /** Item armour already added to `defence.armour`, so refreshes apply only the delta. */
@@ -1407,6 +1442,7 @@ export class CombatSimulation {
   private projectiles: ProjectileState[] = [];
   private enemyProjectiles: EnemyProjectileState[] = [];
   private readonly friendlyProjectilePool: ProjectileState[] = [];
+  private readonly friendlyProjectileBudget = new FriendlyProjectileBudget();
   private readonly hostileProjectilePool: EnemyProjectileState[] = [];
   private groundHazards: GroundHazardState[] = [];
   private eventHorizonFields: EventHorizonFieldState[] = [];
@@ -1443,6 +1479,7 @@ export class CombatSimulation {
   private densitySpawnedThisWave = 0;
   private densitySpawnCapBlockedSeconds = 0;
   private densityPeakEnemyProjectiles = 0;
+  private densityPeakFriendlyProjectiles = 0;
   private densityPressureSpawned: Record<EnemyPressureRole, number> = {
     pursuit: 0, ranged: 0, specialist: 0, boss: 0,
   };
@@ -1530,7 +1567,8 @@ export class CombatSimulation {
     // The ban verb's contract is run-long, so bans arrive from the build rather
     // than starting empty at every node.
     for (const bannedId of options.startingBuild?.bannedShopIds ?? []) this.shopBannedIds.add(bannedId);
-    this.playerStats = this.resolveCurrentPlayerStats();
+    this.rawPlayerStats = this.resolveCurrentPlayerStats();
+    this.playerStats = applyPlayerStatLimits(this.rawPlayerStats).effective;
     this.securedScrap = Math.max(0, Math.floor(
       options.startingBuild?.scrap ?? options.startingScrap ?? (this.scenario === "scrap-shop" ? 150 : 0),
     ));
@@ -1598,6 +1636,7 @@ export class CombatSimulation {
     this.appliedItemArmour = this.playerStats.armourFlat;
     this.defence.maxShield += this.transformationModifiers.maxShieldBonus;
     this.playerMaxHealth = Math.max(3, Math.round(this.playerMaxHealth * this.transformationModifiers.maxHealthMultiplier));
+    this.applyEffectivePlayerStatLimits();
     this.playerHealth = Math.min(this.playerHealth, this.playerMaxHealth);
 
     if (this.expeditionEncounter !== null) {
@@ -1672,6 +1711,11 @@ export class CombatSimulation {
   step(intent: PlayerIntent, deltaSeconds: number): CombatSnapshot {
     const delta = Math.min(Math.max(deltaSeconds, 0), 0.05);
     this.frameEvents = [];
+    for (const enemy of this.enemies) {
+      enemy.recentDamageRemainingSeconds = Math.max(0, enemy.recentDamageRemainingSeconds - delta);
+    }
+    this.lifestealWindowRemainingSeconds = Math.max(0, this.lifestealWindowRemainingSeconds - delta);
+    if (this.lifestealWindowRemainingSeconds <= 0) this.lifestealWindowPaid = 0;
     for (const [id, remaining] of this.obstacleHitRemainingSeconds) {
       const next = Math.max(0, remaining - delta);
       if (next === 0) this.obstacleHitRemainingSeconds.delete(id);
@@ -1793,6 +1837,7 @@ export class CombatSimulation {
       this.enemies.filter((enemy) => !enemy.dead && enemy.type !== "foundry-pad").length,
     );
     this.densityPeakEnemyProjectiles = Math.max(this.densityPeakEnemyProjectiles, this.enemyProjectiles.length);
+    this.densityPeakFriendlyProjectiles = Math.max(this.densityPeakFriendlyProjectiles, this.projectiles.length);
     if (this.wavesEnabled || this.expeditionEncounter !== null) {
       this.updateEncounterProgress(delta);
     }
@@ -1827,6 +1872,7 @@ export class CombatSimulation {
       damageMultiplier: scaling.damageMultiplier,
       attackCooldownSeconds: 0,
       dead: false,
+      recentDamageRemainingSeconds: 0,
       hatchRemainingSeconds: type === "egg-cluster" ? 6 : 0,
       hatchDurationSeconds: type === "egg-cluster" ? 6 : 0,
       brainPhase: "drift",
@@ -2302,15 +2348,32 @@ export class CombatSimulation {
 
   snapshot(): CombatSnapshot {
     const decision = this.decisionQueue[0] ?? null;
+    const heroPresentation: HeroCombatPresentation = {
+      id: this.hero.id,
+      displayName: this.hero.displayName,
+      passiveId: this.hero.passive.id,
+      passiveName: this.hero.passive.name,
+      evasiveName: this.hero.evasiveMove.presentation === "roll" ? "Roll" : "Slide",
+      evasiveDurationSeconds: this.hero.evasiveMove.durationSeconds,
+      evasiveRecoverySeconds: this.heroMotion.getEffectiveEvasiveRecoverySeconds(),
+      ultimateName: this.hero.ultimate.name,
+      ultimateCooldownSeconds: this.hero.ultimate.cooldownSeconds * this.transformationModifiers.ultimateCooldownMultiplier,
+    };
     return {
       status: this.status,
       autoFireEnabled: this.autoFireEnabled,
       heroId: this.hero.id,
+      heroPresentation,
       activePerkId: this.activePerkId,
       transformation: cloneTransformationAffinityState(this.transformation),
       relicIds: [...this.ownedRelicIds],
       ownedItemIds: [...this.ownedItemIds],
       itemStats: { ...this.baseItemStats },
+      playerStats: {
+        raw: { ...this.rawPlayerStats },
+        effective: { ...this.playerStats },
+        capped: [...this.cappedPlayerStatKeys],
+      },
       bannedShopIds: [...this.shopBannedIds],
       equippedArtifactId: this.equippedArtifactId,
       rewardMaxHealthBonus: this.rewardMaxHealthBonus,
@@ -2479,12 +2542,16 @@ export class CombatSimulation {
         activeEnemyProjectiles: this.enemyProjectiles.filter((projectile) => !projectile.dead).length,
         peakEnemyProjectiles: this.densityPeakEnemyProjectiles,
         projectileBudget: ENEMY_PROJECTILE_BUDGET,
+        activeFriendlyProjectiles: this.projectiles.filter((projectile) => !projectile.dead).length,
+        peakFriendlyProjectiles: this.densityPeakFriendlyProjectiles,
+        friendlyProjectileBudget: Number.POSITIVE_INFINITY,
       },
       medicTriageHits: this.medicTriageHits,
       runMetrics: {
         kills: this.runKills,
         scrapEarned: this.runScrapEarned,
         damageByWeapon: { ...this.runDamageByWeapon },
+        suppressedProjectilesByWeapon: this.friendlyProjectileBudget.snapshot(),
       },
     };
   }
@@ -2635,7 +2702,8 @@ export class CombatSimulation {
    * the same amount, so a +max-HP buy feels immediately useful.
    */
   private refreshPlayerStats(): void {
-    this.playerStats = this.resolveCurrentPlayerStats();
+    this.rawPlayerStats = this.resolveCurrentPlayerStats();
+    this.playerStats = applyPlayerStatLimits(this.rawPlayerStats).effective;
 
     const armourDelta = this.playerStats.armourFlat - this.appliedItemArmour;
     if (armourDelta !== 0) {
@@ -2648,9 +2716,16 @@ export class CombatSimulation {
     this.playerMaxHealth = Math.max(3, Math.round(
       this.rewardAdjustedMaxHealth(growth.maxHealthBonus) * this.transformationModifiers.maxHealthMultiplier,
     ));
+    this.applyEffectivePlayerStatLimits();
     const gained = this.playerMaxHealth - previousMax;
     if (gained > 0) this.playerHealth += gained;
     this.playerHealth = Math.max(0.1, Math.min(this.playerHealth, this.playerMaxHealth));
+  }
+
+  private applyEffectivePlayerStatLimits(): void {
+    const result = applyPlayerStatLimits(this.rawPlayerStats, this.playerMaxHealth);
+    this.playerStats = result.effective;
+    this.cappedPlayerStatKeys = result.capped;
   }
 
   /**
@@ -3792,13 +3867,13 @@ export class CombatSimulation {
   }
 
   private currentAttackSpeedMultiplier(): number {
-    return this.defence.attackSpeedMultiplier
+    return finalAttackSpeedFactor(this.defence.attackSpeedMultiplier
       * (this.isBuffActive("overcharge") ? OVERCHARGE_ATTACK_SPEED_MULTIPLIER : 1)
       * (this.isBuffActive("last-stand-stimulant") ? LAST_STAND_STIMULANT_ATTACK_SPEED_MULTIPLIER : 1)
       * this.transformationModifiers.fireRateMultiplier
       * (this.isBraced() ? BRACE_ATTACK_SPEED_MULTIPLIER : 1)
       * (1 + this.overclockStacks * this.relicModifiers.fireRatePerKill)
-      * Math.max(0.1, 1 + this.playerStats.attackSpeedPercent / 100);
+      * (1 + this.playerStats.attackSpeedPercent / 100));
   }
 
   private currentPowerupDamageMultiplier(): number {
@@ -4066,7 +4141,7 @@ export class CombatSimulation {
    * zero read sites, which blocked the whole range item axis.
    */
   private weaponRangeMultiplier(): number {
-    return Math.max(0.1, 1 + this.playerStats.rangePercent / 100);
+    return 1 + this.playerStats.rangePercent / 100;
   }
 
   /** A weapon's effective reach: melee arc, beam cone, and target acquisition. */
@@ -4134,9 +4209,12 @@ export class CombatSimulation {
     if (this.regenerationRemainingSeconds > 0) return;
     this.regenerationRemainingSeconds += PLAYER_REGEN_INTERVAL_SECONDS;
     if (this.playerHealth >= this.playerMaxHealth) return;
-    const perSecondRate = PLAYER_REGEN_PER_SECOND
-      + this.transformationModifiers.regenerationPerSecondBonus
-      + this.playerStats.hpRegenPerSecond;
+    const perSecondRate = Math.min(
+      this.playerMaxHealth * PLAYER_STAT_LIMITS.passiveRegenerationMaxHealthFraction,
+      PLAYER_REGEN_PER_SECOND
+        + this.transformationModifiers.regenerationPerSecondBonus
+        + this.playerStats.hpRegenPerSecond,
+    );
     const amount = Math.min(
       Math.max(0, perSecondRate) * PLAYER_REGEN_INTERVAL_SECONDS
         * this.supportEffectMultiplier * this.transformationModifiers.healingReceivedMultiplier,
@@ -8404,18 +8482,29 @@ export class CombatSimulation {
       );
     }
     const healthBeforeHit = enemy.health;
+    if (shieldBefore > enemy.shield) enemy.recentDamageRemainingSeconds = 2.25;
     this.applyRawDamage(enemy, mitigated);
     // Item lifesteal (Brotato overhaul): heal a fraction of the damage this weapon
     // hit actually removed (shield + health). Only weapon damage routes through
     // `damageEnemy`; status/DoT ticks call `applyRawDamage` directly and don't leech.
     if (this.playerStats.lifestealPercent > 0) {
       const dealt = Math.max(0, shieldBefore - enemy.shield) + Math.max(0, healthBeforeHit - enemy.health);
+      if (this.lifestealWindowRemainingSeconds <= 0) {
+        this.lifestealWindowRemainingSeconds = 1;
+        this.lifestealWindowPaid = 0;
+      }
+      const throughputRemaining = Math.max(
+        0,
+        this.playerMaxHealth * PLAYER_STAT_LIMITS.lifestealThroughputMaxHealthFraction - this.lifestealWindowPaid,
+      );
       const healed = Math.min(
         dealt * this.playerStats.lifestealPercent / 100,
+        throughputRemaining,
         this.playerMaxHealth - this.playerHealth,
       );
       if (healed > 0) {
         this.playerHealth += healed;
+        this.lifestealWindowPaid += healed;
         this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount: healed });
       }
     }
@@ -8433,6 +8522,8 @@ export class CombatSimulation {
     if (enemy.dead || damage <= 0) {
       return;
     }
+
+    enemy.recentDamageRemainingSeconds = 2.25;
 
     const previousHealth = enemy.health;
     if (enemy.type === "cyborg-reclaimer") enemy.reclaimerDamagedSinceLastStep = true;
@@ -8723,6 +8814,13 @@ export class CombatSimulation {
   }
 
   private spawnFriendlyProjectile(data: Omit<ProjectileState, "id" | "dead">): void {
+    // Dead projectiles are reclaimed before admission, so the cap never turns
+    // ordinary expiry into gameplay suppression and live views are never recycled.
+    for (const projectile of this.projectiles) {
+      if (projectile.dead) this.friendlyProjectilePool.push(projectile);
+    }
+    this.projectiles = this.projectiles.filter((projectile) => !projectile.dead);
+    if (!this.friendlyProjectileBudget.admit(this.projectiles.length, data.weaponId)) return;
     const projectile = this.friendlyProjectilePool.pop() ?? ({} as ProjectileState);
     Object.assign(projectile, data, { id: this.nextId(), dead: false });
     this.projectiles.push(projectile);
@@ -8916,6 +9014,7 @@ export class CombatSimulation {
     this.densitySpawnedThisWave = 0;
     this.densitySpawnCapBlockedSeconds = 0;
     this.densityPeakEnemyProjectiles = this.enemyProjectiles.length;
+    this.densityPeakFriendlyProjectiles = this.projectiles.length;
     this.densityPressureSpawned = { pursuit: 0, ranged: 0, specialist: 0, boss: 0 };
     // Powerups from the first wave (was wave 2) — consumables should be common.
     this.spawnPowerup(POWERUP_WAVE_CYCLE[index % POWERUP_WAVE_CYCLE.length]!);
@@ -9005,6 +9104,7 @@ export class CombatSimulation {
     this.densitySpawnedThisWave = 0;
     this.densitySpawnCapBlockedSeconds = 0;
     this.densityPeakEnemyProjectiles = this.enemyProjectiles.length;
+    this.densityPeakFriendlyProjectiles = this.projectiles.length;
     this.densityPressureSpawned = { pursuit: 0, ranged: 0, specialist: 0, boss: 0 };
 
     if (plan.kind === "ordinary") {
@@ -9514,6 +9614,10 @@ export class CombatSimulation {
       bastionEaterTarget: enemy.type === "bastion-eater" ? { ...enemy.bastionEaterTarget } : undefined,
       bastionEaterNodeExposed: enemy.type === "bastion-eater" ? enemy.bastionEaterAction === "recovery" : undefined,
       rank: enemy.rank,
+      threatClass: enemyThreatClass(enemy),
+      recentDamageRemainingSeconds: enemy.recentDamageRemainingSeconds,
+      hasActiveStatus: Object.values(enemy.statusTimers).some((remaining) => (remaining ?? 0) > 0),
+      majorAttackWindup: enemyMajorAttackWindup(enemy),
       eliteKind: enemy.eliteKind,
       carapacePhase: enemy.eliteKind === "carapace-scuttler" ? enemy.carapacePhase : undefined,
       miniBossKind: enemy.miniBossKind,
@@ -9652,6 +9756,31 @@ export class CombatSimulation {
     this.randomState = (Math.imul(this.randomState, 1664525) + 1013904223) >>> 0;
     return this.randomState / 0x100000000;
   }
+}
+
+function enemyThreatClass(enemy: EnemyState): EnemyThreatClass {
+  if (enemy.rank === "boss") return "boss";
+  if (enemy.rank === "mini-boss") return "mini-boss";
+  if (enemy.rank === "elite") return "elite";
+  const steeringProfile = ENEMY_CATALOG[enemy.type].steeringProfile;
+  return steeringProfile === "supportAnchor" || steeringProfile === "standoffShooter"
+    ? "specialist"
+    : "standard";
+}
+
+function enemyMajorAttackWindup(enemy: EnemyState): boolean {
+  const topLevelPhases = Object.values(enemy).some((value) => (
+    typeof value === "string" && value.includes("windup")
+  ));
+  const nestedPhases = [
+    enemy.abominationBehavior.phase,
+    enemy.synapseHeraldBehavior.phase,
+    enemy.assemblyPrimeBehavior.phase,
+    enemy.stormRegentBehavior.phase,
+    enemy.abominationPrimeBehavior.phase,
+    enemy.abominationPrimeBehavior.move,
+  ];
+  return topLevelPhases || nestedPhases.some((phase) => typeof phase === "string" && phase.includes("windup"));
 }
 
 function distance(left: Vector2Data, right: Vector2Data): number {

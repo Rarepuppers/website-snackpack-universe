@@ -1,9 +1,7 @@
 import Phaser from "phaser";
 import type { CombatScenario, CombatSnapshot, PowerupType } from "../combat/CombatSimulation";
-import { MARINE } from "../hero/marine";
 import { DAMAGE_TYPE_COLOURS } from "../combat/damageTypes";
 import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
-import { PROTOTYPE_EVASIVE_RECOVERY_SECONDS } from "../hero/HeroMotionController";
 import {
   cadenceWeapons,
   cooldownRemainingFraction,
@@ -202,7 +200,8 @@ export class CombatHud {
   update(snapshot: CombatSnapshot, paused: boolean, activeEffectCount: number): void {
     this.healthFill.setScale(Math.max(snapshot.playerHealth / snapshot.playerMaxHealth, 0.001), 1);
     this.xpFill.setScale(Math.max(snapshot.experience / snapshot.experienceForNextLevel, 0.001), 1);
-    const totalRollTime = MARINE.evasiveMove.durationSeconds + PROTOTYPE_EVASIVE_RECOVERY_SECONDS;
+    const evasiveCooldownDuration = snapshot.heroPresentation.evasiveDurationSeconds
+      + snapshot.heroPresentation.evasiveRecoverySeconds;
     const timedWaveSuffix = snapshot.density.timerEndsWave
       && snapshot.density.waveDurationSeconds !== null
       && snapshot.status === "combat"
@@ -214,8 +213,11 @@ export class CombatHud {
         ? `STRESS ${snapshot.stressProfile}`
         : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}${timedWaveSuffix}`);
     const shieldLabel = snapshot.playerShield > 0 ? `  +SH${Math.ceil(snapshot.playerShield)}` : "";
-    const flags = `${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerTethered ? "  TETHERED" : ""}${snapshot.playerEntrenched ? "  ENTRENCHED" : ""}`;
-    this.statsText.setText(`MARINE  •  LV ${snapshot.level}${flags}`);
+    const passiveState = snapshot.heroPresentation.id === "marine"
+      ? snapshot.playerEntrenched ? "  ENTRENCHED" : ""
+      : snapshot.heroPresentation.id === "medic" ? `  TRIAGE ${snapshot.medicTriageHits}/6` : "";
+    const flags = `${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerTethered ? "  TETHERED" : ""}${passiveState}`;
+    this.statsText.setText(`${snapshot.heroPresentation.displayName.toUpperCase()}  •  LV ${snapshot.level}${flags}`);
     this.healthText.setText(`${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}`);
     this.xpText.setText(`${snapshot.experience}/${snapshot.experienceForNextLevel}`);
     const scrapVisible = snapshot.securedScrap > 0 || snapshot.scenario === "scrap-shop";
@@ -242,14 +244,16 @@ export class CombatHud {
     });
     updateCooldownTile(
       this.actionTiles[0]!, snapshot.evasiveCooldownRemainingSeconds,
-      totalRollTime, snapshot.evasiveReady, false,
+      evasiveCooldownDuration, snapshot.evasiveReady, false,
       this.cooldownTimersEnabled,
     );
+    this.actionTiles[0]!.label.setText(this.actionTiles[0]!.icon ? "" : snapshot.heroPresentation.evasiveName.toUpperCase());
     updateCooldownTile(
       this.actionTiles[1]!, snapshot.ultimateCooldownRemainingSeconds,
-      MARINE.ultimate.cooldownSeconds, snapshot.ultimateReady, false,
+      snapshot.heroPresentation.ultimateCooldownSeconds, snapshot.ultimateReady, false,
       this.cooldownTimersEnabled,
     );
+    this.actionTiles[1]!.label.setText(this.actionTiles[1]!.icon ? "" : snapshot.heroPresentation.ultimateName.toUpperCase());
     this.actionTiles[2]!.label.setText(
       this.actionTiles[2]!.icon ? "" : snapshot.uraniumKitAvailable ? "U-25" : "KIT",
     );
@@ -316,7 +320,7 @@ export class CombatHud {
     if (paused) message = "PAUSED\nPress Esc to continue";
     else if (snapshot.status === "intermission") message = "WAVE CLEARED";
     else if (snapshot.status === "victory") message = "BASTION SECURED\nPress Enter to restart";
-    else if (snapshot.status === "defeat") message = "MARINE DOWN\nPress Enter to restart";
+    else if (snapshot.status === "defeat") message = `${snapshot.heroPresentation.displayName.toUpperCase()} DOWN\nPress Enter to restart`;
     this.stateText.setText(message);
     this.statePanel.setVisible(message.length > 0);
   }

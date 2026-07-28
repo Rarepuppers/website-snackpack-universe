@@ -235,6 +235,29 @@ describe("LocalSaveStore", () => {
     expect(loaded.progress.victories).toBe(0);
     expect(loaded.progress.bestWaveReached).toBe(3);
   });
+
+  it("migrates v10 settings to the v11 defaults and normalizes invalid values", () => {
+    const storage = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        version: 10,
+        settings: {
+          enemyHealthBars: "unknown",
+          uiScale: 9,
+          masterVolume: Number.NaN,
+          gamepadAimSensitivity: 99,
+          displaySizePercent: -10,
+        },
+      }),
+    });
+    const settings = new LocalSaveStore(storage).load().settings;
+    expect(settings.enemyHealthBars).toBe("threats");
+    expect(settings.uiScale).toBe(1);
+    expect(settings.masterVolume).toBe(1);
+    expect(settings.gamepadAimSensitivity).toBe(3);
+    expect(settings.displaySizePercent).toBe(50);
+    expect(settings.gamepadMoveDeadzone).toBe(0.18);
+    expect(settings.aimAssistStrength).toBe(0);
+  });
 });
 
 describe("Save schema v2 — expedition autosave", () => {

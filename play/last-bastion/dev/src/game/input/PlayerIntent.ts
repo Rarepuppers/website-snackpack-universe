@@ -4,6 +4,7 @@ export interface PlayerIntent {
   move: Vector2Data;
   aim: Vector2Data;
   fireHeld: boolean;
+  interactHeld?: boolean;
   /** Accessibility-mode toggle; T on keyboard or R3 on a standard gamepad. */
   toggleFireModePressed?: boolean;
   evasiveMovePressed: boolean;

@@ -54,6 +54,11 @@ export class HeroMotionController {
     };
   }
 
+  /** Effective recovery duration used by the simulation's evasive cooldown. */
+  getEffectiveEvasiveRecoverySeconds(): number {
+    return PROTOTYPE_EVASIVE_RECOVERY_SECONDS * this.evasiveModifiers.recoveryMultiplier;
+  }
+
   update(intent: PlayerIntent, deltaSeconds: number): HeroMotionFrame {
     this.evasiveCooldownRemainingSeconds = Math.max(
       0,
@@ -71,7 +76,7 @@ export class HeroMotionController {
       });
       if (started) {
         this.evasiveCooldownRemainingSeconds = this.hero.evasiveMove.durationSeconds
-          + PROTOTYPE_EVASIVE_RECOVERY_SECONDS * this.evasiveModifiers.recoveryMultiplier;
+          + this.getEffectiveEvasiveRecoverySeconds();
       }
     }
 

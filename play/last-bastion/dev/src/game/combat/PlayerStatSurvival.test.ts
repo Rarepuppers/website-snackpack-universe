@@ -61,12 +61,14 @@ describe("PlayerStatBlock survival/economy stats reach combat (Phase 1)", () => 
     expect(armouredTaken).toBeLessThan(baseTaken);
   });
 
-  it("dodge at 100% ignores every incoming hit", () => {
+  it("dodge above the cap cannot ignore every incoming hit", () => {
     const dodgy = sim({ dodgePercent: 100 });
     const p = dodgy.snapshot().playerPosition;
     dodgy.spawnEnemy("scuttler", { ...p });
     for (let frame = 0; frame < 20; frame += 1) dodgy.step(intent(), 0.05);
-    expect(dodgy.snapshot().playerHealth).toBe(dodgy.snapshot().playerMaxHealth);
+    expect(dodgy.snapshot().playerHealth).toBeLessThan(dodgy.snapshot().playerMaxHealth);
+    expect(dodgy.snapshot().playerStats.effective.dodgePercent).toBe(60);
+    expect(dodgy.snapshot().playerStats.capped).toContain("dodgePercent");
   });
 
   it("move-speed percent moves the player further per frame", () => {

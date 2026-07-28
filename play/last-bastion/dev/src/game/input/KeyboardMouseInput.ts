@@ -76,6 +76,7 @@ export class KeyboardMouseInput {
         y: pointer.worldY - playerPosition.y,
       }),
       fireHeld: pointer.leftButtonDown(),
+      interactHeld: this.keys.interact.isDown,
       toggleFireModePressed: Phaser.Input.Keyboard.JustDown(this.keys.toggleFireMode),
       evasiveMovePressed: Phaser.Input.Keyboard.JustDown(this.keys.evade),
       interactPressed: Phaser.Input.Keyboard.JustDown(this.keys.interact),

@@ -89,6 +89,7 @@ interface ActiveNumber extends MergeableNumber {
 export class FloatingDamageNumbers {
   private readonly active: ActiveNumber[] = [];
   private readonly free: Phaser.GameObjects.Text[] = [];
+  private suppressed = 0;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -97,6 +98,10 @@ export class FloatingDamageNumbers {
 
   get activeCount(): number {
     return this.active.length;
+  }
+
+  get suppressedCount(): number {
+    return this.suppressed;
   }
 
   /**
@@ -126,7 +131,7 @@ export class FloatingDamageNumbers {
     }
 
     const text = this.acquire(false);
-    if (!text) return;
+    if (!text) { this.suppressed += 1; return; }
     text
       .setText(formatStat(damage))
       .setPosition(xPx, yPx)
@@ -154,7 +159,7 @@ export class FloatingDamageNumbers {
   reportHealing(amount: number, xPx: number, yPx: number, nowMs: number): void {
     if (!(amount > 0)) return;
     const text = this.acquire(true);
-    if (!text) return;
+    if (!text) { this.suppressed += 1; return; }
     text
       .setText(`+${formatStat(amount)}`)
       .setPosition(xPx, yPx)
@@ -178,7 +183,7 @@ export class FloatingDamageNumbers {
   reportPlayerDamage(amount: number, xPx: number, yPx: number, nowMs: number): void {
     if (!(amount > 0)) return;
     const text = this.acquire(true);
-    if (!text) return;
+    if (!text) { this.suppressed += 1; return; }
     text
       .setText(playerDamageLabel(amount))
       .setPosition(xPx, yPx - 10)

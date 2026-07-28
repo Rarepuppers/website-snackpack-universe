@@ -48,7 +48,9 @@ import { WebAudioSynth } from "../audio/WebAudioSynth";
 import { worldDepth } from "../rendering/WorldDepth";
 import { VisualEffectPool } from "../effects/VisualEffectPool";
 import { FloatingDamageNumbers } from "../rendering/FloatingDamageNumbers";
+import { EnemyHealthBars } from "../rendering/EnemyHealthBars";
 import { CombatHud } from "../ui/CombatHud";
+import { FRIENDLY_PROJECTILE_SOFT_BUDGET } from "../combat/FriendlyProjectileBudget";
 import { canonicalWeaponTileFrame } from "../ui/WeaponTileFrames";
 import {
   VERTICAL_SLICE_WEAPON_IDS,
@@ -96,6 +98,7 @@ export class PrototypeScene extends Phaser.Scene {
   private hud!: CombatHud;
   private effectPool!: VisualEffectPool;
   private damageNumbers!: FloatingDamageNumbers;
+  private enemyHealthBars!: EnemyHealthBars;
   private readonly stressProfile = readStressProfile();
   private readonly scenario = readScenario();
   private readonly startingWeaponIds = this.stressProfile === null ? readStartingWeaponIds() : null;
@@ -212,6 +215,7 @@ export class PrototypeScene extends Phaser.Scene {
     renderArena(this, this.simulation.arena, PIXELS_PER_METRE, this.showDebug, this.useMarineArt, this.arenaTheme);
     this.effectPool = new VisualEffectPool(this, this.stressProfile === 12 ? 192 : 96);
     this.damageNumbers = new FloatingDamageNumbers(this);
+    this.enemyHealthBars = new EnemyHealthBars(this);
 
     const shadow = this.useMarineArt
       ? this.add.sprite(0, 10, "combat-effects-v1", 0).setScale(0.62)
@@ -377,6 +381,7 @@ export class PrototypeScene extends Phaser.Scene {
 
     this.syncWeapons(snapshot.equippedWeapons, snapshot.playerPosition, firing);
     this.syncEnemies(snapshot.enemies, snapshot.playerPosition);
+    this.enemyHealthBars.sync(snapshot.enemies, this.settings.enemyHealthBars, this.settings.reducedMotionEnabled, PIXELS_PER_METRE);
     this.syncEnemyStatusOverlays(snapshot.enemies);
     this.syncProjectiles(snapshot.projectiles);
     this.syncEnemyProjectiles(snapshot.enemyProjectiles);
@@ -2580,11 +2585,19 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   private syncProjectiles(projectiles: readonly ProjectileSnapshot[]): void {
-    const liveIds = new Set(projectiles.map((projectile) => projectile.id));
+    const visibleProjectiles = projectiles.length <= FRIENDLY_PROJECTILE_SOFT_BUDGET
+      ? projectiles
+      : [...projectiles].sort((left, right) => {
+        const uniqueWeight = (weaponId: string) => weaponId === "event-horizon" || weaponId === "seeker-swarm" ? 1 : 0;
+        const leftDistance = Math.hypot(left.position.x - this.lastSnapshot.playerPosition.x, left.position.y - this.lastSnapshot.playerPosition.y);
+        const rightDistance = Math.hypot(right.position.x - this.lastSnapshot.playerPosition.x, right.position.y - this.lastSnapshot.playerPosition.y);
+        return uniqueWeight(right.weaponId) - uniqueWeight(left.weaponId) || leftDistance - rightDistance || left.id - right.id;
+      }).slice(0, FRIENDLY_PROJECTILE_SOFT_BUDGET);
+    const liveIds = new Set(visibleProjectiles.map((projectile) => projectile.id));
     this.destroyMissing(this.projectileViews, liveIds);
     this.destroyMissing(this.projectileHaloViews, liveIds);
 
-    for (const projectile of projectiles) {
+    for (const projectile of visibleProjectiles) {
       let view = this.projectileViews.get(projectile.id);
       if (!view) {
         const authoredProjectile = projectile.weaponId === "bolt-carbine"

@@ -141,7 +141,7 @@ export function resolvePlayerStats(sources: PlayerStatSources = {}): PlayerStatB
     // contributions sum cleanly in `foldItemStats` before they reach here.
     for (const key of Object.keys(NO_PLAYER_STATS) as (keyof PlayerStatBlock)[]) {
       const value = item[key];
-      if (typeof value === "number") block[key] += value;
+      if (typeof value === "number" && Number.isFinite(value)) block[key] += value;
     }
   }
 
@@ -155,5 +155,5 @@ export function outgoingDamageMultiplier(
 ): number {
   const bucket = profile.melee ? stats.meleeDamagePercent : stats.rangedDamagePercent;
   const elemental = profile.elemental ? stats.elementalDamagePercent : 0;
-  return 1 + (stats.damagePercent + bucket + elemental) / 100;
+  return Math.max(0.1, 1 + (stats.damagePercent + bucket + elemental) / 100);
 }

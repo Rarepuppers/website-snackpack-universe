@@ -35,7 +35,7 @@ export type ShellIntent = "up" | "down" | "left" | "right" | "confirm" | "back";
 export type ShellEffect =
   | { type: "start-run"; heroId: string; perkId: PerkId }
   | { type: "open-url"; url: string }
-  | { type: "set-setting"; key: keyof GameSettings; value: boolean }
+  | { type: "set-setting"; key: keyof GameSettings; value: GameSettings[keyof GameSettings] }
   | { type: "capture-binding"; device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction };
 
 export interface MenuCard {
@@ -81,19 +81,34 @@ export function howToPlayPages(bindings: ControlBindings): readonly { title: str
   ];
 }
 
-export interface SettingsRow {
-  key: keyof GameSettings | "controls";
-  label: string;
-}
+export type SettingsRow =
+  | { kind: "toggle"; key: keyof GameSettings; label: string }
+  | { kind: "choice"; key: keyof GameSettings; label: string; options: readonly string[] }
+  | { kind: "range"; key: keyof GameSettings; label: string; min: number; max: number; step: number }
+  | { kind: "action"; key: "controls"; label: string };
 
 export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
-  { key: "screenShakeEnabled", label: "Screen shake" },
-  { key: "reducedFlashEnabled", label: "Reduced flash" },
-  { key: "soundEnabled", label: "Sound" },
-  { key: "damageNumbersEnabled", label: "Damage numbers" },
-  { key: "cooldownTimersEnabled", label: "Cooldown timers" },
-  { key: "autoFireEnabled", label: "Auto-fire" },
-  { key: "controls", label: "Control bindings" },
+  { kind: "toggle", key: "screenShakeEnabled", label: "Screen shake" },
+  { kind: "toggle", key: "reducedFlashEnabled", label: "Reduced flash" },
+  { kind: "toggle", key: "soundEnabled", label: "Sound" },
+  { kind: "toggle", key: "damageNumbersEnabled", label: "Damage numbers" },
+  { kind: "toggle", key: "cooldownTimersEnabled", label: "Cooldown timers" },
+  { kind: "toggle", key: "autoFireEnabled", label: "Auto-fire" },
+  { kind: "choice", key: "enemyHealthBars", label: "Enemy health bars", options: ["off", "threats", "all"] },
+  { kind: "toggle", key: "reducedMotionEnabled", label: "Reduced motion" },
+  { kind: "toggle", key: "highContrastOutlinesEnabled", label: "High-contrast outlines" },
+  { kind: "choice", key: "uiScale", label: "UI scale", options: ["0.8", "1", "1.2"] },
+  { kind: "range", key: "masterVolume", label: "Master volume", min: 0, max: 1, step: 0.1 },
+  { kind: "range", key: "sfxVolume", label: "SFX volume", min: 0, max: 1, step: 0.1 },
+  { kind: "range", key: "uiVolume", label: "UI volume", min: 0, max: 1, step: 0.1 },
+  { kind: "range", key: "musicVolume", label: "Music volume", min: 0, max: 1, step: 0.1 },
+  { kind: "range", key: "ambienceVolume", label: "Ambience volume", min: 0, max: 1, step: 0.1 },
+  { kind: "range", key: "gamepadMoveDeadzone", label: "Move deadzone", min: 0, max: 1, step: 0.01 },
+  { kind: "range", key: "gamepadAimDeadzone", label: "Aim deadzone", min: 0, max: 1, step: 0.01 },
+  { kind: "range", key: "gamepadAimSensitivity", label: "Aim sensitivity", min: 0.25, max: 3, step: 0.05 },
+  { kind: "range", key: "aimAssistStrength", label: "Aim assist", min: 0, max: 1, step: 0.1 },
+  { kind: "range", key: "displaySizePercent", label: "Display size", min: 50, max: 200, step: 5 },
+  { kind: "action", key: "controls", label: "Control bindings" },
 ]);
 
 export interface RosterEntry {
@@ -280,10 +295,24 @@ function stepSettings(state: ShellState, intent: ShellIntent): ShellStepResult {
   }
   if (intent === "left" || intent === "right" || intent === "confirm") {
     const row = SETTINGS_ROWS[state.settingsIndex]!;
-    if (row.key === "controls") {
+    if (row.kind === "action") {
       return { state: { ...state, screen: "controls", controlIndex: 0 }, effects: [] };
     }
-    const value = !state.settings[row.key];
+    let value: GameSettings[keyof GameSettings];
+    if (row.kind === "toggle") {
+      value = !state.settings[row.key];
+    } else if (row.kind === "choice") {
+      const options = row.options;
+      const current = String(state.settings[row.key]);
+      const currentIndex = Math.max(0, options.indexOf(current));
+      const direction = intent === "left" ? -1 : 1;
+      value = options[(currentIndex + direction + options.length) % options.length] as GameSettings[keyof GameSettings];
+      if (row.key === "uiScale") value = Number(value) as 0.8 | 1 | 1.2;
+    } else {
+      const current = Number(state.settings[row.key]);
+      const direction = intent === "left" ? -1 : 1;
+      value = Math.min(row.max, Math.max(row.min, Math.round((current + direction * row.step) / row.step) * row.step));
+    }
     return {
       state: { ...state, settings: { ...state.settings, [row.key]: value } },
       effects: [{ type: "set-setting", key: row.key, value }],

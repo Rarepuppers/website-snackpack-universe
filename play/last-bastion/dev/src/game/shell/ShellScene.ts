@@ -237,15 +237,15 @@ export class ShellScene extends Phaser.Scene {
     this.root.add(this.text(70, 48, "SETTINGS", IVORY, "28px"));
     this.root.add(this.text(70, 84, "Changes persist immediately. URL parameters remain as review overrides.", MUTED, "12px"));
     SETTINGS_ROWS.forEach((row, index) => {
-      const y = 126 + index * 55;
+      const y = 105 + index * 21;
       const focused = index === this.state.settingsIndex;
-      this.root.add(this.add.rectangle(WIDTH / 2, y + 22, 640, 52, focused ? 0x24384f : PANEL)
-        .setStrokeStyle(focused ? 3 : 1, focused ? TEAL_HEX : 0x3b4d63));
-      this.root.add(this.text(190, y + 8, row.label, focused ? TEAL : IVORY, "17px"));
-      const controlsRow = row.key === "controls";
-      const enabled = controlsRow ? true : this.state.settings[row.key as keyof import("../save/LocalSaveStore").GameSettings];
+      this.root.add(this.add.rectangle(WIDTH / 2, y + 7, 640, 20, focused ? 0x24384f : PANEL)
+        .setStrokeStyle(focused ? 2 : 1, focused ? TEAL_HEX : 0x3b4d63));
+      this.root.add(this.text(190, y + 1, row.label, focused ? TEAL : IVORY, "11px"));
+      const controlsRow = row.kind === "action";
+      const enabled = controlsRow || (row.kind === "toggle" && Boolean(this.state.settings[row.key]));
       this.root.add(this.text(690, y + 8, controlsRow ? "OPEN  ›" : enabled ? "ON" : "OFF", enabled ? TEAL : ORANGE, "17px"));
-      this.clickZone(160, y - 4, 640, 52, () => {
+      this.clickZone(160, y - 4, 640, 20, () => {
         this.state = { ...this.state, settingsIndex: index };
         this.apply("confirm");
       });

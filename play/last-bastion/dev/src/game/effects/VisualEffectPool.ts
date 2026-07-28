@@ -39,6 +39,7 @@ export class VisualEffectPool {
 
   emitSprite(effect: PooledSpriteEffect): void {
     const view = this.acquireSprite();
+    if (!view) return;
     const startScale = effect.scale ?? 1;
     view.setTexture(effect.texture ?? "combat-effects-v1", effect.frame)
       .setPosition(effect.x, effect.y)
@@ -61,6 +62,7 @@ export class VisualEffectPool {
 
   emit(effect: PooledCircleEffect): void {
     const view = this.acquire();
+    if (!view) return;
     view
       .setPosition(effect.x, effect.y)
       .setRadius(effect.radius)
@@ -98,14 +100,15 @@ export class VisualEffectPool {
     }
   }
 
-  private acquire(): Phaser.GameObjects.Arc {
+  private acquire(): Phaser.GameObjects.Arc | null {
     const freeView = this.free.pop();
     if (freeView) {
       this.active.push(freeView);
       return freeView;
     }
 
-    if (this.active.length >= this.maximumSize) {
+    if (this.active.length + this.activeSprites.length >= this.maximumSize) {
+      if (this.active.length === 0) return null;
       const reused = this.active.shift()!;
       this.scene.tweens.killTweensOf(reused);
       this.active.push(reused);
@@ -125,13 +128,14 @@ export class VisualEffectPool {
     this.free.push(view);
   }
 
-  private acquireSprite(): Phaser.GameObjects.Sprite {
+  private acquireSprite(): Phaser.GameObjects.Sprite | null {
     const freeView = this.freeSprites.pop();
     if (freeView) {
       this.activeSprites.push(freeView);
       return freeView;
     }
-    if (this.activeSprites.length >= this.maximumSize) {
+    if (this.active.length + this.activeSprites.length >= this.maximumSize) {
+      if (this.activeSprites.length === 0) return null;
       const reused = this.activeSprites.shift()!;
       this.scene.tweens.killTweensOf(reused);
       this.activeSprites.push(reused);

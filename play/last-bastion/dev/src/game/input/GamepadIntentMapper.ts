@@ -18,6 +18,7 @@ export interface GamepadStateSnapshot {
   rightStick: Vector2Data;
   /** Right trigger or right shoulder held. */
   fireHeld: boolean;
+  interactHeld?: boolean;
   /** Bottom face button (A / Cross). */
   southPressed: boolean;
   /** Left face button (X / Square). */
@@ -40,6 +41,7 @@ export const DISCONNECTED_GAMEPAD: Readonly<GamepadStateSnapshot> = Object.freez
   leftStick: { x: 0, y: 0 },
   rightStick: { x: 0, y: 0 },
   fireHeld: false,
+  interactHeld: false,
   southPressed: false,
   westPressed: false,
   northPressed: false,
@@ -96,7 +98,7 @@ export class GamepadIntentMapper {
       pausePressed: pressed("pause"),
       restartPressed: current.south && !this.previous.south,
       toggleFireModePressed: pressed("toggleFireMode"),
-    });
+    }, current[this.bindings.interact]);
     this.previous = current;
     return intent;
   }
@@ -106,12 +108,14 @@ function buildIntent(
   state: GamepadStateSnapshot,
   pressed: Pick<PlayerIntent,
     "evasiveMovePressed" | "interactPressed" | "ultimatePressed" | "kitPressed" | "pausePressed" | "restartPressed" | "toggleFireModePressed">,
+  interactHeld: boolean,
 ): PlayerIntent {
   if (!state.connected) {
     return {
       move: { x: 0, y: 0 },
       aim: { x: 0, y: 0 },
       fireHeld: false,
+      interactHeld: false,
       evasiveMovePressed: false,
       interactPressed: false,
       ultimatePressed: false,
@@ -131,6 +135,7 @@ function buildIntent(
     // Aim and trigger remain independent. Auto-fire is a simulation setting;
     // Manual mode therefore requires RT/R1 even while the right stick aims.
     fireHeld: state.fireHeld,
+    interactHeld,
     ...pressed,
   };
 }
@@ -146,6 +151,7 @@ export function mergeIntents(keyboardMouse: PlayerIntent, gamepad: PlayerIntent)
     move: gamepadMoving ? gamepad.move : keyboardMouse.move,
     aim: gamepadAiming ? gamepad.aim : keyboardMouse.aim,
     fireHeld: keyboardMouse.fireHeld || gamepad.fireHeld,
+    interactHeld: Boolean(keyboardMouse.interactHeld || gamepad.interactHeld),
     toggleFireModePressed: Boolean(keyboardMouse.toggleFireModePressed || gamepad.toggleFireModePressed),
     evasiveMovePressed: keyboardMouse.evasiveMovePressed || gamepad.evasiveMovePressed,
     interactPressed: keyboardMouse.interactPressed || gamepad.interactPressed,

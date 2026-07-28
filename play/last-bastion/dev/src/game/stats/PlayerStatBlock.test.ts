@@ -4,6 +4,7 @@ import {
   outgoingDamageMultiplier,
   resolvePlayerStats,
 } from "./PlayerStatBlock";
+import { applyPlayerStatLimits, finalAttackSpeedFactor, PLAYER_STAT_LIMITS } from "./PlayerStatLimits";
 
 describe("resolvePlayerStats", () => {
   it("returns neutral defaults with no sources", () => {
@@ -55,5 +56,91 @@ describe("outgoingDamageMultiplier", () => {
     expect(outgoingDamageMultiplier(stats, { melee: false, elemental: true })).toBeCloseTo(1.70);
     // Ranged + physical weapon: elemental bucket excluded.
     expect(outgoingDamageMultiplier(stats, { melee: false, elemental: false })).toBeCloseTo(1.30);
+  });
+});
+
+describe("applyPlayerStatLimits", () => {
+  it("proves below-cap, exact-cap, and above-cap behavior for every bounded stat", () => {
+    const below = applyPlayerStatLimits({
+      ...NO_PLAYER_STATS,
+      critChancePercent: 20,
+      critMultiplier: 2,
+      dodgePercent: 20,
+      attackSpeedPercent: 100,
+      moveSpeedPercent: 50,
+      rangePercent: 100,
+      lifestealPercent: 20,
+      hpRegenPerSecond: 0.5,
+    }, 10);
+    expect(below.effective.critChancePercent).toBe(20);
+    expect(below.effective.critMultiplier).toBe(2);
+    expect(below.effective.dodgePercent).toBe(20);
+    expect(below.effective.attackSpeedPercent).toBe(100);
+    expect(below.effective.moveSpeedPercent).toBe(50);
+    expect(below.effective.rangePercent).toBe(100);
+    expect(below.effective.lifestealPercent).toBe(20);
+    expect(below.effective.hpRegenPerSecond).toBe(0.5);
+
+    const exact = applyPlayerStatLimits({
+      ...NO_PLAYER_STATS,
+      critChancePercent: 100,
+      critMultiplier: 4,
+      dodgePercent: 60,
+      attackSpeedPercent: 200,
+      moveSpeedPercent: 75,
+      rangePercent: 200,
+      lifestealPercent: 25,
+      hpRegenPerSecond: 1,
+    }, 10);
+    expect(exact.effective.critChancePercent).toBe(PLAYER_STAT_LIMITS.critChancePercent.max);
+    expect(exact.effective.critMultiplier).toBe(PLAYER_STAT_LIMITS.critMultiplier.max);
+    expect(exact.effective.dodgePercent).toBe(PLAYER_STAT_LIMITS.dodgePercent.max);
+    expect(exact.effective.attackSpeedPercent).toBe(200);
+    expect(exact.effective.moveSpeedPercent).toBe(75);
+    expect(exact.effective.rangePercent).toBe(200);
+    expect(exact.effective.lifestealPercent).toBe(25);
+    expect(exact.effective.hpRegenPerSecond).toBe(1);
+
+    const above = applyPlayerStatLimits({
+      ...NO_PLAYER_STATS,
+      critChancePercent: 101,
+      critMultiplier: 5,
+      dodgePercent: 61,
+      attackSpeedPercent: 300,
+      moveSpeedPercent: 100,
+      rangePercent: 300,
+      lifestealPercent: 26,
+      hpRegenPerSecond: 2,
+    }, 10);
+    expect(above.effective.critChancePercent).toBe(100);
+    expect(above.effective.critMultiplier).toBe(4);
+    expect(above.effective.dodgePercent).toBe(60);
+    expect(above.effective.attackSpeedPercent).toBe(200);
+    expect(above.effective.moveSpeedPercent).toBe(75);
+    expect(above.effective.rangePercent).toBe(200);
+    expect(above.effective.lifestealPercent).toBe(25);
+    expect(above.effective.hpRegenPerSecond).toBe(1);
+    expect(above.capped).toEqual(expect.arrayContaining([
+      "critChancePercent", "critMultiplier", "dodgePercent", "attackSpeedPercent",
+      "moveSpeedPercent", "rangePercent", "lifestealPercent", "hpRegenPerSecond",
+    ]));
+  });
+
+  it("retains raw values while neutralizing malformed limited values", () => {
+    const result = applyPlayerStatLimits({
+      ...NO_PLAYER_STATS,
+      dodgePercent: Number.POSITIVE_INFINITY,
+      critMultiplier: Number.NaN,
+    });
+    expect(result.raw.dodgePercent).toBe(Infinity);
+    expect(result.effective.dodgePercent).toBe(0);
+    expect(result.effective.critMultiplier).toBe(1.5);
+    expect(result.capped).toEqual(expect.arrayContaining(["dodgePercent", "critMultiplier"]));
+  });
+
+  it("keeps named attack-speed multipliers inside the final emergency bound", () => {
+    expect(finalAttackSpeedFactor(0.1)).toBe(0.2);
+    expect(finalAttackSpeedFactor(4)).toBe(4);
+    expect(finalAttackSpeedFactor(8)).toBe(4);
   });
 });

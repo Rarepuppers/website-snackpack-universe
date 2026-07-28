@@ -31,6 +31,34 @@ describe("Field Medic combat integration", () => {
     expect(levelled.weaponProficiencies.light).toBe(2);
   });
 
+  it("snapshots hero-aware presentation names and base action timings", () => {
+    const marine = new CombatSimulation({ heroId: "marine", autoStartWaves: false }).snapshot();
+    const medic = new CombatSimulation({ heroId: "medic", autoStartWaves: false }).snapshot();
+
+    expect(marine.heroPresentation).toMatchObject({
+      id: "marine",
+      displayName: "Marine",
+      passiveId: "entrenched",
+      passiveName: "Entrenched",
+      evasiveName: "Roll",
+      evasiveDurationSeconds: 0.55,
+      evasiveRecoverySeconds: 0.75,
+      ultimateName: "Bastion Barrage",
+      ultimateCooldownSeconds: 24,
+    });
+    expect(medic.heroPresentation).toMatchObject({
+      id: "medic",
+      displayName: "Medic",
+      passiveId: "triage-loop",
+      passiveName: "Triage Loop",
+      evasiveName: "Slide",
+      evasiveDurationSeconds: 0.48,
+      evasiveRecoverySeconds: 0.75,
+      ultimateName: "Emergency Surge",
+      ultimateCooldownSeconds: 20,
+    });
+  });
+
   it("converts Emergency Surge overflow into temporary shield", () => {
     const medic = new CombatSimulation({ heroId: "medic", autoStartWaves: false });
     const result = medic.step({ ...IDLE, ultimatePressed: true }, 0.05);

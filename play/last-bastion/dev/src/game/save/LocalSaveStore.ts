@@ -34,6 +34,20 @@ export interface GameSettings {
   damageNumbersEnabled: boolean;
   cooldownTimersEnabled: boolean;
   autoFireEnabled: boolean;
+  enemyHealthBars: "off" | "threats" | "all";
+  reducedMotionEnabled: boolean;
+  highContrastOutlinesEnabled: boolean;
+  uiScale: 0.8 | 1 | 1.2;
+  masterVolume: number;
+  sfxVolume: number;
+  uiVolume: number;
+  musicVolume: number;
+  ambienceVolume: number;
+  gamepadMoveDeadzone: number;
+  gamepadAimDeadzone: number;
+  gamepadAimSensitivity: number;
+  aimAssistStrength: number;
+  displaySizePercent: number;
 }
 
 /**
@@ -97,7 +111,7 @@ export interface ExpeditionSave {
  * Current schema version. Single source of truth — the cloud-save policy and the
  * platform adapter gate on it, so bumping it here is the only edit a migration needs.
  */
-export const SAVE_SCHEMA_VERSION = 10;
+export const SAVE_SCHEMA_VERSION = 11;
 
 export interface SaveData {
   version: typeof SAVE_SCHEMA_VERSION;
@@ -124,6 +138,20 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     damageNumbersEnabled: true,
     cooldownTimersEnabled: true,
     autoFireEnabled: true,
+    enemyHealthBars: "threats",
+    reducedMotionEnabled: false,
+    highContrastOutlinesEnabled: false,
+    uiScale: 1,
+    masterVolume: 1,
+    sfxVolume: 1,
+    uiVolume: 1,
+    musicVolume: 1,
+    ambienceVolume: 1,
+    gamepadMoveDeadzone: 0.18,
+    gamepadAimDeadzone: 0.25,
+    gamepadAimSensitivity: 1,
+    aimAssistStrength: 0,
+    displaySizePercent: 100,
   }),
   controls: DEFAULT_CONTROL_BINDINGS,
   progress: Object.freeze({
@@ -160,9 +188,10 @@ export class LocalSaveStore {
   }
 
   updateSettings(partial: Partial<GameSettings>): SaveData {
+    const nextSettings = normalizeSettings({ ...this.cached.settings, ...partial });
     this.cached = {
       ...this.cached,
-      settings: { ...this.cached.settings, ...partial },
+      settings: nextSettings,
     };
     this.writeToStorage();
     return this.load();
@@ -312,21 +341,14 @@ function normalizeSave(parsed: unknown): SaveData {
   }
   const candidate = parsed as Omit<Partial<SaveData>, "version"> & { version?: number };
   const version = candidate.version ?? -1;
-  // Versions 1–9 migrate into the current schema. Missing fields inherit the
+  // Versions 1–10 migrate into the current schema. Missing fields inherit the
   // accessible defaults; unknown future versions degrade safely to defaults.
-  if (![1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(version)) {
+  if (![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].includes(version)) {
     return cloneSave(DEFAULT_SAVE);
   }
   return {
     version: SAVE_SCHEMA_VERSION,
-    settings: {
-      screenShakeEnabled: readBoolean(candidate.settings?.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
-      reducedFlashEnabled: readBoolean(candidate.settings?.reducedFlashEnabled, DEFAULT_SAVE.settings.reducedFlashEnabled),
-      soundEnabled: readBoolean(candidate.settings?.soundEnabled, DEFAULT_SAVE.settings.soundEnabled),
-      damageNumbersEnabled: readBoolean(candidate.settings?.damageNumbersEnabled, DEFAULT_SAVE.settings.damageNumbersEnabled),
-      cooldownTimersEnabled: readBoolean(candidate.settings?.cooldownTimersEnabled, DEFAULT_SAVE.settings.cooldownTimersEnabled),
-      autoFireEnabled: readBoolean(candidate.settings?.autoFireEnabled, DEFAULT_SAVE.settings.autoFireEnabled),
-    },
+    settings: normalizeSettings(candidate.settings),
     controls: version >= 7
       ? normalizeControlBindings(candidate.controls)
       : normalizeControlBindings(DEFAULT_CONTROL_BINDINGS),
@@ -347,6 +369,43 @@ function normalizeSave(parsed: unknown): SaveData {
       : "perk-veteran",
     selectedHeroId: version >= 3 && candidate.selectedHeroId === "medic" ? "medic" : "marine",
     lastRunSummary: version >= 4 ? readRunSummary(candidate.lastRunSummary) : null,
+  };
+}
+
+function readBoundedNumber(value: unknown, fallback: number, min: number, max: number): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) return fallback;
+  return Math.min(max, Math.max(min, value));
+}
+
+function normalizeSettings(value: unknown): GameSettings {
+  const candidate = typeof value === "object" && value !== null
+    ? value as Partial<GameSettings>
+    : {};
+  const uiScale = candidate.uiScale === 0.8 || candidate.uiScale === 1.2 ? candidate.uiScale : 1;
+  const enemyHealthBars = candidate.enemyHealthBars === "off" || candidate.enemyHealthBars === "all"
+    ? candidate.enemyHealthBars
+    : "threats";
+  return {
+    screenShakeEnabled: readBoolean(candidate.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
+    reducedFlashEnabled: readBoolean(candidate.reducedFlashEnabled, DEFAULT_SAVE.settings.reducedFlashEnabled),
+    soundEnabled: readBoolean(candidate.soundEnabled, DEFAULT_SAVE.settings.soundEnabled),
+    damageNumbersEnabled: readBoolean(candidate.damageNumbersEnabled, DEFAULT_SAVE.settings.damageNumbersEnabled),
+    cooldownTimersEnabled: readBoolean(candidate.cooldownTimersEnabled, DEFAULT_SAVE.settings.cooldownTimersEnabled),
+    autoFireEnabled: readBoolean(candidate.autoFireEnabled, DEFAULT_SAVE.settings.autoFireEnabled),
+    enemyHealthBars,
+    reducedMotionEnabled: readBoolean(candidate.reducedMotionEnabled, DEFAULT_SAVE.settings.reducedMotionEnabled),
+    highContrastOutlinesEnabled: readBoolean(candidate.highContrastOutlinesEnabled, DEFAULT_SAVE.settings.highContrastOutlinesEnabled),
+    uiScale,
+    masterVolume: readBoundedNumber(candidate.masterVolume, 1, 0, 1),
+    sfxVolume: readBoundedNumber(candidate.sfxVolume, 1, 0, 1),
+    uiVolume: readBoundedNumber(candidate.uiVolume, 1, 0, 1),
+    musicVolume: readBoundedNumber(candidate.musicVolume, 1, 0, 1),
+    ambienceVolume: readBoundedNumber(candidate.ambienceVolume, 1, 0, 1),
+    gamepadMoveDeadzone: readBoundedNumber(candidate.gamepadMoveDeadzone, 0.18, 0, 1),
+    gamepadAimDeadzone: readBoundedNumber(candidate.gamepadAimDeadzone, 0.25, 0, 1),
+    gamepadAimSensitivity: readBoundedNumber(candidate.gamepadAimSensitivity, 1, 0.25, 3),
+    aimAssistStrength: readBoundedNumber(candidate.aimAssistStrength, 0, 0, 1),
+    displaySizePercent: readBoundedNumber(candidate.displaySizePercent, 100, 50, 200),
   };
 }
 
