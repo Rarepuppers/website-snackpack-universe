@@ -2,7 +2,8 @@ import Phaser from "phaser";
 import { LocalSaveStore, type GameProgress } from "../save/LocalSaveStore";
 import { MARINE } from "../hero/marine";
 import { MEDIC } from "../hero/medic";
-import { loadGameAssets } from "../assets/PhaserAssetLoader";
+import { areGameAssetsLoaded, loadGameAssets } from "../assets/PhaserAssetLoader";
+import type { AssetGroup } from "../assets/AssetGroups";
 import { PERK_CATALOG } from "../perks/perkCatalog";
 import {
   createShellState,
@@ -50,6 +51,7 @@ export class ShellScene extends Phaser.Scene {
   private state!: ShellState;
   private root!: Phaser.GameObjects.Container;
   private titlePulse = 0;
+  private loadingAssetGroup: AssetGroup | null = null;
   private bindingCapture: { device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction } | null = null;
 
   constructor() {
@@ -57,7 +59,10 @@ export class ShellScene extends Phaser.Scene {
   }
 
   preload(): void {
-    loadGameAssets(this);
+    loadGameAssets(this, "shell-base");
+    if (requestedInitialScreen() === "character-select") {
+      loadGameAssets(this, "shell-character");
+    }
   }
 
   create(): void {
@@ -65,8 +70,7 @@ export class ShellScene extends Phaser.Scene {
       typeof window !== "undefined" ? window.localStorage : null,
     );
     const save = this.saveStore.load();
-    const requestedFlow = new URLSearchParams(window.location.search).get("flow");
-    const initialScreen = requestedFlow === "character-select" ? "character-select" : "title";
+    const initialScreen = requestedInitialScreen();
     this.state = createShellState(save.settings, initialScreen, save.progress, save.selectedPerkId, save.selectedHeroId, save.controls);
     this.root = this.add.container(0, 0);
 
@@ -124,6 +128,7 @@ export class ShellScene extends Phaser.Scene {
   };
 
   private apply(intent: ShellIntent): void {
+    if (this.loadingAssetGroup) return;
     const result = stepShell(this.state, intent);
     this.state = result.state;
     for (const effect of result.effects) {
@@ -147,6 +152,7 @@ export class ShellScene extends Phaser.Scene {
   private render(): void {
     // Review hook: the harness and browser checks read the flow state directly.
     (window as unknown as { __shellState?: ShellState }).__shellState = this.state;
+    if (!this.ensureScreenAssets()) return;
     this.root.removeAll(true);
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY));
     this.root.add(this.add.image(WIDTH / 2, HEIGHT / 2, "bastion-logistics-map-backdrop-v1")
@@ -164,6 +170,39 @@ export class ShellScene extends Phaser.Scene {
       case "records": this.renderRecords(); break;
       case "character-select": this.renderCharacterSelect(); break;
     }
+  }
+
+  private ensureScreenAssets(): boolean {
+    const group = this.state.screen === "character-select" ? "shell-character" : null;
+    if (!group || areGameAssetsLoaded(this, group)) return true;
+    if (this.loadingAssetGroup === group) return false;
+
+    this.loadingAssetGroup = group;
+    this.renderLoadingPanel();
+    const queued = loadGameAssets(this, group);
+    if (queued === 0) {
+      this.loadingAssetGroup = null;
+      return true;
+    }
+    this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+      this.loadingAssetGroup = null;
+      this.render();
+    });
+    this.load.start();
+    return false;
+  }
+
+  private renderLoadingPanel(): void {
+    this.root.removeAll(true);
+    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY));
+    this.root.add(this.add.image(WIDTH / 2, HEIGHT / 2, "bastion-logistics-map-backdrop-v1")
+      .setDisplaySize(WIDTH, 640)
+      .setAlpha(0.48));
+    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY, 0.74));
+    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, 360, 94, PANEL)
+      .setStrokeStyle(2, TEAL_HEX));
+    this.root.add(this.text(WIDTH / 2, HEIGHT / 2 - 10, "PREPARING DOSSIERS", TEAL, "18px", true));
+    this.root.add(this.text(WIDTH / 2, HEIGHT / 2 + 20, "LOADING CHARACTER ART...", MUTED, "10px", true));
   }
 
   private renderTitle(): void {
@@ -245,11 +284,11 @@ export class ShellScene extends Phaser.Scene {
       const column = Math.floor(index / rowsPerColumn);
       const rowIndex = index % rowsPerColumn;
       const x = 70 + column * 420;
-      const y = 112 + rowIndex * 34;
+      const y = 102 + rowIndex * 30;
       const focused = index === this.state.settingsIndex;
-      this.root.add(this.add.rectangle(x + 190, y + 12, 380, 30, focused ? 0x24384f : PANEL)
+      this.root.add(this.add.rectangle(x + 190, y + 11, 380, 26, focused ? 0x24384f : PANEL)
         .setStrokeStyle(focused ? 2 : 1, focused ? TEAL_HEX : 0x3b4d63));
-      this.root.add(this.text(x + 12, y + 5, row.label, focused ? TEAL : IVORY, "11px"));
+      this.root.add(this.text(x + 12, y + 5, row.label, focused ? TEAL : IVORY, "10px"));
       const controlsRow = row.kind === "action";
       const enabled = controlsRow || row.kind !== "toggle" || Boolean(this.state.settings[row.key]);
       const valueLabel = controlsRow
@@ -257,13 +296,13 @@ export class ShellScene extends Phaser.Scene {
         : row.kind === "toggle"
           ? enabled ? "ON" : "OFF"
           : formatSettingValue(row.key, this.state.settings[row.key]);
-      this.root.add(this.text(x + 364, y + 5, valueLabel, enabled ? TEAL : ORANGE, "11px").setOrigin(1, 0));
-      this.clickZone(x, y - 3, 380, 30, () => {
+      this.root.add(this.text(x + 364, y + 5, valueLabel, enabled ? TEAL : ORANGE, "10px").setOrigin(1, 0));
+      this.clickZone(x, y - 2, 380, 27, () => {
         this.state = { ...this.state, settingsIndex: index };
         this.apply("confirm");
       });
     });
-    this.root.add(this.text(70, HEIGHT - 34, "UP/DOWN SELECT  •  ENTER/LEFT/RIGHT TOGGLE  •  ESC BACK", MUTED, "12px"));
+    this.root.add(this.text(70, HEIGHT - 22, "UP/DOWN SELECT  •  ENTER/LEFT/RIGHT TOGGLE  •  ESC BACK", MUTED, "11px"));
   }
 
   private renderControls(): void {
@@ -484,6 +523,13 @@ export class ShellScene extends Phaser.Scene {
 
 function recordsLine(progress: GameProgress): string {
   return `Runs ${progress.runsFinished}  •  Victories ${progress.victories}  •  Kills ${progress.totalKills}`;
+}
+
+function requestedInitialScreen(): "title" | "character-select" {
+  if (typeof window === "undefined") return "title";
+  return new URLSearchParams(window.location.search).get("flow") === "character-select"
+    ? "character-select"
+    : "title";
 }
 
 function formatRecord(value: number): string {

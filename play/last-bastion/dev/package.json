@@ -16,7 +16,9 @@
     "audio:loudness:s23": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit-production-audio-loudness-s23.ps1",
     "audio:encode:s23": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/encode-production-audio-s23.ps1",
     "audio:generate:s1": "node scripts/generate-production-audio-s1.mjs",
-    "verify": "npm run typecheck && npm run test && npm run build && npm run smoke && npm run offline"
+    "image:encode:webp": "python scripts/encode-production-images.py",
+    "image:audit:webp": "node scripts/audit-production-images.mjs",
+    "verify": "npm run image:audit:webp && npm run typecheck && npm run test && npm run build && npm run smoke && npm run offline"
   },
   "dependencies": {
     "phaser": "^4.1.0"

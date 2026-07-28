@@ -10,7 +10,10 @@ export type AssetGroup =
   | "shop"
   | "gallery"
   | "close-view"
-  | "debrief";
+  | "debrief"
+  | "shell-base"
+  | "shell-character"
+  | "map";
 export function assetsForGroup(group: AssetGroup): readonly GameAssetDefinition[] {
   if (group === "boot") return GAME_ASSET_MANIFEST.filter((asset) => /^(arena-floor|arena-boundary|hud-panel|combat-effects|pickup)/.test(asset.id));
   if (group === "hero") return GAME_ASSET_MANIFEST.filter((asset) => /^(marine|medic)/.test(asset.id));
@@ -20,6 +23,17 @@ export function assetsForGroup(group: AssetGroup): readonly GameAssetDefinition[
   if (group === "debrief") return GAME_ASSET_MANIFEST.filter((asset) => (
     asset.id === "bastion-logistics-map-backdrop-v1"
     || asset.id === "batch-i-weapon-tiles-v1"
+  ));
+  if (group === "shell-base") return GAME_ASSET_MANIFEST.filter((asset) => (
+    asset.id === "bastion-logistics-map-backdrop-v1"
+  ));
+  if (group === "shell-character") return GAME_ASSET_MANIFEST.filter((asset) => (
+    asset.id === "marine-select-portrait-v1"
+    || asset.id === "medic-select-portrait-v1"
+    || asset.id === "canonical-perk-tiles-v2"
+  ));
+  if (group === "map") return GAME_ASSET_MANIFEST.filter((asset) => (
+    asset.id.endsWith("-map-backdrop-v1")
   ));
   if (group === "arena") return GAME_ASSET_MANIFEST.filter((asset) => /floor|boundary|obstacle|fixture|decal|world|node/.test(asset.id));
   return GAME_ASSET_MANIFEST.filter((asset) => /enemy|boss|effects|spritesheet/.test(asset.id));

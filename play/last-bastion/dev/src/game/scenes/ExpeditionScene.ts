@@ -109,7 +109,7 @@ export class ExpeditionScene extends Phaser.Scene {
   }
 
   preload(): void {
-    loadGameAssets(this);
+    loadGameAssets(this, "map");
   }
 
   create(): void {

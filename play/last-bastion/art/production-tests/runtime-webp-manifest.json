@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "format": "webp",
+  "quality": 92,
+  "maxRuntimeRatio": 0.75,
+  "assets": [
+    {
+      "source": "art/production-tests/batch-map-presentation/bastion-logistics-map-backdrop-v1-1536x1024.png",
+      "runtime": "art/production-tests/batch-map-presentation/bastion-logistics-map-backdrop-v1-1536x1024.webp",
+      "width": 1536,
+      "height": 1024,
+      "quality": 92,
+      "sourceBytes": 1749545,
+      "runtimeBytes": 112190,
+      "sourceSha256": "63392f477bc22b90a4fe312f7c9d51d3632bba4322301bc8b8ab2f8a0de8e701",
+      "runtimeSha256": "38844b879117736961735fdb797cf25f31ed856559ac76e387c77afe045f8a0a"
+    },
+    {
+      "source": "art/production-tests/batch-map-presentation/alien-hive-map-backdrop-v1-1536x1024.png",
+      "runtime": "art/production-tests/batch-map-presentation/alien-hive-map-backdrop-v1-1536x1024.webp",
+      "width": 1536,
+      "height": 1024,
+      "quality": 92,
+      "sourceBytes": 2271956,
+      "runtimeBytes": 214014,
+      "sourceSha256": "e74fc6ad83d366d9ffca360e07fa1b0b6a7c20e5009ed8212542445190d989e8",
+      "runtimeSha256": "aa9f117141247d24a382a948b1e117ac03d1a5b9f3d6091d65c660ecd86ed316"
+    },
+    {
+      "source": "art/production-tests/batch-map-presentation/machine-foundry-map-backdrop-v1-1536x1024.png",
+      "runtime": "art/production-tests/batch-map-presentation/machine-foundry-map-backdrop-v1-1536x1024.webp",
+      "width": 1536,
+      "height": 1024,
+      "quality": 92,
+      "sourceBytes": 2153499,
+      "runtimeBytes": 157522,
+      "sourceSha256": "e67c447f778fb2f755d387209bc9c1b5a206fc8704a5bb08dfdea64f0a7146e8",
+      "runtimeSha256": "873b2aa0e7137bdb6638773273f9c221c2fc6db940359cf517b02c59d389502d"
+    },
+    {
+      "source": "art/production-tests/batch-map-presentation/science-wing-map-backdrop-v1-1536x1024.png",
+      "runtime": "art/production-tests/batch-map-presentation/science-wing-map-backdrop-v1-1536x1024.webp",
+      "width": 1536,
+      "height": 1024,
+      "quality": 92,
+      "sourceBytes": 2079141,
+      "runtimeBytes": 150262,
+      "sourceSha256": "6b9ad452fd44059414c1b627e21b9839b53f722a99dd8297c44fe5936af0bd01",
+      "runtimeSha256": "9190747d9475834fb58bd44fb44e983939d571d24a32c5e0e73c8afb30472de7"
+    },
+    {
+      "source": "art/production-tests/batch-map-presentation/void-approach-map-backdrop-v1-1536x1024.png",
+      "runtime": "art/production-tests/batch-map-presentation/void-approach-map-backdrop-v1-1536x1024.webp",
+      "width": 1536,
+      "height": 1024,
+      "quality": 92,
+      "sourceBytes": 2093679,
+      "runtimeBytes": 143714,
+      "sourceSha256": "92ac876a8c98de185332a9335ad52573ea020f27bea8686f67854fbcb7df4192",
+      "runtimeSha256": "d4f2616584cfd1e697eb95a393056b518f9c71a8727ec813497f7f71d5e7a40e"
+    },
+    {
+      "source": "art/production-tests/batch-map-presentation/arctic-relay-map-backdrop-v1-1536x1024.png",
+      "runtime": "art/production-tests/batch-map-presentation/arctic-relay-map-backdrop-v1-1536x1024.webp",
+      "width": 1536,
+      "height": 1024,
+      "quality": 92,
+      "sourceBytes": 2738783,
+      "runtimeBytes": 365460,
+      "sourceSha256": "894af4376a66d7744298e10ec4e3e06f50298aa57a627358d7242e917f998056",
+      "runtimeSha256": "bb6177194841142a8079048791beec2d98c9c3957c8e9ec1d3945bb36844af6a"
+    },
+    {
+      "source": "art/production-tests/batch-character-select/marine-select-portrait-v1-1024x1536.png",
+      "runtime": "art/production-tests/batch-character-select/marine-select-portrait-v1-1024x1536.webp",
+      "width": 1024,
+      "height": 1536,
+      "quality": 92,
+      "sourceBytes": 2262669,
+      "runtimeBytes": 180684,
+      "sourceSha256": "edf929bb29977bc08591a539a440ded4860e09794b850b7e6b003b5aa795ff9f",
+      "runtimeSha256": "c36a82785d531ebe36042401a20ea5b57ce726e88a9872a263f4faba7e99893f"
+    },
+    {
+      "source": "art/production-tests/batch-character-select/medic-select-portrait-v1-1024x1536.png",
+      "runtime": "art/production-tests/batch-character-select/medic-select-portrait-v1-1024x1536.webp",
+      "width": 1024,
+      "height": 1536,
+      "quality": 92,
+      "sourceBytes": 2201578,
+      "runtimeBytes": 189262,
+      "sourceSha256": "6ffff0f3a824d7cf7ebfc5b9599106cd696addd7cfa8a9cfac9d3b105f540d34",
+      "runtimeSha256": "66a9de72e4abbc04d0de664bd6161aeb93fce264785f12a0f5fe3971b8ac5880"
+    }
+  ],
+  "supportingAssets": [
+    {
+      "source": "art/production-tests/batch-i/canonical-perk-tile-atlas-v2-128.png",
+      "bytes": 205482,
+      "sha256": "64e4a844f23e062b8970bb413ad20f5c6f7e790d05a262e399cec639d792a052"
+    }
+  ]
+}
