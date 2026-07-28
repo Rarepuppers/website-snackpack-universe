@@ -2,8 +2,11 @@ import Phaser from "phaser";
 import { LocalSaveStore, type GameProgress } from "../save/LocalSaveStore";
 import { MARINE } from "../hero/marine";
 import { MEDIC } from "../hero/medic";
-import { areGameAssetsLoaded, loadGameAssets } from "../assets/PhaserAssetLoader";
-import type { AssetGroup } from "../assets/AssetGroups";
+import { areGameAssetsLoaded, queueGameAssets } from "../assets/PhaserAssetQueue";
+import {
+  SHELL_BASE_ASSETS,
+  SHELL_CHARACTER_ASSETS,
+} from "../assets/ShellAssetManifest";
 import { PERK_CATALOG } from "../perks/perkCatalog";
 import {
   createShellState,
@@ -51,7 +54,7 @@ export class ShellScene extends Phaser.Scene {
   private state!: ShellState;
   private root!: Phaser.GameObjects.Container;
   private titlePulse = 0;
-  private loadingAssetGroup: AssetGroup | null = null;
+  private loadingAssetGroup: "shell-character" | null = null;
   private bindingCapture: { device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction } | null = null;
 
   constructor() {
@@ -59,9 +62,9 @@ export class ShellScene extends Phaser.Scene {
   }
 
   preload(): void {
-    loadGameAssets(this, "shell-base");
+    queueGameAssets(this, SHELL_BASE_ASSETS);
     if (requestedInitialScreen() === "character-select") {
-      loadGameAssets(this, "shell-character");
+      queueGameAssets(this, SHELL_CHARACTER_ASSETS);
     }
   }
 
@@ -174,12 +177,13 @@ export class ShellScene extends Phaser.Scene {
 
   private ensureScreenAssets(): boolean {
     const group = this.state.screen === "character-select" ? "shell-character" : null;
-    if (!group || areGameAssetsLoaded(this, group)) return true;
+    const assets = group ? SHELL_CHARACTER_ASSETS : null;
+    if (!assets || areGameAssetsLoaded(this, assets)) return true;
     if (this.loadingAssetGroup === group) return false;
 
     this.loadingAssetGroup = group;
     this.renderLoadingPanel();
-    const queued = loadGameAssets(this, group);
+    const queued = queueGameAssets(this, assets);
     if (queued === 0) {
       this.loadingAssetGroup = null;
       return true;

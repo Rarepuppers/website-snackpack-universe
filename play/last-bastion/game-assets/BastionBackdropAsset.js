@@ -1,0 +1,1 @@
+import{a as e,i as t,r as n}from"./PhaserAssetQueue.js";var r=Object.freeze({kind:`image`,id:`bastion-logistics-map-backdrop-v1`,url:n(e,t),logicalWidth:1536,logicalHeight:1024,pivot:Object.freeze({x:.5,y:.5})});export{r as t};

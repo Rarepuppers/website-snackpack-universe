@@ -1,5 +1,6 @@
 import Phaser from "phaser";
-import { loadGameAssets } from "../assets/PhaserAssetLoader";
+import { DEBRIEF_ASSETS } from "../assets/DebriefAssetManifest";
+import { queueGameAssets } from "../assets/PhaserAssetQueue";
 import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
 import { UPGRADE_CATALOG, type UpgradeId } from "../content/upgradeCatalog";
 import { PERK_CATALOG } from "../perks/perkCatalog";
@@ -25,7 +26,7 @@ export class RunSummaryScene extends Phaser.Scene {
   }
 
   preload(): void {
-    loadGameAssets(this, "debrief");
+    queueGameAssets(this, DEBRIEF_ASSETS);
   }
 
   create(): void {

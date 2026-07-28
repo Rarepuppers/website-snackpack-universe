@@ -1,5 +1,6 @@
 import Phaser from "phaser";
-import { loadGameAssets } from "../assets/PhaserAssetLoader";
+import { mapBackdropAssetForTheme } from "../assets/MapAssetManifest";
+import { queueGameAssets } from "../assets/PhaserAssetQueue";
 import { cloneTransformationAffinityState } from "../transformations/TransformationAffinity";
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { ARENA_THEMES } from "../rendering/arenaThemes";
@@ -36,21 +37,6 @@ const MAP_LEFT = 90;
 const MAP_RIGHT = WIDTH - 90;
 const LANE_TOP = 130;
 const LANE_GAP = 110;
-
-const MAP_BACKDROP_ASSETS: Readonly<Record<string, string>> = Object.freeze({
-  "bastion-standard": "bastion-logistics-map-backdrop-v1",
-  "bastion-logistics": "bastion-logistics-map-backdrop-v1",
-  "emberfall": "machine-foundry-map-backdrop-v1",
-  "toxic-bloom": "alien-hive-map-backdrop-v1",
-  "surface-frontier": "bastion-logistics-map-backdrop-v1",
-  "starship-transit": "science-wing-map-backdrop-v1",
-  "containment-underworld": "void-approach-map-backdrop-v1",
-  "alien-hive": "alien-hive-map-backdrop-v1",
-  "machine-foundry": "machine-foundry-map-backdrop-v1",
-  "science-wing": "science-wing-map-backdrop-v1",
-  "void-approach": "void-approach-map-backdrop-v1",
-  "arctic-relay": "arctic-relay-map-backdrop-v1",
-});
 
 const NODE_GLYPHS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze({
   combat: "✕",
@@ -108,16 +94,19 @@ export class ExpeditionScene extends Phaser.Scene {
     super("expedition");
   }
 
-  preload(): void {
-    loadGameAssets(this, "map");
-  }
-
-  create(): void {
+  init(): void {
     this.saveStore = new LocalSaveStore(
       typeof window !== "undefined" ? window.localStorage : null,
     );
     this.mapRevealBonusColumns = resolvePerkModifiers(this.saveStore.load().selectedPerkId).mapRevealBonusColumns;
     this.run = this.restoreOrStartRun();
+  }
+
+  preload(): void {
+    queueGameAssets(this, [this.currentBackdropAsset()]);
+  }
+
+  create(): void {
     this.root = this.add.container(0, 0);
     window.addEventListener("keydown", this.handleKey);
     this.events.once("shutdown", () => window.removeEventListener("keydown", this.handleKey));
@@ -305,9 +294,9 @@ export class ExpeditionScene extends Phaser.Scene {
   /** Presentation-only region dressing; route state and node readability stay code-owned. */
   private renderBackdrop(theme: (typeof ARENA_THEMES)[number]): void {
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, theme.backdropColor));
-    const backdropAsset = MAP_BACKDROP_ASSETS[theme.id];
-    if (backdropAsset) {
-      this.root.add(this.add.image(WIDTH / 2, HEIGHT / 2, backdropAsset)
+    const backdropAsset = mapBackdropAssetForTheme(theme.id);
+    if (this.textures.exists(backdropAsset.id)) {
+      this.root.add(this.add.image(WIDTH / 2, HEIGHT / 2, backdropAsset.id)
         .setDisplaySize(WIDTH, 640)
         .setAlpha(0.72));
     }
@@ -321,6 +310,11 @@ export class ExpeditionScene extends Phaser.Scene {
       this.root.add(this.add.rectangle(x, y, width, 2, theme.boundaryTint, 0.14).setAngle(index % 2 === 0 ? 0 : 90));
     }
     this.root.add(this.text(WIDTH - 70, HEIGHT - 30, theme.name.toUpperCase(), MUTED, "11px").setOrigin(1, 0));
+  }
+
+  private currentBackdropAsset() {
+    const currentNode = expeditionNodeById(this.run.map, this.run.state.currentNodeId);
+    return mapBackdropAssetForTheme(currentNode?.themeId ?? "bastion-standard");
   }
 
   private renderEdges(): void {
