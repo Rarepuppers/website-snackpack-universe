@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import "./style.css";
 import { gameConfig } from "./game/config";
 import { planDisplayScale, setUiDeviceScale } from "./game/rendering/DisplayScaling";
+import { LocalSaveStore } from "./game/save/LocalSaveStore";
 
 /**
  * Snaps the canvas to whole physical pixels. `?size=` previews the planned
@@ -10,8 +11,10 @@ import { planDisplayScale, setUiDeviceScale } from "./game/rendering/DisplayScal
  */
 function applyDisplayScale(target: Phaser.Game): void {
   const requested = Number(new URLSearchParams(window.location.search).get("size"));
-  const sizeMultiplier = Number.isFinite(requested) && requested >= 50 && requested <= 300
-    ? requested / 100
+  const savedSize = new LocalSaveStore(window.localStorage).load().settings.displaySizePercent;
+  const sizePercent = Number.isFinite(requested) && requested >= 50 && requested <= 300 ? requested : savedSize;
+  const sizeMultiplier = Number.isFinite(sizePercent) && sizePercent >= 50 && sizePercent <= 300
+    ? sizePercent / 100
     : 1;
   const plan = planDisplayScale(
     window.innerWidth,

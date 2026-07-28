@@ -124,6 +124,10 @@ export function cueForCombatEvent(event: CombatEvent): AudioCue | null {
   return event.type === "weapon-fired" ? WEAPON_CUES[event.weaponId] : cueForEvent(event.type);
 }
 
+export function cueForWeaponId(weaponId: WeaponId): AudioCue {
+  return WEAPON_CUES[weaponId];
+}
+
 function cue(
   id: string,
   frequencyHz: number,
