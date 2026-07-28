@@ -1890,13 +1890,21 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
           "@type": "SportsEvent",
           "name": "World Cup 2026 " + (match.round || "knockout") + ": " + home + " vs " + away,
           "url": "https://www.snackpackuniverse.com/world-cup/knockout/#match-" + match.n,
-          "startDate": match.isoDate || undefined,
+          "startDate": match.isoDate,
+          "endDate": match.isoDate,
           "eventStatus": eventStatus(match),
           "description": "Match " + match.n + " in the World Cup 2026 knockout bracket." + score + winnerText,
+          "image": "https://www.snackpackuniverse.com/world-cup/og-knockout.png",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/InStock" },
+          "organizer": { "@type": "Organization", "name": "FIFA", "url": "https://www.fifa.com/" },
           "location": {
             "@type": "Place",
-            "name": match.venue || "Venue TBD"
+            "name": match.venue || "World Cup 2026 host venue"
           },
+          "performer": [
+            { "@type": "SportsTeam", "name": home },
+            { "@type": "SportsTeam", "name": away }
+          ],
           "homeTeam": { "@type": "SportsTeam", "name": home },
           "awayTeam": { "@type": "SportsTeam", "name": away },
           "competitor": [
@@ -1904,7 +1912,7 @@ body.is-bracket-pan.is-dragging .bracket-scroll {
             { "@type": "SportsTeam", "name": away }
           ],
           "isPartOf": {
-            "@type": "SportsEvent",
+            "@type": "CreativeWork",
             "name": "World Cup 2026 knockout stage"
           }
         }
