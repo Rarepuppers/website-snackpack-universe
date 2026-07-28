@@ -263,7 +263,14 @@ export class PrototypeScene extends Phaser.Scene {
       fontSize: "10px",
     }).setOrigin(0, 1).setDepth(2000).setScrollFactor(0).setResolution(uiTextResolution());
 
-    this.hud = new CombatHud(this, this.showDebug, this.useMarineArt, this.settings.cooldownTimersEnabled, controls);
+    this.hud = new CombatHud(
+      this,
+      this.showDebug,
+      this.useMarineArt,
+      this.settings.cooldownTimersEnabled,
+      controls,
+      this.settings.radarSize,
+    );
     this.createFenceViews();
 
     this.controls = new KeyboardMouseInput(this, controls);
@@ -1475,10 +1482,13 @@ export class PrototypeScene extends Phaser.Scene {
             .setOrigin(GAME_ASSETS[assetId].pivot.x, GAME_ASSETS[assetId].pivot.y)
           : this.useMarineArt
           ? this.add.image(0, 0, assetId)
+            .setDisplaySize(GAME_ASSETS[assetId].logicalWidth, GAME_ASSETS[assetId].logicalHeight)
             .setOrigin(GAME_ASSETS[assetId].pivot.x, GAME_ASSETS[assetId].pivot.y)
           : this.add.rectangle(0, 0, 34, 8, 0xe9e3cf)
             .setOrigin(0.2, 0.5)
             .setStrokeStyle(2, 0x101720);
+        view.setData("weaponBaseScaleX", view.scaleX);
+        view.setData("weaponBaseScaleY", view.scaleY);
         this.weaponViews.set(weapon.instanceId, view);
       }
 
@@ -1506,11 +1516,13 @@ export class PrototypeScene extends Phaser.Scene {
       return;
     }
 
-    weapon.setScale(1.08, 1.18);
+    const baseScaleX = Number(weapon.getData("weaponBaseScaleX")) || 1;
+    const baseScaleY = Number(weapon.getData("weaponBaseScaleY")) || 1;
+    weapon.setScale(baseScaleX * 1.08, baseScaleY * 1.18);
     this.tweens.add({
       targets: weapon,
-      scaleX: 1,
-      scaleY: 1,
+      scaleX: baseScaleX,
+      scaleY: baseScaleY,
       duration: 70,
       ease: "Quad.easeOut",
     });
@@ -1840,7 +1852,7 @@ export class PrototypeScene extends Phaser.Scene {
       // simulation-side size multiplier has to be applied here too or a
       // wave-scaled mini-boss would hit from outside its own silhouette.
       const baseScale = batchJScale ?? authoredMiniBossScale ?? (enemy.type === "infected-survivor" ? 0.86 : enemy.type === "corrupted-marine" ? 0.88 : enemy.type === "abomination" ? 0.82 : enemy.type === "nest-weaver" ? 0.48 : enemy.type === "nest-pod" ? view.texture.key === "nest-pod-v1" ? 0.52 : 0.72 : enemy.type === "nest-hatchling" ? 0.62 : enemy.type === "aurum-hoarder" ? 0.9 : enemy.type === "swarm-scuttler" ? 0.72 : eliteScale);
-      view.setScale(baseScale * (enemy.radiusScale ?? 1));
+      view.setScale(manifestSourceScale(view.texture.key) * baseScale * (enemy.radiusScale ?? 1));
       view.setAlpha(enemy.type === "rift-stalker"
         ? enemy.riftStalkerPhase === "warp" ? 0.12 : enemy.riftStalkerPhase === "cloak" ? 0.38 : 1
         : enemy.type === "warp-flanker" && enemy.warpPhase === "warp-windup" ? 0.72 : 1);
@@ -4446,4 +4458,16 @@ function createManifestSprite(
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);
   return sprite;
+}
+
+/**
+ * High-resolution source sheets may retain a smaller gameplay footprint.
+ * Phaser slices at `frameWidth`; this scale restores the manifest's logical
+ * size without making display resolution alter collision or encounter space.
+ */
+function manifestSourceScale(assetId: string): number {
+  if (!(assetId in GAME_ASSETS)) return 1;
+  const asset = GAME_ASSETS[assetId as GameAssetId];
+  if (asset.kind !== "spritesheet") return 1;
+  return asset.logicalWidth / asset.frameWidth;
 }

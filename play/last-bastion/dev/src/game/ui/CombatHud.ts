@@ -47,8 +47,9 @@ export class CombatHud {
   private readonly scrapIcon: Phaser.GameObjects.Image;
   private readonly scrapText: Phaser.GameObjects.Text;
   private readonly weaponPips: Phaser.GameObjects.Rectangle[] = [];
-  /** Reserved for future live contacts; today the radar shows only the player dot. */
   private readonly radarDot: Phaser.GameObjects.Arc;
+  private readonly radarContacts: Phaser.GameObjects.Arc[] = [];
+  private readonly radarRadius: number;
   private readonly fireModePanel: Phaser.GameObjects.Rectangle;
   private readonly fireModeText: Phaser.GameObjects.Text;
   private readonly statePanel: Phaser.GameObjects.Container;
@@ -73,11 +74,13 @@ export class CombatHud {
     productionArt = true,
     cooldownTimersEnabled = true,
     bindings: ControlBindings = DEFAULT_CONTROL_BINDINGS,
+    radarSize: 0.75 | 1 | 1.25 = 1,
   ) {
     this.productionArt = productionArt;
     this.cooldownTimersEnabled = cooldownTimersEnabled;
     const safe = uiSafeArea(scene.scale.width, scene.scale.height);
-    this.radarCentre = { x: safe.right - 24, y: safe.top + 24 };
+    this.radarRadius = 24 * radarSize;
+    this.radarCentre = { x: safe.right - this.radarRadius, y: safe.top + this.radarRadius };
     this.fireModeBindingLabel = `${keyboardBindingLabel(bindings.keyboard.toggleFireMode)}/${gamepadBindingLabel(bindings.gamepad.toggleFireMode)}`;
 
     // Slim top-left dock: identity, HP, XP, Scrap. Code-drawn flat panel by
@@ -113,20 +116,24 @@ export class CombatHud {
     this.waveText = scene.add.text(480, 15, "", hudText("#ffffff", "13px"))
       .setOrigin(0.5, 0).setDepth(2001);
 
-    // Top-right: minimal radar placeholder. No live contacts yet — this
-    // reserves the corner for a future minimap rather than a blank panel.
-    scene.add.circle(this.radarCentre.x, this.radarCentre.y, 24, 0x0b121c, 0.82).setStrokeStyle(1, 0x334a60).setDepth(2000);
+    scene.add.circle(this.radarCentre.x, this.radarCentre.y, this.radarRadius, 0x0b121c, 0.82)
+      .setStrokeStyle(1, 0x334a60).setDepth(2000);
     this.radarDot = scene.add.circle(this.radarCentre.x, this.radarCentre.y, 3, 0x68e4e8).setDepth(2002);
-    this.fireModePanel = scene.add.rectangle(safe.right - 40, safe.top + 60, 80, 18, 0x0b121c, 0.88)
+    for (let index = 0; index < 64; index += 1) {
+      this.radarContacts.push(scene.add.circle(this.radarCentre.x, this.radarCentre.y, 1.5, 0xe55a67)
+        .setDepth(2001).setVisible(false));
+    }
+    const fireModeY = safe.top + this.radarRadius * 2 + 12;
+    this.fireModePanel = scene.add.rectangle(safe.right - 40, fireModeY, 80, 18, 0x0b121c, 0.88)
       .setStrokeStyle(1, 0x68e4e8).setDepth(2000);
-    this.fireModeText = scene.add.text(safe.right - 40, safe.top + 60, "", hudText("#68e4e8", "9px"))
+    this.fireModeText = scene.add.text(safe.right - 40, fireModeY, "", hudText("#68e4e8", "9px"))
       .setOrigin(0.5).setDepth(2001);
 
     const actionDefinitions = [
       { label: "ROLL", binding: bindingPair(bindings, "evade"), color: 0x68e4e8, frame: 0 },
       { label: "ULT", binding: bindingPair(bindings, "ultimate"), color: 0xffa31a, frame: 1 },
-      { label: "KIT", binding: bindingPair(bindings, "kit"), color: 0x9f7aea, frame: 3 },
-      { label: "ACT", binding: bindingPair(bindings, "interact"), color: 0xb9ef62, frame: 5 },
+      { label: "KIT", binding: bindingPair(bindings, "kit"), color: 0x9f7aea, frame: 2 },
+      { label: "ACT", binding: bindingPair(bindings, "interact"), color: 0xb9ef62, frame: 7 },
     ] as const;
     actionDefinitions.forEach((definition, index) => {
       this.actionTiles.push(createCooldownTile(
@@ -225,10 +232,21 @@ export class CombatHud {
     const spent = snapshot.events.some((event) => event.type === "scrap-spent");
     this.scrapIcon.setVisible(scrapVisible).setFrame(spent ? 2 : secured ? 1 : 0);
     this.scrapText.setVisible(scrapVisible).setText(`${snapshot.securedScrap}`);
-    this.radarDot.setPosition(
-      this.radarCentre.x + (snapshot.playerPosition.x / snapshot.arena.widthMetres - 0.5) * 40,
-      this.radarCentre.y + (snapshot.playerPosition.y / snapshot.arena.heightMetres - 0.5) * 40,
-    );
+    const playerRadar = radarPosition(snapshot.playerPosition, snapshot.arena, this.radarCentre, this.radarRadius);
+    this.radarDot.setPosition(playerRadar.x, playerRadar.y);
+    this.radarContacts.forEach((contact, index) => {
+      const enemy = snapshot.enemies[index];
+      if (!enemy) {
+        contact.setVisible(false);
+        return;
+      }
+      const point = radarPosition(enemy.position, snapshot.arena, this.radarCentre, this.radarRadius);
+      const major = enemy.rank === "boss" || enemy.rank === "mini-boss";
+      contact.setPosition(point.x, point.y)
+        .setRadius(major ? 2.5 : enemy.rank === "elite" ? 2 : 1.5)
+        .setFillStyle(major ? 0xff9a52 : enemy.rank === "elite" ? 0xd66cff : 0xe55a67)
+        .setVisible(true);
+    });
     this.fireModePanel.setStrokeStyle(1, snapshot.autoFireEnabled ? 0x68e4e8 : 0xffb15c);
     this.fireModeText
       .setText(snapshot.autoFireEnabled ? `${this.fireModeBindingLabel} AUTO` : `${this.fireModeBindingLabel} MANUAL`)
@@ -456,7 +474,7 @@ function createCooldownTile(
     .setOrigin(0.5).setDepth(2022);
   const icon = iconFrame === undefined
     ? null
-    : scene.add.image(centreX, centreY, "action-tiles-v1", iconFrame)
+    : scene.add.image(centreX, centreY, "batch-i-hotkey-tiles-v1", iconFrame)
       .setDisplaySize(size - 6, size - 6).setDepth(2021);
   const bindingText = scene.add.text(centreX, centreY - size / 2 - 8, binding, hudText("#9fb3c8", "8px"))
     .setOrigin(0.5).setDepth(2022);
@@ -571,6 +589,23 @@ const SCENARIO_LABELS: Readonly<Record<CombatScenario, string>> = Object.freeze(
   "weapon-gate": "WEAPON GATE LAB",
   "batch-j": "BATCH J LAB",
 });
+
+function radarPosition(
+  position: Readonly<{ x: number; y: number }>,
+  arena: Readonly<{ widthMetres: number; heightMetres: number }>,
+  centre: Readonly<{ x: number; y: number }>,
+  radius: number,
+): Readonly<{ x: number; y: number }> {
+  const offsetX = (position.x / arena.widthMetres - 0.5) * 2;
+  const offsetY = (position.y / arena.heightMetres - 0.5) * 2;
+  const distance = Math.hypot(offsetX, offsetY);
+  const scale = distance > 1 ? 1 / distance : 1;
+  const usableRadius = Math.max(2, radius - 4);
+  return {
+    x: centre.x + offsetX * scale * usableRadius,
+    y: centre.y + offsetY * scale * usableRadius,
+  };
+}
 
 function hudText(color: string, fontSize: string): Phaser.Types.GameObjects.Text.TextStyle {
   return {

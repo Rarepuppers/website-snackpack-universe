@@ -147,6 +147,11 @@ export class ShellScene extends Phaser.Scene {
     (window as unknown as { __shellState?: ShellState }).__shellState = this.state;
     this.root.removeAll(true);
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY));
+    this.root.add(this.add.image(WIDTH / 2, HEIGHT / 2, "bastion-logistics-map-backdrop-v1")
+      .setDisplaySize(WIDTH, 640)
+      .setAlpha(this.state.screen === "title" ? 0.82 : 0.48));
+    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY,
+      this.state.screen === "title" ? 0.34 : 0.67));
     switch (this.state.screen) {
       case "title": this.renderTitle(); break;
       case "menu": this.renderMenu(); break;
@@ -160,10 +165,7 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private renderTitle(): void {
-    // Placeholder backdrop: ridge silhouette and searchlight bands.
-    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT - 90, WIDTH, 180, 0x0e141d));
-    this.root.add(this.add.rectangle(240, HEIGHT - 200, 260, 12, 0x223349));
-    this.root.add(this.add.rectangle(700, HEIGHT - 230, 340, 12, 0x223349));
+    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT - 54, WIDTH, 108, 0x0b121c, 0.76));
     this.root.add(this.text(WIDTH / 2, 170, "LAST BASTION", IVORY, "54px", true));
     this.root.add(this.text(WIDTH / 2, 225, "HOLD THE LINE", TEAL, "16px", true));
     const prompt = this.text(WIDTH / 2, 330, "PRESS ENTER", ORANGE, "22px", true);
@@ -236,16 +238,25 @@ export class ShellScene extends Phaser.Scene {
   private renderSettings(): void {
     this.root.add(this.text(70, 48, "SETTINGS", IVORY, "28px"));
     this.root.add(this.text(70, 84, "Changes persist immediately. URL parameters remain as review overrides.", MUTED, "12px"));
+    const rowsPerColumn = Math.ceil(SETTINGS_ROWS.length / 2);
     SETTINGS_ROWS.forEach((row, index) => {
-      const y = 105 + index * 21;
+      const column = Math.floor(index / rowsPerColumn);
+      const rowIndex = index % rowsPerColumn;
+      const x = 70 + column * 420;
+      const y = 112 + rowIndex * 34;
       const focused = index === this.state.settingsIndex;
-      this.root.add(this.add.rectangle(WIDTH / 2, y + 7, 640, 20, focused ? 0x24384f : PANEL)
+      this.root.add(this.add.rectangle(x + 190, y + 12, 380, 30, focused ? 0x24384f : PANEL)
         .setStrokeStyle(focused ? 2 : 1, focused ? TEAL_HEX : 0x3b4d63));
-      this.root.add(this.text(190, y + 1, row.label, focused ? TEAL : IVORY, "11px"));
+      this.root.add(this.text(x + 12, y + 5, row.label, focused ? TEAL : IVORY, "11px"));
       const controlsRow = row.kind === "action";
-      const enabled = controlsRow || (row.kind === "toggle" && Boolean(this.state.settings[row.key]));
-      this.root.add(this.text(690, y + 8, controlsRow ? "OPEN  ›" : enabled ? "ON" : "OFF", enabled ? TEAL : ORANGE, "17px"));
-      this.clickZone(160, y - 4, 640, 20, () => {
+      const enabled = controlsRow || row.kind !== "toggle" || Boolean(this.state.settings[row.key]);
+      const valueLabel = controlsRow
+        ? "OPEN >"
+        : row.kind === "toggle"
+          ? enabled ? "ON" : "OFF"
+          : formatSettingValue(row.key, this.state.settings[row.key]);
+      this.root.add(this.text(x + 364, y + 5, valueLabel, enabled ? TEAL : ORANGE, "11px").setOrigin(1, 0));
+      this.clickZone(x, y - 3, 380, 30, () => {
         this.state = { ...this.state, settingsIndex: index };
         this.apply("confirm");
       });
@@ -353,7 +364,7 @@ export class ShellScene extends Phaser.Scene {
     const perkUnlocked = this.state.unlockedPerkIds.includes(perk.id);
 
     // Left: full-height select portrait; gameplay sheets remain separate.
-    this.root.add(this.add.rectangle(250, 250, 300, 300, PANEL).setStrokeStyle(1, 0x3b4d63));
+    this.root.add(this.add.rectangle(250, 250, 300, 320, PANEL).setStrokeStyle(1, 0x3b4d63));
     if (hero.status === "playable") {
       const portraitKey = hero.id === "medic" ? "medic-select-portrait-v1" : "marine-select-portrait-v1";
       this.root.add(this.add.image(250, 258, portraitKey).setDisplaySize(196, 294));
@@ -365,7 +376,7 @@ export class ShellScene extends Phaser.Scene {
       : hero.status === "in-development" ? `${hero.name} — IN DEVELOPMENT` : "????", IVORY, "16px", true));
 
     // Right: dossier.
-    this.root.add(this.add.rectangle(660, 250, 440, 300, PANEL).setStrokeStyle(1, 0x3b4d63));
+    this.root.add(this.add.rectangle(660, 260, 440, 350, PANEL).setStrokeStyle(1, 0x3b4d63));
     if (hero.status === "playable") {
       const definition = hero.id === "medic" ? MEDIC : MARINE;
       const dossier = [
@@ -382,27 +393,28 @@ export class ShellScene extends Phaser.Scene {
           ? "PER LEVEL  +2 HEALTH / +1 ARMOUR / +2 LIGHT / +1 SUPPORT"
           : "PER LEVEL  +1 ALL STATS / +1 LIGHT PROFICIENCY",
       ].join("\n");
-      this.root.add(this.text(470, 130, dossier, IVORY, "13px"));
+      this.root.add(this.text(470, 108, dossier, IVORY, "12px").setWordWrapWidth(390));
     } else {
       this.root.add(this.text(660, 240, hero.status === "in-development"
         ? "Dossier sealed.\nThe Medic deploys with the Web MVP."
         : "Signal lost.\nFuture hero slot.", MUTED, "14px", true));
     }
 
-    this.root.add(this.text(470, 338, `PERK  ${perkUnlocked ? perk.name.toUpperCase() : "LOCKED"}`, perkUnlocked ? TEAL : ORANGE, "14px"));
-    this.root.add(this.text(470, 360, perkUnlocked ? perk.description : perk.unlockText, perkUnlocked ? IVORY : MUTED, "11px"));
+    this.root.add(this.text(470, 326, `PERK  ${perkUnlocked ? perk.name.toUpperCase() : "LOCKED"}`, perkUnlocked ? TEAL : ORANGE, "14px"));
+    this.root.add(this.text(470, 348, perkUnlocked ? perk.description : perk.unlockText, perkUnlocked ? IVORY : MUTED, "11px")
+      .setWordWrapWidth(390));
     PERK_CATALOG.forEach((entry, index) => {
       const x = 492 + index * 55;
       const selected = index === this.state.perkIndex;
       const unlocked = this.state.unlockedPerkIds.includes(entry.id);
-      this.root.add(this.add.sprite(x, 410, "canonical-perk-tiles-v2", index)
+      this.root.add(this.add.sprite(x, 397, "canonical-perk-tiles-v2", index)
         .setDisplaySize(46, 46)
         .setAlpha(unlocked ? 1 : 0.3)
         .setTint(selected ? 0xffffff : 0xb7c2cf));
       if (selected) {
-        this.root.add(this.add.rectangle(x, 410, 50, 50).setStrokeStyle(3, perkUnlocked ? TEAL_HEX : 0xff9a52));
+        this.root.add(this.add.rectangle(x, 397, 50, 50).setStrokeStyle(3, perkUnlocked ? TEAL_HEX : 0xff9a52));
       }
-      this.clickZone(x - 25, 385, 50, 50, () => {
+      this.clickZone(x - 25, 372, 50, 50, () => {
         this.state = { ...this.state, perkIndex: index };
         this.render();
       });
@@ -425,6 +437,11 @@ export class ShellScene extends Phaser.Scene {
         }
       });
     });
+    const canDeploy = hero.status === "playable" && perkUnlocked;
+    this.root.add(this.add.rectangle(850, 470, 120, 44, canDeploy ? 0x24384f : PANEL)
+      .setStrokeStyle(2, canDeploy ? TEAL_HEX : 0x3b4d63));
+    this.root.add(this.text(850, 470, "DEPLOY", canDeploy ? TEAL : MUTED, "13px", true));
+    if (canDeploy) this.clickZone(790, 448, 120, 44, () => this.apply("confirm"));
     this.root.add(this.text(70, HEIGHT - 24, "LEFT/RIGHT HERO  •  UP/DOWN PERK  •  ENTER DEPLOY  •  ESC BACK", MUTED, "12px"));
   }
 
@@ -469,6 +486,16 @@ function recordsLine(progress: GameProgress): string {
 
 function formatRecord(value: number): string {
   return value.toFixed(1).replace(/\.0$/, "");
+}
+
+function formatSettingValue(key: string, value: unknown): string {
+  if (key.endsWith("Volume") || key === "aimAssistStrength") return `${Math.round(Number(value) * 100)}%`;
+  if (key.includes("Deadzone")) return Number(value).toFixed(2);
+  if (key === "displaySizePercent") return `${Math.round(Number(value))}%`;
+  if (key === "uiScale" || key === "radarSize") {
+    return `${Number(value).toFixed(2).replace(/0+$/, "").replace(/\.$/, "")}x`;
+  }
+  return String(value).toUpperCase();
 }
 
 function keyToIntent(code: string): ShellIntent | null {

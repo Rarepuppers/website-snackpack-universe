@@ -388,9 +388,13 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("marine-base-v1", marineBaseSheetUrl, 96, 96, 12, 0.5, 0.68),
   sheet("marine-helmet-v1", marineHelmetSheetUrl, 96, 96, 12, 0.5, 0.68),
   image("service-rifle-v1", serviceRifleUrl, 64, 32, 0.25, 0.5),
-  sheet("scuttler-v1", scuttlerSheetUrl, 64, 64, 8, 0.5, 0.5),
-  sheet("egg-cluster-v1", eggClusterSheetUrl, 64, 64, 4, 0.5, 0.5),
-  sheet("brain-blob-v1", brainBlobSheetUrl, 64, 64, 4, 0.5, 0.5),
+  // The refreshed legacy sheets are authored at 256 px per frame but retain
+  // their original 64 px gameplay footprint. Keep source slicing and logical
+  // presentation dimensions separate or Phaser cuts each creature into
+  // sixteen red fragments.
+  sheet("scuttler-v1", scuttlerSheetUrl, 64, 64, 8, 0.5, 0.5, 256, 256),
+  sheet("egg-cluster-v1", eggClusterSheetUrl, 64, 64, 4, 0.5, 0.5, 256, 256),
+  sheet("brain-blob-v1", brainBlobSheetUrl, 64, 64, 4, 0.5, 0.5, 256, 256),
   sheet("arena-floor-v1", arenaFloorSheetUrl, 64, 64, 6, 0.5, 0.5),
   sheet("arena-boundary-v1", arenaBoundarySheetUrl, 64, 64, 8, 0.5, 0.5),
   sheet("arena-obstacle-v1", arenaObstacleSheetUrl, 96, 96, 8, 0.5, 0.5),
@@ -593,20 +597,22 @@ function image(
 function sheet(
   id: GameAssetId,
   url: string,
-  frameWidth: number,
-  frameHeight: number,
+  logicalWidth: number,
+  logicalHeight: number,
   frameCount: number,
   pivotX: number,
   pivotY: number,
+  sourceFrameWidth = logicalWidth,
+  sourceFrameHeight = logicalHeight,
 ): SpriteSheetAssetDefinition {
   return {
     id,
     url,
     kind: "spritesheet",
-    logicalWidth: frameWidth,
-    logicalHeight: frameHeight,
-    frameWidth,
-    frameHeight,
+    logicalWidth,
+    logicalHeight,
+    frameWidth: sourceFrameWidth,
+    frameHeight: sourceFrameHeight,
     frameCount,
     pivot: Object.freeze({ x: pivotX, y: pivotY }),
   };

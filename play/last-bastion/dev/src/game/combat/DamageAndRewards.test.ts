@@ -119,31 +119,31 @@ describe("powerups and timed buffs", () => {
     expect(snapshot.powerups).toHaveLength(0);
     const buff = snapshot.activeBuffs.find((candidate) => candidate.type === "overcharge");
     expect(buff).toBeDefined();
-    expect(buff!.remainingSeconds).toBeGreaterThan(5);
+    expect(buff!.remainingSeconds).toBeGreaterThan(8);
   });
 
   it("expires uncollected powerups", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false });
     simulation.spawnPowerup("adrenaline", { x: 2, y: 2 });
     let snapshot = simulation.snapshot();
-    for (let frame = 0; frame < 245; frame += 1) {
+    for (let frame = 0; frame < 365; frame += 1) {
       snapshot = simulation.step(intent(), 0.05);
     }
     expect(snapshot.powerups).toHaveLength(0);
     expect(snapshot.activeBuffs).toHaveLength(0);
   });
 
-  it("activates Uranium-Core Rounds from the kit slot and expires after twelve seconds", () => {
+  it("activates Uranium-Core Rounds from the kit slot and expires after eighteen seconds", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false, startingUraniumKit: true });
     let snapshot = simulation.step(intent({ kitPressed: true }), 0.05);
 
     expect(snapshot.uraniumKitAvailable).toBe(false);
     expect(snapshot.events.some((event) => event.type === "kit-activated")).toBe(true);
     const uranium = snapshot.activeBuffs.find((buff) => buff.type === "uranium-core-rounds");
-    expect(uranium?.durationSeconds).toBe(12);
-    expect(uranium?.remainingSeconds).toBeGreaterThan(11.9);
+    expect(uranium?.durationSeconds).toBe(18);
+    expect(uranium?.remainingSeconds).toBeGreaterThan(17.9);
 
-    for (let frame = 0; frame < 245; frame += 1) snapshot = simulation.step(intent(), 0.05);
+    for (let frame = 0; frame < 365; frame += 1) snapshot = simulation.step(intent(), 0.05);
     expect(snapshot.activeBuffs.some((buff) => buff.type === "uranium-core-rounds")).toBe(false);
   });
 
@@ -154,8 +154,8 @@ describe("powerups and timed buffs", () => {
     simulation.spawnPowerup("uranium-core-rounds", player);
     const snapshot = simulation.step(intent(), 0.05);
     const uranium = snapshot.activeBuffs.find((buff) => buff.type === "uranium-core-rounds");
-    expect(uranium?.remainingSeconds).toBeGreaterThan(11.9);
-    expect(uranium?.remainingSeconds).toBeLessThanOrEqual(12);
+    expect(uranium?.remainingSeconds).toBeGreaterThan(17.9);
+    expect(uranium?.remainingSeconds).toBeLessThanOrEqual(18);
   });
 
   it("adds twenty-five percent damage to direct ring-weapon hits", () => {
@@ -251,7 +251,7 @@ describe("the four Phase 1 consumable kits", () => {
     const collectSnapshot = boosted.step(intent(), 0.05);
     baseline.step(intent(), 0.05);
     const buff = collectSnapshot.activeBuffs.find((candidate) => candidate.type === "last-stand-stimulant");
-    expect(buff?.durationSeconds).toBe(6);
+    expect(buff?.durationSeconds).toBe(9);
 
     const basePlayerBefore = baseline.snapshot().playerPosition.x;
     const boostPlayerBefore = boosted.snapshot().playerPosition.x;

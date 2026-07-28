@@ -78,7 +78,7 @@ describe("Phase 2 enabler carry-in (grantConsumable / grantLifesteal)", () => {
     });
     const buff = sim.snapshot().activeBuffs.find((candidate) => candidate.type === "siege-loader");
     expect(buff).toBeDefined();
-    expect(buff!.remainingSeconds).toBeCloseTo(10);
+    expect(buff!.remainingSeconds).toBeCloseTo(15);
   });
 
   it("adds bonus lifesteal-per-kill on top of any relic source", () => {

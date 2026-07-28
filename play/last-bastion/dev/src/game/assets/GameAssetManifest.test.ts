@@ -30,6 +30,19 @@ describe("GameAssetManifest", () => {
     }
   });
 
+  it("slices refreshed legacy enemies at source resolution but preserves their gameplay footprint", () => {
+    for (const id of ["scuttler-v1", "egg-cluster-v1", "brain-blob-v1"] as const) {
+      const asset = GAME_ASSETS[id];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") {
+        expect(asset.frameWidth).toBe(256);
+        expect(asset.frameHeight).toBe(256);
+        expect(asset.logicalWidth).toBe(64);
+        expect(asset.logicalHeight).toBe(64);
+      }
+    }
+  });
+
   it("locks Production Batch A frame contracts", () => {
     const expectedFrames = {
       "arena-floor-v1": 6,

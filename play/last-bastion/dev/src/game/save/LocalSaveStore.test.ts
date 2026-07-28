@@ -236,10 +236,10 @@ describe("LocalSaveStore", () => {
     expect(loaded.progress.bestWaveReached).toBe(3);
   });
 
-  it("migrates v10 settings to the v11 defaults and normalizes invalid values", () => {
+  it("migrates v11 settings to the v12 defaults and normalizes invalid values", () => {
     const storage = fakeStorage({
       [SAVE_STORAGE_KEY]: JSON.stringify({
-        version: 10,
+        version: 11,
         settings: {
           enemyHealthBars: "unknown",
           uiScale: 9,
@@ -257,6 +257,7 @@ describe("LocalSaveStore", () => {
     expect(settings.displaySizePercent).toBe(50);
     expect(settings.gamepadMoveDeadzone).toBe(0.18);
     expect(settings.aimAssistStrength).toBe(0);
+    expect(settings.radarSize).toBe(1);
   });
 });
 

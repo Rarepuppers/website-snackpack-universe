@@ -108,6 +108,7 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "range", key: "gamepadAimSensitivity", label: "Aim sensitivity", min: 0.25, max: 3, step: 0.05 },
   { kind: "range", key: "aimAssistStrength", label: "Aim assist", min: 0, max: 1, step: 0.1 },
   { kind: "range", key: "displaySizePercent", label: "Display size", min: 50, max: 200, step: 5 },
+  { kind: "choice", key: "radarSize", label: "Radar size", options: ["0.75", "1", "1.25"] },
   { kind: "action", key: "controls", label: "Control bindings" },
 ]);
 
@@ -308,6 +309,7 @@ function stepSettings(state: ShellState, intent: ShellIntent): ShellStepResult {
       const direction = intent === "left" ? -1 : 1;
       value = options[(currentIndex + direction + options.length) % options.length] as GameSettings[keyof GameSettings];
       if (row.key === "uiScale") value = Number(value) as 0.8 | 1 | 1.2;
+      if (row.key === "radarSize") value = Number(value) as 0.75 | 1 | 1.25;
     } else {
       const current = Number(state.settings[row.key]);
       const direction = intent === "left" ? -1 : 1;

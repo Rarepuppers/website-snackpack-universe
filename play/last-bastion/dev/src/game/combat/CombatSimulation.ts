@@ -1176,7 +1176,7 @@ const ARTIFACT_IMPLOSION_RADIUS_METRES = 2.4;
 /** EMP Charge consumable: stun radius on pickup. */
 const EMP_CHARGE_RADIUS_METRES = 5;
 /** Butcher's Serum consumable: melee damage bonus and how long it lasts. */
-const BUTCHERS_SERUM_DURATION_SECONDS = 8;
+const BUTCHERS_SERUM_DURATION_SECONDS = 12;
 const BUTCHERS_SERUM_MELEE_MULTIPLIER = 1.6;
 /** Riot Plating relic: how close an enemy must be for its armour to count. */
 const RIOT_PLATING_RANGE_METRES = 2;
@@ -1243,13 +1243,13 @@ const TETHER_BLOOM_WINDUP_SECONDS = 0.7;
 const TETHER_BLOOM_DURATION_SECONDS = 1.8;
 const TETHER_BLOOM_PULL_SPEED_METRES_PER_SECOND = 1.15;
 const TETHER_BLOOM_RECOVERY_SECONDS = 3.2;
-const POWERUP_LIFETIME_SECONDS = 12;
+const POWERUP_LIFETIME_SECONDS = 18;
 const POWERUP_COLLECT_RADIUS_METRES = 0.7;
 export const MEDKIT_HEAL_AMOUNT = 2.5;
 /** Ordinary enemies only; specialists and above pay in Scrap instead. */
 export const MEDKIT_DROP_CHANCE = 0.06;
 /** Medkits linger longer than timed powerups so a hard wave can bank one. */
-const MEDKIT_LIFETIME_SECONDS = 25;
+const MEDKIT_LIFETIME_SECONDS = 30;
 export const SUPPLY_CHEST_BASE_HEALTH = 50;
 export const SUPPLY_CHEST_HEALTH_PER_WAVE = 8;
 const SUPPLY_CHEST_SPAWN_CHANCE = 0.4;
@@ -1260,16 +1260,16 @@ const OVERCHARGE_ATTACK_SPEED_MULTIPLIER = 1.6;
 const ADRENALINE_MOVE_MULTIPLIER = 1.35;
 const MAGNET_PULSE_MULTIPLIER = 2.5;
 const AEGIS_SHIELD_AMOUNT = 2.5;
-export const URANIUM_CORE_ROUNDS_DURATION_SECONDS = 12;
+export const URANIUM_CORE_ROUNDS_DURATION_SECONDS = 18;
 export const URANIUM_CORE_ROUNDS_DAMAGE_MULTIPLIER = 1.25;
-export const SIEGE_LOADER_DURATION_SECONDS = 10;
+export const SIEGE_LOADER_DURATION_SECONDS = 15;
 export const SIEGE_LOADER_ATTACK_SPEED_MULTIPLIER = 1.3;
 /** A weapon counts as "slow" (and benefits from Siege Loader) once its base cycle is at least this long. */
 export const SIEGE_LOADER_SLOW_FIRE_INTERVAL_SECONDS = 1;
-export const PHASE_JACKET_DURATION_SECONDS = 8;
-export const HUNTER_OPTICS_DURATION_SECONDS = 15;
+export const PHASE_JACKET_DURATION_SECONDS = 12;
+export const HUNTER_OPTICS_DURATION_SECONDS = 22;
 export const HUNTER_OPTICS_ELITE_DAMAGE_MULTIPLIER = 1.15;
-export const LAST_STAND_STIMULANT_DURATION_SECONDS = 6;
+export const LAST_STAND_STIMULANT_DURATION_SECONDS = 9;
 export const LAST_STAND_STIMULANT_MOVE_MULTIPLIER = 1.25;
 export const LAST_STAND_STIMULANT_ATTACK_SPEED_MULTIPLIER = 1.25;
 /** Sawblade: how close an enemy must be to the orbiting blade's current position to take contact damage. */
@@ -1324,10 +1324,10 @@ const RIFT_STALKER_SPIKE_SPEED = 8;
 const RIFT_STALKER_SPIKE_RANGE_METRES = 9;
 
 const POWERUP_DURATION_SECONDS: Readonly<Record<PowerupType, number>> = Object.freeze({
-  overcharge: 6,
+  overcharge: 9,
   aegis: 0,
-  adrenaline: 5,
-  "magnet-pulse": 6,
+  adrenaline: 8,
+  "magnet-pulse": 9,
   "uranium-core-rounds": URANIUM_CORE_ROUNDS_DURATION_SECONDS,
   medkit: 0,
   "siege-loader": SIEGE_LOADER_DURATION_SECONDS,

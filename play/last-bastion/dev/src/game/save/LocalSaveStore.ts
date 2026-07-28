@@ -48,6 +48,7 @@ export interface GameSettings {
   gamepadAimSensitivity: number;
   aimAssistStrength: number;
   displaySizePercent: number;
+  radarSize: 0.75 | 1 | 1.25;
 }
 
 /**
@@ -111,7 +112,7 @@ export interface ExpeditionSave {
  * Current schema version. Single source of truth — the cloud-save policy and the
  * platform adapter gate on it, so bumping it here is the only edit a migration needs.
  */
-export const SAVE_SCHEMA_VERSION = 11;
+export const SAVE_SCHEMA_VERSION = 12;
 
 export interface SaveData {
   version: typeof SAVE_SCHEMA_VERSION;
@@ -152,6 +153,7 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     gamepadAimSensitivity: 1,
     aimAssistStrength: 0,
     displaySizePercent: 100,
+    radarSize: 1,
   }),
   controls: DEFAULT_CONTROL_BINDINGS,
   progress: Object.freeze({
@@ -343,7 +345,7 @@ function normalizeSave(parsed: unknown): SaveData {
   const version = candidate.version ?? -1;
   // Versions 1–10 migrate into the current schema. Missing fields inherit the
   // accessible defaults; unknown future versions degrade safely to defaults.
-  if (![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].includes(version)) {
+  if (![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].includes(version)) {
     return cloneSave(DEFAULT_SAVE);
   }
   return {
@@ -382,6 +384,7 @@ function normalizeSettings(value: unknown): GameSettings {
     ? value as Partial<GameSettings>
     : {};
   const uiScale = candidate.uiScale === 0.8 || candidate.uiScale === 1.2 ? candidate.uiScale : 1;
+  const radarSize = candidate.radarSize === 0.75 || candidate.radarSize === 1.25 ? candidate.radarSize : 1;
   const enemyHealthBars = candidate.enemyHealthBars === "off" || candidate.enemyHealthBars === "all"
     ? candidate.enemyHealthBars
     : "threats";
@@ -406,6 +409,7 @@ function normalizeSettings(value: unknown): GameSettings {
     gamepadAimSensitivity: readBoundedNumber(candidate.gamepadAimSensitivity, 1, 0.25, 3),
     aimAssistStrength: readBoundedNumber(candidate.aimAssistStrength, 0, 0, 1),
     displaySizePercent: readBoundedNumber(candidate.displaySizePercent, 100, 50, 200),
+    radarSize,
   };
 }
 

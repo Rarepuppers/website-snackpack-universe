@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { loadGameAssets } from "../assets/PhaserAssetLoader";
 import { cloneTransformationAffinityState } from "../transformations/TransformationAffinity";
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { ARENA_THEMES } from "../rendering/arenaThemes";
@@ -37,7 +38,13 @@ const LANE_TOP = 130;
 const LANE_GAP = 110;
 
 const MAP_BACKDROP_ASSETS: Readonly<Record<string, string>> = Object.freeze({
+  "bastion-standard": "bastion-logistics-map-backdrop-v1",
   "bastion-logistics": "bastion-logistics-map-backdrop-v1",
+  "emberfall": "machine-foundry-map-backdrop-v1",
+  "toxic-bloom": "alien-hive-map-backdrop-v1",
+  "surface-frontier": "bastion-logistics-map-backdrop-v1",
+  "starship-transit": "science-wing-map-backdrop-v1",
+  "containment-underworld": "void-approach-map-backdrop-v1",
   "alien-hive": "alien-hive-map-backdrop-v1",
   "machine-foundry": "machine-foundry-map-backdrop-v1",
   "science-wing": "science-wing-map-backdrop-v1",
@@ -99,6 +106,10 @@ export class ExpeditionScene extends Phaser.Scene {
 
   constructor() {
     super("expedition");
+  }
+
+  preload(): void {
+    loadGameAssets(this);
   }
 
   create(): void {
@@ -300,7 +311,7 @@ export class ExpeditionScene extends Phaser.Scene {
         .setDisplaySize(WIDTH, 640)
         .setAlpha(0.72));
     }
-    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2 + 10, WIDTH - 72, HEIGHT - 108, theme.backdropColor, 0.62)
+    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2 + 10, WIDTH - 72, HEIGHT - 108, theme.backdropColor, 0.46)
       .setStrokeStyle(1, theme.floorTint, 0.2));
     const seed = this.run.state.mapSeed + this.run.state.currentNodeId * 17;
     for (let index = 0; index < 9; index += 1) {
