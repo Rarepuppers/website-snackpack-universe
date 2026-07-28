@@ -746,3 +746,940 @@ Phased execution (each phase is behavior-first + tested, art briefs to Codex/ima
     **Phase 4 is now fully complete — all 6 new weapons + Event Horizon shipped**, each with real tested combat behavior, held out of the live drop pool pending their respective art batches (Event Horizon's own Batch L art already exists and is exempt from the shared Batch I atlas). See `last-bastion-log.md`'s "Phase 4" entries (Railspike through Event Horizon) for the full build order and what each one needed.
 
 Sequencing intent: cheap felt-impact first (regen, consumables, artifacts, broad events), then the enablers, then the big transformation wiring, then the slow art-gated weapons. The regen nerf is the highest impact-per-effort change and lands first.
+
+## Systems audit and action plan - 28 July 2026
+
+This audit replaces assumptions in the older roadmap with the state of the verified build. The current game is no longer a prototype shell: it has a complete eight-node expedition, two playable heroes, 21 obtainable weapons, 36 enemy definitions, seven transformation paths, 54 shrine/event cards, seven shop profiles, deterministic world-object placement, and a tested combat/economy/save loop. `npm run verify` passes 125 test files / 902 tests, typecheck, production build, browser smoke, and offline-asset validation.
+
+The next milestone is therefore **clarity, interaction, balance instrumentation, and sensory completion**, not indiscriminate content growth. Full HD and 4K remain presentation targets; the simulation stays at the existing 960 x 540 logical contract so resolution never changes weapon reach, room visibility, spawn density, or difficulty.
+
+### Decisions from this audit
+
+- **Weapon range:** already implemented and modified by items. Preserve metre-based simulation values across resolutions. Add range previews and build comparisons; tune individual outliers only from playtest data.
+- **Traps and hazards:** slime, toxic, fire, lava, electric fence, destructible ice, and explosive fuel cells already have runtime behaviour. Add electric-floor and conductive-water interactions only through a bounded environmental-reaction system. Do not add slippery ice or stacking hazard damage until readability is proven.
+- **Doors, turrets, consoles, teleporters, cryo tubes, and upgrade stations:** art/data exist, but most are deliberately excluded from ordinary placement because their interaction runtime is missing. This is the largest gameplay-content gap.
+- **Rocks, walls, cover, and props:** structural collision and deterministic placement are live. Promote only small, theme-specific subsets from O4-O30; most decoration should remain non-colliding to protect movement lanes and visual clarity.
+- **Spawn rate and maximum monsters:** current ten-wave caps top out at 56 live enemies, with 2.5-second spawn pulses. Do not increase the cap for 1080p/4K. Improve encounter composition and telemetry before increasing density.
+- **Projectiles:** hostile fire is intentionally constrained to six simultaneous projectiles and two ranged windups. Keep this readable baseline; expose harder projectile budgets through later difficulty modifiers. Add an explicit friendly-projectile/effect budget for extreme fire-rate and 12-weapon stress cases.
+- **Critical damage:** live at a 1.5 base multiplier and currently applies to direct weapon damage. Add a 100% critical-chance cap and clearer critical feedback. Status/splash criticals should remain off unless a named perk or artifact explicitly enables them.
+- **Dodge/avoidance:** live, including Chrono interactions, but currently has no hard ceiling. Add a 60% hard cap (ordinary builds target 35-45%) so stacking cannot create permanent immunity.
+- **Health bars:** keep the boss bar. Show compact bars after first damage for elites/specialists and always for minibosses; avoid bars over all 56 standard enemies. Add Off / Threats / All accessibility modes.
+- **Ammo/reloading:** do not add a global ammo system. Last Bastion's identity is cadence-driven multi-weapon bullet-heaven combat. Heat, charge, or reload can be weapon-specific mechanics where they create a distinct decision.
+- **Gold:** do not add it. Scrap remains the normal run currency; HP/max HP remains the Blood Market's exceptional body-cost currency.
+- **More heroes, acts, and event cards:** defer Alien, Cultist, Cyborg, additional sectors, and further event expansion until a complete external start-to-finish run validates the present campaign.
+
+### Priority A - correctness, readability, and balance safety
+
+A1. **Hero-aware combat HUD.** Remove Marine constants and the hard-coded `MARINE` label from the combat HUD. Read the selected hero's name, evasive cooldown/duration, ultimate cooldown, armour, shield, and passive state from the active simulation snapshot.
+
+Acceptance: Marine and Medic display correct identity and cooldown timing in fresh, resumed, and lab combats; controller and keyboard paths match.
+
+A2. **Stat safety policy.** Centralise stat limits: critical chance 100%, dodge 60%, bounded attack speed, bounded movement multiplier, non-negative range/damage multipliers, and a sustain budget for lifesteal/regen. Surface effective capped values in build UI.
+
+Acceptance: repeated copies and event/stat-card stacking cannot create immunity, infinite attack cadence, negative movement, or unbounded healing; tests cover values below, at, and above every cap.
+
+A3. **Threat health bars and combat readability.** Implement the Off / Threats / All setting, recently-hit bars, elite/specialist markers, and colour-independent shield/armour cues. Keep ordinary enemy bars hidden by default.
+
+Acceptance: maximum-density combat has no permanent wall of bars; boss/miniboss state is always legible at 960p logical, 1080p, and 4K output.
+
+A4. **Runtime telemetry and seeded balance harness.** Record peak live enemies, spawn-cap blocked time, friendly/hostile projectile peaks, effect-pool pressure, frame time percentiles, damage by source, healing, scrap earned/spent, purchases, level at boss entry, and end-run scrap.
+
+Acceptance: a deterministic multi-seed report identifies p10/p50/p90 outcomes and compares Marine/Medic without changing save data.
+
+A5. **Friendly projectile/effect budget.** Introduce a deterministic ceiling and graceful degradation for pathological multi-weapon builds. Preserve damaging simulation where possible and reduce/recycle purely visual effects first.
+
+Acceptance: the 12-weapon stress loadout remains deterministic, never grows arrays without bound, and meets the chosen 1080p/4K frame-time budget.
+
+### Priority B - world interaction vertical slice
+
+B1. Build one reusable interaction controller with keyboard, pointer, and gamepad prompts; hold progress; interruption/cancellation; range checks; state transitions; save-safe deterministic results; and accessible non-colour state cues.
+
+B2. Promote interactables in this order:
+
+1. gate button plus reinforced gate;
+2. turret console plus one temporary allied turret;
+3. trap console plus electric floor/fence;
+4. monster teleporter with disrupt-versus-destroy choice;
+5. cryo tube with rescue/reward/threat outcomes;
+6. weapon upgrade station with a timed combat trade-off;
+7. stargate only after encounter-exit and save semantics are proven.
+
+B3. Add a bounded environmental-reaction resolver:
+
+- water plus electricity creates a short charged zone;
+- fire plus cryo/water extinguishes and leaves a short recovery decal;
+- optional toxic plus fire ignition is deferred until chain limits and telegraphs pass;
+- reactions cannot recursively trigger forever, overlap without a cap, or damage through unclear art.
+
+B4. Promote O2/O2B hazard edges and O3A/O3B interactable states before importing decorative O4-O30 props. Each promoted object needs idle, armed/active, disabled/destroyed states and matching SFX.
+
+### Priority C - weapons, builds, shop, and economy
+
+C1. **Unique presentation for the 13 borrowed weapons.** Bind or create distinct field bodies, shop/inventory tiles, projectile/attack treatment, and concise attack animation for Railspike, Seeker Swarm, Cryo Lance, Tesla Coil, Flamethrower, Sawblade, Event Horizon, and the six expanded melee weapons. Event Horizon should use its existing dedicated art instead of the generic launcher mapping.
+
+C2. **Production audio S5.** Replace synthesis-only attacks for those 13 weapons with OGG/MP3 runtime assets, preserving synthesis fallback. Review transient peaks and a 60-second maximum-density mix.
+
+C3. **Build inspection screen.** Add a pause/map-accessible rack and stash view with weapon tier, damage cadence, range, crit, status/synergy tags, before/after item deltas, capped-stat disclosure, relic/artifact/transformation effects, and controller comparison.
+
+C4. **Shop clarity rather than more inventory.** Add direct before/after comparisons, current-build relevance tags, clear sell/merge consequences, and lock/reroll cost forecasting. Retain the current 3/4 active-slot hero identities until playtesting proves they are too restrictive.
+
+C5. **Economy calibration.** Run seeded projections for all seven shop profiles and Scavenger's Manifest. Target meaningful choices rather than guaranteed full purchasing: monitor purchases per shop, repair pressure, rerolls, unused offers, and final scrap. Keep one standard currency.
+
+C6. **Codex reconciliation.** Document the actual item economy, seven shop profiles, liberation nodes, level-up stat cards, 21 weapons, current relic/artifact hooks, and transformation effects. Replace tests that merely pin known documentation drift with tests against the corrected catalogue.
+
+### Priority D - enemies, encounters, map, and progression
+
+D1. Add encounter-director composition limits for summoners, hard-control sources, area-denial zones, ranged specialists, and pursuit enemies. Improve combinations before raising raw density.
+
+D2. Give Nest Weaver a dedicated Hive/event/elite encounter or retune its threat cost only after a focused playtest; do not silently force it into ordinary wave budgets.
+
+D3. Add optional difficulty mutators after baseline validation: hostile projectile budget 8/10, three ranged windups, faster spawn pulses, or elite affixes. Difficulty must remain seeded and never depend on display resolution.
+
+D4. Add route intelligence to map nodes: broad threat tags such as Swarm, Ranged, Hazard, Summoner, or Fortified. Scouting may reveal shop identity or threat family, not exact enemy counts.
+
+D5. After the base route is validated, pilot one seeded lane modifier per lane/column: Hazardous, Infested, Fortified, or Distress, with a visible reward trade-off and no unfair stacking on miniboss/boss nodes.
+
+D6. Tighten progression targets. Replace the broad level 8-20 boss-entry assertion with measured percentile goals, initially targeting approximately level 10-14 for ordinary complete routes. Ensure event-heavy routes do not starve the player of viable upgrades.
+
+D7. Do not add more event cards yet. Add recent-card suppression, run history, clearer known/unknown risk, and build-impact previews to improve the existing 54-card set.
+
+### Priority E - screens, accessibility, audio, and presentation
+
+E1. Replace the minimal pause overlay with Resume, Build, Settings, Controls, Codex, Restart Encounter (if permitted), Abandon Run, and confirmation flows.
+
+E2. Expand settings with master/SFX/music/ambience sliders, reduced motion separate from reduced flash, UI/font scale, controller sensitivity and deadzones, aim assist, enemy health-bar mode, high-contrast outlines, fullscreen, and seed copy.
+
+E3. Add an audio mixer with master, SFX, UI, music, and ambience buses; limiter/compressor; density voice priorities; subtle distance/panning; and combat ducking. Then produce S4 menu, adaptive combat, boss, victory/defeat, and broad world-family ambience.
+
+E4. Add combat feel selectively: optional 20-35 ms critical hit-stop, heavy recoil/cycle, melee anticipation/recovery, boss-phase emphasis, interactable state animation, and hazard loops. Reduced-motion settings must disable or soften all camera/flash/hit-stop accents.
+
+E5. Add transformation affinity/path progress to combat and map build views. Finish the few genuinely unconsumed transformation metrics only where a supporting system exists; do not fake player-drone, typed-status, or gravity-pulse effects.
+
+E6. Integrate Codex/Monsterdex navigation into the game shell or provide an explicit, reliable return path for the current external page.
+
+### Priority F - Full HD / 4K and delivery engineering
+
+F1. Preserve the 960 x 540 logical scene and test exact 2x/4x scaling, safe areas, pixel alignment, text resolution, pointer conversion, and controller focus at 1920 x 1080 and 3840 x 2160.
+
+F2. Split/lazy-load the approximately 2 MB game bundle and scene-specific high-resolution art. Do not preload all six map plates, labs, galleries, codex content, and held production art at startup.
+
+F3. Define asset groups: boot-critical, current hero, current world, current encounter, UI inventory, and optional close-view. The web build can use the same higher-quality assets as Steam, but must stream them by scene/theme and keep compressed runtime derivatives.
+
+F4. Establish performance gates on low-end integrated graphics and the intended Steam baseline: 60 Hz simulation, stable frame pacing, bounded memory, no display-resolution-dependent gameplay, and clean resume after focus loss.
+
+F5. Before Steam packaging, add windowed/borderless/fullscreen, resolution/output scale, VSync/frame cap, save-location/cloud policy, controller glyph switching, and platform-safe exit behaviour.
+
+### Deferred content after the external full-run verdict
+
+- Secret Alien, Cultist, and Cyborg heroes, each requiring a complete gameplay contract before portrait/animation production.
+- Additional acts/sectors and another map-background family.
+- New weapons, relics, artifacts, event cards, currencies, or global ammo.
+- More than 56 live enemies or a denser baseline hostile projectile field.
+- Large-scale promotion of O4-O30 decorative atlases.
+
+### Immediate execution order
+
+1. A1 hero-aware HUD.
+2. A2 stat caps and tests.
+3. A3 threat health bars and accessibility mode.
+4. A4 telemetry/balance harness.
+5. A5 projectile/effect budget.
+6. B1 reusable interaction controller.
+7. B2 gate/button vertical slice, then turret and electric trap.
+8. C3 build inspection plus C4 shop comparisons.
+9. C1 unique weapon presentation and C2 S5 audio.
+10. E1/E2 pause and accessibility settings.
+11. E3 S4 music/ambience and mixer.
+12. F1-F4 HD/4K scaling, loading, and performance gates.
+
+The creator's next full start-to-finish playtest should happen after items 1-5 if possible. Its findings decide balance values; they should not block the correctness and instrumentation work that makes those findings trustworthy.
+
+## Luna execution handoff - Tasks 1-12
+
+This section is the implementation contract for the next engineering pass. Follow the order below. Do not combine unrelated tasks into one large rewrite, and do not tune difficulty from intuition before Task 4 produces measurements.
+
+### Global implementation rules
+
+1. `CombatSimulation` owns deterministic gameplay. Phaser scenes may render snapshots and convert input, but may not invent health, cooldown, interaction, damage, spawn, or economy state.
+2. Pure policies belong in small modules with unit tests. Examples: stat limits, health-bar visibility, interaction transitions, telemetry accumulation, and projectile admission.
+3. Preserve seeded replay behaviour unless a task intentionally changes the simulation. When intentional, update replay fixtures in the same change and explain the digest change.
+4. Never make simulation values depend on canvas size, device pixel ratio, quality level, Full HD, or 4K.
+5. Save fields are normalized at the boundary. Never trust raw `localStorage`; old, malformed, `NaN`, infinite, and out-of-range values must fall back or clamp.
+6. Every interactive screen must support keyboard, gamepad, and pointer before it is considered complete.
+7. Every new art/audio binding keeps a code-native or synthesis fallback until production assets pass review.
+8. Run focused tests while developing, then `npm.cmd run verify` from `dev/` at each task boundary.
+9. Keep generated reports out of source control unless they are an intentionally approved baseline fixture.
+10. Do not generate Alien/Cultist/Cyborg hero art or new acts during this pass.
+
+### Dependency graph
+
+```text
+1 Hero HUD
+   |
+2 Stat policy -----> 8 Build/shop comparisons
+   |
+3 Health bars + settings schema --------------------+
+   |                                                |
+4 Telemetry -----> 5 Projectile/effect budgets      |
+                                                    |
+6 Interaction framework -> 7 Gate/turret/trap       |
+                                                    |
+8 Build/shop UI -> 10 Pause/settings <--------------+
+9 Weapon presentation/audio -> 11 Audio mixer/music
+10 Pause/settings -----------> 11 Audio mixer/music
+3/4/5/9/10/11 --------------> 12 HD/4K delivery
+```
+
+Tasks 1-5 form the first playtest gate. Tasks 6-7 form the world-interaction vertical slice. Tasks 8-11 form the product/presentation pass. Task 12 is the delivery gate, not a late visual redesign.
+
+---
+
+### Task 1 - Hero-aware combat HUD
+
+**Outcome:** the HUD derives all hero identity and action timing from the active simulation, with no Marine-specific imports or labels.
+
+**Primary files**
+
+- `src/game/combat/CombatSimulation.ts`
+- `src/game/ui/CombatHud.ts`
+- `src/game/hero/HeroDefinition.ts`
+- `src/game/hero/marine.ts`
+- `src/game/hero/medic.ts`
+- `src/game/scenes/PrototypeScene.ts`
+- new `src/game/ui/CombatHud.test.ts` if the existing cooldown tests cannot cover the view model cleanly
+
+**Architecture**
+
+Add a serializable `heroPresentation` block to `CombatSnapshot`, built from `this.hero`:
+
+```ts
+interface HeroCombatPresentation {
+  id: HeroDefinition["id"];
+  displayName: string;
+  passiveId: string;
+  passiveName: string;
+  evasiveName: "Roll" | "Slide";
+  evasiveDurationSeconds: number;
+  evasiveRecoverySeconds: number;
+  ultimateName: string;
+  ultimateCooldownSeconds: number;
+}
+```
+
+Do not import Marine or Medic into `CombatHud`. Snapshotting the selected definition keeps the HUD future-hero-safe and ensures transformation/relic cooldown modifiers can later be represented without duplicating catalogue lookup logic.
+
+**Steps**
+
+1. Add a display label to the evasive profile or derive it once in simulation from `presentation`.
+2. Expose effective evasive recovery/cooldown duration, not merely the base hero duration. If `HeroMotionController` already owns the effective value, expose it through a read-only method rather than recomputing it in the HUD.
+3. Expose effective ultimate cooldown duration after modifiers.
+4. Replace `MARINE`, `MARINE DOWN`, and Marine cooldown constants in `CombatHud`.
+5. Render passive state contextually:
+   - Marine: `ENTRENCHED` only while active.
+   - Medic: `TRIAGE n/6`, using `medicTriageHits`.
+6. Use the hero display name in defeat and stats copy.
+7. Verify fresh run, resumed expedition, direct lab URL, Marine, and Medic.
+
+**Tests**
+
+- Snapshot reports correct names and base timings for both heroes.
+- Cooldown fraction uses the matching hero and effective modifier.
+- Medic defeat text never says Marine.
+- Existing `MedicIntegration.test.ts`, cooldown tests, and replay tests remain green.
+
+**Acceptance gate**
+
+No import of `MARINE` or `MEDIC` remains in `CombatHud.ts`; both heroes display accurate cooldowns and identity throughout a fight.
+
+---
+
+### Task 2 - Central stat limits and sustain safety
+
+**Outcome:** stacking cannot produce immunity, invalid movement, runaway cadence, or unbounded healing, while raw build values remain available for transparent UI.
+
+**Primary files**
+
+- `src/game/stats/PlayerStatBlock.ts`
+- new `src/game/stats/PlayerStatLimits.ts`
+- `src/game/combat/CombatSimulation.ts`
+- `src/game/content/itemCatalog.ts`
+- `src/game/stats/PlayerStatBlock.test.ts`
+- `src/game/combat/PlayerStatDamage.test.ts`
+- `src/game/combat/PlayerStatSurvival.test.ts`
+- `src/game/combat/ItemCombatIntegration.test.ts`
+
+**Initial policy**
+
+These are provisional release safety bounds, not final balance targets:
+
+| Stat | Effective rule |
+|---|---|
+| Critical chance | clamp 0-100% |
+| Critical multiplier | clamp x1-x4 |
+| Dodge | clamp 0-60% |
+| Item/global attack-speed factor | clamp x0.25-x3 before other named temporary multipliers |
+| Final attack-speed factor | emergency clamp x0.20-x4 |
+| Movement factor | clamp x0.50-x1.75 |
+| Range factor | clamp x0.25-x3 |
+| Lifesteal | clamp 0-25% of direct damage |
+| Lifesteal throughput | max 20% of max HP healed per rolling second |
+| Passive regeneration | max 10% of max HP per second |
+| Outgoing damage | minimum x0.10; no ordinary maximum yet |
+
+Keep named invulnerability effects, Phase Jacket, Null Field, shield, and dodge separate. The 60% dodge cap applies only to probabilistic dodge.
+
+**Architecture**
+
+`resolvePlayerStats` continues to return the raw additive build. Add:
+
+```ts
+interface EffectivePlayerStats {
+  raw: PlayerStatBlock;
+  effective: PlayerStatBlock;
+  capped: readonly (keyof PlayerStatBlock)[];
+}
+
+function applyPlayerStatLimits(raw: PlayerStatBlock): EffectivePlayerStats;
+```
+
+Combat reads `effective`. Build/shop UI may show raw, effective, and cap markers. Do not destructively clamp persisted item grants because later balance patches must be able to reinterpret existing saves.
+
+For lifesteal throughput, add a deterministic one-second accumulator/window in simulation state. Do not use wall-clock time.
+
+**Steps**
+
+1. Create constants and pure clamp functions in `PlayerStatLimits.ts`.
+2. Apply limits once when player stats refresh, rather than at scattered read sites.
+3. Remove or replace local `Math.max(0.1, ...)` calculations with named effective factors.
+4. Clamp critical chance before RNG comparison. Preserve the zero-chance no-RNG rule.
+5. Clamp dodge before RNG comparison. Preserve deterministic RNG ordering for builds without dodge.
+6. Add deterministic lifesteal throughput accounting.
+7. Expose effective stats and `capped` keys through a build snapshot/view model for Task 8.
+8. Document these limits in the in-game Codex later; do not bury them only in code.
+
+**Edge cases**
+
+- Negative item stacks, edited saves, infinity, `NaN`, duplicate items, berserker/overclock temporary multipliers, slowed movement, and reduced attack speed.
+- A capped stat must not display a larger effective value than combat uses.
+- Named temporary buffs may reach the final emergency cap but may not bypass it.
+
+**Acceptance gate**
+
+Dedicated tests prove below-cap, exact-cap, and above-cap behaviour for every limited stat. A deliberately abusive item build cannot become permanently unhittable or generate an unbounded healing rate.
+
+---
+
+### Task 3 - Threat health bars and forward-compatible settings schema
+
+**Outcome:** health information is readable without covering the horde, and one save migration establishes the settings needed by Tasks 10-12.
+
+**Primary files**
+
+- `src/game/save/LocalSaveStore.ts`
+- `src/game/save/LocalSaveStore.test.ts`
+- `src/game/shell/ScreenFlow.ts`
+- `src/game/shell/ShellScene.ts`
+- `src/game/combat/CombatSimulation.ts`
+- `src/game/scenes/PrototypeScene.ts`
+- new `src/game/rendering/EnemyHealthBars.ts`
+- new `src/game/rendering/EnemyHealthBars.test.ts`
+
+**Save schema**
+
+Bump schema 10 to 11 once. Expand `GameSettings` now, even where later tasks initially use defaults:
+
+```ts
+enemyHealthBars: "off" | "threats" | "all";
+reducedMotionEnabled: boolean;
+highContrastOutlinesEnabled: boolean;
+uiScale: 0.8 | 1 | 1.2;
+masterVolume: number;
+sfxVolume: number;
+uiVolume: number;
+musicVolume: number;
+ambienceVolume: number;
+gamepadMoveDeadzone: number;
+gamepadAimDeadzone: number;
+gamepadAimSensitivity: number;
+aimAssistStrength: number;
+displaySizePercent: number;
+```
+
+Keep `soundEnabled` for migration compatibility during Tasks 3-10. Task 11 maps `false` to master mute without deleting the legacy field until a later schema.
+
+Defaults: Threats, reduced motion off, high contrast off, UI scale 1, all volume fields 1, move deadzone 0.18, aim deadzone 0.25, sensitivity 1, aim assist 0, display size 100.
+
+Normalize numeric settings with finite checks and explicit bounds. Redesign `SETTINGS_ROWS` as discriminated descriptors (`toggle`, `choice`, `range`, `action`) because the current boolean-only reducer cannot support these fields.
+
+**Health-bar policy**
+
+- Boss/miniboss: always visible unless mode is Off.
+- Elite and specialist threats: visible in Threats mode after damage, during shield damage, during a status, or while winding up a major attack.
+- Standard enemies: visible only in All mode and only after damage/status.
+- Recently damaged visibility: 2.25 simulation seconds.
+- Fade: presentation-only 180 ms; reduced motion uses immediate alpha changes.
+- Shield and health use separate segments; armour is a compact icon/pip, not another full bar.
+- Never create/destroy bars every frame. Pool views by enemy id and recycle them.
+
+Add `rank` and a stable threat classification to `EnemySnapshot` if not already present. Classification should come from enemy catalogue/director data, not a hard-coded renderer list.
+
+**Tests**
+
+- Save v10 migrates to all new defaults.
+- Invalid enums/numbers normalize safely.
+- Pure visibility policy covers all three modes and rank/state combinations.
+- Removed enemies release pooled views.
+- Maximum-density snapshot does not create more views than live enemies.
+
+**Acceptance gate**
+
+At 56 enemies in default Threats mode, only tactically important/recently-hit targets receive bars; health bars remain aligned at 960 x 540, 1080p, and 4K.
+
+---
+
+### Task 4 - Deterministic telemetry and balance harness
+
+**Outcome:** balance decisions can be made from repeatable distributions rather than one anecdotal run.
+
+**Primary files**
+
+- `src/game/combat/CombatSimulation.ts`
+- `src/game/run/RunSummary.ts`
+- new `src/game/telemetry/CombatTelemetry.ts`
+- new `src/game/telemetry/CombatTelemetry.test.ts`
+- new `src/game/telemetry/BalanceAudit.ts`
+- new `scripts/run-balance-audit.mjs`
+- `package.json`
+
+**Do not** persist high-frequency telemetry in normal player saves. Lifetime progress remains in `LocalSaveStore`; detailed balance telemetry is an opt-in debug/test artifact.
+
+**Metrics**
+
+- Per encounter: elapsed simulation time, peak/average live enemies, spawn-cap blocked seconds, threat spawned, enemy composition by pressure role, peak friendly/hostile projectiles, suppressed projectile/effect counts, damage dealt by weapon/type/crit/status, damage taken by source/type, dodge/block/shield counts, healing by source, XP spawned/collected/lost, level-ups, scrap earned.
+- Per route: node types, shop profiles, offers/purchases/sales/rerolls/bans, repair spend, item rarity, event choices, level entering boss, scrap entering/leaving each shop, final scrap, victory/defeat and cause.
+- Performance samples belong to the scene layer: update/render frame duration p50/p95/p99, longest frame, active render objects, and memory where browser APIs permit. Never feed these into simulation.
+
+**Architecture**
+
+- `CombatTelemetryAccumulator` is deterministic and receives explicit simulation events/delta.
+- `FramePerformanceSampler` is presentation-only and uses `performance.now()`.
+- `BalanceAudit` runs seeded simulations with scripted policies. Use at least cautious, greedy-damage, sustain-first, and random legal-choice policies.
+- Add `npm run balance:audit`; default 100 seeds x 2 heroes, with CLI options for seeds and policies.
+- Print concise percentiles to console and optionally write JSON only when `--output` is supplied.
+
+**Steps**
+
+1. Extend existing `DensityTelemetrySnapshot` rather than duplicating its counters.
+2. Add friendly projectile peak and budget counters for Task 5.
+3. Add combat event source metadata only where required; keep the event union serializable.
+4. Build a deterministic legal decision policy for level-ups, shops, map nodes, and events.
+5. Assert invariants in the harness: no deadlock, no negative resources, no invalid decision, bounded arrays.
+6. Establish an initial checked-in expectation test using broad ranges, not fragile exact balance numbers.
+
+**Acceptance gate**
+
+The same seed/policy produces byte-equivalent gameplay telemetry on repeated runs. The report shows p10/p50/p90 by hero for boss-entry level, final scrap, purchases, damage taken, peak density, and win rate.
+
+---
+
+### Task 5 - Friendly projectile and effect budgets
+
+**Outcome:** extreme builds have bounded simulation and rendering cost without changing ordinary builds.
+
+**Primary files**
+
+- `src/game/combat/CombatSimulation.ts`
+- new `src/game/combat/FriendlyProjectileBudget.ts`
+- new `src/game/combat/FriendlyProjectileBudget.test.ts`
+- `src/game/effects/VisualEffectPool.ts`
+- `src/game/rendering/FloatingDamageNumbers.ts`
+- `src/game/scenes/PrototypeScene.ts`
+- stress/replay tests
+
+**Policy**
+
+- Normal active friendly projectile soft budget: 256.
+- Emergency hard simulation cap: 512.
+- Twelve-weapon lab may use the same hard cap; it does not receive different gameplay.
+- Visual projectile views: render all through soft budget; above it, prioritize nearest/on-screen/recent unique-heavy projectiles and skip only redundant views.
+- Effect pool: keep the existing 96 normal / 192 stress capacity, but use one combined total cap rather than allowing 96 circles plus 96 sprites independently.
+- Damage numbers remain capped/merged; expose suppression counters.
+
+The hard cap is an emergency invariant, not a balance mechanic. If ordinary seeded runs approach it, reduce attack cadence/projectile lifetime or add weapon-specific batching before silently discarding meaningful damage.
+
+**Admission**
+
+1. Remove dead/expired projectiles before admitting new ones.
+2. Admit up to the hard cap in stable weapon-slot and spawn order.
+3. Count suppressed spawns by weapon.
+4. Never recycle a live damaging projectile into a new shot.
+5. Do not consume a projectile id or mutate RNG for a rejected spawn beyond what the firing action already consumed.
+6. Beam, melee, orbit, and persistent field systems retain their own explicit caps.
+
+**Tests**
+
+- Ordinary reference runs produce zero suppression and unchanged replay digest.
+- Abusive cadence/range build never exceeds 512.
+- Suppression ordering is deterministic.
+- Visual pools never exceed configured totals.
+- Scene destroys views for simulation projectiles that expire or are suppressed.
+
+**Acceptance gate**
+
+Ten-minute stress simulation completes with bounded arrays and no unhandled frame growth. Any non-zero suppression in standard campaign telemetry is treated as a failing balance warning.
+
+---
+
+### Task 6 - Reusable deterministic interaction framework
+
+**Outcome:** one tested interaction state machine supports every future door, console, station, and rescue object.
+
+**Primary files**
+
+- `src/game/arena/WorldObjectCatalog.ts`
+- `src/game/arena/WorldObjectPlacement.ts`
+- new `src/game/interaction/WorldInteraction.ts`
+- new `src/game/interaction/WorldInteraction.test.ts`
+- `src/game/combat/CombatSimulation.ts`
+- `src/game/input/PlayerIntent.ts`
+- `src/game/input/ControlBindings.ts`
+- `src/game/scenes/PrototypeScene.ts`
+- `src/game/ui/CombatHud.ts`
+- save tests only if interaction state ever crosses an encounter boundary
+
+**Input contract**
+
+Add a dedicated `interactHeld` and `interactPressed` intent. Default keyboard should be `E`; default gamepad should be an unused face button chosen after checking existing bindings. Normalize old bindings without overwriting user customizations.
+
+**Pure state machine**
+
+```ts
+type InteractionPhase = "available" | "holding" | "completed" | "cooldown" | "disabled";
+
+interface WorldInteractionState {
+  objectId: string;
+  definitionId: string;
+  phase: InteractionPhase;
+  progressSeconds: number;
+  requiredSeconds: number;
+  cooldownRemainingSeconds: number;
+  completionCount: number;
+}
+```
+
+`stepWorldInteraction` receives state, player distance, held/pressed input, interruption flags, and delta. It returns next state plus zero or one semantic completion command. It does not know Phaser.
+
+**Rules**
+
+- Prompt range is object footprint plus 1.1 m.
+- Only one candidate can be active: nearest valid object, then stable object id tie-break.
+- Moving out of range or taking health damage cancels hold progress by default.
+- Shield-only damage does not cancel unless an interaction definition requests it.
+- Pause freezes progress; focus loss pauses before simulation advances.
+- Completion is idempotent.
+- Destruction disables interaction immediately.
+- Each catalogue definition declares repeatable/non-repeatable, interruption policy, cooldown, and prompt verb.
+- Snapshot exposes candidate, phase, progress fraction, prompt, and input binding.
+
+**Presentation**
+
+HUD prompt near the player but clamped to safe area; progress ring; icon plus text; code-native fallback; reduced motion removes pulsing. Audio cues: available tick once, hold loop with voice cap, complete, cancel, unavailable.
+
+**Acceptance gate**
+
+Framework tests cover start, hold, release, movement cancel, damage cancel, pause, destruction, tie-breaks, completion idempotency, large delta, zero duration, and controller/pointer/keyboard parity. No objective-anchor object is globally placed yet.
+
+---
+
+### Task 7 - Gate, allied turret, and electric trap vertical slice
+
+**Outcome:** three encounter-authored interactions prove traversal, friendly structures, and hazards without destabilizing procedural furnishing.
+
+**Primary files**
+
+- `src/game/arena/WorldObjectCatalog.ts`
+- `src/game/arena/WorldObjectPlacement.ts`
+- new `src/game/arena/EncounterObjectiveLayout.ts`
+- `src/game/combat/CombatSimulation.ts`
+- `src/game/rendering/ArenaRenderer.ts`
+- `src/game/assets/GameAssetManifest.ts`
+- `src/game/scenes/PrototypeScene.ts`
+- new focused integration tests for each object
+
+**Architecture**
+
+Do not remove the global filter that excludes `objective-anchor` interactions. Create seeded authored objective layouts layered on top of ordinary furnishing. A layout reserves player spawn clearance, enemy spawn lanes, objective access, and gate traversal before decoration is placed.
+
+**7A Gate**
+
+- One button owns one gate id.
+- Holding the button for 0.75 s opens the gate.
+- Opening changes collision/projectile blocking atomically at the simulation step boundary.
+- Gate may be destroyed only if the encounter explicitly allows it.
+- Opening cannot trap the player or close again during this slice.
+- Validate reachability on both sides with a simple grid/flood-fill test.
+
+**7B Allied turret**
+
+- Console activation: 1.0 s.
+- Duration: 20 s; cooldown: no reactivation in the first slice.
+- Turret targets nearest visible enemy within 12 m, tie by enemy id.
+- Cadence: 0.6 s; physical damage: 2 base; cannot crit/lifesteal or trigger weapon perks.
+- Uses projectile budget reserved for structures, maximum 16 active.
+- Engineering may remain inactive until a dedicated item contract is designed.
+- Turret damage receives its own telemetry source and never counts as a player weapon.
+
+**7C Electric trap**
+
+- Console activation: 0.8 s.
+- Active: 6 s; one activation in the first slice.
+- Telegraph for 0.75 s before damage begins.
+- Tick cadence: 0.25 s; applies shock buildup and 1 damage per tick to enemies.
+- Player receives clear hazard damage at a reduced but meaningful value; no invisible immunity.
+- Maximum one active electric trap zone per encounter.
+
+**Environmental reaction seam**
+
+Represent electric zones using typed hazard data so later water conduction can expand radius through a pure resolver. Do not implement water in this task.
+
+**Acceptance gate**
+
+Each interaction is reachable, deterministic, controller-complete, impossible to trigger twice accidentally, and cannot softlock the encounter. Collision, target selection, friendly damage attribution, telegraph timing, and pause behaviour have integration tests.
+
+---
+
+### Task 8 - Build inspection and shop comparison
+
+**Outcome:** players can understand what they own, what is capped, and what a purchase changes before committing.
+
+**Primary files**
+
+- new `src/game/build/BuildViewModel.ts`
+- new `src/game/build/BuildViewModel.test.ts`
+- new `src/game/ui/BuildOverlay.ts`
+- `src/game/scenes/PrototypeScene.ts`
+- `src/game/scenes/ExpeditionScene.ts`
+- shop decision code in `CombatSimulation.ts`
+- `src/game/content/itemCatalog.ts`
+- `src/game/content/weaponCatalog.ts`
+- `src/game/ui/WeaponTileFrames.ts`
+
+**View-model contract**
+
+Build a pure `createBuildViewModel(snapshot)` returning:
+
+- hero and perk;
+- rack/stash with weapon name, tier, class, attack pattern, damage type, effective damage, cadence, DPS estimate, reach, projectile count, crit expectation, and status role;
+- raw/effective/capped player stats;
+- upgrades and slot use;
+- relics, artifact, transformation path/affinity;
+- active buffs;
+- concise synergy tags generated from mechanics, never hand-authored recommendation claims.
+
+DPS is labelled `estimated` and must account for attack pattern limitations; do not compare sustained beam/orbit/melee with a misleading projectile-only formula.
+
+**Shop comparison**
+
+Create a non-mutating preview by cloning the relevant pure build state and applying the candidate purchase through the same stat fold used by combat. Never instantiate a second Phaser scene and never mutate the live simulation to preview.
+
+Show:
+
+- scrap before/after;
+- health/shield repair result;
+- raw/effective stat delta and cap loss;
+- weapon slot destination, merge result, or stash overflow;
+- item duplicates and cumulative total;
+- `helps current build` tags based only on explicit mechanics;
+- irreversible sell/ban warnings.
+
+**Navigation**
+
+The overlay is read-only during combat and map. Shop mode may invoke management actions already supported by simulation. Task 10 later mounts the same overlay from Pause.
+
+**Acceptance gate**
+
+Every shop offer has a valid preview. Preview and actual purchase produce identical resulting stats/inventory. No purchase can be made while the comparison is showing unless the user explicitly confirms it.
+
+---
+
+### Task 9 - Unique weapon presentation and S5 audio
+
+**Outcome:** all 21 weapons are identifiable in the ring, inventory, shop, effects, and sound.
+
+**Primary files**
+
+- `src/game/assets/GameAssetManifest.ts`
+- `src/game/assets/GameAssetManifest.test.ts`
+- `src/game/ui/WeaponTileFrames.ts`
+- `src/game/ui/WeaponTileFrames.test.ts`
+- `src/game/scenes/PrototypeScene.ts`
+- `src/game/audio/AudioCueMap.ts`
+- `src/game/audio/ProductionAudioCatalog.ts`
+- `src/game/audio/ProductionAudioAssets.ts`
+- audio validation/encode scripts
+
+**First inventory existing art**
+
+Before generating anything, inspect production-test batches and bind approved dedicated assets already present. Event Horizon already has dedicated art and must stop borrowing the Grenade Tube. Do not regenerate an asset solely because its runtime map is stale.
+
+**Required identities**
+
+Railspike, Seeker Swarm, Cryo Lance, Tesla Coil, Flamethrower, Sawblade, Event Horizon, Combat Knife, Machete, Fire Axe, Shock Baton, Breaching Maul, Plasma Saber.
+
+Each needs:
+
+- unique body silhouette at combat size;
+- unique tile frame;
+- muzzle/contact/beam/orbit treatment;
+- idle/firing or anticipation/contact/recovery frames as appropriate;
+- colour-independent silhouette differences;
+- one-shot or loop audio family with 2-3 variants where cadence permits.
+
+Do not force all assets into the old eight-frame Batch I atlas. Prefer a second manifest-backed atlas with an explicit `weaponId -> {assetId, frame}` map.
+
+**S5 audio pipeline**
+
+1. Define master filenames and cue roles.
+2. Produce WAV masters.
+3. Encode OGG plus MP3 fallback with the established PowerShell pipeline.
+4. Validate duration, channels, sample rate, derivative presence, EBU R128 metrics, and true peak.
+5. Register URLs and cue families.
+6. Keep synthesis fallback for load/decode failure.
+7. Run isolated A/B review and 60-second maximum-density mix.
+
+**Acceptance gate**
+
+Placeholder tests are replaced by exhaustive unique mappings. A blind silhouette/tile review can distinguish every weapon family. All derivatives validate and no cue exceeds its voice/cadence budget.
+
+---
+
+### Task 10 - Full pause menu and accessibility/settings UI
+
+**Outcome:** gameplay can be safely paused, inspected, configured, restarted/abandoned, and resumed with complete input parity.
+
+**Primary files**
+
+- `src/game/scenes/PrototypeScene.ts`
+- new `src/game/ui/PauseMenu.ts`
+- `src/game/ui/BuildOverlay.ts`
+- `src/game/shell/ScreenFlow.ts`
+- `src/game/shell/ShellScene.ts`
+- `src/game/save/LocalSaveStore.ts`
+- input mapper/binding files
+- focus-pause tests
+
+**Pause state machine**
+
+Use explicit modes:
+
+```text
+closed -> root -> build/settings/controls/codex/confirm-restart/confirm-abandon
+```
+
+Opening Pause freezes simulation delta, interaction progress, cooldowns, hazards, audio loops, tweens that communicate gameplay timing, and input-to-fire. Rendering may continue.
+
+Menu:
+
+- Resume
+- Build
+- Settings
+- Controls
+- Codex/Monsterdex
+- Restart Encounter only in labs/Quick Drop unless campaign rules explicitly allow it
+- Abandon Run with hold-to-confirm
+
+Campaign restart must not duplicate rewards or roll back to farmable state. Default recommendation: no restart encounter in expedition; abandon returns to title and clears the expedition save only after confirmation.
+
+**Settings UI**
+
+Render the schema-11 descriptor rows with left/right range changes, confirm for toggles/actions, visible value labels, reset category, and immediate preview. Add:
+
+- reduced motion;
+- enemy health-bar mode;
+- high-contrast outlines;
+- UI scale;
+- master/SFX/UI/music/ambience volume;
+- controller deadzones/sensitivity;
+- aim assist;
+- display size;
+- fullscreen action where browser permits;
+- copy run seed action on map/pause.
+
+Aim assist initial implementation should only rotate gamepad aim modestly toward a nearby visible target inside a narrow cone. It must never alter mouse aim and must default to zero.
+
+**Acceptance gate**
+
+Focus loss always pauses. No damage/cooldown/interaction advances while paused. Escape/back unwinds one menu level. Abandon/restart require confirmation and cannot duplicate run rewards. All settings survive reload and malformed saves.
+
+---
+
+### Task 11 - Audio mixer, S4 music, ambience, and density control
+
+**Outcome:** audio has proper buses, user controls, adaptive music, ambience, spatial treatment, and overload protection.
+
+**Primary files**
+
+- refactor `src/game/audio/WebAudioSynth.ts`
+- new `src/game/audio/AudioMixer.ts`
+- new `src/game/audio/AudioMixer.test.ts`
+- new `src/game/audio/MusicDirector.ts`
+- `src/game/audio/ProductionAudioAssets.ts`
+- `src/game/audio/ProductionAudioCatalog.ts`
+- scenes that initiate music/ambience
+- audio scripts and production README
+
+**Graph**
+
+```text
+sources
+  -> SFX / UI / Music / Ambience gain
+  -> master compressor/limiter
+  -> master gain
+  -> destination
+```
+
+Volume mapping should use a perceptual curve, not linear amplitude (`gain = value^2` is adequate initially). Master mute suspends or zeros the graph without destroying decoded buffers.
+
+**Refactor**
+
+Keep `WebAudioSynth.play(cue)` compatibility while moving context, buses, buffer cache, voice accounting, and output routing into `AudioMixer`. Every current direct `context.destination` connection must route through a bus.
+
+**Voice priorities**
+
+1. player damage/critical warning/boss warning;
+2. interactable completion and UI confirmation;
+3. elite attacks and nearby dangerous projectiles;
+4. player weapons;
+5. ordinary enemy attacks;
+6. ambience/debris.
+
+At density, reject/steal lowest-priority oldest voices. Preserve rotary/beam loops as one voice each. Pause ramps combat loops down over 80 ms and resumes without restarting music position.
+
+**Spatial treatment**
+
+Use subtle stereo pan and distance attenuation for world SFX only. UI and player-critical feedback remain centred. Clamp pan so headphone users do not lose important warnings.
+
+**Adaptive S4**
+
+- title/menu loop;
+- calm combat layer;
+- swarm/intensity layer crossfaded from density telemetry;
+- boss loop;
+- victory and defeat stingers;
+- broad ambience families rather than 12 bespoke loops initially: Bastion/Industrial, Hive/Biomass, Science/Cryo, Surface/Toxic, Void/Underworld.
+
+Music intensity uses hysteresis and minimum hold times so it does not flutter around thresholds. Audio decisions are presentation-only and never affect the simulation.
+
+**Acceptance gate**
+
+All five sliders work live and persist. Muting one bus leaves others intact. Pause/resume is click-free. A maximum-density mix preserves warnings and player damage feedback without clipping. OGG failure falls back to MP3, then synthesis where available.
+
+---
+
+### Task 12 - Full HD/4K scaling, lazy loading, and performance gates
+
+**Outcome:** web and future Steam output share high-quality assets while preserving logical gameplay, fast boot, bounded memory, and stable frame pacing.
+
+**Primary files**
+
+- `src/main.ts`
+- `src/game/config.ts`
+- `src/game/rendering/DisplayScaling.ts`
+- `src/game/rendering/DisplayScaling.test.ts`
+- `src/game/assets/GameAssetManifest.ts`
+- `src/game/assets/PhaserAssetLoader.ts`
+- new scene/asset-group modules
+- `vite.config.ts`
+- smoke/offline scripts
+
+**Resolution contract**
+
+- Logical game: 960 x 540.
+- Full HD: exact 2x output.
+- 4K: exact 4x output.
+- World camera, metres-to-pixels, aim conversion, weapon range, spawn area, and UI information density do not change.
+- UI scale changes layout sizing within safe-area constraints; it does not change world zoom.
+
+**Asset groups**
+
+Split the monolithic manifest/loader into:
+
+1. boot shell and common UI;
+2. selected hero;
+3. current arena/world family;
+4. current encounter enemies/boss;
+5. current weapon set;
+6. shop/build/event UI;
+7. optional gallery/lab;
+8. close-view/4K presentation.
+
+Each group is idempotent and reports load failure. Runtime falls back to code-native presentation where permitted; required gameplay sprites produce a clear recoverable error screen rather than a blank scene.
+
+**Code splitting**
+
+`game/config.ts` currently imports every scene eagerly. Move route selection into an async bootstrap that dynamically imports only the selected entry scene. Gallery and labs must form separate chunks. Separate high-resolution map plates and optional close views from boot-critical imports.
+
+**Display work**
+
+1. Replace the temporary `?size=` ownership with schema-11 `displaySizePercent`, retaining the URL only as a review override.
+2. Reapply scale on resize, device-pixel-ratio changes, fullscreen changes, and monitor changes.
+3. Test pointer-to-world conversion at fractional Windows scaling.
+4. Test text resolution and pixel snapping at DPR 1, 1.25, 1.5, 2, Full HD, ultrawide, and 4K.
+5. Letterbox rather than revealing extra world area.
+6. Add safe-area overflow tests for UI scale 1.2 and long labels.
+
+**Performance gates**
+
+- 60 Hz target with fixed/deterministic simulation step.
+- p95 frame below 16.7 ms on the agreed Steam baseline; browser low-end target may be documented separately.
+- No standard-run projectile/effect suppression.
+- Stable memory after three consecutive encounters and scene transitions.
+- No duplicate audio/image decode after revisiting a scene.
+- Boot-critical transfer and time-to-title recorded before and after splitting.
+- Vite chunk warning removed for optional gallery/lab content; any remaining large gameplay chunk must be explained.
+
+**Verification matrix**
+
+Run:
+
+- normal title-to-run browser flow;
+- direct map/event/summary routes;
+- all documented lab routes;
+- offline boot;
+- refresh during map and after completed node;
+- focus loss and resume;
+- keyboard/mouse and gamepad;
+- Full HD and 4K;
+- DPR 125% Windows scaling;
+- OGG failure and missing optional art fallback.
+
+**Acceptance gate**
+
+`npm.cmd run verify` passes; browser smoke/offline checks cover lazy chunks; Full HD/4K screenshots show crisp text and aligned UI; gameplay telemetry for the same seed is identical at every tested resolution.
+
+---
+
+### Required task-boundary handoff format
+
+After each task Luna should report:
+
+1. files changed;
+2. architecture decision actually used;
+3. tests added/updated;
+4. focused test result;
+5. full `npm.cmd run verify` result;
+6. replay-digest change and reason, if any;
+7. assets/audio still waiting for creator review;
+8. the next task and any dependency newly discovered.
+
+### Stop conditions
+
+Stop and request creator input only when:
+
+- an art/audio choice has two materially different approved directions;
+- a balance report contradicts the provisional cap/budget policy;
+- an interaction cannot be made reachable without changing the authored arena;
+- a save migration would discard valid user progress;
+- Full HD/4K performance requires reducing visible quality below the approved art target.
+
+Do not stop for ordinary refactors, test fixture updates, schema normalization, placeholder fallbacks, or implementation details already decided above.
