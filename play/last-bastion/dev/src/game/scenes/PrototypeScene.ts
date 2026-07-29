@@ -1106,6 +1106,10 @@ export class PrototypeScene extends Phaser.Scene {
             this.emitAuthoredEffect(2, event.position, 80, 0.45, 0.82, Math.atan2(event.direction.y, event.direction.x), "bulwark-rotary-effects-v1");
             break;
           }
+          if (event.weaponId === "event-horizon") {
+            this.emitAuthoredEffect(1, event.position, 140, 0.5, 1.05, Math.atan2(event.direction.y, event.direction.x), "event-horizon-effects-v1");
+            break;
+          }
           if (event.weaponId === "grenade-tube") break;
           this.emitAuthoredEffect(
             event.weaponId === "scattergun" ? 0 : event.weaponId === "arc-carbine" ? 5 : 5,
@@ -1742,7 +1746,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "synapse-herald-effects-v1" | "assembly-prime-effects-v1" | "storm-regent-effects-v1" | "abomination-prime-biomass-v1" | "abomination-prime-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "aurum-hoarder-effects-v1" | "corrupted-marine-effects-v1" | "nest-effects-v1" | "storm-effects-v1" | "machine-scrap-skitterer-effects-v1" | "machine-arc-warden-effects-v1" | "machine-cyborg-reclaimer-effects-v1" | "machine-foundry-effects-v1" | "telegraph-small-v1" | "destructible-terrain-effects-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "synapse-herald-effects-v1" | "assembly-prime-effects-v1" | "storm-regent-effects-v1" | "abomination-prime-biomass-v1" | "abomination-prime-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "event-horizon-effects-v1" | "aurum-hoarder-effects-v1" | "corrupted-marine-effects-v1" | "nest-effects-v1" | "storm-effects-v1" | "machine-scrap-skitterer-effects-v1" | "machine-arc-warden-effects-v1" | "machine-cyborg-reclaimer-effects-v1" | "machine-foundry-effects-v1" | "telegraph-small-v1" | "destructible-terrain-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -1919,7 +1923,10 @@ export class PrototypeScene extends Phaser.Scene {
       let view = this.weaponViews.get(weapon.instanceId);
       if (!view) {
         const assetId = weaponAssetId(weapon.weaponId);
-        view = usesBladeBody(weapon.weaponId) && this.useMarineArt
+        view = weapon.weaponId === "event-horizon" && this.useMarineArt
+          ? this.add.sprite(0, 0, "event-horizon-v1", 1).setDisplaySize(72, 72)
+            .setOrigin(GAME_ASSETS["event-horizon-v1"].pivot.x, GAME_ASSETS["event-horizon-v1"].pivot.y)
+          : usesBladeBody(weapon.weaponId) && this.useMarineArt
           ? this.add.sprite(0, 0, "patrol-blade-v1", 1).setDisplaySize(58, 58)
           : usesBladeBody(weapon.weaponId)
             ? this.add.triangle(0, 0, -18, -5, 18, 0, -18, 5, weaponColor(weapon.weaponId))
@@ -1992,8 +1999,8 @@ export class PrototypeScene extends Phaser.Scene {
     const weapon = this.weaponViews.get(instanceId);
     if (!(weapon instanceof Phaser.GameObjects.Sprite)) return;
     weapon.setFrame(2);
-    const recoverDelay = weaponId === "grenade-tube" ? 150 : weaponId === "bolt-carbine" ? 110 : 55;
-    const readyDelay = weaponId === "grenade-tube" ? 520 : weaponId === "bolt-carbine" ? 300 : 120;
+    const recoverDelay = weaponId === "grenade-tube" ? 150 : weaponId === "event-horizon" ? 170 : weaponId === "bolt-carbine" ? 110 : 55;
+    const readyDelay = weaponId === "grenade-tube" ? 520 : weaponId === "event-horizon" ? 420 : weaponId === "bolt-carbine" ? 300 : 120;
     this.time.delayedCall(recoverDelay, () => {
       if (weapon.active) weapon.setFrame(3);
     });
@@ -3067,6 +3074,8 @@ export class PrototypeScene extends Phaser.Scene {
             ? { texture: "bulwark-rotary-effects-v1", frame: 1, scale: 0.34 }
             : projectile.weaponId === "grenade-tube"
               ? { texture: "grenade-tube-effects-v1", frame: 0, scale: 0.48 }
+              : projectile.weaponId === "event-horizon"
+                ? { texture: "event-horizon-effects-v1", frame: 0, scale: 0.58 }
           : projectile.weaponId === "scattergun"
           ? { texture: "batch-b-effects-v1", frame: 1, scale: 0.24 }
           : projectile.weaponId === "arc-carbine"
@@ -3089,6 +3098,7 @@ export class PrototypeScene extends Phaser.Scene {
           : projectile.weaponId === "injector-carbine" ? 0.5
           : projectile.weaponId === "bulwark-rotary-cannon" ? 0.34
             : projectile.weaponId === "grenade-tube" ? 0.48
+              : projectile.weaponId === "event-horizon" ? 0.58
               : projectile.weaponId === "scattergun" ? 0.24 : 0.3) * visibilityScale);
         view.clearTint();
       } else {
@@ -3101,7 +3111,7 @@ export class PrototypeScene extends Phaser.Scene {
           this.projectileHaloViews.set(projectile.id, halo);
         }
         halo.setPosition(view.x, view.y)
-          .setRadius((projectile.weaponId === "grenade-tube" ? 8 : projectile.weaponId === "bolt-carbine" ? 6 : 4.5)
+          .setRadius((projectile.weaponId === "grenade-tube" || projectile.weaponId === "event-horizon" ? 8 : projectile.weaponId === "bolt-carbine" ? 6 : 4.5)
             * (this.settings.highContrastOutlinesEnabled ? 1.35 : 1))
           .setFillStyle(projectileHaloColor(projectile.weaponId), this.settings.highContrastOutlinesEnabled ? 0.58 : 0.32)
           .setVisible(view.visible);
@@ -4914,8 +4924,8 @@ function usesBladeBody(weaponId: WeaponId): boolean {
   return WEAPON_BODY_ASSETS[weaponId] === "patrol-blade-v1";
 }
 
-function isProductionWeaponSheet(weaponId: WeaponId): weaponId is "bolt-carbine" | "injector-carbine" | "bulwark-rotary-cannon" | "grenade-tube" {
-  return weaponId === "bolt-carbine" || weaponId === "injector-carbine" || weaponId === "bulwark-rotary-cannon" || weaponId === "grenade-tube";
+function isProductionWeaponSheet(weaponId: WeaponId): weaponId is "bolt-carbine" | "injector-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "event-horizon" {
+  return weaponId === "bolt-carbine" || weaponId === "injector-carbine" || weaponId === "bulwark-rotary-cannon" || weaponId === "grenade-tube" || weaponId === "event-horizon";
 }
 
 function applyManifestOrigin(

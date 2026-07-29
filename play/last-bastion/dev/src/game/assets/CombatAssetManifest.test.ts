@@ -46,6 +46,8 @@ describe("combatAssetsForSession", () => {
     expect(ids.has("scrap-shop-panel-v1")).toBe(true);
     expect(ids.has("batch-i-weapon-tiles-v1")).toBe(true);
     expect(ids.has("batch-i-hotkey-tiles-v1")).toBe(true);
+    expect(ids.has("batch-b-effects-v1")).toBe(true);
+    expect(ids.has("batch-c-effects-v1")).toBe(true);
     expect(ids.has("quartermaster-v1")).toBe(true);
   });
 
@@ -103,5 +105,44 @@ describe("combatAssetsForSession", () => {
         expect(ids.has(arenaTheme.decalTexture as GameAssetId), `${arenaTheme.id} decals`).toBe(true);
       }
     }
+  });
+
+  it("loads only the current encounter's body, auxiliary and effect art", () => {
+    const ids = new Set(combatAssetsForSession({
+      arenaTheme: arenaThemeById("machine-foundry")!,
+      heroId: "marine",
+      productionArt: true,
+      helmet: false,
+      worldObjectAssetIds: [],
+      enemyTypes: ["foundry-fabricator", "foundry-drone"],
+      miniBossKinds: [],
+      eliteKinds: [],
+    }).map((asset) => asset.id));
+
+    expect(ids.has("machine-foundry-fabricator-v1")).toBe(true);
+    expect(ids.has("machine-foundry-drone-v1")).toBe(true);
+    expect(ids.has("machine-foundry-pad-v1")).toBe(true);
+    expect(ids.has("machine-foundry-turret-v1")).toBe(true);
+    expect(ids.has("machine-foundry-effects-v1")).toBe(true);
+    expect(ids.has("storm-regent-v1")).toBe(false);
+    expect(ids.has("storm-regent-effects-v1")).toBe(false);
+    expect(ids.has("rift-stalker-effects-v1")).toBe(false);
+  });
+
+  it("keeps nested encounter support art with its parent roster", () => {
+    const ids = new Set(combatAssetsForSession({
+      arenaTheme: arenaThemeById("toxic-bloom")!,
+      heroId: "marine",
+      productionArt: true,
+      helmet: false,
+      worldObjectAssetIds: [],
+      enemyTypes: ["nest-weaver"],
+    }).map((asset) => asset.id));
+
+    expect(ids.has("nest-weaver-v1")).toBe(true);
+    expect(ids.has("nest-pod-v1")).toBe(true);
+    expect(ids.has("swarm-scuttler-v1")).toBe(true);
+    expect(ids.has("nest-effects-v1")).toBe(true);
+    expect(ids.has("machine-foundry-effects-v1")).toBe(false);
   });
 });

@@ -125,6 +125,44 @@ const ENEMY_BODY_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
   "razorlord-v1", "blightspitter-v1", "quillback-matriarch-v1",
 ]);
 
+const ENCOUNTER_SPECIFIC_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
+  ...ENEMY_BODY_ASSET_IDS,
+  "brood-warden-effects-v1", "rift-stalker-effects-v1", "synapse-herald-effects-v1",
+  "assembly-prime-pad-v1", "assembly-prime-effects-v1",
+  "storm-conductive-node-v1", "storm-regent-effects-v1",
+  "abomination-prime-biomass-v1", "abomination-prime-effects-v1",
+  "ripper-effects-v1", "razor-scuttler-effects-v1", "quillback-effects-v1",
+  "spinewheel-effects-v1", "tether-bloom-effects-v1",
+  "bastion-eater-nodes-v1", "bastion-eater-effects-v1", "bastion-eater-environment-v1",
+  "aurum-hoarder-effects-v1", "corrupted-marine-effects-v1",
+  "nest-effects-v1", "storm-node-v1", "storm-effects-v1",
+  "machine-scrap-skitterer-effects-v1", "machine-arc-warden-effects-v1",
+  "machine-cyborg-reclaimer-effects-v1", "machine-foundry-pad-v1",
+  "machine-foundry-drone-v1", "machine-foundry-turret-v1", "machine-foundry-effects-v1",
+]);
+
+const ENCOUNTER_ASSETS_BY_TYPE: Readonly<Record<string, readonly GameAssetId[]>> = Object.freeze({
+  scuttler: ["batch-b-effects-v1"], "egg-cluster": ["batch-c-effects-v1"], "brain-blob": ["batch-c-effects-v1"],
+  "slime-spitter": ["batch-b-effects-v1"], "carapace-scuttler": ["batch-b-effects-v1"],
+  "siege-crusher": ["batch-b-effects-v1"], "blast-mite": ["batch-c-effects-v1"], "warp-flanker": ["batch-c-effects-v1"],
+  "brood-warden": ["brood-warden-effects-v1"], "rift-stalker": ["rift-stalker-effects-v1"],
+  "synapse-herald": ["synapse-herald-effects-v1"], "assembly-prime": ["assembly-prime-pad-v1", "assembly-prime-effects-v1"],
+  "storm-regent": ["storm-conductive-node-v1", "storm-regent-effects-v1"],
+  "abomination-prime": ["abomination-prime-biomass-v1", "abomination-prime-effects-v1"],
+  ripper: ["ripper-effects-v1"], "razor-scuttler": ["razor-scuttler-effects-v1"], quillback: ["quillback-effects-v1"],
+  spinewheel: ["spinewheel-effects-v1"], "tether-bloom": ["tether-bloom-effects-v1"],
+  "bastion-eater": ["bastion-eater-nodes-v1", "bastion-eater-effects-v1", "bastion-eater-environment-v1"],
+  "aurum-hoarder": ["aurum-hoarder-effects-v1"], "infected-survivor": ["batch-c-effects-v1"],
+  "corrupted-marine": ["corrupted-marine-effects-v1"], abomination: ["batch-c-effects-v1"],
+  "nest-weaver": ["nest-effects-v1"], "nest-pod": ["nest-effects-v1"], "nest-hatchling": ["nest-effects-v1"],
+  "swarm-scuttler": ["nest-effects-v1"], "storm-savant": ["storm-node-v1", "storm-effects-v1"],
+  "storm-node": ["storm-effects-v1"], "scrap-skitterer": ["machine-scrap-skitterer-effects-v1"],
+  "arc-warden": ["machine-arc-warden-effects-v1"], "cyborg-reclaimer": ["machine-cyborg-reclaimer-effects-v1"],
+  "foundry-fabricator": ["machine-foundry-pad-v1", "machine-foundry-drone-v1", "machine-foundry-turret-v1", "machine-foundry-effects-v1"],
+  "foundry-pad": ["machine-foundry-effects-v1"], "foundry-drone": ["machine-foundry-effects-v1"],
+  "foundry-turret": ["machine-foundry-effects-v1"],
+});
+
 const ENEMY_BODY_BY_TYPE: Readonly<Record<string, readonly GameAssetId[]>> = Object.freeze({
   scuttler: ["scuttler-v1"],
   "egg-cluster": ["egg-cluster-v1"],
@@ -198,7 +236,7 @@ export function combatAssetsForSession(
   for (const asset of GAME_ASSET_MANIFEST) {
     if (ROUTE_ONLY_ASSET_IDS.has(asset.id) || GALLERY_ONLY_ASSET_IDS.has(asset.id)) continue;
     if (HERO_ASSET_IDS.has(asset.id) || ARENA_ASSET_IDS.has(asset.id) || WORLD_OBJECT_ASSET_IDS.has(asset.id)) continue;
-    if (restrictEnemyBodies && ENEMY_BODY_ASSET_IDS.has(asset.id) && !requiredEnemyBodyIds.has(asset.id)) continue;
+    if (restrictEnemyBodies && ENCOUNTER_SPECIFIC_ASSET_IDS.has(asset.id) && !requiredEnemyBodyIds.has(asset.id)) continue;
     selectedIds.add(asset.id);
   }
 
@@ -226,6 +264,7 @@ function requiredEnemyBodyIdsForSelection(selection: CombatAssetSelection): Read
 
   for (const enemyType of selection.enemyTypes) {
     for (const assetId of ENEMY_BODY_BY_TYPE[enemyType] ?? []) required.add(assetId);
+    for (const assetId of ENCOUNTER_ASSETS_BY_TYPE[enemyType] ?? []) required.add(assetId);
     if (enemyType === "nest-weaver") {
       required.add("nest-pod-v1");
       required.add("swarm-scuttler-v1");

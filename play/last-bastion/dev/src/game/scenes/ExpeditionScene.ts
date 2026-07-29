@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { mapBackdropAssetForTheme } from "../assets/MapAssetManifest";
 import { queueGameAssets } from "../assets/PhaserAssetQueue";
+import { likelyNextNodeBackdropAsset } from "../assets/NextNodeBackdropPreload";
 import { cloneTransformationAffinityState } from "../transformations/TransformationAffinity";
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { ARENA_THEMES } from "../rendering/arenaThemes";
@@ -89,6 +90,7 @@ export class ExpeditionScene extends Phaser.Scene {
   private travelling = false;
   private pulseTime = 0;
   private mapRevealBonusColumns = 0;
+  private backdropPreloadKey = "";
 
   constructor() {
     super("expedition");
@@ -111,6 +113,7 @@ export class ExpeditionScene extends Phaser.Scene {
     window.addEventListener("keydown", this.handleKey);
     this.events.once("shutdown", () => window.removeEventListener("keydown", this.handleKey));
     this.render();
+    window.setTimeout(() => this.preloadLikelyNextBackdrop(), 0);
     if (isExpeditionComplete(this.run)) {
       this.saveStore.clearExpedition();
     } else if (hasPendingEncounter(this.run)) {
@@ -178,6 +181,7 @@ export class ExpeditionScene extends Phaser.Scene {
     }
     this.focusIndex = (this.focusIndex + step + selectable.length) % selectable.length;
     this.render();
+    window.setTimeout(() => this.preloadLikelyNextBackdrop(), 0);
   }
 
   private travelToFocused(): void {
@@ -202,6 +206,7 @@ export class ExpeditionScene extends Phaser.Scene {
     this.focusIndex = 0;
     this.autosave();
     this.render();
+    window.setTimeout(() => this.preloadLikelyNextBackdrop(), 0);
 
     this.travelling = true;
     const token = this.add.triangle(from.x, from.y, 0, -9, 8, 7, -8, 7, 0xffd36b)
@@ -315,6 +320,19 @@ export class ExpeditionScene extends Phaser.Scene {
   private currentBackdropAsset() {
     const currentNode = expeditionNodeById(this.run.map, this.run.state.currentNodeId);
     return mapBackdropAssetForTheme(currentNode?.themeId ?? "bastion-standard");
+  }
+
+  /** Preloads one likely destination after the current map has rendered. */
+  private preloadLikelyNextBackdrop(): void {
+    if (this.travelling || !this.scene.isActive()) return;
+    const selectable = selectableNodeIds(this.run);
+    const focusedId = selectable[this.focusIndex];
+    const asset = likelyNextNodeBackdropAsset(this.run.map, this.run.state.currentNodeId, selectable, focusedId);
+    if (asset.id === this.currentBackdropAsset().id || asset.id === this.backdropPreloadKey || this.textures.exists(asset.id)) return;
+    this.backdropPreloadKey = asset.id;
+    if (queueGameAssets(this, [asset]) > 0 && !this.load.isLoading()) {
+      this.load.start();
+    }
   }
 
   private renderEdges(): void {
