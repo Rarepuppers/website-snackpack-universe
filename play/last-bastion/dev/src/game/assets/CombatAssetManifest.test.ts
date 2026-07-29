@@ -1,0 +1,107 @@
+import { describe, expect, it } from "vitest";
+import type { WorldObjectArtAssetId } from "../arena/WorldObjectCatalog";
+import { ARENA_THEMES, arenaThemeById } from "../rendering/arenaThemes";
+import { combatAssetsForSession } from "./CombatAssetManifest";
+import { GAME_ASSET_MANIFEST, type GameAssetId } from "./GameAssetManifest";
+
+describe("combatAssetsForSession", () => {
+  it("loads only the active arena, selected hero and present object families", () => {
+    const assets = combatAssetsForSession({
+      arenaTheme: arenaThemeById("machine-foundry")!,
+      heroId: "medic",
+      productionArt: true,
+      helmet: true,
+      worldObjectAssetIds: ["world-objects-military-v1"],
+    });
+    const ids = new Set(assets.map((asset) => asset.id));
+
+    expect(ids.has("machine-foundry-floor-v1")).toBe(true);
+    expect(ids.has("machine-foundry-boundary-v1")).toBe(true);
+    expect(ids.has("machine-foundry-fixtures-v1")).toBe(true);
+    expect(ids.has("machine-foundry-decals-v1")).toBe(true);
+    expect(ids.has("bastion-logistics-floor-v1")).toBe(false);
+    expect(ids.has("alien-hive-floor-v1")).toBe(false);
+    expect(ids.has("medic-base-v1")).toBe(true);
+    expect(ids.has("medic-helmet-v1")).toBe(true);
+    expect(ids.has("marine-base-v1")).toBe(false);
+    expect(ids.has("world-objects-military-v1")).toBe(true);
+    expect(ids.has("world-objects-natural-v1")).toBe(false);
+    expect(ids.has("world-objects-organic-v1")).toBe(false);
+  });
+
+  it("excludes route and gallery art while retaining transition-safe combat UI", () => {
+    const assets = combatAssetsForSession({
+      arenaTheme: arenaThemeById("bastion-standard")!,
+      heroId: "marine",
+      productionArt: true,
+      helmet: false,
+      worldObjectAssetIds: [],
+    });
+    const ids = new Set(assets.map((asset) => asset.id));
+
+    expect(ids.has("marine-select-portrait-v1")).toBe(false);
+    expect(ids.has("bastion-logistics-map-backdrop-v1")).toBe(false);
+    expect(ids.has("siege-crusher-portrait-v1")).toBe(false);
+    expect(ids.has("action-tiles-v1")).toBe(false);
+    expect(ids.has("scrap-shop-panel-v1")).toBe(true);
+    expect(ids.has("batch-i-weapon-tiles-v1")).toBe(true);
+    expect(ids.has("batch-i-hotkey-tiles-v1")).toBe(true);
+    expect(ids.has("quartermaster-v1")).toBe(true);
+  });
+
+  it("uses no authored hero, arena or object art in placeholder mode", () => {
+    const objectIds: WorldObjectArtAssetId[] = [
+      "world-objects-military-v1",
+      "world-objects-natural-v1",
+      "world-objects-organic-v1",
+    ];
+    const assets = combatAssetsForSession({
+      arenaTheme: arenaThemeById("toxic-bloom")!,
+      heroId: "marine",
+      productionArt: false,
+      helmet: true,
+      worldObjectAssetIds: objectIds,
+    });
+    const ids = new Set(assets.map((asset) => asset.id));
+
+    expect(ids.has("marine-base-v1")).toBe(false);
+    expect(ids.has("marine-helmet-v1")).toBe(false);
+    expect(ids.has("toxic-bloom-floor-v1")).toBe(false);
+    expect(objectIds.some((id) => ids.has(id))).toBe(false);
+  });
+
+  it("is stable, unique and smaller than the full catalog", () => {
+    const selection = {
+      arenaTheme: arenaThemeById("surface-frontier")!,
+      heroId: "marine" as const,
+      productionArt: true,
+      helmet: true,
+      worldObjectAssetIds: ["world-objects-natural-v1"] as const,
+    };
+    const first = combatAssetsForSession(selection);
+    const second = combatAssetsForSession(selection);
+
+    expect(first).toEqual(second);
+    expect(new Set(first.map((asset) => asset.id)).size).toBe(first.length);
+    expect(first.length).toBeLessThan(GAME_ASSET_MANIFEST.length);
+  });
+
+  it("registers every authored texture used by every arena theme", () => {
+    for (const arenaTheme of ARENA_THEMES) {
+      const ids = new Set(combatAssetsForSession({
+        arenaTheme,
+        heroId: "marine",
+        productionArt: true,
+        helmet: true,
+        worldObjectAssetIds: [],
+      }).map((asset) => asset.id));
+
+      expect(ids.has(arenaTheme.floorTexture as GameAssetId), `${arenaTheme.id} floor`).toBe(true);
+      expect(ids.has(arenaTheme.boundaryTexture as GameAssetId), `${arenaTheme.id} boundary`).toBe(true);
+      expect(ids.has(arenaTheme.obstacleTexture as GameAssetId), `${arenaTheme.id} obstacle`).toBe(true);
+      if (arenaTheme.decalTexture) {
+        expect(ids.has(arenaTheme.decalTexture as GameAssetId), `${arenaTheme.id} decals`).toBe(true);
+      }
+    }
+  });
+});

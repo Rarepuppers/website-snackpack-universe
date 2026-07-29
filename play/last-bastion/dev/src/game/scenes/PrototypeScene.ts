@@ -36,10 +36,12 @@ import {
   eggClusterFrame,
   offsetGaitRow,
 } from "../rendering/EnemyVisualState";
-import { loadGameAssets } from "../assets/PhaserAssetLoader";
+import { combatAssetsForSession } from "../assets/CombatAssetManifest";
+import { queueGameAssets } from "../assets/PhaserAssetQueue";
+import { attachAssetLoadFeedback, type AssetLoadFeedbackHandle } from "../assets/SceneAssetLoadFeedback";
 import { GAME_ASSETS, type GameAssetId } from "../assets/GameAssetManifest";
 import { renderArena } from "../rendering/ArenaRenderer";
-import { obstacleFrameIndex } from "../rendering/TerrainVisualState";
+import { obstacleFrameIndex, worldObjectArtAssetId } from "../rendering/TerrainVisualState";
 import { miniBossSpriteScale } from "../rendering/MiniBossPresentation";
 import { arenaThemeById, arenaThemeVariant, containmentUnderworldTheme, pickArenaTheme, starshipTransitTheme, surfaceFrontierTheme } from "../rendering/arenaThemes";
 import { uiSafeArea, uiTextResolution } from "../rendering/DisplayScaling";
@@ -209,6 +211,8 @@ export class PrototypeScene extends Phaser.Scene {
   private damageDirectionIndicator: Phaser.GameObjects.Triangle | null = null;
   private lowHealthFrame: Phaser.GameObjects.Graphics | null = null;
   private readonly arenaTheme = resolveArenaTheme();
+  private assetLoadFeedback: AssetLoadFeedbackHandle | null = null;
+  private assetRetryListener: ((event: KeyboardEvent) => void) | null = null;
   private readonly synth = new WebAudioSynth(this.settings.soundEnabled);
   private haptics!: CombatHaptics;
   private runOutcomeRecorded = false;
@@ -228,10 +232,43 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   preload(): void {
-    loadGameAssets(this);
+    const worldObjectAssetIds = [...new Set(
+      this.simulation.arena.obstacles
+        .map((obstacle) => worldObjectArtAssetId(obstacle))
+        .filter((assetId): assetId is NonNullable<typeof assetId> => assetId !== null),
+    )];
+    const assets = combatAssetsForSession({
+      arenaTheme: this.arenaTheme,
+      heroId: this.simulation.snapshot().heroId,
+      productionArt: this.useMarineArt,
+      helmet: this.useMarineHelmet,
+      worldObjectAssetIds,
+      ...(this.scenario !== null || this.expeditionContext !== null || this.stressProfile !== null
+        ? {
+          enemyTypes: this.simulation.snapshot().enemies.map((enemy) => enemy.type),
+          eliteKinds: this.simulation.snapshot().enemies.flatMap((enemy) => enemy.eliteKind ? [enemy.eliteKind] : []),
+          miniBossKinds: this.simulation.snapshot().enemies.flatMap((enemy) => enemy.miniBossKind ? [enemy.miniBossKind] : []),
+        }
+        : {}),
+    });
+    this.assetLoadFeedback = attachAssetLoadFeedback(this, "LOADING COMBAT ART");
+    (window as unknown as { __combatAssetAudit?: object }).__combatAssetAudit = {
+      count: assets.length,
+      ids: assets.map((asset) => asset.id),
+      themeId: this.arenaTheme.id,
+      worldObjectAssetIds,
+    };
+    queueGameAssets(this, assets);
+    this.load.once(Phaser.Loader.Events.COMPLETE, () => this.assetLoadFeedback?.markComplete());
   }
 
   create(): void {
+    if (this.assetLoadFeedback?.failedKeys.length) {
+      this.renderAssetLoadFailure();
+      return;
+    }
+    this.assetLoadFeedback?.destroy();
+    this.assetLoadFeedback = null;
     if (new URLSearchParams(window.location.search).get("expedition") === "1" && !this.expeditionContext) {
       window.location.href = "?screen=map";
       return;
@@ -386,6 +423,44 @@ export class PrototypeScene extends Phaser.Scene {
     document.removeEventListener("visibilitychange", this.onVisibilityChange);
     this.pauseOverlay?.destroy();
     this.eventFeed?.destroy();
+  }
+
+  private renderAssetLoadFailure(): void {
+    const failed = [...(this.assetLoadFeedback?.failedKeys ?? [])];
+    this.assetLoadFeedback?.destroy();
+    this.assetLoadFeedback = null;
+    const width = this.scale.width || 960;
+    const height = this.scale.height || 540;
+    this.add.rectangle(width / 2, height / 2, width, height, 0x0b121c, 0.98).setDepth(10000);
+    this.add.rectangle(width / 2, height / 2, 530, 210, 0x1d2938)
+      .setStrokeStyle(2, 0xff9a52).setDepth(10001);
+    this.add.text(width / 2, height / 2 - 70, "COMBAT ART UNAVAILABLE", {
+      color: "#ff9a52", fontFamily: "monospace", fontSize: "20px",
+    }).setOrigin(0.5).setDepth(10002);
+    this.add.text(width / 2, height / 2 - 30, `${failed.length} file${failed.length === 1 ? "" : "s"} failed to load.`, {
+      color: "#e8e2d4", fontFamily: "monospace", fontSize: "12px",
+    }).setOrigin(0.5).setDepth(10002);
+    this.add.text(width / 2, height / 2 + 6, failed.slice(0, 3).join("\n"), {
+      color: "#8fa1b3", fontFamily: "monospace", fontSize: "9px", align: "center",
+    }).setOrigin(0.5).setDepth(10002);
+    this.add.text(width / 2, height / 2 + 63, "PRESS R OR ENTER TO RETRY", {
+      color: "#68e4e8", fontFamily: "monospace", fontSize: "13px",
+    }).setOrigin(0.5).setDepth(10002);
+    this.assetRetryListener = (event: KeyboardEvent): void => {
+      if (event.code !== "KeyR" && event.code !== "Enter") return;
+      event.preventDefault();
+      const listener = this.assetRetryListener;
+      this.assetLoadFeedback?.destroy();
+      this.assetLoadFeedback = null;
+      this.assetRetryListener = null;
+      if (listener) window.removeEventListener("keydown", listener);
+      this.scene.restart();
+    };
+    window.addEventListener("keydown", this.assetRetryListener);
+    this.events.once("shutdown", () => {
+      if (this.assetRetryListener) window.removeEventListener("keydown", this.assetRetryListener);
+      this.assetRetryListener = null;
+    });
   }
 
   private openPauseMenu(): void {
