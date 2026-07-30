@@ -50,8 +50,14 @@ import {
   type ArenaHazard,
   type ArenaObstacle,
 } from "../arena/ArenaDefinition";
-import { worldObjectById } from "../arena/WorldObjectCatalog";
+import { worldObjectById, type InteractionEffect } from "../arena/WorldObjectCatalog";
 import { placeWorldObjects, SPAWN_CLEARANCE_METRES } from "../arena/WorldObjectPlacement";
+import {
+  chooseWorldInteractionCandidate,
+  INTERACTION_PROMPT_MARGIN_METRES,
+  stepWorldInteraction,
+  type WorldInteractionState,
+} from "../interaction/WorldInteraction";
 import {
   STATUS_BY_DAMAGE_TYPE,
   STATUS_BUILDUP_THRESHOLD,
@@ -369,6 +375,17 @@ export interface DecisionOption {
   affordable?: boolean;
 }
 
+export interface WorldInteractionPrompt {
+  objectId: string;
+  worldObjectId: string;
+  /** Imperative label, e.g. "OPEN" or "HARVEST". */
+  verb: string;
+  position: Vector2Data;
+  /** 0..1 hold progress, so the HUD can draw a ring without recomputing it. */
+  progress: number;
+  holding: boolean;
+}
+
 export interface PendingDecision {
   kind: DecisionKind;
   title: string;
@@ -478,6 +495,13 @@ export type CombatEvent =
   | { type: "player-revived"; position: Vector2Data }
   | { type: "status-applied"; position: Vector2Data; status: StatusEffectType }
   | { type: "powerup-collected"; position: Vector2Data; powerupType: PowerupType }
+  | {
+    type: "world-interaction-completed";
+    objectId: string;
+    worldObjectId: string;
+    effect: InteractionEffect["type"];
+    position: Vector2Data;
+  }
   | { type: "kit-activated"; position: Vector2Data; powerupType: "uranium-core-rounds" }
   | { type: "warp-arrival"; position: Vector2Data }
   | { type: "ripper-sweep"; position: Vector2Data; direction: Vector2Data; reachMetres: number }
@@ -799,6 +823,8 @@ export interface CombatSnapshot {
   level: number;
   experience: number;
   experienceForNextLevel: number;
+  /** The interactable the player is close enough to act on, if any. */
+  worldInteractionPrompt: WorldInteractionPrompt | null;
   upgradeLevels: readonly { id: UpgradeId; level: number }[];
   upgradeSlots: readonly UpgradeSlotSnapshot[];
   pendingDecision: PendingDecision | null;
@@ -1475,6 +1501,8 @@ export class CombatSimulation {
    */
   private uniqueWeaponsUnlocked = false;
   private readonly obstacleHealth = new Map<string, number>();
+  /** Hold-to-act state per placed interactable, keyed by obstacle id. */
+  private readonly worldInteractions = new Map<string, WorldInteractionState>();
   /** Fractional carry so hazard damage-per-second lands in whole, readable ticks. */
   private hazardDamageAccumulator = 0;
   private readonly obstacleHitRemainingSeconds = new Map<string, number>();
@@ -1555,6 +1583,7 @@ export class CombatSimulation {
     this.upgradeSlotCapacity = { ...this.hero.upgradeSlots };
     this.playerShield = this.hero.defence.maxShield;
     this.arena = options.arena ?? furnishArena(BASTION_ARENA, options);
+    this.seedWorldInteractions();
     this.widthMetres = options.widthMetres ?? this.arena.widthMetres;
     this.heightMetres = options.heightMetres ?? this.arena.heightMetres;
     this.playerPosition = {
@@ -1853,6 +1882,7 @@ export class CombatSimulation {
 
     this.updateEnemies(delta);
     this.updateSupplyChests(intent);
+    this.updateWorldInteractions(intent, delta);
     this.updateProjectiles(delta);
     this.updateEnemyProjectiles(delta);
     this.updateRainOfSpines(delta);
@@ -2457,6 +2487,7 @@ export class CombatSimulation {
       level: this.level,
       experience: this.experience,
       experienceForNextLevel: this.experienceThreshold(),
+      worldInteractionPrompt: this.worldInteractionPrompt(),
       upgradeLevels: [...this.upgradeLevels.entries()].map(([id, level]) => ({ id, level })),
       upgradeSlots: (Object.keys(this.upgradeSlotCapacity) as UpgradeCategory[]).map((category) => ({
         category,
@@ -4317,6 +4348,154 @@ export class CombatSimulation {
         this.playerShield + this.defence.shieldRechargePerSecond
           * this.relicModifiers.shieldRechargeMultiplier * this.transformationModifiers.shieldRechargeMultiplier * deltaSeconds,
       );
+    }
+  }
+
+  /**
+   * The prompt the HUD draws. Reports the nearest actionable object in range,
+   * which is the same object `updateWorldInteractions` advances — so what the
+   * player is told and what the hold actually affects cannot disagree.
+   */
+  private worldInteractionPrompt(): WorldInteractionPrompt | null {
+    let best: WorldInteractionPrompt | null = null;
+    let bestDistance = Number.POSITIVE_INFINITY;
+
+    for (const [objectId, state] of this.worldInteractions) {
+      if (state.phase === "disabled" || state.phase === "completed") continue;
+      const obstacle = this.arena.obstacles.find((candidate) => candidate.id === objectId);
+      const definition = obstacle?.worldObjectId ? worldObjectById(obstacle.worldObjectId) : null;
+      if (!obstacle || !definition?.interaction) continue;
+      if ((this.obstacleHealth.get(objectId) ?? obstacleMaxDurability(obstacle)) <= 0) continue;
+
+      const centre = obstacleCentre(obstacle);
+      const separation = distance(this.playerPosition, centre);
+      const reach = Math.max(obstacle.width, obstacle.height) / 2 + INTERACTION_PROMPT_MARGIN_METRES;
+      if (separation > reach || separation >= bestDistance) continue;
+
+      bestDistance = separation;
+      best = {
+        objectId,
+        worldObjectId: definition.id,
+        verb: interactionPromptVerb(definition.interaction.effect),
+        position: { ...centre },
+        progress: state.requiredSeconds > 0 ? state.progressSeconds / state.requiredSeconds : 0,
+        holding: state.phase === "holding",
+      };
+    }
+    return best;
+  }
+
+  /** One interaction state per placed object that carries an interaction. */
+  private seedWorldInteractions(): void {
+    this.worldInteractions.clear();
+    for (const obstacle of this.arena.obstacles) {
+      const definition = obstacle.worldObjectId ? worldObjectById(obstacle.worldObjectId) : null;
+      if (!definition?.interaction) continue;
+      this.worldInteractions.set(obstacle.id, {
+        objectId: obstacle.id,
+        definitionId: definition.id,
+        phase: "available",
+        progressSeconds: 0,
+        requiredSeconds: definition.interaction.seconds,
+        cooldownRemainingSeconds: 0,
+        completionCount: 0,
+      });
+    }
+  }
+
+  /**
+   * The world-object interaction verb (31 July 2026).
+   *
+   * `interaction/WorldInteraction.ts` had held a complete, tested hold-to-act
+   * state machine since it was authored, imported by nothing. This is the
+   * layer that drives it: one candidate at a time — the nearest valid object —
+   * so holding the key never progresses two things at once.
+   *
+   * Objects whose durability has run out are reported destroyed, which the
+   * state machine turns into `disabled`. A crate you blew open is not a crate
+   * you can also unlock.
+   */
+  private updateWorldInteractions(intent: PlayerIntent, deltaSeconds: number): void {
+    if (this.worldInteractions.size === 0) return;
+
+    const candidates: { objectId: string; definitionId: string; distanceMetres: number; valid: boolean }[] = [];
+    for (const [objectId, state] of this.worldInteractions) {
+      const obstacle = this.arena.obstacles.find((candidate) => candidate.id === objectId);
+      if (!obstacle) continue;
+      candidates.push({
+        objectId,
+        definitionId: state.definitionId,
+        distanceMetres: distance(this.playerPosition, obstacleCentre(obstacle)),
+        valid: state.phase !== "disabled" && state.phase !== "completed",
+      });
+    }
+    const focus = chooseWorldInteractionCandidate(candidates);
+
+    for (const [objectId, state] of this.worldInteractions) {
+      const obstacle = this.arena.obstacles.find((candidate) => candidate.id === objectId);
+      const definition = obstacle?.worldObjectId ? worldObjectById(obstacle.worldObjectId) : null;
+      if (!obstacle || !definition?.interaction) continue;
+
+      const destroyed = (this.obstacleHealth.get(objectId) ?? obstacleMaxDurability(obstacle)) <= 0;
+      const isFocus = focus?.objectId === objectId;
+      const centre = obstacleCentre(obstacle);
+      const result = stepWorldInteraction({
+        state,
+        definition: {
+          id: definition.id,
+          requiredSeconds: definition.interaction.seconds,
+          repeatable: false,
+          cooldownSeconds: 0,
+          promptVerb: interactionPromptVerb(definition.interaction.effect),
+        },
+        distanceMetres: distance(this.playerPosition, centre),
+        footprintMetres: Math.max(obstacle.width, obstacle.height) / 2,
+        // Only the focused object advances, so two overlapping prompts cannot
+        // both tick off one key press.
+        interactHeld: isFocus && Boolean(intent.interactHeld),
+        interactPressed: isFocus && intent.interactPressed,
+        destroyed,
+        paused: this.status !== "combat",
+        deltaSeconds,
+      });
+      this.worldInteractions.set(objectId, result.state);
+      if (result.completion) {
+        this.applyInteractionEffect(definition.interaction.effect, obstacle, centre);
+        this.frameEvents.push({
+          type: "world-interaction-completed",
+          objectId,
+          worldObjectId: definition.id,
+          effect: definition.interaction.effect.type,
+          position: { ...centre },
+        });
+      }
+    }
+  }
+
+  private applyInteractionEffect(
+    effect: InteractionEffect,
+    obstacle: ArenaDefinition["obstacles"][number],
+    position: Vector2Data,
+  ): void {
+    switch (effect.type) {
+      case "open-loot":
+        // Same payout shape as a sealed supply chest, so the two read as one
+        // idea rather than two economies.
+        this.spawnPowerup("medkit", position);
+        this.secureScrap(SUPPLY_CHEST_SCRAP, "supply-chest", position);
+        break;
+      case "harvest-scrap":
+        this.secureScrap(effect.scrap, "world-object", position);
+        break;
+      case "open-gate":
+        // Opening a gate is exactly destroying it as far as collision goes; the
+        // distinction is that it costs no ammunition and leaves no rubble.
+        this.obstacleHealth.set(obstacle.id, 0);
+        break;
+      default:
+        // Unreachable: `IMPLEMENTED_INTERACTION_EFFECTS` gates placement, so an
+        // object carrying an unimplemented verb never reaches a room.
+        break;
     }
   }
 
@@ -10089,6 +10268,24 @@ function distanceToSegment(point: Vector2Data, from: Vector2Data, to: Vector2Dat
  * its switch is a fixed anchor, so it is kept and its geometry declared
  * off-limits to placement.
  */
+function obstacleCentre(obstacle: ArenaObstacle): Vector2Data {
+  return { x: obstacle.x + obstacle.width / 2, y: obstacle.y + obstacle.height / 2 };
+}
+
+/** Prompt wording for the HUD. Kept beside the effects so they stay in step. */
+function interactionPromptVerb(effect: InteractionEffect): string {
+  switch (effect.type) {
+    case "open-loot": return "OPEN";
+    case "open-gate": return "OPEN GATE";
+    case "harvest-scrap": return "HARVEST";
+    case "disrupt-spawner": return "DISRUPT";
+    case "activate-stargate": return "ACTIVATE";
+    case "toggle-system": return "TOGGLE";
+    case "release-cryo": return "RELEASE";
+    case "upgrade-weapon": return "UPGRADE";
+  }
+}
+
 function furnishArena(base: ArenaDefinition, options: CombatSimulationOptions): ArenaDefinition {
   const theme = options.worldObjectTheme ?? options.expeditionEncounter?.themeId;
   if (!theme) return base;

@@ -111,9 +111,13 @@ describe("versioned fixed-step replay fixture", () => {
     // encounters drop different powerups and the pickups alter player state.
     // Still deterministic — the offset is a pure function of the descriptor
     // seed and never touches the simulation's RNG stream.
+    // Then updated again the same day: placement now admits interactables whose
+    // verb combat can honour (Supply Chest, Scrap Seam, gates), so furnished
+    // rooms hold objects they previously filtered out and the layout shifts.
     // Previous goldens: 84fc796d (23 July, one powerup per wave),
-    // 2cb124a9 (26 July, seeded world-object placement).
-    expect(first.digest).toBe("559b0de8");
+    // 2cb124a9 (26 July, seeded world-object placement),
+    // 559b0de8 (31 July, powerup rotation offset).
+    expect(first.digest).toBe("4dd2f610");
     expect(runCombatReplaySequence([...fixtures].reverse()).digest).not.toBe(first.digest);
     expect(() => runCombatReplaySequence([])).toThrow("at least one encounter");
   });

@@ -1,5 +1,6 @@
 import type { ArenaHazard, ArenaObstacle } from "./ArenaDefinition";
 import {
+  isInteractionImplemented,
   worldObjectsForTheme,
   worldThemeFamilyForArenaTheme,
   type WorldObjectDefinition,
@@ -67,10 +68,12 @@ export function placeWorldObjects(request: WorldObjectPlacementRequest): WorldOb
   const family = isWorldThemeFamily(request.theme)
     ? request.theme
     : worldThemeFamilyForArenaTheme(request.theme);
-  const candidates = worldObjectsForTheme(family)
-    // Objective anchors and the interaction verbs they need are a later
-    // increment; placing a stargate nothing can activate would be a new placebo.
-    .filter((object) => object.placement !== "objective-anchor" && !object.interaction);
+  // Objective anchors are placed as of 31 July 2026, but only when combat can
+  // honour their verb. The original blanket exclusion was right about the
+  // danger and too broad about the remedy: a Stargate that does nothing is a
+  // placebo, while a Supply Chest that opens is the feature. `isInteractionImplemented`
+  // is the narrow version of that rule.
+  const candidates = worldObjectsForTheme(family).filter(isInteractionImplemented);
   if (candidates.length === 0) return EMPTY;
 
   const keepClear = request.keepClear ?? [

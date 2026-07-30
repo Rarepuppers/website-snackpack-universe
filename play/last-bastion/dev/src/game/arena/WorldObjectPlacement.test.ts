@@ -8,6 +8,7 @@ import {
 } from "./WorldObjectPlacement";
 import {
   ARENA_THEME_FAMILY_IDS,
+  IMPLEMENTED_INTERACTION_EFFECTS,
   worldObjectById,
   worldThemeFamilyForArenaTheme,
   WORLD_OBJECT_CATALOG,
@@ -115,20 +116,38 @@ describe("world object placement", () => {
     }
   });
 
-  it("holds objective anchors and interactables back until their verbs exist", () => {
-    // Placing a stargate nothing can activate would just be a new placebo.
-    const anchors = WORLD_OBJECT_CATALOG
-      .filter((object) => object.placement === "objective-anchor" || object.interaction)
+  it("holds back only the interactables whose verb combat cannot honour", () => {
+    // The rule narrowed on 31 July 2026. It used to exclude every anchor and
+    // interactable; now it excludes exactly those whose effect is unimplemented,
+    // because a Stargate that does nothing is a placebo while a Supply Chest
+    // that opens is the feature.
+    const unimplemented = WORLD_OBJECT_CATALOG
+      .filter((object) => object.interaction
+        && !IMPLEMENTED_INTERACTION_EFFECTS.includes(object.interaction.effect.type))
       .map((object) => object.id);
-    expect(anchors.length).toBeGreaterThan(0);
+    expect(unimplemented.length).toBeGreaterThan(0);
     for (const themeId of ARENA_THEME_FAMILY_IDS) {
       for (let seed = 1; seed <= 10; seed += 1) {
         const result = placeWorldObjects({ theme: themeId, ...ARENA, seed });
         for (const placed of [...result.obstacles, ...result.hazards]) {
-          expect(anchors).not.toContain(placed.worldObjectId);
+          expect(unimplemented).not.toContain(placed.worldObjectId);
         }
       }
     }
+  });
+
+  it("does place interactables whose verb exists, or the whole layer stays dead", () => {
+    const placedIds = new Set<string>();
+    for (const themeId of ARENA_THEME_FAMILY_IDS) {
+      for (let seed = 1; seed <= 30; seed += 1) {
+        for (const placed of placeWorldObjects({ theme: themeId, ...ARENA, seed }).obstacles) {
+          if (placed.worldObjectId) placedIds.add(placed.worldObjectId);
+        }
+      }
+    }
+    // Supply Chest and Scrap Seam are the two anchors reachable in the widest
+    // set of themes; if neither ever lands, placement is filtering them out.
+    expect(placedIds.has("supply-chest") || placedIds.has("scrap-seam")).toBe(true);
   });
 
   it("degrades safely rather than cramming a room it cannot furnish", () => {

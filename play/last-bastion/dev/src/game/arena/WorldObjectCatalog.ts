@@ -19,7 +19,38 @@ export type InteractionEffect =
   | { type: "activate-stargate" }
   | { type: "toggle-system"; system: "weapons" | "turrets" | "traps" }
   | { type: "release-cryo" }
-  | { type: "upgrade-weapon"; weaponDisabledSeconds: number };
+  | { type: "upgrade-weapon"; weaponDisabledSeconds: number }
+  | { type: "harvest-scrap"; scrap: number };
+
+/**
+ * The interaction effects combat can actually carry out (31 July 2026).
+ *
+ * Placement reads this rather than admitting every interactable, because the
+ * failure mode here is specific: a Stargate you can walk up to, hold the button
+ * on, and watch do nothing is worse than no Stargate at all. Objects whose
+ * effect is not on this list stay out of rooms until it is.
+ *
+ * Still unimplemented, and why:
+ *   - `disrupt-spawner`  needs a world object that owns a spawn stream.
+ *   - `activate-stargate` is an expedition-level exit, not a combat verb.
+ *   - `toggle-system`    needs player-owned turrets/traps — the ownership
+ *                        language the weapon plan deferred.
+ *   - `release-cryo`     needs a defined payload (ally? hazard? enemy?).
+ *   - `upgrade-weapon`   weapon tier is mutated through the placement/merge
+ *                        decision flow; raising it from a world object needs
+ *                        that path opened up first, not a second one bolted on.
+ */
+export const IMPLEMENTED_INTERACTION_EFFECTS: readonly InteractionEffect["type"][] = Object.freeze([
+  "open-loot",
+  "open-gate",
+  "harvest-scrap",
+]);
+
+export function isInteractionImplemented(definition: WorldObjectDefinition): boolean {
+  return definition.interaction
+    ? IMPLEMENTED_INTERACTION_EFFECTS.includes(definition.interaction.effect.type)
+    : true;
+}
 
 /**
  * What happens when a destructible world object reaches zero durability. Most
@@ -94,6 +125,13 @@ export const WORLD_OBJECT_CATALOG: readonly WorldObjectDefinition[] = Object.fre
    * which is the point.
    */
   { id: "fuel-cell", name: "Fuel Cell", role: "obstacle", themes: all("bastion", "logistics", "foundry", "starship", "containment"), visualKind: "power-conduit", blocksMovement: true, blocksProjectiles: true, durability: 60, footprintMetres: size(1.0, 1.0), onDestroyed: { type: "detonate", damage: 12, radiusMetres: 2.6, chainRadiusMetres: 3.0 }, maxPerRoom: 4, placement: "cover" },
+  // 31 July 2026. Both were designed in `world-object-production-plan.md` 3.3
+  // and never built. The Pillar is the heaviest breachable cover in the game —
+  // it exists so Breaching Maul, Fire Axe and the Breacher's Wedge relic have
+  // something worth swinging at. The Seam is the harvest verb's anchor, and the
+  // only world object that pays the economy build directly.
+  { id: "structural-pillar", name: "Structural Pillar", role: "obstacle", themes: all("bastion", "logistics", "foundry", "starship", "containment", "underworld"), visualKind: "reinforced-cover", blocksMovement: true, blocksProjectiles: true, durability: 900, footprintMetres: size(1.2, 1.2), maxPerRoom: 4, placement: "cover" },
+  { id: "scrap-seam", name: "Scrap Seam", role: "interactable", themes: all("logistics", "foundry", "surface", "underworld", "containment"), visualKind: "cargo-crate", blocksMovement: true, blocksProjectiles: false, durability: 140, footprintMetres: size(1.4, 1.1), interaction: { seconds: 2, effect: { type: "harvest-scrap", scrap: 8 } }, maxPerRoom: 2, placement: "objective-anchor" },
 ]);
 
 export function worldObjectById(id: string): WorldObjectDefinition | null {

@@ -207,6 +207,8 @@ export class PrototypeScene extends Phaser.Scene {
   private fenceLine: Phaser.GameObjects.Line | Phaser.GameObjects.Image | null = null;
   private fenceSwitch: Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite | null = null;
   private fencePrompt: Phaser.GameObjects.Text | null = null;
+  private interactPrompt: Phaser.GameObjects.Text | null = null;
+  private interactProgress: Phaser.GameObjects.Rectangle | null = null;
   private pickupBanner: Phaser.GameObjects.Container | null = null;
   private pauseButton: Phaser.GameObjects.Rectangle | null = null;
   private pauseLabel: Phaser.GameObjects.Text | null = null;
@@ -722,6 +724,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncPowerups(snapshot.powerups);
     this.syncSupplyChests(snapshot.supplyChests);
     this.syncFence(snapshot);
+    this.syncInteractPrompt(snapshot);
     this.syncDecisionOverlay(snapshot.pendingDecision);
     this.positionPauseControls();
     const performance = this.performanceGovernor.snapshot();
@@ -4264,6 +4267,45 @@ export class PrototypeScene extends Phaser.Scene {
       "E — ELECTRIC FENCE",
       { color: "#b8ffd9", fontFamily: "monospace", fontSize: "11px" },
     ).setOrigin(0.5).setDepth(1900).setVisible(false);
+  }
+
+  /**
+   * The world-object interact prompt. Follows the object rather than sitting in
+   * the HUD, because the thing being acted on is in the world and a corner
+   * label would not say *which* crate. The bar underneath is the hold progress
+   * the simulation already computes, so the two cannot disagree.
+   */
+  private syncInteractPrompt(snapshot: CombatSnapshot): void {
+    const prompt = snapshot.worldInteractionPrompt;
+    if (!this.interactPrompt) {
+      this.interactPrompt = this.add.text(0, 0, "", {
+        color: "#ffe9b8", fontFamily: "monospace", fontSize: "11px",
+      }).setOrigin(0.5).setDepth(1900).setVisible(false);
+      this.interactProgress = this.add.rectangle(0, 0, 1, 3, 0xffd36b)
+        .setOrigin(0, 0.5).setDepth(1901).setVisible(false);
+    }
+    if (!prompt) {
+      this.interactPrompt.setVisible(false);
+      this.interactProgress?.setVisible(false);
+      return;
+    }
+
+    const x = prompt.position.x * PIXELS_PER_METRE;
+    const y = prompt.position.y * PIXELS_PER_METRE - 26;
+    this.interactPrompt
+      .setPosition(x, y)
+      .setText(`${this.interactKeyLabel()} — ${prompt.verb}`)
+      .setVisible(true);
+
+    const width = 44;
+    this.interactProgress
+      ?.setPosition(x - width / 2, y + 11)
+      .setSize(Math.max(1, width * Math.min(1, Math.max(0, prompt.progress))), 3)
+      .setVisible(prompt.holding);
+  }
+
+  private interactKeyLabel(): string {
+    return this.controls?.activeInputDevice === "gamepad" ? "X" : "E";
   }
 
   private syncFence(snapshot: CombatSnapshot): void {
