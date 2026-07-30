@@ -14,15 +14,11 @@ import {
  * matching the design ("reaching 3 Affinity commits a path and applies its
  * combat effects").
  *
- * Fourteen of the catalogue's 27 effect metrics are wired here — the ones with
- * a direct existing stat hook in `CombatSimulation`. The rest (retaliation
- * damage, nearby-kill healing beyond the existing lifesteal pattern, drone
- * shot damage, gravity-pulse radius, telekinetic push distance, weapon
- * spread, projectile speed, and the three "received" elemental-buildup
- * metrics, which have no hook at all because the player never takes status
- * effects from enemies) are deliberately unconsumed for now — the same
- * carry-now/wire-later shape `RelicRunModifiers` already uses for over half
- * its own fields (see `relicCatalog.ts`).
+ * Twenty-two of the catalogue's 26 effect metrics resolve here. The four that
+ * do not are listed against the `default` arm below, each with the reason it
+ * has no hook yet. Prefer reading that list over this paragraph — it sits next
+ * to the code that would have to change, so it cannot drift the way a header
+ * count does.
  */
 export interface TransformationRunModifiers {
   committedPathId: TransformationAffinityState["committedPathId"];

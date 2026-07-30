@@ -1,5 +1,7 @@
 import Phaser from "phaser";
 import { KeyboardMouseInput } from "../input/KeyboardMouseInput";
+import type { GamepadTuning } from "../input/GamepadIntentMapper";
+import { applyAimAssist } from "../input/AimAssist";
 import { focusLossRequestsPause } from "../input/FocusPause";
 import { keyboardBindingLabel } from "../input/ControlBindings";
 import type { PlayerIntent } from "../input/PlayerIntent";
@@ -386,7 +388,7 @@ export class PrototypeScene extends Phaser.Scene {
     }
     this.createFenceViews();
 
-    this.controls = new KeyboardMouseInput(this, controls);
+    this.controls = new KeyboardMouseInput(this, controls, this.gamepadTuning());
     // Separate Key instances from the combat adapter so menu navigation gets
     // its own JustDown edges without stealing the gameplay bindings.
     this.menuKeys = this.input.keyboard!.addKeys({
@@ -485,6 +487,28 @@ export class PrototypeScene extends Phaser.Scene {
     this.renderSnapshot(snapshot, false);
   }
 
+  /**
+   * Bends the aim toward a nearby enemy by `aimAssistStrength`. Reads the last
+   * snapshot's enemies rather than simulation internals, which keeps the assist
+   * one frame behind — imperceptible, and it avoids a second live enemy query.
+   */
+  private withAimAssist(intent: PlayerIntent): PlayerIntent {
+    const strength = this.settings.aimAssistStrength;
+    if (strength <= 0) return intent;
+    if (intent.aim.x === 0 && intent.aim.y === 0) return intent;
+    return {
+      ...intent,
+      aim: applyAimAssist(intent.aim, this.player, this.lastSnapshot.enemies, strength),
+    };
+  }
+
+  private gamepadTuning(): GamepadTuning {
+    return {
+      moveDeadzone: this.settings.gamepadMoveDeadzone,
+      aimDeadzone: this.settings.gamepadAimDeadzone,
+    };
+  }
+
   private applyInGameSettings(partial: Partial<GameSettings>): void {
     const rebuildHud = partial.uiScale !== undefined
       || partial.radarSize !== undefined
@@ -493,6 +517,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.synth.enabled = this.settings.soundEnabled;
     this.synth.setVolume(this.settings.masterVolume * this.settings.sfxVolume);
     this.haptics.setStrength(this.settings.gamepadVibrationStrength);
+    this.controls?.setGamepadTuning(this.gamepadTuning());
     if (partial.effectQuality !== undefined) {
       this.performanceGovernor.setPreference(this.settings.effectQuality);
       this.applyPerformanceBudget();
@@ -569,7 +594,7 @@ export class PrototypeScene extends Phaser.Scene {
 
   update(_time: number, deltaMilliseconds: number): void {
     const deltaSeconds = Math.min(deltaMilliseconds / 1000, 0.05);
-    const intent = this.controls.read(this.player);
+    const intent = this.withAimAssist(this.controls.read(this.player));
     const inputDevice = this.controls.activeInputDevice;
     this.hud.setInputDevice(inputDevice);
     this.pauseOverlay.setInputDevice(inputDevice);
@@ -4910,6 +4935,16 @@ const WEAPON_BODY_ASSETS: Readonly<Record<WeaponId, WeaponBodyAssetId>> = Object
   "shock-baton": "patrol-blade-v1",
   "breaching-maul": "patrol-blade-v1",
   "plasma-saber": "patrol-blade-v1",
+  // PLACEHOLDER — art pending (elemental balance pass, 31 July 2026). Borrows
+  // follow the same rule as above: shells to the launcher, long guns to the
+  // rifle, held edges to the blade.
+  "corrosive-lobber": "grenade-tube-v1",
+  "tether-harpoon": "grenade-tube-v1",
+  "scourge-repeater": "service-rifle-v1",
+  "bile-lance": "service-rifle-v1",
+  "hoarfrost-scatter": "scattergun-v1",
+  "glacier-ward": "arc-carbine-v1",
+  "rime-cleaver": "patrol-blade-v1",
 });
 
 function weaponAssetId(weaponId: WeaponId): WeaponBodyAssetId {

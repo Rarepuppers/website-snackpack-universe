@@ -684,6 +684,11 @@ const RELICS = [
   { id: "rel-butchers-rig", name: "Butcher's Rig", glyph: "⚒", status: "live", kind: "Relic", text: "Melee weapons hit considerably harder. The relic that makes committing to the close-quarters rack a plan rather than a panic." },
   { id: "rel-riot-plating", name: "Riot Plating", glyph: "▤", status: "live", kind: "Relic", text: "Armour that only counts while something is inside arm's reach. Useless at range, excellent when the doorway collapses on you." },
   { id: "rel-executioners-mark", name: "Executioner's Mark", glyph: "✖", status: "live", kind: "Relic", text: "Badly wounded enemies take far more damage. Turns the long tail of a fight into a short one." },
+  { id: "rel-breachers-wedge", name: "Breacher's Wedge", glyph: "◤", status: "live", kind: "Relic", text: "You tear through cover and world objects two and a half times faster. Pairs with the Breaching Maul and the Fire Axe: an arena you can reshape is an arena you control." },
+  { id: "rel-coolant-loop", name: "Coolant Loop", glyph: "◍", status: "live", kind: "Relic", text: "Sustained beams run 30% hotter. The Cryo Lance, Flamethrower and Bile Lance were the three weapons no relic had ever spoken to." },
+  { id: "rel-element-primer", name: "Element Primer", glyph: "◆", status: "live", kind: "Relic", text: "Elemental hits build status twice as fast. Slow, heavy elemental weapons could rarely reach the buildup threshold before it decayed; this is what makes them proc." },
+  { id: "rel-scavengers-eye", name: "Scavenger's Eye", glyph: "◇", status: "live", kind: "Relic", text: "Every world object you destroy sheds a little Scrap. Only on destruction — a half-broken crate is worth nothing." },
+  { id: "rel-overwatch-rig", name: "Overwatch Rig", glyph: "⊹", status: "live", kind: "Relic", text: "Hold still for a second and a half and your ranged damage climbs 25%. The deliberate mirror of the Stabiliser Gyro, which rewards the opposite habit." },
   { id: "art-overclock-core", name: "Overclock Core", glyph: "◎", status: "live", kind: "Artifact", text: "Each kill stacks fire rate, and the stacks bleed away if you stop. Rewards never letting the room go quiet." },
   { id: "art-chrono-capacitor", name: "Chrono Capacitor", glyph: "◷", status: "live", kind: "Artifact", text: "A successful dodge hands back half your evasive cooldown. Reads the dodge as a skill, not a resource." },
   { id: "art-bastion-beacon", name: "Bastion Beacon", glyph: "▲", status: "live", kind: "Artifact", text: "The first death of a run leaves you standing on a sliver instead. Once only — and you will know exactly when you spent it." },
@@ -743,6 +748,36 @@ const MELEE_WEAPONS = [
     text: "A contained plasma edge that does not distinguish between bodies and bulkheads. The widest arc in the game, and it reshapes the arena while it swings." },
 ];
 WEAPONS.push(...MELEE_WEAPONS);
+
+/* Elemental balance pass (31 July 2026). The rack ran 13 physical against a
+   single cryo and a single toxic weapon, while the bestiary was built around
+   damage-type counter-play — most pointedly the storm faction, which resists
+   Shock while every chain weapon dealt it. These seven use existing attack
+   patterns only; they exist to make the resistance table playable. */
+const ELEMENTAL_WEAPONS = [
+  { id: "wpn-corrosive-lobber", name: "Corrosive Lobber", glyph: "◓", cls: "heavy", family: "launcher", status: "live", tier: "II",
+    stats: { Damage: "3", Cadence: "2.6s", Range: "11m", Type: "Toxic", Blast: "2.4m" },
+    text: "Lobs an acid canister that bursts into corroding vapour. The Grenade Tube's toxic sibling: less punch per shell, far more often, and it stacks Corrode across a packed group." },
+  { id: "wpn-scourge-repeater", name: "Scourge Repeater", glyph: "≈", cls: "medium", family: "rifle", status: "live", tier: "II",
+    stats: { Damage: "3.5", Cadence: "0.75s", Range: "13m", Type: "Toxic", Chain: "2 @ 3.4m" },
+    text: "Spits clinging blight that leaps between bodies. Deliberately the answer to the storm faction, whose Shock resistance blunts every other chaining weapon in the rack." },
+  { id: "wpn-bile-lance", name: "Bile Lance", glyph: "⋙", cls: "medium", family: "beam", status: "live", tier: "II",
+    stats: { DPS: "4", Range: "4.5m", Type: "Toxic", Cone: "26°" },
+    text: "A pressurised jet of solvent. Wider than the Cryo Lance and longer than the Flamethrower — the middle setting between precision and smother." },
+  { id: "wpn-rime-cleaver", name: "Rime Cleaver", glyph: "/", cls: "medium", family: "melee", status: "live", tier: "II",
+    stats: { Damage: "6", Cadence: "1.3s", Reach: "2.5m", Type: "Cryo", Arc: "108°", Terrain: "×1.5" },
+    text: "A supercooled blade that seeds Freeze in whatever it opens. The first melee weapon that answers being swarmed by slowing the swarm." },
+  { id: "wpn-hoarfrost-scatter", name: "Hoarfrost Scatter", glyph: "❋", cls: "heavy", family: "scatter", status: "live", tier: "II",
+    stats: { Damage: "1.2 ×4", Cadence: "0.95s", Range: "6.5m", Type: "Cryo", Spread: "17°" },
+    text: "A burst of freezing shot, wider than the Scattergun and half as sharp. Four pellets each carry Freeze buildup, so a crowd hit at close range chills all at once." },
+  { id: "wpn-glacier-ward", name: "Glacier Ward", glyph: "◈", cls: "light", family: "orbit", status: "live", tier: "II",
+    stats: { Damage: "2.5", Cadence: "1.1s", Range: "3.5m", Type: "Cryo", Fire: "Auto" },
+    text: "A drifting shard that chills whatever strays closest. Defensive cryo: it asks nothing of your aim and punishes anything that closes." },
+  { id: "wpn-tether-harpoon", name: "Tether Harpoon", glyph: "⌐", cls: "medium", family: "launcher", status: "live", tier: "II",
+    stats: { Damage: "5", Cadence: "3.5s", Range: "12m", Type: "Physical", Blast: "1.6m", Pull: "2.5m" },
+    text: "A barbed line that drags everything near the impact into one heap. Like Event Horizon it never lands a direct hit — the damage is all in the burst, and the point is the heap you make for whatever you fire next." },
+];
+WEAPONS.push(...ELEMENTAL_WEAPONS);
 
 
 const AMMO = [

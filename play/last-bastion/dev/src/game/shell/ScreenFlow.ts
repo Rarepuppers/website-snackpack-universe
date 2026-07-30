@@ -100,15 +100,19 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "choice", key: "uiScale", label: "HUD scale", options: ["0.8", "1", "1.2"] },
   { kind: "range", key: "masterVolume", label: "Master volume", min: 0, max: 1, step: 0.1 },
   { kind: "range", key: "sfxVolume", label: "SFX volume", min: 0, max: 1, step: 0.1 },
-  { kind: "range", key: "uiVolume", label: "UI volume", min: 0, max: 1, step: 0.1 },
-  { kind: "range", key: "musicVolume", label: "Music volume", min: 0, max: 1, step: 0.1 },
-  { kind: "range", key: "ambienceVolume", label: "Ambience volume", min: 0, max: 1, step: 0.1 },
+  // uiVolume / musicVolume / ambienceVolume are deliberately not listed. They
+  // persist in GameSettings, but nothing consumes them yet: there is no music,
+  // and AudioMixer's ui/music/ambience buses are not routed. Re-list them in
+  // the same breath as wiring the mixer — an inert slider is a lie.
   { kind: "range", key: "gamepadMoveDeadzone", label: "Move deadzone", min: 0, max: 1, step: 0.01 },
   { kind: "range", key: "gamepadAimDeadzone", label: "Aim deadzone", min: 0, max: 1, step: 0.01 },
-  { kind: "range", key: "gamepadAimSensitivity", label: "Aim sensitivity", min: 0.25, max: 3, step: 0.05 },
+  // gamepadAimSensitivity is likewise unlisted. Aiming here is absolute — the
+  // right stick's direction *is* the aim vector — so there is no rate for a
+  // sensitivity multiplier to scale. The field is retained so saves written by
+  // earlier builds still load.
   { kind: "range", key: "gamepadVibrationStrength", label: "Controller vibration", min: 0, max: 1, step: 0.25 },
   { kind: "range", key: "aimAssistStrength", label: "Aim assist", min: 0, max: 1, step: 0.1 },
-  { kind: "range", key: "displaySizePercent", label: "Display size", min: 50, max: 200, step: 5 },
+  { kind: "range", key: "displaySizePercent", label: "Display size (applies on reload)", min: 50, max: 200, step: 5 },
   { kind: "choice", key: "radarSize", label: "Radar size", options: ["0.75", "1", "1.25"] },
   { kind: "choice", key: "offscreenThreatIndicators", label: "Threat indicators", options: ["off", "threats", "all"] },
   { kind: "choice", key: "colorVisionMode", label: "Colour-vision palette", options: ["standard", "deuteranopia", "protanopia", "tritanopia"] },

@@ -225,6 +225,120 @@ describe("relic combat effects", () => {
     expect(neutral.meleeDamageMultiplier).toBe(1);
   });
 
+  /* Elemental balance pass relics (31 July 2026). Same rule as the rest of this
+     file: drive a real simulation and assert an observable difference. */
+
+  it("Coolant Loop raises sustained beam damage, and only beams", () => {
+    const beamDamageOver = (relicIds: string[]): number => {
+      const simulation = new CombatSimulation({
+        autoStartWaves: false,
+        startingBuild: { ...build(relicIds), weapons: [{ weaponId: "cryo-lance", tier: 1 }] },
+      });
+      const player = simulation.snapshot().playerPosition;
+      const id = simulation.spawnEnemy("abomination", { x: player.x + 2, y: player.y });
+      const before = simulation.snapshot().enemies.find((enemy) => enemy.id === id)!.health;
+      for (let tick = 0; tick < 20; tick += 1) simulation.step({ ...IDLE, fireHeld: true }, 0.05);
+      const after = simulation.snapshot().enemies.find((enemy) => enemy.id === id)?.health ?? 0;
+      return before - after;
+    };
+    expect(beamDamageOver(["rel-coolant-loop"])).toBeGreaterThan(beamDamageOver([]));
+  });
+
+  it("Element Primer reaches the status threshold sooner", () => {
+    const ticksToStatus = (relicIds: string[]): number => {
+      const simulation = new CombatSimulation({
+        autoStartWaves: false,
+        startingBuild: { ...build(relicIds), weapons: [{ weaponId: "cryo-lance", tier: 1 }] },
+      });
+      const player = simulation.snapshot().playerPosition;
+      simulation.spawnEnemy("abomination", { x: player.x + 2, y: player.y });
+      for (let tick = 1; tick <= 200; tick += 1) {
+        const snapshot = simulation.step({ ...IDLE, fireHeld: true }, 0.05);
+        if (snapshot.events.some((event) => event.type === "status-applied")) return tick;
+      }
+      return Number.POSITIVE_INFINITY;
+    };
+    const primed = ticksToStatus(["rel-element-primer"]);
+    expect(primed).toBeLessThan(ticksToStatus([]));
+    expect(Number.isFinite(primed)).toBe(true);
+  });
+
+  it("Overwatch Rig lifts ranged damage only once you have actually held still", () => {
+    const damageAfterStandingFor = (relicIds: string[], stillTicks: number): number => {
+      const simulation = new CombatSimulation({
+        autoStartWaves: false,
+        startingBuild: { ...build(relicIds), weapons: [{ weaponId: "bolt-carbine", tier: 1 }] },
+      });
+      const player = simulation.snapshot().playerPosition;
+      // Stand still (or keep moving) before firing, then fire from a fixed spot.
+      const move = stillTicks > 0 ? { x: 0, y: 0 } : { x: 1, y: 0 };
+      for (let tick = 0; tick < Math.max(1, stillTicks); tick += 1) {
+        simulation.step({ ...IDLE, move }, 0.05);
+      }
+      const id = simulation.spawnEnemy("abomination", { x: player.x + 3, y: player.y });
+      const before = simulation.snapshot().enemies.find((enemy) => enemy.id === id)!.health;
+      for (let tick = 0; tick < 60; tick += 1) simulation.step({ ...IDLE, fireHeld: true }, 0.05);
+      const after = simulation.snapshot().enemies.find((enemy) => enemy.id === id)?.health ?? 0;
+      return before - after;
+    };
+    // 40 ticks at 0.05s = 2s stationary, past the 1.5s threshold.
+    const held = damageAfterStandingFor(["rel-overwatch-rig"], 40);
+    const baseline = damageAfterStandingFor([], 40);
+    expect(held).toBeGreaterThan(baseline);
+  });
+
+  /** Fires the rifle at the centre barricade and reports what happened to it. */
+  function shellCover(relicIds: string[], ticks: number) {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      startingBuild: { ...build(relicIds), weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }] },
+    });
+    const player = simulation.snapshot().playerPosition;
+    const target = { x: 25.8 + 3.4 / 2, y: 9.1 + 0.8 / 2 };
+    const offset = { x: target.x - player.x, y: target.y - player.y };
+    const length = Math.hypot(offset.x, offset.y);
+    const aim = { x: offset.x / length, y: offset.y / length };
+
+    let coverDamage = 0;
+    let scrapFromObjects = 0;
+    let sawDamageWithoutScrap = false;
+    for (let tick = 0; tick < ticks; tick += 1) {
+      const snapshot = simulation.step({ ...IDLE, aim, fireHeld: true }, 0.05);
+      let destroyedThisTick = false;
+      for (const event of snapshot.events) {
+        if (event.type === "obstacle-damaged") coverDamage += event.damage;
+        if (event.type === "obstacle-destroyed") {
+          coverDamage += event.damage;
+          destroyedThisTick = true;
+        }
+        if (event.type === "scrap-secured" && event.source === "world-object") {
+          scrapFromObjects += event.amount;
+        }
+      }
+      const damaged = snapshot.events.some((event) => event.type === "obstacle-damaged");
+      if (damaged && !destroyedThisTick) sawDamageWithoutScrap = true;
+    }
+    return { coverDamage, scrapFromObjects, sawDamageWithoutScrap };
+  }
+
+  it("Breacher's Wedge multiplies the damage a shot does to cover", () => {
+    // Reads the damage off the obstacle event rather than trusting the modifier
+    // field, which is the whole point of this file.
+    const wedged = shellCover(["rel-breachers-wedge"], 60).coverDamage;
+    const baseline = shellCover([], 60).coverDamage;
+    expect(baseline).toBeGreaterThan(0);
+    expect(wedged).toBeGreaterThan(baseline);
+  });
+
+  it("Scavenger's Eye pays out on destruction, not on damage", () => {
+    const result = shellCover(["rel-scavengers-eye", "rel-breachers-wedge"], 400);
+    expect(result.scrapFromObjects).toBeGreaterThan(0);
+    // Chipping cover must not pay — otherwise the relic rewards flailing at walls.
+    expect(result.sawDamageWithoutScrap).toBe(true);
+    // And no relic means no world-object scrap at all.
+    expect(shellCover(["rel-breachers-wedge"], 400).scrapFromObjects).toBe(0);
+  });
+
   it("every relic in the live pool sets at least one modifier that combat reads", () => {
     // A catalogue-level guard: a relic whose fields are all unread is a placebo
     // pickup, and the player cannot tell the difference.

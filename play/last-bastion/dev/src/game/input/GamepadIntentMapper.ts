@@ -36,6 +36,21 @@ export const GAMEPAD_MOVE_DEADZONE = 0.18;
 export const GAMEPAD_AIM_DEADZONE = 0.25;
 /** Backward-compatible default for callers that do not distinguish the stick role. */
 export const GAMEPAD_DEADZONE = GAMEPAD_AIM_DEADZONE;
+
+/**
+ * Player-tunable stick shaping. The constants above are the defaults; the
+ * settings screen writes these two values and they must reach `buildIntent`,
+ * otherwise the sliders are decorative.
+ */
+export interface GamepadTuning {
+  moveDeadzone: number;
+  aimDeadzone: number;
+}
+
+export const DEFAULT_GAMEPAD_TUNING: Readonly<GamepadTuning> = Object.freeze({
+  moveDeadzone: GAMEPAD_MOVE_DEADZONE,
+  aimDeadzone: GAMEPAD_AIM_DEADZONE,
+});
 export const DISCONNECTED_GAMEPAD: Readonly<GamepadStateSnapshot> = Object.freeze({
   connected: false,
   leftStick: { x: 0, y: 0 },
@@ -73,9 +88,22 @@ export class GamepadIntentMapper {
     south: false, east: false, west: false, north: false, start: false, rightStick: false,
   };
 
+  private tuning: GamepadTuning = { ...DEFAULT_GAMEPAD_TUNING };
+
   constructor(
     private readonly bindings: Readonly<Record<GamepadBindableAction, GamepadButton>> = DEFAULT_CONTROL_BINDINGS.gamepad,
-  ) {}
+    tuning: Readonly<GamepadTuning> = DEFAULT_GAMEPAD_TUNING,
+  ) {
+    this.setTuning(tuning);
+  }
+
+  /** Applied live so the settings sliders take effect without a restart. */
+  setTuning(tuning: Readonly<GamepadTuning>): void {
+    this.tuning = {
+      moveDeadzone: tuning.moveDeadzone,
+      aimDeadzone: tuning.aimDeadzone,
+    };
+  }
 
   update(state: GamepadStateSnapshot): PlayerIntent {
     const current: Record<GamepadButton, boolean> = {
@@ -98,7 +126,7 @@ export class GamepadIntentMapper {
       pausePressed: pressed("pause"),
       restartPressed: current.south && !this.previous.south,
       toggleFireModePressed: pressed("toggleFireMode"),
-    }, current[this.bindings.interact]);
+    }, current[this.bindings.interact], this.tuning);
     this.previous = current;
     return intent;
   }
@@ -109,6 +137,7 @@ function buildIntent(
   pressed: Pick<PlayerIntent,
     "evasiveMovePressed" | "interactPressed" | "ultimatePressed" | "kitPressed" | "pausePressed" | "restartPressed" | "toggleFireModePressed">,
   interactHeld: boolean,
+  tuning: Readonly<GamepadTuning> = DEFAULT_GAMEPAD_TUNING,
 ): PlayerIntent {
   if (!state.connected) {
     return {
@@ -125,8 +154,8 @@ function buildIntent(
     };
   }
 
-  const move = applyDeadzone(state.leftStick, GAMEPAD_MOVE_DEADZONE);
-  const aimStick = applyDeadzone(state.rightStick, GAMEPAD_AIM_DEADZONE);
+  const move = applyDeadzone(state.leftStick, tuning.moveDeadzone);
+  const aimStick = applyDeadzone(state.rightStick, tuning.aimDeadzone);
   const aimMagnitude = Math.hypot(aimStick.x, aimStick.y);
 
   return {

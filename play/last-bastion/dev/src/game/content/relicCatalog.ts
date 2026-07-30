@@ -24,7 +24,12 @@ export type RelicId =
   | "rel-kinetic-greaves"
   | "rel-butchers-rig"
   | "rel-riot-plating"
-  | "rel-executioners-mark";
+  | "rel-executioners-mark"
+  | "rel-breachers-wedge"
+  | "rel-coolant-loop"
+  | "rel-element-primer"
+  | "rel-scavengers-eye"
+  | "rel-overwatch-rig";
 
 export type ArtifactId =
   | "art-event-horizon-core"
@@ -63,6 +68,15 @@ export const RELIC_CATALOG: readonly RelicDefinition[] = Object.freeze([
   { id: "rel-butchers-rig", name: "Butcher's Rig", description: "Melee weapons hit considerably harder." },
   { id: "rel-riot-plating", name: "Riot Plating", description: "You gain armour while anything is inside arm's reach." },
   { id: "rel-executioners-mark", name: "Executioner's Mark", description: "You deal bonus damage to badly wounded enemies." },
+  // 31 July 2026. Wedge and Coolant Loop were designed alongside the released
+  // weapons and never built; the other three back build directions the rack
+  // now supports but nothing rewarded — terrain play, status stacking, and
+  // holding a firing position.
+  { id: "rel-breachers-wedge", name: "Breacher's Wedge", description: "You tear through cover and world objects far faster." },
+  { id: "rel-coolant-loop", name: "Coolant Loop", description: "Sustained beam weapons run hotter without falling off." },
+  { id: "rel-element-primer", name: "Element Primer", description: "Your elemental hits build status effects much faster." },
+  { id: "rel-scavengers-eye", name: "Scavenger's Eye", description: "Destroying a world object shakes loose a little Scrap." },
+  { id: "rel-overwatch-rig", name: "Overwatch Rig", description: "Holding still briefly sharpens your ranged damage." },
 ]);
 
 export const ARTIFACT_CATALOG: readonly ArtifactDefinition[] = Object.freeze([
@@ -109,6 +123,18 @@ export interface RelicRunModifiers {
   evasiveDistanceMultiplier: number;
   /** Kinetic Greaves: evasive-move recovery multiplier (the cost). */
   evasiveRecoveryMultiplier: number;
+  /** Breacher's Wedge: multiplier on damage dealt to terrain and world objects. */
+  terrainDamageMultiplier: number;
+  /** Coolant Loop: multiplier on sustained beam damage. */
+  beamDamageMultiplier: number;
+  /** Element Primer: multiplier on status buildup dealt by elemental hits. */
+  statusBuildupMultiplier: number;
+  /** Scavenger's Eye: Scrap granted when a destructible world object dies. */
+  scrapPerWorldObjectDestroyed: number;
+  /** Overwatch Rig: seconds stationary before the ranged bonus applies. */
+  stationaryRangedBonusAfterSeconds: number | null;
+  /** Overwatch Rig: extra ranged damage fraction once that threshold is met. */
+  stationaryRangedBonusDamage: number;
   /** The single equipped artifact, or null. */
   equippedArtifactId: ArtifactId | null;
   /** Event Horizon Core: seconds between implosion charges, or null. */
@@ -159,6 +185,12 @@ export const NO_RELIC_MODIFIERS: Readonly<RelicRunModifiers> = Object.freeze({
   healthPickupSlowPulse: false,
   evasiveDistanceMultiplier: 1,
   evasiveRecoveryMultiplier: 1,
+  terrainDamageMultiplier: 1,
+  beamDamageMultiplier: 1,
+  statusBuildupMultiplier: 1,
+  scrapPerWorldObjectDestroyed: 0,
+  stationaryRangedBonusAfterSeconds: null,
+  stationaryRangedBonusDamage: 0,
   equippedArtifactId: null,
   meleeDamageMultiplier: 1,
   closeQuartersArmour: 0,
@@ -239,6 +271,22 @@ export function resolveRelicModifiers(
   if (owned.has("rel-kinetic-greaves")) {
     modifiers.evasiveDistanceMultiplier = 1.25;
     modifiers.evasiveRecoveryMultiplier = 1.2;
+  }
+  if (owned.has("rel-breachers-wedge")) {
+    modifiers.terrainDamageMultiplier = 2.5;
+  }
+  if (owned.has("rel-coolant-loop")) {
+    modifiers.beamDamageMultiplier = 1.3;
+  }
+  if (owned.has("rel-element-primer")) {
+    modifiers.statusBuildupMultiplier = 2;
+  }
+  if (owned.has("rel-scavengers-eye")) {
+    modifiers.scrapPerWorldObjectDestroyed = 1;
+  }
+  if (owned.has("rel-overwatch-rig")) {
+    modifiers.stationaryRangedBonusAfterSeconds = 1.5;
+    modifiers.stationaryRangedBonusDamage = 0.25;
   }
 
   if (equippedArtifactId && isArtifactId(equippedArtifactId)) {

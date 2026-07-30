@@ -2,10 +2,12 @@ import Phaser from "phaser";
 import type { PlayerIntent } from "./PlayerIntent";
 import { normalizeVector } from "../math/Vector2Data";
 import {
+  DEFAULT_GAMEPAD_TUNING,
   DISCONNECTED_GAMEPAD,
   GamepadIntentMapper,
   mergeIntents,
   type GamepadStateSnapshot,
+  type GamepadTuning,
 } from "./GamepadIntentMapper";
 import {
   DEFAULT_CONTROL_BINDINGS,
@@ -39,14 +41,18 @@ export class KeyboardMouseInput {
   private previousGamepadEast = false;
   private gamepadBackPressed = false;
 
-  constructor(private readonly scene: Phaser.Scene, bindings: ControlBindings = DEFAULT_CONTROL_BINDINGS) {
+  constructor(
+    private readonly scene: Phaser.Scene,
+    bindings: ControlBindings = DEFAULT_CONTROL_BINDINGS,
+    tuning: Readonly<GamepadTuning> = DEFAULT_GAMEPAD_TUNING,
+  ) {
     const keyboard = scene.input.keyboard;
 
     if (!keyboard) {
       throw new Error("Keyboard input is unavailable in this browser.");
     }
 
-    this.gamepadMapper = new GamepadIntentMapper(bindings.gamepad);
+    this.gamepadMapper = new GamepadIntentMapper(bindings.gamepad, tuning);
     this.keys = keyboard.addKeys({
       up: keyboardCodeNumber(bindings.keyboard.moveUp),
       down: keyboardCodeNumber(bindings.keyboard.moveDown),
@@ -109,6 +115,11 @@ export class KeyboardMouseInput {
     if (gamepadActive) this.activeDevice = "gamepad";
     else if (keyboardActive) this.activeDevice = "keyboard";
     return mergeIntents(keyboardMouse, this.gamepadMapper.update(gamepadState));
+  }
+
+  /** Lets the settings overlay retune the sticks mid-run. */
+  setGamepadTuning(tuning: Readonly<GamepadTuning>): void {
+    this.gamepadMapper.setTuning(tuning);
   }
 
   get activeInputDevice(): "keyboard" | "gamepad" {

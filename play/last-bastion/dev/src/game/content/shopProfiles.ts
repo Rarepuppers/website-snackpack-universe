@@ -124,7 +124,7 @@ export function liberationProfileForSeed(seed: number): ShopProfileId {
 
 /**
  * Relative appearance rate by rarity. Before this existed, rarity affected
- * *price only* — every one of the 27 items was drawn uniformly, so a legendary
+ * *price only* — every item in the catalogue was drawn uniformly, so a legendary
  * was exactly as likely to appear as a common. These are the base odds `luck`
  * and `curse` then bend.
  */

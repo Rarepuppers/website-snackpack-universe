@@ -30,7 +30,7 @@ function codexHas(prefix: string, id: string): boolean {
  * this list, never grow it.
  */
 const KNOWN_CODEX_GAPS = Object.freeze({
-  items: "the entire 26-item shop economy has no codex section at all",
+  items: "the entire shop item economy has no codex section at all",
   shopProfiles: "the 7 themed liberation shops are undocumented",
   liberationNodes: "the liberation node type is undocumented",
   levelStatCards: "the level-up stat cards are undocumented",

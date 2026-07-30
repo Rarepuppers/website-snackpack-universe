@@ -6,7 +6,7 @@ describe("weaponCatalog", () => {
     expect(VERTICAL_SLICE_WEAPON_IDS).toEqual([
       "bastion-service-rifle", "scattergun", "arc-carbine",
     ]);
-    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(21);
+    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(28);
   });
 
   it("keeps each Phase 4 weapon's contract, and its pool membership in step with the art gate", () => {
@@ -74,6 +74,30 @@ describe("weaponCatalog", () => {
       for (const id of Object.keys(WEAPON_CATALOG) as (keyof typeof WEAPON_CATALOG)[]) {
         expect(reachable.has(id)).toBe(true);
       }
+    });
+  });
+
+  describe("elemental coverage", () => {
+    const byType = (type: string) => Object.values(WEAPON_CATALOG).filter((w) => w.damageType === type);
+
+    it("gives every damage type a reachable weapon in more than one shape", () => {
+      // The rack was 13 physical / 3 fire / 3 shock / 1 cryo / 1 toxic while the
+      // bestiary priced resistances per type. A player reading the table right
+      // still had nothing to swap to, which made the whole system decorative.
+      for (const type of ["physical", "fire", "shock", "cryo", "toxic"]) {
+        const weapons = byType(type);
+        expect(weapons.length, `${type} weapon count`).toBeGreaterThanOrEqual(3);
+        expect(new Set(weapons.map((w) => w.attackPattern)).size, `${type} attack patterns`)
+          .toBeGreaterThanOrEqual(2);
+      }
+    });
+
+    it("answers the storm faction's Shock resistance with a non-Shock chaining weapon", () => {
+      // storm-savant/storm-node resist Shock at x0.45-0.5. Every chain weapon
+      // used to deal Shock, so the counter-play the resistance implies was a
+      // dead end.
+      const chainers = Object.values(WEAPON_CATALOG).filter((w) => w.chainCount > 0);
+      expect(chainers.some((w) => w.damageType !== "shock")).toBe(true);
     });
   });
 

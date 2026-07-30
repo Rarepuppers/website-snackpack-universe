@@ -2,14 +2,18 @@ import { describe, expect, it } from "vitest";
 import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
 import { canonicalWeaponTileFrame } from "./WeaponTileFrames";
 
-const PENDING_ART_WEAPON_IDS: readonly WeaponId[] = ["railspike", "seeker-swarm", "cryo-lance", "tesla-coil", "flamethrower", "sawblade", "event-horizon"];
+const PENDING_ART_WEAPON_IDS: readonly WeaponId[] = [
+  "railspike", "seeker-swarm", "cryo-lance", "tesla-coil", "flamethrower", "sawblade", "event-horizon",
+  // Elemental balance pass (31 July 2026), art pending on the same terms.
+  "corrosive-lobber", "scourge-repeater", "bile-lance", "hoarfrost-scatter", "glacier-ward", "tether-harpoon",
+];
 
 /**
  * The close-quarters family (25 July 2026) has no Batch I slots yet either, but
  * borrows the Patrol Blade's blade frame rather than the rifle's so the
  * placeholder at least reads as melee.
  */
-const PENDING_MELEE_WEAPON_IDS: readonly WeaponId[] = ["combat-knife", "machete", "fire-axe", "shock-baton", "breaching-maul", "plasma-saber"];
+const PENDING_MELEE_WEAPON_IDS: readonly WeaponId[] = ["combat-knife", "machete", "fire-axe", "shock-baton", "breaching-maul", "plasma-saber", "rime-cleaver"];
 
 /** The tile each art-pending weapon borrows, chosen by attack pattern. */
 const EXPECTED_PLACEHOLDER_FRAME: Readonly<Record<string, number>> = {
@@ -24,6 +28,14 @@ const EXPECTED_PLACEHOLDER_FRAME: Readonly<Record<string, number>> = {
   "tesla-coil": 4,
   // Orbiting blade and every contact weapon → patrol blade.
   sawblade: 1,
+  // Elemental balance pass. Same rules: shells to the tube, chains and orbits
+  // to the arc carbine, jets and spreads to the scattergun.
+  "corrosive-lobber": 3,
+  "tether-harpoon": 3,
+  "scourge-repeater": 4,
+  "glacier-ward": 4,
+  "bile-lance": 0,
+  "hoarfrost-scatter": 0,
 };
 
 describe("canonical Batch I weapon tile mapping", () => {

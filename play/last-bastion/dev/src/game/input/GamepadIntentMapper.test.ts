@@ -55,6 +55,29 @@ describe("GamepadIntentMapper", () => {
     expect(intent.aim).toEqual({ x: 0, y: 0 });
   });
 
+  it("honours player-tuned deadzones instead of the built-in constants", () => {
+    // The same stick input must read differently under a wider deadzone, or the
+    // settings sliders are decorative.
+    const wide = new GamepadIntentMapper(undefined, { moveDeadzone: 0.5, aimDeadzone: 0.5 });
+    const state = padState({ leftStick: { x: 0.3, y: 0 }, rightStick: { x: 0.3, y: 0 } });
+    const widened = wide.update(state);
+    expect(widened.move).toEqual({ x: 0, y: 0 });
+    expect(widened.aim).toEqual({ x: 0, y: 0 });
+
+    const narrow = new GamepadIntentMapper(undefined, { moveDeadzone: 0.05, aimDeadzone: 0.05 });
+    const narrowed = narrow.update(state);
+    expect(narrowed.move.x).toBeGreaterThan(0);
+    expect(narrowed.aim.x).toBeCloseTo(1);
+  });
+
+  it("applies retuned deadzones live, without rebuilding the mapper", () => {
+    const mapper = new GamepadIntentMapper();
+    const state = padState({ leftStick: { x: 0.3, y: 0 } });
+    expect(mapper.update(state).move.x).toBeGreaterThan(0);
+    mapper.setTuning({ moveDeadzone: 0.6, aimDeadzone: 0.6 });
+    expect(mapper.update(state).move).toEqual({ x: 0, y: 0 });
+  });
+
   it("keeps diagonal magnitude radial and clamps invalid deadzone values", () => {
     const diagonal = applyDeadzone({ x: 0.8, y: 0.8 }, GAMEPAD_MOVE_DEADZONE);
     expect(Math.hypot(diagonal.x, diagonal.y)).toBeCloseTo(1);

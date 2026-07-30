@@ -25,6 +25,15 @@ export const WEAPON_IDENTITY_PRESENTATIONS: Readonly<Record<WeaponId, WeaponIden
   "shock-baton": { weaponId: "shock-baton", silhouetteId: "shock-baton", tileFrame: 1, colour: 0x68e4e8, effectStyle: "melee", dedicatedAssetId: null },
   "breaching-maul": { weaponId: "breaching-maul", silhouetteId: "breaching-maul", tileFrame: 1, colour: 0xd19a69, effectStyle: "melee", dedicatedAssetId: null },
   "plasma-saber": { weaponId: "plasma-saber", silhouetteId: "plasma-saber", tileFrame: 1, colour: 0xff8cf0, effectStyle: "melee", dedicatedAssetId: null },
+  // Elemental balance pass. Colours follow the damage type so the ring stays
+  // readable while these share placeholder tiles: toxic greens, cryo blues.
+  "corrosive-lobber": { weaponId: "corrosive-lobber", silhouetteId: "acid-canister", tileFrame: 3, colour: 0x9ad14b, effectStyle: "explosive", dedicatedAssetId: null },
+  "scourge-repeater": { weaponId: "scourge-repeater", silhouetteId: "blight-repeater", tileFrame: 4, colour: 0x7fc23f, effectStyle: "projectile", dedicatedAssetId: null },
+  "bile-lance": { weaponId: "bile-lance", silhouetteId: "bile-jet", tileFrame: 0, colour: 0xb6e05a, effectStyle: "beam", dedicatedAssetId: null },
+  "rime-cleaver": { weaponId: "rime-cleaver", silhouetteId: "rime-cleaver", tileFrame: 1, colour: 0x8fd8ff, effectStyle: "melee", dedicatedAssetId: null },
+  "hoarfrost-scatter": { weaponId: "hoarfrost-scatter", silhouetteId: "frost-scatter", tileFrame: 0, colour: 0xa8e6ff, effectStyle: "projectile", dedicatedAssetId: null },
+  "glacier-ward": { weaponId: "glacier-ward", silhouetteId: "glacier-shard", tileFrame: 4, colour: 0xc2f0ff, effectStyle: "orbit", dedicatedAssetId: null },
+  "tether-harpoon": { weaponId: "tether-harpoon", silhouetteId: "harpoon", tileFrame: 3, colour: 0xd6c39a, effectStyle: "explosive", dedicatedAssetId: null },
 });
 
 export function weaponIdentityPresentation(weaponId: WeaponId): WeaponIdentityPresentation { return WEAPON_IDENTITY_PRESENTATIONS[weaponId]; }

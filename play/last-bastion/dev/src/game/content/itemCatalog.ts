@@ -73,6 +73,12 @@ export const ITEM_CATALOG: readonly ItemDefinition[] = Object.freeze([
   // Sawn-Off is the deliberate inverse: the close-quarters and scattergun enabler.
   item("long-barrel", "Long Barrel", "uncommon", ["offence", "ranged"], { rangePercent: 20, attackSpeedPercent: -8 }, "+20% weapon range, -8% attack speed."),
   item("sawn-off-stock", "Sawn-Off Stock", "uncommon", ["offence", "risk"], { rangePercent: -25, damagePercent: 25 }, "-25% weapon range, +25% damage."),
+  // Luck axis, opened 31 July 2026. `rarityDrawWeight` bends shop odds by
+  // `(luck - curse)`, but only the curse half had a granting item — so the
+  // upside of the whole mechanic was unreachable in a real run.
+  item("lucky-token", "Lucky Token", "uncommon", ["economy"], { luck: 15 }, "+15 luck. Better shop stock."),
+  item("prospectors-kit", "Prospector's Kit", "uncommon", ["economy"], { harvestingPercent: 20, luck: 8 }, "+20% scrap gained, +8 luck."),
+  item("coolant-sheath", "Coolant Sheath", "uncommon", ["defence", "elemental"], { armourFlat: 3, elementalDamagePercent: 12 }, "+3 armour, +12% elemental damage."),
 
   // --- Rare, sharper trade-offs and multi-stat ---
   item("glass-cannon", "Glass Cannon", "rare", ["offence", "risk"], { damagePercent: 25, maxHpFlat: -15 }, "+25% damage, -15 max HP."),
@@ -82,11 +88,16 @@ export const ITEM_CATALOG: readonly ItemDefinition[] = Object.freeze([
   item("reflex-sight", "Reflex Sight", "rare", ["offence", "ranged", "crit"], { rangePercent: 12, critChancePercent: 6 }, "+12% weapon range, +6% crit chance."),
   item("featherweight-frame", "Featherweight Frame", "rare", ["mobility", "risk"], { moveSpeedPercent: 18, armourFlat: -3 }, "+18% move speed, -3 armour."),
   item("bulwark-plating", "Bulwark Plating", "rare", ["defence", "risk"], { armourFlat: 6, attackSpeedPercent: -18 }, "+6 armour, -18% attack speed."),
+  item("loaded-dice", "Loaded Dice", "rare", ["economy", "risk"], { luck: 30, damagePercent: -10 }, "+30 luck, -10% damage."),
+  item("reactive-weave", "Reactive Weave", "rare", ["defence", "mobility"], { dodgePercent: 12, moveSpeedPercent: 8 }, "+12% dodge, +8% move speed."),
+  item("vital-lattice", "Vital Lattice", "rare", ["sustain", "risk"], { hpRegenPerSecond: 1.2, damagePercent: -10 }, "+1.2 HP regen per second, -10% damage."),
 
   // --- Legendary, powerful multi-stat ---
   item("titan-serum", "Titan Serum", "legendary", ["defence", "sustain", "risk"], { maxHpFlat: 25, armourFlat: 3, attackSpeedPercent: -15 }, "+25 max HP, +3 armour, -15% attack speed."),
   item("bloodthirster", "Bloodthirster", "legendary", ["offence", "melee", "sustain", "risk"], { lifestealPercent: 12, meleeDamagePercent: 15, maxHpFlat: -12 }, "+12% lifesteal, +15% melee damage, -12 max HP."),
   item("overclock-module", "Overclock Module", "legendary", ["offence", "risk"], { attackSpeedPercent: 30, maxHpPercent: -20 }, "+30% attack speed, -20% max HP."),
+  item("fortunes-ledger", "Fortune's Ledger", "legendary", ["economy"], { luck: 40, harvestingPercent: 25 }, "+40 luck, +25% scrap gained."),
+  item("executioners-loadout", "Executioner's Loadout", "legendary", ["offence", "crit", "risk"], { critChancePercent: 18, critMultiplier: 0.6, maxHpFlat: -20 }, "+18% crit chance, +60% crit damage, -20 max HP."),
 
   // --- Cursed, huge power, harsh downside ---
   // These are the only source of the `curse` stat, which drags future shop stock
@@ -94,6 +105,10 @@ export const ITEM_CATALOG: readonly ItemDefinition[] = Object.freeze([
   // whole curse half of the rarity weighting is unreachable in a real run.
   item("cursed-idol", "Cursed Idol", "cursed", ["offence", "risk"], { damagePercent: 40, maxHpFlat: -25, armourFlat: -2, curse: 20 }, "+40% damage, -25 max HP, -2 armour, +20 curse."),
   item("blood-pact", "Blood Pact", "cursed", ["offence", "sustain", "risk"], { lifestealPercent: 15, damagePercent: 20, maxHpPercent: -30, curse: 15 }, "+15% lifesteal, +20% damage, -30% max HP, +15 curse."),
+  item("martyrs-chain", "Martyr's Chain", "cursed", ["sustain", "risk"], { lifestealPercent: 20, maxHpPercent: -40, curse: 25 }, "+20% lifesteal, -40% max HP, +25 curse."),
+  // The only item that writes both sides of the shop-odds equation. Net -5 is
+  // deliberate: it buys raw damage at the price of a slightly souring shop.
+  item("hollow-reliquary", "Hollow Reliquary", "cursed", ["offence", "economy", "risk"], { damagePercent: 35, luck: 25, armourFlat: -4, curse: 30 }, "+35% damage, +25 luck, -4 armour, +30 curse."),
 ]);
 
 export const ITEM_IDS: readonly string[] = Object.freeze(ITEM_CATALOG.map((entry) => entry.id));

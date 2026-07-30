@@ -38,7 +38,6 @@ import {
   UPGRADE_SLOT_HARD_CAP,
   upgradeLevelName,
   type UpgradeCategory,
-  type UpgradeDefinition,
   type UpgradeId,
 } from "../content/upgradeCatalog";
 import {
@@ -334,7 +333,7 @@ export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit" | "siege-loader" | "phase-jacket" | "hunter-optics" | "last-stand-stimulant" | "emp-charge" | "butchers-serum";
 export type SupplyChestVariant = "sealed" | "armored";
 export type DecisionKind = "upgrade" | "level-stat" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
-export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat" | "supply-chest";
+export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat" | "supply-chest" | "world-object";
 
 export type TerrainDamageSource = "player-projectile" | "player-melee" | "mini-boss-charge" | "mini-boss-impact" | "enemy-slam" | "enemy-biomass";
 
@@ -800,7 +799,6 @@ export interface CombatSnapshot {
   level: number;
   experience: number;
   experienceForNextLevel: number;
-  pendingUpgradeChoices: readonly UpgradeDefinition[];
   upgradeLevels: readonly { id: UpgradeId; level: number }[];
   upgradeSlots: readonly UpgradeSlotSnapshot[];
   pendingDecision: PendingDecision | null;
@@ -1348,9 +1346,17 @@ const POWERUP_DURATION_SECONDS: Readonly<Record<PowerupType, number>> = Object.f
   "butchers-serum": BUTCHERS_SERUM_DURATION_SECONDS,
 });
 
+/**
+ * Wave-drop rotation. `medkit` is deliberately absent — supply chests and the
+ * Symbiote Heart drop it, so cycling it here too would flood healing.
+ *
+ * Ordering alternates offence with defence/utility so two consecutive waves
+ * never hand out the same flavour of buff.
+ */
 const POWERUP_WAVE_CYCLE: readonly PowerupType[] = Object.freeze([
   "overcharge", "magnet-pulse", "adrenaline", "aegis",
-  "siege-loader", "phase-jacket", "hunter-optics", "last-stand-stimulant",
+  "uranium-core-rounds", "phase-jacket", "siege-loader", "emp-charge",
+  "hunter-optics", "last-stand-stimulant", "butchers-serum",
 ]);
 
 export class CombatSimulation {
@@ -2194,6 +2200,23 @@ export class CombatSimulation {
     owner.stormRegentBehavior = { ...owner.stormRegentBehavior, nodes };
   }
 
+  /**
+   * Picks the wave's powerup. An expedition node runs only 1-4 waves and each
+   * node builds a fresh simulation, so reading the cycle from index 0 every
+   * time meant the campaign could only ever hand out the first four entries —
+   * the back half of the rotation was unreachable outside Quick Drop's ten-wave
+   * run. Offsetting by the encounter seed spreads the whole cycle across a run
+   * while staying deterministic: the same seed always yields the same drops.
+   *
+   * Quick Drop has no encounter and keeps offset 0, so its sequence is
+   * unchanged.
+   */
+  private powerupForWave(index: number): PowerupType {
+    const offset = this.expeditionEncounter?.seed ?? 0;
+    const position = (offset + index) % POWERUP_WAVE_CYCLE.length;
+    return POWERUP_WAVE_CYCLE[position]!;
+  }
+
   spawnPowerup(type: PowerupType, position?: Vector2Data): number {
     const id = this.nextId();
     this.powerups.push({
@@ -2434,13 +2457,6 @@ export class CombatSimulation {
       level: this.level,
       experience: this.experience,
       experienceForNextLevel: this.experienceThreshold(),
-      // The level-up draw mixes in a stat card, which has no UpgradeDefinition —
-      // filter rather than map, or this surfaces an undefined entry.
-      pendingUpgradeChoices: decision?.kind === "upgrade"
-        ? decision.options.flatMap((option) => (
-          UPGRADE_CATALOG[option.id as UpgradeId] ? [UPGRADE_CATALOG[option.id as UpgradeId]] : []
-        ))
-        : [],
       upgradeLevels: [...this.upgradeLevels.entries()].map(([id, level]) => ({ id, level })),
       upgradeSlots: (Object.keys(this.upgradeSlotCapacity) as UpgradeCategory[]).map((category) => ({
         category,
@@ -3559,7 +3575,8 @@ export class CombatSimulation {
       this.damageObstacle(
         cover.id,
         weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats)
-          * this.currentPowerupDamageMultiplier() * weapon.stats.terrainDamageMultiplier,
+          * this.currentPowerupDamageMultiplier() * weapon.stats.terrainDamageMultiplier
+          * this.relicModifiers.terrainDamageMultiplier,
         { x: cover.x + cover.width / 2, y: cover.y + cover.height / 2 },
         "player-melee",
       );
@@ -4203,7 +4220,23 @@ export class CombatSimulation {
       // is its temporary, far louder version.
       * (melee ? this.relicModifiers.meleeDamageMultiplier : 1)
       * (melee && this.isBuffActive("butchers-serum") ? BUTCHERS_SERUM_MELEE_MULTIPLIER : 1)
+      // Coolant Loop pays off only on sustained beams, so it reads the pattern
+      // rather than the weapon class.
+      * (stats.attackPattern === "beam" ? this.relicModifiers.beamDamageMultiplier : 1)
+      * (melee ? 1 : this.overwatchRangedMultiplier())
       * outgoingDamageMultiplier(this.playerStats, { melee, elemental });
+  }
+
+  /**
+   * Overwatch Rig: holding a firing position sharpens ranged damage. Reuses the
+   * existing `stationarySeconds` clock that Stabiliser Gyro already reads, so
+   * this needs no new state — and it is deliberately the mirror of the Gyro,
+   * which rewards the opposite habit.
+   */
+  private overwatchRangedMultiplier(): number {
+    const threshold = this.relicModifiers.stationaryRangedBonusAfterSeconds;
+    if (threshold === null || this.stationarySeconds < threshold) return 1;
+    return 1 + this.relicModifiers.stationaryRangedBonusDamage;
   }
 
   /**
@@ -4371,7 +4404,8 @@ export class CombatSimulation {
       if (obstacle) {
         this.damageObstacle(
           obstacle.id,
-          projectile.damage * WEAPON_CATALOG[projectile.weaponId].terrainDamageMultiplier,
+          projectile.damage * WEAPON_CATALOG[projectile.weaponId].terrainDamageMultiplier
+            * this.relicModifiers.terrainDamageMultiplier,
           projectile.position,
           "player-projectile",
         );
@@ -7329,6 +7363,11 @@ export class CombatSimulation {
     this.obstacleHitRemainingSeconds.set(obstacleId, 1.5);
     if (remainingHealth <= 0) {
       this.frameEvents.push({ type: "obstacle-destroyed", obstacleId, position: { ...position }, damage, remainingHealth: 0, source });
+      // Scavenger's Eye pays out here rather than on damage, so a half-broken
+      // crate is worth nothing and the relic rewards finishing the job.
+      if (this.relicModifiers.scrapPerWorldObjectDestroyed > 0) {
+        this.secureScrap(this.relicModifiers.scrapPerWorldObjectDestroyed, "world-object", position);
+      }
       this.detonateWorldObject(obstacle, source);
     } else {
       this.frameEvents.push({ type: "obstacle-damaged", obstacleId, position: { ...position }, damage, remainingHealth, source });
@@ -8487,7 +8526,11 @@ export class CombatSimulation {
     if (status && this.canStatusApply(enemy, status)) {
       // Mutagenic "Acidic Secretions" raises Corrode buildup dealt.
       const corrodeBonus = status === "corrode" ? this.transformationModifiers.corrodeBuildupMultiplier : 1;
-      const buildupRate = (this.statusTuning.buildupMultiplier[damageType] ?? 1) * corrodeBonus;
+      // Element Primer doubles buildup, which is what makes the 8-point
+      // threshold reachable for slow, hard-hitting elemental weapons.
+      const buildupRate = (this.statusTuning.buildupMultiplier[damageType] ?? 1)
+        * corrodeBonus
+        * this.relicModifiers.statusBuildupMultiplier;
       const buildup = (enemy.statusBuildup[status] ?? 0) + mitigated * buildupRate;
       if (buildup >= STATUS_BUILDUP_THRESHOLD) {
         enemy.statusBuildup[status] = 0;
@@ -9076,7 +9119,7 @@ export class CombatSimulation {
     this.densityPeakFriendlyProjectiles = this.projectiles.length;
     this.densityPressureSpawned = { pursuit: 0, ranged: 0, specialist: 0, boss: 0 };
     // Powerups from the first wave (was wave 2) — consumables should be common.
-    this.spawnPowerup(POWERUP_WAVE_CYCLE[index % POWERUP_WAVE_CYCLE.length]!);
+    this.spawnPowerup(this.powerupForWave(index));
     // Seeded supply chest: at most one alive, never on the teaching or boss waves.
     if (
       index >= 2
@@ -9179,7 +9222,7 @@ export class CombatSimulation {
       this.waveDurationSeconds = wave.durationSeconds;
       this.waveEndsOnTimer = wave.timerEndsWave;
       // Expedition combat now drops one powerup per wave too (previously none).
-      this.spawnPowerup(POWERUP_WAVE_CYCLE[index % POWERUP_WAVE_CYCLE.length]!);
+      this.spawnPowerup(this.powerupForWave(index));
       return;
     }
 

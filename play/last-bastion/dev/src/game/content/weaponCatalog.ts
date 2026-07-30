@@ -2,7 +2,8 @@ import type { DamageType } from "../combat/damageTypes";
 import type { WeaponClass } from "../hero/HeroDefinition";
 
 export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine" | "railspike" | "seeker-swarm" | "cryo-lance" | "tesla-coil" | "flamethrower" | "sawblade" | "event-horizon"
-  | "combat-knife" | "machete" | "fire-axe" | "shock-baton" | "breaching-maul" | "plasma-saber";
+  | "combat-knife" | "machete" | "fire-axe" | "shock-baton" | "breaching-maul" | "plasma-saber"
+  | "corrosive-lobber" | "scourge-repeater" | "bile-lance" | "rime-cleaver" | "hoarfrost-scatter" | "glacier-ward" | "tether-harpoon";
 export type WeaponTargetingMode = "cursor" | "nearest-enemy";
 export type WeaponAttackPattern = "projectile" | "scatter" | "chain-projectile" | "melee-sweep" | "beam" | "orbit" | "orbit-blade";
 
@@ -457,6 +458,148 @@ export const PLASMA_SABER: Readonly<WeaponRuntimeStats> = weapon({
   terrainDamageMultiplier: 3,
 });
 
+/* ──────────────────────────────────────────────────────────────────────────
+   Elemental balance pass (31 July 2026)
+   ──────────────────────────────────────────────────────────────────────────
+   The rack was 13 physical / 3 fire / 3 shock / 1 cryo / 1 toxic. That is a
+   problem because `enemyCatalog.ts` builds real counter-play on damage type:
+   the machine faction is weak to shock (x1.4-1.5), the storm faction *resists*
+   it (x0.45-0.5), organics burn, and toxic organics shrug off toxic. A player
+   reading those resistances correctly had almost nothing to reach for — most
+   sharply against the storm faction, since all three chain weapons were shock.
+
+   These seven use only existing attack patterns, so nothing new runs at
+   runtime. They take cryo to four and toxic to four, and every damage type now
+   has a melee, a ranged and an area option.
+   ────────────────────────────────────────────────────────────────────────── */
+
+export const CORROSIVE_LOBBER: Readonly<WeaponRuntimeStats> = weapon({
+  id: "corrosive-lobber",
+  displayName: "Corrosive Lobber",
+  description: "Lobs a canister of acid that bursts into a corroding pool of vapour.",
+  weaponClass: "heavy",
+  damageType: "toxic",
+  targetingMode: "cursor",
+  attackPattern: "projectile",
+  rangeMetres: 11,
+  fireIntervalSeconds: 2.6,
+  projectileSpeedMetresPerSecond: 7,
+  projectileLifetimeSeconds: 1.6,
+  projectileDamage: 3,
+  explosionRadiusMetres: 2.4,
+});
+
+export const SCOURGE_REPEATER: Readonly<WeaponRuntimeStats> = weapon({
+  id: "scourge-repeater",
+  displayName: "Scourge Repeater",
+  description: "Spits clinging blight that leaps between bodies. The answer to shock-proof foes.",
+  weaponClass: "medium",
+  damageType: "toxic",
+  targetingMode: "cursor",
+  attackPattern: "chain-projectile",
+  rangeMetres: 13,
+  fireIntervalSeconds: 0.75,
+  projectileSpeedMetresPerSecond: 15,
+  projectileLifetimeSeconds: 1.1,
+  projectileDamage: 3.5,
+  chainCount: 2,
+  chainRadiusMetres: 3.4,
+});
+
+export const BILE_LANCE: Readonly<WeaponRuntimeStats> = weapon({
+  id: "bile-lance",
+  displayName: "Bile Lance",
+  description: "A pressurised jet of solvent. Wider than the Cryo Lance, longer than the Flamethrower.",
+  weaponClass: "medium",
+  damageType: "toxic",
+  targetingMode: "cursor",
+  attackPattern: "beam",
+  rangeMetres: 4.5,
+  fireIntervalSeconds: 0,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 0,
+  beamDamagePerSecond: 4,
+  meleeArcRadians: 0.45,
+});
+
+export const RIME_CLEAVER: Readonly<WeaponRuntimeStats> = weapon({
+  id: "rime-cleaver",
+  displayName: "Rime Cleaver",
+  description: "A supercooled blade. Every swing seeds Freeze in whatever it opens.",
+  weaponClass: "medium",
+  damageType: "cryo",
+  targetingMode: "cursor",
+  attackPattern: "melee-sweep",
+  rangeMetres: 2.5,
+  fireIntervalSeconds: 1.3,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 6,
+  meleeArcRadians: Math.PI * 0.6,
+  terrainDamageMultiplier: 1.5,
+});
+
+export const HOARFROST_SCATTER: Readonly<WeaponRuntimeStats> = weapon({
+  id: "hoarfrost-scatter",
+  displayName: "Hoarfrost Scatter",
+  description: "A burst of freezing shot. Wide, close, and it stacks Freeze fast on a crowd.",
+  weaponClass: "heavy",
+  damageType: "cryo",
+  targetingMode: "cursor",
+  attackPattern: "scatter",
+  rangeMetres: 6.5,
+  fireIntervalSeconds: 0.95,
+  projectileSpeedMetresPerSecond: 16,
+  projectileLifetimeSeconds: 0.5,
+  projectileDamage: 1.2,
+  projectileCount: 4,
+  spreadRadians: 0.3,
+  knockbackMetres: 0.3,
+});
+
+export const GLACIER_WARD: Readonly<WeaponRuntimeStats> = weapon({
+  id: "glacier-ward",
+  displayName: "Glacier Ward",
+  description: "A drifting shard of ice that chills whatever strays closest. Defensive cryo.",
+  weaponClass: "light",
+  damageType: "cryo",
+  targetingMode: "nearest-enemy",
+  attackPattern: "orbit",
+  rangeMetres: 3.5,
+  fireIntervalSeconds: 1.1,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 2.5,
+  firesAutomatically: true,
+});
+
+/**
+ * Reuses Event Horizon's pull field at a fraction of its scale. Like that orb
+ * it deals no direct contact hit — `spawnsGravityWellOnImpact` routes all of
+ * its damage through the burst — so the fantasy is "yank a group together",
+ * not "snipe one thing".
+ */
+export const TETHER_HARPOON: Readonly<WeaponRuntimeStats> = weapon({
+  id: "tether-harpoon",
+  displayName: "Tether Harpoon",
+  description: "Fires a barbed line that drags everything near the impact into one heap.",
+  weaponClass: "medium",
+  damageType: "physical",
+  targetingMode: "cursor",
+  attackPattern: "projectile",
+  rangeMetres: 12,
+  fireIntervalSeconds: 3.5,
+  projectileSpeedMetresPerSecond: 18,
+  projectileLifetimeSeconds: 0.9,
+  projectileDamage: 5,
+  explosionRadiusMetres: 1.6,
+  spawnsGravityWellOnImpact: true,
+  pullFieldDurationSeconds: 0.5,
+  pullStrengthMetresPerSecond: 6,
+  pullRadiusMetres: 2.5,
+});
+
 export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeStats>>> = Object.freeze({
   "bastion-service-rifle": BASTION_SERVICE_RIFLE,
   scattergun: SCATTERGUN,
@@ -479,6 +622,13 @@ export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeSta
   "shock-baton": SHOCK_BATON,
   "breaching-maul": BREACHING_MAUL,
   "plasma-saber": PLASMA_SABER,
+  "corrosive-lobber": CORROSIVE_LOBBER,
+  "scourge-repeater": SCOURGE_REPEATER,
+  "bile-lance": BILE_LANCE,
+  "rime-cleaver": RIME_CLEAVER,
+  "hoarfrost-scatter": HOARFROST_SCATTER,
+  "glacier-ward": GLACIER_WARD,
+  "tether-harpoon": TETHER_HARPOON,
 });
 
 export const VERTICAL_SLICE_WEAPON_IDS: readonly WeaponId[] = Object.freeze([
@@ -534,6 +684,15 @@ const HELD_WEAPONS: readonly WeaponId[] = Object.freeze([
   "shock-baton",
   "breaching-maul",
   "plasma-saber",
+  // Elemental balance pass (31 July 2026). Same gate, same reasoning: they
+  // borrow tiles and bodies by attack pattern until their own art exists.
+  "corrosive-lobber",
+  "scourge-repeater",
+  "bile-lance",
+  "rime-cleaver",
+  "hoarfrost-scatter",
+  "glacier-ward",
+  "tether-harpoon",
 ]);
 
 /**

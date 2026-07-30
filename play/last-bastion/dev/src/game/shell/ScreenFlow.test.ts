@@ -84,6 +84,19 @@ describe("Shell screen flow", () => {
     expect(reverted.state.settings[row.key]).toBe(DEFAULT_SAVE.settings[row.key]);
   });
 
+  it("lists no setting that gameplay ignores", () => {
+    // Every row here must change something the player can perceive. These keys
+    // still persist in GameSettings, but nothing reads them yet: there is no
+    // music, AudioMixer's ui/music/ambience buses are unrouted, and aiming is
+    // absolute so a sensitivity multiplier has no rate to scale. Re-list each
+    // one in the same change that gives it a consumer.
+    const inertKeys = ["uiVolume", "musicVolume", "ambienceVolume", "gamepadAimSensitivity"];
+    const listed = SETTINGS_ROWS.map((row) => row.key);
+    for (const key of inertKeys) {
+      expect(listed).not.toContain(key);
+    }
+  });
+
   it("opens control bindings and requests capture per selected device/action", () => {
     const controlsIndex = SETTINGS_ROWS.findIndex((row) => row.key === "controls");
     const controls = stepShell({ ...boot("settings"), settingsIndex: controlsIndex }, "confirm").state;

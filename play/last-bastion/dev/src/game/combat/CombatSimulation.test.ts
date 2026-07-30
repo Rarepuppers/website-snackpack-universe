@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { PlayerIntent } from "../input/PlayerIntent";
+import { UPGRADE_CATALOG, type UpgradeId } from "../content/upgradeCatalog";
 import {
   broodWardenEnrageTier,
   CombatSimulation,
@@ -226,8 +227,13 @@ describe("CombatSimulation", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false });
     simulation.addExperience(10);
 
-    const choices = simulation.snapshot().pendingUpgradeChoices;
+    const decision = simulation.snapshot().pendingDecision;
+    expect(decision?.kind).toBe("upgrade");
+    // A level-up draw mixes a stat card in among the upgrades, so filter to the
+    // real UpgradeIds rather than assuming every option is one.
+    const choices = decision!.options.filter((option) => option.id in UPGRADE_CATALOG);
     expect(choices).toHaveLength(3);
+    expect(decision!.options).toHaveLength(4);
     expect(simulation.snapshot()).toMatchObject({
       level: 2,
       playerMaxHealth: 11,
@@ -235,9 +241,9 @@ describe("CombatSimulation", () => {
       playerDamageMultiplier: 1.02,
       weaponProficiencies: { light: 1, medium: 0, heavy: 0, unique: 0 },
     });
-    expect(simulation.chooseUpgrade(choices[0]!.id)).toBe(true);
+    expect(simulation.chooseUpgrade(choices[0]!.id as UpgradeId)).toBe(true);
     expect(simulation.snapshot().level).toBe(2);
-    expect(simulation.snapshot().pendingUpgradeChoices).toHaveLength(0);
+    expect(simulation.snapshot().pendingDecision).toBeNull();
   });
 
   it("regenerates baseline health on a slow visible ten-second tick", () => {
@@ -594,7 +600,7 @@ describe("CombatSimulation", () => {
     }
     expect(observedDrop).toBe(true);
     expect(snapshot.eliteRewards.some((reward) => reward.type === "mini-boss-arsenal-cache")
-      || snapshot.pendingUpgradeChoices.length > 0).toBe(true);
+      || snapshot.pendingDecision?.kind === "upgrade").toBe(true);
   });
 
   it("prevents contact damage during the Marine's invulnerability window", () => {

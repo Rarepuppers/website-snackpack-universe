@@ -33,8 +33,11 @@ function placeholderFrameByPattern(weaponId: WeaponId): number {
     case "melee-sweep":
     case "orbit-blade":
       return 1;
-    // Sustained cones borrow the Scattergun — the other spread-shaped tile.
+    // Sustained cones and any other spread borrow the Scattergun — the
+    // spread-shaped tile. `scatter` previously fell through to the rifle, which
+    // put a shotgun-shaped weapon on the least shotgun-shaped tile.
     case "beam":
+    case "scatter":
       return 0;
     // The orbiting coil borrows the Arc Carbine, its own damage family.
     case "orbit":

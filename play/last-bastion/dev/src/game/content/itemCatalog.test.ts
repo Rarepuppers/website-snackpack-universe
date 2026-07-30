@@ -98,4 +98,14 @@ describe("stat reachability", () => {
     // It belongs on cursed stock: taking cheap power should sour what you're offered next.
     expect(granters.every((item) => item.rarity === "cursed")).toBe(true);
   });
+
+  it("grants luck from somewhere, so the other half of rarity weighting is reachable", () => {
+    // `rarityDrawWeight` bends on `(luck - curse)`. Curse had granting items
+    // from the start; luck had none, so for a whole release the positive half
+    // of the shop-odds mechanic could not be reached in a real run.
+    const granters = ITEM_CATALOG.filter((item) => (item.statModifiers.luck ?? 0) > 0);
+    expect(granters.length).toBeGreaterThan(0);
+    // Luck is the economy build's payoff, so it must be buyable without a curse.
+    expect(granters.some((item) => item.rarity !== "cursed")).toBe(true);
+  });
 });

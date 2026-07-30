@@ -118,6 +118,15 @@ const WEAPON_CUES: Readonly<Record<WeaponId, AudioCue>> = Object.freeze({
   "shock-baton": cue("shock-baton-jab", 1100, 0.08, 0.06, "sawtooth", 1700),
   "breaching-maul": cue("breaching-maul-slam", 110, 0.28, 0.14, "square", 60),
   "plasma-saber": cue("plasma-saber-arc", 660, 0.12, 0.07, "sine", 900),
+  // Elemental balance pass: toxic reads wet and low, cryo reads glassy and
+  // high. Distinct cue ids are required — `AudioCueMap.test.ts` asserts it.
+  "corrosive-lobber": cue("corrosive-lobber-lob", 200, 0.15, 0.08, "triangle", 90),
+  "scourge-repeater": cue("scourge-repeater-spit", 480, 0.07, 0.05, "sawtooth", 260),
+  "bile-lance": cue("bile-lance-jet", 160, 0.08, 0.07, "sawtooth", 120),
+  "rime-cleaver": cue("rime-cleaver-swing", 820, 0.13, 0.07, "sine", 460),
+  "hoarfrost-scatter": cue("hoarfrost-scatter-burst", 540, 0.11, 0.08, "triangle", 240),
+  "glacier-ward": cue("glacier-ward-chill", 1500, 0.09, 0.06, "sine", 1900),
+  "tether-harpoon": cue("tether-harpoon-launch", 300, 0.12, 0.08, "square", 150),
 });
 
 export function cueForCombatEvent(event: CombatEvent): AudioCue | null {
