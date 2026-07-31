@@ -231,7 +231,7 @@ import {
   PLAYER_STAT_LIMITS,
   type EffectivePlayerStats,
 } from "../stats/PlayerStatLimits";
-import { foldItemStats, itemById, ITEM_CATALOG } from "../content/itemCatalog";
+import { collectItemEffects, foldItemStats, itemById, ITEM_CATALOG, type ItemEffectTrigger } from "../content/itemCatalog";
 import type { EnemyThreatClass } from "../rendering/EnemyHealthBars";
 import {
   DEFAULT_SHOP_PROFILE_ID,
@@ -375,6 +375,27 @@ export interface DecisionOption {
   affordable?: boolean;
 }
 
+/** A player-owned structure on the floor, e.g. a planted Sentry Stake. */
+interface DeployableState {
+  id: number;
+  weaponId: WeaponId;
+  position: Vector2Data;
+  health: number;
+  maxHealth: number;
+  remainingSeconds: number;
+  cooldownSeconds: number;
+  dead: boolean;
+}
+
+export interface DeployableSnapshot {
+  id: number;
+  weaponId: WeaponId;
+  position: Vector2Data;
+  health: number;
+  maxHealth: number;
+  remainingSeconds: number;
+}
+
 export interface WorldInteractionPrompt {
   objectId: string;
   worldObjectId: string;
@@ -495,6 +516,9 @@ export type CombatEvent =
   | { type: "player-revived"; position: Vector2Data }
   | { type: "status-applied"; position: Vector2Data; status: StatusEffectType }
   | { type: "powerup-collected"; position: Vector2Data; powerupType: PowerupType }
+  | { type: "deployable-placed"; position: Vector2Data; weaponId: WeaponId }
+  | { type: "deployable-fired"; position: Vector2Data; weaponId: WeaponId }
+  | { type: "deployable-expired"; position: Vector2Data; weaponId: WeaponId }
   | {
     type: "world-interaction-completed";
     objectId: string;
@@ -825,6 +849,8 @@ export interface CombatSnapshot {
   experienceForNextLevel: number;
   /** The interactable the player is close enough to act on, if any. */
   worldInteractionPrompt: WorldInteractionPrompt | null;
+  /** Player-owned structures currently standing. */
+  deployables: readonly DeployableSnapshot[];
   upgradeLevels: readonly { id: UpgradeId; level: number }[];
   upgradeSlots: readonly UpgradeSlotSnapshot[];
   pendingDecision: PendingDecision | null;
@@ -1207,6 +1233,8 @@ const ARTIFACT_IMPLOSION_PULL_SPEED = 5.5;
 const ARTIFACT_IMPLOSION_PULL_RADIUS_METRES = 3.4;
 const ARTIFACT_IMPLOSION_RADIUS_METRES = 2.4;
 /** EMP Charge consumable: stun radius on pickup. */
+/** Health fraction at which `on-low-health` item effects fire. */
+const LOW_HEALTH_EFFECT_FRACTION = 0.25;
 const EMP_CHARGE_RADIUS_METRES = 5;
 /** Butcher's Serum consumable: melee damage bonus and how long it lasts. */
 const BUTCHERS_SERUM_DURATION_SECONDS = 12;
@@ -1503,6 +1531,15 @@ export class CombatSimulation {
   private readonly obstacleHealth = new Map<string, number>();
   /** Hold-to-act state per placed interactable, keyed by obstacle id. */
   private readonly worldInteractions = new Map<string, WorldInteractionState>();
+  /** Player-owned structures placed by `attackPattern: "deployable"` weapons. */
+  private deployables: DeployableState[] = [];
+  /** Kills so far this run, for behavioural items that fire every Nth kill. */
+  private itemEffectKillCount = 0;
+  /** Remaining seconds and size of the current behavioural damage window. */
+  private itemDamageWindowSeconds = 0;
+  private itemDamageWindowFraction = 0;
+  /** `on-low-health` fires once per wave, so a dip cannot be farmed. */
+  private lowHealthEffectSpentThisWave = false;
   /** Fractional carry so hazard damage-per-second lands in whole, readable ticks. */
   private hazardDamageAccumulator = 0;
   private readonly obstacleHitRemainingSeconds = new Map<string, number>();
@@ -1883,6 +1920,8 @@ export class CombatSimulation {
     this.updateEnemies(delta);
     this.updateSupplyChests(intent);
     this.updateWorldInteractions(intent, delta);
+    this.updateDeployables(delta);
+    this.updateItemEffectWindows(delta);
     this.updateProjectiles(delta);
     this.updateEnemyProjectiles(delta);
     this.updateRainOfSpines(delta);
@@ -2488,6 +2527,14 @@ export class CombatSimulation {
       experience: this.experience,
       experienceForNextLevel: this.experienceThreshold(),
       worldInteractionPrompt: this.worldInteractionPrompt(),
+      deployables: this.deployables.filter((unit) => !unit.dead).map((unit) => ({
+        id: unit.id,
+        weaponId: unit.weaponId,
+        position: { ...unit.position },
+        health: unit.health,
+        maxHealth: unit.maxHealth,
+        remainingSeconds: unit.remainingSeconds,
+      })),
       upgradeLevels: [...this.upgradeLevels.entries()].map(([id, level]) => ({ id, level })),
       upgradeSlots: (Object.keys(this.upgradeSlotCapacity) as UpgradeCategory[]).map((category) => ({
         category,
@@ -3543,6 +3590,11 @@ export class CombatSimulation {
       return;
     }
 
+    if (weapon.stats.attackPattern === "deployable") {
+      this.deployStructure(weapon, anchor, aimDirection);
+      return;
+    }
+
     const resolution = resolveFractionalProjectiles(weapon.stats.projectileCount, weapon.projectileCarry);
     weapon.projectileCarry = resolution.carry;
     const centre = (resolution.count - 1) / 2;
@@ -3589,6 +3641,177 @@ export class CombatSimulation {
         direction,
       });
     }
+  }
+
+  /**
+   * Deployable weapons (31 July 2026) — the first player-owned entity in the
+   * game. The Sentry Stake plants a unit that fights on its own, so the weapon
+   * fires once and the *structure* keeps firing.
+   *
+   * `engineering` is read here and nowhere else: it is the stat this pattern
+   * was reserved for, and it scales all three of the levers that matter —
+   * how long the stake lives, how much it can absorb, and how fast it shoots.
+   */
+  private deployStructure(
+    weapon: EquippedWeaponState,
+    anchor: Vector2Data,
+    direction: Vector2Data,
+  ): void {
+    const stats = weapon.stats;
+    const active = this.deployables.filter((unit) => !unit.dead && unit.weaponId === weapon.weaponId);
+    // Planting past the cap retires the oldest, so the weapon never becomes a
+    // no-op the player cannot diagnose.
+    if (active.length >= Math.max(1, stats.deployMaxActive)) {
+      active[0]!.dead = true;
+    }
+
+    const scale = this.engineeringScale();
+    const position = {
+      x: clamp(anchor.x + direction.x * 1.2, 0.6, this.widthMetres - 0.6),
+      y: clamp(anchor.y + direction.y * 1.2, 0.6, this.heightMetres - 0.6),
+    };
+    const health = stats.deployHealth * scale;
+    this.deployables.push({
+      id: this.nextId(),
+      weaponId: weapon.weaponId,
+      position,
+      health,
+      maxHealth: health,
+      remainingSeconds: stats.deployLifetimeSeconds * scale,
+      cooldownSeconds: 0,
+      dead: false,
+    });
+    this.frameEvents.push({ type: "deployable-placed", position: { ...position }, weaponId: weapon.weaponId });
+  }
+
+  /**
+   * Engineering's multiplier. 1 at zero engineering, so a run that never picks
+   * the stat plays exactly as it did before deployables existed.
+   */
+  /**
+   * Behavioural item effects (31 July 2026). Every trigger has exactly one
+   * resolution point, so an item can only describe a moment combat has.
+   */
+  private fireItemEffects(trigger: ItemEffectTrigger): void {
+    const effects = collectItemEffects(this.ownedItemIds);
+    if (effects.length === 0) return;
+
+    for (const effect of effects) {
+      if (effect.trigger !== trigger) continue;
+      // `everyNth` counts kills only; the other triggers are already discrete.
+      if (effect.everyNth && effect.everyNth > 1) {
+        if (trigger !== "on-kill" || this.itemEffectKillCount % effect.everyNth !== 0) continue;
+      }
+      switch (effect.type) {
+        case "heal": {
+          if (this.playerHealth >= this.playerMaxHealth) break;
+          const healed = Math.min(effect.amount, this.playerMaxHealth - this.playerHealth);
+          this.playerHealth += healed;
+          this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount: healed });
+          break;
+        }
+        case "scrap":
+          this.secureScrap(effect.amount, "ordinary-drop", this.playerPosition);
+          break;
+        case "damage-window":
+          // Refresh rather than stack: two Kill Clocks should not compound into
+          // a permanent multiplier, the same rule powerup buffs already follow.
+          this.itemDamageWindowSeconds = Math.max(this.itemDamageWindowSeconds, effect.seconds);
+          this.itemDamageWindowFraction = Math.max(this.itemDamageWindowFraction, effect.fraction);
+          break;
+      }
+    }
+  }
+
+  private updateItemEffectWindows(deltaSeconds: number): void {
+    if (this.itemDamageWindowSeconds > 0) {
+      this.itemDamageWindowSeconds -= deltaSeconds;
+      if (this.itemDamageWindowSeconds <= 0) {
+        this.itemDamageWindowSeconds = 0;
+        this.itemDamageWindowFraction = 0;
+      }
+    }
+    if (
+      !this.lowHealthEffectSpentThisWave
+      && this.playerMaxHealth > 0
+      && this.playerHealth / this.playerMaxHealth <= LOW_HEALTH_EFFECT_FRACTION
+    ) {
+      this.lowHealthEffectSpentThisWave = true;
+      this.fireItemEffects("on-low-health");
+    }
+  }
+
+  private engineeringScale(): number {
+    return 1 + Math.max(0, this.playerStats.engineering) / 100;
+  }
+
+  private updateDeployables(deltaSeconds: number): void {
+    if (this.deployables.length === 0) return;
+
+    for (const unit of this.deployables) {
+      if (unit.dead) continue;
+      unit.remainingSeconds -= deltaSeconds;
+      if (unit.remainingSeconds <= 0 || unit.health <= 0) {
+        unit.dead = true;
+        this.frameEvents.push({ type: "deployable-expired", position: { ...unit.position }, weaponId: unit.weaponId });
+        continue;
+      }
+
+      const stats = WEAPON_CATALOG[unit.weaponId];
+      unit.cooldownSeconds -= deltaSeconds;
+      if (unit.cooldownSeconds > 0) continue;
+
+      const target = this.nearestEnemyWithin(unit.position, stats.rangeMetres);
+      if (!target) continue;
+
+      const aim = normalizeVector({
+        x: target.position.x - unit.position.x,
+        y: target.position.y - unit.position.y,
+      });
+      // Faster cadence with engineering, hence dividing rather than scaling.
+      unit.cooldownSeconds = stats.deployFireIntervalSeconds / this.engineeringScale();
+      this.spawnFriendlyProjectile({
+        weaponId: unit.weaponId,
+        damageType: stats.damageType,
+        position: { x: unit.position.x, y: unit.position.y },
+        velocity: {
+          x: aim.x * stats.projectileSpeedMetresPerSecond,
+          y: aim.y * stats.projectileSpeedMetresPerSecond,
+        },
+        damage: stats.projectileDamage * this.weaponDamageMultiplier(stats),
+        uraniumEligible: true,
+        remainingSeconds: stats.projectileLifetimeSeconds,
+        pierceRemaining: stats.pierceCount,
+        explosionRadiusMetres: stats.explosionRadiusMetres,
+        knockbackMetres: stats.knockbackMetres,
+        chainRemaining: stats.chainCount,
+        chainRadiusMetres: stats.chainRadiusMetres,
+        hitEnemyIds: new Set<number>(),
+        homingTurnRateRadiansPerSecond: stats.homingTurnRateRadiansPerSecond,
+        spawnsGravityWellOnImpact: false,
+        pullFieldDurationSeconds: 0,
+        pullStrengthMetresPerSecond: 0,
+        pullRadiusMetres: 0,
+      });
+      this.frameEvents.push({ type: "deployable-fired", position: { ...unit.position }, weaponId: unit.weaponId });
+    }
+
+    this.deployables = this.deployables.filter((unit) => !unit.dead);
+  }
+
+  private nearestEnemyWithin(origin: Vector2Data, rangeMetres: number): EnemyState | null {
+    let best: EnemyState | null = null;
+    let bestDistance = rangeMetres;
+    for (const enemy of this.enemies) {
+      if (enemy.dead) continue;
+      const separation = distance(origin, enemy.position);
+      // Ties break on id so targeting stays deterministic for the replay digest.
+      if (separation < bestDistance || (separation === bestDistance && best && enemy.id < best.id)) {
+        bestDistance = separation;
+        best = enemy;
+      }
+    }
+    return best;
   }
 
   private fireMeleeSweep(
@@ -4255,6 +4478,7 @@ export class CombatSimulation {
       // rather than the weapon class.
       * (stats.attackPattern === "beam" ? this.relicModifiers.beamDamageMultiplier : 1)
       * (melee ? 1 : this.overwatchRangedMultiplier())
+      * (1 + this.itemDamageWindowFraction)
       * outgoingDamageMultiplier(this.playerStats, { melee, elemental });
   }
 
@@ -8939,6 +9163,8 @@ export class CombatSimulation {
       }
     }
     this.runKills += 1;
+    this.itemEffectKillCount += 1;
+    this.fireItemEffects("on-kill");
     if (enemy.rank === "elite") this.runEliteKills += 1;
     this.frameEvents.push({
       type: "enemy-defeated",
@@ -9284,6 +9510,11 @@ export class CombatSimulation {
     this.waveElapsedSeconds = 0;
     this.status = "combat";
     this.aurumSpawnedThisWave = false;
+    // Quick Drop's wave entry. The expedition path has its own copy in
+    // `beginExpeditionWave`; both must fire or the trigger works in one mode
+    // and silently not the other.
+    this.lowHealthEffectSpentThisWave = false;
+    this.fireItemEffects("on-wave-start");
     const wave = buildDensityWave(index);
     this.spawnQueue = [...wave.plans];
     this.waveLiveCap = wave.liveCap;
@@ -9376,6 +9607,8 @@ export class CombatSimulation {
     }
     this.expeditionWaveIndex = index;
     this.nullFieldSpentThisWave = false;
+    this.lowHealthEffectSpentThisWave = false;
+    this.fireItemEffects("on-wave-start");
     this.waveIndex = plan.directorWaveIndex;
     this.waveElapsedSeconds = 0;
     this.status = "combat";

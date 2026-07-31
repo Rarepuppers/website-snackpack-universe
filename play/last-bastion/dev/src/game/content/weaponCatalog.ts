@@ -3,9 +3,10 @@ import type { WeaponClass } from "../hero/HeroDefinition";
 
 export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine" | "railspike" | "seeker-swarm" | "cryo-lance" | "tesla-coil" | "flamethrower" | "sawblade" | "event-horizon"
   | "combat-knife" | "machete" | "fire-axe" | "shock-baton" | "breaching-maul" | "plasma-saber"
-  | "corrosive-lobber" | "scourge-repeater" | "bile-lance" | "rime-cleaver" | "hoarfrost-scatter" | "glacier-ward" | "tether-harpoon";
+  | "corrosive-lobber" | "scourge-repeater" | "bile-lance" | "rime-cleaver" | "hoarfrost-scatter" | "glacier-ward" | "tether-harpoon"
+  | "sentry-stake";
 export type WeaponTargetingMode = "cursor" | "nearest-enemy";
-export type WeaponAttackPattern = "projectile" | "scatter" | "chain-projectile" | "melee-sweep" | "beam" | "orbit" | "orbit-blade";
+export type WeaponAttackPattern = "projectile" | "scatter" | "chain-projectile" | "melee-sweep" | "beam" | "orbit" | "orbit-blade" | "deployable";
 
 /** Autonomous support/cadence weapons ignore the global trigger mode. */
 export function shouldWeaponFire(
@@ -67,6 +68,14 @@ export interface WeaponRuntimeStats {
    * in a couple of swings; a knife barely scratches it. 1 = ordinary.
    */
   terrainDamageMultiplier: number;
+  /** Deployables only: seconds a placed unit stands before expiring. */
+  deployLifetimeSeconds: number;
+  /** Deployables only: how many of this weapon's units may exist at once. */
+  deployMaxActive: number;
+  /** Deployables only: hit points, so a swarm can chew one down. */
+  deployHealth: number;
+  /** Deployables only: seconds between the unit's own shots. */
+  deployFireIntervalSeconds: number;
 }
 
 export const BASTION_SERVICE_RIFLE: Readonly<WeaponRuntimeStats> = weapon({
@@ -600,6 +609,36 @@ export const TETHER_HARPOON: Readonly<WeaponRuntimeStats> = weapon({
   pullRadiusMetres: 2.5,
 });
 
+/**
+ * The first deployable (31 July 2026).
+ *
+ * `engineering` had been authored in `PlayerStatBlock` and its level-up card
+ * written and then deliberately withheld, because no weapon or item read the
+ * stat. Rather than delete the stat, this gives it the consumer it was
+ * reserved for: the Stake's health, lifetime and cadence all scale with it.
+ *
+ * Cursor-aimed so placement is a decision — you plant it where you intend to
+ * hold, not wherever you happen to face.
+ */
+export const SENTRY_STAKE: Readonly<WeaponRuntimeStats> = weapon({
+  id: "sentry-stake",
+  displayName: "Sentry Stake",
+  description: "Plants an automated stake that fires on its own until it expires or is torn down.",
+  weaponClass: "medium",
+  damageType: "physical",
+  targetingMode: "cursor",
+  attackPattern: "deployable",
+  rangeMetres: 9,
+  fireIntervalSeconds: 8,
+  projectileSpeedMetresPerSecond: 20,
+  projectileLifetimeSeconds: 0.8,
+  projectileDamage: 2,
+  deployLifetimeSeconds: 14,
+  deployMaxActive: 2,
+  deployHealth: 12,
+  deployFireIntervalSeconds: 0.55,
+});
+
 export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeStats>>> = Object.freeze({
   "bastion-service-rifle": BASTION_SERVICE_RIFLE,
   scattergun: SCATTERGUN,
@@ -629,6 +668,7 @@ export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeSta
   "hoarfrost-scatter": HOARFROST_SCATTER,
   "glacier-ward": GLACIER_WARD,
   "tether-harpoon": TETHER_HARPOON,
+  "sentry-stake": SENTRY_STAKE,
 });
 
 export const VERTICAL_SLICE_WEAPON_IDS: readonly WeaponId[] = Object.freeze([
@@ -693,6 +733,8 @@ const HELD_WEAPONS: readonly WeaponId[] = Object.freeze([
   "hoarfrost-scatter",
   "glacier-ward",
   "tether-harpoon",
+  // First deployable; released with the rest so `engineering` has a consumer.
+  "sentry-stake",
 ]);
 
 /**
@@ -747,6 +789,10 @@ function weapon(
     pullStrengthMetresPerSecond: 0,
     pullRadiusMetres: 0,
     terrainDamageMultiplier: 1,
+    deployLifetimeSeconds: 0,
+    deployMaxActive: 0,
+    deployHealth: 0,
+    deployFireIntervalSeconds: 0,
     ...definition,
   });
 }

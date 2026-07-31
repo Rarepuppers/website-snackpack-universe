@@ -99,13 +99,14 @@ describe("stat reachability", () => {
     expect(granters.every((item) => item.rarity === "cursed")).toBe(true);
   });
 
-  it("grants luck from somewhere, so the other half of rarity weighting is reachable", () => {
+  it("grants luck from items, not only from level-up cards", () => {
     // `rarityDrawWeight` bends on `(luck - curse)`. Curse had granting items
-    // from the start; luck had none, so for a whole release the positive half
-    // of the shop-odds mechanic could not be reached in a real run.
+    // from the start; luck was reachable only through the `lvl-luck` level-up
+    // card, so you could not *buy into* better shop odds — the economy build
+    // had no purchasable payoff, only a card it might never be offered.
     const granters = ITEM_CATALOG.filter((item) => (item.statModifiers.luck ?? 0) > 0);
     expect(granters.length).toBeGreaterThan(0);
-    // Luck is the economy build's payoff, so it must be buyable without a curse.
+    // And it must be buyable without taking a curse alongside it.
     expect(granters.some((item) => item.rarity !== "cursed")).toBe(true);
   });
 });

@@ -330,8 +330,8 @@ describe("relic combat effects", () => {
     expect(wedged).toBeGreaterThan(baseline);
   });
 
-  it("Scavenger's Eye pays out on destruction, not on damage", () => {
-    const result = shellCover(["rel-scavengers-eye", "rel-breachers-wedge"], 400);
+  it("Salvage Optics pays out on destruction, not on damage", () => {
+    const result = shellCover(["rel-salvage-optics", "rel-breachers-wedge"], 400);
     expect(result.scrapFromObjects).toBeGreaterThan(0);
     // Chipping cover must not pay — otherwise the relic rewards flailing at walls.
     expect(result.sawDamageWithoutScrap).toBe(true);

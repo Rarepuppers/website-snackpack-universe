@@ -44,6 +44,10 @@ function placeholderFrameByPattern(weaponId: WeaponId): number {
       return 4;
     case "chain-projectile":
       return 4;
+    // A planted stake reads as ordnance you put down, so it borrows the
+    // Grenade Tube alongside the shells.
+    case "deployable":
+      return 3;
     // Everything else is a projectile. Explosive/gravitic shells borrow the
     // Grenade Tube; the rest borrow the rifle.
     default:

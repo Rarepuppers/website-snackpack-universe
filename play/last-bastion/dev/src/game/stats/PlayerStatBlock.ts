@@ -68,7 +68,11 @@ export interface PlayerStatBlock {
   luck: number;
   /** Bends shop rarity toward worse stock (the trade-off knob). Reserved. */
   curse: number;
-  /** Boosts turret / structure item power. Reserved for engineering items. */
+  /**
+   * Boosts deployable structures: Sentry Stake health, uptime and cadence all
+   * read this. Reserved and unconsumed until 31 July 2026, when the Stake gave
+   * it something to scale.
+   */
   engineering: number;
 }
 

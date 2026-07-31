@@ -45,6 +45,10 @@ describe("level-up stat cards", () => {
       "critChancePercent", "critMultiplier", "attackSpeedPercent",
       "maxHpFlat", "maxHpPercent", "armourFlat", "hpRegenPerSecond", "lifestealPercent",
       "dodgePercent", "moveSpeedPercent", "harvestingPercent", "luck", "curse",
+      // Admitted 31 July 2026: the Sentry Stake reads `engineering` for
+      // deployable health, uptime and cadence. It stays on this list only for
+      // as long as a deployable weapon exists to consume it.
+      "engineering",
     ]);
     for (const id of LEVEL_STAT_ORDER) {
       const card = levelStatCardById(id);

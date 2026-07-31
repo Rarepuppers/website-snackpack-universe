@@ -18,6 +18,26 @@ export type ItemTag =
   | "offence" | "melee" | "ranged" | "elemental" | "crit"
   | "defence" | "sustain" | "mobility" | "economy" | "risk";
 
+/**
+ * Behavioural items (31 July 2026). Every item until now was a stat bundle,
+ * which made the catalogue read like a spreadsheet: more of a number you
+ * already had. An effect fires on a moment instead — a kill, a wave starting,
+ * dropping low — so the item changes how a fight *feels*, not just its totals.
+ *
+ * Deliberately a small, closed vocabulary. Each trigger has exactly one
+ * resolution point in `CombatSimulation`, so an item cannot describe a moment
+ * combat does not actually have.
+ */
+export type ItemEffectTrigger = "on-kill" | "on-wave-start" | "on-low-health";
+
+export type ItemEffect =
+  /** Restore health. `amount` is flat HP. */
+  | { trigger: ItemEffectTrigger; type: "heal"; amount: number; everyNth?: number }
+  /** Grant scrap. */
+  | { trigger: ItemEffectTrigger; type: "scrap"; amount: number; everyNth?: number }
+  /** Temporary outgoing-damage bonus, as a fraction (0.2 = +20%). */
+  | { trigger: ItemEffectTrigger; type: "damage-window"; fraction: number; seconds: number; everyNth?: number };
+
 export interface ItemDefinition {
   id: string;
   name: string;
@@ -27,6 +47,8 @@ export interface ItemDefinition {
   basePrice: number;
   tags: readonly ItemTag[];
   statModifiers: Partial<PlayerStatBlock>;
+  /** Behavioural effects. Absent on the stat-only majority. */
+  effects?: readonly ItemEffect[];
 }
 
 /** Default price floor per rarity; individual items may override via `basePrice`. */
@@ -48,6 +70,23 @@ const item = (
   description: string,
   basePrice = ITEM_RARITY_BASE_PRICE[rarity],
 ): ItemDefinition => Object.freeze({ id, name, rarity, tags, statModifiers: Object.freeze(statModifiers), description, basePrice });
+
+/** As `item`, but carrying behavioural effects instead of only stats. */
+const behavioural = (
+  id: string,
+  name: string,
+  rarity: ItemRarity,
+  tags: readonly ItemTag[],
+  statModifiers: Partial<PlayerStatBlock>,
+  effects: readonly ItemEffect[],
+  description: string,
+  basePrice = ITEM_RARITY_BASE_PRICE[rarity],
+): ItemDefinition => Object.freeze({
+  id, name, rarity, tags,
+  statModifiers: Object.freeze(statModifiers),
+  effects: Object.freeze(effects),
+  description, basePrice,
+});
 
 export const ITEM_CATALOG: readonly ItemDefinition[] = Object.freeze([
   // --- Common, pure-positive (small bumps, cheap) ---
@@ -79,6 +118,10 @@ export const ITEM_CATALOG: readonly ItemDefinition[] = Object.freeze([
   item("lucky-token", "Lucky Token", "uncommon", ["economy"], { luck: 15 }, "+15 luck. Better shop stock."),
   item("prospectors-kit", "Prospector's Kit", "uncommon", ["economy"], { harvestingPercent: 20, luck: 8 }, "+20% scrap gained, +8 luck."),
   item("coolant-sheath", "Coolant Sheath", "uncommon", ["defence", "elemental"], { armourFlat: 3, elementalDamagePercent: 12 }, "+3 armour, +12% elemental damage."),
+  // Engineering carriers, opened 31 July 2026 alongside the Sentry Stake. The
+  // stat existed and was explicitly "reserved for engineering items" for months
+  // with no weapon to read it and no item to grant it.
+  item("field-toolkit", "Field Toolkit", "uncommon", ["defence"], { engineering: 20 }, "+20 engineering. Sturdier, longer-lived deployables."),
 
   // --- Rare, sharper trade-offs and multi-stat ---
   item("glass-cannon", "Glass Cannon", "rare", ["offence", "risk"], { damagePercent: 25, maxHpFlat: -15 }, "+25% damage, -15 max HP."),
@@ -91,6 +134,7 @@ export const ITEM_CATALOG: readonly ItemDefinition[] = Object.freeze([
   item("loaded-dice", "Loaded Dice", "rare", ["economy", "risk"], { luck: 30, damagePercent: -10 }, "+30 luck, -10% damage."),
   item("reactive-weave", "Reactive Weave", "rare", ["defence", "mobility"], { dodgePercent: 12, moveSpeedPercent: 8 }, "+12% dodge, +8% move speed."),
   item("vital-lattice", "Vital Lattice", "rare", ["sustain", "risk"], { hpRegenPerSecond: 1.2, damagePercent: -10 }, "+1.2 HP regen per second, -10% damage."),
+  item("fabricator-core", "Fabricator Core", "rare", ["offence", "risk"], { engineering: 45, moveSpeedPercent: -10 }, "+45 engineering, -10% move speed."),
 
   // --- Legendary, powerful multi-stat ---
   item("titan-serum", "Titan Serum", "legendary", ["defence", "sustain", "risk"], { maxHpFlat: 25, armourFlat: 3, attackSpeedPercent: -15 }, "+25 max HP, +3 armour, -15% attack speed."),
@@ -109,7 +153,40 @@ export const ITEM_CATALOG: readonly ItemDefinition[] = Object.freeze([
   // The only item that writes both sides of the shop-odds equation. Net -5 is
   // deliberate: it buys raw damage at the price of a slightly souring shop.
   item("hollow-reliquary", "Hollow Reliquary", "cursed", ["offence", "economy", "risk"], { damagePercent: 35, luck: 25, armourFlat: -4, curse: 30 }, "+35% damage, +25 luck, -4 armour, +30 curse."),
+
+  // --- Behavioural: these fire on a moment, not on a total ---
+  behavioural("wave-rations", "Wave Rations", "uncommon", ["sustain"], {},
+    [{ trigger: "on-wave-start", type: "heal", amount: 4 }],
+    "Heal 4 HP when a wave begins."),
+  behavioural("kill-clock", "Kill Clock", "rare", ["offence"], {},
+    [{ trigger: "on-kill", type: "damage-window", fraction: 0.12, seconds: 3 }],
+    "Every kill grants +12% damage for 3 seconds."),
+  behavioural("tithe-collector", "Tithe Collector", "uncommon", ["economy"], {},
+    [{ trigger: "on-kill", type: "scrap", amount: 1, everyNth: 8 }],
+    "Every eighth kill drops 1 extra Scrap."),
+  behavioural("battlefield-triage", "Battlefield Triage", "rare", ["sustain"], { maxHpFlat: 5 },
+    [{ trigger: "on-kill", type: "heal", amount: 1, everyNth: 12 }],
+    "+5 max HP. Every twelfth kill heals 1 HP."),
+  behavioural("deadmans-switch", "Deadman's Switch", "legendary", ["offence", "risk"], {},
+    [{ trigger: "on-low-health", type: "damage-window", fraction: 0.5, seconds: 6 }],
+    "Dropping below a quarter health grants +50% damage for 6 seconds. Once per wave."),
+  behavioural("scavengers-rite", "Scavenger's Rite", "cursed", ["sustain", "economy", "risk"], { curse: 15 },
+    [
+      { trigger: "on-kill", type: "heal", amount: 1, everyNth: 6 },
+      { trigger: "on-wave-start", type: "scrap", amount: 3 },
+    ],
+    "+15 curse. Every sixth kill heals 1 HP, and each wave begins with 3 Scrap."),
 ]);
+
+/** Folds owned items into the behavioural effects the simulation should honour. */
+export function collectItemEffects(ownedItemIds: readonly string[]): readonly ItemEffect[] {
+  const effects: ItemEffect[] = [];
+  for (const id of ownedItemIds) {
+    const definition = itemById(id);
+    if (definition?.effects) effects.push(...definition.effects);
+  }
+  return effects;
+}
 
 export const ITEM_IDS: readonly string[] = Object.freeze(ITEM_CATALOG.map((entry) => entry.id));
 

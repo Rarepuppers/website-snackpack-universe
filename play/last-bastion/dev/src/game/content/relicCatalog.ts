@@ -28,7 +28,7 @@ export type RelicId =
   | "rel-breachers-wedge"
   | "rel-coolant-loop"
   | "rel-element-primer"
-  | "rel-scavengers-eye"
+  | "rel-salvage-optics"
   | "rel-overwatch-rig";
 
 export type ArtifactId =
@@ -75,7 +75,7 @@ export const RELIC_CATALOG: readonly RelicDefinition[] = Object.freeze([
   { id: "rel-breachers-wedge", name: "Breacher's Wedge", description: "You tear through cover and world objects far faster." },
   { id: "rel-coolant-loop", name: "Coolant Loop", description: "Sustained beam weapons run hotter without falling off." },
   { id: "rel-element-primer", name: "Element Primer", description: "Your elemental hits build status effects much faster." },
-  { id: "rel-scavengers-eye", name: "Scavenger's Eye", description: "Destroying a world object shakes loose a little Scrap." },
+  { id: "rel-salvage-optics", name: "Salvage Optics", description: "Destroying a world object shakes loose a little Scrap." },
   { id: "rel-overwatch-rig", name: "Overwatch Rig", description: "Holding still briefly sharpens your ranged damage." },
 ]);
 
@@ -281,7 +281,7 @@ export function resolveRelicModifiers(
   if (owned.has("rel-element-primer")) {
     modifiers.statusBuildupMultiplier = 2;
   }
-  if (owned.has("rel-scavengers-eye")) {
+  if (owned.has("rel-salvage-optics")) {
     modifiers.scrapPerWorldObjectDestroyed = 1;
   }
   if (owned.has("rel-overwatch-rig")) {

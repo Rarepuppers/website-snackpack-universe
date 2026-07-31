@@ -127,6 +127,8 @@ const WEAPON_CUES: Readonly<Record<WeaponId, AudioCue>> = Object.freeze({
   "hoarfrost-scatter": cue("hoarfrost-scatter-burst", 540, 0.11, 0.08, "triangle", 240),
   "glacier-ward": cue("glacier-ward-chill", 1500, 0.09, 0.06, "sine", 1900),
   "tether-harpoon": cue("tether-harpoon-launch", 300, 0.12, 0.08, "square", 150),
+  // The plant, not the stake's own shots: a short mechanical thunk.
+  "sentry-stake": cue("sentry-stake-plant", 250, 0.14, 0.09, "square", 420),
 });
 
 export function cueForCombatEvent(event: CombatEvent): AudioCue | null {

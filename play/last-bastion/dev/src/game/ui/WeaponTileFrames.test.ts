@@ -6,6 +6,8 @@ const PENDING_ART_WEAPON_IDS: readonly WeaponId[] = [
   "railspike", "seeker-swarm", "cryo-lance", "tesla-coil", "flamethrower", "sawblade", "event-horizon",
   // Elemental balance pass (31 July 2026), art pending on the same terms.
   "corrosive-lobber", "scourge-repeater", "bile-lance", "hoarfrost-scatter", "glacier-ward", "tether-harpoon",
+  // First deployable, art pending on the same terms.
+  "sentry-stake",
 ];
 
 /**
@@ -36,6 +38,8 @@ const EXPECTED_PLACEHOLDER_FRAME: Readonly<Record<string, number>> = {
   "glacier-ward": 4,
   "bile-lance": 0,
   "hoarfrost-scatter": 0,
+  // A planted stake reads as ordnance, so it borrows the launcher tile.
+  "sentry-stake": 3,
 };
 
 describe("canonical Batch I weapon tile mapping", () => {

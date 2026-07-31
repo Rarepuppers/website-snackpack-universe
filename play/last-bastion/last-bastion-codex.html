@@ -687,7 +687,7 @@ const RELICS = [
   { id: "rel-breachers-wedge", name: "Breacher's Wedge", glyph: "◤", status: "live", kind: "Relic", text: "You tear through cover and world objects two and a half times faster. Pairs with the Breaching Maul and the Fire Axe: an arena you can reshape is an arena you control." },
   { id: "rel-coolant-loop", name: "Coolant Loop", glyph: "◍", status: "live", kind: "Relic", text: "Sustained beams run 30% hotter. The Cryo Lance, Flamethrower and Bile Lance were the three weapons no relic had ever spoken to." },
   { id: "rel-element-primer", name: "Element Primer", glyph: "◆", status: "live", kind: "Relic", text: "Elemental hits build status twice as fast. Slow, heavy elemental weapons could rarely reach the buildup threshold before it decayed; this is what makes them proc." },
-  { id: "rel-scavengers-eye", name: "Scavenger's Eye", glyph: "◇", status: "live", kind: "Relic", text: "Every world object you destroy sheds a little Scrap. Only on destruction — a half-broken crate is worth nothing." },
+  { id: "rel-salvage-optics", name: "Salvage Optics", glyph: "◇", status: "live", kind: "Relic", text: "Every world object you destroy sheds a little Scrap. Only on destruction — a half-broken crate is worth nothing." },
   { id: "rel-overwatch-rig", name: "Overwatch Rig", glyph: "⊹", status: "live", kind: "Relic", text: "Hold still for a second and a half and your ranged damage climbs 25%. The deliberate mirror of the Stabiliser Gyro, which rewards the opposite habit." },
   { id: "art-overclock-core", name: "Overclock Core", glyph: "◎", status: "live", kind: "Artifact", text: "Each kill stacks fire rate, and the stacks bleed away if you stop. Rewards never letting the room go quiet." },
   { id: "art-chrono-capacitor", name: "Chrono Capacitor", glyph: "◷", status: "live", kind: "Artifact", text: "A successful dodge hands back half your evasive cooldown. Reads the dodge as a skill, not a resource." },
@@ -776,6 +776,9 @@ const ELEMENTAL_WEAPONS = [
   { id: "wpn-tether-harpoon", name: "Tether Harpoon", glyph: "⌐", cls: "medium", family: "launcher", status: "live", tier: "II",
     stats: { Damage: "5", Cadence: "3.5s", Range: "12m", Type: "Physical", Blast: "1.6m", Pull: "2.5m" },
     text: "A barbed line that drags everything near the impact into one heap. Like Event Horizon it never lands a direct hit — the damage is all in the burst, and the point is the heap you make for whatever you fire next." },
+  { id: "wpn-sentry-stake", name: "Sentry Stake", glyph: "⊥", cls: "medium", family: "deployable", status: "live", tier: "II",
+    stats: { Damage: "2", Cadence: "8s", Range: "9m", Type: "Physical", Uptime: "14s", Units: "2" },
+    text: "Plants an automated stake that acquires and fires on its own until it expires or is torn down. The first weapon you put down rather than hold — and the only one that reads Engineering, which lifts its health, its uptime and its rate of fire together." },
 ];
 WEAPONS.push(...ELEMENTAL_WEAPONS);
 
