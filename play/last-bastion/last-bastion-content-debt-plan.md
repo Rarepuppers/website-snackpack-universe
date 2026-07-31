@@ -1,5 +1,20 @@
 # Last Bastion — content-debt plan (placebo pickups, dead stats, held content)
 
+> **STATUS — MOSTLY SHIPPED, 31 July 2026.** Track A was already complete. Of the backlog:
+>
+> - **#4 `rangePercent`, #7 settings/accessibility (partly), #8 Task 96 QoL (partly) — done.**
+>   The 31 July "truth pass" wired aim assist and the gamepad deadzones, and removed four
+>   settings rows that were saved, displayed, and read by nothing.
+> - **`engineering` — done.** It has a weapon consumer, granting items, and its level card back.
+> - **World objects — done.** See `world-object-production-plan.md`.
+> - **Still open:** the in-combat transformation Affinity HUD (#5); the pinned codex gaps
+>   (#3 — items, shop profiles, and liberation nodes remain undocumented, enforced by
+>   `codexDrift.test.ts`); non-boolean settings machinery, which blocks difficulty options
+>   and text scaling; and the legacy five-system modifier cleanup (#9).
+>
+> This doc's *method* — audit the docs against `dev/src/game/` and hunt for things that
+> resolve correctly but are never called — remains the most useful thing in it.
+
 Scoped 25 July 2026 after a full audit of the project `.md` docs against `dev/src/game/`. The Brotato
 overhaul (`last-bastion-shop-economy-plan.md`) is complete across all five phases; this plan covers what
 that audit found sitting behind it.

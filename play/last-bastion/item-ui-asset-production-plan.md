@@ -1,5 +1,18 @@
 # Item, equipment, and effect asset plan
 
+> **STATUS — PREMISES STALE, ART GATES STILL REAL, 31 July 2026.** The "Current coverage"
+> table below reflects 23 July: eight live weapons, no general consumable inventory,
+> relics/artifacts not fully live. None of that holds — there are 29 weapons, all 12
+> artifacts are wired, and 14 relics have combat read-sites.
+>
+> What is still true: **Item Batch P1** (powerup tiles) and **P2** (weapon VFX) remain
+> art-gated, **P3** is blocked on the transformation comprehension gate, and **P4** is not
+> authorized. The standing "do not build" list — wearable armour slots, ammo bookkeeping,
+> non-weapon equipment inventory, rarity armour sets — still stands.
+>
+> **Superseded as a queue** by `asset-next-production-review-2026-07-26.md`. Read that for
+> what to produce next.
+
 **Audit date:** 23 July 2026  
 **Goal:** one honest, Steam-ready visual language for every item the live game can actually award, equip, activate, or display.
 

@@ -1,5 +1,17 @@
 # Last Bastion transformation-path production plan
 
+> **STATUS — STILL THE PLAN OF RECORD, 31 July 2026.** Steps 1–4 shipped: the seven-path
+> design, 21 paired choices × 3 ranks, save-schema v8 persistence, and the isolated decision
+> lab at `?screen=transformation-lab`.
+>
+> **Step 5 (the Cybernetic Ascension behaviour pilot) onward is genuinely open** — this is
+> the live next step, not history. Also open: the in-combat Affinity HUD, since the player
+> currently cannot see the 3-Affinity commit threshold during play, only on the debrief.
+>
+> One correction: `TransformationRunModifiers.ts` used to claim "fourteen of 27 metrics
+> wired". It is **22 of 26**, and the four that are not are listed against the `default` arm
+> in that file. Read the code list, not a count in prose.
+
 ## Decision
 
 Transformation is an optional, run-local specialization layered over the selected hero, normal XP upgrades, weapon tiers, and pre-run perk. A single exposure never locks the player. The third aligned choice commits the run to that family; later aligned choices unlock Ascended and Apex stages.

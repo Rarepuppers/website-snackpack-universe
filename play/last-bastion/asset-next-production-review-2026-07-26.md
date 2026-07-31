@@ -124,3 +124,83 @@ The code and plans agree that world-object art remains the current production ga
 - Evaluate at logical gameplay size first, then inspect the retained source for cell bleed, extraction damage, inconsistent lighting, chroma fringe, and unstable footprints.
 - Preserve stable IDs, frame order, pivots, footprints, attachment points, and runtime rotation rules so future 512+ repaints can replace imagery without rewriting gameplay.
 - For a Steam/4K close-view pass, repaint accepted individual frames at 512×512 or larger from retained references; never upscale a runtime PNG and call it a new source.
+
+---
+
+# Addendum — 31 July 2026
+
+## Audit result (addendum)
+
+Three gaps are now the highest-value asset work, ahead of further decorative object batches (O4–O30 already exceed what any placement system consumes).
+
+- **Screen chrome is code-drawn and flat.** Every menu card, panel, and button in the shell, pause overlay, decision prompts, shop, map, and debrief is a plain filled rectangle with a 1px stroke. The background plates and typography read well; the containers sitting on them do not. This is the most visible unfinished surface in the game and the first thing a new player sees.
+- **There is no music, and two mixer buses are silent.** `audio/MusicDirector.ts` and `audio/AudioMixer.ts` are complete and tested but consume nothing, because no music or ambience files exist. The Music and Ambience volume sliders were removed from Settings on 31 July precisely because they controlled nothing. They go back the moment these assets land.
+- **Locked and future heroes have no presentation.** Assault, Tactician, and Scout render as bare silhouette placeholders, and Alien/Cultist/Cyborg are reserved with nothing to show. A locked slot still needs to look deliberate.
+
+## Priority queue (addendum)
+
+61. **UI Batch U1 — panel and button chrome (highest priority).** The core nine-slice container language, replacing flat rectangles everywhere. Required families:
+    - **Panel frame**, three weights: `recessed` (backing for content wells), `raised` (menu cards, shop cards), `emphasis` (modal/decision prompts). Nine-slice with a 48px corner and 16px repeatable edge at source resolution.
+    - **Button**, five states in one atlas row per weight: `idle`, `hover`, `selected`, `pressed`, `disabled`.
+    - **Selection accent**: a focus ring or corner-bracket set that reads at a glance against both `raised` and `emphasis`, since keyboard and gamepad navigation are primary.
+    - **Header plate** and **divider rule** for section titles and list separation.
+    - **Corner brackets / trim** as separable pieces, so code can compose a frame without a bespoke asset per screen.
+
+    Keep the existing dark technical palette and the terminal/monospace character of the current shell — this is a refinement of what is there, not a restyle. Author **no text, no labels, no icons, no key bindings**. Layout, wording, focus order, and state logic remain code-owned. Nine-slice corner and edge sizes must be stated in the frame map, because code slices on those numbers. Stage under `art/production-tests/ui-batch-u1/`.
+
+62. **UI Batch U2 — screen-specific surfaces.** Built from U1's language once it is accepted, for the surfaces whose shape U1 does not cover:
+    - Combat HUD backing plates (health/XP/wave cluster, weapon ring surround, radar bezel, status tray).
+    - Decision and shop card frames, including an `affordable` vs `too expensive` treatment that is **not colour-only** (colour-vision modes are a shipped setting).
+    - Pause overlay scrim and its menu panel.
+    - Debrief/run-summary panels and the chart well.
+    - Expedition map node card and intel card frames.
+    - Encounter event card frame (the FTL-style choice cards).
+
+    Same rules as U1: text-free, no baked numbers, no telegraphs. Stage under `art/production-tests/ui-batch-u2/`.
+
+63. **Music Batch M1 — six layers.** `audio/MusicDirector.ts` already defines the exact set and the transition rules; compose to that contract:
+
+    | Layer | Trigger | Form |
+    |---|---|---|
+    | `title` | Shell/menu screens | Seamless loop, sparse, no percussion build |
+    | `calm` | Enemy density at or below 35% of live cap, held 4s | Seamless loop, low intensity |
+    | `intensity` | Enemy density at or above 65% of live cap, held 2s | Seamless loop, must layer over `calm` at the same tempo/key |
+    | `boss` | Boss present — switches immediately, no hysteresis | Seamless loop, distinct from `intensity` |
+    | `victory` | Encounter won | One-shot sting, may resolve into a short loop |
+    | `defeat` | Run ended | One-shot sting, no loop |
+
+    `calm` and `intensity` swap frequently mid-fight, so they must be **the same tempo and key and share a bar grid** — the director crossfades, it does not wait for a phrase boundary. Deliver stems where a layer is additive. `boss` may break key. Nothing may include a stinger that assumes a fixed wave length.
+
+    Format: stereo 48 kHz/24-bit WAV masters, plus OGG Vorbis and MP3 fallback derivatives, matching the S2/S3 pipeline. Stage masters under `art/production-tests/audio-batch-m1/` and derivatives under `dev/src/game/audio/runtime/batch-m1/`.
+
+64. **Ambience Batch M2 — nine world families.** One seamless stereo bed per `WorldThemeFamily`: `bastion`, `science`, `logistics`, `foundry`, `hive`, `surface`, `starship`, `containment`, `underworld`. These sit under music on the separate `ambience` bus and must survive being heard for several minutes — no recognisable repeating event, no melodic content that fights `calm`. Same format and pipeline as M1; stage under `art/production-tests/audio-batch-m2/` and `dev/src/game/audio/runtime/batch-m2/`.
+
+65. **UI Audio Batch S4 — the `ui` bus.** Currently silent. Needed: navigation move, confirm, back/cancel, invalid/denied, tab or category change, slider tick, purchase complete, item equipped, pause open, pause close, achievement/discovery toast. Short, dry, non-musical, and quiet enough to fire on every keypress without fatigue — these are the most-repeated sounds in the game. Mono 48 kHz/24-bit masters plus derivatives, matching S1–S3. Stage under `art/production-tests/audio-batch-s4/` and `dev/src/game/audio/runtime/batch-s4/`.
+
+66. **Character Batch C2 — locked, mystery, and reveal plates.** Every roster slot must look intentional, including the ones you cannot pick yet. Three presentation states, at the same 1024x1536 full-height format as the accepted Marine/Medic select portraits:
+    - **Locked** — a hero whose identity is known but who is not yet available (Assault, Tactician, Scout). Readable silhouette with enough shape to distinguish the three from each other, rendered as deliberately unlit rather than blank.
+    - **Mystery** — a reserved slot whose identity is *not* revealed (Alien, Cultist, Cyborg). Must not disclose the hero: no faction-identifying silhouette, no reuse of Alien Hive, Cultist transformation, or Cyborg Reclaimer imagery. A sealed/redacted plate treatment is the intent.
+    - **Reveal** — a short transition frame set the shell can play once when a slot unlocks.
+
+    Also needed: matching small **roster tile** variants of all three states for any compact list.
+
+    Author no unlock conditions, no requirement text, no progress numbers, and no mechanical promises into the art — unlock rules are code-owned and will change. Stage under `art/production-tests/batch-character-c2/`.
+
+67. **Character Batch C3 — the per-hero package for an actual playable hero.** A hero may only leave silhouette state when *all* of the following exist, matching the shipped Marine/Medic contract. Produce this package per hero, in roster order (Assault, then Tactician, then Scout), one hero at a time:
+    - Full-height select portrait, 1024x1536, text-free.
+    - Directional gameplay sprite sheet on the established four-direction column order (south, north, east, west), covering the same states the Marine sheet covers.
+    - Equipment/helmet overlay layers where the hero's silhouette changes with loadout.
+    - Roster tile, unlocked state.
+    - Hero-specific audio: at minimum damage, evade, and death, consistent with the existing marine/medic cues.
+
+    Gameplay contract — stats, weapon-class rack, starting weapon, ultimate, and unlock rule — is code-owned and must exist **before** the package is produced, not after. Do not begin a hero package until its mechanics are real; that is the mistake the silhouette placeholders were meant to avoid. Stage under `art/production-tests/batch-character-c3-<hero>/`.
+
+## Quality floor for every new audio asset
+
+- Deliver a 48 kHz/24-bit WAV master plus OGG Vorbis and MP3 fallback derivatives; the runtime loads the derivatives and the audit script requires both.
+- Stereo for music and ambience, mono for UI and combat SFX, matching batches S1–S3.
+- Loops must be sample-accurate and seam-free — verified by looping the file at least four times, not by trusting the editor.
+- True-peak below -1 dBFS. Keep music and ambience well under the SFX bed: the mixer applies perceptual gain per bus and combat cues must always cut through.
+- No baked silence at the head of a one-shot; the runtime does not trim.
+- Author no voice-over, no lyrics, and no recognisable real-world musical quotation.
+- State the intended bus (`sfx`, `ui`, `music`, `ambience`) and, for music, the tempo and key in the asset map. `calm` and `intensity` must agree on both.

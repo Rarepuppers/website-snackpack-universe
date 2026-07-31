@@ -1,5 +1,23 @@
 # Last Bastion world-object production plan
 
+> **STATUS — LARGELY SHIPPED, 31 July 2026.** The density gates in §3.1 are still the live
+> contract (`arena/WorldObjectPlacement.ts` cites this file by name), but the delivery
+> status has moved on:
+>
+> - Placement, hazard ticks, damage states, and Fuel Cell shipped 26 July.
+> - The **interaction verb shipped 31 July**. Placement no longer excludes every
+>   interactable; it now admits exactly those whose effect combat can honour, via
+>   `IMPLEMENTED_INTERACTION_EFFECTS`. Live verbs: `open-loot`, `open-gate`, `harvest-scrap`
+>   (Supply Chest, Reinforced Gate, Gate Button, Scrap Seam). Still unimplemented and
+>   therefore still unplaced: `disrupt-spawner`, `activate-stargate`, `toggle-system`,
+>   `release-cryo`, `upgrade-weapon` — each documented with its reason at the constant.
+> - **Structural Pillar (§3.3.2) and Scrap Seam (§3.3.3) shipped.** The catalogue is 29 entries.
+> - The §3.1.5 navigation guarantee — *"this needs a test, not a hope"* — now exists as a
+>   flood-fill in `arena/WorldObjectNavigation.test.ts`, across every theme × 25 seeds and
+>   every single-object-destroyed state.
+>
+> **Still open:** the four O3B objective-anchor behaviours, and O2/O3 art binding.
+
 ## Decision
 
 Theme-specific obstacles, hazards, and interactables are required. Environment floors provide identity; world objects provide combat routing, cover, risk/reward, optional objectives, and room replayability. Art never owns health, collision, damage, slow strength, activation state, or rewards.

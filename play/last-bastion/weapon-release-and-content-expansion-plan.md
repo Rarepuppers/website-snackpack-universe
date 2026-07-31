@@ -1,11 +1,34 @@
 # Last Bastion — weapon release + content expansion plan
 
+> **STATUS — SUPERSEDED, 31 July 2026.** Historical. Every "current state" number below is
+> now wrong, and its proposals shipped.
+>
+> - All four asks are answered. Weapons: 21 → **29** (28 draftable + Event Horizon earned);
+>   the seven added on 31 July closed the elemental matrix. Items **47**, relics **14**,
+>   artifacts 12, world objects **29**.
+> - Sentry Stake shipped as the first `deployable`, which gave the `engineering` stat the
+>   consumer it had been reserved for; Corrosive Lobber and Rime Cleaver shipped as designed.
+> - Breacher's Wedge and Coolant Loop shipped. So did Structural Pillar and Scrap Seam.
+> - The §2.5 powerup bug was worse than recorded: not only were 4 of 12 consumables absent
+>   from the wave cycle, the cycle restarted at index 0 every node, so the campaign could
+>   only ever reach the first four. Both halves are fixed.
+> - `WorldObjectCatalog` is no longer dead data — placement, hazards, and the interaction
+>   verb are all live.
+>
+> **Still open from this doc:** the 4-slot rack question (now 4 slots against 28 draftable
+> weapons — weapon-chest banish/reroll remains the recommended answer, and is unbuilt), and
+> the deferred shield pylons / escape lifts / hostile turret emplacements.
+>
+> Kept for its design rationale. For current state read `dev/src/game/`; for what to build
+> next read `README.md`.
+
 Scoped 26 July 2026. Four asks: (1) make every weapon playable, (2) decide whether more
 weapons/items/artifacts/consumables are warranted, (3) design the remaining big world objects,
 (4) collect the other improvements worth doing alongside.
 
-Current state: 21 weapons authored, **8 obtainable**. 26 shop items, 9 relics, 12 artifacts,
-12 consumables. `WorldObjectCatalog` has 24 entries and is imported by nothing but its own test.
+Current state *(as scoped, 26 July — see STATUS above)*: 21 weapons authored, **8 obtainable**.
+26 shop items, 9 relics, 12 artifacts, 12 consumables. `WorldObjectCatalog` has 24 entries and
+is imported by nothing but its own test.
 
 ---
 

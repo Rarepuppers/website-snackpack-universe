@@ -1,5 +1,22 @@
 # Last Bastion — Brotato-style shop, economy & stat overhaul (plan)
 
+> **STATUS — COMPLETE, 31 July 2026.** All five phases shipped. Retained because
+> `itemCatalog.ts`, `shopProfiles.ts`, and `levelStatCatalog.ts` cite this file by name for
+> their design rationale. Its **Deferred** section has since moved:
+>
+> - **Behavioural (non-stat) items — shipped.** Note the doc's claim that `ItemDefinition.effects`
+>   already existed was wrong; the field did not exist and was added on 31 July with a closed
+>   trigger vocabulary (`on-kill`, `on-wave-start`, `on-low-health`) and six items.
+> - **`engineering` — shipped.** The Sentry Stake deployable reads it, so the withheld
+>   `lvl-engineering` card is offered again and two granting items exist.
+> - **`luck` — shipped an item source.** It was reachable only via the `lvl-luck` level-up
+>   card, so an economy build had no purchasable payoff. Five items now grant it.
+> - **Dead surface resolved:** `CombatSnapshot.pendingUpgradeChoices` was deleted.
+> - **Still deferred:** luck-weighted level-card draws (they perturb the replay digest), and
+>   the legacy five-system modifier cleanup.
+>
+> Counts in the body are as-scoped and now low — the catalogue is 47 items.
+
 Creator-directed pivot, scoped 24 July 2026. This is the reference plan for turning
 Last Bastion's build progression into a Brotato-shaped loop: a shop after every node,
 a rich item economy with positive **and** negative stat trade-offs, weapons bought to
