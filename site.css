@@ -1840,3 +1840,74 @@ button:focus-visible {
   color: #fff;
   transform: translateY(-1px);
 }
+
+/* ── Onward-journey block on per-app privacy pages ───
+   These pages are the biggest traffic source on the site (every Play listing
+   links to one), so they get a route back to the app and the arcade. */
+.privacy-cta-section {
+  padding: 8px 0 40px;
+}
+
+.privacy-cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 26px;
+  align-items: center;
+  padding: 26px 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow);
+}
+
+.privacy-cta-copy h2 {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 8px 0 8px;
+}
+
+.privacy-cta-copy p {
+  color: var(--muted);
+  margin: 0 0 16px;
+  max-width: 52ch;
+}
+
+.privacy-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.privacy-cta-aside {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.privacy-cta-aside img {
+  width: 104px;
+  height: 104px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 5px;
+}
+
+.privacy-cta-aside span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .privacy-cta {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 22px 20px;
+  }
+
+  .privacy-cta-aside {
+    justify-items: start;
+  }
+}
