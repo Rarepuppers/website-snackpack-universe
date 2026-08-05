@@ -23,10 +23,10 @@ function canonicalNav(indent) {
     `${i2}<li><a href="/apps/">Apps</a></li>`,
     `${i2}<li><a href="/play/">Play</a></li>`,
     `${i2}<li><a href="/guides/">Guides</a></li>`,
-    `${i2}<li><a class="nav-wc" href="/world-cup/"><img class="nav-ball" src="/world-cup/officialball_transparent2-50.png" alt="" width="18" height="18">World Cup</a></li>`,
     `${i2}<li><a href="/#pipeline">Roadmap</a></li>`,
     `${i2}<li><a href="/privacy/">Privacy</a></li>`,
     `${i2}<li><a href="/terms/">Terms</a></li>`,
+    `${i2}<li><a class="nav-wc" href="/world-cup/"><img class="nav-ball" src="/world-cup/ball-36.png" alt="" width="18" height="18" decoding="async">World Cup</a></li>`,
     `${i2}<li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>`,
     `${i1}</ul>`,
     `${indent}</nav>`
