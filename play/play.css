@@ -1614,3 +1614,53 @@ button.th-card.is-selected {
   display: grid;
   gap: 8px;
 }
+
+/* ── "More free games" block on individual game pages ── */
+.related-games {
+  padding: 34px 0 10px;
+  border-top: 1px solid var(--line);
+  margin-top: 34px;
+}
+
+.related-games-title {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin: 0 0 18px;
+  color: var(--ink);
+}
+
+/* Denser than the hub grid — this is a secondary, end-of-page module. */
+.game-grid--compact {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.game-grid--compact .game-tile {
+  padding: 16px 12px;
+  align-items: center;
+  text-align: center;
+  border-radius: var(--radius-sm);
+}
+
+.game-grid--compact .game-tile h3 {
+  font-size: 0.9rem;
+  margin: 8px 0 0;
+  line-height: 1.25;
+}
+
+.related-games-more {
+  margin: 18px 0 0;
+}
+
+@media (max-width: 900px) {
+  .game-grid--compact {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .game-grid--compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

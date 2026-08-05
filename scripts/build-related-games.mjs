@@ -1,0 +1,107 @@
+import fs from "node:fs/promises";
+import path from "node:path";
+
+/*
+ * Adds a "More free games" block to every arcade game page. Each game page
+ * previously linked only back to the hub, so crawlers (and players who just
+ * finished a round) had no lateral path between the 30+ games. Related games
+ * are picked deterministically from the hub's own ordering, wrapping around,
+ * so every game both links out and is linked to.
+ *
+ * Source of truth is play/index.html — it already lists every game with its
+ * tile art and blurb, so titles never drift out of sync.
+ *
+ * Idempotent: re-running replaces the generated block. Run:
+ *   node scripts/build-related-games.mjs
+ */
+
+const root = path.resolve(".");
+const HUB = path.join(root, "play", "index.html");
+const OPEN = "<!-- related-games:generated -->";
+const CLOSE = "<!-- /related-games:generated -->";
+const COUNT = 6;
+
+function parseHub(html) {
+  const games = [];
+  // Some tiles carry a "New" badge between the anchor and the icon.
+  const re =
+    /<a class="game-tile" href="\.\/([^"]+?)\/">\s*(?:<span class="game-badge-new">[^<]*<\/span>\s*)?<img class="game-icon" src="\.\/tiles\/([^"]+)"[^>]*>\s*<h3>([^<]*)<\/h3>/g;
+  let m;
+  while ((m = re.exec(html))) {
+    games.push({ slug: m[1], tile: m[2], title: m[3].trim() });
+  }
+  return games;
+}
+
+function block(related) {
+  const tiles = related
+    .map(
+      (g) =>
+        `      <a class="game-tile" href="../${g.slug}/">\n` +
+        `        <img class="game-icon" src="../tiles/${g.tile}" alt="" aria-hidden="true" loading="lazy" width="72" height="72">\n` +
+        `        <h3>${g.title}</h3>\n` +
+        `      </a>`
+    )
+    .join("\n");
+
+  return (
+    `${OPEN}\n` +
+    `<section class="related-games" aria-label="More free browser games">\n` +
+    `  <div class="shell">\n` +
+    `    <h2 class="related-games-title">More free games</h2>\n` +
+    `    <div class="game-grid game-grid--compact">\n` +
+    tiles +
+    `\n    </div>\n` +
+    `    <p class="related-games-more"><a class="text-link" href="../">See all games in the arcade →</a></p>\n` +
+    `  </div>\n` +
+    `</section>\n${CLOSE}`
+  );
+}
+
+async function main() {
+  const hub = await fs.readFile(HUB, "utf8");
+  const games = parseHub(hub);
+  if (games.length < COUNT + 1) {
+    console.error("Could not parse the hub game list — aborting.");
+    process.exit(1);
+  }
+  console.log(`parsed ${games.length} games from the arcade hub`);
+
+  let updated = 0;
+  for (let i = 0; i < games.length; i++) {
+    const g = games[i];
+    const file = path.join(root, "play", g.slug, "index.html");
+    let html;
+    try {
+      html = await fs.readFile(file, "utf8");
+    } catch {
+      console.warn("  no page for", g.slug);
+      continue;
+    }
+
+    // Next COUNT games in hub order, wrapping — guarantees full coverage.
+    const related = [];
+    for (let k = 1; related.length < COUNT; k++) {
+      related.push(games[(i + k) % games.length]);
+    }
+
+    const b = block(related);
+    const existing = new RegExp(`${OPEN}[\\s\\S]*?${CLOSE}\\n?`, "m");
+    if (existing.test(html)) {
+      html = html.replace(existing, b + "\n");
+    } else if (html.includes('<footer class="foot">')) {
+      html = html.replace('<footer class="foot">', b + '\n\n<footer class="foot">');
+    } else if (html.includes("</body>")) {
+      // A few pages have no footer — fall back to the end of the document.
+      html = html.replace("</body>", b + "\n</body>");
+    } else {
+      console.warn("  no insertion anchor in", g.slug);
+      continue;
+    }
+    await fs.writeFile(file, html, "utf8");
+    updated++;
+  }
+  console.log(`related-games block written to ${updated} game pages`);
+}
+
+main();
