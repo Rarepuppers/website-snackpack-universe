@@ -222,6 +222,7 @@
               <button type="button" data-diff="hard" aria-pressed="false">Hard</button>
               <button type="button" data-diff="expert" aria-pressed="false">Expert</button>
             </div>
+            <button class="btn-game" id="su-undo" type="button" disabled>Undo</button>
             <button class="btn-game btn-game--primary" id="su-new" type="button">New game</button>
           </div>
         </div>
@@ -371,6 +372,7 @@
   var mistakesEl = document.getElementById("su-mistakes");
   var newBtn = document.getElementById("su-new");
   var notesBtn = document.getElementById("su-notes-btn");
+  var undoBtn = document.getElementById("su-undo");
 
   var diff = "easy";
   var solution, puzzle, given, value, notes, cells;
@@ -523,6 +525,7 @@
       value = puzzle.slice();
       notes = []; for (var i = 0; i < 81; i++) notes[i] = new Set();
       selected = -1; mistakes = 0; solved = false;
+      history = []; undoBtn.disabled = true;
       mistakesEl.textContent = "0";
       statusEl.textContent = "Select a square, then pick a number.";
       paint();
@@ -530,16 +533,52 @@
     }, 20);
   }
 
+  // ── Undo ──────────────────────────────────────────
+  // A wrong digit used to cost you the square with no way back, and clearing
+  // a cell wiped its pencil notes irrecoverably. Snapshots are taken only
+  // when something is actually about to change.
+  var history = [];
+
+  function snapshot() {
+    history.push(JSON.stringify({
+      v: value,
+      n: notes.map(function (s) { return Array.from(s); }),
+      m: mistakes
+    }));
+    if (history.length > 300) history.shift();
+    undoBtn.disabled = false;
+  }
+
+  function undo() {
+    if (!history.length || solved) return;
+    var s = JSON.parse(history.pop());
+    value = s.v;
+    notes = s.n.map(function (a) { return new Set(a); });
+    mistakes = s.m;
+    mistakesEl.textContent = mistakes;
+    undoBtn.disabled = history.length === 0;
+    statusEl.textContent = "Move undone.";
+    statusEl.className = "game-status";
+    paint();
+  }
+
   function setCell(n) {
     if (solved || selected < 0 || given[selected]) return;
     if (notesMode && n > 0) {
       if (value[selected]) return;
+      snapshot();
       if (notes[selected].has(n)) notes[selected].delete(n);
       else notes[selected].add(n);
       paint();
       return;
     }
-    if (n === 0) { value[selected] = 0; notes[selected].clear(); paint(); return; }
+    if (n === 0) {
+      if (!value[selected] && !notes[selected].size) return; // nothing to clear
+      snapshot();
+      value[selected] = 0; notes[selected].clear(); paint(); return;
+    }
+    if (value[selected] === n) return;                        // no-op re-entry
+    snapshot();
     value[selected] = n;
     notes[selected].clear();
     // clear matching notes in peers
@@ -556,6 +595,7 @@
 
   function hint() {
     if (solved || selected < 0 || given[selected] || value[selected] === solution[selected]) return;
+    snapshot();
     value[selected] = solution[selected];
     notes[selected].clear();
     paint();
@@ -606,6 +646,7 @@
   }
 
   window.addEventListener("keydown", function (e) {
+    if ((e.ctrlKey || e.metaKey) && (e.key === "z" || e.key === "Z")) { e.preventDefault(); undo(); return; }
     if (e.key >= "1" && e.key <= "9") { setCell(+e.key); return; }
     if (e.key === "0" || e.key === "Backspace" || e.key === "Delete") { setCell(0); return; }
     if (e.key === "n" || e.key === "N") { toggleNotes(); return; }
@@ -617,6 +658,7 @@
     if (e.key === "ArrowRight" && c < 8) { selected += 1; e.preventDefault(); paint(); }
   });
 
+  undoBtn.addEventListener("click", undo);
   newBtn.addEventListener("click", reset);
   document.querySelectorAll(".seg [data-diff]").forEach(function (btn) {
     btn.addEventListener("click", function () {

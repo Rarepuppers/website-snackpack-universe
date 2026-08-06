@@ -123,6 +123,7 @@
             <span class="readout-chip"><span>Best</span><b id="g-best">0</b></span>
           </div>
           <div class="game-controls">
+            <button class="btn-game" id="g-undo" type="button" disabled>Undo</button>
             <button class="btn-game btn-game--primary" id="g-new" type="button">New game</button>
           </div>
         </div>
@@ -260,8 +261,31 @@
   var statusEl = document.getElementById("g-status");
   var newBtn = document.getElementById("g-new");
   var boardEl = document.getElementById("g-board");
+  var undoBtn = document.getElementById("g-undo");
 
   var grid, score, best, over, won, uid;
+
+  // ── Undo ──────────────────────────────────────────
+  // A mistimed swipe used to be unrecoverable. Snapshots are taken only for
+  // moves that actually changed the board, so a no-op arrow press costs
+  // nothing and undo always steps back a real move.
+  var history = [];
+
+  function snapshot() {
+    history.push(JSON.stringify({ g: grid, s: score, o: over, w: won, u: uid }));
+    if (history.length > 200) history.shift();
+    if (undoBtn) undoBtn.disabled = false;
+  }
+
+  function undo() {
+    if (!history.length) return;
+    var st = JSON.parse(history.pop());
+    grid = st.g; score = st.s; over = st.o; won = st.w; uid = st.u;
+    if (undoBtn) undoBtn.disabled = history.length === 0;
+    statusEl.textContent = "Move undone.";
+    statusEl.className = "game-status";
+    render();
+  }
 
   // Background cells
   for (var i = 0; i < SIZE * SIZE; i++) {
@@ -277,6 +301,7 @@
     grid = [];
     for (var r = 0; r < SIZE; r++) { grid[r] = []; for (var c = 0; c < SIZE; c++) grid[r][c] = null; }
     score = 0; over = false; won = false; uid = 1;
+    history = []; if (undoBtn) undoBtn.disabled = true;
     tilesEl.innerHTML = "";
     scoreEl.textContent = "0";
     statusEl.textContent = "Use the arrow keys or swipe to start.";
@@ -374,6 +399,7 @@
     }
 
     if (!moved) return;
+    snapshot();
     grid = newGrid;
     score += gained;
     addRandom();
@@ -408,11 +434,14 @@
   var KEYS = { ArrowLeft: "left", ArrowRight: "right", ArrowUp: "up", ArrowDown: "down",
                a: "left", d: "right", w: "up", s: "down" };
   window.addEventListener("keydown", function (e) {
+    if ((e.ctrlKey || e.metaKey) && (e.key === "z" || e.key === "Z")) { e.preventDefault(); undo(); return; }
     var dir = KEYS[e.key];
     if (!dir) return;
     e.preventDefault();
     move(dir);
   });
+
+  undoBtn.addEventListener("click", undo);
 
   var sx = 0, sy = 0;
   boardEl.addEventListener("touchstart", function (e) {

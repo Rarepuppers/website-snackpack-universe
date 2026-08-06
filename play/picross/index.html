@@ -150,7 +150,8 @@
 
         <div class="th-actions" style="margin-top:16px;">
           <button class="btn-game" id="p-hint" type="button">Hint</button>
-          <button class="btn-game" id="p-clear" type="button">Clear</button>
+          <button class="btn-game" id="p-undo" type="button" disabled>Undo</button>
+            <button class="btn-game" id="p-clear" type="button">Clear</button>
         </div>
         <p class="game-hint">Tap to mark · switch Fill / Cross with the corner toggle · right-click a cell to cross it.</p>
         <p class="kbd-help">Keyboard: <kbd>Tab</kbd> to the grid, <kbd>←↑→↓</kbd> to move, <kbd>Enter</kbd> to mark, <kbd>X</kbd> to switch fill / cross.</p>
@@ -341,6 +342,7 @@
 
   var wrap = document.getElementById("p-wrap");
   var gridEl = document.getElementById("p-grid");
+  var undoBtn = document.getElementById("p-undo");
   var rowCluesEl = document.getElementById("p-rowclues");
   var colCluesEl = document.getElementById("p-colclues");
   var statusEl = document.getElementById("p-status");
@@ -471,9 +473,30 @@
     cell.classList.toggle("is-cross", grid[r][c] === 2);
   }
 
+  // ── Undo ──────────────────────────────────────────
+  // Nonograms punish a stray click hard: one wrong fill can send you down a
+  // false line for minutes. Each mark is snapshotted so it can be stepped back.
+  var history = [];
+
+  function snapshot() {
+    history.push(JSON.stringify(grid));
+    if (history.length > 400) history.shift();
+    if (undoBtn) undoBtn.disabled = false;
+  }
+
+  function undo() {
+    if (!history.length || solved) return;
+    grid = JSON.parse(history.pop());
+    if (undoBtn) undoBtn.disabled = history.length === 0;
+    for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) paintCell(r, c);
+    statusEl.textContent = "Move undone.";
+    statusEl.className = "game-status";
+  }
+
   function applyMark(r, c, mode) {
     if (solved) return;
     if (!started) { started = true; startTimer(); }
+    snapshot();
     var cur = grid[r][c];
     if (mode === "fill") grid[r][c] = cur === 1 ? 0 : 1;
     else grid[r][c] = cur === 2 ? 0 : 2;
@@ -525,8 +548,10 @@
 
   newBtn.addEventListener("click", build);
   hintBtn.addEventListener("click", hint);
+  undoBtn.addEventListener("click", undo);
   clearBtn.addEventListener("click", function () {
     if (solved) return;
+    history = []; if (undoBtn) undoBtn.disabled = true;
     for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) { grid[r][c] = 0; paintCell(r, c); }
   });
 

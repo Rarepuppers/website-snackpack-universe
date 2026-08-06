@@ -228,11 +228,24 @@ Matters most for the timed/action games: Asteroid Destroyer, Cascade, Snacky
 Worm, Flappy Snacky, Table Tennis, Dribble Rush, Keepy-Uppy, and the soccer set.
 Currently you cannot stop mid-run.
 
-## B5. Undo — missing on 27 of 32
+## B5. Undo — **4 logic puzzles done 2026-08-06, 23 remain**
 
-Only Solitaire, Spider, FreeCell, Checkers and Reversi have it. Highest value
-on the logic puzzles where a misclick currently costs the whole board:
-**Sudoku, Kakuro, Picross, Minesweeper, Crossword, 2048, Memory Match**.
+Added to the games where a stray click did the most damage:
+
+- **Sudoku** (94k/mo) — restores the **mistake counter** too, so a wrong digit
+  no longer permanently costs you. Pencil notes step back one digit at a time.
+- **2048** — restores board, score and the spawned tile. Only real moves are
+  snapshotted, so a no-op arrow press costs nothing.
+- **Picross** — every fill/cross is a step.
+- **Kakuro** — entries and hints are both undoable; the filled counter restores.
+
+All four have an Undo button and <kbd>Ctrl</kbd>+<kbd>Z</kbd> where the game
+already listens for keys. Snapshots are only taken when something is actually
+about to change, so undo always steps back a real move rather than a no-op.
+
+Still missing on the arcade/action games (Cascade, Snacky Worm, Flappy Snacky,
+the soccer set) where undo doesn't really apply, and on Crossword, Memory Match,
+Word Search, Minesweeper, Mahjong, Snakes & Ladders and Thirteen where it does.
 
 ## B6. Thin SEO prose — 8 games under 250 words
 

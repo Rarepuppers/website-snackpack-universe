@@ -152,7 +152,8 @@
         </div>
 
         <div class="th-actions" style="margin-top:14px;">
-          <button class="btn-game" id="k-check" type="button">Check</button>
+          <button class="btn-game" id="k-undo" type="button" disabled>Undo</button>
+            <button class="btn-game" id="k-check" type="button">Check</button>
           <button class="btn-game" id="k-hint" type="button">Hint</button>
         </div>
         <p class="game-hint">Tap a white cell, then a number. Top-right clue = sum across → · bottom-left clue = sum down ↓.</p>
@@ -326,6 +327,7 @@
 
   // ════ UI ════
   var gridEl = document.getElementById("k-grid");
+  var undoBtn = document.getElementById("k-undo");
   var padEl = document.getElementById("k-pad");
   var statusEl = document.getElementById("k-status");
   var timeEl = document.getElementById("k-time");
@@ -348,6 +350,7 @@
   function cellById(id) { return puzzle.cells.find(function (c) { return c.id === id; }); }
 
   function build() {
+    history = []; if (undoBtn) undoBtn.disabled = true;
     stopTimer();
     puzzle = createPuzzle(mode);
     selectedId = null; solved = false; started = false; elapsed = 0;
@@ -401,11 +404,34 @@
     selectedId = id; paint();
   }
 
+  // ── Undo ──────────────────────────────────────────
+  // Kakuro runs interlock, so one wrong digit can cascade into a chain of
+  // bad deductions. Only real edits are snapshotted.
+  var history = [];
+
+  function snapshot() {
+    history.push(JSON.stringify(puzzle.cells.map(function (c) { return c.value; })));
+    if (history.length > 300) history.shift();
+    if (undoBtn) undoBtn.disabled = false;
+  }
+
+  function undo() {
+    if (!history.length || solved) return;
+    var vals = JSON.parse(history.pop());
+    puzzle.cells.forEach(function (c, i) { c.value = vals[i]; });
+    if (undoBtn) undoBtn.disabled = history.length === 0;
+    paint(); updateCompletion();
+    statusEl.textContent = "Move undone.";
+    statusEl.className = "game-status";
+  }
+
   function setValue(v) {
     if (solved || !selectedId) return;
     var cell = cellById(selectedId);
     if (!cell || cell.kind !== "fill" || cell.locked) return;
+    if (cell.value === v) return;            // no-op re-entry
     if (!started) { started = true; startTimer(); }
+    snapshot();
     cell.value = v;
     paint(); updateCompletion();
     // clear any error flags on edit
@@ -449,6 +475,7 @@
       selectedId = target.id;
     }
     if (!started) { started = true; startTimer(); }
+    snapshot();
     target.value = target.solution;
     paint(); updateCompletion();
     if (isSolved(puzzle)) finish();
@@ -470,6 +497,7 @@
   });
 
   newBtn.addEventListener("click", build);
+  undoBtn.addEventListener("click", undo);
   checkBtn.addEventListener("click", check);
   hintBtn.addEventListener("click", hint);
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
