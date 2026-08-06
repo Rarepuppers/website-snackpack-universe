@@ -483,9 +483,29 @@ Details worth keeping: "New game" drops you out of daily mode (a daily is one
 board — re-rolling it while still calling it today's would be a lie), and the
 daily keeps a separate best from free play, since they're different challenges.
 
-That leaves **five** games with a user-facing daily: Crossword, Flag Frenzy,
-Picross, Memory Match, Thirteen. Mahjong, Kakuro and FreeCell are still the
-obvious next candidates (B7 already flags them).
+**Update: FreeCell, Kakuro and Mahjong now have dailies too — eight in total**
+(Crossword, Flag Frenzy, Picross, Memory Match, Thirteen, FreeCell, Kakuro,
+Mahjong). Three different mechanisms, because the games generate boards
+differently:
+
+- **FreeCell** indexes `CHECKED` — the solver-verified deal pool — by the date.
+  That means every daily is **guaranteed winnable**, which is a claim most daily
+  card games can't make. Today resolves to deal #14.
+- **Kakuro** indexes its template pool by date, offset by mode so switching grid
+  size inside a daily still varies.
+- **Mahjong** needed a seeded RNG (mulberry32) because its shuffle used
+  `Math.random` directly. Note `shuffle()` now takes an **optional** rng: the
+  daily deal is seeded, but the mid-game **Shuffle button deliberately stays
+  random**. It's a rescue the player chooses to spend, not part of the puzzle
+  everyone shares — verified that it still reshuffles unpredictably inside a
+  daily.
+
+One near-miss worth recording: the Kakuro patch appeared to succeed because the
+button insert worked, while the declaration block silently failed to apply. That
+left `dailyMode` assigned but never declared and `dailyNumber` missing entirely —
+which would have thrown a ReferenceError on a daily win only. The scope check
+over each call site caught it. **Run that check after any scripted edit**; a
+"changed: true" from a multi-part patch does not mean every part landed.
 
 ## B7. Smaller gaps
 
@@ -500,8 +520,11 @@ obvious next candidates (B7 already flags them).
   would help every board game on a desktop screen.
 - **Best-score tracking** missing on 10 games including Sudoku, Minesweeper,
   Checkers and Reversi.
-- **Daily puzzle** exists on 16 games — a genuine retention hook worth
-  extending to Mahjong, Kakuro and FreeCell.
+- ~~**Daily puzzle** exists on 16 games — a genuine retention hook worth
+  extending to Mahjong, Kakuro and FreeCell.~~ **Both halves of this were wrong
+  and it's now done.** The "16" was a bad grep (see the correction under B10);
+  the real count was three. Mahjong, Kakuro and FreeCell have since been added,
+  along with Memory Match and Thirteen, bringing it to eight.
 
 ## B8. Modes worth adding
 
@@ -581,9 +604,10 @@ B6's thin-prose pass on low-volume soccer pages.
 4. **A2 — Shared SFX set.** Then I wire it across all 32 games.
 5. **A3/A4/A7/A8 — Soccer, Snacky, small-scale arcade sprites, maskable icon.**
 6. Mine, unblocked: pause (B4), remaining undo (B5), Memory Match card backs,
-   thin prose on the soccer pages (B6), the remaining keyboard work (B3), and
-   daily modes for Mahjong, Kakuro and FreeCell now that daily + share compounds.
-   ~~Share wiring~~ and ~~the hidden dailies~~ are done.
+   thin prose on the soccer pages (B6), and the remaining keyboard work (B3).
+   ~~Share wiring~~, ~~the hidden dailies~~ and ~~daily modes for Mahjong, Kakuro
+   and FreeCell~~ are done — eight games now have a daily, and every one of the
+   32 offers a share.
 
 Everything in Section B and C is mine and none of it waits on Codex.
 

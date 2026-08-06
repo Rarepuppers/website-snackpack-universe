@@ -144,6 +144,7 @@
               <button type="button" data-mode="classic" aria-pressed="false">Classic</button>
               <button type="button" data-mode="expert" aria-pressed="false">Expert</button>
             </div>
+            <button class="btn-game" id="k-daily" type="button" aria-pressed="false" title="Everyone gets the same grid today">Daily</button>
             <button class="btn-game btn-game--primary" id="k-new" type="button">New</button>
           </div>
         </div>
@@ -322,9 +323,17 @@
   function sumRight(rows, r, c) { var sum = 0, n = 0; for (var cc = c + 1; cc < rows[r].length && isFill(rows[r][cc]); cc++) { sum += digitAt(rows, r, cc); n++; } return n >= 2 ? sum : undefined; }
   function sumDown(rows, r, c) { var sum = 0, n = 0; for (var rr = r + 1; rr < rows.length && isFill(rows[rr][c]); rr++) { sum += digitAt(rows, rr, c); n++; } return n >= 2 ? sum : undefined; }
 
+  // Daily grid: index the template pool by the date so everyone gets the same
+  // puzzle. Offset by mode so switching size within a daily still varies.
+  var dailyMode = false;
+  function dailyNumber() { return Math.floor(Date.now() / 86400000); }
+
   function createPuzzle(mode) {
     var opts = TEMPLATES[mode];
-    var rows = opts[Math.floor(Math.random() * opts.length)];
+    var pick = dailyMode
+      ? (dailyNumber() + Object.keys(TEMPLATES).indexOf(mode)) % opts.length
+      : Math.floor(Math.random() * opts.length);
+    var rows = opts[pick];
     var size = rows.length;
     var givens = new Set(GIVENS[mode].filter(function (key) { var p = key.split(":").map(Number); return rows[p[0]] && isFill(rows[p[0]][p[1]]); }));
     var cells = [];
@@ -469,7 +478,8 @@
     });
     if (window.SnackPackShare) window.SnackPackShare.result({
       game: "Kakuro",
-      headline: mode.charAt(0).toUpperCase() + mode.slice(1) + " solved in " + fmt(elapsed),
+      puzzle: dailyMode ? dailyNumber() : null,
+      headline: (dailyMode ? "Today's " + mode : mode.charAt(0).toUpperCase() + mode.slice(1)) + " solved in " + fmt(elapsed),
       stats: improved ? ["new personal best"] : []
     });
   }
@@ -517,7 +527,20 @@
     else if (e.key === "Backspace" || e.key === "Delete" || e.key === "0") { setValue(null); e.preventDefault(); }
   });
 
-  newBtn.addEventListener("click", build);
+  // "New" leaves daily mode — a daily is one grid, so re-rolling it while still
+  // calling it today's would be a lie.
+  newBtn.addEventListener("click", function () {
+    dailyMode = false;
+    dailyBtn.setAttribute("aria-pressed", "false");
+    build();
+  });
+
+  var dailyBtn = document.getElementById("k-daily");
+  dailyBtn.addEventListener("click", function () {
+    dailyMode = !dailyMode;
+    dailyBtn.setAttribute("aria-pressed", String(dailyMode));
+    build();
+  });
   undoBtn.addEventListener("click", undo);
   checkBtn.addEventListener("click", check);
   hintBtn.addEventListener("click", hint);

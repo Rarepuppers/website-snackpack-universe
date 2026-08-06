@@ -119,7 +119,7 @@
   </ul>
 </nav></div></header>
 <main><section class="page-hero"><div class="shell"><div class="page-hero-card" style="text-align:center"><span class="eyebrow">Free · No download · Checked deals</span><h1>FreeCell</h1><p class="lead" style="max-width:600px;margin:0 auto">Plan every move in a numbered deal. Four free cells, eight cascades, and a full deck that is guaranteed to be winnable.</p></div></div></section>
-<section><div class="shell"><div class="game-stage" style="max-width:900px"><div class="fc-toolbar"><div class="fc-readout"><span>Time <b id="fc-time">0:00</b></span><span>Moves <b id="fc-moves">0</b></span><span>Deal <b id="fc-deal">1</b></span><span>Best <b id="fc-best">–</b></span></div><div class="fc-actions"><div class="fc-seg" role="group" aria-label="Free cells"><button type="button" data-cells="4" aria-pressed="true">4 cells</button><button type="button" data-cells="2" aria-pressed="false">2 cells</button><button type="button" data-cells="1" aria-pressed="false">1 cell</button></div><button id="fc-undo">Undo</button><button id="fc-redo">Redo</button><button id="fc-hint">Hint</button><button id="fc-auto" title="Finish the game automatically if it's fully solvable from here">Auto</button><button id="fc-large" aria-pressed="false" title="Bigger cards for wide screens">⤢ Large cards</button><button class="primary" id="fc-new">New deal</button></div></div><p class="game-status fc-status" id="fc-status" aria-live="polite">Select a card, then select its destination.</p><div class="fc-board"><div class="fc-table" id="fc-table"><div class="fc-row fc-top" id="fc-top"></div><div class="fc-row" id="fc-cascades"></div></div></div><p class="fc-hint">Drag a card to move it — or click a card then its destination. Double-click sends a card straight to its foundation. Auto finishes the game for you once it's fully solvable from here. Valid runs move together; empty cells and columns increase your supermove capacity.</p>
+<section><div class="shell"><div class="game-stage" style="max-width:900px"><div class="fc-toolbar"><div class="fc-readout"><span>Time <b id="fc-time">0:00</b></span><span>Moves <b id="fc-moves">0</b></span><span>Deal <b id="fc-deal">1</b></span><span>Best <b id="fc-best">–</b></span></div><div class="fc-actions"><div class="fc-seg" role="group" aria-label="Free cells"><button type="button" data-cells="4" aria-pressed="true">4 cells</button><button type="button" data-cells="2" aria-pressed="false">2 cells</button><button type="button" data-cells="1" aria-pressed="false">1 cell</button></div><button id="fc-undo">Undo</button><button id="fc-redo">Redo</button><button id="fc-hint">Hint</button><button id="fc-auto" title="Finish the game automatically if it's fully solvable from here">Auto</button><button id="fc-large" aria-pressed="false" title="Bigger cards for wide screens">⤢ Large cards</button><button id="fc-daily" aria-pressed="false" title="Everyone gets the same deal today — and it is solver-verified winnable">Daily</button><button class="primary" id="fc-new">New deal</button></div></div><p class="game-status fc-status" id="fc-status" aria-live="polite">Select a card, then select its destination.</p><div class="fc-board"><div class="fc-table" id="fc-table"><div class="fc-row fc-top" id="fc-top"></div><div class="fc-row" id="fc-cascades"></div></div></div><p class="fc-hint">Drag a card to move it — or click a card then its destination. Double-click sends a card straight to its foundation. Auto finishes the game for you once it's fully solvable from here. Valid runs move together; empty cells and columns increase your supermove capacity.</p>
 <p class="fc-hint" id="fc-verified">Every numbered deal here has been checked by a solver, so this board is winnable with four cells.</p></div></div></section>
 <section>
   <div class="shell">
@@ -232,6 +232,13 @@ largeBtn.addEventListener('click',function(){
 });
 applyCardSize();
 var cascades=[],free=[],found=[],selected=null,history=[],redoStack=[],moves=0,seconds=0,timer=null,dealIndex=Math.floor(Math.random()*CHECKED.length);
+
+// Daily deal. CHECKED is a pool of solver-verified winnable deals, so indexing it
+// by the date gives everyone the same board AND guarantees it's beatable — a
+// property most daily card games can't offer.
+var dailyMode=false;
+function dailyNumber(){return Math.floor(Date.now()/86400000)}
+function dailyDealIndex(){return dailyNumber()%CHECKED.length}
 // Free-cell count is the standard FreeCell difficulty dial. Fewer cells means
 // a smaller supermove capacity, which capacity() already derives from the
 // number of *empty* cells — so this needs no other rule changes.
@@ -352,7 +359,10 @@ function finishMoveEffects(){
     // be able to suppress the funnel if something here throws.
     if(window.SnackPackShare)window.SnackPackShare.result({
       game:'FreeCell',
-      headline:cellCount+'-cell deal #'+dealEl.textContent+' won in '+timeEl.textContent,
+      puzzle:dailyMode?dailyNumber():null,
+      headline:dailyMode
+        ? "Today's "+cellCount+'-cell deal won in '+timeEl.textContent
+        : cellCount+'-cell deal #'+dealEl.textContent+' won in '+timeEl.textContent,
       stats:[moves+' moves'].concat(isBest?['new personal best']:[])
     });
     return;
@@ -530,7 +540,22 @@ undoBtn.onclick=undo;
 redoBtn.onclick=redo;
 document.getElementById('fc-hint').onclick=hint;
 document.getElementById('fc-auto').onclick=autoBtnClick;
-document.getElementById('fc-new').onclick=function(){dealIndex=(dealIndex+1)%CHECKED.length;deal(CHECKED[dealIndex])};
+// "New deal" leaves daily mode — a daily is one board, so dealing past it while
+// still calling it today's would be a lie.
+document.getElementById('fc-new').onclick=function(){
+  dailyMode=false;
+  dailyBtn.setAttribute('aria-pressed','false');
+  dealIndex=(dealIndex+1)%CHECKED.length;
+  deal(CHECKED[dealIndex]);
+};
+
+var dailyBtn=document.getElementById('fc-daily');
+dailyBtn.onclick=function(){
+  dailyMode=!dailyMode;
+  dailyBtn.setAttribute('aria-pressed',String(dailyMode));
+  if(dailyMode)dealIndex=dailyDealIndex();
+  deal(CHECKED[dealIndex]);
+};
 
 // Free-cell difficulty. Redeals the same numbered deal so you can retry the
 // board you were on with fewer cells, rather than being thrown a new one.

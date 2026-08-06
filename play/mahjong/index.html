@@ -144,6 +144,7 @@
               <button type="button" data-layout="fortress" aria-pressed="false">Fortress</button>
               <button type="button" data-layout="garden" aria-pressed="false">Garden</button>
             </div>
+            <button class="btn-game" id="mj-daily" type="button" aria-pressed="false" title="Everyone gets the same board today">Daily</button>
             <button class="btn-game btn-game--primary" id="mj-new" type="button">New</button>
           </div>
         </div>
@@ -304,7 +305,25 @@
   };
   var SNACK_TILE_ICONS = ["cookie", "donut", "chocolate", "candy", "cupcake", "cake"];
 
-  function shuffle(a) { var n = a.slice(); for (var i = n.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = n[i]; n[i] = n[j]; n[j] = t; } return n; }
+  // shuffle takes an optional rng so the daily board can be reproduced. The
+  // mid-game Shuffle button deliberately keeps using Math.random — it's a rescue
+  // the player chooses to spend, not part of the puzzle everyone shares.
+  function shuffle(a, rng) { var r = rng || Math.random; var n = a.slice(); for (var i = n.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)); var t = n[i]; n[i] = n[j]; n[j] = t; } return n; }
+
+  // Daily board: seed the deal from the date so everyone gets the same layout.
+  var dailyMode = false;
+  function dailyNumber() { return Math.floor(Date.now() / 86400000); }
+  // mulberry32 — small, fast, good enough for a tile shuffle.
+  function makeRng(seed) {
+    var t = seed >>> 0;
+    return function () {
+      t += 0x6D2B79F5;
+      var x = t;
+      x = Math.imul(x ^ (x >>> 15), x | 1);
+      x ^= x + Math.imul(x ^ (x >>> 7), x | 61);
+      return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+    };
+  }
 
   function rectSlots(x0, x1, y0, y1, z) { var s = []; for (var y = y0; y <= y1; y++) for (var x = x0; x <= x1; x++) s.push({ x: x, y: y, z: z }); return s; }
   function uniqueSlots(slots) { var seen = {}; return slots.filter(function (s) { var k = s.x + ":" + s.y + ":" + s.z; if (seen[k]) return false; seen[k] = true; return true; }); }
@@ -318,7 +337,11 @@
   function createBoard(layout) {
     var slots = slotsFor(layout);
     var pool = FACES.slice(0, LAYOUTS[layout].pairs);
-    var faces = shuffle(pool.concat(pool));
+    // Offset the seed by layout so switching layout inside a daily still varies.
+    var faces = shuffle(
+      pool.concat(pool),
+      dailyMode ? makeRng(dailyNumber() * 31 + Object.keys(LAYOUTS).indexOf(layout)) : null
+    );
     return slots.map(function (slot, i) {
       var f = faces[i];
       return { id: layout + "-" + slot.z + "-" + slot.y + "-" + slot.x + "-" + i, x: slot.x, y: slot.y, z: slot.z, pairKey: f.pairKey, label: f.label, suit: f.suit, removed: false };
@@ -458,7 +481,8 @@
     // After celebrate, always — the share card must not be able to suppress the funnel.
     if (window.SnackPackShare) window.SnackPackShare.result({
       game: "Mahjong",
-      headline: layout.charAt(0).toUpperCase() + layout.slice(1) + " layout cleared in " + fmt(elapsed),
+      puzzle: dailyMode ? dailyNumber() : null,
+      headline: (dailyMode ? "Today's " + layout : layout.charAt(0).toUpperCase() + layout.slice(1)) + " layout cleared in " + fmt(elapsed),
       stats: improved ? ["new personal best"] : []
     });
   }
@@ -487,7 +511,20 @@
     var el = e.target.closest(".mj-tile"); if (!el) return;
     tap(el.dataset.id);
   });
-  newBtn.addEventListener("click", build);
+  // "New" leaves daily mode — a daily is one board, so re-rolling it while still
+  // calling it today's would be a lie.
+  newBtn.addEventListener("click", function () {
+    dailyMode = false;
+    dailyBtn.setAttribute("aria-pressed", "false");
+    build();
+  });
+
+  var dailyBtn = document.getElementById("mj-daily");
+  dailyBtn.addEventListener("click", function () {
+    dailyMode = !dailyMode;
+    dailyBtn.setAttribute("aria-pressed", String(dailyMode));
+    build();
+  });
   hintBtn.addEventListener("click", hint);
   shuffleBtn.addEventListener("click", doShuffle);
   document.querySelectorAll(".seg [data-layout]").forEach(function (btn) {
