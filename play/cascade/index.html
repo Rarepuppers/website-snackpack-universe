@@ -177,7 +177,6 @@
               <button type="button" data-mode="normal" aria-pressed="true">Normal</button>
               <button type="button" data-mode="turbo" aria-pressed="false">Turbo</button>
             </div>
-            <button class="btn-game" id="cs-pause" type="button">Pause</button>
             <button class="btn-game btn-game--primary" id="cs-new" type="button">New game</button>
           </div>
         </div>
@@ -323,6 +322,7 @@
 </footer>
 
 <script src="../funnel.js"></script>
+<script src="../pause.js"></script>
 <script src="../share-result.js"></script>
 <script>
 (function () {
@@ -385,7 +385,6 @@
   var bestEl = document.getElementById("cs-best");
   var levelEl = document.getElementById("cs-level");
   var statusEl = document.getElementById("cs-status");
-  var pauseBtn = document.getElementById("cs-pause");
 
   var grid, piece, nextType, score, lines, over, paused, startLevel = 1, best;
   var cellEls = [], dropTimer = null;
@@ -418,7 +417,6 @@
     piece = spawn(randomType());
     nextType = randomType();
     score = 0; lines = 0; over = false; paused = false;
-    pauseBtn.textContent = "Pause";
     statusEl.className = "game-status";
     statusEl.textContent = "Clear full rows to score. Arrow keys or the buttons below.";
     render();
@@ -514,14 +512,6 @@
     });
   }
 
-  function togglePause() {
-    if (over) return;
-    paused = !paused;
-    pauseBtn.textContent = paused ? "Resume" : "Pause";
-    if (paused) { clearTimeout(dropTimer); statusEl.textContent = "Paused."; }
-    else { statusEl.textContent = "Clear full rows to score."; scheduleDrop(); }
-  }
-
   // ── Render ───────────────────────────────────────
   function render() {
     var view = grid.slice();
@@ -564,7 +554,6 @@
     else if (k === "ArrowUp" || k === "x" || k === "X") rotate(1);
     else if (k === "z" || k === "Z") rotate(-1);
     else if (k === " ") hardDrop();
-    else if (k === "p" || k === "P") togglePause();
   });
 
   wellEl.addEventListener("click", function (e) {
@@ -583,7 +572,6 @@
     else if (a === "hard") hardDrop();
   });
 
-  pauseBtn.addEventListener("click", togglePause);
   document.getElementById("cs-new").addEventListener("click", reset);
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
     btn.addEventListener("click", function () {
@@ -595,12 +583,23 @@
     });
   });
 
-  document.addEventListener("visibilitychange", function () {
-    if (document.hidden && !over && !paused) togglePause();
-  });
-
   buildCells();
   reset();
+
+  // Pause. Replaces the game's own hand-rolled pause (button, "p" key, and a
+  // bespoke visibilitychange handler) with the shared control so it gets
+  // Escape-to-resume and the standard overlay, matching the rest of the arcade.
+  // paused already gates every move/rotate/drop function and scheduleDrop(),
+  // so the callbacks only need to own the drop timer and the status line.
+  if (window.SnackPackPause) {
+    window.SnackPackPause.attach({
+      mount: document.querySelector(".game-controls"),
+      stage: document.querySelector(".game-stage"),
+      isPlaying: function () { return !over; },
+      pause: function () { paused = true; clearTimeout(dropTimer); statusEl.textContent = "Paused."; },
+      resume: function () { paused = false; statusEl.textContent = "Clear full rows to score."; scheduleDrop(); }
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

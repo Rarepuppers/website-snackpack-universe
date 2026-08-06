@@ -296,6 +296,7 @@
 
 <script>window.SP_PLAY_URL = "../../world-cup/"; window.SP_PLAY_LABEL = "Open the World Cup hub";</script>
 <script src="../funnel.js"></script>
+<script src="../pause.js"></script>
 <script src="../share-result.js"></script>
 <script src="../soccer-assets.js"></script>
 <script>
@@ -854,14 +855,24 @@
   });
   document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.mode === mode)); });
 
-  document.addEventListener("visibilitychange", function () {
-    if (!st || st.phase !== "playing") return;
-    if (document.hidden) { stopLoop(); statusEl.textContent = "Paused — tap to resume."; }
-    else { startLoop(); statusEl.textContent = "Dodge, hop, and keep running!"; }
-  });
   if (window.SnackSoccerAssets) window.SnackSoccerAssets.onReady(draw);
 
   restart();
+
+  // Pause. frame() only reschedules itself while st.phase === "playing", so
+  // (unlike Asteroid Destroyer's self-sustaining rAF loop) resume has to
+  // restart the loop explicitly, not just flip the flag back.
+  // Replaces the old bespoke visibilitychange handler above — pause.js already
+  // auto-pauses on backgrounding, so keeping both would double-handle it.
+  if (window.SnackPackPause) {
+    window.SnackPackPause.attach({
+      mount: document.querySelector(".game-controls"),
+      stage: document.querySelector(".game-stage"),
+      isPlaying: function () { return !!st && st.phase === "playing"; },
+      pause: function () { st.phase = "paused"; stopLoop(); },
+      resume: function () { st.phase = "playing"; startLoop(); }
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

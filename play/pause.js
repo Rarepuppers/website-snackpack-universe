@@ -87,6 +87,27 @@
 
     btn.addEventListener("click", function () { setPaused(!paused); });
 
+    // A sibling control in the toolbar (New game, a mode/difficulty button…)
+    // can restart the game while paused — every game's own handler for those
+    // already resets ITS state, but doesn't know about ours, so the overlay
+    // stayed stuck open over a game that was quietly running again underneath.
+    // Reproduced and confirmed 2026-08-07 across every game that uses this
+    // helper, not just the newest ones. Drop the paused UI on any OTHER click
+    // inside mount, without calling opts.pause()/resume() — the game already
+    // owns whatever state it just transitioned to, and this only corrects the
+    // UI to stop lying about it. Runs on the bubble phase, after the control's
+    // own handler, so it sees the state the game already changed to.
+    mount.addEventListener("click", function (e) {
+      if (!paused || e.target === btn || btn.contains(e.target)) return;
+      paused = false;
+      btn.textContent = "Pause";
+      btn.setAttribute("aria-pressed", "false");
+      if (overlay) {
+        overlay.classList.remove("is-open");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+    });
+
     window.addEventListener("keydown", function (e) {
       if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
       if (e.key === "p" || e.key === "P") { e.preventDefault(); setPaused(!paused); }

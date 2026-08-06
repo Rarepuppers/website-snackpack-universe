@@ -668,10 +668,13 @@
 }
 
 .mem-face--cover {
-  background: linear-gradient(155deg, #efb54d, #de6a38);
+  /* Same painted deck back used by Solitaire/Spider/FreeCell, so the flip
+     animation matches the rest of the arcade's card games rather than a flat
+     gradient. The source art is a portrait card (512x716) cropped to this
+     square face — same crop behaviour the other games already accept for
+     their taller-than-wide card shape, just a bit more of it here. */
+  background: #0b6461 url("shared-assets/game-ui/pro-hand-painted/card-decks/backs/emerald-arcade.png") center / cover no-repeat;
   box-shadow: inset 0 -3px 0 rgba(32, 23, 19, 0.16);
-  filter: saturate(0.92);
-  opacity: 0.94;
 }
 
 .mem-face--symbol {

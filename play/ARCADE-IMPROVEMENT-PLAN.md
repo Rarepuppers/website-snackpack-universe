@@ -286,7 +286,7 @@ Genuinely unwired, and my honest read on each:
 |---|---|---|
 | Sudoku, Kakuro | `grid-logic-markers/` | **Skip.** Their cell states are clean CSS and highly readable. PNG backgrounds would fight the typography for no gain. |
 | Word Search, Crossword | `word-game-tiles/` | **Maybe.** Worth a look, but the current letter rendering is already crisp. |
-| Memory Match | `card-decks/` backs | **Worth doing** — the painted backs would suit the flip animation. |
+| Memory Match | `card-decks/` backs | **Done 2026-08-07.** Swapped the flat orange `.mem-face--cover` gradient for the same `emerald-arcade.png` deck back Solitaire/Spider/FreeCell already use, so the flip animation matches the rest of the arcade's card games. The source art is a portrait card (512×716) cropped into a square face — a heavier crop than the other games take on their taller-than-wide cards, but the same `cover`/`center` technique, and the motif reads fine at 70px. |
 | Table Tennis, Asteroid Destroyer | `arcade-sprites/` | **Blocked on shape, not wiring** — see below. |
 | Cascade | `arcade-sprites/` | DOM-rendered, not canvas; blocks are CSS. Low value. |
 
@@ -347,11 +347,69 @@ Three details worth keeping in mind if this gets extended:
   loop while backgrounded, so resuming there would restart a loop that game is
   about to stop again.
 
-Still open: Dribble Rush, Keepy-Uppy, Cascade and the six soccer action games.
-Cascade is DOM-driven rather than canvas and has no phase flag, so it needs a
-small refactor first rather than a straight wire-up.
+**Update 2026-08-07 — Dribble Rush, Keepy-Uppy and Cascade done.**
 
-## B5. Undo — **4 logic puzzles done 2026-08-06, 23 remain**
+Two corrections to what this section said before touching them:
+
+- **Cascade did not need a refactor.** It already had its own `paused` flag
+  gating every move/rotate/drop function, plus a bespoke pause button and its
+  own `visibilitychange` auto-pause. "No phase flag" was wrong — it had a more
+  complete one than most games before migrating. Its loop is `setTimeout`, not
+  `requestAnimationFrame`, so pausing only had to own the drop timer.
+- **Keepy-Uppy already had a full hand-rolled pause** (button, `paused` var,
+  loop gate) — just not the shared one, so it was missing <kbd>P</kbd>/Escape
+  and auto-pause-on-backgrounding. Migrated onto `pause.js` rather than left
+  as bespoke, so it now matches every other action game.
+
+Dribble Rush was the one genuinely unwired game in this batch — a real
+`requestAnimationFrame` loop gated on `st.phase`, plus its own ad-hoc
+`visibilitychange` handler that `pause.js`'s own auto-pause now replaces
+(keeping both would have double-handled backgrounding).
+
+One thing to know if a game's loop is written like Dribble Rush's or
+Keepy-Uppy's rather than Asteroid Destroyer's: **not every loop keeps ticking
+under the hood while paused.** Asteroid Destroyer's `loop()` calls
+`requestAnimationFrame(loop)` unconditionally at the top and only gates the
+game *logic* on phase, so flipping the flag is enough. Dribble Rush's `frame()`
+and Keepy-Uppy's `loop()` only reschedule themselves while playing, so pausing
+actually kills the rAF chain — `resume()` has to call `startLoop()` (or
+equivalent) again, not just flip the flag back.
+
+### A real bug found and fixed in `pause.js` itself, affecting all 7 games
+
+Reproduced while testing Cascade: pause, then click **New game** (or a
+mode/difficulty button — anything else in the toolbar that resets the game).
+The game correctly restarts, but the Pause overlay stays visually stuck open
+over a game now running invisibly underneath it. Checked and confirmed this
+was **already present in all four previously-shipped games**, not something
+the new wiring introduced — `pause.js` only ever hears about pause/resume
+through its own button, its own keys, and `visibilitychange`. It has no idea a
+sibling control just reset the thing it thinks is still paused.
+
+Fixed once, in the helper, for everyone: a click listener on `mount` that,
+on any click that isn't the pause button itself while `paused` is true, drops
+the paused UI back to normal — without calling `opts.pause()`/`resume()`,
+since the game's own handler for that control (e.g. its `reset()`) already
+owns whatever state it just transitioned to. Verified against Cascade (the new
+wiring) and Asteroid Destroyer (already-shipped) — New Game now correctly
+dismisses the overlay in both, and a second click while already unpaused is a
+no-op, no regression.
+
+### The six soccer action games are not "still open" — most don't want pause
+
+Re-checked each one rather than carrying the old claim forward:
+
+- **Goalkeeper Hero, Free Kick Curl, Crossbar Challenge, Header Hero,
+  Penalty Shootout** have no continuous clock or ongoing simulation to lose —
+  they're aim-then-shoot, turn-based, with a brief one-shot animation per
+  attempt. There is nothing decaying in the background if you look away, so a
+  pause control would add UI for a problem that doesn't exist in these five.
+- **Dribble Rush and Keepy-Uppy** are the two that are actually continuous
+  (endless runner, real-time juggling) — both done above.
+
+So this line item is complete, not "six remain — five never needed it."
+
+## B5. Undo — **done 2026-08-06/07, 4 games shipped and the rest correctly excluded**
 
 Added to the games where a stray click did the most damage:
 
@@ -366,25 +424,66 @@ All four have an Undo button and <kbd>Ctrl</kbd>+<kbd>Z</kbd> where the game
 already listens for keys. Snapshots are only taken when something is actually
 about to change, so undo always steps back a real move rather than a no-op.
 
-Still missing on the arcade/action games (Cascade, Snacky Worm, Flappy Snacky,
-the soccer set) where undo doesn't really apply, and on Crossword, Memory Match,
-Word Search, Minesweeper, Mahjong, Snakes & Ladders and Thirteen where it does.
+**Update 2026-08-07 — checked the "23 remain" list against each game's actual
+mechanics, rather than carrying it forward. None of the seven non-action games
+listed as needing undo actually do.**
 
-## B6. Thin SEO prose — 8 games under 250 words
+The four that got it share one property: a wrong move leaves a **persistent,
+visible cost** — Sudoku's mistake counter, 2048's board state, Picross's
+fill/cross, Kakuro's entries. Undo genuinely restores something. Checked the
+rest against that bar and none clear it:
 
-| Game | Words | Bing volume for its term |
-|---|---:|---|
-| ~~FreeCell~~ | ~~92~~ → 797 | 21,300/mo — **done** |
-| Target Shooting Arena | 185 | low |
-| Keepy-Uppy | 194 | low |
-| Crossbar Challenge | 197 | low |
-| Goalkeeper Hero | 200 | low |
-| Soccer Trivia Sprint | 206 | low |
-| Free Kick Curl | 218 | low (but ranks #1 and converts) |
-| Snakes & Ladders | 240 | low |
+- **Minesweeper** — undo would let you take back hitting a mine. That's not a
+  missing feature, it's removing the entire risk the game is built on.
+- **Memory Match** — a mismatched pair already auto-flips back
+  (`unmatch()`, on a timeout). Undo would be a shortcut for something the game
+  already does for free; the only "cost" is +1 on the move counter.
+- **Mahjong** — clicking two non-matching tiles never removes anything. There
+  is no wrong-match state to undo.
+- **Word Search** — an incorrect drag just un-highlights on release. Nothing
+  persists.
+- **Crossword** — letters are freely retypable and Check is on-demand, not a
+  scored, accumulating penalty like Sudoku's mistake counter. Low value.
+- **Snakes & Ladders** — no player decision besides clicking Roll.
+- **Thirteen** — the one real candidate, but it's played against three CPU
+  opponents in sequence. "Undo" would mean unwinding their subsequent turns
+  too, which changes what the game is (you could see how the CPU responded,
+  then take the move back) rather than just forgiving a misclick.
 
-FreeCell was the only one where this clearly cost traffic, and it is now fixed.
-The rest are worth doing for consistency, not for ranking.
+So this line item is done, not 23-remain — the four that shipped were the
+four that needed it.
+
+## B6. Thin SEO prose — **done 2026-08-07**
+
+| Game | Words then | Words now | Bing volume for its term |
+|---|---:|---:|---|
+| ~~FreeCell~~ | ~~92~~ | 797 | 21,300/mo — done 2026-08-06 |
+| Target Shooting Arena | 185 | 337 | low |
+| Keepy-Uppy | 194 | 316 | low |
+| Crossbar Challenge | 197 | 350 | low |
+| Goalkeeper Hero | 200 | 343 | low |
+| Soccer Trivia Sprint | 206 | 357 | low |
+| Free Kick Curl | 218 | 358 | low (but ranks #1 and converts) |
+
+FreeCell was the only one where this clearly cost traffic, and that was fixed
+first. The other six were worth doing for consistency, not ranking — each got
+one substantive paragraph (game-specific strategy, not padding) plus two real
+FAQ entries, on top of the three that were already there.
+
+Free Kick Curl already ranks #1 and converts, so its existing sentences were
+left untouched — the new paragraph and FAQ entries were purely additive,
+appended rather than edited in.
+
+**Also found while doing this**: five of the six pages (all but Soccer Trivia
+Sprint) had a visible `<details class="faq-item">` FAQ section with **no
+matching `FAQPage` JSON-LD at all** — the structured data simply didn't exist
+for it. Added it for all six, generated directly from the rendered
+`<summary>`/`<p>` text via a small script rather than hand-typed, so the
+schema can't drift from what's actually shown on the page.
+
+Snakes & Ladders was on the original list at 240 words but is fully
+dice-driven with no player decisions to write strategy tips about (see the
+B5 correction above) — left alone rather than padded for its own sake.
 
 ## B9. PWA / offline arcade — **DONE 2026-08-06**
 
@@ -635,11 +734,13 @@ B6's thin-prose pass on low-volume soccer pages.
 3. **A1 — Spider Solitaire art.** Unblocks a 123k/mo page.
 4. **A2 — Shared SFX set.** Then I wire it across all 32 games.
 5. **A3/A4/A7/A8 — Soccer, Snacky, small-scale arcade sprites, maskable icon.**
-6. Mine, unblocked: pause (B4), remaining undo (B5), Memory Match card backs,
-   thin prose on the soccer pages (B6), and the remaining keyboard work (B3).
-   ~~Share wiring~~, ~~the hidden dailies~~ and ~~daily modes for Mahjong, Kakuro
-   and FreeCell~~ are done — eight games now have a daily, and every one of the
-   32 offers a share.
+6. Mine, unblocked: the remaining keyboard work (B3).
+   ~~Share wiring~~, ~~the hidden dailies~~, ~~daily modes for Mahjong, Kakuro
+   and FreeCell~~, ~~pause (B4)~~, ~~undo (B5)~~, ~~thin prose (B6)~~ and
+   ~~Memory Match card backs~~ are done — eight games now have a daily, pause
+   and undo both cover every game that actually benefits from them, every one
+   of the 32 offers a share, and the six thin soccer pages picked up real FAQ
+   schema they never had.
 
 Everything in Section B and C is mine and none of it waits on Codex.
 

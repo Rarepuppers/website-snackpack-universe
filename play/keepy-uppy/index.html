@@ -108,6 +108,54 @@
   "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is Keepy-Uppy free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. It plays free in your browser with no ads, no sign-in, and nothing to install."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Keepy-Uppy work on mobile?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Tap the ball directly or use the Kick button below the pitch."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's the difference between the three difficulty modes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Chill uses gentler gravity and a slower ball for a relaxed rally. Match speeds things up with more sideways drift. Chaos shrinks the ball and quickens gravity, so recovery windows get much tighter."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my best score saved?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, in your browser's local storage on this device. It isn't tied to an account, so it won't follow you to a different browser or phone."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is this an official World Cup game?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. It is an original SnackPack Studios soccer game and is not affiliated with FIFA, the World Cup, any team, league, or governing body."
+      }
+    }
+  ]
+}
+</script>
 <!-- breadcrumbs:generated -->
 <script type="application/ld+json">
 {
@@ -211,7 +259,6 @@
         <canvas class="ku-canvas" id="ku-canvas" width="640" height="430" aria-label="Keepy-Uppy soccer juggling field"></canvas>
         <div class="ku-actions">
           <button class="btn-game btn-game--primary" id="ku-kick" type="button">Kick</button>
-          <button class="btn-game" id="ku-pause" type="button">Pause</button>
         </div>
         <div class="ku-history" id="ku-history" aria-label="Recent touch history"></div>
         <div class="ku-hint-row">
@@ -253,6 +300,7 @@
       <h2>How to play Keepy-Uppy</h2>
       <p>Tap or click the ball before it hits the grass. Every good touch pops the ball back into the air and adds points. Clean centre touches keep the ball under control, while edge touches send it sideways. Collect stars for bonus points and keep the combo alive for a bigger score.</p>
       <p>Chill mode is forgiving. Match mode adds more speed and sideways drift. Chaos mode makes the ball smaller, faster, and harder to recover.</p>
+      <p>Your combo is the real scoring engine here, not any single touch. Every clean touch in a row multiplies the next one, so a long, steady rally is worth far more than a handful of lucky pops. A single mistimed touch that lets the ball drop resets the combo to zero, which is why keeping the ball centred — even at the cost of catching a star — usually beats a risky reach.</p>
       <h3>Tips for a higher score</h3>
       <ul>
         <li>Tap the lower half of the ball to lift it cleanly.</li>
@@ -264,6 +312,8 @@
       <div class="faq-list" style="margin-top:14px;">
         <details class="faq-item"><summary>Is Keepy-Uppy free?</summary><p>Yes. It plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
         <details class="faq-item"><summary>Does Keepy-Uppy work on mobile?</summary><p>Yes. Tap the ball directly or use the Kick button below the pitch.</p></details>
+        <details class="faq-item"><summary>What's the difference between the three difficulty modes?</summary><p>Chill uses gentler gravity and a slower ball for a relaxed rally. Match speeds things up with more sideways drift. Chaos shrinks the ball and quickens gravity, so recovery windows get much tighter.</p></details>
+        <details class="faq-item"><summary>Is my best score saved?</summary><p>Yes, in your browser's local storage on this device. It isn't tied to an account, so it won't follow you to a different browser or phone.</p></details>
         <details class="faq-item"><summary>Is this an official World Cup game?</summary><p>No. It is an original SnackPack Studios soccer game and is not affiliated with FIFA, the World Cup, any team, league, or governing body.</p></details>
       </div>
       <p style="margin-top:22px;"><a class="text-link" href="../../world-cup/" style="color:var(--accent);font-weight:700;">Back to World Cup games</a></p>
@@ -325,6 +375,7 @@
 
 <script>window.SP_PLAY_URL = "../../world-cup/"; window.SP_PLAY_LABEL = "Open the World Cup hub";</script>
 <script src="../funnel.js"></script>
+<script src="../pause.js"></script>
 <script src="../share-result.js"></script>
 <script src="../soccer-assets.js"></script>
 <script>
@@ -339,7 +390,6 @@
   var statusEl = document.getElementById("ku-status");
   var historyEl = document.getElementById("ku-history");
   var kickBtn = document.getElementById("ku-kick");
-  var pauseBtn = document.getElementById("ku-pause");
   var newBtn = document.getElementById("ku-new");
 
   var W = canvas.width, H = canvas.height;
@@ -400,7 +450,6 @@
       r: configs[difficulty].radius
     };
     star = makeStar();
-    pauseBtn.textContent = "Pause";
     statusEl.className = "game-status";
     statusEl.textContent = "Tap the ball to start juggling.";
     updateReadout();
@@ -733,20 +782,36 @@
     kickAt(p.x, p.y);
   });
   kickBtn.addEventListener("click", kickCenter);
-  pauseBtn.addEventListener("click", function () {
-    if (over || !running) return;
-    paused = !paused;
-    pauseBtn.textContent = paused ? "Resume" : "Pause";
-    statusEl.className = "game-status";
-    statusEl.textContent = paused ? "Paused." : "Back in play.";
-    if (!paused) {
-      accumulator = 0;
-      lastFrameTime = 0;
-      raf = requestAnimationFrame(loop);
-    }
-    draw();
-  });
   newBtn.addEventListener("click", reset);
+
+  // Pause. Replaces the game's own hand-rolled Pause button (no keyboard
+  // shortcut, no auto-pause on backgrounding) with the shared control so it
+  // gets P/Escape and pausing-on-tab-switch for free, matching every other
+  // action game in the arcade.
+  // loop() only reschedules itself while running && !paused, so — like
+  // Dribble Rush — resume has to restart the rAF chain explicitly.
+  if (window.SnackPackPause) {
+    window.SnackPackPause.attach({
+      mount: document.querySelector(".game-controls"),
+      stage: document.querySelector(".game-stage"),
+      isPlaying: function () { return running && !over; },
+      pause: function () {
+        paused = true;
+        statusEl.className = "game-status";
+        statusEl.textContent = "Paused.";
+        draw();
+      },
+      resume: function () {
+        paused = false;
+        statusEl.className = "game-status";
+        statusEl.textContent = "Back in play.";
+        accumulator = 0;
+        lastFrameTime = 0;
+        raf = requestAnimationFrame(loop);
+        draw();
+      }
+    });
+  }
   document.querySelectorAll("[data-difficulty]").forEach(function (button) {
     button.addEventListener("click", function () {
       difficulty = button.dataset.difficulty;
