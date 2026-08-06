@@ -4,9 +4,13 @@ Audit of all 32 browser games, 2026-08-06. Companion to
 [`spider-solitaire/ASSETS-NEEDED.md`](spider-solitaire/ASSETS-NEEDED.md), which
 covers that one game's art in detail and is still outstanding.
 
-**Read the "Before you generate anything" section first — a large amount of art
-already exists and is simply not wired up. Generating it again would be wasted
-work.**
+**Read the "Before you generate anything" section first** — a large amount of
+art already exists, and more of it is wired than an earlier draft of this plan
+claimed. Regenerating it would be wasted work.
+
+> ⚠️ **A5 is urgent and is not a website issue.** All 60 shared Mahjong tiles
+> are corrupted, and **Brain Games Vol 1 is rendering them live on Google
+> Play**. See A5.
 
 ---
 
@@ -31,24 +35,36 @@ parallel or the polish has no audience.
 
 ## Before you generate anything — art that already exists
 
-`play/shared-assets/game-ui/` holds **~640 finished art files**, including a
-full `pro-hand-painted/` set. **Only 5 of 32 games use any of it** (FreeCell was
-wired up on 2026-08-06; the rest still render CSS).
+`shared-assets/game-ui/` (canonical at `C:\snackpack-universe\shared-assets`,
+mirrored into each Brain Games app and into `website-snackpack-universe/play/`)
+holds **~640 finished art files**, including a full `pro-hand-painted/` set.
 
-| Asset family | Files | Used by | Should be used by |
-|---|---:|---|---|
-| `card-decks/` (8 backs, 4 suits, faces) | 64 + 66 | Solitaire, Spider, FreeCell | Thirteen |
-| ~~`mahjong-tiles/`~~ | 30 + 30 | **nothing** | ⚠️ **corrupted — see A5, do not wire** |
-| `arcade-sprites/` (asteroid, ball, blocks, bricks…) | 39 + 58 | **nothing** | Asteroid Destroyer, Cascade, Table Tennis |
-| `board-games/` | 20 + 22 | Checkers | Snakes & Ladders |
-| `strategy-tokens/` | 11 + 13 | Reversi | Connect 4 |
-| `grid-logic-markers/` (bulbs, cages, bridges) | 48 + 50 | **nothing** | Kakuro, Picross, Minesweeper |
-| `word-game-tiles/` (keyboard states, hint ring) | 14 + 16 | **nothing** | Word Search, Crossword |
-| `table-themes/` (8 backgrounds: felt, wood, marble, slate…) | 8 + 6 | **nothing** | every board/card game |
-| `chess-pieces/`, `dominoes/`, `sokoban/`, `battleships/` | 85 | **nothing** | no web game exists for these yet |
+**Correction, 2026-08-06:** an earlier draft of this plan said only 4-5 games
+used any of it. That was an undercount — it grepped the HTML, but most of the
+wiring lives in `play.css`. The real figure is **9 of 32**, and much of the
+remainder is a deliberate choice rather than a gap. See
+`shared-assets/game-ui/ASSET_AUDIT_BRAIN_GAMES.md`, which already documents the
+2026-07-13 website wiring pass.
 
-**Wiring this up is a code task, not an art task — I'll do it.** Listed here so
-Codex doesn't regenerate any of it.
+Already wired: Checkers, Connect 4, Minesweeper, Picross, Reversi,
+Snakes & Ladders, Solitaire, Spider Solitaire, FreeCell.
+
+| Asset family | Used by | Genuinely still unwired? |
+|---|---|---|
+| `card-decks/` | Solitaire, Spider, FreeCell | Thirteen — worth doing |
+| `grid-logic-markers/` | Minesweeper, Picross | Kakuro, Sudoku — worth doing |
+| `strategy-tokens/` | Connect 4, Reversi | — |
+| `board-games/` | Checkers, Snakes & Ladders | — |
+| `table-themes/` | Snakes & Ladders | other board games — optional |
+| `arcade-sprites/` | *(website)* nothing | Asteroid Destroyer, Cascade, Table Tennis |
+| `word-game-tiles/` | nothing | Word Search, Crossword |
+| `mahjong-tiles/` | nothing on web **by design** | see A5 — and the app bug below |
+| `chess-pieces/`, `dominoes/`, `sokoban/`, `battleships/` | nothing | no web game exists for these yet |
+
+**Mahjong on the website is not broken and does not need the shared tiles.** It
+uses `play/sprites/mahjong-suits.png`, a clean local sprite sheet that is
+clearer at its small render size. That was a documented decision, not an
+oversight.
 
 ---
 
@@ -113,47 +129,78 @@ as coloured rectangles.
 - `snacky-worm-head.png`, `snacky-worm-body.png`, `snacky-worm-tail.png` (64×64)
 - Match the corgi/character style used in the apps, not a generic sprite look
 
-## A5. Mahjong tiles — **all 60 files are corrupted, must be regenerated**
+## A5. Mahjong tiles — **corrupted, and SHIPPING in Brain Games Vol 1**
 
-Found 2026-08-06 while attempting to wire these up. **Every one of the 30
-standard and 30 pro-hand-painted mahjong tiles has a mojibake glyph** where the
-Chinese character should be — the classic UTF-8-decoded-as-Latin-1 failure.
-
-Examples of what is actually rendered on the tiles today:
+Found 2026-08-06. **All 60 mahjong tiles (30 base + 30 pro-hand-painted) have a
+mojibake glyph** where a Chinese character should be — UTF-8 written, Latin-1
+read.
 
 | File | Shows | Should show |
 |---|---|---|
-| `bam-3.png` | `â–` above the 3 | 條 / a bamboo glyph |
-| `dot-5.png` | `â—` above the 5 | 筒 / a dot glyph |
-| `wind-e.png` | `â™` above the E | 東 |
-| `flower-a.png` | `âœ` above the A | a flower glyph |
-| `snack-1.png` | `â˜` above the 1 | the snack symbol |
+| `bam-3.png` | `a-` above the 3 | a bamboo glyph |
+| `dot-5.png` | `a-` above the 5 | a dot glyph |
+| `wind-e.png` | `a(tm)` above the E | East |
+| `flower-a.png` | `aoe` above the A | a flower glyph |
+| `snack-1.png` | `a~` above the 1 | the snack symbol |
 
-Nobody noticed because **nothing renders them** — Mahjong draws its tiles in
-CSS, and the art is only referenced in the asset manifest, never consumed.
+**This is not a website problem — the website is fine.** Web Mahjong uses a
+clean local sprite sheet by design. The damage is in the app:
 
-**This is why Mahjong could not be wired up.** Wiring it as-is would have
-shipped 30 visibly broken tiles onto a 12,000/month page.
+> `apps/snackpack-brain-games/components/games/mahjong/MahjongGame.tsx`
+> `require()`s all 30 base tiles into `TILE_ART` and all 30 pro tiles into
+> `PRO_TILE_ART`, and renders them unconditionally as `<Image>` (line ~239).
+>
+> **Brain Games Vol 1 is live on Google Play. Its Mahjong Solitaire is
+> currently showing mojibake on every tile, in both the free and Pro decks.**
 
-To regenerate:
-- Same 30 filenames, same sizes, both the standard and `pro-hand-painted` sets
-- The numeral and the footer word (`Bamboo`, `Dots`, `Cracks`, `Wind`,
-  `Flower`, `Snack`) are correct in the current files — only the glyph above
-  them is wrong
-- **Write the source file as UTF-8 and confirm the renderer reads it as UTF-8.**
-  If the pipeline can't reliably carry CJK, drop the glyph entirely and use a
-  clean suit symbol instead — a wrong-but-tidy tile beats mojibake
-- Suit colours already in use: dots `#2f6fd6`, bamboo `#1f8f77`, cracks
-  `#d8483a`, winds `#5b3fb0`, flowers `#d24a86`, snacks `#b9772e`
+The `ASSET_AUDIT_BRAIN_GAMES.md` entry for 2026-07-12 explains how it survived:
+that pass regenerated the *tile bodies* and explicitly "preserved the custom
+labels and glyphs" — faithfully preserving glyphs that were already corrupt.
 
-Everything else in `shared-assets/` was spot-checked and is clean — card suits,
-grid-logic markers, word tiles, strategy tokens, dominoes and board games all
-render correctly.
+### To fix
+
+Regenerate at the canonical source, then sync:
+
+- Source: `C:\snackpack-universe\shared-assets\game-ui\mahjong-tiles\png\`
+  and `...\pro-hand-painted\mahjong-tiles\png\`
+- Sync targets: all three Brain Games apps' `assets/game-ui/`, plus
+  `website-snackpack-universe/play/shared-assets/game-ui/`
+- Same 30 filenames and sizes in both sets
+- The numeral and footer word (`Bamboo`, `Dots`, `Cracks`, `Wind`, `Flower`,
+  `Snack`) are already correct — only the glyph above them is wrong
+- **Write the source as UTF-8 and confirm the renderer reads it as UTF-8.** If
+  the pipeline can't reliably carry CJK, drop the glyph and use a clean drawn
+  suit symbol instead — a wrong-but-tidy tile beats mojibake
+- Suit colours in use: dots `#2f6fd6`, bamboo `#1f8f77`, cracks `#d8483a`,
+  winds `#5b3fb0`, flowers `#d24a86`, snacks `#b9772e`
+
+After regenerating, run `scripts/verify-game-ui-assets.ps1`. Note that it
+verifies files *match across copies* — it cannot detect that the glyph itself
+is wrong, which is exactly why this survived four refresh passes. Someone
+should eyeball a few tiles.
+
+Everything else in `shared-assets/` was spot-checked and is clean: card suits,
+grid-logic markers, word tiles, strategy tokens, dominoes, board games.
 
 ## A6. Social share cards for games that lack a good one
 
 Check `play/social/` — every game has a file, but several are auto-generated
 placeholders. Lowest priority; only worth doing once A1–A4 are done.
+
+## A7. Correctly-shaped arcade sprites (small, blocks the two canvas games)
+
+The existing `arcade-sprites/` pack is built for large render sizes and
+horizontal orientation. Two canvas games can't use it as-is:
+
+- `paddle-vertical.png` — **64x256**, vertical pill matching the existing
+  paddle's material. Table Tennis renders it at 12x80.
+- `ball-small.png` — **64x64**, a simplified read of `ball.png` that still
+  works at ~18px on screen. The current 256px version loses to a plain circle
+  at that size.
+- `asteroid-small.png` — **64x64**, same simplification for Asteroid Destroyer.
+
+These are small, cheap additions rather than a new pack. Without them, those
+two games are better off as they are.
 
 ## What NOT to generate
 
@@ -187,15 +234,33 @@ The game engine was left alone — it was already the strongest in the arcade
 
 ## B2. Wire up the existing art (see table above)
 
-**Mahjong is blocked** — its 60 tile files are corrupted (see A5). It was the
-intended first job here and cannot proceed until they are regenerated.
+Revised after checking `play.css` — Connect 4, Minesweeper, Picross,
+Snakes & Ladders, Checkers and Reversi were **already wired** in the 2026-07-13
+pass, and web Mahjong deliberately uses its own local sprites.
 
-Remaining, all verified clean and ready to wire:
-Connect 4 (`strategy-tokens/`), Snakes & Ladders (`board-games/`),
-Asteroid Destroyer / Cascade / Table Tennis (`arcade-sprites/`),
-Kakuro / Picross / Minesweeper (`grid-logic-markers/`),
-Word Search / Crossword (`word-game-tiles/`), and `table-themes/` backgrounds
-across the board games.
+**Thirteen is also already wired** — it renders the painted `card-suit-icon`
+set. Static grep missed it because the class name is built in JS at runtime;
+that is why the earlier counts in this plan were unreliable in both directions.
+
+Genuinely unwired, and my honest read on each:
+
+| Game | Available pack | Verdict |
+|---|---|---|
+| Sudoku, Kakuro | `grid-logic-markers/` | **Skip.** Their cell states are clean CSS and highly readable. PNG backgrounds would fight the typography for no gain. |
+| Word Search, Crossword | `word-game-tiles/` | **Maybe.** Worth a look, but the current letter rendering is already crisp. |
+| Memory Match | `card-decks/` backs | **Worth doing** — the painted backs would suit the flip animation. |
+| Table Tennis, Asteroid Destroyer | `arcade-sprites/` | **Blocked on shape, not wiring** — see below. |
+| Cascade | `arcade-sprites/` | DOM-rendered, not canvas; blocks are CSS. Low value. |
+
+**Table Tennis / Asteroid Destroyer — why I did not wire these.** The sprites
+exist and look good, but they are the wrong shape and scale for these
+renderers. `paddle.png` is a *horizontal* pill; Table Tennis paddles are
+12x80 **vertical**. Rotating and squashing it to 12px wide would look worse
+than the current clean rect. The ball renders at 18px across, where the
+painted `ball.png` detail turns to mush against the current crisp circle.
+
+Wiring these would be a visible downgrade, so it needs art at the right shape
+first — see A7.
 
 ## B3. Keyboard support — **7 grid games done 2026-08-06, 13 remain**
 
@@ -292,13 +357,12 @@ The rest are worth doing for consistency, not for ranking.
 
 ## Suggested order
 
-1. ~~**B1** Rebuild FreeCell~~ — **done**
-2. **A1** Spider art (already briefed, unblocks a 123k/mo page)
-3. **A2** Shared SFX set → then I wire it across all 32
-4. **A5** Regenerate the mahjong tiles — currently blocking a 12k/mo page
-5. **B2** Wire the remaining painted art (verified clean), Mahjong once A5 lands
-6. **B3/B4** Keyboard + pause
-7. **A3/A4** Soccer and character sprites
-8. **B5–B8** Undo, prose, modes
+1. **A5 — Mahjong tiles.** Not a website task and not cosmetic: a published
+   Google Play app is rendering broken glyphs right now.
+2. **A1 — Spider Solitaire art.** Unblocks a 123k/mo page.
+3. **A2 — Shared SFX set.** Then I wire it across all 32 games.
+4. **A3/A4/A7 — Soccer, Snacky and small-scale arcade sprites.**
+5. Mine, unblocked: pause (B4), remaining undo (B5), Memory Match card backs,
+   thin prose on the soccer pages (B6), and the remaining keyboard work (B3).
 
-Items 5, 6 and 8 are mine and don't block on Codex.
+Everything in Section B is mine and none of it waits on Codex.
