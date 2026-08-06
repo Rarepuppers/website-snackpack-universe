@@ -296,6 +296,7 @@
 
 <script>window.SP_PLAY_URL = "../../world-cup/"; window.SP_PLAY_LABEL = "Open the World Cup hub";</script>
 <script src="../funnel.js"></script>
+<script src="../share-result.js"></script>
 <script src="../soccer-assets.js"></script>
 <script>
 (function () {
@@ -535,6 +536,13 @@
           body: "You ran " + metres + "m in Dribble Rush. Try the World Cup games hub for more free soccer games."
         });
       }
+      // Outside the celebrate gate on purpose: celebrate needs 300m, but this
+      // whole branch is already a personal best, which is worth sharing.
+      if (window.SnackPackShare) window.SnackPackShare.result({
+        game: "Dribble Rush",
+        headline: "Ran " + metres + "m for " + st.score + " points",
+        stats: ["new personal best"]
+      });
     } else {
       statusEl.className = "game-status game-status--lose";
       statusEl.textContent = "Tackled after " + metres + "m. Score: " + st.score + ". Tap to try again.";

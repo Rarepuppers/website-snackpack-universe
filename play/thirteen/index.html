@@ -140,6 +140,7 @@
               <button type="button" data-mode="standard" aria-pressed="true">Standard</button>
               <button type="button" data-mode="classic" aria-pressed="false">Classic</button>
             </div>
+            <button class="btn-game" id="t-daily" type="button" aria-pressed="false" title="Everyone gets the same deal today">Daily</button>
             <button class="btn-game btn-game--primary" id="t-new" type="button">New game</button>
           </div>
         </div>
@@ -282,6 +283,7 @@
 
 <script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2";</script>
 <script src="../funnel.js"></script>
+<script src="../share-result.js"></script>
 <script>
 (function () {
   "use strict";
@@ -385,7 +387,17 @@
   }
 
   // Seeded RNG (optional daily deal)
-  var dailySeed = new URLSearchParams(location.search).get("daily");
+ // `?daily=<anything>` always produced a deterministic deal, but nothing in the UI
+  // surfaced it. The Daily button seeds from today's UTC date so every player gets
+  // the same deal — which is what makes a shared result worth comparing.
+  var urlSeed = new URLSearchParams(location.search).get("daily");
+  var dailyMode = !!urlSeed;
+  function todaySeed() {
+    var d = new Date();
+    return d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate();
+  }
+  function dailyNumber() { return Math.floor(Date.now() / 86400000); }
+  function activeSeed() { return dailyMode ? (urlSeed || todaySeed()) : null; }
   function makeRng(seedStr) {
     if (!seedStr) return Math.random;
     var h = 1779033703 ^ seedStr.length;
@@ -456,7 +468,8 @@
   }
 
   function initialState(mode) {
-    var rng = makeRng(dailySeed ? dailySeed + "-" + mode : null);
+    var tSeed = activeSeed();
+    var rng = makeRng(tSeed ? tSeed + "-" + mode : null);
     var hands = dealHands(rng);
     var first = findFirstPlayer(hands);
     return {
@@ -595,6 +608,13 @@
         title: "You emptied your hand! 🏆",
         body: "Sharp card play. We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app to play Thirteen and more, offline."
       });
+      // After celebrate, always — the share card must not be able to suppress the funnel.
+      if (window.SnackPackShare) window.SnackPackShare.result({
+        game: "Thirteen",
+        puzzle: dailyMode ? dailyNumber() : null,
+        headline: "Won the " + mode + " deal",
+        stats: [wins + (wins === 1 ? " win" : " wins") + " total"]
+      });
     }
   }
 
@@ -643,7 +663,23 @@
     render();
   });
 
-  newBtn.addEventListener("click", newGame);
+  // "New game" leaves daily mode — a daily is one deal, so re-rolling it while
+  // still calling it today's would be a lie.
+  newBtn.addEventListener("click", function () {
+    dailyMode = false;
+    urlSeed = null;
+    dailyBtn.setAttribute("aria-pressed", "false");
+    newGame();
+  });
+
+  var dailyBtn = document.getElementById("t-daily");
+  dailyBtn.setAttribute("aria-pressed", String(dailyMode));
+  dailyBtn.addEventListener("click", function () {
+    dailyMode = !dailyMode;
+    if (!dailyMode) urlSeed = null;
+    dailyBtn.setAttribute("aria-pressed", String(dailyMode));
+    newGame();
+  });
 
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
     btn.addEventListener("click", function () {

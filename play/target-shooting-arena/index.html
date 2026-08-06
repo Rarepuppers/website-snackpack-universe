@@ -325,6 +325,7 @@
 
 <script>window.SP_PLAY_URL = "../../world-cup/"; window.SP_PLAY_LABEL = "Open the World Cup hub";</script>
 <script src="../funnel.js"></script>
+<script src="../share-result.js"></script>
 <script src="../soccer-assets.js"></script>
 <script>
 (function () {
@@ -568,6 +569,11 @@
       window.SnackPack.celebrate({
         title: "Target master",
         body: "You scored " + score + " in Target Shooting Arena. Try the World Cup games hub for more free soccer games."
+      });
+      // After celebrate, always — the share card must not be able to suppress the funnel.
+      if (window.SnackPackShare) window.SnackPackShare.result({
+        game: "Target Shooting Arena",
+        headline: "Scored " + score
       });
     }
   }

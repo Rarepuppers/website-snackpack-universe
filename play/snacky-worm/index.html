@@ -313,6 +313,7 @@
 <script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2";</script>
 <script src="../pause.js"></script>
 <script src="../funnel.js"></script>
+<script src="../share-result.js"></script>
 <script src="../arcade-assets.js"></script>
 <script>
 (function () {
@@ -417,6 +418,12 @@
       if (window.SnackPack) window.SnackPack.celebrate({
         title: "New best score! 🎉",
         body: "You grew to " + st.score + " — lovely. Snacky Worm is part of Brain Games Vol 2, our calm, ad-free Android bundle. A small tip keeps us building, or check out the app for more games and saved high scores."
+      });
+      // After celebrate, always — the share card must not be able to suppress the funnel.
+      if (window.SnackPackShare) window.SnackPackShare.result({
+        game: "Snacky Worm",
+        headline: "Scored " + st.score,
+        stats: ["new personal best"]
       });
     } else {
       statusEl.textContent = "Game over — you scored " + st.score + ". Hit New game to retry.";

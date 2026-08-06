@@ -145,6 +145,7 @@
               <button type="button" data-size="challenge" aria-pressed="false">Challenge</button>
               <button type="button" data-size="expert" aria-pressed="false">Expert</button>
             </div>
+            <button class="btn-game" id="m-daily" type="button" aria-pressed="false" title="Everyone gets the same board today">Daily</button>
             <button class="btn-game btn-game--primary" id="m-new" type="button">New game</button>
           </div>
         </div>
@@ -272,6 +273,7 @@
 
 <script src="../keyboard-grid.js"></script>
 <script src="../funnel.js"></script>
+<script src="../share-result.js"></script>
 <script>
 (function () {
   "use strict";
@@ -317,7 +319,21 @@
   var moves, matched, flipped, busy, started, timerId, elapsed;
 
   // ── Daily seed → deterministic shuffle ──
-  var dailySeed = new URLSearchParams(location.search).get("daily");
+  // `?daily=<anything>` has always produced a deterministic board, but nothing in
+  // the UI ever surfaced it, so in practice nobody got a daily. The Daily button
+  // seeds from today's UTC date instead, so every player gets the same layout —
+  // which is what makes a shared result worth comparing.
+  var urlSeed = new URLSearchParams(location.search).get("daily");
+  var dailyMode = !!urlSeed;
+
+  function todaySeed() {
+    var d = new Date();
+    return d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate();
+  }
+  // Days since epoch — the number shown in shared results, so "#20670" means the
+  // same board to everyone regardless of timezone.
+  function dailyNumber() { return Math.floor(Date.now() / 86400000); }
+  function activeSeed() { return dailyMode ? (urlSeed || todaySeed()) : null; }
   function makeRng(seedStr) {
     if (!seedStr) return Math.random;
     var h = 1779033703 ^ seedStr.length;
@@ -344,7 +360,9 @@
   }
 
   // ── Best-score storage (per size) ──
-  function bestKey() { return "sp_memory_best_" + size; }
+  // Daily and free play are different challenges — one board everyone shares vs a
+  // fresh shuffle — so they keep separate bests.
+  function bestKey() { return "sp_memory_best_" + size + (dailyMode ? "_daily" : ""); }
   function timeKey() { return "sp_memory_time_" + size; }
   function readBest() {
     try { return parseInt(localStorage.getItem(bestKey()) || "0", 10) || 0; } catch (e) { return 0; }
@@ -379,10 +397,11 @@
     timeEl.textContent = "0:00";
     statusEl.textContent = "Flip two cards to find a matching pair.";
     statusEl.className = "game-status";
-    subEl.textContent = cfg.sub + (dailySeed ? " · daily" : "");
+    subEl.textContent = cfg.sub + (dailyMode ? " · daily #" + dailyNumber() : "");
     showBest();
 
-    var rng = makeRng(dailySeed ? dailySeed + "-" + size : null);
+    var seed = activeSeed();
+    var rng = makeRng(seed ? seed + "-" + size : null);
     var symbols = shuffle(DECK, rng).slice(0, cfg.pairs);
     var cards = shuffle(symbols.concat(symbols), rng);
 
@@ -423,6 +442,13 @@
     if (window.SnackPack) window.SnackPack.celebrate({
       title: improved ? "New best — nicely remembered! 🎉" : "Board cleared! 🎉",
       body: "You matched every pair. We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app to play Memory Match and eight more, offline."
+    });
+    // After celebrate, always — the share card must not be able to suppress the funnel.
+    if (window.SnackPackShare) window.SnackPackShare.result({
+      game: "Memory Match",
+      puzzle: dailyMode ? dailyNumber() : null,
+      headline: SIZES[size].label + " cleared in " + moves + " moves",
+      stats: [fmt(elapsed)].concat(improved ? ["new personal best"] : [])
     });
   }
 
@@ -469,7 +495,23 @@
     if (card) flip(card);
   });
 
-  newBtn.addEventListener("click", reset);
+  newBtn.addEventListener("click", function () {
+    // "New game" out of daily mode returns you to a fresh shuffle — a daily is one
+    // board, so re-rolling it while still calling it today's would be a lie.
+    dailyMode = false;
+    urlSeed = null;
+    dailyBtn.setAttribute("aria-pressed", "false");
+    reset();
+  });
+
+  var dailyBtn = document.getElementById("m-daily");
+  dailyBtn.setAttribute("aria-pressed", String(dailyMode));
+  dailyBtn.addEventListener("click", function () {
+    dailyMode = !dailyMode;
+    if (!dailyMode) urlSeed = null;
+    dailyBtn.setAttribute("aria-pressed", String(dailyMode));
+    reset();
+  });
 
   document.querySelectorAll(".seg [data-size]").forEach(function (btn) {
     btn.addEventListener("click", function () {

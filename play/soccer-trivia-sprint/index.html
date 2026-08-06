@@ -494,6 +494,7 @@
 
 <script>window.SP_PLAY_URL = "../../world-cup/"; window.SP_PLAY_LABEL = "Open the World Cup hub";</script>
 <script src="../funnel.js"></script>
+<script src="../share-result.js"></script>
 <script>
 (function () {
   "use strict";
@@ -935,6 +936,13 @@
         body: "You scored " + score + " in Soccer Trivia Sprint. Try the World Cup games hub for more free soccer games."
       });
     }
+    // Outside the celebrate gate on purpose: celebrate only fires on a high score,
+    // but any finished run is worth offering a share on.
+    if (window.SnackPackShare) window.SnackPackShare.result({
+      game: "Soccer Trivia Sprint",
+      headline: "Scored " + score + " points",
+      stats: [difficulty.charAt(0).toUpperCase() + difficulty.slice(1) + " · " + settings[difficulty].count + " questions"]
+    });
   }
 
   nextBtn.addEventListener("click", next);

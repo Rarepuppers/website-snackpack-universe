@@ -439,9 +439,25 @@ delegates the copy/share mechanics to `SnackPackShare.send()`, so it gets the
 native share sheet on mobile and there's one implementation of the fallback
 chain (native share → clipboard → execCommand → selectable textarea).
 
-Still to wire: Memory Match, Word Search, Thirteen, Mahjong, Snakes & Ladders,
-Connect 4, Reversi, Checkers, and the soccer set. Each needs a sensible
-one-line result — for the action games that's a score, not a time.
+**Update: all 32 games are now wired.** Three result shapes emerged:
+
+- **Completion games** (puzzles, card games, board games) share a time or move
+  count, plus "new personal best" when it applies.
+- **Score games** (Asteroid Destroyer, Snacky Worm, Flappy Snacky, Table
+  Tennis, Cascade, Target Shooting) share a score. Note the two Snacky games
+  only call `celebrate()` on a personal best, so their share is already gated to
+  a run worth sending.
+- **The soccer set** gates `celebrate()` behind a high-score threshold
+  (`score >= 950` and similar). The share call is deliberately placed **outside**
+  that gate — celebrate is a donation ask that should stay rare, but any finished
+  run is worth offering a share on. Same reasoning for Cascade, where the share
+  sits outside the best-score branch.
+
+Two bugs caught during wiring, both of which would only have fired on a win:
+`bestStreak` doesn't exist in Keepy-Uppy or Soccer Trivia Sprint (it was
+copy-pasted from the other soccer games), and Flappy Snacky's score is `st.score`
+rather than `score`. A static scope check over each call site caught all three
+before they shipped — worth re-running if these get extended.
 
 ### Correction to an earlier claim in this document
 
@@ -455,6 +471,21 @@ is never surfaced in their UI.
 That's worth acting on separately: exposing the existing hidden daily on Memory
 Match and Thirteen is a button, not a feature build, and daily modes are what
 make the share mechanic compound.
+
+**Update: done.** Both now have a Daily toggle. The `?daily=` parameter seeded
+from whatever string was in the URL, which is deterministic but not *shared* —
+two players got different boards unless they passed the same value. The button
+seeds from the UTC date instead, so everyone gets the same board on the same day,
+and the result carries a `#20671`-style number derived from days-since-epoch so
+it means the same thing in every timezone.
+
+Details worth keeping: "New game" drops you out of daily mode (a daily is one
+board — re-rolling it while still calling it today's would be a lie), and the
+daily keeps a separate best from free play, since they're different challenges.
+
+That leaves **five** games with a user-facing daily: Crossword, Flag Frenzy,
+Picross, Memory Match, Thirteen. Mahjong, Kakuro and FreeCell are still the
+obvious next candidates (B7 already flags them).
 
 ## B7. Smaller gaps
 
@@ -549,9 +580,10 @@ B6's thin-prose pass on low-volume soccer pages.
 3. **A1 — Spider Solitaire art.** Unblocks a 123k/mo page.
 4. **A2 — Shared SFX set.** Then I wire it across all 32 games.
 5. **A3/A4/A7/A8 — Soccer, Snacky, small-scale arcade sprites, maskable icon.**
-6. Mine, unblocked: finish the share wiring (B10), expose the hidden dailies,
-   pause (B4), remaining undo (B5), Memory Match card backs, thin prose on the
-   soccer pages (B6), and the remaining keyboard work (B3).
+6. Mine, unblocked: pause (B4), remaining undo (B5), Memory Match card backs,
+   thin prose on the soccer pages (B6), the remaining keyboard work (B3), and
+   daily modes for Mahjong, Kakuro and FreeCell now that daily + share compounds.
+   ~~Share wiring~~ and ~~the hidden dailies~~ are done.
 
 Everything in Section B and C is mine and none of it waits on Codex.
 

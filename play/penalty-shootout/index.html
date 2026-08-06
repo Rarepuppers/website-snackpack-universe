@@ -303,6 +303,7 @@
 <!-- Point the shared funnel/donation prompt at Brain Games Vol 2 (app 2). -->
 <script>window.SP_PLAY_URL = "../../apps/snackpack-brain-games-vol-2/";</script>
 <script src="../funnel.js"></script>
+<script src="../share-result.js"></script>
 <script src="../soccer-assets.js"></script>
 <script>
 (function () {
@@ -494,6 +495,11 @@
       if (window.SnackPack) window.SnackPack.celebrate({
         title: "Shootout winner! 🏆",
         body: "Ice in the veins — you won " + you + "–" + cpu + ". We build these calm, ad-free games as a tiny studio. A small tip helps, or check out Brain Games Vol 2 for more quick arcade games."
+      });
+      // After celebrate, always — the share card must not be able to suppress the funnel.
+      if (window.SnackPackShare) window.SnackPackShare.result({
+        game: "Penalty Shootout",
+        headline: "Won the shootout " + you + "–" + cpu
       });
     } else {
       statusEl.textContent = "The computer wins " + cpu + "–" + you + ". Hit New game for a rematch.";
