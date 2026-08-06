@@ -32,11 +32,12 @@ parallel or the polish has no audience.
 ## Before you generate anything — art that already exists
 
 `play/shared-assets/game-ui/` holds **~640 finished art files**, including a
-full `pro-hand-painted/` set. **Only 4 of 32 games use any of it.**
+full `pro-hand-painted/` set. **Only 5 of 32 games use any of it** (FreeCell was
+wired up on 2026-08-06; the rest still render CSS).
 
 | Asset family | Files | Used by | Should be used by |
 |---|---:|---|---|
-| `card-decks/` (8 backs, 4 suits, faces) | 64 + 66 | Solitaire, Spider | FreeCell, Thirteen |
+| `card-decks/` (8 backs, 4 suits, faces) | 64 + 66 | Solitaire, Spider, FreeCell | Thirteen |
 | `mahjong-tiles/` | 30 + 32 | **nothing** | Mahjong (renders in CSS today) |
 | `arcade-sprites/` (asteroid, ball, blocks, bricks…) | 39 + 58 | **nothing** | Asteroid Destroyer, Cascade, Table Tennis |
 | `board-games/` | 20 + 22 | Checkers | Snakes & Ladders |
@@ -132,14 +133,20 @@ placeholders. Lowest priority; only worth doing once A1–A4 are done.
 
 Ordered by value. Nothing here needs Codex.
 
-## B1. FreeCell is visibly the least-finished page — fix first
+## ~~B1. FreeCell~~ — **DONE 2026-08-06**
 
-It is the only game missing **all** of: `VideoGame` schema, an FAQ, difficulty
-options, deck themes, stats, and it has **92 words** of prose against a ~350
-average. It also has **no `<footer>` at all**, unlike every other game.
+Was the only game missing `VideoGame` schema, an FAQ, difficulty options, deck
+art, and a `<footer>`, with 92 words of prose against a ~350 average — all
+while sitting on a **21,300/month** Bing term.
 
-`freecell online free` is a **21,300/month** Bing term. This page is the
-weakest asset pointed at the strongest keyword in the set.
+Rebuilt: fixed two malformed meta tags (the canonical link had no closing `>`,
+which swallowed the tag after it, and there was a stray `>` after
+`twitter:image`); added `VideoGame` + `HowTo` schema, a footer, the download
+funnel card, a real social share image, and 4/2/1 free-cell difficulty; wired
+the painted card art; prose 92 → 797 words with a 6-question FAQ.
+
+The game engine was left alone — it was already the strongest in the arcade
+(supermove capacity, hints, auto-finish, undo/redo, solver-verified deals).
 
 ## B2. Wire up the existing art (see table above)
 
@@ -172,7 +179,7 @@ on the logic puzzles where a misclick currently costs the whole board:
 
 | Game | Words | Bing volume for its term |
 |---|---:|---|
-| FreeCell | 92 | 21,300/mo |
+| ~~FreeCell~~ | ~~92~~ → 797 | 21,300/mo — **done** |
 | Target Shooting Arena | 185 | low |
 | Keepy-Uppy | 194 | low |
 | Crossbar Challenge | 197 | low |
@@ -181,8 +188,8 @@ on the logic puzzles where a misclick currently costs the whole board:
 | Free Kick Curl | 218 | low (but ranks #1 and converts) |
 | Snakes & Ladders | 240 | low |
 
-FreeCell is the only one where this clearly costs traffic. The rest are worth
-doing for consistency, not for ranking.
+FreeCell was the only one where this clearly cost traffic, and it is now fixed.
+The rest are worth doing for consistency, not for ranking.
 
 ## B7. Smaller gaps
 
@@ -208,13 +215,13 @@ doing for consistency, not for ranking.
 
 ## Suggested order
 
-1. **A1** Spider art (already briefed, unblocks a 123k/mo page)
-2. **B1** Rebuild FreeCell to match the other card games
+1. ~~**B1** Rebuild FreeCell~~ — **done**
+2. **A1** Spider art (already briefed, unblocks a 123k/mo page)
 3. **A2** Shared SFX set → then I wire it across all 32
-4. **B2** Wire the existing painted art, Mahjong first
+4. **B2** Wire the existing painted art, **Mahjong first** (12k/mo term, and
+   62 painted tiles are sitting unused while it renders CSS)
 5. **B3/B4** Keyboard + pause
 6. **A3/A4** Soccer and character sprites
 7. **B5–B8** Undo, prose, modes
 
-Items 2, 4, 5 and 7 are mine and don't block on Codex. Say the word and I'll
-start on FreeCell.
+Items 4, 5 and 7 are mine and don't block on Codex — Mahjong is next.
