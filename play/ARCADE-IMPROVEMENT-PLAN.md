@@ -38,7 +38,7 @@ wired up on 2026-08-06; the rest still render CSS).
 | Asset family | Files | Used by | Should be used by |
 |---|---:|---|---|
 | `card-decks/` (8 backs, 4 suits, faces) | 64 + 66 | Solitaire, Spider, FreeCell | Thirteen |
-| `mahjong-tiles/` | 30 + 32 | **nothing** | Mahjong (renders in CSS today) |
+| ~~`mahjong-tiles/`~~ | 30 + 30 | **nothing** | ⚠️ **corrupted — see A5, do not wire** |
 | `arcade-sprites/` (asteroid, ball, blocks, bricks…) | 39 + 58 | **nothing** | Asteroid Destroyer, Cascade, Table Tennis |
 | `board-games/` | 20 + 22 | Checkers | Snakes & Ladders |
 | `strategy-tokens/` | 11 + 13 | Reversi | Connect 4 |
@@ -113,7 +113,44 @@ as coloured rectangles.
 - `snacky-worm-head.png`, `snacky-worm-body.png`, `snacky-worm-tail.png` (64×64)
 - Match the corgi/character style used in the apps, not a generic sprite look
 
-## A5. Social share cards for games that lack a good one
+## A5. Mahjong tiles — **all 60 files are corrupted, must be regenerated**
+
+Found 2026-08-06 while attempting to wire these up. **Every one of the 30
+standard and 30 pro-hand-painted mahjong tiles has a mojibake glyph** where the
+Chinese character should be — the classic UTF-8-decoded-as-Latin-1 failure.
+
+Examples of what is actually rendered on the tiles today:
+
+| File | Shows | Should show |
+|---|---|---|
+| `bam-3.png` | `â–` above the 3 | 條 / a bamboo glyph |
+| `dot-5.png` | `â—` above the 5 | 筒 / a dot glyph |
+| `wind-e.png` | `â™` above the E | 東 |
+| `flower-a.png` | `âœ` above the A | a flower glyph |
+| `snack-1.png` | `â˜` above the 1 | the snack symbol |
+
+Nobody noticed because **nothing renders them** — Mahjong draws its tiles in
+CSS, and the art is only referenced in the asset manifest, never consumed.
+
+**This is why Mahjong could not be wired up.** Wiring it as-is would have
+shipped 30 visibly broken tiles onto a 12,000/month page.
+
+To regenerate:
+- Same 30 filenames, same sizes, both the standard and `pro-hand-painted` sets
+- The numeral and the footer word (`Bamboo`, `Dots`, `Cracks`, `Wind`,
+  `Flower`, `Snack`) are correct in the current files — only the glyph above
+  them is wrong
+- **Write the source file as UTF-8 and confirm the renderer reads it as UTF-8.**
+  If the pipeline can't reliably carry CJK, drop the glyph entirely and use a
+  clean suit symbol instead — a wrong-but-tidy tile beats mojibake
+- Suit colours already in use: dots `#2f6fd6`, bamboo `#1f8f77`, cracks
+  `#d8483a`, winds `#5b3fb0`, flowers `#d24a86`, snacks `#b9772e`
+
+Everything else in `shared-assets/` was spot-checked and is clean — card suits,
+grid-logic markers, word tiles, strategy tokens, dominoes and board games all
+render correctly.
+
+## A6. Social share cards for games that lack a good one
 
 Check `play/social/` — every game has a file, but several are auto-generated
 placeholders. Lowest priority; only worth doing once A1–A4 are done.
@@ -150,8 +187,15 @@ The game engine was left alone — it was already the strongest in the arcade
 
 ## B2. Wire up the existing art (see table above)
 
-Mahjong using the real painted tiles instead of CSS is the highest-impact
-single change — 12k/month term, and tile legibility is the whole game.
+**Mahjong is blocked** — its 60 tile files are corrupted (see A5). It was the
+intended first job here and cannot proceed until they are regenerated.
+
+Remaining, all verified clean and ready to wire:
+Connect 4 (`strategy-tokens/`), Snakes & Ladders (`board-games/`),
+Asteroid Destroyer / Cascade / Table Tennis (`arcade-sprites/`),
+Kakuro / Picross / Minesweeper (`grid-logic-markers/`),
+Word Search / Crossword (`word-game-tiles/`), and `table-themes/` backgrounds
+across the board games.
 
 ## B3. Keyboard support — 20 of 32 games have none
 
@@ -193,8 +237,13 @@ The rest are worth doing for consistency, not for ranking.
 
 ## B7. Smaller gaps
 
-- **Flag Frenzy never calls `SnackPack.celebrate()`** — the only game that
-  doesn't trigger the download funnel on a win. Straight bug.
+- ~~**Flag Frenzy never calls `SnackPack.celebrate()`**~~ — **fixed
+  2026-08-06.** All 32 games now trigger the funnel on a win. While fixing it I
+  found a second bug: nine soccer/World Cup games point the funnel at
+  `/world-cup/` but the button label was hardcoded to "Get the free app on
+  Android", promising an app the link doesn't lead to. `funnel.js` now takes an
+  optional `SP_PLAY_LABEL`, those nine say "Open the World Cup hub", and
+  internal links no longer force a new tab.
 - **"Large cards" mode** exists only on the three card games; the same idea
   would help every board game on a desktop screen.
 - **Best-score tracking** missing on 10 games including Sudoku, Minesweeper,
@@ -218,10 +267,10 @@ The rest are worth doing for consistency, not for ranking.
 1. ~~**B1** Rebuild FreeCell~~ — **done**
 2. **A1** Spider art (already briefed, unblocks a 123k/mo page)
 3. **A2** Shared SFX set → then I wire it across all 32
-4. **B2** Wire the existing painted art, **Mahjong first** (12k/mo term, and
-   62 painted tiles are sitting unused while it renders CSS)
-5. **B3/B4** Keyboard + pause
-6. **A3/A4** Soccer and character sprites
-7. **B5–B8** Undo, prose, modes
+4. **A5** Regenerate the mahjong tiles — currently blocking a 12k/mo page
+5. **B2** Wire the remaining painted art (verified clean), Mahjong once A5 lands
+6. **B3/B4** Keyboard + pause
+7. **A3/A4** Soccer and character sprites
+8. **B5–B8** Undo, prose, modes
 
-Items 4, 5 and 7 are mine and don't block on Codex — Mahjong is next.
+Items 5, 6 and 8 are mine and don't block on Codex.

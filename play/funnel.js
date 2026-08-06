@@ -9,7 +9,14 @@
   // Default to Brain Games (Vol 1). A page can point the funnel at a different
   // app by setting window.SP_PLAY_URL before this script loads (e.g. Vol 2).
   var DEFAULT_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames";
+  var DEFAULT_PLAY_LABEL = "Get the free app on Android";
   function playUrl() { return window.SP_PLAY_URL || DEFAULT_PLAY_URL; }
+  // The soccer and World Cup games point the funnel at /world-cup/ rather than
+  // a Play listing, so they need an honest label — the default promises an
+  // Android app the link doesn't lead to.
+  function playLabel() { return window.SP_PLAY_LABEL || DEFAULT_PLAY_LABEL; }
+  // Only send users off-site in a new tab; internal links should stay put.
+  function playTarget() { return /^https?:/i.test(playUrl()) ? ' target="_blank" rel="noopener"' : ""; }
   var DWELL_MS = 10 * 60 * 1000; // 10 minutes of continuous play
   var SHOWN_KEY = "sp_donate_shown_on";
 
@@ -48,7 +55,7 @@
       '<p class="sp-modal-body"></p>' +
       '<div class="sp-modal-actions">' +
       '<a class="btn btn-primary" target="_blank" rel="noopener" href="' + STRIPE_URL + '">Tip the studio</a>' +
-      '<a class="btn btn-secondary" target="_blank" rel="noopener" href="' + playUrl() + '">Get the free app on Android</a>' +
+      '<a class="btn btn-secondary"' + playTarget() + ' href="' + playUrl() + '">' + playLabel() + "</a>" +
       '<button class="sp-dismiss-link" type="button">Maybe later</button>' +
       "</div>" +
       "</div>";

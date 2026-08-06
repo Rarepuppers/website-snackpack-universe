@@ -447,7 +447,7 @@
   </div>
 </footer>
 
-<script>window.SP_PLAY_URL = "../../world-cup/";</script>
+<script>window.SP_PLAY_URL = "../../world-cup/"; window.SP_PLAY_LABEL = "Open the World Cup hub";</script>
 <script src="../funnel.js"></script>
 <script>
 (function () {
@@ -875,6 +875,15 @@
     }
     renderAll();
     if (done && won && mode === "practice") showBadge("flagStreak", "Practice solved");
+    // Every other game in the arcade surfaces the funnel on a win; this one
+    // was the only page that never called it.
+    if (done && won && window.SnackPack) {
+      window.SnackPack.celebrate({
+        title: "Got it in " + guesses.length + (guesses.length === 1 ? " guess! 🎉" : " guesses! 🎉"),
+        body: "Nicely done — the answer was " + answer + ". We build these calm, ad-free games as a tiny studio. " +
+              "A small tip helps, or head to the World Cup hub for the bracket, fixtures and more soccer games."
+      });
+    }
   }
 
   function startDaily() {
