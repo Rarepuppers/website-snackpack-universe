@@ -197,15 +197,30 @@ Kakuro / Picross / Minesweeper (`grid-logic-markers/`),
 Word Search / Crossword (`word-game-tiles/`), and `table-themes/` backgrounds
 across the board games.
 
-## B3. Keyboard support — 20 of 32 games have none
+## B3. Keyboard support — **7 grid games done 2026-08-06, 13 remain**
 
-Given **95% desktop traffic** this is the most under-weighted gap in the arcade.
-Missing on: Checkers, Connect 4, Minesweeper, Reversi, Solitaire, Mahjong,
-Memory Match, Picross, Word Search, Thirteen, FreeCell, Snakes & Ladders,
-Soccer Trivia Sprint, and the soccer games.
+Given **95% desktop traffic** this was the most under-weighted gap in the
+arcade. Built `play/keyboard-grid.js`, a shared roving-tabindex helper: a grid
+becomes a single tab stop, arrows move a cursor, Enter/Space plays the focused
+cell. It derives the row width from the rendered layout rather than being told,
+so it works at any board size and survives a resize, and a MutationObserver
+restores the cursor after each re-render.
 
-Also an accessibility issue — several games are currently mouse-only, which
-makes them unusable for keyboard-only users.
+Done: **Minesweeper** (+ <kbd>F</kbd> to flag), **Connect 4**, **Reversi**,
+**Checkers**, **Memory Match**, **Word Search**, **Picross**
+(+ <kbd>X</kbd> to switch fill/cross).
+
+Two classes of problem it fixed:
+- `<button>` grids (Minesweeper, Connect 4) were reachable but needed up to
+  480 Tab presses to cross. Now one.
+- `<div>` grids (Reversi, Checkers, Word Search, Picross, Memory Match) could
+  not be reached by keyboard **at all**.
+
+Still to do — these need bespoke work, not the grid helper, because their
+interaction is pile-to-pile rather than cell-to-cell:
+**Solitaire, FreeCell, Spider, Thirteen, Mahjong** (card/tile selection),
+**Snakes & Ladders, Soccer Trivia Sprint**, and the six soccer action games
+(timing-based, need a key to shoot rather than a cursor).
 
 ## B4. Pause — missing on 30 of 32
 

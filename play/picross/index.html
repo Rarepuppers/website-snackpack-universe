@@ -153,6 +153,7 @@
           <button class="btn-game" id="p-clear" type="button">Clear</button>
         </div>
         <p class="game-hint">Tap to mark · switch Fill / Cross with the corner toggle · right-click a cell to cross it.</p>
+        <p class="kbd-help">Keyboard: <kbd>Tab</kbd> to the grid, <kbd>←↑→↓</kbd> to move, <kbd>Enter</kbd> to mark, <kbd>X</kbd> to switch fill / cross.</p>
       </div>
     </div>
   </section>
@@ -270,6 +271,7 @@
 </footer>
 
 <script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2";</script>
+<script src="../keyboard-grid.js"></script>
 <script src="../funnel.js"></script>
 <script>
 (function () {
@@ -545,6 +547,23 @@
 
   build();
 })();
+</script>
+<script>
+// Arrow-key play. Attached from outside the game's own closure so the
+// existing click handlers stay the single source of truth for moves.
+(function () {
+  if (!window.SnackPackKeyboard) return;
+  var g = document.getElementById("p-grid");
+  if (!g) return;
+  g.setAttribute("data-kbd-grid", "");
+  window.SnackPackKeyboard.attachGrid({
+    container: g,
+    cellSelector: ".pc-cell",
+    label: "Picross grid",
+      secondaryKeys: ["x"],
+      onSecondary: function () { var t=document.querySelector('.pc-marktoggle [data-mark="cross"]'),f=document.querySelector('.pc-marktoggle [data-mark="fill"]');if(t&&f){(t.getAttribute('aria-pressed')==='true'?f:t).click();} }
+  });
+}());
 </script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"

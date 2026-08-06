@@ -196,6 +196,7 @@
           </div>
         </div>
         <p class="game-hint">Drag from the first letter to the last · or tap the first letter, then the last.</p>
+        <p class="kbd-help">Keyboard: <kbd>Tab</kbd> to the grid, <kbd>←↑→↓</kbd> to move, <kbd>Enter</kbd> on the first and last letter of a word.</p>
       </div>
     </div>
   </section>
@@ -308,6 +309,7 @@
   </div>
 </footer>
 
+<script src="../keyboard-grid.js"></script>
 <script src="../funnel.js"></script>
 <script>
 (function () {
@@ -543,6 +545,21 @@
 
   reset();
 })();
+</script>
+<script>
+// Arrow-key play. Attached from outside the game's own closure so the
+// existing click handlers stay the single source of truth for moves.
+(function () {
+  if (!window.SnackPackKeyboard) return;
+  var g = document.getElementById("ws-board");
+  if (!g) return;
+  g.setAttribute("data-kbd-grid", "");
+  window.SnackPackKeyboard.attachGrid({
+    container: g,
+    cellSelector: ".ws-cell",
+    label: "Word Search grid"
+  });
+}());
 </script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"

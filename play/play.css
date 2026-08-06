@@ -1664,3 +1664,48 @@ button.th-card.is-selected {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* ── Keyboard cursor for grid games (keyboard-grid.js) ───
+   Only shown once the keyboard is actually used, so mouse players never see
+   a stray highlight. Deliberately distinct from :focus-visible so it reads as
+   a game cursor rather than browser chrome. */
+.kbd-cursor {
+  position: relative;
+  outline: 3px solid var(--gold);
+  outline-offset: -1px;
+  z-index: 5;
+}
+
+.kbd-cursor::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: 0 0 0 2px rgba(32, 23, 19, 0.45);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* The board itself is the single tab stop. */
+[data-kbd-grid]:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.kbd-help {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin: 10px 0 0;
+}
+
+.kbd-help kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--surface-strong);
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.5;
+}

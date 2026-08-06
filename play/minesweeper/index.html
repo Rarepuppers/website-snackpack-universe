@@ -150,6 +150,7 @@
           <div class="ms-grid" id="ms-grid" role="grid" aria-label="Minesweeper board"></div>
         </div>
         <p class="game-hint">Left-click to reveal · Right-click or long-press to flag · First click is always safe.</p>
+        <p class="kbd-help">Keyboard: <kbd>Tab</kbd> to the board, <kbd>←↑→↓</kbd> to move, <kbd>Enter</kbd> to reveal, <kbd>F</kbd> to flag.</p>
       </div>
     </div>
   </section>
@@ -263,6 +264,7 @@
   </div>
 </footer>
 
+<script src="../keyboard-grid.js"></script>
 <script src="../funnel.js"></script>
 <script>
 (function () {
@@ -487,6 +489,22 @@
   });
 
   reset();
+
+  // Arrow-key play. The cells are <button>s, so Enter/Space already reveals;
+  // this adds the roving cursor and an F key for flagging, which was
+  // previously right-click or long-press only.
+  if (window.SnackPackKeyboard) {
+    gridEl.setAttribute("data-kbd-grid", "");
+    window.SnackPackKeyboard.attachGrid({
+      container: gridEl,
+      cellSelector: "button.ms-cell",
+      label: "Minesweeper board",
+      secondaryKeys: ["f"],
+      onSecondary: function (cell) {
+        if (cell) toggleFlag(+cell.dataset.i);
+      }
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->
