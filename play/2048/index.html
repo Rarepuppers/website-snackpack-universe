@@ -77,6 +77,21 @@
 }
 </script>
 <!-- /breadcrumbs:generated -->
+
+<!-- pwa:generated -->
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SnackPack">
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    });
+  }
+</script>
+<!-- /pwa:generated -->
 </head>
 <body>
 <header class="topbar">
@@ -248,6 +263,7 @@
 </footer>
 
 <script src="../funnel.js"></script>
+<script src="../share-result.js"></script>
 <script>
 (function () {
   "use strict";
@@ -411,6 +427,11 @@
       if (w && window.SnackPack) window.SnackPack.celebrate({
         title: "You hit 2048! 🎉",
         body: "Beautifully done. We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app to play 2048 offline with saved scores."
+      });
+      if (w && window.SnackPackShare) window.SnackPackShare.result({
+        game: "2048",
+        headline: "Reached the 2048 tile",
+        stats: ["score " + score.toLocaleString()]
       });
     }
     if (!hasMoves()) {

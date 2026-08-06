@@ -77,6 +77,21 @@
 }
 </script>
 <!-- /breadcrumbs:generated -->
+
+<!-- pwa:generated -->
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SnackPack">
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    });
+  }
+</script>
+<!-- /pwa:generated -->
 </head>
 <body>
 <header class="topbar">
@@ -273,6 +288,7 @@
 </footer>
 
 <script src="../funnel.js"></script>
+<script src="../share-result.js"></script>
 <script>
 (function () {
   "use strict";
@@ -450,6 +466,11 @@
     if (window.SnackPack) window.SnackPack.celebrate({
       title: improved ? "New best time! 🎉" : "Grid solved! 🎉",
       body: "Every run adds up. We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app to play Kakuro and eight more, offline."
+    });
+    if (window.SnackPackShare) window.SnackPackShare.result({
+      game: "Kakuro",
+      headline: mode.charAt(0).toUpperCase() + mode.slice(1) + " solved in " + fmt(elapsed),
+      stats: improved ? ["new personal best"] : []
     });
   }
 

@@ -128,6 +128,20 @@
 }
 </script>
 <!-- /breadcrumbs:generated -->
+<!-- pwa:generated -->
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SnackPack">
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    });
+  }
+</script>
+<!-- /pwa:generated -->
 </head>
 <body>
 <header class="topbar">
@@ -316,6 +330,7 @@
 
 <script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames3";</script>
 <script src="../funnel.js"></script>
+<script src="../share-result.js"></script>
 <script>
 (function () {
   "use strict";
@@ -502,6 +517,13 @@
               "A small tip helps, or grab the free app to play Spider offline with saved best times."
       });
     }
+    // After celebrate, always — the share card is a nice-to-have and must not
+    // be able to suppress the funnel if something here throws.
+    if (window.SnackPackShare) window.SnackPackShare.result({
+      game: "Spider Solitaire",
+      headline: suitCount + "-suit cleared in " + fmt(seconds),
+      stats: [moves + " moves"].concat(record ? ["new personal best"] : [])
+    });
   }
 
   // ── Rendering ─────────────────────────────────────

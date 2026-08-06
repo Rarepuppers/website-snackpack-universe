@@ -1,0 +1,23 @@
+{
+  "name": "SnackPack Studios — Free Browser Games",
+  "short_name": "SnackPack",
+  "description": "32 calm, ad-free browser games — Solitaire, Sudoku, Minesweeper, FreeCell and more. No sign-in, no downloads, and they keep working offline once installed.",
+  "id": "/",
+  "start_url": "/play/?utm_source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fdf6ec",
+  "theme_color": "#de6a38",
+  "orientation": "any",
+  "categories": ["games", "entertainment", "education"],
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Solitaire", "url": "/play/solitaire/" },
+    { "name": "Sudoku", "url": "/play/sudoku/" },
+    { "name": "Minesweeper", "url": "/play/minesweeper/" },
+    { "name": "All games", "url": "/play/" }
+  ]
+}

@@ -260,6 +260,21 @@
 }
 </script>
 <!-- /breadcrumbs:generated -->
+
+<!-- pwa:generated -->
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SnackPack">
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    });
+  }
+</script>
+<!-- /pwa:generated -->
 </head>
 <body>
 <header class="topbar">
@@ -449,6 +464,7 @@
 
 <script>window.SP_PLAY_URL = "../../world-cup/"; window.SP_PLAY_LABEL = "Open the World Cup hub";</script>
 <script src="../funnel.js"></script>
+<script src="../share-result.js"></script>
 <script>
 (function () {
   "use strict";
@@ -915,8 +931,23 @@
     if (mode === "daily") { startPractice(); practiceBtn.textContent = "Back to today's challenge"; }
     else { startDaily(); practiceBtn.textContent = "Practice round (random team)"; }
   });
+  // Keeps its own button and result panel (they're well integrated here), but
+  // defers the share/copy mechanics to the shared helper so mobile gets the
+  // native share sheet and there's one implementation to fix. Falls back to the
+  // original inline path if share-result.js somehow didn't load.
   shareBtn.addEventListener("click", function () {
     var text = buildShareText();
+    if (window.SnackPackShare && window.SnackPackShare.send) {
+      window.SnackPackShare.send(text, {
+        title: "SnackPack Flag Frenzy",
+        onStatus: function (msg) {
+          shareBtn.textContent = msg;
+          setTimeout(function () { shareBtn.textContent = "Copy share result"; }, 1800);
+        },
+        onManual: function () { showShareFallback(text); }
+      });
+      return;
+    }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function () {
         shareBtn.textContent = "Copied!";

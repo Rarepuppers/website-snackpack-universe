@@ -1763,3 +1763,72 @@ button.th-card.is-selected {
   font-size: 0.78rem;
   font-weight: 700;
 }
+
+/* ---------- SHARE RESULT (share-result.js) ---------- */
+/* Deliberately separate from the .sp-modal funnel: that one is rate-limited to
+   once a day and asks for money, this one appears on every win and asks for a
+   share. Quiet by default so it reads as an offer, not another interruption. */
+.sp-share {
+  display: none;
+  margin: 18px auto 0;
+  max-width: 460px;
+  padding: 16px 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  text-align: center;
+}
+.sp-share.is-open { display: block; }
+
+.sp-share-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
+.sp-share-title { font-size: 1rem; color: var(--ink); }
+.sp-share-sub { font-size: 0.85rem; color: var(--accent); font-weight: 600; }
+
+/* The emoji grid is decorative for screen readers — the headline already
+   carries the result in words, and a wall of squares reads as noise. */
+.sp-share-grid {
+  margin: 0 0 12px;
+  font-family: inherit;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  letter-spacing: 2px;
+  white-space: pre;
+  overflow-x: auto;
+}
+.sp-share-grid[hidden] { display: none; }
+
+.sp-share-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+.sp-share-fallback {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  min-height: 92px;
+  padding: 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.82rem;
+  resize: vertical;
+}
+.sp-share-fallback[hidden] { display: none; }
+
+/* Visually hidden, but announced — the button's own label changes too, which
+   some screen readers won't re-read on their own. */
+.sp-share-live {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sp-share.is-open { animation: sp-share-in 0.28s ease; }
+}
+@keyframes sp-share-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

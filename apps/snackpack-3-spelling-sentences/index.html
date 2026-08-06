@@ -66,6 +66,20 @@
 </script>
 <!-- /breadcrumbs:generated -->
 
+<!-- pwa:generated -->
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SnackPack">
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    });
+  }
+</script>
+<!-- /pwa:generated -->
 </head><body>
 <header class="topbar"><div class="shell topbar-inner"><a class="brand" href="../../"><img class="brand-mark" src="/assets/snackpack-mark-96.png" alt="SnackPack Studios icon" width="96" height="94" decoding="async"><span class="brand-copy"><span class="brand-title">SnackPack Studios</span><span class="brand-subtitle">App 3</span></span></a><nav aria-label="Primary">
   <ul class="nav-links">

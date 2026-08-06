@@ -41,6 +41,20 @@
 }
 </script>
 <!-- /breadcrumbs:generated -->
+<!-- pwa:generated -->
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SnackPack">
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    });
+  }
+</script>
+<!-- /pwa:generated -->
 </head>
 <body>
 <header class="topbar">
@@ -97,6 +111,26 @@
           <p>Why most Sudoku and Solitaire apps interrupt you with ads, how to check an app before installing, and the airplane-mode test that tells you if a game is genuinely offline.</p>
           <div class="tag-row"><span class="tag">Puzzles</span><span class="tag">Offline</span></div>
           <div class="app-actions"><a class="text-link" href="./offline-games-without-ads/">Read the guide</a></div>
+        </div>
+      </article>
+
+      <article class="app-card">
+        <div class="app-card-top">
+          <span class="app-index">For players</span>
+          <h2>How to play browser games offline</h2>
+          <p>A website can be installed like an app and keep working with the connection off. How to do it in Chrome, Edge and Safari, why it works, and the step everyone skips that makes it fail on the plane.</p>
+          <div class="tag-row"><span class="tag">Offline</span><span class="tag">How-to</span></div>
+          <div class="app-actions"><a class="text-link" href="./play-browser-games-offline/">Read the guide</a></div>
+        </div>
+      </article>
+
+      <article class="app-card">
+        <div class="app-card-top">
+          <span class="app-index">For players</span>
+          <h2>Free Solitaire without ads or sign-up</h2>
+          <p>Why a card game acquired cookie walls and account prompts, a ten-second test for whether a site will leave you alone, and what "winnable deals" actually means.</p>
+          <div class="tag-row"><span class="tag">Solitaire</span><span class="tag">Ad-free</span></div>
+          <div class="app-actions"><a class="text-link" href="./solitaire-without-ads-or-signup/">Read the guide</a></div>
         </div>
       </article>
 

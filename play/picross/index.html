@@ -77,6 +77,21 @@
 }
 </script>
 <!-- /breadcrumbs:generated -->
+
+<!-- pwa:generated -->
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SnackPack">
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    });
+  }
+</script>
+<!-- /pwa:generated -->
 </head>
 <body>
 <header class="topbar">
@@ -274,6 +289,7 @@
 <script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2";</script>
 <script src="../keyboard-grid.js"></script>
 <script src="../funnel.js"></script>
+<script src="../share-result.js"></script>
 <script>
 (function () {
   "use strict";
@@ -522,6 +538,17 @@
       title: improved ? "New best time! 🎉" : "Picture revealed! 🎉",
       body: "You solved the " + puzzleTitle + " nonogram. We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app for dozens more puzzles, offline."
     });
+    if (window.SnackPackShare) {
+      // Never name the picture on the daily — that IS the puzzle, and a share
+      // that spoils today's answer is a share nobody sends.
+      var pxDaily = size === "daily";
+      window.SnackPackShare.result({
+        game: "Picross",
+        puzzle: pxDaily ? Math.floor(Date.now() / 86400000) : null,
+        headline: (pxDaily ? "Today's picture" : puzzleTitle) + " revealed in " + fmt(elapsed),
+        stats: improved ? ["new personal best"] : []
+      });
+    }
   }
 
   function hint() {

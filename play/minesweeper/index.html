@@ -90,6 +90,21 @@
 }
 </script>
 <!-- /breadcrumbs:generated -->
+
+<!-- pwa:generated -->
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SnackPack">
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    });
+  }
+</script>
+<!-- /pwa:generated -->
 </head>
 <body>
 <header class="topbar">
@@ -266,6 +281,7 @@
 
 <script src="../keyboard-grid.js"></script>
 <script src="../funnel.js"></script>
+<script src="../share-result.js"></script>
 <script>
 (function () {
   "use strict";
@@ -436,6 +452,10 @@
       if (window.SnackPack) window.SnackPack.celebrate({
         title: "Board cleared! 🎉",
         body: "Nice deduction — solved in " + seconds + "s. We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app to play Minesweeper offline with saved best times."
+      });
+      if (window.SnackPackShare) window.SnackPackShare.result({
+        game: "Minesweeper",
+        headline: diff.charAt(0).toUpperCase() + diff.slice(1) + " cleared in " + seconds + "s"
       });
     }
   }

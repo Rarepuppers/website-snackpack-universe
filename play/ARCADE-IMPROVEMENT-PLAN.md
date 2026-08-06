@@ -187,6 +187,44 @@ grid-logic markers, word tiles, strategy tokens, dominoes, board games.
 Check `play/social/` — every game has a file, but several are auto-generated
 placeholders. Lowest priority; only worth doing once A1–A4 are done.
 
+## A8. Maskable PWA icon — **blocks nothing, but the install looks unfinished without it**
+
+Added 2026-08-06 when the arcade became installable (see B9).
+
+`assets/icon-192.png` and `assets/icon-512.png` are straight resizes of
+`google-play-app-icon-512.png` and are fine as `purpose: "any"`. What's missing
+is a **maskable** variant, and it can't be derived from the existing art.
+
+The Android/Chrome maskable spec requires all meaningful content to sit inside a
+centred circle of 80% diameter, because the launcher crops to whatever shape the
+device uses. The current icon is edge-to-edge: the four coloured circles run
+close to the top edge and the backpack to the bottom. Padding it down to 80%
+leaves the corgi tiny in a sea of background; cropping cuts the circles. Either
+is worse than shipping without one, so the manifest currently declares only
+`any` icons and lets Android apply its own mask.
+
+Needed:
+
+- `assets/icon-maskable-512.png` — **512×512**, full-bleed background (no
+  transparency), with the corgi + backpack composed to sit entirely within the
+  centre 410px circle. The four coloured dots can be dropped or reduced to a
+  subtle background motif — they're the first thing a circular mask eats.
+- Background colour to match the manifest's `background_color`, `#fdf6ec`.
+
+Once it exists, add to `manifest.webmanifest`:
+
+```json
+{ "src": "/assets/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+```
+
+## A9. Share-card art (optional, low priority)
+
+The new share cards (B10) are text + emoji only, which is deliberate — Wordle
+proved text travels further than images and it costs no bandwidth. If we ever
+want an image variant for X/Facebook, it would need a 1200×630 template per
+game with the result composited in, which is a build-step problem rather than an
+art problem. Not requesting anything yet; noted so it isn't re-derived later.
+
 ## A7. Correctly-shaped arcade sprites (small, blocks the two canvas games)
 
 The existing `arcade-sprites/` pack is built for large render sizes and
@@ -348,6 +386,76 @@ Word Search, Minesweeper, Mahjong, Snakes & Ladders and Thirteen where it does.
 FreeCell was the only one where this clearly cost traffic, and it is now fixed.
 The rest are worth doing for consistency, not for ranking.
 
+## B9. PWA / offline arcade — **DONE 2026-08-06**
+
+The arcade's pitch is "no ads, no sign-in, no download" and it advertises
+offline play — but "works offline" was only ever true of the *Android bundle*,
+not the site. Both status sites (isclaudeup, iscodexup) were installable PWAs
+while the main property wasn't.
+
+Added `manifest.webmanifest`, `sw.js`, and `scripts/build-pwa.mjs` (an
+idempotent injector in the same shape as `build-breadcrumbs.mjs`, since there's
+no templating layer and ~145 pages to touch). Icons derived from the existing
+Google Play app icon; the maskable variant is A8.
+
+Caching strategy, and why: **code and markup are network-first**, images and
+fonts cache-first. The status sites originally shipped cache-first for scripts,
+which meant a returning visitor kept running whatever build they first installed
+— a fixed bug could never reach them. Don't repeat that here. `CACHE` is
+`snackpack-arcade-v1`; bump it whenever shared code changes.
+
+Note the arcade caches *what you visit*. The shell and `/play/` are precached;
+individual games cache themselves on first visit. That's the honest behaviour
+and the new guide explains it to players rather than pretending otherwise.
+
+## B10. Share-your-result — **DONE 2026-08-06 for 10 games**
+
+The single largest growth gap. Every game already called
+`SnackPack.celebrate()` on a win, but nothing offered a share, so a win produced
+no artefact anyone could post. Wordle's entire distribution was the spoiler-free
+result block, and it needed no ad budget and no backlinks — which matters here
+because this plan's own analytics section says the bottleneck is 4 inbound
+links, not game quality.
+
+Built `play/share-result.js`. Three things worth knowing if this gets extended:
+
+- **It is deliberately NOT attached to the funnel modal.** `openModal()` in
+  `funnel.js` is rate-limited to once per day via `sp_donate_shown_on`, which is
+  right for a donation ask and wrong for a share prompt — a player who wins
+  three puzzles should be offered a share three times. The card owns its own
+  surface.
+- **Share calls go AFTER `celebrate()`, always.** They were briefly placed
+  before it in four games; if the share call had thrown, it would have silently
+  suppressed the existing download/donation funnel. The share is a
+  nice-to-have and must never be able to break the thing that earns money.
+- **Spoiler rule.** Crossword and Picross withhold the puzzle title on the
+  daily, because on a daily everyone is solving the same board and the title
+  hints at the answer. A share that spoils today's puzzle is a share nobody
+  sends.
+
+Wired: Sudoku, Crossword, Picross, Solitaire, Spider, FreeCell, Minesweeper,
+2048, Kakuro. Flag Frenzy kept its own well-integrated result panel but now
+delegates the copy/share mechanics to `SnackPackShare.send()`, so it gets the
+native share sheet on mobile and there's one implementation of the fallback
+chain (native share → clipboard → execCommand → selectable textarea).
+
+Still to wire: Memory Match, Word Search, Thirteen, Mahjong, Snakes & Ladders,
+Connect 4, Reversi, Checkers, and the soccer set. Each needs a sensible
+one-line result — for the action games that's a score, not a time.
+
+### Correction to an earlier claim in this document
+
+An earlier note here counted "17 games with a daily puzzle". That was wrong: it
+matched the *word* "daily" in prose ("daily streaks saved on your device", the
+history paragraphs), not the feature. The real figure is **three** with a
+user-facing daily mode — **Crossword**, **Flag Frenzy** and **Picross** — plus
+**Memory Match** and **Thirteen**, which accept a `?daily=` URL parameter that
+is never surfaced in their UI.
+
+That's worth acting on separately: exposing the existing hidden daily on Memory
+Match and Thirteen is a button, not a feature build, and daily modes are what
+make the share mechanic compound.
+
 ## B7. Smaller gaps
 
 - ~~**Flag Frenzy never calls `SnackPack.celebrate()`**~~ — **fixed
@@ -375,14 +483,86 @@ The rest are worth doing for consistency, not for ranking.
 
 ---
 
+# Section C — distribution (added 2026-08-06)
+
+This section exists because the document was diagnosing one problem and solving
+another. The analytics section at the top says plainly: *"The bottleneck is 4
+inbound links, not game quality... do the link-building in parallel or the
+polish has no audience."* Sections A and B are then entirely art and code. Every
+task was polish on pages nobody can find.
+
+## C1. The 500k impressions figure is not addressable as written
+
+The analytics section reads 234k/mo solitaire, 123k spider, 94k sudoku as demand
+"we capture almost none of". That framing will burn months. Those SERPs belong to
+Microsoft, Google's built-in game, solitaired.com and world-of-solitaire — sites
+with thousands of referring domains. On four inbound links, head-term "solitaire"
+is not winnable this year or next, no matter how good the game is.
+
+What *is* winnable is already sitting in the modifier slot of our own titles:
+**no ads, no sign-in, no download, solver-checked deals, daily puzzle, works
+offline**. Low volume each, reachable, and all genuinely true of this arcade in a
+way the incumbents can't claim. Target those as the primary angle, not as
+suffixes.
+
+## C2. `/guides/` is the link-earning surface and it was nearly empty
+
+Game pages don't earn links — nobody links to a Solitaire implementation. Guides
+do. There were three; two more added 2026-08-06:
+
+- `/guides/play-browser-games-offline/` — how to install any site as an app and
+  test it in airplane mode. Ties directly to B9, and is a natural hub linking out
+  to individual games.
+- `/guides/solitaire-without-ads-or-signup/` — the wedge applied to the highest
+  volume term, from the long-tail angle where we can actually compete. Explains
+  unwinnable deals and Draw 1 vs Draw 3, and funnels to Solitaire, Spider and
+  FreeCell.
+
+Both disclose that we're the publisher, in the same voice as the existing
+guides. More in this shape is the highest-value SEO work available — far above
+B6's thin-prose pass on low-volume soccer pages.
+
+## C3. Things not yet done
+
+- **Directory submissions.** Free-browser-game aggregators and "no ads" game
+  lists. Unglamorous and it's how the first non-zero backlink count happens.
+- **The two status sites already link here** (`isclaudeup.com`,
+  `iscodexup.com` both footer-link `/play/`), which likely accounts for a chunk
+  of the current four. Audience match is weak — dev tooling vs casual puzzles —
+  so don't over-invest there.
+- **Expose the hidden dailies** on Memory Match and Thirteen (see B10), then
+  wire share into them. Daily + share is the compounding loop; either alone is
+  not.
+- **Search Console**: resubmit the sitemap after the PWA and guides pass, since
+  141 URLs now carry changed markup.
+
+---
+
 ## Suggested order
 
 1. **A5 — Mahjong tiles.** Not a website task and not cosmetic: a published
-   Google Play app is rendering broken glyphs right now.
-2. **A1 — Spider Solitaire art.** Unblocks a 123k/mo page.
-3. **A2 — Shared SFX set.** Then I wire it across all 32 games.
-4. **A3/A4/A7 — Soccer, Snacky and small-scale arcade sprites.**
-5. Mine, unblocked: pause (B4), remaining undo (B5), Memory Match card backs,
-   thin prose on the soccer pages (B6), and the remaining keyboard work (B3).
+   Google Play app is rendering broken glyphs right now. Still the only item
+   here affecting real users.
+2. **C2/C3 — more guides and the first directory submissions.** Moved up
+   deliberately. Everything below this line is polish on pages that get ~60
+   views a month; this is what changes that number.
+3. **A1 — Spider Solitaire art.** Unblocks a 123k/mo page.
+4. **A2 — Shared SFX set.** Then I wire it across all 32 games.
+5. **A3/A4/A7/A8 — Soccer, Snacky, small-scale arcade sprites, maskable icon.**
+6. Mine, unblocked: finish the share wiring (B10), expose the hidden dailies,
+   pause (B4), remaining undo (B5), Memory Match card backs, thin prose on the
+   soccer pages (B6), and the remaining keyboard work (B3).
 
-Everything in Section B is mine and none of it waits on Codex.
+Everything in Section B and C is mine and none of it waits on Codex.
+
+## Assets currently requested from Codex
+
+| Item | What | Blocks |
+|---|---|---|
+| A5 | Regenerate 60 Mahjong tiles without mojibake | A live Play Store bug |
+| A1 | Spider Solitaire tile + social card | A 123k/mo page looking unfinished |
+| A2 | 8 shared SFX (`place`, `pickup`, `invalid`, `success`, `win`, `tick`, `pop`, `whoosh`) | All 32 games are silent |
+| A3 | 7 soccer sprites | The soccer set is CSS shapes |
+| A4 | 5 Snacky character sprites | Two games render as rectangles |
+| A7 | 3 correctly-shaped small arcade sprites | Table Tennis + Asteroid Destroyer wiring |
+| A8 | 1 maskable 512×512 PWA icon | Nothing — install works without it |
