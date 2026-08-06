@@ -325,8 +325,16 @@
 
   // Daily grid: index the template pool by the date so everyone gets the same
   // puzzle. Offset by mode so switching size within a daily still varies.
-  var dailyMode = false;
-  function dailyNumber() { return Math.floor(Date.now() / 86400000); }
+  // A shared daily result links back with ?daily=<n>. Honour it on load so the
+  // recipient lands on the same board being compared, not a fresh one.
+  var dailyMode = new URLSearchParams(location.search).has("daily");
+  // Honour ?daily=<n> so a shared result opens the board it actually refers to,
+  // rather than silently serving today's. Falls back to today when absent.
+  function dailyNumber() {
+    var q = new URLSearchParams(location.search).get("daily");
+    var n = q == null ? NaN : parseInt(q, 10);
+    return isNaN(n) ? Math.floor(Date.now() / 86400000) : n;
+  }
 
   function createPuzzle(mode) {
     var opts = TEMPLATES[mode];
@@ -536,6 +544,7 @@
   });
 
   var dailyBtn = document.getElementById("k-daily");
+  dailyBtn.setAttribute("aria-pressed", String(dailyMode));
   dailyBtn.addEventListener("click", function () {
     dailyMode = !dailyMode;
     dailyBtn.setAttribute("aria-pressed", String(dailyMode));

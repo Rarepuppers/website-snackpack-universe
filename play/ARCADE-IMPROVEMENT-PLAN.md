@@ -500,6 +500,38 @@ differently:
   everyone shares — verified that it still reshuffles unpredictably inside a
   daily.
 
+### The share loop only works if the link opens the same board
+
+Added after the dailies landed, because the loop had a hole in the middle: the
+share text said "SnackPack Mahjong **#20671**" but the link went to the plain
+game page. The recipient landed in free play, on a different board, with no way
+to know the comparison was meaningless. A share nobody can act on is a share
+nobody sends.
+
+`share-result.js` now appends `?daily=<n>` whenever a result carries a puzzle
+number, and every daily game honours it on load — starting in daily mode, with
+the daily control shown as active.
+
+Two decisions in here:
+
+- **The number is honoured, not just its presence.** Games originally checked
+  only that `?daily` existed and served *today's* board, so a link opened the
+  next morning quietly showed a different puzzle. `dailyNumber()` now reads the
+  URL value and falls back to today. The trade is that a very old link serves an
+  old puzzle — the better failure, since the alternative lies about what you're
+  playing.
+- **The seed had to be the day number, not a date string.** Memory Match and
+  Thirteen seeded from `"2026-8-6"` while the URL carried `20671`, so the button
+  and the link produced different boards. Both now seed from `String(dailyNumber())`.
+
+Verified per game that arriving via `?daily=` activates the daily control, that
+the same number reproduces the same board, and that a different number gives a
+different one. Two traps in that testing worth knowing: **Picross's grid starts
+blank**, so fingerprinting cells shows every puzzle as identical — fingerprint
+the clues instead; and **Kakuro and Picross have small pools** (2 templates per
+mode, 20 daily packs), so test numbers must be adjacent or they alias onto the
+same board and look broken when they aren't.
+
 One near-miss worth recording: the Kakuro patch appeared to succeed because the
 button insert worked, while the declaration block silently failed to apply. That
 left `dailyMode` assigned but never declared and `dailyNumber` missing entirely —

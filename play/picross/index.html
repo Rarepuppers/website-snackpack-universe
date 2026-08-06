@@ -368,7 +368,18 @@
   var hintBtn = document.getElementById("p-hint");
   var clearBtn = document.getElementById("p-clear");
 
-  var size = "5";
+  // A shared daily result links back with ?daily=<n>. Honour it on load so the
+  // recipient lands on the same board being compared, not a fresh one — without
+  // this the share is pointless to send.
+  var sharedDaily = new URLSearchParams(location.search).has("daily");
+  var size = sharedDaily ? "daily" : "5";
+  // Honour ?daily=<n> so a shared result opens the board it actually refers to,
+  // rather than silently serving today's. Falls back to today when absent.
+  function dailyNumber() {
+    var q = new URLSearchParams(location.search).get("daily");
+    var n = q == null ? NaN : parseInt(q, 10);
+    return isNaN(n) ? Math.floor(Date.now() / 86400000) : n;
+  }
   var markMode = "fill";
   var solution, rows, cols, grid, rowClues, colClues, puzzleTitle;
   var solved, started, elapsed, timerId;
@@ -419,7 +430,7 @@
   function pickPuzzle() {
     if (size === "daily") {
       var packs = PUZZLES["10"];
-      var idx = Math.floor(Date.now() / 86400000) % packs.length;
+      var idx = dailyNumber() % packs.length;
       return { pack: packs[idx], sizeKey: "10" };
     }
     var arr = PUZZLES[size];
@@ -544,7 +555,7 @@
       var pxDaily = size === "daily";
       window.SnackPackShare.result({
         game: "Picross",
-        puzzle: pxDaily ? Math.floor(Date.now() / 86400000) : null,
+        puzzle: pxDaily ? dailyNumber() : null,
         headline: (pxDaily ? "Today's picture" : puzzleTitle) + " revealed in " + fmt(elapsed),
         stats: improved ? ["new personal best"] : []
       });
@@ -597,6 +608,13 @@
     });
   });
 
+  // Arriving via a shared daily link: reflect it in the size control, or the
+  // board is the daily one while the UI still highlights 5x5.
+  if (sharedDaily) {
+    document.querySelectorAll(".seg [data-size]").forEach(function (x) {
+      x.setAttribute("aria-pressed", String(x.dataset.size === "daily"));
+    });
+  }
   build();
 })();
 </script>

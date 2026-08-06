@@ -311,8 +311,16 @@
   function shuffle(a, rng) { var r = rng || Math.random; var n = a.slice(); for (var i = n.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)); var t = n[i]; n[i] = n[j]; n[j] = t; } return n; }
 
   // Daily board: seed the deal from the date so everyone gets the same layout.
-  var dailyMode = false;
-  function dailyNumber() { return Math.floor(Date.now() / 86400000); }
+  // A shared daily result links back with ?daily=<n>. Honour it on load so the
+  // recipient lands on the same board being compared, not a fresh one.
+  var dailyMode = new URLSearchParams(location.search).has("daily");
+  // Honour ?daily=<n> so a shared result opens the board it actually refers to,
+  // rather than silently serving today's. Falls back to today when absent.
+  function dailyNumber() {
+    var q = new URLSearchParams(location.search).get("daily");
+    var n = q == null ? NaN : parseInt(q, 10);
+    return isNaN(n) ? Math.floor(Date.now() / 86400000) : n;
+  }
   // mulberry32 — small, fast, good enough for a tile shuffle.
   function makeRng(seed) {
     var t = seed >>> 0;
@@ -520,6 +528,7 @@
   });
 
   var dailyBtn = document.getElementById("mj-daily");
+  dailyBtn.setAttribute("aria-pressed", String(dailyMode));
   dailyBtn.addEventListener("click", function () {
     dailyMode = !dailyMode;
     dailyBtn.setAttribute("aria-pressed", String(dailyMode));

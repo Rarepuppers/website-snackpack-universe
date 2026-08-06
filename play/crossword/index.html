@@ -385,7 +385,18 @@
   var downListEl = document.getElementById("cw-down");
   var newBtn = document.getElementById("cw-new");
 
-  var mode = "general";
+  // A shared daily result links back with ?daily=<n>. Honour it on load so the
+  // recipient lands on the same board being compared, not a fresh one — without
+  // this the share is pointless to send.
+  var sharedDaily = new URLSearchParams(location.search).has("daily");
+  var mode = sharedDaily ? "daily" : "general";
+  // Honour ?daily=<n> so a shared result opens the board it actually refers to,
+  // rather than silently serving today's. Falls back to today when absent.
+  function dailyNumber() {
+    var q = new URLSearchParams(location.search).get("daily");
+    var n = q == null ? NaN : parseInt(q, 10);
+    return isNaN(n) ? Math.floor(Date.now() / 86400000) : n;
+  }
   var puzzle, meta, userGrid, checkGrid, selR, selC, dir, activeClue;
   var solved, started, elapsed, timerId;
 
@@ -401,7 +412,7 @@
     return out;
   }
   function pickPuzzle() {
-    if (mode === "daily") { var all = allPuzzles(); return all[Math.floor(Date.now() / 86400000) % all.length]; }
+    if (mode === "daily") { var all = allPuzzles(); return all[dailyNumber() % all.length]; }
     var arr = PACKS[mode] || PACKS.general;
     return arr[Math.floor(Math.random() * arr.length)];
   }
@@ -589,7 +600,7 @@
       var cwDaily = mode === "daily";
       window.SnackPackShare.result({
         game: "Crossword",
-        puzzle: cwDaily ? Math.floor(Date.now() / 86400000) : null,
+        puzzle: cwDaily ? dailyNumber() : null,
         headline: (cwDaily ? "Today's crossword" : puzzle.title) + " solved in " + fmt(elapsed),
         stats: improved ? ["new personal best"] : []
       });
@@ -749,6 +760,7 @@
     });
   });
 
+  if (sharedDaily) document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.mode === "daily")); });
   build();
 })();
 </script>

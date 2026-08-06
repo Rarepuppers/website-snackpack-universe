@@ -236,8 +236,11 @@ var cascades=[],free=[],found=[],selected=null,history=[],redoStack=[],moves=0,s
 // Daily deal. CHECKED is a pool of solver-verified winnable deals, so indexing it
 // by the date gives everyone the same board AND guarantees it's beatable — a
 // property most daily card games can't offer.
-var dailyMode=false;
-function dailyNumber(){return Math.floor(Date.now()/86400000)}
+// A shared daily result links back with ?daily=<n>. Honour it on load so the
+// recipient lands on the same board being compared, not a fresh one.
+var dailyMode=new URLSearchParams(location.search).has("daily");
+// Honour ?daily=<n> so a shared result opens the board it refers to.
+function dailyNumber(){var q=new URLSearchParams(location.search).get('daily');var n=q==null?NaN:parseInt(q,10);return isNaN(n)?Math.floor(Date.now()/86400000):n}
 function dailyDealIndex(){return dailyNumber()%CHECKED.length}
 // Free-cell count is the standard FreeCell difficulty dial. Fewer cells means
 // a smaller supermove capacity, which capacity() already derives from the
@@ -569,6 +572,7 @@ document.querySelectorAll('.fc-seg [data-cells]').forEach(function(btn){
     deal(CHECKED[dealIndex]);
   });
 });
+if(dailyMode){dealIndex=dailyDealIndex();dailyBtn.setAttribute("aria-pressed","true")}
 deal(CHECKED[dealIndex]);
 })();</script>
 <!-- Cloudflare Web Analytics -->

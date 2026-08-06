@@ -32,15 +32,22 @@
 
   var SITE = "https://www.snackpackuniverse.com";
 
-  function pageUrl() {
+  // `daily` is the puzzle number when the result came from a daily board.
+  // Carrying it in the URL is what closes the loop: without it the recipient of
+  // "SnackPack Sudoku #20671" lands in free play and can't play the board being
+  // compared, which makes the share pointless to send.
+  function pageUrl(daily) {
     // Prefer the canonical link so a share from ?daily=… or a dev host still
     // points at the real page.
+    var base;
     var canon = document.querySelector('link[rel="canonical"]');
-    if (canon && canon.href) return canon.href;
-    if (location.protocol === "http:" && /^(localhost|127\.)/.test(location.hostname)) {
-      return SITE + location.pathname;
-    }
-    return location.origin + location.pathname;
+    if (canon && canon.href) base = canon.href;
+    else if (location.protocol === "http:" && /^(localhost|127\.)/.test(location.hostname)) {
+      base = SITE + location.pathname;
+    } else base = location.origin + location.pathname;
+
+    if (daily == null) return base;
+    return base + (base.indexOf("?") === -1 ? "?" : "&") + "daily=" + daily;
   }
 
   function buildText(opts) {
@@ -51,7 +58,7 @@
     if (opts.headline) lines.push(opts.headline);
     if (opts.grid && opts.grid.length) lines.push("", opts.grid.join("\n"));
     if (opts.stats && opts.stats.length) lines.push("", opts.stats.join(" · "));
-    lines.push("", pageUrl());
+    lines.push("", pageUrl(opts.puzzle));
     return lines.join("\n");
   }
 
@@ -197,12 +204,13 @@
     var xBtn = node.querySelector(".sp-share-x");
     xBtn.onclick = function () {
       // X strips the URL out of `text` into its own card, so pass it as `url`.
-      var body = text.replace("\n\n" + pageUrl(), "");
+      var shareUrl = pageUrl(opts.puzzle);
+      var body = text.replace("\n\n" + shareUrl, "");
       window.open(
         "https://twitter.com/intent/tweet?text=" +
           encodeURIComponent(body) +
           "&url=" +
-          encodeURIComponent(pageUrl()),
+          encodeURIComponent(shareUrl),
         "_blank",
         "noopener"
       );

@@ -392,11 +392,17 @@
   // the same deal — which is what makes a shared result worth comparing.
   var urlSeed = new URLSearchParams(location.search).get("daily");
   var dailyMode = !!urlSeed;
-  function todaySeed() {
-    var d = new Date();
-    return d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate();
+  // Seed from the day NUMBER, not a formatted date, so that a shared
+  // ?daily=20671 link reproduces exactly the board the Daily button gives.
+  // These have to agree or the share loop hands people a different puzzle.
+  function todaySeed() { return String(dailyNumber()); }
+  // Honour ?daily=<n> so a shared result opens the board it actually refers to,
+  // rather than silently serving today's. Falls back to today when absent.
+  function dailyNumber() {
+    var q = new URLSearchParams(location.search).get("daily");
+    var n = q == null ? NaN : parseInt(q, 10);
+    return isNaN(n) ? Math.floor(Date.now() / 86400000) : n;
   }
-  function dailyNumber() { return Math.floor(Date.now() / 86400000); }
   function activeSeed() { return dailyMode ? (urlSeed || todaySeed()) : null; }
   function makeRng(seedStr) {
     if (!seedStr) return Math.random;
