@@ -926,6 +926,12 @@ or is distribution work, not code.
 
 ## Assets currently requested from Codex
 
+**Ready-to-paste generation briefs for all of these (except A1) are in
+[`CODEX-ASSETS-REQUESTED.md`](CODEX-ASSETS-REQUESTED.md)** — exact file paths,
+sizes, per-tile/sprite specs, and style reference, so nothing needs
+re-deriving from this plan doc. A1 has its own equivalent brief in
+[`spider-solitaire/ASSETS-NEEDED.md`](spider-solitaire/ASSETS-NEEDED.md).
+
 | Item | What | Blocks |
 |---|---|---|
 | A5 | Regenerate 60 Mahjong tiles without mojibake | A live Play Store bug |
