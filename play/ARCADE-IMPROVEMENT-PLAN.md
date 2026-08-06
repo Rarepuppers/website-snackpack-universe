@@ -300,7 +300,7 @@ painted `ball.png` detail turns to mush against the current crisp circle.
 Wiring these would be a visible downgrade, so it needs art at the right shape
 first — see A7.
 
-## B3. Keyboard support — **7 grid games done 2026-08-06, 13 remain**
+## B3. Keyboard support — **done 2026-08-06/07, every game that benefits from it has it**
 
 Given **95% desktop traffic** this was the most under-weighted gap in the
 arcade. Built `play/keyboard-grid.js`, a shared roving-tabindex helper: a grid
@@ -319,11 +319,190 @@ Two classes of problem it fixed:
 - `<div>` grids (Reversi, Checkers, Word Search, Picross, Memory Match) could
   not be reached by keyboard **at all**.
 
-Still to do — these need bespoke work, not the grid helper, because their
-interaction is pile-to-pile rather than cell-to-cell:
-**Solitaire, FreeCell, Spider, Thirteen, Mahjong** (card/tile selection),
-**Snakes & Ladders, Soccer Trivia Sprint**, and the six soccer action games
-(timing-based, need a key to shoot rather than a cursor).
+**Update 2026-08-07 — the "13 remain" list was, like the daily/undo/prose
+counts before it, written without checking each game.** Most of it wasn't a
+real gap:
+
+- **Snakes & Ladders and Soccer Trivia Sprint** turned out to already be fully
+  keyboard-reachable — both use real `<button>` elements for every control
+  (Roll, the four answer options), which are natively Tab/Enter-operable with
+  no extra code. Verified in the browser with `tabIndex`/`focusable` checks on
+  every interactive element.
+- Of the six soccer action games, **Goalkeeper Hero, Header Hero, Penalty
+  Shootout** already had real Left/Centre/Right `<button>` pads for aim, and
+  **Keepy-Uppy** and **Dribble Rush** already had a Kick button and arrow-key
+  lane switching respectively. All five were already substantially or fully
+  playable by keyboard.
+- The genuine gap in that group was narrower than "six games need bespoke
+  work": just **aim position** in **Free Kick Curl, Crossbar Challenge,
+  Target Shooting Arena** — power (a real `<input type="range">`), curl/curve
+  (real buttons) and Shoot were already reachable; only the 2D/1D aim reticle
+  was pointer-only, set solely from `pointerdown`/`pointermove`/`click` on the
+  canvas. Fixed by making the canvas a real focus target (`tabindex="0"`) with
+  its own scoped `keydown` listener that nudges the same `aim.x`/`aim.y` (or
+  1D `aimX` for Crossbar Challenge, which only aims along a bar) the pointer
+  handlers already used, clamped to the same bounds, with Enter/Space firing
+  the existing `shoot()`. Scoped to canvas focus specifically so the arrow
+  keys don't fight the power slider's own native behaviour when *that* has
+  focus instead. Verified each with real `keydown` dispatches through to a
+  changed status line, and confirmed the power slider still gets native
+  arrow-key control independently.
+
+That leaves the five card/tile games — **Solitaire, FreeCell, Spider,
+Thirteen, Mahjong** — as the only genuine remaining gap, and they do need
+real, bespoke work: pile-to-pile selection with no button equivalents
+anywhere.
+
+### FreeCell — done, and it found a real bug in the shared helper
+
+FreeCell turned out to fit `keyboard-grid.js` almost exactly: the top row
+(free cells + foundations, 8 across) and the cascade row (8 across) are both
+already-flat, already-fixed-width sequences of `.fc-pile` divs, each already
+carrying the exact `data-type`/`data-i` attributes the mouse `click()` handler
+reads. Wiring `attachGrid` on the shared parent (`#fc-table`) with
+`cellSelector: '.fc-pile'` gives Up/Down crossing between the two rows and
+Left/Right moving within one, in a single call — no bespoke navigation code
+needed, and the description in `keyboard-grid.js`'s own docstring
+("no game logic needs to change") held up exactly as advertised.
+
+Two things had to be fixed to make it actually work, not just look wired:
+
+1. **The pile `<div>` itself never carried `data-at`** — only the individual
+   card elements inside it did. A synthetic click on the pile (what a
+   keyboard Enter produces) resolves `at` to `NaN`, and the mouse handler's
+   selection check (`at < cascades[i].length`) silently failed on every
+   keyboard attempt while working fine for a real mouse click on a card.
+   Fixed by mirroring the top card's position onto the column div at render
+   time.
+2. **A real, previously-undiscovered bug in `keyboard-grid.js` itself,
+   affecting all 7 already-shipped grid games, not just this one.** The
+   cursor-restore-after-rerender was debounced with `requestAnimationFrame`,
+   which is throttled to never fire while the tab is backgrounded
+   (`document.hidden`). If a board ever re-rendered while genuinely hidden —
+   a turn resolving, a timer tick, anything mutating the DOM while the player
+   had alt-tabbed away — the deferred repaint would simply never run. Worse,
+   the `pending` debounce flag would stay stuck `true` forever, since nothing
+   ever cleared it, which meant **every future re-render for the rest of the
+   session would also skip repainting** — keyboard navigation would look
+   permanently broken even after the tab regained focus, on any of the 7
+   already-live games. Fixed by swapping the `requestAnimationFrame` defer for
+   `setTimeout(fn, 0)`, which has no such starvation. Re-verified Minesweeper
+   afterward — cursor still moves and survives a re-render correctly, no
+   regression from the swap.
+
+Caught because this Browser pane genuinely reports `document.hidden === true`
+throughout the session (confirmed repeatedly during the pause.js work too) —
+without that, the bug would have been invisible in normal desktop testing
+where the tab stays focused the whole time, which is exactly why it shipped
+unnoticed in the first place.
+
+### Solitaire and Spider Solitaire — done, and between them found two more real bugs
+
+**Solitaire's selection reads `e.target.closest(".sol-card")`**, not the pile
+container — unlike FreeCell, the mouse handler only resolves a selection off
+an actual card element. So the roving-focus target has to be the topmost card
+when one exists, falling back to the pile itself only for genuinely empty
+piles. `render()` now tags the right element with `.kbd-target` each time.
+
+Two real problems surfaced getting this working, both now fixed generally
+rather than patched around:
+
+1. **A depth mismatch broke row detection.** The static spacer div added to
+   keep the top row 7-wide (matching the 7 tableau columns) sat one level
+   shallower than its siblings — every other top-row `.kbd-target` is a card
+   or empty-slot placeholder *nested inside* its `.sol-pile` grid cell, not
+   the grid cell itself. That gave it a different `offsetParent` chain, so
+   its `offsetTop` wasn't comparable to its siblings' even though it's
+   visually in the identical spot on screen. Fixed by wrapping it in the same
+   shape as its siblings.
+2. **A structural, not incidental, row-width miscount.** Klondike always
+   deals exactly one card to tableau column 0, which sits at the same height
+   as the top row on *every* deal — not a rare shuffle outcome. A single
+   `attachGrid` call spanning both rows would reliably misdetect the row
+   width as 8 instead of 7. Fixed by splitting into two separate calls (top
+   row, tableau row) rather than one spanning both — Tab moves between them
+   as two stops instead of Up/Down crossing between them, a fair trade.
+
+**Spider Solitaire's stock was already fully keyboard-operable** (its own
+`tabindex="0"` plus an Enter/Space handler dealing a row) and the
+completed-run markers are a passive display, not an interactive target — so
+only the 10-column tableau needed wiring, using the same "topmost card, or
+the empty placeholder" targeting as Solitaire.
+
+Wiring it surfaced the same row-width problem in a form that can't be
+DOM-patched away: a real Spider deal always splits 4 columns of 6 cards and 6
+of 5, so column depths are *structurally* unequal, not just occasionally
+matching by coincidence the way Klondike's shortest column did. No amount of
+wrapper-div nesting fixes that — the topmost cards genuinely sit at different
+heights.
+
+**Added a proper fix to `keyboard-grid.js` itself for this**: an optional
+`opts.rowWidth` (a number, or a function for a width that can change) that
+skips the layout-based auto-detection entirely when the caller already knows
+the true width. Used by Solitaire and Spider Solitaire, both of which are
+really single-row layouts once split correctly — with the true width given
+explicitly, Up/Down correctly go out of bounds and do nothing, which is the
+right behaviour for a layout with no second row to cross into. Re-verified
+Minesweeper (which doesn't pass `rowWidth`) still auto-detects correctly
+afterward — the new option is additive, existing behaviour is unchanged when
+it's omitted.
+
+### Thirteen — already fully accessible, needed nothing
+
+Checked rather than assumed, same as Snakes & Ladders and Soccer Trivia Sprint
+earlier in this section: every hand card is rendered as a real `<button>`
+(`cardEl(c, { button: true })`), and Play/Pass/Sort/New/Daily all are too.
+Tab/Enter already reaches and activates every one of them natively. First
+test read as broken (`selected` class never appeared after a click) — turned
+out to be a stale DOM reference: `render()` rebuilds the hand on every
+interaction, so checking the *old*, now-detached button's class after
+clicking it will always show nothing changed. A fresh query after the click
+showed the selection toggle working exactly as it should.
+
+### Mahjong — done, and needed a genuinely different technique than any of the others
+
+Mahjong's board isn't a grid at all — tiles sit at free-form pixel positions
+computed from `(x, y, z)` with a z-layer offset (the stepped-pyramid look),
+not rows and columns. `keyboard-grid.js`'s whole model (arrows jump by a
+fixed row width) has no meaningful row width to detect here, layout-based or
+otherwise — genuinely not the same class of problem as the row-detection bugs
+above.
+
+The tiles ARE already real `<button>`s, though, so the actual mechanism (Tab
+reaches a cell, Enter fires the browser's own native click) is unchanged.
+What made the board navigable was scoping which tiles participate at all:
+**only currently-open tiles** (`.mj-tile.is-open` — free on at least one side
+and nothing on top) get a roving cursor; blocked tiles are set to
+`tabIndex = -1` unconditionally at render time and never enter the tab order.
+This isn't a simplification for our convenience — a mouse player can't act on
+a blocked tile either, so skipping them turns "tab through 144 tiles
+including 100+ dead ends" into "cycle through whatever's actually playable
+right now," which is the more useful behaviour on its own merits, not just
+the easier one to build. `rowWidth` is a function re-evaluated on every
+keypress (`() => document.querySelectorAll('.mj-tile.is-open').length`)
+since the open count changes every time a pair clears — a fixed number would
+go stale immediately.
+
+One CSS conflict, easy to miss: `.kbd-cursor` sets `position: relative` for
+its outline, which would silently override `.mj-tile`'s own
+`position: absolute` and yank the focused tile out of its pixel-placed board
+position the instant it received keyboard focus. Fixed with a single scoped
+override (`.mj-tile.kbd-cursor { position: absolute; }`) rather than touching
+the shared `.kbd-cursor` rule itself, since other games rely on its plain
+`position: relative` behaviour.
+
+Verified with a real keyboard-only match: found two open tiles sharing a
+face, walked the roving cursor to the first with `ArrowRight`, activated it,
+walked to the second, activated it, and confirmed both tiles were removed
+from the DOM and the remaining-tile counter dropped from 36 to 34 — the same
+signal a mouse-driven match produces, reached entirely through arrow keys and
+Enter.
+
+**All five card/tile games are done. B3 is closed** — every game in the
+arcade that benefits from keyboard support now has it, and the two games that
+didn't (five soccer aim games minus the three genuinely needing work, plus
+Snakes & Ladders, Soccer Trivia Sprint, Thirteen) needed nothing because they
+were already using real form controls throughout.
 
 ## B4. Pause — **4 action games done 2026-08-06**
 
@@ -734,15 +913,16 @@ B6's thin-prose pass on low-volume soccer pages.
 3. **A1 — Spider Solitaire art.** Unblocks a 123k/mo page.
 4. **A2 — Shared SFX set.** Then I wire it across all 32 games.
 5. **A3/A4/A7/A8 — Soccer, Snacky, small-scale arcade sprites, maskable icon.**
-6. Mine, unblocked: the remaining keyboard work (B3).
-   ~~Share wiring~~, ~~the hidden dailies~~, ~~daily modes for Mahjong, Kakuro
-   and FreeCell~~, ~~pause (B4)~~, ~~undo (B5)~~, ~~thin prose (B6)~~ and
-   ~~Memory Match card backs~~ are done — eight games now have a daily, pause
-   and undo both cover every game that actually benefits from them, every one
-   of the 32 offers a share, and the six thin soccer pages picked up real FAQ
-   schema they never had.
+6. **Section B is fully closed.** ~~Share wiring~~, ~~the hidden dailies~~,
+   ~~daily modes for Mahjong, Kakuro and FreeCell~~, ~~pause (B4)~~,
+   ~~undo (B5)~~, ~~thin prose (B6)~~, ~~Memory Match card backs~~ and
+   ~~keyboard support (B3)~~ are all done — eight games have a daily, pause
+   and undo both cover every game that benefits from them, all 32 offer a
+   share, the six thin soccer pages have real FAQ schema they never had, and
+   every game in the arcade that benefits from keyboard support has it.
 
-Everything in Section B and C is mine and none of it waits on Codex.
+Everything left in this plan (A1/A2/A3/A4/A7/A8, C2/C3) either needs Codex art
+or is distribution work, not code.
 
 ## Assets currently requested from Codex
 

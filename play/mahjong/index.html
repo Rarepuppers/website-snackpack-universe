@@ -275,6 +275,7 @@
 </footer>
 
 <script src="../funnel.js"></script>
+<script src="../keyboard-grid.js"></script>
 <script src="../share-result.js"></script>
 <script>
 (function () {
@@ -433,6 +434,12 @@
       el.type = "button";
       el.className = "mj-tile" + (open ? " is-open" : " is-blocked") + (t.id === selectedId ? " is-selected" : "");
       el.dataset.id = t.id;
+      // Keep only the roving cursor (managed by attachGrid below, among
+      // .is-open tiles) in the tab order. Without this every tile — including
+      // blocked ones nobody can act on, and every open tile not currently
+      // focused — would sit in the native tab sequence at its own default
+      // tabIndex, mixed in alongside the roving cursor's single stop.
+      el.tabIndex = -1;
       el.style.left = (pad + (t.x - minX) * UX - t.z * OFF) + "px";
       el.style.top = (pad + (t.y - minY) * UY - t.z * OFF) + "px";
       el.style.width = (UX - 2) + "px";
@@ -545,6 +552,27 @@
   });
 
   build();
+
+  // Arrow-key play. Tiles are already real <button>s, so Enter/Space already
+  // fires a real click natively once one has focus — same as Minesweeper's
+  // button cells. The reason this still needed wiring: the board is a
+  // free-form (x, y, z) pixel layout, not a grid, so there's no meaningful
+  // "row width" for Up/Down to jump by, and most tiles are blocked (covered,
+  // or boxed in on both sides) and can't be acted on by any input method.
+  // Scoping the roving cursor to only .is-open tiles — the ones a mouse
+  // player could actually click — turns "tab through 144 tiles including
+  // dead ends" into "cycle through whatever's currently playable", which
+  // reads as the more useful keyboard behaviour for this board shape, not
+  // just an easier one to implement. rowWidth is a function (not a fixed
+  // number) because the open count changes every time a pair is cleared.
+  if (window.SnackPackKeyboard) {
+    window.SnackPackKeyboard.attachGrid({
+      container: boardEl,
+      cellSelector: ".mj-tile.is-open",
+      label: "Mahjong board — open tiles only",
+      rowWidth: function () { return document.querySelectorAll("#mj-board .mj-tile.is-open").length || 1; }
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

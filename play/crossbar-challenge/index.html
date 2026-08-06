@@ -303,7 +303,7 @@
           </div>
         </div>
         <p class="game-status" id="cb-status" aria-live="polite">Drag the target along the bar, set power, then shoot.</p>
-        <canvas class="cb-canvas" id="cb-canvas" width="640" height="430" aria-label="Crossbar Challenge soccer field"></canvas>
+        <canvas class="cb-canvas" id="cb-canvas" width="640" height="430" tabindex="0" aria-label="Crossbar Challenge soccer field. Focus and use left/right arrow keys to aim along the bar, then Enter or Space to shoot."></canvas>
         <div class="cb-panel">
           <div class="cb-fieldset">
             <label class="cb-label" for="cb-power">Power</label>
@@ -829,6 +829,19 @@
     if (event.buttons || event.pointerType === "touch") setAimFromEvent(event);
   });
   canvas.addEventListener("click", setAimFromEvent);
+
+  // Keyboard aim. Power slider, curl buttons and Shoot were already reachable by
+  // Tab; the aim position along the bar was pointer-only (set from
+  // pointerdown/pointermove/click). Scoped to canvas focus so it doesn't fight
+  // the power slider's own native arrow-key behaviour.
+  var AIM_STEP = 16;
+  canvas.addEventListener("keydown", function (e) {
+    if (busy) return;
+    if (e.key === "ArrowLeft") { e.preventDefault(); aimX = clamp(aimX - AIM_STEP, goal.x + 12, goal.x + goal.w - 12); draw(); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); aimX = clamp(aimX + AIM_STEP, goal.x + 12, goal.x + goal.w - 12); draw(); }
+    else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); shoot(); }
+  });
+
   shootBtn.addEventListener("click", shoot);
   newBtn.addEventListener("click", reset);
   powerEl.addEventListener("input", draw);

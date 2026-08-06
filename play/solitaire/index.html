@@ -200,7 +200,19 @@
             <div class="sol-row sol-top">
               <div class="sol-pile" id="sol-stock" data-pile="stock"></div>
               <div class="sol-pile" id="sol-waste" data-pile="waste"></div>
-              <div></div>
+              <!-- Pure visual spacer (the grid is a fixed 7 columns to line up
+                   with the 7 tableau columns below) — kbd-target here only so
+                   the keyboard row stays 7 wide and aligned with the tableau
+                   row; a click/Enter on it harmlessly falls through to "clear
+                   selection", same as clicking any other dead board space.
+                   Every other top-row kbd-target is one level DEEPER than its
+                   .sol-pile grid cell — the card or empty-slot placeholder
+                   render() puts inside it — so this needs the same wrapper
+                   shape, or its offsetTop (measured from a shallower ancestor)
+                   isn't comparable to its siblings' and keyboard-grid.js's
+                   row-width detection breaks, even though it's visually in
+                   the identical spot on screen. -->
+              <div class="sol-pile"><div class="kbd-target" tabindex="-1"></div></div>
               <div class="sol-pile" data-pile="foundation" data-pi="0"></div>
               <div class="sol-pile" data-pile="foundation" data-pi="1"></div>
               <div class="sol-pile" data-pile="foundation" data-pi="2"></div>
@@ -324,6 +336,7 @@
 </footer>
 
 <script src="../funnel.js"></script>
+<script src="../keyboard-grid.js"></script>
 <script src="../share-result.js"></script>
 <script>
 (function () {
@@ -486,10 +499,11 @@
     if (stock.length) {
       var sc = cardEl(stock[stock.length - 1], false);
       sc.dataset.act = "draw";
+      sc.classList.add("kbd-target");
       stockEl.appendChild(sc);
     } else {
       var rec = document.createElement("div");
-      rec.className = "sol-slot sol-empty recycle";
+      rec.className = "sol-slot sol-empty recycle kbd-target";
       rec.dataset.act = "recycle";
       rec.textContent = "↻";
       stockEl.appendChild(rec);
@@ -503,7 +517,7 @@
     // Waste (show up to last 3 fanned when draw 3)
     wasteEl.innerHTML = "";
     if (waste.length === 0) {
-      var we = document.createElement("div"); we.className = "sol-slot sol-empty"; wasteEl.appendChild(we);
+      var we = document.createElement("div"); we.className = "sol-slot sol-empty kbd-target"; wasteEl.appendChild(we);
     } else {
       var showN = drawN === 3 ? Math.min(3, waste.length) : 1;
       var start = waste.length - showN;
@@ -512,7 +526,7 @@
         var top = i === waste.length - 1;
         var ce = cardEl(waste[i], true);
         ce.style.left = ((i - start) * off) + "px";
-        if (top) { ce.dataset.pile = "waste"; ce.dataset.ci = waste.length - 1; }
+        if (top) { ce.dataset.pile = "waste"; ce.dataset.ci = waste.length - 1; ce.classList.add("kbd-target"); }
         wasteEl.appendChild(ce);
       }
       wasteEl.style.width = "calc(var(--cw) + " + ((showN - 1) * off) + "px)";
@@ -525,12 +539,12 @@
       pileEl.innerHTML = "";
       var f = foundations[pi];
       if (f.length === 0) {
-        var fe = document.createElement("div"); fe.className = "sol-slot sol-foundation";
+        var fe = document.createElement("div"); fe.className = "sol-slot sol-foundation kbd-target";
         fe.innerHTML = '<span class="card-suit-icon card-suit-icon--' + SUITS[pi] + '" aria-hidden="true"></span>';
         pileEl.appendChild(fe);
       } else {
         var fc = cardEl(f[f.length - 1], true);
-        fc.dataset.cardPile = "foundation"; fc.dataset.pi = pi;
+        fc.dataset.cardPile = "foundation"; fc.dataset.pi = pi; fc.classList.add("kbd-target");
         pileEl.appendChild(fc);
       }
     });
@@ -545,7 +559,7 @@
       colEl.dataset.pile = "tableau"; colEl.dataset.pi = col;
       var pile = tableau[col];
       if (pile.length === 0) {
-        var ee = document.createElement("div"); ee.className = "sol-slot sol-empty"; colEl.appendChild(ee);
+        var ee = document.createElement("div"); ee.className = "sol-slot sol-empty kbd-target"; colEl.appendChild(ee);
       }
       var y = 0;
       for (var ci = 0; ci < pile.length; ci++) {
@@ -553,6 +567,10 @@
         var el = cardEl(card, card.up);
         el.style.top = y + "px";
         el.dataset.pile = "tableau"; el.dataset.pi = col; el.dataset.ci = ci;
+        // The topmost card (last in the column) is the one a keyboard Enter
+        // should act on — it's the only face-up, selectable card in most
+        // states, and the natural landing spot for a move destination too.
+        if (ci === pile.length - 1) el.classList.add("kbd-target");
         colEl.appendChild(el);
         y += card.up ? offset : downOffset;
       }
@@ -931,6 +949,42 @@
   window.addEventListener("resize", function () { if (tableau) render(); });
 
   deal();
+
+  // Arrow-key play. Unlike FreeCell's pile divs, selecting a card here reads
+  // e.target.closest(".sol-card") — the mouse click handler only resolves a
+  // selection off an actual card element, not the pile container — so the
+  // roving-focus target has to be the topmost/relevant card when one exists,
+  // falling back to the pile itself only for genuinely empty piles (nothing
+  // there to select, but still a valid move destination). render() tags the
+  // right element with .kbd-target each time.
+  //
+  // Two separate attachGrid calls, not one shared FreeCell-style call across
+  // both rows: keyboard-grid.js's rowWidth() detects a row by counting
+  // leading cells that share the same offsetTop, which works for FreeCell's
+  // genuinely uniform 8x8 grid — but Klondike always deals exactly one card
+  // to tableau column 0, which sits at the SAME height as the top row on
+  // every single deal (not an edge case, a structural guarantee), so a
+  // one-call version reliably miscounts the row width as 8. Two calls means
+  // Tab moves between the two regions as separate stops instead of Up/Down
+  // crossing between them — a fair trade for correctness.
+  if (window.SnackPackKeyboard) {
+    // rowWidth given explicitly on both — each is really a single row (no
+    // second row to cross into), and the tableau's card counts vary by
+    // column (1..7 cards dealt), which would otherwise sometimes fool the
+    // layout-based auto-detection the same way it does for Spider Solitaire.
+    window.SnackPackKeyboard.attachGrid({
+      container: document.querySelector(".sol-row.sol-top"),
+      cellSelector: ".kbd-target",
+      label: "Stock, waste and foundations",
+      rowWidth: 7
+    });
+    window.SnackPackKeyboard.attachGrid({
+      container: tableauRow,
+      cellSelector: ".kbd-target",
+      label: "Tableau",
+      rowWidth: 7
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

@@ -51,7 +51,22 @@
 
     // Row width is derived from the layout: count the cells sharing the first
     // row's offsetTop. Handles any board size, and re-measures after a resize.
+    //
+    // This only works when every cell in a row is genuinely at the same
+    // height — true for uniform button/cell grids, but NOT for a single row
+    // of card piles with unequal stack depths (a Spider Solitaire deal always
+    // splits 4 columns of 6 cards and 6 of 5; a Solitaire tableau's column
+    // heights vary by definition). There the topmost card in a taller column
+    // sits lower on screen than a shorter column's, so auto-detection
+    // undercounts the row and Up/Down jumps to the wrong column instead of
+    // correctly doing nothing in a layout that has no second row at all.
+    //
+    // opts.rowWidth lets the caller skip detection and state the true width
+    // directly — a number, or a function (for a width that can change, e.g.
+    // with the board's own column count).
     function rowWidth(list) {
+      if (typeof opts.rowWidth === "function") return opts.rowWidth() || list.length || 1;
+      if (typeof opts.rowWidth === "number") return opts.rowWidth || list.length || 1;
       if (list.length < 2) return list.length || 1;
       var top = list[0].offsetTop;
       var n = 0;
@@ -158,14 +173,23 @@
 
     // Boards re-render wholesale (innerHTML = ""), which drops the cursor and
     // every tabindex. Put them back after each rebuild.
+    //
+    // Debounced with setTimeout, not requestAnimationFrame. rAF is throttled to
+    // never fire while the page is backgrounded (document.hidden) — so if a
+    // board ever re-renders while the tab isn't visible (a turn resolving, a
+    // timer tick), the deferred repaint would simply never run. Worse, `pending`
+    // would stay stuck true forever, since nothing ever clears it, silently and
+    // permanently breaking keyboard navigation for the rest of the session even
+    // after the tab regains focus. setTimeout has no such starvation: it still
+    // fires (just possibly coalesced to ~1/sec) while backgrounded.
     var pending = false;
     new MutationObserver(function () {
       if (pending) return;
       pending = true;
-      requestAnimationFrame(function () {
+      setTimeout(function () {
         pending = false;
         paint();
-      });
+      }, 0);
     }).observe(container, { childList: true, subtree: true });
 
     paint();

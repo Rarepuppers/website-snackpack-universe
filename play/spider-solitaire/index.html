@@ -330,6 +330,7 @@
 
 <script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames3";</script>
 <script src="../funnel.js"></script>
+<script src="../keyboard-grid.js"></script>
 <script src="../share-result.js"></script>
 <script>
 (function () {
@@ -582,7 +583,7 @@
       var y = 0;
       if (!cols[c].length) {
         var empty = document.createElement("div");
-        empty.className = "spi-slot spi-empty";
+        empty.className = "spi-slot spi-empty kbd-target";
         pile.appendChild(empty);
       }
       for (var k = 0; k < cols[c].length; k++) {
@@ -592,6 +593,10 @@
         el.dataset.col = c;
         el.dataset.idx = k;
         if (sel && sel.col === c && k >= sel.idx) el.classList.add("sel");
+        // The topmost card (last in the column) is what a keyboard Enter
+        // should act on — closest(".spi-pile") walking up from it resolves
+        // the same column either way, so it works for both select and move.
+        if (k === cols[c].length - 1) el.classList.add("kbd-target");
         pile.appendChild(el);
         y += card.up ? off.up : off.down;
       }
@@ -769,6 +774,30 @@
   window.addEventListener("resize", function () { if (cols) render(); });
 
   deal();
+
+  // Arrow-key play across the tableau. The stock is already keyboard-operable
+  // (its own tabindex="0" + Enter/Space handler above deals a row), and the
+  // completed-run markers are a passive display, not an interactive target —
+  // so the tableau's 10 columns are the only real gap. Selecting a card here
+  // reads e.target.closest(".spi-card") the same way Solitaire's does, so the
+  // roving target is the topmost card when a column has one, else the empty
+  // placeholder render() already tags with .kbd-target.
+  //
+  // rowWidth is given explicitly rather than left to auto-detection: a real
+  // deal always has unequal column depths (4 columns of 6 cards, 6 of 5), so
+  // the topmost card in each column sits at a different height and the
+  // layout-based heuristic undercounts the row. There's only one row here
+  // anyway (no second row to cross into), so a correct width just means
+  // Up/Down land out of bounds and do nothing, which is the right behaviour
+  // for a purely horizontal layout.
+  if (window.SnackPackKeyboard) {
+    window.SnackPackKeyboard.attachGrid({
+      container: rowEl,
+      cellSelector: ".kbd-target",
+      label: "Spider Solitaire tableau",
+      rowWidth: COLS
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

@@ -1288,6 +1288,10 @@ button.th-card.is-selected {
   box-shadow: 0 2px 0 rgba(32, 23, 19, 0.32), 0 0 0 2px var(--accent), 1px 2px 6px rgba(31, 143, 119, 0.4);
 }
 .mj-tile.is-hint { animation: mj-hint 0.55s ease 2; }
+/* .kbd-cursor (keyboard-grid.js) sets position:relative for its outline, which
+   would override .mj-tile's own position:absolute and knock it out of its
+   pixel-placed board position the moment it gets keyboard focus. Reassert it. */
+.mj-tile.kbd-cursor { position: absolute; }
 
 @keyframes mj-hint {
   0%, 100% { box-shadow: 0 2px 0 rgba(32, 23, 19, 0.32), 1px 2px 4px rgba(32, 23, 19, 0.28); }

@@ -310,7 +310,7 @@
         </div>
         <p class="game-status" id="fk-status" aria-live="polite">Aim inside the goal, set curl, then shoot.</p>
         <div class="fk-canvas-wrap">
-          <canvas class="fk-canvas" id="fk-canvas" width="640" height="430" aria-label="Free Kick Curl soccer field"></canvas>
+          <canvas class="fk-canvas" id="fk-canvas" width="640" height="430" tabindex="0" aria-label="Free Kick Curl soccer field. Focus and use arrow keys to aim, then Enter or Space to shoot."></canvas>
         </div>
         <div class="fk-shot-panel">
           <div class="fk-fieldset">
@@ -927,6 +927,28 @@
     if (e.buttons || e.pointerType === "touch") setAimFromEvent(e);
   });
   canvas.addEventListener("click", setAimFromEvent);
+
+  // Keyboard aim. Everything else here (power slider, curl buttons, Shoot) was
+  // already reachable by Tab; the aim reticle itself was pointer-only, since it
+  // was only ever moved from pointerdown/pointermove/click on the canvas. Scoped
+  // to when the canvas itself has focus, so arrow keys don't fight the power
+  // slider's own native arrow-key behaviour when that has focus instead.
+  var AIM_STEP = 16;
+  canvas.addEventListener("keydown", function (e) {
+    if (busy) return;
+    var dx = 0, dy = 0;
+    if (e.key === "ArrowLeft") dx = -AIM_STEP;
+    else if (e.key === "ArrowRight") dx = AIM_STEP;
+    else if (e.key === "ArrowUp") dy = -AIM_STEP;
+    else if (e.key === "ArrowDown") dy = AIM_STEP;
+    else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); shoot(); return; }
+    else return;
+    e.preventDefault();
+    aim.x = clamp(aim.x + dx, goal.x + 18, goal.x + goal.w - 18);
+    aim.y = clamp(aim.y + dy, goal.y + 16, goal.y + goal.h - 18);
+    draw();
+  });
+
   document.querySelectorAll("[data-curve]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       curve = parseInt(btn.dataset.curve, 10);

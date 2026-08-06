@@ -252,7 +252,7 @@
           </div>
         </div>
         <p class="game-status" id="ts-status" aria-live="polite">Tap the goal to aim, then shoot.</p>
-        <canvas class="ts-canvas" id="ts-canvas" width="640" height="430" aria-label="Target Shooting Arena soccer goal"></canvas>
+        <canvas class="ts-canvas" id="ts-canvas" width="640" height="430" tabindex="0" aria-label="Target Shooting Arena soccer goal. Focus and use arrow keys to aim, then Enter or Space to shoot."></canvas>
         <div class="ts-panel">
           <div class="ts-fieldset">
             <label class="ts-label" for="ts-power">Power</label>
@@ -796,6 +796,28 @@
     if (event.buttons || event.pointerType === "touch") setAimFromEvent(event);
   });
   canvas.addEventListener("click", setAimFromEvent);
+
+  // Keyboard aim. Power slider and Shoot were already reachable by Tab; the
+  // aim reticle was pointer-only. The target keeps moving on its own timer
+  // regardless of input method, same as it does for a mouse player deciding
+  // when to commit. Scoped to canvas focus so it doesn't fight the power
+  // slider's own native arrow-key behaviour.
+  var AIM_STEP = 16;
+  canvas.addEventListener("keydown", function (e) {
+    if (busy) return;
+    var dx = 0, dy = 0;
+    if (e.key === "ArrowLeft") dx = -AIM_STEP;
+    else if (e.key === "ArrowRight") dx = AIM_STEP;
+    else if (e.key === "ArrowUp") dy = -AIM_STEP;
+    else if (e.key === "ArrowDown") dy = AIM_STEP;
+    else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); shoot(); return; }
+    else return;
+    e.preventDefault();
+    aim.x = clamp(aim.x + dx, goal.x + 18, goal.x + goal.w - 18);
+    aim.y = clamp(aim.y + dy, goal.y + 16, goal.y + goal.h - 18);
+    draw();
+  });
+
   shootBtn.addEventListener("click", shoot);
   newBtn.addEventListener("click", reset);
   powerEl.addEventListener("input", draw);

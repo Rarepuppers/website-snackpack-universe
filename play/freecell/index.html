@@ -204,6 +204,7 @@
   </div>
 </footer>
 <script src="../funnel.js"></script>
+<script src="../keyboard-grid.js"></script>
 <script src="../share-result.js"></script><script>
 (function(){'use strict';
 var SUITS=['♠','♥','♦','♣'], RED=[false,true,true,false], RANK=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'];
@@ -402,6 +403,12 @@ function render(){
   casEl.innerHTML='';
   cascades.forEach(function(p,i){
     var col=document.createElement('div');col.className='fc-pile fc-tableau';col.dataset.type='cascade';col.dataset.i=i;
+    // Mirror the top card's data-at onto the column div itself. click() reads
+    // data-at off whatever element closest('[data-type]') resolves to, and a
+    // keyboard-driven synthetic click lands on the pile div (the roving-focus
+    // target), not the individual card — without this the pile div has no
+    // data-at at all, +undefined is NaN, and cascade selection silently no-ops.
+    if(p.length)col.dataset.at=p.length-1;
     var y=0;
     p.forEach(function(c,at){
       var ce=cardEl(c,selected&&selected.kind==='cascade'&&selected.i===i&&selected.at===at);
@@ -574,6 +581,22 @@ document.querySelectorAll('.fc-seg [data-cells]').forEach(function(btn){
 });
 if(dailyMode){dealIndex=dailyDealIndex();dailyBtn.setAttribute("aria-pressed","true")}
 deal(CHECKED[dealIndex]);
+
+// Arrow-key play. Every free cell, foundation and cascade pile already carries
+// data-type/data-i (that's what the mouse click() handler reads), and it's set
+// directly on the pile div itself — present even when the pile is empty — so a
+// synthetic click on the pile is a full stand-in for a real one: same
+// select-then-target flow the mouse uses, no game logic duplicated. fcTableEl
+// wraps both the top row (free cells + foundations, 8 across) and the cascade
+// row (8 across) as one flat list in DOM order, so Up/Down crosses between the
+// two rows in a single attachGrid call rather than needing a separate one per row.
+if (window.SnackPackKeyboard) {
+  window.SnackPackKeyboard.attachGrid({
+    container: fcTableEl,
+    cellSelector: '.fc-pile',
+    label: 'FreeCell board'
+  });
+}
 })();</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
