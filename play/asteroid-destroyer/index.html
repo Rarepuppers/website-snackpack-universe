@@ -261,6 +261,7 @@
 </footer>
 
 <script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2";</script>
+<script src="../pause.js"></script>
 <script src="../funnel.js"></script>
 <script src="../arcade-assets.js"></script>
 <script>
@@ -687,6 +688,18 @@
 
   reset(false);
   loop();
+
+  // Pause. The loop already gates on state.phase, so parking it on "paused"
+  // stops the simulation while rAF keeps ticking for the overlay.
+  if (window.SnackPackPause) {
+    window.SnackPackPause.attach({
+      mount: document.querySelector(".game-controls"),
+      stage: document.querySelector(".game-stage"),
+      isPlaying: function () { return state.phase === "playing"; },
+      pause: function () { state.phase = "paused"; },
+      resume: function () { state.phase = "playing"; }
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

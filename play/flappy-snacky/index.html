@@ -275,6 +275,7 @@
 
 <!-- Point the shared funnel/donation prompt at Brain Games Vol 2 (app 2). -->
 <script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2";</script>
+<script src="../pause.js"></script>
 <script src="../funnel.js"></script>
 <script src="../arcade-assets.js"></script>
 <script>
@@ -587,6 +588,18 @@
   });
 
   restart();
+
+
+  // Pause. This one cancels its rAF when not playing, so resume has to restart the loop.
+  if (window.SnackPackPause) {
+    window.SnackPackPause.attach({
+      mount: document.querySelector(".game-controls"),
+      stage: document.querySelector(".game-stage"),
+      isPlaying: function () { return st.phase === "playing"; },
+      pause: function () { st.phase = "paused"; stopLoop(); },
+      resume: function () { st.phase = "playing"; startLoop(); }
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

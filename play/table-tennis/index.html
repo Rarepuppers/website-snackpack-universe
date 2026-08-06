@@ -264,6 +264,7 @@
 </footer>
 
 <script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2";</script>
+<script src="../pause.js"></script>
 <script src="../funnel.js"></script>
 <script src="../arcade-assets.js"></script>
 <script>
@@ -548,6 +549,18 @@
 
   resetGame(false);
   loop();
+
+
+  // Pause. The rAF loop already gates on state.phase, so it keeps ticking while the simulation is parked.
+  if (window.SnackPackPause) {
+    window.SnackPackPause.attach({
+      mount: document.querySelector(".game-controls"),
+      stage: document.querySelector(".game-stage"),
+      isPlaying: function () { return state.phase === "playing"; },
+      pause: function () { state.phase = "paused"; },
+      resume: function () { state.phase = "playing"; }
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

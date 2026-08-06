@@ -287,11 +287,31 @@ interaction is pile-to-pile rather than cell-to-cell:
 **Snakes & Ladders, Soccer Trivia Sprint**, and the six soccer action games
 (timing-based, need a key to shoot rather than a cursor).
 
-## B4. Pause — missing on 30 of 32
+## B4. Pause — **4 action games done 2026-08-06**
 
-Matters most for the timed/action games: Asteroid Destroyer, Cascade, Snacky
-Worm, Flappy Snacky, Table Tennis, Dribble Rush, Keepy-Uppy, and the soccer set.
-Currently you cannot stop mid-run.
+`play/pause.js` is a shared control: a Pause button, <kbd>P</kbd> and
+<kbd>Esc</kbd>, an overlay with its own Resume button, and an auto-pause when
+the tab is backgrounded. Each game keeps ownership of its loop and supplies
+`isPlaying` / `pause` / `resume` callbacks; the helper only drives the UI.
+
+Done: **Asteroid Destroyer**, **Table Tennis**, **Snacky Worm**,
+**Flappy Snacky**. All four already gated their loop on a phase string, so
+parking it on `"paused"` stops the simulation without touching game logic.
+
+Three details worth keeping in mind if this gets extended:
+
+- **The overlay sits inside `.game-stage`, which also contains the toolbar** —
+  so it covered its own Pause button and only the keyboard could resume. The
+  toolbar is now lifted above it (`z-index: 45`).
+- **It never auto-resumes.** Coming back to a running game you can't react to
+  is worse than coming back to a paused one.
+- **It refuses to resume while `document.hidden`.** Flappy Snacky stops its own
+  loop while backgrounded, so resuming there would restart a loop that game is
+  about to stop again.
+
+Still open: Dribble Rush, Keepy-Uppy, Cascade and the six soccer action games.
+Cascade is DOM-driven rather than canvas and has no phase flag, so it needs a
+small refactor first rather than a straight wire-up.
 
 ## B5. Undo — **4 logic puzzles done 2026-08-06, 23 remain**
 

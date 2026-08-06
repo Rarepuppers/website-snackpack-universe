@@ -296,6 +296,7 @@
 
 <!-- Point the shared funnel/donation prompt at Brain Games Vol 2 (app 2). -->
 <script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2";</script>
+<script src="../pause.js"></script>
 <script src="../funnel.js"></script>
 <script src="../arcade-assets.js"></script>
 <script>
@@ -567,6 +568,18 @@
   });
 
   restart();
+
+
+  // Pause. Driven by setInterval, which already checks st.phase each tick.
+  if (window.SnackPackPause) {
+    window.SnackPackPause.attach({
+      mount: document.querySelector(".game-controls"),
+      stage: document.querySelector(".game-stage"),
+      isPlaying: function () { return st.phase === "playing"; },
+      pause: function () { st.phase = "paused"; },
+      resume: function () { st.phase = "playing"; }
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->
