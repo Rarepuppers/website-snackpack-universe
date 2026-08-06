@@ -285,7 +285,7 @@ Genuinely unwired, and my honest read on each:
 | Game | Available pack | Verdict |
 |---|---|---|
 | Sudoku, Kakuro | `grid-logic-markers/` | **Skip.** Their cell states are clean CSS and highly readable. PNG backgrounds would fight the typography for no gain. |
-| Word Search, Crossword | `word-game-tiles/` | **Maybe.** Worth a look, but the current letter rendering is already crisp. |
+| Word Search, Crossword | `word-game-tiles/` | **Skip — wrong asset, not a judgment call.** Checked the actual pack contents rather than trusting the name: it's `tile-correct`/`tile-absent`/`keyboard-key`/`keyboard-present` — Wordle-style guess-state tiles and an on-screen keyboard, not letter cells for a search grid or crossword. There's no Wordle-clone in the arcade to use it. Nothing to wire here until one exists. |
 | Memory Match | `card-decks/` backs | **Done 2026-08-07.** Swapped the flat orange `.mem-face--cover` gradient for the same `emerald-arcade.png` deck back Solitaire/Spider/FreeCell already use, so the flip animation matches the rest of the arcade's card games. The source art is a portrait card (512×716) cropped into a square face — a heavier crop than the other games take on their taller-than-wide cards, but the same `cover`/`center` technique, and the motif reads fine at 70px. |
 | Table Tennis, Asteroid Destroyer | `arcade-sprites/` | **Blocked on shape, not wiring** — see below. |
 | Cascade | `arcade-sprites/` | DOM-rendered, not canvas; blocks are CSS. Low value. |
