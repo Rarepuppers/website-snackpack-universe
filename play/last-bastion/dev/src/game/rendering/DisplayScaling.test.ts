@@ -3,6 +3,8 @@ import {
   BASE_HEIGHT,
   BASE_WIDTH,
   planDisplayScale,
+  reapplyDisplayScale,
+  registerDisplayScaleReapply,
   setUiDeviceScale,
   uiSafeArea,
   uiTextResolution,
@@ -84,5 +86,21 @@ describe("uiTextResolution", () => {
     setUiDeviceScale(0);
     expect(uiTextResolution()).toBe(1);
     setUiDeviceScale(2);
+  });
+});
+
+describe("reapplyDisplayScale", () => {
+  it("is inert before boot registers a handler", () => {
+    registerDisplayScaleReapply(null);
+    expect(() => reapplyDisplayScale()).not.toThrow();
+  });
+
+  it("invokes the registered handler so a settings change resizes without a reload", () => {
+    let applied = 0;
+    registerDisplayScaleReapply(() => { applied += 1; });
+    reapplyDisplayScale();
+    reapplyDisplayScale();
+    expect(applied).toBe(2);
+    registerDisplayScaleReapply(null);
   });
 });

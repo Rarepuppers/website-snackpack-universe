@@ -1,5 +1,7 @@
 import { ENEMY_THREAT_COST, MAX_RANGED_WINDUPS, type DirectorSpawnPlan } from "./DensityDirector";
 
+export const INFECTED_SURVIVOR_PACK_CAP = 8;
+
 export interface CorruptedHumanWavePlan {
   readonly id: "introduction" | "crossfire" | "overrun";
   readonly liveCap: number;

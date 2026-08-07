@@ -2017,3 +2017,61 @@ Verification: typecheck clean, **874 tests across 122 files pass** (was 854), pr
 - Started the local Vite web build and reviewed the maximum-density combat route plus the Batch K status gallery through the in-app browser.
 - Both routes loaded with the promoted assets and reported no browser console errors or warnings. The dev server remained at `http://127.0.0.1:5173/play/last-bastion/` for creator follow-up.
 - Final qualitative gates remain creator-owned: visual comfort for Overload, grayscale/colour-vision separation, and dense enemy/status readability at Full HD and 4K display scaling.
+
+## 7 August 2026 — Full review and forward plan for Steam
+
+- Reviewed the whole of `play/last-bastion/`. Verified state: typecheck clean, **1021 tests across 153 files pass**, deployed bundle current (no `dev/src` file newer than `game-assets/game.js`), `?screen=game` boots with zero console errors. 38,309 lines runtime TS, 15,118 lines test TS, 565 runtime asset files at 106 MB.
+- Wrote `last-bastion-improvement-and-steam-plan-2026-08-07.md` and indexed it in `README.md` as the forward plan. It deliberately does not restate the asset queue; items 61–67 of the asset review stand, and new asset batches are numbered 68–75 to append there.
+- **Display finding (the main technical blocker).** `planDisplayScale()` picks the largest whole integer scale that fits, which is exact on 1080p (2x) and 4K (4x) and poor everywhere else: 1440p renders 1920x1080 with 44% of the panel unused, ultrawide is an island, and **Steam Deck at 1280x800 picks N=1 and renders a 960x540 stamp on roughly half the panel — not shippable as-is.** Plan proposes integer render plus three presentation modes: `Crisp` (today), `Fill` (supersample at N+1, GPU-downscale — Deck becomes a clean 1920x1080 -> 1280x800), and `Expanded frame` (integer scale, authored bezel absorbs the leftover, world FOV unchanged so ultrawide is not a balance change).
+- **`platform/` is entirely unwired.** Nothing calls `createSteamPlatformAdapter` or `synchronizeAchievementEvents`; there is no host shell, no `steam_appid.txt`, no depot config. Recommendation is Electron + `steamworks.js` over Tauri, because WebKitGTK's WebGL behaviour under Phaser is the wrong risk on the Linux/Deck target. `LocalSaveStore.recordRunEnd` is the single choke point for achievement sync and already has the right signature.
+- Other findings: no fullscreen handling anywhere; saves are `localStorage`-only; six achievements; no difficulty ladder; no dailies/leaderboards; transformations resolve 22 of 26 metrics as a flat stat bag with no behaviour; `CombatSimulation.ts` at 10,598 lines and `PrototypeScene.ts` at 5,052 lines are where every future feature collides; WebP covers 8 of 435 PNGs.
+- **Correction recorded during review:** an earlier draft of the plan claimed no meta-progression exists. That was wrong — `perks/perkCatalog.ts` defines seven perks unlocking from `GameProgress`, and `recordRunEnd` diffs them so the debrief announces new unlocks. The accurate finding is that the system is real but saturates: all seven unlock within roughly three hours and only one can be equipped. The plan was corrected before publication and G2 now extends the perk system rather than replacing it.
+- Added a task-level implementation breakdown as section 10, with per-block line ranges for both large-file splits. The split follows the pattern the repo already established in `ScrapSkittererBehavior.ts` (readonly state + pure `stepX` function + class applies the result), one enemy per commit, with `ReferenceRun.ts`/`ReplayFixture.ts` byte-identical output as the equivalence proof and the existing per-enemy tests required to pass unmodified.
+- Next: Phase 0 hygiene (the two file splits, WebP widening, live display size), which unblocks both the difficulty ladder and the presentation-mode work.
+
+## 7 August 2026 — Phase 0 hygiene, first pass
+
+Work against section 10 of `last-bastion-improvement-and-steam-plan-2026-08-07.md`.
+
+- **T0.5 doc fix.** Repaired 24 mojibake sequences (`â€”` -> em dash, `Ã—` -> multiplication sign) across items 12-23 of `asset-next-production-review-2026-07-26.md`.
+- **T0.4 live display size.** `rendering/DisplayScaling.ts` gained `registerDisplayScaleReapply`/`reapplyDisplayScale`; `main.ts` registers its existing `apply` closure at `postBoot`, and `ShellScene` calls the hook when `displaySizePercent` changes. The indirection lives in the rendering module rather than `main.ts` so game code never imports the entry point. Label is now plain "Display size" — the "(applies on reload)" caveat is no longer true. Two tests added.
+- **T0.1 step 1 — scenario extraction.** All 30 `populateXScenario` methods moved out of `CombatSimulation.ts` into `combat/scenarios/ScenarioPopulation.ts` behind an explicit `ScenarioPopulationContext`. The 30-branch `else if (this.scenario === ...)` dispatch chain collapsed to one catalogue lookup. `CombatSimulation.ts` 10,601 -> 10,290 lines.
+- Three constants that scenario setup needed (`ARC_WARDEN_LAB_CAP`, `SCRAP_SKITTERER_PACK_CAP`, `INFECTED_SURVIVOR_PACK_CAP`) moved from `CombatSimulation.ts` to `ArcWardenBeam.ts`, `ScrapSkittererBehavior.ts`, and `CorruptedHumanWaves.ts` respectively, and are re-exported from `CombatSimulation` so every existing importer (including `ArcWardenCombat.test.ts`) is unchanged. This removes a would-be runtime import cycle; the remaining import from `CombatSimulation` into the scenario module is type-only and therefore erased at build time. `EnemyState` is now exported as a type for the same reason.
+- **Equivalence proven, not asserted.** A temporary untracked harness captured the initial snapshot of all 30 scenarios, then the tracked source changes were stashed and the capture repeated against the pre-refactor tree. Both captures hash to `f36b5a6e...` — **byte-identical**. Harness deleted afterwards.
+- **Found and fixed a hole in the verification gate.** `scripts/offline-boot-test.ps1` scanned only `game-assets/game.js` for local asset references. Code splitting long ago moved those URLs into the `GameAssetManifest`/`PhaserAssetLoader` chunks, so the audit had been reporting `LocalAssetReferences: 0` and checking nothing — the historical "269 local asset references" in the 26 July entries predates the current chunk layout. The script now scans every emitted chunk and throws if it finds fewer than 100 references, so the check cannot silently go inert again. It now reports **285 references, 0 missing**.
+- Verification: typecheck clean, **1023 tests across 153 files pass** (1021 existing, all unmodified, plus 2 new), production build clean, smoke boot `200` with 120 art assets and 76 review routes, offline boot `0` remote imports and `0` missing local assets. Browser pass on `?scenario=cyborg-reclaimer`, `?scenario=arc-warden`, and `?scenario=weapon-gate` — canvas at 960x540, no console errors.
+- Next in Phase 0: T0.1 step 2 (enemy behaviours out of `CombatSimulation`, one enemy per commit), T0.2 (scene split and `CombatScene` rename), T0.3 (WebP across sprite atlases).
+
+## 7 August 2026 — Build was overwriting the published page
+
+Found while running `npm run verify` during the Phase 0 work above. Two verification checks
+turned out to be inspecting files that never ship, so neither had been enforcing anything.
+
+- **`npm run build` destroyed the live `index.html`.** Vite's `outDir` is the served
+  `/play/last-bastion/` directory, and `dev/index.html` was a bare prototype shell. Every build
+  therefore replaced the published page — deleting the SEO title and description, `rel=canonical`,
+  the favicon link, all Open Graph and Twitter card tags, the breadcrumb JSON-LD, and the
+  Cloudflare Web Analytics beacon — and **added `<meta name="robots" content="noindex, nofollow">`**.
+  Shipping that would have de-indexed the page and stopped analytics. The published file was
+  restored from git; nothing was deployed in the broken state.
+- **Fix.** `dev/index.html` now carries the full production head, so the build is idempotent and
+  the published page is the source of truth rather than a casualty. The two dev-only adjustments
+  (the `noindex` meta, and dropping the analytics beacon so local runs never call out) moved into
+  a `apply: "serve"` Vite plugin in `vite.config.ts`. After a rebuild the only remaining diff
+  against the committed page is the position of the emitted script/link tags, which now sit at the
+  end of `<head>` after the breadcrumb block.
+- **The offline audit's document check had never seen the real page.** Because the build replaced
+  `index.html` before the audit ran, its "no external runtime dependencies" rule only ever
+  inspected the stripped shell. Pointed at the actual published page it immediately failed on the
+  canonical link and the analytics beacon. The rule now distinguishes blocking runtime
+  dependencies (scripts, stylesheets, fonts, images — still a hard failure) from metadata and
+  deferred analytics, which are on the live page by design and do not gate an offline boot.
+- **Added a guard for the regression itself**: the audit now fails if the built document is missing
+  `rel="canonical"`, `og:title`, or `<title>`, so a build that silently strips the production head
+  cannot pass again.
+- Both new guards were negative-tested: injecting `<script src="https://cdn.example.com/x.js">`
+  fails with "blocking external runtime dependencies", and removing `og:title` fails with
+  "missing required production markup". The published `index.html` was restored after each test.
+- Verification after all of the above: typecheck clean, **1023 tests across 153 files pass**,
+  build clean, smoke boot `200` with 120 art assets and 76 review routes, offline boot
+  **285 local asset references, 0 missing, 0 remote imports**.

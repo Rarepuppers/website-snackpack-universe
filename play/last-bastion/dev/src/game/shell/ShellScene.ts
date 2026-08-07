@@ -8,6 +8,7 @@ import {
   SHELL_CHARACTER_ASSETS,
 } from "../assets/ShellAssetManifest";
 import { PERK_CATALOG } from "../perks/perkCatalog";
+import { reapplyDisplayScale } from "../rendering/DisplayScaling";
 import {
   createShellState,
   howToPlayPages,
@@ -137,6 +138,7 @@ export class ShellScene extends Phaser.Scene {
     for (const effect of result.effects) {
       if (effect.type === "set-setting") {
         this.saveStore.updateSettings({ [effect.key]: effect.value });
+        if (effect.key === "displaySizePercent") reapplyDisplayScale();
       } else if (effect.type === "start-run") {
         this.saveStore.selectPerk(effect.perkId);
         this.saveStore.selectHero(effect.heroId === "medic" ? "medic" : "marine");

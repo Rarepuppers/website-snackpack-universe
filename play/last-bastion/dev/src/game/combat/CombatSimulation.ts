@@ -202,6 +202,16 @@ import {
 } from "./WaveScaling";
 import type { EliteKind } from "./EliteCadence";
 export type { EliteKind } from "./EliteCadence";
+import {
+  DENSITY_PRESSURE_RESET,
+  populateScenario,
+  type ScenarioPopulationContext,
+} from "./scenarios/ScenarioPopulation";
+// Re-exported from the modules that own them so existing importers keep
+// working; the definitions moved out to break a cycle with scenario setup.
+export { ARC_WARDEN_LAB_CAP } from "./ArcWardenBeam";
+export { SCRAP_SKITTERER_PACK_CAP } from "./ScrapSkittererBehavior";
+export { INFECTED_SURVIVOR_PACK_CAP } from "./CorruptedHumanWaves";
 import type { ExpeditionBuildSnapshot } from "../expedition/ExpeditionRun";
 import {
   cloneTransformationAffinityState,
@@ -901,7 +911,7 @@ export interface CombatRunMetricsSnapshot {
   defeatCause: string | null;
 }
 
-interface EnemyState {
+export interface EnemyState {
   id: number;
   type: EnemyType;
   position: Vector2Data;
@@ -1275,9 +1285,6 @@ export const INFECTED_SURVIVOR_MAX_STAMINA_SECONDS = 1.2;
 export const INFECTED_SURVIVOR_SPRINT_SPEED = 5.15;
 export const INFECTED_SURVIVOR_ACCELERATION = 11;
 export const INFECTED_SURVIVOR_DECELERATION = 14;
-export const INFECTED_SURVIVOR_PACK_CAP = 8;
-export const SCRAP_SKITTERER_PACK_CAP = 8;
-export const ARC_WARDEN_LAB_CAP = 2;
 const INFECTED_SURVIVOR_RECOVERY_SECONDS = 0.68;
 const INFECTED_SURVIVOR_STAMINA_RECOVERY_PER_SECOND = 1.8;
 export const CORRUPTED_MARINE_WINDUP_SECONDS = 0.72;
@@ -1739,66 +1746,8 @@ export class CombatSimulation {
       this.populateExpeditionEncounter(this.expeditionEncounter);
     } else if (this.stressProfile !== null) {
       this.populateStressScenario(this.stressProfile);
-    } else if (this.scenario === "slime-spitter") {
-      this.populateSlimeSpitterScenario();
-    } else if (this.scenario === "carapace-elite") {
-      this.populateCarapaceEliteScenario();
-    } else if (this.scenario === "siege-crusher") {
-      this.populateSiegeCrusherScenario();
-    } else if (this.scenario === "brood-warden") {
-      this.populateBroodWardenScenario();
-    } else if (this.scenario === "rift-stalker") {
-      this.populateRiftStalkerScenario();
-    } else if (this.scenario === "synapse-herald") {
-      this.populateSynapseHeraldScenario();
-    } else if (this.scenario === "assembly-prime") {
-      this.populateAssemblyPrimeScenario();
-    } else if (this.scenario === "storm-regent") {
-      this.populateStormRegentScenario();
-    } else if (this.scenario === "abomination-prime") {
-      this.populateAbominationPrimeScenario();
-    } else if (this.scenario === "infected-survivor") {
-      this.populateInfectedSurvivorScenario();
-    } else if (this.scenario === "corrupted-marine") {
-      this.populateCorruptedMarineScenario();
-    } else if (this.scenario === "abomination") {
-      this.populateAbominationScenario();
-    } else if (this.scenario === "corrupted-human") {
-      this.populateCorruptedHumanScenario();
-    } else if (this.scenario === "nest-weaver") {
-      this.populateNestWeaverScenario();
-    } else if (this.scenario === "storm-savant") {
-      this.populateStormSavantScenario();
-    } else if (this.scenario === "scrap-skitterer") {
-      this.populateScrapSkittererScenario();
-    } else if (this.scenario === "arc-warden") {
-      this.populateArcWardenScenario();
-    } else if (this.scenario === "cyborg-reclaimer") {
-      this.populateCyborgReclaimerScenario();
-    } else if (this.scenario === "foundry-fabricator") {
-      this.populateFoundryFabricatorScenario();
-    } else if (this.scenario === "ripper") {
-      this.populateRipperScenario();
-    } else if (this.scenario === "razor-scuttler") {
-      this.populateRazorScuttlerScenario();
-    } else if (this.scenario === "quillback") {
-      this.populateQuillbackScenario();
-    } else if (this.scenario === "spinewheel") {
-      this.populateSpinewheelScenario();
-    } else if (this.scenario === "tether-bloom") {
-      this.populateTetherBloomScenario();
-    } else if (this.scenario === "bastion-eater") {
-      this.populateBastionEaterScenario();
-    } else if (this.scenario === "density-capacity") {
-      this.populateDensityCapacityScenario();
-    } else if (this.scenario === "aurum-hoarder") {
-      this.populateAurumHoarderScenario();
-    } else if (this.scenario === "scrap-shop") {
-      this.populateScrapShopScenario();
-    } else if (this.scenario === "weapon-gate") {
-      this.populateWeaponGateScenario();
-    } else if (this.scenario === "batch-j") {
-      this.populateBatchJScenario();
+    } else if (this.scenario !== null) {
+      populateScenario(this.scenario, this.scenarioPopulationContext());
     } else if (this.wavesEnabled) {
       this.beginWave(0);
     }
@@ -9661,294 +9610,6 @@ export class CombatSimulation {
     }
   }
 
-  private populateDensityCapacityScenario(): void {
-    this.waveLiveCap = buildDensityCapacityRoster().length;
-    this.densityPeakLiveEnemies = 0;
-    this.densitySpawnedThisWave = 0;
-    this.densityPressureSpawned = { pursuit: 0, ranged: 0, specialist: 0, boss: 0 };
-    for (const type of buildDensityCapacityRoster()) {
-      this.spawnEnemy(type);
-      this.recordDensitySpawn({ type });
-    }
-  }
-
-  private populateAurumHoarderScenario(): void {
-    this.spawnAurumHoarder({
-      x: this.widthMetres / 2 + 5,
-      y: this.heightMetres / 2,
-    });
-  }
-
-  private populateScrapShopScenario(): void {
-    this.playerHealth = 5.5;
-    this.decisionQueue.push(this.openScrapShopVisit());
-  }
-
-  /** Deterministic review lab for the tile placement, stash, and merge contract. */
-  private populateWeaponGateScenario(): void {
-    const incoming: WeaponTile = {
-      instanceId: this.weaponInventory.nextInstanceId++,
-      weaponId: "scattergun",
-      weaponClass: "heavy",
-      tier: 1,
-    };
-    this.pendingWeaponTile = incoming;
-    this.decisionQueue.push(this.buildWeaponPlacementDecision(incoming));
-  }
-
-  /** Stable live-art lab for Batch J body silhouettes, cadence, and telegraphs. */
-  private populateBatchJScenario(): void {
-    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
-    this.spawnEnemy("swarm-scuttler", { x: centre.x - 7.5, y: centre.y - 4.5 });
-    this.spawnElite("razorlord", { x: centre.x + 7, y: centre.y - 4 });
-    this.spawnElite("blightspitter", { x: centre.x + 7.5, y: centre.y + 4 });
-    this.spawnElite("quillback-matriarch", { x: centre.x - 7, y: centre.y + 4.5 });
-  }
-
-  private populateSlimeSpitterScenario(): void {
-    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
-    for (const offset of [
-      { x: -7, y: -4 },
-      { x: 7, y: -3 },
-      { x: 6, y: 4 },
-    ]) {
-      this.spawnEnemy("slime-spitter", { x: centre.x + offset.x, y: centre.y + offset.y });
-    }
-    this.spawnEnemy("scuttler", { x: centre.x - 6, y: centre.y + 3.5 });
-  }
-
-  private populateCarapaceEliteScenario(): void {
-    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
-    this.spawnElite("carapace-scuttler", { x: centre.x + 6.5, y: centre.y });
-    this.spawnEnemy("scuttler", { x: centre.x - 5.5, y: centre.y - 3 });
-    this.spawnEnemy("scuttler", { x: centre.x - 6.5, y: centre.y + 3 });
-  }
-
-  private populateSiegeCrusherScenario(): void {
-    this.spawnMiniBoss("siege-crusher", { x: 4, y: 14 });
-    this.spawnEnemy("scuttler", { x: 25, y: 3 });
-    this.spawnEnemy("scuttler", { x: 26, y: 13 });
-  }
-
-  private populateBroodWardenScenario(): void {
-    this.spawnMiniBoss("brood-warden", { x: 7, y: this.heightMetres / 2 });
-    this.spawnEnemy("egg-cluster", { x: this.widthMetres - 8, y: 4 });
-  }
-
-  private populateRiftStalkerScenario(): void {
-    this.spawnMiniBoss("rift-stalker", { x: 7, y: this.heightMetres / 2 });
-    this.spawnEnemy("scuttler", { x: this.widthMetres - 8, y: 4 });
-  }
-
-  private populateSynapseHeraldScenario(): void {
-    const centre = { ...this.playerPosition };
-    this.waveLiveCap = 10;
-    this.waveThreatBudget = 44;
-    this.spawnMiniBoss("synapse-herald", { x: centre.x - 6.5, y: centre.y - 1.5 });
-    this.spawnEnemy("brain-blob", { x: centre.x - 3.8, y: centre.y + 2.7 });
-    this.spawnEnemy("brain-blob", { x: centre.x + 4.2, y: centre.y - 3.2 });
-  }
-
-  private populateAssemblyPrimeScenario(): void {
-    const centre = { ...this.playerPosition };
-    this.waveLiveCap = 10;
-    this.waveThreatBudget = 51;
-    const id = this.spawnMiniBoss("assembly-prime", { x: centre.x - 7, y: centre.y - 4 });
-    const prime = this.enemies.find((enemy) => enemy.id === id)!;
-    prime.foundryThreatRemaining = 7;
-    this.spawnEnemy("arc-warden", { x: centre.x + 6.8, y: centre.y - 3.2 });
-    this.spawnEnemy("scrap-skitterer", { x: centre.x + 5.2, y: centre.y + 2.5 });
-    this.spawnEnemy("scrap-skitterer", { x: centre.x - 3.2, y: centre.y + 4 });
-  }
-
-  private populateStormRegentScenario(): void {
-    const centre = { ...this.playerPosition };
-    this.waveLiveCap = 10;
-    this.waveThreatBudget = 44;
-    this.spawnMiniBoss("storm-regent", { x: centre.x - 7.2, y: centre.y - 3.6 });
-    this.spawnEnemy("scuttler", { x: centre.x + 6.8, y: centre.y - 3.4 });
-    this.spawnEnemy("scuttler", { x: centre.x + 5.8, y: centre.y + 3.8 });
-  }
-
-  private populateAbominationPrimeScenario(): void {
-    const centre = { ...this.playerPosition };
-    this.waveLiveCap = 10;
-    this.waveThreatBudget = 48;
-    this.spawnMiniBoss("abomination-prime", { x: centre.x - 5.4, y: centre.y - 2.4 });
-    this.spawnEnemy("corrupted-marine", { x: centre.x + 6.2, y: centre.y - 3.4 });
-    this.spawnEnemy("infected-survivor", { x: centre.x + 5.2, y: centre.y + 2.6 });
-    this.spawnEnemy("infected-survivor", { x: centre.x - 3.8, y: centre.y + 4.1 });
-  }
-
-  private populateInfectedSurvivorScenario(): void {
-    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
-    const positions = Array.from({ length: INFECTED_SURVIVOR_PACK_CAP }, (_, index) => ({
-      x: centre.x - 8.5 - (index % 2) * 0.9,
-      y: centre.y - 4.2 + index * 1.2,
-    }));
-    for (const position of positions) {
-      this.spawnEnemy("infected-survivor", position);
-    }
-  }
-
-  private populateCorruptedMarineScenario(): void {
-    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
-    this.spawnEnemy("corrupted-marine", { x: centre.x - 7.5, y: centre.y - 2.8 });
-    this.spawnEnemy("corrupted-marine", { x: centre.x + 7.2, y: centre.y + 3.4 });
-  }
-
-  private populateAbominationScenario(): void {
-    const centre = { ...this.playerPosition };
-    this.spawnEnemy("abomination", { x: centre.x - 2.1, y: centre.y });
-    this.spawnEnemy("infected-survivor", { x: centre.x + 6.5, y: centre.y - 3.2 });
-    this.spawnEnemy("corrupted-marine", { x: centre.x + 7.5, y: centre.y + 3.4 });
-  }
-
-  private populateCorruptedHumanScenario(): void {
-    const centre = { ...this.playerPosition };
-    const survivorOffsets = [
-      [-8, -4], [-8.8, -1.5], [-8.4, 2], [7, -4.4], [8.2, -1.2], [7.6, 3.2],
-    ] as const;
-    for (const [x, y] of survivorOffsets) {
-      this.spawnEnemy("infected-survivor", { x: centre.x + x, y: centre.y + y });
-    }
-    this.spawnEnemy("corrupted-marine", { x: centre.x - 12, y: centre.y - 5.5 });
-    this.spawnEnemy("corrupted-marine", { x: centre.x + 2, y: centre.y + 9.5 });
-    this.spawnEnemy("abomination", { x: centre.x - 5.2, y: centre.y + 0.5 });
-  }
-
-  private populateNestWeaverScenario(): void {
-    const centre = { ...this.playerPosition };
-    // The lab uses wave-one capacity so reservations are exercised, not bypassed.
-    this.waveLiveCap = 18;
-    this.waveThreatBudget = 25;
-    this.spawnEnemy("nest-weaver", { x: centre.x - 7.2, y: centre.y - 1.8 });
-    this.spawnEnemy("infected-survivor", { x: centre.x + 6.5, y: centre.y - 3.4 });
-    this.spawnEnemy("infected-survivor", { x: centre.x + 7.3, y: centre.y + 2.8 });
-  }
-
-  private populateStormSavantScenario(): void {
-    const centre = { ...this.playerPosition };
-    this.waveLiveCap = 18;
-    this.waveThreatBudget = 18;
-    this.spawnEnemy("storm-savant", { x: centre.x - 8, y: centre.y });
-    this.spawnEnemy("infected-survivor", { x: centre.x + 7, y: centre.y - 3.5 });
-  }
-
-  private populateScrapSkittererScenario(): void {
-    const centre = { ...this.playerPosition };
-    this.waveLiveCap = 18;
-    this.waveThreatBudget = SCRAP_SKITTERER_PACK_CAP;
-    for (let index = 0; index < SCRAP_SKITTERER_PACK_CAP; index += 1) {
-      const side = index % 2 === 0 ? -1 : 1;
-      const row = Math.floor(index / 2);
-      this.spawnEnemy("scrap-skitterer", {
-        x: centre.x + side * (5.2 + row * 0.65),
-        y: centre.y - 4.5 + row * 2.8,
-      });
-    }
-  }
-
-  private populateArcWardenScenario(): void {
-    const centre = { ...this.playerPosition };
-    this.waveLiveCap = 12;
-    this.waveThreatBudget = ARC_WARDEN_LAB_CAP * 4;
-    // The west Warden begins with an authored long pre-cover lane so the lab
-    // always demonstrates the square cover-stop language beside a free lane.
-    // Ordinary Warden acquisition still obeys the pure 3.4–9.5 m range gate.
-    const coverWardenId = this.spawnEnemy("arc-warden", { x: centre.x - 12.5, y: centre.y + 0.75 });
-    const coverWarden = this.enemies.find((enemy) => enemy.id === coverWardenId)!;
-    const coverLane = lockArcWardenLane(
-      coverWarden.position,
-      this.playerPosition,
-      this.activeObstacles(),
-    );
-    if (coverLane) {
-      coverWarden.arcWardenBehavior = {
-        phase: "charge",
-        phaseRemainingSeconds: ARC_WARDEN_CHARGE_SECONDS,
-        cooldownSeconds: 0,
-        lockedLane: coverLane,
-      };
-      coverWarden.facingDirection = { ...coverLane.direction };
-    }
-    this.spawnEnemy("arc-warden", { x: centre.x + 8, y: centre.y + 2.2 });
-  }
-
-  private populateCyborgReclaimerScenario(): void {
-    const centre = { ...this.playerPosition };
-    this.waveLiveCap = 12;
-    this.waveThreatBudget = 14;
-    const reclaimerId = this.spawnEnemy("cyborg-reclaimer", { x: centre.x - 5.3, y: centre.y - 2.2 });
-    const arcId = this.spawnEnemy("arc-warden", { x: centre.x - 1.8, y: centre.y - 3.2 });
-    const skittererIds = [
-      this.spawnEnemy("scrap-skitterer", { x: centre.x - 2.8, y: centre.y + 1.2 }),
-      this.spawnEnemy("scrap-skitterer", { x: centre.x + 3.5, y: centre.y - 2.5 }),
-      this.spawnEnemy("scrap-skitterer", { x: centre.x + 4.4, y: centre.y + 0.4 }),
-      this.spawnEnemy("scrap-skitterer", { x: centre.x + 2.8, y: centre.y + 3.1 }),
-    ];
-    const reclaimer = this.enemies.find((enemy) => enemy.id === reclaimerId)!;
-    reclaimer.reclaimerBehavior = { ...reclaimer.reclaimerBehavior, cooldownSeconds: 0 };
-    const arc = this.enemies.find((enemy) => enemy.id === arcId)!;
-    arc.health = Math.max(1, arc.maxHealth - 4);
-    for (const id of skittererIds.slice(0, 2)) {
-      const skitterer = this.enemies.find((enemy) => enemy.id === id)!;
-      skitterer.health = Math.max(1, skitterer.maxHealth - 2);
-    }
-  }
-
-  private populateFoundryFabricatorScenario(): void {
-    const centre = { ...this.playerPosition };
-    this.waveLiveCap = 8;
-    this.waveThreatBudget = 19;
-    this.spawnEnemy("foundry-fabricator", { x: centre.x - 5.2, y: centre.y - 1.4 });
-    const arcId = this.spawnEnemy("arc-warden", { x: centre.x + 6.2, y: centre.y - 2.8 });
-    this.spawnEnemy("cyborg-reclaimer", { x: centre.x - 1.8, y: centre.y - 3.4 });
-    this.spawnEnemy("scrap-skitterer", { x: centre.x + 4.4, y: centre.y + 2.8 });
-    this.spawnEnemy("scrap-skitterer", { x: centre.x - 3.8, y: centre.y + 3.5 });
-    const arc = this.enemies.find((enemy) => enemy.id === arcId)!;
-    arc.health = Math.max(1, arc.maxHealth - 4);
-  }
-
-  private populateRipperScenario(): void {
-    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
-    this.spawnEnemy("ripper", { x: centre.x + 4.5, y: centre.y - 2.5 });
-    this.spawnEnemy("ripper", { x: centre.x - 5, y: centre.y + 2.5 });
-    this.spawnEnemy("scuttler", { x: centre.x + 6, y: centre.y + 3.5 });
-  }
-
-  private populateRazorScuttlerScenario(): void {
-    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
-    this.spawnEnemy("razor-scuttler", { x: centre.x - 6.2, y: centre.y });
-    this.spawnEnemy("razor-scuttler", { x: centre.x + 5.6, y: centre.y - 3.4 });
-    this.spawnEnemy("scuttler", { x: centre.x + 4.8, y: centre.y + 4.2 });
-  }
-
-  private populateQuillbackScenario(): void {
-    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
-    this.spawnEnemy("quillback", { x: centre.x + 7.5, y: centre.y });
-    this.spawnEnemy("quillback", { x: centre.x - 7, y: centre.y - 3.5 });
-    this.spawnEnemy("scuttler", { x: centre.x + 4.5, y: centre.y + 4 });
-  }
-
-  private populateSpinewheelScenario(): void {
-    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
-    this.spawnEnemy("spinewheel", { x: centre.x - 7.5, y: centre.y });
-    this.spawnEnemy("spinewheel", { x: centre.x + 6.5, y: centre.y - 4.5 });
-    this.spawnEnemy("scuttler", { x: centre.x + 5, y: centre.y + 4.5 });
-  }
-
-  private populateTetherBloomScenario(): void {
-    const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
-    this.spawnEnemy("tether-bloom", { x: centre.x - 3.2, y: centre.y });
-    this.spawnEnemy("tether-bloom", { x: centre.x + 4.6, y: centre.y - 2.8 });
-    this.spawnEnemy("scuttler", { x: centre.x + 5.5, y: centre.y + 3.8 });
-  }
-
-  private populateBastionEaterScenario(): void {
-    this.spawnBastionEater({ x: this.widthMetres / 2 - 7, y: this.heightMetres / 2 });
-  }
-
   private spawnBastionEater(position?: Vector2Data): number {
     const id = this.spawnEnemy("bastion-eater", position);
     const boss = this.enemies.find((enemy) => enemy.id === id)!;
@@ -9957,6 +9618,42 @@ export class CombatSimulation {
     boss.bastionEaterAction = "entrance";
     boss.bastionEaterActionRemainingSeconds = 1.2;
     return id;
+  }
+
+  /**
+   * The seam review labs reach the simulation through. Everything here is
+   * construction-time setup — none of it runs during `step` — so the width of
+   * this surface costs nothing at runtime, and keeping it explicit is what
+   * stops lab fixtures quietly reaching further into the simulation than real
+   * play does.
+   */
+  private scenarioPopulationContext(): ScenarioPopulationContext {
+    return {
+      widthMetres: this.widthMetres,
+      heightMetres: this.heightMetres,
+      playerPosition: this.playerPosition,
+      enemies: this.enemies,
+      setPlayerHealth: (value) => { this.playerHealth = value; },
+      setWaveLiveCap: (value) => { this.waveLiveCap = value; },
+      setWaveThreatBudget: (value) => { this.waveThreatBudget = value; },
+      resetDensityCounters: () => {
+        this.densityPeakLiveEnemies = 0;
+        this.densitySpawnedThisWave = 0;
+        this.densityPressureSpawned = { ...DENSITY_PRESSURE_RESET };
+      },
+      spawnEnemy: (type, position) => this.spawnEnemy(type, position),
+      spawnElite: (kind, position) => this.spawnElite(kind, position),
+      spawnMiniBoss: (kind, position) => this.spawnMiniBoss(kind, position),
+      spawnAurumHoarder: (position) => this.spawnAurumHoarder(position),
+      spawnBastionEater: (position) => this.spawnBastionEater(position),
+      recordDensitySpawn: (spawn) => this.recordDensitySpawn(spawn),
+      activeObstacles: () => this.activeObstacles(),
+      nextWeaponInstanceId: () => this.weaponInventory.nextInstanceId++,
+      setPendingWeaponTile: (tile) => { this.pendingWeaponTile = tile; },
+      queueDecision: (decision) => { this.decisionQueue.push(decision); },
+      openScrapShopVisit: () => this.openScrapShopVisit(),
+      buildWeaponPlacementDecision: (tile) => this.buildWeaponPlacementDecision(tile),
+    };
   }
 
   private pickMiniBoss(): MiniBossKind {

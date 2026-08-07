@@ -2,6 +2,8 @@ import type { ArenaObstacle } from "../arena/ArenaDefinition";
 import type { Vector2Data } from "../math/Vector2Data";
 import { normalizeVector } from "../math/Vector2Data";
 
+/** Wardens are capped in the review lab so beam lanes stay individually readable. */
+export const ARC_WARDEN_LAB_CAP = 2;
 export const ARC_WARDEN_CHARGE_SECONDS = 1.05;
 export const ARC_WARDEN_DISCHARGE_SECONDS = 0.12;
 export const ARC_WARDEN_RECOVERY_SECONDS = 0.85;

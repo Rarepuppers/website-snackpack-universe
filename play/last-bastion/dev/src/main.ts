@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import "./style.css";
 import { createGameConfig } from "./game/config";
-import { planDisplayScale, setUiDeviceScale } from "./game/rendering/DisplayScaling";
+import { planDisplayScale, registerDisplayScaleReapply, setUiDeviceScale } from "./game/rendering/DisplayScaling";
 import { LocalSaveStore } from "./game/save/LocalSaveStore";
 import { resolveSceneRoute } from "./game/SceneRoute";
 import { loadInitialScene } from "./game/loadInitialScene";
@@ -59,6 +59,9 @@ async function boot(): Promise<Phaser.Game> {
         window.setTimeout(apply, 250);
         trackDevicePixelRatio(apply);
         window.addEventListener("resize", apply);
+        // Settings screens change displaySizePercent; without this the canvas
+        // would not resize until the next window resize or reload.
+        registerDisplayScaleReapply(apply);
       },
     },
   });

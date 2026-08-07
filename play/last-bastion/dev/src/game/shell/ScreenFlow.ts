@@ -112,7 +112,7 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   // earlier builds still load.
   { kind: "range", key: "gamepadVibrationStrength", label: "Controller vibration", min: 0, max: 1, step: 0.25 },
   { kind: "range", key: "aimAssistStrength", label: "Aim assist", min: 0, max: 1, step: 0.1 },
-  { kind: "range", key: "displaySizePercent", label: "Display size (applies on reload)", min: 50, max: 200, step: 5 },
+  { kind: "range", key: "displaySizePercent", label: "Display size", min: 50, max: 200, step: 5 },
   { kind: "choice", key: "radarSize", label: "Radar size", options: ["0.75", "1", "1.25"] },
   { kind: "choice", key: "offscreenThreatIndicators", label: "Threat indicators", options: ["off", "threats", "all"] },
   { kind: "choice", key: "colorVisionMode", label: "Colour-vision palette", options: ["standard", "deuteranopia", "protanopia", "tritanopia"] },

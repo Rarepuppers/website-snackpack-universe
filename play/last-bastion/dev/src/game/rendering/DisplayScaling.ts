@@ -97,3 +97,20 @@ export function setUiDeviceScale(deviceScale: number): void {
 export function uiTextResolution(): number {
   return currentDeviceScale;
 }
+
+let reapplyHandler: (() => void) | null = null;
+
+/**
+ * Boot registers how to recompute the scale plan; screens call
+ * `reapplyDisplayScale()` when a setting that feeds it changes. The indirection
+ * lives here rather than in `main.ts` so game modules never import the entry
+ * point, which would be a cycle.
+ */
+export function registerDisplayScaleReapply(handler: (() => void) | null): void {
+  reapplyHandler = handler;
+}
+
+/** No-op before boot registers a handler, and in tests. */
+export function reapplyDisplayScale(): void {
+  reapplyHandler?.();
+}

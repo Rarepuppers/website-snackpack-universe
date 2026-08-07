@@ -1,9 +1,9 @@
 # Last Bastion — document index
 
-Fifteen `.md` files live in this folder and several are historical. This index says which
+Sixteen `.md` files live in this folder and several are historical. This index says which
 to trust. **Read this before acting on any plan doc.**
 
-Last reviewed: 31 July 2026.
+Last reviewed: 7 August 2026.
 
 ---
 
@@ -11,6 +11,7 @@ Last reviewed: 31 July 2026.
 
 | File | What it is |
 |---|---|
+| `last-bastion-improvement-and-steam-plan-2026-08-07.md` | **The forward plan.** Full review of the current build, the Full HD/4K/ultrawide/Steam Deck display plan, the Steam client plan, the gameplay-depth backlog, new Codex asset batches 68–75, and a task-level implementation breakdown (§10) with file targets, line ranges, and acceptance criteria. Does not restate the asset queue — it references it. |
 | `asset-next-production-review-2026-07-26.md` | **The asset queue.** The single authority on what art/audio Codex produces next, in priority order, plus the quality floors. The 31 July addendum adds UI chrome, music, ambience, UI audio, and the locked/mystery/playable character batches. |
 | `last-bastion-art-bible.md` | Asset pipeline: naming, pivots, frame order, source-master retention, Steam/4K rules. Still current. Its open-approvals list is partly stale — see *Known stale points* below. |
 | `last-bastion-codex.html` | Player-facing encyclopedia, and **code-enforced**: `content/codexDrift.test.ts` fails the build if a shipped weapon, upgrade, relic, artifact, or enemy is missing an entry. Not optional documentation. |

@@ -1,6 +1,7 @@
 import type { Vector2Data } from "../math/Vector2Data";
 import { normalizeVector } from "../math/Vector2Data";
 
+export const SCRAP_SKITTERER_PACK_CAP = 8;
 export const SCRAP_SKITTERER_WINDUP_SECONDS = 0.55;
 export const SCRAP_SKITTERER_RUSH_SECONDS = 0.65;
 export const SCRAP_SKITTERER_BRAKE_SECONDS = 0.9;
