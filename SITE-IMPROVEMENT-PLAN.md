@@ -15,6 +15,10 @@ is a risk rather than a confirmed breakage, it says so.
 
 ## P1. The published site is 2.0 GB against GitHub Pages' documented 1 GB limit
 
+**Status: on hold — `last-bastion` is active WIP, leave its art alone per
+direction 2026-08-07.** Re-open when that project is far enough along that
+`art/production-tests/` stops changing daily.
+
 **Confirmed, and the fix is unambiguous.**
 
 | Measure | Size |
@@ -66,6 +70,13 @@ the risk.
 
 ## P2. `llms.txt` carries the exact false claim the June 2026 IAP audit was run to remove
 
+**Status: done 2026-08-07** (commit `78c0260`). Rewritten against the actual
+live catalogue: 12 live apps correctly listed with accurate billing language,
+the false "no in-app purchases" claim on ABC/123 removed, Brain Games Vol 2/3
+moved out of "Coming soon" (both shipped in July), arcade count corrected from
+~12 to the real 31, World Cup section softened out of present tense. All
+internal links verified resolving.
+
 **Confirmed, and this is a correctness/compliance issue, not cosmetics.**
 
 On 2026-06-24 the site was audited for false "no in-app purchases" copy and
@@ -101,6 +112,16 @@ point earning links to a file that misdescribes the products.
 
 ## P3. The World Cup section is written in present tense for a tournament that ended
 
+**Status: done 2026-08-07** (commit `b58003b`). Direction given: repoint the
+nav slot to `/play/`. Removed the dedicated World Cup nav pill from all 150
+pages that carried it (`/play/` already has its own nav entry, so nothing
+needed adding); rewrote the hub, schedule and knockout hero copy, titles and
+meta descriptions from present to past tense, without asserting any specific
+score or champion I can't verify — the pages' own live ESPN-fed data already
+correctly showed every match as final, this just brought the static copy in
+line with it. Group/team pages and Flag Frenzy (an evergreen daily game, not
+tournament-dependent) were left alone.
+
 **Confirmed.** The 2026 World Cup finished in July. Today is 2026-08-07. Current
 live copy:
 
@@ -133,9 +154,12 @@ retiring the World Cup nav link is a judgement about the brand, not a bug fix.
 
 ## P4. Continue the guides wedge (the actual distribution bottleneck)
 
-Unchanged in priority from the arcade plan's Section C, and now three guides in:
-`solitaire-without-ads-or-signup`, `sudoku-without-ads-or-mistakes` (2026-08-07),
-`checkers-without-ads-or-signup` (2026-08-07), on top of the three originals.
+Unchanged in priority from the arcade plan's Section C. **Four guides live now**:
+`solitaire-without-ads-or-signup`, `sudoku-without-ads-or-mistakes`,
+`checkers-without-ads-or-signup`, `freecell-without-ads-solver-verified` — the
+last three all added 2026-08-07, on top of the three originals (toddler apps,
+offline games, browser-games-offline). All cross-link each other; sitemap
+resubmitted to Search Console after each addition.
 
 The diagnosis stands: **4 inbound links is the bottleneck, not game quality.**
 Head terms (solitaire 234k/mo, spider 123k) are unwinnable against
@@ -144,11 +168,18 @@ modifier slot — *no ads, no sign-in, no download, solver-checked deals, works
 offline* — all of which are genuinely true here and structurally hard for
 ad-funded incumbents to claim.
 
+Search Console access is now live (service account, Full permission on both
+the domain and URL-prefix properties) — real numbers instead of the
+2026-08-06 baseline memory: 3 clicks on 809 impressions over the last 28 days
+sitewide, `/play/thirteen/` alone pulling 610 of those impressions on 1 click
+(a title/snippet problem more than a ranking one — avg. position 8.9 there is
+fine). New guides take a few days to accrue impressions; too early to read
+signal from the four added this session.
+
 Remaining targets in the same shape, roughly by volume:
 
 | Guide | Term | Angle |
 |---|---|---|
-| FreeCell without ads | 21k/mo | Solver-verified deals — every board winnable. We can make this claim and most can't. |
 | Mahjong Solitaire without ads | 12k/mo | Layouts, and what "free" usually costs in this category |
 | Minesweeper / classic games | low each | Grouped "the Windows games you miss, in a browser" piece |
 
@@ -161,31 +192,42 @@ first moves off 4. This needs signups on external sites, so it needs you present
 
 ## P5. Smaller confirmed items
 
-- **Zoo World / Garden World privacy pages still say billing is not enabled.**
-  Both apps now carry real (non-stub) RevenueCat keys in `eas.json`, and all 12
-  RC projects had live offerings as of 2026-07-30. If billing is live in the
-  *published* build, the policy is understating data collection — a real
-  compliance gap. If the published build predates it, the copy is correct and
-  should be left alone. **I can't determine which from the repo**; it depends on
-  what's actually live on Play. Worth 5 minutes of your time to check, and I'll
-  fix the copy either way.
-- **Internal links are clean.** Audited all 152 HTML files — zero broken internal
+- **Zoo World / Garden World privacy pages said billing is not enabled — done
+  2026-08-07** (commit `b58003b`). Confirmed billing is live in the published
+  builds. Both privacy pages rewritten to match Prehistoric Pals' existing
+  accurate language (RevenueCat disclosure, parental gate, no hedge) across
+  five spots each: the data-handling bullet, the "In-app purchases" section,
+  "how information is used", "your choices", and the data-deletion section.
+  Effective dates bumped to reflect the material change. Zoo World's *app*
+  page already had this right — only the privacy pages were stale.
+- **Internal links are clean.** Audited all 154 HTML files — zero broken internal
   links. No action.
 - **Technical SEO is fine.** 129 pages indexed, 0 crawl errors, daily crawl,
   sitemap and robots.txt correct. The problem has never been technical.
-- **Resubmit the sitemap** after P2/P3 land, since a lot of markup will have
-  changed.
+- **Google Search Console access is live** as of 2026-08-07 — a service
+  account with Full permission on the domain property, confirmed working via
+  the URL Inspection and Search Analytics APIs. Sitemap resubmitted after
+  each content change this session. No more relying on the stale 2026-08-06
+  baseline memory going forward.
 
 ---
 
-## Suggested order
+## Status as of 2026-08-07
 
-1. **P1 step 1** — move `last-bastion/art/` out. Biggest risk reduction, ~10
-   minutes, no judgement calls.
-2. **P2** — rewrite `llms.txt`. Removes a false billing claim; mechanical.
-3. **P3** — World Cup copy pass. Needs your call on the nav slot first.
-4. **P4** — FreeCell + Mahjong guides, then directory submissions with you.
-5. **P5** — Zoo/Garden privacy, once you've confirmed what's live.
+**P2, P3 and P5 are done. P1 is on hold** (last-bastion is active WIP, revisit
+later — no art/history changes touched). **P4 is ongoing** — four guides live,
+Mahjong is the next natural target, directory submissions are still unstarted
+and need you present for the signups.
+
+What's left, in order:
+
+1. **Mahjong guide** (12k/mo) — same wedge, mechanical.
+2. **Directory submissions** — the actual next lever on the 4-link bottleneck.
+   Needs you present.
+3. **Section A art** (arcade plan) — briefed and waiting on Codex/imagegen,
+   nothing further for me to do until files land.
+4. **P1, later** — once `last-bastion` stabilizes enough that its art stops
+   changing daily.
 
 Deliberately **not** on this list: more arcade code polish. Section B is closed,
 and the analytics say polish has no audience until the link count moves.
