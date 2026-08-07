@@ -154,12 +154,16 @@ retiring the World Cup nav link is a judgement about the brand, not a bug fix.
 
 ## P4. Continue the guides wedge (the actual distribution bottleneck)
 
-Unchanged in priority from the arcade plan's Section C. **Four guides live now**:
+Unchanged in priority from the arcade plan's Section C. **Five guides live now**:
 `solitaire-without-ads-or-signup`, `sudoku-without-ads-or-mistakes`,
-`checkers-without-ads-or-signup`, `freecell-without-ads-solver-verified` — the
-last three all added 2026-08-07, on top of the three originals (toddler apps,
-offline games, browser-games-offline). All cross-link each other; sitemap
-resubmitted to Search Console after each addition.
+`checkers-without-ads-or-signup`, `freecell-without-ads-solver-verified`,
+`mahjong-solitaire-without-ads` — the last four all added 2026-08-07, on top
+of the three originals (toddler apps, offline games, browser-games-offline).
+All cross-link each other; sitemap resubmitted to Search Console after each
+addition. Mahjong's angle deliberately differs from FreeCell's: "solver-
+verified" would be a false claim there (Shuffle rescues a dead board, it
+doesn't guarantee the deal was ever solvable), so the wedge is the same
+ad-gated-rescue pattern used for Sudoku's hints, applied to Shuffle instead.
 
 The diagnosis stands: **4 inbound links is the bottleneck, not game quality.**
 Head terms (solitaire 234k/mo, spider 123k) are unwinnable against
@@ -180,8 +184,7 @@ Remaining targets in the same shape, roughly by volume:
 
 | Guide | Term | Angle |
 |---|---|---|
-| Mahjong Solitaire without ads | 12k/mo | Layouts, and what "free" usually costs in this category |
-| Minesweeper / classic games | low each | Grouped "the Windows games you miss, in a browser" piece |
+| Minesweeper / classic games | low each | Grouped "the Windows games you miss, in a browser" piece — the last one from the original volume table; everything above it now has a guide. |
 
 Also still open from the arcade plan and unstarted: **directory submissions** to
 free-browser-game aggregators. Unglamorous, and it is how the backlink count
@@ -215,15 +218,16 @@ first moves off 4. This needs signups on external sites, so it needs you present
 ## Status as of 2026-08-07
 
 **P2, P3 and P5 are done. P1 is on hold** (last-bastion is active WIP, revisit
-later — no art/history changes touched). **P4 is ongoing** — four guides live,
-Mahjong is the next natural target, directory submissions are still unstarted
-and need you present for the signups.
+later — no art/history changes touched). **P4 is ongoing** — five guides live
+(the sixth, Minesweeper/classic games, is the last one queued), directory
+submissions are still unstarted and need you present for the signups.
 
 What's left, in order:
 
-1. **Mahjong guide** (12k/mo) — same wedge, mechanical.
-2. **Directory submissions** — the actual next lever on the 4-link bottleneck.
-   Needs you present.
+1. **Directory submissions** — the actual next lever on the 4-link bottleneck,
+   now that five guides exist to submit. Needs you present.
+2. **Minesweeper / classic-games guide** — last one queued in the wedge,
+   mechanical, I can do it without input.
 3. **Section A art** (arcade plan) — briefed and waiting on Codex/imagegen,
    nothing further for me to do until files land.
 4. **P1, later** — once `last-bastion` stabilizes enough that its art stops
