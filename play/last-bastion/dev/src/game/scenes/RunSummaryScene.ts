@@ -9,6 +9,7 @@ import { createRunSummary, damagePerMinute, type RunSummary } from "../run/RunSu
 import { createTransformationCodexSnapshot } from "../transformations/TransformationSnapshot";
 import { normalizeTransformationAffinityState } from "../transformations/TransformationAffinity";
 import { canonicalWeaponTileFrame } from "../ui/WeaponTileFrames";
+import { formatRunClock } from "../stats/formatStat";
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -65,7 +66,7 @@ export class RunSummaryScene extends Phaser.Scene {
       ["Enemies defeated", String(summary.kills)],
       ["Elite kills", String(summary.eliteKills)],
       ["Damage taken", format(summary.damageTaken)],
-      ["Run duration", formatDuration(summary.elapsedSeconds)],
+      ["Run duration", formatRunClock(summary.elapsedSeconds)],
       ["Scrap earned", format(summary.scrapEarned)],
       ["Scrap banked", format(summary.scrapBanked)],
     ];
@@ -246,12 +247,6 @@ function format(value: number): string {
 function damageSourceLabel(source: string): string {
   if (source === "generic") return "OTHER";
   return source.replaceAll("-", " ").toUpperCase();
-}
-
-function formatDuration(seconds: number): string {
-  const whole = Math.max(0, Math.floor(seconds));
-  const minutes = Math.floor(whole / 60);
-  return `${minutes}:${String(whole % 60).padStart(2, "0")}`;
 }
 
 function compactMinuteBars(

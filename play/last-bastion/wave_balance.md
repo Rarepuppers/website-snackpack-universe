@@ -530,3 +530,53 @@ on purpose so it reads as a decision rather than an oversight.
 now has a whole faction to exploit — that is the intent, but it makes the two fire melee weapons and
 the Flamethrower noticeably stronger on corrupted-human nodes. Toxic loses ground against the same
 faction, which is the trade. Needs a play pass before any further element tuning.
+
+## 8 August 2026 — bonus health (overheal) and elite bar geometry
+
+### `bonusHealth` — a separate overheal pool
+
+Implements §11.3 **option B**. Healing that would have been discarded is banked in a distinct pool
+instead of being lost. None of the six `Math.min(playerMaxHealth, ...)` clamps changed, and
+`maxHpFlat` / `maxHpPercent` still mean exactly what they meant before.
+
+| Parameter | Value | Reasoning |
+|---|---|---|
+| Cap | `0.5 × playerMaxHealth` | Generous enough to be worth taking a heal at full, small enough that it cannot become a second health bar. |
+| Decay | **None** | It is capped, only obtainable when already near full, and never recharges — so it is strictly weaker per point than shield, which does recharge. |
+| Damage order | shield (raw) → **bonus** (post-mitigation) → health | Bonus health is extra *hit points*, so armour still applies to it. Shield keeps absorbing pre-mitigation as before. |
+
+Sources routed through `grantHealing`, all of which previously could be worth literally zero:
+
+| Source | Amount |
+|---|---|
+| Supply depot `patch-up` (and the `field-armoury` fallback) | `SUPPLY_DEPOT_HEAL` 4.5 |
+| Scrap shop `shop-repair` | `SCRAP_SHOP_REPAIR` 3.5 |
+| Mini-boss arsenal cache | 3 |
+| **Medkit powerup** | `MEDKIT_HEAL_AMOUNT` |
+
+Deliberately **not** routed: `applyLevelGrowth` (a maximum-health increase, not a heal) and
+`applyMedicHealing` (already spends its overflow on shield as the medic's identity — feeding both
+would pay the same overflow twice).
+
+**Net effect to watch.** The medkit is the one that actually moves the needle: it is the common
+in-combat heal and it drops on a wave cadence, so a player who holds position at full health now
+banks a buffer they previously threw away. That is a real survivability gain on the back half of a
+run, where medkits arrive faster than damage does. The other three are one-shot node rewards and
+change little. Needs a play pass; if it proves too strong the first lever is the cap fraction, not
+the sources — removing a source restores the "this reward did nothing" feel that motivated the
+change.
+
+### Elite and mini-boss health bar geometry
+
+Not balance-affecting, recorded here because it changes threat reading at density. Elites and
+mini-bosses used the same 34x4 bar as a trash scuttler with a single 3px pip. Rank is now carried by
+three redundant channels — width, an outline frame, and pip count — rather than colour alone, which
+the four colour-vision modes make unreliable. Standard and specialist bars are unchanged at 34x4, so
+the common case at 30+ enemy density did not get busier.
+
+| Class | Width x height | Frame | Pips | Segments |
+|---|---|---|---|---|
+| standard / specialist | 34 x 4 | no | 0 | 1 |
+| elite | 44 x 5 | yes | 1 | 1 |
+| mini-boss | 52 x 6 | yes | 2 | 4 |
+| boss | 60 x 7 | yes | 3 | 4 |

@@ -772,6 +772,12 @@ while recharging tells the player that disengaging is working.
 
 ### 11.3 Overheal
 
+> **STATUS (8 Aug 2026): shipped as option B.** Separate `bonusHealth` pool, capped at
+> half of maximum, no decay, spent after mitigation and before health. Note the clamp-site
+> count below is wrong: there are **seven**, not six — the medkit powerup clamps as
+> `Math.min(healAmount, maxHealth - health)`, a shape the original grep could not match, and it
+> is the one that matters most. See `wave_balance.md`.
+
 Because health is hard-clamped in six places, pick the mechanic before the visuals.
 
 | | **A — true overheal** | **B — separate bonus pool** *(recommended)* |
@@ -844,20 +850,20 @@ is meaningless. Record the multiplier in the run summary either way.
 
 Ranked by value against effort. The first two are the ones I would do next.
 
-1. **Surface damage-type weakness and resistance.** 29 of 36 enemies now carry resistance profiles
+1. *(Shipped 7-8 Aug 2026 — but see the colour-vision gap in the log: damage-type identity is still carried by colour alone.)* **Surface damage-type weakness and resistance.** 29 of 36 enemies now carry resistance profiles
    after the 7 August pass, and the player has no way to see any of it — the entire
    rock-paper-scissors layer is invisible. A small weakness/resist glyph on the enemy health bar, or
    a tinted hit marker, turns existing data into a readable decision. Highest value per line of code
    on this list.
-2. **Show status buildup progress.** Statuses fire at 8 accumulated buildup, and now that
+2. *(Shipped 8 Aug 2026.)* **Show status buildup progress.** Statuses fire at 8 accumulated buildup, and now that
    `statusBuildupPercent` scales it, invisible progress is actively worse than before — the player
    cannot tell the stat is doing anything. A thin ring or tick marks under the enemy health bar.
-3. **Promote the wave timer** to a real countdown (a ring around the wave number, or a depleting
+3. *(Shipped 8 Aug 2026.)* **Promote the wave timer** to a real countdown (a ring around the wave number, or a depleting
    bar) on the waves that are actually timed. Waves 1-2, 5 and 10 have no countdown by design and
    should show none.
-4. **Live run timer.** `RunSummary.elapsedSeconds` is already tracked but never shown in-run. Cheap,
+4. *(Shipped 8 Aug 2026.)* **Live run timer.** `RunSummary.elapsedSeconds` is already tracked but never shown in-run. Cheap,
    and required for dailies and leaderboards anyway.
-5. **Elite health bars.** A boss panel already exists (`bossPanel` / `bossFill`); elites use the
+5. *(Shipped 8 Aug 2026.)* **Elite health bars.** A boss panel already exists (`bossPanel` / `bossFill`); elites use the
    ordinary enemy bar and do not read as special.
 6. **Damage-taken direction indicator.** `showDamageDirection` exists in the scene — worth
    confirming it is legible at 30+ enemy density, where off-screen threats are the main killer.

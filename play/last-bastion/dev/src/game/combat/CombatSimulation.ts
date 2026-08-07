@@ -706,6 +706,12 @@ export interface EnemySnapshot {
   abominationPrimeGrabDamage?: number;
   facingDirection: Vector2Data;
   statuses: readonly StatusEffectType[];
+  /**
+   * Progress toward `STATUS_BUILDUP_THRESHOLD` per status, so the HUD can show
+   * that an elemental build is working before the status actually fires.
+   * Exposed 8 Aug 2026; buildup was previously invisible to the player.
+   */
+  statusBuildup: Readonly<Partial<Record<StatusEffectType, number>>>;
   steeringProfile: EnemySteeringProfileId;
 }
 
@@ -852,6 +858,10 @@ export interface CombatSnapshot {
   playerPosition: Vector2Data;
   playerHealth: number;
   playerMaxHealth: number;
+  /** Overheal pool, spent before health. Zero unless a heal overflowed. */
+  playerBonusHealth: number;
+  /** Ceiling on the above, so the HUD can size the overlay. */
+  playerMaxBonusHealth: number;
   playerShield: number;
   playerMaxShield: number;
   playerArmour: number;
@@ -1385,6 +1395,12 @@ export const SHOP_WEAPON_CANDIDATE_COUNT = 3;
 /** A Unique is a real decision against a tier-up, not another Tier I purchase. */
 export const SHOP_UNIQUE_WEAPON_PRICE_MULTIPLIER = 3;
 const SCRAP_SHOP_REPAIR = 3.5;
+/**
+ * Overheal ceiling as a fraction of maximum health (§11.3). Half is generous
+ * enough to be worth taking a heal at full and small enough that it cannot
+ * become a second health bar. Balance-affecting — see wave_balance.md.
+ */
+const BONUS_HEALTH_CAP_FRACTION = 0.5;
 const SCRAP_SHOP_ARMOUR = 3;
 const ORDINARY_SCRAP_DROP_CHANCE = 0.25;
 const FENCE_ACTIVE_SECONDS = 6;
@@ -1465,6 +1481,13 @@ export class CombatSimulation {
   private playerPosition: Vector2Data;
   private playerHealth = PLAYER_MAX_HEALTH;
   private playerMaxHealth = PLAYER_MAX_HEALTH;
+  /**
+   * Overheal as a separate pool (§11.3 option B) rather than by letting
+   * `playerHealth` exceed its maximum. Nothing else changes: the six
+   * `Math.min(playerMaxHealth, ...)` clamps stay exactly as they are, and
+   * `maxHpFlat`/`maxHpPercent` keep meaning what they mean now.
+   */
+  private playerBonusHealth = 0;
   private regenerationRemainingSeconds = PLAYER_REGEN_INTERVAL_SECONDS;
   private playerShield: number;
   private medicTriageHits = 0;
@@ -2474,6 +2497,8 @@ export class CombatSimulation {
       playerPosition: { ...this.playerPosition },
       playerHealth: this.playerHealth,
       playerMaxHealth: this.playerMaxHealth,
+      playerBonusHealth: this.playerBonusHealth,
+      playerMaxBonusHealth: this.bonusHealthCap(),
       playerShield: this.playerShield,
       playerMaxShield: this.defence.maxShield,
       playerArmour: this.defence.armour,
@@ -2932,6 +2957,7 @@ export class CombatSimulation {
     });
 
     this.playerHealth = Math.max(0.1, Math.min(this.playerMaxHealth, build.health));
+    this.playerBonusHealth = 0;
     this.playerShield = Math.max(0, build.shield);
   }
 
@@ -2969,7 +2995,7 @@ export class CombatSimulation {
   private applySupplyChoice(optionId: string): void {
     switch (optionId) {
       case "patch-up":
-        this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + SUPPLY_DEPOT_HEAL * this.supportEffectMultiplier * this.transformationModifiers.healingReceivedMultiplier);
+        this.grantHealing(SUPPLY_DEPOT_HEAL * this.supportEffectMultiplier * this.transformationModifiers.healingReceivedMultiplier);
         break;
       case "field-armoury": {
         const armoury = this.buildUpgradeDecision();
@@ -2978,7 +3004,7 @@ export class CombatSimulation {
         } else {
           // Everything is maxed; fall back to the heal so the choice
           // is never wasted.
-          this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + SUPPLY_DEPOT_HEAL * this.supportEffectMultiplier * this.transformationModifiers.healingReceivedMultiplier);
+          this.grantHealing(SUPPLY_DEPOT_HEAL * this.supportEffectMultiplier * this.transformationModifiers.healingReceivedMultiplier);
         }
         break;
       }
@@ -3545,7 +3571,7 @@ export class CombatSimulation {
 
   private applyScrapShopPurchase(optionId: string): void {
     if (optionId === "shop-repair") {
-      this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + SCRAP_SHOP_REPAIR * this.supportEffectMultiplier);
+      this.grantHealing(SCRAP_SHOP_REPAIR * this.supportEffectMultiplier);
       return;
     }
     if (optionId === "shop-uranium-kit") {
@@ -4133,6 +4159,37 @@ export class CombatSimulation {
       this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount: healed });
     }
     return { healed, shieldGained: this.playerShield - shieldBefore };
+  }
+
+  /** Ceiling on the bonus pool: half of maximum health. */
+  private bonusHealthCap(): number {
+    return this.playerMaxHealth * BONUS_HEALTH_CAP_FRACTION;
+  }
+
+  /**
+   * Heal to full, then bank what would have been thrown away as bonus health.
+   *
+   * This exists because a heal taken at full health used to do literally
+   * nothing — a supply-depot choice or a paid shop repair could be silently
+   * worth zero. Bonus health is deliberately weaker than shield per point: it
+   * never recharges, so it is spent once and gone.
+   *
+   * Only player-facing *reward* heals route here. `applyLevelGrowth` is a
+   * maximum-health increase rather than a heal, and `applyMedicHealing` already
+   * spends its overflow on shield as the medic's identity — feeding both would
+   * pay the same overflow twice.
+   */
+  private grantHealing(amount: number): number {
+    const requested = Math.max(0, amount);
+    if (requested <= 0) return 0;
+    const missingHealth = Math.max(0, this.playerMaxHealth - this.playerHealth);
+    const healed = Math.min(missingHealth, requested);
+    this.playerHealth += healed;
+    const overflow = requested - healed;
+    if (overflow > 0) {
+      this.playerBonusHealth = Math.min(this.bonusHealthCap(), this.playerBonusHealth + overflow);
+    }
+    return healed;
   }
 
   private registerInjectorHit(): void {
@@ -8647,7 +8704,12 @@ export class CombatSimulation {
       if (this.playerHealth / this.playerMaxHealth < 0.3) {
         mitigated *= this.perkModifiers.lowHealthDamageMultiplier;
       }
-      this.playerHealth = Math.max(0, this.playerHealth - mitigated);
+      // Bonus health is spent after mitigation, unlike shield which absorbs the
+      // raw hit: it is extra hit points, so armour still applies to it. Spent
+      // before health so it can actually save the player.
+      const absorbedByBonus = Math.min(this.playerBonusHealth, mitigated);
+      this.playerBonusHealth -= absorbedByBonus;
+      this.playerHealth = Math.max(0, this.playerHealth - (mitigated - absorbedByBonus));
       // Reactive Blood answers *health* damage specifically, so it sits inside
       // this branch — a hit fully absorbed by shield provokes nothing.
       if (mitigated > 0) this.applyRetaliationBurst();
@@ -8755,13 +8817,14 @@ export class CombatSimulation {
       return;
     }
     if (type === "medkit") {
-      const amount = Math.min(
+      // Picking a medkit up at full health used to be worth exactly nothing;
+      // the overflow is now banked as bonus health instead. The event still
+      // reports only genuine healing, so healing numbers stay honest.
+      const healed = this.grantHealing(
         MEDKIT_HEAL_AMOUNT * this.supportEffectMultiplier * this.transformationModifiers.healingReceivedMultiplier,
-        this.playerMaxHealth - this.playerHealth,
       );
-      if (amount > 0) {
-        this.playerHealth += amount;
-        this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount });
+      if (healed > 0) {
+        this.frameEvents.push({ type: "player-healed", position: { ...this.playerPosition }, amount: healed });
       }
       this.applyHealthPickupSlowPulse();
       return;
@@ -8812,7 +8875,7 @@ export class CombatSimulation {
         const decision = this.buildSupplyDepotDecision();
         this.decisionQueue.push({ ...decision, title: "AURUM SUPPLY CACHE — CHOOSE ONE" });
       } else if (reward.type === "mini-boss-arsenal-cache") {
-        this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + 3 * this.supportEffectMultiplier);
+        this.grantHealing(3 * this.supportEffectMultiplier);
         this.addExperience(this.experienceThreshold() * 2);
       } else {
         // Elite caches are the run's slot income: choose which category
@@ -9944,6 +10007,7 @@ export class CombatSimulation {
         : undefined,
       facingDirection: { ...enemy.facingDirection },
       statuses: this.activeStatuses(enemy),
+      statusBuildup: { ...enemy.statusBuildup },
       steeringProfile: definition.steeringProfile,
     };
   }

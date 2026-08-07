@@ -1,6 +1,13 @@
 import Phaser from "phaser";
 import type { EnemySnapshot } from "../combat/CombatSimulation";
 import type { GameSettings } from "../save/LocalSaveStore";
+import { DAMAGE_TYPE_COLOURS } from "../combat/damageTypes";
+import {
+  damageTypeForStatus,
+  dominantBuildupProgress,
+  primaryDamageAffinity,
+} from "./EnemyDamageReadout";
+import { buildupRowY, enemyBarStyle, shieldRowY, type EnemyBarStyle } from "./EnemyBarStyle";
 
 export type EnemyHealthBarMode = GameSettings["enemyHealthBars"];
 export type EnemyThreatClass = "standard" | "specialist" | "elite" | "mini-boss" | "boss";
@@ -84,17 +91,79 @@ export class EnemyHealthBars {
   }
 }
 
-function drawHealthBar(graphics: Phaser.GameObjects.Graphics, enemy: EnemyHealthBarTarget): void {
-  const width = 34;
+function drawHealthBar(
+  graphics: Phaser.GameObjects.Graphics,
+  enemy: EnemyHealthBarTarget & Partial<EnemySnapshot>,
+): void {
+  const style = enemyBarStyle(enemy.threatClass);
+  const { width, height } = style;
   const healthRatio = Math.max(0, Math.min(1, enemy.health / Math.max(1, enemy.maxHealth)));
   const shieldRatio = Math.max(0, Math.min(1, enemy.shield / Math.max(1, enemy.maxShield)));
   graphics.clear();
-  graphics.fillStyle(0x160f16, 0.9).fillRect(-width / 2, 0, width, 4);
-  graphics.fillStyle(0xd94b5f, 1).fillRect(-width / 2, 0, width * healthRatio, 4);
-  if (enemy.maxShield > 0 && enemy.shield > 0) {
-    graphics.fillStyle(0x5ec9e8, 1).fillRect(-width / 2, 5, width * shieldRatio, 3);
+  graphics.fillStyle(0x160f16, 0.9).fillRect(-width / 2, 0, width, height);
+  graphics.fillStyle(0xd94b5f, 1).fillRect(-width / 2, 0, width * healthRatio, height);
+  // Segment dividers on the big pools, so a mini-boss bar that barely moves per
+  // hit still shows measurable progress.
+  if (style.segments > 1) {
+    graphics.fillStyle(0x160f16, 0.85);
+    for (let index = 1; index < style.segments; index += 1) {
+      graphics.fillRect(-width / 2 + (width * index) / style.segments, 0, 1, height);
+    }
   }
-  if (enemy.threatClass === "elite" || enemy.threatClass === "mini-boss" || enemy.threatClass === "boss") {
-    graphics.fillStyle(0xffcf70, 1).fillRect(width / 2 + 3, 0, 3, 3);
+  if (style.framed && style.accent !== null) {
+    graphics.lineStyle(1, style.accent, 0.9).strokeRect(-width / 2, 0, width, height);
+  }
+  if (enemy.maxShield > 0 && enemy.shield > 0) {
+    graphics.fillStyle(0x5ec9e8, 1).fillRect(-width / 2, shieldRowY(style), width * shieldRatio, 3);
+  }
+  if (style.accent !== null) {
+    graphics.fillStyle(style.accent, 1);
+    for (let index = 0; index < style.pips; index += 1) {
+      graphics.fillRect(width / 2 + 3 + index * 5, 0, 3, 3);
+    }
+  }
+  drawBuildupTick(graphics, enemy, style);
+  drawAffinityMark(graphics, enemy, style);
+}
+
+/**
+ * A thin tick creeping along under the bar as a status builds toward its
+ * threshold. Without it an elemental build gives no feedback at all until the
+ * status fires, which made `statusBuildupPercent` feel inert.
+ */
+function drawBuildupTick(
+  graphics: Phaser.GameObjects.Graphics,
+  enemy: EnemyHealthBarTarget & Partial<EnemySnapshot>,
+  style: EnemyBarStyle,
+): void {
+  if (!enemy.statusBuildup) return;
+  const building = dominantBuildupProgress(enemy.statusBuildup, enemy.statuses ?? []);
+  if (!building) return;
+  const damageType = damageTypeForStatus(building.status);
+  const colour = damageType ? DAMAGE_TYPE_COLOURS[damageType] : 0xffffff;
+  graphics.fillStyle(colour, 0.85)
+    .fillRect(-style.width / 2, buildupRowY(style), style.width * building.progress, 1);
+}
+
+/**
+ * Weakness and resistance, as a shape plus a colour rather than colour alone —
+ * four colour-vision modes ship, so the triangle direction has to carry the
+ * meaning on its own. Up means the enemy takes extra from that type.
+ */
+function drawAffinityMark(
+  graphics: Phaser.GameObjects.Graphics,
+  enemy: EnemyHealthBarTarget & Partial<EnemySnapshot>,
+  style: EnemyBarStyle,
+): void {
+  if (!enemy.type) return;
+  const mark = primaryDamageAffinity(enemy.type);
+  if (!mark) return;
+  const colour = DAMAGE_TYPE_COLOURS[mark.damageType];
+  const left = -style.width / 2 - 6;
+  graphics.fillStyle(colour, 1);
+  if (mark.affinity === "weak") {
+    graphics.fillTriangle(left, 4, left + 4, 4, left + 2, 0);
+  } else {
+    graphics.fillTriangle(left, 0, left + 4, 0, left + 2, 4);
   }
 }

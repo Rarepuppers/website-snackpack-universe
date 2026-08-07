@@ -2233,3 +2233,45 @@ narrowed to promoting the countdown *on the waves that are actually timed*, show
 1-2, 5 and 10.
 
 - Verification: typecheck clean, **1069 tests across 159 files pass** (17 new), image audit, build clean, smoke `200` / 76 routes, offline 335 / 0 missing. Browser boot clean with no console errors. Screenshots are unavailable in this environment, so the bar behaviour is proven by the extracted pure-function tests rather than by eye — a visual check of colour and placement is still worth doing.
+
+## 8 August 2026 — Damage-type affinity and status-buildup readouts
+
+The top two items from §11.6, both converting data the simulation already held into something the
+player can see.
+
+- **Exposed `statusBuildup` on `EnemySnapshot`.** It was tracked internally and never surfaced, so buildup progress was invisible — which became worse once `statusBuildupPercent` gave players a stat that scaled it with no visible effect.
+- **New Phaser-free module `rendering/EnemyDamageReadout.ts`** holding the rules: `primaryDamageAffinity`, `dominantBuildupProgress`, `damageTypeForStatus`. Kept out of `EnemyHealthBars` because that imports Phaser and cannot be unit-tested — the same lesson as yesterday's `armourLabel`.
+- **Affinity mark:** one small triangle to the left of the enemy health bar, tinted by damage type. Up means the enemy takes extra from that type, down means it resists. **One mark, not a list** — at 30+ enemy density a stack of glyphs per enemy is noise, and the player only needs to know what to point at this thing. Weakness outranks resistance when an enemy has both, because "hit it with fire" is actionable and "don't hit it with toxic" mostly is not.
+- Shape carries the meaning, not colour: four colour-vision modes ship, so a coloured dot alone would be unreadable in three of them. The triangle direction works without any colour at all.
+- **Buildup tick:** a thin line under the bar creeping toward the threshold, coloured by the causing damage type. Statuses already active are excluded — once an enemy is burning, the status itself is the readout, not progress toward re-applying it.
+- 14 tests on the pure rules, including the deliberately-neutral enemies returning null, the weakness-over-resistance preference, clamping past the threshold, and the already-active exclusion.
+- Verification: typecheck clean, **1083 tests across 160 files pass** (14 new), image audit, build clean, smoke `200` / 76 routes, offline 335 / 0 missing. Browser boot on `?scenario=corrupted-human` clean with no console errors.
+- Still unverified by eye: screenshots are unavailable in this environment, so triangle size, placement and legibility at density are proven only by the pure-function tests. Worth a visual pass before this is considered finished.
+
+## 8 August 2026 — §11 remainder: wave countdown, run clock, elite bars, overheal
+
+The four items left in §11 after the shield/armour and affinity passes.
+
+- **Wave countdown promoted.** It already existed as a four-character suffix (`WAVE 7/10 - 42s`) and was easy to miss. The numeric moved to a left slot in the top-centre panel, mirrored by the run clock on the right, with a draining bar along the panel's bottom edge that turns amber-red inside the last five seconds. It flanks the wave label rather than sitting under it because `bossPanel`'s name text sits at y=42 while the panel ends at y=37 — there is no free row below, and putting one there would have collided on exactly the waves where the boss bar matters.
+- **The gate is `timerEndsWave`, not the presence of a duration.** Waves 1-2 carry a 20-second `durationSeconds` that is the spawn-schedule window rather than an ending, so gating on the duration would have drawn a draining bar promising an ending that never arrives. Waves 1-2, 5 and 10 show no countdown at all, as designed.
+- **Live run clock** from `runMetrics.elapsedSeconds`, which was already tracked and never shown. `RunSummaryScene` had its own private `formatDuration`; both now share `formatRunClock`, because two formatters disagreeing about 59.7 seconds would show one duration in-run and a different one on the summary immediately after.
+- **Elite health bars.** Elites and mini-bosses used the identical 34x4 bar as a trash scuttler plus a 3px pip that is invisible at density. New Phaser-free `rendering/EnemyBarStyle.ts` gives each threat class its own geometry, carrying rank on **three redundant channels** — width, outline frame, and pip count — so it survives all four colour-vision modes. Row offsets are now derived from bar height rather than hard-coded, and a test asserts they return exactly the previous 5 and 9 at standard height. Standard and specialist bars are untouched, so the common case did not get busier.
+
+### Overheal — option B, and a seventh clamp site the plan missed
+
+Implemented as a separate `bonusHealth` pool. No existing clamp changed.
+
+- Damage order is shield (raw) → bonus (post-mitigation) → health. Bonus health is extra *hit points*, so armour still applies to it; shield keeps absorbing pre-mitigation. Capped at half of maximum, no decay — it never recharges, so it is strictly weaker per point than shield.
+- **§11.1 counted six `Math.min(playerMaxHealth, ...)` clamp sites. There are seven.** The medkit powerup clamps as `Math.min(healAmount, maxHealth - health)` — a different shape that the original grep pattern could not match. It is also the one that matters most: the other six are one-shot node rewards, while the medkit is the common in-combat heal and drops on a wave cadence. Had it been missed, overheal would have shipped looking wired while never firing during actual combat.
+- Balance entry written to `wave_balance.md`, including the note that the medkit is the source that actually moves survivability and that the cap fraction — not the source list — is the first lever if it proves strong.
+
+### Verification, and what is still unproven
+
+- Full `verify` green: typecheck clean, **1109 tests across 163 files** (26 new), image audit 8 lossy + 50 lossless, build clean, smoke `200` / 76 routes, offline 335 / 0 missing. The deterministic `ReferenceRun` / `ReplayFixture` hashes were unaffected.
+- The overheal tests **drive the real simulation**, not the view helpers: a medkit collected at full health in a live combat node, then a spawned scuttler actually hitting the player, asserting the pool drains while health stays at maximum and only then falls through. Wiring a pool into a snapshot proves nothing about whether a heal ever reaches it.
+- A first attempt used an `as unknown as` cast to fake the encounter descriptor; it compiled and every assertion failed because `chooseOption("patch-up")` returned `false` against a fixture that was not a real supply depot. Replaced with the genuine `buildExpeditionWavePlan` builder. Same lesson as 8 August: the cast is the bug.
+- **Still unverified by eye.** Screenshots remain unavailable — the Browser pane does not composite frames in this environment, so `computer{screenshot}` times out. Browser boot is clean with no console errors, but placement and legibility of the countdown bar, the run clock, the overheal overlay and the elite bar frames are proven only by pure-function tests.
+
+### A colour-vision gap in yesterday's affinity mark
+
+Checked while assessing the affinity triangle without screenshots. `combatPalette()` carries only threat and danger colours — it has **no damage-type entries**, so `DAMAGE_TYPE_COLOURS` is never remapped anywhere in the codebase. The triangle's *direction* survives all four modes as designed, but *which* damage type it refers to is carried by colour alone, and `fire 0xff5148` against `toxic 0x7ed957` is precisely the deuteranopia/protanopia confusion pair. A red-green colourblind player sees "weak to something" and cannot tell which of the two. Not a regression — `EnemyHealthBars` has never been palette-aware — but it is the exact property §11.7 requires of asset batch 86 ("shape-first, never colour-only"), so the shape work needs to extend to damage-type identity, not just weak-versus-resistant. Left as a finding rather than a redesign.

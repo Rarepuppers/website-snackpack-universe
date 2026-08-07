@@ -63,6 +63,64 @@ export function armourLabel(armour: number, flatDamageReduction: number): string
 }
 
 
+/**
+ * `M:SS` for a run clock. The single implementation — `RunSummaryScene` used to
+ * carry its own copy, and two formatters disagreeing about what 59.7 seconds is
+ * would show a different duration on the HUD than on the summary that follows it.
+ *
+ * Floors rather than rounds, so the live clock never displays a second the run
+ * has not actually reached. Hours are included only when a run gets there, which
+ * keeps the common case narrow enough for the top-centre panel.
+ */
+export function formatRunClock(seconds: number): string {
+  const whole = Number.isFinite(seconds) ? Math.max(0, Math.floor(seconds)) : 0;
+  const minutes = Math.floor(whole / 60);
+  const secondsPart = String(whole % 60).padStart(2, "0");
+  if (minutes < 60) return `${minutes}:${secondsPart}`;
+  const hours = Math.floor(minutes / 60);
+  return `${hours}:${String(minutes % 60).padStart(2, "0")}:${secondsPart}`;
+}
+
+export interface WaveCountdownView {
+  /** False on clear-all waves, which have no countdown by design. */
+  readonly visible: boolean;
+  readonly remainingSeconds: number;
+  /** 1 at wave start draining to 0, for a bar that empties as time runs out. */
+  readonly remainingFraction: number;
+  /** Last five seconds — the cue to stop looting and brace. */
+  readonly urgent: boolean;
+}
+
+/**
+ * Whether to draw a wave countdown, and how full it is.
+ *
+ * Waves 1-2, 5 and 10 deliberately have no countdown: 1-2 are clear-all
+ * onboarding (their `durationSeconds` is the spawn-schedule window, not an
+ * ending), and 5 and 10 are the elite and boss waves, which end when cleared.
+ * Showing a draining bar on those would promise an ending that never comes, so
+ * `timerEndsWave` — not the presence of a duration — is the gate.
+ */
+export function waveCountdownView(
+  elapsedSeconds: number,
+  durationSeconds: number | null,
+  timerEndsWave: boolean,
+  inCombat: boolean,
+): WaveCountdownView {
+  const hidden = { visible: false, remainingSeconds: 0, remainingFraction: 0, urgent: false } as const;
+  if (!timerEndsWave || !inCombat) return hidden;
+  if (durationSeconds === null || !Number.isFinite(durationSeconds) || durationSeconds <= 0) return hidden;
+  const elapsed = Number.isFinite(elapsedSeconds) ? Math.max(0, elapsedSeconds) : 0;
+  const remainingSeconds = Math.max(0, durationSeconds - elapsed);
+  return {
+    visible: true,
+    // Ceiling so the readout only shows 0 once the wave is genuinely over,
+    // matching the existing numeric suffix rather than contradicting it.
+    remainingSeconds: Math.ceil(remainingSeconds),
+    remainingFraction: clamp01(remainingSeconds / durationSeconds),
+    urgent: remainingSeconds <= 5,
+  };
+}
+
 export interface HealthBarView {
   /** 0..1 of the health track. Clamped — the fill must never leave its frame. */
   readonly healthFraction: number;
@@ -70,6 +128,19 @@ export interface HealthBarView {
   readonly shieldFraction: number;
   readonly shieldTrackVisible: boolean;
   readonly shieldFillVisible: boolean;
+  /** 0..1 on the SAME scale as health, for the overheal overlay. */
+  readonly bonusFraction: number;
+  readonly bonusVisible: boolean;
+}
+
+/**
+ * `+4` suffix for the health readout, per §11.3's `12/12 +4`. The pool is the
+ * unambiguous readout — the bar overlay is a glance cue, the number is the fact.
+ * Ceiled so a sliver of bonus health never reads as `+0`.
+ */
+export function bonusHealthLabel(bonusHealth: number): string {
+  if (!Number.isFinite(bonusHealth) || bonusHealth <= 0) return "";
+  return `  +${Math.ceil(bonusHealth)}`;
 }
 
 /**
@@ -86,6 +157,7 @@ export function healthBarView(
   maxHealth: number,
   shield: number,
   maxShield: number,
+  bonusHealth = 0,
 ): HealthBarView {
   const safeMax = Math.max(1, maxHealth);
   return {
@@ -95,6 +167,11 @@ export function healthBarView(
     // capacity they bought even while it is depleted and recharging.
     shieldTrackVisible: maxShield > 0,
     shieldFillVisible: maxShield > 0 && shield > 0,
+    // Overheal shares the health scale too, and is drawn as an overlay rather
+    // than by rescaling the bar — rescaling would make the same HP value change
+    // width, which is the one thing a bar must never do.
+    bonusFraction: clamp01(bonusHealth / safeMax),
+    bonusVisible: bonusHealth > 0,
   };
 }
 

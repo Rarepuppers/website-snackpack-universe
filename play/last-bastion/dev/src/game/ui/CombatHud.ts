@@ -1,7 +1,13 @@
 import Phaser from "phaser";
 import type { CombatScenario, CombatSnapshot, PowerupType } from "../combat/CombatSimulation";
 import { DAMAGE_TYPE_COLOURS } from "../combat/damageTypes";
-import { armourLabel, healthBarView } from "../stats/formatStat";
+import {
+  armourLabel,
+  bonusHealthLabel,
+  formatRunClock,
+  healthBarView,
+  waveCountdownView,
+} from "../stats/formatStat";
 import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
 import {
   cadenceWeapons,
@@ -49,12 +55,17 @@ interface StatusTrayView {
 export class CombatHud {
   private readonly scene: Phaser.Scene;
   private readonly healthFill: Phaser.GameObjects.Rectangle;
+  private readonly bonusHealthFill: Phaser.GameObjects.Rectangle;
   private readonly shieldFill: Phaser.GameObjects.Rectangle;
   private readonly shieldTrack: Phaser.GameObjects.Rectangle;
   private readonly healthText: Phaser.GameObjects.Text;
   private readonly xpFill: Phaser.GameObjects.Rectangle;
   private readonly xpText: Phaser.GameObjects.Text;
   private readonly waveText: Phaser.GameObjects.Text;
+  private readonly countdownText: Phaser.GameObjects.Text;
+  private readonly countdownTrack: Phaser.GameObjects.Rectangle;
+  private readonly countdownFill: Phaser.GameObjects.Rectangle;
+  private readonly runClockText: Phaser.GameObjects.Text;
   private readonly statsText: Phaser.GameObjects.Text;
   private readonly scrapIcon: Phaser.GameObjects.Image;
   private readonly scrapText: Phaser.GameObjects.Text;
@@ -121,6 +132,12 @@ export class CombatHud {
       .setStrokeStyle(1, 0x6e3442).setDepth(2001);
     this.healthFill = scene.add.rectangle(safe.left + 11 * s, safe.top + 22 * s, 146 * s, 5 * s, 0xe55a67).setOrigin(0, 0.5).setDepth(2002);
     this.healthText = scene.add.text(safe.left + 164 * s, safe.top + 17 * s, "", hudText("#e8929a", "10px")).setDepth(2001);
+    // Overheal overlay: a lighter band inset from the right end of the health
+    // track, on the health bar's own scale. Anchored right and drawn over the
+    // full bar because bonus health is only obtainable at full health, so it
+    // reads as "extra on top" without needing space the dock does not have.
+    this.bonusHealthFill = scene.add.rectangle(safe.left + 157 * s, safe.top + 22 * s, 146 * s, 5 * s, 0xffd9a0)
+      .setOrigin(1, 0.5).setDepth(2003).setVisible(false);
     // Shield rides directly under the health bar on the SAME pixel-per-point
     // scale (146px = maxHealth), not as its own full-width bar. Shield totals
     // are small — Shield Capacitor grants 1.5 a level against a health pool in
@@ -151,6 +168,19 @@ export class CombatHud {
       .setStrokeStyle(1, 0x334a60).setDepth(2000);
     this.waveText = scene.add.text(480, safe.top + 5 * s, "", hudText("#ffffff", "13px"))
       .setOrigin(0.5, 0).setDepth(2001);
+    // The countdown was a four-character suffix on the wave label and was easy
+    // to miss (§11.6). Promoted to a draining bar with the numeric moved to the
+    // left slot, mirrored by the run clock on the right. Both flank the wave
+    // label rather than sitting under the panel: `bossPanel`'s name text sits at
+    // y=42 and the panel ends at y=37, so there is no free row below it.
+    this.countdownText = scene.add.text(480 - 88 * s, safe.top + 7 * s, "", hudText("#ffd36b", "9px"))
+      .setOrigin(0, 0).setDepth(2001).setVisible(false);
+    this.runClockText = scene.add.text(480 + 88 * s, safe.top + 7 * s, "", hudText("#8fb2c9", "9px"))
+      .setOrigin(1, 0).setDepth(2001);
+    this.countdownTrack = scene.add.rectangle(480, safe.top + 21 * s, 150 * s, 3 * s, 0x2a2418)
+      .setOrigin(0.5).setDepth(2001).setVisible(false);
+    this.countdownFill = scene.add.rectangle(480 - 75 * s, safe.top + 21 * s, 150 * s, 3 * s, 0xffd36b)
+      .setOrigin(0, 0.5).setDepth(2002).setVisible(false);
 
     scene.add.circle(this.radarCentre.x, this.radarCentre.y, this.radarRadius, 0x0b121c, 0.82)
       .setStrokeStyle(1, 0x334a60).setDepth(2000);
@@ -277,25 +307,43 @@ export class CombatHud {
       snapshot.playerMaxHealth,
       snapshot.playerShield,
       snapshot.playerMaxShield,
+      snapshot.playerBonusHealth,
     );
     this.healthFill.setScale(Math.max(bars.healthFraction, 0.001), 1);
+    this.bonusHealthFill.setVisible(bars.bonusVisible)
+      .setScale(Math.max(bars.bonusFraction, 0.001), 1);
     this.shieldTrack.setVisible(bars.shieldTrackVisible);
     this.shieldFill.setVisible(bars.shieldFillVisible)
       .setScale(Math.max(bars.shieldFraction, 0.001), 1);
     this.xpFill.setScale(Math.max(snapshot.experience / snapshot.experienceForNextLevel, 0.001), 1);
     const evasiveCooldownDuration = snapshot.heroPresentation.evasiveDurationSeconds
       + snapshot.heroPresentation.evasiveRecoverySeconds;
-    const timedWaveSuffix = snapshot.density.timerEndsWave
-      && snapshot.density.waveDurationSeconds !== null
-      && snapshot.status === "combat"
-      ? `  •  ${Math.max(0, Math.ceil(snapshot.density.waveDurationSeconds - snapshot.density.waveElapsedSeconds))}s`
-      : "";
     this.waveText.setText(snapshot.scenario
       ? SCENARIO_LABELS[snapshot.scenario]
       : snapshot.stressProfile
         ? `STRESS ${snapshot.stressProfile}`
-        : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}${timedWaveSuffix}`);
+        : `WAVE ${snapshot.waveNumber}/${snapshot.totalWaves}`);
+    const countdown = waveCountdownView(
+      snapshot.density.waveElapsedSeconds,
+      snapshot.density.waveDurationSeconds,
+      snapshot.density.timerEndsWave,
+      snapshot.status === "combat",
+    );
+    this.countdownText.setVisible(countdown.visible);
+    this.countdownTrack.setVisible(countdown.visible);
+    this.countdownFill.setVisible(countdown.visible);
+    if (countdown.visible) {
+      const urgentColour = countdown.urgent ? "#ff8f6b" : "#ffd36b";
+      this.countdownText.setText(`${countdown.remainingSeconds}s`).setColor(urgentColour);
+      // Scale, not resize: the fill is left-origin so scaling drains it from the
+      // right. Guarded above zero because a zero scale can leave a stray pixel.
+      this.countdownFill
+        .setScale(Math.max(countdown.remainingFraction, 0.001), 1)
+        .setFillStyle(countdown.urgent ? 0xff8f6b : 0xffd36b, 1);
+    }
+    this.runClockText.setText(formatRunClock(snapshot.runMetrics.elapsedSeconds));
     const shieldLabel = snapshot.playerShield > 0 ? `  +SH${Math.ceil(snapshot.playerShield)}` : "";
+    const bonusLabel = bonusHealthLabel(snapshot.playerBonusHealth);
     const passiveState = snapshot.heroPresentation.id === "marine"
       ? snapshot.playerEntrenched ? "  ENTRENCHED" : ""
       : snapshot.heroPresentation.id === "medic" ? `  TRIAGE ${snapshot.medicTriageHits}/6` : "";
@@ -304,7 +352,7 @@ export class CombatHud {
       `${snapshot.heroPresentation.displayName.toUpperCase()}  •  LV ${snapshot.level}`
       + `${armourLabel(snapshot.playerArmour, snapshot.playerFlatDamageReduction)}${flags}`,
     );
-    this.healthText.setText(`${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}`);
+    this.healthText.setText(`${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${bonusLabel}${shieldLabel}`);
     this.xpText.setText(`${snapshot.experience}/${snapshot.experienceForNextLevel}`);
     const scrapVisible = snapshot.securedScrap > 0 || snapshot.scenario === "scrap-shop";
     const secured = snapshot.events.some((event) => event.type === "scrap-secured");
