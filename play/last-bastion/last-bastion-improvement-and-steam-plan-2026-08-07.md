@@ -122,9 +122,13 @@ Restated here only because it is the loudest quality gap for a paid product: `Mu
 **F12 — Two files absorb every future feature.** `combat/CombatSimulation.ts` is **10,598 lines**
 and `scenes/PrototypeScene.ts` is **5,052 lines**. Everything new collides in them.
 
-**F13 — Web payload is 106 MB and WebP covers 8 of 435 PNGs.** The pipeline exists
-(`image:encode:webp`, `RuntimeImageFormat.ts`, an audited manifest) but is scoped to the eight
-large photographic plates. Sprite atlases are still PNG.
+**F13 — WebP covered 8 of 435 PNGs.** The pipeline exists (`image:encode:webp`,
+`RuntimeImageFormat.ts`, an audited manifest) but was scoped to the eight large photographic
+plates. **Corrected 7 Aug 2026 after measurement:** the 106 MB in `game-assets/` is *not* the
+download — assets load per scene, and the combat route pulls **6.34 MB**. The real concentration
+is that 50 of the manifest's 181 PNG imports exceed 300 KB and hold 33.4 MB between them. Those 50
+are now lossless WebP (see §10.2); the remaining ~120 are small enough that the paired-import cost
+outweighs the saving.
 
 **F14 — No hit-stop.** Camera shake and flash exist and respect reduced-motion/reduced-flash.
 Gamepad haptics exist. The missing piece is time dilation on crit and kill — the highest
@@ -544,7 +548,17 @@ unchanged.
 zero runtime errors, zero console errors, and render activity detected on each — the harness
 already measures exactly this, so it is a mechanical pass/fail rather than a judgement call.
 
-#### T0.3 — WebP across sprite atlases
+#### T0.3 — WebP across sprite atlases — **DONE 7 Aug 2026, scope corrected**
+
+The premise below was wrong and measurement fixed it before the work was done. "30–50% off the
+106 MB" treated the directory total as the payload; per-scene loading means the combat route
+downloads 6.34 MB. Scoped instead to the 50 manifest imports above 300 KB (33.4 MB), all encoded
+**lossless** with a decode-and-compare round-trip check. Measured result: 48.63 MiB of masters →
+24.60 MiB of derivatives (50.6%); combat route 6.34 → 5.53 MB (−12.8%); heavy mini-boss sheets
+25–28% smaller each. `game-assets/` grew 106 → 129 MB because both formats ship — **open question
+in §10.7 on whether the PNG fallback still earns its place.**
+
+<details><summary>Original task text</summary>
 
 `RuntimeImageFormat.runtimeImageUrl()` already does capability detection and honours
 `?imageformat=png|webp`, so no runtime change is needed — this is pipeline scope only.
@@ -560,6 +574,17 @@ already measures exactly this, so it is a mechanical pass/fail rather than a jud
 
 **Acceptance:** `image:audit:webp` passes over the full set; runtime payload measurably down from
 106 MB (expect 30–50%); `?imageformat=png` still renders identically.
+
+</details>
+
+#### T0.7 — Open decision: keep or drop the PNG fallback
+
+Shipping both formats grew `game-assets/` from 106 MB to 129 MB. `RuntimeImageFormat.ts` exists to
+serve PNG to browsers without WebP support — a population that, for a game already requiring WebGL
+and the Gamepad API, is effectively empty (WebP is universal since Safari 14, 2020). Dropping the
+fallback for the 58 converted assets would take the directory to roughly 82 MB *and* keep the
+download saving. It reverses a deliberate design decision, so it is the creator's call, not a
+refactor to make quietly.
 
 #### T0.4 — Live display size
 

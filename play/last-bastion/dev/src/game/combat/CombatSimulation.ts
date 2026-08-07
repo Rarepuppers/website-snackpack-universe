@@ -207,6 +207,9 @@ import {
   populateScenario,
   type ScenarioPopulationContext,
 } from "./scenarios/ScenarioPopulation";
+import { stepBrainBlobBehavior } from "./BrainBlobBehavior";
+import { armBlastMiteIfInRange, stepBlastMiteBehavior } from "./BlastMiteBehavior";
+import type { EnemyMovementIntent } from "./EnemyMovementIntent";
 // Re-exported from the modules that own them so existing importers keep
 // working; the definitions moved out to break a cycle with scenario setup.
 export { ARC_WARDEN_LAB_CAP } from "./ArcWardenBeam";
@@ -6186,59 +6189,58 @@ export class CombatSimulation {
     }
   }
 
-  private updateBrainBlob(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.brainPhaseRemainingSeconds -= deltaSeconds;
-
-    switch (enemy.brainPhase) {
-      case "drift":
-        this.moveEnemyTowardPlayer(enemy, ENEMY_CATALOG["brain-blob"].movementSpeedMetresPerSecond, deltaSeconds);
-        if (enemy.brainPhaseRemainingSeconds <= 0) {
-          enemy.brainPhase = "windup";
-          enemy.brainPhaseRemainingSeconds = 0.45;
-        }
-        break;
-      case "windup":
-        if (enemy.brainPhaseRemainingSeconds <= 0) {
-          enemy.brainPhase = "lunge";
-          enemy.brainPhaseRemainingSeconds = 0.32;
-          enemy.brainLungeDirection = normalizeVector({
-            x: this.playerPosition.x - enemy.position.x,
-            y: this.playerPosition.y - enemy.position.y,
-          });
-        }
-        break;
-      case "lunge":
-        this.moveEnemy(enemy, enemy.brainLungeDirection, 6, deltaSeconds);
-        if (enemy.brainPhaseRemainingSeconds <= 0) {
-          enemy.brainPhase = "recover";
-          enemy.brainPhaseRemainingSeconds = 0.6;
-        }
-        break;
-      case "recover":
-        if (enemy.brainPhaseRemainingSeconds <= 0) {
-          enemy.brainPhase = "drift";
-          enemy.brainPhaseRemainingSeconds = 1.4 + this.random() * 0.8;
-        }
-        break;
+  /**
+   * Applies a behaviour module's movement intent. `toward-player` blends in
+   * separation steering; `fixed` does not. See `EnemyMovementIntent`.
+   */
+  private applyMovementIntent(
+    enemy: EnemyState,
+    intent: EnemyMovementIntent,
+    deltaSeconds: number,
+  ): void {
+    if (intent.kind === "toward-player") {
+      this.moveEnemyTowardPlayer(enemy, intent.speedMetresPerSecond, deltaSeconds);
+    } else if (intent.kind === "fixed") {
+      this.moveEnemy(enemy, intent.direction, intent.speedMetresPerSecond, deltaSeconds);
     }
   }
 
+  private updateBrainBlob(enemy: EnemyState, deltaSeconds: number): void {
+    const result = stepBrainBlobBehavior(
+      {
+        phase: enemy.brainPhase,
+        phaseRemainingSeconds: enemy.brainPhaseRemainingSeconds,
+        lungeDirection: enemy.brainLungeDirection,
+      },
+      {
+        deltaSeconds,
+        position: enemy.position,
+        playerPosition: this.playerPosition,
+        driftSpeedMetresPerSecond: ENEMY_CATALOG["brain-blob"].movementSpeedMetresPerSecond,
+        random: () => this.random(),
+      },
+    );
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
+    enemy.brainPhase = result.state.phase;
+    enemy.brainPhaseRemainingSeconds = result.state.phaseRemainingSeconds;
+    enemy.brainLungeDirection = result.state.lungeDirection;
+  }
+
   private updateBlastMite(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.mitePhaseRemainingSeconds -= deltaSeconds;
-    switch (enemy.mitePhase) {
-      case "chase":
-        this.moveEnemyTowardPlayer(enemy, ENEMY_CATALOG["blast-mite"].movementSpeedMetresPerSecond, deltaSeconds);
-        if (distance(enemy.position, this.playerPosition) <= 1) {
-          enemy.mitePhase = "armed";
-          enemy.mitePhaseRemainingSeconds = 0.45;
-        }
-        break;
-      case "armed":
-        if (enemy.mitePhaseRemainingSeconds <= 0) {
-          this.applyRawDamage(enemy, enemy.health + 1);
-        }
-        break;
-    }
+    const result = stepBlastMiteBehavior(
+      { phase: enemy.mitePhase, phaseRemainingSeconds: enemy.mitePhaseRemainingSeconds },
+      {
+        deltaSeconds,
+        chaseSpeedMetresPerSecond: ENEMY_CATALOG["blast-mite"].movementSpeedMetresPerSecond,
+      },
+    );
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
+    // Range is tested against the post-movement position, matching the order
+    // the inline version used.
+    const armed = armBlastMiteIfInRange(result.state, enemy.position, this.playerPosition);
+    enemy.mitePhase = armed.phase;
+    enemy.mitePhaseRemainingSeconds = armed.phaseRemainingSeconds;
+    if (result.detonates) this.applyRawDamage(enemy, enemy.health + 1);
   }
 
   private updateWarpFlanker(enemy: EnemyState, deltaSeconds: number): void {

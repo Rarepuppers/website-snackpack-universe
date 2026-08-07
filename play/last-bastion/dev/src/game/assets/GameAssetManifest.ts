@@ -2,13 +2,17 @@ import marineBaseSheetUrl from "../../../../art/production-tests/marine-base-spr
 import marineHelmetSheetUrl from "../../../../art/production-tests/marine-bastion-helmet-overlay-v1-96.png";
 import serviceRifleUrl from "../../../../art/production-tests/legacy-weapon-refresh/service-rifle-gameplay-v2-256x128.png";
 import scuttlerSheetUrl from "../../../../art/production-tests/legacy-enemy-refresh/scuttler-spritesheet-v2-256.png";
+import scuttlerSheetWebpUrl from "../../../../art/production-tests/legacy-enemy-refresh/scuttler-spritesheet-v2-256.webp";
 import eggClusterSheetUrl from "../../../../art/production-tests/legacy-enemy-refresh/egg-cluster-spritesheet-v2-256.png";
+import eggClusterSheetWebpUrl from "../../../../art/production-tests/legacy-enemy-refresh/egg-cluster-spritesheet-v2-256.webp";
 import brainBlobSheetUrl from "../../../../art/production-tests/legacy-enemy-refresh/brain-blob-states-v2-256.png";
 import arenaFloorSheetUrl from "../../../../art/production-tests/batch-a/arena-floor-atlas-v1-64.png";
 import arenaBoundarySheetUrl from "../../../../art/production-tests/batch-a/arena-boundary-atlas-v1-64.png";
 import arenaObstacleSheetUrl from "../../../../art/production-tests/batch-a/arena-obstacle-atlas-v1-96.png";
 import combatEffectSheetUrl from "../../../../art/production-tests/batch-a/combat-effect-atlas-v1.png";
+import combatEffectSheetWebpUrl from "../../../../art/production-tests/batch-a/combat-effect-atlas-v1.webp";
 import pickupSheetUrl from "../../../../art/production-tests/batch-a/pickup-atlas-v1.png";
+import pickupSheetWebpUrl from "../../../../art/production-tests/batch-a/pickup-atlas-v1.webp";
 import hudPanelSheetUrl from "../../../../art/production-tests/batch-a/hud-panel-atlas-v1-256x128.png";
 import scattergunUrl from "../../../../art/production-tests/legacy-weapon-refresh/scattergun-gameplay-v2-256x128.png";
 import arcCarbineUrl from "../../../../art/production-tests/legacy-weapon-refresh/arc-carbine-gameplay-v2-256x128.png";
@@ -16,11 +20,13 @@ import slimeSpitterSheetUrl from "../../../../art/production-tests/batch-b/slime
 import carapaceScuttlerSheetUrl from "../../../../art/production-tests/batch-b/carapace-scuttler-spritesheet-v1-96.png";
 import siegeCrusherSheetUrl from "../../../../art/production-tests/batch-b/siege-crusher-spritesheet-v1-128.png";
 import batchBEffectSheetUrl from "../../../../art/production-tests/batch-b/batch-b-effect-atlas-v1.png";
+import batchBEffectSheetWebpUrl from "../../../../art/production-tests/batch-b/batch-b-effect-atlas-v1.webp";
 import siegeCrusherPortraitUrl from "../../../../art/production-tests/batch-b/siege-crusher-portrait-v1-128.png";
 import blastMiteSheetUrl from "../../../../art/production-tests/batch-c/blast-mite-spritesheet-v1-64.png";
 import warpFlankerSheetUrl from "../../../../art/production-tests/batch-c/warp-flanker-spritesheet-v1-96.png";
 import batchCRewardSheetUrl from "../../../../art/production-tests/batch-c/batch-c-reward-atlas-v1-64.png";
 import batchCEffectSheetUrl from "../../../../art/production-tests/batch-c/batch-c-effect-atlas-v1.png";
+import batchCEffectSheetWebpUrl from "../../../../art/production-tests/batch-c/batch-c-effect-atlas-v1.webp";
 import broodWardenSheetUrl from "../../../../art/production-tests/batch-d/brood-warden-spritesheet-v1-128.png";
 import broodWardenPortraitUrl from "../../../../art/production-tests/batch-d/brood-warden-portrait-v1-128.png";
 import broodWardenEffectSheetUrl from "../../../../art/production-tests/batch-d/brood-warden-effect-atlas-v1-64.png";
@@ -36,24 +42,34 @@ import spinewheelEffectSheetUrl from "../../../../art/production-tests/batch-e2/
 import tetherBloomSheetUrl from "../../../../art/production-tests/batch-e3/tether-bloom-spritesheet-v1-96.png";
 import tetherBloomEffectSheetUrl from "../../../../art/production-tests/batch-e3/tether-bloom-effect-atlas-v1-64.png";
 import bastionEaterSheetUrl from "../../../../art/production-tests/batch-d3/bastion-eater-spritesheet-v1-192.png";
+import bastionEaterSheetWebpUrl from "../../../../art/production-tests/batch-d3/bastion-eater-spritesheet-v1-192.webp";
 import bastionEaterNodeSheetUrl from "../../../../art/production-tests/batch-d3/bastion-eater-node-overlay-v1-192.png";
+import bastionEaterNodeSheetWebpUrl from "../../../../art/production-tests/batch-d3/bastion-eater-node-overlay-v1-192.webp";
 import bastionEaterEffectSheetUrl from "../../../../art/production-tests/batch-d3/bastion-eater-effect-atlas-v1-96.png";
 import bastionEaterEnvironmentSheetUrl from "../../../../art/production-tests/batch-d3/bastion-eater-environment-atlas-v1-96.png";
 import bastionEaterPortraitUrl from "../../../../art/production-tests/batch-d3/bastion-eater-portrait-v1-256.png";
 import patrolBladeSheetUrl from "../../../../art/production-tests/batch-f1/patrol-blade-spritesheet-v1-96.png";
 import patrolBladeEffectSheetUrl from "../../../../art/production-tests/batch-f1/patrol-blade-effect-atlas-v1.png";
+import patrolBladeEffectSheetWebpUrl from "../../../../art/production-tests/batch-f1/patrol-blade-effect-atlas-v1.webp";
 import actionTileSheetUrl from "../../../../art/production-tests/batch-f1/action-tile-atlas-v1.png";
+import actionTileSheetWebpUrl from "../../../../art/production-tests/batch-f1/action-tile-atlas-v1.webp";
 import uraniumStatusUrl from "../../../../art/production-tests/batch-f1/uranium-core-rounds-status-v1-64.png";
 import boltCarbineSheetUrl from "../../../../art/production-tests/batch-f2/bolt-carbine-spritesheet-v1-96.png";
 import boltCarbineEffectUrl from "../../../../art/production-tests/batch-f2/bolt-carbine-effect-atlas-v1.png";
+import boltCarbineEffectWebpUrl from "../../../../art/production-tests/batch-f2/bolt-carbine-effect-atlas-v1.webp";
 import weaponTileSheetUrl from "../../../../art/production-tests/batch-f2/weapon-tile-atlas-v1.png";
+import weaponTileSheetWebpUrl from "../../../../art/production-tests/batch-f2/weapon-tile-atlas-v1.webp";
 import bulwarkRotarySheetUrl from "../../../../art/production-tests/batch-f3/bulwark-rotary-cannon-spritesheet-v1-96.png";
 import bulwarkRotaryEffectUrl from "../../../../art/production-tests/batch-f3/bulwark-rotary-cannon-effect-atlas-v1.png";
+import bulwarkRotaryEffectWebpUrl from "../../../../art/production-tests/batch-f3/bulwark-rotary-cannon-effect-atlas-v1.webp";
 import grenadeTubeSheetUrl from "../../../../art/production-tests/batch-f4/grenade-tube-spritesheet-v1-96.png";
 import grenadeTubeEffectUrl from "../../../../art/production-tests/batch-f4/grenade-tube-effect-atlas-v1.png";
+import grenadeTubeEffectWebpUrl from "../../../../art/production-tests/batch-f4/grenade-tube-effect-atlas-v1.webp";
 import statusOverlaySheetUrl from "../../../../art/production-tests/batch-k/status-effect-overlay-atlas-v2-256.png";
+import statusOverlaySheetWebpUrl from "../../../../art/production-tests/batch-k/status-effect-overlay-atlas-v2-256.webp";
 import eventHorizonSheetUrl from "../../../../art/production-tests/batch-l/event-horizon-spritesheet-v1-96.png";
 import eventHorizonEffectUrl from "../../../../art/production-tests/batch-l/event-horizon-effect-atlas-v1.png";
+import eventHorizonEffectWebpUrl from "../../../../art/production-tests/batch-l/event-horizon-effect-atlas-v1.webp";
 import eventHorizonTileUrl from "../../../../art/production-tests/batch-l/event-horizon-tile-v1-64.png";
 import corruptedSurvivorSheetUrl from "../../../../art/production-tests/batch-m/corrupted-human-survivor-spritesheet-v1-96.png";
 import corruptedMarineSheetUrl from "../../../../art/production-tests/batch-m/corrupted-marine-spritesheet-v1-96.png";
@@ -84,8 +100,10 @@ import riftStalkerPortraitUrl from "../../../../art/production-tests/batch-o/rif
 import scrapShopOfferTileUrl from "../../../../art/production-tests/batch-n2/scrap-shop-offer-tile-atlas-v1-128.png";
 import scrapShopHudUrl from "../../../../art/production-tests/batch-n2/scrap-shop-hud-atlas-v1-128.png";
 import scrapShopPanelUrl from "../../../../art/production-tests/batch-n2/scrap-shop-panel-v1-1024x576.png";
+import scrapShopPanelWebpUrl from "../../../../art/production-tests/batch-n2/scrap-shop-panel-v1-1024x576.webp";
 import quartermasterSheetUrl from "../../../../art/production-tests/batch-q/quartermaster-atlas-v1-384x512.png";
 import destructibleTerrainUrl from "../../../../art/production-tests/batch-r/destructible-terrain-v1-128.png";
+import destructibleTerrainWebpUrl from "../../../../art/production-tests/batch-r/destructible-terrain-v1-128.webp";
 import destructibleTerrainEffectsUrl from "../../../../art/production-tests/batch-r/destructible-terrain-effects-v1-64.png";
 import batchIWeaponTileUrl from "../../../../art/production-tests/batch-i/codex-weapon-tile-atlas-v1-128.png";
 import batchIPerkTileUrl from "../../../../art/production-tests/batch-i/perk-tile-atlas-v1-128.png";
@@ -93,8 +111,10 @@ import canonicalPerkTileUrl from "../../../../art/production-tests/batch-i/canon
 import batchIHotkeyTileUrl from "../../../../art/production-tests/batch-i/hotkey-action-tile-atlas-v1-128.png";
 import batchISlotTierUiUrl from "../../../../art/production-tests/batch-i/slot-tier-ui-atlas-v1-128.png";
 import batchIPlacementModalUrl from "../../../../art/production-tests/batch-i/placement-modal-frame-v1-900x560.png";
+import batchIPlacementModalWebpUrl from "../../../../art/production-tests/batch-i/placement-modal-frame-v1-900x560.webp";
 import batchIWeaponStatCardUrl from "../../../../art/production-tests/batch-i/weapon-stat-card-v1-320x420.png";
 import batchIShopCounterUrl from "../../../../art/production-tests/batch-i/shop-counter-backdrop-v1-1200x700.png";
+import batchIShopCounterWebpUrl from "../../../../art/production-tests/batch-i/shop-counter-backdrop-v1-1200x700.webp";
 import batchIShopGlyphUrl from "../../../../art/production-tests/batch-i/shop-action-glyph-atlas-v1-48.png";
 import swarmScuttlerSheetUrl from "../../../../art/production-tests/batch-j/swarm-scuttler-spritesheet-v1-64.png";
 import razorlordSheetUrl from "../../../../art/production-tests/batch-j/razorlord-spritesheet-v1-96.png";
@@ -102,6 +122,7 @@ import blightspitterSheetUrl from "../../../../art/production-tests/batch-j/blig
 import quillbackMatriarchSheetUrl from "../../../../art/production-tests/batch-j/quillback-matriarch-spritesheet-v1-128.png";
 import telegraphLargeSheetUrl from "../../../../art/production-tests/batch-j/telegraph-large-atlas-v1-128.png";
 import telegraphSmallSheetUrl from "../../../../art/production-tests/telegraph-refresh/telegraph-small-atlas-v2-256.png";
+import telegraphSmallSheetWebpUrl from "../../../../art/production-tests/telegraph-refresh/telegraph-small-atlas-v2-256.webp";
 import telegraphDangerFillUrl from "../../../../art/production-tests/batch-j/telegraph-danger-fill-v1-64.png";
 import medicBaseSheetUrl from "../../../../art/production-tests/batch-p/medic-base-spritesheet-v1-96.png";
 import medicHelmetSheetUrl from "../../../../art/production-tests/batch-p/medic-helmet-overlay-v1-96.png";
@@ -125,68 +146,97 @@ import voidApproachMapBackdropWebpUrl from "../../../../art/production-tests/bat
 import arcticRelayMapBackdropUrl from "../../../../art/production-tests/batch-map-presentation/arctic-relay-map-backdrop-v1-1536x1024.png";
 import arcticRelayMapBackdropWebpUrl from "../../../../art/production-tests/batch-map-presentation/arctic-relay-map-backdrop-v1-1536x1024.webp";
 import nestWeaverSheetUrl from "../../../../art/production-tests/batch-t/nest-weaver-spritesheet-v1-192.png";
+import nestWeaverSheetWebpUrl from "../../../../art/production-tests/batch-t/nest-weaver-spritesheet-v1-192.webp";
 import nestPodSheetUrl from "../../../../art/production-tests/batch-t/nest-pod-spritesheet-v1-128.png";
 import nestEffectsUrl from "../../../../art/production-tests/batch-t/nest-effects-atlas-v1-128.png";
 import stormSavantSheetUrl from "../../../../art/production-tests/batch-u/storm-savant-v1-192.png";
+import stormSavantSheetWebpUrl from "../../../../art/production-tests/batch-u/storm-savant-v1-192.webp";
 import stormNodeSheetUrl from "../../../../art/production-tests/batch-u/storm-node-v1-128.png";
 import stormEffectsUrl from "../../../../art/production-tests/batch-u/storm-effects-v1-128.png";
 import scrapSkittererSheetUrl from "../../../../art/production-tests/batch-v/machine-scrap-skitterer-v1-128.png";
+import scrapSkittererSheetWebpUrl from "../../../../art/production-tests/batch-v/machine-scrap-skitterer-v1-128.webp";
 import scrapSkittererEffectsUrl from "../../../../art/production-tests/batch-v/machine-scrap-skitterer-effects-v1-128.png";
 import arcWardenSheetUrl from "../../../../art/production-tests/batch-w/machine-arc-warden-v1-128.png";
+import arcWardenSheetWebpUrl from "../../../../art/production-tests/batch-w/machine-arc-warden-v1-128.webp";
 import arcWardenEffectsUrl from "../../../../art/production-tests/batch-w/machine-arc-warden-effects-v1-128.png";
 import cyborgReclaimerSheetUrl from "../../../../art/production-tests/batch-x/machine-cyborg-reclaimer-v1-192.png";
+import cyborgReclaimerSheetWebpUrl from "../../../../art/production-tests/batch-x/machine-cyborg-reclaimer-v1-192.webp";
 import cyborgReclaimerEffectsUrl from "../../../../art/production-tests/batch-x/machine-cyborg-reclaimer-effects-v1-128.png";
 import foundryFabricatorSheetUrl from "../../../../art/production-tests/batch-y/machine-foundry-fabricator-v1-192.png";
+import foundryFabricatorSheetWebpUrl from "../../../../art/production-tests/batch-y/machine-foundry-fabricator-v1-192.webp";
 import foundryPadSheetUrl from "../../../../art/production-tests/batch-y/machine-foundry-pad-v1-128.png";
 import foundryDroneSheetUrl from "../../../../art/production-tests/batch-y/machine-foundry-drone-v1-128.png";
+import foundryDroneSheetWebpUrl from "../../../../art/production-tests/batch-y/machine-foundry-drone-v1-128.webp";
 import foundryTurretSheetUrl from "../../../../art/production-tests/batch-y/machine-foundry-turret-v1-128.png";
+import foundryTurretSheetWebpUrl from "../../../../art/production-tests/batch-y/machine-foundry-turret-v1-128.webp";
 import foundryEffectsUrl from "../../../../art/production-tests/batch-y/machine-foundry-effects-v1-128.png";
 import synapseHeraldSheetUrl from "../../../../art/production-tests/batch-z/synapse-herald-v1-192.png";
+import synapseHeraldSheetWebpUrl from "../../../../art/production-tests/batch-z/synapse-herald-v1-192.webp";
 import synapseHeraldEffectsUrl from "../../../../art/production-tests/batch-z/synapse-herald-effects-v1-128.png";
 import synapseHeraldPortraitUrl from "../../../../art/production-tests/batch-z/synapse-herald-portrait-v1-256.png";
 import assemblyPrimeSheetUrl from "../../../../art/production-tests/batch-aa/assembly-prime-v1-192.png";
+import assemblyPrimeSheetWebpUrl from "../../../../art/production-tests/batch-aa/assembly-prime-v1-192.webp";
 import assemblyPrimePadUrl from "../../../../art/production-tests/batch-aa/assembly-prime-pad-v1-128.png";
 import assemblyPrimeEffectsUrl from "../../../../art/production-tests/batch-aa/assembly-prime-effects-v1-128.png";
 import assemblyPrimePortraitUrl from "../../../../art/production-tests/batch-aa/assembly-prime-portrait-v1-256.png";
 import stormRegentSheetUrl from "../../../../art/production-tests/batch-ab/storm-regent-v1-192.png";
+import stormRegentSheetWebpUrl from "../../../../art/production-tests/batch-ab/storm-regent-v1-192.webp";
 import stormConductiveNodeUrl from "../../../../art/production-tests/batch-ab/storm-conductive-node-v1-128.png";
 import stormRegentEffectsUrl from "../../../../art/production-tests/batch-ab/storm-regent-effects-v1-128.png";
 import stormRegentPortraitUrl from "../../../../art/production-tests/batch-ab/storm-regent-portrait-v1-256.png";
 import abominationPrimeSheetUrl from "../../../../art/production-tests/batch-ac/abomination-prime-v1-192.png";
+import abominationPrimeSheetWebpUrl from "../../../../art/production-tests/batch-ac/abomination-prime-v1-192.webp";
 import abominationPrimeBiomassUrl from "../../../../art/production-tests/batch-ac/abomination-prime-biomass-v1-128.png";
 import abominationPrimeEffectsUrl from "../../../../art/production-tests/batch-ac/abomination-prime-effects-v1-128.png";
 import abominationPrimePortraitUrl from "../../../../art/production-tests/batch-ac/abomination-prime-portrait-v1-256.png";
 import scienceWingFloorUrl from "../../../../art/production-tests/batch-ad/science-wing-floor-v1-128.png";
+import scienceWingFloorWebpUrl from "../../../../art/production-tests/batch-ad/science-wing-floor-v1-128.webp";
 import scienceWingBoundaryUrl from "../../../../art/production-tests/batch-ad/science-wing-boundary-v1-128.png";
 import scienceWingFixturesUrl from "../../../../art/production-tests/batch-ad/science-wing-fixtures-v1-192.png";
+import scienceWingFixturesWebpUrl from "../../../../art/production-tests/batch-ad/science-wing-fixtures-v1-192.webp";
 import scienceWingDecalsUrl from "../../../../art/production-tests/batch-ad/science-wing-decals-v1-128.png";
 import bastionLogisticsFloorUrl from "../../../../art/production-tests/batch-ae/bastion-logistics-floor-v1-128.png";
+import bastionLogisticsFloorWebpUrl from "../../../../art/production-tests/batch-ae/bastion-logistics-floor-v1-128.webp";
 import bastionLogisticsBoundaryUrl from "../../../../art/production-tests/batch-ae/bastion-logistics-boundary-v1-128.png";
 import bastionLogisticsFixturesUrl from "../../../../art/production-tests/batch-ae/bastion-logistics-fixtures-v1-192.png";
+import bastionLogisticsFixturesWebpUrl from "../../../../art/production-tests/batch-ae/bastion-logistics-fixtures-v1-192.webp";
 import bastionLogisticsDecalsUrl from "../../../../art/production-tests/batch-ae/bastion-logistics-decals-v1-128.png";
 import machineFoundryFloorUrl from "../../../../art/production-tests/batch-af/machine-foundry-floor-v1-128.png";
+import machineFoundryFloorWebpUrl from "../../../../art/production-tests/batch-af/machine-foundry-floor-v1-128.webp";
 import machineFoundryBoundaryUrl from "../../../../art/production-tests/batch-af/machine-foundry-boundary-v1-128.png";
 import machineFoundryFixturesUrl from "../../../../art/production-tests/batch-af/machine-foundry-fixtures-v1-192.png";
+import machineFoundryFixturesWebpUrl from "../../../../art/production-tests/batch-af/machine-foundry-fixtures-v1-192.webp";
 import machineFoundryDecalsUrl from "../../../../art/production-tests/batch-af/machine-foundry-decals-v1-128.png";
 import alienHiveFloorUrl from "../../../../art/production-tests/batch-ag/alien-hive-floor-v1-128.png";
+import alienHiveFloorWebpUrl from "../../../../art/production-tests/batch-ag/alien-hive-floor-v1-128.webp";
 import alienHiveBoundaryUrl from "../../../../art/production-tests/batch-ag/alien-hive-boundary-v1-128.png";
 import alienHiveFixturesUrl from "../../../../art/production-tests/batch-ag/alien-hive-fixtures-v1-192.png";
+import alienHiveFixturesWebpUrl from "../../../../art/production-tests/batch-ag/alien-hive-fixtures-v1-192.webp";
 import alienHiveDecalsUrl from "../../../../art/production-tests/batch-ag/alien-hive-decals-v1-128.png";
 import surfaceFrontierFloorUrl from "../../../../art/production-tests/batch-ah/surface-frontier-floor-v1-128.png";
+import surfaceFrontierFloorWebpUrl from "../../../../art/production-tests/batch-ah/surface-frontier-floor-v1-128.webp";
 import surfaceFrontierBoundaryUrl from "../../../../art/production-tests/batch-ah/surface-frontier-boundary-v1-128.png";
 import surfaceFrontierFixturesUrl from "../../../../art/production-tests/batch-ah/surface-frontier-fixtures-v1-192.png";
+import surfaceFrontierFixturesWebpUrl from "../../../../art/production-tests/batch-ah/surface-frontier-fixtures-v1-192.webp";
 import surfaceFrontierDecalsUrl from "../../../../art/production-tests/batch-ah/surface-frontier-decals-v1-128.png";
 import starshipTransitFloorUrl from "../../../../art/production-tests/batch-ai/starship-transit-floor-v1-128.png";
+import starshipTransitFloorWebpUrl from "../../../../art/production-tests/batch-ai/starship-transit-floor-v1-128.webp";
 import starshipTransitBoundaryUrl from "../../../../art/production-tests/batch-ai/starship-transit-boundary-v1-128.png";
 import starshipTransitFixturesUrl from "../../../../art/production-tests/batch-ai/starship-transit-fixtures-v1-192.png";
+import starshipTransitFixturesWebpUrl from "../../../../art/production-tests/batch-ai/starship-transit-fixtures-v1-192.webp";
 import starshipTransitDecalsUrl from "../../../../art/production-tests/batch-ai/starship-transit-decals-v1-128.png";
 import containmentUnderworldFloorUrl from "../../../../art/production-tests/batch-aj/containment-underworld-floor-v1-128.png";
+import containmentUnderworldFloorWebpUrl from "../../../../art/production-tests/batch-aj/containment-underworld-floor-v1-128.webp";
 import containmentUnderworldBoundaryUrl from "../../../../art/production-tests/batch-aj/containment-underworld-boundary-v1-128.png";
 import containmentUnderworldFixturesUrl from "../../../../art/production-tests/batch-aj/containment-underworld-fixtures-v1-192.png";
+import containmentUnderworldFixturesWebpUrl from "../../../../art/production-tests/batch-aj/containment-underworld-fixtures-v1-192.webp";
 import containmentUnderworldDecalsUrl from "../../../../art/production-tests/batch-aj/containment-underworld-decals-v1-128.png";
 import worldObjectsMilitaryUrl from "../../../../art/production-tests/object-batch-o1/world-objects-military-v1-192.png";
+import worldObjectsMilitaryWebpUrl from "../../../../art/production-tests/object-batch-o1/world-objects-military-v1-192.webp";
 import worldObjectsNaturalUrl from "../../../../art/production-tests/object-batch-o1/world-objects-natural-v1-192.png";
+import worldObjectsNaturalWebpUrl from "../../../../art/production-tests/object-batch-o1/world-objects-natural-v1-192.webp";
 import worldObjectsOrganicUrl from "../../../../art/production-tests/object-batch-o1/world-objects-organic-v1-192.png";
+import worldObjectsOrganicWebpUrl from "../../../../art/production-tests/object-batch-o1/world-objects-organic-v1-192.webp";
 import { runtimeImageUrl } from "./RuntimeImageFormat";
 
 export type GameAssetId =
@@ -401,26 +451,26 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   // their original 64 px gameplay footprint. Keep source slicing and logical
   // presentation dimensions separate or Phaser cuts each creature into
   // sixteen red fragments.
-  sheet("scuttler-v1", scuttlerSheetUrl, 64, 64, 8, 0.5, 0.5, 256, 256),
-  sheet("egg-cluster-v1", eggClusterSheetUrl, 64, 64, 4, 0.5, 0.5, 256, 256),
+  sheet("scuttler-v1", runtimeImageUrl(scuttlerSheetUrl, scuttlerSheetWebpUrl), 64, 64, 8, 0.5, 0.5, 256, 256),
+  sheet("egg-cluster-v1", runtimeImageUrl(eggClusterSheetUrl, eggClusterSheetWebpUrl), 64, 64, 4, 0.5, 0.5, 256, 256),
   sheet("brain-blob-v1", brainBlobSheetUrl, 64, 64, 4, 0.5, 0.5, 256, 256),
   sheet("arena-floor-v1", arenaFloorSheetUrl, 64, 64, 6, 0.5, 0.5),
   sheet("arena-boundary-v1", arenaBoundarySheetUrl, 64, 64, 8, 0.5, 0.5),
   sheet("arena-obstacle-v1", arenaObstacleSheetUrl, 96, 96, 8, 0.5, 0.5),
-  sheet("combat-effects-v1", combatEffectSheetUrl, 64, 64, 20, 0.5, 0.5),
-  sheet("pickups-v1", pickupSheetUrl, 64, 64, 4, 0.5, 0.5),
+  sheet("combat-effects-v1", runtimeImageUrl(combatEffectSheetUrl, combatEffectSheetWebpUrl), 64, 64, 20, 0.5, 0.5),
+  sheet("pickups-v1", runtimeImageUrl(pickupSheetUrl, pickupSheetWebpUrl), 64, 64, 4, 0.5, 0.5),
   sheet("hud-panels-v1", hudPanelSheetUrl, 256, 128, 6, 0.5, 0.5),
   image("scattergun-v1", scattergunUrl, 64, 32, 0.25, 0.5),
   image("arc-carbine-v1", arcCarbineUrl, 64, 32, 0.25, 0.5),
   sheet("slime-spitter-v1", slimeSpitterSheetUrl, 64, 64, 12, 0.5, 0.5),
   sheet("carapace-scuttler-v1", carapaceScuttlerSheetUrl, 96, 96, 16, 0.5, 0.5),
   sheet("siege-crusher-v1", siegeCrusherSheetUrl, 128, 128, 12, 0.5, 0.5),
-  sheet("batch-b-effects-v1", batchBEffectSheetUrl, 64, 64, 20, 0.5, 0.5),
+  sheet("batch-b-effects-v1", runtimeImageUrl(batchBEffectSheetUrl, batchBEffectSheetWebpUrl), 64, 64, 20, 0.5, 0.5),
   image("siege-crusher-portrait-v1", siegeCrusherPortraitUrl, 128, 128, 0.5, 0.5),
   sheet("blast-mite-v1", blastMiteSheetUrl, 64, 64, 12, 0.5, 0.5),
   sheet("warp-flanker-v1", warpFlankerSheetUrl, 96, 96, 12, 0.5, 0.5),
   sheet("batch-c-rewards-v1", batchCRewardSheetUrl, 64, 64, 16, 0.5, 0.5),
-  sheet("batch-c-effects-v1", batchCEffectSheetUrl, 64, 64, 20, 0.5, 0.5),
+  sheet("batch-c-effects-v1", runtimeImageUrl(batchCEffectSheetUrl, batchCEffectSheetWebpUrl), 64, 64, 20, 0.5, 0.5),
   sheet("brood-warden-v1", broodWardenSheetUrl, 128, 128, 12, 0.5, 0.5),
   image("brood-warden-portrait-v1", broodWardenPortraitUrl, 128, 128, 0.5, 0.5),
   sheet("brood-warden-effects-v1", broodWardenEffectSheetUrl, 64, 64, 10, 0.5, 0.5),
@@ -435,93 +485,93 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("spinewheel-effects-v1", spinewheelEffectSheetUrl, 64, 64, 8, 0.5, 0.5),
   sheet("tether-bloom-v1", tetherBloomSheetUrl, 96, 96, 16, 0.5, 0.5),
   sheet("tether-bloom-effects-v1", tetherBloomEffectSheetUrl, 64, 64, 8, 0.5, 0.5),
-  sheet("bastion-eater-v1", bastionEaterSheetUrl, 192, 192, 12, 0.5, 0.5),
-  sheet("bastion-eater-nodes-v1", bastionEaterNodeSheetUrl, 192, 192, 8, 0.5, 0.5),
+  sheet("bastion-eater-v1", runtimeImageUrl(bastionEaterSheetUrl, bastionEaterSheetWebpUrl), 192, 192, 12, 0.5, 0.5),
+  sheet("bastion-eater-nodes-v1", runtimeImageUrl(bastionEaterNodeSheetUrl, bastionEaterNodeSheetWebpUrl), 192, 192, 8, 0.5, 0.5),
   sheet("bastion-eater-effects-v1", bastionEaterEffectSheetUrl, 96, 96, 12, 0.5, 0.5),
   sheet("bastion-eater-environment-v1", bastionEaterEnvironmentSheetUrl, 96, 96, 8, 0.5, 0.5),
   image("bastion-eater-portrait-v1", bastionEaterPortraitUrl, 256, 256, 0.5, 0.5),
   sheet("patrol-blade-v1", patrolBladeSheetUrl, 96, 96, 4, 0.5, 0.5),
-  sheet("patrol-blade-effects-v1", patrolBladeEffectSheetUrl, 64, 64, 6, 0.5, 0.5),
-  sheet("action-tiles-v1", actionTileSheetUrl, 64, 64, 6, 0.5, 0.5),
+  sheet("patrol-blade-effects-v1", runtimeImageUrl(patrolBladeEffectSheetUrl, patrolBladeEffectSheetWebpUrl), 64, 64, 6, 0.5, 0.5),
+  sheet("action-tiles-v1", runtimeImageUrl(actionTileSheetUrl, actionTileSheetWebpUrl), 64, 64, 6, 0.5, 0.5),
   image("uranium-status-v1", uraniumStatusUrl, 64, 64, 0.5, 0.5),
   sheet("bolt-carbine-v1", boltCarbineSheetUrl, 96, 96, 4, 0.18, 0.5),
-  sheet("bolt-carbine-effects-v1", boltCarbineEffectUrl, 64, 64, 8, 0.5, 0.5),
-  sheet("weapon-tiles-v1", weaponTileSheetUrl, 64, 64, 3, 0.5, 0.5),
+  sheet("bolt-carbine-effects-v1", runtimeImageUrl(boltCarbineEffectUrl, boltCarbineEffectWebpUrl), 64, 64, 8, 0.5, 0.5),
+  sheet("weapon-tiles-v1", runtimeImageUrl(weaponTileSheetUrl, weaponTileSheetWebpUrl), 64, 64, 3, 0.5, 0.5),
   sheet("bulwark-rotary-cannon-v1", bulwarkRotarySheetUrl, 96, 96, 4, 0.18, 0.5),
-  sheet("bulwark-rotary-effects-v1", bulwarkRotaryEffectUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("bulwark-rotary-effects-v1", runtimeImageUrl(bulwarkRotaryEffectUrl, bulwarkRotaryEffectWebpUrl), 64, 64, 8, 0.5, 0.5),
   sheet("grenade-tube-v1", grenadeTubeSheetUrl, 96, 96, 4, 0.18, 0.5),
-  sheet("grenade-tube-effects-v1", grenadeTubeEffectUrl, 64, 64, 8, 0.5, 0.5),
-  sheet("status-overlays-v1", statusOverlaySheetUrl, 48, 48, 16, 0.5, 0.5),
+  sheet("grenade-tube-effects-v1", runtimeImageUrl(grenadeTubeEffectUrl, grenadeTubeEffectWebpUrl), 64, 64, 8, 0.5, 0.5),
+  sheet("status-overlays-v1", runtimeImageUrl(statusOverlaySheetUrl, statusOverlaySheetWebpUrl), 48, 48, 16, 0.5, 0.5),
   sheet("event-horizon-v1", eventHorizonSheetUrl, 96, 96, 4, 0.18, 0.5),
-  sheet("event-horizon-effects-v1", eventHorizonEffectUrl, 64, 64, 8, 0.5, 0.5),
+  sheet("event-horizon-effects-v1", runtimeImageUrl(eventHorizonEffectUrl, eventHorizonEffectWebpUrl), 64, 64, 8, 0.5, 0.5),
   image("event-horizon-tile-v1", eventHorizonTileUrl, 64, 64, 0.5, 0.5),
   sheet("corrupted-survivor-v1", corruptedSurvivorSheetUrl, 96, 96, 8, 0.5, 0.5),
   sheet("corrupted-marine-v1", corruptedMarineSheetUrl, 96, 96, 12, 0.5, 0.5),
   sheet("abomination-v1", abominationSheetUrl, 128, 128, 12, 0.5, 0.5),
   sheet("corrupted-marine-effects-v1", corruptedMarineEffectUrl, 64, 64, 8, 0.5, 0.5),
-  sheet("nest-weaver-v1", nestWeaverSheetUrl, 192, 192, 32, 0.5, 0.92),
+  sheet("nest-weaver-v1", runtimeImageUrl(nestWeaverSheetUrl, nestWeaverSheetWebpUrl), 192, 192, 32, 0.5, 0.92),
   sheet("nest-pod-v1", nestPodSheetUrl, 128, 128, 6, 0.5, 0.92),
   sheet("nest-effects-v1", nestEffectsUrl, 128, 128, 8, 0.5, 0.72),
-  sheet("storm-savant-v1", stormSavantSheetUrl, 192, 192, 36, 0.5, 0.92),
+  sheet("storm-savant-v1", runtimeImageUrl(stormSavantSheetUrl, stormSavantSheetWebpUrl), 192, 192, 36, 0.5, 0.92),
   sheet("storm-node-v1", stormNodeSheetUrl, 128, 128, 6, 0.5, 0.92),
   sheet("storm-effects-v1", stormEffectsUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("machine-scrap-skitterer-v1", scrapSkittererSheetUrl, 128, 128, 32, 0.5, 0.92),
+  sheet("machine-scrap-skitterer-v1", runtimeImageUrl(scrapSkittererSheetUrl, scrapSkittererSheetWebpUrl), 128, 128, 32, 0.5, 0.92),
   sheet("machine-scrap-skitterer-effects-v1", scrapSkittererEffectsUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("machine-arc-warden-v1", arcWardenSheetUrl, 128, 128, 32, 0.5, 0.92),
+  sheet("machine-arc-warden-v1", runtimeImageUrl(arcWardenSheetUrl, arcWardenSheetWebpUrl), 128, 128, 32, 0.5, 0.92),
   sheet("machine-arc-warden-effects-v1", arcWardenEffectsUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("machine-cyborg-reclaimer-v1", cyborgReclaimerSheetUrl, 192, 192, 36, 0.5, 0.92),
+  sheet("machine-cyborg-reclaimer-v1", runtimeImageUrl(cyborgReclaimerSheetUrl, cyborgReclaimerSheetWebpUrl), 192, 192, 36, 0.5, 0.92),
   sheet("machine-cyborg-reclaimer-effects-v1", cyborgReclaimerEffectsUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("machine-foundry-fabricator-v1", foundryFabricatorSheetUrl, 192, 192, 36, 0.5, 0.92),
+  sheet("machine-foundry-fabricator-v1", runtimeImageUrl(foundryFabricatorSheetUrl, foundryFabricatorSheetWebpUrl), 192, 192, 36, 0.5, 0.92),
   sheet("machine-foundry-pad-v1", foundryPadSheetUrl, 128, 128, 6, 0.5, 0.78),
-  sheet("machine-foundry-drone-v1", foundryDroneSheetUrl, 128, 128, 28, 0.5, 0.75),
-  sheet("machine-foundry-turret-v1", foundryTurretSheetUrl, 128, 128, 32, 0.5, 0.88),
+  sheet("machine-foundry-drone-v1", runtimeImageUrl(foundryDroneSheetUrl, foundryDroneSheetWebpUrl), 128, 128, 28, 0.5, 0.75),
+  sheet("machine-foundry-turret-v1", runtimeImageUrl(foundryTurretSheetUrl, foundryTurretSheetWebpUrl), 128, 128, 32, 0.5, 0.88),
   sheet("machine-foundry-effects-v1", foundryEffectsUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("synapse-herald-v1", synapseHeraldSheetUrl, 192, 192, 40, 0.5, 0.92),
+  sheet("synapse-herald-v1", runtimeImageUrl(synapseHeraldSheetUrl, synapseHeraldSheetWebpUrl), 192, 192, 40, 0.5, 0.92),
   sheet("synapse-herald-effects-v1", synapseHeraldEffectsUrl, 128, 128, 8, 0.5, 0.5),
   image("synapse-herald-portrait-v1", synapseHeraldPortraitUrl, 256, 256, 0.5, 0.5),
-  sheet("assembly-prime-v1", assemblyPrimeSheetUrl, 192, 192, 44, 0.5, 0.92),
+  sheet("assembly-prime-v1", runtimeImageUrl(assemblyPrimeSheetUrl, assemblyPrimeSheetWebpUrl), 192, 192, 44, 0.5, 0.92),
   sheet("assembly-prime-pad-v1", assemblyPrimePadUrl, 128, 128, 6, 0.5, 0.78),
   sheet("assembly-prime-effects-v1", assemblyPrimeEffectsUrl, 128, 128, 8, 0.5, 0.5),
   image("assembly-prime-portrait-v1", assemblyPrimePortraitUrl, 256, 256, 0.5, 0.5),
-  sheet("storm-regent-v1", stormRegentSheetUrl, 192, 192, 44, 0.5, 0.92),
+  sheet("storm-regent-v1", runtimeImageUrl(stormRegentSheetUrl, stormRegentSheetWebpUrl), 192, 192, 44, 0.5, 0.92),
   sheet("storm-conductive-node-v1", stormConductiveNodeUrl, 128, 128, 6, 0.5, 0.88),
   sheet("storm-regent-effects-v1", stormRegentEffectsUrl, 128, 128, 8, 0.5, 0.5),
   image("storm-regent-portrait-v1", stormRegentPortraitUrl, 256, 256, 0.5, 0.5),
-  sheet("abomination-prime-v1", abominationPrimeSheetUrl, 192, 192, 52, 0.5, 0.92),
+  sheet("abomination-prime-v1", runtimeImageUrl(abominationPrimeSheetUrl, abominationPrimeSheetWebpUrl), 192, 192, 52, 0.5, 0.92),
   sheet("abomination-prime-biomass-v1", abominationPrimeBiomassUrl, 128, 128, 8, 0.5, 0.72),
   sheet("abomination-prime-effects-v1", abominationPrimeEffectsUrl, 128, 128, 8, 0.5, 0.5),
   image("abomination-prime-portrait-v1", abominationPrimePortraitUrl, 256, 256, 0.5, 0.5),
-  sheet("science-wing-floor-v1", scienceWingFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("science-wing-floor-v1", runtimeImageUrl(scienceWingFloorUrl, scienceWingFloorWebpUrl), 128, 128, 16, 0.5, 0.5),
   sheet("science-wing-boundary-v1", scienceWingBoundaryUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("science-wing-fixtures-v1", scienceWingFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("science-wing-fixtures-v1", runtimeImageUrl(scienceWingFixturesUrl, scienceWingFixturesWebpUrl), 192, 192, 8, 0.5, 0.92),
   sheet("science-wing-decals-v1", scienceWingDecalsUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("bastion-logistics-floor-v1", bastionLogisticsFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("bastion-logistics-floor-v1", runtimeImageUrl(bastionLogisticsFloorUrl, bastionLogisticsFloorWebpUrl), 128, 128, 16, 0.5, 0.5),
   sheet("bastion-logistics-boundary-v1", bastionLogisticsBoundaryUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("bastion-logistics-fixtures-v1", bastionLogisticsFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("bastion-logistics-fixtures-v1", runtimeImageUrl(bastionLogisticsFixturesUrl, bastionLogisticsFixturesWebpUrl), 192, 192, 8, 0.5, 0.92),
   sheet("bastion-logistics-decals-v1", bastionLogisticsDecalsUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("machine-foundry-floor-v1", machineFoundryFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("machine-foundry-floor-v1", runtimeImageUrl(machineFoundryFloorUrl, machineFoundryFloorWebpUrl), 128, 128, 16, 0.5, 0.5),
   sheet("machine-foundry-boundary-v1", machineFoundryBoundaryUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("machine-foundry-fixtures-v1", machineFoundryFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("machine-foundry-fixtures-v1", runtimeImageUrl(machineFoundryFixturesUrl, machineFoundryFixturesWebpUrl), 192, 192, 8, 0.5, 0.92),
   sheet("machine-foundry-decals-v1", machineFoundryDecalsUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("alien-hive-floor-v1", alienHiveFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("alien-hive-floor-v1", runtimeImageUrl(alienHiveFloorUrl, alienHiveFloorWebpUrl), 128, 128, 16, 0.5, 0.5),
   sheet("alien-hive-boundary-v1", alienHiveBoundaryUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("alien-hive-fixtures-v1", alienHiveFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("alien-hive-fixtures-v1", runtimeImageUrl(alienHiveFixturesUrl, alienHiveFixturesWebpUrl), 192, 192, 8, 0.5, 0.92),
   sheet("alien-hive-decals-v1", alienHiveDecalsUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("surface-frontier-floor-v1", surfaceFrontierFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("surface-frontier-floor-v1", runtimeImageUrl(surfaceFrontierFloorUrl, surfaceFrontierFloorWebpUrl), 128, 128, 16, 0.5, 0.5),
   sheet("surface-frontier-boundary-v1", surfaceFrontierBoundaryUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("surface-frontier-fixtures-v1", surfaceFrontierFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("surface-frontier-fixtures-v1", runtimeImageUrl(surfaceFrontierFixturesUrl, surfaceFrontierFixturesWebpUrl), 192, 192, 8, 0.5, 0.92),
   sheet("surface-frontier-decals-v1", surfaceFrontierDecalsUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("starship-transit-floor-v1", starshipTransitFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("starship-transit-floor-v1", runtimeImageUrl(starshipTransitFloorUrl, starshipTransitFloorWebpUrl), 128, 128, 16, 0.5, 0.5),
   sheet("starship-transit-boundary-v1", starshipTransitBoundaryUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("starship-transit-fixtures-v1", starshipTransitFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("starship-transit-fixtures-v1", runtimeImageUrl(starshipTransitFixturesUrl, starshipTransitFixturesWebpUrl), 192, 192, 8, 0.5, 0.92),
   sheet("starship-transit-decals-v1", starshipTransitDecalsUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("containment-underworld-floor-v1", containmentUnderworldFloorUrl, 128, 128, 16, 0.5, 0.5),
+  sheet("containment-underworld-floor-v1", runtimeImageUrl(containmentUnderworldFloorUrl, containmentUnderworldFloorWebpUrl), 128, 128, 16, 0.5, 0.5),
   sheet("containment-underworld-boundary-v1", containmentUnderworldBoundaryUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("containment-underworld-fixtures-v1", containmentUnderworldFixturesUrl, 192, 192, 8, 0.5, 0.92),
+  sheet("containment-underworld-fixtures-v1", runtimeImageUrl(containmentUnderworldFixturesUrl, containmentUnderworldFixturesWebpUrl), 192, 192, 8, 0.5, 0.92),
   sheet("containment-underworld-decals-v1", containmentUnderworldDecalsUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("world-objects-military-v1", worldObjectsMilitaryUrl, 192, 192, 16, 0.5, 0.92),
-  sheet("world-objects-natural-v1", worldObjectsNaturalUrl, 192, 192, 16, 0.5, 0.92),
-  sheet("world-objects-organic-v1", worldObjectsOrganicUrl, 192, 192, 16, 0.5, 0.92),
+  sheet("world-objects-military-v1", runtimeImageUrl(worldObjectsMilitaryUrl, worldObjectsMilitaryWebpUrl), 192, 192, 16, 0.5, 0.92),
+  sheet("world-objects-natural-v1", runtimeImageUrl(worldObjectsNaturalUrl, worldObjectsNaturalWebpUrl), 192, 192, 16, 0.5, 0.92),
+  sheet("world-objects-organic-v1", runtimeImageUrl(worldObjectsOrganicUrl, worldObjectsOrganicWebpUrl), 192, 192, 16, 0.5, 0.92),
   sheet("emberfall-floor-v1", emberfallFloorUrl, 64, 64, 6, 0.5, 0.5),
   sheet("emberfall-boundary-v1", emberfallBoundaryUrl, 64, 64, 8, 0.5, 0.5),
   sheet("emberfall-obstacles-v1", emberfallObstacleUrl, 96, 96, 4, 0.5, 0.5),
@@ -546,25 +596,25 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   image("rift-stalker-portrait-v1", riftStalkerPortraitUrl, 128, 128, 0.5, 0.5),
   sheet("scrap-shop-offer-tiles-v1", scrapShopOfferTileUrl, 128, 128, 6, 0.5, 0.5),
   sheet("scrap-shop-hud-v1", scrapShopHudUrl, 128, 128, 4, 0.5, 0.5),
-  image("scrap-shop-panel-v1", scrapShopPanelUrl, 1024, 576, 0.5, 0.5),
+  image("scrap-shop-panel-v1", runtimeImageUrl(scrapShopPanelUrl, scrapShopPanelWebpUrl), 1024, 576, 0.5, 0.5),
   sheet("quartermaster-v1", quartermasterSheetUrl, 128, 256, 6, 0.5, 1),
-  sheet("destructible-terrain-v1", destructibleTerrainUrl, 128, 128, 28, 0.5, 0.92),
+  sheet("destructible-terrain-v1", runtimeImageUrl(destructibleTerrainUrl, destructibleTerrainWebpUrl), 128, 128, 28, 0.5, 0.92),
   sheet("destructible-terrain-effects-v1", destructibleTerrainEffectsUrl, 64, 64, 8, 0.5, 0.5),
   sheet("batch-i-weapon-tiles-v1", batchIWeaponTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("batch-i-perk-tiles-v1", batchIPerkTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("canonical-perk-tiles-v2", canonicalPerkTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("batch-i-hotkey-tiles-v1", batchIHotkeyTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("batch-i-slot-tier-ui-v1", batchISlotTierUiUrl, 128, 128, 16, 0.5, 0.5),
-  image("batch-i-placement-modal-v1", batchIPlacementModalUrl, 900, 560, 0.5, 0.5),
+  image("batch-i-placement-modal-v1", runtimeImageUrl(batchIPlacementModalUrl, batchIPlacementModalWebpUrl), 900, 560, 0.5, 0.5),
   image("batch-i-weapon-stat-card-v1", batchIWeaponStatCardUrl, 320, 420, 0.5, 0.5),
-  image("batch-i-shop-counter-v1", batchIShopCounterUrl, 1200, 700, 0.5, 0.5),
+  image("batch-i-shop-counter-v1", runtimeImageUrl(batchIShopCounterUrl, batchIShopCounterWebpUrl), 1200, 700, 0.5, 0.5),
   sheet("batch-i-shop-glyphs-v1", batchIShopGlyphUrl, 48, 48, 3, 0.5, 0.5),
   sheet("swarm-scuttler-v1", swarmScuttlerSheetUrl, 64, 64, 8, 0.5, 0.55),
   sheet("razorlord-v1", razorlordSheetUrl, 96, 96, 16, 0.5, 0.55),
   sheet("blightspitter-v1", blightspitterSheetUrl, 96, 96, 12, 0.5, 0.55),
   sheet("quillback-matriarch-v1", quillbackMatriarchSheetUrl, 128, 128, 16, 0.5, 0.58),
   sheet("telegraph-large-v1", telegraphLargeSheetUrl, 128, 128, 8, 0.5, 0.5),
-  sheet("telegraph-small-v1", telegraphSmallSheetUrl, 64, 64, 12, 0.5, 0.5),
+  sheet("telegraph-small-v1", runtimeImageUrl(telegraphSmallSheetUrl, telegraphSmallSheetWebpUrl), 64, 64, 12, 0.5, 0.5),
   sheet("telegraph-danger-fill-v1", telegraphDangerFillUrl, 64, 64, 4, 0.5, 0.5),
   sheet("medic-base-v1", medicBaseSheetUrl, 96, 96, 20, 0.5, 0.68),
   sheet("medic-helmet-v1", medicHelmetSheetUrl, 96, 96, 20, 0.5, 0.68),
