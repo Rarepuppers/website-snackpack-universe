@@ -47,7 +47,8 @@ describe("Task 49 campaign tuning", () => {
   it("keeps all live weapons in the chest pool and makes safe routes economically useful", () => {
     // Size follows the art gate rather than a literal, so art day stays a
     // one-constant change; uniqueness is the part that must always hold.
-    expect(WEAPON_CHEST_POOL).toHaveLength(HELD_WEAPONS_IN_POOL ? 28 : 8);
+    // 28 -> 31 on 8 Aug 2026 with the three Tier 1 hole-filling weapons.
+    expect(WEAPON_CHEST_POOL).toHaveLength(HELD_WEAPONS_IN_POOL ? 31 : 8);
     expect(new Set(WEAPON_CHEST_POOL).size).toBe(WEAPON_CHEST_POOL.length);
     expect(campaignNodeClearScrap("supply-depot", 3)).toBe(15);
     expect(campaignNodeClearScrap("weapon-cache", 5)).toBe(15);

@@ -6,7 +6,9 @@ describe("weaponCatalog", () => {
     expect(VERTICAL_SLICE_WEAPON_IDS).toEqual([
       "bastion-service-rifle", "scattergun", "arc-carbine",
     ]);
-    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(29);
+    // 29 until 8 Aug 2026, when the three Tier 1 hole-filling weapons landed
+    // (Emberlance / Storm Coil Beam / Blight Scythe).
+    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(32);
   });
 
   it("keeps each Phase 4 weapon's contract, and its pool membership in step with the art gate", () => {

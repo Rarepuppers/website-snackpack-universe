@@ -716,3 +716,159 @@ Two hard gates worth restating: **T3.6 must land before batch X1** (do not commi
 for achievement IDs that do not exist), and **T4.8 must not begin before each hero's mechanics
 contract is in code** — that is the rule the existing silhouette placeholders were created to
 enforce.
+
+---
+
+## 11. HUD readouts and run pacing
+
+Added 8 August 2026 in response to five questions. Three of them turned out to have a different
+answer than expected, so the findings come before the proposals.
+
+### 11.1 Findings
+
+**The wave timer already exists.** `WAVE_DURATIONS_SECONDS` in `combat/DensityDirector.ts` is
+`[20, 20, 30, 35, null, 40, 45, 50, 60, null]` — wave 9 is literally a 60-second round. Waves 5 and
+10 are `null` on purpose: the elite wave and the boss wave are clear-all, not timed. So the system
+is there and tuned; the problem is that it renders as a **four-character suffix on the wave label**
+(`WAVE 7/10 • 42s`) and is easy to miss entirely.
+
+*(Corrected 8 Aug 2026: an earlier draft of this paragraph called waves 1-2 an inconsistency,
+claiming their 20-second duration "does nothing". That was wrong.* `durationSeconds` *is also the
+spawn-schedule window —* `scheduleInPulses(composition, durationSeconds ?? 30)` *— so waves 1 and 2
+spread their spawns across 20 seconds and then end when cleared. Timed endings starting at wave 3
+is deliberate onboarding: learn to clear, then learn to survive. Nothing to fix.)*
+
+**Overheal is currently impossible, so this is a systems request rather than a HUD one.** Every heal
+path clamps: there are **six** `Math.min(playerMaxHealth, …)` sites across supply depots, the shop
+repair, medic healing, and pickups. Nothing can push health above maximum today, so an overlay would
+have nothing to draw. Also note `healthFill.setScale(health / maxHealth, 1)` would scale past 1 and
+overflow its frame the moment health could exceed max — the bar has no clamp of its own.
+
+**Shield is text-only.** `+SH4` appended to the health readout. There is no bar.
+
+**Armour is invisible during combat.** It appears only in `ui/BuildOverlay.ts` as
+`Armour bonus <n>`. Mid-fight you cannot see it.
+
+**There is no game-speed control of any kind.** No `timeScale`, no fixed-step accumulator — the
+simulation is stepped once per rendered frame with the frame's delta.
+
+### 11.2 Shield bar
+
+Draw shield as a **blue segment sharing the health bar's pixel scale**, not as its own full-width
+bar. One shield point must be the same width as one health point, or the bar lies about how much
+protection it actually represents — shield totals are small (Shield Capacitor grants 1.5 per level)
+next to a health pool in the tens.
+
+Two placements work; prefer the first:
+
+1. **Inline extension** — shield fills rightward from the end of the health fill, inside the same
+   frame, and depletes first. Reads as "one pool with a blue tip", which matches the mechanic:
+   shield absorbs before armour and before health.
+2. A thin separate bar directly above, on the same width scale.
+
+Also surface the recharge state: shield recharges out of combat after a delay
+(`shieldRechargeDelaySeconds`), and the new Capacitor Array upgrade scales both. A subtle pulse
+while recharging tells the player that disengaging is working.
+
+### 11.3 Overheal
+
+Because health is hard-clamped in six places, pick the mechanic before the visuals.
+
+| | **A — true overheal** | **B — separate bonus pool** *(recommended)* |
+|---|---|---|
+| Change | Allow `playerHealth > playerMaxHealth`, decaying back down | A distinct `bonusHealth` pool consumed before health |
+| Clamp sites | All six must change, plus the bar's scale | None — new field, no existing clamp touched |
+| Risk | Every heal, regen, and lifesteal path is in scope | Contained; mirrors how shield already works |
+| Reads as | `16/12` | `12/12 +4` |
+
+B is recommended: it is the same shape as the shield system that already exists and works, it does
+not require auditing six healing paths, and it keeps `maxHpFlat` and `maxHpPercent` meaning exactly
+what they mean now. If the `16/12` readout is specifically wanted, that is option A and should be
+costed as a systems change with its own balance pass — persistent overheal is a large survivability
+buff, so it needs a decay rule (suggest capping at +50% of max and decaying 1 point per second out
+of combat).
+
+Either way the health bar needs an explicit clamp so the fill cannot exceed its frame, and the
+excess should render as a **distinct lighter overlay past the full mark**, never by rescaling the
+bar. Rescaling would make the same HP value change width, which is the one thing a bar must not do.
+
+### 11.4 Should armour be displayed?
+
+Yes — but **not as a raw number**, because armour is diminishing:
+`reduction = armour / (armour + 15)`. "12 armour" is meaningless to a player; 12 armour is 44%
+reduction, and the next point is worth less than the last. Show the effective figure:
+
+```
+ARM 12  (44%)      -0.9 flat
+```
+
+The flat term matters now that Reactive Plating exists — it is a second, differently-behaving
+mitigation stat, subtracted after the percentage step and floored at 0.1, so showing only one of the
+two would misrepresent survivability. Dodge is a third invisible defensive stat and belongs on the
+same compact line.
+
+Put it in the existing stats line rather than a new panel; that line already carries hero, level,
+and state flags.
+
+### 11.5 Game speed
+
+Worth doing, but the implementation order matters because of one constraint: **the game has a
+deterministic replay fixture** (`combat/ReplayFixture.ts`, `combat/ReferenceRun.ts`) that the
+refactor work depends on for equivalence proofs.
+
+- **Do not scale `deltaSeconds`.** Multiplying the delta changes how many integration steps happen
+  per second and therefore changes results — determinism, replays, and the equivalence harness all
+  break, and floating-point drift makes those failures intermittent rather than obvious.
+- **Do use a fixed-timestep accumulator.** Run the simulation at a constant step (1/60) and let the
+  speed multiplier decide *how many steps run per rendered frame*. 2× is two steps per frame, 0.5×
+  is one step every other frame. Determinism is preserved exactly, and the same accumulator is what
+  hit-stop (G6) needs — both should land against one clock authority rather than fighting.
+- Non-integer multipliers (1.1×, 1.25×) fall out of the accumulator carrying its remainder, which a
+  fixed step handles naturally.
+
+Then three separate uses, in increasing order of risk:
+
+1. **Setting (do first).** Slower speeds (0.75×) are a real accessibility win; faster (1.25×) is a
+   quality-of-life win for repeat runs. Cheapest and least balance-affecting.
+2. **Difficulty modifier.** A clean, legible tier modifier for the T4.1 ladder — "everything is 15%
+   faster" is instantly understood and needs no new art.
+3. **Powerup — recommend against, at least initially.** A world-speed powerup speeds *enemies* too,
+   so it is a downside disguised as a reward, and player-only haste already exists through
+   `moveSpeedPercent` and `attackSpeedPercent`. If a "hyper" mode is wanted, make it a mode, not a
+   pickup.
+
+Leaderboard note: if dailies (G3) ship, score has to be recorded against a fixed speed or the board
+is meaningless. Record the multiplier in the run summary either way.
+
+### 11.6 Further recommendations
+
+Ranked by value against effort. The first two are the ones I would do next.
+
+1. **Surface damage-type weakness and resistance.** 29 of 36 enemies now carry resistance profiles
+   after the 7 August pass, and the player has no way to see any of it — the entire
+   rock-paper-scissors layer is invisible. A small weakness/resist glyph on the enemy health bar, or
+   a tinted hit marker, turns existing data into a readable decision. Highest value per line of code
+   on this list.
+2. **Show status buildup progress.** Statuses fire at 8 accumulated buildup, and now that
+   `statusBuildupPercent` scales it, invisible progress is actively worse than before — the player
+   cannot tell the stat is doing anything. A thin ring or tick marks under the enemy health bar.
+3. **Promote the wave timer** to a real countdown (a ring around the wave number, or a depleting
+   bar) on the waves that are actually timed. Waves 1-2, 5 and 10 have no countdown by design and
+   should show none.
+4. **Live run timer.** `RunSummary.elapsedSeconds` is already tracked but never shown in-run. Cheap,
+   and required for dailies and leaderboards anyway.
+5. **Elite health bars.** A boss panel already exists (`bossPanel` / `bossFill`); elites use the
+   ordinary enemy bar and do not read as special.
+6. **Damage-taken direction indicator.** `showDamageDirection` exists in the scene — worth
+   confirming it is legible at 30+ enemy density, where off-screen threats are the main killer.
+
+### 11.7 Asset implications
+
+Most of this is code-drawn and needs no Codex work. Two exceptions, to append to the asset queue:
+
+- **85 — HUD bar chrome.** Shield-blue and overheal-overlay fills matching the existing health bar,
+  plus a countdown ring for the wave timer. Should be produced alongside UI Batch U2's HUD backing
+  plates so the whole cluster is one visual language rather than two.
+- **86 — Damage-type weakness glyphs.** Five small marks, one per damage type, legible at enemy
+  health-bar size and distinguishable in all four colour-vision modes — so shape-first, never
+  colour-only.

@@ -43,6 +43,10 @@ export const LEVEL_STAT_CARDS: readonly LevelStatCard[] = Object.freeze([
   card("lvl-ranged", "Marksmanship", "rangedDamagePercent", 7, "percent", "offence"),
   card("lvl-melee", "Close Quarters", "meleeDamagePercent", 7, "percent", "offence"),
   card("lvl-elemental", "Reactive Payload", "elementalDamagePercent", 8, "percent", "offence"),
+  // Pairs with Reactive Payload: that one scales elemental damage, this one
+  // scales how fast the hit reaches the status threshold. Before this, the
+  // level-up economy could not influence status application at all.
+  card("lvl-status-buildup", "Catalyst Load", "statusBuildupPercent", 10, "percent", "offence"),
   card("lvl-attack-speed", "Cycling Drill", "attackSpeedPercent", 5, "percent", "offence"),
 
   // --- Defence ---
@@ -107,6 +111,7 @@ export const LEVEL_STAT_LABELS: Readonly<Partial<Record<keyof PlayerStatBlock, s
   meleeDamagePercent: "melee damage",
   rangedDamagePercent: "ranged damage",
   elementalDamagePercent: "elemental damage",
+  statusBuildupPercent: "status buildup",
   critChancePercent: "crit chance",
   attackSpeedPercent: "attack speed",
   maxHpFlat: "max HP",

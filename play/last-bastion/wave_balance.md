@@ -481,3 +481,52 @@ The current two-stage boss-only obstacle break becomes numeric health in its beh
 Terrain bars use the same one-decimal formatter as combat stats, appear after the first hit, remain for 1.5 seconds after the last hit, and hide at full health. Player damage numbers are 25–35% larger than ordinary outgoing numbers, show a leading minus sign, last 0.85–1.05 seconds, and never merge with green healing ticks.
 
 **Task 54 implementation lock (19 July 2026):** obstacle durability is now numeric and data-driven (`fence` 50, `biomass` 55, `cargo-crate` 100, `barricade` 240, `reinforced-cover` 420, `boulder`/`power-conduit` 500). Player projectiles and Patrol Blade reduce terrain by their authored hit damage; enemy projectiles reduce it on impact; Siege Crusher charges deal 140 durability damage per cover collision; Bastion Eater charges deal two 450-damage impacts. Terrain damage events carry source, damage, and remaining health, while snapshots expose conditional 1.5-second hit bars. Destruction removes the obstacle from player/enemy collision and projectile blocking, and route tests verify that a destroyed lane becomes traversable. Batch R now maps code-owned full/75%/35%/zero thresholds to intact, damaged, critical, and destroyed frames; art does not encode collision or HP values.
+
+---
+
+## 7 August 2026 — status buildup stat and corrupted-human resistances
+
+Two content changes landed that move the power curve and have **not** yet had a tuning pass. Both
+come from `last-bastion-content-design-plan-2026-08-07.md` (P3, P4).
+
+### `statusBuildupPercent` (new player stat)
+
+Folded in at the single application site in `damageEnemy`, multiplicatively alongside the three
+sources that already existed (per-damage-type upgrade tuning, the Corrode transformation bonus, and
+the Element Primer relic). Every existing source behaves exactly as before at 0%.
+
+Currently reachable from one level-up card, **Catalyst Load** (`lvl-status-buildup`, +10% per take).
+No item grants it yet.
+
+Tuning open questions:
+- +10% per card against the threshold of 8 is a guess. Stacked with Element Primer (x2) the
+  compounding may be steep; the two multiply rather than add.
+- Buildup accumulates **mitigated** damage, so armoured targets need more hits than
+  `threshold / rawDamage` suggests. Any item magnitudes should be set against mitigated numbers.
+
+### Corrupted-human and nest resistance profiles
+
+The corrupted-human family had no resistance profile at all, making damage type inert against a
+third of the roster. Flesh burns and is already diseased, so fire is a weakness and toxic is
+resisted. Magnitudes soften as the body gets bulkier:
+
+| Enemy | fire | toxic |
+|---|---|---|
+| infected-survivor | 1.50 | 0.60 |
+| corrupted-marine | 1.35 | 0.60 |
+| abomination | 1.25 | 0.55 |
+
+`abomination-prime` already shipped with `toxic: 0.65`, so the family now reads consistently from
+swarm to apex instead of only at the top. Nest Weaver (1.35) and Nest Hatchling (1.40) were given
+the fire weakness `nest-pod` already had, for the same consistency reason.
+
+Coverage moved from 24 of 36 enemies to **29 of 36**. Left deliberately neutral: `scuttler` and
+`swarm-scuttler` (tutorial enemies should not require a damage-type answer), `aurum-hoarder`
+(treasure unit that flees), `siege-crusher` (mini-boss, pending a balance pass), and the three alien
+beasts `ripper` / `quillback` / `spinewheel` (open candidates). A test asserts this list stays empty
+on purpose so it reads as a decision rather than an oversight.
+
+**Net effect to watch:** fire was the joint-weakest represented damage type (3 of 29 weapons) and
+now has a whole faction to exploit — that is the intent, but it makes the two fire melee weapons and
+the Flamethrower noticeably stronger on corrupted-human nodes. Toxic loses ground against the same
+faction, which is the trade. Needs a play pass before any further element tuning.

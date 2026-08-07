@@ -1,9 +1,9 @@
 # Last Bastion — document index
 
-Sixteen `.md` files live in this folder and several are historical. This index says which
+Seventeen `.md` files live in this folder and several are historical. This index says which
 to trust. **Read this before acting on any plan doc.**
 
-Last reviewed: 7 August 2026.
+Last reviewed: 8 August 2026.
 
 ---
 
@@ -11,7 +11,8 @@ Last reviewed: 7 August 2026.
 
 | File | What it is |
 |---|---|
-| `last-bastion-improvement-and-steam-plan-2026-08-07.md` | **The forward plan.** Full review of the current build, the Full HD/4K/ultrawide/Steam Deck display plan, the Steam client plan, the gameplay-depth backlog, new Codex asset batches 68–75, and a task-level implementation breakdown (§10) with file targets, line ranges, and acceptance criteria. Does not restate the asset queue — it references it. |
+| `last-bastion-improvement-and-steam-plan-2026-08-07.md` | **The forward plan.** Full review of the current build, the Full HD/4K/ultrawide/Steam Deck display plan, the Steam client plan, the gameplay-depth backlog, new Codex asset batches 68–75, a task-level implementation breakdown (§10) with file targets, line ranges, and acceptance criteria, and §11 on HUD readouts and run pacing (shield bar, overheal, armour display, wave timer, game speed). Does not restate the asset queue — it references it. |
+| `last-bastion-content-design-plan-2026-08-07.md` | **The content plan.** Review of every content system with measured counts, plus proposed monsters, elites, bosses, weapons, objectives, rewards, items, and stats, and Codex asset batches 76-84. |
 | `asset-next-production-review-2026-07-26.md` | **The asset queue.** The single authority on what art/audio Codex produces next, in priority order, plus the quality floors. The 31 July addendum adds UI chrome, music, ambience, UI audio, and the locked/mystery/playable character batches. |
 | `last-bastion-art-bible.md` | Asset pipeline: naming, pivots, frame order, source-master retention, Steam/4K rules. Still current. Its open-approvals list is partly stale — see *Known stale points* below. |
 | `last-bastion-codex.html` | Player-facing encyclopedia, and **code-enforced**: `content/codexDrift.test.ts` fails the build if a shipped weapon, upgrade, relic, artifact, or enemy is missing an entry. Not optional documentation. |
@@ -50,10 +51,15 @@ decision outlives the plan for it.
 ## Known stale points to fix when next touched
 
 - `last-bastion-art-bible.md` open-approvals asks about **"weapon-ring radius at 1/4/6/12 weapons."** The rack is still 4 slots but the pool is now 28 draftable weapons, so that question needs restating before ring chrome is designed.
-- Several docs quote content counts inline. As of 31 July 2026 the real numbers are:
-  **29 weapons** (28 draftable + 1 earned unique), **47 items**, **14 relics**, **12 artifacts**,
-  **12 consumables** (11 in the wave rotation, medkit chest-only), **29 world objects**.
-  Prefer counting the catalogue over quoting a doc.
+- Several docs quote content counts inline. Counted from the catalogues on **8 August 2026**:
+  **32 weapons** (10 light / 13 medium / 8 heavy / 1 unique), **41 items** (not 47 — the earlier
+  figure was wrong), **14 relics**, **12 artifacts**, **20 upgrades**, **16 level stat cards**,
+  **12 powerups**, **36 enemy types** (of which **4 elites**, **7 mini-bosses**, **1 boss**),
+  **4 objective kinds**, **20 player stats**, **29 world objects**.
+  Prefer counting the catalogue over quoting a doc. Full breakdown, including the damage-type
+  distribution, is in `last-bastion-content-design-plan-2026-08-07.md` §1. Weapons went 29 -> 32,
+  upgrades 12 -> 20, stat cards 15 -> 16 and player stats 19 -> 20 during the 7-8 August content
+  passes; the design plan's own table carries strikethroughs showing both figures.
 
 ## Rule of thumb
 

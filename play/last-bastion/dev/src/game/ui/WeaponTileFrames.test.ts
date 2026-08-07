@@ -8,6 +8,9 @@ const PENDING_ART_WEAPON_IDS: readonly WeaponId[] = [
   "corrosive-lobber", "scourge-repeater", "bile-lance", "hoarfrost-scatter", "glacier-ward", "tether-harpoon",
   // First deployable, art pending on the same terms.
   "sentry-stake",
+  // Tier 1 hole-fillers (8 Aug 2026), art pending on the same terms — they
+  // borrow by attack pattern until asset batch 80 lands.
+  "emberlance", "storm-coil-beam",
 ];
 
 /**
@@ -15,7 +18,7 @@ const PENDING_ART_WEAPON_IDS: readonly WeaponId[] = [
  * borrows the Patrol Blade's blade frame rather than the rifle's so the
  * placeholder at least reads as melee.
  */
-const PENDING_MELEE_WEAPON_IDS: readonly WeaponId[] = ["combat-knife", "machete", "fire-axe", "shock-baton", "breaching-maul", "plasma-saber", "rime-cleaver"];
+const PENDING_MELEE_WEAPON_IDS: readonly WeaponId[] = ["combat-knife", "machete", "fire-axe", "shock-baton", "breaching-maul", "plasma-saber", "rime-cleaver", "blight-scythe"];
 
 /** The tile each art-pending weapon borrows, chosen by attack pattern. */
 const EXPECTED_PLACEHOLDER_FRAME: Readonly<Record<string, number>> = {
@@ -40,6 +43,10 @@ const EXPECTED_PLACEHOLDER_FRAME: Readonly<Record<string, number>> = {
   "hoarfrost-scatter": 0,
   // A planted stake reads as ordnance, so it borrows the launcher tile.
   "sentry-stake": 3,
+  // Lobbed and explosive → grenade tube; the sustained arc joins the other
+  // beams on the scattergun spread tile.
+  emberlance: 3,
+  "storm-coil-beam": 0,
 };
 
 describe("canonical Batch I weapon tile mapping", () => {

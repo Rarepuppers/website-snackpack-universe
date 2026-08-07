@@ -209,6 +209,15 @@ import {
 } from "./scenarios/ScenarioPopulation";
 import { stepBrainBlobBehavior } from "./BrainBlobBehavior";
 import { armBlastMiteIfInRange, stepBlastMiteBehavior } from "./BlastMiteBehavior";
+import { resolveWarpFlankerAfterMovement, stepWarpFlankerBehavior } from "./WarpFlankerBehavior";
+import {
+  resolveCarapaceScuttlerAfterMovement,
+  stepCarapaceScuttlerBehavior,
+} from "./CarapaceScuttlerBehavior";
+import { commitSlimeSpitterWindup, stepSlimeSpitterBehavior } from "./SlimeSpitterBehavior";
+import { stepEggClusterBehavior } from "./EggClusterBehavior";
+import { RIPPER_REACH_METRES, stepRipperBehavior } from "./RipperBehavior";
+import { commitQuillbackWindup, stepQuillbackBehavior } from "./QuillbackBehavior";
 import type { EnemyMovementIntent } from "./EnemyMovementIntent";
 // Re-exported from the modules that own them so existing importers keep
 // working; the definitions moved out to break a cycle with scenario setup.
@@ -846,6 +855,8 @@ export interface CombatSnapshot {
   playerShield: number;
   playerMaxShield: number;
   playerArmour: number;
+  /** Rare flat reduction, subtracted after the armour percentage. Reactive Plating grants it. */
+  playerFlatDamageReduction: number;
   playerDamageMultiplier: number;
   playerMoveSpeedMultiplier: number;
   weaponProficiencies: Readonly<Record<WeaponClass, number>>;
@@ -1261,7 +1272,6 @@ const OVERCLOCK_STACK_DECAY_SECONDS = 3;
 /** Hunter's Beacon relic: punish window after an elite's telegraphed attack misses. */
 const ELITE_MISS_WINDOW_SECONDS = 1.5;
 /** Broodbreaker Seal artifact: how long a cracking egg is held from hatching. */
-const BROODBREAKER_CRACK_SECONDS = 1.2;
 /** Broodbreaker Seal artifact: radius of the burst a destroyed egg leaves. */
 const BROODBREAKER_BURST_RADIUS_METRES = 2.2;
 /** Last Bastion Protocol artifact: brace threshold, duration and cooldown. */
@@ -1443,6 +1453,7 @@ export class CombatSimulation {
   private readonly statusTuning = {
     buildupMultiplier: {} as Partial<Record<DamageType, number>>,
     blazeBonusDamagePerSecond: 0,
+    corrodeBonusDamagePerSecond: 0,
     freezeSpeedMultiplierOverride: null as number | null,
     freezeDurationBonusSeconds: 0,
     combustionOnDeath: false,
@@ -1516,6 +1527,8 @@ export class CombatSimulation {
   private readonly rewardWeaponSlotBonus: number;
   private experienceCarry = 0;
   private magnetMultiplier = 1;
+  /** Scrap gain from upgrades; multiplies with the relic and harvesting paths. */
+  private upgradeScrapMultiplier = 1;
   private lastAimDirection: Vector2Data = { x: 1, y: 0 };
   private enemies: EnemyState[] = [];
   private projectiles: ProjectileState[] = [];
@@ -2464,6 +2477,7 @@ export class CombatSimulation {
       playerShield: this.playerShield,
       playerMaxShield: this.defence.maxShield,
       playerArmour: this.defence.armour,
+      playerFlatDamageReduction: this.defence.flatDamageReduction,
       playerDamageMultiplier: this.levelDamageMultiplier,
       playerMoveSpeedMultiplier: this.levelSpeedMultiplier,
       weaponProficiencies: { ...this.weaponProficiencies },
@@ -2719,6 +2733,55 @@ export class CombatSimulation {
       case "shield-capacitor":
         this.defence.maxShield += 1.5;
         break;
+
+      // --- Added 7 August 2026 ---
+      case "corrosive-rounds":
+        if (level === 1) {
+          this.modifyAllWeapons((weapon) => { weapon.damageType = "toxic"; });
+        } else if (level === 2) {
+          this.statusTuning.buildupMultiplier.toxic = 1.2;
+          this.statusTuning.corrodeBonusDamagePerSecond = 0.3;
+        } else {
+          this.statusTuning.corrodeBonusDamagePerSecond = 0.7;
+        }
+        break;
+      case "catalyst-array":
+        // Element-agnostic, so a mixed rack can still reach the threshold.
+        for (const type of ["fire", "shock", "cryo", "toxic"] as const) {
+          this.statusTuning.buildupMultiplier[type] =
+            (this.statusTuning.buildupMultiplier[type] ?? 1) + 0.15;
+        }
+        break;
+      case "marksman-barrels":
+        // Reach is speed x lifetime, so both scale or cursor-aimed weapons see
+        // no benefit — same reasoning as `rangePercent` in PlayerStatBlock.
+        this.modifyAllWeapons((weapon) => {
+          weapon.rangeMetres *= 1.2;
+          weapon.projectileLifetimeSeconds *= 1.2;
+        });
+        break;
+      case "reactive-plating":
+        this.defence.flatDamageReduction += 0.3;
+        break;
+      case "kinetic-buffer":
+        this.defence.hitInvulnerabilitySeconds += 0.05;
+        this.defence.slowResistance = Math.min(1, this.defence.slowResistance + 0.25);
+        break;
+      case "capacitor-array":
+        this.defence.shieldRechargePerSecond *= 1.4;
+        this.defence.shieldRechargeDelaySeconds *= 0.8;
+        break;
+      case "field-transfusion":
+        this.supportEffectMultiplier *= 1.25;
+        break;
+      case "salvage-drones":
+        this.upgradeScrapMultiplier *= 1.2;
+        break;
+      default:
+        // Exhaustiveness guard. Without it a new UpgradeId compiles cleanly and
+        // silently does nothing, which is exactly what happened when the eight
+        // 7 Aug upgrades were first added.
+        assertUpgradeHandled(upgradeId);
     }
   }
 
@@ -2937,7 +3000,13 @@ export class CombatSimulation {
     const start = (this.level - 2 + UPGRADE_ORDER.length * 2) % UPGRADE_ORDER.length;
     // Preserve the original spread-by-two offer pattern, then fall back to
     // the remaining slots so eligibility filtering can always fill options.
-    const scanOffsets = [0, 2, 4, 6, 8, 10, 1, 3, 5, 7, 9, 11];
+    //
+    // Derived from the catalogue length rather than hard-coded. It used to be
+    // the literal [0,2,4,6,8,10,1,3,5,7,9,11], which was a complete cover only
+    // while there were exactly twelve upgrades; at twenty it could never see
+    // the last eight from a given start, so they were systematically
+    // under-offered.
+    const scanOffsets = upgradeScanOffsets(UPGRADE_ORDER.length);
     const options: DecisionOption[] = [];
     for (const offset of scanOffsets) {
       if (options.length >= 3) break;
@@ -5192,7 +5261,8 @@ export class CombatSimulation {
       }
       const rule = STATUS_RULES[status];
       const damagePerSecond = rule.damagePerSecond
-        + (status === "blaze" ? this.statusTuning.blazeBonusDamagePerSecond : 0);
+        + (status === "blaze" ? this.statusTuning.blazeBonusDamagePerSecond : 0)
+        + (status === "corrode" ? this.statusTuning.corrodeBonusDamagePerSecond : 0);
       if (damagePerSecond > 0) {
         this.applyRawDamage(enemy, damagePerSecond * deltaSeconds);
         if (enemy.dead) return;
@@ -5488,21 +5558,18 @@ export class CombatSimulation {
   }
 
   private updateEggCluster(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.hatchRemainingSeconds -= deltaSeconds;
-
-    // Broodbreaker Seal: the egg is held through one final crack window instead
-    // of hatching, giving the player a bounded chance to destroy it. One stall
-    // per egg, so it delays the hatch rather than preventing it forever.
-    if (
-      enemy.hatchRemainingSeconds <= 0
-      && this.relicModifiers.preventHatchDuringCrack
-      && !enemy.broodbreakerStalled
-    ) {
-      enemy.broodbreakerStalled = true;
-      enemy.hatchRemainingSeconds = BROODBREAKER_CRACK_SECONDS;
-    }
-
-    if (enemy.hatchRemainingSeconds > 0) {
+    const result = stepEggClusterBehavior(
+      {
+        hatchRemainingSeconds: enemy.hatchRemainingSeconds,
+        broodbreakerStalled: enemy.broodbreakerStalled ?? false,
+      },
+      { deltaSeconds, preventHatchDuringCrack: this.relicModifiers.preventHatchDuringCrack },
+    );
+    enemy.hatchRemainingSeconds = result.state.hatchRemainingSeconds;
+    // Only ever set true, never written back to false — the field is optional
+    // and the inline version left it absent until the stall fired.
+    if (result.state.broodbreakerStalled) enemy.broodbreakerStalled = true;
+    if (!result.hatches) {
       return;
     }
 
@@ -6202,6 +6269,8 @@ export class CombatSimulation {
       this.moveEnemyTowardPlayer(enemy, intent.speedMetresPerSecond, deltaSeconds);
     } else if (intent.kind === "fixed") {
       this.moveEnemy(enemy, intent.direction, intent.speedMetresPerSecond, deltaSeconds);
+    } else if (intent.kind === "range-band") {
+      this.moveEnemyForRangeBand(enemy, deltaSeconds);
     }
   }
 
@@ -6244,39 +6313,34 @@ export class CombatSimulation {
   }
 
   private updateWarpFlanker(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.warpPhaseRemainingSeconds -= deltaSeconds;
-    switch (enemy.warpPhase) {
-      case "stalk":
-        enemy.facingDirection = normalizeVector({
-          x: this.playerPosition.x - enemy.position.x,
-          y: this.playerPosition.y - enemy.position.y,
-        });
-        this.moveEnemyTowardPlayer(enemy, ENEMY_CATALOG["warp-flanker"].movementSpeedMetresPerSecond, deltaSeconds);
-        if (enemy.warpPhaseRemainingSeconds <= 0) {
-          if (distance(enemy.position, this.playerPosition) > 3) {
-            enemy.warpPhase = "warp-windup";
-            enemy.warpPhaseRemainingSeconds = 0.7;
-            enemy.warpTarget = this.pickWarpTarget();
-          } else {
-            enemy.warpPhaseRemainingSeconds = 1;
-          }
-        }
-        break;
-      case "warp-windup":
-        if (enemy.warpPhaseRemainingSeconds <= 0) {
-          enemy.position = { ...enemy.warpTarget };
-          enemy.warpPhase = "materialize";
-          enemy.warpPhaseRemainingSeconds = 0.35;
-          this.frameEvents.push({ type: "warp-arrival", position: { ...enemy.position } });
-        }
-        break;
-      case "materialize":
-        if (enemy.warpPhaseRemainingSeconds <= 0) {
-          enemy.warpPhase = "stalk";
-          enemy.warpPhaseRemainingSeconds = 2.2;
-        }
-        break;
+    const result = stepWarpFlankerBehavior(
+      {
+        phase: enemy.warpPhase,
+        phaseRemainingSeconds: enemy.warpPhaseRemainingSeconds,
+        warpTarget: enemy.warpTarget,
+      },
+      {
+        deltaSeconds,
+        position: enemy.position,
+        playerPosition: this.playerPosition,
+        stalkSpeedMetresPerSecond: ENEMY_CATALOG["warp-flanker"].movementSpeedMetresPerSecond,
+      },
+    );
+    if (result.facingDirection) enemy.facingDirection = result.facingDirection;
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
+    if (result.teleportTo) enemy.position = result.teleportTo;
+    if (result.emitArrival) {
+      this.frameEvents.push({ type: "warp-arrival", position: { ...enemy.position } });
     }
+    const resolved = resolveWarpFlankerAfterMovement(
+      result.state,
+      enemy.position,
+      this.playerPosition,
+      () => this.pickWarpTarget(),
+    );
+    enemy.warpPhase = resolved.phase;
+    enemy.warpPhaseRemainingSeconds = resolved.phaseRemainingSeconds;
+    enemy.warpTarget = resolved.warpTarget;
   }
 
   private pickWarpTarget(): Vector2Data {
@@ -6297,102 +6361,63 @@ export class CombatSimulation {
   }
 
   private updateCarapaceScuttler(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.carapacePhaseRemainingSeconds -= deltaSeconds;
-    switch (enemy.carapacePhase) {
-      case "pursuit":
-        enemy.facingDirection = normalizeVector({
-          x: this.playerPosition.x - enemy.position.x,
-          y: this.playerPosition.y - enemy.position.y,
-        });
-        this.moveEnemy(enemy, enemy.facingDirection, 1.85, deltaSeconds);
-        if (enemy.carapacePhaseRemainingSeconds <= 0 && distance(enemy.position, this.playerPosition) <= 8) {
-          enemy.carapacePhase = "windup";
-          enemy.carapacePhaseRemainingSeconds = 0.55;
-        }
-        break;
-      case "windup":
-        if (enemy.carapacePhaseRemainingSeconds <= 0) {
-          enemy.facingDirection = normalizeVector({
-            x: this.playerPosition.x - enemy.position.x,
-            y: this.playerPosition.y - enemy.position.y,
-          });
-          enemy.carapacePhase = "charge";
-          enemy.carapacePhaseRemainingSeconds = 0.48;
-        }
-        break;
-      case "charge":
-        this.moveEnemy(enemy, enemy.facingDirection, 7.2, deltaSeconds);
-        if (enemy.carapacePhaseRemainingSeconds <= 0) {
-          // Hunter's Beacon: a telegraphed charge that ended without reaching
-          // the player is a punishable miss.
-          if (distance(enemy.position, this.playerPosition) > enemyRadius(enemy) + PLAYER_RADIUS_METRES + 0.5) {
-            enemy.missWindowRemainingSeconds = ELITE_MISS_WINDOW_SECONDS;
-          }
-          enemy.carapacePhase = "recovery";
-          enemy.carapacePhaseRemainingSeconds = 1.05;
-        }
-        break;
-      case "recovery":
-        if (enemy.carapacePhaseRemainingSeconds <= 0) {
-          enemy.carapacePhase = "pursuit";
-          enemy.carapacePhaseRemainingSeconds = 1.4;
-        }
-        break;
-    }
+    const result = stepCarapaceScuttlerBehavior(
+      {
+        phase: enemy.carapacePhase,
+        phaseRemainingSeconds: enemy.carapacePhaseRemainingSeconds,
+        facingDirection: enemy.facingDirection,
+      },
+      { deltaSeconds, position: enemy.position, playerPosition: this.playerPosition },
+    );
+    enemy.facingDirection = result.state.facingDirection;
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
+    const resolved = resolveCarapaceScuttlerAfterMovement(
+      result.state,
+      enemy.position,
+      this.playerPosition,
+      enemyRadius(enemy) + PLAYER_RADIUS_METRES + 0.5,
+    );
+    enemy.carapacePhase = resolved.state.phase;
+    enemy.carapacePhaseRemainingSeconds = resolved.state.phaseRemainingSeconds;
+    enemy.facingDirection = resolved.state.facingDirection;
+    if (resolved.missed) enemy.missWindowRemainingSeconds = ELITE_MISS_WINDOW_SECONDS;
   }
 
   private updateRipper(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.ripperPhaseRemainingSeconds -= deltaSeconds;
-    const reachMetres = 2.55;
-    switch (enemy.ripperPhase) {
-      case "pursuit": {
-        enemy.facingDirection = normalizeVector({
-          x: this.playerPosition.x - enemy.position.x,
-          y: this.playerPosition.y - enemy.position.y,
-        });
-        const playerDistance = distance(enemy.position, this.playerPosition);
-        if (playerDistance > reachMetres) {
-          this.moveEnemy(enemy, enemy.facingDirection, ENEMY_CATALOG.ripper.movementSpeedMetresPerSecond, deltaSeconds);
-        }
-        if (enemy.ripperPhaseRemainingSeconds <= 0 && playerDistance <= reachMetres + 0.35) {
-          enemy.ripperDirection = { ...enemy.facingDirection };
-          enemy.ripperPhase = "windup";
-          enemy.ripperPhaseRemainingSeconds = 0.62;
-        }
-        break;
+    const result = stepRipperBehavior(
+      {
+        phase: enemy.ripperPhase,
+        phaseRemainingSeconds: enemy.ripperPhaseRemainingSeconds,
+        sweepDirection: enemy.ripperDirection,
+      },
+      {
+        deltaSeconds,
+        position: enemy.position,
+        playerPosition: this.playerPosition,
+        pursuitSpeedMetresPerSecond: ENEMY_CATALOG.ripper.movementSpeedMetresPerSecond,
+      },
+    );
+    if (result.facingDirection) enemy.facingDirection = result.facingDirection;
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
+    enemy.ripperPhase = result.state.phase;
+    enemy.ripperPhaseRemainingSeconds = result.state.phaseRemainingSeconds;
+    enemy.ripperDirection = result.state.sweepDirection;
+
+    if (result.sweepFired) {
+      this.frameEvents.push({
+        type: "ripper-sweep",
+        position: { ...enemy.position },
+        direction: { ...enemy.ripperDirection },
+        reachMetres: RIPPER_REACH_METRES,
+      });
+      if (pointInsideRipperSweep(
+        enemy.position,
+        enemy.ripperDirection,
+        this.playerPosition,
+        RIPPER_REACH_METRES + PLAYER_RADIUS_METRES,
+      )) {
+        this.damagePlayer(this.scaledEnemyDamage(enemy, PLAYER_ATTACK_DAMAGE_BASELINES.ripperSweep));
       }
-      case "windup":
-        if (enemy.ripperPhaseRemainingSeconds <= 0) {
-          enemy.ripperPhase = "sweep";
-          enemy.ripperPhaseRemainingSeconds = 0.24;
-          this.frameEvents.push({
-            type: "ripper-sweep",
-            position: { ...enemy.position },
-            direction: { ...enemy.ripperDirection },
-            reachMetres,
-          });
-          if (pointInsideRipperSweep(
-            enemy.position,
-            enemy.ripperDirection,
-            this.playerPosition,
-            reachMetres + PLAYER_RADIUS_METRES,
-          )) {
-            this.damagePlayer(this.scaledEnemyDamage(enemy, PLAYER_ATTACK_DAMAGE_BASELINES.ripperSweep));
-          }
-        }
-        break;
-      case "sweep":
-        if (enemy.ripperPhaseRemainingSeconds <= 0) {
-          enemy.ripperPhase = "recovery";
-          enemy.ripperPhaseRemainingSeconds = 1.1;
-        }
-        break;
-      case "recovery":
-        if (enemy.ripperPhaseRemainingSeconds <= 0) {
-          enemy.ripperPhase = "pursuit";
-          enemy.ripperPhaseRemainingSeconds = 0.45;
-        }
-        break;
     }
   }
 
@@ -7823,104 +7848,88 @@ export class CombatSimulation {
   }
 
   private updateSlimeSpitter(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.spitterPhaseRemainingSeconds -= deltaSeconds;
-    const playerDistance = distance(enemy.position, this.playerPosition);
+    const result = stepSlimeSpitterBehavior(
+      { phase: enemy.spitterPhase, phaseRemainingSeconds: enemy.spitterPhaseRemainingSeconds },
+      {
+        deltaSeconds,
+        // Measured before movement, matching the inline version.
+        playerDistanceBeforeMovement: distance(enemy.position, this.playerPosition),
+        random: () => this.random(),
+      },
+    );
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
+    // Launched before the state write, because launchSlimeGlob reads the target
+    // recorded when the windup committed.
+    if (result.launchGlob) this.launchSlimeGlob(enemy);
+    enemy.spitterPhase = result.state.phase;
+    enemy.spitterPhaseRemainingSeconds = result.state.phaseRemainingSeconds;
 
-    switch (enemy.spitterPhase) {
-      case "positioning":
-        this.moveEnemyForRangeBand(enemy, deltaSeconds);
-        if (
-          enemy.spitterPhaseRemainingSeconds <= 0
-          && playerDistance <= 10
-          && this.canBeginRangedWindup()
-          && this.availableEnemyProjectileSlots() >= 1
-        ) {
-          enemy.spitterPhase = "windup";
-          enemy.spitterPhaseRemainingSeconds = 0.65;
-          enemy.spitterTarget = { ...this.playerPosition };
-          this.frameEvents.push({
-            type: "slime-spit-windup",
-            position: { ...enemy.position },
-            target: { ...enemy.spitterTarget },
-          });
-        }
-        break;
-      case "windup":
-        if (enemy.spitterPhaseRemainingSeconds <= 0) {
-          this.launchSlimeGlob(enemy);
-          enemy.spitterPhase = "recover";
-          enemy.spitterPhaseRemainingSeconds = 1.1;
-        }
-        break;
-      case "recover":
-        if (enemy.spitterPhaseRemainingSeconds <= 0) {
-          enemy.spitterPhase = "positioning";
-          enemy.spitterPhaseRemainingSeconds = 0.85 + this.random() * 0.35;
-        }
-        break;
+    // The shared budgets are checked after movement, as they were inline.
+    if (
+      result.readyToWindup
+      && this.canBeginRangedWindup()
+      && this.availableEnemyProjectileSlots() >= 1
+    ) {
+      const windup = commitSlimeSpitterWindup(this.playerPosition);
+      enemy.spitterPhase = windup.state.phase;
+      enemy.spitterPhaseRemainingSeconds = windup.state.phaseRemainingSeconds;
+      enemy.spitterTarget = windup.target;
+      this.frameEvents.push({
+        type: "slime-spit-windup",
+        position: { ...enemy.position },
+        target: { ...enemy.spitterTarget },
+      });
     }
   }
 
   private updateQuillback(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.quillbackPhaseRemainingSeconds -= deltaSeconds;
-    const playerDistance = distance(enemy.position, this.playerPosition);
-    const towardPlayer = normalizeVector({
-      x: this.playerPosition.x - enemy.position.x,
-      y: this.playerPosition.y - enemy.position.y,
-    });
+    const result = stepQuillbackBehavior(
+      {
+        phase: enemy.quillbackPhase,
+        phaseRemainingSeconds: enemy.quillbackPhaseRemainingSeconds,
+        shotCount: enemy.quillbackShotCount,
+        attackCount: enemy.quillbackAttackCount,
+        direction: enemy.quillbackDirection,
+      },
+      {
+        deltaSeconds,
+        playerDistanceBeforeMovement: distance(enemy.position, this.playerPosition),
+        isMatriarch: enemy.eliteKind === "quillback-matriarch",
+      },
+    );
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
+    // Released before the state write: both launchers read live enemy fields.
+    if (result.release === "rain-of-spines") this.beginRainOfSpines(enemy);
+    else if (result.release === "volley") this.launchQuillbackVolley(enemy);
+    enemy.quillbackPhase = result.state.phase;
+    enemy.quillbackPhaseRemainingSeconds = result.state.phaseRemainingSeconds;
+    enemy.quillbackShotCount = result.state.shotCount;
+    enemy.quillbackAttackCount = result.state.attackCount;
+    enemy.quillbackDirection = result.state.direction;
 
-    switch (enemy.quillbackPhase) {
-      case "positioning":
-        this.moveEnemyForRangeBand(enemy, deltaSeconds);
-        if (
-          enemy.quillbackPhaseRemainingSeconds <= 0
-          && playerDistance >= 4.75
-          && playerDistance <= 10.5
-          && this.canBeginRangedWindup()
-          && this.availableEnemyProjectileSlots() >= quillbackVolleyCount(enemy.quillbackAttackCount)
-        ) {
-          enemy.quillbackPhase = "windup";
-          enemy.quillbackShotCount = quillbackVolleyCount(enemy.quillbackAttackCount);
-          enemy.quillbackPhaseRemainingSeconds = 0.62 + (enemy.quillbackShotCount - 1) * 0.055;
-          enemy.quillbackDirection = towardPlayer;
-          enemy.facingDirection = towardPlayer;
-          this.frameEvents.push({
-            type: "quillback-windup",
-            position: { ...enemy.position },
-            direction: { ...enemy.quillbackDirection },
-            count: enemy.quillbackShotCount,
-          });
-        }
-        break;
-      case "windup":
-        if (enemy.quillbackPhaseRemainingSeconds <= 0) {
-          if (enemy.eliteKind === "quillback-matriarch") {
-            this.beginRainOfSpines(enemy);
-            enemy.quillbackAttackCount += 1;
-            enemy.quillbackPhase = "launch";
-            enemy.quillbackPhaseRemainingSeconds = 0.22;
-            break;
-          }
-          this.launchQuillbackVolley(enemy);
-          enemy.quillbackAttackCount += 1;
-          enemy.quillbackPhase = "recover";
-          enemy.quillbackPhaseRemainingSeconds = enemy.quillbackShotCount === 1
-            ? 1.15
-            : enemy.quillbackShotCount === 3 ? 1.45 : 1.75;
-        }
-        break;
-      case "launch":
-        if (enemy.quillbackPhaseRemainingSeconds <= 0) {
-          enemy.quillbackPhase = "recover";
-          enemy.quillbackPhaseRemainingSeconds = 1.55;
-        }
-        break;
-      case "recover":
-        if (enemy.quillbackPhaseRemainingSeconds <= 0) {
-          enemy.quillbackPhase = "positioning";
-          enemy.quillbackPhaseRemainingSeconds = 0.4;
-        }
-        break;
+    const shotCount = quillbackVolleyCount(enemy.quillbackAttackCount);
+    if (
+      result.readyToWindup
+      && this.canBeginRangedWindup()
+      && this.availableEnemyProjectileSlots() >= shotCount
+    ) {
+      const windup = commitQuillbackWindup(
+        result.state,
+        enemy.position,
+        this.playerPosition,
+        shotCount,
+      );
+      enemy.quillbackPhase = windup.state.phase;
+      enemy.quillbackPhaseRemainingSeconds = windup.state.phaseRemainingSeconds;
+      enemy.quillbackShotCount = windup.state.shotCount;
+      enemy.quillbackDirection = windup.direction;
+      enemy.facingDirection = windup.direction;
+      this.frameEvents.push({
+        type: "quillback-windup",
+        position: { ...enemy.position },
+        direction: { ...enemy.quillbackDirection },
+        count: enemy.quillbackShotCount,
+      });
     }
   }
 
@@ -8882,9 +8891,15 @@ export class CombatSimulation {
       const corrodeBonus = status === "corrode" ? this.transformationModifiers.corrodeBuildupMultiplier : 1;
       // Element Primer doubles buildup, which is what makes the 8-point
       // threshold reachable for slow, hard-hitting elemental weapons.
+      // Four independent sources multiply here: the per-damage-type upgrade
+      // tuning, the Corrode transformation bonus, the Element Primer relic, and
+      // — added 7 Aug 2026 — the resolved player stat, which is how items and
+      // level-up cards reach status at all. Kept multiplicative with the others
+      // so every existing source behaves exactly as it did.
       const buildupRate = (this.statusTuning.buildupMultiplier[damageType] ?? 1)
         * corrodeBonus
-        * this.relicModifiers.statusBuildupMultiplier;
+        * this.relicModifiers.statusBuildupMultiplier
+        * (1 + this.playerStats.statusBuildupPercent / 100);
       const buildup = (enemy.statusBuildup[status] ?? 0) + mitigated * buildupRate;
       if (buildup >= STATUS_BUILDUP_THRESHOLD) {
         enemy.statusBuildup[status] = 0;
@@ -9243,6 +9258,7 @@ export class CombatSimulation {
     // kill/clear means more shop purchasing power.
     const scaled = amount
       * this.relicModifiers.scrapMultiplier
+      * this.upgradeScrapMultiplier
       * (1 + this.playerStats.harvestingPercent / 100);
     this.securedScrap += scaled;
     this.runScrapEarned += Math.max(0, scaled);
@@ -10144,6 +10160,25 @@ export function pointInsideRipperSweep(
   const facing = normalizeVector(direction);
   const dot = (offset.x / magnitude) * facing.x + (offset.y / magnitude) * facing.y;
   return dot >= Math.cos(halfAngleRadians);
+}
+
+/**
+ * Even offsets first, then odd, covering the whole rotation exactly once. Keeps
+ * the original "spread by two" feel — consecutive offers are not adjacent in
+ * the order — while guaranteeing every upgrade is reachable from any start.
+ */
+export function upgradeScanOffsets(length: number): readonly number[] {
+  const evens: number[] = [];
+  const odds: number[] = [];
+  for (let offset = 0; offset < Math.max(0, length); offset += 1) {
+    (offset % 2 === 0 ? evens : odds).push(offset);
+  }
+  return [...evens, ...odds];
+}
+
+/** Compile-time proof that every UpgradeId has an effect in `applyUpgrade`. */
+function assertUpgradeHandled(upgradeId: never): never {
+  throw new Error(`Upgrade has no effect wired: ${String(upgradeId)}`);
 }
 
 export function quillbackVolleyCount(attackCount: number): 1 | 3 | 5 {

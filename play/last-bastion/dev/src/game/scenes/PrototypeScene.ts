@@ -4987,6 +4987,9 @@ const WEAPON_BODY_ASSETS: Readonly<Record<WeaponId, WeaponBodyAssetId>> = Object
   "hoarfrost-scatter": "scattergun-v1",
   "glacier-ward": "arc-carbine-v1",
   "rime-cleaver": "patrol-blade-v1",
+  emberlance: "grenade-tube-v1",
+  "storm-coil-beam": "service-rifle-v1",
+  "blight-scythe": "patrol-blade-v1",
   // PLACEHOLDER — art pending. A stake in hand reads closest to the launcher.
   "sentry-stake": "grenade-tube-v1",
 });

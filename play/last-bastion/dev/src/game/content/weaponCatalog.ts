@@ -4,7 +4,11 @@ import type { WeaponClass } from "../hero/HeroDefinition";
 export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine" | "railspike" | "seeker-swarm" | "cryo-lance" | "tesla-coil" | "flamethrower" | "sawblade" | "event-horizon"
   | "combat-knife" | "machete" | "fire-axe" | "shock-baton" | "breaching-maul" | "plasma-saber"
   | "corrosive-lobber" | "scourge-repeater" | "bile-lance" | "rime-cleaver" | "hoarfrost-scatter" | "glacier-ward" | "tether-harpoon"
-  | "sentry-stake";
+  | "sentry-stake"
+  // Added 8 Aug 2026 (content plan, weapon Tier 1). Each exists to close a
+  // damage-type/pattern hole, not to raise the count: Fire had no ranged
+  // projectile at all, Shock had no beam, and Toxic had no melee.
+  | "emberlance" | "storm-coil-beam" | "blight-scythe";
 export type WeaponTargetingMode = "cursor" | "nearest-enemy";
 export type WeaponAttackPattern = "projectile" | "scatter" | "chain-projectile" | "melee-sweep" | "beam" | "orbit" | "orbit-blade" | "deployable";
 
@@ -639,6 +643,71 @@ export const SENTRY_STAKE: Readonly<WeaponRuntimeStats> = weapon({
   deployFireIntervalSeconds: 0.55,
 });
 
+/**
+ * Fire's only ranged option. Fire previously existed as one beam and two melee
+ * weapons, so a fire build had no way to fight at range — the Emberlance is a
+ * slow, arcing lob that trades rate of fire for reliable Blaze application.
+ */
+export const EMBERLANCE: Readonly<WeaponRuntimeStats> = weapon({
+  id: "emberlance",
+  displayName: "Emberlance",
+  description: "Lobs a slow ember that splashes burning fuel on impact.",
+  weaponClass: "medium",
+  damageType: "fire",
+  targetingMode: "cursor",
+  attackPattern: "projectile",
+  rangeMetres: 14,
+  fireIntervalSeconds: 1.05,
+  projectileSpeedMetresPerSecond: 11,
+  projectileLifetimeSeconds: 1.4,
+  projectileDamage: 4.5,
+  explosionRadiusMetres: 1.5,
+  terrainDamageMultiplier: 1.2,
+});
+
+/**
+ * Shock's only beam. Every machine in the game is Shock-weak at 1.4-1.5x, but
+ * Shock had three weapons and no sustained option, so the faction's designed
+ * weakness was hard to actually exploit. Short and narrow to keep it honest.
+ */
+export const STORM_COIL_BEAM: Readonly<WeaponRuntimeStats> = weapon({
+  id: "storm-coil-beam",
+  displayName: "Storm Coil Beam",
+  description: "A continuous arc that pours current into whatever it touches.",
+  weaponClass: "medium",
+  damageType: "shock",
+  targetingMode: "cursor",
+  attackPattern: "beam",
+  rangeMetres: 5.5,
+  fireIntervalSeconds: 0,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 0,
+  beamDamagePerSecond: 3.5,
+  meleeArcRadians: 0.32,
+});
+
+/**
+ * Toxic's only melee weapon. Toxic had four weapons, all of them ranged, so the
+ * close-quarters rack had no Corrode option. Fast and light, leaning on status
+ * rather than per-swing damage.
+ */
+export const BLIGHT_SCYTHE: Readonly<WeaponRuntimeStats> = weapon({
+  id: "blight-scythe",
+  displayName: "Blight Scythe",
+  description: "A wide, fast sweep that leaves solvent in every wound.",
+  weaponClass: "light",
+  damageType: "toxic",
+  targetingMode: "cursor",
+  attackPattern: "melee-sweep",
+  rangeMetres: 2.3,
+  fireIntervalSeconds: 0.8,
+  projectileSpeedMetresPerSecond: 0,
+  projectileLifetimeSeconds: 0,
+  projectileDamage: 3.5,
+  meleeArcRadians: Math.PI * 0.75,
+});
+
 export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeStats>>> = Object.freeze({
   "bastion-service-rifle": BASTION_SERVICE_RIFLE,
   scattergun: SCATTERGUN,
@@ -669,6 +738,9 @@ export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeSta
   "glacier-ward": GLACIER_WARD,
   "tether-harpoon": TETHER_HARPOON,
   "sentry-stake": SENTRY_STAKE,
+  emberlance: EMBERLANCE,
+  "storm-coil-beam": STORM_COIL_BEAM,
+  "blight-scythe": BLIGHT_SCYTHE,
 });
 
 export const VERTICAL_SLICE_WEAPON_IDS: readonly WeaponId[] = Object.freeze([
@@ -724,6 +796,13 @@ const HELD_WEAPONS: readonly WeaponId[] = Object.freeze([
   "shock-baton",
   "breaching-maul",
   "plasma-saber",
+  // Tier 1 hole-fillers (8 Aug 2026). Released straight into the pool on the
+  // same reasoning as the 26 July batch: an unreachable weapon costs more than
+  // a borrowed tile does. They use damage-type colour and pattern tile
+  // grouping until their own art lands (asset batch 80).
+  "emberlance",
+  "storm-coil-beam",
+  "blight-scythe",
   // Elemental balance pass (31 July 2026). Same gate, same reasoning: they
   // borrow tiles and bodies by attack pattern until their own art exists.
   "corrosive-lobber",

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { PlayerIntent } from "../input/PlayerIntent";
 import { CombatSimulation, siegeCrusherEnrageTier } from "./CombatSimulation";
-import { UPGRADE_ORDER } from "../content/upgradeCatalog";
+import { UPGRADE_CATALOG, UPGRADE_ORDER } from "../content/upgradeCatalog";
 
 describe("Siege Crusher enrage thresholds", () => {
   it("enters enrage at half health and frenzy in the final fifth", () => {
@@ -45,9 +45,13 @@ function chooseUpgradeWhenOffered(simulation: CombatSimulation, targetId: string
 }
 
 describe("expanded upgrade catalogue", () => {
-  it("offers twelve distinct upgrades in the rotation", () => {
-    expect(UPGRADE_ORDER).toHaveLength(12);
-    expect(new Set(UPGRADE_ORDER).size).toBe(12);
+  it("offers every catalogue upgrade exactly once in the rotation", () => {
+    // Was a hard-coded 12 until the catalogue grew to 20 on 7 Aug 2026. Derived
+    // from the catalogue now, so growing it again cannot silently drop an entry
+    // from the offer rotation.
+    const catalogueSize = Object.keys(UPGRADE_CATALOG).length;
+    expect(UPGRADE_ORDER).toHaveLength(catalogueSize);
+    expect(new Set(UPGRADE_ORDER).size).toBe(catalogueSize);
   });
 
   it("converts weapon damage type with Incendiary Rounds", () => {

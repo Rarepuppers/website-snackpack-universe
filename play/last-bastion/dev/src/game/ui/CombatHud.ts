@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import type { CombatScenario, CombatSnapshot, PowerupType } from "../combat/CombatSimulation";
 import { DAMAGE_TYPE_COLOURS } from "../combat/damageTypes";
+import { armourLabel, healthBarView } from "../stats/formatStat";
 import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
 import {
   cadenceWeapons,
@@ -44,9 +45,12 @@ interface StatusTrayView {
   readonly radius: number;
 }
 
+
 export class CombatHud {
   private readonly scene: Phaser.Scene;
   private readonly healthFill: Phaser.GameObjects.Rectangle;
+  private readonly shieldFill: Phaser.GameObjects.Rectangle;
+  private readonly shieldTrack: Phaser.GameObjects.Rectangle;
   private readonly healthText: Phaser.GameObjects.Text;
   private readonly xpFill: Phaser.GameObjects.Rectangle;
   private readonly xpText: Phaser.GameObjects.Text;
@@ -117,6 +121,14 @@ export class CombatHud {
       .setStrokeStyle(1, 0x6e3442).setDepth(2001);
     this.healthFill = scene.add.rectangle(safe.left + 11 * s, safe.top + 22 * s, 146 * s, 5 * s, 0xe55a67).setOrigin(0, 0.5).setDepth(2002);
     this.healthText = scene.add.text(safe.left + 164 * s, safe.top + 17 * s, "", hudText("#e8929a", "10px")).setDepth(2001);
+    // Shield rides directly under the health bar on the SAME pixel-per-point
+    // scale (146px = maxHealth), not as its own full-width bar. Shield totals
+    // are small — Shield Capacitor grants 1.5 a level against a health pool in
+    // the tens — so a full-width bar would imply a second health pool.
+    this.shieldTrack = scene.add.rectangle(safe.left + 10 * s, safe.top + 28 * s, 148 * s, 3 * s, 0x10202f)
+      .setOrigin(0, 0.5).setDepth(2001).setVisible(false);
+    this.shieldFill = scene.add.rectangle(safe.left + 11 * s, safe.top + 28 * s, 146 * s, 2 * s, 0x4f9dff)
+      .setOrigin(0, 0.5).setDepth(2002).setVisible(false);
     scene.add.rectangle(safe.left + 10 * s, safe.top + 34 * s, 148 * s, 6 * s, 0x102b31).setOrigin(0, 0.5)
       .setStrokeStyle(1, 0x346d76).setDepth(2001);
     this.xpFill = scene.add.rectangle(safe.left + 11 * s, safe.top + 34 * s, 146 * s, 4 * s, 0x5de2e7).setOrigin(0, 0.5).setDepth(2002);
@@ -258,7 +270,18 @@ export class CombatHud {
     activeEffectCount: number,
     performanceLabel = "",
   ): void {
-    this.healthFill.setScale(Math.max(snapshot.playerHealth / snapshot.playerMaxHealth, 0.001), 1);
+    // Clamped: without this the fill scales past 1 and overflows its frame the
+    // moment health can exceed maximum (see the overheal note in the plan).
+    const bars = healthBarView(
+      snapshot.playerHealth,
+      snapshot.playerMaxHealth,
+      snapshot.playerShield,
+      snapshot.playerMaxShield,
+    );
+    this.healthFill.setScale(Math.max(bars.healthFraction, 0.001), 1);
+    this.shieldTrack.setVisible(bars.shieldTrackVisible);
+    this.shieldFill.setVisible(bars.shieldFillVisible)
+      .setScale(Math.max(bars.shieldFraction, 0.001), 1);
     this.xpFill.setScale(Math.max(snapshot.experience / snapshot.experienceForNextLevel, 0.001), 1);
     const evasiveCooldownDuration = snapshot.heroPresentation.evasiveDurationSeconds
       + snapshot.heroPresentation.evasiveRecoverySeconds;
@@ -277,7 +300,10 @@ export class CombatHud {
       ? snapshot.playerEntrenched ? "  ENTRENCHED" : ""
       : snapshot.heroPresentation.id === "medic" ? `  TRIAGE ${snapshot.medicTriageHits}/6` : "";
     const flags = `${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerTethered ? "  TETHERED" : ""}${passiveState}`;
-    this.statsText.setText(`${snapshot.heroPresentation.displayName.toUpperCase()}  •  LV ${snapshot.level}${flags}`);
+    this.statsText.setText(
+      `${snapshot.heroPresentation.displayName.toUpperCase()}  •  LV ${snapshot.level}`
+      + `${armourLabel(snapshot.playerArmour, snapshot.playerFlatDamageReduction)}${flags}`,
+    );
     this.healthText.setText(`${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${shieldLabel}`);
     this.xpText.setText(`${snapshot.experience}/${snapshot.experienceForNextLevel}`);
     const scrapVisible = snapshot.securedScrap > 0 || snapshot.scenario === "scrap-shop";

@@ -31,6 +31,17 @@ export interface PlayerStatBlock {
   rangedDamagePercent: number;
   /** Extra % for elemental weapons (any non-physical damage type). */
   elementalDamagePercent: number;
+  /**
+   * Scales status buildup dealt, as an additive percentage, against the
+   * `STATUS_BUILDUP_THRESHOLD` of 8.
+   *
+   * Buildup was previously reachable only from three hard-coded places — the
+   * Element Primer relic, three element upgrades, and one transformation — none
+   * of which the item economy or the level-up stat cards can touch. This is the
+   * stat those two systems contribute through. It multiplies alongside the
+   * existing three rather than replacing them.
+   */
+  statusBuildupPercent: number;
   /** Per-hit chance to crit, as a percentage (0..100+, clamped at roll time). */
   critChancePercent: number;
   /** Damage multiplier applied on a crit (1.5 = +50% on crit). */
@@ -81,6 +92,7 @@ export const NO_PLAYER_STATS: Readonly<PlayerStatBlock> = Object.freeze({
   meleeDamagePercent: 0,
   rangedDamagePercent: 0,
   elementalDamagePercent: 0,
+  statusBuildupPercent: 0,
   critChancePercent: 0,
   critMultiplier: 1.5,
   attackSpeedPercent: 0,

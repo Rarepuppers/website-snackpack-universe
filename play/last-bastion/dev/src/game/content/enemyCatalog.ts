@@ -82,6 +82,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 1,
     experienceValue: 1,
     steeringProfile: "rushPack",
+    resistances: { fire: 1.5, toxic: 0.6 },
   }),
   "corrupted-marine": enemy({
     id: "corrupted-marine",
@@ -91,6 +92,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 0.5,
     experienceValue: 4,
     armour: 1,
+    resistances: { fire: 1.35, toxic: 0.6 },
     steeringProfile: "chaseAndFire",
   }),
   abomination: enemy({
@@ -101,6 +103,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 1.2,
     experienceValue: 8,
     armour: 2,
+    resistances: { fire: 1.25, toxic: 0.55 },
     steeringProfile: "pursuer",
   }),
   "nest-weaver": enemy({
@@ -112,6 +115,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     experienceValue: 6,
     armour: 1,
     steeringProfile: "supportAnchor",
+    resistances: { fire: 1.35 },
   }),
   "nest-pod": enemy({
     id: "nest-pod",
@@ -131,6 +135,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     contactDamage: 0.75,
     experienceValue: 1,
     steeringProfile: "rushPack",
+    resistances: { fire: 1.4 },
   }),
   "storm-savant": enemy({
     id: "storm-savant",

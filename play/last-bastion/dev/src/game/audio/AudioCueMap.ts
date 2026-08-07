@@ -124,6 +124,12 @@ const WEAPON_CUES: Readonly<Record<WeaponId, AudioCue>> = Object.freeze({
   "scourge-repeater": cue("scourge-repeater-spit", 480, 0.07, 0.05, "sawtooth", 260),
   "bile-lance": cue("bile-lance-jet", 160, 0.08, 0.07, "sawtooth", 120),
   "rime-cleaver": cue("rime-cleaver-swing", 820, 0.13, 0.07, "sine", 460),
+  // Added 8 Aug 2026 with the Tier 1 hole-filling weapons. Synth cues until
+  // audio batch S-series covers them; each borrows the profile of the closest
+  // existing weapon of the same attack pattern.
+  emberlance: cue("emberlance-lob", 220, 0.16, 0.09, "triangle", 110),
+  "storm-coil-beam": cue("storm-coil-arc", 340, 0.08, 0.06, "sawtooth", 260),
+  "blight-scythe": cue("blight-scythe-swing", 700, 0.12, 0.07, "sine", 400),
   "hoarfrost-scatter": cue("hoarfrost-scatter-burst", 540, 0.11, 0.08, "triangle", 240),
   "glacier-ward": cue("glacier-ward-chill", 1500, 0.09, 0.06, "sine", 1900),
   "tether-harpoon": cue("tether-harpoon-launch", 300, 0.12, 0.08, "square", 150),

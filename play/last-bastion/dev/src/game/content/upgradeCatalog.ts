@@ -10,7 +10,17 @@ export type UpgradeId =
   | "chain-lightning"
   | "adrenal-servos"
   | "composite-plating"
-  | "shield-capacitor";
+  | "shield-capacitor"
+  // Added 7 Aug 2026 (content plan P5): the catalogue was 12 upgrades, nine of
+  // them offensive, with no toxic path at all despite four toxic weapons.
+  | "corrosive-rounds"
+  | "catalyst-array"
+  | "marksman-barrels"
+  | "reactive-plating"
+  | "kinetic-buffer"
+  | "capacitor-array"
+  | "field-transfusion"
+  | "salvage-drones";
 
 /**
  * Slot categories. Each hero has a limited number of slots per category, so
@@ -80,12 +90,12 @@ export const UPGRADE_CATALOG: Readonly<Record<UpgradeId, UpgradeDefinition>> = O
     "All weapons deal Fire damage; buildup ignites aliens (Blaze).",
     "Ignite 20% more often and Blaze burns hotter.",
     "Blazing aliens detonate in fire when they die.",
-  ], ["cryo-coating"]),
+  ], ["cryo-coating", "corrosive-rounds"]),
   "cryo-coating": upgrade("cryo-coating", "Cryo Coating", "offensive", [
     "All weapons deal Cryo damage; buildup freezes aliens.",
     "Freeze 20% more often and Freeze slows harder.",
     "Freeze lasts longer and nearly halts aliens.",
-  ], ["incendiary-rounds"]),
+  ], ["incendiary-rounds", "corrosive-rounds"]),
   "chain-lightning": upgrade("chain-lightning", "Chain Lightning", "offensive", [
     "Attacks arc to one nearby alien at reduced damage.",
     "One more arc, and shock builds 10% faster.",
@@ -107,6 +117,50 @@ export const UPGRADE_CATALOG: Readonly<Record<UpgradeId, UpgradeDefinition>> = O
     "Gain 1.5 more maximum shield.",
     "Gain 1.5 more maximum shield.",
   ]),
+
+  // --- Added 7 August 2026 ---
+  // The third elemental conversion path. Fire and Cryo had one each; Toxic had
+  // none, so four toxic weapons had no upgrade identity to build toward.
+  "corrosive-rounds": upgrade("corrosive-rounds", "Corrosive Rounds", "offensive", [
+    "All weapons deal Toxic damage; buildup corrodes aliens.",
+    "Corrode 20% more often and eats through armour faster.",
+    "Corroded aliens take heavier damage over time.",
+  ], ["incendiary-rounds", "cryo-coating"]),
+  // Element-agnostic buildup, so a mixed-damage rack can still reach statuses.
+  "catalyst-array": upgrade("catalyst-array", "Catalyst Array", "offensive", [
+    "Every damage type builds its status 15% faster.",
+    "A further 15% faster.",
+    "A further 15% faster.",
+  ]),
+  "marksman-barrels": upgrade("marksman-barrels", "Marksman Barrels", "offensive", [
+    "+20% weapon range and projectile reach.",
+    "A further +20% range and reach.",
+  ]),
+  // Flat reduction is deliberately the rarer defensive stat (see DefenceStats),
+  // so this is the one upgrade that grants it.
+  "reactive-plating": upgrade("reactive-plating", "Reactive Plating", "defensive", [
+    "Reduce every hit by a further 0.3 after armour.",
+    "Reduce every hit by a further 0.3.",
+    "Reduce every hit by a further 0.3.",
+  ]),
+  "kinetic-buffer": upgrade("kinetic-buffer", "Kinetic Buffer", "defensive", [
+    "Longer invulnerability after a hit, and shrug off 25% of slows.",
+    "Longer still, and shrug off a further 25% of slows.",
+  ]),
+  "capacitor-array": upgrade("capacitor-array", "Capacitor Array", "defensive", [
+    "Shields recharge 40% faster and start recharging sooner.",
+    "A further 40% faster, sooner again.",
+  ]),
+  "field-transfusion": upgrade("field-transfusion", "Field Transfusion", "support", [
+    "Healing and shields you receive are 25% stronger.",
+    "A further 25% stronger.",
+    "A further 25% stronger.",
+  ]),
+  "salvage-drones": upgrade("salvage-drones", "Salvage Drones", "scavenger", [
+    "Recover 20% more Scrap.",
+    "Recover a further 20% more Scrap.",
+    "Recover a further 20% more Scrap.",
+  ]),
 });
 
 export const UPGRADE_ORDER: readonly UpgradeId[] = Object.freeze([
@@ -122,6 +176,14 @@ export const UPGRADE_ORDER: readonly UpgradeId[] = Object.freeze([
   "composite-plating",
   "field-magnet",
   "shield-capacitor",
+  "corrosive-rounds",
+  "catalyst-array",
+  "reactive-plating",
+  "marksman-barrels",
+  "kinetic-buffer",
+  "field-transfusion",
+  "capacitor-array",
+  "salvage-drones",
 ]);
 
 const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V"] as const;
