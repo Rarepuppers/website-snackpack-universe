@@ -1,64 +1,73 @@
 # SnackPack Universe
 
-> SnackPack Studios builds calm, family-friendly Android apps for early learning, classic offline games, and daily positivity — one shared universe of characters, with no third-party ads and no tracking SDKs in any app. Four apps are live on Google Play; 14+ are planned.
+> SnackPack Studios builds calm, family-friendly Android apps for early learning, classic offline games, and daily positivity — one shared universe of characters, with no third-party ads and no tracking SDKs in any app. 12 apps are live on Google Play; 6 more are in development.
 
-Key facts that apply to every SnackPack app: no third-party ads, no tracking or analytics SDKs, no account required, data stays on the device, and each app has its own named privacy policy. Contact: support@snackpackuniverse.com.
+Key facts that apply to every SnackPack app: no third-party ads, no tracking or analytics SDKs, no account required, data stays on the device, and each app has its own named privacy policy. Several live apps offer an optional one-time purchase or Pro upgrade that unlocks extra content — Google Play processes the payment and SnackPack Studios never receives card details. Contact: support@snackpackuniverse.com.
 
 ## Live apps (Google Play)
 
-- [SnackPack ABC: Learn to Read](https://www.snackpackuniverse.com/apps/snackpack-1-abcs-alphabet/): Free alphabet and early-reading app for ages 3–7 — 26 letters with character-led stories, mini books, a progress bookshelf. No ads, no in-app purchases. Play Store ID: com.snackpackuniverse.abcalphabet
-- [SnackPack 123: Learn to Count](https://www.snackpackuniverse.com/apps/snackpack-2-123s-counting/): Free counting and early-numeracy app for ages 3–7 — counting 1–20, number shapes, story-led adventures. No ads, no in-app purchases. Play Store ID: com.snackpackuniverse.counting
-- [Pawsitive Dose](https://www.snackpackuniverse.com/apps/pawsitive-dose/): Free daily mood-boost app for adults — a finite daily batch of animal photos, uplifting quotes, and affirmations with no endless feed, no ads, and no account; reminders and Android widgets included. Optional Pro features. Play Store ID: com.snackpackuniverse.pawsitivedose
+- [SnackPack ABC: Learn to Read](https://www.snackpackuniverse.com/apps/snackpack-1-abcs-alphabet/): Free alphabet and early-reading app for ages 3–7 — 26 letters with character-led stories, mini books, a progress bookshelf. No ads; an optional one-time purchase unlocks the full library. Play Store ID: com.snackpackuniverse.abcalphabet
+- [SnackPack 123: Learn to Count](https://www.snackpackuniverse.com/apps/snackpack-2-123s-counting/): Free counting and early-numeracy app for ages 3–7 — counting 1–20, number shapes, story-led adventures. No ads; an optional one-time purchase unlocks the full library. Play Store ID: com.snackpackuniverse.counting
+- [SnackPack Sentences & Spelling](https://www.snackpackuniverse.com/apps/snackpack-3-spelling-sentences/): Free spelling and sentence-building app for young readers — eight mini-games, themed word packs, and a bookshelf of stories. No ads; an optional one-time purchase unlocks the full library. Play Store ID: com.snackpackuniverse.sentencesspelling
+- [SnackPack Basic Math](https://www.snackpackuniverse.com/apps/snackpack-4-math-arithmetic/): Free arithmetic app for young learners — number bonds, fractions, and story-led practice. No ads; an optional one-time purchase unlocks the full library. Play Store ID: com.snackpackuniverse.basicmath
+- [Pawsitive Dose](https://www.snackpackuniverse.com/apps/pawsitive-dose/): Free daily mood-boost app for adults — a finite daily batch of animal photos, uplifting quotes, and affirmations with no endless feed, no ads, and no account; reminders and Android widgets included. Optional Pro upgrade. Play Store ID: com.snackpackuniverse.pawsitivedose
 - [Snackpack Brain Games](https://www.snackpackuniverse.com/apps/snackpack-brain-games/): Free offline collection of nine classics — Sudoku, Solitaire, Minesweeper, 2048, Word Search, Checkers, Connect 4, Reversi, and Cascade — with local stats and streaks, themes, and accessibility options. No ads, no tracking; optional one-time Pro unlock. Play Store ID: com.snackpackuniverse.braingames
+- [Snackpack Brain Games Vol 2](https://www.snackpackuniverse.com/apps/snackpack-brain-games-vol-2/): A second collection of calm, offline classic games — Flappy Snacky, Snacky Worm, Table Tennis, Snakes & Ladders, Picross, Thirteen, Asteroid Destroyer, and a themed Crossword. No ads, no tracking. Play Store ID: com.snackpackuniverse.braingames2
+- [Snackpack Brain Games Vol 3](https://www.snackpackuniverse.com/apps/snackpack-brain-games-vol-3/): A third collection headlined by Chess, alongside Mahjong Solitaire, Spider Solitaire, FreeCell, Kakuro, and more classic games. No ads, no tracking. Play Store ID: com.snackpackuniverse.braingames3
+- [SnackPack Prehistoric Pals](https://www.snackpackuniverse.com/apps/snackpack-11-prehistoric-pals/): Free offline dinosaur learning app — 34 species, daily facts, and a Field Notes journal. No ads. Optional Pro upgrade unlocks the Amber Archive. Play Store ID: com.snackpackuniverse.prehistoricpals
+- [SnackPack Zoo World](https://www.snackpackuniverse.com/apps/snackpack-12-zoo-world/): Free animal learning adventure — met-animal tracking, badges, mini-games, and a passport-style exhibit feature. No ads, no tracking, no account. Play Store ID: com.snackpackuniverse.zooworld
 - [SnackPack Garden World](https://www.snackpackuniverse.com/apps/snackpack-13-garden-world/): Free calm nature learning app for ages 6–12 — six connected habitats, plant and bug discovery, Garden Lens close-up photos, Interactive Viewers, and six ecology mini-games. No ads, no tracking. Privacy policy: https://www.snackpackuniverse.com/privacy/snackpack-13-garden-world/. Play Store ID: com.snackpackuniverse.gardenworld
+- [Badgify](https://www.snackpackuniverse.com/apps/badgify/): Free badge and achievement print/share app. No ads. Optional Pro export choices remove watermarks and add PDF export. Play Store ID: com.snackpackuniverse.badgify
 
-## Coming soon
+## In development
 
-- [Snackpack Brain Games Vol 2](https://www.snackpackuniverse.com/apps/snackpack-brain-games-vol-2/): A second collection of calm, offline classic games — Flappy Snacky, Snacky Worm, Table Tennis, Snakes & Ladders, Picross, Thirteen, Asteroid Destroyer, and a themed Crossword. No ads, no tracking. Coming soon to Android (Play Store ID com.snackpackuniverse.braingames2); Flappy Snacky and Snacky Worm are playable free in the web arcade now.
+Six more apps are planned or in progress and not yet live: Tales & Trivia, Creative Studio, Mathematics, Earth & Explorer, Shape & Space, and Robot Recipe. See [All apps](https://www.snackpackuniverse.com/apps/) for details as each ships.
 
 ## Play free in your browser (web arcade)
 
-- [SnackPack Arcade](https://www.snackpackuniverse.com/play/): Free classic games playable instantly in the browser — no ads, no sign-in, no download. A taster for the Snackpack Brain Games Android app.
+31 classic games playable instantly at [SnackPack Arcade](https://www.snackpackuniverse.com/play/) — no ads, no sign-in, no download, and most are installable offline as a PWA. A taster for the Brain Games apps above. Selected highlights:
+
+- [Play Sudoku](https://www.snackpackuniverse.com/play/sudoku/): Free browser Sudoku with Easy/Medium/Hard/Expert puzzles (unique solutions), pencil notes, hints and mistake checking that never ends your game. Includes rules, strategy, and history.
+- [Play Solitaire](https://www.snackpackuniverse.com/play/solitaire/): Free browser Klondike Solitaire with Draw 1 and Draw 3 modes, click-to-move, undo, timer and move counter. Includes rules, strategy, and history.
+- [Play Spider Solitaire](https://www.snackpackuniverse.com/play/spider-solitaire/): Free browser Spider Solitaire in 1, 2 and 4 suit, with unlimited undo.
+- [Play FreeCell](https://www.snackpackuniverse.com/play/freecell/): Free browser FreeCell running on a solver-verified deal pool — every board is winnable. Supermove capacity, hints, auto-finish, undo/redo.
+- [Play Checkers](https://www.snackpackuniverse.com/play/checkers/): Free browser Checkers (draughts) vs a computer opponent with three difficulty levels, compulsory captures, multi-jumps and kings. Includes rules, strategy, and history.
+- [Play Mahjong Solitaire](https://www.snackpackuniverse.com/play/mahjong/): Free browser Mahjong Solitaire with a daily puzzle everyone shares.
 - [Play Minesweeper](https://www.snackpackuniverse.com/play/minesweeper/): Free browser Minesweeper with flags, a timer, and Beginner/Intermediate/Expert boards; first click always safe. Includes rules, strategy, and history.
 - [Play 2048](https://www.snackpackuniverse.com/play/2048/): Free browser 2048 — slide and merge tiles to reach 2048; arrow keys or swipe, best score saved locally. Includes rules, strategy, and history.
 - [Play Connect 4](https://www.snackpackuniverse.com/play/connect-4/): Free browser Connect 4 vs a computer opponent with three difficulty levels. Includes rules, strategy, and history.
-- [Play Sudoku](https://www.snackpackuniverse.com/play/sudoku/): Free browser Sudoku with Easy/Medium/Hard/Expert puzzles (unique solutions), pencil notes, hints and mistake checking. Includes rules, strategy, and history.
-- [Play Word Search](https://www.snackpackuniverse.com/play/word-search/): Free browser Word Search across themed word lists (Animals, Food, Nature, Space); drag or tap to find words in any of eight directions. Includes rules, strategy, and history.
-- [Play Solitaire](https://www.snackpackuniverse.com/play/solitaire/): Free browser Klondike Solitaire with Draw 1 and Draw 3 modes, click-to-move, undo, timer and move counter. Includes rules, strategy, and history.
-- [Play Checkers](https://www.snackpackuniverse.com/play/checkers/): Free browser Checkers (draughts) vs a computer opponent with three difficulty levels, compulsory captures, multi-jumps and kings. Includes rules, strategy, and history.
 - [Play Reversi](https://www.snackpackuniverse.com/play/reversi/): Free browser Reversi / Othello vs a computer opponent with three difficulty levels, legal-move hints, corner-aware AI and pass handling. Includes rules, strategy, and history.
+- [Play Word Search](https://www.snackpackuniverse.com/play/word-search/): Free browser Word Search across themed word lists (Animals, Food, Nature, Space); drag or tap to find words in any of eight directions. Includes rules, strategy, and history.
+- [Play Crossword](https://www.snackpackuniverse.com/play/crossword/): Free browser Crossword with themed packs and a daily puzzle.
+- [Play Picross](https://www.snackpackuniverse.com/play/picross/): Free browser Picross (nonogram) with a daily puzzle.
+- [Play Kakuro](https://www.snackpackuniverse.com/play/kakuro/): Free browser Kakuro with a daily puzzle.
+- [Play Thirteen](https://www.snackpackuniverse.com/play/thirteen/): Free browser Thirteen (Tiến lên) card game vs three computer opponents, with a daily puzzle mode.
 - [Play Cascade](https://www.snackpackuniverse.com/play/cascade/): Free browser Cascade — a calm falling-blocks puzzle (the SnackPack take on tetromino stacking) with Normal and Turbo modes, keyboard and touch controls, and saved best score. Includes rules, strategy, and history.
-- [Play Flappy Snacky](https://www.snackpackuniverse.com/play/flappy-snacky/): Free browser Flappy Snacky — a one-button tap-to-fly arcade game with Classic, Hard and Night modes and a saved best score. From Brain Games Vol 2 (Play Store ID com.snackpackuniverse.braingames2). Includes rules, tips, and an about section.
-- [Play Snacky Worm](https://www.snackpackuniverse.com/play/snacky-worm/): Free browser Snacky Worm — the classic Snake game with Classic, Zen (wrap) and Speed modes and a saved best score. From Brain Games Vol 2. Includes rules, tips, and an about section.
+- [Play Flappy Snacky](https://www.snackpackuniverse.com/play/flappy-snacky/): Free browser Flappy Snacky — a one-button tap-to-fly arcade game with Classic, Hard and Night modes and a saved best score. Includes rules, tips, and an about section.
+- [Play Snacky Worm](https://www.snackpackuniverse.com/play/snacky-worm/): Free browser Snacky Worm — the classic Snake game with Classic, Zen (wrap) and Speed modes and a saved best score. Includes rules, tips, and an about section.
 
-## World Cup 2026 (free soccer games & tournament tracker)
+The full list also includes Snakes & Ladders, Memory Match, Table Tennis, Asteroid Destroyer, and eight original soccer games (Goalkeeper Hero, Penalty Shootout, Free Kick Curl, Crossbar Challenge, Header Hero, Dribble Rush, Keepy-Uppy, Soccer Trivia Sprint, Flag Frenzy) — see [SnackPack Arcade](https://www.snackpackuniverse.com/play/) for the complete, current list.
 
-Original SnackPack browser soccer games and a 2026 tournament tracker. Not affiliated with, endorsed by, or connected to FIFA, the World Cup, any national team, league, or governing body. No ads, no sign-in, no download.
+## World Cup 2026 hub
 
-- [World Cup 2026 hub](https://www.snackpackuniverse.com/world-cup/): Free soccer games for the 2026 football summer plus a tournament tracker (schedule, teams, bracket and predictions).
-- [Schedule](https://www.snackpackuniverse.com/world-cup/schedule/): Today's matches and what's on next, for quick answers.
+Original SnackPack browser soccer games plus a 2026 tournament tracker (schedule, teams, bracket, predictions), built for the 2026 football summer. The tournament itself has concluded. Not affiliated with, endorsed by, or connected to FIFA, the World Cup, any national team, league, or governing body. No ads, no sign-in, no download.
+
+- [World Cup 2026 hub](https://www.snackpackuniverse.com/world-cup/): Soccer games plus a record of the 2026 tournament — group tables, knockout bracket, and results.
 - [All 48 teams](https://www.snackpackuniverse.com/world-cup/teams/): Every team with flags, groups, players to know, and short facts.
-- [Bracket tracker](https://www.snackpackuniverse.com/world-cup/bracket/): Group tables, played and upcoming fixtures, knockout placeholders, and saveable champion/top-scorer predictions with a shareable card.
-- Group pages (table, results, and all six fixtures for each group): [Group A](https://www.snackpackuniverse.com/world-cup/group-a/), [Group B](https://www.snackpackuniverse.com/world-cup/group-b/), [Group C](https://www.snackpackuniverse.com/world-cup/group-c/), [Group D](https://www.snackpackuniverse.com/world-cup/group-d/), [Group E](https://www.snackpackuniverse.com/world-cup/group-e/), [Group F](https://www.snackpackuniverse.com/world-cup/group-f/), [Group G](https://www.snackpackuniverse.com/world-cup/group-g/), [Group H](https://www.snackpackuniverse.com/world-cup/group-h/), [Group I](https://www.snackpackuniverse.com/world-cup/group-i/), [Group J](https://www.snackpackuniverse.com/world-cup/group-j/), [Group K](https://www.snackpackuniverse.com/world-cup/group-k/), [Group L](https://www.snackpackuniverse.com/world-cup/group-l/).
-- [Soccer Trivia Sprint](https://www.snackpackuniverse.com/play/soccer-trivia-sprint/): Fast football quiz — build a streak and chase your best score across 12 rounds.
-- [Keepy-Uppy](https://www.snackpackuniverse.com/play/keepy-uppy/): Tap to keep the ball up, collect stars and build combos for a new best touch run.
-- [Target Shooting Arena](https://www.snackpackuniverse.com/play/target-shooting-arena/): Aim at moving goal targets, score bullseyes, and protect your combo across 12 shots.
-- [Free Kick Curl](https://www.snackpackuniverse.com/play/free-kick-curl/): Bend shots around the wall, beat the keeper and hit bonus corners across 10 kicks.
-- [Crossbar Challenge](https://www.snackpackuniverse.com/play/crossbar-challenge/): Hit the bar from changing distances, fight the wind, and stack perfect hits across 15 shots.
-- [Goalkeeper Hero](https://www.snackpackuniverse.com/play/goalkeeper-hero/): Read the striker, dive the right way, and stack quick saves across 12 shots.
-- [Penalty Shootout](https://www.snackpackuniverse.com/play/penalty-shootout/): Best-of-five penalty shootout vs the computer — you both shoot and dive to save, with three difficulty levels and sudden death. Includes rules, tips, and an about section.
-- [Dribble Rush](https://www.snackpackuniverse.com/play/dribble-rush/): Endless three-lane soccer runner — dodge defenders, hop sliding tackles, collect stars, and chase your best distance across three difficulty modes.
-- [Header Hero](https://www.snackpackuniverse.com/play/header-hero/): Aim your header, time your jump, and beat the keeper across 12 crosses; perfect timing always scores.
-- [Flag Frenzy](https://www.snackpackuniverse.com/play/flag-frenzy/): Daily guessing game — find the mystery World Cup 2026 team in 6 tries using confederation, group, points and live status clues, with a shareable result.
+- [Flag Frenzy](https://www.snackpackuniverse.com/play/flag-frenzy/): Guessing game — find the mystery World Cup 2026 team using confederation, group, points and status clues, with a shareable result.
 
 ## Guides
 
 - [Choosing ad-free learning apps for toddlers](https://www.snackpackuniverse.com/guides/best-ad-free-apps-for-toddlers/): A 5-point checklist for verifying "no ads" claims, reading the Data safety section, and spotting manipulative design in kids apps.
 - [Offline games without ads](https://www.snackpackuniverse.com/guides/offline-games-without-ads/): Why most Sudoku/Solitaire apps are ad-funded, how to check before installing, and the airplane-mode test.
+- [How to play browser games offline](https://www.snackpackuniverse.com/guides/play-browser-games-offline/): How to install a website as an app and keep playing with the connection off.
+- [Free Solitaire without ads or sign-up](https://www.snackpackuniverse.com/guides/solitaire-without-ads-or-signup/): Why a card game acquired cookie walls and account prompts, and what "winnable deals" actually means.
+- [Free Sudoku without ads or a mistake limit](https://www.snackpackuniverse.com/guides/sudoku-without-ads-or-mistakes/): Why free Sudoku apps cap you at three mistakes and gate hints behind coins, and what an honestly-graded puzzle looks like.
+- [Free Checkers without ads or an account](https://www.snackpackuniverse.com/guides/checkers-without-ads-or-signup/): Why free Checkers apps push online matchmaking instead of a simple computer opponent.
 - [A daily mood boost without doomscrolling](https://www.snackpackuniverse.com/guides/daily-positivity-without-doomscrolling/): How to redirect the phone reflex toward finite, calm alternatives to engagement-ranked feeds.
 
 ## Reference
 
-- [All apps](https://www.snackpackuniverse.com/apps/): Full lineup including the 10+ apps in development (spelling, arithmetic, stories, creativity, geography, geometry, coding logic, dinosaurs, animals, gardens).
+- [All apps](https://www.snackpackuniverse.com/apps/): Full lineup, including the 6 apps still in development — Tales & Trivia, Creative Studio, Mathematics, Earth & Explorer, Shape & Space, and Robot Recipe.
 - [Privacy policies](https://www.snackpackuniverse.com/privacy/): Per-app privacy policies meeting Google Play and Apple requirements.
 - [Terms](https://www.snackpackuniverse.com/terms/)
