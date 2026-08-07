@@ -154,16 +154,19 @@ retiring the World Cup nav link is a judgement about the brand, not a bug fix.
 
 ## P4. Continue the guides wedge (the actual distribution bottleneck)
 
-Unchanged in priority from the arcade plan's Section C. **Five guides live now**:
-`solitaire-without-ads-or-signup`, `sudoku-without-ads-or-mistakes`,
-`checkers-without-ads-or-signup`, `freecell-without-ads-solver-verified`,
-`mahjong-solitaire-without-ads` — the last four all added 2026-08-07, on top
-of the three originals (toddler apps, offline games, browser-games-offline).
-All cross-link each other; sitemap resubmitted to Search Console after each
-addition. Mahjong's angle deliberately differs from FreeCell's: "solver-
-verified" would be a false claim there (Shuffle rescues a dead board, it
-doesn't guarantee the deal was ever solvable), so the wedge is the same
-ad-gated-rescue pattern used for Sudoku's hints, applied to Shuffle instead.
+**Status: the volume-ranked wedge is complete as of 2026-08-07.** Six game
+guides now live: `solitaire-without-ads-or-signup`, `sudoku-without-ads-or-
+mistakes`, `checkers-without-ads-or-signup`, `freecell-without-ads-solver-
+verified`, `mahjong-solitaire-without-ads`, `minesweeper-without-ads` — five
+added this session, on top of the three original non-game guides (toddler
+apps, offline games, browser-games-offline). Every game guide targets a
+distinct, verified-true angle rather than reusing one template: Solitaire
+(winnable-deal odds), Sudoku (mistake limits/gated hints), Checkers (forced
+matchmaking), FreeCell (solver-verified — genuinely true here), Mahjong
+(gated Shuffle — solver-verified would have been *false* for this game, so
+the angle changes), Minesweeper (first-click safety + real classic board
+sizes). All six cross-link each other; sitemap resubmitted to Search Console
+after each addition.
 
 The diagnosis stands: **4 inbound links is the bottleneck, not game quality.**
 Head terms (solitaire 234k/mo, spider 123k) are unwinnable against
@@ -180,16 +183,16 @@ sitewide, `/play/thirteen/` alone pulling 610 of those impressions on 1 click
 fine). New guides take a few days to accrue impressions; too early to read
 signal from the four added this session.
 
-Remaining targets in the same shape, roughly by volume:
+Nothing left queued from the original volume table. Further guides (2048,
+Word Search, Reversi, Connect 4, Spider Solitaire) are possible but diminish
+in value fast — those pages don't have obvious, honest, competitor-specific
+angles the way the six above did, and manufacturing one for its own sake
+would be padding, not the wedge.
 
-| Guide | Term | Angle |
-|---|---|---|
-| Minesweeper / classic games | low each | Grouped "the Windows games you miss, in a browser" piece — the last one from the original volume table; everything above it now has a guide. |
-
-Also still open from the arcade plan and unstarted: **directory submissions** to
-free-browser-game aggregators. Unglamorous, and it is how the backlink count
-first moves off 4. This needs signups on external sites, so it needs you present
-— I shouldn't be creating accounts.
+The next lever is **directory submissions** to free-browser-game aggregators
+— unglamorous, unstarted, and how the backlink count actually first moves off
+4. This needs signups on external sites, so it needs you present — I
+shouldn't be creating accounts.
 
 ---
 
@@ -217,20 +220,18 @@ first moves off 4. This needs signups on external sites, so it needs you present
 
 ## Status as of 2026-08-07
 
-**P2, P3 and P5 are done. P1 is on hold** (last-bastion is active WIP, revisit
-later — no art/history changes touched). **P4 is ongoing** — five guides live
-(the sixth, Minesweeper/classic games, is the last one queued), directory
-submissions are still unstarted and need you present for the signups.
+**P2, P3, P4 and P5 are done. P1 is on hold** (last-bastion is active WIP,
+revisit later — no art/history changes touched). All six code/copy items
+that didn't require Codex art or your presence for external signups are
+closed out.
 
 What's left, in order:
 
 1. **Directory submissions** — the actual next lever on the 4-link bottleneck,
-   now that five guides exist to submit. Needs you present.
-2. **Minesweeper / classic-games guide** — last one queued in the wedge,
-   mechanical, I can do it without input.
-3. **Section A art** (arcade plan) — briefed and waiting on Codex/imagegen,
+   now that six guides exist to submit. Needs you present.
+2. **Section A art** (arcade plan) — briefed and waiting on Codex/imagegen,
    nothing further for me to do until files land.
-4. **P1, later** — once `last-bastion` stabilizes enough that its art stops
+3. **P1, later** — once `last-bastion` stabilizes enough that its art stops
    changing daily.
 
 Deliberately **not** on this list: more arcade code polish. Section B is closed,
