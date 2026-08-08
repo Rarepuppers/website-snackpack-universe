@@ -184,6 +184,7 @@ export function buildBudgetDensityWave(
   depthIndex: number,
   timerEndsWave: boolean,
   allowAmbientElite = true,
+  spawnCadenceMultiplier = 1,
 ): DensityWaveDefinition {
   const budget = Math.max(1, Math.floor(threatBudget));
   const templateIndex = budget <= 30 ? 0
@@ -215,9 +216,16 @@ export function buildBudgetDensityWave(
         : budget <= 120 ? 40
           : budget <= 140 ? 45
             : budget <= 160 ? 50 : 55;
+  const safeCadenceMultiplier = Number.isFinite(spawnCadenceMultiplier)
+    ? Math.max(1, Math.min(2, spawnCadenceMultiplier))
+    : 1;
+  const pulseIntervalSeconds = 2.5 / safeCadenceMultiplier;
+  // Keep the authored number of pulses and compress their spacing. Increasing
+  // the count as the interval shrinks would merely spread the same budget back
+  // across the full timer and make the modifier imperceptible.
   const pulseCount = Math.max(1, Math.floor((durationSeconds - 0.5) / 2.5) + 1);
   selected.forEach((plan, index) => {
-    plan.atSeconds = 0.2 + Math.floor(index * pulseCount / selected.length) * 2.5;
+    plan.atSeconds = 0.2 + Math.floor(index * pulseCount / selected.length) * pulseIntervalSeconds;
   });
   selected.sort((left, right) => left.atSeconds - right.atSeconds);
   const depth = Math.max(0, Math.min(8, Math.floor(depthIndex)));

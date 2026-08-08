@@ -26,6 +26,7 @@ import {
   expeditionEncounterForNode,
   expeditionEncounterUrl,
 } from "../expedition/ExpeditionEncounter";
+import { normalizeThreatTier, threatTierDefinition } from "../expedition/ThreatTier";
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -128,14 +129,17 @@ export class ExpeditionScene extends Phaser.Scene {
 
   /** `?mapseed=N` reviews a deterministic fresh chart; otherwise resume or roll. */
   private restoreOrStartRun(): ExpeditionRun {
-    const requested = Number(new URLSearchParams(window.location.search).get("mapseed"));
+    const params = new URLSearchParams(window.location.search);
+    const requested = Number(params.get("mapseed"));
+    const requestedThreatTier = normalizeThreatTier(Number(params.get("threat")));
     if (Number.isFinite(requested) && requested > 0) {
-      return startExpeditionRun(Math.floor(requested));
+      return startExpeditionRun(Math.floor(requested), requestedThreatTier);
     }
     const saved = this.saveStore.load().expedition;
     if (saved) {
       const resumed = resumeExpeditionRun({
         mapSeed: saved.mapSeed,
+        threatTier: normalizeThreatTier(saved.threatTier),
         currentNodeId: saved.currentNodeId,
         clearedNodeIds: saved.clearedNodeIds,
         build: saved.build,
@@ -146,7 +150,7 @@ export class ExpeditionScene extends Phaser.Scene {
       }
       this.saveStore.clearExpedition();
     }
-    return startExpeditionRun((Date.now() % 100000) + 1);
+    return startExpeditionRun((Date.now() % 100000) + 1, requestedThreatTier);
   }
 
   private readonly handleKey = (event: KeyboardEvent): void => {
@@ -232,7 +236,7 @@ export class ExpeditionScene extends Phaser.Scene {
       return;
     }
     window.location.href = expeditionEncounterUrl(
-      expeditionEncounterForNode(this.run.state.mapSeed, node),
+      expeditionEncounterForNode(this.run.state.mapSeed, node, this.run.state.threatTier),
     );
   }
 
@@ -244,6 +248,7 @@ export class ExpeditionScene extends Phaser.Scene {
     }
     this.saveStore.saveExpedition({
       mapSeed: this.run.state.mapSeed,
+      threatTier: this.run.state.threatTier,
       currentNodeId: this.run.state.currentNodeId,
       clearedNodeIds: [...this.run.state.clearedNodeIds],
       build: this.run.state.build === null ? null : {
@@ -268,12 +273,15 @@ export class ExpeditionScene extends Phaser.Scene {
       selectable: selectableNodeIds(this.run),
       complete: isExpeditionComplete(this.run),
       seed: this.run.state.mapSeed,
+      threatTier: this.run.state.threatTier,
     };
     this.root.removeAll(true);
     const currentNode = expeditionNodeById(this.run.map, this.run.state.currentNodeId)!;
     const currentTheme = ARENA_THEMES.find((theme) => theme.id === currentNode.themeId) ?? ARENA_THEMES[0]!;
     this.renderBackdrop(currentTheme);
     this.root.add(this.text(70, 32, "EXPEDITION MAP", IVORY, "24px"));
+    const threat = threatTierDefinition(this.run.state.threatTier);
+    this.root.add(this.text(70, 61, `THREAT ${threat.tier}  ${threat.name}`, threat.tier > 0 ? ORANGE : TEAL, "11px"));
     this.root.add(this.text(WIDTH - 70, 38, `SEED ${this.run.state.mapSeed}`, MUTED, "12px").setOrigin(1, 0));
 
     this.renderEdges();

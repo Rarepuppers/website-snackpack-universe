@@ -18,6 +18,7 @@ import {
   expeditionEncounterForNode,
   expeditionEncounterUrl,
 } from "../expedition/ExpeditionEncounter";
+import { normalizeThreatTier } from "../expedition/ThreatTier";
 import {
   applyEventResolutionToBuild,
   encounterEventById,
@@ -82,6 +83,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
     if (!saved) return false;
     const resumed = resumeExpeditionRun({
       mapSeed: saved.mapSeed,
+      threatTier: normalizeThreatTier(saved.threatTier),
       currentNodeId: saved.currentNodeId,
       clearedNodeIds: saved.clearedNodeIds,
       build: saved.build,
@@ -91,7 +93,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
     const node = expeditionNodeById(resumed.map, resumed.state.currentNodeId);
     if (!node || (node.type !== "shrine" && node.type !== "event")) return false;
     if (resumed.state.clearedNodeIds.includes(node.id)) return false;
-    const encounter = expeditionEncounterForNode(resumed.state.mapSeed, node);
+    const encounter = expeditionEncounterForNode(resumed.state.mapSeed, node, resumed.state.threatTier);
     const event = encounter.eventId ? encounterEventById(encounter.eventId) : null;
     if (!event) return false;
 
@@ -154,7 +156,12 @@ export class ExpeditionEventScene extends Phaser.Scene {
       // Keep the node pending; persist the build so combat resumes with it, then
       // fight the ambush. Victory commits the node through the normal combat path.
       this.persistRun(this.run, nextBuild);
-      const encounter = ambushEncounterForNode(this.run.state.mapSeed, this.node, resolution.effects.ambush.threatBudget);
+      const encounter = ambushEncounterForNode(
+        this.run.state.mapSeed,
+        this.node,
+        resolution.effects.ambush.threatBudget,
+        this.run.state.threatTier,
+      );
       window.location.href = `${expeditionEncounterUrl(encounter)}&ambush=${resolution.effects.ambush.threatBudget}`;
       return;
     }
@@ -168,6 +175,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
   private persistRun(run: ExpeditionRun, build: ExpeditionBuildSnapshot | null): void {
     this.saveStore.saveExpedition({
       mapSeed: run.state.mapSeed,
+      threatTier: run.state.threatTier,
       currentNodeId: run.state.currentNodeId,
       clearedNodeIds: [...run.state.clearedNodeIds],
       build: build === null ? null : {

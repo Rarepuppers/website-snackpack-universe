@@ -28,4 +28,18 @@ describe("Expedition node encounter contract", () => {
     expect(url).not.toContain("health");
     expect(url).not.toContain("scrap");
   });
+
+  it("adds one elite patrol at tier 1 and faster spawn cadence at tier 2", () => {
+    const map = generateExpeditionMap(73);
+    const node = map.nodes.find((candidate) => candidate.type === "combat")!;
+    const standard = expeditionEncounterForNode(map.seed, node, 0);
+    const elitePatrols = expeditionEncounterForNode(map.seed, node, 1);
+    const rapid = expeditionEncounterForNode(map.seed, node, 2);
+
+    expect(standard.waves.some((wave) => wave.kind === "elite")).toBe(false);
+    expect(elitePatrols.waves.filter((wave) => wave.kind === "elite")).toHaveLength(1);
+    expect(elitePatrols.eliteKind).not.toBeNull();
+    expect(rapid.waves.filter((wave) => wave.kind === "elite")).toHaveLength(1);
+    expect(rapid.waves.every((wave) => wave.spawnCadenceMultiplier === 1.2)).toBe(true);
+  });
 });

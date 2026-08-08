@@ -1,6 +1,7 @@
 import type { EliteKind } from "../combat/EliteCadence";
 import type { MiniBossKind } from "../combat/CombatSimulation";
 import type { ExpeditionEncounterKind } from "./ExpeditionEncounter";
+import { threatTierDefinition, type ThreatTier } from "./ThreatTier";
 
 export type ExpeditionWaveKind = "ordinary" | "elite" | "mini-boss" | "boss";
 
@@ -12,6 +13,7 @@ export interface ExpeditionWavePlan {
   timerEndsWave: boolean;
   eliteKind: EliteKind | null;
   miniBossKind: MiniBossKind | null;
+  spawnCadenceMultiplier: number;
 }
 
 /** Task 48's pure, zero-based column-to-budget contract. */
@@ -29,9 +31,11 @@ export function buildExpeditionWavePlan(
   column: number,
   eliteKind: EliteKind | null,
   miniBossKind: MiniBossKind | null,
+  threatTier: ThreatTier = 0,
 ): readonly ExpeditionWavePlan[] {
   const depth = Math.max(0, Math.min(8, Math.floor(column)));
   const combat = combatNodeBudgets(depth);
+  const threat = threatTierDefinition(threatTier);
   const ordinary = (budget: number): ExpeditionWavePlan => ({
     kind: "ordinary",
     directorWaveIndex: depth,
@@ -39,9 +43,24 @@ export function buildExpeditionWavePlan(
     timerEndsWave: budget >= 65,
     eliteKind: null,
     miniBossKind: null,
+    spawnCadenceMultiplier: threat.spawnCadenceMultiplier,
   });
 
-  if (kind === "combat") return Object.freeze(combat.map(ordinary));
+  if (kind === "combat") {
+    const waves = combat.map(ordinary);
+    if (threat.elitePatrols) {
+      waves.push({
+        kind: "elite",
+        directorWaveIndex: depth,
+        threatBudget: 0,
+        timerEndsWave: false,
+        eliteKind: eliteKind ?? "carapace-scuttler",
+        miniBossKind: null,
+        spawnCadenceMultiplier: threat.spawnCadenceMultiplier,
+      });
+    }
+    return Object.freeze(waves);
+  }
   if (kind === "liberation") {
     // Free the location, then trade. One ordinary wave at 0.9 of the node's top
     // budget — enough to be a real fight, short enough that the shop is the
@@ -59,6 +78,7 @@ export function buildExpeditionWavePlan(
       timerEndsWave: false,
       eliteKind: eliteKind ?? "carapace-scuttler",
       miniBossKind: null,
+      spawnCadenceMultiplier: threat.spawnCadenceMultiplier,
     }]);
   }
   if (kind === "mini-boss") {
@@ -71,6 +91,7 @@ export function buildExpeditionWavePlan(
         timerEndsWave: false,
         eliteKind: null,
         miniBossKind: miniBossKind ?? "siege-crusher",
+        spawnCadenceMultiplier: threat.spawnCadenceMultiplier,
       },
     ]);
   }
@@ -82,6 +103,7 @@ export function buildExpeditionWavePlan(
       timerEndsWave: false,
       eliteKind: null,
       miniBossKind: null,
+      spawnCadenceMultiplier: threat.spawnCadenceMultiplier,
     }]);
   }
   return Object.freeze([]);

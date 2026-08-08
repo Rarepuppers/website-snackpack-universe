@@ -155,10 +155,17 @@ describe("Shell screen flow", () => {
   it("starts a run only for a playable hero", () => {
     const state = boot("character-select");
     expect(ROSTER[0]!.status).toBe("playable");
-    expect(stepShell(state, "confirm").effects).toEqual([{ type: "start-run", heroId: "marine", perkId: "perk-veteran" }]);
+    const threat = stepShell(state, "confirm").state;
+    expect(threat.screen).toBe("threat-select");
+    expect(stepShell(threat, "confirm").effects).toEqual([
+      { type: "start-run", heroId: "marine", perkId: "perk-veteran", threatTier: 0 },
+    ]);
 
     const medic = stepShell(state, "right").state;
-    expect(stepShell(medic, "confirm").effects).toEqual([{ type: "start-run", heroId: "medic", perkId: "perk-veteran" }]);
+    const medicThreat = stepShell(medic, "confirm").state;
+    expect(stepShell(medicThreat, "confirm").effects).toEqual([
+      { type: "start-run", heroId: "medic", perkId: "perk-veteran", threatTier: 0 },
+    ]);
 
     const locked = stepShell(medic, "right").state;
     expect(ROSTER[locked.rosterIndex]!.status).not.toBe("playable");
@@ -170,6 +177,24 @@ describe("Shell screen flow", () => {
     for (const screen of ["how-to-play", "settings", "lab", "records", "character-select"] as const) {
       expect(stepShell(boot(screen), "back").state.screen).toBe("menu");
     }
+    expect(stepShell({ ...boot("character-select"), screen: "threat-select" }, "back").state.screen).toBe("character-select");
     expect(stepShell(boot("controls"), "back").state.screen).toBe("settings");
+  });
+
+  it("blocks locked threat tiers and unlocks a tier from the prior victory", () => {
+    const locked = stepShell(boot("character-select"), "confirm").state;
+    const selectedTierOne = stepShell(locked, "down").state;
+    expect(stepShell(selectedTierOne, "confirm").effects).toEqual([]);
+
+    const progress = {
+      ...DEFAULT_SAVE.progress,
+      threatTierVictories: { 0: 1, 1: 0, 2: 0 } as const,
+    };
+    const unlocked = createShellState(DEFAULT_SAVE.settings, "character-select", progress);
+    const tierScreen = stepShell(unlocked, "confirm").state;
+    const tierOne = stepShell(tierScreen, "down").state;
+    expect(stepShell(tierOne, "confirm").effects).toEqual([
+      { type: "start-run", heroId: "marine", perkId: "perk-veteran", threatTier: 1 },
+    ]);
   });
 });

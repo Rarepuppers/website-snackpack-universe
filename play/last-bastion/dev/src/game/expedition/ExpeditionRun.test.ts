@@ -26,6 +26,11 @@ function completeRun(seed: number): ExpeditionRun {
 }
 
 describe("Expedition run state", () => {
+  it("preserves the selected threat tier across construction and resume", () => {
+    const run = startExpeditionRun(91, 2);
+    expect(run.state.threatTier).toBe(2);
+    expect(resumeExpeditionRun(run.state)?.state.threatTier).toBe(2);
+  });
   it("starts on the drop site with only next-column nodes selectable", () => {
     const run = startExpeditionRun(77);
     expect(run.state.currentNodeId).toBe(run.map.startNodeId);

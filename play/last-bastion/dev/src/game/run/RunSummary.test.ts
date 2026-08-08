@@ -69,6 +69,7 @@ describe("Task 50 run-summary contract", () => {
     if (!exposure.ok) throw new Error(exposure.reason);
     const summary = createRunSummary({
       mode: "expedition",
+      threatTier: 2,
       outcome: "victory",
       heroId: "marine",
       perkId: "perk-veteran",
@@ -84,6 +85,7 @@ describe("Task 50 run-summary contract", () => {
       transformation: exposure.state,
     });
     expect(summary.newlyUnlockedPerkIds).toEqual([]);
+    expect(summary.threatTier).toBe(2);
     expect(summary.weapons).toEqual([{ weaponId: "bastion-service-rifle", tier: 2 }]);
     expect(summary.damageByWeapon["bastion-service-rifle"]).toBeCloseTo(900.25);
     expect(summary.highestHit).toBe(0);

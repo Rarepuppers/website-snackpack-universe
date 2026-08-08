@@ -10,6 +10,7 @@ import { createTransformationCodexSnapshot } from "../transformations/Transforma
 import { normalizeTransformationAffinityState } from "../transformations/TransformationAffinity";
 import { canonicalWeaponTileFrame } from "../ui/WeaponTileFrames";
 import { formatRunClock } from "../stats/formatStat";
+import { threatTierDefinition } from "../expedition/ThreatTier";
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -53,6 +54,10 @@ export class RunSummaryScene extends Phaser.Scene {
       .setStrokeStyle(1, victory ? 0x68e4e8 : 0xff9a52, 0.7);
     this.text(54, 32, victory ? "EXPEDITION SECURED" : "BASTION LOST", victory ? TEAL : ORANGE, "28px");
     this.text(56, 70, `${victory ? "THE LINE HELD" : "THE LINE WAS OVERRUN"}  •  ${summary.mode === "expedition" ? "EXPEDITION" : "QUICK DROP"}  •  ${summary.heroId.toUpperCase()}  •  LEVEL ${summary.level}`, MUTED, "12px");
+    if (summary.threatTier !== null) {
+      const threat = threatTierDefinition(summary.threatTier);
+      this.text(892, 70, `THREAT ${threat.tier}  ${threat.name}`, threat.tier > 0 ? ORANGE : TEAL, "10px", false, 1);
+    }
     if (!victory && summary.defeatCause) this.text(56, 86, summary.defeatCause.toUpperCase(), ORANGE, "9px");
     if (summary.newBestWave || summary.newBestNodes) {
       this.text(892, 48, "NEW RECORD", TEAL, "11px", false, 1);
@@ -277,6 +282,7 @@ function demoDamageTimeline(minuteTotals: readonly number[]): readonly number[] 
 function demoSummary() {
   return createRunSummary({
     mode: "expedition",
+    threatTier: 2,
     outcome: "victory",
     heroId: "marine",
     perkId: "perk-veteran",

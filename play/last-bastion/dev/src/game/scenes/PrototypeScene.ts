@@ -3,7 +3,7 @@ import { KeyboardMouseInput } from "../input/KeyboardMouseInput";
 import type { GamepadTuning } from "../input/GamepadIntentMapper";
 import { applyAimAssist } from "../input/AimAssist";
 import { focusLossRequestsPause } from "../input/FocusPause";
-import { keyboardBindingLabel } from "../input/ControlBindings";
+import { gamepadBindingLabel, keyboardBindingLabel } from "../input/ControlBindings";
 import type { PlayerIntent } from "../input/PlayerIntent";
 import {
   CombatSimulation,
@@ -47,6 +47,11 @@ import { arenaThemeById, arenaThemeVariant, containmentUnderworldTheme, pickAren
 import { BASE_HEIGHT, BASE_WIDTH, uiSafeArea, uiTextResolution } from "../rendering/DisplayScaling";
 import { CombatWorldPresenter } from "../rendering/CombatWorldPresenter";
 import { screenShakeIntensity } from "../rendering/ScreenShake";
+import {
+  consumeHitStopFrame,
+  mergeHitStopRequest,
+  requestedHitStopMilliseconds,
+} from "../rendering/HitStop";
 import { LocalSaveStore, type GameSettings } from "../save/LocalSaveStore";
 import { createLocalSaveStore } from "../save/SaveStorage";
 import { requestCloudSaveSync } from "../platform/CloudSaveRuntime";
@@ -86,7 +91,17 @@ import {
   expeditionEncounterForNode,
   type ExpeditionEncounterDescriptor,
 } from "../expedition/ExpeditionEncounter";
+import { normalizeThreatTier, threatTierDefinition } from "../expedition/ThreatTier";
 import { createRunSummary, mergeRunMetrics, type RunMetrics } from "../run/RunSummary";
+import {
+  advanceFirstDropOnboarding,
+  completedFirstDropGoalCount,
+  createFirstDropOnboarding,
+  firstIncompleteDropGoal,
+  shouldShowFirstDropOnboarding,
+  type FirstDropGoal,
+  type FirstDropOnboardingState,
+} from "../onboarding/FirstDropOnboarding";
 import { cloneTransformationAffinityState } from "../transformations/TransformationAffinity";
 import {
   AdaptivePerformanceGovernor,
@@ -118,12 +133,18 @@ export class PrototypeScene extends Phaser.Scene {
   private hud!: CombatHud;
   private pauseOverlay!: CombatPauseOverlay;
   private eventFeed!: CombatEventFeed;
+  private firstDropOnboarding: FirstDropOnboardingState | null = null;
+  private firstDropPanel: Phaser.GameObjects.Container | null = null;
+  private firstDropInstruction: Phaser.GameObjects.Text | null = null;
+  private firstDropProgress: Phaser.GameObjects.Text | null = null;
   private worldPresenter: CombatWorldPresenter | null = null;
   private effectPool!: VisualEffectPool;
   private damageNumbers!: FloatingDamageNumbers;
   private enemyHealthBars!: EnemyHealthBars;
   /** Carried across frames by `planFixedSteps` (§11.5); see FixedTimestepClock.ts. */
   private simulationAccumulatorSeconds = 0;
+  private hitStopRemainingMilliseconds = 0;
+  private presentationFrozenForHitStop = false;
   private readonly stressProfile = readStressProfile();
   private readonly scenario = readScenario();
   private readonly startingWeaponIds = this.stressProfile === null ? readStartingWeaponIds() : null;
@@ -356,6 +377,17 @@ export class PrototypeScene extends Phaser.Scene {
       this.settings.gamepadVibrationStrength,
     );
     this.eventFeed = new CombatEventFeed(this);
+    if (this.expeditionContext) {
+      const threat = threatTierDefinition(this.expeditionContext.run.state.threatTier);
+      this.eventFeed.add(`THREAT ${threat.tier}: ${threat.name}`, threat.tier > 0 ? "#ff9a52" : "#68e4e8");
+    }
+    const params = new URLSearchParams(window.location.search);
+    const showFirstDrop = shouldShowFirstDropOnboarding(
+      this.saveStore.load().progress.runsFinished,
+      params.get("onboarding") === "1",
+      this.scenario !== null || this.stressProfile !== null,
+    );
+    if (showFirstDrop) this.createFirstDropGuidance(controls, safe);
     this.damageDirectionIndicator = this.add.triangle(480, 270, 0, -12, -9, 9, 9, 9, 0xff7a5c, 0.96)
       .setStrokeStyle(2, 0x250b0b, 0.95).setDepth(2600).setScrollFactor(0).setVisible(false);
     this.lowHealthFrame = this.add.graphics().setDepth(2500).setScrollFactor(0);
@@ -440,6 +472,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.eventFeed?.destroy();
     this.worldPresenter?.destroy();
     this.worldPresenter = null;
+    this.setPresentationHitStopFrozen(false);
   }
 
   private renderAssetLoadFailure(): void {
@@ -482,6 +515,8 @@ export class PrototypeScene extends Phaser.Scene {
 
   private openPauseMenu(): void {
     if (this.lastSnapshot.pendingDecision || this.isPaused) return;
+    this.hitStopRemainingMilliseconds = 0;
+    this.setPresentationHitStopFrozen(false);
     this.isPaused = true;
     this.pauseStickReady = true;
     this.pauseOverlay?.open();
@@ -660,6 +695,17 @@ export class PrototypeScene extends Phaser.Scene {
       return;
     }
 
+    const hitStopFrame = consumeHitStopFrame(
+      this.hitStopRemainingMilliseconds,
+      deltaMilliseconds,
+    );
+    this.hitStopRemainingMilliseconds = hitStopFrame.nextRemainingMilliseconds;
+    if (hitStopFrame.freezeFrame) {
+      this.setPresentationHitStopFrozen(true);
+      return;
+    }
+    this.setPresentationHitStopFrozen(false);
+
     // Fixed-timestep accumulator (§11.5): the simulation always advances in
     // constant FIXED_STEP_SECONDS ticks regardless of frame rate or game
     // speed, so the deterministic replay fixture is unaffected. The speed
@@ -669,6 +715,8 @@ export class PrototypeScene extends Phaser.Scene {
     // intent are all internally gated by a cooldown or a collected/consumed
     // flag, so replaying the same intent across a few ticks cannot double-fire
     // an action within one frame.
+    const criticalHitsBefore = this.lastSnapshot.runMetrics.criticalHits;
+    const killsBefore = this.lastSnapshot.runMetrics.kills;
     const plan = planFixedSteps(this.simulationAccumulatorSeconds, deltaSeconds, this.settings.gameSpeedMultiplier);
     this.simulationAccumulatorSeconds = plan.nextAccumulatorSeconds;
     let snapshot = this.lastSnapshot;
@@ -694,9 +742,23 @@ export class PrototypeScene extends Phaser.Scene {
     }
 
     this.renderSnapshot(snapshot, intent.fireHeld);
+    this.updateFirstDropGuidance(intent, snapshot);
     this.synth.beginFrame();
     if (plan.steps > 0) {
       this.playCombatEvents(snapshot.events);
+      const requestedHitStop = requestedHitStopMilliseconds({
+        criticalHits: Math.max(0, snapshot.runMetrics.criticalHits - criticalHitsBefore),
+        enemyDefeats: Math.max(0, snapshot.runMetrics.kills - killsBefore),
+      }, {
+        enabled: this.settings.screenShakeEnabled,
+        reducedMotion: this.settings.reducedMotionEnabled,
+        intensityMultiplier: this.settings.screenShakeIntensity,
+      });
+      this.hitStopRemainingMilliseconds = mergeHitStopRequest(
+        this.hitStopRemainingMilliseconds,
+        requestedHitStop,
+      );
+      if (this.hitStopRemainingMilliseconds > 0) this.setPresentationHitStopFrozen(true);
     }
     if (snapshot.heroState === "evading" && this.previousHeroState !== "evading") {
       this.synth.play(EVASIVE_MOVE_CUE);
@@ -719,6 +781,74 @@ export class PrototypeScene extends Phaser.Scene {
         outlineOnly: true,
       });
     }
+  }
+
+  private createFirstDropGuidance(
+    controls: ReturnType<LocalSaveStore["load"]>["controls"],
+    safe: ReturnType<typeof uiSafeArea>,
+  ): void {
+    this.firstDropOnboarding = createFirstDropOnboarding();
+    const x = safe.left + 12;
+    const y = safe.top + 72;
+    const background = this.add.rectangle(0, 0, 390, 70, 0x101923, 0.94)
+      .setOrigin(0, 0)
+      .setStrokeStyle(2, 0x68e4e8);
+    const title = this.add.text(14, 10, "FIRST DROP", {
+      color: "#68e4e8", fontFamily: "monospace", fontSize: "11px",
+    });
+    this.firstDropInstruction = this.add.text(14, 31, "", {
+      color: "#e8e2d4", fontFamily: "monospace", fontSize: "10px",
+    });
+    this.firstDropProgress = this.add.text(376, 12, "0 / 4", {
+      color: "#8fa1b3", fontFamily: "monospace", fontSize: "9px",
+    }).setOrigin(1, 0);
+    this.firstDropPanel = this.add.container(x, y, [
+      background, title, this.firstDropInstruction, this.firstDropProgress,
+    ]).setDepth(2700).setScrollFactor(0);
+    const movement = [
+      controls.keyboard.moveUp, controls.keyboard.moveLeft,
+      controls.keyboard.moveDown, controls.keyboard.moveRight,
+    ].map(keyboardBindingLabel).join("");
+    this.firstDropInstruction.setData("copy", {
+      move: `${movement} / LEFT STICK  MOVE`,
+      evade: `${keyboardBindingLabel(controls.keyboard.evade)} / ${gamepadBindingLabel(controls.gamepad.evade)}  ROLL THROUGH DANGER`,
+      damage: this.settings.autoFireEnabled
+        ? "AIM AT A TARGET - WEAPONS AUTO-FIRE"
+        : "AIM AT A TARGET - HOLD FIRE",
+      wave: "SURVIVE THE WAVE - THEN CHOOSE AN UPGRADE",
+    } satisfies Record<FirstDropGoal, string>);
+    this.renderFirstDropGuidance();
+  }
+
+  private updateFirstDropGuidance(intent: PlayerIntent, snapshot: CombatSnapshot): void {
+    if (!this.firstDropOnboarding) return;
+    const previousCount = completedFirstDropGoalCount(this.firstDropOnboarding);
+    this.firstDropOnboarding = advanceFirstDropOnboarding(this.firstDropOnboarding, {
+      moved: Math.hypot(intent.move.x, intent.move.y) > 0.1,
+      evaded: intent.evasiveMovePressed || snapshot.heroState === "evading",
+      dealtDamage: Object.values(snapshot.runMetrics.damageByWeapon).some((damage) => damage > 0),
+      clearedWave: snapshot.pendingDecision !== null || snapshot.waveNumber > 1,
+    });
+    const nextCount = completedFirstDropGoalCount(this.firstDropOnboarding);
+    if (nextCount === previousCount) return;
+    if (firstIncompleteDropGoal(this.firstDropOnboarding) === null) {
+      this.eventFeed.add("FIRST DROP TRAINING COMPLETE", "#68e4e8");
+      this.firstDropPanel?.destroy(true);
+      this.firstDropPanel = null;
+      this.firstDropInstruction = null;
+      this.firstDropProgress = null;
+      this.firstDropOnboarding = null;
+      return;
+    }
+    this.renderFirstDropGuidance();
+  }
+
+  private renderFirstDropGuidance(): void {
+    if (!this.firstDropOnboarding || !this.firstDropInstruction || !this.firstDropProgress) return;
+    const goal = firstIncompleteDropGoal(this.firstDropOnboarding);
+    const copy = this.firstDropInstruction.getData("copy") as Record<FirstDropGoal, string> | undefined;
+    if (goal && copy) this.firstDropInstruction.setText(copy[goal]);
+    this.firstDropProgress.setText(`${completedFirstDropGoalCount(this.firstDropOnboarding)} / 4`);
   }
 
   private renderSnapshot(snapshot: CombatSnapshot, firing: boolean): void {
@@ -1008,6 +1138,7 @@ export class PrototypeScene extends Phaser.Scene {
         victory: false,
         waveReached: this.expeditionContext.encounter.column + 1,
         summary,
+        threatTier: this.expeditionContext.run.state.threatTier,
       });
       this.navigateAfterPlatformSync("?screen=summary", queueAchievementProgress(before, after));
       return;
@@ -1020,6 +1151,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.saveStore.recordNodeCleared();
     this.saveStore.saveExpedition({
       mapSeed: completed.state.mapSeed,
+      threatTier: completed.state.threatTier,
       currentNodeId: completed.state.currentNodeId,
       clearedNodeIds: [...completed.state.clearedNodeIds],
       build: completed.state.build ? {
@@ -1042,6 +1174,7 @@ export class PrototypeScene extends Phaser.Scene {
         victory: true,
         waveReached: completed.map.columns,
         summary,
+        threatTier: completed.state.threatTier,
       });
       this.saveStore.clearExpedition();
       this.navigateAfterPlatformSync("?screen=summary", queueAchievementProgress(before, after));
@@ -1085,6 +1218,9 @@ export class PrototypeScene extends Phaser.Scene {
       outcome: snapshot.status === "victory" ? "victory" : "defeat",
       heroId: snapshot.heroId,
       perkId: snapshot.activePerkId,
+      threatTier: mode === "expedition"
+        ? this.expeditionContext?.run.state.threatTier ?? null
+        : null,
       waveReached: mode === "expedition"
         ? (this.expeditionContext?.encounter.column ?? 0) + 1
         : snapshot.waveNumber,
@@ -1153,6 +1289,13 @@ export class PrototypeScene extends Phaser.Scene {
       if (this.worldPresenter) this.worldPresenter.shake(durationMilliseconds, scaledIntensity);
       else this.cameras.main.shake(durationMilliseconds, scaledIntensity);
     }
+  }
+
+  private setPresentationHitStopFrozen(frozen: boolean): void {
+    if (this.presentationFrozenForHitStop === frozen) return;
+    this.presentationFrozenForHitStop = frozen;
+    this.time.timeScale = frozen ? 0 : 1;
+    this.tweens.timeScale = frozen ? 0 : 1;
   }
 
   private flashCamera(durationMilliseconds: number, red: number, green: number, blue: number): void {
@@ -4796,6 +4939,7 @@ function readExpeditionContext(store: LocalSaveStore): ExpeditionCombatContext |
   if (!saved || !Number.isInteger(nodeId) || saved.currentNodeId !== nodeId) return null;
   const run = resumeExpeditionRun({
     mapSeed: saved.mapSeed,
+    threatTier: normalizeThreatTier(saved.threatTier),
     currentNodeId: saved.currentNodeId,
     clearedNodeIds: saved.clearedNodeIds,
     build: saved.build,
@@ -4807,9 +4951,9 @@ function readExpeditionContext(store: LocalSaveStore): ExpeditionCombatContext |
   // An Event node's ambush outcome routes here as a synthesized one-wave combat.
   const ambush = Number(params.get("ambush"));
   if ((node.type === "event" || node.type === "shrine") && Number.isFinite(ambush) && ambush > 0) {
-    return { run, encounter: ambushEncounterForNode(run.state.mapSeed, node, ambush) };
+    return { run, encounter: ambushEncounterForNode(run.state.mapSeed, node, ambush, run.state.threatTier) };
   }
-  return { run, encounter: expeditionEncounterForNode(run.state.mapSeed, node) };
+  return { run, encounter: expeditionEncounterForNode(run.state.mapSeed, node, run.state.threatTier) };
 }
 
 function expeditionBuildFromSnapshot(snapshot: CombatSnapshot): ExpeditionBuildSnapshot {

@@ -24,6 +24,7 @@ import type { PlayerStatBlock } from "../stats/PlayerStatBlock";
 import type { EffectQualityPreference } from "../performance/AdaptivePerformance";
 import type { FrameCap, FullscreenMode } from "../rendering/DisplayCapabilities";
 import type { RequestedPresentationMode } from "../rendering/DisplayPresentation";
+import { normalizeThreatTier, type ThreatTier, type ThreatTierVictories } from "../expedition/ThreatTier";
 
 /**
  * Versioned local persistence for settings and basic run progress.
@@ -96,6 +97,8 @@ export interface GameProgress {
   totalDamage: number;
   totalScrapEarned: number;
   bestiary: Record<string, BestiaryEntry>;
+  threatTierBestNodes: Record<ThreatTier, number>;
+  threatTierVictories: Record<ThreatTier, number>;
 }
 
 /**
@@ -107,6 +110,8 @@ export interface GameProgress {
  */
 export interface ExpeditionSave {
   mapSeed: number;
+  /** Optional only for schema 1-13 migration compatibility. */
+  threatTier?: ThreatTier;
   currentNodeId: number;
   clearedNodeIds: number[];
   build: {
@@ -136,7 +141,7 @@ export interface ExpeditionSave {
  * Current schema version. Single source of truth — the cloud-save policy and the
  * platform adapter gate on it, so bumping it here is the only edit a migration needs.
  */
-export const SAVE_SCHEMA_VERSION = 13;
+export const SAVE_SCHEMA_VERSION = 14;
 
 export interface SaveData {
   version: typeof SAVE_SCHEMA_VERSION;
@@ -146,6 +151,7 @@ export interface SaveData {
   expedition: ExpeditionSave | null;
   selectedPerkId: PerkId | null;
   selectedHeroId: HeroDefinition["id"];
+  selectedThreatTier: ThreatTier;
   lastRunSummary: RunSummary | null;
 }
 
@@ -202,10 +208,13 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     totalDamage: 0,
     totalScrapEarned: 0,
     bestiary: Object.freeze({}) as Record<string, BestiaryEntry>,
+    threatTierBestNodes: Object.freeze({ 0: 0, 1: 0, 2: 0 }),
+    threatTierVictories: Object.freeze({ 0: 0, 1: 0, 2: 0 }),
   }),
   expedition: null,
   selectedPerkId: "perk-veteran",
   selectedHeroId: "marine",
+  selectedThreatTier: 0,
   lastRunSummary: null,
 });
 
@@ -256,6 +265,12 @@ export class LocalSaveStore {
 
   selectHero(heroId: HeroDefinition["id"]): SaveData {
     this.cached = { ...this.cached, selectedHeroId: heroId };
+    this.writeToStorage();
+    return this.load();
+  }
+
+  selectThreatTier(threatTier: ThreatTier): SaveData {
+    this.cached = { ...this.cached, selectedThreatTier: normalizeThreatTier(threatTier) };
     this.writeToStorage();
     return this.load();
   }
@@ -314,7 +329,7 @@ export class LocalSaveStore {
     return this.load();
   }
 
-  recordRunEnd(outcome: { victory: boolean; waveReached: number; summary?: RunSummary }): SaveData {
+  recordRunEnd(outcome: { victory: boolean; waveReached: number; summary?: RunSummary; threatTier?: ThreatTier }): SaveData {
     const summary = outcome.summary;
     const newBestWave = Math.max(0, Math.floor(outcome.waveReached)) > this.cached.progress.bestWaveReached;
     const newBestNodes = (summary?.nodesCleared ?? 0) > this.cached.progress.bestNodesCleared;
@@ -326,6 +341,16 @@ export class LocalSaveStore {
       nodesCleared: Math.max(0, this.cached.progress.nodesCleared - (summary?.nodesCleared ?? 0)),
     };
     const beforeUnlocks = new Set(unlockedPerkIds(runStartProgress));
+    // Prefer the explicit carrier used while resolving an expedition, but let
+    // the durable summary identify its own tier so future callers cannot omit
+    // per-tier progress accidentally.
+    const tier = outcome.threatTier ?? summary?.threatTier ?? undefined;
+    const threatTierBestNodes = { ...this.cached.progress.threatTierBestNodes };
+    const threatTierVictories = { ...this.cached.progress.threatTierVictories };
+    if (tier !== undefined) {
+      threatTierBestNodes[tier] = Math.max(threatTierBestNodes[tier], summary?.nodesCleared ?? 0);
+      if (outcome.victory) threatTierVictories[tier] += 1;
+    }
     const nextProgress: GameProgress = {
       ...this.cached.progress,
       runsFinished: this.cached.progress.runsFinished + 1,
@@ -341,6 +366,8 @@ export class LocalSaveStore {
       totalKills: this.cached.progress.totalKills + (summary?.kills ?? 0),
       totalDamage: this.cached.progress.totalDamage + (summary ? totalRunDamage(summary) : 0),
       totalScrapEarned: this.cached.progress.totalScrapEarned + (summary?.scrapEarned ?? 0),
+      threatTierBestNodes,
+      threatTierVictories,
     };
     const newlyUnlockedPerkIds = unlockedPerkIds(nextProgress).filter((id) => !beforeUnlocks.has(id));
     this.cached = {
@@ -390,7 +417,7 @@ function normalizeSave(parsed: unknown): SaveData {
   const version = candidate.version ?? -1;
   // Versions 1–12 migrate into the current schema. Missing fields inherit the
   // accessible defaults; unknown future versions degrade safely to defaults.
-  if (![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].includes(version)) {
+  if (![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].includes(version)) {
     return cloneSave(DEFAULT_SAVE);
   }
   return {
@@ -409,12 +436,15 @@ function normalizeSave(parsed: unknown): SaveData {
       totalDamage: readFiniteNonNegative(candidate.progress?.totalDamage),
       totalScrapEarned: readFiniteNonNegative(candidate.progress?.totalScrapEarned),
       bestiary: readBestiary(candidate.progress?.bestiary),
+      threatTierBestNodes: readThreatTierCounts(candidate.progress?.threatTierBestNodes),
+      threatTierVictories: readThreatTierCounts(candidate.progress?.threatTierVictories),
     },
     expedition: version >= 2 ? readExpedition(candidate.expedition) : null,
     selectedPerkId: version >= 3 && isPerkId(candidate.selectedPerkId)
       ? candidate.selectedPerkId
       : "perk-veteran",
     selectedHeroId: version >= 3 && candidate.selectedHeroId === "medic" ? "medic" : "marine",
+    selectedThreatTier: version >= 14 ? normalizeThreatTier(candidate.selectedThreatTier) : 0,
     lastRunSummary: version >= 4 ? readRunSummary(candidate.lastRunSummary) : null,
   };
 }
@@ -517,6 +547,7 @@ function readExpedition(value: unknown): ExpeditionSave | null {
   }
   return cloneExpedition({
     mapSeed: Math.floor(candidate.mapSeed),
+    threatTier: normalizeThreatTier(candidate.threatTier),
     currentNodeId: Math.floor(candidate.currentNodeId),
     clearedNodeIds: candidate.clearedNodeIds.map((id) => Math.floor(id)),
     build: readBuild(candidate.build),
@@ -610,6 +641,7 @@ function readBuildRewards(candidate: {
 function cloneExpedition(expedition: ExpeditionSave): ExpeditionSave {
   return {
     mapSeed: expedition.mapSeed,
+    threatTier: normalizeThreatTier(expedition.threatTier),
     currentNodeId: expedition.currentNodeId,
     clearedNodeIds: [...expedition.clearedNodeIds],
     build: expedition.build === null ? null : {
@@ -647,6 +679,13 @@ function readBestiary(value: unknown): Record<string, BestiaryEntry> {
     }
   }
   return bestiary;
+}
+
+function readThreatTierCounts(value: unknown): Record<ThreatTier, number> {
+  const candidate = typeof value === "object" && value !== null
+    ? value as Partial<ThreatTierVictories>
+    : {};
+  return { 0: readCount(candidate[0]), 1: readCount(candidate[1]), 2: readCount(candidate[2]) };
 }
 
 function readBoolean(value: unknown, fallback: boolean): boolean {
@@ -717,6 +756,9 @@ function readRunSummary(value: unknown): RunSummary | null {
     outcome: candidate.outcome,
     heroId: candidate.heroId,
     perkId: isPerkId(candidate.perkId) ? candidate.perkId : null,
+    threatTier: candidate.threatTier === 0 || candidate.threatTier === 1 || candidate.threatTier === 2
+      ? candidate.threatTier
+      : null,
     waveReached: readCount(candidate.waveReached),
     nodesCleared: readCount(candidate.nodesCleared),
     kills: metrics.kills,
@@ -757,10 +799,16 @@ function cloneSave(save: SaveData): SaveData {
     version: save.version,
     settings: { ...save.settings },
     controls: normalizeControlBindings(save.controls),
-    progress: { ...save.progress, bestiary },
+    progress: {
+      ...save.progress,
+      bestiary,
+      threatTierBestNodes: { ...save.progress.threatTierBestNodes },
+      threatTierVictories: { ...save.progress.threatTierVictories },
+    },
     expedition: save.expedition === null ? null : cloneExpedition(save.expedition),
     selectedPerkId: save.selectedPerkId,
     selectedHeroId: save.selectedHeroId,
+    selectedThreatTier: save.selectedThreatTier,
     lastRunSummary: save.lastRunSummary ? createRunSummary(save.lastRunSummary) : null,
   };
 }

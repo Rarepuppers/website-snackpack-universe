@@ -229,6 +229,26 @@ describe("LocalSaveStore", () => {
     expect(reloaded.progress.bestiary.scuttler).toEqual({ seen: 12, kills: 11 });
   });
 
+  it("records best nodes and victories independently for each threat tier", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    const summary = createRunSummary({
+      mode: "expedition", outcome: "victory", heroId: "marine", perkId: "perk-veteran",
+      waveReached: 8, nodesCleared: 11, kills: 20, scrapEarned: 10, scrapBanked: 0,
+      level: 3, damageByWeapon: {}, weapons: [], upgrades: [],
+    });
+    store.recordRunEnd({ victory: true, waveReached: 8, summary, threatTier: 0 });
+    const afterDefeat = store.recordRunEnd({
+      victory: false,
+      waveReached: 5,
+      summary: { ...summary, outcome: "defeat", nodesCleared: 6 },
+      threatTier: 1,
+    });
+    expect(afterDefeat.progress.threatTierVictories).toEqual({ 0: 1, 1: 0, 2: 0 });
+    expect(afterDefeat.progress.threatTierBestNodes).toEqual({ 0: 11, 1: 6, 2: 0 });
+    expect(new LocalSaveStore(storage).load().progress.threatTierBestNodes[1]).toBe(6);
+  });
+
   it("ignores empty dex batches without touching storage", () => {
     const storage = fakeStorage();
     const store = new LocalSaveStore(storage);
@@ -408,6 +428,7 @@ describe("Save schema v2 — expedition autosave", () => {
     const store = new LocalSaveStore(storage);
     store.saveExpedition({
       mapSeed: 2026,
+      threatTier: 2,
       currentNodeId: 5,
       clearedNodeIds: [1, 3, 5],
       build: {
@@ -433,6 +454,7 @@ describe("Save schema v2 — expedition autosave", () => {
     });
     const reloaded = new LocalSaveStore(storage).load();
     expect(reloaded.expedition?.mapSeed).toBe(2026);
+    expect(reloaded.expedition?.threatTier).toBe(2);
     expect(reloaded.expedition?.clearedNodeIds).toEqual([1, 3, 5]);
     expect(reloaded.expedition?.build?.health).toBeCloseTo(7.4, 5);
     expect(reloaded.expedition?.build?.weapons).toEqual([{ weaponId: "bastion-service-rifle", tier: 2 }]);

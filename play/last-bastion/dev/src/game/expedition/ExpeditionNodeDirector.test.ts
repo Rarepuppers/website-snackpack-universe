@@ -18,6 +18,15 @@ describe("Task 48 expedition node director with Task 49 tuning", () => {
     }
   });
 
+  it("tightens tier-2 pulse spacing without changing duration or threat budget", () => {
+    const standard = buildBudgetDensityWave(120, 5, true, true, 1);
+    const rapid = buildBudgetDensityWave(120, 5, true, true, 1.2);
+    expect(rapid.threatBudget).toBe(standard.threatBudget);
+    expect(rapid.durationSeconds).toBe(standard.durationSeconds);
+    expect(rapid.plans.reduce((sum, spawn) => sum + spawn.threatCost, 0)).toBe(120);
+    expect(rapid.plans.at(-1)!.atSeconds).toBeLessThan(standard.plans.at(-1)!.atSeconds);
+  });
+
   it("gives Elite, Mini-boss, and Boss nodes authored terminal waves", () => {
     const elite = buildExpeditionWavePlan("elite", 6, "razorlord", null);
     expect(elite.map((wave) => wave.kind)).toEqual(["ordinary", "ordinary", "elite"]);

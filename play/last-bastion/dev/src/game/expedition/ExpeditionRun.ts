@@ -17,6 +17,7 @@ import {
 import { isArtifactId, isRelicId, type ArtifactId, type RelicId } from "../content/relicCatalog";
 import type { PowerupType } from "../combat/CombatSimulation";
 import type { PlayerStatBlock } from "../stats/PlayerStatBlock";
+import { normalizeThreatTier, type ThreatTier } from "./ThreatTier";
 
 /**
  * Mid-run expedition state (Task 38): which chart the run is on, where the
@@ -77,6 +78,7 @@ export interface ExpeditionBuildSnapshot {
 
 export interface ExpeditionRunState {
   mapSeed: number;
+  threatTier: ThreatTier;
   currentNodeId: number;
   clearedNodeIds: readonly number[];
   build: ExpeditionBuildSnapshot | null;
@@ -88,12 +90,13 @@ export interface ExpeditionRun {
   state: ExpeditionRunState;
 }
 
-export function startExpeditionRun(mapSeed: number): ExpeditionRun {
+export function startExpeditionRun(mapSeed: number, threatTier: ThreatTier = 0): ExpeditionRun {
   const map = generateExpeditionMap(mapSeed);
   return {
     map,
     state: {
       mapSeed,
+      threatTier,
       currentNodeId: map.startNodeId,
       clearedNodeIds: [map.startNodeId],
       build: null,
@@ -129,6 +132,7 @@ export function resumeExpeditionRun(state: ExpeditionRunState): ExpeditionRun | 
     map,
     state: {
       ...state,
+      threatTier: normalizeThreatTier(state.threatTier),
       clearedNodeIds: [...state.clearedNodeIds],
       metrics: cloneRunMetrics(state.metrics ?? EMPTY_RUN_METRICS),
     },

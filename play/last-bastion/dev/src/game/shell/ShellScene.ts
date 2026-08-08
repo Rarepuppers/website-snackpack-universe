@@ -9,6 +9,7 @@ import {
   SHELL_CHARACTER_ASSETS,
 } from "../assets/ShellAssetManifest";
 import { PERK_CATALOG } from "../perks/perkCatalog";
+import { THREAT_TIERS } from "../expedition/ThreatTier";
 import { reapplyDisplayScale } from "../rendering/DisplayScaling";
 import { browserDisplayCapabilities } from "../rendering/DisplayCapabilities";
 import { applyBrowserFullscreen, currentBrowserFullscreenMode } from "../rendering/BrowserFullscreen";
@@ -87,6 +88,7 @@ export class ShellScene extends Phaser.Scene {
     this.state = createShellState(
       settings, initialScreen, save.progress, save.selectedPerkId, save.selectedHeroId, save.controls,
       settingsRowsForDisplayCapabilities(displayCapabilities),
+      save.selectedThreatTier,
     );
     this.root = this.add.container(0, 0);
 
@@ -164,7 +166,8 @@ export class ShellScene extends Phaser.Scene {
       } else if (effect.type === "start-run") {
         this.saveStore.selectPerk(effect.perkId);
         this.saveStore.selectHero(effect.heroId === "medic" ? "medic" : "marine");
-        window.location.href = `?screen=map&hero=${effect.heroId}`;
+        this.saveStore.selectThreatTier(effect.threatTier);
+        window.location.href = `?screen=map&hero=${effect.heroId}&threat=${effect.threatTier}`;
         return;
       } else if (effect.type === "open-url") {
         window.location.href = effect.url;
@@ -215,6 +218,7 @@ export class ShellScene extends Phaser.Scene {
       case "lab": this.renderLab(); break;
       case "records": this.renderRecords(); break;
       case "character-select": this.renderCharacterSelect(); break;
+      case "threat-select": this.renderThreatSelect(); break;
     }
   }
 
@@ -538,6 +542,35 @@ export class ShellScene extends Phaser.Scene {
     this.root.add(this.text(850, 470, "DEPLOY", canDeploy ? TEAL : MUTED, "13px", true));
     if (canDeploy) this.clickZone(790, 448, 120, 44, () => this.apply("confirm"));
     this.root.add(this.text(70, HEIGHT - 24, "LEFT/RIGHT HERO  •  UP/DOWN PERK  •  ENTER DEPLOY  •  ESC BACK", MUTED, "12px"));
+  }
+
+  private renderThreatSelect(): void {
+    this.root.add(this.text(70, 48, "THREAT TIER", IVORY, "28px"));
+    this.root.add(this.text(70, 84, "Modifiers stack. Clear a tier to unlock the next.", MUTED, "12px"));
+    THREAT_TIERS.forEach((definition, index) => {
+      const y = 150 + index * 105;
+      const focused = index === this.state.threatTierIndex;
+      const unlocked = this.state.unlockedThreatTiers.includes(definition.tier);
+      this.root.add(this.add.rectangle(WIDTH / 2, y, 760, 82, focused ? 0x24384f : PANEL)
+        .setStrokeStyle(focused ? 3 : 1, focused ? (unlocked ? TEAL_HEX : 0xff9a52) : 0x3b4d63));
+      this.root.add(this.text(130, y - 19, `TIER ${definition.tier}  ${unlocked ? definition.name : "LOCKED"}`,
+        unlocked ? (focused ? TEAL : IVORY) : ORANGE, "16px"));
+      const detail = unlocked
+        ? `${definition.modifier}  Best: ${this.saveStore.load().progress.threatTierBestNodes[definition.tier]} nodes`
+        : `Clear Tier ${definition.tier - 1} to unlock.`;
+      this.root.add(this.text(130, y + 10, detail, unlocked ? MUTED : ORANGE, "11px"));
+      this.clickZone(100, y - 41, 760, 82, () => {
+        if (this.state.threatTierIndex === index) this.apply("confirm");
+        else {
+          this.state = { ...this.state, threatTierIndex: index };
+          this.render();
+        }
+      });
+    });
+    const selected = THREAT_TIERS[this.state.threatTierIndex]!;
+    const canDeploy = this.state.unlockedThreatTiers.includes(selected.tier);
+    this.root.add(this.text(WIDTH / 2, 480, canDeploy ? "ENTER  BEGIN EXPEDITION" : "TIER LOCKED", canDeploy ? TEAL : ORANGE, "14px", true));
+    this.root.add(this.text(70, HEIGHT - 24, "ARROWS SELECT  -  ENTER DEPLOY  -  ESC BACK", MUTED, "12px"));
   }
 
   private text(

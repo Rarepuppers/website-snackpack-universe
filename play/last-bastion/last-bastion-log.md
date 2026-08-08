@@ -2847,3 +2847,74 @@ all fail closed without blocking game boot or losing the local save.
   definitions for the six canonical IDs, followed by an unlock/offline/restart/commit exercise.
 - Next: build and playtest the planned T4 vertical slice (threat tiers 0–2, presentation-only hit-stop,
   and guided first drop). Keep T3.6's ~28-ID expansion gated until those mechanics are validated.
+
+## 8 August 2026 — T4.4 presentation-only hit-stop complete
+
+Combat now holds presentation for a 60 Hz-equivalent two frames when one or more critical hits land,
+or four frames when an enemy is defeated. Multiple qualifying events in one rendered frame select the
+strongest beat rather than summing into a long stall. Duration scales with the existing bounded shake
+intensity; reduced motion, zero intensity, or the legacy shake toggle suppress it completely.
+
+The implementation does not scale or mutate simulation delta. It detects cumulative crit/kill changes
+across however many fixed ticks ran that rendered frame, retains the last snapshot, and temporarily
+freezes only Phaser timer/tween clocks. Raw host-frame time releases the hold, so the clock cannot trap
+itself at time scale zero. Opening pause, scene shutdown, and scene destruction restore both clocks.
+The replay/simulation contract therefore remains unchanged.
+
+Pure tests lock the crit/defeat durations, high-density non-stacking rule, accessibility scaling, raw
+frame consumption, and malformed-input handling. Live browser acceptance ran the authored Infected
+Survivor route through repeated defeats from encounter time 0:04 to 0:33 with no console warnings or
+errors and no stalled combat clock.
+
+- Full web verification passes: image audit, typecheck, **1,226 tests across 185 files**, production
+  build, smoke `200` / 76 routes, and offline 335 / 0 missing.
+- Next: implement the threat-tier 0–2 prototype and guided first drop, then conduct the required five
+  observed runs before expanding the difficulty ladder or achievement catalogue.
+
+## 8 August 2026 — T4.1 threat-tier 0–2 prototype complete
+
+The playable difficulty slice now has three durable, controller-accessible tiers. Character selection
+hands off to a dedicated threat screen; Tier 0 is always available, Tier 1 requires a Tier-0 victory,
+and Tier 2 requires victories on both prior tiers. Locked tiers cannot launch. The selected tier and
+per-tier best-node/victory records persist in schema v14 and merge monotonically through Steam Cloud.
+Legacy expeditions normalize to Tier 0.
+
+The modifiers are cumulative and intentionally narrow. Tier 1 appends one seed-selected elite patrol
+to every ordinary combat node. Tier 2 also compresses the existing spawn-pulse train by 20%; it does
+not change threat budget, wave duration, simulation delta, or replay determinism. Event ambushes inherit
+Tier-2 cadence but do not gain the full combat-node elite patrol. The expedition map and combat event
+feed identify the active tier so an observed player can name the modifier they selected.
+
+An initial scheduling implementation increased pulse count along with frequency, which left the last
+spawn at the standard time and made the modifier hard to feel. The corrected contract keeps the authored
+pulse count and shortens spacing. A focused test locks the earlier final-spawn time and exact budget.
+
+- Full web verification passes: image audit, typecheck, **1,234 tests across 186 files**, production
+  build, smoke `200` / 76 routes, and offline 335 / 0 missing.
+- Next: guided first-drop onboarding, then five observed Tier 0–2 runs. Record completion, damage source,
+  selected-tier recall, elite-patrol recognition, cadence recognition, and confusion notes before adding
+  tiers 3–11 or expanding Steam achievement IDs.
+
+## 8 August 2026 — T4.6 guided first drop complete
+
+The first recordable run now presents a compact, non-blocking four-goal panel. It advances from observed
+play rather than button acknowledgements: move, evade, deal real weapon damage, and clear the first wave.
+Goals accumulate out of order, so a player who rolls or lands damage early is never asked to repeat it.
+The panel disappears after all four goals and confirms completion through the existing combat event feed.
+
+Copy uses the active remapped keyboard and gamepad bindings and switches between Auto-fire and Manual Fire
+instructions. Scenario and stress-review routes remain clean. `?onboarding=1` forces the guide on a normal
+run for repeat QA without adding a dev unlock or changing progress. The guide is presentation-only and
+does not intercept input, pause combat, scale delta, alter spawn timing, or enter replay state.
+
+- Pure tests cover out-of-order mastery, one-run visibility, forced review, and lab-route suppression.
+- Full web verification passes: image audit, typecheck, **1,236 tests across 187 files**, production
+  build, smoke `200` / 76 routes, and offline 335 / 0 missing.
+- Next: conduct five observed Tier 0–2 runs and log completion, dominant damage source, selected-tier
+  recall, elite/cadence recognition, onboarding comprehension, and confusion notes. The full ladder and
+  expanded Steam IDs remain held until that evidence is recorded.
+
+The expedition debrief now persists and displays its exact threat tier and modifier name. Quick Drop
+and pre-ladder summaries normalize to no tier. The existing debrief already ranks the top three incoming
+damage sources and shows the terminal defeat cause, so every objective field on the five-run observation
+sheet can now be transcribed from one screen. Full verification remains green at 1,236 tests / 187 files.

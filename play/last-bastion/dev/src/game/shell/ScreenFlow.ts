@@ -11,6 +11,11 @@ import {
   type GamepadBindableAction,
   type KeyboardBindableAction,
 } from "../input/ControlBindings";
+import {
+  THREAT_TIERS,
+  unlockedThreatTiers,
+  type ThreatTier,
+} from "../expedition/ThreatTier";
 
 /**
  * Front-end shell screen flow (Task 37 behavior gate).
@@ -29,12 +34,13 @@ export type ShellScreen =
   | "controls"
   | "lab"
   | "records"
-  | "character-select";
+  | "character-select"
+  | "threat-select";
 
 export type ShellIntent = "up" | "down" | "left" | "right" | "confirm" | "back";
 
 export type ShellEffect =
-  | { type: "start-run"; heroId: string; perkId: PerkId }
+  | { type: "start-run"; heroId: string; perkId: PerkId; threatTier: ThreatTier }
   | { type: "open-url"; url: string }
   | { type: "set-setting"; key: keyof GameSettings; value: GameSettings[keyof GameSettings] }
   | { type: "capture-binding"; device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction };
@@ -196,6 +202,8 @@ export interface ShellState {
   rosterIndex: number;
   perkIndex: number;
   unlockedPerkIds: readonly PerkId[];
+  threatTierIndex: number;
+  unlockedThreatTiers: readonly ThreatTier[];
   settings: GameSettings;
   controls: ControlBindings;
   controlIndex: number;
@@ -209,11 +217,14 @@ export function createShellState(
     runsFinished: 0, victories: 0, bestWaveReached: 0, nodesCleared: 0,
     bestNodesCleared: 0, totalKills: 0, totalDamage: 0, totalScrapEarned: 0,
     bestiary: {},
+    threatTierBestNodes: { 0: 0, 1: 0, 2: 0 },
+    threatTierVictories: { 0: 0, 1: 0, 2: 0 },
   },
   selectedPerkId: PerkId | null = "perk-veteran",
   selectedHeroId: "marine" | "medic" = "marine",
   controls: ControlBindings = DEFAULT_CONTROL_BINDINGS,
   settingsRows: readonly SettingsRow[] = SETTINGS_ROWS,
+  selectedThreatTier: ThreatTier = 0,
 ): ShellState {
   const unlocked = unlockedPerkIds(progress);
   const selectedIndex = Math.max(0, PERK_CATALOG.findIndex((perk) => perk.id === selectedPerkId));
@@ -227,6 +238,8 @@ export function createShellState(
     rosterIndex: Math.max(0, ROSTER.findIndex((hero) => hero.id === selectedHeroId)),
     perkIndex: selectedIndex,
     unlockedPerkIds: unlocked,
+    threatTierIndex: selectedThreatTier,
+    unlockedThreatTiers: unlockedThreatTiers(progress.threatTierVictories),
     settings: { ...settings },
     controls: { keyboard: { ...controls.keyboard }, gamepad: { ...controls.gamepad } },
     controlIndex: 0,
@@ -262,6 +275,8 @@ export function stepShell(state: ShellState, intent: ShellIntent): ShellStepResu
         : { state, effects: [] };
     case "character-select":
       return stepCharacterSelect(state, intent);
+    case "threat-select":
+      return stepThreatSelect(state, intent);
   }
 }
 
@@ -407,7 +422,27 @@ function stepCharacterSelect(state: ShellState, intent: ShellIntent): ShellStepR
     if (hero.status !== "playable" || !state.unlockedPerkIds.includes(perk.id)) {
       return { state, effects: [] };
     }
-    return { state, effects: [{ type: "start-run", heroId: hero.id, perkId: perk.id }] };
+    return { state: { ...state, screen: "threat-select" }, effects: [] };
+  }
+  return { state, effects: [] };
+}
+
+function stepThreatSelect(state: ShellState, intent: ShellIntent): ShellStepResult {
+  if (intent === "back") {
+    return { state: { ...state, screen: "character-select" }, effects: [] };
+  }
+  if (intent === "up" || intent === "left") {
+    return { state: { ...state, threatTierIndex: wrap(state.threatTierIndex - 1, THREAT_TIERS.length) }, effects: [] };
+  }
+  if (intent === "down" || intent === "right") {
+    return { state: { ...state, threatTierIndex: wrap(state.threatTierIndex + 1, THREAT_TIERS.length) }, effects: [] };
+  }
+  if (intent === "confirm") {
+    const tier = THREAT_TIERS[state.threatTierIndex]!.tier;
+    const hero = ROSTER[state.rosterIndex]!;
+    const perk = PERK_CATALOG[state.perkIndex]!;
+    if (!state.unlockedThreatTiers.includes(tier)) return { state, effects: [] };
+    return { state, effects: [{ type: "start-run", heroId: hero.id, perkId: perk.id, threatTier: tier }] };
   }
   return { state, effects: [] };
 }

@@ -9617,6 +9617,7 @@ export class CombatSimulation {
         plan.directorWaveIndex,
         plan.timerEndsWave,
         encounter.kind === "combat",
+        plan.spawnCadenceMultiplier,
       );
       this.spawnQueue = [...wave.plans];
       this.waveLiveCap = wave.liveCap;

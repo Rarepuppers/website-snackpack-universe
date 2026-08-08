@@ -4,6 +4,7 @@ import type { ExpeditionNode } from "./ExpeditionMap";
 import { buildExpeditionWavePlan, type ExpeditionWavePlan } from "./ExpeditionNodeDirector";
 import { selectEncounterEvent, type EncounterEventKind } from "./EncounterEventCatalog";
 import type { ShopProfileId } from "../content/shopProfiles";
+import type { ThreatTier } from "./ThreatTier";
 
 export type ExpeditionEncounterKind =
   | "combat"
@@ -69,6 +70,7 @@ function miniBossPoolForColumn(column: number): readonly MiniBossKind[] {
 export function expeditionEncounterForNode(
   mapSeed: number,
   node: ExpeditionNode,
+  threatTier: ThreatTier = 0,
 ): ExpeditionEncounterDescriptor {
   const seed = mixSeed(mapSeed, node.id, node.column);
   const baseBudget = [30, 45, 65, 90, 120, 120, 150, 180][Math.max(0, Math.min(7, node.column))]!;
@@ -79,13 +81,15 @@ export function expeditionEncounterForNode(
         // strength, deliberately shorter than a full combat node.
         : node.type === "liberation" ? Math.round(baseBudget * 0.9)
           : node.type === "boss" ? 40 : 0;
-  const eliteKind = node.type === "elite" ? ELITES[seed % ELITES.length]! : null;
+  const eliteKind = node.type === "elite" || (node.type === "combat" && threatTier >= 1)
+    ? ELITES[seed % ELITES.length]!
+    : null;
   const miniBossPool = miniBossPoolForColumn(node.column);
   const miniBossKind = node.type === "mini-boss" ? miniBossPool[seed % miniBossPool.length]! : null;
   const eventId = node.type === "shrine" || node.type === "event"
     ? selectEncounterEvent(node.type as EncounterEventKind, seed, node.column)?.id ?? null
     : null;
-  const waves = buildExpeditionWavePlan(node.type, node.column, eliteKind, miniBossKind);
+  const waves = buildExpeditionWavePlan(node.type, node.column, eliteKind, miniBossKind, threatTier);
   return {
     nodeId: node.id,
     kind: node.type,
@@ -111,6 +115,7 @@ export function ambushEncounterForNode(
   mapSeed: number,
   node: ExpeditionNode,
   threatBudget: number,
+  threatTier: ThreatTier = 0,
 ): ExpeditionEncounterDescriptor {
   const seed = mixSeed(mapSeed, node.id, node.column);
   const budget = Math.max(20, Math.floor(threatBudget));
@@ -125,14 +130,9 @@ export function ambushEncounterForNode(
     eliteKind: null,
     miniBossKind: null,
     eventId: null,
-    waves: Object.freeze([{
-      kind: "ordinary" as const,
-      directorWaveIndex: Math.max(0, Math.min(8, node.column)),
-      threatBudget: budget,
-      timerEndsWave: true,
-      eliteKind: null,
-      miniBossKind: null,
-    }]),
+    waves: buildExpeditionWavePlan("combat", node.column, ELITES[seed % ELITES.length]!, null, threatTier)
+      .slice(0, 1)
+      .map((wave) => ({ ...wave, threatBudget: budget, timerEndsWave: true })),
   };
 }
 

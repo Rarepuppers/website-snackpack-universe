@@ -1,4 +1,5 @@
 import type { PerkId } from "../perks/perkCatalog";
+import type { ThreatTier } from "../expedition/ThreatTier";
 import {
   cloneTransformationAffinityState,
   type TransformationAffinityState,
@@ -24,6 +25,8 @@ export interface RunSummary {
   outcome: "victory" | "defeat";
   heroId: string;
   perkId: PerkId | null;
+  /** Null for Quick Drop and summaries written before the threat ladder. */
+  threatTier: ThreatTier | null;
   waveReached: number;
   nodesCleared: number;
   kills: number;
@@ -140,7 +143,7 @@ export function createRunSummary(
     RunSummary,
     "newlyUnlockedPerkIds" | "transformation" | "elapsedSeconds" | "damageTaken"
     | "eliteKills" | "bossDamage" | "highestHit" | "criticalHits" | "damageTakenBySource"
-    | "damageBySecond"
+    | "damageBySecond" | "threatTier"
     | "defeatCause" | "newBestWave" | "newBestNodes"
   > & {
     newlyUnlockedPerkIds?: readonly PerkId[];
@@ -156,10 +159,14 @@ export function createRunSummary(
     defeatCause?: string | null;
     newBestWave?: boolean;
     newBestNodes?: boolean;
+    threatTier?: ThreatTier | null;
   },
 ): RunSummary {
   return {
     ...input,
+    threatTier: input.threatTier === 0 || input.threatTier === 1 || input.threatTier === 2
+      ? input.threatTier
+      : null,
     waveReached: Math.max(0, Math.floor(input.waveReached)),
     nodesCleared: Math.max(0, Math.floor(input.nodesCleared)),
     kills: Math.max(0, Math.floor(input.kills)),

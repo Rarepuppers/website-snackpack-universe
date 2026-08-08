@@ -78,9 +78,9 @@ Valve references checked for this review: [Steam Hardware compatibility checklis
    max-calibration 4K pacing gate passes. T3.2 native host selection is implemented with an honest
    browser fallback, T3.3 atomic desktop saves are complete, and T3.4 cloud reconciliation plus
    T3.5 achievement synchronization are implemented pending live-Steam acceptance. **Next:** the
-   playable T4 slice (threat tiers 0–2, hit-stop, first-drop onboarding) before expanding IDs in T3.6;
+   remaining playable T4 gate (five observed tier runs) before expanding IDs in T3.6;
    T3.1 packaged-window acceptance remains open, and T2.3b remains gated on U3/Deck decisions.
-4. **Next playable slice:** prototype threat tiers 0–2, hit-stop, and first-drop onboarding;
+4. **Next playable gate:** T4.4 hit-stop, prototype threat tiers 0–2, and first-drop onboarding are complete;
    conduct at least five observed runs and record completion, damage source, and confusion notes.
 5. **Asset-unblocked work:** continue U1/U2 and M1/M2/S4 in parallel, but wire no slider or
    marketing claim until its runtime path is real.
@@ -826,26 +826,45 @@ constructed by anything.
 
 ### 10.5 Phase 4 — depth
 
-- **T4.1 — Difficulty ladder.** A `ThreatTier` value (0–11) threaded through
+- **T4.1 — PROTOTYPE COMPLETE 8 Aug 2026; full ladder held for playtest.** A `ThreatTier` value (0–11) threaded through
   `expedition/CampaignTuning.ts` and `combat/WaveScaling.ts`. Each tier adds **one legible
   modifier**, not a stat multiplier — more elites, faster cadence, higher shop prices, one fewer
   rack slot, hazards persisting between waves. Store per-tier best results in `GameProgress`.
-  **Depends on T0.1**, because this lands in the file that is currently 10,598 lines.
+  **Prototype acceptance:** tiers 0–2 are now threaded through the schema-v14 expedition save,
+  run resume, event ambushes, encounter plans, and combat director. Tier 1 adds one deterministic
+  elite patrol to ordinary combat nodes; Tier 2 also compresses the authored spawn-pulse train by
+  20% without changing enemy budget or wave duration. The shell blocks locked tiers, requires a
+  victory on the prior tier, remembers selection, and shows per-tier best nodes. Cloud conflict
+  resolution merges per-tier results monotonically. Map and combat surfaces identify the active tier.
+  Do not define tiers 3–11 until five observed runs validate completion rate, damage sources, and
+  modifier comprehension. **Depends on T0.1**, because the full ladder eventually lands in the file
+  that is currently 10,598 lines.
 - **T4.2 — Meta-progression.** Extend `perkCatalog.ts` past seven with tier-gated unlocks, then
   add the currency and tree. Keep `unlockedPerkIds(progress)` as the interface — it is already
   the thing the debrief diffs against.
 - **T4.3 — Daily/weekly runs + leaderboards.** Derive the seed from the UTC date, reuse the
   existing `?mapseed=N` threading, submit to Steam Leaderboards on run end. One attempt per seed,
   enforced in the save.
-- **T4.4 — Hit-stop.** Scale Phaser's time scale for 2–4 frames on crit and kill, driven from the
-  existing `CombatEvent` stream in `playCombatEvents`. Must respect `reducedMotionEnabled` and the
-  T2.5 intensity slider. **Simulation must not observe it** — the sim steps on fixed
-  `deltaSeconds` and hit-stop is presentation only, or determinism and the replay fixture break.
+- **T4.4 — COMPLETE 8 Aug 2026.** Crit and defeat deltas request a two- or four-60-Hz-frame
+  presentation hold. The scene freezes Phaser's timer/tween clocks while retaining the last rendered
+  snapshot; simulation receives no scaled delta and simply resumes its existing fixed 1/60 steps.
+  Busy frames take the strongest beat instead of stacking pauses. Reduced motion, the legacy shake
+  toggle, and the bounded T2.5 intensity multiplier all suppress/scale it. Pause and scene teardown
+  explicitly restore presentation clocks. Pure timing tests, the unchanged replay suite, full verify,
+  and a live authored Survivor route with repeated defeats pass without warnings. Crit detection uses
+  the existing cumulative run metric because `enemy-hit` does not currently carry a crit bit; adding
+  that bit remains part of G6's later crit-number styling, not a prerequisite for deterministic hit-stop.
 - **T4.5 — Transformation behaviours.** `TransformationRunModifiers` resolves 22 of 26 effect
   metrics as flat numbers, and the four unresolved ones are already documented in-place against
   the `default` arm. Pilot Cybernetic Ascension's Drone Controller as a real spawned deployable —
   `deployStructure` and `updateDeployables` already exist in the simulation, so the hook is there.
-- **T4.6 — Onboarding**, **T4.7 — run history** (keep the last 20 rather than one
+- **T4.6 — COMPLETE 8 Aug 2026.** The first real drop shows a non-blocking four-goal guide:
+  move, evade, deal actual damage, and clear the first wave. Goals accumulate out of order, use the
+  player's remapped keyboard/gamepad labels, reflect Auto-fire versus Manual Fire, and disappear with
+  event-feed confirmation once complete. It never changes input or simulation state, does not appear
+  on scenario/stress routes, and can be forced for review with `?onboarding=1`. Completion is scoped
+  to the first run (`runsFinished === 0`), so no second persistent tutorial flag or schema field is needed.
+- **T4.7 — run history** (keep the last 20 rather than one
   `lastRunSummary`), **T4.8 — heroes 3–5** (mechanics contract first, then batch C3).
 
 ### 10.6 Dependency graph

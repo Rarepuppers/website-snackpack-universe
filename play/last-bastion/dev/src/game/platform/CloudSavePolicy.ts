@@ -1,5 +1,6 @@
 import { normalizeControlBindings } from "../input/ControlBindings";
 import { SAVE_SCHEMA_VERSION, type BestiaryEntry, type SaveData } from "../save/LocalSaveStore";
+import type { ThreatTier } from "../expedition/ThreatTier";
 
 export interface CloudSaveEnvelope {
   readonly deviceId: string;
@@ -48,12 +49,32 @@ export function resolveCloudSaveConflict(local: CloudSaveEnvelope, remote: Cloud
         totalDamage: Math.max(local.save.progress.totalDamage, remote.save.progress.totalDamage),
         totalScrapEarned: Math.max(local.save.progress.totalScrapEarned, remote.save.progress.totalScrapEarned),
         bestiary,
+        threatTierBestNodes: mergeTierCounts(
+          local.save.progress.threatTierBestNodes,
+          remote.save.progress.threatTierBestNodes,
+        ),
+        threatTierVictories: mergeTierCounts(
+          local.save.progress.threatTierVictories,
+          remote.save.progress.threatTierVictories,
+        ),
       },
       expedition: preferred.save.expedition ?? secondary.save.expedition,
       selectedPerkId: preferred.save.selectedPerkId,
       selectedHeroId: preferred.save.selectedHeroId,
+      selectedThreatTier: preferred.save.selectedThreatTier,
       lastRunSummary: preferred.save.lastRunSummary ?? secondary.save.lastRunSummary,
     },
+  };
+}
+
+function mergeTierCounts(
+  left: Readonly<Record<ThreatTier, number>>,
+  right: Readonly<Record<ThreatTier, number>>,
+): Record<ThreatTier, number> {
+  return {
+    0: Math.max(left[0], right[0]),
+    1: Math.max(left[1], right[1]),
+    2: Math.max(left[2], right[2]),
   };
 }
 

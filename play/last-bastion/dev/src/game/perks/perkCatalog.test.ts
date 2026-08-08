@@ -7,6 +7,8 @@ function progress(overrides: Partial<GameProgress> = {}): GameProgress {
     runsFinished: 0, victories: 0, bestWaveReached: 0, nodesCleared: 0,
     bestNodesCleared: 0, totalKills: 0, totalDamage: 0, totalScrapEarned: 0,
     bestiary: {}, ...overrides,
+    threatTierBestNodes: overrides.threatTierBestNodes ?? { 0: 0, 1: 0, 2: 0 },
+    threatTierVictories: overrides.threatTierVictories ?? { 0: 0, 1: 0, 2: 0 },
   };
 }
 
