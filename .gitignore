@@ -27,3 +27,17 @@ node_modules/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# NPM cache & local storage
+.npm-cache/
+**/.npm-cache/
+.npm/
+
+# Dependencies & build outputs
+node_modules/
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
