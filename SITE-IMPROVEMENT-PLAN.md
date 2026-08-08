@@ -239,10 +239,34 @@ schema descriptions and FAQs. Memory Match's existing FAQ entry was also
 rewritten — it implied Daily was only reachable via a shared link, when a
 toolbar button has existed the whole time.
 
-**Method, if this gets repeated for the other ~19 unaudited games:** compare
-each game's actual button/toolbar features (grep `<button>` labels) against
-its meta description and FAQ text, and separately grep the game's own JS
-comments for words like "verified", "guarantee", "solver" — that pattern
+**Six soccer pages still described a pre-tournament event.** The earlier P3
+fix only touched `world-cup/*` — missed that Crossbar Challenge, Dribble
+Rush, Free Kick Curl, Goalkeeper Hero, Header Hero and Flag Frenzy's own
+funnel cards still said "for the 2026 football build-up" / "during the 2026
+football hype", and two headlines implied an ongoing event ("Keep the
+tournament run going.", "One puzzle a day, all tournament long."). Found via
+a full-site grep for the phrase after noticing it while auditing Flag
+Frenzy. Fixed (commit `625ae9f`); "built for the 2026 football summer"
+phrasing left alone in three other spots since it reads as *why it exists*,
+not a claim the event is ongoing.
+
+**Remaining ~19 games checked clean.** Ran the same method (button/toolbar
+labels vs. meta description and FAQ text; grep each game's own JS comments
+for "verified"/"guarantee"/"solver"/"unlimited"/"fair"/"honest") across
+every game not covered above — the Vol 2 arcade set (Flappy Snacky, Snacky
+Worm, Table Tennis, Snakes & Ladders, Asteroid Destroyer, Crossword,
+Picross) and the remaining soccer set (Keepy-Uppy, Penalty Shootout, Target
+Shooting Arena). One real gap found: Soccer Trivia Sprint's meta
+description never named its category depth (Players/2026 Teams/World Cup
+History/Rules) even though the page's own prose and FAQ cover it well —
+fixed (commit `f69abe4`). Everything else already matched its actual
+feature set. **This closes P6** — every game in the arcade now has this
+specific check done at least once.
+
+Method, if a future content pass ever needs repeating: compare each game's
+actual button/toolbar features (grep `<button>` labels) against its meta
+description and FAQ text, and separately grep the game's own JS comments
+for words like "verified", "guarantee", "solver" — that second pattern
 specifically catches a real feature explained to nobody but future
 maintainers.
 
