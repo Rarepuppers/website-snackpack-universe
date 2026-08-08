@@ -117,7 +117,7 @@ export class CombatHud {
     this.uiScale = uiScale;
     this.palette = combatPalette(colorVisionMode);
     const s = uiScale;
-    const safe = uiSafeArea(scene.scale.width, scene.scale.height);
+    const safe = uiSafeArea();
     this.radarRadius = 24 * radarSize * s;
     this.radarCentre = { x: safe.right - this.radarRadius, y: safe.top + this.radarRadius };
     this.fireModeBindingLabel = keyboardBindingLabel(bindings.keyboard.toggleFireMode);
@@ -433,7 +433,7 @@ export class CombatHud {
       moveCooldownTile(
         tile,
         480 + (index - (slowWeapons.length - 1) / 2) * 42 * this.uiScale,
-        uiSafeArea(this.scene.scale.width, this.scene.scale.height).bottom - 79 * this.uiScale,
+        uiSafeArea().bottom - 79 * this.uiScale,
       );
       setCooldownTileVisible(tile, true);
       tile.label.setText(tile.icon ? "" : weaponTileAbbreviation(weapon.weaponId));

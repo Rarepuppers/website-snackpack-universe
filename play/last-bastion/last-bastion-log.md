@@ -2455,3 +2455,196 @@ and the easy-to-regress exhaustion tick that must still move before recovery beg
   167 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.
 - Next low-risk extractions: Spinewheel, then Tether Bloom. The pure display-planning spike T2.0/T2.1
   follows before any RenderTexture or Electron implementation.
+
+## 8 August 2026 — Phase 0 refactor: Spinewheel extracted
+
+Continued T0.1 by moving the Spinewheel's positioning/windup/rolling/recovery state machine out of
+`CombatSimulation.ts` into Phaser-free `SpinewheelBehavior.ts`. The existing
+`SpinewheelPhysics.ts` remains the owner of reflection geometry; the new behaviour composes it with
+phase timing, rebound budgets, speed decay, swept player-crossing detection, and hit lockout.
+
+The simulation still owns the parts that must remain contextual: ordinary positioning movement
+and arena collision, damage scaling, invulnerability/hurt-cooldown checks, and ordered event
+emission. The wrapper preserves the original ordering where positioning movement occurs before the
+windup event is placed, successful rebounds emit before a player hit, and an expired roll can emit
+its hit before entering recovery. Existing constants and `SpinewheelPhase` remain re-exported from
+`CombatSimulation.ts`, so downstream imports are unchanged.
+
+Five focused tests cover pre-movement heading lock, roll initialization, swept collision, speed
+decay on an allowed rebound, and the third-wall-contact transition to exposed recovery. The
+existing black-box heading/rebound tests and replay/reference fixtures pass unmodified.
+
+- Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,151 tests across
+  168 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.
+- Next: extract Tether Bloom, then begin the pure T2.0/T2.1 display-capability and presentation
+  planning work before touching RenderTexture or Electron.
+
+## 8 August 2026 — Phase 0 refactor: Tether Bloom extracted
+
+Completed the low-risk T0.1 behaviour batch by moving Tether Bloom's
+idle/windup/tethering/recovery state machine into Phaser-free `TetherBloomBehavior.ts`. The module
+owns acquisition eligibility, shared-tether claim/release intent, target lock, range/evasive/damage
+break transitions, recovery timing, damage-threshold accumulation, and the authored pull distance.
+
+The simulation retains shared ownership itself because Tether Bloom competes with other enemies
+(including Abomination Prime) for `activeTetherEnemyId`; it also retains line-of-sight geometry,
+player collision resolution, damage application, and event emission. The integration explicitly
+preserves the subtle final-tick ordering: an expired tether applies its last pull before releasing
+ownership and emitting `tether-bloom-released`. Losing ownership to another system enters recovery
+silently, exactly as before.
+
+Seven focused tests cover acquisition/target lock, single-owner denial, latching, evasive and range
+breaks, silent ownership loss, final pull-before-release, and the exact mitigated-damage break
+threshold. Existing black-box Tether Bloom tests and replay/reference fixtures pass unmodified.
+
+- Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,158 tests across
+  169 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.
+- Next: T2.0/T2.1 pure display capabilities and presentation geometry. Do not add RenderTexture or
+  Electron plumbing until that contract is proven for 1080p, 1440p, 4K, ultrawide, and Deck.
+
+## 8 August 2026 — Phase 2 display: T2.0/T2.1 pure contracts complete
+
+Added `rendering/DisplayCapabilities.ts` to stop browser and future Electron settings from drifting
+into one dishonest menu. The browser contract exposes only windowed/borderless (when the Fullscreen
+API exists), no display selection, no direct vsync, and only display/60 frame targets. The planned
+desktop minimum adds monitor selection and 120/144 targets but deliberately does not claim exclusive
+fullscreen, uncapped rendering, or direct vsync before a host spike proves them.
+
+Added `rendering/DisplayPresentation.ts`, a Phaser-free geometry planner that reports requested and
+resolved mode, whole physical render scale, offscreen render dimensions, aspect-preserving world
+rectangle, unused frame insets, and nearest/linear sampling. It does not alter the live renderer yet:
+that requires T2.2's RenderTexture boundary, and applying fractional Fill directly to today's canvas
+would reintroduce the blur this work is meant to remove.
+
+Twelve new tests lock the capability boundary and geometry across exact 1080p/4K, supersampled
+1440p, 1366×768, 3440×1440, fractional Windows DPI, explicit Crisp letterboxing, and Deck. Deck is
+now mechanically 1280×720 with 40 px top/bottom—not a stretched 1280×800—and only resolves to
+`expanded-frame` when the authored U3 frame is actually available. The legacy size preference is
+capped inside this new contract so even 200% cannot claim a no-crop plan while placing the world
+outside the window.
+
+- Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,170 tests across
+  171 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.
+- Next: T2.2 RenderTexture integration behind this pure contract, followed by HUD relocation only
+  after the world presentation path is visually verified.
+
+## 8 August 2026 — Phase 2 display: T2.2 RenderTexture spike gated after visual QA
+
+Implemented the first reversible Layer A/Layer B runtime boundary. `CombatWorldPresenter.ts`
+creates a physical-resolution Phaser RenderTexture for world objects below the established HUD
+depth boundary, presents UI through a separate non-input camera, preserves the main camera for
+world-pointer mapping, and consumes the pure `DisplayPresentation` plan through a small runtime
+handoff. `WorldLayerBoundary.ts` makes the depth policy explicit and independently tested.
+
+The in-browser test was valuable: 960×540 renders the separated world, HUD, and pause overlay
+without console errors, but a resized Phaser 4.1 DynamicTexture at `N > 1` paints only the legacy
+960×540 quadrant of its larger framebuffer. The canvas itself has the requested backing dimensions,
+so this is not a CSS sizing failure. Because that violates the central T2.2 no-crop/no-blank-space
+acceptance rule, the new path is available only via `?rendertexture=1`; ordinary combat continues
+to use the previously verified integer physical-pixel canvas scaling.
+
+- Next: reduce the quadrant failure to a tiny Phaser-only scene, test camera projection versus
+  DynamicTexture drawing-context resize, and either fix the adapter or switch to a supported
+  camera-composite path. Re-run 1080p, 1440p, 4K, Deck, pointer aim, pause/menu hitboxes, and frame
+  pacing before enabling it by default. T2.3 and Electron remain gated.
+- Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,172 tests across
+  172 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.
+
+## 8 August 2026 — Current display status after T2.3a
+
+For chronological clarity, this final entry supersedes the older T2.2 gate wording immediately
+above. T2.2 is complete and default, with `?rendertexture=0` retained only as rollback. T2.3a is
+also complete: the full-window physical composition contract and expanded-frame furniture-fit
+planner are implemented. T2.3b is asset/design-gated on U3 and the Deck band decision described in
+the fit-matrix entry.
+
+- Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,180 tests across
+  174 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.
+
+## 8 August 2026 — Phase 2 display: T2.3 furniture fit matrix
+
+Added `ExpandedFrameHudLayout.ts`, a Phaser-free CSS-space layout planner covering the radar,
+six-slot status tray, and four-tile weapon ring across every supported UI/radar scale. It can
+rotate trays vertically for side-panel frames and returns explicit unplaced furniture instead of
+silently clipping or overlapping a too-small band.
+
+At 3440×1440, the maximum 1.2× HUD and 1.25× radar fit: status tray vertical in the left panel,
+radar at upper right, and weapon ring vertical at lower right. A deeper 1280×900 horizontal frame
+also fits the compact 0.8×/0.75× configuration. Steam Deck's specified 1280×720 world plus 40 px
+bands does **not** fit the default furniture—the scaled status tray and radar exceed 40 px, and the
+weapon tiles are taller still. U3 must therefore supply deeper bands or an explicitly approved
+compact Deck treatment; the runtime must not claim expanded-frame availability before that choice.
+
+This entry supersedes the older gated T2.2 note immediately above: T2.2 is complete and default;
+`?rendertexture=0` is only its temporary rollback switch.
+
+## 8 August 2026 — Phase 2 display: T2.3 composition contract started
+
+Runtime review corrected the original T2.3 estimate. The current canvas is deliberately sized to
+the fitted 16:9 `worldRect`; letterbox/frame insets therefore sit outside Phaser's render surface.
+Radar, status-tray, or weapon-ring objects cannot be moved into those bands through `uiSafeArea()`
+alone. Expanded frame needs a full-window compositor before HUD coordinate changes are meaningful.
+
+T2.3a now extends `DisplayPresentationPlan` with the full physical presentation size and the
+world's physical destination rectangle. This preserves the independently scaled world render
+target while defining the surface that T2.3b will use for the U3 bezel and relocated HUD. Tests
+cover 1080p, Deck, ultrawide, and fractional Windows DPI coordinate conversion. Runtime composition
+remains off and `expandedFrameAvailable` remains false until the U3 art and furniture-fit matrix
+exist; ordinary Crisp/Fill rendering is unchanged.
+
+## 8 August 2026 — Phase 2 display: T2.2 pacing and recovery gates passed
+
+Added a bounded 600-frame `FramePacingTelemetry` window to the presentation audit. It reports
+average, p95, p99, and 1% low FPS, ignores paused/hidden frames, and retains actual combat stalls.
+The 60 FPS browser gate is p95 ≤17.5 ms and 1% low ≥50 FPS.
+
+- Normal reference: p95 16.69 ms, 1% low 54.53 FPS.
+- Twelve-weapon 1440p Fill (2880×1620 backing): p95 16.68 ms, 1% low 54.53 FPS.
+- Twelve-weapon 4K Crisp: p95 16.69 ms, 1% low 59.45 FPS.
+- Twelve-weapon Deck Fill (1920×1080 backing into 1280×720): p95 16.69 ms, 1% low 59.56 FPS.
+
+Added a development-only `?contextloss=1` recovery probe using `WEBGL_lose_context`. At 1080p,
+1440p, 4K, and Deck, each run recorded exactly one lost and one restored event, returned to
+`contextLost: false`, republished its presentation audit, and visibly retained the complete world,
+HUD, and pause overlay.
+
+With visual, input, camera-effect, pacing, and context-recovery acceptance complete, T2.2 is now
+the default combat presentation. `?rendertexture=0` remains as a temporary rollback switch;
+non-combat scenes keep their direct-canvas presentation. Next is T2.3 expanded-frame HUD reflow.
+
+- Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,176 tests across
+  173 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.
+  Browser QA confirms the ordinary Full HD path still fills the canvas with complete world/HUD/
+  pause layers and no console warnings or errors.
+
+## 8 August 2026 — Phase 2 display: T2.2 quadrant diagnosis corrected
+
+The earlier resized-target diagnosis was wrong. The RenderTexture backing store was complete; the
+quadrant came from combining Phaser's centred physical camera viewport with the existing logical
+follow/deadzone coordinates. T2.2 now keeps the main camera at the authored 960×540 coordinate
+space, uses an origin-zero physical camera inside the RenderTexture, presents that target once,
+and draws plus hit-tests the HUD with a second origin-zero physical camera. This preserves existing
+follow/world-view behaviour without treating physical pixels as additional world units.
+
+Browser acceptance now shows a complete world and complete HUD at 1920×1080 (2× crisp),
+2560×1440 (3× supersampled Fill), 3840×2160 (4× crisp), and Deck 1280×800 (2× Fill into a
+1280×720 rectangle with 40 px top/bottom bands). Pointer coordinates reported by Phaser and the
+HUD camera agree, and the pause Resume hitbox activates at 1080p and 4K. Shake and flash calls now
+target the presentation camera so those effects remain visible without moving the HUD.
+
+The path intentionally remains behind `?rendertexture=1`. Remaining T2.2 release gates are measured
+frame pacing under normal and 12-weapon stress plus explicit WebGL context-loss/restoration QA;
+only after those pass should the flag be removed and T2.3/Electron unblocked.
+
+- Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,172 tests across
+  172 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.
+
+## 8 August 2026 — Current display status after T2.3a (ordering correction)
+
+This final entry supersedes the older T2.2 gate wording immediately above. T2.2 is complete and
+default, with `?rendertexture=0` retained only as rollback. T2.3a is also complete: the full-window
+physical composition contract and expanded-frame furniture-fit planner are implemented. T2.3b is
+asset/design-gated on U3 and the Deck band decision described in the fit-matrix entry.
+
+- Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,180 tests across
+  174 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.

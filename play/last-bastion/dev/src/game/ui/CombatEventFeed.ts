@@ -13,7 +13,7 @@ export class CombatEventFeed {
   constructor(private readonly scene: Phaser.Scene) {}
 
   add(message: string, color = "#c7d6e4", durationMs = 2600): void {
-    const safe = uiSafeArea(this.scene.scale.width, this.scene.scale.height);
+    const safe = uiSafeArea();
     const text = this.scene.add.text(safe.right - 12, safe.top + 112, message, {
       color,
       fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace",
@@ -41,7 +41,7 @@ export class CombatEventFeed {
   }
 
   private layout(): void {
-    const safe = uiSafeArea(this.scene.scale.width, this.scene.scale.height);
+    const safe = uiSafeArea();
     this.entries.forEach(({ text }, index) => text.setPosition(safe.right - 12, safe.top + 112 + index * 26));
   }
 }

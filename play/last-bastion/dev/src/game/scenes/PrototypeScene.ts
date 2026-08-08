@@ -44,7 +44,8 @@ import { renderArena } from "../rendering/ArenaRenderer";
 import { obstacleFrameIndex, worldObjectArtAssetId } from "../rendering/TerrainVisualState";
 import { miniBossSpriteScale } from "../rendering/MiniBossPresentation";
 import { arenaThemeById, arenaThemeVariant, containmentUnderworldTheme, pickArenaTheme, starshipTransitTheme, surfaceFrontierTheme } from "../rendering/arenaThemes";
-import { uiSafeArea, uiTextResolution } from "../rendering/DisplayScaling";
+import { BASE_HEIGHT, BASE_WIDTH, uiSafeArea, uiTextResolution } from "../rendering/DisplayScaling";
+import { CombatWorldPresenter } from "../rendering/CombatWorldPresenter";
 import { LocalSaveStore, type GameSettings } from "../save/LocalSaveStore";
 import { cueForCombatEvent, EVASIVE_MOVE_CUE, MEDKIT_HEAL_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
 import { WebAudioSynth } from "../audio/WebAudioSynth";
@@ -113,6 +114,7 @@ export class PrototypeScene extends Phaser.Scene {
   private hud!: CombatHud;
   private pauseOverlay!: CombatPauseOverlay;
   private eventFeed!: CombatEventFeed;
+  private worldPresenter: CombatWorldPresenter | null = null;
   private effectPool!: VisualEffectPool;
   private damageNumbers!: FloatingDamageNumbers;
   private enemyHealthBars!: EnemyHealthBars;
@@ -418,6 +420,9 @@ export class PrototypeScene extends Phaser.Scene {
     }) as unknown as NonNullable<typeof this.menuKeys>;
     this.lastSnapshot = this.simulation.snapshot();
     this.renderSnapshot(this.lastSnapshot, false);
+    if (new URLSearchParams(window.location.search).get("rendertexture") !== "0") {
+      this.worldPresenter = new CombatWorldPresenter(this, this.stressProfile);
+    }
     window.addEventListener("blur", this.onWindowBlur);
     document.addEventListener("visibilitychange", this.onVisibilityChange);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.removeFocusPauseListeners, this);
@@ -429,6 +434,8 @@ export class PrototypeScene extends Phaser.Scene {
     document.removeEventListener("visibilitychange", this.onVisibilityChange);
     this.pauseOverlay?.destroy();
     this.eventFeed?.destroy();
+    this.worldPresenter?.destroy();
+    this.worldPresenter = null;
   }
 
   private renderAssetLoadFailure(): void {
@@ -606,6 +613,7 @@ export class PrototypeScene extends Phaser.Scene {
     if (this.performanceGovernor.sample(deltaMilliseconds, this.isPaused || document.hidden)) {
       this.applyPerformanceBudget();
     }
+    this.worldPresenter?.sampleFrame(deltaMilliseconds, this.isPaused || document.hidden);
 
     if (this.lastSnapshot.pendingDecision) {
       this.handleDecisionNavigation(intent);
@@ -765,10 +773,11 @@ export class PrototypeScene extends Phaser.Scene {
     const marineTint = snapshot.playerSlowed ? 0xb9ef62 : 0xffffff;
     snapshot.playerSlowed ? this.marineSprite?.setTint(marineTint) : this.marineSprite?.clearTint();
     snapshot.playerSlowed ? this.marineHelmetSprite?.setTint(marineTint) : this.marineHelmetSprite?.clearTint();
+    this.worldPresenter?.update();
   }
 
   private positionPauseControls(): void {
-    const safe = uiSafeArea(this.scale.width, this.scale.height);
+    const safe = uiSafeArea();
     const camera = this.cameras.main;
     this.pauseButton?.setPosition(camera.scrollX + safe.right - 92, camera.scrollY + safe.top + 12);
     this.pauseLabel?.setPosition(camera.scrollX + safe.right - 92, camera.scrollY + safe.top + 12);
@@ -829,9 +838,9 @@ export class PrototypeScene extends Phaser.Scene {
     const inset = 7;
     const palette = combatPalette(this.settings.colorVisionMode);
     this.lowHealthFrame.lineStyle(8, palette.danger, pulse);
-    this.lowHealthFrame.strokeRect(inset, inset, this.scale.width - inset * 2, this.scale.height - inset * 2);
+    this.lowHealthFrame.strokeRect(inset, inset, BASE_WIDTH - inset * 2, BASE_HEIGHT - inset * 2);
     this.lowHealthFrame.lineStyle(2, palette.dangerBright, Math.min(0.9, pulse + 0.22));
-    this.lowHealthFrame.strokeRect(inset + 5, inset + 5, this.scale.width - (inset + 5) * 2, this.scale.height - (inset + 5) * 2);
+    this.lowHealthFrame.strokeRect(inset + 5, inset + 5, BASE_WIDTH - (inset + 5) * 2, BASE_HEIGHT - (inset + 5) * 2);
   }
 
   private showDamageDirection(): void {
@@ -1098,8 +1107,14 @@ export class PrototypeScene extends Phaser.Scene {
 
   private shakeCamera(durationMilliseconds: number, intensity: number): void {
     if (this.settings.screenShakeEnabled) {
-      this.cameras.main.shake(durationMilliseconds, intensity);
+      if (this.worldPresenter) this.worldPresenter.shake(durationMilliseconds, intensity);
+      else this.cameras.main.shake(durationMilliseconds, intensity);
     }
+  }
+
+  private flashCamera(durationMilliseconds: number, red: number, green: number, blue: number): void {
+    if (this.worldPresenter) this.worldPresenter.flash(durationMilliseconds, red, green, blue);
+    else this.cameras.main.flash(durationMilliseconds, red, green, blue);
   }
 
   private showPickupBanner(type: PowerupType): void {
@@ -1300,7 +1315,7 @@ export class PrototypeScene extends Phaser.Scene {
           this.emitAuthoredEffect(19, event.position, 130, 0.4, 0.8);
           break;
         case "level-up":
-          if (!this.settings.reducedFlashEnabled) this.cameras.main.flash(160, 104, 228, 232);
+          if (!this.settings.reducedFlashEnabled) this.flashCamera(160, 104, 228, 232);
           else this.flashCircle(this.lastSnapshot.playerPosition, 22, 0x68e4e8, 420, 2.4, true);
           this.emitAuthoredEffect(2, this.lastSnapshot.playerPosition, 420, 0.9, 2.2);
           this.eventFeed.add(`LEVEL ${event.level}`, "#68e4e8");
@@ -1732,7 +1747,7 @@ export class PrototypeScene extends Phaser.Scene {
           this.emitAuthoredEffect(17, event.position, 280, 0.62, 1.2, 0, "batch-c-effects-v1");
           break;
         case "ultimate-fired":
-          if (!this.settings.reducedFlashEnabled) this.cameras.main.flash(140, 255, 214, 107);
+          if (!this.settings.reducedFlashEnabled) this.flashCamera(140, 255, 214, 107);
           else this.flashCircle(event.position, 28, 0xffd66b, 420, 2.8, true);
           this.emitAuthoredEffect(10, event.position, 420, 0.7, 2.2, 0, "batch-c-effects-v1");
           this.emitAuthoredEffect(14, event.position, 460, 0.75, 2.4, 0, "batch-c-effects-v1");
@@ -4441,8 +4456,8 @@ export class PrototypeScene extends Phaser.Scene {
     }
     const camera = this.cameras.main;
     this.decisionOverlay.setPosition(
-      camera.scrollX + camera.width / 2,
-      camera.scrollY + camera.height / 2,
+      camera.worldView.centerX,
+      camera.worldView.centerY,
     );
   }
 

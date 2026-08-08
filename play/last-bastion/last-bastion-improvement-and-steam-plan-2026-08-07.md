@@ -16,7 +16,7 @@ task ledger below as the current source of truth.
 
 ### Verified drift since the original snapshot
 
-- After the implementation begun in this review, the suite is **1,146 tests across 167 files**,
+- After the implementation begun in this review, the suite is **1,170 tests across 171 files**,
   not 1,021 across 153; it is green.
 - `CombatSimulation.ts` is already being decomposed. Scenario population and 15 behaviour
   modules are now outside the class; the Infected Survivor extraction began in this review.
@@ -65,13 +65,17 @@ Valve references checked for this review: [Steam Hardware compatibility checklis
 
 ### Ordered next-task ledger
 
-1. **Now — T0.1:** finish the Infected Survivor extraction, then Spinewheel and Tether Bloom (the
-   remaining low-risk state machines), with focused behaviour tests plus unchanged
-   replay/reference fixtures after every extraction.
+1. **Completed in this review — T0.1 low-risk batch:** Infected Survivor, Spinewheel, and Tether
+   Bloom are extracted with focused behaviour tests and unchanged replay/reference fixtures.
 2. **Now — plan hygiene:** mark T0.4 complete; correct the Deck presentation contract and Steam
    asset dimensions; turn frozen counts into generated audit output.
-3. **Next — T2.0/T2.1:** implement and test the pure presentation/capability plan before any
-   RenderTexture or Electron work.
+3. **T2.0–T2.2 complete:** pure host
+   capabilities and aspect-preserving presentation geometry cover 1080p, 1440p, 4K, ultrawide,
+   laptop, fractional DPI, and Deck. The RenderTexture path renders the complete world and HUD,
+   maps pointer input correctly, meets its browser pacing budget, and restores after forced WebGL
+   context loss at 1080p, 1440p, 4K, and Deck. It is now the default combat path with
+   `?rendertexture=0` retained as a rollback switch. **Next:** T2.3 expanded-frame HUD relocation,
+   then T2.4 settings and the Electron host work.
 4. **Next playable slice:** prototype threat tiers 0–2, hit-stop, and first-drop onboarding;
    conduct at least five observed runs and record completion, damage source, and confusion notes.
 5. **Asset-unblocked work:** continue U1/U2 and M1/M2/S4 in parallel, but wire no slider or
@@ -699,17 +703,48 @@ constructed by anything.
 
 ### 10.3 Phase 2 — display
 
-- **T2.1** — Extend `planDisplayScale()` to return a presentation mode alongside `zoom`/
+- **T2.0 — DONE 8 Aug 2026.** `DisplayCapabilities.ts` now separates browser and desktop
+  capabilities. Browser never advertises monitor selection, exclusive fullscreen, direct vsync,
+  or unproven frame caps; the desktop contract exposes only the proven minimum until its host spike.
+- **T2.1 — PURE PLAN DONE 8 Aug 2026; runtime wiring waits for T2.2.**
+  `DisplayPresentation.ts` returns a presentation mode alongside render scale, fitted world rect,
+  frame insets, and sampling rule. It preserves 16:9 without crop/stretch and explicitly gates
+  authored expanded frames on asset availability. This supersedes the original wording below:
+  Extend `planDisplayScale()` to return a presentation mode alongside `zoom`/
   `deviceScale`. Keep the existing integer search; add the `Fill` supersample path (choose
   `N+1`, present with linear filtering) and the `Expanded frame` path (integer `N`, report the
   leftover rect). Pure function, fully unit-testable — add cases for 1920×1080, 3840×2160,
   2560×1440, 3440×1440, 1366×768, and **1280×800 (Deck)**; the Deck case is the regression test
   that must never silently return `N=1` again.
-- **T2.2** — Render the world to a `RenderTexture` at `N` and present it, so Layer A and Layer B
-  are genuinely separable.
-- **T2.3** — HUD reflow for `Expanded frame`: radar, status tray, and weapon ring relocate into
-  the leftover rect. `uiSafeArea()` already parameterises width/height, so this is a call-site
-  change, not a rewrite.
+- **T2.2 — DONE 8 Aug 2026.** The combat
+  world/HUD depth boundary, physical backing-store hand-off, RenderTexture adapter, dedicated HUD
+  camera, runtime audit, and `?rendertexture=1` review hook now exist. The earlier quadrant result
+  was a camera-origin/follow mismatch, not a resized DynamicTexture defect: Phaser was applying a
+  centred physical viewport to logical follow coordinates. The corrected design retains the main
+  camera as a 960×540 logical tracking camera, renders Layer A through an origin-zero physical
+  RenderTexture camera, presents that target once, and renders/hit-tests Layer B through an
+  origin-zero physical HUD camera. Browser QA now passes complete-world, complete-HUD, pointer
+  coordinate, and pause-hitbox checks at 1920×1080, 2560×1440, 3840×2160, and Deck 1280×800
+  (1280×720 with 40 px bands). Camera shake and flash are routed to the presentation camera.
+  `FramePacingTelemetry.ts` supplies a bounded 600-frame audit with average, p95, p99, and 1% low
+  while excluding paused/hidden frames. The browser acceptance budget is p95 ≤17.5 ms and 1% low
+  ≥50 FPS for the 60 FPS target. Twelve-weapon results were p95 16.68 ms / 54.53 FPS at 1440p,
+  16.69 ms / 59.45 FPS at 4K, and 16.69 ms / 59.56 FPS on Deck; the normal reference run was
+  16.69 ms / 54.53 FPS. A dev-only `?contextloss=1` probe forced one loss/restoration at 1080p,
+  1440p, 4K, and Deck, with the presentation returning each time. T2.2 is now the default combat
+  path; `?rendertexture=0` remains as a temporary rollback switch while T2.3/T2.4 land.
+- **T2.3 — IN PROGRESS.** HUD reflow for `Expanded frame`: radar, status tray, and weapon ring
+  relocate into authored frame panels without changing world FOV. **Correction from runtime
+  review:** this is not only a `uiSafeArea()` call-site change. T2.2 deliberately sizes the canvas
+  to `worldRect`, which means the reported frame insets currently live outside Phaser's render
+  surface. T2.3 therefore has two explicit parts: **T2.3a** (pure contract, done) reports the
+  full-window physical presentation surface and the world's physical destination rectangle;
+  it also supplies a furniture-fit planner for all supported HUD/radar scales. **T2.3b** must make
+  the expanded-frame compositor use that full surface, draw the U3 bezel, and relocate furniture
+  into validated panel slots. The planner proves ultrawide can fit all groups with vertical side
+  trays, but Deck's current 40 px bands cannot fit the default radar/status/weapon furniture.
+  Keep `expandedFrameAvailable: false` until U3 either provides deeper bands or an approved compact
+  Deck layout, and both Deck/ultrawide tests pass without clipping.
 - **T2.4** — New settings: presentation mode, fullscreen, display selection, frame cap,
   brightness/gamma, screen-shake intensity. Extend `GameSettings`, bump `SAVE_SCHEMA_VERSION`,
   and add the migration — `readBoundedNumber`/`readBoolean` defaults already handle absent fields,

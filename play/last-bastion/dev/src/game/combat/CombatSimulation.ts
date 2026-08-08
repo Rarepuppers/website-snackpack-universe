@@ -70,7 +70,6 @@ import {
   mitigateDamage,
   resolveSlowedMultiplier,
 } from "../stats/DefenceStats";
-import { stepSpinewheelReflection } from "./SpinewheelPhysics";
 import {
   buildDensityCapacityRoster,
   buildBudgetDensityWave,
@@ -234,6 +233,22 @@ import {
   stepInfectedSurvivorBehavior,
   type InfectedSurvivorPhase,
 } from "./InfectedSurvivorBehavior";
+import {
+  lockSpinewheelPlayerHit,
+  SPINEWHEEL_BASE_ROLL_SPEED,
+  SPINEWHEEL_MAX_REBOUNDS,
+  stepSpinewheelBehavior,
+  type SpinewheelPhase,
+  type SpinewheelState,
+} from "./SpinewheelBehavior";
+import {
+  applyTetherBloomDamage,
+  stepTetherBloomBehavior,
+  type TetherBloomBreakReason,
+  type TetherBloomPhase,
+  type TetherBloomState,
+  type TetherBloomStepResult,
+} from "./TetherBloomBehavior";
 // Re-exported from the modules that own them so existing importers keep
 // working; the definitions moved out to break a cycle with scenario setup.
 export { ARC_WARDEN_LAB_CAP } from "./ArcWardenBeam";
@@ -250,6 +265,30 @@ export {
   INFECTED_SURVIVOR_STAMINA_RECOVERY_PER_SECOND,
   type InfectedSurvivorPhase,
 } from "./InfectedSurvivorBehavior";
+export {
+  SPINEWHEEL_APPROACH_RANGE_METRES,
+  SPINEWHEEL_BASE_ROLL_SPEED,
+  SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER,
+  SPINEWHEEL_MAX_REBOUNDS,
+  SPINEWHEEL_MAX_ROLL_SECONDS,
+  SPINEWHEEL_POSITIONING_SECONDS,
+  SPINEWHEEL_RECOVERY_SECONDS,
+  SPINEWHEEL_REPEAT_HIT_LOCKOUT_SECONDS,
+  SPINEWHEEL_WINDUP_SECONDS,
+  type SpinewheelPhase,
+} from "./SpinewheelBehavior";
+export {
+  TETHER_BLOOM_ACQUISITION_RANGE_METRES,
+  TETHER_BLOOM_BREAK_DAMAGE,
+  TETHER_BLOOM_DURATION_SECONDS,
+  TETHER_BLOOM_HARD_RANGE_METRES,
+  TETHER_BLOOM_IDLE_SECONDS,
+  TETHER_BLOOM_PULL_SPEED_METRES_PER_SECOND,
+  TETHER_BLOOM_RECOVERY_SECONDS,
+  TETHER_BLOOM_WINDUP_SECONDS,
+  type TetherBloomBreakReason,
+  type TetherBloomPhase,
+} from "./TetherBloomBehavior";
 import type { ExpeditionBuildSnapshot } from "../expedition/ExpeditionRun";
 import {
   cloneTransformationAffinityState,
@@ -329,8 +368,6 @@ export type WarpFlankerPhase = "stalk" | "warp-windup" | "materialize";
 export type RipperPhase = "pursuit" | "windup" | "sweep" | "recovery";
 export type RazorScuttlerPhase = "pursuit" | "windup" | "dash" | "recovery";
 export type QuillbackPhase = "positioning" | "windup" | "launch" | "recover";
-export type SpinewheelPhase = "positioning" | "windup" | "rolling" | "recovery";
-export type TetherBloomPhase = "idle" | "windup" | "tethering" | "recovery";
 export type AurumHoarderPhase = "forage" | "flee";
 export type BastionEaterPhase = "breach" | "brood" | "last-stand";
 export type BastionEaterAction =
@@ -1332,21 +1369,7 @@ const CORRUPTED_MARINE_RANGE_METRES = 11;
 export const ABOMINATION_SLAM_RADIUS_METRES = 1.55;
 export const ABOMINATION_SLAM_DAMAGE = 2.6;
 export const ABOMINATION_SLAM_TERRAIN_DAMAGE = 5;
-export const SPINEWHEEL_BASE_ROLL_SPEED = 7;
-export const SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER = 0.85;
-export const SPINEWHEEL_MAX_REBOUNDS = 2;
-export const SPINEWHEEL_REPEAT_HIT_LOCKOUT_SECONDS = 0.75;
 const SPINEWHEEL_ROLL_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.spinewheelRoll;
-const SPINEWHEEL_WINDUP_SECONDS = 0.7;
-const SPINEWHEEL_MAX_ROLL_SECONDS = 3.2;
-const SPINEWHEEL_RECOVERY_SECONDS = 1.5;
-export const TETHER_BLOOM_ACQUISITION_RANGE_METRES = 3.5;
-export const TETHER_BLOOM_HARD_RANGE_METRES = 5;
-export const TETHER_BLOOM_BREAK_DAMAGE = 6;
-const TETHER_BLOOM_WINDUP_SECONDS = 0.7;
-const TETHER_BLOOM_DURATION_SECONDS = 1.8;
-const TETHER_BLOOM_PULL_SPEED_METRES_PER_SECOND = 1.15;
-const TETHER_BLOOM_RECOVERY_SECONDS = 3.2;
 const POWERUP_LIFETIME_SECONDS = 18;
 const POWERUP_COLLECT_RADIUS_METRES = 0.7;
 export const MEDKIT_HEAL_AMOUNT = 2.5;
@@ -8005,215 +8028,170 @@ export class CombatSimulation {
   }
 
   private updateSpinewheel(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.spinewheelPhaseRemainingSeconds -= deltaSeconds;
-    enemy.spinewheelPlayerHitCooldownSeconds = Math.max(
-      0,
-      enemy.spinewheelPlayerHitCooldownSeconds - deltaSeconds,
+    let result = stepSpinewheelBehavior(
+      this.spinewheelState(enemy),
+      {
+        deltaSeconds,
+        position: enemy.position,
+        playerPosition: this.playerPosition,
+        positioningSpeedMetresPerSecond: ENEMY_CATALOG.spinewheel.movementSpeedMetresPerSecond,
+        statusSpeedMultiplier: this.enemyStatusSpeedMultiplier(enemy),
+        radiusMetres: ENEMY_CATALOG.spinewheel.radiusMetres,
+        playerRadiusMetres: PLAYER_RADIUS_METRES,
+        arena: this.collisionArena(),
+      },
     );
-    const towardPlayer = normalizeVector({
-      x: this.playerPosition.x - enemy.position.x,
-      y: this.playerPosition.y - enemy.position.y,
-    });
+    enemy.position = result.position;
+    this.writeSpinewheelState(enemy, result.state);
+    if (result.facingDirection) enemy.facingDirection = result.facingDirection;
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
 
-    switch (enemy.spinewheelPhase) {
-      case "positioning":
-        enemy.facingDirection = towardPlayer;
-        if (distance(enemy.position, this.playerPosition) > 6.5) {
-          this.moveEnemy(
-            enemy,
-            towardPlayer,
-            ENEMY_CATALOG.spinewheel.movementSpeedMetresPerSecond,
-            deltaSeconds,
-          );
-        }
-        if (enemy.spinewheelPhaseRemainingSeconds <= 0) {
-          enemy.spinewheelPhase = "windup";
-          enemy.spinewheelPhaseRemainingSeconds = SPINEWHEEL_WINDUP_SECONDS;
-          enemy.spinewheelDirection = towardPlayer;
-          enemy.facingDirection = towardPlayer;
-          this.frameEvents.push({
-            type: "spinewheel-windup",
-            position: { ...enemy.position },
-            direction: { ...towardPlayer },
-          });
-        }
-        break;
-      case "windup":
-        if (enemy.spinewheelPhaseRemainingSeconds <= 0) {
-          enemy.spinewheelPhase = "rolling";
-          enemy.spinewheelPhaseRemainingSeconds = SPINEWHEEL_MAX_ROLL_SECONDS;
-          enemy.spinewheelSpeedMetresPerSecond = SPINEWHEEL_BASE_ROLL_SPEED;
-          enemy.spinewheelBouncesRemaining = SPINEWHEEL_MAX_REBOUNDS;
-        }
-        break;
-      case "rolling": {
-        const previous = { ...enemy.position };
-        const reflection = stepSpinewheelReflection(
-          previous,
-          enemy.spinewheelDirection,
-          enemy.spinewheelSpeedMetresPerSecond * this.enemyStatusSpeedMultiplier(enemy) * deltaSeconds,
-          ENEMY_CATALOG.spinewheel.radiusMetres,
-          this.collisionArena(),
-        );
-        enemy.position = reflection.position;
-        enemy.spinewheelDirection = reflection.direction;
-        enemy.facingDirection = reflection.direction;
-
-        if (reflection.bounced) {
-          if (enemy.spinewheelBouncesRemaining <= 0) {
-            this.enterSpinewheelRecovery(enemy);
-            break;
-          }
-          enemy.spinewheelBouncesRemaining -= 1;
-          enemy.spinewheelSpeedMetresPerSecond *= SPINEWHEEL_BOUNCE_SPEED_MULTIPLIER;
-          this.frameEvents.push({
-            type: "spinewheel-bounce",
-            position: { ...enemy.position },
-            direction: { ...enemy.spinewheelDirection },
-            bouncesRemaining: enemy.spinewheelBouncesRemaining,
-          });
-        }
-
-        const crossedPlayer = distanceToSegment(this.playerPosition, previous, enemy.position)
-          <= ENEMY_CATALOG.spinewheel.radiusMetres + PLAYER_RADIUS_METRES;
-        if (
-          crossedPlayer
-          && enemy.spinewheelPlayerHitCooldownSeconds <= 0
-          && !this.playerInvulnerable
-          && this.playerHurtCooldownSeconds <= 0
-        ) {
-          this.damagePlayer(this.scaledEnemyDamage(enemy, SPINEWHEEL_ROLL_DAMAGE));
-          enemy.spinewheelPlayerHitCooldownSeconds = SPINEWHEEL_REPEAT_HIT_LOCKOUT_SECONDS;
-          this.frameEvents.push({ type: "spinewheel-hit", position: { ...this.playerPosition } });
-        }
-        if (enemy.spinewheelPhaseRemainingSeconds <= 0) {
-          this.enterSpinewheelRecovery(enemy);
-        }
-        break;
-      }
-      case "recovery":
-        if (enemy.spinewheelPhaseRemainingSeconds <= 0) {
-          enemy.spinewheelPhase = "positioning";
-          enemy.spinewheelPhaseRemainingSeconds = 0.65;
-        }
-        break;
+    if (result.warningFired) {
+      this.frameEvents.push({
+        type: "spinewheel-windup",
+        position: { ...enemy.position },
+        direction: { ...enemy.spinewheelDirection },
+      });
+    }
+    if (result.bounceFired) {
+      this.frameEvents.push({
+        type: "spinewheel-bounce",
+        position: { ...enemy.position },
+        direction: { ...enemy.spinewheelDirection },
+        bouncesRemaining: enemy.spinewheelBouncesRemaining,
+      });
+    }
+    if (
+      result.crossedPlayer
+      && result.state.playerHitCooldownSeconds <= 0
+      && !this.playerInvulnerable
+      && this.playerHurtCooldownSeconds <= 0
+    ) {
+      this.damagePlayer(this.scaledEnemyDamage(enemy, SPINEWHEEL_ROLL_DAMAGE));
+      result = { ...result, state: lockSpinewheelPlayerHit(result.state) };
+      this.writeSpinewheelState(enemy, result.state);
+      this.frameEvents.push({ type: "spinewheel-hit", position: { ...this.playerPosition } });
+    }
+    if (result.recoveryFired) {
+      this.frameEvents.push({ type: "spinewheel-recovery", position: { ...enemy.position } });
     }
   }
 
-  private enterSpinewheelRecovery(enemy: EnemyState): void {
-    enemy.spinewheelPhase = "recovery";
-    enemy.spinewheelPhaseRemainingSeconds = SPINEWHEEL_RECOVERY_SECONDS;
-    this.frameEvents.push({ type: "spinewheel-recovery", position: { ...enemy.position } });
+  private spinewheelState(enemy: EnemyState): SpinewheelState {
+    return {
+      phase: enemy.spinewheelPhase,
+      phaseRemainingSeconds: enemy.spinewheelPhaseRemainingSeconds,
+      direction: enemy.spinewheelDirection,
+      speedMetresPerSecond: enemy.spinewheelSpeedMetresPerSecond,
+      bouncesRemaining: enemy.spinewheelBouncesRemaining,
+      playerHitCooldownSeconds: enemy.spinewheelPlayerHitCooldownSeconds,
+    };
+  }
+
+  private writeSpinewheelState(enemy: EnemyState, state: SpinewheelState): void {
+    enemy.spinewheelPhase = state.phase;
+    enemy.spinewheelPhaseRemainingSeconds = state.phaseRemainingSeconds;
+    enemy.spinewheelDirection = state.direction;
+    enemy.spinewheelSpeedMetresPerSecond = state.speedMetresPerSecond;
+    enemy.spinewheelBouncesRemaining = state.bouncesRemaining;
+    enemy.spinewheelPlayerHitCooldownSeconds = state.playerHitCooldownSeconds;
   }
 
   private updateTetherBloom(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.tetherBloomPhaseRemainingSeconds -= deltaSeconds;
     const playerDistance = distance(enemy.position, this.playerPosition);
     const hasClearPath = !segmentHitsArenaObstacle(
       enemy.position,
       this.playerPosition,
       this.activeObstacles(),
     );
+    const result = stepTetherBloomBehavior(
+      this.tetherBloomState(enemy),
+      {
+        deltaSeconds,
+        playerPosition: this.playerPosition,
+        playerDistanceMetres: playerDistance,
+        hasClearPath,
+        heroEvading: this.heroState === "evading",
+        tetherAvailable: this.activeTetherEnemyId === null,
+        ownsTether: this.activeTetherEnemyId === enemy.id,
+        minimumPullDistanceMetres:
+          ENEMY_CATALOG["tether-bloom"].radiusMetres + PLAYER_RADIUS_METRES + 0.15,
+      },
+    );
 
-    switch (enemy.tetherBloomPhase) {
-      case "idle":
-        if (
-          enemy.tetherBloomPhaseRemainingSeconds <= 0
-          && this.activeTetherEnemyId === null
-          && playerDistance <= TETHER_BLOOM_ACQUISITION_RANGE_METRES
-          && hasClearPath
-        ) {
-          this.activeTetherEnemyId = enemy.id;
-          enemy.tetherBloomPhase = "windup";
-          enemy.tetherBloomPhaseRemainingSeconds = TETHER_BLOOM_WINDUP_SECONDS;
-          enemy.tetherBloomTarget = { ...this.playerPosition };
-          this.frameEvents.push({
-            type: "tether-bloom-windup",
-            position: { ...enemy.position },
-            target: { ...enemy.tetherBloomTarget },
-          });
-        }
-        break;
+    // The authored contract pulls on the final tether tick before release.
+    if (result.pullDistanceMetres > 0) {
+      const towardBloom = normalizeVector({
+        x: enemy.position.x - this.playerPosition.x,
+        y: enemy.position.y - this.playerPosition.y,
+      });
+      this.playerPosition = resolveCircleMovement(
+        this.playerPosition,
+        {
+          x: this.playerPosition.x + towardBloom.x * result.pullDistanceMetres,
+          y: this.playerPosition.y + towardBloom.y * result.pullDistanceMetres,
+        },
+        PLAYER_RADIUS_METRES,
+        this.collisionArena(),
+      );
+    }
+    this.applyTetherBloomResult(enemy, result);
+  }
+
+  private tetherBloomState(enemy: EnemyState): TetherBloomState {
+    return {
+      phase: enemy.tetherBloomPhase,
+      phaseRemainingSeconds: enemy.tetherBloomPhaseRemainingSeconds,
+      target: enemy.tetherBloomTarget,
+      damageDuringGrab: enemy.tetherBloomDamageDuringGrab,
+    };
+  }
+
+  private applyTetherBloomResult(enemy: EnemyState, result: TetherBloomStepResult): void {
+    enemy.tetherBloomPhase = result.state.phase;
+    enemy.tetherBloomPhaseRemainingSeconds = result.state.phaseRemainingSeconds;
+    enemy.tetherBloomTarget = result.state.target;
+    enemy.tetherBloomDamageDuringGrab = result.state.damageDuringGrab;
+    if (result.claimTether) this.activeTetherEnemyId = enemy.id;
+    if (result.releaseTether && this.activeTetherEnemyId === enemy.id) {
+      this.activeTetherEnemyId = null;
+    }
+
+    switch (result.event) {
       case "windup":
-        if (this.heroState === "evading") {
-          this.breakTetherBloom(enemy, "evasive");
-        } else if (playerDistance > TETHER_BLOOM_HARD_RANGE_METRES || !hasClearPath) {
-          this.breakTetherBloom(enemy, "range");
-        } else if (enemy.tetherBloomPhaseRemainingSeconds <= 0) {
-          enemy.tetherBloomPhase = "tethering";
-          enemy.tetherBloomPhaseRemainingSeconds = TETHER_BLOOM_DURATION_SECONDS;
-          enemy.tetherBloomDamageDuringGrab = 0;
-          this.frameEvents.push({ type: "tether-bloom-latched", position: { ...enemy.position } });
-        }
+        this.frameEvents.push({
+          type: "tether-bloom-windup",
+          position: { ...enemy.position },
+          target: { ...enemy.tetherBloomTarget },
+        });
         break;
-      case "tethering": {
-        if (this.activeTetherEnemyId !== enemy.id) {
-          enemy.tetherBloomPhase = "recovery";
-          enemy.tetherBloomPhaseRemainingSeconds = TETHER_BLOOM_RECOVERY_SECONDS;
-          break;
-        }
-        if (this.heroState === "evading") {
-          this.breakTetherBloom(enemy, "evasive");
-          break;
-        }
-        if (playerDistance > TETHER_BLOOM_HARD_RANGE_METRES || !hasClearPath) {
-          this.breakTetherBloom(enemy, "range");
-          break;
-        }
-
-        const minimumDistance = ENEMY_CATALOG["tether-bloom"].radiusMetres + PLAYER_RADIUS_METRES + 0.15;
-        const pullDistance = Math.min(
-          TETHER_BLOOM_PULL_SPEED_METRES_PER_SECOND * deltaSeconds,
-          Math.max(0, playerDistance - minimumDistance),
-        );
-        if (pullDistance > 0) {
-          const towardBloom = normalizeVector({
-            x: enemy.position.x - this.playerPosition.x,
-            y: enemy.position.y - this.playerPosition.y,
-          });
-          this.playerPosition = resolveCircleMovement(
-            this.playerPosition,
-            {
-              x: this.playerPosition.x + towardBloom.x * pullDistance,
-              y: this.playerPosition.y + towardBloom.y * pullDistance,
-            },
-            PLAYER_RADIUS_METRES,
-            this.collisionArena(),
-          );
-        }
-        if (enemy.tetherBloomPhaseRemainingSeconds <= 0) {
-          this.releaseTetherBloom(enemy);
-        }
+      case "latched":
+        this.frameEvents.push({ type: "tether-bloom-latched", position: { ...enemy.position } });
         break;
-      }
-      case "recovery":
-        if (enemy.tetherBloomPhaseRemainingSeconds <= 0) {
-          enemy.tetherBloomPhase = "idle";
-          enemy.tetherBloomPhaseRemainingSeconds = 0.6;
-        }
+      case "released":
+        this.frameEvents.push({ type: "tether-bloom-released", position: { ...enemy.position } });
+        break;
+      case "broken-evasive":
+        this.emitTetherBloomBreak(enemy, "evasive");
+        break;
+      case "broken-damage":
+        this.emitTetherBloomBreak(enemy, "damage");
+        break;
+      case "broken-range":
+        this.emitTetherBloomBreak(enemy, "range");
+        break;
+      case "ownership-lost":
+      case null:
         break;
     }
   }
 
-  private breakTetherBloom(
-    enemy: EnemyState,
-    reason: "evasive" | "damage" | "range",
-  ): void {
-    if (this.activeTetherEnemyId === enemy.id) this.activeTetherEnemyId = null;
-    enemy.tetherBloomPhase = "recovery";
-    enemy.tetherBloomPhaseRemainingSeconds = TETHER_BLOOM_RECOVERY_SECONDS;
+  private emitTetherBloomBreak(enemy: EnemyState, reason: TetherBloomBreakReason): void {
     this.frameEvents.push({
       type: "tether-bloom-broken",
       position: { ...enemy.position },
       reason,
     });
-  }
-
-  private releaseTetherBloom(enemy: EnemyState): void {
-    if (this.activeTetherEnemyId === enemy.id) this.activeTetherEnemyId = null;
-    enemy.tetherBloomPhase = "recovery";
-    enemy.tetherBloomPhaseRemainingSeconds = TETHER_BLOOM_RECOVERY_SECONDS;
-    this.frameEvents.push({ type: "tether-bloom-released", position: { ...enemy.position } });
   }
 
   private launchSlimeGlob(enemy: EnemyState): void {
@@ -8977,10 +8955,14 @@ export class CombatSimulation {
       this.runDamageBySecond[second] = (this.runDamageBySecond[second] ?? 0) + applied;
     }
     if (enemy.type === "tether-bloom" && enemy.tetherBloomPhase === "tethering") {
-      enemy.tetherBloomDamageDuringGrab += mitigated;
-      if (enemy.tetherBloomDamageDuringGrab >= TETHER_BLOOM_BREAK_DAMAGE) {
-        this.breakTetherBloom(enemy, "damage");
-      }
+      this.applyTetherBloomResult(
+        enemy,
+        applyTetherBloomDamage(
+          this.tetherBloomState(enemy),
+          mitigated,
+          this.activeTetherEnemyId === enemy.id,
+        ),
+      );
     }
     if (
       enemy.type === "abomination-prime"
