@@ -9,8 +9,6 @@ import {
   CombatSimulation,
   ABOMINATION_SLAM_RADIUS_METRES,
   MEDKIT_HEAL_AMOUNT,
-  RAZOR_SCUTTLER_DASH_SECONDS,
-  RAZOR_SCUTTLER_DASH_SPEED,
   type CombatSnapshot,
   type EnemySnapshot,
   type ExperiencePickupSnapshot,
@@ -54,6 +52,8 @@ import { worldDepth } from "../rendering/WorldDepth";
 import { VisualEffectPool } from "../effects/VisualEffectPool";
 import { FloatingDamageNumbers } from "../rendering/FloatingDamageNumbers";
 import { EnemyHealthBars } from "../rendering/EnemyHealthBars";
+import { FIXED_STEP_SECONDS, planFixedSteps } from "../combat/FixedTimestepClock";
+import { RAZOR_SCUTTLER_DASH_SECONDS, RAZOR_SCUTTLER_DASH_SPEED } from "../combat/RazorScuttlerBehavior";
 import { CombatHud } from "../ui/CombatHud";
 import { CombatPauseOverlay } from "../ui/CombatPauseOverlay";
 import { CombatEventFeed } from "../ui/CombatEventFeed";
@@ -116,6 +116,8 @@ export class PrototypeScene extends Phaser.Scene {
   private effectPool!: VisualEffectPool;
   private damageNumbers!: FloatingDamageNumbers;
   private enemyHealthBars!: EnemyHealthBars;
+  /** Carried across frames by `planFixedSteps` (§11.5); see FixedTimestepClock.ts. */
+  private simulationAccumulatorSeconds = 0;
   private readonly stressProfile = readStressProfile();
   private readonly scenario = readScenario();
   private readonly startingWeaponIds = this.stressProfile === null ? readStartingWeaponIds() : null;
@@ -646,10 +648,33 @@ export class PrototypeScene extends Phaser.Scene {
       return;
     }
 
-    const snapshot = this.simulation.step(intent, deltaSeconds);
+    // Fixed-timestep accumulator (§11.5): the simulation always advances in
+    // constant FIXED_STEP_SECONDS ticks regardless of frame rate or game
+    // speed, so the deterministic replay fixture is unaffected. The speed
+    // multiplier only changes how many ticks run this rendered frame — input
+    // is polled once per frame and reused across however many that is, which
+    // is the standard fixed-timestep pattern; the "pressed" edge fields on
+    // intent are all internally gated by a cooldown or a collected/consumed
+    // flag, so replaying the same intent across a few ticks cannot double-fire
+    // an action within one frame.
+    const plan = planFixedSteps(this.simulationAccumulatorSeconds, deltaSeconds, this.settings.gameSpeedMultiplier);
+    this.simulationAccumulatorSeconds = plan.nextAccumulatorSeconds;
+    let snapshot = this.lastSnapshot;
+    for (let tick = 0; tick < plan.steps; tick += 1) {
+      snapshot = this.simulation.step(intent, FIXED_STEP_SECONDS);
+    }
     this.lastSnapshot = snapshot;
-    this.collectBestiary(snapshot);
-    this.recordRunOutcome(snapshot);
+    // Below 1x speed, or on a very fast frame, a render tick can land with
+    // zero simulation ticks behind it — the accumulator has not reached a
+    // full FIXED_STEP_SECONDS yet. `snapshot` is then the same object already
+    // processed last frame, `events` included, so anything that consumes
+    // events or transitions exactly once per genuinely new snapshot must be
+    // skipped rather than re-run against stale data. `renderSnapshot` itself
+    // is a pure redraw and stays outside this guard.
+    if (plan.steps > 0) {
+      this.collectBestiary(snapshot);
+      this.recordRunOutcome(snapshot);
+    }
     this.updateMarineFrame(snapshot.heroState, intent.move);
 
     if (intent.aim.x !== 0 || intent.aim.y !== 0) {
@@ -658,7 +683,9 @@ export class PrototypeScene extends Phaser.Scene {
 
     this.renderSnapshot(snapshot, intent.fireHeld);
     this.synth.beginFrame();
-    this.playCombatEvents(snapshot.events);
+    if (plan.steps > 0) {
+      this.playCombatEvents(snapshot.events);
+    }
     if (snapshot.heroState === "evading" && this.previousHeroState !== "evading") {
       this.synth.play(EVASIVE_MOVE_CUE);
     }

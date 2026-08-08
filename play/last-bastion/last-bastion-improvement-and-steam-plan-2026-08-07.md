@@ -6,6 +6,79 @@ Scope: a full review of `play/last-bastion/` as it stands today, then a plan cov
 (a) the move to a Steam desktop release at Full HD and 4K, (b) gameplay and quality
 improvements, and (c) every new art/animation/audio asset Codex needs to produce for them.
 
+## Codex review addendum — 8 August 2026
+
+**Verdict: approve the direction, with the amendments below.** The plan is unusually strong on
+code seams, dependencies, art gates, and acceptance criteria. Its largest weakness is that it
+mixes product validation, platform discovery, refactoring, content production, and release work
+into four mostly linear phases. Treat those as workstreams with explicit gates, and maintain the
+task ledger below as the current source of truth.
+
+### Verified drift since the original snapshot
+
+- After the implementation begun in this review, the suite is **1,146 tests across 167 files**,
+  not 1,021 across 153; it is green.
+- `CombatSimulation.ts` is already being decomposed. Scenario population and 15 behaviour
+  modules are now outside the class; the Infected Survivor extraction began in this review.
+- **T0.4 live display size is shipped** and covered by `DisplayScaling.test.ts`; remove it from
+  the open queue.
+- The five HUD/pacing recommendations in §11.6 and the game-speed setting in §11.5 are shipped.
+  Their remaining follow-ups (especially colour-independent damage-type identity) stay open.
+- Snapshot counts in §1 are historical. Generate counts from catalogues/tests for every release
+  gate instead of hand-updating prose; `README.md` contains the current counted baseline.
+
+### Required technical corrections
+
+1. **Deck and 16:10 presentation.** A 16:9 world cannot fill 1280×800 without distortion or
+   crop. `Fill` must compute an aspect-preserving fitted rectangle: 1280×720 on Deck, with 40 px
+   above and below available to an authored frame/HUD. Make `Expanded frame` the preferred Deck
+   default once U3 exists; until then use fitted `Fill` with deliberate letterboxing. Add tests
+   for presented width, height, offsets, aspect ratio, and no crop—not just integer render scale.
+2. **Separate browser capabilities from desktop capabilities.** Exclusive fullscreen, monitor
+   selection, frame-cap control, and vsync are not equivalent web settings. Add a T2.0 discovery
+   spike and a `DisplayCapabilities` contract. Browser gets supported options only; Electron owns
+   monitor/window placement and any host-only controls. Do not show settings that cannot work.
+3. **Fix the preload contract contradiction.** T3.1 says preload exposes *only*
+   `SteamworksBridge`, while T3.3 also needs file persistence. Define two narrow, versioned APIs:
+   `SteamworksBridge` and `DesktopSaveBridge`. Validate every IPC payload and keep filesystem
+   paths entirely in the main/preload side.
+4. **Do not gate fun validation behind all refactoring and packaging.** After the next small
+   behaviour extractions, build a playable vertical slice of G1 (tiers 0–2), G6 (hit-stop), and
+   G7 (first-drop onboarding). Run structured playtests before committing to 12 tiers, a currency
+   tree, 28 achievements, or their art. Refactors stay byte-equivalent; new systems need player
+   evidence, not only green tests.
+5. **Replace qualitative release gates with budgets.** Record cold-boot time, combat-route bytes,
+   peak memory, p95 frame time, 1% low FPS, save size, and replay hash. Test 960×540, 1080p,
+   1440p, 4K, ultrawide, and Deck 1280×800 with normal/reduced-motion and keyboard/gamepad paths.
+6. **Add a release-operations workstream.** Cover offline/Steam-down boot, overlay attach,
+   suspend/resume, abrupt exit during save, corrupt primary + backup recovery, cloud conflict,
+   schema rollback, Proton smoke testing, crash-log location, third-party licences, and a clean
+   uninstall/reinstall. Steam Cloud should not sync device-specific display settings.
+7. **Add product scope and launch criteria.** Lock target price, demo boundary, Early Access vs
+   full release, minimum supported OS/GPU, localization scope, target run length, retention goal,
+   and the measurable playtest threshold that authorizes paid launch. The current “worth buying”
+   gates are directionally right but not yet falsifiable.
+
+Valve references checked for this review: [Steam Hardware compatibility checklist](https://partner.steamgames.com/doc/steamhardware/compat),
+[Steam graphical asset dimensions](https://partner.steamgames.com/doc/store/assets), and
+[graphical asset content rules](https://partner.steamgames.com/doc/store/assets/rules).
+
+### Ordered next-task ledger
+
+1. **Now — T0.1:** finish the Infected Survivor extraction, then Spinewheel and Tether Bloom (the
+   remaining low-risk state machines), with focused behaviour tests plus unchanged
+   replay/reference fixtures after every extraction.
+2. **Now — plan hygiene:** mark T0.4 complete; correct the Deck presentation contract and Steam
+   asset dimensions; turn frozen counts into generated audit output.
+3. **Next — T2.0/T2.1:** implement and test the pure presentation/capability plan before any
+   RenderTexture or Electron work.
+4. **Next playable slice:** prototype threat tiers 0–2, hit-stop, and first-drop onboarding;
+   conduct at least five observed runs and record completion, damage source, and confusion notes.
+5. **Asset-unblocked work:** continue U1/U2 and M1/M2/S4 in parallel, but wire no slider or
+   marketing claim until its runtime path is real.
+6. **After the slice passes:** finish the simulation/scene splits, then Electron save/Steam
+   integration, then expand progression, achievements, dailies, and hero roster in that order.
+
 This plan **does not restate** the existing asset queue in
 `asset-next-production-review-2026-07-26.md`. Items 61–67 there (UI chrome U1/U2, music M1,
 ambience M2, UI audio S4, character C2/C3) are still correct, still the top of the art queue,
@@ -156,8 +229,8 @@ Small, low-risk, unblocks everything after it.
    `CombatScene` with a re-export shim for the review routes.
 3. **Extend WebP** to every sprite atlas using lossless/near-lossless mode, and widen
    `audit-production-images.mjs` beyond its hard-coded count of 8. Expect 30–50% off the 106 MB.
-4. **Make display size apply live** — export the `applyDisplayScale` closure from boot and call
-   it from the settings handler; drop "(applies on reload)" from the label.
+4. ~~**Make display size apply live** — export the `applyDisplayScale` closure from boot and call
+   it from the settings handler; drop "(applies on reload)" from the label.~~ **DONE 8 Aug 2026.**
 5. **Fix the mojibake** in `asset-next-production-review-2026-07-26.md` items 12–23
    (`â€”` for em dash).
 
@@ -197,7 +270,7 @@ exactly as they are.
 | Mode | How | Use |
 |---|---|---|
 | `Crisp` | Present the `N` target 1:1, letterbox the remainder. Today's behaviour. | Exact 2× (1080p) and 4× (2160p). Default when the display is an exact multiple. |
-| `Fill` | Render at `N+1` (**supersample**), then GPU-downscale with linear filtering to fill the window exactly. | 1440p, 1600p, 1366×768, Steam Deck. A 2880×1620 → 2560×1440 downsample is far sharper than a 1.33× nearest upscale, and costs ~1.4× fill rate on a game that is nowhere near GPU-bound. |
+| `Fill` | Render at `N+1` (**supersample**), then GPU-downscale with linear filtering into the largest aspect-preserving fitted rectangle. Never distort or crop the world. | 1440p, 1600p, 1366×768, Steam Deck. A 2880×1620 → 2560×1440 downsample is far sharper than a 1.33× nearest upscale, and costs ~1.4× fill rate on a game that is nowhere near GPU-bound. |
 | `Expanded frame` | Keep `Crisp` integer scaling, and fill the leftover width/height with an authored bezel that *relocates* HUD furniture (radar, status tray, weapon ring) into the side panels. World FOV unchanged. | 21:9 and 32:9 ultrawide, 16:10. Makes the unused space look deliberate instead of broken. |
 
 Default selection: `Crisp` on exact multiples, `Fill` otherwise, `Expanded frame` offered whenever
@@ -211,9 +284,12 @@ as a sane physical margin on a 32" panel; if not, make the inset fraction a
 ### 5.2 Steam Deck specifically
 
 1280×800 at `Crisp` gives `N=1` and a 960×540 postage stamp. `Fill` with `N=2` supersample
-(1920×1080 → 1280×800) is a clean 1.5:1 downsample and will look excellent. **Deck must default
-to `Fill`.** Also required for a Verified badge: fullscreen by default, all text legible at 7",
-gamepad-only navigation through every screen (already true), and Steam Input glyph support.
+(1920×1080 → **1280×720**) preserves the authored 16:9 world and leaves 40 px above and below.
+Use those bands deliberately; once U3 exists, **Deck should default to `Expanded frame`**.
+Valve's current review also requires a supported Deck resolution, controller access to all
+content, active-device controller glyphs, playable default performance, and legible text (9 px
+absolute minimum at 1280×800, with 12 px recommended). Test these explicitly rather than assuming
+that existing gamepad navigation is complete.
 
 ### 5.3 New settings to add
 
@@ -407,9 +483,10 @@ achievement IDs land in code; do not produce ahead of the IDs. Stage under
 
 The one exception to the no-text rule: Valve requires the game's logo and title in the capsules.
 
-- **Header capsule** 920×430 · **small capsule** 462×174 · **main capsule** 1232×706 ·
-  **vertical/library capsule** 1200×1600 · **library hero** 3840×1240 (subject-left, safe-centre) ·
-  **library logo** transparent PNG · **page background** 1438×810.
+- **Header capsule / library header** 920×430 · **small capsule** 462×174 · **main capsule**
+  1232×706 · **vertical store capsule** 748×896 · **library capsule** 600×900 · **library hero**
+  3840×1240 (subject-left, safe-centre) · **library logo** transparent PNG (1280 px wide and/or
+  720 px tall) · **page background** 1438×810 · **shortcut icon** 256×256 or 512×512 PNG/ICO.
 - **Six to eight screenshots at 1920×1080**, captured from the real game at `Crisp` 2×, not mockups.
 - **Community/achievement showcase icon** 184×184.
 
@@ -586,14 +663,13 @@ fallback for the 58 converted assets would take the directory to roughly 82 MB *
 download saving. It reverses a deliberate design decision, so it is the creator's call, not a
 refactor to make quietly.
 
-#### T0.4 — Live display size
+#### T0.4 — Live display size — **DONE 8 Aug 2026**
 
-`main.ts` builds `applyDisplayScale(game)` inside `boot()` and wires it to resize and DPR change
-only. Export a module-level `reapplyDisplayScale()` and call it from `ShellScene.ts:139`, where
-`saveStore.updateSettings({ [effect.key]: effect.value })` already runs. Drop
-"(applies on reload)" from the label in `shell/ScreenFlow.ts:115`.
+`DisplayScaling.ts` now exposes `registerDisplayScaleReapply()` / `reapplyDisplayScale()`;
+`main.ts` registers the live apply closure and `ShellScene` invokes it when
+`displaySizePercent` changes. The stale reload caveat was removed from `ScreenFlow.ts`.
 
-**Acceptance:** dragging the slider resizes the canvas immediately; the setting still persists.
+**Acceptance met:** focused tests cover the hook and the setting still persists.
 
 #### T0.5 — Doc fix
 
@@ -817,6 +893,11 @@ Put it in the existing stats line rather than a new panel; that line already car
 and state flags.
 
 ### 11.5 Game speed
+
+> **STATUS (8 Aug 2026): the setting is shipped** (0.75x / 1x / 1.25x, pause menu
+> `GAME SPEED`), built on a fixed-timestep accumulator (`combat/FixedTimestepClock.ts`) exactly
+> as recommended below. The difficulty-ladder modifier and the recommendation against a
+> powerup are both still open. See `wave_balance.md` and the 8 August log entry.
 
 Worth doing, but the implementation order matters because of one constraint: **the game has a
 deterministic replay fixture** (`combat/ReplayFixture.ts`, `combat/ReferenceRun.ts`) that the

@@ -231,6 +231,7 @@ export class CombatPauseOverlay {
       this.choice("SFX VOLUME", "sfxVolume", settings.sfxVolume, [0, 0.25, 0.5, 0.75, 1]),
       this.choice("CONTROLLER VIBRATION", "gamepadVibrationStrength", settings.gamepadVibrationStrength, [0, 0.5, 0.75, 1]),
       this.choice("COMBAT EFFECTS", "effectQuality", settings.effectQuality, ["auto", "high", "medium", "low"]),
+      this.choice("GAME SPEED", "gameSpeedMultiplier", settings.gameSpeedMultiplier, [0.75, 1, 1.25]),
       this.toggle("HIGH-CONTRAST OUTLINES", "highContrastOutlinesEnabled", settings.highContrastOutlinesEnabled),
       this.choice("COLOUR-VISION MODE", "colorVisionMode", settings.colorVisionMode, ["standard", "deuteranopia", "protanopia", "tritanopia"]),
       this.choice("THREAT INDICATORS", "offscreenThreatIndicators", settings.offscreenThreatIndicators, ["off", "threats", "all"]),
@@ -274,7 +275,7 @@ export class CombatPauseOverlay {
     return { label, value: value ? "ON" : "OFF", activate, adjust: () => activate() };
   }
 
-  private choice<K extends "offscreenThreatIndicators" | "radarSize" | "uiScale" | "colorVisionMode" | "effectQuality" | "masterVolume" | "sfxVolume" | "gamepadVibrationStrength">(
+  private choice<K extends "offscreenThreatIndicators" | "radarSize" | "uiScale" | "colorVisionMode" | "effectQuality" | "gameSpeedMultiplier" | "masterVolume" | "sfxVolume" | "gamepadVibrationStrength">(
     label: string,
     key: K,
     value: GameSettings[K],

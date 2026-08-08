@@ -269,6 +269,20 @@ function requiredEnemyBodyIdsForSelection(selection: CombatAssetSelection): Read
       required.add("nest-pod-v1");
       required.add("swarm-scuttler-v1");
     }
+    // Brood Warden and Bastion Eater both summon `egg-cluster` mid-fight
+    // through the shared `layBroodEggs`, and an egg left alive hatches into a
+    // `scuttler` — neither appears in the wave's *initial* enemy snapshot,
+    // which is all `preload()` can see. Unlike Nest Weaver's own special
+    // case, egg-cluster's and scuttler's effect batches are not shared with
+    // either boss's own effects, so both bodies AND both effect batches need
+    // adding explicitly, or a solo boss node ships a broken texture the
+    // instant the boss lays its first egg.
+    if (enemyType === "brood-warden" || enemyType === "bastion-eater") {
+      required.add("egg-cluster-v1");
+      required.add("batch-c-effects-v1");
+      required.add("scuttler-v1");
+      required.add("batch-b-effects-v1");
+    }
     if (enemyType === "storm-regent") required.add("storm-node-v1");
     if (enemyType === "foundry-fabricator" || enemyType === "cyborg-reclaimer") {
       required.add("machine-foundry-pad-v1");

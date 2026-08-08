@@ -145,4 +145,33 @@ describe("combatAssetsForSession", () => {
     expect(ids.has("nest-effects-v1")).toBe(true);
     expect(ids.has("machine-foundry-effects-v1")).toBe(false);
   });
+
+  /**
+   * Both mini-bosses summon `egg-cluster` mid-fight via the shared
+   * `layBroodEggs`, and an unhatched-but-uncleared egg later hatches into a
+   * `scuttler` — neither appears in the wave's *initial* enemy snapshot, which
+   * is the only thing `preload()` sees. Without the same special-casing
+   * `nest-weaver` already gets for its own runtime summons, a solo boss node
+   * (nothing else in the initial roster to accidentally pull the asset in)
+   * ships a broken texture the instant the boss lays its first egg.
+   */
+  it.each(["brood-warden", "bastion-eater"] as const)(
+    "keeps the summoned egg-cluster and its scuttler hatch with a solo %s node",
+    (bossType) => {
+      const ids = new Set(combatAssetsForSession({
+        arenaTheme: arenaThemeById("bastion-logistics")!,
+        heroId: "marine",
+        productionArt: true,
+        helmet: false,
+        worldObjectAssetIds: [],
+        enemyTypes: [bossType],
+      }).map((asset) => asset.id));
+
+      expect(ids.has("egg-cluster-v1")).toBe(true);
+      expect(ids.has("batch-c-effects-v1")).toBe(true);
+      expect(ids.has("scuttler-v1")).toBe(true);
+      expect(ids.has("batch-b-effects-v1")).toBe(true);
+      expect(ids.has("machine-foundry-effects-v1")).toBe(false);
+    },
+  );
 });

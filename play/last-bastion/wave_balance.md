@@ -580,3 +580,58 @@ the common case at 30+ enemy density did not get busier.
 | elite | 44 x 5 | yes | 1 | 1 |
 | mini-boss | 52 x 6 | yes | 2 | 4 |
 | boss | 60 x 7 | yes | 3 | 4 |
+
+## 8 August 2026 — game speed (§11.5)
+
+Not balance-affecting at the shipped scope (a player-chosen accessibility/QoL setting, not a
+difficulty modifier or powerup), but recorded here because it changes simulation cadence.
+
+Implemented as a fixed-timestep accumulator (`combat/FixedTimestepClock.ts`), **not** by scaling
+`deltaSeconds`. Every simulation step is still exactly `1/60` seconds — the same
+`REPLAY_FIXED_DELTA_SECONDS` constant `ReplayFixture.ts` already used — regardless of the speed
+setting. The multiplier only changes how many of those fixed steps run per rendered frame (2x runs
+two, 0.5x runs one every other frame), so the deterministic replay fixture and `ReferenceRun`
+equivalence hashes are unaffected by construction, not by luck.
+
+Shipped: the setting only (0.75x / 1x / 1.25x, pause-menu `GAME SPEED`), per §11.5's own ordering.
+**Not shipped:** the difficulty-ladder modifier and the "never as a powerup" recommendation are both
+still open — this entry covers the setting only.
+
+A `MAX_STEPS_PER_FRAME` ceiling (5) guards against a stalled frame or a background tab demanding
+hundreds of catch-up steps at once; on a clamp the unconsumed remainder is dropped rather than
+banked, so the game intentionally falls behind wall-clock time for one frame instead of bursting to
+catch up. Nothing currently reads the `clamped` flag `planFixedSteps` reports — it exists for a
+future debug overlay.
+
+## 8 August 2026 — Bastion Eater: charge available in every phase, not just breach
+
+Reported directly from a live screenshot mid-`last-stand`: the boss appeared to barely move. Root
+cause was two bugs in the phase state machine, not a missing mechanic — the charge (7.8-9.2 m/s,
+faster than the player's 5.25) already existed and was fully implemented.
+
+1. `stalk` skipped movement outright during `brood` (33-66% health) — `if (phase !== "brood")`
+   gated the whole `moveEnemy` call. For a third of the fight the boss was rooted in place except
+   during its own attack windups.
+2. `charge-windup` was only ever selected from the `breach` phase's 2-way cycle (health > 66%).
+   Neither `brood` nor `last-stand` (<33%) rolled it into their rotation at all, so the boss's one
+   fast, telegraphed, dodge-worthy attack was reachable only in the fight's opening third — the
+   two-thirds a player actually spends fighting a wounded, longer-surviving boss never saw it.
+
+Fix, in `updateBastionEater`:
+
+| Phase | Stalk speed (was → now) | Action cycle (was → now) |
+|---|---|---|
+| breach (>66%) | 0.95 | unchanged: 2-way charge/claw |
+| brood (33-66%) | **0 → 1.1** | 2-way egg/tendril → **3-way egg/tendril/charge** |
+| last-stand (<33%) | 1.25 | 3-way breach/claw/tendril → **4-way breach/claw/tendril/charge** |
+
+Charge's own speed is untouched (`last-stand` uses 9.2, everything else 7.8 — both already existed).
+`beginBastionEaterAction` already computes windup direction and duration generically for any action,
+so routing `charge-windup` into two more rotations needed no new plumbing.
+
+**Net effect to watch.** The boss is now meaningfully more mobile and more dangerous for its entire
+health range rather than mostly in the first third — that is the intent, but it changes fight pacing
+throughout `brood` and `last-stand`, which had never been played with a moving boss in those phases.
+Needs a play pass. First lever if it proves too aggressive: drop brood's stalk speed back toward
+breach's 0.95 before touching charge frequency, since charge itself is unchanged from what already
+shipped and was already tuned.

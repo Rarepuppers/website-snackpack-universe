@@ -117,6 +117,7 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "choice", key: "offscreenThreatIndicators", label: "Threat indicators", options: ["off", "threats", "all"] },
   { kind: "choice", key: "colorVisionMode", label: "Colour-vision palette", options: ["standard", "deuteranopia", "protanopia", "tritanopia"] },
   { kind: "choice", key: "effectQuality", label: "Combat effects", options: ["auto", "high", "medium", "low"] },
+  { kind: "choice", key: "gameSpeedMultiplier", label: "Game speed", options: ["0.75", "1", "1.25"] },
   { kind: "action", key: "controls", label: "Control bindings" },
 ]);
 

@@ -217,13 +217,39 @@ import {
 import { commitSlimeSpitterWindup, stepSlimeSpitterBehavior } from "./SlimeSpitterBehavior";
 import { stepEggClusterBehavior } from "./EggClusterBehavior";
 import { RIPPER_REACH_METRES, stepRipperBehavior } from "./RipperBehavior";
+import {
+  RAZORLORD_DASH_SPEED,
+  RAZORLORD_PURSUIT_SPEED,
+  RAZOR_SCUTTLER_DASH_SECONDS,
+  RAZOR_SCUTTLER_DASH_SPEED,
+  RAZOR_SCUTTLER_RECOVERY_SECONDS,
+  RAZOR_SCUTTLER_WINDUP_SECONDS,
+  resolveRazorScuttlerAfterMovement,
+  stepRazorScuttlerBehavior,
+} from "./RazorScuttlerBehavior";
 import { commitQuillbackWindup, stepQuillbackBehavior } from "./QuillbackBehavior";
 import type { EnemyMovementIntent } from "./EnemyMovementIntent";
+import {
+  INFECTED_SURVIVOR_MAX_STAMINA_SECONDS,
+  stepInfectedSurvivorBehavior,
+  type InfectedSurvivorPhase,
+} from "./InfectedSurvivorBehavior";
 // Re-exported from the modules that own them so existing importers keep
 // working; the definitions moved out to break a cycle with scenario setup.
 export { ARC_WARDEN_LAB_CAP } from "./ArcWardenBeam";
 export { SCRAP_SKITTERER_PACK_CAP } from "./ScrapSkittererBehavior";
 export { INFECTED_SURVIVOR_PACK_CAP } from "./CorruptedHumanWaves";
+export {
+  approachVelocity,
+  infectedSurvivorSteeringDirection,
+  INFECTED_SURVIVOR_ACCELERATION,
+  INFECTED_SURVIVOR_DECELERATION,
+  INFECTED_SURVIVOR_MAX_STAMINA_SECONDS,
+  INFECTED_SURVIVOR_RECOVERY_SECONDS,
+  INFECTED_SURVIVOR_SPRINT_SPEED,
+  INFECTED_SURVIVOR_STAMINA_RECOVERY_PER_SECOND,
+  type InfectedSurvivorPhase,
+} from "./InfectedSurvivorBehavior";
 import type { ExpeditionBuildSnapshot } from "../expedition/ExpeditionRun";
 import {
   cloneTransformationAffinityState,
@@ -297,7 +323,6 @@ export type EncounterStatus = "combat" | "intermission" | "victory" | "defeat";
 export type BrainPhase = "drift" | "windup" | "lunge" | "recover";
 export type SlimeSpitterPhase = "positioning" | "windup" | "recover";
 export type BlastMitePhase = "chase" | "armed";
-export type InfectedSurvivorPhase = "hesitate" | "sprint" | "recover";
 export type CorruptedMarinePhase = "positioning" | "windup" | "throw" | "recovery";
 export type NestWeaverPhase = "positioning" | "placement-windup" | "recovery";
 export type WarpFlankerPhase = "stalk" | "warp-windup" | "materialize";
@@ -1297,19 +1322,7 @@ const QUILLBACK_SPIKE_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.quillbackSpike;
 const QUILLBACK_PROJECTILE_SPEED = 7.5;
 const QUILLBACK_PROJECTILE_RANGE_METRES = 11;
 const QUILLBACK_FAN_ARC_RADIANS = Math.PI * 64 / 180;
-export const RAZOR_SCUTTLER_WINDUP_SECONDS = 0.48;
-export const RAZOR_SCUTTLER_DASH_SPEED = 9.5;
-export const RAZOR_SCUTTLER_DASH_SECONDS = 0.55;
-export const RAZOR_SCUTTLER_RECOVERY_SECONDS = 1.15;
 const RAZOR_SCUTTLER_DASH_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.razorDash;
-const RAZOR_SCUTTLER_MIN_DASH_RANGE = 2.6;
-const RAZOR_SCUTTLER_MAX_DASH_RANGE = 7.5;
-export const INFECTED_SURVIVOR_MAX_STAMINA_SECONDS = 1.2;
-export const INFECTED_SURVIVOR_SPRINT_SPEED = 5.15;
-export const INFECTED_SURVIVOR_ACCELERATION = 11;
-export const INFECTED_SURVIVOR_DECELERATION = 14;
-const INFECTED_SURVIVOR_RECOVERY_SECONDS = 0.68;
-const INFECTED_SURVIVOR_STAMINA_RECOVERY_PER_SECOND = 1.8;
 export const CORRUPTED_MARINE_WINDUP_SECONDS = 0.72;
 export const CORRUPTED_MARINE_KNIFE_SPEED = 6;
 export const CORRUPTED_MARINE_KNIFE_DAMAGE = 1.8;
@@ -5355,59 +5368,44 @@ export class CombatSimulation {
   }
 
   private updateInfectedSurvivor(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.survivorPhaseRemainingSeconds -= deltaSeconds;
     const towardPlayer = normalizeVector({
       x: this.playerPosition.x - enemy.position.x,
       y: this.playerPosition.y - enemy.position.y,
     });
     const laneBias = ((enemy.id % 5) - 2) * 0.08;
-    const sprintDirection = infectedSurvivorSteeringDirection(
-      towardPlayer,
-      this.enemySeparation(enemy),
-      laneBias,
+    const result = stepInfectedSurvivorBehavior(
+      {
+        phase: enemy.survivorPhase,
+        phaseRemainingSeconds: enemy.survivorPhaseRemainingSeconds,
+        staminaSeconds: enemy.survivorStaminaSeconds,
+        velocity: enemy.survivorVelocity,
+      },
+      {
+        deltaSeconds,
+        towardPlayer,
+        separation: this.enemySeparation(enemy),
+        laneBias,
+      },
     );
-
-    if (enemy.survivorPhase === "sprint") {
-      enemy.survivorStaminaSeconds = Math.max(0, enemy.survivorStaminaSeconds - deltaSeconds);
-      enemy.survivorVelocity = approachVelocity(
-        enemy.survivorVelocity,
-        {
-          x: sprintDirection.x * INFECTED_SURVIVOR_SPRINT_SPEED,
-          y: sprintDirection.y * INFECTED_SURVIVOR_SPRINT_SPEED,
-        },
-        INFECTED_SURVIVOR_ACCELERATION * deltaSeconds,
-      );
-      if (enemy.survivorStaminaSeconds <= 0) {
-        enemy.survivorPhase = "recover";
-        enemy.survivorPhaseRemainingSeconds = INFECTED_SURVIVOR_RECOVERY_SECONDS;
-      }
-    } else {
-      enemy.survivorStaminaSeconds = Math.min(
-        INFECTED_SURVIVOR_MAX_STAMINA_SECONDS,
-        enemy.survivorStaminaSeconds + INFECTED_SURVIVOR_STAMINA_RECOVERY_PER_SECOND * deltaSeconds,
-      );
-      enemy.survivorVelocity = approachVelocity(
-        enemy.survivorVelocity,
-        { x: 0, y: 0 },
-        INFECTED_SURVIVOR_DECELERATION * deltaSeconds,
-      );
-      if (enemy.survivorPhaseRemainingSeconds <= 0 && enemy.survivorStaminaSeconds >= 0.55) {
-        enemy.survivorPhase = "sprint";
-        enemy.survivorPhaseRemainingSeconds = enemy.survivorStaminaSeconds;
-        this.frameEvents.push({
-          type: "infected-survivor-rush",
-          position: { ...enemy.position },
-          enemyId: enemy.id,
-        });
-      }
+    enemy.survivorPhase = result.state.phase;
+    enemy.survivorPhaseRemainingSeconds = result.state.phaseRemainingSeconds;
+    enemy.survivorStaminaSeconds = result.state.staminaSeconds;
+    enemy.survivorVelocity = result.state.velocity;
+    enemy.facingDirection = result.facingDirection;
+    if (result.rushStarted) {
+      this.frameEvents.push({
+        type: "infected-survivor-rush",
+        position: { ...enemy.position },
+        enemyId: enemy.id,
+      });
     }
-
-    const speed = Math.hypot(enemy.survivorVelocity.x, enemy.survivorVelocity.y);
-    enemy.facingDirection = speed > 0.08
-      ? normalizeVector(enemy.survivorVelocity)
-      : towardPlayer;
-    if (speed > 0) {
-      this.moveEnemy(enemy, enemy.facingDirection, speed, deltaSeconds);
+    if (result.movementSpeedMetresPerSecond > 0) {
+      this.moveEnemy(
+        enemy,
+        enemy.facingDirection,
+        result.movementSpeedMetresPerSecond,
+        deltaSeconds,
+      );
     }
   }
 
@@ -6479,97 +6477,72 @@ export class CombatSimulation {
   }
 
   private updateRazorScuttler(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.razorScuttlerPhaseRemainingSeconds -= deltaSeconds;
-    const playerDistance = distance(enemy.position, this.playerPosition);
     const pursuitSpeed = enemy.eliteKind === "razorlord"
-      ? 4.6
+      ? RAZORLORD_PURSUIT_SPEED
       : ENEMY_CATALOG["razor-scuttler"].movementSpeedMetresPerSecond;
-    const dashSpeed = enemy.eliteKind === "razorlord" ? 11 : RAZOR_SCUTTLER_DASH_SPEED;
-    switch (enemy.razorScuttlerPhase) {
-      case "pursuit": {
-        const towardPlayer = normalizeVector({
-          x: this.playerPosition.x - enemy.position.x,
-          y: this.playerPosition.y - enemy.position.y,
-        });
-        enemy.facingDirection = towardPlayer;
-        if (playerDistance < RAZOR_SCUTTLER_MIN_DASH_RANGE) {
-          this.moveEnemy(enemy, { x: -towardPlayer.x, y: -towardPlayer.y }, pursuitSpeed, deltaSeconds);
-        } else if (playerDistance > RAZOR_SCUTTLER_MAX_DASH_RANGE) {
-          this.moveEnemy(enemy, towardPlayer, pursuitSpeed, deltaSeconds);
-        }
-        if (
-          enemy.razorScuttlerPhaseRemainingSeconds <= 0
-          && playerDistance >= RAZOR_SCUTTLER_MIN_DASH_RANGE
-          && playerDistance <= RAZOR_SCUTTLER_MAX_DASH_RANGE
-        ) {
-          enemy.razorScuttlerDirection = { ...towardPlayer };
-          enemy.razorScuttlerPhase = "windup";
-          enemy.razorScuttlerPhaseRemainingSeconds = RAZOR_SCUTTLER_WINDUP_SECONDS;
-          enemy.razorScuttlerHitPlayer = false;
-          this.frameEvents.push({
-            type: "razor-scuttler-warning",
-            position: { ...enemy.position },
-            direction: { ...enemy.razorScuttlerDirection },
-          });
-        }
-        break;
-      }
-      case "windup":
-        if (enemy.razorScuttlerPhaseRemainingSeconds <= 0) {
-          enemy.razorScuttlerPhase = "dash";
-          enemy.razorScuttlerPhaseRemainingSeconds = RAZOR_SCUTTLER_DASH_SECONDS;
-          this.frameEvents.push({
-            type: "razor-scuttler-dash",
-            position: { ...enemy.position },
-            direction: { ...enemy.razorScuttlerDirection },
-          });
-        }
-        break;
-      case "dash": {
-        const radius = ENEMY_CATALOG["razor-scuttler"].radiusMetres;
-        const desired = {
-          x: enemy.position.x + enemy.razorScuttlerDirection.x * dashSpeed * deltaSeconds,
-          y: enemy.position.y + enemy.razorScuttlerDirection.y * dashSpeed * deltaSeconds,
-        };
-        const hitBoundary = desired.x <= radius || desired.x >= this.widthMetres - radius
-          || desired.y <= radius || desired.y >= this.heightMetres - radius;
-        const hitCover = this.firstCollidingObstacle(desired, radius);
-        if (hitBoundary || hitCover) {
-          this.enterRazorScuttlerRecovery(enemy, "cover", 1.4);
-          break;
-        }
-        this.moveEnemy(enemy, enemy.razorScuttlerDirection, dashSpeed, deltaSeconds);
-        if (
-          !enemy.razorScuttlerHitPlayer
-          && distance(enemy.position, this.playerPosition) <= radius + PLAYER_RADIUS_METRES + 0.12
-        ) {
-          enemy.razorScuttlerHitPlayer = true;
-          this.damagePlayer(this.scaledEnemyDamage(enemy, RAZOR_SCUTTLER_DASH_DAMAGE));
-          this.enterRazorScuttlerRecovery(enemy, "player", 1);
-          break;
-        }
-        if (enemy.razorScuttlerPhaseRemainingSeconds <= 0) {
-          this.enterRazorScuttlerRecovery(enemy, "miss", RAZOR_SCUTTLER_RECOVERY_SECONDS);
-        }
-        break;
-      }
-      case "recovery":
-        if (enemy.razorScuttlerPhaseRemainingSeconds <= 0) {
-          enemy.razorScuttlerPhase = "pursuit";
-          enemy.razorScuttlerPhaseRemainingSeconds = 0.55;
-        }
-        break;
-    }
-  }
+    const dashSpeed = enemy.eliteKind === "razorlord" ? RAZORLORD_DASH_SPEED : RAZOR_SCUTTLER_DASH_SPEED;
+    const radius = ENEMY_CATALOG["razor-scuttler"].radiusMetres;
+    const result = stepRazorScuttlerBehavior(
+      {
+        phase: enemy.razorScuttlerPhase,
+        phaseRemainingSeconds: enemy.razorScuttlerPhaseRemainingSeconds,
+        direction: enemy.razorScuttlerDirection,
+        hitPlayer: enemy.razorScuttlerHitPlayer,
+      },
+      {
+        deltaSeconds,
+        position: enemy.position,
+        playerPosition: this.playerPosition,
+        pursuitSpeedMetresPerSecond: pursuitSpeed,
+        dashSpeedMetresPerSecond: dashSpeed,
+        radiusMetres: radius,
+        playerRadiusMetres: PLAYER_RADIUS_METRES,
+        widthMetres: this.widthMetres,
+        heightMetres: this.heightMetres,
+        arena: this.collisionArena(),
+      },
+    );
+    if (result.facingDirection) enemy.facingDirection = result.facingDirection;
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
 
-  private enterRazorScuttlerRecovery(
-    enemy: EnemyState,
-    reason: "player" | "cover" | "miss",
-    durationSeconds: number,
-  ): void {
-    enemy.razorScuttlerPhase = "recovery";
-    enemy.razorScuttlerPhaseRemainingSeconds = durationSeconds;
-    this.frameEvents.push({ type: "razor-scuttler-impact", position: { ...enemy.position }, reason });
+    let state = result.state;
+    let impact = result.impact;
+    if (impact === null) {
+      const resolved = resolveRazorScuttlerAfterMovement(
+        state,
+        enemy.position,
+        this.playerPosition,
+        radius,
+        PLAYER_RADIUS_METRES,
+      );
+      state = resolved.state;
+      impact = resolved.impact;
+    }
+    enemy.razorScuttlerPhase = state.phase;
+    enemy.razorScuttlerPhaseRemainingSeconds = state.phaseRemainingSeconds;
+    enemy.razorScuttlerDirection = state.direction;
+    enemy.razorScuttlerHitPlayer = state.hitPlayer;
+
+    if (result.warningFired) {
+      this.frameEvents.push({
+        type: "razor-scuttler-warning",
+        position: { ...enemy.position },
+        direction: { ...enemy.razorScuttlerDirection },
+      });
+    }
+    if (result.dashFired) {
+      this.frameEvents.push({
+        type: "razor-scuttler-dash",
+        position: { ...enemy.position },
+        direction: { ...enemy.razorScuttlerDirection },
+      });
+    }
+    if (impact === "player") {
+      this.damagePlayer(this.scaledEnemyDamage(enemy, RAZOR_SCUTTLER_DASH_DAMAGE));
+    }
+    if (impact !== null) {
+      this.frameEvents.push({ type: "razor-scuttler-impact", position: { ...enemy.position }, reason: impact });
+    }
   }
 
   private updateStormRegent(enemy: EnemyState, deltaSeconds: number): void {
@@ -7625,23 +7598,28 @@ export class CombatSimulation {
           x: this.playerPosition.x - enemy.position.x,
           y: this.playerPosition.y - enemy.position.y,
         });
-        if (phase !== "brood") {
-          this.moveEnemy(
-            enemy,
-            enemy.facingDirection,
-            phase === "last-stand" ? 1.25 : ENEMY_CATALOG["bastion-eater"].movementSpeedMetresPerSecond,
-            deltaSeconds,
-          );
-        }
+        // `brood` used to skip movement outright and neither `brood` nor
+        // `last-stand` ever rolled the charge — the boss's one fast,
+        // telegraphed, dodge-worthy attack — into their action cycle, so it
+        // was only ever reachable in the fight's opening third (`breach`,
+        // health > 66%). Stalk now always moves, on a speed curve that rises
+        // with phase, and charge is in every phase's rotation.
+        this.moveEnemy(
+          enemy,
+          enemy.facingDirection,
+          phase === "last-stand" ? 1.25 : phase === "brood" ? 1.1 : ENEMY_CATALOG["bastion-eater"].movementSpeedMetresPerSecond,
+          deltaSeconds,
+        );
         if (enemy.bastionEaterActionRemainingSeconds <= 0) {
           enemy.bastionEaterAttackCount += 1;
           if (phase === "breach") {
             this.beginBastionEaterAction(enemy, enemy.bastionEaterAttackCount % 2 === 0 ? "charge-windup" : "claw-windup");
           } else if (phase === "brood") {
-            this.beginBastionEaterAction(enemy, enemy.bastionEaterAttackCount % 2 === 0 ? "egg-windup" : "tendril-windup");
-          } else {
             const cycle = enemy.bastionEaterAttackCount % 3;
-            this.beginBastionEaterAction(enemy, cycle === 0 ? "breach-windup" : cycle === 1 ? "claw-windup" : "tendril-windup");
+            this.beginBastionEaterAction(enemy, cycle === 0 ? "egg-windup" : cycle === 1 ? "tendril-windup" : "charge-windup");
+          } else {
+            const cycle = enemy.bastionEaterAttackCount % 4;
+            this.beginBastionEaterAction(enemy, cycle === 0 ? "breach-windup" : cycle === 1 ? "claw-windup" : cycle === 2 ? "tendril-windup" : "charge-windup");
           }
         }
         break;
@@ -10164,50 +10142,6 @@ export function miniBossRepositionDirection(
     x: towardPlayer.x * radialIntent + tangent.x * 0.82,
     y: towardPlayer.y * radialIntent + tangent.y * 0.82,
   });
-}
-
-/** Accelerates toward a target velocity without frame-rate-dependent overshoot. */
-export function approachVelocity(
-  current: Vector2Data,
-  target: Vector2Data,
-  maximumDelta: number,
-): Vector2Data {
-  const delta = { x: target.x - current.x, y: target.y - current.y };
-  const magnitude = Math.hypot(delta.x, delta.y);
-  if (magnitude <= Math.max(0, maximumDelta) || magnitude === 0) return { ...target };
-  const scale = Math.max(0, maximumDelta) / magnitude;
-  return { x: current.x + delta.x * scale, y: current.y + delta.y * scale };
-}
-
-/**
- * Pack steering with a guaranteed pursuit component. Separation opens gaps,
- * while the forward floor prevents an evenly spaced crowd ring from forming.
- */
-export function infectedSurvivorSteeringDirection(
-  towardPlayer: Vector2Data,
-  separation: Vector2Data,
-  laneBias: number,
-): Vector2Data {
-  const forward = normalizeVector(towardPlayer);
-  if (forward.x === 0 && forward.y === 0) return { x: 0, y: 0 };
-  const tangent = { x: -forward.y, y: forward.x };
-  const candidate = normalizeVector({
-    x: forward.x + separation.x * 0.72 + tangent.x * laneBias,
-    y: forward.y + separation.y * 0.72 + tangent.y * laneBias,
-  });
-  const dot = candidate.x * forward.x + candidate.y * forward.y;
-  const forwardFloor = 0.55;
-  if (dot >= forwardFloor) return candidate;
-  const lateral = {
-    x: candidate.x - forward.x * dot,
-    y: candidate.y - forward.y * dot,
-  };
-  const lateralDirection = normalizeVector(lateral);
-  const lateralMagnitude = Math.sqrt(1 - forwardFloor * forwardFloor);
-  return {
-    x: forward.x * forwardFloor + lateralDirection.x * lateralMagnitude,
-    y: forward.y * forwardFloor + lateralDirection.y * lateralMagnitude,
-  };
 }
 
 export function pointInsideRipperSweep(

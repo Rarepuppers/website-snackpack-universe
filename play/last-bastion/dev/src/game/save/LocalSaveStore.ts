@@ -56,6 +56,14 @@ export interface GameSettings {
   offscreenThreatIndicators: "off" | "threats" | "all";
   colorVisionMode: "standard" | "deuteranopia" | "protanopia" | "tritanopia";
   effectQuality: EffectQualityPreference;
+  /**
+   * §11.5. Drives a fixed-timestep accumulator (`FixedTimestepClock.ts`)
+   * rather than scaling `deltaSeconds`, so the deterministic replay fixture
+   * is unaffected — every simulation step is still exactly 1/60s regardless
+   * of this value. 0.75x is the accessibility case; 1.25x is quality-of-life
+   * for repeat runs. Difficulty-ladder and powerup uses are not implemented.
+   */
+  gameSpeedMultiplier: 0.75 | 1 | 1.25;
 }
 
 /**
@@ -165,6 +173,7 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     offscreenThreatIndicators: "all",
     colorVisionMode: "standard",
     effectQuality: "auto",
+    gameSpeedMultiplier: 1,
   }),
   controls: DEFAULT_CONTROL_BINDINGS,
   progress: Object.freeze({
@@ -415,6 +424,9 @@ function normalizeSettings(value: unknown): GameSettings {
     || candidate.effectQuality === "low"
     ? candidate.effectQuality
     : "auto";
+  const gameSpeedMultiplier = candidate.gameSpeedMultiplier === 0.75 || candidate.gameSpeedMultiplier === 1.25
+    ? candidate.gameSpeedMultiplier
+    : 1;
   return {
     screenShakeEnabled: readBoolean(candidate.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
     reducedFlashEnabled: readBoolean(candidate.reducedFlashEnabled, DEFAULT_SAVE.settings.reducedFlashEnabled),
@@ -441,6 +453,7 @@ function normalizeSettings(value: unknown): GameSettings {
     offscreenThreatIndicators,
     colorVisionMode,
     effectQuality,
+    gameSpeedMultiplier,
   };
 }
 

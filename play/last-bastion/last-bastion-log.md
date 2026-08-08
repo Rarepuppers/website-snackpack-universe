@@ -2275,3 +2275,183 @@ Implemented as a separate `bonusHealth` pool. No existing clamp changed.
 ### A colour-vision gap in yesterday's affinity mark
 
 Checked while assessing the affinity triangle without screenshots. `combatPalette()` carries only threat and danger colours — it has **no damage-type entries**, so `DAMAGE_TYPE_COLOURS` is never remapped anywhere in the codebase. The triangle's *direction* survives all four modes as designed, but *which* damage type it refers to is carried by colour alone, and `fire 0xff5148` against `toxic 0x7ed957` is precisely the deuteranopia/protanopia confusion pair. A red-green colourblind player sees "weak to something" and cannot tell which of the two. Not a regression — `EnemyHealthBars` has never been palette-aware — but it is the exact property §11.7 requires of asset batch 86 ("shape-first, never colour-only"), so the shape work needs to extend to damage-type identity, not just weak-versus-resistant. Left as a finding rather than a redesign.
+
+## 8 August 2026 — Game speed (§11.5), setting only
+
+The last open item from §11. Ship order followed exactly as the plan specified: setting first,
+difficulty modifier and powerup use both left for later.
+
+- **New Phaser-free `combat/FixedTimestepClock.ts`.** The simulation now always advances in constant
+  `FIXED_STEP_SECONDS` (1/60) ticks — the same constant `ReplayFixture.ts` already used for replay —
+  regardless of frame rate or the speed setting. `planFixedSteps(accumulator, deltaSeconds,
+  multiplier)` is the only place that knows about wall-clock time; it reports how many fixed ticks to
+  run this frame and the accumulator remainder to carry forward. This is precisely what the plan
+  ruled out doing by scaling `deltaSeconds` directly: step count changes, but step *size* never does,
+  so the deterministic replay fixture and `ReferenceRun` hashes are unaffected by construction.
+- **A ceiling most of the design already implied but the plan didn't name.** `MAX_STEPS_PER_FRAME`
+  (5) stops a stalled frame — or a backgrounded tab returning with a multi-second delta — from
+  demanding hundreds of catch-up steps in one call. On a clamp the leftover time is dropped rather
+  than banked, so the game falls behind wall-clock time for one frame on purpose rather than bursting
+  through several frames to catch up, which would be the same stall deferred rather than avoided.
+- **`gameSpeedMultiplier` added to `GameSettings`** (0.75 / 1 / 1.25), normalized the same way
+  `radarSize` already is, exposed as `GAME SPEED` in the pause menu next to `COMBAT EFFECTS`.
+- **`PrototypeScene.update` now loops `plan.steps` calls to `simulation.step`** instead of one
+  variable-delta call per rendered frame. Input is polled once per frame and reused across however
+  many ticks that produces, which is the standard fixed-timestep pattern — the "pressed" edge fields
+  on `PlayerIntent` are all gated internally by a cooldown (`ultimatePressed`, evasive move via
+  `HeroMotionController`) or a collected/consumed flag, so replaying the same intent across a few
+  ticks in one frame cannot double-fire an action.
+- **A genuine bug caught before it shipped, not after.** Below 1x speed a render frame can land with
+  zero ticks behind it — the accumulator hasn't reached a full step yet — so `snapshot` is the same
+  object already processed last frame, `events` included. The first version called `collectBestiary`
+  and `playCombatEvents` unconditionally every frame, which would have replayed last frame's
+  spawn/defeat events and audio cues a second time at 0.75x. Both are now gated on `plan.steps > 0`;
+  `renderSnapshot` stays unguarded because redrawing unchanged positions is a pure, harmless no-op.
+- Verification: typecheck clean, **1120 tests across 164 files pass** (11 new), image audit 8 lossy +
+  50 lossless, build clean, smoke `200` / 76 routes, offline 335 / 0 missing. Browser boot clean, no
+  console errors after several seconds of live play at the default 1x speed. The pause-menu control
+  itself follows the exact pattern already proven by `colorVisionMode` and `radarSize` and was not
+  re-verified by eye — screenshots remain unavailable in this environment.
+
+## 8 August 2026 — Two bugs reported from a live screenshot
+
+The user played a real build in their own browser (screenshots are still unavailable in this dev
+environment) and reported two things from one screenshot of a Bastion Eater fight: the boss's egg
+summons rendered as Phaser's default missing-texture placeholder, and the boss "just stands in one
+spot and barely moves" — asking whether bosses should charge and chase like Brotato instead.
+
+### Missing texture: `preload()` only sees the wave's *opening* roster
+
+`PrototypeScene.preload()` calls `combatAssetsForSession` with `enemyTypes:
+this.simulation.snapshot().enemies.map((enemy) => enemy.type)` — the enemies present at scene
+creation, before the fight starts. `combatAssetsForSession` then restricts the encounter-specific
+asset set (`ENCOUNTER_SPECIFIC_ASSET_IDS`, which every enemy body and effect batch lives in) to only
+what that initial roster requires. Enemies a boss or mini-boss *summons* mid-fight are invisible to
+that snapshot, so their textures never enter the preload queue at all — Phaser falls back to its
+built-in missing-texture image (a green square with a black diagonal cross) the instant one spawns.
+
+The codebase already has the fix pattern for this — `requiredEnemyBodyIdsForSelection` special-cases
+`nest-weaver` to also require `nest-pod-v1`/`swarm-scuttler-v1`, and `foundry-fabricator`/
+`cyborg-reclaimer` to require the foundry pad/drone/turret bodies. **`brood-warden` and
+`bastion-eater` were missing the same treatment.** Both summon `egg-cluster` via the shared
+`layBroodEggs`, and an egg left alive hatches into a `scuttler` — neither appears in a solo boss
+node's initial snapshot. Added both to the special-case list, requiring `egg-cluster-v1` +
+`batch-c-effects-v1` (egg-cluster's effect batch) and `scuttler-v1` + `batch-b-effects-v1`
+(scuttler's), since — unlike Nest Weaver, whose summons happen to share its own effects batch — the
+egg-cluster and scuttler effect batches are distinct from either boss's own.
+
+A new `it.each` test in `CombatAssetManifest.test.ts` drives a solo `brood-warden` / `bastion-eater`
+node and asserts all four are present; it failed against the pre-fix code exactly as expected before
+the special case was added. Verified live in the browser too: `window.__combatAssetAudit.ids`
+contains all four assets on `?scenario=bastion-eater` now, where before the fix it held neither.
+
+### "Barely moves": the charge already existed, it just couldn't fire past 66% health
+
+Read the boss's actual state machine before assuming a redesign was needed, since a mini-boss
+sweep (Siege Crusher, Brood Warden) confirmed most already have exactly the Brotato-style charge
+being asked for: Siege Crusher charges at 8.8-10.8 m/s with a telegraph and obstacle-collision
+damage, Brood Warden rushes once per enrage tier — both faster than the player's 5.25 m/s base move
+speed and already dodge-worthy. Bastion Eater was the actual outlier, and the screenshot's own HUD
+(`LAST STAND / ENRAGED`, 668/2400 health = 27.8%) pinpoints exactly which phase: `updateBastionEater`
+already has a fully-implemented charge at 7.8-9.2 m/s, but two phase-gates meant it and all movement
+were absent for the two-thirds of the fight a player actually spends against a boss that has taken
+damage — see `wave_balance.md` for the exact before/after table. `stalk` skipped movement outright
+during `brood` (33-66% health), and `charge-windup` was only ever selected from `breach`'s 2-way
+cycle (health > 66%) — neither `brood` nor `last-stand` (<33%, where the screenshot was taken) ever
+rolled it in. No design doc anywhere claims this was deliberate; it reads as an artifact of each
+phase's attack set having been authored independently without a full-fight pacing pass.
+
+Four new tests in `BastionEaterMobility.test.ts` prove the fix directly: brood-phase stalk now moves
+a measurable distance (was exactly 0), and `charge` is observed at least once when driven through
+several hundred frames in `breach`, `brood`, and `last-stand` alike (only `breach` passed before the
+fix). Browser-verified on `?scenario=bastion-eater`: clean boot, no console errors.
+
+**Scope note.** This turn fixed the one boss with concrete evidence of a gap. Six other mini-bosses
+were spot-checked (Siege Crusher, Brood Warden) and read as already well-designed on this axis — the
+"should every boss move like Brotato" question is not a uniform gap across the roster, so the other
+five were left untouched rather than guessed at without the same kind of evidence.
+
+- Verification: typecheck clean, **1126 tests across 165 files pass** (6 new), image audit 8 lossy +
+  50 lossless, build clean, smoke `200` / 76 routes, offline 335 / 0 missing. Browser boot clean on
+  both `?scenario=bastion-eater` and the default screen, no console errors, and the asset audit
+  confirmed live in the running page rather than only in tests.
+
+## 8 August 2026 — Phase 0 refactor: Razor Scuttler extracted
+
+Continuing the enemy-behaviour extraction from `CombatSimulation.ts` (10,244 lines and climbing).
+Razor Scuttler was next on the "easy" list — a four-phase pursuit/windup/dash/recovery state machine
+with no elite-specific branching beyond a speed swap, unlike the "hard" bucket's per-enemy structural
+differences.
+
+- New Phaser-free `RazorScuttlerBehavior.ts` following the established `stepX` +
+  `resolveXAfterMovement` contract (`EnemyMovementIntent.ts`). The split matters here specifically:
+  the dash phase's cover/boundary check tests the *desired* position using data already available
+  before movement resolves, so it lives in `stepRazorScuttlerBehavior`; the player-hit check needs
+  where the scuttler actually ended up, so it lives in `resolveRazorScuttlerAfterMovement`, called
+  by the caller only after `applyMovementIntent` has moved the enemy.
+- **Caught a live bug before it shipped, not after: the original obstacle check used
+  `this.firstCollidingObstacle`, which filters through `this.activeObstacles()` — obstacles with
+  positive remaining health. The pure module has no such filter of its own; it just takes whatever
+  `ArenaDefinition` it's handed.** A first draft passed `this.arena` directly, which would have made
+  a Razor Scuttler dash treat a *destroyed* obstacle as still solid — a real regression, caught by
+  reading `firstCollidingObstacle`'s implementation rather than assuming its name matched its
+  behaviour. Fixed by passing `this.collisionArena()`, the existing helper every other extracted
+  module already uses for exactly this reason.
+- 17 new pure-function unit tests in `RazorScuttlerBehavior.test.ts` — the first two attempts at these
+  exposed two more things, both instructive:
+  - A `toEqual` assertion on a retreat vector failed on `y: -0` vs `y: 0`. Not a module bug: the
+    original code computes `{ x: -towardPlayer.x, y: -towardPlayer.y }` too, negative zero included,
+    and the extraction is byte-for-byte faithful to that. Fixed the *test* to compare components with
+    `toBeCloseTo` instead of asserting exact object equality on a value that carries a legitimate
+    signed zero.
+  - A "moves forward when clear" test put the scuttler at `y: 0` in open air and got `NO_MOVEMENT`
+    back — the arena boundary check is `desired.y <= radiusMetres`, and `y: 0` genuinely sits inside
+    the top wall's margin. Not a bug in the module or the boundary logic; the test needed an interior
+    spawn point, same as any position-sensitive fixture in this codebase needs to be sited on purpose.
+- **Equivalence proof, per the standing rule.** A throwaway scratch test (never committed) ran five
+  scenarios — miss, hit, too-close retreat, cover crash, and the Razorlord elite speed variant — for
+  400 frames each through `CombatSimulation`, sampling `replaySnapshotDigest` every 5 frames, before
+  and after the refactor. All 400 digests across all five scenarios matched byte-for-byte. The
+  existing four black-box Razor Scuttler tests in `CombatSimulation.test.ts` also passed unmodified.
+- Constants (`RAZOR_SCUTTLER_WINDUP_SECONDS`, `RAZOR_SCUTTLER_DASH_SPEED`,
+  `RAZOR_SCUTTLER_DASH_SECONDS`, `RAZOR_SCUTTLER_RECOVERY_SECONDS`, the min/max dash-range band, and
+  the new named `RAZORLORD_PURSUIT_SPEED`/`RAZORLORD_DASH_SPEED`, previously inline `4.6`/`11`
+  literals) moved into the new module. `PrototypeScene.ts`'s dash-trail import moved with them.
+- **A stale build cache, not a code bug.** After the refactor, a browser boot threw `SyntaxError: ...
+  does not provide an export named 'RAZOR_SCUTTLER_DASH_SECONDS'` — even after a full dev-server
+  restart. Clearing `node_modules/.vite` and loading a fresh tab fixed it: Vite's dependency
+  pre-bundle cache had not picked up the export moving to a new module. Recorded because it will
+  recur on the next extraction and is easy to mistake for a real regression.
+- Verification: typecheck clean, **1143 tests across 166 files pass** (17 new), image audit 8 lossy +
+  50 lossless, build clean, smoke `200` / 76 routes, offline 335 / 0 missing. Browser boot clean on
+  `?scenario=razor-scuttler` after the cache clear, several seconds of live dash/pursuit AI with no
+  console errors.
+
+**Phase 0 remaining:** Tether Bloom and Spinewheel are the rest of the "easy" bucket (Spinewheel's
+bounce physics are already split out into `SpinewheelPhysics.ts`; its phase state machine itself is
+not). Siege Crusher, Brood Warden, Rift Stalker, and Bastion Eater remain the "hard" bucket — each
+has genuine structural differences from this pattern (enrage tiers, multiple simultaneous windups,
+child-entity spawning) that need reading individually rather than assumed from this extraction.
+
+## 8 August 2026 — Steam-plan review and Infected Survivor extraction
+
+Reviewed `last-bastion-improvement-and-steam-plan-2026-08-07.md` against the live code, current
+Steamworks requirements, and the 8 August working tree. The direction stands, but the plan now has
+a Codex review addendum recording several corrections: Deck 1280×800 must preserve the 16:9 world
+inside a 1280×720 fitted rectangle rather than stretch it; browser and Electron display
+capabilities need separate contracts; desktop saves require their own narrow preload bridge; Steam
+store/library capsule dimensions were corrected to Valve's current templates; release operations,
+performance budgets, product targets, and a small gameplay-validation slice were added as gates.
+T0.4 (live display sizing) is now marked complete rather than remaining in the open queue.
+
+Implementation also continued T0.1 with a Phaser-free `InfectedSurvivorBehavior.ts`. It owns the
+hesitate/sprint/recover state machine, stamina, acceleration/deceleration, pursuit-floor steering,
+and facing result while `CombatSimulation` retains separation lookup, collision/movement
+resolution, and event emission. Existing exports remain available from `CombatSimulation.ts`, so
+downstream imports did not move. Three focused tests cover sprint commitment, authored acceleration,
+and the easy-to-regress exhaustion tick that must still move before recovery begins.
+
+- Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,146 tests across
+  167 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.
+- Next low-risk extractions: Spinewheel, then Tether Bloom. The pure display-planning spike T2.0/T2.1
+  follows before any RenderTexture or Electron implementation.
