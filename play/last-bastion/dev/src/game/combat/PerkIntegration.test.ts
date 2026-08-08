@@ -10,6 +10,14 @@ describe("combat perk integration", () => {
     expect(quartermaster.weaponInventory.capacity).toBe(6);
   });
 
+  it("applies the advanced Vanguard and Logistician values through the same run contract", () => {
+    const vanguard = new CombatSimulation({ autoStartWaves: false, perkId: "perk-vanguard" }).snapshot();
+    const logistician = new CombatSimulation({ autoStartWaves: false, perkId: "perk-logistician" }).snapshot();
+    expect(vanguard.level).toBe(3);
+    expect(vanguard.playerMaxHealth).toBe(12);
+    expect(logistician.weaponInventory.capacity).toBe(7);
+  });
+
   it("applies Fast Learner before the fourth wave and Scrapper to shop resale", () => {
     const learner = new CombatSimulation({ autoStartWaves: false, perkId: "perk-fast-learner" });
     learner.addExperience(20);

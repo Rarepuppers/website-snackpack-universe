@@ -13,11 +13,27 @@ function progress(overrides: Partial<GameProgress> = {}): GameProgress {
 }
 
 describe("perk behavior gate", () => {
-  it("defines seven stable one-slot perks and milestone unlocks", () => {
-    expect(PERK_CATALOG).toHaveLength(7);
+  it("keeps the original seven perks and adds a victory-gated advanced track", () => {
+    expect(PERK_CATALOG).toHaveLength(10);
     expect(unlockedPerkIds(progress())).toEqual(["perk-veteran"]);
-    expect(unlockedPerkIds(progress({ runsFinished: 3, victories: 1, bestWaveReached: 4, nodesCleared: 20 })))
-      .toEqual(PERK_CATALOG.map((perk) => perk.id));
+    expect(unlockedPerkIds(progress({
+      runsFinished: 3, victories: 1, bestWaveReached: 4, nodesCleared: 20,
+    }))).toEqual(PERK_CATALOG.slice(0, 7).map((perk) => perk.id));
+
+    const advanced = progress({
+      runsFinished: 3, victories: 4, bestWaveReached: 4, nodesCleared: 20,
+      threatTierVictories: { 0: 2, 1: 1, 2: 1 },
+    });
+    expect(unlockedPerkIds(advanced)).toEqual(PERK_CATALOG.map((perk) => perk.id));
+  });
+
+  it("requires a victory on each exact threat tier for its advanced perk", () => {
+    expect(unlockedPerkIds(progress({ threatTierVictories: { 0: 1, 1: 0, 2: 0 } })))
+      .toEqual(["perk-veteran", "perk-vanguard"]);
+    expect(unlockedPerkIds(progress({ threatTierVictories: { 0: 0, 1: 1, 2: 0 } })))
+      .toEqual(["perk-veteran", "perk-logistician"]);
+    expect(unlockedPerkIds(progress({ threatTierVictories: { 0: 0, 1: 0, 2: 1 } })))
+      .toEqual(["perk-veteran", "perk-recon-specialist"]);
   });
 
   it("resolves each perk once into the portable run modifier contract", () => {
@@ -28,5 +44,8 @@ describe("perk behavior gate", () => {
     expect(resolvePerkModifiers("perk-gunsmith").mergeDamageMultiplier).toBe(1.1);
     expect(resolvePerkModifiers("perk-survivor").lowHealthDamageMultiplier).toBe(0.75);
     expect(resolvePerkModifiers("perk-pathfinder").mapRevealBonusColumns).toBe(1);
+    expect(resolvePerkModifiers("perk-vanguard").startingLevel).toBe(3);
+    expect(resolvePerkModifiers("perk-logistician").inventoryBonusSlots).toBe(3);
+    expect(resolvePerkModifiers("perk-recon-specialist").mapRevealBonusColumns).toBe(2);
   });
 });

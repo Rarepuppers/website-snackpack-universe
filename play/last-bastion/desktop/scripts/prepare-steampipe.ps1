@@ -34,8 +34,9 @@ $appConfig = $appTemplate.Replace("__APP_ID__", $AppId).
   Replace("__PREVIEW_LINE__", $previewLine)
 $depotTemplate = Get-Content -LiteralPath (Join-Path $templateRoot "depot_build.vdf.in") -Raw -Encoding utf8
 $depotConfig = $depotTemplate.Replace("__DEPOT_ID__", $DepotId)
-Set-Content -LiteralPath (Join-Path $scriptsRoot "app_build.vdf") -Value $appConfig -Encoding utf8NoBOM
-Set-Content -LiteralPath (Join-Path $scriptsRoot "depot_build.vdf") -Value $depotConfig -Encoding utf8NoBOM
+$utf8WithoutBom = New-Object System.Text.UTF8Encoding($false)
+[System.IO.File]::WriteAllText((Join-Path $scriptsRoot "app_build.vdf"), $appConfig, $utf8WithoutBom)
+[System.IO.File]::WriteAllText((Join-Path $scriptsRoot "depot_build.vdf"), $depotConfig, $utf8WithoutBom)
 
 Write-Output "SteamPipe work tree prepared at $workRoot"
 Write-Output "Preview: $($Preview.IsPresent); no upload was performed."

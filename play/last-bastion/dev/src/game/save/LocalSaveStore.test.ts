@@ -249,6 +249,24 @@ describe("LocalSaveStore", () => {
     expect(new LocalSaveStore(storage).load().progress.threatTierBestNodes[1]).toBe(6);
   });
 
+  it("announces each advanced perk after the victory that earns it", () => {
+    const store = new LocalSaveStore(fakeStorage());
+    const summary = createRunSummary({
+      mode: "expedition", outcome: "victory", heroId: "marine", perkId: "perk-veteran",
+      waveReached: 8, nodesCleared: 8, kills: 20, scrapEarned: 10, scrapBanked: 0,
+      level: 3, damageByWeapon: {}, weapons: [], upgrades: [],
+    });
+
+    const tierZero = store.recordRunEnd({ victory: true, waveReached: 8, summary, threatTier: 0 });
+    expect(tierZero.lastRunSummary?.newlyUnlockedPerkIds).toContain("perk-vanguard");
+
+    const tierOne = store.recordRunEnd({ victory: true, waveReached: 8, summary, threatTier: 1 });
+    expect(tierOne.lastRunSummary?.newlyUnlockedPerkIds).toContain("perk-logistician");
+
+    const tierTwo = store.recordRunEnd({ victory: true, waveReached: 8, summary, threatTier: 2 });
+    expect(tierTwo.lastRunSummary?.newlyUnlockedPerkIds).toContain("perk-recon-specialist");
+  });
+
   it("ignores empty dex batches without touching storage", () => {
     const storage = fakeStorage();
     const store = new LocalSaveStore(storage);

@@ -2963,3 +2963,71 @@ contract is limited to offscreen rendering.
 - Remaining acceptance is physical: package the host and test windowed/borderless movement across two
   Windows monitors with different scale factors, monitor removal/reconnection, and Steam Deck desktop
   and gaming modes. No automated result is being substituted for that hardware evidence.
+
+## 8 August 2026 — T3.9 packaging and SteamPipe foundation complete
+
+The desktop workspace now has native-platform packaging commands backed by electron-builder 26.15.3.
+Packaging rebuilds the web and Electron layers, stages only the published game, codex, runtime assets,
+and Steam Input manifest, places those files under `resources/game` and `resources/steam-input`, and
+keeps the `steamworks.js` native binaries unpacked from ASAR. Electron caches, staging, release output,
+generated depot content, and `steam_appid.txt` are ignored. The unsigned Windows x64 directory package
+completed successfully and contains the executable, complete game root, codex, manifest, and native
+module payload.
+
+Tokenized SteamPipe AppBuild and DepotBuild templates contain no assigned IDs, passwords, branch names,
+or credentials. The preparation script requires positive App/Depot IDs, creates a disposable work tree,
+maps the complete packaged directory recursively, excludes PDB symbols, and supports Valve's preview-only
+manifest mode. The upload script delegates to SteamCMD without a password argument and cannot set a build
+live. A local disposable-ID preview-tree generation staged 705 files / 506,737,701 bytes and emitted the
+expected UTF-8 VDFs; no Steam login or upload was performed.
+
+The packaged-renderer smoke path was also made explicit: it skips native Steam initialization, loads the
+custom protocol hidden, verifies the page title/root/URL, and exits. This managed Windows session still
+terminates Electron with access violation `0xC0000005`, including with Steam/GPU disabled, so packaged
+custom-protocol acceptance remains open for a normal desktop rather than being inferred. Release icon,
+code signing, real partner IDs, SteamCMD preview inspection, private-branch upload, and live-client launch
+are the next release-engineering tasks.
+
+- Desktop TypeScript build and **25 tests** pass, covering packaged paths and SteamPipe template safety.
+- The Windows unpacked package builds successfully; its ignored generated output is not staged.
+
+## 8 August 2026 — desktop release icon complete
+
+The desktop build no longer ships Electron's default icon. A new front-facing Marine helmet emblem uses
+the approved deep navy/charcoal armour, ivory side plates, amber visor, cyan equipment lights, restrained
+orange accents, and dark octagonal bastion plate. The composition deliberately omits text, weapons, thin
+projections, and scenery so its silhouette survives taskbar and file-list sizes. A rendered 32 px review
+retains the helmet, visor, and backing-plate read.
+
+The source master is retained at `desktop/packaging-assets/icon-source.png`. A checked-in Pillow script derives the
+seven-resolution Windows ICO (16/24/32/48/64/128/256), Retina ICNS through 1024 px, and 512 px Linux PNG.
+Package metadata now names SnackPack Universe, describes the game, and selects the correct platform asset.
+The Windows directory package rebuild completes with no default-icon warning, and extracting the icon from
+`LastBastion.exe` returns the intended mark.
+
+- Desktop typecheck and **28 tests across 9 suites** pass. New tests lock package metadata, square source,
+  ICO frame count, Linux dimensions, and ICNS signature.
+- Remaining desktop release gates: normal-machine packaged renderer smoke, real multi-monitor/Steam Deck
+  checks, code-signing identity, and live Steam partner acceptance.
+
+## 8 August 2026 — T4.2 advanced perk track complete
+
+The one-slot perk catalogue now extends from seven to ten entries through the existing
+`unlockedPerkIds(progress)` contract. Vanguard unlocks after a Tier-0 expedition victory and starts at
+level 3; Logistician unlocks after Tier 1 and grants three stash slots; Recon Specialist unlocks after
+Tier 2 and reveals two extra expedition-map columns. The bonuses reuse proven run modifiers and consumers,
+so this slice adds no parallel progression path and does not alter threat-tier encounter tuning.
+
+Run-end recording updates the exact tier victory before diffing unlocks, and the debrief names the new
+perk earned on that run. Pure tests cover exact-tier gating (a victory on one tier cannot unlock another),
+modifier values, combat construction, durable debrief announcements, and selection navigation.
+
+The character-select rail was expanded from a seven-wide strip to a bounded five-by-two layout. Because
+the current canonical atlas contains only the original seven populated frames, advanced perks render as
+live T0/T1/T2 doctrine badges. This is an intentional truthful fallback pending the planned P3 art batch;
+the renderer never samples transparent/out-of-range frames or attaches unrelated imagery.
+
+- Full web verification passes: image audit, typecheck, **1,250 tests across 191 files**, production
+  build, smoke `200` / 76 routes, and offline 335 / 0 missing.
+- T4.2 remains open for the currency/spend-tree half. Currency must not be awarded until the visible
+  purchase loop, costs, reset/refund policy, save migration, and cloud merge semantics ship together.

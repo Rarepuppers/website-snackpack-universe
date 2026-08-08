@@ -174,6 +174,14 @@ export const ROSTER: readonly RosterEntry[] = Object.freeze([
   { id: "scout", name: "SCOUT", status: "silhouette" },
 ]);
 
+export function perkTilePosition(index: number): Readonly<{ x: number; y: number }> {
+  const normalized = Math.max(0, Math.floor(index));
+  return {
+    x: 495 + (normalized % 5) * 83,
+    y: 380 + Math.floor(normalized / 5) * 44,
+  };
+}
+
 export interface LabRoute {
   label: string;
   url: string;

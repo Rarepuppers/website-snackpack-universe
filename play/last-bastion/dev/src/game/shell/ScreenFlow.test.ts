@@ -6,6 +6,7 @@ import {
   HOW_TO_PLAY_PAGES,
   LAB_ROUTES,
   MENU_CARDS,
+  perkTilePosition,
   ROSTER,
   SETTINGS_ROWS,
   stepShell,
@@ -14,6 +15,7 @@ import {
 } from "./ScreenFlow";
 import { rebindGamepad, rebindKeyboard } from "../input/ControlBindings";
 import { browserDisplayCapabilities, desktopDisplayCapabilities } from "../rendering/DisplayCapabilities";
+import { PERK_CATALOG } from "../perks/perkCatalog";
 import { settingsRowsForDisplayCapabilities } from "./ScreenFlow";
 
 function boot(screen: Parameters<typeof createShellState>[1] = "title"): ShellState {
@@ -200,6 +202,16 @@ describe("Shell screen flow", () => {
     expect(ROSTER[locked.rosterIndex]!.status).not.toBe("playable");
     expect(stepShell(locked, "confirm").effects).toEqual([]);
     expect(stepShell(locked, "confirm").state.screen).toBe("character-select");
+  });
+
+  it("fits the expanded perk catalog into two rows above the roster rail", () => {
+    const positions = PERK_CATALOG.map((_perk, index) => perkTilePosition(index));
+    expect(new Set(positions.map(({ y }) => y))).toEqual(new Set([380, 424]));
+    for (const { x, y } of positions) {
+      expect(x).toBeGreaterThanOrEqual(473);
+      expect(x).toBeLessThanOrEqual(849);
+      expect(y + 22).toBeLessThanOrEqual(446);
+    }
   });
 
   it("returns from every sub-screen to the menu with back", () => {

@@ -7,7 +7,10 @@ export type PerkId =
   | "perk-fast-learner"
   | "perk-gunsmith"
   | "perk-survivor"
-  | "perk-pathfinder";
+  | "perk-pathfinder"
+  | "perk-vanguard"
+  | "perk-logistician"
+  | "perk-recon-specialist";
 
 export interface PerkDefinition {
   id: PerkId;
@@ -45,6 +48,9 @@ export const PERK_CATALOG: readonly PerkDefinition[] = Object.freeze([
   { id: "perk-gunsmith", name: "Gunsmith", description: "Merged weapons gain +10% bonus damage.", unlockText: "Win 1 run.", isUnlocked: (p) => p.victories >= 1 },
   { id: "perk-survivor", name: "Survivor", description: "Take 25% less health damage below 30% health.", unlockText: "Finish 3 runs.", isUnlocked: (p) => p.runsFinished >= 3 },
   { id: "perk-pathfinder", name: "Pathfinder", description: "Reveal one extra expedition-map column.", unlockText: "Clear 15 expedition nodes.", isUnlocked: (p) => p.nodesCleared >= 15 },
+  { id: "perk-vanguard", name: "Vanguard", description: "Start each run at level 3.", unlockText: "Win an expedition on Threat Tier 0.", isUnlocked: (p) => p.threatTierVictories[0] >= 1 },
+  { id: "perk-logistician", name: "Logistician", description: "+3 stash slots.", unlockText: "Win an expedition on Threat Tier 1.", isUnlocked: (p) => p.threatTierVictories[1] >= 1 },
+  { id: "perk-recon-specialist", name: "Recon Specialist", description: "Reveal two extra expedition-map columns.", unlockText: "Win an expedition on Threat Tier 2.", isUnlocked: (p) => p.threatTierVictories[2] >= 1 },
 ]);
 
 export function isPerkId(value: unknown): value is PerkId {
@@ -65,6 +71,9 @@ export function resolvePerkModifiers(perkId: PerkId | null | undefined): PerkRun
     case "perk-gunsmith": modifiers.mergeDamageMultiplier = 1.1; break;
     case "perk-survivor": modifiers.lowHealthDamageMultiplier = 0.75; break;
     case "perk-pathfinder": modifiers.mapRevealBonusColumns = 1; break;
+    case "perk-vanguard": modifiers.startingLevel = 3; break;
+    case "perk-logistician": modifiers.inventoryBonusSlots = 3; break;
+    case "perk-recon-specialist": modifiers.mapRevealBonusColumns = 2; break;
   }
   return modifiers;
 }

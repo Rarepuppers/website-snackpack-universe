@@ -1,6 +1,8 @@
 {
   "name": "last-bastion-desktop",
   "version": "0.0.1",
+  "description": "Desktop host for the Last Bastion science-fiction survival game.",
+  "author": "SnackPack Universe",
   "private": true,
   "type": "module",
   "main": "dist/main.js",
@@ -11,7 +13,8 @@
     "start": "npm run build && electron .",
     "package:win": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-desktop.ps1 -Platform win",
     "package:linux": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-desktop.ps1 -Platform linux",
-    "package:mac": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-desktop.ps1 -Platform mac"
+    "package:mac": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-desktop.ps1 -Platform mac",
+    "smoke:package:win": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-packaged-host.ps1 -Executable release/win-unpacked/LastBastion.exe"
   },
   "devDependencies": {
     "electron": "43.3.0",
@@ -43,10 +46,18 @@
       }
     ],
     "directories": {
-      "output": "release"
+      "output": "release",
+      "buildResources": "packaging-assets"
     },
     "win": {
-      "executableName": "LastBastion"
+      "executableName": "LastBastion",
+      "icon": "packaging-assets/icon.ico"
+    },
+    "mac": {
+      "icon": "packaging-assets/icon.icns"
+    },
+    "linux": {
+      "icon": "packaging-assets/icon.png"
     }
   }
 }

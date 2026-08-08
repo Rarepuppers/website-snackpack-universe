@@ -22,6 +22,7 @@ import {
   howToPlayPages,
   LAB_ROUTES,
   MENU_CARDS,
+  perkTilePosition,
   ROSTER,
   settingsRowsForDisplayCapabilities,
   stepShell,
@@ -530,17 +531,25 @@ export class ShellScene extends Phaser.Scene {
     this.root.add(this.text(470, 348, perkUnlocked ? perk.description : perk.unlockText, perkUnlocked ? IVORY : MUTED, "11px")
       .setWordWrapWidth(390));
     PERK_CATALOG.forEach((entry, index) => {
-      const x = 492 + index * 55;
+      const { x, y } = perkTilePosition(index);
       const selected = index === this.state.perkIndex;
       const unlocked = this.state.unlockedPerkIds.includes(entry.id);
-      this.root.add(this.add.sprite(x, 397, "canonical-perk-tiles-v2", index)
-        .setDisplaySize(46, 46)
-        .setAlpha(unlocked ? 1 : 0.3)
-        .setTint(selected ? 0xffffff : 0xb7c2cf));
-      if (selected) {
-        this.root.add(this.add.rectangle(x, 397, 50, 50).setStrokeStyle(3, perkUnlocked ? TEAL_HEX : 0xff9a52));
+      if (index < 7) {
+        this.root.add(this.add.sprite(x, y, "canonical-perk-tiles-v2", index)
+          .setDisplaySize(38, 38)
+          .setAlpha(unlocked ? 1 : 0.3)
+          .setTint(selected ? 0xffffff : 0xb7c2cf));
+      } else {
+        const tier = index - 7;
+        this.root.add(this.add.rectangle(x, y, 38, 38, unlocked ? 0x183c46 : 0x202936)
+          .setStrokeStyle(2, unlocked ? TEAL_HEX : 0x596779)
+          .setAlpha(unlocked ? 1 : 0.55));
+        this.root.add(this.text(x, y - 7, `T${tier}`, unlocked ? TEAL : MUTED, "12px", true));
       }
-      this.clickZone(x - 25, 372, 50, 50, () => {
+      if (selected) {
+        this.root.add(this.add.rectangle(x, y, 44, 44).setStrokeStyle(3, perkUnlocked ? TEAL_HEX : 0xff9a52));
+      }
+      this.clickZone(x - 22, y - 22, 44, 44, () => {
         this.state = { ...this.state, perkIndex: index };
         this.render();
       });

@@ -780,7 +780,15 @@ constructed by anything.
   and nothing else — that narrow surface is the whole security model, so it must not grow. IPC
   validates the six current achievement IDs, confines cloud access to the versioned slot, and caps
   payload size. Contract-parity and host security tests are in place, and T3.2 now supplies the real
-  native host. Remaining before DONE: prove packaged custom-protocol boot on Windows and add packaging.
+  native host. Reproducible electron-builder directory packaging now stages only published web/codex/
+  runtime/Steam Input files, keeps native Steamworks binaries outside ASAR, and reads packaged content
+  from `resources/game`. The unsigned Windows x64 directory build completes and its required file set
+  is verified. Remaining before DONE: run the checked-in packaged-renderer smoke harness on a normal
+  Windows desktop; this managed session exits Electron with `0xC0000005`, including with Steam and GPU
+  disabled, so it cannot supply trustworthy custom-protocol acceptance. The release icon is complete:
+  a retained square Marine-helmet source plus tested seven-resolution ICO, 1024 px ICNS, and 512 px PNG
+  derivatives are wired per platform, and Windows packaging embeds the mark without the default Electron
+  icon warning. A signing identity is still required before distribution.
 - **T3.2 — IMPLEMENTED; LIVE-STEAM ACCEPTANCE REMAINS.** `steamworks.js` 0.4.0 initializes in the
   main process. Preload exposes its five-method bridge only after initialization succeeds; otherwise
   the renderer selects a browser-safe adapter at boot. Native false returns become retryable errors,
@@ -836,8 +844,15 @@ constructed by anything.
   offscreen rendering. Pure transition/runtime tests and host-renderer bridge parity are complete.
   Final acceptance still requires packaged Windows testing across at least two monitors with different
   scale factors, unplug/replug recovery, and Steam Deck desktop/gaming-mode checks.
-- **T3.9** — SteamPipe depot config, `steam_appid.txt` (gitignored), and build scripts alongside
-  the existing PowerShell tooling.
+- **T3.9 — FOUNDATION COMPLETE 8 Aug 2026; PARTNER PREVIEW/UPLOAD REMAIN.** electron-builder scripts
+  create unpacked Windows, Linux, or macOS directories on their native platforms, with caches and
+  outputs ignored. Tokenized AppBuild/DepotBuild templates require explicit positive App/Depot IDs;
+  the generator stages the chosen package, supports Valve's manifest-only `Preview` mode, recursively
+  maps the depot, and excludes PDBs. The separate SteamCMD upload script never accepts a password,
+  never embeds credentials, and never promotes a branch. A disposable-ID local generation pass proved
+  705 packaged files / 506,737,701 bytes and emitted valid UTF-8 VDFs; no upload occurred. Final partner
+  acceptance requires the real IDs, SteamCMD preview inspection in App Admin, live Steam client launch,
+  upload to a private branch, and an intentional branch promotion.
 
 ### 10.5 Phase 4 — depth
 
@@ -854,9 +869,16 @@ constructed by anything.
   Do not define tiers 3–11 until five observed runs validate completion rate, damage sources, and
   modifier comprehension. **Depends on T0.1**, because the full ladder eventually lands in the file
   that is currently 10,598 lines.
-- **T4.2 — Meta-progression.** Extend `perkCatalog.ts` past seven with tier-gated unlocks, then
-  add the currency and tree. Keep `unlockedPerkIds(progress)` as the interface — it is already
-  the thing the debrief diffs against.
+- **T4.2 — ADVANCED PERK TRACK COMPLETE 8 Aug 2026; CURRENCY/TREE PENDING.** `perkCatalog.ts`
+  now extends from seven to ten entries without replacing `unlockedPerkIds(progress)`. Vanguard,
+  Logistician, and Recon Specialist require victories on exact Threat Tiers 0, 1, and 2 and feed the
+  existing starting-level, stash-capacity, and map-reveal consumers. Run-end diffing announces each
+  unlock on the earning debrief. Character select uses a tested two-row ten-slot layout; the three
+  advanced perks show honest live T0/T1/T2 badges rather than sampling the seven-frame atlas out of
+  bounds or displaying contradictory fallback art. Commission their final P3 tiles with the later
+  meta-progression art batch. The persistent currency and visible spend tree remain the second half;
+  do not award currency until purchases, costs, refund/reset policy, and cloud reconciliation land in
+  the same slice.
 - **T4.3 — Daily/weekly runs + leaderboards.** Derive the seed from the UTC date, reuse the
   existing `?mapseed=N` threading, submit to Steam Leaderboards on run end. One attempt per seed,
   enforced in the save.
