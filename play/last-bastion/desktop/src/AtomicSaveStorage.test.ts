@@ -3,7 +3,12 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "no
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, it } from "node:test";
-import { AtomicSaveStorage, LOCAL_SAVE_KEY, MAX_LOCAL_SAVE_BYTES } from "./AtomicSaveStorage.js";
+import {
+  AtomicSaveStorage,
+  CLOUD_SYNC_METADATA_KEY,
+  LOCAL_SAVE_KEY,
+  MAX_LOCAL_SAVE_BYTES,
+} from "./AtomicSaveStorage.js";
 
 const temporaryDirectories: string[] = [];
 
@@ -53,6 +58,20 @@ describe("atomic desktop save storage", () => {
     target.setItem(LOCAL_SAVE_KEY, '{"revision":3}');
     assert.equal(readFileSync(target.paths.primary, "utf8"), '{"revision":3}');
     assert.equal(readFileSync(target.paths.backup, "utf8"), '{"revision":1}');
+  });
+
+  it("stores cloud-sync metadata atomically in an isolated fixed slot", () => {
+    const target = storage();
+    target.setItem(LOCAL_SAVE_KEY, '{"save":1}');
+    target.setItem(CLOUD_SYNC_METADATA_KEY, '{"deviceId":"device-a","revision":2}');
+    target.setItem(CLOUD_SYNC_METADATA_KEY, '{"deviceId":"device-a","revision":3}');
+
+    assert.equal(target.getItem(LOCAL_SAVE_KEY), '{"save":1}');
+    assert.equal(target.getItem(CLOUD_SYNC_METADATA_KEY), '{"deviceId":"device-a","revision":3}');
+    assert.equal(
+      readFileSync(target.metadataPaths.backup, "utf8"),
+      '{"deviceId":"device-a","revision":2}',
+    );
   });
 
   it("rejects arbitrary keys, malformed JSON, and oversized payloads", () => {

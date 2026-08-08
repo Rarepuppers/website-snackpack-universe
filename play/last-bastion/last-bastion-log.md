@@ -2796,3 +2796,54 @@ default behavior. Compile-time parity covers both desktop bridge contracts.
   good-backup preservation, confinement, Steamworks fallback, and custom-protocol security.
 - Full web verification passes: image audit, typecheck, **1,202 tests across 181 files**, production
   build, smoke `200` / 76 routes, and offline 335 / 0 missing.
+
+## 8 August 2026 — T3.4 deterministic Steam Cloud reconciliation implemented
+
+Steam builds now reconcile the local schema-v13 save before Phaser boot and request another sync
+after every recordable quick-drop or expedition run outcome. Browser builds skip the path immediately.
+Run-end navigation retains the existing 900 ms debrief beat, waits for a settled cloud operation when
+needed, and has a 2.5 second ceiling so Steam downtime cannot strand the player.
+
+Cloud identity and revision state live in `last-bastion-cloud-sync`, a second exact key accepted by the
+desktop save bridge. It receives the same temporary-write, best-effort flush, known-good backup, and
+atomic-rename behavior as `last-bastion-save`; neither renderer bridge exposes paths or arbitrary file
+access. A portable-content fingerprint avoids revision churn when only local display calibration changes.
+
+Uploads reset display size, presentation/fullscreen mode, selected monitor, frame cap, brightness, and
+gamma to defaults. Reconciliation still uses the full local save, so those device-specific choices survive
+remote preference selection while career and bestiary values merge monotonically. First upload, identical
+content, remote conflict, divergent active runs, offline reads, rejected writes, corrupt metadata, fixed-slot
+confinement, and backup isolation are covered. Failed cloud operations never advance metadata and retain
+local progress for the next retry.
+
+- Full web verification passes: image audit, typecheck, **1,213 tests across 183 files**, production
+  build, smoke `200` / 76 routes, and offline 335 / 0 missing. Desktop build and all **15 tests** pass.
+- T3.4 code is complete. Live acceptance still needs the real Steam App ID and two clients to prove
+  round-trip upload/download, Steam-down recovery, and a deliberate divergent-expedition conflict.
+- Next: T3.5 achievement synchronization with an atomically persisted pending-event queue and boot retry.
+
+## 8 August 2026 — T3.5 durable achievement synchronization implemented
+
+The Steam boot path now derives all six currently earned milestones from the cloud-reconciled save,
+unions them with a durable pending queue, and retries that queue before Phaser starts. Every recordable
+quick-drop and expedition outcome captures progress before and after `recordRunEnd`, queues only newly
+crossed milestones, and starts achievement and cloud synchronization together. Browser builds remain a
+clean no-op.
+
+Pending achievement IDs share the fixed `last-bastion-cloud-sync` metadata file with device/revision
+state. Separate update methods preserve queue entries during a cloud revision write and preserve cloud
+state during a queue write. Serialized stats commits and a latest-metadata merge prevent events added
+during an in-flight commit from being lost. Invalid or duplicate IDs normalize away.
+
+Retry semantics were tightened below the runtime: a queued achievement that Steam already reports as
+set still triggers `StoreStats`. This covers the native state where `SetAchievement` succeeded locally
+but a prior `StoreStats` failed; the queue is cleared only after a successful commit. Read-only metadata,
+Steam-down reads, failed commits, already-unlocked IDs, boot-derived milestones, and run-end crossings
+all fail closed without blocking game boot or losing the local save.
+
+- Full web verification passes: image audit, typecheck, **1,221 tests across 184 files**, production
+  build, smoke `200` / 76 routes, and offline 335 / 0 missing. Desktop build and all **15 tests** pass.
+- T3.5 code is complete. Live acceptance still requires the real Steam App ID and matching dashboard
+  definitions for the six canonical IDs, followed by an unlock/offline/restart/commit exercise.
+- Next: build and playtest the planned T4 vertical slice (threat tiers 0–2, presentation-only hit-stop,
+  and guided first drop). Keep T3.6's ~28-ID expansion gated until those mechanics are validated.

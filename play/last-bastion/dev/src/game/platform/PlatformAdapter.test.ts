@@ -33,7 +33,7 @@ describe("platform adapter", () => {
       { type: "achievement-unlocked", id: "hundred-kills" },
     ]);
     expect(calls).toEqual(["hundred-kills", "commit"]);
-    expect(result).toEqual({ acknowledged: ["hundred-kills"], pending: [] });
+    expect(result).toEqual({ acknowledged: ["first-drop", "hundred-kills"], pending: [] });
   });
 
   it("keeps the whole batch pending when the platform commit fails", async () => {
@@ -44,6 +44,19 @@ describe("platform adapter", () => {
     ]);
     expect(result.acknowledged).toEqual([]);
     expect(result.pending).toEqual(["first-victory", "wave-ten"]);
+  });
+
+  it("retries the stats commit when a queued ID already reads as unlocked", async () => {
+    let commits = 0;
+    const adapter = createSteamPlatformAdapter(bridge({
+      getAchievement: () => true,
+      storeStats: () => { commits += 1; throw new Error("offline"); },
+    }));
+    const result = await synchronizeAchievementEvents(adapter, [
+      { type: "achievement-unlocked", id: "first-drop" },
+    ]);
+    expect(commits).toBe(1);
+    expect(result).toEqual({ acknowledged: [], pending: ["first-drop"] });
   });
 
   it("round-trips the versioned cloud slot and rejects malformed payloads", async () => {

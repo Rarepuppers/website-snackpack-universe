@@ -12,7 +12,9 @@ import {
 import { join } from "node:path";
 
 export const LOCAL_SAVE_KEY = "last-bastion-save";
+export const CLOUD_SYNC_METADATA_KEY = "last-bastion-cloud-sync";
 export const MAX_LOCAL_SAVE_BYTES = 8 * 1024 * 1024;
+export type LocalSaveKey = typeof LOCAL_SAVE_KEY | typeof CLOUD_SYNC_METADATA_KEY;
 
 export interface AtomicSavePaths {
   readonly directory: string;
@@ -21,18 +23,24 @@ export interface AtomicSavePaths {
   readonly temporary: string;
 }
 
-export function atomicSavePaths(userDataDirectory: string): AtomicSavePaths {
+export function atomicSavePaths(
+  userDataDirectory: string,
+  key: LocalSaveKey = LOCAL_SAVE_KEY,
+): AtomicSavePaths {
   const directory = join(userDataDirectory, "saves");
+  const stem = key;
   return {
     directory,
-    primary: join(directory, "last-bastion-save.json"),
-    backup: join(directory, "last-bastion-save.backup.json"),
-    temporary: join(directory, "last-bastion-save.tmp.json"),
+    primary: join(directory, `${stem}.json`),
+    backup: join(directory, `${stem}.backup.json`),
+    temporary: join(directory, `${stem}.tmp.json`),
   };
 }
 
-export function assertLocalSaveKey(value: unknown): asserts value is typeof LOCAL_SAVE_KEY {
-  if (value !== LOCAL_SAVE_KEY) throw new TypeError("Invalid Last Bastion local save key");
+export function assertLocalSaveKey(value: unknown): asserts value is LocalSaveKey {
+  if (value !== LOCAL_SAVE_KEY && value !== CLOUD_SYNC_METADATA_KEY) {
+    throw new TypeError("Invalid Last Bastion local save key");
+  }
 }
 
 export function assertLocalSaveValue(value: unknown): asserts value is string {
@@ -76,32 +84,40 @@ function writeDurably(path: string, value: string): void {
 
 export class AtomicSaveStorage {
   readonly paths: AtomicSavePaths;
+  readonly metadataPaths: AtomicSavePaths;
 
   constructor(userDataDirectory: string) {
     this.paths = atomicSavePaths(userDataDirectory);
+    this.metadataPaths = atomicSavePaths(userDataDirectory, CLOUD_SYNC_METADATA_KEY);
   }
 
   getItem(key: string): string | null {
     assertLocalSaveKey(key);
-    return readValidJson(this.paths.primary) ?? readValidJson(this.paths.backup);
+    const paths = this.pathsForKey(key);
+    return readValidJson(paths.primary) ?? readValidJson(paths.backup);
   }
 
   setItem(key: string, value: string): void {
     assertLocalSaveKey(key);
     assertLocalSaveValue(value);
-    mkdirSync(this.paths.directory, { recursive: true });
-    rmSync(this.paths.temporary, { force: true });
+    const paths = this.pathsForKey(key);
+    mkdirSync(paths.directory, { recursive: true });
+    rmSync(paths.temporary, { force: true });
     try {
-      writeDurably(this.paths.temporary, value);
-      if (readValidJson(this.paths.primary) !== null) {
-        rmSync(this.paths.backup, { force: true });
-        renameSync(this.paths.primary, this.paths.backup);
+      writeDurably(paths.temporary, value);
+      if (readValidJson(paths.primary) !== null) {
+        rmSync(paths.backup, { force: true });
+        renameSync(paths.primary, paths.backup);
       } else {
-        rmSync(this.paths.primary, { force: true });
+        rmSync(paths.primary, { force: true });
       }
-      renameSync(this.paths.temporary, this.paths.primary);
+      renameSync(paths.temporary, paths.primary);
     } finally {
-      rmSync(this.paths.temporary, { force: true });
+      rmSync(paths.temporary, { force: true });
     }
+  }
+
+  private pathsForKey(key: LocalSaveKey): AtomicSavePaths {
+    return key === CLOUD_SYNC_METADATA_KEY ? this.metadataPaths : this.paths;
   }
 }

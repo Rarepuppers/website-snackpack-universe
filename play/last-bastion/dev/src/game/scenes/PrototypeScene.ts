@@ -49,6 +49,8 @@ import { CombatWorldPresenter } from "../rendering/CombatWorldPresenter";
 import { screenShakeIntensity } from "../rendering/ScreenShake";
 import { LocalSaveStore, type GameSettings } from "../save/LocalSaveStore";
 import { createLocalSaveStore } from "../save/SaveStorage";
+import { requestCloudSaveSync } from "../platform/CloudSaveRuntime";
+import { queueAchievementProgress } from "../platform/AchievementRuntime";
 import { cueForCombatEvent, EVASIVE_MOVE_CUE, MEDKIT_HEAL_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
 import { WebAudioSynth } from "../audio/WebAudioSynth";
 import { worldDepth } from "../rendering/WorldDepth";
@@ -971,12 +973,13 @@ export class PrototypeScene extends Phaser.Scene {
       }
       if (this.isRecordableRun(snapshot)) {
         const summary = this.summaryFromSnapshot(snapshot, "quick-drop", 0, snapshot.runMetrics);
-        this.saveStore.recordRunEnd({
+        const before = this.saveStore.load();
+        const after = this.saveStore.recordRunEnd({
           victory: snapshot.status === "victory",
           waveReached: snapshot.waveNumber,
           summary,
         });
-        window.setTimeout(() => { window.location.href = "?screen=summary"; }, 900);
+        this.navigateAfterPlatformSync("?screen=summary", queueAchievementProgress(before, after));
       }
       this.flushBestiary();
     }
@@ -1000,12 +1003,13 @@ export class PrototypeScene extends Phaser.Scene {
         completedBeforeEncounter,
         combinedMetrics,
       );
-      this.saveStore.recordRunEnd({
+      const before = this.saveStore.load();
+      const after = this.saveStore.recordRunEnd({
         victory: false,
         waveReached: this.expeditionContext.encounter.column + 1,
         summary,
       });
-      window.setTimeout(() => { window.location.href = "?screen=summary"; }, 900);
+      this.navigateAfterPlatformSync("?screen=summary", queueAchievementProgress(before, after));
       return;
     }
     const completed = completeCurrentNode(
@@ -1033,16 +1037,41 @@ export class PrototypeScene extends Phaser.Scene {
         Math.max(0, completed.state.clearedNodeIds.length - 1),
         completed.state.metrics,
       );
-      this.saveStore.recordRunEnd({
+      const before = this.saveStore.load();
+      const after = this.saveStore.recordRunEnd({
         victory: true,
         waveReached: completed.map.columns,
         summary,
       });
       this.saveStore.clearExpedition();
-      window.setTimeout(() => { window.location.href = "?screen=summary"; }, 900);
+      this.navigateAfterPlatformSync("?screen=summary", queueAchievementProgress(before, after));
       return;
     }
     window.setTimeout(() => { window.location.href = "?screen=map"; }, 900);
+  }
+
+  /** Gives the run-end Steam Cloud write a bounded chance to finish before page navigation. */
+  private navigateAfterPlatformSync(href: string, achievementSync: Promise<unknown>): void {
+    let navigated = false;
+    let minimumDelayElapsed = false;
+    let syncSettled = false;
+    const navigate = () => {
+      if (navigated) return;
+      navigated = true;
+      window.location.href = href;
+    };
+    window.setTimeout(() => {
+      minimumDelayElapsed = true;
+      if (syncSettled) navigate();
+    }, 900);
+    const fallback = window.setTimeout(navigate, 2_500);
+    void Promise.allSettled([requestCloudSaveSync(), achievementSync]).finally(() => {
+      syncSettled = true;
+      if (minimumDelayElapsed) {
+        window.clearTimeout(fallback);
+        navigate();
+      }
+    });
   }
 
   private summaryFromSnapshot(

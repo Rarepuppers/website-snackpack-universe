@@ -58,15 +58,18 @@ export async function synchronizeAchievementEvents(
   events: readonly AchievementUnlockEvent[],
 ): Promise<AchievementSyncResult> {
   const alreadyUnlocked = new Set(await adapter.unlockedAchievementIds());
-  const pending = [...new Set(events.map((event) => event.id))]
+  const requested = [...new Set(events.map((event) => event.id))];
+  const pending = requested
     .filter((id) => !alreadyUnlocked.has(id));
-  if (pending.length === 0) return { acknowledged: [], pending: [] };
+  if (requested.length === 0) return { acknowledged: [], pending: [] };
   try {
     for (const id of pending) await adapter.unlockAchievement(id);
+    // Commit even when every requested ID already reads as unlocked. A prior
+    // StoreStats failure can leave Steam's in-process state true but not yet durable.
     await adapter.commitAchievements();
-    return { acknowledged: pending, pending: [] };
+    return { acknowledged: requested, pending: [] };
   } catch {
-    return { acknowledged: [], pending };
+    return { acknowledged: [], pending: requested };
   }
 }
 

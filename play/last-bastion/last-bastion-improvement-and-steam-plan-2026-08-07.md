@@ -76,8 +76,9 @@ Valve references checked for this review: [Steam Hardware compatibility checklis
    context loss at 1080p, 1440p, 4K, and Deck. It is now the default combat path with
    `?rendertexture=0` retained as a rollback switch. T2.4's browser settings are complete and the
    max-calibration 4K pacing gate passes. T3.2 native host selection is implemented with an honest
-   browser fallback, and T3.3 atomic desktop saves are complete. **Next:** T3.4 cloud reconciliation,
-   then T3.5 achievement synchronization;
+   browser fallback, T3.3 atomic desktop saves are complete, and T3.4 cloud reconciliation plus
+   T3.5 achievement synchronization are implemented pending live-Steam acceptance. **Next:** the
+   playable T4 slice (threat tiers 0–2, hit-stop, first-drop onboarding) before expanding IDs in T3.6;
    T3.1 packaged-window acceptance remains open, and T2.3b remains gated on U3/Deck decisions.
 4. **Next playable slice:** prototype threat tiers 0–2, hit-stop, and first-drop onboarding;
    conduct at least five observed runs and record completion, damage source, and confusion notes.
@@ -788,18 +789,30 @@ constructed by anything.
   client. **This remains the only place the two builds diverge.**
 - **T3.3 — DONE 8 Aug 2026.** File-backed `StorageLike` now uses a separate synchronous
   `DesktopSaveBridge`; the renderer receives only `getItem`/`setItem`, never paths or general file
-  access. Main-process writes validate the one save key, JSON shape, and 8 MiB ceiling; write to a
+  access. Main-process writes validate exactly two fixed keys (game state and cloud-sync metadata),
+  JSON shape, and the 8 MiB ceiling; write to a
   temporary file; flush when supported; rotate one known-good backup; and atomically rename the
   primary. Corrupt primary files fall back to the backup and are never rotated over it. Every
   production `LocalSaveStore` construction site selects this bridge in Electron and retains browser
   `localStorage` otherwise. This preserves the synchronous save contract without scene-wide async churn.
-- **T3.4** — Cloud reconciliation via `CloudSavePolicy` at boot and at run end. It is already
-  written and tested to merge monotonic career/bestiary fields by maxima without double-counting
-  a replayed run; this task is wiring plus a real round-trip test against Steam Cloud.
-- **T3.5** — Achievements. `LocalSaveStore.recordRunEnd` (line 285) is the single choke point
-  where progress advances, and `achievementUnlockEvents(before, after, summary, alreadyUnlocked)`
-  already takes exactly that shape. Call `synchronizeAchievementEvents` there, persist the
-  `pending` set, and retry it at next boot — the function is already written to be retry-safe.
+- **T3.4 — IMPLEMENTED; LIVE-STEAM ACCEPTANCE REMAINS.** Boot now awaits deterministic
+  reconciliation before Phaser scenes read the save, and all three recordable run-end paths request
+  another sync before navigation. A stable local device ID, revision, timestamp, and portable-content
+  fingerprint live in a second atomically backed fixed slot. Uploads strip monitor, presentation,
+  fullscreen, frame-cap, brightness, and gamma choices; conflict resolution retains those settings
+  locally while merging monotonic career/bestiary progress by maxima. Identical portable content does
+  not churn revisions, concurrent run-end requests coalesce, and Steam read/write failures preserve
+  local progress for retry. Final acceptance requires a real Last Bastion App ID and two Steam clients
+  to exercise upload, download, offline recovery, and a divergent active-run conflict end to end.
+- **T3.5 — IMPLEMENTED; LIVE-STEAM ACCEPTANCE REMAINS.** Boot derives all currently earned
+  milestones from the reconciled local save, unions them with an atomically persisted pending queue,
+  and retries the queue through the Steam adapter. All three recordable run-end paths capture before/
+  after progress and queue newly crossed milestones before platform navigation. Cloud revision fields
+  and achievement queue entries update independently in the shared metadata slot, so concurrent syncs
+  cannot erase one another. A failed `StoreStats` retains the full requested batch; retries still call
+  `StoreStats` when Steam's in-process state already reads true, closing the set-but-not-durable edge.
+  Final acceptance needs the real App ID, matching Steamworks achievement definitions, and a Steam-down/
+  restart test. Do not start T3.6's ~28 IDs until the playable T4 slice has been observed as required above.
 - **T3.6** — Expand `ACHIEVEMENT_IDS` from 6 to ~28 (§6.2). Each new ID needs an `isAchievementEarned`
   arm; the `switch` is exhaustive over the union, so TypeScript will name every one that is
   missing. Land the IDs **before** commissioning batch X1 icons.

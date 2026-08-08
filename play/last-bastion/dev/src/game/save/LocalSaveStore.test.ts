@@ -55,6 +55,19 @@ describe("LocalSaveStore", () => {
     expect(reloaded.settings.autoFireEnabled).toBe(true);
   });
 
+  it("normalizes and persists a complete cloud-reconciled replacement", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    const replaced = store.replaceWith({
+      ...DEFAULT_SAVE,
+      progress: { ...DEFAULT_SAVE.progress, victories: 4, totalKills: 250 },
+      selectedHeroId: "medic",
+    });
+    expect(replaced.progress.victories).toBe(4);
+    expect(replaced.selectedHeroId).toBe("medic");
+    expect(new LocalSaveStore(storage).load()).toEqual(replaced);
+  });
+
   it("migrates old saves to default controls and persists remapped controls", () => {
     const storage = fakeStorage({
       [SAVE_STORAGE_KEY]: JSON.stringify({ ...DEFAULT_SAVE, version: 6, controls: undefined }),

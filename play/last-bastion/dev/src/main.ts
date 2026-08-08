@@ -5,6 +5,8 @@ import { planDisplayPresentation } from "./game/rendering/DisplayPresentation";
 import { publishDisplayPresentation } from "./game/rendering/DisplayPresentationRuntime";
 import { applyDisplayCalibration } from "./game/rendering/DisplayCalibrationRuntime";
 import { initializePlatformAdapter } from "./game/platform/PlatformRuntime";
+import { initializeCloudSaveRuntime } from "./game/platform/CloudSaveRuntime";
+import { initializeAchievementRuntime } from "./game/platform/AchievementRuntime";
 import type { SteamworksWindow } from "./game/platform/HostPlatform";
 import { planDisplayScale, registerDisplayScaleReapply, setUiDeviceScale } from "./game/rendering/DisplayScaling";
 import { createLocalSaveStore } from "./game/save/SaveStorage";
@@ -98,6 +100,14 @@ async function boot(): Promise<Phaser.Game> {
   });
 }
 
-initializePlatformAdapter(window as unknown as SteamworksWindow);
-const game = boot();
+async function start(): Promise<Phaser.Game> {
+  const adapter = initializePlatformAdapter(window as unknown as SteamworksWindow);
+  // Steam reconciliation completes before scenes read LocalSaveStore. Browser
+  // builds skip immediately, and offline Steam failures preserve the local save.
+  await initializeCloudSaveRuntime(window, adapter);
+  await initializeAchievementRuntime(window, adapter, createLocalSaveStore(window).load());
+  return boot();
+}
+
+const game = start();
 export default game;

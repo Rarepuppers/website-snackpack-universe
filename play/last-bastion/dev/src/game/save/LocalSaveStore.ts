@@ -225,6 +225,13 @@ export class LocalSaveStore {
     return cloneSave(this.cached);
   }
 
+  /** Replaces the complete save after a validated cloud reconciliation. */
+  replaceWith(value: unknown): SaveData {
+    this.cached = normalizeSave(value);
+    this.writeToStorage();
+    return this.load();
+  }
+
   updateSettings(partial: Partial<GameSettings>): SaveData {
     const nextSettings = normalizeSettings({ ...this.cached.settings, ...partial });
     this.cached = {
