@@ -270,6 +270,31 @@ for words like "verified", "guarantee", "solver" — that second pattern
 specifically catches a real feature explained to nobody but future
 maintainers.
 
+**The same drift reached `apps/index.html` itself — the page that actually
+gets traffic (~100/mo).** Continuing the audit onto the apps listing page
+turned up a *third* distinct number for Brain Games Vol 1 alone: individual
+game pages said "nine classics" (fixed above), Vol 1's own dedicated page
+says 24, and `apps/index.html` said "Eighteen" in **two separate spots**
+(a summary paragraph and a `meta-tag` pill) — and showed only 18 of 24 icon
+tiles. Vol 2 had the identical pattern: "nineteen"/"19 games" against a
+confirmed 23, 19 of 23 tiles shown. All four numeric mentions fixed to
+match each app's own authoritative page (commit `f80fdaa`).
+
+The missing icon tiles were a wiring gap, not a missing-art one — checked
+first: all ten icon files (Euchre, Dominoes, Pinball, Photo Jigsaw, Bowling,
+Whac-A-Mole for Vol 1; Ludo, Yahtzee, Golf Solitaire, Rummy 500 for Vol 2)
+already existed in each app's own `assets/game-icons/`, just never had a
+`<div class="showcase-tile">` added for them. Wired all ten; verified all 74
+tile images now return HTTP 200. Vol 3's card was already accurate and its
+icon strip already complete — no change needed there.
+
+**This suggests the pattern is worth a standing check, not a one-time
+fix** — every time a volume's game count grows, whoever adds the new game
+in-app has had no reason to know four separate copy locations on the public
+site need the same update. Worth a lightweight audit after any future
+game-count change to a live app, rather than waiting for it to compound
+across three different stated numbers again.
+
 ---
 
 ## P5. Smaller confirmed items
