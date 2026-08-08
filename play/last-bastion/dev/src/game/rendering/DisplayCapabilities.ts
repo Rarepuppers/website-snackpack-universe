@@ -3,7 +3,7 @@ export type FullscreenMode = "windowed" | "borderless";
 export type FrameCap = 60 | 120 | 144 | "display";
 
 /**
- * Host capabilities are deliberately separate from saved settings. A browser
+ * Host capabilities are deliberately separate from saved preferences. A browser
  * must never advertise monitor selection, exclusive fullscreen, vsync control,
  * or an uncapped loop merely because a future Electron host can implement it.
  */

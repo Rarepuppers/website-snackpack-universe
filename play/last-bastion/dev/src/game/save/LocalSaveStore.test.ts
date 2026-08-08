@@ -290,10 +290,10 @@ describe("LocalSaveStore", () => {
     expect(loaded.progress.bestWaveReached).toBe(3);
   });
 
-  it("migrates v11 settings to the v12 defaults and normalizes invalid values", () => {
+  it("migrates v12 settings to the v13 display defaults and normalizes invalid values", () => {
     const storage = fakeStorage({
       [SAVE_STORAGE_KEY]: JSON.stringify({
-        version: 11,
+        version: 12,
         settings: {
           enemyHealthBars: "unknown",
           uiScale: 9,
@@ -312,6 +312,61 @@ describe("LocalSaveStore", () => {
     expect(settings.gamepadMoveDeadzone).toBe(0.18);
     expect(settings.aimAssistStrength).toBe(0);
     expect(settings.radarSize).toBe(1);
+    expect(settings.presentationMode).toBe("auto");
+    expect(settings.fullscreenMode).toBe("windowed");
+    expect(settings.selectedDisplayId).toBeNull();
+    expect(settings.frameCap).toBe("display");
+    expect(settings.brightness).toBe(1);
+    expect(settings.gamma).toBe(1);
+    expect(settings.screenShakeIntensity).toBe(1);
+  });
+
+  it("persists and normalizes schema-v13 display and shake preferences", () => {
+    const storage = fakeStorage();
+    new LocalSaveStore(storage).updateSettings({
+      presentationMode: "crisp",
+      fullscreenMode: "borderless",
+      selectedDisplayId: "monitor-2",
+      frameCap: 120,
+      brightness: 1.25,
+      gamma: 1.5,
+      screenShakeIntensity: 0.5,
+    });
+    const settings = new LocalSaveStore(storage).load().settings;
+    expect(settings).toMatchObject({
+      presentationMode: "crisp",
+      fullscreenMode: "borderless",
+      selectedDisplayId: "monitor-2",
+      frameCap: 120,
+      brightness: 1.25,
+      gamma: 1.5,
+      screenShakeIntensity: 0.5,
+    });
+
+    const malformed = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        ...DEFAULT_SAVE,
+        settings: {
+          ...DEFAULT_SAVE.settings,
+          presentationMode: "stretch",
+          fullscreenMode: "exclusive",
+          selectedDisplayId: "",
+          frameCap: 999,
+          brightness: -4,
+          gamma: 8,
+          screenShakeIntensity: 4,
+        },
+      }),
+    });
+    expect(new LocalSaveStore(malformed).load().settings).toMatchObject({
+      presentationMode: "auto",
+      fullscreenMode: "windowed",
+      selectedDisplayId: null,
+      frameCap: "display",
+      brightness: 0.5,
+      gamma: 2,
+      screenShakeIntensity: 1,
+    });
   });
 });
 

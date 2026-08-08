@@ -33,6 +33,50 @@ describe("cloud-save conflict policy", () => {
     expect(result.save.expedition?.mapSeed).toBe(2);
   });
 
+  it("keeps device-specific display preferences local during cloud reconciliation", () => {
+    const localSettings = {
+      ...DEFAULT_SAVE.settings,
+      displaySizePercent: 80,
+      presentationMode: "fill" as const,
+      fullscreenMode: "windowed" as const,
+      selectedDisplayId: "deck-panel",
+      frameCap: 60 as const,
+      brightness: 0.8,
+      gamma: 1.2,
+      screenShakeIntensity: 0.25,
+    };
+    const remoteSettings = {
+      ...DEFAULT_SAVE.settings,
+      displaySizePercent: 150,
+      presentationMode: "crisp" as const,
+      fullscreenMode: "borderless" as const,
+      selectedDisplayId: "ultrawide",
+      frameCap: 144 as const,
+      brightness: 1.3,
+      gamma: 1.7,
+      screenShakeIntensity: 0.75,
+    };
+    const local: CloudSaveEnvelope = {
+      deviceId: "deck", revision: 1, updatedAtMs: 10,
+      save: save({ settings: localSettings }),
+    };
+    const remote: CloudSaveEnvelope = {
+      deviceId: "desktop", revision: 2, updatedAtMs: 20,
+      save: save({ settings: remoteSettings }),
+    };
+    const settings = resolveCloudSaveConflict(local, remote).save.settings;
+    expect(settings).toMatchObject({
+      displaySizePercent: 80,
+      presentationMode: "fill",
+      fullscreenMode: "windowed",
+      selectedDisplayId: "deck-panel",
+      frameCap: 60,
+      brightness: 0.8,
+      gamma: 1.2,
+      screenShakeIntensity: 0.75,
+    });
+  });
+
   it("rejects unknown schemas rather than corrupting them", () => {
     const envelope: CloudSaveEnvelope = { deviceId: "a", revision: 1, updatedAtMs: 1, save: save() };
     expect(() => resolveCloudSaveConflict(envelope, { ...envelope, save: { ...save(), version: 99 as typeof SAVE_SCHEMA_VERSION } }))

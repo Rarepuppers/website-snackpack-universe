@@ -1,4 +1,5 @@
 import type { GameProgress, GameSettings } from "../save/LocalSaveStore";
+import type { DisplayCapabilities } from "../rendering/DisplayCapabilities";
 import { PERK_CATALOG, unlockedPerkIds, type PerkId } from "../perks/perkCatalog";
 import {
   DEFAULT_CONTROL_BINDINGS,
@@ -89,6 +90,7 @@ export type SettingsRow =
 
 export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "toggle", key: "screenShakeEnabled", label: "Screen shake" },
+  { kind: "range", key: "screenShakeIntensity", label: "Shake intensity", min: 0, max: 1, step: 0.25 },
   { kind: "toggle", key: "reducedFlashEnabled", label: "Reduced flash" },
   { kind: "toggle", key: "soundEnabled", label: "Sound" },
   { kind: "toggle", key: "damageNumbersEnabled", label: "Damage numbers" },
@@ -113,6 +115,9 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "range", key: "gamepadVibrationStrength", label: "Controller vibration", min: 0, max: 1, step: 0.25 },
   { kind: "range", key: "aimAssistStrength", label: "Aim assist", min: 0, max: 1, step: 0.1 },
   { kind: "range", key: "displaySizePercent", label: "Display size", min: 50, max: 200, step: 5 },
+  { kind: "choice", key: "presentationMode", label: "Presentation", options: ["auto", "crisp", "fill"] },
+  { kind: "range", key: "brightness", label: "Brightness", min: 0.5, max: 1.5, step: 0.1 },
+  { kind: "range", key: "gamma", label: "Gamma", min: 0.5, max: 2, step: 0.1 },
   { kind: "choice", key: "radarSize", label: "Radar size", options: ["0.75", "1", "1.25"] },
   { kind: "choice", key: "offscreenThreatIndicators", label: "Threat indicators", options: ["off", "threats", "all"] },
   { kind: "choice", key: "colorVisionMode", label: "Colour-vision palette", options: ["standard", "deuteranopia", "protanopia", "tritanopia"] },
@@ -120,6 +125,18 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "choice", key: "gameSpeedMultiplier", label: "Game speed", options: ["0.75", "1", "1.25"] },
   { kind: "action", key: "controls", label: "Control bindings" },
 ]);
+
+export function settingsRowsForDisplayCapabilities(
+  capabilities: DisplayCapabilities,
+): readonly SettingsRow[] {
+  if (capabilities.fullscreenModes.length < 2) return SETTINGS_ROWS;
+  const insertionIndex = SETTINGS_ROWS.findIndex((row) => row.key === "presentationMode") + 1;
+  return Object.freeze([
+    ...SETTINGS_ROWS.slice(0, insertionIndex),
+    { kind: "choice" as const, key: "fullscreenMode" as const, label: "Fullscreen", options: capabilities.fullscreenModes },
+    ...SETTINGS_ROWS.slice(insertionIndex),
+  ]);
+}
 
 export interface RosterEntry {
   id: string;
@@ -174,6 +191,7 @@ export interface ShellState {
   menuIndex: number;
   howToPlayPage: number;
   settingsIndex: number;
+  settingsRows: readonly SettingsRow[];
   labIndex: number;
   rosterIndex: number;
   perkIndex: number;
@@ -195,6 +213,7 @@ export function createShellState(
   selectedPerkId: PerkId | null = "perk-veteran",
   selectedHeroId: "marine" | "medic" = "marine",
   controls: ControlBindings = DEFAULT_CONTROL_BINDINGS,
+  settingsRows: readonly SettingsRow[] = SETTINGS_ROWS,
 ): ShellState {
   const unlocked = unlockedPerkIds(progress);
   const selectedIndex = Math.max(0, PERK_CATALOG.findIndex((perk) => perk.id === selectedPerkId));
@@ -203,6 +222,7 @@ export function createShellState(
     menuIndex: 0,
     howToPlayPage: 0,
     settingsIndex: 0,
+    settingsRows,
     labIndex: 0,
     rosterIndex: Math.max(0, ROSTER.findIndex((hero) => hero.id === selectedHeroId)),
     perkIndex: selectedIndex,
@@ -298,13 +318,13 @@ function stepSettings(state: ShellState, intent: ShellIntent): ShellStepResult {
     return { state: { ...state, screen: "menu" }, effects: [] };
   }
   if (intent === "up") {
-    return { state: { ...state, settingsIndex: wrap(state.settingsIndex - 1, SETTINGS_ROWS.length) }, effects: [] };
+    return { state: { ...state, settingsIndex: wrap(state.settingsIndex - 1, state.settingsRows.length) }, effects: [] };
   }
   if (intent === "down") {
-    return { state: { ...state, settingsIndex: wrap(state.settingsIndex + 1, SETTINGS_ROWS.length) }, effects: [] };
+    return { state: { ...state, settingsIndex: wrap(state.settingsIndex + 1, state.settingsRows.length) }, effects: [] };
   }
   if (intent === "left" || intent === "right" || intent === "confirm") {
-    const row = SETTINGS_ROWS[state.settingsIndex]!;
+    const row = state.settingsRows[state.settingsIndex]!;
     if (row.kind === "action") {
       return { state: { ...state, screen: "controls", controlIndex: 0 }, effects: [] };
     }

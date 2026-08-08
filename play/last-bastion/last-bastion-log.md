@@ -2561,6 +2561,25 @@ the fit-matrix entry.
 - Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,180 tests across
   174 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.
 
+## 8 August 2026 — Phase 2 display: T2.4a settings migration and T2.5 shake consumer
+
+Advanced the real save schema from v12 to v13 and added normalized presentation mode, fullscreen
+mode, selected-display id, frame cap, brightness, gamma, and screen-shake intensity preferences.
+The stale plan instruction to prove a v10 migration was corrected: the focused migration fixture is
+v12→v13, while the existing suite continues to cover older save versions. Malformed numeric and
+choice values clamp or fall back without discarding progress.
+
+The settings UI now exposes only the new controls with honest live consumers: Auto/Crisp/Fill
+presentation mode applies on the next combat presentation bootstrap, and shake intensity scales
+every authored camera shake. Reduced motion and the existing shake toggle remain authoritative zero-shake gates.
+Expanded frame stays hidden pending T2.3b/U3; fullscreen, monitor selection, frame cap, brightness,
+and gamma stay hidden pending their browser/Electron runtime paths.
+
+Cloud conflict resolution now keeps display size/mode, fullscreen, monitor id, frame cap, brightness,
+and gamma from the current device even when the remote save is newer, fixing the original plan's
+contradiction with its rule that device-specific display settings must not roam between Deck,
+laptop, and desktop. T3.4 must additionally omit these fields from the uploaded preference payload.
+
 ## 8 August 2026 — Phase 2 display: T2.3 furniture fit matrix
 
 Added `ExpandedFrameHudLayout.ts`, a Phaser-free CSS-space layout planner covering the radar,
@@ -2648,3 +2667,86 @@ asset/design-gated on U3 and the Deck band decision described in the fit-matrix 
 
 - Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,180 tests across
   174 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.
+
+## 8 August 2026 — Current display status after T2.4a/T2.5 (ordering correction)
+
+This final entry supersedes stale "next T2.4" wording above. T2.4a's schema-v13 persistence,
+normalization, local-device cloud conflict policy, live Auto/Crisp/Fill selection, and T2.5's
+shake-intensity consumer are complete. T2.4b remains capability/runtime work: brightness/gamma,
+browser fullscreen, and Electron-owned monitor/fullscreen/frame-cap controls. Expanded frame remains
+gated on T2.3b/U3 and is intentionally absent from the settings choices.
+
+- Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,186 tests across
+  175 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.
+
+## 8 August 2026 — Phase 2 display: capability-gated browser fullscreen
+
+Added a browser Fullscreen API adapter with explicit Windowed/Borderless behavior, rejection-safe
+promises, current-mode detection, and focused tests. Settings rows are now part of `ShellState`:
+one capability-filtered list drives rendering, pointer hit zones, and keyboard/controller wrapping,
+so an unavailable control cannot remain invisibly reachable. The Fullscreen row is inserted only
+when the host exposes both modes; monitor selection and frame-cap controls remain absent.
+
+The shell reconciles stale saved fullscreen state to the live document on boot, listens for
+`fullscreenchange` so Escape stays synchronized, reapplies display scale after transitions, and
+rolls a denied request back to the actual mode with an orange player-facing explanation.
+
+Local browser QA confirmed the row appears, pointer selection enters the larger borderless surface,
+keyboard interaction returns to the windowed surface, the canvas rescales, and the denial fallback
+renders visibly with no console warning/error. The embedded browser's fullscreen state reporting is
+not reliable enough to substitute for the later Electron/OS acceptance pass, so T3.8 still owns
+Windows display-by-display verification.
+
+- Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,191 tests across
+  176 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing;
+  browser QA reports no console warnings or errors.
+
+## 8 August 2026 — Phase 2 display: whole-canvas brightness and gamma
+
+Brightness and Gamma now have honest live consumers and are visible in Settings. A pure calibration
+planner clamps the saved v13 ranges and converts player gamma to the nonlinear transfer exponent
+(`1 / gamma`). The DOM adapter installs one sRGB SVG `feComponentTransfer` on the final Phaser canvas,
+so the world, HUD, warnings, and menus use the same calibration. It does not substitute contrast for
+gamma. At Brightness 1 / Gamma 1 the filter host and canvas filter are removed entirely.
+
+The settings grid now compacts its row spacing when capability rows exceed thirteen per column, so
+Brightness/Gamma plus browser Fullscreen fit above the footer without clipping. Changes preview
+immediately through the existing display reapply boundary and persist into combat boot.
+
+Browser QA proved identity has no filter node; Brightness 110% creates amplitude 1.1; Gamma 1.1
+creates exponent 0.9090909; restoring both to 1 removes the node; and a saved non-default calibration
+is present on the RenderTexture combat path over the composed canvas. No console warnings/errors.
+The remaining acceptance item is max-calibration frame pacing at 4K on the intended desktop host.
+
+- Verification: image audit passes (8 lossy + 50 lossless), typecheck clean, **1,194 tests across
+  177 files pass**, production build clean, smoke `200` / 76 routes, offline 335 / 0 missing.
+
+## 8 August 2026 — 4K calibration gate passed; Electron T3.1 started
+
+The remaining browser-side T2.4 calibration pacing gate passes at 3840×2160 under the twelve-weapon
+stress route with Brightness 150% and Gamma 2.0. The bounded 600-frame sample reports average
+16.70 ms, p95 16.68 ms, p99 18.34 ms, and 54.53 FPS 1% low, inside the established p95 ≤17.5 ms /
+1% low ≥50 FPS budget and effectively unchanged from the identity-filter result. Calibration was
+restored to Brightness 100% / Gamma 1.0 after the run.
+
+That run also exposed four Phaser `__MISSING` frame warnings while a weapon fired. All authored
+production weapon sheets exist at the expected 384×96 dimensions and the combat manifest includes
+them. Weapon view creation now checks texture availability and falls back to the code-drawn body
+instead of constructing a missing sprite; firing animation also verifies the exact expected texture
+and frames 1–3 before changing frames. This protects transient asset-load failures without hiding
+them from the existing load-feedback path. Browser warning re-check remains the first next QA item.
+
+T3.1 implementation has begun in `desktop/`. Electron 43.3.0 is pinned in its own workspace. The
+host uses a secure `last-bastion://` protocol, sandboxed/context-isolated BrowserWindow, no Node in
+the renderer, denied permissions/new windows, and loopback-only dev navigation. Preload exposes only
+the existing five-method `SteamworksBridge`. Main-process IPC validates current achievement IDs,
+the single versioned cloud slot, and an 8 MiB payload ceiling. A renderer-side compile-time parity
+test prevents the duplicated desktop contract from silently drifting.
+
+- Full web verification passes: image audit (8 lossy + 50 lossless), typecheck, **1,195 tests across
+  178 files**, production build, smoke `200` / 76 routes, and offline 335 / 0 missing. Desktop
+  typecheck/build and 6 bridge/protocol security tests pass. Electron v43.3.0 downloaded successfully
+  using the workspace cache.
+- A managed-session BrowserWindow smoke exited with Windows access violation `0xC0000005` before an
+  actionable Electron log. T3.1 remains IN PROGRESS until the same build boots in a normal Windows
+  desktop session; Steamworks is deliberately unavailable rather than faked until T3.2 installs it.

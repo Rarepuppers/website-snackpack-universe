@@ -36,7 +36,7 @@ export function resolveCloudSaveConflict(local: CloudSaveEnvelope, remote: Cloud
     divergentActiveRuns,
     save: {
       version: SAVE_SCHEMA_VERSION,
-      settings: { ...preferred.save.settings },
+      settings: mergeSettingsForDevice(local.save.settings, preferred.save.settings),
       controls: normalizeControlBindings(preferred.save.controls),
       progress: {
         runsFinished: Math.max(local.save.progress.runsFinished, remote.save.progress.runsFinished),
@@ -54,6 +54,28 @@ export function resolveCloudSaveConflict(local: CloudSaveEnvelope, remote: Cloud
       selectedHeroId: preferred.save.selectedHeroId,
       lastRunSummary: preferred.save.lastRunSummary ?? secondary.save.lastRunSummary,
     },
+  };
+}
+
+/**
+ * Cloud progress/preferences may follow the newer revision, but monitor and
+ * presentation choices belong to the device performing the reconciliation.
+ * This prevents a Deck, laptop, or ultrawide desktop from inheriting another
+ * machine's monitor id, fullscreen state, frame cap, or calibration.
+ */
+function mergeSettingsForDevice(
+  local: SaveData["settings"],
+  preferred: SaveData["settings"],
+): SaveData["settings"] {
+  return {
+    ...preferred,
+    displaySizePercent: local.displaySizePercent,
+    presentationMode: local.presentationMode,
+    fullscreenMode: local.fullscreenMode,
+    selectedDisplayId: local.selectedDisplayId,
+    frameCap: local.frameCap,
+    brightness: local.brightness,
+    gamma: local.gamma,
   };
 }
 

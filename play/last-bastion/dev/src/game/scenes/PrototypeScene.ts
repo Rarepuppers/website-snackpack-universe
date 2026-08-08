@@ -46,6 +46,7 @@ import { miniBossSpriteScale } from "../rendering/MiniBossPresentation";
 import { arenaThemeById, arenaThemeVariant, containmentUnderworldTheme, pickArenaTheme, starshipTransitTheme, surfaceFrontierTheme } from "../rendering/arenaThemes";
 import { BASE_HEIGHT, BASE_WIDTH, uiSafeArea, uiTextResolution } from "../rendering/DisplayScaling";
 import { CombatWorldPresenter } from "../rendering/CombatWorldPresenter";
+import { screenShakeIntensity } from "../rendering/ScreenShake";
 import { LocalSaveStore, type GameSettings } from "../save/LocalSaveStore";
 import { cueForCombatEvent, EVASIVE_MOVE_CUE, MEDKIT_HEAL_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
 import { WebAudioSynth } from "../audio/WebAudioSynth";
@@ -1106,9 +1107,14 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   private shakeCamera(durationMilliseconds: number, intensity: number): void {
-    if (this.settings.screenShakeEnabled) {
-      if (this.worldPresenter) this.worldPresenter.shake(durationMilliseconds, intensity);
-      else this.cameras.main.shake(durationMilliseconds, intensity);
+    const scaledIntensity = screenShakeIntensity(intensity, {
+      enabled: this.settings.screenShakeEnabled,
+      reducedMotion: this.settings.reducedMotionEnabled,
+      intensityMultiplier: this.settings.screenShakeIntensity,
+    });
+    if (scaledIntensity > 0) {
+      if (this.worldPresenter) this.worldPresenter.shake(durationMilliseconds, scaledIntensity);
+      else this.cameras.main.shake(durationMilliseconds, scaledIntensity);
     }
   }
 
@@ -1993,18 +1999,20 @@ export class PrototypeScene extends Phaser.Scene {
       let view = this.weaponViews.get(weapon.instanceId);
       if (!view) {
         const assetId = weaponAssetId(weapon.weaponId);
-        view = weapon.weaponId === "event-horizon" && this.useMarineArt
+        const eventHorizonTextureReady = this.textures.exists("event-horizon-v1");
+        const bodyTextureReady = this.textures.exists(assetId);
+        view = weapon.weaponId === "event-horizon" && this.useMarineArt && eventHorizonTextureReady
           ? this.add.sprite(0, 0, "event-horizon-v1", 1).setDisplaySize(72, 72)
             .setOrigin(GAME_ASSETS["event-horizon-v1"].pivot.x, GAME_ASSETS["event-horizon-v1"].pivot.y)
-          : usesBladeBody(weapon.weaponId) && this.useMarineArt
+          : usesBladeBody(weapon.weaponId) && this.useMarineArt && bodyTextureReady
           ? this.add.sprite(0, 0, "patrol-blade-v1", 1).setDisplaySize(58, 58)
           : usesBladeBody(weapon.weaponId)
             ? this.add.triangle(0, 0, -18, -5, 18, 0, -18, 5, weaponColor(weapon.weaponId))
               .setOrigin(0.2, 0.5).setStrokeStyle(2, 0x4f2f20)
-          : this.useMarineArt && isProductionWeaponSheet(weapon.weaponId)
+          : this.useMarineArt && isProductionWeaponSheet(weapon.weaponId) && bodyTextureReady
           ? this.add.sprite(0, 0, assetId, 1).setDisplaySize(66, 66)
             .setOrigin(GAME_ASSETS[assetId].pivot.x, GAME_ASSETS[assetId].pivot.y)
-          : this.useMarineArt
+          : this.useMarineArt && bodyTextureReady
           ? this.add.image(0, 0, assetId)
             .setDisplaySize(GAME_ASSETS[assetId].logicalWidth, GAME_ASSETS[assetId].logicalHeight)
             .setOrigin(GAME_ASSETS[assetId].pivot.x, GAME_ASSETS[assetId].pivot.y)
@@ -2068,6 +2076,8 @@ export class PrototypeScene extends Phaser.Scene {
     if (!isProductionWeaponSheet(weaponId)) return;
     const weapon = this.weaponViews.get(instanceId);
     if (!(weapon instanceof Phaser.GameObjects.Sprite)) return;
+    const expectedTexture = weaponId === "event-horizon" ? "event-horizon-v1" : weaponAssetId(weaponId);
+    if (weapon.texture.key !== expectedTexture || !weapon.texture.has("1") || !weapon.texture.has("2") || !weapon.texture.has("3")) return;
     weapon.setFrame(2);
     const recoverDelay = weaponId === "grenade-tube" ? 150 : weaponId === "event-horizon" ? 170 : weaponId === "bolt-carbine" ? 110 : 55;
     const readyDelay = weaponId === "grenade-tube" ? 520 : weaponId === "event-horizon" ? 420 : weaponId === "bolt-carbine" ? 300 : 120;

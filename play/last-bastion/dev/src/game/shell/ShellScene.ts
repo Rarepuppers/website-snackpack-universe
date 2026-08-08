@@ -9,13 +9,15 @@ import {
 } from "../assets/ShellAssetManifest";
 import { PERK_CATALOG } from "../perks/perkCatalog";
 import { reapplyDisplayScale } from "../rendering/DisplayScaling";
+import { browserDisplayCapabilities } from "../rendering/DisplayCapabilities";
+import { applyBrowserFullscreen, currentBrowserFullscreenMode } from "../rendering/BrowserFullscreen";
 import {
   createShellState,
   howToPlayPages,
   LAB_ROUTES,
   MENU_CARDS,
   ROSTER,
-  SETTINGS_ROWS,
+  settingsRowsForDisplayCapabilities,
   stepShell,
   type ShellIntent,
   type ShellState,
@@ -57,6 +59,7 @@ export class ShellScene extends Phaser.Scene {
   private titlePulse = 0;
   private loadingAssetGroup: "shell-character" | null = null;
   private bindingCapture: { device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction } | null = null;
+  private fullscreenFeedback: string | null = null;
 
   constructor() {
     super("shell");
@@ -75,14 +78,28 @@ export class ShellScene extends Phaser.Scene {
     );
     const save = this.saveStore.load();
     const initialScreen = requestedInitialScreen();
-    this.state = createShellState(save.settings, initialScreen, save.progress, save.selectedPerkId, save.selectedHeroId, save.controls);
+    const displayCapabilities = browserDisplayCapabilities({
+      fullscreenApiAvailable: document.fullscreenEnabled && typeof document.documentElement.requestFullscreen === "function",
+    });
+    const fullscreenMode = currentBrowserFullscreenMode(document);
+    const settings = save.settings.fullscreenMode === fullscreenMode
+      ? save.settings
+      : this.saveStore.updateSettings({ fullscreenMode }).settings;
+    this.state = createShellState(
+      settings, initialScreen, save.progress, save.selectedPerkId, save.selectedHeroId, save.controls,
+      settingsRowsForDisplayCapabilities(displayCapabilities),
+    );
     this.root = this.add.container(0, 0);
 
     // One direct window listener instead of the Phaser keyboard plugin: the
     // plugin can deliver capture-list keys (Enter, Space, arrows) a second
     // time from its frame queue, which double-steps menu navigation.
     window.addEventListener("keydown", this.handleKey);
-    this.events.once("shutdown", () => window.removeEventListener("keydown", this.handleKey));
+    document.addEventListener("fullscreenchange", this.handleFullscreenChange);
+    this.events.once("shutdown", () => {
+      window.removeEventListener("keydown", this.handleKey);
+      document.removeEventListener("fullscreenchange", this.handleFullscreenChange);
+    });
     this.input.gamepad?.on("down", (_pad: unknown, button: { index: number }) => {
       if (this.bindingCapture?.device === "gamepad") {
         const mapped = gamepadButtonFromIndex(button.index);
@@ -137,8 +154,14 @@ export class ShellScene extends Phaser.Scene {
     this.state = result.state;
     for (const effect of result.effects) {
       if (effect.type === "set-setting") {
+        if (effect.key === "fullscreenMode") {
+          void this.setFullscreenMode(effect.value === "borderless" ? "borderless" : "windowed");
+          continue;
+        }
         this.saveStore.updateSettings({ [effect.key]: effect.value });
-        if (effect.key === "displaySizePercent") reapplyDisplayScale();
+        if (effect.key === "displaySizePercent" || effect.key === "brightness" || effect.key === "gamma") {
+          reapplyDisplayScale();
+        }
       } else if (effect.type === "start-run") {
         this.saveStore.selectPerk(effect.perkId);
         this.saveStore.selectHero(effect.heroId === "medic" ? "medic" : "marine");
@@ -151,6 +174,25 @@ export class ShellScene extends Phaser.Scene {
         this.bindingCapture = { device: effect.device, action: effect.action };
       }
     }
+    this.render();
+  }
+
+  private readonly handleFullscreenChange = (): void => {
+    const fullscreenMode = currentBrowserFullscreenMode(document);
+    this.fullscreenFeedback = null;
+    this.saveStore.updateSettings({ fullscreenMode });
+    this.state = { ...this.state, settings: { ...this.state.settings, fullscreenMode } };
+    reapplyDisplayScale();
+    this.render();
+  };
+
+  private async setFullscreenMode(mode: "windowed" | "borderless"): Promise<void> {
+    const applied = await applyBrowserFullscreen(document, mode);
+    const fullscreenMode = applied ? mode : currentBrowserFullscreenMode(document);
+    this.fullscreenFeedback = applied ? null : "Fullscreen request was denied by this browser.";
+    this.saveStore.updateSettings({ fullscreenMode });
+    this.state = { ...this.state, settings: { ...this.state.settings, fullscreenMode } };
+    reapplyDisplayScale();
     this.render();
   }
 
@@ -284,13 +326,20 @@ export class ShellScene extends Phaser.Scene {
 
   private renderSettings(): void {
     this.root.add(this.text(70, 48, "SETTINGS", IVORY, "28px"));
-    this.root.add(this.text(70, 84, "Changes persist immediately. URL parameters remain as review overrides.", MUTED, "12px"));
-    const rowsPerColumn = Math.ceil(SETTINGS_ROWS.length / 2);
-    SETTINGS_ROWS.forEach((row, index) => {
+    this.root.add(this.text(
+      70,
+      84,
+      this.fullscreenFeedback ?? "Changes persist immediately. URL parameters remain as review overrides.",
+      this.fullscreenFeedback ? ORANGE : MUTED,
+      "12px",
+    ));
+    const rowsPerColumn = Math.ceil(this.state.settingsRows.length / 2);
+    const rowStep = rowsPerColumn > 13 ? 28 : 30;
+    this.state.settingsRows.forEach((row, index) => {
       const column = Math.floor(index / rowsPerColumn);
       const rowIndex = index % rowsPerColumn;
       const x = 70 + column * 420;
-      const y = 102 + rowIndex * 30;
+      const y = 102 + rowIndex * rowStep;
       const focused = index === this.state.settingsIndex;
       this.root.add(this.add.rectangle(x + 190, y + 11, 380, 26, focused ? 0x24384f : PANEL)
         .setStrokeStyle(focused ? 2 : 1, focused ? TEAL_HEX : 0x3b4d63));
@@ -543,7 +592,8 @@ function formatRecord(value: number): string {
 }
 
 function formatSettingValue(key: string, value: unknown): string {
-  if (key.endsWith("Volume") || key === "aimAssistStrength") return `${Math.round(Number(value) * 100)}%`;
+  if (key.endsWith("Volume") || key === "aimAssistStrength" || key === "brightness") return `${Math.round(Number(value) * 100)}%`;
+  if (key === "gamma") return Number(value).toFixed(1);
   if (key.includes("Deadzone")) return Number(value).toFixed(2);
   if (key === "displaySizePercent") return `${Math.round(Number(value))}%`;
   if (key === "uiScale" || key === "radarSize") {

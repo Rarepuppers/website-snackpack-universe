@@ -74,8 +74,9 @@ Valve references checked for this review: [Steam Hardware compatibility checklis
    laptop, fractional DPI, and Deck. The RenderTexture path renders the complete world and HUD,
    maps pointer input correctly, meets its browser pacing budget, and restores after forced WebGL
    context loss at 1080p, 1440p, 4K, and Deck. It is now the default combat path with
-   `?rendertexture=0` retained as a rollback switch. **Next:** T2.3 expanded-frame HUD relocation,
-   then T2.4 settings and the Electron host work.
+   `?rendertexture=0` retained as a rollback switch. T2.4's browser settings are complete and the
+   max-calibration 4K pacing gate passes. **Next:** continue the T3.1 Electron host scaffold, then
+   T3.2 adapter selection; T2.3b remains correctly gated on U3 art and the Deck furniture decision.
 4. **Next playable slice:** prototype threat tiers 0–2, hit-stop, and first-drop onboarding;
    conduct at least five observed runs and record completion, damage source, and confusion notes.
 5. **Asset-unblocked work:** continue U1/U2 and M1/M2/S4 in parallel, but wire no slider or
@@ -745,19 +746,38 @@ constructed by anything.
   trays, but Deck's current 40 px bands cannot fit the default radar/status/weapon furniture.
   Keep `expandedFrameAvailable: false` until U3 either provides deeper bands or an approved compact
   Deck layout, and both Deck/ultrawide tests pass without clipping.
-- **T2.4** — New settings: presentation mode, fullscreen, display selection, frame cap,
-  brightness/gamma, screen-shake intensity. Extend `GameSettings`, bump `SAVE_SCHEMA_VERSION`,
-  and add the migration — `readBoundedNumber`/`readBoolean` defaults already handle absent fields,
-  so old saves load; add a test proving a v10 save loads into the new version.
-- **T2.5** — Route the shake-intensity setting into `PrototypeScene.shakeCamera()` (line 1072) as
-  a multiplier, with `reducedMotionEnabled` continuing to clamp it to zero.
+- **T2.4 — IN PROGRESS.** New settings: presentation mode, fullscreen, display selection, frame cap,
+  brightness/gamma, screen-shake intensity. **T2.4a is complete:** `GameSettings` and
+  `SAVE_SCHEMA_VERSION` now advance from the actual current schema v12 to v13 (the older v10
+  instruction was stale), with bounded normalization and migration tests. Cloud reconciliation
+  preserves display size/mode, fullscreen, monitor id, frame cap, brightness, and gamma from the
+  current device instead of importing another machine's values. Auto/Crisp/Fill apply at the next
+  combat presentation bootstrap, and shake intensity has a live consumer; Expanded frame remains hidden while T2.3b/U3 is
+  unavailable, and desktop-only display/frame-cap controls remain hidden rather than inert.
+  **T2.4b browser fullscreen is complete:** the Fullscreen API row exists only when the host reports
+  both Windowed and Borderless, the same filtered row list owns rendering and keyboard/controller
+  navigation, Escape/fullscreen-change synchronizes the saved mode, and denied requests roll back
+  with visible feedback. **T2.4b calibration is complete:** Brightness and Gamma apply one sRGB
+  gamma transfer to the final composed canvas, including HUD/menu colors; gamma is nonlinear rather
+  than a contrast approximation, changes preview immediately, and identity removes the filter layer.
+  The browser-side max-calibration 4K stress gate passes at p95 16.68 ms and 54.53 FPS 1% low; repeat
+  it on the packaged desktop host before release. **T2.4b remains:** Electron host plumbing and
+  capability-filtered rows for the desktop-only choices. Before cloud upload
+  wiring in T3.4, strip device-specific fields from the serialized cloud preferences as well as
+  preserving them during conflict resolution.
+- **T2.5 — COMPLETE.** `PrototypeScene.shakeCamera()` now applies the saved bounded multiplier;
+  the legacy enable toggle and `reducedMotionEnabled` both resolve to zero through a pure tested rule.
 
 ### 10.4 Phase 3 — Steam client
 
-- **T3.1** — `desktop/` Electron workspace. Single `BrowserWindow`, `nodeIntegration: false`,
+- **T3.1 — IN PROGRESS.** `desktop/` Electron workspace now exists with a secure custom protocol,
+  single sandboxed `BrowserWindow`, `nodeIntegration: false`,
   `contextIsolation: true`. The preload implements exactly the existing `SteamworksBridge`
   interface (`getAchievement`, `setAchievement`, `storeStats`, `readCloudFile`, `writeCloudFile`)
-  and nothing else — that narrow surface is the whole security model, so it must not grow.
+  and nothing else — that narrow surface is the whole security model, so it must not grow. IPC
+  validates the six current achievement IDs, confines cloud access to the versioned slot, and caps
+  payload size. Contract-parity and host security tests are in place. Remaining before DONE: install
+  the real T3.2 Steamworks host, prove packaged custom-protocol boot on Windows, and add packaging.
 - **T3.2** — Adapter selection at boot: construct `createSteamPlatformAdapter(bridge)` when the
   preload bridge is present, otherwise a browser adapter. **This is the only place the two
   builds diverge.**

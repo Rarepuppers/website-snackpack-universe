@@ -3,6 +3,7 @@ import "./style.css";
 import { createGameConfig } from "./game/config";
 import { planDisplayPresentation } from "./game/rendering/DisplayPresentation";
 import { publishDisplayPresentation } from "./game/rendering/DisplayPresentationRuntime";
+import { applyDisplayCalibration } from "./game/rendering/DisplayCalibrationRuntime";
 import { planDisplayScale, registerDisplayScaleReapply, setUiDeviceScale } from "./game/rendering/DisplayScaling";
 import { LocalSaveStore } from "./game/save/LocalSaveStore";
 import { resolveSceneRoute } from "./game/SceneRoute";
@@ -15,7 +16,9 @@ import { loadInitialScene } from "./game/loadInitialScene";
  */
 function applyDisplayScale(target: Phaser.Game, useWorldPresentation: boolean): void {
   const requested = Number(new URLSearchParams(window.location.search).get("size"));
-  const savedSize = new LocalSaveStore(window.localStorage).load().settings.displaySizePercent;
+  const savedSettings = new LocalSaveStore(window.localStorage).load().settings;
+  applyDisplayCalibration(document, target.canvas, savedSettings);
+  const savedSize = savedSettings.displaySizePercent;
   const sizePercent = Number.isFinite(requested) && requested >= 50 && requested <= 300 ? requested : savedSize;
   const sizeMultiplier = Number.isFinite(sizePercent) && sizePercent >= 50 && sizePercent <= 300
     ? sizePercent / 100
@@ -26,6 +29,7 @@ function applyDisplayScale(target: Phaser.Game, useWorldPresentation: boolean): 
       windowHeight: window.innerHeight,
       devicePixelRatio: window.devicePixelRatio,
       sizeMultiplier,
+      requestedMode: savedSettings.presentationMode,
     });
     setUiDeviceScale(presentation.renderDeviceScale);
     publishDisplayPresentation(presentation);

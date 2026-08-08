@@ -13,6 +13,8 @@ import {
   type ShellState,
 } from "./ScreenFlow";
 import { rebindGamepad, rebindKeyboard } from "../input/ControlBindings";
+import { browserDisplayCapabilities } from "../rendering/DisplayCapabilities";
+import { settingsRowsForDisplayCapabilities } from "./ScreenFlow";
 
 function boot(screen: Parameters<typeof createShellState>[1] = "title"): ShellState {
   return createShellState(DEFAULT_SAVE.settings, screen);
@@ -90,11 +92,38 @@ describe("Shell screen flow", () => {
     // music, AudioMixer's ui/music/ambience buses are unrouted, and aiming is
     // absolute so a sensitivity multiplier has no rate to scale. Re-list each
     // one in the same change that gives it a consumer.
-    const inertKeys = ["uiVolume", "musicVolume", "ambienceVolume", "gamepadAimSensitivity"];
+    const inertKeys = [
+      "uiVolume", "musicVolume", "ambienceVolume", "gamepadAimSensitivity",
+      "fullscreenMode", "selectedDisplayId", "frameCap",
+    ];
     const listed = SETTINGS_ROWS.map((row) => row.key);
     for (const key of inertKeys) {
       expect(listed).not.toContain(key);
     }
+  });
+
+  it("offers only presentation modes the current renderer can complete", () => {
+    const presentation = SETTINGS_ROWS.find((row) => row.key === "presentationMode");
+    expect(presentation).toEqual({
+      kind: "choice", key: "presentationMode", label: "Presentation", options: ["auto", "crisp", "fill"],
+    });
+  });
+
+  it("adds fullscreen to both rendering and navigation only when the host supports it", () => {
+    const unavailable = settingsRowsForDisplayCapabilities(browserDisplayCapabilities({ fullscreenApiAvailable: false }));
+    expect(unavailable.some((row) => row.key === "fullscreenMode")).toBe(false);
+
+    const available = settingsRowsForDisplayCapabilities(browserDisplayCapabilities({ fullscreenApiAvailable: true }));
+    const fullscreenIndex = available.findIndex((row) => row.key === "fullscreenMode");
+    expect(available[fullscreenIndex]).toEqual({
+      kind: "choice", key: "fullscreenMode", label: "Fullscreen", options: ["windowed", "borderless"],
+    });
+    const state = createShellState(
+      DEFAULT_SAVE.settings, "settings", undefined, undefined, undefined, undefined, available,
+    );
+    const result = stepShell({ ...state, settingsIndex: fullscreenIndex }, "right");
+    expect(result.state.settings.fullscreenMode).toBe("borderless");
+    expect(result.effects).toEqual([{ type: "set-setting", key: "fullscreenMode", value: "borderless" }]);
   });
 
   it("opens control bindings and requests capture per selected device/action", () => {

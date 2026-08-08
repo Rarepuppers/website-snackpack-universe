@@ -22,6 +22,8 @@ import { isArtifactId, isRelicId, type ArtifactId, type RelicId } from "../conte
 import { ITEM_STAT_KEYS, isItemId } from "../content/itemCatalog";
 import type { PlayerStatBlock } from "../stats/PlayerStatBlock";
 import type { EffectQualityPreference } from "../performance/AdaptivePerformance";
+import type { FrameCap, FullscreenMode } from "../rendering/DisplayCapabilities";
+import type { RequestedPresentationMode } from "../rendering/DisplayPresentation";
 
 /**
  * Versioned local persistence for settings and basic run progress.
@@ -52,6 +54,13 @@ export interface GameSettings {
   gamepadVibrationStrength: number;
   aimAssistStrength: number;
   displaySizePercent: number;
+  presentationMode: RequestedPresentationMode;
+  fullscreenMode: FullscreenMode;
+  selectedDisplayId: string | null;
+  frameCap: FrameCap;
+  brightness: number;
+  gamma: number;
+  screenShakeIntensity: number;
   radarSize: 0.75 | 1 | 1.25;
   offscreenThreatIndicators: "off" | "threats" | "all";
   colorVisionMode: "standard" | "deuteranopia" | "protanopia" | "tritanopia";
@@ -127,7 +136,7 @@ export interface ExpeditionSave {
  * Current schema version. Single source of truth — the cloud-save policy and the
  * platform adapter gate on it, so bumping it here is the only edit a migration needs.
  */
-export const SAVE_SCHEMA_VERSION = 12;
+export const SAVE_SCHEMA_VERSION = 13;
 
 export interface SaveData {
   version: typeof SAVE_SCHEMA_VERSION;
@@ -169,6 +178,13 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     gamepadVibrationStrength: 0.75,
     aimAssistStrength: 0,
     displaySizePercent: 100,
+    presentationMode: "auto",
+    fullscreenMode: "windowed",
+    selectedDisplayId: null,
+    frameCap: "display",
+    brightness: 1,
+    gamma: 1,
+    screenShakeIntensity: 1,
     radarSize: 1,
     offscreenThreatIndicators: "all",
     colorVisionMode: "standard",
@@ -365,9 +381,9 @@ function normalizeSave(parsed: unknown): SaveData {
   }
   const candidate = parsed as Omit<Partial<SaveData>, "version"> & { version?: number };
   const version = candidate.version ?? -1;
-  // Versions 1–10 migrate into the current schema. Missing fields inherit the
+  // Versions 1–12 migrate into the current schema. Missing fields inherit the
   // accessible defaults; unknown future versions degrade safely to defaults.
-  if (![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].includes(version)) {
+  if (![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].includes(version)) {
     return cloneSave(DEFAULT_SAVE);
   }
   return {
@@ -427,6 +443,20 @@ function normalizeSettings(value: unknown): GameSettings {
   const gameSpeedMultiplier = candidate.gameSpeedMultiplier === 0.75 || candidate.gameSpeedMultiplier === 1.25
     ? candidate.gameSpeedMultiplier
     : 1;
+  const presentationMode = candidate.presentationMode === "crisp"
+    || candidate.presentationMode === "fill"
+    || candidate.presentationMode === "expanded-frame"
+    ? candidate.presentationMode
+    : "auto";
+  const fullscreenMode = candidate.fullscreenMode === "borderless" ? "borderless" : "windowed";
+  const frameCap = candidate.frameCap === 60 || candidate.frameCap === 120 || candidate.frameCap === 144
+    ? candidate.frameCap
+    : "display";
+  const selectedDisplayId = typeof candidate.selectedDisplayId === "string"
+    && candidate.selectedDisplayId.length > 0
+    && candidate.selectedDisplayId.length <= 256
+    ? candidate.selectedDisplayId
+    : null;
   return {
     screenShakeEnabled: readBoolean(candidate.screenShakeEnabled, DEFAULT_SAVE.settings.screenShakeEnabled),
     reducedFlashEnabled: readBoolean(candidate.reducedFlashEnabled, DEFAULT_SAVE.settings.reducedFlashEnabled),
@@ -449,6 +479,13 @@ function normalizeSettings(value: unknown): GameSettings {
     gamepadVibrationStrength: readBoundedNumber(candidate.gamepadVibrationStrength, 0.75, 0, 1),
     aimAssistStrength: readBoundedNumber(candidate.aimAssistStrength, 0, 0, 1),
     displaySizePercent: readBoundedNumber(candidate.displaySizePercent, 100, 50, 200),
+    presentationMode,
+    fullscreenMode,
+    selectedDisplayId,
+    frameCap,
+    brightness: readBoundedNumber(candidate.brightness, 1, 0.5, 1.5),
+    gamma: readBoundedNumber(candidate.gamma, 1, 0.5, 2),
+    screenShakeIntensity: readBoundedNumber(candidate.screenShakeIntensity, 1, 0, 1),
     radarSize,
     offscreenThreatIndicators,
     colorVisionMode,
