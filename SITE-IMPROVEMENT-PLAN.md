@@ -196,6 +196,58 @@ shouldn't be creating accounts.
 
 ---
 
+## P6. Code/copy drift audit — "what you already have" — done 2026-08-07
+
+Prompted by a direct question: should the Solitaire game get more features,
+or is the arcade better served by making sure what's already built is
+actually marketed? Checked, and the answer was the latter, twice over.
+
+**Solitaire's deals are solver-verified and nobody knew.** The game code
+(`VERIFIED_SEEDS` in `play/solitaire/index.html`) has dealt from a pool
+pre-solved under both Draw 1 and Draw 3 for some time — the same guarantee
+FreeCell advertises, on the arcade's single highest-volume term (234k/mo).
+None of it was in the meta description, schema, prose, or FAQ. Fixed
+(commit `ba1b5d9`), and it also corrected two guides written before this was
+confirmed: `solitaire-without-ads-or-signup` had deferred the winnable-deal
+claim to FreeCell only, and `freecell-without-ads-solver-verified` had
+drifted into overclaiming the same guarantee for Spider Solitaire, which
+deals at random by design (confirmed against Spider's own FAQ).
+
+**14 game pages understated Brain Games Vol 1 by more than half.** Checking
+for the same pattern elsewhere turned up the opposite problem at scale:
+2048, Cascade, Checkers, Connect 4, Kakuro, Mahjong, Memory Match,
+Minesweeper, Reversi, Solitaire, Sudoku and Word Search all said "one of
+nine classics" / "eight more games" in their funnel copy, FAQ, and
+win-celebration share text. The app's own page (and its source —
+`apps/snackpack-brain-games/components/games/`, 23 folders) says 24. Every
+occurrence corrected to 24/23 (commit `5e3fc83`).
+
+**Two guides linked the wrong app entirely.** Written last session before
+this was checked: `freecell-without-ads-solver-verified` and
+`mahjong-solitaire-without-ads` both linked their "Android app" mention to
+Brain Games *Vol 3* — which, per its own source directory, contains neither
+FreeCell nor Mahjong (it has Chess, Backgammon, Sokoban, Spider Solitaire,
+etc.). Both games actually ship in **Vol 1**. Fixed in the same commit as
+the app-page copy.
+
+**Five games had a working Daily mode nobody could discover.** FreeCell,
+Kakuro, Mahjong, Thirteen and Memory Match all have a functioning Daily
+toggle in the toolbar (confirmed against each game's own JS) with zero
+explanation anywhere in visible copy — no meta description, no FAQ. Unlike
+Crossword and Picross, which do mention it. Added to all five's meta/og/
+schema descriptions and FAQs. Memory Match's existing FAQ entry was also
+rewritten — it implied Daily was only reachable via a shared link, when a
+toolbar button has existed the whole time.
+
+**Method, if this gets repeated for the other ~19 unaudited games:** compare
+each game's actual button/toolbar features (grep `<button>` labels) against
+its meta description and FAQ text, and separately grep the game's own JS
+comments for words like "verified", "guarantee", "solver" — that pattern
+specifically catches a real feature explained to nobody but future
+maintainers.
+
+---
+
 ## P5. Smaller confirmed items
 
 - **Zoo World / Garden World privacy pages said billing is not enabled — done
