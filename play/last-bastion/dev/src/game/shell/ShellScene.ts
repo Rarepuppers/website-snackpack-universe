@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { LocalSaveStore, type GameProgress } from "../save/LocalSaveStore";
+import { createLocalSaveStore } from "../save/SaveStorage";
 import { MARINE } from "../hero/marine";
 import { MEDIC } from "../hero/medic";
 import { areGameAssetsLoaded, queueGameAssets } from "../assets/PhaserAssetQueue";
@@ -73,9 +74,7 @@ export class ShellScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.saveStore = new LocalSaveStore(
-      typeof window !== "undefined" ? window.localStorage : null,
-    );
+    this.saveStore = createLocalSaveStore(typeof window !== "undefined" ? window : null);
     const save = this.saveStore.load();
     const initialScreen = requestedInitialScreen();
     const displayCapabilities = browserDisplayCapabilities({

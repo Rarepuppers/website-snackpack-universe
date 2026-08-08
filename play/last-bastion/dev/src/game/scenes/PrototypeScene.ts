@@ -48,6 +48,7 @@ import { BASE_HEIGHT, BASE_WIDTH, uiSafeArea, uiTextResolution } from "../render
 import { CombatWorldPresenter } from "../rendering/CombatWorldPresenter";
 import { screenShakeIntensity } from "../rendering/ScreenShake";
 import { LocalSaveStore, type GameSettings } from "../save/LocalSaveStore";
+import { createLocalSaveStore } from "../save/SaveStorage";
 import { cueForCombatEvent, EVASIVE_MOVE_CUE, MEDKIT_HEAL_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
 import { WebAudioSynth } from "../audio/WebAudioSynth";
 import { worldDepth } from "../rendering/WorldDepth";
@@ -873,6 +874,13 @@ export class PrototypeScene extends Phaser.Scene {
     if (!this.marineSprite) {
       return;
     }
+    if (this.marineSprite.texture.key === "__MISSING") {
+      if (!this.marineSprite.getData("missingTextureReported")) {
+        this.marineSprite.setData("missingTextureReported", true);
+        console.warn("[Last Bastion] Hero sprite texture unavailable during frame update");
+      }
+      return;
+    }
 
     if (move.x !== 0 || move.y !== 0) {
       if (Math.abs(move.x) > Math.abs(move.y)) {
@@ -884,9 +892,9 @@ export class PrototypeScene extends Phaser.Scene {
 
     const row = heroState === "evading" ? 2 : heroState === "moving" ? 1 : 0;
     const frame = row * 4 + this.marineFacingColumn;
-    this.marineSprite.setFrame(frame);
-    this.marineHelmetSprite?.setFrame(frame);
-    this.marineRimSprite?.setFrame(frame);
+    setSpriteFrameIfAvailable(this.marineSprite, frame);
+    setSpriteFrameIfAvailable(this.marineHelmetSprite, frame);
+    setSpriteFrameIfAvailable(this.marineRimSprite, frame);
   }
 
   private restartRun(): void {
@@ -2659,6 +2667,13 @@ export class PrototypeScene extends Phaser.Scene {
     enemy: EnemySnapshot,
     playerPosition: { x: number; y: number },
   ): void {
+    if (view.texture.key === "__MISSING") {
+      if (!view.getData("missingTextureReported")) {
+        view.setData("missingTextureReported", true);
+        console.warn(`[Last Bastion] Enemy sprite texture unavailable: ${enemy.type}`);
+      }
+      return;
+    }
     switch (enemy.type) {
       case "egg-cluster":
         view.setFrame(eggClusterFrame(enemy.hatchProgress));
@@ -4736,11 +4751,7 @@ function resolveArenaTheme() {
 }
 
 function createSaveStore(): LocalSaveStore {
-  try {
-    return new LocalSaveStore(window.localStorage);
-  } catch {
-    return new LocalSaveStore(null);
-  }
+  return createLocalSaveStore(typeof window !== "undefined" ? window : null);
 }
 
 interface ExpeditionCombatContext {
@@ -5068,6 +5079,15 @@ function applyManifestOrigin(
 ): void {
   const asset = GAME_ASSETS[assetId];
   view.setOrigin(asset.pivot.x, asset.pivot.y);
+}
+
+function setSpriteFrameIfAvailable(
+  sprite: Phaser.GameObjects.Sprite | null,
+  frame: number,
+): void {
+  if (sprite && sprite.texture.key !== "__MISSING" && sprite.texture.has(String(frame))) {
+    sprite.setFrame(frame);
+  }
 }
 
 function createManifestSprite(

@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { LocalSaveStore } from "../save/LocalSaveStore";
+import { createLocalSaveStore } from "../save/SaveStorage";
 import { cloneTransformationAffinityState } from "../transformations/TransformationAffinity";
 import { MARINE } from "../hero/marine";
 import { MEDIC } from "../hero/medic";
@@ -63,7 +64,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.saveStore = new LocalSaveStore(typeof window !== "undefined" ? window.localStorage : null);
+    this.saveStore = createLocalSaveStore(typeof window !== "undefined" ? window : null);
     if (!this.loadContext()) {
       window.location.href = "?screen=map";
       return;

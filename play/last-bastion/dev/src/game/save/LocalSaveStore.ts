@@ -209,7 +209,7 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
   lastRunSummary: null,
 });
 
-type StorageLike = Pick<Storage, "getItem" | "setItem">;
+export type StorageLike = Pick<Storage, "getItem" | "setItem">;
 
 export class LocalSaveStore {
   private cached: SaveData;

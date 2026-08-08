@@ -4,8 +4,10 @@ import { createGameConfig } from "./game/config";
 import { planDisplayPresentation } from "./game/rendering/DisplayPresentation";
 import { publishDisplayPresentation } from "./game/rendering/DisplayPresentationRuntime";
 import { applyDisplayCalibration } from "./game/rendering/DisplayCalibrationRuntime";
+import { initializePlatformAdapter } from "./game/platform/PlatformRuntime";
+import type { SteamworksWindow } from "./game/platform/HostPlatform";
 import { planDisplayScale, registerDisplayScaleReapply, setUiDeviceScale } from "./game/rendering/DisplayScaling";
-import { LocalSaveStore } from "./game/save/LocalSaveStore";
+import { createLocalSaveStore } from "./game/save/SaveStorage";
 import { resolveSceneRoute } from "./game/SceneRoute";
 import { loadInitialScene } from "./game/loadInitialScene";
 
@@ -16,7 +18,7 @@ import { loadInitialScene } from "./game/loadInitialScene";
  */
 function applyDisplayScale(target: Phaser.Game, useWorldPresentation: boolean): void {
   const requested = Number(new URLSearchParams(window.location.search).get("size"));
-  const savedSettings = new LocalSaveStore(window.localStorage).load().settings;
+  const savedSettings = createLocalSaveStore(window).load().settings;
   applyDisplayCalibration(document, target.canvas, savedSettings);
   const savedSize = savedSettings.displaySizePercent;
   const sizePercent = Number.isFinite(requested) && requested >= 50 && requested <= 300 ? requested : savedSize;
@@ -96,5 +98,6 @@ async function boot(): Promise<Phaser.Game> {
   });
 }
 
+initializePlatformAdapter(window as unknown as SteamworksWindow);
 const game = boot();
 export default game;

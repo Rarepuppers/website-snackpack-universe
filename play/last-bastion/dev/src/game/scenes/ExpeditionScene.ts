@@ -4,6 +4,7 @@ import { queueGameAssets } from "../assets/PhaserAssetQueue";
 import { likelyNextNodeBackdropAsset } from "../assets/NextNodeBackdropPreload";
 import { cloneTransformationAffinityState } from "../transformations/TransformationAffinity";
 import { LocalSaveStore } from "../save/LocalSaveStore";
+import { createLocalSaveStore } from "../save/SaveStorage";
 import { ARENA_THEMES } from "../rendering/arenaThemes";
 import { resolvePerkModifiers } from "../perks/perkCatalog";
 import {
@@ -97,9 +98,7 @@ export class ExpeditionScene extends Phaser.Scene {
   }
 
   init(): void {
-    this.saveStore = new LocalSaveStore(
-      typeof window !== "undefined" ? window.localStorage : null,
-    );
+    this.saveStore = createLocalSaveStore(typeof window !== "undefined" ? window : null);
     this.mapRevealBonusColumns = resolvePerkModifiers(this.saveStore.load().selectedPerkId).mapRevealBonusColumns;
     this.run = this.restoreOrStartRun();
   }

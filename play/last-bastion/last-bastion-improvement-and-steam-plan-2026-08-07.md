@@ -75,8 +75,10 @@ Valve references checked for this review: [Steam Hardware compatibility checklis
    maps pointer input correctly, meets its browser pacing budget, and restores after forced WebGL
    context loss at 1080p, 1440p, 4K, and Deck. It is now the default combat path with
    `?rendertexture=0` retained as a rollback switch. T2.4's browser settings are complete and the
-   max-calibration 4K pacing gate passes. **Next:** continue the T3.1 Electron host scaffold, then
-   T3.2 adapter selection; T2.3b remains correctly gated on U3 art and the Deck furniture decision.
+   max-calibration 4K pacing gate passes. T3.2 native host selection is implemented with an honest
+   browser fallback, and T3.3 atomic desktop saves are complete. **Next:** T3.4 cloud reconciliation,
+   then T3.5 achievement synchronization;
+   T3.1 packaged-window acceptance remains open, and T2.3b remains gated on U3/Deck decisions.
 4. **Next playable slice:** prototype threat tiers 0–2, hit-stop, and first-drop onboarding;
    conduct at least five observed runs and record completion, damage source, and confusion notes.
 5. **Asset-unblocked work:** continue U1/U2 and M1/M2/S4 in parallel, but wire no slider or
@@ -776,15 +778,21 @@ constructed by anything.
   interface (`getAchievement`, `setAchievement`, `storeStats`, `readCloudFile`, `writeCloudFile`)
   and nothing else — that narrow surface is the whole security model, so it must not grow. IPC
   validates the six current achievement IDs, confines cloud access to the versioned slot, and caps
-  payload size. Contract-parity and host security tests are in place. Remaining before DONE: install
-  the real T3.2 Steamworks host, prove packaged custom-protocol boot on Windows, and add packaging.
-- **T3.2** — Adapter selection at boot: construct `createSteamPlatformAdapter(bridge)` when the
-  preload bridge is present, otherwise a browser adapter. **This is the only place the two
-  builds diverge.**
-- **T3.3** — File-backed `StorageLike`. `LocalSaveStore` takes `Pick<Storage, "getItem"|"setItem">`,
-  so this is a ~40-line adapter: atomic write to temp + rename, one backup slot, and a corrupt-file
-  fallback to the backup. Note the store is **synchronous** — keep the file adapter synchronous
-  too rather than making the save layer async, which would ripple through every scene.
+  payload size. Contract-parity and host security tests are in place, and T3.2 now supplies the real
+  native host. Remaining before DONE: prove packaged custom-protocol boot on Windows and add packaging.
+- **T3.2 — IMPLEMENTED; LIVE-STEAM ACCEPTANCE REMAINS.** `steamworks.js` 0.4.0 initializes in the
+  main process. Preload exposes its five-method bridge only after initialization succeeds; otherwise
+  the renderer selects a browser-safe adapter at boot. Native false returns become retryable errors,
+  missing cloud files become `null`, and an invalid App ID cannot reach native code. A no-Steam-host
+  run proves clean fallback. Final acceptance needs the real Last Bastion App ID and a running Steam
+  client. **This remains the only place the two builds diverge.**
+- **T3.3 — DONE 8 Aug 2026.** File-backed `StorageLike` now uses a separate synchronous
+  `DesktopSaveBridge`; the renderer receives only `getItem`/`setItem`, never paths or general file
+  access. Main-process writes validate the one save key, JSON shape, and 8 MiB ceiling; write to a
+  temporary file; flush when supported; rotate one known-good backup; and atomically rename the
+  primary. Corrupt primary files fall back to the backup and are never rotated over it. Every
+  production `LocalSaveStore` construction site selects this bridge in Electron and retains browser
+  `localStorage` otherwise. This preserves the synchronous save contract without scene-wide async churn.
 - **T3.4** — Cloud reconciliation via `CloudSavePolicy` at boot and at run end. It is already
   written and tested to merge monotonic career/bestiary fields by maxima without double-counting
   a replayed run; this task is wiring plus a real round-trip test against Steam Cloud.

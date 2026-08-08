@@ -2750,3 +2750,49 @@ test prevents the duplicated desktop contract from silently drifting.
 - A managed-session BrowserWindow smoke exited with Windows access violation `0xC0000005` before an
   actionable Electron log. T3.1 remains IN PROGRESS until the same build boots in a normal Windows
   desktop session; Steamworks is deliberately unavailable rather than faked until T3.2 installs it.
+
+## 8 August 2026 — Missing-frame warning closed; T3.2 host selection implemented
+
+Correction to the preceding diagnostic: the stress warnings were not production weapon frames.
+The weapon guard was still worthwhile load-failure hardening, but the remaining `frame 2` calls came
+from independently optional layered sprites during hero frame updates. Body availability did not
+prove helmet/rim availability. Hero body, helmet, and rim now each verify their own texture and frame;
+enemy and scrap-HUD frame changes also degrade safely when an optional texture is unavailable.
+The 12-weapon route then ran a fresh 10-second browser window with zero warnings or errors.
+
+T3.2 now uses `steamworks.js` 0.4.0 in the Electron main process. A positive
+`LAST_BASTION_STEAM_APP_ID` may be supplied, or the SDK may use a local ignored `steam_appid.txt`.
+Initialization success installs the real achievement/stats/cloud host and enables the overlay;
+failure registers an unavailable host. An internal synchronous availability handshake means preload
+exposes `window.steamworks` only for the successful case, without expanding the five-method renderer
+contract. The renderer selects Steam or browser at boot and keeps achievement events pending when
+Steam is absent instead of falsely acknowledging them.
+
+- Native-host tests cover App ID validation, achievements, stats commits, cloud read/write, and false
+  native results. A real initialization attempt without Steam installed returned the browser fallback
+  cleanly: `Could not determine Steam client install directory`.
+- Full web verification passes: image audit, typecheck, **1,199 tests across 180 files**, production
+  build, smoke `200` / 76 routes, and offline 335 / 0 missing. Desktop build and all 9 host/security
+  tests pass. Live-Steam acceptance still requires the real App ID and a running Steam client.
+
+## 8 August 2026 — T3.3 atomic desktop persistence complete
+
+Desktop persistence is now a second narrow preload surface, not an expansion of SteamworksBridge.
+`window.desktopSave` exposes synchronous `getItem` and `setItem` only, matching `LocalSaveStore`'s
+existing contract. The Electron main process chooses the per-user `userData/saves` directory and
+owns all paths. IPC accepts only `last-bastion-save`, valid JSON, and payloads no larger than 8 MiB.
+
+Writes replace a fixed temporary file, flush it where the filesystem supports `fsync`, rotate the
+valid primary to one backup, and atomically rename the temporary file into place. A corrupt primary
+falls back to the backup; a later write removes the corrupt primary without replacing that known-good
+backup. Managed Windows volumes that return `EPERM`, `ENOTSUP`, or `EINVAL` for `fsync` retain the
+atomic rename guarantee instead of failing an otherwise valid save.
+
+All runtime save construction now flows through `SaveStorage.ts`: Electron prefers the desktop bridge,
+ordinary web builds retain `localStorage`, and unavailable storage retains the existing in-memory
+default behavior. Compile-time parity covers both desktop bridge contracts.
+
+- Desktop build and **14 tests** pass, including primary/backup rotation, corrupt-primary recovery,
+  good-backup preservation, confinement, Steamworks fallback, and custom-protocol security.
+- Full web verification passes: image audit, typecheck, **1,202 tests across 181 files**, production
+  build, smoke `200` / 76 routes, and offline 335 / 0 missing.

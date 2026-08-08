@@ -2,6 +2,9 @@ import { app, BrowserWindow, net, protocol, session } from "electron";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { registerSteamworksIpc } from "./SteamworksIpc.js";
+import { initializeSteamworksHost } from "./SteamworksHost.js";
+import { AtomicSaveStorage } from "./AtomicSaveStorage.js";
+import { registerDesktopSaveIpc } from "./DesktopSaveIpc.js";
 import { isAllowedDevelopmentUrl, resolveWebRequest, WEB_PATH_PREFIX } from "./WebProtocol.js";
 
 const APP_SCHEME = "last-bastion";
@@ -55,7 +58,9 @@ app.whenReady().then(async () => {
       : new Response("Not found", { status: 404 });
   });
   session.defaultSession.setPermissionRequestHandler((_webContents, _permission, callback) => callback(false));
-  registerSteamworksIpc(null);
+  const steamworksHost = await initializeSteamworksHost();
+  registerSteamworksIpc(steamworksHost);
+  registerDesktopSaveIpc(new AtomicSaveStorage(app.getPath("userData")));
   await createWindow();
 });
 

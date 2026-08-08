@@ -357,7 +357,11 @@ export class CombatHud {
     const scrapVisible = snapshot.securedScrap > 0 || snapshot.scenario === "scrap-shop";
     const secured = snapshot.events.some((event) => event.type === "scrap-secured");
     const spent = snapshot.events.some((event) => event.type === "scrap-spent");
-    this.scrapIcon.setVisible(scrapVisible).setFrame(spent ? 2 : secured ? 1 : 0);
+    const scrapFrame = spent ? 2 : secured ? 1 : 0;
+    this.scrapIcon.setVisible(scrapVisible && this.scrapIcon.texture.key !== "__MISSING");
+    if (this.scrapIcon.texture.key !== "__MISSING" && this.scrapIcon.texture.has(String(scrapFrame))) {
+      this.scrapIcon.setFrame(scrapFrame);
+    }
     this.scrapText.setVisible(scrapVisible).setText(`${snapshot.securedScrap}`);
     const playerRadar = radarPosition(snapshot.playerPosition, snapshot.arena, this.radarCentre, this.radarRadius);
     this.radarDot.setPosition(playerRadar.x, playerRadar.y);

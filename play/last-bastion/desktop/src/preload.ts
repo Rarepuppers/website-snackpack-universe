@@ -1,5 +1,22 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { STEAMWORKS_CHANNELS, type AchievementId, type SteamworksBridge } from "./BridgeContract.js";
+import {
+  DESKTOP_SAVE_CHANNELS,
+  STEAMWORKS_CHANNELS,
+  type AchievementId,
+  type DesktopSaveBridge,
+  type SteamworksBridge,
+} from "./BridgeContract.js";
+
+interface SyncResult<T> {
+  readonly ok: boolean;
+  readonly value?: T;
+  readonly error?: string;
+}
+
+function unwrapSyncResult<T>(result: SyncResult<T>): T {
+  if (!result?.ok) throw new Error(result?.error || "Desktop save operation failed");
+  return result.value as T;
+}
 
 const steamworksBridge: SteamworksBridge = Object.freeze({
   getAchievement: (id: AchievementId) => ipcRenderer.invoke(STEAMWORKS_CHANNELS.getAchievement, id) as Promise<boolean>,
@@ -9,4 +26,19 @@ const steamworksBridge: SteamworksBridge = Object.freeze({
   writeCloudFile: (path: string, contents: string) => ipcRenderer.invoke(STEAMWORKS_CHANNELS.writeCloudFile, path, contents) as Promise<void>,
 });
 
-contextBridge.exposeInMainWorld("steamworks", steamworksBridge);
+if (ipcRenderer.sendSync(STEAMWORKS_CHANNELS.isAvailable) === true) {
+  contextBridge.exposeInMainWorld("steamworks", steamworksBridge);
+}
+
+const desktopSaveBridge: DesktopSaveBridge = Object.freeze({
+  getItem: (key: string) => unwrapSyncResult<string | null>(
+    ipcRenderer.sendSync(DESKTOP_SAVE_CHANNELS.getItem, key) as SyncResult<string | null>,
+  ),
+  setItem: (key: string, value: string) => {
+    unwrapSyncResult<void>(
+      ipcRenderer.sendSync(DESKTOP_SAVE_CHANNELS.setItem, key, value) as SyncResult<void>,
+    );
+  },
+});
+
+contextBridge.exposeInMainWorld("desktopSave", desktopSaveBridge);

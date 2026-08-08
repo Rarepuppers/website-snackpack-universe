@@ -16,6 +16,9 @@ function requireHost(host: SteamworksHost | null): SteamworksHost {
 }
 
 export function registerSteamworksIpc(host: SteamworksHost | null): void {
+  ipcMain.on(STEAMWORKS_CHANNELS.isAvailable, (event) => {
+    event.returnValue = host !== null;
+  });
   ipcMain.handle(STEAMWORKS_CHANNELS.getAchievement, (_event, id: unknown) => {
     assertAchievementId(id);
     return requireHost(host).getAchievement(id);

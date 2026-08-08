@@ -4,7 +4,7 @@ import { queueGameAssets } from "../assets/PhaserAssetQueue";
 import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
 import { UPGRADE_CATALOG, type UpgradeId } from "../content/upgradeCatalog";
 import { PERK_CATALOG } from "../perks/perkCatalog";
-import { LocalSaveStore } from "../save/LocalSaveStore";
+import { createLocalSaveStore } from "../save/SaveStorage";
 import { createRunSummary, damagePerMinute, type RunSummary } from "../run/RunSummary";
 import { createTransformationCodexSnapshot } from "../transformations/TransformationSnapshot";
 import { normalizeTransformationAffinityState } from "../transformations/TransformationAffinity";
@@ -31,7 +31,7 @@ export class RunSummaryScene extends Phaser.Scene {
   }
 
   create(): void {
-    const store = new LocalSaveStore(typeof window !== "undefined" ? window.localStorage : null);
+    const store = createLocalSaveStore(typeof window !== "undefined" ? window : null);
     const save = store.load();
     const summary = new URLSearchParams(window.location.search).get("summarydemo") === "1"
       ? demoSummary()
