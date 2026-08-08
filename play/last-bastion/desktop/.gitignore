@@ -1,2 +1,6 @@
 dist/
 steam_appid.txt
+release/
+stage/
+steampipe/work/
+.cache/

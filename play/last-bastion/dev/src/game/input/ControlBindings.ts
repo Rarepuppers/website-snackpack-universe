@@ -1,3 +1,5 @@
+import { controllerButtonLabel } from "./ControllerGlyphs";
+
 export const KEYBOARD_BINDABLE_ACTIONS = [
   "moveUp", "moveDown", "moveLeft", "moveRight",
   "evade", "interact", "ultimate", "kit", "toggleFireMode", "pause",
@@ -88,7 +90,7 @@ export function keyboardBindingLabel(code: string): string {
 }
 
 export function gamepadBindingLabel(button: GamepadButton): string {
-  return ({ south: "A/×", east: "B/○", west: "X/□", north: "Y/△", start: "START", rightStick: "R3" })[button];
+  return controllerButtonLabel(button);
 }
 
 /** DOM KeyboardEvent.code to the numeric key codes Phaser accepts. */

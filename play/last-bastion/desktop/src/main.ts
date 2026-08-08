@@ -1,11 +1,12 @@
 import { app, BrowserWindow, net, protocol, session } from "electron";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { resolve } from "node:path";
 import { registerSteamworksIpc } from "./SteamworksIpc.js";
 import { initializeSteamworksHost } from "./SteamworksHost.js";
 import { AtomicSaveStorage } from "./AtomicSaveStorage.js";
 import { registerDesktopSaveIpc } from "./DesktopSaveIpc.js";
 import { isAllowedDevelopmentUrl, resolveWebRequest, WEB_PATH_PREFIX } from "./WebProtocol.js";
+import { registerDesktopDisplayIpc } from "./DesktopDisplayIpc.js";
+import { desktopWebRoot } from "./DesktopPaths.js";
 
 const APP_SCHEME = "last-bastion";
 
@@ -15,8 +16,12 @@ protocol.registerSchemesAsPrivileged([{
 }]);
 
 function webRoot(): string {
-  const configured = process.env.LAST_BASTION_WEB_ROOT;
-  return configured ? resolve(configured) : resolve(app.getAppPath(), "..");
+  return desktopWebRoot({
+    configuredRoot: process.env.LAST_BASTION_WEB_ROOT,
+    isPackaged: app.isPackaged,
+    appPath: app.getAppPath(),
+    resourcesPath: process.resourcesPath,
+  });
 }
 
 async function createWindow(): Promise<void> {
@@ -61,6 +66,7 @@ app.whenReady().then(async () => {
   const steamworksHost = await initializeSteamworksHost();
   registerSteamworksIpc(steamworksHost);
   registerDesktopSaveIpc(new AtomicSaveStorage(app.getPath("userData")));
+  registerDesktopDisplayIpc();
   await createWindow();
 });
 

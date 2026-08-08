@@ -8,13 +8,45 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "npm run build && node --test dist/*.test.js",
-    "start": "npm run build && electron ."
+    "start": "npm run build && electron .",
+    "package:win": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-desktop.ps1 -Platform win",
+    "package:linux": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-desktop.ps1 -Platform linux",
+    "package:mac": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-desktop.ps1 -Platform mac"
   },
   "devDependencies": {
     "electron": "43.3.0",
+    "electron-builder": "^26.15.3",
     "typescript": "7.0.2"
   },
   "dependencies": {
     "steamworks.js": "^0.4.0"
+  },
+  "build": {
+    "appId": "com.snackpackuniverse.lastbastion",
+    "productName": "Last Bastion",
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/steamworks.js/dist/**/*"
+    ],
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "stage/game",
+        "to": "game"
+      },
+      {
+        "from": "stage/steam-input",
+        "to": "steam-input"
+      }
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "executableName": "LastBastion"
+    }
   }
 }

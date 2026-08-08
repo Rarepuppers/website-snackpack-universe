@@ -21,3 +21,42 @@ separate synchronous `window.desktopSave` bridge with only `getItem` and `setIte
 a path or general filesystem access. Writes go to a temporary JSON file, flush where the filesystem
 supports it, rotate one known-good backup, then atomically rename into the primary slot. A corrupt
 primary reads from the backup and is never rotated over that backup.
+
+## Packaging
+
+Run the platform script on that platform:
+
+```powershell
+npm run package:win
+npm run package:linux
+npm run package:mac
+```
+
+The script first rebuilds the web game and desktop TypeScript, stages only the published page, codex,
+runtime assets, and Steam Input manifest, then asks electron-builder for an unpacked directory in
+`release/`. Packaged clients read web content from `resources/game`; source runs continue to read the
+parent game directory. The native `steamworks.js` binaries are unpacked from ASAR.
+
+## SteamPipe
+
+Keep the assigned App ID and Depot ID out of the source templates. After packaging, create an ignored
+SteamPipe work tree with the real partner IDs:
+
+```powershell
+powershell -File scripts/prepare-steampipe.ps1 `
+  -AppId <real-app-id> -DepotId <real-depot-id> `
+  -PackageDir release/win-unpacked -Description "QA candidate" -Preview
+```
+
+Inspect `steampipe/work/scripts/app_build.vdf`, `depot_build.vdf`, and the staged content. `-Preview`
+asks SteamPipe to produce logs and a manifest without uploading depot content. Remove `-Preview` only
+when that preview is correct, prepare again, then upload with the Steamworks SDK's SteamCMD:
+
+```powershell
+powershell -File scripts/upload-steampipe.ps1 `
+  -SteamCmdPath C:\SteamworksSDK\tools\ContentBuilder\builder\steamcmd.exe `
+  -AccountName <builder-account>
+```
+
+The upload command intentionally prompts for credentials/Steam Guard instead of accepting a password
+argument. It never sets a branch live; choose and promote the uploaded build in Steamworks App Admin.

@@ -13,6 +13,7 @@ export interface DisplayCapabilities {
   readonly canSelectDisplay: boolean;
   readonly frameCaps: readonly FrameCap[];
   readonly canControlVsync: false;
+  readonly displays: readonly { id: string; label: string }[];
 }
 
 export interface BrowserDisplayCapabilityInput {
@@ -30,6 +31,7 @@ export function browserDisplayCapabilities(
     canSelectDisplay: false,
     frameCaps: [60, "display"],
     canControlVsync: false,
+    displays: [],
   };
 }
 
@@ -38,12 +40,15 @@ export function browserDisplayCapabilities(
  * fullscreen, uncapped rendering, and direct vsync control remain absent until
  * a host spike demonstrates that they work consistently across supported OSes.
  */
-export function desktopDisplayCapabilities(): DisplayCapabilities {
+export function desktopDisplayCapabilities(
+  displays: readonly { id: string; label: string }[] = [],
+): DisplayCapabilities {
   return {
     host: "desktop",
     fullscreenModes: ["windowed", "borderless"],
     canSelectDisplay: true,
     frameCaps: [60, 120, 144, "display"],
     canControlVsync: false,
+    displays,
   };
 }

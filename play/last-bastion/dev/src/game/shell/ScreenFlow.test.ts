@@ -13,7 +13,7 @@ import {
   type ShellState,
 } from "./ScreenFlow";
 import { rebindGamepad, rebindKeyboard } from "../input/ControlBindings";
-import { browserDisplayCapabilities } from "../rendering/DisplayCapabilities";
+import { browserDisplayCapabilities, desktopDisplayCapabilities } from "../rendering/DisplayCapabilities";
 import { settingsRowsForDisplayCapabilities } from "./ScreenFlow";
 
 function boot(screen: Parameters<typeof createShellState>[1] = "title"): ShellState {
@@ -126,6 +126,35 @@ describe("Shell screen flow", () => {
     expect(result.effects).toEqual([{ type: "set-setting", key: "fullscreenMode", value: "borderless" }]);
   });
 
+  it("adds desktop monitor selection and preserves typed frame-cap values", () => {
+    const rows = settingsRowsForDisplayCapabilities(desktopDisplayCapabilities([
+      { id: "primary", label: "Main display" },
+      { id: "deck", label: "Steam Deck display" },
+    ]));
+    const displayIndex = rows.findIndex((row) => row.key === "selectedDisplayId");
+    const frameCapIndex = rows.findIndex((row) => row.key === "frameCap");
+    expect(rows[displayIndex]).toEqual({
+      kind: "choice", key: "selectedDisplayId", label: "Display", options: ["primary", "deck"],
+    });
+    expect(rows[frameCapIndex]).toEqual({
+      kind: "choice", key: "frameCap", label: "Frame cap", options: ["60", "120", "144", "display"],
+    });
+
+    const state = createShellState(
+      { ...DEFAULT_SAVE.settings, selectedDisplayId: "primary", frameCap: 60 },
+      "settings", undefined, undefined, undefined, undefined, rows,
+    );
+    const selectedDisplay = stepShell({ ...state, settingsIndex: displayIndex }, "right");
+    expect(selectedDisplay.state.settings.selectedDisplayId).toBe("deck");
+    expect(selectedDisplay.effects).toEqual([
+      { type: "set-setting", key: "selectedDisplayId", value: "deck" },
+    ]);
+
+    const selectedCap = stepShell({ ...state, settingsIndex: frameCapIndex }, "right");
+    expect(selectedCap.state.settings.frameCap).toBe(120);
+    expect(selectedCap.effects).toEqual([{ type: "set-setting", key: "frameCap", value: 120 }]);
+  });
+
   it("opens control bindings and requests capture per selected device/action", () => {
     const controlsIndex = SETTINGS_ROWS.findIndex((row) => row.key === "controls");
     const controls = stepShell({ ...boot("settings"), settingsIndex: controlsIndex }, "confirm").state;
@@ -143,7 +172,7 @@ describe("Shell screen flow", () => {
     let controls = rebindKeyboard(DEFAULT_SAVE.controls, "evade", "KeyF");
     controls = rebindGamepad(controls, "evade", "north");
     const pages = howToPlayPages(controls);
-    expect(pages[0]!.body).toContain("F / Y/△ rolls");
+    expect(pages[0]!.body).toContain("F / Y rolls");
   });
 
   it("launches lab routes as URL effects", () => {

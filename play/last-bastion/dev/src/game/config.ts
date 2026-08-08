@@ -1,7 +1,10 @@
 import Phaser from "phaser";
+import type { FrameCap } from "./rendering/DisplayCapabilities";
+import { phaserFrameTiming } from "./rendering/FrameCapConfig";
 
 export function createGameConfig(
   initialScene: Phaser.Types.Scenes.SceneType,
+  frameCap: FrameCap = "display",
 ): Phaser.Types.Core.GameConfig {
   return {
     type: Phaser.AUTO,
@@ -11,6 +14,9 @@ export function createGameConfig(
     backgroundColor: "#151e2b",
     pixelArt: true,
     roundPixels: true,
+    // Phaser's `limit` is the supported on-screen cap. Electron's webContents
+    // frame-rate API only applies to offscreen rendering.
+    fps: phaserFrameTiming(frameCap),
     input: {
       gamepad: true,
     },

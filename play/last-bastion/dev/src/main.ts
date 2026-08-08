@@ -7,6 +7,8 @@ import { applyDisplayCalibration } from "./game/rendering/DisplayCalibrationRunt
 import { initializePlatformAdapter } from "./game/platform/PlatformRuntime";
 import { initializeCloudSaveRuntime } from "./game/platform/CloudSaveRuntime";
 import { initializeAchievementRuntime } from "./game/platform/AchievementRuntime";
+import { initializeSteamInputRuntime } from "./game/platform/SteamInputRuntime";
+import { initializeDesktopDisplayRuntime, type DesktopDisplayWindow } from "./game/rendering/DesktopDisplayRuntime";
 import type { SteamworksWindow } from "./game/platform/HostPlatform";
 import { planDisplayScale, registerDisplayScaleReapply, setUiDeviceScale } from "./game/rendering/DisplayScaling";
 import { createLocalSaveStore } from "./game/save/SaveStorage";
@@ -81,8 +83,9 @@ async function boot(): Promise<Phaser.Game> {
   // existing direct-canvas path.
   const useWorldPresentation = route === "combat" && params.get("rendertexture") !== "0";
   const initialScene = await loadInitialScene(route);
+  const frameCap = createLocalSaveStore(window).load().settings.frameCap;
   return new Phaser.Game({
-    ...createGameConfig(initialScene),
+    ...createGameConfig(initialScene, frameCap),
     callbacks: {
       // postBoot runs after Phaser's own scale setup, so our zoom survives.
       postBoot: (booted) => {
@@ -102,6 +105,8 @@ async function boot(): Promise<Phaser.Game> {
 
 async function start(): Promise<Phaser.Game> {
   const adapter = initializePlatformAdapter(window as unknown as SteamworksWindow);
+  await initializeSteamInputRuntime(window as unknown as SteamworksWindow);
+  await initializeDesktopDisplayRuntime(window as unknown as DesktopDisplayWindow);
   // Steam reconciliation completes before scenes read LocalSaveStore. Browser
   // builds skip immediately, and offline Steam failures preserve the local save.
   await initializeCloudSaveRuntime(window, adapter);

@@ -816,11 +816,26 @@ constructed by anything.
 - **T3.6** — Expand `ACHIEVEMENT_IDS` from 6 to ~28 (§6.2). Each new ID needs an `isAchievementEarned`
   arm; the `switch` is exhaustive over the union, so TypeScript will name every one that is
   missing. Land the IDs **before** commissioning batch X1 icons.
-- **T3.7** — Steam Input action-set manifest plus glyph rendering. `input/ControlBindings.ts`
-  already owns the binding model and the HUD already reflects it, so glyphs are a presentation
-  substitution at the existing label sites.
-- **T3.8** — Fullscreen, display selection, and frame cap plumbed through the Electron main
-  process to the T2.4 settings.
+- **T3.7 — FOUNDATION COMPLETE 8 Aug 2026; live layouts pending App ID.** The bundled
+  `steam-input/steam_input_manifest.vdf` defines localized Gameplay and Menu action sets and is
+  audited against the code-owned action names. The desktop host initializes Steam Input separately
+  from core Steamworks, exposes only the connected controller type through IPC, and resolves Xbox/
+  Deck, PlayStation, or Nintendo button-position labels before Phaser creates shell/HUD text. Steam
+  Input or IPC failure falls back to generic labels without delaying boot; browser gamepad behavior is
+  unchanged. Official per-controller configuration VDFs, action polling, hot-plug label refresh, and
+  live layout acceptance remain open until the real App ID can export trustworthy layouts. Follow the
+  checked-in `steam-input/README.md`; do not generate configurations against Spacewar/App 480.
+- **T3.8 — IMPLEMENTED 8 Aug 2026; PACKAGED MULTI-MONITOR ACCEPTANCE REMAINS.** A confined
+  preload bridge now reports Electron display labels/geometry and applies windowed or borderless
+  transitions in the main process. Monitor moves preserve and clamp the normal window size, centre it
+  inside the target work area, leave fullscreen before changing bounds, and then restore the requested
+  mode. T2.4 builds its rows from real host capabilities, persists the selected monitor and fullscreen
+  mode, and falls back to the browser Fullscreen API when no desktop bridge exists. Frame caps of 60,
+  120, 144, or display rate are applied at the next scene boot through Phaser's on-screen limiter;
+  Electron's similarly named WebContents API is intentionally not used because it is documented for
+  offscreen rendering. Pure transition/runtime tests and host-renderer bridge parity are complete.
+  Final acceptance still requires packaged Windows testing across at least two monitors with different
+  scale factors, unplug/replug recovery, and Steam Deck desktop/gaming-mode checks.
 - **T3.9** — SteamPipe depot config, `steam_appid.txt` (gitignored), and build scripts alongside
   the existing PowerShell tooling.
 

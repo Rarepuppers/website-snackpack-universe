@@ -50,6 +50,20 @@ describe("Steamworks host", () => {
     assert.deepEqual(calls, ["activate:first-victory", "store", "write:save.json:{}"]);
   });
 
+  it("reports the connected Steam controller type and degrades safely", async () => {
+    const host = createSteamworksHost(client({
+      input: {
+        init: () => undefined,
+        getControllers: () => [{ getType: () => "PS5Controller" }],
+      },
+    }));
+    assert.equal(await host.getControllerType(), "PS5Controller");
+    const unavailable = createSteamworksHost(client({
+      input: { init: () => undefined, getControllers: () => { throw new Error("offline"); } },
+    }));
+    assert.equal(await unavailable.getControllerType(), null);
+  });
+
   it("turns false native results into retryable bridge failures", async () => {
     const host = createSteamworksHost(client({
       achievement: { isActivated: () => false, activate: () => false },

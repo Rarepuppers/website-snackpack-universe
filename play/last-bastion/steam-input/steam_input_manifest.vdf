@@ -1,0 +1,73 @@
+"Action Manifest"
+{
+  "configurations"
+  {
+  }
+  "actions"
+  {
+    "Gameplay"
+    {
+      "title" "#Set_Gameplay"
+      "StickPadGyro"
+      {
+        "Move"
+        {
+          "title" "#Action_Move"
+          "input_mode" "joystick_move"
+        }
+        "Aim"
+        {
+          "title" "#Action_Aim"
+          "input_mode" "joystick_move"
+        }
+      }
+      "Button"
+      {
+        "Fire" "#Action_Fire"
+        "Evade" "#Action_Evade"
+        "Interact" "#Action_Interact"
+        "Ultimate" "#Action_Ultimate"
+        "Kit" "#Action_Kit"
+        "ToggleFireMode" "#Action_ToggleFireMode"
+        "Pause" "#Action_Pause"
+      }
+    }
+    "Menus"
+    {
+      "title" "#Set_Menus"
+      "StickPadGyro"
+      {
+        "Navigate"
+        {
+          "title" "#Action_Navigate"
+          "input_mode" "joystick_move"
+        }
+      }
+      "Button"
+      {
+        "Confirm" "#Action_Confirm"
+        "Back" "#Action_Back"
+      }
+    }
+  }
+  "localization"
+  {
+    "english"
+    {
+      "Set_Gameplay" "Gameplay"
+      "Set_Menus" "Menus"
+      "Action_Move" "Move"
+      "Action_Aim" "Aim"
+      "Action_Fire" "Fire"
+      "Action_Evade" "Roll / Evade"
+      "Action_Interact" "Interact"
+      "Action_Ultimate" "Ultimate"
+      "Action_Kit" "Use Kit"
+      "Action_ToggleFireMode" "Toggle Fire Mode"
+      "Action_Pause" "Pause"
+      "Action_Navigate" "Navigate"
+      "Action_Confirm" "Confirm"
+      "Action_Back" "Back"
+    }
+  }
+}

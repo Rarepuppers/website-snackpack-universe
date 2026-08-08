@@ -11,8 +11,12 @@ import {
 import { PERK_CATALOG } from "../perks/perkCatalog";
 import { THREAT_TIERS } from "../expedition/ThreatTier";
 import { reapplyDisplayScale } from "../rendering/DisplayScaling";
-import { browserDisplayCapabilities } from "../rendering/DisplayCapabilities";
-import { applyBrowserFullscreen, currentBrowserFullscreenMode } from "../rendering/BrowserFullscreen";
+import {
+  applyHostDisplaySelection,
+  currentHostDisplaySelection,
+  displayLabelForId,
+  hostDisplayCapabilities,
+} from "../rendering/DesktopDisplayRuntime";
 import {
   createShellState,
   howToPlayPages,
@@ -78,13 +82,15 @@ export class ShellScene extends Phaser.Scene {
     this.saveStore = createLocalSaveStore(typeof window !== "undefined" ? window : null);
     const save = this.saveStore.load();
     const initialScreen = requestedInitialScreen();
-    const displayCapabilities = browserDisplayCapabilities({
-      fullscreenApiAvailable: document.fullscreenEnabled && typeof document.documentElement.requestFullscreen === "function",
-    });
-    const fullscreenMode = currentBrowserFullscreenMode(document);
+    const displayCapabilities = hostDisplayCapabilities(document);
+    const hostSelection = currentHostDisplaySelection();
+    const fullscreenMode = hostSelection?.fullscreenMode
+      ?? (document.fullscreenElement ? "borderless" : "windowed");
+    const selectedDisplayId = hostSelection?.selectedDisplayId ?? save.settings.selectedDisplayId;
     const settings = save.settings.fullscreenMode === fullscreenMode
+      && save.settings.selectedDisplayId === selectedDisplayId
       ? save.settings
-      : this.saveStore.updateSettings({ fullscreenMode }).settings;
+      : this.saveStore.updateSettings({ fullscreenMode, selectedDisplayId }).settings;
     this.state = createShellState(
       settings, initialScreen, save.progress, save.selectedPerkId, save.selectedHeroId, save.controls,
       settingsRowsForDisplayCapabilities(displayCapabilities),
@@ -156,7 +162,23 @@ export class ShellScene extends Phaser.Scene {
     for (const effect of result.effects) {
       if (effect.type === "set-setting") {
         if (effect.key === "fullscreenMode") {
-          void this.setFullscreenMode(effect.value === "borderless" ? "borderless" : "windowed");
+          void this.setHostDisplaySelection(
+            effect.value === "borderless" ? "borderless" : "windowed",
+            this.state.settings.selectedDisplayId,
+          );
+          continue;
+        }
+        if (effect.key === "selectedDisplayId") {
+          this.saveStore.updateSettings({ selectedDisplayId: typeof effect.value === "string" ? effect.value : null });
+          void this.setHostDisplaySelection(
+            this.state.settings.fullscreenMode,
+            typeof effect.value === "string" ? effect.value : null,
+          );
+          continue;
+        }
+        if (effect.key === "frameCap") {
+          this.saveStore.updateSettings({ frameCap: effect.value === 60 || effect.value === 120 || effect.value === 144 ? effect.value : "display" });
+          this.fullscreenFeedback = "Frame cap applies when the next screen opens.";
           continue;
         }
         this.saveStore.updateSettings({ [effect.key]: effect.value });
@@ -180,7 +202,8 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private readonly handleFullscreenChange = (): void => {
-    const fullscreenMode = currentBrowserFullscreenMode(document);
+    if (currentHostDisplaySelection()) return;
+    const fullscreenMode = document.fullscreenElement ? "borderless" : "windowed";
     this.fullscreenFeedback = null;
     this.saveStore.updateSettings({ fullscreenMode });
     this.state = { ...this.state, settings: { ...this.state.settings, fullscreenMode } };
@@ -188,12 +211,16 @@ export class ShellScene extends Phaser.Scene {
     this.render();
   };
 
-  private async setFullscreenMode(mode: "windowed" | "borderless"): Promise<void> {
-    const applied = await applyBrowserFullscreen(document, mode);
-    const fullscreenMode = applied ? mode : currentBrowserFullscreenMode(document);
-    this.fullscreenFeedback = applied ? null : "Fullscreen request was denied by this browser.";
-    this.saveStore.updateSettings({ fullscreenMode });
-    this.state = { ...this.state, settings: { ...this.state.settings, fullscreenMode } };
+  private async setHostDisplaySelection(
+    mode: "windowed" | "borderless",
+    selectedDisplayId: string | null,
+  ): Promise<void> {
+    const applied = await applyHostDisplaySelection(document, { fullscreenMode: mode, selectedDisplayId });
+    if (!applied) return;
+    const failed = applied.fullscreenMode !== mode || applied.selectedDisplayId !== selectedDisplayId;
+    this.fullscreenFeedback = failed ? "The requested display mode was unavailable." : null;
+    this.saveStore.updateSettings(applied);
+    this.state = { ...this.state, settings: { ...this.state.settings, ...applied } };
     reapplyDisplayScale();
     this.render();
   }
@@ -628,6 +655,8 @@ function formatSettingValue(key: string, value: unknown): string {
   if (key === "gamma") return Number(value).toFixed(1);
   if (key.includes("Deadzone")) return Number(value).toFixed(2);
   if (key === "displaySizePercent") return `${Math.round(Number(value))}%`;
+  if (key === "selectedDisplayId") return displayLabelForId(value);
+  if (key === "frameCap") return value === "display" ? "DISPLAY" : `${value} FPS`;
   if (key === "uiScale" || key === "radarSize") {
     return `${Number(value).toFixed(2).replace(/0+$/, "").replace(/\.$/, "")}x`;
   }

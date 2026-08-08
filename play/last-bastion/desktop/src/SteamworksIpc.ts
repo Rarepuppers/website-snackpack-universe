@@ -3,6 +3,7 @@ import { STEAMWORKS_CHANNELS, type AchievementId } from "./BridgeContract.js";
 import { assertAchievementId, assertCloudContents, assertCloudPath } from "./BridgeValidation.js";
 
 export interface SteamworksHost {
+  getControllerType(): string | null | Promise<string | null>;
   getAchievement(id: AchievementId): boolean | Promise<boolean>;
   setAchievement(id: AchievementId): void | Promise<void>;
   storeStats(): void | Promise<void>;
@@ -23,6 +24,7 @@ export function registerSteamworksIpc(host: SteamworksHost | null): void {
     assertAchievementId(id);
     return requireHost(host).getAchievement(id);
   });
+  ipcMain.handle(STEAMWORKS_CHANNELS.getControllerType, () => requireHost(host).getControllerType());
   ipcMain.handle(STEAMWORKS_CHANNELS.setAchievement, (_event, id: unknown) => {
     assertAchievementId(id);
     return requireHost(host).setAchievement(id);

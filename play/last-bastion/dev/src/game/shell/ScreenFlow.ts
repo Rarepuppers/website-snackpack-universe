@@ -135,11 +135,27 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
 export function settingsRowsForDisplayCapabilities(
   capabilities: DisplayCapabilities,
 ): readonly SettingsRow[] {
-  if (capabilities.fullscreenModes.length < 2) return SETTINGS_ROWS;
   const insertionIndex = SETTINGS_ROWS.findIndex((row) => row.key === "presentationMode") + 1;
+  const hostRows: SettingsRow[] = [];
+  if (capabilities.fullscreenModes.length > 1) {
+    hostRows.push({ kind: "choice", key: "fullscreenMode", label: "Fullscreen", options: capabilities.fullscreenModes });
+  }
+  if (capabilities.canSelectDisplay && capabilities.displays.length > 1) {
+    hostRows.push({
+      kind: "choice", key: "selectedDisplayId", label: "Display",
+      options: capabilities.displays.map(({ id }) => id),
+    });
+  }
+  if (capabilities.frameCaps.length > 1) {
+    hostRows.push({
+      kind: "choice", key: "frameCap", label: "Frame cap",
+      options: capabilities.frameCaps.map(String),
+    });
+  }
+  if (hostRows.length === 0) return SETTINGS_ROWS;
   return Object.freeze([
     ...SETTINGS_ROWS.slice(0, insertionIndex),
-    { kind: "choice" as const, key: "fullscreenMode" as const, label: "Fullscreen", options: capabilities.fullscreenModes },
+    ...hostRows,
     ...SETTINGS_ROWS.slice(insertionIndex),
   ]);
 }
@@ -354,6 +370,7 @@ function stepSettings(state: ShellState, intent: ShellIntent): ShellStepResult {
       value = options[(currentIndex + direction + options.length) % options.length] as GameSettings[keyof GameSettings];
       if (row.key === "uiScale") value = Number(value) as 0.8 | 1 | 1.2;
       if (row.key === "radarSize") value = Number(value) as 0.75 | 1 | 1.25;
+      if (row.key === "frameCap" && value !== "display") value = Number(value) as 60 | 120 | 144;
     } else {
       const current = Number(state.settings[row.key]);
       const direction = intent === "left" ? -1 : 1;

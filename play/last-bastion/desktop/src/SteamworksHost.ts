@@ -2,6 +2,10 @@ import type { AchievementId } from "./BridgeContract.js";
 import type { SteamworksHost } from "./SteamworksIpc.js";
 
 export interface SteamworksClient {
+  input?: {
+    init(): void;
+    getControllers(): Array<{ getType(): string }>;
+  };
   achievement: {
     isActivated(id: string): boolean;
     activate(id: string): boolean;
@@ -32,6 +36,13 @@ export function readSteamAppId(value: string | undefined): number | undefined {
 
 export function createSteamworksHost(client: SteamworksClient): SteamworksHost {
   return Object.freeze({
+    getControllerType: () => {
+      try {
+        return client.input?.getControllers()[0]?.getType() ?? null;
+      } catch {
+        return null;
+      }
+    },
     getAchievement: (id: AchievementId) => client.achievement.isActivated(id),
     setAchievement: (id: AchievementId) => {
       if (!client.achievement.activate(id)) throw new Error(`Steam rejected achievement ${id}`);
@@ -55,6 +66,12 @@ export async function initializeSteamworksHost(
     const steamworks = imported.default ?? imported;
     const client = steamworks.init(appId);
     steamworks.electronEnableSteamOverlay();
+    try {
+      client.input?.init();
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error);
+      console.warn(`[Last Bastion] Steam Input unavailable; using generic gamepad labels: ${detail}`);
+    }
     return createSteamworksHost(client);
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);

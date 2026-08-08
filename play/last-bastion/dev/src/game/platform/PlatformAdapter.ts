@@ -15,6 +15,7 @@ export interface PlatformAdapter {
 
 /** Minimal surface that a desktop shell exposes after initializing Steamworks. */
 export interface SteamworksBridge {
+  getControllerType?(): string | null | Promise<string | null>;
   getAchievement(id: AchievementId): boolean | Promise<boolean>;
   setAchievement(id: AchievementId): void | Promise<void>;
   storeStats(): void | Promise<void>;

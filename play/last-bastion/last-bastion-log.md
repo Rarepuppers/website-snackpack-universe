@@ -2918,3 +2918,48 @@ The expedition debrief now persists and displays its exact threat tier and modif
 and pre-ladder summaries normalize to no tier. The existing debrief already ranks the top three incoming
 damage sources and shows the terminal defeat cause, so every objective field on the five-run observation
 sheet can now be transcribed from one screen. Full verification remains green at 1,236 tests / 187 files.
+
+## 8 August 2026 — T3.7 Steam Input foundation complete
+
+A source-controlled Valve Action Manifest now defines localized Gameplay and Menu sets for movement,
+aim, fire, evade, interaction, ultimate, kit, fire-mode toggle, pause, navigation, confirm, and back.
+A desktop audit locks those names and rejects placeholder App IDs. The configuration list is deliberately
+empty: official Deck/Xbox/DualSense/Switch/generic layout VDFs must be exported by Steam against Last
+Bastion's real App ID and must not be fabricated with Spacewar/App 480.
+
+The Electron host initializes Steam Input without coupling its failure to achievements or cloud saves,
+queries the first connected controller's native type, and exposes that one string through the confined
+preload bridge. Before Phaser boot, the renderer selects generic Xbox/Deck, PlayStation, or Nintendo
+button-position legends. Steam-down, IPC rejection, unknown devices, and browser builds fall back to
+generic labels; existing Gamepad API input remains unchanged.
+
+- Full web verification passes: image audit, typecheck, **1,241 tests across 189 files**, production
+  build, smoke `200` / 76 routes, and offline 335 / 0 missing.
+- Desktop build and **17 tests** pass, including native controller-type discovery, safe failure, bridge
+  parity, and manifest coverage.
+- T3.7 remains partially open for exported official configurations, Steam Input action polling, hot-plug
+  label refresh, and real-device acceptance under the live App ID.
+
+## 8 August 2026 — T3.8 desktop display controls implemented
+
+The Electron host now owns fullscreen and monitor placement through a narrow preload bridge. It reports
+the current display plus the complete display list, validates renderer requests, leaves fullscreen before
+moving the window, preserves and clamps the last normal bounds, centres the window inside the requested
+work area, and restores borderless fullscreen only after the move. A missing or rejected bridge degrades
+to the existing browser Fullscreen API instead of blocking game boot.
+
+Settings rows are capability-driven: monitor selection appears only when Electron reports multiple
+displays, fullscreen appears only when the host can perform it, and 60/120/144/display-rate frame caps
+remain strongly typed through persistence. The cap takes effect on the next scene boot via Phaser's
+on-screen `fps.limit`; Electron `webContents.setFrameRate` was rejected for this use because its official
+contract is limited to offscreen rendering.
+
+- Pure tests cover requested/current display fallback, minimum and oversized-bound clamping, ultrawide
+  centring, desktop/runtime failure fallback, dynamic settings navigation, cap typing, and exact
+  host-renderer bridge parity.
+- Full web verification passes: image audit, typecheck, **1,246 tests across 191 files**, production
+  build, smoke `200` / 76 routes, and offline 335 / 0 missing.
+- Desktop TypeScript build and **20 tests** pass.
+- Remaining acceptance is physical: package the host and test windowed/borderless movement across two
+  Windows monitors with different scale factors, monitor removal/reconnection, and Steam Deck desktop
+  and gaming modes. No automated result is being substituted for that hardware evidence.

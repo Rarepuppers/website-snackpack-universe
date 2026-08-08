@@ -12,6 +12,7 @@ describe("DisplayCapabilities", () => {
       canSelectDisplay: false,
       frameCaps: [60, "display"],
       canControlVsync: false,
+      displays: [],
     });
   });
 
@@ -26,5 +27,6 @@ describe("DisplayCapabilities", () => {
     expect(capabilities.fullscreenModes).toEqual(["windowed", "borderless"]);
     expect(capabilities.frameCaps).toEqual([60, 120, 144, "display"]);
     expect(capabilities.canControlVsync).toBe(false);
+    expect(capabilities.displays).toEqual([]);
   });
 });
