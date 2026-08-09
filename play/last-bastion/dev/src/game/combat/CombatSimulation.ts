@@ -938,6 +938,7 @@ export interface CombatSnapshot {
   playerInvulnerable: boolean;
   playerEntrenched: boolean;
   assaultMomentumStacks: number;
+  tacticianDesignatedTargetCount: number;
   evasiveReady: boolean;
   evasiveCooldownRemainingSeconds: number;
   ultimateReady: boolean;
@@ -1543,6 +1544,7 @@ export class CombatSimulation {
   private assaultMomentumTargetId: number | null = null;
   private assaultMomentumStacks = 0;
   private assaultMomentumRemainingSeconds = 0;
+  private readonly tacticianDesignations = new Map<number, number>();
   private shieldRechargeCooldownSeconds = 0;
   private playerInvulnerable = false;
   private heroState = "idle";
@@ -1878,6 +1880,7 @@ export class CombatSimulation {
     this.playerHurtCooldownSeconds = Math.max(0, this.playerHurtCooldownSeconds - delta);
     this.ultimateCooldownRemainingSeconds = Math.max(0, this.ultimateCooldownRemainingSeconds - delta);
     this.updateAssaultMomentum(delta);
+    this.updateTacticianDesignations(delta);
     this.updateArtifactTimers(delta);
     this.updateBuffs(delta);
     this.updateRegeneration(delta);
@@ -2571,6 +2574,7 @@ export class CombatSimulation {
       playerInvulnerable: this.playerInvulnerable || this.playerHurtCooldownSeconds > 0,
       playerEntrenched: this.isPlayerEntrenched(),
       assaultMomentumStacks: this.assaultMomentumStacks,
+      tacticianDesignatedTargetCount: this.tacticianDesignations.size,
       evasiveReady: this.evasiveReady,
       evasiveCooldownRemainingSeconds: this.evasiveCooldownRemainingSeconds,
       ultimateReady: this.ultimateCooldownRemainingSeconds <= 0,
@@ -4172,13 +4176,18 @@ export class CombatSimulation {
     }
 
     let nearest: EnemyState | null = null;
+    let nearestIsDesignated = false;
     let nearestDistance = this.weaponRange(weapon.stats);
     for (const enemy of this.enemies) {
       if (enemy.dead) continue;
       const candidateDistance = distance(this.playerPosition, enemy.position);
-      if (candidateDistance <= nearestDistance) {
+      const candidateIsDesignated = (this.tacticianDesignations.get(enemy.id) ?? 0) > 0;
+      if (candidateDistance <= this.weaponRange(weapon.stats)
+        && (candidateIsDesignated && !nearestIsDesignated
+          || candidateIsDesignated === nearestIsDesignated && candidateDistance <= nearestDistance)) {
         nearest = enemy;
         nearestDistance = candidateDistance;
+        nearestIsDesignated = candidateIsDesignated;
       }
     }
     return nearest
@@ -4209,6 +4218,15 @@ export class CombatSimulation {
     }
   }
 
+  private updateTacticianDesignations(deltaSeconds: number): void {
+    for (const [enemyId, remainingSeconds] of this.tacticianDesignations) {
+      const remaining = Math.max(0, remainingSeconds - deltaSeconds);
+      const alive = this.enemies.some((enemy) => enemy.id === enemyId && !enemy.dead);
+      if (remaining === 0 || !alive) this.tacticianDesignations.delete(enemyId);
+      else this.tacticianDesignations.set(enemyId, remaining);
+    }
+  }
+
   private assaultMomentumMultiplier(enemyId: number, sourceWeaponId?: WeaponId): number {
     if (
       this.hero.id !== "assault"
@@ -4235,6 +4253,14 @@ export class CombatSimulation {
   private fireUltimate(): void {
     const ultimate = this.hero.ultimate;
     this.ultimateCooldownRemainingSeconds = ultimate.cooldownSeconds * this.transformationModifiers.ultimateCooldownMultiplier;
+    if (this.hero.id === "tactician" && ultimate.coordinatedStrike) {
+      for (const weapon of this.equippedWeapons) {
+        const direction = this.resolveWeaponAimDirection(weapon, this.lastAimDirection) ?? this.lastAimDirection;
+        this.fireWeapon(weapon, direction, 0.05);
+      }
+      this.frameEvents.push({ type: "ultimate-fired", position: { ...this.playerPosition } });
+      return;
+    }
     if (this.hero.id === "medic") {
       const result = this.applyMedicHealing(
         (ultimate.healAmount ?? 0) * this.supportEffectMultiplier,
@@ -5245,6 +5271,9 @@ export class CombatSimulation {
         const toCentre = { x: field.position.x - enemy.position.x, y: field.position.y - enemy.position.y };
         const gap = Math.hypot(toCentre.x, toCentre.y);
         if (gap <= 0 || gap > field.pullRadiusMetres) continue;
+        if (this.hero.id === "tactician" && field.kind === "event-horizon") {
+          this.tacticianDesignations.set(enemy.id, this.hero.passive.designateDurationSeconds ?? 0);
+        }
         const travel = Math.min(field.pullStrengthMetresPerSecond * deltaSeconds, gap);
         const definition = ENEMY_CATALOG[enemy.type];
         enemy.position = resolveCircleMovement(

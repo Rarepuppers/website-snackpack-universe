@@ -1,5 +1,6 @@
 import { isPerkId, unlockedPerkIds, type PerkId } from "../perks/perkCatalog";
 import type { HeroDefinition } from "../hero/HeroDefinition";
+import { isHeroId } from "../hero/HeroCatalog";
 import {
   DEFAULT_CONTROL_BINDINGS,
   normalizeControlBindings,
@@ -36,6 +37,7 @@ import {
   canPurchaseArmoryNode,
   canSelectArmoryNode,
   commandMarksForRun,
+  isHeroDeploymentUnlocked,
   isArmoryNodeId,
   normalizePurchasedArmoryNodeIds,
   type ArmoryNodeId,
@@ -287,6 +289,9 @@ export class LocalSaveStore {
   }
 
   selectHero(heroId: HeroDefinition["id"]): SaveData {
+    if (!isHeroDeploymentUnlocked(heroId, this.cached.progress.purchasedArmoryNodeIds)) {
+      return this.load();
+    }
     this.cached = { ...this.cached, selectedHeroId: heroId };
     this.writeToStorage();
     return this.load();
@@ -530,7 +535,11 @@ function normalizeSave(parsed: unknown): SaveData {
     selectedPerkId: version >= 3 && isPerkId(candidate.selectedPerkId)
       ? candidate.selectedPerkId
       : "perk-veteran",
-    selectedHeroId: version >= 3 && candidate.selectedHeroId === "medic" ? "medic" : "marine",
+    selectedHeroId: version >= 3
+      && isHeroId(candidate.selectedHeroId)
+      && isHeroDeploymentUnlocked(candidate.selectedHeroId, normalizePurchasedArmoryNodeIds(candidate.progress?.purchasedArmoryNodeIds))
+      ? candidate.selectedHeroId
+      : "marine",
     selectedThreatTier: version >= 14 ? normalizeThreatTier(candidate.selectedThreatTier) : 0,
     selectedArmoryNodeId: version >= 15 && isArmoryNodeId(candidate.selectedArmoryNodeId)
       && canSelectArmoryNode(candidate.selectedArmoryNodeId)

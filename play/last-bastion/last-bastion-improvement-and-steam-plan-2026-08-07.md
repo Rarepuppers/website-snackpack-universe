@@ -181,13 +181,14 @@ about three hours (finish 1 run, win 1 run, finish 3 runs, reach wave 3, clear 5
 only one perk can be equipped, and after that nothing ever changes between runs again. There is
 no persistent currency, no spendable tree, and the three silhouette heroes have no unlock rule.
 
-**F8 — Two production-playable heroes; Assault mechanics and C3 visuals complete.** Marine and
-Medic remain the two deployable heroes. Assault has its typed combat contract, Marauder AR,
+**F8 — Three production-playable heroes; Assault released behind progression.** Marine and
+Medic remain immediately deployable. Assault has its typed combat contract, Marauder AR,
 Momentum passive, Breach & Clear ultimate, rack/growth/upgrade economy, dossier, HUD feedback,
 full-height portrait, 12-frame directional body, modular Breach overlay, and roster tile. Three
-validated 48 kHz/24-bit audio masters exist, but OGG/MP3 derivatives, hero-aware runtime cue wiring,
-and contextual mix acceptance remain open. Assault therefore stays truthfully **IN DEVELOPMENT**.
-Tactician and Scout remain silhouettes without mechanics.
+validated 48 kHz/24-bit audio masters and six screened OGG/MP3 runtime derivatives exist, and
+hero-aware damage/evade/death selection is wired, and contextual human mix acceptance passed.
+Assault is playable after purchasing Assault Clearance through its 35-mark prerequisite path.
+Tactician now has a reviewable mechanics candidate behind its in-development gate; Scout remains a silhouette without mechanics.
 
 **F9 — No daily/weekly seeded run and no leaderboards.** Steam Leaderboards are free, the run
 already threads a deterministic seed (`?mapseed=N`), and a daily is the cheapest retention
@@ -392,13 +393,15 @@ Gravity Adept pull-pulse pilots are complete. Extend this pattern to the remaini
 needs one readable, testable combat behaviour instead of another percentage bag. Close the last two
 typed elemental-received scars only after the player-side damage/status contract exists.
 
-**G5 — Heroes 3–5.** Assault's mechanics and C3 visual package are complete. The remaining hero gate
-is audio delivery: encode the three retained masters to OGG/MP3, screen loudness/peak, wire hero-aware
-damage/evade/death selection, and accept the mix in combat. Marauder now owns its gameplay body, tracer,
+**G5 — Heroes 3–5.** Assault's mechanics and C3 visual package are complete. Tactician's mechanics candidate
+is implemented and test-covered but remains non-deployable until its production presentation, audio, unlock economy,
+and explicit acceptance are complete. The remaining hero gate
+is complete: the retained masters have OGG/MP3 derivatives, automated metadata/peak screening,
+hero-aware damage/evade/death selection, and accepted contextual playback. Marauder now owns its gameplay body, tracer,
 muzzle/casing, impact presentation, and standalone HUD/choice/debrief tile. The unlock contract is now
 defined and tested: Assault Clearance costs 18 Command Marks after Breach Protocol (35 total path cost), but
-the node remains catalogued, hidden, and unpurchasable until audio acceptance. Then enable deployment and
-begin Tactician, followed by Scout. Keep the one-hero-at-a-time rule.
+the released node is visible and purchasable. Assault remains locked until that node is owned. Begin
+Tactician C3 production is next, followed by its unlock integration and then Scout. Keep the one-hero-at-a-time rule.
 
 **G6 — Combat feel.** Hit-stop: 2–4 frames of `timeScale` dilation on crit and on kill, scaled by
 the existing reduced-motion setting and the new shake-intensity slider. Weapon recoil kick on the
@@ -539,8 +542,9 @@ gated the same way. Do not begin any of them early.
 now produce the 1024×1536 portrait + WebP derivative, 12-frame south/north/east/west body, aligned
 Breach Module overlay, composite review sheet, and 128px roster tile. Explicit QA routes expose these
 without changing the deployment gate. Damage/evade/death WAV masters also exist and pass source-format,
-peak, and edge screening. This managed workspace has no FFmpeg/alternate encoder, so OGG/MP3 runtime
-derivatives, live cue wiring, and listening acceptance remain the only C3 blockers.
+peak, and edge screening. Six OGG/MP3 runtime derivatives now pass codec, 48 kHz mono, duration, and
+true-peak checks, and hero-aware selection is wired without disturbing shared fallbacks. Contextual human
+listening acceptance passed on 9 Aug 2026; the C3 package is complete and released through Assault Clearance.
 
 ---
 
@@ -941,23 +945,37 @@ constructed by anything.
   six journal rows at once, and scrolls through all retained entries with bounded keyboard/controller
   navigation. The old `lastRunSummary` remains as a compatibility/current-debrief pointer derived from
   the newest journal entry.
-- **T4.8 — IN PROGRESS 9 Aug 2026. Assault mechanics + C3 visuals complete; audio gate remains.** Assault now owns
+- **T4.8 — COMPLETE 9 Aug 2026. Assault released through Assault Clearance.** Assault now owns
   a typed hero definition and catalogue entry, 9-health / 5.4-speed chassis, four-slot
   Medium/Medium/Heavy/All rack, 4/1/1/1 upgrade economy, Marauder AR, Momentum's same-target
   +4%-per-hit ramp (capped at +20%, reset after 1.25 seconds or target change), and Breach & Clear's
   nine-round 100-degree forward cone. Marauder is hero-bound and excluded from random chest/shop
   acquisition. `?hero=assault` is the explicit code-native mechanics review route; it refuses Marine
-  art, while Character Select exposes the real dossier but keeps Deploy disabled. **Next:** produce
-  and integrate C3 Assault portrait/body/helmet/effects/audio, replace all temporary presentation,
-  The select portrait, 12-frame directional body, aligned Breach overlay, roster tile, retained masters,
+  art, while Character Select exposes the real dossier but keeps Deploy disabled. The select portrait,
+  12-frame directional body, aligned Breach overlay, roster tile, retained masters,
   prompt provenance, and deterministic normalizer are complete and accepted through explicit QA routes.
-  Three mono 48 kHz/24-bit suit-feedback masters pass peak/edge screening. **Next:** install/provide an
-  approved encoder, create OGG/MP3 derivatives, run loudness and contextual listening acceptance, wire
-  hero-aware damage/evade/death cues, flip the reviewed release gate, then enable Assault and begin
+  Three mono 48 kHz/24-bit suit-feedback masters pass peak/edge screening. Their six OGG/MP3 derivatives
+  pass automated metadata, duration, and true-peak screening, and hero-aware damage/evade/death playback
+  is wired with format and synth fallbacks intact. Contextual listening is accepted and the release flag is
+  enabled. Assault appears as a playable but locked roster hero until Assault Clearance is owned. Next, begin
   Tactician's mechanics contract. Marauder's dedicated gameplay body, four-state ballistic presentation,
   and standalone HUD/choice/debrief tile are integrated; the stable eight-frame Batch I atlas remains
   unchanged. Assault Clearance is a typed 18-mark hero node after Breach Protocol; it cannot render,
-  purchase, select as a starting kit, or unlock deployment while the C3 audio release flag is false.
+  purchase, or unlock deployment before its prerequisites and 18-mark cost are satisfied.
+- **T4.9 — IN PROGRESS 9 Aug 2026. Tactician mechanics candidate implemented; release gates retained.** The
+  typed definition now owns an 11-health / 4.85-speed chassis, Unique/Light/Medium/All rack, Event Horizon start,
+  2/2/2/1 upgrade economy, and the canon growth package (+1 health, +1 armour, +1 Unique proficiency, alternating
+  damage/speed). `Designate Priority` marks enemies touched by Event Horizon for 4 seconds and makes autonomous
+  weapons prefer those targets without adding a damage multiplier. `Coordinated Strike` orders every equipped
+  weapon to perform one immediate attack on a 26-second cooldown without resetting its normal firing cadence.
+  The HUD exposes the designation count and `?hero=tactician` provides a code-native mechanics-review route that
+  never borrows Marine art. Character Select exposes the real dossier as **IN DEVELOPMENT** and keeps Deploy
+  disabled. Browser QA accepted the complete dossier at 960×540 with no console warnings or errors. The first
+  C3 visual candidate is now retained: a 1024×1536 select identity anchor, transparent 12-frame 96 px gameplay
+  sheet, 128 px roster crop, deterministic normalizer, and explicit select/combat review routes. The ordinary
+  roster still shows a silhouette. Remaining: freeze tuning after playtest, decide whether a separate equipment
+  overlay is materially required, produce and accept hero-specific audio, complete compact/density visual
+  acceptance, define the Armory cost and prerequisite path, then enable deployment only after all gates pass.
 
 ### 10.6 Dependency graph
 
@@ -978,8 +996,8 @@ T4.1 ladder ──→ T4.3 dailies + leaderboards
 Two hard gates worth restating: **T3.6 must land before batch X1** (do not commission 56 icons
 for achievement IDs that do not exist), and **a T4.8 hero must not become deployable before both
 its mechanics contract and dedicated production presentation exist**. Assault has cleared its mechanics
-and visual gates, but not the audio delivery and in-combat acceptance gate; its roster lock remains the
-enforcement mechanism for C3.
+and visual/audio gates plus contextual human listening acceptance. Its released Armory clearance is now the
+progression enforcement mechanism for deployment.
 
 ---
 

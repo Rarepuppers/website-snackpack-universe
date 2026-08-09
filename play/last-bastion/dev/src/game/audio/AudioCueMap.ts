@@ -81,6 +81,8 @@ const CUES: Readonly<Partial<Record<CombatEvent["type"], AudioCue>>> = Object.fr
 
 /** Roll/dodge feedback is driven by hero state, not a combat event. */
 export const EVASIVE_MOVE_CUE: Readonly<AudioCue> = cue("dodge", 460, 0.1, 0.06, "sine", 700);
+/** Defeat transition feedback; hero-aware production selection may override it. */
+export const HERO_DEATH_CUE: Readonly<AudioCue> = cue("hero-death", 190, 0.42, 0.11, "sawtooth", 55);
 /**
  * Medkit/chest heal feedback. Not wired through `cueForEvent`: `player-healed`
  * also fires on every passive regen tick, and that must stay silent so the

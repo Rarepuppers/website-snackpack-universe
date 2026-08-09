@@ -59,7 +59,7 @@ import { LocalSaveStore, type GameSettings } from "../save/LocalSaveStore";
 import { createLocalSaveStore } from "../save/SaveStorage";
 import { requestCloudSaveSync } from "../platform/CloudSaveRuntime";
 import { queueAchievementProgress } from "../platform/AchievementRuntime";
-import { cueForCombatEvent, EVASIVE_MOVE_CUE, MEDKIT_HEAL_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
+import { cueForCombatEvent, EVASIVE_MOVE_CUE, HERO_DEATH_CUE, MEDKIT_HEAL_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
 import { WebAudioSynth } from "../audio/WebAudioSynth";
 import { worldDepth } from "../rendering/WorldDepth";
 import { VisualEffectPool } from "../effects/VisualEffectPool";
@@ -262,10 +262,11 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly arenaTheme = resolveArenaTheme();
   private assetLoadFeedback: AssetLoadFeedbackHandle | null = null;
   private assetRetryListener: ((event: KeyboardEvent) => void) | null = null;
-  private readonly synth = new WebAudioSynth(this.settings.soundEnabled);
+  private readonly synth = new WebAudioSynth(this.settings.soundEnabled, this.simulation.snapshot().heroId);
   private haptics!: CombatHaptics;
   private runOutcomeRecorded = false;
   private previousHeroState = "idle";
+  private previousRunStatus = this.lastSnapshot.status;
   /** Dex counts accumulated this wave, flushed on wave change and run end. */
   private readonly pendingBestiary = new Map<string, { seen: number; kills: number }>();
   private lastFlushedWaveNumber = 1;
@@ -339,7 +340,9 @@ export class PrototypeScene extends Phaser.Scene {
       const heroId = this.simulation.snapshot().heroId;
       const heroBodyAsset = heroId === "medic"
         ? "medic-base-v1"
-        : heroId === "assault" ? "assault-base-v1" : "marine-base-v1";
+        : heroId === "assault"
+          ? "assault-base-v1"
+          : heroId === "tactician" ? "tactician-base-v1" : "marine-base-v1";
       const heroHelmetAsset = heroId === "medic"
         ? "medic-helmet-v1"
         : heroId === "assault" ? "assault-breach-overlay-v1" : "marine-helmet-v1";
@@ -765,6 +768,10 @@ export class PrototypeScene extends Phaser.Scene {
     this.renderSnapshot(snapshot, intent.fireHeld);
     this.updateFirstDropGuidance(intent, snapshot);
     this.synth.beginFrame();
+    if (snapshot.status === "defeat" && this.previousRunStatus !== "defeat") {
+      this.synth.play(HERO_DEATH_CUE);
+    }
+    this.previousRunStatus = snapshot.status;
     if (plan.steps > 0) {
       this.playCombatEvents(snapshot.events);
       const requestedHitStop = requestedHitStopMilliseconds({
@@ -1066,6 +1073,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.isPaused = false;
     this.runOutcomeRecorded = false;
     this.previousHeroState = "idle";
+    this.previousRunStatus = this.lastSnapshot.status;
     this.lastFlushedWaveNumber = 1;
     this.visibleDecisionKey = "";
     this.decisionOverlay?.destroy(true);
@@ -4949,17 +4957,20 @@ function readWorldObjectTheme(): string | undefined {
 
 function readMarineArtPreview(): boolean {
   const params = new URLSearchParams(window.location.search);
+  if (params.get("hero") === "tactician") return params.get("art") === "c3";
   return params.get("hero") === "assault"
     ? params.get("art") === "c3"
     : params.get("art") !== "placeholder";
 }
 
 function readHeroPreview(): HeroDefinition["id"] | null {
-  return new URLSearchParams(window.location.search).get("hero") === "assault" ? "assault" : null;
+  const hero = new URLSearchParams(window.location.search).get("hero");
+  return hero === "assault" || hero === "tactician" ? hero : null;
 }
 
 function readMarineHelmetPreview(): boolean {
-  return new URLSearchParams(window.location.search).get("helmet") !== "0";
+  const params = new URLSearchParams(window.location.search);
+  return params.get("hero") !== "tactician" && params.get("helmet") !== "0";
 }
 
 function normalizeDirection(x: number, y: number): { x: number; y: number } {

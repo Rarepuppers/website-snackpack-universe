@@ -153,7 +153,7 @@ Solo, so this is a hero dossier rather than a versus grid:
 
 - Left: large hero render (the Marine's modular base + helmet layers, live-assembled — the same sprites as gameplay, oversized).
 - Right: dossier panel — role line, three stat bars (health/armour/speed), passive and ultimate cards with icons, starting weapon with its ring sprite, and the helmet on/off toggle the engine already supports.
-- Roster rail below: Marine and Medic (playable), followed by three darkened silhouette slots (Assault, Tactician, Scout) that communicate future breadth without promising dates.
+- Roster rail below: Marine and Medic (immediately playable), Assault (playable after Armory clearance), Tactician (mechanics preview only, non-deployable), and a darkened Scout silhouette. Future breadth never promises a release date.
 - Confirm advances to the expedition map.
 
 ### Expedition map — the 20-node run
@@ -255,7 +255,7 @@ The approved Marine art-direction concept is the visual anchor for the initial a
 
 The Medic is the second playable hero. The 2 Light / 1 All rack starts with the toxic Injector Carbine; every sixth Injector hit triggers **Triage Loop**, restoring 0.75 health with overflow converted to shield. **Emergency Surge** restores 4 health and grants 2 shield on a 20-second cooldown, with excess healing also becoming shield. This produces sustain through combat tempo rather than passive regeneration.
 
-Additional heroes are future content: Assault, Tactician, Scout, and Sniper.
+Tactician is the next hero in development. Its mechanics candidate starts with Event Horizon in a Unique/Light/Medium/All rack. Event Horizon touches apply a four-second **Designate Priority** mark that autonomous weapons prefer, while **Coordinated Strike** orders every equipped weapon to make one immediate attack without resetting normal cooldown cadence. Its retained visual candidate uses a slender slate command-armour silhouette, sealed violet visor, compact sensor fin, and Event Horizon's black-core/broken-ring weapon identity. The candidate remains non-deployable until dedicated audio, tuning, unlock economy, complete visual acceptance, and explicit release acceptance are complete. Scout and Sniper remain future content. Assault is the first progression-unlocked hero.
 
 ### Hero level-up growth
 

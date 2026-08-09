@@ -52,7 +52,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(188);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(191);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -61,7 +61,7 @@ describe("GameAssetManifest", () => {
   });
 
   it("locks the playable hero select portrait contract", () => {
-    for (const id of ["marine-select-portrait-v1", "medic-select-portrait-v1"] as const) {
+    for (const id of ["marine-select-portrait-v1", "medic-select-portrait-v1", "assault-select-portrait-v1", "tactician-select-portrait-v1"] as const) {
       const asset = GAME_ASSETS[id];
       expect(asset.kind).toBe("image");
       expect(asset.logicalWidth).toBe(1024);
@@ -70,7 +70,19 @@ describe("GameAssetManifest", () => {
     }
   });
 
-  it("locks the review-only Assault C3 visual contract", () => {
+  it("locks the held Tactician C3 visual contract", () => {
+    const body = GAME_ASSETS["tactician-base-v1"];
+    expect(body.kind).toBe("spritesheet");
+    if (body.kind === "spritesheet") expect(body.frameCount).toBe(12);
+    expect(GAME_ASSETS["tactician-select-portrait-v1"]).toMatchObject({
+      kind: "image", logicalWidth: 1024, logicalHeight: 1536,
+    });
+    expect(GAME_ASSETS["tactician-roster-tile-v1"]).toMatchObject({
+      kind: "image", logicalWidth: 128, logicalHeight: 128,
+    });
+  });
+
+  it("locks the Assault C3 combat visual contract", () => {
     const body = GAME_ASSETS["assault-base-v1"];
     const overlay = GAME_ASSETS["assault-breach-overlay-v1"];
     expect(body.kind).toBe("spritesheet");

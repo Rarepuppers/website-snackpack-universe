@@ -2,8 +2,8 @@ import type { HeroDefinition } from "./HeroDefinition";
 import { assaultUnlockRequirementText } from "../progression/ArmoryProgression";
 
 /**
- * T4.8 mechanics contract. Assault remains roster-locked until Character
- * Batch C3 supplies its own portrait, directional body/overlays, and audio.
+ * T4.8 production hero contract. Deployment is earned through Assault
+ * Clearance after the accepted Character Batch C3 presentation package.
  */
 export const ASSAULT = Object.freeze({
   id: "assault",

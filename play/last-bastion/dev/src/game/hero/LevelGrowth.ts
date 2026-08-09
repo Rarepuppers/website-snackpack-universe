@@ -25,11 +25,19 @@ export function marineGrowthAtLevel(level: number): LevelGrowthTotals {
 
 export function heroGrowthAtLevel(hero: HeroDefinition, level: number): LevelGrowthTotals {
   const gained = Math.max(0, Math.floor(level) - 1);
+  const alternating = hero.levelGrowth.alternatingPrimaryStats ?? [];
+  let alternatingDamage = 0;
+  let alternatingSpeed = 0;
+  for (let index = 0; index < gained && alternating.length > 0; index += 1) {
+    const stat = alternating[index % alternating.length];
+    if (stat === "damage") alternatingDamage += 1;
+    if (stat === "speed") alternatingSpeed += 1;
+  }
   return {
     maxHealthBonus: gained * hero.levelGrowth.health * LEVEL_STAT_MAGNITUDES.health,
     armourBonus: gained * hero.levelGrowth.armour * LEVEL_STAT_MAGNITUDES.armour,
-    damageMultiplier: 1 + gained * hero.levelGrowth.damage * LEVEL_STAT_MAGNITUDES.damage,
-    speedMultiplier: 1 + gained * hero.levelGrowth.speed * LEVEL_STAT_MAGNITUDES.speed,
+    damageMultiplier: 1 + (gained * hero.levelGrowth.damage + alternatingDamage) * LEVEL_STAT_MAGNITUDES.damage,
+    speedMultiplier: 1 + (gained * hero.levelGrowth.speed + alternatingSpeed) * LEVEL_STAT_MAGNITUDES.speed,
     supportMultiplier: 1 + gained * hero.levelGrowth.supportEffect * LEVEL_STAT_MAGNITUDES.supportEffect,
     proficiencyMultiplier: {
       light: 1 + gained * (hero.levelGrowth.proficiency.light ?? 0) * LEVEL_STAT_MAGNITUDES.proficiency,

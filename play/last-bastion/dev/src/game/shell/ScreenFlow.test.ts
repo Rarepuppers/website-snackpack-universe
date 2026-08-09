@@ -213,7 +213,7 @@ describe("Shell screen flow", () => {
     expect(stepShell({ ...locked, armoryIndex: 1 }, "confirm").effects).toEqual([]);
   });
 
-  it("starts a run only for a playable hero", () => {
+  it("starts a run only for a playable and unlocked hero", () => {
     const state = boot("character-select");
     expect(ROSTER[0]!.status).toBe("playable");
     const threat = stepShell(state, "confirm").state;
@@ -229,9 +229,26 @@ describe("Shell screen flow", () => {
     ]);
 
     const locked = stepShell(medic, "right").state;
-    expect(ROSTER[locked.rosterIndex]!.status).not.toBe("playable");
+    expect(ROSTER[locked.rosterIndex]!.status).toBe("playable");
     expect(stepShell(locked, "confirm").effects).toEqual([]);
     expect(stepShell(locked, "confirm").state.screen).toBe("character-select");
+
+    const assaultProgress: typeof DEFAULT_SAVE.progress = {
+      ...DEFAULT_SAVE.progress,
+      commandMarksLifetime: 35,
+      purchasedArmoryNodeIds: [
+        "armory-scattergun", "armory-patrol-blade", "armory-assault-clearance",
+      ],
+    };
+    const assault = createShellState(DEFAULT_SAVE.settings, "character-select", assaultProgress, "perk-veteran", "assault");
+    const assaultThreat = stepShell(assault, "confirm").state;
+    expect(assaultThreat.screen).toBe("threat-select");
+    expect(stepShell(assaultThreat, "confirm").effects).toEqual([
+      { type: "start-run", heroId: "assault", perkId: "perk-veteran", threatTier: 0 },
+    ]);
+
+    const craftedThreat = { ...locked, screen: "threat-select" as const };
+    expect(stepShell(craftedThreat, "confirm").effects).toEqual([]);
   });
 
   it("fits the expanded perk catalog into two rows above the roster rail", () => {

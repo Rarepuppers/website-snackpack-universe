@@ -12,6 +12,7 @@ describe("route asset manifests", () => {
       "marine-select-portrait-v1",
       "medic-select-portrait-v1",
       "assault-select-portrait-v1",
+      "tactician-select-portrait-v1",
       "canonical-perk-tiles-v2",
     ]);
   });

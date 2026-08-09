@@ -183,8 +183,8 @@ export interface RosterEntry {
 export const ROSTER: readonly RosterEntry[] = Object.freeze([
   { id: "marine", name: "MARINE", status: "playable" },
   { id: "medic", name: "MEDIC", status: "playable" },
-  { id: "assault", name: "ASSAULT", status: "in-development" },
-  { id: "tactician", name: "TACTICIAN", status: "silhouette" },
+  { id: "assault", name: "ASSAULT", status: "playable" },
+  { id: "tactician", name: "TACTICIAN", status: "in-development" },
   { id: "scout", name: "SCOUT", status: "silhouette" },
 ]);
 
@@ -551,7 +551,10 @@ function stepThreatSelect(state: ShellState, intent: ShellIntent): ShellStepResu
     const tier = THREAT_TIERS[state.threatTierIndex]!.tier;
     const hero = ROSTER[state.rosterIndex]!;
     const perk = PERK_CATALOG[state.perkIndex]!;
-    if (hero.status !== "playable" || !isHeroId(hero.id) || !state.unlockedThreatTiers.includes(tier)) {
+    if (hero.status !== "playable"
+      || !isHeroId(hero.id)
+      || !isHeroDeploymentUnlocked(hero.id, state.purchasedArmoryNodeIds)
+      || !state.unlockedThreatTiers.includes(tier)) {
       return { state, effects: [] };
     }
     return { state, effects: [{ type: "start-run", heroId: hero.id, perkId: perk.id, threatTier: tier }] };

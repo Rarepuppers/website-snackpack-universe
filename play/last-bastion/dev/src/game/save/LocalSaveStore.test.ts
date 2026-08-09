@@ -159,6 +159,24 @@ describe("LocalSaveStore", () => {
     expect(reloaded.selectedPerkId).toBe("perk-scrapper");
   });
 
+  it("persists Assault only after its Armory clearance is owned", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    store.selectHero("assault");
+    expect(store.load().selectedHeroId).toBe("marine");
+
+    store.replaceWith({
+      ...DEFAULT_SAVE,
+      progress: {
+        ...DEFAULT_SAVE.progress,
+        commandMarksLifetime: 35,
+        purchasedArmoryNodeIds: ["armory-scattergun", "armory-patrol-blade", "armory-assault-clearance"],
+      },
+      selectedHeroId: "assault",
+    });
+    expect(new LocalSaveStore(storage).load().selectedHeroId).toBe("assault");
+  });
+
   it("defaults damage numbers on and lets them be turned off", () => {
     expect(DEFAULT_SAVE.settings.damageNumbersEnabled).toBe(true);
     const storage = fakeStorage();

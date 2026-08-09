@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cueForCombatEvent, cueForEvent, EVASIVE_MOVE_CUE, UI_CONFIRM_CUE } from "./AudioCueMap";
+import { cueForCombatEvent, cueForEvent, EVASIVE_MOVE_CUE, HERO_DEATH_CUE, UI_CONFIRM_CUE } from "./AudioCueMap";
 
 describe("AudioCueMap", () => {
   it("provides cues for the representative vertical-slice moments", () => {
@@ -14,6 +14,7 @@ describe("AudioCueMap", () => {
       expect(cue!.frequencyHz).toBeGreaterThan(0);
     }
     expect(EVASIVE_MOVE_CUE.durationSeconds).toBeGreaterThan(0);
+    expect(HERO_DEATH_CUE.durationSeconds).toBeGreaterThan(0);
     expect(UI_CONFIRM_CUE.durationSeconds).toBeGreaterThan(0);
   });
 

@@ -26,7 +26,7 @@ export class WebAudioSynth {
   private rotaryStopTimer: ReturnType<typeof setTimeout> | null = null;
   private outputVolume = 1;
 
-  constructor(public enabled: boolean) {}
+  constructor(public enabled: boolean, private readonly heroId?: string) {}
 
   setVolume(volume: number): void {
     this.outputVolume = Math.max(0, Math.min(1, volume));
@@ -117,7 +117,7 @@ export class WebAudioSynth {
   }
 
   private playProductionCue(context: AudioContext, cue: AudioCue): boolean {
-    const feedbackIds = productionFeedbackAssetIdsForCue(cue.id);
+    const feedbackIds = productionFeedbackAssetIdsForCue(cue.id, this.heroId);
     if (feedbackIds.length > 0) {
       const candidates = feedbackIds.filter((id) => this.productionBuffers.has(id));
       if (candidates.length === feedbackIds.length) {

@@ -190,7 +190,7 @@ export class ShellScene extends Phaser.Scene {
         }
       } else if (effect.type === "start-run") {
         this.saveStore.selectPerk(effect.perkId);
-        this.saveStore.selectHero(effect.heroId === "medic" ? "medic" : "marine");
+        this.saveStore.selectHero(effect.heroId);
         this.saveStore.selectThreatTier(effect.threatTier);
         window.location.href = `?screen=map&hero=${effect.heroId}&threat=${effect.threatTier}`;
         return;
@@ -521,9 +521,24 @@ export class ShellScene extends Phaser.Scene {
     this.root.add(this.text(70, 42, "ARMORY", IVORY, "28px"));
     this.root.add(this.text(70, 78, `${COMMAND_MARKS_LABEL}  ${this.state.commandMarksBalance}`, TEAL, "16px"));
     this.root.add(this.text(360, 80, "Permanent purchases • no refunds • selected kit applies to new runs", MUTED, "11px"));
+    const positions = [
+      { x: 480, y: 160 },
+      { x: 240, y: 310 },
+      { x: 560, y: 310 },
+      { x: 790, y: 445 },
+    ] as const;
+    const positionById = new Map(ARMORY_NODES.map((node, index) => [node.id, positions[index]!]));
+    for (const node of ARMORY_NODES) {
+      const target = positionById.get(node.id)!;
+      for (const prerequisiteId of node.prerequisiteIds) {
+        const source = positionById.get(prerequisiteId);
+        if (source) {
+          this.root.add(this.add.line(0, 0, source.x, source.y + 59, target.x, target.y - 59, 0x68e4e8, 0.45).setOrigin(0));
+        }
+      }
+    }
     ARMORY_NODES.forEach((node, index) => {
-      const x = index === 0 ? 480 : index === 1 ? 270 : 690;
-      const y = index === 0 ? 180 : 355;
+      const { x, y } = positions[index]!;
       const focused = index === this.state.armoryIndex;
       const purchased = this.state.purchasedArmoryNodeIds.includes(node.id);
       const selected = this.state.selectedArmoryNodeId === node.id;
@@ -534,7 +549,7 @@ export class ShellScene extends Phaser.Scene {
       this.root.add(this.text(x, y - 40, node.name, purchased ? TEAL : focused ? IVORY : MUTED, "14px", true));
       this.root.add(this.text(x, y - 11, node.description, IVORY, "10px", true).setWordWrapWidth(260));
       const status = selected ? "SELECTED"
-        : purchased ? "OWNED • ENTER TO EQUIP"
+        : purchased ? node.kind === "hero-unlock" ? "CLEARANCE GRANTED" : "OWNED • ENTER TO EQUIP"
           : !prerequisitesMet ? `REQUIRES ${node.prerequisiteIds.map((id) => armoryNode(id).name).join(", ")}`
             : affordable ? `${node.cost} MARKS • ENTER TO PURCHASE` : `${node.cost} MARKS • NEED ${node.cost - this.state.commandMarksBalance}`;
       this.root.add(this.text(x, y + 37, status, selected || (affordable && prerequisitesMet) ? TEAL : ORANGE, "9px", true));
@@ -546,8 +561,6 @@ export class ShellScene extends Phaser.Scene {
         }
       });
     });
-    this.root.add(this.add.line(0, 0, 480, 239, 270, 296, 0x68e4e8, 0.45).setOrigin(0));
-    this.root.add(this.add.line(0, 0, 480, 239, 690, 296, 0x68e4e8, 0.45).setOrigin(0));
     this.root.add(this.text(70, HEIGHT - 26, "ARROWS SELECT • ENTER PURCHASE/EQUIP • ESC BACK", MUTED, "11px"));
   }
 
@@ -556,20 +569,24 @@ export class ShellScene extends Phaser.Scene {
     const hero = ROSTER[this.state.rosterIndex]!;
     const perk = PERK_CATALOG[this.state.perkIndex]!;
     const perkUnlocked = this.state.unlockedPerkIds.includes(perk.id);
+    const heroUnlocked = isHeroId(hero.id)
+      && isHeroDeploymentUnlocked(hero.id, this.state.purchasedArmoryNodeIds);
 
     // Left: full-height select portrait; gameplay sheets remain separate.
     this.root.add(this.add.rectangle(250, 250, 300, 320, PANEL).setStrokeStyle(1, 0x3b4d63));
-    const assaultC3Preview = hero.id === "assault" && requestedAssaultC3Preview();
-    if (hero.status === "playable" || assaultC3Preview) {
+    const c3Preview = requestedHeroC3Preview(hero.id);
+    if (hero.status === "playable" || c3Preview) {
       const portraitKey = hero.id === "medic"
         ? "medic-select-portrait-v1"
-        : hero.id === "assault" ? "assault-select-portrait-v1" : "marine-select-portrait-v1";
+        : hero.id === "assault"
+          ? "assault-select-portrait-v1"
+          : hero.id === "tactician" ? "tactician-select-portrait-v1" : "marine-select-portrait-v1";
       this.root.add(this.add.image(250, 258, portraitKey).setDisplaySize(196, 294));
     } else {
       this.root.add(this.add.rectangle(250, 250, 120, 220, 0x232c3a)
         .setStrokeStyle(2, 0x3b4d63));
     }
-    this.root.add(this.text(250, 415, hero.status === "playable" ? hero.name
+    this.root.add(this.text(250, 415, hero.status === "playable" ? `${hero.name}${heroUnlocked ? "" : " — LOCKED"}`
       : hero.status === "in-development" ? `${hero.name} — IN DEVELOPMENT` : "????", IVORY, "16px", true));
 
     // Right: dossier.
@@ -587,7 +604,7 @@ export class ShellScene extends Phaser.Scene {
         "",
         `STARTING WEAPON  ${definition.startingWeaponName}`,
         `PER LEVEL  ${definition.levelGrowthDescription}`,
-        ...(hero.status === "in-development" ? ["", definition.unlockText] : []),
+        ...(!heroUnlocked ? ["", definition.unlockText] : []),
       ].join("\n");
       this.root.add(this.text(470, 108, dossier, IVORY, "12px").setWordWrapWidth(390));
     } else {
@@ -626,10 +643,12 @@ export class ShellScene extends Phaser.Scene {
     ROSTER.forEach((entry, index) => {
       const x = 140 + index * 140;
       const focused = index === this.state.rosterIndex;
+      const entryUnlocked = isHeroId(entry.id)
+        && isHeroDeploymentUnlocked(entry.id, this.state.purchasedArmoryNodeIds);
       this.root.add(this.add.rectangle(x, 470, 120, 44, focused ? 0x24384f : PANEL)
         .setStrokeStyle(focused ? 3 : 1, focused ? TEAL_HEX : 0x3b4d63));
       this.root.add(this.text(x, 462, entry.status === "silhouette" ? "????" : entry.name,
-        focused ? TEAL : entry.status === "playable" ? IVORY : MUTED, "13px", true));
+        focused ? TEAL : entry.status === "playable" && entryUnlocked ? IVORY : MUTED, "13px", true));
       this.clickZone(x - 60, 448, 120, 44, () => {
         if (this.state.rosterIndex === index) {
           this.apply("confirm");
@@ -725,9 +744,9 @@ function requestedInitialScreen(): "title" | "character-select" {
     : "title";
 }
 
-function requestedAssaultC3Preview(): boolean {
+function requestedHeroC3Preview(heroId: string): boolean {
   return typeof window !== "undefined"
-    && new URLSearchParams(window.location.search).get("c3") === "assault";
+    && new URLSearchParams(window.location.search).get("c3") === heroId;
 }
 
 function formatRecord(value: number): string {

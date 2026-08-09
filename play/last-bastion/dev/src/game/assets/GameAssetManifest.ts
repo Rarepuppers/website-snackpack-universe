@@ -138,6 +138,10 @@ import assaultBreachOverlayUrl from "../../../../art/production-tests/batch-char
 import assaultSelectPortraitUrl from "../../../../art/production-tests/batch-character-c3-assault/assault-select-portrait-v1-1024x1536.png";
 import assaultSelectPortraitWebpUrl from "../../../../art/production-tests/batch-character-c3-assault/assault-select-portrait-v1-1024x1536.webp";
 import assaultRosterTileUrl from "../../../../art/production-tests/batch-character-c3-assault/assault-roster-tile-v1-128.png";
+import tacticianBaseSheetUrl from "../../../../art/production-tests/batch-character-c3-tactician/tactician-base-spritesheet-v1-96.png";
+import tacticianSelectPortraitUrl from "../../../../art/production-tests/batch-character-c3-tactician/tactician-select-portrait-v1-1024x1536.png";
+import tacticianSelectPortraitWebpUrl from "../../../../art/production-tests/batch-character-c3-tactician/tactician-select-portrait-v1-1024x1536.webp";
+import tacticianRosterTileUrl from "../../../../art/production-tests/batch-character-c3-tactician/tactician-roster-tile-v1-128.png";
 import marauderArUrl from "../../../../art/production-tests/batch-character-c3-assault/marauder/marauder-ar-gameplay-v1-256x128.png";
 import marauderArEffectsUrl from "../../../../art/production-tests/batch-character-c3-assault/marauder/marauder-ar-effects-v1-64.png";
 import marauderArTileUrl from "../../../../art/production-tests/batch-character-c3-assault/marauder/marauder-ar-tile-v1-128.png";
@@ -427,6 +431,9 @@ export type GameAssetId =
   | "assault-breach-overlay-v1"
   | "assault-select-portrait-v1"
   | "assault-roster-tile-v1"
+  | "tactician-base-v1"
+  | "tactician-select-portrait-v1"
+  | "tactician-roster-tile-v1"
   | "marauder-ar-v1"
   | "marauder-ar-effects-v1"
   | "marauder-ar-tile-v1"
@@ -642,6 +649,9 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("assault-breach-overlay-v1", assaultBreachOverlayUrl, 96, 96, 12, 0.5, 0.68),
   image("assault-select-portrait-v1", runtimeImageUrl(assaultSelectPortraitUrl, assaultSelectPortraitWebpUrl), 1024, 1536, 0.5, 0.9),
   image("assault-roster-tile-v1", assaultRosterTileUrl, 128, 128, 0.5, 0.5),
+  sheet("tactician-base-v1", tacticianBaseSheetUrl, 96, 96, 12, 0.5, 0.68),
+  image("tactician-select-portrait-v1", runtimeImageUrl(tacticianSelectPortraitUrl, tacticianSelectPortraitWebpUrl), 1024, 1536, 0.5, 0.9),
+  image("tactician-roster-tile-v1", tacticianRosterTileUrl, 128, 128, 0.5, 0.5),
   image("marauder-ar-v1", marauderArUrl, 64, 32, 0.25, 0.5),
   sheet("marauder-ar-effects-v1", marauderArEffectsUrl, 64, 64, 4, 0.5, 0.5),
   image("marauder-ar-tile-v1", marauderArTileUrl, 128, 128, 0.5, 0.5),

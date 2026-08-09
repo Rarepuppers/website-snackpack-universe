@@ -170,6 +170,8 @@ try {
 
   $reviewRoutes = @(
     '/play/last-bastion/?art=placeholder',
+    '/play/last-bastion/?flow=character-select&c3=tactician',
+    '/play/last-bastion/?hero=tactician&art=c3',
     '/play/last-bastion/?mode=gallery',
     '/play/last-bastion/?mode=gallery&batch=a',
     '/play/last-bastion/?mode=gallery&batch=b',

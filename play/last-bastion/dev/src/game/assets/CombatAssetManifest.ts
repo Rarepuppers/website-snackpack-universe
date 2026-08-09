@@ -26,6 +26,7 @@ const HERO_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
   "medic-helmet-v1",
   "assault-base-v1",
   "assault-breach-overlay-v1",
+  "tactician-base-v1",
 ]);
 
 const WORLD_OBJECT_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
@@ -59,6 +60,8 @@ const ROUTE_ONLY_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
   "medic-select-portrait-v1",
   "assault-select-portrait-v1",
   "assault-roster-tile-v1",
+  "tactician-select-portrait-v1",
+  "tactician-roster-tile-v1",
   "bastion-logistics-map-backdrop-v1",
   "alien-hive-map-backdrop-v1",
   "machine-foundry-map-backdrop-v1",
@@ -255,6 +258,8 @@ export function combatAssetsForSession(
     } else if (selection.heroId === "assault") {
       selectedIds.add("assault-base-v1");
       if (selection.helmet) selectedIds.add("assault-breach-overlay-v1");
+    } else if (selection.heroId === "tactician") {
+      selectedIds.add("tactician-base-v1");
     }
     addArenaTexture(selectedIds, selection.arenaTheme.floorTexture);
     addArenaTexture(selectedIds, selection.arenaTheme.boundaryTexture);

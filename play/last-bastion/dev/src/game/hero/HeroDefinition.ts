@@ -15,6 +15,8 @@ export interface HeroPassiveProfile {
   consecutiveHitDamageBonus?: number;
   consecutiveHitMaxStacks?: number;
   consecutiveHitResetSeconds?: number;
+  /** Tactician: seconds an enemy touched by Event Horizon remains designated. */
+  designateDurationSeconds?: number;
 }
 
 export interface HeroUltimateProfile {
@@ -30,10 +32,12 @@ export interface HeroUltimateProfile {
   /** When present, projectiles spread across this forward-facing arc instead of a full radial volley. */
   projectileArcRadians?: number;
   projectileKnockbackMetres?: number;
+  /** Tactician: order one immediate attack from every equipped weapon. */
+  coordinatedStrike?: boolean;
 }
 
 export interface HeroDefinition {
-  id: "marine" | "medic" | "assault";
+  id: "marine" | "medic" | "assault" | "tactician";
   displayName: string;
   role: string;
   baseMaxHealth: number;
@@ -66,5 +70,7 @@ export interface HeroDefinition {
     speed: number;
     supportEffect: number;
     proficiency: Readonly<Partial<Record<WeaponClass, number>>>;
+    /** Extra primary-stat points applied in a repeating per-level sequence. */
+    alternatingPrimaryStats?: readonly ("damage" | "speed")[];
   };
 }

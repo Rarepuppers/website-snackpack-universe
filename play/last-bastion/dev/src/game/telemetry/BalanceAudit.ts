@@ -19,7 +19,7 @@ export function runBalanceAudit(options: BalanceAuditOptions = {}): BalanceAudit
   const policies = options.policies ?? ["cautious", "greedy-damage", "sustain-first", "random"];
   const maxSeconds = Math.max(1, options.maxSeconds ?? 90);
   const rows: BalanceAuditRow[] = [];
-  for (const heroId of ["marine", "medic"] as const) for (let seed = 1; seed <= seeds; seed += 1) for (const policy of policies) {
+  for (const heroId of ["marine", "medic", "assault"] as const) for (let seed = 1; seed <= seeds; seed += 1) for (const policy of policies) {
     const simulation = new CombatSimulation({ heroId, seed, autoStartWaves: true, autoFireEnabled: true });
     const telemetry = new CombatTelemetryAccumulator();
     let snapshot = simulation.snapshot();

@@ -3220,3 +3220,85 @@ copy from this canonical progression contract instead of duplicating a stale pro
 - Focused progression, save, shell-flow, and hero tests pass.
 - Remaining C3 work is exclusively audio delivery and acceptance: OGG/MP3 derivatives, hero-aware damage/
   evade/death playback, contextual listening, then flipping the reviewed release flag and enabling deployment.
+
+## 9 August 2026 — Assault C3 audio delivery integrated; human listening gate retained
+
+The three retained Assault suit-feedback masters now have OGG Vorbis and MP3 runtime derivatives in the
+same fallback arrangement as the accepted production audio families. A reproducible C3 encoder mirrors all
+six files into `game-assets/`; its companion audit verifies the complete file set, codec metadata, 48 kHz
+mono delivery, bounded cue duration, and a -1 dBFS true-peak ceiling. Short damage/evade cues deliberately
+report integrated LUFS as unavailable because EBU gating is not meaningful at their duration.
+
+Runtime selection now keys the existing `player-hit` and `dodge` cue IDs by deployed hero and adds a single
+defeat-transition cue. Assault receives its authored damage, evade, and death assets; Marine and Medic retain
+their shared production or oscillator fallbacks. Tests cover the 27-asset catalogue and isolation of all three
+Assault mappings. The release flag remains false: contextual human listening approval is still required before
+Assault Clearance appears or deployment can be enabled.
+
+- Full verification passes with **1,276 tests across 193 files**, production build success, smoke HTTP 200
+  across 76 review routes, and offline **349 / 0 missing** local asset references.
+
+## 9 August 2026 — Assault audio accepted and deployment gate released
+
+Mark accepted the C3 damage, evade, and death cues. The reviewed release flag is now enabled, Assault is a
+production-playable roster entry, and the 18-mark Assault Clearance node is visible after Breach Protocol.
+The complete path still costs 35 lifetime Command Marks; release does not grant the hero for free.
+
+Release integration also closes the seams that were intentionally dormant while Assault was hidden: save
+hydration and run-start persistence retain Assault after clearance, direct selection rejects an unowned hero,
+and threat confirmation rechecks deployment authority. The four-node Armory now lays out the clearance branch
+without overlap and labels the purchased hero node `CLEARANCE GRANTED` instead of offering a meaningless Equip
+action. Character Select shows the production portrait and canonical unlock requirement while locked, then
+enables Deploy when the node and selected perk are owned. Balance audit coverage now includes Assault.
+
+- Browser QA accepted the four-node Armory hierarchy and locked Assault dossier at the live 960×540 canvas.
+- Full verification passes with **1,279 tests across 193 files**, production build success, smoke HTTP 200
+  across 76 review routes, and offline **349 / 0 missing** local asset references.
+
+The follow-on Tactician audit found that canon currently specifies only growth and a Unique-weapon lean. The
+plan now records a concrete mechanics proposal and an explicit design-freeze gate rather than allowing chassis,
+passive, ultimate, and unlock economy to emerge accidentally during implementation.
+
+## 9 August 2026 — T4.9 Tactician mechanics candidate implemented; deployment gate retained
+
+The reviewed mechanics contract is now code-owned. Tactician has an 11-health / 4.85-speed chassis, an
+Event Horizon start in a Unique/Light/Medium/All rack, a 2/2/2/1 upgrade economy, and automatic growth of
++1 health, +1 armour, +1 Unique proficiency, and alternating damage/speed. Event Horizon applies the
+four-second **Designate Priority** mark, autonomous weapons prefer designated targets in range, and the HUD
+shows the live designation count. **Coordinated Strike** orders every equipped weapon to make one immediate
+attack on a 26-second cooldown while preserving its ordinary firing cadence.
+
+The catalogue, save authority, run-start checks, and threat confirmation retain the release boundary:
+Tactician is a real `in-development` roster definition but cannot be deployed or persisted as a selected hero.
+The explicit `?hero=tactician` mechanics route remains code-native and never borrows Marine art. Character
+Select presents the complete dossier with a silhouette and disabled Deploy action.
+
+- Focused hero, growth, designation, and ultimate coverage passes.
+- Browser QA accepted the Tactician dossier at the live 960×540 canvas with no console warnings or errors.
+- Full verification passes with **1,282 tests across 194 files**, production build success, smoke HTTP 200
+  across 76 review routes, and offline **349 / 0 missing** local asset references.
+
+T4.9 remains open for tuning freeze, dedicated C3 art/audio production and acceptance, and an authored Armory
+cost/prerequisite path. Deployment must remain disabled until those gates pass. Scout stays behind Tactician in
+the one-hero-at-a-time queue.
+
+## 9 August 2026 — Tactician C3 visual candidate retained behind review routes
+
+The first Tactician production identity is now versioned under `batch-character-c3-tactician`. The package
+contains a full-height 1024×1536 select portrait, a transparent 12-frame south/north/east/west idle/move/evade
+sheet normalized to 384×288 with 96 px cells, a 128 px roster crop, WebP portrait derivative, prompt provenance,
+and a deterministic normalizer. The identity is intentionally distinct: slender slate command armour, sealed
+violet visor, compact sensor fin, restrained cyan hardware lights, and the existing Event Horizon black-core /
+broken-ring weapon family.
+
+Two explicit QA surfaces now expose the held art without weakening the release boundary:
+`?flow=character-select&c3=tactician` shows the portrait in the real dossier and `?hero=tactician&art=c3`
+loads the gameplay sheet in combat. Ordinary Character Select still renders the in-development silhouette,
+save and threat authority still reject deployment, and no Armory node exists.
+
+- Live select QA accepted portrait scale, silhouette separation, dossier fit, and disabled Deploy presentation.
+- Live combat QA accepted 96 px readability in a populated frame; no browser warnings or errors were reported.
+- Full verification passes with **1,283 tests across 194 files**, production build success, smoke HTTP 200
+  across 78 review routes, and offline **353 / 0 missing** local asset references.
+- The next C3 decisions are whether a separate equipment overlay adds real value and the production of
+  hero-specific damage, evade, and death audio for contextual human listening.

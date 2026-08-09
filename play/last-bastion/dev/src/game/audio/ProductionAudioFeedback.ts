@@ -1,6 +1,6 @@
 export interface ProductionFeedbackAsset {
   readonly id: string;
-  readonly batch: "batch-s2" | "batch-s3";
+  readonly batch: "batch-s2" | "batch-s3" | "batch-c3-assault";
   readonly fileStem: string;
 }
 
@@ -13,10 +13,16 @@ const S3 = [
   "brittle-cover-impact", "reinforced-cover-impact", "pickup-confirm", "xp-tick", "level-up-stinger",
   "chest-shop-confirm", "player-damage-a", "player-damage-b", "boss-warning-stinger", "reward-stinger",
 ] as const;
+const C3_ASSAULT = ["assault-damage", "assault-evade", "assault-death"] as const;
 
 export const PRODUCTION_AUDIO_FEEDBACK_ASSETS: readonly ProductionFeedbackAsset[] = Object.freeze([
   ...S2.map((fileStem) => Object.freeze({ id: `s2:${fileStem}`, batch: "batch-s2" as const, fileStem })),
   ...S3.map((fileStem) => Object.freeze({ id: `s3:${fileStem}`, batch: "batch-s3" as const, fileStem })),
+  ...C3_ASSAULT.map((fileStem) => Object.freeze({
+    id: `c3-assault:${fileStem}`,
+    batch: "batch-c3-assault" as const,
+    fileStem,
+  })),
 ]);
 
 /** Stable simulation cue → approved feedback variant stems. */
@@ -40,6 +46,17 @@ export const PRODUCTION_AUDIO_FEEDBACK_BY_CUE: Readonly<Record<string, readonly 
   "victory-vault": ["s3:reward-stinger"],
 });
 
-export function productionFeedbackAssetIdsForCue(cueId: string): readonly string[] {
+const ASSAULT_FEEDBACK_BY_CUE: Readonly<Record<string, readonly string[]>> = Object.freeze({
+  "player-hit": ["c3-assault:assault-damage"],
+  dodge: ["c3-assault:assault-evade"],
+  "hero-death": ["c3-assault:assault-death"],
+});
+
+/** Hero-specific cues override the shared set without changing simulation ids. */
+export function productionFeedbackAssetIdsForCue(cueId: string, heroId?: string): readonly string[] {
+  if (heroId === "assault") {
+    const assaultAssets = ASSAULT_FEEDBACK_BY_CUE[cueId];
+    if (assaultAssets) return assaultAssets;
+  }
   return PRODUCTION_AUDIO_FEEDBACK_BY_CUE[cueId] ?? [];
 }

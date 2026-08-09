@@ -15,6 +15,8 @@
     "audio:audit:s23": "node scripts/audit-production-audio-s23.mjs",
     "audio:loudness:s23": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit-production-audio-loudness-s23.ps1",
     "audio:encode:s23": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/encode-production-audio-s23.ps1",
+    "audio:encode:c3-assault": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/encode-production-audio-c3-assault.ps1",
+    "audio:audit:c3-assault": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit-production-audio-c3-assault.ps1",
     "audio:generate:s1": "node scripts/generate-production-audio-s1.mjs",
     "image:encode:webp": "python scripts/encode-production-images.py",
     "image:audit:webp": "node scripts/audit-production-images.mjs",

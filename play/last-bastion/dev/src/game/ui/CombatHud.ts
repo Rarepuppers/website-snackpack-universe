@@ -350,7 +350,9 @@ export class CombatHud {
         ? `  TRIAGE ${snapshot.medicTriageHits}/6`
         : snapshot.heroPresentation.id === "assault"
           ? `  MOMENTUM ${snapshot.assaultMomentumStacks}/5`
-          : "";
+          : snapshot.heroPresentation.id === "tactician"
+            ? `  DESIGNATED ${snapshot.tacticianDesignatedTargetCount}`
+            : "";
     const flags = `${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerTethered ? "  TETHERED" : ""}${passiveState}`;
     this.statsText.setText(
       `${snapshot.heroPresentation.displayName.toUpperCase()}  •  LV ${snapshot.level}`

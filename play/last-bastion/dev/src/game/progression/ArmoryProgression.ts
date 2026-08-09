@@ -27,8 +27,8 @@ export interface HeroUnlockArmoryNode extends ArmoryNodeBase {
 
 export type ArmoryNode = StartingWeaponArmoryNode | HeroUnlockArmoryNode;
 
-/** Flip only after C3 audio derivatives, runtime wiring, and contextual listening acceptance pass. */
-export const ASSAULT_DEPLOYMENT_RELEASED = false;
+/** C3 art, audio delivery, runtime wiring, and contextual listening accepted 9 Aug 2026. */
+export const ASSAULT_DEPLOYMENT_RELEASED = true;
 export const ASSAULT_UNLOCK_NODE_ID: ArmoryNodeId = "armory-assault-clearance";
 
 /**
