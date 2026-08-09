@@ -141,6 +141,21 @@ import { planStructurePlacement } from "./DeployablePlacement";
 import { commitDeployableFire, stepDeployableBehavior } from "./DeployableBehavior";
 import { planDeployableProjectile } from "./DeployableProjectilePayload";
 import { advanceOrbitBladeMotion } from "./OrbitBladeMotion";
+import { selectDeployableTarget } from "./DeployableTargetSelection";
+import { planMeleeTerrainImpact } from "./MeleeTerrainImpact";
+import { composeWeaponHitDamage } from "./WeaponHitDamage";
+import { steerProjectileVelocity } from "./ProjectileHoming";
+import { stepProjectileKinematics } from "./ProjectileKinematics";
+import { planProjectileWorldCollision } from "./ProjectileWorldCollision";
+import { projectileContactsEnemy } from "./ProjectileEnemyContact";
+import { planProjectileSpecialImpact } from "./ProjectileSpecialImpact";
+import { resolveProjectilePierceContinuation } from "./ProjectilePierce";
+import { composeProjectileHitDamage } from "./ProjectileHitDamage";
+import { planProjectileKnockback } from "./ProjectileKnockback";
+import { planProjectileChainHop } from "./ProjectileChain";
+import { planProjectileArmourImpact } from "./ProjectileArmourImpact";
+import { planProjectileExplosionRoute } from "./ProjectileExplosionRoute";
+import { planProjectileSplashImpact } from "./ProjectileSplashImpact";
 import {
   bastionEaterChargeDestination,
   resolveBastionEaterActionChoice,
@@ -3967,7 +3982,11 @@ export class CombatSimulation {
       const stats = WEAPON_CATALOG[unit.weaponId];
       if (!step.requestsTarget) continue;
 
-      const target = this.nearestEnemyWithin(unit.position, stats.rangeMetres);
+      const target = selectDeployableTarget({
+        targets: this.enemies,
+        origin: unit.position,
+        rangeMetres: stats.rangeMetres,
+      });
       if (!target) continue;
 
       unit.cooldownSeconds = commitDeployableFire(unit, {
@@ -3991,39 +4010,29 @@ export class CombatSimulation {
     this.deployables = this.deployables.filter((unit) => !unit.dead);
   }
 
-  private nearestEnemyWithin(origin: Vector2Data, rangeMetres: number): EnemyState | null {
-    let best: EnemyState | null = null;
-    let bestDistance = rangeMetres;
-    for (const enemy of this.enemies) {
-      if (enemy.dead) continue;
-      const separation = distance(origin, enemy.position);
-      // Ties break on id so targeting stays deterministic for the replay digest.
-      if (separation < bestDistance || (separation === bestDistance && best && enemy.id < best.id)) {
-        bestDistance = separation;
-        best = enemy;
-      }
-    }
-    return best;
-  }
-
   private fireMeleeSweep(
     weapon: EquippedWeaponState,
     anchor: Vector2Data,
     direction: Vector2Data,
   ): void {
     const facing = normalizeVector(direction);
-    const cover = this.activeObstacles().find((obstacle) =>
-      segmentIntersectsRectangle(anchor, {
-        x: anchor.x + facing.x * this.weaponRange(weapon.stats),
-        y: anchor.y + facing.y * this.weaponRange(weapon.stats),
-      }, obstacle));
-    if (cover) {
+    const terrainImpact = planMeleeTerrainImpact({
+      obstacles: this.activeObstacles(),
+      anchor,
+      facing,
+      reachMetres: this.weaponRange(weapon.stats),
+      projectileDamage: weapon.stats.projectileDamage,
+      weaponDamageMultiplier: () => this.weaponDamageMultiplier(weapon.stats),
+      powerupDamageMultiplier: () => this.currentPowerupDamageMultiplier(),
+      terrainDamageMultiplier: weapon.stats.terrainDamageMultiplier,
+      relicTerrainDamageMultiplier: this.relicModifiers.terrainDamageMultiplier,
+      intersects: segmentIntersectsRectangle,
+    });
+    if (terrainImpact) {
       this.damageObstacle(
-        cover.id,
-        weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats)
-          * this.currentPowerupDamageMultiplier() * weapon.stats.terrainDamageMultiplier
-          * this.relicModifiers.terrainDamageMultiplier,
-        { x: cover.x + cover.width / 2, y: cover.y + cover.height / 2 },
+        terrainImpact.obstacle.id,
+        terrainImpact.damage,
+        terrainImpact.impactPosition,
         "player-melee",
       );
     }
@@ -4040,10 +4049,14 @@ export class CombatSimulation {
       if (enemy.dead) continue;
       this.damageEnemy(
         enemy,
-        weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats)
-          * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(enemy)
-          * this.transformationRangeDamageMultiplier(distance(anchor, enemy.position))
-          * this.rollCritMultiplier(),
+        composeWeaponHitDamage({
+          baseDamage: weapon.stats.projectileDamage,
+          weaponDamageMultiplier: this.weaponDamageMultiplier(weapon.stats),
+          powerupDamageMultiplier: this.currentPowerupDamageMultiplier(),
+          eliteMarkDamageMultiplier: this.eliteMarkDamageMultiplier(enemy),
+          rangeDamageMultiplier: this.transformationRangeDamageMultiplier(distance(anchor, enemy.position)),
+          critMultiplier: this.rollCritMultiplier(),
+        }),
         weapon.stats.damageType,
         weapon.weaponId,
       );
@@ -4094,10 +4107,14 @@ export class CombatSimulation {
       if (enemy.dead) continue;
       this.damageEnemy(
         enemy,
-        weapon.stats.beamDamagePerSecond * deltaSeconds * this.weaponDamageMultiplier(weapon.stats)
-          * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(enemy)
-          * this.transformationRangeDamageMultiplier(distance(anchor, enemy.position))
-          * this.rollCritMultiplier(),
+        composeWeaponHitDamage({
+          baseDamage: weapon.stats.beamDamagePerSecond * deltaSeconds,
+          weaponDamageMultiplier: this.weaponDamageMultiplier(weapon.stats),
+          powerupDamageMultiplier: this.currentPowerupDamageMultiplier(),
+          eliteMarkDamageMultiplier: this.eliteMarkDamageMultiplier(enemy),
+          rangeDamageMultiplier: this.transformationRangeDamageMultiplier(distance(anchor, enemy.position)),
+          critMultiplier: this.rollCritMultiplier(),
+        }),
         weapon.stats.damageType,
         weapon.weaponId,
       );
@@ -4139,10 +4156,14 @@ export class CombatSimulation {
       });
       this.damageEnemy(
         current,
-        weapon.stats.projectileDamage * Math.pow(0.7, hop) * this.weaponDamageMultiplier(weapon.stats)
-          * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(current)
-          * this.transformationRangeDamageMultiplier(distance(anchor, current.position))
-          * this.rollCritMultiplier(),
+        composeWeaponHitDamage({
+          baseDamage: weapon.stats.projectileDamage * Math.pow(0.7, hop),
+          weaponDamageMultiplier: this.weaponDamageMultiplier(weapon.stats),
+          powerupDamageMultiplier: this.currentPowerupDamageMultiplier(),
+          eliteMarkDamageMultiplier: this.eliteMarkDamageMultiplier(current),
+          rangeDamageMultiplier: this.transformationRangeDamageMultiplier(distance(anchor, current.position)),
+          critMultiplier: this.rollCritMultiplier(),
+        }),
         weapon.stats.damageType,
         weapon.weaponId,
       );
@@ -4191,10 +4212,14 @@ export class CombatSimulation {
       if (enemy.dead) continue;
       this.damageEnemy(
         enemy,
-        weapon.stats.beamDamagePerSecond * deltaSeconds * this.weaponDamageMultiplier(weapon.stats)
-          * this.currentPowerupDamageMultiplier() * this.eliteMarkDamageMultiplier(enemy)
-          * this.transformationRangeDamageMultiplier(distance(this.playerPosition, enemy.position))
-          * this.rollCritMultiplier(),
+        composeWeaponHitDamage({
+          baseDamage: weapon.stats.beamDamagePerSecond * deltaSeconds,
+          weaponDamageMultiplier: this.weaponDamageMultiplier(weapon.stats),
+          powerupDamageMultiplier: this.currentPowerupDamageMultiplier(),
+          eliteMarkDamageMultiplier: this.eliteMarkDamageMultiplier(enemy),
+          rangeDamageMultiplier: this.transformationRangeDamageMultiplier(distance(this.playerPosition, enemy.position)),
+          critMultiplier: this.rollCritMultiplier(),
+        }),
         weapon.stats.damageType,
         weapon.weaponId,
       );
@@ -5054,32 +5079,46 @@ export class CombatSimulation {
       }
 
       if (projectile.homingTurnRateRadiansPerSecond > 0) {
-        this.steerProjectileTowardNearestEnemy(projectile, deltaSeconds);
+        projectile.velocity = steerProjectileVelocity({
+          position: projectile.position,
+          velocity: projectile.velocity,
+          targets: this.enemies,
+          turnRateRadiansPerSecond: projectile.homingTurnRateRadiansPerSecond,
+          deltaSeconds,
+        });
       }
-      projectile.position.x += projectile.velocity.x * deltaSeconds;
-      projectile.position.y += projectile.velocity.y * deltaSeconds;
-      projectile.remainingSeconds -= deltaSeconds;
+      const kinematics = stepProjectileKinematics({
+        position: projectile.position,
+        velocity: projectile.velocity,
+        remainingSeconds: projectile.remainingSeconds,
+        deltaSeconds,
+        widthMetres: this.widthMetres,
+        heightMetres: this.heightMetres,
+      });
+      projectile.position = kinematics.position;
+      projectile.remainingSeconds = kinematics.remainingSeconds;
 
-      if (projectile.remainingSeconds <= 0) {
+      if (kinematics.outcome === "expired") {
         this.explodeProjectile(projectile, projectile.position);
         projectile.dead = true;
         continue;
       }
 
-      if (
-        projectile.position.x < 0
-        || projectile.position.y < 0
-        || projectile.position.x > this.widthMetres
-        || projectile.position.y > this.heightMetres
-      ) {
+      if (kinematics.outcome === "out-of-bounds") {
         projectile.dead = true;
         continue;
       }
 
-      const obstacle = this.activeObstacles().find((candidate) => pointHitsObstacle(projectile.position, [candidate]));
-      if (obstacle) {
+      const worldCollision = planProjectileWorldCollision({
+        position: projectile.position,
+        obstacles: this.activeObstacles(),
+        chests: this.supplyChests,
+        chestRadiusMetres: SUPPLY_CHEST_RADIUS_METRES,
+        hitsObstacle: (position, obstacle) => pointHitsObstacle(position, [obstacle]),
+      });
+      if (worldCollision?.kind === "obstacle") {
         this.damageObstacle(
-          obstacle.id,
+          worldCollision.obstacle.id,
           projectile.damage * WEAPON_CATALOG[projectile.weaponId].terrainDamageMultiplier
             * this.relicModifiers.terrainDamageMultiplier,
           projectile.position,
@@ -5095,29 +5134,19 @@ export class CombatSimulation {
         continue;
       }
 
-      for (const chest of this.supplyChests) {
-        if (
-          chest.resolved
-          || chest.variant !== "armored"
-          || distance(projectile.position, chest.position) > SUPPLY_CHEST_RADIUS_METRES
-        ) {
-          continue;
-        }
-        this.damageSupplyChest(chest, projectile.damage);
+      if (worldCollision?.kind === "armored-chest") {
+        this.damageSupplyChest(worldCollision.chest, projectile.damage);
         projectile.dead = true;
-        break;
-      }
-      if (projectile.dead) {
         continue;
       }
 
       for (const enemy of this.enemies) {
-        if (enemy.dead || projectile.hitEnemyIds.has(enemy.id)) {
-          continue;
-        }
-
-        const definition = ENEMY_CATALOG[enemy.type];
-        if (distance(projectile.position, enemy.position) > enemyRadius(enemy) + 0.14) {
+        if (!projectileContactsEnemy({
+          projectilePosition: projectile.position,
+          target: enemy,
+          hitEnemyIds: projectile.hitEnemyIds,
+          contactRadiusMetres: () => enemyRadius(enemy) + 0.14,
+        })) {
           continue;
         }
 
@@ -5127,35 +5156,53 @@ export class CombatSimulation {
           position: { ...enemy.position },
           weaponId: projectile.weaponId,
         });
-        if (projectile.triggersGravityPulse) {
+        const specialImpact = planProjectileSpecialImpact({
+          triggersGravityPulse: projectile.triggersGravityPulse ?? false,
+          spawnsGravityWellOnImpact: projectile.spawnsGravityWellOnImpact,
+          weaponId: projectile.weaponId,
+          hitCount: projectile.hitEnemyIds.size,
+        });
+        if (specialImpact.triggersGravityPulse) {
           projectile.triggersGravityPulse = false;
           this.spawnGravityPulse(enemy.position, projectile.weaponId);
         }
 
         // Event Horizon's orb never deals a direct hit — touching an enemy just
         // triggers its delayed pull-then-implode field at that position instead.
-        if (projectile.spawnsGravityWellOnImpact) {
+        if (specialImpact.routesToGravityWell) {
           this.explodeProjectile(projectile, enemy.position);
           projectile.dead = true;
           break;
         }
 
-        if (projectile.weaponId === "bolt-carbine") {
+        if (specialImpact.boltHitIndex !== null) {
           this.frameEvents.push({
             type: "bolt-impact",
             position: { ...enemy.position },
-            hitIndex: projectile.hitEnemyIds.size === 1 ? 1 : 2,
+            hitIndex: specialImpact.boltHitIndex,
           });
         }
         const damageMultiplier = this.projectileDamageMultiplier(projectile, enemy);
+        const powerupDamageMultiplier = projectile.uraniumEligible
+          ? this.currentPowerupDamageMultiplier()
+          : 1;
+        const eliteMarkDamageMultiplier = projectile.uraniumEligible
+          ? this.eliteMarkDamageMultiplier(enemy)
+          : 1;
+        const rangeDamageMultiplier = this.transformationRangeDamageMultiplier(
+          distance(this.playerPosition, enemy.position),
+        );
+        const critMultiplier = this.rollCritMultiplier();
         this.damageEnemy(
           enemy,
-          projectile.damage * damageMultiplier * (
-            projectile.uraniumEligible ? this.currentPowerupDamageMultiplier() : 1
-          ) * (
-            projectile.uraniumEligible ? this.eliteMarkDamageMultiplier(enemy) : 1
-          ) * this.transformationRangeDamageMultiplier(distance(this.playerPosition, enemy.position))
-          * this.rollCritMultiplier(),
+          composeProjectileHitDamage({
+            baseDamage: projectile.damage,
+            projectileDamageMultiplier: damageMultiplier,
+            powerupDamageMultiplier,
+            eliteMarkDamageMultiplier,
+            rangeDamageMultiplier,
+            critMultiplier,
+          }),
           projectile.damageType,
           projectile.weaponId,
         );
@@ -5167,9 +5214,9 @@ export class CombatSimulation {
 
         this.explodeProjectile(projectile, enemy.position, enemy.id);
 
-        if (projectile.pierceRemaining > 0) {
-          projectile.pierceRemaining -= 1;
-        } else {
+        const pierce = resolveProjectilePierceContinuation(projectile.pierceRemaining);
+        projectile.pierceRemaining = pierce.pierceRemaining;
+        if (!pierce.continues) {
           projectile.dead = true;
           break;
         }
@@ -5177,60 +5224,36 @@ export class CombatSimulation {
     }
   }
 
-  /** Seeker Swarm: turns a projectile's velocity toward the nearest live enemy, at most its turn rate per second. */
-  private steerProjectileTowardNearestEnemy(projectile: ProjectileState, deltaSeconds: number): void {
-    let nearest: EnemyState | null = null;
-    let nearestDistance = Infinity;
-    for (const enemy of this.enemies) {
-      if (enemy.dead) continue;
-      const candidateDistance = distance(projectile.position, enemy.position);
-      if (candidateDistance < nearestDistance) {
-        nearest = enemy;
-        nearestDistance = candidateDistance;
-      }
-    }
-    if (!nearest) return;
-
-    const speed = Math.hypot(projectile.velocity.x, projectile.velocity.y);
-    if (speed <= 0) return;
-    const currentAngle = Math.atan2(projectile.velocity.y, projectile.velocity.x);
-    const desiredAngle = Math.atan2(
-      nearest.position.y - projectile.position.y,
-      nearest.position.x - projectile.position.x,
-    );
-    let angleDiff = desiredAngle - currentAngle;
-    while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
-    while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
-    const maxTurn = projectile.homingTurnRateRadiansPerSecond * deltaSeconds;
-    const turn = Math.max(-maxTurn, Math.min(maxTurn, angleDiff));
-    const nextAngle = currentAngle + turn;
-    projectile.velocity = { x: Math.cos(nextAngle) * speed, y: Math.sin(nextAngle) * speed };
-  }
-
   private explodeProjectile(
     projectile: ProjectileState,
     position: Vector2Data,
     directEnemyId?: number,
   ): void {
-    // Event Horizon Core: every Nth second the next impact becomes a pull-and-
-    // implode event instead of an ordinary blast, reusing the weapon's own
-    // gravity-well machinery rather than a parallel implementation.
-    if (this.eventHorizonCoreArmed && !projectile.spawnsGravityWellOnImpact) {
+    const route = planProjectileExplosionRoute({
+      eventHorizonCoreArmed: this.eventHorizonCoreArmed,
+      spawnsGravityWellOnImpact: projectile.spawnsGravityWellOnImpact,
+      explosionRadiusMetres: projectile.explosionRadiusMetres,
+      artifactDurationSeconds: ARTIFACT_IMPLOSION_DURATION_SECONDS,
+      artifactPullStrengthMetresPerSecond: ARTIFACT_IMPLOSION_PULL_SPEED,
+      artifactPullRadiusMetres: ARTIFACT_IMPLOSION_PULL_RADIUS_METRES,
+      artifactImplosionRadiusMetres: ARTIFACT_IMPLOSION_RADIUS_METRES,
+    });
+    if (route.kind === "artifact-field") {
       this.eventHorizonCoreArmed = false;
       this.spawnEventHorizonField({
         ...projectile,
-        pullFieldDurationSeconds: ARTIFACT_IMPLOSION_DURATION_SECONDS,
-        pullStrengthMetresPerSecond: ARTIFACT_IMPLOSION_PULL_SPEED,
-        pullRadiusMetres: ARTIFACT_IMPLOSION_PULL_RADIUS_METRES,
-        explosionRadiusMetres: Math.max(projectile.explosionRadiusMetres, ARTIFACT_IMPLOSION_RADIUS_METRES),
+        pullFieldDurationSeconds: route.pullFieldDurationSeconds,
+        pullStrengthMetresPerSecond: route.pullStrengthMetresPerSecond,
+        pullRadiusMetres: route.pullRadiusMetres,
+        explosionRadiusMetres: route.explosionRadiusMetres,
       }, position);
       return;
     }
-    if (projectile.spawnsGravityWellOnImpact) {
+    if (route.kind === "gravity-well") {
       this.spawnEventHorizonField(projectile, position);
       return;
     }
-    if (projectile.explosionRadiusMetres <= 0) return;
+    if (route.kind === "none") return;
     this.frameEvents.push({
       type: "explosion",
       position: { ...position },
@@ -5238,18 +5261,16 @@ export class CombatSimulation {
       weaponId: projectile.weaponId,
     });
     for (const nearby of this.enemies) {
-      if (
-        nearby.id !== directEnemyId
-        && !nearby.dead
-        && distance(nearby.position, position) <= projectile.explosionRadiusMetres
-      ) {
-        this.damageEnemy(
-          nearby,
-          projectile.damage * this.explosionSplashMultiplier,
-          projectile.damageType,
-          projectile.weaponId,
-        );
-      }
+      const splash = planProjectileSplashImpact({
+        candidate: nearby,
+        directEnemyId,
+        explosionPosition: position,
+        explosionRadiusMetres: projectile.explosionRadiusMetres,
+        projectileDamage: projectile.damage,
+        splashDamageMultiplier: () => this.explosionSplashMultiplier,
+      });
+      if (!splash) continue;
+      this.damageEnemy(splash.target, splash.damage, projectile.damageType, projectile.weaponId);
     }
   }
 
@@ -5337,29 +5358,33 @@ export class CombatSimulation {
   }
 
   private projectileDamageMultiplier(projectile: ProjectileState, enemy: EnemyState): number {
-    if (enemy.eliteKind !== "carapace-scuttler" || enemy.carapacePhase === "recovery") return 1;
-    const directionToShooter = normalizeVector({ x: -projectile.velocity.x, y: -projectile.velocity.y });
-    const frontalDot = directionToShooter.x * enemy.facingDirection.x
-      + directionToShooter.y * enemy.facingDirection.y;
-    if (frontalDot <= 0.25) return 1;
-    this.frameEvents.push({
-      type: "elite-armour-hit",
-      position: { ...enemy.position },
+    const plan = planProjectileArmourImpact({
       eliteKind: enemy.eliteKind,
+      carapacePhase: enemy.carapacePhase,
+      projectileVelocity: projectile.velocity,
+      enemyFacingDirection: enemy.facingDirection,
     });
-    return 0.25;
+    if (plan.emitsArmourHit && enemy.eliteKind === "carapace-scuttler") {
+      this.frameEvents.push({
+        type: "elite-armour-hit",
+        position: { ...enemy.position },
+        eliteKind: enemy.eliteKind,
+      });
+    }
+    return plan.damageMultiplier;
   }
 
   private applyProjectileKnockback(projectile: ProjectileState, enemy: EnemyState): void {
-    if (projectile.knockbackMetres <= 0 || enemy.dead) return;
-    const direction = normalizeVector(projectile.velocity);
-    const definition = ENEMY_CATALOG[enemy.type];
+    const destination = planProjectileKnockback({
+      enemyPosition: enemy.position,
+      enemyDead: enemy.dead,
+      projectileVelocity: projectile.velocity,
+      knockbackMetres: projectile.knockbackMetres,
+    });
+    if (!destination) return;
     enemy.position = resolveCircleMovement(
       enemy.position,
-      {
-        x: enemy.position.x + direction.x * projectile.knockbackMetres,
-        y: enemy.position.y + direction.y * projectile.knockbackMetres,
-      },
+      destination,
       enemyRadius(enemy),
       this.collisionArena(),
     );
@@ -5369,20 +5394,20 @@ export class CombatSimulation {
     let from = source;
     let hop = 0;
     while (projectile.chainRemaining > 0) {
-      let target: EnemyState | null = null;
-      let nearestDistance = projectile.chainRadiusMetres;
-      for (const enemy of this.enemies) {
-        if (enemy.dead || projectile.hitEnemyIds.has(enemy.id)) continue;
-        const candidateDistance = distance(from.position, enemy.position);
-        if (candidateDistance <= nearestDistance) {
-          target = enemy;
-          nearestDistance = candidateDistance;
-        }
-      }
-      if (!target) return;
+      const plan = planProjectileChainHop({
+        targets: this.enemies,
+        fromPosition: from.position,
+        hitEnemyIds: projectile.hitEnemyIds,
+        chainRemaining: projectile.chainRemaining,
+        chainRadiusMetres: projectile.chainRadiusMetres,
+        completedHops: hop,
+        baseDamage: projectile.damage,
+      });
+      if (!plan) return;
+      const { target } = plan;
       projectile.hitEnemyIds.add(target.id);
-      projectile.chainRemaining -= 1;
-      hop += 1;
+      projectile.chainRemaining = plan.chainRemaining;
+      hop = plan.hop;
       this.frameEvents.push({
         type: "chain-arc",
         from: { ...from.position },
@@ -5392,7 +5417,7 @@ export class CombatSimulation {
       // Each additional bounce carries less energy: 70%, 49%, 34%…
       this.damageEnemy(
         target,
-        projectile.damage * Math.pow(0.7, hop),
+        plan.damage,
         projectile.damageType,
         projectile.weaponId,
       );

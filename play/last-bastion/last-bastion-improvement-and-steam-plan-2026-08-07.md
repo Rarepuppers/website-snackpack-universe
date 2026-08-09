@@ -665,11 +665,17 @@ Sequencing, safest first — each is independently shippable and independently r
    damage, collision, and events remain simulation-owned. The boundary audit confirms all 31 enemy adapters now
    delegate policy and contain no inline switch state machines. That boss slice left the monolith at 10,112 lines.
 3. **Weapons in progress:** pure modules now own projectile geometry/payloads, melee/beam and orbit targeting,
-   auto-aim/dispatch, deployable placement plus runtime timing, deployable shot payloads, and orbit-blade motion.
-   `CombatSimulation` remains the adapter for target lookup, cooldown/entity mutation, evolving death-state checks,
-   RNG draw order, damage, allocation, terrain, and events. The monolith is now 10,073 lines. Continue with three
-   bounded slices: deployable nearest-target selection; melee terrain-impact planning; shared melee/beam/orbit hit-
-   damage composition. The projectile update loop, scrap shop, decisions, and snapshot follow.
+   auto-aim/dispatch, deployable placement/runtime/targeting/shot payloads, orbit-blade motion, melee terrain-impact
+   planning, and shared melee/beam/orbit hit-damage composition. `CombatSimulation` remains the adapter for
+   cooldown/entity mutation, evolving death-state checks, RNG draw order, damage, allocation, terrain mutation,
+   and events. Projectile homing, kinematic movement/lifetime/bounds resolution, and ordered obstacle/armored-chest
+   collision planning are now pure modules as well. Enemy-contact eligibility, gravity-pulse/gravity-well/Bolt
+   special-impact routing, post-impact pierce continuation, direct-hit damage composition, knockback displacement,
+   one-hop-at-a-time chain targeting/falloff, Carapace armour response, explosion routing, and live splash planning
+   are also extracted. The monolith is now 10,098 lines; explicit route adapters keep artifact consumption, events,
+   field allocation, and live damage mutation simulation-owned. Continue with three bounded gravity-field slices:
+   Event Horizon/gravity-pulse payload construction; pull movement planning; detonation eligibility and damage
+   planning. Scrap shop, decisions, and snapshot follow.
 
 **Acceptance:** `combat/CombatSimulation.ts` under 3,000 lines; its public exports remain
 exported from the same path (re-export from the new modules — every consumer imports from

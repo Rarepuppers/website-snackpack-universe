@@ -3801,3 +3801,149 @@ the already-updated unit position and selected target.
 - `CombatSimulation.ts` is now **10,073 lines**.
 - Controlled verification passes with **1,365 tests across 222 files**, the 31-adapter boundary audit, production
   build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 deployable target selection extracted
+
+`DeployableTargetSelection.ts` now owns nearest-live-enemy selection for Sentry Stakes and auxiliary drones.
+
+- Strict range behavior remains unchanged: an enemy exactly on the authored range boundary is not acquired.
+- Equal-distance in-range ties resolve to the lower entity ID for stable replay digests; dead enemies are skipped.
+- The simulation still decides when a unit requests a target, commits cooldown only after acquisition, constructs
+  the mutable projectile entity, and emits the firing event.
+
+## 9 August 2026 — T0.1 melee terrain-impact planning extracted
+
+`MeleeTerrainImpact.ts` now owns sweep endpoint geometry, first-cover selection in authored obstacle order, impact
+centre, and terrain-damage composition.
+
+- Damage multipliers remain lazily evaluated only after an obstacle is found, preserving the previous no-hit path.
+- The simulation still supplies active terrain geometry and performs durability mutation and impact events before
+  selecting exposed enemy targets.
+
+## 9 August 2026 — T0.1 shared direct-hit damage composition extracted
+
+`WeaponHitDamage.ts` now owns the common ordered multiplier product used by melee sweeps, continuous beams, Tesla
+orbit chains, and Sawblade contact ticks.
+
+- Beam tick scaling and Tesla hop falloff remain caller-derived base damage, preserving floating-point operation
+  order. Runtime modifier lookup and the critical-hit RNG draw remain simulation-owned and occur in the same order.
+- Seven focused tests cover deployable selection, terrain planning, and hit composition; affected weapon suites,
+  reference runs, and replay fixtures pass unchanged.
+- `CombatSimulation.ts` is now **10,086 lines**.
+- Controlled verification passes with **1,372 tests across 225 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 projectile homing steering extracted
+
+`ProjectileHoming.ts` now owns Seeker Swarm nearest-live-target selection, shortest-angle normalization, bounded
+turning, and speed-preserving velocity reconstruction.
+
+- Exact-distance ties retain the earlier encounter entry, matching the original strict-nearer comparison.
+- No-target and zero-speed paths retain the existing velocity; the simulation still gates steering on authored
+  turn rate and writes the resulting mutable projectile state.
+
+## 9 August 2026 — T0.1 projectile kinematic lifecycle extracted
+
+`ProjectileKinematics.ts` now owns per-frame movement, lifetime decrement, expiry precedence, and arena-bounds
+classification.
+
+- Movement and lifetime still advance before any outcome. Expiry still wins if a shot also crosses a boundary on
+  that frame, while positions exactly on an arena edge remain active.
+- The simulation still performs expiry explosions and terminal entity mutation.
+
+## 9 August 2026 — T0.1 projectile world-collision planning extracted
+
+`ProjectileWorldCollision.ts` now owns first-obstacle selection and subsequent unresolved armored-chest selection.
+
+- Active obstacle order and precedence over chests remain unchanged. Chest contact remains inclusive at the
+  authored radius and keeps supply-chest encounter order.
+- Terrain/chest damage, explosion routing, projectile death, and events remain simulation-owned.
+- Nine focused tests cover homing, kinematics, and world collision; Seeker Swarm, supply-chest, simulation,
+  reference-run, and replay suites pass unchanged.
+- `CombatSimulation.ts` is now **10,063 lines**.
+- Controlled verification passes with **1,381 tests across 228 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 projectile enemy-contact eligibility extracted
+
+`ProjectileEnemyContact.ts` now owns live/unhit gating and inclusive circular contact geometry for each enemy at
+its encounter-order turn.
+
+- Eligibility remains evaluated inside the live impact loop, so earlier damage, chains, and hit-set mutation can
+  still change later candidates. Enemy-radius lookup remains lazy and is skipped for dead or previously hit targets.
+
+## 9 August 2026 — T0.1 projectile special-impact routing extracted
+
+`ProjectileSpecialImpact.ts` now plans one-shot gravity pulses, terminal gravity-well routing, and Bolt Carbine's
+first/follow-up hit presentation.
+
+- The simulation preserves the established order: ordinary impact event, pulse consumption/spawn, gravity-well
+  early exit, then Bolt presentation. Projectile mutation, field allocation, explosions, and events remain local.
+
+## 9 August 2026 — T0.1 projectile pierce continuation extracted
+
+`ProjectilePierce.ts` now owns the final post-impact decrement-or-stop decision.
+
+- Pierce is still resolved only after direct damage, weapon/item effects, knockback, chains, and explosion routing.
+- Eight focused tests cover contact eligibility, special routing, and exhausted/available pierce behavior; affected
+  simulation, Event Horizon, reference-run, and replay suites pass unchanged.
+- `CombatSimulation.ts` is now **10,072 lines**.
+- Controlled verification passes with **1,389 tests across 231 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 projectile direct-hit damage composition extracted
+
+`ProjectileHitDamage.ts` now owns the ordered direct-hit multiplier product after the simulation resolves each
+runtime value.
+
+- Carapace feedback, uranium powerup, elite mark, range transformation, and critical-hit RNG values are still
+  evaluated by the simulation in their original order. The pure composer performs no state lookup or RNG draw.
+
+## 9 August 2026 — T0.1 projectile knockback displacement extracted
+
+`ProjectileKnockback.ts` now owns normalized travel-direction displacement and dead/zero-strength eligibility.
+
+- Zero-speed projectiles retain the target position exactly. Arena collision, enemy radius, and final position
+  mutation remain simulation-owned.
+
+## 9 August 2026 — T0.1 projectile chain-hop planning extracted
+
+`ProjectileChain.ts` now owns one-hop nearest-target selection, inclusive range, later-entry exact-distance ties,
+chain-capacity decrement, hop count, and exponential damage falloff.
+
+- The simulation applies each hop before requesting the next plan, preserving evolving death and hit-set state,
+  damage events, and encounter ordering.
+- Eight focused tests cover damage composition, knockback, and chain selection/falloff; affected combat, damage,
+  relic, Event Horizon, reference-run, and replay suites pass unchanged.
+- `CombatSimulation.ts` is now **10,088 lines**.
+- Controlled verification passes with **1,397 tests across 234 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 Carapace projectile armour response extracted
+
+`ProjectileArmourImpact.ts` now owns frontal-dot geometry, recovery bypass, the authored 0.25 threshold, and the
+quarter-damage response for Carapace Scuttlers.
+
+- The simulation still emits `elite-armour-hit` and resolves all subsequent damage modifiers. Zero-speed and
+  non-frontal contacts remain ordinary damage.
+
+## 9 August 2026 — T0.1 projectile explosion routing extracted
+
+`ProjectileExplosionRoute.ts` now selects artifact field, native gravity well, ordinary explosion, or no-op routes.
+
+- An armed Event Horizon Core still converts any non-gravity projectile, including a zero-radius shot, and enforces
+  its minimum implosion radius. Native gravity wells retain priority and do not consume the armed artifact.
+- Artifact mutation, field allocation, and explosion events remain simulation-owned.
+
+## 9 August 2026 — T0.1 projectile splash impact planning extracted
+
+`ProjectileSplashImpact.ts` now owns per-enemy direct-target exclusion, live-state gating, inclusive radius geometry,
+and splash-damage composition.
+
+- Planning remains inside the encounter-order damage loop, and the splash multiplier is read lazily only for an
+  eligible target, preserving effects from earlier splash kills.
+- Nine focused tests cover armour, routing, and splash behavior; combat, elite cadence, Event Horizon, damage,
+  reference-run, and replay suites pass unchanged.
+- `CombatSimulation.ts` is now **10,098 lines**.
+- Controlled verification passes with **1,406 tests across 237 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
