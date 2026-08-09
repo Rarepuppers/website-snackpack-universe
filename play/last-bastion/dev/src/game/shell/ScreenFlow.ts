@@ -21,7 +21,9 @@ import {
 import {
   ARMORY_NODES,
   canPurchaseArmoryNode,
+  canSelectArmoryNode,
   commandMarksBalance,
+  isHeroDeploymentUnlocked,
   type ArmoryNodeId,
 } from "../progression/ArmoryProgression";
 
@@ -491,7 +493,10 @@ function stepCharacterSelect(state: ShellState, intent: ShellIntent): ShellStepR
   if (intent === "confirm") {
     const hero = ROSTER[state.rosterIndex]!;
     const perk = PERK_CATALOG[state.perkIndex]!;
-    if (hero.status !== "playable" || !isHeroId(hero.id) || !state.unlockedPerkIds.includes(perk.id)) {
+    if (hero.status !== "playable"
+      || !isHeroId(hero.id)
+      || !isHeroDeploymentUnlocked(hero.id, state.purchasedArmoryNodeIds)
+      || !state.unlockedPerkIds.includes(perk.id)) {
       return { state, effects: [] };
     }
     return { state: { ...state, screen: "threat-select" }, effects: [] };
@@ -510,6 +515,7 @@ function stepArmory(state: ShellState, intent: ShellIntent): ShellStepResult {
   if (intent !== "confirm") return { state, effects: [] };
   const node = ARMORY_NODES[state.armoryIndex]!;
   if (state.purchasedArmoryNodeIds.includes(node.id)) {
+    if (!canSelectArmoryNode(node.id)) return { state, effects: [] };
     return {
       state: { ...state, selectedArmoryNodeId: node.id },
       effects: [{ type: "select-armory-node", nodeId: node.id }],
@@ -519,11 +525,12 @@ function stepArmory(state: ShellState, intent: ShellIntent): ShellStepResult {
     return { state, effects: [] };
   }
   const purchasedArmoryNodeIds = [...state.purchasedArmoryNodeIds, node.id];
+  const selectedArmoryNodeId = canSelectArmoryNode(node.id) ? node.id : state.selectedArmoryNodeId;
   return {
     state: {
       ...state,
       purchasedArmoryNodeIds,
-      selectedArmoryNodeId: node.id,
+      selectedArmoryNodeId,
       commandMarksBalance: commandMarksBalance(state.commandMarksLifetime, purchasedArmoryNodeIds),
     },
     effects: [{ type: "purchase-armory-node", nodeId: node.id }],

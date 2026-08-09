@@ -1,10 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { createRunSummary } from "../run/RunSummary";
 import {
+  ARMORY_NODES,
+  ASSAULT_UNLOCK_NODE_ID,
+  armoryNode,
+  assaultUnlockRequirementText,
   canPurchaseArmoryNode,
+  canSelectArmoryNode,
   commandMarksBalance,
   commandMarksForRun,
   commandMarksSpent,
+  isHeroDeploymentUnlocked,
   normalizePurchasedArmoryNodeIds,
   selectedArmoryWeapon,
 } from "./ArmoryProgression";
@@ -42,5 +48,28 @@ describe("ArmoryProgression", () => {
       .toEqual(["armory-scattergun"]);
     expect(selectedArmoryWeapon("armory-scattergun", [])).toBeNull();
     expect(selectedArmoryWeapon("armory-scattergun", ["armory-scattergun"])).toBe("scattergun");
+  });
+
+  it("defines Assault Clearance without exposing it before C3 audio acceptance", () => {
+    const node = armoryNode(ASSAULT_UNLOCK_NODE_ID);
+    expect(node).toMatchObject({
+      kind: "hero-unlock",
+      heroId: "assault",
+      cost: 18,
+      prerequisiteIds: ["armory-patrol-blade"],
+      released: false,
+    });
+    expect(ARMORY_NODES.map(({ id }) => id)).not.toContain(ASSAULT_UNLOCK_NODE_ID);
+    expect(canPurchaseArmoryNode(ASSAULT_UNLOCK_NODE_ID, 100, ["armory-scattergun", "armory-patrol-blade"]))
+      .toBe(false);
+    expect(assaultUnlockRequirementText()).toContain("C3 audio acceptance pending");
+  });
+
+  it("never treats a hero unlock as a selectable starting kit or a production shortcut", () => {
+    expect(canSelectArmoryNode(ASSAULT_UNLOCK_NODE_ID)).toBe(false);
+    expect(selectedArmoryWeapon(ASSAULT_UNLOCK_NODE_ID, [ASSAULT_UNLOCK_NODE_ID])).toBeNull();
+    expect(isHeroDeploymentUnlocked("assault", [ASSAULT_UNLOCK_NODE_ID])).toBe(false);
+    expect(isHeroDeploymentUnlocked("marine", [])).toBe(true);
+    expect(isHeroDeploymentUnlocked("medic", [])).toBe(true);
   });
 });

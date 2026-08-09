@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
-import { canonicalWeaponTileFrame } from "./WeaponTileFrames";
+import { canonicalWeaponTileFrame, weaponTilePresentation } from "./WeaponTileFrames";
 
 const PENDING_ART_WEAPON_IDS: readonly WeaponId[] = [
-  "marauder-ar", "railspike", "seeker-swarm", "cryo-lance", "tesla-coil", "flamethrower", "sawblade", "event-horizon",
+  "railspike", "seeker-swarm", "cryo-lance", "tesla-coil", "flamethrower", "sawblade", "event-horizon",
   // Elemental balance pass (31 July 2026), art pending on the same terms.
   "corrosive-lobber", "scourge-repeater", "bile-lance", "hoarfrost-scatter", "glacier-ward", "tether-harpoon",
   // First deployable, art pending on the same terms.
@@ -14,6 +14,8 @@ const PENDING_ART_WEAPON_IDS: readonly WeaponId[] = [
   // borrow by attack pattern until asset batch 80 lands.
   "emberlance", "storm-coil-beam",
 ];
+
+const STANDALONE_TILE_WEAPON_IDS: readonly WeaponId[] = ["marauder-ar"];
 
 /**
  * The close-quarters family (25 July 2026) has no Batch I slots yet either, but
@@ -26,7 +28,6 @@ const PENDING_MELEE_WEAPON_IDS: readonly WeaponId[] = ["combat-knife", "machete"
 const EXPECTED_PLACEHOLDER_FRAME: Readonly<Record<string, number>> = {
   // Projectiles → rifle; the gravitic/explosive shell → grenade tube.
   railspike: 7,
-  "marauder-ar": 7,
   "seeker-swarm": 7,
   "event-horizon": 3,
   // Sustained cones → scattergun's spread tile.
@@ -56,11 +57,18 @@ const EXPECTED_PLACEHOLDER_FRAME: Readonly<Record<string, number>> = {
 describe("canonical Batch I weapon tile mapping", () => {
   it("maps every Batch I weapon to one unique atlas frame", () => {
     const batchIIds = (Object.keys(WEAPON_CATALOG) as WeaponId[])
-      .filter((id) => !PENDING_ART_WEAPON_IDS.includes(id) && !PENDING_MELEE_WEAPON_IDS.includes(id));
+      .filter((id) => !PENDING_ART_WEAPON_IDS.includes(id) && !PENDING_MELEE_WEAPON_IDS.includes(id) && !STANDALONE_TILE_WEAPON_IDS.includes(id));
     const frames = batchIIds.map(canonicalWeaponTileFrame);
     expect(batchIIds).toHaveLength(8);
     expect(new Set(frames).size).toBe(8);
     expect([...frames].sort((left, right) => left - right)).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
+  });
+
+  it("selects Marauder's standalone tile without expanding the stable Batch I atlas", () => {
+    expect(weaponTilePresentation("marauder-ar")).toEqual({ texture: "marauder-ar-tile-v1" });
+    expect(weaponTilePresentation("bastion-service-rifle")).toEqual({
+      texture: "batch-i-weapon-tiles-v1", frame: 7,
+    });
   });
 
   it("groups every art-pending weapon onto the tile closest to how it plays", () => {

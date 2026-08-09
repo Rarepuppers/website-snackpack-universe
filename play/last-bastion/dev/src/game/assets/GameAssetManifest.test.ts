@@ -52,7 +52,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(181);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(188);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -68,6 +68,32 @@ describe("GameAssetManifest", () => {
       expect(asset.logicalHeight).toBe(1536);
       expect(asset.pivot).toEqual({ x: 0.5, y: 0.9 });
     }
+  });
+
+  it("locks the review-only Assault C3 visual contract", () => {
+    const body = GAME_ASSETS["assault-base-v1"];
+    const overlay = GAME_ASSETS["assault-breach-overlay-v1"];
+    expect(body.kind).toBe("spritesheet");
+    expect(overlay.kind).toBe("spritesheet");
+    if (body.kind === "spritesheet" && overlay.kind === "spritesheet") {
+      expect(body.frameCount).toBe(12);
+      expect(overlay.frameCount).toBe(body.frameCount);
+    }
+    expect(GAME_ASSETS["assault-select-portrait-v1"]).toMatchObject({
+      kind: "image", logicalWidth: 1024, logicalHeight: 1536,
+    });
+    expect(GAME_ASSETS["assault-roster-tile-v1"]).toMatchObject({
+      kind: "image", logicalWidth: 128, logicalHeight: 128,
+    });
+    expect(GAME_ASSETS["marauder-ar-v1"]).toMatchObject({
+      kind: "image", logicalWidth: 64, logicalHeight: 32, pivot: { x: 0.25, y: 0.5 },
+    });
+    const effects = GAME_ASSETS["marauder-ar-effects-v1"];
+    expect(effects.kind).toBe("spritesheet");
+    if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(4);
+    expect(GAME_ASSETS["marauder-ar-tile-v1"]).toMatchObject({
+      kind: "image", logicalWidth: 128, logicalHeight: 128,
+    });
   });
 
   it("locks the authored expedition map backdrop contract", () => {

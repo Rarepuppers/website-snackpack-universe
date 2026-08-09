@@ -75,7 +75,7 @@ import { CombatHaptics } from "../ui/CombatHaptics";
 import { createBuildViewModel } from "../build/BuildViewModel";
 import { buildOverlayModel } from "../ui/BuildOverlay";
 import { FRIENDLY_PROJECTILE_SOFT_BUDGET } from "../combat/FriendlyProjectileBudget";
-import { canonicalWeaponTileFrame } from "../ui/WeaponTileFrames";
+import { weaponTilePresentation } from "../ui/WeaponTileFrames";
 import {
   VERTICAL_SLICE_WEAPON_IDS,
   WEAPON_CATALOG,
@@ -336,8 +336,13 @@ export class PrototypeScene extends Phaser.Scene {
       : this.add.ellipse(0, 10, 34, 16, 0x05080c, 0.55);
     const playerLayers: Phaser.GameObjects.GameObject[] = [shadow];
     if (this.useMarineArt) {
-      const heroBodyAsset = this.simulation.snapshot().heroId === "medic" ? "medic-base-v1" : "marine-base-v1";
-      const heroHelmetAsset = this.simulation.snapshot().heroId === "medic" ? "medic-helmet-v1" : "marine-helmet-v1";
+      const heroId = this.simulation.snapshot().heroId;
+      const heroBodyAsset = heroId === "medic"
+        ? "medic-base-v1"
+        : heroId === "assault" ? "assault-base-v1" : "marine-base-v1";
+      const heroHelmetAsset = heroId === "medic"
+        ? "medic-helmet-v1"
+        : heroId === "assault" ? "assault-breach-overlay-v1" : "marine-helmet-v1";
       if (this.readabilityRims) {
         const rim = this.add.sprite(0, 0, heroBodyAsset, 0).setTint(0x18202b).setScale(1.07);
         this.marineRimSprite = rim;
@@ -1383,6 +1388,12 @@ export class PrototypeScene extends Phaser.Scene {
             this.emitAuthoredEffect(2, event.position, 80, 0.45, 0.82, Math.atan2(event.direction.y, event.direction.x), "bulwark-rotary-effects-v1");
             break;
           }
+          if (event.weaponId === "marauder-ar") {
+            const angle = Math.atan2(event.direction.y, event.direction.x);
+            this.emitAuthoredEffect(0, event.position, 72, 0.38, 0.72, angle, "marauder-ar-effects-v1");
+            this.emitAuthoredEffect(3, event.position, 180, 0.3, 0.55, angle - 0.8, "marauder-ar-effects-v1");
+            break;
+          }
           if (event.weaponId === "event-horizon") {
             this.emitAuthoredEffect(1, event.position, 140, 0.5, 1.05, Math.atan2(event.direction.y, event.direction.x), "event-horizon-effects-v1");
             break;
@@ -1430,6 +1441,8 @@ export class PrototypeScene extends Phaser.Scene {
             this.emitAuthoredEffect(2, event.position, 150, 0.52, 1.05, 0, "injector-carbine-effects-v1");
           } else if (event.weaponId === "bulwark-rotary-cannon") {
             this.emitAuthoredEffect(4, event.position, 120, 0.48, 0.9, 0, "bulwark-rotary-effects-v1");
+          } else if (event.weaponId === "marauder-ar") {
+            this.emitAuthoredEffect(2, event.position, 115, 0.4, 0.82, 0, "marauder-ar-effects-v1");
           }
           break;
         case "enemy-defeated":
@@ -2023,7 +2036,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "synapse-herald-effects-v1" | "assembly-prime-effects-v1" | "storm-regent-effects-v1" | "abomination-prime-biomass-v1" | "abomination-prime-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "event-horizon-effects-v1" | "aurum-hoarder-effects-v1" | "corrupted-marine-effects-v1" | "nest-effects-v1" | "storm-effects-v1" | "machine-scrap-skitterer-effects-v1" | "machine-arc-warden-effects-v1" | "machine-cyborg-reclaimer-effects-v1" | "machine-foundry-effects-v1" | "telegraph-small-v1" | "destructible-terrain-effects-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "synapse-herald-effects-v1" | "assembly-prime-effects-v1" | "storm-regent-effects-v1" | "abomination-prime-biomass-v1" | "abomination-prime-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "event-horizon-effects-v1" | "marauder-ar-effects-v1" | "aurum-hoarder-effects-v1" | "corrupted-marine-effects-v1" | "nest-effects-v1" | "storm-effects-v1" | "machine-scrap-skitterer-effects-v1" | "machine-arc-warden-effects-v1" | "machine-cyborg-reclaimer-effects-v1" | "machine-foundry-effects-v1" | "telegraph-small-v1" | "destructible-terrain-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -3402,9 +3415,11 @@ export class PrototypeScene extends Phaser.Scene {
     for (const projectile of visibleProjectiles) {
       let view = this.projectileViews.get(projectile.id);
       if (!view) {
-        const authoredProjectile = projectile.weaponId === "bolt-carbine"
-          ? { texture: "bolt-carbine-effects-v1", frame: 1, scale: 0.58 }
-          : projectile.weaponId === "injector-carbine"
+        const authoredProjectile = projectile.weaponId === "marauder-ar"
+          ? { texture: "marauder-ar-effects-v1", frame: 1, scale: 0.42 }
+          : projectile.weaponId === "bolt-carbine"
+            ? { texture: "bolt-carbine-effects-v1", frame: 1, scale: 0.58 }
+            : projectile.weaponId === "injector-carbine"
             ? { texture: "injector-carbine-effects-v1", frame: 0, scale: 0.5 }
           : projectile.weaponId === "bulwark-rotary-cannon"
             ? { texture: "bulwark-rotary-effects-v1", frame: 1, scale: 0.34 }
@@ -4810,7 +4825,8 @@ export class PrototypeScene extends Phaser.Scene {
     if (isPlacement && decision.weaponId) {
       const stats = WEAPON_CATALOG[decision.weaponId];
       if (this.useMarineArt) children.push(this.add.image(-335, -20, "batch-i-weapon-stat-card-v1").setDisplaySize(206, 270));
-      children.push(this.add.image(-335, -90, "batch-i-weapon-tiles-v1", canonicalWeaponTileFrame(decision.weaponId)).setDisplaySize(112, 112));
+      const tile = weaponTilePresentation(decision.weaponId);
+      children.push(this.add.image(-335, -90, tile.texture, tile.frame).setDisplaySize(112, 112));
       children.push(this.add.text(-335, 8, `${stats.weaponClass.toUpperCase()} • TIER I\nDMG ${stats.projectileDamage}   CADENCE ${stats.fireIntervalSeconds.toFixed(2)}s`, {
         color: "#dce8f2", fontFamily: "Consolas, Courier New, monospace", fontSize: "11px", align: "center", lineSpacing: 5,
       }).setOrigin(0.5).setResolution(uiTextResolution()));
@@ -4933,7 +4949,9 @@ function readWorldObjectTheme(): string | undefined {
 
 function readMarineArtPreview(): boolean {
   const params = new URLSearchParams(window.location.search);
-  return params.get("art") !== "placeholder" && params.get("hero") !== "assault";
+  return params.get("hero") === "assault"
+    ? params.get("art") === "c3"
+    : params.get("art") !== "placeholder";
 }
 
 function readHeroPreview(): HeroDefinition["id"] | null {
@@ -5277,7 +5295,7 @@ function projectileHaloColor(weaponId: WeaponId): number {
   return 0x171b22;
 }
 
-type WeaponBodyAssetId = "service-rifle-v1" | "scattergun-v1" | "arc-carbine-v1" | "patrol-blade-v1" | "bolt-carbine-v1" | "injector-carbine-v1" | "bulwark-rotary-cannon-v1" | "grenade-tube-v1";
+type WeaponBodyAssetId = "service-rifle-v1" | "marauder-ar-v1" | "scattergun-v1" | "arc-carbine-v1" | "patrol-blade-v1" | "bolt-carbine-v1" | "injector-carbine-v1" | "bulwark-rotary-cannon-v1" | "grenade-tube-v1";
 
 /**
  * Body sprite for a weapon in the ring. Exhaustive on purpose: this was an
@@ -5291,8 +5309,7 @@ type WeaponBodyAssetId = "service-rifle-v1" | "scattergun-v1" | "arc-carbine-v1"
  */
 const WEAPON_BODY_ASSETS: Readonly<Record<WeaponId, WeaponBodyAssetId>> = Object.freeze({
   "bastion-service-rifle": "service-rifle-v1",
-  // PLACEHOLDER — the Assault review route forces code-native art until C3 lands.
-  "marauder-ar": "service-rifle-v1",
+  "marauder-ar": "marauder-ar-v1",
   scattergun: "scattergun-v1",
   "arc-carbine": "arc-carbine-v1",
   "patrol-blade": "patrol-blade-v1",

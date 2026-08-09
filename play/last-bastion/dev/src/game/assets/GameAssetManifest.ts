@@ -133,6 +133,14 @@ import marineSelectPortraitUrl from "../../../../art/production-tests/batch-char
 import marineSelectPortraitWebpUrl from "../../../../art/production-tests/batch-character-select/marine-select-portrait-v1-1024x1536.webp";
 import medicSelectPortraitUrl from "../../../../art/production-tests/batch-character-select/medic-select-portrait-v1-1024x1536.png";
 import medicSelectPortraitWebpUrl from "../../../../art/production-tests/batch-character-select/medic-select-portrait-v1-1024x1536.webp";
+import assaultBaseSheetUrl from "../../../../art/production-tests/batch-character-c3-assault/assault-base-spritesheet-v1-96.png";
+import assaultBreachOverlayUrl from "../../../../art/production-tests/batch-character-c3-assault/assault-breach-module-overlay-v1-96.png";
+import assaultSelectPortraitUrl from "../../../../art/production-tests/batch-character-c3-assault/assault-select-portrait-v1-1024x1536.png";
+import assaultSelectPortraitWebpUrl from "../../../../art/production-tests/batch-character-c3-assault/assault-select-portrait-v1-1024x1536.webp";
+import assaultRosterTileUrl from "../../../../art/production-tests/batch-character-c3-assault/assault-roster-tile-v1-128.png";
+import marauderArUrl from "../../../../art/production-tests/batch-character-c3-assault/marauder/marauder-ar-gameplay-v1-256x128.png";
+import marauderArEffectsUrl from "../../../../art/production-tests/batch-character-c3-assault/marauder/marauder-ar-effects-v1-64.png";
+import marauderArTileUrl from "../../../../art/production-tests/batch-character-c3-assault/marauder/marauder-ar-tile-v1-128.png";
 import bastionLogisticsMapBackdropUrl from "../../../../art/production-tests/batch-map-presentation/bastion-logistics-map-backdrop-v1-1536x1024.png";
 import bastionLogisticsMapBackdropWebpUrl from "../../../../art/production-tests/batch-map-presentation/bastion-logistics-map-backdrop-v1-1536x1024.webp";
 import alienHiveMapBackdropUrl from "../../../../art/production-tests/batch-map-presentation/alien-hive-map-backdrop-v1-1536x1024.png";
@@ -415,6 +423,13 @@ export type GameAssetId =
   | "medic-portrait-v1"
   | "marine-select-portrait-v1"
   | "medic-select-portrait-v1"
+  | "assault-base-v1"
+  | "assault-breach-overlay-v1"
+  | "assault-select-portrait-v1"
+  | "assault-roster-tile-v1"
+  | "marauder-ar-v1"
+  | "marauder-ar-effects-v1"
+  | "marauder-ar-tile-v1"
   | "bastion-logistics-map-backdrop-v1"
   | "alien-hive-map-backdrop-v1"
   | "machine-foundry-map-backdrop-v1"
@@ -623,6 +638,13 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   image("medic-portrait-v1", medicPortraitUrl, 128, 128, 0.5, 0.5),
   image("marine-select-portrait-v1", runtimeImageUrl(marineSelectPortraitUrl, marineSelectPortraitWebpUrl), 1024, 1536, 0.5, 0.9),
   image("medic-select-portrait-v1", runtimeImageUrl(medicSelectPortraitUrl, medicSelectPortraitWebpUrl), 1024, 1536, 0.5, 0.9),
+  sheet("assault-base-v1", assaultBaseSheetUrl, 96, 96, 12, 0.5, 0.68),
+  sheet("assault-breach-overlay-v1", assaultBreachOverlayUrl, 96, 96, 12, 0.5, 0.68),
+  image("assault-select-portrait-v1", runtimeImageUrl(assaultSelectPortraitUrl, assaultSelectPortraitWebpUrl), 1024, 1536, 0.5, 0.9),
+  image("assault-roster-tile-v1", assaultRosterTileUrl, 128, 128, 0.5, 0.5),
+  image("marauder-ar-v1", marauderArUrl, 64, 32, 0.25, 0.5),
+  sheet("marauder-ar-effects-v1", marauderArEffectsUrl, 64, 64, 4, 0.5, 0.5),
+  image("marauder-ar-tile-v1", marauderArTileUrl, 128, 128, 0.5, 0.5),
   image("bastion-logistics-map-backdrop-v1", runtimeImageUrl(bastionLogisticsMapBackdropUrl, bastionLogisticsMapBackdropWebpUrl), 1536, 1024, 0.5, 0.5),
   image("alien-hive-map-backdrop-v1", runtimeImageUrl(alienHiveMapBackdropUrl, alienHiveMapBackdropWebpUrl), 1536, 1024, 0.5, 0.5),
   image("machine-foundry-map-backdrop-v1", runtimeImageUrl(machineFoundryMapBackdropUrl, machineFoundryMapBackdropWebpUrl), 1536, 1024, 0.5, 0.5),

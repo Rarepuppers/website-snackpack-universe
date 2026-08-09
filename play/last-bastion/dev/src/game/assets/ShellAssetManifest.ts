@@ -2,6 +2,8 @@ import marineSelectPortraitUrl from "../../../../art/production-tests/batch-char
 import marineSelectPortraitWebpUrl from "../../../../art/production-tests/batch-character-select/marine-select-portrait-v1-1024x1536.webp";
 import medicSelectPortraitUrl from "../../../../art/production-tests/batch-character-select/medic-select-portrait-v1-1024x1536.png";
 import medicSelectPortraitWebpUrl from "../../../../art/production-tests/batch-character-select/medic-select-portrait-v1-1024x1536.webp";
+import assaultSelectPortraitUrl from "../../../../art/production-tests/batch-character-c3-assault/assault-select-portrait-v1-1024x1536.png";
+import assaultSelectPortraitWebpUrl from "../../../../art/production-tests/batch-character-c3-assault/assault-select-portrait-v1-1024x1536.webp";
 import canonicalPerkTileUrl from "../../../../art/production-tests/batch-i/canonical-perk-tile-atlas-v2-128.png";
 import type { GameAssetDefinition } from "./GameAssetManifest";
 import { BASTION_BACKDROP_ASSET } from "./BastionBackdropAsset";
@@ -24,6 +26,14 @@ export const SHELL_CHARACTER_ASSETS: readonly GameAssetDefinition[] = Object.fre
     kind: "image",
     id: "medic-select-portrait-v1",
     url: runtimeImageUrl(medicSelectPortraitUrl, medicSelectPortraitWebpUrl),
+    logicalWidth: 1024,
+    logicalHeight: 1536,
+    pivot: Object.freeze({ x: 0.5, y: 0.9 }),
+  }),
+  Object.freeze({
+    kind: "image",
+    id: "assault-select-portrait-v1",
+    url: runtimeImageUrl(assaultSelectPortraitUrl, assaultSelectPortraitWebpUrl),
     logicalWidth: 1024,
     logicalHeight: 1536,
     pivot: Object.freeze({ x: 0.5, y: 0.9 }),

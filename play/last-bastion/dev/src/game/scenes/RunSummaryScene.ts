@@ -8,7 +8,7 @@ import { createLocalSaveStore } from "../save/SaveStorage";
 import { createRunSummary, damagePerMinute, type RunSummary } from "../run/RunSummary";
 import { createTransformationCodexSnapshot } from "../transformations/TransformationSnapshot";
 import { normalizeTransformationAffinityState } from "../transformations/TransformationAffinity";
-import { canonicalWeaponTileFrame } from "../ui/WeaponTileFrames";
+import { weaponTilePresentation } from "../ui/WeaponTileFrames";
 import { formatRunClock } from "../stats/formatStat";
 import { threatTierDefinition } from "../expedition/ThreatTier";
 
@@ -149,7 +149,8 @@ export class RunSummaryScene extends Phaser.Scene {
     summary.weapons.slice(0, 4).forEach((weapon, index) => {
       const name = WEAPON_CATALOG[weapon.weaponId as WeaponId]?.displayName ?? weapon.weaponId;
       const y = 153 + index * 39;
-      this.add.image(690, y + 10, "batch-i-weapon-tiles-v1", canonicalWeaponTileFrame(weapon.weaponId as WeaponId))
+      const presentation = weaponTilePresentation(weapon.weaponId as WeaponId);
+      this.add.image(690, y + 10, presentation.texture, presentation.frame)
         .setDisplaySize(32, 32);
       this.text(714, y, name, TEAL, "10px");
       this.text(714, y + 17, `TIER ${weapon.tier}`, MUTED, "9px");

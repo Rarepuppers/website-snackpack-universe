@@ -181,11 +181,13 @@ about three hours (finish 1 run, win 1 run, finish 3 runs, reach wave 3, clear 5
 only one perk can be equipped, and after that nothing ever changes between runs again. There is
 no persistent currency, no spendable tree, and the three silhouette heroes have no unlock rule.
 
-**F8 — Two production-playable heroes; Assault mechanics complete.** Marine and Medic remain the
-two deployable heroes. Assault now has a typed combat contract, Marauder AR, Momentum passive,
-Breach & Clear ultimate, rack/growth/upgrade economy, roster dossier, HUD feedback, tests, and a
-code-native review route. It remains truthfully marked **IN DEVELOPMENT** and cannot deploy until
-the dedicated C3 art/audio package lands. Tactician and Scout remain silhouettes without mechanics.
+**F8 — Two production-playable heroes; Assault mechanics and C3 visuals complete.** Marine and
+Medic remain the two deployable heroes. Assault has its typed combat contract, Marauder AR,
+Momentum passive, Breach & Clear ultimate, rack/growth/upgrade economy, dossier, HUD feedback,
+full-height portrait, 12-frame directional body, modular Breach overlay, and roster tile. Three
+validated 48 kHz/24-bit audio masters exist, but OGG/MP3 derivatives, hero-aware runtime cue wiring,
+and contextual mix acceptance remain open. Assault therefore stays truthfully **IN DEVELOPMENT**.
+Tactician and Scout remain silhouettes without mechanics.
 
 **F9 — No daily/weekly seeded run and no leaderboards.** Steam Leaderboards are free, the run
 already threads a deterministic seed (`?mapseed=N`), and a daily is the cheapest retention
@@ -390,10 +392,13 @@ Gravity Adept pull-pulse pilots are complete. Extend this pattern to the remaini
 needs one readable, testable combat behaviour instead of another percentage bag. Close the last two
 typed elemental-received scars only after the player-side damage/status contract exists.
 
-**G5 — Heroes 3–5.** Assault is the completed mechanics pilot: stats, medium/medium/heavy/all rack,
-Marauder AR, Momentum, Breach & Clear, level growth, upgrade economy, and a hard C3 deployment gate
-all exist in code. Next complete C3 Assault art/audio and production acceptance; only then begin the
-Tactician mechanics contract, followed by Scout. Keep the one-hero-at-a-time rule.
+**G5 — Heroes 3–5.** Assault's mechanics and C3 visual package are complete. The remaining hero gate
+is audio delivery: encode the three retained masters to OGG/MP3, screen loudness/peak, wire hero-aware
+damage/evade/death selection, and accept the mix in combat. Marauder now owns its gameplay body, tracer,
+muzzle/casing, impact presentation, and standalone HUD/choice/debrief tile. The unlock contract is now
+defined and tested: Assault Clearance costs 18 Command Marks after Breach Protocol (35 total path cost), but
+the node remains catalogued, hidden, and unpurchasable until audio acceptance. Then enable deployment and
+begin Tactician, followed by Scout. Keep the one-hero-at-a-time rule.
 
 **G6 — Combat feel.** Hit-stop: 2–4 frames of `timeScale` dilation on crit and on kill, scaled by
 the existing reduced-motion setting and the new shake-intensity slider. Weapon recoil kick on the
@@ -529,6 +534,13 @@ C3 contract from queue item 67 (full-height 1024×1536 select portrait, four-dir
 sheet on the established column order, equipment/helmet overlays, unlocked roster tile, and
 hero-specific damage/evade/death audio). Repeat for Tactician and Scout, one at a time, each
 gated the same way. Do not begin any of them early.
+
+**Visual package complete 9 Aug 2026.** Retained chroma/alpha masters and deterministic normalization
+now produce the 1024×1536 portrait + WebP derivative, 12-frame south/north/east/west body, aligned
+Breach Module overlay, composite review sheet, and 128px roster tile. Explicit QA routes expose these
+without changing the deployment gate. Damage/evade/death WAV masters also exist and pass source-format,
+peak, and edge screening. This managed workspace has no FFmpeg/alternate encoder, so OGG/MP3 runtime
+derivatives, live cue wiring, and listening acceptance remain the only C3 blockers.
 
 ---
 
@@ -929,7 +941,7 @@ constructed by anything.
   six journal rows at once, and scrolls through all retained entries with bounded keyboard/controller
   navigation. The old `lastRunSummary` remains as a compatibility/current-debrief pointer derived from
   the newest journal entry.
-- **T4.8 — IN PROGRESS 9 Aug 2026. Assault mechanics complete; C3 gate remains.** Assault now owns
+- **T4.8 — IN PROGRESS 9 Aug 2026. Assault mechanics + C3 visuals complete; audio gate remains.** Assault now owns
   a typed hero definition and catalogue entry, 9-health / 5.4-speed chassis, four-slot
   Medium/Medium/Heavy/All rack, 4/1/1/1 upgrade economy, Marauder AR, Momentum's same-target
   +4%-per-hit ramp (capped at +20%, reset after 1.25 seconds or target change), and Breach & Clear's
@@ -937,7 +949,15 @@ constructed by anything.
   acquisition. `?hero=assault` is the explicit code-native mechanics review route; it refuses Marine
   art, while Character Select exposes the real dossier but keeps Deploy disabled. **Next:** produce
   and integrate C3 Assault portrait/body/helmet/effects/audio, replace all temporary presentation,
-  run live combat/roster acceptance, then unlock Assault and begin Tactician's mechanics contract.
+  The select portrait, 12-frame directional body, aligned Breach overlay, roster tile, retained masters,
+  prompt provenance, and deterministic normalizer are complete and accepted through explicit QA routes.
+  Three mono 48 kHz/24-bit suit-feedback masters pass peak/edge screening. **Next:** install/provide an
+  approved encoder, create OGG/MP3 derivatives, run loudness and contextual listening acceptance, wire
+  hero-aware damage/evade/death cues, flip the reviewed release gate, then enable Assault and begin
+  Tactician's mechanics contract. Marauder's dedicated gameplay body, four-state ballistic presentation,
+  and standalone HUD/choice/debrief tile are integrated; the stable eight-frame Batch I atlas remains
+  unchanged. Assault Clearance is a typed 18-mark hero node after Breach Protocol; it cannot render,
+  purchase, select as a starting kit, or unlock deployment while the C3 audio release flag is false.
 
 ### 10.6 Dependency graph
 
@@ -957,8 +977,9 @@ T4.1 ladder ──→ T4.3 dailies + leaderboards
 
 Two hard gates worth restating: **T3.6 must land before batch X1** (do not commission 56 icons
 for achievement IDs that do not exist), and **a T4.8 hero must not become deployable before both
-its mechanics contract and dedicated production presentation exist**. Assault has cleared the first
-gate only; its roster lock is the enforcement mechanism for C3.
+its mechanics contract and dedicated production presentation exist**. Assault has cleared its mechanics
+and visual gates, but not the audio delivery and in-combat acceptance gate; its roster lock remains the
+enforcement mechanism for C3.
 
 ---
 

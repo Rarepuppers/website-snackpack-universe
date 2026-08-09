@@ -22,7 +22,7 @@ import {
   keyboardBindingLabel,
   type ControlBindings,
 } from "../input/ControlBindings";
-import { canonicalWeaponTileFrame } from "./WeaponTileFrames";
+import { weaponTilePresentation } from "./WeaponTileFrames";
 import { combatPalette, type CombatPalette, type ColorVisionMode } from "./CombatPalette";
 import {
   bossHudPresentation,
@@ -446,7 +446,8 @@ export class CombatHud {
       setCooldownTileVisible(tile, true);
       tile.label.setText(tile.icon ? "" : weaponTileAbbreviation(weapon.weaponId));
       if (tile.icon) {
-        tile.icon.setTexture("batch-i-weapon-tiles-v1", canonicalWeaponTileFrame(weapon.weaponId))
+        const presentation = weaponTilePresentation(weapon.weaponId);
+        tile.icon.setTexture(presentation.texture, presentation.frame)
           .setVisible(true);
       }
       tile.binding.setText(weapon.stats.firesAutomatically ? "SYNC" : snapshot.autoFireEnabled ? "AUTO" : "FIRE");

@@ -11,6 +11,7 @@ describe("route asset manifests", () => {
     expect(SHELL_CHARACTER_ASSETS.map((asset) => asset.id)).toEqual([
       "marine-select-portrait-v1",
       "medic-select-portrait-v1",
+      "assault-select-portrait-v1",
       "canonical-perk-tiles-v2",
     ]);
   });
@@ -19,6 +20,7 @@ describe("route asset manifests", () => {
     expect(DEBRIEF_ASSETS.map((asset) => asset.id)).toEqual([
       "bastion-logistics-map-backdrop-v1",
       "batch-i-weapon-tiles-v1",
+      "marauder-ar-tile-v1",
     ]);
   });
 

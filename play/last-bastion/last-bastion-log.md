@@ -3149,3 +3149,74 @@ warning, and disabled Deploy state at the authored 960×540 canvas.
   smoke `200` / 76 routes, and offline 335 / 0 missing.
 - T4.8 remains open only for Assault C3 production art/audio and acceptance before unlock. After that,
   Tactician is the next mechanics contract; Scout follows, preserving the one-hero-at-a-time rule.
+
+## 9 August 2026 — Assault C3 visual package complete; audio derivative gate isolated
+
+Assault now has a production identity anchor and complete reviewable visual package. The 1024×1536 select
+portrait establishes a leaner charcoal/navy silhouette, asymmetric reinforced right shoulder, sealed narrow
+amber visor, restrained burnt-orange markings, cyan equipment lights, and a distinct compact Marauder AR.
+The body master preserves that identity across exactly 12 weapon-free frames: south/north/east/west columns
+and idle/move/evade rows. A separate Breach Module overlay follows the same frame contract, and a fixed crop
+derives the unlocked 128px roster tile.
+
+All generated imagery retains its built-in image-generation prompt provenance, chroma master, alpha master,
+runtime derivative, and deterministic normalizer under `art/production-tests/batch-character-c3-assault/`.
+Chroma extraction reports transparent corners and plausible subject coverage; the runtime body and overlay
+are exact 384×288 atlases of twelve 96px cells. The portrait also has a 1024×1536 WebP runtime derivative.
+
+Four new typed manifest assets are available only through explicit review paths. `?hero=assault&art=c3`
+loads the body and Breach overlay in combat, while `?flow=character-select&c3=assault` shows the portrait.
+Ordinary Character Select still labels Assault **IN DEVELOPMENT**, keeps Deploy disabled, and persists no
+unlock. Live browser acceptance at 960×540 confirmed both routes and the production-art asset load.
+
+Three deterministic hero-specific suit-feedback masters now cover damage, evade, and death without voice-over
+or borrowed samples. Each is mono 48 kHz/24-bit PCM; peaks range from −15.76 to −9.69 dBFS, and first/last
+3 ms edge peaks remain below −45 dBFS. This workspace has no FFmpeg or alternate encoder, so OGG/MP3
+derivatives, hero-aware runtime cue wiring, loudness/listening acceptance, and the final deploy unlock remain
+open rather than being approximated.
+
+- Full web verification passes: image audit, typecheck, **1,272 tests across 193 files**, production build,
+  smoke `200` / 76 routes, and offline 340 / 0 missing.
+- Next: encode and audit the three cues, wire hero-aware playback, add Marauder's standalone HUD/debrief tile,
+  implement the authored unlock rule, then perform final C3 acceptance and enable Assault.
+
+## 9 August 2026 — Marauder AR gameplay presentation accepted
+
+Assault no longer carries the Bastion Service Rifle during C3 combat review. Marauder now owns a dedicated
+64×32 logical gameplay prop with a compact charcoal/navy silhouette, orange heat accents, and cyan status
+light. A separate four-frame 64px atlas supplies the muzzle flash, copper-orange tracer, physical impact,
+and ejected casing. The retained chroma/alpha masters, exact built-in generation prompts, and deterministic
+normalizer live under `art/production-tests/batch-character-c3-assault/marauder/`.
+
+The asset manifest, exhaustive weapon-body registry, projectile renderer, pooled effect texture contract,
+and identity presentation registry all reference the new Marauder assets. Live browser acceptance on
+`?hero=assault&art=c3&scenario=carapace-elite&autofire=1` confirmed that the dark rifle separates from the
+hero armour, the orange tracer remains readable across the arena, and casing/impact effects do not obscure
+targets. Assault remains locked and Marauder remains excluded from acquisition pools.
+
+- Full verification passes: image audit, typecheck, **1,272 tests across 193 files**, production build,
+  smoke `200` / 76 routes, and offline 342 / 0 missing.
+- Full Marauder presentation is now complete: a standalone 128px tile replaces the borrowed Service Rifle
+  frame in combat HUD, placement-choice, and run-debrief selectors while preserving the stable eight-frame
+  Batch I atlas. Built-in generation provenance and deterministic alpha normalization are retained beside
+  the weapon masters.
+- Full verification passes with **1,273 tests across 193 files** and offline 343 / 0 missing. At this point the
+  C3 release gate still required encoded and accepted hero damage/evade/death audio, hero-aware cue wiring,
+  an unlock rule, and final acceptance; the next entry resolves the unlock-rule item.
+
+## 9 August 2026 — Assault unlock contract implemented behind the audio gate
+
+Assault's permanent unlock is now code-owned rather than an unresolved planning note. **ASSAULT CLEARANCE**
+costs 18 Command Marks and requires **BREACH PROTOCOL**, which itself requires the 5-mark Close-Quarters Kit.
+The complete hero path therefore costs 35 lifetime marks: a meaningful four-strong-Expedition target without
+turning the third hero into a long grind.
+
+The node is part of the typed Armory catalogue and save sanitizer, but its release flag is false. Consequently
+it is omitted from the Armory screen, rejects purchase even with sufficient marks and prerequisites, cannot
+be selected as a starting weapon kit, and cannot grant deployment even if a crafted/future save contains its
+ID. Marine and Medic retain their first-deployment availability. Character Select draws Assault's requirement
+copy from this canonical progression contract instead of duplicating a stale promise in the hero definition.
+
+- Focused progression, save, shell-flow, and hero tests pass.
+- Remaining C3 work is exclusively audio delivery and acceptance: OGG/MP3 derivatives, hero-aware damage/
+  evade/death playback, contextual listening, then flipping the reviewed release flag and enabling deployment.

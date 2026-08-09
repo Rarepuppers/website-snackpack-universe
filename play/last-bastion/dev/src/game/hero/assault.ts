@@ -1,4 +1,5 @@
 import type { HeroDefinition } from "./HeroDefinition";
+import { assaultUnlockRequirementText } from "../progression/ArmoryProgression";
 
 /**
  * T4.8 mechanics contract. Assault remains roster-locked until Character
@@ -52,7 +53,7 @@ export const ASSAULT = Object.freeze({
   startingWeaponName: "Marauder AR",
   rackClasses: ["medium", "medium", "heavy", "all"],
   levelGrowthDescription: "+2 DAMAGE / +1 HEALTH / +2 MEDIUM / +1 HEAVY",
-  unlockText: "Mechanics ready. Requires the dedicated C3 Assault art and audio package before deployment.",
+  unlockText: assaultUnlockRequirementText(),
   ultimate: {
     id: "breach-and-clear",
     name: "Breach & Clear",

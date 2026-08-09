@@ -1,5 +1,16 @@
 import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
 
+export interface WeaponTilePresentation {
+  texture: "batch-i-weapon-tiles-v1" | "marauder-ar-tile-v1";
+  frame?: number;
+}
+
+/** Standalone tiles override the shared Batch I atlas without changing its stable eight-frame contract. */
+export function weaponTilePresentation(weaponId: WeaponId): WeaponTilePresentation {
+  if (weaponId === "marauder-ar") return { texture: "marauder-ar-tile-v1" };
+  return { texture: "batch-i-weapon-tiles-v1", frame: canonicalWeaponTileFrame(weaponId) };
+}
+
 /**
  * Batch I master order, shared by every compact weapon presentation.
  *

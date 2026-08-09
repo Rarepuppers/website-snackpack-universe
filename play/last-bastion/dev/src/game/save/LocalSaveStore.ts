@@ -34,6 +34,7 @@ import type { RequestedPresentationMode } from "../rendering/DisplayPresentation
 import { normalizeThreatTier, type ThreatTier, type ThreatTierVictories } from "../expedition/ThreatTier";
 import {
   canPurchaseArmoryNode,
+  canSelectArmoryNode,
   commandMarksForRun,
   isArmoryNodeId,
   normalizePurchasedArmoryNodeIds,
@@ -308,14 +309,16 @@ export class LocalSaveStore {
         ...progress,
         purchasedArmoryNodeIds: [...progress.purchasedArmoryNodeIds, nodeId],
       },
-      selectedArmoryNodeId: nodeId,
+      selectedArmoryNodeId: canSelectArmoryNode(nodeId) ? nodeId : this.cached.selectedArmoryNodeId,
     };
     this.writeToStorage();
     return this.load();
   }
 
   selectArmoryNode(nodeId: ArmoryNodeId | null): SaveData {
-    const selectedArmoryNodeId = nodeId !== null && this.cached.progress.purchasedArmoryNodeIds.includes(nodeId)
+    const selectedArmoryNodeId = nodeId !== null
+      && canSelectArmoryNode(nodeId)
+      && this.cached.progress.purchasedArmoryNodeIds.includes(nodeId)
       ? nodeId
       : null;
     this.cached = { ...this.cached, selectedArmoryNodeId };
@@ -530,6 +533,7 @@ function normalizeSave(parsed: unknown): SaveData {
     selectedHeroId: version >= 3 && candidate.selectedHeroId === "medic" ? "medic" : "marine",
     selectedThreatTier: version >= 14 ? normalizeThreatTier(candidate.selectedThreatTier) : 0,
     selectedArmoryNodeId: version >= 15 && isArmoryNodeId(candidate.selectedArmoryNodeId)
+      && canSelectArmoryNode(candidate.selectedArmoryNodeId)
       && normalizePurchasedArmoryNodeIds(candidate.progress?.purchasedArmoryNodeIds).includes(candidate.selectedArmoryNodeId)
       ? candidate.selectedArmoryNodeId
       : null,

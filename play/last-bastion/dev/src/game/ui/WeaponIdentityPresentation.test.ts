@@ -11,5 +11,6 @@ describe("WeaponIdentityPresentation", () => {
       expect(WEAPON_IDENTITY_PRESENTATIONS[id]!.effectStyle).toBeTruthy();
     }
     expect(WEAPON_IDENTITY_PRESENTATIONS["event-horizon"]!.dedicatedAssetId).toBe("event-horizon-v1");
+    expect(WEAPON_IDENTITY_PRESENTATIONS["marauder-ar"]!.dedicatedAssetId).toBe("marauder-ar-v1");
   });
 });

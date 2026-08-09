@@ -9,7 +9,7 @@ import {
 } from "../assets/ShellAssetManifest";
 import { PERK_CATALOG } from "../perks/perkCatalog";
 import { THREAT_TIERS } from "../expedition/ThreatTier";
-import { ARMORY_NODES, COMMAND_MARKS_LABEL, armoryNode } from "../progression/ArmoryProgression";
+import { ARMORY_NODES, COMMAND_MARKS_LABEL, armoryNode, isHeroDeploymentUnlocked } from "../progression/ArmoryProgression";
 import { reapplyDisplayScale } from "../rendering/DisplayScaling";
 import {
   applyHostDisplaySelection,
@@ -559,8 +559,11 @@ export class ShellScene extends Phaser.Scene {
 
     // Left: full-height select portrait; gameplay sheets remain separate.
     this.root.add(this.add.rectangle(250, 250, 300, 320, PANEL).setStrokeStyle(1, 0x3b4d63));
-    if (hero.status === "playable") {
-      const portraitKey = hero.id === "medic" ? "medic-select-portrait-v1" : "marine-select-portrait-v1";
+    const assaultC3Preview = hero.id === "assault" && requestedAssaultC3Preview();
+    if (hero.status === "playable" || assaultC3Preview) {
+      const portraitKey = hero.id === "medic"
+        ? "medic-select-portrait-v1"
+        : hero.id === "assault" ? "assault-select-portrait-v1" : "marine-select-portrait-v1";
       this.root.add(this.add.image(250, 258, portraitKey).setDisplaySize(196, 294));
     } else {
       this.root.add(this.add.rectangle(250, 250, 120, 220, 0x232c3a)
@@ -636,7 +639,10 @@ export class ShellScene extends Phaser.Scene {
         }
       });
     });
-    const canDeploy = hero.status === "playable" && perkUnlocked;
+    const canDeploy = hero.status === "playable"
+      && isHeroId(hero.id)
+      && isHeroDeploymentUnlocked(hero.id, this.state.purchasedArmoryNodeIds)
+      && perkUnlocked;
     this.root.add(this.add.rectangle(850, 470, 120, 44, canDeploy ? 0x24384f : PANEL)
       .setStrokeStyle(2, canDeploy ? TEAL_HEX : 0x3b4d63));
     this.root.add(this.text(850, 470, "DEPLOY", canDeploy ? TEAL : MUTED, "13px", true));
@@ -717,6 +723,11 @@ function requestedInitialScreen(): "title" | "character-select" {
   return new URLSearchParams(window.location.search).get("flow") === "character-select"
     ? "character-select"
     : "title";
+}
+
+function requestedAssaultC3Preview(): boolean {
+  return typeof window !== "undefined"
+    && new URLSearchParams(window.location.search).get("c3") === "assault";
 }
 
 function formatRecord(value: number): string {
