@@ -110,6 +110,40 @@ describe("committed transformation path effects reach real combat stats (Phase 3
     expect(boostDamageTaken).toBeLessThan(baseDamageTaken);
   });
 
+  it("Gravity Adept creates one non-damaging pull pulse on every eighth projectile attack", () => {
+    const simulation = new CombatSimulation({
+      autoStartWaves: false,
+      startingBuild: build({ transformation: committed("void-initiation", "gravity-adept") }),
+    });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnEnemy("abomination", { x: player.x + 4, y: player.y });
+    const bystanderId = simulation.spawnEnemy("nest-pod", { x: player.x + 4, y: player.y + 0.9 });
+    let attacks = 0;
+    let snapshot = simulation.snapshot();
+    for (let frame = 0; frame < 500 && attacks < 7; frame += 1) {
+      snapshot = simulation.step(intent({ fireHeld: true }), 0.05);
+      attacks += snapshot.events.filter((event) => event.type === "weapon-fired").length;
+    }
+    expect(attacks).toBe(7);
+    expect(snapshot.eventHorizonFields.some((field) => field.kind === "gravity-pulse")).toBe(false);
+
+    for (let frame = 0; frame < 100 && !snapshot.eventHorizonFields.some((field) => field.kind === "gravity-pulse"); frame += 1) {
+      snapshot = simulation.step(intent({ fireHeld: attacks < 8 }), 0.05);
+      attacks += snapshot.events.filter((event) => event.type === "weapon-fired").length;
+    }
+    const pulse = snapshot.eventHorizonFields.find((field) => field.kind === "gravity-pulse")!;
+    expect(pulse.pullRadiusMetres).toBe(1.8);
+    const before = snapshot.enemies.find((enemy) => enemy.id === bystanderId)!;
+    const beforeDistance = Math.hypot(before.position.x - pulse.position.x, before.position.y - pulse.position.y);
+    const beforeHealth = before.health;
+    for (let frame = 0; frame < 10; frame += 1) snapshot = simulation.step(intent(), 0.05);
+    const after = snapshot.enemies.find((enemy) => enemy.id === bystanderId)!;
+    const afterDistance = Math.hypot(after.position.x - pulse.position.x, after.position.y - pulse.position.y);
+    expect(afterDistance).toBeLessThan(beforeDistance);
+    expect(after.health).toBe(beforeHealth);
+    expect(snapshot.eventHorizonFields.some((field) => field.kind === "gravity-pulse")).toBe(false);
+  });
+
   it("Heavy Gunner (Bastion Super-Soldier) increases damage from a heavy-class weapon only", () => {
     const baseline = new CombatSimulation({
       autoStartWaves: false,

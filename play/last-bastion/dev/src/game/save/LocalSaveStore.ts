@@ -14,6 +14,13 @@ import {
   type RunSummary,
 } from "../run/RunSummary";
 import {
+  createRunHistoryEntry,
+  mergeRunHistories,
+  normalizeCompletedAtMs,
+  prependRunHistory,
+  type RunHistoryEntry,
+} from "../run/RunHistory";
+import {
   cloneTransformationAffinityState,
   normalizeTransformationAffinityState,
   type TransformationAffinityState,
@@ -25,6 +32,13 @@ import type { EffectQualityPreference } from "../performance/AdaptivePerformance
 import type { FrameCap, FullscreenMode } from "../rendering/DisplayCapabilities";
 import type { RequestedPresentationMode } from "../rendering/DisplayPresentation";
 import { normalizeThreatTier, type ThreatTier, type ThreatTierVictories } from "../expedition/ThreatTier";
+import {
+  canPurchaseArmoryNode,
+  commandMarksForRun,
+  isArmoryNodeId,
+  normalizePurchasedArmoryNodeIds,
+  type ArmoryNodeId,
+} from "../progression/ArmoryProgression";
 
 /**
  * Versioned local persistence for settings and basic run progress.
@@ -99,6 +113,8 @@ export interface GameProgress {
   bestiary: Record<string, BestiaryEntry>;
   threatTierBestNodes: Record<ThreatTier, number>;
   threatTierVictories: Record<ThreatTier, number>;
+  commandMarksLifetime: number;
+  purchasedArmoryNodeIds: ArmoryNodeId[];
 }
 
 /**
@@ -141,7 +157,7 @@ export interface ExpeditionSave {
  * Current schema version. Single source of truth — the cloud-save policy and the
  * platform adapter gate on it, so bumping it here is the only edit a migration needs.
  */
-export const SAVE_SCHEMA_VERSION = 14;
+export const SAVE_SCHEMA_VERSION = 16;
 
 export interface SaveData {
   version: typeof SAVE_SCHEMA_VERSION;
@@ -152,7 +168,9 @@ export interface SaveData {
   selectedPerkId: PerkId | null;
   selectedHeroId: HeroDefinition["id"];
   selectedThreatTier: ThreatTier;
+  selectedArmoryNodeId: ArmoryNodeId | null;
   lastRunSummary: RunSummary | null;
+  runHistory: RunHistoryEntry[];
 }
 
 export const SAVE_STORAGE_KEY = "last-bastion-save";
@@ -210,12 +228,16 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     bestiary: Object.freeze({}) as Record<string, BestiaryEntry>,
     threatTierBestNodes: Object.freeze({ 0: 0, 1: 0, 2: 0 }),
     threatTierVictories: Object.freeze({ 0: 0, 1: 0, 2: 0 }),
+    commandMarksLifetime: 0,
+    purchasedArmoryNodeIds: Object.freeze([]) as unknown as ArmoryNodeId[],
   }),
   expedition: null,
   selectedPerkId: "perk-veteran",
   selectedHeroId: "marine",
   selectedThreatTier: 0,
+  selectedArmoryNodeId: null,
   lastRunSummary: null,
+  runHistory: Object.freeze([]) as unknown as RunHistoryEntry[],
 });
 
 export type StorageLike = Pick<Storage, "getItem" | "setItem">;
@@ -275,6 +297,32 @@ export class LocalSaveStore {
     return this.load();
   }
 
+  purchaseArmoryNode(nodeId: ArmoryNodeId): SaveData {
+    const progress = this.cached.progress;
+    if (!canPurchaseArmoryNode(nodeId, progress.commandMarksLifetime, progress.purchasedArmoryNodeIds)) {
+      return this.load();
+    }
+    this.cached = {
+      ...this.cached,
+      progress: {
+        ...progress,
+        purchasedArmoryNodeIds: [...progress.purchasedArmoryNodeIds, nodeId],
+      },
+      selectedArmoryNodeId: nodeId,
+    };
+    this.writeToStorage();
+    return this.load();
+  }
+
+  selectArmoryNode(nodeId: ArmoryNodeId | null): SaveData {
+    const selectedArmoryNodeId = nodeId !== null && this.cached.progress.purchasedArmoryNodeIds.includes(nodeId)
+      ? nodeId
+      : null;
+    this.cached = { ...this.cached, selectedArmoryNodeId };
+    this.writeToStorage();
+    return this.load();
+  }
+
   recordNodeCleared(count = 1): SaveData {
     this.cached = {
       ...this.cached,
@@ -329,7 +377,13 @@ export class LocalSaveStore {
     return this.load();
   }
 
-  recordRunEnd(outcome: { victory: boolean; waveReached: number; summary?: RunSummary; threatTier?: ThreatTier }): SaveData {
+  recordRunEnd(outcome: {
+    victory: boolean;
+    waveReached: number;
+    summary?: RunSummary;
+    threatTier?: ThreatTier;
+    completedAtMs?: number;
+  }): SaveData {
     const summary = outcome.summary;
     const newBestWave = Math.max(0, Math.floor(outcome.waveReached)) > this.cached.progress.bestWaveReached;
     const newBestNodes = (summary?.nodesCleared ?? 0) > this.cached.progress.bestNodesCleared;
@@ -351,6 +405,10 @@ export class LocalSaveStore {
       threatTierBestNodes[tier] = Math.max(threatTierBestNodes[tier], summary?.nodesCleared ?? 0);
       if (outcome.victory) threatTierVictories[tier] += 1;
     }
+    const effectiveSummary = summary
+      ? createRunSummary({ ...summary, threatTier: tier ?? summary.threatTier })
+      : null;
+    const commandMarksEarned = effectiveSummary ? commandMarksForRun(effectiveSummary) : 0;
     const nextProgress: GameProgress = {
       ...this.cached.progress,
       runsFinished: this.cached.progress.runsFinished + 1,
@@ -368,14 +426,32 @@ export class LocalSaveStore {
       totalScrapEarned: this.cached.progress.totalScrapEarned + (summary?.scrapEarned ?? 0),
       threatTierBestNodes,
       threatTierVictories,
+      commandMarksLifetime: this.cached.progress.commandMarksLifetime + commandMarksEarned,
     };
     const newlyUnlockedPerkIds = unlockedPerkIds(nextProgress).filter((id) => !beforeUnlocks.has(id));
+    const completedSummary = summary
+      ? createRunSummary({
+        ...summary,
+        threatTier: tier ?? summary.threatTier,
+        newlyUnlockedPerkIds,
+        newBestWave,
+        newBestNodes,
+        commandMarksEarned,
+      })
+      : null;
+    const completedAtMs = typeof outcome.completedAtMs === "number" && Number.isFinite(outcome.completedAtMs)
+      ? normalizeCompletedAtMs(outcome.completedAtMs)
+      : Date.now();
     this.cached = {
       ...this.cached,
       progress: nextProgress,
-      lastRunSummary: summary
-        ? createRunSummary({ ...summary, newlyUnlockedPerkIds, newBestWave, newBestNodes })
-        : this.cached.lastRunSummary,
+      lastRunSummary: completedSummary ?? this.cached.lastRunSummary,
+      runHistory: completedSummary
+        ? prependRunHistory(
+          this.cached.runHistory,
+          createRunHistoryEntry(completedSummary, completedAtMs, nextProgress.runsFinished),
+        )
+        : this.cached.runHistory,
     };
     this.writeToStorage();
     return this.load();
@@ -415,11 +491,17 @@ function normalizeSave(parsed: unknown): SaveData {
   }
   const candidate = parsed as Omit<Partial<SaveData>, "version"> & { version?: number };
   const version = candidate.version ?? -1;
-  // Versions 1–12 migrate into the current schema. Missing fields inherit the
+  // Versions 1–15 migrate into the current schema. Missing fields inherit the
   // accessible defaults; unknown future versions degrade safely to defaults.
-  if (![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].includes(version)) {
+  if (![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].includes(version)) {
     return cloneSave(DEFAULT_SAVE);
   }
+  const lastRunSummary = version >= 4 ? readRunSummary(candidate.lastRunSummary) : null;
+  const runHistory = version >= 16
+    ? readRunHistory(candidate.runHistory)
+    : lastRunSummary
+      ? [createRunHistoryEntry(lastRunSummary, 0, readCount(candidate.progress?.runsFinished))]
+      : [];
   return {
     version: SAVE_SCHEMA_VERSION,
     settings: normalizeSettings(candidate.settings),
@@ -438,6 +520,8 @@ function normalizeSave(parsed: unknown): SaveData {
       bestiary: readBestiary(candidate.progress?.bestiary),
       threatTierBestNodes: readThreatTierCounts(candidate.progress?.threatTierBestNodes),
       threatTierVictories: readThreatTierCounts(candidate.progress?.threatTierVictories),
+      commandMarksLifetime: readCount(candidate.progress?.commandMarksLifetime),
+      purchasedArmoryNodeIds: normalizePurchasedArmoryNodeIds(candidate.progress?.purchasedArmoryNodeIds),
     },
     expedition: version >= 2 ? readExpedition(candidate.expedition) : null,
     selectedPerkId: version >= 3 && isPerkId(candidate.selectedPerkId)
@@ -445,7 +529,12 @@ function normalizeSave(parsed: unknown): SaveData {
       : "perk-veteran",
     selectedHeroId: version >= 3 && candidate.selectedHeroId === "medic" ? "medic" : "marine",
     selectedThreatTier: version >= 14 ? normalizeThreatTier(candidate.selectedThreatTier) : 0,
-    lastRunSummary: version >= 4 ? readRunSummary(candidate.lastRunSummary) : null,
+    selectedArmoryNodeId: version >= 15 && isArmoryNodeId(candidate.selectedArmoryNodeId)
+      && normalizePurchasedArmoryNodeIds(candidate.progress?.purchasedArmoryNodeIds).includes(candidate.selectedArmoryNodeId)
+      ? candidate.selectedArmoryNodeId
+      : null,
+    lastRunSummary: runHistory[0]?.summary ?? lastRunSummary,
+    runHistory,
   };
 }
 
@@ -787,7 +876,29 @@ function readRunSummary(value: unknown): RunSummary | null {
     newlyUnlockedPerkIds: Array.isArray(candidate.newlyUnlockedPerkIds)
       ? candidate.newlyUnlockedPerkIds.filter(isPerkId)
       : [],
+    commandMarksEarned: readCount(candidate.commandMarksEarned),
   });
+}
+
+function readRunHistory(value: unknown): RunHistoryEntry[] {
+  if (!Array.isArray(value)) return [];
+  const entries: RunHistoryEntry[] = [];
+  for (const raw of value.slice(0, 100)) {
+    if (typeof raw !== "object" || raw === null) continue;
+    const candidate = raw as Partial<RunHistoryEntry>;
+    const summary = readRunSummary(candidate.summary);
+    if (!summary) continue;
+    const completedAtMs = normalizeCompletedAtMs(readFiniteNonNegative(candidate.completedAtMs));
+    const generated = createRunHistoryEntry(summary, completedAtMs, entries.length);
+    entries.push({
+      id: typeof candidate.id === "string" && candidate.id.length > 0 && candidate.id.length <= 256
+        ? candidate.id
+        : generated.id,
+      completedAtMs,
+      summary,
+    });
+  }
+  return mergeRunHistories(entries, []);
 }
 
 function cloneSave(save: SaveData): SaveData {
@@ -804,11 +915,18 @@ function cloneSave(save: SaveData): SaveData {
       bestiary,
       threatTierBestNodes: { ...save.progress.threatTierBestNodes },
       threatTierVictories: { ...save.progress.threatTierVictories },
+      purchasedArmoryNodeIds: [...save.progress.purchasedArmoryNodeIds],
     },
     expedition: save.expedition === null ? null : cloneExpedition(save.expedition),
     selectedPerkId: save.selectedPerkId,
     selectedHeroId: save.selectedHeroId,
     selectedThreatTier: save.selectedThreatTier,
+    selectedArmoryNodeId: save.selectedArmoryNodeId,
     lastRunSummary: save.lastRunSummary ? createRunSummary(save.lastRunSummary) : null,
+    runHistory: save.runHistory.map((entry) => ({
+      id: entry.id,
+      completedAtMs: entry.completedAtMs,
+      summary: createRunSummary(entry.summary),
+    })),
   };
 }

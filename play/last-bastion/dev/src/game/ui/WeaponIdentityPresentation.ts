@@ -39,6 +39,7 @@ export const WEAPON_IDENTITY_PRESENTATIONS: Readonly<Record<WeaponId, WeaponIden
   "tether-harpoon": { weaponId: "tether-harpoon", silhouetteId: "harpoon", tileFrame: 3, colour: 0xd6c39a, effectStyle: "explosive", dedicatedAssetId: null },
   // First deployable; borrows the launcher tile until it has its own.
   "sentry-stake": { weaponId: "sentry-stake", silhouetteId: "sentry-stake", tileFrame: 3, colour: 0x9fd0b4, effectStyle: "projectile", dedicatedAssetId: null },
+  "auxiliary-drone": { weaponId: "auxiliary-drone", silhouetteId: "auxiliary-drone", tileFrame: 4, colour: 0x68e4e8, effectStyle: "projectile", dedicatedAssetId: null },
 });
 
 export function weaponIdentityPresentation(weaponId: WeaponId): WeaponIdentityPresentation { return WEAPON_IDENTITY_PRESENTATIONS[weaponId]; }

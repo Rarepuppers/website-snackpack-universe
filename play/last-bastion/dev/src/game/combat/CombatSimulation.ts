@@ -302,6 +302,7 @@ import {
   NEARBY_KILL_HEAL_WINDOW_SECONDS,
   RETALIATION_COOLDOWN_SECONDS,
   RETALIATION_RADIUS_METRES,
+  GRAVITY_PULSE_EVERY_NTH_ATTACK,
   TELEKINETIC_PUSH_EVERY_NTH_ATTACK,
   TRANSFORMATION_CLOSE_RANGE_METRES,
   TRANSFORMATION_LONG_RANGE_METRES,
@@ -463,17 +464,21 @@ export interface DecisionOption {
 interface DeployableState {
   id: number;
   weaponId: WeaponId;
+  kind: "structure" | "auxiliary-drone";
   position: Vector2Data;
   health: number;
   maxHealth: number;
   remainingSeconds: number;
   cooldownSeconds: number;
+  shotDamage: number;
+  orbitAngleRadians: number;
   dead: boolean;
 }
 
 export interface DeployableSnapshot {
   id: number;
   weaponId: WeaponId;
+  kind: "structure" | "auxiliary-drone";
   position: Vector2Data;
   health: number;
   maxHealth: number;
@@ -1155,6 +1160,8 @@ interface ProjectileState {
   pullFieldDurationSeconds: number;
   pullStrengthMetresPerSecond: number;
   pullRadiusMetres: number;
+  /** Gravity Adept: the first impact of this qualifying attack owns the pulse. */
+  triggersGravityPulse?: boolean;
 }
 
 /** Event Horizon: a delayed pull-then-implode field left behind by a spent gravity-well projectile. */
@@ -1169,6 +1176,7 @@ interface EventHorizonFieldState {
   implosionDamage: number;
   damageType: DamageType;
   weaponId: WeaponId;
+  kind: "event-horizon" | "gravity-pulse";
 }
 
 export interface EventHorizonFieldSnapshot {
@@ -1177,6 +1185,7 @@ export interface EventHorizonFieldSnapshot {
   remainingSeconds: number;
   durationSeconds: number;
   pullRadiusMetres: number;
+  kind: "event-horizon" | "gravity-pulse";
 }
 
 interface ExperiencePickupState {
@@ -1257,6 +1266,8 @@ export interface CombatSimulationOptions {
   startingScrap?: number;
   expeditionEncounter?: ExpeditionEncounterDescriptor;
   startingBuild?: ExpeditionBuildSnapshot | null;
+  /** Deterministic review/test carrier when no expedition build exists. */
+  startingTransformation?: TransformationAffinityState;
   perkId?: PerkId | null;
   heroId?: HeroDefinition["id"];
   /** Scene-owned persisted accessibility setting; false keeps pure harnesses explicit. */
@@ -1485,6 +1496,9 @@ const POWERUP_WAVE_CYCLE: readonly PowerupType[] = Object.freeze([
   "hunter-optics", "last-stand-stimulant", "butchers-serum",
 ]);
 
+const GRAVITY_PULSE_DURATION_SECONDS = 0.35;
+const GRAVITY_PULSE_PULL_SPEED_METRES_PER_SECOND = 5;
+
 export class CombatSimulation {
   readonly widthMetres: number;
   readonly heightMetres: number;
@@ -1571,6 +1585,8 @@ export class CombatSimulation {
   private overclockDecaySeconds = 0;
   /** Psionic "Telekinetic Focus": qualifying-hit counter. */
   private telekineticAttackCount = 0;
+  /** Void "Gravity Adept": counts discrete projectile attacks, not pellets/hits. */
+  private gravityPulseAttackCount = 0;
   /** Mutagenic "Reactive Blood": retaliation burst cooldown. */
   private retaliationCooldownSeconds = 0;
   /** Alien "Feeding Tendrils": rolling heal window and the amount already paid in it. */
@@ -1714,8 +1730,8 @@ export class CombatSimulation {
     this.scenario = options.scenario ?? null;
     this.expeditionEncounter = options.expeditionEncounter ?? null;
     this.activePerkId = options.perkId ?? null;
-    this.transformation = options.startingBuild?.transformation
-      ? cloneTransformationAffinityState(options.startingBuild.transformation)
+    this.transformation = options.startingBuild?.transformation || options.startingTransformation
+      ? cloneTransformationAffinityState(options.startingBuild?.transformation ?? options.startingTransformation)
       : createTransformationAffinityState();
     this.transformationModifiers = resolveTransformationModifiers(this.transformation);
     this.perkModifiers = resolvePerkModifiers(this.activePerkId);
@@ -1816,6 +1832,9 @@ export class CombatSimulation {
     this.playerMaxHealth = Math.max(3, Math.round(this.playerMaxHealth * this.transformationModifiers.maxHealthMultiplier));
     this.applyEffectivePlayerStatLimits();
     this.playerHealth = Math.min(this.playerHealth, this.playerMaxHealth);
+    if (this.transformationModifiers.droneShotDamage > 0) {
+      this.spawnAuxiliaryDrone(this.transformationModifiers.droneShotDamage);
+    }
 
     if (this.expeditionEncounter !== null) {
       this.populateExpeditionEncounter(this.expeditionEncounter);
@@ -2557,6 +2576,7 @@ export class CombatSimulation {
       deployables: this.deployables.filter((unit) => !unit.dead).map((unit) => ({
         id: unit.id,
         weaponId: unit.weaponId,
+        kind: unit.kind,
         position: { ...unit.position },
         health: unit.health,
         maxHealth: unit.maxHealth,
@@ -2598,6 +2618,7 @@ export class CombatSimulation {
         remainingSeconds: field.remainingSeconds,
         durationSeconds: field.durationSeconds,
         pullRadiusMetres: field.pullRadiusMetres,
+        kind: field.kind,
       })),
       combatTelegraphs: this.combatTelegraphSnapshots(),
       eliteRewards: this.eliteRewards.filter((reward) => !reward.collected).map((reward) => ({
@@ -3678,6 +3699,7 @@ export class CombatSimulation {
       return;
     }
 
+    const triggersGravityPulse = this.nextProjectileAttackTriggersGravityPulse();
     const resolution = resolveFractionalProjectiles(weapon.stats.projectileCount, weapon.projectileCarry);
     weapon.projectileCarry = resolution.carry;
     const centre = (resolution.count - 1) / 2;
@@ -3714,6 +3736,7 @@ export class CombatSimulation {
         pullFieldDurationSeconds: weapon.stats.pullFieldDurationSeconds,
         pullStrengthMetresPerSecond: weapon.stats.pullStrengthMetresPerSecond,
         pullRadiusMetres: weapon.stats.pullRadiusMetres,
+        triggersGravityPulse: triggersGravityPulse && index === 0,
       });
 
       this.frameEvents.push({
@@ -3724,6 +3747,12 @@ export class CombatSimulation {
         direction,
       });
     }
+  }
+
+  private nextProjectileAttackTriggersGravityPulse(): boolean {
+    if (this.transformationModifiers.gravityPulseRadiusMetres <= 0) return false;
+    this.gravityPulseAttackCount += 1;
+    return this.gravityPulseAttackCount % GRAVITY_PULSE_EVERY_NTH_ATTACK === 0;
   }
 
   /**
@@ -3757,14 +3786,34 @@ export class CombatSimulation {
     this.deployables.push({
       id: this.nextId(),
       weaponId: weapon.weaponId,
+      kind: "structure",
       position,
       health,
       maxHealth: health,
       remainingSeconds: stats.deployLifetimeSeconds * scale,
       cooldownSeconds: 0,
+      shotDamage: stats.projectileDamage * this.weaponDamageMultiplier(stats),
+      orbitAngleRadians: 0,
       dead: false,
     });
     this.frameEvents.push({ type: "deployable-placed", position: { ...position }, weaponId: weapon.weaponId });
+  }
+
+  /** Cybernetic Ascension: one persistent support drone per committed run. */
+  private spawnAuxiliaryDrone(shotDamage: number): void {
+    this.deployables.push({
+      id: this.nextId(),
+      weaponId: "auxiliary-drone",
+      kind: "auxiliary-drone",
+      position: { x: this.playerPosition.x + 1.15, y: this.playerPosition.y - 0.45 },
+      health: 1,
+      maxHealth: 1,
+      remainingSeconds: Number.MAX_SAFE_INTEGER,
+      cooldownSeconds: 0,
+      shotDamage,
+      orbitAngleRadians: 0,
+      dead: false,
+    });
   }
 
   /**
@@ -3833,8 +3882,16 @@ export class CombatSimulation {
 
     for (const unit of this.deployables) {
       if (unit.dead) continue;
-      unit.remainingSeconds -= deltaSeconds;
-      if (unit.remainingSeconds <= 0 || unit.health <= 0) {
+      if (unit.kind === "auxiliary-drone") {
+        unit.orbitAngleRadians += deltaSeconds * 1.4;
+        unit.position = {
+          x: clamp(this.playerPosition.x + Math.cos(unit.orbitAngleRadians) * 1.15, 0.4, this.widthMetres - 0.4),
+          y: clamp(this.playerPosition.y + Math.sin(unit.orbitAngleRadians) * 0.7 - 0.45, 0.4, this.heightMetres - 0.4),
+        };
+      } else {
+        unit.remainingSeconds -= deltaSeconds;
+      }
+      if ((unit.kind === "structure" && unit.remainingSeconds <= 0) || unit.health <= 0) {
         unit.dead = true;
         this.frameEvents.push({ type: "deployable-expired", position: { ...unit.position }, weaponId: unit.weaponId });
         continue;
@@ -3852,7 +3909,9 @@ export class CombatSimulation {
         y: target.position.y - unit.position.y,
       });
       // Faster cadence with engineering, hence dividing rather than scaling.
-      unit.cooldownSeconds = stats.deployFireIntervalSeconds / this.engineeringScale();
+      unit.cooldownSeconds = unit.kind === "auxiliary-drone"
+        ? stats.fireIntervalSeconds
+        : stats.deployFireIntervalSeconds / this.engineeringScale();
       this.spawnFriendlyProjectile({
         weaponId: unit.weaponId,
         damageType: stats.damageType,
@@ -3861,7 +3920,7 @@ export class CombatSimulation {
           x: aim.x * stats.projectileSpeedMetresPerSecond,
           y: aim.y * stats.projectileSpeedMetresPerSecond,
         },
-        damage: stats.projectileDamage * this.weaponDamageMultiplier(stats),
+        damage: unit.shotDamage,
         uraniumEligible: true,
         remainingSeconds: stats.projectileLifetimeSeconds,
         pierceRemaining: stats.pierceCount,
@@ -4968,6 +5027,10 @@ export class CombatSimulation {
           position: { ...enemy.position },
           weaponId: projectile.weaponId,
         });
+        if (projectile.triggersGravityPulse) {
+          projectile.triggersGravityPulse = false;
+          this.spawnGravityPulse(enemy.position, projectile.weaponId);
+        }
 
         // Event Horizon's orb never deals a direct hit — touching an enemy just
         // triggers its delayed pull-then-implode field at that position instead.
@@ -5103,6 +5166,23 @@ export class CombatSimulation {
       implosionDamage: projectile.damage,
       damageType: projectile.damageType,
       weaponId: projectile.weaponId,
+      kind: "event-horizon",
+    });
+  }
+
+  private spawnGravityPulse(position: Vector2Data, weaponId: WeaponId): void {
+    this.eventHorizonFields.push({
+      id: this.nextId(),
+      position: { ...position },
+      remainingSeconds: GRAVITY_PULSE_DURATION_SECONDS,
+      durationSeconds: GRAVITY_PULSE_DURATION_SECONDS,
+      pullStrengthMetresPerSecond: GRAVITY_PULSE_PULL_SPEED_METRES_PER_SECOND,
+      pullRadiusMetres: this.transformationModifiers.gravityPulseRadiusMetres,
+      implosionRadiusMetres: 0,
+      implosionDamage: 0,
+      damageType: "physical",
+      weaponId,
+      kind: "gravity-pulse",
     });
   }
 
@@ -5135,7 +5215,9 @@ export class CombatSimulation {
       field.remainingSeconds -= deltaSeconds;
     }
 
-    const detonating = this.eventHorizonFields.filter((field) => field.remainingSeconds <= 0);
+    const detonating = this.eventHorizonFields.filter((field) => (
+      field.remainingSeconds <= 0 && field.kind === "event-horizon"
+    ));
     for (const field of detonating) {
       this.frameEvents.push({
         type: "explosion",

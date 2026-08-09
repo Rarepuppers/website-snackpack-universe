@@ -5,6 +5,7 @@ export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | 
   | "combat-knife" | "machete" | "fire-axe" | "shock-baton" | "breaching-maul" | "plasma-saber"
   | "corrosive-lobber" | "scourge-repeater" | "bile-lance" | "rime-cleaver" | "hoarfrost-scatter" | "glacier-ward" | "tether-harpoon"
   | "sentry-stake"
+  | "auxiliary-drone"
   // Added 8 Aug 2026 (content plan, weapon Tier 1). Each exists to close a
   // damage-type/pattern hole, not to raise the count: Fire had no ranged
   // projectile at all, Shock had no beam, and Toxic had no melee.
@@ -644,6 +645,27 @@ export const SENTRY_STAKE: Readonly<WeaponRuntimeStats> = weapon({
 });
 
 /**
+ * Internal transformation weapon used by Cybernetic Ascension's Drone
+ * Controller. It is deliberately absent from every draft/shop pool: the
+ * transformation is its acquisition route and supplies rank-scaled damage.
+ */
+export const AUXILIARY_DRONE: Readonly<WeaponRuntimeStats> = weapon({
+  id: "auxiliary-drone",
+  displayName: "Auxiliary Drone",
+  description: "A transformation-bound support drone that shadows its operator.",
+  weaponClass: "unique",
+  damageType: "shock",
+  targetingMode: "nearest-enemy",
+  attackPattern: "projectile",
+  rangeMetres: 8,
+  fireIntervalSeconds: 3.5,
+  projectileSpeedMetresPerSecond: 15,
+  projectileLifetimeSeconds: 0.8,
+  projectileDamage: 0,
+  firesAutomatically: true,
+});
+
+/**
  * Fire's only ranged option. Fire previously existed as one beam and two melee
  * weapons, so a fire build had no way to fight at range — the Emberlance is a
  * slow, arcing lob that trades rate of fire for reliable Blaze application.
@@ -738,6 +760,7 @@ export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeSta
   "glacier-ward": GLACIER_WARD,
   "tether-harpoon": TETHER_HARPOON,
   "sentry-stake": SENTRY_STAKE,
+  "auxiliary-drone": AUXILIARY_DRONE,
   emberlance: EMBERLANCE,
   "storm-coil-beam": STORM_COIL_BEAM,
   "blight-scythe": BLIGHT_SCYTHE,
@@ -823,6 +846,9 @@ const HELD_WEAPONS: readonly WeaponId[] = Object.freeze([
  * run has taken down its first ranked enemy (mini-boss or boss).
  */
 export const UNIQUE_SLOT_WEAPONS: readonly WeaponId[] = Object.freeze(["event-horizon"]);
+
+/** Internal weapon entities reached through transformation choices, not drafts. */
+export const TRANSFORMATION_WEAPONS: readonly WeaponId[] = Object.freeze(["auxiliary-drone"]);
 
 /** The base pool: everything obtainable before a unique is unlocked. */
 export const WEAPON_CHEST_POOL: readonly WeaponId[] = Object.freeze(

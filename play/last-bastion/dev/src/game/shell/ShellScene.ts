@@ -10,6 +10,7 @@ import {
 } from "../assets/ShellAssetManifest";
 import { PERK_CATALOG } from "../perks/perkCatalog";
 import { THREAT_TIERS } from "../expedition/ThreatTier";
+import { ARMORY_NODES, COMMAND_MARKS_LABEL, armoryNode } from "../progression/ArmoryProgression";
 import { reapplyDisplayScale } from "../rendering/DisplayScaling";
 import {
   applyHostDisplaySelection,
@@ -96,6 +97,8 @@ export class ShellScene extends Phaser.Scene {
       settings, initialScreen, save.progress, save.selectedPerkId, save.selectedHeroId, save.controls,
       settingsRowsForDisplayCapabilities(displayCapabilities),
       save.selectedThreatTier,
+      save.selectedArmoryNodeId,
+      save.runHistory.length,
     );
     this.root = this.add.container(0, 0);
 
@@ -197,6 +200,10 @@ export class ShellScene extends Phaser.Scene {
         return;
       } else if (effect.type === "capture-binding") {
         this.bindingCapture = { device: effect.device, action: effect.action };
+      } else if (effect.type === "purchase-armory-node") {
+        this.saveStore.purchaseArmoryNode(effect.nodeId);
+      } else if (effect.type === "select-armory-node") {
+        this.saveStore.selectArmoryNode(effect.nodeId);
       }
     }
     this.render();
@@ -245,6 +252,7 @@ export class ShellScene extends Phaser.Scene {
       case "controls": this.renderControls(); break;
       case "lab": this.renderLab(); break;
       case "records": this.renderRecords(); break;
+      case "armory": this.renderArmory(); break;
       case "character-select": this.renderCharacterSelect(); break;
       case "threat-select": this.renderThreatSelect(); break;
     }
@@ -307,7 +315,7 @@ export class ShellScene extends Phaser.Scene {
     this.root.add(this.text(70, 48, "LAST BASTION", IVORY, "28px"));
     const progress = this.saveStore.load().progress;
     const columns = 2;
-    const cardWidth = 380, cardHeight = 96, originX = 90, originY = 110, gap = 26;
+    const cardWidth = 380, cardHeight = 72, originX = 90, originY = 100, gap = 16;
     MENU_CARDS.forEach((card, index) => {
       const column = index % columns;
       const row = Math.floor(index / columns);
@@ -319,12 +327,13 @@ export class ShellScene extends Phaser.Scene {
       this.root.add(rect);
       this.root.add(this.text(x + 22, y + 18, card.label, focused ? TEAL : IVORY, "20px"));
       const sub = card.id === "expedition" ? "20 NODES • ONE LIFE (Quick Drop until the starchart lands)"
+        : card.id === "armory" ? `${progress.commandMarksLifetime} lifetime command marks • permanent starting kits`
         : card.id === "records" ? recordsLine(progress)
           : card.id === "codex" ? "The encyclopedia — discoveries fill the Monsterdex"
             : card.id === "lab" ? "Review scenarios and art galleries"
               : card.id === "settings" ? "Persisted immediately to local save"
                 : "Four short pages";
-      this.root.add(this.text(x + 22, y + 54, sub, MUTED, "12px"));
+      this.root.add(this.text(x + 22, y + 44, sub, MUTED, "11px"));
       this.clickZone(x, y, cardWidth, cardHeight, () => {
         this.state = { ...this.state, menuIndex: index };
         this.apply("confirm");
@@ -459,9 +468,12 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private renderRecords(): void {
-    const progress = this.saveStore.load().progress;
+    const save = this.saveStore.load();
+    const progress = save.progress;
     this.root.add(this.text(70, 48, "RECORDS", IVORY, "28px"));
-    this.root.add(this.add.rectangle(WIDTH / 2, 278, 820, 350, PANEL).setStrokeStyle(1, 0x3b4d63));
+    this.root.add(this.add.rectangle(250, 278, 360, 350, PANEL).setStrokeStyle(1, 0x3b4d63));
+    this.root.add(this.add.rectangle(675, 278, 450, 350, PANEL).setStrokeStyle(1, 0x3b4d63));
+    this.root.add(this.text(90, 92, "CAREER", TEAL, "13px"));
     const rows: readonly [string, string][] = [
       ["RUNS FINISHED", String(progress.runsFinished)],
       ["VICTORIES", String(progress.victories)],
@@ -473,15 +485,71 @@ export class ShellScene extends Phaser.Scene {
       ["SCRAP EARNED", formatRecord(progress.totalScrapEarned)],
     ];
     rows.forEach(([label, value], index) => {
-      const column = index % 2;
-      const row = Math.floor(index / 2);
-      const x = 110 + column * 400;
-      const y = 130 + row * 72;
-      this.root.add(this.text(x, y, label, MUTED, "11px"));
-      this.root.add(this.text(x, y + 24, value, index < 2 ? TEAL : IVORY, "22px"));
+      const y = 120 + index * 38;
+      this.root.add(this.text(90, y, label, MUTED, "10px"));
+      this.root.add(this.text(390, y, value, index < 2 ? TEAL : IVORY, "15px", true));
     });
-    this.root.add(this.text(WIDTH / 2, 480, "ENTER / ESC  BACK", MUTED, "12px", true));
+
+    const visibleHistory = save.runHistory.slice(this.state.recordsOffset, this.state.recordsOffset + 6);
+    const firstVisible = save.runHistory.length === 0 ? 0 : this.state.recordsOffset + 1;
+    const lastVisible = this.state.recordsOffset + visibleHistory.length;
+    this.root.add(this.text(470, 92, "RECENT RUNS", TEAL, "13px"));
+    this.root.add(this.text(870, 94, `${firstVisible}-${lastVisible} / ${save.runHistory.length}`, MUTED, "10px", true));
+    if (visibleHistory.length === 0) {
+      this.root.add(this.text(675, 270, "NO COMPLETED RUNS YET", MUTED, "13px", true));
+    }
+    visibleHistory.forEach((entry, index) => {
+      const summary = entry.summary;
+      const y = 124 + index * 52;
+      const resultColor = summary.outcome === "victory" ? TEAL : "#ff7d72";
+      const date = entry.completedAtMs > 0
+        ? new Date(entry.completedAtMs).toISOString().slice(0, 10)
+        : "LEGACY SAVE";
+      const progressLabel = summary.mode === "expedition"
+        ? `${summary.nodesCleared} NODES${summary.threatTier === null ? "" : `  T${summary.threatTier}`}`
+        : `WAVE ${summary.waveReached}`;
+      this.root.add(this.add.rectangle(675, y + 18, 410, 44, 0x172335).setStrokeStyle(1, 0x334860));
+      this.root.add(this.text(484, y + 5, summary.outcome.toUpperCase(), resultColor, "11px"));
+      this.root.add(this.text(570, y + 5, progressLabel, IVORY, "11px"));
+      this.root.add(this.text(852, y + 5, date, MUTED, "9px", true));
+      this.root.add(this.text(484, y + 24, `${summary.kills} KILLS  •  ${summary.commandMarksEarned} MARKS`, MUTED, "9px"));
+    });
+    this.root.add(this.text(WIDTH / 2, 480, "UP/DOWN  SCROLL RUNS  •  ENTER / ESC  BACK", MUTED, "12px", true));
     this.clickZone(0, 450, WIDTH, 90, () => this.apply("back"));
+  }
+
+  private renderArmory(): void {
+    this.root.add(this.text(70, 42, "ARMORY", IVORY, "28px"));
+    this.root.add(this.text(70, 78, `${COMMAND_MARKS_LABEL}  ${this.state.commandMarksBalance}`, TEAL, "16px"));
+    this.root.add(this.text(360, 80, "Permanent purchases • no refunds • selected kit applies to new runs", MUTED, "11px"));
+    ARMORY_NODES.forEach((node, index) => {
+      const x = index === 0 ? 480 : index === 1 ? 270 : 690;
+      const y = index === 0 ? 180 : 355;
+      const focused = index === this.state.armoryIndex;
+      const purchased = this.state.purchasedArmoryNodeIds.includes(node.id);
+      const selected = this.state.selectedArmoryNodeId === node.id;
+      const prerequisitesMet = node.prerequisiteIds.every((id) => this.state.purchasedArmoryNodeIds.includes(id));
+      const affordable = this.state.commandMarksBalance >= node.cost;
+      this.root.add(this.add.rectangle(x, y, 300, 118, focused ? 0x24384f : PANEL)
+        .setStrokeStyle(focused ? 3 : 1, selected ? 0xffd36b : focused ? TEAL_HEX : 0x3b4d63));
+      this.root.add(this.text(x, y - 40, node.name, purchased ? TEAL : focused ? IVORY : MUTED, "14px", true));
+      this.root.add(this.text(x, y - 11, node.description, IVORY, "10px", true).setWordWrapWidth(260));
+      const status = selected ? "SELECTED"
+        : purchased ? "OWNED • ENTER TO EQUIP"
+          : !prerequisitesMet ? `REQUIRES ${node.prerequisiteIds.map((id) => armoryNode(id).name).join(", ")}`
+            : affordable ? `${node.cost} MARKS • ENTER TO PURCHASE` : `${node.cost} MARKS • NEED ${node.cost - this.state.commandMarksBalance}`;
+      this.root.add(this.text(x, y + 37, status, selected || (affordable && prerequisitesMet) ? TEAL : ORANGE, "9px", true));
+      this.clickZone(x - 150, y - 59, 300, 118, () => {
+        if (this.state.armoryIndex === index) this.apply("confirm");
+        else {
+          this.state = { ...this.state, armoryIndex: index };
+          this.render();
+        }
+      });
+    });
+    this.root.add(this.add.line(0, 0, 480, 239, 270, 296, 0x68e4e8, 0.45).setOrigin(0));
+    this.root.add(this.add.line(0, 0, 480, 239, 690, 296, 0x68e4e8, 0.45).setOrigin(0));
+    this.root.add(this.text(70, HEIGHT - 26, "ARROWS SELECT • ENTER PURCHASE/EQUIP • ESC BACK", MUTED, "11px"));
   }
 
   private renderCharacterSelect(): void {

@@ -4,6 +4,7 @@ import type { PlayerIntent } from "../input/PlayerIntent";
 import { WEAPON_CATALOG } from "../content/weaponCatalog";
 import { foldItemStats, ITEM_CATALOG } from "../content/itemCatalog";
 import { LEVEL_STAT_CARDS, LEVEL_STAT_ORDER } from "../content/levelStatCatalog";
+import { applyTransformationChoice, createTransformationAffinityState } from "../transformations/TransformationAffinity";
 
 /**
  * Deployables, and the `engineering` stat they exist to give a consumer.
@@ -33,6 +34,16 @@ function build(itemIds: string[] = []) {
     // so this exercises what a purchased item actually does.
     itemStats: foldItemStats(itemIds),
   };
+}
+
+function droneBuild() {
+  let transformation = createTransformationAffinityState();
+  for (let rank = 0; rank < 3; rank += 1) {
+    const result = applyTransformationChoice(transformation, "cybernetic-ascension", "auxiliary-drone");
+    if (!result.ok) throw new Error(result.reason);
+    transformation = result.state;
+  }
+  return { ...build(), transformation };
 }
 
 function plant(simulation: CombatSimulation, ticks = 4) {
@@ -101,6 +112,33 @@ describe("deployables", () => {
     // Already ticking down by a few frames, so bound it rather than pin it.
     expect(unit.remainingSeconds).toBeGreaterThan(WEAPON_CATALOG["sentry-stake"].deployLifetimeSeconds - 0.5);
     expect(unit.remainingSeconds).toBeLessThanOrEqual(WEAPON_CATALOG["sentry-stake"].deployLifetimeSeconds);
+  });
+});
+
+describe("Cybernetic Ascension auxiliary drone", () => {
+  it("spawns one visible snapshot entity only after the path commits", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, startingBuild: droneBuild() });
+    const drones = simulation.snapshot().deployables.filter((unit) => unit.kind === "auxiliary-drone");
+    expect(drones).toHaveLength(1);
+    expect(drones[0]!.weaponId).toBe("auxiliary-drone");
+  });
+
+  it("shadows the player and fires without player trigger input", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, startingBuild: droneBuild() });
+    const beforeDrone = simulation.snapshot().deployables.find((unit) => unit.kind === "auxiliary-drone")!;
+    const player = simulation.snapshot().playerPosition;
+    const enemyId = simulation.spawnEnemy("abomination", { x: player.x + 4, y: player.y });
+    const beforeHealth = simulation.snapshot().enemies.find((enemy) => enemy.id === enemyId)!.health;
+
+    for (let tick = 0; tick < 80; tick += 1) {
+      simulation.step(intent({ move: { x: 1, y: 0 } }), 0.05);
+    }
+    const after = simulation.snapshot();
+    const afterDrone = after.deployables.find((unit) => unit.kind === "auxiliary-drone")!;
+    const afterHealth = after.enemies.find((enemy) => enemy.id === enemyId)?.health ?? 0;
+    expect(afterDrone.position).not.toEqual(beforeDrone.position);
+    expect(Math.abs(afterDrone.position.x - after.playerPosition.x)).toBeLessThan(1.3);
+    expect(afterHealth).toBeLessThan(beforeHealth);
   });
 });
 

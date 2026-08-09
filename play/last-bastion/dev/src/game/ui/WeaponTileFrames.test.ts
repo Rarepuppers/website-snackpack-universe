@@ -8,6 +8,8 @@ const PENDING_ART_WEAPON_IDS: readonly WeaponId[] = [
   "corrosive-lobber", "scourge-repeater", "bile-lance", "hoarfrost-scatter", "glacier-ward", "tether-harpoon",
   // First deployable, art pending on the same terms.
   "sentry-stake",
+  // Transformation-bound support entity; never appears in the weapon ring.
+  "auxiliary-drone",
   // Tier 1 hole-fillers (8 Aug 2026), art pending on the same terms — they
   // borrow by attack pattern until asset batch 80 lands.
   "emberlance", "storm-coil-beam",
@@ -43,6 +45,7 @@ const EXPECTED_PLACEHOLDER_FRAME: Readonly<Record<string, number>> = {
   "hoarfrost-scatter": 0,
   // A planted stake reads as ordnance, so it borrows the launcher tile.
   "sentry-stake": 3,
+  "auxiliary-drone": 7,
   // Lobbed and explosive → grenade tube; the sustained arc joins the other
   // beams on the scattergun spread tile.
   emberlance: 3,

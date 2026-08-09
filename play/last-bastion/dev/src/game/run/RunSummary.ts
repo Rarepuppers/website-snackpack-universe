@@ -49,6 +49,8 @@ export interface RunSummary {
   upgrades: readonly { upgradeId: string; level: number }[];
   transformation: TransformationAffinityState;
   newlyUnlockedPerkIds: readonly PerkId[];
+  /** Persistent meta-currency banked when this run ended. */
+  commandMarksEarned: number;
 }
 
 export const EMPTY_RUN_METRICS: Readonly<RunMetrics> = Object.freeze({
@@ -143,7 +145,7 @@ export function createRunSummary(
     RunSummary,
     "newlyUnlockedPerkIds" | "transformation" | "elapsedSeconds" | "damageTaken"
     | "eliteKills" | "bossDamage" | "highestHit" | "criticalHits" | "damageTakenBySource"
-    | "damageBySecond" | "threatTier"
+    | "damageBySecond" | "threatTier" | "commandMarksEarned"
     | "defeatCause" | "newBestWave" | "newBestNodes"
   > & {
     newlyUnlockedPerkIds?: readonly PerkId[];
@@ -160,6 +162,7 @@ export function createRunSummary(
     newBestWave?: boolean;
     newBestNodes?: boolean;
     threatTier?: ThreatTier | null;
+    commandMarksEarned?: number;
   },
 ): RunSummary {
   return {
@@ -189,6 +192,7 @@ export function createRunSummary(
     upgrades: input.upgrades.map((upgrade) => ({ ...upgrade })),
     transformation: cloneTransformationAffinityState(input.transformation),
     newlyUnlockedPerkIds: [...(input.newlyUnlockedPerkIds ?? [])],
+    commandMarksEarned: Math.max(0, Math.floor(input.commandMarksEarned ?? 0)),
   };
 }
 

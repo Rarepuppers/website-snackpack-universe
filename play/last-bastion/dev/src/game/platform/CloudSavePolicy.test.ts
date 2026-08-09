@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { DEFAULT_SAVE, type SAVE_SCHEMA_VERSION, type SaveData } from "../save/LocalSaveStore";
 import { resolveCloudSaveConflict, type CloudSaveEnvelope } from "./CloudSavePolicy";
+import { createRunSummary } from "../run/RunSummary";
+import { createRunHistoryEntry } from "../run/RunHistory";
 
 function save(overrides: Partial<SaveData> = {}): SaveData {
   return JSON.parse(JSON.stringify({ ...DEFAULT_SAVE, ...overrides })) as SaveData;
@@ -75,6 +77,49 @@ describe("cloud-save conflict policy", () => {
       gamma: 1.2,
       screenShakeIntensity: 0.75,
     });
+  });
+
+  it("unions permanent Armory purchases and max-merges lifetime marks", () => {
+    const local: CloudSaveEnvelope = {
+      deviceId: "a", revision: 1, updatedAtMs: 10,
+      save: save({
+        progress: { ...DEFAULT_SAVE.progress, commandMarksLifetime: 15, purchasedArmoryNodeIds: ["armory-scattergun"] },
+        selectedArmoryNodeId: "armory-scattergun",
+      }),
+    };
+    const remote: CloudSaveEnvelope = {
+      deviceId: "b", revision: 2, updatedAtMs: 20,
+      save: save({
+        progress: { ...DEFAULT_SAVE.progress, commandMarksLifetime: 13, purchasedArmoryNodeIds: ["armory-scattergun", "armory-arc-carbine"] },
+        selectedArmoryNodeId: "armory-arc-carbine",
+      }),
+    };
+    const merged = resolveCloudSaveConflict(local, remote).save;
+    expect(merged.progress.commandMarksLifetime).toBe(15);
+    expect(merged.progress.purchasedArmoryNodeIds).toEqual(["armory-scattergun", "armory-arc-carbine"]);
+    expect(merged.selectedArmoryNodeId).toBe("armory-arc-carbine");
+  });
+
+  it("unions divergent run histories and makes the newest merged run current", () => {
+    const summary = (waveReached: number) => createRunSummary({
+      mode: "quick-drop", outcome: "defeat", heroId: "marine", perkId: null,
+      waveReached, nodesCleared: 0, kills: waveReached, scrapEarned: 0, scrapBanked: 0,
+      level: 1, damageByWeapon: {}, weapons: [], upgrades: [],
+    });
+    const localEntry = createRunHistoryEntry(summary(4), 100, 1);
+    const remoteEntry = createRunHistoryEntry(summary(7), 200, 2);
+    const sharedEntry = createRunHistoryEntry(summary(2), 50, 0);
+    const local: CloudSaveEnvelope = {
+      deviceId: "a", revision: 3, updatedAtMs: 300,
+      save: save({ runHistory: [localEntry, sharedEntry], lastRunSummary: localEntry.summary }),
+    };
+    const remote: CloudSaveEnvelope = {
+      deviceId: "b", revision: 2, updatedAtMs: 200,
+      save: save({ runHistory: [remoteEntry, sharedEntry], lastRunSummary: remoteEntry.summary }),
+    };
+    const merged = resolveCloudSaveConflict(local, remote).save;
+    expect(merged.runHistory.map((entry) => entry.summary.waveReached)).toEqual([7, 4, 2]);
+    expect(merged.lastRunSummary).toEqual(remoteEntry.summary);
   });
 
   it("rejects unknown schemas rather than corrupting them", () => {

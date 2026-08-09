@@ -41,6 +41,7 @@ describe("Shell screen flow", () => {
 
     const targets: Record<string, string> = {
       expedition: "character-select",
+      armory: "armory",
       "how-to-play": "how-to-play",
       settings: "settings",
       lab: "lab",
@@ -75,6 +76,15 @@ describe("Shell screen flow", () => {
     expect(stepShell(state, "right").state.howToPlayPage).toBe(HOW_TO_PLAY_PAGES.length - 1);
     expect(stepShell(state, "confirm").state.screen).toBe("menu");
     expect(stepShell(state, "back").state.screen).toBe("menu");
+  });
+
+  it("scrolls the six-row recent-run window within the retained history", () => {
+    let state = { ...boot("records"), runHistoryCount: 20 };
+    for (let index = 0; index < 30; index += 1) state = stepShell(state, "down").state;
+    expect(state.recordsOffset).toBe(14);
+    state = stepShell(state, "up").state;
+    expect(state.recordsOffset).toBe(13);
+    expect(stepShell(state, "confirm").state.screen).toBe("menu");
   });
 
   it("toggles a setting, mirrors it in state, and emits the persistence effect", () => {
@@ -183,6 +193,26 @@ describe("Shell screen flow", () => {
     expect(result.effects).toEqual([{ type: "open-url", url: LAB_ROUTES[2]!.url }]);
   });
 
+  it("purchases and equips affordable Armory nodes but blocks unmet prerequisites", () => {
+    const progress = { ...DEFAULT_SAVE.progress, commandMarksLifetime: 13 };
+    const state = createShellState(DEFAULT_SAVE.settings, "armory", progress);
+    const root = stepShell(state, "confirm");
+    expect(root.effects).toEqual([{ type: "purchase-armory-node", nodeId: "armory-scattergun" }]);
+    expect(root.state.commandMarksBalance).toBe(8);
+    expect(root.state.selectedArmoryNodeId).toBe("armory-scattergun");
+
+    const arc = stepShell(stepShell(root.state, "down").state, "confirm");
+    expect(arc.effects).toEqual([{ type: "purchase-armory-node", nodeId: "armory-arc-carbine" }]);
+    expect(arc.state.commandMarksBalance).toBe(0);
+    const reequipped = stepShell({ ...arc.state, armoryIndex: 0 }, "confirm");
+    expect(reequipped.effects).toEqual([{ type: "select-armory-node", nodeId: "armory-scattergun" }]);
+
+    const locked = createShellState(DEFAULT_SAVE.settings, "armory", {
+      ...DEFAULT_SAVE.progress, commandMarksLifetime: 20,
+    });
+    expect(stepShell({ ...locked, armoryIndex: 1 }, "confirm").effects).toEqual([]);
+  });
+
   it("starts a run only for a playable hero", () => {
     const state = boot("character-select");
     expect(ROSTER[0]!.status).toBe("playable");
@@ -215,7 +245,7 @@ describe("Shell screen flow", () => {
   });
 
   it("returns from every sub-screen to the menu with back", () => {
-    for (const screen of ["how-to-play", "settings", "lab", "records", "character-select"] as const) {
+    for (const screen of ["how-to-play", "settings", "lab", "records", "armory", "character-select"] as const) {
       expect(stepShell(boot(screen), "back").state.screen).toBe("menu");
     }
     expect(stepShell({ ...boot("character-select"), screen: "threat-select" }, "back").state.screen).toBe("character-select");

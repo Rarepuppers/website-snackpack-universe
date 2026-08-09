@@ -14,7 +14,7 @@ import {
  * matching the design ("reaching 3 Affinity commits a path and applies its
  * combat effects").
  *
- * Twenty-two of the catalogue's 26 effect metrics resolve here. The four that
+ * Twenty-four of the catalogue's 26 effect metrics resolve here. The two that
  * do not are listed against the `default` arm below, each with the reason it
  * has no hook yet. Prefer reading that list over this paragraph — it sits next
  * to the code that would have to change, so it cannot drift the way a header
@@ -50,6 +50,10 @@ export interface TransformationRunModifiers {
   corrodeBuildupMultiplier: number;
   /** Psionic "Telekinetic Focus": metres an ordinary enemy is shoved, periodically. */
   telekineticPushMetres: number;
+  /** Cybernetic "Drone Controller": damage dealt by its autonomous shot. */
+  droneShotDamage: number;
+  /** Void "Gravity Adept": radius of its periodic non-damaging pull pulse. */
+  gravityPulseRadiusMetres: number;
 }
 
 export const NO_TRANSFORMATION_MODIFIERS: Readonly<TransformationRunModifiers> = Object.freeze({
@@ -76,10 +80,13 @@ export const NO_TRANSFORMATION_MODIFIERS: Readonly<TransformationRunModifiers> =
   projectileSpeedMultiplier: 1,
   corrodeBuildupMultiplier: 1,
   telekineticPushMetres: 0,
+  droneShotDamage: 0,
+  gravityPulseRadiusMetres: 0,
 });
 
 /** "Telekinetic Focus" fires on every Nth qualifying attack, per its rule text. */
 export const TELEKINETIC_PUSH_EVERY_NTH_ATTACK = 10;
+export const GRAVITY_PULSE_EVERY_NTH_ATTACK = 8;
 
 /** "Reactive Blood" fires at most this often, per the trait's own rule text. */
 export const RETALIATION_COOLDOWN_SECONDS = 5;
@@ -194,12 +201,16 @@ export function resolveTransformationModifiers(
             // grouped with the "received" scars and left unwired by mistake.
             modifiers.corrodeBuildupMultiplier = applyPercent(modifiers.corrodeBuildupMultiplier, effect, rank);
             break;
+          case "drone-shot-damage":
+            modifiers.droneShotDamage = applyPoints(modifiers.droneShotDamage, effect, rank);
+            break;
+          case "gravity-pulse-radius":
+            modifiers.gravityPulseRadiusMetres = applyPoints(modifiers.gravityPulseRadiusMetres, effect, rank);
+            break;
           // Genuinely unattachable today, and deliberately left so:
           //  - `fire-damage-received` / `shock-buildup-received` are *scars*; the
           //    player never takes typed elemental damage, and deleting a downside
           //    would strictly buff those paths rather than fix them.
-          //  - `drone-shot-damage` needs a player-side drone entity that does not exist.
-          //  - `gravity-pulse-radius` needs a periodic player pull pulse.
           default:
             break;
         }
@@ -216,5 +227,6 @@ export function resolveTransformationModifiers(
   modifiers.weaponSpreadMultiplier = Math.max(0, modifiers.weaponSpreadMultiplier);
   modifiers.projectileSpeedMultiplier = Math.max(0.1, modifiers.projectileSpeedMultiplier);
   modifiers.corrodeBuildupMultiplier = Math.max(0, modifiers.corrodeBuildupMultiplier);
+  modifiers.gravityPulseRadiusMetres = Math.max(0, modifiers.gravityPulseRadiusMetres);
   return modifiers;
 }

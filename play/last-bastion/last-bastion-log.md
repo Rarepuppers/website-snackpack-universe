@@ -3031,3 +3031,92 @@ the renderer never samples transparent/out-of-range frames or attaches unrelated
   build, smoke `200` / 76 routes, and offline 335 / 0 missing.
 - T4.2 remains open for the currency/spend-tree half. Currency must not be awarded until the visible
   purchase loop, costs, reset/refund policy, save migration, and cloud merge semantics ship together.
+
+## 9 August 2026 — T4.2 Command Marks and Armory tree complete
+
+The meta-progression loop now has a real earn/spend/use cycle. Completed runs bank deterministic Command
+Marks: Quick Drop awards from depth and victory, while expeditions award from cleared nodes, victory, and
+Threat Tier, with bounded formulas and no random or wall-clock input. The debrief shows the exact amount
+banked. Currency is distinct from Scrap, which remains run-local, and from Requisition, which already names
+an in-run slot reward.
+
+The main menu now opens a visible three-node Armory. The 5-mark Close-Quarters Kit unlocks the Scattergun;
+its 8-mark Shock Doctrine and 12-mark Breach Protocol branches unlock the Arc Carbine and Patrol Blade.
+Every node has a real gameplay consumer: an equipped kit replaces the default first weapon of a fresh Quick
+Drop or expedition, while explicit QA loadouts, stress routes, scenarios, and resumed expedition builds keep
+authority. Purchases are permanent with no refund/reset path, and the screen states that policy before spend.
+
+Schema v15 stores monotonic lifetime earnings and an immutable purchased-node set, deriving balance as
+`max(0, lifetime earned - purchased costs)`. Cloud conflicts max-merge lifetime earnings, union permanent
+purchases, and retain only an owned preferred selection, so reconciliation cannot duplicate a balance or
+lose an unlock. Schema-14 migration invents no currency or purchases; malformed and duplicate node IDs are
+discarded.
+
+- Pure tests cover awards, caps, costs, prerequisites, sanitization, purchase persistence, migration, shell
+  navigation, selection, and divergent-device cloud reconciliation.
+- Full web verification passes: image audit, typecheck, **1,258 tests across 192 files**, production build,
+  smoke `200` / 76 routes, and offline 335 / 0 missing.
+- In-app browser acceptance at the real 960×540 canvas confirms the complete tree, connectors, costs, locked
+  copy, selected focus, and footer fit without clipping; no console warnings or errors were recorded.
+- T4.2 behavior is complete. The remaining P3 perk/tree art is presentation polish and can join the later
+  meta-progression asset batch.
+
+## 9 August 2026 — T4.5 Drone Controller behavior pilot complete
+
+Cybernetic Ascension's Drone Controller is no longer a catalogue-only number. A committed choice now
+spawns one persistent Auxiliary Drone that shadows the player on a bounded elliptical orbit, acquires the
+nearest target within eight metres, and fires independently every 3.5 seconds. Rank I/II/III preserve the
+authored 1/1.5/2 base damage. Player trigger mode does not control it, and the default replay/run path is
+unchanged when the transformation is absent.
+
+The drone has its own internal `auxiliary-drone` weapon identity for projectile attribution, audio identity,
+damage type, and Codex documentation, but is deliberately excluded from chest/shop drafts: Drone Controller
+is its acquisition route. Runtime presentation is code-native cyan/amber geometry, clearly separate from the
+Sentry Stake and visible alongside the player. The deterministic
+`?scenario=abomination&transformation=drone-controller&loadout=patrol&autofire=0` route supports live review
+without editing a save or introducing a production unlock.
+
+- Tests prove commit gating, exactly one spawned drone, player-following motion, independent firing, rank-III
+  damage resolution, transformation-owned reachability, and complete catalogue/tile/Codex accounting.
+- Full web verification passes: image audit, typecheck, **1,261 tests across 192 files**, production build,
+  smoke `200` / 76 routes, and offline 335 / 0 missing.
+- In-app browser review confirms the cyan/amber drone remains readable beside the Marine in a live Abomination
+  fight at the real 960×540 canvas; no console warnings or errors were recorded.
+- T4.5 remains open for Gravity Adept's pull pulse and the two typed elemental-received scars. The latter two
+  must wait for a real player-side typed damage/status model rather than silently deleting their downside.
+
+## 9 August 2026 — T4.5 Gravity Adept behavior pilot complete
+
+Gravity Adept's authored `gravity-pulse-radius` is now a real combat behaviour. Ordinary discrete projectile
+attacks are counted once at the weapon trigger boundary; every eighth attack tags only its first projectile,
+so scatter and other multi-projectile weapons cannot create duplicate pulses. On impact that projectile emits
+a 0.35-second, non-damaging pull field using the authored rank radius and the existing collision-safe Event
+Horizon pull rules. Gravity pulses have their own field kind, expire without an implosion, and cannot damage
+the enemy used to demonstrate the pull.
+
+The deterministic `?scenario=abomination&transformation=gravity-adept&autofire=1` route supports live review,
+and runtime presentation now distinguishes the cyan Gravity pulse from the purple Event Horizon field. The
+integration test locks the first seven attacks, eighth-impact pulse, rank III 1.8-metre radius, inward enemy
+movement, unchanged health, and clean expiry.
+
+- `TransformationRunModifiers` now consumes **24 of 26** authored metrics.
+- Full web verification passes: image audit, typecheck, **1,263 tests across 192 files**, production build,
+  smoke `200` / 76 routes, and offline 335 / 0 missing.
+- T4.5's behaviour pilots are complete. Only Fire damage received and Shock buildup received remain; both are
+  explicitly blocked on a real player-side typed damage/status model rather than being approximated away.
+
+## 9 August 2026 — T4.7 twenty-run history complete
+
+The save contract advances to schema v16 and retains the newest 20 completed summaries. History entries carry
+a bounded completion timestamp plus a stable content fingerprint, allowing Steam Cloud reconciliation to union
+divergent device journals without duplicating a run that has already synced. The merged journal is sorted
+newest-first and capped again at 20; `lastRunSummary` remains compatible and follows the newest merged entry.
+A v15 save migrates its existing last summary into a timestamp-free `LEGACY SAVE` row rather than losing it.
+
+The Records screen is now a two-panel Career / Recent Runs view. Six compact run rows fit at once and show
+outcome, wave or expedition nodes/tier, kills, Command Marks, and date. Up/down navigation scrolls the full
+retained journal with hard bounds. Live browser review confirmed that a migrated legacy row and the career
+panel fit together cleanly at the authored canvas size.
+
+- Full web verification passes: image audit, typecheck, **1,267 tests across 192 files**, production build,
+  smoke `200` / 76 routes, and offline 335 / 0 missing.

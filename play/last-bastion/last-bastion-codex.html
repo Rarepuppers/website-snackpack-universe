@@ -805,6 +805,9 @@ const ELEMENTAL_WEAPONS = [
   { id: "wpn-sentry-stake", name: "Sentry Stake", glyph: "⊥", cls: "medium", family: "deployable", status: "live", tier: "II",
     stats: { Damage: "2", Cadence: "8s", Range: "9m", Type: "Physical", Uptime: "14s", Units: "2" },
     text: "Plants an automated stake that acquires and fires on its own until it expires or is torn down. The first weapon you put down rather than hold — and the only one that reads Engineering, which lifts its health, its uptime and its rate of fire together." },
+  { id: "wpn-auxiliary-drone", name: "Auxiliary Drone", glyph: "◇", cls: "unique", family: "transformation", status: "live", tier: "—",
+    stats: { Damage: "1 / 1.5 / 2", Cadence: "3.5s", Range: "8m", Type: "Shock", Source: "Drone Controller" },
+    text: "A Cybernetic Ascension support entity, not a draft weapon. It shadows its operator and independently fires one restrained shot at the nearest valid target; transformation rank sets its damage." },
 ];
 WEAPONS.push(...ELEMENTAL_WEAPONS);
 

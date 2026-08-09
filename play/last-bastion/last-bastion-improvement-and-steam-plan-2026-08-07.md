@@ -189,10 +189,12 @@ mechanics-before-art.
 already threads a deterministic seed (`?mapseed=N`), and a daily is the cheapest retention
 mechanic in the genre.
 
-**F10 — Transformations are a stat bag.** `TransformationRunModifiers` resolves 22 of 26 effect
-metrics into flat multipliers. Step 5 of `transformation-path-production-plan.md` — the
-behaviour pilot that makes a path feel like a transformation rather than a percentage — is
-genuinely open and is the difference between seven paths and seven damage modifiers.
+**F10 — Transformation behaviour pilots landed 9 Aug; two typed scars remain blocked.**
+`TransformationRunModifiers` resolves 24 of 26 effect metrics. Drone Controller now creates a real
+autonomous support entity, and Gravity Adept emits a non-damaging pull pulse on every eighth discrete
+projectile attack, proving Step 5 of `transformation-path-production-plan.md` across two distinct combat
+behaviours. Fire damage received and Shock buildup received remain intentionally unresolved until the
+player has a typed incoming-damage/status model; do not silently delete those authored downsides.
 
 **F11 — No music, no ambience, silent UI bus.** Already the top of the asset queue (items 63–65).
 Restated here only because it is the loudest quality gap for a paid product: `MusicDirector` and
@@ -381,10 +383,10 @@ runs" arrives at hour three today.
 **G3 — Daily and weekly seeded runs + Steam Leaderboards.** The seed threading already exists.
 One daily seed, one weekly with a fixed modifier set, score = depth + kills + time.
 
-**G4 — Transformation behaviours (plan-of-record step 5+).** Pilot Cybernetic Ascension with an
-actual behaviour — the Drone Controller choice should spawn a drone, not add a damage percentage.
-Then extend to the remaining six paths. This is what turns F10 from a stat bag into the game's
-identity mechanic.
+**G4 — Transformation behaviours (plan-of-record step 5+).** The Cybernetic Ascension drone and
+Gravity Adept pull-pulse pilots are complete. Extend this pattern to the remaining paths: each choice
+needs one readable, testable combat behaviour instead of another percentage bag. Close the last two
+typed elemental-received scars only after the player-side damage/status contract exists.
 
 **G5 — Heroes 3–5.** Mechanics contract first (stats, weapon-class rack, starting weapon,
 ultimate, unlock rule), then the C3 art package per the existing rule. One hero at a time.
@@ -869,16 +871,22 @@ constructed by anything.
   Do not define tiers 3–11 until five observed runs validate completion rate, damage sources, and
   modifier comprehension. **Depends on T0.1**, because the full ladder eventually lands in the file
   that is currently 10,598 lines.
-- **T4.2 — ADVANCED PERK TRACK COMPLETE 8 Aug 2026; CURRENCY/TREE PENDING.** `perkCatalog.ts`
+- **T4.2 — COMPLETE 9 Aug 2026.** `perkCatalog.ts`
   now extends from seven to ten entries without replacing `unlockedPerkIds(progress)`. Vanguard,
   Logistician, and Recon Specialist require victories on exact Threat Tiers 0, 1, and 2 and feed the
   existing starting-level, stash-capacity, and map-reveal consumers. Run-end diffing announces each
   unlock on the earning debrief. Character select uses a tested two-row ten-slot layout; the three
   advanced perks show honest live T0/T1/T2 badges rather than sampling the seven-frame atlas out of
   bounds or displaying contradictory fallback art. Commission their final P3 tiles with the later
-  meta-progression art batch. The persistent currency and visible spend tree remain the second half;
-  do not award currency until purchases, costs, refund/reset policy, and cloud reconciliation land in
-  the same slice.
+  meta-progression art batch. The second half adds deterministic Command Marks, banked on the debrief,
+  and a visible three-node Armory tree. Its 5/8/12-mark permanent purchases unlock real Scattergun,
+  Arc Carbine, and Patrol Blade starting kits; purchased kits can be equipped and affect the first
+  combat of a fresh Quick Drop or expedition without overriding explicit review routes or resumed builds.
+  Schema v15 introduced monotonic lifetime earnings plus an immutable purchased-node set (carried
+  forward by the current v16 schema), derives the
+  spendable balance from those two values, and unions purchases/max-merges earnings during Steam Cloud
+  reconciliation. Purchases deliberately have no refund/reset path, avoiding non-monotonic cloud state.
+  Final P3 perk/tree art remains a presentation batch, not a behavior dependency.
 - **T4.3 — Daily/weekly runs + leaderboards.** Derive the seed from the UTC date, reuse the
   existing `?mapseed=N` threading, submit to Steam Leaderboards on run end. One attempt per seed,
   enforced in the save.
@@ -891,18 +899,33 @@ constructed by anything.
   and a live authored Survivor route with repeated defeats pass without warnings. Crit detection uses
   the existing cumulative run metric because `enemy-hit` does not currently carry a crit bit; adding
   that bit remains part of G6's later crit-number styling, not a prerequisite for deterministic hit-stop.
-- **T4.5 — Transformation behaviours.** `TransformationRunModifiers` resolves 22 of 26 effect
-  metrics as flat numbers, and the four unresolved ones are already documented in-place against
-  the `default` arm. Pilot Cybernetic Ascension's Drone Controller as a real spawned deployable —
-  `deployStructure` and `updateDeployables` already exist in the simulation, so the hook is there.
+- **T4.5 — DRONE + GRAVITY BEHAVIOURS COMPLETE 9 Aug 2026; TWO TYPED SCARS BLOCKED.**
+  `TransformationRunModifiers` now resolves 24 of 26 effect metrics. Committing Cybernetic Ascension's
+  Drone Controller spawns one persistent auxiliary drone that orbits the player, independently targets
+  enemies within eight metres, and fires the authored rank-scaled 1/1.5/2-damage Shock shot every 3.5
+  seconds. It has a distinct internal-only weapon identity, damage attribution, Codex entry, code-native
+  silhouette, and deterministic `?transformation=drone-controller` review route; it never enters a draft
+  or shop pool. Gravity Adept now counts discrete projectile attacks and turns every eighth into one
+  rank-scaled, non-damaging pull field at the first projectile impact; multi-projectile attacks still emit
+  only one pulse. It reuses the Event Horizon movement rules but has its own short-lived field kind and no
+  implosion. The two unresolved metrics remain documented beside the resolver: Fire damage received and
+  Shock buildup received. Do not fake them until the player can actually receive typed elemental
+  damage/status.
 - **T4.6 — COMPLETE 8 Aug 2026.** The first real drop shows a non-blocking four-goal guide:
   move, evade, deal actual damage, and clear the first wave. Goals accumulate out of order, use the
   player's remapped keyboard/gamepad labels, reflect Auto-fire versus Manual Fire, and disappear with
   event-feed confirmation once complete. It never changes input or simulation state, does not appear
   on scenario/stress routes, and can be forced for review with `?onboarding=1`. Completion is scoped
   to the first run (`runsFinished === 0`), so no second persistent tutorial flag or schema field is needed.
-- **T4.7 — run history** (keep the last 20 rather than one
-  `lastRunSummary`), **T4.8 — heroes 3–5** (mechanics contract first, then batch C3).
+- **T4.7 — COMPLETE 9 Aug 2026.** Schema v16 retains the newest 20 completed runs instead of only
+  `lastRunSummary`. Each entry has a stable content-fingerprinted identity and completion timestamp;
+  Steam Cloud reconciliation unions divergent device journals, deduplicates already-synced runs,
+  sorts newest-first, and reapplies the 20-entry cap. Schema v15 migration preserves its existing
+  last summary as a legacy history row. Records now splits into Career and Recent Runs panels, shows
+  six journal rows at once, and scrolls through all retained entries with bounded keyboard/controller
+  navigation. The old `lastRunSummary` remains as a compatibility/current-debrief pointer derived from
+  the newest journal entry.
+- **T4.8 — heroes 3–5** (mechanics contract first, then batch C3).
 
 ### 10.6 Dependency graph
 

@@ -1,6 +1,8 @@
 import { normalizeControlBindings } from "../input/ControlBindings";
 import { SAVE_SCHEMA_VERSION, type BestiaryEntry, type SaveData } from "../save/LocalSaveStore";
 import type { ThreatTier } from "../expedition/ThreatTier";
+import { normalizePurchasedArmoryNodeIds } from "../progression/ArmoryProgression";
+import { mergeRunHistories } from "../run/RunHistory";
 
 export interface CloudSaveEnvelope {
   readonly deviceId: string;
@@ -27,11 +29,16 @@ export function resolveCloudSaveConflict(local: CloudSaveEnvelope, remote: Cloud
   const preferred = remotePreferred ? remote : local;
   const secondary = remotePreferred ? local : remote;
   const bestiary = mergeBestiary(local.save.progress.bestiary, remote.save.progress.bestiary);
+  const purchasedArmoryNodeIds = normalizePurchasedArmoryNodeIds([
+    ...local.save.progress.purchasedArmoryNodeIds,
+    ...remote.save.progress.purchasedArmoryNodeIds,
+  ]);
   const divergentActiveRuns = Boolean(
     local.save.expedition && remote.save.expedition
     && (local.save.expedition.mapSeed !== remote.save.expedition.mapSeed
       || local.save.expedition.currentNodeId !== remote.save.expedition.currentNodeId),
   );
+  const runHistory = mergeRunHistories(local.save.runHistory, remote.save.runHistory);
   return {
     preference: remotePreferred ? "remote" : "local",
     divergentActiveRuns,
@@ -57,12 +64,22 @@ export function resolveCloudSaveConflict(local: CloudSaveEnvelope, remote: Cloud
           local.save.progress.threatTierVictories,
           remote.save.progress.threatTierVictories,
         ),
+        commandMarksLifetime: Math.max(
+          local.save.progress.commandMarksLifetime,
+          remote.save.progress.commandMarksLifetime,
+        ),
+        purchasedArmoryNodeIds,
       },
       expedition: preferred.save.expedition ?? secondary.save.expedition,
       selectedPerkId: preferred.save.selectedPerkId,
       selectedHeroId: preferred.save.selectedHeroId,
       selectedThreatTier: preferred.save.selectedThreatTier,
-      lastRunSummary: preferred.save.lastRunSummary ?? secondary.save.lastRunSummary,
+      selectedArmoryNodeId: preferred.save.selectedArmoryNodeId !== null
+        && purchasedArmoryNodeIds.includes(preferred.save.selectedArmoryNodeId)
+        ? preferred.save.selectedArmoryNodeId
+        : null,
+      lastRunSummary: runHistory[0]?.summary ?? preferred.save.lastRunSummary ?? secondary.save.lastRunSummary,
+      runHistory,
     },
   };
 }

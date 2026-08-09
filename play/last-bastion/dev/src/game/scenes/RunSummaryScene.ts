@@ -180,6 +180,7 @@ export class RunSummaryScene extends Phaser.Scene {
     } else {
       this.text(54, 438, "No new perk unlocks this run.", MUTED, "12px");
     }
+    this.text(54, 458, `COMMAND MARKS BANKED  +${summary.commandMarksEarned}`, ORANGE, "12px");
     this.addReturnControls(summary);
   }
 

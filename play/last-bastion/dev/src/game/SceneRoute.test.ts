@@ -14,5 +14,6 @@ describe("route-driven scene loading", () => {
     expect(resolveSceneRoute(new URLSearchParams("screen=title&stress=12"))).toBe("shell");
     expect(resolveSceneRoute(new URLSearchParams("stress=12"))).toBe("combat");
     expect(resolveSceneRoute(new URLSearchParams("effects=low"))).toBe("combat");
+    expect(resolveSceneRoute(new URLSearchParams("transformation=drone-controller"))).toBe("combat");
   });
 });

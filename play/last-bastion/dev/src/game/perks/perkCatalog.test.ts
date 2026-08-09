@@ -9,6 +9,8 @@ function progress(overrides: Partial<GameProgress> = {}): GameProgress {
     bestiary: {}, ...overrides,
     threatTierBestNodes: overrides.threatTierBestNodes ?? { 0: 0, 1: 0, 2: 0 },
     threatTierVictories: overrides.threatTierVictories ?? { 0: 0, 1: 0, 2: 0 },
+    commandMarksLifetime: overrides.commandMarksLifetime ?? 0,
+    purchasedArmoryNodeIds: overrides.purchasedArmoryNodeIds ?? [],
   };
 }
 

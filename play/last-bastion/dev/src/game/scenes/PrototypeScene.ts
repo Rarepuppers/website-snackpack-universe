@@ -19,6 +19,8 @@ import {
   type ProjectileSnapshot,
   type CombatEvent,
   type CombatTelegraphSnapshot,
+  type DeployableSnapshot,
+  type EventHorizonFieldSnapshot,
   type PendingDecision,
   type PowerupPickupSnapshot,
   type SupplyChestSnapshot,
@@ -92,6 +94,7 @@ import {
   type ExpeditionEncounterDescriptor,
 } from "../expedition/ExpeditionEncounter";
 import { normalizeThreatTier, threatTierDefinition } from "../expedition/ThreatTier";
+import { selectedArmoryWeapon } from "../progression/ArmoryProgression";
 import { createRunSummary, mergeRunMetrics, type RunMetrics } from "../run/RunSummary";
 import {
   advanceFirstDropOnboarding,
@@ -102,7 +105,12 @@ import {
   type FirstDropGoal,
   type FirstDropOnboardingState,
 } from "../onboarding/FirstDropOnboarding";
-import { cloneTransformationAffinityState } from "../transformations/TransformationAffinity";
+import {
+  applyTransformationChoice,
+  cloneTransformationAffinityState,
+  createTransformationAffinityState,
+  type TransformationAffinityState,
+} from "../transformations/TransformationAffinity";
 import {
   AdaptivePerformanceGovernor,
   combatEffectsBudget,
@@ -154,6 +162,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly readabilityRims = readReadabilityRims();
   private readonly showDebug = readDebugMode();
   private readonly uraniumLab = readUraniumLab();
+  private readonly transformationPreview = readTransformationPreview();
   private readonly saveStore = createSaveStore();
   private settings = applySettingOverrides(this.saveStore);
   private readonly performanceGovernor = new AdaptivePerformanceGovernor(this.settings.effectQuality);
@@ -161,7 +170,10 @@ export class PrototypeScene extends Phaser.Scene {
   private simulation = createSimulation(
     this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
     this.expeditionContext, this.saveStore.load().selectedPerkId, this.saveStore.load().selectedHeroId,
-    this.settings.autoFireEnabled,
+    this.settings.autoFireEnabled, selectedArmoryWeapon(
+      this.saveStore.load().selectedArmoryNodeId,
+      this.saveStore.load().progress.purchasedArmoryNodeIds,
+    ), this.transformationPreview,
   );
   private readonly enemyViews = new Map<number, EnemyView>();
   private readonly enemyRimViews = new Map<number, Phaser.GameObjects.Sprite>();
@@ -201,6 +213,8 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly powerupViews = new Map<number, PickupView>();
   private readonly supplyChestViews = new Map<number, Phaser.GameObjects.Container>();
   private readonly weaponViews = new Map<number, WeaponView>();
+  private readonly deployableViews = new Map<number, Phaser.GameObjects.Container>();
+  private readonly pullFieldViews = new Map<number, Phaser.GameObjects.Arc>();
   private decisionOverlay: Phaser.GameObjects.Container | null = null;
   private decisionButtons: { rect: Phaser.GameObjects.Rectangle; choiceId: string; enabled: boolean }[] = [];
   private decisionSelectionIndex = 0;
@@ -860,6 +874,8 @@ export class PrototypeScene extends Phaser.Scene {
     this.player.setDepth(worldDepth(snapshot.playerPosition.y));
 
     this.syncWeapons(snapshot.equippedWeapons, snapshot.playerPosition, firing);
+    this.syncDeployables(snapshot.deployables);
+    this.syncPullFields(snapshot.eventHorizonFields);
     this.syncEnemies(snapshot.enemies, snapshot.playerPosition);
     this.enemyHealthBars.sync(snapshot.enemies, this.settings.enemyHealthBars, this.settings.reducedMotionEnabled, PIXELS_PER_METRE);
     this.syncEnemyStatusOverlays(snapshot.enemies);
@@ -1033,7 +1049,10 @@ export class PrototypeScene extends Phaser.Scene {
     this.simulation = createSimulation(
       this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
       this.expeditionContext, this.saveStore.load().selectedPerkId, this.saveStore.load().selectedHeroId,
-      this.settings.autoFireEnabled,
+      this.settings.autoFireEnabled, selectedArmoryWeapon(
+        this.saveStore.load().selectedArmoryNodeId,
+        this.saveStore.load().progress.purchasedArmoryNodeIds,
+      ), this.transformationPreview,
     );
     this.flushBestiary();
     this.lastSnapshot = this.simulation.snapshot();
@@ -3317,6 +3336,54 @@ export class PrototypeScene extends Phaser.Scene {
     }
   }
 
+  private syncDeployables(deployables: readonly DeployableSnapshot[]): void {
+    const liveIds = new Set(deployables.map((unit) => unit.id));
+    this.destroyMissing(this.deployableViews, liveIds);
+    for (const unit of deployables) {
+      let view = this.deployableViews.get(unit.id);
+      if (!view) {
+        view = this.add.container(0, 0).setDepth(610);
+        if (unit.kind === "auxiliary-drone") {
+          view.add([
+            this.add.circle(0, 0, 8, 0x183c46).setStrokeStyle(2, 0x68e4e8),
+            this.add.rectangle(0, 0, 7, 7, 0xffd36b).setAngle(45),
+            this.add.circle(-9, 0, 2, 0x68e4e8),
+            this.add.circle(9, 0, 2, 0x68e4e8),
+          ]);
+        } else {
+          view.add([
+            this.add.rectangle(0, 1, 12, 15, 0x24384f).setStrokeStyle(2, 0x8fb8ff),
+            this.add.triangle(0, -9, 0, 7, 5, -3, -5, -3, 0xffd36b),
+          ]);
+        }
+        this.deployableViews.set(unit.id, view);
+      }
+      view.setPosition(unit.position.x * PIXELS_PER_METRE, unit.position.y * PIXELS_PER_METRE);
+      view.setDepth(worldDepth(unit.position.y) + 2);
+      if (unit.kind === "auxiliary-drone") view.setRotation(this.time.now / 850);
+    }
+  }
+
+  private syncPullFields(fields: readonly EventHorizonFieldSnapshot[]): void {
+    const liveIds = new Set(fields.map((field) => field.id));
+    this.destroyMissing(this.pullFieldViews, liveIds);
+    for (const field of fields) {
+      let view = this.pullFieldViews.get(field.id);
+      if (!view) {
+        const gravityPulse = field.kind === "gravity-pulse";
+        view = this.add.circle(0, 0, field.pullRadiusMetres * PIXELS_PER_METRE,
+          gravityPulse ? 0x68e4e8 : 0xa684ff, gravityPulse ? 0.08 : 0.12)
+          .setStrokeStyle(2, gravityPulse ? 0x68e4e8 : 0xa684ff, 0.75)
+          .setDepth(430);
+        this.pullFieldViews.set(field.id, view);
+      }
+      const progress = field.durationSeconds > 0 ? field.remainingSeconds / field.durationSeconds : 0;
+      view.setPosition(field.position.x * PIXELS_PER_METRE, field.position.y * PIXELS_PER_METRE)
+        .setRadius(field.pullRadiusMetres * PIXELS_PER_METRE)
+        .setAlpha(0.45 + Math.max(0, progress) * 0.45);
+    }
+  }
+
   private syncProjectiles(projectiles: readonly ProjectileSnapshot[]): void {
     const visibleProjectiles = projectiles.length <= FRIENDLY_PROJECTILE_SOFT_BUDGET
       ? projectiles
@@ -5042,11 +5109,20 @@ function createSimulation(
   perkId: PerkId | null,
   heroId: "marine" | "medic",
   autoFireEnabled: boolean,
+  armoryStartingWeaponId: WeaponId | null,
+  transformationPreview: TransformationAffinityState | null,
 ): CombatSimulation {
+  const armoryLoadout = startingWeaponIds === null
+    && stressProfile === null
+    && scenario === null
+    && expeditionContext?.run.state.build == null
+    && armoryStartingWeaponId !== null
+    ? [armoryStartingWeaponId]
+    : undefined;
   return new CombatSimulation({
     worldObjectTheme: readWorldObjectTheme(),
     startingWeaponCount,
-    startingWeaponIds: startingWeaponIds ?? undefined,
+    startingWeaponIds: startingWeaponIds ?? armoryLoadout,
     stressProfile: stressProfile ?? undefined,
     scenario: scenario ?? undefined,
     startingUraniumKit: uraniumLab.kit,
@@ -5057,7 +5133,25 @@ function createSimulation(
     perkId,
     heroId,
     autoFireEnabled,
+    startingTransformation: expeditionContext === null ? transformationPreview ?? undefined : undefined,
   });
+}
+
+function readTransformationPreview(): TransformationAffinityState | null {
+  const requested = new URLSearchParams(window.location.search).get("transformation");
+  const selection = requested === "drone-controller"
+    ? { pathId: "cybernetic-ascension" as const, choiceId: "auxiliary-drone" as const }
+    : requested === "gravity-adept"
+      ? { pathId: "void-initiation" as const, choiceId: "gravity-adept" as const }
+      : null;
+  if (!selection) return null;
+  let state = createTransformationAffinityState();
+  for (let rank = 0; rank < 3; rank += 1) {
+    const result = applyTransformationChoice(state, selection.pathId, selection.choiceId);
+    if (!result.ok) return null;
+    state = result.state;
+  }
+  return state;
 }
 
 function statusColor(status: string): number {
@@ -5228,6 +5322,8 @@ const WEAPON_BODY_ASSETS: Readonly<Record<WeaponId, WeaponBodyAssetId>> = Object
   "blight-scythe": "patrol-blade-v1",
   // PLACEHOLDER — art pending. A stake in hand reads closest to the launcher.
   "sentry-stake": "grenade-tube-v1",
+  // Internal transformation entity; never rendered in the held-weapon ring.
+  "auxiliary-drone": "arc-carbine-v1",
 });
 
 function weaponAssetId(weaponId: WeaponId): WeaponBodyAssetId {

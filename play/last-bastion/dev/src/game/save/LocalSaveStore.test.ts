@@ -214,6 +214,82 @@ describe("LocalSaveStore", () => {
     expect(new LocalSaveStore(storage).load().lastRunSummary).toEqual(saved.lastRunSummary);
   });
 
+  it("retains the newest 20 completed run summaries in chronological order", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    for (let run = 1; run <= 21; run += 1) {
+      const summary = createRunSummary({
+        mode: "quick-drop", outcome: run % 2 === 0 ? "victory" : "defeat",
+        heroId: "marine", perkId: null, waveReached: run, nodesCleared: 0,
+        kills: run * 2, scrapEarned: run, scrapBanked: 0, level: 2,
+        damageByWeapon: { "bastion-service-rifle": run }, weapons: [], upgrades: [],
+      });
+      store.recordRunEnd({
+        victory: summary.outcome === "victory",
+        waveReached: run,
+        summary,
+        completedAtMs: 1_000 + run,
+      });
+    }
+
+    const saved = new LocalSaveStore(storage).load();
+    expect(saved.runHistory).toHaveLength(20);
+    expect(saved.runHistory.map((entry) => entry.summary.waveReached)).toEqual(
+      Array.from({ length: 20 }, (_, index) => 21 - index),
+    );
+    expect(saved.runHistory[0]?.completedAtMs).toBe(1_021);
+    expect(saved.lastRunSummary).toEqual(saved.runHistory[0]?.summary);
+  });
+
+  it("migrates a schema 15 last-run summary into the first history entry", () => {
+    const summary = createRunSummary({
+      mode: "expedition", outcome: "victory", heroId: "medic", perkId: null,
+      waveReached: 7, nodesCleared: 12, kills: 30, scrapEarned: 20, scrapBanked: 4,
+      level: 6, damageByWeapon: {}, weapons: [], upgrades: [],
+    });
+    const storage = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({ ...DEFAULT_SAVE, version: 15, lastRunSummary: summary, runHistory: undefined }),
+    });
+    const migrated = new LocalSaveStore(storage).load();
+    expect(migrated.version).toBe(SAVE_SCHEMA_VERSION);
+    expect(migrated.runHistory).toHaveLength(1);
+    expect(migrated.runHistory[0]?.summary).toEqual(migrated.lastRunSummary);
+    expect(migrated.runHistory[0]?.completedAtMs).toBe(0);
+  });
+
+  it("banks command marks and persists valid permanent Armory purchases", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    const summary = createRunSummary({
+      mode: "expedition", outcome: "victory", heroId: "marine", perkId: null,
+      waveReached: 8, nodesCleared: 20, kills: 10, scrapEarned: 20, scrapBanked: 0,
+      level: 5, damageByWeapon: {}, weapons: [], upgrades: [],
+    });
+    const earned = store.recordRunEnd({ victory: true, waveReached: 8, summary });
+    expect(earned.progress.commandMarksLifetime).toBe(9);
+    expect(earned.lastRunSummary?.commandMarksEarned).toBe(9);
+
+    const purchased = store.purchaseArmoryNode("armory-scattergun");
+    expect(purchased.progress.purchasedArmoryNodeIds).toEqual(["armory-scattergun"]);
+    expect(purchased.selectedArmoryNodeId).toBe("armory-scattergun");
+    expect(store.purchaseArmoryNode("armory-arc-carbine").progress.purchasedArmoryNodeIds)
+      .toEqual(["armory-scattergun"]);
+    expect(new LocalSaveStore(storage).load()).toEqual(store.load());
+  });
+
+  it("migrates schema 14 with no invented Armory progress", () => {
+    const storage = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({ ...DEFAULT_SAVE, version: 14, progress: {
+        ...DEFAULT_SAVE.progress, commandMarksLifetime: undefined, purchasedArmoryNodeIds: undefined,
+      } }),
+    });
+    const migrated = new LocalSaveStore(storage).load();
+    expect(migrated.version).toBe(SAVE_SCHEMA_VERSION);
+    expect(migrated.progress.commandMarksLifetime).toBe(0);
+    expect(migrated.progress.purchasedArmoryNodeIds).toEqual([]);
+    expect(migrated.selectedArmoryNodeId).toBeNull();
+  });
+
   it("accumulates dex sightings and kills across batches and instances", () => {
     const storage = fakeStorage();
     const store = new LocalSaveStore(storage);

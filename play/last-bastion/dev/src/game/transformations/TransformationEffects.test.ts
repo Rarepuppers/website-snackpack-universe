@@ -23,6 +23,8 @@ const CONSUMED: readonly TransformationEffectMetric[] = [
   "health-regeneration-per-second", "long-range-damage", "close-range-damage", "heavy-weapon-damage",
   "retaliation-damage", "nearby-kill-healing", "evasive-cooldown", "evasive-distance",
   "weapon-spread", "projectile-speed", "corrode-buildup", "telekinetic-push-distance",
+  "drone-shot-damage",
+  "gravity-pulse-radius",
 ];
 
 /**
@@ -35,9 +37,6 @@ const KNOWN_UNCONSUMED: Readonly<Record<string, string>> = Object.freeze({
   // strictly buff their paths rather than fix anything. Left deliberately.
   "fire-damage-received": "player takes no typed elemental damage",
   "shock-buildup-received": "player receives no status buildup",
-  // Need content that does not exist yet, not a hook.
-  "drone-shot-damage": "no player-side drone entity",
-  "gravity-pulse-radius": "no periodic player pull pulse",
 });
 
 function authoredMetrics(): Set<TransformationEffectMetric> {
@@ -95,6 +94,16 @@ describe("newly wired transformation metrics", () => {
   it("resolves Acidic Secretions as extra Corrode buildup dealt", () => {
     const resolved = resolveTransformationModifiers(committed("alien-symbiosis", "acidic-secretions"));
     expect(resolved.corrodeBuildupMultiplier).toBeGreaterThan(1);
+  });
+
+  it("resolves Drone Controller's autonomous shot damage", () => {
+    const resolved = resolveTransformationModifiers(committed("cybernetic-ascension", "auxiliary-drone", 3));
+    expect(resolved.droneShotDamage).toBe(2);
+  });
+
+  it("resolves Gravity Adept's pull-pulse radius", () => {
+    const resolved = resolveTransformationModifiers(committed("void-initiation", "gravity-adept", 3));
+    expect(resolved.gravityPulseRadiusMetres).toBe(1.8);
   });
 
   it("leaves a neutral bag completely untouched", () => {

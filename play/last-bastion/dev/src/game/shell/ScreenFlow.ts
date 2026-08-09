@@ -16,6 +16,12 @@ import {
   unlockedThreatTiers,
   type ThreatTier,
 } from "../expedition/ThreatTier";
+import {
+  ARMORY_NODES,
+  canPurchaseArmoryNode,
+  commandMarksBalance,
+  type ArmoryNodeId,
+} from "../progression/ArmoryProgression";
 
 /**
  * Front-end shell screen flow (Task 37 behavior gate).
@@ -34,6 +40,7 @@ export type ShellScreen =
   | "controls"
   | "lab"
   | "records"
+  | "armory"
   | "character-select"
   | "threat-select";
 
@@ -43,15 +50,18 @@ export type ShellEffect =
   | { type: "start-run"; heroId: string; perkId: PerkId; threatTier: ThreatTier }
   | { type: "open-url"; url: string }
   | { type: "set-setting"; key: keyof GameSettings; value: GameSettings[keyof GameSettings] }
-  | { type: "capture-binding"; device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction };
+  | { type: "capture-binding"; device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction }
+  | { type: "purchase-armory-node"; nodeId: ArmoryNodeId }
+  | { type: "select-armory-node"; nodeId: ArmoryNodeId };
 
 export interface MenuCard {
-  id: "expedition" | "how-to-play" | "settings" | "codex" | "lab" | "records";
+  id: "expedition" | "armory" | "how-to-play" | "settings" | "codex" | "lab" | "records";
   label: string;
 }
 
 export const MENU_CARDS: readonly MenuCard[] = Object.freeze([
   { id: "expedition", label: "EXPEDITION" },
+  { id: "armory", label: "ARMORY" },
   { id: "how-to-play", label: "HOW TO PLAY" },
   { id: "settings", label: "SETTINGS" },
   { id: "codex", label: "CODEX" },
@@ -232,6 +242,13 @@ export interface ShellState {
   controls: ControlBindings;
   controlIndex: number;
   controlDevice: "keyboard" | "gamepad";
+  armoryIndex: number;
+  commandMarksLifetime: number;
+  commandMarksBalance: number;
+  purchasedArmoryNodeIds: readonly ArmoryNodeId[];
+  selectedArmoryNodeId: ArmoryNodeId | null;
+  recordsOffset: number;
+  runHistoryCount: number;
 }
 
 export function createShellState(
@@ -243,12 +260,15 @@ export function createShellState(
     bestiary: {},
     threatTierBestNodes: { 0: 0, 1: 0, 2: 0 },
     threatTierVictories: { 0: 0, 1: 0, 2: 0 },
+    commandMarksLifetime: 0, purchasedArmoryNodeIds: [],
   },
   selectedPerkId: PerkId | null = "perk-veteran",
   selectedHeroId: "marine" | "medic" = "marine",
   controls: ControlBindings = DEFAULT_CONTROL_BINDINGS,
   settingsRows: readonly SettingsRow[] = SETTINGS_ROWS,
   selectedThreatTier: ThreatTier = 0,
+  selectedArmoryNodeId: ArmoryNodeId | null = null,
+  runHistoryCount = 0,
 ): ShellState {
   const unlocked = unlockedPerkIds(progress);
   const selectedIndex = Math.max(0, PERK_CATALOG.findIndex((perk) => perk.id === selectedPerkId));
@@ -268,6 +288,15 @@ export function createShellState(
     controls: { keyboard: { ...controls.keyboard }, gamepad: { ...controls.gamepad } },
     controlIndex: 0,
     controlDevice: "keyboard",
+    armoryIndex: 0,
+    commandMarksLifetime: progress.commandMarksLifetime,
+    commandMarksBalance: commandMarksBalance(progress.commandMarksLifetime, progress.purchasedArmoryNodeIds),
+    purchasedArmoryNodeIds: [...progress.purchasedArmoryNodeIds],
+    selectedArmoryNodeId: selectedArmoryNodeId !== null && progress.purchasedArmoryNodeIds.includes(selectedArmoryNodeId)
+      ? selectedArmoryNodeId
+      : null,
+    recordsOffset: 0,
+    runHistoryCount: Math.max(0, Math.floor(runHistoryCount)),
   };
 }
 
@@ -294,9 +323,23 @@ export function stepShell(state: ShellState, intent: ShellIntent): ShellStepResu
     case "lab":
       return stepLab(state, intent);
     case "records":
+      if (intent === "up") {
+        return { state: { ...state, recordsOffset: Math.max(0, state.recordsOffset - 1) }, effects: [] };
+      }
+      if (intent === "down") {
+        return {
+          state: {
+            ...state,
+            recordsOffset: Math.min(Math.max(0, state.runHistoryCount - 6), state.recordsOffset + 1),
+          },
+          effects: [],
+        };
+      }
       return intent === "back" || intent === "confirm"
         ? { state: { ...state, screen: "menu" }, effects: [] }
         : { state, effects: [] };
+    case "armory":
+      return stepArmory(state, intent);
     case "character-select":
       return stepCharacterSelect(state, intent);
     case "threat-select":
@@ -319,6 +362,8 @@ function stepMenu(state: ShellState, intent: ShellIntent): ShellStepResult {
     switch (card.id) {
       case "expedition":
         return { state: { ...state, screen: "character-select", rosterIndex: 0 }, effects: [] };
+      case "armory":
+        return { state: { ...state, screen: "armory", armoryIndex: 0 }, effects: [] };
       case "how-to-play":
         return { state: { ...state, screen: "how-to-play", howToPlayPage: 0 }, effects: [] };
       case "settings":
@@ -328,7 +373,7 @@ function stepMenu(state: ShellState, intent: ShellIntent): ShellStepResult {
       case "lab":
         return { state: { ...state, screen: "lab", labIndex: 0 }, effects: [] };
       case "records":
-        return { state: { ...state, screen: "records" }, effects: [] };
+        return { state: { ...state, screen: "records", recordsOffset: 0 }, effects: [] };
     }
   }
   return { state, effects: [] };
@@ -450,6 +495,37 @@ function stepCharacterSelect(state: ShellState, intent: ShellIntent): ShellStepR
     return { state: { ...state, screen: "threat-select" }, effects: [] };
   }
   return { state, effects: [] };
+}
+
+function stepArmory(state: ShellState, intent: ShellIntent): ShellStepResult {
+  if (intent === "back") return { state: { ...state, screen: "menu" }, effects: [] };
+  if (intent === "up" || intent === "left") {
+    return { state: { ...state, armoryIndex: wrap(state.armoryIndex - 1, ARMORY_NODES.length) }, effects: [] };
+  }
+  if (intent === "down" || intent === "right") {
+    return { state: { ...state, armoryIndex: wrap(state.armoryIndex + 1, ARMORY_NODES.length) }, effects: [] };
+  }
+  if (intent !== "confirm") return { state, effects: [] };
+  const node = ARMORY_NODES[state.armoryIndex]!;
+  if (state.purchasedArmoryNodeIds.includes(node.id)) {
+    return {
+      state: { ...state, selectedArmoryNodeId: node.id },
+      effects: [{ type: "select-armory-node", nodeId: node.id }],
+    };
+  }
+  if (!canPurchaseArmoryNode(node.id, state.commandMarksLifetime, state.purchasedArmoryNodeIds)) {
+    return { state, effects: [] };
+  }
+  const purchasedArmoryNodeIds = [...state.purchasedArmoryNodeIds, node.id];
+  return {
+    state: {
+      ...state,
+      purchasedArmoryNodeIds,
+      selectedArmoryNodeId: node.id,
+      commandMarksBalance: commandMarksBalance(state.commandMarksLifetime, purchasedArmoryNodeIds),
+    },
+    effects: [{ type: "purchase-armory-node", nodeId: node.id }],
+  };
 }
 
 function stepThreatSelect(state: ShellState, intent: ShellIntent): ShellStepResult {
