@@ -20,6 +20,7 @@ import {
 } from "../expedition/ThreatTier";
 import {
   ARMORY_NODES,
+  SCOUT_DEPLOYMENT_RELEASED,
   canPurchaseArmoryNode,
   canSelectArmoryNode,
   commandMarksBalance,
@@ -184,8 +185,8 @@ export const ROSTER: readonly RosterEntry[] = Object.freeze([
   { id: "marine", name: "MARINE", status: "playable" },
   { id: "medic", name: "MEDIC", status: "playable" },
   { id: "assault", name: "ASSAULT", status: "playable" },
-  { id: "tactician", name: "TACTICIAN", status: "in-development" },
-  { id: "scout", name: "SCOUT", status: "silhouette" },
+  { id: "tactician", name: "TACTICIAN", status: "playable" },
+  { id: "scout", name: "SCOUT", status: SCOUT_DEPLOYMENT_RELEASED ? "playable" : "in-development" },
 ]);
 
 export function perkTilePosition(index: number): Readonly<{ x: number; y: number }> {

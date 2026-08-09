@@ -15,7 +15,7 @@ describe("Tactician hero mechanics contract", () => {
   it("registers the proposed identity, Event Horizon start, rack, and growth", () => {
     expect(heroDefinition("tactician")).toBe(TACTICIAN);
     expect(Object.values(HERO_CATALOG).map((hero) => hero.id))
-      .toEqual(["marine", "medic", "assault", "tactician"]);
+      .toEqual(["marine", "medic", "assault", "tactician", "scout"]);
     const snapshot = new CombatSimulation({ heroId: "tactician", autoStartWaves: false }).snapshot();
     expect(snapshot.playerMaxHealth).toBe(11);
     expect(snapshot.equippedWeapons[0]!.weaponId).toBe("event-horizon");

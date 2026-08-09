@@ -4,7 +4,7 @@ import type { RunSummary } from "../run/RunSummary";
 
 export const COMMAND_MARKS_LABEL = "COMMAND MARKS";
 
-export type ArmoryNodeId = "armory-scattergun" | "armory-arc-carbine" | "armory-patrol-blade" | "armory-assault-clearance";
+export type ArmoryNodeId = "armory-scattergun" | "armory-arc-carbine" | "armory-patrol-blade" | "armory-assault-clearance" | "armory-tactician-clearance" | "armory-scout-clearance";
 
 interface ArmoryNodeBase {
   readonly id: ArmoryNodeId;
@@ -30,6 +30,12 @@ export type ArmoryNode = StartingWeaponArmoryNode | HeroUnlockArmoryNode;
 /** C3 art, audio delivery, runtime wiring, and contextual listening accepted 9 Aug 2026. */
 export const ASSAULT_DEPLOYMENT_RELEASED = true;
 export const ASSAULT_UNLOCK_NODE_ID: ArmoryNodeId = "armory-assault-clearance";
+/** Mechanics, C3 presentation, tuning, density, and contextual listening accepted 9 Aug 2026. */
+export const TACTICIAN_DEPLOYMENT_RELEASED = true;
+export const TACTICIAN_UNLOCK_NODE_ID: ArmoryNodeId = "armory-tactician-clearance";
+/** Mechanics, C3 presentation, tuning, density, progression, and contextual listening accepted 9 Aug 2026. */
+export const SCOUT_DEPLOYMENT_RELEASED = true;
+export const SCOUT_UNLOCK_NODE_ID: ArmoryNodeId = "armory-scout-clearance";
 
 /**
  * A deliberately modest first tree: every purchase exposes a real starting
@@ -76,6 +82,26 @@ const ARMORY_NODE_CATALOG: readonly ArmoryNode[] = Object.freeze([
     prerequisiteIds: Object.freeze(["armory-patrol-blade"] as ArmoryNodeId[]),
     released: ASSAULT_DEPLOYMENT_RELEASED,
     heroId: "assault",
+  }),
+  Object.freeze({
+    id: TACTICIAN_UNLOCK_NODE_ID,
+    kind: "hero-unlock",
+    name: "TACTICIAN CLEARANCE",
+    description: "Authorize Tactician for future deployments.",
+    cost: 22,
+    prerequisiteIds: Object.freeze(["armory-arc-carbine"] as ArmoryNodeId[]),
+    released: TACTICIAN_DEPLOYMENT_RELEASED,
+    heroId: "tactician",
+  }),
+  Object.freeze({
+    id: SCOUT_UNLOCK_NODE_ID,
+    kind: "hero-unlock",
+    name: "SCOUT CLEARANCE",
+    description: "Authorize Scout for future deployments.",
+    cost: 20,
+    prerequisiteIds: Object.freeze(["armory-arc-carbine", "armory-patrol-blade"] as ArmoryNodeId[]),
+    released: SCOUT_DEPLOYMENT_RELEASED,
+    heroId: "scout",
   }),
 ]);
 
@@ -151,6 +177,12 @@ export function isHeroDeploymentUnlocked(
   if (heroId === "assault") {
     return ASSAULT_DEPLOYMENT_RELEASED && normalizePurchasedArmoryNodeIds(purchasedIds).includes(ASSAULT_UNLOCK_NODE_ID);
   }
+  if (heroId === "tactician") {
+    return TACTICIAN_DEPLOYMENT_RELEASED && normalizePurchasedArmoryNodeIds(purchasedIds).includes(TACTICIAN_UNLOCK_NODE_ID);
+  }
+  if (heroId === "scout") {
+    return SCOUT_DEPLOYMENT_RELEASED && normalizePurchasedArmoryNodeIds(purchasedIds).includes(SCOUT_UNLOCK_NODE_ID);
+  }
   return false;
 }
 
@@ -159,4 +191,19 @@ export function assaultUnlockRequirementText(): string {
   return node.released
     ? `Purchase ${node.name} for ${node.cost} Command Marks after ${armoryNode(node.prerequisiteIds[0]!).name}.`
     : `C3 audio acceptance pending. Then purchase ${node.name} for ${node.cost} Command Marks after ${armoryNode(node.prerequisiteIds[0]!).name}.`;
+}
+
+export function tacticianUnlockRequirementText(): string {
+  const node = armoryNode(TACTICIAN_UNLOCK_NODE_ID);
+  return node.released
+    ? `Purchase ${node.name} for ${node.cost} Command Marks after ${armoryNode(node.prerequisiteIds[0]!).name}.`
+    : `C3 acceptance pending. Then purchase ${node.name} for ${node.cost} Command Marks after ${armoryNode(node.prerequisiteIds[0]!).name}.`;
+}
+
+export function scoutUnlockRequirementText(): string {
+  const node = armoryNode(SCOUT_UNLOCK_NODE_ID);
+  const prerequisiteNames = node.prerequisiteIds.map((id) => armoryNode(id).name).join(" and ");
+  return node.released
+    ? `Purchase ${node.name} for ${node.cost} Command Marks after ${prerequisiteNames}.`
+    : `C3 audio acceptance pending. Then purchase ${node.name} for ${node.cost} Command Marks after ${prerequisiteNames}.`;
 }

@@ -93,6 +93,26 @@ import {
   selectAurumExit,
   shouldSpawnAurumHoarder,
 } from "./AurumHoarder";
+import {
+  beginAurumHoarderFlee,
+  shouldAurumHoarderEscape,
+  stepAurumHoarderBehavior,
+} from "./AurumHoarderBehavior";
+import {
+  CORRUPTED_MARINE_KNIFE_DAMAGE,
+  CORRUPTED_MARINE_KNIFE_SPEED,
+  resolveCorruptedMarineAfterMovement,
+  stepCorruptedMarineBehavior,
+  type CorruptedMarinePhase,
+} from "./CorruptedMarineBehavior";
+import { stepFoundryChildBehavior } from "./FoundryChildBehavior";
+export {
+  CORRUPTED_MARINE_COOLDOWN_SECONDS,
+  CORRUPTED_MARINE_KNIFE_SPEED,
+  CORRUPTED_MARINE_RECOVERY_SECONDS,
+  CORRUPTED_MARINE_WINDUP_SECONDS,
+  type CorruptedMarinePhase,
+} from "./CorruptedMarineBehavior";
 import { initialProjectileCarry, resolveFractionalProjectiles } from "./FractionalProjectiles";
 import { FriendlyProjectileBudget } from "./FriendlyProjectileBudget";
 import {
@@ -112,6 +132,12 @@ import {
   type NestPodReservation,
   type NestPodState,
 } from "./NestWeaverLifecycle";
+import {
+  resolveNestWeaverPlacement,
+  stepNestWeaverBehavior,
+  type NestWeaverPhase,
+} from "./NestWeaverBehavior";
+export type { NestWeaverPhase } from "./NestWeaverBehavior";
 import {
   createConductiveNode,
   createIdleStormChain,
@@ -361,8 +387,6 @@ export type EncounterStatus = "combat" | "intermission" | "victory" | "defeat";
 export type BrainPhase = "drift" | "windup" | "lunge" | "recover";
 export type SlimeSpitterPhase = "positioning" | "windup" | "recover";
 export type BlastMitePhase = "chase" | "armed";
-export type CorruptedMarinePhase = "positioning" | "windup" | "throw" | "recovery";
-export type NestWeaverPhase = "positioning" | "placement-windup" | "recovery";
 export type WarpFlankerPhase = "stalk" | "warp-windup" | "materialize";
 export type RipperPhase = "pursuit" | "windup" | "sweep" | "recovery";
 export type RazorScuttlerPhase = "pursuit" | "windup" | "dash" | "recovery";
@@ -808,6 +832,8 @@ export interface ProjectileSnapshot {
   weaponId: WeaponId;
   position: Vector2Data;
   rotationRadians: number;
+  /** Remaining extra targets this projectile may pass through; exposed for combat telemetry and contract tests. */
+  pierceRemaining: number;
 }
 
 export interface ExperiencePickupSnapshot {
@@ -1371,12 +1397,6 @@ const QUILLBACK_PROJECTILE_SPEED = 7.5;
 const QUILLBACK_PROJECTILE_RANGE_METRES = 11;
 const QUILLBACK_FAN_ARC_RADIANS = Math.PI * 64 / 180;
 const RAZOR_SCUTTLER_DASH_DAMAGE = PLAYER_ATTACK_DAMAGE_BASELINES.razorDash;
-export const CORRUPTED_MARINE_WINDUP_SECONDS = 0.72;
-export const CORRUPTED_MARINE_KNIFE_SPEED = 6;
-export const CORRUPTED_MARINE_KNIFE_DAMAGE = 1.8;
-export const CORRUPTED_MARINE_RECOVERY_SECONDS = 0.65;
-export const CORRUPTED_MARINE_COOLDOWN_SECONDS = 2.8;
-const CORRUPTED_MARINE_RANGE_METRES = 11;
 export const ABOMINATION_SLAM_RADIUS_METRES = 1.55;
 export const ABOMINATION_SLAM_DAMAGE = 2.6;
 export const ABOMINATION_SLAM_TERRAIN_DAMAGE = 5;
@@ -1545,6 +1565,7 @@ export class CombatSimulation {
   private assaultMomentumStacks = 0;
   private assaultMomentumRemainingSeconds = 0;
   private readonly tacticianDesignations = new Map<number, number>();
+  private scoutSlipstreamRemainingSeconds = 0;
   private shieldRechargeCooldownSeconds = 0;
   private playerInvulnerable = false;
   private heroState = "idle";
@@ -1879,6 +1900,7 @@ export class CombatSimulation {
     }
     this.playerHurtCooldownSeconds = Math.max(0, this.playerHurtCooldownSeconds - delta);
     this.ultimateCooldownRemainingSeconds = Math.max(0, this.ultimateCooldownRemainingSeconds - delta);
+    this.scoutSlipstreamRemainingSeconds = Math.max(0, this.scoutSlipstreamRemainingSeconds - delta);
     this.updateAssaultMomentum(delta);
     this.updateTacticianDesignations(delta);
     this.updateArtifactTimers(delta);
@@ -1888,11 +1910,15 @@ export class CombatSimulation {
     this.updateFence(intent, delta);
     this.updateArenaHazards(delta);
 
+    const previousHeroState = this.heroState;
     const motionFrame = this.heroMotion.update(intent, delta);
     this.heroState = motionFrame.state;
     this.playerInvulnerable = motionFrame.isInvulnerable;
     this.evasiveReady = motionFrame.evasiveReady;
     this.evasiveCooldownRemainingSeconds = motionFrame.evasiveCooldownRemainingSeconds;
+    if (this.hero.id === "scout" && previousHeroState !== "evading" && motionFrame.state === "evading") {
+      this.scoutSlipstreamRemainingSeconds = this.hero.passive.postEvasiveAttackSpeedDurationSeconds ?? 0;
+    }
     if (intent.move.x !== 0 || intent.move.y !== 0 || motionFrame.state === "evading") {
       this.stationarySeconds = 0;
     } else {
@@ -2609,6 +2635,7 @@ export class CombatSimulation {
         weaponId: projectile.weaponId,
         position: { ...projectile.position },
         rotationRadians: Math.atan2(projectile.velocity.y, projectile.velocity.x),
+        pierceRemaining: projectile.pierceRemaining,
       })),
       enemyProjectiles: this.enemyProjectiles.filter((projectile) => !projectile.dead).map((projectile) => ({
         id: projectile.id,
@@ -4282,7 +4309,9 @@ export class CombatSimulation {
           + (index / Math.max(1, ultimate.projectileCount - 1) - 0.5) * forwardArc;
       const direction = { x: Math.cos(angle), y: Math.sin(angle) };
       this.spawnFriendlyProjectile({
-        weaponId: this.hero.id === "assault" ? "marauder-ar" : "bastion-service-rifle",
+        weaponId: this.hero.id === "assault"
+          ? "marauder-ar"
+          : this.hero.id === "scout" ? "arc-carbine" : "bastion-service-rifle",
         damageType: "physical",
         position: {
           x: this.playerPosition.x + direction.x * 0.6,
@@ -4295,7 +4324,7 @@ export class CombatSimulation {
         damage: ultimate.projectileDamage,
         uraniumEligible: false,
         remainingSeconds: ULTIMATE_PROJECTILE_LIFETIME_SECONDS,
-        pierceRemaining: 0,
+        pierceRemaining: ultimate.projectilePierceCount ?? 0,
         explosionRadiusMetres: ultimate.explosionRadiusMetres,
         knockbackMetres: ultimate.projectileKnockbackMetres ?? 0.4,
         chainRemaining: 0,
@@ -4430,6 +4459,9 @@ export class CombatSimulation {
       * (this.isBuffActive("last-stand-stimulant") ? LAST_STAND_STIMULANT_ATTACK_SPEED_MULTIPLIER : 1)
       * this.transformationModifiers.fireRateMultiplier
       * (this.isBraced() ? BRACE_ATTACK_SPEED_MULTIPLIER : 1)
+      * (this.hero.id === "scout" && this.scoutSlipstreamRemainingSeconds > 0
+        ? 1 + (this.hero.passive.postEvasiveAttackSpeedBonus ?? 0)
+        : 1)
       * (1 + this.overclockStacks * this.relicModifiers.fireRatePerKill)
       * (1 + this.playerStats.attackSpeedPercent / 100));
   }
@@ -5589,61 +5621,37 @@ export class CombatSimulation {
   }
 
   private updateCorruptedMarine(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.corruptedMarinePhaseRemainingSeconds -= deltaSeconds;
-    const towardPlayer = normalizeVector({
-      x: this.playerPosition.x - enemy.position.x,
-      y: this.playerPosition.y - enemy.position.y,
-    });
-    enemy.facingDirection = towardPlayer;
-
-    switch (enemy.corruptedMarinePhase) {
-      case "positioning": {
-        this.moveEnemyForRangeBand(enemy, deltaSeconds);
-        if (
-          enemy.attackCooldownSeconds <= 0
-          && distance(enemy.position, this.playerPosition) <= CORRUPTED_MARINE_RANGE_METRES
-        ) {
-          enemy.corruptedMarineTarget = { ...this.playerPosition };
-          enemy.facingDirection = normalizeVector({
-            x: enemy.corruptedMarineTarget.x - enemy.position.x,
-            y: enemy.corruptedMarineTarget.y - enemy.position.y,
-          });
-          enemy.corruptedMarinePhase = "windup";
-          enemy.corruptedMarinePhaseRemainingSeconds = CORRUPTED_MARINE_WINDUP_SECONDS;
-          this.frameEvents.push({
-            type: "corrupted-marine-warning",
-            position: { ...enemy.position },
-            target: { ...enemy.corruptedMarineTarget },
-            enemyId: enemy.id,
-          });
-        }
-        break;
-      }
-      case "windup":
-        if (enemy.corruptedMarinePhaseRemainingSeconds <= 0) {
-          if (this.availableEnemyProjectileSlots() <= 0) {
-            enemy.corruptedMarinePhaseRemainingSeconds = 0.1;
-            break;
-          }
-          this.launchCorruptedMarineKnife(enemy);
-          enemy.corruptedMarinePhase = "throw";
-          enemy.corruptedMarinePhaseRemainingSeconds = 0.12;
-          enemy.attackCooldownSeconds = CORRUPTED_MARINE_COOLDOWN_SECONDS;
-        }
-        break;
-      case "throw":
-        if (enemy.corruptedMarinePhaseRemainingSeconds <= 0) {
-          enemy.corruptedMarinePhase = "recovery";
-          enemy.corruptedMarinePhaseRemainingSeconds = CORRUPTED_MARINE_RECOVERY_SECONDS;
-        }
-        break;
-      case "recovery":
-        if (enemy.corruptedMarinePhaseRemainingSeconds <= 0) {
-          enemy.corruptedMarinePhase = "positioning";
-          enemy.corruptedMarinePhaseRemainingSeconds = 0;
-        }
-        break;
+    const result = stepCorruptedMarineBehavior(
+      {
+        phase: enemy.corruptedMarinePhase,
+        phaseRemainingSeconds: enemy.corruptedMarinePhaseRemainingSeconds,
+        attackCooldownSeconds: enemy.attackCooldownSeconds,
+        lockedTarget: enemy.corruptedMarineTarget,
+      },
+      {
+        deltaSeconds,
+        position: enemy.position,
+        playerPosition: this.playerPosition,
+        projectileSlotAvailable: this.availableEnemyProjectileSlots() > 0,
+      },
+    );
+    enemy.facingDirection = result.facingDirection;
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
+    const resolved = resolveCorruptedMarineAfterMovement(result.state, enemy.position, this.playerPosition);
+    enemy.corruptedMarinePhase = resolved.state.phase;
+    enemy.corruptedMarinePhaseRemainingSeconds = resolved.state.phaseRemainingSeconds;
+    enemy.attackCooldownSeconds = resolved.state.attackCooldownSeconds;
+    enemy.corruptedMarineTarget = resolved.state.lockedTarget;
+    enemy.facingDirection = resolved.facingDirection;
+    if (resolved.warningStarted) {
+      this.frameEvents.push({
+        type: "corrupted-marine-warning",
+        position: { ...enemy.position },
+        target: { ...enemy.corruptedMarineTarget },
+        enemyId: enemy.id,
+      });
     }
+    if (result.firesKnife) this.launchCorruptedMarineKnife(enemy);
   }
 
   private launchCorruptedMarineKnife(enemy: EnemyState): void {
@@ -5743,46 +5751,42 @@ export class CombatSimulation {
   }
 
   private updateAurumHoarder(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.aurumPhaseRemainingSeconds -= deltaSeconds;
-    if (enemy.aurumPhase === "forage") {
-      const away = normalizeVector({
-        x: enemy.position.x - this.playerPosition.x,
-        y: enemy.position.y - this.playerPosition.y,
+    const result = stepAurumHoarderBehavior(
+      {
+        phase: enemy.aurumPhase,
+        phaseRemainingSeconds: enemy.aurumPhaseRemainingSeconds,
+        exitTarget: enemy.aurumExitTarget,
+      },
+      {
+        deltaSeconds,
+        position: enemy.position,
+        playerPosition: this.playerPosition,
+        forageSpeedMetresPerSecond: 1.35,
+        fleeSpeedMetresPerSecond: ENEMY_CATALOG["aurum-hoarder"].movementSpeedMetresPerSecond,
+      },
+    );
+    enemy.facingDirection = result.facingDirection;
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
+    let state = result.state;
+    if (result.beginsFleeing) {
+      state = beginAurumHoarderFlee(
+        state,
+        enemy.position,
+        this.playerPosition,
+        this.widthMetres,
+        this.heightMetres,
+      );
+      this.frameEvents.push({
+        type: "aurum-fleeing",
+        position: { ...enemy.position },
+        target: { ...state.exitTarget },
+        remainingSeconds: AURUM_HOARDER_ESCAPE_SECONDS,
       });
-      const wobble = Math.sin((AURUM_HOARDER_FORAGE_SECONDS - enemy.aurumPhaseRemainingSeconds) * 5) * 0.35;
-      const direction = normalizeVector({ x: away.x - away.y * wobble, y: away.y + away.x * wobble });
-      enemy.facingDirection = direction;
-      this.moveEnemy(enemy, direction, 1.35, deltaSeconds);
-      if (enemy.aurumPhaseRemainingSeconds <= 0) {
-        enemy.aurumPhase = "flee";
-        enemy.aurumPhaseRemainingSeconds = AURUM_HOARDER_ESCAPE_SECONDS;
-        enemy.aurumExitTarget = selectAurumExit(
-          enemy.position,
-          this.playerPosition,
-          this.widthMetres,
-          this.heightMetres,
-        );
-        this.frameEvents.push({
-          type: "aurum-fleeing",
-          position: { ...enemy.position },
-          target: { ...enemy.aurumExitTarget },
-          remainingSeconds: AURUM_HOARDER_ESCAPE_SECONDS,
-        });
-      }
-      return;
     }
-
-    const toExit = normalizeVector({
-      x: enemy.aurumExitTarget.x - enemy.position.x,
-      y: enemy.aurumExitTarget.y - enemy.position.y,
-    });
-    const wobble = Math.sin((AURUM_HOARDER_ESCAPE_SECONDS - enemy.aurumPhaseRemainingSeconds) * 7) * 0.18;
-    const direction = normalizeVector({ x: toExit.x - toExit.y * wobble, y: toExit.y + toExit.x * wobble });
-    enemy.facingDirection = direction;
-    this.moveEnemy(enemy, direction, ENEMY_CATALOG["aurum-hoarder"].movementSpeedMetresPerSecond, deltaSeconds);
-    if (distance(enemy.position, enemy.aurumExitTarget) <= 0.22 || enemy.aurumPhaseRemainingSeconds <= 0) {
-      this.escapeAurumHoarder(enemy);
-    }
+    enemy.aurumPhase = state.phase;
+    enemy.aurumPhaseRemainingSeconds = state.phaseRemainingSeconds;
+    enemy.aurumExitTarget = state.exitTarget;
+    if (!result.beginsFleeing && shouldAurumHoarderEscape(state, enemy.position)) this.escapeAurumHoarder(enemy);
   }
 
   private escapeAurumHoarder(enemy: EnemyState): void {
@@ -5821,37 +5825,28 @@ export class CombatSimulation {
   }
 
   private updateNestWeaver(enemy: EnemyState, deltaSeconds: number): void {
-    enemy.nestWeaverPhaseRemainingSeconds = Math.max(0, enemy.nestWeaverPhaseRemainingSeconds - deltaSeconds);
-    const towardPlayer = normalizeVector({
-      x: this.playerPosition.x - enemy.position.x,
-      y: this.playerPosition.y - enemy.position.y,
-    });
-    enemy.facingDirection = towardPlayer;
-
-    if (enemy.nestWeaverPhase === "placement-windup") {
-      if (enemy.nestWeaverPhaseRemainingSeconds <= 0 && enemy.nestPendingReservation) {
-        this.spawnNestPod(enemy, enemy.nestPendingReservation);
-        enemy.nestPendingReservation = null;
-        enemy.nestWeaverPhase = "recovery";
-        enemy.nestWeaverPhaseRemainingSeconds = 1.4;
-      }
-      return;
+    const result = stepNestWeaverBehavior(
+      {
+        phase: enemy.nestWeaverPhase,
+        phaseRemainingSeconds: enemy.nestWeaverPhaseRemainingSeconds,
+      },
+      {
+        deltaSeconds,
+        position: enemy.position,
+        playerPosition: this.playerPosition,
+        movementSpeedMetresPerSecond: ENEMY_CATALOG["nest-weaver"].movementSpeedMetresPerSecond,
+        pendingReservationAvailable: enemy.nestPendingReservation !== null,
+      },
+    );
+    enemy.facingDirection = result.facingDirection;
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
+    enemy.nestWeaverPhase = result.state.phase;
+    enemy.nestWeaverPhaseRemainingSeconds = result.state.phaseRemainingSeconds;
+    if (result.laysPod && enemy.nestPendingReservation) {
+      this.spawnNestPod(enemy, enemy.nestPendingReservation);
+      enemy.nestPendingReservation = null;
     }
-    if (enemy.nestWeaverPhase === "recovery") {
-      if (enemy.nestWeaverPhaseRemainingSeconds <= 0) {
-        enemy.nestWeaverPhase = "positioning";
-        enemy.nestWeaverPhaseRemainingSeconds = 2.1;
-      }
-      return;
-    }
-
-    const playerDistance = distance(enemy.position, this.playerPosition);
-    if (playerDistance > 8.5) {
-      this.moveEnemy(enemy, towardPlayer, ENEMY_CATALOG["nest-weaver"].movementSpeedMetresPerSecond, deltaSeconds);
-    } else if (playerDistance < 4.5) {
-      this.moveEnemy(enemy, { x: -towardPlayer.x, y: -towardPlayer.y }, ENEMY_CATALOG["nest-weaver"].movementSpeedMetresPerSecond, deltaSeconds);
-    }
-    if (enemy.nestWeaverPhaseRemainingSeconds > 0) return;
+    if (!result.requestsPlacement) return;
 
     const reservation = tryReserveNestPod({
       activePodsForOwner: this.enemies.filter((candidate) => (
@@ -5864,7 +5859,9 @@ export class CombatSimulation {
       remainingThreat: enemy.nestWeaverThreatRemaining,
     });
     if (!reservation.accepted) {
-      enemy.nestWeaverPhaseRemainingSeconds = 0.5;
+      const state = resolveNestWeaverPlacement(result.state, false);
+      enemy.nestWeaverPhase = state.phase;
+      enemy.nestWeaverPhaseRemainingSeconds = state.phaseRemainingSeconds;
       return;
     }
 
@@ -5883,8 +5880,9 @@ export class CombatSimulation {
     enemy.nestPendingReservation = reservation.reservation;
     this.nestReservedLiveSlots += reservation.reservation.reservedHatchlingSlots;
     this.nestReservedThreat += reservation.reservation.reservedHatchlingThreat;
-    enemy.nestWeaverPhase = "placement-windup";
-    enemy.nestWeaverPhaseRemainingSeconds = 0.85;
+    const state = resolveNestWeaverPlacement(result.state, true);
+    enemy.nestWeaverPhase = state.phase;
+    enemy.nestWeaverPhaseRemainingSeconds = state.phaseRemainingSeconds;
     this.frameEvents.push({
       type: "nest-weaver-placement-warning",
       position: { ...enemy.position },
@@ -6414,37 +6412,42 @@ export class CombatSimulation {
       candidate.id === ownerId && !candidate.dead
       && (candidate.type === "foundry-fabricator" || candidate.type === "assembly-prime")
     ));
-    enemy.foundryChildRemainingSeconds = Math.max(0, enemy.foundryChildRemainingSeconds - deltaSeconds);
-    if (!ownerAlive || enemy.foundryChildRemainingSeconds <= 0) {
+    const result = stepFoundryChildBehavior(
+      {
+        remainingSeconds: enemy.foundryChildRemainingSeconds,
+        turretPhase: enemy.foundryTurretPhase,
+        turretPhaseRemainingSeconds: enemy.foundryTurretPhaseRemainingSeconds,
+        turretTarget: enemy.foundryTurretTarget,
+        attackCooldownSeconds: enemy.attackCooldownSeconds,
+      },
+      {
+        deltaSeconds,
+        ownerAlive,
+        mobile,
+        position: enemy.position,
+        playerPosition: this.playerPosition,
+        movementSpeedMetresPerSecond: ENEMY_CATALOG[enemy.type].movementSpeedMetresPerSecond,
+      },
+    );
+    enemy.foundryChildRemainingSeconds = result.state.remainingSeconds;
+    enemy.foundryTurretPhase = result.state.turretPhase;
+    enemy.foundryTurretPhaseRemainingSeconds = result.state.turretPhaseRemainingSeconds;
+    enemy.foundryTurretTarget = result.state.turretTarget;
+    enemy.attackCooldownSeconds = result.state.attackCooldownSeconds;
+    enemy.facingDirection = result.facingDirection;
+    if (result.powerDownReason) {
       enemy.dead = true;
       this.frameEvents.push({
         type: "foundry-child-powered-down",
         position: { ...enemy.position },
         enemyId: enemy.id,
         ownerId: ownerId ?? -1,
-        reason: ownerAlive ? "expired" : "owner-defeated",
+        reason: result.powerDownReason,
       });
       return;
     }
-    const direction = normalizeVector({
-      x: this.playerPosition.x - enemy.position.x,
-      y: this.playerPosition.y - enemy.position.y,
-    });
-    enemy.facingDirection = direction;
-    if (mobile) {
-      this.moveEnemy(enemy, direction, ENEMY_CATALOG[enemy.type].movementSpeedMetresPerSecond, deltaSeconds);
-      return;
-    }
-    if (enemy.foundryTurretPhase === "warning") {
-      enemy.foundryTurretPhaseRemainingSeconds = Math.max(
-        0,
-        enemy.foundryTurretPhaseRemainingSeconds - deltaSeconds,
-      );
-      enemy.facingDirection = normalizeVector({
-        x: enemy.foundryTurretTarget.x - enemy.position.x,
-        y: enemy.foundryTurretTarget.y - enemy.position.y,
-      });
-      if (enemy.foundryTurretPhaseRemainingSeconds > 0) return;
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
+    if (result.firesTurret) {
       const damage = this.scaledEnemyDamage(enemy, 1.1);
       const hitPlayer = !segmentHitsArenaObstacle(
         enemy.position,
@@ -6456,9 +6459,6 @@ export class CombatSimulation {
         enemy.foundryTurretTarget,
       ) <= 0.25 + PLAYER_RADIUS_METRES;
       if (hitPlayer) this.damagePlayer(damage);
-      enemy.foundryTurretPhase = "recovery";
-      enemy.foundryTurretPhaseRemainingSeconds = 0.5;
-      enemy.attackCooldownSeconds = 1.2;
       this.frameEvents.push({
         type: "foundry-turret-fired",
         position: { ...enemy.position },
@@ -6467,20 +6467,8 @@ export class CombatSimulation {
         damage,
         hitPlayer,
       });
-      return;
     }
-    if (enemy.foundryTurretPhase === "recovery") {
-      enemy.foundryTurretPhaseRemainingSeconds = Math.max(
-        0,
-        enemy.foundryTurretPhaseRemainingSeconds - deltaSeconds,
-      );
-      if (enemy.foundryTurretPhaseRemainingSeconds <= 0) enemy.foundryTurretPhase = "tracking";
-      return;
-    }
-    if (enemy.attackCooldownSeconds <= 0 && distance(enemy.position, this.playerPosition) <= 9.5) {
-      enemy.foundryTurretPhase = "warning";
-      enemy.foundryTurretPhaseRemainingSeconds = 0.55;
-      enemy.foundryTurretTarget = { ...this.playerPosition };
+    if (result.warningStarted) {
       this.frameEvents.push({
         type: "foundry-turret-warning",
         position: { ...enemy.position },

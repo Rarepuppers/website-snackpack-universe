@@ -153,7 +153,7 @@ Solo, so this is a hero dossier rather than a versus grid:
 
 - Left: large hero render (the Marine's modular base + helmet layers, live-assembled — the same sprites as gameplay, oversized).
 - Right: dossier panel — role line, three stat bars (health/armour/speed), passive and ultimate cards with icons, starting weapon with its ring sprite, and the helmet on/off toggle the engine already supports.
-- Roster rail below: Marine and Medic (immediately playable), Assault (playable after Armory clearance), Tactician (mechanics preview only, non-deployable), and a darkened Scout silhouette. Future breadth never promises a release date.
+- Roster rail below: Marine and Medic (immediately playable), plus Assault, Tactician, and Scout after their Armory clearances. Future breadth never promises a release date.
 - Confirm advances to the expedition map.
 
 ### Expedition map — the 20-node run
@@ -255,7 +255,9 @@ The approved Marine art-direction concept is the visual anchor for the initial a
 
 The Medic is the second playable hero. The 2 Light / 1 All rack starts with the toxic Injector Carbine; every sixth Injector hit triggers **Triage Loop**, restoring 0.75 health with overflow converted to shield. **Emergency Surge** restores 4 health and grants 2 shield on a 20-second cooldown, with excess healing also becoming shield. This produces sustain through combat tempo rather than passive regeneration.
 
-Tactician is the next hero in development. Its mechanics candidate starts with Event Horizon in a Unique/Light/Medium/All rack. Event Horizon touches apply a four-second **Designate Priority** mark that autonomous weapons prefer, while **Coordinated Strike** orders every equipped weapon to make one immediate attack without resetting normal cooldown cadence. Its retained visual candidate uses a slender slate command-armour silhouette, sealed violet visor, compact sensor fin, and Event Horizon's black-core/broken-ring weapon identity. The candidate remains non-deployable until dedicated audio, tuning, unlock economy, complete visual acceptance, and explicit release acceptance are complete. Scout and Sniper remain future content. Assault is the first progression-unlocked hero.
+Tactician is the fourth production-playable hero. It starts with Event Horizon in a Unique/Light/Medium/All rack. Event Horizon touches apply a four-second **Designate Priority** mark that autonomous weapons prefer, while **Coordinated Strike** orders every equipped weapon to make one immediate attack without resetting normal cooldown cadence. Its slender slate command armour, sealed violet visor, compact sensor fin, and Event Horizon black-core/broken-ring weapon identity remain readable at maximum density. Tactician is earned through a 22-mark **Tactician Clearance** after Shock Doctrine, a 35-mark total path parallel to Assault's branch. Sniper remains future content.
+
+Scout is the fifth production-playable hero and the fragile mobility extreme: 8 health, 6.0 movement speed, a five-metre dash, Arc Carbine start, and a Light/Light/Medium/All rack. **Slipstream** grants 20% attack speed for 2.5 seconds when a dash begins. **Deadeye Burst** fires three tightly grouped, two-target-piercing precision rounds on a 24-second cooldown. Its +2 speed, +1 damage, and +1 Light proficiency growth is live. The C3 identity uses a close dark tactical hood, sealed narrow cyan visor, distinctive long side optic, lightweight charcoal/navy armour, and pale-sand markings; the body remains readable in the 56-enemy capacity scene. Scout is earned through a 20-mark **Scout Clearance** after both Shock Doctrine and Breach Protocol, a 45-mark total path.
 
 ### Hero level-up growth
 

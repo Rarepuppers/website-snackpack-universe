@@ -10,6 +10,7 @@ import {
 import { PERK_CATALOG } from "../perks/perkCatalog";
 import { THREAT_TIERS } from "../expedition/ThreatTier";
 import { ARMORY_NODES, COMMAND_MARKS_LABEL, armoryNode, isHeroDeploymentUnlocked } from "../progression/ArmoryProgression";
+import { armoryLayout } from "./ArmoryLayout";
 import { reapplyDisplayScale } from "../rendering/DisplayScaling";
 import {
   applyHostDisplaySelection,
@@ -518,16 +519,19 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private renderArmory(): void {
+    const scoutReleased = ARMORY_NODES.some(({ id }) => id === "armory-scout-clearance");
     this.root.add(this.text(70, 42, "ARMORY", IVORY, "28px"));
     this.root.add(this.text(70, 78, `${COMMAND_MARKS_LABEL}  ${this.state.commandMarksBalance}`, TEAL, "16px"));
-    this.root.add(this.text(360, 80, "Permanent purchases • no refunds • selected kit applies to new runs", MUTED, "11px"));
-    const positions = [
-      { x: 480, y: 160 },
-      { x: 240, y: 310 },
-      { x: 560, y: 310 },
-      { x: 790, y: 445 },
-    ] as const;
-    const positionById = new Map(ARMORY_NODES.map((node, index) => [node.id, positions[index]!]));
+    const armoryHelp = this.text(
+      scoutReleased ? 650 : 360,
+      scoutReleased ? 52 : 80,
+      "Permanent purchases • no refunds • selected kit applies to new runs",
+      MUTED,
+      scoutReleased ? "10px" : "11px",
+    );
+    if (scoutReleased) armoryHelp.setWordWrapWidth(250);
+    this.root.add(armoryHelp);
+    const { nodeWidth, positionById } = armoryLayout(ARMORY_NODES.map(({ id }) => id));
     for (const node of ARMORY_NODES) {
       const target = positionById.get(node.id)!;
       for (const prerequisiteId of node.prerequisiteIds) {
@@ -538,22 +542,22 @@ export class ShellScene extends Phaser.Scene {
       }
     }
     ARMORY_NODES.forEach((node, index) => {
-      const { x, y } = positions[index]!;
+      const { x, y } = positionById.get(node.id)!;
       const focused = index === this.state.armoryIndex;
       const purchased = this.state.purchasedArmoryNodeIds.includes(node.id);
       const selected = this.state.selectedArmoryNodeId === node.id;
       const prerequisitesMet = node.prerequisiteIds.every((id) => this.state.purchasedArmoryNodeIds.includes(id));
       const affordable = this.state.commandMarksBalance >= node.cost;
-      this.root.add(this.add.rectangle(x, y, 300, 118, focused ? 0x24384f : PANEL)
+      this.root.add(this.add.rectangle(x, y, nodeWidth, 118, focused ? 0x24384f : PANEL)
         .setStrokeStyle(focused ? 3 : 1, selected ? 0xffd36b : focused ? TEAL_HEX : 0x3b4d63));
       this.root.add(this.text(x, y - 40, node.name, purchased ? TEAL : focused ? IVORY : MUTED, "14px", true));
-      this.root.add(this.text(x, y - 11, node.description, IVORY, "10px", true).setWordWrapWidth(260));
+      this.root.add(this.text(x, y - 11, node.description, IVORY, "10px", true).setWordWrapWidth(nodeWidth - 40));
       const status = selected ? "SELECTED"
         : purchased ? node.kind === "hero-unlock" ? "CLEARANCE GRANTED" : "OWNED • ENTER TO EQUIP"
           : !prerequisitesMet ? `REQUIRES ${node.prerequisiteIds.map((id) => armoryNode(id).name).join(", ")}`
             : affordable ? `${node.cost} MARKS • ENTER TO PURCHASE` : `${node.cost} MARKS • NEED ${node.cost - this.state.commandMarksBalance}`;
       this.root.add(this.text(x, y + 37, status, selected || (affordable && prerequisitesMet) ? TEAL : ORANGE, "9px", true));
-      this.clickZone(x - 150, y - 59, 300, 118, () => {
+      this.clickZone(x - nodeWidth / 2, y - 59, nodeWidth, 118, () => {
         if (this.state.armoryIndex === index) this.apply("confirm");
         else {
           this.state = { ...this.state, armoryIndex: index };
@@ -580,7 +584,9 @@ export class ShellScene extends Phaser.Scene {
         ? "medic-select-portrait-v1"
         : hero.id === "assault"
           ? "assault-select-portrait-v1"
-          : hero.id === "tactician" ? "tactician-select-portrait-v1" : "marine-select-portrait-v1";
+          : hero.id === "tactician"
+            ? "tactician-select-portrait-v1"
+            : hero.id === "scout" ? "scout-select-portrait-v1" : "marine-select-portrait-v1";
       this.root.add(this.add.image(250, 258, portraitKey).setDisplaySize(196, 294));
     } else {
       this.root.add(this.add.rectangle(250, 250, 120, 220, 0x232c3a)

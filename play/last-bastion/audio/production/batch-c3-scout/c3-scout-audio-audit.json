@@ -1,0 +1,68 @@
+﻿[
+    {
+        "name":  "scout-damage",
+        "format":  "ogg",
+        "codec":  "vorbis",
+        "sampleRateHz":  48000,
+        "channels":  "mono",
+        "durationSeconds":  0.16,
+        "integratedLufs":  null,
+        "truePeakDbfs":  -11.9,
+        "bytes":  5474
+    },
+    {
+        "name":  "scout-damage",
+        "format":  "mp3",
+        "codec":  "mp3",
+        "sampleRateHz":  48000,
+        "channels":  "mono",
+        "durationSeconds":  0.19,
+        "integratedLufs":  null,
+        "truePeakDbfs":  -12.3,
+        "bytes":  2133
+    },
+    {
+        "name":  "scout-death",
+        "format":  "ogg",
+        "codec":  "vorbis",
+        "sampleRateHz":  48000,
+        "channels":  "mono",
+        "durationSeconds":  0.68,
+        "integratedLufs":  -30.2,
+        "truePeakDbfs":  -14.7,
+        "bytes":  10884
+    },
+    {
+        "name":  "scout-death",
+        "format":  "mp3",
+        "codec":  "mp3",
+        "sampleRateHz":  48000,
+        "channels":  "mono",
+        "durationSeconds":  0.72,
+        "integratedLufs":  -30.3,
+        "truePeakDbfs":  -14.9,
+        "bytes":  6885
+    },
+    {
+        "name":  "scout-evade",
+        "format":  "ogg",
+        "codec":  "vorbis",
+        "sampleRateHz":  48000,
+        "channels":  "mono",
+        "durationSeconds":  0.14,
+        "integratedLufs":  null,
+        "truePeakDbfs":  -18.8,
+        "bytes":  5608
+    },
+    {
+        "name":  "scout-evade",
+        "format":  "mp3",
+        "codec":  "mp3",
+        "sampleRateHz":  48000,
+        "channels":  "mono",
+        "durationSeconds":  0.17,
+        "integratedLufs":  null,
+        "truePeakDbfs":  -18.8,
+        "bytes":  2253
+    }
+]

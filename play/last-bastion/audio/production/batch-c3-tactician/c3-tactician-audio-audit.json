@@ -1,0 +1,68 @@
+﻿[
+    {
+        "name":  "tactician-damage",
+        "format":  "ogg",
+        "codec":  "vorbis",
+        "sampleRateHz":  48000,
+        "channels":  "mono",
+        "durationSeconds":  0.22,
+        "integratedLufs":  null,
+        "truePeakDbfs":  -11.4,
+        "bytes":  6223
+    },
+    {
+        "name":  "tactician-damage",
+        "format":  "mp3",
+        "codec":  "mp3",
+        "sampleRateHz":  48000,
+        "channels":  "mono",
+        "durationSeconds":  0.26,
+        "integratedLufs":  null,
+        "truePeakDbfs":  -12,
+        "bytes":  2781
+    },
+    {
+        "name":  "tactician-death",
+        "format":  "ogg",
+        "codec":  "vorbis",
+        "sampleRateHz":  48000,
+        "channels":  "mono",
+        "durationSeconds":  0.82,
+        "integratedLufs":  -27.6,
+        "truePeakDbfs":  -12.3,
+        "bytes":  12288
+    },
+    {
+        "name":  "tactician-death",
+        "format":  "mp3",
+        "codec":  "mp3",
+        "sampleRateHz":  48000,
+        "channels":  "mono",
+        "durationSeconds":  0.86,
+        "integratedLufs":  -27.6,
+        "truePeakDbfs":  -12.9,
+        "bytes":  8325
+    },
+    {
+        "name":  "tactician-evade",
+        "format":  "ogg",
+        "codec":  "vorbis",
+        "sampleRateHz":  48000,
+        "channels":  "mono",
+        "durationSeconds":  0.19,
+        "integratedLufs":  null,
+        "truePeakDbfs":  -17.6,
+        "bytes":  6101
+    },
+    {
+        "name":  "tactician-evade",
+        "format":  "mp3",
+        "codec":  "mp3",
+        "sampleRateHz":  48000,
+        "channels":  "mono",
+        "durationSeconds":  0.22,
+        "integratedLufs":  null,
+        "truePeakDbfs":  -17.5,
+        "bytes":  2685
+    }
+]

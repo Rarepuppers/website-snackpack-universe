@@ -65,8 +65,8 @@ Valve references checked for this review: [Steam Hardware compatibility checklis
 
 ### Ordered next-task ledger
 
-1. **Completed in this review — T0.1 low-risk batch:** Infected Survivor, Spinewheel, and Tether
-   Bloom are extracted with focused behaviour tests and unchanged replay/reference fixtures.
+1. **In progress — T0.1 one-enemy slices:** the low-risk batch and four additional slices through
+   Nest Weaver are extracted with focused behaviour tests and unchanged replay/reference fixtures.
 2. **Now — plan hygiene:** mark T0.4 complete; correct the Deck presentation contract and Steam
    asset dimensions; turn frozen counts into generated audit output.
 3. **T2.0–T2.2 complete:** pure host
@@ -181,14 +181,16 @@ about three hours (finish 1 run, win 1 run, finish 3 runs, reach wave 3, clear 5
 only one perk can be equipped, and after that nothing ever changes between runs again. There is
 no persistent currency, no spendable tree, and the three silhouette heroes have no unlock rule.
 
-**F8 — Three production-playable heroes; Assault released behind progression.** Marine and
+**F8 — Five production-playable heroes; Assault, Tactician, and Scout released behind progression.** Marine and
 Medic remain immediately deployable. Assault has its typed combat contract, Marauder AR,
 Momentum passive, Breach & Clear ultimate, rack/growth/upgrade economy, dossier, HUD feedback,
 full-height portrait, 12-frame directional body, modular Breach overlay, and roster tile. Three
 validated 48 kHz/24-bit audio masters and six screened OGG/MP3 runtime derivatives exist, and
 hero-aware damage/evade/death selection is wired, and contextual human mix acceptance passed.
-Assault is playable after purchasing Assault Clearance through its 35-mark prerequisite path.
-Tactician now has a reviewable mechanics candidate behind its in-development gate; Scout remains a silhouette without mechanics.
+Assault is playable after purchasing Assault Clearance through its 35-mark prerequisite path. Tactician's
+mechanics, C3 presentation/audio, tuning, density, and listening gates are accepted; it is playable after
+purchasing Tactician Clearance through its parallel 35-mark path. Scout's complete mechanics and presentation
+package is released through its 45-mark dual-doctrine Scout Clearance path.
 
 **F9 — No daily/weekly seeded run and no leaderboards.** Steam Leaderboards are free, the run
 already threads a deterministic seed (`?mapseed=N`), and a daily is the cheapest retention
@@ -393,15 +395,14 @@ Gravity Adept pull-pulse pilots are complete. Extend this pattern to the remaini
 needs one readable, testable combat behaviour instead of another percentage bag. Close the last two
 typed elemental-received scars only after the player-side damage/status contract exists.
 
-**G5 — Heroes 3–5.** Assault's mechanics and C3 visual package are complete. Tactician's mechanics candidate
-is implemented and test-covered but remains non-deployable until its production presentation, audio, unlock economy,
-and explicit acceptance are complete. The remaining hero gate
+**G5 — Heroes 3–5.** Assault and Tactician's mechanics, C3 packages, audio, tuning, unlock economy, and
+explicit acceptance are complete. The remaining hero gate
 is complete: the retained masters have OGG/MP3 derivatives, automated metadata/peak screening,
 hero-aware damage/evade/death selection, and accepted contextual playback. Marauder now owns its gameplay body, tracer,
 muzzle/casing, impact presentation, and standalone HUD/choice/debrief tile. The unlock contract is now
 defined and tested: Assault Clearance costs 18 Command Marks after Breach Protocol (35 total path cost), but
 the released node is visible and purchasable. Assault remains locked until that node is owned. Begin
-Tactician C3 production is next, followed by its unlock integration and then Scout. Keep the one-hero-at-a-time rule.
+Scout is next. Keep the one-hero-at-a-time rule.
 
 **G6 — Combat feel.** Hit-stop: 2–4 frames of `timeScale` dilation on crit and on kill, scaled by
 the existing reduced-motion setting and the new shake-intensity slider. Weapon recoil kick on the
@@ -620,6 +621,21 @@ Sequencing, safest first — each is independently shippable and independently r
 2. Enemy behaviours next, **one enemy per commit**, each with its existing test file kept green
    and unmodified. There are already `*.test.ts` files per enemy — if a behaviour extraction
    requires editing its test, the extraction changed behaviour and must be reworked.
+   **Aurum Hoarder extraction complete 9 Aug 2026:** forage/flee timing, movement intent, post-movement
+   exit selection, and escape resolution now live in `AurumHoarderBehavior.ts`. Existing Aurum integration,
+   reference-run, and replay fixtures pass unchanged. **Corrupted Marine extraction complete 9 Aug 2026:** its
+   positioning, locked tell, projectile-capacity hold, throw, and recovery state machine now lives in
+   `CorruptedMarineBehavior.ts`; movement still resolves before its range lock. Existing lifecycle, reference-run,
+   and replay tests pass unchanged. **Foundry child extraction complete 9 Aug 2026:** finite lifetime, owner-loss
+   shutdown, drone pursuit, and turret tracking/warning/fire/recovery decisions now live in
+   `FoundryChildBehavior.ts`; collision, line of sight, damage, and events remain simulation-owned. Fabricator,
+   Assembly Prime, reference-run, and replay tests pass unchanged. **Nest Weaver extraction complete 9 Aug 2026:**
+   positioning, range control, placement windup, recovery, and retry timing now live in
+   `NestWeaverBehavior.ts`; live-cap/threat reservation, target placement, pod spawning, and events remain
+   simulation-owned. Its existing combat/lifecycle, reference-run, and replay tests pass unchanged. The monolith
+   remains 10,464 lines because the extracted adapter and imports offset this slice; the behavior itself is now
+   independently testable. Continue one enemy at a time; Cyborg Reclaimer is the next bounded candidate, while
+   Siege Crusher remains deferred until the lower-risk standard-enemy wrappers are gone.
 3. Weapons, projectiles, scrap shop, decisions, snapshot last — these hold more shared mutable
    state and need an explicit context interface rather than pure step functions.
 
@@ -962,20 +978,51 @@ constructed by anything.
   and standalone HUD/choice/debrief tile are integrated; the stable eight-frame Batch I atlas remains
   unchanged. Assault Clearance is a typed 18-mark hero node after Breach Protocol; it cannot render,
   purchase, or unlock deployment before its prerequisites and 18-mark cost are satisfied.
-- **T4.9 — IN PROGRESS 9 Aug 2026. Tactician mechanics candidate implemented; release gates retained.** The
+- **T4.9 — COMPLETE 9 Aug 2026. Tactician released through Tactician Clearance.** The
   typed definition now owns an 11-health / 4.85-speed chassis, Unique/Light/Medium/All rack, Event Horizon start,
   2/2/2/1 upgrade economy, and the canon growth package (+1 health, +1 armour, +1 Unique proficiency, alternating
   damage/speed). `Designate Priority` marks enemies touched by Event Horizon for 4 seconds and makes autonomous
   weapons prefer those targets without adding a damage multiplier. `Coordinated Strike` orders every equipped
   weapon to perform one immediate attack on a 26-second cooldown without resetting its normal firing cadence.
   The HUD exposes the designation count and `?hero=tactician` provides a code-native mechanics-review route that
-  never borrows Marine art. Character Select exposes the real dossier as **IN DEVELOPMENT** and keeps Deploy
-  disabled. Browser QA accepted the complete dossier at 960×540 with no console warnings or errors. The first
-  C3 visual candidate is now retained: a 1024×1536 select identity anchor, transparent 12-frame 96 px gameplay
-  sheet, 128 px roster crop, deterministic normalizer, and explicit select/combat review routes. The ordinary
-  roster still shows a silhouette. Remaining: freeze tuning after playtest, decide whether a separate equipment
-  overlay is materially required, produce and accept hero-specific audio, complete compact/density visual
-  acceptance, define the Armory cost and prerequisite path, then enable deployment only after all gates pass.
+  never borrows Marine art. Character Select exposes the accepted portrait and real dossier, labels the hero
+  **LOCKED** until clearance ownership, and enables Deploy only when that authority check passes. Browser QA
+  accepted the complete dossier at 960×540 with no console warnings or errors. The retained C3 package includes
+  a 1024×1536 select identity anchor, transparent 12-frame 96 px gameplay sheet, 128 px roster crop,
+  deterministic normalizer, and explicit select/combat review routes. A separate equipment overlay is
+  intentionally omitted because the sensor fin
+  belongs to the stable body and no equipped mechanic needs a modular layer. The held Armory contract is a
+  22-mark **Tactician Clearance** after Shock Doctrine, producing a 35-mark total path parallel to Assault's
+  Breach branch. The accepted release flag exposes the node while cost, prerequisites, save hydration, direct
+  selection, run start, and threat confirmation continue enforcing ownership. Tuning is frozen after the
+  corrected deterministic policy audit placed Tactician within the
+  implemented roster band across 12 seeds at 45 seconds (median level 2, scrap 3, damage taken 9). Close-view,
+  ordinary combat, and 56-enemy density presentation are accepted with no browser warnings or errors.
+  Contextual damage/evade/death listening is accepted and the reviewed release flag is enabled. The three
+  deterministic 48 kHz/24-bit masters and six OGG/MP3
+  derivatives are wired and pass automated codec, duration, channel, sample-rate, and true-peak screening;
+  Mark's contextual acceptance completes the human listening gate.
+- **T4.10 — COMPLETE 9 Aug 2026. Scout released through Scout Clearance.** Scout
+  owns a typed definition and catalogue entry with an 8-health / 6.0-speed fragile chassis, five-metre dash,
+  Light/Light/Medium/All rack, Arc Carbine start, and 3/1/1/2 upgrade economy. Canon growth is implemented as
+  +2 speed, +1 damage, and +1 Light proficiency per level. `Slipstream` grants 20% attack speed for 2.5 seconds
+  when an evasive dash begins; `Deadeye Burst` fires three tightly grouped seven-damage rounds with two-target
+  pierce on a 24-second cooldown. Across 12 cautious-policy seeds at 45 seconds, the candidate records median
+  level 2, 21 scrap, and 8 damage taken; a provisional regression band now owns those results. `?hero=scout`
+  began with an explicit code-native mechanics route that refused all existing hero art. Focused mechanics,
+  catalogue, and balance-audit tests plus TypeScript pass. The C3 visual package
+  now adds a 1024×1536 hooded select portrait, transparent 12-frame 96 px body sheet, 128 px roster tile,
+  deterministic normalizer, and standard Character Select / `?hero=scout` routes; the explicit C3 query aliases
+  remain useful for provenance reviews.
+  Its narrow cyan visor, long side optic, slim charcoal/navy armour, and pale-sand markings pass close-view,
+  ordinary-combat, and 56-enemy density review. A separate overlay is intentionally omitted because the hood and
+  optic are stable identity and no equipped mechanic requires a modular layer. Three deterministic dry Scout
+  masters and six OGG/MP3 derivatives now provide isolated damage, evade, and death feedback. Codec, duration,
+  channel, sample-rate, and true-peak screening pass with shared/synth fallbacks intact. The released progression
+  contract is a 20-mark **Scout Clearance** after both Shock Doctrine and Breach Protocol (45 marks total).
+  Contextual damage/evade/death listening is accepted, the six-node Armory layout is live, and the single release
+  authority now admits Scout to the roster, standard hero asset group, save selection, threat confirmation, and
+  run start. Ownership remains mandatory at every boundary.
 
 ### 10.6 Dependency graph
 

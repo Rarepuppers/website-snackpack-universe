@@ -3,8 +3,11 @@ import { createRunSummary } from "../run/RunSummary";
 import {
   ARMORY_NODES,
   ASSAULT_UNLOCK_NODE_ID,
+  SCOUT_UNLOCK_NODE_ID,
+  TACTICIAN_UNLOCK_NODE_ID,
   armoryNode,
   assaultUnlockRequirementText,
+  tacticianUnlockRequirementText,
   canPurchaseArmoryNode,
   canSelectArmoryNode,
   commandMarksBalance,
@@ -12,6 +15,7 @@ import {
   commandMarksSpent,
   isHeroDeploymentUnlocked,
   normalizePurchasedArmoryNodeIds,
+  scoutUnlockRequirementText,
   selectedArmoryWeapon,
 } from "./ArmoryProgression";
 
@@ -74,5 +78,54 @@ describe("ArmoryProgression", () => {
     expect(isHeroDeploymentUnlocked("assault", [ASSAULT_UNLOCK_NODE_ID])).toBe(true);
     expect(isHeroDeploymentUnlocked("marine", [])).toBe(true);
     expect(isHeroDeploymentUnlocked("medic", [])).toBe(true);
+  });
+
+  it("releases Tactician Clearance after C3 acceptance and enforces its parallel path", () => {
+    const node = armoryNode(TACTICIAN_UNLOCK_NODE_ID);
+    expect(node).toMatchObject({
+      kind: "hero-unlock",
+      heroId: "tactician",
+      cost: 22,
+      prerequisiteIds: ["armory-arc-carbine"],
+      released: true,
+    });
+    expect(ARMORY_NODES.map(({ id }) => id)).toContain(TACTICIAN_UNLOCK_NODE_ID);
+    expect(canPurchaseArmoryNode(
+      TACTICIAN_UNLOCK_NODE_ID,
+      35,
+      ["armory-scattergun", "armory-arc-carbine"],
+    )).toBe(true);
+    expect(canPurchaseArmoryNode(TACTICIAN_UNLOCK_NODE_ID, 34, ["armory-scattergun", "armory-arc-carbine"]))
+      .toBe(false);
+    expect(canSelectArmoryNode(TACTICIAN_UNLOCK_NODE_ID)).toBe(false);
+    expect(selectedArmoryWeapon(TACTICIAN_UNLOCK_NODE_ID, [TACTICIAN_UNLOCK_NODE_ID])).toBeNull();
+    expect(isHeroDeploymentUnlocked("tactician", [])).toBe(false);
+    expect(isHeroDeploymentUnlocked("tactician", [TACTICIAN_UNLOCK_NODE_ID])).toBe(true);
+    expect(tacticianUnlockRequirementText()).toBe(
+      "Purchase TACTICIAN CLEARANCE for 22 Command Marks after SHOCK DOCTRINE.",
+    );
+  });
+
+  it("releases Scout Clearance behind both weapon doctrines", () => {
+    const node = armoryNode(SCOUT_UNLOCK_NODE_ID);
+    const completePath = ["armory-scattergun", "armory-arc-carbine", "armory-patrol-blade"] as const;
+    expect(node).toMatchObject({
+      kind: "hero-unlock",
+      heroId: "scout",
+      cost: 20,
+      prerequisiteIds: ["armory-arc-carbine", "armory-patrol-blade"],
+      released: true,
+    });
+    expect(commandMarksSpent([...completePath, SCOUT_UNLOCK_NODE_ID])).toBe(45);
+    expect(ARMORY_NODES.map(({ id }) => id)).toContain(SCOUT_UNLOCK_NODE_ID);
+    expect(canPurchaseArmoryNode(SCOUT_UNLOCK_NODE_ID, 45, completePath)).toBe(true);
+    expect(canPurchaseArmoryNode(SCOUT_UNLOCK_NODE_ID, 44, completePath)).toBe(false);
+    expect(canSelectArmoryNode(SCOUT_UNLOCK_NODE_ID)).toBe(false);
+    expect(selectedArmoryWeapon(SCOUT_UNLOCK_NODE_ID, [SCOUT_UNLOCK_NODE_ID])).toBeNull();
+    expect(isHeroDeploymentUnlocked("scout", [])).toBe(false);
+    expect(isHeroDeploymentUnlocked("scout", [SCOUT_UNLOCK_NODE_ID])).toBe(true);
+    expect(scoutUnlockRequirementText()).toBe(
+      "Purchase SCOUT CLEARANCE for 20 Command Marks after SHOCK DOCTRINE and BREACH PROTOCOL.",
+    );
   });
 });

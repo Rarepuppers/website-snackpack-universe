@@ -342,7 +342,9 @@ export class PrototypeScene extends Phaser.Scene {
         ? "medic-base-v1"
         : heroId === "assault"
           ? "assault-base-v1"
-          : heroId === "tactician" ? "tactician-base-v1" : "marine-base-v1";
+          : heroId === "tactician"
+            ? "tactician-base-v1"
+            : heroId === "scout" ? "scout-base-v1" : "marine-base-v1";
       const heroHelmetAsset = heroId === "medic"
         ? "medic-helmet-v1"
         : heroId === "assault" ? "assault-breach-overlay-v1" : "marine-helmet-v1";
@@ -4957,6 +4959,7 @@ function readWorldObjectTheme(): string | undefined {
 
 function readMarineArtPreview(): boolean {
   const params = new URLSearchParams(window.location.search);
+  if (params.get("hero") === "scout") return params.get("art") !== "placeholder";
   if (params.get("hero") === "tactician") return params.get("art") === "c3";
   return params.get("hero") === "assault"
     ? params.get("art") === "c3"
@@ -4965,12 +4968,12 @@ function readMarineArtPreview(): boolean {
 
 function readHeroPreview(): HeroDefinition["id"] | null {
   const hero = new URLSearchParams(window.location.search).get("hero");
-  return hero === "assault" || hero === "tactician" ? hero : null;
+  return hero === "assault" || hero === "tactician" || hero === "scout" ? hero : null;
 }
 
 function readMarineHelmetPreview(): boolean {
   const params = new URLSearchParams(window.location.search);
-  return params.get("hero") !== "tactician" && params.get("helmet") !== "0";
+  return params.get("hero") !== "tactician" && params.get("hero") !== "scout" && params.get("helmet") !== "0";
 }
 
 function normalizeDirection(x: number, y: number): { x: number; y: number } {

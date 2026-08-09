@@ -177,6 +177,44 @@ describe("LocalSaveStore", () => {
     expect(new LocalSaveStore(storage).load().selectedHeroId).toBe("assault");
   });
 
+  it("persists Tactician only after its Armory clearance is owned", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    store.selectHero("tactician");
+    expect(store.load().selectedHeroId).toBe("marine");
+
+    store.replaceWith({
+      ...DEFAULT_SAVE,
+      progress: {
+        ...DEFAULT_SAVE.progress,
+        commandMarksLifetime: 35,
+        purchasedArmoryNodeIds: ["armory-scattergun", "armory-arc-carbine", "armory-tactician-clearance"],
+      },
+      selectedHeroId: "tactician",
+    });
+    expect(new LocalSaveStore(storage).load().selectedHeroId).toBe("tactician");
+  });
+
+  it("persists Scout only after its complete Armory clearance path is owned", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    store.selectHero("scout");
+    expect(store.load().selectedHeroId).toBe("marine");
+
+    store.replaceWith({
+      ...DEFAULT_SAVE,
+      progress: {
+        ...DEFAULT_SAVE.progress,
+        commandMarksLifetime: 45,
+        purchasedArmoryNodeIds: [
+          "armory-scattergun", "armory-arc-carbine", "armory-patrol-blade", "armory-scout-clearance",
+        ],
+      },
+      selectedHeroId: "scout",
+    });
+    expect(new LocalSaveStore(storage).load().selectedHeroId).toBe("scout");
+  });
+
   it("defaults damage numbers on and lets them be turned off", () => {
     expect(DEFAULT_SAVE.settings.damageNumbersEnabled).toBe(true);
     const storage = fakeStorage();

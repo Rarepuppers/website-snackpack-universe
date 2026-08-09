@@ -1,21 +1,22 @@
 # Character Batch C3 — Tactician
 
-Production staging for the second progression hero. Tactician's mechanics candidate is implemented, but
-the hero remains non-deployable until the complete visual/audio, tuning, unlock-economy, and acceptance gates
-pass.
+Accepted production package for the second progression hero. Tactician's mechanics, visual/audio, tuning,
+unlock-economy, density, and contextual-listening gates passed on 9 Aug 2026.
 
 - [x] Full-height, text-free 1024×1536 select portrait candidate.
 - [x] Four-direction gameplay sheet candidate: south, north, east, west columns; idle, move, and evade rows.
 - [x] Unlocked roster-tile candidate.
-- [ ] Dedicated equipment overlay, if the final gameplay presentation requires one.
-- [ ] Hero-specific damage, evade, and death audio masters plus OGG/MP3 runtime derivatives.
-- [ ] Close-view, compact-scale, in-context, and human listening acceptance.
-- [ ] Armory cost and prerequisite path.
+- [x] Separate equipment overlay reviewed and intentionally omitted: the passive sensor fin is part of the
+  stable base identity and no equipped Tactician mechanic needs a modular layer.
+- [x] Hero-specific damage, evade, and death audio candidates plus OGG/MP3 runtime derivatives.
+- [x] Close-view, compact-scale, and 56-enemy in-context visual acceptance.
+- [x] Contextual human listening acceptance.
+- [x] Held Armory contract: 22-mark Tactician Clearance after Shock Doctrine (35-mark total path).
 
 `tactician-select-portrait-v1-1024x1536.png` is the identity anchor. The sealed violet visor, high collar,
 slender segmented command armour, compact sensor fin, slate/violet/cyan palette, and Event Horizon weapon
 identity must remain stable across follow-on assets.
 
-The candidates are registered only for explicit review through `?flow=character-select&c3=tactician` and
-`?hero=tactician&art=c3`. Partial C3 production must not replace the ordinary in-development silhouette or
-enable deployment.
+The explicit `?flow=character-select&c3=tactician` and `?hero=tactician&art=c3` routes remain useful for focused
+review. Ordinary Character Select now presents the accepted portrait and locks deployment behind Tactician
+Clearance; the accepted audio package is hero-isolated with format and synth fallbacks intact.

@@ -2,6 +2,7 @@ import type { HeroDefinition } from "./HeroDefinition";
 import { ASSAULT } from "./assault";
 import { MARINE } from "./marine";
 import { MEDIC } from "./medic";
+import { SCOUT } from "./scout";
 import { TACTICIAN } from "./tactician";
 
 export const HERO_CATALOG: Readonly<Record<HeroDefinition["id"], HeroDefinition>> = Object.freeze({
@@ -9,6 +10,7 @@ export const HERO_CATALOG: Readonly<Record<HeroDefinition["id"], HeroDefinition>
   medic: MEDIC,
   assault: ASSAULT,
   tactician: TACTICIAN,
+  scout: SCOUT,
 });
 
 export function heroDefinition(heroId: HeroDefinition["id"]): HeroDefinition {
@@ -16,5 +18,5 @@ export function heroDefinition(heroId: HeroDefinition["id"]): HeroDefinition {
 }
 
 export function isHeroId(value: unknown): value is HeroDefinition["id"] {
-  return value === "marine" || value === "medic" || value === "assault" || value === "tactician";
+  return value === "marine" || value === "medic" || value === "assault" || value === "tactician" || value === "scout";
 }

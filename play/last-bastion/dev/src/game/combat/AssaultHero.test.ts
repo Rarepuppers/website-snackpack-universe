@@ -20,7 +20,7 @@ describe("Assault hero mechanics contract", () => {
   it("registers the authored identity, loadout, rack, and upgrade economy", () => {
     expect(heroDefinition("assault")).toBe(ASSAULT);
     expect(Object.values(HERO_CATALOG).map((hero) => hero.id))
-      .toEqual(["marine", "medic", "assault", "tactician"]);
+      .toEqual(["marine", "medic", "assault", "tactician", "scout"]);
 
     const deployed = new CombatSimulation({ heroId: "assault", autoStartWaves: false }).snapshot();
     expect(deployed.heroId).toBe("assault");

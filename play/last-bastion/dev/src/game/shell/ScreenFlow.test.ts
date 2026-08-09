@@ -13,6 +13,7 @@ import {
   type ShellIntent,
   type ShellState,
 } from "./ScreenFlow";
+import { SCOUT_DEPLOYMENT_RELEASED } from "../progression/ArmoryProgression";
 import { rebindGamepad, rebindKeyboard } from "../input/ControlBindings";
 import { browserDisplayCapabilities, desktopDisplayCapabilities } from "../rendering/DisplayCapabilities";
 import { PERK_CATALOG } from "../perks/perkCatalog";
@@ -247,8 +248,45 @@ describe("Shell screen flow", () => {
       { type: "start-run", heroId: "assault", perkId: "perk-veteran", threatTier: 0 },
     ]);
 
+    const tacticianProgress: typeof DEFAULT_SAVE.progress = {
+      ...DEFAULT_SAVE.progress,
+      commandMarksLifetime: 35,
+      purchasedArmoryNodeIds: [
+        "armory-scattergun", "armory-arc-carbine", "armory-tactician-clearance",
+      ],
+    };
+    const tactician = createShellState(
+      DEFAULT_SAVE.settings, "character-select", tacticianProgress, "perk-veteran", "tactician",
+    );
+    const tacticianThreat = stepShell(tactician, "confirm").state;
+    expect(tacticianThreat.screen).toBe("threat-select");
+    expect(stepShell(tacticianThreat, "confirm").effects).toEqual([
+      { type: "start-run", heroId: "tactician", perkId: "perk-veteran", threatTier: 0 },
+    ]);
+
+    const scoutProgress: typeof DEFAULT_SAVE.progress = {
+      ...DEFAULT_SAVE.progress,
+      commandMarksLifetime: 45,
+      purchasedArmoryNodeIds: [
+        "armory-scattergun", "armory-arc-carbine", "armory-patrol-blade", "armory-scout-clearance",
+      ],
+    };
+    const scout = createShellState(
+      DEFAULT_SAVE.settings, "character-select", scoutProgress, "perk-veteran", "scout",
+    );
+    const scoutThreat = stepShell(scout, "confirm").state;
+    expect(scoutThreat.screen).toBe("threat-select");
+    expect(stepShell(scoutThreat, "confirm").effects).toEqual([
+      { type: "start-run", heroId: "scout", perkId: "perk-veteran", threatTier: 0 },
+    ]);
+
     const craftedThreat = { ...locked, screen: "threat-select" as const };
     expect(stepShell(craftedThreat, "confirm").effects).toEqual([]);
+  });
+
+  it("derives Scout's roster state from the deployment release authority", () => {
+    expect(ROSTER.find(({ id }) => id === "scout")?.status)
+      .toBe(SCOUT_DEPLOYMENT_RELEASED ? "playable" : "in-development");
   });
 
   it("fits the expanded perk catalog into two rows above the roster rail", () => {

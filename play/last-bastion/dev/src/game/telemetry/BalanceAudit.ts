@@ -8,6 +8,27 @@ export interface BalanceAuditRow extends CombatTelemetrySnapshot { heroId: strin
 export interface BalanceAuditPercentiles { heroId: string; policy: BalanceAuditPolicy; bossEntryLevel: [number, number, number]; finalScrap: [number, number, number]; purchases: [number, number, number]; damageTaken: [number, number, number]; peakDensity: [number, number, number]; winRate: number; }
 
 const idle: PlayerIntent = { move: { x: 0, y: 0 }, aim: { x: 1, y: 0 }, fireHeld: true, evasiveMovePressed: false, ultimatePressed: false, interactPressed: false, kitPressed: false, pausePressed: false, restartPressed: false };
+
+function auditIntent(policy: BalanceAuditPolicy, elapsed: number, seed: number): PlayerIntent {
+  const frame = Math.round(elapsed / 0.05);
+  const phase = elapsed * 0.72 + seed * 0.37;
+  const aimPhase = elapsed * 0.41 + seed * 0.19;
+  const move = policy === "greedy-damage"
+    ? { x: 0, y: 0 }
+    : policy === "sustain-first"
+      ? { x: Math.cos(phase) * 0.7, y: Math.sin(phase) * 0.7 }
+      : policy === "random"
+        ? { x: Math.cos(phase * 2.17), y: Math.sin(phase * 1.63) }
+        : { x: Math.cos(phase), y: Math.sin(phase) };
+  const evadeCadenceFrames = policy === "sustain-first" ? 72 : policy === "greedy-damage" ? 150 : 100;
+  return {
+    ...idle,
+    move,
+    aim: { x: Math.cos(aimPhase), y: Math.sin(aimPhase) },
+    evasiveMovePressed: frame % evadeCadenceFrames === 0,
+    ultimatePressed: frame % 20 === 0,
+  };
+}
 function choosePolicyOption(simulation: CombatSimulation, policy: BalanceAuditPolicy, options: readonly { id: string }[]): void {
   if (!options.length) return;
   const index = policy === "greedy-damage" ? 0 : policy === "sustain-first" ? Math.min(1, options.length - 1) : 0;
@@ -19,13 +40,13 @@ export function runBalanceAudit(options: BalanceAuditOptions = {}): BalanceAudit
   const policies = options.policies ?? ["cautious", "greedy-damage", "sustain-first", "random"];
   const maxSeconds = Math.max(1, options.maxSeconds ?? 90);
   const rows: BalanceAuditRow[] = [];
-  for (const heroId of ["marine", "medic", "assault"] as const) for (let seed = 1; seed <= seeds; seed += 1) for (const policy of policies) {
+  for (const heroId of ["marine", "medic", "assault", "tactician", "scout"] as const) for (let seed = 1; seed <= seeds; seed += 1) for (const policy of policies) {
     const simulation = new CombatSimulation({ heroId, seed, autoStartWaves: true, autoFireEnabled: true });
     const telemetry = new CombatTelemetryAccumulator();
     let snapshot = simulation.snapshot();
     for (let elapsed = 0; elapsed < maxSeconds && snapshot.status === "combat"; elapsed += 0.05) {
       if (snapshot.pendingDecision) choosePolicyOption(simulation, policy, snapshot.pendingDecision.options);
-      snapshot = simulation.step(idle, 0.05);
+      snapshot = simulation.step(auditIntent(policy, elapsed, seed), 0.05);
       telemetry.recordSnapshot(0.05, snapshot);
     }
     rows.push({ ...telemetry.toSnapshot(), heroId, seed, policy, level: snapshot.level, outcome: snapshot.status, finalScrap: snapshot.securedScrap });

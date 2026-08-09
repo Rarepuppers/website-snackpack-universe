@@ -52,7 +52,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(191);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(194);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -78,6 +78,18 @@ describe("GameAssetManifest", () => {
       kind: "image", logicalWidth: 1024, logicalHeight: 1536,
     });
     expect(GAME_ASSETS["tactician-roster-tile-v1"]).toMatchObject({
+      kind: "image", logicalWidth: 128, logicalHeight: 128,
+    });
+  });
+
+  it("locks the held Scout C3 visual contract", () => {
+    const body = GAME_ASSETS["scout-base-v1"];
+    expect(body.kind).toBe("spritesheet");
+    if (body.kind === "spritesheet") expect(body.frameCount).toBe(12);
+    expect(GAME_ASSETS["scout-select-portrait-v1"]).toMatchObject({
+      kind: "image", logicalWidth: 1024, logicalHeight: 1536,
+    });
+    expect(GAME_ASSETS["scout-roster-tile-v1"]).toMatchObject({
       kind: "image", logicalWidth: 128, logicalHeight: 128,
     });
   });

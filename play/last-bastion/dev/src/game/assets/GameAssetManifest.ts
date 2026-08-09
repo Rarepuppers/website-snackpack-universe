@@ -142,6 +142,10 @@ import tacticianBaseSheetUrl from "../../../../art/production-tests/batch-charac
 import tacticianSelectPortraitUrl from "../../../../art/production-tests/batch-character-c3-tactician/tactician-select-portrait-v1-1024x1536.png";
 import tacticianSelectPortraitWebpUrl from "../../../../art/production-tests/batch-character-c3-tactician/tactician-select-portrait-v1-1024x1536.webp";
 import tacticianRosterTileUrl from "../../../../art/production-tests/batch-character-c3-tactician/tactician-roster-tile-v1-128.png";
+import scoutBaseSheetUrl from "../../../../art/production-tests/batch-character-c3-scout/scout-base-spritesheet-v1-96.png";
+import scoutSelectPortraitUrl from "../../../../art/production-tests/batch-character-c3-scout/scout-select-portrait-v1-1024x1536.png";
+import scoutSelectPortraitWebpUrl from "../../../../art/production-tests/batch-character-c3-scout/scout-select-portrait-v1-1024x1536.webp";
+import scoutRosterTileUrl from "../../../../art/production-tests/batch-character-c3-scout/scout-roster-tile-v1-128.png";
 import marauderArUrl from "../../../../art/production-tests/batch-character-c3-assault/marauder/marauder-ar-gameplay-v1-256x128.png";
 import marauderArEffectsUrl from "../../../../art/production-tests/batch-character-c3-assault/marauder/marauder-ar-effects-v1-64.png";
 import marauderArTileUrl from "../../../../art/production-tests/batch-character-c3-assault/marauder/marauder-ar-tile-v1-128.png";
@@ -434,6 +438,9 @@ export type GameAssetId =
   | "tactician-base-v1"
   | "tactician-select-portrait-v1"
   | "tactician-roster-tile-v1"
+  | "scout-base-v1"
+  | "scout-select-portrait-v1"
+  | "scout-roster-tile-v1"
   | "marauder-ar-v1"
   | "marauder-ar-effects-v1"
   | "marauder-ar-tile-v1"
@@ -652,6 +659,9 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("tactician-base-v1", tacticianBaseSheetUrl, 96, 96, 12, 0.5, 0.68),
   image("tactician-select-portrait-v1", runtimeImageUrl(tacticianSelectPortraitUrl, tacticianSelectPortraitWebpUrl), 1024, 1536, 0.5, 0.9),
   image("tactician-roster-tile-v1", tacticianRosterTileUrl, 128, 128, 0.5, 0.5),
+  sheet("scout-base-v1", scoutBaseSheetUrl, 96, 96, 12, 0.5, 0.68),
+  image("scout-select-portrait-v1", runtimeImageUrl(scoutSelectPortraitUrl, scoutSelectPortraitWebpUrl), 1024, 1536, 0.5, 0.9),
+  image("scout-roster-tile-v1", scoutRosterTileUrl, 128, 128, 0.5, 0.5),
   image("marauder-ar-v1", marauderArUrl, 64, 32, 0.25, 0.5),
   sheet("marauder-ar-effects-v1", marauderArEffectsUrl, 64, 64, 4, 0.5, 0.5),
   image("marauder-ar-tile-v1", marauderArTileUrl, 128, 128, 0.5, 0.5),

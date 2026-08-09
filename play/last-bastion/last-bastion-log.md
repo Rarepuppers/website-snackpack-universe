@@ -3302,3 +3302,253 @@ save and threat authority still reject deployment, and no Armory node exists.
   across 78 review routes, and offline **353 / 0 missing** local asset references.
 - The next C3 decisions are whether a separate equipment overlay adds real value and the production of
   hero-specific damage, evade, and death audio for contextual human listening.
+
+## 9 August 2026 — Tactician C3 audio candidates encoded and wired; listening gate retained
+
+Tactician now has three deterministic dry command-suit masters: a damped armour strike with broken sensor
+chirp for damage, a directional servo sweep with targeting-array confirmation for evade, and a fragmented
+command-link collapse with restrained power-down for death. The source generator writes mono 48 kHz/24-bit
+PCM without borrowed samples or voice-over. Dedicated encode and audit scripts produce OGG Vorbis and MP3
+runtime derivatives, mirror them to the built site, and retain a machine-readable six-file audit.
+
+Runtime feedback selection now isolates all three cues to `heroId === "tactician"`; shared Marine/Medic cues,
+Assault's accepted package, and oscillator fallbacks remain unchanged. Catalogue tests cover 30 unique feedback
+assets and prevent cross-hero cue leakage. All derivatives pass codec, 48 kHz mono, duration, and -1 dBFS
+true-peak-ceiling screening.
+
+The release boundary remains intact. Tactician has no Armory node, ordinary Character Select still shows its
+silhouette, and deployment remains disabled. Contextual human listening is the next required acceptance gate.
+
+- Full verification passes with **1,284 tests across 194 files**, production build success, smoke HTTP 200
+  across 78 review routes, and offline **359 / 0 missing** local asset references.
+
+## 9 August 2026 — Tactician overlay decision and hidden clearance contract frozen
+
+The C3 overlay question is closed as **not required**. Tactician's compact sensor fin, high collar, and command
+hardware are stable base-body identity rather than optional equipment, and no passive, ultimate, or equipped
+upgrade needs a modular visual layer. Adding one would create alignment and maintenance work without conveying
+a gameplay state.
+
+The progression contract is now code-owned but unreleased. **Tactician Clearance** costs 22 Command Marks after
+Shock Doctrine, making its Scattergun → Shock Doctrine → Clearance path total 35 marks—the same total as the
+parallel Assault branch through Breach Protocol. `TACTICIAN_DEPLOYMENT_RELEASED` remains false, so the node is
+excluded from the visible Armory, cannot be purchased or selected, and cannot authorize deployment even if its
+ID is injected into a save. The dossier derives its held cost and prerequisite copy from the same node data.
+
+- Focused progression, hero, shell, and save coverage passes with 66 tests.
+- Browser QA accepted the longer clearance copy at 960×540 with no overlap, warnings, or errors.
+- Contextual listening and final tuning/visual acceptance remain open; no release flag changed.
+- Tactician now participates in the deterministic balance audit alongside Marine, Medic, and Assault; a
+  dedicated regression test locks all four implemented mechanics contracts into the audit roster.
+- Full verification passes with **1,286 tests across 195 files**, production build success, smoke HTTP 200
+  across 78 review routes, and offline **359 / 0 missing** local asset references.
+
+## 9 August 2026 — Tactician tuning and density presentation accepted
+
+The balance audit previously changed only upgrade choices while every policy stood still and never used an
+ultimate, producing nearly identical hero output. The harness now drives deterministic policy-specific movement,
+aim, evade cadence, and ultimate use. This makes it a useful hero gate rather than a catalogue loop.
+
+Across 12 fixed cautious-policy seeds at 45 seconds, Tactician reaches median level 2, earns median 3 scrap,
+and takes median 9 damage. Those values sit inside the implemented roster band and are locked by a dedicated
+regression test, so the 11-health / 4.85-speed chassis, four-second designation, and 26-second Coordinated Strike
+cooldown are frozen for this release candidate.
+
+The explicit C3 route also passed the 56-enemy density-capacity scene. The body remains locatable through its
+visor/sensor accents, Event Horizon ring and aim presentation remain readable, the designation HUD survives the
+crowded frame, and the browser reports no warnings or errors. Close-view, ordinary combat, and density visual
+acceptance are complete. Contextual human listening is now the only remaining Tactician release gate.
+
+- Full verification passes with **1,287 tests across 196 files**, production build success, smoke HTTP 200
+  across 78 review routes, and offline **359 / 0 missing** local asset references.
+
+## 9 August 2026 — Tactician audio accepted and deployment gate released
+
+Mark accepted the Tactician damage, evade, and death cues. The reviewed release flag is enabled, Tactician is
+a production-playable roster entry, and the 22-mark Tactician Clearance node is visible after Shock Doctrine.
+Its complete path costs 35 lifetime Command Marks, parallel to Assault's Breach Protocol branch.
+
+Release integration promotes the accepted portrait from C3-only review to the ordinary locked roster, includes
+Tactician in the production hero asset group, and retains save hydration, direct selection, run-start, and threat
+authority behind ownership of the clearance node. The five-node Armory now uses an explicit symmetric layout:
+Shock Doctrine → Tactician Clearance on the left and Breach Protocol → Assault Clearance on the right.
+
+- Focused progression, shell, save, asset-group, and hero coverage passes with 70 tests.
+- Browser QA accepted the five-node Armory and locked Tactician dossier at 960×540 with no warnings or errors.
+- Full verification passes with **1,288 tests across 196 files**, production build success, smoke HTTP 200
+  across 78 review routes, and offline **359 / 0 missing** local asset references.
+- T4.9 is complete. Scout is the next one-hero-at-a-time mechanics contract.
+
+## 9 August 2026 — T4.10 Scout mechanics candidate implemented; release gates retained
+
+Scout now owns a typed hero definition without becoming deployable. The candidate establishes the roster's
+fragile mobility extreme: 8 health, no regeneration or armour, 6.0 movement speed, a compact 0.48-metre body,
+and a five-metre dash with 0.22 seconds of protection. It starts with the existing Arc Carbine in a
+Light/Light/Medium/All rack and uses a 3/1/1/2 offensive/defensive/support/scavenger slot economy. Reusing the
+existing Light weapon keeps this gate about hero mechanics rather than silently opening another weapon art and
+audio pipeline.
+
+The canon growth package is live: +2 speed, +1 damage, and +1 Light proficiency per level. `Slipstream` is a
+real simulation modifier, granting 20% attack speed for 2.5 seconds when an evasive dash begins. `Deadeye Burst`
+fires three tightly grouped seven-damage rounds with two-target pierce on a 24-second cooldown. Projectile
+snapshots now expose remaining pierce for telemetry and deterministic contract verification.
+
+- Focused Scout, Assault, Tactician, catalogue, and balance-audit coverage passes: 10 tests across 4 files.
+- TypeScript passes.
+- Scout is `in-development`; Character Select cannot deploy it and no release authority has been added.
+- Across 12 fixed cautious-policy seeds at 45 seconds, Scout records median level 2, median 21 scrap, and median
+  8 damage taken; those values are held by a provisional regression test. The high scrap collection is consistent
+  with the fastest chassis and scavenger lean, but remains a deliberate playtest question rather than a final tune.
+- `?hero=scout` now boots the candidate with code-native geometry and explicitly refuses Marine or other hero art.
+- Browser QA accepted the code-native combat route and in-development Character Select dossier at 960×540.
+  The HUD exposes Scout's health, Dash, Deadeye Burst, and Arc Carbine; the roster keeps Deploy disabled and
+  states that clearance is unavailable. No browser warnings or errors were observed.
+- Full verification passes with **1,292 tests across 198 files**, production build success, smoke HTTP 200
+  across 78 review routes, and offline **359 / 0 missing** local asset references.
+- Next: begin the Scout C3 visual package and density review. Audio, clearance, and release remain later gates.
+
+## 9 August 2026 — Scout C3 visual candidate retained and presentation-reviewed
+
+Scout's production identity is now versioned under `batch-character-c3-scout`. The built-in generation path
+produced a full-height 1024×1536 select anchor and an exact 4×3 chroma gameplay sheet. The installed imagegen
+helper removed the sampled magenta background with soft matte and despill; the retained alpha master has
+transparent corners and no obvious key fringe. A deterministic normalizer creates the shared 12-frame 96 px
+runtime body, portrait WebP, and 128 px roster tile.
+
+The identity is intentionally lighter than the other Bastion heroes: close dark tactical hood, fully sealed narrow
+icy-cyan visor, unmistakable long side optic, slim charcoal/navy armour, compact equipment, and restrained
+pale-sand markings. The body sheet stays unarmed because the Arc Carbine remains a runtime layer. No separate
+overlay is required: hood and optic are stable identity, and Scout has no modular equipped mechanic.
+
+- Manifest and combat-selection contracts expose Scout's own body without borrowing another hero's art.
+- `?flow=character-select&c3=scout` shows the portrait while retaining **IN DEVELOPMENT**, unavailable clearance,
+  and disabled Deploy. `?hero=scout&art=c3` is the explicit combat route.
+- Browser QA accepts portrait fit, ordinary combat, and the 56-enemy density-capacity scene at 960×540. The cyan
+  visor/optic and slim silhouette remain locatable; no browser warnings or errors were observed.
+- Full verification passes with **1,294 tests across 198 files**, production build success, smoke HTTP 200 across
+  78 review routes, and offline **363 / 0 missing** local asset references.
+- Focused manifest, route, combat-selection, and Scout coverage passes. Audio, clearance, and release remain gated.
+- Next: produce Scout-isolated damage, evade, and death audio candidates and retain the human listening gate.
+
+## 9 August 2026 — Scout C3 audio candidates encoded and wired; listening gate retained
+
+Scout now has three deterministic dry reconnaissance-suit masters: a light plate snap with optical glitch, a
+compressed fabric/servo dash with ranging ping, and a cascading sensor shutdown. The generator writes mono
+48 kHz/24-bit PCM without borrowed samples or voice-over. Encoding retains OGG Vorbis and MP3 derivatives in the
+runtime tree and mirrors them to `game-assets`; the versioned audit report records codec, sample rate, channels,
+duration, integrated loudness where measurable, true peak, and byte size.
+
+All six derivatives pass the 48 kHz mono, 0.08–1.5 second, and −1 dBFS true-peak contracts. Scout is slightly
+quieter and shorter than Tactician by design: its feedback reads as lightweight fabric, compact plates, and a fast
+optic rather than command armour. Hero-aware lookup maps player hit, dodge, and death exclusively to the three
+Scout stems while preserving the shared sample and oscillator fallbacks for every other hero.
+
+- `PRODUCTION_AUDIO_FEEDBACK_ASSETS` now owns 33 unique batch-qualified stems.
+- Full verification passes with **1,295 tests across 198 files**, production build success, smoke HTTP 200 across
+  78 review routes, and offline **369 / 0 missing** local asset references.
+- Automated screening is complete; contextual human listening is still required.
+- Scout remains in development with no clearance, deployment authority, or release flag.
+
+## 9 August 2026 — Scout progression contract authored; release authority still held
+
+Scout now has a forward-compatible Armory contract without changing the live five-node tree. **Scout Clearance**
+costs 20 Command Marks after both Shock Doctrine and Breach Protocol, making its complete path 45 marks. The
+dual-doctrine prerequisite matches Scout's Light/Light/Medium/All rack and positions the fifth hero as a later,
+high-skill unlock rather than another 35-mark parallel branch.
+
+- The unreleased node is absent from `ARMORY_NODES`, cannot be purchased, and cannot be selected as a starting kit.
+- Deployment authority stays false even when the future clearance ID is manually injected into a save.
+- Save hydration, Character Select, and crafted threat-confirmation paths all refuse Scout while the flag is held.
+- A dormant six-node Armory arrangement avoids card overlap when release is eventually authorized while leaving
+  the current accepted five-node presentation unchanged.
+- The Scout roster state and standard hero asset-group admission derive from the same deployment flag as its
+  Armory node and run authority, eliminating separate manual release toggles.
+- Full verification passes with **1,300 tests across 199 files**, production build success, 78 smoke routes, and
+  offline **369 / 0 missing** local asset references.
+- Contextual listening and the final release review remain open; no roster status or deployment flag changed.
+
+## 9 August 2026 — T0.1 Aurum Hoarder behavior extracted while Scout release is held
+
+With Scout waiting on explicit contextual sound acceptance, work continued on the independent T0.1 monolith
+reduction. Aurum Hoarder's forage and flee state machine now lives in `AurumHoarderBehavior.ts` using the repo's
+established pure-step plus post-movement-resolution contract.
+
+- Timer advancement, wobble vectors, fixed movement intent, and facing are pure behavior outputs.
+- Exit selection still occurs after forage movement, and escape range is still checked after flee movement,
+  preserving the load-bearing tick order and seeded run behavior.
+- Existing Aurum integration, reference-run, and replay fixture tests pass unchanged; two focused behavior tests
+  cover transition intent and both escape conditions.
+- `CombatSimulation.ts` is now 10,490 lines. T0.1 remains in progress and the next extraction must remain a
+  separate one-enemy slice.
+- Full verification passes with **1,302 tests across 200 files**, production build success, 78 smoke routes, and
+  offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 Corrupted Marine behavior extracted
+
+The second independent T0.1 slice moves Corrupted Marine's four-phase knife state machine into
+`CorruptedMarineBehavior.ts`. The simulation remains responsible for collision-aware range-band movement,
+projectile creation, damage scaling, and presentation events.
+
+- Positioning movement still resolves before the 11-metre range check and target lock.
+- A saturated hostile-projectile budget still holds the windup in 0.1-second increments without losing the tell.
+- Throw, 2.8-second attack cooldown, recovery, and return to positioning retain their authored timing.
+- Existing lifecycle tests for locked-target dodging, cover interception, projectile speed, cooldown, and recovery
+  pass unchanged, as do the reference-run and replay fixtures.
+- Two pure behavior tests cover post-movement locking and the capacity-hold/throw/recovery sequence.
+- `CombatSimulation.ts` is now 10,473 lines; T0.1 remains in progress.
+- Full verification passes with **1,304 tests across 201 files**, production build success, 78 smoke routes, and
+  offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 Foundry child behavior extracted
+
+Foundry drones and turrets now share a pure `FoundryChildBehavior.ts` lifecycle. The module owns finite lifetime,
+owner-loss shutdown, drone pursuit intent, and turret tracking/warning/fire/recovery decisions. The simulation
+continues to own collision-aware movement, obstacle line-of-sight, damage scaling, player damage, and events.
+
+- Owner defeat retains precedence when owner loss and lifetime expiry occur on the same tick.
+- Drones retain fixed pursuit movement without separation steering.
+- Turrets retain the 9.5-metre acquisition range, 0.55-second locked warning, 0.5-second recovery, and 1.2-second
+  attack cooldown.
+- Existing Fabricator and Assembly Prime integration tests plus reference-run and replay fixtures pass unchanged.
+- Two pure behavior tests cover shutdown precedence and the complete drone/turret phase sequence.
+- `CombatSimulation.ts` is now 10,464 lines; T0.1 remains in progress.
+- Full verification passes with **1,306 tests across 202 files**, production build success, 78 smoke routes, and
+  offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T4.10 Scout contextual audio accepted and release enabled
+
+Mark accepted Scout's damage, evade, and death cues. The reviewed Scout deployment authority is now enabled,
+completing the fifth production-playable hero without weakening ownership checks.
+
+- **Scout Clearance** is visible and purchasable for 20 Command Marks after both Shock Doctrine and Breach
+  Protocol, a 45-mark total path.
+- Owning the clearance authorizes Scout persistence, Character Select confirmation, threat selection, and run
+  start; every boundary still rejects Scout without ownership.
+- The same release authority changes Scout from `in-development` to `playable` and admits its production assets to
+  the standard hero group. Ordinary `?hero=scout` now uses Scout art without the C3 preview query.
+- The live six-node Armory uses a three-card clearance row. Browser QA found and fixed a release-only overlap by
+  moving the permanent-purchase explanation into the free right header column.
+- Browser QA at the fixed 960×540 simulation contract accepts the six-node Armory, locked Scout dossier, ordinary
+  combat, and 56-enemy density scene with no warnings or errors.
+- The narrow cyan visor, hood/optic silhouette, Arc Carbine, HUD identity, prerequisites, and disabled locked-state
+  Deploy control remain readable on their production routes.
+- Full verification passes with **1,306 tests across 202 files**, production build success, 78 smoke routes, and
+  offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 Nest Weaver behavior extracted
+
+Nest Weaver's positioning, range control, placement windup, exposed recovery, and capacity-retry timing now live
+in the Phaser-free `NestWeaverBehavior.ts`. `CombatSimulation` retains the contextual systems: live-cap and threat
+reservation, post-movement target placement, pod spawning, hatch accounting, collision, and event emission.
+
+- Positioning movement still happens before the reservation attempt and target calculation, preserving the
+  load-bearing tick order and deterministic replay.
+- Rejected reservations retry after 0.5 seconds; accepted reservations keep the 0.85-second tell, 1.4-second
+  recovery, and 2.1-second repositioning window.
+- Existing Nest Weaver combat/lifecycle tests, reference run, and replay fixture pass unchanged.
+- Three focused behavior tests cover range control, accepted/rejected reservations, pod lay, recovery, and return
+  to positioning.
+- `CombatSimulation.ts` remains 10,464 lines because the explicit adapter/imports offset this small extraction;
+  T0.1 remains in progress and Cyborg Reclaimer is the next bounded candidate.
+- Full verification passes with **1,309 tests across 203 files**, production build success, 78 smoke routes, and
+  offline **369 / 0 missing** local asset references.

@@ -1,4 +1,5 @@
 import type { HeroDefinition } from "./HeroDefinition";
+import { tacticianUnlockRequirementText } from "../progression/ArmoryProgression";
 
 /** T4.9 mechanics candidate; presentation and deployment remain gated. */
 export const TACTICIAN = Object.freeze({
@@ -48,7 +49,7 @@ export const TACTICIAN = Object.freeze({
   startingWeaponName: "Event Horizon",
   rackClasses: ["unique", "light", "medium", "all"],
   levelGrowthDescription: "+1 HEALTH / +1 ARMOUR / +1 UNIQUE / ALTERNATE DAMAGE-SPEED",
-  unlockText: "Mechanics review in progress; production presentation and clearance are not released.",
+  unlockText: tacticianUnlockRequirementText(),
   ultimate: {
     id: "coordinated-strike",
     name: "Coordinated Strike",

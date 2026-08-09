@@ -72,6 +72,20 @@ describe("combatAssetsForSession", () => {
     expect(objectIds.some((id) => ids.has(id))).toBe(false);
   });
 
+  it("selects Scout C3 body art without borrowing another hero body", () => {
+    const ids = new Set(combatAssetsForSession({
+      arenaTheme: arenaThemeById("bastion-standard")!,
+      heroId: "scout",
+      productionArt: true,
+      helmet: false,
+      worldObjectAssetIds: [],
+    }).map((asset) => asset.id));
+    expect(ids.has("scout-base-v1")).toBe(true);
+    expect(ids.has("marine-base-v1")).toBe(false);
+    expect(ids.has("assault-base-v1")).toBe(false);
+    expect(ids.has("tactician-base-v1")).toBe(false);
+  });
+
   it("is stable, unique and smaller than the full catalog", () => {
     const selection = {
       arenaTheme: arenaThemeById("surface-frontier")!,

@@ -17,6 +17,9 @@ export interface HeroPassiveProfile {
   consecutiveHitResetSeconds?: number;
   /** Tactician: seconds an enemy touched by Event Horizon remains designated. */
   designateDurationSeconds?: number;
+  /** Scout: fire-rate window granted when an evasive move begins. */
+  postEvasiveAttackSpeedBonus?: number;
+  postEvasiveAttackSpeedDurationSeconds?: number;
 }
 
 export interface HeroUltimateProfile {
@@ -32,12 +35,13 @@ export interface HeroUltimateProfile {
   /** When present, projectiles spread across this forward-facing arc instead of a full radial volley. */
   projectileArcRadians?: number;
   projectileKnockbackMetres?: number;
+  projectilePierceCount?: number;
   /** Tactician: order one immediate attack from every equipped weapon. */
   coordinatedStrike?: boolean;
 }
 
 export interface HeroDefinition {
-  id: "marine" | "medic" | "assault" | "tactician";
+  id: "marine" | "medic" | "assault" | "tactician" | "scout";
   displayName: string;
   role: string;
   baseMaxHealth: number;
