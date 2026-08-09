@@ -65,8 +65,10 @@ Valve references checked for this review: [Steam Hardware compatibility checklis
 
 ### Ordered next-task ledger
 
-1. **In progress — T0.1 one-enemy slices:** the low-risk batch and four additional slices through
-   Nest Weaver are extracted with focused behaviour tests and unchanged replay/reference fixtures.
+1. **In progress — T0.1 one-enemy slices:** the standard-machine wrappers and the original
+   mini-boss trio through Siege Crusher are extracted with focused behaviour tests and unchanged
+   replay/reference fixtures. Nest Pod is the next smallest residual enemy lifecycle; Bastion Eater
+   follows as a deliberately staged boss extraction rather than one oversized move.
 2. **Now — plan hygiene:** mark T0.4 complete; correct the Deck presentation contract and Steam
    asset dimensions; turn frozen counts into generated audit output.
 3. **T2.0–T2.2 complete:** pure host
@@ -639,9 +641,25 @@ Sequencing, safest first — each is independently shippable and independently r
    reference-run, and replay tests pass unchanged. **Arc Warden extraction complete 9 Aug 2026:**
    `ArcWardenBehavior.ts` now composes the existing beam lifecycle with approach, retreat, deterministic strafe,
    facing, and warning-start decisions. Beam clipping, collision, scaled damage, and events remain
-   simulation-owned. Existing beam/live-combat, reference-run, and replay tests pass unchanged. The monolith is
-   now 10,412 lines. Continue one enemy at a time; Storm Savant is the next bounded wrapper, while Siege Crusher
-   remains deferred until the lower-risk standard-enemy wrappers are gone.
+   simulation-owned. Existing beam/live-combat, reference-run, and replay tests pass unchanged. **Storm Savant
+   extraction complete 9 Aug 2026:** `StormSavantBehavior.ts` now owns cooldown, idle range control, chain-phase
+   stepping, interruption/discharge signals, overload recovery, retry timing, and post-movement chain-start intent.
+   Node placement/spawning, cover clipping, hit geometry, damage, and events remain simulation-owned. Existing
+   lightning/live-combat, reference-run, and replay tests pass unchanged. **Foundry Fabricator extraction complete
+   9 Aug 2026:** `FoundryFabricatorBehavior.ts` now composes the existing finite fabrication lifecycle with
+   positioning-tick eligibility, drone/turret alternation, rejected-capacity pursuit, and bounded pad targeting.
+   Shared capacity/threat accounting, pad/child spawning, collision, and events remain simulation-owned. Existing
+   lifecycle/live-combat, reference-run, and replay tests pass unchanged. **Brood Warden extraction complete
+   9 Aug 2026:** `BroodWardenBehavior.ts` owns its attack cycle, one-time enrage rush, movement/facing, and
+   tier-scaled action payloads; spawning, projectiles, collision, damage, and events remain simulation-owned.
+   **Rift Stalker extraction complete 9 Aug 2026:** `RiftStalkerBehavior.ts` owns cloak/mark/warp/pounce/slash
+   timing, frenzy chaining, and movement intent while landing resolution, spikes, damage, and events remain in
+   the simulation. **Siege Crusher extraction complete 9 Aug 2026:** `SiegeCrusherBehavior.ts` owns attack
+   selection, enrage timing, movement intent, and action payloads. Its pure charge-destination probe lets the
+   simulation preserve pre-movement obstacle collision, terrain damage, and shockwaves exactly. Existing
+   mini-boss, mobility, reference-run, and replay tests pass unchanged. The monolith is now 10,193 lines. Nest
+   Pod is the next bounded slice; then split Bastion Eater into lifecycle/action seams before moving shared-state
+   systems.
 3. Weapons, projectiles, scrap shop, decisions, snapshot last — these hold more shared mutable
    state and need an explicit context interface rather than pure step functions.
 

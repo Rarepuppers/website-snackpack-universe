@@ -3587,3 +3587,78 @@ clipping inputs, collision resolution, beam hit geometry, scaled player damage, 
   the unrelated world-navigation stress test exceed its five-second default; rerunning it alone passed in 1.95
   seconds. The complete suite then passed with two workers and a 15-second ceiling: **1,315 tests across 205 files**.
   Production build, 78 smoke routes, and offline **369 / 0 missing** local asset references also pass.
+
+## 9 August 2026 — T0.1 Storm Savant behavior extracted
+
+Storm Savant's combat policy now lives in `StormSavantBehavior.ts`, composing the existing lightning-chain
+lifecycle with idle range control, cooldown/retry timing, facing, interruption/discharge signals, and overload
+recovery. `CombatSimulation` retains node placement and spawning, cover clipping, collision, hit geometry, scaled
+damage, and ordered events.
+
+- Idle movement still resolves before node placement and chain locking through the two-phase behavior contract.
+- The Savant still approaches beyond 9 metres, retreats inside 5 metres, retries failed placement after 0.5
+  seconds, and waits 2.4 seconds after overload recovery.
+- Destroying a locked node still cancels the tell into exposed overload recovery without discharging.
+- Existing lightning and live-combat tests plus reference-run and replay fixtures pass unchanged.
+- Three focused behavior tests cover range control/start intent, accepted/failed chain resolution, discharge,
+  interruption, and cooldown restoration.
+- `CombatSimulation.ts` is now 10,410 lines; Foundry Fabricator is the next bounded T0.1 wrapper.
+- Controlled two-worker verification passes with **1,318 tests across 206 files**, production build success, 78
+  smoke routes, and offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 Foundry Fabricator behavior extracted
+
+Foundry Fabricator's high-level policy now lives in `FoundryFabricatorBehavior.ts`, composing the existing finite
+reservation/channel/recovery lifecycle with positioning-tick eligibility, child alternation, rejected-capacity
+pursuit, facing, and bounded pad targeting. `CombatSimulation` retains encounter-wide capacity and threat
+accounting, pad/child spawning, collision, interruption state, and ordered events.
+
+- Recovery completion still waits until the following positioning tick before requesting another fabrication.
+- The three-charge sequence remains drone, turret, drone; accepted reservations hold position while rejected
+  requests pursue only beyond 7.5 metres.
+- Alternating pad offsets and 0.7-metre arena-edge clamps remain unchanged.
+- Existing lifecycle and live-combat tests plus reference-run and replay fixtures pass unchanged.
+- Three focused behavior tests cover request eligibility/alternation, rejected-capacity pursuit, and accepted
+  bounded pad placement.
+- `CombatSimulation.ts` is now 10,404 lines. The next bounded slice is Brood Warden; Siege Crusher remains deferred
+  because obstacle-impact ordering makes it higher risk.
+- Controlled two-worker verification passes with **1,321 tests across 207 files**, production build success, 78
+  smoke routes, and offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 Brood Warden behavior extracted
+
+Brood Warden's complete mini-boss policy now lives in `BroodWardenBehavior.ts`. It owns the deterministic
+cleave/acid/egg cycle, the one-time enrage rush, phase timing, facing, and fixed movement intent while
+`CombatSimulation` retains projectile and spawn capacity, collision, scaled damage, hit geometry, and events.
+
+- The final stalk and swarm-rush ticks still move before transitioning, preserving replay timing.
+- Attack choice still uses the pre-movement player distance and the authored attack counter.
+- Three pure tests cover the normal attack cycle, enrage rush, final-tick movement, and tier-scaled payloads.
+- Existing mini-boss mobility, reference-run, replay, and simulation tests pass unchanged.
+
+## 9 August 2026 — T0.1 Rift Stalker behavior extracted
+
+Rift Stalker's cloak, mark, warp, pounce, slash, chained frenzy, and recovery latch now live in
+`RiftStalkerBehavior.ts`. The simulation retains landing placement, rift spikes, collision, damage geometry,
+scaled damage, and presentation events.
+
+- Cloak movement still resolves on its final tick before the mark event captures the Stalker's position.
+- Warp facing remains locked until the pounce resolver owns the landing-facing update.
+- Three pure tests cover mark/warp progression, final-tick cloak movement, frenzy chaining, and slash reach.
+- Existing Rift Stalker, mini-boss mobility, reference-run, replay, and simulation tests pass unchanged.
+
+## 9 August 2026 — T0.1 Siege Crusher behavior extracted
+
+Siege Crusher completes the original mini-boss trio. `SiegeCrusherBehavior.ts` owns entrance, repositioning,
+attack selection, charge/sweep/slam phases, enrage timing, facing, and movement intent. A pure tier-scaled charge
+destination probe leaves obstacle collision and all world mutations in `CombatSimulation`.
+
+- Charge collision is still probed against the desired position before movement; an impact still damages cover,
+  emits its shockwave at the Crusher's current position, and immediately enters recovery.
+- Unblocked charges and stalk repositioning still move on their final phase tick.
+- Sweep and slam payloads preserve every authored radius, tell, recovery, and damage tier.
+- Three pure tests cover attack locking/final-tick movement, charge probing/impact, and tier-scaled attacks.
+- `CombatSimulation.ts` is now **10,193 lines**.
+- Controlled verification passes with **1,330 tests across 210 files**, production build success, 78 smoke routes,
+  and offline **369 / 0 missing** local asset references. The production WebP audit also passes at 58 assets,
+  reducing 48.63 MiB to 24.60 MiB.
