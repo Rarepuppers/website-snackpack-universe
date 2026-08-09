@@ -3662,3 +3662,142 @@ destination probe leaves obstacle collision and all world mutations in `CombatSi
 - Controlled verification passes with **1,330 tests across 210 files**, production build success, 78 smoke routes,
   and offline **369 / 0 missing** local asset references. The production WebP audit also passes at 58 assets,
   reducing 48.63 MiB to 24.60 MiB.
+
+## 9 August 2026 — T0.1 Nest Pod world-action behavior extracted
+
+`NestPodBehavior.ts` now composes the existing finite `NestWeaverLifecycle` countdown into a deterministic hatch
+action. It owns the three authored hatch offsets and the reservation-release payload; `CombatSimulation` retains
+shared capacity/threat accounting, arena clamps, entity spawning, death state, and events.
+
+- Countdown and one-shot hatch semantics remain owned and tested by the original lifecycle module.
+- Two focused tests cover pre-threshold hold, exact offsets, reservation release, and one-shot behavior.
+- Existing Nest Weaver combat, lifecycle, reference-run, and replay tests pass unchanged.
+
+## 9 August 2026 — T0.1 Bastion Eater behavior extracted
+
+The final large enemy policy now lives in `BastionEaterBehavior.ts`. It owns health-phase transitions, the breach,
+brood, and last-stand rotations, every tell/action/recovery timer, movement intent, and pure charge probing.
+`CombatSimulation` remains the world adapter for terrain collision/damage, hit geometry, player damage, egg
+capacity, spawning, and ordered presentation events.
+
+- The action choice and locked direction are resolved after the final stalk movement, preserving the authored
+  two-phase tick order.
+- Health-phase changes still pre-empt the old action without advancing its timer.
+- Charge collision still probes the desired position before movement and preserves the intentional double terrain
+  impact; unblocked charges still move on their final tick.
+- Four focused behavior tests cover phase precedence, post-movement locks, all three rotations, and obstacle impact.
+- Existing Bastion Eater mobility, simulation, reference-run, and replay tests pass unchanged.
+
+## 9 August 2026 — T0.1 enemy boundary audited; first weapon seam extracted
+
+The new `combat:audit:boundaries` command inspects `CombatSimulation.ts` and fails if an enemy adapter regains an
+inline switch state machine, loses its behavior/lifecycle delegate, or restores obsolete Bastion Eater helpers.
+The current audit passes all **31 enemy adapters**.
+
+`WeaponProjectileVolley.ts` begins the shared-state systems phase with pure ordinary-projectile spread and muzzle
+geometry. Fractional carry mutation, gravity-pulse cadence, projectile allocation, damage/range modifiers, and
+event emission remain simulation-owned, keeping the first weapon slice deterministic and independently revertible.
+
+- Two focused planner tests cover a centred shot and stable symmetric spread ordering.
+- `CombatSimulation.ts` is now **10,112 lines**.
+- Controlled verification passes with **1,338 tests across 213 files**, production build success, 78 smoke routes,
+  WebP audit success, and offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 ordinary projectile payload planning extracted
+
+`WeaponProjectilePayload.ts` now builds the immutable payload for ordinary player projectiles. It carries every
+authored weapon field and applies projectile-speed, damage, range, relic explosion-radius, and transformation
+explosion-radius multipliers exactly once.
+
+- Fractional projectile carry, gravity-pulse attack cadence, ID allocation, mutable hit tracking, spawning, and
+  events remain simulation-owned.
+- Two focused tests cover multiplier composition and homing/chain/gravity-well field preservation.
+- Ordinary weapon, reference-run, and replay tests pass unchanged.
+
+## 9 August 2026 — T0.1 melee and beam target geometry extracted
+
+`WeaponTargetGeometry.ts` now owns the shared forward-cone predicate and stable live/visible target selection used
+by melee sweeps and continuous beams. The established `pointInsideRipperSweep` public path remains available as a
+compatibility wrapper.
+
+- Melee cover damage still resolves before target selection, so destroying cover can expose targets that tick.
+- Targets remain in encounter order and are checked for death again during damage application, preserving effects
+  from earlier hits and their RNG consumption.
+- Two focused geometry tests plus melee, Cryo Lance, Flamethrower, simulation, reference-run, and replay suites pass.
+
+## 9 August 2026 — T0.1 orbit and chain target ordering extracted
+
+`WeaponOrbitTargeting.ts` owns Tesla-style next-hop selection and Sawblade contact ordering. The simulation still
+applies each hit before selecting the following chain target, so evolving death state and effect order remain live.
+
+- Inclusive range checks and the original later-entry exact-distance tie rule are explicitly tested.
+- Sawblade contacts preserve encounter order and per-enemy collision radii; dead targets are rechecked while hits
+  are applied.
+- `CombatSimulation.ts` is now **10,097 lines**.
+- Controlled verification passes with **1,344 tests across 216 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 designated weapon auto-aim extracted
+
+`WeaponAimSelection.ts` now owns cursor/nearest-enemy aim policy. Tactician designation remains an input supplied
+by the simulation, keeping progression state out of the pure selector.
+
+- A designated in-range target outranks every ordinary target regardless of distance.
+- Inclusive range and later-entry exact-distance tie resolution remain unchanged.
+- Cursor targeting returns immediately without consulting the encounter target list.
+- Three focused tests plus simulation, orbit, reference-run, replay, and type checks pass.
+
+## 9 August 2026 — T0.1 firing anchor and attack-pattern dispatch extracted
+
+`WeaponFirePlan.ts` now owns weapon-ring anchor placement and exhaustive routing of all authored attack patterns to
+ordinary projectile, melee, beam, orbit, orbit-blade, or deployable execution.
+
+- Single-weapon anchors still align with the aim angle; multi-weapon anchors retain indexed ring placement.
+- Missing indices retain the zero-offset fallback.
+- Nine focused cases cover anchor contracts and every attack-pattern mapping; all weapon-pattern integration,
+  reference-run, and replay suites pass unchanged.
+
+## 9 August 2026 — T0.1 deployable placement and cap retirement extracted
+
+`DeployablePlacement.ts` now owns Sentry Stake forward placement, arena-edge clamps, engineering durability/lifetime
+scaling, shot-damage planning, and oldest live same-weapon retirement selection.
+
+- `CombatSimulation` still performs retirement mutation, ID allocation, entity creation, and event emission.
+- Dead units and other weapon IDs do not consume the placement cap.
+- Two focused tests cover scaling/offsets and cap/edge behavior; deployable, simulation, reference-run, and replay
+  suites pass unchanged.
+- `CombatSimulation.ts` is now **10,082 lines**.
+- Controlled verification passes with **1,358 tests across 219 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 deployable runtime behavior extracted
+
+`DeployableBehavior.ts` now owns Sentry Stake lifetime, auxiliary-drone orbit movement, health/lifetime expiry,
+cooldown advancement, target-request readiness, and post-acquisition cooldown commitment.
+
+- Drone movement and structure lifetime resolve before expiry checks.
+- Expiry still occurs before cooldown advancement and emits from the resulting position.
+- A ready unit with no target retains its elapsed cooldown and retries on the next tick; cadence commits only after
+  the simulation supplies a live target.
+- Three focused tests plus deployable, simulation, reference-run, replay, and type checks pass unchanged.
+
+## 9 August 2026 — T0.1 deployable projectile payload extracted
+
+`DeployableProjectilePayload.ts` now owns deployable aim normalization and immutable projectile construction from
+the already-updated unit position and selected target.
+
+- Authored speed, lifetime, pierce, explosion, knockback, chain, and homing fields remain unchanged.
+- Deployable shots explicitly remain gravity-well-free with zero pull fields.
+- Mutable hit tracking, ID allocation, spawning, and events remain simulation-owned.
+- Two focused payload tests plus the deployable/reference/replay suites pass unchanged.
+
+## 9 August 2026 — T0.1 orbit-blade motion geometry extracted
+
+`OrbitBladeMotion.ts` now owns Sawblade angular integration, world-space blade position, and event-facing geometry.
+
+- Angle advancement still happens before contact selection and damage.
+- Accumulated angles intentionally remain unwrapped, matching the original long-run state.
+- Two focused motion tests plus Sawblade targeting, simulation, reference-run, and replay suites pass unchanged.
+- `CombatSimulation.ts` is now **10,073 lines**.
+- Controlled verification passes with **1,365 tests across 222 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.

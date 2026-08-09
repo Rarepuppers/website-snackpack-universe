@@ -65,10 +65,10 @@ Valve references checked for this review: [Steam Hardware compatibility checklis
 
 ### Ordered next-task ledger
 
-1. **In progress — T0.1 one-enemy slices:** the standard-machine wrappers and the original
-   mini-boss trio through Siege Crusher are extracted with focused behaviour tests and unchanged
-   replay/reference fixtures. Nest Pod is the next smallest residual enemy lifecycle; Bastion Eater
-   follows as a deliberately staged boss extraction rather than one oversized move.
+1. **Enemy-policy phase complete — T0.1:** all 31 `updateX` adapters now delegate policy without
+   inline switch state machines. Nest Pod and Bastion Eater close the residual lifecycle/boss work,
+   and `combat:audit:boundaries` now prevents inline state machines returning. Shared-state systems
+   work has begun with pure ordinary-projectile volley geometry.
 2. **Now — plan hygiene:** mark T0.4 complete; correct the Deck presentation contract and Steam
    asset dimensions; turn frozen counts into generated audit output.
 3. **T2.0–T2.2 complete:** pure host
@@ -657,15 +657,23 @@ Sequencing, safest first — each is independently shippable and independently r
    the simulation. **Siege Crusher extraction complete 9 Aug 2026:** `SiegeCrusherBehavior.ts` owns attack
    selection, enrage timing, movement intent, and action payloads. Its pure charge-destination probe lets the
    simulation preserve pre-movement obstacle collision, terrain damage, and shockwaves exactly. Existing
-   mini-boss, mobility, reference-run, and replay tests pass unchanged. The monolith is now 10,193 lines. Nest
-   Pod is the next bounded slice; then split Bastion Eater into lifecycle/action seams before moving shared-state
-   systems.
-3. Weapons, projectiles, scrap shop, decisions, snapshot last — these hold more shared mutable
-   state and need an explicit context interface rather than pure step functions.
+   mini-boss, mobility, reference-run, and replay tests pass unchanged. **Nest Pod extraction complete
+   9 Aug 2026:** `NestPodBehavior.ts` composes the existing finite lifecycle into deterministic hatch offsets and
+   reservation-release payloads; accounting, spawning, clamps, and events remain simulation-owned. **Bastion Eater
+   extraction complete 9 Aug 2026:** `BastionEaterBehavior.ts` owns health phases, every attack rotation and timer,
+   movement intent, post-movement direction/target locks, and charge probing. Terrain mutation, brood capacity,
+   damage, collision, and events remain simulation-owned. The boundary audit confirms all 31 enemy adapters now
+   delegate policy and contain no inline switch state machines. That boss slice left the monolith at 10,112 lines.
+3. **Weapons in progress:** pure modules now own projectile geometry/payloads, melee/beam and orbit targeting,
+   auto-aim/dispatch, deployable placement plus runtime timing, deployable shot payloads, and orbit-blade motion.
+   `CombatSimulation` remains the adapter for target lookup, cooldown/entity mutation, evolving death-state checks,
+   RNG draw order, damage, allocation, terrain, and events. The monolith is now 10,073 lines. Continue with three
+   bounded slices: deployable nearest-target selection; melee terrain-impact planning; shared melee/beam/orbit hit-
+   damage composition. The projectile update loop, scrap shop, decisions, and snapshot follow.
 
-**Acceptance:** `combat/CombatSimulation.ts` under 3,000 lines; the 129 exports from it remain
+**Acceptance:** `combat/CombatSimulation.ts` under 3,000 lines; its public exports remain
 exported from the same path (re-export from the new modules — every consumer imports from
-`./CombatSimulation`, so the public path must not move); all 1021 tests pass **unmodified**;
+`./CombatSimulation`, so the public path must not move); the complete generated test inventory passes;
 `ReferenceRun.ts` and `ReplayFixture.ts` produce byte-identical output before and after.
 
 That last check is the real safety net — a deterministic replay fixture already exists, so this

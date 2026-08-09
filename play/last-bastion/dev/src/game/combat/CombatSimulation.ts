@@ -28,7 +28,6 @@ import {
   type WeaponPlacementTarget,
   type WeaponTile,
 } from "../equipment/WeaponInventory";
-import { calculateWeaponRingLayout } from "../equipment/WeaponRingLayout";
 import {
   UPGRADE_CATALOG,
   UPGRADE_CATEGORY_LABELS,
@@ -127,11 +126,30 @@ import {
   NEST_HATCHLING_COUNT,
   NEST_POD_HATCH_SECONDS,
   NEST_WEAVER_PLACEMENT_CHARGES,
-  stepNestPod,
   tryReserveNestPod,
   type NestPodReservation,
   type NestPodState,
 } from "./NestWeaverLifecycle";
+import { stepNestPodBehavior } from "./NestPodBehavior";
+import { planProjectileVolley } from "./WeaponProjectileVolley";
+import { planOrdinaryProjectilePayload } from "./WeaponProjectilePayload";
+import { pointInsideWeaponArc, selectForwardArcTargets } from "./WeaponTargetGeometry";
+import { selectOrbitChainTarget, selectOrbitContactTargets } from "./WeaponOrbitTargeting";
+import { selectWeaponAimDirection } from "./WeaponAimSelection";
+import { planWeaponFire } from "./WeaponFirePlan";
+import { planStructurePlacement } from "./DeployablePlacement";
+import { commitDeployableFire, stepDeployableBehavior } from "./DeployableBehavior";
+import { planDeployableProjectile } from "./DeployableProjectilePayload";
+import { advanceOrbitBladeMotion } from "./OrbitBladeMotion";
+import {
+  bastionEaterChargeDestination,
+  resolveBastionEaterActionChoice,
+  stepBastionEaterBehavior,
+  type BastionEaterAction,
+  type BastionEaterPhase,
+  type BastionEaterWorldAction,
+} from "./BastionEaterBehavior";
+export type { BastionEaterAction, BastionEaterPhase } from "./BastionEaterBehavior";
 import {
   resolveNestWeaverPlacement,
   stepNestWeaverBehavior,
@@ -430,11 +448,6 @@ export type RipperPhase = "pursuit" | "windup" | "sweep" | "recovery";
 export type RazorScuttlerPhase = "pursuit" | "windup" | "dash" | "recovery";
 export type QuillbackPhase = "positioning" | "windup" | "launch" | "recover";
 export type AurumHoarderPhase = "forage" | "flee";
-export type BastionEaterPhase = "breach" | "brood" | "last-stand";
-export type BastionEaterAction =
-  | "entrance" | "stalk" | "claw-windup" | "claw" | "charge-windup" | "charge"
-  | "tendril-windup" | "tendril" | "egg-windup" | "eggs"
-  | "breach-windup" | "breach" | "recovery";
 export type EnemyRank = "standard" | "treasure" | "elite" | "mini-boss" | "boss";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
 export type MiniBossKind = "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime";
@@ -3731,36 +3744,36 @@ export class CombatSimulation {
   }
 
   private fireWeapon(weapon: EquippedWeaponState, aimDirection: Vector2Data, deltaSeconds: number): void {
-    const baseAngle = Math.atan2(aimDirection.y, aimDirection.x);
-    const slot = calculateWeaponRingLayout(this.equippedWeapons.length, baseAngle)[
-      this.equippedWeapons.indexOf(weapon)
-    ] ?? { x: 0, y: 0 };
-    const anchor = {
-      x: this.playerPosition.x + slot.x,
-      y: this.playerPosition.y + slot.y,
-    };
+    const plan = planWeaponFire({
+      equippedWeaponCount: this.equippedWeapons.length,
+      weaponIndex: this.equippedWeapons.indexOf(weapon),
+      playerPosition: this.playerPosition,
+      aimDirection,
+      attackPattern: weapon.stats.attackPattern,
+    });
+    const { anchor } = plan;
 
-    if (weapon.stats.attackPattern === "melee-sweep") {
+    if (plan.kind === "melee-sweep") {
       this.fireMeleeSweep(weapon, anchor, aimDirection);
       return;
     }
 
-    if (weapon.stats.attackPattern === "beam") {
+    if (plan.kind === "beam") {
       this.fireBeam(weapon, anchor, aimDirection, deltaSeconds);
       return;
     }
 
-    if (weapon.stats.attackPattern === "orbit") {
+    if (plan.kind === "orbit") {
       this.fireOrbitZap(weapon, anchor);
       return;
     }
 
-    if (weapon.stats.attackPattern === "orbit-blade") {
+    if (plan.kind === "orbit-blade") {
       this.fireOrbitBlade(weapon, deltaSeconds);
       return;
     }
 
-    if (weapon.stats.attackPattern === "deployable") {
+    if (plan.kind === "deployable") {
       this.deployStructure(weapon, anchor, aimDirection);
       return;
     }
@@ -3768,41 +3781,28 @@ export class CombatSimulation {
     const triggersGravityPulse = this.nextProjectileAttackTriggersGravityPulse();
     const resolution = resolveFractionalProjectiles(weapon.stats.projectileCount, weapon.projectileCarry);
     weapon.projectileCarry = resolution.carry;
-    const centre = (resolution.count - 1) / 2;
     const spreadRadians = weapon.stats.spreadRadians * this.movingSpreadFactor();
-    for (let index = 0; index < resolution.count; index += 1) {
-      const angle = baseAngle + (index - centre) * spreadRadians;
-      const direction = { x: Math.cos(angle), y: Math.sin(angle) };
-      const muzzlePosition = {
-        x: anchor.x + direction.x * 0.55,
-        y: anchor.y + direction.y * 0.55,
-      };
-
-      this.spawnFriendlyProjectile({
-        weaponId: weapon.weaponId,
-        damageType: weapon.stats.damageType,
-        position: { ...muzzlePosition },
-        velocity: {
-          x: direction.x * weapon.stats.projectileSpeedMetresPerSecond * this.transformationModifiers.projectileSpeedMultiplier,
-          y: direction.y * weapon.stats.projectileSpeedMetresPerSecond * this.transformationModifiers.projectileSpeedMultiplier,
-        },
-        damage: weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats),
-        uraniumEligible: true,
-        remainingSeconds: weapon.stats.projectileLifetimeSeconds * this.weaponRangeMultiplier(),
-        pierceRemaining: weapon.stats.pierceCount,
-        // Blast Baffle relic slightly enlarges the hero's own explosions.
-        explosionRadiusMetres: weapon.stats.explosionRadiusMetres
-          * this.relicModifiers.explosionRadiusMultiplier * this.transformationModifiers.explosionRadiusMultiplier,
-        knockbackMetres: weapon.stats.knockbackMetres,
-        chainRemaining: weapon.stats.chainCount,
-        chainRadiusMetres: weapon.stats.chainRadiusMetres,
-        hitEnemyIds: new Set<number>(),
-        homingTurnRateRadiansPerSecond: weapon.stats.homingTurnRateRadiansPerSecond,
-        spawnsGravityWellOnImpact: weapon.stats.spawnsGravityWellOnImpact,
-        pullFieldDurationSeconds: weapon.stats.pullFieldDurationSeconds,
-        pullStrengthMetresPerSecond: weapon.stats.pullStrengthMetresPerSecond,
-        pullRadiusMetres: weapon.stats.pullRadiusMetres,
+    const volley = planProjectileVolley({
+      anchor,
+      aimDirection,
+      projectileCount: resolution.count,
+      spreadRadians,
+    });
+    for (const [index, { direction, muzzlePosition }] of volley.entries()) {
+      const payload = planOrdinaryProjectilePayload({
+        stats: weapon.stats,
+        muzzlePosition,
+        direction,
+        projectileSpeedMultiplier: this.transformationModifiers.projectileSpeedMultiplier,
+        damageMultiplier: this.weaponDamageMultiplier(weapon.stats),
+        rangeMultiplier: this.weaponRangeMultiplier(),
+        relicExplosionRadiusMultiplier: this.relicModifiers.explosionRadiusMultiplier,
+        transformationExplosionRadiusMultiplier: this.transformationModifiers.explosionRadiusMultiplier,
         triggersGravityPulse: triggersGravityPulse && index === 0,
+      });
+      this.spawnFriendlyProjectile({
+        ...payload,
+        hitEnemyIds: new Set<number>(),
       });
 
       this.frameEvents.push({
@@ -3835,34 +3835,34 @@ export class CombatSimulation {
     anchor: Vector2Data,
     direction: Vector2Data,
   ): void {
-    const stats = weapon.stats;
-    const active = this.deployables.filter((unit) => !unit.dead && unit.weaponId === weapon.weaponId);
-    // Planting past the cap retires the oldest, so the weapon never becomes a
-    // no-op the player cannot diagnose.
-    if (active.length >= Math.max(1, stats.deployMaxActive)) {
-      active[0]!.dead = true;
+    const placement = planStructurePlacement({
+      stats: weapon.stats,
+      existingDeployables: this.deployables,
+      anchor,
+      direction,
+      widthMetres: this.widthMetres,
+      heightMetres: this.heightMetres,
+      engineeringScale: this.engineeringScale(),
+      weaponDamageMultiplier: this.weaponDamageMultiplier(weapon.stats),
+    });
+    if (placement.retireDeployableId !== null) {
+      const retired = this.deployables.find((unit) => unit.id === placement.retireDeployableId);
+      if (retired) retired.dead = true;
     }
-
-    const scale = this.engineeringScale();
-    const position = {
-      x: clamp(anchor.x + direction.x * 1.2, 0.6, this.widthMetres - 0.6),
-      y: clamp(anchor.y + direction.y * 1.2, 0.6, this.heightMetres - 0.6),
-    };
-    const health = stats.deployHealth * scale;
     this.deployables.push({
       id: this.nextId(),
       weaponId: weapon.weaponId,
       kind: "structure",
-      position,
-      health,
-      maxHealth: health,
-      remainingSeconds: stats.deployLifetimeSeconds * scale,
+      position: placement.position,
+      health: placement.health,
+      maxHealth: placement.health,
+      remainingSeconds: placement.remainingSeconds,
       cooldownSeconds: 0,
-      shotDamage: stats.projectileDamage * this.weaponDamageMultiplier(stats),
+      shotDamage: placement.shotDamage,
       orbitAngleRadians: 0,
       dead: false,
     });
-    this.frameEvents.push({ type: "deployable-placed", position: { ...position }, weaponId: weapon.weaponId });
+    this.frameEvents.push({ type: "deployable-placed", position: { ...placement.position }, weaponId: weapon.weaponId });
   }
 
   /** Cybernetic Ascension: one persistent support drone per committed run. */
@@ -3948,58 +3948,42 @@ export class CombatSimulation {
 
     for (const unit of this.deployables) {
       if (unit.dead) continue;
-      if (unit.kind === "auxiliary-drone") {
-        unit.orbitAngleRadians += deltaSeconds * 1.4;
-        unit.position = {
-          x: clamp(this.playerPosition.x + Math.cos(unit.orbitAngleRadians) * 1.15, 0.4, this.widthMetres - 0.4),
-          y: clamp(this.playerPosition.y + Math.sin(unit.orbitAngleRadians) * 0.7 - 0.45, 0.4, this.heightMetres - 0.4),
-        };
-      } else {
-        unit.remainingSeconds -= deltaSeconds;
-      }
-      if ((unit.kind === "structure" && unit.remainingSeconds <= 0) || unit.health <= 0) {
-        unit.dead = true;
+      const step = stepDeployableBehavior(unit, {
+        deltaSeconds,
+        playerPosition: this.playerPosition,
+        widthMetres: this.widthMetres,
+        heightMetres: this.heightMetres,
+      });
+      unit.position = step.state.position;
+      unit.remainingSeconds = step.state.remainingSeconds;
+      unit.cooldownSeconds = step.state.cooldownSeconds;
+      unit.orbitAngleRadians = step.state.orbitAngleRadians;
+      unit.dead = step.state.dead;
+      if (step.expired) {
         this.frameEvents.push({ type: "deployable-expired", position: { ...unit.position }, weaponId: unit.weaponId });
         continue;
       }
 
       const stats = WEAPON_CATALOG[unit.weaponId];
-      unit.cooldownSeconds -= deltaSeconds;
-      if (unit.cooldownSeconds > 0) continue;
+      if (!step.requestsTarget) continue;
 
       const target = this.nearestEnemyWithin(unit.position, stats.rangeMetres);
       if (!target) continue;
 
-      const aim = normalizeVector({
-        x: target.position.x - unit.position.x,
-        y: target.position.y - unit.position.y,
+      unit.cooldownSeconds = commitDeployableFire(unit, {
+        fireIntervalSeconds: stats.fireIntervalSeconds,
+        deployFireIntervalSeconds: stats.deployFireIntervalSeconds,
+        engineeringScale: this.engineeringScale(),
+      }).cooldownSeconds;
+      const shot = planDeployableProjectile({
+        stats,
+        position: unit.position,
+        targetPosition: target.position,
+        shotDamage: unit.shotDamage,
       });
-      // Faster cadence with engineering, hence dividing rather than scaling.
-      unit.cooldownSeconds = unit.kind === "auxiliary-drone"
-        ? stats.fireIntervalSeconds
-        : stats.deployFireIntervalSeconds / this.engineeringScale();
       this.spawnFriendlyProjectile({
-        weaponId: unit.weaponId,
-        damageType: stats.damageType,
-        position: { x: unit.position.x, y: unit.position.y },
-        velocity: {
-          x: aim.x * stats.projectileSpeedMetresPerSecond,
-          y: aim.y * stats.projectileSpeedMetresPerSecond,
-        },
-        damage: unit.shotDamage,
-        uraniumEligible: true,
-        remainingSeconds: stats.projectileLifetimeSeconds,
-        pierceRemaining: stats.pierceCount,
-        explosionRadiusMetres: stats.explosionRadiusMetres,
-        knockbackMetres: stats.knockbackMetres,
-        chainRemaining: stats.chainCount,
-        chainRadiusMetres: stats.chainRadiusMetres,
+        ...shot.payload,
         hitEnemyIds: new Set<number>(),
-        homingTurnRateRadiansPerSecond: stats.homingTurnRateRadiansPerSecond,
-        spawnsGravityWellOnImpact: false,
-        pullFieldDurationSeconds: 0,
-        pullStrengthMetresPerSecond: 0,
-        pullRadiusMetres: 0,
       });
       this.frameEvents.push({ type: "deployable-fired", position: { ...unit.position }, weaponId: unit.weaponId });
     }
@@ -4044,12 +4028,16 @@ export class CombatSimulation {
       );
     }
     const halfArc = weapon.stats.meleeArcRadians / 2;
-    for (const enemy of this.enemies) {
-      if (
-        enemy.dead
-        || !pointInsideRipperSweep(anchor, facing, enemy.position, this.weaponRange(weapon.stats), halfArc)
-        || segmentHitsArenaObstacle(anchor, enemy.position, this.activeObstacles())
-      ) continue;
+    const targets = selectForwardArcTargets({
+      targets: this.enemies,
+      origin: anchor,
+      facing,
+      reachMetres: this.weaponRange(weapon.stats),
+      halfAngleRadians: halfArc,
+      isPathBlocked: (enemy) => segmentHitsArenaObstacle(anchor, enemy.position, this.activeObstacles()),
+    });
+    for (const enemy of targets) {
+      if (enemy.dead) continue;
       this.damageEnemy(
         enemy,
         weapon.stats.projectileDamage * this.weaponDamageMultiplier(weapon.stats)
@@ -4060,7 +4048,6 @@ export class CombatSimulation {
         weapon.weaponId,
       );
       if (!enemy.dead && weapon.stats.knockbackMetres > 0) {
-        const definition = ENEMY_CATALOG[enemy.type];
         enemy.position = resolveCircleMovement(
           enemy.position,
           {
@@ -4095,12 +4082,16 @@ export class CombatSimulation {
     deltaSeconds: number,
   ): void {
     const facing = normalizeVector(direction);
-    for (const enemy of this.enemies) {
-      if (
-        enemy.dead
-        || !pointInsideRipperSweep(anchor, facing, enemy.position, this.weaponRange(weapon.stats), weapon.stats.meleeArcRadians / 2)
-        || segmentHitsArenaObstacle(anchor, enemy.position, this.activeObstacles())
-      ) continue;
+    const targets = selectForwardArcTargets({
+      targets: this.enemies,
+      origin: anchor,
+      facing,
+      reachMetres: this.weaponRange(weapon.stats),
+      halfAngleRadians: weapon.stats.meleeArcRadians / 2,
+      isPathBlocked: (enemy) => segmentHitsArenaObstacle(anchor, enemy.position, this.activeObstacles()),
+    });
+    for (const enemy of targets) {
+      if (enemy.dead) continue;
       this.damageEnemy(
         enemy,
         weapon.stats.beamDamagePerSecond * deltaSeconds * this.weaponDamageMultiplier(weapon.stats)
@@ -4128,16 +4119,11 @@ export class CombatSimulation {
    * `resolveProjectileChain` already uses for a travelling projectile's chain.
    */
   private fireOrbitZap(weapon: EquippedWeaponState, anchor: Vector2Data): void {
-    let current: EnemyState | null = null;
-    let nearestDistance = this.weaponRange(weapon.stats);
-    for (const enemy of this.enemies) {
-      if (enemy.dead) continue;
-      const candidateDistance = distance(anchor, enemy.position);
-      if (candidateDistance <= nearestDistance) {
-        current = enemy;
-        nearestDistance = candidateDistance;
-      }
-    }
+    let current = selectOrbitChainTarget({
+      targets: this.enemies,
+      origin: anchor,
+      maximumDistanceMetres: this.weaponRange(weapon.stats),
+    });
     if (!current) return;
 
     const hitEnemyIds = new Set<number>();
@@ -4162,17 +4148,12 @@ export class CombatSimulation {
       );
       fromPosition = current.position;
 
-      let next: EnemyState | null = null;
-      let nextDistance = weapon.stats.chainRadiusMetres;
-      for (const enemy of this.enemies) {
-        if (enemy.dead || hitEnemyIds.has(enemy.id)) continue;
-        const candidateDistance = distance(fromPosition, enemy.position);
-        if (candidateDistance <= nextDistance) {
-          next = enemy;
-          nextDistance = candidateDistance;
-        }
-      }
-      current = next;
+      current = selectOrbitChainTarget({
+        targets: this.enemies,
+        origin: fromPosition,
+        maximumDistanceMetres: weapon.stats.chainRadiusMetres,
+        excludedIds: hitEnemyIds,
+      });
     }
 
     this.frameEvents.push({
@@ -4192,15 +4173,22 @@ export class CombatSimulation {
    * all — only proximity to the blade's own moving position.
    */
   private fireOrbitBlade(weapon: EquippedWeaponState, deltaSeconds: number): void {
-    weapon.orbitAngleRadians += weapon.stats.orbitAngularSpeedRadiansPerSecond * deltaSeconds;
-    const bladePosition = {
-      x: this.playerPosition.x + Math.cos(weapon.orbitAngleRadians) * weapon.stats.orbitRadiusMetres,
-      y: this.playerPosition.y + Math.sin(weapon.orbitAngleRadians) * weapon.stats.orbitRadiusMetres,
-    };
-    for (const enemy of this.enemies) {
+    const motion = advanceOrbitBladeMotion({
+      currentAngleRadians: weapon.orbitAngleRadians,
+      angularSpeedRadiansPerSecond: weapon.stats.orbitAngularSpeedRadiansPerSecond,
+      deltaSeconds,
+      orbitRadiusMetres: weapon.stats.orbitRadiusMetres,
+      playerPosition: this.playerPosition,
+    });
+    weapon.orbitAngleRadians = motion.angleRadians;
+    const { bladePosition } = motion;
+    const targets = selectOrbitContactTargets({
+      targets: this.enemies,
+      bladePosition,
+      contactReachMetres: (enemy) => enemyRadius(enemy) + ORBIT_BLADE_CONTACT_RADIUS_METRES,
+    });
+    for (const enemy of targets) {
       if (enemy.dead) continue;
-      const definition = ENEMY_CATALOG[enemy.type];
-      if (distance(bladePosition, enemy.position) > enemyRadius(enemy) + ORBIT_BLADE_CONTACT_RADIUS_METRES) continue;
       this.damageEnemy(
         enemy,
         weapon.stats.beamDamagePerSecond * deltaSeconds * this.weaponDamageMultiplier(weapon.stats)
@@ -4216,7 +4204,7 @@ export class CombatSimulation {
       weaponInstanceId: weapon.instanceId,
       weaponId: weapon.weaponId,
       position: { ...bladePosition },
-      direction: { x: Math.cos(weapon.orbitAngleRadians), y: Math.sin(weapon.orbitAngleRadians) },
+      direction: motion.direction,
     });
   }
 
@@ -4224,31 +4212,14 @@ export class CombatSimulation {
     weapon: EquippedWeaponState,
     cursorDirection: Vector2Data,
   ): Vector2Data | null {
-    if (weapon.stats.targetingMode === "cursor") {
-      return cursorDirection;
-    }
-
-    let nearest: EnemyState | null = null;
-    let nearestIsDesignated = false;
-    let nearestDistance = this.weaponRange(weapon.stats);
-    for (const enemy of this.enemies) {
-      if (enemy.dead) continue;
-      const candidateDistance = distance(this.playerPosition, enemy.position);
-      const candidateIsDesignated = (this.tacticianDesignations.get(enemy.id) ?? 0) > 0;
-      if (candidateDistance <= this.weaponRange(weapon.stats)
-        && (candidateIsDesignated && !nearestIsDesignated
-          || candidateIsDesignated === nearestIsDesignated && candidateDistance <= nearestDistance)) {
-        nearest = enemy;
-        nearestDistance = candidateDistance;
-        nearestIsDesignated = candidateIsDesignated;
-      }
-    }
-    return nearest
-      ? normalizeVector({
-        x: nearest.position.x - this.playerPosition.x,
-        y: nearest.position.y - this.playerPosition.y,
-      })
-      : null;
+    return selectWeaponAimDirection({
+      targetingMode: weapon.stats.targetingMode,
+      cursorDirection,
+      origin: this.playerPosition,
+      rangeMetres: this.weaponRange(weapon.stats),
+      targets: this.enemies,
+      isDesignated: (enemy) => (this.tacticianDesignations.get(enemy.id) ?? 0) > 0,
+    });
   }
 
   private modifyAllWeapons(modifier: (weapon: WeaponRuntimeStats) => void): void {
@@ -5936,20 +5907,15 @@ export class CombatSimulation {
 
   private updateNestPod(enemy: EnemyState, deltaSeconds: number): void {
     if (!enemy.nestPod) return;
-    const result = stepNestPod(enemy.nestPod, deltaSeconds);
+    const result = stepNestPodBehavior(enemy.nestPod, deltaSeconds);
     enemy.nestPod = result.pod;
     enemy.hatchRemainingSeconds = result.pod.remainingSeconds;
-    if (result.hatchlingCount <= 0) return;
+    if (!result.action) return;
 
-    this.nestReservedLiveSlots = Math.max(0, this.nestReservedLiveSlots - result.consumedReservedSlots);
-    this.nestReservedThreat = Math.max(0, this.nestReservedThreat - result.consumedReservedThreat);
+    this.nestReservedLiveSlots = Math.max(0, this.nestReservedLiveSlots - result.action.consumedReservedSlots);
+    this.nestReservedThreat = Math.max(0, this.nestReservedThreat - result.action.consumedReservedThreat);
     enemy.dead = true;
-    const offsets = [
-      { x: -0.48, y: 0.12 },
-      { x: 0.48, y: 0.12 },
-      { x: 0, y: -0.46 },
-    ].slice(0, result.hatchlingCount);
-    for (const offset of offsets) {
+    for (const offset of result.action.offsets) {
       this.spawnEnemy("nest-hatchling", {
         x: clamp(enemy.position.x + offset.x, 0.4, this.widthMetres - 0.4),
         y: clamp(enemy.position.y + offset.y, 0.4, this.heightMetres - 0.4),
@@ -7511,169 +7477,89 @@ export class CombatSimulation {
   }
 
   private updateBastionEater(enemy: EnemyState, deltaSeconds: number): void {
-    const healthRatio = enemy.health / enemy.maxHealth;
-    const phase: BastionEaterPhase = healthRatio <= 0.33
-      ? "last-stand"
-      : healthRatio <= 0.66 ? "brood" : "breach";
-    if (phase !== enemy.bastionEaterPhase) {
-      enemy.bastionEaterPhase = phase;
-      enemy.bastionEaterAction = "entrance";
-      enemy.bastionEaterActionRemainingSeconds = 0.8;
-      this.frameEvents.push({ type: "bastion-eater-phase", position: { ...enemy.position }, phase });
-      return;
-    }
-
-    enemy.bastionEaterActionRemainingSeconds -= deltaSeconds;
-    const action = enemy.bastionEaterAction;
-    const recoverySeconds = phase === "last-stand" ? 0.55 : phase === "brood" ? 0.78 : 1;
-    switch (action) {
-      case "entrance":
-        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
-          enemy.bastionEaterAction = "stalk";
-          enemy.bastionEaterActionRemainingSeconds = phase === "last-stand" ? 0.38 : 0.65;
-        }
-        break;
-      case "stalk": {
-        enemy.facingDirection = normalizeVector({
-          x: this.playerPosition.x - enemy.position.x,
-          y: this.playerPosition.y - enemy.position.y,
-        });
-        // `brood` used to skip movement outright and neither `brood` nor
-        // `last-stand` ever rolled the charge — the boss's one fast,
-        // telegraphed, dodge-worthy attack — into their action cycle, so it
-        // was only ever reachable in the fight's opening third (`breach`,
-        // health > 66%). Stalk now always moves, on a speed curve that rises
-        // with phase, and charge is in every phase's rotation.
-        this.moveEnemy(
-          enemy,
-          enemy.facingDirection,
-          phase === "last-stand" ? 1.25 : phase === "brood" ? 1.1 : ENEMY_CATALOG["bastion-eater"].movementSpeedMetresPerSecond,
-          deltaSeconds,
-        );
-        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
-          enemy.bastionEaterAttackCount += 1;
-          if (phase === "breach") {
-            this.beginBastionEaterAction(enemy, enemy.bastionEaterAttackCount % 2 === 0 ? "charge-windup" : "claw-windup");
-          } else if (phase === "brood") {
-            const cycle = enemy.bastionEaterAttackCount % 3;
-            this.beginBastionEaterAction(enemy, cycle === 0 ? "egg-windup" : cycle === 1 ? "tendril-windup" : "charge-windup");
-          } else {
-            const cycle = enemy.bastionEaterAttackCount % 4;
-            this.beginBastionEaterAction(enemy, cycle === 0 ? "breach-windup" : cycle === 1 ? "claw-windup" : cycle === 2 ? "tendril-windup" : "charge-windup");
-          }
-        }
-        break;
-      }
-      case "claw-windup":
-        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
-          enemy.bastionEaterAction = "claw";
-          enemy.bastionEaterActionRemainingSeconds = 0.28;
-          this.frameEvents.push({
-            type: "bastion-eater-claw-strike",
-            position: { ...enemy.position },
-            direction: { ...enemy.bastionEaterDirection },
-          });
-          if (pointInsideRipperSweep(enemy.position, enemy.bastionEaterDirection, this.playerPosition, 4.4)) {
-            this.damagePlayer(PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterClaw);
-          }
-        }
-        break;
-      case "charge-windup":
-        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
-          enemy.bastionEaterAction = "charge";
-          enemy.bastionEaterActionRemainingSeconds = 0.85;
-          this.frameEvents.push({ type: "bastion-eater-charge", position: { ...enemy.position }, direction: { ...enemy.bastionEaterDirection } });
-        }
-        break;
-      case "charge": {
-        const speed = phase === "last-stand" ? 9.2 : 7.8;
-        const desired = {
-          x: enemy.position.x + enemy.bastionEaterDirection.x * speed * deltaSeconds,
-          y: enemy.position.y + enemy.bastionEaterDirection.y * speed * deltaSeconds,
-        };
-        const obstacle = this.firstCollidingObstacle(desired, ENEMY_CATALOG["bastion-eater"].radiusMetres);
-        if (obstacle) {
-          const impact = { x: obstacle.x + obstacle.width / 2, y: obstacle.y + obstacle.height / 2 };
-          this.damageObstacle(obstacle.id, 450, impact, "mini-boss-charge");
-          this.damageObstacle(obstacle.id, 450, impact, "mini-boss-charge");
-          this.finishBastionEaterAction(enemy, recoverySeconds);
-        } else {
-          this.moveEnemy(enemy, enemy.bastionEaterDirection, speed, deltaSeconds);
-          if (enemy.bastionEaterActionRemainingSeconds <= 0) this.finishBastionEaterAction(enemy, recoverySeconds);
-        }
-        break;
-      }
-      case "tendril-windup":
-        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
-          enemy.bastionEaterAction = "tendril";
-          enemy.bastionEaterActionRemainingSeconds = 0.32;
-          const radiusMetres = phase === "last-stand" ? 5.6 : 5;
-          this.frameEvents.push({ type: "bastion-eater-tendril", position: { ...enemy.position }, radiusMetres, warning: false });
-          const playerDistance = distance(enemy.position, this.playerPosition);
-          if (playerDistance >= 2.25 && playerDistance <= radiusMetres + PLAYER_RADIUS_METRES) {
-            this.damagePlayer(phase === "last-stand"
-              ? PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterTendrilLastStand
-              : PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterTendril);
-          }
-        }
-        break;
-      case "egg-windup":
-        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
-          enemy.bastionEaterAction = "eggs";
-          enemy.bastionEaterActionRemainingSeconds = 0.35;
-          const before = this.enemies.filter((candidate) => !candidate.dead && candidate.type === "egg-cluster").length;
-          this.layBroodEggs(enemy, phase === "last-stand" ? 1 : 2);
-          const after = this.enemies.filter((candidate) => !candidate.dead && candidate.type === "egg-cluster").length;
-          this.frameEvents.push({ type: "bastion-eater-eggs", position: { ...enemy.position }, count: after - before });
-        }
-        break;
-      case "breach-windup":
-        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
-          enemy.bastionEaterAction = "breach";
-          enemy.bastionEaterActionRemainingSeconds = 0.3;
-          const radiusMetres = 2.15;
-          this.frameEvents.push({ type: "bastion-eater-breach", position: { ...enemy.bastionEaterTarget }, radiusMetres, warning: false });
-          if (distance(enemy.bastionEaterTarget, this.playerPosition) <= radiusMetres + PLAYER_RADIUS_METRES) {
-            this.damagePlayer(PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterBreach, "explosive");
-          }
-        }
-        break;
-      case "claw":
-      case "tendril":
-      case "eggs":
-      case "breach":
-        if (enemy.bastionEaterActionRemainingSeconds <= 0) this.finishBastionEaterAction(enemy, recoverySeconds);
-        break;
-      case "recovery":
-        if (enemy.bastionEaterActionRemainingSeconds <= 0) {
-          enemy.bastionEaterAction = "stalk";
-          enemy.bastionEaterActionRemainingSeconds = phase === "last-stand" ? 0.32 : 0.58;
-        }
-        break;
-    }
-  }
-
-  private beginBastionEaterAction(enemy: EnemyState, action: BastionEaterAction): void {
-    enemy.bastionEaterAction = action;
-    enemy.bastionEaterDirection = normalizeVector({
-      x: this.playerPosition.x - enemy.position.x,
-      y: this.playerPosition.y - enemy.position.y,
+    let state = {
+      phase: enemy.bastionEaterPhase,
+      action: enemy.bastionEaterAction,
+      actionRemainingSeconds: enemy.bastionEaterActionRemainingSeconds,
+      direction: enemy.bastionEaterDirection,
+      target: enemy.bastionEaterTarget,
+      attackCount: enemy.bastionEaterAttackCount,
+    };
+    const chargeDestination = bastionEaterChargeDestination(state, enemy.position, deltaSeconds);
+    const chargeObstacle = state.action === "charge"
+      ? this.firstCollidingObstacle(chargeDestination, ENEMY_CATALOG["bastion-eater"].radiusMetres)
+      : null;
+    const result = stepBastionEaterBehavior(state, {
+      deltaSeconds,
+      health: enemy.health,
+      maxHealth: enemy.maxHealth,
+      position: enemy.position,
+      playerPosition: this.playerPosition,
+      baseMovementSpeedMetresPerSecond: ENEMY_CATALOG["bastion-eater"].movementSpeedMetresPerSecond,
+      chargeBlocked: chargeObstacle !== null,
     });
-    enemy.bastionEaterTarget = { ...this.playerPosition };
-    const lastStand = enemy.bastionEaterPhase === "last-stand";
-    enemy.bastionEaterActionRemainingSeconds = lastStand ? 0.5 : 0.72;
-    if (action === "claw-windup") {
-      this.frameEvents.push({ type: "bastion-eater-claw-warning", position: { ...enemy.position }, direction: { ...enemy.bastionEaterDirection } });
-    } else if (action === "tendril-windup") {
-      this.frameEvents.push({ type: "bastion-eater-tendril", position: { ...enemy.position }, radiusMetres: lastStand ? 5.6 : 5, warning: true });
-    } else if (action === "breach-windup") {
-      this.frameEvents.push({ type: "bastion-eater-breach", position: { ...enemy.bastionEaterTarget }, radiusMetres: 2.15, warning: true });
+    state = result.state;
+    if (result.facingDirection) enemy.facingDirection = result.facingDirection;
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
+    let worldAction = result.action;
+    if (result.requestsActionChoice) {
+      const resolved = resolveBastionEaterActionChoice(state, enemy.position, this.playerPosition);
+      state = resolved.state;
+      worldAction = resolved.action;
     }
+    enemy.bastionEaterPhase = state.phase;
+    enemy.bastionEaterAction = state.action;
+    enemy.bastionEaterActionRemainingSeconds = state.actionRemainingSeconds;
+    enemy.bastionEaterDirection = state.direction;
+    enemy.bastionEaterTarget = state.target;
+    enemy.bastionEaterAttackCount = state.attackCount;
+    this.applyBastionEaterWorldAction(enemy, worldAction, chargeObstacle);
   }
 
-  private finishBastionEaterAction(enemy: EnemyState, recoverySeconds: number): void {
-    enemy.bastionEaterAction = "recovery";
-    enemy.bastionEaterActionRemainingSeconds = recoverySeconds;
+  private applyBastionEaterWorldAction(
+    enemy: EnemyState,
+    action: BastionEaterWorldAction,
+    chargeObstacle: ArenaObstacle | null | undefined,
+  ): void {
+    if (!action) return;
+    if (action.kind === "phase-change") {
+      this.frameEvents.push({ type: "bastion-eater-phase", position: { ...enemy.position }, phase: action.phase });
+    } else if (action.kind === "claw-warning") {
+      this.frameEvents.push({ type: "bastion-eater-claw-warning", position: { ...enemy.position }, direction: { ...enemy.bastionEaterDirection } });
+    } else if (action.kind === "tendril-warning") {
+      this.frameEvents.push({ type: "bastion-eater-tendril", position: { ...enemy.position }, radiusMetres: action.radiusMetres, warning: true });
+    } else if (action.kind === "breach-warning") {
+      this.frameEvents.push({ type: "bastion-eater-breach", position: { ...enemy.bastionEaterTarget }, radiusMetres: action.radiusMetres, warning: true });
+    } else if (action.kind === "claw-strike") {
+      this.frameEvents.push({ type: "bastion-eater-claw-strike", position: { ...enemy.position }, direction: { ...enemy.bastionEaterDirection } });
+      if (pointInsideRipperSweep(enemy.position, enemy.bastionEaterDirection, this.playerPosition, 4.4)) {
+        this.damagePlayer(PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterClaw);
+      }
+    } else if (action.kind === "charge-start") {
+      this.frameEvents.push({ type: "bastion-eater-charge", position: { ...enemy.position }, direction: { ...enemy.bastionEaterDirection } });
+    } else if (action.kind === "charge-impact" && chargeObstacle) {
+      const impact = { x: chargeObstacle.x + chargeObstacle.width / 2, y: chargeObstacle.y + chargeObstacle.height / 2 };
+      this.damageObstacle(chargeObstacle.id, 450, impact, "mini-boss-charge");
+      this.damageObstacle(chargeObstacle.id, 450, impact, "mini-boss-charge");
+    } else if (action.kind === "tendril-strike") {
+      this.frameEvents.push({ type: "bastion-eater-tendril", position: { ...enemy.position }, radiusMetres: action.radiusMetres, warning: false });
+      const playerDistance = distance(enemy.position, this.playerPosition);
+      if (playerDistance >= 2.25 && playerDistance <= action.radiusMetres + PLAYER_RADIUS_METRES) {
+        this.damagePlayer(enemy.bastionEaterPhase === "last-stand"
+          ? PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterTendrilLastStand
+          : PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterTendril);
+      }
+    } else if (action.kind === "lay-eggs") {
+      const before = this.enemies.filter((candidate) => !candidate.dead && candidate.type === "egg-cluster").length;
+      this.layBroodEggs(enemy, action.count);
+      const after = this.enemies.filter((candidate) => !candidate.dead && candidate.type === "egg-cluster").length;
+      this.frameEvents.push({ type: "bastion-eater-eggs", position: { ...enemy.position }, count: after - before });
+    } else if (action.kind === "breach-strike") {
+      this.frameEvents.push({ type: "bastion-eater-breach", position: { ...enemy.bastionEaterTarget }, radiusMetres: action.radiusMetres, warning: false });
+      if (distance(enemy.bastionEaterTarget, this.playerPosition) <= action.radiusMetres + PLAYER_RADIUS_METRES) {
+        this.damagePlayer(PLAYER_ATTACK_DAMAGE_BASELINES.bastionEaterBreach, "explosive");
+      }
+    }
   }
 
   private firstCollidingObstacle(position: Vector2Data, radius: number) {
@@ -10010,13 +9896,7 @@ export function pointInsideRipperSweep(
   reachMetres: number,
   halfAngleRadians = Math.PI * 0.32,
 ): boolean {
-  const offset = { x: point.x - origin.x, y: point.y - origin.y };
-  const magnitude = Math.hypot(offset.x, offset.y);
-  if (magnitude > reachMetres) return false;
-  if (magnitude === 0) return true;
-  const facing = normalizeVector(direction);
-  const dot = (offset.x / magnitude) * facing.x + (offset.y / magnitude) * facing.y;
-  return dot >= Math.cos(halfAngleRadians);
+  return pointInsideWeaponArc(origin, direction, point, reachMetres, halfAngleRadians);
 }
 
 /**

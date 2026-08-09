@@ -11,6 +11,7 @@
     "smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-test.ps1",
     "offline": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/offline-boot-test.ps1",
     "balance:audit": "node scripts/run-balance-audit.mjs",
+    "combat:audit:boundaries": "node scripts/audit-combat-boundaries.mjs",
     "audio:validate:s1": "node scripts/validate-production-audio.mjs",
     "audio:audit:s23": "node scripts/audit-production-audio-s23.mjs",
     "audio:loudness:s23": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit-production-audio-loudness-s23.ps1",
@@ -24,7 +25,7 @@
     "audio:generate:s1": "node scripts/generate-production-audio-s1.mjs",
     "image:encode:webp": "python scripts/encode-production-images.py",
     "image:audit:webp": "node scripts/audit-production-images.mjs",
-    "verify": "npm run image:audit:webp && npm run typecheck && npm run test && npm run build && npm run smoke && npm run offline"
+    "verify": "npm run image:audit:webp && npm run combat:audit:boundaries && npm run typecheck && npm run test && npm run build && npm run smoke && npm run offline"
   },
   "dependencies": {
     "phaser": "^4.1.0"
