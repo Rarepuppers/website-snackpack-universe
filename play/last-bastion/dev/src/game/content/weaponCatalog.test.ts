@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { HELD_WEAPONS_IN_POOL, shouldWeaponFire, TRANSFORMATION_WEAPONS, UNIQUE_SLOT_WEAPONS, VERTICAL_SLICE_WEAPON_IDS, WEAPON_CATALOG, WEAPON_CHEST_POOL, weaponPoolFor } from "./weaponCatalog";
+import { HELD_WEAPONS_IN_POOL, HERO_STARTING_WEAPONS, shouldWeaponFire, TRANSFORMATION_WEAPONS, UNIQUE_SLOT_WEAPONS, VERTICAL_SLICE_WEAPON_IDS, WEAPON_CATALOG, WEAPON_CHEST_POOL, weaponPoolFor } from "./weaponCatalog";
 
 describe("weaponCatalog", () => {
   it("locks the three vertical-slice weapon families", () => {
@@ -8,7 +8,7 @@ describe("weaponCatalog", () => {
     ]);
     // 29 until 8 Aug 2026, when the three Tier 1 hole-filling weapons landed
     // (Emberlance / Storm Coil Beam / Blight Scythe).
-    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(33);
+    expect(Object.keys(WEAPON_CATALOG)).toHaveLength(34);
   });
 
   it("keeps each Phase 4 weapon's contract, and its pool membership in step with the art gate", () => {
@@ -72,11 +72,21 @@ describe("weaponCatalog", () => {
       // The 26 July release: the only thing a run cannot reach by any route is a
       // Unique it has not earned. If a weapon is ever added and forgotten, this
       // fails rather than shipping another unobtainable subsystem.
-      const reachable = new Set([...weaponPoolFor({ uniqueUnlocked: true }), ...TRANSFORMATION_WEAPONS]);
+      const reachable = new Set([
+        ...weaponPoolFor({ uniqueUnlocked: true }),
+        ...TRANSFORMATION_WEAPONS,
+        ...HERO_STARTING_WEAPONS,
+      ]);
       for (const id of Object.keys(WEAPON_CATALOG) as (keyof typeof WEAPON_CATALOG)[]) {
         expect(reachable.has(id)).toBe(true);
       }
     });
+  });
+
+  it("keeps Assault's Marauder bound to its hero instead of random acquisition", () => {
+    expect(HERO_STARTING_WEAPONS).toContain("marauder-ar");
+    expect(WEAPON_CHEST_POOL).not.toContain("marauder-ar");
+    expect(weaponPoolFor({ uniqueUnlocked: true })).not.toContain("marauder-ar");
   });
 
   describe("elemental coverage", () => {

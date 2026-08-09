@@ -1,7 +1,7 @@
 import type { DamageType } from "../combat/damageTypes";
 import type { WeaponClass } from "../hero/HeroDefinition";
 
-export type WeaponId = "bastion-service-rifle" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine" | "railspike" | "seeker-swarm" | "cryo-lance" | "tesla-coil" | "flamethrower" | "sawblade" | "event-horizon"
+export type WeaponId = "bastion-service-rifle" | "marauder-ar" | "scattergun" | "arc-carbine" | "patrol-blade" | "bolt-carbine" | "bulwark-rotary-cannon" | "grenade-tube" | "injector-carbine" | "railspike" | "seeker-swarm" | "cryo-lance" | "tesla-coil" | "flamethrower" | "sawblade" | "event-horizon"
   | "combat-knife" | "machete" | "fire-axe" | "shock-baton" | "breaching-maul" | "plasma-saber"
   | "corrosive-lobber" | "scourge-repeater" | "bile-lance" | "rime-cleaver" | "hoarfrost-scatter" | "glacier-ward" | "tether-harpoon"
   | "sentry-stake"
@@ -96,6 +96,23 @@ export const BASTION_SERVICE_RIFLE: Readonly<WeaponRuntimeStats> = weapon({
   projectileSpeedMetresPerSecond: 19,
   projectileLifetimeSeconds: 1.15,
   projectileDamage: 2,
+});
+
+/** Assault's starting rifle; held out of all random pools until C3 art/audio lands. */
+export const MARAUDER_AR: Readonly<WeaponRuntimeStats> = weapon({
+  id: "marauder-ar",
+  displayName: "Marauder AR",
+  description: "Hard-cycling medium rifle built to maintain Momentum on a priority target.",
+  weaponClass: "medium",
+  damageType: "physical",
+  targetingMode: "cursor",
+  attackPattern: "projectile",
+  rangeMetres: 20,
+  fireIntervalSeconds: 0.12,
+  projectileSpeedMetresPerSecond: 20,
+  projectileLifetimeSeconds: 1,
+  projectileDamage: 2.6,
+  knockbackMetres: 0.04,
 });
 
 export const SCATTERGUN: Readonly<WeaponRuntimeStats> = weapon({
@@ -732,6 +749,7 @@ export const BLIGHT_SCYTHE: Readonly<WeaponRuntimeStats> = weapon({
 
 export const WEAPON_CATALOG: Readonly<Record<WeaponId, Readonly<WeaponRuntimeStats>>> = Object.freeze({
   "bastion-service-rifle": BASTION_SERVICE_RIFLE,
+  "marauder-ar": MARAUDER_AR,
   scattergun: SCATTERGUN,
   "arc-carbine": ARC_CARBINE,
   "patrol-blade": PATROL_BLADE,
@@ -849,6 +867,9 @@ export const UNIQUE_SLOT_WEAPONS: readonly WeaponId[] = Object.freeze(["event-ho
 
 /** Internal weapon entities reached through transformation choices, not drafts. */
 export const TRANSFORMATION_WEAPONS: readonly WeaponId[] = Object.freeze(["auxiliary-drone"]);
+
+/** Hero-bound weapons that never enter random drafts or shops. */
+export const HERO_STARTING_WEAPONS: readonly WeaponId[] = Object.freeze(["marauder-ar"]);
 
 /** The base pool: everything obtainable before a unique is unlocked. */
 export const WEAPON_CHEST_POOL: readonly WeaponId[] = Object.freeze(

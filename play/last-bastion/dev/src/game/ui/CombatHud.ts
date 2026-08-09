@@ -346,7 +346,11 @@ export class CombatHud {
     const bonusLabel = bonusHealthLabel(snapshot.playerBonusHealth);
     const passiveState = snapshot.heroPresentation.id === "marine"
       ? snapshot.playerEntrenched ? "  ENTRENCHED" : ""
-      : snapshot.heroPresentation.id === "medic" ? `  TRIAGE ${snapshot.medicTriageHits}/6` : "";
+      : snapshot.heroPresentation.id === "medic"
+        ? `  TRIAGE ${snapshot.medicTriageHits}/6`
+        : snapshot.heroPresentation.id === "assault"
+          ? `  MOMENTUM ${snapshot.assaultMomentumStacks}/5`
+          : "";
     const flags = `${snapshot.playerSlowed ? "  SLOWED" : ""}${snapshot.playerTethered ? "  TETHERED" : ""}${passiveState}`;
     this.statsText.setText(
       `${snapshot.heroPresentation.displayName.toUpperCase()}  •  LV ${snapshot.level}`

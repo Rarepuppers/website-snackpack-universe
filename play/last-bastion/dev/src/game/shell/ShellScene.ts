@@ -1,8 +1,7 @@
 import Phaser from "phaser";
 import { LocalSaveStore, type GameProgress } from "../save/LocalSaveStore";
 import { createLocalSaveStore } from "../save/SaveStorage";
-import { MARINE } from "../hero/marine";
-import { MEDIC } from "../hero/medic";
+import { heroDefinition, isHeroId } from "../hero/HeroCatalog";
 import { areGameAssetsLoaded, queueGameAssets } from "../assets/PhaserAssetQueue";
 import {
   SHELL_BASE_ASSETS,
@@ -572,10 +571,10 @@ export class ShellScene extends Phaser.Scene {
 
     // Right: dossier.
     this.root.add(this.add.rectangle(660, 260, 440, 350, PANEL).setStrokeStyle(1, 0x3b4d63));
-    if (hero.status === "playable") {
-      const definition = hero.id === "medic" ? MEDIC : MARINE;
+    if (isHeroId(hero.id)) {
+      const definition = heroDefinition(hero.id);
       const dossier = [
-        hero.id === "medic" ? "ROLE  Mobile combat sustain specialist" : "ROLE  Durable all-round ranged fighter",
+        `ROLE  ${definition.role}`,
         "",
         `PASSIVE  ${definition.passive.name}`,
         definition.passive.description,
@@ -583,16 +582,13 @@ export class ShellScene extends Phaser.Scene {
         `ULTIMATE  ${definition.ultimate.name}`,
         definition.ultimate.description,
         "",
-        hero.id === "medic" ? "STARTING WEAPON  Injector Carbine" : "STARTING WEAPON  Bastion Service Rifle",
-        hero.id === "medic"
-          ? "PER LEVEL  +2 HEALTH / +1 ARMOUR / +2 LIGHT / +1 SUPPORT"
-          : "PER LEVEL  +1 ALL STATS / +1 LIGHT PROFICIENCY",
+        `STARTING WEAPON  ${definition.startingWeaponName}`,
+        `PER LEVEL  ${definition.levelGrowthDescription}`,
+        ...(hero.status === "in-development" ? ["", definition.unlockText] : []),
       ].join("\n");
       this.root.add(this.text(470, 108, dossier, IVORY, "12px").setWordWrapWidth(390));
     } else {
-      this.root.add(this.text(660, 240, hero.status === "in-development"
-        ? "Dossier sealed.\nThe Medic deploys with the Web MVP."
-        : "Signal lost.\nFuture hero slot.", MUTED, "14px", true));
+      this.root.add(this.text(660, 240, "Signal lost.\nFuture hero slot.", MUTED, "14px", true));
     }
 
     this.root.add(this.text(470, 326, `PERK  ${perkUnlocked ? perk.name.toUpperCase() : "LOCKED"}`, perkUnlocked ? TEAL : ORANGE, "14px"));

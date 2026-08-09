@@ -2,8 +2,7 @@ import type { PlayerIntent } from "../input/PlayerIntent";
 import type { Vector2Data } from "../math/Vector2Data";
 import { normalizeVector } from "../math/Vector2Data";
 import { HeroMotionController } from "../hero/HeroMotionController";
-import { MARINE } from "../hero/marine";
-import { MEDIC } from "../hero/medic";
+import { heroDefinition } from "../hero/HeroCatalog";
 import { experienceThreshold, heroGrowthAtLevel } from "../hero/LevelGrowth";
 import type { HeroDefinition, WeaponClass } from "../hero/HeroDefinition";
 import { ENEMY_CATALOG, type EnemyType } from "../content/enemyCatalog";
@@ -17,7 +16,6 @@ import {
 } from "../content/weaponCatalog";
 import {
   clampWeaponCount,
-  createServiceRifleLoadout,
   createWeaponLoadout,
   MAX_EQUIPPED_WEAPONS,
   type EquippedWeapon,
@@ -884,7 +882,7 @@ export interface HeroCombatPresentation {
   displayName: string;
   passiveId: string;
   passiveName: string;
-  evasiveName: "Roll" | "Slide";
+  evasiveName: string;
   evasiveDurationSeconds: number;
   evasiveRecoverySeconds: number;
   ultimateName: string;
@@ -939,6 +937,7 @@ export interface CombatSnapshot {
   weaponProficiencies: Readonly<Record<WeaponClass, number>>;
   playerInvulnerable: boolean;
   playerEntrenched: boolean;
+  assaultMomentumStacks: number;
   evasiveReady: boolean;
   evasiveCooldownRemainingSeconds: number;
   ultimateReady: boolean;
@@ -1541,6 +1540,9 @@ export class CombatSimulation {
   private regenerationRemainingSeconds = PLAYER_REGEN_INTERVAL_SECONDS;
   private playerShield: number;
   private medicTriageHits = 0;
+  private assaultMomentumTargetId: number | null = null;
+  private assaultMomentumStacks = 0;
+  private assaultMomentumRemainingSeconds = 0;
   private shieldRechargeCooldownSeconds = 0;
   private playerInvulnerable = false;
   private heroState = "idle";
@@ -1711,12 +1713,14 @@ export class CombatSimulation {
 
   constructor(options: CombatSimulationOptions = {}) {
     this.autoFireEnabled = options.autoFireEnabled ?? false;
-    this.hero = options.heroId === "medic" ? MEDIC : MARINE;
+    this.hero = heroDefinition(options.heroId ?? "marine");
     this.heroMotion = new HeroMotionController(this.hero);
     this.defence = { ...this.hero.defence };
     this.weaponProficiencies = { ...this.hero.weaponProficiencies };
     this.upgradeSlotCapacity = { ...this.hero.upgradeSlots };
     this.playerShield = this.hero.defence.maxShield;
+    this.playerMaxHealth = Math.round(this.hero.baseMaxHealth);
+    this.playerHealth = this.playerMaxHealth;
     this.arena = options.arena ?? furnishArena(BASTION_ARENA, options);
     this.seedWorldInteractions();
     this.widthMetres = options.widthMetres ?? this.arena.widthMetres;
@@ -1786,16 +1790,17 @@ export class CombatSimulation {
     const carriedWeaponIds = options.startingBuild?.weapons
       .map((weapon) => weapon.weaponId)
       .filter((weaponId): weaponId is WeaponId => weaponId in WEAPON_CATALOG);
+    const heroStartingWeaponId = this.hero.startingWeaponId in WEAPON_CATALOG
+      ? this.hero.startingWeaponId as WeaponId
+      : "bastion-service-rifle";
     const initialLoadout = carriedWeaponIds && carriedWeaponIds.length > 0
       ? createWeaponLoadout(carriedWeaponIds)
       : options.startingWeaponIds
       ? createWeaponLoadout(options.startingWeaponIds)
-      : this.hero.id === "medic"
-      ? createWeaponLoadout(Array.from(
+      : createWeaponLoadout(Array.from(
         { length: clampWeaponCount(options.startingWeaponCount ?? 1) },
-        () => "injector-carbine" as const,
-      ))
-      : createServiceRifleLoadout(clampWeaponCount(options.startingWeaponCount ?? 1));
+        () => heroStartingWeaponId,
+      ));
     this.equippedWeapons = initialLoadout.map((weapon) => ({
       ...weapon,
       cooldownSeconds: 0,
@@ -1803,9 +1808,7 @@ export class CombatSimulation {
       projectileCarry: initialProjectileCarry(weapon.instanceId),
       orbitAngleRadians: 0,
     }));
-    const rackClasses: ("light" | "medium" | "heavy" | "unique" | "all")[] = this.hero.id === "medic"
-      ? ["light", "light", "all"]
-      : ["light", "medium", "heavy", "all"];
+    const rackClasses: ("light" | "medium" | "heavy" | "unique" | "all")[] = [...this.hero.rackClasses];
     while (rackClasses.length < this.equippedWeapons.length) rackClasses.push("all");
     // Weapon slots granted by Shrine/Event rewards are flexible "all" mounts.
     for (let slot = 0; slot < this.rewardWeaponSlotBonus; slot += 1) rackClasses.push("all");
@@ -1829,7 +1832,10 @@ export class CombatSimulation {
     this.defence.armour += this.transformationModifiers.armourBonus + this.playerStats.armourFlat;
     this.appliedItemArmour = this.playerStats.armourFlat;
     this.defence.maxShield += this.transformationModifiers.maxShieldBonus;
-    this.playerMaxHealth = Math.max(3, Math.round(this.playerMaxHealth * this.transformationModifiers.maxHealthMultiplier));
+    this.playerMaxHealth = Math.max(
+      3,
+      Math.round(this.playerMaxHealth * this.transformationModifiers.maxHealthMultiplier),
+    );
     this.applyEffectivePlayerStatLimits();
     this.playerHealth = Math.min(this.playerHealth, this.playerMaxHealth);
     if (this.transformationModifiers.droneShotDamage > 0) {
@@ -1871,6 +1877,7 @@ export class CombatSimulation {
     }
     this.playerHurtCooldownSeconds = Math.max(0, this.playerHurtCooldownSeconds - delta);
     this.ultimateCooldownRemainingSeconds = Math.max(0, this.ultimateCooldownRemainingSeconds - delta);
+    this.updateAssaultMomentum(delta);
     this.updateArtifactTimers(delta);
     this.updateBuffs(delta);
     this.updateRegeneration(delta);
@@ -2522,7 +2529,7 @@ export class CombatSimulation {
       displayName: this.hero.displayName,
       passiveId: this.hero.passive.id,
       passiveName: this.hero.passive.name,
-      evasiveName: this.hero.evasiveMove.presentation === "roll" ? "Roll" : "Slide",
+      evasiveName: titleCase(this.hero.evasiveMove.presentation),
       evasiveDurationSeconds: this.hero.evasiveMove.durationSeconds,
       evasiveRecoverySeconds: this.heroMotion.getEffectiveEvasiveRecoverySeconds(),
       ultimateName: this.hero.ultimate.name,
@@ -2563,6 +2570,7 @@ export class CombatSimulation {
       weaponProficiencies: { ...this.weaponProficiencies },
       playerInvulnerable: this.playerInvulnerable || this.playerHurtCooldownSeconds > 0,
       playerEntrenched: this.isPlayerEntrenched(),
+      assaultMomentumStacks: this.assaultMomentumStacks,
       evasiveReady: this.evasiveReady,
       evasiveCooldownRemainingSeconds: this.evasiveCooldownRemainingSeconds,
       ultimateReady: this.ultimateCooldownRemainingSeconds <= 0,
@@ -2947,9 +2955,10 @@ export class CombatSimulation {
 
     const previousMax = this.playerMaxHealth;
     const growth = heroGrowthAtLevel(this.hero, this.level);
-    this.playerMaxHealth = Math.max(3, Math.round(
-      this.rewardAdjustedMaxHealth(growth.maxHealthBonus) * this.transformationModifiers.maxHealthMultiplier,
-    ));
+    this.playerMaxHealth = Math.max(
+      3,
+      Math.round(this.rewardAdjustedMaxHealth(growth.maxHealthBonus) * this.transformationModifiers.maxHealthMultiplier),
+    );
     this.applyEffectivePlayerStatLimits();
     const gained = this.playerMaxHealth - previousMax;
     if (gained > 0) this.playerHealth += gained;
@@ -2970,8 +2979,8 @@ export class CombatSimulation {
    * constructor.
    */
   private rewardAdjustedMaxHealth(growthBonus: number): number {
-    const base = PLAYER_MAX_HEALTH + growthBonus + this.rewardMaxHealthBonus + this.playerStats.maxHpFlat;
-    return Math.max(3, base * (1 + this.playerStats.maxHpPercent / 100));
+    const base = this.hero.baseMaxHealth + growthBonus + this.rewardMaxHealthBonus + this.playerStats.maxHpFlat;
+    return Math.max(3, Math.round(base * (1 + this.playerStats.maxHpPercent / 100)));
   }
 
   private restoreExpeditionBuild(build: ExpeditionBuildSnapshot): void {
@@ -4191,6 +4200,38 @@ export class CombatSimulation {
       && this.stationarySeconds >= this.hero.passive.stationarySecondsRequired;
   }
 
+  private updateAssaultMomentum(deltaSeconds: number): void {
+    if (this.hero.id !== "assault" || this.assaultMomentumRemainingSeconds <= 0) return;
+    this.assaultMomentumRemainingSeconds = Math.max(0, this.assaultMomentumRemainingSeconds - deltaSeconds);
+    if (this.assaultMomentumRemainingSeconds === 0) {
+      this.assaultMomentumTargetId = null;
+      this.assaultMomentumStacks = 0;
+    }
+  }
+
+  private assaultMomentumMultiplier(enemyId: number, sourceWeaponId?: WeaponId): number {
+    if (
+      this.hero.id !== "assault"
+      || sourceWeaponId === undefined
+      || this.assaultMomentumTargetId !== enemyId
+      || this.assaultMomentumRemainingSeconds <= 0
+    ) return 1;
+    return 1 + this.assaultMomentumStacks * (this.hero.passive.consecutiveHitDamageBonus ?? 0);
+  }
+
+  private registerAssaultMomentumHit(enemyId: number, sourceWeaponId?: WeaponId): void {
+    if (this.hero.id !== "assault" || sourceWeaponId === undefined) return;
+    const sameTarget = this.assaultMomentumTargetId === enemyId && this.assaultMomentumRemainingSeconds > 0;
+    this.assaultMomentumTargetId = enemyId;
+    this.assaultMomentumStacks = sameTarget
+      ? Math.min(
+        this.hero.passive.consecutiveHitMaxStacks ?? 0,
+        this.assaultMomentumStacks + 1,
+      )
+      : 1;
+    this.assaultMomentumRemainingSeconds = this.hero.passive.consecutiveHitResetSeconds ?? 0;
+  }
+
   private fireUltimate(): void {
     const ultimate = this.hero.ultimate;
     this.ultimateCooldownRemainingSeconds = ultimate.cooldownSeconds * this.transformationModifiers.ultimateCooldownMultiplier;
@@ -4207,11 +4248,15 @@ export class CombatSimulation {
       });
       return;
     }
+    const forwardArc = ultimate.projectileArcRadians;
     for (let index = 0; index < ultimate.projectileCount; index += 1) {
-      const angle = (index / ultimate.projectileCount) * Math.PI * 2;
+      const angle = forwardArc === undefined
+        ? (index / ultimate.projectileCount) * Math.PI * 2
+        : Math.atan2(this.lastAimDirection.y, this.lastAimDirection.x)
+          + (index / Math.max(1, ultimate.projectileCount - 1) - 0.5) * forwardArc;
       const direction = { x: Math.cos(angle), y: Math.sin(angle) };
       this.spawnFriendlyProjectile({
-        weaponId: "bastion-service-rifle",
+        weaponId: this.hero.id === "assault" ? "marauder-ar" : "bastion-service-rifle",
         damageType: "physical",
         position: {
           x: this.playerPosition.x + direction.x * 0.6,
@@ -4226,7 +4271,7 @@ export class CombatSimulation {
         remainingSeconds: ULTIMATE_PROJECTILE_LIFETIME_SECONDS,
         pierceRemaining: 0,
         explosionRadiusMetres: ultimate.explosionRadiusMetres,
-        knockbackMetres: 0.4,
+        knockbackMetres: ultimate.projectileKnockbackMetres ?? 0.4,
         chainRemaining: 0,
         chainRadiusMetres: 0,
         hitEnemyIds: new Set<number>(),
@@ -4719,7 +4764,7 @@ export class CombatSimulation {
     if (this.playerHealth >= this.playerMaxHealth) return;
     const perSecondRate = Math.min(
       this.playerMaxHealth * PLAYER_STAT_LIMITS.passiveRegenerationMaxHealthFraction,
-      PLAYER_REGEN_PER_SECOND
+      this.hero.baseRegenerationPerSecond
         + this.transformationModifiers.regenerationPerSecondBonus
         + this.playerStats.hpRegenPerSecond,
     );
@@ -8948,7 +8993,8 @@ export class CombatSimulation {
       0,
     );
     const shieldBefore = enemy.shield;
-    const absorption = absorbWithShield(enemy.shield, rawDamage * resistanceMultiplier);
+    const momentumMultiplier = this.assaultMomentumMultiplier(enemy.id, sourceWeaponId);
+    const absorption = absorbWithShield(enemy.shield, rawDamage * resistanceMultiplier * momentumMultiplier);
     enemy.shield = absorption.remainingShield;
     let mitigated = mitigateDamage(
       absorption.remainingDamage,
@@ -9023,6 +9069,7 @@ export class CombatSimulation {
       damageType,
       enemyId: enemy.id,
     });
+    this.registerAssaultMomentumHit(enemy.id, sourceWeaponId);
     if (this.scenario === "density-capacity") {
       return;
     }
@@ -10362,6 +10409,10 @@ export function rotatingWindow<T>(entries: readonly T[], size: number, offset: n
 
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(Math.max(value, minimum), maximum);
+}
+
+function titleCase(value: string): string {
+  return value.length === 0 ? value : value[0]!.toUpperCase() + value.slice(1);
 }
 
 function playerDefeatCause(source: PlayerDamageSource): string {

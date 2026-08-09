@@ -181,9 +181,11 @@ about three hours (finish 1 run, win 1 run, finish 3 runs, reach wave 3, clear 5
 only one perk can be equipped, and after that nothing ever changes between runs again. There is
 no persistent currency, no spendable tree, and the three silhouette heroes have no unlock rule.
 
-**F8 — Two playable heroes.** Marine and Medic. Assault, Tactician, and Scout are silhouettes
-with no gameplay contract, which is correctly identified in the asset review as
-mechanics-before-art.
+**F8 — Two production-playable heroes; Assault mechanics complete.** Marine and Medic remain the
+two deployable heroes. Assault now has a typed combat contract, Marauder AR, Momentum passive,
+Breach & Clear ultimate, rack/growth/upgrade economy, roster dossier, HUD feedback, tests, and a
+code-native review route. It remains truthfully marked **IN DEVELOPMENT** and cannot deploy until
+the dedicated C3 art/audio package lands. Tactician and Scout remain silhouettes without mechanics.
 
 **F9 — No daily/weekly seeded run and no leaderboards.** Steam Leaderboards are free, the run
 already threads a deterministic seed (`?mapseed=N`), and a daily is the cheapest retention
@@ -388,8 +390,10 @@ Gravity Adept pull-pulse pilots are complete. Extend this pattern to the remaini
 needs one readable, testable combat behaviour instead of another percentage bag. Close the last two
 typed elemental-received scars only after the player-side damage/status contract exists.
 
-**G5 — Heroes 3–5.** Mechanics contract first (stats, weapon-class rack, starting weapon,
-ultimate, unlock rule), then the C3 art package per the existing rule. One hero at a time.
+**G5 — Heroes 3–5.** Assault is the completed mechanics pilot: stats, medium/medium/heavy/all rack,
+Marauder AR, Momentum, Breach & Clear, level growth, upgrade economy, and a hard C3 deployment gate
+all exist in code. Next complete C3 Assault art/audio and production acceptance; only then begin the
+Tactician mechanics contract, followed by Scout. Keep the one-hero-at-a-time rule.
 
 **G6 — Combat feel.** Hit-stop: 2–4 frames of `timeScale` dilation on crit and on kill, scaled by
 the existing reduced-motion setting and the new shake-intensity slider. Weapon recoil kick on the
@@ -925,7 +929,15 @@ constructed by anything.
   six journal rows at once, and scrolls through all retained entries with bounded keyboard/controller
   navigation. The old `lastRunSummary` remains as a compatibility/current-debrief pointer derived from
   the newest journal entry.
-- **T4.8 — heroes 3–5** (mechanics contract first, then batch C3).
+- **T4.8 — IN PROGRESS 9 Aug 2026. Assault mechanics complete; C3 gate remains.** Assault now owns
+  a typed hero definition and catalogue entry, 9-health / 5.4-speed chassis, four-slot
+  Medium/Medium/Heavy/All rack, 4/1/1/1 upgrade economy, Marauder AR, Momentum's same-target
+  +4%-per-hit ramp (capped at +20%, reset after 1.25 seconds or target change), and Breach & Clear's
+  nine-round 100-degree forward cone. Marauder is hero-bound and excluded from random chest/shop
+  acquisition. `?hero=assault` is the explicit code-native mechanics review route; it refuses Marine
+  art, while Character Select exposes the real dossier but keeps Deploy disabled. **Next:** produce
+  and integrate C3 Assault portrait/body/helmet/effects/audio, replace all temporary presentation,
+  run live combat/roster acceptance, then unlock Assault and begin Tactician's mechanics contract.
 
 ### 10.6 Dependency graph
 
@@ -944,9 +956,9 @@ T4.1 ladder ──→ T4.3 dailies + leaderboards
 ```
 
 Two hard gates worth restating: **T3.6 must land before batch X1** (do not commission 56 icons
-for achievement IDs that do not exist), and **T4.8 must not begin before each hero's mechanics
-contract is in code** — that is the rule the existing silhouette placeholders were created to
-enforce.
+for achievement IDs that do not exist), and **a T4.8 hero must not become deployable before both
+its mechanics contract and dedicated production presentation exist**. Assault has cleared the first
+gate only; its roster lock is the enforcement mechanism for C3.
 
 ---
 

@@ -3,6 +3,9 @@ import type { HeroDefinition } from "./HeroDefinition";
 export const MEDIC = Object.freeze({
   id: "medic",
   displayName: "Medic",
+  role: "Mobile combat sustain specialist",
+  baseMaxHealth: 9.5,
+  baseRegenerationPerSecond: 0.05,
   movementSpeedMetresPerSecond: 5.1,
   collisionRadiusMetres: 0.52,
   evasiveMove: {
@@ -38,6 +41,11 @@ export const MEDIC = Object.freeze({
     bonusArmour: 0,
   },
   upgradeSlots: { offensive: 2, defensive: 2, support: 2, scavenger: 1 },
+  startingWeaponId: "injector-carbine",
+  startingWeaponName: "Injector Carbine",
+  rackClasses: ["light", "light", "all"],
+  levelGrowthDescription: "+2 HEALTH / +1 ARMOUR / +2 LIGHT / +1 SUPPORT",
+  unlockText: "Available from the first deployment.",
   ultimate: {
     id: "emergency-surge",
     name: "Emergency Surge",

@@ -1,4 +1,5 @@
 import type { WorldObjectArtAssetId } from "../arena/WorldObjectCatalog";
+import type { HeroDefinition } from "../hero/HeroDefinition";
 import type { ArenaTheme } from "../rendering/arenaThemes";
 import {
   GAME_ASSET_MANIFEST,
@@ -8,7 +9,7 @@ import {
 
 export interface CombatAssetSelection {
   arenaTheme: ArenaTheme;
-  heroId: "marine" | "medic";
+  heroId: HeroDefinition["id"];
   productionArt: boolean;
   helmet: boolean;
   worldObjectAssetIds: readonly WorldObjectArtAssetId[];
@@ -241,9 +242,12 @@ export function combatAssetsForSession(
   }
 
   if (selection.productionArt) {
-    selectedIds.add(selection.heroId === "medic" ? "medic-base-v1" : "marine-base-v1");
-    if (selection.helmet) {
-      selectedIds.add(selection.heroId === "medic" ? "medic-helmet-v1" : "marine-helmet-v1");
+    if (selection.heroId === "medic") {
+      selectedIds.add("medic-base-v1");
+      if (selection.helmet) selectedIds.add("medic-helmet-v1");
+    } else if (selection.heroId === "marine") {
+      selectedIds.add("marine-base-v1");
+      if (selection.helmet) selectedIds.add("marine-helmet-v1");
     }
     addArenaTexture(selectedIds, selection.arenaTheme.floorTexture);
     addArenaTexture(selectedIds, selection.arenaTheme.boundaryTexture);

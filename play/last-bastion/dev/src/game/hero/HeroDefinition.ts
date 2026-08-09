@@ -11,6 +11,10 @@ export interface HeroPassiveProfile {
   /** Seconds of standing still before the passive engages. */
   stationarySecondsRequired: number;
   bonusArmour: number;
+  /** Assault Momentum: bonus applied per prior consecutive hit on one target. */
+  consecutiveHitDamageBonus?: number;
+  consecutiveHitMaxStacks?: number;
+  consecutiveHitResetSeconds?: number;
 }
 
 export interface HeroUltimateProfile {
@@ -23,17 +27,29 @@ export interface HeroUltimateProfile {
   explosionRadiusMetres: number;
   healAmount?: number;
   shieldAmount?: number;
+  /** When present, projectiles spread across this forward-facing arc instead of a full radial volley. */
+  projectileArcRadians?: number;
+  projectileKnockbackMetres?: number;
 }
 
 export interface HeroDefinition {
-  id: "marine" | "medic";
+  id: "marine" | "medic" | "assault";
   displayName: string;
+  role: string;
+  baseMaxHealth: number;
+  baseRegenerationPerSecond: number;
   movementSpeedMetresPerSecond: number;
   collisionRadiusMetres: number;
   evasiveMove: EvasiveMoveProfile;
   defence: DefenceProfile;
   passive: HeroPassiveProfile;
   ultimate: HeroUltimateProfile;
+  /** Stable weapon id; validated against the weapon catalogue at simulation construction. */
+  startingWeaponId: string;
+  startingWeaponName: string;
+  rackClasses: readonly (WeaponClass | "all")[];
+  levelGrowthDescription: string;
+  unlockText: string;
   /**
    * Starting upgrade slots per category. New upgrades consume a slot in
    * their category; leveling an owned upgrade never does. Slot rewards can

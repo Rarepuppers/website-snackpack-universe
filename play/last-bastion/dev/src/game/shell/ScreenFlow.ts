@@ -1,4 +1,6 @@
 import type { GameProgress, GameSettings } from "../save/LocalSaveStore";
+import type { HeroDefinition } from "../hero/HeroDefinition";
+import { isHeroId } from "../hero/HeroCatalog";
 import type { DisplayCapabilities } from "../rendering/DisplayCapabilities";
 import { PERK_CATALOG, unlockedPerkIds, type PerkId } from "../perks/perkCatalog";
 import {
@@ -47,7 +49,7 @@ export type ShellScreen =
 export type ShellIntent = "up" | "down" | "left" | "right" | "confirm" | "back";
 
 export type ShellEffect =
-  | { type: "start-run"; heroId: string; perkId: PerkId; threatTier: ThreatTier }
+  | { type: "start-run"; heroId: HeroDefinition["id"]; perkId: PerkId; threatTier: ThreatTier }
   | { type: "open-url"; url: string }
   | { type: "set-setting"; key: keyof GameSettings; value: GameSettings[keyof GameSettings] }
   | { type: "capture-binding"; device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction }
@@ -179,7 +181,7 @@ export interface RosterEntry {
 export const ROSTER: readonly RosterEntry[] = Object.freeze([
   { id: "marine", name: "MARINE", status: "playable" },
   { id: "medic", name: "MEDIC", status: "playable" },
-  { id: "assault", name: "ASSAULT", status: "silhouette" },
+  { id: "assault", name: "ASSAULT", status: "in-development" },
   { id: "tactician", name: "TACTICIAN", status: "silhouette" },
   { id: "scout", name: "SCOUT", status: "silhouette" },
 ]);
@@ -263,7 +265,7 @@ export function createShellState(
     commandMarksLifetime: 0, purchasedArmoryNodeIds: [],
   },
   selectedPerkId: PerkId | null = "perk-veteran",
-  selectedHeroId: "marine" | "medic" = "marine",
+  selectedHeroId: HeroDefinition["id"] = "marine",
   controls: ControlBindings = DEFAULT_CONTROL_BINDINGS,
   settingsRows: readonly SettingsRow[] = SETTINGS_ROWS,
   selectedThreatTier: ThreatTier = 0,
@@ -489,7 +491,7 @@ function stepCharacterSelect(state: ShellState, intent: ShellIntent): ShellStepR
   if (intent === "confirm") {
     const hero = ROSTER[state.rosterIndex]!;
     const perk = PERK_CATALOG[state.perkIndex]!;
-    if (hero.status !== "playable" || !state.unlockedPerkIds.includes(perk.id)) {
+    if (hero.status !== "playable" || !isHeroId(hero.id) || !state.unlockedPerkIds.includes(perk.id)) {
       return { state, effects: [] };
     }
     return { state: { ...state, screen: "threat-select" }, effects: [] };
@@ -542,7 +544,9 @@ function stepThreatSelect(state: ShellState, intent: ShellIntent): ShellStepResu
     const tier = THREAT_TIERS[state.threatTierIndex]!.tier;
     const hero = ROSTER[state.rosterIndex]!;
     const perk = PERK_CATALOG[state.perkIndex]!;
-    if (!state.unlockedThreatTiers.includes(tier)) return { state, effects: [] };
+    if (hero.status !== "playable" || !isHeroId(hero.id) || !state.unlockedThreatTiers.includes(tier)) {
+      return { state, effects: [] };
+    }
     return { state, effects: [{ type: "start-run", heroId: hero.id, perkId: perk.id, threatTier: tier }] };
   }
   return { state, effects: [] };

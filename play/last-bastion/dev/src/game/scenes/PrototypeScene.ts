@@ -29,6 +29,7 @@ import {
 import { offscreenWarningPosition, telegraphShapeCue } from "../combat/TelegraphRules";
 import type { EquippedWeapon } from "../equipment/WeaponLoadout";
 import type { PerkId } from "../perks/perkCatalog";
+import type { HeroDefinition } from "../hero/HeroDefinition";
 import { clampWeaponCount } from "../equipment/WeaponLoadout";
 import { calculateWeaponRingLayout } from "../equipment/WeaponRingLayout";
 import {
@@ -163,13 +164,14 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly showDebug = readDebugMode();
   private readonly uraniumLab = readUraniumLab();
   private readonly transformationPreview = readTransformationPreview();
+  private readonly heroPreview = readHeroPreview();
   private readonly saveStore = createSaveStore();
   private settings = applySettingOverrides(this.saveStore);
   private readonly performanceGovernor = new AdaptivePerformanceGovernor(this.settings.effectQuality);
   private readonly expeditionContext = readExpeditionContext(this.saveStore);
   private simulation = createSimulation(
     this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
-    this.expeditionContext, this.saveStore.load().selectedPerkId, this.saveStore.load().selectedHeroId,
+    this.expeditionContext, this.saveStore.load().selectedPerkId, this.heroPreview ?? this.saveStore.load().selectedHeroId,
     this.settings.autoFireEnabled, selectedArmoryWeapon(
       this.saveStore.load().selectedArmoryNodeId,
       this.saveStore.load().progress.purchasedArmoryNodeIds,
@@ -1048,7 +1050,7 @@ export class PrototypeScene extends Phaser.Scene {
   private restartRun(): void {
     this.simulation = createSimulation(
       this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
-      this.expeditionContext, this.saveStore.load().selectedPerkId, this.saveStore.load().selectedHeroId,
+      this.expeditionContext, this.saveStore.load().selectedPerkId, this.heroPreview ?? this.saveStore.load().selectedHeroId,
       this.settings.autoFireEnabled, selectedArmoryWeapon(
         this.saveStore.load().selectedArmoryNodeId,
         this.saveStore.load().progress.purchasedArmoryNodeIds,
@@ -4930,7 +4932,12 @@ function readWorldObjectTheme(): string | undefined {
 }
 
 function readMarineArtPreview(): boolean {
-  return new URLSearchParams(window.location.search).get("art") !== "placeholder";
+  const params = new URLSearchParams(window.location.search);
+  return params.get("art") !== "placeholder" && params.get("hero") !== "assault";
+}
+
+function readHeroPreview(): HeroDefinition["id"] | null {
+  return new URLSearchParams(window.location.search).get("hero") === "assault" ? "assault" : null;
 }
 
 function readMarineHelmetPreview(): boolean {
@@ -5107,7 +5114,7 @@ function createSimulation(
   uraniumLab: { kit: boolean; active: boolean },
   expeditionContext: ExpeditionCombatContext | null,
   perkId: PerkId | null,
-  heroId: "marine" | "medic",
+  heroId: HeroDefinition["id"],
   autoFireEnabled: boolean,
   armoryStartingWeaponId: WeaponId | null,
   transformationPreview: TransformationAffinityState | null,
@@ -5284,6 +5291,8 @@ type WeaponBodyAssetId = "service-rifle-v1" | "scattergun-v1" | "arc-carbine-v1"
  */
 const WEAPON_BODY_ASSETS: Readonly<Record<WeaponId, WeaponBodyAssetId>> = Object.freeze({
   "bastion-service-rifle": "service-rifle-v1",
+  // PLACEHOLDER — the Assault review route forces code-native art until C3 lands.
+  "marauder-ar": "service-rifle-v1",
   scattergun: "scattergun-v1",
   "arc-carbine": "arc-carbine-v1",
   "patrol-blade": "patrol-blade-v1",

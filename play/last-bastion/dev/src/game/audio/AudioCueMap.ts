@@ -96,6 +96,7 @@ export function cueForEvent(eventType: CombatEvent["type"]): AudioCue | null {
 
 const WEAPON_CUES: Readonly<Record<WeaponId, AudioCue>> = Object.freeze({
   "bastion-service-rifle": cue("service-rifle-fire", 720, 0.05, 0.05, "square", 520),
+  "marauder-ar": cue("marauder-ar-fire", 610, 0.06, 0.06, "square", 390),
   scattergun: cue("scattergun-fire", 210, 0.12, 0.09, "sawtooth", 95),
   "arc-carbine": cue("arc-carbine-fire", 1250, 0.08, 0.06, "sawtooth", 620),
   "patrol-blade": cue("patrol-blade-swing", 440, 0.14, 0.07, "triangle", 120),

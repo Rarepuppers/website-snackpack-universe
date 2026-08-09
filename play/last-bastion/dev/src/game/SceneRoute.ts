@@ -12,7 +12,7 @@ const REVIEW_PARAMETERS = [
   "scenario", "stress", "loadout", "weapons", "kit", "buff", "art",
   "helmet", "theme", "debug", "timers", "damage", "size", "shake", "sound",
   "flash", "autofire", "uiscale", "radarsize", "threats", "palette",
-  "vibration", "effects", "rims", "expedition", "transformation",
+  "vibration", "effects", "rims", "expedition", "transformation", "hero",
 ] as const;
 
 export function resolveSceneRoute(params: URLSearchParams): SceneRoute {

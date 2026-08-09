@@ -3120,3 +3120,32 @@ panel fit together cleanly at the authored canvas size.
 
 - Full web verification passes: image audit, typecheck, **1,267 tests across 192 files**, production build,
   smoke `200` / 76 routes, and offline 335 / 0 missing.
+
+## 9 August 2026 — T4.8 Assault mechanics contract complete; C3 deployment gate retained
+
+Assault is now mechanically complete without being falsely presented as production-ready. The shared hero
+contract and catalogue cover Marine, Medic, and Assault through typed identity, chassis, starting weapon,
+rack classes, upgrade slots, growth copy, passive, ultimate, and deployment-gate copy. Combat constructs
+from the selected definition rather than Marine/Medic branches, including hero-specific base health,
+regeneration, loadout, rack, and presentation names.
+
+The new Marauder AR is a medium physical rifle with the authored 2.6 damage, 0.12-second cadence, and
+20-metre range. It is explicitly hero-bound: catalogue accounting includes it, but neither ordinary weapon
+chests nor unique-unlocked shops can draft it. Momentum tracks one target, adds 4% damage for each prior
+consecutive weapon hit up to five stacks, and resets on target change or after 1.25 seconds without a hit.
+Breach & Clear fires nine 3-damage rounds evenly across a 100-degree forward cone on a 22-second cooldown.
+The HUD surfaces the current Momentum stack count.
+
+Character Select now shows Assault's real dossier and **IN DEVELOPMENT** state while keeping Deploy disabled.
+The explicit `?hero=assault` review route boots its mechanics without persisting an unlock and forcibly uses
+code-native presentation, preventing Marine art from being mistaken for Assault art. The combat asset
+manifest likewise loads no Marine/Medic hero sheet for that route. Live in-app browser acceptance confirmed
+the Assault HUD, Momentum readout, Breach & Clear action, code-native player silhouette, roster dossier, C3
+warning, and disabled Deploy state at the authored 960×540 canvas.
+
+- Focused tests lock the definition/loadout/rack/upgrade economy, hero-only acquisition boundary, Momentum
+  ramp/cap/expiry, and the ultimate's count and cone bounds.
+- Full web verification passes: image audit, typecheck, **1,271 tests across 193 files**, production build,
+  smoke `200` / 76 routes, and offline 335 / 0 missing.
+- T4.8 remains open only for Assault C3 production art/audio and acceptance before unlock. After that,
+  Tactician is the next mechanics contract; Scout follows, preserving the one-hero-at-a-time rule.

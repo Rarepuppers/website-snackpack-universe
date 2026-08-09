@@ -3,6 +3,9 @@ import type { HeroDefinition } from "./HeroDefinition";
 export const MARINE = Object.freeze({
   id: "marine",
   displayName: "Marine",
+  role: "Durable all-round ranged fighter",
+  baseMaxHealth: 10,
+  baseRegenerationPerSecond: 0.05,
   movementSpeedMetresPerSecond: 5.25,
   collisionRadiusMetres: 0.55,
   evasiveMove: {
@@ -48,6 +51,11 @@ export const MARINE = Object.freeze({
     support: 1,
     scavenger: 1,
   },
+  startingWeaponId: "bastion-service-rifle",
+  startingWeaponName: "Bastion Service Rifle",
+  rackClasses: ["light", "medium", "heavy", "all"],
+  levelGrowthDescription: "+1 ALL STATS / +1 LIGHT PROFICIENCY",
+  unlockText: "Available from the first deployment.",
   ultimate: {
     id: "bastion-barrage",
     name: "Bastion Barrage",

@@ -2,8 +2,7 @@ import Phaser from "phaser";
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { createLocalSaveStore } from "../save/SaveStorage";
 import { cloneTransformationAffinityState } from "../transformations/TransformationAffinity";
-import { MARINE } from "../hero/marine";
-import { MEDIC } from "../hero/medic";
+import { heroDefinition } from "../hero/HeroCatalog";
 import { heroGrowthAtLevel } from "../hero/LevelGrowth";
 import { PLAYER_MAX_HEALTH } from "../combat/CombatSimulation";
 import {
@@ -101,10 +100,10 @@ export class ExpeditionEventScene extends Phaser.Scene {
     this.node = node;
     this.event = event;
     this.build = resumed.state.build ?? this.baselineBuild();
-    const hero = this.saveStore.load().selectedHeroId === "medic" ? MEDIC : MARINE;
+    const hero = heroDefinition(this.saveStore.load().selectedHeroId);
     this.maxHealth = Math.max(
       3,
-      PLAYER_MAX_HEALTH + heroGrowthAtLevel(hero, Math.max(1, this.build.level)).maxHealthBonus + (this.build.maxHealthBonus ?? 0),
+      hero.baseMaxHealth + heroGrowthAtLevel(hero, Math.max(1, this.build.level)).maxHealthBonus + (this.build.maxHealthBonus ?? 0),
     );
     // Deterministic gamble roll from the encounter seed — reproducible per seed.
     this.roll = ((encounter.seed >>> 0) % 100_000) / 100_000;
@@ -112,7 +111,8 @@ export class ExpeditionEventScene extends Phaser.Scene {
   }
 
   private baselineBuild(): ExpeditionBuildSnapshot {
-    return { health: PLAYER_MAX_HEALTH, shield: 0, level: 1, experience: 0, scrap: 0, weapons: [], upgrades: [] };
+    const hero = heroDefinition(this.saveStore.load().selectedHeroId);
+    return { health: hero.baseMaxHealth, shield: 0, level: 1, experience: 0, scrap: 0, weapons: [], upgrades: [] };
   }
 
   private readonly handleKeyDown = (event: KeyboardEvent): void => {

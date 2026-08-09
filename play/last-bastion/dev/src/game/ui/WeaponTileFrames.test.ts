@@ -3,7 +3,7 @@ import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
 import { canonicalWeaponTileFrame } from "./WeaponTileFrames";
 
 const PENDING_ART_WEAPON_IDS: readonly WeaponId[] = [
-  "railspike", "seeker-swarm", "cryo-lance", "tesla-coil", "flamethrower", "sawblade", "event-horizon",
+  "marauder-ar", "railspike", "seeker-swarm", "cryo-lance", "tesla-coil", "flamethrower", "sawblade", "event-horizon",
   // Elemental balance pass (31 July 2026), art pending on the same terms.
   "corrosive-lobber", "scourge-repeater", "bile-lance", "hoarfrost-scatter", "glacier-ward", "tether-harpoon",
   // First deployable, art pending on the same terms.
@@ -26,6 +26,7 @@ const PENDING_MELEE_WEAPON_IDS: readonly WeaponId[] = ["combat-knife", "machete"
 const EXPECTED_PLACEHOLDER_FRAME: Readonly<Record<string, number>> = {
   // Projectiles → rifle; the gravitic/explosive shell → grenade tube.
   railspike: 7,
+  "marauder-ar": 7,
   "seeker-swarm": 7,
   "event-horizon": 3,
   // Sustained cones → scattergun's spread tile.

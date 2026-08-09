@@ -5,6 +5,7 @@ export interface WeaponIdentityPresentation { weaponId: WeaponId; silhouetteId: 
 /** Exhaustive identity registry. Null assets intentionally select the code-native silhouette until approved art lands. */
 export const WEAPON_IDENTITY_PRESENTATIONS: Readonly<Record<WeaponId, WeaponIdentityPresentation>> = Object.freeze({
   "bastion-service-rifle": { weaponId: "bastion-service-rifle", silhouetteId: "rifle", tileFrame: 7, colour: 0xffd36b, effectStyle: "projectile", dedicatedAssetId: null },
+  "marauder-ar": { weaponId: "marauder-ar", silhouetteId: "assault-rifle", tileFrame: 7, colour: 0xff9a52, effectStyle: "projectile", dedicatedAssetId: null },
   scattergun: { weaponId: "scattergun", silhouetteId: "wide-muzzle", tileFrame: 0, colour: 0xf0b46b, effectStyle: "projectile", dedicatedAssetId: null },
   "arc-carbine": { weaponId: "arc-carbine", silhouetteId: "forked-arc", tileFrame: 4, colour: 0x68e4e8, effectStyle: "projectile", dedicatedAssetId: null },
   "patrol-blade": { weaponId: "patrol-blade", silhouetteId: "patrol-blade", tileFrame: 1, colour: 0xc7e4ec, effectStyle: "melee", dedicatedAssetId: null },
