@@ -3552,3 +3552,38 @@ reservation, post-movement target placement, pod spawning, hatch accounting, col
   T0.1 remains in progress and Cyborg Reclaimer is the next bounded candidate.
 - Full verification passes with **1,309 tests across 203 files**, production build success, 78 smoke routes, and
   offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 Cyborg Reclaimer behavior extracted
+
+Cyborg Reclaimer's high-level decision layer now lives in `CyborgReclaimerBehavior.ts`, composing rather than
+duplicating the established finite repair lifecycle. It owns deterministic repair acquisition, channel-facing,
+nearest-damaged-machine pursuit, and player fallback movement intent. `CombatSimulation` retains encounter-wide
+link ownership, healing application, collision, damage interruption state, and ordered presentation events.
+
+- The most-damaged in-range repair priority and one-live-link rule remain owned by `CyborgReclaimerRepair.ts`.
+- Completed and interrupted channels still enter recovery without moving; successful acquisition still emits its
+  warning before any subsequent world update.
+- When acquisition is unavailable, nearest damaged-machine pursuit retains distance then entity-ID tie-breaking.
+- Existing repair and live-combat tests plus reference-run and replay fixtures pass unchanged.
+- Three focused behavior tests cover acquisition/facing, blocked-link pursuit, player fallback, and recovery hold.
+- `CombatSimulation.ts` is now 10,423 lines; Arc Warden is the next bounded T0.1 wrapper.
+- Full verification passes with **1,312 tests across 204 files**, production build success, 78 smoke routes, and
+  offline **369 / 0 missing** local asset references.
+
+## 9 August 2026 — T0.1 Arc Warden behavior extracted
+
+Arc Warden's remaining combat policy now lives in `ArcWardenBehavior.ts`, composing the existing fixed-beam
+lifecycle with its reposition movement and presentation-facing decisions. `CombatSimulation` retains obstacle
+clipping inputs, collision resolution, beam hit geometry, scaled player damage, and ordered event emission.
+
+- The Warden still approaches beyond 8 metres, retreats inside 4.5 metres, and alternates clockwise/counterclockwise
+  strafing by entity-ID parity inside the preferred band.
+- Acquiring a lane still suppresses movement immediately, locks facing through charge/discharge/recovery, and emits
+  exactly one warning before discharge.
+- Existing beam and live-combat tests plus reference-run and replay fixtures pass unchanged.
+- Three focused behavior tests cover approach/retreat, deterministic strafing, facing, warning start, and charge hold.
+- `CombatSimulation.ts` is now 10,412 lines; Storm Savant is the next bounded T0.1 wrapper.
+- The default full-suite attempt hit a Windows `VirtualAlloc` failure in Vitest's fork pool. A one-worker retry made
+  the unrelated world-navigation stress test exceed its five-second default; rerunning it alone passed in 1.95
+  seconds. The complete suite then passed with two workers and a 15-second ceiling: **1,315 tests across 205 files**.
+  Production build, 78 smoke routes, and offline **369 / 0 missing** local asset references also pass.

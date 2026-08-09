@@ -632,10 +632,16 @@ Sequencing, safest first — each is independently shippable and independently r
    Assembly Prime, reference-run, and replay tests pass unchanged. **Nest Weaver extraction complete 9 Aug 2026:**
    positioning, range control, placement windup, recovery, and retry timing now live in
    `NestWeaverBehavior.ts`; live-cap/threat reservation, target placement, pod spawning, and events remain
-   simulation-owned. Its existing combat/lifecycle, reference-run, and replay tests pass unchanged. The monolith
-   remains 10,464 lines because the extracted adapter and imports offset this slice; the behavior itself is now
-   independently testable. Continue one enemy at a time; Cyborg Reclaimer is the next bounded candidate, while
-   Siege Crusher remains deferred until the lower-risk standard-enemy wrappers are gone.
+   simulation-owned. Its existing combat/lifecycle, reference-run, and replay tests pass unchanged. **Cyborg
+   Reclaimer extraction complete 9 Aug 2026:** `CyborgReclaimerBehavior.ts` now composes the existing finite repair
+   lifecycle with deterministic acquisition, link-facing, nearest-damaged-machine pursuit, and player fallback.
+   Shared-link ownership, healing, collision, and events remain simulation-owned. Existing repair/live-combat,
+   reference-run, and replay tests pass unchanged. **Arc Warden extraction complete 9 Aug 2026:**
+   `ArcWardenBehavior.ts` now composes the existing beam lifecycle with approach, retreat, deterministic strafe,
+   facing, and warning-start decisions. Beam clipping, collision, scaled damage, and events remain
+   simulation-owned. Existing beam/live-combat, reference-run, and replay tests pass unchanged. The monolith is
+   now 10,412 lines. Continue one enemy at a time; Storm Savant is the next bounded wrapper, while Siege Crusher
+   remains deferred until the lower-risk standard-enemy wrappers are gone.
 3. Weapons, projectiles, scrap shop, decisions, snapshot last — these hold more shared mutable
    state and need an explicit context interface rather than pure step functions.
 

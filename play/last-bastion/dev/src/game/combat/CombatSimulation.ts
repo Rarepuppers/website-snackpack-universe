@@ -162,16 +162,15 @@ import {
   createArcWardenBehavior,
   lockArcWardenLane,
   pointInsideArcWardenLane,
-  stepArcWardenBehavior,
   type ArcWardenState,
 } from "./ArcWardenBeam";
+import { stepArcWardenCombatBehavior } from "./ArcWardenBehavior";
 import {
   createReclaimerRepairBehavior,
-  stepReclaimerRepair,
-  tryBeginReclaimerRepair,
   type ReclaimerRepairState,
   type ReclaimerRepairTarget,
 } from "./CyborgReclaimerRepair";
+import { stepCyborgReclaimerBehavior } from "./CyborgReclaimerBehavior";
 import {
   beginFoundryFabrication,
   createFoundryFabricatorBehavior,
@@ -6106,18 +6105,21 @@ export class CombatSimulation {
   }
 
   private updateArcWarden(enemy: EnemyState, deltaSeconds: number): void {
-    const previousPhase = enemy.arcWardenBehavior.phase;
-    const result = stepArcWardenBehavior(
+    const result = stepArcWardenCombatBehavior(
       enemy.arcWardenBehavior,
-      deltaSeconds,
-      enemy.position,
-      this.playerPosition,
-      this.activeObstacles(),
+      {
+        deltaSeconds,
+        enemyId: enemy.id,
+        position: enemy.position,
+        playerPosition: this.playerPosition,
+        obstacles: this.activeObstacles(),
+        movementSpeedMetresPerSecond: ENEMY_CATALOG["arc-warden"].movementSpeedMetresPerSecond,
+      },
     );
     enemy.arcWardenBehavior = result.state;
 
-    if (result.state.lockedLane) enemy.facingDirection = { ...result.state.lockedLane.direction };
-    if (previousPhase === "reposition" && result.state.phase === "charge" && result.state.lockedLane) {
+    enemy.facingDirection = result.facingDirection;
+    if (result.warningStarted && result.state.lockedLane) {
       this.frameEvents.push({
         type: "arc-warden-warning",
         position: { ...enemy.position },
@@ -6148,21 +6150,7 @@ export class CombatSimulation {
       });
     }
 
-    if (result.state.phase !== "reposition") return;
-    const towardPlayer = normalizeVector({
-      x: this.playerPosition.x - enemy.position.x,
-      y: this.playerPosition.y - enemy.position.y,
-    });
-    enemy.facingDirection = towardPlayer;
-    const playerDistance = distance(enemy.position, this.playerPosition);
-    const direction = playerDistance > 8
-      ? towardPlayer
-      : playerDistance < 4.5
-        ? { x: -towardPlayer.x, y: -towardPlayer.y }
-        : enemy.id % 2 === 0
-          ? { x: -towardPlayer.y, y: towardPlayer.x }
-          : { x: towardPlayer.y, y: -towardPlayer.x };
-    this.moveEnemy(enemy, direction, ENEMY_CATALOG["arc-warden"].movementSpeedMetresPerSecond, deltaSeconds);
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
   }
 
   private updateCyborgReclaimer(enemy: EnemyState, deltaSeconds: number): void {
@@ -6172,12 +6160,28 @@ export class CombatSimulation {
       : this.enemies.find((candidate) => candidate.id === previousTargetId && !candidate.dead) ?? null;
     const wasDamaged = enemy.reclaimerDamagedSinceLastStep;
     enemy.reclaimerDamagedSinceLastStep = false;
-    const result = stepReclaimerRepair(
+    const repairTargets = this.enemies
+      .filter((candidate) => !candidate.dead)
+      .map((candidate) => this.reclaimerRepairTarget(candidate));
+    const activeLinkOwnerId = this.enemies.find((candidate) => (
+      !candidate.dead
+      && candidate.type === "cyborg-reclaimer"
+      && candidate.id !== enemy.id
+      && candidate.reclaimerBehavior.phase === "channel"
+    ))?.id ?? null;
+    const result = stepCyborgReclaimerBehavior(
       enemy.reclaimerBehavior,
-      deltaSeconds,
-      enemy.position,
-      lockedTarget ? this.reclaimerRepairTarget(lockedTarget) : null,
-      wasDamaged,
+      {
+        deltaSeconds,
+        ownerId: enemy.id,
+        ownerPosition: enemy.position,
+        playerPosition: this.playerPosition,
+        movementSpeedMetresPerSecond: ENEMY_CATALOG["cyborg-reclaimer"].movementSpeedMetresPerSecond,
+        lockedTarget: lockedTarget ? this.reclaimerRepairTarget(lockedTarget) : null,
+        repairTargets,
+        activeLinkOwnerId,
+        ownerWasDamaged: wasDamaged,
+      },
     );
     enemy.reclaimerBehavior = result.state;
 
@@ -6209,73 +6213,17 @@ export class CombatSimulation {
       }
     }
 
-    if (enemy.reclaimerBehavior.phase === "channel") {
-      const target = this.enemies.find((candidate) => candidate.id === enemy.reclaimerBehavior.targetId);
-      if (target) enemy.facingDirection = normalizeVector({
-        x: target.position.x - enemy.position.x,
-        y: target.position.y - enemy.position.y,
-      });
-      return;
-    }
-    if (enemy.reclaimerBehavior.phase === "recovery") return;
-
-    const repairTargets = this.enemies
-      .filter((candidate) => !candidate.dead)
-      .map((candidate) => this.reclaimerRepairTarget(candidate));
-    const activeLinkOwnerId = this.enemies.find((candidate) => (
-      !candidate.dead
-      && candidate.type === "cyborg-reclaimer"
-      && candidate.id !== enemy.id
-      && candidate.reclaimerBehavior.phase === "channel"
-    ))?.id ?? null;
-    const begun = tryBeginReclaimerRepair(
-      enemy.reclaimerBehavior,
-      enemy.id,
-      enemy.position,
-      repairTargets,
-      activeLinkOwnerId,
-    );
-    if (begun.phase === "channel" && begun.targetId !== null) {
-      enemy.reclaimerBehavior = begun;
-      const target = this.enemies.find((candidate) => candidate.id === begun.targetId)!;
-      enemy.facingDirection = normalizeVector({
-        x: target.position.x - enemy.position.x,
-        y: target.position.y - enemy.position.y,
-      });
+    if (result.facingDirection) enemy.facingDirection = result.facingDirection;
+    if (result.startedTarget) {
       this.frameEvents.push({
         type: "reclaimer-link-started",
         position: { ...enemy.position },
-        target: { ...target.position },
+        target: { ...result.startedTarget.position },
         enemyId: enemy.id,
-        targetId: target.id,
+        targetId: result.startedTarget.id,
       });
-      return;
     }
-
-    const nearestDamagedMachine = this.enemies.filter((candidate) => (
-      !candidate.dead
-      && candidate.id !== enemy.id
-      && this.isRepairableMachine(candidate)
-      && candidate.health > 0
-      && candidate.health < candidate.maxHealth
-      && candidate.rank !== "mini-boss"
-      && candidate.rank !== "boss"
-    )).sort((left, right) => (
-      distance(enemy.position, left.position) - distance(enemy.position, right.position)
-      || left.id - right.id
-    ))[0];
-    const targetPosition = nearestDamagedMachine?.position ?? this.playerPosition;
-    const direction = normalizeVector({
-      x: targetPosition.x - enemy.position.x,
-      y: targetPosition.y - enemy.position.y,
-    });
-    enemy.facingDirection = direction;
-    this.moveEnemy(
-      enemy,
-      direction,
-      ENEMY_CATALOG["cyborg-reclaimer"].movementSpeedMetresPerSecond,
-      deltaSeconds,
-    );
+    this.applyMovementIntent(enemy, result.movement, deltaSeconds);
   }
 
   private reclaimerRepairTarget(enemy: EnemyState): ReclaimerRepairTarget {
