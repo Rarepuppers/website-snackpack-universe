@@ -132,6 +132,11 @@ type HazardView = Phaser.GameObjects.Ellipse | Phaser.GameObjects.Sprite;
 type TelegraphView = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
 type PickupView = Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite;
 type EliteRewardView = Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite;
+interface EscortObjectiveView {
+  container: Phaser.GameObjects.Container;
+  healthFill: Phaser.GameObjects.Rectangle;
+  label: Phaser.GameObjects.Text;
+}
 
 export class PrototypeScene extends Phaser.Scene {
   private player!: Phaser.GameObjects.Container;
@@ -179,6 +184,7 @@ export class PrototypeScene extends Phaser.Scene {
   );
   private readonly enemyViews = new Map<number, EnemyView>();
   private readonly enemyRimViews = new Map<number, Phaser.GameObjects.Sprite>();
+  private readonly eliteMarkerViews = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly enemyStatusViews = new Map<string, Phaser.GameObjects.Sprite>();
   private readonly offscreenThreatViews = new Map<number, Phaser.GameObjects.Triangle>();
   private readonly projectileViews = new Map<number, ProjectileView>();
@@ -189,6 +195,9 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly spitterTelegraphs = new Map<number, TelegraphView>();
   private readonly eliteArmorViews = new Map<number, Phaser.GameObjects.Triangle>();
   private readonly eliteRewardViews = new Map<number, EliteRewardView>();
+  private escortObjectiveView: EscortObjectiveView | null = null;
+  private readonly denyObjectiveViews = new Map<number, Phaser.GameObjects.Graphics>();
+  private readonly collectObjectiveViews = new Map<number, Phaser.GameObjects.Container>();
   private readonly miniBossTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly combatTelegraphViews = new Map<string, Phaser.GameObjects.Graphics>();
   private readonly combatTelegraphArtViews = new Map<string, Phaser.GameObjects.Sprite>();
@@ -902,6 +911,9 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncSpitterTelegraphs(snapshot.enemies);
     this.syncEliteArmor(snapshot.enemies);
     this.syncEliteRewards(snapshot.eliteRewards);
+    this.syncEscortObjective(snapshot.escortObjective);
+    this.syncDenyObjective(snapshot.denyObjective);
+    this.syncCollectObjective(snapshot.collectObjective);
     this.syncMiniBossTelegraphs(snapshot.enemies);
     this.syncCombatTelegraphs(snapshot.combatTelegraphs);
     this.syncCombatTelegraphArt(snapshot.combatTelegraphs);
@@ -1084,6 +1096,7 @@ export class PrototypeScene extends Phaser.Scene {
     for (const views of [
       this.enemyViews,
       this.enemyRimViews,
+      this.eliteMarkerViews,
       this.enemyStatusViews,
       this.offscreenThreatViews,
       this.projectileViews,
@@ -1130,6 +1143,9 @@ export class PrototypeScene extends Phaser.Scene {
     if (this.runOutcomeRecorded) {
       return;
     }
+    // Victory rewards must be chosen before the expedition build is persisted;
+    // otherwise objective relics and boss artifacts vanish on the map hand-off.
+    if (snapshot.pendingDecision) return;
     if (snapshot.status === "victory" || snapshot.status === "defeat") {
       this.runOutcomeRecorded = true;
       if (this.expeditionContext) {
@@ -1434,6 +1450,10 @@ export class PrototypeScene extends Phaser.Scene {
               this.time.now,
             );
           }
+          break;
+        case "ironhide-adapted":
+          this.flashCircle(event.position, 30, 0xd98252, 380, 1.55, true);
+          this.eventFeed.add(`IRONHIDE ADAPTS — ARMOUR +${event.bonusArmour}`, "#ffd08a");
           break;
         case "bolt-impact":
           this.emitAuthoredEffect(
@@ -2320,6 +2340,7 @@ export class PrototypeScene extends Phaser.Scene {
     const liveIds = new Set(enemies.map((enemy) => enemy.id));
     this.destroyMissing(this.enemyViews, liveIds);
     this.destroyMissing(this.enemyRimViews, liveIds);
+    this.destroyMissing(this.eliteMarkerViews, liveIds);
     for (const id of this.spinewheelTrailTimes.keys()) {
       if (!liveIds.has(id)) this.spinewheelTrailTimes.delete(id);
     }
@@ -2346,10 +2367,34 @@ export class PrototypeScene extends Phaser.Scene {
       );
       view.setDepth(worldDepth(enemy.position.y));
       this.styleEnemyView(view, enemy);
+      this.syncEliteMarker(enemy);
       if (view instanceof Phaser.GameObjects.Sprite) {
         this.updateEnemySprite(view, enemy, playerPosition);
         this.syncEnemyRim(enemy.id, view);
       }
+    }
+  }
+
+  /** Segmented brackets keep elite rank readable without depending on hue. */
+  private syncEliteMarker(enemy: EnemySnapshot): void {
+    if (enemy.rank !== "elite") return;
+    let marker = this.eliteMarkerViews.get(enemy.id);
+    if (!marker) {
+      marker = this.add.graphics();
+      this.eliteMarkerViews.set(enemy.id, marker);
+    }
+    const radius = enemy.radiusMetres * PIXELS_PER_METRE + 11;
+    marker.clear().setPosition(
+      enemy.position.x * PIXELS_PER_METRE,
+      enemy.position.y * PIXELS_PER_METRE,
+    ).setDepth(worldDepth(enemy.position.y) - 0.2);
+    for (const angle of [0, Math.PI / 2, Math.PI, Math.PI * 1.5]) {
+      marker.lineStyle(7, 0x081018, 0.88).beginPath()
+        .arc(0, 0, radius, angle - 0.34, angle + 0.34)
+        .strokePath();
+      marker.lineStyle(3, 0xffe47a, 0.95).beginPath()
+        .arc(0, 0, radius, angle - 0.34, angle + 0.34)
+        .strokePath();
     }
   }
 
@@ -2385,6 +2430,15 @@ export class PrototypeScene extends Phaser.Scene {
     }
     if (this.useMarineArt && enemy.eliteKind === "carapace-scuttler") {
       return createManifestSprite(this, "carapace-scuttler-v1");
+    }
+    if (this.useMarineArt && enemy.eliteKind === "ironhide-abomination") {
+      return createManifestSprite(this, "ironhide-abomination-v1");
+    }
+    if (this.useMarineArt && enemy.eliteKind === "splitcaller-weaver") {
+      return createManifestSprite(this, "splitcaller-weaver-v1");
+    }
+    if (this.useMarineArt && enemy.eliteKind === "voltaic-warden") {
+      return createManifestSprite(this, "voltaic-warden-v1");
     }
     switch (enemy.type) {
       case "infected-survivor":
@@ -2621,6 +2675,9 @@ export class PrototypeScene extends Phaser.Scene {
       else if (enemy.eliteKind === "razorlord" && view.texture.key !== "razorlord-v1") view.setTint(0xd696ff);
       else if (enemy.eliteKind === "blightspitter" && view.texture.key !== "blightspitter-v1") view.setTint(0xb9f35b);
       else if (enemy.eliteKind === "quillback-matriarch" && view.texture.key !== "quillback-matriarch-v1") view.setTint(0xff9a72);
+      else if (enemy.eliteKind === "ironhide-abomination" && view.texture.key !== "ironhide-abomination-v1") view.setTint(0xd98252);
+      else if (enemy.eliteKind === "splitcaller-weaver" && view.texture.key !== "splitcaller-weaver-v1") view.setTint(0xb97aff);
+      else if (enemy.eliteKind === "voltaic-warden" && view.texture.key !== "voltaic-warden-v1") view.setTint(0x66e7ff);
       else if (enemy.type === "nest-pod" && view.texture.key !== "nest-pod-v1") view.setTint(0x83d9aa);
       else if (enemy.type === "nest-hatchling") view.setTint(0xa889dc);
       else if (enemy.type === "swarm-scuttler" && view.texture.key !== "swarm-scuttler-v1") view.setTint(0xffd36b);
@@ -2908,7 +2965,9 @@ export class PrototypeScene extends Phaser.Scene {
         const row = phase === "placement-windup"
           ? 3 + ((Math.floor(this.time.now / 180) + enemy.id) % 2)
           : phase === "recovery" ? 5 : 1 + ((Math.floor(this.time.now / 150) + enemy.id) % 2);
-        view.setTexture("nest-weaver-v1").setFrame(row * 4 + facingColumn).setRotation(0);
+        view.setTexture(enemy.eliteKind === "splitcaller-weaver" ? "splitcaller-weaver-v1" : "nest-weaver-v1")
+          .setFrame(row * 4 + facingColumn).setRotation(0)
+          .setScale(enemy.eliteKind === "splitcaller-weaver" ? 0.54 : 0.48);
         return;
       }
       case "storm-savant": {
@@ -2965,7 +3024,9 @@ export class PrototypeScene extends Phaser.Scene {
         const facingColumn = [0, 3, 2, 1][canonicalColumn] ?? 0;
         const phase = enemy.arcWardenPhase ?? "reposition";
         const row = phase === "charge" ? 3 : phase === "discharge" ? 4 : phase === "recovery" ? 5 : 1 + ((Math.floor(this.time.now / 170) + enemy.id) % 2);
-        view.setTexture("machine-arc-warden-v1").setFrame(row * 4 + facingColumn).setRotation(0).setScale(0.58);
+        view.setTexture(enemy.eliteKind === "voltaic-warden" ? "voltaic-warden-v1" : "machine-arc-warden-v1")
+          .setFrame(row * 4 + facingColumn).setRotation(0)
+          .setScale(enemy.eliteKind === "voltaic-warden" ? 0.66 : 0.58);
         return;
       }
       case "cyborg-reclaimer": {
@@ -3316,7 +3377,9 @@ export class PrototypeScene extends Phaser.Scene {
           const row = enemy.abominationPhase === "slam-windup" || enemy.abominationPhase === "slam-impact"
             ? 1
             : enemy.abominationPhase === "recovery" ? 2 : 0;
-          view.setTexture("abomination-v1").setFrame(row * 4 + facingColumn).setRotation(0);
+          view.setTexture(enemy.eliteKind === "ironhide-abomination" ? "ironhide-abomination-v1" : "abomination-v1")
+            .setFrame(row * 4 + facingColumn).setRotation(0)
+            .setScale(enemy.eliteKind === "ironhide-abomination" ? 0.9 : 0.82);
           return;
         }
         if (enemy.type === "infected-survivor") {
@@ -3641,6 +3704,80 @@ export class PrototypeScene extends Phaser.Scene {
     }
   }
 
+  private syncEscortObjective(objective: CombatSnapshot["escortObjective"]): void {
+    if (!objective) {
+      this.escortObjectiveView?.container.destroy(true);
+      this.escortObjectiveView = null;
+      return;
+    }
+    if (!this.escortObjectiveView) {
+      const body = this.add.rectangle(0, 0, 38, 24, 0x5fc9d8, 1).setStrokeStyle(2, 0xe5fbff);
+      const core = this.add.rectangle(0, 0, 12, 12, 0x132637, 1).setStrokeStyle(1, 0xffffff);
+      const leftSkid = this.add.rectangle(-15, 11, 13, 4, 0x263b4e, 1);
+      const rightSkid = this.add.rectangle(15, 11, 13, 4, 0x263b4e, 1);
+      const healthBack = this.add.rectangle(-18, -20, 36, 5, 0x091018, 0.9).setOrigin(0, 0.5);
+      const healthFill = this.add.rectangle(-18, -20, 36, 5, 0x65f0a5, 1).setOrigin(0, 0.5);
+      const label = this.add.text(0, -34, "ESCORT", {
+        color: "#dffcff", fontFamily: "Consolas, Courier New, monospace", fontSize: "10px", fontStyle: "bold",
+        stroke: "#081018", strokeThickness: 3,
+      }).setOrigin(0.5).setResolution(uiTextResolution());
+      const container = this.add.container(0, 0, [body, core, leftSkid, rightSkid, healthBack, healthFill, label]);
+      this.escortObjectiveView = { container, healthFill, label };
+    }
+    const view = this.escortObjectiveView;
+    const healthFraction = objective.maxHealth > 0 ? objective.health / objective.maxHealth : 0;
+    view.container
+      .setPosition(objective.position.x * PIXELS_PER_METRE, objective.position.y * PIXELS_PER_METRE)
+      .setDepth(worldDepth(objective.position.y) + 1)
+      .setAlpha(objective.status === "failed" ? 0.42 : 1);
+    view.healthFill.setDisplaySize(Math.max(0, 36 * healthFraction), 5)
+      .setFillStyle(objective.underAttack ? 0xff776d : 0x65f0a5);
+    view.label.setText(objective.status === "active"
+      ? `${objective.underAttack ? "CLEAR HOSTILES" : "ESCORT"} ${Math.round(objective.progress * 100)}%`
+      : objective.status.toUpperCase());
+  }
+
+  private syncDenyObjective(objective: CombatSnapshot["denyObjective"]): void {
+    const liveIds = new Set(objective?.terminals.map(({ id }) => id) ?? []);
+    this.destroyMissing(this.denyObjectiveViews, liveIds);
+    if (!objective) return;
+    for (const terminal of objective.terminals) {
+      let view = this.denyObjectiveViews.get(terminal.id);
+      if (!view) {
+        view = this.add.graphics();
+        this.denyObjectiveViews.set(terminal.id, view);
+      }
+      const pulse = 23 + Math.sin(this.time.now / 130 + terminal.id) * 3;
+      const colour = terminal.active ? 0xff5b7f : 0x52677b;
+      view.clear()
+        .lineStyle(3, colour, terminal.active ? 0.95 : 0.45)
+        .strokeCircle(0, 0, pulse)
+        .lineStyle(2, 0xffd36b, terminal.active ? 0.85 : 0.25)
+        .strokeCircle(0, 0, 10)
+        .setPosition(terminal.position.x * PIXELS_PER_METRE, terminal.position.y * PIXELS_PER_METRE)
+        .setDepth(worldDepth(terminal.position.y) - 1);
+    }
+  }
+
+  private syncCollectObjective(objective: CombatSnapshot["collectObjective"]): void {
+    const visible = objective?.pickups.filter((pickup) => !pickup.collected) ?? [];
+    const liveIds = new Set(visible.map(({ id }) => id));
+    this.destroyMissing(this.collectObjectiveViews, liveIds);
+    for (const pickup of visible) {
+      let view = this.collectObjectiveViews.get(pickup.id);
+      if (!view) {
+        const halo = this.add.circle(0, 0, 15, 0x65f0a5, 0.2).setStrokeStyle(2, 0x65f0a5, 0.9);
+        const core = this.add.rectangle(0, 0, 12, 12, 0xe5fbff, 1)
+          .setRotation(Math.PI / 4).setStrokeStyle(2, 0x68e4e8);
+        view = this.add.container(0, 0, [halo, core]);
+        this.collectObjectiveViews.set(pickup.id, view);
+      }
+      view.setPosition(pickup.position.x * PIXELS_PER_METRE, pickup.position.y * PIXELS_PER_METRE)
+        .setDepth(worldDepth(pickup.position.y) - 1)
+        .setScale(1 + Math.sin(this.time.now / 110 + pickup.id) * 0.1);
+    }
+  }
+
   private syncAurumExitMarkers(enemies: readonly EnemySnapshot[]): void {
     const fleeing = enemies.filter((enemy) => enemy.type === "aurum-hoarder" && enemy.aurumPhase === "flee");
     const liveIds = new Set(fleeing.map((enemy) => enemy.id));
@@ -3891,18 +4028,21 @@ export class PrototypeScene extends Phaser.Scene {
         view = this.add.graphics().setDepth(63);
         this.arcWardenTelegraphs.set(enemy.id, view);
       }
-      const lane = enemy.arcWardenLane!;
-      const fromX = lane.from.x * PIXELS_PER_METRE;
-      const fromY = lane.from.y * PIXELS_PER_METRE;
-      const toX = lane.to.x * PIXELS_PER_METRE;
-      const toY = lane.to.y * PIXELS_PER_METRE;
-      const dx = toX - fromX;
-      const dy = toY - fromY;
-      const length = Math.max(1, Math.hypot(dx, dy));
-      const normal = { x: -dy / length * 4.5, y: dx / length * 4.5 };
       const discharge = enemy.arcWardenPhase === "discharge";
-      view.clear()
-        .lineStyle(discharge ? 11 : 9, 0x081018, 0.9)
+      view.clear();
+      const lanes = [enemy.arcWardenLane, enemy.arcWardenSecondaryLane].filter(
+        (lane): lane is NonNullable<EnemySnapshot["arcWardenLane"]> => Boolean(lane),
+      );
+      for (const lane of lanes) {
+        const fromX = lane.from.x * PIXELS_PER_METRE;
+        const fromY = lane.from.y * PIXELS_PER_METRE;
+        const toX = lane.to.x * PIXELS_PER_METRE;
+        const toY = lane.to.y * PIXELS_PER_METRE;
+        const dx = toX - fromX;
+        const dy = toY - fromY;
+        const length = Math.max(1, Math.hypot(dx, dy));
+        const normal = { x: -dy / length * 4.5, y: dx / length * 4.5 };
+        view.lineStyle(discharge ? 11 : 9, 0x081018, 0.9)
         .lineBetween(fromX, fromY, toX, toY)
         .lineStyle(discharge ? 6 : 3, discharge ? 0xf4ffff : 0x8de7ff, discharge ? 1 : 0.92)
         .lineBetween(fromX + normal.x, fromY + normal.y, toX + normal.x, toY + normal.y)
@@ -3924,6 +4064,7 @@ export class PrototypeScene extends Phaser.Scene {
             new Phaser.Math.Vector2(toX, toY + 12),
             new Phaser.Math.Vector2(toX - 12, toY),
           ], true);
+      }
       }
     }
   }
@@ -4992,7 +5133,7 @@ function readStressProfile(): 4 | 12 | null {
 
 function readScenario(): CombatScenario | null {
   const scenario = new URLSearchParams(window.location.search).get("scenario");
-  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "rift-stalker" || scenario === "synapse-herald" || scenario === "assembly-prime" || scenario === "storm-regent" || scenario === "abomination-prime" || scenario === "infected-survivor" || scenario === "corrupted-marine" || scenario === "abomination" || scenario === "corrupted-human" || scenario === "nest-weaver" || scenario === "storm-savant" || scenario === "scrap-skitterer" || scenario === "arc-warden" || scenario === "cyborg-reclaimer" || scenario === "foundry-fabricator" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop" || scenario === "weapon-gate" || scenario === "batch-j"
+  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "ironhide-abomination" || scenario === "splitcaller-weaver" || scenario === "voltaic-warden" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "rift-stalker" || scenario === "synapse-herald" || scenario === "assembly-prime" || scenario === "storm-regent" || scenario === "abomination-prime" || scenario === "infected-survivor" || scenario === "corrupted-marine" || scenario === "abomination" || scenario === "corrupted-human" || scenario === "nest-weaver" || scenario === "storm-savant" || scenario === "scrap-skitterer" || scenario === "arc-warden" || scenario === "cyborg-reclaimer" || scenario === "foundry-fabricator" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "escort-objective" || scenario === "deny-objective" || scenario === "collect-objective" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop" || scenario === "weapon-gate" || scenario === "batch-j"
     ? scenario
     : null;
 }
@@ -5401,7 +5542,7 @@ function setSpriteFrameIfAvailable(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "rift-stalker-v1" | "synapse-herald-v1" | "assembly-prime-v1" | "storm-regent-v1" | "abomination-prime-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1" | "aurum-hoarder-v1" | "swarm-scuttler-v1" | "corrupted-survivor-v1" | "corrupted-marine-v1" | "abomination-v1" | "nest-weaver-v1" | "nest-pod-v1" | "storm-savant-v1" | "storm-node-v1" | "machine-scrap-skitterer-v1" | "machine-arc-warden-v1" | "machine-cyborg-reclaimer-v1" | "machine-foundry-fabricator-v1" | "machine-foundry-pad-v1" | "machine-foundry-drone-v1" | "machine-foundry-turret-v1" | "razorlord-v1" | "blightspitter-v1" | "quillback-matriarch-v1",
+  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "rift-stalker-v1" | "synapse-herald-v1" | "assembly-prime-v1" | "storm-regent-v1" | "abomination-prime-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1" | "aurum-hoarder-v1" | "swarm-scuttler-v1" | "corrupted-survivor-v1" | "corrupted-marine-v1" | "abomination-v1" | "nest-weaver-v1" | "nest-pod-v1" | "storm-savant-v1" | "storm-node-v1" | "machine-scrap-skitterer-v1" | "machine-arc-warden-v1" | "machine-cyborg-reclaimer-v1" | "machine-foundry-fabricator-v1" | "machine-foundry-pad-v1" | "machine-foundry-drone-v1" | "machine-foundry-turret-v1" | "razorlord-v1" | "blightspitter-v1" | "quillback-matriarch-v1" | "ironhide-abomination-v1" | "splitcaller-weaver-v1" | "voltaic-warden-v1",
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

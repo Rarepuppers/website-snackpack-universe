@@ -134,6 +134,7 @@ const ENEMY_BODY_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
   "machine-arc-warden-v1", "machine-cyborg-reclaimer-v1", "machine-foundry-fabricator-v1",
   "machine-foundry-pad-v1", "machine-foundry-drone-v1", "machine-foundry-turret-v1",
   "razorlord-v1", "blightspitter-v1", "quillback-matriarch-v1",
+  "ironhide-abomination-v1", "splitcaller-weaver-v1", "voltaic-warden-v1",
 ]);
 
 const ENCOUNTER_SPECIFIC_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
@@ -219,6 +220,9 @@ const ELITE_BODY_BY_KIND: Readonly<Record<string, GameAssetId>> = Object.freeze(
   razorlord: "razorlord-v1",
   blightspitter: "blightspitter-v1",
   "quillback-matriarch": "quillback-matriarch-v1",
+  "ironhide-abomination": "ironhide-abomination-v1",
+  "splitcaller-weaver": "splitcaller-weaver-v1",
+  "voltaic-warden": "voltaic-warden-v1",
 });
 
 const MINI_BOSS_BODY_BY_KIND: Readonly<Record<string, GameAssetId>> = Object.freeze({

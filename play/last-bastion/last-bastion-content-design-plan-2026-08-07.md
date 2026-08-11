@@ -1,5 +1,28 @@
 # Last Bastion — content design plan
 
+## Implementation addendum — 11 August 2026
+
+The first recommended content-depth batch is now implemented code-first:
+
+- Elite caches offer three items aligned to the defeated elite's combat identity.
+- Mini-boss caches offer a choice between two unowned relics and an eligible upgrade.
+- Objective completion owns a small utility-relic pool instead of sharing the generic reward path.
+- **Escort** moves a vulnerable drone through three pressured waypoints. **Deny** asks the player to
+  destroy three channel anchors before shared corruption reaches 100%. **Collect** places six timed
+  recoveries around the arena. All three grant Scrap plus an objective-only relic choice.
+- Three additional code-first elites are now live and expedition-eligible: **Ironhide Abomination**
+  adapts to repeated damage types, **Splitcaller Weaver** hatches six fragile-pod children, and
+  **Voltaic Warden** fires two independently cover-clipped lanes. Their bespoke production bodies and
+  the non-colour-only segmented elite marker are now live; Batch 77 upgrade tiles/effect accents remain open.
+
+The inventory audit now distinguishes the four hold/interact fixtures from the four actual objective
+modes. Deterministic local review routes use `escort-objective`, `deny-objective`, and
+`collect-objective` with `?scenario=<id>&loadout=vertical`.
+
+Eligible mid-run combat nodes now seed these three objective modifiers directly into normal expedition
+play, at roughly one in four candidates. Victory reward decisions resolve before the expedition build
+is persisted, so objective relics and boss artifacts survive the map hand-off.
+
 **Written: 7 August 2026. Status: LIVE — forward plan.**
 
 Covers monsters, weapons (melee and ranged), projectiles, objectives, rewards, artifacts, items,
@@ -16,18 +39,18 @@ Several disagree with the counts in `README.md`; the code wins and the README ne
 
 | System | Count | Notes |
 |---|---|---|
-| Weapons | ~~29~~ **32** | 3 Tier 1 hole-fillers added 8 Aug 2026 |
+| Weapons | ~~29~~ **34** | 31 draftable, 1 earned unique, 1 hero-bound, 1 transformation-only |
 | Enemy types | **36** | ~20 fightable, 7 mini-bosses, 1 boss, 8 summons/props |
-| **Elites** | **4** | carapace-scuttler, razorlord, blightspitter, quillback-matriarch |
+| **Elites** | **7** | four established identities plus ironhide-abomination, splitcaller-weaver, voltaic-warden |
 | **Mini-bosses** | **7** | siege-crusher, brood-warden, rift-stalker, synapse-herald, assembly-prime, storm-regent, abomination-prime |
 | **Bosses** | **1** | bastion-eater |
-| Items | **41** | 8 common, 13 uncommon, 11 rare, 5 legendary, 4 cursed |
+| Items | ~~41~~ **47** | Count generated from the live catalogue on 11 Aug 2026 |
 | Relics | **14** | `rel-` prefix |
 | Artifacts | **12** | `art-` prefix, one equipped at a time |
 | **Upgrades** | ~~12~~ **20** | level-up choices — 8 added 7 Aug 2026, see §9 |
 | Level stat cards | ~~15~~ **16** | against ~~19~~ **20** stats |
 | Powerups | **12** | |
-| **Objective kinds** | **4** | gate-button, gate, turret-console, trap-console |
+| **Objective fixtures / modes** | **4 / 4** | four hold/interact fixtures; hold/interact, Escort, Deny, and Collect modes |
 | Damage types | **5** | physical, fire, shock, cryo, toxic |
 | Statuses | **4** | blaze, overload, freeze, corrode — physical has none |
 | Player stats | ~~19~~ **20** | `statusBuildupPercent` added 7 Aug 2026 |
@@ -53,7 +76,14 @@ Several disagree with the counts in `README.md`; the code wins and the README ne
 
 ### P1. Elites are the weakest system in the game *(highest priority)*
 
-Four elite kinds, and `eliteKindsForWave` is a hardcoded ten-wave table where only waves 4, 6, 7,
+**11 August update:** the existing four now all have signature behavior: Carapace charge/armour timing,
+Razorlord's faster locked dash, Blightspitter's 2 m / 7 s denial puddles, and Matriarch's Rain of Spines.
+Threat 1 adds one elite patrol to ordinary combat nodes; Threat 2 adds two distinct sequential patrols.
+Ironhide Abomination, Splitcaller Weaver, and Voltaic Warden are now code-complete, expedition-eligible,
+and locally testable. Their bespoke bodies and non-colour-only segmented elite marker are now live;
+the remaining Batch 77 upgrade tiles and supporting effect accents stay open.
+
+Seven elite kinds are live, but `eliteKindsForWave` is still a hardcoded ten-wave table where only waves 4, 6, 7,
 8, and 9 produce elites at all. Three consequences:
 
 - **Elites are stat-buffed base enemies**, not distinct threats. Carapace Scuttler is the only one
@@ -160,8 +190,8 @@ Elites should be a base enemy **plus one rule that changes how you fight it**, n
 
 - **Ironhide Abomination** — Abomination that gains armour each time it is hit by the same damage
   type twice in a row. Punishes single-weapon builds; rewards the rack.
-- **Splitcaller Weaver** — Nest Weaver whose pods hatch two hatchlings instead of one, but whose
-  pods are visibly weaker. A DPS-check elite.
+- **Splitcaller Weaver** — Nest Weaver whose pods hatch six hatchlings instead of the ordinary
+  three, but whose pods are visibly weaker. A DPS-check elite.
 - **Voltaic Warden** — Arc Warden that chains its beam to a second target. Makes the machine
   faction's signature threat readable at elite tier.
 
@@ -282,8 +312,8 @@ Today ten scrap sources feed one currency and the reward pools barely differ. Pr
 |---|---|
 | Ordinary kills | Scrap only (unchanged) |
 | **Elite defeat** | Guaranteed item choice from a **narrowed** pool matching the elite's damage type |
-| **Mini-boss defeat** | Choice of relic, or weapon upgrade — never plain scrap |
-| **Boss defeat** | Guaranteed artifact (the two new ones above) plus run-defining choice |
+| **Mini-boss defeat** | Choice of relic or upgrade, alongside the existing depth-scaled Scrap |
+| **Boss defeat** | Three-artifact choice replacing the generic item roll |
 | **Objective complete** | The *only* source of the new objective-keyed relic |
 | Supply chest | Consumables and scrap (unchanged) |
 
@@ -338,10 +368,10 @@ boss stingers for 78–79, objective success/fail cues for 82.
 1. DONE 7 Aug  P4 status-buildup stat + P3 corrupted-human resistances
 2. DONE 7 Aug  P5 upgrades (+8)
 3. DONE 8 Aug  Weapon Tier 1 (3 hole-fillers)  — art still open, batch 80
-4. Elite behaviours for the existing 4 + P1 cadence signature -> lands WITH the difficulty ladder
-5. Reward source differentiation (§7)      -> batch 83
-6. New elites (3)                          -> batch 77
-7. Objectives (3 verbs)                    -> batch 82
+4. DONE 11 Aug Existing elite signatures + threat-tier patrol cadence
+5. DONE 11 Aug Reward source differentiation (elite, mini-boss, objective) -> batch 83 art open
+6. DONE 11 Aug New elite mechanics, bodies, marker -> batch 77 tiles/effect accents open
+7. DONE 11 Aug Objectives: Escort, Deny and Collect code-complete -> batch 82 art open
 8. Bosses (2)                              -> batches 78, 79
 9. Standard monsters (4)                   -> batch 76
 10. Weapon Tier 2/3, items, relics, artifacts -> batches 81, 84
@@ -350,8 +380,8 @@ boss stingers for 78–79, objective success/fail cues for 82.
 Steps 1 and 2 were pure data, unlocked build variety with **no art dependency at all**, and shipped
 on 7 August 2026 — see the log for what each landed and the two latent bugs they exposed
 (`applyUpgrade` had no exhaustiveness guard, and `buildUpgradeDecision`'s offer scan was hard-coded
-to a twelve-entry catalogue). Step 3 onward is open. Step 4 is deliberately pinned to the difficulty ladder (T4.1 in
-the improvement plan) because changing `eliteKindsForWave`'s signature twice would be wasteful.
+to a twelve-entry catalogue). Steps 8-10 remain open; step 6's supporting upgrade tiles and effect
+accents remain, while its mechanics, production silhouettes, and elite marker are complete.
 
 ### Gates
 

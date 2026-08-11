@@ -169,6 +169,7 @@ try {
   }
 
   $reviewRoutes = @(
+    '/play/last-bastion/?screen=map&mapseed=1&threat=2',
     '/play/last-bastion/?art=placeholder',
     '/play/last-bastion/?flow=character-select&c3=tactician',
     '/play/last-bastion/?hero=tactician&art=c3',
@@ -232,6 +233,10 @@ try {
     '/play/last-bastion/?loadout=patrol&buff=uranium',
     '/play/last-bastion/?scenario=slime-spitter&loadout=vertical',
     '/play/last-bastion/?scenario=carapace-elite&loadout=vertical',
+    '/play/last-bastion/?scenario=ironhide-abomination&loadout=vertical',
+    '/play/last-bastion/?scenario=splitcaller-weaver&loadout=vertical',
+    '/play/last-bastion/?scenario=voltaic-warden&loadout=vertical',
+    '/play/last-bastion/?mode=gallery&batch=elite-e1',
     '/play/last-bastion/?scenario=siege-crusher&loadout=vertical',
     '/play/last-bastion/?scenario=brood-warden&loadout=vertical',
     '/play/last-bastion/?scenario=ripper&loadout=vertical',
@@ -240,6 +245,9 @@ try {
     '/play/last-bastion/?scenario=spinewheel&loadout=vertical',
     '/play/last-bastion/?scenario=tether-bloom&loadout=vertical',
     '/play/last-bastion/?scenario=bastion-eater&loadout=vertical',
+    '/play/last-bastion/?scenario=escort-objective&loadout=vertical',
+    '/play/last-bastion/?scenario=deny-objective&loadout=vertical',
+    '/play/last-bastion/?scenario=collect-objective&loadout=vertical',
     '/play/last-bastion/?scenario=density-capacity&debug=1',
     '/play/last-bastion/?scenario=aurum-hoarder&loadout=bulwark',
     '/play/last-bastion/?scenario=scrap-shop&loadout=vertical',

@@ -318,7 +318,13 @@ export class CombatHud {
     this.xpFill.setScale(Math.max(snapshot.experience / snapshot.experienceForNextLevel, 0.001), 1);
     const evasiveCooldownDuration = snapshot.heroPresentation.evasiveDurationSeconds
       + snapshot.heroPresentation.evasiveRecoverySeconds;
-    this.waveText.setText(snapshot.scenario
+    this.waveText.setText(snapshot.denyObjective?.status === "active"
+      ? `DENY  CORRUPTION ${Math.round(snapshot.denyObjective.corruption * 100)}%`
+      : snapshot.collectObjective?.status === "active"
+        ? `RECOVER ${snapshot.collectObjective.collected}/${snapshot.collectObjective.total}  ${Math.ceil(snapshot.collectObjective.remainingSeconds)}s`
+      : snapshot.escortObjective?.status === "active"
+        ? `ESCORT ${Math.round(snapshot.escortObjective.progress * 100)}%`
+      : snapshot.scenario
       ? SCENARIO_LABELS[snapshot.scenario]
       : snapshot.stressProfile
         ? `STRESS ${snapshot.stressProfile}`
@@ -717,6 +723,9 @@ function setCooldownTileVisible(tile: CooldownTileView, visible: boolean): void 
 const SCENARIO_LABELS: Readonly<Record<CombatScenario, string>> = Object.freeze({
   "slime-spitter": "SPITTER LAB",
   "carapace-elite": "ELITE LAB",
+  "ironhide-abomination": "IRONHIDE ELITE LAB",
+  "splitcaller-weaver": "SPLITCALLER ELITE LAB",
+  "voltaic-warden": "VOLTAIC ELITE LAB",
   "siege-crusher": "CRUSHER LAB",
   "brood-warden": "BROOD LAB",
   "rift-stalker": "RIFT LAB",
@@ -739,6 +748,9 @@ const SCENARIO_LABELS: Readonly<Record<CombatScenario, string>> = Object.freeze(
   quillback: "QUILLBACK LAB",
   spinewheel: "SPINEWHEEL LAB",
   "tether-bloom": "TETHER LAB",
+  "escort-objective": "ESCORT OBJECTIVE LAB",
+  "deny-objective": "DENY OBJECTIVE LAB",
+  "collect-objective": "COLLECT OBJECTIVE LAB",
   "bastion-eater": "FINAL BOSS LAB",
   "density-capacity": "DENSITY 56 LAB",
   "aurum-hoarder": "AURUM LAB",

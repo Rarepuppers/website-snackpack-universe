@@ -3,7 +3,7 @@
 Seventeen `.md` files live in this folder and several are historical. This index says which
 to trust. **Read this before acting on any plan doc.**
 
-Last reviewed: 8 August 2026.
+Last reviewed: 11 August 2026.
 
 ---
 
@@ -51,13 +51,16 @@ decision outlives the plan for it.
 ## Known stale points to fix when next touched
 
 - `last-bastion-art-bible.md` open-approvals asks about **"weapon-ring radius at 1/4/6/12 weapons."** The rack is still 4 slots but the pool is now 28 draftable weapons, so that question needs restating before ring chrome is designed.
-- Several docs quote content counts inline. Counted from the catalogues on **8 August 2026**:
-  **32 weapons** (10 light / 13 medium / 8 heavy / 1 unique), **41 items** (not 47 — the earlier
-  figure was wrong), **14 relics**, **12 artifacts**, **20 upgrades**, **16 level stat cards**,
-  **12 powerups**, **36 enemy types** (of which **4 elites**, **7 mini-bosses**, **1 boss**),
-  **4 objective kinds**, **20 player stats**, **29 world objects**.
-  Prefer counting the catalogue over quoting a doc. Full breakdown, including the damage-type
-  distribution, is in `last-bastion-content-design-plan-2026-08-07.md` §1. Weapons went 29 -> 32,
+- Several docs quote content counts inline. Counted from the catalogues on **11 August 2026**:
+  **34 weapons** (31 draftable / 1 earned unique / 1 hero-bound / 1 transformation-only), **47 items**,
+  **14 relics**, **12 artifacts**, **20 upgrades**, **16 level stat cards**,
+  **12 powerups**, **36 enemy catalogue types** (20 regular/treasure, 8 summons/props,
+  **7 mini-bosses**, **1 boss**) plus **4 elite identities**,
+  **4 interactable objective fixtures across 4 objective modes** (hold/interact, Escort, Deny, Collect),
+  **20 player stats**, **29 world objects**.
+  Run `npm run content:audit` from `dev/` for the generated live inventory; it reads the catalogues
+  and fails when an enemy entry is not classified. Full breakdown, including the damage-type
+  distribution, is in `last-bastion-content-design-plan-2026-08-07.md` §1. Weapons went 29 -> 34,
   upgrades 12 -> 20, stat cards 15 -> 16 and player stats 19 -> 20 during the 7-8 August content
   passes; the design plan's own table carries strikethroughs showing both figures.
 

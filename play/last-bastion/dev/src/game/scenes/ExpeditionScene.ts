@@ -25,6 +25,7 @@ import {
 import {
   expeditionEncounterForNode,
   expeditionEncounterUrl,
+  objectiveModeLabel,
 } from "../expedition/ExpeditionEncounter";
 import { normalizeThreatTier, threatTierDefinition } from "../expedition/ThreatTier";
 
@@ -386,6 +387,15 @@ export class ExpeditionScene extends Phaser.Scene {
       this.root.add(this.text(x, y - 1, intelVisible ? SAFE_NODE_GLYPHS[node.type] : "?", glyphColor, "16px", true)
         .setDepth(11)
         .setAlpha(!intelVisible ? 0.12 : presentation === "unreachable" ? 0.4 : 1));
+      const objectiveMode = intelVisible
+        ? expeditionEncounterForNode(this.run.state.mapSeed, node, this.run.state.threatTier).objectiveMode
+        : null;
+      if (objectiveMode) {
+        const badge = objectiveMode === "escort" ? "E" : objectiveMode === "deny" ? "D" : "C";
+        this.root.add(this.add.circle(x + radius - 2, y - radius + 2, 8, 0x132637)
+          .setStrokeStyle(2, 0xffd36b).setDepth(13));
+        this.root.add(this.text(x + radius - 2, y - radius + 2, badge, "#ffd36b", "9px", true).setDepth(14));
+      }
       if (presentation === "cleared") {
         this.root.add(this.text(x + radius - 4, y - radius + 2, "✓", TEAL, "11px", true).setDepth(12).setAlpha(0.8));
       }
@@ -415,6 +425,11 @@ export class ExpeditionScene extends Phaser.Scene {
     }
     const node = expeditionNodeById(this.run.map, focusedId)!;
     const theme = ARENA_THEMES.find((candidate) => candidate.id === node.themeId);
+    const objectiveMode = expeditionEncounterForNode(
+      this.run.state.mapSeed,
+      node,
+      this.run.state.threatTier,
+    ).objectiveMode;
     const threat = node.type === "boss" ? "EXTREME"
       : node.type === "mini-boss" ? "SEVERE"
         : node.type === "elite" ? "HIGH"
@@ -422,7 +437,8 @@ export class ExpeditionScene extends Phaser.Scene {
             : node.type === "shrine" ? "CHOICE"
               : node.type === "combat" ? (node.column >= 5 ? "ELEVATED" : "MODERATE") : "NONE";
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT - 78, 620, 58, PANEL).setStrokeStyle(1, 0x3b4d63).setDepth(20));
-    this.root.add(this.text(WIDTH / 2, HEIGHT - 90, NODE_LABELS[node.type], TEAL, "15px", true).setDepth(21));
+    const objectiveSuffix = objectiveMode ? `  •  OBJECTIVE ${objectiveModeLabel(objectiveMode)}` : "";
+    this.root.add(this.text(WIDTH / 2, HEIGHT - 90, `${NODE_LABELS[node.type]}${objectiveSuffix}`, TEAL, "15px", true).setDepth(21));
     this.root.add(this.text(
       WIDTH / 2,
       HEIGHT - 68,

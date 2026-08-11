@@ -1,4 +1,4 @@
-import type { EliteKind } from "../combat/EliteCadence";
+import { ELITE_KINDS, type EliteKind } from "../combat/EliteCadence";
 import type { MiniBossKind } from "../combat/CombatSimulation";
 import type { ExpeditionNode } from "./ExpeditionMap";
 import { buildExpeditionWavePlan, type ExpeditionWavePlan } from "./ExpeditionNodeDirector";
@@ -17,6 +17,8 @@ export type ExpeditionEncounterKind =
   | "liberation"
   | "boss";
 
+export type ExpeditionObjectiveMode = "escort" | "deny" | "collect";
+
 export interface ExpeditionEncounterDescriptor {
   nodeId: number;
   kind: ExpeditionEncounterKind;
@@ -30,6 +32,8 @@ export interface ExpeditionEncounterDescriptor {
   miniBossKind: MiniBossKind | null;
   /** Shrine/Event nodes resolve to a specific catalogue card; null otherwise. */
   eventId: string | null;
+  /** Optional combat-node modifier; absent on ordinary and non-combat nodes. */
+  objectiveMode?: ExpeditionObjectiveMode | null;
   /**
    * Themed stock opened after a `liberation` node's fight (Phase 4). Absent
    * elsewhere, in which case the post-node shop is the plain scrap market.
@@ -38,9 +42,7 @@ export interface ExpeditionEncounterDescriptor {
   waves: readonly ExpeditionWavePlan[];
 }
 
-const ELITES: readonly EliteKind[] = [
-  "carapace-scuttler", "razorlord", "blightspitter", "quillback-matriarch",
-];
+const ELITES: readonly EliteKind[] = ELITE_KINDS;
 
 /**
  * Mini-boss pool, tiered by depth so the difficulty curve holds after the
@@ -90,6 +92,7 @@ export function expeditionEncounterForNode(
     ? selectEncounterEvent(node.type as EncounterEventKind, seed, node.column)?.id ?? null
     : null;
   const waves = buildExpeditionWavePlan(node.type, node.column, eliteKind, miniBossKind, threatTier);
+  const objectiveMode = objectiveModeForNode(seed, node);
   return {
     nodeId: node.id,
     kind: node.type,
@@ -101,9 +104,22 @@ export function expeditionEncounterForNode(
     eliteKind,
     miniBossKind,
     eventId,
+    objectiveMode,
     ...(node.shopProfileId ? { shopProfileId: node.shopProfileId } : {}),
     waves,
   };
+}
+
+/** Roughly one in four eligible mid-run combat nodes gains a visible movement objective. */
+export function objectiveModeForNode(seed: number, node: ExpeditionNode): ExpeditionObjectiveMode | null {
+  if (node.type !== "combat" || node.column < 2 || node.column > 6 || seed % 4 !== 0) return null;
+  return (["escort", "deny", "collect"] as const)[Math.floor(seed / 4) % 3]!;
+}
+
+export function objectiveModeLabel(mode: ExpeditionObjectiveMode): string {
+  if (mode === "escort") return "ESCORT";
+  if (mode === "deny") return "DENY CHANNEL";
+  return "TIMED RECOVERY";
 }
 
 /**

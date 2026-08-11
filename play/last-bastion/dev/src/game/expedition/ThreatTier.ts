@@ -10,6 +10,8 @@ export interface ThreatTierDefinition {
   modifier: string;
   /** Ordinary combat nodes finish with this extra rank fight. */
   elitePatrols: boolean;
+  /** Number of sequential elite patrol waves appended to ordinary combat nodes. */
+  elitePatrolCount: 0 | 1 | 2;
   /** Multiplies spawn-pulse frequency without changing threat budgets. */
   spawnCadenceMultiplier: number;
 }
@@ -20,6 +22,7 @@ export const THREAT_TIERS: readonly ThreatTierDefinition[] = Object.freeze([
     name: "STANDARD",
     modifier: "No threat modifiers.",
     elitePatrols: false,
+    elitePatrolCount: 0,
     spawnCadenceMultiplier: 1,
   }),
   Object.freeze({
@@ -27,13 +30,15 @@ export const THREAT_TIERS: readonly ThreatTierDefinition[] = Object.freeze([
     name: "ELITE PATROLS",
     modifier: "Ordinary combat nodes end with an elite patrol.",
     elitePatrols: true,
+    elitePatrolCount: 1,
     spawnCadenceMultiplier: 1,
   }),
   Object.freeze({
     tier: 2,
     name: "RAPID INCURSION",
-    modifier: "Enemy spawn pulses arrive 20% faster.",
+    modifier: "Enemy spawn pulses arrive 20% faster and combat nodes end with two distinct elite patrols.",
     elitePatrols: true,
+    elitePatrolCount: 2,
     spawnCadenceMultiplier: 1.2,
   }),
 ]);

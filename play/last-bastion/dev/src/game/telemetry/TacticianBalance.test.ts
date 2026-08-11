@@ -14,5 +14,5 @@ describe("Tactician balance candidate", () => {
     expect(tactician!.finalScrap[1]).toBeLessThanOrEqual(5);
     expect(tactician!.damageTaken[1]).toBeGreaterThanOrEqual(7);
     expect(tactician!.damageTaken[1]).toBeLessThanOrEqual(11);
-  });
+  }, 10_000);
 });

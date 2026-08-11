@@ -271,6 +271,9 @@ Offer frames are Field Repair, Uranium-Core Kit, Armour Retrofit, Upgrade Calibr
 | `razorlord-v1` | 4×4 | 96×96 | 16 |
 | `blightspitter-v1` | 4×3 | 96×96 | 12 |
 | `quillback-matriarch-v1` | 4×4 | 128×128 | 16 |
+| `ironhide-abomination-v1` | 4×3 | 128×128 | 12 |
+| `splitcaller-weaver-v1` | 4×8 | 192×192 | 32 |
+| `voltaic-warden-v1` | 4×8 | 128×128 | 32 |
 | `telegraph-large-v1` | 4×2 | 128×128 | 8 |
 | `telegraph-small-v1` | 4×3 | 64×64 | 12 |
 | `telegraph-danger-fill-v1` | 4×1 | 64×64 | 4 |

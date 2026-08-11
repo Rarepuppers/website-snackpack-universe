@@ -35,6 +35,7 @@ const CUES: Readonly<Partial<Record<CombatEvent["type"], AudioCue>>> = Object.fr
   "slime-impact": cue("glob-impact", 220, 0.14, 0.07, "sine", 120),
   "chain-arc": cue("chain-arc", 1400, 0.06, 0.05, "sawtooth", 700),
   "elite-armour-hit": cue("armour-clank", 520, 0.07, 0.07, "square", 480),
+  "ironhide-adapted": cue("ironhide-adapt", 310, 0.16, 0.09, "square", 170),
   "elite-reward-collected": cue("cache", 760, 0.24, 0.1, "sine", 1300),
   "mini-boss-sweep": cue("sweep", 160, 0.24, 0.12, "sawtooth", 80),
   "mini-boss-shockwave": cue("shockwave", 100, 0.32, 0.13, "sawtooth", 40),

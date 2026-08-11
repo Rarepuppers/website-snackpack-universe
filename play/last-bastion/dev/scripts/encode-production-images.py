@@ -47,6 +47,9 @@ SOURCES = (
 )
 
 LOSSLESS_SOURCES = (
+    "batch-e1/ironhide-abomination-spritesheet-v1-128.png",
+    "batch-e1/splitcaller-weaver-spritesheet-v1-192.png",
+    "batch-e1/voltaic-warden-spritesheet-v1-128.png",
     "batch-aa/assembly-prime-v1-192.png",
     "batch-ac/abomination-prime-v1-192.png",
     "batch-y/machine-foundry-fabricator-v1-192.png",

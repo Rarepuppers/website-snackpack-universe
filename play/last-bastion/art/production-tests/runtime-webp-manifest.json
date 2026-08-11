@@ -104,6 +104,42 @@
   ],
   "losslessAssets": [
     {
+      "source": "art/production-tests/batch-e1/ironhide-abomination-spritesheet-v1-128.png",
+      "runtime": "art/production-tests/batch-e1/ironhide-abomination-spritesheet-v1-128.webp",
+      "width": 512,
+      "height": 384,
+      "quality": 100,
+      "lossless": true,
+      "sourceBytes": 315062,
+      "runtimeBytes": 239370,
+      "sourceSha256": "8425aea01a871cfcc4f5b804a09294f5d9bb183805653a998122367ff9878109",
+      "runtimeSha256": "1826cf9e93542cff7031a311394b1b3edd5b5dbaafbb577f3f288d4146fec359"
+    },
+    {
+      "source": "art/production-tests/batch-e1/splitcaller-weaver-spritesheet-v1-192.png",
+      "runtime": "art/production-tests/batch-e1/splitcaller-weaver-spritesheet-v1-192.webp",
+      "width": 768,
+      "height": 1536,
+      "quality": 100,
+      "lossless": true,
+      "sourceBytes": 1436058,
+      "runtimeBytes": 1039828,
+      "sourceSha256": "8762091992706268ffff1d9fd1fad5aeccd540d9c097ac1b2dd98fee068af1a1",
+      "runtimeSha256": "4c6ac5e30333d588ba47121dce1912ec6b629e4ce019c155f5f31241c5da2f22"
+    },
+    {
+      "source": "art/production-tests/batch-e1/voltaic-warden-spritesheet-v1-128.png",
+      "runtime": "art/production-tests/batch-e1/voltaic-warden-spritesheet-v1-128.webp",
+      "width": 512,
+      "height": 1024,
+      "quality": 100,
+      "lossless": true,
+      "sourceBytes": 654248,
+      "runtimeBytes": 511364,
+      "sourceSha256": "1c33b9e0f39eee66a421d4456284a6ce6140bb00b381d8b085d7b4125a0016e0",
+      "runtimeSha256": "2beca40d56b9cf19660ec6b129120ec25b12c42294fe0f55dce18642450ba4f9"
+    },
+    {
       "source": "art/production-tests/batch-aa/assembly-prime-v1-192.png",
       "runtime": "art/production-tests/batch-aa/assembly-prime-v1-192.webp",
       "width": 768,

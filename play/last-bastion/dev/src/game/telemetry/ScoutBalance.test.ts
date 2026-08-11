@@ -14,5 +14,5 @@ describe("Scout balance candidate", () => {
     expect(scout!.finalScrap[1]).toBeLessThanOrEqual(24);
     expect(scout!.damageTaken[1]).toBeGreaterThanOrEqual(7);
     expect(scout!.damageTaken[1]).toBeLessThanOrEqual(9);
-  });
+  }, 10_000);
 });

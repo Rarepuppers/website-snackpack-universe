@@ -1,4 +1,5 @@
 import type { EliteKind } from "../combat/EliteCadence";
+import { elitePatrolKinds } from "../combat/EliteCadence";
 import type { MiniBossKind } from "../combat/CombatSimulation";
 import type { ExpeditionEncounterKind } from "./ExpeditionEncounter";
 import { threatTierDefinition, type ThreatTier } from "./ThreatTier";
@@ -48,13 +49,13 @@ export function buildExpeditionWavePlan(
 
   if (kind === "combat") {
     const waves = combat.map(ordinary);
-    if (threat.elitePatrols) {
+    for (const patrolKind of elitePatrolKinds(eliteKind ?? "carapace-scuttler", threat.elitePatrolCount)) {
       waves.push({
         kind: "elite",
         directorWaveIndex: depth,
         threatBudget: 0,
         timerEndsWave: false,
-        eliteKind: eliteKind ?? "carapace-scuttler",
+        eliteKind: patrolKind,
         miniBossKind: null,
         spawnCadenceMultiplier: threat.spawnCadenceMultiplier,
       });

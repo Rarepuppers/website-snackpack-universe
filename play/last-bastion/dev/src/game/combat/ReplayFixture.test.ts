@@ -125,31 +125,37 @@ describe("versioned fixed-step replay fixture", () => {
 
 /**
  * Closing a coverage hole flagged in `last-bastion-content-debt-plan.md`: the
- * rank-kill item grant added a `random()` draw on mini-boss/boss death, and no
+ * ranked reward planning consumes `random()` draws, and no
  * replay fixture ever kills a ranked enemy — so the digest passed while saying
  * nothing about that branch of the stream. The gameplay fixtures cannot reach a
  * mini-boss kill inside a few hundred frames, so this drives the same
  * deterministic path directly and digests the result.
  */
 describe("ranked-kill determinism (the branch no gameplay fixture reaches)", () => {
-  const rankedKillRun = (seed: number): { digest: string; items: readonly string[] } => {
+  const rankedKillRun = (seed: number): { digest: string; offers: readonly string[] } => {
     const simulation = new CombatSimulation({ seed, autoStartWaves: false });
-    const miniBossId = simulation.spawnMiniBoss("siege-crusher", { x: 6, y: 6 });
+    const miniBossId = simulation.spawnMiniBoss("siege-crusher", simulation.snapshot().playerPosition);
     simulation.dealDamage(miniBossId, 99_999);
+    let offers: readonly string[] = [];
     for (let frame = 0; frame < 60; frame += 1) {
-      simulation.step(NEUTRAL_INTENT, REPLAY_FIXED_DELTA_SECONDS);
+      const frameSnapshot = simulation.step(NEUTRAL_INTENT, REPLAY_FIXED_DELTA_SECONDS);
+      if (!frameSnapshot.pendingDecision) continue;
+      if (frameSnapshot.pendingDecision.kind === "rank-reward") {
+        offers = frameSnapshot.pendingDecision.options.map(({ id }) => id);
+      }
+      simulation.chooseOption(frameSnapshot.pendingDecision.options[0]!.id);
     }
     const snapshot = simulation.snapshot();
-    return { digest: replaySnapshotDigest(snapshot, seed), items: snapshot.ownedItemIds };
+    return { digest: replaySnapshotDigest(snapshot, seed), offers };
   };
 
-  it("grants the same item and reaches the same state for the same seed", () => {
+  it("offers the same reward and reaches the same state for the same seed", () => {
     const first = rankedKillRun(4242);
     const second = rankedKillRun(4242);
     expect(first.digest).toBe(second.digest);
-    expect(first.items).toEqual(second.items);
+    expect(first.offers).toEqual(second.offers);
     // The draw really happened — this is the branch the fixtures never entered.
-    expect(first.items.length).toBeGreaterThan(0);
+    expect(first.offers.length).toBeGreaterThan(0);
   });
 
   it("diverges by seed, so the draw is genuinely seeded and not constant", () => {
@@ -164,7 +170,7 @@ describe("ranked-kill determinism (the branch no gameplay fixture reaches)", () 
     for (const seed of [101, 7919, 104_729, 1_299_709, 15_485_863, 2_147_483_647, 999_999_937]) {
       const run = rankedKillRun(seed);
       digests.add(run.digest);
-      grants.add(run.items.join(","));
+      grants.add(run.offers.join(","));
     }
     expect(digests.size).toBeGreaterThan(1);
     expect(grants.size).toBeGreaterThan(1);

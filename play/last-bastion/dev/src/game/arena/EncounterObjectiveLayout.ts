@@ -1,6 +1,8 @@
 import type { Vector2Data } from "../math/Vector2Data";
 
 export type EncounterObjectiveKind = "gate-button" | "gate" | "turret-console" | "trap-console";
+export const ENCOUNTER_OBJECTIVE_MODES = Object.freeze(["hold-interact", "escort", "deny", "collect"] as const);
+export type EncounterObjectiveMode = typeof ENCOUNTER_OBJECTIVE_MODES[number];
 export interface EncounterObjectivePoint { id: string; kind: EncounterObjectiveKind; position: Vector2Data; footprintMetres: number; linkedGateId?: string; }
 export interface EncounterObjectiveLayout { seed: number; objectives: readonly EncounterObjectivePoint[]; playerSpawn: Vector2Data; enemySpawnLanes: readonly Vector2Data[]; reservedClearanceMetres: number; }
 

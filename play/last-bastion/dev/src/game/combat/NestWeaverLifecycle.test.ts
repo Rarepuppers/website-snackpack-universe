@@ -4,6 +4,8 @@ import {
   NEST_POD_HATCH_SECONDS,
   NEST_POD_MAX_HEALTH,
   NEST_WEAVER_MAX_LIVE_PODS,
+  SPLITCALLER_HATCHLING_COUNT,
+  SPLITCALLER_POD_MAX_HEALTH,
   createNestPod,
   damageNestPod,
   stepNestPod,
@@ -33,6 +35,26 @@ describe("Nest Weaver pod lifecycle", () => {
     expect(tryReserveNestPod({ ...OPEN_CONTEXT, ownerChargesRemaining: 0 })).toEqual({ accepted: false, reason: "charges" });
     expect(tryReserveNestPod({ ...OPEN_CONTEXT, activePodsForOwner: NEST_WEAVER_MAX_LIVE_PODS }))
       .toEqual({ accepted: false, reason: "owner-pod-cap" });
+  });
+
+  it("reserves and creates Splitcaller's doubled but fragile payload", () => {
+    const accepted = tryReserveNestPod({ ...OPEN_CONTEXT, liveCap: 24 }, SPLITCALLER_HATCHLING_COUNT);
+    if (!accepted.accepted) throw new Error("expected splitcaller reservation");
+    expect(accepted.reservation).toEqual({
+      immediatePodThreat: 2,
+      reservedHatchlingThreat: 6,
+      reservedHatchlingSlots: 6,
+    });
+    const pod = createNestPod(3, 9, { x: 2, y: 3 }, accepted.reservation, {
+      health: SPLITCALLER_POD_MAX_HEALTH,
+      hatchlingCount: SPLITCALLER_HATCHLING_COUNT,
+    });
+    expect(stepNestPod(pod, NEST_POD_HATCH_SECONDS)).toMatchObject({
+      pod: { health: 5, status: "hatched" },
+      hatchlingCount: 6,
+      consumedReservedSlots: 6,
+      consumedReservedThreat: 6,
+    });
   });
 
   it("hatches exactly one non-summoning payload after the visible clock", () => {

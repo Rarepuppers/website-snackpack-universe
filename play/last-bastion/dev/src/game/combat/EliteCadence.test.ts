@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { eliteKindsForWave, isFastElite } from "./EliteCadence";
+import { ELITE_KINDS, eliteKindsForWave, elitePatrolKinds, isFastElite } from "./EliteCadence";
 import { CombatSimulation } from "./CombatSimulation";
 import type { PlayerIntent } from "../input/PlayerIntent";
 
@@ -24,17 +24,32 @@ describe("elite cadence", () => {
     }
   });
 
+  it("adds a distinct second patrol at threat tier two", () => {
+    expect(elitePatrolKinds("carapace-scuttler", 0)).toEqual([]);
+    expect(elitePatrolKinds("carapace-scuttler", 1)).toEqual(["carapace-scuttler"]);
+    expect(elitePatrolKinds("carapace-scuttler", 2)).toEqual(["carapace-scuttler", "razorlord"]);
+    for (const kind of ELITE_KINDS) {
+      expect(new Set(elitePatrolKinds(kind, 2)).size).toBe(2);
+    }
+  });
+
   it("maps every elite identity onto its live behavior family", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false });
     simulation.spawnElite("carapace-scuttler", { x: 3, y: 3 });
     simulation.spawnElite("razorlord", { x: 4, y: 3 });
     simulation.spawnElite("blightspitter", { x: 5, y: 3 });
     simulation.spawnElite("quillback-matriarch", { x: 6, y: 3 });
+    simulation.spawnElite("ironhide-abomination", { x: 7, y: 3 });
+    simulation.spawnElite("splitcaller-weaver", { x: 8, y: 3 });
+    simulation.spawnElite("voltaic-warden", { x: 9, y: 3 });
     expect(simulation.snapshot().enemies.map(({ type, eliteKind, rank }) => ({ type, eliteKind, rank }))).toEqual([
       { type: "scuttler", eliteKind: "carapace-scuttler", rank: "elite" },
       { type: "razor-scuttler", eliteKind: "razorlord", rank: "elite" },
       { type: "slime-spitter", eliteKind: "blightspitter", rank: "elite" },
       { type: "quillback", eliteKind: "quillback-matriarch", rank: "elite" },
+      { type: "abomination", eliteKind: "ironhide-abomination", rank: "elite" },
+      { type: "nest-weaver", eliteKind: "splitcaller-weaver", rank: "elite" },
+      { type: "arc-warden", eliteKind: "voltaic-warden", rank: "elite" },
     ]);
   });
 
@@ -52,5 +67,18 @@ describe("elite cadence", () => {
       sawImpact ||= snapshot.events.some((event) => event.type === "rain-of-spines-impact");
     }
     expect({ sawLaunch, sawRain, sawImpact }).toEqual({ sawLaunch: true, sawRain: true, sawImpact: true });
+  });
+
+  it("makes Blightspitter impacts create wider, longer area denial", () => {
+    const simulation = new CombatSimulation({ autoStartWaves: false, seed: 51 });
+    const player = simulation.snapshot().playerPosition;
+    simulation.spawnElite("blightspitter", { x: player.x + 5, y: player.y });
+    let hazard = simulation.snapshot().groundHazards[0];
+    for (let frame = 0; frame < 180 && !hazard; frame += 1) {
+      hazard = simulation.step(IDLE, 0.05).groundHazards[0];
+    }
+    expect(hazard).toBeDefined();
+    expect(hazard!.radiusMetres).toBe(2);
+    expect(hazard!.durationSeconds).toBe(7);
   });
 });

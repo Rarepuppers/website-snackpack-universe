@@ -4442,3 +4442,81 @@ deterministic per-instance projectile carry.
   build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
 - Next: extract weapon-placement option presentation, target-ID serialization/parsing, then post-placement equip/
   merge commit planning. Inventory and runtime-weapon mutation remain adapter-owned.
+
+## 11 August 2026 — reward differentiation and Escort objective
+
+The first large content-depth batch now gives elite, mini-boss, and objective rewards distinct jobs.
+
+- Elite caches present three deterministic, non-cursed item choices aligned to the defeated elite's combat tags.
+- Mini-boss caches present two unowned relics and one eligible upgrade instead of an immediate generic item.
+- Objective completion owns a three-relic utility pool: Field Lattice, Salvage Optics, and Overwatch Rig.
+- Added the code-first Escort mode: a three-waypoint drone advances at 1.35 m/s, pauses and takes stacked damage
+  when hostiles enter its 1.75 m safety radius, fails the encounter at zero health, and awards 25 Scrap plus an
+  objective relic choice on completion.
+- Added a cyan code-native drone view, health bar, HUD/scenario labels, deterministic population, Lab route,
+  generated objective-mode inventory count, and smoke coverage. Deny and Collect remain open.
+- Full verification passes: 31-adapter combat boundary audit, **1,524 tests across 266 files**, production build,
+  **79 smoke routes**, WebP audit, and offline **369 / 0 missing** local asset references.
+
+## 11 August 2026 — Deny, Collect, and boss artifact rewards
+
+The objective expansion is mechanically complete across all three planned verbs.
+
+- Deny spawns three destructible channel anchors. Each surviving anchor fills a shared corruption meter; destroying
+  all three interrupts the channel and wins, while reaching 100% corruption fails the encounter.
+- Collect places six timed recovery pickups around the arena. Crossing each pickup radius banks it immediately;
+  recovering all six wins, while the 32-second window creates a real movement failure state.
+- Both modes pay 25 Scrap and use the objective-exclusive utility-relic choice, matching Escort's reward contract.
+- Bastion Eater victories now offer three deterministic artifacts, excluding the currently equipped artifact, and
+  selecting one immediately refreshes the run's resolved artifact effects. The generic boss item roll is removed.
+- Added code-native anchor/pickup presentation, live HUD progress, deterministic scenario population, Lab routes,
+  generated four-mode inventory coverage, integration tests, and smoke routes. Production art/audio remain open.
+- Eligible combat nodes in columns 2-6 now deterministically receive objective modifiers in ordinary expeditions.
+  Outcome persistence waits for the victory reward decision, preventing objective relics and boss artifacts from
+  disappearing during the map hand-off.
+- Full verification passes: 31-adapter combat boundary audit, **1,536 tests across 269 files**, production build,
+  **81 smoke routes**, WebP audit, and offline **369 / 0 missing** local asset references.
+
+## 11 August 2026 — existing elite depth and expedition intel
+
+The four live elite identities now each communicate a different combat lesson.
+
+- Carapace Scuttler keeps its charge and armour-window timing; Razorlord keeps its faster locked dash; Quillback
+  Matriarch keeps Rain of Spines. The audit found these were already real signatures, not stat-only variants.
+- Blightspitter closes the genuine gap: its glob now leaves a 2 m, 7-second denial pool instead of the ordinary
+  Spitter's 1.25 m, 4-second slow, making its arena-control identity materially different without new art.
+- Threat 1 ordinary combat ends with one elite patrol. Threat 2 now ends with two sequential, distinct elite
+  patrols in addition to its 20% faster spawn pulses; partner selection prevents duplicate identities.
+- Seeded objective combat nodes now show E/D/C badges on the expedition map and spell out Escort, Deny Channel,
+  or Timed Recovery in the focused intel card before the player commits to the route.
+- Full verification passes: 31-adapter combat boundary audit, **1,538 tests across 269 files**, production build,
+  **82 smoke routes**, WebP audit, and offline **369 / 0 missing** local asset references.
+
+## 11 August 2026 — Elite Batch E1 mechanics
+
+- Expanded the live elite roster from four to seven with Ironhide Abomination, Splitcaller Weaver,
+  and Voltaic Warden. Ironhide gains one armour after each consecutive same-type damage pair (cap
+  four); Splitcaller reserves six hatchling slots and threat behind a five-health pod; Voltaic locks
+  a second independently cover-clipped beam lane and still applies at most one hit per discharge.
+- Wired all three through expedition selection, threat-tier patrol partners, themed item caches,
+  generated content inventory, Combat HUD labels, Lab navigation, deterministic scenarios,
+  code-first tint presentation, Codex entries, smoke routes, and focused pure/integration tests.
+- Production bodies and the non-colour-only elite marker remain Batch 77 art work; mechanics no
+  longer block that batch.
+- Full verification passes: 31-adapter combat boundary audit, **1,545 tests across 272 files**,
+  production build, **85 smoke routes**, WebP audit, and offline **369 / 0 missing** local assets.
+
+## 11 August 2026 — Elite Batch E1 production bodies and marker
+
+- Generated and integrated three bespoke production sprite sheets while retaining the ordinary-family
+  animation grids: 12-frame Ironhide Abomination, 32-frame Splitcaller Weaver, and 32-frame Voltaic
+  Warden. Flat chroma and alpha masters remain in `art/production-tests/batch-e1`; runtime PNGs have
+  exact cell sizes and lossless WebP derivatives.
+- Ironhide reads through asymmetric bronze plating, Splitcaller through a forked twin-brood crown,
+  and Voltaic through cyan/amber twin coils. Gameplay still owns all collision and telegraph geometry.
+- Added a four-segment bracket marker around every elite so rank is not colour-dependent, plus an
+  Ironhide adaptation ring, event-feed callout, and distinct synthesis cue.
+- Added the `?mode=gallery&batch=elite-e1` review sheet and updated manifest preload selection,
+  Codex copy, art contracts, local routes, and forward-plan status.
+- Full verification passes: **1,546 tests across 272 files**, production build, **86 smoke routes**,
+  WebP audit (**8 lossy + 53 lossless**), and offline **375 / 0 missing** local references.

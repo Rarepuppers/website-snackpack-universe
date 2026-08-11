@@ -125,11 +125,18 @@ import {
   NEST_HATCHLING_COUNT,
   NEST_POD_HATCH_SECONDS,
   NEST_WEAVER_PLACEMENT_CHARGES,
+  SPLITCALLER_HATCHLING_COUNT,
+  SPLITCALLER_POD_MAX_HEALTH,
   tryReserveNestPod,
   type NestPodReservation,
   type NestPodState,
 } from "./NestWeaverLifecycle";
 import { stepNestPodBehavior } from "./NestPodBehavior";
+import {
+  createIronhideAdaptiveArmour,
+  recordIronhideDamageType,
+  type IronhideAdaptiveArmourState,
+} from "./IronhideAdaptiveArmour";
 import { planProjectileVolley } from "./WeaponProjectileVolley";
 import { planOrdinaryProjectilePayload } from "./WeaponProjectilePayload";
 import { pointInsideWeaponArc, selectForwardArcTargets } from "./WeaponTargetGeometry";
@@ -281,6 +288,7 @@ import {
   type ArcWardenState,
 } from "./ArcWardenBeam";
 import { stepArcWardenCombatBehavior } from "./ArcWardenBehavior";
+import { lockVoltaicSecondaryLane } from "./VoltaicWardenBeam";
 import {
   createReclaimerRepairBehavior,
   type ReclaimerRepairState,
@@ -503,11 +511,41 @@ import {
 } from "../content/shopProfiles";
 import { resolvePerkModifiers, type PerkId, type PerkRunModifiers } from "../perks/perkCatalog";
 import {
+  isRelicId,
   resolveRelicModifiers,
   type ArtifactId,
   type RelicId,
   type RelicRunModifiers,
 } from "../content/relicCatalog";
+import {
+  parseRankRewardChoice,
+  planBossRewardDecision,
+  planEliteRewardDecision,
+  planMiniBossRewardDecision,
+  planObjectiveRewardDecision,
+} from "./RankRewardPlanning";
+import {
+  createEscortObjective,
+  escortObjectiveSnapshot,
+  ESCORT_HOSTILE_RADIUS_METRES,
+  stepEscortObjective,
+  type EscortObjectiveSnapshot,
+  type EscortObjectiveState,
+} from "./EscortObjective";
+import {
+  collectObjectiveSnapshot,
+  createCollectObjective,
+  stepCollectObjective,
+  type CollectObjectiveSnapshot,
+  type CollectObjectiveState,
+} from "./CollectObjective";
+import {
+  createDenyObjective,
+  denyObjectiveSnapshot,
+  stepDenyObjective,
+  type DenyObjectiveSnapshot,
+  type DenyObjectiveState,
+} from "./DenyObjective";
 import type { ExpeditionEncounterDescriptor } from "../expedition/ExpeditionEncounter";
 import type { ExpeditionWavePlan } from "../expedition/ExpeditionNodeDirector";
 import { campaignNodeClearScrap, campaignOffersShop, rankDefeatScrap } from "../expedition/CampaignTuning";
@@ -544,6 +582,9 @@ export const MINI_BOSS_KINDS: readonly MiniBossKind[] = Object.freeze([
   "synapse-herald", "assembly-prime", "storm-regent", "abomination-prime",
 ]);
 
+/** Campaign-ending bosses, separate from the rotating mini-boss pool. */
+export const BOSS_KINDS: readonly EnemyType[] = Object.freeze(["bastion-eater"]);
+
 export function isMiniBossKind(value: string): value is MiniBossKind {
   return (MINI_BOSS_KINDS as readonly string[]).includes(value);
 }
@@ -557,11 +598,11 @@ export function isMiniBossKind(value: string): value is MiniBossKind {
 export function enemyRadius(enemy: { type: EnemyType; radiusScale?: number }): number {
   return ENEMY_CATALOG[enemy.type].radiusMetres * (enemy.radiusScale ?? 1);
 }
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "ironhide-abomination" | "splitcaller-weaver" | "voltaic-warden" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "escort-objective" | "deny-objective" | "collect-objective" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit" | "siege-loader" | "phase-jacket" | "hunter-optics" | "last-stand-stimulant" | "emp-charge" | "butchers-serum";
 export type SupplyChestVariant = "sealed" | "armored";
-export type DecisionKind = "upgrade" | "level-stat" | "weapon-chest" | "supply-depot" | "slot-requisition" | "scrap-shop" | "weapon-placement";
-export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "boss-defeat" | "wave-clear" | "aurum-armour" | "aurum-defeat" | "supply-chest" | "world-object";
+export type DecisionKind = "upgrade" | "level-stat" | "weapon-chest" | "supply-depot" | "slot-requisition" | "rank-reward" | "scrap-shop" | "weapon-placement";
+export type ScrapSource = "ordinary-drop" | "specialist-defeat" | "elite-defeat" | "mini-boss-defeat" | "boss-defeat" | "objective-complete" | "wave-clear" | "aurum-armour" | "aurum-defeat" | "supply-chest" | "world-object";
 
 export type TerrainDamageSource = "player-projectile" | "player-melee" | "mini-boss-charge" | "mini-boss-impact" | "enemy-slam" | "enemy-biomass";
 
@@ -672,6 +713,14 @@ export type CombatEvent =
   | { type: "elite-armour-hit"; position: Vector2Data; eliteKind: EliteKind }
   | { type: "elite-reward-dropped"; position: Vector2Data; eliteKind: EliteKind }
   | { type: "elite-reward-collected"; position: Vector2Data }
+  | { type: "escort-objective-damaged"; position: Vector2Data; health: number; maxHealth: number }
+  | { type: "escort-objective-completed"; position: Vector2Data }
+  | { type: "escort-objective-failed"; position: Vector2Data }
+  | { type: "deny-objective-completed"; position: Vector2Data }
+  | { type: "deny-objective-failed"; position: Vector2Data }
+  | { type: "collect-objective-picked-up"; position: Vector2Data; pickupId: number }
+  | { type: "collect-objective-completed"; position: Vector2Data }
+  | { type: "collect-objective-failed"; position: Vector2Data }
   | { type: "mini-boss-sweep"; position: Vector2Data; radiusMetres: number }
   | { type: "mini-boss-shockwave"; position: Vector2Data; radiusMetres: number }
   | { type: "rain-of-spines-impact"; position: Vector2Data }
@@ -700,6 +749,7 @@ export type CombatEvent =
   | { type: "scrap-skitterer-wreck"; position: Vector2Data; wreckId: number; durationSeconds: number }
   | { type: "arc-warden-warning"; position: Vector2Data; enemyId: number; lane: NonNullable<ArcWardenState["lockedLane"]> }
   | { type: "arc-warden-discharged"; position: Vector2Data; endpoint: Vector2Data; enemyId: number; hitPlayer: boolean; damage: number; blockedByObstacleId?: string }
+  | { type: "ironhide-adapted"; position: Vector2Data; enemyId: number; damageType: DamageType; bonusArmour: number }
   | { type: "foundry-fabrication-started"; position: Vector2Data; enemyId: number; padId: number; childType: FoundryChildType }
   | { type: "foundry-fabrication-completed"; position: Vector2Data; enemyId: number; childId: number; childType: FoundryChildType }
   | { type: "foundry-fabrication-interrupted"; position: Vector2Data; enemyId: number; reason: "owner-damage" | "pad-destroyed" }
@@ -830,6 +880,8 @@ export interface EnemySnapshot {
   scrapSkittererDirection?: Vector2Data;
   arcWardenPhase?: ArcWardenState["phase"];
   arcWardenLane?: ArcWardenState["lockedLane"];
+  arcWardenSecondaryLane?: ArcWardenState["lockedLane"];
+  ironhideAdaptiveArmour?: number;
   reclaimerPhase?: ReclaimerRepairState["phase"];
   reclaimerTargetId?: number;
   reclaimerChargesRemaining?: number;
@@ -1107,6 +1159,9 @@ export interface CombatSnapshot {
   powerups: readonly PowerupPickupSnapshot[];
   supplyChests: readonly SupplyChestSnapshot[];
   activeBuffs: readonly ActiveBuffSnapshot[];
+  escortObjective: EscortObjectiveSnapshot | null;
+  denyObjective: DenyObjectiveSnapshot | null;
+  collectObjective: CollectObjectiveSnapshot | null;
   uraniumKitAvailable: boolean;
   securedScrap: number;
   weapon: Readonly<WeaponRuntimeStats>;
@@ -1182,6 +1237,8 @@ export interface EnemyState {
   conductiveNode: ConductiveNodeState | null;
   scrapSkittererBehavior: ScrapSkittererState;
   arcWardenBehavior: ArcWardenState;
+  arcWardenSecondaryLane: ArcWardenState["lockedLane"];
+  ironhideAdaptiveArmour: IronhideAdaptiveArmourState;
   reclaimerBehavior: ReclaimerRepairState;
   reclaimerDamagedSinceLastStep: boolean;
   foundryBehavior: FoundryFabricatorState;
@@ -1363,6 +1420,8 @@ interface EnemyProjectileState {
   remainingSeconds: number;
   damage: number;
   createsPuddle: boolean;
+  puddleRadiusMetres?: number;
+  puddleDurationSeconds?: number;
   dead: boolean;
 }
 
@@ -1390,6 +1449,8 @@ interface EliteRewardState {
   type: "elite-upgrade-cache" | "mini-boss-arsenal-cache" | "aurum-supply-cache";
   position: Vector2Data;
   collected: boolean;
+  eliteKind?: EliteKind;
+  miniBossKind?: MiniBossKind;
 }
 
 export interface CombatSimulationOptions {
@@ -1472,6 +1533,8 @@ const INTERMISSION_SECONDS = 2;
 const MAX_SLOWING_PUDDLES = 5;
 const SLOWING_PUDDLE_DURATION_SECONDS = 4;
 const SLOWING_PUDDLE_RADIUS_METRES = 1.25;
+const BLIGHTSPITTER_PUDDLE_DURATION_SECONDS = 7;
+const BLIGHTSPITTER_PUDDLE_RADIUS_METRES = 2;
 const SLIME_MOVEMENT_MULTIPLIER = 0.55;
 /** Field Lattice relic: radius of the chill pulse emitted on a health pickup. */
 const FIELD_LATTICE_PULSE_RADIUS_METRES = 3.5;
@@ -1730,9 +1793,10 @@ export class CombatSimulation {
   /** Raw non-item stat grants carried on the build (level-up cards, shrine grants, tests). */
   private baseItemStats: Partial<PlayerStatBlock>;
   /** Run-long reward items (Task 94), resolved into combat effects and carried through the snapshot. */
-  private readonly relicModifiers: RelicRunModifiers;
-  private readonly ownedRelicIds: readonly RelicId[];
-  private readonly equippedArtifactId: ArtifactId | null;
+  private relicModifiers: RelicRunModifiers;
+  private ownedRelicIds: RelicId[];
+  private equippedArtifactId: ArtifactId | null;
+  private readonly bonusLifestealPerKill: number;
   private readonly rewardMaxHealthBonus: number;
   private readonly rewardWeaponSlotBonus: number;
   private experienceCarry = 0;
@@ -1837,6 +1901,9 @@ export class CombatSimulation {
   private readonly expeditionRewardedWaves = new Set<number>();
   private expeditionPostEncounterShopQueued = false;
   private activeTetherEnemyId: number | null = null;
+  private escortObjective: EscortObjectiveState | null = null;
+  private denyObjective: DenyObjectiveState | null = null;
+  private collectObjective: CollectObjectiveState | null = null;
   private nestReservedLiveSlots = 0;
   private nestReservedThreat = 0;
   private foundryReservedLiveSlots = 0;
@@ -1865,7 +1932,44 @@ export class CombatSimulation {
     this.randomState = options.seed ?? 0x5a17b45;
     this.stressProfile = options.stressProfile ?? null;
     this.scenario = options.scenario ?? null;
+    if (this.scenario === "escort-objective") {
+      const centreY = this.heightMetres / 2;
+      this.escortObjective = createEscortObjective([
+        { x: 4, y: centreY },
+        { x: this.widthMetres / 2, y: centreY - 4.5 },
+        { x: this.widthMetres - 4, y: centreY },
+      ]);
+      this.playerPosition = { x: 6, y: centreY + 2 };
+    }
+    if (this.scenario === "collect-objective") {
+      const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+      this.collectObjective = createCollectObjective([
+        { x: centre.x, y: centre.y - 4 },
+        { x: centre.x + 6, y: centre.y - 3 },
+        { x: centre.x + 7, y: centre.y + 3 },
+        { x: centre.x, y: centre.y + 5 },
+        { x: centre.x - 7, y: centre.y + 3 },
+        { x: centre.x - 6, y: centre.y - 3 },
+      ]);
+    }
     this.expeditionEncounter = options.expeditionEncounter ?? null;
+    if (this.expeditionEncounter?.objectiveMode === "escort") {
+      const centreY = this.heightMetres / 2;
+      this.escortObjective = createEscortObjective([
+        { x: 4, y: centreY },
+        { x: this.widthMetres / 2, y: centreY - 4.5 },
+        { x: this.widthMetres - 4, y: centreY },
+      ]);
+      this.playerPosition = { x: 6, y: centreY + 2 };
+    }
+    if (this.expeditionEncounter?.objectiveMode === "collect") {
+      const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+      this.collectObjective = createCollectObjective([
+        { x: centre.x, y: centre.y - 4 }, { x: centre.x + 6, y: centre.y - 3 },
+        { x: centre.x + 7, y: centre.y + 3 }, { x: centre.x, y: centre.y + 5 },
+        { x: centre.x - 7, y: centre.y + 3 }, { x: centre.x - 6, y: centre.y - 3 },
+      ]);
+    }
     this.activePerkId = options.perkId ?? null;
     this.transformation = options.startingBuild?.transformation || options.startingTransformation
       ? cloneTransformationAffinityState(options.startingBuild?.transformation ?? options.startingTransformation)
@@ -1879,9 +1983,9 @@ export class CombatSimulation {
       : 0;
     this.rewardWeaponSlotBonus = Math.max(0, Math.floor(options.startingBuild?.weaponSlotBonus ?? 0));
     const resolvedRelicModifiers = resolveRelicModifiers(this.ownedRelicIds, this.equippedArtifactId);
-    const bonusLifestealPerKill = Math.max(0, options.startingBuild?.bonusLifestealPerKill ?? 0);
-    this.relicModifiers = bonusLifestealPerKill > 0
-      ? { ...resolvedRelicModifiers, lifestealPerKill: resolvedRelicModifiers.lifestealPerKill + bonusLifestealPerKill }
+    this.bonusLifestealPerKill = Math.max(0, options.startingBuild?.bonusLifestealPerKill ?? 0);
+    this.relicModifiers = this.bonusLifestealPerKill > 0
+      ? { ...resolvedRelicModifiers, lifestealPerKill: resolvedRelicModifiers.lifestealPerKill + this.bonusLifestealPerKill }
       : resolvedRelicModifiers;
     // Kinetic Greaves: further evasive travel, slightly longer recovery. Set
     // here rather than at construction because the relic bag resolves above.
@@ -1977,10 +2081,24 @@ export class CombatSimulation {
 
     if (this.expeditionEncounter !== null) {
       this.populateExpeditionEncounter(this.expeditionEncounter);
+      if (this.expeditionEncounter.objectiveMode === "deny") {
+        const centre = { x: this.widthMetres / 2, y: this.heightMetres / 2 };
+        const ids = [
+          { x: centre.x - 7, y: centre.y - 3.5 },
+          { x: centre.x + 7, y: centre.y - 3.5 },
+          { x: centre.x, y: centre.y + 5 },
+        ].map((position) => ({ id: this.spawnEnemy("storm-node", position), position }));
+        this.denyObjective = createDenyObjective(ids);
+      }
     } else if (this.stressProfile !== null) {
       this.populateStressScenario(this.stressProfile);
     } else if (this.scenario !== null) {
       populateScenario(this.scenario, this.scenarioPopulationContext());
+      if (this.scenario === "deny-objective") {
+        this.denyObjective = createDenyObjective(this.enemies
+          .filter((enemy) => enemy.type === "storm-node")
+          .map((enemy) => ({ id: enemy.id, position: enemy.position })));
+      }
     } else if (this.wavesEnabled) {
       this.beginWave(0);
     }
@@ -2107,6 +2225,7 @@ export class CombatSimulation {
     }
 
     this.updateEnemies(delta);
+    this.updateEscortObjective(delta);
     this.updateSupplyChests(intent);
     this.updateWorldInteractions(intent, delta);
     this.updateDeployables(delta);
@@ -2118,6 +2237,8 @@ export class CombatSimulation {
     this.updateEventHorizonFields(delta);
     this.updateExperiencePickups(delta);
     this.updatePowerups(delta);
+    this.updateDenyObjective(delta);
+    this.updateCollectObjective(delta);
     this.updateEliteRewards();
     this.resolveEnemyContactDamage();
     this.removeDeadEntities();
@@ -2193,6 +2314,8 @@ export class CombatSimulation {
       conductiveNode: null,
       scrapSkittererBehavior: createScrapSkittererBehavior(),
       arcWardenBehavior: createArcWardenBehavior(),
+      arcWardenSecondaryLane: null,
+      ironhideAdaptiveArmour: createIronhideAdaptiveArmour(),
       reclaimerBehavior: createReclaimerRepairBehavior(),
       reclaimerDamagedSinceLastStep: false,
       foundryBehavior: createFoundryFabricatorBehavior(),
@@ -2349,13 +2472,16 @@ export class CombatSimulation {
   }
 
   spawnElite(eliteKind: EliteKind, position?: Vector2Data): number {
-    const baseType: EnemyType = eliteKind === "carapace-scuttler"
-      ? "scuttler"
-      : eliteKind === "razorlord"
-        ? "razor-scuttler"
-        : eliteKind === "blightspitter"
-          ? "slime-spitter"
-          : "quillback";
+    const baseTypes: Readonly<Record<EliteKind, EnemyType>> = {
+      "carapace-scuttler": "scuttler",
+      razorlord: "razor-scuttler",
+      blightspitter: "slime-spitter",
+      "quillback-matriarch": "quillback",
+      "ironhide-abomination": "abomination",
+      "splitcaller-weaver": "nest-weaver",
+      "voltaic-warden": "arc-warden",
+    };
+    const baseType = baseTypes[eliteKind];
     const id = this.spawnEnemy(baseType, position);
     const enemy = this.enemies.find((candidate) => candidate.id === id)!;
     enemy.rank = "elite";
@@ -2367,12 +2493,18 @@ export class CombatSimulation {
       razorlord: 30,
       blightspitter: 40,
       "quillback-matriarch": 50,
+      "ironhide-abomination": 80,
+      "splitcaller-weaver": 55,
+      "voltaic-warden": 48,
     };
     const authoredArmour: Record<EliteKind, number> = {
       "carapace-scuttler": ENEMY_CATALOG.scuttler.armour,
       razorlord: 1,
       blightspitter: 1,
       "quillback-matriarch": 2,
+      "ironhide-abomination": 2,
+      "splitcaller-weaver": 0,
+      "voltaic-warden": 1,
     };
     enemy.maxHealth = scaleEnemyHealth(authoredHealth[eliteKind], scaling);
     enemy.health = enemy.maxHealth;
@@ -2384,6 +2516,15 @@ export class CombatSimulation {
     if (eliteKind === "carapace-scuttler") {
       enemy.carapacePhase = "pursuit";
       enemy.carapacePhaseRemainingSeconds = 1.25;
+    }
+    if (eliteKind === "ironhide-abomination") {
+      enemy.ironhideAdaptiveArmour = createIronhideAdaptiveArmour();
+    }
+    if (eliteKind === "splitcaller-weaver") {
+      enemy.nestWeaverThreatRemaining = 24;
+    }
+    if (eliteKind === "voltaic-warden") {
+      enemy.arcWardenSecondaryLane = null;
     }
     return id;
   }
@@ -2571,6 +2712,9 @@ export class CombatSimulation {
         if (requisition.ok) this.upgradeSlotCapacity[requisition.category] = requisition.nextCapacity;
         break;
       }
+      case "rank-reward":
+        this.applyRankRewardChoice(optionId);
+        break;
       case "scrap-shop":
         const shopAction = routeScrapShopAction(optionId);
         if (shopAction.kind === "open-mode") {
@@ -2817,6 +2961,9 @@ export class CombatSimulation {
         remainingSeconds,
         durationSeconds: POWERUP_DURATION_SECONDS[type],
       })),
+      escortObjective: this.escortObjective ? escortObjectiveSnapshot(this.escortObjective) : null,
+      denyObjective: this.denyObjective ? denyObjectiveSnapshot(this.denyObjective) : null,
+      collectObjective: this.collectObjective ? collectObjectiveSnapshot(this.collectObjective) : null,
       uraniumKitAvailable: this.uraniumKitAvailable,
       securedScrap: this.securedScrap,
       weapon: { ...(this.equippedWeapons[0]?.stats ?? BASTION_SERVICE_RIFLE) },
@@ -3038,6 +3185,42 @@ export class CombatSimulation {
     }
     this.playerMaxHealth = plan.nextMaxHealth;
     this.playerHealth = plan.nextHealth;
+  }
+
+  private refreshRelicModifiers(): void {
+    Object.assign(this.relicModifiers, resolveRelicModifiers(this.ownedRelicIds, this.equippedArtifactId));
+    this.relicModifiers.lifestealPerKill += this.bonusLifestealPerKill;
+    this.heroMotion.setEvasiveModifiers({
+      distanceMultiplier: this.relicModifiers.evasiveDistanceMultiplier
+        * this.transformationModifiers.evasiveDistanceMultiplier,
+      recoveryMultiplier: this.relicModifiers.evasiveRecoveryMultiplier
+        * this.transformationModifiers.evasiveCooldownMultiplier,
+    });
+    this.refreshPlayerStats();
+  }
+
+  private applyRankRewardChoice(optionId: string): void {
+    const choice = parseRankRewardChoice(optionId);
+    if (!choice) return;
+    if (choice.kind === "item") {
+      this.grantItem(choice.itemId);
+      return;
+    }
+    if (choice.kind === "relic") {
+      if (!isRelicId(choice.relicId) || this.ownedRelicIds.includes(choice.relicId)) return;
+      this.ownedRelicIds.push(choice.relicId);
+      this.refreshRelicModifiers();
+      return;
+    }
+    if (choice.kind === "artifact") {
+      this.equippedArtifactId = choice.artifactId;
+      this.refreshRelicModifiers();
+      return;
+    }
+    if (!this.isUpgradeEligible(choice.upgradeId)) return;
+    const nextLevel = (this.upgradeLevels.get(choice.upgradeId) ?? 0) + 1;
+    this.upgradeLevels.set(choice.upgradeId, nextLevel);
+    this.applyUpgrade(choice.upgradeId, nextLevel);
   }
 
   private applyEffectivePlayerStatLimits(): void {
@@ -5654,6 +5837,9 @@ export class CombatSimulation {
     }
     if (!result.requestsPlacement) return;
 
+    const hatchlingCount = enemy.eliteKind === "splitcaller-weaver"
+      ? SPLITCALLER_HATCHLING_COUNT
+      : NEST_HATCHLING_COUNT;
     const reservation = tryReserveNestPod({
       activePodsForOwner: this.enemies.filter((candidate) => (
         !candidate.dead && candidate.type === "nest-pod" && candidate.nestPod?.ownerId === enemy.id
@@ -5663,7 +5849,7 @@ export class CombatSimulation {
       reservedLiveSlots: this.nestReservedLiveSlots,
       liveCap: this.waveLiveCap > 0 ? this.waveLiveCap : 56,
       remainingThreat: enemy.nestWeaverThreatRemaining,
-    });
+    }, hatchlingCount);
     if (!reservation.accepted) {
       const state = resolveNestWeaverPlacement(result.state, false);
       enemy.nestWeaverPhase = state.phase;
@@ -5700,7 +5886,16 @@ export class CombatSimulation {
   private spawnNestPod(owner: EnemyState, reservation: NestPodReservation): void {
     const podId = this.spawnEnemy("nest-pod", owner.nestWeaverTarget);
     const podEnemy = this.enemies.find((candidate) => candidate.id === podId)!;
-    podEnemy.nestPod = createNestPod(podId, owner.id, owner.nestWeaverTarget, reservation);
+    const splitcallerPod = owner.eliteKind === "splitcaller-weaver";
+    podEnemy.nestPod = createNestPod(
+      podId,
+      owner.id,
+      owner.nestWeaverTarget,
+      reservation,
+      splitcallerPod
+        ? { health: SPLITCALLER_POD_MAX_HEALTH, hatchlingCount: SPLITCALLER_HATCHLING_COUNT }
+        : {},
+    );
     podEnemy.health = podEnemy.nestPod.health;
     podEnemy.maxHealth = podEnemy.nestPod.health;
     podEnemy.hatchRemainingSeconds = NEST_POD_HATCH_SECONDS;
@@ -5734,7 +5929,7 @@ export class CombatSimulation {
       type: "nest-pod-hatched",
       position: { ...enemy.position },
       podId: enemy.id,
-      count: NEST_HATCHLING_COUNT,
+      count: result.action.offsets.length,
     });
   }
 
@@ -5914,36 +6109,57 @@ export class CombatSimulation {
       },
     );
     enemy.arcWardenBehavior = result.state;
+    if (!result.state.lockedLane) enemy.arcWardenSecondaryLane = null;
 
     enemy.facingDirection = result.facingDirection;
     if (result.warningStarted && result.state.lockedLane) {
+      if (enemy.eliteKind === "voltaic-warden") {
+        enemy.arcWardenSecondaryLane = lockVoltaicSecondaryLane(
+          enemy.position,
+          result.state.lockedLane.unclippedTo,
+          this.activeObstacles(),
+          enemy.id % 2 === 0 ? 1 : -1,
+        );
+      }
       this.frameEvents.push({
         type: "arc-warden-warning",
         position: { ...enemy.position },
         enemyId: enemy.id,
         lane: result.state.lockedLane,
       });
+      if (enemy.arcWardenSecondaryLane) {
+        this.frameEvents.push({
+          type: "arc-warden-warning",
+          position: { ...enemy.position },
+          enemyId: enemy.id,
+          lane: enemy.arcWardenSecondaryLane,
+        });
+      }
     }
     if (result.discharged && result.state.lockedLane) {
-      const hitPlayer = pointInsideArcWardenLane(
-        this.playerPosition,
-        result.state.lockedLane,
-        PLAYER_RADIUS_METRES,
+      const lanes = [result.state.lockedLane, enemy.arcWardenSecondaryLane].filter(
+        (lane): lane is NonNullable<ArcWardenState["lockedLane"]> => lane !== null,
       );
+      const laneHits = lanes.map((lane) => pointInsideArcWardenLane(
+        this.playerPosition,
+        lane,
+        PLAYER_RADIUS_METRES,
+      ));
+      const hitPlayer = laneHits.some(Boolean);
       const damage = hitPlayer
         ? this.scaledEnemyDamage(enemy, PLAYER_ATTACK_DAMAGE_BASELINES.arcWardenBeam)
         : 0;
       if (damage > 0) this.damagePlayer(damage);
-      this.frameEvents.push({
-        type: "arc-warden-discharged",
-        position: { ...enemy.position },
-        endpoint: { ...result.state.lockedLane.to },
-        enemyId: enemy.id,
-        hitPlayer,
-        damage,
-        ...(result.state.lockedLane.blockedByObstacleId
-          ? { blockedByObstacleId: result.state.lockedLane.blockedByObstacleId }
-          : {}),
+      lanes.forEach((lane, index) => {
+        this.frameEvents.push({
+          type: "arc-warden-discharged",
+          position: { ...enemy.position },
+          endpoint: { ...lane.to },
+          enemyId: enemy.id,
+          hitPlayer: laneHits[index] ?? false,
+          damage: laneHits[index] ? damage : 0,
+          ...(lane.blockedByObstacleId ? { blockedByObstacleId: lane.blockedByObstacleId } : {}),
+        });
       });
     }
 
@@ -7825,6 +8041,10 @@ export class CombatSimulation {
       remainingSeconds: Math.max(0.12, distance(start, enemy.spitterTarget) / speed),
       damage: this.scaledEnemyDamage(enemy, SLIME_GLOB_DAMAGE),
       createsPuddle: true,
+      ...(enemy.eliteKind === "blightspitter" ? {
+        puddleRadiusMetres: BLIGHTSPITTER_PUDDLE_RADIUS_METRES,
+        puddleDurationSeconds: BLIGHTSPITTER_PUDDLE_DURATION_SECONDS,
+      } : {}),
     });
     this.frameEvents.push({
       type: "slime-glob-fired",
@@ -7864,7 +8084,11 @@ export class CombatSimulation {
     impactReason: "player" | "cover" | "expired",
   ): void {
     projectile.dead = true;
-    const createdPuddle = projectile.createsPuddle && this.createSlowingPuddle(projectile.position);
+    const createdPuddle = projectile.createsPuddle && this.createSlowingPuddle(
+      projectile.position,
+      projectile.puddleRadiusMetres,
+      projectile.puddleDurationSeconds,
+    );
     const hitPlayer = distance(projectile.position, this.playerPosition) <= PLAYER_RADIUS_METRES + 0.45;
     if (projectile.type === "prime-biomass") {
       return;
@@ -7893,14 +8117,16 @@ export class CombatSimulation {
     }
   }
 
-  private createSlowingPuddle(position: Vector2Data): boolean {
+  private createSlowingPuddle(position: Vector2Data, radiusMetres?: number, durationSeconds?: number): boolean {
+    const radius = radiusMetres ?? SLOWING_PUDDLE_RADIUS_METRES;
+    const duration = durationSeconds ?? SLOWING_PUDDLE_DURATION_SECONDS;
     this.groundHazards.push({
       id: this.nextId(),
       type: "slowing-slime",
       position: { ...position },
-      radiusMetres: SLOWING_PUDDLE_RADIUS_METRES,
-      remainingSeconds: SLOWING_PUDDLE_DURATION_SECONDS,
-      durationSeconds: SLOWING_PUDDLE_DURATION_SECONDS,
+      radiusMetres: radius,
+      remainingSeconds: duration,
+      durationSeconds: duration,
     });
     while (this.groundHazards.filter((hazard) => hazard.type === "slowing-slime").length > MAX_SLOWING_PUDDLES) {
       const oldestPuddle = this.groundHazards.findIndex((hazard) => hazard.type === "slowing-slime");
@@ -8443,19 +8669,99 @@ export class CombatSimulation {
         const decision = this.buildSupplyDepotDecision();
         this.decisionQueue.push({ ...decision, title: "AURUM SUPPLY CACHE — CHOOSE ONE" });
       } else if (reward.type === "mini-boss-arsenal-cache") {
-        this.grantHealing(3 * this.supportEffectMultiplier);
-        this.addExperience(this.experienceThreshold() * 2);
+        const decision = planMiniBossRewardDecision({
+          ownedRelicIds: this.ownedRelicIds,
+          eligibleUpgradeIds: UPGRADE_ORDER.filter((id) => this.isUpgradeEligible(id)),
+          randomUnits: [this.random(), this.random(), this.random()],
+        });
+        if (decision) this.decisionQueue.push(decision);
       } else {
-        // Elite caches are the run's slot income: choose which category
-        // grows. Once the hard cap is reached they fall back to experience.
-        const requisition = this.buildSlotRequisitionDecision();
-        if (requisition) {
-          this.decisionQueue.push(requisition);
-        } else {
-          this.addExperience(this.experienceThreshold());
-        }
+        this.decisionQueue.push(planEliteRewardDecision({
+          eliteKind: reward.eliteKind ?? "carapace-scuttler",
+          randomUnits: [this.random(), this.random(), this.random()],
+        }));
       }
       break;
+    }
+  }
+
+  private updateEscortObjective(deltaSeconds: number): void {
+    if (!this.escortObjective || this.escortObjective.status !== "active") return;
+    const previousHealth = this.escortObjective.health;
+    const nearbyHostiles = this.enemies.filter((enemy) => (
+      !enemy.dead
+      && enemy.rank !== "treasure"
+      && distance(enemy.position, this.escortObjective!.position) <= ESCORT_HOSTILE_RADIUS_METRES + enemyRadius(enemy)
+    )).length;
+    this.escortObjective = stepEscortObjective(this.escortObjective, { deltaSeconds, nearbyHostiles });
+    if (this.escortObjective.health < previousHealth) {
+      this.frameEvents.push({
+        type: "escort-objective-damaged",
+        position: { ...this.escortObjective.position },
+        health: this.escortObjective.health,
+        maxHealth: this.escortObjective.maxHealth,
+      });
+    }
+    if (this.escortObjective.status === "failed") {
+      this.status = "defeat";
+      this.runDefeatCause = "Escort drone destroyed";
+      this.frameEvents.push({ type: "escort-objective-failed", position: { ...this.escortObjective.position } });
+    }
+    if (this.escortObjective.status === "complete") {
+      this.secureScrap(25, "objective-complete", this.escortObjective.position);
+      const reward = planObjectiveRewardDecision(this.ownedRelicIds);
+      if (reward) this.decisionQueue.push(reward);
+      this.status = "victory";
+      this.frameEvents.push({ type: "escort-objective-completed", position: { ...this.escortObjective.position } });
+    }
+  }
+
+  private updateDenyObjective(deltaSeconds: number): void {
+    if (!this.denyObjective || this.denyObjective.status !== "active") return;
+    const liveTerminalIds = new Set(this.enemies
+      .filter((enemy) => !enemy.dead && enemy.type === "storm-node")
+      .map((enemy) => enemy.id));
+    this.denyObjective = stepDenyObjective(this.denyObjective, { deltaSeconds, liveTerminalIds });
+    if (this.denyObjective.status === "failed") {
+      this.status = "defeat";
+      this.runDefeatCause = "Enemy channel completed";
+      this.frameEvents.push({ type: "deny-objective-failed", position: { ...this.playerPosition } });
+    }
+    if (this.denyObjective.status === "complete") {
+      this.secureScrap(25, "objective-complete", this.playerPosition);
+      const reward = planObjectiveRewardDecision(this.ownedRelicIds);
+      if (reward) this.decisionQueue.push(reward);
+      this.status = "victory";
+      this.frameEvents.push({ type: "deny-objective-completed", position: { ...this.playerPosition } });
+    }
+  }
+
+  private updateCollectObjective(deltaSeconds: number): void {
+    if (!this.collectObjective || this.collectObjective.status !== "active") return;
+    const result = stepCollectObjective(this.collectObjective, {
+      deltaSeconds,
+      playerPosition: this.playerPosition,
+    });
+    this.collectObjective = result.state;
+    for (const pickupId of result.collectedIds) {
+      const pickup = this.collectObjective.pickups.find((candidate) => candidate.id === pickupId)!;
+      this.frameEvents.push({
+        type: "collect-objective-picked-up",
+        position: { ...pickup.position },
+        pickupId,
+      });
+    }
+    if (this.collectObjective.status === "failed") {
+      this.status = "defeat";
+      this.runDefeatCause = "Recovery window expired";
+      this.frameEvents.push({ type: "collect-objective-failed", position: { ...this.playerPosition } });
+    }
+    if (this.collectObjective.status === "complete") {
+      this.secureScrap(25, "objective-complete", this.playerPosition);
+      const reward = planObjectiveRewardDecision(this.ownedRelicIds);
+      if (reward) this.decisionQueue.push(reward);
+      this.status = "victory";
+      this.frameEvents.push({ type: "collect-objective-completed", position: { ...this.playerPosition } });
     }
   }
 
@@ -8559,6 +8865,20 @@ export class CombatSimulation {
       return;
     }
     const applied = Math.max(0, shieldBefore - enemy.shield) + Math.min(enemy.health, mitigated);
+    if (enemy.eliteKind === "ironhide-abomination") {
+      const adaptation = recordIronhideDamageType(enemy.ironhideAdaptiveArmour, damageType);
+      enemy.ironhideAdaptiveArmour = adaptation.state;
+      if (adaptation.armourGained > 0) {
+        enemy.armour += adaptation.armourGained;
+        this.frameEvents.push({
+          type: "ironhide-adapted",
+          position: { ...enemy.position },
+          enemyId: enemy.id,
+          damageType,
+          bonusArmour: adaptation.state.bonusArmour,
+        });
+      }
+    }
     this.runHighestHit = Math.max(this.runHighestHit, applied);
     if (enemy.rank === "boss") {
       this.runBossDamage += applied;
@@ -8797,14 +9117,16 @@ export class CombatSimulation {
       // rewards made a late mini-boss worth the same as the first one.
       this.secureScrap(rankDefeatScrap(40, this.waveIndex), "mini-boss-defeat", enemy.position);
       this.unlockUniqueWeapons();
-      this.grantWeightedItem(enemy.position);
     } else if (enemy.eliteKind) {
       this.secureScrap(rankDefeatScrap(15, this.waveIndex), "elite-defeat", enemy.position);
     } else if (enemy.rank === "boss") {
       // The boss previously fell through every reward branch and paid nothing.
       this.secureScrap(rankDefeatScrap(80, this.waveIndex), "boss-defeat", enemy.position);
       this.unlockUniqueWeapons();
-      this.grantWeightedItem(enemy.position);
+      this.decisionQueue.push(planBossRewardDecision({
+        equippedArtifactId: this.equippedArtifactId,
+        randomUnits: [this.random(), this.random(), this.random()],
+      }));
     } else if (enemy.type === "quillback" || enemy.type === "spinewheel" || enemy.type === "ripper") {
       this.secureScrap(2, "specialist-defeat", enemy.position);
     } else if (enemy.rank === "standard" && this.random() < ORDINARY_SCRAP_DROP_CHANCE) {
@@ -8852,6 +9174,7 @@ export class CombatSimulation {
         type: "elite-upgrade-cache",
         position: { ...enemy.position },
         collected: false,
+        eliteKind: enemy.eliteKind,
       });
       this.frameEvents.push({
         type: "elite-reward-dropped",
@@ -8865,6 +9188,7 @@ export class CombatSimulation {
         type: "mini-boss-arsenal-cache",
         position: { ...enemy.position },
         collected: false,
+        miniBossKind: enemy.miniBossKind,
       });
       this.frameEvents.push({
         type: "mini-boss-reward-dropped",
@@ -9153,7 +9477,9 @@ export class CombatSimulation {
         liveEnemies: this.enemies.filter((enemy) => !enemy.dead).length,
         liveCap: this.waveLiveCap,
         alreadySpawned: this.aurumSpawnedThisWave,
-        objectiveActive: false,
+        objectiveActive: this.escortObjective?.status === "active"
+          || this.denyObjective?.status === "active"
+          || this.collectObjective?.status === "active",
         rewardEconomyEnabled: true,
       })
     ) {
@@ -9411,6 +9737,12 @@ export class CombatSimulation {
         : undefined,
       arcWardenPhase: enemy.type === "arc-warden" ? enemy.arcWardenBehavior.phase : undefined,
       arcWardenLane: enemy.type === "arc-warden" ? enemy.arcWardenBehavior.lockedLane : undefined,
+      arcWardenSecondaryLane: enemy.eliteKind === "voltaic-warden"
+        ? enemy.arcWardenSecondaryLane
+        : undefined,
+      ironhideAdaptiveArmour: enemy.eliteKind === "ironhide-abomination"
+        ? enemy.ironhideAdaptiveArmour.bonusArmour
+        : undefined,
       reclaimerPhase: enemy.type === "cyborg-reclaimer" ? enemy.reclaimerBehavior.phase : undefined,
       reclaimerTargetId: enemy.type === "cyborg-reclaimer"
         ? enemy.reclaimerBehavior.targetId ?? undefined

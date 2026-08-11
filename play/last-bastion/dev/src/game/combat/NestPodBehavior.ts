@@ -5,6 +5,9 @@ const HATCH_OFFSETS: readonly Vector2Data[] = Object.freeze([
   Object.freeze({ x: -0.48, y: 0.12 }),
   Object.freeze({ x: 0.48, y: 0.12 }),
   Object.freeze({ x: 0, y: -0.46 }),
+  Object.freeze({ x: -0.42, y: -0.38 }),
+  Object.freeze({ x: 0.42, y: -0.38 }),
+  Object.freeze({ x: 0, y: 0.52 }),
 ]);
 
 export interface NestPodHatchAction {

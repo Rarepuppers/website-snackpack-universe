@@ -6,6 +6,8 @@ export const NEST_POD_MAX_HEALTH = 9;
 export const NEST_POD_HATCH_SECONDS = 6;
 export const NEST_POD_THREAT_COST = 2;
 export const NEST_HATCHLING_COUNT = 3;
+export const SPLITCALLER_HATCHLING_COUNT = 6;
+export const SPLITCALLER_POD_MAX_HEALTH = 5;
 export const NEST_HATCHLING_THREAT_COST = 1;
 
 export interface NestPlacementContext {
@@ -36,6 +38,7 @@ export interface NestPodState {
   readonly health: number;
   readonly remainingSeconds: number;
   readonly status: NestPodStatus;
+  readonly hatchlingCount: number;
   readonly reservation: NestPodReservation;
 }
 
@@ -58,14 +61,17 @@ export const NEST_HATCHLING_PAYLOAD = Object.freeze({
   canSummon: false as const,
 });
 
-export function tryReserveNestPod(context: NestPlacementContext): NestPlacementResult {
+export function tryReserveNestPod(
+  context: NestPlacementContext,
+  hatchlingCount = NEST_HATCHLING_COUNT,
+): NestPlacementResult {
   if (context.ownerChargesRemaining <= 0) return { accepted: false, reason: "charges" };
   if (context.activePodsForOwner >= NEST_WEAVER_MAX_LIVE_PODS) return { accepted: false, reason: "owner-pod-cap" };
-  const reservedHatchlingSlots = NEST_HATCHLING_COUNT;
+  const reservedHatchlingSlots = hatchlingCount;
   if (context.liveUnits + 1 + context.reservedLiveSlots + reservedHatchlingSlots > context.liveCap) {
     return { accepted: false, reason: "live-cap" };
   }
-  const reservedHatchlingThreat = NEST_HATCHLING_COUNT * NEST_HATCHLING_THREAT_COST;
+  const reservedHatchlingThreat = hatchlingCount * NEST_HATCHLING_THREAT_COST;
   if (context.remainingThreat < NEST_POD_THREAT_COST + reservedHatchlingThreat) {
     return { accepted: false, reason: "threat-budget" };
   }
@@ -84,14 +90,16 @@ export function createNestPod(
   ownerId: number,
   position: Readonly<Vector2Data>,
   reservation: NestPodReservation,
+  options: { readonly health?: number; readonly hatchlingCount?: number } = {},
 ): NestPodState {
   return {
     id,
     ownerId,
     position: { ...position },
-    health: NEST_POD_MAX_HEALTH,
+    health: options.health ?? NEST_POD_MAX_HEALTH,
     remainingSeconds: NEST_POD_HATCH_SECONDS,
     status: "counting",
+    hatchlingCount: options.hatchlingCount ?? NEST_HATCHLING_COUNT,
     reservation,
   };
 }
@@ -111,7 +119,7 @@ export function stepNestPod(pod: NestPodState, deltaSeconds: number): NestPodSte
   }
   return {
     pod: { ...pod, remainingSeconds: 0, status: "hatched" },
-    hatchlingCount: NEST_HATCHLING_COUNT,
+    hatchlingCount: pod.hatchlingCount,
     consumedReservedSlots: pod.reservation.reservedHatchlingSlots,
     consumedReservedThreat: pod.reservation.reservedHatchlingThreat,
   };

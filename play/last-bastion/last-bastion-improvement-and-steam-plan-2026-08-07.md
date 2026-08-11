@@ -1,5 +1,21 @@
 # Last Bastion — improvement and Steam plan
 
+## Delivery update — 11 August 2026
+
+The first post-review gameplay batch is live locally: elite and mini-boss reward contracts are now
+distinct, objective completion has an exclusive utility-relic pool, and Escort is a complete
+code-first objective mode with failure, completion, reward, HUD, rendering, deterministic tests,
+and a review route. Deny and Collect now complete the three-verb objective batch, and boss victories
+offer a run-defining artifact choice instead of a generic item. Bespoke production art and audio
+remain a later presentation gate.
+
+The next content-depth batch is also live code-first: the elite roster expands from four to seven.
+Ironhide Abomination counters repeated single-type damage, Splitcaller Weaver doubles the ordinary
+pod payload through a weaker interrupt window, and Voltaic Warden adds a second readable beam lane.
+All three are expedition-eligible, have deterministic Lab routes and tests, bespoke production
+silhouettes, and a non-colour-only segmented elite marker. Batch 77's upgrade tiles and supporting
+effect accents remain open.
+
 **Written: 7 August 2026. Status: LIVE — this is a forward plan, not a history doc.**
 
 Scope: a full review of `play/last-bastion/` as it stands today, then a plan covering
@@ -978,8 +994,9 @@ constructed by anything.
   rack slot, hazards persisting between waves. Store per-tier best results in `GameProgress`.
   **Prototype acceptance:** tiers 0–2 are now threaded through the schema-v14 expedition save,
   run resume, event ambushes, encounter plans, and combat director. Tier 1 adds one deterministic
-  elite patrol to ordinary combat nodes; Tier 2 also compresses the authored spawn-pulse train by
-  20% without changing enemy budget or wave duration. The shell blocks locked tiers, requires a
+  elite patrol to ordinary combat nodes; Tier 2 adds a second mechanically distinct patrol and also
+  compresses the authored spawn-pulse train by 20% without changing enemy budget or wave duration.
+  The shell blocks locked tiers, requires a
   victory on the prior tier, remembers selection, and shows per-tier best nodes. Cloud conflict
   resolution merges per-tier results monotonically. Map and combat surfaces identify the active tier.
   Do not define tiers 3–11 until five observed runs validate completion rate, damage sources, and

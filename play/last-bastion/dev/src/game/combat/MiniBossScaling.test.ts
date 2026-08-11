@@ -4,7 +4,6 @@ import type { ExpeditionEncounterDescriptor } from "../expedition/ExpeditionEnco
 import { buildExpeditionWavePlan } from "../expedition/ExpeditionNodeDirector";
 import { rankDefeatScrap } from "../expedition/CampaignTuning";
 import { ENEMY_CATALOG } from "../content/enemyCatalog";
-import { itemById } from "../content/itemCatalog";
 import { waveScaling } from "./WaveScaling";
 
 /**
@@ -67,18 +66,23 @@ describe("mini-boss wave scaling", () => {
     expect(rankDefeatScrap(40, 0)).toBe(40);
   });
 
-  it("drops a guaranteed item as well as scrap", () => {
-    // Phase 5 scaled the scrap payout but not the drop; a mini-boss is the
-    // climax of a node and should hand over something you keep.
+  it("drops a distinct relic-or-upgrade cache as well as scrap", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false });
-    const id = simulation.spawnMiniBoss("brood-warden", { x: 8, y: 8 });
-    expect(simulation.snapshot().ownedItemIds).toHaveLength(0);
+    const id = simulation.spawnMiniBoss("brood-warden", simulation.snapshot().playerPosition);
 
     simulation.dealDamage(id, 99999);
-    const after = simulation.snapshot();
-    expect(after.ownedItemIds).toHaveLength(1);
-    expect(itemById(after.ownedItemIds[0]!)).not.toBeNull();
-    const granted = after.events.find((event) => event.type === "item-granted");
-    expect(granted).toBeDefined();
+    for (let frame = 0; frame < 30; frame += 1) {
+      const snapshot = simulation.step({
+        move: { x: 0, y: 0 }, aim: { x: 1, y: 0 }, fireHeld: false,
+        evasiveMovePressed: false, interactPressed: false, ultimatePressed: false,
+        kitPressed: false, pausePressed: false, restartPressed: false,
+      }, 0.05);
+      if (snapshot.pendingDecision?.kind === "rank-reward") break;
+      if (snapshot.pendingDecision) simulation.chooseOption(snapshot.pendingDecision.options[0]!.id);
+    }
+    const reward = simulation.snapshot().pendingDecision;
+    expect(reward?.kind).toBe("rank-reward");
+    expect(reward?.options.some(({ id: optionId }) => optionId.startsWith("relic:"))).toBe(true);
+    expect(reward?.options.some(({ id: optionId }) => optionId.startsWith("upgrade:"))).toBe(true);
   });
 });

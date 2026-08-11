@@ -15,6 +15,10 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "elite-e1") {
+      this.createEliteBatchE1Gallery();
+      return;
+    }
     if (batch === "o1") {
       this.createObjectBatchO1Gallery();
       return;
@@ -1143,6 +1147,27 @@ export class AssetGalleryScene extends Phaser.Scene {
 
     this.add.text(480, 490, "Ivory spike projectile remains separate; warning paths and collision use the same 64° runtime fan", style("#ffb982", "10px")).setOrigin(0.5);
     this.add.text(480, 518, "Review: ?mode=gallery&batch=e1 • Encounter: ?scenario=quillback&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createEliteBatchE1Gallery(): void {
+    this.add.text(20, 14, "LAST BASTION — ELITE BATCH E1", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Three bespoke bodies • exact inherited animation contracts • code-owned telegraphs", style("#8fb2c9", "11px"));
+    const rows = [
+      { label: "IRONHIDE ABOMINATION — ADAPTIVE BRONZE PLATING", asset: "ironhide-abomination-v1", frames: [4, 5, 6, 7], scale: 0.66 },
+      { label: "SPLITCALLER WEAVER — FORKED TWIN-BROOD CROWN", asset: "splitcaller-weaver-v1", frames: [16, 17, 18, 19], scale: 0.42 },
+      { label: "VOLTAIC WARDEN — CYAN / AMBER TWIN COILS", asset: "voltaic-warden-v1", frames: [20, 21, 22, 23], scale: 0.56 },
+    ] as const;
+    rows.forEach((row, rowIndex) => {
+      const y = 116 + rowIndex * 156;
+      this.add.text(20, y - 48, row.label, style("#ffd08a", "11px"));
+      row.frames.forEach((frame, column) => {
+        const x = 160 + column * 210;
+        this.add.sprite(x, y, row.asset, frame).setScale(row.scale);
+        this.drawPivot(x, y);
+        this.add.text(x, y + 53, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+      });
+    });
+    this.add.text(480, 526, "Live labs: ironhide-abomination • splitcaller-weaver • voltaic-warden", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createBatchE2Gallery(): void {

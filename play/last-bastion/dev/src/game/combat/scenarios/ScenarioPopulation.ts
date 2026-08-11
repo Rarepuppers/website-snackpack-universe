@@ -88,6 +88,29 @@ const POPULATE: Readonly<Record<CombatScenario, Populate>> = Object.freeze({
     context.spawnEnemy("scuttler", { x: centre.x - 6.5, y: centre.y + 3 });
   },
 
+  "ironhide-abomination": (context) => {
+    const centre = centreOf(context);
+    context.spawnElite("ironhide-abomination", { x: centre.x + 6, y: centre.y });
+    context.spawnEnemy("infected-survivor", { x: centre.x - 5, y: centre.y - 3 });
+    context.spawnEnemy("infected-survivor", { x: centre.x - 5, y: centre.y + 3 });
+  },
+
+  "splitcaller-weaver": (context) => {
+    const centre = centreOf(context);
+    context.setWaveLiveCap(16);
+    context.setWaveThreatBudget(48);
+    context.spawnElite("splitcaller-weaver", { x: centre.x + 6.5, y: centre.y });
+    context.spawnEnemy("nest-hatchling", { x: centre.x - 5, y: centre.y - 2 });
+    context.spawnEnemy("nest-hatchling", { x: centre.x - 5, y: centre.y + 2 });
+  },
+
+  "voltaic-warden": (context) => {
+    const centre = centreOf(context);
+    context.spawnElite("voltaic-warden", { x: centre.x + 6.5, y: centre.y });
+    context.spawnEnemy("scuttler", { x: centre.x - 5.5, y: centre.y - 3 });
+    context.spawnEnemy("scuttler", { x: centre.x - 5.5, y: centre.y + 3 });
+  },
+
   "siege-crusher": (context) => {
     context.spawnMiniBoss("siege-crusher", { x: 4, y: 14 });
     context.spawnEnemy("scuttler", { x: 25, y: 3 });
@@ -306,6 +329,32 @@ const POPULATE: Readonly<Record<CombatScenario, Populate>> = Object.freeze({
     context.spawnEnemy("tether-bloom", { x: centre.x - 3.2, y: centre.y });
     context.spawnEnemy("tether-bloom", { x: centre.x + 4.6, y: centre.y - 2.8 });
     context.spawnEnemy("scuttler", { x: centre.x + 5.5, y: centre.y + 3.8 });
+  },
+
+  "escort-objective": (context) => {
+    const centreY = context.heightMetres / 2;
+    context.spawnEnemy("scuttler", { x: 4.8, y: centreY });
+    context.spawnEnemy("infected-survivor", { x: context.widthMetres / 2, y: centreY - 4.5 });
+    context.spawnEnemy("corrupted-marine", { x: context.widthMetres - 10, y: centreY + 1.5 });
+  },
+
+  "deny-objective": (context) => {
+    const centre = centreOf(context);
+    for (const position of [
+      { x: centre.x - 7, y: centre.y - 3.5 },
+      { x: centre.x + 7, y: centre.y - 3.5 },
+      { x: centre.x, y: centre.y + 5 },
+    ]) context.spawnEnemy("storm-node", position);
+    context.spawnEnemy("storm-savant", { x: centre.x, y: centre.y - 6 });
+    context.spawnEnemy("scrap-skitterer", { x: centre.x - 3, y: centre.y + 3 });
+    context.spawnEnemy("scrap-skitterer", { x: centre.x + 3, y: centre.y + 3 });
+  },
+
+  "collect-objective": (context) => {
+    const centre = centreOf(context);
+    context.spawnEnemy("infected-survivor", { x: centre.x - 8, y: centre.y });
+    context.spawnEnemy("infected-survivor", { x: centre.x + 8, y: centre.y });
+    context.spawnEnemy("corrupted-marine", { x: centre.x, y: centre.y - 7 });
   },
 
   "bastion-eater": (context) => {

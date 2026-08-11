@@ -103,42 +103,27 @@ describe("categorized upgrade slots", () => {
     }
   });
 
-  it("turns an elite cache into a slot-requisition choice that grows a category", () => {
+  it("turns an elite cache into a themed three-item choice", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false });
     const decision = collectEliteCache(simulation);
-    expect(decision?.kind).toBe("slot-requisition");
-    expect(decision!.options.length).toBeLessThanOrEqual(3);
+    expect(decision?.kind).toBe("rank-reward");
+    expect(decision!.options).toHaveLength(3);
     for (const option of decision!.options) {
-      expect(option.id.startsWith("slot-")).toBe(true);
+      expect(option.id.startsWith("item:")).toBe(true);
     }
 
-    const before = simulation.snapshot().upgradeSlots
-      .find((slot) => slot.category === "offensive")!.capacity;
-    const offensiveOffered = decision!.options.some((option) => option.id === "slot-offensive");
-    const chosen = offensiveOffered ? "slot-offensive" : decision!.options[0]!.id;
+    const chosen = decision!.options[0]!.id;
     expect(simulation.chooseOption(chosen)).toBe(true);
-    const slots = simulation.snapshot().upgradeSlots;
-    const total = slots.reduce((sum, slot) => sum + slot.capacity, 0);
-    expect(total).toBe(8);
-    if (offensiveOffered) {
-      expect(slots.find((slot) => slot.category === "offensive")!.capacity).toBe(before + 1);
-    }
+    expect(simulation.snapshot().ownedItemIds).toContain(chosen.replace("item:", ""));
   });
 
-  it("stops granting slots at the hard cap and falls back to experience", () => {
+  it("does not grow upgrade capacity when elite caches are collected", () => {
     const simulation = new CombatSimulation({ autoStartWaves: false });
-
-    for (let grant = 0; grant < UPGRADE_SLOT_HARD_CAP - 7; grant += 1) {
-      const decision = collectEliteCache(simulation);
-      expect(decision?.kind).toBe("slot-requisition");
-      expect(simulation.chooseOption(decision!.options[0]!.id)).toBe(true);
-    }
-
+    const decision = collectEliteCache(simulation);
+    expect(decision?.kind).toBe("rank-reward");
+    expect(simulation.chooseOption(decision!.options[0]!.id)).toBe(true);
     const total = simulation.snapshot().upgradeSlots
       .reduce((sum, slot) => sum + slot.capacity, 0);
-    expect(total).toBe(UPGRADE_SLOT_HARD_CAP);
-
-    const overflow = collectEliteCache(simulation);
-    expect(overflow?.kind).not.toBe("slot-requisition");
+    expect(total).toBe(7);
   });
 });

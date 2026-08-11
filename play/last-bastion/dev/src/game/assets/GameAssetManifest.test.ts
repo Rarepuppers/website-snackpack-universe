@@ -52,7 +52,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(194);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(197);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -725,6 +725,23 @@ describe("GameAssetManifest", () => {
     const expected = {
       "machine-arc-warden-v1": [128, 32],
       "machine-arc-warden-effects-v1": [128, 8],
+    } as const;
+    for (const [id, [size, frames]] of Object.entries(expected)) {
+      const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
+      expect(asset.kind).toBe("spritesheet");
+      if (asset.kind === "spritesheet") {
+        expect(asset.logicalWidth).toBe(size);
+        expect(asset.logicalHeight).toBe(size);
+        expect(asset.frameCount).toBe(frames);
+      }
+    }
+  });
+
+  it("locks the production Elite Batch E1 body contracts", () => {
+    const expected = {
+      "ironhide-abomination-v1": [128, 12],
+      "splitcaller-weaver-v1": [192, 32],
+      "voltaic-warden-v1": [128, 32],
     } as const;
     for (const [id, [size, frames]] of Object.entries(expected)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];

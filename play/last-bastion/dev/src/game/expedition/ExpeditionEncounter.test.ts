@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { generateExpeditionMap } from "./ExpeditionMap";
-import { expeditionEncounterForNode, expeditionEncounterUrl } from "./ExpeditionEncounter";
+import { expeditionEncounterForNode, expeditionEncounterUrl, objectiveModeLabel } from "./ExpeditionEncounter";
 
 describe("Expedition node encounter contract", () => {
   it("maps every node deterministically to its existing encounter family", () => {
@@ -39,7 +39,26 @@ describe("Expedition node encounter contract", () => {
     expect(standard.waves.some((wave) => wave.kind === "elite")).toBe(false);
     expect(elitePatrols.waves.filter((wave) => wave.kind === "elite")).toHaveLength(1);
     expect(elitePatrols.eliteKind).not.toBeNull();
-    expect(rapid.waves.filter((wave) => wave.kind === "elite")).toHaveLength(1);
+    expect(rapid.waves.filter((wave) => wave.kind === "elite")).toHaveLength(2);
+    expect(new Set(rapid.waves.filter((wave) => wave.kind === "elite").map((wave) => wave.eliteKind)).size).toBe(2);
     expect(rapid.waves.every((wave) => wave.spawnCadenceMultiplier === 1.2)).toBe(true);
+  });
+
+  it("seeds all three objective modifiers onto eligible mid-run combat nodes", () => {
+    const modes = new Set<string>();
+    for (let seed = 1; seed <= 80; seed += 1) {
+      const map = generateExpeditionMap(seed);
+      for (const node of map.nodes) {
+        const encounter = expeditionEncounterForNode(map.seed, node);
+        if (!encounter.objectiveMode) continue;
+        expect(node.type).toBe("combat");
+        expect(node.column).toBeGreaterThanOrEqual(2);
+        expect(node.column).toBeLessThanOrEqual(6);
+        modes.add(encounter.objectiveMode);
+      }
+    }
+    expect(modes).toEqual(new Set(["escort", "deny", "collect"]));
+    expect([objectiveModeLabel("escort"), objectiveModeLabel("deny"), objectiveModeLabel("collect")])
+      .toEqual(["ESCORT", "DENY CHANNEL", "TIMED RECOVERY"]);
   });
 });

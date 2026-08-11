@@ -2,7 +2,21 @@ export type EliteKind =
   | "carapace-scuttler"
   | "razorlord"
   | "blightspitter"
-  | "quillback-matriarch";
+  | "quillback-matriarch"
+  | "ironhide-abomination"
+  | "splitcaller-weaver"
+  | "voltaic-warden";
+
+/** Every authored elite identity. Keep audits and presentation keyed to this list. */
+export const ELITE_KINDS: readonly EliteKind[] = Object.freeze([
+  "carapace-scuttler",
+  "razorlord",
+  "blightspitter",
+  "quillback-matriarch",
+  "ironhide-abomination",
+  "splitcaller-weaver",
+  "voltaic-warden",
+]);
 
 export const FAST_ELITE_KINDS: readonly EliteKind[] = Object.freeze(["razorlord", "blightspitter"]);
 
@@ -19,4 +33,21 @@ export function eliteKindsForWave(waveNumber: number, roll: number): readonly El
   if (waveNumber === 8) return [fast, "carapace-scuttler"];
   if (waveNumber === 9) return [fast, "quillback-matriarch"];
   return [];
+}
+
+const PATROL_PARTNERS: Readonly<Record<EliteKind, EliteKind>> = Object.freeze({
+  "carapace-scuttler": "razorlord",
+  razorlord: "quillback-matriarch",
+  blightspitter: "ironhide-abomination",
+  "quillback-matriarch": "voltaic-warden",
+  "ironhide-abomination": "splitcaller-weaver",
+  "splitcaller-weaver": "voltaic-warden",
+  "voltaic-warden": "blightspitter",
+});
+
+/** Threat 2 adds a second, mechanically different patrol rather than another stat multiplier. */
+export function elitePatrolKinds(primary: EliteKind, count: 0 | 1 | 2): readonly EliteKind[] {
+  if (count === 0) return [];
+  if (count === 1) return [primary];
+  return [primary, PATROL_PARTNERS[primary]];
 }

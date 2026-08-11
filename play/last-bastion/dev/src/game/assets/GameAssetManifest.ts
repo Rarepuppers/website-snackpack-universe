@@ -175,6 +175,12 @@ import scrapSkittererEffectsUrl from "../../../../art/production-tests/batch-v/m
 import arcWardenSheetUrl from "../../../../art/production-tests/batch-w/machine-arc-warden-v1-128.png";
 import arcWardenSheetWebpUrl from "../../../../art/production-tests/batch-w/machine-arc-warden-v1-128.webp";
 import arcWardenEffectsUrl from "../../../../art/production-tests/batch-w/machine-arc-warden-effects-v1-128.png";
+import ironhideAbominationSheetUrl from "../../../../art/production-tests/batch-e1/ironhide-abomination-spritesheet-v1-128.png";
+import ironhideAbominationSheetWebpUrl from "../../../../art/production-tests/batch-e1/ironhide-abomination-spritesheet-v1-128.webp";
+import splitcallerWeaverSheetUrl from "../../../../art/production-tests/batch-e1/splitcaller-weaver-spritesheet-v1-192.png";
+import splitcallerWeaverSheetWebpUrl from "../../../../art/production-tests/batch-e1/splitcaller-weaver-spritesheet-v1-192.webp";
+import voltaicWardenSheetUrl from "../../../../art/production-tests/batch-e1/voltaic-warden-spritesheet-v1-128.png";
+import voltaicWardenSheetWebpUrl from "../../../../art/production-tests/batch-e1/voltaic-warden-spritesheet-v1-128.webp";
 import cyborgReclaimerSheetUrl from "../../../../art/production-tests/batch-x/machine-cyborg-reclaimer-v1-192.png";
 import cyborgReclaimerSheetWebpUrl from "../../../../art/production-tests/batch-x/machine-cyborg-reclaimer-v1-192.webp";
 import cyborgReclaimerEffectsUrl from "../../../../art/production-tests/batch-x/machine-cyborg-reclaimer-effects-v1-128.png";
@@ -329,6 +335,9 @@ export type GameAssetId =
   | "machine-scrap-skitterer-effects-v1"
   | "machine-arc-warden-v1"
   | "machine-arc-warden-effects-v1"
+  | "ironhide-abomination-v1"
+  | "splitcaller-weaver-v1"
+  | "voltaic-warden-v1"
   | "machine-cyborg-reclaimer-v1"
   | "machine-cyborg-reclaimer-effects-v1"
   | "machine-foundry-fabricator-v1"
@@ -548,6 +557,9 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("machine-scrap-skitterer-effects-v1", scrapSkittererEffectsUrl, 128, 128, 8, 0.5, 0.5),
   sheet("machine-arc-warden-v1", runtimeImageUrl(arcWardenSheetUrl, arcWardenSheetWebpUrl), 128, 128, 32, 0.5, 0.92),
   sheet("machine-arc-warden-effects-v1", arcWardenEffectsUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("ironhide-abomination-v1", runtimeImageUrl(ironhideAbominationSheetUrl, ironhideAbominationSheetWebpUrl), 128, 128, 12, 0.5, 0.5),
+  sheet("splitcaller-weaver-v1", runtimeImageUrl(splitcallerWeaverSheetUrl, splitcallerWeaverSheetWebpUrl), 192, 192, 32, 0.5, 0.92),
+  sheet("voltaic-warden-v1", runtimeImageUrl(voltaicWardenSheetUrl, voltaicWardenSheetWebpUrl), 128, 128, 32, 0.5, 0.92),
   sheet("machine-cyborg-reclaimer-v1", runtimeImageUrl(cyborgReclaimerSheetUrl, cyborgReclaimerSheetWebpUrl), 192, 192, 36, 0.5, 0.92),
   sheet("machine-cyborg-reclaimer-effects-v1", cyborgReclaimerEffectsUrl, 128, 128, 8, 0.5, 0.5),
   sheet("machine-foundry-fabricator-v1", runtimeImageUrl(foundryFabricatorSheetUrl, foundryFabricatorSheetWebpUrl), 192, 192, 36, 0.5, 0.92),
