@@ -13,7 +13,8 @@ The first recommended content-depth batch is now implemented code-first:
 - Three additional code-first elites are now live and expedition-eligible: **Ironhide Abomination**
   adapts to repeated damage types, **Splitcaller Weaver** hatches six fragile-pod children, and
   **Voltaic Warden** fires two independently cover-clipped lanes. Their bespoke production bodies and
-  the non-colour-only segmented elite marker are now live; Batch 77 upgrade tiles/effect accents remain open.
+  the non-colour-only segmented elite marker, four elemental upgrade tiles, and Razorlord/Blightspitter
+  effect accents are now live. Batch 77 is complete.
 
 The inventory audit now distinguishes the four hold/interact fixtures from the four actual objective
 modes. Deterministic local review routes use `escort-objective`, `deny-objective`, and
@@ -81,7 +82,8 @@ Razorlord's faster locked dash, Blightspitter's 2 m / 7 s denial puddles, and Ma
 Threat 1 adds one elite patrol to ordinary combat nodes; Threat 2 adds two distinct sequential patrols.
 Ironhide Abomination, Splitcaller Weaver, and Voltaic Warden are now code-complete, expedition-eligible,
 and locally testable. Their bespoke bodies and non-colour-only segmented elite marker are now live;
-the remaining Batch 77 upgrade tiles and supporting effect accents stay open.
+the four elemental upgrade tiles and supporting Razorlord/Blightspitter effect accents are now live.
+Batch 77 is complete.
 
 Seven elite kinds are live, but `eliteKindsForWave` is still a hardcoded ten-wave table where only waves 4, 6, 7,
 8, and 9 produce elites at all. Three consequences:
@@ -199,7 +201,7 @@ Behaviour to add to the existing four: **Razorlord** gets a short untargetable d
 fast); **Blightspitter** leaves a corrode puddle where it dies; **Quillback Matriarch** already has
 Rain of Spines and is fine; **Carapace Scuttler** is fine.
 
-### Bosses (2 new) — the fix for P2
+### Bosses (2 new) — SHIPPED CODE-FIRST 11 AUG 2026
 
 - **The Choir** (Alien Hive) — three linked Brain-Blob-scale bodies sharing one health pool.
   Killing one does not end the fight; it accelerates the other two. Phase change at 50%: the
@@ -210,6 +212,13 @@ Rain of Spines and is fine; **Carapace Scuttler** is fine.
 
 Selecting the finale boss by the final node's region theme turns the existing region system into
 run variety at zero extra systems cost.
+
+The shared-health Choir transition, outside-safe-radius flood, Sovereign fabrication escalation,
+Shock weakness, owned-child lifecycle, deterministic regional selection, Lab routes, HUD/audio
+feedback, boss rewards, and victory handling are live. Production bodies, portraits, phase frames,
+merge/hazard accents, and fabrication/buff effects shipped in Batch 78–79 on 11 August 2026. The
+remaining gate is observed balance testing, especially flood pressure and summon-clear versus
+core-rush viability.
 
 ---
 
@@ -340,10 +349,10 @@ silhouette heroes exist to enforce.
   Splitcaller Weaver, Voltaic Warden, plus an **elite marker treatment** that reads at 30+ enemy
   density and is not colour-only (colour-vision modes ship). Also the dash/puddle effects for the
   Razorlord and Blightspitter behaviour additions.
-- **78 — Boss Batch B2: The Choir.** Three linked bodies, merge transition frames, arena hazard
-  overlay, portrait. The merge is the fight's signature moment and needs real frames.
-- **79 — Boss Batch B3: Foundry Sovereign.** Core body, fabrication states, summon-buff effect,
-  portrait.
+- **78 — Boss Batch B2: The Choir. COMPLETE 11 AUG 2026.** Three linked bodies, merge transition frames, arena hazard
+  accents, portrait, runtime wiring, gallery, and live-lab QA.
+- **79 — Boss Batch B3: Foundry Sovereign. COMPLETE 11 AUG 2026.** Core body, fabrication states, summon-buff effects,
+  portrait, runtime wiring, gallery, and live-lab QA.
 - **80 — Weapon Batch W2: the three hole-filling weapons.** Emberlance, Storm Coil Beam, Blight
   Scythe — body, tile, and behaviour-matched VFX each. Highest-value weapon art in the queue.
 - **81 — Weapon Batch W3: pattern-variety five + Null Chorus.** Same package per weapon. Includes
@@ -370,7 +379,7 @@ boss stingers for 78–79, objective success/fail cues for 82.
 3. DONE 8 Aug  Weapon Tier 1 (3 hole-fillers)  — art still open, batch 80
 4. DONE 11 Aug Existing elite signatures + threat-tier patrol cadence
 5. DONE 11 Aug Reward source differentiation (elite, mini-boss, objective) -> batch 83 art open
-6. DONE 11 Aug New elite mechanics, bodies, marker -> batch 77 tiles/effect accents open
+6. DONE 11 Aug New elite mechanics, bodies, marker, elemental tiles and effect accents -> batch 77 complete
 7. DONE 11 Aug Objectives: Escort, Deny and Collect code-complete -> batch 82 art open
 8. Bosses (2)                              -> batches 78, 79
 9. Standard monsters (4)                   -> batch 76
@@ -380,8 +389,9 @@ boss stingers for 78–79, objective success/fail cues for 82.
 Steps 1 and 2 were pure data, unlocked build variety with **no art dependency at all**, and shipped
 on 7 August 2026 — see the log for what each landed and the two latent bugs they exposed
 (`applyUpgrade` had no exhaustiveness guard, and `buildUpgradeDecision`'s offer scan was hard-coded
-to a twelve-entry catalogue). Steps 8-10 remain open; step 6's supporting upgrade tiles and effect
-accents remain, while its mechanics, production silhouettes, and elite marker are complete.
+to a twelve-entry catalogue). Steps 8-10 remain open. Step 6 and Batch 77 are complete: mechanics,
+production bodies, elite marker, four elemental upgrade tiles, and the Razorlord/Blightspitter effect
+accents are all live.
 
 ### Gates
 

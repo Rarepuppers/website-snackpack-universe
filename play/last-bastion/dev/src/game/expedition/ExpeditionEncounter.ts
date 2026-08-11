@@ -1,5 +1,5 @@
 import { ELITE_KINDS, type EliteKind } from "../combat/EliteCadence";
-import type { MiniBossKind } from "../combat/CombatSimulation";
+import type { BossKind, MiniBossKind } from "../combat/CombatSimulation";
 import type { ExpeditionNode } from "./ExpeditionMap";
 import { buildExpeditionWavePlan, type ExpeditionWavePlan } from "./ExpeditionNodeDirector";
 import { selectEncounterEvent, type EncounterEventKind } from "./EncounterEventCatalog";
@@ -30,6 +30,7 @@ export interface ExpeditionEncounterDescriptor {
   threatBudget: number;
   eliteKind: EliteKind | null;
   miniBossKind: MiniBossKind | null;
+  bossKind?: BossKind | null;
   /** Shrine/Event nodes resolve to a specific catalogue card; null otherwise. */
   eventId: string | null;
   /** Optional combat-node modifier; absent on ordinary and non-combat nodes. */
@@ -88,6 +89,7 @@ export function expeditionEncounterForNode(
     : null;
   const miniBossPool = miniBossPoolForColumn(node.column);
   const miniBossKind = node.type === "mini-boss" ? miniBossPool[seed % miniBossPool.length]! : null;
+  const bossKind = node.type === "boss" ? bossKindForTheme(node.themeId) : null;
   const eventId = node.type === "shrine" || node.type === "event"
     ? selectEncounterEvent(node.type as EncounterEventKind, seed, node.column)?.id ?? null
     : null;
@@ -103,6 +105,7 @@ export function expeditionEncounterForNode(
     threatBudget: waves[0]?.threatBudget ?? threatBudget,
     eliteKind,
     miniBossKind,
+    bossKind,
     eventId,
     objectiveMode,
     ...(node.shopProfileId ? { shopProfileId: node.shopProfileId } : {}),
@@ -145,11 +148,19 @@ export function ambushEncounterForNode(
     threatBudget: budget,
     eliteKind: null,
     miniBossKind: null,
+    bossKind: null,
     eventId: null,
     waves: buildExpeditionWavePlan("combat", node.column, ELITES[seed % ELITES.length]!, null, threatTier)
       .slice(0, 1)
       .map((wave) => ({ ...wave, threatBudget: budget, timerEndsWave: true })),
   };
+}
+
+/** Finales teach the region's combat language; neutral regions retain Bastion Eater. */
+export function bossKindForTheme(themeId: string): BossKind {
+  if (themeId === "alien-hive" || themeId === "toxic-bloom") return "the-choir";
+  if (themeId === "machine-foundry" || themeId === "science-wing") return "foundry-sovereign";
+  return "bastion-eater";
 }
 
 /** Route hand-off keeps the node id explicit while the save remains authority. */

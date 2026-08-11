@@ -36,7 +36,7 @@ Gameplay bindings can be remapped under **Main Menu → Settings → Control bin
 - `/play/last-bastion/?scenario=assembly-prime&loadout=scattergun&autofire=0` — Task 66B machine mini-boss gate: targetable reserved fabrication, finite existing-child recall, and three fully warned rotating lanes
 - `/play/last-bastion/?scenario=storm-regent&loadout=scattergun&autofire=0` — Task 66C conductive mini-boss gate: three finite destructible nodes, fixed cover-clipped chains, node overcharge, and a locked close coil burst
 - `/play/last-bastion/?scenario=abomination-prime&loadout=scattergun&autofire=0` — Task 66D corrupted-human apex gate: locked slam, breakable grab, lobbed biomass, and one finite lingering hazard
-- `/play/last-bastion/?screen=map` — the tuned playable 20-node expedition: objective-modified combat nodes are marked E/D/C before deployment; selecting a route autosaves and enters depth-budgeted Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, or Bastion Eater encounters. `&mapseed=N&threat=2` reviews a deterministic high-threat chart
+- `/play/last-bastion/?screen=map` — the tuned playable 20-node expedition: objective-modified combat nodes are marked E/D/C before deployment; selecting a route autosaves and enters depth-budgeted Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, or a region-selected finale (Bastion Eater, The Choir, or Foundry Sovereign). `&mapseed=N&threat=2` reviews a deterministic high-threat chart
 - `/play/last-bastion/?screen=summary&summarydemo=1` — deterministic populated Task 50 run-summary review without changing the local save
 - `/play/last-bastion/?screen=transformation-lab` — isolated in-memory transformation warning/hold/commit/purge lab; starts with Cybernetic at 2/3 and never applies stats or writes a save
 - `/play/last-bastion/?screen=game&autofire=0` — Task 53 Manual-fire HUD/input review (`autofire=1` restores the default; both persist)
@@ -63,6 +63,8 @@ Gameplay bindings can be remapped under **Main Menu → Settings → Control bin
 - `/play/last-bastion/?scenario=spinewheel&loadout=vertical` — locked heading, wall/cover rebounds, speed decay, repeat-hit safety, and recovery-punish lab
 - `/play/last-bastion/?scenario=tether-bloom&loadout=vertical` — non-damaging pull, cover blocking, dodge/damage breaks, and single-controller lab
 - `/play/last-bastion/?scenario=bastion-eater&loadout=vertical` — three-phase final-boss, exposed-node damage windows, cover breach, tendril, egg, and last-stand lab
+- `/play/last-bastion/?scenario=the-choir&loadout=vertical` — shared-health three-voice finale; voice collapse, merge pulse, and shrinking safe-space lab
+- `/play/last-bastion/?scenario=foundry-sovereign&loadout=vertical` — stationary shock-weak command core with escalating drone/turret fabrication lab
 - `/play/last-bastion/?scenario=escort-objective&loadout=vertical` — code-first Escort objective: clear hostiles from the drone lane, protect its health across three waypoints, and earn the objective-only relic choice
 - `/play/last-bastion/?scenario=deny-objective&loadout=vertical` — destroy three channel anchors before their shared corruption meter fills
 - `/play/last-bastion/?scenario=collect-objective&loadout=vertical` — cross the pressured arena to recover all six timed pickups
@@ -76,8 +78,10 @@ Gameplay bindings can be remapped under **Main Menu → Settings → Control bin
 - `/play/last-bastion/?mode=gallery&batch=d` — all 23 Brood Warden Production Asset Batch D1 visuals
 - `/play/last-bastion/?mode=gallery&batch=d2` — all 24 Ripper Production Asset Batch D2 visuals
 - `/play/last-bastion/?mode=gallery&batch=d3` — all 41 Bastion Eater Production Asset Batch D3 visuals
+- `/play/last-bastion/?mode=gallery&batch=boss-b2-b3` — Choir and Foundry Sovereign bodies, mechanic accents, and portraits
 - `/play/last-bastion/?mode=gallery&batch=e1` — all 20 Quillback Production Asset Batch E1 visuals
 - `/play/last-bastion/?mode=gallery&batch=elite-e1` — Ironhide, Splitcaller, and Voltaic production-body review
+- `/play/last-bastion/?mode=gallery&batch=elite-e1-ui` — four elemental upgrade tiles plus Razorlord dash and Blightspitter puddle effect accents
 - `/play/last-bastion/?mode=gallery&batch=e2` — all 24 Spinewheel Production Asset Batch E2 visuals
 - `/play/last-bastion/?mode=gallery&batch=e3` — all 24 Tether Bloom Production Asset Batch E3 visuals
 - `/play/last-bastion/?mode=gallery&batch=f1` — Patrol Blade, action-bar, and timed-status Production Asset Batch F1

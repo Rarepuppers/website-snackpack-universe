@@ -48,6 +48,14 @@ import bastionEaterNodeSheetWebpUrl from "../../../../art/production-tests/batch
 import bastionEaterEffectSheetUrl from "../../../../art/production-tests/batch-d3/bastion-eater-effect-atlas-v1-96.png";
 import bastionEaterEnvironmentSheetUrl from "../../../../art/production-tests/batch-d3/bastion-eater-environment-atlas-v1-96.png";
 import bastionEaterPortraitUrl from "../../../../art/production-tests/batch-d3/bastion-eater-portrait-v1-256.png";
+import choirSheetUrl from "../../../../art/production-tests/batch-b2-b3/the-choir-spritesheet-v1-192.png";
+import choirSheetWebpUrl from "../../../../art/production-tests/batch-b2-b3/the-choir-spritesheet-v1-192.webp";
+import choirEffectUrl from "../../../../art/production-tests/batch-b2-b3/the-choir-effects-v1-128.png";
+import choirPortraitUrl from "../../../../art/production-tests/batch-b2-b3/the-choir-portrait-v1-256.png";
+import sovereignSheetUrl from "../../../../art/production-tests/batch-b2-b3/foundry-sovereign-spritesheet-v1-192.png";
+import sovereignSheetWebpUrl from "../../../../art/production-tests/batch-b2-b3/foundry-sovereign-spritesheet-v1-192.webp";
+import sovereignEffectUrl from "../../../../art/production-tests/batch-b2-b3/foundry-sovereign-effects-v1-128.png";
+import sovereignPortraitUrl from "../../../../art/production-tests/batch-b2-b3/foundry-sovereign-portrait-v1-256.png";
 import patrolBladeSheetUrl from "../../../../art/production-tests/batch-f1/patrol-blade-spritesheet-v1-96.png";
 import patrolBladeEffectSheetUrl from "../../../../art/production-tests/batch-f1/patrol-blade-effect-atlas-v1.png";
 import patrolBladeEffectSheetWebpUrl from "../../../../art/production-tests/batch-f1/patrol-blade-effect-atlas-v1.webp";
@@ -181,6 +189,8 @@ import splitcallerWeaverSheetUrl from "../../../../art/production-tests/batch-e1
 import splitcallerWeaverSheetWebpUrl from "../../../../art/production-tests/batch-e1/splitcaller-weaver-spritesheet-v1-192.webp";
 import voltaicWardenSheetUrl from "../../../../art/production-tests/batch-e1/voltaic-warden-spritesheet-v1-128.png";
 import voltaicWardenSheetWebpUrl from "../../../../art/production-tests/batch-e1/voltaic-warden-spritesheet-v1-128.webp";
+import elementalUpgradeTileSheetUrl from "../../../../art/production-tests/batch-e1/elemental-upgrade-tile-atlas-v1-128.png";
+import eliteDashPuddleEffectSheetUrl from "../../../../art/production-tests/batch-e1/elite-dash-puddle-effects-v1-128.png";
 import cyborgReclaimerSheetUrl from "../../../../art/production-tests/batch-x/machine-cyborg-reclaimer-v1-192.png";
 import cyborgReclaimerSheetWebpUrl from "../../../../art/production-tests/batch-x/machine-cyborg-reclaimer-v1-192.webp";
 import cyborgReclaimerEffectsUrl from "../../../../art/production-tests/batch-x/machine-cyborg-reclaimer-effects-v1-128.png";
@@ -306,6 +316,12 @@ export type GameAssetId =
   | "bastion-eater-effects-v1"
   | "bastion-eater-environment-v1"
   | "bastion-eater-portrait-v1"
+  | "the-choir-v1"
+  | "the-choir-effects-v1"
+  | "the-choir-portrait-v1"
+  | "foundry-sovereign-v1"
+  | "foundry-sovereign-effects-v1"
+  | "foundry-sovereign-portrait-v1"
   | "patrol-blade-v1"
   | "patrol-blade-effects-v1"
   | "action-tiles-v1"
@@ -338,6 +354,8 @@ export type GameAssetId =
   | "ironhide-abomination-v1"
   | "splitcaller-weaver-v1"
   | "voltaic-warden-v1"
+  | "elemental-upgrade-tiles-v1"
+  | "elite-dash-puddle-effects-v1"
   | "machine-cyborg-reclaimer-v1"
   | "machine-cyborg-reclaimer-effects-v1"
   | "machine-foundry-fabricator-v1"
@@ -528,6 +546,12 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("bastion-eater-effects-v1", bastionEaterEffectSheetUrl, 96, 96, 12, 0.5, 0.5),
   sheet("bastion-eater-environment-v1", bastionEaterEnvironmentSheetUrl, 96, 96, 8, 0.5, 0.5),
   image("bastion-eater-portrait-v1", bastionEaterPortraitUrl, 256, 256, 0.5, 0.5),
+  sheet("the-choir-v1", runtimeImageUrl(choirSheetUrl, choirSheetWebpUrl), 192, 192, 12, 0.5, 0.5),
+  sheet("the-choir-effects-v1", choirEffectUrl, 128, 128, 8, 0.5, 0.5),
+  image("the-choir-portrait-v1", choirPortraitUrl, 256, 256, 0.5, 0.5),
+  sheet("foundry-sovereign-v1", runtimeImageUrl(sovereignSheetUrl, sovereignSheetWebpUrl), 192, 192, 12, 0.5, 0.5),
+  sheet("foundry-sovereign-effects-v1", sovereignEffectUrl, 128, 128, 8, 0.5, 0.5),
+  image("foundry-sovereign-portrait-v1", sovereignPortraitUrl, 256, 256, 0.5, 0.5),
   sheet("patrol-blade-v1", patrolBladeSheetUrl, 96, 96, 4, 0.5, 0.5),
   sheet("patrol-blade-effects-v1", runtimeImageUrl(patrolBladeEffectSheetUrl, patrolBladeEffectSheetWebpUrl), 64, 64, 6, 0.5, 0.5),
   sheet("action-tiles-v1", runtimeImageUrl(actionTileSheetUrl, actionTileSheetWebpUrl), 64, 64, 6, 0.5, 0.5),
@@ -560,6 +584,8 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("ironhide-abomination-v1", runtimeImageUrl(ironhideAbominationSheetUrl, ironhideAbominationSheetWebpUrl), 128, 128, 12, 0.5, 0.5),
   sheet("splitcaller-weaver-v1", runtimeImageUrl(splitcallerWeaverSheetUrl, splitcallerWeaverSheetWebpUrl), 192, 192, 32, 0.5, 0.92),
   sheet("voltaic-warden-v1", runtimeImageUrl(voltaicWardenSheetUrl, voltaicWardenSheetWebpUrl), 128, 128, 32, 0.5, 0.92),
+  sheet("elemental-upgrade-tiles-v1", elementalUpgradeTileSheetUrl, 128, 128, 4, 0.5, 0.5),
+  sheet("elite-dash-puddle-effects-v1", eliteDashPuddleEffectSheetUrl, 128, 128, 8, 0.5, 0.5),
   sheet("machine-cyborg-reclaimer-v1", runtimeImageUrl(cyborgReclaimerSheetUrl, cyborgReclaimerSheetWebpUrl), 192, 192, 36, 0.5, 0.92),
   sheet("machine-cyborg-reclaimer-effects-v1", cyborgReclaimerEffectsUrl, 128, 128, 8, 0.5, 0.5),
   sheet("machine-foundry-fabricator-v1", runtimeImageUrl(foundryFabricatorSheetUrl, foundryFabricatorSheetWebpUrl), 192, 192, 36, 0.5, 0.92),

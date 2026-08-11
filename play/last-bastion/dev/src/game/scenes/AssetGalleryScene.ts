@@ -15,6 +15,14 @@ export class AssetGalleryScene extends Phaser.Scene {
   create(): void {
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
     const batch = new URLSearchParams(window.location.search).get("batch");
+    if (batch === "boss-b2-b3") {
+      this.createRegionalBossGallery();
+      return;
+    }
+    if (batch === "elite-e1-ui") {
+      this.createEliteBatchE1UiGallery();
+      return;
+    }
     if (batch === "elite-e1") {
       this.createEliteBatchE1Gallery();
       return;
@@ -529,6 +537,32 @@ export class AssetGalleryScene extends Phaser.Scene {
       this.add.sprite(x, y, "bastion-eater-environment-v1", frame).setScale(0.72);
     }
     this.add.text(480, 522, "Review: ?mode=gallery&batch=d3 • Encounter: ?scenario=bastion-eater&loadout=vertical", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createRegionalBossGallery(): void {
+    this.add.text(20, 14, "LAST BASTION — REGIONAL BOSS BATCHES B2–B3", style("#ffffff", "17px"));
+    this.add.text(20, 38, "42 production visuals • code-owned positions, radii, summon placement, timing, and collision", style("#8fb2c9", "11px"));
+
+    for (const [offset, title, body, effects, portrait, tint] of [
+      [0, "THE CHOIR — linked / warning / merged", "the-choir-v1", "the-choir-effects-v1", "the-choir-portrait-v1", "#e7a4ff"],
+      [480, "FOUNDRY SOVEREIGN — cooldown / warning / fabrication", "foundry-sovereign-v1", "foundry-sovereign-effects-v1", "foundry-sovereign-portrait-v1", "#ffcf72"],
+    ] as const) {
+      this.add.text(offset + 18, 68, title, style(tint, "10px"));
+      this.add.image(offset + 76, 142, portrait).setDisplaySize(112, 112);
+      for (let frame = 0; frame < 12; frame += 1) {
+        const x = offset + 170 + (frame % 4) * 72;
+        const y = 104 + Math.floor(frame / 4) * 72;
+        this.add.sprite(x, y, body, frame).setScale(0.32);
+        this.drawPivot(x, y);
+      }
+      this.add.text(offset + 18, 328, "MECHANIC ACCENTS 4×2", style(tint, "9px"));
+      for (let frame = 0; frame < 8; frame += 1) {
+        const x = offset + 54 + (frame % 4) * 104;
+        const y = 382 + Math.floor(frame / 4) * 82;
+        this.add.sprite(x, y, effects, frame).setScale(0.52);
+      }
+    }
+    this.add.text(480, 526, "Review: ?mode=gallery&batch=boss-b2-b3 • Labs: the-choir / foundry-sovereign", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createBatchD4Gallery(): void {
@@ -1168,6 +1202,26 @@ export class AssetGalleryScene extends Phaser.Scene {
       });
     });
     this.add.text(480, 526, "Live labs: ironhide-abomination • splitcaller-weaver • voltaic-warden", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createEliteBatchE1UiGallery(): void {
+    this.add.text(20, 14, "LAST BASTION — ELITE BATCH E1 TILES + EFFECT ACCENTS", style("#ffffff", "17px"));
+    this.add.text(20, 38, "Four live elemental paths • Razorlord dash sequence • Blightspitter puddle lifecycle", style("#8fb2c9", "11px"));
+    const upgrades = ["INCENDIARY / BLAZE", "CRYO / FREEZE", "CHAIN / OVERLOAD", "CORROSIVE / CORRODE"];
+    upgrades.forEach((label, frame) => {
+      const x = 138 + frame * 228;
+      this.add.sprite(x, 140, "elemental-upgrade-tiles-v1", frame).setScale(0.82);
+      this.add.text(x, 202, label, style(frame === 0 ? "#ff8a52" : frame === 1 ? "#a8e8ff" : frame === 2 ? "#68e4e8" : "#b9ef62", "9px")).setOrigin(0.5);
+    });
+    this.add.text(20, 240, "RAZORLORD — launch / streak / impact / recovery     BLIGHTSPITTER — impact / onset / active / dissipate", style("#ffd08a", "10px"));
+    for (let frame = 0; frame < 8; frame += 1) {
+      const x = 64 + frame * 118;
+      this.add.sprite(x, 334, "elite-dash-puddle-effects-v1", frame).setScale(0.86);
+      this.add.text(x, 392, String(frame), style("#728ba1", "8px")).setOrigin(0.5);
+    }
+    this.add.text(480, 456, "Tiles lead level-up choices and elemental shop offers; the same normalized frames feed the static Codex.", style("#dce8f2", "9px")).setOrigin(0.5);
+    this.add.text(480, 484, "Effect art accents simulation-owned direction, impact timing, puddle radius, duration, collision, slow, and damage.", style("#b9ef62", "9px")).setOrigin(0.5);
+    this.add.text(480, 518, "Review: ?mode=gallery&batch=elite-e1-ui • Labs: razorlord / blightspitter", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createBatchE2Gallery(): void {

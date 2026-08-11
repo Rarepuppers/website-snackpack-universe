@@ -76,6 +76,7 @@ import { createBuildViewModel } from "../build/BuildViewModel";
 import { buildOverlayModel } from "../ui/BuildOverlay";
 import { FRIENDLY_PROJECTILE_SOFT_BUDGET } from "../combat/FriendlyProjectileBudget";
 import { weaponTilePresentation } from "../ui/WeaponTileFrames";
+import { upgradeTilePresentation } from "../ui/UpgradeTilePresentation";
 import {
   VERTICAL_SLICE_WEAPON_IDS,
   WEAPON_CATALOG,
@@ -199,6 +200,8 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly denyObjectiveViews = new Map<number, Phaser.GameObjects.Graphics>();
   private readonly collectObjectiveViews = new Map<number, Phaser.GameObjects.Container>();
   private readonly miniBossTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
+  private readonly bossMechanicViews = new Map<number, Phaser.GameObjects.Graphics>();
+  private readonly choirAuxiliaryVoiceViews = new Map<number, Phaser.GameObjects.Container>();
   private readonly combatTelegraphViews = new Map<string, Phaser.GameObjects.Graphics>();
   private readonly combatTelegraphArtViews = new Map<string, Phaser.GameObjects.Sprite>();
   private readonly ripperTelegraphs = new Map<number, Phaser.GameObjects.Graphics>();
@@ -915,6 +918,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncDenyObjective(snapshot.denyObjective);
     this.syncCollectObjective(snapshot.collectObjective);
     this.syncMiniBossTelegraphs(snapshot.enemies);
+    this.syncBossMechanicViews(snapshot.enemies);
     this.syncCombatTelegraphs(snapshot.combatTelegraphs);
     this.syncCombatTelegraphArt(snapshot.combatTelegraphs);
     this.syncRipperTelegraphs(snapshot.enemies);
@@ -1108,6 +1112,8 @@ export class PrototypeScene extends Phaser.Scene {
       this.eliteArmorViews,
       this.eliteRewardViews,
       this.miniBossTelegraphs,
+      this.bossMechanicViews,
+      this.choirAuxiliaryVoiceViews,
       this.ripperTelegraphs,
       this.razorScuttlerTelegraphs,
       this.quillbackTelegraphs,
@@ -1507,6 +1513,10 @@ export class PrototypeScene extends Phaser.Scene {
             this.emitNestEffect(3, event.position, 460, 0.72, 1.55);
           } else if (event.enemyType === "bastion-eater") {
             this.emitAuthoredEffect(10, event.position, 760, 1.4, 3.2, 0, "bastion-eater-effects-v1");
+          } else if (event.enemyType === "the-choir") {
+            this.emitAuthoredEffect(6, event.position, 820, 0.9, 2.4, 0, "the-choir-effects-v1");
+          } else if (event.enemyType === "foundry-sovereign") {
+            this.emitAuthoredEffect(7, event.position, 900, 0.9, 2.5, 0, "foundry-sovereign-effects-v1");
           } else {
             this.emitAuthoredEffect(event.enemyType === "brain-blob" ? 18 : event.enemyType === "egg-cluster" ? 13 : 11, event.position, 210, 0.72, 1.2);
           }
@@ -1726,7 +1736,15 @@ export class PrototypeScene extends Phaser.Scene {
           this.emitAuthoredEffect(10, event.position, 130, 0.35, 0.65, 0, "batch-b-effects-v1");
           break;
         case "slime-impact":
-          this.emitAuthoredEffect(13, event.position, 260, 0.55, 1.05, 0, "batch-b-effects-v1");
+          this.emitAuthoredEffect(
+            event.eliteKind === "blightspitter" ? 4 : 13,
+            event.position,
+            260,
+            0.55,
+            1.05,
+            0,
+            event.eliteKind === "blightspitter" ? "elite-dash-puddle-effects-v1" : "batch-b-effects-v1",
+          );
           break;
         case "elite-armour-hit":
           this.emitAuthoredEffect(18, event.position, 150, 0.52, 0.95, 0, "batch-b-effects-v1");
@@ -1830,17 +1848,25 @@ export class PrototypeScene extends Phaser.Scene {
         case "razor-scuttler-warning":
           this.emitAuthoredEffect(
             0, event.position, 300, 0.56, 0.92,
-            Math.atan2(event.direction.y, event.direction.x), "razor-scuttler-effects-v1",
+            Math.atan2(event.direction.y, event.direction.x),
+            event.eliteKind === "razorlord" ? "elite-dash-puddle-effects-v1" : "razor-scuttler-effects-v1",
           );
           this.flashCircle(event.position, 12, 0xffd36b, 260, 1.5, true);
           break;
         case "razor-scuttler-dash":
           this.emitAuthoredEffect(
             1, event.position, 180, 0.62, 1.05,
-            Math.atan2(event.direction.y, event.direction.x), "razor-scuttler-effects-v1",
+            Math.atan2(event.direction.y, event.direction.x),
+            event.eliteKind === "razorlord" ? "elite-dash-puddle-effects-v1" : "razor-scuttler-effects-v1",
           );
           break;
         case "razor-scuttler-impact":
+          if (event.eliteKind === "razorlord") {
+            this.emitAuthoredEffect(2, event.position, 280, 0.68, event.reason === "cover" ? 1.35 : 1.16, 0, "elite-dash-puddle-effects-v1");
+            this.emitAuthoredEffect(3, event.position, 360, 0.5, 1.05, 0, "elite-dash-puddle-effects-v1");
+            if (event.reason !== "miss") this.shakeCamera(80, 0.0035);
+            break;
+          }
           this.emitAuthoredEffect(
             event.reason === "player" ? 3 : event.reason === "cover" ? 4 : 5,
             event.position, event.reason === "cover" ? 280 : 220, 0.68, event.reason === "cover" ? 1.35 : 1.16,
@@ -1951,6 +1977,49 @@ export class PrototypeScene extends Phaser.Scene {
           break;
         case "bastion-eater-vault":
           this.emitAuthoredEffect(6, event.position, 1800, 0.9, 1.5, 0, "bastion-eater-environment-v1");
+          break;
+        case "choir-voice-collapsed":
+          this.emitAuthoredEffect(0, event.position, 520, 0.72, 1.5, 0, "the-choir-effects-v1");
+          this.flashCircle(event.position, 28, 0xe788ff, 480, 2.2, true);
+          this.eventFeed.add(`CHOIR VOICE LOST  /  ${event.voicesActive} REMAIN`, "#e7a4ff");
+          break;
+        case "choir-merged":
+          this.emitAuthoredEffect(1, event.position, 760, 0.85, 2.1, 0, "the-choir-effects-v1");
+          this.flashCircle(event.position, event.safeRadiusMetres * PIXELS_PER_METRE, 0x8de7ff, 700, 1.08, true);
+          this.shakeCamera(180, 0.007);
+          this.eventFeed.add("THE CHOIR MERGES  /  HOLD THE SAFE RADIUS", "#8de7ff");
+          break;
+        case "choir-pulse-warning":
+          this.emitAuthoredEffect(2, event.position, 520, 0.7, 1.35, 0, "the-choir-effects-v1");
+          this.flashCircle(event.position, event.radiusMetres * PIXELS_PER_METRE, 0xe788ff, 520, 1.02, true);
+          break;
+        case "choir-pulse":
+          this.emitAuthoredEffect(3, event.position, 340, 0.78, 1.7, 0, "the-choir-effects-v1");
+          this.flashCircle(event.position, event.radiusMetres * PIXELS_PER_METRE, 0xff72ba, 280, 1.04, true);
+          if (event.hitPlayer) this.shakeCamera(110, 0.005);
+          break;
+        case "choir-flood-hit":
+          this.emitAuthoredEffect(4, event.position, 260, 0.55, 1.25, 0, "the-choir-effects-v1");
+          this.flashCircle(event.position, event.safeRadiusMetres * PIXELS_PER_METRE, 0x8de7ff, 220, 1.02, true);
+          break;
+        case "sovereign-fabrication-warning":
+          this.emitAuthoredEffect(0, event.position, 560, 0.7, 1.35, 0, "foundry-sovereign-effects-v1");
+          this.flashCircle(event.position, 70, 0xffb84d, 540, 1.7, true);
+          this.eventFeed.add(`SOVEREIGN FABRICATION ${event.waveIndex + 1}`, "#ffcf72");
+          break;
+        case "sovereign-fabricated":
+          this.emitAuthoredEffect(event.waveIndex >= 4 ? 5 : 4, event.position, 620, 0.72, 1.5, 0, "foundry-sovereign-effects-v1");
+          event.childIds.forEach((_, index) => this.emitAuthoredEffect(
+            index % 2 === 0 ? 2 : 3,
+            { x: event.position.x + (index === 0 ? -1.5 : 1.5), y: event.position.y + 1.1 },
+            460,
+            0.62,
+            1.2,
+            0,
+            "foundry-sovereign-effects-v1",
+          ));
+          this.flashCircle(event.position, 88, 0x8de7ff, 360, 1.9, true);
+          this.eventFeed.add(`${event.childIds.length} UNITS ONLINE  /  x${event.buffMultiplier.toFixed(1)}`, "#8de7ff");
           break;
         case "obstacle-damaged":
           this.effectPool.emitBurst(event.position.x * PIXELS_PER_METRE, event.position.y * PIXELS_PER_METRE, 0xffd36b, 5);
@@ -2066,7 +2135,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "synapse-herald-effects-v1" | "assembly-prime-effects-v1" | "storm-regent-effects-v1" | "abomination-prime-biomass-v1" | "abomination-prime-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "event-horizon-effects-v1" | "marauder-ar-effects-v1" | "aurum-hoarder-effects-v1" | "corrupted-marine-effects-v1" | "nest-effects-v1" | "storm-effects-v1" | "machine-scrap-skitterer-effects-v1" | "machine-arc-warden-effects-v1" | "machine-cyborg-reclaimer-effects-v1" | "machine-foundry-effects-v1" | "telegraph-small-v1" | "destructible-terrain-effects-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "synapse-herald-effects-v1" | "assembly-prime-effects-v1" | "storm-regent-effects-v1" | "abomination-prime-biomass-v1" | "abomination-prime-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "elite-dash-puddle-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "the-choir-effects-v1" | "foundry-sovereign-effects-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "event-horizon-effects-v1" | "marauder-ar-effects-v1" | "aurum-hoarder-effects-v1" | "corrupted-marine-effects-v1" | "nest-effects-v1" | "storm-effects-v1" | "machine-scrap-skitterer-effects-v1" | "machine-arc-warden-effects-v1" | "machine-cyborg-reclaimer-effects-v1" | "machine-foundry-effects-v1" | "telegraph-small-v1" | "destructible-terrain-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -2570,6 +2639,12 @@ export class PrototypeScene extends Phaser.Scene {
           return createManifestSprite(this, "bastion-eater-v1");
         }
         return this.add.ellipse(0, 0, 132, 104, 0x273153).setStrokeStyle(7, 0xc99248);
+      case "the-choir":
+        if (this.useMarineArt) return createManifestSprite(this, "the-choir-v1");
+        return this.add.ellipse(0, 0, 48, 48, 0x422856).setStrokeStyle(6, 0xe788ff);
+      case "foundry-sovereign":
+        if (this.useMarineArt) return createManifestSprite(this, "foundry-sovereign-v1");
+        return this.add.rectangle(0, 0, 108, 92, 0x263b48).setStrokeStyle(7, 0xffb84d);
       case "egg-cluster":
         if (this.useMarineArt) {
           return createManifestSprite(this, "egg-cluster-v1");
@@ -3227,6 +3302,20 @@ export class PrototypeScene extends Phaser.Scene {
         }
         return;
       }
+      case "the-choir": {
+        const row = enemy.choirPhase === "merged" ? 2 : enemy.choirAttackPhase === "warning" ? 1 : 0;
+        const column = (Math.floor(this.time.now / 155) + enemy.id) % 4;
+        view.setTexture("the-choir-v1").setFrame(row * 4 + column).setScale(row === 2 ? 0.58 : 0.48).setRotation(0);
+        const lead = enemy.choirVoicePositions?.[0];
+        if (lead) view.setPosition(lead.x * PIXELS_PER_METRE, lead.y * PIXELS_PER_METRE);
+        return;
+      }
+      case "foundry-sovereign": {
+        const row = enemy.sovereignPhase === "warning" ? 1 : enemy.sovereignPhase === "fabricating" ? 2 : 0;
+        const column = (Math.floor(this.time.now / 170) + enemy.id) % 4;
+        view.setTexture("foundry-sovereign-v1").setFrame(row * 4 + column).setScale(0.72).setRotation(0);
+        return;
+      }
       case "bastion-eater": {
         const phase = enemy.bastionEaterPhase ?? "breach";
         const column = (Math.floor(this.time.now / 170) + enemy.id) % 4;
@@ -3603,7 +3692,9 @@ export class PrototypeScene extends Phaser.Scene {
             ? this.add.ellipse(0, 0, 1, 1, 0x5c2632, 0.62)
               .setStrokeStyle(4, 0xff8a62, 0.94).setDepth(45)
           : this.useMarineArt
-            ? this.add.sprite(0, 0, "batch-b-effects-v1", 13).setDepth(45)
+            ? hazard.eliteKind === "blightspitter"
+              ? this.add.sprite(0, 0, "elite-dash-puddle-effects-v1", 5).setDepth(45)
+              : this.add.sprite(0, 0, "batch-b-effects-v1", 13).setDepth(45)
             : this.add.ellipse(0, 0, 1, 1, 0x86bd35, 0.55)
               .setStrokeStyle(3, 0xc9f164, 0.9).setDepth(45);
         this.hazardViews.set(hazard.id, view);
@@ -3617,7 +3708,11 @@ export class PrototypeScene extends Phaser.Scene {
         )
         .setAlpha(hazard.type === "machine-wreck" ? lifetime * 0.9 : 0.22 + lifetime * 0.55);
       if (view instanceof Phaser.GameObjects.Sprite) {
-        view.setFrame(hazard.type === "machine-wreck" ? 28 : lifetime < 0.3 ? 14 : 13);
+        view.setFrame(
+          hazard.type === "machine-wreck" ? 28
+            : hazard.eliteKind === "blightspitter" ? lifetime < 0.2 ? 7 : lifetime > 0.84 ? 5 : 6
+              : lifetime < 0.3 ? 14 : 13,
+        );
       }
       if (hazard.type === "prime-biomass" && view instanceof Phaser.GameObjects.Ellipse) {
         view.setStrokeStyle(4, Math.floor(this.time.now / 120) % 2 === 0 ? 0xff8a62 : 0xffd36b, 0.94);
@@ -4314,6 +4409,95 @@ export class PrototypeScene extends Phaser.Scene {
     }
   }
 
+  private syncBossMechanicViews(enemies: readonly EnemySnapshot[]): void {
+    const bosses = enemies.filter((enemy) => enemy.type === "the-choir" || enemy.type === "foundry-sovereign");
+    const liveIds = new Set(bosses.map((enemy) => enemy.id));
+    this.destroyMissing(this.bossMechanicViews, liveIds);
+    this.destroyMissing(
+      this.choirAuxiliaryVoiceViews,
+      new Set(bosses.filter((enemy) => enemy.type === "the-choir").map((enemy) => enemy.id)),
+    );
+    for (const boss of bosses) {
+      let view = this.bossMechanicViews.get(boss.id);
+      if (!view) {
+        view = this.add.graphics().setDepth(63);
+        this.bossMechanicViews.set(boss.id, view);
+      }
+      view.clear();
+      const x = boss.position.x * PIXELS_PER_METRE;
+      const y = boss.position.y * PIXELS_PER_METRE;
+      if (boss.type === "the-choir") {
+        const voices = (boss.choirVoicePositions ?? [boss.position]).slice(0, boss.choirVoicesActive ?? 1);
+        const points = voices.map((voice) => ({ x: voice.x * PIXELS_PER_METRE, y: voice.y * PIXELS_PER_METRE }));
+        if (this.useMarineArt) {
+          let auxiliary = this.choirAuxiliaryVoiceViews.get(boss.id);
+          if (!auxiliary) {
+            auxiliary = this.add.container(0, 0, [
+              createManifestSprite(this, "the-choir-v1"),
+              createManifestSprite(this, "the-choir-v1"),
+            ]).setDepth(61);
+            this.choirAuxiliaryVoiceViews.set(boss.id, auxiliary);
+          }
+          const row = boss.choirPhase === "merged" ? 2 : boss.choirAttackPhase === "warning" ? 1 : 0;
+          const column = (Math.floor(this.time.now / 155) + boss.id) % 4;
+          auxiliary.list.forEach((child, index) => {
+            const sprite = child as Phaser.GameObjects.Sprite;
+            const point = points[index + 1];
+            sprite.setVisible(Boolean(point));
+            if (point) sprite.setPosition(point.x, point.y).setFrame(row * 4 + column).setScale(0.48);
+          });
+        }
+        if (points.length > 1) {
+          view.lineStyle(10, 0x120d1d, 0.9);
+          for (let index = 0; index < points.length; index += 1) {
+            const next = points[(index + 1) % points.length]!;
+            view.lineBetween(points[index]!.x, points[index]!.y, next.x, next.y);
+          }
+          view.lineStyle(4, 0xe788ff, 0.92);
+          for (let index = 0; index < points.length; index += 1) {
+            const next = points[(index + 1) % points.length]!;
+            view.lineBetween(points[index]!.x, points[index]!.y, next.x, next.y);
+          }
+        }
+        for (const [index, point] of points.entries()) {
+          if (!this.useMarineArt) {
+            view.fillStyle(index === 0 ? 0x5a3372 : 0x352448, 0.96).fillCircle(point.x, point.y, 22)
+              .lineStyle(5, index === 0 ? 0xff8fd2 : 0x8de7ff, 0.96).strokeCircle(point.x, point.y, 22);
+          }
+          if (boss.choirAttackPhase === "warning") {
+            view.lineStyle(4, 0xff8fd2, 0.72).strokeCircle(
+              point.x, point.y, (boss.choirPhase === "merged" ? 6.25 : 4.25) * PIXELS_PER_METRE,
+            );
+          }
+        }
+        if (boss.choirSafeRadiusMetres) {
+          const radius = boss.choirSafeRadiusMetres * PIXELS_PER_METRE;
+          view.lineStyle(12, 0x081018, 0.88).strokeCircle(x, y, radius)
+            .lineStyle(5, 0x8de7ff, 0.96).strokeCircle(x, y, radius);
+          for (let index = 0; index < 12; index += 1) {
+            const angle = index * Math.PI / 6;
+            view.lineBetween(
+              x + Math.cos(angle) * radius, y + Math.sin(angle) * radius,
+              x + Math.cos(angle) * (radius + 18), y + Math.sin(angle) * (radius + 18),
+            );
+          }
+        }
+      } else {
+        const phaseColour = boss.sovereignPhase === "warning" ? 0xffb84d : 0x8de7ff;
+        view.lineStyle(10, 0x081018, 0.9).strokeCircle(x, y, 58)
+          .lineStyle(4, phaseColour, 0.96).strokeCircle(x, y, 58).strokeCircle(x, y, 42);
+        for (let index = 0; index < 8; index += 1) {
+          const angle = index * Math.PI / 4;
+          view.lineBetween(x + Math.cos(angle) * 42, y + Math.sin(angle) * 42, x + Math.cos(angle) * 66, y + Math.sin(angle) * 66);
+        }
+        const pips = Math.min(5, Math.max(1, Math.ceil(((boss.sovereignSummonBuffMultiplier ?? 1) - 0.9) * 10)));
+        for (let index = 0; index < pips; index += 1) {
+          view.fillStyle(0xffcf72, 0.95).fillRect(x - 22 + index * 11, y + 70, 7, 7);
+        }
+      }
+    }
+  }
+
   private syncCombatTelegraphs(telegraphs: readonly CombatTelegraphSnapshot[]): void {
     const liveIds = new Set(telegraphs.map((telegraph) => telegraph.id));
     this.destroyMissing(this.combatTelegraphViews, liveIds);
@@ -4993,6 +5177,7 @@ export class PrototypeScene extends Phaser.Scene {
         : isStatCards ? titleY + 96 + Math.floor(index / 2) * 132
           : isShop ? titleY + 78 + shopRow * 70 : titleY + 65 + index * 86;
       const enabled = choice.affordable !== false;
+      const upgradeTile = this.useMarineArt ? upgradeTilePresentation(choice.id) : null;
       const shopButtonWidth = shopColumns === 2 ? 444 : 500;
       const button = this.add.rectangle(
         x, y,
@@ -5003,12 +5188,21 @@ export class PrototypeScene extends Phaser.Scene {
       const price = choice.cost && choice.cost > 0 ? ` — ${choice.cost} SCRAP${enabled ? "" : " (SHORT)"}` : "";
       children.push(button);
       if (isShop && this.useMarineArt) {
-        children.push(this.add.image(x - shopButtonWidth / 2 + 34, y, "scrap-shop-offer-tiles-v1", scrapShopOfferFrame(choice.id))
+        children.push(this.add.image(
+          x - shopButtonWidth / 2 + 34,
+          y,
+          upgradeTile?.texture ?? "scrap-shop-offer-tiles-v1",
+          upgradeTile?.frame ?? scrapShopOfferFrame(choice.id),
+        )
           .setDisplaySize(48, 48).setAlpha(enabled ? 1 : 0.42));
       }
       if (isPlacement && this.useMarineArt) {
         children.push(this.add.image(x - 116, y, "batch-i-slot-tier-ui-v1", placementOptionFrame(choice.id, choice.name))
           .setDisplaySize(58, 58).setAlpha(enabled ? 1 : 0.42));
+      }
+      if (!isShop && !isPlacement && !isStatCards && upgradeTile) {
+        children.push(this.add.image(-292, y, upgradeTile.texture, upgradeTile.frame)
+          .setDisplaySize(56, 56).setAlpha(enabled ? 1 : 0.42));
       }
       const quickKey = index < 9 ? `${index + 1}. ` : "";
       // A stat card leads with the grant, not the flavour name — the number is
@@ -5022,11 +5216,11 @@ export class PrototypeScene extends Phaser.Scene {
           wordWrap: { width: 312 },
           lineSpacing: 4,
         }).setOrigin(0.5).setResolution(uiTextResolution())
-        : this.add.text(isPlacement ? x - 78 : isShop ? x - shopButtonWidth / 2 + 76 : -310, y - (isPlacement ? 26 : isShop ? 15 : 18), `${quickKey}${choice.name}${price}\n${choice.description}`, {
+        : this.add.text(isPlacement ? x - 78 : isShop ? x - shopButtonWidth / 2 + 76 : upgradeTile ? -250 : -310, y - (isPlacement ? 26 : isShop ? 15 : 18), `${quickKey}${choice.name}${price}\n${choice.description}`, {
           color: enabled ? "#edf4ff" : "#758493",
           fontFamily: "Consolas, Courier New, monospace",
           fontSize: isPlacement ? "13px" : isShop ? "13px" : "15px",
-          wordWrap: isPlacement ? { width: 202 } : isShop ? { width: shopButtonWidth - 92 } : undefined,
+          wordWrap: isPlacement ? { width: 202 } : isShop ? { width: shopButtonWidth - 92 } : upgradeTile ? { width: 520 } : undefined,
           lineSpacing: isShop ? 2 : 5,
         }).setResolution(uiTextResolution());
       button.on("pointerover", () => {
@@ -5133,7 +5327,7 @@ function readStressProfile(): 4 | 12 | null {
 
 function readScenario(): CombatScenario | null {
   const scenario = new URLSearchParams(window.location.search).get("scenario");
-  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "ironhide-abomination" || scenario === "splitcaller-weaver" || scenario === "voltaic-warden" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "rift-stalker" || scenario === "synapse-herald" || scenario === "assembly-prime" || scenario === "storm-regent" || scenario === "abomination-prime" || scenario === "infected-survivor" || scenario === "corrupted-marine" || scenario === "abomination" || scenario === "corrupted-human" || scenario === "nest-weaver" || scenario === "storm-savant" || scenario === "scrap-skitterer" || scenario === "arc-warden" || scenario === "cyborg-reclaimer" || scenario === "foundry-fabricator" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "escort-objective" || scenario === "deny-objective" || scenario === "collect-objective" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop" || scenario === "weapon-gate" || scenario === "batch-j"
+  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "ironhide-abomination" || scenario === "splitcaller-weaver" || scenario === "voltaic-warden" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "rift-stalker" || scenario === "synapse-herald" || scenario === "assembly-prime" || scenario === "storm-regent" || scenario === "abomination-prime" || scenario === "the-choir" || scenario === "foundry-sovereign" || scenario === "infected-survivor" || scenario === "corrupted-marine" || scenario === "abomination" || scenario === "corrupted-human" || scenario === "nest-weaver" || scenario === "storm-savant" || scenario === "scrap-skitterer" || scenario === "arc-warden" || scenario === "cyborg-reclaimer" || scenario === "foundry-fabricator" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "escort-objective" || scenario === "deny-objective" || scenario === "collect-objective" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop" || scenario === "weapon-gate" || scenario === "batch-j"
     ? scenario
     : null;
 }
@@ -5542,7 +5736,7 @@ function setSpriteFrameIfAvailable(
 
 function createManifestSprite(
   scene: Phaser.Scene,
-  assetId: "scuttler-v1" | "egg-cluster-v1" | "brain-blob-v1" | "slime-spitter-v1" | "carapace-scuttler-v1" | "siege-crusher-v1" | "brood-warden-v1" | "rift-stalker-v1" | "synapse-herald-v1" | "assembly-prime-v1" | "storm-regent-v1" | "abomination-prime-v1" | "blast-mite-v1" | "warp-flanker-v1" | "ripper-v1" | "razor-scuttler-v1" | "quillback-v1" | "spinewheel-v1" | "tether-bloom-v1" | "bastion-eater-v1" | "status-overlays-v1" | "aurum-hoarder-v1" | "swarm-scuttler-v1" | "corrupted-survivor-v1" | "corrupted-marine-v1" | "abomination-v1" | "nest-weaver-v1" | "nest-pod-v1" | "storm-savant-v1" | "storm-node-v1" | "machine-scrap-skitterer-v1" | "machine-arc-warden-v1" | "machine-cyborg-reclaimer-v1" | "machine-foundry-fabricator-v1" | "machine-foundry-pad-v1" | "machine-foundry-drone-v1" | "machine-foundry-turret-v1" | "razorlord-v1" | "blightspitter-v1" | "quillback-matriarch-v1" | "ironhide-abomination-v1" | "splitcaller-weaver-v1" | "voltaic-warden-v1",
+  assetId: GameAssetId,
 ): Phaser.GameObjects.Sprite {
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);

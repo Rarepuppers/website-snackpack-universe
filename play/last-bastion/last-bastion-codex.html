@@ -598,6 +598,12 @@ const MONSTERS = [
   { id: "mon-bastion-eater", name: "The Bastion Eater", glyph: "☠", tint: TINT.boss, status: "live", rank: "boss", tier: "Authored",
     stats: { Health: "2400", Armour: "shutters", Speed: "—", Damage: "5 claw", Fight: "3–5 min" },
     text: "Three phases: Breach (claw lanes, cover-breaking charges), Brood (tendril sweep, capped eggs), Last Stand (faster combinations, targeted breach zones). Never an unavoidable full-arena attack." },
+  { id: "mon-the-choir", name: "The Choir", glyph: "CH", tint: TINT.boss, status: "live", rank: "boss", tier: "Control",
+    stats: { Health: "1800 shared", Armour: "1 flat", Voices: "3 → 2 → 1", Weakness: "Shock +15%", Counter: "collapse inward" },
+    text: "Three production-art voices share one health pool. One voice collapses below 75%; at 50% they merge, widen their pulse, and flood the arena outside a clearly marked safe radius." },
+  { id: "mon-foundry-sovereign", name: "Foundry Sovereign", glyph: "FS", tint: TINT.boss, status: "live", rank: "boss", tier: "Summoner",
+    stats: { Health: "2100", Armour: "4 flat", Speed: "stationary", Weakness: "Shock +60%", Fabrication: "+10% / wave" },
+    text: "A production-art stationary command core that alternates drone and turret fabrication. Each completed wave strengthens all surviving constructs, forcing a choice between clearing the factory floor and rushing the shock-weak core." },
 ];
 
 const DAMAGE_TYPES = [
@@ -1177,7 +1183,7 @@ function render() {
       Counts below are computed from this codex's own data, so they update the moment an entry
       goes live. The build order lives in <code>last-bastion-model.md</code>; this page is the
       player-visible summary. Current playable build: the ten-wave <em>Quick Drop</em> run
-      (Marine, 7 weapons, 17 alien behaviours, elites, mini-bosses, the Bastion Eater, Scrap Shop).</div>`;
+      (five heroes, 34 weapons, 38 enemy types, elites, mini-bosses, three regional finales, and the Scrap Shop).</div>`;
     html += `<h2 class="sect">Content status</h2>
       <div class="tablewrap"><table>
       <thead><tr><th>System</th><th>Live</th><th>Designed</th><th>Concept</th><th>Playable</th></tr></thead><tbody>
@@ -1196,7 +1202,7 @@ function render() {
       <tr><td><b>Ten-wave Quick Drop</b></td><td>${badge("live")}</td><td>Timed waves, elites, mini-bosses, the Bastion Eater finale, Scrap Shop, weapon rack &amp; merging</td></tr>
       <tr><td><b>Third mini-boss — Rift Stalker</b></td><td>${badge("live")}</td><td>Cloaked stalk, marked warp-pounces, rift-spike fans, chained-warp frenzy, and the integrated Production Batch O body/effect/portrait set</td></tr>
       <tr><td><b>Front-end shell</b></td><td>${badge("live")}</td><td>Title screen, main menu, How to Play, Settings, Lab, and character select — placeholder panels until the Batch G art pass</td></tr>
-      <tr><td><b>Expedition map — 20 nodes</b></td><td>${badge("live")}</td><td>The starchart deploys into depth-budgeted multi-wave Combat, Elite, and Mini-boss encounters plus safe nodes and Bastion Eater; the carried build persists between victories</td></tr>
+      <tr><td><b>Expedition map — 20 nodes</b></td><td>${badge("live")}</td><td>The starchart deploys into depth-budgeted multi-wave Combat, Elite, and Mini-boss encounters plus safe nodes and a region-selected Bastion Eater, Choir, or Foundry Sovereign finale; the carried build persists between victories</td></tr>
       <tr><td><b>Campaign tuning</b></td><td>${badge("live")}</td><td>Protected opening curve, two guaranteed shop stops per route, wounded Field Repair stock, safe-node Scrap, and tested boss-entry growth/build targets</td></tr>
       <tr><td><b>World themes</b></td><td>${badge("live")}</td><td>Bastion Perimeter, Emberfall, Toxic Bloom, Void Approach, and Arctic Relay now use authored terrain families with seeded lighting variants and gameplay-first contrast washes</td></tr>
       <tr><td><b>Shop keeper &amp; economy v2</b></td><td>${badge("live")}</td><td>The between-wave Scrap Shop now has one depth-priced reroll, an offer lock, 50% weapon resale, and the production Quartermaster; specialist keepers remain future content</td></tr>

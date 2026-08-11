@@ -16,6 +16,7 @@ import { buildDensityCapacityRoster } from "../DensityDirector";
 // `CombatSimulation`, which imports this module for its value export.
 import type {
   CombatScenario,
+  BossKind,
   EnemyState,
   MiniBossKind,
   PendingDecision,
@@ -48,6 +49,7 @@ export interface ScenarioPopulationContext {
   spawnMiniBoss(kind: MiniBossKind, position?: Vector2Data): number;
   spawnAurumHoarder(position?: Vector2Data): number | null;
   spawnBastionEater(position?: Vector2Data): number;
+  spawnBoss(kind: BossKind, position?: Vector2Data): number;
   recordDensitySpawn(spawn: { type: EnemyType }): void;
 
   activeObstacles(): ArenaDefinition["obstacles"];
@@ -164,6 +166,18 @@ const POPULATE: Readonly<Record<CombatScenario, Populate>> = Object.freeze({
     context.spawnEnemy("corrupted-marine", { x: centre.x + 6.2, y: centre.y - 3.4 });
     context.spawnEnemy("infected-survivor", { x: centre.x + 5.2, y: centre.y + 2.6 });
     context.spawnEnemy("infected-survivor", { x: centre.x - 3.8, y: centre.y + 4.1 });
+  },
+
+  "the-choir": (context) => {
+    const centre = centreOf(context);
+    context.setWaveLiveCap(12);
+    context.spawnBoss("the-choir", { x: centre.x - 5.5, y: centre.y });
+  },
+
+  "foundry-sovereign": (context) => {
+    const centre = centreOf(context);
+    context.setWaveLiveCap(16);
+    context.spawnBoss("foundry-sovereign", { x: centre.x - 6, y: centre.y });
   },
 
   "infected-survivor": (context) => {

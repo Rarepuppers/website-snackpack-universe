@@ -342,6 +342,20 @@ import {
   type AbominationPrimeState,
 } from "./AbominationPrimeBehavior";
 import {
+  CHOIR_FLOOD_DAMAGE,
+  CHOIR_FLOOD_SAFE_RADIUS_METRES,
+  CHOIR_PULSE_DAMAGE,
+  choirVoicePositions,
+  createChoirBossState,
+  stepChoirBoss,
+  type ChoirBossState,
+} from "./ChoirBoss";
+import {
+  createFoundrySovereignState,
+  stepFoundrySovereign,
+  type FoundrySovereignState,
+} from "./FoundrySovereign";
+import {
   ENEMY_HIT_CAP,
   RANKED_ENEMY_HIT_CAP,
   scaleEnemyHealth,
@@ -575,6 +589,7 @@ export type AurumHoarderPhase = "forage" | "flee";
 export type EnemyRank = "standard" | "treasure" | "elite" | "mini-boss" | "boss";
 export type CarapacePhase = "pursuit" | "windup" | "charge" | "recovery";
 export type MiniBossKind = "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime";
+export type BossKind = "bastion-eater" | "the-choir" | "foundry-sovereign";
 
 /** Every mini-boss kind, so the spawn path can't drift out of sync with the union again. */
 export const MINI_BOSS_KINDS: readonly MiniBossKind[] = Object.freeze([
@@ -583,10 +598,14 @@ export const MINI_BOSS_KINDS: readonly MiniBossKind[] = Object.freeze([
 ]);
 
 /** Campaign-ending bosses, separate from the rotating mini-boss pool. */
-export const BOSS_KINDS: readonly EnemyType[] = Object.freeze(["bastion-eater"]);
+export const BOSS_KINDS: readonly BossKind[] = Object.freeze(["bastion-eater", "the-choir", "foundry-sovereign"]);
 
 export function isMiniBossKind(value: string): value is MiniBossKind {
   return (MINI_BOSS_KINDS as readonly string[]).includes(value);
+}
+
+export function isBossKind(value: string): value is BossKind {
+  return (BOSS_KINDS as readonly string[]).includes(value);
 }
 
 /**
@@ -598,7 +617,7 @@ export function isMiniBossKind(value: string): value is MiniBossKind {
 export function enemyRadius(enemy: { type: EnemyType; radiusScale?: number }): number {
   return ENEMY_CATALOG[enemy.type].radiusMetres * (enemy.radiusScale ?? 1);
 }
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "ironhide-abomination" | "splitcaller-weaver" | "voltaic-warden" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "escort-objective" | "deny-objective" | "collect-objective" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "ironhide-abomination" | "splitcaller-weaver" | "voltaic-warden" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime" | "the-choir" | "foundry-sovereign" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "escort-objective" | "deny-objective" | "collect-objective" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit" | "siege-loader" | "phase-jacket" | "hunter-optics" | "last-stand-stimulant" | "emp-charge" | "butchers-serum";
 export type SupplyChestVariant = "sealed" | "armored";
 export type DecisionKind = "upgrade" | "level-stat" | "weapon-chest" | "supply-depot" | "slot-requisition" | "rank-reward" | "scrap-shop" | "weapon-placement";
@@ -708,8 +727,8 @@ export type CombatEvent =
   | { type: "projectile-blocked"; position: Vector2Data; weaponId?: WeaponId }
   | { type: "chain-arc"; from: Vector2Data; to: Vector2Data; weaponId: WeaponId }
   | { type: "slime-spit-windup"; position: Vector2Data; target: Vector2Data }
-  | { type: "slime-glob-fired"; position: Vector2Data; target: Vector2Data }
-  | { type: "slime-impact"; position: Vector2Data; createdPuddle: boolean }
+  | { type: "slime-glob-fired"; position: Vector2Data; target: Vector2Data; eliteKind?: EliteKind }
+  | { type: "slime-impact"; position: Vector2Data; createdPuddle: boolean; eliteKind?: EliteKind }
   | { type: "elite-armour-hit"; position: Vector2Data; eliteKind: EliteKind }
   | { type: "elite-reward-dropped"; position: Vector2Data; eliteKind: EliteKind }
   | { type: "elite-reward-collected"; position: Vector2Data }
@@ -805,9 +824,9 @@ export type CombatEvent =
   | { type: "kit-activated"; position: Vector2Data; powerupType: "uranium-core-rounds" }
   | { type: "warp-arrival"; position: Vector2Data }
   | { type: "ripper-sweep"; position: Vector2Data; direction: Vector2Data; reachMetres: number }
-  | { type: "razor-scuttler-warning"; position: Vector2Data; direction: Vector2Data }
-  | { type: "razor-scuttler-dash"; position: Vector2Data; direction: Vector2Data }
-  | { type: "razor-scuttler-impact"; position: Vector2Data; reason: "player" | "cover" | "miss" }
+  | { type: "razor-scuttler-warning"; position: Vector2Data; direction: Vector2Data; eliteKind?: EliteKind }
+  | { type: "razor-scuttler-dash"; position: Vector2Data; direction: Vector2Data; eliteKind?: EliteKind }
+  | { type: "razor-scuttler-impact"; position: Vector2Data; reason: "player" | "cover" | "miss"; eliteKind?: EliteKind }
   | { type: "quillback-windup"; position: Vector2Data; direction: Vector2Data; count: 1 | 3 | 5 }
   | { type: "quillback-volley"; position: Vector2Data; direction: Vector2Data; count: 1 | 3 | 5 }
   | { type: "quillback-spike-impact"; position: Vector2Data; hitPlayer: boolean }
@@ -835,6 +854,13 @@ export type CombatEvent =
   | { type: "bastion-eater-eggs"; position: Vector2Data; count: number }
   | { type: "bastion-eater-breach"; position: Vector2Data; radiusMetres: number; warning: boolean }
   | { type: "bastion-eater-vault"; position: Vector2Data }
+  | { type: "choir-voice-collapsed"; position: Vector2Data; voicesActive: number }
+  | { type: "choir-merged"; position: Vector2Data; safeRadiusMetres: number }
+  | { type: "choir-pulse-warning"; position: Vector2Data; radiusMetres: number; voicesActive: number }
+  | { type: "choir-pulse"; position: Vector2Data; radiusMetres: number; hitPlayer: boolean }
+  | { type: "choir-flood-hit"; position: Vector2Data; safeRadiusMetres: number; damage: number }
+  | { type: "sovereign-fabrication-warning"; position: Vector2Data; waveIndex: number }
+  | { type: "sovereign-fabricated"; position: Vector2Data; waveIndex: number; childIds: readonly number[]; buffMultiplier: number }
   | { type: "ultimate-fired"; position: Vector2Data }
   | { type: "medic-triage"; position: Vector2Data; healed: number; shieldGained: number }
   | { type: "medic-surge"; position: Vector2Data; healed: number; shieldGained: number }
@@ -918,6 +944,14 @@ export interface EnemySnapshot {
   bastionEaterDirection?: Vector2Data;
   bastionEaterTarget?: Vector2Data;
   bastionEaterNodeExposed?: boolean;
+  choirPhase?: ChoirBossState["phase"];
+  choirVoicesActive?: ChoirBossState["voicesActive"];
+  choirAttackPhase?: ChoirBossState["attackPhase"];
+  choirVoicePositions?: readonly Vector2Data[];
+  choirSafeRadiusMetres?: number;
+  sovereignPhase?: FoundrySovereignState["phase"];
+  sovereignWaveIndex?: number;
+  sovereignSummonBuffMultiplier?: number;
   rank: EnemyRank;
   threatClass: EnemyThreatClass;
   recentDamageRemainingSeconds: number;
@@ -1057,6 +1091,7 @@ export interface GroundHazardSnapshot {
   radiusMetres: number;
   remainingSeconds: number;
   durationSeconds: number;
+  eliteKind?: EliteKind;
 }
 
 export interface EliteRewardSnapshot {
@@ -1285,6 +1320,8 @@ export interface EnemyState {
   bastionEaterDirection: Vector2Data;
   bastionEaterTarget: Vector2Data;
   bastionEaterAttackCount: number;
+  choirBehavior: ChoirBossState;
+  foundrySovereignBehavior: FoundrySovereignState;
   rank: EnemyRank;
   /**
    * Body-radius multiplier on top of the catalog `radiusMetres`. Only ranked
@@ -1414,6 +1451,7 @@ interface EnemyProjectileState {
   id: number;
   type: "slime-glob" | "brood-acid" | "quill-spike" | "corrupted-knife" | "prime-biomass";
   sourceEnemyId?: number;
+  sourceEliteKind?: EliteKind;
   position: Vector2Data;
   velocity: Vector2Data;
   target: Vector2Data;
@@ -1433,6 +1471,7 @@ interface GroundHazardState {
   remainingSeconds: number;
   durationSeconds: number;
   ownerId?: number;
+  eliteKind?: EliteKind;
   damageCooldownSeconds?: number;
 }
 
@@ -2262,7 +2301,7 @@ export class CombatSimulation {
     // generic path must not pre-scale them. This list previously omitted
     // synapse-herald / assembly-prime / storm-regent, which briefly took real
     // wave scaling here before being overwritten.
-    const authoredBoss = isMiniBossKind(type) || type === "bastion-eater";
+    const authoredBoss = isMiniBossKind(type) || isBossKind(type);
     const scaling = waveScaling(this.waveIndex + 1, type, { boss: authoredBoss });
     const scaledMaxHealth = scaleEnemyHealth(definition.maxHealth, scaling);
     const spawnPosition = position ? { ...position } : this.nextEdgeSpawn(definition.radiusMetres);
@@ -2376,6 +2415,8 @@ export class CombatSimulation {
       }),
       bastionEaterTarget: { ...this.playerPosition },
       bastionEaterAttackCount: 0,
+      choirBehavior: createChoirBossState(),
+      foundrySovereignBehavior: createFoundrySovereignState(),
       rank: "standard",
       carapacePhase: "pursuit",
       carapacePhaseRemainingSeconds: 0,
@@ -2921,6 +2962,7 @@ export class CombatSimulation {
         radiusMetres: hazard.radiusMetres,
         remainingSeconds: hazard.remainingSeconds,
         durationSeconds: hazard.durationSeconds,
+        ...(hazard.eliteKind ? { eliteKind: hazard.eliteKind } : {}),
       })),
       eventHorizonFields: this.eventHorizonFields.map((field) => ({
         id: field.id,
@@ -5515,6 +5557,12 @@ export class CombatSimulation {
         case "abomination-prime":
           this.updateAbominationPrime(enemy, deltaSeconds);
           break;
+        case "the-choir":
+          this.updateChoirBoss(enemy, deltaSeconds);
+          break;
+        case "foundry-sovereign":
+          this.updateFoundrySovereign(enemy, deltaSeconds);
+          break;
         case "bastion-eater":
           this.updateBastionEater(enemy, deltaSeconds);
           break;
@@ -6363,7 +6411,11 @@ export class CombatSimulation {
     const ownerId = enemy.foundryChildOwnerId;
     const ownerAlive = ownerId !== null && this.enemies.some((candidate) => (
       candidate.id === ownerId && !candidate.dead
-      && (candidate.type === "foundry-fabricator" || candidate.type === "assembly-prime")
+      && (
+        candidate.type === "foundry-fabricator"
+        || candidate.type === "assembly-prime"
+        || candidate.type === "foundry-sovereign"
+      )
     ));
     const result = stepFoundryChildBehavior(
       {
@@ -6648,6 +6700,7 @@ export class CombatSimulation {
         type: "razor-scuttler-warning",
         position: { ...enemy.position },
         direction: { ...enemy.razorScuttlerDirection },
+        eliteKind: enemy.eliteKind,
       });
     }
     if (result.dashFired) {
@@ -6655,13 +6708,14 @@ export class CombatSimulation {
         type: "razor-scuttler-dash",
         position: { ...enemy.position },
         direction: { ...enemy.razorScuttlerDirection },
+        eliteKind: enemy.eliteKind,
       });
     }
     if (impact === "player") {
       this.damagePlayer(this.scaledEnemyDamage(enemy, RAZOR_SCUTTLER_DASH_DAMAGE));
     }
     if (impact !== null) {
-      this.frameEvents.push({ type: "razor-scuttler-impact", position: { ...enemy.position }, reason: impact });
+      this.frameEvents.push({ type: "razor-scuttler-impact", position: { ...enemy.position }, reason: impact, eliteKind: enemy.eliteKind });
     }
   }
 
@@ -7501,6 +7555,102 @@ export class CombatSimulation {
     });
   }
 
+  private updateChoirBoss(enemy: EnemyState, deltaSeconds: number): void {
+    const result = stepChoirBoss({
+      state: enemy.choirBehavior,
+      deltaSeconds,
+      health: enemy.health,
+      maxHealth: enemy.maxHealth,
+      ownerPosition: enemy.position,
+      playerPosition: this.playerPosition,
+    });
+    enemy.choirBehavior = result.state;
+    if (result.voiceCollapsed) {
+      this.frameEvents.push({
+        type: "choir-voice-collapsed",
+        position: { ...enemy.position },
+        voicesActive: result.state.voicesActive,
+      });
+    }
+    if (result.merged) {
+      this.frameEvents.push({
+        type: "choir-merged",
+        position: { ...enemy.position },
+        safeRadiusMetres: result.safeRadiusMetres!,
+      });
+    }
+    if (result.warning) {
+      this.frameEvents.push({
+        type: "choir-pulse-warning",
+        position: { ...enemy.position },
+        radiusMetres: result.pulseRadiusMetres,
+        voicesActive: result.state.voicesActive,
+      });
+    }
+    if (result.pulse) {
+      if (result.pulseHitPlayer) this.damagePlayer(this.scaledEnemyDamage(enemy, CHOIR_PULSE_DAMAGE), "explosive");
+      this.frameEvents.push({
+        type: "choir-pulse",
+        position: { ...enemy.position },
+        radiusMetres: result.pulseRadiusMetres,
+        hitPlayer: result.pulseHitPlayer,
+      });
+    }
+    if (result.floodHitPlayer) {
+      const damage = this.scaledEnemyDamage(enemy, CHOIR_FLOOD_DAMAGE);
+      this.damagePlayer(damage, "hazard");
+      this.frameEvents.push({
+        type: "choir-flood-hit",
+        position: { ...enemy.position },
+        safeRadiusMetres: result.safeRadiusMetres!,
+        damage,
+      });
+    }
+  }
+
+  private updateFoundrySovereign(enemy: EnemyState, deltaSeconds: number): void {
+    const result = stepFoundrySovereign(enemy.foundrySovereignBehavior, deltaSeconds);
+    enemy.foundrySovereignBehavior = result.state;
+    for (const child of this.enemies) {
+      if (!child.dead && child.foundryChildOwnerId === enemy.id) {
+        child.damageMultiplier = Math.max(child.damageMultiplier, result.summonBuffMultiplier);
+        if (child.type === "foundry-drone") {
+          child.movementSpeedMultiplier = Math.max(child.movementSpeedMultiplier, result.summonBuffMultiplier);
+        }
+      }
+    }
+    if (result.warning) {
+      this.frameEvents.push({
+        type: "sovereign-fabrication-warning",
+        position: { ...enemy.position },
+        waveIndex: result.state.waveIndex,
+      });
+    }
+    if (result.fabricated.length === 0) return;
+    const childIds: number[] = [];
+    result.fabricated.forEach((type, index) => {
+      if (this.availableDirectorEnemySlots() <= 0) return;
+      const angle = (result.state.waveIndex * 1.7 + index * Math.PI) % (Math.PI * 2);
+      const childId = this.spawnEnemy(type, {
+        x: clamp(enemy.position.x + Math.cos(angle) * 2.2, 0.8, this.widthMetres - 0.8),
+        y: clamp(enemy.position.y + Math.sin(angle) * 2.2, 0.8, this.heightMetres - 0.8),
+      });
+      const child = this.enemies.find((candidate) => candidate.id === childId)!;
+      child.foundryChildOwnerId = enemy.id;
+      child.foundryChildRemainingSeconds = 24;
+      child.damageMultiplier *= result.summonBuffMultiplier;
+      if (type === "foundry-drone") child.movementSpeedMultiplier *= result.summonBuffMultiplier;
+      childIds.push(childId);
+    });
+    this.frameEvents.push({
+      type: "sovereign-fabricated",
+      position: { ...enemy.position },
+      waveIndex: result.state.waveIndex,
+      childIds,
+      buffMultiplier: result.summonBuffMultiplier,
+    });
+  }
+
   private updateBastionEater(enemy: EnemyState, deltaSeconds: number): void {
     let state = {
       phase: enemy.bastionEaterPhase,
@@ -8035,6 +8185,8 @@ export class CombatSimulation {
     };
     this.spawnHostileProjectile({
       type: "slime-glob",
+      sourceEnemyId: enemy.id,
+      sourceEliteKind: enemy.eliteKind,
       position: start,
       velocity: { x: direction.x * speed, y: direction.y * speed },
       target: { ...enemy.spitterTarget },
@@ -8050,6 +8202,7 @@ export class CombatSimulation {
       type: "slime-glob-fired",
       position: { ...start },
       target: { ...enemy.spitterTarget },
+      eliteKind: enemy.eliteKind,
     });
   }
 
@@ -8088,6 +8241,7 @@ export class CombatSimulation {
       projectile.position,
       projectile.puddleRadiusMetres,
       projectile.puddleDurationSeconds,
+      projectile.sourceEliteKind,
     );
     const hitPlayer = distance(projectile.position, this.playerPosition) <= PLAYER_RADIUS_METRES + 0.45;
     if (projectile.type === "prime-biomass") {
@@ -8110,6 +8264,7 @@ export class CombatSimulation {
         type: "slime-impact",
         position: { ...projectile.position },
         createdPuddle,
+        eliteKind: projectile.sourceEliteKind,
       });
     }
     if (hitPlayer) {
@@ -8117,7 +8272,12 @@ export class CombatSimulation {
     }
   }
 
-  private createSlowingPuddle(position: Vector2Data, radiusMetres?: number, durationSeconds?: number): boolean {
+  private createSlowingPuddle(
+    position: Vector2Data,
+    radiusMetres?: number,
+    durationSeconds?: number,
+    eliteKind?: EliteKind,
+  ): boolean {
     const radius = radiusMetres ?? SLOWING_PUDDLE_RADIUS_METRES;
     const duration = durationSeconds ?? SLOWING_PUDDLE_DURATION_SECONDS;
     this.groundHazards.push({
@@ -8127,6 +8287,7 @@ export class CombatSimulation {
       radiusMetres: radius,
       remainingSeconds: duration,
       durationSeconds: duration,
+      eliteKind,
     });
     while (this.groundHazards.filter((hazard) => hazard.type === "slowing-slime").length > MAX_SLOWING_PUDDLES) {
       const oldestPuddle = this.groundHazards.findIndex((hazard) => hazard.type === "slowing-slime");
@@ -9058,6 +9219,20 @@ export class CombatSimulation {
         }
       }
     }
+    if (enemy.type === "foundry-sovereign") {
+      for (const child of this.enemies) {
+        if (!child.dead && child.foundryChildOwnerId === enemy.id) {
+          child.dead = true;
+          this.frameEvents.push({
+            type: "foundry-child-powered-down",
+            position: { ...child.position },
+            enemyId: child.id,
+            ownerId: enemy.id,
+            reason: "owner-defeated",
+          });
+        }
+      }
+    }
     if (enemy.type === "assembly-prime") {
       const pending = enemy.assemblyPrimeBehavior.pendingReservation;
       if (pending) {
@@ -9151,9 +9326,11 @@ export class CombatSimulation {
         }
       }
     }
-    if (enemy.type === "bastion-eater") {
+    if (isBossKind(enemy.type)) {
       this.status = "victory";
-      this.frameEvents.push({ type: "bastion-eater-vault", position: { ...enemy.position } });
+      if (enemy.type === "bastion-eater") {
+        this.frameEvents.push({ type: "bastion-eater-vault", position: { ...enemy.position } });
+      }
     }
     if (enemy.type === "blast-mite") {
       this.frameEvents.push({
@@ -9263,7 +9440,7 @@ export class CombatSimulation {
 
   private spawnHostileProjectile(data: Omit<EnemyProjectileState, "id" | "dead">): void {
     const projectile = this.hostileProjectilePool.pop() ?? ({} as EnemyProjectileState);
-    Object.assign(projectile, { sourceEnemyId: undefined }, data, { id: this.nextId(), dead: false });
+    Object.assign(projectile, { sourceEnemyId: undefined, sourceEliteKind: undefined }, data, { id: this.nextId(), dead: false });
     this.enemyProjectiles.push(projectile);
   }
 
@@ -9586,19 +9763,25 @@ export class CombatSimulation {
       this.waveThreatBudget = 40;
       this.recordDensitySpawn({ type: "siege-crusher", rank: "mini-boss", threatCost: 40 });
     } else {
-      this.spawnBastionEater({ x: this.widthMetres / 2 - 7, y: this.heightMetres / 2 });
+      this.spawnBoss(encounter.bossKind ?? "bastion-eater", { x: this.widthMetres / 2 - 7, y: this.heightMetres / 2 });
       this.waveThreatBudget = 40;
-      this.recordDensitySpawn({ type: "bastion-eater", rank: "boss", threatCost: 40 });
+      this.recordDensitySpawn({ type: encounter.bossKind ?? "bastion-eater", rank: "boss", threatCost: 40 });
     }
   }
 
   private spawnBastionEater(position?: Vector2Data): number {
-    const id = this.spawnEnemy("bastion-eater", position);
+    return this.spawnBoss("bastion-eater", position);
+  }
+
+  private spawnBoss(kind: BossKind, position?: Vector2Data): number {
+    const id = this.spawnEnemy(kind, position);
     const boss = this.enemies.find((enemy) => enemy.id === id)!;
     boss.rank = "boss";
-    boss.bastionEaterPhase = "breach";
-    boss.bastionEaterAction = "entrance";
-    boss.bastionEaterActionRemainingSeconds = 1.2;
+    if (kind === "bastion-eater") {
+      boss.bastionEaterPhase = "breach";
+      boss.bastionEaterAction = "entrance";
+      boss.bastionEaterActionRemainingSeconds = 1.2;
+    }
     return id;
   }
 
@@ -9628,6 +9811,7 @@ export class CombatSimulation {
       spawnMiniBoss: (kind, position) => this.spawnMiniBoss(kind, position),
       spawnAurumHoarder: (position) => this.spawnAurumHoarder(position),
       spawnBastionEater: (position) => this.spawnBastionEater(position),
+      spawnBoss: (kind, position) => this.spawnBoss(kind, position),
       recordDensitySpawn: (spawn) => this.recordDensitySpawn(spawn),
       activeObstacles: () => this.activeObstacles(),
       nextWeaponInstanceId: () => this.weaponInventory.nextInstanceId++,
@@ -9803,6 +9987,20 @@ export class CombatSimulation {
       bastionEaterDirection: enemy.type === "bastion-eater" ? { ...enemy.bastionEaterDirection } : undefined,
       bastionEaterTarget: enemy.type === "bastion-eater" ? { ...enemy.bastionEaterTarget } : undefined,
       bastionEaterNodeExposed: enemy.type === "bastion-eater" ? enemy.bastionEaterAction === "recovery" : undefined,
+      choirPhase: enemy.type === "the-choir" ? enemy.choirBehavior.phase : undefined,
+      choirVoicesActive: enemy.type === "the-choir" ? enemy.choirBehavior.voicesActive : undefined,
+      choirAttackPhase: enemy.type === "the-choir" ? enemy.choirBehavior.attackPhase : undefined,
+      choirVoicePositions: enemy.type === "the-choir"
+        ? choirVoicePositions(enemy.position, enemy.choirBehavior.phase).slice(0, enemy.choirBehavior.voicesActive)
+        : undefined,
+      choirSafeRadiusMetres: enemy.type === "the-choir" && enemy.choirBehavior.phase === "merged"
+        ? CHOIR_FLOOD_SAFE_RADIUS_METRES
+        : undefined,
+      sovereignPhase: enemy.type === "foundry-sovereign" ? enemy.foundrySovereignBehavior.phase : undefined,
+      sovereignWaveIndex: enemy.type === "foundry-sovereign" ? enemy.foundrySovereignBehavior.waveIndex : undefined,
+      sovereignSummonBuffMultiplier: enemy.type === "foundry-sovereign"
+        ? Math.min(1.5, 1 + enemy.foundrySovereignBehavior.waveIndex * 0.1)
+        : undefined,
       rank: enemy.rank,
       threatClass: enemyThreatClass(enemy),
       recentDamageRemainingSeconds: enemy.recentDamageRemainingSeconds,

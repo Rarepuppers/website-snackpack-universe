@@ -37,6 +37,8 @@ export type EnemyType =
   | "assembly-prime"
   | "storm-regent"
   | "abomination-prime"
+  | "the-choir"
+  | "foundry-sovereign"
   | "bastion-eater";
 
 export interface EnemyDefinition {
@@ -417,6 +419,30 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyType, EnemyDefinition>> = Objec
     flatDamageReduction: 3,
     resistances: { toxic: 0.65 },
     steeringProfile: "pursuer",
+  }),
+  "the-choir": enemy({
+    id: "the-choir",
+    maxHealth: 1800,
+    radiusMetres: 1.55,
+    movementSpeedMetresPerSecond: 0.6,
+    contactDamage: 2,
+    experienceValue: 0,
+    armour: 1,
+    resistances: { fire: 1.2, shock: 1.15, toxic: 0.7 },
+    steeringProfile: "supportAnchor",
+  }),
+  "foundry-sovereign": enemy({
+    id: "foundry-sovereign",
+    maxHealth: 2100,
+    radiusMetres: 1.7,
+    movementSpeedMetresPerSecond: 0,
+    contactDamage: 0,
+    experienceValue: 0,
+    armour: 4,
+    flatDamageReduction: 1,
+    // Machine-faction finale lesson: Shock is the clean answer to the core.
+    resistances: { shock: 1.6, physical: 0.85 },
+    steeringProfile: "supportAnchor",
   }),
   "bastion-eater": enemy({
     id: "bastion-eater",

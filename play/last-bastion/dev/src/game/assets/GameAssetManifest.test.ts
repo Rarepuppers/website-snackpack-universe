@@ -52,7 +52,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(197);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(205);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -277,6 +277,23 @@ describe("GameAssetManifest", () => {
     if (effects.kind === "spritesheet") expect(effects.frameCount).toBe(12);
     if (environment.kind === "spritesheet") expect(environment.frameCount).toBe(8);
     expect(GAME_ASSETS["bastion-eater-portrait-v1"].kind).toBe("image");
+  });
+
+  it("locks Regional Boss B2-B3 body, effect, and portrait contracts", () => {
+    for (const prefix of ["the-choir", "foundry-sovereign"] as const) {
+      const body = GAME_ASSETS[`${prefix}-v1`];
+      const effects = GAME_ASSETS[`${prefix}-effects-v1`];
+      const portrait = GAME_ASSETS[`${prefix}-portrait-v1`];
+      expect(body.kind).toBe("spritesheet");
+      expect(effects.kind).toBe("spritesheet");
+      expect(portrait.kind).toBe("image");
+      if (body.kind === "spritesheet") {
+        expect(body).toMatchObject({ frameWidth: 192, frameHeight: 192, frameCount: 12 });
+      }
+      if (effects.kind === "spritesheet") {
+        expect(effects).toMatchObject({ frameWidth: 128, frameHeight: 128, frameCount: 8 });
+      }
+    }
   });
 
   it("locks Production Batch F1 weapon and UI contracts", () => {
@@ -737,11 +754,13 @@ describe("GameAssetManifest", () => {
     }
   });
 
-  it("locks the production Elite Batch E1 body contracts", () => {
+  it("locks the production Elite Batch E1 body, tile and effect contracts", () => {
     const expected = {
       "ironhide-abomination-v1": [128, 12],
       "splitcaller-weaver-v1": [192, 32],
       "voltaic-warden-v1": [128, 32],
+      "elemental-upgrade-tiles-v1": [128, 4],
+      "elite-dash-puddle-effects-v1": [128, 8],
     } as const;
     for (const [id, [size, frames]] of Object.entries(expected)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];

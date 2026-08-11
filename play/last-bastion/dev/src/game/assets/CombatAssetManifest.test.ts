@@ -160,6 +160,21 @@ describe("combatAssetsForSession", () => {
     expect(ids.has("machine-foundry-effects-v1")).toBe(false);
   });
 
+  it.each(["razorlord", "blightspitter"])("keeps Elite Batch E1 effect accents with %s", (eliteKind) => {
+    const ids = new Set(combatAssetsForSession({
+      arenaTheme: arenaThemeById("alien-hive")!,
+      heroId: "marine",
+      productionArt: true,
+      helmet: false,
+      worldObjectAssetIds: [],
+      enemyTypes: [eliteKind === "razorlord" ? "razor-scuttler" : "slime-spitter"],
+      eliteKinds: [eliteKind],
+    }).map((asset) => asset.id));
+
+    expect(ids.has("elite-dash-puddle-effects-v1")).toBe(true);
+    expect(ids.has(eliteKind === "razorlord" ? "razorlord-v1" : "blightspitter-v1")).toBe(true);
+  });
+
   /**
    * Both mini-bosses summon `egg-cluster` mid-fight via the shared
    * `layBroodEggs`, and an unhatched-but-uncleared egg later hatches into a
@@ -188,4 +203,19 @@ describe("combatAssetsForSession", () => {
       expect(ids.has("machine-foundry-effects-v1")).toBe(false);
     },
   );
+
+  it.each([
+    ["the-choir", ["the-choir-v1", "the-choir-effects-v1"]],
+    ["foundry-sovereign", ["foundry-sovereign-v1", "foundry-sovereign-effects-v1", "machine-foundry-drone-v1", "machine-foundry-turret-v1"]],
+  ] as const)("keeps the complete regional-boss set with a solo %s node", (bossType, expected) => {
+    const ids = new Set(combatAssetsForSession({
+      arenaTheme: arenaThemeById(bossType === "the-choir" ? "alien-hive" : "machine-foundry")!,
+      heroId: "marine",
+      productionArt: true,
+      helmet: false,
+      worldObjectAssetIds: [],
+      enemyTypes: [bossType],
+    }).map((asset) => asset.id));
+    for (const id of expected) expect(ids.has(id)).toBe(true);
+  });
 });

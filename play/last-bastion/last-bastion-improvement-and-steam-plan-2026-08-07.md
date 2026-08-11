@@ -13,8 +13,14 @@ The next content-depth batch is also live code-first: the elite roster expands f
 Ironhide Abomination counters repeated single-type damage, Splitcaller Weaver doubles the ordinary
 pod payload through a weaker interrupt window, and Voltaic Warden adds a second readable beam lane.
 All three are expedition-eligible, have deterministic Lab routes and tests, bespoke production
-silhouettes, and a non-colour-only segmented elite marker. Batch 77's upgrade tiles and supporting
-effect accents remain open.
+silhouettes, a non-colour-only segmented elite marker, four elemental upgrade tiles, and live
+Razorlord/Blightspitter effect accents. Batch 77 is complete.
+
+The regional-finale batch is complete. Alien Hive/Toxic Bloom end at The Choir, Machine
+Foundry/Science Wing end at Foundry Sovereign, and neutral themes retain Bastion Eater. Both new
+bosses have complete simulation, victory/reward lifecycle, HUD/audio feedback, production bodies,
+phase/effect atlases, portraits, deterministic tests, Lab routes, gallery review, and smoke coverage.
+The next gate is observed balance testing, not presentation prerequisites.
 
 **Written: 7 August 2026. Status: LIVE — this is a forward plan, not a history doc.**
 

@@ -4520,3 +4520,56 @@ The four live elite identities now each communicate a different combat lesson.
   Codex copy, art contracts, local routes, and forward-plan status.
 - Full verification passes: **1,546 tests across 272 files**, production build, **86 smoke routes**,
   WebP audit (**8 lossy + 53 lossless**), and offline **375 / 0 missing** local references.
+
+## 11 August 2026 — Elite Batch E1 elemental tiles and effect accents
+
+- Completed Batch 77 with a four-frame elemental upgrade atlas for Incendiary Rounds, Cryo Coating,
+  Chain Lightning, and Corrosive Rounds. The live level-up list and matching Scrap Shop offers now
+  use those stable frames; the normalization script exports the same cells to the static Codex.
+- Added an eight-frame Razorlord/Blightspitter atlas. Razorlord now uses authored launch, streak,
+  impact, and recovery beats. Blightspitter projectile identity now survives into its ground-hazard
+  snapshot, so impact, puddle onset, active bubbles, and dissipation follow the elite's full 2 m / 7 s
+  denial lifecycle without changing simulation-owned geometry or timing.
+- Retained built-in image-generation chroma and alpha masters, added exact 128 px runtime contracts,
+  focused tile/preload tests, and the `?mode=gallery&batch=elite-e1-ui` review route.
+- Full verification passes: **1,550 tests across 273 files**, production build, **87 smoke routes**,
+  WebP audit (**8 lossy + 53 lossless**), and offline **377 / 0 missing** local references. Browser
+  review confirmed the gallery and both elite labs render with no console errors.
+
+## 11 August 2026 — Regional finale mechanics: The Choir and Foundry Sovereign
+
+- Added The Choir as a shared-health three-voice boss. It loses a voice at 75%, accelerates its
+  warned pulses, merges at 50%, and then damages only players outside its clearly drawn safe radius.
+- Added Foundry Sovereign as a stationary, Shock-weak command core. It telegraphs deterministic
+  drone/turret waves, increases summon strength by 10% per completed wave up to 50%, and powers all
+  owned constructs down when the core falls.
+- Final expedition nodes now select Choir for Alien Hive/Toxic Bloom, Sovereign for Machine
+  Foundry/Science Wing, and Bastion Eater for neutral themes. All three finales use the same victory,
+  Scrap, unique-unlock, and artifact-vault contract.
+- Added code-native bodies, linked-voice/core telegraphs, pulse/safe-radius/fabrication feedback,
+  synthesized cues, boss HUD phases, Codex entries, deterministic Labs, review-harness routes, and
+  smoke coverage. The integration tests caught and fixed Sovereign children rejecting their new
+  owner and the old Bastion-only victory check.
+- Live inventory is now **5 heroes, 34 weapons, 38 enemy types, 7 elites, 7 mini-bosses, 3 bosses**.
+  Full verification passes: **1,560 tests across 276 files**, production build, **89 smoke routes**,
+  WebP audit (**8 lossy + 53 lossless**), and offline **377 / 0 missing** local references.
+- Next: production art Batch 78 (Choir) and Batch 79 (Sovereign), then observed balance runs for
+  pulse/flood pressure, summon-clear versus core-rush viability, and three-to-five-minute duration.
+
+## 11 August 2026 — Regional finale production art: Boss Batches 78–79
+
+- Shipped The Choir and Foundry Sovereign as production-art encounters: one 12-frame body atlas,
+  one eight-frame mechanic-effects atlas, and one 256 px portrait per boss, for **42 production
+  visuals** across the combined review gallery.
+- The Choir now renders three simulation-owned linked voices, collapse/merge phase frames, pulse and
+  flood accents, and its defeat effect. Foundry Sovereign now renders cooldown/warning/fabrication
+  frames, fabrication and owned-child effects, and its defeat effect.
+- Added stable manifest IDs, encounter-scoped preload contracts, gallery/review/smoke routes, retained
+  chroma and clean-alpha masters, deterministic normalization, and prompt/provenance documentation.
+- Added both body sheets to the lossless runtime image pipeline. The audited inventory is now
+  **8 lossy + 55 lossless** WebP derivatives.
+- Browser QA confirmed the combined gallery and both live boss labs render without console warnings
+  or errors. Full verification passes: **1,563 tests across 276 files**, production build,
+  **90 smoke routes**, and offline **385 / 0 missing** local references.
+- Next: five observed tier runs, logging Choir pulse/flood pressure, Sovereign summon-clear versus
+  core-rush viability, boss duration, damage source, and any mechanic-confusion notes.

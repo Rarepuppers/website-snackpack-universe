@@ -100,6 +100,8 @@ LOSSLESS_SOURCES = (
     "batch-d3/bastion-eater-spritesheet-v1-192.png",
     "batch-k/status-effect-overlay-atlas-v2-256.png",
     "legacy-enemy-refresh/egg-cluster-spritesheet-v2-256.png",
+    "batch-b2-b3/the-choir-spritesheet-v1-192.png",
+    "batch-b2-b3/foundry-sovereign-spritesheet-v1-192.png",
 )
 
 

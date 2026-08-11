@@ -85,7 +85,7 @@ export function formatContentInventory(inventory: ContentInventory = CONTENT_INV
   return [
     `${inventory.heroes} heroes`,
     `${inventory.weaponsTotal} weapons (${inventory.weaponsDraftable} draftable, ${inventory.weaponsUnique} earned unique, ${inventory.weaponsHeroBound} hero-bound, ${inventory.weaponsTransformationOnly} transformation-only)`,
-    `${inventory.enemyTypesTotal} enemy catalogue types (${inventory.regularEnemyTypes} regular/treasure, ${inventory.supportEnemyTypes} summons/props, ${inventory.miniBosses} mini-bosses, ${inventory.bosses} boss)`,
+    `${inventory.enemyTypesTotal} enemy catalogue types (${inventory.regularEnemyTypes} regular/treasure, ${inventory.supportEnemyTypes} summons/props, ${inventory.miniBosses} mini-bosses, ${inventory.bosses} ${inventory.bosses === 1 ? "boss" : "bosses"})`,
     `${inventory.elites} elite identities`,
     `${inventory.items} items, ${inventory.relics} relics, ${inventory.artifacts} artifacts`,
     `${inventory.upgrades} upgrades, ${inventory.levelStatCards} level-stat cards, ${inventory.worldObjects} world objects, ${inventory.objectiveModes} objective modes`,

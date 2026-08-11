@@ -738,6 +738,30 @@
       "runtimeBytes": 243198,
       "sourceSha256": "57bae05ec98717fcde577f2a322b6de4106a01fd7e76e77ba8580e44770e9c83",
       "runtimeSha256": "ddef6dd803679e6977c3037988bdc1119ff2fa8761c099b7271fdc11f06bf869"
+    },
+    {
+      "source": "art/production-tests/batch-b2-b3/the-choir-spritesheet-v1-192.png",
+      "runtime": "art/production-tests/batch-b2-b3/the-choir-spritesheet-v1-192.webp",
+      "width": 768,
+      "height": 576,
+      "quality": 100,
+      "lossless": true,
+      "sourceBytes": 476546,
+      "runtimeBytes": 374894,
+      "sourceSha256": "53d6b512769380b9fa9f732f6d0c293031c70633a75fd2c5f9c3bf69c1b93cf2",
+      "runtimeSha256": "7b3776673623970c5ee6dc99eb596b8f10273269d2f243668c12638ffe26c69e"
+    },
+    {
+      "source": "art/production-tests/batch-b2-b3/foundry-sovereign-spritesheet-v1-192.png",
+      "runtime": "art/production-tests/batch-b2-b3/foundry-sovereign-spritesheet-v1-192.webp",
+      "width": 768,
+      "height": 576,
+      "quality": 100,
+      "lossless": true,
+      "sourceBytes": 581543,
+      "runtimeBytes": 409886,
+      "sourceSha256": "6d4129b52c11a8772d066f00a358daebb74c9800b09773a6513a556552b50883",
+      "runtimeSha256": "73b4d6efc6db9ea96b6e3152bf243e3bb7390a760d4e77e1ffbf5cb0d70ab1da"
     }
   ],
   "supportingAssets": [

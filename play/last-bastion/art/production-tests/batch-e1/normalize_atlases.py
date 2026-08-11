@@ -1,4 +1,4 @@
-"""Normalize approved Quillback Production Batch E1 masters into fixed Phaser assets."""
+"""Normalize approved Production Batch E1 masters into fixed Phaser assets."""
 
 from collections import deque
 from pathlib import Path
@@ -7,6 +7,7 @@ from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parent
+GAME_TILE_ROOT = ROOT.parents[2] / "game-assets" / "tiles"
 NEAREST = Image.Resampling.NEAREST
 
 
@@ -127,3 +128,40 @@ fitted_sheet(
     False,
     0.015,
 )
+fitted_sheet(
+    "elemental-upgrade-tile-atlas-v1-alpha-master.png",
+    "elemental-upgrade-tile-atlas-v1-128.png",
+    2,
+    2,
+    128,
+    128,
+    2,
+    True,
+    0.015,
+)
+fitted_sheet(
+    "elite-dash-puddle-effects-v1-alpha-master.png",
+    "elite-dash-puddle-effects-v1-128.png",
+    4,
+    2,
+    128,
+    128,
+    4,
+    False,
+    0.01,
+)
+
+# The static Codex consumes stable individual files while Phaser consumes the
+# atlas above. Export both from the same normalized source so they cannot drift.
+upgrade_atlas = Image.open(ROOT / "elemental-upgrade-tile-atlas-v1-128.png").convert("RGBA")
+GAME_TILE_ROOT.mkdir(parents=True, exist_ok=True)
+for index, tile_id in enumerate((
+    "upg-incendiary-rounds",
+    "upg-cryo-coating",
+    "upg-chain-lightning",
+    "upg-corrosive-rounds",
+)):
+    column, row = index % 2, index // 2
+    upgrade_atlas.crop((column * 128, row * 128, (column + 1) * 128, (row + 1) * 128)).save(
+        GAME_TILE_ROOT / f"{tile_id}-v1.png"
+    )

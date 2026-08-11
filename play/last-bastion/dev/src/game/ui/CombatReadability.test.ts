@@ -43,4 +43,13 @@ describe("combat readability presentation", () => {
     });
     expect(bossHudPresentation([])).toBeNull();
   });
+
+  it("names and phases both regional finales", () => {
+    expect(bossHudPresentation([{
+      type: "the-choir", rank: "boss", health: 900, maxHealth: 1800, choirPhase: "merged",
+    } as EnemySnapshot])).toMatchObject({ name: "THE CHOIR", phaseLabel: "MERGED  /  ENRAGED" });
+    expect(bossHudPresentation([{
+      type: "foundry-sovereign", rank: "boss", health: 2100, maxHealth: 2100, sovereignPhase: "warning",
+    } as EnemySnapshot])).toMatchObject({ name: "FOUNDRY SOVEREIGN", phaseLabel: "WARNING" });
+  });
 });

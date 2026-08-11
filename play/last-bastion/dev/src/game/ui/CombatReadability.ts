@@ -44,6 +44,10 @@ export function bossHudPresentation(enemies: readonly EnemySnapshot[]): BossHudP
   const healthRatio = Math.max(0, Math.min(boss.health / Math.max(1, boss.maxHealth), 1));
   const phase = boss.type === "bastion-eater"
     ? boss.bastionEaterPhase
+    : boss.type === "the-choir"
+      ? boss.choirPhase
+      : boss.type === "foundry-sovereign"
+        ? boss.sovereignPhase
     : boss.miniBossKind === "brood-warden"
       ? boss.broodWardenPhase
       : boss.miniBossKind === "rift-stalker"
@@ -70,6 +74,8 @@ export function bossHudPresentation(enemies: readonly EnemySnapshot[]): BossHudP
 
 function bossName(boss: EnemySnapshot): string {
   if (boss.type === "bastion-eater") return "THE BASTION EATER";
+  if (boss.type === "the-choir") return "THE CHOIR";
+  if (boss.type === "foundry-sovereign") return "FOUNDRY SOVEREIGN";
   switch (boss.miniBossKind) {
     case "brood-warden": return "BROOD WARDEN";
     case "rift-stalker": return "RIFT STALKER";

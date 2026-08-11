@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { generateExpeditionMap } from "./ExpeditionMap";
-import { expeditionEncounterForNode, expeditionEncounterUrl, objectiveModeLabel } from "./ExpeditionEncounter";
+import { bossKindForTheme, expeditionEncounterForNode, expeditionEncounterUrl, objectiveModeLabel } from "./ExpeditionEncounter";
 
 describe("Expedition node encounter contract", () => {
   it("maps every node deterministically to its existing encounter family", () => {
@@ -60,5 +60,13 @@ describe("Expedition node encounter contract", () => {
     expect(modes).toEqual(new Set(["escort", "deny", "collect"]));
     expect([objectiveModeLabel("escort"), objectiveModeLabel("deny"), objectiveModeLabel("collect")])
       .toEqual(["ESCORT", "DENY CHANNEL", "TIMED RECOVERY"]);
+  });
+
+  it("selects a finale that teaches the region's combat language", () => {
+    expect(bossKindForTheme("alien-hive")).toBe("the-choir");
+    expect(bossKindForTheme("toxic-bloom")).toBe("the-choir");
+    expect(bossKindForTheme("machine-foundry")).toBe("foundry-sovereign");
+    expect(bossKindForTheme("science-wing")).toBe("foundry-sovereign");
+    expect(bossKindForTheme("ruined-city")).toBe("bastion-eater");
   });
 });

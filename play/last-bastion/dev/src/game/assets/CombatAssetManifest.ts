@@ -40,6 +40,8 @@ const GALLERY_ONLY_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
   "siege-crusher-portrait-v1",
   "brood-warden-portrait-v1",
   "bastion-eater-portrait-v1",
+  "the-choir-portrait-v1",
+  "foundry-sovereign-portrait-v1",
   "rift-stalker-portrait-v1",
   "synapse-herald-portrait-v1",
   "assembly-prime-portrait-v1",
@@ -128,7 +130,7 @@ const ENEMY_BODY_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
   "siege-crusher-v1", "blast-mite-v1", "warp-flanker-v1", "brood-warden-v1", "rift-stalker-v1",
   "synapse-herald-v1", "assembly-prime-v1", "storm-regent-v1", "abomination-prime-v1",
   "ripper-v1", "razor-scuttler-v1", "quillback-v1", "spinewheel-v1", "spinewheel-shell-v1",
-  "tether-bloom-v1", "bastion-eater-v1", "bastion-eater-nodes-v1", "aurum-hoarder-v1",
+  "tether-bloom-v1", "bastion-eater-v1", "bastion-eater-nodes-v1", "the-choir-v1", "foundry-sovereign-v1", "aurum-hoarder-v1",
   "corrupted-survivor-v1", "corrupted-marine-v1", "abomination-v1", "nest-weaver-v1", "nest-pod-v1",
   "swarm-scuttler-v1", "storm-savant-v1", "storm-node-v1", "machine-scrap-skitterer-v1",
   "machine-arc-warden-v1", "machine-cyborg-reclaimer-v1", "machine-foundry-fabricator-v1",
@@ -146,11 +148,13 @@ const ENCOUNTER_SPECIFIC_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
   "ripper-effects-v1", "razor-scuttler-effects-v1", "quillback-effects-v1",
   "spinewheel-effects-v1", "tether-bloom-effects-v1",
   "bastion-eater-nodes-v1", "bastion-eater-effects-v1", "bastion-eater-environment-v1",
+  "the-choir-effects-v1", "foundry-sovereign-effects-v1",
   "aurum-hoarder-effects-v1", "corrupted-marine-effects-v1",
   "nest-effects-v1", "storm-node-v1", "storm-effects-v1",
   "machine-scrap-skitterer-effects-v1", "machine-arc-warden-effects-v1",
   "machine-cyborg-reclaimer-effects-v1", "machine-foundry-pad-v1",
   "machine-foundry-drone-v1", "machine-foundry-turret-v1", "machine-foundry-effects-v1",
+  "elite-dash-puddle-effects-v1",
 ]);
 
 const ENCOUNTER_ASSETS_BY_TYPE: Readonly<Record<string, readonly GameAssetId[]>> = Object.freeze({
@@ -164,6 +168,8 @@ const ENCOUNTER_ASSETS_BY_TYPE: Readonly<Record<string, readonly GameAssetId[]>>
   ripper: ["ripper-effects-v1"], "razor-scuttler": ["razor-scuttler-effects-v1"], quillback: ["quillback-effects-v1"],
   spinewheel: ["spinewheel-effects-v1"], "tether-bloom": ["tether-bloom-effects-v1"],
   "bastion-eater": ["bastion-eater-nodes-v1", "bastion-eater-effects-v1", "bastion-eater-environment-v1"],
+  "the-choir": ["the-choir-effects-v1"],
+  "foundry-sovereign": ["machine-foundry-drone-v1", "machine-foundry-turret-v1", "machine-foundry-effects-v1", "foundry-sovereign-effects-v1"],
   "aurum-hoarder": ["aurum-hoarder-effects-v1"], "infected-survivor": ["batch-c-effects-v1"],
   "corrupted-marine": ["corrupted-marine-effects-v1"], abomination: ["batch-c-effects-v1"],
   "nest-weaver": ["nest-effects-v1"], "nest-pod": ["nest-effects-v1"], "nest-hatchling": ["nest-effects-v1"],
@@ -196,6 +202,8 @@ const ENEMY_BODY_BY_TYPE: Readonly<Record<string, readonly GameAssetId[]>> = Obj
   spinewheel: ["spinewheel-v1", "spinewheel-shell-v1"],
   "tether-bloom": ["tether-bloom-v1"],
   "bastion-eater": ["bastion-eater-v1", "bastion-eater-nodes-v1"],
+  "the-choir": ["the-choir-v1"],
+  "foundry-sovereign": ["foundry-sovereign-v1"],
   "aurum-hoarder": ["aurum-hoarder-v1"],
   "infected-survivor": ["corrupted-survivor-v1"],
   "corrupted-marine": ["corrupted-marine-v1"],
@@ -318,6 +326,9 @@ function requiredEnemyBodyIdsForSelection(selection: CombatAssetSelection): Read
   for (const eliteKind of selection.eliteKinds ?? []) {
     const assetId = ELITE_BODY_BY_KIND[eliteKind];
     if (assetId) required.add(assetId);
+    if (eliteKind === "razorlord" || eliteKind === "blightspitter") {
+      required.add("elite-dash-puddle-effects-v1");
+    }
   }
   for (const miniBossKind of selection.miniBossKinds ?? []) {
     const assetId = MINI_BOSS_BODY_BY_KIND[miniBossKind];

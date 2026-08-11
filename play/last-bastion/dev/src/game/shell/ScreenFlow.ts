@@ -229,6 +229,8 @@ export const LAB_ROUTES: readonly LabRoute[] = Object.freeze([
   { label: "Cyborg Reclaimer lab", url: "?scenario=cyborg-reclaimer&loadout=vertical" },
   { label: "Foundry Fabricator lab", url: "?scenario=foundry-fabricator&loadout=vertical" },
   { label: "Bastion Eater lab", url: "?scenario=bastion-eater&loadout=vertical" },
+  { label: "The Choir boss lab", url: "?scenario=the-choir&loadout=vertical" },
+  { label: "Foundry Sovereign boss lab", url: "?scenario=foundry-sovereign&loadout=vertical" },
   { label: "Escort objective lab", url: "?scenario=escort-objective&loadout=vertical" },
   { label: "Deny objective lab", url: "?scenario=deny-objective&loadout=vertical" },
   { label: "Collect objective lab", url: "?scenario=collect-objective&loadout=vertical" },

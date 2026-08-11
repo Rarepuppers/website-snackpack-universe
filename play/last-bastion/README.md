@@ -54,8 +54,8 @@ decision outlives the plan for it.
 - Several docs quote content counts inline. Counted from the catalogues on **11 August 2026**:
   **34 weapons** (31 draftable / 1 earned unique / 1 hero-bound / 1 transformation-only), **47 items**,
   **14 relics**, **12 artifacts**, **20 upgrades**, **16 level stat cards**,
-  **12 powerups**, **36 enemy catalogue types** (20 regular/treasure, 8 summons/props,
-  **7 mini-bosses**, **1 boss**) plus **4 elite identities**,
+  **12 powerups**, **38 enemy catalogue types** (20 regular/treasure, 8 summons/props,
+  **7 mini-bosses**, **3 bosses**) plus **7 elite identities**,
   **4 interactable objective fixtures across 4 objective modes** (hold/interact, Escort, Deny, Collect),
   **20 player stats**, **29 world objects**.
   Run `npm run content:audit` from `dev/` for the generated live inventory; it reads the catalogues

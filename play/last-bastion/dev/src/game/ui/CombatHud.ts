@@ -733,6 +733,10 @@ const SCENARIO_LABELS: Readonly<Record<CombatScenario, string>> = Object.freeze(
   "assembly-prime": "ASSEMBLY PRIME LAB",
   "storm-regent": "STORM REGENT LAB",
   "abomination-prime": "ABOMINATION PRIME LAB",
+  "the-choir": "THE CHOIR BOSS LAB",
+  // Keep the long proper name in the boss bar immediately below. The compact
+  // Lab heading leaves a guaranteed clock gutter at the 960 px logical HUD.
+  "foundry-sovereign": "SOVEREIGN LAB",
   "infected-survivor": "SURVIVOR LAB",
   "corrupted-marine": "MARINE LAB",
   abomination: "ABOMINATION LAB",
