@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   planScrapShopWeaponSale,
+  prepareScrapShopSellEntries,
   scrapShopWeaponSaleValue,
   type ScrapShopSaleTile,
 } from "./ScrapShopWeaponSale";
@@ -12,6 +13,30 @@ describe("scrapShopWeaponSaleValue", () => {
     expect(scrapShopWeaponSaleValue(1)).toBe(30);
     expect(scrapShopWeaponSaleValue(2, 0.75)).toBe(90);
     expect(scrapShopWeaponSaleValue(3, 1 / 3)).toBe(80);
+  });
+});
+
+describe("prepareScrapShopSellEntries", () => {
+  it("prepares rack entries before stash entries with catalogue names and sale values", () => {
+    const blade: ScrapShopSaleTile = { instanceId: 8, weaponId: "patrol-blade", tier: 1 };
+    expect(prepareScrapShopSellEntries({
+      rack: [{ tile: rifle }],
+      stash: [null, blade],
+      equippedInstanceIds: [7, 3],
+      saleFraction: 0.75,
+    })).toEqual([
+      expect.objectContaining({ instanceId: 7, tier: 2, saleValue: 90, canSell: true }),
+      expect.objectContaining({ instanceId: 8, tier: 1, saleValue: 45, canSell: true }),
+    ]);
+  });
+
+  it("disables only the final active weapon and does not mutate inventory inputs", () => {
+    const rack = [{ tile: rifle }];
+    expect(prepareScrapShopSellEntries({ rack, stash: [], equippedInstanceIds: [7] })[0]).toMatchObject({
+      instanceId: 7,
+      canSell: false,
+    });
+    expect(rack[0]!.tile).toBe(rifle);
   });
 });
 

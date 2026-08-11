@@ -16,6 +16,17 @@ export interface ScrapShopDecisionPresentation {
   readonly shopRerollCost: number;
 }
 
+export function hydrateScrapShopDecision(input: {
+  readonly offers: readonly ScrapShopDecisionOption[];
+  readonly securedScrap: number;
+  readonly mode: "offers" | "manage" | "sell";
+}): { readonly offers: ScrapShopDecisionOption[]; readonly route: "offers" | "manage" | "sell" } {
+  return {
+    offers: refreshScrapShopAffordability(input.offers, input.securedScrap),
+    route: input.mode,
+  };
+}
+
 export function presentScrapShopOffersDecision(input: {
   readonly offers: readonly ScrapShopDecisionOption[];
   readonly profileName: string;
@@ -144,3 +155,4 @@ export function presentScrapShopSellDecision(input: {
     shopRerollCost: input.rerollCost,
   };
 }
+import { refreshScrapShopAffordability } from "./ScrapShopAffordability";

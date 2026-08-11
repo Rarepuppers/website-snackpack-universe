@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  hydrateScrapShopDecision,
   presentScrapShopManagementDecision,
   presentScrapShopOffersDecision,
   presentScrapShopSellDecision,
@@ -11,6 +12,15 @@ const offers = [
 ];
 
 describe("ScrapShopDecisionPresentation", () => {
+  it("hydrates current affordability and routes every decision mode", () => {
+    for (const mode of ["offers", "manage", "sell"] as const) {
+      const hydrated = hydrateScrapShopDecision({ offers, securedScrap: 10, mode });
+      expect(hydrated.route).toBe(mode);
+      expect(hydrated.offers.map((offer) => offer.affordable)).toEqual([true, false]);
+      expect(hydrated.offers[0]).not.toBe(offers[0]);
+    }
+  });
+
   it("presents offers with a lock marker followed by manage and leave actions", () => {
     const decision = presentScrapShopOffersDecision({
       offers,

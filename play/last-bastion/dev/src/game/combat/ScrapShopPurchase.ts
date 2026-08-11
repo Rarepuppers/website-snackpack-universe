@@ -7,6 +7,15 @@ export type ScrapShopPurchaseEffect =
   | { readonly kind: "item"; readonly itemId: string }
   | { readonly kind: "none" };
 
+export type ValidatedScrapShopPurchaseEffect =
+  | { readonly kind: "repair" }
+  | { readonly kind: "uranium-kit" }
+  | { readonly kind: "armour-retrofit" }
+  | { readonly kind: "upgrade"; readonly upgradeId: UpgradeId }
+  | { readonly kind: "weapon"; readonly weaponId: WeaponId }
+  | { readonly kind: "item"; readonly itemId: string }
+  | { readonly kind: "none" };
+
 export type ScrapShopPurchasePlan =
   | { readonly ok: false }
   | {
@@ -52,3 +61,27 @@ export function classifyScrapShopPurchase(optionId: string): ScrapShopPurchaseEf
   }
   return { kind: "none" };
 }
+
+/** Validates catalogue membership and live upgrade eligibility before the adapter commits an effect. */
+export function validateScrapShopPurchaseEffect(
+  effect: ScrapShopPurchaseEffect,
+  isUpgradeEligible: (upgradeId: UpgradeId) => boolean,
+): ValidatedScrapShopPurchaseEffect {
+  if (effect.kind === "upgrade") {
+    if (!(effect.upgradeId in UPGRADE_CATALOG)) return { kind: "none" };
+    const upgradeId = effect.upgradeId as UpgradeId;
+    return isUpgradeEligible(upgradeId) ? { kind: "upgrade", upgradeId } : { kind: "none" };
+  }
+  if (effect.kind === "weapon") {
+    return effect.weaponId in WEAPON_CATALOG
+      ? { kind: "weapon", weaponId: effect.weaponId as WeaponId }
+      : { kind: "none" };
+  }
+  if (effect.kind === "item") {
+    return itemById(effect.itemId) ? effect : { kind: "none" };
+  }
+  return effect;
+}
+import { itemById } from "../content/itemCatalog";
+import { UPGRADE_CATALOG, type UpgradeId } from "../content/upgradeCatalog";
+import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";

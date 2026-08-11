@@ -683,8 +683,39 @@ Sequencing, safest first — each is independently shippable and independently r
    adapter wiring added seven net lines while removing these policy seams. Paid-reroll spend validation, banned-
    offer replacement-rack assembly, and reset/open visit lifecycle state are now extracted too. The monolith is now
    10,086 lines; explicit typed commit wiring added 29 net lines while centralizing the four visit-state assignments.
-   Replacement RNG draws and runtime state/event mutation remain adapter-owned. Continue with fixed repair/utility
-   candidate construction, upgrade/weapon candidate construction, and item candidate construction.
+   Replacement RNG draws and runtime state/event mutation remain adapter-owned. Fixed repair/utility, upgrade/
+   weapon, and item candidate construction are now pure, including exact pricing stages, authored labels, stable
+   group order, run-long ban filtering, and affordability. Upgrade next-level input preparation, owned/capacity-aware
+   weapon window preparation, and weighted without-replacement rack selection are now extracted too. The adapter
+   supplies prefiltered eligible upgrades and consumes the exact planned RNG roll count, preserving replay state.
+   `shopOfferDrawWeight` remains re-exported from its public path. Sell-entry preparation, decision affordability/
+   mode hydration, and purchase-effect catalogue/eligibility validation are now extracted too. Invalid authored
+   purchases preserve the approved spend but commit no effect. The monolith is now 10,052 lines; initial offer draws,
+   inventory/state mutation, and event emission remain adapter-owned. Supply-depot presentation, scaled choice/
+   armoury-fallback planning, and slot-requisition decision/choice planning are now extracted. The adapter consumes
+   a requisition RNG roll only after confirming room below the shared hard cap. Upgrade eligibility, deterministic
+   upgrade-option selection/presentation, and deterministic level-stat card/draw planning are now extracted into
+   `LevelUpDecision.ts`. The adapter supplies current levels/capacities and authored RNG rolls, then owns the selected
+   upgrade/stat mutation. `upgradeScanOffsets` remains re-exported from its existing public path. The monolith is now
+   9,941 lines. Upgrade-choice commit planning, immutable stat-card grant planning, and level-up threshold/queue
+   planning are now extracted too. The adapter commits upgrade/stat state, refreshes resolved stats, applies hero
+   growth, emits the level event, and mutates the queue. Fractional XP award/carry planning and hero level-growth
+   delta/proficiency planning are now extracted too. `UpgradeEffectPlanning.ts` now exhaustively maps all authored
+   upgrades to typed weapon, status, defence, movement, support, and economy effects; the adapter applies those plans
+   to live runtime state. Weighted reward-item selection, item-grant validation/commit planning, and owned-item/base-
+   grant stat folding are now extracted into `ItemRewardPlanning.ts`. The reward selector reuses the shared supplied-
+   roll weighted-index primitive, while the adapter retains RNG consumption, ownership/event commits, and resolved-
+   stat refresh. Resolved player-stat source planning, exact armour-delta reconciliation, and max-health/current-
+   health reconciliation are now extracted into `PlayerStatRefreshPlanning.ts`, with one transaction planner
+   preserving the two stat-limit passes and commit order. The adapter owns the returned live assignments. Explicit
+   typed commit wiring brings the monolith to 9,842 lines. Expedition progression/growth restoration, ordered
+   carried-upgrade normalization/replay planning, and index-aligned weapon-tier/survival-state restoration are now
+   extracted into `ExpeditionBuildRestorePlanning.ts`. Live upgrade-effect, rack/equipped-weapon, and survival commits
+   remain adapter-owned. Weapon-acquisition capacity admission, compatible rack/stash destination planning, and
+   deterministic tile/runtime initialization are now extracted into `WeaponAcquisitionPlanning.ts`. The adapter
+   retains instance-ID consumption and live inventory/equipped-weapon commits, including the admitted-but-unplaceable
+   ID-consumption behavior. The monolith is now 9,843 lines. Continue with weapon-placement option presentation,
+   placement-target ID serialization/parsing, and post-placement equip/merge commit planning.
 
 **Acceptance:** `combat/CombatSimulation.ts` under 3,000 lines; its public exports remain
 exported from the same path (re-export from the new modules — every consumer imports from

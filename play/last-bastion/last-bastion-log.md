@@ -4123,3 +4123,322 @@ clears only a lock targeting that banned ID.
   build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
 - Next: extract fixed repair/utility candidate construction, upgrade/weapon candidate construction, then item
   candidate construction. Profile/catalogue lookup and runtime eligibility remain in the adapter.
+
+## 11 August 2026 — T0.1 fixed shop candidate construction extracted
+
+`ScrapShopCandidateConstruction.ts` now owns repair, uranium-kit, and armour-retrofit option construction and their
+profile-scaled prices.
+
+- Repair remains conditional on damage, the uranium kit remains conditional on carry state, and armour remains
+  available whenever the active profile stocks utility.
+
+## 11 August 2026 — T0.1 upgrade and weapon candidate construction extracted
+
+The same module now builds immediate-upgrade and rotating weapon options from adapter-prepared eligible rows.
+
+- Ordinary versus Unique copy and the Unique price multiplier remain exact. Upgrade eligibility, owned-weapon
+  exclusion, rack capacity, catalogue lookup, and the RNG-free rotating window still occur in the adapter.
+
+## 11 August 2026 — T0.1 item candidate construction extracted
+
+Profile-approved item rows now become shop options through the pure builder, preserving rarity copy and the required
+depth-rounding-then-profile-rounding price sequence.
+
+- Final candidate assembly also applies run-long bans and current affordability without reordering surviving rows.
+- Five focused tests cover fixed-stock conditions/order, profile scaling, upgrade/ordinary/Unique weapon copy and
+  price, item rounding order, ban filtering, and affordability; economy, shop, purchase, weapon, reference-run, and
+  replay suites pass unchanged.
+- `CombatSimulation.ts` is now **10,071 lines**, down 15 lines in this batch.
+- Controlled verification passes with **1,457 tests across 253 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract upgrade input preparation, weapon availability/window preparation, then weighted rack selection
+  from adapter-supplied RNG rolls. Catalogue truth and RNG state mutation stay simulation-owned.
+
+## 11 August 2026 — T0.1 shop upgrade input preparation extracted
+
+`ScrapShopCandidateConstruction.ts` now turns adapter-approved upgrade IDs and current levels into the next authored
+level name and description consumed by candidate construction.
+
+- Slot/category eligibility remains simulation-owned; catalogue lookup and next-level presentation no longer do.
+
+## 11 August 2026 — T0.1 weapon availability and rotating input preparation extracted
+
+The candidate module now owns profile/capacity suppression, owned-weapon exclusion, deterministic rotating-window
+selection, and catalogue presentation rows.
+
+- `offerableWeapons()` remains adapter-owned and is not called when the profile or capacity blocks weapon stock.
+  The window remains RNG-free because reroll feasibility also evaluates this path.
+
+## 11 August 2026 — T0.1 weighted shop rack selection extracted
+
+`ScrapShopOfferSelection.ts` now owns draw-count planning, item/non-item weight resolution, and weighted selection
+without replacement from already-consumed unit rolls.
+
+- The adapter consumes exactly `min(open slots, candidates)` RNG values before delegation, preserving replay stream
+  position. Reserved campaign repair remains first and candidate inputs are cloned rather than mutated.
+- `shopOfferDrawWeight` remains re-exported from `CombatSimulation.ts`, preserving its public import path.
+- Six focused tests cover next-level inputs, owned/capacity/profile weapon rules, rotating selection, draw counts,
+  without-replacement behavior, and weight fallback; shop, purchase, weapon, reference-run, and replay suites pass.
+- `CombatSimulation.ts` is now **10,055 lines**, down 16 lines in this batch.
+- Controlled verification passes with **1,463 tests across 253 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract sell-entry preparation, decision-mode routing/hydration, then purchase-effect catalogue/eligibility
+  validation. Runtime mutation and RNG state advancement stay simulation-owned.
+
+## 11 August 2026 — T0.1 shop sell-entry preparation extracted
+
+`ScrapShopWeaponSale.ts` now prepares rack-then-stash sell rows with catalogue names, tiers, sale values, and the
+final-active-weapon rule from immutable inventory inputs.
+
+- Inventory arrays remain untouched; sale commits still use the separately planned rack/stash/equipped indices.
+
+## 11 August 2026 — T0.1 shop decision routing and hydration extracted
+
+`ScrapShopDecisionPresentation.ts` now refreshes current affordability and returns the offers/manage/sell presenter
+route before the adapter dispatches to the corresponding decision builder.
+
+- The initial rack draw remains adapter-owned because it advances seeded RNG state.
+
+## 11 August 2026 — T0.1 shop purchase-effect validation extracted
+
+`ScrapShopPurchase.ts` now validates upgrade, weapon, and item catalogue membership plus live upgrade eligibility,
+returning typed commit effects or `none`.
+
+- Fixed effects bypass upgrade eligibility. Invalid authored effects retain the already-approved spend transaction
+  but perform no state mutation, matching prior behavior.
+- Six focused tests cover sell ordering/value/final-active state, all three hydration routes, catalogue validation,
+  upgrade eligibility, and fixed-effect pass-through; shop, purchase, weapon, reference-run, and replay suites pass.
+- `CombatSimulation.ts` is now **10,052 lines**, down three lines in this batch.
+- Controlled verification passes with **1,469 tests across 253 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract supply-depot presentation, supply-choice effect/fallback planning, then slot-requisition decision/
+  choice planning. Reward mutation and seeded option removal stay simulation-owned.
+
+## 11 August 2026 — T0.1 supply-depot presentation extracted
+
+`SupplyDepot.ts` now owns the stable three-option Patch Up, Field Armoury, and Aegis Lattice decision presentation.
+
+- The Aurum cache title override remains at its call site and continues to reuse the same option payload.
+
+## 11 August 2026 — T0.1 supply-choice effect and fallback planning extracted
+
+The supply module now routes choices to scaled healing, an available armoury decision, scaled shielding, or no-op.
+
+- An exhausted Field Armoury still falls back to the fully support/transformation-scaled heal. Healing, shield, and
+  decision-queue mutation remain simulation-owned.
+
+## 11 August 2026 — T0.1 slot-requisition decision and choice planning extracted
+
+`SlotRequisition.ts` now owns hard-cap suppression, option presentation, supplied-roll option removal, option-ID
+validation, and next-capacity planning.
+
+- The adapter consumes no RNG at the hard cap and exactly one roll when four authored categories must become three.
+  It remains responsible for current used-slot counts and committing the chosen capacity.
+- Seven focused tests cover supply presentation/effects/fallback/no-op and requisition roll count, removal, hard-cap,
+  valid growth, and invalid choices; shop, purchase, weapon, reference-run, and replay suites pass unchanged.
+- `CombatSimulation.ts` is now **10,021 lines**, down 31 lines in this batch.
+- Controlled verification passes with **1,476 tests across 255 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract upgrade eligibility planning, deterministic upgrade-option selection/presentation, then deterministic
+  level-stat card/draw planning. Upgrade/stat mutation remains simulation-owned.
+
+## 11 August 2026 — T0.1 upgrade eligibility planning extracted
+
+`LevelUpDecision.ts` now owns maximum-level, run-exclusion, and category-slot eligibility checks plus used-slot
+counting for authored upgrades.
+
+- The simulation delegates its eligibility and slot-count helpers, keeping current run state and capacity ownership.
+
+## 11 August 2026 — T0.1 deterministic upgrade selection and presentation extracted
+
+The level-up module now owns the supplied-roll circular scan, spread-by-two selection order, next-level option copy,
+and appended stat-card option.
+
+- It consumes no randomness itself: the adapter still supplies the starting roll and current level/capacity snapshot,
+  preserving replay behavior. `upgradeScanOffsets` remains re-exported from `CombatSimulation.ts`.
+
+## 11 August 2026 — T0.1 deterministic level-stat planning extracted
+
+The same module now owns level-scaled stat-card presentation and the four-card supplied-roll draw used when authored
+upgrades are unavailable.
+
+- Five focused tests cover used-slot counts, run eligibility, deterministic upgrade scanning, all-maxed fallback, and
+  deterministic stat-card output; upgrade, stat-card, supply, requisition, reference-run, and replay suites pass.
+- `CombatSimulation.ts` is now **9,941 lines**, down 80 lines in this batch and below 10,000 for the first time.
+- Controlled verification passes with **1,481 tests across 256 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract upgrade-choice commit planning, stat-card grant planning, then level-up threshold/queue planning.
+  Upgrade/stat mutation, level growth, event emission, and queue mutation remain simulation-owned.
+
+## 11 August 2026 — T0.1 upgrade-choice commit planning extracted
+
+`LevelUpDecision.ts` now routes a chosen mixed-draw option to a typed stat-card grant, authored upgrade plus next
+level, or no-op for an unknown identifier.
+
+- Upgrade-level map mutation and applying the authored runtime effect remain simulation-owned.
+
+## 11 August 2026 — T0.1 stat-card grant planning extracted
+
+The level-up module now validates the selected card and returns its stat key, amount, and an immutable next stat bag.
+
+- The adapter commits the copied bag and refreshes resolved player stats, preserving armour and max-HP reconciliation.
+
+## 11 August 2026 — T0.1 level-up threshold and queue planning extracted
+
+The module now blocks advancement while another decision is pending, spends exactly one current-level XP threshold,
+advances one level, and returns the deterministic upgrade-or-all-stat decision for that new level.
+
+- Level growth, level-up event emission, and queue mutation remain simulation-owned.
+- Four new focused tests cover choice routing/unknown IDs, immutable stat grants, pending/short-XP suppression, and
+  one-threshold advancement with the correct next-level draw; the focused progression/replay set passes 45 tests.
+- `CombatSimulation.ts` is now **9,919 lines**, down 22 lines in this batch.
+- Controlled verification passes with **1,485 tests across 256 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract fractional XP award/carry planning, hero level-growth delta planning, then typed upgrade-effect
+  routing. Runtime mutation and event/queue ownership remain in the simulation adapter.
+
+## 11 August 2026 — T0.1 fractional XP award and carry planning extracted
+
+`LevelUpDecision.ts` now owns non-negative award normalization, early-wave multiplication, integer XP payout, and
+fractional carry preservation.
+
+- The adapter supplies the active perk multiplier, commits XP/carry, and invokes the existing one-level queue check.
+
+## 11 August 2026 — T0.1 hero level-growth delta planning extracted
+
+The level-up module now converts authored hero growth at the new/previous levels into max-health, healing, armour,
+damage, speed, support, and weapon-proficiency outputs.
+
+- Reward-adjusted max-health calculation and live player/defence mutation remain simulation-owned.
+
+## 11 August 2026 — T0.1 typed upgrade-effect routing extracted
+
+`UpgradeEffectPlanning.ts` exhaustively maps every `UpgradeId` and purchased level to a typed data plan covering
+weapon geometry/damage, elemental status tuning, defence, movement, support, magnet, splash, and scrap effects.
+
+- The simulation now has one generic commit adapter for live weapons and run state. Assignment versus additive and
+  multiplicative semantics remain explicit in the plan, including buildup defaults and slow-resistance clamping.
+- Five new focused tests cover fractional/negative XP, Marine growth deltas, weapon/scalar upgrades, level-specific
+  elemental paths, and additive status/defence/support/economy plans; progression, upgrade, reference, and replay
+  suites pass 45 focused tests.
+- `CombatSimulation.ts` is now **9,838 lines**, down 81 lines in this batch.
+- Controlled verification passes with **1,490 tests across 257 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract weighted reward-item selection, item-grant validation/commit planning, then owned-item/base-grant
+  stat folding. Runtime item ownership, event emission, and resolved-stat reconciliation remain adapter-owned.
+
+## 11 August 2026 — T0.1 weighted reward-item selection extracted
+
+`ItemRewardPlanning.ts` now maps one supplied unit roll onto the luck/curse-weighted authored item catalogue, reusing
+the shared weighted-index selector used by shop offer selection.
+
+- The adapter consumes exactly one RNG value, commits the validated grant, and emits the positioned reward event.
+
+## 11 August 2026 — T0.1 item-grant validation and commit planning extracted
+
+The item reward module now validates authored item IDs and returns the exact ownership commit payload.
+
+- Duplicate grants remain valid and stack. Unknown IDs return false before ownership or stat-refresh mutation.
+
+## 11 August 2026 — T0.1 owned-item and base-grant stat folding extracted
+
+The module now copies raw run grants and adds canonical folded stats for every owned item, preserving duplicate
+stacking and canonical unknown-ID suppression.
+
+- Perk, relic, transformation, stat-limit, armour, and max-health resolution remain simulation-owned.
+- Five focused tests cover weighted endpoint selection, deterministic supplied rolls, grant validation, stacked
+  copied folds, and unknown owned IDs; item, shop, reward, reference, and replay suites pass 41 focused tests.
+- `CombatSimulation.ts` is now **9,829 lines**, down nine lines in this batch.
+- Controlled verification passes with **1,495 tests across 258 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract resolved player-stat source planning, armour reconciliation planning, then max-health/current-health
+  reconciliation planning. Live stat/defence/health commits remain simulation-owned.
+
+## 11 August 2026 — T0.1 resolved player-stat source planning extracted
+
+`PlayerStatRefreshPlanning.ts` now combines base grants and owned items with the canonical perk, relic, and
+transformation sources before applying the shared player-stat resolver.
+
+- The full refresh transaction preserves the preliminary unlimited-health stat-limit pass and the final pass at the
+  newly calculated health ceiling.
+
+## 11 August 2026 — T0.1 armour reconciliation planning extracted
+
+The refresh module now returns the exact live-armour delta, zero floor, and next applied-item-armour marker.
+
+- A zero delta remains a true no-op, including no incidental clamp of pre-existing live armour.
+
+## 11 August 2026 — T0.1 max-health and current-health reconciliation planning extracted
+
+The module now owns flat/percentage max-health ordering, the reward and transformation stages, both rounding/floor
+steps, positive-ceiling gain healing, lower-ceiling clamping, and the 0.1 current-health floor.
+
+- `planPlayerStatRefresh` consolidates all three outputs into one immutable commit payload; raw/effective stat,
+  capped-key, armour, max-health, and current-health assignments remain simulation-owned.
+- Six focused tests cover source resolution, zero/delta armour behavior, max-health ordering, gain healing, lower-
+  ceiling clamping, and the integrated health-aware stat-limit transaction; stat/item/health/reference/replay suites
+  pass 43 focused tests.
+- `CombatSimulation.ts` is now **9,842 lines**, 13 lines above the prior batch due to explicit typed commit wiring.
+- Controlled verification passes with **1,501 tests across 259 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract expedition progression/growth restoration, carried-upgrade normalization/replay planning, then
+  weapon-tier and survival-state restoration planning. Live restore commits remain simulation-owned.
+
+## 11 August 2026 — T0.1 expedition progression and growth restoration extracted
+
+`ExpeditionBuildRestorePlanning.ts` now normalizes persisted level/experience and returns total authored hero growth,
+including max-health/armour bonuses, combat multipliers, and weapon-proficiency points.
+
+- Reward-adjusted max-health and all live progression assignments remain simulation-owned.
+
+## 11 August 2026 — T0.1 carried-upgrade normalization and replay planning extracted
+
+The restore module now validates authored upgrade IDs, floors and clamps saved levels, and returns ordered per-level
+replay steps.
+
+- Duplicate persisted entries remain ordered and replay independently, matching the previous restore semantics.
+  Applying upgrade effects and committing the final upgrade-level map remain adapter-owned.
+
+## 11 August 2026 — T0.1 weapon-tier and survival-state restoration extracted
+
+The module now clamps carried weapon tiers, supplies missing tier-one defaults, maps equipped damage multipliers, and
+clamps health/shield while clearing encounter-local bonus health.
+
+- Rack tile, equipped runtime weapon, and player survival assignments remain simulation-owned.
+- Five focused tests cover progression normalization/growth, invalid and over-level upgrades, duplicate replay,
+  tier/default/damage mapping, and survival clamps; expedition/upgrade/inventory/health/reference/replay suites pass
+  47 focused tests.
+- `CombatSimulation.ts` is now **9,848 lines**, six lines above the prior batch due to explicit typed commit wiring.
+- Controlled verification passes with **1,506 tests across 260 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract weapon-acquisition capacity admission, compatible rack/stash destination planning, then weapon tile/
+  runtime initialization planning. Live inventory and equipped-weapon mutation remain adapter-owned.
+
+## 11 August 2026 — T0.1 weapon-acquisition capacity admission extracted
+
+`WeaponAcquisitionPlanning.ts` now owns the strict equipped-count cap check performed before instance-ID consumption.
+
+- The existing rule is preserved: the equipped count controls admission even when the incoming tile may land in the
+  stash.
+
+## 11 August 2026 — T0.1 compatible rack and stash destination planning extracted
+
+The acquisition module now selects the first empty compatible rack slot, then the first empty stash slot, then an
+explicit unplaceable result.
+
+- An admitted but unplaceable weapon still consumes its instance ID, matching prior behavior.
+
+## 11 August 2026 — T0.1 weapon tile and runtime initialization extracted
+
+The module now creates the tier-one tile plus copied catalogue runtime stats, zeroed cooldown/orbit state, and the
+deterministic per-instance projectile carry.
+
+- Rack placement commits both tile and runtime weapon; stash placement commits only the tile. All mutation and ID
+  increment remain simulation-owned.
+- Five focused tests cover cap admission, compatible rack priority, stash/none fallback, authored initialization, and
+  independent runtime stat copies; weapon/reward/shop/reference/replay suites pass 52 focused tests.
+- `CombatSimulation.ts` is now **9,843 lines**, down five lines in this batch.
+- Controlled verification passes with **1,511 tests across 261 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract weapon-placement option presentation, target-ID serialization/parsing, then post-placement equip/
+  merge commit planning. Inventory and runtime-weapon mutation remain adapter-owned.

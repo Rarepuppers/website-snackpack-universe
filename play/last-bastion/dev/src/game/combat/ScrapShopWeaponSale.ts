@@ -1,5 +1,5 @@
 import type { WeaponTier } from "../equipment/WeaponInventory";
-import type { WeaponId } from "../content/weaponCatalog";
+import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
 
 export interface ScrapShopSaleTile {
   readonly instanceId: number;
@@ -26,6 +26,37 @@ export type ScrapShopWeaponSalePlan =
 
 export function scrapShopWeaponSaleValue(tier: WeaponTier, fraction = 0.5): number {
   return Math.floor(SCRAP_SHOP_WEAPON_BASE_PRICE * (2 ** (tier - 1)) * fraction);
+}
+
+export interface ScrapShopPreparedSellEntry {
+  readonly instanceId: number;
+  readonly displayName: string;
+  readonly tier: WeaponTier;
+  readonly saleValue: number;
+  readonly canSell: boolean;
+}
+
+/** Prepares rack-then-stash sale presentation without mutating either inventory collection. */
+export function prepareScrapShopSellEntries(input: {
+  readonly rack: readonly ScrapShopSaleRackSlot[];
+  readonly stash: readonly (ScrapShopSaleTile | null)[];
+  readonly equippedInstanceIds: readonly number[];
+  readonly saleFraction?: number;
+}): ScrapShopPreparedSellEntry[] {
+  const tiles = [
+    ...input.rack.flatMap((slot) => slot.tile ? [slot.tile] : []),
+    ...input.stash.flatMap((tile) => tile ? [tile] : []),
+  ];
+  return tiles.map((tile) => {
+    const active = input.equippedInstanceIds.includes(tile.instanceId);
+    return {
+      instanceId: tile.instanceId,
+      displayName: WEAPON_CATALOG[tile.weaponId].displayName,
+      tier: tile.tier,
+      saleValue: scrapShopWeaponSaleValue(tile.tier, input.saleFraction),
+      canSell: !active || input.equippedInstanceIds.length > 1,
+    };
+  });
 }
 
 /** Locates every mutable slot and validates the last-active-weapon rule before the adapter commits a sale. */

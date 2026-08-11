@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { classifyScrapShopPurchase, planScrapShopPurchase } from "./ScrapShopPurchase";
+import {
+  classifyScrapShopPurchase,
+  planScrapShopPurchase,
+  validateScrapShopPurchaseEffect,
+} from "./ScrapShopPurchase";
 
 describe("planScrapShopPurchase", () => {
   it("normalizes free and negative costs and plans the remaining balance", () => {
@@ -46,5 +50,47 @@ describe("classifyScrapShopPurchase", () => {
     expect(classifyScrapShopPurchase("shop-weapon:arc-carbine")).toEqual({ kind: "weapon", weaponId: "arc-carbine" });
     expect(classifyScrapShopPurchase("shop-item:field-kit")).toEqual({ kind: "item", itemId: "field-kit" });
     expect(classifyScrapShopPurchase("shop-unknown")).toEqual({ kind: "none" });
+  });
+});
+
+describe("validateScrapShopPurchaseEffect", () => {
+  it("accepts known eligible upgrades and rejects unknown or ineligible upgrades", () => {
+    expect(validateScrapShopPurchaseEffect(
+      { kind: "upgrade", upgradeId: "rapid-cycling" },
+      () => true,
+    )).toEqual({ kind: "upgrade", upgradeId: "rapid-cycling" });
+    expect(validateScrapShopPurchaseEffect(
+      { kind: "upgrade", upgradeId: "missing" },
+      () => true,
+    )).toEqual({ kind: "none" });
+    expect(validateScrapShopPurchaseEffect(
+      { kind: "upgrade", upgradeId: "rapid-cycling" },
+      () => false,
+    )).toEqual({ kind: "none" });
+  });
+
+  it("validates weapon and item catalogue membership", () => {
+    expect(validateScrapShopPurchaseEffect(
+      { kind: "weapon", weaponId: "arc-carbine" },
+      () => false,
+    )).toEqual({ kind: "weapon", weaponId: "arc-carbine" });
+    expect(validateScrapShopPurchaseEffect(
+      { kind: "weapon", weaponId: "missing" },
+      () => false,
+    )).toEqual({ kind: "none" });
+    expect(validateScrapShopPurchaseEffect(
+      { kind: "item", itemId: "glass-cannon" },
+      () => false,
+    )).toEqual({ kind: "item", itemId: "glass-cannon" });
+    expect(validateScrapShopPurchaseEffect(
+      { kind: "item", itemId: "missing" },
+      () => false,
+    )).toEqual({ kind: "none" });
+  });
+
+  it("passes fixed and none effects through without consulting upgrade eligibility", () => {
+    const eligibility = () => { throw new Error("must not be called"); };
+    expect(validateScrapShopPurchaseEffect({ kind: "repair" }, eligibility)).toEqual({ kind: "repair" });
+    expect(validateScrapShopPurchaseEffect({ kind: "none" }, eligibility)).toEqual({ kind: "none" });
   });
 });

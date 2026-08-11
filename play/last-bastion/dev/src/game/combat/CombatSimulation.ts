@@ -33,7 +33,6 @@ import {
   UPGRADE_CATEGORY_LABELS,
   UPGRADE_ORDER,
   UPGRADE_SLOT_HARD_CAP,
-  upgradeLevelName,
   type UpgradeCategory,
   type UpgradeId,
 } from "../content/upgradeCatalog";
@@ -159,12 +158,11 @@ import { planProjectileSplashImpact } from "./ProjectileSplashImpact";
 import { planEventHorizonFieldPayload, planGravityPulseFieldPayload } from "./GravityFieldPayload";
 import { planGravityFieldPull } from "./GravityFieldPull";
 import { planGravityFieldDetonationImpact, stepGravityFieldLifetime } from "./GravityFieldDetonation";
-import { depthScaledShopItemPrice, profileScaledShopPrice } from "./ScrapShopPricing";
-import { rotatingWindow } from "./ScrapShopStock";
 export { rotatingWindow } from "./ScrapShopStock";
-import { selectWeightedOfferIndex } from "./ScrapShopOfferSelection";
+import { scrapShopWeightedDrawCount, selectWeightedScrapShopOffers } from "./ScrapShopOfferSelection";
+export { shopOfferDrawWeight } from "./ScrapShopOfferSelection";
 import { prepareCampaignRepairDraw } from "./ScrapShopCampaignRepair";
-import { refreshScrapShopAffordability, sortScrapShopOffersAffordableFirst } from "./ScrapShopAffordability";
+import { sortScrapShopOffersAffordableFirst } from "./ScrapShopAffordability";
 import {
   assembleLockedScrapShopReroll,
   canPlanScrapShopReroll,
@@ -172,12 +170,17 @@ import {
   scrapShopRerollExcludedIds,
 } from "./ScrapShopReroll";
 import {
+  hydrateScrapShopDecision,
   presentScrapShopManagementDecision,
   presentScrapShopOffersDecision,
   presentScrapShopSellDecision,
 } from "./ScrapShopDecisionPresentation";
 import { routeScrapShopAction } from "./ScrapShopAction";
-import { planScrapShopPurchase, type ScrapShopPurchaseEffect } from "./ScrapShopPurchase";
+import {
+  planScrapShopPurchase,
+  validateScrapShopPurchaseEffect,
+  type ValidatedScrapShopPurchaseEffect,
+} from "./ScrapShopPurchase";
 import { planScrapShopBan } from "./ScrapShopBan";
 import {
   planScrapShopVisitOpen,
@@ -185,11 +188,54 @@ import {
   type ScrapShopVisitResetPlan,
 } from "./ScrapShopVisit";
 import {
+  buildFixedScrapShopCandidates,
+  buildItemScrapShopCandidates,
+  buildUpgradeWeaponScrapShopCandidates,
+  finalizeScrapShopCandidates,
+  prepareScrapShopUpgradeInputs,
+  prepareScrapShopWeaponInputs,
+} from "./ScrapShopCandidateConstruction";
+import {
   planScrapShopWeaponSale,
+  prepareScrapShopSellEntries,
   SCRAP_SHOP_WEAPON_BASE_PRICE,
   scrapShopWeaponSaleValue,
 } from "./ScrapShopWeaponSale";
 export { scrapShopWeaponSaleValue } from "./ScrapShopWeaponSale";
+import { planSupplyDepotChoice, presentSupplyDepotDecision } from "./SupplyDepot";
+import {
+  planSlotRequisitionChoice,
+  planSlotRequisitionDecision,
+  slotRequisitionRollCount,
+} from "./SlotRequisition";
+import {
+  isUpgradeEligibleForRun,
+  planExperienceAward,
+  planHeroLevelGrowth,
+  planLevelStatGrant,
+  planLevelUpAdvance,
+  planLevelUpChoice,
+  planUpgradeDecision,
+  usedUpgradeSlots as countUsedUpgradeSlots,
+} from "./LevelUpDecision";
+export { upgradeScanOffsets } from "./LevelUpDecision";
+import { planUpgradeEffect } from "./UpgradeEffectPlanning";
+import { planItemGrant, planWeightedRewardItem } from "./ItemRewardPlanning";
+import {
+  calculateRewardAdjustedMaxHealth,
+  planPlayerStatRefresh,
+  resolveRunPlayerStats,
+} from "./PlayerStatRefreshPlanning";
+import {
+  planCarriedUpgradeRestores,
+  planExpeditionProgressionRestore,
+  planWeaponAndSurvivalRestore,
+} from "./ExpeditionBuildRestorePlanning";
+import {
+  canAdmitWeapon,
+  planWeaponAcquisitionDestination,
+  planWeaponInitialization,
+} from "./WeaponAcquisitionPlanning";
 import {
   bastionEaterChargeDestination,
   resolveBastionEaterActionChoice,
@@ -439,7 +485,6 @@ import {
 } from "../transformations/TransformationRunModifiers";
 import {
   outgoingDamageMultiplier,
-  resolvePlayerStats,
   type PlayerStatBlock,
 } from "../stats/PlayerStatBlock";
 import {
@@ -448,22 +493,14 @@ import {
   PLAYER_STAT_LIMITS,
   type EffectivePlayerStats,
 } from "../stats/PlayerStatLimits";
-import { collectItemEffects, foldItemStats, itemById, ITEM_CATALOG, type ItemEffectTrigger } from "../content/itemCatalog";
+import { collectItemEffects, ITEM_CATALOG, type ItemEffectTrigger } from "../content/itemCatalog";
 import type { EnemyThreatClass } from "../rendering/EnemyHealthBars";
 import {
   DEFAULT_SHOP_PROFILE_ID,
-  NON_ITEM_DRAW_WEIGHT,
   profileStocksItem,
-  rarityDrawWeight,
   shopProfileById,
   type ShopProfileId,
 } from "../content/shopProfiles";
-import {
-  LEVEL_STAT_ORDER,
-  isLevelStatCardId,
-  levelStatCardById,
-  levelStatCardDescription,
-} from "../content/levelStatCatalog";
 import { resolvePerkModifiers, type PerkId, type PerkRunModifiers } from "../perks/perkCatalog";
 import {
   resolveRelicModifiers,
@@ -509,18 +546,6 @@ export const MINI_BOSS_KINDS: readonly MiniBossKind[] = Object.freeze([
 
 export function isMiniBossKind(value: string): value is MiniBossKind {
   return (MINI_BOSS_KINDS as readonly string[]).includes(value);
-}
-
-/**
- * Draw weight for one shop offer. Item offers (`shop-item:<id>`) are weighted by
- * rarity and bent by luck/curse; every other stock line (repair, kits,
- * upgrades, weapons) takes the flat non-item weight so the rest of the shop
- * isn't crowded out by the item catalogue's size.
- */
-export function shopOfferDrawWeight(offerId: string, luck: number, curse: number): number {
-  if (!offerId.startsWith("shop-item:")) return NON_ITEM_DRAW_WEIGHT;
-  const definition = itemById(offerId.slice("shop-item:".length));
-  return definition ? rarityDrawWeight(definition.rarity, luck, curse) : NON_ITEM_DRAW_WEIGHT;
 }
 
 /**
@@ -2487,10 +2512,14 @@ export class CombatSimulation {
 
   addExperience(amount: number): void {
     const multiplier = this.waveIndex < 3 ? this.perkModifiers.earlyExperienceMultiplier : 1;
-    const scaled = Math.max(0, amount) * multiplier + this.experienceCarry;
-    const whole = Math.floor(scaled);
-    this.experienceCarry = scaled - whole;
-    this.experience += whole;
+    const plan = planExperienceAward({
+      amount,
+      currentExperience: this.experience,
+      carry: this.experienceCarry,
+      multiplier,
+    });
+    this.experienceCarry = plan.nextCarry;
+    this.experience = plan.nextExperience;
     this.checkForLevelUp();
   }
 
@@ -2516,14 +2545,12 @@ export class CombatSimulation {
       case "upgrade": {
         // The level-up draw mixes authored upgrades with one stat card, so the
         // chosen id decides which system applies it.
-        if (isLevelStatCardId(optionId)) {
-          this.applyLevelStatCard(optionId);
-          break;
+        const plan = planLevelUpChoice(optionId, this.upgradeLevels);
+        if (plan.kind === "stat-card") this.applyLevelStatCard(plan.cardId);
+        if (plan.kind === "upgrade") {
+          this.upgradeLevels.set(plan.upgradeId, plan.nextLevel);
+          this.applyUpgrade(plan.upgradeId, plan.nextLevel);
         }
-        const upgradeId = optionId as UpgradeId;
-        const nextLevel = (this.upgradeLevels.get(upgradeId) ?? 0) + 1;
-        this.upgradeLevels.set(upgradeId, nextLevel);
-        this.applyUpgrade(upgradeId, nextLevel);
         break;
       }
       case "level-stat":
@@ -2536,10 +2563,12 @@ export class CombatSimulation {
         this.applySupplyChoice(optionId);
         break;
       case "slot-requisition": {
-        const category = optionId.replace("slot-", "") as UpgradeCategory;
-        if (category in this.upgradeSlotCapacity && this.totalSlotCapacity() < UPGRADE_SLOT_HARD_CAP) {
-          this.upgradeSlotCapacity[category] += 1;
-        }
+        const requisition = planSlotRequisitionChoice({
+          optionId,
+          capacities: this.upgradeSlotCapacity,
+          hardCap: UPGRADE_SLOT_HARD_CAP,
+        });
+        if (requisition.ok) this.upgradeSlotCapacity[requisition.category] = requisition.nextCapacity;
         break;
       }
       case "scrap-shop":
@@ -2604,7 +2633,10 @@ export class CombatSimulation {
             return false;
           }
           this.securedScrap = purchase.remainingScrap;
-          this.applyScrapShopPurchase(purchase.effect);
+          this.applyScrapShopPurchase(validateScrapShopPurchaseEffect(
+            purchase.effect,
+            (upgradeId) => this.isUpgradeEligible(upgradeId),
+          ));
           this.frameEvents.push({
             type: "scrap-spent",
             amount: purchase.cost,
@@ -2877,128 +2909,50 @@ export class CombatSimulation {
 
   /** Applies the effect of buying the given 1-based level of an upgrade. */
   private applyUpgrade(upgradeId: UpgradeId, level: number): void {
-    switch (upgradeId) {
-      case "rapid-cycling":
-        this.modifyAllWeapons((weapon) => { weapon.fireIntervalSeconds *= 0.85; });
-        break;
-      case "twin-shot":
-        this.modifyAllWeapons((weapon) => {
-          weapon.projectileCount += 1;
-          weapon.spreadRadians = Math.max(weapon.spreadRadians, 0.11);
-        });
-        break;
-      case "piercing-rounds":
-        this.modifyAllWeapons((weapon) => { weapon.pierceCount += 1; });
-        break;
-      case "explosive-payload": {
-        const radius = level === 1 ? 1.4 : level === 2 ? 1.8 : 2.2;
-        this.modifyAllWeapons((weapon) => {
-          weapon.explosionRadiusMetres = Math.max(weapon.explosionRadiusMetres, radius);
-        });
-        this.explosionSplashMultiplier = Math.max(this.explosionSplashMultiplier, 0.4 + level * 0.1);
-        break;
-      }
-      case "heavy-calibre":
-        this.modifyAllWeapons((weapon) => {
-          weapon.projectileDamage *= 1.35;
-          weapon.fireIntervalSeconds *= 1.1;
-        });
-        break;
-      case "field-magnet":
-        this.magnetMultiplier *= 1.5;
-        break;
-      case "incendiary-rounds":
-        if (level === 1) {
-          this.modifyAllWeapons((weapon) => { weapon.damageType = "fire"; });
-        } else if (level === 2) {
-          this.statusTuning.buildupMultiplier.fire = 1.2;
-          this.statusTuning.blazeBonusDamagePerSecond = 0.3;
-        } else {
-          this.statusTuning.combustionOnDeath = true;
-        }
-        break;
-      case "cryo-coating":
-        if (level === 1) {
-          this.modifyAllWeapons((weapon) => { weapon.damageType = "cryo"; });
-        } else if (level === 2) {
-          this.statusTuning.buildupMultiplier.cryo = 1.2;
-          this.statusTuning.freezeSpeedMultiplierOverride = 0.22;
-        } else {
-          this.statusTuning.freezeDurationBonusSeconds = 0.8;
-          this.statusTuning.freezeSpeedMultiplierOverride = 0.15;
-        }
-        break;
-      case "chain-lightning":
-        // Each level adds one bounce (bounces decay per hop) plus a small
-        // shock-buildup rate bonus from level 2 — both, in lesser amounts.
-        this.modifyAllWeapons((weapon) => {
-          weapon.chainCount += 1;
-          weapon.chainRadiusMetres = Math.max(weapon.chainRadiusMetres, 2.1 + level * 0.4);
-        });
-        if (level >= 2) {
-          this.statusTuning.buildupMultiplier.shock =
-            (this.statusTuning.buildupMultiplier.shock ?? 1) + 0.1;
-        }
-        break;
-      case "adrenal-servos":
-        this.moveSpeedMultiplier *= 1.12;
-        break;
-      case "composite-plating":
-        this.defence.armour += 3;
-        break;
-      case "shield-capacitor":
-        this.defence.maxShield += 1.5;
-        break;
-
-      // --- Added 7 August 2026 ---
-      case "corrosive-rounds":
-        if (level === 1) {
-          this.modifyAllWeapons((weapon) => { weapon.damageType = "toxic"; });
-        } else if (level === 2) {
-          this.statusTuning.buildupMultiplier.toxic = 1.2;
-          this.statusTuning.corrodeBonusDamagePerSecond = 0.3;
-        } else {
-          this.statusTuning.corrodeBonusDamagePerSecond = 0.7;
-        }
-        break;
-      case "catalyst-array":
-        // Element-agnostic, so a mixed rack can still reach the threshold.
-        for (const type of ["fire", "shock", "cryo", "toxic"] as const) {
-          this.statusTuning.buildupMultiplier[type] =
-            (this.statusTuning.buildupMultiplier[type] ?? 1) + 0.15;
-        }
-        break;
-      case "marksman-barrels":
-        // Reach is speed x lifetime, so both scale or cursor-aimed weapons see
-        // no benefit — same reasoning as `rangePercent` in PlayerStatBlock.
-        this.modifyAllWeapons((weapon) => {
-          weapon.rangeMetres *= 1.2;
-          weapon.projectileLifetimeSeconds *= 1.2;
-        });
-        break;
-      case "reactive-plating":
-        this.defence.flatDamageReduction += 0.3;
-        break;
-      case "kinetic-buffer":
-        this.defence.hitInvulnerabilitySeconds += 0.05;
-        this.defence.slowResistance = Math.min(1, this.defence.slowResistance + 0.25);
-        break;
-      case "capacitor-array":
-        this.defence.shieldRechargePerSecond *= 1.4;
-        this.defence.shieldRechargeDelaySeconds *= 0.8;
-        break;
-      case "field-transfusion":
-        this.supportEffectMultiplier *= 1.25;
-        break;
-      case "salvage-drones":
-        this.upgradeScrapMultiplier *= 1.2;
-        break;
-      default:
-        // Exhaustiveness guard. Without it a new UpgradeId compiles cleanly and
-        // silently does nothing, which is exactly what happened when the eight
-        // 7 Aug upgrades were first added.
-        assertUpgradeHandled(upgradeId);
+    const plan = planUpgradeEffect(upgradeId, level);
+    if (plan.weapon) {
+      const effect = plan.weapon;
+      this.modifyAllWeapons((weapon) => {
+        if (effect.fireIntervalMultiplier !== undefined) weapon.fireIntervalSeconds *= effect.fireIntervalMultiplier;
+        if (effect.projectileCountDelta !== undefined) weapon.projectileCount += effect.projectileCountDelta;
+        if (effect.minimumSpreadRadians !== undefined) weapon.spreadRadians = Math.max(weapon.spreadRadians, effect.minimumSpreadRadians);
+        if (effect.pierceCountDelta !== undefined) weapon.pierceCount += effect.pierceCountDelta;
+        if (effect.minimumExplosionRadiusMetres !== undefined) weapon.explosionRadiusMetres = Math.max(weapon.explosionRadiusMetres, effect.minimumExplosionRadiusMetres);
+        if (effect.projectileDamageMultiplier !== undefined) weapon.projectileDamage *= effect.projectileDamageMultiplier;
+        if (effect.damageType !== undefined) weapon.damageType = effect.damageType;
+        if (effect.chainCountDelta !== undefined) weapon.chainCount += effect.chainCountDelta;
+        if (effect.minimumChainRadiusMetres !== undefined) weapon.chainRadiusMetres = Math.max(weapon.chainRadiusMetres, effect.minimumChainRadiusMetres);
+        if (effect.rangeMultiplier !== undefined) weapon.rangeMetres *= effect.rangeMultiplier;
+        if (effect.projectileLifetimeMultiplier !== undefined) weapon.projectileLifetimeSeconds *= effect.projectileLifetimeMultiplier;
+      });
     }
+    if (plan.status?.buildupMultiplierSet) {
+      Object.assign(this.statusTuning.buildupMultiplier, plan.status.buildupMultiplierSet);
+    }
+    if (plan.status?.buildupMultiplierDelta) {
+      for (const [type, delta] of Object.entries(plan.status.buildupMultiplierDelta)) {
+        const damageType = type as DamageType;
+        this.statusTuning.buildupMultiplier[damageType] =
+          (this.statusTuning.buildupMultiplier[damageType] ?? 1) + delta;
+      }
+    }
+    if (plan.status?.blazeBonusDamagePerSecond !== undefined) this.statusTuning.blazeBonusDamagePerSecond = plan.status.blazeBonusDamagePerSecond;
+    if (plan.status?.corrodeBonusDamagePerSecond !== undefined) this.statusTuning.corrodeBonusDamagePerSecond = plan.status.corrodeBonusDamagePerSecond;
+    if (plan.status?.freezeSpeedMultiplierOverride !== undefined) this.statusTuning.freezeSpeedMultiplierOverride = plan.status.freezeSpeedMultiplierOverride;
+    if (plan.status?.freezeDurationBonusSeconds !== undefined) this.statusTuning.freezeDurationBonusSeconds = plan.status.freezeDurationBonusSeconds;
+    if (plan.status?.combustionOnDeath !== undefined) this.statusTuning.combustionOnDeath = plan.status.combustionOnDeath;
+    if (plan.minimumExplosionSplashMultiplier !== undefined) this.explosionSplashMultiplier = Math.max(this.explosionSplashMultiplier, plan.minimumExplosionSplashMultiplier);
+    if (plan.magnetMultiplier !== undefined) this.magnetMultiplier *= plan.magnetMultiplier;
+    if (plan.moveSpeedMultiplier !== undefined) this.moveSpeedMultiplier *= plan.moveSpeedMultiplier;
+    if (plan.defence?.armourDelta !== undefined) this.defence.armour += plan.defence.armourDelta;
+    if (plan.defence?.maxShieldDelta !== undefined) this.defence.maxShield += plan.defence.maxShieldDelta;
+    if (plan.defence?.flatDamageReductionDelta !== undefined) this.defence.flatDamageReduction += plan.defence.flatDamageReductionDelta;
+    if (plan.defence?.hitInvulnerabilitySecondsDelta !== undefined) this.defence.hitInvulnerabilitySeconds += plan.defence.hitInvulnerabilitySecondsDelta;
+    if (plan.defence?.slowResistanceDelta !== undefined) this.defence.slowResistance = Math.min(1, this.defence.slowResistance + plan.defence.slowResistanceDelta);
+    if (plan.defence?.shieldRechargePerSecondMultiplier !== undefined) this.defence.shieldRechargePerSecond *= plan.defence.shieldRechargePerSecondMultiplier;
+    if (plan.defence?.shieldRechargeDelaySecondsMultiplier !== undefined) this.defence.shieldRechargeDelaySeconds *= plan.defence.shieldRechargeDelaySecondsMultiplier;
+    if (plan.supportEffectMultiplier !== undefined) this.supportEffectMultiplier *= plan.supportEffectMultiplier;
+    if (plan.scrapMultiplier !== undefined) this.upgradeScrapMultiplier *= plan.scrapMultiplier;
   }
 
   /**
@@ -3022,43 +2976,32 @@ export class CombatSimulation {
   }
 
   private grantWeightedItem(position: Vector2Data): string | null {
-    const luck = this.playerStats.luck;
-    const curse = this.playerStats.curse;
-    const weights = ITEM_CATALOG.map((entry) => rarityDrawWeight(entry.rarity, luck, curse));
-    const total = weights.reduce((sum, weight) => sum + weight, 0);
-    let roll = this.random() * total;
-    let index = 0;
-    while (index < ITEM_CATALOG.length - 1) {
-      roll -= weights[index]!;
-      if (roll <= 0) break;
-      index += 1;
-    }
-    const chosen = ITEM_CATALOG[index]!;
-    this.grantItem(chosen.id);
-    this.frameEvents.push({ type: "item-granted", position: { ...position }, itemId: chosen.id });
-    return chosen.id;
+    const plan = planWeightedRewardItem({
+      luck: this.playerStats.luck,
+      curse: this.playerStats.curse,
+      randomUnit: this.random(),
+    });
+    if (!plan || !this.grantItem(plan.itemId)) return null;
+    this.frameEvents.push({ type: "item-granted", position: { ...position }, itemId: plan.itemId });
+    return plan.itemId;
   }
 
   grantItem(itemId: string): boolean {
-    if (!itemById(itemId)) return false;
-    this.ownedItemIds.push(itemId);
+    const plan = planItemGrant(itemId);
+    if (!plan) return false;
+    this.ownedItemIds.push(plan.itemId);
     this.refreshPlayerStats();
     return true;
   }
 
   /** Folds the build's raw stat grants plus every owned shop item into one resolved vector. */
   private resolveCurrentPlayerStats(): PlayerStatBlock {
-    const owned = foldItemStats(this.ownedItemIds);
-    const combined: Partial<PlayerStatBlock> = { ...this.baseItemStats };
-    for (const key of Object.keys(owned) as (keyof PlayerStatBlock)[]) {
-      const value = owned[key];
-      if (typeof value === "number") combined[key] = (combined[key] ?? 0) + value;
-    }
-    return resolvePlayerStats({
+    return resolveRunPlayerStats({
       perk: this.perkModifiers,
       relic: this.relicModifiers,
       transformation: this.transformationModifiers,
-      itemStats: combined,
+      baseItemStats: this.baseItemStats,
+      ownedItemIds: this.ownedItemIds,
     });
   }
 
@@ -3070,25 +3013,31 @@ export class CombatSimulation {
    * the same amount, so a +max-HP buy feels immediately useful.
    */
   private refreshPlayerStats(): void {
-    this.rawPlayerStats = this.resolveCurrentPlayerStats();
-    this.playerStats = applyPlayerStatLimits(this.rawPlayerStats).effective;
-
-    const armourDelta = this.playerStats.armourFlat - this.appliedItemArmour;
-    if (armourDelta !== 0) {
-      this.defence.armour = Math.max(0, this.defence.armour + armourDelta);
-      this.appliedItemArmour = this.playerStats.armourFlat;
-    }
-
-    const previousMax = this.playerMaxHealth;
     const growth = heroGrowthAtLevel(this.hero, this.level);
-    this.playerMaxHealth = Math.max(
-      3,
-      Math.round(this.rewardAdjustedMaxHealth(growth.maxHealthBonus) * this.transformationModifiers.maxHealthMultiplier),
-    );
-    this.applyEffectivePlayerStatLimits();
-    const gained = this.playerMaxHealth - previousMax;
-    if (gained > 0) this.playerHealth += gained;
-    this.playerHealth = Math.max(0.1, Math.min(this.playerHealth, this.playerMaxHealth));
+    const plan = planPlayerStatRefresh({
+      perk: this.perkModifiers,
+      relic: this.relicModifiers,
+      transformation: this.transformationModifiers,
+      baseItemStats: this.baseItemStats,
+      ownedItemIds: this.ownedItemIds,
+      currentArmour: this.defence.armour,
+      appliedItemArmour: this.appliedItemArmour,
+      heroBaseMaxHealth: this.hero.baseMaxHealth,
+      growthBonus: growth.maxHealthBonus,
+      rewardMaxHealthBonus: this.rewardMaxHealthBonus,
+      transformationMaxHealthMultiplier: this.transformationModifiers.maxHealthMultiplier,
+      previousMaxHealth: this.playerMaxHealth,
+      currentHealth: this.playerHealth,
+    });
+    this.rawPlayerStats = plan.rawStats;
+    this.playerStats = plan.effectiveStats;
+    this.cappedPlayerStatKeys = plan.cappedStatKeys;
+    if (plan.armour.changed) {
+      this.defence.armour = plan.armour.nextArmour;
+      this.appliedItemArmour = plan.armour.nextAppliedItemArmour;
+    }
+    this.playerMaxHealth = plan.nextMaxHealth;
+    this.playerHealth = plan.nextHealth;
   }
 
   private applyEffectivePlayerStatLimits(): void {
@@ -3105,105 +3054,94 @@ export class CombatSimulation {
    * constructor.
    */
   private rewardAdjustedMaxHealth(growthBonus: number): number {
-    const base = this.hero.baseMaxHealth + growthBonus + this.rewardMaxHealthBonus + this.playerStats.maxHpFlat;
-    return Math.max(3, Math.round(base * (1 + this.playerStats.maxHpPercent / 100)));
+    return calculateRewardAdjustedMaxHealth({
+      heroBaseMaxHealth: this.hero.baseMaxHealth,
+      growthBonus,
+      rewardMaxHealthBonus: this.rewardMaxHealthBonus,
+      maxHpFlat: this.playerStats.maxHpFlat,
+      maxHpPercent: this.playerStats.maxHpPercent,
+    });
   }
 
   private restoreExpeditionBuild(build: ExpeditionBuildSnapshot): void {
-    this.level = Math.max(1, Math.floor(build.level));
-    this.experience = Math.max(0, Math.floor(build.experience));
-    const growth = heroGrowthAtLevel(this.hero, this.level);
-    this.playerMaxHealth = this.rewardAdjustedMaxHealth(growth.maxHealthBonus);
-    this.defence.armour = this.hero.defence.armour + growth.armourBonus;
-    this.levelDamageMultiplier = growth.damageMultiplier;
-    this.levelSpeedMultiplier = growth.speedMultiplier;
-    this.supportEffectMultiplier = growth.supportMultiplier;
-    for (const weaponClass of Object.keys(this.weaponProficiencies) as WeaponClass[]) {
-      this.weaponProficiencies[weaponClass] =
-        Math.round(((growth.proficiencyMultiplier[weaponClass] - 1) / 0.04) * 1_000) / 1_000;
-    }
+    const progression = planExpeditionProgressionRestore({
+      hero: this.hero,
+      level: build.level,
+      experience: build.experience,
+    });
+    this.level = progression.level;
+    this.experience = progression.experience;
+    this.playerMaxHealth = this.rewardAdjustedMaxHealth(progression.maxHealthGrowthBonus);
+    this.defence.armour = this.hero.defence.armour + progression.armourBonus;
+    this.levelDamageMultiplier = progression.damageMultiplier;
+    this.levelSpeedMultiplier = progression.speedMultiplier;
+    this.supportEffectMultiplier = progression.supportMultiplier;
+    this.weaponProficiencies = { ...progression.weaponProficiencies };
 
-    for (const carried of build.upgrades) {
-      if (!(carried.upgradeId in UPGRADE_CATALOG)) continue;
-      const id = carried.upgradeId as UpgradeId;
-      const targetLevel = Math.min(
-        UPGRADE_CATALOG[id].maxLevel,
-        Math.max(0, Math.floor(carried.level)),
-      );
-      for (let level = 1; level <= targetLevel; level += 1) {
-        this.applyUpgrade(id, level);
+    for (const upgrade of planCarriedUpgradeRestores(build.upgrades)) {
+      for (const level of upgrade.levelsToApply) {
+        this.applyUpgrade(upgrade.upgradeId, level);
       }
-      if (targetLevel > 0) this.upgradeLevels.set(id, targetLevel);
+      this.upgradeLevels.set(upgrade.upgradeId, upgrade.targetLevel);
     }
 
-    const tiers = build.weapons.map((weapon) => Math.max(1, Math.min(3, Math.floor(weapon.tier))));
+    const restore = planWeaponAndSurvivalRestore({
+      weapons: build.weapons,
+      rackTileCount: this.weaponInventory.rack.filter((slot) => slot.tile !== null).length,
+      equippedWeaponCount: this.equippedWeapons.length,
+      maxHealth: this.playerMaxHealth,
+      health: build.health,
+      shield: build.shield,
+    });
     let carriedIndex = 0;
     this.weaponInventory.rack.forEach((slot) => {
       if (!slot.tile) return;
-      slot.tile.tier = (tiers[carriedIndex] ?? 1) as 1 | 2 | 3;
+      slot.tile.tier = restore.rackTiers[carriedIndex] ?? 1;
       carriedIndex += 1;
     });
     this.equippedWeapons.forEach((weapon, index) => {
-      const tier = tiers[index] ?? 1;
-      weapon.stats.projectileDamage *= tier === 1 ? 1 : tier === 2 ? 1.6 : 2.56;
+      weapon.stats.projectileDamage *= restore.weaponDamageMultipliers[index] ?? 1;
     });
 
-    this.playerHealth = Math.max(0.1, Math.min(this.playerMaxHealth, build.health));
-    this.playerBonusHealth = 0;
-    this.playerShield = Math.max(0, build.shield);
+    this.playerHealth = restore.health;
+    this.playerBonusHealth = restore.bonusHealth;
+    this.playerShield = restore.shield;
   }
 
   private addWeapon(weaponId: WeaponId): void {
-    if (this.equippedWeapons.length >= MAX_EQUIPPED_WEAPONS) {
-      return;
-    }
+    if (!canAdmitWeapon({
+      equippedWeaponCount: this.equippedWeapons.length,
+      maximumEquippedWeapons: MAX_EQUIPPED_WEAPONS,
+    })) return;
     const nextInstanceId = this.weaponInventory.nextInstanceId++;
-    const tile: WeaponTile = {
-      instanceId: nextInstanceId,
-      weaponId,
-      weaponClass: WEAPON_CATALOG[weaponId].weaponClass,
-      tier: 1,
-    };
-    const emptySlot = this.weaponInventory.rack.find((slot) => (
-      slot.tile === null && (slot.weaponClass === "all" || slot.weaponClass === tile.weaponClass)
-    ));
-    if (emptySlot) {
-      emptySlot.tile = tile;
-      this.equippedWeapons.push({
-        instanceId: nextInstanceId,
-        weaponId,
-        stats: { ...WEAPON_CATALOG[weaponId] },
-        cooldownSeconds: 0,
-        cooldownDurationSeconds: 0,
-        projectileCarry: initialProjectileCarry(nextInstanceId),
-        orbitAngleRadians: 0,
-      });
-    } else {
-      const emptyStash = this.weaponInventory.stash.findIndex((candidate) => candidate === null);
-      if (emptyStash >= 0) this.weaponInventory.stash[emptyStash] = tile;
+    const initialized = planWeaponInitialization({ instanceId: nextInstanceId, weaponId });
+    const destination = planWeaponAcquisitionDestination({
+      weaponClass: initialized.tile.weaponClass,
+      rack: this.weaponInventory.rack,
+      stash: this.weaponInventory.stash,
+    });
+    if (destination.kind === "rack") {
+      this.weaponInventory.rack[destination.slotIndex]!.tile = initialized.tile;
+      this.equippedWeapons.push(initialized.runtimeWeapon);
+    }
+    if (destination.kind === "stash") {
+      this.weaponInventory.stash[destination.slotIndex] = initialized.tile;
     }
   }
 
   private applySupplyChoice(optionId: string): void {
-    switch (optionId) {
-      case "patch-up":
-        this.grantHealing(SUPPLY_DEPOT_HEAL * this.supportEffectMultiplier * this.transformationModifiers.healingReceivedMultiplier);
-        break;
-      case "field-armoury": {
-        const armoury = this.buildUpgradeDecision();
-        if (armoury) {
-          this.decisionQueue.unshift(armoury);
-        } else {
-          // Everything is maxed; fall back to the heal so the choice
-          // is never wasted.
-          this.grantHealing(SUPPLY_DEPOT_HEAL * this.supportEffectMultiplier * this.transformationModifiers.healingReceivedMultiplier);
-        }
-        break;
-      }
-      case "aegis-lattice":
-        this.playerShield += AEGIS_SHIELD_AMOUNT * this.supportEffectMultiplier;
-        break;
-    }
+    const armoury = optionId === "field-armoury" ? this.buildUpgradeDecision() : null;
+    const plan = planSupplyDepotChoice({
+      optionId,
+      armouryAvailable: armoury !== null,
+      effectiveHealAmount: SUPPLY_DEPOT_HEAL
+        * this.supportEffectMultiplier
+        * this.transformationModifiers.healingReceivedMultiplier,
+      effectiveShieldAmount: AEGIS_SHIELD_AMOUNT * this.supportEffectMultiplier,
+    });
+    if (plan.kind === "heal") this.grantHealing(plan.amount);
+    if (plan.kind === "open-armoury" && armoury) this.decisionQueue.unshift(armoury);
+    if (plan.kind === "shield") this.playerShield += plan.amount;
   }
 
   /**
@@ -3215,79 +3153,11 @@ export class CombatSimulation {
    * exhausted, in which case the caller falls back to an all-stat draw.
    */
   private buildUpgradeDecision(): PendingDecision | null {
-    const start = (this.level - 2 + UPGRADE_ORDER.length * 2) % UPGRADE_ORDER.length;
-    // Preserve the original spread-by-two offer pattern, then fall back to
-    // the remaining slots so eligibility filtering can always fill options.
-    //
-    // Derived from the catalogue length rather than hard-coded. It used to be
-    // the literal [0,2,4,6,8,10,1,3,5,7,9,11], which was a complete cover only
-    // while there were exactly twelve upgrades; at twenty it could never see
-    // the last eight from a given start, so they were systematically
-    // under-offered.
-    const scanOffsets = upgradeScanOffsets(UPGRADE_ORDER.length);
-    const options: DecisionOption[] = [];
-    for (const offset of scanOffsets) {
-      if (options.length >= 3) break;
-      const id = UPGRADE_ORDER[(start + offset) % UPGRADE_ORDER.length]!;
-      if (options.some((option) => option.id === id) || !this.isUpgradeEligible(id)) {
-        continue;
-      }
-      const nextLevel = (this.upgradeLevels.get(id) ?? 0) + 1;
-      options.push({
-        id,
-        name: upgradeLevelName(id, nextLevel),
-        description: `[${UPGRADE_CATEGORY_LABELS[UPGRADE_CATALOG[id].category]}] `
-          + UPGRADE_CATALOG[id].levelDescriptions[nextLevel - 1]!,
-      });
-    }
-    if (options.length === 0) {
-      return null;
-    }
-    const statCard = this.levelStatCardForLevel(0);
-    if (statCard) options.push(statCard);
-    return {
-      kind: "upgrade",
-      title: "LEVEL UP — CHOOSE ONE",
-      options,
-    };
-  }
-
-  /**
-   * The stat card offered at this level, `slot` steps along the interleaved
-   * order. RNG-free on purpose: `this.random()` call order is part of the replay
-   * digest, so drawing here would invalidate every fixture. Luck-weighted draws
-   * are a deferred item.
-   */
-  private levelStatCardForLevel(slot: number): DecisionOption | null {
-    const length = LEVEL_STAT_ORDER.length;
-    const index = (this.level - 2 + slot * 4 + length * 2) % length;
-    const entry = levelStatCardById(LEVEL_STAT_ORDER[index]!);
-    if (!entry) return null;
-    return { id: entry.id, name: entry.name, description: levelStatCardDescription(entry) };
-  }
-
-  /**
-   * Deterministic four-card stat draw from the shared `PlayerStatBlock`
-   * vocabulary. Deliberately RNG-free, exactly like `buildUpgradeDecision`:
-   * `this.random()` call order is part of the replay digest, so drawing here
-   * would invalidate every fixture. Luck-weighted draws are a deferred item.
-   *
-   * The stride walks the interleaved `LEVEL_STAT_ORDER` so consecutive levels
-   * offer different cards, and every card is always eligible — a stat can be
-   * taken any number of times.
-   */
-  private buildLevelStatDecision(): PendingDecision {
-    const options: DecisionOption[] = [];
-    for (let slot = 0; slot < LEVEL_STAT_ORDER.length && options.length < 4; slot += 1) {
-      const option = this.levelStatCardForLevel(slot);
-      if (!option || options.some((existing) => existing.id === option.id)) continue;
-      options.push(option);
-    }
-    return {
-      kind: "level-stat",
-      title: "LEVEL UP — CHOOSE A STAT",
-      options,
-    };
+    return planUpgradeDecision({
+      level: this.level,
+      upgradeLevels: this.upgradeLevels,
+      slotCapacity: this.upgradeSlotCapacity,
+    });
   }
 
   /**
@@ -3298,38 +3168,22 @@ export class CombatSimulation {
    * HP is recomputed there, so a card touching either is inert without it.
    */
   private applyLevelStatCard(cardId: string): void {
-    const entry = levelStatCardById(cardId);
-    if (!entry) return;
-    this.baseItemStats = {
-      ...this.baseItemStats,
-      [entry.statKey]: (this.baseItemStats[entry.statKey] ?? 0) + entry.amount,
-    };
+    const plan = planLevelStatGrant({ cardId, currentStats: this.baseItemStats });
+    if (!plan) return;
+    this.baseItemStats = { ...plan.nextStats };
     this.refreshPlayerStats();
   }
 
   private isUpgradeEligible(id: UpgradeId): boolean {
-    const definition = UPGRADE_CATALOG[id];
-    const ownedLevel = this.upgradeLevels.get(id) ?? 0;
-    if (ownedLevel >= definition.maxLevel) {
-      return false;
-    }
-    if (definition.excludes.some((excluded) => (this.upgradeLevels.get(excluded) ?? 0) > 0)) {
-      return false;
-    }
-    // Breadth is slot-limited: a NEW upgrade needs a free slot in its
-    // category, while leveling an owned upgrade never consumes one.
-    return ownedLevel > 0
-      || this.usedUpgradeSlots(definition.category) < this.upgradeSlotCapacity[definition.category];
+    return isUpgradeEligibleForRun({
+      id,
+      upgradeLevels: this.upgradeLevels,
+      slotCapacity: this.upgradeSlotCapacity,
+    });
   }
 
   private usedUpgradeSlots(category: UpgradeCategory): number {
-    let used = 0;
-    for (const [id, level] of this.upgradeLevels) {
-      if (level > 0 && UPGRADE_CATALOG[id].category === category) {
-        used += 1;
-      }
-    }
-    return used;
+    return countUsedUpgradeSlots(category, this.upgradeLevels);
   }
 
   private totalSlotCapacity(): number {
@@ -3341,30 +3195,18 @@ export class CombatSimulation {
    * null once the shared hard cap is reached.
    */
   private buildSlotRequisitionDecision(): PendingDecision | null {
-    if (this.totalSlotCapacity() >= UPGRADE_SLOT_HARD_CAP) {
-      return null;
-    }
     const categories = Object.keys(this.upgradeSlotCapacity) as UpgradeCategory[];
-    const options: DecisionOption[] = categories.map((category) => ({
-      id: `slot-${category}`,
-      name: `${UPGRADE_CATEGORY_LABELS[category]} Slot`,
-      description: `Unlock one more ${UPGRADE_CATEGORY_LABELS[category]} upgrade slot `
-        + `(now ${this.usedUpgradeSlots(category)}/${this.upgradeSlotCapacity[category]}).`,
-    }));
-    // Keep the overlay at three options: drop a seeded entry when all four
-    // categories still have room.
-    while (options.length > 3) {
-      const dropIndex = Math.min(
-        Math.floor(this.random() * options.length),
-        options.length - 1,
-      );
-      options.splice(dropIndex, 1);
-    }
-    return {
-      kind: "slot-requisition",
-      title: "REQUISITION — UNLOCK AN UPGRADE SLOT",
-      options,
-    };
+    const canOffer = this.totalSlotCapacity() < UPGRADE_SLOT_HARD_CAP;
+    const rollCount = canOffer ? slotRequisitionRollCount(categories.length) : 0;
+    return planSlotRequisitionDecision({
+      capacities: this.upgradeSlotCapacity,
+      used: Object.fromEntries(
+        categories.map((category) => [category, this.usedUpgradeSlots(category)]),
+      ) as Record<UpgradeCategory, number>,
+      labels: UPGRADE_CATEGORY_LABELS,
+      hardCap: UPGRADE_SLOT_HARD_CAP,
+      randomUnits: Array.from({ length: rollCount }, () => this.random()),
+    });
   }
 
   /** Everything this run may still be offered, uniques included once earned. */
@@ -3454,117 +3296,66 @@ export class CombatSimulation {
   }
 
   private buildSupplyDepotDecision(): PendingDecision {
-    return {
-      kind: "supply-depot",
-      title: "SUPPLY DEPOT — CHOOSE ONE",
-      options: [
-        {
-          id: "patch-up",
-          name: "Patch Up",
-          description: `Restore ${SUPPLY_DEPOT_HEAL} health.`,
-        },
-        {
-          id: "field-armoury",
-          name: "Field Armoury",
-          description: "Choose one upgrade immediately.",
-        },
-        {
-          id: "aegis-lattice",
-          name: "Aegis Lattice",
-          description: `Gain a ${AEGIS_SHIELD_AMOUNT}-point shield that absorbs damage before health.`,
-        },
-      ],
-    };
+    return presentSupplyDepotDecision({ healAmount: SUPPLY_DEPOT_HEAL, shieldAmount: AEGIS_SHIELD_AMOUNT });
   }
 
   /** Same-run economy v2: stock, one depth-priced reroll, one protected offer, and 50% weapon resale. */
   private buildScrapShopCandidates(): DecisionOption[] {
-    const candidates: DecisionOption[] = [];
     // Liberation nodes (Phase 4) open a themed shop instead of the plain scrap
     // market. The profile decides which stock lines exist, filters items by tag
     // and rarity floor, and scales prices — so a themed shop is a data row, not
     // a second shop implementation.
     const profile = shopProfileById(this.shopProfileId);
-    const price = (base: number): number => profileScaledShopPrice(base, profile.priceMultiplier);
-    const add = (option: Omit<DecisionOption, "affordable"> & { cost: number }): void => {
-      // Banned stock never returns for the rest of the run (Brotato's ban verb).
-      if (this.shopBannedIds.has(option.id)) return;
-      candidates.push({ ...option, affordable: option.cost <= this.securedScrap });
-    };
+    const upgrades = profile.stock.upgrades
+      ? prepareScrapShopUpgradeInputs({
+        eligibleUpgradeIds: UPGRADE_ORDER.filter((id) => this.isUpgradeEligible(id)),
+        upgradeLevels: this.upgradeLevels,
+      })
+      : [];
 
-    if (profile.stock.repair && this.playerHealth < this.playerMaxHealth) {
-      add({
-        id: "shop-repair",
-        name: "Field Repair",
-        description: `Restore ${SCRAP_SHOP_REPAIR} health.`,
-        cost: price(SCRAP_SHOP_PRICES.fieldRepair),
-      });
-    }
-    if (profile.stock.utility && !this.uraniumKitAvailable) {
-      add({
-        id: "shop-uranium-kit",
-        name: "Uranium-Core Kit",
-        description: "Carry one activatable 12-second +25% damage kit.",
-        cost: price(SCRAP_SHOP_PRICES.uraniumKit),
-      });
-    }
-    if (profile.stock.utility) {
-      add({
-        id: "shop-armour-retrofit",
-        name: "Armour Retrofit",
-        description: `Gain ${SCRAP_SHOP_ARMOUR} armour for this run.`,
-        cost: price(SCRAP_SHOP_PRICES.armourRetrofit),
-      });
-    }
-
-    if (profile.stock.upgrades) {
-      const eligibleUpgrades = UPGRADE_ORDER.filter((id) => this.isUpgradeEligible(id));
-      for (const upgradeId of eligibleUpgrades) {
-        const nextLevel = (this.upgradeLevels.get(upgradeId) ?? 0) + 1;
-        add({
-          id: `shop-upgrade:${upgradeId}`,
-          name: upgradeLevelName(upgradeId, nextLevel),
-          description: `Install immediately. ${UPGRADE_CATALOG[upgradeId].levelDescriptions[nextLevel - 1]!}`,
-          cost: price(SCRAP_SHOP_PRICES.upgrade),
-        });
-      }
-    }
-
-    if (profile.stock.weapons && this.equippedWeapons.length < MAX_EQUIPPED_WEAPONS) {
-      const owned = new Set(this.equippedWeapons.map((weapon) => weapon.weaponId));
-      const availableWeapons = this.offerableWeapons().filter((id) => !owned.has(id));
-      // The pool went 8 → 20 on the 26 July release. Every unowned weapon used to
-      // become a candidate, which at 20 would push ~19 weapon entries into a draw
-      // shared with ~26 items and visibly starve the item economy. Take a rotating
-      // window instead. RNG-free on purpose, exactly like the level-stat draw:
-      // this method is also called by `canRerollScrapShop`, so a `random()` here
-      // would consume a variable number of draws and break the replay digest.
-      for (const weaponId of rotatingWindow(availableWeapons, SHOP_WEAPON_CANDIDATE_COUNT, this.waveIndex)) {
-        const isUnique = WEAPON_CATALOG[weaponId].weaponClass === "unique";
-        add({
-          id: `shop-weapon:${weaponId}`,
-          name: WEAPON_CATALOG[weaponId].displayName,
-          description: isUnique
-            ? `Unique. ${WEAPON_CATALOG[weaponId].description}`
-            : `Add this Tier I weapon to the active rack. ${WEAPON_CATALOG[weaponId].description}`,
-          cost: price(SCRAP_SHOP_PRICES.weapon * (isUnique ? SHOP_UNIQUE_WEAPON_PRICE_MULTIPLIER : 1)),
-        });
-      }
-    }
+    // RNG-free because this path is also queried for reroll feasibility.
+    const canPrepareWeapons = profile.stock.weapons && this.equippedWeapons.length < MAX_EQUIPPED_WEAPONS;
+    const weapons = prepareScrapShopWeaponInputs({
+      stocksWeapons: profile.stock.weapons,
+      equippedWeaponIds: this.equippedWeapons.map((weapon) => weapon.weaponId),
+      maxEquippedWeapons: MAX_EQUIPPED_WEAPONS,
+      offerableWeaponIds: canPrepareWeapons ? this.offerableWeapons() : [],
+      candidateCount: SHOP_WEAPON_CANDIDATE_COUNT,
+      rotationOffset: this.waveIndex,
+    });
 
     // Shop items (Brotato overhaul). Items stack, so nothing is filtered by
     // ownership; the profile, rarity and price do the gating.
-    for (const definition of ITEM_CATALOG) {
-      if (!profileStocksItem(profile, definition)) continue;
-      add({
-        id: `shop-item:${definition.id}`,
-        name: definition.name,
-        description: `${definition.description} (${definition.rarity})`,
-        cost: price(depthScaledShopItemPrice(definition.basePrice, this.waveIndex)),
-      });
-    }
-
-    return candidates;
+    const candidates = [
+      ...buildFixedScrapShopCandidates({
+        stocksRepair: profile.stock.repair,
+        stocksUtility: profile.stock.utility,
+        playerHealth: this.playerHealth,
+        playerMaxHealth: this.playerMaxHealth,
+        uraniumKitAvailable: this.uraniumKitAvailable,
+        repairAmount: SCRAP_SHOP_REPAIR,
+        armourAmount: SCRAP_SHOP_ARMOUR,
+        prices: SCRAP_SHOP_PRICES,
+        profilePriceMultiplier: profile.priceMultiplier,
+      }),
+      ...buildUpgradeWeaponScrapShopCandidates({
+        upgrades,
+        weapons,
+        prices: SCRAP_SHOP_PRICES,
+        profilePriceMultiplier: profile.priceMultiplier,
+        uniqueWeaponPriceMultiplier: SHOP_UNIQUE_WEAPON_PRICE_MULTIPLIER,
+      }),
+      ...buildItemScrapShopCandidates({
+        items: ITEM_CATALOG.filter((definition) => profileStocksItem(profile, definition)),
+        waveIndex: this.waveIndex,
+        profilePriceMultiplier: profile.priceMultiplier,
+      }),
+    ];
+    return finalizeScrapShopCandidates({
+      candidates,
+      bannedIds: this.shopBannedIds,
+      securedScrap: this.securedScrap,
+    });
   }
 
   private drawScrapShopOffers(excludedIds: ReadonlySet<string> = new Set()): DecisionOption[] {
@@ -3577,29 +3368,40 @@ export class CombatSimulation {
       playerMaxHealth: this.playerMaxHealth,
       lockedOfferId: this.shopLockedOfferId,
     });
-    const offers: DecisionOption[] = prepared.reservedRepair ? [prepared.reservedRepair] : [];
-    const candidates = prepared.candidates;
+    const initialOffers: DecisionOption[] = prepared.reservedRepair ? [prepared.reservedRepair] : [];
     // Rarity-weighted draw, bent by luck/curse. This deliberately spends
     // exactly one `random()` per offer, like the uniform draw it replaces —
     // the RNG stream position is part of the deterministic replay digest, so
     // changing *which* candidate is picked is safe but changing *how many*
     // draws happen is not.
-    const luck = this.playerStats.luck;
-    const curse = this.playerStats.curse;
-    while (offers.length < SCRAP_SHOP_OFFER_COUNT && candidates.length > 0) {
-      const weights = candidates.map((candidate) => shopOfferDrawWeight(candidate.id, luck, curse));
-      const index = selectWeightedOfferIndex(weights, this.random());
-      offers.push(candidates.splice(index, 1)[0]!);
-    }
+    const drawCount = scrapShopWeightedDrawCount(
+      initialOffers.length,
+      prepared.candidates.length,
+      SCRAP_SHOP_OFFER_COUNT,
+    );
+    const randomUnits = Array.from({ length: drawCount }, () => this.random());
+    const offers = selectWeightedScrapShopOffers({
+      initialOffers,
+      candidates: prepared.candidates,
+      offerCount: SCRAP_SHOP_OFFER_COUNT,
+      luck: this.playerStats.luck,
+      curse: this.playerStats.curse,
+      randomUnits,
+    });
     return sortScrapShopOffersAffordableFirst(offers);
   }
 
   private buildScrapShopDecision(): PendingDecision {
     if (this.shopOffers === null) this.shopOffers = this.drawScrapShopOffers();
-    this.shopOffers = refreshScrapShopAffordability(this.shopOffers, this.securedScrap);
+    const hydrated = hydrateScrapShopDecision({
+      offers: this.shopOffers,
+      securedScrap: this.securedScrap,
+      mode: this.shopMode,
+    });
+    this.shopOffers = hydrated.offers;
 
-    if (this.shopMode === "manage") return this.buildScrapShopManagementDecision();
-    if (this.shopMode === "sell") return this.buildScrapShopSellDecision();
+    if (hydrated.route === "manage") return this.buildScrapShopManagementDecision();
+    if (hydrated.route === "sell") return this.buildScrapShopSellDecision();
 
     return presentScrapShopOffersDecision({
       offers: this.shopOffers,
@@ -3625,20 +3427,11 @@ export class CombatSimulation {
   }
 
   private buildScrapShopSellDecision(): PendingDecision {
-    const tiles = [
-      ...this.weaponInventory.rack.flatMap((slot) => slot.tile ? [slot.tile] : []),
-      ...this.weaponInventory.stash.flatMap((tile) => tile ? [tile] : []),
-    ];
-    const entries = tiles.map((tile) => {
-      const active = this.equippedWeapons.some((weapon) => weapon.instanceId === tile.instanceId);
-      const canSell = !active || this.equippedWeapons.length > 1;
-      return {
-        instanceId: tile.instanceId,
-        displayName: WEAPON_CATALOG[tile.weaponId].displayName,
-        tier: tile.tier,
-        saleValue: scrapShopWeaponSaleValue(tile.tier, this.perkModifiers.weaponSaleFraction),
-        canSell,
-      };
+    const entries = prepareScrapShopSellEntries({
+      rack: this.weaponInventory.rack,
+      stash: this.weaponInventory.stash,
+      equippedInstanceIds: this.equippedWeapons.map((weapon) => weapon.instanceId),
+      saleFraction: this.perkModifiers.weaponSaleFraction,
     });
     return presentScrapShopSellDecision({
       entries,
@@ -3713,7 +3506,7 @@ export class CombatSimulation {
     this.shopMode = visit.mode;
   }
 
-  private applyScrapShopPurchase(effect: ScrapShopPurchaseEffect): void {
+  private applyScrapShopPurchase(effect: ValidatedScrapShopPurchaseEffect): void {
     if (effect.kind === "repair") {
       this.grantHealing(SCRAP_SHOP_REPAIR * this.supportEffectMultiplier);
       return;
@@ -3727,26 +3520,18 @@ export class CombatSimulation {
       return;
     }
     if (effect.kind === "upgrade") {
-      const upgradeId = effect.upgradeId as UpgradeId;
-      if (upgradeId in UPGRADE_CATALOG && this.isUpgradeEligible(upgradeId)) {
-        const nextLevel = (this.upgradeLevels.get(upgradeId) ?? 0) + 1;
-        this.upgradeLevels.set(upgradeId, nextLevel);
-        this.applyUpgrade(upgradeId, nextLevel);
-      }
+      const nextLevel = (this.upgradeLevels.get(effect.upgradeId) ?? 0) + 1;
+      this.upgradeLevels.set(effect.upgradeId, nextLevel);
+      this.applyUpgrade(effect.upgradeId, nextLevel);
       return;
     }
     if (effect.kind === "weapon") {
-      const weaponId = effect.weaponId as WeaponId;
-      if (weaponId in WEAPON_CATALOG) {
-        this.addWeapon(weaponId);
-      }
+      this.addWeapon(effect.weaponId);
       return;
     }
     if (effect.kind === "item") {
-      if (itemById(effect.itemId)) {
-        this.ownedItemIds.push(effect.itemId);
-        this.refreshPlayerStats();
-      }
+      this.ownedItemIds.push(effect.itemId);
+      this.refreshPlayerStats();
     }
   }
 
@@ -9532,42 +9317,33 @@ export class CombatSimulation {
   }
 
   private checkForLevelUp(): void {
-    if (this.decisionQueue.length > 0) {
-      return;
-    }
-
-    const threshold = this.experienceThreshold();
-    if (this.experience < threshold) {
-      return;
-    }
-
-    this.experience -= threshold;
-    this.level += 1;
+    const plan = planLevelUpAdvance({
+      level: this.level,
+      experience: this.experience,
+      hasPendingDecision: this.decisionQueue.length > 0,
+      upgradeLevels: this.upgradeLevels,
+      slotCapacity: this.upgradeSlotCapacity,
+    });
+    if (!plan) return;
+    this.experience = plan.remainingExperience;
+    this.level = plan.nextLevel;
     this.applyLevelGrowth();
     this.frameEvents.push({ type: "level-up", level: this.level });
     // Phase 3C: the upgrade draw now carries a stat card alongside the authored
     // upgrades. The all-stat draw covers the case where every upgrade is maxed
     // or locked out — that used to level the player up in complete silence.
-    const decision = this.buildUpgradeDecision() ?? this.buildLevelStatDecision();
-    if (decision) {
-      this.decisionQueue.push(decision);
-    }
+    this.decisionQueue.push(plan.decision);
   }
 
   private applyLevelGrowth(): void {
-    const current = heroGrowthAtLevel(this.hero, this.level);
-    const previous = heroGrowthAtLevel(this.hero, this.level - 1);
-    const healthGain = current.maxHealthBonus - previous.maxHealthBonus;
-    this.playerMaxHealth = this.rewardAdjustedMaxHealth(current.maxHealthBonus);
-    this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + healthGain);
-    this.defence.armour += current.armourBonus - previous.armourBonus;
-    this.levelDamageMultiplier = current.damageMultiplier;
-    this.levelSpeedMultiplier = current.speedMultiplier;
-    this.supportEffectMultiplier = current.supportMultiplier;
-    for (const weaponClass of Object.keys(this.weaponProficiencies) as WeaponClass[]) {
-      this.weaponProficiencies[weaponClass] =
-        Math.round(((current.proficiencyMultiplier[weaponClass] - 1) / 0.04) * 1_000) / 1_000;
-    }
+    const plan = planHeroLevelGrowth({ hero: this.hero, level: this.level });
+    this.playerMaxHealth = this.rewardAdjustedMaxHealth(plan.maxHealthBonus);
+    this.playerHealth = Math.min(this.playerMaxHealth, this.playerHealth + plan.healthGain);
+    this.defence.armour += plan.armourGain;
+    this.levelDamageMultiplier = plan.damageMultiplier;
+    this.levelSpeedMultiplier = plan.speedMultiplier;
+    this.supportEffectMultiplier = plan.supportMultiplier;
+    this.weaponProficiencies = { ...plan.weaponProficiencies };
   }
 
   private experienceThreshold(): number {
@@ -9921,25 +9697,6 @@ export function pointInsideRipperSweep(
   halfAngleRadians = Math.PI * 0.32,
 ): boolean {
   return pointInsideWeaponArc(origin, direction, point, reachMetres, halfAngleRadians);
-}
-
-/**
- * Even offsets first, then odd, covering the whole rotation exactly once. Keeps
- * the original "spread by two" feel — consecutive offers are not adjacent in
- * the order — while guaranteeing every upgrade is reachable from any start.
- */
-export function upgradeScanOffsets(length: number): readonly number[] {
-  const evens: number[] = [];
-  const odds: number[] = [];
-  for (let offset = 0; offset < Math.max(0, length); offset += 1) {
-    (offset % 2 === 0 ? evens : odds).push(offset);
-  }
-  return [...evens, ...odds];
-}
-
-/** Compile-time proof that every UpgradeId has an effect in `applyUpgrade`. */
-function assertUpgradeHandled(upgradeId: never): never {
-  throw new Error(`Upgrade has no effect wired: ${String(upgradeId)}`);
 }
 
 export function quillbackVolleyCount(attackCount: number): 1 | 3 | 5 {
