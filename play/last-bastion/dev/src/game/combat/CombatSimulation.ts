@@ -156,6 +156,40 @@ import { planProjectileChainHop } from "./ProjectileChain";
 import { planProjectileArmourImpact } from "./ProjectileArmourImpact";
 import { planProjectileExplosionRoute } from "./ProjectileExplosionRoute";
 import { planProjectileSplashImpact } from "./ProjectileSplashImpact";
+import { planEventHorizonFieldPayload, planGravityPulseFieldPayload } from "./GravityFieldPayload";
+import { planGravityFieldPull } from "./GravityFieldPull";
+import { planGravityFieldDetonationImpact, stepGravityFieldLifetime } from "./GravityFieldDetonation";
+import { depthScaledShopItemPrice, profileScaledShopPrice } from "./ScrapShopPricing";
+import { rotatingWindow } from "./ScrapShopStock";
+export { rotatingWindow } from "./ScrapShopStock";
+import { selectWeightedOfferIndex } from "./ScrapShopOfferSelection";
+import { prepareCampaignRepairDraw } from "./ScrapShopCampaignRepair";
+import { refreshScrapShopAffordability, sortScrapShopOffersAffordableFirst } from "./ScrapShopAffordability";
+import {
+  assembleLockedScrapShopReroll,
+  canPlanScrapShopReroll,
+  planPaidScrapShopReroll,
+  scrapShopRerollExcludedIds,
+} from "./ScrapShopReroll";
+import {
+  presentScrapShopManagementDecision,
+  presentScrapShopOffersDecision,
+  presentScrapShopSellDecision,
+} from "./ScrapShopDecisionPresentation";
+import { routeScrapShopAction } from "./ScrapShopAction";
+import { planScrapShopPurchase, type ScrapShopPurchaseEffect } from "./ScrapShopPurchase";
+import { planScrapShopBan } from "./ScrapShopBan";
+import {
+  planScrapShopVisitOpen,
+  planScrapShopVisitReset,
+  type ScrapShopVisitResetPlan,
+} from "./ScrapShopVisit";
+import {
+  planScrapShopWeaponSale,
+  SCRAP_SHOP_WEAPON_BASE_PRICE,
+  scrapShopWeaponSaleValue,
+} from "./ScrapShopWeaponSale";
+export { scrapShopWeaponSaleValue } from "./ScrapShopWeaponSale";
 import {
   bastionEaterChargeDestination,
   resolveBastionEaterActionChoice,
@@ -1498,7 +1532,7 @@ export const SCRAP_SHOP_PRICES = Object.freeze({
   fieldRepair: 40,
   upgrade: 45,
   armourRetrofit: 50,
-  weapon: 60,
+  weapon: SCRAP_SHOP_WEAPON_BASE_PRICE,
 } as const);
 /** Offers shown per shop visit (Brotato overhaul raised this from 3 to 4). */
 export const SCRAP_SHOP_OFFER_COUNT = 4;
@@ -1507,9 +1541,6 @@ export function scrapShopRerollCost(depth: number): number {
   return 10 + Math.max(1, Math.floor(depth)) * 5;
 }
 
-export function scrapShopWeaponSaleValue(tier: 1 | 2 | 3, fraction = 0.5): number {
-  return Math.floor(SCRAP_SHOP_PRICES.weapon * (2 ** (tier - 1)) * fraction);
-}
 /**
  * How many weapon lines the shop may stock at once, out of everything unowned.
  * Caps the weapon share of the offer draw now that the pool is 20 rather than 8.
@@ -2512,65 +2543,75 @@ export class CombatSimulation {
         break;
       }
       case "scrap-shop":
-        if (optionId === "shop-manage") {
-          this.shopMode = "manage";
+        const shopAction = routeScrapShopAction(optionId);
+        if (shopAction.kind === "open-mode") {
+          this.shopMode = shopAction.mode;
           this.decisionQueue.unshift(this.buildScrapShopDecision());
-        } else if (optionId === "shop-back") {
-          this.shopMode = "offers";
+        } else if (shopAction.kind === "toggle-lock") {
+          this.shopLockedOfferId = this.shopLockedOfferId === shopAction.offerId ? null : shopAction.offerId;
           this.decisionQueue.unshift(this.buildScrapShopDecision());
-        } else if (optionId === "shop-sell-menu") {
-          this.shopMode = "sell";
-          this.decisionQueue.unshift(this.buildScrapShopDecision());
-        } else if (optionId.startsWith("shop-lock:")) {
-          const offerId = optionId.slice("shop-lock:".length);
-          this.shopLockedOfferId = this.shopLockedOfferId === offerId ? null : offerId;
-          this.decisionQueue.unshift(this.buildScrapShopDecision());
-        } else if (optionId.startsWith("shop-ban:")) {
-          const offerId = optionId.slice("shop-ban:".length);
-          this.shopBannedIds.add(offerId);
-          if (this.shopLockedOfferId === offerId) this.shopLockedOfferId = null;
+        } else if (shopAction.kind === "ban-offer") {
+          this.shopBannedIds.add(shopAction.offerId);
           // Replace the banned offer in the current rack immediately, free of charge.
           const excluded = new Set(this.shopOffers?.map((offer) => offer.id) ?? []);
           const replacement = this.drawScrapShopOffers(excluded)[0] ?? null;
-          this.shopOffers = (this.shopOffers ?? [])
-            .filter((offer) => offer.id !== offerId)
-            .concat(replacement ? [replacement] : []);
+          const ban = planScrapShopBan({
+            offers: this.shopOffers,
+            bannedOfferId: shopAction.offerId,
+            lockedOfferId: this.shopLockedOfferId,
+            replacement,
+          });
+          this.shopOffers = ban.offers;
+          this.shopLockedOfferId = ban.lockedOfferId;
           this.shopMode = "offers";
           this.decisionQueue.unshift(this.buildScrapShopDecision());
-        } else if (optionId === "shop-reroll") {
-          const cost = this.currentShopRerollCost();
-          if (this.shopRerollUsed || cost > this.securedScrap) {
+        } else if (shopAction.kind === "reroll") {
+          const reroll = planPaidScrapShopReroll({
+            rerollUsed: this.shopRerollUsed,
+            cost: this.currentShopRerollCost(),
+            securedScrap: this.securedScrap,
+          });
+          if (!reroll.ok) {
             this.decisionQueue.unshift(decision);
             return false;
           }
-          this.securedScrap -= cost;
+          this.securedScrap = reroll.remainingScrap;
           this.shopRerollUsed = true;
           this.rerollScrapShopOffers();
-          this.frameEvents.push({ type: "scrap-spent", amount: cost, remaining: this.securedScrap, offerId: optionId });
-          this.shopMode = "offers";
-          this.decisionQueue.unshift(this.buildScrapShopDecision());
-        } else if (optionId.startsWith("shop-sell:")) {
-          const instanceId = Number(optionId.slice("shop-sell:".length));
-          if (!this.sellWeapon(instanceId)) {
-            this.decisionQueue.unshift(decision);
-            return false;
-          }
-          this.decisionQueue.unshift(this.buildScrapShopDecision());
-        } else if (optionId !== "shop-leave") {
-          const cost = Math.max(0, option.cost ?? 0);
-          if (cost > this.securedScrap) {
-            this.decisionQueue.unshift(decision);
-            return false;
-          }
-          this.securedScrap -= cost;
-          this.applyScrapShopPurchase(optionId);
           this.frameEvents.push({
             type: "scrap-spent",
-            amount: cost,
+            amount: reroll.cost,
             remaining: this.securedScrap,
             offerId: optionId,
           });
-          if (this.shopLockedOfferId === optionId) this.shopLockedOfferId = null;
+          this.shopMode = "offers";
+          this.decisionQueue.unshift(this.buildScrapShopDecision());
+        } else if (shopAction.kind === "sell-weapon") {
+          if (!this.sellWeapon(shopAction.instanceId)) {
+            this.decisionQueue.unshift(decision);
+            return false;
+          }
+          this.decisionQueue.unshift(this.buildScrapShopDecision());
+        } else if (shopAction.kind === "purchase") {
+          const purchase = planScrapShopPurchase({
+            optionId: shopAction.optionId,
+            declaredCost: option.cost,
+            securedScrap: this.securedScrap,
+            lockedOfferId: this.shopLockedOfferId,
+          });
+          if (!purchase.ok) {
+            this.decisionQueue.unshift(decision);
+            return false;
+          }
+          this.securedScrap = purchase.remainingScrap;
+          this.applyScrapShopPurchase(purchase.effect);
+          this.frameEvents.push({
+            type: "scrap-spent",
+            amount: purchase.cost,
+            remaining: this.securedScrap,
+            offerId: purchase.optionId,
+          });
+          if (purchase.clearLockedOffer) this.shopLockedOfferId = null;
           this.shopOffers = null;
           this.decisionQueue.unshift(this.buildScrapShopDecision());
         } else {
@@ -3444,7 +3485,7 @@ export class CombatSimulation {
     // and rarity floor, and scales prices — so a themed shop is a data row, not
     // a second shop implementation.
     const profile = shopProfileById(this.shopProfileId);
-    const price = (base: number): number => Math.max(1, Math.round(base * profile.priceMultiplier));
+    const price = (base: number): number => profileScaledShopPrice(base, profile.priceMultiplier);
     const add = (option: Omit<DecisionOption, "affordable"> & { cost: number }): void => {
       // Banned stock never returns for the rest of the run (Brotato's ban verb).
       if (this.shopBannedIds.has(option.id)) return;
@@ -3519,30 +3560,25 @@ export class CombatSimulation {
         id: `shop-item:${definition.id}`,
         name: definition.name,
         description: `${definition.description} (${definition.rarity})`,
-        cost: price(this.itemPrice(definition.basePrice)),
+        cost: price(depthScaledShopItemPrice(definition.basePrice, this.waveIndex)),
       });
     }
 
     return candidates;
   }
 
-  /** Item prices drift up with depth so late shops stay meaningful purchases. */
-  private itemPrice(basePrice: number): number {
-    return Math.round(basePrice * (1 + Math.max(0, this.waveIndex) * 0.08));
-  }
-
   private drawScrapShopOffers(excludedIds: ReadonlySet<string> = new Set()): DecisionOption[] {
     const allCandidates = this.buildScrapShopCandidates();
-    const offers: DecisionOption[] = [];
-    const campaignRepair = this.expeditionEncounter !== null
-      && this.playerHealth < this.playerMaxHealth
-      && this.shopLockedOfferId !== "shop-repair"
-      ? allCandidates.find((candidate) => candidate.id === "shop-repair")
-      : undefined;
-    if (campaignRepair) offers.push(campaignRepair);
-    const candidates = allCandidates.filter((candidate) => (
-      candidate.id !== campaignRepair?.id && !excludedIds.has(candidate.id)
-    ));
+    const prepared = prepareCampaignRepairDraw({
+      candidates: allCandidates,
+      excludedIds,
+      hasCampaignEncounter: this.expeditionEncounter !== null,
+      playerHealth: this.playerHealth,
+      playerMaxHealth: this.playerMaxHealth,
+      lockedOfferId: this.shopLockedOfferId,
+    });
+    const offers: DecisionOption[] = prepared.reservedRepair ? [prepared.reservedRepair] : [];
+    const candidates = prepared.candidates;
     // Rarity-weighted draw, bent by luck/curse. This deliberately spends
     // exactly one `random()` per offer, like the uniform draw it replaces —
     // the RNG stream position is part of the deterministic replay digest, so
@@ -3552,96 +3588,40 @@ export class CombatSimulation {
     const curse = this.playerStats.curse;
     while (offers.length < SCRAP_SHOP_OFFER_COUNT && candidates.length > 0) {
       const weights = candidates.map((candidate) => shopOfferDrawWeight(candidate.id, luck, curse));
-      const total = weights.reduce((sum, weight) => sum + weight, 0);
-      let roll = this.random() * total;
-      let index = 0;
-      while (index < candidates.length - 1) {
-        roll -= weights[index]!;
-        if (roll <= 0) break;
-        index += 1;
-      }
+      const index = selectWeightedOfferIndex(weights, this.random());
       offers.push(candidates.splice(index, 1)[0]!);
     }
-    offers.sort((left, right) => Number(right.affordable) - Number(left.affordable));
-    return offers;
+    return sortScrapShopOffersAffordableFirst(offers);
   }
 
   private buildScrapShopDecision(): PendingDecision {
     if (this.shopOffers === null) this.shopOffers = this.drawScrapShopOffers();
-    this.shopOffers = this.shopOffers.map((offer) => ({
-      ...offer,
-      affordable: (offer.cost ?? 0) <= this.securedScrap,
-    }));
+    this.shopOffers = refreshScrapShopAffordability(this.shopOffers, this.securedScrap);
 
     if (this.shopMode === "manage") return this.buildScrapShopManagementDecision();
     if (this.shopMode === "sell") return this.buildScrapShopSellDecision();
 
-    const offers = this.shopOffers.map((offer) => ({
-      ...offer,
-      name: offer.id === this.shopLockedOfferId ? `${offer.name} [LOCKED]` : offer.name,
-    }));
-    offers.push({
-      id: "shop-manage",
-      name: "Manage Stock",
-      description: "Lock an offer, use this visit's reroll, or sell a weapon.",
-      cost: 0,
-      affordable: true,
+    return presentScrapShopOffersDecision({
+      offers: this.shopOffers,
+      profileName: shopProfileById(this.shopProfileId).name,
+      securedScrap: this.securedScrap,
+      lockedOfferId: this.shopLockedOfferId,
+      rerollUsed: this.shopRerollUsed,
+      rerollCost: this.currentShopRerollCost(),
     });
-    offers.push({
-      id: "shop-leave",
-      name: "Leave Shop",
-      description: "Bank remaining Scrap for the next terminal.",
-      cost: 0,
-      affordable: true,
-    });
-    return {
-      kind: "scrap-shop",
-      title: `${shopProfileById(this.shopProfileId).name.toUpperCase()} — ${this.securedScrap} SCRAP`,
-      options: offers,
-      shopMode: "offers",
-      shopLockedOfferId: this.shopLockedOfferId,
-      shopRerollUsed: this.shopRerollUsed,
-      shopRerollCost: this.currentShopRerollCost(),
-    };
   }
 
   private buildScrapShopManagementDecision(): PendingDecision {
-    const options: DecisionOption[] = this.shopOffers!.map((offer, index) => ({
-      id: `shop-lock:${offer.id}`,
-      name: offer.id === this.shopLockedOfferId ? `Unlock Offer ${index + 1}` : `Lock Offer ${index + 1}`,
-      description: `${offer.name}: ${offer.id === this.shopLockedOfferId ? "will reroll normally" : "survives the paid reroll"}.`,
-      affordable: true,
-    }));
     const rerollCost = this.currentShopRerollCost();
     const canReroll = this.canRerollScrapShop();
-    options.push({
-      id: "shop-reroll",
-      name: this.shopRerollUsed ? "Reroll Used" : "Reroll Unlocked Stock",
-      description: this.shopRerollUsed
-        ? "Only one reroll is available per visit."
-        : canReroll ? "Replace every offer except the locked one." : "No complete replacement rack is available.",
-      cost: rerollCost,
-      affordable: !this.shopRerollUsed && canReroll && rerollCost <= this.securedScrap,
+    return presentScrapShopManagementDecision({
+      offers: this.shopOffers!,
+      securedScrap: this.securedScrap,
+      lockedOfferId: this.shopLockedOfferId,
+      rerollUsed: this.shopRerollUsed,
+      rerollCost,
+      canReroll,
     });
-    for (const [index, offer] of this.shopOffers!.entries()) {
-      options.push({
-        id: `shop-ban:${offer.id}`,
-        name: `Ban Offer ${index + 1}`,
-        description: `${offer.name}: never restocks for the rest of this run.`,
-        affordable: true,
-      });
-    }
-    options.push({ id: "shop-sell-menu", name: "Sell Weapon", description: "Recover 50% of its total shop value.", affordable: true });
-    options.push({ id: "shop-back", name: "Back to Offers", description: "Return to the salvage counter.", affordable: true });
-    return {
-      kind: "scrap-shop",
-      title: `MANAGE STOCK — ${this.securedScrap} SCRAP`,
-      options,
-      shopMode: "manage",
-      shopLockedOfferId: this.shopLockedOfferId,
-      shopRerollUsed: this.shopRerollUsed,
-      shopRerollCost: rerollCost,
-    };
   }
 
   private buildScrapShopSellDecision(): PendingDecision {
@@ -3649,27 +3629,24 @@ export class CombatSimulation {
       ...this.weaponInventory.rack.flatMap((slot) => slot.tile ? [slot.tile] : []),
       ...this.weaponInventory.stash.flatMap((tile) => tile ? [tile] : []),
     ];
-    const options: DecisionOption[] = tiles.map((tile) => {
+    const entries = tiles.map((tile) => {
       const active = this.equippedWeapons.some((weapon) => weapon.instanceId === tile.instanceId);
       const canSell = !active || this.equippedWeapons.length > 1;
-      const value = scrapShopWeaponSaleValue(tile.tier, this.perkModifiers.weaponSaleFraction);
       return {
-        id: `shop-sell:${tile.instanceId}`,
-        name: `${WEAPON_CATALOG[tile.weaponId].displayName} — Tier ${tile.tier}`,
-        description: canSell ? `Sell for ${value} Scrap.` : "Keep at least one active weapon.",
-        affordable: canSell,
+        instanceId: tile.instanceId,
+        displayName: WEAPON_CATALOG[tile.weaponId].displayName,
+        tier: tile.tier,
+        saleValue: scrapShopWeaponSaleValue(tile.tier, this.perkModifiers.weaponSaleFraction),
+        canSell,
       };
     });
-    options.push({ id: "shop-back", name: "Back to Stock", description: "Return without selling.", affordable: true });
-    return {
-      kind: "scrap-shop",
-      title: `SELL WEAPON — ${this.securedScrap} SCRAP`,
-      options,
-      shopMode: "sell",
-      shopLockedOfferId: this.shopLockedOfferId,
-      shopRerollUsed: this.shopRerollUsed,
-      shopRerollCost: this.currentShopRerollCost(),
-    };
+    return presentScrapShopSellDecision({
+      entries,
+      securedScrap: this.securedScrap,
+      lockedOfferId: this.shopLockedOfferId,
+      rerollUsed: this.shopRerollUsed,
+      rerollCost: this.currentShopRerollCost(),
+    });
   }
 
   private currentShopRerollCost(): number {
@@ -3677,64 +3654,80 @@ export class CombatSimulation {
   }
 
   private rerollScrapShopOffers(): void {
-    const locked = this.shopOffers?.find((offer) => offer.id === this.shopLockedOfferId) ?? null;
-    const excluded = new Set(this.shopOffers?.map((offer) => offer.id) ?? []);
-    const replacements = this.drawScrapShopOffers(excluded)
-      .slice(0, locked ? SCRAP_SHOP_OFFER_COUNT - 1 : SCRAP_SHOP_OFFER_COUNT);
-    this.shopOffers = locked ? [locked, ...replacements] : replacements;
+    const excludedIds = scrapShopRerollExcludedIds(this.shopOffers);
+    const drawnReplacements = this.drawScrapShopOffers(excludedIds);
+    this.shopOffers = assembleLockedScrapShopReroll({
+      offers: this.shopOffers,
+      lockedOfferId: this.shopLockedOfferId,
+      drawnReplacements,
+      offerCount: SCRAP_SHOP_OFFER_COUNT,
+    });
   }
 
   private canRerollScrapShop(): boolean {
     if (!this.shopOffers) return false;
-    const excluded = new Set(this.shopOffers.map((offer) => offer.id));
-    const unlockedCount = this.shopOffers.length - (this.shopLockedOfferId ? 1 : 0);
-    return this.buildScrapShopCandidates().filter((candidate) => !excluded.has(candidate.id)).length >= unlockedCount;
+    return canPlanScrapShopReroll({
+      offers: this.shopOffers,
+      candidates: this.buildScrapShopCandidates(),
+      lockedOfferId: this.shopLockedOfferId,
+    });
   }
 
   private sellWeapon(instanceId: number): boolean {
-    const rackSlot = this.weaponInventory.rack.find((slot) => slot.tile?.instanceId === instanceId);
-    const stashIndex = this.weaponInventory.stash.findIndex((tile) => tile?.instanceId === instanceId);
-    const tile = rackSlot?.tile ?? (stashIndex >= 0 ? this.weaponInventory.stash[stashIndex] : null);
-    if (!tile) return false;
-    const activeIndex = this.equippedWeapons.findIndex((weapon) => weapon.instanceId === instanceId);
-    if (activeIndex >= 0 && this.equippedWeapons.length <= 1) return false;
-    if (rackSlot) rackSlot.tile = null;
-    if (stashIndex >= 0) this.weaponInventory.stash[stashIndex] = null;
-    if (activeIndex >= 0) this.equippedWeapons.splice(activeIndex, 1);
-    const amount = scrapShopWeaponSaleValue(tile.tier, this.perkModifiers.weaponSaleFraction);
-    this.securedScrap += amount;
-    this.frameEvents.push({ type: "weapon-sold", weaponId: tile.weaponId, amount, total: this.securedScrap });
+    const sale = planScrapShopWeaponSale({
+      instanceId,
+      rack: this.weaponInventory.rack,
+      stash: this.weaponInventory.stash,
+      equippedInstanceIds: this.equippedWeapons.map((weapon) => weapon.instanceId),
+      saleFraction: this.perkModifiers.weaponSaleFraction,
+    });
+    if (!sale.ok) return false;
+    if (sale.rackIndex >= 0) this.weaponInventory.rack[sale.rackIndex]!.tile = null;
+    if (sale.stashIndex >= 0) this.weaponInventory.stash[sale.stashIndex] = null;
+    if (sale.activeIndex >= 0) this.equippedWeapons.splice(sale.activeIndex, 1);
+    this.securedScrap += sale.amount;
+    this.frameEvents.push({
+      type: "weapon-sold",
+      weaponId: sale.tile.weaponId,
+      amount: sale.amount,
+      total: this.securedScrap,
+    });
     return true;
   }
 
   private resetScrapShopVisit(): void {
-    this.shopOffers = null;
-    this.shopLockedOfferId = null;
-    this.shopRerollUsed = false;
-    this.shopMode = "offers";
+    this.applyScrapShopVisitReset(planScrapShopVisitReset());
   }
 
   private openScrapShopVisit(profileId: ShopProfileId = DEFAULT_SHOP_PROFILE_ID): PendingDecision {
-    this.resetScrapShopVisit();
-    this.shopProfileId = profileId;
+    const visit = planScrapShopVisitOpen(profileId);
+    this.applyScrapShopVisitReset(visit);
+    this.shopProfileId = visit.profileId;
     return this.buildScrapShopDecision();
   }
 
-  private applyScrapShopPurchase(optionId: string): void {
-    if (optionId === "shop-repair") {
+  private applyScrapShopVisitReset(visit: ScrapShopVisitResetPlan): void {
+    this.shopOffers = visit.offers;
+    this.shopLockedOfferId = visit.lockedOfferId;
+    this.shopRerollUsed = visit.rerollUsed;
+    this.shopMode = visit.mode;
+  }
+
+  private applyScrapShopPurchase(effect: ScrapShopPurchaseEffect): void {
+    if (effect.kind === "repair") {
       this.grantHealing(SCRAP_SHOP_REPAIR * this.supportEffectMultiplier);
       return;
     }
-    if (optionId === "shop-uranium-kit") {
+    if (effect.kind === "uranium-kit") {
       this.uraniumKitAvailable = true;
       return;
     }
-    if (optionId === "shop-armour-retrofit") {
+    if (effect.kind === "armour-retrofit") {
       this.defence.armour += SCRAP_SHOP_ARMOUR;
       return;
     }
-    if (optionId.startsWith("shop-upgrade:")) {
-      const upgradeId = optionId.slice("shop-upgrade:".length) as UpgradeId;
+    if (effect.kind === "upgrade") {
+      const upgradeId = effect.upgradeId as UpgradeId;
       if (upgradeId in UPGRADE_CATALOG && this.isUpgradeEligible(upgradeId)) {
         const nextLevel = (this.upgradeLevels.get(upgradeId) ?? 0) + 1;
         this.upgradeLevels.set(upgradeId, nextLevel);
@@ -3742,17 +3735,16 @@ export class CombatSimulation {
       }
       return;
     }
-    if (optionId.startsWith("shop-weapon:")) {
-      const weaponId = optionId.slice("shop-weapon:".length) as WeaponId;
+    if (effect.kind === "weapon") {
+      const weaponId = effect.weaponId as WeaponId;
       if (weaponId in WEAPON_CATALOG) {
         this.addWeapon(weaponId);
       }
       return;
     }
-    if (optionId.startsWith("shop-item:")) {
-      const itemId = optionId.slice("shop-item:".length);
-      if (itemById(itemId)) {
-        this.ownedItemIds.push(itemId);
+    if (effect.kind === "item") {
+      if (itemById(effect.itemId)) {
+        this.ownedItemIds.push(effect.itemId);
         this.refreshPlayerStats();
       }
     }
@@ -5278,32 +5270,29 @@ export class CombatSimulation {
   private spawnEventHorizonField(projectile: ProjectileState, position: Vector2Data): void {
     this.eventHorizonFields.push({
       id: this.nextId(),
-      position: { ...position },
-      remainingSeconds: projectile.pullFieldDurationSeconds,
-      durationSeconds: projectile.pullFieldDurationSeconds,
-      pullStrengthMetresPerSecond: projectile.pullStrengthMetresPerSecond,
-      pullRadiusMetres: projectile.pullRadiusMetres,
-      implosionRadiusMetres: projectile.explosionRadiusMetres,
-      implosionDamage: projectile.damage,
-      damageType: projectile.damageType,
-      weaponId: projectile.weaponId,
-      kind: "event-horizon",
+      ...planEventHorizonFieldPayload({
+        position,
+        durationSeconds: projectile.pullFieldDurationSeconds,
+        pullStrengthMetresPerSecond: projectile.pullStrengthMetresPerSecond,
+        pullRadiusMetres: projectile.pullRadiusMetres,
+        implosionRadiusMetres: projectile.explosionRadiusMetres,
+        implosionDamage: projectile.damage,
+        damageType: projectile.damageType,
+        weaponId: projectile.weaponId,
+      }),
     });
   }
 
   private spawnGravityPulse(position: Vector2Data, weaponId: WeaponId): void {
     this.eventHorizonFields.push({
       id: this.nextId(),
-      position: { ...position },
-      remainingSeconds: GRAVITY_PULSE_DURATION_SECONDS,
-      durationSeconds: GRAVITY_PULSE_DURATION_SECONDS,
-      pullStrengthMetresPerSecond: GRAVITY_PULSE_PULL_SPEED_METRES_PER_SECOND,
-      pullRadiusMetres: this.transformationModifiers.gravityPulseRadiusMetres,
-      implosionRadiusMetres: 0,
-      implosionDamage: 0,
-      damageType: "physical",
-      weaponId,
-      kind: "gravity-pulse",
+      ...planGravityPulseFieldPayload({
+        position,
+        durationSeconds: GRAVITY_PULSE_DURATION_SECONDS,
+        pullStrengthMetresPerSecond: GRAVITY_PULSE_PULL_SPEED_METRES_PER_SECOND,
+        pullRadiusMetres: this.transformationModifiers.gravityPulseRadiusMetres,
+        weaponId,
+      }),
     });
   }
 
@@ -5315,33 +5304,37 @@ export class CombatSimulation {
    * removed.
    */
   private updateEventHorizonFields(deltaSeconds: number): void {
+    const detonating: EventHorizonFieldState[] = [];
     for (const field of this.eventHorizonFields) {
       for (const enemy of this.enemies) {
-        if (enemy.dead) continue;
-        const toCentre = { x: field.position.x - enemy.position.x, y: field.position.y - enemy.position.y };
-        const gap = Math.hypot(toCentre.x, toCentre.y);
-        if (gap <= 0 || gap > field.pullRadiusMetres) continue;
+        const pull = planGravityFieldPull({
+          enemyPosition: enemy.position,
+          enemyDead: enemy.dead,
+          fieldPosition: field.position,
+          pullRadiusMetres: field.pullRadiusMetres,
+          pullStrengthMetresPerSecond: field.pullStrengthMetresPerSecond,
+          deltaSeconds,
+        });
+        if (!pull) continue;
         if (this.hero.id === "tactician" && field.kind === "event-horizon") {
           this.tacticianDesignations.set(enemy.id, this.hero.passive.designateDurationSeconds ?? 0);
         }
-        const travel = Math.min(field.pullStrengthMetresPerSecond * deltaSeconds, gap);
-        const definition = ENEMY_CATALOG[enemy.type];
         enemy.position = resolveCircleMovement(
           enemy.position,
-          {
-            x: enemy.position.x + (toCentre.x / gap) * travel,
-            y: enemy.position.y + (toCentre.y / gap) * travel,
-          },
+          pull.destination,
           enemyRadius(enemy),
           this.collisionArena(),
         );
       }
-      field.remainingSeconds -= deltaSeconds;
+      const lifetime = stepGravityFieldLifetime({
+        remainingSeconds: field.remainingSeconds,
+        deltaSeconds,
+        kind: field.kind,
+      });
+      field.remainingSeconds = lifetime.remainingSeconds;
+      if (lifetime.detonates) detonating.push(field);
     }
 
-    const detonating = this.eventHorizonFields.filter((field) => (
-      field.remainingSeconds <= 0 && field.kind === "event-horizon"
-    ));
     for (const field of detonating) {
       this.frameEvents.push({
         type: "explosion",
@@ -5350,8 +5343,14 @@ export class CombatSimulation {
         weaponId: field.weaponId,
       });
       for (const enemy of this.enemies) {
-        if (enemy.dead || distance(enemy.position, field.position) > field.implosionRadiusMetres) continue;
-        this.damageEnemy(enemy, field.implosionDamage, field.damageType, field.weaponId);
+        const impact = planGravityFieldDetonationImpact({
+          candidate: enemy,
+          fieldPosition: field.position,
+          implosionRadiusMetres: field.implosionRadiusMetres,
+          implosionDamage: field.implosionDamage,
+        });
+        if (!impact) continue;
+        this.damageEnemy(impact.target, impact.damage, field.damageType, field.weaponId);
       }
     }
     this.eventHorizonFields = this.eventHorizonFields.filter((field) => field.remainingSeconds > 0);
@@ -10046,17 +10045,6 @@ function furnishArena(base: ArenaDefinition, options: CombatSimulationOptions): 
     obstacles: placement.obstacles,
     hazards: placement.hazards,
   };
-}
-
-export function rotatingWindow<T>(entries: readonly T[], size: number, offset: number): readonly T[] {
-  if (entries.length === 0 || size <= 0) return [];
-  if (entries.length <= size) return entries;
-  const start = ((offset % entries.length) + entries.length) % entries.length;
-  const window: T[] = [];
-  for (let step = 0; step < size; step += 1) {
-    window.push(entries[(start + step) % entries.length]!);
-  }
-  return window;
 }
 
 function clamp(value: number, minimum: number, maximum: number): number {

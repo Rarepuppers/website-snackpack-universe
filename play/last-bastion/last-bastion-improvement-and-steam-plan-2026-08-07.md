@@ -672,10 +672,19 @@ Sequencing, safest first — each is independently shippable and independently r
    collision planning are now pure modules as well. Enemy-contact eligibility, gravity-pulse/gravity-well/Bolt
    special-impact routing, post-impact pierce continuation, direct-hit damage composition, knockback displacement,
    one-hop-at-a-time chain targeting/falloff, Carapace armour response, explosion routing, and live splash planning
-   are also extracted. The monolith is now 10,098 lines; explicit route adapters keep artifact consumption, events,
-   field allocation, and live damage mutation simulation-owned. Continue with three bounded gravity-field slices:
-   Event Horizon/gravity-pulse payload construction; pull movement planning; detonation eligibility and damage
-   planning. Scrap shop, decisions, and snapshot follow.
+   are also extracted. Gravity-field payload construction, pull movement, lifetime/detonation classification, and
+   live implosion hits are now pure modules too. The monolith is now 10,108 lines; allocation, designation, arena
+   collision, events, and damage mutation remain simulation-owned. Scrap-shop depth/profile pricing, rotating
+   weapon stock, and weighted offer-index selection are now extracted while catalogue/profile lookup and RNG draws
+   remain in the adapter. Campaign-repair reservation, affordability refresh/order, and locked-reroll feasibility/
+   assembly are now pure as well. Offers, management, and sell decision presentation are now extracted while rack
+   lookup and live inventory state remain adapter-owned. Action parsing/routing, purchase spend/effect planning,
+   and weapon-sale eligibility/location/value planning are extracted too. The monolith is now 10,057 lines; typed
+   adapter wiring added seven net lines while removing these policy seams. Paid-reroll spend validation, banned-
+   offer replacement-rack assembly, and reset/open visit lifecycle state are now extracted too. The monolith is now
+   10,086 lines; explicit typed commit wiring added 29 net lines while centralizing the four visit-state assignments.
+   Replacement RNG draws and runtime state/event mutation remain adapter-owned. Continue with fixed repair/utility
+   candidate construction, upgrade/weapon candidate construction, and item candidate construction.
 
 **Acceptance:** `combat/CombatSimulation.ts` under 3,000 lines; its public exports remain
 exported from the same path (re-export from the new modules — every consumer imports from

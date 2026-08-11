@@ -3947,3 +3947,179 @@ and splash-damage composition.
 - `CombatSimulation.ts` is now **10,098 lines**.
 - Controlled verification passes with **1,406 tests across 237 files**, the 31-adapter boundary audit, production
   build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+
+## 11 August 2026 — T0.1 gravity-field payload construction extracted
+
+`GravityFieldPayload.ts` now constructs immutable Event Horizon and Gravity Adept pulse payloads before runtime ID
+allocation.
+
+- Event Horizon fields preserve projectile damage/type/weapon attribution and matched initial lifetime. Gravity
+  pulses remain physical, non-damaging, and zero-radius for implosion purposes.
+- Position data is copied; ID allocation and insertion remain simulation-owned.
+
+## 11 August 2026 — T0.1 gravity-field pull planning extracted
+
+`GravityFieldPull.ts` now owns dead/range/centred eligibility, inclusive pull radius, frame travel, and no-overshoot
+destination geometry.
+
+- Tactician designation still occurs only after a valid Event Horizon pull plan. Enemy radius, arena collision, and
+  final position mutation remain in the simulation adapter.
+
+## 11 August 2026 — T0.1 gravity-field detonation planning extracted
+
+`GravityFieldDetonation.ts` now owns post-pull lifetime advancement, Event Horizon versus silent-pulse expiry, and
+per-enemy inclusive implosion eligibility/damage payloads.
+
+- Every field still completes its pull/lifetime step before any queued detonation is applied, preserving encounter
+  ordering and effects from earlier implosion hits.
+- Eight focused tests cover payloads, pull geometry, expiry, and detonation hits; Event Horizon, transformation,
+  Tactician, combat, reference-run, and replay suites pass unchanged.
+- `CombatSimulation.ts` is now **10,108 lines**.
+- Controlled verification passes with **1,414 tests across 240 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+
+## 11 August 2026 — T0.1 scrap-shop pricing extracted
+
+`ScrapShopPricing.ts` now owns item depth inflation and themed profile price scaling.
+
+- Item pricing retains its two independent rounding stages: eight-percent-per-wave depth inflation first, then
+  profile multiplication. Profile prices retain the one-Scrap minimum and negative depth remains clamped to zero.
+
+## 11 August 2026 — T0.1 rotating shop weapon stock extracted
+
+`ScrapShopStock.ts` now owns the wrapping deterministic window that caps unowned weapon candidates without making
+late catalogue entries unreachable.
+
+- Negative and oversized offsets remain normalized. Source arrays that already fit are returned unchanged.
+- `rotatingWindow` remains re-exported from `CombatSimulation.ts`, preserving the established public import path.
+
+## 11 August 2026 — T0.1 weighted shop offer index extracted
+
+`ScrapShopOfferSelection.ts` now maps one supplied unit roll across cumulative candidate weights.
+
+- Weight construction and the single `random()` draw per selected offer remain simulation-owned, preserving replay
+  stream position. Exact bucket boundaries retain the earlier candidate, and the final candidate is the fallback.
+- Nine focused tests cover pricing stages, rotating stock, and weighted bucket selection; shop, item purchase,
+  weapon release, reference-run, and replay suites pass unchanged.
+- `CombatSimulation.ts` is now **10,089 lines**.
+- Controlled verification passes with **1,423 tests across 243 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+
+## 11 August 2026 — T0.1 campaign repair reservation extracted
+
+`ScrapShopCampaignRepair.ts` now owns damaged-campaign repair reservation and preparation of the remaining weighted
+candidate pool.
+
+- A reserved repair still bypasses current-rack exclusions. Locking repair suppresses forced reservation but leaves
+  it eligible for the normal weighted pool, matching the previous behavior.
+
+## 11 August 2026 — T0.1 shop affordability ordering extracted
+
+`ScrapShopAffordability.ts` now owns current-Scrap affordability refresh and stable affordable-first draw ordering.
+
+- Missing costs remain free, refreshed offers remain cloned, and relative order is preserved inside affordable and
+  unaffordable groups. Refreshing an existing rack does not introduce an extra resort.
+
+## 11 August 2026 — T0.1 locked shop reroll planning extracted
+
+`ScrapShopReroll.ts` now owns current-rack exclusions, unlocked-slot feasibility, actual-lock retention, and final
+replacement-rack assembly.
+
+- The simulation still performs a full seeded replacement draw before the planner slices one slot away for a lock,
+  preserving the established RNG consumption. A stale declared lock retains the historical feasibility slot count.
+- Eight focused tests cover reservation, affordability/order, and locked rerolls; scrap-shop, item-purchase, weapon-
+  release, reference-run, and replay suites pass unchanged.
+- `CombatSimulation.ts` is now **10,093 lines**.
+- Controlled verification passes with **1,431 tests across 246 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+
+## 11 August 2026 — T0.1 offers-mode shop decision presentation extracted
+
+`ScrapShopDecisionPresentation.ts` now owns the offers-mode decision title, explanatory copy, displayed Scrap,
+shop-offer options, and footer actions.
+
+- The simulation still refreshes live affordability and supplies the current rack, so no pricing, inventory, or
+  mutation authority moved into presentation code.
+
+## 11 August 2026 — T0.1 management-mode shop decision presentation extracted
+
+The same presenter now owns management-mode copy plus lock, ban, reroll, sell, and back option assembly.
+
+- Reroll cost and feasibility remain computed from live shop state before presentation, preserving the existing
+  lock and candidate-pool rules.
+
+## 11 August 2026 — T0.1 sell-mode shop decision presentation extracted
+
+Sell-mode decision assembly now accepts prepared rack/stash entries and builds their labels, sale values, active
+weapon state, disabled state, and back action without reading mutable simulation state.
+
+- The adapter still locates weapon tiles, resolves catalogue names, identifies the equipped weapon, and computes
+  sale values. Four focused presenter tests cover all three modes and disabled-sale behavior.
+- `CombatSimulation.ts` is now **10,050 lines**.
+- Controlled verification passes with **1,435 tests across 247 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract shop action parsing/routing, purchase spend validation/transaction planning, then weapon-sale
+  eligibility/location/value planning. Runtime inventory, Scrap, equipped-weapon, and event mutation stay in the
+  simulation adapter.
+
+## 11 August 2026 — T0.1 shop action parsing and routing extracted
+
+`ScrapShopAction.ts` now maps authored option IDs to navigation, lock, ban, reroll, sale, purchase, and leave
+actions without reading simulation state.
+
+- Offer IDs and numeric weapon instance IDs are parsed once. The adapter retains all decision-queue, mode, RNG,
+  and event mutation.
+
+## 11 August 2026 — T0.1 shop purchase transaction planning extracted
+
+`ScrapShopPurchase.ts` now normalizes declared cost, rejects insufficient Scrap, computes the remaining balance,
+marks a purchased lock for clearing, and classifies fixed/prefixed purchase effects.
+
+- Catalogue and eligibility validation still occurs at commit time. Healing, armour, upgrades, weapon placement,
+  owned items, stat refresh, Scrap assignment, and event emission remain simulation-owned.
+
+## 11 August 2026 — T0.1 weapon-sale planning extracted
+
+`ScrapShopWeaponSale.ts` now owns rack/stash/equipped lookup, missing/final-active rejection, tier/fraction value,
+and the indices needed for a deterministic mutation commit.
+
+- The canonical weapon base price is shared with `SCRAP_SHOP_PRICES`, and `scrapShopWeaponSaleValue` remains
+  re-exported from `CombatSimulation.ts` to preserve its public import path.
+- Eleven focused tests cover the three extracted modules; shop, item-purchase, weapon-release, reference-run, and
+  replay suites pass unchanged.
+- `CombatSimulation.ts` is now **10,057 lines**. Typed adapter wiring added seven net lines while removing the three
+  policy seams.
+- Controlled verification passes with **1,446 tests across 250 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract paid-reroll transaction planning, banned-offer replacement-rack assembly, then shop-visit reset/open
+  lifecycle planning. Replacement draws, state mutation, and event emission stay in the simulation adapter.
+
+## 11 August 2026 — T0.1 paid shop-reroll transaction planning extracted
+
+`ScrapShopReroll.ts` now validates the once-per-visit flag before affordability and returns the exact cost and
+remaining Scrap for a successful reroll.
+
+- Replacement drawing, rack mutation, event emission, and mode/decision-queue changes remain simulation-owned.
+
+## 11 August 2026 — T0.1 banned-offer replacement-rack assembly extracted
+
+`ScrapShopBan.ts` now removes all instances of the banned offer, appends an optional prepared replacement, and
+clears only a lock targeting that banned ID.
+
+- The adapter still records the run-long ban and performs exactly one seeded replacement draw before assembly,
+  preserving replay stream position.
+
+## 11 August 2026 — T0.1 shop-visit lifecycle planning extracted
+
+`ScrapShopVisit.ts` now prepares reset and open state for offers, lock, reroll availability, mode, and themed profile.
+
+- Leaving resets per-visit state without changing the current profile. Opening applies the requested profile after
+  the common reset through one typed commit helper.
+- Six focused tests cover reroll validation order, ban assembly/lock behavior, and reset/open profile semantics;
+  shop, item-purchase, weapon-release, reference-run, and replay suites pass unchanged.
+- `CombatSimulation.ts` is now **10,086 lines**. Explicit typed commit wiring added 29 net lines while extracting the
+  three policies and centralizing four visit-state assignments.
+- Controlled verification passes with **1,452 tests across 252 files**, the 31-adapter boundary audit, production
+  build success, 78 smoke routes, WebP audit success, and offline **369 / 0 missing** local asset references.
+- Next: extract fixed repair/utility candidate construction, upgrade/weapon candidate construction, then item
+  candidate construction. Profile/catalogue lookup and runtime eligibility remain in the adapter.
