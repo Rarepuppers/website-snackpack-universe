@@ -12,6 +12,7 @@
     "offline": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/offline-boot-test.ps1",
     "content:audit": "vitest run src/game/content/ContentInventory.test.ts --reporter=verbose",
     "balance:audit": "node scripts/run-balance-audit.mjs",
+    "balance:audit:bosses": "vitest run src/game/telemetry/RegionalBossBalanceAudit.test.ts --reporter=verbose",
     "combat:audit:boundaries": "node scripts/audit-combat-boundaries.mjs",
     "audio:validate:s1": "node scripts/validate-production-audio.mjs",
     "audio:audit:s23": "node scripts/audit-production-audio-s23.mjs",

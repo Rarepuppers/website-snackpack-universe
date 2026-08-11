@@ -4573,3 +4573,18 @@ The four live elite identities now each communicate a different combat lesson.
   **90 smoke routes**, and offline **385 / 0 missing** local references.
 - Next: five observed tier runs, logging Choir pulse/flood pressure, Sovereign summon-clear versus
   core-rush viability, boss duration, damage source, and any mechanic-confusion notes.
+
+## 11 August 2026 — Regional boss balance preflight
+
+- Added a deterministic boss-only audit using the public simulation contract, five rotating-hero
+  seeds, a representative level-10 campaign boss-entry build, and fixed 50 ms steps.
+- The Choir policy responds to warned pulses and collapses back inside the merged flood boundary.
+  Foundry Sovereign is tested with separate core-rush and summon-control policies.
+- Baseline: Choir **4/5 wins, 56.15 s median, 15 damage**; Sovereign core-rush **5/5,
+  101.95 s, 12.48 damage**; Sovereign summon-control **5/5, 109.60 s, 6.19 damage**.
+- Summon control is safer but modestly slower, so both answers are viable. Choir remains the sharper
+  survival/readability check. No balance values were changed from automated evidence alone.
+- Added phase, strategy, duration, survival, and peak-density acceptance tests plus
+  `npm.cmd run balance:audit:bosses`. Human observed threat-tier runs remain required.
+- Full verification passes: **1,566 tests across 277 files**, production build, **90 smoke routes**,
+  WebP audit (**8 lossy + 55 lossless**), and offline **385 / 0 missing** local references.

@@ -20,7 +20,10 @@ The regional-finale batch is complete. Alien Hive/Toxic Bloom end at The Choir, 
 Foundry/Science Wing end at Foundry Sovereign, and neutral themes retain Bastion Eater. Both new
 bosses have complete simulation, victory/reward lifecycle, HUD/audio feedback, production bodies,
 phase/effect atlases, portraits, deterministic tests, Lab routes, gallery review, and smoke coverage.
-The next gate is observed balance testing, not presentation prerequisites.
+The deterministic five-seed regional-boss preflight is complete: Choir warning response wins 4/5;
+Sovereign core-rush and summon-control both win 5/5, with summon control trading roughly eight
+seconds for about half the incoming damage. No tuning was made from automation alone. The next gate
+remains five observed campaign runs, not presentation prerequisites.
 
 **Written: 7 August 2026. Status: LIVE — this is a forward plan, not a history doc.**
 

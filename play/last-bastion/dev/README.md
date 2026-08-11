@@ -6,11 +6,17 @@
 npm.cmd run dev
 npm.cmd run verify
 npm.cmd run offline
+npm.cmd run balance:audit:bosses
 ```
 
 The production build is emitted to the parent `/play/last-bastion/` route.
 
 `npm.cmd run offline` audits that built route for remote startup dependencies and verifies every referenced local game asset. Run it after `npm.cmd run build`; the full `verify` command already includes both steps.
+
+`npm.cmd run balance:audit:bosses` runs the five-seed regional-finale preflight against a
+representative level-10 boss-entry build. It checks Choir phase exposure and warning response, plus
+Foundry Sovereign core-rush and summon-control viability. It is a deterministic safety gate before,
+not a replacement for, five observed campaign runs.
 
 ## Control remapping
 
