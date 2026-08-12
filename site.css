@@ -1985,19 +1985,20 @@ button:focus-visible {
 .read-library-card:hover{transform:translateY(-5px);box-shadow:0 28px 72px rgba(55,43,35,.14)}
 .read-library-card>div{display:flex;flex:1;flex-direction:column;align-items:flex-start}
 .read-library-card .btn{margin-top:auto}
-.read-library-card img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:20px;box-shadow:0 18px 38px rgba(55,43,35,.16)}
+.read-library-card>picture{display:grid;width:100%;aspect-ratio:4/5;place-items:center;overflow:hidden;border-radius:20px;background:linear-gradient(145deg,#f7ead2,#eef5ed);box-shadow:0 18px 38px rgba(55,43,35,.16)}
+.read-library-card img{display:block;width:100%;height:100%;object-fit:contain}
 .read-library-card h2{margin:12px 0;font-family:var(--font-display,Georgia,serif);font-size:clamp(2rem,4vw,3.4rem);line-height:1}
 .read-library-card p{margin:0 0 22px;color:var(--muted,#675d55);line-height:1.65}
 .read-library-note{max-width:760px;margin:28px auto 0;color:var(--muted,#675d55);text-align:center}
 .story-title-section{padding:70px 0;background:linear-gradient(135deg,#fff3e8,#f3ece7)}
 .story-title-grid{display:grid;grid-template-columns:1.1fr minmax(280px,.6fr);gap:60px;align-items:center}
-.story-title-grid>picture img{display:block;width:100%;max-height:700px;aspect-ratio:2/3;object-fit:cover;border:12px solid #fff;border-radius:28px;box-shadow:0 30px 80px rgba(73,47,32,.18);transform:rotate(2deg)}
+.story-title-grid>picture img{display:block;width:100%;height:auto;max-height:700px;aspect-ratio:2/3;object-fit:cover;border:12px solid #fff;border-radius:28px;box-shadow:0 30px 80px rgba(73,47,32,.18);transform:rotate(2deg)}
 .story-title-grid .btn{margin-top:26px}
 .story-pages{display:grid;gap:64px;max-width:1040px;margin:0 auto;padding:72px 24px}
 .story-page-card{display:grid;grid-template-columns:minmax(300px,.86fr) 1fr;gap:48px;align-items:center}
 .story-page-card:nth-child(even){grid-template-columns:1fr minmax(300px,.86fr)}
 .story-page-card:nth-child(even)>picture{order:2}
-.story-page-card img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:24px;box-shadow:0 24px 55px rgba(55,43,35,.16)}
+.story-page-card img{display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;border-radius:24px;box-shadow:0 24px 55px rgba(55,43,35,.16)}
 .story-pages-landscape .story-page-card img{aspect-ratio:3/2}
 .story-hero-landscape .story-title-grid{grid-template-columns:.85fr 1.15fr}
 .story-hero-landscape .story-title-grid>picture img{max-height:none;aspect-ratio:3/2;transform:rotate(1deg)}
