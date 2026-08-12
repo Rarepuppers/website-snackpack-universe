@@ -1980,8 +1980,11 @@ button:focus-visible {
 +/* Free illustrated bookshelf */
 .read-hub-hero{padding:92px 0 54px;background:radial-gradient(circle at 85% 15%,#ffe2a8,transparent 27%),radial-gradient(circle at 10% 80%,#dff5ec,transparent 32%),#faf5eb}
 .read-hub-hero h1,.story-title-section h1{max-width:850px;margin:16px 0 22px;font-family:var(--font-display,Georgia,serif);font-size:clamp(3.3rem,8vw,7rem);line-height:.93;letter-spacing:-.05em}
-.read-library-grid{display:grid;grid-template-columns:minmax(0,920px);justify-content:center}
-.read-library-card{display:grid;grid-template-columns:minmax(220px,.72fr) 1fr;gap:42px;align-items:center;padding:30px;border:1px solid rgba(55,43,35,.12);border-radius:30px;background:#fff;color:inherit;text-decoration:none;box-shadow:0 22px 64px rgba(55,43,35,.09)}
+.read-library-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px;align-items:stretch}
+.read-library-card{display:flex;flex-direction:column;gap:22px;padding:22px;border:1px solid rgba(55,43,35,.12);border-radius:30px;background:#fff;color:inherit;text-decoration:none;box-shadow:0 22px 64px rgba(55,43,35,.09);transition:transform .2s ease,box-shadow .2s ease}
+.read-library-card:hover{transform:translateY(-5px);box-shadow:0 28px 72px rgba(55,43,35,.14)}
+.read-library-card>div{display:flex;flex:1;flex-direction:column;align-items:flex-start}
+.read-library-card .btn{margin-top:auto}
 .read-library-card img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:20px;box-shadow:0 18px 38px rgba(55,43,35,.16)}
 .read-library-card h2{margin:12px 0;font-family:var(--font-display,Georgia,serif);font-size:clamp(2rem,4vw,3.4rem);line-height:1}
 .read-library-card p{margin:0 0 22px;color:var(--muted,#675d55);line-height:1.65}
@@ -1995,8 +1998,12 @@ button:focus-visible {
 .story-page-card:nth-child(even){grid-template-columns:1fr minmax(300px,.86fr)}
 .story-page-card:nth-child(even)>picture{order:2}
 .story-page-card img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:24px;box-shadow:0 24px 55px rgba(55,43,35,.16)}
+.story-pages-landscape .story-page-card img{aspect-ratio:3/2}
+.story-hero-landscape .story-title-grid{grid-template-columns:.85fr 1.15fr}
+.story-hero-landscape .story-title-grid>picture img{max-height:none;aspect-ratio:3/2;transform:rotate(1deg)}
 .story-page-copy>span{color:#a65e45;font-size:.78rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
 .story-page-copy>p{margin:16px 0 22px;font-family:var(--font-display,Georgia,serif);font-size:clamp(1.8rem,3.4vw,3rem);line-height:1.32}
+.story-long-copy .story-page-copy>p{font-size:clamp(1.35rem,2.1vw,1.9rem);line-height:1.48}
 .story-page-copy mark{padding:0 .08em;border-radius:.18em;background:#ffe3a1;color:inherit}
 .story-page-copy aside{padding:16px 18px;border-left:4px solid #a65e45;border-radius:0 14px 14px 0;background:#fff3e8;color:#5d473b;line-height:1.55}
 .story-finish-card{padding:48px;border-radius:30px;background:linear-gradient(135deg,#e6f6ee,#fff7df);text-align:center}
@@ -2005,4 +2012,5 @@ button:focus-visible {
 .story-finish-card .stack-inline{justify-content:center}
 .story-answer{max-width:620px;margin:0 auto;padding:16px;border:1px solid rgba(55,43,35,.12);border-radius:15px;background:#fff;text-align:left}
 .story-answer summary{cursor:pointer;font-weight:900}
-@media(max-width:760px){.read-library-card,.story-title-grid,.story-page-card,.story-page-card:nth-child(even){grid-template-columns:1fr}.read-library-card img,.story-title-grid>picture img{max-width:430px;margin:0 auto}.story-page-card:nth-child(even)>picture{order:0}.story-page-card{gap:24px}.story-pages{gap:76px}.story-page-copy>p{font-size:2rem}.story-finish-card{padding:32px 22px}}
+@media(max-width:980px){.read-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.read-library-grid{grid-template-columns:1fr}.read-library-card,.story-title-grid,.story-hero-landscape .story-title-grid,.story-page-card,.story-page-card:nth-child(even){grid-template-columns:1fr}.read-library-card img,.story-title-grid>picture img{max-width:430px;margin:0 auto}.story-page-card:nth-child(even)>picture{order:0}.story-page-card{gap:24px}.story-pages{gap:76px}.story-page-copy>p{font-size:2rem}.story-finish-card{padding:32px 22px}}

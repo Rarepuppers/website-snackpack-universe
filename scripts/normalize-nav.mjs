@@ -22,6 +22,7 @@ function canonicalNav(indent) {
     `${i1}<ul class="nav-links">`,
     `${i2}<li><a href="/apps/">Apps</a></li>`,
     `${i2}<li><a href="/play/">Play</a></li>`,
+    `${i2}<li><a href="/read/">Read</a></li>`,
     `${i2}<li><a href="/guides/">Guides</a></li>`,
     `${i2}<li><a href="/#pipeline">Roadmap</a></li>`,
     `${i2}<li><a href="/privacy/">Privacy</a></li>`,
@@ -46,6 +47,7 @@ async function main() {
   let changed = 0;
   let skipped = 0;
   const noNav = [];
+  const unwritable = [];
 
   for await (const file of htmlFiles(root)) {
     const original = await fs.readFile(file, "utf8");
@@ -55,8 +57,13 @@ async function main() {
     }
     const updated = original.replace(NAV_RE, (m, indent) => indent + canonicalNav(indent));
     if (updated !== original) {
-      await fs.writeFile(file, updated, "utf8");
-      changed += 1;
+      try {
+        await fs.writeFile(file, updated, "utf8");
+        changed += 1;
+      } catch (error) {
+        if (error?.code !== "EPERM" && error?.code !== "EACCES") throw error;
+        unwritable.push(path.relative(root, file));
+      }
     } else {
       skipped += 1;
     }
@@ -64,6 +71,7 @@ async function main() {
 
   console.log(`Updated ${changed} pages, ${skipped} already canonical.`);
   if (noNav.length) console.log(`No primary nav (skipped): ${noNav.join(", ")}`);
+  if (unwritable.length) console.log(`Protected files left unchanged: ${unwritable.join(", ")}`);
 }
 
 main().catch((error) => { console.error(error); process.exit(1); });

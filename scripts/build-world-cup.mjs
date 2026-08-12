@@ -537,6 +537,7 @@ function groupPage(letter) {
       <ul class="nav-links">
         <li><a href="/apps/">Apps</a></li>
         <li><a href="/play/">Play</a></li>
+        <li><a href="/read/">Read</a></li>
         <li><a href="/guides/">Guides</a></li>
         <li><a href="/#pipeline">Roadmap</a></li>
         <li><a href="/privacy/">Privacy</a></li>
@@ -1040,6 +1041,7 @@ function teamPage(team) {
       <ul class="nav-links">
         <li><a href="/apps/">Apps</a></li>
         <li><a href="/play/">Play</a></li>
+        <li><a href="/read/">Read</a></li>
         <li><a href="/guides/">Guides</a></li>
         <li><a href="/#pipeline">Roadmap</a></li>
         <li><a href="/privacy/">Privacy</a></li>
