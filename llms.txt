@@ -21,7 +21,12 @@ Key facts that apply to every SnackPack app: no third-party ads, no tracking or 
 
 ## In development
 
-Six more apps are planned or in progress and not yet live: Tales & Trivia, Creative Studio, Mathematics, Earth & Explorer, Shape & Space, and Robot Recipe. See [All apps](https://www.snackpackuniverse.com/apps/) for details as each ships.
+Six more apps are planned or in progress and not yet live: Tales & Trivia, Creative Studio, Mathematics, Earth & Explorer, Shape & Space, and Robot Recipe. [SnackPack Mathematics](https://www.snackpackuniverse.com/apps/snackpack-7-mathematics/) has a complete pre-launch preview: 2,790 questions, 645 game rounds, 560 riddles, 86 story books and 168 Math Lab templates for ages 8–12. See [All apps](https://www.snackpackuniverse.com/apps/) for details as each ships.
+
+## Read free in your browser
+
+- [Ted-E-Bear's Short-Vowel Kit](https://www.snackpackuniverse.com/read/ted-e-bears-short-vowel-kit/): A complete five-page illustrated beginning reader from SnackPack Sentences & Spelling, focused on CVC short-vowel words. No account, ads or download.
+- [Free SnackPack bookshelf](https://www.snackpackuniverse.com/read/): Complete illustrated stories are added only when their full approved page-art sets are ready.
 
 ## Play free in your browser (web arcade)
 

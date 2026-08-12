@@ -19,8 +19,8 @@ const root = path.resolve(".");
 // pages, then everything else.
 function priorityFor(urlPath) {
   if (urlPath === "/") return "1.0";
-  if (["/apps/", "/play/", "/guides/"].includes(urlPath)) return "0.9";
-  if (urlPath.startsWith("/apps/") || urlPath.startsWith("/guides/")) return "0.8";
+  if (["/apps/", "/play/", "/guides/", "/read/", "/daily-pawtrait/", "/make-a-certificate/"].includes(urlPath)) return "0.9";
+  if (urlPath.startsWith("/apps/") || urlPath.startsWith("/guides/") || urlPath.startsWith("/read/")) return "0.8";
   if (urlPath.startsWith("/play/")) return "0.7";
   if (urlPath.startsWith("/world-cup/")) return "0.6";
   return "0.4";
@@ -30,12 +30,19 @@ async function* htmlFiles(dir) {
   for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
     if (entry.name === "node_modules" || entry.name.startsWith(".")) continue;
     const full = path.join(dir, entry.name);
+    const rel = path.relative(root, full).split(path.sep).join("/");
+    if (entry.isDirectory() && /^play\/last-bastion\/(?:dev|desktop)(?:\/|$)/.test(rel)) continue;
     if (entry.isDirectory()) yield* htmlFiles(full);
     else if (entry.isFile() && entry.name === "index.html") yield full;
   }
 }
 
 function gitLastMod(file) {
+  try {
+    execFileSync("git", ["diff", "--quiet", "--", file], { cwd: root, stdio: "ignore" });
+  } catch {
+    return new Date().toISOString().slice(0, 10);
+  }
   try {
     const out = execFileSync("git", ["log", "-1", "--format=%cs", "--", file], {
       cwd: root,

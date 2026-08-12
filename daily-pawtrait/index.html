@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Daily Pawtrait | A Cute Animal Every Day</title>
+  <meta name="description" content="Meet today’s Daily Pawtrait: one reviewed animal photo, one gentle thought, and full photographer credit from Pawsitive Dose.">
+  <link rel="canonical" href="https://www.snackpackuniverse.com/daily-pawtrait/">
+  <link rel="stylesheet" href="../site.css">
+  <link rel="icon" href="../assets/favicon-32.png" sizes="32x32">
+</head>
+<body class="pawtrait-page">
+  <header class="topbar"><div class="shell topbar-inner"><a class="brand" href="../"><img class="brand-mark" src="../assets/snackpack-mark-96.png" alt="SnackPack Studios icon" width="96" height="94"><span class="brand-copy"><span class="brand-title">SnackPack Studios</span><span class="brand-subtitle">Daily Pawtrait</span></span></a><nav aria-label="Primary"><ul class="nav-links"><li><a href="../apps/">Apps</a></li><li><a href="../play/">Play</a></li><li><a href="../guides/">Guides</a></li><li><a href="../privacy/">Privacy</a></li></ul></nav></div></header>
+  <main>
+    <section class="pawtrait-hero">
+      <div class="shell pawtrait-grid">
+        <figure class="pawtrait-photo-wrap">
+          <img id="pawtrait-photo" class="pawtrait-photo" alt="" width="800" height="1200" referrerpolicy="no-referrer">
+          <figcaption>Photo by <a id="photographer-link" target="_blank" rel="noopener"><span id="photographer-name"></span></a> on <a id="source-link" target="_blank" rel="noopener">Pexels</a></figcaption>
+        </figure>
+        <div class="pawtrait-copy">
+          <span class="eyebrow">Pawsitive Dose · <span id="pawtrait-date"></span></span>
+          <h1 id="pawtrait-title">Today’s Daily Pawtrait</h1>
+          <p class="lead" id="pawtrait-caption"></p>
+          <blockquote><p id="pawtrait-quote"></p><cite>— Pawsitive Dose</cite></blockquote>
+          <p class="tool-note">One quiet moment, then back to your day. The app adds daily batches, saved favourites, reminders, themes and Android widgets — without an endless social feed.</p>
+          <div class="stack-inline"><a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.pawsitivedose" target="_blank" rel="noopener">Get Pawsitive Dose</a><a class="btn btn-secondary" href="../apps/pawsitive-dose/">Explore the app</a></div>
+        </div>
+      </div>
+    </section>
+    <section><div class="shell app-upsell-card"><div><span class="eyebrow">Come back tomorrow</span><h2>A new reviewed animal friend each day.</h2><p>Every image shown here comes from the same reviewed pool used by Pawsitive Dose, with the photographer and source kept visible.</p></div><a class="btn btn-secondary" href="../">Explore SnackPack Universe</a></div></section>
+  </main>
+  <footer class="foot"><div class="shell foot-wrap"><p class="foot-note">Daily Pawtrait by Pawsitive Dose and SnackPack Studios.</p><div class="footer-links"><a class="text-link" href="../apps/">All Apps</a><a class="text-link" href="../privacy/">Privacy</a><a class="text-link" href="../terms/">Terms</a><a class="text-link" href="mailto:support@snackpackuniverse.com">Contact</a></div></div></footer>
+  <script>
+    const portraits = [
+      {title:'Kitten of the day',caption:'A curious tabby kitten pauses on a soft rug and looks up at the world.',image:'https://images.pexels.com/photos/10480345/pexels-photo-10480345.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',source:'https://www.pexels.com/photo/a-cute-furry-cat-10480345/',photographer:'Lera Mk',photographerUrl:'https://www.pexels.com/@nabokovin'},
+      {title:'Kitten of the day',caption:'A ginger-and-white kitten watches the light through a window.',image:'https://images.pexels.com/photos/10529037/pexels-photo-10529037.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',source:'https://www.pexels.com/photo/orange-and-white-tabby-cat-by-the-window-10529037/',photographer:'Nadiye Odabaşı',photographerUrl:'https://www.pexels.com/@nadiye-odabasi-3668408'},
+      {title:'Bunny of the day',caption:'A black-and-white rabbit takes a calm pause in the grass.',image:'https://images.pexels.com/photos/11100978/pexels-photo-11100978.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',source:'https://www.pexels.com/photo/close-up-photo-of-a-rabbit-11100978/',photographer:'Sid Mirza',photographerUrl:'https://www.pexels.com/@sid-mirza-154798538'},
+      {title:'Pupper of the day',caption:'A white-and-tan puppy sits among the leaves, ready for the next small adventure.',image:'https://images.pexels.com/photos/11596512/pexels-photo-11596512.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',source:'https://www.pexels.com/photo/close-up-shot-of-a-dog-11596512/',photographer:'Nothing Ahead',photographerUrl:'https://www.pexels.com/@ian-panelo'},
+      {title:'Pupper of the day',caption:'A tiny black puppy raises one paw as if to say hello.',image:'https://images.pexels.com/photos/11605151/pexels-photo-11605151.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',source:'https://www.pexels.com/photo/puppy-with-raised-paw-11605151/',photographer:'Noel Aph',photographerUrl:'https://www.pexels.com/@noelace'},
+      {title:'Duckling of the day',caption:'A duckling explores bright grass beside the water.',image:'https://images.pexels.com/photos/12043781/pexels-photo-12043781.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',source:'https://www.pexels.com/photo/close-up-of-duckling-12043781/',photographer:'Chris F',photographerUrl:'https://www.pexels.com/@chris-f-38966'},
+      {title:'Tiny friend of the day',caption:'A young deer fawn explores a sunny forest clearing, surrounded by lush grass.',image:'https://images.pexels.com/photos/1249462/pexels-photo-1249462.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',source:'https://www.pexels.com/photo/brown-deer-1249462/',photographer:'Chris F',photographerUrl:'https://www.pexels.com/@chris-f-38966'}
+    ];
+    const thoughts = ['Small paws, huge mood improvement.','A gentle pause still counts as progress.','Curiosity makes ordinary moments feel new.','You do not have to hurry every good thing.','Softness and courage can live in the same day.','Joy does not need to be complicated.','Take the next step at your own pace.'];
+    const now = new Date();
+    const day = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
+    const portrait = portraits[day % portraits.length];
+    document.getElementById('pawtrait-photo').src = portrait.image;
+    document.getElementById('pawtrait-photo').alt = portrait.caption;
+    document.getElementById('pawtrait-title').textContent = portrait.title;
+    document.getElementById('pawtrait-caption').textContent = portrait.caption;
+    document.getElementById('pawtrait-quote').textContent = thoughts[day % thoughts.length];
+    document.getElementById('photographer-name').textContent = portrait.photographer;
+    document.getElementById('photographer-link').href = portrait.photographerUrl;
+    document.getElementById('source-link').href = portrait.source;
+    document.getElementById('pawtrait-date').textContent = new Intl.DateTimeFormat('en', {weekday:'long',day:'numeric',month:'long'}).format(now);
+  </script>
+  <!-- Cloudflare Web Analytics -->
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+  <!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Free Certificate Maker | SnackPack Universe</title>
+  <meta name="description" content="Make and print a free certificate in your browser. Choose a design, add a name and award, then print or save it as a PDF — no account required.">
+  <link rel="canonical" href="https://www.snackpackuniverse.com/make-a-certificate/">
+  <link rel="stylesheet" href="../site.css">
+  <link rel="icon" href="../assets/favicon-32.png" sizes="32x32">
+</head>
+<body class="maker-page">
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="../"><img class="brand-mark" src="../assets/snackpack-mark-96.png" alt="SnackPack Studios icon" width="96" height="94"><span class="brand-copy"><span class="brand-title">SnackPack Studios</span><span class="brand-subtitle">Free certificate maker</span></span></a>
+      <nav aria-label="Primary"><ul class="nav-links"><li><a href="../apps/">Apps</a></li><li><a href="../play/">Play</a></li><li><a href="../guides/">Guides</a></li><li><a href="../privacy/">Privacy</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="tool-hero">
+      <div class="shell tool-hero-grid">
+        <div>
+          <span class="eyebrow">Free web tool · No account</span>
+          <h1>Make someone’s day official.</h1>
+          <p class="lead">Create a polished certificate in under a minute. Pick a style, personalize it, then print it or save it as a PDF — completely free.</p>
+          <p class="tool-note">Need 135 designs, image export, saved projects, or a whole class at once? Badgify has the full toolkit.</p>
+          <a class="btn btn-secondary" href="../apps/badgify/">Explore Badgify</a>
+        </div>
+        <form class="maker-controls" id="certificate-form">
+          <label>Certificate style
+            <select id="theme">
+              <option value="classic">Classic achievement</option>
+              <option value="celebration">Bright celebration</option>
+              <option value="kindness">Kindness award</option>
+            </select>
+          </label>
+          <label>Recipient’s name<input id="recipient" value="A Very Deserving Human" maxlength="42"></label>
+          <label>Award title<input id="award" value="For Being Absolutely Brilliant" maxlength="64"></label>
+          <label>Short message<textarea id="message" maxlength="150" rows="3">Presented with appreciation for effort, kindness, and making a real difference.</textarea></label>
+          <label>From<input id="presenter" value="The SnackPack Crew" maxlength="48"></label>
+          <button class="btn btn-primary" id="print-button" type="button">Print or save as PDF</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="certificate-stage" aria-label="Certificate preview">
+      <div class="shell">
+        <div class="certificate-sheet theme-classic" id="certificate">
+          <div class="certificate-confetti" aria-hidden="true">★ · ✦ · ★</div>
+          <p class="certificate-kicker" id="certificate-kicker">Certificate of achievement</p>
+          <p class="certificate-intro">This certificate is proudly presented to</p>
+          <h2 id="certificate-recipient">A Very Deserving Human</h2>
+          <p class="certificate-award" id="certificate-award">For Being Absolutely Brilliant</p>
+          <p class="certificate-message" id="certificate-message">Presented with appreciation for effort, kindness, and making a real difference.</p>
+          <div class="certificate-signoff"><span id="certificate-date"></span><span id="certificate-presenter">The SnackPack Crew</span></div>
+          <div class="certificate-brand">Made with Badgify · SnackPack Studios</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell app-upsell-card">
+        <div><span class="eyebrow">Take it further</span><h2>Three free web designs. 135 in the app.</h2><p>Badgify adds school, sports, workplace, pets, gaming, holiday and wonderfully silly awards, plus PNG/PDF export and batch certificates.</p></div>
+        <div class="stack-inline"><a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.badgify" target="_blank" rel="noopener">Get Badgify on Google Play</a><a class="btn btn-secondary" href="../apps/badgify/">See all features</a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot"><div class="shell foot-wrap"><p class="foot-note">Free certificate maker by Badgify and SnackPack Studios.</p><div class="footer-links"><a class="text-link" href="../apps/">All Apps</a><a class="text-link" href="../privacy/">Privacy</a><a class="text-link" href="../terms/">Terms</a><a class="text-link" href="mailto:support@snackpackuniverse.com">Contact</a></div></div></footer>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const copy = {
+      classic: ['Certificate of achievement', 'For Being Absolutely Brilliant'],
+      celebration: ['Official celebration award', 'For Making Today Worth Celebrating'],
+      kindness: ['Certificate of kindness', 'For Making the World a Little Kinder']
+    };
+    const fields = ['recipient', 'award', 'message', 'presenter'];
+    function sync() {
+      fields.forEach((field) => $('certificate-' + field).textContent = $(field).value.trim() || '—');
+      const theme = $('theme').value;
+      $('certificate').className = 'certificate-sheet theme-' + theme;
+      $('certificate-kicker').textContent = copy[theme][0];
+    }
+    fields.forEach((field) => $(field).addEventListener('input', sync));
+    $('theme').addEventListener('change', () => { $('award').value = copy[$('theme').value][1]; sync(); });
+    $('certificate-date').textContent = new Intl.DateTimeFormat('en', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
+    $('print-button').addEventListener('click', () => window.print());
+    sync();
+  </script>
+  <!-- Cloudflare Web Analytics -->
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+  <!-- End Cloudflare Web Analytics -->
+</body>
+</html>
