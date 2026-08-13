@@ -924,6 +924,80 @@ B6's thin-prose pass on low-volume soccer pages.
 Everything left in this plan (A1/A2/A3/A4/A7/A8, C2/C3) either needs Codex art
 or is distribution work, not code.
 
+---
+
+## B1. Port SnackWords (daily word guess) — **recommended next game**
+
+Proposed 2026-08-14. This is the strongest remaining port, and unlike the other
+game ports it is not just keyword surface: it is the natural headline for
+[`/play/daily/`](daily/), which shipped the same week. Flag Frenzy already
+proves the shape works here.
+
+### Do NOT call it Wordle
+
+The source game is `snackwords-daily` in Brain Games Vol 2 and is already
+titled **SnackWords** — keep that. *Wordle* is a New York Times trademark and
+they issued takedowns to clones in 2022. That constraint is not only legal:
+
+- You cannot rank for a brand term you do not own, so targeting "wordle" spends
+  the page's title on a query it will never win — the same trap
+  `/play/thirteen/` fell into (640 impressions, 0 clicks).
+- Target instead: **daily word game**, **word guess game**, **5 letter word
+  puzzle**, **free word game no ads**. Real volume, and winnable.
+
+Avoid "Wordle clone" / "Wordle alternative" in copy too. The differentiator to
+lead on is the one that is true and unusual: *no ads, no sign-in, and the
+answer schedule is deterministic and offline.*
+
+### The content is already done
+
+| Asset | Source | Size |
+|---|---|---|
+| Answer bank | `words.ts` | **1,320** curated words = **3.6 years** of dailies |
+| Validation dictionary | `dictionary.ts` | **14,855** words |
+| Scoring / hard mode | `engine.ts` | pure functions, transliterate directly |
+
+`engine.ts` has no React or React Native in it — `scoreGuess`, `isKnownWord`,
+`violatesHardMode` port to vanilla JS unchanged. The duplicate-letter handling
+in `scoreGuess` is already correct (two-pass, marks exact matches before
+counting the remainder), which is the bug most clones ship.
+
+### The one real integration detail
+
+The app's `answerForDate()` derives its index from the player's **local** date
+against a `2025-01-01` epoch. The web arcade's daily convention is the **UTC**
+day number parsed from `?daily=YYYY-MM-DD`, which is what `/play/daily/` sends
+and what `daily-state.js` files results under.
+
+Port it to UTC. If it keeps local time, two things break: players either side of
+midnight get different words from the same shared link, and the completion
+recorded by `share-result.js` can land on the wrong day. The app can stay as it
+is — it has no shared-link problem.
+
+### Monetization: no conflict
+
+Unlike the `/read/` books, this needs no free-vs-Pro decision. `tier` in
+`constants/games.ts` is a rollout grouping, not a paywall, and the engine's
+`FREE_ATTEMPTS = 6` / `PRO_ATTEMPTS = 7` means Pro buys a **seventh guess**,
+not access. Ship the web version at six guesses and let the extra guess stay an
+app perk — that is an honest funnel rather than a giveaway.
+
+Ship the single-word daily first. `quordle.ts` (solve 2 / 4 / 8 at once) exists
+and is a good follow-up, but it is a harder first impression.
+
+### Assets needed — only two
+
+Everything else is CSS. The board, letter tiles and on-screen keyboard are
+styled surfaces like the other 32 games (`play.css`, plus the existing
+`keyboard-grid.js`), so **no background art, container art or tile art is
+needed** — adding bespoke art here would make it the only game in the arcade
+that does not match the rest.
+
+| File | Size | Notes |
+|---|---|---|
+| `play/tiles/snackwords.png` | 72×72 | Hub tile, matching the existing 32 |
+| `play/social/snackwords.png` | 1200×630 | OG card — this *is* the link preview when someone shares their daily result, so it matters more here than on any other game |
+
 ## Assets currently requested from Codex
 
 **Ready-to-paste generation briefs for all of these (except A1) are in
@@ -941,3 +1015,4 @@ re-deriving from this plan doc. A1 has its own equivalent brief in
 | A4 | 5 Snacky character sprites | Two games render as rectangles |
 | A7 | 3 correctly-shaped small arcade sprites | Table Tennis + Asteroid Destroyer wiring |
 | A8 | 1 maskable 512×512 PWA icon | Nothing — install works without it |
+| B1 | SnackWords hub tile (72×72) + social card (1200×630) | The recommended next game port |
