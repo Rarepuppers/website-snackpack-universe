@@ -127,7 +127,7 @@
         <h1>Today's puzzles.<br>Same boards for everyone.</h1>
         <p class="lead">One set a day, drawn from the same seed for every player — so a time or a streak actually means something. Free, no ads, no sign-in, nothing to install.</p>
         <div class="dl-hero-stats">
-          <span class="dl-stat">Done today <b id="dl-done">0/7</b></span>
+          <span class="dl-stat">Done today <b id="dl-done">0/8</b></span>
           <span class="dl-stat">Streak <b id="dl-streak">0</b></span>
           <span class="dl-stat">Best streak <b id="dl-best">0</b></span>
         </div>
@@ -141,7 +141,7 @@
         <div class="daily-challenge-head">
           <div>
             <span class="eyebrow">The set</span>
-            <h2>Seven boards, one day.</h2>
+            <h2>Eight boards, one day.</h2>
           </div>
           <span class="daily-challenge-date" id="dl-seed">Seed loading</span>
         </div>
@@ -170,6 +170,11 @@
           <a class="dl-card" data-game="mahjong" href="../mahjong/">
             <img src="../tiles/mahjong.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
             <div><h3>Mahjong Solitaire</h3><p>Today's shared layout</p></div>
+            <span class="dl-tick" hidden>Done</span>
+          </a>
+          <a class="dl-card" data-game="golf-solitaire" href="../golf-solitaire/">
+            <img src="../tiles/golf-solitaire.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <div><h3>Golf Solitaire</h3><p>Today's shared deal</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="minesweeper" href="../minesweeper/">
@@ -217,7 +222,7 @@
 
   var LABELS = {
     snackwords: "SnackWords", sudoku: "Sudoku", "word-search": "Word Search", freecell: "FreeCell",
-    mahjong: "Mahjong", minesweeper: "Minesweeper", "flag-frenzy": "Flag Frenzy"
+    mahjong: "Mahjong", "golf-solitaire": "Golf Solitaire", minesweeper: "Minesweeper", "flag-frenzy": "Flag Frenzy"
   };
   var cards = [].slice.call(document.querySelectorAll(".dl-card"));
 

@@ -185,6 +185,22 @@ Both in the house style at the top of this file: calm, hand-painted, warm cream
 
 ---
 
+## B2. Golf Solitaire — hub tile + social card
+
+Ported from Brain Games Vol 2. Same shape of request as B1: the board and cards
+are CSS reusing the existing painted suit icons, so **only these two files are
+needed — no board, background, table or card-face art.**
+
+| File | Size | Brief |
+|---|---|---|
+| `play/tiles/golf-solitaire.png` | 72&times;72 | Hub tile, matching the other 33. Suggested motif: three cards fanned in a shallow arc, or a single card over a small green baize sweep — it must read differently from the Solitaire, Spider Solitaire and FreeCell tiles at 72px, since all four sit near each other on the hub. |
+| `play/social/golf-solitaire.png` | 1200&times;630 | OG card. Seven short columns of card backs/faces over the green baize `#247a55`&rarr;`#14523a` used by the board, with the wordmark "Golf Solitaire" and "Free &middot; no ads &middot; no sign-in". |
+
+> **Flat placeholders already sit at both paths** so nothing renders broken.
+> Overwrite in place, then run `node scripts/build-webp.mjs` from the repo root.
+
+---
+
 ## What NOT to generate (already covered, see `ARCADE-IMPROVEMENT-PLAN.md`)
 
 - Grid puzzle art (Sudoku, Crossword, Kakuro, Picross, Minesweeper, 2048, Word
@@ -196,6 +212,8 @@ Both in the house style at the top of this file: calm, hand-painted, warm cream
   for now; not requested.
 - SnackWords board / background / letter-tile / keyboard art — the game is
   CSS, and only the two B1 files above are wanted.
+- Golf Solitaire board / baize / card-face art — same reason; the cards reuse
+  the existing painted suit icons.
 
 ## When art arrives
 

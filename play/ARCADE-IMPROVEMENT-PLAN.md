@@ -1016,3 +1016,4 @@ re-deriving from this plan doc. A1 has its own equivalent brief in
 | A7 | 3 correctly-shaped small arcade sprites | Table Tennis + Asteroid Destroyer wiring |
 | A8 | 1 maskable 512×512 PWA icon | Nothing — install works without it |
 | B1 | SnackWords hub tile (72×72) + social card (1200×630) | The recommended next game port |
+| B2 | Golf Solitaire hub tile (72×72) + social card (1200×630) | Shipped with placeholders |
