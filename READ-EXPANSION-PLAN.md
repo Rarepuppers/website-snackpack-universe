@@ -147,17 +147,26 @@ worth more to a teacher than any number of alphabet books.
 
 ## 3. Priority order
 
-1. **`ten-red-hens` first.** The only free decodable not yet on the web.
-   "Free decodable readers" is the search term with real intent, and teachers
-   link decodables, not alphabet books.
-2. **The 5 free alphabet books** (`panda-cake`, `eggs-benedict`,
-   `french-toast`, `meow-inara`, `wise-owl-librarian`), all 6-pagers.
-3. **Chase interior art for `bug-in-a-cup` and `dog-in-the-fog`**, then mark
-   them free. Two books complete the decodable shelf and are worth more than
-   ten alphabet books for linkability.
-4. **Only then**, if the Pro decision goes that way, the paid books —
-   `nan-and-pip` and `the-cat-and-the-rat` first, since both already have
-   complete art.
+**Batch 1 — the decodable shelf (highest value, do first).** All three have
+complete art and take the web shelf from 1 book to 4:
+`ten-red-hens` (free), `nan-and-pip` (Pro, approved), `the-cat-and-the-rat`
+(Pro, approved). "Free decodable readers" is the search term with real intent,
+and teachers link decodables, not alphabet books.
+
+**Batch 2 — the 5 free alphabet books**, all 6-pagers: `panda-cake`,
+`eggs-benedict`, `french-toast`, `meow-inara`, `wise-owl-librarian`.
+That puts `/read/` at 9.
+
+**Batch 3 — the best mini books**, drawn only from the 13 rated
+excellent/strong in §1b. Note four of those characters (`eggs-benedict`,
+`cluck-oclock`, `hen-berry`, `sub-zero`) also appear as alphabet books — check
+you are importing the *mini book* (art in `story-heroes/`), not the ABC book
+(art in `book-pages/`). They are different stories with the same cast.
+
+**Batch 4 — apps 2–4**, only after finding a per-app quality signal. Do not
+import a shelf wholesale.
+
+**Ongoing:** commission interior art for `bug-in-a-cup` and `dog-in-the-fog`.
 
 ## 4. Page build
 
@@ -262,9 +271,10 @@ it adds a heavy dependency and gives worse control over image placement.
 
 ## 7. Definition of done
 
-- [ ] `ten-red-hens` imported; free decodable shelf on the web reads 2
-- [ ] The 5 free alphabet books imported; `/read/` reads 9
-- [ ] No `isFree: false` book published without an explicit decision
+- [ ] Batch 1 done: decodable shelf on the web reads 4
+- [ ] Batch 2 done: `/read/` reads 9
+- [ ] Every imported book chosen on a quality signal, not just "has art"
+- [ ] No `isFree: false` book beyond the two approved decodables
 - [ ] All imported art optimised (~100 KB/page)
 - [ ] Level pages live, derived from the phonics data
 - [ ] A PDF per book, linked from its page, under 3 MB each
