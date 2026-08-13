@@ -95,6 +95,87 @@ do-follow link.
 
 ---
 
+## Ready-to-post drafts
+
+Copy-paste. Each is written for the venue's own norms — the fastest way to get
+these wrong is to post the same promotional blurb everywhere.
+
+### Show HN (one shot — spend it on the technical angle, not the games)
+
+> **Title:** Show HN: Free browser Solitaire and FreeCell where every deal is solver-verified winnable
+>
+> **Body:** I build small offline games and got annoyed that most browser
+> solitaire serves you unwinnable shuffles with no way to know. So I pre-solve
+> the deals: the FreeCell page only serves boards a solver has already beaten
+> (at the standard four free cells), and the daily deal indexes that pool by
+> date, so everyone gets the same board *and* it's known to have a solution.
+>
+> No ads, no sign-in, no download, nothing stored server-side. Vanilla JS, one
+> self-contained HTML file per game, no build step.
+>
+> https://www.snackpackuniverse.com/play/freecell/
+
+Why this angle: "another free games site" is not a story; "the deals are
+solver-checked" is a real engineering claim almost no competitor can make —
+see `scripts/verify-freecell-deals.js` and `scripts/klondike-solver.js`.
+
+> **Accuracy note before posting.** The web FreeCell `CHECKED` pool is **73**
+> deals, not the ~1550 the *Android* app ships — do not quote the app's number
+> for the web page. Only the four-free-cell mode is solver-guaranteed (the pool
+> was solved at four cells); the page already says so. HN will check, and one
+> inflated number costs more credibility than the post can earn. Growing the
+> web pool with `verify-freecell-deals.js` before posting would make the claim
+> stronger and is worth doing first.
+
+### r/WebGames
+
+Read the subreddit rules first; most cap self-promo frequency. Post **one**
+game, not the hub.
+
+> **Title:** [HTML5] FreeCell with solver-checked deals — no dead shuffles, no ads or sign-up
+>
+> **Body:** Browser FreeCell, free, no ads and no account. The thing I actually
+> cared about: the deals are pre-checked by a solver, so you don't get a dead
+> shuffle. There's a shared daily deal too — same board for everyone, drawn
+> from that same checked pool. Unlimited undo, hints, auto-finish.
+> Feedback welcome, especially on the supermove rules.
+
+### itch.io — short description
+
+> Free browser card and puzzle games — Solitaire, Spider Solitaire, FreeCell,
+> Sudoku, Mahjong and 27 more. No ads, no sign-in, no download. FreeCell and
+> Solitaire deals are solver-checked so you don't hit dead shuffles, and a
+> shared daily deal gives everyone the same board. Plays on phone or desktop.
+
+### Homeschool / teacher outreach (highest-probability real link)
+
+Personalise the first line per recipient or it reads as a mailshot and gets
+deleted. Pitch `/read/`, never the arcade.
+
+> **Subject:** Free decodable readers (no ads, no sign-up) — for your phonics list
+>
+> Hi [name],
+>
+> I saw your [specific post/roundup] on [specific topic] — [one honest sentence
+> about it].
+>
+> I make free decodable readers and thought they might suit that list. Three
+> full illustrated books, short-vowel and early-blend focused, readable straight
+> in the browser: https://www.snackpackuniverse.com/read/
+>
+> No ads, no sign-up, no email capture, nothing tracked — it's a free page, not
+> a funnel. There's a paid app in the background, but the books stand alone and
+> I'm not asking you to mention it.
+>
+> Use them however's useful. Happy to make a printable version if that'd help.
+>
+> [name]
+
+The credibility of that last one rests on `/read/` genuinely having no sign-up
+wall. Do not add one.
+
+---
+
 ## What NOT to do
 
 - Paid link packages, PBNs, mass directory blasts, comment/forum link drops.
