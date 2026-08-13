@@ -243,7 +243,10 @@ var cascades=[],free=[],found=[],selected=null,history=[],redoStack=[],moves=0,s
 // recipient lands on the same board being compared, not a fresh one.
 var dailyMode=new URLSearchParams(location.search).has("daily");
 // Honour ?daily=<n> so a shared result opens the board it refers to.
-function dailyNumber(){var q=new URLSearchParams(location.search).get('daily');var n=q==null?NaN:parseInt(q,10);return isNaN(n)?Math.floor(Date.now()/86400000):n}
+// Accepts both ?daily=<n> (shared result links) and ?daily=YYYY-MM-DD (arcade
+// hub links). Without the date branch parseInt("2026-08-13") is 2026, so every
+// date in a year collapses onto one deal.
+function dailyNumber(){var q=new URLSearchParams(location.search).get('daily');if(q==null)return Math.floor(Date.now()/86400000);if(/^\d{4}-\d{2}-\d{2}$/.test(q)){var t=Date.parse(q+'T00:00:00Z');if(!isNaN(t))return Math.floor(t/86400000)}var n=parseInt(q,10);return isNaN(n)?Math.floor(Date.now()/86400000):n}
 function dailyDealIndex(){return dailyNumber()%CHECKED.length}
 // Free-cell count is the standard FreeCell difficulty dial. Fewer cells means
 // a smaller supermove capacity, which capacity() already derives from the
@@ -609,29 +612,29 @@ if (window.SnackPackKeyboard) {
   <div class="shell">
     <h2 class="related-games-title">More free games</h2>
     <div class="game-grid game-grid--compact">
+      <a class="game-tile" href="../mahjong/">
+        <img class="game-icon" src="../tiles/mahjong.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <h3>Mahjong Solitaire</h3>
+      </a>
       <a class="game-tile" href="../checkers/">
         <img class="game-icon" src="../tiles/checkers.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
         <h3>Checkers</h3>
       </a>
-      <a class="game-tile" href="../reversi/">
-        <img class="game-icon" src="../tiles/reversi.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
-        <h3>Reversi</h3>
+      <a class="game-tile" href="../minesweeper/">
+        <img class="game-icon" src="../tiles/minesweeper.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <h3>Minesweeper</h3>
       </a>
-      <a class="game-tile" href="../cascade/">
-        <img class="game-icon" src="../tiles/cascade.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
-        <h3>Cascade</h3>
+      <a class="game-tile" href="../crossword/">
+        <img class="game-icon" src="../tiles/crossword.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <h3>Crossword</h3>
       </a>
-      <a class="game-tile" href="../memory-match/">
-        <img class="game-icon" src="../tiles/memory-match.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
-        <h3>Memory Match</h3>
+      <a class="game-tile" href="../word-search/">
+        <img class="game-icon" src="../tiles/word-search.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <h3>Word Search</h3>
       </a>
-      <a class="game-tile" href="../thirteen/">
-        <img class="game-icon" src="../tiles/thirteen.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
-        <h3>Thirteen</h3>
-      </a>
-      <a class="game-tile" href="../picross/">
-        <img class="game-icon" src="../tiles/picross.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
-        <h3>Picross</h3>
+      <a class="game-tile" href="../kakuro/">
+        <img class="game-icon" src="../tiles/kakuro.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <h3>Kakuro</h3>
       </a>
     </div>
     <p class="related-games-more"><a class="text-link" href="../">See all games in the arcade →</a></p>
