@@ -13,18 +13,65 @@ the app repos. This is an import-and-format job.
 
 ## 1. Where the art actually is (verified 2026-08-13)
 
-The only app with complete illustrated interiors is
-**`apps/snackpack-1-abcs-alphabet`**. Checked and ruled out:
-`snackpack-3-spelling-sentences` (26 covers, no page art),
-`snackpack-4-math-arithmetic` (69 covers, no page art), and the rest have book
-*data* but no interior illustrations. Do not go hunting in the other apps.
+Four apps hold illustrated books, across **six separate shelves**. The
+directory names differ per app, which is why a single glob finds almost none of
+it — always check the app's own asset folder names.
 
 ```
-apps/snackpack-1-abcs-alphabet/assets/
-  decodable/     34 files,  9.4 MB   decodable readers (cover + numbered pages)
-  book-pages/   264 files,   59 MB   alphabet books (<book>-<letter>-<word>.jpg)
-  book-covers/   44 files,  9.1 MB   alphabet covers (<book>-alphabet.jpg)
+snackpack-1-abcs-alphabet/assets/
+  decodable/            34 files    9.4 MB   decodable readers  (<book>-cover / <book>-page-N)
+  book-covers/          44 files    9.1 MB   ABC book covers    (<book>-alphabet.jpg)
+  book-pages/          264 files     59 MB   ABC interiors      (<book>-<letter>-<word>.jpg)
+  mini-story-covers/    64 files     16 MB   mini-book covers
+  story-heroes/        192 files     48 MB   mini-book interiors
+snackpack-2-123s-counting/assets/
+  story-covers/         21 files    6.5 MB
+  story-page-art/      161 files     45 MB
+snackpack-3-spelling-sentences/assets/
+  book-covers/          26 files    6.6 MB
+  book-page-art/       471 files    106 MB   <- largest interior set anywhere
+snackpack-4-math-arithmetic/assets/
+  book-covers/          69 files    191 MB
+  book-page-images/    147 files     43 MB
 ```
+
+Roughly **1,200 interior illustrations and 220 covers** exist. Supply is not
+the constraint. Selection is.
+
+Metadata (titles, page text, ordering, free/Pro) lives in each app's
+`constants/` — `decodableBooks.ts`, `alphabet.ts`, `bookPageArtwork.ts`
+(app1); `curatedStoryBooks.ts` (app2); `books.ts`, `curated-long-stories.ts`
+(app3); `curatedMathBooks.ts`, `bookPageImages.ts` (app4).
+**Take titles and page text from there, never from filenames.**
+
+## 1b. Choose on quality, not availability
+
+The library was authored by different models over time and the quality is
+genuinely uneven — the Fable- and Sol-authored books are materially better than
+the ones from weaker models. Importing by "has complete art" would ship the
+weak ones alongside the good.
+
+**app1 has a usable quality signal already.** `docs/MINI_BOOK_ILLUSTRATION_REVIEW_2026-08-02.md`
+is an editorial pass over all 64 mini books with a verdict per story. Thirteen
+are rated *excellent* or *strong* — that is the shortlist, in the doc's own order:
+
+> Ted-E-Bear and the Pocketful of Sounds · Booklava and the Page That Stayed
+> Blank · Flutter-Luckybug's Wind-Mixed Message · Cereal-Swimmer and the
+> Alphabet Sea · Sub-Zero's Snow Day · Nutmeg and the Lost Acorn · Lionnaise and
+> the Very Tiny Roar · Pork-ulele's Big Concert · Snack-Spector and the Puddle
+> Mystery · The Day Cluck O'Clock Slept In · Sub-Zero and the Summer Snowball ·
+> Hen-Berry and the Midnight Helpers · Eggs-Benedict and the Sky That Wasn't
+> Falling
+
+Stories merely marked "Approved" or "Polished" are *not* in that tier — the doc
+distinguishes them deliberately.
+
+**Before importing from apps 2–4, find the equivalent signal** (the content
+patch plans and handover docs in each app record which batches were rewritten
+and by whom). If no signal exists for a given shelf, read a sample of three
+books and judge directly rather than importing the shelf wholesale. Shipping
+twenty mediocre books would actively damage the section's ability to earn a
+link, which is the entire reason it exists.
 
 Naming differs between the two shelves — this trips up a naive glob:
 
@@ -85,15 +132,18 @@ book id from `alphabet.ts`, not on a shared filename prefix.
 (including `nan-and-pip` and `the-cat-and-the-rat`, both of which have complete
 art and would otherwise be the obvious next imports).
 
-**So the free tier tops out at 6 new books — `/read/` reaches 9, not 15.**
-Passing 12 requires a deliberate decision to publish Pro books on the web.
-That is a monetization call, not a content one, and it should be made
-explicitly rather than by whoever runs the import.
+Those counts are for app1's ABC and decodable shelves only; apps 2–4 have their
+own free/Pro flags that must be checked the same way.
 
-If the answer is "free tier only", the highest-value action is not importing at
-all — it is **commissioning interior art for `bug-in-a-cup` and
-`dog-in-the-fog`** and marking them free, since a complete 6-book decodable
-shelf is worth far more to a teacher than a dozen alphabet books.
+**Decision taken 2026-08-13:** publish the free-tier books **plus the two Pro
+decodables** `nan-and-pip` and `the-cat-and-the-rat` (both already have complete
+art). Rationale: the decodable shelf is the linkable asset, and a shelf of four
+reads as a real resource where one reads as a sample. All other Pro books stay
+app-only unless separately approved.
+
+Still worth doing regardless: **commission interior art for `bug-in-a-cup` and
+`dog-in-the-fog`**. Those two complete the decodable shelf at six, which is
+worth more to a teacher than any number of alphabet books.
 
 ## 3. Priority order
 
