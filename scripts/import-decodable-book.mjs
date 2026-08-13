@@ -128,7 +128,7 @@ function buildHtml(book) {
 ${pageCards}
 </section>
 
-<section><div class="shell story-finish-card"><span class="eyebrow">The end &middot; Brilliant reading</span><h2>For grown-ups</h2><p>${esc(book.parentNote)}</p><p>SnackPack ABC &amp; Alphabet continues with letter activities, read-together stories and more early phonics practice.</p><div class="stack-inline"><a class="btn btn-primary" href="${PLAY_URL}" target="_blank" rel="noopener">Get the app on Google Play</a><a class="btn btn-secondary" href="../../apps/snackpack-1-abcs-alphabet/">Explore the app</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>
+<section><div class="shell story-finish-card"><span class="eyebrow">The end &middot; Brilliant reading</span><h2>For grown-ups</h2><p>${esc(book.parentNote)}</p><p>SnackPack ABC &amp; Alphabet continues with letter activities, read-together stories and more early phonics practice.</p><div class="stack-inline"><a class="btn btn-primary" href="${PLAY_URL}" target="_blank" rel="noopener">Get the app on Google Play</a><a class="btn btn-secondary" href="../../apps/snackpack-1-abcs-alphabet/">Explore the app</a><a class="btn btn-secondary" href="./${book.id}.pdf" download>Print this book (PDF)</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>
 </main>
 <footer class="foot"><div class="shell foot-wrap"><p class="foot-note">Story from SnackPack ABC &amp; Alphabet.</p><div class="footer-links"><a class="text-link" href="../">Bookshelf</a><a class="text-link" href="../../privacy/snackpack-1-abcs-alphabet/">Privacy</a></div></div></footer>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${BEACON}"}'></script>
