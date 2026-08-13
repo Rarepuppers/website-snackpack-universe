@@ -1,5 +1,16 @@
 # Scripts
 
+## Before you push
+
+| Script | What it does | When to run |
+|---|---|---|
+| `check-site.mjs` | Read-only integrity check across every page: dead internal links, missing images/scripts/styles, unparseable JSON-LD, sitemap drift, and missing title/canonical/description/beacon | **Before every push.** Exits non-zero on errors; `--warn` to report without failing |
+
+It scans static markup only — `<script>` blocks are stripped first, because
+several pages build HTML by string concatenation and matching inside those
+produces nonsense targets like `' + href + '`.
+
+
 ## Card game deal pools
 
 | Script | What it does | When to run |
