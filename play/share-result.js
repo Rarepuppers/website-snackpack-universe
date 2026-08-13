@@ -161,6 +161,11 @@
     opts = opts || {};
     if (!opts.game) return null;
 
+    // Every game routes its win through here, so this is the one place that
+    // needs to know a daily puzzle was finished. It self-filters on ?daily=,
+    // so a free-play win is correctly ignored. See daily-state.js.
+    if (window.SnackPackDaily) window.SnackPackDaily.recordIfDaily(opts.headline);
+
     var mount =
       opts.mount ||
       document.querySelector(".game-stage") ||
