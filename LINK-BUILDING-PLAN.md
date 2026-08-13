@@ -123,9 +123,16 @@ see `scripts/verify-freecell-deals.js` and `scripts/klondike-solver.js`.
 > deals, not the ~1550 the *Android* app ships — do not quote the app's number
 > for the web page. Only the four-free-cell mode is solver-guaranteed (the pool
 > was solved at four cells); the page already says so. HN will check, and one
-> inflated number costs more credibility than the post can earn. Growing the
-> web pool with `verify-freecell-deals.js` before posting would make the claim
-> stronger and is worth doing first.
+> inflated number costs more credibility than the post can earn.
+>
+> Verified 2026-08-13 from the website repo root:
+> `node scripts/verify-freecell-deals.js` → 73 in pool, 73 solved, 0 unsolvable,
+> 0 inconclusive. So the *claim* is sound; only the count is small.
+>
+> Note `verify-freecell-deals.js` **only checks the existing pool — it does not
+> generate new deals.** Its `CHECKED` list is seeds 1–100 with the failures
+> removed. Growing the pool means scanning a wider seed range and writing the
+> survivors into both the script and `play/freecell/index.html`.
 
 ### r/WebGames
 
