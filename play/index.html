@@ -471,7 +471,10 @@
     var target = game === "soccer" ? soccer.slug : game;
     card.href = "./" + target + "/?daily=" + encodeURIComponent(seed);
     var seedEl = card.querySelector(".daily-challenge-seed");
-    if (seedEl) seedEl.textContent = "Seed " + seed;
+    // Only claim a shared seed for games that actually honour ?daily= and have
+    // a board to share. The soccer slot is a score chase that rotates by date,
+    // so it gets an honest "today's pick" label instead of a seed.
+    if (seedEl) seedEl.textContent = game === "soccer" ? "Today's pick" : "Seed " + seed;
     if (game === "soccer") {
       var title = card.querySelector("strong");
       var copy = document.getElementById("daily-soccer-copy");

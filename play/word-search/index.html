@@ -355,13 +355,43 @@
   var grid, placements, cells, foundCount, total, solved;
   var timer, seconds;
 
-  function rndDir() { return DIRS[Math.floor(Math.random() * DIRS.length)]; }
+  // -- Daily seeding --------------------------------
+  // Accepts ?daily=<n> and ?daily=YYYY-MM-DD (the arcade hub sends the date),
+  // so everyone opening today's link gets the same grid. Without the param the
+  // grid is freshly random, as before. New puzzle or a theme change leaves
+  // daily mode so you still get fresh grids afterwards.
+  function dailyNumber() {
+    var q = new URLSearchParams(location.search).get("daily");
+    if (q == null) return null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(q)) {
+      var t = Date.parse(q + "T00:00:00Z");
+      if (!isNaN(t)) return Math.floor(t / 86400000);
+    }
+    var n = parseInt(q, 10);
+    return isNaN(n) ? null : n;
+  }
+  function mulberry32(seed) {
+    var t = seed >>> 0;
+    return function () {
+      t = (t + 0x6D2B79F5) >>> 0;
+      var x = t;
+      x = Math.imul(x ^ (x >>> 15), x | 1);
+      x ^= x + Math.imul(x ^ (x >>> 7), x | 61);
+      return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  var dailySeed = dailyNumber();
+  var dailyActive = dailySeed !== null;
+  var seededRnd = null; // non-null only while generating the daily grid
+  function rnd() { return seededRnd ? seededRnd() : Math.random(); }
+
+  function rndDir() { return DIRS[Math.floor(rnd() * DIRS.length)]; }
 
   function tryPlace(g, word) {
     for (var attempt = 0; attempt < 200; attempt++) {
       var d = rndDir();
-      var r = Math.floor(Math.random() * SIZE);
-      var c = Math.floor(Math.random() * SIZE);
+      var r = Math.floor(rnd() * SIZE);
+      var c = Math.floor(rnd() * SIZE);
       var endR = r + d[0] * (word.length - 1);
       var endC = c + d[1] * (word.length - 1);
       if (endR < 0 || endR >= SIZE || endC < 0 || endC >= SIZE) continue;
@@ -388,7 +418,7 @@
       if (path) placements[w] = path.map(function (p) { return p[0] * SIZE + p[1]; });
     });
     for (var r2 = 0; r2 < SIZE; r2++) for (var c2 = 0; c2 < SIZE; c2++) {
-      if (g[r2][c2] === "") g[r2][c2] = LETTERS[Math.floor(Math.random() * 26)];
+      if (g[r2][c2] === "") g[r2][c2] = LETTERS[Math.floor(rnd() * 26)];
     }
     grid = g;
   }
@@ -431,7 +461,10 @@
     timeEl.textContent = m + ":" + (s < 10 ? "0" : "") + s;
   }
 
-  function reset() {
+  function reset(fresh) {
+    // A user-initiated new puzzle leaves daily mode.
+    if (fresh) dailyActive = false;
+    seededRnd = dailyActive ? mulberry32(dailySeed) : null;
     themeLabelEl.textContent = THEMES[theme].label;
     generate();
     build();
@@ -554,7 +587,7 @@
     }
   });
 
-  newBtn.addEventListener("click", function () { anchor = -1; reset(); });
+  newBtn.addEventListener("click", function () { anchor = -1; reset(true); });
   document.querySelectorAll(".seg [data-theme]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       theme = btn.dataset.theme;
@@ -562,7 +595,7 @@
         b.setAttribute("aria-pressed", String(b === btn));
       });
       anchor = -1;
-      reset();
+      reset(true);
     });
   });
 

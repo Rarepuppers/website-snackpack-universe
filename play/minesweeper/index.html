@@ -306,7 +306,41 @@
   var mineSet, revealed, flags, adj, cells;
   var started, over, won, placed, flagsUsed, revealCount, timer, seconds;
 
-  function reset() {
+  // -- Daily seeding --------------------------------
+  // Accepts ?daily=<n> and ?daily=YYYY-MM-DD. Minesweeper is a weaker "shared
+  // board" than the card games: mines are placed on the FIRST CLICK so the
+  // opening square is always safe, which means the layout cannot depend on the
+  // date alone. Seeding therefore mixes the date with the first square opened
+  // -- two players who open the same square get the same board. Pressing New
+  // or changing difficulty leaves daily mode.
+  function dailyNumber() {
+    var q = new URLSearchParams(location.search).get("daily");
+    if (q == null) return null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(q)) {
+      var t = Date.parse(q + "T00:00:00Z");
+      if (!isNaN(t)) return Math.floor(t / 86400000);
+    }
+    var n = parseInt(q, 10);
+    return isNaN(n) ? null : n;
+  }
+  function mulberry32(seed) {
+    var t = seed >>> 0;
+    return function () {
+      t = (t + 0x6D2B79F5) >>> 0;
+      var x = t;
+      x = Math.imul(x ^ (x >>> 15), x | 1);
+      x ^= x + Math.imul(x ^ (x >>> 7), x | 61);
+      return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  var dailySeed = dailyNumber();
+  var dailyActive = dailySeed !== null;
+  var seededRnd = null;
+  function rnd() { return seededRnd ? seededRnd() : Math.random(); }
+
+  function reset(fresh) {
+    // A user-initiated new board leaves daily mode.
+    if (fresh) dailyActive = false;
     var lv = LEVELS[diff];
     rows = lv.rows; cols = lv.cols; mineCount = lv.mines;
     mineSet = {}; revealed = []; flags = []; adj = [];
@@ -353,13 +387,15 @@
   }
 
   function placeMines(safe) {
+    // Mix the date with the opening square (see the daily-seeding note above).
+    seededRnd = dailyActive ? mulberry32((dailySeed >>> 0) ^ Math.imul(safe + 1, 0x9E3779B1)) : null;
     var safeZone = {};
     safeZone[safe] = true;
     neighbours(safe).forEach(function (n) { safeZone[n] = true; });
     var pool = [];
     for (var i = 0; i < rows * cols; i++) if (!safeZone[i]) pool.push(i);
     for (var m = 0; m < mineCount && pool.length; m++) {
-      var k = Math.floor(Math.random() * pool.length);
+      var k = Math.floor(rnd() * pool.length);
       mineSet[pool[k]] = true;
       pool.splice(k, 1);
     }
@@ -498,7 +534,7 @@
     flagBtn.classList.toggle("btn-game--primary", flagMode);
   });
 
-  newBtn.addEventListener("click", reset);
+  newBtn.addEventListener("click", function () { reset(true); });
 
   document.querySelectorAll(".seg [data-diff]").forEach(function (btn) {
     btn.addEventListener("click", function () {
@@ -506,7 +542,7 @@
       document.querySelectorAll(".seg [data-diff]").forEach(function (b) {
         b.setAttribute("aria-pressed", String(b === btn));
       });
-      reset();
+      reset(true);
     });
   });
 
