@@ -542,7 +542,6 @@ function groupPage(letter) {
         <li><a href="/#pipeline">Roadmap</a></li>
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
-        <li><a class="nav-wc" href="/world-cup/"><img class="nav-ball" src="/world-cup/ball-36.png" alt="" width="18" height="18" decoding="async">World Cup</a></li>
         <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
       </ul>
     </nav>
@@ -1046,7 +1045,6 @@ function teamPage(team) {
         <li><a href="/#pipeline">Roadmap</a></li>
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
-        <li><a class="nav-wc" href="/world-cup/"><img class="nav-ball" src="/world-cup/ball-36.png" alt="" width="18" height="18" decoding="async">World Cup</a></li>
         <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
       </ul>
     </nav>

@@ -27,7 +27,10 @@ function canonicalNav(indent) {
     `${i2}<li><a href="/#pipeline">Roadmap</a></li>`,
     `${i2}<li><a href="/privacy/">Privacy</a></li>`,
     `${i2}<li><a href="/terms/">Terms</a></li>`,
-    `${i2}<li><a class="nav-wc" href="/world-cup/"><img class="nav-ball" src="/world-cup/ball-36.png" alt="" width="18" height="18" decoding="async">World Cup</a></li>`,
+    // World Cup 2026 finished on 2026-07-19. The section still gets a trickle of
+    // traffic so the pages stay live and indexed, but it is no longer the
+    // highlighted item on all 153 pages. Reachable from the homepage footer.
+    // Review 2026-09-13: keep as an archive, or retire it.
     `${i2}<li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>`,
     `${i1}</ul>`,
     `${indent}</nav>`
