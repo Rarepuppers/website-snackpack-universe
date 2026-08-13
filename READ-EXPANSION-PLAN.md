@@ -248,19 +248,34 @@ linked; the individual book page is what gets read.
   `snackpackuniverse.com/read` — so a printed copy passed around a classroom
   still points home. This is the whole distribution argument for PDFs.
 
-### Suggested implementation
-Node, using `pdf-lib` (pure JS, no native deps, no headless browser):
+### Implementation — DONE 2026-08-13
 
-```
-scripts/build-read-pdfs.mjs
-  --slug=<slug>     build one book
-  --all             build every book under read/
-  (default: dry run, prints page order and output size; --write to emit)
+`scripts/build-read-pdfs.mjs`, **zero dependencies**:
+
+```bash
+node scripts/build-read-pdfs.mjs                      # dry run, all books
+node scripts/build-read-pdfs.mjs --write
+node scripts/build-read-pdfs.mjs --slug=ten-red-hens --write
 ```
 
-`pdf-lib` embeds JPEG directly via `embedJpg()`, so with pre-downscaled images
-there is no rasterisation step at all. Avoid Puppeteer/headless-Chrome print —
-it adds a heavy dependency and gives worse control over image placement.
+`pdf-lib` turned out to be unnecessary. A PDF can carry a JPEG verbatim as a
+`/DCTDecode` stream, so the art is embedded byte-for-byte — no image library,
+no headless browser, and nothing added to a repo that deliberately has no
+`package.json`. It also means **no re-encoding**, so print quality is exactly
+the source art.
+
+Two details worth keeping if this is ever rewritten:
+- **No downscaling is needed.** The art is 1200px (interiors) / 1024px (covers),
+  which is 164 / 140 dpi across the printable width — already the right
+  ballpark. The 150 dpi target in the original spec was satisfied for free.
+- **Page order is read from the rendered HTML**, never a filename sort, so
+  `page-10` cannot precede `page-2`.
+- Non-ASCII titles are written as UTF-16BE with a BOM; a latin1 literal turns
+  the curly apostrophe in "Ted-E-Bear's" into mojibake in the document title.
+
+Result: 6 PDFs, 0.9–2.5 MB each, ~12 MB total. All verified round-tripping
+through pypdf with correct page counts, A4 media boxes, one decodable image per
+page, and content confined to the shared A4/Letter safe box.
 
 ### Verify before committing
 - Page count == 1 + interior page count, for every book.
@@ -277,6 +292,6 @@ it adds a heavy dependency and gives worse control over image placement.
 - [ ] No `isFree: false` book beyond the two approved decodables
 - [ ] All imported art optimised (~100 KB/page)
 - [ ] Level pages live, derived from the phonics data
-- [ ] A PDF per book, linked from its page, under 3 MB each
+- [x] A PDF per book, linked from its page, under 3 MB each
 - [ ] `build-webp`, `build-sitemap`, `build-breadcrumbs` re-run
 - [ ] Still no sign-up wall anywhere in `/read/`
