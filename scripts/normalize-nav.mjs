@@ -22,6 +22,9 @@ function canonicalNav(indent) {
     `${i1}<ul class="nav-links">`,
     `${i2}<li><a href="/apps/">Apps</a></li>`,
     `${i2}<li><a href="/play/">Play</a></li>`,
+    // Daily sits next to Play because it is the return-visit hook: a streak is
+    // only worth keeping if getting back to it is one click from any page.
+    `${i2}<li><a href="/play/daily/">Daily</a></li>`,
     `${i2}<li><a href="/read/">Read</a></li>`,
     `${i2}<li><a href="/guides/">Guides</a></li>`,
     `${i2}<li><a href="/#pipeline">Roadmap</a></li>`,
