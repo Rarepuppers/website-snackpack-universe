@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Today's Free Daily Puzzles | Sudoku, FreeCell &amp; More — SnackPack</title>
-<meta name="description" content="One shared set of daily puzzles — Sudoku, Word Search, FreeCell, Mahjong and more. Everyone gets the same boards. Keep a streak, share your result. Free, no ads, no sign-in.">
+<meta name="description" content="One shared set of daily puzzles — SnackWords, Sudoku, Word Search, FreeCell and more. Everyone gets the same boards. Keep a streak, share your result. Free, no ads, no sign-in.">
 <link rel="canonical" href="https://www.snackpackuniverse.com/play/daily/">
 <meta name="theme-color" content="#de6a38">
 <link rel="icon" type="image/png" href="/assets/favicon-32.png">
@@ -126,7 +126,7 @@
         <h1>Today's puzzles.<br>Same boards for everyone.</h1>
         <p class="lead">One set a day, drawn from the same seed for every player — so a time or a streak actually means something. Free, no ads, no sign-in, nothing to install.</p>
         <div class="dl-hero-stats">
-          <span class="dl-stat">Done today <b id="dl-done">0/6</b></span>
+          <span class="dl-stat">Done today <b id="dl-done">0/7</b></span>
           <span class="dl-stat">Streak <b id="dl-streak">0</b></span>
           <span class="dl-stat">Best streak <b id="dl-best">0</b></span>
         </div>
@@ -140,12 +140,17 @@
         <div class="daily-challenge-head">
           <div>
             <span class="eyebrow">The set</span>
-            <h2>Six boards, one day.</h2>
+            <h2>Seven boards, one day.</h2>
           </div>
           <span class="daily-challenge-date" id="dl-seed">Seed loading</span>
         </div>
 
         <div class="dl-grid" id="dl-grid">
+          <a class="dl-card" data-game="snackwords" href="../snackwords/">
+            <img src="../tiles/snackwords.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <div><h3>SnackWords</h3><p>Today's five-letter word</p></div>
+            <span class="dl-tick" hidden>Done</span>
+          </a>
           <a class="dl-card" data-game="sudoku" href="../sudoku/">
             <img src="../tiles/sudoku.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
             <div><h3>Sudoku</h3><p>Today's shared grid</p></div>
@@ -210,7 +215,7 @@
   var seed = D.today();
 
   var LABELS = {
-    sudoku: "Sudoku", "word-search": "Word Search", freecell: "FreeCell",
+    snackwords: "SnackWords", sudoku: "Sudoku", "word-search": "Word Search", freecell: "FreeCell",
     mahjong: "Mahjong", minesweeper: "Minesweeper", "flag-frenzy": "Flag Frenzy"
   };
   var cards = [].slice.call(document.querySelectorAll(".dl-card"));

@@ -156,6 +156,35 @@ Once it exists, add to `manifest.webmanifest`:
 
 ---
 
+## B1. SnackWords — hub tile + social card
+
+For the daily word-guess game ported from Brain Games Vol 2. Full context in
+`ARCADE-IMPROVEMENT-PLAN.md` &sect; B1. The game itself is CSS — board, letter
+tiles and on-screen keyboard are styled surfaces like the other 32 games — so
+**only these two files are needed. Do not generate a background, a board, a
+container, letter tiles or a keyboard**; bespoke art there would make
+SnackWords the only game in the arcade that doesn't match the rest.
+
+**Naming, and this one is not negotiable: the game is "SnackWords". Never
+"Wordle"** — that is a New York Times trademark and they took down clones in
+2022. Do not put the word Wordle in the artwork, the filename, or the alt text.
+
+| File | Size | Brief |
+|---|---|---|
+| `play/tiles/snackwords.png` | 72&times;72 PNG, transparent | Hub tile. Must sit beside the existing 32 in `play/tiles/` — match their weight and silhouette exactly. Suggested motif: a single small letter tile (a rounded cream square with a serif capital letter on it), or three overlapping tiles fanned slightly. Use the accent green `#1f8f77` for a "correct" tile if you want one colour hit; keep the rest cream/ink. No text other than the letter itself. |
+| `play/social/snackwords.png` | 1200&times;630 PNG | Open Graph card. **This matters more than any other social card in the arcade**: it is the link preview when a player pastes their daily result into a chat, which is the whole growth loop for a daily game. Show a partially-solved 5&times;6 grid — a few tiles in accent green `#1f8f77` (correct) and gold `#efb54d` (present), the rest empty cream outlines — with the wordmark "SnackWords" and the line "A new word every day &middot; free, no ads". **Do not spell a real answer word in the grid** — use scattered non-word letters, or blank tiles, so the card can never leak a puzzle. |
+
+Both in the house style at the top of this file: calm, hand-painted, warm cream
+`#f6efe4` ground, ink `#201713`, brand orange `#de6a38` available as an accent.
+
+> **Both paths already contain a flat placeholder** so the live hub has no
+> broken image and the social card is not blank. They are plain shapes drawn
+> programmatically, not art — **overwrite them at the same paths.** After
+> dropping the real files, run `node scripts/build-webp.mjs` from the repo
+> root so the WebP variants regenerate.
+
+---
+
 ## What NOT to generate (already covered, see `ARCADE-IMPROVEMENT-PLAN.md`)
 
 - Grid puzzle art (Sudoku, Crossword, Kakuro, Picross, Minesweeper, 2048, Word
@@ -165,6 +194,8 @@ Once it exists, add to `manifest.webmanifest`:
 - App store art — these are web pages only.
 - Share-card image variants (A9 in the plan) — deliberately text/emoji only
   for now; not requested.
+- SnackWords board / background / letter-tile / keyboard art — the game is
+  CSS, and only the two B1 files above are wanted.
 
 ## When art arrives
 
