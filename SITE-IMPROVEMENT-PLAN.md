@@ -534,17 +534,54 @@ GitHub Pages limit to comfortably under it. Nothing to do today.
 
 ## Next tasks, in order
 
-1. **Commit the two orphaned assets + `manifest.webmanifest`, deploy, verify
-   both URLs return 200** (P7). Unblocks the A2 Android listening gate.
-2. **Service-worker whitelist + `CACHE` v5 — complete** (P9). Ship with 1 so
-   the new media policy and orphaned assets reach existing installs together.
-3. **Rewrite the stale counts in `llms.txt`** (P8).
-4. **Fix "32 games" → 34 in the four guides** that state it — the standing
-   check P6 asked for, already overdue after two new games.
-5. **Add the live-URL smoke script** (P10.1) so 1 cannot recur.
-6. **`/read/` wedge — complete:** printable-reader guide, dedicated share
-   cards, internal discovery links and eight PDFs in the durable sitemap (P11).
+1. ~~**Commit the two orphaned assets + `manifest.webmanifest`, deploy, verify
+   both URLs return 200**~~ (P7) — **done 2026-08-14.** Both now return 200.
+   **The A2 Android listening gate is unblocked.**
+2. ~~**Service-worker whitelist + `CACHE` v5**~~ (P9) — **done.** Rule 3 is now
+   an explicit media whitelist (`png|jpe?g|webp|svg|gif|woff2?|wav|mp3|ogg`);
+   PDFs, archives and unknown large downloads bypass Cache Storage entirely.
+3. ~~**Rewrite the stale counts in `llms.txt`**~~ (P8) — **done.** See the
+   correction note below: the audit found a *fourth* stale count nobody had
+   flagged.
+4. ~~**Fix "32 games" → 34 in the four guides**~~ — **done.**
+5. ~~**Add the live-URL smoke script**~~ (P10.1) — **done:**
+   `scripts/check-live.mjs`. Reads `manifest.webmanifest` icons, the `sw.js`
+   `SHELL` array and every `og:image`/`twitter:image` on the property, then
+   asserts each returns 200 against the live origin. **77 declared URLs, all
+   resolving.** Run it after every deploy.
+6. ~~**`/read/` wedge**~~ (P11) — **done:** printable-reader guide, dedicated
+   share cards, internal discovery links and eight PDFs in the durable sitemap.
 7. **Directory submissions** — unchanged, still the real backlink lever, still
    needs you present for the signups.
+8. **Teacher/homeschool outreach** using the updated `LINK-BUILDING-PLAN.md`
+   copy — new, and now the highest-value thing that needs you rather than me.
+9. **Resubmit `sitemap.xml`** and inspect the new guide in Search Console.
 
-Items 1–4 are mechanical and low-risk. Item 6 is the one with upside.
+### Correction found while doing item 3: a fourth stale count
+
+P8 listed three wrong numbers in `llms.txt`. Checking each against its
+authoritative source — `constants/games.ts` in each app, not the directory
+listing, since `shared/` and `ai/` are not games — turned up one more, and it
+was **in the HTML, not just `llms.txt`**:
+
+| Claim | Stated | Actual | Where |
+|---|---|---|---|
+| Brain Games **Vol 3** game count | 23 | **24** | `apps/index.html`, `index.html`, `play/spider-solitaire/` |
+
+`chess-openings` was added to Vol 3 after the site copy was written. Vol 1 (24)
+and Vol 2 (23) were both correct, so the 2026-08-07 P6 pass held — this is new
+drift, not a missed fix, and it is the **third** volume to drift the same way.
+
+That is now three separate occurrences of one root cause: **whoever adds a game
+in-app has no reason to know the public site states the count in four places.**
+Fixing the number a fourth time is not the answer. The durable fix is to derive
+these counts at build time from each app's `constants/games.ts` — the same
+approach `build-sitemap.mjs` and `build-breadcrumbs.mjs` already use for links.
+Worth doing before the next volume ships.
+
+The `llms.txt` root cause is separate and now understood: **every audit greps
+`--include=*.html`, and `llms.txt` is not HTML.** Any future content sweep must
+name it explicitly.
+
+Items 1–6 are complete and verified. Items 7–8 need you; item 9 is a two-minute
+Search Console task.

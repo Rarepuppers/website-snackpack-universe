@@ -21,13 +21,13 @@ This table overrides older narrative below when statuses conflict.
 
 | Priority | Task | Owner / gate | Done when |
 |---|---|---|---|
-| **P0** | **Commit + deploy `icon-maskable-512.png` and `place.wav`** | Claude | Both return **200 live**. They are finished on disk but were never `git add`ed, so both 404 today — see the 2026-08-14 note below |
-| **P0** | **Service worker: whitelist cache-first types, bump `CACHE` to v5** | Claude | Book PDFs are no longer cached-first; existing installs pick up the new routing |
+| ~~P0~~ | ~~Commit + deploy `icon-maskable-512.png` and `place.wav`~~ | — | **DONE 2026-08-14** — both return 200 live |
+| ~~P0~~ | ~~Service worker: whitelist cache-first types, bump `CACHE` to v5~~ | — | **DONE** — PDFs, archives and unknown downloads now bypass Cache Storage |
 | P0 | Brain Games Vol 1 Mahjong release | Mark device smoke test, then Claude build/submission | Base and Pro decks pass on Android and the production release is handed off |
-| P0 | Approve the Solitaire `place.wav` pilot | Mark listening on desktop + Android | Tone and level are approved or concrete revision notes are recorded — **blocked until the deploy task above lands; the file 404s, so it cannot be heard on Android** |
-| P1 | Fix "32 games" → **34** in four guides, and the stale counts in `llms.txt` | Claude | No file states a game count that disagrees with `ls play/*/` |
+| **P0** | **Approve the Solitaire `place.wav` pilot** | **Mark — now unblocked** | Tone and level are approved or concrete revision notes are recorded. **The file is live, so it can finally be heard on Android; this is the oldest open gate on the board** |
+| ~~P1~~ | ~~Fix stale game counts~~ | — | **DONE** — 34 in four guides, Vol 3 corrected 23→24 in three places, `llms.txt` rewritten |
 | P1 | Add verification CI across both repositories | Repository automation | Monorepo app/word checks and website site/JS checks run independently; cross-repo asset parity uses an explicit companion checkout |
-| P1 | Post-deploy PWA/share smoke — **as a script, not a checklist** | After website deploy | Manifest icons, `sw.js` `SHELL` entries and every `og:image` are asserted 200 against the live origin automatically |
+| ~~P1~~ | ~~Post-deploy PWA/share smoke — as a script, not a checklist~~ | — | **DONE** — `scripts/check-live.mjs` asserts manifest icons, `sw.js` `SHELL` entries and every `og:image`/`twitter:image` return 200 against the live origin. 77 URLs, all resolving. Run after every deploy |
 | P2 | Finish C2/C3 distribution work | Site growth | Next guides ship, sitemap is resubmitted, and the first relevant directory submissions are logged |
 
 ### 2026-08-14 re-audit — three findings against this board

@@ -20,11 +20,11 @@ Work top-down.
 | # | Item | Files | State |
 |---|---|---|---|
 | ~~A5~~ | ~~Mahjong tiles~~ | 60 PNGs | **DONE + REVIEWED** — vector symbols fixed at the generator; canonical, app and website copies match; no regeneration needed |
-| **A2** | Shared sound effects | 1 of 8 `.wav` | **PILOT WIRED LOCALLY — NOT LIVE.** `place.wav`, the Sound on/off control and the Solitaire integration all pass locally, but the `.wav` was never committed and returns **404** in production. **The listening gate cannot be satisfied on Android until it deploys.** Seven sounds and wider rollout remain behind that |
+| **A2** | Shared sound effects | 1 of 8 `.wav` | **PILOT LIVE — AWAITING EAR.** `place.wav` returns 200 in production as of 2026-08-14, so the Android half of the listening gate is finally testable. **This is now the oldest open gate in the plan.** Seven sounds and wider rollout remain behind Mark's approval |
 | ~~A3~~ | ~~Soccer sprites~~ | existing sprite system | **DONE + WIRED** — actors, balls, goals, pitches, effects and badges are loaded by all soccer games |
 | ~~A4~~ | ~~Snacky character sprites~~ | existing frames + sheet | **DONE + WIRED** — Flappy Snacky has three painted bird frames; Snacky Worm has head/body/tail in its sprite sheet |
 | ~~A7~~ | ~~Small arcade sprites~~ | existing sheets | **DONE + WIRED** — Table Tennis and Asteroid Destroyer already use correctly scaled sprite-sheet regions |
-| ~~A8~~ | ~~Maskable PWA icon~~ | 1 PNG | **DONE ON DISK — NOT LIVE.** Art and wiring are correct, but the PNG was never committed, so `/assets/icon-maskable-512.png` returns **404** and the manifest declares an icon that does not resolve. No regeneration needed; commit + deploy |
+| ~~A8~~ | ~~Maskable PWA icon~~ | 1 PNG | **DONE + WIRED + LIVE** — committed and deployed 2026-08-14; `/assets/icon-maskable-512.png` returns 200 and is asserted by `scripts/check-live.mjs` |
 | ~~B1~~ | ~~SnackWords tile + card~~ | 2 PNGs + WebP | **DONE + WIRED** — final transparent hub icon and 1200×630 sharing card installed and visually checked |
 | ~~B2~~ | ~~Golf Solitaire tile + card~~ | 2 PNGs + WebP | **DONE + WIRED** — distinct golf/card hub icon and final social card installed |
 | ~~A1~~ | ~~Spider Solitaire~~ | — | **DONE** — real art present (85 KB tile, 157 KB card). Ignore any older note calling this outstanding |
@@ -62,11 +62,16 @@ Two visual items, both **completed and wired 2026-08-14**. The final PNGs are
 WebP derivatives. The `/read/` hub and printable-reader guide now reference
 their dedicated PNG cards in Open Graph and Twitter metadata.
 
-Before either: note that **`assets/icon-maskable-512.png` and
-`play/shared-assets/game-ui/audio/place.wav` are finished but were never
-committed and 404 on the live site.** No regeneration is needed — they exist and
-are correct. That is a commit/deploy task for Claude, recorded here only so the
-"DONE + WIRED" rows in the status board are not read as "live".
+**Resolved 2026-08-14:** `assets/icon-maskable-512.png` and
+`play/shared-assets/game-ui/audio/place.wav` were finished but had never been
+committed, so both 404'd in production while this board recorded them as
+"DONE + WIRED". Both are now committed, deployed and returning 200.
+
+**Process change, so this cannot recur:** a status of "done" on this board now
+means *live*, not *on disk*. `scripts/check-live.mjs` enforces it — it reads the
+manifest icons, the `sw.js` `SHELL` array and every `og:image`/`twitter:image`,
+then asserts each returns 200 against the deployed origin. Run it after every
+deploy before marking anything here complete.
 
 ### C1. `/read/` bookshelf social card
 
