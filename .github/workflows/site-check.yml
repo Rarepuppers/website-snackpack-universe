@@ -1,0 +1,52 @@
+name: Check website
+
+on:
+  pull_request:
+    paths:
+      - "**/*.html"
+      - "**/*.css"
+      - "**/*.js"
+      - "**/*.mjs"
+      - "**/*.json"
+      - "**/*.xml"
+      - "assets/**"
+      - "play/**"
+      - ".github/workflows/site-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "**/*.html"
+      - "**/*.css"
+      - "**/*.js"
+      - "**/*.mjs"
+      - "**/*.json"
+      - "**/*.xml"
+      - "assets/**"
+      - "play/**"
+      - ".github/workflows/site-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check JavaScript syntax
+        run: node scripts/check-javascript.mjs
+
+      - name: Check website delivery contract
+        run: node scripts/check-website-delivery.mjs
+
+      - name: Check site integrity
+        run: node scripts/check-site.mjs

@@ -1,4 +1,4 @@
 ﻿# Pro Hand Painted arcade-sprites
 
-Premium painterly variants derived from the canonical base pack. Keep these additive until renderer pickers expose pro theme selection.
+Premium painterly variants derived from the canonical base pack. Transparent gameplay sprites live in `png/`; opaque scene art lives in `backgrounds/`.
 

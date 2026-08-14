@@ -1,12 +1,11 @@
 # Site improvement plan — whole property, 2026-08-07
 
-Scope note: this covers **the site as a whole**. The 32-game arcade has its own
+Scope note: this covers **the site as a whole**. The 34-game arcade has its own
 document, [`play/ARCADE-IMPROVEMENT-PLAN.md`](play/ARCADE-IMPROVEMENT-PLAN.md),
-whose Section B (code) is closed and whose remaining items are Codex art
-(briefed in [`play/CODEX-ASSETS-REQUESTED.md`](play/CODEX-ASSETS-REQUESTED.md))
-or distribution. This plan is deliberately *not* more arcade polish — the three
-items at the top were found by auditing the property outside `/play/`, and each
-outranks another guide.
+whose earlier Section B work is closed and whose current board covers release,
+audio, daily-hub, verification, delivery-payload and distribution tasks. This
+plan is deliberately *not* more arcade polish — the three items at the top were
+found by auditing the property outside `/play/`, and each outranks another guide.
 
 Every claim below was checked against the repo, not inferred. Where something
 is a risk rather than a confirmed breakage, it says so.
@@ -27,6 +26,18 @@ direction 2026-08-07.** Re-open when that project is far enough along that
 | `play/last-bastion/art/` | **1.3 GB** (1,693 tracked files) |
 | Everything else | **705 MB** |
 | `.git` history | 1.6 GB |
+
+**2026-08-14 payload note:** synchronizing nine canonical Pro game-UI packs
+added another 26.60 MB to the website tree, almost entirely from premium card
+faces that no live page currently consumes. This is small beside Last Bastion's
+source-art issue but the same category of mistake. Preserve the canonical PNGs
+for apps; define a website consumption manifest or reviewed WebP derivatives
+instead of publishing every app asset. See `play/ARCADE-IMPROVEMENT-PLAN.md` D1.
+
+**Implemented the confirmed part the same day:** the website delivery manifest
+now excludes those 52 unused Pro faces, saving 31.72 MB. Sync and verification
+enforce the exclusion; canonical and app masters remain complete. The larger
+Last Bastion source-art hold is unchanged.
 
 GitHub Pages documents a **1 GB limit on the published site**. We are at double
 that. The site is currently serving, so this is not a live outage — but it is an
@@ -337,3 +348,201 @@ What's left, in order:
 
 Deliberately **not** on this list: more arcade code polish. Section B is closed,
 and the analytics say polish has no audience until the link count moves.
+
+---
+
+# Re-audit 2026-08-14 — after the Codex asset pass
+
+Everything below was measured against the repo and the live site today, not
+carried forward from the sections above. The asset work landed; these are the
+gaps it surfaced or left behind.
+
+## P7. Two finished assets were never committed and are 404 on the live site
+
+**Confirmed, live, and the highest-priority item here because it is a
+regression against what both other plans record as done.**
+
+`ARCADE-IMPROVEMENT-PLAN.md` A8 and `CODEX-ASSETS-REQUESTED.md` both mark the
+maskable icon and the `place.wav` audio pilot **"DONE + WIRED"**. Both files
+exist on disk, neither is gitignored, and **neither was ever `git add`ed**, so
+neither has ever deployed:
+
+| URL | Live status |
+|---|---|
+| `/assets/icon-maskable-512.png` | **404** |
+| `/play/shared-assets/game-ui/audio/place.wav` | **404** |
+
+The consequences are live right now:
+
+- `manifest.webmanifest` (itself modified and uncommitted) declares a
+  `purpose: "maskable"` icon that does not resolve. Android installs fall back
+  to masking the edge-to-edge `any` icon — the exact outcome A8 existed to
+  prevent.
+- `sw.js`'s `SHELL` precaches `place.wav`. The install handler adds entries
+  individually and tolerates misses by design, so this degrades silently rather
+  than breaking the service worker — good defence, but it means nobody would
+  notice.
+- **The A2 listening gate cannot be satisfied on Android**, because the file the
+  gate is about is not being served. The plan is waiting on an approval that is
+  currently impossible to give on one of its two required devices.
+
+**Fix:** commit both files plus the modified `manifest.webmanifest`, deploy,
+then re-run the D2 post-deploy smoke. This is a one-commit fix, and it should
+happen before any further asset work.
+
+**The general lesson worth keeping:** "generated and reviewed on disk" is not
+"shipped". Every asset item in both plans is marked done on the strength of a
+local file check. A live-URL check belongs in the definition of done — see P10.
+
+## P8. `llms.txt` has now been missed by three consecutive site-wide audits
+
+**Confirmed.** This file has a track record: the June 2026 IAP audit missed it
+(that was P2 above), and the 2026-08-07 P6 count audit — which corrected the
+Brain Games Vol 1 game count in 14 game pages, `apps/index.html` twice, and the
+funnel/FAQ/share copy — **missed it again**. It currently carries the exact
+number P6 was run to eliminate:
+
+| Claim in `llms.txt` | Reality | Where this was already fixed |
+|---|---|---|
+| Brain Games Vol 1: "collection of **nine** classics" | **24** | P6, everywhere else |
+| Brain Games Vol 2: lists **eight** games | **23** | P6, everywhere else |
+| "**31** classic games playable instantly" | **34** | never — new since SnackWords + Golf Solitaire |
+| "**eight** original soccer games" then names **nine** | self-contradictory in one sentence | never |
+| SnackWords, Golf Solitaire | absent entirely | both shipped this week |
+
+The `/read/` section *is* correctly represented, which shows the file is being
+maintained — just never by the audits that sweep the HTML. That is the actual
+defect: **every audit greps `--include=*.html` and `llms.txt` is not HTML.**
+
+This matters more than ordinary stale copy for the reason P2 already gave: this
+is the file AI assistants read to describe the products, so a wrong number gets
+repeated downstream with our name on it.
+
+**Fix:** rewrite the stale counts, add SnackWords and Golf Solitaire, fix the
+eight/nine soccer contradiction. Mechanical. Then P10.
+
+## P9. The service worker caches book PDFs permanently, and that can evict the offline arcade
+
+**Confirmed by reading the routing, and this is a real bug rather than a
+tidiness point.** `sw.js`'s route table is:
+
+1. navigations → network-first
+2. `/\.(?:js|css|html|webmanifest|json)$/` → network-first
+3. **everything else → cache-first**
+
+Rule 3 is commented "images, fonts and audio", but it is a catch-all, not a
+whitelist. `.pdf` does not match rule 2, so **the eight printable book PDFs —
+15.9 MB, 1.9–2.6 MB each — are cached first and never revalidated.** Two
+consequences:
+
+- **A corrected book PDF can never reach a returning visitor.** This is
+  precisely the failure mode B9 documented and told us not to repeat: *"The
+  status sites originally shipped cache-first for scripts, which meant a
+  returning visitor kept running whatever build they first installed — a fixed
+  bug could never reach them. Don't repeat that here."* The rule was written
+  for code, and PDFs quietly fell into the same trap when `/read/` shipped
+  after it.
+- **Quota pressure can wipe the offline arcade.** A parent downloading a few
+  readers adds up to 15.9 MB to Cache Storage. Browsers evict a whole origin's
+  cache when quota is hit — they do not evict the PDFs selectively. So the
+  cost of caching something nobody needs offline is potentially the offline
+  games, which are the feature the PWA was built for and the thing
+  `/guides/play-browser-games-offline/` promises in writing.
+
+**Fix, and it should be a whitelist not another exclusion:** make rule 3 an
+explicit extension list (`png|jpg|jpeg|webp|svg|gif|woff2?|wav|mp3|ogg`) and
+let anything unmatched pass through to the network. That fixes PDFs and every
+future file type at once, instead of waiting for the next one to fall in. Bump
+`CACHE` to `snackpack-arcade-v5` in the same commit — the header comment
+already says to, and without it existing installs keep the old routing.
+
+## P10. Add the two checks that would have caught P7, P8 and P9
+
+All three of the above are the same shape: something true on disk, or true in
+HTML, that nothing verifies. `check-site.mjs` passes cleanly on 166 pages, and
+passed while all three were live. Two additions close the class:
+
+1. **A live-URL smoke check.** Take the manifest's icon list, `sw.js`'s `SHELL`
+   array, and every `og:image`, and assert each returns 200 against the
+   deployed origin. This is the D2 "post-deploy smoke" item, but written as a
+   script rather than a checklist — a checklist is what we already had, and P7
+   still shipped.
+2. **Extend the count/claim audit past HTML.** Whatever grep the next content
+   pass uses must include `llms.txt`, `sitemap.xml` and the plan docs, or P8
+   recurs a fourth time. Better: derive the arcade count from
+   `ls play/*/` at build time rather than hand-writing it in prose — there are
+   now five separate places stating a game count and they disagree.
+
+## P11. `/read/` is the strongest un-exploited SEO surface on the property
+
+**This is the one genuinely new opportunity, as opposed to a repair.**
+
+The guides wedge (P4) is entirely arcade-facing: all ten guides target game
+terms. Meanwhile `/read/` shipped eight complete illustrated decodable readers,
+each with a **free printable PDF**, and has:
+
+- **no guide pointing at it** — the guides link to `/read/` in the nav only;
+- **no PDFs in `sitemap.xml`** (`grep -c "\.pdf"` returns 0), though Google
+  indexes PDFs and these are exactly the kind of file that earns links;
+- **no `FAQPage` schema** on any of the eight books (they do have correct
+  `Book` schema, which is good and better than most of the arcade started).
+
+Why this outranks more arcade guides on the same effort: P4's own conclusion
+was that further game guides "diminish in value fast" because the remaining
+terms have no honest competitor-specific angle. `/read/` has the opposite
+problem — a genuinely strong angle nobody has written yet. "Free printable
+decodable readers", "phonics books to print", "CVC reader PDF" are searched by
+teachers and parents, sit in a far weaker competitive field than solitaire, and
+**printables are one of the few page types people still link to and share in
+teacher groups** — which is the 4-inbound-links bottleneck, addressed with
+content we have already paid to produce.
+
+Proposed, in order:
+
+1. `/guides/free-printable-decodable-readers/` — what a decodable reader is,
+   which sounds each of our eight covers, how to print them double-sided, and
+   the honest disclosure that we publish them. Links out to all eight books.
+2. Add the eight PDFs to `sitemap.xml`.
+3. `FAQPage` schema on the eight book pages, generated from rendered text the
+   way B6 did it, so it cannot drift.
+
+No new art is required for any of it — guides reuse existing social cards, and
+the books already have cover images serving as `og:image`. Two small art items
+would improve it and are listed in `play/CODEX-ASSETS-REQUESTED.md`, but the
+work is not blocked on them.
+
+## P1 — re-measured today
+
+Correcting a figure rather than changing the recommendation. The working tree
+is now **4.0 GB**, but most of that growth is *untracked* build output
+(`play/last-bastion/desktop/` 1.7 GB, `dev/` 383 MB) that never deploys. The
+number that matters:
+
+| Measure | 2026-08-07 | 2026-08-14 |
+|---|---|---|
+| **Published payload (tracked files)** | ~2.0 GB | **1.83 GB** |
+| of which `play/last-bastion/art/` | 1.3 GB | **1.36 GB** |
+| of which `play/last-bastion/game-assets/` | — | **143 MB** (this one *is* served) |
+| `.git` | 1.6 GB | 1.9 GB |
+
+So the situation has not materially worsened, and the P1 hold remains correct
+while Last Bastion is active WIP. One thing worth noting for later: `art/` is
+1.36 GB of the 1.83 GB, so Step 1 alone still takes the site from 1.8× the
+GitHub Pages limit to comfortably under it. Nothing to do today.
+
+## Next tasks, in order
+
+1. **Commit the two orphaned assets + `manifest.webmanifest`, deploy, verify
+   both URLs return 200** (P7). Unblocks the A2 Android listening gate.
+2. **Fix the service-worker route to a whitelist, bump `CACHE` to v5** (P9).
+   Ship with 1 so there is one deploy, not two.
+3. **Rewrite the stale counts in `llms.txt`** (P8).
+4. **Fix "32 games" → 34 in the four guides** that state it — the standing
+   check P6 asked for, already overdue after two new games.
+5. **Add the live-URL smoke script** (P10.1) so 1 cannot recur.
+6. **`/read/` wedge: the printable-readers guide, PDFs in the sitemap, FAQ
+   schema on the eight books** (P11). The largest single growth item here.
+7. **Directory submissions** — unchanged, still the real backlink lever, still
+   needs you present for the signups.
+
+Items 1–4 are mechanical and low-risk. Item 6 is the one with upside.

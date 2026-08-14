@@ -1,16 +1,61 @@
 # SnackPack Arcade — improvement plan
 
-Audit of all 32 browser games, 2026-08-06. Companion to
+Audit started against 32 browser games on 2026-08-06; the live arcade now has
+34. Companion to
 [`spider-solitaire/ASSETS-NEEDED.md`](spider-solitaire/ASSETS-NEEDED.md), which
-covers that one game's art in detail and is still outstanding.
+is retained as the completed A1 brief.
 
 **Read the "Before you generate anything" section first** — a large amount of
 art already exists, and more of it is wired than an earlier draft of this plan
 claimed. Regenerating it would be wasted work.
 
-> ⚠️ **A5 is urgent and is not a website issue.** All 60 shared Mahjong tiles
-> are corrupted, and **Brain Games Vol 1 is rendering them live on Google
-> Play**. See A5.
+> **2026-08-14 status correction:** A1 and A5 are complete. The Mahjong source
+> fix and all 60 repaired assets are implemented, synchronized and reviewed;
+> the remaining A5 action is on-device verification and the normal Brain Games
+> Vol 1 release handoff. Use `CODEX-ASSETS-REQUESTED.md` as the current asset
+> priority list.
+
+## Current open task board
+
+This table overrides older narrative below when statuses conflict.
+
+| Priority | Task | Owner / gate | Done when |
+|---|---|---|---|
+| **P0** | **Commit + deploy `icon-maskable-512.png` and `place.wav`** | Claude | Both return **200 live**. They are finished on disk but were never `git add`ed, so both 404 today — see the 2026-08-14 note below |
+| **P0** | **Service worker: whitelist cache-first types, bump `CACHE` to v5** | Claude | Book PDFs are no longer cached-first; existing installs pick up the new routing |
+| P0 | Brain Games Vol 1 Mahjong release | Mark device smoke test, then Claude build/submission | Base and Pro decks pass on Android and the production release is handed off |
+| P0 | Approve the Solitaire `place.wav` pilot | Mark listening on desktop + Android | Tone and level are approved or concrete revision notes are recorded — **blocked until the deploy task above lands; the file 404s, so it cannot be heard on Android** |
+| P1 | Fix "32 games" → **34** in four guides, and the stale counts in `llms.txt` | Claude | No file states a game count that disagrees with `ls play/*/` |
+| P1 | Add verification CI across both repositories | Repository automation | Monorepo app/word checks and website site/JS checks run independently; cross-repo asset parity uses an explicit companion checkout |
+| P1 | Post-deploy PWA/share smoke — **as a script, not a checklist** | After website deploy | Manifest icons, `sw.js` `SHELL` entries and every `og:image` are asserted 200 against the live origin automatically |
+| P2 | Finish C2/C3 distribution work | Site growth | Next guides ship, sitemap is resubmitted, and the first relevant directory submissions are logged |
+
+### 2026-08-14 re-audit — three findings against this board
+
+Full write-up in [`../SITE-IMPROVEMENT-PLAN.md`](../SITE-IMPROVEMENT-PLAN.md)
+§ P7–P10. In short:
+
+1. **A8 and the A2 pilot are recorded as "DONE + WIRED" but never shipped.**
+   Both files are on disk, neither is gitignored, neither was ever committed.
+   `manifest.webmanifest` declares a maskable icon that 404s, and `sw.js`
+   precaches a `place.wav` that 404s (tolerated silently by design, so nothing
+   surfaced it). **"Reviewed on disk" is not "shipped"** — every asset item on
+   this board was closed on a local file check, so the same gap may exist
+   elsewhere. The live-URL smoke script above is the fix for the class.
+2. **`sw.js`'s third route is a catch-all, not the "images, fonts and audio"
+   its comment claims.** The eight `/read/` book PDFs (15.9 MB) are therefore
+   cache-first and never revalidated — a corrected PDF can never reach a
+   returning reader, and the quota pressure can cause the browser to evict the
+   whole origin cache, taking the offline arcade with it. Same failure B9
+   explicitly warned against; it just arrived through a file type that did not
+   exist when the rule was written.
+3. **The game count drifted again, exactly as B10/P6 predicted it would.** Four
+   guides say "32 games" and `llms.txt` says "31"; the real figure is **34**.
+   `llms.txt` also still carries the "nine classics" Vol 1 number that the
+   2026-08-07 audit corrected in sixteen other places — it has now been missed
+   by three consecutive sweeps, because every sweep greps `--include=*.html`
+   and `llms.txt` is not HTML. Worth deriving the count at build time rather
+   than fixing the number a fourth time.
 
 ---
 
@@ -46,18 +91,20 @@ remainder is a deliberate choice rather than a gap. See
 `shared-assets/game-ui/ASSET_AUDIT_BRAIN_GAMES.md`, which already documents the
 2026-07-13 website wiring pass.
 
-Already wired: Checkers, Connect 4, Minesweeper, Picross, Reversi,
-Snakes & Ladders, Solitaire, Spider Solitaire, FreeCell.
+Already wired through either shared primitives or deliberate dedicated sheets:
+Checkers, Connect 4, Minesweeper, Picross, Reversi, Snakes & Ladders,
+Solitaire, Spider Solitaire, FreeCell, Thirteen, Flappy Snacky, Snacky Worm,
+Table Tennis and Asteroid Destroyer.
 
 | Asset family | Used by | Genuinely still unwired? |
 |---|---|---|
-| `card-decks/` | Solitaire, Spider, FreeCell | Thirteen — worth doing |
-| `grid-logic-markers/` | Minesweeper, Picross | Kakuro, Sudoku — worth doing |
+| `card-decks/` | Solitaire, Spider, FreeCell; Thirteen uses the shared CSS suit system | — |
+| `grid-logic-markers/` | Minesweeper, Picross | Kakuro and Sudoku remain CSS by design |
 | `strategy-tokens/` | Connect 4, Reversi | — |
 | `board-games/` | Checkers, Snakes & Ladders | — |
 | `table-themes/` | Snakes & Ladders | other board games — optional |
-| `arcade-sprites/` | *(website)* nothing | Asteroid Destroyer, Cascade, Table Tennis |
-| `word-game-tiles/` | nothing | Word Search, Crossword |
+| `arcade-sprites/` | Flappy Snacky; dedicated site sheets cover Worm, Asteroid and Table Tennis | Cascade remains CSS by design |
+| `word-game-tiles/` | SnackWords uses the matching CSS vocabulary | Word Search and Crossword remain typographic by design |
 | `mahjong-tiles/` | nothing on web **by design** | see A5 — and the app bug below |
 | `chess-pieces/`, `dominoes/`, `sokoban/`, `battleships/` | nothing | no web game exists for these yet |
 
@@ -86,10 +133,16 @@ nothing is broken — the page just doesn't match the rest of the arcade.
 
 </details>
 
-## A2. Sound effects — **the single biggest gap**
+## A2. Sound effects — **pilot wired; listening approval required**
 
-**All 32 games are completely silent.** There is no audio anywhere in the
-arcade (the 288 audio files in the repo all belong to Last Bastion).
+The first shared sound is now implemented. Solitaire uses a deterministic
+`place.wav` after legal placements and exposes a persistent visible Sound
+on/off control through `play/audio.js`. Browser verification passed with no
+console or loading errors.
+
+The other games remain silent by design until this pilot is approved by ear on
+desktop and Android. After approval, generate and wire the remaining seven
+sounds incrementally rather than enabling audio across all 34 games at once.
 
 Needed: a small **shared** SFX set, not per-game libraries. Short, soft,
 mixed quiet — these are calm games and the sounds must never startle.
@@ -110,11 +163,18 @@ mixed quiet — these are calm games and the sounds must never startle.
 - Target path: `play/shared-assets/game-ui/audio/`
 - Peak around -12dBFS; nothing harsh above 8kHz
 
-> If audio generation is out of scope for Codex, say so and I'll source
-> CC0 sounds instead — but they must be tonally consistent, which is why a
-> generated set is preferable.
+The deterministic generator lives at `scripts/generate-arcade-audio.mjs` and
+writes canonical output first, then synchronizes the website copy.
 
-## A3. Soccer game sprites
+## A3. Soccer game sprites — **DONE; audit corrected**
+
+The seven soccer games already use a shared `SnackSoccerAssets` runtime backed
+by actor, ball, goal, pitch, effects and badge sheets under `play/sprites/`.
+Canvas shapes are fallbacks, not the normal render path. The existing sheets
+were visually reviewed on 2026-08-14 and are higher-coverage than the proposed
+standalone replacements, so no regeneration is required.
+
+<details><summary>Superseded request retained for audit history</summary>
 
 Seven soccer games (Goalkeeper Hero, Penalty Shootout, Free Kick Curl, Crossbar
 Challenge, Header Hero, Dribble Rush, Keepy-Uppy) are **entirely CSS shapes**.
@@ -128,7 +188,17 @@ Needed, in the existing hand-painted style, matching `arcade-sprites/`:
 - `pitch-grass.png` — tileable turf background, 512×512 seamless
 - `football.png` — 128×128 (may already suit `arcade-sprites/ball.png`; check first)
 
-## A4. Character sprites for the two "Snacky" games
+</details>
+
+## A4. Character sprites for the two "Snacky" games — **DONE; audit corrected**
+
+The proposed standalone folder was never the runtime contract. Flappy Snacky
+already loads three painted bird frames from the shared Pro arcade pack, and
+Snacky Worm loads head/body/tail regions from its dedicated sprite sheet. The
+shape drawing is fallback code. Existing art was visually reviewed on
+2026-08-14 and should not be regenerated.
+
+<details><summary>Superseded request retained for audit history</summary>
 
 Flappy Snacky and Snacky Worm use the SnackPack characters by name but render
 as coloured rectangles.
@@ -137,65 +207,39 @@ as coloured rectangles.
 - `snacky-worm-head.png`, `snacky-worm-body.png`, `snacky-worm-tail.png` (64×64)
 - Match the corgi/character style used in the apps, not a generic sprite look
 
-## A5. Mahjong tiles — **corrupted, and SHIPPING in Brain Games Vol 1**
+</details>
 
-Found 2026-08-06. **All 60 mahjong tiles (30 base + 30 pro-hand-painted) have a
-mojibake glyph** where a Chinese character should be — UTF-8 written, Latin-1
-read.
+## A5. Mahjong tiles — **DONE; release handoff remains**
 
-| File | Shows | Should show |
-|---|---|---|
-| `bam-3.png` | `a-` above the 3 | a bamboo glyph |
-| `dot-5.png` | `a-` above the 5 | a dot glyph |
-| `wind-e.png` | `a(tm)` above the E | East |
-| `flower-a.png` | `aoe` above the A | a flower glyph |
-| `snack-1.png` | `a~` above the 1 | the snack symbol |
+The corruption was caused by non-ASCII glyph literals in a BOM-less PowerShell
+script being decoded as ANSI by Windows PowerShell 5.1. The generator is now
+pure ASCII and draws vector suit symbols. All 30 base and 30 Pro tiles were
+repaired, synchronized and visually reviewed on 2026-08-14.
 
-**This is not a website problem — the website is fine.** Web Mahjong uses a
-clean local sprite sheet by design. The damage is in the app:
+The Pro set was not flattened through the generic coverage generator: its
+painted frame and parchment were preserved and only the corrupt symbol area was
+healed. Canonical, app and website copies are byte-identical. No art regeneration
+is recommended. See `CODEX-ASSETS-REQUESTED.md` for the detailed audit and the
+correct 30-tile inventory.
 
-> `apps/snackpack-brain-games/components/games/mahjong/MahjongGame.tsx`
-> `require()`s all 30 base tiles into `TILE_ART` and all 30 pro tiles into
-> `PRO_TILE_ART`, and renders them unconditionally as `<Image>` (line ~239).
->
-> **Brain Games Vol 1 is live on Google Play. Its Mahjong Solitaire is
-> currently showing mojibake on every tile, in both the free and Pro decks.**
+Remaining task: verify Brain Games Vol 1, smoke-test both tile themes on device,
+then hand the production build/submission to Claude.
 
-The `ASSET_AUDIT_BRAIN_GAMES.md` entry for 2026-07-12 explains how it survived:
-that pass regenerated the *tile bodies* and explicitly "preserved the custom
-labels and glyphs" — faithfully preserving glyphs that were already corrupt.
+## A6. Social share cards — no current generation request
 
-### To fix
+Every game has a non-empty social PNG, and the two placeholder replacements
+identified in this audit—SnackWords and Golf Solitaire—are complete. Do not
+start a speculative full-set repaint. Revisit a specific card only when social
+preview QA or engagement data identifies a weak one.
 
-Regenerate at the canonical source, then sync:
+## A8. Maskable PWA icon — **DONE**
 
-- Source: `C:\snackpack-universe\shared-assets\game-ui\mahjong-tiles\png\`
-  and `...\pro-hand-painted\mahjong-tiles\png\`
-- Sync targets: all three Brain Games apps' `assets/game-ui/`, plus
-  `website-snackpack-universe/play/shared-assets/game-ui/`
-- Same 30 filenames and sizes in both sets
-- The numeral and footer word (`Bamboo`, `Dots`, `Cracks`, `Wind`, `Flower`,
-  `Snack`) are already correct — only the glyph above them is wrong
-- **Write the source as UTF-8 and confirm the renderer reads it as UTF-8.** If
-  the pipeline can't reliably carry CJK, drop the glyph and use a clean drawn
-  suit symbol instead — a wrong-but-tidy tile beats mojibake
-- Suit colours in use: dots `#2f6fd6`, bamboo `#1f8f77`, cracks `#d8483a`,
-  winds `#5b3fb0`, flowers `#d24a86`, snacks `#b9772e`
+Added `assets/icon-maskable-512.png` on 2026-08-14 using the canonical mascot,
+an opaque `#fdf6ec` background, and the central 410px safe circle. Circular,
+squircle and rounded-square previews retain the full mascot. The web manifest
+and offline shell now include the maskable icon.
 
-After regenerating, run `scripts/verify-game-ui-assets.ps1`. Note that it
-verifies files *match across copies* — it cannot detect that the glyph itself
-is wrong, which is exactly why this survived four refresh passes. Someone
-should eyeball a few tiles.
-
-Everything else in `shared-assets/` was spot-checked and is clean: card suits,
-grid-logic markers, word tiles, strategy tokens, dominoes, board games.
-
-## A6. Social share cards for games that lack a good one
-
-Check `play/social/` — every game has a file, but several are auto-generated
-placeholders. Lowest priority; only worth doing once A1–A4 are done.
-
-## A8. Maskable PWA icon — **blocks nothing, but the install looks unfinished without it**
+<details><summary>Original specification retained for audit history</summary>
 
 Added 2026-08-06 when the arcade became installable (see B9).
 
@@ -225,6 +269,8 @@ Once it exists, add to `manifest.webmanifest`:
 { "src": "/assets/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
 ```
 
+</details>
+
 ## A9. Share-card art (optional, low priority)
 
 The new share cards (B10) are text + emoji only, which is deliberate — Wordle
@@ -233,7 +279,14 @@ want an image variant for X/Facebook, it would need a 1200×630 template per
 game with the result composited in, which is a build-step problem rather than an
 art problem. Not requesting anything yet; noted so it isn't re-derived later.
 
-## A7. Correctly-shaped arcade sprites (small, blocks the two canvas games)
+## A7. Correctly-shaped arcade sprites — **DONE via dedicated sprite sheets**
+
+Table Tennis and Asteroid Destroyer already load correctly scaled sprite-sheet
+regions through `arcade-assets.js`, including a vertical paddle, 48px ball and
+small asteroid. The missing standalone filenames were a false proxy for wiring;
+no new files are required.
+
+<details><summary>Superseded standalone-file request retained for audit history</summary>
 
 The existing `arcade-sprites/` pack is built for large render sizes and
 horizontal orientation. Two canvas games can't use it as-is:
@@ -247,6 +300,8 @@ horizontal orientation. Two canvas games can't use it as-is:
 
 These are small, cheap additions rather than a new pack. Without them, those
 two games are better off as they are.
+
+</details>
 
 ## What NOT to generate
 
@@ -902,42 +957,102 @@ B6's thin-prose pass on low-volume soccer pages.
   `iscodexup.com` both footer-link `/play/`), which likely accounts for a chunk
   of the current four. Audience match is weak — dev tooling vs casual puzzles —
   so don't over-invest there.
-- **Expose the hidden dailies** on Memory Match and Thirteen (see B10), then
-  wire share into them. Daily + share is the compounding loop; either alone is
-  not.
 - **Search Console**: resubmit the sitemap after the PWA and guides pass, since
   141 URLs now carry changed markup.
+
+Completed 2026-08-14: Memory Match and Thirteen are now listed on the Daily hub.
+Their query handling was normalized so the hub's ISO date, older numeric links
+and each game's Daily button all resolve to the same UTC day-number seed.
+
+---
+
+## D1. Website delivery payload — **DONE for confirmed unused faces**
+
+Canonical art quality is correct and must remain untouched, but byte-identical
+website mirroring is not automatically the right deployment contract. Syncing
+the nine stale Pro packs changed their website footprint from **21.21 MB to
+47.81 MB** (+26.60 MB). Premium card decks account for +29.87 MB by themselves.
+
+The 52 premium classic-face PNGs are currently exposed only as an unused path in
+`game-ui-assets.js`; no page consumes `classicFacePath`. Do not spend image
+quality to solve this. Choose one explicit web-delivery model:
+
+1. publish only assets referenced by live website registries/pages; or
+2. generate reviewed WebP delivery derivatives while retaining canonical PNG
+   masters for the apps.
+
+Then change website verification from blanket byte parity to a declared
+consumption manifest: every declared website asset must exist and be current,
+while unconsumed app-only packs need not be deployed. Track this alongside the
+larger whole-site payload work in `SITE-IMPROVEMENT-PLAN.md`.
+
+Implemented 2026-08-14:
+
+- Added `play/shared-assets/game-ui/website-delivery.json` with a documented
+  exclusion for the unused 52 premium classic faces.
+- Removed their Pro `classicFacePath` registry entry and 31.72 MB of website
+  delivery copies. Canonical and all app masters remain untouched.
+- The nine audited Pro packs now total 16.10 MB, 5.11 MB smaller than at the
+  start of the audit while retaining the higher-quality assets actually used.
+- Updated sync and verification: sync skips declared exclusions; verification
+  fails if an excluded file returns or a required delivered file drifts.
+- Added a website delivery check that scans runtime HTML/JS/CSS for excluded
+  references.
+
+Do not broaden exclusions without a fresh usage audit. Reviewed WebP derivatives
+remain an option if a live page later needs a high-resolution master.
+
+## D2. Verification automation and post-deploy smoke
+
+The monorepo and website are separate Git repositories, so one ordinary
+path-filtered workflow cannot see both working trees. Add two workflows:
+
+- monorepo Windows CI for app game-UI parity plus the Vol 2/Vol 3 validators;
+- website CI for `scripts/check-site.mjs` and JavaScript syntax checks.
+
+For canonical-to-website parity, explicitly check out the public companion repo
+at a pinned branch/commit or compare against a versioned hash manifest. Do not
+assume the nested local checkout exists in CI.
+
+Together they should run:
+
+- `scripts/verify-game-ui-assets.ps1`;
+- Vol 2 `validate:snackwords` and typecheck;
+- Vol 3 `validate:content` and typecheck;
+- website `scripts/check-site.mjs` and JavaScript syntax checks.
+
+Website CI is implemented in `.github/workflows/site-check.yml`; it runs syntax,
+delivery-contract and whole-site checks on relevant pushes and pull requests.
+The remaining automation work is the monorepo Windows job and optional pinned
+cross-repository parity checkout.
+
+After the next website deployment, verify the live manifest, maskable icon,
+service-worker v4, `place.wav`, SnackWords OG image and Golf Solitaire OG image.
+Also confirm an existing PWA installation upgrades from the previous cache and
+that Sound off persists after relaunch.
 
 ---
 
 ## Suggested order
 
-1. **A5 — Mahjong tiles.** Not a website task and not cosmetic: a published
-   Google Play app is rendering broken glyphs right now. Still the only item
-   here affecting real users.
-2. **C2/C3 — more guides and the first directory submissions.** Moved up
-   deliberately. Everything below this line is polish on pages that get ~60
-   views a month; this is what changes that number.
-3. **A1 — Spider Solitaire art.** Unblocks a 123k/mo page.
-4. **A2 — Shared SFX set.** Then I wire it across all 32 games.
-5. **A3/A4/A7/A8 — Soccer, Snacky, small-scale arcade sprites, maskable icon.**
-6. **Section B is fully closed.** ~~Share wiring~~, ~~the hidden dailies~~,
-   ~~daily modes for Mahjong, Kakuro and FreeCell~~, ~~pause (B4)~~,
-   ~~undo (B5)~~, ~~thin prose (B6)~~, ~~Memory Match card backs~~ and
-   ~~keyboard support (B3)~~ are all done — eight games have a daily, pause
-   and undo both cover every game that benefits from them, all 32 offer a
-   share, the six thin soccer pages have real FAQ schema they never had, and
-   every game in the arcade that benefits from keyboard support has it.
+1. **A5 release handoff:** device-smoke both Mahjong themes, then hand the
+   production build/submission to Claude.
+2. **A2 listening gate:** approve or revise `place.wav` on desktop and Android.
+3. **D2 verification:** add the monorepo CI half, then perform the post-deploy
+   PWA/share smoke. Website CI is already in place.
+4. **C2/C3 distribution:** ship the next guides, resubmit the sitemap and log
+   the first relevant directory submissions.
 
-Everything left in this plan (A1/A2/A3/A4/A7/A8, C2/C3) either needs Codex art
-or is distribution work, not code.
+The earlier Section B work remains closed: pause and undo cover every game that
+benefits from them, all 34 games expose result sharing, the six thin soccer
+pages have FAQ schema, and keyboard support covers the applicable games. Ten
+games now implement a daily mode and all ten are listed on the Daily hub.
 
 ---
 
-## B1. Port SnackWords (daily word guess) — **recommended next game**
+## B1. Port SnackWords (daily word guess) — **DONE 2026-08-14**
 
-Proposed 2026-08-14. This is the strongest remaining port, and unlike the other
-game ports it is not just keyword surface: it is the natural headline for
+Completed 2026-08-14. It is the natural headline for
 [`/play/daily/`](daily/), which shipped the same week. Flag Frenzy already
 proves the shape works here.
 
@@ -996,14 +1111,14 @@ and is a good follow-up, but it is a harder first impression.
 ### Assets needed — only two
 
 Everything else is CSS. The board, letter tiles and on-screen keyboard are
-styled surfaces like the other 32 games (`play.css`, plus the existing
+styled surfaces like the other 33 games (`play.css`, plus the existing
 `keyboard-grid.js`), so **no background art, container art or tile art is
 needed** — adding bespoke art here would make it the only game in the arcade
 that does not match the rest.
 
 | File | Size | Notes |
 |---|---|---|
-| `play/tiles/snackwords.png` | 72×72 | Hub tile, matching the existing 32 |
+| `play/tiles/snackwords.png` | 72×72 | Hub tile, matching the existing arcade |
 | `play/social/snackwords.png` | 1200×630 | OG card — this *is* the link preview when someone shares their daily result, so it matters more here than on any other game |
 
 ## Assets currently requested from Codex
@@ -1016,11 +1131,11 @@ re-deriving from this plan doc. A1 has its own equivalent brief in
 
 | Item | What | Blocks |
 |---|---|---|
-| A5 | Regenerate 60 Mahjong tiles without mojibake | **A live Play Store bug — still unfixed as of 2026-08-14** |
-| A2 | 8 shared SFX (`place`, `pickup`, `invalid`, `success`, `win`, `tick`, `pop`, `whoosh`) | All 32 games are silent |
-| A3 | 7 soccer sprites | The soccer set is CSS shapes |
-| A4 | 5 Snacky character sprites | Two games render as rectangles |
-| A7 | 3 missing sprites: `asteroid-small.png`, `ball-small.png`, `paddle-vertical.png` (the full-size three exist) | Table Tennis + Asteroid Destroyer wiring |
-| A8 | 1 maskable 512×512 PWA icon | Nothing — install works without it |
-| B1 | SnackWords hub tile (72×72) + social card (1200×630) | The recommended next game port |
-| B2 | Golf Solitaire hub tile (72×72) + social card (1200×630) | Shipped with placeholders |
+| A5 | Verify and release the 60 repaired Mahjong tiles | **Source/art done; app release handoff remains** |
+| A2 | 8 shared SFX (`place`, `pickup`, `invalid`, `success`, `win`, `tick`, `pop`, `whoosh`) | **Pilot `place.wav` + Solitaire controls done; listening approval and seven sounds remain** |
+| A3 | Existing shared soccer sheets | **Done and wired across the soccer games** |
+| A4 | Existing painted bird frames + worm sprite sheet | **Done and wired; fallback shapes remain intentionally** |
+| A7 | Existing Table Tennis + Asteroid Destroyer sprite sheets | **Done and wired; standalone variants unnecessary** |
+| A8 | 1 maskable 512×512 PWA icon | **Done; manifest and offline shell wired** |
+| B1 | SnackWords hub tile (72×72) + social card (1200×630) | **Done and wired** |
+| B2 | Golf Solitaire hub tile (72×72) + social card (1200×630) | **Done and wired** |

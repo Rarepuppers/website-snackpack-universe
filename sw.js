@@ -13,7 +13,7 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v1";
+const CACHE = "snackpack-arcade-v4";
 
 const SHELL = [
   "/",
@@ -24,9 +24,12 @@ const SHELL = [
   "/play/share-result.js",
   "/play/keyboard-grid.js",
   "/play/pause.js",
+  "/play/audio.js",
+  "/play/shared-assets/game-ui/audio/place.wav",
   "/assets/fonts/fonts.css",
   "/assets/icon-192.png",
   "/assets/icon-512.png",
+  "/assets/icon-maskable-512.png",
 ];
 
 self.addEventListener("install", (e) => {

@@ -329,9 +329,8 @@
   var urlSeed = new URLSearchParams(location.search).get("daily");
   var dailyMode = !!urlSeed;
 
-  // Seed from the day NUMBER, not a formatted date, so that a shared
-  // ?daily=20671 link reproduces exactly the board the Daily button gives.
-  // These have to agree or the share loop hands people a different puzzle.
+  // Normalize both the hub's ?daily=YYYY-MM-DD contract and older numeric
+  // ?daily=20671 links to the same UTC day number used by the Daily button.
   function todaySeed() { return String(dailyNumber()); }
   // Days since epoch — the number shown in shared results, so "#20670" means the
   // same board to everyone regardless of timezone.
@@ -339,10 +338,12 @@
   // rather than silently serving today's. Falls back to today when absent.
   function dailyNumber() {
     var q = new URLSearchParams(location.search).get("daily");
-    var n = q == null ? NaN : parseInt(q, 10);
+    var iso = q && /^\d{4}-\d{2}-\d{2}$/.test(q) ? Date.parse(q + "T00:00:00Z") : NaN;
+    if (!isNaN(iso)) return Math.floor(iso / 86400000);
+    var n = q == null ? NaN : Number(q);
     return isNaN(n) ? Math.floor(Date.now() / 86400000) : n;
   }
-  function activeSeed() { return dailyMode ? (urlSeed || todaySeed()) : null; }
+  function activeSeed() { return dailyMode ? String(dailyNumber()) : null; }
   function makeRng(seedStr) {
     if (!seedStr) return Math.random;
     var h = 1779033703 ^ seedStr.length;

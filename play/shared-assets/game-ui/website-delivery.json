@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "packs": {
+    "pro-hand-painted/card-decks": {
+      "exclude": [
+        "faces/classic/"
+      ],
+      "reason": "The 52 premium full-face PNGs are app-only masters. No website page consumes classicFacePath; web card games render CSS faces with shared suit and back art."
+    }
+  }
+}

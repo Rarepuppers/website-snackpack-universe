@@ -191,6 +191,7 @@
               <button type="button" data-draw="3" aria-pressed="false">Draw 3</button>
             </div>
             <button class="btn-game" id="sol-undo" type="button">Undo</button>
+            <button class="btn-game" type="button" data-sp-audio-toggle aria-pressed="false">Sound on</button>
             <button class="btn-game" id="sol-large" type="button" aria-pressed="false" title="Bigger cards for wide screens">⤢ Large cards</button>
             <button class="btn-game btn-game--primary" id="sol-new" type="button">New game</button>
           </div>
@@ -341,6 +342,7 @@
 
 <script src="../funnel.js"></script>
 <script src="../keyboard-grid.js"></script>
+<script src="../audio.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script>
 (function () {
@@ -681,6 +683,7 @@
   function afterMove() {
     sel = null;
     startTimer();
+    if (window.SnackPackAudio) window.SnackPackAudio.play("place");
     render();
     checkWin();
   }

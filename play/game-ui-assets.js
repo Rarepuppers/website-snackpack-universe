@@ -45,8 +45,7 @@
       boardGames: BASE + "pro-hand-painted/board-games/png/",
       cardDecks: {
         backs: BASE + "pro-hand-painted/card-decks/backs/",
-        suits: BASE + "pro-hand-painted/card-decks/suits/",
-        classicFacePath: BASE + "pro-hand-painted/card-decks/faces/classic/"
+        suits: BASE + "pro-hand-painted/card-decks/suits/"
       },
       mahjongTiles: BASE + "pro-hand-painted/mahjong-tiles/png/",
       strategyTokens: BASE + "pro-hand-painted/strategy-tokens/png/",
