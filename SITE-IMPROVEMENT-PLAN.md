@@ -574,10 +574,42 @@ drift, not a missed fix, and it is the **third** volume to drift the same way.
 
 That is now three separate occurrences of one root cause: **whoever adds a game
 in-app has no reason to know the public site states the count in four places.**
-Fixing the number a fourth time is not the answer. The durable fix is to derive
-these counts at build time from each app's `constants/games.ts` — the same
-approach `build-sitemap.mjs` and `build-breadcrumbs.mjs` already use for links.
-Worth doing before the next volume ships.
+Fixing the number a fourth time is not the answer.
+
+**Done 2026-08-14 — `scripts/build-game-counts.mjs`.** Counts are now derived,
+not typed. A fourth audit turned up two more stale numbers nobody had flagged
+(the SnackWords page said the arcade had 32 games and the daily hub "five more"
+when it has nine), which is the point: hand-checking kept missing some.
+
+How it works, and why it is built this way:
+
+- **The arcade and daily-hub counts are derived from this repo** — `play/*/`
+  directories and `data-game="…"` cards on the hub. Nothing to declare, so they
+  cannot go stale.
+- **The three Android counts are declared** in `data/game-counts.json`, because
+  their real source (`constants/games.ts` per app) is in the companion monorepo,
+  which is not checked out in CI. When the monorepo *is* present — any dev
+  machine — the script cross-checks the JSON against it and refuses to run on a
+  mismatch. So a stale entry survives CI but not a local run.
+- **Counts are injected into `<span data-game-count="vol3">` markers**, not
+  find-and-replaced. The attribute names the entity, so the "23 games" that
+  means Vol 2 can never be confused with the "23 games" that means Vol 3 —
+  precisely the mistake a blind replace would have made, since both strings were
+  live on the same page.
+- **`llms.txt`, `<meta>` descriptions and JSON-LD use phrase rules instead**,
+  because a `<span>` is invalid in all three. Including `llms.txt` is
+  deliberate: it is the file three consecutive audits missed.
+- `--check` fails instead of fixing, and **runs in CI** via `site-check.yml`.
+
+Two things worth knowing if this is extended. It validates the declared counts
+*before* touching any file — an earlier draft rewrote first and checked after,
+which propagated a wrong JSON value into every page and then reported an error,
+leaving the tree worse than it started. And markers can opt into spelled-out
+numbers (`data-game-count-format="word"`) so mid-sentence prose reads "nine
+more" rather than "9 more".
+
+Coverage: 28 markers plus 7 phrase rules, across the guides, both index pages,
+the app pages, three game pages and `llms.txt`.
 
 The `llms.txt` root cause is separate and now understood: **every audit greps
 `--include=*.html`, and `llms.txt` is not HTML.** Any future content sweep must

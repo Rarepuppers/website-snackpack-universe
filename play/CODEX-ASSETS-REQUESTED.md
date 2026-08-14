@@ -20,7 +20,7 @@ Work top-down.
 | # | Item | Files | State |
 |---|---|---|---|
 | ~~A5~~ | ~~Mahjong tiles~~ | 60 PNGs | **DONE + REVIEWED** — vector symbols fixed at the generator; canonical, app and website copies match; no regeneration needed |
-| **A2** | Shared sound effects | 1 of 8 `.wav` | **PILOT LIVE — AWAITING EAR.** `place.wav` returns 200 in production as of 2026-08-14, so the Android half of the listening gate is finally testable. **This is now the oldest open gate in the plan.** Seven sounds and wider rollout remain behind Mark's approval |
+| ~~A2~~ | ~~Shared sound effects~~ | 8 of 8 `.wav` | **APPROVED + GENERATED + WIRING STARTED 2026-08-14.** `place.wav` approved by ear; the remaining seven generated from the same deterministic tool. Wired into the four card games. Four sounds (`invalid`, `tick`, `pop`, `whoosh`) exist but no game calls them yet — see the rollout note below |
 | ~~A3~~ | ~~Soccer sprites~~ | existing sprite system | **DONE + WIRED** — actors, balls, goals, pitches, effects and badges are loaded by all soccer games |
 | ~~A4~~ | ~~Snacky character sprites~~ | existing frames + sheet | **DONE + WIRED** — Flappy Snacky has three painted bird frames; Snacky Worm has head/body/tail in its sprite sheet |
 | ~~A7~~ | ~~Small arcade sprites~~ | existing sheets | **DONE + WIRED** — Table Tennis and Asteroid Destroyer already use correctly scaled sprite-sheet regions |
@@ -184,7 +184,45 @@ Completed follow-up: the existing Vol 2 and Vol 3 validation scripts now assert
 `LATIN` and every curated answer are known, a nonsense token is not known, and
 scheduled answers remain accepted. Both validators and both app typechecks pass.
 
-## A2. Shared sound effects — pilot complete; wider rollout gated on listening
+## A2. Shared sound effects — approved; all eight exist; rollout in progress
+
+**Approved by ear 2026-08-14.** All seven remaining sounds were generated from
+`scripts/generate-arcade-audio.mjs`, which is now a family generator rather than
+a single-sound script.
+
+| File | Length | Peak | Wired into |
+|---|---|---|---|
+| `place.wav` | 0.180s | −12.0 dBFS | Solitaire, FreeCell, Spider, Golf Solitaire |
+| `pickup.wav` | 0.140s | −13.0 dBFS | Golf Solitaire (stock draw) |
+| `success.wav` | 0.340s | −12.0 dBFS | Spider Solitaire (completed run) |
+| `win.wav` | 1.150s | −12.0 dBFS | all four card games |
+| `invalid.wav` | 0.200s | −13.0 dBFS | *not yet wired* |
+| `pop.wav` | 0.120s | −12.9 dBFS | *not yet wired* |
+| `whoosh.wav` | 0.240s | −13.5 dBFS | *not yet wired* |
+| `tick.wav` | 0.035s | −24.0 dBFS | *not yet wired* |
+
+Three things worth knowing before extending this:
+
+- **`place.wav` is frozen.** It is the sound that passed the listening gate, so
+  the generator asserts its SHA-256 on every run and fails if a refactor changes
+  the bytes. Verified byte-identical after the rewrite.
+- **`tick.wav` is normalized to −24 dBFS, not the family's −12.** It can fire
+  once a second for an entire game; at −12 it would dominate everything else.
+  "Very quiet" in the original brief is a level instruction, not a description.
+- **`play/audio.js` was rewritten for the rollout.** The pilot created a fresh
+  `Audio` object per call, which is fine for one card placement a second and not
+  fine for `pop` in Asteroid Destroyer. It now pools up to four voices per sound
+  and throttles retriggers at 35 ms — verified: 60 `pop` calls in one tight loop
+  produce one playback, and a call after the window still plays.
+
+Only the four wired sounds are precached in `sw.js`; precaching the other four
+would cost every visitor bytes for silence. **Add them to `SHELL` as they are
+wired.** Remaining rollout, in the order the plan recommends (incremental, not
+all 30 remaining games at once): `invalid` on rejected moves in the card games,
+then `pop`/`whoosh` in the arcade and soccer sets, then `tick` where a visible
+counter increments.
+
+<details><summary>Original pilot brief retained for audit history</summary>
 
 Implemented pilot:
 
@@ -221,6 +259,8 @@ quiet. These are calm games; nothing should startle a player.
 - Peak around −12dBFS; nothing harsh above 8kHz.
 - Canonical path: `shared-assets/game-ui/audio/`; the generator explicitly
   refreshes the website delivery copy under `play/shared-assets/game-ui/audio/`.
+
+</details>
 
 ## A3. Soccer game sprites — complete; do not regenerate
 

@@ -5,6 +5,8 @@
 | Script | What it does | When to run |
 |---|---|---|
 | `check-site.mjs` | Read-only integrity check across every page: dead internal links, missing images/scripts/styles, unparseable JSON-LD, sitemap drift, and missing title/canonical/description/beacon | **Before every push.** Exits non-zero on errors; `--warn` to report without failing |
+| `build-game-counts.mjs` | Keeps every stated game count (arcade, daily hub, Brain Games Vol 1–3) in sync across ~30 places in HTML **and `llms.txt`** | After adding a game anywhere. `--check` to fail instead of fix — that form runs in CI |
+| `check-live.mjs` | Asks the **deployed** origin whether every asset the repo declares actually resolves: manifest icons, the `sw.js` `SHELL` array, every `og:image`/`twitter:image` | **After every deploy.** `check-site.mjs` validates the repo against itself and so cannot catch a file that was built but never committed |
 
 It scans static markup only — `<script>` blocks are stripped first, because
 several pages build HTML by string concatenation and matching inside those

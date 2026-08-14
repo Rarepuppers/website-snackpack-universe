@@ -50,3 +50,11 @@ jobs:
 
       - name: Check site integrity
         run: node scripts/check-site.mjs
+
+      # Catches the drift that hit three times in a week: a volume gains a game
+      # in the companion monorepo and the ~30 places the site states a count go
+      # stale. The companion repo is not checked out here, so this validates the
+      # markup against data/game-counts.json only; the monorepo cross-check runs
+      # locally, where the app source actually exists.
+      - name: Check game counts
+        run: node scripts/build-game-counts.mjs --check

@@ -1,0 +1,21 @@
+{
+  "_comment": [
+    "Source of truth for every game count stated in public copy.",
+    "Do not hand-edit the numbers in HTML or llms.txt -- run scripts/build-game-counts.mjs.",
+    "",
+    "'arcade' and 'daily' are NOT listed here: they are derived automatically from",
+    "play/*/ and play/daily/index.html, because both live in this repo and can be",
+    "counted exactly. Only the Android game counts need declaring, because their",
+    "source (each app's constants/games.ts) lives in the companion monorepo, which",
+    "is not guaranteed to be checked out in CI.",
+    "",
+    "When a volume gains a game: update the number here, run the script, commit.",
+    "Locally the script cross-checks these against the monorepo and fails on a",
+    "mismatch, so a stale entry cannot survive a run on a dev machine."
+  ],
+  "brainGames": {
+    "vol1": 24,
+    "vol2": 23,
+    "vol3": 24
+  }
+}

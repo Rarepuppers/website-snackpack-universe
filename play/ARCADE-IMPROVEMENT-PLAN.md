@@ -24,7 +24,9 @@ This table overrides older narrative below when statuses conflict.
 | ~~P0~~ | ~~Commit + deploy `icon-maskable-512.png` and `place.wav`~~ | — | **DONE 2026-08-14** — both return 200 live |
 | ~~P0~~ | ~~Service worker: whitelist cache-first types, bump `CACHE` to v5~~ | — | **DONE** — PDFs, archives and unknown downloads now bypass Cache Storage |
 | P0 | Brain Games Vol 1 Mahjong release | Mark device smoke test, then Claude build/submission | Base and Pro decks pass on Android and the production release is handed off |
-| **P0** | **Approve the Solitaire `place.wav` pilot** | **Mark — now unblocked** | Tone and level are approved or concrete revision notes are recorded. **The file is live, so it can finally be heard on Android; this is the oldest open gate on the board** |
+| ~~P0~~ | ~~Approve the Solitaire `place.wav` pilot~~ | — | **APPROVED 2026-08-14.** All eight sounds generated; four wired into the four card games. `invalid`/`pop`/`whoosh`/`tick` exist but await their rollout tranche |
+| P1 | Continue the audio rollout | Claude | `invalid` in the card games, then `pop`/`whoosh` in the arcade and soccer sets, then `tick`. Add each to `sw.js` `SHELL` as it is wired |
+| ~~P1~~ | ~~Derive game counts at build time~~ | — | **DONE** — `scripts/build-game-counts.mjs`, 28 markers + 7 phrase rules, `--check` runs in CI |
 | ~~P1~~ | ~~Fix stale game counts~~ | — | **DONE** — 34 in four guides, Vol 3 corrected 23→24 in three places, `llms.txt` rewritten |
 | P1 | Add verification CI across both repositories | Repository automation | Monorepo app/word checks and website site/JS checks run independently; cross-repo asset parity uses an explicit companion checkout |
 | ~~P1~~ | ~~Post-deploy PWA/share smoke — as a script, not a checklist~~ | — | **DONE** — `scripts/check-live.mjs` asserts manifest icons, `sw.js` `SHELL` entries and every `og:image`/`twitter:image` return 200 against the live origin. 77 URLs, all resolving. Run after every deploy |
