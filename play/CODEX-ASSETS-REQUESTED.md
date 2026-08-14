@@ -12,6 +12,30 @@ wiring it into the site is a follow-up code task, not part of this request.
 
 ---
 
+---
+
+## Status board — verified on disk 2026-08-14
+
+Everything below was checked against the actual files, not against this doc.
+Work top-down.
+
+| # | Item | Files | State |
+|---|---|---|---|
+| **A5** | Mahjong tiles | 60 PNGs | **MISSING — live Google Play bug.** Still `â–` mojibake; app assets unchanged since 4 Jul |
+| **A2** | Shared sound effects | 8 × `.wav` | **MISSING** — zero audio files exist anywhere in `play/`; all 34 games are silent |
+| **A3** | Soccer sprites | 8 PNGs | **MISSING** — `soccer-sprites/png/` does not exist; those games render CSS shapes |
+| **A4** | Snacky character sprites | 5 PNGs | **MISSING** — `snacky-sprites/png/` does not exist; both games render rectangles |
+| **A7** | Small arcade sprites | 3 PNGs | **PARTIAL** — `asteroid.png`, `ball.png`, `paddle.png` exist; `asteroid-small.png`, `ball-small.png`, `paddle-vertical.png` are missing |
+| **A8** | Maskable PWA icon | 1 PNG | **MISSING** — `assets/` has only `icon-192`/`icon-512`, and the manifest declares `purpose: "any"` only |
+| **B1** | SnackWords tile + card | 2 PNGs | **PLACEHOLDER** — flat shapes in place so nothing renders broken; overwrite them |
+| **B2** | Golf Solitaire tile + card | 2 PNGs | **PLACEHOLDER** — same |
+| ~~A1~~ | ~~Spider Solitaire~~ | — | **DONE** — real art present (85 KB tile, 157 KB card). Ignore any older note calling this outstanding |
+
+**Nothing here blocks the website.** `node scripts/check-site.mjs` reports clean
+across all 166 pages: every asset actually *referenced* by markup exists. These
+requests are for art that would replace CSS shapes or placeholders, plus the
+one genuine bug (A5) which lives in the app, not the site.
+
 ## Style reference (applies to every visual item below)
 
 - **Palette:** cream `#f6efe4` background, ink `#201713`, brand orange

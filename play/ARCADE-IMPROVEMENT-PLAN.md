@@ -72,11 +72,19 @@ oversight.
 
 Only genuine gaps. Everything above is already covered.
 
-## A1. Spider Solitaire art — **outstanding, highest priority**
+## A1. Spider Solitaire art — **DONE** (verified 2026-08-14)
+
+> Both files are present and are real painted art: `play/tiles/spider-solitaire.png`
+> (85 KB) and `play/social/spider-solitaire.png` (157 KB). Nothing outstanding here.
+
+<details><summary>Original request, kept for reference</summary>
+
 
 See [`spider-solitaire/ASSETS-NEEDED.md`](spider-solitaire/ASSETS-NEEDED.md).
 Tile (144×144) and social card (1200×630). Interim placeholders are live, so
 nothing is broken — the page just doesn't match the rest of the arcade.
+
+</details>
 
 ## A2. Sound effects — **the single biggest gap**
 
@@ -1008,12 +1016,11 @@ re-deriving from this plan doc. A1 has its own equivalent brief in
 
 | Item | What | Blocks |
 |---|---|---|
-| A5 | Regenerate 60 Mahjong tiles without mojibake | A live Play Store bug |
-| A1 | Spider Solitaire tile + social card | A 123k/mo page looking unfinished |
+| A5 | Regenerate 60 Mahjong tiles without mojibake | **A live Play Store bug — still unfixed as of 2026-08-14** |
 | A2 | 8 shared SFX (`place`, `pickup`, `invalid`, `success`, `win`, `tick`, `pop`, `whoosh`) | All 32 games are silent |
 | A3 | 7 soccer sprites | The soccer set is CSS shapes |
 | A4 | 5 Snacky character sprites | Two games render as rectangles |
-| A7 | 3 correctly-shaped small arcade sprites | Table Tennis + Asteroid Destroyer wiring |
+| A7 | 3 missing sprites: `asteroid-small.png`, `ball-small.png`, `paddle-vertical.png` (the full-size three exist) | Table Tennis + Asteroid Destroyer wiring |
 | A8 | 1 maskable 512×512 PWA icon | Nothing — install works without it |
 | B1 | SnackWords hub tile (72×72) + social card (1200×630) | The recommended next game port |
 | B2 | Golf Solitaire hub tile (72×72) + social card (1200×630) | Shipped with placeholders |
