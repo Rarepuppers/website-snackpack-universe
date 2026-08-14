@@ -37,7 +37,12 @@
 .sol-card {
   position: absolute; left: 0; width: var(--cw); height: var(--ch);
   border-radius: calc(var(--cw) * 0.13);
-  background: var(--surface-strong);
+  /* Pinned, not themed. A playing card is a physical white object, and its
+     rank/suit colours below are hardcoded black and red — binding the face to
+     --surface-strong turned the card dark in dark mode while the pips stayed
+     near-black, i.e. unreadable. FreeCell and Golf Solitaire already hardcode
+     #fff here for the same reason. */
+  background: #fffdf8;
   border: 1px solid var(--line-strong);
   box-shadow: 0 2px 4px rgba(32,23,19,0.12);
   font-family: var(--sans); font-weight: 700; cursor: pointer;
@@ -137,6 +142,20 @@
   }
 </script>
 <!-- /pwa:generated -->
+<!-- theme:generated -->
+<script>
+  (function () {
+    var d = document.documentElement, t = null;
+    try { t = localStorage.getItem("snackpack.theme.v1"); } catch (e) {}
+    if (t !== "dark" && t !== "light" && t !== "cream") {
+      t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "cream";
+    }
+    d.setAttribute("data-theme", t);
+    d.setAttribute("data-theme-default", "cream");
+  })();
+</script>
+<script defer src="/theme.js"></script>
+<!-- /theme:generated -->
 </head>
 <body>
 <header class="topbar">

@@ -50,6 +50,20 @@
   }
 </script>
 <!-- /pwa:generated -->
+<!-- theme:generated -->
+<script>
+  (function () {
+    var d = document.documentElement, t = null;
+    try { t = localStorage.getItem("snackpack.theme.v1"); } catch (e) {}
+    if (t !== "dark" && t !== "light" && t !== "cream") {
+      t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "cream";
+    }
+    d.setAttribute("data-theme", t);
+    d.setAttribute("data-theme-default", "cream");
+  })();
+</script>
+<script defer src="/theme.js"></script>
+<!-- /theme:generated -->
 </head>
 <body class="story-reader-page">
 <header class="topbar"><div class="shell topbar-inner"><a class="brand" href="../../"><img class="brand-mark" src="/assets/snackpack-mark-96.png" alt="SnackPack Studios icon" width="96" height="94"><span class="brand-copy"><span class="brand-title">SnackPack Studios</span><span class="brand-subtitle">Free illustrated reader</span></span></a><nav aria-label="Primary">

@@ -140,6 +140,20 @@
   }
 </script>
 <!-- /pwa:generated -->
+<!-- theme:generated -->
+<script>
+  (function () {
+    var d = document.documentElement, t = null;
+    try { t = localStorage.getItem("snackpack.theme.v1"); } catch (e) {}
+    if (t !== "dark" && t !== "light" && t !== "cream") {
+      t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "cream";
+    }
+    d.setAttribute("data-theme", t);
+    d.setAttribute("data-theme-default", "cream");
+  })();
+</script>
+<script defer src="/theme.js"></script>
+<!-- /theme:generated -->
 </head>
 <body>
 <header class="topbar">

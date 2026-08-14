@@ -13,7 +13,7 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v6";
+const CACHE = "snackpack-arcade-v7";
 
 const SHELL = [
   "/",
@@ -24,6 +24,7 @@ const SHELL = [
   "/play/share-result.js",
   "/play/keyboard-grid.js",
   "/play/pause.js",
+  "/theme.js",
   "/play/audio.js",
   // Only the sounds currently wired into a game are precached. The other four
   // (invalid, tick, pop, whoosh) exist and are generated, but nothing calls them
