@@ -197,6 +197,7 @@
               <button type="button" data-suits="4" aria-pressed="false">4 suits</button>
             </div>
             <button class="btn-game" id="spi-undo" type="button">Undo</button>
+            <button class="btn-game" type="button" data-sp-audio-toggle aria-pressed="false">Sound on</button>
             <button class="btn-game" id="spi-large" type="button" aria-pressed="false" title="Bigger cards for wide screens">⤢ Large cards</button>
             <button class="btn-game btn-game--primary" id="spi-new" type="button">New game</button>
           </div>
@@ -332,7 +333,7 @@
 <script>window.SP_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames3";</script>
 <script src="../funnel.js"></script>
 <script src="../keyboard-grid.js"></script>
-<script src="../daily-state.js"></script><script src="../share-result.js"></script>
+<script src="../audio.js"></script><script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script>
 (function () {
   "use strict";
@@ -497,8 +498,13 @@
 
   function afterMove() {
     moves++;
+    // A completed run is the bigger event, so it gets the chime instead of the
+    // placement tap rather than both firing on the same move.
     if (harvest()) {
       statusEl.textContent = "Run complete — " + completed.length + " of 8 done.";
+      if (window.SnackPackAudio) window.SnackPackAudio.play("success");
+    } else if (window.SnackPackAudio) {
+      window.SnackPackAudio.play("place");
     }
     render();
     checkWin();
@@ -526,6 +532,7 @@
       headline: suitCount + "-suit cleared in " + fmt(seconds),
       stats: [moves + " moves"].concat(record ? ["new personal best"] : [])
     });
+    if (window.SnackPackAudio) window.SnackPackAudio.play("win");
   }
 
   // ── Rendering ─────────────────────────────────────

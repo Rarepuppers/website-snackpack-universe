@@ -120,7 +120,7 @@
   </ul>
 </nav></div></header>
 <main><section class="page-hero"><div class="shell"><div class="page-hero-card" style="text-align:center"><span class="eyebrow">Free · No download · Checked deals</span><h1>FreeCell</h1><p class="lead" style="max-width:600px;margin:0 auto">Plan every move in a numbered deal. Four free cells, eight cascades, and a full deck that is guaranteed to be winnable.</p></div></div></section>
-<section><div class="shell"><div class="game-stage" style="max-width:900px"><div class="fc-toolbar"><div class="fc-readout"><span>Time <b id="fc-time">0:00</b></span><span>Moves <b id="fc-moves">0</b></span><span>Deal <b id="fc-deal">1</b></span><span>Best <b id="fc-best">–</b></span></div><div class="fc-actions"><div class="fc-seg" role="group" aria-label="Free cells"><button type="button" data-cells="4" aria-pressed="true">4 cells</button><button type="button" data-cells="2" aria-pressed="false">2 cells</button><button type="button" data-cells="1" aria-pressed="false">1 cell</button></div><button id="fc-undo">Undo</button><button id="fc-redo">Redo</button><button id="fc-hint">Hint</button><button id="fc-auto" title="Finish the game automatically if it's fully solvable from here">Auto</button><button id="fc-large" aria-pressed="false" title="Bigger cards for wide screens">⤢ Large cards</button><button id="fc-daily" aria-pressed="false" title="Everyone gets the same deal today — and it is solver-verified winnable">Daily</button><button class="primary" id="fc-new">New deal</button></div></div><p class="game-status fc-status" id="fc-status" aria-live="polite">Select a card, then select its destination.</p><div class="fc-board"><div class="fc-table" id="fc-table"><div class="fc-row fc-top" id="fc-top"></div><div class="fc-row" id="fc-cascades"></div></div></div><p class="fc-hint">Drag a card to move it — or click a card then its destination. Double-click sends a card straight to its foundation. Auto finishes the game for you once it's fully solvable from here. Valid runs move together; empty cells and columns increase your supermove capacity.</p>
+<section><div class="shell"><div class="game-stage" style="max-width:900px"><div class="fc-toolbar"><div class="fc-readout"><span>Time <b id="fc-time">0:00</b></span><span>Moves <b id="fc-moves">0</b></span><span>Deal <b id="fc-deal">1</b></span><span>Best <b id="fc-best">–</b></span></div><div class="fc-actions"><div class="fc-seg" role="group" aria-label="Free cells"><button type="button" data-cells="4" aria-pressed="true">4 cells</button><button type="button" data-cells="2" aria-pressed="false">2 cells</button><button type="button" data-cells="1" aria-pressed="false">1 cell</button></div><button id="fc-undo">Undo</button><button id="fc-redo">Redo</button><button id="fc-hint">Hint</button><button id="fc-auto" title="Finish the game automatically if it's fully solvable from here">Auto</button><button type="button" data-sp-audio-toggle aria-pressed="false">Sound on</button><button id="fc-large" aria-pressed="false" title="Bigger cards for wide screens">⤢ Large cards</button><button id="fc-daily" aria-pressed="false" title="Everyone gets the same deal today — and it is solver-verified winnable">Daily</button><button class="primary" id="fc-new">New deal</button></div></div><p class="game-status fc-status" id="fc-status" aria-live="polite">Select a card, then select its destination.</p><div class="fc-board"><div class="fc-table" id="fc-table"><div class="fc-row fc-top" id="fc-top"></div><div class="fc-row" id="fc-cascades"></div></div></div><p class="fc-hint">Drag a card to move it — or click a card then its destination. Double-click sends a card straight to its foundation. Auto finishes the game for you once it's fully solvable from here. Valid runs move together; empty cells and columns increase your supermove capacity.</p>
 <p class="fc-hint" id="fc-verified">Every numbered deal here has been checked by a solver, so this board is winnable with four cells.</p></div></div></section>
 <section>
   <div class="shell">
@@ -207,7 +207,7 @@
 </footer>
 <script src="../funnel.js"></script>
 <script src="../keyboard-grid.js"></script>
-<script src="../daily-state.js"></script><script src="../share-result.js"></script><script>
+<script src="../audio.js"></script><script src="../daily-state.js"></script><script src="../share-result.js"></script><script>
 (function(){'use strict';
 var SUITS=['♠','♥','♦','♣'], RED=[false,true,true,false], RANK=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 // Painted suit art shared with Solitaire and Spider, so all three card games
@@ -312,7 +312,7 @@ function move(src,dest){
   if(dest.kind==='free')free[dest.i]=cards[0];
   else if(dest.kind==='foundation')found[dest.i].push(cards[0]);
   else cascades[dest.i].push.apply(cascades[dest.i],cards);
-  moves++;selected=null;render();finishMoveEffects();
+  moves++;selected=null;if(window.SnackPackAudio)window.SnackPackAudio.play('place');render();finishMoveEffects();
   return true;
 }
 
@@ -374,6 +374,7 @@ function finishMoveEffects(){
         : cellCount+'-cell deal #'+dealEl.textContent+' won in '+timeEl.textContent,
       stats:[moves+' moves'].concat(isBest?['new personal best']:[])
     });
+    if(window.SnackPackAudio)window.SnackPackAudio.play('win');
     return;
   }
   statusEl.textContent=hasAnyMove()?'Select a card, then select its destination.':'No legal moves left — try Undo or start a New Deal.';

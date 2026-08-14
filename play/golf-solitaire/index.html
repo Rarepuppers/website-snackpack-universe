@@ -192,7 +192,8 @@
 
         <div class="th-actions" style="margin-top:16px;">
           <button class="btn-game" id="gs-undo" type="button">Undo</button>
-          <button class="btn-game" id="gs-hint" type="button">Hint</button>
+          <button class="btn-game" type="button" data-sp-audio-toggle aria-pressed="false">Sound on</button>
+            <button class="btn-game" id="gs-hint" type="button">Hint</button>
         </div>
         <p class="game-hint">Tap the stock to turn a new card. A column card is playable when it is exactly one rank above or below the waste card &mdash; suit is irrelevant.</p>
       </div>
@@ -249,7 +250,7 @@
 <footer class="foot"><div class="shell foot-wrap"><p class="foot-note">Golf Solitaire &mdash; free in your browser from SnackPack Studios.</p><div class="footer-links"><a class="text-link" href="../">Arcade</a><a class="text-link" href="../daily/">Daily</a><a class="text-link" href="/privacy/">Privacy</a></div></div></footer>
 
 <script src="../daily-state.js"></script>
-<script src="../share-result.js"></script>
+<script src="../audio.js"></script><script src="../share-result.js"></script>
 <script src="../funnel.js"></script>
 <script>
 (function () {
@@ -427,6 +428,7 @@
       if (window.SnackPack && window.SnackPack.celebrate) {
         window.SnackPack.celebrate({ title: "Course cleared!", body: "All seven columns gone in " + state.moves + " moves." });
       }
+      if (window.SnackPackAudio) window.SnackPackAudio.play("win");
     }
   }
 
@@ -444,6 +446,7 @@
     hintCol = null;
     state.waste.push(col.pop());
     state.moves++;
+    if (window.SnackPackAudio) window.SnackPackAudio.play("place");
     if (cleared(state)) state.phase = "won";
     else if (stuck(state)) state.phase = "lost";
     render();
@@ -456,6 +459,8 @@
     hintCol = null;
     state.waste.push(state.stock.pop());
     state.moves++;
+    // Drawing from the stock is a lift, not a placement — the lighter tap.
+    if (window.SnackPackAudio) window.SnackPackAudio.play("pickup");
     if (stuck(state)) state.phase = "lost";
     render();
   }

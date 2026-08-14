@@ -740,6 +740,7 @@
         headline: "Klondike draw-" + drawN + " won in " + timeEl.textContent,
         stats: [moves + " moves"].concat(isBest ? ["new personal best"] : [])
       });
+      if (window.SnackPackAudio) window.SnackPackAudio.play("win");
       return;
     }
     statusEl.textContent = hasAnyMove() ? "Click a card to select it, then click where it should go." : "No legal moves left — try Undo or start a New Game.";
