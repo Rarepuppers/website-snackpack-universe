@@ -1200,14 +1200,20 @@ main section {
 }
 
 .showcase-frame > img,
-.showcase-frame > a > img {
+.showcase-frame > a > img,
+.showcase-frame > picture > img,
+.showcase-frame > a > picture > img {
   width: 100%;
   height: auto;
   border-radius: var(--radius);
 }
 
 .showcase-frame > a,
-.device-shot > a {
+.showcase-frame > picture,
+.showcase-frame > a > picture,
+.device-shot > a,
+.device-shot > picture,
+.device-shot > a > picture {
   display: block;
 }
 
