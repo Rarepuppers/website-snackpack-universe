@@ -57,9 +57,10 @@ release handoff before Play users receive it.
 
 ## 2026-08-14 re-audit — new asset requests
 
-Two visual items, both **optional and non-blocking** — the `/read/` SEO work in
-`SITE-IMPROVEMENT-PLAN.md` § P11 ships without them, they just make it land
-better. Generate in the house style below.
+Two visual items, both **completed and wired 2026-08-14**. The final PNGs are
+1200×630, use exact deterministically composited copy, and have lightweight
+WebP derivatives. The `/read/` hub and printable-reader guide now reference
+their dedicated PNG cards in Open Graph and Twitter metadata.
 
 Before either: note that **`assets/icon-maskable-512.png` and
 `play/shared-assets/game-ui/audio/place.wav` are finished but were never
@@ -69,11 +70,19 @@ are correct. That is a commit/deploy task for Claude, recorded here only so the
 
 ### C1. `/read/` bookshelf social card
 
+**DONE + REVIEWED.** Three-to-four evergreen imaginary covers sit on a warm
+painted shelf; no shipped cover was copied exactly. Exact title/subtitle copy
+was added after generation so there is no malformed image text.
+
 | File | Size | Brief |
 |---|---|---|
 | `read/social-card.png` | 1200×630 PNG | The `/read/` index currently has no dedicated OG card. Each individual book correctly uses its own cover as `og:image`, but the shelf page itself has nothing representing the collection. Show **three or four book covers fanned or stacked on a shelf** in the house style, with the wordmark "SnackPack Bookshelf" and the line "Complete illustrated stories · free, no account". Do not reproduce a specific book's cover art exactly — a suggestion of covers is enough, so the card does not go stale when the shelf grows. |
 
 ### C2. Printable-readers guide social card
+
+**DONE + REVIEWED.** Printable sheets, an open picture book and shelf art match
+the approved reader style. The exact 8-book/PDF/no-sign-up promise matches the
+live guide and all eight verified A4 downloads.
 
 | File | Size | Brief |
 |---|---|---|

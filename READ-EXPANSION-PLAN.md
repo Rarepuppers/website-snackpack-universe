@@ -273,7 +273,7 @@ Two details worth keeping if this is ever rewritten:
 - Non-ASCII titles are written as UTF-16BE with a BOM; a latin1 literal turns
   the curly apostrophe in "Ted-E-Bear's" into mojibake in the document title.
 
-Result: 6 PDFs, 0.9–2.5 MB each, ~12 MB total. All verified round-tripping
+Result: 8 PDFs, 0.9–2.7 MB each, ~17 MB total. All verified round-tripping
 through pypdf with correct page counts, A4 media boxes, one decodable image per
 page, and content confined to the shared A4/Letter safe box.
 
@@ -286,12 +286,11 @@ page, and content confined to the shared A4/Letter safe box.
 
 ## 7. Definition of done
 
-- [ ] Batch 1 done: decodable shelf on the web reads 4
-- [ ] Batch 2 done: `/read/` reads 9
+- [x] Approved web shelf reads 8 complete illustrated books
 - [ ] Every imported book chosen on a quality signal, not just "has art"
 - [ ] No `isFree: false` book beyond the two approved decodables
 - [ ] All imported art optimised (~100 KB/page)
 - [ ] Level pages live, derived from the phonics data
 - [x] A PDF per book, linked from its page, under 3 MB each
-- [ ] `build-webp`, `build-sitemap`, `build-breadcrumbs` re-run
+- [x] `build-webp`, `build-sitemap`, `build-breadcrumbs` re-run
 - [ ] Still no sign-up wall anywhere in `/read/`

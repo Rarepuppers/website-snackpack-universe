@@ -449,12 +449,11 @@ consequences:
   games, which are the feature the PWA was built for and the thing
   `/guides/play-browser-games-offline/` promises in writing.
 
-**Fix, and it should be a whitelist not another exclusion:** make rule 3 an
+**Completed 2026-08-14:** rule 3 is now an
 explicit extension list (`png|jpg|jpeg|webp|svg|gif|woff2?|wav|mp3|ogg`) and
-let anything unmatched pass through to the network. That fixes PDFs and every
-future file type at once, instead of waiting for the next one to fall in. Bump
-`CACHE` to `snackpack-arcade-v5` in the same commit — the header comment
-already says to, and without it existing installs keep the old routing.
+anything unmatched passes through to the network. That fixes PDFs and every
+future file type at once. `CACHE` is bumped to `snackpack-arcade-v5`, so
+existing installs discard the old catch-all routing.
 
 ## P10. Add the two checks that would have caught P7, P8 and P9
 
@@ -484,8 +483,9 @@ each with a **free printable PDF**, and has:
 - **no guide pointing at it** — the guides link to `/read/` in the nav only;
 - **no PDFs in `sitemap.xml`** (`grep -c "\.pdf"` returns 0), though Google
   indexes PDFs and these are exactly the kind of file that earns links;
-- **no `FAQPage` schema** on any of the eight books (they do have correct
-  `Book` schema, which is good and better than most of the arcade started).
+- correct `Book` schema on every reader. The earlier idea of adding
+  `FAQPage` schema was reviewed against current Google guidance and rejected;
+  this site is not eligible for FAQ rich results.
 
 Why this outranks more arcade guides on the same effort: P4's own conclusion
 was that further game guides "diminish in value fast" because the remaining
@@ -497,19 +497,21 @@ teachers and parents, sit in a far weaker competitive field than solitaire, and
 teacher groups** — which is the 4-inbound-links bottleneck, addressed with
 content we have already paid to produce.
 
-Proposed, in order:
+Implemented 2026-08-14:
 
 1. `/guides/free-printable-decodable-readers/` — what a decodable reader is,
    which sounds each of our eight covers, how to print them double-sided, and
    the honest disclosure that we publish them. Links out to all eight books.
-2. Add the eight PDFs to `sitemap.xml`.
-3. `FAQPage` schema on the eight book pages, generated from rendered text the
-   way B6 did it, so it cannot drift.
+2. The durable sitemap generator now includes the eight PDFs, rather than a
+   one-off manual edit.
+3. **Dropped the proposed `FAQPage` duplication.** Google limits FAQ rich
+   results to authoritative government and health sites; repeating boilerplate
+   questions across eight book pages would add maintenance without a visible
+   search feature. The guide instead adds useful visible printing and level
+   guidance, while the existing `Book` schema remains on each reader.
 
-No new art is required for any of it — guides reuse existing social cards, and
-the books already have cover images serving as `og:image`. Two small art items
-would improve it and are listed in `play/CODEX-ASSETS-REQUESTED.md`, but the
-work is not blocked on them.
+Both optional art items are now complete and wired: a shelf-level `/read/`
+social card and a dedicated printable-reader guide card.
 
 ## P1 — re-measured today
 
@@ -534,14 +536,14 @@ GitHub Pages limit to comfortably under it. Nothing to do today.
 
 1. **Commit the two orphaned assets + `manifest.webmanifest`, deploy, verify
    both URLs return 200** (P7). Unblocks the A2 Android listening gate.
-2. **Fix the service-worker route to a whitelist, bump `CACHE` to v5** (P9).
-   Ship with 1 so there is one deploy, not two.
+2. **Service-worker whitelist + `CACHE` v5 — complete** (P9). Ship with 1 so
+   the new media policy and orphaned assets reach existing installs together.
 3. **Rewrite the stale counts in `llms.txt`** (P8).
 4. **Fix "32 games" → 34 in the four guides** that state it — the standing
    check P6 asked for, already overdue after two new games.
 5. **Add the live-URL smoke script** (P10.1) so 1 cannot recur.
-6. **`/read/` wedge: the printable-readers guide, PDFs in the sitemap, FAQ
-   schema on the eight books** (P11). The largest single growth item here.
+6. **`/read/` wedge — complete:** printable-reader guide, dedicated share
+   cards, internal discovery links and eight PDFs in the durable sitemap (P11).
 7. **Directory submissions** — unchanged, still the real backlink lever, still
    needs you present for the signups.
 

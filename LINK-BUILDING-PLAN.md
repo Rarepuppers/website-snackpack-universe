@@ -86,8 +86,10 @@ submitting — directory submission paths change often.
   cannot claim.
 
 ### 4. Homeschool / teacher resource lists — best fit for `/read/`
-The decodable books (`/read/`, 3 full illustrated books, free, no sign-in, no
-ads) are the most linkable thing on the site. Free decodable readers are
+The reading shelf (`/read/`, 8 full illustrated books with printable A4 PDFs,
+free, no sign-in, no ads) is the most linkable thing on the site. Six books are
+staged phonics/decodable readers and two are companion early-reading stories.
+Free printable readers are
 genuinely scarce and teachers link them unprompted. Target: homeschool
 blogs, teacher resource roundups, and dyslexia/phonics parent communities.
 This is the single highest-probability source of a real, relevant,
@@ -166,15 +168,17 @@ deleted. Pitch `/read/`, never the arcade.
 > I saw your [specific post/roundup] on [specific topic] — [one honest sentence
 > about it].
 >
-> I make free decodable readers and thought they might suit that list. Three
-> full illustrated books, short-vowel and early-blend focused, readable straight
-> in the browser: https://www.snackpackuniverse.com/read/
+> I make free early readers and thought they might suit that list. There are
+> eight full illustrated books, including six staged phonics readers, available
+> in the browser and as A4 PDFs:
+> https://www.snackpackuniverse.com/guides/free-printable-decodable-readers/
 >
 > No ads, no sign-up, no email capture, nothing tracked — it's a free page, not
 > a funnel. There's a paid app in the background, but the books stand alone and
 > I'm not asking you to mention it.
 >
-> Use them however's useful. Happy to make a printable version if that'd help.
+> Feel free to print them for home or classroom use. If a particular phonics
+> stage would make the set more useful, I would genuinely value the feedback.
 >
 > [name]
 

@@ -13,7 +13,7 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v4";
+const CACHE = "snackpack-arcade-v5";
 
 const SHELL = [
   "/",
@@ -85,17 +85,21 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
-  // Images, fonts and audio: cache-first, they're content-addressed by name and
-  // change rarely.
-  e.respondWith(
-    caches.match(req).then(
-      (hit) =>
-        hit ||
-        fetch(req).then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
-          return res;
-        })
-    )
-  );
+  // Only small, reusable media assets are cache-first. Leave PDFs, archives,
+  // videos and unknown future file types to the browser/network so a corrected
+  // download cannot be trapped in cache and large files cannot evict the
+  // offline arcade shell.
+  if (/\.(?:png|jpe?g|webp|svg|gif|woff2?|wav|mp3|ogg)$/.test(url.pathname)) {
+    e.respondWith(
+      caches.match(req).then(
+        (hit) =>
+          hit ||
+          fetch(req).then((res) => {
+            const copy = res.clone();
+            caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+            return res;
+          })
+      )
+    );
+  }
 });

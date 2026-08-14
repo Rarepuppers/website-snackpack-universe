@@ -26,14 +26,14 @@ function priorityFor(urlPath) {
   return "0.4";
 }
 
-async function* htmlFiles(dir) {
+async function* indexableFiles(dir) {
   for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
     if (entry.name === "node_modules" || entry.name.startsWith(".")) continue;
     const full = path.join(dir, entry.name);
     const rel = path.relative(root, full).split(path.sep).join("/");
     if (entry.isDirectory() && /^play\/last-bastion\/(?:dev|desktop)(?:\/|$)/.test(rel)) continue;
-    if (entry.isDirectory()) yield* htmlFiles(full);
-    else if (entry.isFile() && entry.name === "index.html") yield full;
+    if (entry.isDirectory()) yield* indexableFiles(full);
+    else if (entry.isFile() && (entry.name === "index.html" || (rel.startsWith("read/") && entry.name.endsWith(".pdf")))) yield full;
   }
 }
 
@@ -59,13 +59,14 @@ async function main() {
   const entries = [];
   const skipped = [];
 
-  for await (const file of htmlFiles(root)) {
+  for await (const file of indexableFiles(root)) {
     const rel = path.relative(root, file).split(path.sep).join("/");
+    const isHtml = file.endsWith(".html");
     const dir = path.posix.dirname(rel);
-    const urlPath = dir === "." ? "/" : `/${dir}/`;
+    const urlPath = isHtml ? (dir === "." ? "/" : `/${dir}/`) : `/${rel}`;
 
-    const html = await fs.readFile(file, "utf8");
-    if (/<meta[^>]+name="robots"[^>]+noindex/i.test(html)) {
+    const html = isHtml ? await fs.readFile(file, "utf8") : "";
+    if (isHtml && /<meta[^>]+name="robots"[^>]+noindex/i.test(html)) {
       skipped.push(urlPath + " (noindex)");
       continue;
     }
