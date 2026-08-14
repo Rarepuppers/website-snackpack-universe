@@ -38,7 +38,12 @@ const HEAD_BLOCK = [
   '    var d = document.documentElement, t = null;',
   '    try { t = localStorage.getItem("snackpack.theme.v1"); } catch (e) {}',
   '    if (t !== "dark" && t !== "light" && t !== "cream") {',
-  `      t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "${DEFAULT_THEME}";`,
+  // Cream is the brand, so it is the default for everyone on a first visit --
+  // deliberately NOT following prefers-color-scheme. A visitor whose OS is dark
+  // was previously served the dark theme before ever seeing the real palette,
+  // which made the site's own identity the exception rather than the norm.
+  // Dark and light remain one click away and are remembered once chosen.
+  `      t = "${DEFAULT_THEME}";`,
   "    }",
   '    d.setAttribute("data-theme", t);',
   `    d.setAttribute("data-theme-default", "${DEFAULT_THEME}");`,

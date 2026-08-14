@@ -58,3 +58,9 @@ jobs:
       # locally, where the app source actually exists.
       - name: Check game counts
         run: node scripts/build-game-counts.mjs --check
+
+      # Catches a rule that pins a background but lets its text follow the theme:
+      # fine in cream, invisible in dark. This is how the hero and the primary
+      # button shipped unreadable.
+      - name: Check theme contrast
+        run: node scripts/check-contrast.mjs

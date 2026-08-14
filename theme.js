@@ -37,7 +37,8 @@
 
   function fallback() {
     // Per-site default, written into <html data-theme-default="…"> by the build
-    // step. Without one, honour the OS preference.
+    // step. Each site states its own, so the OS preference is only consulted
+    // when a page somehow ships without the attribute.
     var declared = root.getAttribute("data-theme-default");
     if (declared && META[declared]) return declared;
     return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
