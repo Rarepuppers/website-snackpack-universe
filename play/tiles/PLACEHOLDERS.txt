@@ -1,0 +1,2 @@
+tripeaks.png = PLACEHOLDER (studio mark), awaiting Codex Asset 1
+pyramid.png  = PLACEHOLDER (studio mark), awaiting Codex Asset 3

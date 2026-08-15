@@ -46,7 +46,7 @@
   "@type": "WebPage",
   "name": "Today's Free Daily Puzzles",
   "url": "https://www.snackpackuniverse.com/play/daily/",
-  "description": "A shared set of ten daily puzzles — SnackWords, Sudoku, Word Search, FreeCell, Mahjong, Golf Solitaire, Memory Match, Thirteen, Minesweeper and Flag Frenzy. The same boards for everyone, every day.",
+  "description": "A shared set of twelve daily puzzles — SnackWords, Sudoku, Word Search, FreeCell, Mahjong, Pyramid Solitaire, TriPeaks Solitaire, Golf Solitaire, Memory Match, Thirteen, Minesweeper and Flag Frenzy. The same boards for everyone, every day.",
   "isPartOf": { "@type": "WebSite", "name": "SnackPack Universe", "url": "https://www.snackpackuniverse.com/" }
 }
 </script>
@@ -142,7 +142,7 @@
         <h1>Today's puzzles.<br>Same boards for everyone.</h1>
         <p class="lead">One set a day, drawn from the same seed for every player — so a time or a streak actually means something. Free, no ads, no sign-in, nothing to install.</p>
         <div class="dl-hero-stats">
-          <span class="dl-stat">Done today <b id="dl-done">0/10</b></span>
+          <span class="dl-stat">Done today <b id="dl-done">0/<span data-game-count="daily">12</span></b></span>
           <span class="dl-stat">Streak <b id="dl-streak">0</b></span>
           <span class="dl-stat">Best streak <b id="dl-best">0</b></span>
         </div>
@@ -156,7 +156,10 @@
         <div class="daily-challenge-head">
           <div>
             <span class="eyebrow">The set</span>
-            <h2>Ten boards, one day.</h2>
+            <!-- Number kept mid-sentence on purpose: build-game-counts.mjs
+                 renders word-format markers lowercase, so a sentence-initial
+                 one would read "twelve boards". -->
+            <h2>One day, <span data-game-count="daily" data-game-count-format="word">twelve</span> boards.</h2>
           </div>
           <span class="daily-challenge-date" id="dl-seed">Seed loading</span>
         </div>
@@ -185,6 +188,16 @@
           <a class="dl-card" data-game="mahjong" href="../mahjong/">
             <img src="../tiles/mahjong.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
             <div><h3>Mahjong Solitaire</h3><p>Today's shared layout</p></div>
+            <span class="dl-tick" hidden>Done</span>
+          </a>
+          <a class="dl-card" data-game="pyramid" href="../pyramid/">
+            <img src="../tiles/pyramid.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <div><h3>Pyramid Solitaire</h3><p>Today's shared pyramid</p></div>
+            <span class="dl-tick" hidden>Done</span>
+          </a>
+          <a class="dl-card" data-game="tripeaks" href="../tripeaks/">
+            <img src="../tiles/tripeaks.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <div><h3>TriPeaks Solitaire</h3><p>Today's shared deal</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="golf-solitaire" href="../golf-solitaire/">
@@ -230,7 +243,7 @@
       <h2>Why a daily puzzle at all?</h2>
       <p>Because a score only means something if the board is the same. Every puzzle here is generated from the date, so the Sudoku you solve is the Sudoku everyone else solved today — and the FreeCell deal is drawn from a pool a solver has already proven winnable, which most daily card games can't promise.</p>
       <p>Your streak and results are stored on your own device. There is no account, no email capture and no leaderboard server — nothing leaves your browser. Come back tomorrow and the set refreshes.</p>
-      <p><a href="../">Browse all <span data-game-count="arcade">34</span> free games</a> if you'd rather just play something.</p>
+      <p><a href="../">Browse all <span data-game-count="arcade">36</span> free games</a> if you'd rather just play something.</p>
     </div>
   </section>
 </main>

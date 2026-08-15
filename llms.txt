@@ -32,12 +32,14 @@ Six more apps are planned or in progress and not yet live: Tales & Trivia, Creat
 
 ## Play free in your browser (web arcade)
 
-34 classic games playable instantly at [SnackPack Arcade](https://www.snackpackuniverse.com/play/) — no ads, no sign-in, no download, and most are installable offline as a PWA. A taster for the Brain Games apps above. Selected highlights:
+36 classic games playable instantly at [SnackPack Arcade](https://www.snackpackuniverse.com/play/) — no ads, no sign-in, no download, and most are installable offline as a PWA. A taster for the Brain Games apps above. Selected highlights:
 
 - [Play Sudoku](https://www.snackpackuniverse.com/play/sudoku/): Free browser Sudoku with Easy/Medium/Hard/Expert puzzles (unique solutions), pencil notes, hints and mistake checking that never ends your game. Includes rules, strategy, and history.
 - [Play Solitaire](https://www.snackpackuniverse.com/play/solitaire/): Free browser Klondike Solitaire with Draw 1 and Draw 3 modes, click-to-move, undo, timer and move counter. Includes rules, strategy, and history.
 - [Play Spider Solitaire](https://www.snackpackuniverse.com/play/spider-solitaire/): Free browser Spider Solitaire in 1, 2 and 4 suit, with unlimited undo.
 - [Play FreeCell](https://www.snackpackuniverse.com/play/freecell/): Free browser FreeCell running on a solver-verified deal pool — every board is winnable. Supermove capacity, hints, auto-finish, undo/redo.
+- [Play TriPeaks Solitaire](https://www.snackpackuniverse.com/play/tripeaks/): Free browser TriPeaks with streak scoring, round-the-corner mode, undo, hints and a daily deal. Runs on a solver-verified pool of 1,200 deals, so every board is winnable — about 28% of random TriPeaks deals are not.
+- [Play Pyramid Solitaire](https://www.snackpackuniverse.com/play/pyramid/): Free browser Pyramid — clear a 28-card pyramid by pairing cards that add to 13, Kings alone. Relaxed, Classic and Hard settings for how often the stock may be recycled, plus undo, hints and a daily deal. Deals are shuffled honestly and not all are winnable.
 - [Play Checkers](https://www.snackpackuniverse.com/play/checkers/): Free browser Checkers (draughts) vs a computer opponent with three difficulty levels, compulsory captures, multi-jumps and kings. Includes rules, strategy, and history.
 - [Play Mahjong Solitaire](https://www.snackpackuniverse.com/play/mahjong/): Free browser Mahjong Solitaire with a daily puzzle everyone shares.
 - [Play Minesweeper](https://www.snackpackuniverse.com/play/minesweeper/): Free browser Minesweeper with flags, a timer, and Beginner/Intermediate/Expert boards; first click always safe. Includes rules, strategy, and history.
@@ -55,7 +57,7 @@ Six more apps are planned or in progress and not yet live: Tales & Trivia, Creat
 
 The full list also includes SnackWords (a daily five-letter word guess), Golf Solitaire, Snakes & Ladders, Memory Match, Table Tennis, Asteroid Destroyer, and nine original soccer and flag games (Goalkeeper Hero, Penalty Shootout, Free Kick Curl, Crossbar Challenge, Header Hero, Dribble Rush, Keepy-Uppy, Soccer Trivia Sprint, Flag Frenzy) — see [SnackPack Arcade](https://www.snackpackuniverse.com/play/) for the complete, current list.
 
-Ten games have a shared daily puzzle, collected at [SnackPack Daily](https://www.snackpackuniverse.com/play/daily/) — one board per UTC day, the same for every player, with a local streak and a spoiler-free share string. Includes SnackWords, Sudoku, Word Search, FreeCell, Mahjong Solitaire, Golf Solitaire, Memory Match, Thirteen, Minesweeper and Flag Frenzy.
+Twelve games have a shared daily puzzle, collected at [SnackPack Daily](https://www.snackpackuniverse.com/play/daily/) — one board per UTC day, the same for every player, with a local streak and a spoiler-free share string. Includes SnackWords, Sudoku, Word Search, FreeCell, Mahjong Solitaire, Pyramid Solitaire, TriPeaks Solitaire, Golf Solitaire, Memory Match, Thirteen, Minesweeper and Flag Frenzy.
 
 ## World Cup 2026 hub
 
