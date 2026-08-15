@@ -617,3 +617,586 @@ name it explicitly.
 
 Items 1–6 are complete and verified. Items 7–8 need you; item 9 is a two-minute
 Search Console task.
+
+---
+
+# Re-audit 2026-08-15 — measured against live Search Console, not the repo
+
+Prompted by an observed traffic increase. Everything in this section comes from
+the Search Console API (`sc-domain:snackpackuniverse.com`, service account, run
+2026-08-15) or from the live origin. No figures are carried forward.
+
+## The headline: the increase was real, was almost entirely one page, and has already ended
+
+| Window | Clicks | Impressions | Avg. position |
+|---|---|---|---|
+| Prior 28d (2026-06-18 → 07-15) | 1 | 82 | 34.7 |
+| Current 28d (2026-07-16 → 08-12) | **11** | **1,210** | **15.6** |
+| Last 90d (05-16 → 08-13) | 12 | 1,306 | 17.1 |
+
+That is a genuine 15x impression lift and the first month the property has ever
+produced clicks in a meaningful number. But the daily series shows it was a
+two-week event, not a new baseline:
+
+| Date | Impressions |
+|---|---|
+| 07-16 → 07-25 | 3–12/day |
+| 07-26 | 24 |
+| **07-27 → 08-08** | **59–103/day** |
+| 08-09 | 42 |
+| 08-10 → 08-14 | **5–16/day** |
+
+**`/play/thirteen/` accounts for 899 of the 1,210 impressions (74%) and 6 of the
+11 clicks.** Its own daily series *is* the site's daily series: zero impressions
+before 07-26, 54–85/day through 08-08, then **zero from 08-10 onward**. Average
+position held at 7.4–9.1 for the whole run, then 22.7 on 08-09, then gone.
+
+This is the shape of a freshness/discovery boost decaying, not a penalty — the
+URL Inspection API still reports `PASS / Submitted and indexed`, canonical
+correct, robots ALLOWED. But note the crawl date: **last crawled 2026-07-25**,
+three weeks ago. Google ranked the page on a single crawl, tested it, and has
+not been back. Nothing on the property has given it a reason to.
+
+**So the honest read: nothing broke, but nothing was captured either.** The site
+got two weeks of free exposure on one term and converted 0.7% of it.
+
+---
+
+## R1. Thirteen is the only ranking asset on the property, and it is the one game with no supporting content
+
+**This is the highest-value item in this audit and it displaces "more guides".**
+
+The evidence, side by side:
+
+| Surface | Pages | Impressions (28d) | Clicks |
+|---|---|---|---|
+| `/play/thirteen/` | 1 | **899** | 6 |
+| All 12 `/guides/` | 12 | **49** | **0** |
+| All of `/read/` | 9 | 0 | 0 |
+| Everything else | ~145 | ~262 | 5 |
+
+Twelve guides — the deliberate wedge from P4 — have produced **49 impressions
+and zero clicks in 28 days.** One game page nobody planned around produced 899.
+The guides wedge targeted solitaire, sudoku, checkers, freecell, mahjong and
+minesweeper because they had the search volume. They also have the competition.
+Thirteen (Tien Len) has a real, under-served, low-competition query cluster and
+we are already on page one of it:
+
+| Query | Impressions | Clicks | Position |
+|---|---|---|---|
+| `free thirteen` | 77 | **0** | 7.9 |
+| `13 card game online` | 61 | 1 | 8.8 |
+| `13 online card game` | 2 | 0 | 9.0 |
+| `card game 13 online` | 2 | 0 | 6.0 |
+| `13 online` | 2 | 0 | 9.5 |
+| `13 card game online free` | 1 | 0 | 7.0 |
+| `game tien len` | 2 | 0 | 30.0 |
+| `13 vietnamese card game` | 1 | 0 | 57.0 |
+
+Two things jump out.
+
+**First, the CTR is the problem, not the ranking.** 899 impressions at average
+position ~8 returned 6 clicks — about **0.7%**. A page-one position in that range
+would normally return several times that. The ranking is already won; the snippet
+is losing the click. Current title:
+
+> `Play Thirteen (Tien Len) Online Free vs Computer | No Ads — SnackPack`
+
+Against the actual top query, `free thirteen`, the word "free" sits sixth and
+"Thirteen" second, behind nothing that earns its place. Against `13 card game
+online`, the numeral **`13` does not appear in the title at all** — and five of
+the eight queries above use the numeral, not the word. Google bolds matched terms
+in the SERP; we are handing it almost nothing to bold.
+
+**Second, the cluster is one page deep.** `game tien len` sits at position 30 and
+`13 vietnamese card game` at 57 — those are terms where a dedicated rules page
+would outrank a game page, and there is no such page. Ten internal links point at
+`/play/thirteen/`, all from other arcade pages; **no guide mentions Thirteen at
+all**, while six guides compete for terms that returned zero clicks.
+
+### What to do
+
+1. **Rewrite the title, meta description and H1 around the real queries.** Lead
+   with both the numeral and the word, put "free" early, keep the honest
+   modifiers that are our whole differentiator. Something in the shape of:
+   `Thirteen (13) Card Game Online — Free, No Ads, vs Computer | Tien Len`.
+   This is a ten-minute change against 900 impressions/month of proven demand and
+   it is the single highest-expected-value edit available on the site.
+2. **Write `/guides/thirteen-tien-len-rules/`** — how to play Tien Len: card
+   ranking (3 low, 2 high), singles/pairs/triples/sequences, bombs, the chop
+   rules, the two rule sets our game implements, and how the daily deal works.
+   This is the one guide on the site that would target a term we have already
+   proven we can rank for. Cross-link it both ways with the game.
+3. **Add the correctly-diacriticked "Tien Len" spelling** to the page (currently
+   unaccented only, per the title tag). The diacritic form is how the
+   Vietnamese-language audience searches, and `13 vietnamese card game` already
+   shows that audience reaching us at position 57.
+4. **Then consider Thirteen variants** — the two southern/northern rule sets are
+   genuinely different and we already ship both. That is a second cluster page
+   with real content behind it, not padding.
+
+Explicitly **do not** write more `X-without-ads` guides. Twelve of them, 49
+impressions, zero clicks, and the format is now well tested.
+
+---
+
+## R2. Not one Play Store link on the site can be attributed
+
+**Confirmed, and this is the biggest measurement gap on the property.**
+
+There are **137 outbound Google Play links** across the site. **136 of them carry
+no `referrer` parameter.** Exactly one does — a World Cup link tagged
+`utm_source=worldcup`.
+
+The consequence is blunt: **we cannot tell whether this website has ever driven a
+single install.** Play Console reports installs by acquisition channel using the
+`referrer` parameter on the store URL; without it, every web-driven install is
+filed as organic Play search and the site's entire commercial justification is
+unmeasurable. Given the portfolio's revenue reality, "does the site convert at
+all?" is arguably the single most valuable unanswered question here, and it has
+been unanswerable this whole time for the want of a query string.
+
+**Fix:** a generator in the existing `scripts/build-*.mjs` idiom —
+`scripts/build-play-links.mjs` — that rewrites every Play URL to carry
+`&referrer=utm_source%3Dwebsite%26utm_medium%3D<surface>%26utm_campaign%3D<page-slug>`,
+where `<surface>` is `arcade` / `guide` / `app-page` / `read` / `home`. Derived,
+not hand-typed, so it cannot drift — same reasoning as `build-game-counts.mjs`.
+Add `--check` and wire it into `site-check.yml`.
+
+Two details worth getting right:
+
+- The parameter must be `referrer`, URL-encoded, on the `details?id=…` URL. Plain
+  `utm_source=…` on the store URL is ignored by Play.
+- The funnel modal in `play/funnel.js` builds its Play URL in JS
+  (`DEFAULT_PLAY_URL`, `window.SP_PLAY_URL`) — the generator only sees HTML, so
+  that one needs tagging by hand and a note so it isn't missed a second time.
+
+**Do this before the app7 launch**, so the launch is the first release with a
+measurable web funnel rather than the fourteenth without one.
+
+---
+
+## R3. App7 (Mathematics) launches in ~1 week and its page is not launch-ready
+
+App7 is in review and expected in production around 2026-08-22. Checked its page
+today:
+
+- `apps/snackpack-7-mathematics/index.html` contains **zero** Play Store links
+  (correct today, blocking on launch day).
+- It has no `SoftwareApplication` schema, which the 12 live app pages carry.
+- The homepage hero says **"Now live — 12 apps on Google Play"**; this becomes 13
+  on launch day.
+- `llms.txt` lists app7 as unreleased — and per P2/P8, `llms.txt` has been missed
+  by three consecutive audits precisely because it isn't HTML.
+
+**Prepare a launch-day checklist now, while there is slack, rather than
+scrambling on the day.** The full list of touchpoints, verified against how the
+other 12 apps are wired:
+
+1. Play link + install button on the app page (with the R2 `referrer` tag).
+2. `SoftwareApplication` + `Offer` schema block, matching a live app page.
+3. `apps/index.html` — move from pipeline to live, add the icon tile strip.
+4. Homepage hero count 12 → 13, and the roadmap section.
+5. `llms.txt` — move out of upcoming, with accurate billing language.
+6. `data/game-counts.json` if app7 declares a count.
+7. `sitemap.xml` regen + Search Console resubmit + URL inspection request.
+8. Store release notes, per the standing rule.
+9. Run `check-site.mjs` and `check-live.mjs`.
+
+Worth doing in advance as a single "app7 launch" branch that only needs the Play
+URL pasted in on the day.
+
+---
+
+## R4. The newest and best content is not in the index yet, and nothing nudges it
+
+URL Inspection on the five most recent surfaces, run today:
+
+| URL | Google's status |
+|---|---|
+| `/read/` | **URL is unknown to Google** |
+| `/guides/free-printable-decodable-readers/` | **URL is unknown to Google** |
+| `/play/daily/` | **URL is unknown to Google** |
+| `/play/snackwords/` | **URL is unknown to Google** |
+| `/play/thirteen/` | Submitted and indexed (last crawled 07-25) |
+
+These four shipped 2026-08-13/14, so a day or two of "unknown" is normal and not
+a defect. The point is the mechanism, not the alarm: **`sitemap.xml` was last
+downloaded by Google on 2026-08-11 — before any of them existed.** Google's own
+record of the sitemap says 146 URLs submitted; the live file now has **169**.
+Nothing on this property tells Google when content ships. Combined with
+`/play/thirteen/` going 21 days without a recrawl, the picture is a site Google
+visits rarely and on its own schedule.
+
+Two things help, in order of value:
+
+1. **Resubmit the sitemap after each content deploy** — a one-line `curl`/`fetch`
+   ping in the existing deploy path, or the Search Console API the service
+   account already has access to. Cheap, durable, and it is the only signal we
+   can send at will.
+2. **Use the URL-inspection request quota deliberately** on the handful of pages
+   that matter — `/read/`, the printable guide, and whatever comes out of R1 —
+   rather than spraying it across 169 URLs.
+
+Note this does not replace the link problem below. Crawl rate is downstream of
+authority; the ping just stops us waiting an extra week on top.
+
+---
+
+## R5. What the data says to stop doing
+
+Worth stating plainly, because the repo currently carries plans that this month's
+numbers argue against:
+
+- **Stop writing `X-without-ads` guides.** Twelve guides, 49 impressions, zero
+  clicks in 28 days. P4 already concluded further guides "diminish in value
+  fast"; the measurement now confirms it for the ones that *were* written, not
+  just the ones that weren't.
+- **Stop treating arcade breadth as growth.** 34 games, and one of them produces
+  74% of all search exposure. The next game added will almost certainly produce
+  what the last eight did, which is nothing measurable.
+- **The `/world-cup/` section still pulls impressions** — `egypt world cup
+  schedule`, `ghana world cup games`, `golden boot race` and similar, all at
+  position 37–98, all zero clicks. Harmless, correctly past-tensed, no action.
+  But it is not a growth surface and should not receive further work.
+
+The one thing the data does **not** contradict is the standing diagnosis: with
+four inbound links, we rank when Google happens to test us and stop when it
+stops. **Directory submissions and teacher/homeschool outreach remain the real
+lever and still need you present** (items 7–8 of the previous section, still
+open).
+
+---
+
+## R6. `/read/` is still the best untested bet — and printables are the natural extension
+
+Zero impressions so far, but it is days old, so this is "not yet measured", not
+"failed". The reasoning in P11 stands and the surface is now complete: eight
+illustrated decodable readers, eight printable PDFs, a dedicated guide, correct
+`Book` schema, PDFs in the sitemap.
+
+The extension worth planning — and the one that plays to what this portfolio
+already owns — is **free printable worksheets**, drawn from content already
+authored for the apps:
+
+- **Phonics/CVC worksheets** from ABCs (snackpack-1) — letter formation,
+  sound-sorting, blending practice, matched to the decodable readers we already
+  publish, so the shelf and the worksheets cross-sell each other.
+- **Number formation and counting mats** from 123s (snackpack-2).
+- **Times-table and place-value practice sheets** from Mathematics (app7) — timed
+  to its launch, which makes the launch a content event rather than a page edit.
+- **Handwriting/sentence-building strips** from Sentences & Spelling
+  (snackpack-3).
+
+Why this over more games: printables are one of the few page types teachers and
+parents genuinely link to and share, which is the four-inbound-links bottleneck
+addressed with content already paid for. The PDF build path already exists
+(`scripts/build-read-pdfs.mjs`) and can be generalised. Target terms are
+long-tail, honest, and in a far weaker field than `solitaire`.
+
+Sequence it **after** R1–R3, which are cheaper and act on proven demand.
+
+---
+
+---
+
+## R7. Brain Games Vol 2 also ships Thirteen — but it needs *different* work, not the same work twice
+
+Raised 2026-08-15. Checked rather than assumed:
+
+- **Thirteen ships in Vol 2 only.** `apps/snackpack-brain-games-vol-2/constants/games.ts`
+  has `id: 'thirteen'`, tier 2, category `Cards`. Vol 1 has no Thirteen. Vol 3's
+  only match was an unrelated tagline ("pair cards that add up to thirteen" — a
+  solitaire variant), not the same game.
+- **The web page already points at the right app.** `/play/thirteen/` sets
+  `window.SP_PLAY_URL` and its store badge to `com.snackpackuniverse.braingames2`,
+  so the funnel is correctly wired. This is *not* a repeat of the P6 bug where two
+  guides linked FreeCell and Mahjong to Vol 3, which ships neither.
+
+**So the two surfaces do not want the same edit.** They are fed by two different
+search engines and only one of them has measured demand:
+
+| | `/play/thirteen/` (web) | Thirteen in Vol 2 (app) |
+|---|---|---|
+| Discovery engine | Google web search | Play Store search (ASO) |
+| Measured demand | **899 impressions/28d, position ~8** | unmeasured |
+| Lever | title/meta/H1 + a rules guide | store listing keywords |
+| Status | **done 2026-08-15** | open, see below |
+
+### What the app side actually needs
+
+Not a code change and not new game features — a **listing** change. The keyword
+evidence from R1 transfers directly, and it is the only part of this that carries
+over:
+
+- The in-app tagline is `Vietnamese card shedding classic`. It contains no `13`,
+  no `Tiến Lên`, and no `Tien Len` — the exact omission that was costing the
+  website its CTR. Same blind spot, different surface.
+- Vol 2's `store/` directory holds only `release-notes/` and `screenshots/`. **The
+  Play listing title, short description and full description are not in this
+  repo** — they live in Play Console only, so they cannot be audited from here.
+  Someone needs to open the listing and check whether "13", "Tien Len" or
+  "Vietnamese card game" appear in the short and full descriptions.
+- If they do not, adding them is the cheapest ASO change available on Vol 2, and
+  it targets demand we have *already proven exists* on the open web rather than
+  a guess.
+
+### Sequencing
+
+Do this **after** the R1 web work, not alongside it, and for a specific reason:
+the website change is measurable in Search Console within ~2–4 weeks, and Play
+listing changes are notoriously hard to attribute. Let the web result tell us
+whether the keyword thesis is right before spending the Vol 2 listing on it. If
+the CTR on `/play/thirteen/` moves off 0.7%, the thesis is confirmed and the same
+terms are worth putting in the Play listing with confidence.
+
+**One caveat worth stating:** Vol 2's listing is a shared shopfront for 23 games.
+Rewriting it around Thirteen specifically would be over-fitting to one title.
+The right change is *additive* — get the `13` / `Tien Len` terms into the full
+description's game list, not restructure the listing around them.
+
+### Not recommended
+
+- **Do not build a standalone Thirteen app.** The portfolio's problem is
+  distribution, not catalogue size, and a fourteenth listing splits attention
+  further.
+- **Do not add game features to Vol 2's Thirteen to "match" the web version.**
+  Nothing in the data suggests the game is the constraint; the constraint is that
+  nobody finds it.
+
+## Suggested order
+
+| # | Item | Effort | Why this position |
+|---|---|---|---|
+| 1 | ~~R1.1 — rewrite Thirteen title/meta/H1~~ **done 2026-08-15** | ~15 min | 900 impressions/mo of proven demand, 0.7% CTR |
+| 2 | ~~R2 — `build-play-links.mjs` + `funnel.js`~~ **done 2026-08-15** | ~1–2 h | Makes every later change measurable; blocks nothing else |
+| 3 | ~~R3 — app7 launch checklist~~ **done 2026-08-15** | ~1 h | Deadline-driven, ~1 week out |
+| 4 | ~~R1.2 — `/guides/thirteen-tien-len-rules/`~~ **done 2026-08-15** | ~2 h | Only guide targeting a term we can demonstrably rank for |
+| 5 | ~~R4 — search-engine notification~~ **done 2026-08-15** | ~30 min | Small, durable, compounds with everything after it |
+| 6 | R6 — printable worksheets, first set | multi-session | Best untested surface; needs art |
+| 7 | Directory submissions + outreach | needs you | Still the actual bottleneck |
+
+R1, R2, R3 and R4 need no art at all.
+
+---
+
+## Assets requested from Codex / imagegen
+
+Only R1 and R6 need new art. Nothing here blocks the code items above — ship
+those first and drop art in when it lands. House style throughout: the existing
+SnackPack look — flat, warm, rounded, cream/amber palette, soft shadows, no
+gradients-on-gradients, no text baked into the image unless stated.
+
+### Asset 1 — Thirteen guide hero / share card
+
+**File:** `guides/thirteen-tien-len-rules/social-card.png` (1200x630, plus a
+`.webp` derivative via `scripts/build-webp.mjs`)
+
+> A warm, flat-illustrated social share card, 1200x630, for a web guide about the
+> Vietnamese card game Tien Len ("Thirteen"). A fan of five playing cards spread
+> across the lower-left, drawn in a soft rounded style with clearly readable
+> pips — show a 3 of spades at one end and a 2 of hearts at the other to hint at
+> the game's low-to-high ranking. Cream (#FBF7EF) background with a soft amber
+> glow behind the cards. Generous empty space in the upper-right third for a text
+> overlay to be added later. No text in the image itself. Flat vector look, soft
+> long shadows, no gradients, no photorealism, and no gambling or casino
+> imagery — this should read as a friendly family card game, not a betting one.
+
+### Asset 2 — Thirteen combination explainer strip
+
+**File:** `guides/thirteen-tien-len-rules/combos.png` (1600x400, transparent
+background)
+
+> A single horizontal instructional strip, 1600x400, transparent background,
+> showing five card combinations left to right with a small gap between each
+> group: (1) one single card, (2) a pair, (3) a triple, (4) a run of four
+> sequential cards, (5) four of a kind. Flat rounded playing cards in the same
+> soft style, pips clearly legible at small size, slight overlap within each
+> group so they read as a set. No labels or text — captions are added in HTML
+> beneath. Warm cream card faces, muted red and charcoal suits, soft drop shadow
+> under each group.
+
+### Asset 3 — Printable worksheet page furniture (R6, one reusable set)
+
+**Files:** `read/printables/frame-header.png`, `read/printables/frame-footer.png`
+(A4-width, 300 dpi, transparent)
+
+> Reusable decorative header and footer bands for printable A4 children's
+> worksheets, transparent background, sized for A4 width at 300 dpi. Header: a
+> shallow band of small friendly SnackPack-style motifs — a pencil, a star, a
+> leaf, a smiling sun — spaced along a thin rounded rule, leaving the centre
+> clear for a title to be typeset over. Footer: a matching thinner band, mostly
+> empty, with two or three small motifs at the outer edges only. Print-safe: line
+> art and flat fills only, no large dark areas, no full-bleed colour — this will
+> be printed on home inkjets and must not drain ink. No text.
+
+### Asset 4 — Printables shelf social card (R6)
+
+**File:** `read/printables/social-card.png` (1200x630)
+
+> A warm flat-illustrated social share card, 1200x630, for a free printable
+> worksheets page aimed at parents and teachers of 4–7 year olds. Show a small
+> stack of printed worksheet pages fanned slightly, one on top showing faint
+> generic pencil-line marks (no readable words or numbers), beside a chunky
+> child's pencil and a couple of scattered crayons. Cream (#FBF7EF) background,
+> soft amber and sage accents, generous clear space on the right for a text
+> overlay. Flat vector style, soft shadows, no text in the image, and no
+> photographs of real children.
+
+**Do not generate:** anything for the World Cup section (retired), any further
+arcade game art (Section A is closed and A1–A8 are done), or any Thirteen *game*
+art — the game page itself is finished and this audit changes only its copy.
+
+---
+
+## Implementation log — 2026-08-15
+
+R1–R4 are implemented and verified. R6 is planned but not started (it needs the
+Codex art below). R5 is a "stop doing" item with nothing to build. R7 is
+deliberately deferred until the R1 result can be read.
+
+### R1.1 — Thirteen title/meta/H1 — **done**
+
+| | Before | After |
+|---|---|---|
+| `<title>` | `Play Thirteen (Tien Len) Online Free vs Computer \| No Ads — SnackPack` | `Thirteen (13) Card Game Online — Free, vs Computer \| Tiến Lên` (61 chars) |
+| `<h1>` | `Thirteen` | `Thirteen (13)` |
+
+Also: `alternateName` added to the `VideoGame` schema (`13`, `13 Card Game`,
+`Tiến Lên`, `Tien Len`, `Vietnamese Cards`); the diacritic spelling added to the
+lead paragraph and the how-to-play `<h2>`, with the unaccented form kept beside
+it so both match; `og:title`/`og:description` brought in line.
+
+The `— SnackPack` brand suffix was **dropped deliberately**. It cost pixels in a
+61-character title on a property with essentially no brand search — "snackpack"
+drew a single impression in 28 days. The numeral `13` earns that space instead,
+since five of the eight ranking queries use it.
+
+### R1.2 — `/guides/thirteen-tien-len-rules/` — **done**
+
+The first guide on the property targeting a term we have *demonstrably* ranked
+for. Covers the deal and the 3♠ opening lead, the full rank order, the suit
+tiebreak, all six legal combinations, the three bombs, and how a round resolves.
+
+**Every rule was read out of `play/thirteen/index.html` rather than from
+general knowledge**, which matters because the two rule sets differ in ways a
+generic Tiến Lên article would get wrong for this implementation:
+
+- **Standard** — `rankValue()` puts 2 highest (`13*4+suit`), Ace next; suit
+  order is ♠ < ♣ < ♦ < ♥; sequences and double sequences may not contain a 2;
+  `canBeat()` allows exactly three chops — quad beats a single 2, 3 consecutive
+  pairs (6 cards) beats a single 2, 4 consecutive pairs (8 cards) beats a pair
+  of 2s.
+- **Classic** — 2 becomes the *lowest* card, Ace highest, sequences may contain
+  a 2 and may wrap around (`isCircularConsecutive`), and there are no chops,
+  because there is no unbeatable card left to counter.
+
+Cross-linked three ways: from the game page (above the back-to-arcade link),
+from `/guides/`, and from the guide back to the game in three places.
+
+### R2 — `scripts/build-play-links.mjs` — **done**
+
+**102 Play links across 62 files** now carry
+`&referrer=utm_source%3Dwebsite%26utm_medium%3D<surface>%26utm_campaign%3D<slug>`.
+Surfaces: `arcade`, `guide`, `app-page`, `app-index`, `read`, `daily`,
+`privacy`, `worldcup`, `home`, `site`. Wired into `site-check.yml` as
+`--check`, and documented in `scripts/README.md`.
+
+Four decisions worth keeping:
+
+- **JSON-LD is skipped by construction.** Thirteen app pages carry the Play URL
+  as the schema entity's `url`/`downloadUrl`. That is an identity claim about
+  the app, not a click target. Handled by splitting the document on `ld+json`
+  blocks rather than by regex lookaround, which would have been the sort of
+  thing that works until one page nests a script tag differently.
+- **`play/funnel.js` is tagged by hand and *asserted* by the script.** It builds
+  its URL in JS, so no HTML walk can see it; the script fails if that hand-tag
+  is ever dropped. Pages overriding it via `window.SP_PLAY_URL` are ordinary
+  HTML and get tagged automatically — verified live: `/play/sudoku/` (no
+  override) resolves to Vol 1 tagged `arcade/sudoku`, `/play/thirteen/`
+  (override) to Vol 2 tagged `arcade/thirteen`.
+- **Non-`referrer` query parameters are preserved**, so a deliberate parameter
+  someone adds later is not silently eaten.
+- The one pre-existing tag (`utm_source=worldcup` on the World Cup hub) was
+  **absorbed into the common taxonomy** rather than left as a special case.
+
+Verified a tagged URL returns HTTP 200 from Play, and that the referrer decodes
+back to exactly the three intended UTM pairs.
+
+### R3 — `APP7-LAUNCH-CHECKLIST.md` — **done**
+
+Nine steps with ready-to-paste snippets, verified against how the twelve live
+apps are actually wired. Package id `com.snackpackuniverse.mathematics`.
+
+Two findings from preparing it:
+
+- **`privacy/snackpack-7-mathematics/` is already correct** — same eight
+  RevenueCat/purchase disclosures as the `snackpack-11-prehistoric-pals`
+  reference. This is the P5 bug class (Zoo World and Garden World both claimed
+  billing was not enabled when it was) and app7 does **not** have it. Recorded
+  so nobody re-checks it on launch day.
+- The checklist leads with **"do not start until the listing is live"**, because
+  every step puts "live on Google Play" copy and a real store link on the public
+  site.
+
+### R4 — `scripts/notify-search-engines.mjs` — **done, and the plan was wrong**
+
+R4 above proposed "a one-line `curl`/`fetch` ping in the existing deploy path".
+**That approach no longer exists.** Verified today:
+
+| Endpoint | Status |
+|---|---|
+| `google.com/ping?sitemap=…` | **404** — retired 2023 |
+| `bing.com/ping?sitemap=…` | **410 Gone** |
+
+So the script uses the two mechanisms that are actually live:
+
+1. **Google** — Search Console API `sitemaps.submit`, using the service account
+   that already holds Full permission. Key path via `SNACKPACK_GSC_KEY`; if
+   unset, that half skips with a warning instead of failing the run. It also
+   prints back what Google thinks it holds (last-downloaded, URL count, errors),
+   so a silent no-op is visible.
+2. **IndexNow** — covers Bing, Yandex, Seznam and Naver, needs no credentials.
+   Bing is worth having: 841 impressions over ~6 months on a property Google
+   barely crawls.
+
+`900693c096558a71b548e48b92b33acd.txt` at the site root is IndexNow's ownership
+token. **It is a public verification file, not a secret** — the receiving engine
+fetches it to confirm we control the domain, which is why it is committed.
+
+**Run it after the deploy, not before** — pushing URLs that are not live yet is
+worse than not pushing at all.
+
+### Verification
+
+`check-site.mjs` clean on 168 pages · `check-javascript.mjs` clean on 35 files ·
+`check-website-delivery.mjs` clean · `build-play-links.mjs --check` clean on 102
+links · `build-game-counts.mjs --check` clean on 28 markers. The new guide was
+loaded in a browser: all three JSON-LD blocks parse, no horizontal overflow at
+1265px or at 375px mobile, six combination cards render, cream theme applies.
+
+### Still open
+
+- **R6 printables** — not started, needs Assets 3 and 4 below.
+- **R1 art** — the guide currently reuses `/play/social/thirteen.png` as its
+  `og:image`. Swap to Asset 1 when it lands, and add Asset 2 to the
+  combinations section. Both are cosmetic; the guide is complete without them.
+- **R7 Vol 2 ASO** — deliberately waiting on the R1 measurement.
+- **Directory submissions and outreach** — still need you.
+
+### Read the result on or after 2026-09-12
+
+Four weeks of Search Console data, comparing against the measured baseline in
+this document:
+
+| Metric | Baseline (28d to 2026-08-12) | Watch for |
+|---|---|---|
+| `/play/thirteen/` CTR | **0.7%** (899 impr, 6 clicks) | anything above ~2% confirms the title thesis |
+| `/guides/thirteen-tien-len-rules/` | did not exist | any impressions at all on `tien len` / `13 card game rules` |
+| Sitemap last-downloaded | 2026-08-11, 4 days stale | should track deploys once the notify script is habitual |
+| Play Console web referrals | **unmeasurable** | first ever non-zero `utm_source=website` |
+
+That last row is the one that changes what gets worked on next. If the site
+drives measurable installs, the arcade justifies further investment; if it
+drives none after the funnel is finally instrumented, that is a much stronger
+argument for the distribution work than any amount of further content.

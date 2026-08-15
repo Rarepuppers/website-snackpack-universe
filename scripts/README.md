@@ -6,11 +6,73 @@
 |---|---|---|
 | `check-site.mjs` | Read-only integrity check across every page: dead internal links, missing images/scripts/styles, unparseable JSON-LD, sitemap drift, and missing title/canonical/description/beacon | **Before every push.** Exits non-zero on errors; `--warn` to report without failing |
 | `build-game-counts.mjs` | Keeps every stated game count (arcade, daily hub, Brain Games Vol 1–3) in sync across ~30 places in HTML **and `llms.txt`** | After adding a game anywhere. `--check` to fail instead of fix — that form runs in CI |
+| `build-play-links.mjs` | Tags every outbound Google Play link with a `referrer` so Play Console can attribute the install to the site, page and section it came from | After adding any Play link. `--check` to fail instead of fix — that form runs in CI |
 | `check-live.mjs` | Asks the **deployed** origin whether every asset the repo declares actually resolves: manifest icons, the `sw.js` `SHELL` array, every `og:image`/`twitter:image` | **After every deploy.** `check-site.mjs` validates the repo against itself and so cannot catch a file that was built but never committed |
+| `notify-search-engines.mjs` | Submits `sitemap.xml` to Google via the Search Console API, and pushes URLs to Bing/Yandex via IndexNow | **After every deploy**, once `check-live.mjs` passes |
 
-It scans static markup only — `<script>` blocks are stripped first, because
-several pages build HTML by string concatenation and matching inside those
-produces nonsense targets like `' + href + '`.
+`check-site.mjs` scans static markup only — `<script>` blocks are stripped
+first, because several pages build HTML by string concatenation and matching
+inside those produces nonsense targets like `' + href + '`.
+
+
+## Install attribution
+
+`build-play-links.mjs` rewrites every outbound Play link to carry:
+
+```
+&referrer=utm_source%3Dwebsite%26utm_medium%3D<surface>%26utm_campaign%3D<page>
+```
+
+`referrer` is the parameter Google Play actually reads — a plain `utm_source=`
+on the store URL is ignored, which is why the UTM pairs are URL-encoded *inside*
+it. `<surface>` is the kind of page (`arcade`, `guide`, `app-page`, `read`,
+`daily`, `privacy`, `worldcup`, `home`), `<page>` is the individual slug. Read
+the results in Play Console under **Acquisition reports → traffic source**.
+
+Two things it deliberately leaves alone:
+
+- **JSON-LD blocks.** Thirteen app pages carry the Play URL as the schema.org
+  entity's `url`/`downloadUrl`. That is an identity claim about the app, not a
+  click target, so tagging it would be wrong.
+- **`play/funnel.js`.** It builds its URL in JavaScript, so no HTML walk can see
+  it. It is tagged by hand; the script *asserts* that tag still exists and fails
+  if it is ever dropped. Pages override it with `window.SP_PLAY_URL`, and those
+  overrides live in HTML, so they are tagged automatically.
+
+Unlike `check-site.mjs`, this one does **not** strip `<script>` blocks — the
+`window.SP_PLAY_URL` overrides it needs to tag live inside them.
+
+
+## Telling search engines something shipped
+
+```bash
+node scripts/notify-search-engines.mjs                 # sitemap + every URL
+node scripts/notify-search-engines.mjs <url> [<url>…]  # just these URLs
+```
+
+**Do not reach for the old ping URLs.** Both are dead, verified 2026-08-15:
+
+| Endpoint | Status |
+|---|---|
+| `google.com/ping?sitemap=…` | **404** — retired in 2023 |
+| `bing.com/ping?sitemap=…` | **410 Gone** |
+
+What replaced them, and what this script uses:
+
+- **Google** — the Search Console API's `sitemaps.submit`, authenticated with
+  the service account. The key is not in this repo; set `SNACKPACK_GSC_KEY` to
+  its path. Unset, the Google half is skipped with a warning instead of failing.
+- **Bing, Yandex, Seznam, Naver** — IndexNow, which needs no credentials but
+  does need `900693c096558a71b548e48b92b33acd.txt` served from the site root.
+  That file is a **public ownership token, not a secret** — the receiving engine
+  fetches it to confirm we control the domain, so it is committed on purpose.
+  A `202` response means the key has not been validated yet, which is the normal
+  answer on the first run after the file goes live.
+
+Worth running deliberately rather than trusting the crawler: as of 2026-08-15
+Google had last downloaded the sitemap four days *before* `/read/`,
+`/play/daily/` and `/play/snackwords/` existed, and `/play/thirteen/` — the
+single best-ranking page on the property — had gone 21 days without a recrawl.
 
 
 ## Card game deal pools
