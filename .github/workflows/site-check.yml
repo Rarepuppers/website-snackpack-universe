@@ -59,6 +59,12 @@ jobs:
       - name: Check game counts
         run: node scripts/build-game-counts.mjs --check
 
+      # Every outbound Play link must carry a referrer, or the install it drives
+      # is filed as organic Play search and the web funnel goes dark. 136 of 137
+      # links were untagged until 2026-08-15; this is what stops that returning.
+      - name: Check Play link attribution
+        run: node scripts/build-play-links.mjs --check
+
       # Catches a rule that pins a background but lets its text follow the theme:
       # fine in cream, invisible in dark. This is how the hero and the primary
       # button shipped unreadable.
