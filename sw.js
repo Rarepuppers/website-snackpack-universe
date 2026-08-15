@@ -13,7 +13,7 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v8";
+const CACHE = "snackpack-arcade-v9";
 
 const SHELL = [
   "/",
@@ -30,6 +30,7 @@ const SHELL = [
   // (invalid, tick, pop, whoosh) exist and are generated, but nothing calls them
   // yet — precaching them would cost every visitor bytes for silence.
   "/play/shared-assets/game-ui/audio/place.wav",
+  "/play/shared-assets/game-ui/audio/invalid.wav",
   "/play/shared-assets/game-ui/audio/pickup.wav",
   "/play/shared-assets/game-ui/audio/success.wav",
   "/play/shared-assets/game-ui/audio/win.wav",

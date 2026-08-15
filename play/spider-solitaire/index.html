@@ -749,7 +749,14 @@
     justDragged = true;
     setTimeout(function () { justDragged = false; }, 0);
     var pile = pileUnder(e.clientX, e.clientY);
-    if (pile) tryMove(d.col, d.idx, +pile.dataset.col);
+    if (pile) {
+      var dest = +pile.dataset.col;
+      // Dropped onto a pile that refused the run; releasing over empty space is
+      // a cancelled drag and stays silent.
+      if (!tryMove(d.col, d.idx, dest) && dest !== d.col && window.SnackPackAudio) {
+        window.SnackPackAudio.play("invalid");
+      }
+    }
     else render();
   });
 
@@ -763,6 +770,9 @@
     if (sel) {
       // Second click: drop the selection here, or re-select.
       if (tryMove(sel.col, sel.idx, col)) return;
+      // Refused. Clicking back into your own column is a reselect rather than a
+      // rejected move, so only a different column buzzes.
+      if (col !== sel.col && window.SnackPackAudio) window.SnackPackAudio.play("invalid");
       sel = null;
       render();
       if (!card) return;

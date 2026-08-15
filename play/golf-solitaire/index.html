@@ -455,6 +455,10 @@
     if (state.phase !== "playing") return;
     var col = state.tableau[i];
     var top = state.waste[state.waste.length - 1];
+    // No `invalid` sound here on purpose: unplayable cards render as disabled
+    // <button>s and the single call site checks `!c.disabled`, so this guard is
+    // unreachable from the UI. Golf prevents the illegal move rather than
+    // buzzing after it, which is the better version of the same feedback.
     if (!col.length || !top || !canPlay(col[col.length - 1], top, wrap)) return;
     snapshot();
     hintCol = null;

@@ -451,6 +451,10 @@ function click(e){
   if(selected){
     if(type==='foundation'){var sc=sourceCards(selected)[0];if(sc&&move(selected,{kind:'foundation',i:sc.s}))return}
     else if(move(selected,{kind:type,i:i})){return}
+    // The move was refused. Clicking the selected card again is a deselect, not
+    // a rejected move, so that case stays silent.
+    var sameSpot=selected.kind===type&&selected.i===i;
+    if(!sameSpot&&window.SnackPackAudio)window.SnackPackAudio.play('invalid');
     selected=null;render();
   }else if(type==='cascade'&&at<cascades[i].length||type==='free'&&free[i]){
     selected={kind:type,i:i,at:at};render();
@@ -548,6 +552,9 @@ window.addEventListener('pointerup',function(e){
     if(type==='foundation'){var sc=sourceCards(info.src)[0];if(sc)moved=move(info.src,{kind:'foundation',i:sc.s})}
     else moved=move(info.src,{kind:type,i:i});
   }
+  // Dropped onto a pile that refused it; releasing over empty space is a
+  // cancelled drag and stays silent.
+  if(!moved&&typeEl&&window.SnackPackAudio)window.SnackPackAudio.play('invalid');
   if(!moved){selected=null;render()}
 });
 

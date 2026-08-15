@@ -810,10 +810,19 @@
     }
 
     // We have a selection — attempt a move to the clicked destination.
+    // Track whether a real destination was aimed at, so a rejected move can be
+    // told apart from clicking empty space to deselect. Only the first is
+    // "invalid"; the second is just cancelling, and buzzing at someone for
+    // cancelling would train them to distrust the sound.
+    var attemptedDest = false;
     if (destPile === "foundation") {
+      attemptedDest = true;
       if (tryMoveToFoundation(destPi !== undefined ? destPi : sel.pi)) return;
     }
     if (destPile === "tableau") {
+      // Aiming at the column the selection already sits in is a deselect or a
+      // reselect, not a rejected move (tryMoveToTableau refuses it explicitly).
+      attemptedDest = !(sel.pile === "tableau" && sel.pi === destPi);
       if (tryMoveToTableau(destPi)) return;
     }
     // Clicking the same selection or empty space: if clicked another selectable card, reselect.
@@ -829,6 +838,7 @@
       return;
     }
     // Otherwise clear selection.
+    if (attemptedDest && window.SnackPackAudio) window.SnackPackAudio.play("invalid");
     sel = null; applySel();
   });
 
@@ -934,6 +944,14 @@
       sel = info.src;
       if (dp === "foundation") moved = tryMoveToFoundation(dpi !== undefined ? dpi : info.src.pi);
       else if (dp === "tableau") moved = tryMoveToTableau(dpi);
+    }
+    // Dropping onto a pile that refused the card is invalid. Releasing over
+    // empty space, or back onto the column the card came from, is a cancelled
+    // drag and stays silent.
+    var droppedHome = pileSlot && pileSlot.dataset.pile === "tableau" &&
+      info.src.pile === "tableau" && +pileSlot.dataset.pi === info.src.pi;
+    if (!moved && pileSlot && !droppedHome && window.SnackPackAudio) {
+      window.SnackPackAudio.play("invalid");
     }
     if (!moved) { sel = null; applySel(); }
   });
