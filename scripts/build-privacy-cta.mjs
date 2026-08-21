@@ -39,7 +39,7 @@ const APPS = {
   "snackpack-5-tales-trivia": { name: "SnackPack Tales & Trivia", appPage: "snackpack-5-tales-trivia", pkg: null },
   "snackpack-6-creative-studio": { name: "SnackPack Creative Studio", appPage: "snackpack-6-creative-studio", pkg: null },
   "snackpack-7-mathematics": { name: "SnackPack Mathematics", appPage: "snackpack-7-mathematics", pkg: null },
-  "snackpack-8-earth-and-explorer": { name: "SnackPack Earth & Explorer", appPage: "snackpack-8-earth-and-explorer", pkg: null },
+  "snackpack-8-earth-science": { name: "SnackPack Earth Science", appPage: "snackpack-8-earth-science", pkg: null },
   "snackpack-9-shape-space": { name: "SnackPack Shape & Space", appPage: "snackpack-9-shape-space", pkg: null },
   "snackpack-10-robot-recipe": { name: "SnackPack Robot Recipe", appPage: "snackpack-10-robot-recipe", pkg: null }
 };

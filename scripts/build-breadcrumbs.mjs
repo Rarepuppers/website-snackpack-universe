@@ -22,7 +22,11 @@ const SECTION = {
   guides: "Guides",
   privacy: "Privacy",
   terms: "Terms",
-  "world-cup": "World Cup"
+  "world-cup": "World Cup",
+  // App slugs that appear as an intermediate crumb (e.g. a nested data-deletion
+  // page). Without these the slug is title-cased from its parts rather than
+  // reading as the app's actual name.
+  "snackpack-8-earth-science": "Earth Science"
 };
 
 function titleOf(html) {
