@@ -114,6 +114,14 @@ import destructibleTerrainUrl from "../../../../art/production-tests/batch-r/des
 import destructibleTerrainWebpUrl from "../../../../art/production-tests/batch-r/destructible-terrain-v1-128.webp";
 import destructibleTerrainEffectsUrl from "../../../../art/production-tests/batch-r/destructible-terrain-effects-v1-64.png";
 import batchIWeaponTileUrl from "../../../../art/production-tests/batch-i/codex-weapon-tile-atlas-v1-128.png";
+import weaponIdentity68AUrl from "../../../../art/production-tests/weapon-batch-68a/weapon-identity-atlas-68a-v1-128.png";
+import weaponIdentity68AWebpUrl from "../../../../art/production-tests/weapon-batch-68a/weapon-identity-atlas-68a-v1-128.webp";
+import weaponIdentity68BUrl from "../../../../art/production-tests/weapon-batch-68b/weapon-identity-atlas-68b-v1-128.png";
+import weaponIdentity68BWebpUrl from "../../../../art/production-tests/weapon-batch-68b/weapon-identity-atlas-68b-v1-128.webp";
+import weaponIdentity68CUrl from "../../../../art/production-tests/weapon-batch-68c/weapon-identity-atlas-68c-v1-128.png";
+import weaponIdentity68CWebpUrl from "../../../../art/production-tests/weapon-batch-68c/weapon-identity-atlas-68c-v1-128.webp";
+import powerupIdentityUrl from "../../../../art/production-tests/powerup-identity-batch/powerup-identity-atlas-v1-128.png";
+import powerupIdentityWebpUrl from "../../../../art/production-tests/powerup-identity-batch/powerup-identity-atlas-v1-128.webp";
 import batchIPerkTileUrl from "../../../../art/production-tests/batch-i/perk-tile-atlas-v1-128.png";
 import canonicalPerkTileUrl from "../../../../art/production-tests/batch-i/canonical-perk-tile-atlas-v2-128.png";
 import batchIHotkeyTileUrl from "../../../../art/production-tests/batch-i/hotkey-action-tile-atlas-v1-128.png";
@@ -438,6 +446,10 @@ export type GameAssetId =
   | "scrap-shop-panel-v1"
   | "quartermaster-v1"
   | "batch-i-weapon-tiles-v1"
+  | "weapon-identity-atlas-68a-v1"
+  | "weapon-identity-atlas-68b-v1"
+  | "weapon-identity-atlas-68c-v1"
+  | "powerup-identity-atlas-v1"
   | "batch-i-perk-tiles-v1"
   | "canonical-perk-tiles-v2"
   | "batch-i-hotkey-tiles-v1"
@@ -475,6 +487,18 @@ export type GameAssetId =
   | "marauder-ar-tile-v1"
   | "bastion-logistics-map-backdrop-v1"
   | "title-menu-backdrop-v1"
+  | "ui-panel-frame-v1"
+  | "ui-panel-recessed-v1"
+  | "ui-panel-raised-v1"
+  | "ui-panel-emphasis-v1"
+  | "ui-button-idle-v1"
+  | "ui-button-hover-v1"
+  | "ui-button-selected-v1"
+  | "ui-button-pressed-v1"
+  | "ui-button-disabled-v1"
+  | "ui-focus-brackets-v1"
+  | "ui-header-plate-v1"
+  | "ui-divider-rule-v1"
   | "alien-hive-map-backdrop-v1"
   | "machine-foundry-map-backdrop-v1"
   | "science-wing-map-backdrop-v1"
@@ -671,6 +695,10 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("destructible-terrain-v1", runtimeImageUrl(destructibleTerrainUrl, destructibleTerrainWebpUrl), 128, 128, 28, 0.5, 0.92),
   sheet("destructible-terrain-effects-v1", destructibleTerrainEffectsUrl, 64, 64, 8, 0.5, 0.5),
   sheet("batch-i-weapon-tiles-v1", batchIWeaponTileUrl, 128, 128, 8, 0.5, 0.5),
+  sheet("weapon-identity-atlas-68a-v1", runtimeImageUrl(weaponIdentity68AUrl, weaponIdentity68AWebpUrl), 128, 128, 8, 0.5, 0.5),
+  sheet("weapon-identity-atlas-68b-v1", runtimeImageUrl(weaponIdentity68BUrl, weaponIdentity68BWebpUrl), 128, 128, 8, 0.5, 0.5),
+  sheet("weapon-identity-atlas-68c-v1", runtimeImageUrl(weaponIdentity68CUrl, weaponIdentity68CWebpUrl), 128, 128, 7, 0.5, 0.5),
+  sheet("powerup-identity-atlas-v1", runtimeImageUrl(powerupIdentityUrl, powerupIdentityWebpUrl), 128, 128, 6, 0.5, 0.5),
   sheet("batch-i-perk-tiles-v1", batchIPerkTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("canonical-perk-tiles-v2", canonicalPerkTileUrl, 128, 128, 8, 0.5, 0.5),
   sheet("batch-i-hotkey-tiles-v1", batchIHotkeyTileUrl, 128, 128, 8, 0.5, 0.5),

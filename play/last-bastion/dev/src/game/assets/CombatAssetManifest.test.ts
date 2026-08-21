@@ -45,6 +45,11 @@ describe("combatAssetsForSession", () => {
     expect(ids.has("action-tiles-v1")).toBe(false);
     expect(ids.has("scrap-shop-panel-v1")).toBe(true);
     expect(ids.has("batch-i-weapon-tiles-v1")).toBe(true);
+    expect(ids.has("weapon-identity-atlas-68a-v1")).toBe(true);
+    expect(ids.has("weapon-identity-atlas-68b-v1")).toBe(true);
+    expect(ids.has("weapon-identity-atlas-68c-v1")).toBe(true);
+    expect(ids.has("powerup-identity-atlas-v1")).toBe(true);
+    expect(ids.has("event-horizon-tile-v1")).toBe(true);
     expect(ids.has("batch-i-hotkey-tiles-v1")).toBe(true);
     expect(ids.has("batch-b-effects-v1")).toBe(true);
     expect(ids.has("batch-c-effects-v1")).toBe(true);

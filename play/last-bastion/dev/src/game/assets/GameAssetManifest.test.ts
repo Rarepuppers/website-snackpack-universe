@@ -52,7 +52,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(206);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(210);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -674,6 +674,46 @@ describe("GameAssetManifest", () => {
         expect(asset.logicalWidth).toBe(128);
         expect(asset.logicalHeight).toBe(128);
       }
+    }
+  });
+
+  it("locks the Batch 68A dedicated weapon tile contract", () => {
+    const asset = GAME_ASSETS["weapon-identity-atlas-68a-v1"];
+    expect(asset.kind).toBe("spritesheet");
+    if (asset.kind === "spritesheet") {
+      expect(asset.frameCount).toBe(8);
+      expect(asset.logicalWidth).toBe(128);
+      expect(asset.logicalHeight).toBe(128);
+    }
+  });
+
+  it("locks the Batch 68B dedicated weapon tile contract", () => {
+    const asset = GAME_ASSETS["weapon-identity-atlas-68b-v1"];
+    expect(asset.kind).toBe("spritesheet");
+    if (asset.kind === "spritesheet") {
+      expect(asset.frameCount).toBe(8);
+      expect(asset.logicalWidth).toBe(128);
+      expect(asset.logicalHeight).toBe(128);
+    }
+  });
+
+  it("locks the seven-frame Batch 68C dedicated weapon tile contract", () => {
+    const asset = GAME_ASSETS["weapon-identity-atlas-68c-v1"];
+    expect(asset.kind).toBe("spritesheet");
+    if (asset.kind === "spritesheet") {
+      expect(asset.frameCount).toBe(7);
+      expect(asset.logicalWidth).toBe(128);
+      expect(asset.logicalHeight).toBe(128);
+    }
+  });
+
+  it("locks the six-frame dedicated power-up tile contract", () => {
+    const asset = GAME_ASSETS["powerup-identity-atlas-v1"];
+    expect(asset.kind).toBe("spritesheet");
+    if (asset.kind === "spritesheet") {
+      expect(asset.frameCount).toBe(6);
+      expect(asset.logicalWidth).toBe(128);
+      expect(asset.logicalHeight).toBe(128);
     }
   });
 

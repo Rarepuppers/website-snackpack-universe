@@ -617,7 +617,7 @@ export function isBossKind(value: string): value is BossKind {
 export function enemyRadius(enemy: { type: EnemyType; radiusScale?: number }): number {
   return ENEMY_CATALOG[enemy.type].radiusMetres * (enemy.radiusScale ?? 1);
 }
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "ironhide-abomination" | "splitcaller-weaver" | "voltaic-warden" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime" | "the-choir" | "foundry-sovereign" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "escort-objective" | "deny-objective" | "collect-objective" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "batch-j";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "ironhide-abomination" | "splitcaller-weaver" | "voltaic-warden" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime" | "the-choir" | "foundry-sovereign" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "escort-objective" | "deny-objective" | "collect-objective" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "weapon-review" | "powerup-identity" | "batch-j";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit" | "siege-loader" | "phase-jacket" | "hunter-optics" | "last-stand-stimulant" | "emp-charge" | "butchers-serum";
 export type SupplyChestVariant = "sealed" | "armored";
 export type DecisionKind = "upgrade" | "level-stat" | "weapon-chest" | "supply-depot" | "slot-requisition" | "rank-reward" | "scrap-shop" | "weapon-placement";
@@ -1499,6 +1499,8 @@ export interface CombatSimulationOptions {
   seed?: number;
   startingWeaponCount?: number;
   startingWeaponIds?: readonly WeaponId[];
+  /** Optional deterministic contents shared by weapon review surfaces. */
+  reviewWeaponIds?: readonly WeaponId[];
   arena?: ArenaDefinition;
   stressProfile?: 4 | 12;
   scenario?: CombatScenario;
@@ -1935,6 +1937,7 @@ export class CombatSimulation {
   private frameEvents: CombatEvent[] = [];
   private readonly stressProfile: 4 | 12 | null;
   private readonly scenario: CombatScenario | null;
+  private readonly reviewWeaponIds: readonly WeaponId[] | null;
   private readonly expeditionEncounter: ExpeditionEncounterDescriptor | null;
   private expeditionWaveIndex = 0;
   private readonly expeditionRewardedWaves = new Set<number>();
@@ -1971,6 +1974,9 @@ export class CombatSimulation {
     this.randomState = options.seed ?? 0x5a17b45;
     this.stressProfile = options.stressProfile ?? null;
     this.scenario = options.scenario ?? null;
+    this.reviewWeaponIds = options.reviewWeaponIds?.length
+      ? [...new Set(options.reviewWeaponIds)].slice(0, SCRAP_SHOP_OFFER_COUNT)
+      : null;
     if (this.scenario === "escort-objective") {
       const centreY = this.heightMetres / 2;
       this.escortObjective = createEscortObjective([
@@ -3531,6 +3537,30 @@ export class CombatSimulation {
     // and rarity floor, and scales prices — so a themed shop is a data row, not
     // a second shop implementation.
     const profile = shopProfileById(this.shopProfileId);
+    if (this.reviewWeaponIds) {
+      const weapons = prepareScrapShopWeaponInputs({
+        stocksWeapons: true,
+        equippedWeaponIds: this.equippedWeapons.map((weapon) => weapon.weaponId),
+        maxEquippedWeapons: MAX_EQUIPPED_WEAPONS,
+        // Diagnostic stock still obeys the real shop pool. Hero-bound and
+        // earned unique weapons can be reviewed in HUD/debrief without ever
+        // being advertised as purchasable.
+        offerableWeaponIds: this.reviewWeaponIds.filter((weaponId) => this.offerableWeapons().includes(weaponId)),
+        candidateCount: SCRAP_SHOP_OFFER_COUNT,
+        rotationOffset: 0,
+      });
+      return finalizeScrapShopCandidates({
+        candidates: buildUpgradeWeaponScrapShopCandidates({
+          upgrades: [],
+          weapons,
+          prices: SCRAP_SHOP_PRICES,
+          profilePriceMultiplier: profile.priceMultiplier,
+          uniqueWeaponPriceMultiplier: SHOP_UNIQUE_WEAPON_PRICE_MULTIPLIER,
+        }),
+        bannedIds: new Set(),
+        securedScrap: this.securedScrap,
+      });
+    }
     const upgrades = profile.stock.upgrades
       ? prepareScrapShopUpgradeInputs({
         eligibleUpgradeIds: UPGRADE_ORDER.filter((id) => this.isUpgradeEligible(id)),
@@ -4829,6 +4859,10 @@ export class CombatSimulation {
   }
 
   private updateBuffs(deltaSeconds: number): void {
+    // The identity lab is a visual fixture, not a balance encounter. Keep its
+    // exact-duration labels and rings stable while a reviewer compares icons;
+    // every campaign and combat scenario continues through the normal path.
+    if (this.scenario === "powerup-identity") return;
     for (const [type, remaining] of this.activeBuffs) {
       const next = remaining - deltaSeconds;
       if (next <= 0) {
@@ -9812,6 +9846,11 @@ export class CombatSimulation {
       spawnAurumHoarder: (position) => this.spawnAurumHoarder(position),
       spawnBastionEater: (position) => this.spawnBastionEater(position),
       spawnBoss: (kind, position) => this.spawnBoss(kind, position),
+      spawnPowerup: (type, position) => this.spawnPowerup(type, position),
+      activatePowerup: (type) => {
+        const duration = POWERUP_DURATION_SECONDS[type];
+        if (duration > 0) this.activeBuffs.set(type, duration);
+      },
       recordDensitySpawn: (spawn) => this.recordDensitySpawn(spawn),
       activeObstacles: () => this.activeObstacles(),
       nextWeaponInstanceId: () => this.weaponInventory.nextInstanceId++,

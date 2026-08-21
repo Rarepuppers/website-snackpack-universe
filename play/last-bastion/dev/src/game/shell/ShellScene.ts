@@ -46,6 +46,17 @@ import {
   type KeyboardBindableAction,
 } from "../input/ControlBindings";
 import { runRecordPresentation } from "../run/RunRecordPresentation";
+import {
+  UI_BUTTON_SLICE,
+  UI_FOCUS_SLICE,
+  UI_PANEL_SLICE,
+  uiButtonAssetId,
+  uiChromeEnabled,
+  type UiButtonState,
+} from "../assets/UiChromeAssets";
+import { requestedShellScreen } from "./ShellReviewRoute";
+
+type UiPanelWeight = "recessed" | "raised" | "emphasis";
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -303,7 +314,22 @@ export class ShellScene extends Phaser.Scene {
     this.root.add(this.text(WIDTH / 2, 225, "HOLD THE LINE", TEAL, "16px", true));
     const prompt = this.text(WIDTH / 2, 330, "PRESS ENTER", ORANGE, "22px", true);
     prompt.setName("title-prompt");
-    this.root.add(this.panelBehind(prompt, 24));
+    const promptFrame = uiChromeEnabled()
+      ? this.add.nineslice(
+        prompt.x,
+        prompt.y,
+        "ui-button-selected-v1",
+        undefined,
+        Math.max(244, prompt.width + 64),
+        72,
+        UI_BUTTON_SLICE.left,
+        UI_BUTTON_SLICE.right,
+        UI_BUTTON_SLICE.top,
+        UI_BUTTON_SLICE.bottom,
+      )
+      : this.panelBehind(prompt, 24);
+    promptFrame.setName("title-prompt-frame");
+    this.root.add(promptFrame);
     this.root.add(prompt);
     this.root.add(this.text(
       WIDTH / 2,
@@ -317,6 +343,7 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private renderMenu(): void {
+    if (uiChromeEnabled()) this.root.add(this.uiHeaderPlate(220, 48, 330, 62));
     this.root.add(this.text(70, 48, "LAST BASTION", IVORY, "28px"));
     const progress = this.saveStore.load().progress;
     const columns = 2;
@@ -327,9 +354,30 @@ export class ShellScene extends Phaser.Scene {
       const x = originX + column * (cardWidth + gap);
       const y = originY + row * (cardHeight + gap);
       const focused = index === this.state.menuIndex;
-      const rect = this.add.rectangle(x + cardWidth / 2, y + cardHeight / 2, cardWidth, cardHeight, focused ? 0x24384f : PANEL)
-        .setStrokeStyle(focused ? 3 : 1, focused ? TEAL_HEX : 0x3b4d63);
-      this.root.add(rect);
+      const chromeFrame = uiChromeEnabled()
+        ? this.uiButtonFrame(
+          x + cardWidth / 2,
+          y + cardHeight / 2,
+          cardWidth,
+          cardHeight,
+          focused ? "selected" : "idle",
+        )
+        : null;
+      this.root.add(chromeFrame ?? this.add.rectangle(
+        x + cardWidth / 2,
+        y + cardHeight / 2,
+        cardWidth,
+        cardHeight,
+        focused ? 0x24384f : PANEL,
+      ).setStrokeStyle(focused ? 3 : 1, focused ? TEAL_HEX : 0x3b4d63));
+      if (focused && uiChromeEnabled()) {
+        this.root.add(this.uiFocusBrackets(
+          x + cardWidth / 2,
+          y + cardHeight / 2,
+          cardWidth + 12,
+          cardHeight + 12,
+        ));
+      }
       this.root.add(this.text(x + 22, y + 18, card.label, focused ? TEAL : IVORY, "20px"));
       const sub = card.id === "expedition" ? "20 NODES • ONE LIFE (Quick Drop until the starchart lands)"
         : card.id === "armory" ? `${progress.commandMarksLifetime} lifetime command marks • permanent starting kits`
@@ -342,16 +390,21 @@ export class ShellScene extends Phaser.Scene {
       this.clickZone(x, y, cardWidth, cardHeight, () => {
         this.state = { ...this.state, menuIndex: index };
         this.apply("confirm");
-      });
+      }, chromeFrame, focused ? "selected" : "idle");
     });
+    if (uiChromeEnabled()) this.root.add(this.uiDivider(WIDTH / 2, HEIGHT - 52, 820));
     this.root.add(this.text(70, HEIGHT - 34, "ARROWS/WASD MOVE  •  ENTER CONFIRM  •  ESC BACK", MUTED, "12px"));
   }
 
   private renderHowToPlay(): void {
     const pages = howToPlayPages(this.state.controls);
     const page = pages[this.state.howToPlayPage]!;
+    if (uiChromeEnabled()) this.root.add(this.uiHeaderPlate(220, 48, 330, 62));
     this.root.add(this.text(70, 48, "HOW TO PLAY", IVORY, "28px"));
-    this.root.add(this.add.rectangle(WIDTH / 2, 290, 760, 320, PANEL).setStrokeStyle(1, 0x3b4d63));
+    this.root.add(this.add.rectangle(WIDTH / 2, 290, 740, 300, PANEL, 0.9));
+    this.root.add(uiChromeEnabled()
+      ? this.uiPanelFrame(WIDTH / 2, 290, 760, 320, "recessed")
+      : this.add.rectangle(WIDTH / 2, 290, 760, 320, PANEL, 0).setStrokeStyle(1, 0x3b4d63));
     // Diagram placeholder: Batch G supplies the real illustration per page.
     this.root.add(this.add.rectangle(WIDTH / 2, 240, 380, 130, 0x24384f).setStrokeStyle(1, TEAL_HEX));
     this.root.add(this.text(WIDTH / 2, 234, "[ DIAGRAM ]", MUTED, "13px", true));
@@ -378,6 +431,7 @@ export class ShellScene extends Phaser.Scene {
       this.fullscreenFeedback ? ORANGE : MUTED,
       "12px",
     ));
+    if (uiChromeEnabled()) this.root.add(this.uiDivider(WIDTH / 2, 448, 760));
     const rowsPerColumn = Math.ceil(this.state.settingsRows.length / 2);
     const rowStep = rowsPerColumn > 13 ? 28 : 30;
     this.state.settingsRows.forEach((row, index) => {
@@ -680,8 +734,10 @@ export class ShellScene extends Phaser.Scene {
       && isHeroId(hero.id)
       && isHeroDeploymentUnlocked(hero.id, this.state.purchasedArmoryNodeIds)
       && perkUnlocked;
-    this.root.add(this.add.rectangle(850, 470, 120, 44, canDeploy ? 0x24384f : PANEL)
-      .setStrokeStyle(2, canDeploy ? TEAL_HEX : 0x3b4d63));
+    this.root.add(uiChromeEnabled()
+      ? this.add.image(850, 470, uiButtonAssetId(canDeploy ? "selected" : "disabled")).setDisplaySize(120, 44)
+      : this.add.rectangle(850, 470, 120, 44, canDeploy ? 0x24384f : PANEL)
+        .setStrokeStyle(2, canDeploy ? TEAL_HEX : 0x3b4d63));
     this.root.add(this.text(850, 470, "DEPLOY", canDeploy ? TEAL : MUTED, "13px", true));
     if (canDeploy) this.clickZone(790, 448, 120, 44, () => this.apply("confirm"));
     this.root.add(this.text(70, HEIGHT - 24, "LEFT/RIGHT HERO  •  UP/DOWN PERK  •  ENTER DEPLOY  •  ESC BACK", MUTED, "12px"));
@@ -744,9 +800,94 @@ export class ShellScene extends Phaser.Scene {
     ).setStrokeStyle(1, 0x3b4d63);
   }
 
-  private clickZone(x: number, y: number, width: number, height: number, onClick: () => void): void {
+  private uiButtonFrame(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    state: UiButtonState,
+  ): Phaser.GameObjects.NineSlice {
+    return this.add.nineslice(
+      x,
+      y,
+      uiButtonAssetId(state),
+      undefined,
+      width,
+      height,
+      UI_BUTTON_SLICE.left,
+      UI_BUTTON_SLICE.right,
+      UI_BUTTON_SLICE.top,
+      UI_BUTTON_SLICE.bottom,
+    );
+  }
+
+  private uiPanelFrame(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    weight: UiPanelWeight = "raised",
+  ): Phaser.GameObjects.NineSlice {
+    return this.add.nineslice(
+      x,
+      y,
+      `ui-panel-${weight}-v1`,
+      undefined,
+      width,
+      height,
+      UI_PANEL_SLICE.left,
+      UI_PANEL_SLICE.right,
+      UI_PANEL_SLICE.top,
+      UI_PANEL_SLICE.bottom,
+    );
+  }
+
+  private uiFocusBrackets(x: number, y: number, width: number, height: number): Phaser.GameObjects.NineSlice {
+    return this.add.nineslice(
+      x,
+      y,
+      "ui-focus-brackets-v1",
+      undefined,
+      width,
+      height,
+      UI_FOCUS_SLICE.left,
+      UI_FOCUS_SLICE.right,
+      UI_FOCUS_SLICE.top,
+      UI_FOCUS_SLICE.bottom,
+    );
+  }
+
+  private uiHeaderPlate(x: number, y: number, width: number, height: number): Phaser.GameObjects.Image {
+    return this.add.image(x, y, "ui-header-plate-v1").setDisplaySize(width, height).setAlpha(0.9);
+  }
+
+  private uiDivider(x: number, y: number, width: number): Phaser.GameObjects.Image {
+    return this.add.image(x, y, "ui-divider-rule-v1").setDisplaySize(width, 16).setAlpha(0.72);
+  }
+
+  private clickZone(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    onClick: () => void,
+    chromeFrame: Phaser.GameObjects.NineSlice | null = null,
+    restingState: UiButtonState = "idle",
+  ): void {
     const zone = this.add.zone(x, y, width, height).setOrigin(0, 0).setInteractive();
-    zone.on("pointerdown", onClick);
+    if (chromeFrame) {
+      zone.on("pointerover", () => chromeFrame.setTexture(uiButtonAssetId(
+        restingState === "selected" ? "selected" : "hover",
+      )));
+      zone.on("pointerout", () => chromeFrame.setTexture(uiButtonAssetId(restingState)));
+      zone.on("pointerdown", () => {
+        chromeFrame.setTexture(uiButtonAssetId("pressed"));
+        onClick();
+      });
+      zone.on("pointerupoutside", () => chromeFrame.setTexture(uiButtonAssetId(restingState)));
+    } else {
+      zone.on("pointerdown", onClick);
+    }
     this.root.add(zone);
   }
 }
@@ -755,11 +896,9 @@ function recordsLine(progress: GameProgress): string {
   return `Runs ${progress.runsFinished}  •  Victories ${progress.victories}  •  Kills ${progress.totalKills}`;
 }
 
-function requestedInitialScreen(): "title" | "character-select" {
+function requestedInitialScreen() {
   if (typeof window === "undefined") return "title";
-  return new URLSearchParams(window.location.search).get("flow") === "character-select"
-    ? "character-select"
-    : "title";
+  return requestedShellScreen(window.location.search);
 }
 
 function requestedHeroC3Preview(heroId: string): boolean {

@@ -1,14 +1,76 @@
 import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
 
 export interface WeaponTilePresentation {
-  texture: "batch-i-weapon-tiles-v1" | "marauder-ar-tile-v1";
+  texture:
+    | "batch-i-weapon-tiles-v1"
+    | "weapon-identity-atlas-68a-v1"
+    | "weapon-identity-atlas-68b-v1"
+    | "weapon-identity-atlas-68c-v1"
+    | "marauder-ar-tile-v1"
+    | "event-horizon-tile-v1";
   frame?: number;
 }
 
-/** Standalone tiles override the shared Batch I atlas without changing its stable eight-frame contract. */
+/** Stable frame order for the first dedicated expansion atlas. */
+export const WEAPON_BATCH_68A_FRAMES: Readonly<Partial<Record<WeaponId, number>>> = Object.freeze({
+  railspike: 0,
+  "seeker-swarm": 1,
+  "cryo-lance": 2,
+  "tesla-coil": 3,
+  flamethrower: 4,
+  sawblade: 5,
+  "combat-knife": 6,
+  machete: 7,
+});
+
+/** Stable frame order for the second dedicated expansion atlas. */
+export const WEAPON_BATCH_68B_FRAMES: Readonly<Partial<Record<WeaponId, number>>> = Object.freeze({
+  "fire-axe": 0,
+  "shock-baton": 1,
+  "breaching-maul": 2,
+  "plasma-saber": 3,
+  "corrosive-lobber": 4,
+  "scourge-repeater": 5,
+  "bile-lance": 6,
+  "rime-cleaver": 7,
+});
+
+/** Stable frame order for the final seven player-facing identities. */
+export const WEAPON_BATCH_68C_FRAMES: Readonly<Partial<Record<WeaponId, number>>> = Object.freeze({
+  "hoarfrost-scatter": 0,
+  "glacier-ward": 1,
+  "tether-harpoon": 2,
+  "sentry-stake": 3,
+  emberlance: 4,
+  "storm-coil-beam": 5,
+  "blight-scythe": 6,
+});
+
+/** Dedicated tiles override Batch I without changing its stable eight-frame contract. */
 export function weaponTilePresentation(weaponId: WeaponId): WeaponTilePresentation {
   if (weaponId === "marauder-ar") return { texture: "marauder-ar-tile-v1" };
+  if (weaponId === "event-horizon") return { texture: "event-horizon-tile-v1" };
+  const batch68AFrame = WEAPON_BATCH_68A_FRAMES[weaponId];
+  if (batch68AFrame !== undefined) {
+    return { texture: "weapon-identity-atlas-68a-v1", frame: batch68AFrame };
+  }
+  const batch68BFrame = WEAPON_BATCH_68B_FRAMES[weaponId];
+  if (batch68BFrame !== undefined) {
+    return { texture: "weapon-identity-atlas-68b-v1", frame: batch68BFrame };
+  }
+  const batch68CFrame = WEAPON_BATCH_68C_FRAMES[weaponId];
+  if (batch68CFrame !== undefined) {
+    return { texture: "weapon-identity-atlas-68c-v1", frame: batch68CFrame };
+  }
   return { texture: "batch-i-weapon-tiles-v1", frame: canonicalWeaponTileFrame(weaponId) };
+}
+
+/** Resolve a real Scrap Shop weapon choice without changing non-weapon stock art. */
+export function shopWeaponTilePresentation(choiceId: string): WeaponTilePresentation | null {
+  const prefix = "shop-weapon:";
+  if (!choiceId.startsWith(prefix)) return null;
+  const weaponId = choiceId.slice(prefix.length);
+  return weaponId in WEAPON_CATALOG ? weaponTilePresentation(weaponId as WeaponId) : null;
 }
 
 /**

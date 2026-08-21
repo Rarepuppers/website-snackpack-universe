@@ -50,7 +50,6 @@ const GALLERY_ONLY_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
   "medic-portrait-v1",
   "action-tiles-v1",
   "weapon-tiles-v1",
-  "event-horizon-tile-v1",
   "aurum-tiles-v1",
   "batch-i-perk-tiles-v1",
   "batch-i-shop-counter-v1",

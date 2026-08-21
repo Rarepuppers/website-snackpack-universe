@@ -20,6 +20,7 @@ import type {
   EnemyState,
   MiniBossKind,
   PendingDecision,
+  PowerupType,
 } from "../CombatSimulation";
 
 /**
@@ -50,6 +51,8 @@ export interface ScenarioPopulationContext {
   spawnAurumHoarder(position?: Vector2Data): number | null;
   spawnBastionEater(position?: Vector2Data): number;
   spawnBoss(kind: BossKind, position?: Vector2Data): number;
+  spawnPowerup(type: PowerupType, position?: Vector2Data): number;
+  activatePowerup(type: PowerupType): void;
   recordDensitySpawn(spawn: { type: EnemyType }): void;
 
   activeObstacles(): ArenaDefinition["obstacles"];
@@ -410,6 +413,34 @@ const POPULATE: Readonly<Record<CombatScenario, Populate>> = Object.freeze({
     };
     context.setPendingWeaponTile(incoming);
     context.queueDecision(context.buildWeaponPlacementDecision(incoming));
+  },
+
+  /** Quiet live HUD fixture; the scene supplies the requested four-weapon page. */
+  "weapon-review": () => {},
+
+  /**
+   * Exact-size review lab for the dedicated world-pickup and HUD identities.
+   * EMP is intentionally absent from the timed tray because its real mechanic
+   * detonates immediately; it remains present in the pickup ring.
+   */
+  "powerup-identity": (context) => {
+    const centre = centreOf(context);
+    const types = [
+      "siege-loader",
+      "phase-jacket",
+      "hunter-optics",
+      "last-stand-stimulant",
+      "emp-charge",
+      "butchers-serum",
+    ] as const satisfies readonly PowerupType[];
+    types.forEach((type, index) => {
+      const angle = -Math.PI / 2 + index * Math.PI / 3;
+      context.spawnPowerup(type, {
+        x: centre.x + Math.cos(angle) * 4.2,
+        y: centre.y + Math.sin(angle) * 4.2,
+      });
+      context.activatePowerup(type);
+    });
   },
 
   /** Stable live-art lab for Batch J body silhouettes, cadence, and telegraphs. */

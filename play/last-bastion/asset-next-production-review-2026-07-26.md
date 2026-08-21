@@ -218,14 +218,42 @@ decorative props or theme variants.
     512×512-or-larger retained masters. Do not regenerate the accepted eight Batch I tiles or the
     standalone Marauder tile without a specific close-view failure. `auxiliary-drone` remains an
     internal supporting identity and is outside the player-facing tile count.
+    **Batch 68A complete (21 August 2026):** dedicated stable frames now cover Railspike, Seeker
+    Swarm, Cryo Lance, Tesla Coil, Flamethrower, Sawblade, Combat Knife, and Machete. Event Horizon's
+    already-authored tile was also restored to the shared mapper and route preloads. That leaves 15
+    borrowed player-facing identities for 68B–68C; 68C may be a seven-frame atlas rather than
+    manufacturing an unnecessary identity to fill an eighth slot.
+    **Batch 68B complete (21 August 2026):** stable dedicated frames now cover Fire Axe, Shock
+    Baton, Breaching Maul, Plasma Saber, Corrosive Lobber, Scourge Repeater, Bile Lance, and Rime
+    Cleaver. The first Fire Axe source was rejected before promotion because it read as a fantasy
+    double-axe; the retained replacement is a single-headed rescue tool. Seven borrowed identities
+    remain for Batch 68C.
+    **Batch 68C complete (21 August 2026):** Hoarfrost Scatter, Glacier Ward, Tether Harpoon,
+    Sentry Stake, Emberlance, Storm Coil Beam, and Blight Scythe now own a deliberate seven-frame
+    atlas. The weapon identity tile programme is complete: every player-facing weapon selects either
+    its accepted original tile or a dedicated identity. `auxiliary-drone` remains internal-only.
 69. **Power-up identity completion:** author dedicated pickup/HUD frames for Siege Loader, Phase
     Jacket, Hunter Optics, Last Stand Stimulant, EMP Charge, and Butcher's Serum. They currently
     reuse four generic reward frames. Preserve Medkit and Uranium-Core Rounds and keep names,
     durations, bindings, stack state, and timers code-owned.
+    **Complete (21 August 2026):** all six now share a deliberate six-frame 128 px atlas across
+    world pickups, collection bursts, and timed HUD status slots. The mapper is typed and tested,
+    while labels, timers, urgency rings, duration, and behavior remain code-owned. Review the atlas
+    at `?mode=gallery&batch=powerup-identity`.
 70. **Conditional expedition-plate refresh:** review all six 1536×1024 map plates at Full HD and 4K.
     Re-author only failed plates at 3840×2560, preserving their 3:2 composition, stable IDs, and
     1536×1024 logical contract. Do not convert them to title-style 16:9 art; shell and route overlays
     intentionally crop the plate.
+71. **UI Batch U1 reusable primitives complete:** retained ImageGen panel/button sources, a
+    deterministic alpha-cleaning normalizer, one transparent panel frame, and five explicit button
+    states now stage under `art/production-tests/ui-batch-u1/`. The selected state is wired behind the
+    title confirmation, idle/selected/hover/pressed states now back main-menu cards, and the panel
+    frame surrounds How to Play. `?uichrome=legacy` remains the A/B fallback, while `?flow=<screen>`
+    can open every shell screen directly for deterministic visual review. Browser review confirmed
+    clean button and large-panel scaling. Deterministic recessed, raised, and emphasis panel weights,
+    non-colour-only focus brackets, a header plate, divider rule, and a real disabled deploy treatment
+    are now integrated as stable runtime assets. U1 is complete. Keep screen-specific U2 surfaces
+    behind observed playtest findings; no further item identity batch is currently required.
 
 Do not blanket-regenerate early 64 px floor, boundary, obstacle, pickup, or effect families. Exact
 integer pixel-art scaling is expected. A family earns regeneration only through a named seam,

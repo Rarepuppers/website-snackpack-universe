@@ -5,13 +5,13 @@
 
 ## Readiness baseline
 
-- `npm run verify` passes: image audit, combat-boundary audit, generated content inventory, typecheck, 1,572 tests across 279 files, production build, HTTP smoke test, and offline boot.
+- `npm run verify` passes: image audit, combat-boundary audit, generated content inventory, typecheck, 1,577 tests across 281 files, production build, HTTP smoke test, and offline boot.
 - Desktop `npm run typecheck` and `npm test` pass: 28 tests across save recovery, bridge validation, display policy, packaging, Steam Input, Steamworks fallback, and the desktop protocol.
 - Windows unpacked packaging completes on Electron 43.4.0. Packaged renderer acceptance remains open:
   the Codex managed host exits in Electron's pre-app `IsSandboxedProcess` path with `0xC0000005`,
   including on Electron 42.9.0 and 43.3.0. Run `npm run smoke:package:win` and the visible executable
   from an ordinary local PowerShell session before attributing this host-policy crash to game code.
-- Live browser boot reaches Title and Main Menu at the canonical 960×540 logical render size without console errors or warnings. Full HD uses an exact 1920×1080 backing buffer; the 4K display contract remains an exact 4× presentation. The title now has a dedicated text-free 3840×2160 master rather than enlarging and cropping the 3:2 expedition map plate.
+- Live browser boot reaches Title and Main Menu at the canonical 960×540 logical render size without console errors or warnings. Full HD uses an exact 1920×1080 backing buffer and 4K uses an exact 3840×2160 backing buffer across shell, gallery, map, event, debrief, and combat routes; scene coordinates remain 960×540. Browser review confirmed the title, menu, character-select pointer mapping, and power-up gallery at 4K. The title uses a dedicated text-free 3840×2160 master rather than enlarging and cropping the 3:2 expedition map plate.
 - This is ready for **local gameplay and balance testing**. It is not yet a paid-Steam-release candidate: packaged-window/live-Steam acceptance, creator-led visual/audio review, and the observed-run gate remain open.
 
 ## Start
@@ -80,16 +80,14 @@ IDs, logical sizes, pivots, frame order, and code-rendered labels when replacing
 
 ### High priority — new art required
 
-1. **Weapon identity tiles:** author dedicated 128×128 runtime tiles from retained 512×512-or-larger
-   masters for the 24 player-visible weapon identities that currently borrow one of the eight Batch I
-   frames. `auxiliary-drone` is an internal supporting identity and does not need a player-facing tile.
-   Preserve the existing eight accepted tiles and the standalone Marauder tile unless close-view
-   testing finds a concrete defect. Deliver additions in three reviewable eight-tile atlases rather
-   than replacing the whole catalogue in one image-generation pass.
-2. **Power-up pickup and HUD identities:** author six dedicated, text-free frames for Siege Loader,
-   Phase Jacket, Hunter Optics, Last Stand Stimulant, EMP Charge, and Butcher's Serum. They currently
-   reuse the four Overcharge/Aegis/Magnet Pulse/Adrenaline reward motifs with colour as the primary
-   distinction. Keep Medkit and Uranium-Core Rounds on their existing dedicated presentations.
+1. **Weapon identity tiles — complete:** Batches 68A–68C give all 23 expansion weapons dedicated
+   128×128 runtime tiles from retained 512×512 masters, Event Horizon selects its previously unused
+   dedicated tile, and the eight accepted Batch I identities plus Marauder remain unchanged.
+   `auxiliary-drone` is internal-only and intentionally has no player-facing tile.
+2. **Power-up pickup and HUD identities — complete:** a six-frame 128 px atlas now gives Siege
+   Loader, Phase Jacket, Hunter Optics, Last Stand Stimulant, EMP Charge, and Butcher's Serum distinct
+   silhouettes in world pickups, collection bursts, and HUD statuses. Medkit and Uranium-Core Rounds
+   retain their accepted presentations. Review at `?mode=gallery&batch=powerup-identity`.
 3. **UI instruction diagrams:** replace the four `[ DIAGRAM ]` placeholders only after each page's
    teaching copy survives the observed-run comprehension review. Diagrams must depict the actual
    remappable inputs and never bake key labels into the bitmap.
@@ -112,6 +110,54 @@ IDs, logical sizes, pivots, frame order, and code-rendered labels when replacing
 
 - The title no longer enlarges the 1536×1024 map plate. It uses a dedicated text-free 3840×2160
   master and optimized WebP, with all language and controls rendered in code.
+- The first U1 shell-chrome slice is live: the title confirmation uses a text-free generated button
+  source normalized into a deterministic nine-slice asset. Main-menu cards now use idle, selected,
+  hover, and pressed states, and How to Play uses the transparent panel frame. `?uichrome=legacy`
+  preserves an immediate comparison path, and `?flow=<screen>` opens every shell screen directly for
+  deterministic review.
+- U1 reusable chrome is complete: recessed/raised/emphasis panel weights, five button states,
+  non-colour-only focus brackets, header plate, divider rule, and disabled deploy treatment all have
+  stable PNG/WebP contracts. Screen-specific U2 art remains evidence-gated.
+- Weapon Batch 68A is live for Railspike, Seeker Swarm, Cryo Lance, Tesla Coil, Flamethrower,
+  Sawblade, Combat Knife, and Machete. Event Horizon now uses its existing dedicated tile instead of
+  borrowing Grenade Tube. Review all eight at `?mode=gallery&batch=weapon-68a`.
+- Weapon Batch 68B is live for Fire Axe, Shock Baton, Breaching Maul, Plasma Saber, Corrosive
+  Lobber, Scourge Repeater, Bile Lance, and Rime Cleaver. Review it at
+  `?mode=gallery&batch=weapon-68b`.
+- Weapon Batch 68C is live for Hoarfrost Scatter, Glacier Ward, Tether Harpoon, Sentry Stake,
+  Emberlance, Storm Coil Beam, and Blight Scythe. Review it at
+  `?mode=gallery&batch=weapon-68c`. No player-facing expansion weapon now borrows Batch I art.
+- The power-up identity batch is live for Siege Loader, Phase Jacket, Hunter Optics, Last Stand
+  Stimulant, EMP Charge, and Butcher's Serum. Pickup and HUD surfaces select the same typed frame map;
+  review it at `?mode=gallery&batch=powerup-identity`.
 - Recent character, enemy, boss, object, terrain, shop, and status families retain source masters at
   sufficient scale. Do not regenerate them without an observed silhouette, extraction, seam, or
   readability failure.
+
+### Next implementation queue
+
+1. Run the five observed campaign sessions and fix any repeated comprehension, fairness, input, or
+   frame-pacing failure before expanding difficulty.
+2. Validate the completed U1 shell with mouse, keyboard/gamepad, 16:10, Full HD, and 4K during the
+   observed sessions; create screen-specific U2 surfaces only for a recorded failure.
+3. Complete native packaged-window and Steam-down/offline acceptance outside the managed Codex host.
+4. Review the completed weapon identity programme in live HUD/shop/debrief contexts. Deterministic
+   route coverage is complete; observed density and creator-led legibility review remain open.
+5. Review all six dedicated power-up identities at pickup size and 30 px HUD size during density play.
+6. Keep map-plate, early-tile, and theme regeneration conditional on a named local-test failure.
+
+Deterministic setup for item 5: open `?scenario=powerup-identity`. The no-wave lab places all six
+dedicated pickups around the player and fills the HUD tray with the five identities that are truly
+timed. EMP Charge correctly remains pickup-only because its effect detonates immediately. Use the lab
+for exact-size inspection, then confirm the same identities remain legible during an observed dense run.
+
+Deterministic setup for item 4 uses one `weaponreview` page across the real production surfaces:
+
+- HUD: `?scenario=weapon-review&weaponreview=68a-1`
+- Shop: `?scenario=scrap-shop&weaponreview=68a-1`
+- Debrief: `?screen=summary&weaponreview=68a-1`
+
+Available pages are `core-1`, `core-2`, `special-1`, `68a-1`, `68a-2`, `68b-1`, `68b-2`, `68c-1`,
+and `68c-2`. Together they cover all 33 player-facing identities exactly once. Shop review continues
+to enforce real availability, so the earned/hero-bound `special-1` identities intentionally appear
+only in HUD and debrief rather than being falsely advertised as purchasable stock.

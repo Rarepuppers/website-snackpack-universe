@@ -23,6 +23,7 @@ import {
   type ControlBindings,
 } from "../input/ControlBindings";
 import { weaponTilePresentation } from "./WeaponTileFrames";
+import { powerupStatusPresentation } from "./PowerupTileFrames";
 import { combatPalette, type CombatPalette, type ColorVisionMode } from "./CombatPalette";
 import {
   bossHudPresentation,
@@ -439,7 +440,11 @@ export class CombatHud {
       this.actionTiles[3]!.timer.setVisible(true).setText(nearbyChest ? "OPEN" : "FENCE").setColor("#b9ef62");
     }
 
-    const slowWeapons = cadenceWeapons(snapshot.equippedWeapons).slice(0, this.cadenceTiles.length);
+    // The quiet identity lab deliberately exposes every requested tile at the
+    // real 34 px cadence-row size. Campaign HUD behavior remains cadence-only.
+    const slowWeapons = (snapshot.scenario === "weapon-review"
+      ? snapshot.equippedWeapons
+      : cadenceWeapons(snapshot.equippedWeapons)).slice(0, this.cadenceTiles.length);
     this.cadenceTiles.forEach((tile, index) => {
       const weapon = slowWeapons[index];
       if (!weapon) {
@@ -565,8 +570,8 @@ function updateStatusTrayView(
     .setStrokeStyle(2, timing.urgent ? 0xffc35a : statusColor(type), 0.95);
   view.iconText.setText(statusAbbreviation(type));
   if (view.image) {
-    if (type === "uranium-core-rounds") view.image.setTexture("uranium-status-v1");
-    else view.image.setTexture("batch-c-rewards-v1", statusRewardFrame(type));
+    const presentation = powerupStatusPresentation(type);
+    view.image.setTexture(presentation.texture, presentation.frame);
   }
   view.timer.setText(timing.timerLabel).setColor(timing.urgent ? "#ffd36b" : "#ffffff");
   view.ring.clear();
@@ -589,21 +594,6 @@ function statusColor(type: PowerupType): number {
     case "hunter-optics": return 0xe8b24a;
     case "last-stand-stimulant": return 0xff4d5e;
     default: return 0x9f7aea;
-  }
-}
-
-function statusRewardFrame(type: PowerupType): number {
-  switch (type) {
-    case "overcharge": return 12;
-    case "magnet-pulse": return 14;
-    case "adrenaline": return 15;
-    // Placeholder frames pending dedicated HUD icon art; colour + abbreviation
-    // are the primary visual distinction until then.
-    case "siege-loader": return 12;
-    case "phase-jacket": return 13;
-    case "hunter-optics": return 14;
-    case "last-stand-stimulant": return 15;
-    default: return 13;
   }
 }
 
@@ -760,6 +750,8 @@ const SCENARIO_LABELS: Readonly<Record<CombatScenario, string>> = Object.freeze(
   "aurum-hoarder": "AURUM LAB",
   "scrap-shop": "SCRAP SHOP LAB",
   "weapon-gate": "WEAPON GATE LAB",
+  "weapon-review": "WEAPON REVIEW",
+  "powerup-identity": "POWER-UP LAB",
   "batch-j": "BATCH J LAB",
 });
 

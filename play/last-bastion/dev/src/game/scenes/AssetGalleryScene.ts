@@ -127,6 +127,22 @@ export class AssetGalleryScene extends Phaser.Scene {
       this.createBatchI2Gallery();
       return;
     }
+    if (batch === "weapon-68a") {
+      this.createWeaponBatch68AGallery();
+      return;
+    }
+    if (batch === "weapon-68b") {
+      this.createWeaponBatch68BGallery();
+      return;
+    }
+    if (batch === "weapon-68c") {
+      this.createWeaponBatch68CGallery();
+      return;
+    }
+    if (batch === "powerup-identity") {
+      this.createPowerupIdentityGallery();
+      return;
+    }
     if (batch === "i") {
       this.createBatchIGallery();
       return;
@@ -290,6 +306,78 @@ export class AssetGalleryScene extends Phaser.Scene {
       }
     });
     this.add.text(480, 522, "Review: ?mode=gallery&batch=i • Live placement: ?scenario=weapon-gate", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createWeaponBatch68AGallery(): void {
+    this.add.text(20, 18, "WEAPON IDENTITY BATCH 68A — DEDICATED 128 PX TILES", style("#f4dfb8", "18px"));
+    this.add.text(20, 46, "Stable weapon IDs • code-owned names, stats, bindings, cooldowns, and selection", style("#8fb2c9", "11px"));
+    const labels = [
+      "RAILSPIKE", "SEEKER SWARM", "CRYO LANCE", "TESLA COIL",
+      "FLAMETHROWER", "SAWBLADE", "COMBAT KNIFE", "MACHETE",
+    ] as const;
+    for (let frame = 0; frame < labels.length; frame += 1) {
+      const column = frame % 4;
+      const row = Math.floor(frame / 4);
+      const x = 126 + column * 238;
+      const y = 150 + row * 220;
+      this.add.sprite(x, y, "weapon-identity-atlas-68a-v1", frame).setDisplaySize(142, 142);
+      this.add.text(x, y + 86, `${frame}  ${labels[frame]}`, style("#dce8f2", "10px")).setOrigin(0.5);
+    }
+    this.add.text(480, 520, "Review: ?mode=gallery&batch=weapon-68a • Live: weapon chest, shop, HUD ring, debrief", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createWeaponBatch68BGallery(): void {
+    this.add.text(20, 18, "WEAPON IDENTITY BATCH 68B — DEDICATED 128 PX TILES", style("#f4dfb8", "18px"));
+    this.add.text(20, 46, "Melee weight and elemental roles remain readable without relying on labels", style("#8fb2c9", "11px"));
+    const labels = [
+      "FIRE AXE", "SHOCK BATON", "BREACHING MAUL", "PLASMA SABER",
+      "CORROSIVE LOBBER", "SCOURGE REPEATER", "BILE LANCE", "RIME CLEAVER",
+    ] as const;
+    for (let frame = 0; frame < labels.length; frame += 1) {
+      const column = frame % 4;
+      const row = Math.floor(frame / 4);
+      const x = 126 + column * 238;
+      const y = 150 + row * 220;
+      this.add.sprite(x, y, "weapon-identity-atlas-68b-v1", frame).setDisplaySize(142, 142);
+      this.add.text(x, y + 86, `${frame}  ${labels[frame]}`, style("#dce8f2", "10px")).setOrigin(0.5);
+    }
+    this.add.text(480, 520, "Review: ?mode=gallery&batch=weapon-68b • Live: weapon chest, shop, HUD ring, debrief", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createWeaponBatch68CGallery(): void {
+    this.add.text(20, 18, "WEAPON IDENTITY BATCH 68C — FINAL DEDICATED TILES", style("#f4dfb8", "18px"));
+    this.add.text(20, 46, "Seven intentional frames • every player-facing weapon now has an owned identity", style("#8fb2c9", "11px"));
+    const labels = [
+      "HOARFROST SCATTER", "GLACIER WARD", "TETHER HARPOON", "SENTRY STAKE",
+      "EMBERLANCE", "STORM COIL BEAM", "BLIGHT SCYTHE",
+    ] as const;
+    for (let frame = 0; frame < labels.length; frame += 1) {
+      const column = frame % 4;
+      const row = Math.floor(frame / 4);
+      const x = 126 + column * 238;
+      const y = 150 + row * 220;
+      this.add.sprite(x, y, "weapon-identity-atlas-68c-v1", frame).setDisplaySize(142, 142);
+      this.add.text(x, y + 86, `${frame}  ${labels[frame]}`, style("#dce8f2", "10px")).setOrigin(0.5);
+    }
+    this.add.text(480, 520, "Review: ?mode=gallery&batch=weapon-68c • No generic player-facing expansion tiles remain", style("#8fb2c9", "10px")).setOrigin(0.5);
+  }
+
+  private createPowerupIdentityGallery(): void {
+    this.add.text(20, 18, "POWER-UP IDENTITY BATCH — DEDICATED 128 PX TILES", style("#f4dfb8", "18px"));
+    this.add.text(20, 46, "Six implemented mechanics • one stable identity shared by pickup and HUD status", style("#8fb2c9", "11px"));
+    const labels = [
+      "SIEGE LOADER", "PHASE JACKET", "HUNTER OPTICS",
+      "LAST STAND STIMULANT", "EMP CHARGE", "BUTCHER'S SERUM",
+    ] as const;
+    for (let frame = 0; frame < labels.length; frame += 1) {
+      const column = frame % 3;
+      const row = Math.floor(frame / 3);
+      const x = 175 + column * 305;
+      const y = 150 + row * 220;
+      this.add.sprite(x, y, "powerup-identity-atlas-v1", frame).setDisplaySize(142, 142);
+      this.add.text(x, y + 86, `${frame}  ${labels[frame]}`, style("#dce8f2", "10px")).setOrigin(0.5);
+    }
+    this.add.text(480, 520, "Exact-size live review: ?scenario=powerup-identity • pickup ring + 30 px HUD tray", style("#8fb2c9", "10px")).setOrigin(0.5);
   }
 
   private createBatchI2Gallery(): void {

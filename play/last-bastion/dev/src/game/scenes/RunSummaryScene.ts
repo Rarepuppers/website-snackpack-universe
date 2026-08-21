@@ -9,6 +9,7 @@ import { createRunSummary, damagePerMinute, type RunSummary } from "../run/RunSu
 import { createTransformationCodexSnapshot } from "../transformations/TransformationSnapshot";
 import { normalizeTransformationAffinityState } from "../transformations/TransformationAffinity";
 import { weaponTilePresentation } from "../ui/WeaponTileFrames";
+import { weaponReviewPage } from "../ui/WeaponReviewRoutes";
 import { formatRunClock } from "../stats/formatStat";
 import { threatTierDefinition } from "../expedition/ThreatTier";
 
@@ -34,8 +35,10 @@ export class RunSummaryScene extends Phaser.Scene {
   create(): void {
     const store = createLocalSaveStore(typeof window !== "undefined" ? window : null);
     const save = store.load();
-    const summary = new URLSearchParams(window.location.search).get("summarydemo") === "1"
-      ? demoSummary()
+    const params = new URLSearchParams(window.location.search);
+    const reviewWeapons = weaponReviewPage(params);
+    const summary = params.get("summarydemo") === "1" || reviewWeapons
+      ? demoSummary(reviewWeapons ?? undefined)
       : save.lastRunSummary;
     this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY);
     this.add.image(WIDTH / 2, HEIGHT / 2, "bastion-logistics-map-backdrop-v1")
@@ -281,7 +284,14 @@ function demoDamageTimeline(minuteTotals: readonly number[]): readonly number[] 
   ]);
 }
 
-function demoSummary() {
+function demoSummary(reviewWeapons: readonly WeaponId[] = [
+  "bastion-service-rifle",
+  "scattergun",
+  "bulwark-rotary-cannon",
+]) {
+  const damageByWeapon = Object.fromEntries(
+    reviewWeapons.map((weaponId, index) => [weaponId, 1428.5 - index * 286.25]),
+  );
   return createRunSummary({
     mode: "expedition",
     threatTier: 2,
@@ -305,16 +315,8 @@ function demoSummary() {
     defeatCause: null,
     newBestWave: true,
     newBestNodes: true,
-    damageByWeapon: {
-      "bulwark-rotary-cannon": 1428.5,
-      "bastion-service-rifle": 986,
-      scattergun: 442.5,
-    },
-    weapons: [
-      { weaponId: "bastion-service-rifle", tier: 2 },
-      { weaponId: "scattergun", tier: 2 },
-      { weaponId: "bulwark-rotary-cannon", tier: 2 },
-    ],
+    damageByWeapon,
+    weapons: reviewWeapons.map((weaponId) => ({ weaponId, tier: 2 })),
     upgrades: [
       { upgradeId: "rapid-cycling", level: 3 },
       { upgradeId: "heavy-calibre", level: 2 },

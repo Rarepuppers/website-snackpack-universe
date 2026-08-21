@@ -13,10 +13,12 @@ import type { GameAssetDefinition } from "./GameAssetManifest";
 import { BASTION_BACKDROP_ASSET } from "./BastionBackdropAsset";
 import { TITLE_BACKDROP_ASSET } from "./TitleBackdropAsset";
 import { runtimeImageUrl } from "./RuntimeImageFormat";
+import { UI_CHROME_ASSETS } from "./UiChromeAssets";
 
 export const SHELL_BASE_ASSETS: readonly GameAssetDefinition[] = Object.freeze([
   BASTION_BACKDROP_ASSET,
   TITLE_BACKDROP_ASSET,
+  ...UI_CHROME_ASSETS,
 ]);
 
 export const SHELL_CHARACTER_ASSETS: readonly GameAssetDefinition[] = Object.freeze([

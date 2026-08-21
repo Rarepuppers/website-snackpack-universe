@@ -75,7 +75,9 @@ import { CombatHaptics } from "../ui/CombatHaptics";
 import { createBuildViewModel } from "../build/BuildViewModel";
 import { buildOverlayModel } from "../ui/BuildOverlay";
 import { FRIENDLY_PROJECTILE_SOFT_BUDGET } from "../combat/FriendlyProjectileBudget";
-import { weaponTilePresentation } from "../ui/WeaponTileFrames";
+import { shopWeaponTilePresentation, weaponTilePresentation } from "../ui/WeaponTileFrames";
+import { dedicatedPowerupFrame, powerupPickupPresentation } from "../ui/PowerupTileFrames";
+import { weaponReviewPage } from "../ui/WeaponReviewRoutes";
 import { upgradeTilePresentation } from "../ui/UpgradeTilePresentation";
 import {
   VERTICAL_SLICE_WEAPON_IDS,
@@ -2056,7 +2058,13 @@ export class PrototypeScene extends Phaser.Scene {
             this.synth.play(MEDKIT_HEAL_CUE);
             this.emitAuthoredEffect(2, event.position, 320, 0.5, 1.1, 0, "combat-effects-v1");
           } else {
-            this.emitAuthoredEffect(powerupRewardFrame(event.powerupType), event.position, 360, 0.6, 1.3, 0, "batch-c-rewards-v1");
+            const dedicatedFrame = dedicatedPowerupFrame(event.powerupType);
+            if (dedicatedFrame !== undefined) {
+              this.emitAuthoredEffect(dedicatedFrame, event.position, 360, 0.32, 0.68, 0, "powerup-identity-atlas-v1");
+            } else {
+              const presentation = powerupPickupPresentation(event.powerupType);
+              this.emitAuthoredEffect(presentation.frame ?? 0, event.position, 360, 0.6, 1.3, 0, "batch-c-rewards-v1");
+            }
           }
           break;
         case "kit-activated":
@@ -2135,7 +2143,7 @@ export class PrototypeScene extends Phaser.Scene {
     scale: number,
     targetScale: number,
     rotation = 0,
-    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "synapse-herald-effects-v1" | "assembly-prime-effects-v1" | "storm-regent-effects-v1" | "abomination-prime-biomass-v1" | "abomination-prime-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "elite-dash-puddle-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "the-choir-effects-v1" | "foundry-sovereign-effects-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "event-horizon-effects-v1" | "marauder-ar-effects-v1" | "aurum-hoarder-effects-v1" | "corrupted-marine-effects-v1" | "nest-effects-v1" | "storm-effects-v1" | "machine-scrap-skitterer-effects-v1" | "machine-arc-warden-effects-v1" | "machine-cyborg-reclaimer-effects-v1" | "machine-foundry-effects-v1" | "telegraph-small-v1" | "destructible-terrain-effects-v1" = "combat-effects-v1",
+    texture: "combat-effects-v1" | "batch-b-effects-v1" | "batch-c-effects-v1" | "batch-c-rewards-v1" | "powerup-identity-atlas-v1" | "brood-warden-effects-v1" | "rift-stalker-effects-v1" | "synapse-herald-effects-v1" | "assembly-prime-effects-v1" | "storm-regent-effects-v1" | "abomination-prime-biomass-v1" | "abomination-prime-effects-v1" | "ripper-effects-v1" | "razor-scuttler-effects-v1" | "elite-dash-puddle-effects-v1" | "quillback-effects-v1" | "spinewheel-effects-v1" | "tether-bloom-effects-v1" | "bastion-eater-effects-v1" | "bastion-eater-environment-v1" | "the-choir-effects-v1" | "foundry-sovereign-effects-v1" | "patrol-blade-effects-v1" | "bolt-carbine-effects-v1" | "injector-carbine-effects-v1" | "bulwark-rotary-effects-v1" | "grenade-tube-effects-v1" | "event-horizon-effects-v1" | "marauder-ar-effects-v1" | "aurum-hoarder-effects-v1" | "corrupted-marine-effects-v1" | "nest-effects-v1" | "storm-effects-v1" | "machine-scrap-skitterer-effects-v1" | "machine-arc-warden-effects-v1" | "machine-cyborg-reclaimer-effects-v1" | "machine-foundry-effects-v1" | "telegraph-small-v1" | "destructible-terrain-effects-v1" = "combat-effects-v1",
   ): void {
     if (!this.useMarineArt) {
       this.flashCircle(position, 8, 0x68e4e8, duration, targetScale);
@@ -4784,15 +4792,14 @@ export class PrototypeScene extends Phaser.Scene {
     for (const powerup of powerups) {
       let view = this.powerupViews.get(powerup.id);
       if (!view) {
+        const presentation = powerupPickupPresentation(powerup.type);
         view = this.useMarineArt
-          ? powerup.type === "medkit"
-            ? this.add.sprite(0, 0, "pickups-v1", 2)
-            : this.add.sprite(0, 0, "batch-c-rewards-v1", powerupRewardFrame(powerup.type))
+          ? this.add.sprite(0, 0, presentation.texture, presentation.frame ?? 0)
           : this.add.rectangle(0, 0, 16, 16, powerupColor(powerup.type))
             .setRotation(Math.PI / 4).setStrokeStyle(2, 0xffffff);
         this.powerupViews.set(powerup.id, view);
       }
-      const baseScale = powerup.type === "medkit" ? 0.5 : 1;
+      const baseScale = powerup.type === "medkit" || dedicatedPowerupFrame(powerup.type) !== undefined ? 0.5 : 1;
       view.setPosition(powerup.position.x * PIXELS_PER_METRE, powerup.position.y * PIXELS_PER_METRE)
         .setDepth(worldDepth(powerup.position.y) - 2)
         .setScale(baseScale * (1 + Math.sin(this.time.now / 140) * 0.12))
@@ -5178,6 +5185,7 @@ export class PrototypeScene extends Phaser.Scene {
           : isShop ? titleY + 78 + shopRow * 70 : titleY + 65 + index * 86;
       const enabled = choice.affordable !== false;
       const upgradeTile = this.useMarineArt ? upgradeTilePresentation(choice.id) : null;
+      const shopWeaponTile = isShop && this.useMarineArt ? shopWeaponTilePresentation(choice.id) : null;
       const shopButtonWidth = shopColumns === 2 ? 444 : 500;
       const button = this.add.rectangle(
         x, y,
@@ -5191,8 +5199,8 @@ export class PrototypeScene extends Phaser.Scene {
         children.push(this.add.image(
           x - shopButtonWidth / 2 + 34,
           y,
-          upgradeTile?.texture ?? "scrap-shop-offer-tiles-v1",
-          upgradeTile?.frame ?? scrapShopOfferFrame(choice.id),
+          shopWeaponTile?.texture ?? upgradeTile?.texture ?? "scrap-shop-offer-tiles-v1",
+          shopWeaponTile?.frame ?? upgradeTile?.frame ?? scrapShopOfferFrame(choice.id),
         )
           .setDisplaySize(48, 48).setAlpha(enabled ? 1 : 0.42));
       }
@@ -5271,7 +5279,12 @@ function readStartingWeaponCount(): number {
 }
 
 function readStartingWeaponIds(): readonly WeaponId[] | null {
-  const raw = new URLSearchParams(window.location.search).get("loadout")?.trim().toLowerCase();
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("scenario") === "weapon-review") {
+    const reviewPage = weaponReviewPage(params);
+    if (reviewPage) return reviewPage;
+  }
+  const raw = params.get("loadout")?.trim().toLowerCase();
   if (!raw) return null;
   if (raw === "vertical") return VERTICAL_SLICE_WEAPON_IDS;
   if (raw === "patrol") return ["patrol-blade"];
@@ -5327,7 +5340,7 @@ function readStressProfile(): 4 | 12 | null {
 
 function readScenario(): CombatScenario | null {
   const scenario = new URLSearchParams(window.location.search).get("scenario");
-  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "ironhide-abomination" || scenario === "splitcaller-weaver" || scenario === "voltaic-warden" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "rift-stalker" || scenario === "synapse-herald" || scenario === "assembly-prime" || scenario === "storm-regent" || scenario === "abomination-prime" || scenario === "the-choir" || scenario === "foundry-sovereign" || scenario === "infected-survivor" || scenario === "corrupted-marine" || scenario === "abomination" || scenario === "corrupted-human" || scenario === "nest-weaver" || scenario === "storm-savant" || scenario === "scrap-skitterer" || scenario === "arc-warden" || scenario === "cyborg-reclaimer" || scenario === "foundry-fabricator" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "escort-objective" || scenario === "deny-objective" || scenario === "collect-objective" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop" || scenario === "weapon-gate" || scenario === "batch-j"
+  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "ironhide-abomination" || scenario === "splitcaller-weaver" || scenario === "voltaic-warden" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "rift-stalker" || scenario === "synapse-herald" || scenario === "assembly-prime" || scenario === "storm-regent" || scenario === "abomination-prime" || scenario === "the-choir" || scenario === "foundry-sovereign" || scenario === "infected-survivor" || scenario === "corrupted-marine" || scenario === "abomination" || scenario === "corrupted-human" || scenario === "nest-weaver" || scenario === "storm-savant" || scenario === "scrap-skitterer" || scenario === "arc-warden" || scenario === "cyborg-reclaimer" || scenario === "foundry-fabricator" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "escort-objective" || scenario === "deny-objective" || scenario === "collect-objective" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop" || scenario === "weapon-gate" || scenario === "weapon-review" || scenario === "powerup-identity" || scenario === "batch-j"
     ? scenario
     : null;
 }
@@ -5497,6 +5510,7 @@ function createSimulation(
     worldObjectTheme: readWorldObjectTheme(),
     startingWeaponCount,
     startingWeaponIds: startingWeaponIds ?? armoryLoadout,
+    reviewWeaponIds: weaponReviewPage(window.location.search) ?? undefined,
     stressProfile: stressProfile ?? undefined,
     scenario: scenario ?? undefined,
     startingUraniumKit: uraniumLab.kit,
@@ -5596,26 +5610,6 @@ function statusEffectFrame(status: string): number {
     case "freeze": return 2;
     case "corrode": return 3;
     default: return 4;
-  }
-}
-
-function powerupRewardFrame(type: PowerupType): number {
-  switch (type) {
-    case "overcharge": return 8;
-    case "aegis": return 9;
-    case "magnet-pulse": return 10;
-    case "adrenaline": return 11;
-    case "uranium-core-rounds": return 8;
-    // Medkits render from the Batch A pickup atlas instead; see syncPowerups.
-    case "medkit": return 9;
-    // Placeholder frames pending dedicated pickup art (item-ui-asset-production-plan.md);
-    // colour (see powerupColor) is the primary visual distinction until then.
-    case "siege-loader": return 8;
-    case "phase-jacket": return 9;
-    case "hunter-optics": return 10;
-    case "last-stand-stimulant": return 11;
-    case "emp-charge": return 10;
-    case "butchers-serum": return 8;
   }
 }
 

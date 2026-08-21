@@ -8,6 +8,18 @@ describe("route asset manifests", () => {
     expect(SHELL_BASE_ASSETS.map((asset) => asset.id)).toEqual([
       "bastion-logistics-map-backdrop-v1",
       "title-menu-backdrop-v1",
+      "ui-panel-frame-v1",
+      "ui-panel-recessed-v1",
+      "ui-panel-raised-v1",
+      "ui-panel-emphasis-v1",
+      "ui-button-idle-v1",
+      "ui-button-hover-v1",
+      "ui-button-selected-v1",
+      "ui-button-pressed-v1",
+      "ui-button-disabled-v1",
+      "ui-focus-brackets-v1",
+      "ui-header-plate-v1",
+      "ui-divider-rule-v1",
     ]);
     expect(SHELL_CHARACTER_ASSETS.map((asset) => asset.id)).toEqual([
       "marine-select-portrait-v1",
@@ -23,7 +35,11 @@ describe("route asset manifests", () => {
     expect(DEBRIEF_ASSETS.map((asset) => asset.id)).toEqual([
       "bastion-logistics-map-backdrop-v1",
       "batch-i-weapon-tiles-v1",
+      "weapon-identity-atlas-68a-v1",
+      "weapon-identity-atlas-68b-v1",
+      "weapon-identity-atlas-68c-v1",
       "marauder-ar-tile-v1",
+      "event-horizon-tile-v1",
     ]);
   });
 

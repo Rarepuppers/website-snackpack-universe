@@ -3,6 +3,7 @@ import "./style.css";
 import { createGameConfig } from "./game/config";
 import { planDisplayPresentation } from "./game/rendering/DisplayPresentation";
 import { publishDisplayPresentation } from "./game/rendering/DisplayPresentationRuntime";
+import { applyDirectDisplayPresentation } from "./game/rendering/DirectDisplayPresentation";
 import { applyDisplayCalibration } from "./game/rendering/DisplayCalibrationRuntime";
 import { initializePlatformAdapter } from "./game/platform/PlatformRuntime";
 import { initializeCloudSaveRuntime } from "./game/platform/CloudSaveRuntime";
@@ -10,7 +11,7 @@ import { initializeAchievementRuntime } from "./game/platform/AchievementRuntime
 import { initializeSteamInputRuntime } from "./game/platform/SteamInputRuntime";
 import { initializeDesktopDisplayRuntime, type DesktopDisplayWindow } from "./game/rendering/DesktopDisplayRuntime";
 import type { SteamworksWindow } from "./game/platform/HostPlatform";
-import { planDisplayScale, registerDisplayScaleReapply, setUiDeviceScale } from "./game/rendering/DisplayScaling";
+import { registerDisplayScaleReapply, setUiDeviceScale } from "./game/rendering/DisplayScaling";
 import { createLocalSaveStore } from "./game/save/SaveStorage";
 import { resolveSceneRoute } from "./game/SceneRoute";
 import { loadInitialScene } from "./game/loadInitialScene";
@@ -48,14 +49,15 @@ function applyDisplayScale(target: Phaser.Game, useWorldPresentation: boolean): 
     }
     return;
   }
-  const plan = planDisplayScale(
-    window.innerWidth,
-    window.innerHeight,
-    window.devicePixelRatio,
+  const presentation = planDisplayPresentation({
+    windowWidth: window.innerWidth,
+    windowHeight: window.innerHeight,
+    devicePixelRatio: window.devicePixelRatio,
     sizeMultiplier,
-  );
-  setUiDeviceScale(plan.deviceScale);
-  target.scale.setZoom(plan.zoom);
+    requestedMode: savedSettings.presentationMode,
+  });
+  setUiDeviceScale(presentation.renderDeviceScale);
+  applyDirectDisplayPresentation(target, presentation);
 }
 
 /**

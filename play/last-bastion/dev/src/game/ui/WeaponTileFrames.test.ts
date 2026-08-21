@@ -1,6 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
-import { canonicalWeaponTileFrame, weaponTilePresentation } from "./WeaponTileFrames";
+import {
+  HERO_STARTING_WEAPONS,
+  UNIQUE_SLOT_WEAPONS,
+  WEAPON_CATALOG,
+  WEAPON_CHEST_POOL,
+  type WeaponId,
+} from "../content/weaponCatalog";
+import {
+  WEAPON_BATCH_68A_FRAMES,
+  WEAPON_BATCH_68B_FRAMES,
+  WEAPON_BATCH_68C_FRAMES,
+  canonicalWeaponTileFrame,
+  weaponTilePresentation,
+  shopWeaponTilePresentation,
+} from "./WeaponTileFrames";
 
 const PENDING_ART_WEAPON_IDS: readonly WeaponId[] = [
   "railspike", "seeker-swarm", "cryo-lance", "tesla-coil", "flamethrower", "sawblade", "event-horizon",
@@ -71,6 +84,75 @@ describe("canonical Batch I weapon tile mapping", () => {
     });
   });
 
+  it("selects every dedicated Batch 68A tile and the existing Event Horizon tile", () => {
+    expect(WEAPON_BATCH_68A_FRAMES).toEqual({
+      railspike: 0,
+      "seeker-swarm": 1,
+      "cryo-lance": 2,
+      "tesla-coil": 3,
+      flamethrower: 4,
+      sawblade: 5,
+      "combat-knife": 6,
+      machete: 7,
+    });
+    for (const [weaponId, frame] of Object.entries(WEAPON_BATCH_68A_FRAMES)) {
+      expect(weaponTilePresentation(weaponId as WeaponId)).toEqual({
+        texture: "weapon-identity-atlas-68a-v1",
+        frame,
+      });
+    }
+    expect(weaponTilePresentation("event-horizon")).toEqual({ texture: "event-horizon-tile-v1" });
+  });
+
+  it("selects every dedicated Batch 68B tile", () => {
+    expect(WEAPON_BATCH_68B_FRAMES).toEqual({
+      "fire-axe": 0,
+      "shock-baton": 1,
+      "breaching-maul": 2,
+      "plasma-saber": 3,
+      "corrosive-lobber": 4,
+      "scourge-repeater": 5,
+      "bile-lance": 6,
+      "rime-cleaver": 7,
+    });
+    for (const [weaponId, frame] of Object.entries(WEAPON_BATCH_68B_FRAMES)) {
+      expect(weaponTilePresentation(weaponId as WeaponId)).toEqual({
+        texture: "weapon-identity-atlas-68b-v1",
+        frame,
+      });
+    }
+  });
+
+  it("selects every dedicated Batch 68C tile", () => {
+    expect(WEAPON_BATCH_68C_FRAMES).toEqual({
+      "hoarfrost-scatter": 0,
+      "glacier-ward": 1,
+      "tether-harpoon": 2,
+      "sentry-stake": 3,
+      emberlance: 4,
+      "storm-coil-beam": 5,
+      "blight-scythe": 6,
+    });
+    for (const [weaponId, frame] of Object.entries(WEAPON_BATCH_68C_FRAMES)) {
+      expect(weaponTilePresentation(weaponId as WeaponId)).toEqual({
+        texture: "weapon-identity-atlas-68c-v1",
+        frame,
+      });
+    }
+  });
+
+  it("never gives a released expansion weapon a borrowed Batch I tile", () => {
+    const acceptedBatchIIds = new Set<WeaponId>([
+      "bastion-service-rifle", "scattergun", "arc-carbine", "patrol-blade",
+      "bolt-carbine", "bulwark-rotary-cannon", "grenade-tube", "injector-carbine",
+    ]);
+    const playerFacingIds = [...WEAPON_CHEST_POOL, ...UNIQUE_SLOT_WEAPONS, ...HERO_STARTING_WEAPONS];
+    for (const weaponId of playerFacingIds) {
+      if (acceptedBatchIIds.has(weaponId)) continue;
+      expect(weaponTilePresentation(weaponId).texture).not.toBe("batch-i-weapon-tiles-v1");
+    }
+  });
+
   it("groups every art-pending weapon onto the tile closest to how it plays", () => {
     for (const id of PENDING_ART_WEAPON_IDS) {
       expect(canonicalWeaponTileFrame(id)).toBe(EXPECTED_PLACEHOLDER_FRAME[id]);
@@ -87,5 +169,19 @@ describe("canonical Batch I weapon tile mapping", () => {
       expect(frame).toBeGreaterThanOrEqual(0);
       expect(frame).toBeLessThanOrEqual(7);
     }
+  });
+});
+
+describe("Scrap Shop weapon tile presentation", () => {
+  it("uses the offered weapon's dedicated identity", () => {
+    expect(shopWeaponTilePresentation("shop-weapon:railspike"))
+      .toEqual(weaponTilePresentation("railspike"));
+    expect(shopWeaponTilePresentation("shop-weapon:storm-coil-beam"))
+      .toEqual(weaponTilePresentation("storm-coil-beam"));
+  });
+
+  it("leaves non-weapon and invalid stock on its existing presentation path", () => {
+    expect(shopWeaponTilePresentation("shop-repair")).toBeNull();
+    expect(shopWeaponTilePresentation("shop-weapon:not-a-weapon")).toBeNull();
   });
 });
