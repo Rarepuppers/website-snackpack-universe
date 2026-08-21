@@ -2111,6 +2111,10 @@ button:focus-visible {
 .math-screenshot-grid figcaption{padding:11px 3px 0;color:var(--muted,#675d55);font-size:.76rem;font-weight:800}
 .math-feature-mark{display:inline-grid;width:42px;height:42px;place-items:center;margin-bottom:14px;border-radius:50%;background:#eee6ff;color:#6746a3;font-weight:900}
 .math-launch-section{background:linear-gradient(180deg,transparent,rgba(103,70,163,.16))}
+.math-topic-grid{grid-template-columns:repeat(7,minmax(0,1fr))}
+.math-mode-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:1000px){.math-topic-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:650px){.math-topic-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.math-mode-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:1000px){.math-number-grid{grid-template-columns:repeat(3,1fr)}.math-screenshot-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:650px){.math-number-grid{grid-template-columns:repeat(2,1fr)}.math-number-grid article:last-child{grid-column:1/-1}.math-screenshot-grid{grid-template-columns:repeat(2,1fr)}.mathematics-hero .app-hero-card{padding:30px 22px}}
 +/* Free illustrated bookshelf */
