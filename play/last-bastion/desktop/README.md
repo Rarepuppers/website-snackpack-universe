@@ -37,6 +37,28 @@ runtime assets, and Steam Input manifest, then asks electron-builder for an unpa
 `release/`. Packaged clients read web content from `resources/game`; source runs continue to read the
 parent game directory. The native `steamworks.js` binaries are unpacked from ASAR.
 
+### Windows packaged acceptance
+
+After `npm run package:win`, run:
+
+```powershell
+npm run smoke:package:win
+release\win-unpacked\LastBastion.exe
+```
+
+The automated smoke must print `PASS packaged renderer:`. For the visible launch, verify Title,
+keyboard/controller navigation, windowed/borderless transitions, the target monitor selector, pause,
+focus loss/resume, and a short combat encounter. Repeat once with Steam closed and once from the
+Steam client when an App ID is assigned.
+
+The Codex managed Windows environment currently terminates Electron 42.9.0, 43.3.0, and 43.4.0 in
+Electron's pre-app `IsSandboxedProcess` startup path with Windows access violation `0xC0000005`.
+The web build, desktop unit tests, and packaging complete before that environment-only launch
+failure. Do not weaken `sandbox: true` or suppress the smoke gate to make it appear green; run the
+executable from an ordinary local PowerShell session to distinguish host policy from a distributable
+failure. Electron is pinned to the current stable 43.4.0 patch and should be retested when Electron 44
+reaches stable.
+
 ## SteamPipe
 
 Keep the assigned App ID and Depot ID out of the source templates. After packaging, create an ignored

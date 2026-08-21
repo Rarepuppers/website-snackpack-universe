@@ -11,10 +11,12 @@ import scoutSelectPortraitWebpUrl from "../../../../art/production-tests/batch-c
 import canonicalPerkTileUrl from "../../../../art/production-tests/batch-i/canonical-perk-tile-atlas-v2-128.png";
 import type { GameAssetDefinition } from "./GameAssetManifest";
 import { BASTION_BACKDROP_ASSET } from "./BastionBackdropAsset";
+import { TITLE_BACKDROP_ASSET } from "./TitleBackdropAsset";
 import { runtimeImageUrl } from "./RuntimeImageFormat";
 
 export const SHELL_BASE_ASSETS: readonly GameAssetDefinition[] = Object.freeze([
   BASTION_BACKDROP_ASSET,
+  TITLE_BACKDROP_ASSET,
 ]);
 
 export const SHELL_CHARACTER_ASSETS: readonly GameAssetDefinition[] = Object.freeze([

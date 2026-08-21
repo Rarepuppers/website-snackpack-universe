@@ -1,9 +1,9 @@
 # Last Bastion — document index
 
-Seventeen `.md` files live in this folder and several are historical. This index says which
+Eighteen `.md` files live in this folder and several are historical. This index says which
 to trust. **Read this before acting on any plan doc.**
 
-Last reviewed: 11 August 2026.
+Last reviewed: 21 August 2026.
 
 ---
 
@@ -18,6 +18,7 @@ Last reviewed: 11 August 2026.
 | `last-bastion-codex.html` | Player-facing encyclopedia, and **code-enforced**: `content/codexDrift.test.ts` fails the build if a shipped weapon, upgrade, relic, artifact, or enemy is missing an entry. Not optional documentation. |
 | `last-bastion-log.md` | Append-only running history. The record of what happened and why. |
 | `wave_balance.md` | Balance reference and tuning tables. |
+| `local-playtest-plan-2026-08-21.md` | **The current local test gate.** Five observed runs, device/display matrix, evidence fields, pass thresholds, and the next implementation order. |
 
 ## Design reference — durable, but predates recent content
 

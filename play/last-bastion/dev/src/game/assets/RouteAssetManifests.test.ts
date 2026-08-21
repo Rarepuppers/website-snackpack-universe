@@ -7,6 +7,7 @@ describe("route asset manifests", () => {
   it("keeps the shell base and character-select art independent", () => {
     expect(SHELL_BASE_ASSETS.map((asset) => asset.id)).toEqual([
       "bastion-logistics-map-backdrop-v1",
+      "title-menu-backdrop-v1",
     ]);
     expect(SHELL_CHARACTER_ASSETS.map((asset) => asset.id)).toEqual([
       "marine-select-portrait-v1",

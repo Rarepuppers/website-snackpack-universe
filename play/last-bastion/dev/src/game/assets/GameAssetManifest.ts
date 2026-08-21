@@ -159,6 +159,8 @@ import marauderArEffectsUrl from "../../../../art/production-tests/batch-charact
 import marauderArTileUrl from "../../../../art/production-tests/batch-character-c3-assault/marauder/marauder-ar-tile-v1-128.png";
 import bastionLogisticsMapBackdropUrl from "../../../../art/production-tests/batch-map-presentation/bastion-logistics-map-backdrop-v1-1536x1024.png";
 import bastionLogisticsMapBackdropWebpUrl from "../../../../art/production-tests/batch-map-presentation/bastion-logistics-map-backdrop-v1-1536x1024.webp";
+import titleMenuBackdropUrl from "../../../../art/production-tests/ui-batch-title/title-menu-backdrop-v1-3840x2160.png";
+import titleMenuBackdropWebpUrl from "../../../../art/production-tests/ui-batch-title/title-menu-backdrop-v1-3840x2160.webp";
 import alienHiveMapBackdropUrl from "../../../../art/production-tests/batch-map-presentation/alien-hive-map-backdrop-v1-1536x1024.png";
 import alienHiveMapBackdropWebpUrl from "../../../../art/production-tests/batch-map-presentation/alien-hive-map-backdrop-v1-1536x1024.webp";
 import machineFoundryMapBackdropUrl from "../../../../art/production-tests/batch-map-presentation/machine-foundry-map-backdrop-v1-1536x1024.png";
@@ -472,6 +474,7 @@ export type GameAssetId =
   | "marauder-ar-effects-v1"
   | "marauder-ar-tile-v1"
   | "bastion-logistics-map-backdrop-v1"
+  | "title-menu-backdrop-v1"
   | "alien-hive-map-backdrop-v1"
   | "machine-foundry-map-backdrop-v1"
   | "science-wing-map-backdrop-v1"
@@ -704,6 +707,7 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("marauder-ar-effects-v1", marauderArEffectsUrl, 64, 64, 4, 0.5, 0.5),
   image("marauder-ar-tile-v1", marauderArTileUrl, 128, 128, 0.5, 0.5),
   image("bastion-logistics-map-backdrop-v1", runtimeImageUrl(bastionLogisticsMapBackdropUrl, bastionLogisticsMapBackdropWebpUrl), 1536, 1024, 0.5, 0.5),
+  image("title-menu-backdrop-v1", runtimeImageUrl(titleMenuBackdropUrl, titleMenuBackdropWebpUrl), 3840, 2160, 0.5, 0.5),
   image("alien-hive-map-backdrop-v1", runtimeImageUrl(alienHiveMapBackdropUrl, alienHiveMapBackdropWebpUrl), 1536, 1024, 0.5, 0.5),
   image("machine-foundry-map-backdrop-v1", runtimeImageUrl(machineFoundryMapBackdropUrl, machineFoundryMapBackdropWebpUrl), 1536, 1024, 0.5, 0.5),
   image("science-wing-map-backdrop-v1", runtimeImageUrl(scienceWingMapBackdropUrl, scienceWingMapBackdropWebpUrl), 1536, 1024, 0.5, 0.5),

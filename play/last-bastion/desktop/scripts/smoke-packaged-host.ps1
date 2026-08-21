@@ -27,6 +27,9 @@ try {
   $stderr = $hostProcess.StandardError.ReadToEnd()
   if (-not $completed) { throw "Packaged smoke test timed out. $stdout $stderr" }
   if ($hostProcess.ExitCode -ne 0) {
+    if ($hostProcess.ExitCode -eq -1073741819) {
+      throw "Packaged Electron crashed before renderer acceptance (Windows 0xC0000005 access violation). Run the same package from an ordinary local PowerShell session; if it still fails, capture Electron startup logging before changing game code."
+    }
     throw "Packaged smoke test exited $($hostProcess.ExitCode). $stderr"
   }
   if ($stdout -notmatch "PASS packaged renderer:") {

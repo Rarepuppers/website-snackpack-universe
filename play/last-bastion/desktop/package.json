@@ -17,7 +17,7 @@
     "smoke:package:win": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-packaged-host.ps1 -Executable release/win-unpacked/LastBastion.exe"
   },
   "devDependencies": {
-    "electron": "43.3.0",
+    "electron": "43.4.0",
     "electron-builder": "^26.15.3",
     "typescript": "7.0.2"
   },

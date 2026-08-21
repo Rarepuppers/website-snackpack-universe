@@ -3,6 +3,7 @@ import { LocalSaveStore, type GameProgress } from "../save/LocalSaveStore";
 import { createLocalSaveStore } from "../save/SaveStorage";
 import { heroDefinition, isHeroId } from "../hero/HeroCatalog";
 import { areGameAssetsLoaded, queueGameAssets } from "../assets/PhaserAssetQueue";
+import { titleBackdropAssetId } from "../assets/TitleBackdropAsset";
 import {
   SHELL_BASE_ASSETS,
   SHELL_CHARACTER_ASSETS,
@@ -44,6 +45,7 @@ import {
   type GamepadButton,
   type KeyboardBindableAction,
 } from "../input/ControlBindings";
+import { runRecordPresentation } from "../run/RunRecordPresentation";
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -239,8 +241,11 @@ export class ShellScene extends Phaser.Scene {
     if (!this.ensureScreenAssets()) return;
     this.root.removeAll(true);
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY));
-    this.root.add(this.add.image(WIDTH / 2, HEIGHT / 2, "bastion-logistics-map-backdrop-v1")
-      .setDisplaySize(WIDTH, 640)
+    const backdropId = this.state.screen === "title"
+      ? titleBackdropAssetId()
+      : "bastion-logistics-map-backdrop-v1";
+    this.root.add(this.add.image(WIDTH / 2, HEIGHT / 2, backdropId)
+      .setDisplaySize(WIDTH, this.state.screen === "title" ? HEIGHT : 640)
       .setAlpha(this.state.screen === "title" ? 0.82 : 0.48));
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY,
       this.state.screen === "title" ? 0.34 : 0.67));
@@ -500,6 +505,7 @@ export class ShellScene extends Phaser.Scene {
     }
     visibleHistory.forEach((entry, index) => {
       const summary = entry.summary;
+      const record = runRecordPresentation(summary);
       const y = 124 + index * 52;
       const resultColor = summary.outcome === "victory" ? TEAL : "#ff7d72";
       const date = entry.completedAtMs > 0
@@ -512,7 +518,13 @@ export class ShellScene extends Phaser.Scene {
       this.root.add(this.text(484, y + 5, summary.outcome.toUpperCase(), resultColor, "11px"));
       this.root.add(this.text(570, y + 5, progressLabel, IVORY, "11px"));
       this.root.add(this.text(852, y + 5, date, MUTED, "9px", true));
-      this.root.add(this.text(484, y + 24, `${summary.kills} KILLS  •  ${summary.commandMarksEarned} MARKS`, MUTED, "9px"));
+      this.root.add(this.text(
+        484,
+        y + 24,
+        `${record.heroLabel}  •  ${summary.kills} KILLS  •  ${summary.commandMarksEarned} MARKS  •  ${record.balanceSignal}`,
+        MUTED,
+        "8px",
+      ));
     });
     this.root.add(this.text(WIDTH / 2, 480, "UP/DOWN  SCROLL RUNS  •  ENTER / ESC  BACK", MUTED, "12px", true));
     this.clickZone(0, 450, WIDTH, 90, () => this.apply("back"));

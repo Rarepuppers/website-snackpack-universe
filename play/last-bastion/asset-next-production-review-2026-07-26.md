@@ -204,3 +204,31 @@ Three gaps are now the highest-value asset work, ahead of further decorative obj
 - No baked silence at the head of a one-shot; the runtime does not trim.
 - Author no voice-over, no lyrics, and no recognisable real-world musical quotation.
 - State the intended bus (`sfx`, `ui`, `music`, `ambience`) and, for music, the tempo and key in the asset map. `calm` and `intensity` must agree on both.
+
+---
+
+# Addendum — 21 August 2026
+
+The local-test readiness audit found two concrete identity gaps and one conditional 4K refresh.
+These sit behind U1 and the missing M1/M2/S4 audio in production urgency, but ahead of additional
+decorative props or theme variants.
+
+68. **Weapon identity tile completion:** 24 player-visible identities still borrow one of the eight
+    Batch I frames. Author three reviewable eight-tile atlases at 128×128 runtime resolution from
+    512×512-or-larger retained masters. Do not regenerate the accepted eight Batch I tiles or the
+    standalone Marauder tile without a specific close-view failure. `auxiliary-drone` remains an
+    internal supporting identity and is outside the player-facing tile count.
+69. **Power-up identity completion:** author dedicated pickup/HUD frames for Siege Loader, Phase
+    Jacket, Hunter Optics, Last Stand Stimulant, EMP Charge, and Butcher's Serum. They currently
+    reuse four generic reward frames. Preserve Medkit and Uranium-Core Rounds and keep names,
+    durations, bindings, stack state, and timers code-owned.
+70. **Conditional expedition-plate refresh:** review all six 1536×1024 map plates at Full HD and 4K.
+    Re-author only failed plates at 3840×2560, preserving their 3:2 composition, stable IDs, and
+    1536×1024 logical contract. Do not convert them to title-style 16:9 art; shell and route overlays
+    intentionally crop the plate.
+
+Do not blanket-regenerate early 64 px floor, boundary, obstacle, pickup, or effect families. Exact
+integer pixel-art scaling is expected. A family earns regeneration only through a named seam,
+silhouette, extraction, repetition, grayscale, colour-vision, density, or 4K close-view failure.
+Likewise, a new theme must add navigation, hazard, or encounter language; a palette-only theme is
+optional polish.

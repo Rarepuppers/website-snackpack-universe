@@ -52,7 +52,7 @@ describe("GameAssetManifest", () => {
       "pickups-v1": 4,
       "hud-panels-v1": 6,
     } as const;
-    expect(GAME_ASSET_MANIFEST).toHaveLength(205);
+    expect(GAME_ASSET_MANIFEST).toHaveLength(206);
     for (const [id, frameCount] of Object.entries(expectedFrames)) {
       const asset = GAME_ASSETS[id as keyof typeof GAME_ASSETS];
       expect(asset.kind).toBe("spritesheet");
@@ -134,6 +134,15 @@ describe("GameAssetManifest", () => {
       expect(asset.logicalWidth).toBe(1536);
       expect(asset.logicalHeight).toBe(1024);
     }
+  });
+
+  it("locks the dedicated 4K title backdrop contract", () => {
+    expect(GAME_ASSETS["title-menu-backdrop-v1"]).toMatchObject({
+      kind: "image",
+      logicalWidth: 3840,
+      logicalHeight: 2160,
+      pivot: { x: 0.5, y: 0.5 },
+    });
   });
 
   it("locks Production Batch R terrain contracts", () => {
