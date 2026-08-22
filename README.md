@@ -106,7 +106,7 @@ snackpackuniverse.com/
 | 6 | Creative Studio | Pipeline |
 | 7 | Mathematics | Pipeline |
 | 8 | Earth & Explorer | Pipeline |
-| 9 | Shape Space | Pipeline |
+| 9 | Space Math | Pipeline |
 | 10 | Robot Recipe | Pipeline |
 | 11 | Prehistoric Pals | Upcoming |
 | 12 | Zoo World | Upcoming |
