@@ -70,6 +70,12 @@ jobs:
       - name: Check download-click interstitials
         run: node scripts/build-go-links.mjs --check
 
+      # The app pages are where referral traffic lands and they had no email
+      # capture at all. A new app page shipping without it loses those readers
+      # silently, so assert the block is present and current.
+      - name: Check newsletter CTA
+        run: node scripts/build-newsletter-cta.mjs --check
+
       # Catches a rule that pins a background but lets its text follow the theme:
       # fine in cream, invisible in dark. This is how the hero and the primary
       # button shipped unreadable.

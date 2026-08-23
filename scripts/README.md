@@ -236,3 +236,35 @@ Two things to keep in mind if you edit it:
 Just run the generator — it is idempotent and self-migrating. It rewrites raw
 Play links *and* interstitial links already in an older layout, then deletes any
 interstitial nothing points at any more.
+
+## Email capture on app pages
+
+`build-newsletter-cta.mjs` inserts a marker-delimited signup block
+(`<!-- newsletter:generated -->`) as the last section before `</main>` on all
+18 app pages, posting to the **same Brevo list** as the homepage form.
+
+Why it exists: measured 2026-08-23, the site's only email capture was the Brevo
+form near the *foot of the homepage* — a page that drew 28 impressions in 28
+days. The app pages are where referral traffic actually lands, and they had no
+capture at all. Search is not the fix for them either: over 90 days all 18 app
+pages together drew **0 clicks and 37 impressions**, and the Prehistoric Pals
+page drew zero. Those pages get read because someone linked to them, so the only
+thing worth optimising is what happens to a reader who is already there.
+
+Three fields are Brevo's contract, not decoration — dropping any one makes
+submissions fail or get rejected silently:
+
+| Field | Why |
+|---|---|
+| `EMAIL` | the subscriber |
+| `GDPR_CONSENT` (`value="1"`, required) | the list has consent enabled |
+| `email_address_check` | honeypot; must be present and empty |
+| `locale` | `en` |
+
+The form endpoint is a **public** Brevo form URL, not a secret — same one the
+homepage uses — which is why it can live in the repo.
+
+Styling uses theme tokens only (`--surface-strong`, `--ink`, `--bg-soft`), so
+background and text move together across cream/dark/light. Pinning a literal
+background while letting text follow the theme is exactly the bug
+`check-contrast.mjs` exists to catch.

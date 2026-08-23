@@ -2155,3 +2155,51 @@ button:focus-visible {
 .story-answer summary{cursor:pointer;font-weight:900}
 @media(max-width:980px){.read-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.read-library-grid{grid-template-columns:1fr}.read-library-card,.story-title-grid,.story-hero-landscape .story-title-grid,.story-page-card,.story-page-card:nth-child(even){grid-template-columns:1fr}.read-library-card img,.story-title-grid>picture img{max-width:430px;margin:0 auto}.story-page-card:nth-child(even)>picture{order:0}.story-page-card{gap:24px}.story-pages{gap:76px}.story-page-copy>p{font-size:2rem}.story-finish-card{padding:32px 22px}}
+
+/* ── Newsletter signup on app pages (build-newsletter-cta.mjs) ─────────────
+   Every colour here is a theme token, so background and text move together
+   across cream/dark/light. Pinning a literal background while letting the
+   text follow the theme is the exact bug check-contrast.mjs exists to catch. */
+.signup-card {
+  background: var(--surface-strong);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px;
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: center;
+}
+.signup-card .section-copy { margin: 0 auto 18px; max-width: 46ch; }
+.signup-form { display: flex; flex-direction: column; gap: 12px; }
+.signup-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.signup-input {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 12px 14px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--bg-soft);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+}
+.signup-input::placeholder { color: var(--muted); }
+.signup-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.signup-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  text-align: left;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+  cursor: pointer;
+}
+.signup-consent input {
+  width: 16px; height: 16px; margin-top: 2px;
+  flex: 0 0 auto; accent-color: var(--accent); cursor: pointer;
+}
+.signup-consent a { color: var(--accent); }
+/* Brevo's honeypot: real people never see it, bots fill it in. */
+.signup-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
