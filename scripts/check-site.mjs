@@ -101,7 +101,9 @@ for (const file of htmlFiles) {
 
   // ── 5. house rules ──
   if (!/<title>[^<]+<\/title>/.test(html)) errors.push(`${name}: no <title>`);
-  if (!/name="description"/.test(html)) warnings.push(`${name}: no meta description`);
+  // A description exists to be a search snippet, so a noindex page not having
+  // one is correct, not a defect -- same reasoning as the canonical check below.
+  if (!isNoindex && !/name="description"/.test(html)) warnings.push(`${name}: no meta description`);
   if (!isNoindex && !/rel="canonical"/.test(html)) warnings.push(`${name}: no canonical`);
   if (!/cloudflareinsights/.test(html)) warnings.push(`${name}: no analytics beacon`);
 }

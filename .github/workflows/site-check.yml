@@ -65,6 +65,11 @@ jobs:
       - name: Check Play link attribution
         run: node scripts/build-play-links.mjs --check
 
+      # A new app page ships with a direct Play badge and its download clicks
+      # are invisible again. Cheap to regenerate, silent to lose, so assert it.
+      - name: Check download-click interstitials
+        run: node scripts/build-go-links.mjs --check
+
       # Catches a rule that pins a background but lets its text follow the theme:
       # fine in cream, invisible in dark. This is how the hero and the primary
       # button shipped unreadable.

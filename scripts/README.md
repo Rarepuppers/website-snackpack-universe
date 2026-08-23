@@ -7,6 +7,7 @@
 | `check-site.mjs` | Read-only integrity check across every page: dead internal links, missing images/scripts/styles, unparseable JSON-LD, sitemap drift, and missing title/canonical/description/beacon | **Before every push.** Exits non-zero on errors; `--warn` to report without failing |
 | `build-game-counts.mjs` | Keeps every stated game count (arcade, daily hub, Brain Games Vol 1–3) in sync across ~30 places in HTML **and `llms.txt`** | After adding a game anywhere. `--check` to fail instead of fix — that form runs in CI |
 | `build-play-links.mjs` | Tags every outbound Google Play link with a `referrer` so Play Console can attribute the install to the site, page and section it came from | After adding any Play link. `--check` to fail instead of fix — that form runs in CI |
+| `build-go-links.mjs` | Generates the `/go/<slug>/` interstitials that make app-page Play-badge clicks countable, and points each app page's store badge at one | After adding or releasing an app. `--check` to fail instead of fix |
 | `check-live.mjs` | Asks the **deployed** origin whether every asset the repo declares actually resolves: manifest icons, the `sw.js` `SHELL` array, every `og:image`/`twitter:image` | **After every deploy.** `check-site.mjs` validates the repo against itself and so cannot catch a file that was built but never committed |
 | `notify-search-engines.mjs` | Submits `sitemap.xml` to Google via the Search Console API, and pushes URLs to Bing/Yandex via IndexNow | **After every deploy**, once `check-live.mjs` passes |
 
@@ -173,3 +174,23 @@ Use `--seed-data` rarely. For everyday changes, leave it off.
 The workflow `.github/workflows/update-world-cup-data.yml` runs every 5 minutes
 and commits `data/world-cup-2026.json` when scores change. It needs a repository
 secret `API_FOOTBALL_KEY`. See `WORLD-CUP-DATA-AUTOMATION.md` for full setup.
+
+## Counting download clicks
+
+Cloudflare Web Analytics is the only analytics on this property, it is the
+beacon-only free tier, and that tier has **no custom events** — so an `onclick`
+handler on a store badge has nowhere to report to. The one thing Cloudflare
+counts is a page view of a real page a real browser renders.
+
+So each app page's Play badge points at `/go/<slug>/`: a `noindex`
+interstitial that loads (and is therefore counted), then hands the visitor
+straight on to Play via `location.replace`. Read the numbers in Cloudflare
+under page views, filtered to `/go/`.
+
+`build-play-links.mjs` classifies `go/<slug>/` as surface `app-page`, campaign
+`<slug>` — byte-identical to the referrer the badge carried when it linked to
+Play directly, so the Play Console series continues rather than restarting.
+
+The interstitial holds the Play URL in exactly one place, the `#go-link`
+anchor: the redirect reads that anchor's `href`, so tagging the anchor tags the
+redirect, and the anchor doubles as the no-JavaScript path.

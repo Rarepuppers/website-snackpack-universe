@@ -77,6 +77,13 @@ function classify(rel) {
     case "apps":
       if (isSectionIndex) return { surface: "app-index", campaign: "apps-index" };
       return { surface: "app-page", campaign: leaf };
+    // go/<slug>/ is the click-counting interstitial an app page's store badge
+    // now points at (see build-go-links.mjs). It is the app page's click, just
+    // relayed, so it deliberately carries the *app page's* tag -- keeping the
+    // Play Console series continuous instead of splitting it across a new
+    // surface on the day the interstitial shipped.
+    case "go":
+      return { surface: "app-page", campaign: leaf };
     case "read":
       if (isSectionIndex) return { surface: "read", campaign: "read-shelf" };
       return { surface: "read", campaign: leaf };
