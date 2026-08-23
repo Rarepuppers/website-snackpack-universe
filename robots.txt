@@ -1,4 +1,13 @@
 User-agent: *
 Allow: /
 
+# /go/ holds ~74 click-counting interstitials that redirect straight to Google
+# Play. They carry noindex and are kept out of sitemap.xml, but they are still
+# crawlable links, and at 74 pages against 110 real ones they would two-thirds
+# the crawlable surface of this site for zero search value. Crawl budget is a
+# measured problem here -- /play/mahjong/ went unindexed on it, and
+# /play/thirteen/, the best-ranking page on the property, once went 21 days
+# without a recrawl. So they are disallowed outright.
+Disallow: /go/
+
 Sitemap: https://www.snackpackuniverse.com/sitemap.xml
