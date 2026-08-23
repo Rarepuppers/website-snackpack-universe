@@ -38,69 +38,13 @@
 import fs from "node:fs";
 import path from "node:path";
 
+// Shared with build-go-links.mjs -- see that file for why they must agree.
+import { classify, referrerFor } from "./lib/play-surface.mjs";
+
 const root = path.resolve(".");
 const checkOnly = process.argv.includes("--check");
 
 const PLAY_HOST = "https://play.google.com/store/apps/details";
-
-// ---------------------------------------------------------------------------
-// Surface + campaign, derived from where the file sits
-// ---------------------------------------------------------------------------
-
-/**
- * Map a repo-relative HTML path to { surface, campaign }.
- * surface = the kind of page (the utm_medium), campaign = the specific page.
- */
-function classify(rel) {
-  const parts = rel.split("/");
-  const file = parts[parts.length - 1];
-  const dir = parts.slice(0, -1);
-
-  if (dir.length === 0) {
-    // Root-level pages: index.html is the homepage, everything else is itself.
-    const slug = file === "index.html" ? "home" : file.replace(/\.html$/, "");
-    return { surface: "home", campaign: slug };
-  }
-
-  const section = dir[0];
-  const leaf = dir[dir.length - 1];
-  const isSectionIndex = dir.length === 1;
-
-  switch (section) {
-    case "play":
-      if (isSectionIndex) return { surface: "arcade", campaign: "arcade-index" };
-      if (leaf === "daily") return { surface: "daily", campaign: "daily-hub" };
-      return { surface: "arcade", campaign: leaf };
-    case "guides":
-      if (isSectionIndex) return { surface: "guide", campaign: "guides-index" };
-      return { surface: "guide", campaign: leaf };
-    case "apps":
-      if (isSectionIndex) return { surface: "app-index", campaign: "apps-index" };
-      return { surface: "app-page", campaign: leaf };
-    // go/<slug>/ is the click-counting interstitial an app page's store badge
-    // now points at (see build-go-links.mjs). It is the app page's click, just
-    // relayed, so it deliberately carries the *app page's* tag -- keeping the
-    // Play Console series continuous instead of splitting it across a new
-    // surface on the day the interstitial shipped.
-    case "go":
-      return { surface: "app-page", campaign: leaf };
-    case "read":
-      if (isSectionIndex) return { surface: "read", campaign: "read-shelf" };
-      return { surface: "read", campaign: leaf };
-    case "privacy":
-      return { surface: "privacy", campaign: isSectionIndex ? "privacy-index" : leaf };
-    case "world-cup":
-      return { surface: "worldcup", campaign: isSectionIndex ? "worldcup-hub" : leaf };
-    default:
-      return { surface: "site", campaign: leaf };
-  }
-}
-
-/** The referrer value Play reads, with the UTM pairs encoded inside it. */
-function referrerFor({ surface, campaign }) {
-  const inner = `utm_source=website&utm_medium=${surface}&utm_campaign=${campaign}`;
-  return encodeURIComponent(inner);
-}
 
 // ---------------------------------------------------------------------------
 // Rewrite
@@ -195,6 +139,21 @@ function checkFunnel() {
   const problems = [];
   for (const match of source.matchAll(/"(https:\/\/play\.google\.com[^"]*)"/g)) {
     if (!match[1].includes("referrer=")) problems.push(`${rel}: untagged Play URL ${match[1]}`);
+  }
+  // Since 2026-08-23 the default goes through a /go/ interstitial so the modal's
+  // clicks are countable, which means there is normally no Play URL left in
+  // here for the loop above to check -- and a vacuous assertion is worse than
+  // none, because it looks like cover it is not providing. So require the
+  // default to be one of the two acceptable shapes, explicitly.
+  const dflt = (source.match(/var DEFAULT_PLAY_URL = "([^"]*)"/) || [])[1];
+  if (!dflt) {
+    problems.push(`${rel}: DEFAULT_PLAY_URL not found`);
+  } else {
+    const viaInterstitial = /^https:\/\/www\.snackpackuniverse\.com\/go\//.test(dflt);
+    const taggedDirect = dflt.includes("play.google.com") && dflt.includes("referrer=");
+    if (!viaInterstitial && !taggedDirect) {
+      problems.push(`${rel}: DEFAULT_PLAY_URL is neither a /go/ interstitial nor a tagged Play URL: ${dflt}`);
+    }
   }
   return problems;
 }

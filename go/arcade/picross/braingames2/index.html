@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Opening Google Play — Snackpack Brain Games Vol 2</title>
+<link rel="icon" type="image/png" href="/assets/favicon-32.png">
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; min-height: 100vh;
+         display: flex; align-items: center; justify-content: center;
+         text-align: center; padding: 24px; }
+</style>
+</head>
+<body>
+<main>
+  <p>Taking you to Google Play…</p>
+  <!-- Single source of truth for the URL: the redirect below reads this
+       anchor, so build-play-links.mjs tagging it tags the redirect too. It is
+       also the no-JavaScript path -- without it this page is a dead end. -->
+  <p><a id="go-link" href="https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames2&referrer=utm_source%3Dwebsite%26utm_medium%3Darcade%26utm_campaign%3Dpicross" rel="noopener">Continue to Snackpack Brain Games Vol 2 on Google Play</a></p>
+  <p><a href="/play/picross/">Go back</a></p>
+</main>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+<script>
+  // replace(), not assign(): Back from the Play listing should return to the
+  // page the visitor came from, not to this one, which would bounce them
+  // straight forward again and trap them.
+  (function () {
+    var a = document.getElementById("go-link");
+    if (a) { window.location.replace(a.href); }
+  })();
+</script>
+</body>
+</html>

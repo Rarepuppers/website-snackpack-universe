@@ -8,11 +8,18 @@
   var STRIPE_URL = "https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04";
   // Default to Brain Games (Vol 1). A page can point the funnel at a different
   // app by setting window.SP_PLAY_URL before this script loads (e.g. Vol 2).
-  // Tagged by hand: scripts/build-play-links.mjs walks HTML and cannot see a
-  // URL built in JS. That script asserts this stays tagged -- if you edit this
-  // line, keep the referrer, or `--check` will fail the build. Play reads the
-  // `referrer` parameter; the UTM pairs are URL-encoded inside it.
-  var DEFAULT_PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.braingames&referrer=utm_source%3Dwebsite%26utm_medium%3Darcade%26utm_campaign%3Dfunnel-modal";
+  //
+  // This goes through a /go/ interstitial rather than straight to Play, so the
+  // modal's clicks are countable: Cloudflare Web Analytics has no custom
+  // events, so a rendered page view is the only click signal available. The
+  // interstitial carries the referrer this URL used to (arcade/funnel-modal),
+  // so Play attribution is unchanged -- see scripts/build-go-links.mjs.
+  //
+  // Keep it ABSOLUTE. playTarget() below tests /^https?:/ to decide on a new
+  // tab, so a root-relative path here would silently stop the modal opening
+  // Play in a new tab. build-go-links.mjs regenerates this line and
+  // build-play-links.mjs asserts its shape; both fail the build if it drifts.
+  var DEFAULT_PLAY_URL = "https://www.snackpackuniverse.com/go/arcade/funnel-modal/braingames/";
   var DEFAULT_PLAY_LABEL = "Get the free app on Android";
   function playUrl() { return window.SP_PLAY_URL || DEFAULT_PLAY_URL; }
   // The soccer and World Cup games point the funnel at /world-cup/ rather than
