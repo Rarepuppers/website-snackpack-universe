@@ -451,6 +451,11 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://www.snackpackuniverse.com/privacy/atlas-quest/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.snackpackuniverse.com/privacy/snackpack-brain-games/</loc>
     <lastmod>2026-08-21</lastmod>
     <priority>0.4</priority>
