@@ -429,6 +429,141 @@ a {
   border: 1px solid rgba(32, 23, 19, 0.08);
 }
 
+/* Atlas Quest launch feature. The media is an authentic game capture; live HTML
+   carries every word so the banner stays useful with images disabled. */
+.atlas-feature {
+  padding: 12px 0 40px;
+}
+
+.atlas-feature-card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.72fr) minmax(420px, 1.28fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 52px);
+  padding: clamp(26px, 4vw, 48px);
+  border: 1px solid rgba(239, 181, 77, 0.32);
+  border-radius: calc(var(--radius) + 8px);
+  background:
+    radial-gradient(circle at 86% 14%, rgba(72, 187, 181, 0.19), transparent 31%),
+    radial-gradient(circle at 14% 88%, rgba(239, 181, 77, 0.17), transparent 34%),
+    #0b1428;
+  box-shadow: 0 28px 70px rgba(9, 17, 35, 0.2);
+  color: #f8f5ed;
+}
+
+.atlas-feature-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(90deg, #000, transparent 72%);
+}
+
+.atlas-feature-copy,
+.atlas-feature-media {
+  position: relative;
+  z-index: 1;
+}
+
+.atlas-feature-copy .eyebrow {
+  background: #273047;
+  color: #ffd671;
+}
+
+.atlas-feature-copy h2 {
+  margin: 18px 0 14px;
+  max-width: 12ch;
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 4.2vw, 4.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.atlas-feature-copy > p {
+  margin: 0;
+  max-width: 48ch;
+  color: #cdd7e8;
+  font-size: 1.04rem;
+  line-height: 1.66;
+}
+
+.atlas-feature-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  margin-top: 24px;
+}
+
+.atlas-feature-actions .btn-primary {
+  background: #f2c85b;
+  color: #172033;
+}
+
+.atlas-support-link {
+  color: #e8eef8;
+  font-size: 0.94rem;
+  font-weight: 650;
+  text-underline-offset: 4px;
+}
+
+.atlas-feature-copy .atlas-feature-trust {
+  margin-top: 16px;
+  color: #aebbd0;
+  font-size: 0.84rem;
+  font-weight: 650;
+}
+
+.atlas-feature-media {
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  background: #071020;
+  color: #fff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
+  text-decoration: none;
+  transform: perspective(1200px) rotateY(-2deg);
+  transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.atlas-feature-media:hover,
+.atlas-feature-media:focus-visible {
+  border-color: rgba(242, 200, 91, 0.72);
+  transform: perspective(1200px) rotateY(0deg) translateY(-2px);
+}
+
+.atlas-feature-media picture,
+.atlas-feature-media img {
+  display: block;
+  width: 100%;
+}
+
+.atlas-feature-media img {
+  height: auto;
+  aspect-ratio: 8 / 5;
+  object-fit: cover;
+}
+
+.atlas-feature-media-label {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  border-radius: 999px;
+  background: rgba(5, 12, 25, 0.82);
+  color: #e9eef8;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  backdrop-filter: blur(8px);
+}
+
 .hero-card img {
   width: 100%;
   height: auto;
@@ -1527,6 +1662,7 @@ button:focus-visible {
 
 @media (max-width: 980px) {
   .hero-panel,
+  .atlas-feature-card,
   .two-up,
   .stats-grid,
   .app-grid,
@@ -1596,6 +1732,7 @@ button:focus-visible {
   }
 
   .hero-panel,
+  .atlas-feature-card,
   .page-hero-card,
   .app-hero-card,
   .content-card,
@@ -1603,6 +1740,22 @@ button:focus-visible {
   .stat-card {
     padding: 22px;
     border-radius: 22px;
+  }
+
+  .atlas-feature {
+    padding-top: 4px;
+  }
+
+  .atlas-feature-copy h2 {
+    max-width: 14ch;
+  }
+
+  .atlas-feature-media {
+    transform: none;
+  }
+
+  .atlas-feature-media img {
+    aspect-ratio: 3 / 4;
   }
 
   .shell {

@@ -13,7 +13,7 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v9";
+const CACHE = "snackpack-arcade-v10";
 
 const SHELL = [
   "/",
@@ -38,6 +38,8 @@ const SHELL = [
   "/assets/icon-192.png",
   "/assets/icon-512.png",
   "/assets/icon-maskable-512.png",
+  "/assets/atlas/atlas-quest-gameplay-desktop.webp",
+  "/assets/atlas/atlas-quest-gameplay-mobile.webp",
 ];
 
 self.addEventListener("install", (e) => {
