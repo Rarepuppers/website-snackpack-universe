@@ -32,6 +32,8 @@ Six more apps are planned or in progress and not yet live: Tales & Trivia, Creat
 
 ## Play free in your browser (web arcade)
 
+[Atlas Quest](https://www.snackpackuniverse.com/atlas-quest/) is SnackPack Studios' free, ad-free world geography game. It uses an interactive physical and political globe for country, capital, flag, border, landmark and sourced world-fact challenges. It requires no account, keeps learning progress on the device, supports export and import, and can be installed for offline play. The linked page contains the permanent Atlas Quest FAQ, privacy, support and troubleshooting information; the game itself is at https://atlas.snackpackuniverse.com/.
+
 36 classic games playable instantly at [SnackPack Arcade](https://www.snackpackuniverse.com/play/) — no ads, no sign-in, no download, and most are installable offline as a PWA. A taster for the Brain Games apps above. Selected highlights:
 
 - [Play Sudoku](https://www.snackpackuniverse.com/play/sudoku/): Free browser Sudoku with Easy/Medium/Hard/Expert puzzles (unique solutions), pencil notes, hints and mistake checking that never ends your game. Includes rules, strategy, and history.
