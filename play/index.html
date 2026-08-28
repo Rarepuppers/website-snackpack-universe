@@ -211,6 +211,18 @@
         <p class="section-copy">Everything here plays instantly in your browser, on phone or desktop. Free, forever, ad-free.</p>
       </div>
       <div class="game-grid">
+        <!-- Atlas Quest lives at /atlas-quest/, not under play/, so this tile is
+             deliberately off-pattern: build-related-games.mjs only parses
+             href="./slug/" tiles and skips this one, and build-game-counts.mjs
+             counts play/ directories, so neither the rotation nor the stated
+             arcade count is affected. It reaches the game pages as the curated
+             featured entry in the generator instead. -->
+        <a class="game-tile" href="/atlas-quest/">
+          <img class="game-icon" src="./tiles/atlas-quest.svg" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+          <h3>Atlas Quest</h3>
+          <p>Spin a physical globe and find countries, capitals and flags. A free world geography game with a new challenge every day.</p>
+          <span class="game-play">Play now →</span>
+        </a>
         <a class="game-tile" href="./solitaire/">
           <img class="game-icon" src="./tiles/solitaire.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
           <h3>Solitaire</h3>

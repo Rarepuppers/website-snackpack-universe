@@ -21,6 +21,24 @@ const OPEN = "<!-- related-games:generated -->";
 const CLOSE = "<!-- /related-games:generated -->";
 const COUNT = 6;
 
+/*
+ * One curated entry pinned to the front of every block.
+ *
+ * Atlas Quest is the studio's flagship and it is not a play/<slug>/ page — it
+ * lives at /atlas-quest/ and the game itself is on its own subdomain. The hub
+ * parser below only recognises href="./slug/" tiles, so without this it was
+ * absent from all 37 game pages: of 264 pages on the site, exactly two linked
+ * to it. Rotation cannot fix that, because there is no slug to rotate.
+ *
+ * Kept deliberately small. This is a pinned link, not an ad slot — if a second
+ * entry is ever added here, revisit whether the block is still "more games".
+ */
+const FEATURED = {
+  href: "/atlas-quest/",
+  tile: "atlas-quest.svg",
+  title: "Atlas Quest",
+};
+
 function parseHub(html) {
   const games = [];
   // Some tiles carry a "New" badge between the anchor and the icon.
@@ -33,16 +51,21 @@ function parseHub(html) {
   return games;
 }
 
+function tile(href, src, title) {
+  return (
+    `      <a class="game-tile" href="${href}">\n` +
+    `        <img class="game-icon" src="${src}" alt="" aria-hidden="true" loading="lazy" width="72" height="72">\n` +
+    `        <h3>${title}</h3>\n` +
+    `      </a>`
+  );
+}
+
 function block(related) {
-  const tiles = related
-    .map(
-      (g) =>
-        `      <a class="game-tile" href="../${g.slug}/">\n` +
-        `        <img class="game-icon" src="../tiles/${g.tile}" alt="" aria-hidden="true" loading="lazy" width="72" height="72">\n` +
-        `        <h3>${g.title}</h3>\n` +
-        `      </a>`
-    )
-    .join("\n");
+  const tiles = [
+    // Root-relative, because the featured page is not a sibling of the game pages.
+    tile(FEATURED.href, `../tiles/${FEATURED.tile}`, FEATURED.title),
+    ...related.map((g) => tile(`../${g.slug}/`, `../tiles/${g.tile}`, g.title)),
+  ].join("\n");
 
   return (
     `${OPEN}\n` +
