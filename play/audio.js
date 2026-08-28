@@ -33,9 +33,14 @@
   var script = document.currentScript;
   var base = new URL(".", script ? script.src : window.location.href);
   var storageKey = "snackpack.arcade.audio.muted.v1";
-  var muted = false;
+  // Quiet by default. A player must explicitly opt in once; the preference is
+  // then remembered for every arcade game.
+  var muted = true;
 
-  try { muted = localStorage.getItem(storageKey) === "1"; } catch (error) {}
+  try {
+    var savedMuted = localStorage.getItem(storageKey);
+    muted = savedMuted == null ? true : savedMuted === "1";
+  } catch (error) {}
 
   // Per-name pool of Audio elements, plus the timestamp of the last trigger.
   var pools = Object.create(null);

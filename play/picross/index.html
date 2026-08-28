@@ -311,6 +311,7 @@
 <script src="../keyboard-grid.js"></script>
 <script src="../funnel.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
 <script>
 (function () {
   "use strict";
@@ -393,17 +394,23 @@
   // recipient lands on the same board being compared, not a fresh one — without
   // this the share is pointless to send.
   var sharedDaily = new URLSearchParams(location.search).has("daily");
-  var size = sharedDaily ? "daily" : "5";
+  var preferredSize = window.SnackPackStore && window.SnackPackStore.get("picross", "mode");
+  var size = sharedDaily ? "daily" : (PUZZLES[preferredSize] ? preferredSize : "5");
   // Honour ?daily=<n> so a shared result opens the board it actually refers to,
   // rather than silently serving today's. Falls back to today when absent.
   function dailyNumber() {
     var q = new URLSearchParams(location.search).get("daily");
+    if (/^\d{4}-\d{2}-\d{2}$/.test(q || "")) {
+      var t = Date.parse(q + "T00:00:00Z");
+      if (!isNaN(t)) return Math.floor(t / 86400000);
+    }
     var n = q == null ? NaN : parseInt(q, 10);
     return isNaN(n) ? Math.floor(Date.now() / 86400000) : n;
   }
   var markMode = "fill";
   var solution, rows, cols, grid, rowClues, colClues, puzzleTitle;
   var solved, started, elapsed, timerId;
+  var history = [], forcedPuzzle = null, resume = null;
 
   function bestKey() { return "sp_picross_best_" + size; }
   function fmt(s) { var m = Math.floor(s / 60); return m + ":" + (s % 60 < 10 ? "0" : "") + (s % 60); }
@@ -467,7 +474,8 @@
 
   function build() {
     stopTimer();
-    var sel = pickPuzzle();
+    var sel = forcedPuzzle || pickPuzzle();
+    forcedPuzzle = null;
     var sizeKey = sel.sizeKey;
     solution = sel.pack.g.map(function (s) { return s.split("").map(function (ch) { return ch === "1"; }); });
     puzzleTitle = sel.pack.t;
@@ -475,6 +483,7 @@
     var cl = cluesFor(solution); rowClues = cl.rc; colClues = cl.cc;
     grid = []; for (var r = 0; r < rows; r++) { grid[r] = []; for (var c = 0; c < cols; c++) grid[r][c] = 0; }
     solved = false; started = false; elapsed = 0;
+    history = []; if (undoBtn) undoBtn.disabled = true;
     timeEl.textContent = "0:00";
     statusEl.textContent = "Fill the cells that match the clues.";
     statusEl.className = "game-status";
@@ -524,8 +533,6 @@
   // ── Undo ──────────────────────────────────────────
   // Nonograms punish a stray click hard: one wrong fill can send you down a
   // false line for minutes. Each mark is snapshotted so it can be stepped back.
-  var history = [];
-
   function snapshot() {
     history.push(JSON.stringify(grid));
     if (history.length > 400) history.shift();
@@ -539,6 +546,7 @@
     for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) paintCell(r, c);
     statusEl.textContent = "Move undone.";
     statusEl.className = "game-status";
+    if (resume) resume.changed();
   }
 
   function applyMark(r, c, mode) {
@@ -550,6 +558,7 @@
     else grid[r][c] = cur === 2 ? 0 : 2;
     paintCell(r, c);
     if (isSolved()) finish();
+    else if (resume) resume.changed();
   }
 
   function finish() {
@@ -566,6 +575,7 @@
     var improved = !prev || elapsed < prev;
     if (improved) { try { localStorage.setItem(bestKey(), String(elapsed)); } catch (e) {} }
     showBest();
+    if (resume) resume.clear();
     if (window.SnackPack) window.SnackPack.celebrate({
       title: improved ? "New best time! 🎉" : "Picture revealed! 🎉",
       body: "You solved the " + puzzleTitle + " nonogram. We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app for dozens more puzzles, offline."
@@ -593,6 +603,7 @@
     if (!started) { started = true; startTimer(); }
     grid[pick[0]][pick[1]] = 1; paintCell(pick[0], pick[1]);
     if (isSolved()) finish();
+    else if (resume) resume.changed();
   }
 
   gridEl.addEventListener("click", function (e) {
@@ -605,13 +616,14 @@
     applyMark(+cell.dataset.r, +cell.dataset.c, "cross");
   });
 
-  newBtn.addEventListener("click", build);
+  newBtn.addEventListener("click", function () { if (resume) resume.clear(); build(); });
   hintBtn.addEventListener("click", hint);
   undoBtn.addEventListener("click", undo);
   clearBtn.addEventListener("click", function () {
     if (solved) return;
     history = []; if (undoBtn) undoBtn.disabled = true;
     for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) { grid[r][c] = 0; paintCell(r, c); }
+    if (resume) resume.changed();
   });
 
   document.querySelectorAll(".pc-marktoggle [data-mark]").forEach(function (btn) {
@@ -623,20 +635,61 @@
 
   document.querySelectorAll(".seg [data-size]").forEach(function (btn) {
     btn.addEventListener("click", function () {
+      if (resume) resume.save();
       size = btn.dataset.size;
+      if (size !== "daily" && window.SnackPackStore) window.SnackPackStore.set("picross", "mode", size);
       document.querySelectorAll(".seg [data-size]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
+      if (resume) resume.variantChanged();
       build();
     });
   });
 
   // Arriving via a shared daily link: reflect it in the size control, or the
   // board is the daily one while the UI still highlights 5x5.
-  if (sharedDaily) {
-    document.querySelectorAll(".seg [data-size]").forEach(function (x) {
-      x.setAttribute("aria-pressed", String(x.dataset.size === "daily"));
+  document.querySelectorAll(".seg [data-size]").forEach(function (x) {
+    x.setAttribute("aria-pressed", String(x.dataset.size === size));
+  });
+  build();
+
+  function resumeVariant() { return size === "daily" ? "daily-" + dailyNumber() : size; }
+  function resumeState() {
+    return {
+      size: size, title: puzzleTitle,
+      solution: solution.map(function (row) { return row.map(function (v) { return v ? 1 : 0; }).join(""); }),
+      grid: grid.map(function (row) { return row.slice(); }),
+      started: started, elapsed: elapsed, markMode: markMode, history: history.slice(-100)
+    };
+  }
+  function validState(s) {
+    var allowed = s && (s.size === "daily" || PUZZLES[s.size]);
+    return !!allowed && Array.isArray(s.solution) && Array.isArray(s.grid) &&
+      s.solution.length > 0 && s.solution.length === s.grid.length &&
+      s.solution.every(function (row, i) { return typeof row === "string" && Array.isArray(s.grid[i]) && row.length === s.grid[i].length; });
+  }
+  function restoreState(s) {
+    if (!validState(s)) return false;
+    size = s.size;
+    forcedPuzzle = { pack: { t: String(s.title || "Saved puzzle"), g: s.solution.slice() }, sizeKey: String(s.solution.length) };
+    build();
+    grid = s.grid.map(function (row) { return row.map(function (v) { v = Number(v); return v >= 0 && v <= 2 ? v : 0; }); });
+    started = !!s.started; elapsed = Number(s.elapsed) || 0; markMode = s.markMode === "cross" ? "cross" : "fill";
+    history = Array.isArray(s.history) ? s.history.slice(-100) : [];
+    for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) paintCell(r, c);
+    timeEl.textContent = fmt(elapsed);
+    statusEl.textContent = "Puzzle resumed.";
+    document.querySelectorAll(".seg [data-size]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.size === size)); });
+    document.querySelectorAll(".pc-marktoggle [data-mark]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.mark === markMode)); });
+    if (undoBtn) undoBtn.disabled = history.length === 0;
+    if (started) startTimer();
+    return true;
+  }
+  if (window.SnackPackResume) {
+    resume = window.SnackPackResume.attach({
+      game: "picross", gameVersion: 1, variant: resumeVariant,
+      serialize: resumeState, restore: restoreState,
+      isActive: function () { return !solved && grid.some(function (row) { return row.some(Boolean); }); }
     });
   }
-  build();
 })();
 </script>
 <script>

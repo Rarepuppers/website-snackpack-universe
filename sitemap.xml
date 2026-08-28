@@ -216,6 +216,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.snackpackuniverse.com/play/stats/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.snackpackuniverse.com/play/dribble-rush/</loc>
     <lastmod>2026-08-15</lastmod>
     <priority>0.7</priority>
@@ -263,11 +268,6 @@
   <url>
     <loc>https://www.snackpackuniverse.com/play/keepy-uppy/</loc>
     <lastmod>2026-08-15</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.snackpackuniverse.com/play/last-bastion/</loc>
-    <lastmod>2026-08-07</lastmod>
     <priority>0.7</priority>
   </url>
   <url>

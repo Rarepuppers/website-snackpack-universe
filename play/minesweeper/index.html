@@ -164,6 +164,7 @@
           <div class="game-readout">
             <span class="readout-chip"><span>Mines</span><b id="ms-mines">10</b></span>
             <span class="readout-chip"><span>Time</span><b id="ms-time">0</b></span>
+            <span class="readout-chip"><span>Best</span><b id="ms-best">—</b></span>
           </div>
           <div class="game-controls">
             <div class="seg" role="group" aria-label="Difficulty">
@@ -240,6 +241,32 @@
       <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
     </div>
   </section>
+<!-- newsletter:generated -->
+  <section>
+    <div class="shell">
+      <div class="signup-card">
+        <span class="eyebrow">Stay in the loop</span>
+        <h2 class="section-title" style="margin:6px 0 10px;">Hear when the next one lands.</h2>
+        <p class="section-copy">A handful of new games a month. No spam, and you can unsubscribe in one click.</p>
+        <form class="signup-form" method="POST" action="https://c8e915bf.sibforms.com/serve/MUIFADVt4ZlXsiMM8wqiXqcGeRGBU0WF59M6fHpCegIo6lKDBIizhj4EybwGYQygjM8s619mIdox-2D8mik7upF-_5x30R9bApxbcK16bM2mPFLFTDokgMBnqtOdTY4r7u9TKTorSiC2MPn5mwOTncBTtrQAx2W58RDmqLLtC5OLxrFrNmZH7As9WjK4krNNglwOtxjzbYH3k9qc4Q==" data-type="subscription">
+          <div class="signup-row">
+            <label class="signup-hp" for="EMAIL-cta">Your email address</label>
+            <input class="signup-input" type="email" id="EMAIL-cta" name="EMAIL" autocomplete="email" placeholder="you@example.com" required>
+            <button class="btn btn-primary" type="submit">Keep me posted</button>
+          </div>
+          <label class="signup-consent">
+            <input type="checkbox" name="GDPR_CONSENT" value="1" required>
+            <span>I agree to receive SnackPack Universe updates by email and accept the <a href="/privacy/">privacy policy</a>. Unsubscribe anytime.</span>
+          </label>
+          <!-- Brevo contract: honeypot must be present and empty; locale must be set. -->
+          <input class="signup-hp" type="text" name="email_address_check" value="" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <input type="hidden" name="locale" value="en">
+          <input type="hidden" name="SOURCE" value="arcade-minesweeper">
+        </form>
+      </div>
+    </div>
+  </section>
+  <!-- /newsletter:generated -->
 </main>
 
 <!-- related-games:generated -->
@@ -276,6 +303,7 @@
         <h3>2048</h3>
       </a>
     </div>
+    <p class="related-games-guide"><a class="text-link" href="../../guides/minesweeper-without-ads/">Read the Minesweeper guide →</a></p>
     <p class="related-games-more"><a class="text-link" href="../">See all games in the arcade →</a></p>
   </div>
 </section>
@@ -302,6 +330,7 @@
 <script src="../keyboard-grid.js"></script>
 <script src="../funnel.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
 <script>
 (function () {
   "use strict";
@@ -314,15 +343,30 @@
   var gridEl = document.getElementById("ms-grid");
   var minesEl = document.getElementById("ms-mines");
   var timeEl = document.getElementById("ms-time");
+  var bestEl = document.getElementById("ms-best");
   var statusEl = document.getElementById("ms-status");
   var newBtn = document.getElementById("ms-new");
   var flagBtn = document.getElementById("ms-flagmode");
 
-  var diff = "beginner";
+  var preferredDiff = window.SnackPackStore && window.SnackPackStore.get("minesweeper", "mode");
+  var diff = LEVELS[preferredDiff] ? preferredDiff : "beginner";
   var flagMode = false;
   var rows, cols, mineCount;
   var mineSet, revealed, flags, adj, cells;
   var started, over, won, placed, flagsUsed, revealCount, timer, seconds;
+  var resume = null;
+
+  function bestKey() { return window.SnackPackStore.key("minesweeper", "best", diff); }
+  function renderBest() {
+    var best = window.SnackPackStore && window.SnackPackStore.get(bestKey());
+    bestEl.textContent = best == null ? "—" : best + "s";
+  }
+  function recordBest() {
+    if (!window.SnackPackStore) return;
+    var old = Number(window.SnackPackStore.get(bestKey()));
+    if (!old || seconds < old) window.SnackPackStore.set(bestKey(), String(seconds));
+    renderBest();
+  }
 
   // -- Daily seeding --------------------------------
   // Accepts ?daily=<n> and ?daily=YYYY-MM-DD. Minesweeper is a weaker "shared
@@ -370,6 +414,7 @@
     statusEl.textContent = "Click any square to begin.";
     statusEl.className = "game-status";
     build();
+    renderBest();
   }
 
   function build() {
@@ -458,6 +503,7 @@
       }
     }
     checkWin();
+    if (resume && !over) resume.changed();
   }
 
   function chord(i) {
@@ -475,6 +521,7 @@
     cells[i].classList.toggle("is-flag", flags[i]);
     cells[i].textContent = "";
     minesEl.textContent = mineCount - flagsUsed;
+    if (resume) resume.changed();
   }
 
   function lose(hit) {
@@ -490,6 +537,7 @@
     cells[hit].textContent = "";
     statusEl.textContent = "Boom! You hit a mine. Try again.";
     statusEl.className = "game-status game-status--lose";
+    if (resume) resume.clear();
   }
 
   function checkWin() {
@@ -503,6 +551,8 @@
         }
       }
       minesEl.textContent = 0;
+      recordBest();
+      if (resume) resume.clear();
       statusEl.textContent = "Cleared in " + seconds + "s — well played! 🎉";
       statusEl.className = "game-status";
       if (window.SnackPack) window.SnackPack.celebrate({
@@ -552,18 +602,27 @@
     flagBtn.classList.toggle("btn-game--primary", flagMode);
   });
 
-  newBtn.addEventListener("click", function () { reset(true); });
+  newBtn.addEventListener("click", function () {
+    if (resume) resume.clear();
+    reset(true);
+  });
 
   document.querySelectorAll(".seg [data-diff]").forEach(function (btn) {
     btn.addEventListener("click", function () {
+      if (resume) resume.save();
       diff = btn.dataset.diff;
+      if (window.SnackPackStore) window.SnackPackStore.set("minesweeper", "mode", diff);
       document.querySelectorAll(".seg [data-diff]").forEach(function (b) {
         b.setAttribute("aria-pressed", String(b === btn));
       });
+      if (resume) resume.variantChanged();
       reset(true);
     });
   });
 
+  document.querySelectorAll(".seg [data-diff]").forEach(function (b) {
+    b.setAttribute("aria-pressed", String(b.dataset.diff === diff));
+  });
   reset();
 
   // Arrow-key play. The cells are <button>s, so Enter/Space already reveals;
@@ -579,6 +638,68 @@
       onSecondary: function (cell) {
         if (cell) toggleFlag(+cell.dataset.i);
       }
+    });
+  }
+
+  function resumeVariant() {
+    return (dailyActive ? "daily-" + dailySeed + "-" : "") + diff;
+  }
+  function resumeState() {
+    return {
+      diff: diff, dailyActive: dailyActive, dailySeed: dailySeed,
+      rows: rows, cols: cols, mineCount: mineCount,
+      mineSet: Object.keys(mineSet || {}).map(Number),
+      revealed: revealed.slice(), flags: flags.slice(), adj: adj.slice(),
+      started: started, placed: placed, flagsUsed: flagsUsed,
+      revealCount: revealCount, seconds: seconds, flagMode: flagMode
+    };
+  }
+  function validState(s) {
+    if (!s || !LEVELS[s.diff]) return false;
+    var count = LEVELS[s.diff].rows * LEVELS[s.diff].cols;
+    return s.rows === LEVELS[s.diff].rows && s.cols === LEVELS[s.diff].cols &&
+      Array.isArray(s.mineSet) && Array.isArray(s.revealed) &&
+      Array.isArray(s.flags) && Array.isArray(s.adj) &&
+      s.revealed.length === count && s.flags.length === count && s.adj.length === count;
+  }
+  function restoreState(s) {
+    if (!validState(s)) return false;
+    clearInterval(timer); timer = null;
+    diff = s.diff; dailyActive = !!s.dailyActive; dailySeed = s.dailySeed;
+    rows = s.rows; cols = s.cols; mineCount = s.mineCount;
+    revealed = []; flags = []; adj = []; mineSet = {};
+    build();
+    revealed = s.revealed.map(Boolean); flags = s.flags.map(Boolean); adj = s.adj.map(Number);
+    s.mineSet.forEach(function (i) { if (i >= 0 && i < rows * cols) mineSet[i] = true; });
+    started = !!s.started; placed = !!s.placed; flagsUsed = Number(s.flagsUsed) || 0;
+    revealCount = Number(s.revealCount) || 0; seconds = Number(s.seconds) || 0;
+    flagMode = !!s.flagMode; over = false; won = false;
+    cells.forEach(function (cell, i) {
+      if (revealed[i]) {
+        cell.classList.add("is-open");
+        if (adj[i] > 0) { cell.textContent = adj[i]; cell.dataset.n = adj[i]; }
+      } else if (flags[i]) {
+        cell.classList.add("is-flag");
+      }
+    });
+    minesEl.textContent = mineCount - flagsUsed;
+    timeEl.textContent = seconds;
+    statusEl.textContent = started ? "Game resumed." : "Click any square to begin.";
+    statusEl.className = "game-status";
+    flagBtn.setAttribute("aria-pressed", String(flagMode));
+    flagBtn.classList.toggle("btn-game--primary", flagMode);
+    document.querySelectorAll(".seg [data-diff]").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.diff === diff));
+    });
+    renderBest();
+    if (started) startTimer();
+    return true;
+  }
+  if (window.SnackPackResume) {
+    resume = window.SnackPackResume.attach({
+      game: "minesweeper", gameVersion: 1, variant: resumeVariant,
+      serialize: resumeState, restore: restoreState,
+      isActive: function () { return !over && (started || flagsUsed > 0); }
     });
   }
 })();

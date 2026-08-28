@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Play Reversi / Othello Online Free vs Computer | No Ads — SnackPack</title>
-<meta name="description" content="Play Reversi (Othello) free in your browser against the computer — flip discs to outnumber your opponent. Three difficulty levels, legal-move hints, no ads, no sign-in, no download. From SnackPack Studios.">
+<meta name="description" content="Play Reversi (Othello) free against the computer or a friend — flip discs, seize corners, use legal-move hints, and try local 2-player. No ads or sign-in.">
 <link rel="canonical" href="https://www.snackpackuniverse.com/play/reversi/">
 <meta name="theme-color" content="#de6a38">
 <link rel="icon" type="image/png" href="/assets/favicon-32.png">
@@ -72,8 +72,8 @@
   "genre": "Strategy",
   "gamePlatform": "Web browser",
   "operatingSystem": "Any",
-  "playMode": "SinglePlayer",
-  "description": "Free browser Reversi / Othello against a computer opponent with three difficulty levels and legal-move hints. Flip discs to outnumber your opponent. No ads, no sign-in.",
+  "playMode": ["SinglePlayer", "MultiPlayer"],
+  "description": "Free browser Reversi / Othello against a computer opponent or a friend in local 2-player, with three difficulty levels and legal-move hints.",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
 }
@@ -182,7 +182,7 @@
       <div class="page-hero-card" style="text-align:center;">
         <span class="eyebrow">Free · No download</span>
         <h1>Reversi</h1>
-        <p class="lead" style="max-width:580px;margin-left:auto;margin-right:auto;">The classic disc-flipping game, also known as Othello. Trap your opponent's pieces to flip them, grab the corners, and finish with the most discs. Play the computer across three levels. No ads, no sign-in.</p>
+        <p class="lead" style="max-width:580px;margin-left:auto;margin-right:auto;">The classic disc-flipping game, also known as Othello. Trap and flip discs, grab the corners, and finish with the most — against the computer or a friend on the same device.</p>
       </div>
     </div>
   </section>
@@ -192,8 +192,8 @@
       <div class="game-stage">
         <div class="game-toolbar">
           <div class="game-readout">
-            <span class="readout-chip"><span>You ⚫</span><b id="rv-you">2</b></span>
-            <span class="readout-chip"><span>CPU ⚪</span><b id="rv-cpu">2</b></span>
+            <span class="readout-chip"><span id="rv-p1-label">You ⚫</span><b id="rv-you">2</b></span>
+            <span class="readout-chip"><span id="rv-p2-label">CPU ⚪</span><b id="rv-cpu">2</b></span>
           </div>
           <div class="game-controls">
             <div class="seg" role="group" aria-label="Difficulty">
@@ -201,6 +201,7 @@
               <button type="button" data-level="3" aria-pressed="true">Medium</button>
               <button type="button" data-level="5" aria-pressed="false">Hard</button>
             </div>
+            <div class="seg" role="group" aria-label="Players"><button type="button" data-players="1" aria-pressed="true">1 player</button><button type="button" data-players="2" aria-pressed="false">2 players</button></div>
             <button class="btn-game" id="rv-undo" type="button" disabled>Undo</button>
             <button class="btn-game btn-game--primary" id="rv-new" type="button">New game</button>
           </div>
@@ -361,7 +362,9 @@
   var newBtn = document.getElementById("rv-new");
   var undoBtn = document.getElementById("rv-undo");
 
-  var board, cells, busy = false, gameOver = false, depth = 3, legal = [];
+  var savedDepth = 3, localMode = false;
+  try { savedDepth = +(localStorage.getItem("sp_reversi_mode") || 3); localMode = localStorage.getItem("sp_reversi_players") === "2"; } catch (e) {}
+  var board, cells, busy = false, gameOver = false, depth = [1,3,5].indexOf(savedDepth) >= 0 ? savedDepth : 3, legal = [], currentSide = HUMAN;
   var undoStack = [];
   function updateUndo() { undoBtn.disabled = busy || undoStack.length === 0; }
 
@@ -380,10 +383,10 @@
   function reset() {
     board = new Array(64).fill(0);
     board[27] = -1; board[28] = 1; board[35] = 1; board[36] = -1; // d4 w, e4 b, d5 b, e5 w
-    busy = false; gameOver = false;
+    busy = false; gameOver = false; currentSide = HUMAN;
     undoStack = [];
     statusEl.className = "game-status";
-    statusEl.textContent = "Your move — you're black. Legal squares are dotted.";
+    statusEl.textContent = localMode ? "Player 1's move — black. Legal squares are dotted." : "Your move — you're black. Legal squares are dotted.";
     render();
   }
 
@@ -426,7 +429,7 @@
   }
 
   function render() {
-    legal = gameOver ? [] : legalMoves(board, HUMAN);
+    legal = gameOver ? [] : legalMoves(board, localMode ? currentSide : HUMAN);
     var legalSet = {};
     legal.forEach(function (m) { legalSet[m.idx] = true; });
     for (var i = 0; i < 64; i++) {
@@ -448,8 +451,18 @@
     if (busy || gameOver) return;
     var mv = legal.filter(function (m) { return m.idx === i; })[0];
     if (!mv) return;
-    undoStack.push(board.slice());
-    board = applyMove(board, mv, HUMAN);
+    undoStack.push(localMode ? { board: board.slice(), side: currentSide } : board.slice());
+    board = applyMove(board, mv, localMode ? currentSide : HUMAN);
+    if (localMode) {
+      var next = -currentSide;
+      if (legalMoves(board, HUMAN).length === 0 && legalMoves(board, CPU).length === 0) { finish(); return; }
+      if (legalMoves(board, next).length === 0) {
+        statusEl.textContent = (next === HUMAN ? "Player 1" : "Player 2") + " has no move and passes.";
+      } else currentSide = next;
+      busy = false; render();
+      if (legalMoves(board, next).length !== 0) statusEl.textContent = currentSide === HUMAN ? "Player 1's move — black." : "Player 2's move — white.";
+      return;
+    }
     busy = true;
     render();
     setTimeout(nextAfterHuman, 250);
@@ -457,9 +470,10 @@
 
   function undo() {
     if (busy || !undoStack.length) return;
-    board = undoStack.pop();
+    var previous = undoStack.pop();
+    if (localMode) { board = previous.board; currentSide = previous.side; } else board = previous;
     busy = false; gameOver = false;
-    statusEl.textContent = "Move undone — your turn.";
+    statusEl.textContent = localMode ? (currentSide === HUMAN ? "Move undone — Player 1's turn." : "Move undone — Player 2's turn.") : "Move undone — your turn.";
     statusEl.className = "game-status";
     render();
   }
@@ -505,7 +519,7 @@
     var cnt = counts(board);
     render();
     if (cnt.you > cnt.cpu) {
-      statusEl.textContent = "You win " + cnt.you + "–" + cnt.cpu + "! 🎉";
+      statusEl.textContent = (localMode ? "Player 1 wins " : "You win ") + cnt.you + "–" + cnt.cpu + "! 🎉";
       statusEl.className = "game-status";
       if (window.SnackPack) window.SnackPack.celebrate({
         title: "You won at Reversi! 🎉",
@@ -514,10 +528,10 @@
       // After celebrate, always — the share card must not be able to suppress the funnel.
       if (window.SnackPackShare) window.SnackPackShare.result({
         game: "Reversi",
-        headline: "Won " + cnt.you + "\u2013" + cnt.cpu + " on " + (depth <= 1 ? "Easy" : depth <= 3 ? "Medium" : "Hard")
+        headline: localMode ? "Player 1 won " + cnt.you + "\u2013" + cnt.cpu : "Won " + cnt.you + "\u2013" + cnt.cpu + " on " + (depth <= 1 ? "Easy" : depth <= 3 ? "Medium" : "Hard")
       });
     } else if (cnt.cpu > cnt.you) {
-      statusEl.textContent = "Computer wins " + cnt.cpu + "–" + cnt.you + ". Try again!";
+      statusEl.textContent = (localMode ? "Player 2 wins " : "Computer wins ") + cnt.cpu + "–" + cnt.you + (localMode ? "! 🎉" : ". Try again!");
       statusEl.className = "game-status game-status--lose";
     } else {
       statusEl.textContent = "It's a tie, " + cnt.you + "–" + cnt.cpu + ". Rematch?";
@@ -594,12 +608,27 @@
   document.querySelectorAll(".seg [data-level]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       depth = +btn.dataset.level;
+      try { localStorage.setItem("sp_reversi_mode", String(depth)); } catch (e) {}
       document.querySelectorAll(".seg [data-level]").forEach(function (x) {
         x.setAttribute("aria-pressed", String(x === btn));
       });
       reset();
     });
   });
+  document.querySelectorAll(".seg [data-level]").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.level === depth)); });
+  document.querySelectorAll("[data-players]").forEach(function (btn) {
+    btn.setAttribute("aria-pressed", String((btn.dataset.players === "2") === localMode));
+    btn.addEventListener("click", function () {
+      localMode = btn.dataset.players === "2";
+      try { localStorage.setItem("sp_reversi_players", localMode ? "2" : "1"); } catch (e) {}
+      document.querySelectorAll("[data-players]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
+      document.getElementById("rv-p1-label").textContent = localMode ? "Player 1 ⚫" : "You ⚫";
+      document.getElementById("rv-p2-label").textContent = localMode ? "Player 2 ⚪" : "CPU ⚪";
+      reset();
+    });
+  });
+  document.getElementById("rv-p1-label").textContent = localMode ? "Player 1 ⚫" : "You ⚫";
+  document.getElementById("rv-p2-label").textContent = localMode ? "Player 2 ⚪" : "CPU ⚪";
 
   // ── Colour / colour-blind picker ─────────────────
   var PALETTE = [

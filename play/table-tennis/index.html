@@ -151,6 +151,7 @@
           <div class="game-readout">
             <span class="readout-chip"><span>You</span><b id="tt-sl">0</b></span>
             <span class="readout-chip"><span>Opp</span><b id="tt-sr">0</b></span>
+            <span class="readout-chip"><span>Record</span><b id="tt-record">0–0</b></span>
           </div>
           <div class="game-controls">
             <div class="seg" role="group" aria-label="Mode">
@@ -425,15 +426,22 @@
   var statusEl = document.getElementById("tt-status");
   var slEl = document.getElementById("tt-sl");
   var srEl = document.getElementById("tt-sr");
+  var recordEl = document.getElementById("tt-record");
   var newBtn = document.getElementById("tt-new");
   var startBtn = document.getElementById("tt-start");
   var hintEl = document.getElementById("tt-hint");
 
   var mode = "1p-beginner";
   var paddleColor = "#29B6F6";
+  try { mode = localStorage.getItem("sp_table_tennis_mode") || mode; paddleColor = localStorage.getItem("sp_table_tennis_colour") || paddleColor; } catch (e) {}
+  if (!MODE_CONFIG[mode]) mode = "1p-beginner";
   var state = initialState(mode, 7, paddleColor);
   var keys = {};
   var rafId = null;
+
+  function recordKey() { return "sp_table_tennis_record_" + mode.replace(/[^a-z0-9]+/g, "_"); }
+  function readRecord() { try { var r = JSON.parse(localStorage.getItem(recordKey()) || "{}"); return { wins: Number(r.wins) || 0, losses: Number(r.losses) || 0 }; } catch (e) { return { wins: 0, losses: 0 }; } }
+  function showRecord() { var r = readRecord(); recordEl.textContent = r.wins + "–" + r.losses; }
 
   window.addEventListener("snackpack:arcade-assets-ready", function (e) {
     if (e.detail && e.detail.slug === "table-tennis") draw();
@@ -443,6 +451,7 @@
     state = initialState(mode, 7, paddleColor);
     slEl.textContent = "0"; srEl.textContent = "0";
     statusEl.className = "game-status";
+    showRecord();
     if (startNow) { state.phase = "playing"; startBtn.style.display = "none"; statusEl.textContent = playingHint(); }
     else { startBtn.style.display = ""; startBtn.textContent = "Start"; statusEl.textContent = "Press Start, then move your paddle."; }
     draw();
@@ -525,6 +534,9 @@
   function finish() {
     updateScores();
     var youWin = state.winner === 1;
+    var record = readRecord(); if (youWin) record.wins++; else record.losses++;
+    try { localStorage.setItem(recordKey(), JSON.stringify(record)); } catch (e) {}
+    showRecord();
     statusEl.textContent = youWin ? "You win " + state.scoreL + "–" + state.scoreR + "! 🏆" : "Opponent wins " + state.scoreR + "–" + state.scoreL + ". Try again!";
     statusEl.className = "game-status " + (youWin ? "game-status--win" : "game-status--lose");
     startBtn.style.display = ""; startBtn.textContent = "Play again";
@@ -535,7 +547,7 @@
     // After celebrate, always — the share card must not be able to suppress the funnel.
     if (window.SnackPackShare) window.SnackPackShare.result({
       game: "Table Tennis",
-      headline: "Scored " + state.score
+      headline: (youWin ? "Won " : "Finished ") + state.scoreL + "–" + state.scoreR + " in " + MODE_CONFIG[mode].label
     });
   }
 
@@ -573,6 +585,7 @@
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       mode = btn.dataset.mode;
+      try { localStorage.setItem("sp_table_tennis_mode", mode); } catch (e) {}
       document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
       hintEl.textContent = MODE_CONFIG[mode].twoPlayer ? "Left: W & S · Right: ↑ & ↓ keys. First to 7 wins." : "Move: slide / mouse, or W & S. First to 7 wins.";
       resetGame(false);
@@ -582,12 +595,16 @@
   document.querySelectorAll(".tt-swatch").forEach(function (sw) {
     sw.addEventListener("click", function () {
       paddleColor = sw.dataset.color;
+      try { localStorage.setItem("sp_table_tennis_colour", paddleColor); } catch (e) {}
       state.paddleColorL = paddleColor;
       document.querySelectorAll(".tt-swatch").forEach(function (x) { x.classList.toggle("is-on", x === sw); });
       draw();
     });
   });
 
+  document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.mode === mode)); });
+  document.querySelectorAll(".tt-swatch").forEach(function (x) { x.classList.toggle("is-on", x.dataset.color === paddleColor); });
+  hintEl.textContent = MODE_CONFIG[mode].twoPlayer ? "Left: W & S · Right: ↑ & ↓ keys. First to 7 wins." : "Move: slide / mouse, or W & S. First to 7 wins.";
   resetGame(false);
   loop();
 

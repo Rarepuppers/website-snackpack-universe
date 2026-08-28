@@ -312,6 +312,7 @@
 <script>window.SP_PLAY_URL = "https://www.snackpackuniverse.com/go/arcade/crossword/braingames2/";</script>
 <script src="../funnel.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
 <script>
 (function () {
   "use strict";
@@ -408,16 +409,22 @@
   // recipient lands on the same board being compared, not a fresh one — without
   // this the share is pointless to send.
   var sharedDaily = new URLSearchParams(location.search).has("daily");
-  var mode = sharedDaily ? "daily" : "general";
+  var preferredMode = window.SnackPackStore.get("sp_crossword_mode");
+  var mode = sharedDaily ? "daily" : (PACKS[preferredMode] ? preferredMode : "general");
   // Honour ?daily=<n> so a shared result opens the board it actually refers to,
   // rather than silently serving today's. Falls back to today when absent.
   function dailyNumber() {
     var q = new URLSearchParams(location.search).get("daily");
+    if (/^\d{4}-\d{2}-\d{2}$/.test(q || "")) {
+      var t = Date.parse(q + "T00:00:00Z");
+      if (!isNaN(t)) return Math.floor(t / 86400000);
+    }
     var n = q == null ? NaN : parseInt(q, 10);
     return isNaN(n) ? Math.floor(Date.now() / 86400000) : n;
   }
   var puzzle, meta, userGrid, checkGrid, selR, selC, dir, activeClue;
   var solved, started, elapsed, timerId;
+  var resume = null;
 
   function bestKey() { return "sp_crossword_best_" + mode; }
   function fmt(s) { var m = Math.floor(s / 60); return m + ":" + (s % 60 < 10 ? "0" : "") + (s % 60); }
@@ -597,6 +604,7 @@
 
   function finish() {
     solved = true; stopTimer();
+    if (resume) resume.clear();
     statusEl.textContent = "Solved: " + puzzle.title + "! 🎉 " + fmt(elapsed);
     statusEl.className = "game-status game-status--win";
     paintClueStatus();
@@ -635,13 +643,14 @@
     checkGrid[selR][selC] = "unchecked";
     advanceCursor();
     paint(); renderActiveClue();
+    if (resume) resume.changed();
     if (checkSolved()) finish();
   }
 
   function deleteLetter() {
     if (solved) return;
-    if (userGrid[selR][selC] !== "") { userGrid[selR][selC] = ""; checkGrid[selR][selC] = "unchecked"; paint(); return; }
-    if (retreatCursor()) { userGrid[selR][selC] = ""; checkGrid[selR][selC] = "unchecked"; paint(); }
+    if (userGrid[selR][selC] !== "") { userGrid[selR][selC] = ""; checkGrid[selR][selC] = "unchecked"; paint(); if (resume) resume.changed(); return; }
+    if (retreatCursor()) { userGrid[selR][selC] = ""; checkGrid[selR][selC] = "unchecked"; paint(); if (resume) resume.changed(); }
   }
 
   function clueCells(num, d) {
@@ -681,6 +690,7 @@
     var wrong = 0; for (var rr = 0; rr < meta.rows; rr++) for (var cc = 0; cc < meta.cols; cc++) if (checkGrid[rr][cc] === "wrong") wrong++;
     statusEl.textContent = wrong === 0 ? "No mistakes so far — keep going." : (wrong === 1 ? "1 letter is wrong." : wrong + " letters are wrong.");
     statusEl.className = "game-status";
+    if (resume) resume.changed();
   }
 
   function revealCell() {
@@ -690,6 +700,7 @@
     if (!started) { started = true; startTimer(); }
     userGrid[selR][selC] = sol; checkGrid[selR][selC] = "correct";
     advanceCursor(); paint(); renderActiveClue();
+    if (resume) resume.changed();
     if (checkSolved()) finish();
   }
 
@@ -702,6 +713,7 @@
       if (inWord) { userGrid[r][c] = puzzle.grid[r][c]; checkGrid[r][c] = "correct"; }
     }
     paint();
+    if (resume) resume.changed();
     if (checkSolved()) finish();
   }
 
@@ -750,10 +762,10 @@
   document.getElementById("cw-check").addEventListener("click", checkAnswers);
   document.getElementById("cw-reveal").addEventListener("click", revealCell);
   document.getElementById("cw-revealword").addEventListener("click", revealWord);
-  newBtn.addEventListener("click", function () { build(); });
-  document.getElementById("cw-victory-new").addEventListener("click", function () { build(); });
+  newBtn.addEventListener("click", function () { if (resume) resume.clear(); build(); });
+  document.getElementById("cw-victory-new").addEventListener("click", function () { if (resume) resume.clear(); build(); });
   document.getElementById("cw-victory-hard").addEventListener("click", function () {
-    var p = harderPuzzle(); setMode(p.pack); build(p);
+    if (resume) resume.clear(); var p = harderPuzzle(); setMode(p.pack); build(p);
   });
 
   document.addEventListener("keydown", function (e) {
@@ -773,14 +785,39 @@
 
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
     btn.addEventListener("click", function () {
+      if (resume) resume.save();
       mode = btn.dataset.mode;
+      window.SnackPackStore.set("sp_crossword_mode", mode);
       document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
+      if (resume) resume.variantChanged();
       build();
     });
   });
 
-  if (sharedDaily) document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.mode === "daily")); });
+  document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.mode === mode)); });
   build();
+  resume = window.SnackPackResume.attach({
+    game: "crossword",
+    variant: function () { return mode === "daily" ? "daily_" + dailyNumber() : mode; },
+    serialize: function () {
+      return { puzzleId: puzzle.id, mode: mode, userGrid: userGrid, checkGrid: checkGrid,
+        selR: selR, selC: selC, dir: dir, activeClue: activeClue, started: started, elapsed: elapsed };
+    },
+    validate: function (s) {
+      return s && typeof s.puzzleId === "string" && Array.isArray(s.userGrid) && Array.isArray(s.checkGrid) && Number.isFinite(s.elapsed);
+    },
+    restore: function (s) {
+      var restoredPuzzle = allPuzzles().find(function (p) { return p.id === s.puzzleId; });
+      if (!restoredPuzzle) throw new Error("Puzzle no longer exists");
+      stopTimer(); hideVictory(); mode = s.mode; puzzle = restoredPuzzle; meta = buildGridMeta(puzzle);
+      userGrid = s.userGrid.map(function (row) { return row.slice(); }); checkGrid = s.checkGrid.map(function (row) { return row.slice(); });
+      selR = s.selR; selC = s.selC; dir = s.dir; activeClue = s.activeClue; started = !!s.started; elapsed = s.elapsed; solved = false;
+      document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.mode === mode)); });
+      timeEl.textContent = fmt(elapsed); showBest(); renderGrid(); renderClueLists(); renderActiveClue(); paintClueStatus();
+      if (started) startTimer();
+    },
+    isActive: function () { return !!puzzle && !solved && (started || userGrid.some(function (row) { return row.some(Boolean); })); }
+  });
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

@@ -20,6 +20,16 @@ const HUB = path.join(root, "play", "index.html");
 const OPEN = "<!-- related-games:generated -->";
 const CLOSE = "<!-- /related-games:generated -->";
 const COUNT = 6;
+const GUIDES = {
+  solitaire: "solitaire-without-ads-or-signup",
+  sudoku: "sudoku-without-ads-or-mistakes",
+  freecell: "freecell-without-ads-solver-verified",
+  checkers: "checkers-without-ads-or-signup",
+  minesweeper: "minesweeper-without-ads",
+  mahjong: "mahjong-solitaire-without-ads",
+  thirteen: "thirteen-tien-len-rules",
+  "flag-frenzy": "flag-quiz-without-ads",
+};
 
 /*
  * One curated entry pinned to the front of every block.
@@ -60,7 +70,7 @@ function tile(href, src, title) {
   );
 }
 
-function block(related) {
+function block(current, related) {
   const tiles = [
     // Root-relative, because the featured page is not a sibling of the game pages.
     tile(FEATURED.href, `../tiles/${FEATURED.tile}`, FEATURED.title),
@@ -75,6 +85,9 @@ function block(related) {
     `    <div class="game-grid game-grid--compact">\n` +
     tiles +
     `\n    </div>\n` +
+    (GUIDES[current.slug]
+      ? `    <p class="related-games-guide"><a class="text-link" href="../../guides/${GUIDES[current.slug]}/">Read the ${current.title} guide →</a></p>\n`
+      : "") +
     `    <p class="related-games-more"><a class="text-link" href="../">See all games in the arcade →</a></p>\n` +
     `  </div>\n` +
     `</section>\n${CLOSE}`
@@ -108,7 +121,7 @@ async function main() {
       related.push(games[(i + k) % games.length]);
     }
 
-    const b = block(related);
+    const b = block(g, related);
     const existing = new RegExp(`${OPEN}[\\s\\S]*?${CLOSE}\\n?`, "m");
     if (existing.test(html)) {
       html = html.replace(existing, b + "\n");

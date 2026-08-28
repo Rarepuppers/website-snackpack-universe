@@ -15,6 +15,14 @@ claimed. Regenerating it would be wasted work.
 > Vol 1 release handoff. Use `CODEX-ASSETS-REQUESTED.md` as the current asset
 > priority list.
 
+> **2026-08-28 re-audit added.** Sections E-K at the end of this file were
+> measured against the live origin and both repo trees on 2026-08-28 and
+> supersede anything above that conflicts with them. **Start there**, not with
+> the task board below: it opens with a shipped P0 (2048 is unreadable in the
+> dark theme) and a major quality-of-life gap (no game in the arcade survives a
+> page reload). Section K is Codex's review of the Claude handover and is the
+> final authority where it corrects E-J.
+
 ## Current open task board
 
 This table overrides older narrative below when statuses conflict.
@@ -1141,3 +1149,708 @@ re-deriving from this plan doc. A1 has its own equivalent brief in
 | A8 | 1 maskable 512×512 PWA icon | **Done; manifest and offline shell wired** |
 | B1 | SnackWords hub tile (72×72) + social card (1200×630) | **Done and wired** |
 | B2 | Golf Solitaire hub tile (72×72) + social card (1200×630) | **Done and wired** |
+
+---
+
+# Re-audit 2026-08-28 — measured against the live origin and both repos
+
+Written by Claude for Codex handover. Everything in this section was checked
+against **the live site** (`https://www.snackpackuniverse.com/play/`, computed
+styles read in-browser) or against the actual repo trees, not against the
+narrative above. Where an earlier section of this document conflicts with a
+measurement here, **the measurement wins**.
+
+Standing constraints this section respects:
+
+- **Only Codex/imagegen creates or regenerates assets.** Every item below is
+  tagged `[no art]` or `[art]`, and the `[art]` list is deliberately tiny.
+- **R5 of `../SITE-IMPROVEMENT-PLAN.md` still holds**: arcade breadth is not the
+  growth lever. 36 games, and one page (`/play/thirteen/`) produced 74% of all
+  search exposure in the last measured window. Nothing below is justified as
+  "more games will bring traffic" — the new-game section (G) is justified on a
+  different and much narrower basis, stated there.
+- **The `../SITE-IMPROVEMENT-PLAN.md` R6 printables work and the directory
+  outreach outrank everything here for traffic.** This section is about making
+  the arcade *good and retentive* for the people who do arrive, plus a small
+  number of genuinely-cheap SEO wins. Do not let it displace R6.
+
+## What the arcade actually is, as of today
+
+| Fact | Value | How verified |
+|---|---|---|
+| Game directories under `play/` with an `index.html` | **37** (36 arcade + `last-bastion`, which is not in the hub grid) | `ls play/*/index.html` |
+| Tiles in the live hub grid | **37** (36 arcade + Atlas Quest, which lives at `/atlas-quest/`) | `document.querySelectorAll('.game-tile').length` on the live page |
+| Games with a daily mode | **12** | `node scripts/build-game-counts.mjs --check` and the generated cards on `/play/daily/` |
+| Games with result sharing | all | `share-result.js` in every game page |
+| Games with keyboard-grid support | 9 wired to `keyboard-grid.js`; the rest use native controls | grep plus B3 above |
+| Games with sound | **6 of 36** — Solitaire, Spider, FreeCell, Golf, Pyramid, TriPeaks | `grep -l audio.js play/*/index.html` |
+| Games that persist **anything** beyond the theme | **~20 of 36** | `localStorage` key inventory, below |
+| Games that persist an **in-progress board** | **0 of 36** | see F1 |
+| Hub search / filter / category / sort controls | **none** — `<input>`, `<select>` and `<button>` counts on `play/index.html` are all zero | grep of the hub markup |
+
+---
+
+# Section E — defects found on the live site (do these first) `[no art]`
+
+These are shipped bugs, not polish. All were reproduced on the live origin.
+
+## E1. **2048 is unplayable in the dark theme.** P0.
+
+The site ships a three-way theme toggle (`theme.js`, dark to light to cream),
+mounted on **37 of 38** arcade pages. `play/play.css` contains **83 hardcoded
+hex colours** and **zero `[data-theme]` rules**, so any rule that pins a light
+background but lets its text colour inherit `var(--ink)` inverts to
+light-on-light in the dark theme. That is exactly the failure
+`scripts/check-contrast.mjs` was written to catch — but that script reads
+**`site.css` only** and has never looked at `play/play.css`.
+
+Measured live with `data-theme="dark"`, contrast ratio of tile text against tile
+background:
+
+| Tile | Background | Text | Ratio | Verdict |
+|---|---|---|---:|---|
+| **2** | `rgb(251,243,230)` | `rgb(244,236,227)` | **1.06** | invisible |
+| **4** | `rgb(247,235,212)` | `rgb(244,236,227)` | **1.01** | invisible |
+| 8 | `rgb(239,181,77)` | `rgb(43,29,8)` | 8.88 | fine |
+| **16** | `rgb(232,154,60)` | `#fff` | **2.30** | fails AA in *every* theme |
+| 32 | `rgb(222,106,56)` | `#fff` | 3.37 | fails AA for body text |
+| 64 to 2048 | — | — | 4.00–9.54 | fine |
+
+The 2 and 4 tiles are the two most frequent tiles on a 2048 board. In dark theme
+the game reads as an empty grid. The 16 and 32 tiles fail AA regardless of
+theme, so those are a plain accessibility bug independent of theming.
+
+**Codex live verification found a second, wider P0 in the same surface.** The
+shared active `.btn-game--primary` control is white text on `var(--ink)`. In the
+dark theme `--ink` becomes pale cream, so every primary **New game** button is
+white on cream (measured live at **1.17:1**). The base `.btn-game` uses pale
+themed ink on an 85%-white background and is similarly unreadable, although the
+2048 Undo button happens to be disabled on first load. This is not a 2048-only
+fix; it affects the shared control primitive used across the arcade.
+
+**Fix:** first repair `.btn-game` and `.btn-game--primary` with paired,
+theme-safe foreground/background tokens. Then give `.g2048-tile[data-v="2"]`
+and `[data-v="4"]` an explicit `color`
+(the existing dark ink, e.g. `#2b1d08`) rather than letting them inherit, and
+darken the 16/32 backgrounds or switch their text to the dark ink until both
+clear 4.5:1. Do not "fix" this by removing the theme toggle from the page.
+
+## E2. Sixteen more rules in `play.css` have the same shape. P1.
+
+A static resolve of `play/play.css` (light background, no explicit `color`,
+therefore inheriting themed ink) returns 18 rules. Four are confirmed safe
+because the *page* overrides them — Minesweeper, Picross, Memory Match and
+Crossword all read correctly dark on the live site. The remaining candidates
+each need a live check under all three themes, then an explicit `color`:
+
+```
+.g2048-tile[data-v="2"]        .g2048-tile[data-v="4"]        <- E1, confirmed broken
+.c4-cell.is-p2                 .c4-key--you::before           .c4-key--cpu::before
+.kk-fill:hover:not(.is-locked) .kk-fill.is-selected
+.cw-cell.is-active             .cw-cell.is-selected           .cw-key:hover
+.cw-victory-card               .mj-tile.is-selected
+.ms-cell   .ms-cell:hover      .mem-face--symbol   .pc-cell   <- verified safe live
+.funnel-aside img.funnel-qr    <- a QR code; must stay white, leave it
+```
+
+**Method that found these, reusable:** parse every rule in `play/play.css`, keep
+those whose `background`/`background-color` resolves to a hex with relative
+luminance above 0.6, and flag any that does not also set `color`.
+
+That method is only the first pass. It misses rules such as `.btn-game`, which
+*do* set a colour but pair a themed foreground token with a hardcoded light
+background. The finished audit must resolve both declarations in all three
+themes and test the resulting ratio, not use "has a color declaration" as a
+proxy for safety.
+
+## E3. Extend `check-contrast.mjs` to `play/play.css` and make it CI-blocking. P1.
+
+`.github/workflows/site-check.yml` already runs `check-site.mjs`,
+`check-javascript.mjs`, `check-website-delivery.mjs` **and
+`check-contrast.mjs`**. The remaining defect is coverage: the contrast script
+only reads `site.css`, not `play/play.css`.
+
+Change: let the checker take one or more target stylesheets while always loading
+the theme variables from `site.css`; a naive invocation against `play.css`
+alone has no `:root` theme table to resolve. Keep the existing workflow step but
+make it cover both files. Carry the existing allowlist idea over — `.funnel-qr`
+and any deliberately-white image surface gets an explicit exemption with a
+comment saying why. Also stop treating "fails in all three themes" as
+automatically non-blocking: that rule would explicitly suppress the 2048 16/32
+failures. Report theme-specific regressions separately from universal WCAG
+failures, but fail CI for both when the selector renders text.
+
+Without this, E1 recurs the moment a new game page is added, because every game
+page inherits the same pattern.
+
+## E4. Three incompatible `localStorage` key namespaces. P2.
+
+The arcade uses all three of these at once:
+
+| Shape | Example | Used by |
+|---|---|---|
+| `sp_<game>_<field>` | `sp_2048_best`, `sp_worm_best`, `sp_mahjong_best_` | most games |
+| `sp-<game>-best-<variant>` | `sp-solitaire-best-d3`, `sp-freecell-best-c4`, `sp-spider-best-s1` | the three big card games |
+| `snackpack-<game>-best` | `snackpack-soccer-trivia-sprint-best`, `snackpack-free-kick-curl-best` | the soccer set |
+
+Nothing is broken today, but this is the reason a cross-game profile/stats page
+(F4) cannot simply be written — there is no enumerable convention. Fix it as a
+**read-both, write-new** migration inside a shared `play/store.js` helper: read
+the legacy key if the canonical one is absent, write only `sp_<game>_<field>`
+thereafter. Never delete a legacy key — a player with two browsers open should
+not lose a best time to a migration.
+
+---
+
+# Section F — quality of life, in descending order of value `[no art]`
+
+## F1. **Nothing in the arcade survives a page reload.** P1 — the highest-value retention item, immediately after shipped defects.
+
+Verified by inventorying every `localStorage` call on every game page:
+
+| Game | Everything it persists |
+|---|---|
+| **Sudoku** | nothing but the theme |
+| **Minesweeper** | nothing but the theme |
+| **Word Search** | nothing but the theme |
+| **Table Tennis** | nothing but the theme |
+| **Snakes and Ladders** | nothing but the theme |
+| **Crossword** | nothing but the theme (4 `localStorage` calls, all theme) |
+| **Flag Frenzy** | nothing but the theme (11 calls, all theme) |
+| Checkers / Reversi / Connect 4 | the two player *names* only |
+| Solitaire / FreeCell / Spider | a best time per variant, and the large-cards toggle |
+
+The consequence is worst exactly where the stakes are highest: a 25-minute
+Expert Sudoku, a nearly-cleared Minesweeper board or a half-solved Crossword is
+destroyed by an accidental refresh, a back-button, a phone call, or the tab
+being evicted on mobile. The site's own pitch is "calm games that respect your
+time", and it currently throws the player's time away on any interruption.
+
+**Build `play/resume.js`, one shared helper, in the same shape as `pause.js` and
+`keyboard-grid.js`** — the game owns its state, the helper owns storage:
+
+```js
+SnackPackResume.attach({
+  game: "sudoku",
+  variant: () => difficulty,        // separate saves per difficulty/mode
+  serialize: () => ({ grid, notes, mistakes, seconds, seed }),
+  restore: (s) => { /* rehydrate, then render() */ },
+  isActive: () => phase === "playing",
+});
+```
+
+Design decisions to make once, in the helper, not per game:
+
+- **Save on every state change, debounced (~400ms), plus on `visibilitychange`
+  and `pagehide`.** `beforeunload` alone is unreliable on mobile Safari.
+- **Never auto-restore silently.** Show a small "Resume your game / Start fresh"
+  choice on load. Dropping a player into a half-finished board they do not
+  remember is worse than losing it.
+- **Expire saves after 7 days** so a stale board does not ambush someone.
+- **Never save a `?daily=` board's *result*, only its progress** — completion is
+  `daily-state.js`'s job, and duplicating it will corrupt the streak.
+- **One key per game and variant**, `sp_<game>_save_<variant>`, so these saves
+  and the E4 migration share one convention.
+
+Priority order for wiring, by how much a lost board costs: **Sudoku, Crossword,
+Minesweeper, Picross, Kakuro, Word Search**, then the card games (Solitaire,
+FreeCell, Spider, TriPeaks, Pyramid, Golf), then Mahjong. Skip the action and
+soccer games entirely — a run is short, and losing it is the game.
+
+## F2. Best-score tracking is missing where it would matter most. P1.
+
+Five games persist no score at all, including the two with the largest search
+demand in the arcade:
+
+- **Sudoku** (~94k/mo term) — no best time per difficulty
+- **Minesweeper** — no best time per board size; this is *the* metric the game
+  is traditionally played for
+- **Word Search** — no best time per grid size
+- **Table Tennis**, **Snakes and Ladders** — no best score, no win count
+
+Wire these through the same `play/store.js` helper as E4 so they land on the
+canonical key shape from the start. Show the value in the toolbar next to the
+timer, matching how Solitaire already does it.
+
+## F3. The hub is a flat wall of 37 tiles with no way to navigate it. P1.
+
+`play/index.html` contains **zero** `<input>`, `<select>` or `<button>`
+elements. There is no search, no category filter, no sort, no "recently played",
+no favourites. A visitor who wants "a card game" or "something quick" has to
+read 37 descriptions.
+
+This is the highest-leverage *engagement* change on the property, because it is
+the page every arcade session starts on. Build it **progressively enhanced and
+static-first** — the tiles must stay in the HTML for crawlers, and the controls
+must be added by JS on top:
+
+1. **Category chips** — Cards, Puzzles, Word, Board, Arcade, Soccer, Daily.
+   Derive from a `data-cat` attribute added to each existing `.game-tile`;
+   filter by toggling a class. No new markup shape, and no reordering of the DOM
+   (which would hurt the crawlable link order).
+2. **A live text filter** — one `<input type="search">`, matching title plus the
+   existing description text. 37 items, so this is a `filter()` over a
+   `NodeList`, not a search index.
+3. **"Jump back in"** — a row above the grid, built from `sp_recent` (the last
+   four games opened, written by a one-line hook on each game page). Combined
+   with F1 this becomes "Resume your Sudoku", which is the whole retention loop
+   the arcade currently lacks.
+4. **Favourites** — a star on each tile, `sp_favs`, pinned to the top. Cheap,
+   and a reasonable retention hypothesis to test after search/categories.
+5. **Sort control** — Featured (current DOM order) / A to Z / Recently added.
+
+Keep all state in `localStorage` under the E4 convention. With JS disabled the
+page must render exactly as it does today.
+
+## F4. A "Your stats" page. P2 — do it *after* E4 and F2.
+
+Once the key namespace is uniform and the missing bests exist, `/play/stats/` is
+a read-only enumeration of `sp_*` keys: games played, best times, the current
+daily streak (already in `sp_daily_streak`) and daily-completion history. It
+costs almost nothing once E4 lands, it is a natural share surface, and it is the
+honest version of the "profile" that ad-funded arcades use to justify a sign-in
+— we can offer it with no account at all, which is on-message.
+
+**Do not add accounts or sync.** "No sign-in" is one of the four differentiators
+C1 says we can actually win on.
+
+## F5. Finish the audio rollout — 30 of 36 games are still silent. P3.
+
+All eight WAVs are shipped and live in `play/shared-assets/game-ui/audio/`
+(`place`, `pickup`, `invalid`, `success`, `win`, `tick`, `pop`, `whoosh`;
+212 KB total). `play/audio.js` and the persistent Sound on/off control are
+built. Only the six card games load it.
+
+The A2 rollout tranches were defined above and never completed. Do them in this
+order, adding each new file to the `SHELL` array in `sw.js` as it is wired:
+
+| Tranche | Games | Sounds |
+|---|---|---|
+| 1 | Solitaire, Spider, FreeCell, Golf, Pyramid, TriPeaks | add `invalid` (already loaded, not yet wired) |
+| 2 | Mahjong, Memory Match, Thirteen, Checkers, Reversi, Connect 4, Snakes and Ladders | `place`, `pickup`, `invalid`, `success`, `win` |
+| 3 | 2048, Cascade, Picross, Minesweeper, Kakuro, Sudoku, Word Search, Crossword, SnackWords | `place`/`tick` on entry, `invalid` on a mistake, `success` on a completed line or word, `win` |
+| 4 | Asteroid Destroyer, Snacky Worm, Flappy Snacky, Table Tennis, Target Shooting | `pop`, `whoosh` |
+| 5 | the seven soccer games | `whoosh` on the kick, `success` on a goal |
+
+Two rules must hold: **sound stays off by default and the toggle persists**
+(already true in `audio.js`), and **no sound fires on page load** — autoplay
+policy will block it, and it startles.
+
+No new audio assets are needed. `[no art]`
+
+## F6. Modes and options still open from B8. P2.
+
+- **Mahjong already has three layouts** — Classic, Fortress and Garden — plus a
+  daily variant. Do not schedule a layout build as missing functionality. A
+  fourth layout is optional content only after evidence that people replay it.
+- **"Large pieces" exists only on the three card games** (`CARD_SIZE_KEY`). The
+  same toggle on Checkers, Reversi, Connect 4, Mahjong, Sudoku and Crossword is
+  a CSS-variable swap, and it is an accessibility feature, not a preference.
+- **Two-player pass-and-play exists only on Snakes and Ladders and Table
+  Tennis.** Checkers, Connect 4 and Reversi already track two player names
+  (`sp_checkers_p1`/`p2` and friends) and already have a CPU opponent — a
+  "2 players" mode is a branch around the AI call.
+- **Checkers and Reversi already expose Easy / Medium / Hard.** The remaining
+  improvement is persisting the selected difficulty, covered by F7.
+- **Deck skins are wired but not selectable.** `card-decks/backs/` holds 8
+  painted backs and the games use exactly one. A back-picker is a
+  `background-image` swap plus a persisted key, and it is the cheapest
+  personalisation feature available. `[no art]` — the art already exists.
+
+## F7. Smaller confirmed items. P3.
+
+- `play/last-bastion/` has an `index.html` but **no theme toggle** (the only
+  arcade page missing `theme.js`) and is not in the hub grid. Either wire it up
+  and list it, or move it out of `play/` so the counts stop being ambiguous.
+- The hub's `<h2>` reads **"Nine games, fully offline."** — that is the app's
+  count, on the arcade page, immediately below a grid of 37 tiles.
+  `build-game-counts.mjs` exists precisely to stop this; add that string to its
+  marker list.
+- Games do not persist their **difficulty or mode choice**. Returning to Sudoku
+  and being handed Easy when you always play Expert is a small, constant tax.
+  Same helper as E4 and F2.
+
+---
+
+# Section G — new games `[art already exists for five of them]`
+
+## G0. Read this before adding anything
+
+R5 is right: **the last eight games added produced nothing measurable.** Do not
+expect breadth to move traffic. But there is one narrow, evidenced exception,
+and `NEW-SOLITAIRE-GAMES-PLAN.md` already articulated it: *Thirteen proved that a
+game page with genuine, independent, low-competition name-search demand can rank
+on this domain from a standing start* — 899 impressions at position ~8, on four
+inbound links.
+
+So the selection rule is: **only add a game whose own name is a searched term
+with a weak field.** Not "another soccer game", and not a card variant with no
+independent name recognition.
+
+## G1. The cheap-port discovery: roughly 44 finished game engines already exist
+
+The Android monorepo ships about **70 games** across the three Brain Games
+volumes. The web arcade has 36. The overlap is partial, and the SnackWords port
+(B1) already proved the migration path: `engine.ts` in these apps is largely
+**pure functions with no React or React Native**, and transliterates to vanilla
+JS essentially unchanged.
+
+Not in the web arcade, by volume:
+
+- **Vol 1** — bowling, dominoes, euchre, gin-rummy, hearts, mancala, morris
+  (Nine Men's Morris), photo-jigsaw, pinball, spades, whac-a-mole
+- **Vol 2** — binairo, brick-breaker, futoshiki, logic-grid, ludo, match-3,
+  rummy-500, simon, star-battle, sudoku-x, tile-slide, water-sort, yahtzee
+- **Vol 3** — akari, backgammon, battleships, block-blast, bubble-shooter,
+  chess, draughts, gomoku, hashi, hitori, kenken, killer-sudoku, masyu,
+  numberlink, nurikabe, shikaku, slitherlink, sokoban, tents, word-guess
+
+## G2. And painted art already exists for five of them, wired to nothing
+
+`play/shared-assets/game-ui/` holds complete base **and** `pro-hand-painted`
+sets for five games that have **no web implementation at all**:
+
+| Pack | Files (base / pro) | Size | Web game? | Android game? |
+|---|---:|---:|---|---|
+| `chess-pieces/` | 12 / 12 | 1.6 MB | none | Vol 3 `chess` |
+| `dominoes/` | 57 / 29 | 753 KB | none | Vol 1 `dominoes` |
+| `battleships/` | 10 / 10 | 1.7 MB | none | Vol 3 `battleships` |
+| `sokoban/` | 6 / 6 | 1.6 MB | none | Vol 3 `sokoban` |
+| `photo-jigsaw/` | 10 / 3 | 61 KB | none | Vol 1 `photo-jigsaw` |
+
+That is roughly 5.7 MB of finished, already-paid-for art shipping to the website
+today and downloaded by nobody, for five games whose engines also already exist.
+**The marginal cost of these five is code only — no Codex time at all.**
+
+## G3. Recommended shortlist, in order
+
+Judge each on its own query cluster, not on sitewide numbers — the same test
+`NEW-SOLITAIRE-GAMES-PLAN.md` applied to TriPeaks and Pyramid.
+
+| # | Game | Engine source | Art | Why this one |
+|---|---|---|---|---|
+| 1 | **Water Sort** | Vol 2 `water-sort` | CSS only | Very large, still-growing name search, against a weak field of ad-heavy clones — our "no ads" angle is at its strongest against exactly that field. Pure CSS, so also the cheapest thing on this list. |
+| 2 | **Chess** | Vol 3 `chess` | **exists** | The largest name-search term we could plausibly host. We will not outrank chess.com, but "play chess in your browser, no sign-in, works offline" is a real long-tail cluster and the art is already paid for. |
+| 3 | **Dominoes** | Vol 1 `dominoes` | **exists** (57 tiles) | Established name, weak field, and the classic-game audience that already performs best here (see the card games). |
+| 4 | **Backgammon** | Vol 3 `backgammon` | `board-games/` + `strategy-tokens/` cover most of it | Big name term, genuinely under-served by ad-free sites. |
+| 5 | **Yahtzee-style dice** | Vol 2 `yahtzee` | dice art needed `[art]` | High-volume classic. Name it carefully: Yahtzee is a Hasbro trademark, so apply the same discipline as B1's "do NOT call it Wordle" rule — ship it as e.g. **SnackDice** and target *"dice game online free"*, never the brand. |
+| 6 | **Killer Sudoku / KenKen** | Vol 3 `killer-sudoku`, `kenken` | CSS | Direct extensions of our strongest existing puzzle page, both with real low-competition demand, and both cross-linkable with `/play/sudoku/`. |
+| 7 | **Sokoban** | Vol 3 `sokoban` | **exists** | Small, evergreen, art is free. |
+| 8 | **Battleships** | Vol 3 `battleships` | **exists** | Two-player pass-and-play plus a CPU; art is free. |
+
+**Explicitly not recommended now:** block-blast and bubble-shooter (trend terms
+owned by app-install advertisers — we cannot compete on ad spend), any further
+soccer game, and any variant without independent name recognition.
+
+## G4. The quality bar every port must meet
+
+Non-negotiable, and identical to the bar in `NEW-SOLITAIRE-GAMES-PLAN.md`. A new
+game ships only when it has **all** of:
+
+`VideoGame` and `FAQPage` JSON-LD; a real `<footer>`; the download funnel card;
+a hub tile and a social card; 350+ words of genuine prose with a 4-question FAQ;
+keyboard support, or documented proof it needs none; `share-result.js`;
+`pause.js` if it has a continuous loop; `audio.js` per F5; `resume.js` per F1; a
+persisted best per F2; a daily mode where the game supports one; and an entry in
+`build-related-games.mjs`, the sitemap and `sw.js`.
+
+**Add `scripts/check-new-game.mjs` that asserts this list**, so the bar is
+mechanical rather than remembered, and run it in `site-check.yml`. This is the
+cheapest guard against the arcade acquiring a second tier of half-finished
+pages.
+
+---
+
+# Section H — assets genuinely needed from Codex `[art]`
+
+Deliberately short. **Everything not listed here already exists** — re-read
+"Before you generate anything" above, and Section G2, before generating
+anything.
+
+| # | File | Size | For | Notes |
+|---|---|---|---|---|
+| H1 | `play/tiles/<slug>.png` | **144x144** | one per new game shipped in G3 | Match the actual existing tile masters exactly; CSS renders them smaller |
+| H2 | `play/social/<slug>.png` | 1200x630 | one per new game shipped in G3 | This *is* the link preview for a shared result, so it matters more than the tile |
+| H3 | `shared-assets/game-ui/dice/` | 6 faces at 256x256, plus a roll-blur frame | G3 #5 (SnackDice) | The only genuinely missing pack in the shortlist. House style: warm cream and amber, soft shadow, pips readable at 48px |
+| H4 | `play/social/stats.png` | 1200x630 | F4 `/play/stats/` | Only if F4 ships |
+
+**Do not generate:** grid-puzzle art (typographic by design), card faces
+(complete), backgrounds (`table-themes/` has 8), replacement soccer sprites (A3
+settled this), or any new share-card style. The existing arcade look is the
+constraint, not an option.
+
+One optional item, low priority, no deadline: `play/social/` is **19 MB** of
+PNGs only ever fetched by social crawlers. If it ever needs slimming, that is a
+re-encode question for `scripts/build-webp.mjs`, not a repaint — **do not
+regenerate the art to save bytes.**
+
+---
+
+# Section I — SEO and marketing `[no art]`
+
+Ordered by expected value. The honest ceiling first: with four inbound links,
+the arcade ranks when Google chooses to test it. I1-I3 are cheap and
+compounding; I4-I5 are where the actual traffic is, and they need Mark, not
+code.
+
+## I1. Optional semantic `ItemList` schema. P3, not a traffic promise.
+
+Live, `/play/` carries `CollectionPage` and `BreadcrumbList`, and nothing else.
+An `ItemList` can describe the list semantically, but Google does not support a
+`VideoGame` host-carousel rich result: its documented `ItemList` carousel types
+are limited to specific content families. The games are already crawlable HTML
+links and are not "invisible" without this markup. If added, generate simple
+`ListItem` entries (`position`, `url`, and optionally `name`) from the existing
+tile markup so it cannot drift. Do **not** add `SearchAction`: Google removed the
+sitelinks search box in November 2024, so that markup has no current Search
+feature to unlock.
+
+## I2. Every game page should link to its guide, and each guide back to its game. P1.
+
+R1 measured this: twelve guides produced 49 impressions and zero clicks, while
+one game page produced 899 impressions. The guides are not the problem — their
+**isolation** is. Guides exist for solitaire, sudoku, checkers, freecell,
+mahjong, minesweeper and thirteen; the corresponding game pages link to *other
+games* via `build-related-games.mjs`, but not consistently to their own guide.
+
+Extend `build-related-games.mjs` to emit a "How to play" link to the matching
+`/guides/` page where one exists, and have each guide link back to the game with
+descriptive anchor text. This is the cheapest internal-link improvement
+available, and it makes the guides reachable by crawl instead of by sitemap
+alone.
+
+## I3. There is no email capture on any of the 36 arcade pages. P2 pilot.
+
+`build-newsletter-cta.mjs` exists and places a capture on every **app** page.
+No `/play/` page carries one. The arcade is the surface where a visitor
+has just had a good, free, no-strings experience — the best moment in the funnel
+to ask for an email, and the only audience asset the site builds that is not
+rented from Google.
+
+Pilot the generator on the hub and a small set of the highest-traffic game
+pages, placed **after** the game and after the funnel card, never above the fold,
+and never as a modal. Give the form a page/source field so Brevo can show whether
+the pilot produces subscriptions before stamping a form onto all 36 pages. One
+honest line: "A handful of new games a month. No spam, unsubscribe in one
+click."
+
+## I4. The C1 modifier strategy is still the only winnable angle, and F1 adds a new one.
+
+C1 concluded that we cannot win `solitaire` and should target the honest
+modifiers we uniquely own: *no ads, no sign-in, no download, solver-checked
+deals, daily puzzle, works offline*. F1 adds a genuinely new and rare one —
+**"picks up where you left off, with no account"**. Once F1 ships, put it in the
+hub copy and in the `offline-games-without-ads` guide; almost nothing in this
+field can claim it without a sign-in.
+
+Do **not** write more `X-without-ads` guides (R5). Apply the modifiers to the
+pages that already exist.
+
+## I5. What actually moves the number, and it is not on this page.
+
+Restated so it does not get lost under forty code items:
+
+- **`../SITE-IMPROVEMENT-PLAN.md` R6 — printable worksheets.** Still the best
+  untested surface, still unstarted, still the one page type teachers and
+  parents genuinely link to. It outranks this entire document for traffic.
+- **Directory submissions and outreach.** Four inbound links is the ceiling on
+  everything above. Needs Mark; no amount of code substitutes for it.
+- **Re-read the R1 measurement on or after 2026-09-12** before committing to
+  further SEO work here. If `/play/thirteen/`'s CTR moved above ~2%, the title
+  thesis is confirmed and the same rewrite should be applied to the next
+  strongest game pages. If it did not, stop investing in game-page SEO and put
+  everything into R6 and links.
+
+---
+
+# Section J — suggested order
+
+Grouped so each block is independently shippable and independently verifiable.
+
+| Block | Items | Effort | Gate |
+|---|---|---|---|
+| **1. Defects** | E1, E2, E3 | ~half a day | `check-contrast.mjs` extended and green on `play/play.css` in CI |
+| **2. The retention loop** | E4 (`store.js`), F1 (`resume.js`, six puzzle games), F2 | ~2-3 days | Reload mid-game in Sudoku, Crossword and Minesweeper; the board returns behind an explicit prompt |
+| **3. The hub** | F3 (all five sub-items), F7 | ~1-2 days | Filter, search, favourites and "Jump back in" all work; the page is unchanged with JS disabled |
+| **4. Navigation + conversion** | I2, I3 pilot, then optional I1 | ~1 day | Every guide-backed game links both ways; source-tagged newsletter pilot renders on the hub and selected pages; any schema validates without claiming a rich result |
+| **5. Polish** | F6 (large pieces, pass-and-play, deck picker); audio only after these | ~2-3 days | Preferences persist; deck picker and accessibility sizing work; existing difficulty/layout controls are not rebuilt |
+| **6. Stats** | F4 | ~half a day | Only after block 2 |
+| **7. New games** | `check-new-game.mjs` first, then G3 in order, one at a time | multi-session | Each ships meeting the full G4 bar, or it does not ship |
+| **8. Remaining audio** | F5 tranches 4-5 | ~1 day | — |
+
+Blocks 1-6 need **zero** new assets. Block 7 needs H1 and H2 per game, and H3
+only if SnackDice is built.
+
+Everything in blocks 1-6 is retention and correctness work on an audience that
+already arrives. **None of it substitutes for R6 and link-building** — run those
+in parallel, or this is polish on pages nobody can find, which is the exact
+warning the top of this document has carried since 2026-08-06.
+
+---
+
+# Section K — Codex review of the Claude handover (execution authority)
+
+Claude's central recommendation is accepted: **do not add breadth first**. The
+arcade already looks cohesive and polished at the hub level; the highest-value
+work is correctness, interruption-safe play, and finding a game quickly. The
+corrections above remove already-shipped work and downgrade speculative SEO and
+audio work.
+
+## K1. Final execution order
+
+### Sprint 0 — shipped defects and a trustworthy guardrail
+
+1. Repair shared `.btn-game` / `.btn-game--primary` contrast in all three themes.
+2. Repair 2048 tiles 2, 4, 16 and 32 to a 4.5:1 floor.
+3. Upgrade `check-contrast.mjs` so it loads theme tokens from `site.css`, checks
+   `play.css`, catches paired themed/hardcoded declarations, and does not hide
+   universal failures.
+4. Add a small rendered browser matrix to the acceptance check: hub plus 2048,
+   Sudoku, Crossword, Mahjong and one canvas game; cream/dark/light; desktop and
+   phone widths. Static CSS analysis remains the CI gate, but rendered smoke is
+   needed because the current checker does not model DOM ancestry.
+
+### Sprint 1 — interruption-safe puzzle play
+
+Build `store.js` and `resume.js`, then pilot them on **Sudoku only** before
+wiring the other five long-form puzzles. A saved-state envelope must include
+`schemaVersion`, `gameVersion`, `variant`, `updatedAt` and `payload`. All storage
+reads, parses and writes must be guarded; restore must validate shape and reject
+incompatible or corrupt saves; quota/security failures must leave the game
+fully playable. Add **Resume / Start fresh** plus a visible **Discard saved
+game** path. Do not write a separate serializer framework per game.
+
+After the Sudoku pilot passes reload, back/forward, duplicate-tab, expired-save,
+corrupt-JSON and completed-daily cases, wire Crossword, Minesweeper, Picross,
+Kakuro and Word Search. Card games come later. Action and soccer runs remain
+unsaved by design.
+
+### Sprint 2 — hub findability and return loop
+
+Ship category chips, text search and **Jump back in / Resume** first. They solve
+the observed 37-tile wall with little state or visual complexity. Add accessible
+empty results, a clear-filters control, keyboard focus management and
+`aria-live` result counts. Favourites and alternate sorting are phase 2, not a
+condition for the first hub improvement; neither has usage evidence yet. Keep
+the canonical tile DOM and link order unchanged when JavaScript is disabled.
+
+### Sprint 3 — consistency and conversion
+
+Persist existing difficulty/mode choices; fix the stale "Nine games" app copy;
+add direct game↔guide links; decide Last Bastion explicitly (launch it as a
+featured original with a tile and normal arcade chrome, or keep it out of the
+hub and sitemap/noindex it until launch-ready). Pilot the newsletter on the hub
+and a few high-traffic games with source attribution. `ItemList` is optional
+semantic cleanup, not a reason to delay this sprint.
+
+### Sprint 4 — depth before sound
+
+Prioritise pass-and-play for Checkers, Connect 4 and Reversi, the existing deck
+back picker, large-piece/accessibility sizing, and meaningful bests (Sudoku and
+Minesweeper per difficulty; Word Search per size; Table Tennis match record,
+not a meaningless "best score" in a first-to-seven game). Only then continue
+the sound rollout. Keep sound off by default and never use per-keystroke ticks
+in long-form puzzles without an explicit listening test.
+
+Build `/play/stats/` only after enough canonical data exists to avoid an empty
+dashboard. Label everything **On this device** and provide a clear-all control
+with confirmation. Do not add accounts or cloud sync.
+
+## K2. New games: one evidence-gated pilot, not an eight-game roadmap
+
+Before porting anything, add `check-new-game.mjs` and score candidates on:
+
+1. independent name-search demand and realistic competition;
+2. engine completeness and test coverage in the Android source;
+3. web interaction/accessibility complexity;
+4. existing usable art, including the still-required hub tile and social card;
+5. maintenance cost and naming/trademark risk;
+6. fit with the calm, ad-free, no-sign-in promise.
+
+Recommended first evaluation set:
+
+| Order | Candidate | Recommendation |
+|---|---|---|
+| 1 | **Water Sort** | Best first pilot if query evidence holds: compact engine, touch-friendly, CSS-renderable, naturally resumeable and daily-seedable. |
+| 2 | **Killer Sudoku** | Strong adjacency to the arcade's largest puzzle term and reuses Sudoku interaction patterns; lower product risk than Chess. |
+| 3 | **Dominoes** | Existing engine and painted set; confirm the exact ruleset and AI quality before promising a generic "Dominoes" page. |
+| 4 | **Sokoban** | Small evergreen puzzle with existing art; good quality/maintenance ratio even if traffic is modest. |
+| 5 | **Hearts or Spades** | Missing from Claude's shortlist despite existing engines and the mature shared card stack; compare their actual query field against Dominoes before choosing. |
+
+Defer **Chess** and **Backgammon** until their AI/rules/resume behavior meet a
+much higher test bar; famous names create higher user expectations, not cheaper
+ports. Defer SnackDice until naming review and demand justify a new dice asset
+pack. Treat KenKen/Calcudoku and Battleship/Fleet Battle naming as a brand-review
+gate rather than assuming the Android labels are safe web product names.
+
+Port **one** game, ship it at the full G4 quality bar, and measure its indexed
+page and usage before selecting the second. Existing engine/art lowers build
+cost; it does not eliminate UI, accessibility, test, metadata, tile or social
+asset work.
+
+## K3. Asset decision
+
+Generate nothing during Sprints 0-4. When the first new-game pilot is approved,
+reuse its existing canonical art and create only:
+
+- one **144×144** hub tile;
+- one **1200×630** social card;
+- no additional shared pack unless the selected game genuinely lacks runtime
+  art.
+
+Do not repaint the current arcade, grid puzzles, card deck, soccer sprites or
+backgrounds. The current visual identity is already one of the strongest parts
+of `/play/`.
+
+## K4. Success gates
+
+- **Correctness:** zero known active-control or game-text contrast failures at
+  4.5:1; CI covers both stylesheets; rendered theme matrix passes.
+- **Durability:** Sudoku and the five follow-up puzzles restore valid progress,
+  reject bad state safely, and never overwrite daily completion history.
+- **Hub:** a visitor can reach any category in one action, find a title by text,
+  and resume a saved game; no-JS output remains complete.
+- **Conversion/navigation:** every existing guide-backed game links both ways;
+  newsletter pilot reports its source in Brevo; stale app/game counts are
+  generator-owned.
+- **New games:** no port begins until its scorecard and naming review are written;
+  no second port begins until the first has shipped cleanly and produced enough
+  data for a decision.
+
+Cloudflare Web Analytics does not support custom events, so do not claim that
+favourites, filters or resume are "proven highest leverage" from pageview data
+alone. Use page-level traffic/Search Console for acquisition, Brevo source data
+for email conversion, and a privacy review before adding any new behavioral
+analytics provider.
+
+# Section L — implementation record (2026-08-29)
+
+The re-audit's release-sized work is implemented and verified locally:
+
+- Sprint 0: dark-theme and shared-control contrast defects fixed; the contrast
+  checker now covers both `site.css` and `play/play.css` in all three themes.
+- Sprint 1: versioned, expiring, guarded resume support shipped for Sudoku,
+  Minesweeper, Word Search, Crossword, Picross and Kakuro; relevant difficulty
+  preferences and personal bests persist locally.
+- Sprint 2: the hub now has search, category filters, sorting, favourites, a
+  recent/"Jump back in" row and a private on-device stats page. Static no-JS
+  tiles remain intact.
+- Sprint 3: guide links are bidirectional for the mapped guides, newsletter
+  capture is piloted on the hub and four high-intent games, stale game counts
+  are generator-owned, and Last Bastion remains intentionally unlisted and
+  `noindex` until it meets the public quality bar.
+- Sprint 4: Checkers, Reversi and Connect 4 have local pass-and-play; existing
+  preferences persist; four card games expose all eight shipped card backs;
+  larger-piece controls are available on dense boards; Table Tennis and Snakes
+  & Ladders retain their lightweight records; sound is available arcade-wide
+  but remains opt-in.
+- New ports remain evidence-gated. `data/arcade-baseline.json`,
+  `NEW-GAME-SCORECARD.md` and `check-new-game.mjs` prevent an unreviewed port
+  from silently bypassing the shared launch standard. No new bitmap art was
+  generated because the accepted Sprints 0-4 require none.
+
+Browser QA covered desktop and 390 px layouts, filtering/favourites, 2048 in
+dark mode, an entered Sudoku value surviving reload and explicit resume,
+Connect 4 local-turn alternation, persistent card-back selection, opt-in sound,
+and the stats surface. The release checks named in `.github/workflows/site-check.yml`
+pass locally.

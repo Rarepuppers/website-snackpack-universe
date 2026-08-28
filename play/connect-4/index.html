@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Play Connect 4 Online Free vs Computer | No Ads — SnackPack</title>
-<meta name="description" content="Play Connect 4 free in your browser against the computer — drop discs and line up four in a row. Three difficulty levels, no ads, no sign-in, no download. From SnackPack Studios.">
+<meta name="description" content="Play Connect 4 free in your browser against the computer or with a friend. Three difficulty levels, local 2-player, no ads, no sign-in, no download.">
 <link rel="canonical" href="https://www.snackpackuniverse.com/play/connect-4/">
 <meta name="theme-color" content="#de6a38">
 <link rel="icon" type="image/png" href="/assets/favicon-32.png">
 <link rel="apple-touch-icon" href="/assets/snackpack-mark-180.png">
 <meta property="og:title" content="Play Connect 4 Online Free vs Computer | No Ads">
-<meta property="og:description" content="Drop discs and line up four in a row against the computer. Three levels, free in your browser — no ads, no sign-in.">
+<meta property="og:description" content="Drop discs and line up four in a row against the computer or a friend. Three levels and local 2-player, free in your browser.">
 <meta property="og:image" content="https://www.snackpackuniverse.com/play/social/connect-4.png">
 <meta property="og:url" content="https://www.snackpackuniverse.com/play/connect-4/">
 <meta property="og:type" content="website">
@@ -31,8 +31,8 @@
   "genre": "Strategy",
   "gamePlatform": "Web browser",
   "operatingSystem": "Any",
-  "playMode": "SinglePlayer",
-  "description": "Free browser Connect 4 against a computer opponent with three difficulty levels. Line up four discs in a row. No ads, no sign-in.",
+  "playMode": ["SinglePlayer", "MultiPlayer"],
+  "description": "Free browser Connect 4 against a computer opponent or a friend in local 2-player, with three difficulty levels. No ads, no sign-in.",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
 }
@@ -140,7 +140,7 @@
       <div class="page-hero-card" style="text-align:center;">
         <span class="eyebrow">Free · No download</span>
         <h1>Connect 4</h1>
-        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">Drop your discs and line up four in a row before the computer does. Quick, clever, and surprisingly deep. Three thinking levels — no ads, no sign-in.</p>
+        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">Drop your discs and line up four in a row before the computer does, or pass the device to a friend. Three thinking levels and local 2-player — no ads, no sign-in.</p>
       </div>
     </div>
   </section>
@@ -150,8 +150,8 @@
       <div class="game-stage">
         <div class="game-toolbar">
           <div class="game-readout">
-            <span class="readout-chip"><span>You</span><b id="c-you">0</b></span>
-            <span class="readout-chip"><span>CPU</span><b id="c-cpu">0</b></span>
+            <span class="readout-chip"><span id="c-p1-label">You</span><b id="c-you">0</b></span>
+            <span class="readout-chip"><span id="c-p2-label">CPU</span><b id="c-cpu">0</b></span>
           </div>
           <div class="game-controls">
             <div class="seg" role="group" aria-label="Difficulty">
@@ -159,6 +159,7 @@
               <button type="button" data-level="4" aria-pressed="true">Medium</button>
               <button type="button" data-level="6" aria-pressed="false">Hard</button>
             </div>
+            <div class="seg" role="group" aria-label="Players"><button type="button" data-players="1" aria-pressed="true">1 player</button><button type="button" data-players="2" aria-pressed="false">2 players</button></div>
             <button class="btn-game btn-game--primary" id="c-new" type="button">New game</button>
           </div>
         </div>
@@ -213,7 +214,7 @@
   <section>
     <div class="shell seo-prose">
       <h2>How to play Connect 4</h2>
-      <p>Connect 4 is played on a grid that's seven columns wide and six rows tall. Players take turns dropping a coloured disc into a column; it falls to the lowest empty slot. You play red, the computer plays yellow. The first player to line up four of their own discs in a straight line — horizontally, vertically, or diagonally — wins. If the board fills with no four-in-a-row, it's a draw.</p>
+      <p>Connect 4 is played on a grid that's seven columns wide and six rows tall. Players take turns dropping a coloured disc into a column; it falls to the lowest empty slot. Choose 1 player to face the computer or 2 players to pass the device to a friend. The first player to line up four of their own discs — horizontally, vertically, or diagonally — wins. If the board fills with no four-in-a-row, it's a draw.</p>
 
       <h3>Strategy tips</h3>
       <ul>
@@ -230,9 +231,9 @@
       <h3>Frequently asked questions</h3>
       <div class="faq-list" style="margin-top:14px;">
         <details class="faq-item"><summary>Is Connect 4 free here?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
-        <details class="faq-item"><summary>Do I play against a person or the computer?</summary><p>Against the computer, which you can set to Easy, Medium, or Hard.</p></details>
+        <details class="faq-item"><summary>Do I play against a person or the computer?</summary><p>Either. Choose 1 player for an Easy, Medium, or Hard computer opponent, or 2 players for pass-and-play on one device.</p></details>
         <details class="faq-item"><summary>Who goes first?</summary><p>You do — you play red and move first each game.</p></details>
-        <details class="faq-item"><summary>Can I play a friend or play offline?</summary><p>This web version is solo vs. the computer. For more game modes and fully offline play, try the free <a class="text-link" href="../../apps/snackpack-brain-games/" style="color:var(--accent);">Snackpack Brain Games</a> app.</p></details>
+        <details class="faq-item"><summary>Can I play a friend or play offline?</summary><p>Yes, choose 2 players to share this device. For fully offline play, try the free <a class="text-link" href="../../apps/snackpack-brain-games/" style="color:var(--accent);">Snackpack Brain Games</a> app.</p></details>
       </div>
 
       <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
@@ -313,7 +314,9 @@
   var youEl = document.getElementById("c-you");
   var cpuEl = document.getElementById("c-cpu");
 
-  var board, cells, busy, gameOver, depth = 4;
+  var savedDepth = 4, localMode = false;
+  try { savedDepth = +(localStorage.getItem("sp_connect4_mode") || 4); localMode = localStorage.getItem("sp_connect4_players") === "2"; } catch (e) {}
+  var board, cells, busy, gameOver, depth = [2,4,6].indexOf(savedDepth) >= 0 ? savedDepth : 4, currentPlayer = HUMAN;
   var wins = { you: 0, cpu: 0 };
 
   // Build column buttons + cells once.
@@ -337,14 +340,14 @@
   function reset() {
     board = [];
     for (var r = 0; r < ROWS; r++) { board[r] = []; for (var c = 0; c < COLS; c++) board[r][c] = 0; }
-    busy = false; gameOver = false;
+    busy = false; gameOver = false; currentPlayer = HUMAN;
     boardEl.className = "c4-board";
     cells.forEach(function (el) {
       el.className = "c4-cell";
       el.style.removeProperty("--drop-distance");
     });
     setBtns(true);
-    statusEl.textContent = "Your move — drop a disc.";
+    statusEl.textContent = localMode ? "Player 1's move — drop a disc." : "Your move — drop a disc.";
     statusEl.className = "game-status";
   }
 
@@ -396,10 +399,17 @@
     if (busy || gameOver) return;
     var r = lowestRow(board, col);
     if (r < 0) return;
-    board[r][col] = HUMAN;
-    paint(r, col, HUMAN, -1);
-    if (winner(board, HUMAN)) { finish("you"); return; }
+    var who = localMode ? currentPlayer : HUMAN;
+    board[r][col] = who;
+    paint(r, col, who, -1);
+    if (winner(board, who)) { finish(who === HUMAN ? "you" : "cpu"); return; }
     if (isFull(board)) { finish("draw"); return; }
+    if (localMode) {
+      currentPlayer = currentPlayer === HUMAN ? CPU : HUMAN;
+      setBtns(true);
+      statusEl.textContent = currentPlayer === HUMAN ? "Player 1's move." : "Player 2's move.";
+      return;
+    }
     busy = true; setBtns(false);
     statusEl.textContent = "Computer is thinking…";
     setTimeout(cpuMove, 280);
@@ -421,7 +431,7 @@
     gameOver = true; setBtns(false);
     if (who === "you") {
       wins.you++; youEl.textContent = wins.you;
-      statusEl.textContent = "You win! 🎉 Four in a row.";
+      statusEl.textContent = (localMode ? "Player 1 wins! 🎉" : "You win! 🎉") + " Four in a row.";
       statusEl.className = "game-status game-status--win";
       markWinningLine(HUMAN);
       boardEl.classList.add("is-win");
@@ -432,11 +442,11 @@
       // After celebrate, always — the share card must not be able to suppress the funnel.
       if (window.SnackPackShare) window.SnackPackShare.result({
         game: "Connect 4",
-        headline: "Beat the computer on " + (depth <= 2 ? "Easy" : depth <= 4 ? "Medium" : "Hard")
+        headline: localMode ? "Player 1 won a two-player match" : "Beat the computer on " + (depth <= 2 ? "Easy" : depth <= 4 ? "Medium" : "Hard")
       });
     } else if (who === "cpu") {
       wins.cpu++; cpuEl.textContent = wins.cpu;
-      statusEl.textContent = "Bad luck - the computer got four in a row. Try again!";
+      statusEl.textContent = localMode ? "Player 2 wins! 🎉 Four in a row." : "Bad luck - the computer got four in a row. Try again!";
       statusEl.className = "game-status game-status--lose";
       markWinningLine(CPU);
       boardEl.classList.add("is-loss");
@@ -560,12 +570,27 @@
   document.querySelectorAll(".seg [data-level]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       depth = +btn.dataset.level;
+      try { localStorage.setItem("sp_connect4_mode", String(depth)); } catch (e) {}
       document.querySelectorAll(".seg [data-level]").forEach(function (x) {
         x.setAttribute("aria-pressed", String(x === btn));
       });
       reset();
     });
   });
+  document.querySelectorAll(".seg [data-level]").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.level === depth)); });
+  document.querySelectorAll("[data-players]").forEach(function (btn) {
+    btn.setAttribute("aria-pressed", String((btn.dataset.players === "2") === localMode));
+    btn.addEventListener("click", function () {
+      localMode = btn.dataset.players === "2";
+      try { localStorage.setItem("sp_connect4_players", localMode ? "2" : "1"); } catch (e) {}
+      document.querySelectorAll("[data-players]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
+      document.getElementById("c-p1-label").textContent = localMode ? "Player 1" : "You";
+      document.getElementById("c-p2-label").textContent = localMode ? "Player 2" : "CPU";
+      applyColours(); reset();
+    });
+  });
+  document.getElementById("c-p1-label").textContent = localMode ? "Player 1" : "You";
+  document.getElementById("c-p2-label").textContent = localMode ? "Player 2" : "CPU";
 
   // ── Colour / colour-blind picker ─────────────────
   var PALETTE = [
@@ -586,8 +611,8 @@
     var root = document.documentElement.style;
     root.setProperty("--c4-p1-light", p1.light); root.setProperty("--c4-p1-dark", p1.dark);
     root.setProperty("--c4-p2-light", p2.light); root.setProperty("--c4-p2-dark", p2.dark);
-    document.getElementById("c-key-you").textContent = "You: " + p1.name;
-    document.getElementById("c-key-cpu").textContent = "Computer: " + p2.name;
+    document.getElementById("c-key-you").textContent = (localMode ? "Player 1: " : "You: ") + p1.name;
+    document.getElementById("c-key-cpu").textContent = (localMode ? "Player 2: " : "Computer: ") + p2.name;
     document.querySelectorAll("#c-you-sw .cp-swatch").forEach(function (b) { b.classList.toggle("is-on", b.dataset.id === colP1); });
     document.querySelectorAll("#c-cpu-sw .cp-swatch").forEach(function (b) { b.classList.toggle("is-on", b.dataset.id === colP2); });
     try { localStorage.setItem("sp_connect4_p1", colP1); localStorage.setItem("sp_connect4_p2", colP2); } catch (e) {}

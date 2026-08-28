@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Arcade Stats | On This Device — SnackPack</title>
+<meta name="description" content="See your SnackPack Arcade best times, saved games, favourites and daily streak. Stored privately on this device with no account.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/stats/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="/assets/favicon-32.png">
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css">
+<script>(function(){var t=null;try{t=localStorage.getItem("snackpack.theme.v1");}catch(e){}if(!/^(dark|light|cream)$/.test(t||""))t="cream";document.documentElement.setAttribute("data-theme",t);}());</script>
+<script defer src="/theme.js"></script>
+</head>
+<body>
+<header class="topbar"><div class="shell topbar-inner"><a class="brand" href="../../"><img class="brand-mark" src="/assets/snackpack-mark-96.png" alt="SnackPack Studios icon" width="96" height="94"><span class="brand-copy"><span class="brand-title">SnackPack Studios</span><span class="brand-subtitle">Your arcade stats</span></span></a><nav aria-label="Primary"><ul class="nav-links"><li><a href="/apps/">Apps</a></li><li><a href="/play/">Play</a></li><li><a href="/play/daily/">Daily</a></li><li><a href="/guides/">Guides</a></li><li><a href="/privacy/">Privacy</a></li></ul></nav></div></header>
+<main>
+  <section class="page-hero"><div class="shell"><div class="page-hero-card"><span class="eyebrow">Private · No account</span><h1>Your arcade stats</h1><p class="lead">Your saved games, favourites and best times live only in this browser. Nothing here is uploaded or tied to an account.</p><div class="stack-inline"><a class="btn btn-primary" href="../">Back to the arcade</a><button class="btn btn-secondary" id="stats-clear" type="button">Clear arcade data</button></div></div></div></section>
+  <section aria-labelledby="stats-summary-title"><div class="shell"><span class="eyebrow">On this device</span><h2 id="stats-summary-title" class="section-title">At a glance</h2><div class="stats-summary" id="stats-summary"></div><p class="game-status" id="stats-status" aria-live="polite"></p></div></section>
+  <section aria-labelledby="stats-bests-title"><div class="shell"><div class="section-head"><div><span class="eyebrow">Personal bests</span><h2 id="stats-bests-title" class="section-title">Your best results</h2></div><p class="section-copy">Times and scores are grouped by game and mode.</p></div><div class="stats-list" id="stats-bests"></div></div></section>
+</main>
+<footer class="foot"><div class="shell foot-wrap"><p class="foot-note">SnackPack Arcade stats stay on this device.</p><div class="footer-links"><a class="text-link" href="../">Arcade</a><a class="text-link" href="../daily/">Daily challenges</a><a class="text-link" href="../../privacy/">Privacy</a></div></div></footer>
+<script src="./stats.js"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+</body>
+</html>

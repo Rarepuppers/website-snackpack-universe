@@ -13,7 +13,7 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v11";
+const CACHE = "snackpack-arcade-v12";
 
 const SHELL = [
   "/",
@@ -24,6 +24,12 @@ const SHELL = [
   "/play/share-result.js",
   "/play/keyboard-grid.js",
   "/play/pause.js",
+  "/play/store.js",
+  "/play/resume.js",
+  "/play/hub.js",
+  "/play/game-ui-assets.js",
+  "/play/stats/",
+  "/play/stats/stats.js",
   "/theme.js",
   "/play/audio.js",
   // Only the sounds currently wired into a game are precached. The other four
@@ -34,6 +40,9 @@ const SHELL = [
   "/play/shared-assets/game-ui/audio/pickup.wav",
   "/play/shared-assets/game-ui/audio/success.wav",
   "/play/shared-assets/game-ui/audio/win.wav",
+  "/play/shared-assets/game-ui/audio/tick.wav",
+  "/play/shared-assets/game-ui/audio/pop.wav",
+  "/play/shared-assets/game-ui/audio/whoosh.wav",
   "/assets/fonts/fonts.css",
   "/assets/icon-192.png",
   "/assets/icon-512.png",

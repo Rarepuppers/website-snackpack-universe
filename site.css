@@ -2356,3 +2356,6 @@ button:focus-visible {
 .signup-consent a { color: var(--accent); }
 /* Brevo's honeypot: real people never see it, bots fill it in. */
 .signup-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.guide-play-cta { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 22px 24px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-strong); box-shadow: var(--shadow); }
+.guide-play-cta strong { font-family: var(--serif); font-size: 1.35rem; }
+@media (max-width: 560px) { .guide-play-cta { align-items: stretch; flex-direction: column; text-align: center; } }

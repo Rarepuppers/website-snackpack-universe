@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Play Checkers Online Free vs Computer | No Ads — SnackPack</title>
-<meta name="description" content="Play Checkers (draughts) free in your browser against the computer — forced captures, multi-jumps and kings. Three difficulty levels, no ads, no sign-in, no download. From SnackPack Studios.">
+<meta name="description" content="Play Checkers (draughts) free against the computer or a friend — forced captures, multi-jumps, kings, three levels and local 2-player. No ads or sign-in.">
 <link rel="canonical" href="https://www.snackpackuniverse.com/play/checkers/">
 <meta name="theme-color" content="#de6a38">
 <link rel="icon" type="image/png" href="/assets/favicon-32.png">
 <link rel="apple-touch-icon" href="/assets/snackpack-mark-180.png">
 <meta property="og:title" content="Play Checkers Online Free vs Computer | No Ads">
-<meta property="og:description" content="Classic Checkers against the computer — forced captures, multi-jumps, kings. Three levels, free in your browser.">
+<meta property="og:description" content="Classic Checkers against the computer or a friend — forced captures, multi-jumps, kings and local 2-player.">
 <meta property="og:image" content="https://www.snackpackuniverse.com/play/social/checkers.png">
 <meta property="og:url" content="https://www.snackpackuniverse.com/play/checkers/">
 <meta property="og:type" content="website">
@@ -77,8 +77,8 @@
   "genre": "Strategy",
   "gamePlatform": "Web browser",
   "operatingSystem": "Any",
-  "playMode": "SinglePlayer",
-  "description": "Free browser Checkers (draughts) against a computer opponent with three difficulty levels, forced captures, multi-jumps and kings. No ads, no sign-in.",
+  "playMode": ["SinglePlayer", "MultiPlayer"],
+  "description": "Free browser Checkers (draughts) against a computer opponent or a friend in local 2-player, with forced captures, multi-jumps and kings.",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
 }
@@ -187,7 +187,7 @@
       <div class="page-hero-card" style="text-align:center;">
         <span class="eyebrow">Free · No download</span>
         <h1>Checkers</h1>
-        <p class="lead" style="max-width:580px;margin-left:auto;margin-right:auto;">The classic game of diagonal strategy — also known as draughts. Jump your opponent's pieces, crown your kings, and clear the board. Play the computer across three levels. No ads, no sign-in.</p>
+        <p class="lead" style="max-width:580px;margin-left:auto;margin-right:auto;">The classic game of diagonal strategy — also known as draughts. Jump pieces, crown kings, and clear the board against the computer or a friend on the same device. No ads, no sign-in.</p>
       </div>
     </div>
   </section>
@@ -197,8 +197,8 @@
       <div class="game-stage">
         <div class="game-toolbar">
           <div class="game-readout">
-            <span class="readout-chip"><span>You</span><b id="ck-you">12</b></span>
-            <span class="readout-chip"><span>CPU</span><b id="ck-cpu">12</b></span>
+            <span class="readout-chip"><span id="ck-p1-label">You</span><b id="ck-you">12</b></span>
+            <span class="readout-chip"><span id="ck-p2-label">CPU</span><b id="ck-cpu">12</b></span>
           </div>
           <div class="game-controls">
             <div class="seg" role="group" aria-label="Difficulty">
@@ -206,6 +206,7 @@
               <button type="button" data-level="4" aria-pressed="true">Medium</button>
               <button type="button" data-level="6" aria-pressed="false">Hard</button>
             </div>
+            <div class="seg" role="group" aria-label="Players"><button type="button" data-players="1" aria-pressed="true">1 player</button><button type="button" data-players="2" aria-pressed="false">2 players</button></div>
             <button class="btn-game" id="ck-undo" type="button" disabled>Undo</button>
             <button class="btn-game btn-game--primary" id="ck-new" type="button">New game</button>
           </div>
@@ -315,6 +316,7 @@
         <h3>Picross</h3>
       </a>
     </div>
+    <p class="related-games-guide"><a class="text-link" href="../../guides/checkers-without-ads-or-signup/">Read the Checkers guide →</a></p>
     <p class="related-games-more"><a class="text-link" href="../">See all games in the arcade →</a></p>
   </div>
 </section>
@@ -356,7 +358,9 @@
   var newBtn = document.getElementById("ck-new");
   var undoBtn = document.getElementById("ck-undo");
 
-  var board, cells, selected = -1, legalForSel = [], busy = false, gameOver = false, depth = 4;
+  var savedDepth = 4, localMode = false;
+  try { savedDepth = +(localStorage.getItem("sp_checkers_mode") || 4); localMode = localStorage.getItem("sp_checkers_players") === "2"; } catch (e) {}
+  var board, cells, selected = -1, legalForSel = [], busy = false, gameOver = false, depth = [2,4,6].indexOf(savedDepth) >= 0 ? savedDepth : 4, currentSide = RED;
   var undoStack = [];
   function updateUndo() { undoBtn.disabled = busy || undoStack.length === 0; }
 
@@ -380,9 +384,9 @@
         else if (r > 4) board[r * 8 + c] = RED;
       }
     }
-    selected = -1; legalForSel = []; busy = false; gameOver = false;
+    selected = -1; legalForSel = []; busy = false; gameOver = false; currentSide = RED;
     undoStack = [];
-    statusEl.textContent = "Your move — you're red.";
+    statusEl.textContent = localMode ? "Player 1's move — red." : "Your move — you're red.";
     statusEl.className = "game-status";
     render();
   }
@@ -482,8 +486,9 @@
   // ── Turn handling ────────────────────────────────
   function humanSelect(i) {
     if (busy || gameOver) return;
-    var all = genMoves(board, RED);
-    if (side(board[i]) === RED) {
+    var movingSide = localMode ? currentSide : RED;
+    var all = genMoves(board, movingSide);
+    if (side(board[i]) === movingSide) {
       var mine = all.filter(function (mv) { return mv.from === i; });
       if (mine.length) { selected = i; legalForSel = mine; render(); return; }
     }
@@ -494,7 +499,13 @@
         board = applyMove(board, pick[0]);
         selected = -1; legalForSel = [];
         render();
-        if (checkEnd(BLACK)) return;
+        if (checkEnd(-movingSide)) return;
+        if (localMode) {
+          currentSide = -movingSide;
+          statusEl.textContent = currentSide === RED ? "Player 1's move — red." : "Player 2's move — dark.";
+          updateUndo();
+          return;
+        }
         busy = true;
         statusEl.textContent = "Computer is thinking…";
         setTimeout(cpuTurn, 300);
@@ -530,7 +541,7 @@
   function end(who) {
     gameOver = true; busy = false; updateUndo();
     if (who === "you") {
-      statusEl.textContent = "You win! 🎉 The computer is out of moves.";
+      statusEl.textContent = localMode ? "Player 1 wins! 🎉" : "You win! 🎉 The computer is out of moves.";
       statusEl.className = "game-status";
       if (window.SnackPack) window.SnackPack.celebrate({
         title: "You won at Checkers! 🎉",
@@ -539,10 +550,10 @@
       // After celebrate, always — the share card must not be able to suppress the funnel.
       if (window.SnackPackShare) window.SnackPackShare.result({
         game: "Checkers",
-        headline: "Beat the computer on " + (depth <= 2 ? "Easy" : depth <= 4 ? "Medium" : "Hard")
+        headline: localMode ? "Player 1 won a two-player match" : "Beat the computer on " + (depth <= 2 ? "Easy" : depth <= 4 ? "Medium" : "Hard")
       });
     } else {
-      statusEl.textContent = "The computer wins this one. Try again!";
+      statusEl.textContent = localMode ? "Player 2 wins! 🎉" : "The computer wins this one. Try again!";
       statusEl.className = "game-status game-status--lose";
     }
     return true;
@@ -606,7 +617,8 @@
     if (busy || !undoStack.length) return;
     board = undoStack.pop();
     selected = -1; legalForSel = []; gameOver = false;
-    statusEl.textContent = "Move undone — your turn.";
+    if (localMode) currentSide = -currentSide;
+    statusEl.textContent = localMode ? (currentSide === RED ? "Move undone — Player 1's turn." : "Move undone — Player 2's turn.") : "Move undone — your turn.";
     statusEl.className = "game-status";
     render();
   }
@@ -615,12 +627,27 @@
   document.querySelectorAll(".seg [data-level]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       depth = +btn.dataset.level;
+      try { localStorage.setItem("sp_checkers_mode", String(depth)); } catch (e) {}
       document.querySelectorAll(".seg [data-level]").forEach(function (x) {
         x.setAttribute("aria-pressed", String(x === btn));
       });
       reset();
     });
   });
+  document.querySelectorAll(".seg [data-level]").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.level === depth)); });
+  document.querySelectorAll("[data-players]").forEach(function (btn) {
+    btn.setAttribute("aria-pressed", String((btn.dataset.players === "2") === localMode));
+    btn.addEventListener("click", function () {
+      localMode = btn.dataset.players === "2";
+      try { localStorage.setItem("sp_checkers_players", localMode ? "2" : "1"); } catch (e) {}
+      document.querySelectorAll("[data-players]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
+      document.getElementById("ck-p1-label").textContent = localMode ? "Player 1" : "You";
+      document.getElementById("ck-p2-label").textContent = localMode ? "Player 2" : "CPU";
+      reset();
+    });
+  });
+  document.getElementById("ck-p1-label").textContent = localMode ? "Player 1" : "You";
+  document.getElementById("ck-p2-label").textContent = localMode ? "Player 2" : "CPU";
 
   // ── Colour / colour-blind picker ─────────────────
   var PALETTE = [

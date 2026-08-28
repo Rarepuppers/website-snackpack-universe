@@ -58,7 +58,7 @@
 .sol-card.red { color: #c0392b; }
 .sol-card.black { color: #201713; }
 .sol-card.down {
-  background: #0b6461 url("../shared-assets/game-ui/pro-hand-painted/card-decks/backs/emerald-arcade.png") center / cover no-repeat;
+  background: #0b6461 var(--sp-card-back, url("../shared-assets/game-ui/pro-hand-painted/card-decks/backs/emerald-arcade.png")) center / cover no-repeat;
   border-color: #2ec9b5; cursor: pointer;
 }
 .sol-card.down .r, .sol-card.down .s, .sol-card.down .big { display: none; }
@@ -305,6 +305,32 @@
       <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
     </div>
   </section>
+<!-- newsletter:generated -->
+  <section>
+    <div class="shell">
+      <div class="signup-card">
+        <span class="eyebrow">Stay in the loop</span>
+        <h2 class="section-title" style="margin:6px 0 10px;">Hear when the next one lands.</h2>
+        <p class="section-copy">A handful of new games a month. No spam, and you can unsubscribe in one click.</p>
+        <form class="signup-form" method="POST" action="https://c8e915bf.sibforms.com/serve/MUIFADVt4ZlXsiMM8wqiXqcGeRGBU0WF59M6fHpCegIo6lKDBIizhj4EybwGYQygjM8s619mIdox-2D8mik7upF-_5x30R9bApxbcK16bM2mPFLFTDokgMBnqtOdTY4r7u9TKTorSiC2MPn5mwOTncBTtrQAx2W58RDmqLLtC5OLxrFrNmZH7As9WjK4krNNglwOtxjzbYH3k9qc4Q==" data-type="subscription">
+          <div class="signup-row">
+            <label class="signup-hp" for="EMAIL-cta">Your email address</label>
+            <input class="signup-input" type="email" id="EMAIL-cta" name="EMAIL" autocomplete="email" placeholder="you@example.com" required>
+            <button class="btn btn-primary" type="submit">Keep me posted</button>
+          </div>
+          <label class="signup-consent">
+            <input type="checkbox" name="GDPR_CONSENT" value="1" required>
+            <span>I agree to receive SnackPack Universe updates by email and accept the <a href="/privacy/">privacy policy</a>. Unsubscribe anytime.</span>
+          </label>
+          <!-- Brevo contract: honeypot must be present and empty; locale must be set. -->
+          <input class="signup-hp" type="text" name="email_address_check" value="" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <input type="hidden" name="locale" value="en">
+          <input type="hidden" name="SOURCE" value="arcade-solitaire">
+        </form>
+      </div>
+    </div>
+  </section>
+  <!-- /newsletter:generated -->
 </main>
 
 <!-- related-games:generated -->
@@ -341,6 +367,7 @@
         <h3>Golf Solitaire</h3>
       </a>
     </div>
+    <p class="related-games-guide"><a class="text-link" href="../../guides/solitaire-without-ads-or-signup/">Read the Solitaire guide →</a></p>
     <p class="related-games-more"><a class="text-link" href="../">See all games in the arcade →</a></p>
   </div>
 </section>

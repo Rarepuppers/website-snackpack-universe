@@ -206,6 +206,7 @@
           <div class="game-readout">
             <span class="readout-chip"><span>Found</span><b id="ws-found">0</b>/<b id="ws-total">0</b></span>
             <span class="readout-chip"><span>Time</span><b id="ws-time">0:00</b></span>
+            <span class="readout-chip"><span>Best</span><b id="ws-best">—</b></span>
           </div>
           <div class="game-controls">
             <div class="seg" role="group" aria-label="Theme">
@@ -347,6 +348,7 @@
 <script src="../keyboard-grid.js"></script>
 <script src="../funnel.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
 <script>
 (function () {
   "use strict";
@@ -366,12 +368,25 @@
   var foundEl = document.getElementById("ws-found");
   var totalEl = document.getElementById("ws-total");
   var timeEl = document.getElementById("ws-time");
+  var bestEl = document.getElementById("ws-best");
   var themeLabelEl = document.getElementById("ws-theme-label");
   var newBtn = document.getElementById("ws-new");
 
-  var theme = "animals";
+  var preferredTheme = window.SnackPackStore && window.SnackPackStore.get("word_search", "mode");
+  var theme = THEMES[preferredTheme] ? preferredTheme : "animals";
   var grid, placements, cells, foundCount, total, solved;
   var timer, seconds;
+  var resume = null;
+
+  function bestKey() { return window.SnackPackStore.key("word_search", "best", theme); }
+  function showBest() {
+    var b = window.SnackPackStore && Number(window.SnackPackStore.get(bestKey()));
+    bestEl.textContent = b ? formatTime(b) : "—";
+  }
+  function formatTime(value) {
+    var m = Math.floor(value / 60), s = value % 60;
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
 
   // -- Daily seeding --------------------------------
   // Accepts ?daily=<n> and ?daily=YYYY-MM-DD (the arcade hub sends the date),
@@ -475,8 +490,7 @@
     timer = setInterval(function () { seconds++; renderTime(); }, 1000);
   }
   function renderTime() {
-    var m = Math.floor(seconds / 60), s = seconds % 60;
-    timeEl.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+    timeEl.textContent = formatTime(seconds);
   }
 
   function reset(fresh) {
@@ -490,6 +504,7 @@
     solved = false;
     statusEl.textContent = "Drag across the letters to find a word.";
     statusEl.className = "game-status";
+    showBest();
     startTimer();
   }
 
@@ -537,6 +552,7 @@
       foundEl.textContent = foundCount;
     }
     if (foundCount === total) win();
+    else if (resume) resume.changed();
   }
 
   function win() {
@@ -544,6 +560,12 @@
     clearInterval(timer);
     statusEl.textContent = "All words found in " + timeEl.textContent + "! 🎉";
     statusEl.className = "game-status";
+    if (window.SnackPackStore) {
+      var old = Number(window.SnackPackStore.get(bestKey()));
+      if (!old || seconds < old) window.SnackPackStore.set(bestKey(), String(seconds));
+      showBest();
+    }
+    if (resume) resume.clear();
     if (window.SnackPack) window.SnackPack.celebrate({
       title: "Every word found! 🎉",
       body: "Sharp eyes — cleared in " + timeEl.textContent + ". We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app for more themes offline."
@@ -605,19 +627,73 @@
     }
   });
 
-  newBtn.addEventListener("click", function () { anchor = -1; reset(true); });
+  newBtn.addEventListener("click", function () { if (resume) resume.clear(); anchor = -1; reset(true); });
   document.querySelectorAll(".seg [data-theme]").forEach(function (btn) {
     btn.addEventListener("click", function () {
+      if (resume) resume.save();
       theme = btn.dataset.theme;
+      if (window.SnackPackStore) window.SnackPackStore.set("word_search", "mode", theme);
       document.querySelectorAll(".seg [data-theme]").forEach(function (b) {
         b.setAttribute("aria-pressed", String(b === btn));
       });
       anchor = -1;
+      if (resume) resume.variantChanged();
       reset(true);
     });
   });
 
+  document.querySelectorAll(".seg [data-theme]").forEach(function (b) {
+    b.setAttribute("aria-pressed", String(b.dataset.theme === theme));
+  });
   reset();
+
+  function resumeVariant() { return (dailyActive ? "daily-" + dailySeed + "-" : "") + theme; }
+  function foundWords() {
+    return Object.keys(placements).filter(function (word) {
+      return cells[placements[word][0]] && cells[placements[word][0]].classList.contains("found-locked");
+    });
+  }
+  function resumeState() {
+    return {
+      theme: theme, dailyActive: dailyActive, dailySeed: dailySeed,
+      grid: grid.map(function (row) { return row.join(""); }),
+      placements: placements, found: foundWords(), seconds: seconds
+    };
+  }
+  function validState(s) {
+    return !!(s && THEMES[s.theme] && Array.isArray(s.grid) && s.grid.length === SIZE &&
+      s.grid.every(function (row) { return typeof row === "string" && row.length === SIZE; }) &&
+      s.placements && typeof s.placements === "object" && Array.isArray(s.found));
+  }
+  function restoreState(s) {
+    if (!validState(s)) return false;
+    clearInterval(timer);
+    theme = s.theme; dailyActive = !!s.dailyActive; dailySeed = s.dailySeed;
+    grid = s.grid.map(function (row) { return row.split(""); });
+    placements = s.placements; seconds = Number(s.seconds) || 0;
+    themeLabelEl.textContent = THEMES[theme].label;
+    build(); renderList();
+    s.found.forEach(function (word) {
+      if (!Array.isArray(placements[word])) return;
+      placements[word].forEach(function (i) { if (cells[i]) cells[i].classList.add("found"); });
+      if (cells[placements[word][0]]) cells[placements[word][0]].classList.add("found-locked");
+      var label = listEl.querySelector('[data-word="' + word + '"]');
+      if (label) label.classList.add("done");
+    });
+    foundCount = s.found.length; foundEl.textContent = foundCount;
+    solved = false; renderTime(); showBest();
+    statusEl.textContent = "Puzzle resumed."; statusEl.className = "game-status";
+    document.querySelectorAll(".seg [data-theme]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.theme === theme)); });
+    timer = setInterval(function () { seconds++; renderTime(); }, 1000);
+    return true;
+  }
+  if (window.SnackPackResume) {
+    resume = window.SnackPackResume.attach({
+      game: "word_search", gameVersion: 1, variant: resumeVariant,
+      serialize: resumeState, restore: restoreState,
+      isActive: function () { return !solved && (foundCount > 0 || seconds > 2); }
+    });
+  }
 })();
 </script>
 <script>

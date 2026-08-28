@@ -312,6 +312,7 @@
 
 <script src="../funnel.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
 <script>
 (function () {
   "use strict";
@@ -354,6 +355,10 @@
   // rather than silently serving today's. Falls back to today when absent.
   function dailyNumber() {
     var q = new URLSearchParams(location.search).get("daily");
+    if (/^\d{4}-\d{2}-\d{2}$/.test(q || "")) {
+      var t = Date.parse(q + "T00:00:00Z");
+      if (!isNaN(t)) return Math.floor(t / 86400000);
+    }
     var n = q == null ? NaN : parseInt(q, 10);
     return isNaN(n) ? Math.floor(Date.now() / 86400000) : n;
   }
@@ -393,8 +398,10 @@
   var hintBtn = document.getElementById("k-hint");
 
   var CELL = { starter: 50, classic: 44, expert: 39 };
-  var mode = "starter";
+  var preferredMode = window.SnackPackStore && window.SnackPackStore.get("kakuro", "mode");
+  var mode = TEMPLATES[preferredMode] ? preferredMode : "starter";
   var puzzle, selectedId, solved, started, elapsed, timerId;
+  var history = [], forcedPuzzle = null, resume = null;
 
   function bestKey() { return "sp_kakuro_best_" + mode; }
   function fmt(s) { var m = Math.floor(s / 60); return m + ":" + (s % 60 < 10 ? "0" : "") + (s % 60); }
@@ -407,7 +414,8 @@
   function build() {
     history = []; if (undoBtn) undoBtn.disabled = true;
     stopTimer();
-    puzzle = createPuzzle(mode);
+    puzzle = forcedPuzzle || createPuzzle(mode);
+    forcedPuzzle = null;
     selectedId = null; solved = false; started = false; elapsed = 0;
     timeEl.textContent = "0:00";
     statusEl.textContent = "Fill each run so it adds up to its clue.";
@@ -462,8 +470,6 @@
   // ── Undo ──────────────────────────────────────────
   // Kakuro runs interlock, so one wrong digit can cascade into a chain of
   // bad deductions. Only real edits are snapshotted.
-  var history = [];
-
   function snapshot() {
     history.push(JSON.stringify(puzzle.cells.map(function (c) { return c.value; })));
     if (history.length > 300) history.shift();
@@ -478,6 +484,7 @@
     paint(); updateCompletion();
     statusEl.textContent = "Move undone.";
     statusEl.className = "game-status";
+    if (resume) resume.changed();
   }
 
   function setValue(v) {
@@ -492,6 +499,7 @@
     // clear any error flags on edit
     Array.from(gridEl.children).forEach(function (el) { el.classList.remove("is-wrong"); });
     if (isSolved(puzzle)) finish();
+    else if (resume) resume.changed();
   }
 
   function finish() {
@@ -502,6 +510,7 @@
     var improved = !prev || elapsed < prev;
     if (improved) { try { localStorage.setItem(bestKey(), String(elapsed)); } catch (e) {} }
     showBest();
+    if (resume) resume.clear();
     if (window.SnackPack) window.SnackPack.celebrate({
       title: improved ? "New best time! 🎉" : "Grid solved! 🎉",
       body: "Every run adds up. We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app to play Kakuro and 23 more, offline."
@@ -540,6 +549,7 @@
     target.value = target.solution;
     paint(); updateCompletion();
     if (isSolved(puzzle)) finish();
+    else if (resume) resume.changed();
   }
 
   gridEl.addEventListener("click", function (e) {
@@ -560,6 +570,7 @@
   // "New" leaves daily mode — a daily is one grid, so re-rolling it while still
   // calling it today's would be a lie.
   newBtn.addEventListener("click", function () {
+    if (resume) resume.clear();
     dailyMode = false;
     dailyBtn.setAttribute("aria-pressed", "false");
     build();
@@ -568,8 +579,10 @@
   var dailyBtn = document.getElementById("k-daily");
   dailyBtn.setAttribute("aria-pressed", String(dailyMode));
   dailyBtn.addEventListener("click", function () {
+    if (resume) resume.save();
     dailyMode = !dailyMode;
     dailyBtn.setAttribute("aria-pressed", String(dailyMode));
+    if (resume) resume.variantChanged();
     build();
   });
   undoBtn.addEventListener("click", undo);
@@ -577,13 +590,57 @@
   hintBtn.addEventListener("click", hint);
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
     btn.addEventListener("click", function () {
+      if (resume) resume.save();
       mode = btn.dataset.mode;
+      if (window.SnackPackStore) window.SnackPackStore.set("kakuro", "mode", mode);
       document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
+      if (resume) resume.variantChanged();
       build();
     });
   });
 
+  document.querySelectorAll(".seg [data-mode]").forEach(function (x) {
+    x.setAttribute("aria-pressed", String(x.dataset.mode === mode));
+  });
   build();
+
+  function resumeVariant() { return (dailyMode ? "daily-" + dailyNumber() + "-" : "") + mode; }
+  function resumeState() {
+    return {
+      mode: mode, dailyMode: dailyMode, puzzle: puzzle,
+      selectedId: selectedId, started: started, elapsed: elapsed,
+      history: history.slice(-100)
+    };
+  }
+  function validState(s) {
+    return !!(s && TEMPLATES[s.mode] && s.puzzle && s.puzzle.mode === s.mode &&
+      Number.isInteger(s.puzzle.size) && Array.isArray(s.puzzle.cells) &&
+      s.puzzle.cells.length === s.puzzle.size * s.puzzle.size);
+  }
+  function restoreState(s) {
+    if (!validState(s)) return false;
+    mode = s.mode; dailyMode = !!s.dailyMode;
+    forcedPuzzle = JSON.parse(JSON.stringify(s.puzzle));
+    build();
+    selectedId = s.selectedId || null; started = !!s.started; elapsed = Number(s.elapsed) || 0;
+    history = Array.isArray(s.history) ? s.history.slice(-100) : [];
+    paint(); updateCompletion(); timeEl.textContent = fmt(elapsed);
+    statusEl.textContent = "Puzzle resumed.";
+    dailyBtn.setAttribute("aria-pressed", String(dailyMode));
+    document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.mode === mode)); });
+    if (undoBtn) undoBtn.disabled = history.length === 0;
+    if (started) startTimer();
+    return true;
+  }
+  if (window.SnackPackResume) {
+    resume = window.SnackPackResume.attach({
+      game: "kakuro", gameVersion: 1, variant: resumeVariant,
+      serialize: resumeState, restore: restoreState,
+      isActive: function () {
+        return !solved && puzzle.cells.some(function (c) { return c.kind === "fill" && !c.locked && c.value != null; });
+      }
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

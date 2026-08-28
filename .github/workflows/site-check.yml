@@ -45,6 +45,9 @@ jobs:
       - name: Check JavaScript syntax
         run: node scripts/check-javascript.mjs
 
+      - name: Enforce new arcade game quality bar
+        run: node scripts/check-new-game.mjs
+
       - name: Check website delivery contract
         run: node scripts/check-website-delivery.mjs
 

@@ -149,6 +149,7 @@
         <div class="game-toolbar">
           <div class="game-readout">
             <span class="readout-chip"><span>Turn</span><b id="s-turn">You</b></span>
+            <span class="readout-chip"><span>Wins</span><b id="s-wins">0</b></span>
           </div>
           <div class="game-controls">
             <div class="seg" role="group" aria-label="Mode">
@@ -345,6 +346,7 @@
   var tokensEl = document.getElementById("s-tokens");
   var statusEl = document.getElementById("s-status");
   var turnEl = document.getElementById("s-turn");
+  var winsEl = document.getElementById("s-wins");
   var diceEl = document.getElementById("s-dice");
   var rollBtn = document.getElementById("s-roll");
   var playerListEl = document.getElementById("s-playerlist");
@@ -352,7 +354,11 @@
 
   var DICE_FACES = ["", "dice-1", "dice-2", "dice-3", "dice-4", "dice-5", "dice-6"];
   var mode = "classic";
+  try { mode = localStorage.getItem("sp_snakes_and_ladders_mode") || mode; } catch (e) {}
+  if (["classic", "2p", "4p", "chaos"].indexOf(mode) < 0) mode = "classic";
   var players, snakes, ladders, current, busy, over;
+  function winsKey() { return "sp_snakes_and_ladders_wins_" + mode; }
+  function showWins() { var n = 0; try { n = +(localStorage.getItem(winsKey()) || 0); } catch (e) {} winsEl.textContent = n; }
 
   function buildBoard() {
     boardEl.innerHTML = "";
@@ -538,6 +544,8 @@
     statusEl.className = "game-status " + (winner.isHuman && winner.id === 0 ? "game-status--win" : "game-status--lose");
     setTurnReadout(); renderPlayers();
     if (winner.id === 0) {
+      try { localStorage.setItem(winsKey(), String(+(localStorage.getItem(winsKey()) || 0) + 1)); } catch (e) {}
+      showWins();
       if (window.SnackPack) window.SnackPack.celebrate({
         title: "You reached 100 first!",
         body: "Lucky dice! We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app to play Snakes & Ladders and more, offline."
@@ -559,6 +567,7 @@
     setDice(1);
     statusEl.textContent = "Roll to start.";
     statusEl.className = "game-status";
+    showWins();
     buildBoard(); drawOverlay(); renderTokens(); renderPlayers(); setTurnReadout();
   }
 
@@ -568,11 +577,13 @@
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       mode = btn.dataset.mode;
+      try { localStorage.setItem("sp_snakes_and_ladders_mode", mode); } catch (e) {}
       document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
       newGame();
     });
   });
 
+  document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.mode === mode)); });
   newGame();
 })();
 </script>
