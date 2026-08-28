@@ -13,13 +13,13 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v12";
+const CACHE = "snackpack-arcade-v13";
 
 const SHELL = [
   "/",
   "/play/",
   "/site.css",
-  "/play/play.css",
+  "/play/play.css?v=13",
   "/play/funnel.js",
   "/play/share-result.js",
   "/play/keyboard-grid.js",
