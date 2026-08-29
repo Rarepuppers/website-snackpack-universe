@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 const surfaces = [
   { slug: "hub", path: "/play/", target: "#games" },
   { slug: "2048", path: "/play/2048/", target: ".game-stage" },
-  { slug: "sudoku", path: "/play/sudoku/", target: ".game-stage" },
+  { slug: "sudoku", path: "/play/sudoku/", target: "#su-board" },
   { slug: "solitaire", path: "/play/solitaire/", target: ".game-stage" },
   { slug: "stats", path: "/play/stats/", target: "main" }
 ];
