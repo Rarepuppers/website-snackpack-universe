@@ -176,7 +176,7 @@
       // move knowledge own their sounds inline, avoiding the old double-trigger
       // where every click was treated as a successful placement.
       var slug = gameMatch[1];
-      var inlineOwned = /^(solitaire|spider-solitaire|freecell|thirteen|tripeaks|pyramid|golf-solitaire)$/;
+      var inlineOwned = /^(solitaire|spider-solitaire|freecell|thirteen|tripeaks|pyramid|golf-solitaire|water-sort)$/;
       var clickProfiles = {
         "2048": [[".g2048-board", "tick"]],
         "checkers": [[".ck-sq", "pickup"]], "reversi": [[".rv-sq", "place"]],

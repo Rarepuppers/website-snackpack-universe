@@ -6,14 +6,14 @@
 
   var categories = {
     cards: ["solitaire", "spider-solitaire", "freecell", "tripeaks", "pyramid", "golf-solitaire", "thirteen"],
-    puzzles: ["atlas-quest", "sudoku", "minesweeper", "kakuro", "picross", "2048", "cascade", "memory-match"],
+    puzzles: ["atlas-quest", "sudoku", "minesweeper", "kakuro", "picross", "water-sort", "2048", "cascade", "memory-match"],
     word: ["snackwords", "crossword", "word-search"],
     board: ["mahjong", "checkers", "connect-4", "reversi", "snakes-and-ladders"],
     arcade: ["table-tennis", "asteroid-destroyer", "flappy-snacky", "snacky-worm"],
     soccer: ["flag-frenzy", "soccer-trivia-sprint", "keepy-uppy", "target-shooting-arena", "free-kick-curl", "crossbar-challenge", "goalkeeper-hero", "penalty-shootout", "dribble-rush", "header-hero"],
-    daily: ["sudoku", "minesweeper", "word-search", "freecell", "snackwords", "crossword", "kakuro", "picross", "mahjong", "flag-frenzy", "soccer-trivia-sprint", "thirteen"]
+    daily: ["sudoku", "minesweeper", "word-search", "freecell", "snackwords", "crossword", "kakuro", "picross", "water-sort", "mahjong", "flag-frenzy", "soccer-trivia-sprint", "thirteen"]
   };
-  var recentAdded = ["spider-solitaire", "tripeaks", "pyramid", "snackwords", "flag-frenzy", "dribble-rush", "header-hero"];
+  var recentAdded = ["water-sort", "spider-solitaire", "tripeaks", "pyramid", "snackwords", "flag-frenzy", "dribble-rush", "header-hero"];
   var tiles = Array.from(grid.querySelectorAll(":scope > .game-tile"));
   var records = [];
 
@@ -61,7 +61,7 @@
   panel.className = "arcade-tools";
   panel.innerHTML =
     '<div class="arcade-search-row">' +
-      '<label class="arcade-search"><span class="sr-only">Search games</span><input type="search" placeholder="Search 37 games" autocomplete="off"></label>' +
+      '<label class="arcade-search"><span class="sr-only">Search games</span><input type="search" placeholder="Search 38 games" autocomplete="off"></label>' +
       '<label class="arcade-sort"><span>Sort</span><select><option value="featured">Featured</option><option value="az">A to Z</option><option value="new">Recently added</option><option value="favourites">Favourites first</option></select></label>' +
       '<button class="btn-game arcade-clear" type="button">Clear filters</button>' +
     '</div>' +

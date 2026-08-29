@@ -36,3 +36,42 @@ test("Thirteen offers a saved game after play advances", async ({ page }) => {
   if (await selectable.isEnabled()) await selectable.click();
   await expectResumeAfterReload(page);
 });
+
+test("Water Sort saves a legal pour and restores the exact board", async ({ page }) => {
+  await fresh(page, "/play/water-sort/?daily=2026-08-29");
+  const source = page.locator("#ws-board .ws-tube:not(.is-complete)").first();
+  await source.click();
+  const target = page.locator("#ws-board .ws-tube.is-target").first();
+  await expect(target).toBeVisible();
+  await target.click();
+  await expect(page.locator("#ws-moves")).toHaveText("1");
+  const movedLabels = await page.locator("#ws-board .ws-tube").evaluateAll((nodes) => nodes.map((node) => node.getAttribute("aria-label")));
+  await expectResumeAfterReload(page);
+  await page.getByRole("button", { name: "Resume game" }).click();
+  await expect(page.locator("#ws-moves")).toHaveText("1");
+  await expect.poll(() => page.locator("#ws-board .ws-tube").evaluateAll((nodes) => nodes.map((node) => node.getAttribute("aria-label")))).toEqual(movedLabels);
+  await page.getByRole("button", { name: "Undo" }).click();
+  await expect(page.locator("#ws-moves")).toHaveText("0");
+});
+
+test("Water Sort daily board is deterministic and patterns are available", async ({ page }) => {
+  await fresh(page, "/play/water-sort/?daily=2026-08-29");
+  const first = await page.locator("#ws-board .ws-tube").evaluateAll((nodes) => nodes.map((node) => node.getAttribute("aria-label")));
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await expect.poll(() => page.locator("#ws-board .ws-tube").count()).toBe(8);
+  const second = await page.locator("#ws-board .ws-tube").evaluateAll((nodes) => nodes.map((node) => node.getAttribute("aria-label")));
+  expect(second).toEqual(first);
+  await page.getByRole("button", { name: "Colour patterns" }).click();
+  await expect(page.locator("#ws-stage")).toHaveClass(/is-patterned/);
+  await expect(page.getByRole("button", { name: "Colour patterns" })).toHaveAttribute("aria-pressed", "true");
+});
+
+test("Water Sort verifies a solution and builds every difficulty", async ({ page }) => {
+  await fresh(page, "/play/water-sort/?daily=2026-08-29");
+  const sizes = { Easy: 6, Classic: 8, Hard: 11, Expert: 14 };
+  for (const [name, count] of Object.entries(sizes)) {
+    await page.getByRole("button", { name, exact: true }).click();
+    await expect(page.locator("#ws-board")).toHaveAttribute("data-solution-verified", "true");
+    await expect(page.locator("#ws-board .ws-tube")).toHaveCount(count);
+  }
+});

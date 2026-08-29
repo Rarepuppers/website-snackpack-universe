@@ -5,6 +5,7 @@ const surfaces = [
   { slug: "2048", path: "/play/2048/", target: ".game-stage" },
   { slug: "sudoku", path: "/play/sudoku/", target: "#su-board" },
   { slug: "solitaire", path: "/play/solitaire/", target: ".game-stage" },
+  { slug: "water-sort", path: "/play/water-sort/?daily=2026-08-29", target: ".game-stage" },
   { slug: "stats", path: "/play/stats/", target: "main" }
 ];
 const themes = ["cream", "dark", "light"];

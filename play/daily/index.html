@@ -46,7 +46,7 @@
   "@type": "WebPage",
   "name": "Today's Free Daily Puzzles",
   "url": "https://www.snackpackuniverse.com/play/daily/",
-  "description": "A shared set of twelve daily puzzles — SnackWords, Sudoku, Word Search, FreeCell, Mahjong, Pyramid Solitaire, TriPeaks Solitaire, Golf Solitaire, Memory Match, Thirteen, Minesweeper and Flag Frenzy. The same boards for everyone, every day.",
+  "description": "A shared set of thirteen daily puzzles — SnackWords, Sudoku, Word Search, FreeCell, Mahjong, Pyramid Solitaire, TriPeaks Solitaire, Golf Solitaire, Memory Match, Thirteen, Minesweeper, Water Sort and Flag Frenzy. The same boards for everyone, every day.",
   "isPartOf": { "@type": "WebSite", "name": "SnackPack Universe", "url": "https://www.snackpackuniverse.com/" }
 }
 </script>
@@ -142,7 +142,7 @@
         <h1>Today's puzzles.<br>Same boards for everyone.</h1>
         <p class="lead">One set a day, drawn from the same seed for every player — so a time or a streak actually means something. Free, no ads, no sign-in, nothing to install.</p>
         <div class="dl-hero-stats">
-          <span class="dl-stat">Done today <b id="dl-done">0/<span data-game-count="daily">12</span></b></span>
+          <span class="dl-stat">Done today <b id="dl-done">0/<span data-game-count="daily">13</span></b></span>
           <span class="dl-stat">Streak <b id="dl-streak">0</b></span>
           <span class="dl-stat">Best streak <b id="dl-best">0</b></span>
         </div>
@@ -159,7 +159,7 @@
             <!-- Number kept mid-sentence on purpose: build-game-counts.mjs
                  renders word-format markers lowercase, so a sentence-initial
                  one would read "twelve boards". -->
-            <h2>One day, <span data-game-count="daily" data-game-count-format="word">twelve</span> boards.</h2>
+            <h2>One day, <span data-game-count="daily" data-game-count-format="word">thirteen</span> boards.</h2>
           </div>
           <span class="daily-challenge-date" id="dl-seed">Seed loading</span>
         </div>
@@ -220,6 +220,11 @@
             <div><h3>Minesweeper</h3><p>Shared once you open the same square</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
+          <a class="dl-card" data-game="water-sort" href="../water-sort/">
+            <img src="../tiles/water-sort.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <div><h3>Water Sort</h3><p>Today's shared colour sort</p></div>
+            <span class="dl-tick" hidden>Done</span>
+          </a>
           <a class="dl-card" data-game="flag-frenzy" href="../flag-frenzy/">
             <img src="../tiles/flag-frenzy.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
             <div><h3>Flag Frenzy</h3><p>Guess today's mystery team</p></div>
@@ -243,7 +248,7 @@
       <h2>Why a daily puzzle at all?</h2>
       <p>Because a score only means something if the board is the same. Every puzzle here is generated from the date, so the Sudoku you solve is the Sudoku everyone else solved today — and the FreeCell deal is drawn from a pool a solver has already proven winnable, which most daily card games can't promise.</p>
       <p>Your streak and results are stored on your own device. There is no account, no email capture and no leaderboard server — nothing leaves your browser. Come back tomorrow and the set refreshes.</p>
-      <p><a href="../">Browse all <span data-game-count="arcade">37</span> free games</a> if you'd rather just play something.</p>
+      <p><a href="../">Browse all <span data-game-count="arcade">38</span> free games</a> if you'd rather just play something.</p>
     </div>
   </section>
 </main>
@@ -261,7 +266,7 @@
   var LABELS = {
     snackwords: "SnackWords", sudoku: "Sudoku", "word-search": "Word Search", freecell: "FreeCell",
     mahjong: "Mahjong", "golf-solitaire": "Golf Solitaire", "memory-match": "Memory Match",
-    thirteen: "Thirteen", minesweeper: "Minesweeper", "flag-frenzy": "Flag Frenzy"
+    thirteen: "Thirteen", minesweeper: "Minesweeper", "water-sort": "Water Sort", "flag-frenzy": "Flag Frenzy"
   };
   var cards = [].slice.call(document.querySelectorAll(".dl-card"));
 

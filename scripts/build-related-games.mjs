@@ -29,6 +29,7 @@ const GUIDES = {
   mahjong: "mahjong-solitaire-without-ads",
   thirteen: "thirteen-tien-len-rules",
   "flag-frenzy": "flag-quiz-without-ads",
+  "water-sort": "water-sort-strategy",
 };
 
 /*

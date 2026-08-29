@@ -34,7 +34,7 @@ Six more apps are planned or in progress and not yet live: Tales & Trivia, Creat
 
 [Atlas Quest](https://www.snackpackuniverse.com/atlas-quest/) is SnackPack Studios' free, ad-free world geography game. It uses an interactive physical and political globe for country, capital, flag, border, landmark and sourced world-fact challenges. It requires no account, keeps learning progress on the device, supports export and import, and can be installed for offline play. The linked page contains the permanent Atlas Quest FAQ, privacy, support and troubleshooting information; the game itself is at https://atlas.snackpackuniverse.com/.
 
-37 classic games playable instantly at [SnackPack Arcade](https://www.snackpackuniverse.com/play/) — no ads, no sign-in, no download, and most are installable offline as a PWA. A taster for the Brain Games apps above. Selected highlights:
+38 classic games playable instantly at [SnackPack Arcade](https://www.snackpackuniverse.com/play/) — no ads, no sign-in, no download, and most are installable offline as a PWA. A taster for the Brain Games apps above. Selected highlights:
 
 - [Play Sudoku](https://www.snackpackuniverse.com/play/sudoku/): Free browser Sudoku with Easy/Medium/Hard/Expert puzzles (unique solutions), pencil notes, hints and mistake checking that never ends your game. Includes rules, strategy, and history.
 - [Play Solitaire](https://www.snackpackuniverse.com/play/solitaire/): Free browser Klondike Solitaire with Draw 1 and Draw 3 modes, click-to-move, undo, timer and move counter. Includes rules, strategy, and history.
@@ -52,6 +52,7 @@ Six more apps are planned or in progress and not yet live: Tales & Trivia, Creat
 - [Play Crossword](https://www.snackpackuniverse.com/play/crossword/): Free browser Crossword with themed packs and a daily puzzle.
 - [Play Picross](https://www.snackpackuniverse.com/play/picross/): Free browser Picross (nonogram) with a daily puzzle.
 - [Play Kakuro](https://www.snackpackuniverse.com/play/kakuro/): Free browser Kakuro with a daily puzzle.
+- [Play Water Sort](https://www.snackpackuniverse.com/play/water-sort/): Free browser colour-sorting puzzle with guaranteed-solvable boards, four difficulties, unlimited undo, reload-safe progress, optional colour patterns and a shared daily board. Includes a strategy guide.
 - [Play Thirteen](https://www.snackpackuniverse.com/play/thirteen/): Free browser Thirteen (Tiến lên) card game vs three computer opponents, with a daily puzzle mode.
 - [Play Cascade](https://www.snackpackuniverse.com/play/cascade/): Free browser Cascade — a calm falling-blocks puzzle (the SnackPack take on tetromino stacking) with Normal and Turbo modes, keyboard and touch controls, and saved best score. Includes rules, strategy, and history.
 - [Play Flappy Snacky](https://www.snackpackuniverse.com/play/flappy-snacky/): Free browser Flappy Snacky — a one-button tap-to-fly arcade game with Classic, Hard and Night modes and a saved best score. Includes rules, tips, and an about section.
@@ -59,7 +60,7 @@ Six more apps are planned or in progress and not yet live: Tales & Trivia, Creat
 
 The full list also includes SnackWords (a daily five-letter word guess), Golf Solitaire, Snakes & Ladders, Memory Match, Table Tennis, Asteroid Destroyer, and nine original soccer and flag games (Goalkeeper Hero, Penalty Shootout, Free Kick Curl, Crossbar Challenge, Header Hero, Dribble Rush, Keepy-Uppy, Soccer Trivia Sprint, Flag Frenzy) — see [SnackPack Arcade](https://www.snackpackuniverse.com/play/) for the complete, current list.
 
-Twelve games have a shared daily puzzle, collected at [SnackPack Daily](https://www.snackpackuniverse.com/play/daily/) — one board per UTC day, the same for every player, with a local streak and a spoiler-free share string. Includes SnackWords, Sudoku, Word Search, FreeCell, Mahjong Solitaire, Pyramid Solitaire, TriPeaks Solitaire, Golf Solitaire, Memory Match, Thirteen, Minesweeper and Flag Frenzy.
+Thirteen games have a shared daily puzzle, collected at [SnackPack Daily](https://www.snackpackuniverse.com/play/daily/) — one board per UTC day, the same for every player, with a local streak and a spoiler-free share string. Includes SnackWords, Sudoku, Word Search, FreeCell, Mahjong Solitaire, Pyramid Solitaire, TriPeaks Solitaire, Golf Solitaire, Memory Match, Thirteen, Minesweeper, Water Sort and Flag Frenzy.
 
 ## World Cup 2026 hub
 

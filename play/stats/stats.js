@@ -9,6 +9,14 @@
     catch (error) { return fallback; }
   }
   function label(value) { return value.replace(/^sp_/, "").replace(/_/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); }); }
+  function formatResult(entry) {
+    var value = String(entry.value || "—");
+    if (/^sp_water_sort_best_/.test(entry.key) && /^\d+$/.test(value)) {
+      var seconds = Number(value);
+      return Math.floor(seconds / 60) + ":" + String(seconds % 60).padStart(2, "0");
+    }
+    return value;
+  }
   function entries() {
     var out = [];
     try { for (var i = 0; i < localStorage.length; i++) { var key = localStorage.key(i); if (key && key.indexOf("sp_") === 0) out.push({ key: key, value: localStorage.getItem(key) }); } }
@@ -32,7 +40,7 @@
     }
     results.sort(function (a, b) { return a.key.localeCompare(b.key); });
     bests.innerHTML = results.map(function (entry) {
-      var value = /^\d+$/.test(entry.value || "") ? entry.value : String(entry.value || "—");
+      var value = formatResult(entry);
       return '<article class="stats-row"><span>' + label(entry.key.replace(/_best_/, " · ")) + '</span><strong>' + value + '</strong></article>';
     }).join("");
   }
