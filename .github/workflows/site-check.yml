@@ -62,6 +62,9 @@ jobs:
       - name: Check game counts
         run: node scripts/build-game-counts.mjs --check
 
+      - name: Check arcade ItemList schema
+        run: node scripts/build-arcade-schema.mjs --check
+
       # Every outbound Play link must carry a referrer, or the install it drives
       # is filed as organic Play search and the web funnel goes dark. 136 of 137
       # links were untagged until 2026-08-15; this is what stops that returning.
@@ -84,3 +87,29 @@ jobs:
       # button shipped unreadable.
       - name: Check theme contrast
         run: node scripts/check-contrast.mjs
+
+  visual-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install test dependencies
+        run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Compare arcade screenshots
+        run: npm run test:visual
+      - name: Upload visual diff on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arcade-visual-diff
+          path: |
+            test-results/
+            playwright-report/

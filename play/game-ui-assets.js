@@ -86,7 +86,7 @@
     var match = location.pathname.match(/^\/play\/([^/]+)\/?$/);
     if (!match) return;
     var slug = match[1].replace(/[^a-z0-9]+/g, "_");
-    var attributes = ["mode", "level", "diff", "difficulty", "size", "layout", "cells", "suits", "players", "theme"];
+    var attributes = ["mode", "level", "diff", "difficulty", "size", "layout", "cells", "suits", "draw", "players", "theme"];
     document.querySelectorAll(".game-controls [role=group], .game-controls .seg, .fc-actions [role=group], .fc-actions .fc-seg").forEach(function (group) {
       var attr = attributes.find(function (name) { return group.querySelector("[data-" + name + "]"); });
       if (!attr) return;
@@ -171,15 +171,28 @@
         controls.insertBefore(toggle, controls.lastElementChild);
         window.SnackPackAudio.setMuted(window.SnackPackAudio.isMuted());
       }
-      window.SnackPackAudio.preload(["place", "invalid", "success", "win", "pop", "whoosh"]);
-      document.addEventListener("click", function (event) {
-        if (event.target.closest("[data-sp-audio-toggle], .theme-toggle, .sp-share-actions")) return;
-        if (event.target.closest(".card, .fc-card, .spi-card, .th-card, .mj-tile, .mem-card, .ck-sq, .rv-sq, .c4-cell, .c4-col-btn, .ms-cell, .su-cell, .pc-cell, .kk-fill, .cw-cell, .ws-cell, .g2048-board")) {
-          window.SnackPackAudio.play("place");
-        }
+      window.SnackPackAudio.preload(["place", "pickup", "invalid", "success", "win", "tick", "pop", "whoosh"]);
+      // Each game gets feedback that matches its action. Card games with richer
+      // move knowledge own their sounds inline, avoiding the old double-trigger
+      // where every click was treated as a successful placement.
+      var slug = gameMatch[1];
+      var inlineOwned = /^(solitaire|spider-solitaire|freecell|thirteen|tripeaks|pyramid|golf-solitaire)$/;
+      var clickProfiles = {
+        "2048": [[".g2048-board", "tick"]],
+        "checkers": [[".ck-sq", "pickup"]], "reversi": [[".rv-sq", "place"]],
+        "connect-4": [[".c4-cell,.c4-col-btn", "place"]], "mahjong": [[".mj-tile", "pickup"]],
+        "memory-match": [[".mem-card", "pickup"]], "minesweeper": [[".ms-cell", "tick"]],
+        "sudoku": [[".su-cell,.su-pad button", "tick"]], "picross": [[".pc-cell", "tick"]],
+        "killer-kenken": [[".kk-fill,.kk-cell", "tick"]], "crossword": [[".cw-cell", "tick"]],
+        "word-search": [[".ws-cell", "pickup"]]
+      };
+      (clickProfiles[slug] || []).forEach(function (binding) {
+        document.addEventListener("click", function (event) {
+          if (!event.target.closest("[data-sp-audio-toggle], .theme-toggle, .sp-share-actions") && event.target.closest(binding[0])) window.SnackPackAudio.play(binding[1]);
+        });
       });
       var status = document.querySelector(".game-status");
-      if (status) {
+      if (status && !inlineOwned.test(slug)) {
         var last = status.textContent;
         new MutationObserver(function () {
           var next = status.textContent;
@@ -190,9 +203,9 @@
           else if (/found|correct|ladder|goal|matched|nice/i.test(next)) window.SnackPackAudio.play("success");
         }).observe(status, { childList: true, characterData: true, subtree: true });
       }
-      if (/^(asteroid-destroyer|flappy-snacky|snacky-worm|table-tennis|target-shooting-arena)$/.test(gameMatch[1])) {
+      if (/^(asteroid-destroyer|flappy-snacky|snacky-worm|table-tennis|target-shooting-arena)$/.test(slug)) {
         document.addEventListener("pointerdown", function (event) {
-          if (event.target.closest("canvas, .as-btn, .tt-board-wrap")) window.SnackPackAudio.play(gameMatch[1] === "asteroid-destroyer" ? "pop" : "whoosh");
+          if (event.target.closest("canvas, .as-btn, .tt-board-wrap")) window.SnackPackAudio.play(slug === "asteroid-destroyer" ? "pop" : "whoosh");
         });
       } else if (/^(keepy-uppy|free-kick-curl|crossbar-challenge|goalkeeper-hero|penalty-shootout|dribble-rush|header-hero)$/.test(gameMatch[1])) {
         document.addEventListener("pointerdown", function (event) { if (event.target.closest("canvas, .game-board-wrap")) window.SnackPackAudio.play("whoosh"); });

@@ -221,7 +221,7 @@
 </footer>
 <script src="../funnel.js"></script>
 <script src="../keyboard-grid.js"></script>
-<script src="../audio.js"></script><script src="../daily-state.js"></script><script src="../share-result.js"></script><script>
+<script src="../audio.js"></script><script src="../store.js"></script><script src="../resume.js"></script><script src="../daily-state.js"></script><script src="../share-result.js"></script><script>
 (function(){'use strict';
 var SUITS=['♠','♥','♦','♣'], RED=[false,true,true,false], RANK=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 // Painted suit art shared with Solitaire and Spider, so all three card games
@@ -248,7 +248,7 @@ largeBtn.addEventListener('click',function(){
   if(cascades.length)render();
 });
 applyCardSize();
-var cascades=[],free=[],found=[],selected=null,history=[],redoStack=[],moves=0,seconds=0,timer=null,dealIndex=Math.floor(Math.random()*CHECKED.length);
+var cascades=[],free=[],found=[],selected=null,history=[],redoStack=[],moves=0,seconds=0,timer=null,dealIndex=Math.floor(Math.random()*CHECKED.length),resume=null;
 
 // Daily deal. CHECKED is a pool of solver-verified winnable deals, so indexing it
 // by the date gives everyone the same board AND guarantees it's beatable — a
@@ -295,7 +295,7 @@ function deal(seed){
   render();
 }
 function copy(){return JSON.stringify({c:cascades,f:free,o:found,m:moves,sec:seconds})}
-function restore(x){var q=JSON.parse(x);cascades=q.c;free=q.f;found=q.o;moves=q.m;if(q.sec!==undefined)seconds=q.sec;selected=null;render()}
+function restoreSnapshot(x){var q=JSON.parse(x);cascades=q.c;free=q.f;found=q.o;moves=q.m;if(q.sec!==undefined)seconds=q.sec;selected=null;render()}
 
 function cardCode(c){return c.s+'-'+c.r}
 function red(c){return RED[c.s]}
@@ -375,6 +375,7 @@ function finishMoveEffects(){
   var total=found.reduce(function(a,p){return a+p.length},0);
   if(total===52){
     clearInterval(timer);
+    if(resume)resume.clear();
     var isBest=maybeSaveBest();
     statusEl.textContent='You won in '+timeEl.textContent+' and '+moves+' moves!'+(isBest?' New best! 🎉':' 🎉');
     if(window.SnackPack)window.SnackPack.celebrate({title:'You cleared the board! 🎉',body:'Beautifully played — solved in '+timeEl.textContent+'. We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app to play FreeCell offline with saved best times.'});
@@ -559,8 +560,8 @@ window.addEventListener('pointerup',function(e){
 });
 
 // ── Undo / redo ──────────────────────────────────
-function undo(){if(!history.length)return;redoStack.push(copy());restore(history.pop())}
-function redo(){if(!redoStack.length)return;history.push(copy());restore(redoStack.pop())}
+function undo(){if(!history.length)return;redoStack.push(copy());restoreSnapshot(history.pop())}
+function redo(){if(!redoStack.length)return;history.push(copy());restoreSnapshot(redoStack.pop())}
 
 function hint(){
   for(var i=0;i<8;i++){var c=cascades[i].at(-1);if(c&&found[c.s].length===c.r-1){statusEl.textContent='Hint: send '+RANK[c.r]+SUITS[c.s]+' to its foundation.';return}}
@@ -580,6 +581,7 @@ document.getElementById('fc-auto').onclick=autoBtnClick;
 // "New deal" leaves daily mode — a daily is one board, so dealing past it while
 // still calling it today's would be a lie.
 document.getElementById('fc-new').onclick=function(){
+  if(resume)resume.clear();
   dailyMode=false;
   dailyBtn.setAttribute('aria-pressed','false');
   dealIndex=(dealIndex+1)%CHECKED.length;
@@ -588,9 +590,11 @@ document.getElementById('fc-new').onclick=function(){
 
 var dailyBtn=document.getElementById('fc-daily');
 dailyBtn.onclick=function(){
+  if(resume)resume.save();
   dailyMode=!dailyMode;
   dailyBtn.setAttribute('aria-pressed',String(dailyMode));
   if(dailyMode)dealIndex=dailyDealIndex();
+  if(resume)resume.variantChanged();
   deal(CHECKED[dealIndex]);
 };
 
@@ -598,16 +602,22 @@ dailyBtn.onclick=function(){
 // board you were on with fewer cells, rather than being thrown a new one.
 document.querySelectorAll('.fc-seg [data-cells]').forEach(function(btn){
   btn.addEventListener('click',function(){
+    if(resume)resume.save();
     cellCount=+btn.dataset.cells;
     document.querySelectorAll('.fc-seg [data-cells]').forEach(function(b){
       b.setAttribute('aria-pressed',String(b===btn));
     });
     document.getElementById('fc-verified').hidden=(cellCount!==4);
+    if(resume)resume.variantChanged();
     deal(CHECKED[dealIndex]);
   });
 });
 if(dailyMode){dealIndex=dailyDealIndex();dailyBtn.setAttribute("aria-pressed","true")}
 deal(CHECKED[dealIndex]);
+function validFreeCard(c){return c&&Number.isInteger(c.s)&&c.s>=0&&c.s<4&&Number.isInteger(c.r)&&c.r>=1&&c.r<=13&&c.id===c.s+'-'+c.r}
+function validFreeSave(p){if(!p||!Array.isArray(p.cascades)||p.cascades.length!==8||!Array.isArray(p.free)||p.free.length!==cellCount||!Array.isArray(p.found)||p.found.length!==4)return false;var cards=p.cascades.concat(p.found).reduce(function(a,x){return a.concat(x)},[]).concat(p.free.filter(Boolean));return cards.length===52&&cards.every(validFreeCard)&&new Set(cards.map(cardCode)).size===52&&Number.isFinite(p.moves)&&Number.isFinite(p.seconds)&&Number.isFinite(p.seed)}
+if(window.SnackPackResume)resume=window.SnackPackResume.attach({game:'freecell',variant:function(){return(dailyMode?'daily-'+dailyNumber():'random')+'-cells-'+cellCount},serialize:function(){return{cascades:cascades,free:free,found:found,moves:moves,seconds:seconds,seed:+dealEl.textContent,history:history.slice(-300),redo:redoStack.slice(-300)}},validate:validFreeSave,restore:function(p){cascades=p.cascades;free=p.free;found=p.found;moves=p.moves;seconds=p.seconds;history=Array.isArray(p.history)?p.history:[];redoStack=Array.isArray(p.redo)?p.redo:[];selected=null;dealEl.textContent=String(p.seed);dealIndex=Math.max(0,CHECKED.indexOf(p.seed));clearInterval(timer);timer=setInterval(function(){seconds++;timeEl.textContent=Math.floor(seconds/60)+':'+(seconds%60<10?'0':'')+(seconds%60)},1000);timeEl.textContent=Math.floor(seconds/60)+':'+(seconds%60<10?'0':'')+(seconds%60);renderBest();render();return true},isActive:function(){return moves>0&&found.reduce(function(a,p){return a+p.length},0)<52}});
+new MutationObserver(function(){if(resume)resume.changed()}).observe(fcTableEl,{childList:true,subtree:true});
 
 // Arrow-key play. Every free cell, foundation and cascade pile already carries
 // data-type/data-i (that's what the mouse click() handler reads), and it's set

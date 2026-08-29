@@ -1,0 +1,11 @@
+{
+  "name": "snackpack-universe-website",
+  "private": true,
+  "scripts": {
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1"
+  }
+}

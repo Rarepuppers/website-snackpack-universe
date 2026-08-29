@@ -13,7 +13,7 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v13";
+const CACHE = "snackpack-arcade-v14";
 
 const SHELL = [
   "/",
@@ -32,9 +32,8 @@ const SHELL = [
   "/play/stats/stats.js",
   "/theme.js",
   "/play/audio.js",
-  // Only the sounds currently wired into a game are precached. The other four
-  // (invalid, tick, pop, whoosh) exist and are generated, but nothing calls them
-  // yet — precaching them would cost every visitor bytes for silence.
+  // All eight cues are now mapped to concrete game actions and stay available
+  // offline with the rest of the arcade shell.
   "/play/shared-assets/game-ui/audio/place.wav",
   "/play/shared-assets/game-ui/audio/invalid.wav",
   "/play/shared-assets/game-ui/audio/pickup.wav",

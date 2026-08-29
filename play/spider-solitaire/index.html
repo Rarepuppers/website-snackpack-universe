@@ -356,7 +356,7 @@
 <script>window.SP_PLAY_URL = "https://www.snackpackuniverse.com/go/arcade/spider-solitaire/braingames3/";</script>
 <script src="../funnel.js"></script>
 <script src="../keyboard-grid.js"></script>
-<script src="../audio.js"></script><script src="../daily-state.js"></script><script src="../share-result.js"></script>
+<script src="../audio.js"></script><script src="../store.js"></script><script src="../resume.js"></script><script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script>
 (function () {
   "use strict";
@@ -399,7 +399,7 @@
   var COLS = 10;
   var cols, stock, completed, suitCount = 1;
   var moves, solved, sel = null, timer, seconds, started;
-  var history = [];
+  var history = [], resume = null;
 
   // ── Best time, tracked per difficulty ─────────────
   function bestKey() { return "sp-spider-best-s" + suitCount; }
@@ -494,7 +494,7 @@
     undoBtn.disabled = false;
   }
 
-  function restore(s) {
+  function restoreSnapshot(s) {
     var st = JSON.parse(s);
     cols = st.cols; stock = st.stock; completed = st.completed; moves = st.moves;
     sel = null; solved = false;
@@ -536,6 +536,7 @@
   function checkWin() {
     if (completed.length < 8 || solved) return;
     solved = true;
+    if (resume) resume.clear();
     clearInterval(timer);
     statusEl.className = "game-status is-win";
     var record = maybeSaveBest();
@@ -797,17 +798,19 @@
     clearInterval(timer);
     started = false;
     if (seconds) { started = true; timer = setInterval(function () { seconds++; timeEl.textContent = fmt(seconds); }, 1000); }
-    restore(history.pop());
+    restoreSnapshot(history.pop());
   });
 
-  newBtn.addEventListener("click", function () { deal(); });
+  newBtn.addEventListener("click", function () { if (resume) resume.clear(); deal(); });
 
   document.querySelectorAll(".seg [data-suits]").forEach(function (btn) {
     btn.addEventListener("click", function () {
+      if (resume) resume.save();
       suitCount = +btn.dataset.suits;
       document.querySelectorAll(".seg [data-suits]").forEach(function (b) {
         b.setAttribute("aria-pressed", String(b === btn));
       });
+      if (resume) resume.variantChanged();
       deal();
     });
   });
@@ -815,6 +818,10 @@
   window.addEventListener("resize", function () { if (cols) render(); });
 
   deal();
+  function validSpiderCard(c){return c&&Number.isInteger(c.s)&&c.s>=0&&c.s<4&&Number.isInteger(c.r)&&c.r>=1&&c.r<=13&&typeof c.up==="boolean";}
+  function validSpiderSave(p){if(!p||!Array.isArray(p.cols)||p.cols.length!==10||!Array.isArray(p.stock)||!Array.isArray(p.completed))return false;var cards=p.stock.concat.apply(p.stock,p.cols);return cards.every(validSpiderCard)&&cards.length+p.completed.length*13===104&&p.completed.every(function(s){return Number.isInteger(s)&&s>=0&&s<4;})&&Number.isFinite(p.moves)&&Number.isFinite(p.seconds);}
+  if(window.SnackPackResume)resume=window.SnackPackResume.attach({game:"spider-solitaire",variant:function(){return "suits-"+suitCount;},serialize:function(){return{cols:cols,stock:stock,completed:completed,moves:moves,seconds:seconds,started:started,history:history.slice(-400)};},validate:validSpiderSave,restore:function(p){cols=p.cols;stock=p.stock;completed=p.completed;moves=p.moves;seconds=p.seconds;started=!!p.started;history=Array.isArray(p.history)?p.history:[];sel=null;solved=false;clearInterval(timer);timeEl.textContent=fmt(seconds);renderBest();render();if(started)timer=setInterval(function(){seconds++;timeEl.textContent=fmt(seconds);},1000);return true;},isActive:function(){return !solved&&(started||moves>0);}});
+  new MutationObserver(function(){if(resume)resume.changed();}).observe(tableEl,{childList:true,subtree:true});
 
   // Arrow-key play across the tableau. The stock is already keyboard-operable
   // (its own tabindex="0" + Enter/Space handler above deals a row), and the

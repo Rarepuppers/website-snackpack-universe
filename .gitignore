@@ -32,6 +32,9 @@ desktop.ini
 .npm-cache/
 **/.npm-cache/
 .npm/
+.playwright-browsers/
+test-results/
+playwright-report/
 
 # Dependencies & build outputs
 node_modules/

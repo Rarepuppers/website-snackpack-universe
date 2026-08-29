@@ -332,6 +332,7 @@
 
 <script>window.SP_PLAY_URL = "https://www.snackpackuniverse.com/go/arcade/thirteen/braingames2/";</script>
 <script src="../funnel.js"></script>
+<script src="../game-ui-assets.js"></script><script src="../audio.js"></script><script src="../store.js"></script><script src="../resume.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script>
 (function () {
@@ -555,6 +556,7 @@
   var gs = null;
   var selected = [];
   var cpuTimer = null;
+  var resume = null;
   var wins = 0;
   try { wins = parseInt(localStorage.getItem("sp_thirteen_wins") || "0", 10) || 0; } catch (e) {}
   winsEl.textContent = wins;
@@ -648,8 +650,10 @@
       if (!gs || gs.phase !== "playing" || gs.currentPlayer === 0) return;
       var idx = gs.currentPlayer;
       var play = cpuChoosePlay(gs, idx);
-      if (play === "pass") applyPass(gs, idx); else applyPlay(gs, idx, play);
+      if (play === "pass") { applyPass(gs, idx); if(window.SnackPackAudio)window.SnackPackAudio.play("tick"); }
+      else { applyPlay(gs, idx, play); if(window.SnackPackAudio)window.SnackPackAudio.play("place"); }
       render();
+      if (resume) resume.changed();
       if (gs.phase === "gameover") { finish(); return; }
       scheduleCpu();
     }, 1100);
@@ -657,6 +661,8 @@
 
   function finish() {
     if (cpuTimer) clearTimeout(cpuTimer);
+    if (resume) resume.clear();
+    if (window.SnackPackAudio) window.SnackPackAudio.play(gs.winner === 0 ? "win" : "invalid");
     if (gs.winner === 0) {
       wins++; winsEl.textContent = wins;
       try { localStorage.setItem("sp_thirteen_wins", String(wins)); } catch (e) {}
@@ -690,7 +696,9 @@
     if (!c) return;
     if (selected.some(function (s) { return s.id === id; })) selected = selected.filter(function (s) { return s.id !== id; });
     else selected = selected.concat([c]);
+    if (window.SnackPackAudio) window.SnackPackAudio.play("pickup");
     render();
+    if (resume) resume.changed();
   });
 
   playBtn.addEventListener("click", function () {
@@ -699,8 +707,10 @@
     if (!combo || !canBeat(combo, gs.lastCombo, gs.mode)) return;
     if (gs.isFirstTurn && !selected.some(function (c) { return c.value === 3 && c.suit === 0; })) return;
     applyPlay(gs, 0, combo);
+    if (window.SnackPackAudio) window.SnackPackAudio.play(combo.type === "bomb" ? "success" : "place");
     selected = [];
     render();
+    if (resume) resume.changed();
     if (gs.phase === "gameover") { finish(); return; }
     scheduleCpu();
   });
@@ -708,8 +718,10 @@
   passBtn.addEventListener("click", function () {
     if (gs.currentPlayer !== 0 || gs.phase !== "playing" || !gs.lastCombo || gs.lastPlayerIdx === 0) return;
     applyPass(gs, 0);
+    if (window.SnackPackAudio) window.SnackPackAudio.play("tick");
     selected = [];
     render();
+    if (resume) resume.changed();
     scheduleCpu();
   });
 
@@ -722,6 +734,7 @@
   // "New game" leaves daily mode — a daily is one deal, so re-rolling it while
   // still calling it today's would be a lie.
   newBtn.addEventListener("click", function () {
+    if (resume) resume.clear();
     dailyMode = false;
     urlSeed = null;
     dailyBtn.setAttribute("aria-pressed", "false");
@@ -731,21 +744,28 @@
   var dailyBtn = document.getElementById("t-daily");
   dailyBtn.setAttribute("aria-pressed", String(dailyMode));
   dailyBtn.addEventListener("click", function () {
+    if (resume) resume.save();
     dailyMode = !dailyMode;
     if (!dailyMode) urlSeed = null;
     dailyBtn.setAttribute("aria-pressed", String(dailyMode));
+    if (resume) resume.variantChanged();
     newGame();
   });
 
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
     btn.addEventListener("click", function () {
+      if (resume) resume.save();
       mode = btn.dataset.mode;
       document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
+      if (resume) resume.variantChanged();
       newGame();
     });
   });
 
   newGame();
+  function validThirteenCard(c){return c&&Number.isInteger(c.value)&&c.value>=1&&c.value<=13&&Number.isInteger(c.suit)&&c.suit>=0&&c.suit<4&&c.id===c.value+"-"+c.suit;}
+  function validThirteenSave(p){if(!p||p.phase!=="playing"||p.mode!==mode||!Array.isArray(p.players)||p.players.length!==4||!Number.isInteger(p.currentPlayer)||p.currentPlayer<0||p.currentPlayer>3||!Array.isArray(p.passed))return false;var cards=[];for(var i=0;i<4;i++){if(!p.players[i]||!Array.isArray(p.players[i].hand))return false;cards=cards.concat(p.players[i].hand);}if(p.lastCombo&&(!Array.isArray(p.lastCombo.cards)||!p.lastCombo.cards.every(validThirteenCard)))return false;return cards.every(validThirteenCard)&&new Set(cards.map(function(c){return c.id;})).size===cards.length&&p.passed.every(function(x){return Number.isInteger(x)&&x>=0&&x<4;});}
+  if(window.SnackPackResume)resume=window.SnackPackResume.attach({game:"thirteen",variant:function(){return(dailyMode?"daily-"+dailyNumber():"random")+"-"+mode;},serialize:function(){return{phase:gs.phase,mode:gs.mode,players:gs.players,currentPlayer:gs.currentPlayer,lastCombo:gs.lastCombo,lastPlayerIdx:gs.lastPlayerIdx,selectedCards:gs.selectedCards,passed:Array.from(gs.passedPlayers),winner:gs.winner,roundStarter:gs.roundStarter,isFirstTurn:gs.isFirstTurn,selected:selected.map(function(c){return c.id;})};},validate:validThirteenSave,restore:function(p){if(cpuTimer)clearTimeout(cpuTimer);gs={phase:p.phase,mode:p.mode,players:p.players,currentPlayer:p.currentPlayer,lastCombo:p.lastCombo,lastPlayerIdx:p.lastPlayerIdx,selectedCards:p.selectedCards||[],passedPlayers:new Set(p.passed),winner:p.winner,roundStarter:p.roundStarter,isFirstTurn:!!p.isFirstTurn};selected=gs.players[0].hand.filter(function(c){return(p.selected||[]).indexOf(c.id)>=0;});render();scheduleCpu();return true;},isActive:function(){return gs&&gs.phase==="playing"&&(selected.length>0||gs.players.reduce(function(n,p){return n+p.hand.length;},0)<52);}});
 })();
 </script>
 <!-- Cloudflare Web Analytics -->
