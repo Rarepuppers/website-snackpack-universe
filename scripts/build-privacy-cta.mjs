@@ -23,7 +23,13 @@ const CLOSE = "<!-- /privacy-cta:generated -->";
 
 // slug -> { name, appPage, pkg (null when not on Play yet), qr }
 const APPS = {
-  "badgify": { name: "Badgify", appPage: "badgify", pkg: "com.snackpackuniverse.badgify", qr: "qr-code-badgify.png" },
+  "badgify": {
+    name: "Badgify",
+    appPage: "badgify",
+    pkg: "com.snackpackuniverse.badgify",
+    qr: "qr-code-badgify.png",
+    privacyLead: "Badgify is free on Google Play — no third-party ads and no cross-app advertising tracking. Certificate content stays on your device."
+  },
   "pawsitive-dose": { name: "Pawsitive Dose", appPage: "pawsitive-dose", pkg: "com.snackpackuniverse.pawsitivedose", qr: "qr-code-pawsitive-dose.png" },
   "snackpack-1-abcs-alphabet": { name: "SnackPack ABC: Learn to Read", appPage: "snackpack-1-abcs-alphabet", pkg: "com.snackpackuniverse.abcalphabet", qr: "qr-code-abc-learn-to-read.png" },
   "snackpack-2-123s-counting": { name: "SnackPack 123: Learn to Count", appPage: "snackpack-2-123s-counting", pkg: "com.snackpackuniverse.counting", qr: "qr-code-123-learn-to-count.png" },
@@ -56,9 +62,9 @@ function block(app) {
         <span>Scan to download</span>
       </div>\n`
     : "";
-  const lead = app.pkg
+  const lead = app.privacyLead ?? (app.pkg
     ? `${app.name} is free on Google Play — no third-party ads, no tracking SDKs, and nothing that follows you around.`
-    : `${app.name} is still in development. In the meantime, everything else we make is ad-free too.`;
+    : `${app.name} is still in development. In the meantime, everything else we make is ad-free too.`)
 
   return `${OPEN}
 <section class="privacy-cta-section">
