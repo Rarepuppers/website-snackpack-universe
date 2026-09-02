@@ -2359,3 +2359,35 @@ button:focus-visible {
 .guide-play-cta { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 22px 24px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-strong); box-shadow: var(--shadow); }
 .guide-play-cta strong { font-family: var(--serif); font-size: 1.35rem; }
 @media (max-width: 560px) { .guide-play-cta { align-items: stretch; flex-direction: column; text-align: center; } }
+
+/* Mature-audience game card. Promotional art is separate from gameplay captures. */
+.keeping-up-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 48px);
+}
+.keeping-up-copy { min-width: 0; }
+.keeping-up-art { min-width: 0; margin: 0; }
+.keeping-up-art a {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: #0b1428;
+  color: #fff;
+}
+.keeping-up-art a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 5px;
+}
+.keeping-up-art picture, .keeping-up-art img { display: block; width: 100%; }
+.keeping-up-art img { height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
+.keeping-up-art figcaption {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+@media (max-width: 800px) {
+  .keeping-up-feature { grid-template-columns: minmax(0, 1fr); }
+}
