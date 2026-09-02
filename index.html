@@ -354,18 +354,29 @@
   </section>
 
   <!-- Keeping Up with the Joneses is adult satire on a Families-facing site, so
-       it gets a restrained labelled card rather than a second hero block. The
+       it gets a labelled illustrated card, distinct from the children's catalogue. The
        age framing is deliberate and should not be softened. -->
   <section>
     <div class="shell">
-      <article class="content-card">
+      <article class="content-card keeping-up-feature" aria-labelledby="keeping-up-feature-title">
+        <div class="keeping-up-copy">
         <span class="eyebrow">Also from the studio · For older teens and adults</span>
-        <h2>Keeping Up with the Joneses</h2>
+        <h2 id="keeping-up-feature-title">Keeping Up with the Joneses</h2>
         <p class="section-copy">A free satirical life sim about the cost of living — sixty hours a week, rent due either way, and neighbours who are quietly doing better. This one is written for grown-ups, not for the early-learning audience the rest of this site serves.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="/keeping-up-with-the-joneses/">About the game</a>
           <a class="btn btn-secondary" href="https://keepingup.snackpackuniverse.com/">Play free in your browser</a>
         </div>
+        </div>
+        <figure class="keeping-up-art">
+          <a href="/keeping-up-with-the-joneses/" aria-label="About Keeping Up with the Joneses">
+            <picture>
+              <source type="image/webp" srcset="/assets/keeping-up/keeping-up-neighbours-v1-768.webp 768w, /assets/keeping-up/keeping-up-neighbours-v1-1536.webp 1536w" sizes="(max-width: 800px) calc(100vw - 80px), 520px">
+              <img src="/assets/keeping-up/keeping-up-neighbours-v1.jpg" alt="Promotional artwork of a modest brick apartment beside a luxurious modern home, overlooking a coastal city at dusk." width="1536" height="1024" loading="lazy" decoding="async">
+            </picture>
+          </a>
+          <figcaption>Promotional artwork · City life. Different price tags.</figcaption>
+        </figure>
       </article>
     </div>
   </section>
