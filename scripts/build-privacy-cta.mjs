@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileEol, replaceMarkerBlock, withEol } from "./lib/marker-block.mjs";
 
 /*
  * Adds an onward-journey block to the bottom of each per-app privacy policy.
@@ -87,6 +88,7 @@ ${CLOSE}`;
 
 async function main() {
   let done = 0;
+  let already = 0;
   const missing = [];
   for (const [slug, app] of Object.entries(APPS)) {
     const file = path.join(root, "privacy", slug, "index.html");
@@ -98,14 +100,18 @@ async function main() {
       continue;
     }
     const b = block(app);
-    const existing = new RegExp(`${OPEN}[\\s\\S]*?${CLOSE}\\n?`, "m");
-    html = existing.test(html)
-      ? html.replace(existing, b + "\n")
-      : html.replace("</main>", b + "\n</main>");
-    await fs.writeFile(file, html, "utf8");
+    const eol = fileEol(html);
+    const next =
+      replaceMarkerBlock(html, OPEN, CLOSE, b) ??
+      html.replace("</main>", withEol(b, eol) + eol + "</main>");
+    if (next === html) {
+      already++;
+      continue;
+    }
+    await fs.writeFile(file, next, "utf8");
     done++;
   }
-  console.log(`privacy CTA written to ${done} pages`);
+  console.log(`privacy CTA: ${done} written, ${already} already current`);
   if (missing.length) console.log("no page for:", missing.join(", "));
 }
 

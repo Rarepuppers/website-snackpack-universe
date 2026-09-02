@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileEol, replaceMarkerBlock, withEol } from "./lib/marker-block.mjs";
 
 /*
  * Injects BreadcrumbList structured data into every section page, so Google
@@ -51,6 +52,7 @@ async function* pages(dir) {
 
 async function main() {
   let added = 0;
+  let unchanged = 0;
   let skipped = 0;
 
   for await (const file of pages(root)) {
@@ -94,19 +96,26 @@ async function main() {
       `\n</script>\n${MARKER_CLOSE}`;
 
     // Replace an earlier generated block, else insert before </head>.
-    const existing = new RegExp(
-      `${MARKER_OPEN}[\\s\\S]*?${MARKER_CLOSE}\\n?`,
-      "m"
-    );
-    html = existing.test(html)
-      ? html.replace(existing, block + "\n")
-      : html.replace("</head>", block + "\n</head>");
+    const eol = fileEol(html);
+    const next =
+      replaceMarkerBlock(html, MARKER_OPEN, MARKER_CLOSE, block) ??
+      html.replace("</head>", withEol(block, eol) + eol + "</head>");
 
-    await fs.writeFile(file, html, "utf8");
+    // Only touch the file when the block actually changed. Without this the
+    // generator rewrote every indexable page on each run, so a one-page edit
+    // arrived as a hundred-file diff.
+    if (next === html) {
+      unchanged++;
+      continue;
+    }
+
+    await fs.writeFile(file, next, "utf8");
     added++;
   }
 
-  console.log(`breadcrumbs: ${added} pages, ${skipped} skipped (noindex)`);
+  console.log(
+    `breadcrumbs: ${added} written, ${unchanged} already current, ${skipped} skipped (noindex)`
+  );
 }
 
 main();

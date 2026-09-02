@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileEol, replaceMarkerBlock, withEol } from "./lib/marker-block.mjs";
 
 /*
  * Adds a "More free games" block to every arcade game page. Each game page
@@ -105,6 +106,7 @@ async function main() {
   console.log(`parsed ${games.length} games from the arcade hub`);
 
   let updated = 0;
+  let already = 0;
   for (let i = 0; i < games.length; i++) {
     const g = games[i];
     const file = path.join(root, "play", g.slug, "index.html");
@@ -123,22 +125,28 @@ async function main() {
     }
 
     const b = block(g, related);
-    const existing = new RegExp(`${OPEN}[\\s\\S]*?${CLOSE}\\n?`, "m");
-    if (existing.test(html)) {
-      html = html.replace(existing, b + "\n");
-    } else if (html.includes('<footer class="foot">')) {
-      html = html.replace('<footer class="foot">', b + '\n\n<footer class="foot">');
-    } else if (html.includes("</body>")) {
-      // A few pages have no footer — fall back to the end of the document.
-      html = html.replace("</body>", b + "\n</body>");
-    } else {
-      console.warn("  no insertion anchor in", g.slug);
+    const eol = fileEol(html);
+    let next = replaceMarkerBlock(html, OPEN, CLOSE, b);
+    if (next === null) {
+      const inserted = withEol(b, eol);
+      if (html.includes('<footer class="foot">')) {
+        next = html.replace('<footer class="foot">', inserted + eol + eol + '<footer class="foot">');
+      } else if (html.includes("</body>")) {
+        // A few pages have no footer — fall back to the end of the document.
+        next = html.replace("</body>", inserted + eol + "</body>");
+      } else {
+        console.warn("  no insertion anchor in", g.slug);
+        continue;
+      }
+    }
+    if (next === html) {
+      already++;
       continue;
     }
-    await fs.writeFile(file, html, "utf8");
+    await fs.writeFile(file, next, "utf8");
     updated++;
   }
-  console.log(`related-games block written to ${updated} game pages`);
+  console.log(`related-games: ${updated} written, ${already} already current`);
 }
 
 main();

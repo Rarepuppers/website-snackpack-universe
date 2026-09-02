@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileEol, replaceMarkerBlock, withEol } from "./lib/marker-block.mjs";
 
 /*
  * Injects the PWA wiring — manifest link, apple-touch-icon and the service
@@ -54,11 +55,10 @@ let already = 0;
 
 for await (const file of pages(root)) {
   let html = await fs.readFile(file, "utf8");
-  const existing = new RegExp(`${OPEN}[\\s\\S]*?${CLOSE}\\n?`, "g");
 
-  if (existing.test(html)) {
-    const next = html.replace(existing, HEAD_BLOCK + "\n");
-    if (next !== html) { await fs.writeFile(file, next); changed++; } else already++;
+  const replaced = replaceMarkerBlock(html, OPEN, CLOSE, HEAD_BLOCK);
+  if (replaced !== null) {
+    if (replaced !== html) { await fs.writeFile(file, replaced); changed++; } else already++;
     continue;
   }
 
@@ -66,7 +66,8 @@ for await (const file of pages(root)) {
     console.warn("  no </head>, skipped:", path.relative(root, file));
     continue;
   }
-  html = html.replace("</head>", HEAD_BLOCK + "\n</head>");
+  const eol = fileEol(html);
+  html = html.replace("</head>", withEol(HEAD_BLOCK, eol) + eol + "</head>");
   await fs.writeFile(file, html);
   changed++;
 }
