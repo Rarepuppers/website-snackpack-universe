@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileEol, replaceMarkerBlock, withEol } from "./lib/marker-block.mjs";
+import { classify, referrerFor } from "./lib/play-surface.mjs";
 
 /*
  * Adds an onward-journey block to the bottom of each per-app privacy policy.
@@ -33,7 +34,13 @@ const APPS = {
   },
   "pawsitive-dose": { name: "Pawsitive Dose", appPage: "pawsitive-dose", pkg: "com.snackpackuniverse.pawsitivedose", qr: "qr-code-pawsitive-dose.png" },
   "snackpack-1-abcs-alphabet": { name: "SnackPack ABC: Learn to Read", appPage: "snackpack-1-abcs-alphabet", pkg: "com.snackpackuniverse.abcalphabet", qr: "qr-code-abc-learn-to-read.png" },
-  "snackpack-2-123s-counting": { name: "SnackPack 123: Learn to Count", appPage: "snackpack-2-123s-counting", pkg: "com.snackpackuniverse.counting", qr: "qr-code-123-learn-to-count.png" },
+  "snackpack-2-123s-counting": {
+    name: "SnackPack 123: Learn to Count",
+    appPage: "snackpack-2-123s-counting",
+    pkg: "com.snackpackuniverse.counting",
+    qr: "qr-code-123-learn-to-count.png",
+    privacyLead: "SnackPack 123: Learn to Count is free on Google Play with no third-party ads or behavioural analytics. An optional one-time purchase unlocks the full library."
+  },
   "snackpack-3-spelling-sentences": { name: "SnackPack Sentences & Spelling", appPage: "snackpack-3-spelling-sentences", pkg: "com.snackpackuniverse.sentencesspelling", qr: "qr-code-sentences-and-spelling.png" },
   "snackpack-4-math-arithmetic": { name: "SnackPack Basic Math", appPage: "snackpack-4-math-arithmetic", pkg: "com.snackpackuniverse.basicmath", qr: "qr-code-basic-math.png" },
   "snackpack-11-prehistoric-pals": { name: "SnackPack Prehistoric Pals", appPage: "snackpack-11-prehistoric-pals", pkg: "com.snackpackuniverse.prehistoricpals", qr: "qr-code-prehistoric-pals.png" },
@@ -45,15 +52,29 @@ const APPS = {
   // Not on Play yet — arcade link only.
   "snackpack-5-tales-trivia": { name: "SnackPack Tales & Trivia", appPage: "snackpack-5-tales-trivia", pkg: null },
   "snackpack-6-creative-studio": { name: "SnackPack Creative Studio", appPage: "snackpack-6-creative-studio", pkg: null },
-  "snackpack-7-mathematics": { name: "SnackPack Mathematics", appPage: "snackpack-7-mathematics", pkg: null },
+  "snackpack-7-mathematics": {
+    name: "SnackPack Mathematics",
+    appPage: "snackpack-7-mathematics",
+    pkg: null,
+    privacyLead: "SnackPack Mathematics is in pre-launch testing. Explore the completed app preview, or play something free while the public Google Play listing is prepared."
+  },
   "snackpack-8-earth-science": { name: "SnackPack Earth Science", appPage: "snackpack-8-earth-science", pkg: null },
   "snackpack-9-space-math": { name: "Snackpack Space Math", appPage: "snackpack-9-space-math", pkg: null },
   "snackpack-10-robot-recipe": { name: "SnackPack Robot Recipe", appPage: "snackpack-10-robot-recipe", pkg: null }
 };
 
-function block(app) {
+function block(slug, app) {
+  /*
+   * Note the pre-tagged Play href below. Emit it already tagged, rather than a
+   * bare one that build-play-links.mjs has to come along and fix. Both scripts
+   * read the same lib/play-surface.mjs, so the URL written here is
+   * byte-identical to the one that generator wants -- which is what makes
+   * running this script on its own safe. Before this, regenerating the CTA
+   * stripped the referrer parameter off 15 privacy pages and silently refiled
+   * every install they drove as organic Play search.
+   */
   const store = app.pkg
-    ? `        <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=${app.pkg}" target="_blank" rel="noopener" aria-label="Get ${app.name} on Google Play">
+    ? `        <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=${app.pkg}&referrer=${referrerFor(classify(`privacy/${slug}/index.html`))}" target="_blank" rel="noopener" aria-label="Get ${app.name} on Google Play">
           <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play" width="200" height="60" loading="lazy" decoding="async">
         </a>\n`
     : "";
@@ -99,7 +120,7 @@ async function main() {
       missing.push(slug);
       continue;
     }
-    const b = block(app);
+    const b = block(slug, app);
     const eol = fileEol(html);
     const next =
       replaceMarkerBlock(html, OPEN, CLOSE, b) ??
