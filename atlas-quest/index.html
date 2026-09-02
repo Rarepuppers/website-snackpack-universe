@@ -95,27 +95,6 @@
 <!-- Breadcrumbs are injected by scripts/build-breadcrumbs.mjs, like every other
      page. A hand-written BreadcrumbList used to sit here, so running the
      generator produced two of them on this page. -->
-<link rel="manifest" href="/manifest.webmanifest">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="SnackPack">
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-      navigator.serviceWorker.register("/sw.js").catch(function () {});
-    });
-  }
-</script>
-<script>
-  (function () {
-    var d = document.documentElement, t = null;
-    try { t = localStorage.getItem("snackpack.theme.v1"); } catch (e) {}
-    if (t !== "dark" && t !== "light" && t !== "cream") t = "cream";
-    d.setAttribute("data-theme", t);
-    d.setAttribute("data-theme-default", "cream");
-  })();
-</script>
-<script defer src="/theme.js"></script>
 <!-- breadcrumbs:generated -->
 <script type="application/ld+json">
 {
@@ -138,6 +117,34 @@
 }
 </script>
 <!-- /breadcrumbs:generated -->
+<!-- pwa:generated -->
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SnackPack">
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    });
+  }
+</script>
+<!-- /pwa:generated -->
+<!-- theme:generated -->
+<script>
+  (function () {
+    var d = document.documentElement, t = null;
+    try { t = localStorage.getItem("snackpack.theme.v1"); } catch (e) {}
+    if (t !== "dark" && t !== "light" && t !== "cream") {
+      t = "cream";
+    }
+    d.setAttribute("data-theme", t);
+    d.setAttribute("data-theme-default", "cream");
+  })();
+</script>
+<script defer src="/theme.js"></script>
+<!-- /theme:generated -->
 </head>
 <body>
 <header class="topbar">

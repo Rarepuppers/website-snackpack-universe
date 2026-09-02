@@ -96,10 +96,26 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="SnackPack">
-<script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){});});}</script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    });
+  }
+</script>
 <!-- /pwa:generated -->
 <!-- theme:generated -->
-<script>(function(){var d=document.documentElement,t=null;try{t=localStorage.getItem("snackpack.theme.v1");}catch(e){}if(t!=="dark"&&t!=="light"&&t!=="cream")t="cream";d.setAttribute("data-theme",t);d.setAttribute("data-theme-default","cream");}());</script>
+<script>
+  (function () {
+    var d = document.documentElement, t = null;
+    try { t = localStorage.getItem("snackpack.theme.v1"); } catch (e) {}
+    if (t !== "dark" && t !== "light" && t !== "cream") {
+      t = "cream";
+    }
+    d.setAttribute("data-theme", t);
+    d.setAttribute("data-theme-default", "cream");
+  })();
+</script>
 <script defer src="/theme.js"></script>
 <!-- /theme:generated -->
 <script src="../game-ui-assets.js" defer></script>
