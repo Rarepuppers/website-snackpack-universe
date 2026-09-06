@@ -1518,6 +1518,13 @@ main section {
   color: var(--ink);
 }
 
+/* A plain index of links reads better in columns than as one tall stack, and
+   collapses to a single column below the breakpoint without a media query. */
+.list-clean.two-column {
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 10px 24px;
+}
+
 .shot-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
