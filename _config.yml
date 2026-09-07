@@ -1,0 +1,6 @@
+# GitHub Pages publishes the repository through Jekyll. Keep development
+# sources available for now, but do not upload large working files that the
+# browser build never requests.
+exclude:
+  - play/last-bastion/art
+  - play/last-bastion/.qa-runtime
