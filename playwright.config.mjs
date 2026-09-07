@@ -2,6 +2,7 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests/visual",
+  testIgnore: "last-bastion-functional.spec.mjs",
   timeout: 30_000,
   expect: { toHaveScreenshot: { animations: "disabled", maxDiffPixelRatio: 0.025 } },
   snapshotPathTemplate: "{testDir}/__screenshots__/{arg}{ext}",

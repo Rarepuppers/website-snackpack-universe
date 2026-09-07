@@ -105,6 +105,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Compare arcade screenshots
         run: npm run test:visual
+      - name: Exercise Last Bastion browser journeys
+        run: npx playwright test --config playwright.last-bastion.config.mjs
       - name: Upload visual diff on failure
         if: failure()
         uses: actions/upload-artifact@v4
