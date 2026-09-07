@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_SAVE, LocalSaveStore, SAVE_SCHEMA_VERSION, SAVE_STORAGE_KEY } from "./LocalSaveStore";
+import {
+  DEFAULT_SAVE,
+  LocalSaveStore,
+  SAVE_SCHEMA_VERSION,
+  SAVE_STORAGE_KEY,
+  previewSaveImport,
+} from "./LocalSaveStore";
 import { createRunSummary } from "../run/RunSummary";
 import { rebindGamepad, rebindKeyboard } from "../input/ControlBindings";
 import { applyTransformationChoice, createTransformationAffinityState } from "../transformations/TransformationAffinity";
@@ -25,8 +31,68 @@ function committedCyberState() {
 
 describe("LocalSaveStore", () => {
   it("returns defaults when storage is empty or unavailable", () => {
-    expect(new LocalSaveStore(fakeStorage()).load()).toEqual(DEFAULT_SAVE);
-    expect(new LocalSaveStore(null).load()).toEqual(DEFAULT_SAVE);
+    const available = new LocalSaveStore(fakeStorage());
+    const unavailable = new LocalSaveStore(null);
+    expect(available.load()).toEqual(DEFAULT_SAVE);
+    expect(available.persistence()).toEqual({ kind: "saved", operation: "none" });
+    expect(unavailable.load()).toEqual(DEFAULT_SAVE);
+    expect(unavailable.persistence()).toEqual({ kind: "memory-only", operation: "none" });
+  });
+
+  it("reports read and write failures instead of silently claiming persistence", () => {
+    const readFailure = new LocalSaveStore({
+      getItem: () => { throw new Error("blocked"); },
+      setItem: () => undefined,
+    });
+    expect(readFailure.persistence()).toEqual({ kind: "failed", operation: "read" });
+
+    const writeFailure = new LocalSaveStore({
+      getItem: () => null,
+      setItem: () => { throw new Error("quota"); },
+    });
+    writeFailure.updateSettings({ soundEnabled: false });
+    expect(writeFailure.load().settings.soundEnabled).toBe(false);
+    expect(writeFailure.persistence()).toEqual({ kind: "failed", operation: "write" });
+  });
+
+  it("protects an unreadable save until an explicit retry succeeds", () => {
+    const persisted = JSON.stringify({
+      ...DEFAULT_SAVE,
+      settings: { ...DEFAULT_SAVE.settings, soundEnabled: false },
+    });
+    let readsBlocked = true;
+    let written: string | null = null;
+    const store = new LocalSaveStore({
+      getItem: () => {
+        if (readsBlocked) throw new Error("temporarily blocked");
+        return persisted;
+      },
+      setItem: (_key, value) => { written = value; },
+    });
+    store.updateSettings({ brightness: 1.2 });
+    expect(written).toBeNull();
+    expect(store.persistence()).toEqual({ kind: "failed", operation: "read" });
+
+    readsBlocked = false;
+    expect(store.retryPersistence()).toEqual({ kind: "saved", operation: "none" });
+    expect(store.load().settings.soundEnabled).toBe(false);
+    expect(store.load().settings.brightness).toBe(1);
+  });
+
+  it("retries the current in-memory save after a write failure", () => {
+    let writesBlocked = true;
+    let written: string | null = null;
+    const store = new LocalSaveStore({
+      getItem: () => null,
+      setItem: (_key, value) => {
+        if (writesBlocked) throw new Error("quota");
+        written = value;
+      },
+    });
+    store.updateSettings({ soundEnabled: false });
+    writesBlocked = false;
+    expect(store.retryPersistence()).toEqual({ kind: "saved", operation: "none" });
+    expect(JSON.parse(written!).settings.soundEnabled).toBe(false);
   });
 
   it("returns defaults for corrupt or foreign-version payloads", () => {
@@ -37,6 +103,40 @@ describe("LocalSaveStore", () => {
       [SAVE_STORAGE_KEY]: JSON.stringify({ version: 99, settings: { soundEnabled: false } }),
     }));
     expect(foreign.load()).toEqual(DEFAULT_SAVE);
+  });
+
+  it("exports a readable backup and imports supported saves after validation", () => {
+    const source = new LocalSaveStore(fakeStorage());
+    source.recordNodeCleared(7);
+    const serialized = source.exportSerialized();
+    const preview = previewSaveImport(serialized);
+    expect(preview).toMatchObject({
+      ok: true,
+      preview: { sourceVersion: SAVE_SCHEMA_VERSION },
+    });
+    if (!preview.ok) throw new Error(preview.error);
+    expect(preview.preview.summary).toContain("0 runs, 0 victories");
+    expect(preview.preview.save.progress.nodesCleared).toBe(7);
+
+    const storage = fakeStorage();
+    const target = new LocalSaveStore(storage);
+    expect(target.importSerialized(serialized).ok).toBe(true);
+    expect(new LocalSaveStore(storage).load().progress.nodesCleared).toBe(7);
+  });
+
+  it("rejects malformed and future backup files without replacing the current save", () => {
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    store.recordNodeCleared(3);
+    const before = storage.dump().get(SAVE_STORAGE_KEY);
+
+    expect(store.importSerialized("{broken")).toEqual({ ok: false, error: "That file is not valid JSON." });
+    expect(store.importSerialized(JSON.stringify({ version: 999 }))).toEqual({
+      ok: false,
+      error: "That save version is not supported by this build.",
+    });
+    expect(storage.dump().get(SAVE_STORAGE_KEY)).toBe(before);
+    expect(store.load().progress.nodesCleared).toBe(3);
   });
 
   it("persists settings updates across store instances", () => {
@@ -554,6 +654,54 @@ describe("LocalSaveStore", () => {
 });
 
 describe("Save schema v2 — expedition autosave", () => {
+  it("rejects unsafe expedition identities and sanitizes build catalogue entries", () => {
+    const unsafe = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        ...DEFAULT_SAVE,
+        expedition: {
+          mapSeed: 1,
+          currentNodeId: 1.5,
+          clearedNodeIds: [1],
+          build: null,
+          metrics: {},
+        },
+      }),
+    });
+    expect(new LocalSaveStore(unsafe).load().expedition).toBeNull();
+
+    const malformedBuild = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        ...DEFAULT_SAVE,
+        expedition: {
+          mapSeed: 1,
+          currentNodeId: 2,
+          clearedNodeIds: [1, 1, 2],
+          build: {
+            health: 12,
+            shield: "infinite",
+            level: 3,
+            experience: 0,
+            scrap: 0,
+            weapons: [
+              { weaponId: "bastion-service-rifle", tier: 99 },
+              { weaponId: "retired-cannon", tier: 2 },
+            ],
+            upgrades: [
+              { upgradeId: "rapid-cycling", level: 99 },
+              { upgradeId: "rapid-cycling", level: 1 },
+              { upgradeId: "retired-upgrade", level: 2 },
+            ],
+          },
+          metrics: {},
+        },
+      }),
+    });
+    const expedition = new LocalSaveStore(malformedBuild).load().expedition;
+    expect(expedition?.clearedNodeIds).toEqual([1, 2]);
+    expect(expedition?.build?.shield).toBe(0);
+    expect(expedition?.build?.weapons).toEqual([{ weaponId: "bastion-service-rifle", tier: 3 }]);
+    expect(expedition?.build?.upgrades).toEqual([{ upgradeId: "rapid-cycling", level: 3 }]);
+  });
   it("migrates a version-1 payload, preserving settings and progress with no run in progress", () => {
     const storage = fakeStorage({
       [SAVE_STORAGE_KEY]: JSON.stringify({

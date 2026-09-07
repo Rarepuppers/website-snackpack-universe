@@ -120,6 +120,18 @@ export function resumeExpeditionRun(state: ExpeditionRunState): ExpeditionRun | 
   if (!state.clearedNodeIds.every((id) => validIds.has(id))) {
     return null;
   }
+  const clearedNodes = state.clearedNodeIds
+    .map((id) => expeditionNodeById(map, id)!)
+    .sort((left, right) => left.column - right.column);
+  if (
+    clearedNodes.length === 0
+    || clearedNodes[0]!.id !== map.startNodeId
+    || clearedNodes.some((node, index) => (
+      index > 0 && !clearedNodes[index - 1]!.next.includes(node.id)
+    ))
+  ) {
+    return null;
+  }
   const cleared = new Set(state.clearedNodeIds);
   const currentIsCleared = cleared.has(state.currentNodeId);
   const currentIsPending = map.nodes.some((node) => (

@@ -1,5 +1,29 @@
 # Last Bastion — improvement and Steam plan
 
+## Audit update — 7 September 2026
+
+The [quality audit and implementation queue](quality-audit-2026-09-07.md) adds twelve
+prioritized tasks with source evidence, dependencies and acceptance checks. Start with
+visible save failures, expedition-save validation, and debrief controller/hint correctness;
+then add executable browser acceptance and strengthen replay continuity before broad file
+extraction. Extend the existing `verify` command across web and desktop rather than adding
+a duplicate verification system.
+
+Implementation began the same day: QA-01 save visibility, retry, validated backup transfer,
+QA-03 debrief input, QA-04's first executable browser lane, QA-07's root verifier, and LB-08
+map confirmation are complete locally. QA-02 has its first validation/topology slice in place;
+its retired-content policy remains recorded in the audit. `npm run verify:last-bastion` now
+covers five browser scenarios alongside the web and desktop suites.
+
+The [23 August presentation defect plan](presentation-defect-plan-2026-08-23.md) remains
+the presentation register: recheck and close those LB items before commissioning more art
+or expanding content. The September audit records 1,615 passing game tests and 28 passing
+desktop tests, but does not claim observed gameplay, visual, offline-launch or Steam acceptance.
+
+The supplied Godot `docs/codex-work-order.md` handover was not present in this Phaser checkout.
+Its renames, potion assignments, upgraded cards and Gradient fix remain unverified and must
+not be applied to this project's assets by inference. See the audit's scope and disposition table.
+
 ## Delivery update — 11 August 2026
 
 The first post-review gameplay batch is live locally: elite and mini-boss reward contracts are now

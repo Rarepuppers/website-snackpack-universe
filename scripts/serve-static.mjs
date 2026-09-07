@@ -16,6 +16,12 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(target).pipe(res);
 }).listen(port, "127.0.0.1", () => console.log(`Static site listening on http://127.0.0.1:${port}`));
 
-function shutdown() { server.close(() => process.exit(0)); }
+function shutdown() {
+  // Playwright's browser can leave keep-alive sockets open after the final
+  // assertion. Close them before waiting for the listener so test commands
+  // return their real exit code instead of hanging during webServer teardown.
+  server.closeAllConnections();
+  server.close(() => process.exit(0));
+}
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);

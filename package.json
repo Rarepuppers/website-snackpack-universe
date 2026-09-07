@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "test:visual": "playwright test",
-    "test:visual:update": "playwright test --update-snapshots"
+    "test:visual:update": "playwright test --update-snapshots",
+    "test:last-bastion": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-last-bastion-browser-tests.ps1",
+    "verify:last-bastion": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-last-bastion.ps1"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1"

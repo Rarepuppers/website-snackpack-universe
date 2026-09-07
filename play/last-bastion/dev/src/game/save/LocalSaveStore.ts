@@ -29,6 +29,8 @@ import {
 import { isArtifactId, isRelicId, type ArtifactId, type RelicId } from "../content/relicCatalog";
 import { ITEM_STAT_KEYS, isItemId } from "../content/itemCatalog";
 import type { PlayerStatBlock } from "../stats/PlayerStatBlock";
+import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
+import { UPGRADE_CATALOG, type UpgradeId } from "../content/upgradeCatalog";
 import type { EffectQualityPreference } from "../performance/AdaptivePerformance";
 import type { FrameCap, FullscreenMode } from "../rendering/DisplayCapabilities";
 import type { RequestedPresentationMode } from "../rendering/DisplayPresentation";
@@ -245,18 +247,103 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
 
 export type StorageLike = Pick<Storage, "getItem" | "setItem">;
 
+export type SavePersistenceStatus = Readonly<{
+  kind: "saved" | "memory-only" | "failed";
+  operation: "none" | "read" | "write";
+}>;
+
+export type SaveImportPreview = Readonly<{
+  save: SaveData;
+  sourceVersion: number;
+  summary: string;
+}>;
+
+export type SaveImportResult =
+  | { ok: true; preview: SaveImportPreview }
+  | { ok: false; error: string };
+
+const SUPPORTED_SAVE_VERSIONS = Object.freeze([
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+]);
+
+/** Parses and migrates a player-selected backup without accepting arbitrary JSON. */
+export function previewSaveImport(serialized: string): SaveImportResult {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(serialized);
+  } catch {
+    return { ok: false, error: "That file is not valid JSON." };
+  }
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+    return { ok: false, error: "That file is not a Last Bastion save." };
+  }
+  const sourceVersion = (parsed as { version?: unknown }).version;
+  if (typeof sourceVersion !== "number" || !SUPPORTED_SAVE_VERSIONS.includes(sourceVersion)) {
+    return { ok: false, error: "That save version is not supported by this build." };
+  }
+  const save = normalizeSave(parsed);
+  const activeRun = save.expedition ? "Active expedition included" : "No active expedition";
+  return {
+    ok: true,
+    preview: {
+      save,
+      sourceVersion,
+      summary: `Schema ${sourceVersion} -> ${SAVE_SCHEMA_VERSION}\n${save.progress.runsFinished} runs, ${save.progress.victories} victories\n${activeRun}`,
+    },
+  };
+}
+
 export class LocalSaveStore {
   private cached: SaveData;
+  private persistenceStatus: SavePersistenceStatus;
 
   constructor(
     private readonly storage: StorageLike | null,
     private readonly key: string = SAVE_STORAGE_KEY,
   ) {
+    this.persistenceStatus = storage
+      ? { kind: "saved", operation: "none" }
+      : { kind: "memory-only", operation: "none" };
     this.cached = this.readFromStorage();
   }
 
   load(): SaveData {
     return cloneSave(this.cached);
+  }
+
+  persistence(): SavePersistenceStatus {
+    return { ...this.persistenceStatus };
+  }
+
+  exportSerialized(): string {
+    return JSON.stringify(this.cached, null, 2);
+  }
+
+  importSerialized(serialized: string): SaveImportResult {
+    const result = previewSaveImport(serialized);
+    if (!result.ok) return result;
+    this.cached = result.preview.save;
+    this.writeToStorage();
+    return result;
+  }
+
+  /**
+   * Retries the operation that most recently failed. A failed read is retried
+   * before any write, so inaccessible or corrupt persisted data is never
+   * replaced by the in-memory defaults merely because the player changed a
+   * setting while storage was unavailable.
+   */
+  retryPersistence(): SavePersistenceStatus {
+    if (!this.storage) {
+      this.persistenceStatus = { kind: "memory-only", operation: "none" };
+      return this.persistence();
+    }
+    if (this.persistenceStatus.operation === "read") {
+      this.cached = this.readFromStorage();
+    } else {
+      this.writeToStorage();
+    }
+    return this.persistence();
   }
 
   /** Replaces the complete save after a validated cloud reconciliation. */
@@ -467,28 +554,36 @@ export class LocalSaveStore {
 
   private readFromStorage(): SaveData {
     if (!this.storage) {
+      this.persistenceStatus = { kind: "memory-only", operation: "none" };
       return cloneSave(DEFAULT_SAVE);
     }
     try {
       const raw = this.storage.getItem(this.key);
+      this.persistenceStatus = { kind: "saved", operation: "none" };
       if (!raw) {
         return cloneSave(DEFAULT_SAVE);
       }
       const parsed: unknown = JSON.parse(raw);
       return normalizeSave(parsed);
     } catch {
+      this.persistenceStatus = { kind: "failed", operation: "read" };
       return cloneSave(DEFAULT_SAVE);
     }
   }
 
   private writeToStorage(): void {
     if (!this.storage) {
+      this.persistenceStatus = { kind: "memory-only", operation: "none" };
+      return;
+    }
+    if (this.persistenceStatus.kind === "failed" && this.persistenceStatus.operation === "read") {
       return;
     }
     try {
       this.storage.setItem(this.key, JSON.stringify(this.cached));
+      this.persistenceStatus = { kind: "saved", operation: "none" };
     } catch {
-      // Storage may be full or blocked; the in-memory copy keeps working.
+      this.persistenceStatus = { kind: "failed", operation: "write" };
     }
   }
 }
@@ -501,7 +596,7 @@ function normalizeSave(parsed: unknown): SaveData {
   const version = candidate.version ?? -1;
   // Versions 1–15 migrate into the current schema. Missing fields inherit the
   // accessible defaults; unknown future versions degrade safely to defaults.
-  if (![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].includes(version)) {
+  if (!SUPPORTED_SAVE_VERSIONS.includes(version)) {
     return cloneSave(DEFAULT_SAVE);
   }
   const lastRunSummary = version >= 4 ? readRunSummary(candidate.lastRunSummary) : null;
@@ -639,19 +734,23 @@ function readExpedition(value: unknown): ExpeditionSave | null {
     return null;
   }
   const candidate = value as Partial<ExpeditionSave>;
+  const mapSeed = candidate.mapSeed;
+  const currentNodeId = candidate.currentNodeId;
   if (
-    typeof candidate.mapSeed !== "number" || !Number.isFinite(candidate.mapSeed)
-    || typeof candidate.currentNodeId !== "number"
+    typeof mapSeed !== "number" || !Number.isSafeInteger(mapSeed)
+    || typeof currentNodeId !== "number" || !Number.isSafeInteger(currentNodeId) || currentNodeId < 0
     || !Array.isArray(candidate.clearedNodeIds)
-    || !candidate.clearedNodeIds.every((id) => typeof id === "number")
+    || candidate.clearedNodeIds.length > 20
+    || !candidate.clearedNodeIds.every((id) => Number.isSafeInteger(id) && id >= 0)
   ) {
     return null;
   }
+  const clearedNodeIds = [...new Set(candidate.clearedNodeIds)];
   return cloneExpedition({
-    mapSeed: Math.floor(candidate.mapSeed),
+    mapSeed,
     threatTier: normalizeThreatTier(candidate.threatTier),
-    currentNodeId: Math.floor(candidate.currentNodeId),
-    clearedNodeIds: candidate.clearedNodeIds.map((id) => Math.floor(id)),
+    currentNodeId,
+    clearedNodeIds,
     build: readBuild(candidate.build),
     metrics: readRunMetrics(candidate.metrics),
   });
@@ -663,23 +762,35 @@ function readBuild(value: unknown): ExpeditionSave["build"] {
   }
   const candidate = value as NonNullable<ExpeditionSave["build"]>;
   if (
-    typeof candidate.health !== "number" || !Array.isArray(candidate.weapons)
+    typeof candidate.health !== "number" || !Number.isFinite(candidate.health) || candidate.health < 0
+    || !Array.isArray(candidate.weapons) || candidate.weapons.length > 12
     || !Array.isArray(candidate.upgrades)
+    || candidate.upgrades.length > 12
   ) {
     return null;
   }
+  const weapons = candidate.weapons
+    .filter((weapon): weapon is { weaponId: WeaponId; tier: number } => (
+      typeof weapon?.weaponId === "string"
+      && Object.prototype.hasOwnProperty.call(WEAPON_CATALOG, weapon.weaponId)
+    ))
+    .map((weapon) => ({ weaponId: weapon.weaponId, tier: readBoundedCount(weapon.tier, 1, 3) }));
+  const upgradeLevels = new Map<UpgradeId, number>();
+  for (const upgrade of candidate.upgrades) {
+    if (typeof upgrade?.upgradeId !== "string"
+      || !Object.prototype.hasOwnProperty.call(UPGRADE_CATALOG, upgrade.upgradeId)) continue;
+    const upgradeId = upgrade.upgradeId as UpgradeId;
+    const level = readBoundedCount(upgrade.level, 1, UPGRADE_CATALOG[upgradeId].maxLevel);
+    upgradeLevels.set(upgradeId, Math.max(upgradeLevels.get(upgradeId) ?? 0, level));
+  }
   return {
     health: candidate.health,
-    shield: typeof candidate.shield === "number" ? candidate.shield : 0,
-    level: readCount(candidate.level),
-    experience: readCount(candidate.experience),
-    scrap: readCount(candidate.scrap),
-    weapons: candidate.weapons
-      .filter((weapon) => typeof weapon?.weaponId === "string")
-      .map((weapon) => ({ weaponId: weapon.weaponId, tier: readCount(weapon.tier) || 1 })),
-    upgrades: candidate.upgrades
-      .filter((upgrade) => typeof upgrade?.upgradeId === "string")
-      .map((upgrade) => ({ upgradeId: upgrade.upgradeId, level: readCount(upgrade.level) || 1 })),
+    shield: readFiniteNonNegative(candidate.shield),
+    level: readBoundedCount(candidate.level, 1, 10_000),
+    experience: readBoundedCount(candidate.experience, 0, 1_000_000_000),
+    scrap: readBoundedCount(candidate.scrap, 0, 1_000_000_000),
+    weapons,
+    upgrades: [...upgradeLevels].map(([upgradeId, level]) => ({ upgradeId, level })),
     transformation: normalizeTransformationAffinityState(candidate.transformation),
     ...readBuildRewards(candidate),
     ...readBuildItems(candidate),
@@ -798,6 +909,12 @@ function readCount(value: unknown): number {
   return typeof value === "number" && Number.isFinite(value) && value >= 0
     ? Math.floor(value)
     : 0;
+}
+
+function readBoundedCount(value: unknown, fallback: number, max: number): number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0
+    ? Math.min(max, Math.floor(value))
+    : fallback;
 }
 
 function readFiniteNonNegative(value: unknown): number {

@@ -3,7 +3,7 @@
 Eighteen `.md` files live in this folder and several are historical. This index says which
 to trust. **Read this before acting on any plan doc.**
 
-Last reviewed: 21 August 2026.
+Last reviewed: 7 September 2026 (audit and live-plan index; historical counts below retain their dates).
 
 ---
 
@@ -11,6 +11,8 @@ Last reviewed: 21 August 2026.
 
 | File | What it is |
 |---|---|
+| `quality-audit-2026-09-07.md` | **Current quality audit.** Verified automated baseline, twelve prioritized correctness/QoL/verification tasks, acceptance criteria, and the missing Godot-handover scope warning. |
+| `presentation-defect-plan-2026-08-23.md` | **Presentation defect register.** Existing LB findings, shared layout/text/inspection work, art gates, and separate presentation acceptance lane; recheck closure against current code and observed evidence. |
 | `last-bastion-improvement-and-steam-plan-2026-08-07.md` | **The forward plan.** Full review of the current build, the Full HD/4K/ultrawide/Steam Deck display plan, the Steam client plan, the gameplay-depth backlog, new Codex asset batches 68–75, a task-level implementation breakdown (§10) with file targets, line ranges, and acceptance criteria, and §11 on HUD readouts and run pacing (shield bar, overheal, armour display, wave timer, game speed). Does not restate the asset queue — it references it. |
 | `last-bastion-content-design-plan-2026-08-07.md` | **The content plan.** Review of every content system with measured counts, plus proposed monsters, elites, bosses, weapons, objectives, rewards, items, and stats, and Codex asset batches 76-84. |
 | `asset-next-production-review-2026-07-26.md` | **The asset queue.** The single authority on what art/audio Codex produces next, in priority order, plus the quality floors. The 31 July addendum adds UI chrome, music, ambience, UI audio, and the locked/mystery/playable character batches. |

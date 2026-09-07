@@ -131,5 +131,11 @@ describe("Expedition run state", () => {
     expect(resumeExpeditionRun({ ...run.state, currentNodeId: 999 })).toBeNull();
     expect(resumeExpeditionRun({ ...run.state, clearedNodeIds: [1, 999] })).toBeNull();
     expect(resumeExpeditionRun({ ...run.state, currentNodeId: run.map.bossNodeId })).toBeNull();
+    const disconnected = run.map.nodes.find((node) => node.column === 2)!;
+    expect(resumeExpeditionRun({
+      ...run.state,
+      clearedNodeIds: [run.map.startNodeId, disconnected.id],
+      currentNodeId: disconnected.id,
+    })).toBeNull();
   });
 });

@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { LocalSaveStore, type GameProgress } from "../save/LocalSaveStore";
+import { LocalSaveStore, previewSaveImport, type GameProgress } from "../save/LocalSaveStore";
 import { createLocalSaveStore } from "../save/SaveStorage";
 import { heroDefinition, isHeroId } from "../hero/HeroCatalog";
 import { areGameAssetsLoaded, queueGameAssets } from "../assets/PhaserAssetQueue";
@@ -81,6 +81,7 @@ export class ShellScene extends Phaser.Scene {
   private loadingAssetGroup: "shell-character" | null = null;
   private bindingCapture: { device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction } | null = null;
   private fullscreenFeedback: string | null = null;
+  private saveTransferFeedback: string | null = null;
 
   constructor() {
     super("shell");
@@ -157,6 +158,12 @@ export class ShellScene extends Phaser.Scene {
       this.commitKeyboardBinding(event.code);
       return;
     }
+    if (event.code === "KeyP" && this.saveStore.persistence().kind === "failed") {
+      event.preventDefault();
+      this.saveStore.retryPersistence();
+      this.render();
+      return;
+    }
     if (this.state.screen === "controls" && event.code === "Delete") {
       event.preventDefault();
       const controls = normalizeControlBindings(DEFAULT_CONTROL_BINDINGS);
@@ -217,6 +224,9 @@ export class ShellScene extends Phaser.Scene {
         this.saveStore.purchaseArmoryNode(effect.nodeId);
       } else if (effect.type === "select-armory-node") {
         this.saveStore.selectArmoryNode(effect.nodeId);
+      } else if (effect.type === "transfer-save") {
+        if (effect.operation === "export") this.exportSaveBackup();
+        else this.importSaveBackup();
       }
     }
     this.render();
@@ -249,6 +259,7 @@ export class ShellScene extends Phaser.Scene {
   private render(): void {
     // Review hook: the harness and browser checks read the flow state directly.
     (window as unknown as { __shellState?: ShellState }).__shellState = this.state;
+    (window as unknown as { __savePersistence?: object }).__savePersistence = this.saveStore.persistence();
     if (!this.ensureScreenAssets()) return;
     this.root.removeAll(true);
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY));
@@ -271,6 +282,25 @@ export class ShellScene extends Phaser.Scene {
       case "armory": this.renderArmory(); break;
       case "character-select": this.renderCharacterSelect(); break;
       case "threat-select": this.renderThreatSelect(); break;
+    }
+    this.renderPersistenceWarning();
+  }
+
+  private renderPersistenceWarning(): void {
+    const persistence = this.saveStore.persistence();
+    (window as unknown as { __savePersistence?: object }).__savePersistence = persistence;
+    if (persistence.kind === "saved") return;
+    const message = persistence.kind === "memory-only"
+      ? "SAVE UNAVAILABLE  •  PROGRESS LASTS UNTIL THIS WINDOW CLOSES"
+      : "SAVE ERROR  •  PRESS P OR CLICK HERE TO RETRY";
+    this.root.add(this.add.rectangle(WIDTH / 2, 14, WIDTH, 28, 0x4a211c, 0.98).setDepth(2000));
+    this.root.add(this.text(WIDTH / 2, 14, message, ORANGE, "10px", true).setDepth(2001));
+    if (persistence.kind === "failed") {
+      this.root.add(this.add.zone(0, 0, WIDTH, 28).setOrigin(0, 0).setDepth(2002).setInteractive()
+        .on("pointerdown", () => {
+          this.saveStore.retryPersistence();
+          this.render();
+        }));
     }
   }
 
@@ -384,7 +414,9 @@ export class ShellScene extends Phaser.Scene {
         : card.id === "records" ? recordsLine(progress)
           : card.id === "codex" ? "The encyclopedia — discoveries fill the Monsterdex"
             : card.id === "lab" ? "Review scenarios and art galleries"
-              : card.id === "settings" ? "Persisted immediately to local save"
+              : card.id === "settings" ? (this.saveStore.persistence().kind === "saved"
+                ? "Persisted immediately to local save"
+                : "Settings apply now; local save is unavailable")
                 : "Four short pages";
       this.root.add(this.text(x + 22, y + 44, sub, MUTED, "11px"));
       this.clickZone(x, y, cardWidth, cardHeight, () => {
@@ -427,8 +459,8 @@ export class ShellScene extends Phaser.Scene {
     this.root.add(this.text(
       70,
       84,
-      this.fullscreenFeedback ?? "Changes persist immediately. URL parameters remain as review overrides.",
-      this.fullscreenFeedback ? ORANGE : MUTED,
+      this.saveTransferFeedback ?? this.fullscreenFeedback ?? "Changes persist immediately. URL parameters remain as review overrides.",
+      this.saveTransferFeedback || this.fullscreenFeedback ? ORANGE : MUTED,
       "12px",
     ));
     if (uiChromeEnabled()) this.root.add(this.uiDivider(WIDTH / 2, 448, 760));
@@ -443,10 +475,10 @@ export class ShellScene extends Phaser.Scene {
       this.root.add(this.add.rectangle(x + 190, y + 11, 380, 26, focused ? 0x24384f : PANEL)
         .setStrokeStyle(focused ? 2 : 1, focused ? TEAL_HEX : 0x3b4d63));
       this.root.add(this.text(x + 12, y + 5, row.label, focused ? TEAL : IVORY, "10px"));
-      const controlsRow = row.kind === "action";
-      const enabled = controlsRow || row.kind !== "toggle" || Boolean(this.state.settings[row.key]);
-      const valueLabel = controlsRow
-        ? "OPEN >"
+      const actionRow = row.kind === "action";
+      const enabled = actionRow || row.kind !== "toggle" || Boolean(this.state.settings[row.key]);
+      const valueLabel = actionRow
+        ? row.key === "controls" ? "OPEN >" : "RUN >"
         : row.kind === "toggle"
           ? enabled ? "ON" : "OFF"
           : formatSettingValue(row.key, this.state.settings[row.key]);
@@ -457,6 +489,47 @@ export class ShellScene extends Phaser.Scene {
       });
     });
     this.root.add(this.text(70, HEIGHT - 22, "UP/DOWN SELECT  •  ENTER/LEFT/RIGHT TOGGLE  •  ESC BACK", MUTED, "11px"));
+  }
+
+  private exportSaveBackup(): void {
+    const blob = new Blob([this.saveStore.exportSerialized()], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `last-bastion-save-v${this.saveStore.load().version}.json`;
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    this.saveTransferFeedback = "Save backup downloaded.";
+  }
+
+  private importSaveBackup(): void {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json,application/json";
+    input.addEventListener("change", async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      const serialized = await file.text();
+      const validation = previewSaveImport(serialized);
+      if (!validation.ok) {
+        this.saveTransferFeedback = validation.error;
+        this.render();
+        return;
+      }
+      if (!window.confirm(`Replace this device's save?\n\n${validation.preview.summary}`)) {
+        this.saveTransferFeedback = "Import cancelled; current save unchanged.";
+        this.render();
+        return;
+      }
+      this.saveStore.importSerialized(serialized);
+      if (this.saveStore.persistence().kind !== "saved") {
+        this.saveTransferFeedback = "Import loaded, but browser storage could not save it.";
+        this.render();
+        return;
+      }
+      window.location.href = "?screen=title";
+    }, { once: true });
+    input.click();
   }
 
   private renderControls(): void {

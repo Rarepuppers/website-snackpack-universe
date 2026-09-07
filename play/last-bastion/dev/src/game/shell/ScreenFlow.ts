@@ -57,7 +57,8 @@ export type ShellEffect =
   | { type: "set-setting"; key: keyof GameSettings; value: GameSettings[keyof GameSettings] }
   | { type: "capture-binding"; device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction }
   | { type: "purchase-armory-node"; nodeId: ArmoryNodeId }
-  | { type: "select-armory-node"; nodeId: ArmoryNodeId };
+  | { type: "select-armory-node"; nodeId: ArmoryNodeId }
+  | { type: "transfer-save"; operation: "export" | "import" };
 
 export interface MenuCard {
   id: "expedition" | "armory" | "how-to-play" | "settings" | "codex" | "lab" | "records";
@@ -107,7 +108,7 @@ export type SettingsRow =
   | { kind: "toggle"; key: keyof GameSettings; label: string }
   | { kind: "choice"; key: keyof GameSettings; label: string; options: readonly string[] }
   | { kind: "range"; key: keyof GameSettings; label: string; min: number; max: number; step: number }
-  | { kind: "action"; key: "controls"; label: string };
+  | { kind: "action"; key: "controls" | "export-save" | "import-save"; label: string };
 
 export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "toggle", key: "screenShakeEnabled", label: "Screen shake" },
@@ -145,6 +146,8 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "choice", key: "effectQuality", label: "Combat effects", options: ["auto", "high", "medium", "low"] },
   { kind: "choice", key: "gameSpeedMultiplier", label: "Game speed", options: ["0.75", "1", "1.25"] },
   { kind: "action", key: "controls", label: "Control bindings" },
+  { kind: "action", key: "export-save", label: "Export save backup" },
+  { kind: "action", key: "import-save", label: "Import save backup" },
 ]);
 
 export function settingsRowsForDisplayCapabilities(
@@ -425,7 +428,13 @@ function stepSettings(state: ShellState, intent: ShellIntent): ShellStepResult {
   if (intent === "left" || intent === "right" || intent === "confirm") {
     const row = state.settingsRows[state.settingsIndex]!;
     if (row.kind === "action") {
-      return { state: { ...state, screen: "controls", controlIndex: 0 }, effects: [] };
+      if (row.key === "controls") {
+        return { state: { ...state, screen: "controls", controlIndex: 0 }, effects: [] };
+      }
+      return {
+        state,
+        effects: [{ type: "transfer-save", operation: row.key === "export-save" ? "export" : "import" }],
+      };
     }
     let value: GameSettings[keyof GameSettings];
     if (row.kind === "toggle") {

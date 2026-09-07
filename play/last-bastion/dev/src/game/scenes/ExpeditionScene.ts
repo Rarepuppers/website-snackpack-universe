@@ -28,6 +28,7 @@ import {
   objectiveModeLabel,
 } from "../expedition/ExpeditionEncounter";
 import { normalizeThreatTier, threatTierDefinition } from "../expedition/ThreatTier";
+import { expeditionMapGamepadIntent } from "../input/ExpeditionMapInput";
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -91,6 +92,7 @@ export class ExpeditionScene extends Phaser.Scene {
   private root!: Phaser.GameObjects.Container;
   private focusIndex = 0;
   private travelling = false;
+  private armedNodeId: number | null = null;
   private pulseTime = 0;
   private mapRevealBonusColumns = 0;
   private backdropPreloadKey = "";
@@ -113,6 +115,14 @@ export class ExpeditionScene extends Phaser.Scene {
     this.root = this.add.container(0, 0);
     window.addEventListener("keydown", this.handleKey);
     this.events.once("shutdown", () => window.removeEventListener("keydown", this.handleKey));
+    this.input.gamepad?.on("down", (_pad: unknown, button: { index: number }) => {
+      if (this.travelling) return;
+      const intent = expeditionMapGamepadIntent(button.index);
+      if (intent === "previous") this.moveFocus(-1);
+      else if (intent === "next") this.moveFocus(1);
+      else if (intent === "confirm") this.confirmFocusedNode();
+      else if (intent === "back") window.location.href = "?screen=title";
+    });
     this.render();
     window.setTimeout(() => this.preloadLikelyNextBackdrop(), 0);
     if (isExpeditionComplete(this.run)) {
@@ -169,7 +179,7 @@ export class ExpeditionScene extends Phaser.Scene {
         break;
       case "Enter": case "Space": case "NumpadEnter":
         event.preventDefault();
-        this.travelToFocused();
+        this.confirmFocusedNode();
         break;
       case "Escape":
         event.preventDefault();
@@ -184,17 +194,48 @@ export class ExpeditionScene extends Phaser.Scene {
       return;
     }
     this.focusIndex = (this.focusIndex + step + selectable.length) % selectable.length;
+    this.armedNodeId = null;
     this.render();
     window.setTimeout(() => this.preloadLikelyNextBackdrop(), 0);
   }
 
-  private travelToFocused(): void {
+  private confirmFocusedNode(): void {
     const selectable = selectableNodeIds(this.run);
     const targetId = selectable[this.focusIndex];
     if (targetId === undefined) {
       return;
     }
+    if (this.armedNodeId !== targetId) {
+      this.armedNodeId = targetId;
+      this.render();
+      window.setTimeout(() => this.preloadLikelyNextBackdrop(), 0);
+      return;
+    }
     this.travelTo(targetId);
+  }
+
+  private focusNode(targetId: number): void {
+    const selectable = selectableNodeIds(this.run);
+    const index = selectable.indexOf(targetId);
+    if (index < 0 || index === this.focusIndex) return;
+    this.focusIndex = index;
+    this.armedNodeId = null;
+    this.render();
+    window.setTimeout(() => this.preloadLikelyNextBackdrop(), 0);
+  }
+
+  private selectNode(targetId: number): void {
+    const selectable = selectableNodeIds(this.run);
+    const index = selectable.indexOf(targetId);
+    if (index < 0) return;
+    this.focusIndex = index;
+    if (this.armedNodeId === targetId) {
+      this.travelTo(targetId);
+      return;
+    }
+    this.armedNodeId = targetId;
+    this.render();
+    window.setTimeout(() => this.preloadLikelyNextBackdrop(), 0);
   }
 
   private travelTo(targetId: number): void {
@@ -272,6 +313,8 @@ export class ExpeditionScene extends Phaser.Scene {
       currentNodeId: this.run.state.currentNodeId,
       cleared: this.run.state.clearedNodeIds.length,
       selectable: selectableNodeIds(this.run),
+      focusedNodeId: selectableNodeIds(this.run)[this.focusIndex] ?? null,
+      armedNodeId: this.armedNodeId,
       complete: isExpeditionComplete(this.run),
       seed: this.run.state.mapSeed,
       threatTier: this.run.state.threatTier,
@@ -297,7 +340,7 @@ export class ExpeditionScene extends Phaser.Scene {
       this.root.add(this.text(
         70,
         HEIGHT - 30,
-        "ARROWS CYCLE ROUTES  •  ENTER DEPLOY  •  ESC TITLE",
+        "ARROWS / D-PAD PREVIEW  •  ENTER / A CONFIRM  •  ESC / B TITLE",
         MUTED,
         "12px",
       ));
@@ -368,16 +411,18 @@ export class ExpeditionScene extends Phaser.Scene {
       const presentation = nodePresentation(this.run, node.id);
       const intelVisible = this.isInsideIntelHorizon(node);
       const focused = node.id === focusedId;
+      const armed = node.id === this.armedNodeId;
       const fill = presentation === "current" ? 0x24506b
         : presentation === "reachable" ? 0x24384f
           : presentation === "cleared" ? 0x1a222e
             : presentation === "open" ? PANEL : 0x181f29;
-      const stroke = presentation === "current" || focused ? TEAL_HEX
+      const stroke = armed ? 0xff9a52
+        : presentation === "current" || focused ? TEAL_HEX
         : presentation === "reachable" ? 0x4f8ca3
           : presentation === "cleared" ? 0x2c3947 : 0x33475e;
       const radius = node.type === "boss" ? 26 : node.type === "mini-boss" || node.type === "elite" ? 21 : 18;
       const medallion = this.add.circle(x, y, radius, fill)
-        .setStrokeStyle(focused ? 3 : 2, stroke)
+        .setStrokeStyle(focused || armed ? 3 : 2, stroke)
         .setDepth(10)
         .setAlpha(!intelVisible ? 0.1 : presentation === "unreachable" ? 0.35 : presentation === "cleared" ? 0.55 : 1);
       this.root.add(medallion);
@@ -406,7 +451,8 @@ export class ExpeditionScene extends Phaser.Scene {
       }
       if (presentation === "reachable") {
         const zone = this.add.zone(x - radius, y - radius, radius * 2, radius * 2).setOrigin(0, 0).setInteractive();
-        zone.on("pointerdown", () => this.travelTo(node.id));
+        zone.on("pointerover", () => this.focusNode(node.id));
+        zone.on("pointerdown", () => this.selectNode(node.id));
         this.root.add(zone);
       }
     }
@@ -436,7 +482,8 @@ export class ExpeditionScene extends Phaser.Scene {
           : node.type === "event" ? "UNKNOWN"
             : node.type === "shrine" ? "CHOICE"
               : node.type === "combat" ? (node.column >= 5 ? "ELEVATED" : "MODERATE") : "NONE";
-    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT - 78, 620, 58, PANEL).setStrokeStyle(1, 0x3b4d63).setDepth(20));
+    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT - 78, 620, 70, PANEL)
+      .setStrokeStyle(1, this.armedNodeId === focusedId ? 0xff9a52 : 0x3b4d63).setDepth(20));
     const objectiveSuffix = objectiveMode ? `  •  OBJECTIVE ${objectiveModeLabel(objectiveMode)}` : "";
     this.root.add(this.text(WIDTH / 2, HEIGHT - 90, `${NODE_LABELS[node.type]}${objectiveSuffix}`, TEAL, "15px", true).setDepth(21));
     this.root.add(this.text(
@@ -445,6 +492,14 @@ export class ExpeditionScene extends Phaser.Scene {
       `${theme?.name ?? "Unknown region"}  •  THREAT ${threat}  •  COLUMN ${node.column + 1}/${this.run.map.columns}`,
       MUTED,
       "12px",
+      true,
+    ).setDepth(21));
+    this.root.add(this.text(
+      WIDTH / 2,
+      HEIGHT - 48,
+      this.armedNodeId === focusedId ? "ROUTE ARMED  •  CONFIRM AGAIN TO DEPLOY" : "PREVIEWING ROUTE  •  CONFIRM TO ARM",
+      this.armedNodeId === focusedId ? ORANGE : MUTED,
+      "10px",
       true,
     ).setDepth(21));
   }

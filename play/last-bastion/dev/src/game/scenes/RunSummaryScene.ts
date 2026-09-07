@@ -12,6 +12,7 @@ import { weaponTilePresentation } from "../ui/WeaponTileFrames";
 import { weaponReviewPage } from "../ui/WeaponReviewRoutes";
 import { formatRunClock } from "../stats/formatStat";
 import { threatTierDefinition } from "../expedition/ThreatTier";
+import { debriefGamepadIntent, moveDebriefSelection } from "../ui/DebriefNavigation";
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -24,6 +25,12 @@ const MUTED = "#8fa1b3";
 
 /** Task 50 code-native debrief. Art can dress it later without changing data. */
 export class RunSummaryScene extends Phaser.Scene {
+  private returnActionIndex = 0;
+  private returnActions: readonly { readonly run: () => void; readonly shortcut: string }[] = [];
+  private returnFrames: Phaser.GameObjects.Rectangle[] = [];
+  private returnLabels: Phaser.GameObjects.Text[] = [];
+  private returnHints: Phaser.GameObjects.Text[] = [];
+
   constructor() {
     super("run-summary");
   }
@@ -196,32 +203,86 @@ export class RunSummaryScene extends Phaser.Scene {
       this.text(WIDTH / 2, 507, "ENTER / A / CLICK", MUTED, "9px", true);
       this.input.keyboard?.on("keydown-ENTER", leave);
       this.input.keyboard?.on("keydown-SPACE", leave);
-      this.input.gamepad?.on("down", leave);
+      this.input.gamepad?.on("down", (_pad: unknown, button: { index: number }) => {
+        const intent = debriefGamepadIntent(button.index);
+        if (intent === "confirm" || intent === "back") leave();
+      });
       this.add.zone(337, 477, 286, 42).setOrigin(0, 0).setInteractive().on("pointerdown", leave);
       return;
     }
     const retry = () => { window.location.href = `?screen=game&hero=${summary.heroId}`; };
     const expedition = () => { window.location.href = "?screen=title&flow=character-select"; };
     const actions = [
-      { x: 292, label: "RETRY QUICK DROP", hint: "R", run: retry },
-      { x: 480, label: "NEW EXPEDITION", hint: "ENTER / A", run: expedition },
-      { x: 668, label: "MAIN MENU", hint: "ESC", run: leave },
+      { x: 292, label: "RETRY QUICK DROP", shortcut: "R", run: retry },
+      { x: 480, label: "NEW EXPEDITION", shortcut: "N", run: expedition },
+      { x: 668, label: "MAIN MENU", shortcut: "ESC / B", run: leave },
     ] as const;
+    this.returnActions = actions;
+    this.returnActionIndex = summary.mode === "expedition" ? 1 : 0;
+    this.returnFrames = [];
+    this.returnLabels = [];
+    this.returnHints = [];
     actions.forEach((action, index) => {
-      const primary = summary.mode === "expedition" ? index === 1 : index === 0;
-      this.add.rectangle(action.x, 492, 174, 42, primary ? 0x24384f : PANEL, 0.96)
-        .setStrokeStyle(primary ? 2 : 1, primary ? 0x68e4e8 : 0x52677b);
-      this.text(action.x, 480, action.label, primary ? TEAL : IVORY, "11px", true);
-      this.text(action.x, 502, action.hint, MUTED, "8px", true);
-      this.add.zone(action.x - 87, 471, 174, 42).setOrigin(0, 0).setInteractive().on("pointerdown", action.run);
+      this.returnFrames.push(this.add.rectangle(action.x, 492, 174, 42, PANEL, 0.96));
+      this.returnLabels.push(this.text(action.x, 480, action.label, IVORY, "11px", true));
+      this.returnHints.push(this.text(action.x, 502, action.shortcut, MUTED, "8px", true));
+      this.add.zone(action.x - 87, 471, 174, 42).setOrigin(0, 0).setInteractive()
+        .on("pointerover", () => this.selectReturnAction(index))
+        .on("pointerdown", action.run);
     });
-    const defaultAction = summary.mode === "expedition" ? expedition : retry;
-    this.input.keyboard?.on("keydown-ENTER", defaultAction);
-    this.input.keyboard?.on("keydown-SPACE", defaultAction);
-    this.input.keyboard?.on("keydown-R", retry);
-    this.input.keyboard?.on("keydown-N", expedition);
-    this.input.keyboard?.on("keydown-ESC", leave);
-    this.input.gamepad?.on("down", defaultAction);
+    this.refreshReturnActions();
+    this.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
+      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter", "Space", "KeyR", "KeyN", "Escape"].includes(event.code)) {
+        event.preventDefault();
+      }
+      if (event.code === "ArrowLeft" || event.code === "ArrowUp") this.moveReturnAction(-1);
+      else if (event.code === "ArrowRight" || event.code === "ArrowDown") this.moveReturnAction(1);
+      else if (event.code === "Enter" || event.code === "Space") this.activateReturnAction();
+      else if (event.code === "KeyR") retry();
+      else if (event.code === "KeyN") expedition();
+      else if (event.code === "Escape") leave();
+    });
+    this.input.gamepad?.on("down", (_pad: unknown, button: { index: number }) => {
+      const intent = debriefGamepadIntent(button.index);
+      if (intent === "previous") this.moveReturnAction(-1);
+      else if (intent === "next") this.moveReturnAction(1);
+      else if (intent === "confirm") this.activateReturnAction();
+      else if (intent === "back") leave();
+    });
+  }
+
+  private selectReturnAction(index: number): void {
+    this.returnActionIndex = Math.max(0, Math.min(this.returnActions.length - 1, index));
+    this.refreshReturnActions();
+  }
+
+  private moveReturnAction(direction: -1 | 1): void {
+    this.returnActionIndex = moveDebriefSelection(
+      this.returnActionIndex,
+      direction,
+      this.returnActions.length,
+    );
+    this.refreshReturnActions();
+  }
+
+  private activateReturnAction(): void {
+    this.returnActions[this.returnActionIndex]?.run();
+  }
+
+  private refreshReturnActions(): void {
+    (window as unknown as { __runSummaryNavigation?: object }).__runSummaryNavigation = {
+      selectedIndex: this.returnActionIndex,
+      selectedShortcut: this.returnActions[this.returnActionIndex]?.shortcut ?? null,
+    };
+    this.returnActions.forEach((action, index) => {
+      const selected = index === this.returnActionIndex;
+      this.returnFrames[index]?.setFillStyle(selected ? 0x24384f : PANEL, 0.96)
+        .setStrokeStyle(selected ? 2 : 1, selected ? 0x68e4e8 : 0x52677b);
+      this.returnLabels[index]?.setColor(selected ? TEAL : IVORY);
+      this.returnHints[index]?.setText(selected
+        ? `ENTER / A${action.shortcut ? ` / ${action.shortcut}` : ""}`
+        : action.shortcut);
+    });
   }
 
   private panel(x: number, y: number, width: number, height: number): void {

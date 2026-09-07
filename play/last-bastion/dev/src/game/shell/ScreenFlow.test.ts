@@ -91,12 +91,22 @@ describe("Shell screen flow", () => {
   it("toggles a setting, mirrors it in state, and emits the persistence effect", () => {
     const state = boot("settings");
     const row = SETTINGS_ROWS[0]!;
-    if (row.key === "controls") throw new Error("Expected a boolean settings row");
+    if (row.kind === "action") throw new Error("Expected a boolean settings row");
     const result = stepShell(state, "confirm");
     expect(result.state.settings[row.key]).toBe(!DEFAULT_SAVE.settings[row.key]);
     expect(result.effects).toEqual([{ type: "set-setting", key: row.key, value: !DEFAULT_SAVE.settings[row.key] }]);
     const reverted = stepShell(result.state, "left");
     expect(reverted.state.settings[row.key]).toBe(DEFAULT_SAVE.settings[row.key]);
+  });
+
+  it("emits save transfer effects from the backup settings rows", () => {
+    const state = boot("settings");
+    const exportIndex = SETTINGS_ROWS.findIndex((row) => row.key === "export-save");
+    const importIndex = SETTINGS_ROWS.findIndex((row) => row.key === "import-save");
+    expect(stepShell({ ...state, settingsIndex: exportIndex }, "confirm").effects)
+      .toEqual([{ type: "transfer-save", operation: "export" }]);
+    expect(stepShell({ ...state, settingsIndex: importIndex }, "confirm").effects)
+      .toEqual([{ type: "transfer-save", operation: "import" }]);
   });
 
   it("lists no setting that gameplay ignores", () => {
