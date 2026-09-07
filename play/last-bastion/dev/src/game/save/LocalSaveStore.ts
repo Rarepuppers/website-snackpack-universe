@@ -1,6 +1,6 @@
 import { isPerkId, unlockedPerkIds, type PerkId } from "../perks/perkCatalog";
 import type { HeroDefinition } from "../hero/HeroDefinition";
-import { isHeroId } from "../hero/HeroCatalog";
+import { heroDefinition, isHeroId } from "../hero/HeroCatalog";
 import {
   DEFAULT_CONTROL_BINDINGS,
   normalizeControlBindings,
@@ -265,6 +265,15 @@ export type SaveImportResult =
 const SUPPORTED_SAVE_VERSIONS = Object.freeze([
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 ]);
+
+/**
+ * Save-facing content IDs are an API. Add an old -> current entry here in the
+ * same change that renames catalogue content. Unknown upgrades are dropped;
+ * if every saved weapon is unknown, the selected hero's starter is restored
+ * so a retired loadout cannot leave an otherwise valid expedition unarmed.
+ */
+const WEAPON_SAVE_ID_ALIASES: Readonly<Record<string, WeaponId>> = Object.freeze({});
+const UPGRADE_SAVE_ID_ALIASES: Readonly<Record<string, UpgradeId>> = Object.freeze({});
 
 /** Parses and migrates a player-selected backup without accepting arbitrary JSON. */
 export function previewSaveImport(serialized: string): SaveImportResult {
@@ -605,6 +614,14 @@ function normalizeSave(parsed: unknown): SaveData {
     : lastRunSummary
       ? [createRunHistoryEntry(lastRunSummary, 0, readCount(candidate.progress?.runsFinished))]
       : [];
+  const purchasedArmoryNodeIds = normalizePurchasedArmoryNodeIds(candidate.progress?.purchasedArmoryNodeIds);
+  const selectedHeroId = version >= 3
+    && isHeroId(candidate.selectedHeroId)
+    && isHeroDeploymentUnlocked(candidate.selectedHeroId, purchasedArmoryNodeIds)
+    ? candidate.selectedHeroId
+    : "marine";
+  const heroStartingWeaponId = migrateWeaponId(heroDefinition(selectedHeroId).startingWeaponId)
+    ?? "bastion-service-rifle";
   return {
     version: SAVE_SCHEMA_VERSION,
     settings: normalizeSettings(candidate.settings),
@@ -624,21 +641,17 @@ function normalizeSave(parsed: unknown): SaveData {
       threatTierBestNodes: readThreatTierCounts(candidate.progress?.threatTierBestNodes),
       threatTierVictories: readThreatTierCounts(candidate.progress?.threatTierVictories),
       commandMarksLifetime: readCount(candidate.progress?.commandMarksLifetime),
-      purchasedArmoryNodeIds: normalizePurchasedArmoryNodeIds(candidate.progress?.purchasedArmoryNodeIds),
+      purchasedArmoryNodeIds,
     },
-    expedition: version >= 2 ? readExpedition(candidate.expedition) : null,
+    expedition: version >= 2 ? readExpedition(candidate.expedition, heroStartingWeaponId) : null,
     selectedPerkId: version >= 3 && isPerkId(candidate.selectedPerkId)
       ? candidate.selectedPerkId
       : "perk-veteran",
-    selectedHeroId: version >= 3
-      && isHeroId(candidate.selectedHeroId)
-      && isHeroDeploymentUnlocked(candidate.selectedHeroId, normalizePurchasedArmoryNodeIds(candidate.progress?.purchasedArmoryNodeIds))
-      ? candidate.selectedHeroId
-      : "marine",
+    selectedHeroId,
     selectedThreatTier: version >= 14 ? normalizeThreatTier(candidate.selectedThreatTier) : 0,
     selectedArmoryNodeId: version >= 15 && isArmoryNodeId(candidate.selectedArmoryNodeId)
       && canSelectArmoryNode(candidate.selectedArmoryNodeId)
-      && normalizePurchasedArmoryNodeIds(candidate.progress?.purchasedArmoryNodeIds).includes(candidate.selectedArmoryNodeId)
+      && purchasedArmoryNodeIds.includes(candidate.selectedArmoryNodeId)
       ? candidate.selectedArmoryNodeId
       : null,
     lastRunSummary: runHistory[0]?.summary ?? lastRunSummary,
@@ -729,7 +742,7 @@ function normalizeSettings(value: unknown): GameSettings {
 }
 
 /** A malformed mid-run save degrades to "no run in progress", never a crash. */
-function readExpedition(value: unknown): ExpeditionSave | null {
+function readExpedition(value: unknown, heroStartingWeaponId: WeaponId): ExpeditionSave | null {
   if (typeof value !== "object" || value === null) {
     return null;
   }
@@ -751,12 +764,12 @@ function readExpedition(value: unknown): ExpeditionSave | null {
     threatTier: normalizeThreatTier(candidate.threatTier),
     currentNodeId,
     clearedNodeIds,
-    build: readBuild(candidate.build),
+    build: readBuild(candidate.build, heroStartingWeaponId),
     metrics: readRunMetrics(candidate.metrics),
   });
 }
 
-function readBuild(value: unknown): ExpeditionSave["build"] {
+function readBuild(value: unknown, heroStartingWeaponId: WeaponId): ExpeditionSave["build"] {
   if (typeof value !== "object" || value === null) {
     return null;
   }
@@ -769,17 +782,19 @@ function readBuild(value: unknown): ExpeditionSave["build"] {
   ) {
     return null;
   }
-  const weapons = candidate.weapons
-    .filter((weapon): weapon is { weaponId: WeaponId; tier: number } => (
-      typeof weapon?.weaponId === "string"
-      && Object.prototype.hasOwnProperty.call(WEAPON_CATALOG, weapon.weaponId)
-    ))
-    .map((weapon) => ({ weaponId: weapon.weaponId, tier: readBoundedCount(weapon.tier, 1, 3) }));
+  const weapons = candidate.weapons.flatMap((weapon) => {
+    const weaponId = migrateWeaponId(weapon?.weaponId);
+    return weaponId
+      ? [{ weaponId, tier: readBoundedCount(weapon.tier, 1, 3) }]
+      : [];
+  });
+  if (candidate.weapons.length > 0 && weapons.length === 0) {
+    weapons.push({ weaponId: heroStartingWeaponId, tier: 1 });
+  }
   const upgradeLevels = new Map<UpgradeId, number>();
   for (const upgrade of candidate.upgrades) {
-    if (typeof upgrade?.upgradeId !== "string"
-      || !Object.prototype.hasOwnProperty.call(UPGRADE_CATALOG, upgrade.upgradeId)) continue;
-    const upgradeId = upgrade.upgradeId as UpgradeId;
+    const upgradeId = migrateUpgradeId(upgrade?.upgradeId);
+    if (!upgradeId) continue;
     const level = readBoundedCount(upgrade.level, 1, UPGRADE_CATALOG[upgradeId].maxLevel);
     upgradeLevels.set(upgradeId, Math.max(upgradeLevels.get(upgradeId) ?? 0, level));
   }
@@ -795,6 +810,18 @@ function readBuild(value: unknown): ExpeditionSave["build"] {
     ...readBuildRewards(candidate),
     ...readBuildItems(candidate),
   };
+}
+
+function migrateWeaponId(value: unknown): WeaponId | null {
+  if (typeof value !== "string") return null;
+  if (Object.prototype.hasOwnProperty.call(WEAPON_CATALOG, value)) return value as WeaponId;
+  return WEAPON_SAVE_ID_ALIASES[value] ?? null;
+}
+
+function migrateUpgradeId(value: unknown): UpgradeId | null {
+  if (typeof value !== "string") return null;
+  if (Object.prototype.hasOwnProperty.call(UPGRADE_CATALOG, value)) return value as UpgradeId;
+  return UPGRADE_SAVE_ID_ALIASES[value] ?? null;
 }
 
 /**

@@ -702,6 +702,48 @@ describe("Save schema v2 — expedition autosave", () => {
     expect(expedition?.build?.weapons).toEqual([{ weaponId: "bastion-service-rifle", tier: 3 }]);
     expect(expedition?.build?.upgrades).toEqual([{ upgradeId: "rapid-cycling", level: 3 }]);
   });
+
+  it("applies the retired-content policy without leaving a restored run unarmed", () => {
+    const retiredLoadout = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        ...DEFAULT_SAVE,
+        selectedHeroId: "medic",
+        expedition: {
+          mapSeed: 1,
+          currentNodeId: 0,
+          clearedNodeIds: [0],
+          build: {
+            health: 8,
+            shield: 1,
+            level: 2,
+            experience: 4,
+            scrap: 9,
+            weapons: [{ weaponId: "retired-cannon", tier: 3 }],
+            upgrades: [{ upgradeId: "retired-upgrade", level: 2 }],
+          },
+          metrics: {},
+        },
+      }),
+    });
+    const build = new LocalSaveStore(retiredLoadout).load().expedition?.build;
+    expect(build?.weapons).toEqual([{ weaponId: "injector-carbine", tier: 1 }]);
+    expect(build?.upgrades).toEqual([]);
+    expect(build).toMatchObject({ health: 8, shield: 1, level: 2, experience: 4, scrap: 9 });
+
+    const intentionallyUnarmed = fakeStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        ...DEFAULT_SAVE,
+        expedition: {
+          mapSeed: 1,
+          currentNodeId: 0,
+          clearedNodeIds: [0],
+          build: { health: 8, shield: 0, level: 2, experience: 0, scrap: 0, weapons: [], upgrades: [] },
+          metrics: {},
+        },
+      }),
+    });
+    expect(new LocalSaveStore(intentionallyUnarmed).load().expedition?.build?.weapons).toEqual([]);
+  });
   it("migrates a version-1 payload, preserving settings and progress with no run in progress", () => {
     const storage = fakeStorage({
       [SAVE_STORAGE_KEY]: JSON.stringify({
