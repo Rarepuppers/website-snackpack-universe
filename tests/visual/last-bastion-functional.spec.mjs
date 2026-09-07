@@ -5,8 +5,11 @@ function watchRuntime(page) {
   page.on("pageerror", (error) => failures.push(`pageerror: ${error.message}`));
   page.on("console", (message) => {
     const source = message.location().url;
-    if (message.type() === "error" && (!source || source.includes("/play/last-bastion/"))) {
-      failures.push(`console: ${message.text()}`);
+    const text = message.text();
+    const expectedAnalyticsFailure = text.includes("cloudflareinsights.com/cdn-cgi/rum");
+    if (message.type() === "error" && !expectedAnalyticsFailure
+      && (!source || source.includes("/play/last-bastion/"))) {
+      failures.push(`console: ${text}`);
     }
   });
   page.on("requestfailed", (request) => {
