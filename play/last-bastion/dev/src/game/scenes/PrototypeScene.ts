@@ -89,9 +89,9 @@ import { expeditionNodeById } from "../expedition/ExpeditionMap";
 import {
   completeCurrentNode,
   resumeExpeditionRun,
-  type ExpeditionBuildSnapshot,
   type ExpeditionRun,
 } from "../expedition/ExpeditionRun";
+import { expeditionBuildFromCombatSnapshot } from "../expedition/ExpeditionBuildSnapshot";
 import {
   ambushEncounterForNode,
   expeditionEncounterForNode,
@@ -1205,7 +1205,7 @@ export class PrototypeScene extends Phaser.Scene {
     }
     const completed = completeCurrentNode(
       this.expeditionContext.run,
-      expeditionBuildFromSnapshot(snapshot),
+      expeditionBuildFromCombatSnapshot(snapshot),
       snapshot.runMetrics,
     );
     this.saveStore.recordNodeCleared();
@@ -5408,31 +5408,6 @@ function readExpeditionContext(store: LocalSaveStore): ExpeditionCombatContext |
     return { run, encounter: ambushEncounterForNode(run.state.mapSeed, node, ambush, run.state.threatTier) };
   }
   return { run, encounter: expeditionEncounterForNode(run.state.mapSeed, node, run.state.threatTier) };
-}
-
-function expeditionBuildFromSnapshot(snapshot: CombatSnapshot): ExpeditionBuildSnapshot {
-  return {
-    health: snapshot.playerHealth,
-    shield: snapshot.playerShield,
-    level: snapshot.level,
-    experience: snapshot.experience,
-    scrap: snapshot.securedScrap,
-    weapons: snapshot.weaponInventory.rack.flatMap((slot) => slot.tile
-      ? [{ weaponId: slot.tile.weaponId, tier: slot.tile.tier }]
-      : []),
-    upgrades: snapshot.upgradeLevels.map((upgrade) => ({
-      upgradeId: upgrade.id,
-      level: upgrade.level,
-    })),
-    transformation: cloneTransformationAffinityState(snapshot.transformation),
-    relicIds: [...snapshot.relicIds],
-    ownedItemIds: [...snapshot.ownedItemIds],
-    itemStats: { ...snapshot.itemStats },
-    bannedShopIds: [...snapshot.bannedShopIds],
-    equippedArtifactId: snapshot.equippedArtifactId,
-    maxHealthBonus: snapshot.rewardMaxHealthBonus,
-    weaponSlotBonus: snapshot.rewardWeaponSlotBonus,
-  };
 }
 
 /**

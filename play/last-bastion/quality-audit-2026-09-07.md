@@ -82,12 +82,15 @@ Export can follow the failure-status fix as a second focused change.
 
 ### QA-02 — Harden expedition save validation at the boundary (P1, M)
 
-**Implementation status — first boundary slice shipped locally 7 September 2026.** Save
+**Implementation status — completed 8 September 2026.** Save
 normalization now requires safe integer seed/node identities, deduplicates and caps cleared
 nodes, rejects non-finite health, clamps survival/progression values, validates weapon and
 upgrade IDs against their catalogues, clamps tiers/levels, and merges duplicate upgrade rows.
 `resumeExpeditionRun` now also requires a connected cleared path from the generated map's start
-node. An explicit retired-content migration policy remains open.
+node. Save-facing IDs now have explicit weapon and upgrade alias tables: a rename must add its
+alias in the same change, unknown upgrades are discarded, and a retired-only weapon loadout
+restores the selected hero's starter weapon while an intentionally empty loadout remains empty.
+Tests cover both retired-content outcomes.
 
 **Evidence:** `LocalSaveStore.ts::readExpedition` checks node IDs only with `typeof number`,
 and `readBuild` accepts numeric health/shield without finite bounds and arbitrary string
@@ -153,6 +156,16 @@ Capture screenshots at the existing plan's 960x540, 1080p, 4K, and 1280x800 targ
 visual approval still needs a human review of legibility and art.
 
 ### QA-05 — Strengthen replay evidence before broad extraction (P1, M)
+
+**Implementation status — continuity slice completed 8 September 2026.** Replay compatibility
+version 2 now uses the same pure combat-to-expedition-build conversion as the live scene, carries
+that build through ordered encounters, exposes per-node build checkpoints, and fingerprints
+shield, bonus health, progression, scrap, weapon tiers and stash, upgrades, transformation,
+relic/item holdings, item stats, shop bans, artifact and slot/health rewards. Tests prove weapon,
+shield, upgrade, item, ban and transformation state cross a node, and prove previously omitted
+progression fields change the digest. The remaining corpus work is shop purchase/ban actions,
+objective completion/failure, hero abilities, defeat, and a renderer-level repeated boot/transition
+reproducer for the historical `Gradient` crash.
 
 **Evidence:** seeded fixtures and ranked-kill determinism tests already exist in
 `combat/ReplayFixture.test.ts`. However, `runCombatReplaySequence` uses
@@ -282,6 +295,15 @@ have useful retry/back behavior; cached media is refreshed deliberately; package
 without a service worker. Keep shared-worker changes scoped and test sibling arcade games.
 
 ### QA-12 — Make performance and loading polish measurable (P2, M)
+
+**Deployment-size update — 8 September 2026.** The Pages artifact reached 1.89 GB because
+the branch publisher included 1.42 GB of source-art working files and 82.6 MB of bundled QA
+runtime tools. Root `_config.yml` now excludes only those two non-runtime trees; the complete
+149.5 MB browser `game-assets` directory and development/desktop sources remain published while
+the project is actively being developed. After the content pipeline settles, audit and exclude
+the remaining source-only `dev`, `desktop`, `audio`, scripts, tests, evidence and planning trees,
+with a target Pages artifact below 250 MB. Keep that later reduction separate from deleting or
+archiving source assets from Git history.
 
 **Evidence:** asset groups, scene loading feedback, effect budgets and frame-pacing telemetry
 already exist. WebP checks measure selected derivatives, not total startup cost or texture

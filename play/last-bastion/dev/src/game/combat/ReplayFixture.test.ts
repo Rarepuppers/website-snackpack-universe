@@ -38,7 +38,8 @@ describe("versioned fixed-step replay fixture", () => {
     const second = runCombatReplay(FIXTURE);
     expect(first.framesRun).toBe(210);
     expect(first.digest).toBe(second.digest);
-    expect(first.digest).toBe("346f7115");
+    // Compatibility v2 includes run-long progression and inventory state.
+    expect(first.digest).toBe("5705ce6b");
   });
 
   it("detects seed and input divergence", () => {
@@ -49,7 +50,7 @@ describe("versioned fixed-step replay fixture", () => {
 
   it("rejects incompatible formats, simulation rules, and timesteps", () => {
     expect(() => runCombatReplay({ ...FIXTURE, formatVersion: 2 })).toThrow("Unsupported replay format");
-    expect(() => runCombatReplay({ ...FIXTURE, simulationVersion: 2 })).toThrow("Unsupported simulation version");
+    expect(() => runCombatReplay({ ...FIXTURE, simulationVersion: 3 })).toThrow("Unsupported simulation version");
     expect(() => runCombatReplay({ ...FIXTURE, fixedDeltaSeconds: 0.05 })).toThrow("canonical fixed timestep");
   });
 
@@ -114,12 +115,87 @@ describe("versioned fixed-step replay fixture", () => {
     // Then updated again the same day: placement now admits interactables whose
     // verb combat can honour (Supply Chest, Scrap Seam, gates), so furnished
     // rooms hold objects they previously filtered out and the layout shifts.
+    // Compatibility v2 now carries each encounter's saved build into the next
+    // and fingerprints progression state omitted by the earlier digest.
     // Previous goldens: 84fc796d (23 July, one powerup per wave),
     // 2cb124a9 (26 July, seeded world-object placement),
-    // 559b0de8 (31 July, powerup rotation offset).
-    expect(first.digest).toBe("4dd2f610");
+    // 559b0de8 (31 July, powerup rotation offset),
+    // 4dd2f610 (31 July, interactable placement; fresh build per encounter).
+    expect(first.digest).toBe("fcd28e4b");
     expect(runCombatReplaySequence([...fixtures].reverse()).digest).not.toBe(first.digest);
     expect(() => runCombatReplaySequence([])).toThrow("at least one encounter");
+  });
+
+  it("carries progression through the same build boundary used by the live expedition", () => {
+    const startingBuild = {
+      health: 75,
+      shield: 4,
+      level: 2,
+      experience: 3,
+      scrap: 91,
+      weapons: [{ weaponId: "bastion-service-rifle", tier: 2 }],
+      upgrades: [{ upgradeId: "rapid-cycling", level: 1 }],
+      transformation: {
+        committedPathId: null,
+        paths: [{ pathId: "cybernetic-ascension" as const, affinity: 1, choiceIds: ["targeting-suite" as const] }],
+      },
+      ownedItemIds: ["scrap-magnet"],
+      bannedShopIds: ["shop-item:glass-cannon"],
+    };
+    const sequence = runCombatReplaySequence([
+      {
+        ...FIXTURE,
+        scenario: "weapon-gate",
+        startingBuild,
+        inputSpans: [{ frames: 1, decisionOnFirstFrame: "place:rack:rack-3" }],
+      },
+      { ...FIXTURE, seed: FIXTURE.seed + 1, inputSpans: [{ frames: 1 }] },
+    ]);
+
+    expect(sequence.encounterBuilds[0]?.weapons).toEqual([
+      { weaponId: "bastion-service-rifle", tier: 2 },
+      { weaponId: "scattergun", tier: 1 },
+    ]);
+    expect(sequence.finalBuild).toMatchObject({
+      shield: 4,
+      level: 2,
+      experience: 3,
+      scrap: 91,
+      upgrades: [{ upgradeId: "rapid-cycling", level: 1 }],
+      ownedItemIds: ["scrap-magnet"],
+      bannedShopIds: ["shop-item:glass-cannon"],
+      transformation: startingBuild.transformation,
+    });
+    expect(sequence.finalBuild.weapons).toEqual(sequence.encounterBuilds[0]?.weapons);
+  });
+
+  it("fingerprints progression fields that must survive a node transition", () => {
+    const baseBuild = {
+      health: 75,
+      shield: 0,
+      level: 1,
+      experience: 0,
+      scrap: 0,
+      weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }],
+      upgrades: [],
+    };
+    const baseline = runCombatReplay({ ...FIXTURE, startingBuild: baseBuild }).digest;
+    expect(runCombatReplay({ ...FIXTURE, startingBuild: { ...baseBuild, shield: 3 } }).digest).not.toBe(baseline);
+    expect(runCombatReplay({ ...FIXTURE, startingBuild: { ...baseBuild, scrap: 20 } }).digest).not.toBe(baseline);
+    expect(runCombatReplay({
+      ...FIXTURE,
+      startingBuild: { ...baseBuild, ownedItemIds: ["scrap-magnet"] },
+    }).digest).not.toBe(baseline);
+    expect(runCombatReplay({
+      ...FIXTURE,
+      startingBuild: {
+        ...baseBuild,
+        transformation: {
+          committedPathId: null,
+          paths: [{ pathId: "cybernetic-ascension", affinity: 1, choiceIds: ["targeting-suite"] }],
+        },
+      },
+    }).digest).not.toBe(baseline);
   });
 });
 

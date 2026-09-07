@@ -1,9 +1,11 @@
 import type { PlayerIntent } from "../input/PlayerIntent";
 import { CombatSimulation, type CombatScenario, type CombatSnapshot } from "./CombatSimulation";
 import type { ExpeditionEncounterDescriptor } from "../expedition/ExpeditionEncounter";
+import type { ExpeditionBuildSnapshot } from "../expedition/ExpeditionRun";
+import { expeditionBuildFromCombatSnapshot } from "../expedition/ExpeditionBuildSnapshot";
 
 export const REPLAY_FORMAT_VERSION = 1;
-export const SIMULATION_COMPATIBILITY_VERSION = 1;
+export const SIMULATION_COMPATIBILITY_VERSION = 2;
 export const REPLAY_FIXED_DELTA_SECONDS = 1 / 60;
 
 export interface ReplayInputSpan {
@@ -24,12 +26,15 @@ export interface CombatReplayFixture {
   readonly fixedDeltaSeconds: number;
   readonly inputSpans: readonly ReplayInputSpan[];
   readonly expeditionEncounter?: ExpeditionEncounterDescriptor;
+  /** Initial run state. In a sequence this is read only from the first fixture. */
+  readonly startingBuild?: ExpeditionBuildSnapshot;
 }
 
 export interface ReplayResult {
   readonly framesRun: number;
   readonly digest: string;
   readonly snapshot: CombatSnapshot;
+  readonly endingBuild: ExpeditionBuildSnapshot;
 }
 
 export interface ReplaySequenceResult {
@@ -37,6 +42,8 @@ export interface ReplaySequenceResult {
   readonly framesRun: number;
   readonly digest: string;
   readonly encounterDigests: readonly string[];
+  readonly encounterBuilds: readonly ExpeditionBuildSnapshot[];
+  readonly finalBuild: ExpeditionBuildSnapshot;
 }
 
 const NEUTRAL: PlayerIntent = {
@@ -51,6 +58,7 @@ export function runCombatReplay(fixture: CombatReplayFixture): ReplayResult {
     seed: fixture.seed,
     scenario: fixture.scenario,
     startingWeaponIds: ["bastion-service-rifle"],
+    startingBuild: fixture.startingBuild,
     autoFireEnabled: false,
     expeditionEncounter: fixture.expeditionEncounter,
   });
@@ -71,14 +79,29 @@ export function runCombatReplay(fixture: CombatReplayFixture): ReplayResult {
     }
   }
   const snapshot = simulation.snapshot();
-  return { framesRun, digest: replaySnapshotDigest(snapshot, fixture.seed), snapshot };
+  return {
+    framesRun,
+    digest: replaySnapshotDigest(snapshot, fixture.seed),
+    snapshot,
+    endingBuild: expeditionBuildFromCombatSnapshot(snapshot),
+  };
 }
 
-/** Runs an ordered set of encounter fixtures and fingerprints their order as well as each result. */
+/** Runs encounters in order, carrying the live game's saved build boundary between each node. */
 export function runCombatReplaySequence(fixtures: readonly CombatReplayFixture[]): ReplaySequenceResult {
   if (fixtures.length === 0) throw new Error("Replay sequence requires at least one encounter");
-  const results = fixtures.map(runCombatReplay);
+  const results: ReplayResult[] = [];
+  let carriedBuild: ExpeditionBuildSnapshot | undefined;
+  fixtures.forEach((fixture, index) => {
+    const result = runCombatReplay({
+      ...fixture,
+      startingBuild: index === 0 ? fixture.startingBuild : carriedBuild,
+    });
+    results.push(result);
+    carriedBuild = result.endingBuild;
+  });
   const encounterDigests = results.map((result) => result.digest);
+  const encounterBuilds = results.map((result) => result.endingBuild);
   return {
     encountersRun: results.length,
     framesRun: results.reduce((total, result) => total + result.framesRun, 0),
@@ -88,6 +111,8 @@ export function runCombatReplaySequence(fixtures: readonly CombatReplayFixture[]
       digest: encounterDigests[index],
     })))),
     encounterDigests,
+    encounterBuilds,
+    finalBuild: encounterBuilds[encounterBuilds.length - 1]!,
   };
 }
 
@@ -104,11 +129,42 @@ export function replaySnapshotDigest(snapshot: CombatSnapshot, seed = 0): string
     seed,
     status: snapshot.status,
     wave: snapshot.waveNumber,
-    health: round(snapshot.playerHealth),
+    hero: snapshot.heroId,
+    health: [
+      round(snapshot.playerHealth),
+      round(snapshot.playerMaxHealth),
+      round(snapshot.playerBonusHealth),
+      round(snapshot.playerMaxBonusHealth),
+    ],
+    shield: [round(snapshot.playerShield), round(snapshot.playerMaxShield)],
+    progression: [snapshot.level, snapshot.experience, snapshot.experienceForNextLevel, snapshot.securedScrap],
     player: [round(snapshot.playerPosition.x), round(snapshot.playerPosition.y)],
     kills: snapshot.runMetrics.kills,
     decision: snapshot.pendingDecision?.kind ?? "",
-    weapons: snapshot.equippedWeapons.map((weapon) => [weapon.instanceId, weapon.weaponId]),
+    weapons: snapshot.weaponInventory.rack.map((slot) => slot.tile
+      ? [slot.id, slot.tile.instanceId, slot.tile.weaponId, slot.tile.tier]
+      : [slot.id]),
+    stash: snapshot.weaponInventory.stash.map((tile) => tile
+      ? [tile.instanceId, tile.weaponId, tile.tier]
+      : null),
+    upgrades: [...snapshot.upgradeLevels]
+      .sort((left, right) => left.id.localeCompare(right.id))
+      .map((upgrade) => [upgrade.id, upgrade.level]),
+    transformation: {
+      committed: snapshot.transformation.committedPathId,
+      paths: [...snapshot.transformation.paths]
+        .sort((left, right) => left.pathId.localeCompare(right.pathId))
+        .map((path) => [path.pathId, path.affinity, [...path.choiceIds]]),
+    },
+    holdings: {
+      relics: [...snapshot.relicIds].sort(),
+      items: [...snapshot.ownedItemIds].sort(),
+      itemStats: Object.entries(snapshot.itemStats).sort(([left], [right]) => left.localeCompare(right)),
+      bannedShopIds: [...snapshot.bannedShopIds].sort(),
+      artifact: snapshot.equippedArtifactId,
+      maxHealthBonus: snapshot.rewardMaxHealthBonus,
+      weaponSlotBonus: snapshot.rewardWeaponSlotBonus,
+    },
     enemies: snapshot.enemies.map((enemy) => [
       enemy.id, enemy.type, round(enemy.position.x), round(enemy.position.y), round(enemy.health),
       enemy.corruptedMarinePhase ?? enemy.brainPhase ?? enemy.spitterPhase ?? enemy.ripperPhase ?? enemy.miniBossKind ?? "",
