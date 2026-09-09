@@ -114,4 +114,31 @@ test.describe("Last Bastion executable acceptance", () => {
     await page.waitForFunction(() => window.__savePersistence?.operation === "read");
     await expectHealthyCanvas(page, failures);
   });
+
+  test("repeated renderer boots and scene transitions remain crash-free", async ({ page }) => {
+    const failures = watchRuntime(page);
+    for (let cycle = 0; cycle < 2; cycle += 1) {
+      await page.goto("/play/last-bastion/?screen=title");
+      await page.waitForFunction(() => window.__shellState?.screen === "title");
+      await page.keyboard.press("Enter");
+      await page.waitForFunction(() => window.__shellState?.screen === "menu");
+      await expectHealthyCanvas(page, failures);
+
+      await page.goto(`/play/last-bastion/?screen=map&mapseed=${7000 + cycle}&threat=1`);
+      await page.waitForFunction(() => Boolean(window.__expeditionState));
+      await page.keyboard.press("Enter");
+      await page.waitForFunction(() => Number.isInteger(window.__expeditionState?.armedNodeId));
+      await page.keyboard.press("Enter");
+      await page.waitForURL((url) => url.searchParams.get("screen") === "game" || url.searchParams.get("screen") === "event");
+      await expectHealthyCanvas(page, failures);
+
+      await page.goto("/play/last-bastion/?scenario=powerup-identity");
+      await page.waitForFunction(() => Number(window.__combatAssetAudit?.count) > 0);
+      await expectHealthyCanvas(page, failures);
+
+      await page.goto("/play/last-bastion/?screen=summary&summarydemo=1");
+      await page.waitForFunction(() => Number.isInteger(window.__runSummaryNavigation?.selectedIndex));
+      await expectHealthyCanvas(page, failures);
+    }
+  });
 });

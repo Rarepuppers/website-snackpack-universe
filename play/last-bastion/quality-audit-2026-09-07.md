@@ -157,15 +157,19 @@ visual approval still needs a human review of legibility and art.
 
 ### QA-05 — Strengthen replay evidence before broad extraction (P1, M)
 
-**Implementation status — continuity slice completed 8 September 2026.** Replay compatibility
-version 2 now uses the same pure combat-to-expedition-build conversion as the live scene, carries
-that build through ordered encounters, exposes per-node build checkpoints, and fingerprints
-shield, bonus health, progression, scrap, weapon tiers and stash, upgrades, transformation,
-relic/item holdings, item stats, shop bans, artifact and slot/health rewards. Tests prove weapon,
-shield, upgrade, item, ban and transformation state cross a node, and prove previously omitted
-progression fields change the digest. The remaining corpus work is shop purchase/ban actions,
-objective completion/failure, hero abilities, defeat, and a renderer-level repeated boot/transition
-reproducer for the historical `Gradient` crash.
+**Implementation status — completed 10 September 2026.** Replay compatibility version 3 uses the
+same pure combat-to-expedition-build conversion as the live scene, carries that build through
+ordered encounters, and records per-node and per-input-span checkpoints. Its digest covers shield,
+bonus health, progression, scrap, weapon tiers and stash, upgrades, transformation, relic/item
+holdings, item stats, shop bans, artifact and slot/health rewards, objectives, hero-action cooldowns,
+active buffs and defeat cause. The representative corpus now includes node continuity, shop item
+purchase and ban, ranked reward, transformation, Deny completion, Collect failure, an Assault
+ultimate, and an abandoned-run defeat. Changing the shop action preserves the preceding checkpoints
+and diverges at the changed span. The executable browser lane also repeats title-to-menu and
+map-to-encounter transitions plus direct combat and debrief boots twice while rejecting page,
+console, request and response failures. This certifies the Phaser renderer used by this project;
+the handover's historical Godot `Gradient` crash remains inapplicable without the missing Godot
+project or a reproducer from it.
 
 **Evidence:** seeded fixtures and ranked-kill determinism tests already exist in
 `combat/ReplayFixture.test.ts`. However, `runCombatReplaySequence` uses

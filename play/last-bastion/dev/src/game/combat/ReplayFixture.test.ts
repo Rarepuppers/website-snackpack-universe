@@ -38,8 +38,8 @@ describe("versioned fixed-step replay fixture", () => {
     const second = runCombatReplay(FIXTURE);
     expect(first.framesRun).toBe(210);
     expect(first.digest).toBe(second.digest);
-    // Compatibility v2 includes run-long progression and inventory state.
-    expect(first.digest).toBe("5705ce6b");
+    // Compatibility v3 adds objective, hero-action and defeat state.
+    expect(first.digest).toBe("a22853dd");
   });
 
   it("detects seed and input divergence", () => {
@@ -49,8 +49,8 @@ describe("versioned fixed-step replay fixture", () => {
   });
 
   it("rejects incompatible formats, simulation rules, and timesteps", () => {
-    expect(() => runCombatReplay({ ...FIXTURE, formatVersion: 2 })).toThrow("Unsupported replay format");
-    expect(() => runCombatReplay({ ...FIXTURE, simulationVersion: 3 })).toThrow("Unsupported simulation version");
+    expect(() => runCombatReplay({ ...FIXTURE, formatVersion: 3 })).toThrow("Unsupported replay format");
+    expect(() => runCombatReplay({ ...FIXTURE, simulationVersion: 4 })).toThrow("Unsupported simulation version");
     expect(() => runCombatReplay({ ...FIXTURE, fixedDeltaSeconds: 0.05 })).toThrow("canonical fixed timestep");
   });
 
@@ -121,7 +121,7 @@ describe("versioned fixed-step replay fixture", () => {
     // 2cb124a9 (26 July, seeded world-object placement),
     // 559b0de8 (31 July, powerup rotation offset),
     // 4dd2f610 (31 July, interactable placement; fresh build per encounter).
-    expect(first.digest).toBe("fcd28e4b");
+    expect(first.digest).toBe("92a2f0f4");
     expect(runCombatReplaySequence([...fixtures].reverse()).digest).not.toBe(first.digest);
     expect(() => runCombatReplaySequence([])).toThrow("at least one encounter");
   });
@@ -196,6 +196,92 @@ describe("versioned fixed-step replay fixture", () => {
         },
       },
     }).digest).not.toBe(baseline);
+  });
+
+  it("replays a shop item purchase and ban with an identified divergence checkpoint", () => {
+    const startingBuild = {
+      health: 75, shield: 0, level: 1, experience: 0, scrap: 400,
+      weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }], upgrades: [],
+    };
+    let seed = 0;
+    let purchaseId = "";
+    let purchaseCost = 0;
+    for (let candidate = 1; candidate < 60 && !purchaseId; candidate += 1) {
+      const preview = new CombatSimulation({ scenario: "scrap-shop", seed: candidate, startingBuild });
+      const item = preview.snapshot().pendingDecision?.options.find((option) => option.id.startsWith("shop-item:"));
+      if (!item) continue;
+      seed = candidate;
+      purchaseId = item.id;
+      purchaseCost = item.cost ?? 0;
+    }
+    expect(purchaseId).not.toBe("");
+
+    const afterPurchase = new CombatSimulation({ scenario: "scrap-shop", seed, startingBuild });
+    expect(afterPurchase.chooseOption(purchaseId)).toBe(true);
+    const banTarget = afterPurchase.snapshot().pendingDecision!.options.find((option) => (option.cost ?? 0) > 0)!;
+    const fixture: CombatReplayFixture = {
+      ...FIXTURE,
+      seed,
+      scenario: "scrap-shop",
+      startingBuild,
+      inputSpans: [
+        { frames: 1, decisionOnFirstFrame: purchaseId },
+        { frames: 1, decisionOnFirstFrame: "shop-manage" },
+        { frames: 1, decisionOnFirstFrame: `shop-ban:${banTarget.id}` },
+      ],
+    };
+    const result = runCombatReplay(fixture);
+    const withoutBan = runCombatReplay({ ...fixture, inputSpans: fixture.inputSpans.slice(0, 2) });
+
+    expect(result.snapshot.securedScrap).toBe(400 - purchaseCost);
+    expect(result.endingBuild.ownedItemIds).toContain(purchaseId.slice("shop-item:".length));
+    expect(result.endingBuild.bannedShopIds).toContain(banTarget.id);
+    expect(result.spanDigests.slice(0, 2)).toEqual(withoutBan.spanDigests);
+    expect(result.spanDigests[2]).not.toBe(withoutBan.digest);
+    expect(runCombatReplay(fixture)).toEqual(result);
+  });
+
+  it("replays objective completion and failure as deterministic outcomes", () => {
+    const completed = runCombatReplay({
+      ...FIXTURE,
+      scenario: "deny-objective",
+      inputSpans: [{ frames: 1, defeatAllEnemiesOnFirstFrame: true }],
+    });
+    const failedFixture: CombatReplayFixture = {
+      ...FIXTURE,
+      scenario: "collect-objective",
+      inputSpans: [{ frames: 2_000, defeatAllEnemiesOnFirstFrame: true }],
+    };
+    const failed = runCombatReplay(failedFixture);
+
+    expect(completed.snapshot.status).toBe("victory");
+    expect(completed.snapshot.denyObjective?.status).toBe("complete");
+    expect(failed.snapshot.status).toBe("defeat");
+    expect(failed.snapshot.collectObjective?.status).toBe("failed");
+    expect(runCombatReplay(failedFixture).digest).toBe(failed.digest);
+  });
+
+  it("replays hero ultimate input and an abandoned-run defeat", () => {
+    const ultimate = runCombatReplay({
+      ...FIXTURE,
+      heroId: "assault",
+      inputSpans: [{ frames: 1, ultimateOnFirstFrame: true }],
+    });
+    const idle = runCombatReplay({
+      ...FIXTURE,
+      heroId: "assault",
+      inputSpans: [{ frames: 1 }],
+    });
+    const abandoned = runCombatReplay({
+      ...FIXTURE,
+      inputSpans: [{ frames: 1, abandonOnFirstFrame: true }],
+    });
+
+    expect(ultimate.snapshot.projectiles.filter((projectile) => projectile.weaponId === "marauder-ar")).toHaveLength(9);
+    expect(ultimate.snapshot.ultimateReady).toBe(false);
+    expect(ultimate.digest).not.toBe(idle.digest);
+    expect(abandoned.snapshot.status).toBe("defeat");
+    expect(abandoned.snapshot.runMetrics.defeatCause).toBe("Run abandoned");
   });
 });
 

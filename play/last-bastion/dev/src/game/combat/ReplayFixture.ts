@@ -3,9 +3,10 @@ import { CombatSimulation, type CombatScenario, type CombatSnapshot } from "./Co
 import type { ExpeditionEncounterDescriptor } from "../expedition/ExpeditionEncounter";
 import type { ExpeditionBuildSnapshot } from "../expedition/ExpeditionRun";
 import { expeditionBuildFromCombatSnapshot } from "../expedition/ExpeditionBuildSnapshot";
+import type { HeroDefinition } from "../hero/HeroDefinition";
 
-export const REPLAY_FORMAT_VERSION = 1;
-export const SIMULATION_COMPATIBILITY_VERSION = 2;
+export const REPLAY_FORMAT_VERSION = 2;
+export const SIMULATION_COMPATIBILITY_VERSION = 3;
 export const REPLAY_FIXED_DELTA_SECONDS = 1 / 60;
 
 export interface ReplayInputSpan {
@@ -13,7 +14,15 @@ export interface ReplayInputSpan {
   readonly move?: Readonly<{ x: number; y: number }>;
   readonly aim?: Readonly<{ x: number; y: number }>;
   readonly fireHeld?: boolean;
+  readonly toggleFireModeOnFirstFrame?: boolean;
   readonly evasiveMoveOnFirstFrame?: boolean;
+  readonly interactOnFirstFrame?: boolean;
+  readonly ultimateOnFirstFrame?: boolean;
+  readonly kitOnFirstFrame?: boolean;
+  /** Deterministic harness setup for objective and ranked-reward branches. */
+  readonly defeatAllEnemiesOnFirstFrame?: boolean;
+  /** Replays the pause-menu abandon command before this span's first step. */
+  readonly abandonOnFirstFrame?: boolean;
   /** Decision option applied before the first simulation frame in this span. */
   readonly decisionOnFirstFrame?: string;
 }
@@ -26,6 +35,7 @@ export interface CombatReplayFixture {
   readonly fixedDeltaSeconds: number;
   readonly inputSpans: readonly ReplayInputSpan[];
   readonly expeditionEncounter?: ExpeditionEncounterDescriptor;
+  readonly heroId?: HeroDefinition["id"];
   /** Initial run state. In a sequence this is read only from the first fixture. */
   readonly startingBuild?: ExpeditionBuildSnapshot;
 }
@@ -33,6 +43,7 @@ export interface CombatReplayFixture {
 export interface ReplayResult {
   readonly framesRun: number;
   readonly digest: string;
+  readonly spanDigests: readonly string[];
   readonly snapshot: CombatSnapshot;
   readonly endingBuild: ExpeditionBuildSnapshot;
 }
@@ -59,29 +70,41 @@ export function runCombatReplay(fixture: CombatReplayFixture): ReplayResult {
     scenario: fixture.scenario,
     startingWeaponIds: ["bastion-service-rifle"],
     startingBuild: fixture.startingBuild,
+    heroId: fixture.heroId,
     autoFireEnabled: false,
     expeditionEncounter: fixture.expeditionEncounter,
   });
   let framesRun = 0;
+  const spanDigests: string[] = [];
   for (const span of fixture.inputSpans) {
     if (span.decisionOnFirstFrame && !simulation.chooseOption(span.decisionOnFirstFrame)) {
       throw new Error(`Replay decision is unavailable: ${span.decisionOnFirstFrame}`);
     }
+    if (span.defeatAllEnemiesOnFirstFrame) {
+      for (const enemy of simulation.snapshot().enemies) simulation.dealDamage(enemy.id, 99_999);
+    }
+    if (span.abandonOnFirstFrame) simulation.abandonRun();
     for (let frame = 0; frame < span.frames; frame += 1) {
       simulation.step({
         ...NEUTRAL,
         move: span.move ? { ...span.move } : NEUTRAL.move,
         aim: span.aim ? { ...span.aim } : NEUTRAL.aim,
         fireHeld: Boolean(span.fireHeld),
+        toggleFireModePressed: Boolean(span.toggleFireModeOnFirstFrame && frame === 0),
         evasiveMovePressed: Boolean(span.evasiveMoveOnFirstFrame && frame === 0),
+        interactPressed: Boolean(span.interactOnFirstFrame && frame === 0),
+        ultimatePressed: Boolean(span.ultimateOnFirstFrame && frame === 0),
+        kitPressed: Boolean(span.kitOnFirstFrame && frame === 0),
       }, fixture.fixedDeltaSeconds);
       framesRun += 1;
     }
+    spanDigests.push(replaySnapshotDigest(simulation.snapshot(), fixture.seed));
   }
   const snapshot = simulation.snapshot();
   return {
     framesRun,
     digest: replaySnapshotDigest(snapshot, fixture.seed),
+    spanDigests,
     snapshot,
     endingBuild: expeditionBuildFromCombatSnapshot(snapshot),
   };
@@ -138,6 +161,14 @@ export function replaySnapshotDigest(snapshot: CombatSnapshot, seed = 0): string
     ],
     shield: [round(snapshot.playerShield), round(snapshot.playerMaxShield)],
     progression: [snapshot.level, snapshot.experience, snapshot.experienceForNextLevel, snapshot.securedScrap],
+    heroAction: {
+      state: snapshot.heroState,
+      evasiveReady: snapshot.evasiveReady,
+      evasiveCooldown: round(snapshot.evasiveCooldownRemainingSeconds),
+      ultimateReady: snapshot.ultimateReady,
+      ultimateCooldown: round(snapshot.ultimateCooldownRemainingSeconds),
+      uraniumKitAvailable: snapshot.uraniumKitAvailable,
+    },
     player: [round(snapshot.playerPosition.x), round(snapshot.playerPosition.y)],
     kills: snapshot.runMetrics.kills,
     decision: snapshot.pendingDecision?.kind ?? "",
@@ -165,6 +196,29 @@ export function replaySnapshotDigest(snapshot: CombatSnapshot, seed = 0): string
       maxHealthBonus: snapshot.rewardMaxHealthBonus,
       weaponSlotBonus: snapshot.rewardWeaponSlotBonus,
     },
+    objectives: {
+      escort: snapshot.escortObjective ? {
+        status: snapshot.escortObjective.status,
+        health: round(snapshot.escortObjective.health),
+        progress: round(snapshot.escortObjective.progress),
+        underAttack: snapshot.escortObjective.underAttack,
+      } : null,
+      deny: snapshot.denyObjective ? {
+        status: snapshot.denyObjective.status,
+        corruption: round(snapshot.denyObjective.corruption),
+        terminals: snapshot.denyObjective.terminals.map((terminal) => [terminal.id, terminal.active]),
+      } : null,
+      collect: snapshot.collectObjective ? {
+        status: snapshot.collectObjective.status,
+        collected: snapshot.collectObjective.collected,
+        total: snapshot.collectObjective.total,
+        remaining: round(snapshot.collectObjective.remainingSeconds),
+      } : null,
+    },
+    activeBuffs: [...snapshot.activeBuffs]
+      .sort((left, right) => left.type.localeCompare(right.type))
+      .map((buff) => [buff.type, round(buff.remainingSeconds)]),
+    defeatCause: snapshot.runMetrics.defeatCause,
     enemies: snapshot.enemies.map((enemy) => [
       enemy.id, enemy.type, round(enemy.position.x), round(enemy.position.y), round(enemy.health),
       enemy.corruptedMarinePhase ?? enemy.brainPhase ?? enemy.spitterPhase ?? enemy.ripperPhase ?? enemy.miniBossKind ?? "",
