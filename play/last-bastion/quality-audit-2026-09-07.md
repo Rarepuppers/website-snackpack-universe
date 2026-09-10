@@ -191,18 +191,19 @@ certify a rendering crash such as the unrelated Godot Gradient issue.
 
 ### QA-06 — Stage the large-file split by responsibility (P2, L; depends on QA-05)
 
-**Implementation status — first extraction completed 10 September 2026.** With QA-05's replay
-corpus in place, decision rendering and keyboard/gamepad/pointer selection now live in the focused
-`CombatDecisionOverlay` UI owner. `PrototypeScene` retains simulation mutation authority through a
-single `chooseOption` callback and supplies confirmation audio and the two existing presentation
-cache resets. This removes about 265 lines from the scene without changing decision layout or input
-rules. Browser acceptance opens a weapon-placement decision, moves the selection, confirms it, and
-observes the overlay close. The next extraction is combat-event presentation dispatch; simulation
-state ownership remains deferred to the existing pure planner seams.
+**Implementation status — two scene extractions completed 10 September 2026.** With QA-05's
+replay corpus in place, decision rendering and keyboard/gamepad/pointer selection now live in the
+focused `CombatDecisionOverlay` UI owner. Combat event-to-audio, haptic, visual-effect and feedback
+dispatch now lives in `CombatEventPresenter`, behind a typed presentation port whose callbacks keep
+Phaser scene ownership explicit. `PrototypeScene` retains simulation mutation authority and the
+actual Phaser object/effect helpers. Together these changes reduce the scene from 5,546 to 4,803
+lines without changing event order, decision layout, input rules or fixed-step timing. Browser
+acceptance covers decision navigation and repeated combat scene transitions; the full replay corpus
+continues to cover simulation state. Simulation ownership remains deferred to its pure planner seams.
 
-**Evidence:** `CombatSimulation.ts` and `PrototypeScene.ts` remain roughly 10,000 and 5,600
-nonblank lines respectively. Existing behavior/restore planners and 33 adapter checks are
-useful seams, but the boundary script checks delegation patterns, not state equivalence.
+**Evidence:** `CombatSimulation.ts` remains 10,412 lines, while `PrototypeScene.ts` is now 4,803
+lines. Existing behavior/restore planners and adapter checks are useful seams, but the boundary
+script checks delegation patterns, not state equivalence.
 
 **Task:** extract one responsibility per change. Start with decision presentation/input
 from PrototypeScene, then combat-event presentation dispatch. In simulation, extend the
