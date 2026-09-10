@@ -5,7 +5,8 @@ import { WEAPON_CATALOG, type WeaponId } from "../content/weaponCatalog";
 import { UPGRADE_CATALOG, type UpgradeId } from "../content/upgradeCatalog";
 import { PERK_CATALOG } from "../perks/perkCatalog";
 import { createLocalSaveStore } from "../save/SaveStorage";
-import { createRunSummary, damagePerMinute, type RunSummary } from "../run/RunSummary";
+import { createCurrentRunProvenance, createRunSummary, damagePerMinute, type RunSummary } from "../run/RunSummary";
+import { formatRunDetails, quickDropRetryUrl } from "../run/RunReport";
 import { createTransformationCodexSnapshot } from "../transformations/TransformationSnapshot";
 import { normalizeTransformationAffinityState } from "../transformations/TransformationAffinity";
 import { weaponTilePresentation } from "../ui/WeaponTileFrames";
@@ -30,6 +31,7 @@ export class RunSummaryScene extends Phaser.Scene {
   private returnFrames: Phaser.GameObjects.Rectangle[] = [];
   private returnLabels: Phaser.GameObjects.Text[] = [];
   private returnHints: Phaser.GameObjects.Text[] = [];
+  private copyStatus: Phaser.GameObjects.Text | null = null;
 
   constructor() {
     super("run-summary");
@@ -68,6 +70,8 @@ export class RunSummaryScene extends Phaser.Scene {
       const threat = threatTierDefinition(summary.threatTier);
       this.text(892, 70, `THREAT ${threat.tier}  ${threat.name}`, threat.tier > 0 ? ORANGE : TEAL, "10px", false, 1);
     }
+    const seedLabel = summary.provenance.combatSeed === null ? "SEED UNKNOWN" : `SEED ${summary.provenance.combatSeed}`;
+    this.text(892, 88, `${seedLabel}  /  SIM ${summary.provenance.simulationVersion || "?"}`, MUTED, "8px", false, 1);
     if (!victory && summary.defeatCause) this.text(56, 86, summary.defeatCause.toUpperCase(), ORANGE, "9px");
     if (summary.newBestWave || summary.newBestNodes) {
       this.text(892, 48, "NEW RECORD", TEAL, "11px", false, 1);
@@ -210,15 +214,25 @@ export class RunSummaryScene extends Phaser.Scene {
       this.add.zone(337, 477, 286, 42).setOrigin(0, 0).setInteractive().on("pointerdown", leave);
       return;
     }
-    const retry = () => { window.location.href = `?screen=game&hero=${summary.heroId}`; };
+    const retryUrl = quickDropRetryUrl(summary);
+    const retry = () => { if (retryUrl) window.location.href = retryUrl; };
+    const quickDrop = () => { window.location.href = `?screen=game&hero=${summary.heroId}`; };
     const expedition = () => { window.location.href = "?screen=title&flow=character-select"; };
-    const actions = [
-      { x: 292, label: "RETRY QUICK DROP", shortcut: "R", run: retry },
-      { x: 480, label: "NEW EXPEDITION", shortcut: "N", run: expedition },
-      { x: 668, label: "MAIN MENU", shortcut: "ESC / B", run: leave },
-    ] as const;
+    const copy = () => { void this.copyRunDetails(summary); };
+    const actionDefinitions = [
+      ...(retryUrl ? [{ label: "RETRY THIS SEED", shortcut: "R", run: retry }] : []),
+      { label: "NEW QUICK DROP", shortcut: "Q", run: quickDrop },
+      { label: "NEW EXPEDITION", shortcut: "N", run: expedition },
+      { label: "COPY RUN DETAILS", shortcut: "C", run: copy },
+      { label: "MAIN MENU", shortcut: "ESC / B", run: leave },
+    ];
+    const spacing = 178;
+    const firstX = WIDTH / 2 - spacing * (actionDefinitions.length - 1) / 2;
+    const actions = actionDefinitions.map((action, index) => ({ ...action, x: firstX + index * spacing }));
     this.returnActions = actions;
-    this.returnActionIndex = summary.mode === "expedition" ? 1 : 0;
+    this.returnActionIndex = summary.mode === "expedition"
+      ? Math.max(0, actions.findIndex(({ label }) => label === "NEW EXPEDITION"))
+      : 0;
     this.returnFrames = [];
     this.returnLabels = [];
     this.returnHints = [];
@@ -232,14 +246,16 @@ export class RunSummaryScene extends Phaser.Scene {
     });
     this.refreshReturnActions();
     this.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
-      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter", "Space", "KeyR", "KeyN", "Escape"].includes(event.code)) {
+      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter", "Space", "KeyR", "KeyQ", "KeyN", "KeyC", "Escape"].includes(event.code)) {
         event.preventDefault();
       }
       if (event.code === "ArrowLeft" || event.code === "ArrowUp") this.moveReturnAction(-1);
       else if (event.code === "ArrowRight" || event.code === "ArrowDown") this.moveReturnAction(1);
       else if (event.code === "Enter" || event.code === "Space") this.activateReturnAction();
       else if (event.code === "KeyR") retry();
+      else if (event.code === "KeyQ") quickDrop();
       else if (event.code === "KeyN") expedition();
+      else if (event.code === "KeyC") copy();
       else if (event.code === "Escape") leave();
     });
     this.input.gamepad?.on("down", (_pad: unknown, button: { index: number }) => {
@@ -249,6 +265,25 @@ export class RunSummaryScene extends Phaser.Scene {
       else if (intent === "confirm") this.activateReturnAction();
       else if (intent === "back") leave();
     });
+  }
+
+  private async copyRunDetails(summary: RunSummary): Promise<void> {
+    const details = formatRunDetails(summary);
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(details);
+      this.setCopyStatus("RUN DETAILS COPIED", TEAL);
+      (window as unknown as { __runSummaryCopy?: object }).__runSummaryCopy = { copied: true, fallback: false };
+    } catch {
+      showSelectableRunDetails(details);
+      this.setCopyStatus("COPY BLOCKED — DETAILS OPENED FOR SELECTION", ORANGE);
+      (window as unknown as { __runSummaryCopy?: object }).__runSummaryCopy = { copied: false, fallback: true };
+    }
+  }
+
+  private setCopyStatus(message: string, color: string): void {
+    this.copyStatus?.destroy();
+    this.copyStatus = this.text(WIDTH / 2, 461, message, color, "8px", true).setDepth(3000);
   }
 
   private selectReturnAction(index: number): void {
@@ -309,6 +344,40 @@ export class RunSummaryScene extends Phaser.Scene {
     else if (align === 1) text.setOrigin(1, 0);
     return text;
   }
+}
+
+function showSelectableRunDetails(details: string): void {
+  document.getElementById("run-details-fallback")?.remove();
+  const overlay = document.createElement("div");
+  overlay.id = "run-details-fallback";
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-label", "Run details");
+  Object.assign(overlay.style, {
+    position: "fixed", inset: "0", zIndex: "10000", display: "grid", placeItems: "center",
+    background: "rgba(5, 10, 16, .88)", padding: "24px",
+  });
+  const panel = document.createElement("div");
+  Object.assign(panel.style, { width: "min(680px, 92vw)", color: "#e8e2d4", fontFamily: "monospace" });
+  const heading = document.createElement("p");
+  heading.textContent = "Clipboard access was blocked. Select and copy these run details:";
+  const textarea = document.createElement("textarea");
+  textarea.value = details;
+  textarea.readOnly = true;
+  textarea.setAttribute("aria-label", "Selectable run details");
+  Object.assign(textarea.style, {
+    width: "100%", height: "280px", boxSizing: "border-box", resize: "vertical",
+    background: "#101923", color: "#e8e2d4", border: "1px solid #68e4e8", padding: "12px",
+  });
+  const close = document.createElement("button");
+  close.type = "button";
+  close.textContent = "Close";
+  Object.assign(close.style, { marginTop: "12px", padding: "8px 18px", cursor: "pointer" });
+  close.addEventListener("click", () => overlay.remove());
+  panel.append(heading, textarea, close);
+  overlay.append(panel);
+  document.body.append(overlay);
+  textarea.focus();
+  textarea.select();
 }
 
 function format(value: number): string {
@@ -388,5 +457,12 @@ function demoSummary(reviewWeapons: readonly WeaponId[] = [
       paths: [{ pathId: "cybernetic-ascension", choiceIds: ["targeting-suite", "targeting-suite", "shield-lattice"] }],
     }),
     newlyUnlockedPerkIds: ["perk-gunsmith"],
+    provenance: createCurrentRunProvenance({
+      combatSeed: 61061,
+      mapSeed: 20260910,
+      gameSpeedMultiplier: 1,
+      autoFireEnabled: true,
+      aimAssistStrength: 0.35,
+    }),
   });
 }

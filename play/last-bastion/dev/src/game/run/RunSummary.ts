@@ -1,5 +1,6 @@
 import type { PerkId } from "../perks/perkCatalog";
 import type { ThreatTier } from "../expedition/ThreatTier";
+import { SIMULATION_COMPATIBILITY_VERSION } from "../combat/SimulationCompatibility";
 import {
   cloneTransformationAffinityState,
   type TransformationAffinityState,
@@ -19,6 +20,23 @@ export interface RunMetrics {
   damageTakenBySource?: Readonly<Record<string, number>>;
   defeatCause?: string | null;
 }
+
+export interface RunProvenance {
+  /** Encounter seed. Null only for summaries written before provenance tracking. */
+  combatSeed: number | null;
+  /** Expedition chart seed; null for Quick Drop and old summaries. */
+  mapSeed: number | null;
+  buildVersion: string;
+  simulationVersion: number;
+  settings: {
+    gameSpeedMultiplier: 0.75 | 1 | 1.25;
+    autoFireEnabled: boolean;
+    aimAssistStrength: number;
+  };
+  gameSpeedModified: boolean;
+}
+
+export const LAST_BASTION_BUILD_VERSION = "web-2026.09.10-qa09";
 
 export interface RunSummary {
   mode: "quick-drop" | "expedition";
@@ -49,6 +67,7 @@ export interface RunSummary {
   upgrades: readonly { upgradeId: string; level: number }[];
   transformation: TransformationAffinityState;
   newlyUnlockedPerkIds: readonly PerkId[];
+  provenance: RunProvenance;
   /** Persistent meta-currency banked when this run ended. */
   commandMarksEarned: number;
 }
@@ -146,7 +165,7 @@ export function createRunSummary(
     "newlyUnlockedPerkIds" | "transformation" | "elapsedSeconds" | "damageTaken"
     | "eliteKills" | "bossDamage" | "highestHit" | "criticalHits" | "damageTakenBySource"
     | "damageBySecond" | "threatTier" | "commandMarksEarned"
-    | "defeatCause" | "newBestWave" | "newBestNodes"
+    | "defeatCause" | "newBestWave" | "newBestNodes" | "provenance"
   > & {
     newlyUnlockedPerkIds?: readonly PerkId[];
     transformation?: TransformationAffinityState;
@@ -163,6 +182,7 @@ export function createRunSummary(
     newBestNodes?: boolean;
     threatTier?: ThreatTier | null;
     commandMarksEarned?: number;
+    provenance?: Partial<RunProvenance> | null;
   },
 ): RunSummary {
   return {
@@ -192,8 +212,59 @@ export function createRunSummary(
     upgrades: input.upgrades.map((upgrade) => ({ ...upgrade })),
     transformation: cloneTransformationAffinityState(input.transformation),
     newlyUnlockedPerkIds: [...(input.newlyUnlockedPerkIds ?? [])],
+    provenance: normalizeRunProvenance(input.provenance),
     commandMarksEarned: Math.max(0, Math.floor(input.commandMarksEarned ?? 0)),
   };
+}
+
+
+function normalizeRunProvenance(value: Partial<RunProvenance> | null | undefined): RunProvenance {
+  const speed = value?.settings?.gameSpeedMultiplier;
+  const aimAssist = value?.settings?.aimAssistStrength;
+  return {
+    combatSeed: finiteIntegerOrNull(value?.combatSeed),
+    mapSeed: finiteIntegerOrNull(value?.mapSeed),
+    buildVersion: typeof value?.buildVersion === "string" && value.buildVersion.trim()
+      ? value.buildVersion.slice(0, 80)
+      : "unknown",
+    simulationVersion: Number.isSafeInteger(value?.simulationVersion) && (value?.simulationVersion ?? 0) > 0
+      ? value!.simulationVersion!
+      : 0,
+    settings: {
+      gameSpeedMultiplier: speed === 0.75 || speed === 1.25 ? speed : 1,
+      autoFireEnabled: value?.settings?.autoFireEnabled === true,
+      aimAssistStrength: typeof aimAssist === "number" && Number.isFinite(aimAssist)
+        ? Math.max(0, Math.min(1, aimAssist))
+        : 0,
+    },
+    gameSpeedModified: value?.gameSpeedModified === true,
+  };
+}
+
+function finiteIntegerOrNull(value: unknown): number | null {
+  return typeof value === "number" && Number.isSafeInteger(value) ? value : null;
+}
+
+export function createCurrentRunProvenance(input: {
+  combatSeed: number;
+  mapSeed?: number | null;
+  gameSpeedMultiplier: 0.75 | 1 | 1.25;
+  autoFireEnabled: boolean;
+  aimAssistStrength: number;
+  gameSpeedModified?: boolean;
+}): RunProvenance {
+  return normalizeRunProvenance({
+    combatSeed: input.combatSeed,
+    mapSeed: input.mapSeed ?? null,
+    buildVersion: LAST_BASTION_BUILD_VERSION,
+    simulationVersion: SIMULATION_COMPATIBILITY_VERSION,
+    settings: {
+      gameSpeedMultiplier: input.gameSpeedMultiplier,
+      autoFireEnabled: input.autoFireEnabled,
+      aimAssistStrength: input.aimAssistStrength,
+    },
+    gameSpeedModified: input.gameSpeedModified === true,
+  });
 }
 
 const MAX_DAMAGE_TIMELINE_SECONDS = 6 * 60 * 60;

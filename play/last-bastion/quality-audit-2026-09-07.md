@@ -263,6 +263,17 @@ input method, and evidence; no open S1/S2 presentation defect on release-critica
 
 ### QA-09 — Give players a reproducible run report (P2, M)
 
+**Implementation status — Quick Drop provenance and copy flow completed 10 September 2026.**
+Recordable Quick Drops now receive an explicit random seed; `?seed=` reproduces it. Summaries
+normalize combat/map seed, web build and simulation compatibility versions, starting speed,
+auto-fire and aim-assist settings, plus a speed-changed flag. The debrief distinguishes “Retry
+this seed” from “New Quick Drop”, preserves hero/perk/settings in the retry URL, and copies a
+plain-text factual report. Clipboard denial opens an accessible, selected textarea. Old summaries
+remain readable with explicit unknown provenance. A later schema change should carry initial
+settings and all encounter seeds across an entire multi-node expedition; the current expedition
+report records its map seed and final encounter setup, which is enough to regenerate the chart but
+is not claimed as a complete replay.
+
 **Evidence:** `run/RunSummary.ts` stores useful outcomes and defeat-cause metrics but has
 no seed/build identity or game-speed provenance fields. Retry Quick Drop in
 `RunSummaryScene.ts` carries only the hero ID. Existing data is a strong starting point.

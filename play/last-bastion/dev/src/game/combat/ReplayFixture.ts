@@ -6,7 +6,8 @@ import { expeditionBuildFromCombatSnapshot } from "../expedition/ExpeditionBuild
 import type { HeroDefinition } from "../hero/HeroDefinition";
 
 export const REPLAY_FORMAT_VERSION = 2;
-export const SIMULATION_COMPATIBILITY_VERSION = 3;
+export { SIMULATION_COMPATIBILITY_VERSION } from "./SimulationCompatibility";
+import { SIMULATION_COMPATIBILITY_VERSION } from "./SimulationCompatibility";
 export const REPLAY_FIXED_DELTA_SECONDS = 1 / 60;
 
 export interface ReplayInputSpan {

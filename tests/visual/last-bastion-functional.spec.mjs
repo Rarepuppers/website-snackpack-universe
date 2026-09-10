@@ -60,8 +60,9 @@ test.describe("Last Bastion executable acceptance", () => {
     const persisted = await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")));
     expect(persisted.expedition.currentNodeId).toBe(armedNodeId);
 
-    await page.goto("/play/last-bastion/?scenario=powerup-identity");
+    await page.goto("/play/last-bastion/?scenario=powerup-identity&seed=61061");
     await page.waitForFunction(() => Number(window.__combatAssetAudit?.count) > 0);
+    expect(await page.evaluate(() => window.__combatAssetAudit?.runSeed)).toBe(61061);
     await expectHealthyCanvas(page, failures);
   });
 
@@ -86,8 +87,27 @@ test.describe("Last Bastion executable acceptance", () => {
     await page.waitForFunction(() => window.__runSummaryNavigation?.selectedIndex === 0);
     expect(await page.evaluate(() => window.__runSummaryNavigation)).toEqual({
       selectedIndex: 0,
-      selectedShortcut: "R",
+      selectedShortcut: "Q",
     });
+    await expectHealthyCanvas(page, failures);
+  });
+
+  test("run details remain selectable when clipboard access is blocked", async ({ page }) => {
+    const failures = watchRuntime(page);
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "clipboard", {
+        configurable: true,
+        value: { writeText: () => Promise.reject(new DOMException("Clipboard blocked", "NotAllowedError")) },
+      });
+    });
+    await page.goto("/play/last-bastion/?screen=summary&summarydemo=1");
+    await page.waitForFunction(() => window.__runSummary?.provenance?.combatSeed === 61061);
+    await page.keyboard.press("c");
+    await page.waitForFunction(() => window.__runSummaryCopy?.fallback === true);
+    const details = page.locator("#run-details-fallback textarea");
+    await expect(details).toBeVisible();
+    await expect(details).toHaveValue(/Combat seed: 61061/);
+    await expect(details).toHaveValue(/Simulation: 3/);
     await expectHealthyCanvas(page, failures);
   });
 

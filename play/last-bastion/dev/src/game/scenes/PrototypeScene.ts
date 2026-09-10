@@ -27,7 +27,7 @@ import {
 } from "../combat/CombatSimulation";
 import { offscreenWarningPosition, telegraphShapeCue } from "../combat/TelegraphRules";
 import type { EquippedWeapon } from "../equipment/WeaponLoadout";
-import type { PerkId } from "../perks/perkCatalog";
+import { isPerkId, type PerkId } from "../perks/perkCatalog";
 import type { HeroDefinition } from "../hero/HeroDefinition";
 import { clampWeaponCount } from "../equipment/WeaponLoadout";
 import { calculateWeaponRingLayout } from "../equipment/WeaponRingLayout";
@@ -98,7 +98,7 @@ import {
 } from "../expedition/ExpeditionEncounter";
 import { normalizeThreatTier, threatTierDefinition } from "../expedition/ThreatTier";
 import { selectedArmoryWeapon } from "../progression/ArmoryProgression";
-import { createRunSummary, mergeRunMetrics, type RunMetrics } from "../run/RunSummary";
+import { createCurrentRunProvenance, createRunSummary, mergeRunMetrics, type RunMetrics } from "../run/RunSummary";
 import {
   advanceFirstDropOnboarding,
   completedFirstDropGoalCount,
@@ -177,13 +177,16 @@ export class PrototypeScene extends Phaser.Scene {
   private settings = applySettingOverrides(this.saveStore);
   private readonly performanceGovernor = new AdaptivePerformanceGovernor(this.settings.effectQuality);
   private readonly expeditionContext = readExpeditionContext(this.saveStore);
+  private readonly runSeed = readRunSeed(this.expeditionContext);
+  private readonly initialRunSettings = { ...this.settings };
+  private readonly perkId = readPerkPreview() ?? this.saveStore.load().selectedPerkId;
   private simulation = createSimulation(
     this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
-    this.expeditionContext, this.saveStore.load().selectedPerkId, this.heroPreview ?? this.saveStore.load().selectedHeroId,
+    this.expeditionContext, this.perkId, this.heroPreview ?? this.saveStore.load().selectedHeroId,
     this.settings.autoFireEnabled, selectedArmoryWeapon(
       this.saveStore.load().selectedArmoryNodeId,
       this.saveStore.load().progress.purchasedArmoryNodeIds,
-    ), this.transformationPreview,
+    ), this.transformationPreview, this.runSeed,
   );
   private readonly enemyViews = new Map<number, EnemyView>();
   private readonly enemyRimViews = new Map<number, Phaser.GameObjects.Sprite>();
@@ -314,6 +317,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.assetLoadFeedback = attachAssetLoadFeedback(this, "LOADING COMBAT ART");
     (window as unknown as { __combatAssetAudit?: object }).__combatAssetAudit = {
       count: assets.length,
+      runSeed: this.runSeed,
       ids: assets.map((asset) => asset.id),
       themeId: this.arenaTheme.id,
       worldObjectAssetIds,
@@ -1123,11 +1127,11 @@ export class PrototypeScene extends Phaser.Scene {
   private restartRun(): void {
     this.simulation = createSimulation(
       this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
-      this.expeditionContext, this.saveStore.load().selectedPerkId, this.heroPreview ?? this.saveStore.load().selectedHeroId,
+      this.expeditionContext, this.perkId, this.heroPreview ?? this.saveStore.load().selectedHeroId,
       this.settings.autoFireEnabled, selectedArmoryWeapon(
         this.saveStore.load().selectedArmoryNodeId,
         this.saveStore.load().progress.purchasedArmoryNodeIds,
-      ), this.transformationPreview,
+      ), this.transformationPreview, this.runSeed,
     );
     this.flushBestiary();
     this.lastSnapshot = this.simulation.snapshot();
@@ -1346,6 +1350,14 @@ export class PrototypeScene extends Phaser.Scene {
         level: upgrade.level,
       })),
       transformation: snapshot.transformation,
+      provenance: createCurrentRunProvenance({
+        combatSeed: this.runSeed,
+        mapSeed: mode === "expedition" ? this.expeditionContext?.run.state.mapSeed ?? null : null,
+        gameSpeedMultiplier: this.initialRunSettings.gameSpeedMultiplier,
+        autoFireEnabled: this.initialRunSettings.autoFireEnabled,
+        aimAssistStrength: this.initialRunSettings.aimAssistStrength,
+        gameSpeedModified: this.settings.gameSpeedMultiplier !== this.initialRunSettings.gameSpeedMultiplier,
+      }),
     });
   }
 
@@ -4388,6 +4400,16 @@ function readStartingWeaponIds(): readonly WeaponId[] | null {
  * theme's world-object family — the review route for placement, hazards and the
  * Fuel Cell without walking an expedition to the right node.
  */
+function readRunSeed(expeditionContext: ExpeditionCombatContext | null): number {
+  if (expeditionContext) return expeditionContext.encounter.seed;
+  const parameter = new URLSearchParams(window.location.search).get("seed");
+  const requested = parameter === null ? Number.NaN : Number(parameter);
+  if (Number.isSafeInteger(requested)) return requested;
+  const values = new Uint32Array(1);
+  globalThis.crypto?.getRandomValues?.(values);
+  return values[0] || (Date.now() >>> 0);
+}
+
 function readWorldObjectTheme(): string | undefined {
   return new URLSearchParams(window.location.search).get("worldobjects")?.trim() || undefined;
 }
@@ -4403,7 +4425,12 @@ function readMarineArtPreview(): boolean {
 
 function readHeroPreview(): HeroDefinition["id"] | null {
   const hero = new URLSearchParams(window.location.search).get("hero");
-  return hero === "assault" || hero === "tactician" || hero === "scout" ? hero : null;
+  return hero === "marine" || hero === "assault" || hero === "tactician" || hero === "scout" ? hero : null;
+}
+
+function readPerkPreview(): PerkId | null {
+  const perk = new URLSearchParams(window.location.search).get("perk");
+  return isPerkId(perk) ? perk : null;
 }
 
 function readMarineHelmetPreview(): boolean {
@@ -4517,6 +4544,13 @@ function applySettingOverrides(store: LocalSaveStore) {
   if (timers === "0" || timers === "1") overrides.cooldownTimersEnabled = timers === "1";
   const autoFire = params.get("autofire");
   if (autoFire === "0" || autoFire === "1") overrides.autoFireEnabled = autoFire === "1";
+  const speed = Number(params.get("gamespeed"));
+  if (speed === 0.75 || speed === 1 || speed === 1.25) overrides.gameSpeedMultiplier = speed;
+  const aimAssistParameter = params.get("aimassist");
+  const aimAssist = Number(aimAssistParameter);
+  if (aimAssistParameter !== null && Number.isFinite(aimAssist) && aimAssist >= 0 && aimAssist <= 1) {
+    overrides.aimAssistStrength = aimAssist;
+  }
   const uiScale = Number(params.get("uiscale"));
   if (uiScale === 0.8 || uiScale === 1 || uiScale === 1.2) overrides.uiScale = uiScale;
   const radarSize = Number(params.get("radarsize"));
@@ -4560,6 +4594,7 @@ function createSimulation(
   autoFireEnabled: boolean,
   armoryStartingWeaponId: WeaponId | null,
   transformationPreview: TransformationAffinityState | null,
+  runSeed: number,
 ): CombatSimulation {
   const armoryLoadout = startingWeaponIds === null
     && stressProfile === null
@@ -4577,7 +4612,7 @@ function createSimulation(
     scenario: scenario ?? undefined,
     startingUraniumKit: uraniumLab.kit,
     startWithUraniumBuff: uraniumLab.active,
-    seed: expeditionContext?.encounter.seed,
+    seed: runSeed,
     expeditionEncounter: expeditionContext?.encounter,
     startingBuild: expeditionContext?.run.state.build,
     perkId,
