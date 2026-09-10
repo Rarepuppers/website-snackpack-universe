@@ -146,6 +146,7 @@ export class PrototypeScene extends Phaser.Scene {
   private marineHelmetSprite: Phaser.GameObjects.Sprite | null = null;
   private marineRimSprite: Phaser.GameObjects.Sprite | null = null;
   private controls!: KeyboardMouseInput;
+  private assetLoadFailed = false;
   private hud!: CombatHud;
   private pauseOverlay!: CombatPauseOverlay;
   private eventFeed!: CombatEventFeed;
@@ -295,6 +296,8 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   preload(): void {
+    this.assetLoadFailed = false;
+    delete (window as unknown as { __combatAssetFailure?: object }).__combatAssetFailure;
     const worldObjectAssetIds = [...new Set(
       this.simulation.arena.obstacles
         .map((obstacle) => worldObjectArtAssetId(obstacle))
@@ -561,7 +564,12 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   private renderAssetLoadFailure(): void {
+    this.assetLoadFailed = true;
     const failed = [...(this.assetLoadFeedback?.failedKeys ?? [])];
+    (window as unknown as { __combatAssetFailure?: object }).__combatAssetFailure = {
+      failed,
+      retryable: true,
+    };
     this.assetLoadFeedback?.destroy();
     this.assetLoadFeedback = null;
     const width = this.scale.width || 960;
@@ -728,6 +736,7 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   update(_time: number, deltaMilliseconds: number): void {
+    if (this.assetLoadFailed) return;
     const deltaSeconds = Math.min(deltaMilliseconds / 1000, 0.05);
     const intent = this.withAimAssist(this.controls.read(this.player));
     const inputDevice = this.controls.activeInputDevice;

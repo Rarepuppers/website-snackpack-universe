@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 function watchRuntime(page) {
   const failures = [];
-  page.on("pageerror", (error) => failures.push(`pageerror: ${error.message}`));
+  page.on("pageerror", (error) => failures.push(`pageerror: ${error.stack ?? error.message}`));
   page.on("console", (message) => {
     const source = message.location().url;
     const text = message.text();
@@ -109,6 +109,27 @@ test.describe("Last Bastion executable acceptance", () => {
     await expect(details).toHaveValue(/Combat seed: 61061/);
     await expect(details).toHaveValue(/Simulation: 3/);
     await expectHealthyCanvas(page, failures);
+  });
+
+  test("a warmed release boots offline and an unwarmed combat theme fails visibly", async ({ page, context }) => {
+    const failures = watchRuntime(page);
+    await page.goto("/play/last-bastion/?screen=summary&summarydemo=1");
+    await page.waitForFunction(() => Boolean(window.__runSummary));
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await page.reload();
+    await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+    await page.waitForFunction(() => Boolean(window.__runSummary));
+
+    await context.setOffline(true);
+    await page.reload();
+    await page.waitForFunction(() => Boolean(window.__runSummary));
+    await expect(page.locator("#game-root canvas")).toBeVisible();
+
+    await page.goto("/play/last-bastion/?scenario=powerup-identity&biome=arctic");
+    await page.waitForFunction(() => window.__combatAssetFailure?.retryable === true);
+    expect((await page.evaluate(() => window.__combatAssetFailure)).failed.length).toBeGreaterThan(0);
+    await context.setOffline(false);
+    expect(failures.filter((failure) => failure.startsWith("pageerror:"))).toEqual([]);
   });
 
   test("storage read failure stays visible and retryable", async ({ page }) => {

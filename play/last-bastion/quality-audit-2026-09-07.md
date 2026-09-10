@@ -305,6 +305,15 @@ until performed, rather than inferring them from input helper unit tests.
 
 ### QA-11 — Check updates and offline asset consistency (P2, M)
 
+**Implementation status — coordinated browser release cache completed 10 September 2026.**
+Last Bastion now registers the root worker on direct HTTP(S) visits. Worker release
+`2026-09-10-qa11` installs every published executable chunk atomically, keeps runtime media in the
+same release-specific cache, and serves all Last Bastion resources network-first. Activation drops
+the prior release cache, so stable filenames cannot combine old media with new code. Only successful
+responses are cached. Browser acceptance warms a summary, proves it reloads offline under worker
+control, then opens an unwarmed combat theme and observes the existing visible, keyboard-retryable
+asset failure. The desktop custom protocol continues to use packaged assets without a worker.
+
 **Evidence:** game chunks have stable filenames (`dev/vite.config.ts`). The parent site's
 `sw.js` is network-first for JavaScript but cache-first for image/audio URLs. A browser
 controlled by that worker can retain older media at unchanged URLs. This is an update risk,

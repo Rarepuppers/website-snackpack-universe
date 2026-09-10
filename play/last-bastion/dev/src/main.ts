@@ -16,6 +16,14 @@ import { createLocalSaveStore } from "./game/save/SaveStorage";
 import { resolveSceneRoute } from "./game/SceneRoute";
 import { loadInitialScene } from "./game/loadInitialScene";
 
+// A direct Last Bastion visit must install the root arcade worker itself. The
+// desktop host uses a custom protocol, so registration is limited to HTTP(S).
+if ((location.protocol === "https:" || location.protocol === "http:") && "serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    void navigator.serviceWorker.register("/sw.js").catch(() => {});
+  });
+}
+
 /**
  * Snaps the canvas to whole physical pixels. `?size=` previews the planned
  * game-size setting (100–300); it is a review hook until the settings screen
