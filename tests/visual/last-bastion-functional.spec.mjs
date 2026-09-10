@@ -141,4 +141,23 @@ test.describe("Last Bastion executable acceptance", () => {
       await expectHealthyCanvas(page, failures);
     }
   });
+
+  test("combat decisions remain keyboard-operable after overlay extraction", async ({ page }) => {
+    const failures = watchRuntime(page);
+    await page.goto("/play/last-bastion/?scenario=weapon-gate");
+    await page.waitForFunction(() => window.__combatDecisionOverlay?.kind === "weapon-placement");
+    const initial = await page.evaluate(() => window.__combatDecisionOverlay);
+    expect(initial.visible).toBe(true);
+    expect(initial.selectedIndex).toBe(0);
+    expect(initial.optionIds.length).toBeGreaterThan(1);
+    const discardIndex = initial.optionIds.indexOf("place:discard");
+    expect(discardIndex).toBeGreaterThanOrEqual(0);
+    expect(discardIndex).toBeLessThan(9);
+
+    await page.keyboard.press("ArrowDown");
+    await page.waitForFunction(() => Number(window.__combatDecisionOverlay?.selectedIndex) > 0);
+    await page.keyboard.press(String(discardIndex + 1));
+    await page.waitForFunction(() => window.__combatDecisionOverlay?.visible === false);
+    await expectHealthyCanvas(page, failures);
+  });
 });

@@ -21,7 +21,6 @@ import {
   type CombatTelegraphSnapshot,
   type DeployableSnapshot,
   type EventHorizonFieldSnapshot,
-  type PendingDecision,
   type PowerupPickupSnapshot,
   type SupplyChestSnapshot,
   type PowerupType,
@@ -72,13 +71,12 @@ import { CombatPauseOverlay } from "../ui/CombatPauseOverlay";
 import { CombatEventFeed } from "../ui/CombatEventFeed";
 import { combatPalette } from "../ui/CombatPalette";
 import { CombatHaptics } from "../ui/CombatHaptics";
+import { CombatDecisionOverlay } from "../ui/CombatDecisionOverlay";
 import { createBuildViewModel } from "../build/BuildViewModel";
 import { buildOverlayModel } from "../ui/BuildOverlay";
 import { FRIENDLY_PROJECTILE_SOFT_BUDGET } from "../combat/FriendlyProjectileBudget";
-import { shopWeaponTilePresentation, weaponTilePresentation } from "../ui/WeaponTileFrames";
 import { dedicatedPowerupFrame, powerupPickupPresentation } from "../ui/PowerupTileFrames";
 import { weaponReviewPage } from "../ui/WeaponReviewRoutes";
-import { upgradeTilePresentation } from "../ui/UpgradeTilePresentation";
 import {
   VERTICAL_SLICE_WEAPON_IDS,
   WEAPON_CATALOG,
@@ -231,10 +229,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly weaponViews = new Map<number, WeaponView>();
   private readonly deployableViews = new Map<number, Phaser.GameObjects.Container>();
   private readonly pullFieldViews = new Map<number, Phaser.GameObjects.Arc>();
-  private decisionOverlay: Phaser.GameObjects.Container | null = null;
-  private decisionButtons: { rect: Phaser.GameObjects.Rectangle; choiceId: string; enabled: boolean }[] = [];
-  private decisionSelectionIndex = 0;
-  private menuStickReady = true;
+  private decisionOverlay!: CombatDecisionOverlay;
   private menuKeys: {
     up: Phaser.Input.Keyboard.Key;
     down: Phaser.Input.Keyboard.Key;
@@ -256,7 +251,6 @@ export class PrototypeScene extends Phaser.Scene {
     a: Phaser.Input.Keyboard.Key;
     d: Phaser.Input.Keyboard.Key;
   } | null = null;
-  private visibleDecisionKey = "";
   private isPaused = false;
   private pauseStickReady = true;
   private lastAimAngle = 0;
@@ -494,6 +488,16 @@ export class PrototypeScene extends Phaser.Scene {
       a: Phaser.Input.Keyboard.KeyCodes.A,
       d: Phaser.Input.Keyboard.KeyCodes.D,
     }) as unknown as NonNullable<typeof this.menuKeys>;
+    this.decisionOverlay = new CombatDecisionOverlay(this, {
+      keys: this.menuKeys,
+      useMarineArt: this.useMarineArt,
+      chooseOption: (choiceId) => this.simulation.chooseOption(choiceId),
+      onConfirmed: () => this.synth.play(UI_CONFIRM_CUE),
+      onDecisionChanged: () => {
+        this.spinewheelTrailTimes.clear();
+        this.tetherBloomAccentTimes.clear();
+      },
+    });
     this.lastSnapshot = this.simulation.snapshot();
     this.renderSnapshot(this.lastSnapshot, false);
     if (new URLSearchParams(window.location.search).get("rendertexture") !== "0") {
@@ -510,6 +514,7 @@ export class PrototypeScene extends Phaser.Scene {
     document.removeEventListener("visibilitychange", this.onVisibilityChange);
     this.pauseOverlay?.destroy();
     this.eventFeed?.destroy();
+    this.decisionOverlay?.destroy();
     this.worldPresenter?.destroy();
     this.worldPresenter = null;
     this.setPresentationHitStopFrozen(false);
@@ -695,7 +700,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.worldPresenter?.sampleFrame(deltaMilliseconds, this.isPaused || document.hidden);
 
     if (this.lastSnapshot.pendingDecision) {
-      this.handleDecisionNavigation(intent);
+      this.decisionOverlay.handleNavigation(intent);
     }
 
     if (intent.toggleFireModePressed && this.lastSnapshot.pendingDecision === null) {
@@ -944,7 +949,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.syncSupplyChests(snapshot.supplyChests);
     this.syncFence(snapshot);
     this.syncInteractPrompt(snapshot);
-    this.syncDecisionOverlay(snapshot.pendingDecision);
+    this.decisionOverlay.sync(snapshot.pendingDecision);
     this.positionPauseControls();
     const performance = this.performanceGovernor.snapshot();
     this.hud.update(
@@ -1095,9 +1100,7 @@ export class PrototypeScene extends Phaser.Scene {
     this.previousHeroState = "idle";
     this.previousRunStatus = this.lastSnapshot.status;
     this.lastFlushedWaveNumber = 1;
-    this.visibleDecisionKey = "";
-    this.decisionOverlay?.destroy(true);
-    this.decisionOverlay = null;
+    this.decisionOverlay.reset();
 
     for (const views of [
       this.enemyViews,
@@ -4995,267 +4998,6 @@ export class PrototypeScene extends Phaser.Scene {
    * confirms, and digits 1–3 pick directly. Runs before the simulation step
    * so a confirm applies on the same frame.
    */
-  private handleDecisionNavigation(intent: PlayerIntent): void {
-    if (!this.menuKeys || this.decisionButtons.length === 0) {
-      return;
-    }
-
-    let delta = 0;
-    if (Phaser.Input.Keyboard.JustDown(this.menuKeys.up) || Phaser.Input.Keyboard.JustDown(this.menuKeys.w)) {
-      delta -= 1;
-    }
-    if (Phaser.Input.Keyboard.JustDown(this.menuKeys.down) || Phaser.Input.Keyboard.JustDown(this.menuKeys.s)) {
-      delta += 1;
-    }
-    // Gamepad stick: one step per push, re-armed once the stick recentres.
-    if (Math.abs(intent.move.y) < 0.35) {
-      this.menuStickReady = true;
-    } else if (this.menuStickReady && Math.abs(intent.move.y) > 0.6) {
-      delta += intent.move.y > 0 ? 1 : -1;
-      this.menuStickReady = false;
-    }
-    if (delta !== 0) {
-      const count = this.decisionButtons.length;
-      for (let step = 0; step < count; step += 1) {
-        this.decisionSelectionIndex = (this.decisionSelectionIndex + delta + count) % count;
-        if (this.decisionButtons[this.decisionSelectionIndex]?.enabled) break;
-      }
-      this.updateDecisionSelectionHighlight();
-    }
-
-    const digits = [
-      this.menuKeys.one, this.menuKeys.two, this.menuKeys.three,
-      this.menuKeys.four, this.menuKeys.five, this.menuKeys.six,
-      this.menuKeys.seven, this.menuKeys.eight, this.menuKeys.nine,
-    ];
-    for (let index = 0; index < this.decisionButtons.length; index += 1) {
-      if (digits[index] && Phaser.Input.Keyboard.JustDown(digits[index]!)) {
-        this.decisionSelectionIndex = index;
-        this.confirmDecisionSelection();
-        return;
-      }
-    }
-
-    if (Phaser.Input.Keyboard.JustDown(this.menuKeys.confirm) || intent.evasiveMovePressed) {
-      this.confirmDecisionSelection();
-    }
-  }
-
-  private confirmDecisionSelection(): void {
-    const selected = this.decisionButtons[this.decisionSelectionIndex];
-    if (!selected?.enabled) {
-      return;
-    }
-    if (this.simulation.chooseOption(selected.choiceId)) {
-      this.synth.play(UI_CONFIRM_CUE);
-    }
-  }
-
-  private updateDecisionSelectionHighlight(): void {
-    this.decisionButtons.forEach(({ rect, enabled }, index) => {
-      if (!enabled) {
-        rect.setFillStyle(0x141b24).setStrokeStyle(2, 0x394756).setAlpha(0.72);
-        return;
-      }
-      rect.setAlpha(1);
-      if (index === this.decisionSelectionIndex) {
-        rect.setFillStyle(0x294865).setStrokeStyle(3, 0x68e4e8);
-      } else {
-        rect.setFillStyle(0x1b2d42).setStrokeStyle(2, 0x5d7892);
-      }
-    });
-  }
-
-  /**
-   * The overlay deliberately does NOT use scrollFactor(0): Phaser hit-tests
-   * interactive objects in world space, so a screen-fixed container drifts
-   * away from its own hover/click zones once the camera scrolls. Instead the
-   * container follows the camera's world-view centre every frame, keeping
-   * the drawn panel and its hit areas identical.
-   */
-  private positionDecisionOverlay(): void {
-    if (!this.decisionOverlay) {
-      return;
-    }
-    const camera = this.cameras.main;
-    this.decisionOverlay.setPosition(
-      camera.worldView.centerX,
-      camera.worldView.centerY,
-    );
-  }
-
-  private syncDecisionOverlay(decision: PendingDecision | null): void {
-    const nextKey = decision
-      ? `${decision.kind}|${decision.title}|${decision.options.map((option) => `${option.id}:${option.affordable ?? true}`).join("|")}`
-      : "";
-    if (nextKey === this.visibleDecisionKey) {
-      this.positionDecisionOverlay();
-      return;
-    }
-
-    this.decisionOverlay?.destroy(true);
-    this.decisionOverlay = null;
-    this.decisionButtons = [];
-    this.decisionSelectionIndex = 0;
-    this.spinewheelTrailTimes.clear();
-    this.tetherBloomAccentTimes.clear();
-    this.visibleDecisionKey = nextKey;
-
-    if (!decision) {
-      return;
-    }
-
-    const isShop = decision.kind === "scrap-shop";
-    const isPlacement = decision.kind === "weapon-placement";
-    // Level-up stat cards read as a 2x2 grid of cards rather than a list of
-    // rows — closest existing shape is the shop's two-column offer layout.
-    const isStatCards = decision.kind === "level-stat";
-    const statCardRows = isStatCards ? Math.ceil(decision.options.length / 2) : 0;
-    const shopColumns = isShop && decision.options.length > 7 ? 2 : 1;
-    const shopRows = isShop ? Math.ceil(decision.options.length / shopColumns) : 0;
-    const panelWidth = isPlacement ? 860 : isStatCards ? 820 : shopColumns === 2 ? 980 : 760;
-    // The plain list grew a fourth row when level-ups started mixing in a stat
-    // card, so its height follows the option count instead of being pinned.
-    const panelHeight = isShop
-      ? Math.max(520, 190 + shopRows * 70)
-      : isPlacement ? 520
-        : isStatCards ? Math.max(330, 150 + statCardRows * 132)
-          : 330 + Math.max(0, decision.options.length - 3) * 86;
-    const children: Phaser.GameObjects.GameObject[] = [];
-    if (isShop && this.useMarineArt) {
-      children.push(this.add.image(0, 0, "scrap-shop-panel-v1").setDisplaySize(panelWidth, panelHeight));
-    } else if (isPlacement && this.useMarineArt) {
-      children.push(this.add.image(0, 0, "batch-i-placement-modal-v1").setDisplaySize(panelWidth, panelHeight));
-    } else {
-      children.push(this.add.rectangle(0, 0, panelWidth, panelHeight, 0x0b121c, 0.985).setStrokeStyle(4, isShop ? 0xdca652 : 0x68e4e8));
-      children.push(this.add.rectangle(0, 0, panelWidth - 18, panelHeight - 18, 0x172536, 0.72).setStrokeStyle(1, 0x4d6a83));
-    }
-    const titleY = isPlacement ? -220 : -panelHeight / 2 + 40;
-    if (isShop && this.useMarineArt && shopColumns === 1) {
-      if (!this.anims.exists("quartermaster-idle-v1")) {
-        this.anims.create({
-          key: "quartermaster-idle-v1",
-          frames: this.anims.generateFrameNumbers("quartermaster-v1", { start: 0, end: 3 }),
-          frameRate: 2,
-          repeat: -1,
-        });
-      }
-      const keeper = this.add.sprite(270, panelHeight / 2 - 18, "quartermaster-v1", 0)
-        .setDisplaySize(128, 256)
-        .setOrigin(0.5, 1)
-        .play("quartermaster-idle-v1");
-      children.push(keeper);
-    }
-    const title = this.add.text(0, titleY, decision.title, {
-      color: "#ffffff",
-      fontFamily: "Consolas, Courier New, monospace",
-      fontSize: "22px",
-      fontStyle: "bold",
-      stroke: "#081018",
-      strokeThickness: 4,
-    }).setOrigin(0.5).setResolution(uiTextResolution());
-    children.push(title);
-    if (this.useMarineArt) {
-      if (isShop) {
-        children.push(this.add.image(-325, titleY, "scrap-shop-hud-v1", 0).setDisplaySize(54, 54));
-      } else if (!isPlacement) {
-        const decisionFrame = decision.kind === "weapon-chest" ? 1 : decision.kind === "supply-depot" ? 4 : 12;
-        children.push(this.add.image(-325, titleY, "batch-c-rewards-v1", decisionFrame).setScale(0.62));
-      }
-    }
-
-    if (isPlacement && decision.weaponId) {
-      const stats = WEAPON_CATALOG[decision.weaponId];
-      if (this.useMarineArt) children.push(this.add.image(-335, -20, "batch-i-weapon-stat-card-v1").setDisplaySize(206, 270));
-      const tile = weaponTilePresentation(decision.weaponId);
-      children.push(this.add.image(-335, -90, tile.texture, tile.frame).setDisplaySize(112, 112));
-      children.push(this.add.text(-335, 8, `${stats.weaponClass.toUpperCase()} • TIER I\nDMG ${stats.projectileDamage}   CADENCE ${stats.fireIntervalSeconds.toFixed(2)}s`, {
-        color: "#dce8f2", fontFamily: "Consolas, Courier New, monospace", fontSize: "11px", align: "center", lineSpacing: 5,
-      }).setOrigin(0.5).setResolution(uiTextResolution()));
-    }
-
-    decision.options.forEach((choice, index) => {
-      const shopColumn = shopColumns === 2 ? index % 2 : 0;
-      const shopRow = shopColumns === 2 ? Math.floor(index / 2) : index;
-      const x = isPlacement ? -70 + (index % 2) * 330
-        : isStatCards ? -190 + (index % 2) * 380
-          : isShop && shopColumns === 2 ? -238 + shopColumn * 476 : isShop ? -78 : 0;
-      const y = isPlacement ? -125 + Math.floor(index / 2) * 98
-        : isStatCards ? titleY + 96 + Math.floor(index / 2) * 132
-          : isShop ? titleY + 78 + shopRow * 70 : titleY + 65 + index * 86;
-      const enabled = choice.affordable !== false;
-      const upgradeTile = this.useMarineArt ? upgradeTilePresentation(choice.id) : null;
-      const shopWeaponTile = isShop && this.useMarineArt ? shopWeaponTilePresentation(choice.id) : null;
-      const shopButtonWidth = shopColumns === 2 ? 444 : 500;
-      const button = this.add.rectangle(
-        x, y,
-        isPlacement ? 300 : isStatCards ? 344 : isShop ? shopButtonWidth : 670,
-        isPlacement ? 78 : isStatCards ? 116 : isShop ? 62 : 66,
-        0x1b2d42, 0.98,
-      ).setStrokeStyle(2, isStatCards ? 0x68e4e8 : 0x5d7892).setInteractive({ useHandCursor: enabled });
-      const price = choice.cost && choice.cost > 0 ? ` — ${choice.cost} SCRAP${enabled ? "" : " (SHORT)"}` : "";
-      children.push(button);
-      if (isShop && this.useMarineArt) {
-        children.push(this.add.image(
-          x - shopButtonWidth / 2 + 34,
-          y,
-          shopWeaponTile?.texture ?? upgradeTile?.texture ?? "scrap-shop-offer-tiles-v1",
-          shopWeaponTile?.frame ?? upgradeTile?.frame ?? scrapShopOfferFrame(choice.id),
-        )
-          .setDisplaySize(48, 48).setAlpha(enabled ? 1 : 0.42));
-      }
-      if (isPlacement && this.useMarineArt) {
-        children.push(this.add.image(x - 116, y, "batch-i-slot-tier-ui-v1", placementOptionFrame(choice.id, choice.name))
-          .setDisplaySize(58, 58).setAlpha(enabled ? 1 : 0.42));
-      }
-      if (!isShop && !isPlacement && !isStatCards && upgradeTile) {
-        children.push(this.add.image(-292, y, upgradeTile.texture, upgradeTile.frame)
-          .setDisplaySize(56, 56).setAlpha(enabled ? 1 : 0.42));
-      }
-      const quickKey = index < 9 ? `${index + 1}. ` : "";
-      // A stat card leads with the grant, not the flavour name — the number is
-      // the decision, so it gets the weight and the card is centred around it.
-      const label = isStatCards
-        ? this.add.text(x, y, `${quickKey}${choice.name}\n\n${choice.description.toUpperCase()}`, {
-          color: "#edf4ff",
-          fontFamily: "Consolas, Courier New, monospace",
-          fontSize: "15px",
-          align: "center",
-          wordWrap: { width: 312 },
-          lineSpacing: 4,
-        }).setOrigin(0.5).setResolution(uiTextResolution())
-        : this.add.text(isPlacement ? x - 78 : isShop ? x - shopButtonWidth / 2 + 76 : upgradeTile ? -250 : -310, y - (isPlacement ? 26 : isShop ? 15 : 18), `${quickKey}${choice.name}${price}\n${choice.description}`, {
-          color: enabled ? "#edf4ff" : "#758493",
-          fontFamily: "Consolas, Courier New, monospace",
-          fontSize: isPlacement ? "13px" : isShop ? "13px" : "15px",
-          wordWrap: isPlacement ? { width: 202 } : isShop ? { width: shopButtonWidth - 92 } : upgradeTile ? { width: 520 } : undefined,
-          lineSpacing: isShop ? 2 : 5,
-        }).setResolution(uiTextResolution());
-      button.on("pointerover", () => {
-        this.decisionSelectionIndex = index;
-        this.updateDecisionSelectionHighlight();
-      });
-      button.on("pointerdown", () => {
-        this.decisionSelectionIndex = index;
-        this.confirmDecisionSelection();
-      });
-      this.decisionButtons.push({ rect: button, choiceId: choice.id, enabled });
-      children.push(label);
-    });
-
-    const quickPickCount = Math.min(9, decision.options.length);
-    const hint = this.add.text(0, isShop ? titleY + 38 : isPlacement ? 225 : 138, `↑↓ SELECT   •   ENTER CONFIRM   •   1-${quickPickCount} QUICK PICK`, {
-      color: "#9fb3c8",
-      fontFamily: "Consolas, Courier New, monospace",
-      fontSize: "11px",
-    }).setOrigin(0.5).setResolution(uiTextResolution());
-    children.push(hint);
-
-    this.decisionOverlay = this.add.container(0, 0, children).setDepth(2200);
-    this.updateDecisionSelectionHighlight();
-    this.positionDecisionOverlay();
-  }
-
   private destroyMissing<K, T extends Phaser.GameObjects.GameObject>(
     views: Map<K, T>,
     liveIds: ReadonlySet<K>,
@@ -5552,30 +5294,6 @@ function powerupColor(type: PowerupType): number {
     case "emp-charge": return 0x8fd8ff;
     case "butchers-serum": return 0xff5f5f;
   }
-}
-
-function scrapShopOfferFrame(optionId: string): number {
-  if (optionId === "shop-repair") return 0;
-  if (optionId === "shop-uranium-kit") return 1;
-  if (optionId === "shop-armour-retrofit") return 2;
-  if (optionId.startsWith("shop-upgrade:")) return 3;
-  if (optionId.startsWith("shop-weapon:")) return 4;
-  // Shop items (Brotato overhaul) share the generic frame 5 until per-rarity item
-  // tile art lands — the Batch atlas only has the six original offer frames.
-  if (optionId.startsWith("shop-item:")) return 5;
-  return 5;
-}
-
-function placementOptionFrame(optionId: string, name: string): number {
-  if (optionId.startsWith("place:inventory:")) return 5;
-  if (optionId.startsWith("place:merge:")) return 12;
-  if (optionId === "place:discard") return 9;
-  if (name.includes("LIGHT")) return 0;
-  if (name.includes("MEDIUM")) return 1;
-  if (name.includes("HEAVY")) return 2;
-  if (name.includes("UNIQUE")) return 3;
-  if (name.includes("ALL")) return 4;
-  return 15;
 }
 
 function statusEffectFrame(status: string): number {

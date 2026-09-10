@@ -191,6 +191,15 @@ certify a rendering crash such as the unrelated Godot Gradient issue.
 
 ### QA-06 — Stage the large-file split by responsibility (P2, L; depends on QA-05)
 
+**Implementation status — first extraction completed 10 September 2026.** With QA-05's replay
+corpus in place, decision rendering and keyboard/gamepad/pointer selection now live in the focused
+`CombatDecisionOverlay` UI owner. `PrototypeScene` retains simulation mutation authority through a
+single `chooseOption` callback and supplies confirmation audio and the two existing presentation
+cache resets. This removes about 265 lines from the scene without changing decision layout or input
+rules. Browser acceptance opens a weapon-placement decision, moves the selection, confirms it, and
+observes the overlay close. The next extraction is combat-event presentation dispatch; simulation
+state ownership remains deferred to the existing pure planner seams.
+
 **Evidence:** `CombatSimulation.ts` and `PrototypeScene.ts` remain roughly 10,000 and 5,600
 nonblank lines respectively. Existing behavior/restore planners and 33 adapter checks are
 useful seams, but the boundary script checks delegation patterns, not state equivalence.
