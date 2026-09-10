@@ -35,6 +35,7 @@ desktop.ini
 .playwright-browsers/
 test-results/
 playwright-report/
+**/performance-report.local.json
 
 # Dependencies & build outputs
 node_modules/

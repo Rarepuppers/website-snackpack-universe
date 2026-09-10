@@ -19,6 +19,8 @@ export class CombatWorldPresenter {
   private readonly ignoredByPresentation = new Set<Phaser.GameObjects.GameObject>();
   private readonly ignoredByHud = new Set<Phaser.GameObjects.GameObject>();
   private readonly framePacing = new FramePacingTelemetry();
+  private textureFootprint = { textureCount: 0, sourceCount: 0, estimatedDecodedBytes: 0 };
+  private lastTextureSampleMilliseconds = Number.NEGATIVE_INFINITY;
   private readonly contextRecovery = {
     probeRequested: false,
     extensionAvailable: false,
@@ -103,6 +105,11 @@ export class CombatWorldPresenter {
 
     const pointer = this.scene.input.activePointer;
     const pointerWorld = this.hudCamera.getWorldPoint(pointer.x, pointer.y);
+    const now = performance.now();
+    if (now - this.lastTextureSampleMilliseconds >= 1_000) {
+      this.textureFootprint = this.measureTextureFootprint();
+      this.lastTextureSampleMilliseconds = now;
+    }
 
     const audit = {
       mode: this.plan.mode,
@@ -114,6 +121,7 @@ export class CombatWorldPresenter {
       renderDeviceScale: scale,
       workload: { stressProfile: this.stressProfile },
       framePacing: this.framePacing.snapshot(),
+      textures: this.textureFootprint,
       contextRecovery: { ...this.contextRecovery },
       logicalCamera: { width: main.width, height: main.height, zoom: main.zoom },
       presentationCamera: {
@@ -189,6 +197,23 @@ export class CombatWorldPresenter {
 
   private publishContextRecoveryAudit(): void {
     this.scene.game.canvas.dataset.contextRecoveryAudit = JSON.stringify(this.contextRecovery);
+  }
+
+  private measureTextureFootprint(): {
+    textureCount: number;
+    sourceCount: number;
+    estimatedDecodedBytes: number;
+  } {
+    const keys = this.scene.textures.getTextureKeys();
+    let sourceCount = 0;
+    let estimatedDecodedBytes = 0;
+    for (const key of keys) {
+      for (const source of this.scene.textures.get(key).source) {
+        sourceCount += 1;
+        estimatedDecodedBytes += source.width * source.height * 4;
+      }
+    }
+    return { textureCount: keys.length, sourceCount, estimatedDecodedBytes };
   }
 
   private ignoreNew(

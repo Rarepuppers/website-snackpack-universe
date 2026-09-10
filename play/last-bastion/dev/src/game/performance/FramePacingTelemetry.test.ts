@@ -14,6 +14,9 @@ describe("frame pacing telemetry", () => {
       p95FrameMilliseconds: 95,
       p99FrameMilliseconds: 99,
       onePercentLowFps: 1_000 / 99,
+      maximumFrameMilliseconds: 100,
+      hitchCount: 51,
+      severeHitchCount: 1,
     });
   });
 
@@ -35,6 +38,17 @@ describe("frame pacing telemetry", () => {
     telemetry.sample(Number.NaN);
     telemetry.sample(0);
     expect(telemetry.snapshot()).toMatchObject({ ready: false, sampleCount: 1, sampledMilliseconds: 16 });
+  });
+
+  it("counts hitches only inside the rolling window", () => {
+    const telemetry = new FramePacingTelemetry(4, 2);
+    [120, 16, 50, 99, 100].forEach((sample) => telemetry.sample(sample));
+    expect(telemetry.snapshot()).toMatchObject({
+      sampleCount: 4,
+      maximumFrameMilliseconds: 100,
+      hitchCount: 3,
+      severeHitchCount: 1,
+    });
   });
 
   it("rejects impossible window configuration", () => {

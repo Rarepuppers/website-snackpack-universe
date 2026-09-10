@@ -339,6 +339,21 @@ without a service worker. Keep shared-worker changes scoped and test sibling arc
 
 ### QA-12 — Make performance and loading polish measurable (P2, M)
 
+**Automated measurement tranche — 11 September 2026.** `npm run performance:measure`
+now produces an advisory JSON report from cache-disabled Chromium. It covers cold title, final
+boss, the released 12-weapon stress loadout, and three map/combat/shop/debrief lifecycle cycles;
+records ready/navigation timing, transfer bytes by asset role and largest resources; and captures
+rolling p95/p99, 50/100 ms hitch counts, texture count/estimated decoded bytes, and precise JS heap.
+The checked local reference found zero 50 ms gameplay hitches in its 120-frame samples. It also
+identified the Scrap Shop as the current largest measured route (about 29.8 MB transferred and
+an estimated 212.6 MB decoded textures). That exposed an empty-roster bug which treated “no
+enemies” as “unknown roster” and eagerly loaded every encounter sheet; the shop now excludes
+those unrelated assets, reducing the same local measurement to 11.25 MB and 118.5 MB
+respectively. Unit and executable-browser guards preserve the empty-roster contract. The
+three-cycle run records raw growth rather
+than imposing a guessed threshold. Physical low/mid-range budgets, a longer in-engine transition
+soak, observed loading input response, and the dense-combat listening gate remain open.
+
 **Deployment-size update — 8 September 2026.** The Pages artifact reached 1.89 GB because
 the branch publisher included 1.42 GB of source-art working files and 82.6 MB of bundled QA
 runtime tools. Root `_config.yml` now excludes only those two non-runtime trees; the complete

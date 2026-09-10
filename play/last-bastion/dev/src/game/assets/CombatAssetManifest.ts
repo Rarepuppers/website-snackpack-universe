@@ -13,7 +13,7 @@ export interface CombatAssetSelection {
   productionArt: boolean;
   helmet: boolean;
   worldObjectAssetIds: readonly WorldObjectArtAssetId[];
-  /** When present, restricts enemy body sheets to this known encounter roster. */
+  /** When present, restricts enemy/effect sheets to this known encounter roster. An empty list means none. */
   enemyTypes?: readonly string[];
   eliteKinds?: readonly string[];
   miniBossKinds?: readonly string[];
@@ -252,13 +252,13 @@ export function combatAssetsForSession(
   selection: CombatAssetSelection,
 ): readonly GameAssetDefinition[] {
   const selectedIds = new Set<GameAssetId>();
-  const restrictEnemyBodies = Boolean(selection.enemyTypes?.length);
+  const restrictEncounterAssets = selection.enemyTypes !== undefined;
   const requiredEnemyBodyIds = requiredEnemyBodyIdsForSelection(selection);
 
   for (const asset of GAME_ASSET_MANIFEST) {
     if (ROUTE_ONLY_ASSET_IDS.has(asset.id) || GALLERY_ONLY_ASSET_IDS.has(asset.id)) continue;
     if (HERO_ASSET_IDS.has(asset.id) || ARENA_ASSET_IDS.has(asset.id) || WORLD_OBJECT_ASSET_IDS.has(asset.id)) continue;
-    if (restrictEnemyBodies && ENCOUNTER_SPECIFIC_ASSET_IDS.has(asset.id) && !requiredEnemyBodyIds.has(asset.id)) continue;
+    if (restrictEncounterAssets && ENCOUNTER_SPECIFIC_ASSET_IDS.has(asset.id) && !requiredEnemyBodyIds.has(asset.id)) continue;
     selectedIds.add(asset.id);
   }
 

@@ -66,6 +66,18 @@ test.describe("Last Bastion executable acceptance", () => {
     await expectHealthyCanvas(page, failures);
   });
 
+  test("the Scrap Shop does not preload unrelated encounter art", async ({ page }) => {
+    const failures = watchRuntime(page);
+    await page.goto("/play/last-bastion/?scenario=scrap-shop&loadout=vertical&seed=61061");
+    await page.waitForFunction(() => Number(window.__combatAssetAudit?.count) > 0);
+    const ids = await page.evaluate(() => window.__combatAssetAudit.ids);
+    expect(ids).toContain("scrap-shop-panel-v1");
+    expect(ids).toContain("quartermaster-v1");
+    expect(ids).not.toContain("bastion-eater-v1");
+    expect(ids).not.toContain("assembly-prime-effects-v1");
+    await expectHealthyCanvas(page, failures);
+  });
+
   test("settings can export a versioned save backup", async ({ page }) => {
     const failures = watchRuntime(page);
     await page.goto("/play/last-bastion/?flow=settings");

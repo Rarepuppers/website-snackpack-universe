@@ -56,6 +56,25 @@ describe("combatAssetsForSession", () => {
     expect(ids.has("quartermaster-v1")).toBe(true);
   });
 
+  it("treats an explicitly empty encounter roster as requiring no enemy art", () => {
+    const ids = new Set(combatAssetsForSession({
+      arenaTheme: arenaThemeById("bastion-standard")!,
+      heroId: "marine",
+      productionArt: true,
+      helmet: false,
+      worldObjectAssetIds: [],
+      enemyTypes: [],
+      eliteKinds: [],
+      miniBossKinds: [],
+    }).map((asset) => asset.id));
+
+    expect(ids.has("scrap-shop-panel-v1")).toBe(true);
+    expect(ids.has("batch-i-weapon-tiles-v1")).toBe(true);
+    expect(ids.has("scuttler-v1")).toBe(false);
+    expect(ids.has("bastion-eater-v1")).toBe(false);
+    expect(ids.has("assembly-prime-effects-v1")).toBe(false);
+  });
+
   it("uses no authored hero, arena or object art in placeholder mode", () => {
     const objectIds: WorldObjectArtAssetId[] = [
       "world-objects-military-v1",

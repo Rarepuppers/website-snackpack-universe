@@ -6,10 +6,15 @@ export interface FramePacingSnapshot {
   readonly p95FrameMilliseconds: number;
   readonly p99FrameMilliseconds: number;
   readonly onePercentLowFps: number;
+  readonly maximumFrameMilliseconds: number;
+  readonly hitchCount: number;
+  readonly severeHitchCount: number;
 }
 
 const DEFAULT_CAPACITY = 600;
 const DEFAULT_READY_SAMPLES = 120;
+export const HITCH_THRESHOLD_MILLISECONDS = 50;
+export const SEVERE_HITCH_THRESHOLD_MILLISECONDS = 100;
 
 /**
  * Bounded rolling frame-time window for release QA. Suspended frames are
@@ -45,6 +50,9 @@ export class FramePacingTelemetry {
         p95FrameMilliseconds: 0,
         p99FrameMilliseconds: 0,
         onePercentLowFps: 0,
+        maximumFrameMilliseconds: 0,
+        hitchCount: 0,
+        severeHitchCount: 0,
       };
     }
     const sorted = [...this.samples].sort((left, right) => left - right);
@@ -59,6 +67,11 @@ export class FramePacingTelemetry {
       p95FrameMilliseconds,
       p99FrameMilliseconds,
       onePercentLowFps: 1_000 / p99FrameMilliseconds,
+      maximumFrameMilliseconds: sorted[sorted.length - 1]!,
+      hitchCount: this.samples.filter((sample) => sample >= HITCH_THRESHOLD_MILLISECONDS).length,
+      severeHitchCount: this.samples.filter(
+        (sample) => sample >= SEVERE_HITCH_THRESHOLD_MILLISECONDS,
+      ).length,
     };
   }
 }

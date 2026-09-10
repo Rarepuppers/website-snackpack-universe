@@ -107,6 +107,8 @@ Gameplay bindings can be remapped under **Main Menu → Settings → Control bin
 
 - `/play/last-bastion/?scenario=aurum-hoarder&loadout=bulwark` — Aurum Hoarder forage/flee lab with armour-break Scrap, edge-exit marker, and guaranteed supply-cache reward
 - `/play/last-bastion/?scenario=scrap-shop&loadout=vertical` — seeded four-row Scrap Shop lab with three live offers, affordability states, repeat purchasing, and explicit leave/bank action
+
+Run `npm run performance:measure` for an advisory cache-disabled Chromium report covering cold title, boss, 12-weapon stress, and repeated map/combat/shop/debrief lifecycles. Pass `-- --output ..\performance-reports\<name>.json` to retain a baseline; target-device budgets remain a separate release decision.
 - `/play/last-bastion/?scenario=weapon-gate` — code-native weapon placement lab with typed rack slots, four-slot stash, swap refusal, discard, and merge targets
 - `/play/last-bastion/?scenario=batch-j&loadout=vertical` — deterministic J1/J2 live-art lab with the swarm body, three elite bodies, attack cadence, and layered telegraphs
 

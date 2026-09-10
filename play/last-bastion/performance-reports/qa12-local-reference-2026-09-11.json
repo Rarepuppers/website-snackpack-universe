@@ -1,0 +1,1803 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-09-10T23:49:00.809Z",
+  "advisoryOnly": true,
+  "note": "Set device budgets before treating these measurements as pass/fail gates.",
+  "environment": {
+    "browser": "Chromium 151.0.7922.34",
+    "platform": "win32-x64",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "baseUrl": "http://127.0.0.1:44176"
+  },
+  "failures": [],
+  "samples": [
+    {
+      "name": "title",
+      "route": "/play/last-bastion/?screen=title",
+      "cycle": 0,
+      "wallMilliseconds": 594,
+      "readyMilliseconds": 591.5999999998603,
+      "navigation": {
+        "responseStartMilliseconds": 2.8999999999068677,
+        "domContentLoadedMilliseconds": 45.799999999813735,
+        "loadMilliseconds": 46.799999999813735,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 6,
+          "transferBytes": 1509957,
+          "encodedBytes": 1508157,
+          "decodedBytes": 1508157
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 14,
+          "transferBytes": 763552,
+          "encodedBytes": 759352,
+          "decodedBytes": 759352
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/title-menu-backdrop-v1-3840x2160.webp",
+          "group": "authored-art",
+          "transferBytes": 421948,
+          "decodedBytes": 421648
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bastion-logistics-map-backdrop-v1-1536x1024.webp",
+          "group": "authored-art",
+          "transferBytes": 112490,
+          "decodedBytes": 112190
+        },
+        {
+          "path": "/play/last-bastion/game-assets/game.js",
+          "group": "executable",
+          "transferBytes": 109337,
+          "decodedBytes": 109037
+        },
+        {
+          "path": "/play/last-bastion/game-assets/ShellScene.js",
+          "group": "executable",
+          "transferBytes": 45612,
+          "decodedBytes": 45312
+        },
+        {
+          "path": "/play/last-bastion/game-assets/ui-button-selected-v1-320x120.webp",
+          "group": "authored-art",
+          "transferBytes": 29278,
+          "decodedBytes": 28978
+        },
+        {
+          "path": "/play/last-bastion/game-assets/ui-button-hover-v1-320x120.webp",
+          "group": "authored-art",
+          "transferBytes": 28494,
+          "decodedBytes": 28194
+        },
+        {
+          "path": "/play/last-bastion/game-assets/ui-button-pressed-v1-320x120.webp",
+          "group": "authored-art",
+          "transferBytes": 26428,
+          "decodedBytes": 26128
+        },
+        {
+          "path": "/play/last-bastion/game-assets/ui-button-idle-v1-320x120.webp",
+          "group": "authored-art",
+          "transferBytes": 25558,
+          "decodedBytes": 25258
+        },
+        {
+          "path": "/play/last-bastion/game-assets/ui-header-plate-v1-512x96.webp",
+          "group": "authored-art",
+          "transferBytes": 24400,
+          "decodedBytes": 24100
+        }
+      ],
+      "resourceCount": 22,
+      "framePacing": null,
+      "textures": null,
+      "jsHeapBytes": 12895205
+    },
+    {
+      "name": "boss",
+      "route": "/play/last-bastion/?scenario=bastion-eater&loadout=vertical&seed=61061",
+      "cycle": 0,
+      "wallMilliseconds": 3594,
+      "readyMilliseconds": 3586.8000000000466,
+      "navigation": {
+        "responseStartMilliseconds": 1.3000000000465661,
+        "domContentLoadedMilliseconds": 37.9000000001397,
+        "loadMilliseconds": 38.300000000046566,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 14,
+          "transferBytes": 2168831,
+          "encodedBytes": 2164631,
+          "decodedBytes": 2164631
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 59,
+          "transferBytes": 11784416,
+          "encodedBytes": 11766716,
+          "decodedBytes": 11766716
+        },
+        "audio": {
+          "requests": 57,
+          "transferBytes": 396088,
+          "encodedBytes": 378988,
+          "decodedBytes": 378988
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-c-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 731676,
+          "decodedBytes": 731376
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-b-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 679632,
+          "decodedBytes": 679332
+        },
+        {
+          "path": "/play/last-bastion/game-assets/combat-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 643588,
+          "decodedBytes": 643288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/telegraph-small-atlas-v2-256.webp",
+          "group": "authored-art",
+          "transferBytes": 595840,
+          "decodedBytes": 595540
+        },
+        {
+          "path": "/play/last-bastion/game-assets/scrap-shop-panel-v1-1024x576.webp",
+          "group": "authored-art",
+          "transferBytes": 479176,
+          "decodedBytes": 478876
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bulwark-rotary-cannon-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 444588,
+          "decodedBytes": 444288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/grenade-tube-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 426776,
+          "decodedBytes": 426476
+        },
+        {
+          "path": "/play/last-bastion/game-assets/title-menu-backdrop-v1-3840x2160.webp",
+          "group": "authored-art",
+          "transferBytes": 421948,
+          "decodedBytes": 421648
+        },
+        {
+          "path": "/play/last-bastion/game-assets/patrol-blade-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 398126,
+          "decodedBytes": 397826
+        }
+      ],
+      "resourceCount": 132,
+      "framePacing": {
+        "ready": true,
+        "sampleCount": 132,
+        "sampledMilliseconds": 2267.729999999999,
+        "averageFrameMilliseconds": 17.17977272727272,
+        "p95FrameMilliseconds": 21.65999999999999,
+        "p99FrameMilliseconds": 21.66999999999998,
+        "onePercentLowFps": 46.14674665436091,
+        "maximumFrameMilliseconds": 21.670000000000027,
+        "hitchCount": 0,
+        "severeHitchCount": 0
+      },
+      "textures": {
+        "textureCount": 121,
+        "sourceCount": 121,
+        "estimatedDecodedBytes": 132767212
+      },
+      "jsHeapBytes": 27288302
+    },
+    {
+      "name": "heaviestReleasedLoadout",
+      "route": "/play/last-bastion/?stress=12&seed=61061",
+      "cycle": 0,
+      "wallMilliseconds": 3990,
+      "readyMilliseconds": 3984.600000000093,
+      "navigation": {
+        "responseStartMilliseconds": 1.3000000000465661,
+        "domContentLoadedMilliseconds": 69.60000000009313,
+        "loadMilliseconds": 70,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "executable": {
+          "requests": 14,
+          "transferBytes": 2168831,
+          "encodedBytes": 2164631,
+          "decodedBytes": 2164631
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 56,
+          "transferBytes": 11092492,
+          "encodedBytes": 11075692,
+          "decodedBytes": 11075692
+        },
+        "audio": {
+          "requests": 57,
+          "transferBytes": 396088,
+          "encodedBytes": 378988,
+          "decodedBytes": 378988
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-c-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 731676,
+          "decodedBytes": 731376
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-b-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 679632,
+          "decodedBytes": 679332
+        },
+        {
+          "path": "/play/last-bastion/game-assets/combat-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 643588,
+          "decodedBytes": 643288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/telegraph-small-atlas-v2-256.webp",
+          "group": "authored-art",
+          "transferBytes": 595840,
+          "decodedBytes": 595540
+        },
+        {
+          "path": "/play/last-bastion/game-assets/scrap-shop-panel-v1-1024x576.webp",
+          "group": "authored-art",
+          "transferBytes": 479176,
+          "decodedBytes": 478876
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bulwark-rotary-cannon-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 444588,
+          "decodedBytes": 444288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/grenade-tube-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 426776,
+          "decodedBytes": 426476
+        },
+        {
+          "path": "/play/last-bastion/game-assets/title-menu-backdrop-v1-3840x2160.webp",
+          "group": "authored-art",
+          "transferBytes": 421948,
+          "decodedBytes": 421648
+        },
+        {
+          "path": "/play/last-bastion/game-assets/patrol-blade-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 398126,
+          "decodedBytes": 397826
+        }
+      ],
+      "resourceCount": 129,
+      "framePacing": {
+        "ready": true,
+        "sampleCount": 130,
+        "sampledMilliseconds": 2279.879999999999,
+        "averageFrameMilliseconds": 17.537538461538457,
+        "p95FrameMilliseconds": 25,
+        "p99FrameMilliseconds": 25,
+        "onePercentLowFps": 40,
+        "maximumFrameMilliseconds": 26.660000000000036,
+        "hitchCount": 0,
+        "severeHitchCount": 0
+      },
+      "textures": {
+        "textureCount": 116,
+        "sourceCount": 116,
+        "estimatedDecodedBytes": 130099096
+      },
+      "jsHeapBytes": 28916919
+    },
+    {
+      "name": "map",
+      "route": "/play/last-bastion/?screen=map&mapseed=2026&threat=2",
+      "cycle": 1,
+      "wallMilliseconds": 422,
+      "readyMilliseconds": 419.30000000004657,
+      "navigation": {
+        "responseStartMilliseconds": 1.3000000000465661,
+        "domContentLoadedMilliseconds": 72,
+        "loadMilliseconds": 72.4000000001397,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 8,
+          "transferBytes": 1536808,
+          "encodedBytes": 1534408,
+          "decodedBytes": 1534408
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 2,
+          "transferBytes": 256504,
+          "encodedBytes": 255904,
+          "decodedBytes": 255904
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/void-approach-map-backdrop-v1-1536x1024.webp",
+          "group": "authored-art",
+          "transferBytes": 144014,
+          "decodedBytes": 143714
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bastion-logistics-map-backdrop-v1-1536x1024.webp",
+          "group": "authored-art",
+          "transferBytes": 112490,
+          "decodedBytes": 112190
+        },
+        {
+          "path": "/play/last-bastion/game-assets/game.js",
+          "group": "executable",
+          "transferBytes": 109337,
+          "decodedBytes": 109037
+        },
+        {
+          "path": "/play/last-bastion/game-assets/EncounterEventCatalog.js",
+          "group": "executable",
+          "transferBytes": 39963,
+          "decodedBytes": 39663
+        },
+        {
+          "path": "/play/last-bastion/game-assets/ExpeditionRun.js",
+          "group": "executable",
+          "transferBytes": 20657,
+          "decodedBytes": 20357
+        },
+        {
+          "path": "/play/last-bastion/game-assets/ExpeditionScene.js",
+          "group": "executable",
+          "transferBytes": 12056,
+          "decodedBytes": 11756
+        },
+        {
+          "path": "/play/last-bastion/game-assets/PhaserAssetQueue.js",
+          "group": "executable",
+          "transferBytes": 1186,
+          "decodedBytes": 886
+        },
+        {
+          "path": "/play/last-bastion/game-assets/arctic-relay-map-backdrop-v1-1536x1024.js",
+          "group": "executable",
+          "transferBytes": 1166,
+          "decodedBytes": 866
+        },
+        {
+          "path": "/play/last-bastion/game-assets/index.css",
+          "group": "style-font",
+          "transferBytes": 734,
+          "decodedBytes": 434
+        }
+      ],
+      "resourceCount": 12,
+      "framePacing": null,
+      "textures": null,
+      "jsHeapBytes": 23774286
+    },
+    {
+      "name": "combat",
+      "route": "/play/last-bastion/?scenario=density-capacity&debug=1&seed=61061",
+      "cycle": 1,
+      "wallMilliseconds": 3923,
+      "readyMilliseconds": 3916.1999999999534,
+      "navigation": {
+        "responseStartMilliseconds": 1.5,
+        "domContentLoadedMilliseconds": 44.199999999953434,
+        "loadMilliseconds": 44.699999999953434,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 14,
+          "transferBytes": 2168831,
+          "encodedBytes": 2164631,
+          "decodedBytes": 2164631
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 66,
+          "transferBytes": 12054123,
+          "encodedBytes": 12034323,
+          "decodedBytes": 12034323
+        },
+        "audio": {
+          "requests": 57,
+          "transferBytes": 396088,
+          "encodedBytes": 378988,
+          "decodedBytes": 378988
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-c-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 731676,
+          "decodedBytes": 731376
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-b-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 679632,
+          "decodedBytes": 679332
+        },
+        {
+          "path": "/play/last-bastion/game-assets/combat-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 643588,
+          "decodedBytes": 643288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/telegraph-small-atlas-v2-256.webp",
+          "group": "authored-art",
+          "transferBytes": 595840,
+          "decodedBytes": 595540
+        },
+        {
+          "path": "/play/last-bastion/game-assets/scrap-shop-panel-v1-1024x576.webp",
+          "group": "authored-art",
+          "transferBytes": 479176,
+          "decodedBytes": 478876
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bulwark-rotary-cannon-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 444588,
+          "decodedBytes": 444288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/alien-hive-floor-v1-128.webp",
+          "group": "authored-art",
+          "transferBytes": 429004,
+          "decodedBytes": 428704
+        },
+        {
+          "path": "/play/last-bastion/game-assets/grenade-tube-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 426776,
+          "decodedBytes": 426476
+        },
+        {
+          "path": "/play/last-bastion/game-assets/title-menu-backdrop-v1-3840x2160.webp",
+          "group": "authored-art",
+          "transferBytes": 421948,
+          "decodedBytes": 421648
+        }
+      ],
+      "resourceCount": 139,
+      "framePacing": {
+        "ready": true,
+        "sampleCount": 131,
+        "sampledMilliseconds": 2330.173333333336,
+        "averageFrameMilliseconds": 17.78758269720104,
+        "p95FrameMilliseconds": 25,
+        "p99FrameMilliseconds": 26.66999999999998,
+        "onePercentLowFps": 37.4953130858643,
+        "maximumFrameMilliseconds": 26.66999999999998,
+        "hitchCount": 0,
+        "severeHitchCount": 0
+      },
+      "textures": {
+        "textureCount": 134,
+        "sourceCount": 134,
+        "estimatedDecodedBytes": 132454064
+      },
+      "jsHeapBytes": 29523348
+    },
+    {
+      "name": "shop",
+      "route": "/play/last-bastion/?scenario=scrap-shop&loadout=vertical&seed=61061",
+      "cycle": 1,
+      "wallMilliseconds": 4130,
+      "readyMilliseconds": 4125.799999999814,
+      "navigation": {
+        "responseStartMilliseconds": 1.1999999999534339,
+        "domContentLoadedMilliseconds": 69.5,
+        "loadMilliseconds": 70,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 14,
+          "transferBytes": 2168831,
+          "encodedBytes": 2164631,
+          "decodedBytes": 2164631
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 53,
+          "transferBytes": 9623013,
+          "encodedBytes": 9607113,
+          "decodedBytes": 9607113
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-c-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 731676,
+          "decodedBytes": 731376
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-b-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 679632,
+          "decodedBytes": 679332
+        },
+        {
+          "path": "/play/last-bastion/game-assets/combat-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 643588,
+          "decodedBytes": 643288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/telegraph-small-atlas-v2-256.webp",
+          "group": "authored-art",
+          "transferBytes": 595840,
+          "decodedBytes": 595540
+        },
+        {
+          "path": "/play/last-bastion/game-assets/scrap-shop-panel-v1-1024x576.webp",
+          "group": "authored-art",
+          "transferBytes": 479176,
+          "decodedBytes": 478876
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bulwark-rotary-cannon-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 444588,
+          "decodedBytes": 444288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/grenade-tube-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 426776,
+          "decodedBytes": 426476
+        },
+        {
+          "path": "/play/last-bastion/game-assets/title-menu-backdrop-v1-3840x2160.webp",
+          "group": "authored-art",
+          "transferBytes": 421948,
+          "decodedBytes": 421648
+        },
+        {
+          "path": "/play/last-bastion/game-assets/patrol-blade-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 398126,
+          "decodedBytes": 397826
+        }
+      ],
+      "resourceCount": 69,
+      "framePacing": {
+        "ready": true,
+        "sampleCount": 130,
+        "sampledMilliseconds": 2268.3629333333365,
+        "averageFrameMilliseconds": 17.448945641025666,
+        "p95FrameMilliseconds": 24.996666666666684,
+        "p99FrameMilliseconds": 25,
+        "onePercentLowFps": 40,
+        "maximumFrameMilliseconds": 25.00999999999999,
+        "hitchCount": 0,
+        "severeHitchCount": 0
+      },
+      "textures": {
+        "textureCount": 121,
+        "sourceCount": 121,
+        "estimatedDecodedBytes": 124245560
+      },
+      "jsHeapBytes": 29165298
+    },
+    {
+      "name": "debrief",
+      "route": "/play/last-bastion/?screen=summary&summarydemo=1",
+      "cycle": 1,
+      "wallMilliseconds": 485,
+      "readyMilliseconds": 482.19999999995343,
+      "navigation": {
+        "responseStartMilliseconds": 1.5,
+        "domContentLoadedMilliseconds": 66.80000000004657,
+        "loadMilliseconds": 67.30000000004657,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 8,
+          "transferBytes": 1483971,
+          "encodedBytes": 1481571,
+          "decodedBytes": 1481571
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 7,
+          "transferBytes": 857580,
+          "encodedBytes": 855480,
+          "decodedBytes": 855480
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/codex-weapon-tile-atlas-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 201943,
+          "decodedBytes": 201643
+        },
+        {
+          "path": "/play/last-bastion/game-assets/weapon-identity-atlas-68a-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 182937,
+          "decodedBytes": 182637
+        },
+        {
+          "path": "/play/last-bastion/game-assets/weapon-identity-atlas-68b-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 175352,
+          "decodedBytes": 175052
+        },
+        {
+          "path": "/play/last-bastion/game-assets/weapon-identity-atlas-68c-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 163377,
+          "decodedBytes": 163077
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bastion-logistics-map-backdrop-v1-1536x1024.webp",
+          "group": "authored-art",
+          "transferBytes": 112490,
+          "decodedBytes": 112190
+        },
+        {
+          "path": "/play/last-bastion/game-assets/game.js",
+          "group": "executable",
+          "transferBytes": 109337,
+          "decodedBytes": 109037
+        },
+        {
+          "path": "/play/last-bastion/game-assets/marauder-ar-tile-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 18759,
+          "decodedBytes": 18459
+        },
+        {
+          "path": "/play/last-bastion/game-assets/RunSummaryScene.js",
+          "group": "executable",
+          "transferBytes": 15768,
+          "decodedBytes": 15468
+        },
+        {
+          "path": "/play/last-bastion/game-assets/event-horizon-tile-v1-64.png",
+          "group": "authored-art",
+          "transferBytes": 2722,
+          "decodedBytes": 2422
+        }
+      ],
+      "resourceCount": 17,
+      "framePacing": null,
+      "textures": null,
+      "jsHeapBytes": 25189496
+    },
+    {
+      "name": "map",
+      "route": "/play/last-bastion/?screen=map&mapseed=2026&threat=2",
+      "cycle": 2,
+      "wallMilliseconds": 401,
+      "readyMilliseconds": 399.5,
+      "navigation": {
+        "responseStartMilliseconds": 1.3000000000465661,
+        "domContentLoadedMilliseconds": 47.300000000046566,
+        "loadMilliseconds": 47.800000000046566,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 8,
+          "transferBytes": 1536808,
+          "encodedBytes": 1534408,
+          "decodedBytes": 1534408
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 2,
+          "transferBytes": 256504,
+          "encodedBytes": 255904,
+          "decodedBytes": 255904
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/void-approach-map-backdrop-v1-1536x1024.webp",
+          "group": "authored-art",
+          "transferBytes": 144014,
+          "decodedBytes": 143714
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bastion-logistics-map-backdrop-v1-1536x1024.webp",
+          "group": "authored-art",
+          "transferBytes": 112490,
+          "decodedBytes": 112190
+        },
+        {
+          "path": "/play/last-bastion/game-assets/game.js",
+          "group": "executable",
+          "transferBytes": 109337,
+          "decodedBytes": 109037
+        },
+        {
+          "path": "/play/last-bastion/game-assets/EncounterEventCatalog.js",
+          "group": "executable",
+          "transferBytes": 39963,
+          "decodedBytes": 39663
+        },
+        {
+          "path": "/play/last-bastion/game-assets/ExpeditionRun.js",
+          "group": "executable",
+          "transferBytes": 20657,
+          "decodedBytes": 20357
+        },
+        {
+          "path": "/play/last-bastion/game-assets/ExpeditionScene.js",
+          "group": "executable",
+          "transferBytes": 12056,
+          "decodedBytes": 11756
+        },
+        {
+          "path": "/play/last-bastion/game-assets/PhaserAssetQueue.js",
+          "group": "executable",
+          "transferBytes": 1186,
+          "decodedBytes": 886
+        },
+        {
+          "path": "/play/last-bastion/game-assets/arctic-relay-map-backdrop-v1-1536x1024.js",
+          "group": "executable",
+          "transferBytes": 1166,
+          "decodedBytes": 866
+        },
+        {
+          "path": "/play/last-bastion/game-assets/index.css",
+          "group": "style-font",
+          "transferBytes": 734,
+          "decodedBytes": 434
+        }
+      ],
+      "resourceCount": 12,
+      "framePacing": null,
+      "textures": null,
+      "jsHeapBytes": 25687438
+    },
+    {
+      "name": "combat",
+      "route": "/play/last-bastion/?scenario=density-capacity&debug=1&seed=61061",
+      "cycle": 2,
+      "wallMilliseconds": 3890,
+      "readyMilliseconds": 3883.6999999999534,
+      "navigation": {
+        "responseStartMilliseconds": 1.1999999999534339,
+        "domContentLoadedMilliseconds": 46.800000000046566,
+        "loadMilliseconds": 47.300000000046566,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 14,
+          "transferBytes": 2168831,
+          "encodedBytes": 2164631,
+          "decodedBytes": 2164631
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 66,
+          "transferBytes": 11840358,
+          "encodedBytes": 11820558,
+          "decodedBytes": 11820558
+        },
+        "audio": {
+          "requests": 57,
+          "transferBytes": 396088,
+          "encodedBytes": 378988,
+          "decodedBytes": 378988
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-c-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 731676,
+          "decodedBytes": 731376
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-b-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 679632,
+          "decodedBytes": 679332
+        },
+        {
+          "path": "/play/last-bastion/game-assets/combat-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 643588,
+          "decodedBytes": 643288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/telegraph-small-atlas-v2-256.webp",
+          "group": "authored-art",
+          "transferBytes": 595840,
+          "decodedBytes": 595540
+        },
+        {
+          "path": "/play/last-bastion/game-assets/scrap-shop-panel-v1-1024x576.webp",
+          "group": "authored-art",
+          "transferBytes": 479176,
+          "decodedBytes": 478876
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bulwark-rotary-cannon-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 444588,
+          "decodedBytes": 444288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/grenade-tube-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 426776,
+          "decodedBytes": 426476
+        },
+        {
+          "path": "/play/last-bastion/game-assets/title-menu-backdrop-v1-3840x2160.webp",
+          "group": "authored-art",
+          "transferBytes": 421948,
+          "decodedBytes": 421648
+        },
+        {
+          "path": "/play/last-bastion/game-assets/patrol-blade-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 398126,
+          "decodedBytes": 397826
+        }
+      ],
+      "resourceCount": 139,
+      "framePacing": {
+        "ready": true,
+        "sampleCount": 131,
+        "sampledMilliseconds": 2308.840000000016,
+        "averageFrameMilliseconds": 17.624732824427603,
+        "p95FrameMilliseconds": 24.99000000000001,
+        "p99FrameMilliseconds": 25.006666666666675,
+        "onePercentLowFps": 39.989336177019446,
+        "maximumFrameMilliseconds": 26.66999999999998,
+        "hitchCount": 0,
+        "severeHitchCount": 0
+      },
+      "textures": {
+        "textureCount": 134,
+        "sourceCount": 134,
+        "estimatedDecodedBytes": 132454064
+      },
+      "jsHeapBytes": 33701510
+    },
+    {
+      "name": "shop",
+      "route": "/play/last-bastion/?scenario=scrap-shop&loadout=vertical&seed=61061",
+      "cycle": 2,
+      "wallMilliseconds": 4139,
+      "readyMilliseconds": 4136.100000000093,
+      "navigation": {
+        "responseStartMilliseconds": 1.3999999999068677,
+        "domContentLoadedMilliseconds": 68.69999999995343,
+        "loadMilliseconds": 69.30000000004657,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 14,
+          "transferBytes": 2168831,
+          "encodedBytes": 2164631,
+          "decodedBytes": 2164631
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 53,
+          "transferBytes": 10294076,
+          "encodedBytes": 10278176,
+          "decodedBytes": 10278176
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-c-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 731676,
+          "decodedBytes": 731376
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-b-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 679632,
+          "decodedBytes": 679332
+        },
+        {
+          "path": "/play/last-bastion/game-assets/combat-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 643588,
+          "decodedBytes": 643288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/telegraph-small-atlas-v2-256.webp",
+          "group": "authored-art",
+          "transferBytes": 595840,
+          "decodedBytes": 595540
+        },
+        {
+          "path": "/play/last-bastion/game-assets/scrap-shop-panel-v1-1024x576.webp",
+          "group": "authored-art",
+          "transferBytes": 479176,
+          "decodedBytes": 478876
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bulwark-rotary-cannon-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 444588,
+          "decodedBytes": 444288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/grenade-tube-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 426776,
+          "decodedBytes": 426476
+        },
+        {
+          "path": "/play/last-bastion/game-assets/title-menu-backdrop-v1-3840x2160.webp",
+          "group": "authored-art",
+          "transferBytes": 421948,
+          "decodedBytes": 421648
+        },
+        {
+          "path": "/play/last-bastion/game-assets/patrol-blade-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 398126,
+          "decodedBytes": 397826
+        }
+      ],
+      "resourceCount": 69,
+      "framePacing": {
+        "ready": true,
+        "sampleCount": 130,
+        "sampledMilliseconds": 2279.0666666666807,
+        "averageFrameMilliseconds": 17.531282051282158,
+        "p95FrameMilliseconds": 25,
+        "p99FrameMilliseconds": 26.66999999999998,
+        "onePercentLowFps": 37.4953130858643,
+        "maximumFrameMilliseconds": 26.66999999999998,
+        "hitchCount": 0,
+        "severeHitchCount": 0
+      },
+      "textures": {
+        "textureCount": 121,
+        "sourceCount": 121,
+        "estimatedDecodedBytes": 127047224
+      },
+      "jsHeapBytes": 36689979
+    },
+    {
+      "name": "debrief",
+      "route": "/play/last-bastion/?screen=summary&summarydemo=1",
+      "cycle": 2,
+      "wallMilliseconds": 464,
+      "readyMilliseconds": 462.20000000018626,
+      "navigation": {
+        "responseStartMilliseconds": 1.4000000001396984,
+        "domContentLoadedMilliseconds": 67.80000000004657,
+        "loadMilliseconds": 68.30000000004657,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 8,
+          "transferBytes": 1483971,
+          "encodedBytes": 1481571,
+          "decodedBytes": 1481571
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 7,
+          "transferBytes": 857580,
+          "encodedBytes": 855480,
+          "decodedBytes": 855480
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/codex-weapon-tile-atlas-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 201943,
+          "decodedBytes": 201643
+        },
+        {
+          "path": "/play/last-bastion/game-assets/weapon-identity-atlas-68a-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 182937,
+          "decodedBytes": 182637
+        },
+        {
+          "path": "/play/last-bastion/game-assets/weapon-identity-atlas-68b-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 175352,
+          "decodedBytes": 175052
+        },
+        {
+          "path": "/play/last-bastion/game-assets/weapon-identity-atlas-68c-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 163377,
+          "decodedBytes": 163077
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bastion-logistics-map-backdrop-v1-1536x1024.webp",
+          "group": "authored-art",
+          "transferBytes": 112490,
+          "decodedBytes": 112190
+        },
+        {
+          "path": "/play/last-bastion/game-assets/game.js",
+          "group": "executable",
+          "transferBytes": 109337,
+          "decodedBytes": 109037
+        },
+        {
+          "path": "/play/last-bastion/game-assets/marauder-ar-tile-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 18759,
+          "decodedBytes": 18459
+        },
+        {
+          "path": "/play/last-bastion/game-assets/RunSummaryScene.js",
+          "group": "executable",
+          "transferBytes": 15768,
+          "decodedBytes": 15468
+        },
+        {
+          "path": "/play/last-bastion/game-assets/event-horizon-tile-v1-64.png",
+          "group": "authored-art",
+          "transferBytes": 2722,
+          "decodedBytes": 2422
+        }
+      ],
+      "resourceCount": 17,
+      "framePacing": null,
+      "textures": null,
+      "jsHeapBytes": 26840586
+    },
+    {
+      "name": "map",
+      "route": "/play/last-bastion/?screen=map&mapseed=2026&threat=2",
+      "cycle": 3,
+      "wallMilliseconds": 400,
+      "readyMilliseconds": 397.4000000001397,
+      "navigation": {
+        "responseStartMilliseconds": 1.7000000001862645,
+        "domContentLoadedMilliseconds": 47.5,
+        "loadMilliseconds": 48.300000000046566,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 8,
+          "transferBytes": 1536808,
+          "encodedBytes": 1534408,
+          "decodedBytes": 1534408
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 2,
+          "transferBytes": 256504,
+          "encodedBytes": 255904,
+          "decodedBytes": 255904
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/void-approach-map-backdrop-v1-1536x1024.webp",
+          "group": "authored-art",
+          "transferBytes": 144014,
+          "decodedBytes": 143714
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bastion-logistics-map-backdrop-v1-1536x1024.webp",
+          "group": "authored-art",
+          "transferBytes": 112490,
+          "decodedBytes": 112190
+        },
+        {
+          "path": "/play/last-bastion/game-assets/game.js",
+          "group": "executable",
+          "transferBytes": 109337,
+          "decodedBytes": 109037
+        },
+        {
+          "path": "/play/last-bastion/game-assets/EncounterEventCatalog.js",
+          "group": "executable",
+          "transferBytes": 39963,
+          "decodedBytes": 39663
+        },
+        {
+          "path": "/play/last-bastion/game-assets/ExpeditionRun.js",
+          "group": "executable",
+          "transferBytes": 20657,
+          "decodedBytes": 20357
+        },
+        {
+          "path": "/play/last-bastion/game-assets/ExpeditionScene.js",
+          "group": "executable",
+          "transferBytes": 12056,
+          "decodedBytes": 11756
+        },
+        {
+          "path": "/play/last-bastion/game-assets/PhaserAssetQueue.js",
+          "group": "executable",
+          "transferBytes": 1186,
+          "decodedBytes": 886
+        },
+        {
+          "path": "/play/last-bastion/game-assets/arctic-relay-map-backdrop-v1-1536x1024.js",
+          "group": "executable",
+          "transferBytes": 1166,
+          "decodedBytes": 866
+        },
+        {
+          "path": "/play/last-bastion/game-assets/index.css",
+          "group": "style-font",
+          "transferBytes": 734,
+          "decodedBytes": 434
+        }
+      ],
+      "resourceCount": 12,
+      "framePacing": null,
+      "textures": null,
+      "jsHeapBytes": 27347452
+    },
+    {
+      "name": "combat",
+      "route": "/play/last-bastion/?scenario=density-capacity&debug=1&seed=61061",
+      "cycle": 3,
+      "wallMilliseconds": 3671,
+      "readyMilliseconds": 3665,
+      "navigation": {
+        "responseStartMilliseconds": 1.3000000000465661,
+        "domContentLoadedMilliseconds": 36,
+        "loadMilliseconds": 36.5,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 14,
+          "transferBytes": 2168831,
+          "encodedBytes": 2164631,
+          "decodedBytes": 2164631
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 65,
+          "transferBytes": 11249905,
+          "encodedBytes": 11230405,
+          "decodedBytes": 11230405
+        },
+        "audio": {
+          "requests": 57,
+          "transferBytes": 396088,
+          "encodedBytes": 378988,
+          "decodedBytes": 378988
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-c-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 731676,
+          "decodedBytes": 731376
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-b-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 679632,
+          "decodedBytes": 679332
+        },
+        {
+          "path": "/play/last-bastion/game-assets/combat-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 643588,
+          "decodedBytes": 643288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/telegraph-small-atlas-v2-256.webp",
+          "group": "authored-art",
+          "transferBytes": 595840,
+          "decodedBytes": 595540
+        },
+        {
+          "path": "/play/last-bastion/game-assets/scrap-shop-panel-v1-1024x576.webp",
+          "group": "authored-art",
+          "transferBytes": 479176,
+          "decodedBytes": 478876
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bulwark-rotary-cannon-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 444588,
+          "decodedBytes": 444288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/grenade-tube-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 426776,
+          "decodedBytes": 426476
+        },
+        {
+          "path": "/play/last-bastion/game-assets/title-menu-backdrop-v1-3840x2160.webp",
+          "group": "authored-art",
+          "transferBytes": 421948,
+          "decodedBytes": 421648
+        },
+        {
+          "path": "/play/last-bastion/game-assets/patrol-blade-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 398126,
+          "decodedBytes": 397826
+        }
+      ],
+      "resourceCount": 138,
+      "framePacing": {
+        "ready": true,
+        "sampleCount": 131,
+        "sampledMilliseconds": 2280.9433333333336,
+        "averageFrameMilliseconds": 17.41178117048346,
+        "p95FrameMilliseconds": 21.66999999999998,
+        "p99FrameMilliseconds": 25,
+        "onePercentLowFps": 40,
+        "maximumFrameMilliseconds": 25.00999999999999,
+        "hitchCount": 0,
+        "severeHitchCount": 0
+      },
+      "textures": {
+        "textureCount": 133,
+        "sourceCount": 133,
+        "estimatedDecodedBytes": 129703280
+      },
+      "jsHeapBytes": 35226547
+    },
+    {
+      "name": "shop",
+      "route": "/play/last-bastion/?scenario=scrap-shop&loadout=vertical&seed=61061",
+      "cycle": 3,
+      "wallMilliseconds": 4122,
+      "readyMilliseconds": 4118.5,
+      "navigation": {
+        "responseStartMilliseconds": 1.5,
+        "domContentLoadedMilliseconds": 66.69999999995343,
+        "loadMilliseconds": 67.30000000004657,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 14,
+          "transferBytes": 2168831,
+          "encodedBytes": 2164631,
+          "decodedBytes": 2164631
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 53,
+          "transferBytes": 10226535,
+          "encodedBytes": 10210635,
+          "decodedBytes": 10210635
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-c-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 731676,
+          "decodedBytes": 731376
+        },
+        {
+          "path": "/play/last-bastion/game-assets/batch-b-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 679632,
+          "decodedBytes": 679332
+        },
+        {
+          "path": "/play/last-bastion/game-assets/combat-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 643588,
+          "decodedBytes": 643288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/telegraph-small-atlas-v2-256.webp",
+          "group": "authored-art",
+          "transferBytes": 595840,
+          "decodedBytes": 595540
+        },
+        {
+          "path": "/play/last-bastion/game-assets/scrap-shop-panel-v1-1024x576.webp",
+          "group": "authored-art",
+          "transferBytes": 479176,
+          "decodedBytes": 478876
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bulwark-rotary-cannon-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 444588,
+          "decodedBytes": 444288
+        },
+        {
+          "path": "/play/last-bastion/game-assets/grenade-tube-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 426776,
+          "decodedBytes": 426476
+        },
+        {
+          "path": "/play/last-bastion/game-assets/title-menu-backdrop-v1-3840x2160.webp",
+          "group": "authored-art",
+          "transferBytes": 421948,
+          "decodedBytes": 421648
+        },
+        {
+          "path": "/play/last-bastion/game-assets/patrol-blade-effect-atlas-v1.webp",
+          "group": "authored-art",
+          "transferBytes": 398126,
+          "decodedBytes": 397826
+        }
+      ],
+      "resourceCount": 69,
+      "framePacing": {
+        "ready": true,
+        "sampleCount": 130,
+        "sampledMilliseconds": 2292.1734666666684,
+        "averageFrameMilliseconds": 17.632103589743604,
+        "p95FrameMilliseconds": 25,
+        "p99FrameMilliseconds": 26.65999999999999,
+        "onePercentLowFps": 37.5093773443361,
+        "maximumFrameMilliseconds": 26.66999999999998,
+        "hitchCount": 0,
+        "severeHitchCount": 0
+      },
+      "textures": {
+        "textureCount": 121,
+        "sourceCount": 121,
+        "estimatedDecodedBytes": 127047224
+      },
+      "jsHeapBytes": 40696755
+    },
+    {
+      "name": "debrief",
+      "route": "/play/last-bastion/?screen=summary&summarydemo=1",
+      "cycle": 3,
+      "wallMilliseconds": 456,
+      "readyMilliseconds": 454.10000000009313,
+      "navigation": {
+        "responseStartMilliseconds": 1.3000000000465661,
+        "domContentLoadedMilliseconds": 66.19999999995343,
+        "loadMilliseconds": 66.69999999995343,
+        "transferSize": 2785,
+        "encodedBodySize": 2485,
+        "decodedBodySize": 2485
+      },
+      "resourceGroups": {
+        "executable": {
+          "requests": 8,
+          "transferBytes": 1483971,
+          "encodedBytes": 1481571,
+          "decodedBytes": 1481571
+        },
+        "style-font": {
+          "requests": 1,
+          "transferBytes": 734,
+          "encodedBytes": 434,
+          "decodedBytes": 434
+        },
+        "other": {
+          "requests": 1,
+          "transferBytes": 0,
+          "encodedBytes": 0,
+          "decodedBytes": 0
+        },
+        "authored-art": {
+          "requests": 7,
+          "transferBytes": 857580,
+          "encodedBytes": 855480,
+          "decodedBytes": 855480
+        }
+      },
+      "largestResources": [
+        {
+          "path": "/play/last-bastion/game-assets/phaser.js",
+          "group": "executable",
+          "transferBytes": 1351916,
+          "decodedBytes": 1351616
+        },
+        {
+          "path": "/play/last-bastion/game-assets/codex-weapon-tile-atlas-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 201943,
+          "decodedBytes": 201643
+        },
+        {
+          "path": "/play/last-bastion/game-assets/weapon-identity-atlas-68a-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 182937,
+          "decodedBytes": 182637
+        },
+        {
+          "path": "/play/last-bastion/game-assets/weapon-identity-atlas-68b-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 175352,
+          "decodedBytes": 175052
+        },
+        {
+          "path": "/play/last-bastion/game-assets/weapon-identity-atlas-68c-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 163377,
+          "decodedBytes": 163077
+        },
+        {
+          "path": "/play/last-bastion/game-assets/bastion-logistics-map-backdrop-v1-1536x1024.webp",
+          "group": "authored-art",
+          "transferBytes": 112490,
+          "decodedBytes": 112190
+        },
+        {
+          "path": "/play/last-bastion/game-assets/game.js",
+          "group": "executable",
+          "transferBytes": 109337,
+          "decodedBytes": 109037
+        },
+        {
+          "path": "/play/last-bastion/game-assets/marauder-ar-tile-v1-128.png",
+          "group": "authored-art",
+          "transferBytes": 18759,
+          "decodedBytes": 18459
+        },
+        {
+          "path": "/play/last-bastion/game-assets/RunSummaryScene.js",
+          "group": "executable",
+          "transferBytes": 15768,
+          "decodedBytes": 15468
+        },
+        {
+          "path": "/play/last-bastion/game-assets/event-horizon-tile-v1-64.png",
+          "group": "authored-art",
+          "transferBytes": 2722,
+          "decodedBytes": 2422
+        }
+      ],
+      "resourceCount": 17,
+      "framePacing": null,
+      "textures": null,
+      "jsHeapBytes": 34290198
+    }
+  ],
+  "repeatedRouteTrends": {
+    "map": {
+      "heapDeltaBytes": 3573166,
+      "textureCountDelta": null,
+      "decodedTextureBytesDelta": null,
+      "heapMonotonicallyIncreased": true,
+      "textureCountMonotonicallyIncreased": null
+    },
+    "combat": {
+      "heapDeltaBytes": 5703199,
+      "textureCountDelta": -1,
+      "decodedTextureBytesDelta": -2750784,
+      "heapMonotonicallyIncreased": true,
+      "textureCountMonotonicallyIncreased": false
+    },
+    "shop": {
+      "heapDeltaBytes": 11531457,
+      "textureCountDelta": 0,
+      "decodedTextureBytesDelta": 2801664,
+      "heapMonotonicallyIncreased": true,
+      "textureCountMonotonicallyIncreased": false
+    },
+    "debrief": {
+      "heapDeltaBytes": 9100702,
+      "textureCountDelta": null,
+      "decodedTextureBytesDelta": null,
+      "heapMonotonicallyIncreased": true,
+      "textureCountMonotonicallyIncreased": null
+    }
+  }
+}

@@ -10,6 +10,7 @@
     "test": "vitest run",
     "smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-test.ps1",
     "offline": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/offline-boot-test.ps1",
+    "performance:measure": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/measure-performance.ps1",
     "content:audit": "vitest run src/game/content/ContentInventory.test.ts --reporter=verbose",
     "balance:audit": "node scripts/run-balance-audit.mjs",
     "balance:audit:bosses": "vitest run src/game/telemetry/RegionalBossBalanceAudit.test.ts --reporter=verbose",
