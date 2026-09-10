@@ -146,6 +146,7 @@ export class PrototypeScene extends Phaser.Scene {
   private marineHelmetSprite: Phaser.GameObjects.Sprite | null = null;
   private marineRimSprite: Phaser.GameObjects.Sprite | null = null;
   private controls!: KeyboardMouseInput;
+  private moveRightBinding = "KeyD";
   private assetLoadFailed = false;
   private hud!: CombatHud;
   private pauseOverlay!: CombatPauseOverlay;
@@ -343,6 +344,7 @@ export class PrototypeScene extends Phaser.Scene {
     const { width, height } = this.scale;
     const safe = uiSafeArea(width, height);
     const controls = this.saveStore.load().controls;
+    this.moveRightBinding = controls.keyboard.moveRight;
     renderArena(this, this.simulation.arena, PIXELS_PER_METRE, this.showDebug, this.useMarineArt, this.arenaTheme);
     this.effectPool = new VisualEffectPool(this, 192);
     this.damageNumbers = new FloatingDamageNumbers(this);
@@ -1012,6 +1014,13 @@ export class PrototypeScene extends Phaser.Scene {
     snapshot.playerSlowed ? this.marineSprite?.setTint(marineTint) : this.marineSprite?.clearTint();
     snapshot.playerSlowed ? this.marineHelmetSprite?.setTint(marineTint) : this.marineHelmetSprite?.clearTint();
     this.worldPresenter?.update();
+    (window as unknown as { __combatAccessibilityAudit?: object }).__combatAccessibilityAudit = {
+      playerPosition: { ...snapshot.playerPosition },
+      uiScale: this.settings.uiScale,
+      reducedMotion: this.settings.reducedMotionEnabled,
+      moveRightBinding: this.moveRightBinding,
+      paused: this.isPaused,
+    };
   }
 
   private positionPauseControls(): void {

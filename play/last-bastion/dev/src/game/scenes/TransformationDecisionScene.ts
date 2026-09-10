@@ -48,9 +48,13 @@ export class TransformationDecisionScene extends Phaser.Scene {
     this.root = this.add.container(0, 0);
     window.addEventListener("keydown", this.handleKeyDown);
     window.addEventListener("keyup", this.handleKeyUp);
+    window.addEventListener("blur", this.releaseConfirmation);
+    document.addEventListener("visibilitychange", this.releaseConfirmation);
     this.events.once("shutdown", () => {
       window.removeEventListener("keydown", this.handleKeyDown);
       window.removeEventListener("keyup", this.handleKeyUp);
+      window.removeEventListener("blur", this.releaseConfirmation);
+      document.removeEventListener("visibilitychange", this.releaseConfirmation);
     });
     this.input.gamepad?.on("down", (_pad: unknown, button: { index: number }) => this.handlePadDown(button.index));
     this.input.gamepad?.on("up", (_pad: unknown, button: { index: number }) => {
@@ -95,6 +99,10 @@ export class TransformationDecisionScene extends Phaser.Scene {
 
   private readonly handleKeyUp = (event: KeyboardEvent): void => {
     if (event.code === "Enter" || event.code === "Space") this.confirmHeld = false;
+  };
+
+  private readonly releaseConfirmation = (): void => {
+    this.confirmHeld = false;
   };
 
   private handlePadDown(index: number): void {

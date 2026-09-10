@@ -348,10 +348,14 @@ export class RunSummaryScene extends Phaser.Scene {
 
 function showSelectableRunDetails(details: string): void {
   document.getElementById("run-details-fallback")?.remove();
+  const returnFocus = document.activeElement instanceof HTMLElement && document.activeElement !== document.body
+    ? document.activeElement
+    : document.querySelector<HTMLElement>("#game-root canvas");
   const overlay = document.createElement("div");
   overlay.id = "run-details-fallback";
   overlay.setAttribute("role", "dialog");
-  overlay.setAttribute("aria-label", "Run details");
+  overlay.setAttribute("aria-modal", "true");
+  overlay.setAttribute("aria-labelledby", "run-details-fallback-heading");
   Object.assign(overlay.style, {
     position: "fixed", inset: "0", zIndex: "10000", display: "grid", placeItems: "center",
     background: "rgba(5, 10, 16, .88)", padding: "24px",
@@ -359,6 +363,7 @@ function showSelectableRunDetails(details: string): void {
   const panel = document.createElement("div");
   Object.assign(panel.style, { width: "min(680px, 92vw)", color: "#e8e2d4", fontFamily: "monospace" });
   const heading = document.createElement("p");
+  heading.id = "run-details-fallback-heading";
   heading.textContent = "Clipboard access was blocked. Select and copy these run details:";
   const textarea = document.createElement("textarea");
   textarea.value = details;
@@ -372,7 +377,25 @@ function showSelectableRunDetails(details: string): void {
   close.type = "button";
   close.textContent = "Close";
   Object.assign(close.style, { marginTop: "12px", padding: "8px 18px", cursor: "pointer" });
-  close.addEventListener("click", () => overlay.remove());
+  const closeDialog = (): void => {
+    document.removeEventListener("keydown", handleDialogKey);
+    overlay.remove();
+    const focusTarget = returnFocus?.isConnected
+      ? returnFocus
+      : document.querySelector<HTMLElement>("#game-root canvas");
+    if (focusTarget instanceof HTMLCanvasElement && !focusTarget.hasAttribute("tabindex")) {
+      focusTarget.tabIndex = -1;
+    }
+    focusTarget?.focus();
+  };
+  const handleDialogKey = (event: KeyboardEvent): void => {
+    if (event.code !== "Escape") return;
+    event.preventDefault();
+    event.stopPropagation();
+    closeDialog();
+  };
+  close.addEventListener("click", closeDialog);
+  document.addEventListener("keydown", handleDialogKey);
   panel.append(heading, textarea, close);
   overlay.append(panel);
   document.body.append(overlay);

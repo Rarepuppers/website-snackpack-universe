@@ -138,6 +138,20 @@ describe("GamepadIntentMapper", () => {
     expect(intent.pausePressed).toBe(false);
   });
 
+  it("requires held buttons to be released after a reconnect before edge-triggering", () => {
+    const mapper = new GamepadIntentMapper();
+    mapper.update(padState());
+    mapper.update(DISCONNECTED_GAMEPAD);
+
+    const reconnectedHeld = mapper.update(padState({ southPressed: true, westPressed: true, interactHeld: true }));
+    expect(reconnectedHeld.evasiveMovePressed).toBe(false);
+    expect(reconnectedHeld.restartPressed).toBe(false);
+    expect(reconnectedHeld.interactHeld).toBe(false);
+    expect(mapper.update(padState({ southPressed: true, westPressed: true, interactHeld: true })).evasiveMovePressed).toBe(false);
+    expect(mapper.update(padState()).evasiveMovePressed).toBe(false);
+    expect(mapper.update(padState({ southPressed: true })).evasiveMovePressed).toBe(true);
+  });
+
   it("lets the active device win when merging with keyboard and mouse", () => {
     const mapper = new GamepadIntentMapper();
     const gamepad = mapper.update(padState({

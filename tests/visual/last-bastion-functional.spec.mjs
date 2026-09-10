@@ -108,6 +108,79 @@ test.describe("Last Bastion executable acceptance", () => {
     await expect(details).toBeVisible();
     await expect(details).toHaveValue(/Combat seed: 61061/);
     await expect(details).toHaveValue(/Simulation: 3/);
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#run-details-fallback")).toHaveCount(0);
+    expect(await page.evaluate(() => document.activeElement?.tagName)).toBe("CANVAS");
+    await expectHealthyCanvas(page, failures);
+  });
+
+  test("focus loss clears a held irreversible confirmation", async ({ page }) => {
+    const failures = watchRuntime(page);
+    await page.goto("/play/last-bastion/?screen=transformation-lab");
+    await page.waitForFunction(() => Boolean(window.__transformationDecisionLab));
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(() => Boolean(window.__transformationDecisionLab?.state?.pending));
+
+    await page.keyboard.down("Enter");
+    await page.waitForFunction(() => window.__transformationDecisionLab.state.pending.holdElapsedMs > 0);
+    await page.evaluate(() => window.dispatchEvent(new Event("blur")));
+    await page.waitForFunction(() => window.__transformationDecisionLab.state.pending.holdElapsedMs === 0);
+    await page.waitForTimeout(500);
+    expect((await page.evaluate(() => window.__transformationDecisionLab.state.pending)).holdElapsedMs).toBe(0);
+    await page.keyboard.up("Enter");
+    await expectHealthyCanvas(page, failures);
+  });
+
+  test("maximum HUD scale, reduced motion, and remapped movement work at the minimum viewport", async ({ page }) => {
+    const failures = watchRuntime(page);
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/play/last-bastion/?screen=title");
+    await page.waitForFunction(() => window.__shellState?.screen === "title");
+    await page.evaluate(() => {
+      const state = window.__shellState;
+      const save = {
+        version: 16,
+        settings: { ...state.settings, uiScale: 1.2, reducedMotionEnabled: true },
+        controls: {
+          keyboard: { ...state.controls.keyboard, moveRight: "KeyZ" },
+          gamepad: { ...state.controls.gamepad },
+        },
+        progress: {
+          runsFinished: 0, victories: 0, bestWaveReached: 0, nodesCleared: 0,
+          bestNodesCleared: 0, totalKills: 0, totalDamage: 0, totalScrapEarned: 0,
+          bestiary: {}, threatTierBestNodes: { 0: 0, 1: 0, 2: 0 },
+          threatTierVictories: { 0: 0, 1: 0, 2: 0 }, commandMarksLifetime: 0,
+          purchasedArmoryNodeIds: [],
+        },
+        expedition: null,
+        selectedPerkId: "perk-veteran",
+        selectedHeroId: "marine",
+        selectedThreatTier: 0,
+        selectedArmoryNodeId: null,
+        lastRunSummary: null,
+        runHistory: [],
+      };
+      localStorage.setItem("last-bastion-save", JSON.stringify(save));
+    });
+
+    await page.goto("/play/last-bastion/?scenario=powerup-identity&seed=61061");
+    await page.waitForFunction(() => window.__combatAccessibilityAudit?.uiScale === 1.2);
+    expect(await page.evaluate(() => window.__combatAccessibilityAudit)).toMatchObject({
+      uiScale: 1.2,
+      reducedMotion: true,
+      moveRightBinding: "KeyZ",
+      paused: false,
+    });
+    const initialX = await page.evaluate(() => window.__combatAccessibilityAudit.playerPosition.x);
+    await page.keyboard.down("z");
+    await page.waitForFunction((x) => window.__combatAccessibilityAudit.playerPosition.x > x, initialX);
+    await page.keyboard.up("z");
+
+    const canvas = await page.locator("#game-root canvas").boundingBox();
+    expect(canvas).not.toBeNull();
+    expect(canvas.width).toBeLessThanOrEqual(1280);
+    expect(canvas.height).toBeLessThanOrEqual(800);
+    expect(canvas.width / canvas.height).toBeCloseTo(16 / 9, 2);
     await expectHealthyCanvas(page, failures);
   });
 

@@ -89,6 +89,8 @@ export class GamepadIntentMapper {
   };
 
   private tuning: GamepadTuning = { ...DEFAULT_GAMEPAD_TUNING };
+  private wasConnected = false;
+  private suppressButtonsUntilRelease = false;
 
   constructor(
     private readonly bindings: Readonly<Record<GamepadBindableAction, GamepadButton>> = DEFAULT_CONTROL_BINDINGS.gamepad,
@@ -114,9 +116,18 @@ export class GamepadIntentMapper {
       start: state.connected && state.startPressed,
       rightStick: state.connected && state.rightStickPressed,
     };
+    if (!state.connected) {
+      if (this.wasConnected) this.suppressButtonsUntilRelease = true;
+      this.wasConnected = false;
+    } else {
+      this.wasConnected = true;
+      if (this.suppressButtonsUntilRelease && !Object.values(current).some(Boolean)) {
+        this.suppressButtonsUntilRelease = false;
+      }
+    }
     const pressed = (action: GamepadBindableAction): boolean => {
       const button = this.bindings[action];
-      return current[button] && !this.previous[button];
+      return !this.suppressButtonsUntilRelease && current[button] && !this.previous[button];
     };
     const intent = buildIntent(state, {
       evasiveMovePressed: pressed("evade"),
@@ -124,9 +135,9 @@ export class GamepadIntentMapper {
       ultimatePressed: pressed("ultimate"),
       kitPressed: pressed("kit"),
       pausePressed: pressed("pause"),
-      restartPressed: current.south && !this.previous.south,
+      restartPressed: !this.suppressButtonsUntilRelease && current.south && !this.previous.south,
       toggleFireModePressed: pressed("toggleFireMode"),
-    }, current[this.bindings.interact], this.tuning);
+    }, !this.suppressButtonsUntilRelease && current[this.bindings.interact], this.tuning);
     this.previous = current;
     return intent;
   }

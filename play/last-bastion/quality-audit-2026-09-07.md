@@ -289,6 +289,15 @@ Use existing damage/defeat metrics for a concise, factual “What ended this run
 
 ### QA-10 — Prove accessibility across the full journey (P2, M)
 
+**Implementation status — automated input-safety tranche completed 11 September 2026.**
+The browser lane now exercises reduced-motion combat with the maximum 1.2x HUD at the 1280x800
+minimum viewport and proves a remapped movement key changes simulation position. Controller input
+now suppresses edge-triggered actions after a disconnect until every held button is released.
+Transformation hold-confirm resets on focus/visibility loss, and the selectable run-details dialog
+has modal semantics, closes with Escape, and restores focus to the game canvas. Physical controller
+disconnect/reconnect, screen-reader review, long-copy screenshot review, and observed reduced-motion
+threat timing remain explicit manual gates rather than inferred passes.
+
 **Evidence:** reduced motion, colour-vision choices, UI scaling, game speed, focus pause,
 and confirmation for pause-menu abandon/restart already exist. Do not re-add those systems.
 Existing plans still call for observed readability and input acceptance.
