@@ -2,12 +2,13 @@
 
 **Created:** 23 August 2026
 **Trigger:** first creator-observed local run against `local-playtest-plan-2026-08-21.md`.
-**Status:** active register, reconciled 11 September 2026. LB-01's code half and LB-05, LB-06, LB-08, LB-10, LB-11,
-and LB-12 are implemented; LB-09 now applies high-resolution text to every release-critical scene,
-with a verification audit preventing omissions. LB-03's missing lifecycle feedback is implemented
-and every current combat-event variant now has an exhaustive presentation decision. LB-02,
-LB-04, the authored-icon/art half of LB-07, and observed/device acceptance remain open. See the
-register status column and `quality-audit-2026-09-07.md` for current evidence.
+**Status:** active register, reconciled 11 September 2026. Every code-owned defect is closed and
+observed in the browser. LB-04's registered helmet sheets remain the only open defect. The packaged
+Windows 125% scaling check, Steam client acceptance, and five observed campaign runs remain manual
+release gates. Batches 85/85b, 86, and 89 are optional authored-art polish because their code
+fallbacks now communicate the required feedback; Batch 88 is superseded by vector map icons and
+aspect-correct region backdrops. See the register status column and
+`quality-audit-2026-09-07.md` for current evidence.
 
 This document does three things:
 
@@ -142,16 +143,16 @@ lands the pixels.
 | ID | Finding | Sev | Owner | Status at 11 September 2026 |
 |---|---|---|---|---|
 | LB-01 | No visible bullets from the Marine's default gun — and from 9 other weapons plus all turret fire (§4.1a) | S1 | both | **Blocking defect closed; authored identity art remains polish.** A total `Record<WeaponId, …>` now owns scale, halo, trail, tint and impact for all 18 projectile sources. The Marine route was reviewed successfully on dark Bastion and light Arctic Relay arenas at 960×540 and 3840×2160. |
-| LB-02 | Cannot inspect a collected power-up (name + description) | S2 | code | **Open.** Collection banner exists; persistent world/HUD inspection does not. |
+| LB-02 | Cannot inspect a collected power-up (name + description) | S2 | code | **Closed.** One exhaustive catalog now drives pickup/event/inspect identity. Nearby pickups auto-show the shared inspect card; pointer hover works on pickups and HUD chips; held Interact cycles active effects for keyboard/gamepad. Reviewed at 960×540 on 11 September 2026. |
 | LB-03 | Opening a crate gives no animation and no reward readout | S1 | both | **Code closed.** Spawn/hit/open/destroy effects and explicit reward feed copy are exhaustive; authored chest body/animation remains art polish. |
 | LB-04 | Separate helmet is oversized and off-head, varying by facing | S1 | art | **Open.** No accepted re-registered sheet or observed facing evidence found. |
 | LB-05 | "LAST BASTION" sits outside its menu container | S2 | code | **Closed.** Current header/text geometry keeps the title inside the generated plate. |
 | LB-06 | Character-select perk tiles overflow their container | S2 | code | **Closed.** The dossier and two-row perk grid now share derived bounds; all ten tiles remain inside the panel with clearance from the description and roster rail. Rechecked at 3840×2160 on 11 September 2026. |
-| LB-07 | Map screen is low quality and has no node icons | S2 | both | **Partly closed.** Region backdrops, medallions, objective badges, hidden intel, and focus states exist; authored node-icon art remains open. |
+| LB-07 | Map screen is low quality and has no node icons | S2 | both | **Closed.** Nine exhaustive resolution-independent vector pictograms replace ASCII node identities while ring/alpha state cues remain. The 3:2 backdrop is letterboxed at an integer 768×512 logical size. Reviewed at 3840×2160 on 11 September 2026. |
 | LB-08 | Map nodes cannot be hovered for info; clicking commits instantly | S1 | code | **Closed.** Hover/focus previews intel and a second confirm deploys; browser acceptance covers it. |
-| LB-09 | Menu text is blurry at Full HD and 4K | S1 | code | **Implemented; remaining scene recheck pending.** Six release scenes now use `uiTextResolution()` and a verify-time source audit. Title, character select, map, and debrief were rechecked at 3840×2160 on 11 September 2026; encounter, expedition-event, and transformation screens remain to be observed. Developer gallery text remains outside the release gate. |
+| LB-09 | Menu text is blurry at Full HD and 4K | S1 | code | **Closed.** Six release scenes use `uiTextResolution()` and a verify-time source audit. Title, character select, map, debrief, encounter lab, real expedition-event, and transformation screens were rechecked at 3840×2160 on 11 September 2026. Developer gallery text remains outside the release gate. |
 | LB-10 | Screenshot evidence has nowhere to live | — | process | **Closed.** `playtest-evidence/README.md` defines storage and naming. |
-| LB-11 | Level-up card text overflows its card and collides with the hint line | S2 | code | **Implemented; observed recheck pending.** Stat cards use a measured 2-column grid and dynamic panel height. |
+| LB-11 | Level-up card text overflows its card and collides with the hint line | S2 | code | **Closed.** Stat-only cards retain their measured 2-column grid; the real four-option mixed draw now uses wide 82 px rows, a derived panel height, and a measured footer gutter. `?scenario=level-up-review` was reviewed at 3840×2160 on 11 September 2026. |
 | LB-12 | Dead `NODE_GLYPHS` table; only the ASCII fallback ever renders | S3 | code | **Closed.** The unused Unicode table was removed; safe glyphs remain the intentional fallback until LB-07 art lands. |
 
 ---
@@ -296,6 +297,11 @@ description. Route: existing `?scenario=powerup-identity` gains hover assertions
 **Acceptance.** Every power-up in the lab can be identified without prior knowledge, by mouse and by
 pad, before and after collection.
 
+**Implemented 11 September 2026.** `powerupCatalog.ts` is the exhaustive player-facing source for
+all 12 power-ups. `InspectCard` auto-shows within five metres, pointer hover takes priority on world
+and HUD surfaces, and held Interact (E / pad X by default) cycles active buffs. Pure catalog/model
+tests fail on a missing identity or empty description.
+
 ### 4.3 LB-03 — crates open into silence
 
 **Verified cause.** Supply chests are code-drawn rectangles built inline in `syncSupplyChests`
@@ -427,6 +433,10 @@ gate at 3840×2560; this run is the named failure that fires it.
 **Acceptance.** At 3840×2160 the map reads as an authored screen: node types identifiable without
 the legend, route lines crisp, plate showing no softness or visible repetition.
 
+**Implemented 11 September 2026.** Nine distinct vector pictograms now identify node types without
+font or colour dependence; an exhaustive catalog test protects the mapping. The backdrop keeps its
+3:2 aspect at an integer 768×512 logical presentation. Seed 117 passed the 3840×2160 browser review.
+
 ### 4.8 LB-08 — map nodes cannot be previewed, only committed
 
 **Verified cause.** Only nodes whose presentation is `reachable` get an interactive zone, and that
@@ -483,6 +493,11 @@ player saw it in the menus.
 **Acceptance.** Side-by-side capture of the menu at 1920×1080 and 3840×2160 before/after, plus a
 check that a HiDPI laptop at 125% Windows scaling shows no resampling seam.
 
+**Observed 11 September 2026.** Encounter Event Lab, the real Expedition Event scene via its new
+no-save `eventdemo=1` route, and Transformation Decision Lab all rendered sharp at 3840×2160 with no
+page errors. This completes the release-scene recheck; the physical 125% Windows monitor check stays
+in the packaged hardware pass.
+
 ### 4.10 LB-11 — level-up cards clip their own text *(found in review, not reported)*
 
 Visible in the reported screenshot even though it was not called out. Option buttons are fixed
@@ -497,6 +512,11 @@ option's card spans y 60…126 and its wrapped text runs past it, so option 4 an
 sequentially from the measured heights, and place the hint below the *measured* stack rather than at
 a constant. Cap descriptions at two wrapped lines at the catalogue level so a card can never grow
 unbounded, and add a catalogue test for the length budget.
+
+**Implemented and observed 11 September 2026.** `DecisionOverlayLayout` derives panel and footer
+geometry, and the normal mixed list uses 770×82 px cards on a 92 px pitch. The deterministic real
+catalog draw at `?scenario=level-up-review` exposed the old wrap-through-border defect and then
+verified all four cards plus the footer at 3840×2160 after correction.
 
 ### 4.11 LB-12 — dead glyph table
 
@@ -578,13 +598,13 @@ Numbering continues past the content plan's 76–84. Standing rules unchanged: t
 logical sizes, pivots and frame order preserved, source masters retained at ≥4× the runtime size,
 staged under `art/production-tests/<folder>/`, reviewed through a `?mode=gallery&batch=…` route.
 
-**85 — `weapon-batch-85-service-rifle-vfx`** *(unblocks LB-01 for the Marine)*
+**85 — `weapon-batch-85-service-rifle-vfx`** *(optional authored-art polish; LB-01 is code-closed)*
 `bastion-service-rifle-effects-v1`, 64×64 cells, matching the existing per-weapon effect sheets:
 muzzle flash (2 frames), tracer body (1 frame, readable as a streak at ~20 px on-screen, high
 contrast against both the dark-brown logistics floor and the pale arctic floor), tracer trail
 (1 frame), impact spark (3 frames). The tracer is the critical one — it must read at 12–20 px.
 
-**85b — `weapon-batch-85b-projectile-identity`** *(closes LB-01 across the pool; see §4.1a)*
+**85b — `weapon-batch-85b-projectile-identity`** *(optional authored-art polish; see §4.1a)*
 The same four-element treatment for the nine weapons still on the generic fallback: `railspike`,
 `seeker-swarm`, `corrosive-lobber`, `scourge-repeater`, `hoarfrost-scatter`, `tether-harpoon`,
 `emberlance`, `sentry-stake`, and `auxiliary-drone`. Seven of these already have Batch 68 identity
@@ -592,7 +612,7 @@ tiles; the projectile must read as the same weapon as its tile. Plus gameplay sp
 Stake turret and Auxiliary Drone, which are currently code-drawn primitives. Ship after 85 — the
 Marine fix must not wait on a ten-weapon batch.
 
-**86 — `object-batch-86-supply-chest`** *(unblocks LB-03)*
+**86 — `object-batch-86-supply-chest`** *(optional authored-art polish; LB-03 is code-closed)*
 Standard and armoured supply chests, 64×64: closed, hit-flash, opening (3–4 frames), open-empty,
 destroyed. Plus a reward burst (4 frames) reusable by every grant path. Silhouette must be
 distinguishable from world-object crates at 30-enemy density.
@@ -604,7 +624,7 @@ exact pixel position and scale it occupies over the corresponding body frame, ev
 transparent, identical cell size and frame order. Deliver a composited contact sheet (body + overlay
 per frame) as the review artefact; that sheet is the acceptance evidence.
 
-**88 — `ui-batch-88-map-medallions`** *(unblocks LB-07)*
+**88 — `ui-batch-88-map-medallions`** *(superseded for LB-07; retain only as optional art direction)*
 Node medallions for all nine node types (combat, elite, mini-boss, supply depot, weapon cache,
 shrine, event, liberation, boss) at 64×64, each in five states (current, reachable, cleared, open,
 unreachable) or one base plus a code-tintable state ring — state must survive greyscale. Plus the
@@ -612,7 +632,7 @@ three objective badges (Escort / Deny / Collect), a cleared tick, a current-posi
 route-line end caps. Then the six region plates re-authored at 3840×2560 (3:2) keeping their
 1536×1024 logical contract and stable IDs.
 
-**89 — `ui-batch-89-inspect-and-toast`** *(supports §6)*
+**89 — `ui-batch-89-inspect-and-toast`** *(optional authored-art polish; InspectCard is code-closed)*
 Nine-slice frame for the `InspectCard` in the established U1 language (small, dark, readable over
 both combat and the map plate), plus a toast plate, plus six small reward-class icons (scrap,
 experience, health, weapon, relic, command marks). Text-free; all copy is code-rendered.
@@ -664,9 +684,9 @@ half · LB-08 · LB-02.
 
 **Step 3 — S2 code fixes.** LB-05 · LB-06 · LB-11 · LB-07 code half · LB-12.
 
-**Step 4 — art, in parallel from step 1.** Batch 87 first (LB-04 is art-only and blocks nothing
-else), then 85, 86, 88, 89. Each lands against wiring that already exists, behind the existing
-fallback so a missing texture degrades rather than crashes.
+**Step 4 — remaining art.** Batch 87 is the only defect-closing batch. Batches 85/85b, 86, and 89
+may follow as polish against wiring that already exists. Batch 88 is no longer required for closure;
+the vector medallions and aspect-correct region backdrops passed review.
 
 **Step 5 — re-gate.** Restart the five-run matrix as Runs 1–5 with Lane B clean. Only then consider
 Threat Tiers 3–5.

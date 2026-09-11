@@ -45,6 +45,8 @@ Gameplay bindings can be remapped under **Main Menu → Settings → Control bin
 - `/play/last-bastion/?screen=map` — the tuned playable 20-node expedition: objective-modified combat nodes are marked E/D/C before deployment; selecting a route autosaves and enters depth-budgeted Combat, Elite, Mini-boss, Supply Depot, Weapon Cache, or a region-selected finale (Bastion Eater, The Choir, or Foundry Sovereign). `&mapseed=N&threat=2` reviews a deterministic high-threat chart
 - `/play/last-bastion/?screen=summary&summarydemo=1` — deterministic populated Task 50 run-summary review without changing the local save
 - `/play/last-bastion/?screen=transformation-lab` — isolated in-memory transformation warning/hold/commit/purge lab; starts with Cybernetic at 2/3 and never applies stats or writes a save
+- `/play/last-bastion/?screen=event&eventdemo=1` — deterministic no-save entry state for the real expedition Shrine/Event scene
+- `/play/last-bastion/?scenario=level-up-review` — deterministic real four-option mixed level-up draw for card and footer layout review
 - `/play/last-bastion/?screen=game&autofire=0` — Task 53 Manual-fire HUD/input review (`autofire=1` restores the default; both persist)
 - `/play/last-bastion/?art=placeholder` — code-shape comparison renderer
 - `/play/last-bastion/?helmet=0` — styled Marine without the removable helmet

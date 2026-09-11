@@ -53,6 +53,7 @@ export interface ScenarioPopulationContext {
   spawnBoss(kind: BossKind, position?: Vector2Data): number;
   spawnPowerup(type: PowerupType, position?: Vector2Data): number;
   activatePowerup(type: PowerupType): void;
+  grantExperience(amount: number): void;
   recordDensitySpawn(spawn: { type: EnemyType }): void;
 
   activeObstacles(): ArenaDefinition["obstacles"];
@@ -441,6 +442,11 @@ const POPULATE: Readonly<Record<CombatScenario, Populate>> = Object.freeze({
       });
       context.activatePowerup(type);
     });
+  },
+
+  /** Real four-option mixed draw for worst-case card and hint review. */
+  "level-up-review": (context) => {
+    context.grantExperience(1000);
   },
 
   /** Stable live-art lab for Batch J body silhouettes, cadence, and telegraphs. */

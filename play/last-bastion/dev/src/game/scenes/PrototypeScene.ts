@@ -78,6 +78,8 @@ import { createBuildViewModel } from "../build/BuildViewModel";
 import { buildOverlayModel } from "../ui/BuildOverlay";
 import { FRIENDLY_PROJECTILE_SOFT_BUDGET } from "../combat/FriendlyProjectileBudget";
 import { dedicatedPowerupFrame, powerupPickupPresentation } from "../ui/PowerupTileFrames";
+import { InspectCard } from "../ui/InspectCard";
+import { powerupInspectCard } from "../ui/InspectCardModel";
 import { weaponReviewPage } from "../ui/WeaponReviewRoutes";
 import {
   VERTICAL_SLICE_WEAPON_IDS,
@@ -85,6 +87,7 @@ import {
   type WeaponId,
 } from "../content/weaponCatalog";
 import { DAMAGE_TYPE_COLOURS } from "../combat/damageTypes";
+import { powerupDisplayName } from "../content/powerupCatalog";
 import { expeditionNodeById } from "../expedition/ExpeditionMap";
 import {
   completeCurrentNode,
@@ -234,6 +237,9 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly warpTelegraphs = new Map<number, TelegraphView>();
   private readonly pickupViews = new Map<number, PickupView>();
   private readonly powerupViews = new Map<number, PickupView>();
+  private inspectCard!: InspectCard;
+  private hoveredPowerup: Readonly<{ id: number; type: PowerupType }> | null = null;
+  private hoveredHudPowerupType: PowerupType | null = null;
   private readonly supplyChestViews = new Map<number, Phaser.GameObjects.Container>();
   private readonly weaponViews = new Map<number, WeaponView>();
   private readonly deployableViews = new Map<number, Phaser.GameObjects.Container>();
@@ -417,7 +423,9 @@ export class PrototypeScene extends Phaser.Scene {
       this.settings.radarSize,
       this.settings.uiScale,
       this.settings.colorVisionMode,
+      (type) => { this.hoveredHudPowerupType = type; },
     );
+    this.inspectCard = new InspectCard(this);
     this.synth.setVolume(this.settings.masterVolume * this.settings.sfxVolume);
     this.haptics = new CombatHaptics(
       () => this.input.gamepad?.getAll().find((pad) => pad.vibration)?.vibration ?? null,
@@ -684,6 +692,7 @@ export class PrototypeScene extends Phaser.Scene {
         this.settings.radarSize,
         this.settings.uiScale,
         this.settings.colorVisionMode,
+        (type) => { this.hoveredHudPowerupType = type; },
       );
     }
     this.pauseOverlay.refresh();
@@ -840,6 +849,7 @@ export class PrototypeScene extends Phaser.Scene {
     }
 
     this.renderSnapshot(snapshot, intent.fireHeld);
+    this.updatePowerupInspection(snapshot, Boolean(intent.interactHeld));
     this.updateFirstDropGuidance(intent, snapshot);
     this.synth.beginFrame();
     if (snapshot.status === "defeat" && this.previousRunStatus !== "defeat") {
@@ -4167,6 +4177,11 @@ export class PrototypeScene extends Phaser.Scene {
           ? this.add.sprite(0, 0, presentation.texture, presentation.frame ?? 0)
           : this.add.rectangle(0, 0, 16, 16, powerupColor(powerup.type))
             .setRotation(Math.PI / 4).setStrokeStyle(2, 0xffffff);
+        view.setInteractive({ useHandCursor: true })
+          .on("pointerover", () => { this.hoveredPowerup = { id: powerup.id, type: powerup.type }; })
+          .on("pointerout", () => {
+            if (this.hoveredPowerup?.id === powerup.id) this.hoveredPowerup = null;
+          });
         this.powerupViews.set(powerup.id, view);
       }
       const baseScale = powerup.type === "medkit" || dedicatedPowerupFrame(powerup.type) !== undefined ? 0.5 : 1;
@@ -4175,6 +4190,43 @@ export class PrototypeScene extends Phaser.Scene {
         .setScale(baseScale * (1 + Math.sin(this.time.now / 140) * 0.12))
         .setAlpha(powerup.remainingSeconds < 3 && Math.floor(this.time.now / 160) % 2 === 0 ? 0.4 : 1);
     }
+  }
+
+  private updatePowerupInspection(snapshot: CombatSnapshot, inspectHeld: boolean): void {
+    if (this.hoveredHudPowerupType) {
+      const buff = snapshot.activeBuffs.find((candidate) => candidate.type === this.hoveredHudPowerupType);
+      if (buff) {
+        this.inspectCard.show(powerupInspectCard(buff.type, buff.remainingSeconds), 18, 112);
+        return;
+      }
+    }
+    const hoveredPickup = this.hoveredPowerup
+      ? snapshot.powerups.find((powerup) => powerup.id === this.hoveredPowerup!.id)
+      : undefined;
+    const nearbyPickup = [...snapshot.powerups]
+      .filter((powerup) => distanceSquared(powerup.position, snapshot.playerPosition) <= 5 ** 2)
+      .sort((left, right) => distanceSquared(left.position, snapshot.playerPosition) - distanceSquared(right.position, snapshot.playerPosition))[0];
+    const pickup = hoveredPickup ?? nearbyPickup;
+    if (pickup) {
+      const camera = this.cameras.main;
+      this.inspectCard.show(
+        powerupInspectCard(pickup.type),
+        pickup.position.x * PIXELS_PER_METRE - camera.scrollX + 24,
+        pickup.position.y * PIXELS_PER_METRE - camera.scrollY - 92,
+      );
+      return;
+    }
+    const activeType = inspectHeld && snapshot.activeBuffs.length > 0
+        ? snapshot.activeBuffs[Math.floor(this.time.now / 1500) % snapshot.activeBuffs.length]?.type ?? null
+        : null;
+    if (activeType) {
+      const buff = snapshot.activeBuffs.find((candidate) => candidate.type === activeType);
+      if (buff) {
+        this.inspectCard.show(powerupInspectCard(activeType, buff.remainingSeconds), 18, 112);
+        return;
+      }
+    }
+    this.inspectCard.hide();
   }
 
   /** Placeholder crates until a future art batch: bronze armored, teal-trim sealed. */
@@ -4464,7 +4516,7 @@ function readStressProfile(): 4 | 12 | null {
 
 function readScenario(): CombatScenario | null {
   const scenario = new URLSearchParams(window.location.search).get("scenario");
-  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "ironhide-abomination" || scenario === "splitcaller-weaver" || scenario === "voltaic-warden" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "rift-stalker" || scenario === "synapse-herald" || scenario === "assembly-prime" || scenario === "storm-regent" || scenario === "abomination-prime" || scenario === "the-choir" || scenario === "foundry-sovereign" || scenario === "infected-survivor" || scenario === "corrupted-marine" || scenario === "abomination" || scenario === "corrupted-human" || scenario === "nest-weaver" || scenario === "storm-savant" || scenario === "scrap-skitterer" || scenario === "arc-warden" || scenario === "cyborg-reclaimer" || scenario === "foundry-fabricator" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "escort-objective" || scenario === "deny-objective" || scenario === "collect-objective" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop" || scenario === "weapon-gate" || scenario === "weapon-review" || scenario === "powerup-identity" || scenario === "batch-j"
+  return scenario === "slime-spitter" || scenario === "carapace-elite" || scenario === "ironhide-abomination" || scenario === "splitcaller-weaver" || scenario === "voltaic-warden" || scenario === "siege-crusher" || scenario === "brood-warden" || scenario === "rift-stalker" || scenario === "synapse-herald" || scenario === "assembly-prime" || scenario === "storm-regent" || scenario === "abomination-prime" || scenario === "the-choir" || scenario === "foundry-sovereign" || scenario === "infected-survivor" || scenario === "corrupted-marine" || scenario === "abomination" || scenario === "corrupted-human" || scenario === "nest-weaver" || scenario === "storm-savant" || scenario === "scrap-skitterer" || scenario === "arc-warden" || scenario === "cyborg-reclaimer" || scenario === "foundry-fabricator" || scenario === "ripper" || scenario === "razor-scuttler" || scenario === "quillback" || scenario === "spinewheel" || scenario === "tether-bloom" || scenario === "escort-objective" || scenario === "deny-objective" || scenario === "collect-objective" || scenario === "bastion-eater" || scenario === "density-capacity" || scenario === "aurum-hoarder" || scenario === "scrap-shop" || scenario === "weapon-gate" || scenario === "weapon-review" || scenario === "powerup-identity" || scenario === "level-up-review" || scenario === "batch-j"
     ? scenario
     : null;
 }
@@ -4818,10 +4870,6 @@ function createManifestSprite(
   const sprite = scene.add.sprite(0, 0, assetId, 0);
   applyManifestOrigin(sprite, assetId);
   return sprite;
-}
-
-function powerupDisplayName(type: PowerupType): string {
-  return type.split("-").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
 }
 
 function threatIndicatorWeight(enemy: EnemySnapshot): number {

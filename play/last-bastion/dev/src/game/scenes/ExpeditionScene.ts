@@ -30,6 +30,7 @@ import {
 } from "../expedition/ExpeditionEncounter";
 import { normalizeThreatTier, threatTierDefinition } from "../expedition/ThreatTier";
 import { expeditionMapGamepadIntent } from "../input/ExpeditionMapInput";
+import { createNodeMedallionIcon } from "../ui/NodeMedallionIcon";
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -44,18 +45,6 @@ const MAP_RIGHT = WIDTH - 90;
 const LANE_TOP = 130;
 const LANE_GAP = 110;
 
-const SAFE_NODE_GLYPHS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze({
-  combat: "*",
-  elite: "E",
-  "mini-boss": "M",
-  "supply-depot": "+",
-  "weapon-cache": "W",
-  shrine: "S",
-  event: "?",
-  liberation: "L",
-  boss: "B",
-});
-
 const NODE_LABELS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze({
   combat: "COMBAT",
   elite: "ELITE — guaranteed cache",
@@ -69,11 +58,10 @@ const NODE_LABELS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze(
 });
 
 /**
- * Task 38 behavior gate: the 20-node starchart screen with code-native
+ * Task 38 behavior gate: the 20-node starchart screen with vector-authored
  * medallions and route lines. Traversal advances the dropship and autosaves
  * schema-v2 state on every arrival; node → encounter wiring is Task 39, so
- * selecting a node currently scouts it directly. Batch G2 replaces the
- * medallion dressing later without touching the run rules.
+ * selecting a node currently scouts it directly.
  */
 export class ExpeditionScene extends Phaser.Scene {
   private saveStore!: LocalSaveStore;
@@ -342,7 +330,7 @@ export class ExpeditionScene extends Phaser.Scene {
     const backdropAsset = mapBackdropAssetForTheme(theme.id);
     if (this.textures.exists(backdropAsset.id)) {
       this.root.add(this.add.image(WIDTH / 2, HEIGHT / 2, backdropAsset.id)
-        .setDisplaySize(WIDTH, 640)
+        .setDisplaySize(768, 512)
         .setAlpha(0.72));
     }
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2 + 10, WIDTH - 72, HEIGHT - 108, theme.backdropColor, 0.46)
@@ -418,9 +406,12 @@ export class ExpeditionScene extends Phaser.Scene {
       const glyphColor = presentation === "current" || presentation === "reachable" || focused
         ? (node.type === "boss" ? ORANGE : TEAL)
         : MUTED;
-      this.root.add(this.text(x, y - 1, intelVisible ? SAFE_NODE_GLYPHS[node.type] : "?", glyphColor, "16px", true)
-        .setDepth(11)
-        .setAlpha(!intelVisible ? 0.12 : presentation === "unreachable" ? 0.4 : 1));
+      if (intelVisible) {
+        this.root.add(createNodeMedallionIcon(this, node.type, x, y, Phaser.Display.Color.HexStringToColor(glyphColor).color)
+          .setDepth(11).setAlpha(presentation === "unreachable" ? 0.4 : 1));
+      } else {
+        this.root.add(this.text(x, y - 1, "?", MUTED, "16px", true).setDepth(11).setAlpha(0.12));
+      }
       const objectiveMode = intelVisible
         ? expeditionEncounterForNode(this.run.state.mapSeed, node, this.run.state.threatTier).objectiveMode
         : null;

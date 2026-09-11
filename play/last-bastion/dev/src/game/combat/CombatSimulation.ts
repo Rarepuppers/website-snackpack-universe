@@ -617,7 +617,7 @@ export function isBossKind(value: string): value is BossKind {
 export function enemyRadius(enemy: { type: EnemyType; radiusScale?: number }): number {
   return ENEMY_CATALOG[enemy.type].radiusMetres * (enemy.radiusScale ?? 1);
 }
-export type CombatScenario = "slime-spitter" | "carapace-elite" | "ironhide-abomination" | "splitcaller-weaver" | "voltaic-warden" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime" | "the-choir" | "foundry-sovereign" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "escort-objective" | "deny-objective" | "collect-objective" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "weapon-review" | "powerup-identity" | "batch-j";
+export type CombatScenario = "slime-spitter" | "carapace-elite" | "ironhide-abomination" | "splitcaller-weaver" | "voltaic-warden" | "siege-crusher" | "brood-warden" | "rift-stalker" | "synapse-herald" | "assembly-prime" | "storm-regent" | "abomination-prime" | "the-choir" | "foundry-sovereign" | "infected-survivor" | "corrupted-marine" | "abomination" | "corrupted-human" | "nest-weaver" | "storm-savant" | "scrap-skitterer" | "arc-warden" | "cyborg-reclaimer" | "foundry-fabricator" | "ripper" | "razor-scuttler" | "quillback" | "spinewheel" | "tether-bloom" | "escort-objective" | "deny-objective" | "collect-objective" | "bastion-eater" | "density-capacity" | "aurum-hoarder" | "scrap-shop" | "weapon-gate" | "weapon-review" | "powerup-identity" | "level-up-review" | "batch-j";
 export type PowerupType = "overcharge" | "aegis" | "adrenaline" | "magnet-pulse" | "uranium-core-rounds" | "medkit" | "siege-loader" | "phase-jacket" | "hunter-optics" | "last-stand-stimulant" | "emp-charge" | "butchers-serum";
 export type SupplyChestVariant = "sealed" | "armored";
 export type DecisionKind = "upgrade" | "level-stat" | "weapon-chest" | "supply-depot" | "slot-requisition" | "rank-reward" | "scrap-shop" | "weapon-placement";
@@ -9851,6 +9851,7 @@ export class CombatSimulation {
         const duration = POWERUP_DURATION_SECONDS[type];
         if (duration > 0) this.activeBuffs.set(type, duration);
       },
+      grantExperience: (amount) => this.addExperience(amount),
       recordDensitySpawn: (spawn) => this.recordDensitySpawn(spawn),
       activeObstacles: () => this.activeObstacles(),
       nextWeaponInstanceId: () => this.weaponInventory.nextInstanceId++,

@@ -50,6 +50,7 @@ interface StatusTrayView {
   readonly timer: Phaser.GameObjects.Text;
   readonly ring: Phaser.GameObjects.Graphics;
   readonly radius: number;
+  type: PowerupType | null;
 }
 
 
@@ -109,6 +110,7 @@ export class CombatHud {
     radarSize: 0.75 | 1 | 1.25 = 1,
     uiScale: 0.8 | 1 | 1.2 = 1,
     colorVisionMode: ColorVisionMode = "standard",
+    onPowerupInspect: (type: PowerupType | null) => void = () => {},
   ) {
     const hudChildrenStart = scene.children.list.length;
     this.scene = scene;
@@ -160,7 +162,11 @@ export class CombatHud {
         .setStrokeStyle(1, 0x4f6e8d).setDepth(2001));
     }
     for (let index = 0; index < 6; index += 1) {
-      this.statusTray.push(createStatusTrayView(scene, safe.left + (22 + index * 44) * s, safe.top + 82 * s, productionArt, s));
+      const view = createStatusTrayView(scene, safe.left + (22 + index * 44) * s, safe.top + 82 * s, productionArt, s);
+      view.background.setInteractive({ useHandCursor: true })
+        .on("pointerover", () => onPowerupInspect(view.type))
+        .on("pointerout", () => onPowerupInspect(null));
+      this.statusTray.push(view);
     }
 
     // Top-centre: wave and timer only. Roll/ultimate readiness already lives
@@ -400,9 +406,11 @@ export class CombatHud {
     this.statusTray.forEach((view, index) => {
       const buff = snapshot.activeBuffs[index];
       if (!buff) {
+        view.type = null;
         setStatusTrayVisible(view, false);
         return;
       }
+      view.type = buff.type;
       setStatusTrayVisible(view, true);
       updateStatusTrayView(view, buff.type, buff.remainingSeconds, buff.durationSeconds);
     });
@@ -545,7 +553,7 @@ function createStatusTrayView(
   const timer = scene.add.text(x, y + 11 * scale, "", hudText("#ffffff", "8px"))
     .setOrigin(0.5).setDepth(2023).setVisible(false);
   const ring = scene.add.graphics().setDepth(2022).setVisible(false);
-  return { background, iconText, image, timer, ring, radius };
+  return { background, iconText, image, timer, ring, radius, type: null };
 }
 
 function setStatusTrayVisible(view: StatusTrayView, visible: boolean): void {
@@ -752,6 +760,7 @@ const SCENARIO_LABELS: Readonly<Record<CombatScenario, string>> = Object.freeze(
   "weapon-gate": "WEAPON GATE LAB",
   "weapon-review": "WEAPON REVIEW",
   "powerup-identity": "POWER-UP LAB",
+  "level-up-review": "LEVEL-UP LAB",
   "batch-j": "BATCH J LAB",
 });
 

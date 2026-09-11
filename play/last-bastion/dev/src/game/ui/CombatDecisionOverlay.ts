@@ -5,6 +5,7 @@ import { WEAPON_CATALOG } from "../content/weaponCatalog";
 import { uiTextResolution } from "../rendering/DisplayScaling";
 import { shopWeaponTilePresentation, weaponTilePresentation } from "./WeaponTileFrames";
 import { upgradeTilePresentation } from "./UpgradeTilePresentation";
+import { decisionHintY, decisionPanelHeight } from "./DecisionOverlayLayout";
 
 export interface DecisionMenuKeys {
   readonly up: Phaser.Input.Keyboard.Key;
@@ -162,17 +163,10 @@ export class CombatDecisionOverlay {
     // Level-up stat cards read as a 2x2 grid of cards rather than a list of
     // rows — closest existing shape is the shop's two-column offer layout.
     const isStatCards = decision.kind === "level-stat";
-    const statCardRows = isStatCards ? Math.ceil(decision.options.length / 2) : 0;
+    const isPlainList = !isShop && !isPlacement && !isStatCards;
     const shopColumns = isShop && decision.options.length > 7 ? 2 : 1;
-    const shopRows = isShop ? Math.ceil(decision.options.length / shopColumns) : 0;
-    const panelWidth = isPlacement ? 860 : isStatCards ? 820 : shopColumns === 2 ? 980 : 760;
-    // The plain list grew a fourth row when level-ups started mixing in a stat
-    // card, so its height follows the option count instead of being pinned.
-    const panelHeight = isShop
-      ? Math.max(520, 190 + shopRows * 70)
-      : isPlacement ? 520
-        : isStatCards ? Math.max(330, 150 + statCardRows * 132)
-          : 330 + Math.max(0, decision.options.length - 3) * 86;
+    const panelWidth = isPlacement ? 860 : isStatCards ? 820 : shopColumns === 2 ? 980 : isPlainList ? 860 : 760;
+    const panelHeight = decisionPanelHeight(decision.kind, decision.options.length, shopColumns);
     const children: Phaser.GameObjects.GameObject[] = [];
     if (isShop && this.options.useMarineArt) {
       children.push(this.scene.add.image(0, 0, "scrap-shop-panel-v1").setDisplaySize(panelWidth, panelHeight));
@@ -234,15 +228,15 @@ export class CombatDecisionOverlay {
           : isShop && shopColumns === 2 ? -238 + shopColumn * 476 : isShop ? -78 : 0;
       const y = isPlacement ? -125 + Math.floor(index / 2) * 98
         : isStatCards ? titleY + 96 + Math.floor(index / 2) * 132
-          : isShop ? titleY + 78 + shopRow * 70 : titleY + 65 + index * 86;
+          : isShop ? titleY + 78 + shopRow * 70 : titleY + 70 + index * 92;
       const enabled = choice.affordable !== false;
       const upgradeTile = this.options.useMarineArt ? upgradeTilePresentation(choice.id) : null;
       const shopWeaponTile = isShop && this.options.useMarineArt ? shopWeaponTilePresentation(choice.id) : null;
       const shopButtonWidth = shopColumns === 2 ? 444 : 500;
       const button = this.scene.add.rectangle(
         x, y,
-        isPlacement ? 300 : isStatCards ? 344 : isShop ? shopButtonWidth : 670,
-        isPlacement ? 78 : isStatCards ? 116 : isShop ? 62 : 66,
+        isPlacement ? 300 : isStatCards ? 344 : isShop ? shopButtonWidth : 770,
+        isPlacement ? 78 : isStatCards ? 116 : isShop ? 62 : 82,
         0x1b2d42, 0.98,
       ).setStrokeStyle(2, isStatCards ? 0x68e4e8 : 0x5d7892).setInteractive({ useHandCursor: enabled });
       const price = choice.cost && choice.cost > 0 ? ` — ${choice.cost} SCRAP${enabled ? "" : " (SHORT)"}` : "";
@@ -261,7 +255,7 @@ export class CombatDecisionOverlay {
           .setDisplaySize(58, 58).setAlpha(enabled ? 1 : 0.42));
       }
       if (!isShop && !isPlacement && !isStatCards && upgradeTile) {
-        children.push(this.scene.add.image(-292, y, upgradeTile.texture, upgradeTile.frame)
+        children.push(this.scene.add.image(-345, y, upgradeTile.texture, upgradeTile.frame)
           .setDisplaySize(56, 56).setAlpha(enabled ? 1 : 0.42));
       }
       const quickKey = index < 9 ? `${index + 1}. ` : "";
@@ -276,11 +270,11 @@ export class CombatDecisionOverlay {
           wordWrap: { width: 312 },
           lineSpacing: 4,
         }).setOrigin(0.5).setResolution(uiTextResolution())
-        : this.scene.add.text(isPlacement ? x - 78 : isShop ? x - shopButtonWidth / 2 + 76 : upgradeTile ? -250 : -310, y - (isPlacement ? 26 : isShop ? 15 : 18), `${quickKey}${choice.name}${price}\n${choice.description}`, {
+        : this.scene.add.text(isPlacement ? x - 78 : isShop ? x - shopButtonWidth / 2 + 76 : upgradeTile ? -305 : -365, y - (isPlacement ? 26 : isShop ? 15 : 26), `${quickKey}${choice.name}${price}\n${choice.description}`, {
           color: enabled ? "#edf4ff" : "#758493",
           fontFamily: "Consolas, Courier New, monospace",
           fontSize: isPlacement ? "13px" : isShop ? "13px" : "15px",
-          wordWrap: isPlacement ? { width: 202 } : isShop ? { width: shopButtonWidth - 92 } : upgradeTile ? { width: 520 } : undefined,
+          wordWrap: isPlacement ? { width: 202 } : isShop ? { width: shopButtonWidth - 92 } : upgradeTile ? { width: 620 } : { width: 710 },
           lineSpacing: isShop ? 2 : 5,
         }).setResolution(uiTextResolution());
       button.on("pointerover", () => {
@@ -296,7 +290,7 @@ export class CombatDecisionOverlay {
     });
 
     const quickPickCount = Math.min(9, decision.options.length);
-    const hint = this.scene.add.text(0, isShop ? titleY + 38 : isPlacement ? 225 : 138, `↑↓ SELECT   •   ENTER CONFIRM   •   1-${quickPickCount} QUICK PICK`, {
+    const hint = this.scene.add.text(0, decisionHintY(decision.kind, panelHeight, titleY), `↑↓ SELECT   •   ENTER CONFIRM   •   1-${quickPickCount} QUICK PICK`, {
       color: "#9fb3c8",
       fontFamily: "Consolas, Courier New, monospace",
       fontSize: "11px",

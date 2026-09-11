@@ -9,6 +9,7 @@ import { PLAYER_MAX_HEALTH } from "../combat/CombatSimulation";
 import {
   completeCurrentNode,
   resumeExpeditionRun,
+  startExpeditionRun,
   type ExpeditionBuildSnapshot,
   type ExpeditionRun,
 } from "../expedition/ExpeditionRun";
@@ -59,6 +60,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
   private root!: Phaser.GameObjects.Container;
   private choiceIndex = 0;
   private outcome: { choice: EventChoice; resolution: EventResolution } | null = null;
+  private demoMode = false;
 
   constructor() {
     super("expedition-event");
@@ -79,6 +81,9 @@ export class ExpeditionEventScene extends Phaser.Scene {
 
   /** Resolves the run, current node, event card, build, and gamble roll. Returns false to bounce to the map. */
   private loadContext(): boolean {
+    if (new URLSearchParams(window.location.search).get("eventdemo") === "1") {
+      return this.loadDemoContext();
+    }
     const saved = this.saveStore.load().expedition;
     if (!saved) return false;
     const resumed = resumeExpeditionRun({
@@ -107,6 +112,25 @@ export class ExpeditionEventScene extends Phaser.Scene {
       hero.baseMaxHealth + heroGrowthAtLevel(hero, Math.max(1, this.build.level)).maxHealthBonus + (this.build.maxHealthBonus ?? 0),
     );
     // Deterministic gamble roll from the encounter seed — reproducible per seed.
+    this.roll = ((encounter.seed >>> 0) % 100_000) / 100_000;
+    return true;
+  }
+
+  /** Stable no-save entry state for 4K and input acceptance of the real run scene. */
+  private loadDemoContext(): boolean {
+    this.demoMode = true;
+    const fresh = startExpeditionRun(117);
+    const node = fresh.map.nodes.find((candidate) => candidate.type === "shrine" || candidate.type === "event");
+    if (!node) return false;
+    const encounter = expeditionEncounterForNode(fresh.state.mapSeed, node, fresh.state.threatTier);
+    const event = encounter.eventId ? encounterEventById(encounter.eventId) : null;
+    if (!event) return false;
+    this.run = { map: fresh.map, state: { ...fresh.state, currentNodeId: node.id } };
+    this.node = node;
+    this.event = event;
+    this.build = { ...this.baselineBuild(), health: 9, level: 6, experience: 120, scrap: 100 };
+    const hero = heroDefinition(this.saveStore.load().selectedHeroId);
+    this.maxHealth = hero.baseMaxHealth + heroGrowthAtLevel(hero, this.build.level).maxHealthBonus;
     this.roll = ((encounter.seed >>> 0) % 100_000) / 100_000;
     return true;
   }
@@ -150,6 +174,11 @@ export class ExpeditionEventScene extends Phaser.Scene {
   /** Applies the resolved outcome: ambush → combat, otherwise commit the node and return to the map. */
   private commitOutcome(): void {
     if (!this.outcome) return;
+    if (this.demoMode) {
+      this.outcome = null;
+      this.render();
+      return;
+    }
     const { resolution } = this.outcome;
     const nextBuild = applyEventResolutionToBuild(resolution);
 
