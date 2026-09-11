@@ -27,6 +27,17 @@ Before the first observed run, use a clean browser profile or record the existin
 
 ## Five-run matrix
 
+The 23 August session is **Run 0 — shakedown**. It created LB-01 through LB-12 and does not count
+toward the five-run systems sample. Restart Runs 1–5 after all touched-screen S1/S2 presentation
+defects are closed or explicitly accepted with evidence.
+
+Two lanes gate independently:
+
+- **Lane A — systems evidence:** the five-run matrix and gameplay thresholds below.
+- **Lane B — presentation acceptance:** the `LB-nn` register, signed off on each touched screen at
+  960×540, 1920×1080, and 3840×2160. One run must pause on title, menu, character select, map, and
+  debrief at 4K long enough to read every line. Lane B gates public releases and store screenshots.
+
 | Run | Hero | Threat | Input | Display | Primary question |
 |---|---|---:|---|---|---|
 | 1 | Marine or Medic | 0 | Keyboard/mouse | 960×540 | Does onboarding teach movement, evade, damage, and wave clear without blocking play? |
@@ -51,7 +62,11 @@ The Records screen now exposes outcome, progress, hero, kills, Command Marks, an
 | Elite modifier understood without explanation? | Yes / No — why? |
 | Objective instruction understood within 5 seconds? | Yes / No — why? |
 | Reward choice felt meaningful? | Yes / No — why? |
-| Frame hitch, input loss, audio issue, or layout defect | |
+| Missing feedback | |
+| Layout / overflow | |
+| Art registration | |
+| Text legibility | |
+| Input affordance | |
 | One thing the player wanted to do but could not | |
 
 ## Pass thresholds
@@ -63,7 +78,11 @@ Do not expand Threat Tiers 3–11 until all of these are true:
 - No objective fails because its verb, timer, target, or reward is unclear.
 - Keyboard/mouse and gamepad both complete a run without an input dead end.
 - No critical console error, missing asset, save loss, resume failure, or persistent frame-pacing failure occurs.
+- No open S1/S2 presentation defect exists on a screen touched by the run.
 - Every confusion note is triaged as fix-now, monitor, or intentional learning curve.
+
+Store screenshots and captures under `playtest-evidence/YYYY-MM-DD-run-N/`. Start every filename
+with its `LB-nn` defect ID and keep the full surrounding UI in frame.
 
 ## Immediate implementation order after evidence
 

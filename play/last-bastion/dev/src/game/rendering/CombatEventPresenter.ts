@@ -755,10 +755,150 @@ export class CombatEventPresenter {
           this.context.emitAuthoredEffect(9, event.from, 300, 0.55, 1.2, 0, "batch-c-effects-v1");
           this.context.emitAuthoredEffect(9, event.to, 300, 0.55, 1.2, 0, "batch-c-effects-v1");
           break;
+        case "world-interaction-completed":
+          this.context.emitAuthoredEffect(19, event.position, 320, 0.52, 1.1, 0, "batch-c-effects-v1");
+          this.context.flashCircle(event.position, 22, 0x68e4e8, 380, 1.8, true);
+          this.context.eventFeed.add(
+            `${event.worldObjectId.replaceAll("-", " ").toUpperCase()}  /  ${event.effect.replaceAll("-", " ").toUpperCase()}`,
+            "#68e4e8",
+          );
+          break;
+        case "escort-objective-damaged":
+          this.context.flashCircle(event.position, 24, 0xff9b5f, 240, 1.5, true);
+          this.context.eventFeed.add(
+            `ESCORT UNDER FIRE  /  ${Math.ceil(event.health)} OF ${Math.ceil(event.maxHealth)}`,
+            "#ff9b5f",
+          );
+          break;
+        case "escort-objective-completed":
+          this.presentObjectiveOutcome(event.position, "ESCORT SECURED", true);
+          break;
+        case "escort-objective-failed":
+          this.presentObjectiveOutcome(event.position, "ESCORT LOST", false);
+          break;
+        case "deny-objective-completed":
+          this.presentObjectiveOutcome(event.position, "DENIAL ZONE HELD", true);
+          break;
+        case "deny-objective-failed":
+          this.presentObjectiveOutcome(event.position, "DENIAL ZONE OVERRUN", false);
+          break;
+        case "collect-objective-picked-up":
+          this.context.emitAuthoredEffect(19, event.position, 220, 0.5, 1.05, 0, "batch-c-effects-v1");
+          this.context.eventFeed.add("OBJECTIVE PACKAGE RECOVERED", "#68e4e8");
+          break;
+        case "collect-objective-completed":
+          this.presentObjectiveOutcome(event.position, "ALL PACKAGES SECURED", true);
+          break;
+        case "collect-objective-failed":
+          this.presentObjectiveOutcome(event.position, "PACKAGE RECOVERY FAILED", false);
+          break;
+        case "infected-survivor-rush":
+          this.context.emitAuthoredEffect(4, event.position, 220, 0.48, 0.95, 0, "batch-c-effects-v1");
+          break;
+        case "abomination-recovery":
+          this.context.emitAuthoredEffect(5, event.position, 360, 0.62, 1.25, 0, "batch-c-effects-v1");
+          break;
+        case "foundry-turret-warning":
+          this.context.emitFoundryEffect(3, event.position, 260, 0.45, 0.9, Math.atan2(event.target.y - event.position.y, event.target.x - event.position.x));
+          this.context.flashCircle(event.target, 14, 0xff9b5f, 280, 1.35, true);
+          break;
+        case "foundry-child-powered-down":
+          this.context.emitFoundryEffect(2, event.position, 320, 0.5, 1.05);
+          break;
+        case "assembly-prime-lane-fired":
+          this.context.emitAssemblyPrimeEffect(2, event.position, 260, 0.58, 1.15);
+          this.context.emitAssemblyPrimeEffect(2, event.endpoint, 260, 0.5, 1);
+          if (event.hitPlayer) this.context.shakeCamera(90, 0.003);
+          break;
+        case "abomination-prime-warning":
+          this.context.emitAbominationPrimeEffect(0, event.position, 360, 0.62, 1.25);
+          this.context.flashCircle(
+            event.target,
+            Math.max(18, (event.radiusMetres ?? 0.75) * PIXELS_PER_METRE),
+            0xff9b5f,
+            420,
+            1.15,
+            true,
+          );
+          break;
+        case "abomination-prime-hazard-tick":
+          this.context.emitAbominationPrimeEffect(2, event.position, 180, 0.42, 0.82);
+          break;
+        case "brace-formation":
+          this.context.flashCircle(event.position, 20, 0x68e4e8, 300, 1.6, true);
+          this.context.eventFeed.add("FORMATION BRACED", "#68e4e8");
+          break;
+        case "deployable-placed":
+          this.context.emitAuthoredEffect(19, event.position, 260, 0.48, 1, 0, "batch-c-effects-v1");
+          this.context.eventFeed.add(`${event.weaponId.replaceAll("-", " ").toUpperCase()} DEPLOYED`, "#68e4e8");
+          break;
+        case "deployable-fired":
+          this.context.emitAuthoredEffect(5, event.position, 90, 0.36, 0.68, 0, "combat-effects-v1");
+          break;
+        case "deployable-expired":
+          this.context.emitAuthoredEffect(5, event.position, 260, 0.45, 0.9, 0, "batch-c-effects-v1");
+          this.context.eventFeed.add(`${event.weaponId.replaceAll("-", " ").toUpperCase()} EXPIRED`, "#8fa1b3");
+          break;
+        case "scrap-spent":
+          this.context.eventFeed.add(`-${event.amount} SCRAP  /  ${event.remaining} REMAIN`, "#ffd36b");
+          break;
+        case "weapon-sold":
+          this.context.eventFeed.add(
+            `${event.weaponId.replaceAll("-", " ").toUpperCase()} SOLD  /  +${event.amount} SCRAP`,
+            "#ffd36b",
+          );
+          break;
+        case "supply-chest-spawned":
+          this.context.flashCircle(event.position, 22, 0x68e4e8, 420, 1.8, true);
+          this.context.eventFeed.add(
+            event.variant === "armored" ? "ARMOURED SUPPLY CACHE DETECTED" : "SUPPLY CACHE DETECTED",
+            "#68e4e8",
+          );
+          break;
+        case "supply-chest-hit":
+          this.context.effectPool.emitBurst(
+            event.position.x * PIXELS_PER_METRE,
+            event.position.y * PIXELS_PER_METRE,
+            0xffd36b,
+            4,
+          );
+          this.context.emitAuthoredEffect(0, event.position, 180, 0.42, 0.82, 0, "destructible-terrain-effects-v1");
+          break;
+        case "supply-chest-opened":
+          this.context.emitAuthoredEffect(5, event.position, 480, 0.62, 1.45, 0, "batch-c-rewards-v1");
+          this.context.flashCircle(event.position, 28, 0x68e4e8, 520, 2.4, true);
+          this.context.eventFeed.add("SUPPLY CACHE OPENED  /  REWARDS DEPLOYED", "#68e4e8");
+          break;
+        case "supply-chest-destroyed":
+          this.context.effectPool.emitBurst(
+            event.position.x * PIXELS_PER_METRE,
+            event.position.y * PIXELS_PER_METRE,
+            0xff9b5f,
+            10,
+          );
+          this.context.emitAuthoredEffect(5, event.position, 520, 0.7, 1.65, 0, "destructible-terrain-effects-v1");
+          this.context.flashCircle(event.position, 30, 0xffd36b, 480, 2.2, true);
+          this.context.shakeCamera(130, 0.005);
+          this.context.eventFeed.add("ARMOURED SUPPLY CACHE BREACHED  /  REWARDS DEPLOYED", "#ffd36b");
+          break;
+        default:
+          assertNever(event);
       }
     }
   }
 
+  private presentObjectiveOutcome(position: WorldPoint, label: string, success: boolean): void {
+    const color = success ? 0x68e4e8 : 0xff6b54;
+    this.context.emitAuthoredEffect(success ? 2 : 5, position, 520, 0.72, 1.6, 0, "batch-c-effects-v1");
+    this.context.flashCircle(position, 34, color, 620, 2.5, true);
+    this.context.shakeCamera(success ? 90 : 160, success ? 0.003 : 0.007);
+    this.context.eventFeed.add(label, success ? "#68e4e8" : "#ff6b54");
+  }
+
+}
+
+function assertNever(value: never): never {
+  throw new Error(`Unhandled combat event: ${JSON.stringify(value)}`);
 }
 
 function statusEffectFrame(status: string): number {

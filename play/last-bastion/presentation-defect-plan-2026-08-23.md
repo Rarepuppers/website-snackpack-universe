@@ -2,8 +2,12 @@
 
 **Created:** 23 August 2026
 **Trigger:** first creator-observed local run against `local-playtest-plan-2026-08-21.md`.
-**Status:** plan only. No code, no art, no doc-index change has been made yet beyond this file and
-the evidence folder in §9.
+**Status:** active register, reconciled 11 September 2026. LB-05, LB-06, LB-08, LB-10, LB-11,
+and LB-12 are implemented; LB-09 now applies high-resolution text to every release-critical scene,
+with a verification audit preventing omissions. LB-03's missing lifecycle feedback is implemented
+and every current combat-event variant now has an exhaustive presentation decision. LB-01, LB-02,
+LB-04, the authored-icon/art half of LB-07, and observed/device acceptance remain open. See the
+register status column and `quality-audit-2026-09-07.md` for current evidence.
 
 This document does three things:
 
@@ -135,20 +139,20 @@ Severity: **S1** = the player cannot tell what the game is doing; **S2** = visib
 **S3** = polish. Owner: **code** = Claude, **art** = Codex, **both** = code lands the wiring, art
 lands the pixels.
 
-| ID | Finding | Sev | Owner | Root cause verified at |
+| ID | Finding | Sev | Owner | Status at 11 September 2026 |
 |---|---|---|---|---|
-| LB-01 | No visible bullets from the Marine's default gun — and from 9 other weapons plus all turret fire (§4.1a) | S1 | both | `PrototypeScene.ts:3572`, `:3600`, `:3618`, `:3524`, `:1435`, `:1477` |
-| LB-02 | Cannot inspect a collected power-up (name + description) | S2 | code | `PrototypeScene.ts:1365`, `CombatHud.ts:163` |
-| LB-03 | Opening a crate gives no animation and no reward readout | S1 | both | `PrototypeScene.ts:4811`, missing case for `CombatSimulation.ts:870` |
-| LB-04 | Separate helmet is oversized and off-head, varying by facing | S1 | art | `GameAssetManifest.ts:530–531`, `PrototypeScene.ts:374`, `:1077` |
-| LB-05 | "LAST BASTION" sits outside its menu container | S2 | code | `ShellScene.ts:346–347`, `:775` |
-| LB-06 | Character-select perk tiles overflow their container | S2 | code | `ShellScene.ts:689`, `ScreenFlow.ts:192` |
-| LB-07 | Map screen is low quality and has no node icons | S2 | both | `ExpeditionScene.ts:363–390`, `:310` |
-| LB-08 | Map nodes cannot be hovered for info; clicking commits instantly | S1 | code | `ExpeditionScene.ts:407–411` |
-| LB-09 | Menu text is blurry at Full HD and 4K | S1 | code | `ShellScene.ts:775` + six sibling scenes; `DisplayScaling.ts:97` |
-| LB-10 | Screenshot evidence has nowhere to live | — | process | §9 |
-| LB-11 | *(found during this review)* Level-up card text overflows its card and collides with the hint line | S2 | code | `PrototypeScene.ts:5225–5235`, `:5245` |
-| LB-12 | *(found during this review)* Dead `NODE_GLYPHS` table; only the ASCII fallback ever renders | S3 | code | `ExpeditionScene.ts:45` vs `:387` |
+| LB-01 | No visible bullets from the Marine's default gun — and from 9 other weapons plus all turret fire (§4.1a) | S1 | both | **Open.** Typed projectile-presentation map, visibility route, and art remain outstanding. |
+| LB-02 | Cannot inspect a collected power-up (name + description) | S2 | code | **Open.** Collection banner exists; persistent world/HUD inspection does not. |
+| LB-03 | Opening a crate gives no animation and no reward readout | S1 | both | **Code closed.** Spawn/hit/open/destroy effects and explicit reward feed copy are exhaustive; authored chest body/animation remains art polish. |
+| LB-04 | Separate helmet is oversized and off-head, varying by facing | S1 | art | **Open.** No accepted re-registered sheet or observed facing evidence found. |
+| LB-05 | "LAST BASTION" sits outside its menu container | S2 | code | **Closed.** Current header/text geometry keeps the title inside the generated plate. |
+| LB-06 | Character-select perk tiles overflow their container | S2 | code | **Closed.** The dossier and two-row perk grid now share derived bounds; all ten tiles remain inside the panel with clearance from the description and roster rail. Rechecked at 3840×2160 on 11 September 2026. |
+| LB-07 | Map screen is low quality and has no node icons | S2 | both | **Partly closed.** Region backdrops, medallions, objective badges, hidden intel, and focus states exist; authored node-icon art remains open. |
+| LB-08 | Map nodes cannot be hovered for info; clicking commits instantly | S1 | code | **Closed.** Hover/focus previews intel and a second confirm deploys; browser acceptance covers it. |
+| LB-09 | Menu text is blurry at Full HD and 4K | S1 | code | **Implemented; remaining scene recheck pending.** Six release scenes now use `uiTextResolution()` and a verify-time source audit. Title, character select, map, and debrief were rechecked at 3840×2160 on 11 September 2026; encounter, expedition-event, and transformation screens remain to be observed. Developer gallery text remains outside the release gate. |
+| LB-10 | Screenshot evidence has nowhere to live | — | process | **Closed.** `playtest-evidence/README.md` defines storage and naming. |
+| LB-11 | Level-up card text overflows its card and collides with the hint line | S2 | code | **Implemented; observed recheck pending.** Stat cards use a measured 2-column grid and dynamic panel height. |
+| LB-12 | Dead `NODE_GLYPHS` table; only the ASCII fallback ever renders | S3 | code | **Closed.** The unused Unicode table was removed; safe glyphs remain the intentional fallback until LB-07 art lands. |
 
 ---
 

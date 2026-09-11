@@ -192,12 +192,53 @@ export const ROSTER: readonly RosterEntry[] = Object.freeze([
   { id: "scout", name: "SCOUT", status: SCOUT_DEPLOYMENT_RELEASED ? "playable" : "in-development" },
 ]);
 
+export interface PerkGridLayout {
+  positions: readonly Readonly<{ x: number; y: number }>[];
+  bounds: Readonly<{ left: number; top: number; right: number; bottom: number }>;
+  panelCenterY: number;
+  panelHeight: number;
+  headingY: number;
+  descriptionY: number;
+}
+
+export function perkGridLayout(count: number): Readonly<PerkGridLayout> {
+  const columns = 5;
+  const tileHalfExtent = 22;
+  const columnGap = 83;
+  const rowGap = 44;
+  const lastRowY = 416;
+  const panelTop = 85;
+  const panelBottomPadding = 6;
+  const normalizedCount = Math.max(1, Math.floor(count));
+  const rows = Math.ceil(normalizedCount / columns);
+  const firstRowY = lastRowY - (rows - 1) * rowGap;
+  const positions = Object.freeze(Array.from({ length: normalizedCount }, (_unused, index) => Object.freeze({
+    x: 495 + (index % columns) * columnGap,
+    y: firstRowY + Math.floor(index / columns) * rowGap,
+  })));
+  const bounds = Object.freeze({
+    left: positions[0]!.x - tileHalfExtent,
+    top: firstRowY - tileHalfExtent,
+    right: Math.max(...positions.map(({ x }) => x)) + tileHalfExtent,
+    bottom: lastRowY + tileHalfExtent,
+  });
+  const panelBottom = bounds.bottom + panelBottomPadding;
+  const descriptionY = bounds.top - 24;
+
+  return Object.freeze({
+    positions,
+    bounds,
+    panelCenterY: (panelTop + panelBottom) / 2,
+    panelHeight: panelBottom - panelTop,
+    headingY: descriptionY - 22,
+    descriptionY,
+  });
+}
+
 export function perkTilePosition(index: number): Readonly<{ x: number; y: number }> {
-  const normalized = Math.max(0, Math.floor(index));
-  return {
-    x: 495 + (normalized % 5) * 83,
-    y: 380 + Math.floor(normalized / 5) * 44,
-  };
+  const positions = perkGridLayout(PERK_CATALOG.length).positions;
+  const normalized = Math.min(positions.length - 1, Math.max(0, Math.floor(index)));
+  return positions[normalized]!;
 }
 
 export interface LabRoute {

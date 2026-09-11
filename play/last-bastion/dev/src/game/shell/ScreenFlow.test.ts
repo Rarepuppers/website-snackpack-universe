@@ -6,6 +6,7 @@ import {
   HOW_TO_PLAY_PAGES,
   LAB_ROUTES,
   MENU_CARDS,
+  perkGridLayout,
   perkTilePosition,
   ROSTER,
   SETTINGS_ROWS,
@@ -299,13 +300,18 @@ describe("Shell screen flow", () => {
       .toBe(SCOUT_DEPLOYMENT_RELEASED ? "playable" : "in-development");
   });
 
-  it("fits the expanded perk catalog into two rows above the roster rail", () => {
+  it("fits the expanded perk catalog inside the dossier above the roster rail", () => {
+    const layout = perkGridLayout(PERK_CATALOG.length);
     const positions = PERK_CATALOG.map((_perk, index) => perkTilePosition(index));
-    expect(new Set(positions.map(({ y }) => y))).toEqual(new Set([380, 424]));
+    expect(new Set(positions.map(({ y }) => y))).toEqual(new Set([372, 416]));
+    expect(layout.bounds.top).toBeGreaterThanOrEqual(layout.descriptionY + 24);
+    expect(layout.bounds.bottom).toBeLessThanOrEqual(layout.panelCenterY + layout.panelHeight / 2);
+    expect(layout.panelCenterY + layout.panelHeight / 2).toBeLessThan(448);
     for (const { x, y } of positions) {
-      expect(x).toBeGreaterThanOrEqual(473);
-      expect(x).toBeLessThanOrEqual(849);
-      expect(y + 22).toBeLessThanOrEqual(446);
+      expect(x - 22).toBeGreaterThanOrEqual(layout.bounds.left);
+      expect(x + 22).toBeLessThanOrEqual(layout.bounds.right);
+      expect(y - 22).toBeGreaterThanOrEqual(layout.bounds.top);
+      expect(y + 22).toBeLessThanOrEqual(layout.bounds.bottom);
     }
   });
 

@@ -14,6 +14,7 @@ import { weaponReviewPage } from "../ui/WeaponReviewRoutes";
 import { formatRunClock } from "../stats/formatStat";
 import { threatTierDefinition } from "../expedition/ThreatTier";
 import { debriefGamepadIntent, moveDebriefSelection } from "../ui/DebriefNavigation";
+import { uiTextResolution } from "../rendering/DisplayScaling";
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -339,7 +340,7 @@ export class RunSummaryScene extends Phaser.Scene {
       fontSize,
       lineSpacing: 5,
       align: align === 1 ? "right" : "left",
-    });
+    }).setResolution(uiTextResolution());
     if (centred) text.setOrigin(0.5, 0);
     else if (align === 1) text.setOrigin(1, 0);
     return text;

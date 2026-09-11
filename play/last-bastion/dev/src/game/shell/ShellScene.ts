@@ -12,7 +12,7 @@ import { PERK_CATALOG } from "../perks/perkCatalog";
 import { THREAT_TIERS } from "../expedition/ThreatTier";
 import { ARMORY_NODES, COMMAND_MARKS_LABEL, armoryNode, isHeroDeploymentUnlocked } from "../progression/ArmoryProgression";
 import { armoryLayout } from "./ArmoryLayout";
-import { reapplyDisplayScale } from "../rendering/DisplayScaling";
+import { reapplyDisplayScale, uiTextResolution } from "../rendering/DisplayScaling";
 import {
   applyHostDisplaySelection,
   currentHostDisplaySelection,
@@ -24,6 +24,7 @@ import {
   howToPlayPages,
   LAB_ROUTES,
   MENU_CARDS,
+  perkGridLayout,
   perkTilePosition,
   ROSTER,
   settingsRowsForDisplayCapabilities,
@@ -714,6 +715,7 @@ export class ShellScene extends Phaser.Scene {
     const perkUnlocked = this.state.unlockedPerkIds.includes(perk.id);
     const heroUnlocked = isHeroId(hero.id)
       && isHeroDeploymentUnlocked(hero.id, this.state.purchasedArmoryNodeIds);
+    const perkLayout = perkGridLayout(PERK_CATALOG.length);
 
     // Left: full-height select portrait; gameplay sheets remain separate.
     this.root.add(this.add.rectangle(250, 250, 300, 320, PANEL).setStrokeStyle(1, 0x3b4d63));
@@ -735,7 +737,8 @@ export class ShellScene extends Phaser.Scene {
       : hero.status === "in-development" ? `${hero.name} — IN DEVELOPMENT` : "????", IVORY, "16px", true));
 
     // Right: dossier.
-    this.root.add(this.add.rectangle(660, 260, 440, 350, PANEL).setStrokeStyle(1, 0x3b4d63));
+    this.root.add(this.add.rectangle(660, perkLayout.panelCenterY, 440, perkLayout.panelHeight, PANEL)
+      .setStrokeStyle(1, 0x3b4d63));
     if (isHeroId(hero.id)) {
       const definition = heroDefinition(hero.id);
       const dossier = [
@@ -756,8 +759,8 @@ export class ShellScene extends Phaser.Scene {
       this.root.add(this.text(660, 240, "Signal lost.\nFuture hero slot.", MUTED, "14px", true));
     }
 
-    this.root.add(this.text(470, 326, `PERK  ${perkUnlocked ? perk.name.toUpperCase() : "LOCKED"}`, perkUnlocked ? TEAL : ORANGE, "14px"));
-    this.root.add(this.text(470, 348, perkUnlocked ? perk.description : perk.unlockText, perkUnlocked ? IVORY : MUTED, "11px")
+    this.root.add(this.text(470, perkLayout.headingY, `PERK  ${perkUnlocked ? perk.name.toUpperCase() : "LOCKED"}`, perkUnlocked ? TEAL : ORANGE, "14px"));
+    this.root.add(this.text(470, perkLayout.descriptionY, perkUnlocked ? perk.description : perk.unlockText, perkUnlocked ? IVORY : MUTED, "11px")
       .setWordWrapWidth(390));
     PERK_CATALOG.forEach((entry, index) => {
       const { x, y } = perkTilePosition(index);
@@ -858,7 +861,7 @@ export class ShellScene extends Phaser.Scene {
       fontSize: size,
       color,
       align: centered ? "center" : "left",
-    });
+    }).setResolution(uiTextResolution());
     if (centered) label.setOrigin(0.5, 0.5);
     return label;
   }

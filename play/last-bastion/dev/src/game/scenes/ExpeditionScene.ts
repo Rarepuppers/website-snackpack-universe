@@ -6,6 +6,7 @@ import { cloneTransformationAffinityState } from "../transformations/Transformat
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { createLocalSaveStore } from "../save/SaveStorage";
 import { ARENA_THEMES } from "../rendering/arenaThemes";
+import { uiTextResolution } from "../rendering/DisplayScaling";
 import { resolvePerkModifiers } from "../perks/perkCatalog";
 import {
   expeditionNodeById,
@@ -42,18 +43,6 @@ const MAP_LEFT = 90;
 const MAP_RIGHT = WIDTH - 90;
 const LANE_TOP = 130;
 const LANE_GAP = 110;
-
-const NODE_GLYPHS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze({
-  combat: "✕",
-  elite: "◆",
-  "mini-boss": "⬢",
-  "supply-depot": "+",
-  "weapon-cache": "▣",
-  shrine: "⛨",
-  event: "?",
-  liberation: "⚑",
-  boss: "☠",
-});
 
 const SAFE_NODE_GLYPHS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze({
   combat: "*",
@@ -517,7 +506,7 @@ export class ExpeditionScene extends Phaser.Scene {
       fontSize: size,
       color,
       align: centered ? "center" : "left",
-    });
+    }).setResolution(uiTextResolution());
     if (centered) label.setOrigin(0.5, 0.5);
     return label;
   }

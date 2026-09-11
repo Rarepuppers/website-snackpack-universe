@@ -239,18 +239,25 @@ produce a false pass; report explains unrun device checks. No publishing or Stea
 
 ### QA-08 — Close the existing presentation register before more content (P1, M/L)
 
-**Implementation status — LB-08 complete locally 7 September 2026.** Map hover/focus previews
+**Implementation status — register reconciled and event/text tranche completed 11 September 2026.**
+Map hover/focus previews
 intel; the first click/Enter/A arms a route and the second explicitly deploys; movement clears
 the armed state; D-pad cycles choices; B returns; unrelated pad buttons do nothing. The armed
 route uses an orange outline and explicit “confirm again” copy. Unit/browser checks pass and the
-armed 2026/Threat 2 map was visually inspected at the default desktop viewport. Other LB items
-remain open until individually rechecked.
+armed 2026/Threat 2 map was visually inspected at the default desktop viewport. LB-03 now presents
+supply-cache spawn, hit, opened and destroyed states with effects and explicit reward copy. Adding
+an exhaustive event switch exposed 21 more silent variants; objective outcomes, deployable lifecycle,
+boss/foundry attacks, shop transactions and world interactions now all have deliberate feedback,
+and future union additions fail typecheck until handled. Six release-critical scene text factories
+now apply `uiTextResolution()`, enforced by `npm run ui:audit:text`; the stale Unicode node-glyph
+table was removed.
 
-**Evidence:** `presentation-defect-plan-2026-08-23.md` already specifies LB-01 onward,
-shared text/layout primitives, inspect behavior, reward feedback and event coverage.
-Its top banner still says plan only. `ExpeditionScene.ts` still binds reachable-node
-`pointerdown` directly to `travelTo(node.id)`, confirming the first-click commitment part
-of LB-08 remains present. This audit does not re-certify every historical visual defect.
+**Evidence:** `presentation-defect-plan-2026-08-23.md` now distinguishes closed, partial, open,
+and observed-recheck work. LB-05, LB-06, LB-08, LB-10 and LB-12 are closed in current code;
+LB-06's derived dossier/grid bounds were also rechecked at 3840×2160. LB-03's feedback half and
+LB-09's release-scene code half are implemented, with title, character select, map, and debrief
+text reviewed at 4K. LB-01 projectile visibility, LB-02 power-up inspection, LB-04 helmet art,
+LB-07 authored node icons, the remaining LB-09 scenes, and observed LB-11 review remain open.
 
 **Task:** recheck each LB item against current code and screenshots, then update its status.
 Prioritize inspect-before-travel, visible projectiles/rewards, text/layout, and character

@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { uiTextResolution } from "../rendering/DisplayScaling";
 import { normalizeTransformationAffinityState, transformationProgress, transformationStage } from "../transformations/TransformationAffinity";
 import { TRANSFORMATION_CHOICE_CATALOG, transformationChoicesForPath } from "../transformations/TransformationChoiceCatalog";
 import {
@@ -248,7 +249,7 @@ export class TransformationDecisionScene extends Phaser.Scene {
       fontSize,
       lineSpacing: 5,
       ...(wordWrapWidth ? { wordWrap: { width: wordWrapWidth } } : {}),
-    });
+    }).setResolution(uiTextResolution());
     if (centred) text.setOrigin(0.5, 0);
     else if (right) text.setOrigin(1, 0);
     return text;

@@ -28,7 +28,8 @@
     "audio:generate:s1": "node scripts/generate-production-audio-s1.mjs",
     "image:encode:webp": "python scripts/encode-production-images.py",
     "image:audit:webp": "node scripts/audit-production-images.mjs",
-    "verify": "npm run image:audit:webp && npm run combat:audit:boundaries && npm run content:audit && npm run typecheck && npm run test && npm run build && npm run smoke && npm run offline"
+    "ui:audit:text": "node scripts/audit-ui-text-resolution.mjs",
+    "verify": "npm run image:audit:webp && npm run combat:audit:boundaries && npm run content:audit && npm run ui:audit:text && npm run typecheck && npm run test && npm run build && npm run smoke && npm run offline"
   },
   "dependencies": {
     "phaser": "^4.1.0"

@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { uiTextResolution } from "../rendering/DisplayScaling";
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { createLocalSaveStore } from "../save/SaveStorage";
 import { cloneTransformationAffinityState } from "../transformations/TransformationAffinity";
@@ -248,7 +249,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
     const t = this.add.text(x, y, value, {
       color, fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace", fontSize: size, lineSpacing: 5,
       ...(wrap ? { wordWrap: { width: wrap } } : {}),
-    });
+    }).setResolution(uiTextResolution());
     if (centred) t.setOrigin(0.5, 0);
     else if (right) t.setOrigin(1, 0);
     return t;
