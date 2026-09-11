@@ -9,6 +9,7 @@ import type { CombatEventFeed } from "../ui/CombatEventFeed";
 import type { CombatHaptics } from "../ui/CombatHaptics";
 import { dedicatedPowerupFrame, powerupPickupPresentation } from "../ui/PowerupTileFrames";
 import type { WeaponId } from "../content/weaponCatalog";
+import { projectilePresentation } from "./ProjectilePresentation";
 
 const PIXELS_PER_METRE = 32;
 type WorldPoint = Readonly<{ x: number; y: number }>;
@@ -147,12 +148,17 @@ export class CombatEventPresenter {
           );
           break;
         case "projectile-impact":
-          if (event.weaponId === "injector-carbine") {
-            this.context.emitAuthoredEffect(2, event.position, 150, 0.52, 1.05, 0, "injector-carbine-effects-v1");
-          } else if (event.weaponId === "bulwark-rotary-cannon") {
-            this.context.emitAuthoredEffect(4, event.position, 120, 0.48, 0.9, 0, "bulwark-rotary-effects-v1");
-          } else if (event.weaponId === "marauder-ar") {
-            this.context.emitAuthoredEffect(2, event.position, 115, 0.4, 0.82, 0, "marauder-ar-effects-v1");
+          {
+            const impact = projectilePresentation(event.weaponId).impact;
+            this.context.emitAuthoredEffect(
+              impact.frame,
+              event.position,
+              impact.durationMilliseconds,
+              impact.startScale,
+              impact.endScale,
+              0,
+              impact.texture,
+            );
           }
           break;
         case "enemy-defeated":

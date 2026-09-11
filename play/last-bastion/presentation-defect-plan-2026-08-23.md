@@ -2,10 +2,10 @@
 
 **Created:** 23 August 2026
 **Trigger:** first creator-observed local run against `local-playtest-plan-2026-08-21.md`.
-**Status:** active register, reconciled 11 September 2026. LB-05, LB-06, LB-08, LB-10, LB-11,
+**Status:** active register, reconciled 11 September 2026. LB-01's code half and LB-05, LB-06, LB-08, LB-10, LB-11,
 and LB-12 are implemented; LB-09 now applies high-resolution text to every release-critical scene,
 with a verification audit preventing omissions. LB-03's missing lifecycle feedback is implemented
-and every current combat-event variant now has an exhaustive presentation decision. LB-01, LB-02,
+and every current combat-event variant now has an exhaustive presentation decision. LB-02,
 LB-04, the authored-icon/art half of LB-07, and observed/device acceptance remain open. See the
 register status column and `quality-audit-2026-09-07.md` for current evidence.
 
@@ -141,7 +141,7 @@ lands the pixels.
 
 | ID | Finding | Sev | Owner | Status at 11 September 2026 |
 |---|---|---|---|---|
-| LB-01 | No visible bullets from the Marine's default gun — and from 9 other weapons plus all turret fire (§4.1a) | S1 | both | **Open.** Typed projectile-presentation map, visibility route, and art remain outstanding. |
+| LB-01 | No visible bullets from the Marine's default gun — and from 9 other weapons plus all turret fire (§4.1a) | S1 | both | **Blocking defect closed; authored identity art remains polish.** A total `Record<WeaponId, …>` now owns scale, halo, trail, tint and impact for all 18 projectile sources. The Marine route was reviewed successfully on dark Bastion and light Arctic Relay arenas at 960×540 and 3840×2160. |
 | LB-02 | Cannot inspect a collected power-up (name + description) | S2 | code | **Open.** Collection banner exists; persistent world/HUD inspection does not. |
 | LB-03 | Opening a crate gives no animation and no reward readout | S1 | both | **Code closed.** Spawn/hit/open/destroy effects and explicit reward feed copy are exhaustive; authored chest body/animation remains art polish. |
 | LB-04 | Separate helmet is oversized and off-head, varying by facing | S1 | art | **Open.** No accepted re-registered sheet or observed facing evidence found. |
@@ -259,6 +259,14 @@ class across the frame for gallery review.
 
 **Acceptance.** On the Marine at 960×540 and 3840×2160, on both the darkest and lightest arena
 themes, a continuous tracer stream and a per-shot impact spark are visible at 20 m range.
+
+**Implementation update — 11 September 2026.** `ProjectilePresentation.ts` replaces the two
+drifting ternary chains with one exhaustive weapon record. Every projectile source has a minimum
+20 px atlas span, an always-on low-alpha halo, a damage-coloured batched trail, and an impact
+decision; non-projectile weapons explicitly record `null`. Reduced motion suppresses the trail
+while retaining the body and halo. `?screen=game&loadout=bastion-service-rifle&autofire=1&seed=117&helmet=0`
+is surfaced in the Lab and was reviewed on dark Bastion and light Arctic Relay arenas at 960×540
+and 3840×2160. Dedicated identity art for the fallback weapons remains an art-polish task.
 
 ### 4.2 LB-02 — power-ups cannot be inspected
 

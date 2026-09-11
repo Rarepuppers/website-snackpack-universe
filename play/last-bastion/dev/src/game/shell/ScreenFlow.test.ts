@@ -203,6 +203,10 @@ describe("Shell screen flow", () => {
     const state = drive(boot("lab"), ["down", "down"]);
     const result = stepShell(state, "confirm");
     expect(result.effects).toEqual([{ type: "open-url", url: LAB_ROUTES[2]!.url }]);
+    expect(LAB_ROUTES).toContainEqual({
+      label: "Marine projectile visibility",
+      url: "?screen=game&loadout=bastion-service-rifle&autofire=1&seed=117&helmet=0",
+    });
   });
 
   it("purchases and equips affordable Armory nodes but blocks unmet prerequisites", () => {

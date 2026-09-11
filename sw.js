@@ -14,7 +14,7 @@
  * cache itself the first time it's visited.
  */
 const CACHE = "snackpack-arcade-v18";
-const LAST_BASTION_RELEASE = "2026-09-11-qa08-chests";
+const LAST_BASTION_RELEASE = "2026-09-11-qa08-projectiles";
 const LAST_BASTION_CACHE = `last-bastion-${LAST_BASTION_RELEASE}`;
 
 // Stable public filenames make a partial cache refresh unsafe: a new scene can

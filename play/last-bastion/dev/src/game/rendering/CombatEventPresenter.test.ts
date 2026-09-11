@@ -95,4 +95,19 @@ describe("CombatEventPresenter supply-cache feedback", () => {
       "SUPPLY CHEST  /  OPEN LOOT", "#68e4e8",
     );
   });
+
+  it("renders impacts for generic and authored projectile weapons", () => {
+    const harness = presenterHarness();
+    harness.presenter.play([
+      { type: "projectile-impact", position: { x: 2, y: 3 }, weaponId: "bastion-service-rifle" },
+      { type: "projectile-impact", position: { x: 4, y: 5 }, weaponId: "marauder-ar" },
+    ]);
+
+    expect(harness.emitAuthoredEffect).toHaveBeenCalledWith(
+      7, { x: 2, y: 3 }, 130, 0.5, 0.92, 0, "combat-effects-v1",
+    );
+    expect(harness.emitAuthoredEffect).toHaveBeenCalledWith(
+      2, { x: 4, y: 5 }, 115, 0.4, 0.82, 0, "marauder-ar-effects-v1",
+    );
+  });
 });

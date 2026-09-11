@@ -256,8 +256,10 @@ table was removed.
 and observed-recheck work. LB-05, LB-06, LB-08, LB-10 and LB-12 are closed in current code;
 LB-06's derived dossier/grid bounds were also rechecked at 3840×2160. LB-03's feedback half and
 LB-09's release-scene code half are implemented, with title, character select, map, and debrief
-text reviewed at 4K. LB-01 projectile visibility, LB-02 power-up inspection, LB-04 helmet art,
-LB-07 authored node icons, the remaining LB-09 scenes, and observed LB-11 review remain open.
+text reviewed at 4K. LB-01's code half now has exhaustive projectile body/halo/trail/impact
+presentation and dark/light-arena reviews at 960×540 and 4K. LB-02 power-up inspection, LB-04 helmet art,
+LB-07 authored node icons, LB-01's authored identity-art polish, the remaining LB-09 scenes, and observed
+LB-11 review remain open.
 
 **Task:** recheck each LB item against current code and screenshots, then update its status.
 Prioritize inspect-before-travel, visible projectiles/rewards, text/layout, and character

@@ -252,6 +252,7 @@ export const LAB_ROUTES: readonly LabRoute[] = Object.freeze([
   { label: "Expedition map (scout mode)", url: "?screen=map" },
   { label: "Readability stress (4 weapons)", url: "?stress=4" },
   { label: "Capacity stress (12 weapons)", url: "?stress=12" },
+  { label: "Marine projectile visibility", url: "?screen=game&loadout=bastion-service-rifle&autofire=1&seed=117&helmet=0" },
   { label: "Siege Crusher lab", url: "?scenario=siege-crusher&loadout=vertical" },
   { label: "Brood Warden lab", url: "?scenario=brood-warden&loadout=vertical" },
   { label: "Rift Stalker lab", url: "?scenario=rift-stalker&loadout=vertical" },

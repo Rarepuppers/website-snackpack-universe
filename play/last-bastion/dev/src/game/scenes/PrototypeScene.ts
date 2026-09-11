@@ -73,6 +73,7 @@ import { combatPalette } from "../ui/CombatPalette";
 import { CombatHaptics } from "../ui/CombatHaptics";
 import { CombatDecisionOverlay } from "../ui/CombatDecisionOverlay";
 import { CombatEventPresenter } from "../rendering/CombatEventPresenter";
+import { projectilePresentation, projectileTrailLength } from "../rendering/ProjectilePresentation";
 import { createBuildViewModel } from "../build/BuildViewModel";
 import { buildOverlayModel } from "../ui/BuildOverlay";
 import { FRIENDLY_PROJECTILE_SOFT_BUDGET } from "../combat/FriendlyProjectileBudget";
@@ -197,6 +198,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly offscreenThreatViews = new Map<number, Phaser.GameObjects.Triangle>();
   private readonly projectileViews = new Map<number, ProjectileView>();
   private readonly projectileHaloViews = new Map<number, Phaser.GameObjects.Arc>();
+  private projectileTrailLayer: Phaser.GameObjects.Graphics | null = null;
   private readonly enemyProjectileViews = new Map<number, EnemyProjectileView>();
   private readonly hazardViews = new Map<number, HazardView>();
   private readonly hazardArtViews = new Map<number, Phaser.GameObjects.Sprite>();
@@ -2959,29 +2961,15 @@ export class PrototypeScene extends Phaser.Scene {
     const liveIds = new Set(visibleProjectiles.map((projectile) => projectile.id));
     this.destroyMissing(this.projectileViews, liveIds);
     this.destroyMissing(this.projectileHaloViews, liveIds);
+    if (!this.projectileTrailLayer) this.projectileTrailLayer = this.add.graphics().setDepth(698);
+    this.projectileTrailLayer.clear();
 
     for (const projectile of visibleProjectiles) {
+      const presentation = projectilePresentation(projectile.weaponId);
       let view = this.projectileViews.get(projectile.id);
       if (!view) {
-        const authoredProjectile = projectile.weaponId === "marauder-ar"
-          ? { texture: "marauder-ar-effects-v1", frame: 1, scale: 0.42 }
-          : projectile.weaponId === "bolt-carbine"
-            ? { texture: "bolt-carbine-effects-v1", frame: 1, scale: 0.58 }
-            : projectile.weaponId === "injector-carbine"
-            ? { texture: "injector-carbine-effects-v1", frame: 0, scale: 0.5 }
-          : projectile.weaponId === "bulwark-rotary-cannon"
-            ? { texture: "bulwark-rotary-effects-v1", frame: 1, scale: 0.34 }
-            : projectile.weaponId === "grenade-tube"
-              ? { texture: "grenade-tube-effects-v1", frame: 0, scale: 0.48 }
-              : projectile.weaponId === "event-horizon"
-                ? { texture: "event-horizon-effects-v1", frame: 0, scale: 0.58 }
-          : projectile.weaponId === "scattergun"
-          ? { texture: "batch-b-effects-v1", frame: 1, scale: 0.24 }
-          : projectile.weaponId === "arc-carbine"
-            ? { texture: "batch-b-effects-v1", frame: 6, scale: 0.3 }
-            : { texture: "combat-effects-v1", frame: 6, scale: 0.3 };
         view = this.useMarineArt
-          ? this.add.sprite(0, 0, authoredProjectile.texture, authoredProjectile.frame)
+          ? this.add.sprite(0, 0, presentation.texture, presentation.frame)
           : this.add.circle(0, 0, 4, 0xffd36b).setStrokeStyle(1, 0xffffff);
         view.setDepth(700);
         this.projectileViews.set(projectile.id, view);
@@ -2993,27 +2981,31 @@ export class PrototypeScene extends Phaser.Scene {
       view.setRotation(projectile.rotationRadians);
       if (view instanceof Phaser.GameObjects.Sprite) {
         const visibilityScale = this.settings.highContrastOutlinesEnabled ? 1.25 : 1;
-        view.setScale((projectile.weaponId === "bolt-carbine" ? 0.58
-          : projectile.weaponId === "injector-carbine" ? 0.5
-          : projectile.weaponId === "bulwark-rotary-cannon" ? 0.34
-            : projectile.weaponId === "grenade-tube" ? 0.48
-              : projectile.weaponId === "event-horizon" ? 0.58
-              : projectile.weaponId === "scattergun" ? 0.24 : 0.3) * visibilityScale);
-        view.clearTint();
+        view.setScale(presentation.scale * visibilityScale);
+        if (presentation.tintWithWeaponColor) view.setTint(weaponColor(projectile.weaponId));
+        else view.clearTint();
       } else {
         view.setFillStyle(weaponColor(projectile.weaponId));
       }
-      if (this.readabilityRims || this.settings.highContrastOutlinesEnabled) {
-        let halo = this.projectileHaloViews.get(projectile.id);
-        if (!halo) {
-          halo = this.add.circle(0, 0, 5, projectileHaloColor(projectile.weaponId), 0.32).setDepth(699);
-          this.projectileHaloViews.set(projectile.id, halo);
-        }
-        halo.setPosition(view.x, view.y)
-          .setRadius((projectile.weaponId === "grenade-tube" || projectile.weaponId === "event-horizon" ? 8 : projectile.weaponId === "bolt-carbine" ? 6 : 4.5)
-            * (this.settings.highContrastOutlinesEnabled ? 1.35 : 1))
-          .setFillStyle(projectileHaloColor(projectile.weaponId), this.settings.highContrastOutlinesEnabled ? 0.58 : 0.32)
-          .setVisible(view.visible);
+      let halo = this.projectileHaloViews.get(projectile.id);
+      if (!halo) {
+        halo = this.add.circle(0, 0, presentation.haloRadius, weaponColor(projectile.weaponId), 0.24).setDepth(699);
+        this.projectileHaloViews.set(projectile.id, halo);
+      }
+      const highContrast = this.settings.highContrastOutlinesEnabled;
+      halo.setPosition(view.x, view.y)
+        .setRadius(presentation.haloRadius * (highContrast ? 1.35 : 1))
+        .setFillStyle(highContrast ? projectileHaloColor(projectile.weaponId) : weaponColor(projectile.weaponId), highContrast ? 0.62 : 0.24)
+        .setVisible(view.visible);
+
+      const trailLength = projectileTrailLength(projectile.weaponId, this.settings.reducedMotionEnabled);
+      if (trailLength > 0) {
+        const trailEndX = view.x - Math.cos(projectile.rotationRadians) * trailLength;
+        const trailEndY = view.y - Math.sin(projectile.rotationRadians) * trailLength;
+        this.projectileTrailLayer.lineStyle(4, projectileHaloColor(projectile.weaponId), 0.58)
+          .lineBetween(trailEndX, trailEndY, view.x, view.y)
+          .lineStyle(2, weaponColor(projectile.weaponId), 0.78)
+          .lineBetween(trailEndX, trailEndY, view.x, view.y);
       }
     }
   }
