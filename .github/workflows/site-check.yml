@@ -88,6 +88,63 @@ jobs:
       - name: Check theme contrast
         run: node scripts/check-contrast.mjs
 
+  last-bastion:
+    # The game's 1,626 unit tests, its typechecker and its content/combat audits
+    # ran only on one developer's machine until 11 September 2026: the sole
+    # Last Bastion step in CI was the five-scenario browser lane below. The
+    # deepest test suite on the site was not defending the branch.
+    #
+    # `build:check` is what stops the browser lane passing against a stale
+    # bundle: the published chunks are committed, so a source change without a
+    # rebuild would otherwise leave every browser check green on yesterday's game.
+    #
+    # The PowerShell `smoke` and `offline` lanes stay local until they are
+    # ported off `powershell`; they check the published tree, which build:check
+    # now proves is current.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: |
+            play/last-bastion/dev/package-lock.json
+            play/last-bastion/desktop/package-lock.json
+      - name: Install game dependencies
+        run: npm ci
+        working-directory: play/last-bastion/dev
+      - name: Typecheck the game
+        run: npm run typecheck
+        working-directory: play/last-bastion/dev
+      - name: Run the game test suite
+        run: npm test
+        working-directory: play/last-bastion/dev
+      - name: Audit content inventory
+        run: npm run content:audit
+        working-directory: play/last-bastion/dev
+      - name: Audit combat adapter boundaries
+        run: npm run combat:audit:boundaries
+        working-directory: play/last-bastion/dev
+      - name: Check the published bundle matches source
+        run: npm run build:check
+        working-directory: play/last-bastion/dev
+      - name: Install desktop host dependencies
+        # The desktop tests are pure Node: none of them import `electron`, and
+        # none launch a window. Skipping the ~100 MB binary download keeps this
+        # job fast and stops an unrelated CDN hiccup reddening the branch.
+        # Packaged-window acceptance is a manual hardware gate, not this job.
+        run: npm ci
+        working-directory: play/last-bastion/desktop
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+      - name: Build and test the desktop host
+        run: npm test
+        working-directory: play/last-bastion/desktop
+
   visual-regression:
     runs-on: ubuntu-latest
     timeout-minutes: 15

@@ -4588,3 +4588,406 @@ The four live elite identities now each communicate a different combat lesson.
   `npm.cmd run balance:audit:bosses`. Human observed threat-tier runs remain required.
 - Full verification passes: **1,566 tests across 277 files**, production build, **90 smoke routes**,
   WebP audit (**8 lossy + 55 lossless**), and offline **385 / 0 missing** local references.
+
+## 11 September 2026 — Revised plan, and the guards that should have existed already
+
+- Re-audited the whole project against `quality-audit-2026-09-07.md` and wrote
+  `implementation-plan-2026-09-11.md`, now the queue of record. QA-01/02/03 and
+  LB-08/09/10 verified **closed**; QA-04/05/07/08 confirmed **partial**; QA-06 (the
+  10,412-line/5,740-line split) **demoted to last** — the harness that would catch a bad
+  extraction did not exist yet, so building it first was the right order.
+- **Eight new findings**, each verified at a line. Four shipped today as guards rather
+  than as one-off fixes, because in every case the instance was cheap and the *class* was
+  the problem.
+- **QA-13 — combat-event presentation.** The event union has **152** members; **21** reached
+  the player through no surface at all, including the completion and failure of all three
+  objective modes. `combat/CombatEventPresentation.ts` is now a
+  `Record<CombatEvent["type"], …>`, so `tsc` names any member added without a row *and* any
+  stale row left behind — proven to fail in both directions. Its test then checks each row's
+  claim against the code. Objective outcomes closed with a flash, an event-feed line and a
+  rising/falling cue; backlog ratchet lowered **21 → 13**. No new asset asked of Codex.
+- **QA-14 — published-bundle drift.** Vite writes committed chunks straight into
+  `game-assets/`, so every browser check — CI's included — was exercising the *committed*
+  bundle. `dev/scripts/check-published-build.mjs` rebuilds into a scratch tree and compares.
+  On its first run it found **ten orphaned chunks** accumulated by `emptyOutDir: false`,
+  cross-referencing only each other; removed.
+- **QA-15 — CI.** The only Last Bastion step in CI was the five-scenario browser lane. The
+  1,642-test suite, typecheck, content audit, combat-boundary audit and the 28 desktop tests
+  ran nowhere but one laptop. A `last-bastion` job now runs all of them.
+- **QA-16(a) — service worker.** `sw.js` cached responses without checking `res.ok`, so one
+  transient 404 or 503 for a sprite sheet was replayed to that player forever on the
+  cache-first media path. Guarded; `CACHE` bumped to v18, which also evicts stale media once.
+  Arcade-wide, not Last Bastion only. Asset versioning (QA-16b) remains open.
+- **QA-17 — the unseeded arena.** `resolveArenaTheme` ended in
+  `pickArenaTheme(Math.floor(Math.random() * 1024))` and threw the result away: the one
+  unseeded draw in the game, and the reason QA-09's run report could not have worked.
+  `run/RunSeed.ts` resolves a seed (`?runseed=`, then `?worldseed=`, then generated) and the
+  theme derives from it. Observed: seed 7 and seed 2 give different, stable arenas.
+- **QA-18/19/LB-12.** Projectile appearance was two divergent weapon-ID ternaries with a
+  dead `scale` field — `marauder-ar` declared 0.42 and rendered 0.3; collapsed to one table,
+  preserving what actually rendered. Run-history dates used `toISOString()`, i.e. the UTC
+  day, not the player's. Dead `NODE_GLYPHS` removed.
+- **Two corrections to the audit as first written**, recorded rather than edited away: the
+  union is 152 members, not 120, and the unpresented set was 21, not 20. Separately,
+  `supply-chest-opened` has a cue but no visual, which locates **LB-03** exactly — crates
+  are not silent, they are invisible.
+- **Two defects found by the new checks, not by a person**: the ten orphaned chunks above,
+  and `Number("")` being `0`, which made an empty `?runseed=` read as a request for seed zero.
+- Full verification passes: **1,642 tests across 292 files** (from 1,618/288), typecheck,
+  production build, `build:check` on 24 outputs, 5 browser scenarios, and 28 desktop tests —
+  `npm run verify:last-bastion`, all lanes, 26.5 s.
+- **Not observed.** Objective completion/failure were not played end to end; they are covered
+  by the source-level test and reuse the API the other 126 events already use. A cold local
+  load of the combat route took over 20 seconds — a datapoint for QA-12, not a measurement.
+- Next, per the revised plan: QA-13's remaining 13 events, QA-09 run report (now unblocked),
+  QA-04b's screenshot matrix to close LB-05/LB-06, then LB-02/LB-03/LB-11.
+
+## 11 September 2026 — Distribution audit: the game had no door
+
+- Wrote `product-strategy-plan-2026-09-11.md` after auditing the game as a *product* rather
+  than as code. The headline finding is not a code defect and has no symptom:
+  **Last Bastion had zero inbound internal links, was absent from `sitemap.xml`, was not in
+  the arcade hub's 37-game list, and was in neither `arcade-baseline.json` nor
+  `game-counts.json`.** The URL worked; nothing on the site or in search could reach it.
+- So the most developed thing in the portfolio — 1,642 tests, 152 event types, 34 weapons,
+  38 enemies, 4 GB of art, a Steamworks host — has never been discoverable by a stranger.
+  Every judgement about the game made in six months rests on no evidence, because no
+  evidence could have been generated.
+- **Fixed today:** added the `/play/last-bastion/` entry to `sitemap.xml` (119 → 120 URLs).
+  Inserted by hand rather than regenerating: a full regeneration stamps today's date onto
+  any page dirty in the working tree, and three unrelated app pages were dirty — the exact
+  inflated-lastmod defect commit `5bd77110` fixed.
+- Second concern recorded: **the game sends no telemetry anywhere.** Nobody can arrive, and
+  if they did, we would not know. The four counters proposed in the plan (start, wave 1,
+  wave 5, return) are the prerequisite for every content decision after this.
+- Strategy recommendation: the browser build is the **wishlist engine**, not a demo of the
+  Steam game. Steam distributes wishlists accumulated before launch, so the Steam page
+  should exist now and the *launch* should sit behind an audience gate (~1,000 wishlists),
+  not a feature gate. Proposed content freeze until telemetry exists — 34 weapons and 38
+  enemies is already past most shipped roguelites.
+- Also recorded: the August Steam-Deck/1440p/ultrawide "release blocker" is substantially
+  **closed** — `planDisplayPresentation` implements crisp/fill/expanded-frame — with two
+  caveats: `expanded-frame` is unreachable pending Codex's U3 bezel art, and none of it has
+  been checked on real hardware. That plan's banner needs updating.
+- Four decisions are owed before implementation: the Steam page ($100, needs Mark), the
+  content freeze, the telemetry privacy posture, and whether Codex's next art batch becomes
+  store/landing assets instead of enemies.
+
+## 11 September 2026 — A door, and a way to see who walks through it
+
+Mark's decisions: Steam **parked** (not ready, no account); content freeze, telemetry and
+the Codex art redirect all **accepted**.
+
+- **The game now has a way in.** An arcade tile heading the `/play/` grid, a real guide page
+  at `/guides/free-browser-roguelite/` following the site's existing guide pattern, both
+  linked from the guides index, and both in `sitemap.xml`. The tile uses a root-relative
+  href on purpose so `build-related-games.mjs` still parses 37 games and
+  `build-game-counts.mjs` still excludes Last Bastion from the arcade total; both verified.
+  The guide is the only indexable text this game has ever had — `/play/last-bastion/` is
+  the canvas and carries nothing but a meta description.
+- **Found while doing it:** `build-breadcrumbs.mjs` walked into `play/last-bastion/dev/`,
+  the Vite source for the published page, and gave it a fourth crumb pointing at
+  `/play/last-bastion/dev/`, a URL that does not exist. The next build would have published
+  it. `build-sitemap.mjs` already skipped that tree; this one now does too.
+- **Telemetry is instrumented and deliberately dormant.** `PlayerFunnel` answers exactly
+  four questions — does an opener start a run, do they clear wave 1 and 5, what ends runs,
+  do they return — and nothing else. Session-scoped across page loads, because each screen
+  is its own URL and a per-page counter would report four opens per visitor. No identifier
+  of any kind: no visitor id, fingerprint, session token, URL, referrer, sub-day timestamp
+  or free text; outcomes are coarse buckets and a test pins every value to a closed
+  vocabulary. Corrupt wave counts fall to the *shallowest* bucket so bad data cannot flatter
+  the metric. Verified in a browser that nothing is injected and nothing is sent.
+  Cloudflare Web Analytics has no event model, so one step remains: a GoatCounter site code
+  plus a `/privacy/` disclosure. This is **not** the app7 local-only trap; it is switched
+  off pending a privacy decision, not incapable of reporting.
+- **Startup time measured, and it is the next real problem.** Cold local origin, no service
+  worker, `?screen=game`: **46.7 seconds to finish loading**. DOM ready in **379 ms**.
+  **29.8 MB over 143 requests** (19.9 MB WebP, 7.8 MB PNG, 2.1 MB JS). The sum of every
+  image download duration is **1.78 seconds**, spread across a **46.1-second** wall-clock
+  window — the data moves in under two seconds and the loader then idles for forty-four.
+  So this is not bandwidth and compressing art will not fix it, which is lucky, because the
+  art is Codex's and none of it needs to change. It points at main-thread decode and texture
+  upload serialising Phaser's loader queue. **Confound to rule out first:** this was served
+  by the single-process `scripts/serve-static.mjs`, which may be serialising connections.
+  Re-measure behind a concurrent server before acting on the decode theory.
+- A live demonstration of why the published-bundle guard matters: a stale service-worker
+  cache on another session's server served an old bundle and made correct new code look
+  broken. The fix was a clean origin, and `build:check` is what stops the same confusion in CI.
+- Full verification passes: **1,670 tests across 294 files**, typecheck, build,
+  `build:check` on 24 outputs, 5 browser scenarios, 28 desktop tests — 29.6 s.
+- Next: rule out the serve-static confound and fix loader scheduling (G1); content-freeze
+  banners; then LB-03/LB-02/LB-11 and the QA-04b screenshot matrix.
+
+## 11 September 2026 — Correction: startup is 1.8 seconds, not 46.7
+
+- **I reported the wrong number, and it was the scariest number in the plan.** The
+  earlier entry said a cold combat load took **46.7 seconds** and called startup a P0
+  product defect. **That is retracted.** It was measured by driving the in-app browser
+  pane, which was hidden. A hidden tab throttles `requestAnimationFrame`, and
+  `requestAnimationFrame` is what advances Phaser's loader. The figure described the
+  measuring instrument, not the game. The tell was there in the data and I read past
+  it: at 52 seconds the server had been idle since 671 ms, which is a stalled loader,
+  not a slow one.
+- **Re-measured with Playwright**, which does not throttle its pages. Two consecutive
+  runs agree:
+
+  | Route | Canvas visible | Assets quiet | Payload |
+  | --- | --- | --- | --- |
+  | Title | 466 ms | 490 ms | 2.2 MB, 22 requests |
+  | Combat | 287 ms | 1,811 ms | 30.3 MB, 199 requests, 1.27 s image transfer |
+
+  Under half a second to a rendered title, under two seconds to a loaded combat scene.
+  **Startup is fine.** The 30 MB payload is heavier than it needs to be and is worth
+  trimming for players on slow connections, but that is tuning, not an emergency, and
+  it drops below everything else in the plan.
+- The measurement is now a committed test rather than a one-off:
+  `tests/visual/last-bastion-startup.spec.mjs` plus
+  `playwright.last-bastion-startup.config.mjs`, run with `npm run measure:last-bastion`.
+  Deliberately separate from the acceptance lane, which has to stay a fast gate.
+- Two honest limits on it. "Assets quiet" is a proxy for readiness, not interactivity —
+  the obvious flag, `canvas.dataset.directPresentationAudit`, is only set by the direct
+  presentation path, and combat uses a RenderTexture presenter instead, so waiting on it
+  measured the loading screen. And none of this covers a real network, a low-end device
+  or a cold CDN.
+- **The durable lesson: never measure a `requestAnimationFrame`-driven loader in a
+  background tab.** The bad figure reached this log, the strategy plan and a commit
+  message before it was caught.
+
+## 11 September 2026 — The unpresented combat backlog reaches zero
+
+- Started the day at **21 of 152 combat events reaching the player through no surface at
+  all**. It is now **zero**, closed in two passes: the eight objective outcomes earlier,
+  and today the rest.
+- Landed here: the three boss telegraphs (`foundry-turret-warning`,
+  `abomination-prime-warning`, `assembly-prime-lane-fired`) — a warning the player cannot
+  see is not a warning, and these were the only ones in the game firing into nothing.
+  `assembly-prime-lane-fired` draws at its endpoint as well as its source, because a lane
+  you only see at the origin tells you nothing about where it is safe to stand.
+  `abomination-prime-hazard-tick` is deliberately faint: it repeats while you stand in the
+  hazard, so anything loud becomes noise in a second.
+- **LB-03 closed.** The crates were never silent — `supply-chest-opened` had a cue and no
+  picture, so a crate opened into an audible nothing. It now bursts and writes to the feed.
+  Spawn and destruction got their own tells too.
+- Also closed: deployable placement and expiry (knowing a turret has run out matters more
+  than watching it shoot), `brace-formation`, `foundry-child-powered-down`, and
+  `world-interaction-completed` — a held interaction with no completion feedback feels like
+  it might not have worked.
+- **A correction to my own guard.** Four rows looked like remaining debt. Three were not:
+  `scrap-spent` is read by `CombatHud`, which my detector never looked at, and
+  `weapon-sold` and `deployable-fired` are deliberate silences. The surface list now has
+  `hud` and `exempt` alongside `scene`, `audio-only` and `unpresented`, each exemption
+  carries its reason at the row, and two new tests check that a `hud` claim is real and
+  that exemptions stay rare. **A guard that cannot see a surface invents debt on it.**
+- `unpresented` is now ratcheted to exactly **zero** rather than an upper bound. A new
+  event with no presentation fails the build; the honest escape is an argued `exempt`,
+  never a raised ceiling.
+- Full verification passes: **1,672 tests across 294 files**, typecheck, build,
+  `build:check`, 5 browser scenarios, 28 desktop tests.
+
+## 11 September 2026 — LB-06, and a test that had been calibrated to the bug
+
+- **LB-06 closed.** Character-select perk tiles were laid out by
+  `x = 495 + (i % 5) * 83, y = 380 + floor(i / 5) * 44` — a five-wide grid written when the
+  catalogue was smaller. At ten perks that is two rows, and the second row's 44px selection
+  ring spanned y 402–446 against a dossier panel that ends at **y=435**. It hung eleven
+  pixels through the bottom of its own panel.
+- **The test was calibrated to the defect.** `ScreenFlow.test.ts` asserted
+  `y + 22 <= 446` — a bound derived from the code's output rather than from the panel it has
+  to fit inside. It passed for months while the tiles sat outside the container. This is the
+  `test-mirroring` failure mode exactly: a test that re-states its subject instead of
+  checking it against the world.
+- Replaced with `perkGridLayout(count, bounds)`, which derives columns, rows and tile size
+  from the catalogue size and the panel, and four tests that check the real properties:
+  every ring inside the panel, tiles above a legibility floor, no two tiles overlapping, and
+  the grid still contained when the catalogue grows by four. Ten perks now render as one
+  rail of 30px tiles, fully inside the panel, with the description no longer colliding.
+- Verified in the screenshot matrix rather than argued: `character-select-960x540.png`
+  before and after.
+- Full verification: **1,690 tests across 296 files**, all `verify:last-bastion` lanes green.
+
+## 11 September 2026 — LB-02, and the register's code half is done
+
+- **LB-02 closed.** A collected power-up could not be inspected: the HUD showed a tile and a
+  timer, and the only name in the game was the id title-cased, so `butchers-serum` read as
+  "Butchers Serum" and explained nothing. There was no description anywhere in the project.
+- `content/powerupCatalog.ts` gives all twelve an authored name and a one-line description,
+  shown on pickup. Every line was **read off the simulation, not invented**, and
+  `powerupCatalog.test.ts` pins the stated numbers to the exported constants — so a balance
+  change either updates the sentence or fails the build. Copy that overstates a buff is worse
+  than no copy, because the player builds a plan around it.
+- The banner holds for 1750ms rather than 1050ms: the old timing was tuned for a name and a
+  timer and is not long enough to read a sentence.
+- The derived `powerupDisplayName` helper is gone, and the event feed now draws from the same
+  catalogue, so the two surfaces cannot drift apart.
+- **Every code-owned defect in the presentation register is now closed.** LB-01, LB-02,
+  LB-03, LB-05, LB-06, LB-08, LB-09, LB-10, LB-11, LB-12. What remains is LB-04 and LB-07,
+  both art, both Codex's.
+- Full verification: **1,699 tests across 297 files**, all lanes green.
+
+## 11 September 2026 — QA-09: a run you can describe
+
+- **QA-09 core landed.** The debrief could say what happened but not *which run it was*, so a
+  player who wanted to show a friend, file a bug or try the same setup again had nothing to
+  hand over. `RunSummary` now carries `seed`, `buildId` and `gameSpeedChanged`; the debrief
+  shows them and `C` copies a plain-text report.
+- **Honesty was the hard part, not the plumbing.** The report says *setup*, never *replay*:
+  a seed plus a build reproduces the arena, the generated map and the wave composition, not
+  the player's decisions, and a report implying otherwise would be a worse lie than silence.
+  A summary written before seeds existed prints `not recorded` rather than a placeholder that
+  would send someone to a different run. A test asserts the wording and that no machine,
+  account or file path can leak into the clipboard text.
+- **`buildId` is a hand-bumped constant, and the reasoning is recorded in the file.** Hashing
+  the bundle is circular — the injected hash changes the bundle — and a date stamp would make
+  `check-published-build` report drift every time the clock rolled over rather than when the
+  game changed. Bump it when a change would alter what a seed produces.
+- **Game speed is observed in the frame loop**, not hooked into the settings screen, so it
+  cannot miss a change made through the pause overlay or anything added later. The baseline is
+  whatever the run started at, not 1. It is reported as a caveat only when true, because its
+  entire purpose is to stop someone comparing these timings with another run's.
+- Clipboard denial is ordinary — insecure origin, permissions policy, an unrecognised gesture
+  — so the fallback prints the same text on screen rather than apologising.
+- **I introduced a collision and the screenshot caught it.** The first placement drew the
+  identity block straight through `NEW PERK` and `COMMAND MARKS BANKED`. Moved under the Final
+  Build column; both are readable again. Exactly the defect class this session has been
+  closing, caught within minutes because the matrix now exists.
+- Full verification: **1,709 tests across 298 files**, all lanes green.
+
+## 11 September 2026 — §5.4's audit finds a defect on the first run
+
+- **Presentation plan §5.4 landed** as `shell/shellTextLayout.test.ts`: run the real hero
+  dossiers and perk copy through the measurement and assert each block clears what sits
+  below it. Only five fixed-width text sites remained in the game, so this is a targeted
+  containment check rather than a lint — the pattern that has now caught three defects today.
+- **It found a fourth on its first run.** At a fixed 12px wrapped to 390px, **four of the
+  five hero dossiers ran past the PERK heading at y=326** — medic, assault, scout and
+  tactician, the locked Tactician by 51 pixels. Since only the Marine starts unlocked, a new
+  player opening character select saw the broken case on four of five heroes. Nobody had
+  reported it.
+- Fixed by putting the dossier through `fitText`, the same rule the stat cards use. Confirmed
+  on the worst case: `character-select-tactician-960x540.png` shows the full locked dossier,
+  unlock text included, ending clear of the heading with the perk rail inside its panel.
+- **My calibration case failed first, again, and was right to.** The absurd-content case used
+  60 words, which the fitting rule absorbed comfortably — so it proved nothing until it was
+  400. A containment test is worthless until you have watched it go red.
+- §5.1 and §5.4 are now both shipped; **§5.2, one text factory, is the only structural item
+  left in the presentation plan.**
+- Full verification: **1,713 tests across 299 files**, all lanes green.
+
+## 12 September 2026 — QA-16(b): art that can actually be replaced
+
+- **QA-16(b) closed.** The site's service worker is cache-first for
+  `png|jpe?g|webp|svg|gif|woff2?|wav|mp3|ogg`, and Last Bastion's ~150 MB of media all have
+  stable filenames. A player who loaded a sheet once kept that copy **indefinitely** —
+  re-exported art would never reach them, and no amount of redeploying would change it. The
+  game page does not register the worker itself, but `/sw.js` is registered at root scope
+  from `/apps/*` and the arcade index, so anyone arriving via the rest of the site is
+  controlled by it.
+- `assets/AssetVersion.ts` stamps `?v=<BUILD_IDENTITY>` onto every texture URL, applied at
+  the single chokepoint in `queueGameAssets` so it cannot be forgotten at a call site.
+  `caches.match` keys on the full URL, so a bumped identity is a miss and a fresh fetch —
+  and costs nothing on the builds where it does not change. That is precisely why the
+  identity is hand-bumped rather than a timestamp: a timestamp would refetch 30 MB on every
+  load and defeat the offline cache entirely.
+- Also fixed while here: `scripts/serve-static.mjs` had no MIME type for `.mp3` or `.ogg`,
+  serving both as `application/octet-stream`.
+- **The offline guard threw a false positive, and the guard was wrong, not the code.** Its
+  remote-import pattern has a `url(` arm aimed at CSS, and `Select-String` is
+  case-insensitive — so it matched the tail of *any* identifier ending in "url". A unit test
+  calling `versionedAssetUrl("https://...")` tripped it. Tightened with a lookbehind so CSS
+  `url(https://...)` is still caught while `…AssetUrl(` passes. **Calibrated both arms**
+  against injected violations before trusting it; both still fire.
+- Full verification: **1,720 tests across 300 files**, all lanes green.
+
+## 12 September 2026 — QA-05: the corpus reaches the branches a split would break
+
+- **QA-05's remaining corpus landed** as `combat/ReplayCorpus.test.ts`, 15 cases covering the
+  four gaps the audit named: shop purchase **and ban**, objective completion versus failure,
+  hero abilities, and defeat. These are the branches a refactor is most likely to reroute
+  without any existing test noticing, which is why the plan makes them a prerequisite for
+  QA-06's file split.
+- **Every case is paired with a negative.** Buying differs from leaving *and* puts the item in
+  `ownedItemIds` *and* costs scrap; evading differs from standing still; seed 99 differs from
+  seed 100; fleeing an objective differs from fighting it. A digest test that only asserts
+  equality passes happily when a branch is deleted — the differences are what make it a net.
+- **The shop ban is two decisions deep** and worth its own case: `shop-manage` opens a second
+  decision whose options are `shop-lock:` / `shop-ban:` / `shop-reroll`. Two-step flows are
+  exactly where a refactor loses a branch.
+- **I wrote the tests against guesses first and they failed.** `ReplayResult` has no `status`
+  (it is on `snapshot`), and decision options are real ids like `shop-item:bayonet` rather
+  than indices. Probed the simulation for the actual values rather than loosening the
+  assertions — and the defeat case now asserts `status === "defeat"` and `health === 0`
+  specifically, because "one of three outcomes" would still pass if defeat stopped being
+  reachable at all.
+- The file records what the digest does **not** prove: it covers observable run state, not
+  rendering, audio, or any omitted field. A net, not a certificate — the 7 September audit was
+  right about that and the comment says so.
+- Full verification: **1,735 tests across 301 files**, all lanes green.
+
+## 12 September 2026 — QA-06's first extraction
+
+- With QA-05's corpus in place, **QA-06 is properly unblocked** and its first extraction
+  landed: `combat/DecisionNavigation.ts`. The decision overlay's input rule — skipping
+  disabled options, wrapping, re-arming the gamepad stick, quick-picking by digit — was the
+  only part of that screen with real branching, and it lived inside a 5,900-line Phaser scene
+  where none of it could be tested without a renderer.
+- **Pure by construction.** It takes the current selection and a description of what was
+  pressed, and returns the next selection. It never touches Phaser, never reads scene state,
+  and never applies the choice — so the boundary the plan asks for, "keep mutation authority
+  explicit", *is* the function signature. The scene is now translation only. 14 cases cover
+  the branches, including the bounded loop that stops a shop where nothing is affordable from
+  spinning the frame.
+- Mirrors `ui/DebriefNavigation.ts`, which did the same for the debrief. Following the
+  house pattern rather than inventing one.
+- **Verified behaviour-preserving against the previous build, not asserted.** A browser check
+  showed one ArrowDown moving from option 1 to option 3, which looked like a two-step
+  regression. Stashing the change, rebuilding and repeating the same press gave exactly the
+  same result: option 2 ("Equip in ALL slot") is genuinely disabled for a HEAVY weapon, and
+  skipping it is correct pre-existing behaviour. Worth the five minutes — the alternative was
+  shipping a refactor on the assumption that a surprise was fine.
+- One deliberate improvement: a quick-pick digit now repaints the highlight. The original set
+  the index and confirmed without repainting, so the highlight could lag the selection.
+- Full verification: **1,749 tests across 302 files**, all lanes green.
+
+## 12 September 2026 — QA-07: a report a script can read
+
+- **QA-07's remainder closed.** `npm run verify:last-bastion -- -Json <path>` now writes a
+  machine-readable report: commit, build identity, working-tree state, per-lane
+  PASS/FAIL/NOT-RUN with durations, and the manual gates. The isolated-staging half was
+  already met by `build:check`, which rebuilds into a scratch tree and compares — the gap was
+  that the script printed durations for a human and nothing a script could read.
+- **Two rules the audit asked for, now encoded.** A required lane that did not PASS fails the
+  run, *including one that never ran* — "not run" and "passed" must never look alike in a
+  report. And the manual gates are listed as MANUAL rather than omitted, because a report that
+  silently drops the hardware and observed-play gates reads as though the release is fully
+  verified, which is the misleading half of QA-07.
+- Lanes stop at the first failure deliberately: later lanes would be exercising a build already
+  known to be broken. They are recorded as **NOT-RUN** rather than quietly missing.
+- **My first calibration was worthless and I caught it.** I broke `localDayKey` by swapping
+  `getFullYear` for `getUTCFullYear` and the verifier passed — correctly, because the test
+  cases are both in 2026 and the year getter makes no difference there. Replacing the whole
+  return with a constant produced the real result: exit 1, `result: FAIL`,
+  `web=FAIL browser=NOT-RUN desktop=NOT-RUN`. A verification script that has never been
+  watched going red is not a verification script.
+
+## 12 September 2026 — QA-12: the performance numbers, and one claim withdrawn
+
+- **QA-12's measurement landed** as `npm run profile:last-bastion`. The game already recorded
+  frame times — `FramePacingTelemetry` publishes on `window.__displayPresentationAudit` — and
+  nothing read them. Now something does.
+- **The numbers are healthy.** Combat: average **20.5 ms**, p95 **23.3 ms**, p99 **25 ms**,
+  1% low 40 fps. Under `stress=12`, the heaviest density profile the game can be asked to
+  draw: average **21.7 ms**, p99 **28.3 ms**, 1% low 35 fps. Barely degrades under the worst
+  case, which says the density work holds. WebGL context: zero losses across repeated
+  transitions.
+- **The frame assertions are collapse detectors, not targets.** This is desktop Chromium on
+  one machine, and the audit was explicit that budgets have to be agreed per target device
+  before results mean anything. No such budget exists, so the ceilings catch a stall rather
+  than grade the performance.
+- **One claim withdrawn before shipping it.** I wrote the heap check as leak detection. It
+  is not: Last Bastion is a **multi-page** app, every screen is its own document, so each
+  cycle discards the previous JS heap and a per-cycle leak *cannot* accumulate in that
+  number. A green check proving nothing is the false-confidence trap this project has
+  already been bitten by. The test now says what it actually proves — four transition cycles
+  complete, and one document ballooning would still be caught — and records that genuine leak
+  detection for this architecture needs GPU and texture memory across navigations, which is
+  not reachable from here. **Still open, not quietly claimed.**

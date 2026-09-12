@@ -1,2 +1,5 @@
 tripeaks.png = PLACEHOLDER (studio mark), awaiting Codex Asset 1
 pyramid.png  = PLACEHOLDER (studio mark), awaiting Codex Asset 3
+last-bastion.png = PLACEHOLDER (studio mark), awaiting Codex: a Last Bastion arcade tile.
+                   This one is the odd case out - the game has 4 GB of source art and
+                   still no 72x72 tile, because nothing on the site ever linked to it.

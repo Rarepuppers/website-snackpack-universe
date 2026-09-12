@@ -1,5 +1,26 @@
 # Last Bastion — content design plan
 
+> ## FROZEN — 11 September 2026
+>
+> **Do not build new content from this plan.** Everything below is parked by decision,
+> not cancelled: the proposals stay on record and the reasoning stays valid, but nothing
+> here should be implemented until the funnel in
+> [`product-strategy-plan-2026-09-11.md`](product-strategy-plan-2026-09-11.md) reports a
+> number.
+>
+> The reason is in §1 of that plan. Until 11 September the game had **no inbound link from
+> anywhere on the site, no arcade tile and no sitemap entry** — no stranger could reach it.
+> So every argument for more content rests on no evidence that any existing content has
+> ever been seen. The catalogue already stands at 34 weapons, 38 enemy types, 47 items,
+> 14 relics, 12 artifacts and 20 upgrades, which is past most shipped roguelites; each
+> addition multiplies the cost of every future balance pass and art batch.
+>
+> The freeze lifts when telemetry says where players actually stop. Argue from that.
+>
+> Still in scope while frozen: fixing what exists. Presentation defects, the thirteen
+> unpresented combat events, startup time, and first-session work are all unfrozen.
+
+
 ## Implementation addendum — 11 August 2026
 
 The first recommended content-depth batch is now implemented code-first:

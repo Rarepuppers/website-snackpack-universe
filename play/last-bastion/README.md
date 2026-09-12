@@ -3,7 +3,7 @@
 Eighteen `.md` files live in this folder and several are historical. This index says which
 to trust. **Read this before acting on any plan doc.**
 
-Last reviewed: 7 September 2026 (audit and live-plan index; historical counts below retain their dates).
+Last reviewed: 11 September 2026 (revised plan; historical counts below retain their dates).
 
 ---
 
@@ -11,11 +11,13 @@ Last reviewed: 7 September 2026 (audit and live-plan index; historical counts be
 
 | File | What it is |
 |---|---|
-| `quality-audit-2026-09-07.md` | **Current quality audit.** Verified automated baseline, twelve prioritized correctness/QoL/verification tasks, acceptance criteria, and the missing Godot-handover scope warning. |
+| `product-strategy-plan-2026-09-11.md` | **The product, design and distribution plan.** Opens with the finding that the game had zero inbound links, was absent from the sitemap and the arcade hub, and so had no discovery path at all. Covers strategy (the browser build is the wishlist engine, not a demo), distribution, the Steam audience gate, first-session/startup work, the content freeze, and what to park. Proposal — four decisions are owed. |
+| `implementation-plan-2026-09-11.md` | **The current queue — read this first.** Re-verifies every 7 September task against the code, closes QA-01/02/03 and LB-08/09/10/12, adds eight new findings (combat-event presentation coverage, published-bundle drift, the missing CI unit lane, service-worker failure caching, the unseeded arena, and three smaller ones), demotes the large-file split, and logs what landed on 11 September. |
+| `quality-audit-2026-09-07.md` | **Superseded as a queue** by the file above; still the reference for each original task's evidence and acceptance wording. Verified automated baseline, twelve prioritized correctness/QoL/verification tasks, acceptance criteria, and the missing Godot-handover scope warning. |
 | `presentation-defect-plan-2026-08-23.md` | **Presentation defect register.** Existing LB findings, shared layout/text/inspection work, art gates, and separate presentation acceptance lane; recheck closure against current code and observed evidence. |
 | `last-bastion-improvement-and-steam-plan-2026-08-07.md` | **The forward plan.** Full review of the current build, the Full HD/4K/ultrawide/Steam Deck display plan, the Steam client plan, the gameplay-depth backlog, new Codex asset batches 68–75, a task-level implementation breakdown (§10) with file targets, line ranges, and acceptance criteria, and §11 on HUD readouts and run pacing (shield bar, overheal, armour display, wave timer, game speed). Does not restate the asset queue — it references it. |
-| `last-bastion-content-design-plan-2026-08-07.md` | **The content plan.** Review of every content system with measured counts, plus proposed monsters, elites, bosses, weapons, objectives, rewards, items, and stats, and Codex asset batches 76-84. |
-| `asset-next-production-review-2026-07-26.md` | **The asset queue.** The single authority on what art/audio Codex produces next, in priority order, plus the quality floors. The 31 July addendum adds UI chrome, music, ambience, UI audio, and the locked/mystery/playable character batches. |
+| `last-bastion-content-design-plan-2026-08-07.md` | **FROZEN 11 September 2026 — do not build from this.** Parked until the funnel reports a number; see its banner. Otherwise: **the content plan.** Review of every content system with measured counts, plus proposed monsters, elites, bosses, weapons, objectives, rewards, items, and stats, and Codex asset batches 76-84. |
+| `asset-next-production-review-2026-07-26.md` | **Priority redirected 11 September 2026** to store and landing assets (tile, screenshots, share image, GIF); content art frozen, presentation-defect art is not. Otherwise: **the asset queue.** The single authority on what art/audio Codex produces next, in priority order, plus the quality floors. The 31 July addendum adds UI chrome, music, ambience, UI audio, and the locked/mystery/playable character batches. |
 | `last-bastion-art-bible.md` | Asset pipeline: naming, pivots, frame order, source-master retention, Steam/4K rules. Still current. Its open-approvals list is partly stale — see *Known stale points* below. |
 | `last-bastion-codex.html` | Player-facing encyclopedia, and **code-enforced**: `content/codexDrift.test.ts` fails the build if a shipped weapon, upgrade, relic, artifact, or enemy is missing an entry. Not optional documentation. |
 | `last-bastion-log.md` | Append-only running history. The record of what happened and why. |

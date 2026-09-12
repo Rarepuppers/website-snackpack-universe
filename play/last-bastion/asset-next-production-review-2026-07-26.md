@@ -1,5 +1,28 @@
 # Last Bastion next asset review — 26 July 2026
 
+> ## PRIORITY REDIRECTED — 11 September 2026
+>
+> **Codex's next Last Bastion art is the store and landing assets, not more game content.**
+> Accepted by Mark on 11 September. The batches below are not cancelled; they are behind
+> this.
+>
+> Wanted, in order:
+>
+> 1. **An arcade tile**, 72×72, `play/tiles/last-bastion.png`. Currently the studio
+>    placeholder mark. This is the odd one out in the whole project: the game has 4 GB of
+>    source art and no tile, because until this week nothing on the site linked to it.
+> 2. **Screenshots for the guide page** at `/guides/free-browser-roguelite/`, which today
+>    is text only. Combat mid-wave, the expedition map, and a level-up choice would carry it.
+> 3. **A social share image** for `/play/last-bastion/`, which currently borrows the generic
+>    site card.
+> 4. **A short loop or GIF** of a run, for the communities where a browser roguelite
+>    actually spreads.
+>
+> Rationale in [`product-strategy-plan-2026-09-11.md`](product-strategy-plan-2026-09-11.md).
+> Content art is frozen alongside the content design plan; presentation-defect art
+> (LB-04's helmet, LB-07's node icons) is **not** frozen — that is fixing what exists.
+
+
 ## Audit result
 
 The code and plans agree that world-object art remains the current production gate; the next held-weapon release-art candidate is now staged for review without enabling its pool.

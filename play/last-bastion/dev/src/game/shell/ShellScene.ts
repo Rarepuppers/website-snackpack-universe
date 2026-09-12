@@ -47,6 +47,8 @@ import {
   type KeyboardBindableAction,
 } from "../input/ControlBindings";
 import { runRecordPresentation } from "../run/RunRecordPresentation";
+import { localDayKey } from "../run/LocalDayKey";
+import { fitText, phaserTextMeasure } from "../ui/MeasuredText";
 import {
   UI_BUTTON_SLICE,
   UI_FOCUS_SLICE,
@@ -61,6 +63,15 @@ type UiPanelWeight = "recessed" | "raised" | "emphasis";
 
 const WIDTH = 960;
 const HEIGHT = 540;
+
+/** Character-select hero dossier. Its bottom is derived from the perk layout. */
+const DOSSIER_LEFT = 470;
+const DOSSIER_TOP = 108;
+const DOSSIER_WRAP_WIDTH = 390;
+const DOSSIER_PADDING = 4;
+/** Clearance kept between the dossier last line and the PERK heading. */
+const DOSSIER_HEADING_GAP = 8;
+const DOSSIER_SIZES: readonly number[] = [12, 11, 10, 9];
 const NAVY = 0x151e2b;
 const PANEL = 0x1d2938;
 const IVORY = "#e8e2d4";
@@ -637,7 +648,7 @@ export class ShellScene extends Phaser.Scene {
       const y = 124 + index * 52;
       const resultColor = summary.outcome === "victory" ? TEAL : "#ff7d72";
       const date = entry.completedAtMs > 0
-        ? new Date(entry.completedAtMs).toISOString().slice(0, 10)
+        ? localDayKey(entry.completedAtMs)
         : "LEGACY SAVE";
       const progressLabel = summary.mode === "expedition"
         ? `${summary.nodesCleared} NODES${summary.threatTier === null ? "" : `  T${summary.threatTier}`}`
@@ -754,7 +765,7 @@ export class ShellScene extends Phaser.Scene {
         `PER LEVEL  ${definition.levelGrowthDescription}`,
         ...(!heroUnlocked ? ["", definition.unlockText] : []),
       ].join("\n");
-      this.root.add(this.text(470, 108, dossier, IVORY, "12px").setWordWrapWidth(390));
+      this.root.add(this.fittedDossier(dossier, perkLayout.headingY));
     } else {
       this.root.add(this.text(660, 240, "Signal lost.\nFuture hero slot.", MUTED, "14px", true));
     }
@@ -846,6 +857,34 @@ export class ShellScene extends Phaser.Scene {
     const canDeploy = this.state.unlockedThreatTiers.includes(selected.tier);
     this.root.add(this.text(WIDTH / 2, 480, canDeploy ? "ENTER  BEGIN EXPEDITION" : "TIER LOCKED", canDeploy ? TEAL : ORANGE, "14px", true));
     this.root.add(this.text(70, HEIGHT - 24, "ARROWS SELECT  -  ENTER DEPLOY  -  ESC BACK", MUTED, "12px"));
+  }
+
+  /**
+   * The hero dossier, shrunk to clear the PERK heading below it.
+   *
+   * Found by the 5.4 overflow audit rather than by looking: at a fixed 12px
+   * wrapped to 390px, four of the five heroes ran past the heading — the locked
+   * Tactician by 51px. Locked heroes are exactly what a new player reads, since
+   * only the Marine starts unlocked, so this was the common case, not an edge one.
+   *
+   * The bottom bound is the perk layout own headingY rather than a constant, so
+   * the two cannot drift apart — which is how the overflow arrived.
+   */
+  private fittedDossier(content: string, headingY: number): Phaser.GameObjects.Text {
+    const style = { fontFamily: "Consolas, monospace", align: "left" };
+    const fit = fitText({
+      content,
+      maxWidth: DOSSIER_WRAP_WIDTH + DOSSIER_PADDING * 2,
+      maxHeight: (headingY - DOSSIER_HEADING_GAP) - DOSSIER_TOP + DOSSIER_PADDING * 2,
+      sizesPx: DOSSIER_SIZES,
+      padding: DOSSIER_PADDING,
+    }, phaserTextMeasure(this, style));
+    return this.add.text(DOSSIER_LEFT, DOSSIER_TOP, content, {
+      ...style,
+      color: IVORY,
+      fontSize: fit.fontSizePx + "px",
+      wordWrap: { width: fit.wrapWidth },
+    }).setResolution(uiTextResolution());
   }
 
   private text(

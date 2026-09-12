@@ -37,6 +37,17 @@ const CUES: Readonly<Partial<Record<CombatEvent["type"], AudioCue>>> = Object.fr
   "elite-armour-hit": cue("armour-clank", 520, 0.07, 0.07, "square", 480),
   "ironhide-adapted": cue("ironhide-adapt", 310, 0.16, 0.09, "square", 170),
   "elite-reward-collected": cue("cache", 760, 0.24, 0.1, "sine", 1300),
+  // Objective outcomes. The presenter draws these; without a cue the result is
+  // visible only if the player happens to be looking at the right part of the
+  // screen — and an Escort is most often lost while looking somewhere else.
+  // Rising for a win, falling for a loss. Existing synth vocabulary, no new asset.
+  "escort-objective-completed": cue("objective-complete", 520, 0.3, 0.1, "sine", 990),
+  "deny-objective-completed": cue("objective-complete", 520, 0.3, 0.1, "sine", 990),
+  "collect-objective-completed": cue("objective-complete", 520, 0.3, 0.1, "sine", 990),
+  "escort-objective-failed": cue("objective-failed", 420, 0.34, 0.11, "sawtooth", 130),
+  "deny-objective-failed": cue("objective-failed", 420, 0.34, 0.11, "sawtooth", 130),
+  "collect-objective-failed": cue("objective-failed", 420, 0.34, 0.11, "sawtooth", 130),
+  "collect-objective-picked-up": cue("objective-pickup", 680, 0.09, 0.06, "sine", 1020),
   "mini-boss-sweep": cue("sweep", 160, 0.24, 0.12, "sawtooth", 80),
   "mini-boss-shockwave": cue("shockwave", 100, 0.32, 0.13, "sawtooth", 40),
   "brood-cleave": cue("brood-cleave", 190, 0.2, 0.11, "sawtooth", 90),

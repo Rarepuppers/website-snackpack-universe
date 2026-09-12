@@ -5,7 +5,10 @@
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
     "test:last-bastion": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-last-bastion-browser-tests.ps1",
-    "verify:last-bastion": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-last-bastion.ps1"
+    "verify:last-bastion": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-last-bastion.ps1",
+    "measure:last-bastion": "playwright test --config playwright.last-bastion-startup.config.mjs",
+    "screens:last-bastion": "playwright test --config playwright.last-bastion-screens.config.mjs",
+    "profile:last-bastion": "playwright test --config playwright.last-bastion-profile.config.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1"

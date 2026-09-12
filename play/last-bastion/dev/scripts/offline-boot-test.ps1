@@ -44,7 +44,11 @@ foreach ($required in @('rel="canonical"', 'og:title', '<title>')) {
   }
 }
 
-$remoteSourceImports = $sourceFiles | Select-String -Pattern '(?:from\s+|import\s*\(|url\s*\()["'']https?://' -AllMatches
+# The `url(` arm targets CSS, and Select-String is case-insensitive, so it was
+# also matching the tail of any identifier ending in "url" — `versionedAssetUrl("https://...")`
+# in a unit test tripped it. The lookbehind keeps CSS `url(https://...)` caught
+# while letting a function whose name merely ends in Url pass.
+$remoteSourceImports = $sourceFiles | Select-String -Pattern '(?:from\s+|import\s*\(|(?<![A-Za-z0-9_])url\s*\()["'']https?://' -AllMatches
 if ($remoteSourceImports) {
   throw "Source contains remote imports/assets: $($remoteSourceImports.Path -join ', ')"
 }

@@ -41,10 +41,23 @@ function titleOf(html) {
     .replace(/&amp;/g, "&");
 }
 
+/**
+ * `play/last-bastion/dev/index.html` is the Vite SOURCE for the published game
+ * page, not a page of its own: the build copies it over
+ * `play/last-bastion/index.html`. Walking into it gave that source a breadcrumb
+ * trail ending at a `/play/last-bastion/dev/` URL that does not exist, and the
+ * next `npm run build` would have published it. `desktop/` is the same kind of
+ * source tree. `build-sitemap.mjs` already skips both; this generator did not,
+ * which is how the bogus crumb appeared on 11 September 2026.
+ */
+const SOURCE_ONLY_TREES = new RegExp("^play/last-bastion/(?:dev|desktop)(?:/|$)");
+
 async function* pages(dir) {
   for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
     if (entry.name === "node_modules" || entry.name.startsWith(".")) continue;
     const full = path.join(dir, entry.name);
+    const rel = path.relative(root, full).split(path.sep).join("/");
+    if (SOURCE_ONLY_TREES.test(rel)) continue;
     if (entry.isDirectory()) yield* pages(full);
     else if (entry.isFile() && entry.name === "index.html") yield full;
   }

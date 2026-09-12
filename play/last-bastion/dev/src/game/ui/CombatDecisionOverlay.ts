@@ -6,6 +6,7 @@ import { uiTextResolution } from "../rendering/DisplayScaling";
 import { shopWeaponTilePresentation, weaponTilePresentation } from "./WeaponTileFrames";
 import { upgradeTilePresentation } from "./UpgradeTilePresentation";
 import { decisionHintY, decisionPanelHeight } from "./DecisionOverlayLayout";
+import { stepDecisionNavigation } from "../combat/DecisionNavigation";
 
 export interface DecisionMenuKeys {
   readonly up: Phaser.Input.Keyboard.Key;
@@ -51,43 +52,47 @@ export class CombatDecisionOverlay {
       return;
     }
 
-    let delta = 0;
-    if (Phaser.Input.Keyboard.JustDown(this.options.keys.up) || Phaser.Input.Keyboard.JustDown(this.options.keys.w)) {
-      delta -= 1;
-    }
-    if (Phaser.Input.Keyboard.JustDown(this.options.keys.down) || Phaser.Input.Keyboard.JustDown(this.options.keys.s)) {
-      delta += 1;
-    }
-    // Gamepad stick: one step per push, re-armed once the stick recentres.
-    if (Math.abs(intent.move.y) < 0.35) {
-      this.menuStickReady = true;
-    } else if (this.menuStickReady && Math.abs(intent.move.y) > 0.6) {
-      delta += intent.move.y > 0 ? 1 : -1;
-      this.menuStickReady = false;
-    }
-    if (delta !== 0) {
-      const count = this.buttons.length;
-      for (let step = 0; step < count; step += 1) {
-        this.selectionIndex = (this.selectionIndex + delta + count) % count;
-        if (this.buttons[this.selectionIndex]?.enabled) break;
-      }
-      this.updateDecisionSelectionHighlight();
-    }
-
+    // Translation only: read Phaser, hand the pure rule a plain description of
+    // what was pressed, apply what it decides. The branching — skipping disabled
+    // options, wrapping, re-arming the stick, quick picks — lives in
+    // combat/DecisionNavigation.ts, where it has tests. It was inline and
+    // untested here, which is the one part of this overlay a renderer cannot
+    // check for you.
     const digits = [
       this.options.keys.one, this.options.keys.two, this.options.keys.three,
       this.options.keys.four, this.options.keys.five, this.options.keys.six,
       this.options.keys.seven, this.options.keys.eight, this.options.keys.nine,
     ];
+    let digitIndex: number | null = null;
     for (let index = 0; index < this.buttons.length; index += 1) {
       if (digits[index] && Phaser.Input.Keyboard.JustDown(digits[index]!)) {
-        this.selectionIndex = index;
-        this.confirmDecisionSelection();
-        return;
+        digitIndex = index;
+        break;
       }
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.options.keys.confirm) || intent.evasiveMovePressed) {
+    const up = Phaser.Input.Keyboard.JustDown(this.options.keys.up)
+      || Phaser.Input.Keyboard.JustDown(this.options.keys.w);
+    const down = Phaser.Input.Keyboard.JustDown(this.options.keys.down)
+      || Phaser.Input.Keyboard.JustDown(this.options.keys.s);
+    const previousIndex = this.selectionIndex;
+    const result = stepDecisionNavigation({
+      selectedIndex: this.selectionIndex,
+      enabled: this.buttons.map((button) => button.enabled),
+      keyboardDelta: down ? 1 : up ? -1 : 0,
+      stickY: intent.move.y,
+      stickReady: this.menuStickReady,
+      digitIndex,
+      confirmPressed: Phaser.Input.Keyboard.JustDown(this.options.keys.confirm)
+        || intent.evasiveMovePressed,
+    });
+
+    this.menuStickReady = result.stickReady;
+    if (result.selectedIndex !== previousIndex) {
+      this.selectionIndex = result.selectedIndex;
+      this.updateDecisionSelectionHighlight();
+    }
+    if (result.confirm) {
       this.confirmDecisionSelection();
     }
   }

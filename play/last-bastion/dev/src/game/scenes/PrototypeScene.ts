@@ -125,6 +125,13 @@ import {
 
 const PIXELS_PER_METRE = 32;
 
+/**
+ * How far off-screen threat arrows stay clear of the screen edge, in metres.
+ * The HUD owns a strip at the top (status, wave, radar) and the bottom (hint
+ * line, weapon rack); an arrow clamped to the true edge lands inside them.
+ */
+const HUD_RESERVED_BAND_METRES = 1.6;
+
 type EnemyView =
   | Phaser.GameObjects.Arc
   | Phaser.GameObjects.Ellipse
@@ -282,7 +289,7 @@ export class PrototypeScene extends Phaser.Scene {
   private pauseLabel: Phaser.GameObjects.Text | null = null;
   private damageDirectionIndicator: Phaser.GameObjects.Triangle | null = null;
   private lowHealthFrame: Phaser.GameObjects.Graphics | null = null;
-  private readonly arenaTheme = resolveArenaTheme();
+  private readonly arenaTheme = resolveArenaTheme(this.runSeed);
   private assetLoadFeedback: AssetLoadFeedbackHandle | null = null;
   private assetRetryListener: ((event: KeyboardEvent) => void) | null = null;
   private readonly synth = new WebAudioSynth(this.settings.soundEnabled, this.simulation.snapshot().heroId);
@@ -1049,11 +1056,16 @@ export class PrototypeScene extends Phaser.Scene {
       return;
     }
     const camera = this.cameras.main.worldView;
+    // The indicator band is inset from the camera edge by the HUD's reserved
+    // strips, not clamped to the raw viewport. Clamping to the edge parked a
+    // threat arrow on top of the bottom hint line — at 960x540 the pause hint
+    // read "ESC PAU<arrow>E" — and on the status block at the top. The arrow
+    // still points correctly; it simply cannot stand where text lives.
     const viewport = {
-      x: camera.x / PIXELS_PER_METRE,
-      y: camera.y / PIXELS_PER_METRE,
-      width: camera.width / PIXELS_PER_METRE,
-      height: camera.height / PIXELS_PER_METRE,
+      x: camera.x / PIXELS_PER_METRE + HUD_RESERVED_BAND_METRES,
+      y: camera.y / PIXELS_PER_METRE + HUD_RESERVED_BAND_METRES,
+      width: camera.width / PIXELS_PER_METRE - HUD_RESERVED_BAND_METRES * 2,
+      height: camera.height / PIXELS_PER_METRE - HUD_RESERVED_BAND_METRES * 2,
     };
     const eligible = this.settings.offscreenThreatIndicators === "threats"
       ? enemies.filter((enemy) => enemy.rank !== "standard")
@@ -4538,7 +4550,7 @@ function readUraniumLab(): { kit: boolean; active: boolean } {
  * load draws one from the pool, previewing the expedition map's per-node
  * background variety.
  */
-function resolveArenaTheme() {
+function resolveArenaTheme(runSeed: number) {
   const params = new URLSearchParams(window.location.search);
   const requested = arenaThemeById(params.get("theme"));
   if (requested) {
@@ -4549,7 +4561,10 @@ function resolveArenaTheme() {
     const selected = containmentUnderworldTheme(starshipSelected, seed, params.get("room"));
     return Number.isFinite(worldSeed) ? arenaThemeVariant(selected, worldSeed) : selected;
   }
-  return pickArenaTheme(Math.floor(Math.random() * 1024));
+  // Derived from the run seed, never from Math.random(): an arena the player
+  // cannot name is an arena they cannot report a bug in or ask a friend to try,
+  // and it was the only unseeded draw left in the game.
+  return pickArenaTheme(runSeed);
 }
 
 function createSaveStore(): LocalSaveStore {
