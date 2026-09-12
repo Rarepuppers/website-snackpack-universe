@@ -4991,3 +4991,37 @@ the Codex art redirect all **accepted**.
   complete, and one document ballooning would still be caught — and records that genuine leak
   detection for this architecture needs GPU and texture memory across navigations, which is
   not reachable from here. **Still open, not quietly claimed.**
+
+## 12 September 2026 — Reconciling two parallel lines of work
+
+- **Codex and I worked the same twelve-item QA queue independently, and both pushed.** The
+  earlier entries in this log are an accurate record of what I built; several of those files
+  no longer exist on this tree, because the reconciliation kept Codex's equivalent instead.
+  The log stays as history; `implementation-plan-2026-09-11.md` carries the corrected status.
+- **Codex's ten commits are the base.** Theirs kept: the combat event presenter and decision
+  overlay extractions, `ProjectilePresentation`, replay compatibility, `RunReport` and run
+  provenance (encounter *and* chart seeds plus a settings snapshot — more thorough than mine),
+  the powerup catalogue, the perk grid, gamepad intent mapping, frame pacing, and `sw.js`.
+- **Mine dropped as superseded:** `RunSeed` (their `readRunSeed` already honours the encounter
+  seed and `?seed=`), `ProjectileAppearance`, my `RunReport` and `powerupCatalog`, my asset-URL
+  versioning, and my `sw.js` `res.ok` guard — **theirs already had it**, at line 124.
+- **Mine kept, no equivalent on their side:** the distribution work that gave the game a
+  discovery path, `MeasuredText` + the §5.4 audit, the compile-time-exhaustive combat event
+  map, the player funnel, the screenshot/startup/profiling harnesses, the machine-readable
+  verify report, `build:check`, local run-history dates, the replay corpus, and the seeded
+  arena — their tree still drew it from `Math.random()`.
+- **Improved on theirs where it was cheap:** their decision overlay's navigation was inline and
+  untested, so my pure rule is wired into it — their structure, my fourteen cases. Objective
+  outcomes gained audio cues; their presenter draws them, but a lost Escort was silent.
+- **Two things the reconciliation caught that no test would have.** `build:check` called ten
+  chunks orphaned and I deleted them on its word; every one is in `sw.js`'s Last Bastion
+  precache list, and `cache.addAll` rejects on a missing entry — that deletion would have
+  broken offline boot for every warmed player. The check now exempts anything the worker
+  names. And my `sw.js` overwrote that precache block, which broke Codex's offline acceptance
+  test: combat could not boot with its chunks uncached, so no asset failure was ever reported.
+  **Found by rebuilding the reconciliation in groups with that test as the gate** — I bisected
+  by guesswork first and got nowhere.
+- **A note for whoever is next: check `origin/main` before starting.** Two agents
+  reimplementing one queue cost more than either implementation.
+- Full verification: **1,729 tests across 304 files**, all `verify:last-bastion` lanes green,
+  including Codex's twelve browser scenarios.

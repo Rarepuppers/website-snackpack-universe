@@ -1,5 +1,30 @@
 # Last Bastion — revised implementation plan
 
+> ## RECONCILED — 12 September 2026. Read this before trusting anything below.
+>
+> Codex worked this same queue independently and pushed first. On 12 September the two lines
+> of work were reconciled by taking **Codex's ten commits as the base** and keeping only what
+> was additive. Several items below say "landed" about code that no longer exists on this
+> tree, because the equivalent Codex implementation was kept instead. Specifically:
+>
+> | Item | Who owns it now |
+> |---|---|
+> | QA-09 run report (`run/RunReport.ts`) | **Codex.** Their provenance carries encounter *and* chart seeds plus a settings snapshot. |
+> | LB-02 power-up copy (`content/powerupCatalog.ts`) | **Codex.** |
+> | QA-18 projectile appearance | **Codex** (`rendering/ProjectilePresentation.ts`). |
+> | QA-16(a)/(b) service worker + asset versioning | **Codex.** Their `sw.js` already had the `res.ok` guard and adds an atomic Last Bastion chunk precache, which is better than the `?v=` query I wrote. |
+> | QA-17 seeded arena | **Both.** Codex's `readRunSeed` supplies the seed; my wiring removed the last `Math.random()`. My `run/RunSeed.ts` was dropped. |
+> | QA-06 extractions | **Codex** owns `CombatEventPresenter` and `CombatDecisionOverlay`; my pure `combat/DecisionNavigation.ts` is wired into their overlay so the branching has tests. |
+>
+> Still mine, and still true below: the distribution work, `ui/MeasuredText.ts` and the §5.4
+> overflow audit, `combat/CombatEventPresentation.ts`, the player funnel, the screenshot,
+> startup and profiling harnesses, the machine-readable verify report, `build:check`, local
+> run-history dates, and the replay corpus.
+>
+> **`build:check`'s "orphaned" list is not a delete list.** Ten chunks it flagged are in
+> `sw.js`'s precache block; removing them breaks offline boot. The check now exempts them.
+
+
 Date: 11 September 2026. **Status: LIVE — steps 1-5 of §5 implemented the same day.
 This supersedes the priority queue in `quality-audit-2026-09-07.md`** and carries its open
 items forward with re-verified statuses. The 7 September audit remains the reference for each task's original evidence
