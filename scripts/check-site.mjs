@@ -99,6 +99,58 @@ for (const file of htmlFiles) {
     }
   }
 
+  // ── 6. <head> integrity ──
+  // Every required meta tag can be *present* in the source and still never
+  // reach the parser. Fourteen privacy pages shipped a canonical <link> with
+  // no closing bracket, which swallowed the og:* metas after it as its own
+  // attributes, plus a stray ">" that terminated <head> early and reparented
+  // both stylesheets, the fonts, the manifest and the favicon into <body> --
+  // while rendering a literal ">" as the first visible character on the page.
+  // Checks 1-3 and 5 all passed on those pages throughout, because presence is
+  // not the same as parses. This walks the head and asserts it tokenises.
+  const headMatch = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i);
+  if (headMatch) {
+    // title/script/style hold free text legitimately; comments are not content.
+    const head = headMatch[1]
+      .replace(/<!--[\s\S]*?-->/g, "")
+      .replace(/<(script|style|title)\b[\s\S]*?<\/\1\s*>/gi, "");
+
+    // Find a tag's closing ">", ignoring one inside a quoted attribute value.
+    // Returns -2 if another "<" opens first, which means this tag never closed.
+    const tagEnd = (s, start) => {
+      let quote = null;
+      for (let i = start + 1; i < s.length; i++) {
+        const c = s[i];
+        if (quote) { if (c === quote) quote = null; continue; }
+        if (c === '"' || c === "'") { quote = c; continue; }
+        if (c === ">") return i;
+        if (c === "<") return -2;
+      }
+      return -1;
+    };
+
+    for (let i = 0; i < head.length; ) {
+      const lt = head.indexOf("<", i);
+      const between = lt === -1 ? head.slice(i) : head.slice(i, lt);
+      if (between.trim()) {
+        const stray = between.trim().slice(0, 20);
+        errors.push(`${name}: stray text in <head> ends it early -> ${JSON.stringify(stray)}`);
+        break;
+      }
+      if (lt === -1) break;
+      const gt = tagEnd(head, lt);
+      if (gt === -2) {
+        errors.push(`${name}: unclosed tag in <head> -> ${head.slice(lt, lt + 48).replace(/\s+/g, " ")}`);
+        break;
+      }
+      if (gt === -1) {
+        errors.push(`${name}: unterminated tag in <head> -> ${head.slice(lt, lt + 48).replace(/\s+/g, " ")}`);
+        break;
+      }
+      i = gt + 1;
+    }
+  }
+
   // ── 5. house rules ──
   if (!/<title>[^<]+<\/title>/.test(html)) errors.push(`${name}: no <title>`);
   // A description exists to be a search snippet, so a noindex page not having

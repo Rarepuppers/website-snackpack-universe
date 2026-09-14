@@ -4,13 +4,21 @@
 
 | Script | What it does | When to run |
 |---|---|---|
-| `check-site.mjs` | Read-only integrity check across every page: dead internal links, missing images/scripts/styles, unparseable JSON-LD, sitemap drift, and missing title/canonical/description/beacon | **Before every push.** Exits non-zero on errors; `--warn` to report without failing |
+| `check-site.mjs` | Read-only integrity check across every page: dead internal links, missing images/scripts/styles, unparseable JSON-LD, sitemap drift, missing title/canonical/description/beacon, and **`<head>` integrity** (a tag that never closes, or stray text that ends the head early) | **Before every push.** Exits non-zero on errors; `--warn` to report without failing |
 | `build-game-counts.mjs` | Keeps every stated game count (arcade, daily hub, Brain Games Vol 1–3) in sync across ~30 places in HTML **and `llms.txt`** | After adding a game anywhere. `--check` to fail instead of fix — that form runs in CI |
 | `build-play-links.mjs` | Tags every outbound Google Play link with a `referrer` so Play Console can attribute the install to the site, page and section it came from | After adding any Play link. `--check` to fail instead of fix — that form runs in CI |
 | `build-go-links.mjs` | Generates the `/go/<surface>/<campaign>/<app>/` interstitials that make outbound Play clicks countable, and points every store link on the site at one | After adding an app, a page, or any Play link. `--check` to fail instead of fix — that form runs in CI |
 | `build-newsletter-cta.mjs` | Inserts the Brevo email-signup block on every app page — the only capture point readers of those pages ever see | After adding an app page. `--check` to fail instead of fix — that form runs in CI |
 | `check-live.mjs` | Asks the **deployed** origin whether every asset the repo declares actually resolves: manifest icons, the `sw.js` `SHELL` array, every `og:image`/`twitter:image` | **After every deploy.** `check-site.mjs` validates the repo against itself and so cannot catch a file that was built but never committed |
 | `notify-search-engines.mjs` | Submits `sitemap.xml` to Google via the Search Console API, and pushes URLs to Bing/Yandex via IndexNow | **After every deploy**, once `check-live.mjs` passes |
+
+The `<head>` check exists because presence is not the same as parses. Fourteen
+privacy pages once shipped a canonical `<link>` with no closing bracket — which
+swallowed every `og:*` meta after it as its own attributes, losing `og:title` —
+followed by a stray `>` that terminated `<head>` early and reparented both
+stylesheets, the fonts, the manifest and the favicon into `<body>`, rendering a
+literal `>` as the first visible character on the page. Every other check in
+this script passed on those pages the whole time.
 
 `check-site.mjs` scans static markup only — `<script>` blocks are stripped
 first, because several pages build HTML by string concatenation and matching

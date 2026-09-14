@@ -1200,3 +1200,363 @@ That last row is the one that changes what gets worked on next. If the site
 drives measurable installs, the arcade justifies further investment; if it
 drives none after the funnel is finally instrumented, that is a much stronger
 argument for the distribution work than any amount of further content.
+
+---
+
+# Re-audit 2026-09-14 — app-page freshness, motion media, and the measurement question
+
+Scope: every page under `/apps/`, checked against the *actual* app source in
+`C:\snackpack-universe\apps\*` (app.json versions, release notes, billing
+constants, data files) rather than against memory or the last audit.
+
+## What I checked and found **still accurate** — do not re-open these
+
+Re-verified against app source, so no work is needed:
+
+| Claim on site | Source of truth | Verdict |
+|---|---|---|
+| Vol 1 "24 classics" | `constants/games.ts` -> 24 ids | correct |
+| Vol 2 "23 classics" | `constants/games.ts` -> 23 ids | correct |
+| Vol 3 title list | `constants/games.ts` -> 24 ids | correct |
+| Zoo World "68 animals", "38 free" | `constants/zooData/animals.ts` -> 68 | correct |
+| Prehistoric Pals "55 species" | `ALL_DINOSAURS` -> 55 | correct |
+| Homepage "13 apps" | 13 pages carry a Play link | correct |
+| Play-link UTM attribution | 87/124 links tagged; the 37 untagged are **JSON-LD `url` fields**, not clickable links | complete — R2 is closed |
+| Cloudflare beacon coverage | 265/265 pages | complete |
+| Published payload vs the 1 GB Pages limit | ~92–170 MB git-tracked; the local 3.5 GB is `node_modules`, `.playwright-browsers`, and untracked Last Bastion masters | P1 is closed |
+
+## A1. Badgify's page sells two products that no longer exist — **confirmed defect**
+
+`apps/badgify/index.html` says, twice:
+
+> Optional Lifetime Pro, **Monthly Pro** and **a single watermark-free export**
+> are available
+
+and
+
+> Flexible ways to go watermark-free: Lifetime Pro, optional Monthly Pro, or a
+> **single-certificate unlock** if you only need one right now.
+
+Badgify 1.8.0's release notes say Pro was *"Simplified to one Lifetime offer"*,
+and `apps/badgify/app/unlock.tsx` confirms it: the only purchasable item is
+Lifetime Pro ("One payment. Lifetime access."), with the footnote *"Existing
+subscriptions can still be restored."* `constants/billing.ts` still *documents*
+four products, but that file's comment block is stale — the UI presents one.
+
+So a visitor arriving from the website expecting a monthly plan or a
+single-certificate purchase opens the app and cannot buy either. This is the
+only place on the property where the site promises a transaction the app
+refuses.
+
+**Fix:** rewrite both sentences to a single Lifetime Pro. Keep one clause
+noting existing subscribers can restore. Verify against `unlock.tsx`, not
+`billing.ts`.
+
+## A2. `/apps/snackpack-10-robot-recipe/` advertises an app that no longer exists
+
+The site has a "coming soon" page for **Robot Recipe** as app 10. There is no
+`snackpack-10-robot-recipe` in the repo. App slot 10 is now
+`snackpack-10-logic-and-loops` (`Logic & Loops`,
+`com.snackpackuniverse.logicandloops`, last touched 2026-08-24).
+
+Meanwhile **`snackpack-14-store-keeper-tycoon`** (`Store Keeper Tycoon`, at
+version **1.3.0** — the furthest along of any unreleased app) has **no page at
+all**.
+
+**Fix options, in preference order:**
+
+1. Delete `/apps/snackpack-10-robot-recipe/` outright and let `404.html` handle
+   it. Add nothing new until an app is actually submitted.
+2. If a placeholder is wanted, rename the directory to
+   `snackpack-10-logic-and-loops` and rewrite the copy.
+
+Do **not** simply add a Store Keeper Tycoon placeholder — see A3.
+
+## A3. Three vapourware pages cost crawl budget and earn nothing
+
+`snackpack-5-tales-trivia`, `snackpack-6-creative-studio` and
+`snackpack-10-robot-recipe` are ~7 KB stubs whose entire body is *"This page is
+ready for screenshots, launch links, and final series-specific copy"* and
+*"Screenshots will be added here once … is closer to release."* Tales & Trivia
+and Creative Studio are both still at 1.0.0 with no versionCode and no store
+directory — neither has ever been built for release.
+
+The 2026-08-20 analytics baseline in this document already established that
+crawl budget, not internal linking, was what kept pages out of the index. Three
+zero-content pages in `/apps/` — a directory Google is being asked to crawl for
+13 real products — is a direct tax on that.
+
+**Recommendation:** delete all three, and remove their cards from
+`apps/index.html`. Re-create a page the week an app is actually submitted to a
+Play track, at which point it can ship with screenshots and a real listing.
+This is the opposite of the usual "more pages = more SEO" instinct, and it is
+what the measured data supports.
+
+## A4. Four live/submitted apps have **zero screenshots on the site** — and the captures already exist
+
+| App page | Screenshots on site | Captures sitting in the app repo |
+|---|---|---|
+| `snackpack-brain-games` (Vol 1, **2.1.1**) | **0** | 5 in `store/screenshots/en-US/` |
+| `snackpack-brain-games-vol-2` (**1.13.1**) | **0** | 9 in `store/screenshots/en-US/` |
+| `snackpack-8-earth-science` (1.0.0, live on internal) | **0** | 6 in `store/screenshots/web-preview/` |
+| `snackpack-9-space-math` (1.2.0, production draft) | **0** | 8 in `store/screenshots/web-preview/` |
+
+Vol 1 and Vol 2 are the two deepest products in the portfolio (24 and 23 games)
+and their pages show only game *icons* — no proof the app exists or looks good.
+This is the highest value-per-hour item on this list: the assets are already
+made, sized, and reviewed; the work is copy, optimise, and wire.
+
+**Fix:** copy into `apps/<slug>/screenshots/`, run the existing `webp` and
+`optimize-images` generators, wire into the page's screenshot section, then
+re-run the sitemap/related-games generators.
+
+## A5. Every app screenshot on the site is from one batch on 2026-08-06
+
+`git log` shows every `apps/*/screenshots/` directory was last committed
+2026-08-06 (Mathematics, 08-12). Since that date these shipped:
+
+| App | Then -> now | What changed that the page predates |
+|---|---|---|
+| Brain Games Vol 1 | -> **2.1.1 / vc35** | landscape fit across every board |
+| Brain Games Vol 2 | -> **1.13.1 / vc26** | landscape fit, crossword packs |
+| Brain Games Vol 3 | -> **1.7.1 / vc17** | landscape fit |
+| Garden World | -> **1.6.1 / vc15** | 7 Garden Adventures, Night Garden sample, real store pricing, voice controls |
+| Zoo World | -> **1.7.0** | Keeper Adventures |
+| Prehistoric Pals | -> **1.9.0 / vc21** | the buy button actually works |
+| Basic Math | -> **1.9.0 / vc21** | 3 guided journeys, refreshed Home, **all core difficulties free** |
+| Spelling & Sentences | -> **1.9.0 / vc19** | 6 modules, **2 free modules + samples** |
+| 123s Counting | -> **1.9.0 / vc27** | **all cards 1–30 free**, new Play screen |
+| Badgify | -> **1.8.0 / vc16** | see A1 |
+| Mathematics | -> **1.4.0 / vc10** | — |
+
+The important subset is the **free/paid boundary changes** (Basic Math,
+Spelling, 123s, Badgify). Those are the claims a visitor acts on. I checked the
+123s and Basic Math pages: their copy is vague enough ("a single one-time
+purchase unlocks the full library") to still be true, so only Badgify (A1) is
+actually *wrong*. But all four now under-sell what is free, which is the wrong
+direction for a portfolio whose measured problem is that nobody ever converts.
+
+**Fix (copy only, no new assets):** add a concrete "what you get free" line to
+Basic Math, Spelling and 123s, using the release-note wording. Refresh the
+Garden World page for the seven Adventures and the Night Garden sample.
+
+**Fix (assets):** re-capture screenshots only for Garden World and the three
+Brain Games volumes, where the UI genuinely changed. The rest can wait.
+
+## B. Do we need video, GIFs, or animation? — **No. Not now.**
+
+The site currently has **zero** motion media anywhere: no `<video>`, no `.mp4`,
+no `.webm`, no animated GIF across all 265 pages. The question is whether that
+is a gap. On the measured evidence, it is not:
+
+1. **Motion media is a conversion-rate lever, and conversion rate is not the
+   bottleneck.** The 2026-08-20 baseline recorded 11 clicks in 28 days to the
+   main site. Doubling the conversion of 11 visitors is worth nothing. The
+   bottleneck is inbound traffic, and video on the page does not create it.
+2. **The site already has something strictly better than a GIF.** 39 of 40
+   arcade pages under `/play/` are *playable, offline-capable HTML* versions of
+   the same genres the apps sell, and 39 of them link through to an app page. A
+   visitor can play the real thing. No recording of a UI beats interacting with
+   it.
+3. **Motion media has real costs here.** Video and GIF are heavy; the property
+   already has a size history (P1). Every recording is also a freshness
+   liability — A5 shows a single screenshot batch already went 3–6 releases
+   stale in five weeks. Video decays the same way and costs 10x more to redo.
+4. **Where motion *would* pay is not the website.** Google Play listings accept
+   a promo video, and that sits where the actual traffic is — the store page,
+   not `snackpackuniverse.com`. If motion is going to be produced at all,
+   produce it for the Play listing of the one or two apps with the most
+   installs, and only *after* the measurement in section C says where the
+   installs come from.
+
+**Decision to record: no video, no GIF, no animation for the website.** Static
+screenshots plus the playable arcade are sufficient, and the screenshot gaps in
+A4/A5 are where the same hours produce more.
+
+The one cheap exception worth considering later, if a page ever needs motion:
+CSS-animated SVG (a few KB, theme-aware, no decode cost, editable in a diff).
+Not a video pipeline.
+
+## C. Do we wait a month for Cloudflare? — **No, because a measurement is already due**
+
+The previous section of this document set a decision date:
+
+> **Read the result on or after 2026-09-12** — four weeks of Search Console
+> data, comparing against the measured baseline in this document.
+
+That date passed **two days ago** and the read has not happened. Waiting another
+month does not add information; it delays acting on a window that has already
+closed. It also stacks two measurement periods on top of each other, which makes
+both harder to attribute.
+
+There is also a limit worth being explicit about: **Cloudflare Web Analytics
+cannot answer the question that matters.** It measures visits to the website. It
+cannot see whether a visit became a Play install. The
+`referrer=utm_source%3Dwebsite` tagging (now confirmed complete on all 87
+clickable Play links) reports into **Play Console -> Acquisition -> Traffic
+sources**, and that is the number that decides whether any further website work
+is justified.
+
+**So the order is:**
+
+1. **Read the 2026-09-12 window now** — the four rows already specified in the
+   previous section (thirteen CTR, the tien-len guide's first impressions,
+   sitemap freshness, and first non-zero `utm_source=website` in Play Console).
+2. Do the zero-risk work in section D while that read happens — it is all
+   correctness and already-made assets, and none of it perturbs the experiment.
+3. **Then** decide on anything speculative, including whether the arcade earns
+   further investment.
+
+## D. Task order
+
+**Do now — correctness and already-made assets, no new decisions required:**
+
+0. Commit or discard the uncommitted truth-pass already sitting in the working
+   tree (8 files: `apps/index.html`, apps 7/8/9/11/12, `index.html`,
+   `llms.txt`). It corrects overclaims on Zoo World and others and should not
+   sit unreviewed. Check whether a parallel session owns it before committing —
+   this has bitten this repo before.
+1. **A1 — Badgify pricing.** The only outright false claim on the property.
+2. **A4 — wire the four missing screenshot sets.** Assets already exist;
+   highest value per hour on the list.
+3. **A2/A3 — delete the three vapourware pages** and the dead Robot Recipe slug.
+4. **A5 copy pass** — free-tier lines for Basic Math, Spelling, 123s; Garden
+   World's Adventures and Night Garden.
+
+**Do next — after the section C read:**
+
+5. Re-capture screenshots for Garden World and Brain Games Vol 1/2/3.
+6. Re-run the five idempotent generators (sitemap, breadcrumbs, related-games,
+   webp, optimize-images) and `check-site.mjs`.
+7. Decide on Store Keeper Tycoon's page — **only** once it is submitted to a
+   Play track.
+
+**Explicitly not doing:**
+
+- Any video, GIF, or animation production (section B).
+- Adding placeholder pages for unreleased apps (A3).
+- A second measurement wait before acting on the first (section C).
+
+## Open question for Mark
+
+`play/last-bastion/` holds ~3.1 GB of untracked local masters (`art/`,
+`desktop/`, `dev/`). Memory records these must never be deleted or downscaled
+because of the 4K Steam port. They are correctly untracked and do not affect the
+published site — flagging only so a future "clear space" pass does not touch
+them.
+
+## Implementation log — 2026-09-14, same day
+
+Items 0–4 above are done and pushed. Two corrections to the audit itself, and
+four defects that only surfaced while implementing.
+
+### Where the audit above was wrong
+
+**A4 overcounted the missing screenshots.** It claimed Vol 1, Vol 2, Earth
+Science and Space Math all had zero screenshots on the site. Only the last two
+did. The audit counted `apps/<slug>/screenshots/` and missed that Vol 1 and
+Vol 2 use `apps/<slug>/assets/screenshots/` instead — Vol 2 references three of
+them on the page, and Vol 1 has five files committed. A reference check across
+every app page found **0 broken image references out of 505**, which is the
+check that should have been run first. Counting files in one guessed directory
+is not the same as checking what a page actually loads.
+
+**A4's remaining half turned out to be unpublishable, not merely unwired.**
+The captures exist, but:
+
+- *Space Math* — held back entirely. `library.png` and `stories.png` render
+  blank grey rectangles where book and story covers belong (the web-preview
+  export does not bundle the cover art), and `games.png` is dominated by two
+  greyed-out locked cards. These are QA captures, not marketing assets.
+- *Earth Science* — three of six published. `home.png` states "5 Mini Games"
+  and "20 Expedition Packs"; `constants/miniGames.ts` records those exact
+  figures as hand-maintained literals that had drifted, since replaced by
+  derived counts of twelve and twenty-eight. Publishing it would have put a
+  known understatement of the app on the live site.
+
+The general lesson: a capture is evidence of what *some* build displayed, not
+of what the current one does. Check the derived value in source before
+publishing a screenshot that states a number.
+
+### Defects found while implementing, all fixed
+
+**1. Badgify was underselling its own free tier.** A1 above caught the two
+phantom products. While verifying the replacement copy against `unlock.tsx`, a
+third and worse error appeared: the page said free templates "are watermarked
+but usable right away". `showWatermark` is hardcoded `false` in both
+`CertificateCanvas` consumers, and `appConfig.ts` comments that "Free templates
+now export clean PNGs, so the old watermark-triggered nudge has no truthful
+trigger." Free exports are clean. The page was inventing a restriction that
+does not exist — the opposite of the error worth worrying about, and a direct
+disincentive to download.
+
+**2. Fourteen privacy pages had a structurally broken `<head>`.** Two
+malformed tags, both in generated markup:
+
+- `<link rel="canonical" href="...">` was missing its closing bracket, so the
+  `og:*` metas that followed were parsed as *attributes of the link element*.
+  `og:title` was swallowed on all fourteen: shared links showed no title.
+- A stray `>` after the `twitter:image` meta then appeared as text inside
+  `<head>`, which terminates the head. The favicon, both font preloads, both
+  stylesheets, the web manifest and the apple-touch-icon were all reparented
+  into `<body>`, and a literal `>` rendered as the first visible character on
+  the page.
+
+Verified with parse5 before and after. A scan of all 269 pages now finds no
+stylesheet stranded in body and no stray text node. **This is the highest-value
+find of the session and nothing in the audit predicted it** — the existing
+`check-site.mjs` validates links, images, JSON-LD and required meta *presence*,
+but never asked whether the head parses. Worth adding.
+
+**3. Mathematics is live on Google Play and the apps index was hiding it.**
+Verified on the listing itself — Install button, in-app purchases. Its own app
+page has said "Live on Google Play" all along, but `/apps/` filed it under
+"More apps coming" with a `Pre-launch` tag, and `llms.txt` counted it among the
+in-development apps. The one product on the site that is live, monetised and
+not being sold. It now has a full featured card; `build-go-links` generated its
+interstitial, so the click is attributable like every other.
+
+**4. The roadmap named an app that does not exist.** Slot 10 is Logic & Loops
+(`com.snackpackuniverse.logicandloops`), not Robot Recipe. Store Keeper Tycoon —
+at 1.3.0, the furthest along of the unreleased apps — was missing entirely.
+Both corrected; cards without a page are no longer links.
+
+Smaller: Badgify's card on `/apps/` said 135 templates in three places against
+the app's actual 157.
+
+### Verified accurate — do not re-audit
+
+Checked against app source this session and correct: Vol 1 "24 classics"
+(`games.ts`, 24 ids), Vol 2 "23", Zoo World "68 animals / 38 free"
+(`animals.ts`, 68) and "11 games" (`ALL_GAMES`, 11), Prehistoric Pals "55
+species" (`ALL_DINOSAURS`, 55) and "132 Field Notes" (`ALL_DAILY_FACTS`, 132),
+Badgify "157 templates / 11 categories", homepage "13 apps" (13 Play links).
+Internal links: 5,937 checked, zero broken. Play-link attribution: complete.
+
+Two near-misses worth recording, because both looked like bugs and were not:
+
+- `PREMIUM_CHALLENGE_PACKS` appeared to hold 64 packs against only 28 `ROUTES`
+  entries, which would crash `expeditions.ts` at module load. It holds 28 — the
+  other 36 ids belong to `PREMIUM_JOURNAL_PROMPTS` further down the same file.
+- `privacy/snackpack-8-earth-and-explorer/` looked like an orphan. It is a
+  deliberate "Moved:" redirect to the current Earth Science policy.
+
+### Still open
+
+- **Earth Science's question count.** The page says "901 explained questions";
+  the app's Explore header derives `SCIENCE_QUESTIONS.length +
+  FACT_OR_FICTION.length` and rendered 957 in the capture. Static analysis could
+  not settle which is current — the arrays are assembled from several sources
+  including `contentExpansion.ts`. Neither number was changed. Resolve by
+  reading the value off a running build.
+- **Logic & Loops has no privacy page at the URL it points at.** The app
+  references `snackpackuniverse.com/privacy/snackpack-10-logic-and-loops`,
+  which the site does not serve; only the obsolete `snackpack-10-robot-recipe`
+  policy exists, and it names Robot Recipe fifteen times. This is a Play
+  submission blocker for that app. Writing the replacement needs a real audit of
+  what Logic & Loops actually collects, so it was not fabricated here.
+- **Space Math and Earth Science need real device captures** before either page
+  can show a full screenshot set.
+- **`check-site.mjs` should assert that `<head>` parses.** Defect 2 lived
+  through every previous audit because no check ever looked.
+- The section C measurement — still the thing that decides what comes next.
