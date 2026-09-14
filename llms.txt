@@ -1,6 +1,6 @@
 # SnackPack Universe
 
-> SnackPack Studios builds calm, family-friendly Android apps for early learning, classic offline games, and daily positivity — one shared universe of characters, with no third-party ads and no tracking SDKs in any app. 12 apps are live on Google Play; 6 more are in development.
+> SnackPack Studios builds calm, family-friendly Android apps for early learning, classic offline games, and daily positivity — one shared universe of characters, with no third-party ads and no tracking SDKs in any app. 13 apps are live on Google Play; 6 more are in development.
 
 Key facts that apply to every SnackPack app: no third-party ads, no tracking or analytics SDKs, no account required, data stays on the device, and each app has its own named privacy policy. Several live apps offer an optional one-time purchase or Pro upgrade that unlocks extra content — Google Play processes the payment and SnackPack Studios never receives card details. Contact: support@snackpackuniverse.com.
 
@@ -17,11 +17,12 @@ Key facts that apply to every SnackPack app: no third-party ads, no tracking or 
 - [SnackPack Prehistoric Pals](https://www.snackpackuniverse.com/apps/snackpack-11-prehistoric-pals/): Free offline dinosaur investigation app for ages 8–12 — three complete expeditions, 55 prehistoric species, 132 Field Notes, field books and evidence challenges. No ads; an optional one-time Premium purchase unlocks the complete journeys and species guide. Play Store ID: com.snackpackuniverse.prehistoricpals
 - [SnackPack Zoo World](https://www.snackpackuniverse.com/apps/snackpack-12-zoo-world/): Free animal learning adventure — met-animal tracking, badges, mini-games, and a passport-style exhibit feature. No ads, no tracking, no account. Play Store ID: com.snackpackuniverse.zooworld
 - [SnackPack Garden World](https://www.snackpackuniverse.com/apps/snackpack-13-garden-world/): Free calm nature learning app for ages 6–12 — six connected habitats, plant and bug discovery, Garden Lens close-up photos, Interactive Viewers, and six ecology mini-games. No ads, no tracking. Privacy policy: https://www.snackpackuniverse.com/privacy/snackpack-13-garden-world/. Play Store ID: com.snackpackuniverse.gardenworld
+- [SnackPack Mathematics](https://www.snackpackuniverse.com/apps/snackpack-7-mathematics/): Maths practice for ages 8–12 across Grades 3–6 — 2,790 questions on fractions, decimals, ratios, percentages, geometry and statistics, plus 645 game rounds, 560 riddles, 86 story books and 168 Math Lab templates. No ads; optional one-time purchase. Play Store ID: com.snackpackuniverse.mathematics
 - [Badgify](https://www.snackpackuniverse.com/apps/badgify/): Free certificate and award maker, 157 templates across 11 categories. No ads. 47 free templates export as clean PNGs with no watermark; one optional Lifetime Pro purchase adds the full library, PDF and direct printing, and batch creation. Play Store ID: com.snackpackuniverse.badgify
 
 ## In development
 
-Six more apps are planned or in progress and not yet live: Tales & Trivia, Creative Studio, Mathematics, Earth Science, Space Math, and Robot Recipe. [SnackPack Mathematics](https://www.snackpackuniverse.com/apps/snackpack-7-mathematics/) has a complete pre-launch preview: 2,790 questions, 645 game rounds, 560 riddles, 86 story books and 168 Math Lab templates for ages 8–12. See [All apps](https://www.snackpackuniverse.com/apps/) for details as each ships.
+Six more apps are planned or in progress and not yet live: Tales & Trivia, Creative Studio, Earth Science, Space Math, Logic & Loops, and Store Keeper Tycoon. See [All apps](https://www.snackpackuniverse.com/apps/) for details as each ships.
 
 ## Read free in your browser
 
@@ -88,6 +89,6 @@ Original SnackPack browser soccer games plus a 2026 tournament tracker (schedule
 
 ## Reference
 
-- [All apps](https://www.snackpackuniverse.com/apps/): Full lineup, including the 6 apps still in development — Tales & Trivia, Creative Studio, Mathematics, Earth Science, Space Math, and Robot Recipe.
+- [All apps](https://www.snackpackuniverse.com/apps/): Full lineup, including the 6 apps still in development — Tales & Trivia, Creative Studio, Earth Science, Space Math, Logic & Loops, and Store Keeper Tycoon.
 - [Privacy policies](https://www.snackpackuniverse.com/privacy/): Per-app privacy policies meeting Google Play and Apple requirements.
 - [Terms](https://www.snackpackuniverse.com/terms/)
