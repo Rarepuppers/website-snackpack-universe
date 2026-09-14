@@ -50,17 +50,18 @@ const APPS = {
   "snackpack-brain-games-vol-2": { name: "Snackpack Brain Games Vol 2", appPage: "snackpack-brain-games-vol-2", pkg: "com.snackpackuniverse.braingames2", qr: "qr-code-brain-games-vol-2.png" },
   "snackpack-brain-games-vol-3": { name: "Snackpack Brain Games Vol 3", appPage: "snackpack-brain-games-vol-3", pkg: "com.snackpackuniverse.braingames3", qr: "qr-code-brain-games-vol-3.png" },
   // Not on Play yet — arcade link only.
-  "snackpack-5-tales-trivia": { name: "SnackPack Tales & Trivia", appPage: "snackpack-5-tales-trivia", pkg: null },
-  "snackpack-6-creative-studio": { name: "SnackPack Creative Studio", appPage: "snackpack-6-creative-studio", pkg: null },
+  "snackpack-5-tales-trivia": { name: "SnackPack Tales & Trivia", appPage: null, pkg: null },
+  "snackpack-6-creative-studio": { name: "SnackPack Creative Studio", appPage: null, pkg: null },
   "snackpack-7-mathematics": {
     name: "SnackPack Mathematics",
     appPage: "snackpack-7-mathematics",
-    pkg: null,
-    privacyLead: "SnackPack Mathematics is in pre-launch testing. Explore the completed app preview, or play something free while the public Google Play listing is prepared."
+    pkg: "com.snackpackuniverse.mathematics",
+    qr: "qr-code-mathematics.png"
   },
   "snackpack-8-earth-science": { name: "SnackPack Earth Science", appPage: "snackpack-8-earth-science", pkg: null },
   "snackpack-9-space-math": { name: "Snackpack Space Math", appPage: "snackpack-9-space-math", pkg: null },
-  "snackpack-10-robot-recipe": { name: "SnackPack Robot Recipe", appPage: "snackpack-10-robot-recipe", pkg: null }
+  "snackpack-10-robot-recipe": { name: "SnackPack Robot Recipe", appPage: null, pkg: null },
+  "snackpack-10-logic-and-loops": { name: "SnackPack Logic & Loops", appPage: null, pkg: null }
 };
 
 function block(slug, app) {
@@ -97,7 +98,7 @@ function block(slug, app) {
         <h2>${app.pkg ? "Get the app" : "More from SnackPack"}</h2>
         <p>${lead}</p>
         <div class="privacy-cta-actions">
-${store}          <a class="btn btn-secondary" href="../../apps/${app.appPage}/">App details</a>
+${store}${app.appPage ? `          <a class="btn btn-secondary" href="../../apps/${app.appPage}/">App details</a>` : `          <a class="btn btn-secondary" href="../../apps/">All apps</a>`}
           <a class="btn btn-secondary" href="/play/">Play 30+ free games</a>
         </div>
       </div>
