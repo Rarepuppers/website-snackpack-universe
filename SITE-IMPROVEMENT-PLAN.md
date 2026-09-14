@@ -1,11 +1,12 @@
 # Site improvement plan — whole property, 2026-08-07
 
-Scope note: this covers **the site as a whole**. The 34-game arcade has its own
-document, [`play/ARCADE-IMPROVEMENT-PLAN.md`](play/ARCADE-IMPROVEMENT-PLAN.md),
-whose earlier Section B work is closed and whose current board covers release,
-audio, daily-hub, verification, delivery-payload and distribution tasks. This
-plan is deliberately *not* more arcade polish — the three items at the top were
-found by auditing the property outside `/play/`, and each outranks another guide.
+Scope note: this covers **the site as a whole**. The arcade's completed August
+plan and implementation record are archived at
+[`play/docs/archive/2026-08/ARCADE-IMPROVEMENT-PLAN.md`](play/docs/archive/2026-08/ARCADE-IMPROVEMENT-PLAN.md).
+The reusable admission gate for future games remains
+[`play/NEW-GAME-SCORECARD.md`](play/NEW-GAME-SCORECARD.md). This plan is
+deliberately *not* more arcade polish — the three items at the top were found by
+auditing the property outside `/play/`, and each outranks another guide.
 
 Every claim below was checked against the repo, not inferred. Where something
 is a risk rather than a confirmed breakage, it says so.
@@ -32,7 +33,8 @@ added another 26.60 MB to the website tree, almost entirely from premium card
 faces that no live page currently consumes. This is small beside Last Bastion's
 source-art issue but the same category of mistake. Preserve the canonical PNGs
 for apps; define a website consumption manifest or reviewed WebP derivatives
-instead of publishing every app asset. See `play/ARCADE-IMPROVEMENT-PLAN.md` D1.
+instead of publishing every app asset. See the archived
+`play/docs/archive/2026-08/ARCADE-IMPROVEMENT-PLAN.md` D1.
 
 **Implemented the confirmed part the same day:** the website delivery manifest
 now excludes those 52 unused Pro faces, saving 31.72 MB. Sync and verification
@@ -362,7 +364,8 @@ gaps it surfaced or left behind.
 **Confirmed, live, and the highest-priority item here because it is a
 regression against what both other plans record as done.**
 
-`ARCADE-IMPROVEMENT-PLAN.md` A8 and `CODEX-ASSETS-REQUESTED.md` both mark the
+The archived `play/docs/archive/2026-08/ARCADE-IMPROVEMENT-PLAN.md` A8 and
+`play/docs/archive/2026-08/CODEX-ASSETS-REQUESTED.md` both mark the
 maskable icon and the `place.wav` audio pilot **"DONE + WIRED"**. Both files
 exist on disk, neither is gitignored, and **neither was ever `git add`ed**, so
 neither has ever deployed:
@@ -1560,3 +1563,111 @@ Two near-misses worth recording, because both looked like bugs and were not:
 - **`check-site.mjs` should assert that `<head>` parses.** Defect 2 lived
   through every previous audit because no check ever looked.
 - The section C measurement — still the thing that decides what comes next.
+
+---
+
+# Task ledger — 2026-09-14, end of session
+
+Everything below is current as of the last push. Items are grouped by whether
+anyone needs to do anything, not by when they were found.
+
+## Closed this session
+
+| # | Item | Where it ended |
+|---|---|---|
+| 0 | Uncommitted truth-pass (Earth Science + Space Math privacy, app-page copy) | committed `310b0070` |
+| 1 | Badgify sold two products that no longer exist, and called free exports watermarked when they are clean | committed `adf93413` |
+| 2 | Earth Science had no screenshots | three publishable captures wired, `7bd5e2fe`; the other three held back and why is recorded |
+| 3 | Three empty "coming soon" app stubs; roadmap named a dead app | deleted + roadmap corrected, `43feb211` / `b3ada4c9` |
+| 4 | Free-tier copy vague on 123s, Basic Math, Spelling; Garden World missing two releases' headline features | committed `aaf51da1` |
+| 5 | **14 privacy pages had a `<head>` that broke into `<body>`** | fixed `43feb211`, guard added `6338ff2f` |
+| 6 | **Mathematics was live on Play but filed as pre-launch** on `/apps/` and in `llms.txt` | promoted `b3ada4c9`; the same staleness in `build-privacy-cta.mjs` fixed in `bc369277` |
+| 7 | Logic & Loops had no privacy page at the URL it points at | written and live, `bc369277` / `fed660fb` |
+| 8 | **Logic & Loops had no parental gate** | added `2715f5e22`; policy updated to match, `2df7467e` |
+
+## Open — needs a person, not a session
+
+1. **Read the measurement.** The decision date set in the 2026-08-15 section was
+   **2026-09-12**. It has now been open for two days and nothing downstream
+   should be planned until it is read: the four rows are `/play/thirteen/` CTR,
+   first impressions on the tien-len guide, sitemap freshness, and the first
+   non-zero `utm_source=website` in **Play Console → Acquisition**. Cloudflare
+   Web Analytics cannot answer the last one and it is the one that matters.
+2. **Earth Science's question count.** Page says "901 explained questions"; the
+   app's own Explore header derives `SCIENCE_QUESTIONS.length +
+   FACT_OR_FICTION.length` and rendered **957**. Static analysis could not settle
+   it — the pool is assembled from several files including
+   `contentExpansion.ts`. Neither number was touched. Read it off a running
+   build, then fix whichever is wrong.
+3. **Device captures for Space Math and Earth Science.** The existing
+   `store/screenshots/web-preview/` sets are not publishable: Space Math's
+   render blank grey where cover art belongs and its games screen is dominated
+   by locked cards; Earth Science's home screen states counts the app's own
+   source records as since-corrected. Three Earth Science captures are live; the
+   rest needs a real device.
+4. **Decide whether Logic & Loops ships.** It now has a privacy page and a
+   parental gate, which were the two compliance blockers. It is still 1.0.0 with
+   no versionCode and has never been built for release.
+
+## Open — mechanical, safe to pick up any time
+
+5. **`npm ci` in `apps/snackpack-10-logic-and-loops`.** `node_modules` is
+   incomplete: `tsx` is absent so **every** `audit:*` script silently cannot run
+   (including `audit:privacy`, the one that guards the no-network property the
+   new policy depends on), and `jest-expo` is absent so the test suite cannot
+   run at all — including the `__tests__/ParentalGate.test.ts` added this
+   session. Typecheck currently reports 1,485 errors, 1,481 of them from missing
+   test types. This is the portfolio-wide false-PASS pattern; here it is
+   actively hiding whether the new gate's test passes.
+6. **Run the gate on a device.** The gate's logic was verified in node (200,000
+   generated targets, zero round-trip failures, six-word minimum) but the
+   component itself has never been rendered — no emulator on this machine. Check
+   the keypad auto-submit, that Cancel returns you to Settings rather than
+   dismissing the screen under it, and that the modal is readable in all four
+   colour schemes.
+7. **Storage keys still carry the old app name.** `snackpack.robotrecipe.*`,
+   `BACKUP_APP_ID = 'snackpack-10-robot-recipe'`, the backup prefix
+   `SNACKPACK_ROBOT_RECIPE_BACKUP_V1:` and the `rr-` profile-id prefix all
+   predate the rename. Invisible to users and **deliberately left alone** —
+   renaming them strips existing progress and invalidates every backup code
+   already in circulation. Recorded so a future tidy-up does not do it by
+   accident.
+8. **`privacy/snackpack-10-robot-recipe/` is now a policy for a product that
+   will never ship.** It is unlinked from `/apps/`, still in the sitemap, and
+   described on the privacy hub as superseded. Either leave it (harmless, one
+   crawled page) or convert it to a "Moved:" redirect at the Logic & Loops
+   policy, the pattern `privacy/snackpack-8-earth-and-explorer/` already uses.
+
+## Open — judgement calls I deliberately did not make
+
+9. **Two achievement shares in Logic & Loops are still ungated**
+   (`app/(tabs)/learn.tsx` and `app/pack/[packId].tsx`). Both send a plain
+   progress summary to the share sheet and carry no personal data, and both are
+   kid-facing "share your win" moments that a gate would spoil.
+   `snackpack-8-earth-science` gates its share sheet, so there is a consistency
+   argument for gating these too — it is a product call, not a compliance one.
+10. **No parental gate exists in Zoo World**, and this session only checked
+    Logic & Loops. Memory records three apps in a row each having exactly one
+    ungated outbound link. A sweep of `Linking.openURL` across the whole
+    portfolio, checking for a gate in the same file, is the cheap version of
+    that audit and has not been run.
+11. **A Data Safety form still needs filling for Logic & Loops.** The app's own
+    `STORE_PRIVACY_LABELS_DRAFT.md` walks all 14 Google categories to "No" and
+    that matches what I verified, but the form itself is a human step in Play
+    Console and the draft says so.
+
+## Recurring traps re-confirmed this session
+
+- **Presence is not parses.** Every check passed on 14 pages whose `<head>` was
+  being thrown away. `check-site.mjs` now asserts the head tokenises; the
+  general lesson is that a green check is evidence about what it tests and
+  nothing else.
+- **Generators outrank hand edits.** A hand-repaired dead link was silently
+  undone by re-running `build-privacy-cta.mjs`. If a page is generated, fix the
+  generator or the fix has a half-life of one command.
+- **Docs and store captures go stale; source does not.** Earth Science's home
+  screenshot and `constants/billing.ts` in Badgify both described products that
+  had changed. Verify a number in the code that renders it.
+- **Never `git checkout -- .` in this repo.** It destroyed ~28 uncommitted files
+  belonging to the parallel Codex session; all but one were recovered from loose
+  objects under `.git/objects` by mtime. Name paths explicitly.
