@@ -286,6 +286,9 @@
 <script src="./words.js"></script>
 <script src="../daily-state.js"></script>
 <script src="../share-result.js"></script>
+<!-- SnackWords ships in Brain Games Vol 2 as the daily word game, so the download funnel must not fall through to the
+     Vol 1 default in funnel.js — that offered an app without this game. -->
+<script>window.SP_PLAY_URL = "https://www.snackpackuniverse.com/go/arcade/snackwords/braingames2/";</script>
 <script src="../funnel.js"></script>
 <script>
 (function () {
