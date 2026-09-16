@@ -232,6 +232,18 @@
   "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is Flag Frenzy free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It plays free in your browser with no ads, no sign-in, and nothing to install." } },
+    { "@type": "Question", "name": "Is there a new puzzle every day?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Everyone gets the same mystery team each day, and your progress for the day is saved if you come back later." } },
+    { "@type": "Question", "name": "What happens if I run out of guesses?", "acceptedAnswer": { "@type": "Answer", "text": "The answer is revealed and your streak resets to zero. Come back tomorrow for a new team, or try a practice round any time." } },
+    { "@type": "Question", "name": "Is this an official World Cup game?", "acceptedAnswer": { "@type": "Answer", "text": "No. It is an original SnackPack Studios soccer game and is not affiliated with FIFA, the World Cup, any team, league, or governing body." } }
+  ]
+}
+</script>
 <!-- breadcrumbs:generated -->
 <script type="application/ld+json">
 {
@@ -370,7 +382,7 @@
         <div class="ff-hint-row">
           <span>Green chip = exact match.</span>
           <span>▲ / ▼ on points means the answer is higher / lower.</span>
-          <span>Status compares still-in vs eliminated, whatever the round.</span>
+          <span>Status compares how far each team got.</span>
         </div>
       </div>
     </div>
@@ -404,16 +416,16 @@
   <section>
     <div class="shell seo-prose">
       <h2>How to play Flag Frenzy</h2>
-      <p>Every day, Flag Frenzy picks one of the 48 teams at the World Cup 2026. You have 6 guesses to find it. Type any team name into the box — a dropdown will help with spelling. A starter geography clue is visible immediately, then each guess adds a row to your guess history showing four clues compared against the mystery team: confederation, group, group-stage points, and whether the team is still alive in the tournament or already eliminated. A green chip means that clue matches the answer exactly. The mystery flag itself stays hidden while you play, with another hint unlocked after each miss. Run out of guesses or solve it, and the real flag and team name are both revealed.</p>
+      <p>Every day, Flag Frenzy picks one of the 48 teams at the World Cup 2026. You have 6 guesses to find it. Type any team name into the box — a dropdown will help with spelling. A starter geography clue is visible immediately, then each guess adds a row to your guess history showing four clues compared against the mystery team: confederation, group, group-stage points, and how far the team got in the tournament. A green chip means that clue matches the answer exactly. The mystery flag itself stays hidden while you play, with another hint unlocked after each miss. Run out of guesses or solve it, and the real flag and team name are both revealed.</p>
       <h3>Reading the clues</h3>
       <ul>
         <li><strong>Confederation</strong> — green if the guessed team plays in the same confederation as the answer (UEFA, CONMEBOL, CONCACAF, CAF, AFC, or OFC).</li>
         <li><strong>Group</strong> — green if they were drawn into the same group.</li>
         <li><strong>Points</strong> — shows the guessed team's group-stage points, with an arrow pointing toward whether the answer scored more or fewer.</li>
-        <li><strong>Status</strong> — green if both teams share the same still-in-it or eliminated status right now.</li>
+        <li><strong>Status</strong> — green if both teams went out at the same stage, from the group stage through to the final. The team that lifted the trophy is the only one marked Champion.</li>
       </ul>
       <h3>About Flag Frenzy</h3>
-      <p>Flag Frenzy is an original SnackPack Studios daily puzzle built for the 2026 football summer, in the spirit of daily word and sports guessing games. Status and points clues update automatically as the real tournament results come in, so the game stays accurate from the group stage through the final. Try a practice round any time for extra reps that don't affect your daily streak.</p>
+      <p>Flag Frenzy is an original SnackPack Studios daily puzzle built for the 2026 football summer, in the spirit of daily word and sports guessing games. The tournament is now complete, so the points and status clues are drawn from the final results &mdash; every team&rsquo;s group-stage points and the stage it went out at. Try a practice round any time for extra reps that don&rsquo;t affect your daily streak.</p>
       <h3>Frequently asked questions</h3>
       <div class="faq-list" style="margin-top:14px;">
         <details class="faq-item"><summary>Is Flag Frenzy free?</summary><p>Yes. It plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
@@ -616,12 +628,26 @@
       return allGroupsDone ? { state: "eliminated", round: "Group Stage" } : { state: "group-stage", round: "Group Stage" };
     }
     koEntries.sort(function (a, b) { return a.n - b.n; });
-    var last = koEntries[koEntries.length - 1];
-    if (last.statusShort !== "FT" && last.statusShort !== "FT-Pens") {
-      return { state: "alive", round: last.round };
+    // Decide on the presence of a winner, not on the status string. The old
+    // test whitelisted "FT" and "FT-Pens" and so treated "AET" — which the feed
+    // uses for five knockout ties, the 2026 Final among them — as a match still
+    // being played. That marked six teams "Still in" months after the
+    // tournament finished, including the side that lost the Final.
+    // world-cup/wc-knockout.js already decides by winner; this now matches it.
+    var undecided = koEntries.filter(function (m) { return !m.winner; });
+    if (undecided.length > 0) {
+      return { state: "alive", round: undecided[0].round };
     }
-    if (last.winner === name) return { state: "alive", round: last.round };
-    return { state: "eliminated", round: last.round };
+    // A team's exit is the last tie it LOST, ignoring the third-place playoff:
+    // both semi-final losers went out at the semi-final, and the playoff only
+    // ranks them 3rd and 4th. Counting it would label the fourth-placed side
+    // "Out · Third place" while the side that actually finished third read as
+    // going out a round earlier.
+    var lost = koEntries.filter(function (m) {
+      return m.winner !== name && m.round !== "Third place";
+    });
+    if (lost.length === 0) return { state: "champion", round: "Final" };
+    return { state: "eliminated", round: lost[lost.length - 1].round };
   }
 
   function buildTeamData(json) {
@@ -645,6 +671,7 @@
 
   function statusLabel(status) {
     if (!status) return "Unknown";
+    if (status.state === "champion") return "Champion";
     if (status.state === "alive") return "Still in · " + status.round;
     if (status.state === "group-stage") return "In group stage";
     return "Out · " + status.round;
@@ -660,7 +687,16 @@
       confed: { value: g.confed, match: g.confed === a.confed },
       group: { value: "Group " + g.group, match: g.group === a.group },
       points: { value: g.points === null ? "—" : g.points + " pts", match: pointsDir === "eq", dir: pointsDir },
-      status: { value: statusLabel(g.status), match: g.status && a.status && g.status.state === a.status.state }
+      // Compare the stage reached, not just in/out. With the tournament over,
+      // a bare alive/eliminated test is green for ~96% of pairs and so carries
+      // almost no information; matching on the round a team went out in keeps
+      // the clue useful, and reads the same way while a tournament is running.
+      status: {
+        value: statusLabel(g.status),
+        match: !!(g.status && a.status
+          && g.status.state === a.status.state
+          && g.status.round === a.status.round)
+      }
     };
   }
 
