@@ -1,34 +1,31 @@
 /**
  * game.js -- loop, input, and arcade integration.
  *
- * P2 scope: a playable grey-box. Mode select, plunger, flippers, nudge, ball
- * loss, game over. Scoring here is a deliberate PLACEHOLDER -- the real
- * ruleset (missions, ranks, multiball, combos, bonus) arrives in rules.js at
- * P3, and this file will hand events to it instead of counting them itself.
+ * Routing only. The engine owns physics, rules.js owns scoring, and this file
+ * owns input, timing and the DOM -- it hands every engine event to the ruleset
+ * and executes the commands the ruleset asks for. It deliberately contains no
+ * scoring logic of its own.
  *
  * The engine never reads a clock; this file owns all of the timing.
  */
 
-import { createWorld, advance, drainEvents, serveBall, nudge, DT } from './engine.js';
+import { createWorld, advance, drainEvents, serveBall, nudge, addBall, releaseSaucer, DT } from './engine.js';
 import { createRenderer } from './render.js';
-import { MODES, W, H } from './table.js';
+import { MODES, SAUCERS } from './table.js';
+import {
+  createRules, applyEvent, tick as tickRules, nextBall, setBallsInPlay,
+  drainCommands, drainLog, statusLine, RANKS, MISSIONS,
+} from './rules.js';
 
 const el = (id) => document.getElementById(id);
 
-// -- Placeholder scoring. Replaced wholesale by rules.js at P3. -------------
-const PLACEHOLDER_POINTS = {
-  bumper: 250, sling: 100, target: 1500, 'target-bank-clear': 15000,
-  rollover: 2500, 'ramp-exit': 6000, saucer: 10000, spinner: 150,
-  kickback: 5000, flipper: 0,
-};
-
 const state = {
   world: null,
+  rules: null,
   renderer: null,
   mode: 'classic',
-  score: 0,
-  ball: 1,
   ballsLeft: 3,
+  pendingKicks: [],
   running: false,
   paused: false,
   last: 0,
@@ -51,6 +48,12 @@ function frame(now) {
   if (state.running && !state.paused) {
     advance(state.world, state.input, dt);
     handleEvents(drainEvents(state.world));
+    tickRules(state.rules, dt);
+    runCommands(drainCommands(state.rules));
+    runPendingKicks(dt);
+    setBallsInPlay(state.rules, state.world.ballsInPlay);
+    showLog(drainLog(state.rules));
+    paint();
   }
 
   // Decay bumper flashes on real time, not on simulation steps, so they look
@@ -67,20 +70,59 @@ function handleEvents(events) {
   for (const e of events) {
     if (e.type === 'bumper' || e.type === 'sling') state.flashes.set(e.id, 0.12);
 
-    const pts = PLACEHOLDER_POINTS[e.type];
-    if (pts) {
-      state.score += e.type === 'spinner' ? pts * (e.revs || 1) : pts;
-    }
+    // The ruleset owns all scoring. This file only routes.
+    applyEvent(state.rules, e);
 
-    if (e.type === 'tilt') announce('TILT');
     if (e.type === 'ball-lost') onBallLost();
     if (e.type === 'escaped') {
-      // Should never happen. If it does, it is a physics bug and it must be
+      // Should never happen. If it does it is a physics bug, and it must be
       // loud rather than quietly recovered from.
       console.warn('pinball: ball escaped the cabinet', e);
     }
   }
-  paint();
+}
+
+/**
+ * rules.js is pure and cannot touch the world, so it emits commands instead.
+ * This is the only place they are executed.
+ */
+function runCommands(commands) {
+  for (const c of commands) {
+    switch (c.type) {
+      case 'release-saucer':
+        if (c.delay) state.pendingKicks.push({ id: c.id, t: c.delay });
+        else releaseSaucer(state.world, c.id);
+        break;
+      case 'add-balls': {
+        const from = SAUCERS.find((x) => x.id === 'lock') || { x: 408, y: 330 };
+        for (let i = 0; i < c.count; i += 1) {
+          addBall(state.world, from.x, from.y + i * 4, -260 - i * 40, 700);
+        }
+        break;
+      }
+      // Audio arrives at P5. Routing the cues now keeps the wiring honest: if
+      // one is missing then, it will be missing HERE rather than never having
+      // been emitted in the first place.
+      case 'sound':
+      case 'voice':
+      case 'music':
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+function runPendingKicks(dt) {
+  if (!state.pendingKicks.length) return;
+  for (const k of state.pendingKicks) k.t -= dt;
+  const due = state.pendingKicks.filter((k) => k.t <= 0);
+  state.pendingKicks = state.pendingKicks.filter((k) => k.t > 0);
+  for (const k of due) releaseSaucer(state.world, k.id);
+}
+
+function showLog(entries) {
+  for (const entry of entries) announce(entry.text);
 }
 
 function onBallLost() {
@@ -88,23 +130,27 @@ function onBallLost() {
     serveBall(state.world);
     return;
   }
+  const bonus = nextBall(state.rules);
   state.ballsLeft -= 1;
   if (state.ballsLeft <= 0) {
     gameOver();
     return;
   }
-  state.ball += 1;
   serveBall(state.world);
-  announce(`Ball ${state.ball}`);
+  state.pendingKicks = [];
+  announce(bonus > 0 ? `Bonus ${bonus.toLocaleString()}` : `Ball ${state.rules.ball}`);
   paint();
 }
 
 function gameOver() {
   state.running = false;
-  announce(`Game over. ${state.score.toLocaleString()} points.`);
+  const r = state.rules;
+  announce(`Game over. ${r.score.toLocaleString()} points.`);
   el('pb-overlay').hidden = false;
   el('pb-overlay-title').textContent = 'Game over';
-  el('pb-overlay-body').textContent = `${state.score.toLocaleString()} points`;
+  el('pb-overlay-body').textContent = `${r.score.toLocaleString()} points`;
+  el('pb-overlay-note').textContent =
+    `${RANKS[r.rank]} • ${r.missionsDone.length} of ${MISSIONS.length} missions`;
   saveBest();
 }
 
@@ -123,9 +169,9 @@ function readBest() {
 
 function saveBest() {
   try {
-    if (state.score <= readBest()) return;
-    if (window.SnackPackStore) window.SnackPackStore.set('pinball', 'best', state.mode, state.score);
-    else localStorage.setItem(`sp_${bestKey()}`, String(state.score));
+    if (state.rules.score <= readBest()) return;
+    if (window.SnackPackStore) window.SnackPackStore.set('pinball', 'best', state.mode, state.rules.score);
+    else localStorage.setItem(`sp_${bestKey()}`, String(state.rules.score));
   } catch (err) { /* storage can be blocked; never break the game over it */ }
 }
 
@@ -134,11 +180,14 @@ function saveBest() {
 // ---------------------------------------------------------------------------
 
 function paint() {
-  el('pb-score').textContent = state.score.toLocaleString();
+  const r = state.rules;
+  el('pb-score').textContent = r ? r.score.toLocaleString() : '0';
   el('pb-ball').textContent = state.world && state.world.mode.endless
     ? '∞'
-    : `${state.ball} / ${MODES[state.mode].balls}`;
+    : `${r ? r.ball : 1} / ${MODES[state.mode].balls}`;
   el('pb-best').textContent = readBest().toLocaleString();
+  el('pb-rank').textContent = r ? RANKS[r.rank] : RANKS[0];
+  if (r) el('pb-dmd').textContent = statusLine(r);
 }
 
 let announceTimer = 0;
@@ -153,11 +202,12 @@ function announce(text) {
 }
 
 function describeTable() {
-  if (!state.world) return 'Pinball table';
+  if (!state.world || !state.rules) return 'Pinball table';
   const b = state.world.balls.find((x) => x.alive);
-  if (!b) return 'Pinball table, ball lost';
+  if (!b || !state.rules) return 'Pinball table, ball lost';
   const where = b.y < 300 ? 'the top arch' : b.y < 700 ? 'the middle of the table' : 'near the flippers';
-  return `Pinball. Score ${state.score}. Ball ${state.ball}. Ball is at ${where}.`;
+  const r = state.rules;
+  return `Pinball. Score ${r.score}. Ball ${r.ball}. ${statusLine(r)}. Ball is at ${where}.`;
 }
 
 // ---------------------------------------------------------------------------
@@ -166,10 +216,11 @@ function describeTable() {
 
 function start(modeId) {
   state.mode = modeId;
-  state.world = createWorld(modeId, seedForRun());
-  state.score = 0;
-  state.ball = 1;
+  const seed = seedForRun();
+  state.world = createWorld(modeId, seed);
+  state.rules = createRules(seed, modeId);
   state.ballsLeft = MODES[modeId].balls;
+  state.pendingKicks = [];
   state.running = true;
   state.paused = false;
   state.flashes.clear();

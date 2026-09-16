@@ -2039,3 +2039,19 @@ button.th-card.is-selected {
 @media (prefers-reduced-motion: reduce) {
   .pb-banner { animation: none; }
 }
+
+.pb-dmd {
+  margin: 0 0 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #141824;
+  color: #ffd479;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: center;
+  min-height: 1.6em;
+}
+
+.pb-overlay-note { margin: -4px 0 10px; color: #9aa6bd; font-size: 0.82rem; }
