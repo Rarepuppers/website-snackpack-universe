@@ -11,6 +11,11 @@ on:
       - "**/*.xml"
       - "assets/**"
       - "play/**"
+      # The visual baselines gate this workflow, so a change to them has to be
+      # able to run it. Without this a wrong or stale snapshot could be
+      # committed and the suite would stay green until some unrelated HTML
+      # change happened to trigger a run.
+      - "tests/**"
       - ".github/workflows/site-check.yml"
   push:
     branches: [main]
@@ -23,6 +28,11 @@ on:
       - "**/*.xml"
       - "assets/**"
       - "play/**"
+      # The visual baselines gate this workflow, so a change to them has to be
+      # able to run it. Without this a wrong or stale snapshot could be
+      # committed and the suite would stay green until some unrelated HTML
+      # change happened to trigger a run.
+      - "tests/**"
       - ".github/workflows/site-check.yml"
   workflow_dispatch:
 
