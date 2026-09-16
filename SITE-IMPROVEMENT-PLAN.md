@@ -1671,3 +1671,101 @@ anyone needs to do anything, not by when they were found.
 - **Never `git checkout -- .` in this repo.** It destroyed ~28 uncommitted files
   belonging to the parallel Codex session; all but one were recovered from loose
   objects under `.git/objects` by mtime. Name paths explicitly.
+
+---
+
+# Arcade audit — /play/, 2026-09-16
+
+Swept all 41 game pages plus the hub, daily and stats. Four issues; three
+fixed, one needs a Linux runner.
+
+## Fixed
+
+**Flag Frenzy's Status clue had the losing finalist still in the tournament.**
+`computeStatus` decided a knockout tie was finished by whitelisting `"FT"` and
+`"FT-Pens"`. The feed also uses `"AET"` — five ties, the 2026 Final among them —
+so those read as still being played. Six of 48 teams were labelled "Still in"
+two months after the tournament ended, including Argentina, who *lost* that
+final. Now decided by the presence of a `winner`, which `wc-knockout.js` already
+did and which cannot rot when the feed adds a status code.
+
+Two things came out of fixing it:
+
+- A team's exit is the last tie it **lost, ignoring the third-place playoff**.
+  Counting the playoff labelled the fourth-placed side "Out · Third place" while
+  the side that actually finished third read as going out a round earlier.
+- The clue now compares the **stage reached** rather than a bare in/out. With
+  the tournament complete, in/out was green for ~96% of team pairs and carried
+  almost no information; by stage that is 24%. Reads the same way mid-tournament.
+
+Copy went with it: the page described a live tournament ("still alive", "right
+now") and claimed clues "update automatically as the real tournament results
+come in", which stopped being true when the feed froze on 2026-07-19. Also added
+the `FAQPage` schema this page was the only one of forty game pages to lack.
+
+Verified in the browser against the real feed: Spain reads Champion, Argentina
+Out · Final, England and France both Out · Semi-finals, Qatar Out · Group Stage.
+
+**Three download funnels offered the wrong app.** `funnel.js` defaults its "get
+the app" target to Brain Games Vol 1 and a page overrides with
+`window.SP_PLAY_URL`. Three never did:
+
+| page | ships in | funnel pointed at |
+|---|---|---|
+| golf-solitaire | Vol 2 | Vol 1 |
+| snackwords | Vol 2 (`snackwords-daily`) | Vol 1 |
+| pyramid | Vol 3 | Vol 1 |
+
+Worse than no funnel: it recommended the wrong product to someone who had just
+demonstrated interest in a specific game. Found by cross-checking every arcade
+slug against the `games.ts` id lists of all three volumes, not by reading pages.
+Those three were the only mismatches — the other 15 pages without an override
+are correct, because no app ships their game (the soccer set, Flag Frenzy,
+TriPeaks).
+
+## Open — needs a Linux runner
+
+**The arcade visual check has been red since 2026-09-06 and is giving no
+signal.** Hub baselines were last updated 2026-08-29; the hub changed on 09-06
+and 09-12. The failure is a *size* mismatch (1280x4367 → 1280x4392), so it is
+genuine layout drift, not antialiasing.
+
+Do **not** fix it with `npm run test:visual:update` on Windows. Measured on the
+same commit: CI (Linux) fails 6 of 49, all hub. A Windows box fails 15 — the
+same 6 plus 2048, solitaire and water-sort on mobile. Those nine are correct in
+CI and outside tolerance on Windows, so re-baselining here would fix the hub and
+break them. Baselines are shared across platforms (`snapshotPathTemplate` has no
+`{platform}`) and were generated on Linux. Written up in `scripts/README.md`,
+including how to tell a stale baseline (size mismatch) from a platform
+difference (pixel ratio at matching dimensions).
+
+## Checked and sound — do not re-audit
+
+- `check-site` clean across 259 pages: no dead links, no missing assets, heads
+  intact.
+- Game counts current; `build-game-counts --check` passes.
+- 40 of 41 game pages already carried `HowTo`/`FAQPage` schema, related-games
+  blocks and real SEO prose. Flag Frenzy was the only gap and is now closed.
+- TriPeaks' generic "bigger offline collection" pointer to Vol 1 is accurate —
+  it does not claim Vol 1 contains TriPeaks, and no app does.
+- Last Bastion's page is a bare game mount with no nav, but that is deliberate:
+  a 15.9 KB guide at `/guides/free-browser-roguelite/` carries its SEO and links
+  to it four times. Worth a back-link into the arcade at most; it is also
+  Codex's game.
+- The World Cup pages themselves are fine — they decide by `winner`, which is
+  why only Flag Frenzy had the AET bug.
+
+## Note on the working tree
+
+26 `play/` pages plus `play.css`, `game-ui-assets.js` and a new
+`scripts/check-game-ui-bootstrap.mjs` have been sitting uncommitted for two days
+— the parallel session's arcade game-UI bootstrap. Flag Frenzy and SnackWords
+were among them, so their one added line was lifted out before editing and
+restored afterwards, byte-exact and in the same position as the other 24 pages;
+`check-game-ui-bootstrap.mjs` still passes at 38 playable pages. Nothing of
+theirs was committed. The archived plan docs under `play/docs/archive/2026-08/`
+are a move, not a deletion.
+
+Unrelated: a stray `node.exe` was squatting port 4179 serving Atlas Quest, which
+made local previews 404. Atlas Quest is configured on 4178, so it is a leftover
+process rather than a config collision.
