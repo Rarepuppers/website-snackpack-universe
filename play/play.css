@@ -1961,6 +1961,7 @@ button.th-card.is-selected {
   aspect-ratio: 500 / 1040;
   margin-inline: auto;
   background: #141824;
+  color: #eef2f8;
   border-radius: 14px;
   overflow: hidden;
   touch-action: none;
@@ -1979,7 +1980,8 @@ button.th-card.is-selected {
   align-items: center;
   gap: 10px;
   padding: 20px;
-  background: rgba(14, 17, 26, 0.86);
+  background: rgba(14, 17, 26, 0.94);
+  color: #eef2f8;
   backdrop-filter: blur(2px);
   text-align: center;
 }
@@ -2055,3 +2057,10 @@ button.th-card.is-selected {
 }
 
 .pb-overlay-note { margin: -4px 0 10px; color: #9aa6bd; font-size: 0.82rem; }
+
+/* Colour is declared alongside each background above, not in a separate rule:
+   inheriting the site's dark ink onto a dark scrim gives a 1.27 ratio, and
+   binding the two together is what makes that checkable. */
+.pb-modes-title,
+.pb-overlay-title { color: #ffffff; }
+.pb-overlay-body { color: #ffd479; }

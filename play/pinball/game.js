@@ -11,11 +11,22 @@
 
 import { createWorld, advance, drainEvents, serveBall, nudge, addBall, releaseSaucer, DT } from './engine.js';
 import { createRenderer } from './render.js';
-import { MODES, SAUCERS } from './table.js';
+import { MODES, SAUCERS, BUMPERS } from './table.js';
+
+/** Slingshot face midpoints, for spark positions. */
+const SLING_POS = {
+  'sling-left': { x: 108, y: 800 },
+  'sling-right': { x: 378, y: 800 },
+};
 import {
   createRules, applyEvent, tick as tickRules, nextBall, setBallsInPlay,
-  drainCommands, drainLog, statusLine, RANKS, MISSIONS,
+  drainCommands, drainLog, statusLine, litShots,
+  serialize as serializeRules, deserialize as deserializeRules,
+  RANKS, MISSIONS,
 } from './rules.js';
+
+/** ?daily=YYYY-MM-DD -- everyone gets the same missions, one attempt. */
+const DAILY = new URLSearchParams(location.search).get('daily');
 
 const el = (id) => document.getElementById(id);
 
@@ -31,6 +42,8 @@ const state = {
   last: 0,
   flashes: new Map(),
   input: { left: false, right: false, plunge: false },
+  lit: [],
+  resume: null,
   raf: 0,
 };
 
@@ -53,6 +66,8 @@ function frame(now) {
     runPendingKicks(dt);
     setBallsInPlay(state.rules, state.world.ballsInPlay);
     showLog(drainLog(state.rules));
+    state.lit = litShots(state.rules);
+    if (state.resume) state.resume.changed();
     paint();
   }
 
@@ -63,12 +78,24 @@ function frame(now) {
     if (next <= 0) state.flashes.delete(k); else state.flashes.set(k, next);
   }
 
-  state.renderer.draw(state.world, state.flashes);
+  state.renderer.draw(state.world, state.flashes, state.lit, dt);
 }
 
 function handleEvents(events) {
   for (const e of events) {
-    if (e.type === 'bumper' || e.type === 'sling') state.flashes.set(e.id, 0.12);
+    // Feedback for the hit, before the ruleset decides what it is worth.
+    if (e.type === 'bumper') {
+      state.flashes.set(e.id, 0.12);
+      const b = BUMPERS.find((x) => x.id === e.id);
+      if (b) state.renderer.burst(b.x, b.y, 8, '255,226,170', 260);
+      state.renderer.kick(2.6);
+    } else if (e.type === 'sling') {
+      state.flashes.set(e.id, 0.10);
+      const w = SLING_POS[e.id];
+      if (w) state.renderer.burst(w.x, w.y, 6, '255,190,150', 230);
+      state.renderer.kick(2.0);
+    }
+    if (e.type === 'target') state.renderer.kick(1.2);
 
     // The ruleset owns all scoring. This file only routes.
     applyEvent(state.rules, e);
@@ -92,6 +119,9 @@ function runCommands(commands) {
       case 'release-saucer':
         if (c.delay) state.pendingKicks.push({ id: c.id, t: c.delay });
         else releaseSaucer(state.world, c.id);
+        break;
+      case 'celebrate':
+        state.renderer.kick(5);
         break;
       case 'add-balls': {
         const from = SAUCERS.find((x) => x.id === 'lock') || { x: 408, y: 330 };
@@ -152,6 +182,47 @@ function gameOver() {
   el('pb-overlay-note').textContent =
     `${RANKS[r.rank]} • ${r.missionsDone.length} of ${MISSIONS.length} missions`;
   saveBest();
+  if (state.resume) state.resume.clear();
+  if (DAILY) markDailyDone();
+  offerShare();
+}
+
+/**
+ * Share on game over. The spoiler rule matters even here: the mission ORDER is
+ * the daily's content, so the card reports how far you got, never which
+ * missions came up.
+ */
+function offerShare() {
+  if (!window.SnackPackShare) return;
+  const r = state.rules;
+  const filled = Math.min(r.missionsDone.length, MISSIONS.length);
+  const row = '\u{1F7E9}'.repeat(filled) + '\u2B1C'.repeat(MISSIONS.length - filled);
+  window.SnackPackShare.result({
+    mount: document.querySelector('.pb-stage'),
+    game: 'Pinball',
+    puzzle: DAILY || undefined,
+    headline: `${MODES[state.mode].label}: ${r.score.toLocaleString()} as ${RANKS[r.rank]}`,
+    stats: [`${r.missionsDone.length}/${MISSIONS.length} missions`, `ball ${r.ball}`],
+    grid: [row],
+  });
+}
+
+const dailyKey = () => `pinball_daily_${DAILY}`;
+
+function dailyAlreadyPlayed() {
+  if (!DAILY) return false;
+  try {
+    if (window.SnackPackStore) return !!window.SnackPackStore.get('pinball', 'daily', DAILY);
+    return !!localStorage.getItem(`sp_${dailyKey()}`);
+  } catch (err) { return false; }
+}
+
+function markDailyDone() {
+  try {
+    const v = String(state.rules.score);
+    if (window.SnackPackStore) window.SnackPackStore.set('pinball', 'daily', DAILY, v);
+    else localStorage.setItem(`sp_${dailyKey()}`, v);
+  } catch (err) { /* storage can be blocked; never break the game over it */ }
 }
 
 // ---------------------------------------------------------------------------
@@ -215,6 +286,10 @@ function describeTable() {
 // ---------------------------------------------------------------------------
 
 function start(modeId) {
+  if (DAILY && dailyAlreadyPlayed()) {
+    announce("Today's challenge is already played. Come back tomorrow.");
+    return;
+  }
   state.mode = modeId;
   const seed = seedForRun();
   state.world = createWorld(modeId, seed);
@@ -232,13 +307,12 @@ function start(modeId) {
   announce(`${MODES[modeId].label}. Hold the plunger.`);
 }
 
-/** Daily runs share a seed so everyone gets the same game. */
+/** Daily runs share a seed, so everyone gets the same missions in the same order. */
 function seedForRun() {
-  const daily = new URLSearchParams(location.search).get('daily');
-  if (daily) {
+  if (DAILY) {
     let h = 2166136261;
-    for (let i = 0; i < daily.length; i += 1) {
-      h ^= daily.charCodeAt(i);
+    for (let i = 0; i < DAILY.length; i += 1) {
+      h ^= DAILY.charCodeAt(i);
       h = Math.imul(h, 16777619);
     }
     return h >>> 0;
@@ -348,6 +422,44 @@ function boot() {
       isPlaying: () => state.running && !state.paused,
       pause: () => { state.paused = true; },
       resume: () => { state.paused = false; state.last = 0; },
+    });
+  }
+
+  // Saved progress. The world itself is NOT serialised: restoring a ball
+  // mid-flight would drop the player into a physics state they did not
+  // create, mid-air and mid-shot. Resuming instead returns the ball to the
+  // plunger with the score, rank, missions and ball number intact -- which is
+  // what a real machine does when the power comes back.
+  if (window.SnackPackResume) {
+    state.resume = window.SnackPackResume.attach({
+      game: 'pinball',
+      variant: () => state.mode,
+      schemaVersion: 1,
+      serialize: () => ({
+        mode: state.mode,
+        ballsLeft: state.ballsLeft,
+        rules: serializeRules(state.rules),
+      }),
+      validate: (p) => !!p && typeof p.mode === 'string' && !!p.rules
+        && typeof p.rules.score === 'number',
+      restore: (p) => {
+        state.mode = p.mode;
+        state.rules = deserializeRules(p.rules);
+        state.world = createWorld(p.mode, state.rules.seed);
+        state.ballsLeft = p.ballsLeft;
+        state.pendingKicks = [];
+        state.running = true;
+        state.paused = false;
+        el('pb-modes').hidden = true;
+        el('pb-overlay').hidden = true;
+        el('pb-hud').hidden = false;
+        state.renderer.resize();
+        state.lit = litShots(state.rules);
+        paint();
+        announce('Resumed');
+        return true;
+      },
+      isActive: () => state.running && state.rules && state.rules.score > 0,
     });
   }
 

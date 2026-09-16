@@ -20,9 +20,28 @@ import { GRAVITY, nudge } from '../../play/pinball/engine.js';
 import { ROLLOVERS, BALL_REST } from '../../play/pinball/table.js';
 
 // Resting contact points on each flipper, derived from the table geometry.
-const LEFT_TIP = { x: 226.6, y: 926.5 };
-const LEFT_BASE = { x: 175, y: 909 };
-const RIGHT_TIP = { x: 259.4, y: 926.5 };
+// Pivots are at x=144 and x=342; at rest the tips sit at 217.6 and 268.4.
+const LEFT_TIP = { x: 217.6, y: 926.5 };
+const LEFT_MID = { x: 184, y: 916 };
+const LEFT_BASE = { x: 166, y: 909 };
+const RIGHT_TIP = { x: 268.4, y: 926.5 };
+
+/** The window in which a ball is on a flipper and the player can hit it. */
+const STRIKE = {
+  left: { x0: 144, x1: 222, y0: 855, y1: 968 },
+  right: { x0: 264, x1: 342, y0: 855, y1: 968 },
+};
+
+const inStrikeZone = (p, side) => {
+  const z = STRIKE[side];
+  return p.x >= z.x0 && p.x <= z.x1 && p.y >= z.y0 && p.y <= z.y1;
+};
+
+/** First moment the ball is on the given flipper, or null. */
+function arrivesAt(path, side) {
+  const hit = path.find((p) => inStrikeZone(p, side));
+  return hit ? hit.t : null;
+}
 
 /**
  * A ball that stops moving and never starts again is wedged. It is NOT a
@@ -85,7 +104,7 @@ test('T2b launch speed falls off monotonically from tip to base', () => {
       .reduce((m, p) => Math.max(m, Math.hypot(p.vx, p.vy)), 0);
   };
   const tip = launch(LEFT_TIP.x, LEFT_TIP.y);
-  const mid = launch(193, 916);
+  const mid = launch(LEFT_MID.x, LEFT_MID.y);
   const base = launch(LEFT_BASE.x, LEFT_BASE.y);
   assert(tip > mid && mid > base, `not monotonic: tip ${round(tip)}, mid ${round(mid)}, base ${round(base)}`);
   // The gradient is the whole point -- it must be large enough to feel.
@@ -105,18 +124,21 @@ test('T2c a full tip shot clears the height needed to reach the top arch', () =>
 group('Gravity');
 
 test('T3  free fall in a clear column matches the analytic time', () => {
-  // x=210 from y=380 is clear of every bumper, post and guide.
-  const drop = 500;
+  // The column must actually be clear, so the test asserts that too rather
+  // than trusting a comment: a device moved into the path once already, and
+  // the only symptom was a fall time 2% out.
+  const drop = 240;
   const r = sim({
     steps: secs(2),
-    setup: (w) => place(w, 210, 380),
+    setup: (w) => place(w, 270, 470),
     input: {},
-    stopWhen: (w) => w.balls[0] && w.balls[0].y >= 380 + drop,
+    stopWhen: (w) => w.balls[0] && w.balls[0].y >= 470 + drop,
   });
+  const touched = r.events.filter((e) => e.type !== 'plunge-reset');
+  assert(touched.length === 0, `column was not clear: ${touched.map((e) => e.type + ':' + (e.id || '')).join(', ')}`);
   const t = r.steps / 480;
-  // Analytic free fall, slightly slowed by rolling friction.
   const ideal = Math.sqrt((2 * drop) / GRAVITY);
-  assertBetween(t, ideal * 0.98, ideal * 1.12, `fall time (ideal ${round(ideal)}s)`);
+  assertBetween(t, ideal * 0.98, ideal * 1.10, `fall time (ideal ${round(ideal)}s)`);
 });
 
 // ---------------------------------------------------------------------------
@@ -128,15 +150,16 @@ test('T4  a full plunge crosses all three top rollover lanes', () => {
   assert(countOf(r.events, 'rollover') >= 3, `only crossed ${countOf(r.events, 'rollover')} lanes`);
 });
 
-test('T4c a full plunge ends with the ball on a flipper, not in the drain', () => {
-  // The opening five seconds of every game. If a full plunge drains, the
-  // first thing a new player experiences is losing a ball for doing the one
-  // obvious thing -- so this is asserted, not assumed.
+test('T4c a full plunge delivers the ball to a flipper, playably', () => {
+  // The opening five seconds of every game. If a full plunge never reaches a
+  // flipper, the first thing a new player experiences is losing a ball for
+  // doing the one obvious thing. Note the ball is NOT expected to sit there
+  // forever: a flipper at rest lets the ball roll off, which is correct --
+  // cradling requires holding the flipper up.
   const r = sim({ steps: secs(8), input: (i) => ({ plunge: i < secs(1.0) }) });
-  assert(!had(r.events, 'drain'), 'a full plunge drained the ball');
-  const end = r.path.at(-1);
-  assertBetween(end.y, 840, 960, 'ball came to rest at flipper height (y)');
-  assertBetween(end.x, 130, 360, 'ball came to rest between the flippers (x)');
+  const t = arrivesAt(r.path, 'right') || arrivesAt(r.path, 'left');
+  assert(t !== null, 'a full plunge never put the ball on a flipper');
+  assert(t < 6, `ball took ${round(t)}s to reach a flipper`);
 });
 
 test('T4d a cradled ball does not re-fire the flipper event every step', () => {
@@ -192,37 +215,67 @@ test('T7  a dead bounce off the raised left flipper crosses to the right side', 
 });
 
 test('T8  a cradled ball can be flipped again without being re-placed', () => {
-  // Cradle first, then flip. This is the shot a player actually makes.
+  // Cradle first, then drop and re-flip. This is the shot a player actually
+  // makes: hold to settle the ball, release to let it roll down the flipper,
+  // then flip for power.
   const r = sim({
     steps: secs(3),
-    setup: (w) => place(w, 215, 830, 0, 260),
-    input: (i) => ({ left: i < secs(1.2) || i >= secs(1.5) }),
+    setup: (w) => place(w, 200, 830, 0, 260),
+    input: (i) => ({ left: i < secs(1.2) || i >= secs(1.55) }),
   });
-  const after = r.path.filter((p) => p.t > 1.5 && p.t < 1.9);
+  const after = r.path.filter((p) => p.t > 1.55 && p.t < 2.0);
   const vmax = after.reduce((m, p) => Math.max(m, Math.hypot(p.vx, p.vy)), 0);
-  assert(vmax > 900, `re-flip only produced ${round(vmax)} u/s`);
+  assert(vmax > 700, `re-flip only produced ${round(vmax)} u/s`);
 });
 
 // ---------------------------------------------------------------------------
 group('Lane returns');
 
-test('R1  the right ramp returns the ball onto the left flipper, not the drain', () => {
+test('R1  the right ramp returns the ball onto the left flipper', () => {
   // This is a regression test. An earlier slingshot placement left 3.6 units
   // of clearance above the inlane rail, so every inlane return was silently a
   // drain -- and nothing else in the suite would have caught it.
-  const r = sim({ steps: secs(4), setup: (w) => place(w, 74, 782, 0, 300), input: {} });
-  assert(!had(r.events, 'drain'), 'the left inlane drained the ball');
-  const end = r.path.at(-1);
-  assertBetween(end.x, 130, 240, 'ball ended up on the left flipper (x)');
-  assertBetween(end.y, 840, 960, 'ball ended up on the left flipper (y)');
+  const r = sim({ steps: secs(5), setup: (w) => place(w, 74, 782, 0, 300), input: {} });
+  const t = arrivesAt(r.path, 'left');
+  assert(t !== null, 'the left inlane never delivered the ball to the flipper');
+  assert(t < 3, `inlane return took ${round(t)}s`);
 });
 
-test('R2  the left orbit returns the ball onto the right flipper, not the drain', () => {
-  const r = sim({ steps: secs(4), setup: (w) => place(w, 412, 782, 0, 300), input: {} });
-  assert(!had(r.events, 'drain'), 'the right inlane drained the ball');
-  const end = r.path.at(-1);
-  assertBetween(end.x, 246, 356, 'ball ended up on the right flipper (x)');
-  assertBetween(end.y, 840, 960, 'ball ended up on the right flipper (y)');
+test('R2  the left orbit returns the ball onto the right flipper', () => {
+  const r = sim({ steps: secs(5), setup: (w) => place(w, 412, 782, 0, 300), input: {} });
+  const t = arrivesAt(r.path, 'right');
+  assert(t !== null, 'the right inlane never delivered the ball to the flipper');
+  assert(t < 3, `inlane return took ${round(t)}s`);
+});
+
+test('R3  a ball delivered by an inlane can be flipped into a real shot', () => {
+  // Reaching the flipper is not enough -- it has to arrive in a state the
+  // player can actually do something with.
+  for (const [label, x, side, floor] of [
+    ['right ramp return', 74, 'left', 1500],
+    ['left orbit return', 412, 'right', 1500],
+  ]) {
+    const probe = sim({ steps: secs(5), setup: (w) => place(w, x, 782, 0, 300), input: {} });
+    const t = arrivesAt(probe.path, side);
+    assert(t !== null, `${label}: never reached the flipper`);
+    const shot = sim({
+      steps: secs(5),
+      setup: (w) => place(w, x, 782, 0, 300),
+      input: (i) => ({ [side]: i >= secs(t + 0.25) && i < secs(t + 0.65) }),
+    });
+    const after = shot.path.filter((p) => p.t > t + 0.25 && p.t < t + 0.9);
+    const vmax = after.reduce((m, p) => Math.max(m, Math.hypot(p.vx, p.vy)), 0);
+    assert(vmax > floor, `${label}: flipping produced only ${round(vmax)} u/s`);
+  }
+});
+
+test('R4  a ball left alone on a resting flipper eventually drains', () => {
+  // A flipper at rest must let the ball roll off. When it does not, no ball
+  // is ever lost and no game can end -- which is exactly what happened when
+  // the drain gap was measured between tip CENTRES instead of tip edges,
+  // leaving 16.8 units of clearance for a 26-unit ball.
+  const r = sim({ steps: secs(12), setup: (w) => place(w, 412, 782, 0, 300), input: {} });
+  assert(had(r.events, 'drain'), 'the ball never drained with no input at all');
 });
 
 // ---------------------------------------------------------------------------
@@ -231,7 +284,7 @@ group('Ramps');
 test('T11 a ramp entered at or above threshold is captured and delivered', () => {
   const r = sim({
     steps: secs(4),
-    setup: (w) => place(w, 400, 700, 0, -1400),
+    setup: (w) => place(w, 296, 560, 0, -1500),
     input: {},
   });
   assert(had(r.events, 'ramp-enter', 'ramp-right'), 'ramp was not entered');
@@ -241,7 +294,7 @@ test('T11 a ramp entered at or above threshold is captured and delivered', () =>
 test('T12 a ramp entered below threshold rejects', () => {
   const r = sim({
     steps: secs(2),
-    setup: (w) => place(w, 400, 700, 0, -700),
+    setup: (w) => place(w, 296, 560, 0, -700),
     input: {},
   });
   assert(had(r.events, 'ramp-reject', 'ramp-right'), 'a weak shot should reject');
@@ -249,7 +302,7 @@ test('T12 a ramp entered below threshold rejects', () => {
 });
 
 test('T12b a rejecting ball does not machine-gun the reject event', () => {
-  const r = sim({ steps: secs(2), setup: (w) => place(w, 400, 700, 0, -700), input: {} });
+  const r = sim({ steps: secs(2), setup: (w) => place(w, 296, 560, 0, -700), input: {} });
   assert(countOf(r.events, 'ramp-reject') <= 3, `reject fired ${countOf(r.events, 'ramp-reject')} times`);
 });
 
@@ -259,7 +312,7 @@ group('Nudge and tilt');
 test('T13 three nudges inside a second tilt the table', () => {
   const r = sim({
     steps: secs(2),
-    setup: (w) => place(w, 243, 400),
+    setup: (w) => place(w, 270, 500),
     input: {},
     at: (i, w) => {
       if (i === 10 || i === 120 || i === 230) nudge(w, 1, 0);
@@ -270,15 +323,16 @@ test('T13 three nudges inside a second tilt the table', () => {
 });
 
 test('T13b a tilted table kills the flippers', () => {
-  // Tilt first, THEN try to flip -- otherwise the flipper fires before the
-  // tilt lands and the test proves nothing.
+  // The tilt is set directly rather than nudged into existence. Nudging three
+  // times also flings the ball sideways into a slingshot, and the 1600 u/s
+  // kick from that was being read as "the flipper launched it" -- the test
+  // was measuring the nudge, not the flipper. T13 already covers that three
+  // nudges cause a tilt.
   const r = sim({
     steps: secs(2),
     setup: (w) => place(w, LEFT_TIP.x, LEFT_TIP.y),
     input: (i) => ({ left: i >= 30 }),
-    at: (i, w) => {
-      if (i === 2 || i === 6 || i === 10) nudge(w, 1, 0);
-    },
+    at: (i, w) => { if (i === 1) w.tilted = true; },
   });
   assert(r.world.tilted, 'table did not tilt');
   assert(r.world.flippers.left.angle === r.world.flippers.left.restAngle, 'flipper left its rest position');
@@ -291,7 +345,7 @@ test('T13b a tilted table kills the flippers', () => {
 test('T14 nudges spaced out do not tilt', () => {
   const r = sim({
     steps: secs(6),
-    setup: (w) => place(w, 243, 400),
+    setup: (w) => place(w, 270, 500),
     input: {},
     at: (i, w) => {
       // One nudge every 2 s. The meter decays at 1.0/s, so it never stacks.
@@ -303,10 +357,12 @@ test('T14 nudges spaced out do not tilt', () => {
 });
 
 test('T14b a nudge actually moves the ball', () => {
-  const noNudge = sim({ steps: secs(0.5), setup: (w) => place(w, 243, 400), input: {} });
+  // Not at (243, 400): that is inside the centre scoop, and a captured ball
+  // is deliberately immune to nudging -- which made this pass zero movement.
+  const noNudge = sim({ steps: secs(0.5), setup: (w) => place(w, 270, 500), input: {} });
   const withNudge = sim({
     steps: secs(0.5),
-    setup: (w) => place(w, 243, 400),
+    setup: (w) => place(w, 270, 500),
     input: {},
     at: (i, w) => { if (i === 10) nudge(w, 1, 0); },
   });

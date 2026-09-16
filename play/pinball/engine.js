@@ -51,6 +51,7 @@ export const LOW_SPEED_E_MIN = 0.2; // ...to this, so balls settle in lanes
 export const PLUNGE_MIN = 900;      // u/s at zero charge
 export const PLUNGE_MAX = 2600;     // u/s at full charge
 
+export const SAUCER_CATCH_SPEED = 3000; // u/s -- above this a scoop rejects
 export const NUDGE_IMPULSE = 260;   // u/s
 export const TILT_PER_NUDGE = 1.15;
 export const TILT_DECAY = 0.6;      // per second
@@ -504,7 +505,10 @@ function checkTriggers(ball, world, dt) {
     if (s.ball) continue;
     if (Math.hypot(ball.x - s.x, ball.y - s.y) < s.r) {
       const speed = Math.hypot(ball.vx, ball.vy);
-      if (speed < 2200) {
+      // A scoop catches most balls that enter it. Too tight a threshold and
+      // the shot the whole mission system depends on simply cannot be made:
+      // a clean centre shot still arrives at well over 2000 u/s.
+      if (speed < SAUCER_CATCH_SPEED) {
         ball.captured = s.id;
         ball.captureT = 0;
         ball.vx = 0;
@@ -532,6 +536,10 @@ function checkTriggers(ball, world, dt) {
       ball.inRamp = r.id;
       ball.rampT = 0;
       world.events.push({ type: 'ramp-enter', id: r.id, speed });
+    } else if (r.silentReject) {
+      // Nothing physically obstructs this one, so a ball below the gate
+      // simply carries on. Rattling it would be inventing a wall.
+      ball._rampCool = 0;
     } else {
       // Rejects: rattles back out. A weak shot has a visible consequence.
       ball.vy = Math.abs(ball.vy) * 0.4 + 120;
@@ -797,6 +805,21 @@ export function step(world, input, dt) {
       world.plunger.power = 0;
       world.phase = 'playing';
       world.events.push({ type: 'plunge', speed });
+    }
+  }
+
+  // A plunge too weak to clear the lane drops the ball back onto the plunger.
+  // Without this the table sits in 'playing' forever with the ball parked in
+  // the lane: it cannot drain, and the player cannot re-plunge because the
+  // plunger only works in 'ready'. The game becomes unwinnable, quietly.
+  if (world.phase === 'playing' && world.balls.length === 1) {
+    const b = world.balls[0];
+    if (b.alive && !b.inRamp && !b.captured
+        && b.x > LANE_CX - 6 && b.y > 940
+        && Math.hypot(b.vx, b.vy) < 40) {
+      world.phase = 'ready';
+      world.plunger = { charging: false, power: 0 };
+      world.events.push({ type: 'plunge-reset' });
     }
   }
 

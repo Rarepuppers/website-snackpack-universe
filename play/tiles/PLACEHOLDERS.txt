@@ -3,3 +3,6 @@ pyramid.png  = PLACEHOLDER (studio mark), awaiting Codex Asset 3
 last-bastion.png = PLACEHOLDER (studio mark), awaiting Codex: a Last Bastion arcade tile.
                    This one is the odd case out - the game has 4 GB of source art and
                    still no 72x72 tile, because nothing on the site ever linked to it.
+pinball.png  = PLACEHOLDER (studio mark), awaiting Codex art brief item 4 (docs/pinball/05-codex-art-brief.md)
+social/pinball.png = PLACEHOLDER (generic studio share card). og:image points at the generic
+                     card too, NOT at a mismatched game image. Awaiting Codex art brief item 5.

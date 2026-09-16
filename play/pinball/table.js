@@ -148,8 +148,13 @@ export const WALLS = [
   // The ball rides the TOP of these. They slope down toward the flipper base,
   // so a returning ball rolls onto the flipper instead of past it. Getting
   // this wrong is why an inlane silently becomes a second drain.
-  seg(66, 845, 152, 900, 'wood', 'wall', 'rail-inlane-left'),
-  seg(420, 845, 334, 900, 'wood', 'wall', 'rail-inlane-right'),
+  // Each rail ends ON the flipper's span, not at its pivot. Ending at the
+  // pivot creates a pocket between the rail cap and the flipper base that
+  // traps the ball: it sits there supported by both, never rolls to the tip
+  // and never drains, so a ball you simply do not flip is stuck forever and
+  // the game cannot end.
+  seg(66, 845, 166, 890, 'wood', 'wall', 'rail-inlane-left'),
+  seg(420, 845, 320, 890, 'wood', 'wall', 'rail-inlane-right'),
 
   // -- Pop bumper cluster guides -------------------------------------------
   seg(120, 250, 100, 380, 'wood'),
@@ -158,7 +163,8 @@ export const WALLS = [
   // -- Rubber posts ---------------------------------------------------------
   circ(150, 430, 11, 'rubber', 'post', 'post-left'),
   circ(336, 430, 11, 'rubber', 'post', 'post-right'),
-  circ(243, 700, 11, 'rubber', 'post', 'post-centre'),
+  // No centre post at (243,700): it sat directly in the lane both flippers
+  // shoot through, and turned every ramp attempt into a random deflection.
   circ(172, 800, 11, 'rubber', 'post', 'post-lower-left'),
   circ(314, 800, 11, 'rubber', 'post', 'post-lower-right'),
 ];
@@ -189,9 +195,13 @@ export const SPINNER = { id: 'spinner', x: 94, y: 545, halfSpan: 23 };
 export const SAUCERS = [
   {
     id: 'saucer',
-    x: 105,
-    y: 452,
-    r: 18,
+    x: 243,
+    y: 395,
+    // Wide on purpose. The two flippers' centre shots pass at x=225 and
+    // x=261, straddling the middle, so an 18-unit scoop is missed by both --
+    // by 0.4 units, which would have made the entire mission system
+    // unreachable without a single test failing.
+    r: 26,
     holdMs: 900,
     kick: { vx: 1500, vy: 250 },
   },
@@ -226,11 +236,12 @@ export const ROLLOVERS = [
 export const RAMPS = [
   {
     id: 'orbit-left',
-    entry: { x: 48, y: 620, r: 20 },
+    entry: { x: 190, y: 470, r: 22 },
     minSpeed: 1150,
     // Up the left rail, over the arch, down to the right inlane.
     path: [
-      { x: 48, y: 620 },
+      { x: 190, y: 470 },
+      { x: 90, y: 430 },
       { x: 38, y: 500 },
       { x: 36, y: 400 },
       { x: 80, y: 180 },
@@ -245,11 +256,12 @@ export const RAMPS = [
   },
   {
     id: 'ramp-right',
-    entry: { x: 400, y: 640, r: 20 },
+    entry: { x: 296, y: 470, r: 22 },
     minSpeed: 1250,
     // Up and over, returning to the left inlane.
     path: [
-      { x: 400, y: 640 },
+      { x: 296, y: 470 },
+      { x: 396, y: 430 },
       { x: 406, y: 520 },
       { x: 380, y: 360 },
       { x: 300, y: 250 },
@@ -260,6 +272,28 @@ export const RAMPS = [
     ],
     exit: { x: 74, y: 782, vx: 0, vy: 300 },
     travelMs: 1300,
+  },
+  {
+    // The far end of the orbit. A ball that has ridden the left rail all the
+    // way round arrives here fast and is deposited into the left inlane --
+    // which is what a real orbit does, and what makes a full plunge end on a
+    // flipper instead of in the drain.
+    //
+    // The speed gate is what keeps the outlane meaningful: a fast orbiting
+    // ball is returned, a slow dribble falls past into the outlane and
+    // drains. Below the gate it passes through untouched rather than
+    // rattling, because nothing physically obstructs it.
+    id: 'orbit-return',
+    entry: { x: 33, y: 700, r: 26 },
+    minSpeed: 950,
+    silentReject: true,
+    path: [
+      { x: 33, y: 700 },
+      { x: 44, y: 745 },
+      { x: 74, y: 782 },
+    ],
+    exit: { x: 74, y: 782, vx: 0, vy: 300 },
+    travelMs: 260,
   },
   {
     id: 'lane-feed',
@@ -276,11 +310,23 @@ export const RAMPS = [
 /** Kickback: saves a ball in the left outlane. */
 export const KICKBACK = { id: 'kickback', x: 46, y: 960, r: 22, kick: { vx: 40, vy: -1900 } };
 
-/** Flippers. Angles per the header's convention; sweep is 48 degrees. */
+/**
+ * Flippers. Angles per the header's convention; sweep is 48 degrees.
+ *
+ * Pivot separation is set by the DRAIN GAP, which is measured between the
+ * tips' inner EDGES, not their centres. At rest the tip centres sit 50.8
+ * apart and each tip has radius 8, leaving 34.8 units of clear gap against a
+ * 26-unit ball -- about 1.34 ball widths, a standard modern gap.
+ *
+ * Getting this wrong is quietly fatal. An earlier layout used the centre
+ * separation as if it were the gap, leaving 16.8 units of clearance: the ball
+ * could not fit between the tips, so it came to rest supported by both and
+ * NEVER DRAINED. Every ball lasted forever and no game could end.
+ */
 export const FLIPPERS = {
   left: {
     id: 'flipper-left',
-    pivot: { x: 153, y: 905 },
+    pivot: { x: 144, y: 905 },
     length: 85,
     baseR: 13,
     tipR: 8,
@@ -290,7 +336,7 @@ export const FLIPPERS = {
   },
   right: {
     id: 'flipper-right',
-    pivot: { x: 333, y: 905 },
+    pivot: { x: 342, y: 905 },
     length: 85,
     baseR: 13,
     tipR: 8,
