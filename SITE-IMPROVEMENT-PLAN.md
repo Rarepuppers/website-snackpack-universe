@@ -1769,3 +1769,56 @@ are a move, not a deletion.
 Unrelated: a stray `node.exe` was squatting port 4179 serving Atlas Quest, which
 made local previews 404. Atlas Quest is configured on 4178, so it is a leftover
 process rather than a config collision.
+
+## Arcade follow-up — same day, 2026-09-16
+
+### The visual check is green again, and the gate that guards it now works
+
+The six hub baselines were stale, and re-baselining needed Linux, which this
+machine does not have (no WSL, no Docker). It turned out not to need one: **the
+failing job already uploads every render as the `arcade-visual-diff` artifact,
+and its `-actual.png` files are Linux renders of the current page** — exactly
+what a re-baseline produces. Pulled the six hub ones from run 35061405738 and
+installed them.
+
+Two checks before blessing CI's output as correct, both now written into
+`scripts/README.md` as the procedure:
+
+1. The artifact's commit still had to match HEAD for `play/index.html` and
+   `play/play.css` — it did (`bc03ffe0`).
+2. The image had to be *looked at*, because a regression makes a page taller
+   just as readily as new content does. The new render carries exactly one more
+   game card — Last Bastion's, added 09-12 when it finally got a discovery path
+   — which fills the last row and accounts for the height on both viewports.
+
+**Then a second gap turned up: `tests/**` was in neither path filter**, so
+editing a visual snapshot did not run the visual suite. The baseline commit
+triggered nothing at all, and neither would a wrong one — the gate would have
+stayed green until some unrelated HTML change happened to run it. The files a
+gate guards being unable to trigger it is the worst shape for one to be in.
+Fixed; that change is itself what ran the suite against the new baselines.
+
+### Do not land the parallel session's arcade work without a paired baseline refresh
+
+Its `play.css` hunk adds `.game-controls > .seg { display:flex; flex-wrap:wrap }`
+inside `@media (max-width: 520px)`. The visual suite renders mobile at **390px**,
+and sudoku, solitaire and water-sort all have a `.game-controls` with a `.seg`
+child. Committing it alone would very likely move three mobile surfaces across
+three themes — up to nine snapshots — and undo the green just restored.
+
+It should land as one commit with its refreshed baselines, via the artifact
+route now documented. Worth saying that the work itself looks sound: it extends
+an already-half-shipped bootstrap from 13 pages to 38 (its own
+`check-game-ui-bootstrap.mjs` enforces that), all 40 asset paths it references
+resolve, and it carries a real fix — a guard stopping Last Bastion, which owns
+its Phaser audio stack, from having a second sound system preloaded under it.
+
+One caveat for whoever picks it up: nothing reads `window.SnackPackGameUiAssets`
+yet. The bootstrap defines a global and no game consumes it, so today the
+rollout buys page weight and no behaviour. That is fine as a foundation, but it
+argues for landing it alongside its first consumer rather than on its own.
+
+### Not a finding
+
+The stray `node.exe` on port 4179 serving Atlas Quest has exited on its own; the
+port is free. No config change needed — Atlas Quest is correctly on 4178.
