@@ -20,6 +20,33 @@ stylesheets, the fonts, the manifest and the favicon into `<body>`, rendering a
 literal `>` as the first visible character on the page. Every other check in
 this script passed on those pages the whole time.
 
+## Visual baselines are Linux-generated — do not refresh them on Windows
+
+`npm run test:visual` compares six arcade surfaces (hub, 2048, sudoku,
+solitaire, water-sort, stats) against `tests/visual/__screenshots__/`. The
+snapshots are shared across platforms — `snapshotPathTemplate` has no
+`{platform}` segment — and they were generated on Linux.
+
+Measured 2026-09-16, same commit, same suite:
+
+| | CI (Linux) | A Windows dev box |
+|---|---|---|
+| passed | 43 | 34 |
+| failed | 6 (hub only) | 15 (hub, plus 2048/solitaire/water-sort on **mobile**) |
+
+So nine snapshots render outside the 2.5% tolerance on Windows while being
+correct in CI. `npm run test:visual:update` on Windows would make the hub pass
+and push those nine into failure — swapping one red for a worse one. The
+existing 5% allowance for `sudoku · mobile` is a symptom of the same split.
+
+**To re-baseline**, run `--update-snapshots` on Linux and commit what it
+produces: a CI container, WSL, or `mcr.microsoft.com/playwright` locally. A
+stale baseline shows up as a *size* mismatch in the failure output (e.g.
+"Expected an image 1280px by 4367px, received 1280px by 4392px"); a platform
+difference shows up as a pixel-ratio difference at the same dimensions. That
+distinction tells you which of the two problems you have before you touch
+anything.
+
 `check-site.mjs` scans static markup only — `<script>` blocks are stripped
 first, because several pages build HTML by string concatenation and matching
 inside those produces nonsense targets like `' + href + '`.
