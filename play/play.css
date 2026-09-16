@@ -240,6 +240,8 @@
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .btn-game {
@@ -1921,6 +1923,14 @@ button.th-card.is-selected {
   .stats-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 520px) {
+  .game-controls > .seg {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 18px;
+  }
+  .game-controls > .seg > button { flex: 1 1 calc(50% - 4px); }
   .arcade-tools { padding: 14px; }
   .arcade-search-row > * { flex-basis: 100%; width: 100%; }
   .arcade-recent-grid { grid-template-columns: 1fr; }
@@ -1932,4 +1942,100 @@ button.th-card.is-selected {
 @keyframes sp-share-in {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Pinball ───────────────────────────────────────────────────────────── */
+.pb-stage-wrap { --pb-ink: #cfd7e6; }
+
+.pb-stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* The table is 500x1040. Height is derived from WIDTH via aspect-ratio
+     rather than from vh: vh is unreliable on mobile, where it shifts as the
+     URL bar hides, and it collapses to zero in embedded/hidden contexts --
+     either of which silently produces a zero-height stage and an invisible
+     game. Width is capped instead, which cannot degenerate. */
+  width: min(100%, 420px);
+  aspect-ratio: 500 / 1040;
+  margin-inline: auto;
+  background: #141824;
+  border-radius: 14px;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+}
+
+.pb-stage canvas { display: block; touch-action: none; }
+
+.pb-modes,
+.pb-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  background: rgba(14, 17, 26, 0.86);
+  backdrop-filter: blur(2px);
+  text-align: center;
+}
+
+.pb-modes[hidden],
+.pb-overlay[hidden] { display: none; }
+
+.pb-modes-title,
+.pb-overlay-title {
+  margin: 0 0 4px;
+  font-family: var(--font-display, inherit);
+  font-size: 1.15rem;
+  color: #fff;
+}
+
+.pb-overlay-body { margin: 0 0 10px; color: var(--pb-ink); font-size: 1.4rem; font-weight: 700; }
+
+.pb-modes .btn-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 232px;
+  padding: 10px 18px;
+}
+
+.pb-modes .btn-game small { font-weight: 500; opacity: 0.75; font-size: 0.74rem; }
+
+.pb-banner {
+  position: absolute;
+  top: 14%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 7px 18px;
+  border-radius: 999px;
+  background: rgba(20, 24, 36, 0.92);
+  color: #ffd479;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  animation: pb-banner-in 180ms ease-out;
+}
+
+.pb-banner[hidden] { display: none; }
+
+@keyframes pb-banner-in {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@media (max-width: 640px) {
+  .pb-stage { width: min(100%, 360px); }
+  .pb-modes .btn-game { min-width: 0; width: 100%; max-width: 280px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-banner { animation: none; }
 }

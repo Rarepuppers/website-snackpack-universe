@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Play Pinball Online Free | Classic Arcade Pinball Table — SnackPack</title>
+<meta name="description" content="Play pinball free in your browser — real flipper physics, ramps, multiball and a mission ladder. Relaxed, Classic, Expert and Endless modes. No ads, no sign-in, no download. From SnackPack Studios.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/pinball/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/snackpack-mark-180.png">
+<meta property="og:title" content="Play Pinball Online Free | Classic Arcade Pinball Table">
+<meta property="og:description" content="Real flipper physics, ramps, multiball and a mission ladder — free in your browser, no ads.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/play/social/pinball.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/pinball/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.snackpackuniverse.com/play/social/pinball.png">
+<link rel="preload" href="/assets/fonts/dmsans-ed656a5d.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-36024e18.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css?v=13">
+</head>
+<body>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Pinball</h1>
+        <p class="lead" style="max-width:600px;margin-left:auto;margin-right:auto;">A full pinball table in your browser. Real rotating flippers — a tip shot is stronger than a base shot, exactly as it should be — plus ramps, an orbit, drop targets, a spinner, multiball and nudge. Relaxed, Classic, Expert and Endless. No ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage pb-stage-wrap">
+        <div class="game-toolbar">
+          <div class="game-readout" id="pb-hud" hidden>
+            <span class="readout-chip"><span>Score</span><b id="pb-score">0</b></span>
+            <span class="readout-chip"><span>Ball</span><b id="pb-ball">1 / 3</b></span>
+            <span class="readout-chip"><span>Best</span><b id="pb-best">0</b></span>
+          </div>
+          <div class="game-controls pb-controls"></div>
+        </div>
+
+        <p class="game-status" id="pb-live" aria-live="polite">Choose a mode to start.</p>
+
+        <div class="pb-stage">
+          <canvas id="pb-canvas" role="img" aria-label="Pinball table"></canvas>
+
+          <div class="pb-modes" id="pb-modes">
+            <p class="pb-modes-title">Choose a mode</p>
+            <button type="button" class="btn-game btn-game--primary" data-mode="relaxed">Relaxed<small>5 balls · kickback always on</small></button>
+            <button type="button" class="btn-game" data-mode="classic">Classic<small>3 balls · the standard table</small></button>
+            <button type="button" class="btn-game" data-mode="expert">Expert<small>3 balls · faster, no kickback</small></button>
+            <button type="button" class="btn-game" data-mode="endless">Endless<small>No ball loss · chase the score</small></button>
+          </div>
+
+          <div class="pb-overlay" id="pb-overlay" hidden>
+            <p class="pb-overlay-title" id="pb-overlay-title">Game over</p>
+            <p class="pb-overlay-body" id="pb-overlay-body">0 points</p>
+            <button type="button" class="btn-game btn-game--primary" id="pb-again">Play again</button>
+          </div>
+
+          <p class="pb-banner" id="pb-banner" hidden></p>
+        </div>
+
+        <p class="game-hint">Keys: <b>Z</b> / <b>←</b> left flipper · <b>/</b> / <b>→</b> right flipper · hold <b>Space</b> to charge the plunger and release to fire · <b>,</b> and <b>.</b> nudge · <b>N</b> nudge up. On a phone: hold the left or right third of the table for the flippers, the middle for the plunger.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play pinball</h2>
+      <p>Hold the plunger to charge it, then let go. A full plunge sends the ball all the way around the top arch, through the three rollover lanes, and back down to the right flipper ready to shoot — so your first real decision arrives about two seconds into every ball. From there the job is simple to describe and hard to do: keep the ball alive, and hit the lit shots.</p>
+
+      <h3>The shots</h3>
+      <p>The <b>right ramp</b> is the left flipper's shot, and the <b>left orbit</b> is the right flipper's. That is not arbitrary — a flipper can only reach the ramp on the far side of the table. Both return the ball to the opposite inlane, so a clean shot hands you the next one immediately, which is how combos get built. The <b>drop target bank</b> on the left lights a lock; two locks plus the ball in play starts multiball. The <b>spinner</b> in the left ramp throat pays per revolution, so a fast ball through it is worth far more than a slow one. The <b>saucer</b> in the middle of the table starts missions.</p>
+
+      <h3>Why the flippers matter</h3>
+      <p>Each flipper is a rotating capsule, and the ball takes its speed from the contact point's actual surface velocity. That means a shot off the tip leaves at roughly twice the speed of one off the base, with no special cases in the code — it falls out of the physics. In practice: nudge the ball down to the tip before you shoot, and learn to catch it. Letting a ball land on a raised flipper will settle it against the base, giving you a moment to aim instead of swinging blind.</p>
+
+      <h3>Nudging and tilt</h3>
+      <p>You can shove the table. A nudge pushes every ball a little, which is often the difference between an outlane drain and a save. It is not free: each nudge fills the tilt meter, the meter drains slowly, and three shoves in quick succession tilt the table — the flippers die, the ball drains and your end-of-ball bonus is gone. Nudge when it matters, not out of habit.</p>
+
+      <h3>Modes</h3>
+      <p><b>Relaxed</b> gives you five balls and leaves the outlane kickback on permanently, which is the right place to learn the table. <b>Classic</b> is the standard three-ball game. <b>Expert</b> is faster, drops the kickback and tilts more easily. <b>Endless</b> never takes a ball away — it just keeps speeding up while you chase a number. Your best score for each mode is saved on your own device; nothing is uploaded and there is no account.</p>
+    </div>
+  </section>
+</main>
+
+<script src="../store.js"></script>
+<script src="../pause.js"></script>
+<script type="module" src="./game.js"></script>
+</body>
+</html>

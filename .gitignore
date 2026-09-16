@@ -45,3 +45,6 @@ build/
 # Logs
 *.log
 npm-debug.log*
+
+# Pinball dev screenshots (regenerate with tools/pinball/shoot.mjs)
+tools/pinball/shots/
