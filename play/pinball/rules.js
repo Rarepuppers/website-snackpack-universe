@@ -185,7 +185,7 @@ function updateRank(r) {
   add(r, POINTS.rankUp);
   note(r, `Rank up: ${RANKS[r.rank]}`, 'rank');
   push(r, 'sound', { name: 'rank-up' });
-  push(r, 'voice', { name: 'voice-rank-up' });
+  push(r, 'voice', { name: 'voice/voice-rank-up' });
   if (r.rank === RANKS.length - 1 && r.missionsDone.length >= MISSIONS.length) {
     r.wizardLit = true;
     note(r, 'THE LONG VOYAGE IS LIT', 'wizard');
@@ -217,7 +217,7 @@ function startMission(r) {
   r.saucerLit = false;
   note(r, def.name, 'mission');
   push(r, 'sound', { name: 'mission-start' });
-  push(r, 'voice', { name: `mission-${id}` });
+  push(r, 'voice', { name: `voice/mission-${id}` });
   return true;
 }
 
@@ -237,7 +237,7 @@ function completeMission(r) {
   r.missionRelight = MISSION_RELIGHT;
   note(r, `${def.name} complete`, 'mission-done');
   push(r, 'sound', { name: 'mission-complete' });
-  push(r, 'voice', { name: 'voice-complete' });
+  push(r, 'voice', { name: 'voice/voice-complete' });
   updateRank(r);
 }
 
@@ -305,7 +305,7 @@ function startMultiball(r) {
   r.superJackpotLit = false;
   note(r, 'GALLEY RUSH', 'multiball');
   push(r, 'sound', { name: 'multiball-start' });
-  push(r, 'voice', { name: 'voice-multiball' });
+  push(r, 'voice', { name: 'voice/voice-multiball' });
   push(r, 'release-saucer', { id: 'lock' });
   push(r, 'add-balls', { count: 2 });
   push(r, 'music', { bed: 'intense' });
@@ -325,7 +325,7 @@ function startWizard(r) {
   r.mission = null;
   note(r, 'THE LONG VOYAGE', 'wizard');
   push(r, 'sound', { name: 'wizard-start' });
-  push(r, 'voice', { name: 'voice-wizard' });
+  push(r, 'voice', { name: 'voice/voice-wizard' });
   push(r, 'add-balls', { count: 3 });
   push(r, 'music', { bed: 'intense' });
 }
@@ -419,7 +419,7 @@ function majorShot(r, kind, basePoints) {
     r.jackpotsCollected += 1;
     note(r, 'JACKPOT', 'jackpot');
     push(r, 'sound', { name: 'jackpot' });
-    push(r, 'voice', { name: 'voice-jackpot' });
+    push(r, 'voice', { name: 'voice/voice-jackpot' });
     if (r.jackpotsCollected % 3 === 0) {
       r.superJackpotLit = true;
       note(r, 'SUPER JACKPOT LIT', 'jackpot');

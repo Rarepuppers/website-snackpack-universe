@@ -26,6 +26,20 @@
  *  3. **Autoplay-policy safety.** Browsers reject play() until the user has
  *     interacted with the page. Rejections are swallowed -- a missing sound
  *     effect must never surface as a console error or break game logic.
+ *
+ * Added for Pinball, and strictly additive -- the four-name API above is
+ * untouched:
+ *
+ *   SnackPackAudio.bank(ns)        -- a namespaced player. bank("pinball")
+ *                                     resolves "bumper-1" to
+ *                                     .../audio/pinball/bumper-1.wav
+ *   SnackPackAudio.loop(name)      -- a continuous sound with live controls,
+ *                                     returning { setRate, setVolume, stop }
+ *
+ * Loops need a different mechanism from the one-shot pool: the pool exists to
+ * hand out a FINISHED voice, and a loop never finishes. Pinball needs two of
+ * them -- ball roll and ramp roll -- with volume and rate following the ball's
+ * speed, which a fire-and-forget call cannot express.
  */
 (function () {
   "use strict";
@@ -83,6 +97,8 @@
     muted = Boolean(next);
     try { localStorage.setItem(storageKey, muted ? "1" : "0"); } catch (error) {}
     updateButtons();
+    // Loops are continuous, so muting has to reach the ones already running.
+    for (var i = 0; activeLoops && i < activeLoops.length; i++) activeLoops[i]._sync();
   }
 
   /**
@@ -135,6 +151,76 @@
     if (promise && promise.catch) promise.catch(function () {});
   }
 
+  // -- Loops ---------------------------------------------------------------
+  // Tracked so muting can silence them: a loop started before the player
+  // muted would otherwise keep running forever, which is the one failure the
+  // one-shot pool cannot produce.
+  var activeLoops = [];
+
+  function loop(name) {
+    var audio = new Audio(urlFor(name));
+    audio.loop = true;
+    audio.preload = "auto";
+    audio.volume = 0;
+
+    var wanted = 0;
+    var stopped = false;
+
+    var handle = {
+      setVolume: function (v) {
+        wanted = Math.max(0, Math.min(1, v || 0));
+        if (!stopped) audio.volume = muted ? 0 : wanted;
+        return handle;
+      },
+      setRate: function (r) {
+        // Outside roughly 0.25-4 some browsers throw rather than clamp.
+        try { audio.playbackRate = Math.max(0.25, Math.min(4, r || 1)); } catch (error) {}
+        return handle;
+      },
+      stop: function () {
+        stopped = true;
+        try { audio.pause(); audio.currentTime = 0; } catch (error) {}
+        var i = activeLoops.indexOf(handle);
+        if (i >= 0) activeLoops.splice(i, 1);
+        return handle;
+      },
+      /** Called by setMuted; not part of the public surface. */
+      _sync: function () {
+        if (stopped) return;
+        audio.volume = muted ? 0 : wanted;
+        if (muted) { try { audio.pause(); } catch (error) {} }
+        else if (audio.paused) { var q = audio.play(); if (q && q.catch) q.catch(function () {}); }
+      }
+    };
+
+    activeLoops.push(handle);
+    if (!muted) { var promise = audio.play(); if (promise && promise.catch) promise.catch(function () {}); }
+    return handle;
+  }
+
+  /**
+   * A namespaced player, so a game with a bank of thirty-odd cues does not put
+   * thirty-odd names into a module shared by every other game.
+   */
+  function bank(namespace) {
+    var prefix = String(namespace || "").replace(/^\/+|\/+$/g, "");
+    var at = function (name) { return prefix ? prefix + "/" + name : name; };
+    return {
+      play: function (name) { play(at(name)); },
+      loop: function (name) { return loop(at(name)); },
+      preload: function (names) {
+        if (typeof names === "string") names = [names];
+        preload((names || []).map(at));
+      },
+      /** Round-robin across name-1..name-n, so repeats do not machine-gun. */
+      playVariant: function (name, count) {
+        var n = Math.max(1, count || 1);
+        var i = 1 + Math.floor(Math.random() * n);
+        play(at(name + "-" + i));
+      }
+    };
+  }
+
   document.addEventListener("click", function (event) {
     var button = event.target.closest("[data-sp-audio-toggle]");
     if (button) setMuted(!muted);
@@ -145,6 +231,8 @@
     isMuted: function () { return muted; },
     play: play,
     preload: preload,
-    setMuted: setMuted
+    setMuted: setMuted,
+    loop: loop,
+    bank: bank
   };
 })();
