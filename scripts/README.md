@@ -39,9 +39,31 @@ correct in CI. `npm run test:visual:update` on Windows would make the hub pass
 and push those nine into failure — swapping one red for a worse one. The
 existing 5% allowance for `sudoku · mobile` is a symptom of the same split.
 
-**To re-baseline**, run `--update-snapshots` on Linux and commit what it
-produces: a CI container, WSL, or `mcr.microsoft.com/playwright` locally. A
-stale baseline shows up as a *size* mismatch in the failure output (e.g.
+**To re-baseline you do not need a Linux box.** The failing CI job already
+uploads every rendered screenshot as the `arcade-visual-diff` artifact, and the
+`-actual.png` files in it *are* Linux renders of the current page — exactly what
+a re-baseline would produce:
+
+```bash
+run=$(gh run list --workflow='Check website' --limit 1 --json databaseId --jq '.[0].databaseId')
+gh run download "$run" -n arcade-visual-diff -D /tmp/diff
+# /tmp/diff/test-results/arcade-<slug>-·-<theme>-·-<viewport>/<snapshot>-actual.png
+cp /tmp/diff/test-results/arcade-hub-·-cream-·-desktop/hub-cream-desktop-actual.png    tests/visual/__screenshots__/hub-cream-desktop.png
+```
+
+Two things to check before copying one in, because this blesses whatever CI
+rendered as correct:
+
+1. **The artifact's commit must still match.** `gh run view <run> --json headSha`,
+   then confirm the page has not changed since:
+   `git diff <sha> HEAD -- play/index.html play/play.css`.
+2. **Look at the image.** A regression makes a page taller just as readily as new
+   content does. Crop the region around the size change and compare it against
+   the old baseline — when this was last done, the hub had gained exactly one
+   game card (Last Bastion's, added 2026-09-12), which is what a legitimate
+   growth looks like.
+
+A stale baseline shows up as a *size* mismatch in the failure output (e.g.
 "Expected an image 1280px by 4367px, received 1280px by 4392px"); a platform
 difference shows up as a pixel-ratio difference at the same dimensions. That
 distinction tells you which of the two problems you have before you touch
