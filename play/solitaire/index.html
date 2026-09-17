@@ -23,7 +23,12 @@
 <link rel="stylesheet" href="../play.css?v=13">
 <style>
 /* Klondike Solitaire (local styles). */
-.sol-table { --cw: clamp(40px, 12vw, 62px); --ch: calc(var(--cw) * 1.4); --gap: clamp(5px, 1.6vw, 12px); margin: 0 auto; width: fit-content; max-width: 100%; }
+/* Seven columns plus six gaps have to fit the page's content box, not the
+   viewport: at 390px the shell leaves ~320px, and 12vw cards (46.8px) needed
+   365px, so the tableau hung 10px off the right edge. 10.5vw lands at ~41px,
+   which is a hair above the 40px floor and fits with room to spare. Desktop is
+   unchanged — both still cap at 62px well before that matters. */
+.sol-table { --cw: clamp(40px, 10.5vw, 62px); --ch: calc(var(--cw) * 1.4); --gap: clamp(4px, 1.1vw, 12px); margin: 0 auto; width: fit-content; max-width: 100%; }
 .sol-row { display: grid; grid-template-columns: repeat(7, var(--cw)); gap: var(--gap); }
 .sol-top { margin-bottom: calc(var(--ch) * 0.28); }
 .sol-slot { width: var(--cw); height: var(--ch); border-radius: calc(var(--cw) * 0.13); }
