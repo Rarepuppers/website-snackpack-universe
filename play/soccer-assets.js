@@ -9,11 +9,36 @@
   var fx = new Image();
   var fxExtra = new Image();
   var goal = new Image();
-  var pitchWide = new Image();
-  var pitchRunner = new Image();
   var ready = false;
   var callbacks = [];
-  var pending = 8;
+  // Six sheets plus exactly one pitch.
+  var pending = 7;
+
+  // Only one pitch is ever drawn by a given game: seven of the eight soccer
+  // games ask for "wide" and Dribble Rush asks for "runner". Loading both cost
+  // every page 2.4-2.6 MB for art it could never draw — about a quarter of a
+  // ~9 MB first load. The page declares what it needs with data-pitch on the
+  // script tag, defaulting to wide; anything else is fetched on demand the
+  // first time it is actually asked for, so a mismatch degrades to the game's
+  // own gradient pitch for a moment rather than breaking.
+  var PITCHES = { wide: "pitch-wide.png", runner: "pitch-runner.png" };
+  var pitches = {};
+
+  function pitchImage(variant, counted) {
+    var name = PITCHES[variant] ? variant : "wide";
+    var img = pitches[name];
+    if (!img) {
+      img = pitches[name] = new Image();
+      if (counted) {
+        load(img, PITCHES[name]);
+      } else {
+        // Lazily fetched because a game asked for a pitch it did not declare;
+        // nothing is waiting on it, so it just needs the same WebP preference.
+        img.src = new URL("sprites/" + (webpOk ? PITCHES[name].replace(/\.png$/, ".webp") : PITCHES[name]), base).href;
+      }
+    }
+    return img;
+  }
 
   var actorRects = {
     runner0: [0, 0, 128, 128],
@@ -67,8 +92,31 @@
     callbacks.splice(0).forEach(function (callback) { callback(); });
   }
 
+  // These sheets are the heaviest thing the soccer games pull — 8 MB of raw
+  // PNG across the set. The same art at WebP q90 is 1.8 MB, so every sheet has
+  // a .webp beside it and the .png stays as the fallback for anything that
+  // cannot read one. Canvas toDataURL is the honest support test: a browser
+  // without WebP hands back a PNG data URL instead.
+  var webpOk = (function () {
+    try {
+      return document.createElement("canvas").toDataURL("image/webp").indexOf("data:image/webp") === 0;
+    } catch (error) {
+      return false;
+    }
+  }());
+
   function load(img, name) {
     img.onload = assetReady;
+    if (webpOk) {
+      // One retry on the PNG if the WebP is missing or refused, so a sheet that
+      // failed to generate degrades to the original rather than to nothing.
+      img.onerror = function () {
+        img.onerror = assetReady;
+        img.src = new URL("sprites/" + name, base).href;
+      };
+      img.src = new URL("sprites/" + name.replace(/\.png$/, ".webp"), base).href;
+      return;
+    }
     img.onerror = assetReady;
     img.src = new URL("sprites/" + name, base).href;
   }
@@ -143,7 +191,7 @@
   }
 
   function drawPitch(ctx, width, height, variant) {
-    var img = variant === "runner" ? pitchRunner : pitchWide;
+    var img = pitchImage(variant);
     if (!ready || !img.complete || img.naturalWidth === 0) return false;
     ctx.drawImage(img, 0, 0, width, height);
     return true;
@@ -173,6 +221,5 @@
   load(fx, "soccer-fx.png");
   load(fxExtra, "soccer-fx-extra.png");
   load(goal, "soccer-goal.png");
-  load(pitchWide, "pitch-wide.png");
-  load(pitchRunner, "pitch-runner.png");
+  pitchImage((script && script.dataset && script.dataset.pitch) || "wide", true);
 })();
