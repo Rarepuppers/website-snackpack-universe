@@ -80,15 +80,23 @@ volume or leave the gap honest.
 
 ## Still worth doing, nobody has
 
-- **The rest of `play/sprites/` is still raw PNG.** `board-game-icons.png` is 202 KB and
-  the small sheets are a few KB each, so the win is much smaller than the soccer set —
-  but the WebP-with-PNG-fallback pattern in `soccer-assets.js` is there to copy if
-  `game-ui-assets.js` ever grows.
-- **`win.wav` is 99 KB and loads on every game page.** It is now among the largest single
-  assets on a soccer page. An encoded format would make it a rounding error.
-- **`arcade.spec.mjs` screenshots only 6 surfaces** — hub, 2048, sudoku, solitaire,
-  water-sort, stats. Most game pages have no visual baseline at all, which is why the
-  toolbar and layout changes in this batch updated no snapshot.
+**`play/shared-assets/game-ui/` is 57 MB and contains no WebP at all.** This is the
+single largest remaining win and it is an asset job, not a code one — see the Codex
+handover in `CODEX-ASSET-HANDOVER.md`. `921d96c6` did the only two that CSS pulls
+directly (`board-game-icons.png` 2,311 KB → 457 KB, `painted-walnut.png` 1,860 KB →
+120 KB, which took snakes-and-ladders from 4,927 KB of media to 863 KB). Everything else
+in that tree is resolved through `game-ui-assets.js`, which another session is editing,
+and several packs look like they want regenerating at source rather than converting in
+place: the table themes alone are eight PNGs at 1.8–2.2 MB each.
+
+**`arcade.spec.mjs` screenshots only 6 surfaces** — hub, 2048, sudoku, solitaire,
+water-sort, stats. Most game pages have no visual baseline at all, which is why the
+toolbar and layout changes in this batch updated no snapshot. **Do not fill this gap
+from a Windows machine**: new baselines must be generated on CI's Linux renderer or they
+will fail for everyone else. That makes it a CI task, not a local one.
+
+**Three games still persist no result** (`checkers`, `reversi`, `penalty-shootout`) and
+that needs a product decision — see the gate section above.
 
 ---
 
