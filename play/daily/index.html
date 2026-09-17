@@ -142,7 +142,7 @@
         <h1>Today's puzzles.<br>Same boards for everyone.</h1>
         <p class="lead">One set a day, drawn from the same seed for every player — so a time or a streak actually means something. Free, no ads, no sign-in, nothing to install.</p>
         <div class="dl-hero-stats">
-          <span class="dl-stat">Done today <b id="dl-done">0/<span data-game-count="daily">14</span></b></span>
+          <span class="dl-stat">Done today <b id="dl-done">0/<span data-game-count="daily">17</span></b></span>
           <span class="dl-stat">Streak <b id="dl-streak">0</b></span>
           <span class="dl-stat">Best streak <b id="dl-best">0</b></span>
         </div>
@@ -159,7 +159,7 @@
             <!-- Number kept mid-sentence on purpose: build-game-counts.mjs
                  renders word-format markers lowercase, so a sentence-initial
                  one would read "twelve boards". -->
-            <h2>One day, <span data-game-count="daily" data-game-count-format="word">fourteen</span> boards.</h2>
+            <h2>One day, <span data-game-count="daily" data-game-count-format="word">seventeen</span> boards.</h2>
           </div>
           <span class="daily-challenge-date" id="dl-seed">Seed loading</span>
         </div>
@@ -233,6 +233,21 @@
           <a class="dl-card" data-game="flag-frenzy" href="../flag-frenzy/">
             <img src="../tiles/flag-frenzy.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
             <div><h3>Flag Frenzy</h3><p>Guess today's mystery team</p></div>
+            <span class="dl-tick" hidden>Done</span>
+          </a>
+          <a class="dl-card" data-game="crossword" href="../crossword/?daily">
+            <img src="../tiles/crossword.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <div><h3>Crossword</h3><p>Today's mini grid</p></div>
+            <span class="dl-tick" hidden>Done</span>
+          </a>
+          <a class="dl-card" data-game="kakuro" href="../kakuro/?daily">
+            <img src="../tiles/kakuro.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <div><h3>Kakuro</h3><p>Today's shared cross-sums</p></div>
+            <span class="dl-tick" hidden>Done</span>
+          </a>
+          <a class="dl-card" data-game="picross" href="../picross/?daily">
+            <img src="../tiles/picross.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <div><h3>Picross</h3><p>Today's hidden picture</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
         </div>

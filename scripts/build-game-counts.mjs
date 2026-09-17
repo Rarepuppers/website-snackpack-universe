@@ -197,6 +197,11 @@ const phraseFiles = {
     // Opens a paragraph, so it reads as a word rather than a digit.
     { key: "daily", re: /(\n)(\w+|\d+)( games have a shared daily puzzle)/, asWord: true }
   ],
+  // The PWA install description. JSON, so no <span> can go here, and it drifts
+  // silently every time a game ships — it advertised 34 while the arcade had 39.
+  "manifest.webmanifest": [
+    { key: "arcade", re: /(")(\d+)( calm, ad-free browser games)/ }
+  ],
   "apps/snackpack-brain-games/index.html": [
     { key: "vol1", re: /(calm, offline puzzle pack with )(\d+)( classics)/ },
     { key: "vol1", re: /(A calm, offline collection of )(\d+)( classic games)/ }

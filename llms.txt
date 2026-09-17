@@ -61,7 +61,7 @@ Six more apps are planned or in progress and not yet live: Tales & Trivia, Creat
 
 The full list also includes SnackWords (a daily five-letter word guess), Golf Solitaire, Snakes & Ladders, Memory Match, Table Tennis, Asteroid Destroyer, and nine original soccer and flag games (Goalkeeper Hero, Penalty Shootout, Free Kick Curl, Crossbar Challenge, Header Hero, Dribble Rush, Keepy-Uppy, Soccer Trivia Sprint, Flag Frenzy) — see [SnackPack Arcade](https://www.snackpackuniverse.com/play/) for the complete, current list.
 
-Fourteen games have a shared daily puzzle, collected at [SnackPack Daily](https://www.snackpackuniverse.com/play/daily/) — one board per UTC day, the same for every player, with a local streak and a spoiler-free share string. Includes SnackWords, Sudoku, Word Search, FreeCell, Mahjong Solitaire, Pyramid Solitaire, TriPeaks Solitaire, Golf Solitaire, Memory Match, Thirteen, Minesweeper, Water Sort, Flag Frenzy and Pinball.
+Seventeen games have a shared daily puzzle, collected at [SnackPack Daily](https://www.snackpackuniverse.com/play/daily/) — one board per UTC day, the same for every player, with a local streak and a spoiler-free share string. Includes SnackWords, Sudoku, Word Search, FreeCell, Mahjong Solitaire, Pyramid Solitaire, TriPeaks Solitaire, Golf Solitaire, Memory Match, Thirteen, Minesweeper, Water Sort, Flag Frenzy and Pinball.
 
 ## Games for adults (not part of the children's catalogue)
 
