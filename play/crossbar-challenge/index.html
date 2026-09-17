@@ -452,6 +452,7 @@
 
 <script>window.SP_PLAY_URL = "../../world-cup/"; window.SP_PLAY_LABEL = "Open the World Cup hub";</script>
 <script src="../funnel.js"></script>
+<script src="../pause.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script src="../soccer-assets.js"></script>
 <script>
@@ -585,7 +586,7 @@
     trail = [];
     animateShot(start, end, function () {
       applyOutcome(judge(end));
-      setTimeout(nextShot, 820);
+      queueNextShot(820);
     });
   }
 
@@ -637,6 +638,17 @@
     draw();
   }
 
+  // The beat between the outcome landing and the next shot being set up. Held
+  // so pausing over it doesn't deal you a fresh shot behind the overlay.
+  var nextTimer = null;
+  var nextDueAt = 0;
+
+  function queueNextShot(delay) {
+    if (nextTimer) clearTimeout(nextTimer);
+    nextDueAt = performance.now() + delay;
+    nextTimer = setTimeout(function () { nextTimer = null; nextDueAt = 0; nextShot(); }, delay);
+  }
+
   function nextShot() {
     if (shot >= 15) {
       finish();
@@ -677,11 +689,15 @@
     draw();
   }
 
+  // The live shot tween, held in module scope so the pause control can freeze
+  // the ball in mid-air and pick the same flight back up afterwards.
+  var flight = null;
+
   function animateShot(start, end, done) {
-    var startTime = performance.now();
     var duration = 760;
     function frame(now) {
-      var t = clamp((now - startTime) / duration, 0, 1);
+      if (!flight) return;
+      var t = clamp((now - flight.startTime) / duration, 0, 1);
       var ease = 1 - Math.pow(1 - t, 3);
       var arc = Math.sin(t * Math.PI) * (92 + state.distance * 0.15);
       var curveArc = curl * Math.sin(t * Math.PI) * 38;
@@ -692,14 +708,16 @@
       trail.push({ x: ball.x, y: ball.y });
       if (trail.length > 20) trail.shift();
       draw();
-      if (t < 1) requestAnimationFrame(frame);
+      if (t < 1) flight.raf = requestAnimationFrame(frame);
       else {
         ball = end;
         draw();
+        flight = null;
         done();
       }
     }
-    requestAnimationFrame(frame);
+    flight = { startTime: performance.now(), raf: null, step: frame, pausedAt: 0 };
+    flight.raf = requestAnimationFrame(frame);
   }
 
   function drawPitch() {
@@ -888,6 +906,37 @@
   bestEl.textContent = best;
   if (window.SnackSoccerAssets) window.SnackSoccerAssets.onReady(draw);
   reset();
+
+  // Pause. Unlike the timed soccer games there is no clock here, so a tab
+  // switch never cost a run — the flight tween clamps and the outcome was
+  // already decided the moment you shot. What pause buys is the rest: the ball
+  // stops in mid-air instead of teleporting to the goal when you come back,
+  // and the game won't deal the next shot behind the overlay.
+  if (window.SnackPackPause) {
+    window.SnackPackPause.attach({
+      mount: document.querySelector(".game-controls"),
+      stage: document.querySelector(".game-stage"),
+      isPlaying: function () { return shot <= 15; },
+      pause: function () {
+        if (flight) {
+          cancelAnimationFrame(flight.raf);
+          flight.pausedAt = performance.now();
+        }
+        if (nextTimer) {
+          clearTimeout(nextTimer);
+          nextTimer = null;
+        }
+      },
+      resume: function () {
+        if (flight) {
+          flight.startTime += performance.now() - flight.pausedAt;
+          flight.raf = requestAnimationFrame(flight.step);
+        } else if (nextDueAt) {
+          queueNextShot(Math.max(0, nextDueAt - performance.now()));
+        }
+      }
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

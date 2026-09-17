@@ -397,6 +397,7 @@
 
 <script>window.SP_PLAY_URL = "../../world-cup/"; window.SP_PLAY_LABEL = "Open the World Cup hub";</script>
 <script src="../funnel.js"></script>
+<script src="../pause.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script src="../soccer-assets.js"></script>
 <script>
@@ -855,6 +856,27 @@
   bestEl.textContent = best;
   if (window.SnackSoccerAssets) window.SnackSoccerAssets.onReady(draw);
   reset();
+
+  // Pause. The fixed-timestep accumulator is clamped to 80ms a frame, so a
+  // tab switch never fast-forwarded the target the way the other soccer games
+  // jumped — but the target does drift the whole time you are not looking, and
+  // the loop kept requesting frames forever. Stop it properly and clear the
+  // frame clock on resume so the target picks up where it stopped.
+  if (window.SnackPackPause) {
+    window.SnackPackPause.attach({
+      mount: document.querySelector(".game-controls"),
+      stage: document.querySelector(".game-stage"),
+      isPlaying: function () { return shot <= 12 && !busy; },
+      pause: function () {
+        if (raf) { cancelAnimationFrame(raf); raf = null; }
+      },
+      resume: function () {
+        lastFrameTime = 0;
+        accumulator = 0;
+        loop();
+      }
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

@@ -436,6 +436,7 @@
 
 <script>window.SP_PLAY_URL = "../../world-cup/"; window.SP_PLAY_LABEL = "Open the World Cup hub";</script>
 <script src="../funnel.js"></script>
+<script src="../pause.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script src="../soccer-assets.js"></script>
 <script>
@@ -850,6 +851,31 @@
   bestEl.textContent = best;
   if (window.SnackSoccerAssets) window.SnackSoccerAssets.onReady(draw);
   reset();
+
+  // Pause. The shot clock is a setTimeout that keeps running while the tab is
+  // hidden, so backgrounding the page used to concede the live shot before you
+  // could dive. Pausing banks the time left on the current shot; resuming
+  // rolls roundStart forward by the time away, so the save window — and the
+  // quick-dive bonus that keys off it — are exactly as you left them.
+  var pauseRemaining = 0;
+  if (window.SnackPackPause) {
+    window.SnackPackPause.attach({
+      mount: document.querySelector(".game-controls"),
+      stage: document.querySelector(".game-stage"),
+      isPlaying: function () { return !!current && !busy; },
+      pause: function () {
+        if (timer) { clearTimeout(timer); timer = null; }
+        if (raf) { cancelAnimationFrame(raf); raf = null; }
+        pauseRemaining = Math.max(0, current.time - (performance.now() - roundStart));
+      },
+      resume: function () {
+        if (!current || busy) return;
+        roundStart = performance.now() - (current.time - pauseRemaining);
+        timer = setTimeout(function () { choose("none"); }, pauseRemaining);
+        tickMeter();
+      }
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

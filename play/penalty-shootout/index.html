@@ -322,6 +322,7 @@
 <!-- Point the shared funnel/donation prompt at Brain Games Vol 2 (app 2). -->
 <script>window.SP_PLAY_URL = "../../apps/snackpack-brain-games-vol-2/";</script>
 <script src="../funnel.js"></script>
+<script src="../pause.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script src="../soccer-assets.js"></script>
 <script>
@@ -442,7 +443,7 @@
       }
       renderTracks();
       draw();
-      setTimeout(startSave, 950);
+      schedule(startSave, 950);
     });
   }
 
@@ -485,7 +486,7 @@
       }
       renderTracks();
       draw();
-      setTimeout(endRound, 950);
+      schedule(endRound, 950);
     });
   }
 
@@ -531,6 +532,19 @@
   function label(d) { return d === "L" ? "left" : d === "R" ? "right" : "centre"; }
 
   // ── Animation ────────────────────────────────────
+  // Every beat between animations runs through schedule() so the pause control
+  // can hold it. A bare setTimeout keeps firing in a hidden tab, which would
+  // run the shootout on without you. `flight` is the live ball tween, kept here
+  // so a pause can freeze it in mid-air rather than snapping it to the goal.
+  var flight = null;
+  var beat = null;
+
+  function schedule(fn, delay) {
+    if (beat) clearTimeout(beat.id);
+    beat = { fn: fn, dueAt: performance.now() + delay, remaining: delay, id: null };
+    beat.id = setTimeout(function () { var b = beat; beat = null; b.fn(); }, delay);
+  }
+
   function animate(spec, done) {
     var fromBall = { x: BALL_START.x, y: BALL_START.y };
     var toBall = spec.woodwork === "crossbar"
@@ -541,20 +555,22 @@
     var fromKeeper = dirX("C"), toKeeper = dirX(spec.keeperTo);
     ballTrail = [];
     keeperPose = spec.keeperTo;
-    var dur = 600, start = performance.now(), raf;
+    var dur = 600;
     function step(now) {
-      var t = Math.min(1, (now - start) / dur);
+      if (!flight) return;
+      var t = Math.min(1, (now - flight.startTime) / dur);
       ballPos = { x: fromBall.x + (toBall.x - fromBall.x) * t, y: fromBall.y + (toBall.y - fromBall.y) * t };
       ballTrail.push({ x: ballPos.x, y: ballPos.y });
       if (ballTrail.length > 16) ballTrail.shift();
       keeperX = fromKeeper + (toKeeper - fromKeeper) * t;
       draw();
-      if (t < 1) raf = requestAnimationFrame(step);
+      if (t < 1) flight.raf = requestAnimationFrame(step);
     }
-    raf = requestAnimationFrame(step);
+    flight = { startTime: performance.now(), raf: null, step: step, pausedAt: 0 };
+    flight.raf = requestAnimationFrame(step);
     // Resolve on a timer so it works even if rAF is throttled (background tab).
-    setTimeout(function () {
-      cancelAnimationFrame(raf);
+    schedule(function () {
+      if (flight) { cancelAnimationFrame(flight.raf); flight = null; }
       ballPos = toBall; keeperX = toKeeper; draw();
       done();
     }, dur + 40);
@@ -683,6 +699,36 @@
   if (window.SnackSoccerAssets) window.SnackSoccerAssets.onReady(draw);
 
   reset();
+
+  // Pause. The shootout has no clock, so a tab switch never cost a run — but
+  // it did play on without you: the beats between kicks are timers, and those
+  // keep firing while the tab is hidden, so you could come back to a round or
+  // two already taken. Pause holds the next beat and freezes the ball.
+  if (window.SnackPackPause) {
+    window.SnackPackPause.attach({
+      mount: document.querySelector(".game-controls"),
+      stage: document.querySelector(".game-stage"),
+      isPlaying: function () { return phase !== "over"; },
+      pause: function () {
+        if (flight) {
+          cancelAnimationFrame(flight.raf);
+          flight.pausedAt = performance.now();
+        }
+        if (beat) {
+          clearTimeout(beat.id);
+          beat.remaining = Math.max(0, beat.dueAt - performance.now());
+        }
+      },
+      resume: function () {
+        if (flight && flight.pausedAt) {
+          flight.startTime += performance.now() - flight.pausedAt;
+          flight.pausedAt = 0;
+          flight.raf = requestAnimationFrame(flight.step);
+        }
+        if (beat) schedule(beat.fn, beat.remaining);
+      }
+    });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

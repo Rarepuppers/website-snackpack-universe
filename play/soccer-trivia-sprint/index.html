@@ -534,6 +534,7 @@
 
 <script>window.SP_PLAY_URL = "../../world-cup/"; window.SP_PLAY_LABEL = "Open the World Cup hub";</script>
 <script src="../funnel.js"></script>
+<script src="../pause.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script>
 (function () {
@@ -1009,7 +1010,33 @@
 
   bestEl.textContent = best;
   reset();
+
+  // Pause. The question clock is a setTimeout, which keeps running while the
+  // tab is hidden — so backgrounding the page used to auto-answer the live
+  // question wrong and break the streak. Pausing banks the time that was
+  // left; resuming rolls roundStart forward by however long we were away, so
+  // a pause costs neither the question nor the fast-answer bonus.
+  var pauseRemaining = 0;
+  if (window.SnackPackPause) {
+    window.SnackPackPause.attach({
+      mount: document.querySelector(".game-controls"),
+      stage: document.querySelector(".game-stage"),
+      isPlaying: function () { return !answered && !!current; },
+      pause: function () {
+        if (timer) { clearTimeout(timer); timer = null; }
+        if (raf) { cancelAnimationFrame(raf); raf = null; }
+        pauseRemaining = Math.max(0, settings[difficulty].time - (performance.now() - roundStart));
+      },
+      resume: function () {
+        if (answered || !current) return;
+        roundStart = performance.now() - (settings[difficulty].time - pauseRemaining);
+        timer = setTimeout(function () { answer(-1); }, pauseRemaining);
+        tick();
+      }
+    });
+  }
 })();
+
 </script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
