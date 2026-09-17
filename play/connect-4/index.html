@@ -333,7 +333,32 @@
   var board, cells, busy, gameOver, depth = [2,4,6].indexOf(savedDepth) >= 0 ? savedDepth : 4, currentPlayer = HUMAN;
   // Assigned at the end of the file, once SnackPackResume is known to exist.
   var resume = null;
-  var wins = { you: 0, cpu: 0 };
+  // Win/loss record. It was already on screen but lived only in this tab, so
+  // the tally you built up vanished on reload. Kept per opponent — beating
+  // Hard is not the same achievement as beating Easy, and a two-player tally
+  // is not a record against the computer at all.
+  function winsKey() { return "sp_connect4_record_" + (localMode ? "local" : "cpu" + depth); }
+
+  function loadWins() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(winsKey()) || "null");
+      if (raw && Number.isFinite(raw.you) && Number.isFinite(raw.cpu) && raw.you >= 0 && raw.cpu >= 0) {
+        return { you: raw.you, cpu: raw.cpu };
+      }
+    } catch (e) {}
+    return { you: 0, cpu: 0 };
+  }
+
+  function saveWins() {
+    try { localStorage.setItem(winsKey(), JSON.stringify(wins)); } catch (e) {}
+  }
+
+  function showWins() {
+    youEl.textContent = wins.you;
+    cpuEl.textContent = wins.cpu;
+  }
+
+  var wins = loadWins();
 
   // Build column buttons + cells once.
   for (var c = 0; c < COLS; c++) {
@@ -460,7 +485,7 @@
   function finish(who) {
     gameOver = true; setBtns(false);
     if (who === "you") {
-      wins.you++; youEl.textContent = wins.you;
+      wins.you++; youEl.textContent = wins.you; saveWins();
       statusEl.textContent = (localMode ? "Player 1 wins! 🎉" : "You win! 🎉") + " Four in a row.";
       statusEl.className = "game-status game-status--win";
       markWinningLine(HUMAN);
@@ -475,7 +500,7 @@
         headline: localMode ? "Player 1 won a two-player match" : "Beat the computer on " + (depth <= 2 ? "Easy" : depth <= 4 ? "Medium" : "Hard")
       });
     } else if (who === "cpu") {
-      wins.cpu++; cpuEl.textContent = wins.cpu;
+      wins.cpu++; cpuEl.textContent = wins.cpu; saveWins();
       statusEl.textContent = localMode ? "Player 2 wins! 🎉 Four in a row." : "Bad luck - the computer got four in a row. Try again!";
       statusEl.className = "game-status game-status--lose";
       markWinningLine(CPU);
@@ -611,6 +636,7 @@
         x.setAttribute("aria-pressed", String(x === btn));
       });
       reset();
+      wins = loadWins(); showWins();
       // Each difficulty keeps its own save; offer this one's if there is one.
       if (resume) resume.variantChanged();
     });
@@ -625,6 +651,7 @@
       document.getElementById("c-p1-label").textContent = localMode ? "Player 1" : "You";
       document.getElementById("c-p2-label").textContent = localMode ? "Player 2" : "CPU";
       applyColours(); reset();
+      wins = loadWins(); showWins();
       if (resume) resume.variantChanged();
     });
   });
@@ -677,6 +704,7 @@
   applyColours();
 
   reset();
+  showWins();
 
   // Saved progress. A match against the deeper CPU levels takes a while and
   // the board is the whole game, so closing the tab threw the match away.
@@ -721,8 +749,11 @@
       // Difficulty changes the opponent, and two-player is a different game
       // altogether, so neither may hand a board to the other.
       variant: function () { return localMode ? "local" : "cpu-" + depth; },
+      // The win/loss record is persisted on its own, keyed by opponent, so it
+      // deliberately does not ride along in here — a restored board must not
+      // roll the record back to whatever it was when the board was saved.
       serialize: function () {
-        return { board: board, currentPlayer: currentPlayer, wins: wins };
+        return { board: board, currentPlayer: currentPlayer };
       },
       validate: validSave,
       restore: function (p) {
@@ -730,11 +761,7 @@
         currentPlayer = p.currentPlayer;
         busy = false;
         gameOver = false;
-        if (p.wins && Number.isFinite(p.wins.you) && Number.isFinite(p.wins.cpu)) {
-          wins = p.wins;
-          youEl.textContent = wins.you;
-          cpuEl.textContent = wins.cpu;
-        }
+
         repaintAll();
         setBtns(true);
         statusEl.className = "game-status";

@@ -23,14 +23,23 @@ for (const slug of candidates) {
     [html.includes('"@type": "VideoGame"'), "VideoGame JSON-LD"],
     [html.includes('"@type": "FAQPage"'), "FAQPage JSON-LD"],
     [html.includes('<footer class="foot"'), "site footer"],
-    [html.includes("funnel-card"), "download funnel"],
+    // Either the inline card, or the JS funnel configured per game with
+    // SP_PLAY_URL — Golf Solitaire, Pyramid and SnackWords use the latter and
+    // were being reported as having no funnel at all.
+    [html.includes("funnel-card") || html.includes("SP_PLAY_URL"), "download funnel"],
     [textWords >= 350, "350 words of page copy"],
     [/keyboard-grid\.js|data-no-keyboard-reason/.test(html), "keyboard support or written waiver"],
     [html.includes("share-result.js"), "result sharing"],
     [!/(requestAnimationFrame|<canvas)/.test(html) || html.includes("pause.js"), "pause support for continuous/canvas play"],
     [/audio\.js|game-ui-assets\.js/.test(html), "shared audio"],
     [html.includes("resume.js"), "saved progress"],
-    [/_best_|bestKey|SnackPackStore/.test(html), "persisted best result"],
+    // The original pattern wanted a trailing underscore or camelCase, so it
+    // missed the BEST_KEY constant that most of these games actually use —
+    // 2048 stores sp_2048_best and was still reported as persisting nothing.
+    // Match the write instead of guessing the identifier's spelling.
+    [/_best_|bestKey|SnackPackStore/.test(html) ||
+      /(localStorage\.setItem|SnackPackStore\.set\w*)\s*\(\s*[^,)]*(best|record|wins|score|time|streak|stat)/i.test(html),
+      "persisted best result"],
     [/daily|data-no-daily-reason/.test(html), "daily mode or written waiver"],
     [html.includes("related-games:generated"), "related games block"],
     [hub.includes(`./${slug}/`), "hub tile"],
