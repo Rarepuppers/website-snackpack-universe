@@ -186,3 +186,184 @@ test("golf-solitaire: a run survives a reload", async ({ page }) => {
   await page.waitForTimeout(150);
   expect(errors).toEqual([]);
 });
+
+
+// ── Board games ─────────────────────────────────────────────────────────────
+// Checkers, Connect 4 and Reversi are matches against the AI. The rule that
+// matters here is that a save is never taken while the computer owes a move:
+// its turn is a pending setTimeout, so a save caught in flight would restore a
+// board where it is the CPU to play with nothing coming — a match that looks
+// perfectly fine and can never continue.
+
+function watch(page) {
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(String(e)));
+  page.on("console", (m) => {
+    if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errors.push(m.text());
+  });
+  return errors;
+}
+
+const discs = (page) => page.evaluate(() =>
+  [...document.querySelectorAll("#c-board .c4-cell")].map(c =>
+    c.classList.contains("is-p1") ? 1 : c.classList.contains("is-p2") ? 2 : 0).join(""));
+
+test("connect-4: a match against the CPU survives a reload", async ({ page }) => {
+  const errors = watch(page);
+  await page.goto("/play/connect-4/");
+  // Two human moves, each answered by the CPU.
+  for (const col of [3, 2]) {
+    await page.locator(`.c4-col-btn[data-col="${col}"]`).click();
+    await expect(page.locator("#c-status")).toContainText("Your move", { timeout: 5000 });
+  }
+  const before = await discs(page);
+  expect(before.replace(/0/g, "").length, "four discs on the board").toBe(4);
+
+  await page.waitForTimeout(700);
+  await page.reload();
+  const prompt = page.locator(".sp-resume");
+  await expect(prompt, "resume offered").toBeVisible();
+  await prompt.locator("[data-resume]").click();
+  expect(await discs(page), "board restored").toBe(before);
+
+  // Playable, not just painted: another move must work and the CPU must reply.
+  await page.locator('.c4-col-btn[data-col="4"]').click();
+  await expect(page.locator("#c-status")).toContainText("Your move", { timeout: 5000 });
+  expect((await discs(page)).replace(/0/g, "").length, "match continued").toBe(6);
+  expect(errors).toEqual([]);
+});
+
+test("connect-4: a new match retires the save", async ({ page }) => {
+  await page.goto("/play/connect-4/");
+  await page.locator('.c4-col-btn[data-col="3"]').click();
+  await expect(page.locator("#c-status")).toContainText("Your move", { timeout: 5000 });
+  await page.waitForTimeout(700);
+  await page.locator("#c-new").click();
+  await page.waitForTimeout(300);
+  await page.reload();
+  await expect(page.locator(".sp-resume")).toHaveCount(0);
+});
+
+test("connect-4: each difficulty keeps its own save", async ({ page }) => {
+  await page.goto("/play/connect-4/");
+  await page.locator('.c4-col-btn[data-col="3"]').click();
+  await expect(page.locator("#c-status")).toContainText("Your move", { timeout: 5000 });
+  const medium = await discs(page);
+  await page.waitForTimeout(700);
+
+  await page.locator('.seg [data-level="2"]').click();
+  await expect(page.locator(".sp-resume"), "easy has no save").toHaveCount(0);
+  await page.locator('.seg [data-level="4"]').click();
+  const prompt = page.locator(".sp-resume");
+  await expect(prompt, "medium save survived the round trip").toBeVisible();
+  await prompt.locator("[data-resume]").click();
+  expect(await discs(page)).toBe(medium);
+});
+
+test("connect-4: an empty board is not offered back", async ({ page }) => {
+  await page.goto("/play/connect-4/");
+  await page.waitForTimeout(800);
+  await page.reload();
+  await expect(page.locator(".sp-resume")).toHaveCount(0);
+});
+
+// Checkers: drive a real move by asking the page which moves are legal, so the
+// test plays the game rather than guessing at squares.
+const ckBoard = (page) => page.evaluate(() =>
+  [...document.querySelectorAll("#ck-board .ck-sq")].map(sq => {
+    const p = sq.querySelector(".ck-piece");
+    return !p ? "." : (p.classList.contains("red") ? "r" : "b") + (p.classList.contains("king") ? "K" : "");
+  }).join(","));
+
+async function checkersMove(page) {
+  // Click a red piece, then whichever square lights up as a legal landing.
+  const from = await page.evaluate(() => {
+    for (const p of document.querySelectorAll("#ck-board .ck-piece.red")) return p.dataset.i;
+    return null;
+  });
+  for (const el of await page.locator("#ck-board .ck-piece.red").all()) {
+    await el.click();
+    const target = await page.evaluate(() => {
+      const m = document.querySelector("#ck-board .ck-sq.move");
+      return m ? m.dataset.i : null;
+    });
+    if (target) {
+      await page.locator(`#ck-board .ck-sq[data-i="${target}"]`).click();
+      return true;
+    }
+  }
+  return false;
+}
+
+test("checkers: a match against the CPU survives a reload", async ({ page }) => {
+  const errors = watch(page);
+  await page.goto("/play/checkers/");
+  expect(await checkersMove(page), "played a legal move").toBe(true);
+  await expect(page.locator("#ck-status")).toContainText("Your move", { timeout: 6000 });
+  const before = await ckBoard(page);
+
+  await page.waitForTimeout(700);
+  await page.reload();
+  const prompt = page.locator(".sp-resume");
+  await expect(prompt, "resume offered").toBeVisible();
+  await prompt.locator("[data-resume]").click();
+  expect(await ckBoard(page), "position restored").toBe(before);
+
+  // Playable, not just painted.
+  expect(await checkersMove(page), "match continues after restore").toBe(true);
+  await expect(page.locator("#ck-status")).toContainText("Your move", { timeout: 6000 });
+  expect(errors).toEqual([]);
+});
+
+test("checkers: the opening position is not offered back", async ({ page }) => {
+  await page.goto("/play/checkers/");
+  await page.waitForTimeout(800);
+  await page.reload();
+  await expect(page.locator(".sp-resume")).toHaveCount(0);
+});
+
+const rvBoard = (page) => page.evaluate(() =>
+  [...document.querySelectorAll("#rv-board .rv-sq")].map(sq => {
+    const p = sq.querySelector(".rv-disc");
+    return !p ? "." : (p.classList.contains("b") ? "b" : "w");
+  }).join(""));
+
+const rvDiscs = (page) => page.evaluate(() => document.querySelectorAll("#rv-board .rv-disc").length);
+
+// The status line reads the same before the click and after the CPU replies
+// ("Your move — you.re black..."), so waiting on it matches instantly and
+// samples the board mid-think. Wait on the position itself instead.
+async function rvPlayAndWait(page) {
+  const start = await rvDiscs(page);
+  const legal = await page.evaluate(() => document.querySelector("#rv-board .rv-sq.legal")?.dataset.i);
+  expect(legal, "found a legal square").toBeTruthy();
+  await page.locator(`#rv-board .rv-sq[data-i="${legal}"]`).click();
+  // Human disc + CPU disc: settle at start + 2.
+  await expect.poll(() => rvDiscs(page), { timeout: 8000 }).toBe(start + 2);
+}
+
+test("reversi: a match against the CPU survives a reload", async ({ page }) => {
+  const errors = watch(page);
+  await page.goto("/play/reversi/");
+  await rvPlayAndWait(page);
+  const before = await rvBoard(page);
+
+  await page.waitForTimeout(700);
+  await page.reload();
+  const prompt = page.locator(".sp-resume");
+  await expect(prompt, "resume offered").toBeVisible();
+  await prompt.locator("[data-resume]").click();
+  expect(await rvBoard(page), "position restored").toBe(before);
+
+  // Playable, not just painted: legal moves must be recomputed and a further
+  // move must draw a CPU reply.
+  await rvPlayAndWait(page);
+  expect(errors).toEqual([]);
+});
+
+test("reversi: the opening four discs are not offered back", async ({ page }) => {
+  await page.goto("/play/reversi/");
+  await page.waitForTimeout(800);
+  await page.reload();
+  await expect(page.locator(".sp-resume")).toHaveCount(0);
+});

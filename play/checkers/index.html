@@ -342,6 +342,7 @@
 
 <script src="../keyboard-grid.js"></script>
 <script src="../funnel.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script>
 (function () {
@@ -362,6 +363,8 @@
   try { savedDepth = +(localStorage.getItem("sp_checkers_mode") || 4); localMode = localStorage.getItem("sp_checkers_players") === "2"; } catch (e) {}
   var board, cells, selected = -1, legalForSel = [], busy = false, gameOver = false, depth = [2,4,6].indexOf(savedDepth) >= 0 ? savedDepth : 4, currentSide = RED;
   var undoStack = [];
+  // Assigned at the end of the file, once SnackPackResume is known to exist.
+  var resume = null;
   function updateUndo() { undoBtn.disabled = busy || undoStack.length === 0; }
 
   function build() {
@@ -623,7 +626,13 @@
     render();
   }
   undoBtn.addEventListener("click", undo);
-  newBtn.addEventListener("click", reset);
+  newBtn.addEventListener("click", function () {
+    reset();
+    // A new match retires the one it replaced. Not done inside reset(): the
+    // difficulty and player-count buttons reset too, and each of those keeps
+    // its own save.
+    if (resume) resume.clear();
+  });
   document.querySelectorAll(".seg [data-level]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       depth = +btn.dataset.level;
@@ -632,6 +641,8 @@
         x.setAttribute("aria-pressed", String(x === btn));
       });
       reset();
+      // Each difficulty keeps its own save; offer this one's if there is one.
+      if (resume) resume.variantChanged();
     });
   });
   document.querySelectorAll(".seg [data-level]").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.level === depth)); });
@@ -644,6 +655,7 @@
       document.getElementById("ck-p1-label").textContent = localMode ? "Player 1" : "You";
       document.getElementById("ck-p2-label").textContent = localMode ? "Player 2" : "CPU";
       reset();
+      if (resume) resume.variantChanged();
     });
   });
   document.getElementById("ck-p1-label").textContent = localMode ? "Player 1" : "You";
@@ -694,6 +706,84 @@
 
   build();
   reset();
+
+  // Saved progress. A full game of checkers against the deeper levels is one
+  // of the longer sittings here, and an abandoned match was simply gone.
+  //
+  // Deliberately never saved mid-think: cpuTurn() is a pending setTimeout, and
+  // a save taken while it is in flight would restore a board where it is the
+  // computer's move with nothing coming — a match that looks fine and can
+  // never continue. isActive() requires the turn to be back with a player.
+  //
+  // The undo stack rides along, capped. It holds whole board snapshots rather
+  // than moves, so it is the bulky part of the save; 40 plies is far more than
+  // anyone steps back through and keeps a long match well inside quota.
+  var START_PIECES = 24;
+
+  function validBoard(b) {
+    if (!Array.isArray(b) || b.length !== 64) return false;
+    for (var i = 0; i < 64; i++) {
+      var v = b[i];
+      if (v !== 0 && v !== 1 && v !== -1 && v !== 2 && v !== -2) return false;
+      // Pieces only ever occupy dark squares.
+      if (v !== 0 && (Math.floor(i / 8) + (i % 8)) % 2 !== 1) return false;
+    }
+    return true;
+  }
+
+  function validSave(p) {
+    if (!p || !validBoard(p.board)) return false;
+    if (p.currentSide !== RED && p.currentSide !== BLACK) return false;
+    if (p.undoStack && !Array.isArray(p.undoStack)) return false;
+    var red = p.board.filter(function (v) { return v > 0; }).length;
+    var black = p.board.filter(function (v) { return v < 0; }).length;
+    // Both sides must still have a piece, or the match was already decided,
+    // and neither can have gained one.
+    return red > 0 && black > 0 && red + black <= START_PIECES;
+  }
+
+  function piecesTaken() {
+    return START_PIECES - board.filter(function (v) { return v !== 0; }).length;
+  }
+
+  if (window.SnackPackResume) {
+    resume = window.SnackPackResume.attach({
+      game: "checkers",
+      // Difficulty changes the opponent, and two-player is a different game
+      // altogether, so neither may hand a board to the other.
+      variant: function () { return localMode ? "local" : "cpu-" + depth; },
+      serialize: function () {
+        return {
+          board: board,
+          currentSide: currentSide,
+          undoStack: undoStack.slice(-40)
+        };
+      },
+      validate: validSave,
+      restore: function (p) {
+        board = p.board;
+        currentSide = p.currentSide;
+        undoStack = Array.isArray(p.undoStack) ? p.undoStack : [];
+        selected = -1;
+        legalForSel = [];
+        busy = false;
+        gameOver = false;
+        statusEl.className = "game-status";
+        statusEl.textContent = localMode
+          ? (currentSide === RED ? "Player 1's move — red." : "Player 2's move — dark.")
+          : "Your move — you're red.";
+        render();
+        return true;
+      },
+      // Nothing worth offering back until the position has actually moved on
+      // from the opening, and never while the computer owes a move.
+      isActive: function () {
+        return !gameOver && !busy && (piecesTaken() > 0 || undoStack.length > 0);
+      }
+    });
+    new MutationObserver(function () { if (resume) resume.changed(); })
+      .observe(boardEl, { childList: true, subtree: true });
+  }
 })();
 </script>
 <script>

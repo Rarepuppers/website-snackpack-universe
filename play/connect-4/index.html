@@ -300,6 +300,7 @@
 
 <script src="../keyboard-grid.js"></script>
 <script src="../funnel.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script>
 (function () {
@@ -317,6 +318,8 @@
   var savedDepth = 4, localMode = false;
   try { savedDepth = +(localStorage.getItem("sp_connect4_mode") || 4); localMode = localStorage.getItem("sp_connect4_players") === "2"; } catch (e) {}
   var board, cells, busy, gameOver, depth = [2,4,6].indexOf(savedDepth) >= 0 ? savedDepth : 4, currentPlayer = HUMAN;
+  // Assigned at the end of the file, once SnackPackResume is known to exist.
+  var resume = null;
   var wins = { you: 0, cpu: 0 };
 
   // Build column buttons + cells once.
@@ -371,6 +374,20 @@
     cell.classList.add(who === HUMAN ? "is-p1" : "is-p2");
     void cell.offsetWidth;
     cell.classList.add("is-drop");
+  }
+
+  // Repaint every cell straight from the board array. paint() runs the drop
+  // animation and needs the row it fell from, which a restored match does not
+  // have — these discs were never dropped, they were already there.
+  function repaintAll() {
+    boardEl.className = "c4-board";
+    for (var r = 0; r < ROWS; r++) for (var c = 0; c < COLS; c++) {
+      var cell = cells[r * COLS + c];
+      cell.className = "c4-cell";
+      cell.style.removeProperty("--drop-distance");
+      if (board[r][c] === HUMAN) cell.classList.add("is-p1");
+      else if (board[r][c] === CPU) cell.classList.add("is-p2");
+    }
   }
 
   function winner(b, who) {
@@ -566,7 +583,13 @@
     }
     if (col >= 0 && col < COLS && board[0][col] === 0) humanMove(col);
   });
-  newBtn.addEventListener("click", reset);
+  newBtn.addEventListener("click", function () {
+    reset();
+    // A new match retires the one it replaced. Not done inside reset(): the
+    // difficulty and player-count buttons reset too, and each of those keeps
+    // its own save.
+    if (resume) resume.clear();
+  });
   document.querySelectorAll(".seg [data-level]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       depth = +btn.dataset.level;
@@ -575,6 +598,8 @@
         x.setAttribute("aria-pressed", String(x === btn));
       });
       reset();
+      // Each difficulty keeps its own save; offer this one's if there is one.
+      if (resume) resume.variantChanged();
     });
   });
   document.querySelectorAll(".seg [data-level]").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.level === depth)); });
@@ -587,6 +612,7 @@
       document.getElementById("c-p1-label").textContent = localMode ? "Player 1" : "You";
       document.getElementById("c-p2-label").textContent = localMode ? "Player 2" : "CPU";
       applyColours(); reset();
+      if (resume) resume.variantChanged();
     });
   });
   document.getElementById("c-p1-label").textContent = localMode ? "Player 1" : "You";
@@ -638,6 +664,77 @@
   applyColours();
 
   reset();
+
+  // Saved progress. A match against the deeper CPU levels takes a while and
+  // the board is the whole game, so closing the tab threw the match away.
+  //
+  // Deliberately never saved mid-think: cpuMove() is a pending setTimeout, and
+  // a save taken while it is in flight would restore a board where it is the
+  // computer's turn with no move coming — a match that looks fine and can
+  // never continue. isActive() requires the turn to be back with a player.
+  function validSave(p) {
+    if (!p || !Array.isArray(p.board) || p.board.length !== ROWS) return false;
+    var discs = { 1: 0, 2: 0 };
+    for (var r = 0; r < ROWS; r++) {
+      if (!Array.isArray(p.board[r]) || p.board[r].length !== COLS) return false;
+      for (var c = 0; c < COLS; c++) {
+        var v = p.board[r][c];
+        if (v !== 0 && v !== HUMAN && v !== CPU) return false;
+        if (v) discs[v]++;
+      }
+    }
+    // Discs alternate, so the two counts can never differ by more than one.
+    if (Math.abs(discs[1] - discs[2]) > 1) return false;
+    // Gravity: a disc can never sit above an empty cell in the same column.
+    for (var col = 0; col < COLS; col++) {
+      var seen = false;
+      for (var row = 0; row < ROWS; row++) {
+        if (p.board[row][col]) seen = true;
+        else if (seen) return false;
+      }
+    }
+    return p.currentPlayer === HUMAN || p.currentPlayer === CPU;
+  }
+
+  function discCount() {
+    var n = 0;
+    for (var r = 0; r < ROWS; r++) for (var c = 0; c < COLS; c++) if (board[r][c]) n++;
+    return n;
+  }
+
+  if (window.SnackPackResume) {
+    resume = window.SnackPackResume.attach({
+      game: "connect-4",
+      // Difficulty changes the opponent, and two-player is a different game
+      // altogether, so neither may hand a board to the other.
+      variant: function () { return localMode ? "local" : "cpu-" + depth; },
+      serialize: function () {
+        return { board: board, currentPlayer: currentPlayer, wins: wins };
+      },
+      validate: validSave,
+      restore: function (p) {
+        board = p.board;
+        currentPlayer = p.currentPlayer;
+        busy = false;
+        gameOver = false;
+        if (p.wins && Number.isFinite(p.wins.you) && Number.isFinite(p.wins.cpu)) {
+          wins = p.wins;
+          youEl.textContent = wins.you;
+          cpuEl.textContent = wins.cpu;
+        }
+        repaintAll();
+        setBtns(true);
+        statusEl.className = "game-status";
+        statusEl.textContent = localMode
+          ? (currentPlayer === HUMAN ? "Player 1's move." : "Player 2's move.")
+          : "Your move — drop a disc.";
+        return true;
+      },
+      isActive: function () { return !gameOver && !busy && discCount() > 0; }
+    });
+    new MutationObserver(function () { if (resume) resume.changed(); })
+      .observe(boardEl, { attributes: true, subtree: true, attributeFilter: ["class"] });
+  }
 })();
 </script>
 <script>
