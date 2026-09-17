@@ -77,7 +77,13 @@ const errors = [];
 
 for (const shot of shots) {
   const page = await browser.newPage({ viewport: { width: 520, height: 1180 } });
-  page.on('console', (m) => { if (m.type() === 'error') errors.push(`${shot.name}: ${m.text()}`); });
+  // Third-party scripts are not this game's problem, and the analytics beacon
+  // cannot resolve DNS in a sandbox at all -- counting it as a failure makes
+  // the harness cry wolf on every run.
+  const external = /cloudflareinsights|static\.cloudflare|googletagmanager|ERR_NAME_NOT_RESOLVED/i;
+  page.on('console', (m) => {
+    if (m.type() === 'error' && !external.test(m.text())) errors.push(`${shot.name}: ${m.text()}`);
+  });
   page.on('pageerror', (e) => errors.push(`${shot.name}: ${e.message}`));
 
   await page.goto(`${BASE}/play/pinball/`, { waitUntil: 'load' });
