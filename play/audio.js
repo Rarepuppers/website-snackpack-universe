@@ -69,8 +69,33 @@
   // the player expects, not just cheaper.
   var RETRIGGER_MS = 35;
 
-  function urlFor(name) {
-    return new URL("shared-assets/game-ui/audio/" + name + ".wav", base).href;
+  // The UI set shipped as uncompressed PCM — 207 KB of WAV preloaded on every
+  // game page, and win.wav alone was 99 KB of that. The same eight at MP3 96k
+  // mono are 35 KB, and ffprobe puts every decoded duration within a
+  // millisecond of the original, so even the 35ms tick keeps its attack rather
+  // than picking up encoder padding. The .wav files stay as the fallback.
+  var AUDIO_EXT = (function () {
+    try {
+      return new Audio().canPlayType("audio/mpeg") ? "mp3" : "wav";
+    } catch (error) {
+      return "wav";
+    }
+  }());
+
+  function urlFor(name, ext) {
+    return new URL("shared-assets/game-ui/audio/" + name + "." + (ext || AUDIO_EXT), base).href;
+  }
+
+  // One retry on the WAV if the MP3 is missing or refused, so a sound that
+  // failed to encode degrades to the original rather than to silence.
+  function withWavFallback(audio, name) {
+    if (AUDIO_EXT === "wav") return audio;
+    audio.addEventListener("error", function once() {
+      audio.removeEventListener("error", once);
+      audio.src = urlFor(name, "wav");
+      audio.load();
+    });
+    return audio;
   }
 
   function poolFor(name) {
@@ -79,7 +104,7 @@
   }
 
   function makeVoice(name) {
-    var audio = new Audio(urlFor(name));
+    var audio = withWavFallback(new Audio(urlFor(name)), name);
     audio.preload = "auto";
     audio.volume = 0.65;
     return audio;
@@ -158,7 +183,7 @@
   var activeLoops = [];
 
   function loop(name) {
-    var audio = new Audio(urlFor(name));
+    var audio = withWavFallback(new Audio(urlFor(name)), name);
     audio.loop = true;
     audio.preload = "auto";
     audio.volume = 0;
