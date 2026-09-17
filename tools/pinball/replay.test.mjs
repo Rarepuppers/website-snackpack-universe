@@ -97,14 +97,33 @@ const TAPE_DEFS = [
 function runTape(def) {
   const world = createWorld(def.mode, def.seed);
   const rules = createRules(def.seed, def.mode);
-  const input = PATTERNS[def.pattern];
+
+  // Two kinds of tape.
+  //
+  // 'frames' tapes are RECORDED through the real page: each entry is the
+  // (dt, buttons) of one real rAF frame, so replaying the same dt sequence
+  // reproduces the run exactly, frame jitter included. They exercise game.js
+  // and the input handlers, which scripted tapes never touch.
+  //
+  // Pattern tapes are scripted straight into the engine: cheaper, fully
+  // reproducible, and useful for pinning specific behaviours.
+  const recorded = def.kind === 'frames';
+  const input = recorded ? null : PATTERNS[def.pattern];
+  const frames = recorded ? def.frames : null;
+  const total = recorded ? frames.length : def.frames;
+
   let ballsLeft = MODES[def.mode].balls;
   let over = false;
   const pendingKicks = [];
   const counts = Object.create(null);
 
-  for (let i = 0; i < def.frames && !over; i += 1) {
-    advance(world, input(i, world) || {}, DT);
+  for (let i = 0; i < total && !over; i += 1) {
+    if (recorded) {
+      const [dt, buttons] = frames[i];
+      advance(world, { left: !!(buttons & 1), right: !!(buttons & 2), plunge: !!(buttons & 4) }, dt);
+    } else {
+      advance(world, input(i, world) || {}, DT);
+    }
 
     for (const e of drainEvents(world)) {
       counts[e.type] = (counts[e.type] || 0) + 1;
@@ -160,7 +179,17 @@ function runTape(def) {
 
 fs.mkdirSync(TAPES, { recursive: true });
 
-group('Replay regression');
+/**
+ * Recorded tapes are files first and definitions second: anyone can drop one
+ * into tapes/ (from `record-tape.mjs`, or by hand from the browser with
+ * ?record=1) and it becomes part of the suite with no code change.
+ */
+const RECORDED = fs.readdirSync(TAPES)
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => JSON.parse(fs.readFileSync(path.join(TAPES, f), 'utf8')))
+  .filter((t) => t.kind === 'frames');
+
+group('Replay regression -- scripted');
 
 for (const def of TAPE_DEFS) {
   const file = path.join(TAPES, `${def.name}.json`);
@@ -191,6 +220,38 @@ for (const def of TAPE_DEFS) {
     }
   });
 }
+
+group('Replay regression -- recorded through the real page');
+
+for (const tape of RECORDED) {
+  const file = path.join(TAPES, `${tape.name}.json`);
+
+  if (update || !tape.expect) {
+    const expect = runTape(tape);
+    fs.writeFileSync(file, `${JSON.stringify({ ...tape, expect }, null, 2)}
+`);
+    tape.expect = expect;
+  }
+
+  test(`${tape.name} (${tape.frames.length} recorded frames) replays identically`, () => {
+    const stored = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const got = runTape(stored);
+    assert(got.events.escaped === 0, 'a ball escaped the cabinet');
+    for (const key of ['score', 'ball', 'rank', 'missions', 'gameOver']) {
+      assert(
+        String(got[key]) === String(stored.expect[key]),
+        `${key}: got ${round(got[key])}, tape expects ${round(stored.expect[key])}`,
+      );
+    }
+  });
+}
+
+test('at least one tape came from the real page, not the engine', () => {
+  // A suite of engine-only tapes would never notice game.js breaking.
+  assert(RECORDED.length > 0, 'no recorded tapes present — run tools/pinball/record-tape.mjs');
+});
+
+group('Tape sanity');
 
 test('every tape actually exercised the table', () => {
   // A tape that scores nothing and hits nothing would replay identically

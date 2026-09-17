@@ -81,7 +81,11 @@ export function createRenderer(canvas) {
   // -------------------------------------------------------------------------
   function resize() {
     const stage = canvas.parentElement;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Capped at 3, not 2. Beyond 3 the fill cost of the dynamic and light
+    // layers grows faster than anything a display can show. At 3 the table is
+    // noticeably crisper on a modern phone, and it is the tier the Codex art
+    // ships at -- a 2 cap would have meant the 3x playfield never rendered.
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
     const availW = stage.clientWidth;
     let availH = stage.clientHeight;
 
