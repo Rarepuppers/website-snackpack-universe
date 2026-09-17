@@ -339,6 +339,7 @@
 <script src="../daily-state.js"></script>
 <script src="../audio.js"></script><script src="../share-result.js"></script>
 <script src="../funnel.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
 <script>
 (function () {
   "use strict";
@@ -437,6 +438,8 @@
   var DAILY = dailyParam();
   var poolIndex = Math.floor(Math.random() * VERIFIED.length);
   var state, history, wrap = false, hintIdx = null;
+  // Assigned at the end of the file, once SnackPackResume is known to exist.
+  var resume = null;
 
   function available(st, i) {
     if (st.gone[i]) return false;
@@ -686,12 +689,18 @@
     render();
   });
 
-  document.getElementById("tp-new").addEventListener("click", function () { newDeal(true); });
+  document.getElementById("tp-new").addEventListener("click", function () {
+    newDeal(true);
+    // A new deal retires the one it replaced. Not done inside newDeal(): the
+    // Daily button deals too, and daily keeps its own save.
+    if (resume) resume.clear();
+  });
 
   dailyBtn.addEventListener("click", function () {
-    if (DAILY != null) { DAILY = null; newDeal(true); return; }
+    if (DAILY != null) { DAILY = null; newDeal(true); if (resume) resume.variantChanged(); return; }
     DAILY = Math.floor(Date.now() / 86400000);
     newDeal(false);
+    if (resume) resume.variantChanged();
   });
 
   var wrapBtn = document.getElementById("tp-wrap");
@@ -717,6 +726,44 @@
   wrapBtn.setAttribute("aria-pressed", String(wrap));
   showBest();
   newDeal(false);
+
+  // Saved progress. A TriPeaks run is a long streak-scored sitting, and the
+  // streak multiplier is what makes a good run good — losing it to a closed
+  // tab costs more than the cards. The undo history rides along so a restored
+  // run can still be stepped back. Wrap is left out on purpose: it is a stored
+  // rule preference applied at load, not part of this particular deal.
+  function validSave(p) {
+    var st = p && p.state;
+    if (!st || !Array.isArray(st.tableau) || st.tableau.length !== 28) return false;
+    if (!Array.isArray(st.gone) || st.gone.length !== 28) return false;
+    if (!Array.isArray(st.waste) || !st.waste.length || !Array.isArray(st.stock)) return false;
+    var live = st.tableau.filter(function (c, i) { return !st.gone[i]; }).concat(st.waste, st.stock);
+    for (var i = 0; i < live.length; i++) {
+      var c = live[i];
+      if (!c || !Number.isFinite(c.s) || !Number.isFinite(c.r) || c.r < 1 || c.r > 13) return false;
+    }
+    return Number.isFinite(st.score) && Number.isFinite(st.streak) && Number.isFinite(st.moves);
+  }
+
+  if (window.SnackPackResume) {
+    resume = window.SnackPackResume.attach({
+      game: "tripeaks",
+      variant: function () { return DAILY != null ? "daily" : "default"; },
+      serialize: function () { return { state: state, history: history.slice(-100) }; },
+      validate: validSave,
+      restore: function (p) {
+        state = p.state;
+        history = Array.isArray(p.history) ? p.history : [];
+        hintIdx = null;
+        dailyBtn.setAttribute("aria-pressed", String(DAILY != null));
+        render();
+        return true;
+      },
+      isActive: function () { return !!state && state.phase === "playing" && state.moves > 0; }
+    });
+    new MutationObserver(function () { if (resume) resume.changed(); })
+      .observe(boardEl, { childList: true, subtree: true });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

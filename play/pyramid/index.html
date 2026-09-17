@@ -334,6 +334,7 @@
      Vol 1 default in funnel.js — that offered an app without this game. -->
 <script>window.SP_PLAY_URL = "https://www.snackpackuniverse.com/go/arcade/pyramid/braingames3/";</script>
 <script src="../funnel.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
 <script>
 (function () {
   "use strict";
@@ -403,6 +404,8 @@
   var DAILY = dailyParam();
   var mode = "classic";
   var state, history, selected = null, hintPair = null;
+  // Assigned at the end of the file, once SnackPackResume is known to exist.
+  var resume = null;
 
   function exposed(st, i) {
     if (!st.pyramid[i]) return false;
@@ -706,12 +709,18 @@
     render();
   });
 
-  document.getElementById("py-new").addEventListener("click", function () { newDeal(true); });
+  document.getElementById("py-new").addEventListener("click", function () {
+    newDeal(true);
+    // A new deal retires the one it replaced. Not done inside newDeal(): the
+    // mode and Daily buttons deal too, and each of those keeps its own save.
+    if (resume) resume.clear();
+  });
 
   dailyBtn.addEventListener("click", function () {
-    if (DAILY != null) { DAILY = null; newDeal(true); return; }
+    if (DAILY != null) { DAILY = null; newDeal(true); if (resume) resume.variantChanged(); return; }
     DAILY = Math.floor(Date.now() / 86400000);
     newDeal(false);
+    if (resume) resume.variantChanged();
   });
 
   Array.prototype.forEach.call(document.querySelectorAll(".seg [data-mode]"), function (btn) {
@@ -722,6 +731,8 @@
       });
       try { localStorage.setItem(MODE_KEY, mode); } catch (e) {}
       newDeal(true);
+      // Each mode keeps its own save; offer this one's if there is one.
+      if (resume) resume.variantChanged();
     });
   });
 
@@ -740,6 +751,46 @@
   });
   showBest();
   newDeal(false);
+
+  // Saved progress. A Pyramid deal is a long sitting and only some deals are
+  // winnable at all, so losing a half-cleared pyramid to a closed tab is a
+  // real cost. The undo history rides along; resuming into a pyramid you can
+  // no longer step back through would be the wrong half of the game. Mode is
+  // the variant — the recycle allowance differs, so a Relaxed board must not
+  // be handed back under Hard rules.
+  function validSave(p) {
+    var st = p && p.state;
+    if (!st || !Array.isArray(st.pyramid) || st.pyramid.length !== SIZE) return false;
+    if (!Array.isArray(st.stock) || !Array.isArray(st.waste)) return false;
+    var live = st.pyramid.filter(Boolean).concat(st.stock, st.waste);
+    for (var i = 0; i < live.length; i++) {
+      var c = live[i];
+      if (!c || !Number.isFinite(c.s) || !Number.isFinite(c.r) || c.r < 1 || c.r > 13) return false;
+    }
+    // Cards only ever leave the game in pairs, so an odd remainder is corrupt.
+    return live.length % 2 === 0 && Number.isFinite(st.moves) && Number.isFinite(st.recycles);
+  }
+
+  if (window.SnackPackResume) {
+    resume = window.SnackPackResume.attach({
+      game: "pyramid",
+      variant: function () { return mode + (DAILY != null ? "-daily" : ""); },
+      serialize: function () { return { state: state, history: history.slice(-100) }; },
+      validate: validSave,
+      restore: function (p) {
+        state = p.state;
+        history = Array.isArray(p.history) ? p.history : [];
+        selected = null;
+        hintPair = null;
+        dailyBtn.setAttribute("aria-pressed", String(DAILY != null));
+        render();
+        return true;
+      },
+      isActive: function () { return !!state && state.phase === "playing" && state.moves > 0; }
+    });
+    new MutationObserver(function () { if (resume) resume.changed(); })
+      .observe(boardEl, { childList: true, subtree: true });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

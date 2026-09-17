@@ -296,6 +296,7 @@
 </footer>
 
 <script src="../funnel.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
 <script src="../keyboard-grid.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script>
@@ -423,6 +424,8 @@
 
   var layout = "classic";
   var board, selectedId, solved, started, elapsed, timerId, minX, minY, zmax;
+  // Assigned further down, once SnackPackResume is known to be present.
+  var resume = null;
 
   function bestKey() { return "sp_mahjong_best_" + layout; }
   function fmt(s) { var m = Math.floor(s / 60); return m + ":" + (s % 60 < 10 ? "0" : "") + (s % 60); }
@@ -439,6 +442,14 @@
     statusEl.className = "game-status";
     showBest();
 
+    measure();
+    render();
+  }
+
+  // Board extents and the element size that follows from them. Split out of
+  // build() because restoring a saved board has to size the stage the same
+  // way without dealing a new one.
+  function measure() {
     minX = Math.min.apply(null, board.map(function (t) { return t.x; }));
     minY = Math.min.apply(null, board.map(function (t) { return t.y; }));
     var maxX = Math.max.apply(null, board.map(function (t) { return t.x; }));
@@ -447,8 +458,6 @@
     var pad = zmax * OFF + 6;
     boardEl.style.width = (pad * 2 + (maxX - minX + 1) * UX) + "px";
     boardEl.style.height = (pad * 2 + (maxY - minY + 1) * UY) + "px";
-
-    render();
   }
 
   function render() {
@@ -561,6 +570,10 @@
     dailyMode = false;
     dailyBtn.setAttribute("aria-pressed", "false");
     build();
+    // Asking for a new board retires the save for the board it replaced.
+    // Deliberately not done inside build(): the layout buttons call build()
+    // too, and switching layout away and back must not destroy that board.
+    if (resume) resume.clear();
   });
 
   var dailyBtn = document.getElementById("mj-daily");
@@ -569,6 +582,7 @@
     dailyMode = !dailyMode;
     dailyBtn.setAttribute("aria-pressed", String(dailyMode));
     build();
+    if (resume) resume.variantChanged();
   });
   hintBtn.addEventListener("click", hint);
   shuffleBtn.addEventListener("click", doShuffle);
@@ -577,6 +591,8 @@
       layout = btn.dataset.layout;
       document.querySelectorAll(".seg [data-layout]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
       build();
+      // Each layout keeps its own save; offer this one's if there is one.
+      if (resume) resume.variantChanged();
     });
   });
 
@@ -601,6 +617,52 @@
       label: "Mahjong board — open tiles only",
       rowWidth: function () { return document.querySelectorAll("#mj-board .mj-tile.is-open").length || 1; }
     });
+  }
+
+  // Saved progress. Clearing a 144-tile layout is the longest sitting in the
+  // arcade — far too long to expect in one go — so the board, the clock and
+  // the current selection are all kept. The layout (and Daily) is the variant:
+  // a saved Classic board must not be offered back over a Turtle deal.
+  function validSave(p) {
+    if (!p || !Array.isArray(p.board) || !p.board.length) return false;
+    for (var i = 0; i < p.board.length; i++) {
+      var t = p.board[i];
+      if (!t || !Number.isFinite(t.x) || !Number.isFinite(t.y) || !Number.isFinite(t.z)) return false;
+      if (typeof t.pairKey === "undefined" || typeof t.suit === "undefined") return false;
+    }
+    // An odd number of live tiles can never be matched away, so a save that
+    // reports one is corrupt rather than merely stale.
+    var live = p.board.filter(function (t) { return !t.removed; }).length;
+    return live % 2 === 0 && Number.isFinite(p.elapsed);
+  }
+
+  if (window.SnackPackResume) {
+    resume = window.SnackPackResume.attach({
+      game: "mahjong",
+      variant: function () { return layout + (dailyMode ? "-daily" : ""); },
+      serialize: function () {
+        return { board: board, selectedId: selectedId, started: started, elapsed: elapsed };
+      },
+      validate: validSave,
+      restore: function (p) {
+        stopTimer();
+        board = p.board;
+        selectedId = p.selectedId == null ? null : p.selectedId;
+        started = !!p.started;
+        elapsed = p.elapsed;
+        solved = false;
+        timeEl.textContent = fmt(elapsed);
+        statusEl.className = "game-status";
+        showBest();
+        measure();
+        render();
+        if (started) startTimer();
+        return true;
+      },
+      // Nothing to offer back from an untouched deal or a cleared board.
+      isActive: function () { return !solved && started; }
+    });
+    new MutationObserver(function () { if (resume) resume.changed(); }).observe(boardEl, { childList: true });
   }
 })();
 </script>

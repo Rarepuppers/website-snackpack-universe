@@ -273,6 +273,7 @@
      Vol 1 default in funnel.js — that offered an app without this game. -->
 <script>window.SP_PLAY_URL = "https://www.snackpackuniverse.com/go/arcade/golf-solitaire/braingames2/";</script>
 <script src="../funnel.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
 <script>
 (function () {
   "use strict";
@@ -343,6 +344,8 @@
   var BEST_KEY = "sp_golf_best";
   var WRAP_KEY = "sp_golf_wrap";
   var state, history, wrap = false, hintCol = null;
+  // Assigned at the end of the file, once SnackPackResume is known to exist.
+  var resume = null;
 
   function playable(st) {
     var top = st.waste[st.waste.length - 1];
@@ -515,7 +518,11 @@
     render();
   });
 
-  document.getElementById("gs-new").addEventListener("click", function () { newDeal(true); });
+  document.getElementById("gs-new").addEventListener("click", function () {
+    newDeal(true);
+    // A new deal retires the one it replaced.
+    if (resume) resume.clear();
+  });
 
   var wrapBtn = document.getElementById("gs-wrap");
   wrapBtn.addEventListener("click", function () {
@@ -531,6 +538,47 @@
   wrapBtn.setAttribute("aria-pressed", String(wrap));
   showBest();
   newDeal(false);
+
+  // Saved progress. Clearing all 35 tableau cards is a long sitting and a
+  // stuck board ends it outright, so a run that is going well is worth keeping.
+  // The undo history rides along. Wrap stays out: it is a stored rule
+  // preference applied at load, not part of this deal.
+  function validSave(p) {
+    var st = p && p.state;
+    if (!st || !Array.isArray(st.tableau) || st.tableau.length !== 7) return false;
+    if (!Array.isArray(st.waste) || !st.waste.length || !Array.isArray(st.stock)) return false;
+    var live = st.waste.concat(st.stock);
+    for (var i = 0; i < st.tableau.length; i++) {
+      if (!Array.isArray(st.tableau[i])) return false;
+      live = live.concat(st.tableau[i]);
+    }
+    for (var j = 0; j < live.length; j++) {
+      var c = live[j];
+      if (!c || !Number.isFinite(c.s) || !Number.isFinite(c.r) || c.r < 1 || c.r > 13) return false;
+    }
+    // Golf never removes a card from play, so all 52 must still be accounted
+    // for; a save that has lost one is corrupt rather than merely stale.
+    return live.length === 52 && Number.isFinite(st.moves);
+  }
+
+  if (window.SnackPackResume) {
+    resume = window.SnackPackResume.attach({
+      game: "golf-solitaire",
+      variant: function () { return DAILY != null ? "daily" : "default"; },
+      serialize: function () { return { state: state, history: history.slice(-100) }; },
+      validate: validSave,
+      restore: function (p) {
+        state = p.state;
+        history = Array.isArray(p.history) ? p.history : [];
+        hintCol = null;
+        render();
+        return true;
+      },
+      isActive: function () { return !!state && state.phase === "playing" && state.moves > 0; }
+    });
+    new MutationObserver(function () { if (resume) resume.changed(); })
+      .observe(colsEl, { childList: true, subtree: true });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

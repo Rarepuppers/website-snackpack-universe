@@ -283,6 +283,7 @@
 </footer>
 
 <script src="../funnel.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script>
 (function () {
@@ -300,6 +301,8 @@
   var undoBtn = document.getElementById("g-undo");
 
   var grid, score, best, over, won, uid;
+  // Assigned further down, once SnackPackResume is known to be present.
+  var resume = null;
 
   // ── Undo ──────────────────────────────────────────
   // A mistimed swipe used to be unrecoverable. Snapshots are taken only for
@@ -334,6 +337,9 @@
   bestEl.textContent = best;
 
   function reset() {
+    // Starting fresh retires the saved run; otherwise abandoning the new board
+    // before it scores would leave the old save to be offered back next visit.
+    if (resume) resume.clear();
     grid = [];
     for (var r = 0; r < SIZE; r++) { grid[r] = []; for (var c = 0; c < SIZE; c++) grid[r][c] = null; }
     score = 0; over = false; won = false; uid = 1;
@@ -498,6 +504,47 @@
 
   newBtn.addEventListener("click", reset);
   reset();
+
+  // Saved progress. A 2048 run is long and the board is the whole game, so
+  // closing the tab mid-run used to throw the run away. The undo history rides
+  // along with it — resuming into a board you can no longer step back from
+  // would be a worse offer than not resuming at all. Capped the same way the
+  // live history is, so a long run can't outgrow the storage quota.
+  function validSave(p) {
+    if (!p || !Array.isArray(p.grid) || p.grid.length !== SIZE) return false;
+    for (var r = 0; r < SIZE; r++) {
+      if (!Array.isArray(p.grid[r]) || p.grid[r].length !== SIZE) return false;
+      for (var c = 0; c < SIZE; c++) {
+        var cell = p.grid[r][c];
+        if (cell === null) continue;
+        if (!cell || !Number.isFinite(cell.v) || cell.v < 2) return false;
+      }
+    }
+    return Number.isFinite(p.score) && Number.isFinite(p.uid);
+  }
+
+  if (window.SnackPackResume) {
+    resume = window.SnackPackResume.attach({
+      game: "2048",
+      serialize: function () {
+        return { grid: grid, score: score, over: over, won: won, uid: uid, history: history.slice(-50) };
+      },
+      validate: validSave,
+      restore: function (p) {
+        grid = p.grid; score = p.score; over = !!p.over; won = !!p.won; uid = p.uid;
+        history = Array.isArray(p.history) ? p.history : [];
+        if (undoBtn) undoBtn.disabled = history.length === 0;
+        scoreEl.textContent = String(score);
+        statusEl.className = "game-status";
+        statusEl.textContent = "Saved game restored.";
+        render();
+        return true;
+      },
+      // Only worth offering back a run that actually got going.
+      isActive: function () { return !over && score > 0; }
+    });
+    new MutationObserver(function () { resume.changed(); }).observe(tilesEl, { childList: true });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->
