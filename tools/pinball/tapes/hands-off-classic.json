@@ -1,0 +1,24 @@
+{
+  "name": "hands-off-classic",
+  "seed": 1234,
+  "mode": "classic",
+  "pattern": "hands-off",
+  "frames": 86400,
+  "expect": {
+    "score": 35000,
+    "ball": 4,
+    "rank": 0,
+    "missions": 0,
+    "bonusMultiplier": 3,
+    "gameOver": true,
+    "events": {
+      "bumper": 0,
+      "sling": 0,
+      "drain": 3,
+      "rollover": 6,
+      "ramp-exit": 2,
+      "saucer": 1,
+      "escaped": 0
+    }
+  }
+}

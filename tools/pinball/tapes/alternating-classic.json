@@ -1,0 +1,24 @@
+{
+  "name": "alternating-classic",
+  "seed": 77,
+  "mode": "classic",
+  "pattern": "alternating",
+  "frames": 86400,
+  "expect": {
+    "score": 273500,
+    "ball": 4,
+    "rank": 0,
+    "missions": 0,
+    "bonusMultiplier": 5,
+    "gameOver": true,
+    "events": {
+      "bumper": 25,
+      "sling": 10,
+      "drain": 3,
+      "rollover": 15,
+      "ramp-exit": 10,
+      "saucer": 1,
+      "escaped": 0
+    }
+  }
+}

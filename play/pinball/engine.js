@@ -500,9 +500,11 @@ function collectDynamicShapes(world) {
 
 /** Non-colliding triggers: rollovers, spinner, saucers, ramp entries, kickback. */
 function checkTriggers(ball, world, dt) {
-  // Saucer capture.
+  // Saucer capture. The cooldown is what stops a just-ejected ball being
+  // swallowed again on the next step.
+  if (ball._saucerCool > 0) ball._saucerCool -= dt;
   for (const s of world.saucers) {
-    if (s.ball) continue;
+    if (s.ball || ball._saucerCool > 0) continue;
     if (Math.hypot(ball.x - s.x, ball.y - s.y) < s.r) {
       const speed = Math.hypot(ball.vx, ball.vy);
       // A scoop catches most balls that enter it. Too tight a threshold and
@@ -712,6 +714,8 @@ function resolveImpact(ball, world, shape, hit) {
 // Public actions
 // ---------------------------------------------------------------------------
 
+export const SAUCER_COOLDOWN = 0.5; // s -- cannot be recaptured during this
+
 export function releaseSaucer(world, saucerId) {
   const s = world.saucers.find((x) => x.id === saucerId);
   if (!s || !s.ball) return;
@@ -720,8 +724,18 @@ export function releaseSaucer(world, saucerId) {
   ball.captureT = 0;
   ball.vx = s.kick.vx;
   ball.vy = s.kick.vy;
-  ball.x = s.x;
-  ball.y = s.y;
+
+  // Eject from the LIP of the scoop along the kick direction, not from its
+  // centre. Released at the centre the ball is still deep inside the capture
+  // radius, so the very next step recaptures it -- the scoop then fires every
+  // holdMs forever. A hands-off game scored 2.1 million that way, and no
+  // property test noticed because none of them runs a long game.
+  const k = Math.hypot(s.kick.vx, s.kick.vy) || 1;
+  const out = s.r + BALL_R + 1;
+  ball.x = s.x + (s.kick.vx / k) * out;
+  ball.y = s.y + (s.kick.vy / k) * out;
+  ball._saucerCool = SAUCER_COOLDOWN;
+
   s.ball = null;
   world.events.push({ type: 'saucer-kick', id: s.id });
 }

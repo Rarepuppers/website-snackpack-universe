@@ -1,0 +1,24 @@
+{
+  "name": "soft-plunge",
+  "seed": 9,
+  "mode": "classic",
+  "pattern": "soft-plunge",
+  "frames": 57600,
+  "expect": {
+    "score": 172350,
+    "ball": 4,
+    "rank": 0,
+    "missions": 0,
+    "bonusMultiplier": 5,
+    "gameOver": true,
+    "events": {
+      "bumper": 9,
+      "sling": 36,
+      "drain": 3,
+      "rollover": 24,
+      "ramp-exit": 6,
+      "saucer": 3,
+      "escaped": 0
+    }
+  }
+}
