@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 // Saved progress for the long-form games.
 //
 // resume.js existed but only a dozen games used it. These five are the ones
-// where an interrupted sitting actually costs work — a 144-tile Mahjong
+// where an interrupted sitting actually costs work — a 30-pair Mahjong
 // layout, a half-cleared Pyramid, a scored TriPeaks streak, a Golf run, a
 // long 2048 board. Each spec plays real moves, reloads the page, takes the
 // resume offer and then checks the board is PLAYABLE again rather than

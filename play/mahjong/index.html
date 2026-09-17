@@ -619,9 +619,10 @@
     });
   }
 
-  // Saved progress. Clearing a 144-tile layout is the longest sitting in the
-  // arcade — far too long to expect in one go — so the board, the clock and
-  // the current selection are all kept. The layout (and Daily) is the variant:
+  // Saved progress. Layouts run 18 to 30 pairs (Garden is 60 tiles), which is
+  // a long enough sitting that finishing in one go is not a safe assumption,
+  // so the board, the clock and the current selection are all kept. The
+  // layout (and Daily) is the variant:
   // a saved Classic board must not be offered back over a Turtle deal.
   function validSave(p) {
     if (!p || !Array.isArray(p.board) || !p.board.length) return false;
