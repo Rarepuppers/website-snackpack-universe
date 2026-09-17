@@ -110,3 +110,65 @@ test("the keyboard answer agrees with the page's own keyboard marker", () => {
   }
   expect(wrong).toEqual([]);
 });
+
+// The offline answer shipped wrong once, copied from a house line that predated
+// sw.js: it told people the web version needs a connection and pushed them to
+// the Android app. The site registers a service worker on every game page and
+// plays offline once a game has been opened — verified by cutting the network,
+// not by reading the worker. Do not let that claim come back.
+test("no answer claims the web version needs a connection", () => {
+  const lies = [];
+  for (const slug of games) {
+    const { faq } = faqOf(slug);
+    if (!faq) continue;
+    for (const q of faq.mainEntity) {
+      const a = q.acceptedAnswer.text;
+      if (/needs a browser tab open|Not as an installed app|needs a connection/i.test(a)) {
+        lies.push(`${slug}: "${q.name}" still says the web version cannot go offline`);
+      }
+    }
+  }
+  expect(lies).toEqual([]);
+});
+
+// And every game page must actually register the worker that makes it true.
+test("every game page registers the service worker its FAQ relies on", () => {
+  const without = games.filter((slug) => {
+    const html = fs.readFileSync(path.join(PLAY, slug, "index.html"), "utf8");
+    const { faq } = faqOf(slug);
+    const claimsOffline = faq && faq.mainEntity.some((q) =>
+      /offline/i.test(q.name) && /keeps working with no connection/i.test(q.acceptedAnswer.text));
+    return claimsOffline && !/serviceWorker/.test(html);
+  });
+  expect(without, "a page promising offline play must register the worker").toEqual([]);
+});
+
+// The evidence behind the claim, kept as a test rather than a note: cut the
+// network and a game that has been opened must still load and still be
+// playable. If the worker ever regresses, the FAQ becomes a lie and this is
+// what catches it.
+test("a game really does play with the network cut", async ({ page, context }) => {
+  await page.goto("/play/sudoku/", { waitUntil: "load" });
+  const ready = await page.evaluate(async () => {
+    if (!("serviceWorker" in navigator)) return false;
+    return !!(await navigator.serviceWorker.ready.catch(() => null));
+  });
+  expect(ready, "the service worker registers and becomes ready").toBe(true);
+
+  await page.waitForTimeout(1200);
+  await page.reload({ waitUntil: "load" });
+  await page.waitForTimeout(600);
+
+  await context.setOffline(true);
+  try {
+    await page.goto("/play/sudoku/", { waitUntil: "load" });
+    const state = await page.evaluate(() => ({
+      cells: document.querySelectorAll("#su-board .su-cell").length,
+      status: (document.querySelector(".game-status") || {}).textContent || ""
+    }));
+    expect(state.cells, "the grid is rendered offline").toBe(81);
+    expect(state.status.length, "the game is in a playable state offline").toBeGreaterThan(0);
+  } finally {
+    await context.setOffline(false);
+  }
+});
