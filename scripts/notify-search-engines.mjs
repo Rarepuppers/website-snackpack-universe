@@ -23,7 +23,8 @@
 //      property Google barely crawls.
 //
 // Usage:
-//   node scripts/notify-search-engines.mjs                 # sitemap + IndexNow
+//   node scripts/notify-search-engines.mjs                 # sitemap + IndexNow + Bing
+//   node scripts/notify-search-engines.mjs --dry-run       # show, send nothing
 //   node scripts/notify-search-engines.mjs <url> [<url>…]  # also push URLs
 //
 // The service account key is not in this repo. Point SNACKPACK_GSC_KEY at it,
@@ -45,6 +46,11 @@ const INDEXNOW_KEY = "900693c096558a71b548e48b92b33acd";
 const DEFAULT_KEY_PATH = "D:/billing/api-tokens/snackpack-abc-alphabet-billing-f2c06893aa0b.json";
 
 let failed = false;
+
+// --dry-run reports what would be sent without sending it. Every action here is
+// an irreversible outward call against a metered quota, so there has to be a way
+// to check the wiring without spending it.
+const DRY = process.argv.includes("--dry-run");
 
 // ---------------------------------------------------------------------------
 // Google — Search Console API
@@ -90,6 +96,7 @@ async function submitSitemap() {
     return;
   }
 
+  if (DRY) { console.log(`· Google: would submit ${SITEMAP} to ${PROPERTY}`); return; }
   const token = await accessToken(keyFile);
   const url =
     `https://searchconsole.googleapis.com/webmasters/v3/sites/` +
@@ -136,6 +143,8 @@ async function submitIndexNow(urls) {
     return;
   }
 
+  if (DRY) { console.log(`· IndexNow: would submit ${urls.length} URL(s)`); return; }
+
   // IndexNow accepts up to 10,000 per request; we are nowhere near that.
   const res = await fetch("https://api.indexnow.org/indexnow", {
     method: "POST",
@@ -160,6 +169,114 @@ async function submitIndexNow(urls) {
 }
 
 // ---------------------------------------------------------------------------
+// Bing — Webmaster API, SubmitUrlBatch
+// ---------------------------------------------------------------------------
+//
+// IndexNow above already reaches Bing, but this is a second, direct channel on
+// a separate quota (100/day, 1200/month per site) that was sitting completely
+// idle. It costs nothing to use both, and on 2026-09-19 Bing was carrying real
+// volume -- 1,979 impressions on this site, more than Google's 1,181.
+
+const BING_KEY_FILE = "D:/billing/api-tokens/web-analytics.txt";
+
+async function bingKey() {
+  if (process.env.BING_API_KEY) return process.env.BING_API_KEY.trim();
+  if (!fs.existsSync(BING_KEY_FILE)) return null;
+  // Read line by line. That file is a notepad of pasted shell transcripts, and
+  // collapsing newlines before extracting makes a key absorb the next line --
+  // which yields a plausible-looking wrong key and a "Key not found" that reads
+  // exactly like a revoked one.
+  //
+  // Shape alone CANNOT identify the Bing key: this same file also holds a
+  // Cloudflare account id and other 32-char hex strings, so taking the first
+  // shape match picks one of those and Bing answers InvalidApiKey. Probe each
+  // candidate and keep the one that actually authenticates.
+  const candidates = [
+    ...new Set(
+      fs
+        .readFileSync(BING_KEY_FILE, "utf8")
+        .split(/\r?\n/)
+        .map((l) => l.trim())
+        .filter((l) => /^[A-Za-z0-9]{32,48}$/.test(l))
+    )
+  ];
+  for (const candidate of candidates) {
+    try {
+      if ((await bingApi(candidate, "GetUserSites", ""))?.d) return candidate;
+    } catch {
+      /* not this one; try the next */
+    }
+  }
+  return null;
+}
+
+const bingApi = async (key, endpoint, site) =>
+  (await fetch(
+    `https://ssl.bing.com/webmaster/api.svc/json/${endpoint}` +
+      `?apikey=${key}&siteUrl=${encodeURIComponent(site)}`
+  )).json();
+
+async function submitBing(urls) {
+  const key = await bingKey();
+  if (!key) {
+    console.warn("! Bing: skipped — no API key. Set BING_API_KEY, or put it in web-analytics.txt.");
+    return;
+  }
+
+  const quota = await bingApi(key, "GetUrlSubmissionQuota", ORIGIN);
+  // Distinguish "no quota left" from "the call failed". Collapsing the two
+  // reports an auth error as an exhausted quota and skips Bing silently and
+  // forever, which is exactly how this went wrong the first time it was wired.
+  if (quota?.ErrorCode || !quota?.d) {
+    console.error(`x Bing: quota check failed - ${quota?.Message ?? "no data returned"}`);
+    failed = true;
+    return;
+  }
+  const before = quota.d.DailyQuota ?? 0;
+  if (before === 0) {
+    console.warn("! Bing: skipped — daily quota already spent. It resets tomorrow.");
+    return;
+  }
+
+  // Over quota, spend it where it can earn something. /privacy/ and /apps/ are
+  // already indexed and earn ~0 clicks between them, so they go last rather
+  // than crowding out an arcade page or a guide.
+  const worthwhile = (u) => !u.includes("/privacy/") && !u.includes("/apps/");
+  const ordered = [...urls.filter(worthwhile), ...urls.filter((u) => !worthwhile(u))];
+  const batch = ordered.slice(0, before);
+
+  if (DRY) {
+    console.log(`· Bing: would submit ${batch.length} of ${ordered.length} URL(s); daily quota ${before}`);
+    return;
+  }
+
+  const res = await fetch(`https://ssl.bing.com/webmaster/api.svc/json/SubmitUrlBatch?apikey=${key}`, {
+    method: "POST",
+    headers: { "content-type": "application/json; charset=utf-8" },
+    body: JSON.stringify({ siteUrl: ORIGIN, urlList: batch })
+  });
+  if (!res.ok) {
+    console.error(`✗ Bing: SubmitUrlBatch returned ${res.status} ${await res.text()}`);
+    failed = true;
+    return;
+  }
+
+  // SubmitUrlBatch answers {"d":null} on success, so the body proves nothing.
+  // The quota delta is the only honest confirmation that anything registered.
+  const after = (await bingApi(key, "GetUrlSubmissionQuota", ORIGIN))?.d?.DailyQuota ?? before;
+  const used = before - after;
+  if (used === batch.length) {
+    console.log(`✓ Bing: submitted ${batch.length} URL(s) — quota ${before} → ${after}, confirmed`);
+  } else {
+    console.error(`✗ Bing: sent ${batch.length} URL(s) but quota moved by ${used} (${before} → ${after})`);
+    failed = true;
+  }
+  if (ordered.length > batch.length) {
+    console.log(`  ${ordered.length - batch.length} URL(s) over today's quota — re-run tomorrow`);
+  }
+}
+
+// ---------------------------------------------------------------------------
 
 const explicit = process.argv.slice(2).filter((a) => a.startsWith("http"));
 const urls = explicit.length > 0 ? explicit : urlsFromSitemap();
@@ -174,6 +291,13 @@ try {
 }
 
 await submitIndexNow(urls);
+
+try {
+  await submitBing(urls);
+} catch (error) {
+  console.error(`✗ Bing: ${error.message}`);
+  failed = true;
+}
 
 if (failed) {
   console.error("\nOne or more notifications failed.");

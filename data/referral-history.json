@@ -1,0 +1,17 @@
+{
+  "rows": [
+    {
+      "date": "2026-09-19",
+      "windowDays": 30,
+      "total": 2560,
+      "assistants": {
+        "chatgpt.com": 60
+      },
+      "assistantTotal": 60,
+      "search": 40,
+      "internal": 340,
+      "direct": 2050
+    }
+  ],
+  "note": "Written by scripts/report-referrals.mjs. Counts come from Cloudflare Web Analytics and are bucketed to the nearest 10 -- treat any +/-10 move as noise."
+}

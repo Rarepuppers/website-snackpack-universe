@@ -109,10 +109,18 @@ Unlike `check-site.mjs`, this one does **not** strip `<script>` blocks — the
 ## Who sends people here (incl. AI assistants)
 
 ```bash
-npm run report:referrals                          # last 30d vs prior 30d
+npm run report:referrals                          # last 30d vs prior 30d, records a row
 node scripts/report-referrals.mjs --days=7
 node scripts/report-referrals.mjs --host=chatgpt.com   # which pages it sent to
+node scripts/report-referrals.mjs --history            # the long trend
+node scripts/report-referrals.mjs --no-write           # report without recording
 ```
+
+Every default run appends a dated row to `data/referral-history.json`, replacing
+any existing row for the same date and window rather than stacking duplicates.
+**That file is committed on purpose.** Cloudflare's retention is short, so the
+history is the only way to answer "did assistant traffic grow across the
+autumn?" -- which is the question the guide-page bet is judged on.
 
 Added 2026-09-19, when `chatgpt.com` appeared referring ~60 pageviews in 30 days
 against `www.google.com`'s 40 — having been **zero** the month before. An LLM had
@@ -135,7 +143,25 @@ exits 0 — never a zero, because a zero here is a finding and a fake one is a l
 ```bash
 node scripts/notify-search-engines.mjs                 # sitemap + every URL
 node scripts/notify-search-engines.mjs <url> [<url>…]  # just these URLs
+node scripts/notify-search-engines.mjs --dry-run       # show, send nothing
 ```
+
+It now notifies **three** channels: Google (`sitemaps.submit`), IndexNow
+(Bing/Yandex/Seznam/Naver) and **Bing directly** via `SubmitUrlBatch`, which has
+its own 100/day, 1200/month quota that was sitting idle. Over quota it spends it
+on arcade pages and guides first, pushing `/privacy/` and `/apps/` to the back.
+
+Two things that cost a debugging round trip, now handled:
+
+- **`SubmitUrlBatch` answers `{"d":null}` on success.** The body proves nothing,
+  so the script confirms against the `GetUrlSubmissionQuota` delta instead, and
+  reports a mismatch as a failure.
+- **The Bing key cannot be found by shape.** `web-analytics.txt` also holds a
+  Cloudflare account id and other 32-char hex strings, so taking the first match
+  picks the wrong one and Bing answers `InvalidApiKey` -- which the first cut
+  then reported as *"daily quota already spent"*, silently skipping Bing
+  forever. It now probes each candidate and separates an auth failure from a
+  genuinely exhausted quota.
 
 **Do not reach for the old ping URLs.** Both are dead, verified 2026-08-15:
 

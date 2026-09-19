@@ -114,8 +114,63 @@ async function pagesFor(tok, host, since, until) {
   return data?.rumPageloadEventsAdaptiveGroups ?? [];
 }
 
+const HISTORY_FILE = "data/referral-history.json";
+
+// Cloudflare Web Analytics retention is short, so this script can only ever
+// compare two adjacent windows. Persisting one row per run is what makes
+// "did assistant traffic grow across the autumn?" answerable at all -- and that
+// is the question the guide-page bet is judged on. Committed on purpose: the
+// history is the asset, not a build artefact.
+function loadHistory() {
+  if (!fs.existsSync(HISTORY_FILE)) return { rows: [] };
+  try {
+    const parsed = JSON.parse(fs.readFileSync(HISTORY_FILE, "utf8"));
+    return Array.isArray(parsed.rows) ? parsed : { rows: [] };
+  } catch {
+    // A corrupt history must not take the report down with it.
+    console.warn(`! ${HISTORY_FILE} is unreadable; starting a fresh history.`);
+    return { rows: [] };
+  }
+}
+
+function recordHistory(row) {
+  const history = loadHistory();
+  // One row per (date, window). Re-running today corrects today rather than
+  // stacking duplicates that would read as growth.
+  history.rows = history.rows
+    .filter((r) => !(r.date === row.date && r.windowDays === row.windowDays))
+    .concat(row)
+    .sort((a, b) => (a.date < b.date ? -1 : 1));
+  history.note =
+    "Written by scripts/report-referrals.mjs. Counts come from Cloudflare Web " +
+    "Analytics and are bucketed to the nearest 10 -- treat any +/-10 move as noise.";
+  fs.writeFileSync(HISTORY_FILE, `${JSON.stringify(history, null, 2)}\n`);
+  return history;
+}
+
+function printHistory() {
+  const { rows } = loadHistory();
+  if (rows.length === 0) {
+    console.log("No history yet. Run `npm run report:referrals` to record the first row.");
+    return;
+  }
+  console.log("date        window  total  assistants  search  (assistant hosts)");
+  for (const r of rows) {
+    const hosts = Object.entries(r.assistants ?? {}).map(([h, n]) => `${h}:${n}`).join(" ") || "-";
+    console.log(
+      `${r.date}  ${String(r.windowDays).padStart(5)}d  ${String(r.total).padStart(5)}  ` +
+        `${String(r.assistantTotal).padStart(10)}  ${String(r.search).padStart(6)}  ${hosts}`
+    );
+  }
+  console.log("\nCounts bucket to the nearest 10; a +/-10 move between rows is not a change.");
+}
+
 const isAssistant = (h) => ASSISTANTS.some((a) => h.toLowerCase().includes(a));
 const isBot = (h) => KNOWN_BOTS.some((b) => h.toLowerCase().includes(b));
+
+if (process.argv.includes("--history")) {
+  printHistory();
+} else {
 
 const tok = token();
 if (!tok) {
@@ -172,8 +227,24 @@ try {
   }
   console.log("\nCounts bucket to the nearest 10; +/-10 between periods is not a change.");
   console.log("Cloudflare sees referrals Search Console cannot. For search itself, use GSC.");
+
+    if (!process.argv.includes("--no-write")) {
+      const history = recordHistory({
+        date: new Date().toISOString().slice(0, 10),
+        windowDays: DAYS,
+        total,
+        assistants: Object.fromEntries(assistants),
+        assistantTotal,
+        search,
+        internal: cur.get("www.snackpackuniverse.com") ?? 0,
+        direct: cur.get("(none)") ?? 0
+      });
+      console.log(`\nRecorded to ${HISTORY_FILE} (${history.rows.length} row(s)). --history to see the trend.`);
+    }
   }
 } catch (error) {
   console.error(`x Cloudflare: ${error.message}`);
   process.exit(1);
 }
+}
+

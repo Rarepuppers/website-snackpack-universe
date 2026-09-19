@@ -39,19 +39,22 @@ nothing.** Always verify with the `GetUrlSubmissionQuota` delta before and after
 
 ## Accepted recommendations
 
-### R1 — Keep feeding Bing (partly done, needs repeating)
+### R1 - Keep feeding Bing (DONE, now automatic)
 
 ChatGPT's search is substantially Bing-backed, so Bing indexation plausibly
 feeds assistant citation. *This is a mechanism, not something verified against
-our own referral logs — treat it as the reason the action is cheap, not proof.*
+our own referral logs -- the reason the action is cheap, not proof.*
 
-- **39 main-site URLs were deliberately left unsubmitted**: all of `/privacy/`
-  (25) and `/apps/` (14). Both are already indexed and earn ~0. They were not
-  truncated by accident — do not "fix" this by submitting them.
-- Quota is **100/day, 1200/month per site** and was otherwise idle.
-- **Action:** re-run after any deploy that adds or materially changes pages.
-  Worth folding into `notify-search-engines.mjs` so one command covers Google
-  sitemap + IndexNow + Bing batch.
+**Folded into `scripts/notify-search-engines.mjs`**, which now covers all three
+channels in one command: Google `sitemaps.submit`, IndexNow, and Bing
+`SubmitUrlBatch`. Over quota it spends on arcade pages and guides first and
+pushes `/privacy/` and `/apps/` to the back. A `--dry-run` flag shows what would
+be sent without spending the quota.
+
+- **39 main-site URLs were deliberately left unsubmitted** on 2026-09-19: all of
+  `/privacy/` (25) and `/apps/` (14). Already indexed, earn ~0. Not an accident
+  -- do not "fix" this by submitting them.
+- **Action:** run after any deploy that adds or materially changes pages.
 
 ### R2 — Build 2–3 more guides in the decodable-readers mould
 
@@ -90,33 +93,46 @@ a ranking or retrieval input.
 
 ## Further recommendations, ranked by expected value
 
-### F1 — `noindex` the `/apps/` pages to free crawl budget *(strong evidence)*
+### F1 - RETRACTED. Do not noindex the `/apps/` pages *(premise was wrong)*
 
-Over 90 days the `/apps/` pages earned **0 clicks / 37 impressions between them**
-(measured 2026-08-23), one had *zero* impressions, and today they took **zero**
-ChatGPT referrals. They are **14 of 124 sitemap URLs** (15 exist on disk; one is
-already unlisted) competing for a crawl budget that is a measured, not
-theoretical, constraint here.
+The proposal assumed those pages were uncrawled dead weight eating crawl budget.
+**Checked with the URL Inspection API on 2026-09-19: 14 of 15 are `Submitted and
+indexed`, crawled recently** (2026-08-23 through 2026-09-13). They are healthy,
+actively-crawled pages. Noindexing 14 indexed product pages to chase a
+speculative budget gain is a bad trade, and the World Cup precedent does not
+transfer -- those were 66 *dead* fixture pages, these are live product pages.
 
-The precedent is strong: the World Cup sunset cut the sitemap 172 → 107, and
-**six arcade pages that had never been crawled were crawled within days** and
-are now indexed. Subtraction worked once on exactly this problem.
+The check was worth running anyway, because it turned up something real:
 
-Reversible, and cheap to test. Do this before writing any new page.
+**Two app pages carry `noindex,follow`, and that is CORRECT** --
+`/apps/snackpack-8-earth-science/` (`Excluded by 'noindex' tag`) and
+`/apps/snackpack-9-space-math/` (`URL is unknown to Google`, never crawled).
+Both apps are genuinely not publicly available, so the tag is right. **Do not
+"fix" it.** See the finding below for why that matters more than it sounds.
 
-### F2 — Exploit Bing on isclaudeup *(needs one check first)*
 
-Bing ranks isclaudeup at **position 8–9** for `is claude down` (876 impr) and
-`claude status` (566 impr) — queries Google buries it at 22–44 for. ~1,400
+### F2 - Bing on isclaudeup *(BLOCKED: could not verify from here)*
+
+Bing ranks isclaudeup at **position 8-9** for `is claude down` (876 impr) and
+`claude status` (566 impr), queries Google buries it at 22-44 for. ~1,400
 page-1 Bing impressions earning 9 clicks. It is also the only **declining**
-property (22 → 13 clicks).
+property (22 -> 13 clicks).
 
-**Check before acting.** On the main site, `/play/thirteen/` turned out to render
-at Bing positions 6–8 as a **title-less bare-domain row** in the collapsed
-cluster — no title, no snippet, so no copy change could ever have helped.
-Verify how isclaudeup actually renders on those Bing SERPs *first*. If it gets a
-real title and snippet, copy work is worth it; if it is collapsed, the answer is
-authority and nothing on-page will move it.
+**The gating check did not pass -- it could not be run.** The plan was to look at
+how isclaudeup renders on those Bing SERPs, because `/play/thirteen/` turned out
+to render at Bing positions 6-8 as a **title-less bare-domain row** with no
+snippet, making copy work pointless. Searching `is claude down` from here returns
+**no isclaudeup result on page 1 or 2** -- the served SERP is region-specific and
+does not match the market generating those impressions. So the rendering question
+is **unresolved, not answered**.
+
+What the attempt did show: that SERP is owned by `status.claude.com` (official),
+Downdetector, `claudestatus.com`, StatusGator, IsDown and pulsetic -- purpose-built
+status aggregators. Far more crowded than Codex's. This corroborates the existing
+conclusion that `claude down` is not winnable and is not a site-quality problem.
+
+**Do not commission copy work for this until someone can see the real SERP.**
+
 
 ### F3 — Decide what to do about `isclaudedown.com` in Bing
 
@@ -126,30 +142,72 @@ the two are splitting one Bing SERP. Harmless today at 0 clicks, but it means
 **isclaudeup's Bing totals are not the whole picture** — don't read them as
 complete. Options: leave it, or ask Bing Webmaster to treat it as a site move.
 
-### F4 — Snapshot referral history to a file *(polish)*
+### F4 - Snapshot referral history (DONE)
 
-Cloudflare Web Analytics retention is limited, so `report-referrals.mjs` can
-only ever compare two adjacent windows. To answer *"did assistant traffic grow
-across the autumn?"* the numbers must be persisted. Append a dated JSON/CSV row
-per run and have the script read it for a long trend. Small, and it is the
-thing that will actually decide R2's kill-date question.
+`report-referrals.mjs` now appends a dated row to `data/referral-history.json`
+on every default run, replacing any row for the same date and window rather than
+stacking duplicates. `--history` prints the trend; `--no-write` reports without
+recording. The file is committed on purpose -- Cloudflare's retention is short,
+so this history is the only thing that can answer R2's kill-date question.
 
-### F5 — Spend GSC "Request Indexing" deliberately
 
-~10/day, dashboard-only, no API. Currently spent ad hoc. Keep a short ranked
-queue — arcade and guide pages with real demand, never `/apps/` pages. Revisit
-monthly.
+### F5 - Spend GSC "Request Indexing" deliberately
 
-### F6 — Move the working Cloudflare token somewhere honest *(hygiene)*
+~10/day, dashboard-only, no API. As of 2026-09-19 the queue is **short**, because
+the August crawl-budget fix worked and most pages are now indexed:
 
-The documented location (`api-tokens/web-analytics.txt`) holds **two dead
-tokens**; the working one is in `backup-keys/_root/.env.local`. That cost a
-round trip today and had both memory files recording "Cloudflare is unreadable."
-Either move it or document it at the documented location. Note it does **not**
-grant `/rum/site_info/list` (`Authentication error`), so which sites carry a
-Cloudflare beacon is currently unknown and unverified.
+| Priority | Page | Why |
+|---|---|---|
+| 1 | `/play/freecell/` | The only arcade page still `Discovered - not indexed`, crawled NEVER. ~21k/mo demand. Requested 2026-09-19 |
+| 2 | `/play/thirteen/` | Crawled 2026-07-25; forces the Aug-15 title rewrite to finally be seen. Requested 2026-09-19 |
+| 3 | any new R2 guide | On publish, so the assistant-citation bet is not waiting on a crawl |
+
+**Never spend it on `/apps/` pages** -- they are already indexed and earn 0.
+Re-derive this queue at each re-measure rather than assuming it is still valid.
+
 
 ---
+
+## Findings turned up while executing this plan
+
+Neither was what the task was looking for. Both matter more than the task.
+
+### Earth Science and Space Math have completed production releases and no public listing
+
+Verified 2026-09-19 three ways:
+
+- **Play Developer API:** `com.snackpackuniverse.earthscience` shows
+  `track=production status=completed vc=5`; `com.snackpackuniverse.spacemath`
+  shows `track=production status=completed vc=6`.
+- **Public store listing: HTTP 404** for both, with a browser user-agent, in
+  both `gl=US` and `gl=GB`.
+- **Controls:** `prehistoricpals` (production, vc22) and `gardenworld` both
+  return **200** by the identical method, so the method is sound and the 404 is
+  real, not a fetch artefact.
+
+So both apps have a completed production rollout that **nobody can reach or
+install**. A completed release is not the same as a published listing -- an app
+can sit unpublished, pending review, or with no country availability. Neither
+carries a `DRAFT-STATUS.md`, so nothing in the repo records this as intended.
+
+**This needs a human in Play Console.** It is not a website problem and there is
+no API fix. Flagged here because the website `noindex` on those two pages is the
+*correct* response to it, and anyone "tidying up" those tags would be publishing
+pages for apps that cannot be downloaded.
+
+### `site-check.yml` has been red on every push since at least 2026-09-17
+
+Eight consecutive failures on `main`, all predating today's work: **27 failed /
+106 passed**, an identical count before and after. The failures are
+visual-regression snapshots across arcade pause/resume and the hub, solitaire and
+water-sort surfaces.
+
+The consequence is what matters: **CI currently provides no signal.** A genuine
+regression pushed today would land in a run that was already red and be
+indistinguishable from the existing 27. `SITE-IMPROVEMENT-PLAN.md` already notes
+the game-ui bootstrap work needs to land *with* refreshed baselines; until that
+happens, nobody can trust a green or a red here.
+
 
 ## Open items with dates attached
 
