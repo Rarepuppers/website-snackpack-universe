@@ -56,25 +56,34 @@ be sent without spending the quota.
   -- do not "fix" this by submitting them.
 - **Action:** run after any deploy that adds or materially changes pages.
 
-### R2 — Build 2–3 more guides in the decodable-readers mould
+### R2 - Two guides in the decodable-readers mould (DONE, now measuring)
 
-`/guides/free-printable-decodable-readers/` is the **only page on the property
-with two independent channels working**: top ChatGPT referral (20) *and*
-joint-top GSC clicker (2 clicks / 14 impr @ pos 16.2).
+Shipped 2026-09-19:
 
-The shape to copy: one specific named free resource · parent intent · the
-explicit *"no ads, no sign-in, no download"* line near the top where it is
-machine-extractable · answers one question completely.
+| Page | Question it answers |
+|---|---|
+| `/guides/decodable-vs-levelled-readers/` | "What is the difference, and which does my child need?" |
+| `/guides/phonics-sound-order-satpin/` | "What order are phonics sounds taught in?" |
 
-**This does not contradict "stop building guide pages."** That verdict was about
-*status-site* guides trying to out-rank established competitors on
-authority-gated status queries — they earned **0 clicks on 44 impressions** and
-are confirmed indexed, so it was a real verdict. Utility guides serving a
-specific long-tail need are a different bet with a working example behind them.
+Both copy the shape of the page that works: one specific question answered
+completely, resolving to a named free resource with no sign-up. Both carry
+Article + FAQPage + BreadcrumbList schema; FAQPage is deliberate, because these
+are written to be quotable by an assistant answering a parent.
 
-**Kill date: late October 2026.** If the new guides earn nothing in *both*
-`report-referrals` and GSC by then, stop. Do not extend the deadline twice, as
-happened with the 08-20 batch.
+**A third guide was dropped on purpose.** The plan proposed a short-vowel/CVC
+page; it would have listed the same eight books as the printables guide and
+cannibalised it -- the same mistake already rejected for a second
+`codex-status.html`. Both shipped pages link to the shelf instead of restating it.
+
+**A factual correction found while writing:** the CVC angle was going to lead on
+a missing short-i reader. **There is no such gap.** "Pip Sits" is built on the
+`s a t p i n` set and leans on short i (tin, sits), so all five short vowels are
+covered across the three stages. Verified against the book text, not the tags --
+the printables guide labels "Pip Sits" as Short A, which understates it.
+
+**Kill date: late October 2026.** Judge on `npm run report:referrals --history`
+and GSC together. If neither moves, stop building guides. No third extension.
+
 
 ### R3 — Referral tracking (done)
 
@@ -207,6 +216,29 @@ regression pushed today would land in a run that was already red and be
 indistinguishable from the existing 27. `SITE-IMPROVEMENT-PLAN.md` already notes
 the game-ui bootstrap work needs to land *with* refreshed baselines; until that
 happens, nobody can trust a green or a red here.
+
+
+### `normalize-nav.mjs` is not idempotent against the repository
+
+Running it reports **"Updated 184 pages, 1 already canonical"** -- and the diff is
+**whitespace only**. The canonical link set it writes is identical to what every
+page already has; it simply expands the minified single-line `<nav>` that the
+committed pages use into indented multi-line form.
+
+So the script cannot be run as part of an ordinary change without burying that
+change under 184 files of no-op churn, and it must **never** be run while another
+session has pages checked out dirty -- it would rewrite their work wholesale.
+Either teach it to leave semantically-identical nav alone, or accept that it is a
+one-off tool. New pages should carry the canonical links in the existing minified
+form, which is what the two R2 guides do.
+
+### `play/pinball/index.html` has a dead interstitial link
+
+`check-site.mjs` reports exactly one error across 265 pages:
+`play/pinball/index.html: dead link -> /go/arcade/pinball/braingames/`. The
+interstitial was never generated. Pre-existing and untouched by this work; it
+needs `build-go-links.mjs` re-run, which is its own change because that generator
+also rewrites store links across the site.
 
 
 ## Open items with dates attached
