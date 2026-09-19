@@ -2,6 +2,7 @@
   "name": "snackpack-universe-website",
   "private": true,
   "scripts": {
+    "report:referrals": "node scripts/report-referrals.mjs",
     "compose:atlas-guide-card": "node scripts/compose-atlas-guide-card.mjs",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",

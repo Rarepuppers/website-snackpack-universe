@@ -11,6 +11,7 @@
 | `build-newsletter-cta.mjs` | Inserts the Brevo email-signup block on every app page — the only capture point readers of those pages ever see | After adding an app page. `--check` to fail instead of fix — that form runs in CI |
 | `check-live.mjs` | Asks the **deployed** origin whether every asset the repo declares actually resolves: manifest icons, the `sw.js` `SHELL` array, every `og:image`/`twitter:image` | **After every deploy.** `check-site.mjs` validates the repo against itself and so cannot catch a file that was built but never committed |
 | `notify-search-engines.mjs` | Submits `sitemap.xml` to Google via the Search Console API, and pushes URLs to Bing/Yandex via IndexNow | **After every deploy**, once `check-live.mjs` passes |
+| `report-referrals.mjs` | Reports who sends traffic here, separating **AI assistants** (ChatGPT, Claude, Perplexity, Gemini…) from search, direct and known bots. Search Console cannot see referrals at all | Monthly, and whenever deciding if more guide pages are worth building |
 
 The `<head>` check exists because presence is not the same as parses. Fourteen
 privacy pages once shipped a canonical `<link>` with no closing bracket — which
@@ -104,6 +105,30 @@ Two things it deliberately leaves alone:
 Unlike `check-site.mjs`, this one does **not** strip `<script>` blocks — the
 `window.SP_PLAY_URL` overrides live inside them.
 
+
+## Who sends people here (incl. AI assistants)
+
+```bash
+npm run report:referrals                          # last 30d vs prior 30d
+node scripts/report-referrals.mjs --days=7
+node scripts/report-referrals.mjs --host=chatgpt.com   # which pages it sent to
+```
+
+Added 2026-09-19, when `chatgpt.com` appeared referring ~60 pageviews in 30 days
+against `www.google.com`'s 40 — having been **zero** the month before. An LLM had
+become a discovery channel the size of organic search and nothing measured it.
+
+Two traps this output is built to stop you falling into:
+
+| Trap | Why it matters |
+|---|---|
+| Counts bucket to the **nearest 10** | A row reading `10` may be 5 or 14. Read the shape, never a single row. The script prints `flat within bucketing` rather than a fake delta for any change of ±10 |
+| Cloudflare **counts bots** | `mokka.corp.google.com` is Google's internal Play review tooling, not an audience. It is labelled in the output so it is never mistaken for one |
+
+The two `cfat_` tokens in `api-tokens/web-analytics.txt` are **dead**. The working
+Cloudflare token lives in the backup env file; override with `SNACKPACK_CF_TOKEN`
+or point `CF_ENV_FILE` at another env file. A missing token reports *skipped* and
+exits 0 — never a zero, because a zero here is a finding and a fake one is a lie.
 
 ## Telling search engines something shipped
 
