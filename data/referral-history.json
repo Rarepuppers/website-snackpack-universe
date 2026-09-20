@@ -11,6 +11,50 @@
       "search": 40,
       "internal": 340,
       "direct": 2050
+    },
+    {
+      "site": "isclaudeup.com",
+      "date": "2026-09-20",
+      "windowDays": 30,
+      "total": 120,
+      "assistants": {},
+      "assistantTotal": 0,
+      "search": 10,
+      "internal": 0,
+      "direct": 110
+    },
+    {
+      "site": "isclaudedown.com",
+      "date": "2026-09-20",
+      "windowDays": 30,
+      "total": 310,
+      "assistants": {},
+      "assistantTotal": 0,
+      "search": 0,
+      "internal": 0,
+      "direct": 290
+    },
+    {
+      "site": "iscodexup.com",
+      "date": "2026-09-20",
+      "windowDays": 30,
+      "total": 140,
+      "assistants": {},
+      "assistantTotal": 0,
+      "search": 100,
+      "internal": 0,
+      "direct": 10
+    },
+    {
+      "site": "atlas.snackpackuniverse.com",
+      "date": "2026-09-20",
+      "windowDays": 30,
+      "total": 460,
+      "assistants": {},
+      "assistantTotal": 0,
+      "search": 10,
+      "internal": 10,
+      "direct": 190
     }
   ],
   "note": "Written by scripts/report-referrals.mjs. Counts come from Cloudflare Web Analytics and are bucketed to the nearest 10 -- treat any +/-10 move as noise."
