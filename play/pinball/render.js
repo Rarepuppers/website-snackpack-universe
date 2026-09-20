@@ -6,11 +6,10 @@
  *   2. dynamic    -- balls, flippers, targets, particles
  *   3. light      -- additive glow, drawn at half resolution and upscaled
  *
- * The playfield layer is where the Codex art drops in at P4: swap the cached
- * drawGeometry() call for drawImage() of the painted table and nothing else
- * changes. Until then it draws the real table.js geometry in flat colour, so
- * what is on screen is always what the physics actually collides with -- there
- * is no separate "visual" table that can drift out of sync with the real one.
+ * The playfield layer draws the optional canonical Galley bitmap first, then
+ * the real table.js geometry above it. A failed or incomplete image load keeps
+ * the original flat navy surface, so physics and readability never depend on
+ * a decorative asset.
  *
  * Everything draws in logical units under one root transform. Nothing here
  * knows about pixels, which is what lets the Skia port at P8 reuse the draw
@@ -72,6 +71,27 @@ export function createRenderer(canvas) {
   const fieldCtx = field.getContext('2d');
   const light = document.createElement('canvas');
   const lightCtx = light.getContext('2d');
+  const playfield = new Image();
+  let playfieldReady = false;
+
+  playfield.decoding = 'async';
+  playfield.onload = () => {
+    playfieldReady = true;
+    if (field.width > 0 && field.height > 0) drawField();
+  };
+  playfield.onerror = () => {
+    playfieldReady = false;
+    if (field.width > 0 && field.height > 0) drawField();
+  };
+  // `?art=off` is the deterministic development comparison: it captures the
+  // same live geometry over the procedural fallback without moving a single
+  // rule-bearing coordinate.
+  if (new URLSearchParams(window.location.search).get('art') !== 'off') {
+    const playfieldTier = (window.devicePixelRatio || 1) > 2
+      ? 'playfield-galley@3x.webp'
+      : 'playfield-galley.webp';
+    playfield.src = new URL(`../shared-assets/game-ui/pinball/playfields/${playfieldTier}`, import.meta.url).href;
+  }
 
   const reducedMotion = () => {
     try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
@@ -119,8 +139,12 @@ export function createRenderer(canvas) {
     c.clearRect(0, 0, field.width, field.height);
     c.scale(scale, scale);
 
-    c.fillStyle = INK.cloth;
-    c.fillRect(0, 0, W, H);
+    if (playfieldReady) {
+      c.drawImage(playfield, 0, 0, W, H);
+    } else {
+      c.fillStyle = INK.cloth;
+      c.fillRect(0, 0, W, H);
+    }
 
     // Ramp beds, drawn under everything so a captured ball reads as elevated.
     c.strokeStyle = 'rgba(120,140,190,0.20)';
