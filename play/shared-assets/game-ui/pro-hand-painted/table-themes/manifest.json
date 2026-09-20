@@ -3,10 +3,11 @@
     "generatedAt":  "2026-07-12",
     "pack":  "pro-hand-painted/table-themes",
     "assets":  [
-                   "painted-arcade-night.png",
-                   "painted-felt-emerald.png",
-                   "painted-rose-marble.png",
-                   "painted-walnut.png"
+                   "png/painted-arcade-night.png",
+                   "png/painted-felt-emerald.png",
+                   "png/painted-rose-marble.png",
+                   "png/painted-walnut.png",
+                   "png/painted-walnut.webp"
                ],
-    "format":  "opaque PNG, high-resolution painterly material raster"
+    "format":  "opaque PNG painterly materials with a website WebP walnut derivative"
 }

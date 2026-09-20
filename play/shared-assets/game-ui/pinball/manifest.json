@@ -1,0 +1,22 @@
+{
+  "title": "Pinball Galley pilot",
+  "generatedAt": "2026-09-20",
+  "pack": "pinball",
+  "assets": [
+    "masters/playfield-galley@4x.png",
+    "playfields/playfield-galley.png",
+    "playfields/playfield-galley@2x.png",
+    "playfields/playfield-galley@3x.png",
+    "playfields/playfield-galley.webp",
+    "playfields/playfield-galley@3x.webp"
+  ],
+  "format": "opaque PNG master/app tiers and opaque WebP website tiers",
+  "consumerContract": "decorative layer only; procedural geometry remains above it",
+  "deferred": [
+    "alternate skins",
+    "sprite sheet",
+    "arcade tile",
+    "social card",
+    "audio and music"
+  ]
+}

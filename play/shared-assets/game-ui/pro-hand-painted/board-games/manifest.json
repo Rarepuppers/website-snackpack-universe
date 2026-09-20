@@ -4,6 +4,7 @@
     "pack":  "pro-hand-painted/board-games",
     "assets":  [
                    "board-game-icons.png",
+                   "board-game-icons.webp",
                    "png/backgammon-point-dark.png",
                    "png/backgammon-point-light.png",
                    "png/checker-dark.png",
@@ -24,5 +25,5 @@
                    "png/pawn-red.png",
                    "png/snake-marker.png"
                ],
-    "format":  "transparent PNG, high-resolution hand-painted style raster"
+    "format":  "transparent PNG masters with a website WebP board-icon derivative"
 }
