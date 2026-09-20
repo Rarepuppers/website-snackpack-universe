@@ -152,6 +152,14 @@
   <section>
     <div class="shell">
       <div class="game-stage pb-stage-wrap">
+        <!-- The readout and the mission line dock to the top of the viewport
+             while the table is on screen. The stage is 874-1498px tall, so
+             without this the score scrolls off the top the moment the table is
+             positioned to play and the player cannot see the number they are
+             chasing. `top` is the sticky offset below the site header, whose
+             height changes with nav wrapping, so it is measured at runtime
+             into --pb-dock-top rather than guessed. -->
+        <div class="pb-hud-dock">
         <div class="game-toolbar">
           <div class="game-readout" id="pb-hud" hidden>
             <span class="readout-chip"><span>Score</span><b id="pb-score">0</b></span>
@@ -159,8 +167,8 @@
             <!-- Best score per mode is persisted on this device only, via
                  SnackPackStore under sp_pinball_best_<mode>. Nothing is
                  uploaded and there is no account. -->
-            <span class="readout-chip" data-store="SnackPackStore sp_pinball_best_&lt;mode&gt;"><span>Best</span><b id="pb-best">0</b></span>
-            <span class="readout-chip"><span>Rank</span><b id="pb-rank">Crumb Cadet</b></span>
+            <span class="readout-chip pb-chip-ref" data-store="SnackPackStore sp_pinball_best_&lt;mode&gt;"><span>Best</span><b id="pb-best">0</b></span>
+            <span class="readout-chip pb-chip-ref"><span>Rank</span><b id="pb-rank">Crumb Cadet</b></span>
           </div>
           <div class="game-controls pb-controls">
             <button type="button" class="btn-game" data-sp-audio-toggle aria-pressed="true">Sound off</button>
@@ -168,6 +176,8 @@
         </div>
 
         <p class="pb-dmd" id="pb-dmd">SHOOT THE HATCH FOR A MISSION</p>
+        </div>
+
         <p class="game-status" id="pb-live" aria-live="polite">Choose a mode to start.</p>
 
         <div class="pb-stage" data-no-keyboard-reason="Pinball is not a grid game, so keyboard-grid.js roving focus does not apply. It has direct key bindings instead: Z and Left for the left flipper, / and Right for the right flipper, Space for the plunger, comma and period to nudge. Every control is also reachable by Tab.">
@@ -209,6 +219,100 @@
 
       <h3>Nudging and tilt</h3>
       <p>You can shove the table. A nudge pushes every ball a little, which is often the difference between an outlane drain and a save. It is not free: each nudge fills the tilt meter, the meter drains slowly, and three shoves in quick succession tilt the table — the flippers die, the ball drains and your end-of-ball bonus is gone. Nudge when it matters, not out of habit.</p>
+
+<!-- pinball-scoring:generated -->
+      <h3>What everything scores</h3>
+      <p>Generated from the game's own ruleset, so these are the numbers the
+         table actually awards. A ramp is worth thirty bumpers, which is the
+         whole reason to aim rather than flail.</p>
+      <div class="pb-score-table-wrap">
+        <table class="pb-score-table">
+          <thead>
+            <tr><th scope="col">Shot</th><th scope="col">Points</th><th scope="col">Notes</th></tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>Slingshot</td>
+            <td class="pb-score-value">100</td>
+            <td>Bounces off the kickers above the flippers.</td>
+          </tr>
+          <tr>
+            <td>Bumper</td>
+            <td class="pb-score-value">250</td>
+            <td>The three portholes at the top of the table.</td>
+          </tr>
+          <tr>
+            <td>Spinner</td>
+            <td class="pb-score-value">150</td>
+            <td>Per revolution, so speed through it is what pays.</td>
+          </tr>
+          <tr>
+            <td>Spinner (lit)</td>
+            <td class="pb-score-value">500</td>
+            <td>Same shot, lit by the drop-target bank.</td>
+          </tr>
+          <tr>
+            <td>Drop target</td>
+            <td class="pb-score-value">1,500</td>
+            <td>Each target in the left-hand bank.</td>
+          </tr>
+          <tr>
+            <td>Rollover lane</td>
+            <td class="pb-score-value">2,500</td>
+            <td>The three lanes across the top arch.</td>
+          </tr>
+          <tr>
+            <td>Left orbit</td>
+            <td class="pb-score-value">5,000</td>
+            <td>The right flipper's shot.</td>
+          </tr>
+          <tr>
+            <td>Kickback save</td>
+            <td class="pb-score-value">5,000</td>
+            <td>Returns a ball from the left outlane.</td>
+          </tr>
+          <tr>
+            <td>Right ramp</td>
+            <td class="pb-score-value">7,500</td>
+            <td>The left flipper's shot.</td>
+          </tr>
+          <tr>
+            <td>Saucer</td>
+            <td class="pb-score-value">10,000</td>
+            <td>Starts a mission when lit.</td>
+          </tr>
+          <tr>
+            <td>Drop bank cleared</td>
+            <td class="pb-score-value">15,000</td>
+            <td>All three targets down.</td>
+          </tr>
+          <tr>
+            <td>Skill shot</td>
+            <td class="pb-score-value">25,000</td>
+            <td>The lit lane on the opening plunge.</td>
+          </tr>
+          <tr>
+            <td>Jackpot</td>
+            <td class="pb-score-value">50,000</td>
+            <td>During multiball. Each one raises the next.</td>
+          </tr>
+          <tr>
+            <td>Rank up</td>
+            <td class="pb-score-value">100,000</td>
+            <td>Awarded on every promotion.</td>
+          </tr>
+          <tr>
+            <td>Super jackpot</td>
+            <td class="pb-score-value">250,000</td>
+            <td>The multiball payoff shot.</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Consecutive lit shots build a combo multiplier, and missions and the
+         wizard mode pay far more than anything listed here — those are left
+         for you to find.</p>
+<!-- /pinball-scoring:generated -->
 
       <h3>Modes</h3>
       <p><b>Relaxed</b> gives you five balls and leaves the outlane kickback on permanently, which is the right place to learn the table. <b>Classic</b> is the standard three-ball game. <b>Expert</b> is faster, drops the kickback and tilts more easily. <b>Endless</b> never takes a ball away — it just keeps speeding up while you chase a number. Your best score for each mode is saved on your own device; nothing is uploaded and there is no account.</p>
@@ -313,6 +417,21 @@
       navigator.serviceWorker.register("/sw.js").catch(function () {});
     });
   }
+  // The HUD dock sticks below the site header. That header is sticky itself and
+  // its height changes as the nav wraps (77px desktop, 143px phone as measured),
+  // so a hard-coded offset would either overlap it or leave a gap. Measure it.
+  (function () {
+    var bar = document.querySelector(".topbar");
+    if (!bar) return;
+    var apply = function () {
+      document.documentElement.style.setProperty(
+        "--pb-dock-top", Math.round(bar.getBoundingClientRect().height) + "px");
+    };
+    apply();
+    window.addEventListener("resize", apply);
+    window.addEventListener("orientationchange", apply);
+    if (window.ResizeObserver) new ResizeObserver(apply).observe(bar);
+  })();
 </script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"

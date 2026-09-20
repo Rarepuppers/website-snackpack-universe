@@ -2060,6 +2060,95 @@ button.th-card.is-selected {
   .pb-modes .btn-game { min-width: 0; width: 100%; max-width: 280px; }
 }
 
+/* Pinball scoring table, generated into the page by
+   scripts/build-pinball-scoring.mjs from the ruleset's own POINTS. */
+.pb-score-table-wrap {
+  overflow-x: auto;
+  margin: 14px 0 18px;
+}
+.pb-score-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.pb-score-table th,
+.pb-score-table td {
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.pb-score-table th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.pb-score-table td { color: var(--muted); line-height: 1.6; }
+.pb-score-table td:first-child { color: var(--ink); font-weight: 600; white-space: nowrap; }
+.pb-score-table .pb-score-value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--ink);
+  text-align: right;
+  white-space: nowrap;
+}
+.pb-score-table tbody tr:last-child th,
+.pb-score-table tbody tr:last-child td { border-bottom: 0; }
+
+/* The Pinball readout and mission line dock to the top of the viewport while
+   the table is on screen. Sticky rather than fixed so it occupies its normal
+   place in the flow before the table is reached and cannot cover the page.
+   --pb-dock-top is the measured site-header height, set in the page. The dock
+   must clear the canvas but stay under the site header (z-index 20); it never
+   overlaps it because the offset equals the header's own height. */
+.pb-hud-dock {
+  position: sticky;
+  top: var(--pb-dock-top, 0px);
+  z-index: 15;
+  padding: 8px 0 2px;
+  margin-bottom: 10px;
+  background: var(--surface-strong);
+  border-bottom: 1px solid var(--line);
+}
+
+.pb-hud-dock .game-toolbar { margin-bottom: 8px; }
+
+/* Docked, the readout is chrome, not content: it has to cost as little height
+   as possible or it eats the table it is reporting on. Measured undocked on a
+   390px phone the toolbar alone was 146px, which is a fifth of the viewport. */
+.pb-hud-dock .game-readout {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: 6px;
+}
+.pb-hud-dock .game-readout::-webkit-scrollbar { display: none; }
+.pb-hud-dock .readout-chip {
+  min-height: 32px;
+  padding: 0 10px;
+  flex: 0 0 auto;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  /* Keep the readout and the sound control on ONE row. Allowed to wrap, the
+     dock costs 130px of a 844px phone; on one row it costs ~90px, which is
+     table the player gets back. The readout itself scrolls sideways. */
+  .pb-hud-dock .game-toolbar { flex-wrap: nowrap; gap: 8px; }
+  .pb-hud-dock .game-controls { flex: 0 0 auto; }
+  /* Score and Ball change every shot; Best and Rank do not. On a 390px phone
+     all four plus Pause and Sound cannot share a row without the live values
+     being clipped by the controls, so the two reference chips drop out of the
+     dock. Both remain in the undocked readout and the game-over overlay. */
+  .pb-hud-dock .pb-chip-ref { display: none; }
+  .pb-hud-dock .readout-chip { min-height: 28px; padding: 0 8px; font-size: 0.82rem; }
+  .pb-hud-dock .readout-chip span { font-size: 0.7rem; }
+  .pb-hud-dock .pb-dmd { font-size: 0.7rem; padding: 4px 8px; }
+  .pb-hud-dock .game-controls .btn-game { min-height: 28px; padding: 0 10px; font-size: 0.82rem; }
+}
+
 /* Pinball is the only arcade game whose stage is taller than it is wide, so it
    needs a wider card than the shared 640px one. Everything here is border-box:
    640px less 24px padding either side and the 1px border leaves 590px of
