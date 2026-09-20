@@ -1979,7 +1979,7 @@ button.th-card.is-selected {
      URL bar hides, and it collapses to zero in embedded/hidden contexts --
      either of which silently produces a zero-height stage and an invisible
      game. Width is capped instead, which cannot degenerate. */
-  width: min(100%, 420px);
+  width: min(100%, 520px);
   aspect-ratio: 500 / 1040;
   margin-inline: auto;
   background: #141824;
@@ -2058,6 +2058,18 @@ button.th-card.is-selected {
 @media (max-width: 640px) {
   .pb-stage { width: min(100%, 360px); }
   .pb-modes .btn-game { min-width: 0; width: 100%; max-width: 280px; }
+}
+
+@media (min-width: 1100px) and (min-height: 1300px) {
+  .pb-stage { width: min(100%, 620px); }
+}
+
+@media (min-width: 1400px) and (min-height: 1600px) {
+  .pb-stage { width: min(100%, 720px); }
+}
+
+@media (min-width: 641px) and (max-height: 1000px) {
+  .pb-stage { width: min(100%, 420px); }
 }
 
 @media (prefers-reduced-motion: reduce) {

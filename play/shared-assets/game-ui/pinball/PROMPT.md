@@ -39,3 +39,28 @@ The accepted 870 × 1808 output was center-cropped by one pixel to 869 × 1808,
 then resampled to the exact 2000 × 4160 master. The 1x, 2x and 3x PNG tiers
 were derived from that master with Lanczos resampling and a 192-colour palette. WebP
 tiers were encoded at quality 82. No consumer file was used as a source.
+
+## Quality v2 — accepted 2026-09-20
+
+Mark accepted a higher-fidelity mobile visual concept, then requested smoother,
+less jagged line work. The resulting concept is a style reference, not a
+production playfield: it contains live bumpers, flippers, ball and rails.
+
+The built-in image generation tool edited the canonical background to retain
+the same Captain Beakon Galley frame while adding restrained brushed-navy
+enamel and warm material lighting. The production background prompt explicitly
+forbade collision rails, ramps, lanes, holes, balls, flippers, bumpers, targets,
+inserts and marks that imply a ball path. The approved output is stored at
+`masters/quality-v2/playfield-source.png`.
+
+Two transparent sprite source sheets were generated from the accepted material
+style. The first contains bumper cap, steel ball and mirrored flippers; the
+second contains saucer, drop-target states, spinner, post and a gate study.
+Only objects with current renderer consumers are delivered. The sheets are
+stored at `masters/quality-v2/sprites-primary-source.png` and
+`sprites-secondary-source.png`. The exact crop rectangles, final dimensions
+and WebP settings are executable in `scripts/build-pinball-quality-v2.ps1`.
+
+The source background is 870 × 1808 and is resampled to the 2000 × 4160
+master. This larger raster is a delivery master, not evidence of independently
+generated 4K detail. Quality is judged at actual app and browser display size.

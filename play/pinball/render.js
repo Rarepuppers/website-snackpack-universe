@@ -73,6 +73,28 @@ export function createRenderer(canvas) {
   const lightCtx = light.getContext('2d');
   const playfield = new Image();
   let playfieldReady = false;
+  const artEnabled = new URLSearchParams(window.location.search).get('art') !== 'off';
+
+  const spriteFiles = [
+    'ball', 'bumper', 'flipper-left', 'flipper-right', 'post', 'saucer',
+    'spinner', 'target-up', 'target-down',
+  ];
+  const sprites = Object.fromEntries(spriteFiles.map((name) => [name, new Image()]));
+
+  const spriteReady = (name) => {
+    const image = sprites[name];
+    return image.complete && image.naturalWidth > 0;
+  };
+
+  const drawSprite = (name, x, y, width, height, angle = 0) => {
+    if (!spriteReady(name)) return false;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.drawImage(sprites[name], -width / 2, -height / 2, width, height);
+    ctx.restore();
+    return true;
+  };
 
   playfield.decoding = 'async';
   playfield.onload = () => {
@@ -86,11 +108,18 @@ export function createRenderer(canvas) {
   // `?art=off` is the deterministic development comparison: it captures the
   // same live geometry over the procedural fallback without moving a single
   // rule-bearing coordinate.
-  if (new URLSearchParams(window.location.search).get('art') !== 'off') {
+  if (artEnabled) {
     const playfieldTier = (window.devicePixelRatio || 1) > 2
-      ? 'playfield-galley@3x.webp'
-      : 'playfield-galley.webp';
+      ? 'playfield-galley-v2@3x.webp'
+      : 'playfield-galley-v2.webp';
     playfield.src = new URL(`../shared-assets/game-ui/pinball/playfields/${playfieldTier}`, import.meta.url).href;
+    for (const [name, image] of Object.entries(sprites)) {
+      image.decoding = 'async';
+      image.onload = () => {
+        if ((name === 'post' || name === 'spinner') && field.width > 0 && field.height > 0) drawField();
+      };
+      image.src = new URL(`../shared-assets/game-ui/pinball/sprites/webp/${name}.webp`, import.meta.url).href;
+    }
   }
 
   const reducedMotion = () => {
@@ -147,8 +176,8 @@ export function createRenderer(canvas) {
     }
 
     // Ramp beds, drawn under everything so a captured ball reads as elevated.
-    c.strokeStyle = 'rgba(120,140,190,0.20)';
-    c.lineWidth = 24;
+    c.strokeStyle = 'rgba(207,154,87,0.16)';
+    c.lineWidth = 3;
     c.lineCap = 'round';
     c.lineJoin = 'round';
     for (const r of RAMPS) {
@@ -159,24 +188,40 @@ export function createRenderer(canvas) {
       c.stroke();
     }
 
+    const strokeWall = (shape, kind) => {
+      const sling = kind === 'sling';
+      const passes = sling
+        ? [[10, 'rgba(35,15,12,0.55)'], [6, '#d85f48'], [1.5, 'rgba(255,210,176,0.78)']]
+        : [[8, 'rgba(20,16,18,0.58)'], [4, '#a97843'], [1.25, 'rgba(255,231,190,0.72)']];
+      for (const [width, colour] of passes) {
+        c.beginPath();
+        shape(c);
+        c.strokeStyle = colour;
+        c.lineWidth = width;
+        c.stroke();
+      }
+    };
+
     c.lineCap = 'round';
+    c.lineJoin = 'round';
     for (const s of WALLS) {
-      c.beginPath();
       if (s.type === 'segment') {
-        c.moveTo(s.a.x, s.a.y);
-        c.lineTo(s.b.x, s.b.y);
-        c.strokeStyle = s.kind === 'sling' ? INK.sling : INK.wall;
-        c.lineWidth = s.kind === 'sling' ? 7 : 4;
-        c.stroke();
+        strokeWall((path) => {
+          path.moveTo(s.a.x, s.a.y);
+          path.lineTo(s.b.x, s.b.y);
+        }, s.kind);
       } else if (s.type === 'arc') {
-        c.arc(s.c.x, s.c.y, s.r, s.a0, s.a1);
-        c.strokeStyle = INK.wall;
-        c.lineWidth = 4;
-        c.stroke();
+        strokeWall((path) => path.arc(s.c.x, s.c.y, s.r, s.a0, s.a1), s.kind);
       } else if (s.type === 'circle') {
-        c.arc(s.c.x, s.c.y, s.r, 0, Math.PI * 2);
-        c.fillStyle = INK.rubber;
-        c.fill();
+        if (spriteReady('post')) {
+          const size = (s.r + 2) * 2;
+          c.drawImage(sprites.post, s.c.x - size / 2, s.c.y - size / 2, size, size);
+        } else {
+          c.beginPath();
+          c.arc(s.c.x, s.c.y, s.r, 0, Math.PI * 2);
+          c.fillStyle = INK.rubber;
+          c.fill();
+        }
       }
     }
 
@@ -200,12 +245,16 @@ export function createRenderer(canvas) {
       c.stroke();
     }
 
-    c.beginPath();
-    c.moveTo(SPINNER.x, SPINNER.y - SPINNER.halfSpan);
-    c.lineTo(SPINNER.x, SPINNER.y + SPINNER.halfSpan);
-    c.strokeStyle = INK.metal;
-    c.lineWidth = 3;
-    c.stroke();
+    if (spriteReady('spinner')) {
+      c.drawImage(sprites.spinner, SPINNER.x - 5, SPINNER.y - 25, 10, 50);
+    } else {
+      c.beginPath();
+      c.moveTo(SPINNER.x, SPINNER.y - SPINNER.halfSpan);
+      c.lineTo(SPINNER.x, SPINNER.y + SPINNER.halfSpan);
+      c.strokeStyle = INK.metal;
+      c.lineWidth = 3;
+      c.stroke();
+    }
 
     c.beginPath();
     c.arc(KICKBACK.x, KICKBACK.y, KICKBACK.r, 0, Math.PI * 2);
@@ -269,6 +318,8 @@ export function createRenderer(canvas) {
   // -- Layer 2 pieces -------------------------------------------------------
   function drawSaucers(world) {
     for (const s of world.saucers) {
+      const size = (s.r + 3) * 2;
+      if (drawSprite('saucer', s.x, s.y, size, size)) continue;
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       ctx.fillStyle = INK.saucer;
@@ -281,6 +332,8 @@ export function createRenderer(canvas) {
 
   function drawDropTargets(world) {
     for (const t of world.dropTargets) {
+      const sprite = t.up ? 'target-up' : 'target-down';
+      if (drawSprite(sprite, t.x, t.y, 32, t.up ? 14 : 8, t.angle)) continue;
       const half = t.w / 2;
       const dx = Math.cos(t.angle) * half;
       const dy = Math.sin(t.angle) * half;
@@ -298,6 +351,7 @@ export function createRenderer(canvas) {
     for (const b of BUMPERS) {
       const flash = flashes.get(b.id) || 0;
       const pop = flash > 0 ? 1 + flash * 0.5 : 1;
+      if (drawSprite('bumper', b.x, b.y, 64 * pop, 64 * pop)) continue;
       ctx.beginPath();
       ctx.arc(b.x, b.y, b.r * pop, 0, Math.PI * 2);
       ctx.fillStyle = INK.bumper;
@@ -310,6 +364,16 @@ export function createRenderer(canvas) {
   }
 
   function drawFlipper(f) {
+    const isLeft = f.side === 'left' || f.pivot.x < W / 2;
+    const sprite = isLeft ? 'flipper-left' : 'flipper-right';
+    if (spriteReady(sprite)) {
+      ctx.save();
+      ctx.translate(f.pivot.x, f.pivot.y);
+      ctx.rotate(isLeft ? f.angle : f.angle - Math.PI);
+      ctx.drawImage(sprites[sprite], isLeft ? -14 : -91, -15, 105, 30);
+      ctx.restore();
+      return;
+    }
     const tipX = f.pivot.x + Math.cos(f.angle) * f.length;
     const tipY = f.pivot.y + Math.sin(f.angle) * f.length;
     const nx = -Math.sin(f.angle);
@@ -354,24 +418,26 @@ export function createRenderer(canvas) {
     ctx.fillStyle = inRamp ? 'rgba(0,0,0,0.42)' : 'rgba(0,0,0,0.35)';
     ctx.fill();
 
-    const g = ctx.createRadialGradient(
-      ball.x - r * 0.35, ball.y - r * 0.4, r * 0.12,
-      ball.x, ball.y, r,
-    );
-    g.addColorStop(0, '#ffffff');
-    g.addColorStop(0.45, INK.ball);
-    g.addColorStop(1, INK.ballDark);
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, r, 0, Math.PI * 2);
-    ctx.fillStyle = g;
-    ctx.fill();
+    if (!drawSprite('ball', ball.x, ball.y, r * 2, r * 2)) {
+      const g = ctx.createRadialGradient(
+        ball.x - r * 0.35, ball.y - r * 0.4, r * 0.12,
+        ball.x, ball.y, r,
+      );
+      g.addColorStop(0, '#ffffff');
+      g.addColorStop(0.45, INK.ball);
+      g.addColorStop(1, INK.ballDark);
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = g;
+      ctx.fill();
 
-    // Rim light opposite the highlight, so the sphere reads at small sizes.
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, r - 1, Math.PI * 0.15, Math.PI * 0.85);
-    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
+      // Rim light opposite the highlight, so the sphere reads at small sizes.
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, r - 1, Math.PI * 0.15, Math.PI * 0.85);
+      ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
   }
 
   // -- Layer 3: additive light ---------------------------------------------
