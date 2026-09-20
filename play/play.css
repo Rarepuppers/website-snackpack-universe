@@ -2060,16 +2060,33 @@ button.th-card.is-selected {
   .pb-modes .btn-game { min-width: 0; width: 100%; max-width: 280px; }
 }
 
-@media (min-width: 1100px) and (min-height: 1300px) {
+/* Pinball is the only arcade game whose stage is taller than it is wide, so it
+   needs a wider card than the shared 640px one. Everything here is border-box:
+   640px less 24px padding either side and the 1px border leaves 590px of
+   content, which silently clamped the 620 and 720 tiers below to 590 and made
+   them dead rules. 770px is 720 plus that same chrome. */
+.game-stage.pb-stage-wrap { max-width: 770px; }
+
+/* Stage height is width x 2.08 (the table is 500x1040), so each width tier is
+   gated on a viewport height that can actually show the stage it produces --
+   420 -> 874, 520 -> 1082, 620 -> 1290, 720 -> 1498. Gating on height rather
+   than vh keeps the mobile URL-bar and hidden-container failures documented on
+   .pb-stage out of play. The first rule is the short-viewport floor and must
+   stay first so the taller tiers can override it. */
+@media (min-width: 641px) and (max-height: 1199px) {
+  .pb-stage { width: min(100%, 420px); }
+}
+
+@media (min-width: 1100px) and (min-height: 1200px) {
+  .pb-stage { width: min(100%, 520px); }
+}
+
+@media (min-width: 1280px) and (min-height: 1400px) {
   .pb-stage { width: min(100%, 620px); }
 }
 
-@media (min-width: 1400px) and (min-height: 1600px) {
+@media (min-width: 1400px) and (min-height: 1620px) {
   .pb-stage { width: min(100%, 720px); }
-}
-
-@media (min-width: 641px) and (max-height: 1000px) {
-  .pb-stage { width: min(100%, 420px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
