@@ -1,7 +1,7 @@
 # Arcade asset execution record — reviewed 2026-08-14
 
 Companion to `ARCADE-IMPROVEMENT-PLAN.md`. The older
-[`spider-solitaire/ASSETS-NEEDED.md`](spider-solitaire/ASSETS-NEEDED.md) is
+[`SPIDER-SOLITAIRE-ASSETS-NEEDED.md`](SPIDER-SOLITAIRE-ASSETS-NEEDED.md) is
 historical only: A1 is complete. This file is the current source of truth for
 asset work. The only open production family is the gated A2 audio rollout;
 completed briefs remain below as an audit record and must not be regenerated.

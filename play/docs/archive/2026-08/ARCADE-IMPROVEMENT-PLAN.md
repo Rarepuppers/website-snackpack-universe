@@ -2,7 +2,7 @@
 
 Audit started against 32 browser games on 2026-08-06; the live arcade now has
 34. Companion to
-[`spider-solitaire/ASSETS-NEEDED.md`](spider-solitaire/ASSETS-NEEDED.md), which
+[`SPIDER-SOLITAIRE-ASSETS-NEEDED.md`](SPIDER-SOLITAIRE-ASSETS-NEEDED.md), which
 is retained as the completed A1 brief.
 
 **Read the "Before you generate anything" section first** — a large amount of
@@ -42,7 +42,7 @@ This table overrides older narrative below when statuses conflict.
 
 ### 2026-08-14 re-audit — three findings against this board
 
-Full write-up in [`../SITE-IMPROVEMENT-PLAN.md`](../SITE-IMPROVEMENT-PLAN.md)
+Full write-up in [`SITE-IMPROVEMENT-PLAN.md`](../../../../SITE-IMPROVEMENT-PLAN.md)
 § P7–P10. In short:
 
 1. **A8 and the A2 pilot are recorded as "DONE + WIRED" but never shipped.**
@@ -137,7 +137,7 @@ Only genuine gaps. Everything above is already covered.
 <details><summary>Original request, kept for reference</summary>
 
 
-See [`spider-solitaire/ASSETS-NEEDED.md`](spider-solitaire/ASSETS-NEEDED.md).
+See [`SPIDER-SOLITAIRE-ASSETS-NEEDED.md`](SPIDER-SOLITAIRE-ASSETS-NEEDED.md).
 Tile (144×144) and social card (1200×630). Interim placeholders are live, so
 nothing is broken — the page just doesn't match the rest of the arcade.
 
@@ -1063,7 +1063,7 @@ games now implement a daily mode and all ten are listed on the Daily hub.
 ## B1. Port SnackWords (daily word guess) — **DONE 2026-08-14**
 
 Completed 2026-08-14. It is the natural headline for
-[`/play/daily/`](daily/), which shipped the same week. Flag Frenzy already
+[`/play/daily/`](../../../daily/), which shipped the same week. Flag Frenzy already
 proves the shape works here.
 
 ### Do NOT call it Wordle
@@ -1137,7 +1137,7 @@ that does not match the rest.
 [`CODEX-ASSETS-REQUESTED.md`](CODEX-ASSETS-REQUESTED.md)** — exact file paths,
 sizes, per-tile/sprite specs, and style reference, so nothing needs
 re-deriving from this plan doc. A1 has its own equivalent brief in
-[`spider-solitaire/ASSETS-NEEDED.md`](spider-solitaire/ASSETS-NEEDED.md).
+[`SPIDER-SOLITAIRE-ASSETS-NEEDED.md`](SPIDER-SOLITAIRE-ASSETS-NEEDED.md).
 
 | Item | What | Blocks |
 |---|---|---|

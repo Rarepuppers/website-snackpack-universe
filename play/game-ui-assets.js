@@ -160,7 +160,11 @@
 
   (function enableArcadeAudio() {
     var gameMatch = location.pathname.match(/^\/play\/([^/]+)\/?$/);
-    if (!gameMatch || gameMatch[1] === "daily" || gameMatch[1] === "stats") return;
+    // Last Bastion owns its own Phaser audio stack. Without this guard the
+    // arcade sound system is preloaded underneath it and the page ends up
+    // running two of them.
+    if (!gameMatch || gameMatch[1] === "daily" || gameMatch[1] === "stats"
+        || gameMatch[1] === "last-bastion") return;
 
     function wire() {
       var controls = document.querySelector(".game-controls, .fc-actions");

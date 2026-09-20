@@ -1,6 +1,6 @@
 # Plan — the two missing solitaire classics: TriPeaks, then Pyramid
 
-Written 2026-08-15. Companion to [`../SITE-IMPROVEMENT-PLAN.md`](../SITE-IMPROVEMENT-PLAN.md)
+Written 2026-08-15. Companion to [`SITE-IMPROVEMENT-PLAN.md`](../../../../SITE-IMPROVEMENT-PLAN.md)
 and [`ARCADE-IMPROVEMENT-PLAN.md`](ARCADE-IMPROVEMENT-PLAN.md).
 
 ---
