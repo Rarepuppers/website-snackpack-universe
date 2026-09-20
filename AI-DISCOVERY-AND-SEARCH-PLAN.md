@@ -143,13 +143,21 @@ conclusion that `claude down` is not winnable and is not a site-quality problem.
 **Do not commission copy work for this until someone can see the real SERP.**
 
 
-### F3 — Decide what to do about `isclaudedown.com` in Bing
+### F3 - `isclaudedown.com` *(CORRECTED 2026-09-20 - it is not a 301)*
 
-Bing indexes it **separately** (299 impr @ pos 9 for `is claude down`, 0 clicks)
-despite a verified single-hop 301 to isclaudeup. Google shows no such split, so
-the two are splitting one Bing SERP. Harmless today at 0 clicks, but it means
-**isclaudeup's Bing totals are not the whole picture** — don't read them as
-complete. Options: leave it, or ask Bing Webmaster to treat it as a site move.
+**It is no longer a redirect.** It serves its own site: HTTP 200, its own title,
+its own pages (`/sponsor.html`, `/claude-code-not-working.html`) and its own
+Cloudflare beacon. The August decision to "keep as a 301, don't build on it" was
+reversed at some point; this document previously repeated the old state.
+
+It does split the Bing SERP with isclaudeup - both around position 9 for
+`is claude down` - so **isclaudeup's Bing totals are not the whole picture**.
+
+**Resolved by decision, not by action:** Mark keeps both domains until renewal and
+drops whichever performs worse. Criterion, dates and the early read live in
+`CLAUDE-DOMAIN-DECISION-2027-06.md` at the monorepo root. First number, now that
+Search Console access has been granted: isclaudedown took **1 click from 117
+impressions in 90 days** against isclaudeup's **14 clicks from 1,749 in 28**.
 
 ### F4 - Snapshot referral history (DONE)
 
@@ -194,10 +202,11 @@ Verified 2026-09-19 three ways:
   return **200** by the identical method, so the method is sound and the 404 is
   real, not a fetch artefact.
 
-So both apps have a completed production rollout that **nobody can reach or
-install**. A completed release is not the same as a published listing -- an app
-can sit unpublished, pending review, or with no country availability. Neither
-carries a `DRAFT-STATUS.md`, so nothing in the repo records this as intended.
+**CORRECTED 2026-09-20:** Mark confirms both are **in production review for
+their first ever release**, so this is the normal pre-launch state, not a
+misconfiguration. Retract the alarm; keep the durable lesson, which is that
+`status=completed` is **not** the same as publicly listed - check the public
+listing separately before calling an app live.
 
 **This needs a human in Play Console.** It is not a website problem and there is
 no API fix. Flagged here because the website `noindex` on those two pages is the
@@ -239,6 +248,37 @@ form, which is what the two R2 guides do.
 interstitial was never generated. Pre-existing and untouched by this work; it
 needs `build-go-links.mjs` re-run, which is its own change because that generator
 also rewrites store links across the site.
+
+
+## Update 2026-09-20 - the status sites, and this is now automated
+
+**Assistants send ZERO traffic to any status site.** isclaudeup, iscodexup and
+isclaudedown took **0** assistant referrals in 30 days, against 60 to this site.
+That is a real difference, not a measurement gap. A live-status page is not a
+citation an assistant can safely make, because it cannot verify the claim at
+answer time. **Do not plan around assistant discovery on the status sites** - the
+thesis in this document applies to *utility pages that stay true*, which is why
+it works for the decodable-readers guide and not for a page whose whole value is
+being live.
+
+**`scripts/monitor/weekly.py` now reads all of this on demand** (monorepo), so
+the October re-measure does not depend on anyone re-deriving it by hand:
+Cloudflare referrals per property, Bing, Brevo contacts, Porkbun expiry, and the
+decision dates themselves. Search Console stays in `daily.py`. **F4 and F5 are
+done; F6 is resolved** - the working Cloudflare token's location is now encoded in
+both `report-referrals.mjs` and `weekly.py` rather than living only in memory.
+
+**F2 (Bing on isclaudeup) - closed as not worth it.** The gating check never
+passed, and the wider picture now argues against the work anyway: isclaudeup is
+at Google position 23.4 and *falling* (22 -> 14 clicks) in a SERP owned by
+status.claude.com, Downdetector, claudestatus.com, StatusGator, IsDown and
+pulsetic. iscodexup sits at 8.5 and is *growing* (82 -> 114) because its category
+had no incumbent. **The transferable asset is the playbook, not more work on
+Claude head terms** - it pays out on a tool with no established status page.
+
+**What converts on those sites is the name, not the category:** Bing `isclaudeup`
+earns 10% CTR at position 5.3 and Google `is codex up` earns 64% at 2.5, while
+generic head terms at position 8-9 earn ~0% across thousands of impressions.
 
 
 ## Open items with dates attached
