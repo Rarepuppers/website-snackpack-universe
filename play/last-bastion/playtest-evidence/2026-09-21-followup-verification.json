@@ -1,0 +1,36 @@
+﻿{
+    "commit":  "f3d1194a",
+    "buildIdentity":  "web-2026.09.10-qa09",
+    "workingTree":  "dirty",
+    "finishedAt":  "2026-09-21T19:08:59.3998974+10:00",
+    "totalSeconds":  38.4,
+    "result":  "PASS",
+    "lanes":  [
+                  {
+                      "lane":  "web",
+                      "title":  "Web static/unit/build/smoke/offline",
+                      "status":  "PASS",
+                      "seconds":  20.9,
+                      "error":  null
+                  },
+                  {
+                      "lane":  "browser",
+                      "title":  "Executable browser acceptance",
+                      "status":  "PASS",
+                      "seconds":  16.9,
+                      "error":  null
+                  },
+                  {
+                      "lane":  "desktop",
+                      "title":  "Desktop host build and tests",
+                      "status":  "PASS",
+                      "seconds":  0.6,
+                      "error":  null
+                  }
+              ],
+    "manualGates":  [
+                        "Observed gameplay, visual and audio review",
+                        "Packaged-window hardware checks",
+                        "Steam client acceptance"
+                    ]
+}

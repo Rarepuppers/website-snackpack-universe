@@ -84,11 +84,33 @@ test.describe("Last Bastion executable acceptance", () => {
     await page.waitForFunction(() => window.__shellState?.screen === "settings");
     await page.keyboard.press("ArrowUp");
     await page.keyboard.press("ArrowUp");
+    await page.keyboard.press("ArrowUp");
     const downloadPromise = page.waitForEvent("download");
     await page.keyboard.press("Enter");
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toBe("last-bastion-save-v16.json");
     await expectHealthyCanvas(page, failures);
+  });
+
+  test("settings exposes the game privacy policy without overflowing the minimum viewport", async ({ page }) => {
+    const failures = watchRuntime(page);
+    await page.setViewportSize({ width: 960, height: 540 });
+    await page.goto("/play/last-bastion/?flow=settings");
+    await page.waitForFunction(() => window.__shellState?.screen === "settings");
+    await page.keyboard.press("ArrowUp");
+    expect(await page.evaluate(() => {
+      const state = window.__shellState;
+      return state.settingsRows[state.settingsIndex];
+    })).toMatchObject({ kind: "action", key: "privacy", label: "Privacy policy" });
+    const canvas = await page.locator("#game-root canvas").boundingBox();
+    expect(canvas).not.toBeNull();
+    expect(canvas.width).toBeLessThanOrEqual(960);
+    expect(canvas.height).toBeLessThanOrEqual(540);
+    await expectHealthyCanvas(page, failures);
+
+    await page.keyboard.press("Enter");
+    await page.waitForURL("**/privacy/last-bastion/");
+    await expect(page.getByRole("heading", { name: "Last Bastion privacy policy" })).toBeVisible();
   });
 
   test("debrief keyboard navigation updates the selected action", async ({ page }) => {

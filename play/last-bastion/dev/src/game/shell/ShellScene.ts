@@ -490,7 +490,7 @@ export class ShellScene extends Phaser.Scene {
       const actionRow = row.kind === "action";
       const enabled = actionRow || row.kind !== "toggle" || Boolean(this.state.settings[row.key]);
       const valueLabel = actionRow
-        ? row.key === "controls" ? "OPEN >" : "RUN >"
+        ? row.key === "controls" || row.key === "privacy" ? "OPEN >" : "RUN >"
         : row.kind === "toggle"
           ? enabled ? "ON" : "OFF"
           : formatSettingValue(row.key, this.state.settings[row.key]);

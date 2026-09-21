@@ -1957,13 +1957,19 @@ button:focus-visible {
   margin: 1.25rem 0 0;
 }
 
-.last-bastion-shot img {
+.last-bastion-shot img,
+.last-bastion-shot video {
   display: block;
   width: 100%;
   height: auto;
   border: 1px solid var(--line);
   border-radius: 14px;
   box-shadow: var(--shadow-soft);
+}
+
+.last-bastion-loop {
+  max-width: 960px;
+  margin-inline: auto;
 }
 
 .last-bastion-shot figcaption {

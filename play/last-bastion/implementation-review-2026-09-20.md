@@ -242,3 +242,10 @@ current results.
 Observed limitations remain explicit: no physical gamepad was attached for hardware
 acceptance; Steam/package checks remain deferred; GoatCounter dashboard receipt cannot be
 verified until Mark supplies the Last Bastion site code. None blocks the browser release.
+
+### Post-release follow-up — 21 September
+
+The game-specific privacy policy is now reachable from the Settings screen by keyboard,
+gamepad intent and pointer, with a minimum-viewport browser acceptance test. The guide now
+embeds the captured run loop with native controls, a poster and a direct fallback link;
+social metadata also declares the card's type and 1200×630 dimensions.

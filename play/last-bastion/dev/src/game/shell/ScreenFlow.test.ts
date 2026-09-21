@@ -110,6 +110,14 @@ describe("Shell screen flow", () => {
       .toEqual([{ type: "transfer-save", operation: "import" }]);
   });
 
+  it("makes the game-specific privacy policy reachable from settings", () => {
+    const state = boot("settings");
+    const privacyIndex = SETTINGS_ROWS.findIndex((row) => row.key === "privacy");
+    expect(privacyIndex).toBeGreaterThan(-1);
+    expect(stepShell({ ...state, settingsIndex: privacyIndex }, "confirm").effects)
+      .toEqual([{ type: "open-url", url: "/privacy/last-bastion/" }]);
+  });
+
   it("lists no setting that gameplay ignores", () => {
     // Every row here must change something the player can perceive. These keys
     // still persist in GameSettings, but nothing reads them yet: there is no

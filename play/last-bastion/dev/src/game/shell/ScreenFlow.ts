@@ -108,7 +108,7 @@ export type SettingsRow =
   | { kind: "toggle"; key: keyof GameSettings; label: string }
   | { kind: "choice"; key: keyof GameSettings; label: string; options: readonly string[] }
   | { kind: "range"; key: keyof GameSettings; label: string; min: number; max: number; step: number }
-  | { kind: "action"; key: "controls" | "export-save" | "import-save"; label: string };
+  | { kind: "action"; key: "controls" | "export-save" | "import-save" | "privacy"; label: string };
 
 export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "toggle", key: "screenShakeEnabled", label: "Screen shake" },
@@ -148,6 +148,7 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "action", key: "controls", label: "Control bindings" },
   { kind: "action", key: "export-save", label: "Export save backup" },
   { kind: "action", key: "import-save", label: "Import save backup" },
+  { kind: "action", key: "privacy", label: "Privacy policy" },
 ]);
 
 export function settingsRowsForDisplayCapabilities(
@@ -473,6 +474,9 @@ function stepSettings(state: ShellState, intent: ShellIntent): ShellStepResult {
     if (row.kind === "action") {
       if (row.key === "controls") {
         return { state: { ...state, screen: "controls", controlIndex: 0 }, effects: [] };
+      }
+      if (row.key === "privacy") {
+        return { state, effects: [{ type: "open-url", url: "/privacy/last-bastion/" }] };
       }
       return {
         state,
