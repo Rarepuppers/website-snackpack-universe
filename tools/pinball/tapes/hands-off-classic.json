@@ -5,19 +5,19 @@
   "pattern": "hands-off",
   "frames": 86400,
   "expect": {
-    "score": 35000,
+    "score": 70500,
     "ball": 4,
     "rank": 0,
     "missions": 0,
-    "bonusMultiplier": 3,
+    "bonusMultiplier": 4,
     "gameOver": true,
     "events": {
       "bumper": 0,
       "sling": 0,
-      "drain": 3,
-      "rollover": 6,
-      "ramp-exit": 2,
-      "saucer": 1,
+      "drain": 6,
+      "rollover": 9,
+      "ramp-exit": 3,
+      "saucer": 3,
       "escaped": 0
     }
   }

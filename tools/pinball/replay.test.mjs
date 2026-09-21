@@ -32,6 +32,7 @@ import url from 'node:url';
 import { createWorld, advance, drainEvents, serveBall, addBall, releaseSaucer, DT } from '../../play/pinball/engine.js';
 import {
   createRules, applyEvent, tick as tickRules, nextBall, setBallsInPlay, drainCommands,
+  armBallSave, consumeBallSave, consumeExtraBall,
 } from '../../play/pinball/rules.js';
 import { MODES, SAUCERS } from '../../play/pinball/table.js';
 import { group, test, assert, report, round } from './harness.mjs';
@@ -97,6 +98,7 @@ const TAPE_DEFS = [
 function runTape(def) {
   const world = createWorld(def.mode, def.seed);
   const rules = createRules(def.seed, def.mode);
+  armBallSave(rules);
 
   // Two kinds of tape.
   //
@@ -130,7 +132,16 @@ function runTape(def) {
       applyEvent(rules, e);
       if (e.type === 'ball-lost') {
         if (world.mode.endless) { serveBall(world); continue; }
+        // Mirrors game.js onBallLost, including ball save and extra ball. If
+        // these fall out of step the tapes stop meaning anything.
+        if (consumeBallSave(rules)) { serveBall(world); continue; }
         nextBall(rules);
+        if (consumeExtraBall(rules)) {
+          rules.ball -= 1;
+          armBallSave(rules);
+          serveBall(world);
+          continue;
+        }
         ballsLeft -= 1;
         if (ballsLeft <= 0) { over = true; break; }
         serveBall(world);

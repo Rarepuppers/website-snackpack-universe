@@ -2060,6 +2060,18 @@ button.th-card.is-selected {
   .pb-modes .btn-game { min-width: 0; width: 100%; max-width: 280px; }
 }
 
+/* MATCH, revealed on the game-over overlay. */
+.pb-match {
+  margin: 10px 0 0;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.pb-match[data-hit="yes"] { color: #b4671f; }
+.pb-match[hidden] { display: none; }
+
 /* Combo and tilt meters. Both chips are hidden unless the mechanic is live, so
    they add nothing to the dock's height in normal play. The tilt chip appearing
    the first time you nudge is the only place the game teaches that nudging has

@@ -9,9 +9,9 @@
  * The engine never reads a clock; this file owns all of the timing.
  */
 
-import { createWorld, advance, drainEvents, serveBall, nudge, addBall, releaseSaucer, DT } from './engine.js?v=828626f2cd';
-import { createRenderer } from './render.js?v=828626f2cd';
-import { MODES, SAUCERS, BUMPERS } from './table.js?v=828626f2cd';
+import { createWorld, advance, drainEvents, serveBall, nudge, addBall, releaseSaucer, DT } from './engine.js?v=439db8cfaa';
+import { createRenderer } from './render.js?v=439db8cfaa';
+import { MODES, SAUCERS, BUMPERS } from './table.js?v=439db8cfaa';
 
 /** Slingshot face midpoints, for spark positions. */
 const SLING_POS = {
@@ -23,7 +23,8 @@ import {
   drainCommands, drainLog, statusLine, litShots,
   serialize as serializeRules, deserialize as deserializeRules,
   RANKS, MISSIONS, COMBO_WINDOW,
-} from './rules.js?v=828626f2cd';
+  armBallSave, consumeBallSave, consumeExtraBall,
+} from './rules.js?v=439db8cfaa';
 
 /** ?daily=YYYY-MM-DD -- everyone gets the same missions, one attempt. */
 const DAILY = new URLSearchParams(location.search).get('daily');
@@ -85,6 +86,7 @@ const state = {
   pendingKicks: [],
   running: false,
   paused: false,
+  rolling: false,        // the end-of-ball bonus owns the score display
   last: 0,
   flashes: new Map(),
   input: { left: false, right: false, plunge: false },
@@ -269,29 +271,88 @@ function onBallLost() {
     serveBall(state.world);
     return;
   }
+
+  // Ball save first: a saved ball is not a lost ball, so nothing advances --
+  // not the ball number, not the bonus, not the count remaining.
+  if (consumeBallSave(state.rules)) {
+    serveBall(state.world);
+    state.pendingKicks = [];
+    announce('BALL SAVED');
+    paint();
+    return;
+  }
+
   const bonus = nextBall(state.rules);
+
+  // An extra ball is the same ball number over again, so it is spent here
+  // rather than added to the count: the player sees "Ball 2 / 3" twice.
+  if (consumeExtraBall(state.rules)) {
+    state.rules.ball -= 1;
+    armBallSave(state.rules);
+    serveBall(state.world);
+    state.pendingKicks = [];
+    rollBonus(bonus, 'EXTRA BALL');
+    return;
+  }
+
   state.ballsLeft -= 1;
   if (state.ballsLeft <= 0) {
-    gameOver();
+    // The final bonus is the one worth watching. Count it up, then end.
+    state.running = false;
+    rollBonus(bonus, 'Game over', () => gameOver(bonus));
     return;
   }
   serveBall(state.world);
   state.pendingKicks = [];
-  announce(bonus > 0 ? `Bonus ${bonus.toLocaleString()}` : `Ball ${state.rules.ball}`);
-  paint();
+  rollBonus(bonus, `Ball ${state.rules.ball}`);
 }
 
-function gameOver() {
+/*
+ * The end-of-ball bonus was already tallied and paid; it was just handed over
+ * instantly. The countdown IS the reward in pinball, so the SCORE DISPLAY is
+ * animated up to the already-awarded total. Presentation only -- the rules
+ * have the real number the whole time, so nothing here can desync the game.
+ */
+let rollTimer = 0;
+function rollBonus(bonus, thenText, done) {
+  clearInterval(rollTimer);
+  const r = state.rules;
+  if (!bonus || bonus <= 0) { state.rolling = false; announce(thenText); paint(); if (done) done(); return; }
+  const steps = 12;
+  const from = r.score - bonus;
+  let i = 0;
+  state.rolling = true;
+  announce(`Bonus ${bonus.toLocaleString()}`);
+  rollTimer = setInterval(() => {
+    i += 1;
+    const shown = Math.round(from + (bonus * i) / steps);
+    el('pb-score').textContent = shown.toLocaleString();
+    sfx('spinner-tick');
+    if (i >= steps) {
+      clearInterval(rollTimer);
+      state.rolling = false;
+      paint();
+      announce(thenText);
+      if (done) done();
+    }
+  }, 70);
+}
+
+function gameOver(bonus) {
   state.running = false;
   stopContinuous();
+  clearInterval(rollTimer);
+  state.rolling = false;
   sfx('game-over');
   const r = state.rules;
+  if (bonus > 0) el('pb-score').textContent = r.score.toLocaleString();
   announce(`Game over. ${r.score.toLocaleString()} points.`);
   el('pb-overlay').hidden = false;
   el('pb-overlay-title').textContent = 'Game over';
   el('pb-overlay-body').textContent = `${r.score.toLocaleString()} points`;
   el('pb-overlay-note').textContent =
     `${RANKS[r.rank]} • ${r.missionsDone.length} of ${MISSIONS.length} missions`;
+  showMatch(r.score);
   saveBest();
   if (state.resume) state.resume.clear();
   if (DAILY) markDailyDone();
@@ -363,10 +424,16 @@ function saveBest() {
 
 function paint() {
   const r = state.rules;
-  el('pb-score').textContent = r ? r.score.toLocaleString() : '0';
+  // While the bonus is counting up, the roll owns the score display. paint()
+  // runs every frame, so without this it overwrote each step within ~16ms and
+  // the countdown was invisible.
+  if (!state.rolling) el('pb-score').textContent = r ? r.score.toLocaleString() : '0';
+  // nextBall() increments before the game-over check, so the last drain would
+  // otherwise read "Ball 4 / 3" while the final bonus counts up.
+  const ballCount = MODES[state.mode].balls;
   el('pb-ball').textContent = state.world && state.world.mode.endless
     ? '∞'
-    : `${r ? r.ball : 1} / ${MODES[state.mode].balls}`;
+    : `${Math.min(r ? r.ball : 1, ballCount)} / ${ballCount}`;
   el('pb-best').textContent = readBest().toLocaleString();
   el('pb-rank').textContent = r ? RANKS[r.rank] : RANKS[0];
   if (r) el('pb-dmd').textContent = statusLine(r);
@@ -437,6 +504,9 @@ function start(modeId) {
   state.seed = seed;
   state.world = createWorld(modeId, seed);
   state.rules = createRules(seed, modeId);
+  // createRules starts the game on ball 1 without going through nextBall, so
+  // the first ball would otherwise be the only one with no save.
+  armBallSave(state.rules);
   state.tape = RECORD ? [] : null;
   state.ballsLeft = MODES[modeId].balls;
   state.pendingKicks = [];
@@ -492,6 +562,28 @@ function flipperSound(down) {
  */
 function plungerSound(down) {
   if (down) sfx('plunger-pull');
+}
+
+/*
+ * MATCH. A real cabinet rolls two digits at game over and gives a free credit
+ * when they match the score's last two. Here the game is already free, so the
+ * credit has nothing to buy -- the reveal is the whole point, and pretending it
+ * grants something would be inventing stakes that do not exist. One in ten,
+ * exactly as on a real table.
+ */
+function showMatch(score) {
+  const el2 = el('pb-match');
+  if (!el2) return;
+  const drawn = Math.floor(Math.random() * 10) * 10;
+  const mine = score % 100;
+  const hit = drawn === mine - (mine % 10);
+  el2.hidden = false;
+  el2.textContent = `MATCH ${String(drawn).padStart(2, '0')}`;
+  el2.dataset.hit = hit ? 'yes' : 'no';
+  if (hit) {
+    el2.textContent = `MATCH ${String(drawn).padStart(2, '0')} — free game`;
+    sfx('rank-up');
+  }
 }
 
 function bindKeys() {

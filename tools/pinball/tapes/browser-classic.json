@@ -11742,8 +11742,8 @@
     ]
   ],
   "expect": {
-    "score": 62400,
-    "ball": 2,
+    "score": 54400,
+    "ball": 1,
     "rank": 0,
     "missions": 0,
     "bonusMultiplier": 4,

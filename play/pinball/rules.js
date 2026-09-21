@@ -15,7 +15,7 @@
  * them is a bug.
  */
 
-import { mulberry32 } from './engine.js?v=828626f2cd';
+import { mulberry32 } from './engine.js?v=439db8cfaa';
 
 // ---------------------------------------------------------------------------
 // Tables
@@ -71,6 +71,23 @@ export const MISSIONS = [
 ];
 
 export const COMBO_WINDOW = 3.0;
+
+/**
+ * Ball save: a drain inside this window gives the ball straight back, once per
+ * ball. Near-universal in modern pinball, and the fix for the player who
+ * drains twice in fifteen seconds and closes the tab. It matters more since
+ * the shooter lane stopped sheltering the ball.
+ *
+ * Both numbers are starting values to tune by feel, not results of analysis.
+ */
+export const BALL_SAVE_SECONDS = 8.0;
+
+/**
+ * Extra balls are how pinball pays for skill rather than for time. One on each
+ * of the first two rank-ups: rank is driven by missions completed, so this
+ * rewards doing the hard thing, and the cap stops a strong player compounding.
+ */
+export const EXTRA_BALL_RANKS = 2;
 export const SKILL_WINDOW = 4.0;
 export const MISSION_RELIGHT = 15.0;
 export const WIZARD_TIME = 60;
@@ -140,10 +157,40 @@ export function createRules(seed, modeId) {
     rolloversThisSet: [],
     bonus: { bumpers: 0, ramps: 0, targets: 0 },
 
+    // Ball save lives in the ruleset, not in game.js, so it is part of the
+    // deterministic simulation the replay tapes verify -- and so it ports to
+    // the app for free with the rest of rules.js.
+    ballSave: 0,             // seconds of grace left on this ball
+    ballSaveArmed: true,     // one save per ball
+    ballSaved: false,        // set on a saved drain, read and cleared by game.js
+    extraBalls: 0,           // awarded but not yet handed to game.js
+    extraBallsAwarded: 0,    // lifetime this game, against EXTRA_BALL_RANKS
+
     tilted: false,
     commands: [],
     log: [],                 // significant moments, for the DMD and the share card
   };
+}
+
+/** Start a ball's grace period. Also used for the first ball of a game. */
+export function armBallSave(r) {
+  r.ballSave = BALL_SAVE_SECONDS;
+  r.ballSaveArmed = true;
+  r.ballSaved = false;
+}
+
+/** game.js asks once per drain whether the ball comes back. */
+export function consumeBallSave(r) {
+  const saved = r.ballSaved;
+  r.ballSaved = false;
+  return saved;
+}
+
+/** game.js asks once per drain whether an extra ball is owed. */
+export function consumeExtraBall(r) {
+  if (r.extraBalls <= 0) return false;
+  r.extraBalls -= 1;
+  return true;
 }
 
 const push = (r, type, data) => { r.commands.push({ type, ...data }); };
@@ -186,6 +233,11 @@ function updateRank(r) {
   note(r, `Rank up: ${RANKS[r.rank]}`, 'rank');
   push(r, 'sound', { name: 'rank-up' });
   push(r, 'voice', { name: 'voice/voice-rank-up' });
+  if (r.extraBallsAwarded < EXTRA_BALL_RANKS) {
+    r.extraBallsAwarded += 1;
+    r.extraBalls += 1;
+    note(r, 'EXTRA BALL', 'extra');
+  }
   if (r.rank === RANKS.length - 1 && r.missionsDone.length >= MISSIONS.length) {
     r.wizardLit = true;
     note(r, 'THE LONG VOYAGE IS LIT', 'wizard');
@@ -554,6 +606,15 @@ export function applyEvent(r, e) {
 
     case 'drain':
       breakCombo(r);
+      // Tilting kills the save too: a tilted ball is forfeit, which is the
+      // whole point of the penalty.
+      if (r.ballSave > 0 && r.ballSaveArmed && !r.tilted) {
+        r.ballSaveArmed = false;
+        r.ballSave = 0;
+        r.ballSaved = true;
+        note(r, 'BALL SAVED', 'save');
+        push(r, 'sound', { name: 'kickback' });
+      }
       break;
 
     default:
@@ -564,6 +625,11 @@ export function applyEvent(r, e) {
 
 /** Time-based rules: mission clocks, combo window, skill window, wizard clock. */
 export function tick(r, dt) {
+  if (r.ballSave > 0) {
+    r.ballSave -= dt;
+    if (r.ballSave <= 0) { r.ballSave = 0; note(r, 'Ball save off', 'save'); }
+  }
+
   if (r.comboTimer > 0) {
     r.comboTimer -= dt;
     if (r.comboTimer <= 0) breakCombo(r);
@@ -616,6 +682,7 @@ export function nextBall(r) {
   const bonus = endOfBallBonus(r);
   if (bonus > 0) { add(r, bonus); note(r, `Bonus ${bonus.toLocaleString()}`, 'bonus'); }
   r.ball += 1;
+  armBallSave(r);
   r.bonus = { bumpers: 0, ramps: 0, targets: 0 };
   r.tilted = false;
   r.multiball = false;
