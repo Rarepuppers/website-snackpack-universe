@@ -13,8 +13,8 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v20";
-const LAST_BASTION_RELEASE = "2026-09-11-qa09-inspection";
+const CACHE = "snackpack-arcade-v21";
+const LAST_BASTION_RELEASE = "2026-09-21-privacy-link";
 const LAST_BASTION_CACHE = `last-bastion-${LAST_BASTION_RELEASE}`;
 
 // Stable public filenames make a partial cache refresh unsafe: a new scene can
