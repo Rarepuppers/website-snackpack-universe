@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { NEW_VISITOR } from "./PlayerFunnel";
 import {
+  bufferedGoatCounterTransport,
+  flushPendingFunnelEvents,
   goatCounterTransport,
   installFunnelTransport,
   readVisitState,
@@ -19,6 +21,7 @@ function memoryStorage(): Storage {
 
 function fakeHost(options: { storage?: Storage | null; session?: Storage | null; goatcounter?: unknown } = {}) {
   const appended: { dataset: Record<string, string>; src?: string }[] = [];
+  const loadListeners: (() => void)[] = [];
   const store = new Map<string, string>();
   const storage = options.storage === undefined
     ? {
@@ -33,11 +36,16 @@ function fakeHost(options: { storage?: Storage | null; session?: Storage | null;
     goatcounter: options.goatcounter,
     document: {
       querySelector: () => null,
-      createElement: () => ({ dataset: {} as Record<string, string> }),
+      createElement: () => ({
+        dataset: {} as Record<string, string>,
+        addEventListener: (name: string, listener: () => void) => {
+          if (name === "load") loadListeners.push(listener);
+        },
+      }),
       head: { appendChild: (node: never) => void appended.push(node) },
     },
   } as unknown as Window;
-  return { host, appended, store };
+  return { host, appended, store, fireLoad: () => loadListeners.splice(0).forEach((listener) => listener()) };
 }
 
 describe("installFunnelTransport", () => {
@@ -45,6 +53,20 @@ describe("installFunnelTransport", () => {
     const { host, appended } = fakeHost();
     expect(installFunnelTransport(host)).toBe(false);
     expect(appended).toHaveLength(0);
+  });
+
+  it("installs once with the configured endpoint and flushes after load", () => {
+    const count = vi.fn();
+    const session = memoryStorage();
+    const setup = fakeHost({ session });
+    expect(bufferedGoatCounterTransport(setup.host).send("opened", {})).toBe(true);
+    expect(installFunnelTransport(setup.host, "snackpack-test")).toBe(true);
+    expect(setup.appended).toHaveLength(1);
+    expect(setup.appended[0]?.dataset.goatcounter).toBe("https://snackpack-test.goatcounter.com/count");
+    (setup.host as unknown as { goatcounter: unknown }).goatcounter = { count };
+    setup.fireLoad();
+    expect(count).toHaveBeenCalledTimes(1);
+    expect(session.getItem("lastBastion.funnelPending.v1")).toBe("[]");
   });
 });
 
@@ -64,9 +86,9 @@ describe("goatCounterTransport", () => {
     });
   });
 
-  it("does nothing when the counter script has not loaded", () => {
+  it("declines immediate delivery when the counter script has not loaded", () => {
     const { host } = fakeHost({ goatcounter: undefined });
-    expect(() => goatCounterTransport(host).send("opened", {})).not.toThrow();
+    expect(goatCounterTransport(host).send("opened", {})).toBe(false);
   });
 
   it("sends only values drawn from the closed vocabulary", () => {
@@ -95,6 +117,32 @@ describe("goatCounterTransport", () => {
       }
       expect(Object.keys(payload).sort()).toEqual(["event", "path", "title"]);
     }
+  });
+});
+
+describe("buffered delivery", () => {
+  it("survives a navigation and flushes oldest-first", () => {
+    const session = memoryStorage();
+    const first = fakeHost({ session });
+    expect(bufferedGoatCounterTransport(first.host).send("opened", {})).toBe(true);
+    expect(bufferedGoatCounterTransport(first.host).send("run-started", { mode: "expedition" })).toBe(true);
+
+    const count = vi.fn();
+    const second = fakeHost({ session, goatcounter: { count } });
+    expect(flushPendingFunnelEvents(second.host)).toBe(2);
+    expect(count.mock.calls.map(([payload]) => payload.path)).toEqual([
+      "last-bastion/opened",
+      "last-bastion/run-started/expedition",
+    ]);
+  });
+
+  it("does not claim acceptance when storage and delivery are both blocked", () => {
+    const blocked = {
+      getItem: () => { throw new Error("SecurityError"); },
+      setItem: () => { throw new Error("SecurityError"); },
+    } as unknown as Storage;
+    const { host } = fakeHost({ session: blocked });
+    expect(bufferedGoatCounterTransport(host).send("opened", {})).toBe(false);
   });
 });
 
@@ -140,8 +188,8 @@ describe("the session ledger", () => {
     const session = memoryStorage();
     const first = fakeHost({ session });
     const second = fakeHost({ session });
-    startPlayerFunnel(first.host, Date.UTC(2026, 8, 11, 12));
-    startPlayerFunnel(second.host, Date.UTC(2026, 8, 11, 12, 5));
+    startPlayerFunnel(first.host, Date.UTC(2026, 8, 11, 12), "snackpack-test");
+    startPlayerFunnel(second.host, Date.UTC(2026, 8, 11, 12, 5), "snackpack-test");
     expect(session.getItem("lastBastion.funnelSession.v1")).toBe(JSON.stringify(["opened"]));
   });
 
@@ -159,14 +207,14 @@ describe("startPlayerFunnel", () => {
   it("records a first visit without claiming a return", () => {
     const { host } = fakeHost();
     const funnel = startPlayerFunnel(host, Date.UTC(2026, 8, 11, 12));
-    expect(funnel.reported()).toContain("opened");
+    expect(funnel.reported()).not.toContain("opened");
     expect(funnel.reported()).not.toContain("returning");
   });
 
   it("reports a return on a later day", () => {
     const { host } = fakeHost();
-    startPlayerFunnel(host, Date.UTC(2026, 8, 11, 12));
-    const second = startPlayerFunnel(host, Date.UTC(2026, 8, 13, 12));
+    startPlayerFunnel(host, Date.UTC(2026, 8, 11, 12), "snackpack-test");
+    const second = startPlayerFunnel(host, Date.UTC(2026, 8, 13, 12), "snackpack-test");
     expect(second.reported()).toContain("returning");
   });
 

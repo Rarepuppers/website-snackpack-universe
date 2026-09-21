@@ -1953,6 +1953,25 @@ button:focus-visible {
   box-shadow: 0 30px 64px rgba(32, 23, 19, 0.24);
 }
 
+.last-bastion-shot {
+  margin: 1.25rem 0 0;
+}
+
+.last-bastion-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-soft);
+}
+
+.last-bastion-shot figcaption {
+  margin-top: .55rem;
+  color: var(--muted);
+  font-size: .9rem;
+}
+
 .shot-caption {
   margin: 10px 0 0;
   text-align: center;

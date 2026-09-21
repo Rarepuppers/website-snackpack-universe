@@ -44,17 +44,29 @@ $manualGates = @(
 Push-Location $siteRoot
 try {
   $commit = (& git rev-parse --short HEAD).Trim()
-  $dirty = [bool](& git status --short -- play/last-bastion package.json playwright.last-bastion.config.mjs scripts)
+  $dirtyPaths = @(
+    '.github/workflows/site-check.yml'
+    'package.json'
+    'play/last-bastion'
+    'playwright.last-bastion.config.mjs'
+    'playwright.last-bastion-profile.config.mjs'
+    'playwright.last-bastion-screens.config.mjs'
+    'playwright.last-bastion-startup.config.mjs'
+    'scripts/run-last-bastion-browser-tests.ps1'
+    'scripts/verify-last-bastion.ps1'
+    'sw.js'
+  )
+  $dirty = [bool](& git status --short -- @dirtyPaths)
 }
 finally {
   Pop-Location
 }
 
-# The identity a seed reproduces against; see dev/src/game/run/BuildIdentity.ts.
+# The identity a seed reproduces against; owned by RunSummary provenance.
 $buildIdentity = 'unknown'
-$identityFile = Join-Path $webRoot 'src\game\run\BuildIdentity.ts'
+$identityFile = Join-Path $webRoot 'src\game\run\RunSummary.ts'
 if (Test-Path -LiteralPath $identityFile) {
-  $match = Select-String -LiteralPath $identityFile -Pattern 'BUILD_IDENTITY\s*=\s*"([^"]+)"'
+  $match = Select-String -LiteralPath $identityFile -Pattern 'LAST_BASTION_BUILD_VERSION\s*=\s*"([^"]+)"'
   if ($match) { $buildIdentity = $match.Matches[0].Groups[1].Value }
 }
 
@@ -76,9 +88,15 @@ foreach ($lane in $lanes) {
   $timer = [System.Diagnostics.Stopwatch]::StartNew()
   Write-Host "`n=== $($lane.Title) ==="
   Push-Location $lane.Dir
+  $code = 1
+  $failureMessage = $null
   try {
     & npm.cmd @($lane.Args)
     $code = $LASTEXITCODE
+  }
+  catch {
+    $failureMessage = $_.Exception.Message
+    $code = 1
   }
   finally {
     Pop-Location
@@ -87,11 +105,13 @@ foreach ($lane in $lanes) {
   $status = if ($code -eq 0) { 'PASS' } else { 'FAIL' }
   if ($code -ne 0) { $failed = $true }
   Write-Host ("{0} {1} ({2:n1}s)" -f $status, $lane.Title, $timer.Elapsed.TotalSeconds)
+  if ($failureMessage) { Write-Host "ERROR $failureMessage" }
   $results += [pscustomobject]@{
     lane = $lane.Name
     title = $lane.Title
     status = $status
     seconds = [math]::Round($timer.Elapsed.TotalSeconds, 1)
+    error = $failureMessage
   }
 }
 $total.Stop()

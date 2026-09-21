@@ -11,6 +11,7 @@ import { defineConfig } from "@playwright/test";
 const port = Number(process.env.LAST_BASTION_TEST_PORT || 44178);
 
 export default defineConfig({
+  globalTeardown: "./tests/visual/shutdown-static-server.mjs",
   testDir: "./tests/visual",
   testMatch: "last-bastion-profile.spec.mjs",
   timeout: 180_000,

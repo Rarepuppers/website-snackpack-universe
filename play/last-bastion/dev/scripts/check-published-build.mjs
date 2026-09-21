@@ -24,7 +24,9 @@ import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const devRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const publishedRoot = resolve(devRoot, "..");
+const publishedRoot = process.env.LAST_BASTION_PUBLISHED_ROOT
+  ? resolve(process.env.LAST_BASTION_PUBLISHED_ROOT)
+  : resolve(devRoot, "..");
 const BUILD_EXTENSIONS = [".js", ".css"];
 
 function isBuildOutput(name) {

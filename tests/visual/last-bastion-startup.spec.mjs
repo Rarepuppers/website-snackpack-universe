@@ -54,11 +54,14 @@ async function measure(page, route, { settleMs = 2500, capMs = 90_000 } = {}) {
     const entries = performance.getEntriesByType("resource");
     const bytes = entries.reduce((total, entry) => total + (entry.transferSize || entry.encodedBodySize || 0), 0);
     const images = entries.filter((entry) => /\.(png|webp)$/.test(entry.name.split("?")[0]));
+    const imageStart = Math.min(...images.map((entry) => entry.startTime));
+    const imageEnd = Math.max(0, ...images.map((entry) => entry.responseEnd));
     return {
       requests: entries.length,
       megabytes: +(bytes / 1048576).toFixed(1),
       imageCount: images.length,
-      imageTransferMs: Math.round(images.reduce((total, entry) => total + entry.duration, 0)),
+      cumulativeImageTransferMs: Math.round(images.reduce((total, entry) => total + entry.duration, 0)),
+      imageTransferSpanMs: images.length ? Math.round(imageEnd - imageStart) : 0,
       lastResponseEndMs: Math.round(Math.max(0, ...entries.map((entry) => entry.responseEnd))),
       domContentLoadedMs: Math.round(performance.getEntriesByType("navigation")[0]?.domContentLoadedEventEnd ?? 0),
     };
@@ -85,8 +88,10 @@ test.describe("Last Bastion startup cost", () => {
     // that catches a genuine collapse rather than ordinary variation.
     expect(result.assetQuietAtMs).toBeLessThan(75_000);
     expect(result.quietTimedOut).toBe(false);
-    // Transfer should stay a small fraction of the total. If this inverts, the
-    // problem moved to the network and the advice changes with it.
-    expect(result.imageTransferMs).toBeLessThan(result.assetQuietAtMs);
+    // Image requests run concurrently, so summing each request duration can be
+    // many times larger than wall-clock startup. Guard the actual transfer
+    // span instead; if this consumes the whole quiet window, the bottleneck has
+    // moved to the network and the advice changes with it.
+    expect(result.imageTransferSpanMs).toBeLessThan(result.assetQuietAtMs);
   });
 });

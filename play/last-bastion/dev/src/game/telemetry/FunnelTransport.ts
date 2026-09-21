@@ -23,18 +23,16 @@ import {
  * choosing one is a privacy decision on a family-facing site, not a coding one.
  *
  * So the instrumentation ships complete and switched off. Set `SITE_CODE` and
- * every counter starts working; leave it empty and the game sends nothing,
- * exactly as before. That is deliberately not the same thing as local-only
- * telemetry, which is a trap this portfolio has already fallen into once: a
- * counter nobody can read is a counter that never changes a decision.
+ * every counter starts working; leave it empty and the game sends nothing.
+ * Visit-day state is still maintained locally while disabled so enabling the
+ * transport later can identify a return without inventing a remote identifier.
  *
  * ## Activating it
  *
- * 1. Create a free GoatCounter site (goatcounter.com). It sets no cookies,
- *    collects no personal data and needs no consent banner, which is why it is
- *    the recommendation over anything session-based.
+ * 1. Create and configure the approved GoatCounter site. Confirm its current
+ *    privacy and retention settings rather than relying on a provider slogan.
  * 2. Put the code — the `<code>.goatcounter.com` subdomain — in `SITE_CODE`.
- * 3. Update `/privacy/` to disclose it before shipping the change, not after.
+ * 3. Update `/privacy/last-bastion/` to disclose it before shipping the change, not after.
  */
 const SITE_CODE = "";
 
@@ -60,8 +58,70 @@ export function goatCounterTransport(host: Window): FunnelTransport {
   return {
     send(event, properties) {
       const api = (host as unknown as { goatcounter?: GoatCounterApi }).goatcounter;
-      if (!api || typeof api.count !== "function") return;
+      if (!api || typeof api.count !== "function") return false;
       api.count({ path: eventPath(event, properties), title: event, event: true });
+      return true;
+    },
+  };
+}
+
+const PENDING_LEDGER_KEY = "lastBastion.funnelPending.v1";
+const MAX_PENDING_EVENTS = 24;
+
+interface PendingEvent {
+  readonly event: FunnelEvent;
+  readonly properties: FunnelProperties;
+}
+
+function readPending(host: Window): PendingEvent[] {
+  try {
+    const parsed: unknown = JSON.parse(host.sessionStorage.getItem(PENDING_LEDGER_KEY) ?? "[]");
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((entry): entry is PendingEvent => {
+      if (typeof entry !== "object" || entry === null) return false;
+      const event = (entry as { event?: unknown }).event;
+      return ["opened", "run-started", "wave-1", "wave-5", "run-ended", "returning"].includes(String(event));
+    }).slice(-MAX_PENDING_EVENTS);
+  } catch {
+    return [];
+  }
+}
+
+function writePending(host: Window, pending: readonly PendingEvent[]): boolean {
+  try {
+    host.sessionStorage.setItem(PENDING_LEDGER_KEY, JSON.stringify(pending));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Flushes oldest first and retains the unsent suffix for the next page load. */
+export function flushPendingFunnelEvents(host: Window): number {
+  const pending = readPending(host);
+  const direct = goatCounterTransport(host);
+  let delivered = 0;
+  while (delivered < pending.length) {
+    const entry = pending[delivered];
+    if (!entry || !direct.send(entry.event, entry.properties)) break;
+    delivered += 1;
+  }
+  if (delivered > 0) writePending(host, pending.slice(delivered));
+  return delivered;
+}
+
+/**
+ * Accepts an event only after it has been sent or persisted for a later load.
+ * This is what lets PlayerFunnel mark its once-per-session ledger honestly.
+ */
+export function bufferedGoatCounterTransport(host: Window): FunnelTransport {
+  return {
+    send(event, properties) {
+      flushPendingFunnelEvents(host);
+      if (goatCounterTransport(host).send(event, properties)) return true;
+      const pending = readPending(host);
+      if (pending.length >= MAX_PENDING_EVENTS) return false;
+      return writePending(host, [...pending, { event, properties }]);
     },
   };
 }
@@ -70,19 +130,25 @@ export function goatCounterTransport(host: Window): FunnelTransport {
  * Injects the counter script once. Returns false when no site code is
  * configured, which is the current state and is not an error.
  */
-export function installFunnelTransport(host: Window): boolean {
-  if (!SITE_CODE) return false;
+export function installFunnelTransport(host: Window, siteCode: string = SITE_CODE): boolean {
+  if (!siteCode) return false;
   const document = host.document;
-  if (document.querySelector("script[data-funnel-transport]")) return true;
+  const existing = document.querySelector("script[data-funnel-transport]");
+  if (existing) {
+    existing.addEventListener("load", () => flushPendingFunnelEvents(host), { once: true });
+    flushPendingFunnelEvents(host);
+    return true;
+  }
   const script = document.createElement("script");
   script.async = true;
   script.dataset.funnelTransport = "goatcounter";
-  script.dataset.goatcounter = `https://${SITE_CODE}.goatcounter.com/count`;
+  script.dataset.goatcounter = `https://${siteCode}.goatcounter.com/count`;
   // `data-goatcounter-settings` with no_onload stops it counting a page view of
   // its own: the shell reports `opened` explicitly, and two denominators that
   // disagree are worse than one.
   script.dataset.goatcounterSettings = JSON.stringify({ no_onload: true });
   script.src = "https://gc.zgo.at/count.js";
+  script.addEventListener("load", () => flushPendingFunnelEvents(host), { once: true });
   document.head.appendChild(script);
   return true;
 }
@@ -163,10 +229,14 @@ function dayOrNull(value: unknown): string | null {
  * Boot-time entry point: installs the transport if one is configured, records
  * the visit, and reports `opened` plus `returning` where it applies.
  */
-export function startPlayerFunnel(host: Window, nowMs: number = Date.now()): PlayerFunnel {
-  const active = installFunnelTransport(host);
+export function startPlayerFunnel(
+  host: Window,
+  nowMs: number = Date.now(),
+  siteCode: string = SITE_CODE,
+): PlayerFunnel {
+  const active = installFunnelTransport(host, siteCode);
   const funnel = new PlayerFunnel(
-    active ? goatCounterTransport(host) : NO_OP_TRANSPORT,
+    active ? bufferedGoatCounterTransport(host) : NO_OP_TRANSPORT,
     sessionLedger(host),
   );
 

@@ -57,14 +57,23 @@ test.describe("Last Bastion performance profile", () => {
     await page.waitForTimeout(6000);
     const pacing = await page.evaluate(() => window.__displayPresentationAudit?.framePacing ?? null);
 
+    const environment = await page.evaluate(() => ({
+      userAgent: navigator.userAgent,
+      viewport: `${innerWidth}x${innerHeight}`,
+      devicePixelRatio,
+      visibility: document.visibilityState,
+      targetFramesPerSecond: 60,
+      evidenceFloorFramesPerSecond: 30,
+    }));
+    console.log("profileEnvironment:", JSON.stringify(environment));
     console.log("framePacing:", JSON.stringify(pacing));
     expect(pacing, "combat did not publish frame pacing").not.toBeNull();
     expect(pacing.sampleCount).toBeGreaterThan(0);
 
-    // Collapse detectors, not targets. A p99 beyond a third of a second is not
-    // "slower than we would like", it is a visible stall on any machine.
-    expect(pacing.p99FrameMilliseconds).toBeLessThan(333);
-    expect(pacing.averageFrameMilliseconds).toBeLessThan(100);
+    // The game targets 60 fps. Headless evidence is allowed to miss that target,
+    // but must sustain a 30 fps floor without long perceptible stalls.
+    expect(pacing.p99FrameMilliseconds).toBeLessThan(60);
+    expect(pacing.averageFrameMilliseconds).toBeLessThan(33.4);
   });
 
   test("reports frame pacing under the density stress profile", async ({ page }) => {
@@ -75,7 +84,40 @@ test.describe("Last Bastion performance profile", () => {
     const pacing = await page.evaluate(() => window.__displayPresentationAudit?.framePacing ?? null);
     console.log("framePacing(stress=12):", JSON.stringify(pacing));
     expect(pacing).not.toBeNull();
-    expect(pacing.p99FrameMilliseconds).toBeLessThan(500);
+    expect(pacing.p99FrameMilliseconds).toBeLessThan(75);
+    expect(pacing.averageFrameMilliseconds).toBeLessThan(40);
+  });
+
+  test("keeps heap and texture resources bounded during sustained dense combat", async ({ page }) => {
+    await bootCombat(page, "&scenario=density-capacity");
+    await page.waitForTimeout(4000);
+    const baselineHeap = await usedHeapBytes(page);
+    const baseline = await page.evaluate(() => ({
+      textures: window.__displayPresentationAudit?.textures ?? null,
+      recovery: window.__displayPresentationAudit?.contextRecovery ?? null,
+      resources: performance.getEntriesByType("resource").length,
+    }));
+
+    await page.waitForTimeout(12_000);
+    const afterHeap = await usedHeapBytes(page);
+    const after = await page.evaluate(() => ({
+      textures: window.__displayPresentationAudit?.textures ?? null,
+      recovery: window.__displayPresentationAudit?.contextRecovery ?? null,
+      resources: performance.getEntriesByType("resource").length,
+    }));
+    console.log("sustainedCombatResources:", JSON.stringify({ baselineHeap, afterHeap, baseline, after }));
+
+    expect(baseline.textures).not.toBeNull();
+    // A handful of lazy Pixi wrappers may materialize after the baseline even
+    // though the underlying browser resource set is already stable. Bound both
+    // wrapper growth and the decoded footprint instead of demanding bitwise
+    // equality from two samples of a running scene.
+    expect(after.resources).toBe(baseline.resources);
+    expect(after.textures.textureCount / Math.max(1, baseline.textures.textureCount)).toBeLessThan(1.05);
+    expect(after.textures.sourceCount / Math.max(1, baseline.textures.sourceCount)).toBeLessThan(1.05);
+    expect(after.textures.estimatedDecodedBytes / Math.max(1, baseline.textures.estimatedDecodedBytes)).toBeLessThan(1.01);
+    expect(after.recovery?.lostCount ?? 0).toBe(0);
+    if (baselineHeap > 0) expect(afterHeap / baselineHeap).toBeLessThan(2.5);
   });
 
   test("survives repeated transitions, and reports the heap for the record", async ({ page }) => {
@@ -89,23 +131,29 @@ test.describe("Last Bastion performance profile", () => {
     // the game failing to boot, and it prints the heap so a real regression —
     // one screen suddenly costing twice as much — is visible in the log.
     //
-    // Genuine leak detection for this architecture would have to watch GPU and
-    // texture memory across navigations, which is not reachable from here. That
-    // is recorded as still-open rather than quietly claimed.
+    // GPU allocation is not directly exposed by browsers, so the production
+    // audit reports the stable proxies we can observe: Pixi texture/source
+    // counts, decoded source-byte estimates, and WebGL context-loss events.
     await bootCombat(page);
     const baseline = await usedHeapBytes(page);
 
+    const cycles = [];
     for (let cycle = 0; cycle < 4; cycle += 1) {
       await page.goto("/play/last-bastion/?screen=map");
       await page.waitForSelector("#game-root canvas", { state: "visible", timeout: 60_000 });
       await page.waitForTimeout(500);
       await bootCombat(page);
+      cycles.push(await page.evaluate(() => ({
+        textures: window.__displayPresentationAudit?.textures ?? null,
+        recovery: window.__displayPresentationAudit?.contextRecovery ?? null,
+      })));
     }
 
     const after = await usedHeapBytes(page);
     console.log("heap:", JSON.stringify({
       baselineBytes: baseline,
       afterBytes: after,
+      cycles,
       note: "fresh document per cycle — not a leak check",
     }));
 
@@ -115,20 +163,13 @@ test.describe("Last Bastion performance profile", () => {
     if (baseline > 0) {
       expect(after / baseline, "one combat document ballooned").toBeLessThan(3);
     }
+    expect(cycles.every((cycle) => (cycle.recovery?.lostCount ?? 0) === 0)).toBe(true);
+    const textureCounts = cycles.map((cycle) => cycle.textures?.textureCount ?? 0);
+    const sourceCounts = cycles.map((cycle) => cycle.textures?.sourceCount ?? 0);
+    expect(Math.max(...textureCounts) / Math.max(1, Math.min(...textureCounts)), "texture count varied by more than 5% across fresh documents").toBeLessThan(1.05);
+    expect(Math.max(...sourceCounts) / Math.max(1, Math.min(...sourceCounts)), "texture source count varied by more than 5% across fresh documents").toBeLessThan(1.05);
+    const decodedBytes = cycles.map((cycle) => cycle.textures?.estimatedDecodedBytes ?? 0);
+    expect(Math.max(...decodedBytes) / Math.max(1, Math.min(...decodedBytes)), "decoded texture footprint varied by more than 5% across fresh documents").toBeLessThan(1.05);
   });
 
-  test("keeps reporting a live context after repeated transitions", async ({ page }) => {
-    // A lost-and-not-recovered WebGL context is the other way repeated
-    // transitions fail, and it is silent: the canvas simply stops updating.
-    await bootCombat(page);
-    for (let cycle = 0; cycle < 3; cycle += 1) {
-      await page.goto("/play/last-bastion/?screen=summary");
-      await page.waitForSelector("#game-root canvas", { state: "visible", timeout: 60_000 });
-      await bootCombat(page);
-    }
-    const recovery = await page.evaluate(() => window.__displayPresentationAudit?.contextRecovery ?? null);
-    console.log("contextRecovery:", JSON.stringify(recovery));
-    const pacing = await page.evaluate(() => window.__displayPresentationAudit?.framePacing ?? null);
-    expect(pacing?.sampleCount ?? 0).toBeGreaterThan(0);
-  });
 });

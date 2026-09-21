@@ -12,7 +12,7 @@ import {
 
 function recordingTransport(): FunnelTransport & { sent: { event: FunnelEvent; properties: FunnelProperties }[] } {
   const sent: { event: FunnelEvent; properties: FunnelProperties }[] = [];
-  return { sent, send: (event, properties) => void sent.push({ event, properties }) };
+  return { sent, send: (event, properties) => { sent.push({ event, properties }); return true; } };
 }
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -149,6 +149,24 @@ describe("PlayerFunnel", () => {
   it("does nothing at all with the default transport", () => {
     const funnel = new PlayerFunnel();
     expect(() => funnel.opened()).not.toThrow();
+    expect(funnel.reported()).not.toContain("opened");
+  });
+
+  it("retries an event that a transport did not accept", () => {
+    let available = false;
+    const sent: FunnelEvent[] = [];
+    const transport: FunnelTransport = {
+      send: (event) => {
+        if (!available) return false;
+        sent.push(event);
+        return true;
+      },
+    };
+    const funnel = new PlayerFunnel(transport);
+    funnel.opened();
+    available = true;
+    funnel.opened();
+    expect(sent).toEqual(["opened"]);
     expect(funnel.reported()).toContain("opened");
   });
 });

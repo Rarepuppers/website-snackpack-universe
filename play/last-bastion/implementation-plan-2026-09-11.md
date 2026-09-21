@@ -1,5 +1,13 @@
 # Last Bastion — revised implementation plan
 
+> ## CURRENT QUEUE — Codex review, updated 21 September 2026
+>
+> **Planning review only; implementation has not begun.** Read the reconciliation banner
+> below, then the [reviewed queue and handover](implementation-review-2026-09-20.md).
+> That review replaces the old execution order and "still open" lists in this document.
+> Sections 1–4a below are historical evidence, including superseded findings and closure
+> claims. Their test counts and line numbers are not current verification results.
+
 > ## RECONCILED — 12 September 2026. Read this before trusting anything below.
 >
 > Codex worked this same queue independently and pushed first. On 12 September the two lines
@@ -393,9 +401,11 @@ icons.
 
 ---
 
-## 5. Execution order
+## 5. Historical execution order — superseded 20 September
 
-Ship in this order. Each step is independently committable and leaves the tree green.
+Do not execute this list. The current order and acceptance criteria are in
+[the reviewed queue, §3](implementation-review-2026-09-20.md#3-revised-execution-order).
+The original order below is retained only to interpret the historical implementation log.
 
 1. ~~**QA-19** local dates, **QA-18** projectile table, **LB-12** dead glyph table.~~ **DONE**
 2. ~~**QA-17** seeded arena theme.~~ **DONE** — QA-09 is now unblocked.
@@ -416,3 +426,14 @@ Unchanged from 7 September, and worth restating: a green content count cannot ce
 correct art, a green simulation digest cannot certify rendering, and static offline checks
 cannot certify an offline launch. Every closure records the change, the automated result,
 observed evidence where the claim needs an eye, the remaining limitation, and the commit.
+
+### Update — 21 September implementation closeout
+
+The reviewed queue in `implementation-review-2026-09-20.md` is implemented. QA-21,
+QA-22, QA-23 delivery readiness and QA-24 are closed; the canonical arcade tile, targeted
+Medic helmet repair, dated screenshot matrix, guide captures, Last Bastion social card and
+short run loop are complete. Fresh evidence corrected LB-07: the code-native medallion
+catalog already supplies the requested icon/state system, so no duplicate raster assets
+were created. The remaining items are external or deliberately deferred: GoatCounter
+activation/dashboard receipt needs Mark's site code, hardware-gamepad and Steam checks need
+their platforms, and QA-06/U3/QA-20 require a newly prioritized need. Content remains frozen.

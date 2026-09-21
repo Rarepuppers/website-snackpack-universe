@@ -82,10 +82,11 @@ export function depthBucket(waveReached: number): FunnelDepth {
  * game must never fail to start over an analytics endpoint.
  */
 export interface FunnelTransport {
-  send(event: FunnelEvent, properties: FunnelProperties): void;
+  /** True only when delivery completed or durable retry responsibility was accepted. */
+  send(event: FunnelEvent, properties: FunnelProperties): boolean;
 }
 
-export const NO_OP_TRANSPORT: FunnelTransport = Object.freeze({ send(): void {} });
+export const NO_OP_TRANSPORT: FunnelTransport = Object.freeze({ send: () => false });
 
 /** Local, per-browser state. Not sent; only the derived boolean is. */
 export interface FunnelVisitState {
@@ -208,22 +209,20 @@ export class PlayerFunnel {
 
   private onceInSession(event: FunnelEvent, properties: FunnelProperties): void {
     if (this.session.has(event)) return;
-    this.session.add(event);
-    this.deliver(event, properties);
+    if (this.deliver(event, properties)) this.session.add(event);
   }
 
   private once(seen: Set<FunnelEvent>, event: FunnelEvent, properties: FunnelProperties): void {
     if (seen.has(event)) return;
-    seen.add(event);
-    this.deliver(event, properties);
+    if (this.deliver(event, properties)) seen.add(event);
   }
 
-  private deliver(event: FunnelEvent, properties: FunnelProperties): void {
+  private deliver(event: FunnelEvent, properties: FunnelProperties): boolean {
     // A broken or blocked endpoint must never surface as a broken game.
     try {
-      this.transport.send(event, properties);
+      return this.transport.send(event, properties);
     } catch {
-      /* measurement is never worth a crash */
+      return false;
     }
   }
 }

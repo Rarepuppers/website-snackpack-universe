@@ -13,6 +13,7 @@ import { defineConfig } from "@playwright/test";
 const port = Number(process.env.LAST_BASTION_TEST_PORT || 44176);
 
 export default defineConfig({
+  globalTeardown: "./tests/visual/shutdown-static-server.mjs",
   testDir: "./tests/visual",
   testMatch: "last-bastion-startup.spec.mjs",
   // Generous: the thing being measured is how long startup takes, so the
