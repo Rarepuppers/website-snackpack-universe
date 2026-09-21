@@ -11742,18 +11742,18 @@
     ]
   ],
   "expect": {
-    "score": 54400,
-    "ball": 1,
+    "score": 107200,
+    "ball": 2,
     "rank": 0,
     "missions": 0,
-    "bonusMultiplier": 4,
+    "bonusMultiplier": 5,
     "gameOver": false,
     "events": {
-      "bumper": 4,
-      "sling": 14,
-      "drain": 1,
-      "rollover": 11,
-      "ramp-exit": 4,
+      "bumper": 5,
+      "sling": 13,
+      "drain": 3,
+      "rollover": 14,
+      "ramp-exit": 5,
       "saucer": 2,
       "escaped": 0
     }

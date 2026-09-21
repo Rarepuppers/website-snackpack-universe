@@ -24,7 +24,7 @@
 import {
   W, H, BALL_R, WALLS, BUMPERS, SPINNER, ROLLOVERS, RAMPS, KICKBACK, SAUCERS,
   DROP_TARGETS,
-} from './table.js?v=439db8cfaa';
+} from './table.js?v=c69ef3ae39';
 
 const INK = {
   cloth: '#1d2230',
@@ -243,6 +243,23 @@ export function createRenderer(canvas) {
       c.strokeStyle = 'rgba(255,212,121,0.30)';
       c.lineWidth = 2;
       c.stroke();
+    }
+
+    // The lane-mouth deflector. Without something drawn here the ball appears
+    // to change direction for no reason at the top of the shooter lane; a post
+    // at the gate gives the deflection a visible cause. It is decoration over a
+    // real device -- the gate is in table.js as RAMPS 'lane-feed'.
+    const gate = RAMPS.find((r) => r.oneWay);
+    if (gate) {
+      const size = 26;
+      if (spriteReady('post')) {
+        c.drawImage(sprites.post, gate.entry.x - size / 2, gate.entry.y - size / 2, size, size);
+      } else {
+        c.beginPath();
+        c.arc(gate.entry.x, gate.entry.y, size / 2, 0, Math.PI * 2);
+        c.fillStyle = INK.rubber;
+        c.fill();
+      }
     }
 
     if (spriteReady('spinner')) {

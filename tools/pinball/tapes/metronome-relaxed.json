@@ -5,19 +5,19 @@
   "pattern": "metronome",
   "frames": 86400,
   "expect": {
-    "score": 294300,
+    "score": 638100,
     "ball": 6,
     "rank": 0,
     "missions": 0,
     "bonusMultiplier": 5,
     "gameOver": true,
     "events": {
-      "bumper": 32,
-      "sling": 18,
+      "bumper": 87,
+      "sling": 37,
       "drain": 5,
-      "rollover": 20,
-      "ramp-exit": 11,
-      "saucer": 6,
+      "rollover": 29,
+      "ramp-exit": 21,
+      "saucer": 5,
       "escaped": 0
     }
   }

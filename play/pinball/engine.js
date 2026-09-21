@@ -33,7 +33,7 @@ import {
   WALLS, BUMPERS, BUMPER_KICK, SLING_KICK, SLING_THRESHOLD,
   DROP_TARGETS, SPINNER, SAUCERS, ROLLOVERS, RAMPS, KICKBACK,
   FLIPPERS, FLIPPER_MOTOR, MODES, MAT,
-} from './table.js?v=439db8cfaa';
+} from './table.js?v=c69ef3ae39';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -545,10 +545,26 @@ function checkTriggers(ball, world, dt) {
       if (ball.vy > 0 && ball.x > LANE_LEFT
           && ball.y + BALL_R >= r.entry.y && ball.y < r.entry.y) {
         ball.y = r.entry.y - BALL_R;
-        // A flap absorbs rather than bounces, and swings the ball back out
-        // into the field instead of parking it on the gate.
-        ball.vy = -ball.vy * 0.2;
-        ball.vx -= 60;
+        // A sprung flap that merely absorbed (vy * -0.2, vx - 60) left the ball
+        // crawling along the mouth, re-triggering and reading as a stutter of
+        // sharp little corrections. Deflect decisively instead, the way a
+        // rubber-sleeved post at the lane mouth would: keep most of the
+        // incoming speed, always send it LEFT into the field, and vary the
+        // angle so repeated approaches do not retrace the same path.
+        //
+        // world.rand is the seeded mulberry32, not Math.random -- the engine
+        // never reads the wall clock, and replay depends on that.
+        // The deflection must leave the trigger band in one step, and the
+        // trigger is "moving down at the mouth" -- so it always sends the ball
+        // UP as well as left. An earlier version varied the angle either side
+        // of horizontal, which let vy stay positive: the ball was still a
+        // downward-moving ball at the mouth, so it re-fired on the next
+        // 480 Hz sub-step. Measured 10 re-fires, all within 8 ms of each
+        // other, which is exactly the stutter that was visible on the table.
+        const speed = Math.max(260, Math.hypot(ball.vx, ball.vy) * 0.7);
+        const a = 0.25 + world.rand() * 0.6;   // 14-49 degrees above horizontal
+        ball.vx = -Math.cos(a) * speed;        // always leftward, into the field
+        ball.vy = -Math.sin(a) * speed;        // always upward, out of the band
         world.events.push({ type: 'gate', id: r.id });
       }
       continue;
