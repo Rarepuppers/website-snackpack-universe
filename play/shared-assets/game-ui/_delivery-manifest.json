@@ -3352,10 +3352,21 @@
       "pack": "pinball",
       "sourcePath": "pinball/manifest.json",
       "targetPath": "pinball/manifest.json",
-      "sourceHash": "0253ea6d3383ba47bde276e6d36df2cd8adae82c75d45e87f09261adabe50c49",
-      "outputHash": "0253ea6d3383ba47bde276e6d36df2cd8adae82c75d45e87f09261adabe50c49",
+      "sourceHash": "f807ea5bae86f6c4c63748e690ce95e3a9dc78ff0fe3e3d8d2593340bc8311c5",
+      "outputHash": "f807ea5bae86f6c4c63748e690ce95e3a9dc78ff0fe3e3d8d2593340bc8311c5",
       "dimensions": null,
       "psnrDb": null,
+      "candidatePsnrDb": null,
+      "deliveryMode": "copy"
+    },
+    {
+      "pack": "pinball",
+      "sourcePath": "pinball/marketing/pinball-icon-512.png",
+      "targetPath": "pinball/marketing/pinball-icon-512.png",
+      "sourceHash": "acbcaf31d4affc3148a2e3489e7dbc4e907b4ab18ecbe39d03831d8239f2629c",
+      "outputHash": "acbcaf31d4affc3148a2e3489e7dbc4e907b4ab18ecbe39d03831d8239f2629c",
+      "dimensions": "512x512",
+      "psnrDb": 120.0,
       "candidatePsnrDb": null,
       "deliveryMode": "copy"
     },

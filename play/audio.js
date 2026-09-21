@@ -139,7 +139,7 @@
     });
   }
 
-  function play(name) {
+  function play(name, volume) {
     if (muted || !name) return;
 
     var now = (window.performance && performance.now) ? performance.now() : Date.now();
@@ -172,6 +172,8 @@
       // from wherever it is beats not playing at all.
     }
 
+    voice.volume = Math.max(0, Math.min(1, volume == null ? 0.65 : volume));
+
     var promise = voice.play();
     if (promise && promise.catch) promise.catch(function () {});
   }
@@ -183,7 +185,12 @@
   var activeLoops = [];
 
   function loop(name) {
-    var audio = withWavFallback(new Audio(urlFor(name)), name);
+    // MP3 encoder delay is harmless for one-shots but makes a hard seam in a
+    // loop. The Pinball rolling sounds and synchronized music beds therefore
+    // use their canonical WAV deliveries directly.
+    var seamless = /^pinball\/(?:ball-roll|ramp-roll|music\/)/.test(name);
+    var audio = new Audio(urlFor(name, seamless ? "wav" : null));
+    if (!seamless) withWavFallback(audio, name);
     audio.loop = true;
     audio.preload = "auto";
     audio.volume = 0;
@@ -230,18 +237,20 @@
   function bank(namespace) {
     var prefix = String(namespace || "").replace(/^\/+|\/+$/g, "");
     var at = function (name) { return prefix ? prefix + "/" + name : name; };
+    var variantIndex = Object.create(null);
     return {
-      play: function (name) { play(at(name)); },
+      play: function (name, volume) { play(at(name), volume); },
       loop: function (name) { return loop(at(name)); },
       preload: function (names) {
         if (typeof names === "string") names = [names];
         preload((names || []).map(at));
       },
-      /** Round-robin across name-1..name-n, so repeats do not machine-gun. */
-      playVariant: function (name, count) {
+      /** True round-robin across name-1..name-n, so chains stay varied. */
+      playVariant: function (name, count, volume) {
         var n = Math.max(1, count || 1);
-        var i = 1 + Math.floor(Math.random() * n);
-        play(at(name + "-" + i));
+        var i = ((variantIndex[name] || 0) % n) + 1;
+        variantIndex[name] = i;
+        play(at(name + "-" + i), volume);
       }
     };
   }

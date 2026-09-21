@@ -9,9 +9,9 @@
  * The engine never reads a clock; this file owns all of the timing.
  */
 
-import { createWorld, advance, drainEvents, serveBall, nudge, addBall, releaseSaucer, DT } from './engine.js?v=c69ef3ae39';
-import { createRenderer } from './render.js?v=c69ef3ae39';
-import { MODES, SAUCERS, BUMPERS } from './table.js?v=c69ef3ae39';
+import { createWorld, advance, drainEvents, serveBall, nudge, addBall, releaseSaucer, DT } from './engine.js?v=ee8b9ec348';
+import { createRenderer } from './render.js?v=ee8b9ec348';
+import { MODES, SAUCERS, BUMPERS } from './table.js?v=ee8b9ec348';
 
 /** Slingshot face midpoints, for spark positions. */
 const SLING_POS = {
@@ -24,7 +24,7 @@ import {
   serialize as serializeRules, deserialize as deserializeRules,
   RANKS, MISSIONS, COMBO_WINDOW,
   armBallSave, consumeBallSave, consumeExtraBall,
-} from './rules.js?v=c69ef3ae39';
+} from './rules.js?v=ee8b9ec348';
 
 /** ?daily=YYYY-MM-DD -- everyone gets the same missions, one attempt. */
 const DAILY = new URLSearchParams(location.search).get('daily');
@@ -55,8 +55,20 @@ const TAPE_FRAME_CAP = 60 * 60 * 6; // ~6 minutes; a tape is not a memory leak
  * effect must never surface as an error or change game logic.
  */
 const SFX = window.SnackPackAudio ? window.SnackPackAudio.bank('pinball') : null;
-const sfx = (name) => { if (SFX) SFX.play(name); };
-const sfxVariant = (name, n) => { if (SFX) SFX.playVariant(name, n); };
+const CUE_GAIN = {
+  'spinner-tick': 0.55, 'post-1': 0.60, 'post-2': 0.60,
+  'game-over': 0.80, 'tilt-warn': 0.80, tilt: 0.90,
+};
+function gainFor(name) {
+  if (CUE_GAIN[name] != null) return CUE_GAIN[name];
+  if (name.startsWith('voice/')) return 0.90;
+  if (/^(bumper|sling|post)-/.test(name)) return 0.65;
+  if (/^(skill-shot|combo-|mission-complete|jackpot|super-jackpot|rank-up|multiball|wizard)/.test(name)) return 0.95;
+  if (/^(mission-|tilt|game-over)/.test(name)) return 0.80;
+  return 0.70;
+}
+const sfx = (name) => { if (SFX) SFX.play(name, gainFor(name)); };
+const sfxVariant = (name, n) => { if (SFX) SFX.playVariant(name, n, gainFor(`${name}-1`)); };
 
 /** Event -> one-shot cue. Kept as data so the bank and the engine stay in step. */
 const EVENT_SFX = {
@@ -96,8 +108,11 @@ const state = {
   tape: null,
   roll: null,
   rampRoll: null,
-  music: null,
-  musicName: null,
+  musicCalm: null,
+  musicIntense: null,
+  musicBed: 'calm',
+  musicVolumes: { calm: 0, intense: 0 },
+  musicFade: 0,
   raf: 0,
 };
 
@@ -223,12 +238,30 @@ function runCommands(commands) {
 
 function setMusic(bed) {
   if (!SFX) return;
-  const want = bed === 'intense' ? 'music/bed-intense' : 'music/bed-calm';
-  if (state.musicName === want) return;
-  if (state.music) state.music.stop();
-  state.musicName = want;
-  state.music = SFX.loop(want);
-  state.music.setVolume(0.25);
+  const want = bed === 'intense' ? 'intense' : 'calm';
+  if (!state.musicCalm) {
+    // Start both beds together and leave them running. They share an exact
+    // bar grid, so changing intensity is a gain crossfade, never a song reset.
+    state.musicCalm = SFX.loop('music/bed-calm');
+    state.musicIntense = SFX.loop('music/bed-intense');
+    state.musicVolumes = { calm: 0, intense: 0 };
+  }
+  if (state.musicBed === want && state.musicVolumes[want] === 0.25) return;
+  state.musicBed = want;
+  if (state.musicFade) cancelAnimationFrame(state.musicFade);
+  const from = { ...state.musicVolumes };
+  const to = { calm: want === 'calm' ? 0.25 : 0, intense: want === 'intense' ? 0.25 : 0 };
+  const started = performance.now();
+  const fade = (now) => {
+    const p = Math.min(1, (now - started) / 500);
+    state.musicVolumes.calm = from.calm + (to.calm - from.calm) * p;
+    state.musicVolumes.intense = from.intense + (to.intense - from.intense) * p;
+    state.musicCalm.setVolume(state.musicVolumes.calm);
+    state.musicIntense.setVolume(state.musicVolumes.intense);
+    if (p < 1) state.musicFade = requestAnimationFrame(fade);
+    else state.musicFade = 0;
+  };
+  state.musicFade = requestAnimationFrame(fade);
 }
 
 /** Roll volume and pitch follow the fastest ball, so the table sounds alive. */
@@ -251,7 +284,11 @@ function updateRollSound() {
 function stopContinuous() {
   if (state.roll) { state.roll.stop(); state.roll = null; }
   if (state.rampRoll) { state.rampRoll.stop(); state.rampRoll = null; }
-  if (state.music) { state.music.stop(); state.music = null; state.musicName = null; }
+  if (state.musicFade) { cancelAnimationFrame(state.musicFade); state.musicFade = 0; }
+  if (state.musicCalm) { state.musicCalm.stop(); state.musicCalm = null; }
+  if (state.musicIntense) { state.musicIntense.stop(); state.musicIntense = null; }
+  state.musicBed = 'calm';
+  state.musicVolumes = { calm: 0, intense: 0 };
 }
 
 function runPendingKicks(dt) {

@@ -14,6 +14,8 @@
     "capture:last-bastion": "node scripts/capture-last-bastion.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "1.62.1"
+    "@breezystack/lamejs": "^1.2.7",
+    "@playwright/test": "1.62.1",
+    "mpg123-decoder": "^1.0.3"
   }
 }

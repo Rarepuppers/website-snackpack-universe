@@ -35,14 +35,12 @@
     "sprites/webp/saucer.webp",
     "sprites/webp/spinner.webp",
     "sprites/webp/target-down.webp",
-    "sprites/webp/target-up.webp"
+    "sprites/webp/target-up.webp",
+    "marketing/pinball-icon-512.png"
   ],
   "format": "opaque playfield PNG/WebP tiers and transparent PNG/WebP object sprites",
   "consumerContract": "static decorative background under live geometry; separately positioned sprites follow table.js and have procedural fallbacks",
   "deferred": [
-    "alternate skins",
-    "arcade tile",
-    "social card",
-    "audio and music"
+    "alternate skins"
   ]
 }

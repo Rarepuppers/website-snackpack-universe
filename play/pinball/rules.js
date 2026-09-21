@@ -15,7 +15,7 @@
  * them is a bug.
  */
 
-import { mulberry32 } from './engine.js?v=c69ef3ae39';
+import { mulberry32 } from './engine.js?v=ee8b9ec348';
 
 // ---------------------------------------------------------------------------
 // Tables
@@ -602,6 +602,7 @@ export function applyEvent(r, e) {
       r.bonus = { bumpers: 0, ramps: 0, targets: 0 };
       if (r.mission) failMission(r);
       note(r, 'TILT', 'tilt');
+      push(r, 'voice', { name: 'voice/voice-tilt' });
       break;
 
     case 'drain':
