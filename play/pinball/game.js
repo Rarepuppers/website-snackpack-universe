@@ -9,9 +9,9 @@
  * The engine never reads a clock; this file owns all of the timing.
  */
 
-import { createWorld, advance, drainEvents, serveBall, nudge, addBall, releaseSaucer, DT } from './engine.js?v=fb49d14d4e';
-import { createRenderer } from './render.js?v=fb49d14d4e';
-import { MODES, SAUCERS, BUMPERS } from './table.js?v=fb49d14d4e';
+import { createWorld, advance, drainEvents, serveBall, nudge, addBall, releaseSaucer, DT } from './engine.js?v=1a3d6687c7';
+import { createRenderer } from './render.js?v=1a3d6687c7';
+import { MODES, SAUCERS, BUMPERS } from './table.js?v=1a3d6687c7';
 
 /** Slingshot face midpoints, for spark positions. */
 const SLING_POS = {
@@ -22,8 +22,8 @@ import {
   createRules, applyEvent, tick as tickRules, nextBall, setBallsInPlay,
   drainCommands, drainLog, statusLine, litShots,
   serialize as serializeRules, deserialize as deserializeRules,
-  RANKS, MISSIONS,
-} from './rules.js?v=fb49d14d4e';
+  RANKS, MISSIONS, COMBO_WINDOW,
+} from './rules.js?v=1a3d6687c7';
 
 /** ?daily=YYYY-MM-DD -- everyone gets the same missions, one attempt. */
 const DAILY = new URLSearchParams(location.search).get('daily');
@@ -225,7 +225,7 @@ function setMusic(bed) {
   if (state.musicName === want) return;
   if (state.music) state.music.stop();
   state.musicName = want;
-  state.music = SFX.loop(want.replace('music/', 'music/'));
+  state.music = SFX.loop(want);
   state.music.setVolume(0.25);
 }
 
@@ -370,6 +370,37 @@ function paint() {
   el('pb-best').textContent = readBest().toLocaleString();
   el('pb-rank').textContent = r ? RANKS[r.rank] : RANKS[0];
   if (r) el('pb-dmd').textContent = statusLine(r);
+  paintCombo(r);
+  paintTilt(state.world);
+}
+
+/**
+ * A combo multiplies everything you shoot and expires on a timer, and until now
+ * nothing on screen said so. The bar is the time left to keep it alive, which is
+ * the only part the player can act on.
+ */
+function paintCombo(r) {
+  const chip = el('pb-combo-chip');
+  if (!r || r.combo < 2) { chip.hidden = true; return; }
+  chip.hidden = false;
+  el('pb-combo').textContent = `${Math.min(r.combo, 5)}x`;
+  const left = Math.max(0, Math.min(1, r.comboTimer / COMBO_WINDOW));
+  el('pb-combo-fill').style.width = `${Math.round(left * 100)}%`;
+}
+
+/**
+ * Tilt is the one mechanic that can take a ball away without the player
+ * understanding why. The meter stays hidden until the first nudge, so it costs
+ * nothing until the moment it becomes the answer to "what just happened".
+ */
+function paintTilt(w) {
+  const chip = el('pb-tilt-chip');
+  if (!w || (w.tilt <= 0 && !w.tilted)) { chip.hidden = true; return; }
+  const limit = w.mode.tiltWarnings || 1;
+  const filled = Math.max(0, Math.min(1, w.tilt / limit));
+  chip.hidden = false;
+  chip.dataset.state = w.tilted ? 'tilted' : filled >= 0.66 ? 'warn' : 'ok';
+  el('pb-tilt-fill').style.width = `${Math.round((w.tilted ? 1 : filled) * 100)}%`;
 }
 
 let announceTimer = 0;
@@ -450,12 +481,22 @@ function flipperSound(down) {
   sfx(down ? 'flipper-up' : 'flipper-down');
 }
 
+/**
+ * The plunger's RELEASE is an engine event (EVENT_SFX.plunge), because the ball
+ * leaving the lane is a physics fact. The pull is not -- it is pure input, and
+ * it is the part the player is actually doing, so it needs its own cue here or
+ * charging the plunger is silent. plunger-pull.wav existed with no caller.
+ */
+function plungerSound(down) {
+  if (down) sfx('plunger-pull');
+}
+
 function bindKeys() {
   window.addEventListener('keydown', (e) => {
     if (e.repeat) return;
     if (KEYS_LEFT.includes(e.code)) { state.input.left = true; flipperSound(true); e.preventDefault(); }
     else if (KEYS_RIGHT.includes(e.code)) { state.input.right = true; flipperSound(true); e.preventDefault(); }
-    else if (e.code === 'Space') { state.input.plunge = true; e.preventDefault(); }
+    else if (e.code === 'Space') { state.input.plunge = true; plungerSound(true); e.preventDefault(); }
     else if (e.code === 'Comma' && state.world) nudge(state.world, -1, 0);
     else if (e.code === 'Period' && state.world) nudge(state.world, 1, 0);
     else if (e.code === 'KeyN' && state.world) nudge(state.world, 0, -1);
@@ -490,11 +531,13 @@ function bindTouch(stage) {
     const active = new Set(zones.values());
     const wasLeft = state.input.left;
     const wasRight = state.input.right;
+    const wasPlunge = state.input.plunge;
     state.input.left = active.has('left');
     state.input.right = active.has('right');
     state.input.plunge = active.has('plunge');
     if (state.input.left !== wasLeft) flipperSound(state.input.left);
     if (state.input.right !== wasRight) flipperSound(state.input.right);
+    if (state.input.plunge && !wasPlunge) plungerSound(true);
   };
 
   stage.addEventListener('pointerdown', (e) => {

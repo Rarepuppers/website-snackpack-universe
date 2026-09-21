@@ -33,7 +33,7 @@ import {
   WALLS, BUMPERS, BUMPER_KICK, SLING_KICK, SLING_THRESHOLD,
   DROP_TARGETS, SPINNER, SAUCERS, ROLLOVERS, RAMPS, KICKBACK,
   FLIPPERS, FLIPPER_MOTOR, MODES, MAT,
-} from './table.js?v=fb49d14d4e';
+} from './table.js?v=1a3d6687c7';
 
 // ---------------------------------------------------------------------------
 // Constants

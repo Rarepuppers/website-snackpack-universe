@@ -15,7 +15,7 @@
  * them is a bug.
  */
 
-import { mulberry32 } from './engine.js?v=fb49d14d4e';
+import { mulberry32 } from './engine.js?v=1a3d6687c7';
 
 // ---------------------------------------------------------------------------
 // Tables

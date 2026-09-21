@@ -167,6 +167,19 @@
             <!-- Best score per mode is persisted on this device only, via
                  SnackPackStore under sp_pinball_best_<mode>. Nothing is
                  uploaded and there is no account. -->
+            <!-- Combo and tilt are live mechanics the table never showed. Both
+                 stay hidden until they are actually happening, so they teach
+                 themselves at the moment they matter and cost no space
+                 otherwise. Neither drops out on mobile: unlike Best and Rank
+                 they are the things you act on. -->
+            <span class="readout-chip pb-chip-combo" id="pb-combo-chip" hidden>
+              <span>Combo</span><b id="pb-combo">2x</b>
+              <span class="pb-meter"><i id="pb-combo-fill"></i></span>
+            </span>
+            <span class="readout-chip pb-chip-tilt" id="pb-tilt-chip" hidden data-state="ok">
+              <span>Tilt</span>
+              <span class="pb-meter"><i id="pb-tilt-fill"></i></span>
+            </span>
             <span class="readout-chip pb-chip-ref" data-store="SnackPackStore sp_pinball_best_&lt;mode&gt;"><span>Best</span><b id="pb-best">0</b></span>
             <span class="readout-chip pb-chip-ref"><span>Rank</span><b id="pb-rank">Crumb Cadet</b></span>
           </div>
@@ -409,7 +422,7 @@
 <script src="../share-result.js"></script>
 <script src="../audio.js"></script>
 <script src="../resume.js"></script>
-<script type="module" src="./game.js?v=fb49d14d4e"></script>
+<script type="module" src="./game.js?v=1a3d6687c7"></script>
 <script src="../game-ui-assets.js" defer></script>
 <script>
   if ("serviceWorker" in navigator) {

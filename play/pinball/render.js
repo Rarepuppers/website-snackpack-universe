@@ -24,7 +24,7 @@
 import {
   W, H, BALL_R, WALLS, BUMPERS, SPINNER, ROLLOVERS, RAMPS, KICKBACK, SAUCERS,
   DROP_TARGETS,
-} from './table.js?v=fb49d14d4e';
+} from './table.js?v=1a3d6687c7';
 
 const INK = {
   cloth: '#1d2230',

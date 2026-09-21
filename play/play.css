@@ -2060,6 +2060,35 @@ button.th-card.is-selected {
   .pb-modes .btn-game { min-width: 0; width: 100%; max-width: 280px; }
 }
 
+/* Combo and tilt meters. Both chips are hidden unless the mechanic is live, so
+   they add nothing to the dock's height in normal play. The tilt chip appearing
+   the first time you nudge is the only place the game teaches that nudging has
+   a cost. */
+.pb-meter {
+  display: inline-block;
+  width: 34px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(32, 23, 19, 0.16);
+  overflow: hidden;
+}
+.pb-meter i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: currentColor;
+  transition: width 90ms linear;
+}
+.pb-chip-combo { color: #2f7d63; }
+.pb-chip-tilt { color: #2f7d63; }
+.pb-chip-tilt[data-state="warn"] { color: #b4671f; }
+.pb-chip-tilt[data-state="tilted"] { color: #b3402f; }
+.pb-chip-tilt[data-state="tilted"] b,
+.pb-chip-tilt[data-state="warn"] b { color: inherit; }
+.pb-chip-combo[hidden],
+.pb-chip-tilt[hidden] { display: none; }
+
 /* Pinball scoring table, generated into the page by
    scripts/build-pinball-scoring.mjs from the ruleset's own POINTS. */
 .pb-score-table-wrap {
@@ -2118,11 +2147,20 @@ button.th-card.is-selected {
 /* Docked, the readout is chrome, not content: it has to cost as little height
    as possible or it eats the table it is reporting on. Measured undocked on a
    390px phone the toolbar alone was 146px, which is a fifth of the viewport. */
+/* The toolbar must not wrap at any width. The combo and tilt chips appear
+   mid-ball, and if they pushed the row to wrap, the dock would grow and shove
+   the table down under a moving ball. Measured: wrapping took the desktop dock
+   from 95px to 139px. The readout scrolls sideways instead, so the dock keeps
+   one height for the whole game. */
+.pb-hud-dock .game-toolbar { flex-wrap: nowrap; }
+.pb-hud-dock .game-controls { flex: 0 0 auto; }
+
 .pb-hud-dock .game-readout {
   flex-wrap: nowrap;
   overflow-x: auto;
   scrollbar-width: none;
   gap: 6px;
+  min-width: 0;
 }
 .pb-hud-dock .game-readout::-webkit-scrollbar { display: none; }
 .pb-hud-dock .readout-chip {
