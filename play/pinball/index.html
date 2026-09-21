@@ -43,7 +43,7 @@
   "@type": "HowTo",
   "name": "How to play pinball",
   "step": [
-    { "@type": "HowToStep", "name": "Plunge", "text": "Hold the plunger to charge it and release. A full plunge orbits the table and returns the ball to the right flipper." },
+    { "@type": "HowToStep", "name": "Plunge", "text": "Hold Space or the Up arrow to charge the plunger and release. A full plunge orbits the table and returns the ball to the right flipper." },
     { "@type": "HowToStep", "name": "Shoot the lit shots", "text": "The left flipper reaches the right ramp; the right flipper reaches the left orbit. Consecutive shots build a combo multiplier." },
     { "@type": "HowToStep", "name": "Start missions", "text": "Shoot the saucer when it is lit to begin a mission. Completing missions raises your rank." },
     { "@type": "HowToStep", "name": "Keep the ball alive", "text": "Nudge to save a ball heading for an outlane, but three nudges in quick succession tilt the table and cost your bonus." }
@@ -193,7 +193,7 @@
 
         <p class="game-status" id="pb-live" aria-live="polite">Choose a mode to start.</p>
 
-        <div class="pb-stage" data-no-keyboard-reason="Pinball is not a grid game, so keyboard-grid.js roving focus does not apply. It has direct key bindings instead: Z and Left for the left flipper, / and Right for the right flipper, Space for the plunger, comma and period to nudge. Every control is also reachable by Tab.">
+        <div class="pb-stage" data-no-keyboard-reason="Pinball is not a grid game, so keyboard-grid.js roving focus does not apply. It has direct key bindings instead: Z and Left for the left flipper, / and Right for the right flipper, Space or Up for the plunger, comma and period to nudge. Every control is also reachable by Tab.">
           <canvas id="pb-canvas" role="img" aria-label="Pinball table"></canvas>
 
           <div class="pb-modes" id="pb-modes">
@@ -214,7 +214,7 @@
           <p class="pb-banner" id="pb-banner" hidden></p>
         </div>
 
-        <p class="game-hint">Keys: <b>Z</b> / <b>←</b> left flipper · <b>/</b> / <b>→</b> right flipper · hold <b>Space</b> to charge the plunger and release to fire · <b>,</b> and <b>.</b> nudge · <b>N</b> nudge up. On a phone: hold the left or right third of the table for the flippers, the middle for the plunger.</p>
+        <p class="game-hint">Keys: <b>Z</b> / <b>←</b> left flipper · <b>/</b> / <b>→</b> right flipper · hold <b>Space</b> or <b>&uarr;</b> to charge the plunger and release to fire · <b>,</b> and <b>.</b> nudge · <b>N</b> nudge up. On a phone: hold the left or right third of the table for the flippers, the middle for the plunger.</p>
       </div>
     </div>
   </section>
@@ -422,7 +422,7 @@
 <script src="../share-result.js"></script>
 <script src="../audio.js"></script>
 <script src="../resume.js"></script>
-<script type="module" src="./game.js?v=1a3d6687c7"></script>
+<script type="module" src="./game.js?v=828626f2cd"></script>
 <script src="../game-ui-assets.js" defer></script>
 <script>
   if ("serviceWorker" in navigator) {

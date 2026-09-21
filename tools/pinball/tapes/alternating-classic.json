@@ -5,19 +5,19 @@
   "pattern": "alternating",
   "frames": 86400,
   "expect": {
-    "score": 273500,
+    "score": 368450,
     "ball": 4,
     "rank": 0,
     "missions": 0,
     "bonusMultiplier": 5,
     "gameOver": true,
     "events": {
-      "bumper": 25,
-      "sling": 10,
+      "bumper": 13,
+      "sling": 25,
       "drain": 3,
-      "rollover": 15,
-      "ramp-exit": 10,
-      "saucer": 1,
+      "rollover": 25,
+      "ramp-exit": 15,
+      "saucer": 3,
       "escaped": 0
     }
   }

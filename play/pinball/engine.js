@@ -29,11 +29,11 @@
  */
 
 import {
-  W, H, BALL_R, FIELD_LEFT, LANE_CX, LANE_TOP, BALL_REST,
+  W, H, BALL_R, FIELD_LEFT, LANE_CX, LANE_LEFT, LANE_TOP, BALL_REST,
   WALLS, BUMPERS, BUMPER_KICK, SLING_KICK, SLING_THRESHOLD,
   DROP_TARGETS, SPINNER, SAUCERS, ROLLOVERS, RAMPS, KICKBACK,
   FLIPPERS, FLIPPER_MOTOR, MODES, MAT,
-} from './table.js?v=1a3d6687c7';
+} from './table.js?v=828626f2cd';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -527,6 +527,32 @@ function checkTriggers(ball, world, dt) {
   // Ramp entries.
   if (ball._rampCool > 0) ball._rampCool -= dt;
   for (const r of RAMPS) {
+    if (r.oneWay) {
+      // The plunger lane's one-way gate. table.js has declared this device
+      // since the table was laid out, but nothing ever read the flag and the
+      // entry has no path, so the ramp loop below skipped it -- leaving the
+      // shooter lane open from the playfield. Measured: a ball crossing the
+      // upper field rightward at 500-900 u/s dropped straight back into the
+      // lane, where it sat safe behind the divider and could be re-plunged
+      // mid-ball. Every real cabinet closes that lane with a sprung flap.
+      //
+      // Balls LEAVING the lane are moving up and pass untouched, which is what
+      // makes it one-way rather than a wall.
+      // The band is exactly the ball's radius ABOVE the mouth, never below it.
+      // A wider band caught balls already inside the lane falling back from a
+      // soft plunge and flung them out into the field, which is the opposite
+      // of what a gate does: once past the flap, a ball is past it.
+      if (ball.vy > 0 && ball.x > LANE_LEFT
+          && ball.y + BALL_R >= r.entry.y && ball.y < r.entry.y) {
+        ball.y = r.entry.y - BALL_R;
+        // A flap absorbs rather than bounces, and swings the ball back out
+        // into the field instead of parking it on the gate.
+        ball.vy = -ball.vy * 0.2;
+        ball.vx -= 60;
+        world.events.push({ type: 'gate', id: r.id });
+      }
+      continue;
+    }
     if (!r.path) continue;
     if (Math.hypot(ball.x - r.entry.x, ball.y - r.entry.y) > r.entry.r) continue;
     // A ball loitering near an entrance must not re-fire the reject every

@@ -9,9 +9,9 @@
  * The engine never reads a clock; this file owns all of the timing.
  */
 
-import { createWorld, advance, drainEvents, serveBall, nudge, addBall, releaseSaucer, DT } from './engine.js?v=1a3d6687c7';
-import { createRenderer } from './render.js?v=1a3d6687c7';
-import { MODES, SAUCERS, BUMPERS } from './table.js?v=1a3d6687c7';
+import { createWorld, advance, drainEvents, serveBall, nudge, addBall, releaseSaucer, DT } from './engine.js?v=828626f2cd';
+import { createRenderer } from './render.js?v=828626f2cd';
+import { MODES, SAUCERS, BUMPERS } from './table.js?v=828626f2cd';
 
 /** Slingshot face midpoints, for spark positions. */
 const SLING_POS = {
@@ -23,7 +23,7 @@ import {
   drainCommands, drainLog, statusLine, litShots,
   serialize as serializeRules, deserialize as deserializeRules,
   RANKS, MISSIONS, COMBO_WINDOW,
-} from './rules.js?v=1a3d6687c7';
+} from './rules.js?v=828626f2cd';
 
 /** ?daily=YYYY-MM-DD -- everyone gets the same missions, one attempt. */
 const DAILY = new URLSearchParams(location.search).get('daily');
@@ -471,6 +471,9 @@ function seedForRun() {
 
 const KEYS_LEFT = ['KeyZ', 'ArrowLeft', 'ShiftLeft'];
 const KEYS_RIGHT = ['Slash', 'ArrowRight', 'ShiftRight'];
+// Space is the convention, but Up is what people reach for when the plunger is
+// drawn at the bottom of a portrait table, and it is otherwise unbound.
+const KEYS_PLUNGE = ['Space', 'ArrowUp'];
 
 /**
  * Flipper sound follows the BUTTON, not the ball. A flipper makes its noise
@@ -496,7 +499,7 @@ function bindKeys() {
     if (e.repeat) return;
     if (KEYS_LEFT.includes(e.code)) { state.input.left = true; flipperSound(true); e.preventDefault(); }
     else if (KEYS_RIGHT.includes(e.code)) { state.input.right = true; flipperSound(true); e.preventDefault(); }
-    else if (e.code === 'Space') { state.input.plunge = true; plungerSound(true); e.preventDefault(); }
+    else if (KEYS_PLUNGE.includes(e.code)) { state.input.plunge = true; plungerSound(true); e.preventDefault(); }
     else if (e.code === 'Comma' && state.world) nudge(state.world, -1, 0);
     else if (e.code === 'Period' && state.world) nudge(state.world, 1, 0);
     else if (e.code === 'KeyN' && state.world) nudge(state.world, 0, -1);
@@ -504,7 +507,7 @@ function bindKeys() {
   window.addEventListener('keyup', (e) => {
     if (KEYS_LEFT.includes(e.code)) { state.input.left = false; flipperSound(false); }
     else if (KEYS_RIGHT.includes(e.code)) { state.input.right = false; flipperSound(false); }
-    else if (e.code === 'Space') state.input.plunge = false;
+    else if (KEYS_PLUNGE.includes(e.code)) state.input.plunge = false;
   });
 }
 
