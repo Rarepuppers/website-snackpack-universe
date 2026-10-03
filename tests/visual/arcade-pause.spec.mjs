@@ -1,5 +1,13 @@
 import { test, expect } from "@playwright/test";
 
+// Gameplay tests do not exercise analytics. Loading the external beacon from
+// localhost can produce a Cloudflare CORS error that depends on its live edge.
+test.beforeEach(async ({ page }) => {
+  await page.route("https://static.cloudflareinsights.com/**", (route) =>
+    route.fulfill({ status: 200, contentType: "application/javascript", body: "" }),
+  );
+});
+
 // Pause coverage for the arcade's real-time games.
 //
 // Seven games ran a requestAnimationFrame loop with no pause control and no

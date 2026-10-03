@@ -1,5 +1,12 @@
 import { test, expect } from "@playwright/test";
 
+// Keep persistence checks independent of the live analytics edge on localhost.
+test.beforeEach(async ({ page }) => {
+  await page.route("https://static.cloudflareinsights.com/**", (route) =>
+    route.fulfill({ status: 200, contentType: "application/javascript", body: "" }),
+  );
+});
+
 // Saved progress for the long-form games.
 //
 // resume.js existed but only a dozen games used it. These five are the ones
