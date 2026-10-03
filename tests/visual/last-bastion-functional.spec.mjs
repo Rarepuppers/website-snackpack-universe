@@ -148,6 +148,25 @@ test.describe("Last Bastion executable acceptance", () => {
     await expectHealthyCanvas(page, failures);
   });
 
+  test("debrief game link remains selectable when clipboard access is blocked", async ({ page }) => {
+    const failures = watchRuntime(page);
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "clipboard", {
+        configurable: true,
+        value: { writeText: () => Promise.reject(new DOMException("Clipboard blocked", "NotAllowedError")) },
+      });
+    });
+    await page.goto("/play/last-bastion/?screen=summary&summarydemo=1");
+    await page.waitForFunction(() => Boolean(window.__runSummary));
+    await page.keyboard.press("l");
+    const link = page.locator("#run-details-fallback textarea");
+    await expect(link).toHaveValue("https://www.snackpackuniverse.com/play/last-bastion/");
+    await expect(page.getByText("Select and copy this game link:", { exact: false })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#run-details-fallback")).toHaveCount(0);
+    await expectHealthyCanvas(page, failures);
+  });
+
   test("focus loss clears a held irreversible confirmation", async ({ page }) => {
     const failures = watchRuntime(page);
     await page.goto("/play/last-bastion/?screen=transformation-lab");

@@ -72,7 +72,7 @@ export class RunSummaryScene extends Phaser.Scene {
       this.text(892, 70, `THREAT ${threat.tier}  ${threat.name}`, threat.tier > 0 ? ORANGE : TEAL, "10px", false, 1);
     }
     const seedLabel = summary.provenance.combatSeed === null ? "SEED UNKNOWN" : `SEED ${summary.provenance.combatSeed}`;
-    this.text(892, 88, `${seedLabel}  /  SIM ${summary.provenance.simulationVersion || "?"}`, MUTED, "8px", false, 1);
+    this.text(892, 82, `${seedLabel}  /  SIM ${summary.provenance.simulationVersion || "?"}`, MUTED, "8px", false, 1);
     if (!victory && summary.defeatCause) this.text(56, 86, summary.defeatCause.toUpperCase(), ORANGE, "9px");
     if (summary.newBestWave || summary.newBestNodes) {
       this.text(892, 48, "NEW RECORD", TEAL, "11px", false, 1);
@@ -220,14 +220,17 @@ export class RunSummaryScene extends Phaser.Scene {
     const quickDrop = () => { window.location.href = `?screen=game&hero=${summary.heroId}`; };
     const expedition = () => { window.location.href = "?screen=title&flow=character-select"; };
     const copy = () => { void this.copyRunDetails(summary); };
+    const copyLink = () => { void this.copyGameLink(); };
     const actionDefinitions = [
       ...(retryUrl ? [{ label: "RETRY THIS SEED", shortcut: "R", run: retry }] : []),
       { label: "NEW QUICK DROP", shortcut: "Q", run: quickDrop },
       { label: "NEW EXPEDITION", shortcut: "N", run: expedition },
       { label: "COPY RUN DETAILS", shortcut: "C", run: copy },
+      { label: "COPY GAME LINK", shortcut: "L", run: copyLink },
       { label: "MAIN MENU", shortcut: "ESC / B", run: leave },
     ];
-    const spacing = 178;
+    const actionWidth = actionDefinitions.length > 5 ? 146 : 174;
+    const spacing = actionDefinitions.length > 5 ? 150 : 178;
     const firstX = WIDTH / 2 - spacing * (actionDefinitions.length - 1) / 2;
     const actions = actionDefinitions.map((action, index) => ({ ...action, x: firstX + index * spacing }));
     this.returnActions = actions;
@@ -238,16 +241,16 @@ export class RunSummaryScene extends Phaser.Scene {
     this.returnLabels = [];
     this.returnHints = [];
     actions.forEach((action, index) => {
-      this.returnFrames.push(this.add.rectangle(action.x, 492, 174, 42, PANEL, 0.96));
+      this.returnFrames.push(this.add.rectangle(action.x, 492, actionWidth, 42, PANEL, 0.96));
       this.returnLabels.push(this.text(action.x, 480, action.label, IVORY, "11px", true));
       this.returnHints.push(this.text(action.x, 502, action.shortcut, MUTED, "8px", true));
-      this.add.zone(action.x - 87, 471, 174, 42).setOrigin(0, 0).setInteractive()
+      this.add.zone(action.x - actionWidth / 2, 471, actionWidth, 42).setOrigin(0, 0).setInteractive()
         .on("pointerover", () => this.selectReturnAction(index))
         .on("pointerdown", action.run);
     });
     this.refreshReturnActions();
     this.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
-      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter", "Space", "KeyR", "KeyQ", "KeyN", "KeyC", "Escape"].includes(event.code)) {
+      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter", "Space", "KeyR", "KeyQ", "KeyN", "KeyC", "KeyL", "Escape"].includes(event.code)) {
         event.preventDefault();
       }
       if (event.code === "ArrowLeft" || event.code === "ArrowUp") this.moveReturnAction(-1);
@@ -257,6 +260,7 @@ export class RunSummaryScene extends Phaser.Scene {
       else if (event.code === "KeyQ") quickDrop();
       else if (event.code === "KeyN") expedition();
       else if (event.code === "KeyC") copy();
+      else if (event.code === "KeyL") copyLink();
       else if (event.code === "Escape") leave();
     });
     this.input.gamepad?.on("down", (_pad: unknown, button: { index: number }) => {
@@ -279,6 +283,18 @@ export class RunSummaryScene extends Phaser.Scene {
       showSelectableRunDetails(details);
       this.setCopyStatus("COPY BLOCKED — DETAILS OPENED FOR SELECTION", ORANGE);
       (window as unknown as { __runSummaryCopy?: object }).__runSummaryCopy = { copied: false, fallback: true };
+    }
+  }
+
+  private async copyGameLink(): Promise<void> {
+    const url = "https://www.snackpackuniverse.com/play/last-bastion/";
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(url);
+      this.setCopyStatus("GAME LINK COPIED", TEAL);
+    } catch {
+      showSelectableRunDetails(url, "Clipboard access was blocked. Select and copy this game link:");
+      this.setCopyStatus("COPY BLOCKED — LINK OPENED FOR SELECTION", ORANGE);
     }
   }
 
@@ -347,7 +363,7 @@ export class RunSummaryScene extends Phaser.Scene {
   }
 }
 
-function showSelectableRunDetails(details: string): void {
+function showSelectableRunDetails(details: string, headingText = "Clipboard access was blocked. Select and copy these run details:"): void {
   document.getElementById("run-details-fallback")?.remove();
   const returnFocus = document.activeElement instanceof HTMLElement && document.activeElement !== document.body
     ? document.activeElement
@@ -365,7 +381,7 @@ function showSelectableRunDetails(details: string): void {
   Object.assign(panel.style, { width: "min(680px, 92vw)", color: "#e8e2d4", fontFamily: "monospace" });
   const heading = document.createElement("p");
   heading.id = "run-details-fallback-heading";
-  heading.textContent = "Clipboard access was blocked. Select and copy these run details:";
+  heading.textContent = headingText;
   const textarea = document.createElement("textarea");
   textarea.value = details;
   textarea.readOnly = true;

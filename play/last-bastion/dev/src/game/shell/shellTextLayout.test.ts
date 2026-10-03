@@ -3,6 +3,7 @@ import { HERO_CATALOG } from "../hero/HeroCatalog";
 import { PERK_CATALOG } from "../perks/perkCatalog";
 import { fitText, type MeasureText } from "../ui/MeasuredText";
 import { perkGridLayout } from "./ScreenFlow";
+import { heroDossierCopy } from "./HeroDossierCopy";
 
 /**
  * Presentation plan §5.4 — the overflow audit, aimed at the two blocks of
@@ -57,7 +58,7 @@ const DOSSIER_PADDING = 4;
 const PERK_LAYOUT = perkGridLayout(PERK_CATALOG.length);
 const DOSSIER_HEADING_GAP = 8;
 const DOSSIER_BOTTOM = PERK_LAYOUT.headingY - DOSSIER_HEADING_GAP;
-const DOSSIER_SIZES = [12, 11, 10, 9];
+const DOSSIER_SIZES = [12, 11];
 /** The PERK heading is the first thing the dossier must not reach. */
 const PERK_HEADING_Y = PERK_LAYOUT.headingY;
 const PERK_DESCRIPTION = { top: PERK_LAYOUT.descriptionY, wrapWidth: 390, fontSizePx: 11 };
@@ -66,20 +67,7 @@ const PERK_GRID_TOP = PERK_LAYOUT.bounds.top;
 
 /** Mirrors the dossier string ShellScene composes. */
 function dossierText(heroId: keyof typeof HERO_CATALOG, unlocked: boolean): string {
-  const definition = HERO_CATALOG[heroId];
-  return [
-    `ROLE  ${definition.role}`,
-    "",
-    `PASSIVE  ${definition.passive.name}`,
-    definition.passive.description,
-    "",
-    `ULTIMATE  ${definition.ultimate.name}`,
-    definition.ultimate.description,
-    "",
-    `STARTING WEAPON  ${definition.startingWeaponName}`,
-    `PER LEVEL  ${definition.levelGrowthDescription}`,
-    ...(!unlocked ? ["", definition.unlockText] : []),
-  ].join("\n");
+  return heroDossierCopy(HERO_CATALOG[heroId], unlocked);
 }
 
 describe("character-select copy stays inside its panel", () => {

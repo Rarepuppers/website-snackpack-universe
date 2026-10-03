@@ -58,6 +58,7 @@ import {
   type UiButtonState,
 } from "../assets/UiChromeAssets";
 import { requestedShellScreen } from "./ShellReviewRoute";
+import { heroDossierCopy } from "./HeroDossierCopy";
 
 type UiPanelWeight = "recessed" | "raised" | "emphasis";
 
@@ -71,7 +72,7 @@ const DOSSIER_WRAP_WIDTH = 390;
 const DOSSIER_PADDING = 4;
 /** Clearance kept between the dossier last line and the PERK heading. */
 const DOSSIER_HEADING_GAP = 8;
-const DOSSIER_SIZES: readonly number[] = [12, 11, 10, 9];
+const DOSSIER_SIZES: readonly number[] = [12, 11];
 const NAVY = 0x151e2b;
 const PANEL = 0x1d2938;
 const IVORY = "#e8e2d4";
@@ -152,10 +153,11 @@ export class ShellScene extends Phaser.Scene {
 
   override update(_time: number, delta: number): void {
     this.titlePulse += delta;
-    // The title prompt breathes so the placeholder screen reads as alive.
+    // Keep the call to action legible for the whole pulse; reduced motion is steady.
     if (this.state.screen === "title") {
       const prompt = this.root.getByName("title-prompt") as Phaser.GameObjects.Text | null;
-      prompt?.setAlpha(0.55 + Math.sin(this.titlePulse / 400) * 0.45);
+      const reducedMotion = this.state.settings.reducedMotionEnabled;
+      prompt?.setAlpha(reducedMotion ? 1 : 0.88 + Math.sin(this.titlePulse / 400) * 0.12);
     }
   }
 
@@ -444,14 +446,12 @@ export class ShellScene extends Phaser.Scene {
     const pages = howToPlayPages(this.state.controls);
     const page = pages[this.state.howToPlayPage]!;
     if (uiChromeEnabled()) this.root.add(this.uiHeaderPlate(220, 48, 330, 62));
-    this.root.add(this.text(70, 48, "HOW TO PLAY", IVORY, "28px"));
+    this.root.add(this.text(70, 35, "HOW TO PLAY", IVORY, "28px"));
     this.root.add(this.add.rectangle(WIDTH / 2, 290, 740, 300, PANEL, 0.9));
     this.root.add(uiChromeEnabled()
       ? this.uiPanelFrame(WIDTH / 2, 290, 760, 320, "recessed")
       : this.add.rectangle(WIDTH / 2, 290, 760, 320, PANEL, 0).setStrokeStyle(1, 0x3b4d63));
-    // Diagram placeholder: Batch G supplies the real illustration per page.
-    this.root.add(this.add.rectangle(WIDTH / 2, 240, 380, 130, 0x24384f).setStrokeStyle(1, TEAL_HEX));
-    this.root.add(this.text(WIDTH / 2, 234, "[ DIAGRAM ]", MUTED, "13px", true));
+    this.renderHowToPlayDiagram(this.state.howToPlayPage);
     this.root.add(this.text(WIDTH / 2, 330, page.title, TEAL, "20px", true));
     this.root.add(this.text(WIDTH / 2, 386, page.body, IVORY, "14px", true));
     this.root.add(this.text(
@@ -464,6 +464,70 @@ export class ShellScene extends Phaser.Scene {
     ));
     this.clickZone(0, 0, WIDTH / 2, HEIGHT, () => this.apply("left"));
     this.clickZone(WIDTH / 2, 0, WIDTH / 2, HEIGHT, () => this.apply("right"));
+  }
+
+  /** Vector teaching diagrams stay sharp at Full HD and 4K and carry no baked key labels. */
+  private renderHowToPlayDiagram(page: number): void {
+    const g = this.add.graphics();
+    this.root.add(g);
+    g.fillStyle(0x142334, 1).fillRoundedRect(290, 175, 380, 130, 8);
+    g.lineStyle(1, 0x49657b, 1).strokeRoundedRect(290, 175, 380, 130, 8);
+    const label = (x: number, y: number, value: string, color = MUTED): void => {
+      this.root.add(this.text(x, y, value, color, "11px", true));
+    };
+    const node = (x: number, y: number, radius: number, color: number): void => {
+      g.fillStyle(0x142334, 1).fillCircle(x, y, radius);
+      g.lineStyle(3, color, 1).strokeCircle(x, y, radius);
+    };
+    if (page === 0) {
+      g.lineStyle(3, TEAL_HEX, 1).lineBetween(354, 246, 445, 246);
+      g.lineStyle(3, TEAL_HEX, 1).lineBetween(445, 246, 491, 214);
+      g.fillStyle(0x51657a, 1).fillRoundedRect(455, 251, 58, 24, 3);
+      node(354, 246, 15, TEAL_HEX);
+      node(491, 214, 13, TEAL_HEX);
+      g.fillStyle(0xff9a52, 1).fillTriangle(569, 238, 583, 255, 555, 255);
+      label(354, 281, "MOVE", TEAL);
+      label(491, 190, "EVADE", TEAL);
+      label(485, 281, "COVER");
+      label(569, 281, "THREAT", ORANGE);
+    } else if (page === 1) {
+      node(479, 239, 19, TEAL_HEX);
+      for (const [x, y] of [[418, 206], [540, 206], [418, 271], [540, 271]] as const) {
+        g.fillStyle(0x254051, 1).fillRoundedRect(x - 12, y - 12, 24, 24, 3);
+        g.lineStyle(2, TEAL_HEX, 1).strokeRoundedRect(x - 12, y - 12, 24, 24, 3);
+      }
+      g.lineStyle(3, 0xff9a52, 1).lineBetween(501, 239, 608, 239);
+      g.fillStyle(0xff9a52, 1).fillTriangle(616, 239, 604, 233, 604, 245);
+      label(479, 186, "WEAPON RACK", TEAL);
+      label(479, 287, "AUTO / MANUAL");
+      label(608, 262, "TARGET", ORANGE);
+    } else if (page === 2) {
+      const statuses = [
+        { x: 341, text: "FIRE", color: 0xff9a52 },
+        { x: 431, text: "SHOCK", color: 0x68e4e8 },
+        { x: 527, text: "CRYO", color: 0x9dc7ff },
+        { x: 619, text: "TOXIC", color: 0x9ee388 },
+      ];
+      for (const status of statuses) {
+        node(status.x, 218, 13, status.color);
+        label(status.x, 246, status.text, `#${status.color.toString(16).padStart(6, "0")}`);
+      }
+      g.fillStyle(0x31465b, 1).fillRoundedRect(335, 268, 290, 7, 3);
+      g.fillStyle(TEAL_HEX, 1).fillRoundedRect(335, 268, 218, 7, 3);
+      g.lineStyle(2, 0xff9a52, 1).lineBetween(554, 260, 554, 282);
+      label(479, 289, "BUILD STATUS TO THE THRESHOLD");
+    } else {
+      const points = [[333, 240], [411, 211], [411, 270], [492, 240], [571, 240], [638, 240]] as const;
+      g.lineStyle(2, 0x58798d, 1);
+      for (const [a, b] of [[0, 1], [0, 2], [1, 3], [2, 3], [3, 4], [4, 5]] as const) {
+        g.lineBetween(points[a]![0], points[a]![1], points[b]![0], points[b]![1]);
+      }
+      points.forEach(([x, y], index) => node(x, y, index === 5 ? 15 : 11, index === 5 ? 0xff9a52 : TEAL_HEX));
+      label(333, 274, "START", TEAL);
+      label(411, 190, "CACHE");
+      label(411, 289, "ELITE");
+      label(638, 274, "BOSS", ORANGE);
+    }
   }
 
   private renderSettings(): void {
@@ -752,19 +816,7 @@ export class ShellScene extends Phaser.Scene {
       .setStrokeStyle(1, 0x3b4d63));
     if (isHeroId(hero.id)) {
       const definition = heroDefinition(hero.id);
-      const dossier = [
-        `ROLE  ${definition.role}`,
-        "",
-        `PASSIVE  ${definition.passive.name}`,
-        definition.passive.description,
-        "",
-        `ULTIMATE  ${definition.ultimate.name}`,
-        definition.ultimate.description,
-        "",
-        `STARTING WEAPON  ${definition.startingWeaponName}`,
-        `PER LEVEL  ${definition.levelGrowthDescription}`,
-        ...(!heroUnlocked ? ["", definition.unlockText] : []),
-      ].join("\n");
+      const dossier = heroDossierCopy(definition, heroUnlocked);
       this.root.add(this.fittedDossier(dossier, perkLayout.headingY));
     } else {
       this.root.add(this.text(660, 240, "Signal lost.\nFuture hero slot.", MUTED, "14px", true));
