@@ -12,6 +12,7 @@ import {
 import { INFECTED_SURVIVOR_PACK_CAP } from "../CorruptedHumanWaves";
 import { SCRAP_SKITTERER_PACK_CAP } from "../ScrapSkittererBehavior";
 import { buildDensityCapacityRoster } from "../DensityDirector";
+import { planLevelStatDecision } from "../LevelUpDecision";
 // Type-only, so it is erased at build time and no import cycle exists with
 // `CombatSimulation`, which imports this module for its value export.
 import type {
@@ -447,6 +448,11 @@ const POPULATE: Readonly<Record<CombatScenario, Populate>> = Object.freeze({
   /** Real four-option mixed draw for worst-case card and hint review. */
   "level-up-review": (context) => {
     context.grantExperience(1000);
+  },
+
+  /** Direct stat-card review after the upgrade pool is exhausted. */
+  "stat-card-review": (context) => {
+    context.queueDecision(planLevelStatDecision({ level: 2 }));
   },
 
   /** Stable live-art lab for Batch J body silhouettes, cadence, and telegraphs. */

@@ -327,4 +327,22 @@ test.describe("Last Bastion executable acceptance", () => {
     await page.waitForFunction(() => window.__combatDecisionOverlay?.visible === false);
     await expectHealthyCanvas(page, failures);
   });
+
+  test("level-up stat cards fit their rendered text inside the choices", async ({ page }) => {
+    const failures = watchRuntime(page);
+    for (const viewport of [{ width: 960, height: 540 }, { width: 1920, height: 1080 }, { width: 3840, height: 2160 }]) {
+      await page.setViewportSize(viewport);
+      await page.goto("/play/last-bastion/?scenario=stat-card-review");
+      await page.waitForFunction(() => window.__combatDecisionOverlay?.kind === "level-stat");
+      const cards = await page.evaluate(() => window.__combatDecisionOverlay.statCardBounds);
+      expect(cards).toHaveLength(4);
+      for (const card of cards) {
+        expect(card.overflowed, card.id).toBe(false);
+        expect(card.width, card.id).toBeLessThanOrEqual(328);
+        expect(card.height, card.id).toBeLessThanOrEqual(100);
+        expect(card.fontSize, card.id).toBeGreaterThanOrEqual(10);
+      }
+      await expectHealthyCanvas(page, failures);
+    }
+  });
 });

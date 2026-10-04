@@ -6,6 +6,7 @@ import { uiTextResolution } from "../rendering/DisplayScaling";
 import { shopWeaponTilePresentation, weaponTilePresentation } from "./WeaponTileFrames";
 import { upgradeTilePresentation } from "./UpgradeTilePresentation";
 import { decisionHintY, decisionPanelHeight } from "./DecisionOverlayLayout";
+import { fitText, phaserTextMeasure } from "./MeasuredText";
 import { stepDecisionNavigation } from "../combat/DecisionNavigation";
 
 export interface DecisionMenuKeys {
@@ -41,6 +42,7 @@ export class CombatDecisionOverlay {
   private menuStickReady = true;
   private visibleDecisionKey = "";
   private activeDecisionKind: PendingDecision["kind"] | null = null;
+  private statCardBounds: { id: string; width: number; height: number; fontSize: number; overflowed: boolean }[] = [];
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -153,6 +155,7 @@ export class CombatDecisionOverlay {
     this.overlay?.destroy(true);
     this.overlay = null;
     this.buttons = [];
+    this.statCardBounds = [];
     this.selectionIndex = 0;
     this.options.onDecisionChanged();
     this.visibleDecisionKey = nextKey;
@@ -266,13 +269,24 @@ export class CombatDecisionOverlay {
       const quickKey = index < 9 ? `${index + 1}. ` : "";
       // A stat card leads with the grant, not the flavour name — the number is
       // the decision, so it gets the weight and the card is centred around it.
+      const statCardText = `${quickKey}${choice.name}\n\n${choice.description.toUpperCase()}`;
+      const statCardFit = isStatCards ? fitText({
+        content: statCardText,
+        maxWidth: 344,
+        maxHeight: 116,
+        sizesPx: [15, 14, 13, 12, 11, 10],
+      }, phaserTextMeasure(this.scene, {
+        fontFamily: "Consolas, Courier New, monospace",
+        lineSpacing: 4,
+        align: "center",
+      })) : null;
       const label = isStatCards
-        ? this.scene.add.text(x, y, `${quickKey}${choice.name}\n\n${choice.description.toUpperCase()}`, {
+        ? this.scene.add.text(x, y, statCardText, {
           color: "#edf4ff",
           fontFamily: "Consolas, Courier New, monospace",
-          fontSize: "15px",
+          fontSize: `${statCardFit!.fontSizePx}px`,
           align: "center",
-          wordWrap: { width: 312 },
+          wordWrap: { width: statCardFit!.wrapWidth },
           lineSpacing: 4,
         }).setOrigin(0.5).setResolution(uiTextResolution())
         : this.scene.add.text(isPlacement ? x - 78 : isShop ? x - shopButtonWidth / 2 + 76 : upgradeTile ? -305 : -365, y - (isPlacement ? 26 : isShop ? 15 : 26), `${quickKey}${choice.name}${price}\n${choice.description}`, {
@@ -282,6 +296,15 @@ export class CombatDecisionOverlay {
           wordWrap: isPlacement ? { width: 202 } : isShop ? { width: shopButtonWidth - 92 } : upgradeTile ? { width: 620 } : { width: 710 },
           lineSpacing: isShop ? 2 : 5,
         }).setResolution(uiTextResolution());
+      if (statCardFit) {
+        this.statCardBounds.push({
+          id: choice.id,
+          width: label.width,
+          height: label.height,
+          fontSize: statCardFit.fontSizePx,
+          overflowed: statCardFit.overflowed,
+        });
+      }
       button.on("pointerover", () => {
         this.selectionIndex = index;
         this.updateDecisionSelectionHighlight();
@@ -313,6 +336,7 @@ export class CombatDecisionOverlay {
     this.overlay?.destroy(true);
     this.overlay = null;
     this.buttons = [];
+    this.statCardBounds = [];
     this.selectionIndex = 0;
     this.menuStickReady = true;
     this.activeDecisionKind = null;
@@ -329,6 +353,7 @@ export class CombatDecisionOverlay {
       kind: this.activeDecisionKind,
       selectedIndex: this.selectionIndex,
       optionIds: this.buttons.map((button) => button.choiceId),
+      statCardBounds: this.statCardBounds,
     };
   }
 }

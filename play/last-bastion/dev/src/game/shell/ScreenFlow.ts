@@ -285,6 +285,7 @@ export const LAB_ROUTES: readonly LabRoute[] = Object.freeze([
   { label: "Weapon identity HUD lab", url: "?scenario=weapon-review&weaponreview=68a-1" },
   { label: "Power-up identity lab", url: "?scenario=powerup-identity" },
   { label: "Level-up layout lab", url: "?scenario=level-up-review" },
+  { label: "Stat-card layout lab", url: "?scenario=stat-card-review" },
   { label: "Production art gallery", url: "?mode=gallery" },
 ]);
 

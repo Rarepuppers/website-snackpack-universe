@@ -14,7 +14,7 @@
  * cache itself the first time it's visited.
  */
 const CACHE = "snackpack-arcade-v21";
-const LAST_BASTION_RELEASE = "2026-10-03-onboarding-polish";
+const LAST_BASTION_RELEASE = "2026-10-05-stat-card-fit";
 const LAST_BASTION_CACHE = `last-bastion-${LAST_BASTION_RELEASE}`;
 
 // Stable public filenames make a partial cache refresh unsafe: a new scene can
@@ -40,6 +40,7 @@ const LAST_BASTION_CORE = [
   "/play/last-bastion/game-assets/GameAssetManifest.js",
   "/play/last-bastion/game-assets/HeroCatalog.js",
   "/play/last-bastion/game-assets/marauder-ar-tile-v1-128.js",
+  "/play/last-bastion/game-assets/MeasuredText.js",
   "/play/last-bastion/game-assets/medic-select-portrait-v1-1024x1536.js",
   "/play/last-bastion/game-assets/medic.js",
   "/play/last-bastion/game-assets/phaser.js",

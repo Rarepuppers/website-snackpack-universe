@@ -761,6 +761,7 @@ const SCENARIO_LABELS: Readonly<Record<CombatScenario, string>> = Object.freeze(
   "weapon-review": "WEAPON REVIEW",
   "powerup-identity": "POWER-UP LAB",
   "level-up-review": "LEVEL-UP LAB",
+  "stat-card-review": "STAT CARD LAB",
   "batch-j": "BATCH J LAB",
 });
 
