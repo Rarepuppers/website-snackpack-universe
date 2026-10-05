@@ -15,9 +15,12 @@ function summary(mode: "quick-drop" | "expedition" = "quick-drop") {
     scrapBanked: 7,
     level: 5,
     damageByWeapon: { "bastion-service-rifle": 320 },
+    elapsedSeconds: 125,
     damageTaken: 24,
     damageTakenBySource: { projectile: 16, contact: 8 },
     defeatCause: "storm projectile",
+    threatTier: mode === "expedition" ? 2 : null,
+    commandMarksEarned: 9,
     weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }],
     upgrades: [],
     provenance: createCurrentRunProvenance({
@@ -37,8 +40,17 @@ describe("reproducible run report", () => {
     expect(report).toContain("Combat seed: 61061");
     expect(report).toContain("Simulation: 3");
     expect(report).toContain("speed 0.75x (changed during run)");
+    expect(report).toContain("Duration: 2:05");
+    expect(report).toContain("Dominant incoming threat: projectile");
+    expect(report).toContain("Strongest weapon: bastion service rifle");
+    expect(report).toContain("9 Command Marks");
     expect(report).toContain("What ended this run: storm projectile");
     expect(report).not.toMatch(/[A-Z]:\\|file:\/\//i);
+  });
+
+  it("includes the selected threat tier in expedition reports", () => {
+    expect(formatRunDetails(summary("expedition"))).toContain("Threat tier: 2");
+    expect(formatRunDetails(summary())).not.toContain("Threat tier:");
   });
 
   it("builds an exact Quick Drop retry URL with hero, perk, seed and settings", () => {

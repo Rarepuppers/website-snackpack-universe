@@ -5,6 +5,7 @@ export function formatRunDetails(summary: RunSummary): string {
   const setup = [
     "LAST BASTION RUN DETAILS",
     `Mode: ${summary.mode === "expedition" ? "Expedition" : "Quick Drop"}`,
+    ...(summary.threatTier === null ? [] : [`Threat tier: ${summary.threatTier}`]),
     `Outcome: ${summary.outcome}`,
     `Hero: ${summary.heroId}`,
     `Perk: ${summary.perkId ?? "none"}`,
@@ -13,13 +14,28 @@ export function formatRunDetails(summary: RunSummary): string {
     `Build: ${provenance.buildVersion}`,
     `Simulation: ${provenance.simulationVersion || "unknown"}`,
     `Settings: speed ${provenance.settings.gameSpeedMultiplier}x${provenance.gameSpeedModified ? " (changed during run)" : ""}, auto-fire ${provenance.settings.autoFireEnabled ? "on" : "off"}, aim assist ${Math.round(provenance.settings.aimAssistStrength * 100)}%`,
+    `Duration: ${formatDuration(summary.elapsedSeconds)}`,
     `Progress: ${summary.nodesCleared} nodes, wave/column ${summary.waveReached}, level ${summary.level}`,
-    `Result: ${summary.kills} enemies, ${format(summary.damageTaken)} damage taken, ${format(summary.scrapBanked)} scrap banked`,
+    `Result: ${summary.kills} enemies, ${format(summary.damageTaken)} damage taken, ${format(summary.scrapBanked)} scrap banked, ${summary.commandMarksEarned} Command Marks`,
+    `Dominant incoming threat: ${leadingDamageSource(summary) ?? "none recorded"}`,
+    `Strongest weapon: ${leadingWeapon(summary) ?? "none recorded"}`,
   ];
   if (summary.outcome === "defeat") {
     setup.push(`What ended this run: ${summary.defeatCause ?? leadingDamageSource(summary) ?? "unknown"}`);
   }
   return setup.join("\n");
+}
+
+function leadingWeapon(summary: RunSummary): string | null {
+  const weapon = Object.entries(summary.damageByWeapon)
+    .filter(([, damage]) => damage > 0)
+    .sort((left, right) => right[1] - left[1])[0]?.[0];
+  return weapon ? weapon.replaceAll("-", " ") : null;
+}
+
+function formatDuration(seconds: number): string {
+  const wholeSeconds = Math.floor(seconds);
+  return `${Math.floor(wholeSeconds / 60)}:${String(wholeSeconds % 60).padStart(2, "0")}`;
 }
 
 export function quickDropRetryUrl(summary: RunSummary): string | null {

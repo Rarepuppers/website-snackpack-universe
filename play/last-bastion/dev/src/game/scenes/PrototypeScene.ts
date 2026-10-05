@@ -192,6 +192,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly expeditionContext = readExpeditionContext(this.saveStore);
   private readonly runSeed = readRunSeed(this.expeditionContext);
   private readonly initialRunSettings = { ...this.settings };
+  private gameSpeedModified = false;
   private readonly perkId = readPerkPreview() ?? this.saveStore.load().selectedPerkId;
   private simulation = createSimulation(
     this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
@@ -672,6 +673,9 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   private applyInGameSettings(partial: Partial<GameSettings>): void {
+    if (partial.gameSpeedMultiplier !== undefined && partial.gameSpeedMultiplier !== this.settings.gameSpeedMultiplier) {
+      this.gameSpeedModified = true;
+    }
     const rebuildHud = partial.uiScale !== undefined
       || partial.radarSize !== undefined
       || partial.colorVisionMode !== undefined;
@@ -1398,7 +1402,7 @@ export class PrototypeScene extends Phaser.Scene {
         gameSpeedMultiplier: this.initialRunSettings.gameSpeedMultiplier,
         autoFireEnabled: this.initialRunSettings.autoFireEnabled,
         aimAssistStrength: this.initialRunSettings.aimAssistStrength,
-        gameSpeedModified: this.settings.gameSpeedMultiplier !== this.initialRunSettings.gameSpeedMultiplier,
+        gameSpeedModified: this.gameSpeedModified,
       }),
     });
   }
