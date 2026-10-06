@@ -41,13 +41,14 @@ const ACCOUNT_TAG = "f58a3b6775dbe9c7cad11ec9ed6cfc80";
 const DEFAULT_ENV_FILE = "D:/billing/backup-keys/_root/.env.local";
 const GRAPHQL = "https://api.cloudflare.com/client/v4/graphql";
 
-// Every Cloudflare Web Analytics property on the account, discovered 2026-09-20
+// Portfolio Cloudflare Web Analytics properties, including Keeping Up's dedicated site tag.
 // by grouping rumPageloadEventsAdaptiveGroups on siteTag with no siteTag filter.
 // Do that again rather than hunting for /rum/site_info/list, which this token
 // cannot read (it returns "Authentication error", and that is not fixable here).
 const SITES = {
   "www.snackpackuniverse.com": "1c270abb562c47788dad5c05b3ba2c2a",
   "atlas.snackpackuniverse.com": "509cda8885eb44dd838f0545823040a7",
+  "keepingup.snackpackuniverse.com": "42db9549332e4e2fa5b8b7c0e3458e2a",
   "isclaudedown.com": "0698e095c29249ebb30c57a820357b20",
   "iscodexup.com": "d76d454a223648b8bb3b55cf3941b954",
   "isclaudeup.com": "fb8ab1693757413481e4c7d401810a9d",
@@ -288,4 +289,3 @@ try {
   process.exit(1);
 }
 }
-
