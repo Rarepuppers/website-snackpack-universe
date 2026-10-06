@@ -160,6 +160,18 @@ for (const file of htmlFiles) {
   if (!/cloudflareinsights/.test(html)) warnings.push(`${name}: no analytics beacon`);
 }
 
+// The home page features only a selection of live apps. Its total must match
+// the full /apps/ directory, where Badgify and future releases also appear.
+const homeHtml = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
+const appsHtml = fs.readFileSync(path.join(ROOT, "apps", "index.html"), "utf8");
+const liveCards = [...appsHtml.matchAll(/<article class="featured-app-card">([\s\S]*?)<\/article>/g)]
+  .filter(([, card]) => /class="meta-tag meta-tag--live"/.test(card));
+const liveStat = homeHtml.match(/<div class="stat-card"><strong>(\d+)<\/strong><span class="section-copy">Live on Google Play<\/span><\/div>/);
+if (!liveStat) errors.push("index.html: live Google Play stat is missing or unreadable");
+else if (Number(liveStat[1]) !== liveCards.length) {
+  errors.push(`index.html: live Google Play stat says ${liveStat[1]}, but /apps/ lists ${liveCards.length} live apps`);
+}
+
 // ── 4. sitemap vs disk ──
 const sitemapPath = path.join(ROOT, "sitemap.xml");
 if (fs.existsSync(sitemapPath)) {
