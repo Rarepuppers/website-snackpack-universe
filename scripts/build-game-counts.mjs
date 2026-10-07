@@ -92,8 +92,13 @@ function verifyAgainstMonorepo() {
     const file = path.join(root, "..", "apps", dir, "constants", "games.ts");
     if (!fs.existsSync(file)) continue;
     const source = fs.readFileSync(file, "utf8");
-    // One registry entry per `id: '...'` at the top level of a game object.
-    const actual = (source.match(/^\s+id: '[^']+'/gm) || []).length;
+    // Count only playable registry entries; retired games remain in the source
+    // to preserve stored progress but are no longer part of the app lineup.
+    const ids = (source.match(/^\s+id: '[^']+'/gm) || []).length;
+    const statuses = [...source.matchAll(/^\s+status: '([^']+)'/gm)].map((match) => match[1]);
+    const actual = statuses.length === ids
+      ? statuses.filter((status) => status === "available").length
+      : ids;
     checked += 1;
     if (actual !== declared.brainGames[key]) {
       problems.push(
@@ -203,7 +208,7 @@ const phraseFiles = {
     { key: "arcade", re: /(")(\d+)( calm, ad-free browser games)/ }
   ],
   "apps/snackpack-brain-games/index.html": [
-    { key: "vol1", re: /(calm, offline puzzle pack with )(\d+)( classics)/ },
+    { key: "vol1", re: /(calm, offline collection of )(\d+)( puzzles)/ },
     { key: "vol1", re: /(A calm, offline collection of )(\d+)( classic games)/ }
   ]
 };

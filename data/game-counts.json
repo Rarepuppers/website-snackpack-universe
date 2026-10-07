@@ -14,7 +14,7 @@
     "mismatch, so a stale entry cannot survive a run on a dev machine."
   ],
   "brainGames": {
-    "vol1": 24,
+    "vol1": 17,
     "vol2": 23,
     "vol3": 24
   }
