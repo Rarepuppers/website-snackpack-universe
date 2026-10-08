@@ -1525,6 +1525,24 @@ main section {
   gap: 10px 24px;
 }
 
+/* Grouped link index (Atlas Quest places): one small titled list per kind of
+   place, flowing into as many columns as fit. */
+.place-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 24px 32px;
+}
+
+.place-groups h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.place-groups .list-clean {
+  gap: 6px;
+}
+
 .shot-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }

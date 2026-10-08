@@ -234,25 +234,108 @@
        Atlas Quest publishes 50 sourced place notes; a crawler reaching the
        game finds a canvas and no path to any of them, and by 2026-09-06 search
        engines had indexed exactly one URL on that origin. This page is
-       indexed, so it is the one that can introduce them. -->
+       indexed, so it is the one that can introduce them.
+       2026-10-08: it linked only 12 of the 50, and Search Console showed the
+       other 38 sitting at "Discovered - currently not indexed" or unknown.
+       It now links every one. Adding or removing a place page means editing
+       this list too; the slugs are the folder names under
+       website-atlas-quest/place/. -->
   <section id="places-in-atlas-quest">
     <div class="shell">
       <div class="section-head"><div><span class="eyebrow">Sourced notes</span><h2 class="section-title">Places in Atlas Quest</h2><p class="section-copy">Short, cited notes on the seas, deserts, lakes, ranges and straits the game asks about. Every fact names the official source it came from, and each page opens that place on the globe.</p></div></div>
       <article class="content-card">
-        <ul class="list-clean two-column">
-            <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/desert-sahara/">Sahara</a></li>
-            <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/sea-mediterranean-sea/">Mediterranean Sea</a></li>
-            <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/lake-lake-baikal/">Lake Baikal</a></li>
-            <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/strait-strait-of-malacca/">Strait of Malacca</a></li>
-            <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/peak-denali/">Denali</a></li>
-            <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/region-amazon-basin/">Amazon Basin</a></li>
-            <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/depression-death-valley/">Death Valley</a></li>
-            <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/territory-greenland/">Greenland</a></li>
-            <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/ocean-southern-ocean/">Southern Ocean</a></li>
-            <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/peak-mount-kilimanjaro/">Mount Kilimanjaro</a></li>
-            <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/peninsula-kamchatka-peninsula/">Kamchatka Peninsula</a></li>
-            <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/sea-sargasso-sea/">Sargasso Sea</a></li>
-        </ul>
+        <div class="place-groups">
+          <div class="place-group">
+            <h3>Continents</h3>
+            <ul class="list-clean">
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/continent-africa/">Africa</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/continent-antarctica/">Antarctica</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/continent-asia/">Asia</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/continent-europe/">Europe</a></li>
+            </ul>
+          </div>
+          <div class="place-group">
+            <h3>Oceans</h3>
+            <ul class="list-clean">
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/ocean-arctic-ocean/">Arctic Ocean</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/ocean-indian-ocean/">Indian Ocean</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/ocean-north-atlantic-ocean/">North Atlantic Ocean</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/ocean-south-atlantic-ocean/">South Atlantic Ocean</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/ocean-north-pacific-ocean/">North Pacific Ocean</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/ocean-south-pacific-ocean/">South Pacific Ocean</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/ocean-southern-ocean/">Southern Ocean</a></li>
+            </ul>
+          </div>
+          <div class="place-group">
+            <h3>Seas and straits</h3>
+            <ul class="list-clean">
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/sea-arabian-sea/">Arabian Sea</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/sea-baltic-sea/">Baltic Sea</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/sea-bering-sea/">Bering Sea</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/sea-black-sea/">Black Sea</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/sea-coral-sea/">Coral Sea</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/sea-mediterranean-sea/">Mediterranean Sea</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/sea-north-sea/">North Sea</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/sea-red-sea/">Red Sea</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/sea-sargasso-sea/">Sargasso Sea</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/strait-strait-of-hormuz/">Strait of Hormuz</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/strait-strait-of-malacca/">Strait of Malacca</a></li>
+            </ul>
+          </div>
+          <div class="place-group">
+            <h3>Lakes</h3>
+            <ul class="list-clean">
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/lake-dead-sea/">Dead Sea</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/lake-great-salt-lake/">Great Salt Lake</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/lake-lake-baikal/">Lake Baikal</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/lake-lake-victoria/">Lake Victoria</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/lake-north-aral-sea/">North Aral Sea</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/lake-south-aral-sea/">South Aral Sea</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/lake-yellowstone-lake/">Yellowstone Lake</a></li>
+            </ul>
+          </div>
+          <div class="place-group">
+            <h3>Rivers</h3>
+            <ul class="list-clean">
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/river-amazonas/">Amazon</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/river-congo/">Congo</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/river-ganges/">Ganges</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/river-mississippi/">Mississippi</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/river-yangtze/">Yangtze</a></li>
+            </ul>
+          </div>
+          <div class="place-group">
+            <h3>Deserts, basins and valleys</h3>
+            <ul class="list-clean">
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/desert-sahara/">Sahara</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/desert-desierto-de-atacama/">Atacama Desert</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/desert-kalahari-desert/">Kalahari Desert</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/desert-namib-desert/">Namib Desert</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/depression-death-valley/">Death Valley</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/region-amazon-basin/">Amazon Basin</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/region-congo-basin/">Congo Basin</a></li>
+            </ul>
+          </div>
+          <div class="place-group">
+            <h3>Mountains</h3>
+            <ul class="list-clean">
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/peak-denali/">Denali</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/peak-mount-kilimanjaro/">Mount Kilimanjaro</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/range-cascade-range/">Cascade Range</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/range-tian-shan/">Tian Shan</a></li>
+            </ul>
+          </div>
+          <div class="place-group">
+            <h3>Islands and peninsulas</h3>
+            <ul class="list-clean">
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/territory-greenland/">Greenland</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/island-easter-island/">Easter Island</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/islandGroup-aleutian-islands/">Aleutian Islands</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/peninsula-antarctic-peninsula/">Antarctic Peninsula</a></li>
+              <li><a class="text-link" href="https://atlas.snackpackuniverse.com/place/peninsula-kamchatka-peninsula/">Kamchatka Peninsula</a></li>
+            </ul>
+          </div>
+        </div>
         <div class="app-actions">
           <a class="text-link" href="https://atlas.snackpackuniverse.com/place/">Browse all 50 places</a>
         </div>
