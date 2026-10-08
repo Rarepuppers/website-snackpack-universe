@@ -15,7 +15,7 @@
  * them is a bug.
  */
 
-import { mulberry32 } from './engine.js?v=ee8b9ec348';
+import { mulberry32 } from './engine.js?v=77e88eb10f';
 
 // ---------------------------------------------------------------------------
 // Tables
@@ -469,12 +469,11 @@ function majorShot(r, kind, basePoints) {
     add(r, r.jackpot);
     r.jackpot += POINTS.jackpotStep;
     r.jackpotsCollected += 1;
-    note(r, 'JACKPOT', 'jackpot');
+    note(r, 'STAR BONUS', 'jackpot');
     push(r, 'sound', { name: 'jackpot' });
-    push(r, 'voice', { name: 'voice/voice-jackpot' });
     if (r.jackpotsCollected % 3 === 0) {
       r.superJackpotLit = true;
-      note(r, 'SUPER JACKPOT LIT', 'jackpot');
+      note(r, 'MEGA STAR LIT', 'jackpot');
     }
   }
 
@@ -580,7 +579,7 @@ export function applyEvent(r, e) {
         add(r, POINTS.superJackpot);
         r.superJackpotLit = false;
         r.jackpot = POINTS.jackpot;
-        note(r, 'SUPER JACKPOT', 'jackpot');
+        note(r, 'MEGA STAR', 'jackpot');
         push(r, 'sound', { name: 'super-jackpot' });
         break;
       }
@@ -704,7 +703,7 @@ export function nextBall(r) {
 
 export function statusLine(r) {
   if (r.wizard) return `THE LONG VOYAGE  ${Math.ceil(r.wizard.timeLeft)}s  ${r.wizard.shots.length}/${WIZARD_SHOTS}`;
-  if (r.multiball) return r.superJackpotLit ? 'SUPER JACKPOT AT THE HATCH' : 'JACKPOT ON THE RIGHT RAMP';
+  if (r.multiball) return r.superJackpotLit ? 'MEGA STAR AT THE HATCH' : 'STAR BONUS ON THE RIGHT RAMP';
   if (r.mission) {
     const def = missionDef(r);
     return `${def.name.toUpperCase()}  ${Math.ceil(r.mission.timeLeft)}s`;

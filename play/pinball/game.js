@@ -9,9 +9,9 @@
  * The engine never reads a clock; this file owns all of the timing.
  */
 
-import { createWorld, advance, drainEvents, serveBall, nudge, addBall, releaseSaucer, DT } from './engine.js?v=ee8b9ec348';
-import { createRenderer } from './render.js?v=ee8b9ec348';
-import { MODES, SAUCERS, BUMPERS } from './table.js?v=ee8b9ec348';
+import { createWorld, advance, drainEvents, serveBall, nudge, addBall, releaseSaucer, DT } from './engine.js?v=77e88eb10f';
+import { createRenderer } from './render.js?v=77e88eb10f';
+import { MODES, SAUCERS, BUMPERS } from './table.js?v=77e88eb10f';
 
 /** Slingshot face midpoints, for spark positions. */
 const SLING_POS = {
@@ -24,7 +24,7 @@ import {
   serialize as serializeRules, deserialize as deserializeRules,
   RANKS, MISSIONS, COMBO_WINDOW,
   armBallSave, consumeBallSave, consumeExtraBall,
-} from './rules.js?v=ee8b9ec348';
+} from './rules.js?v=77e88eb10f';
 
 /** ?daily=YYYY-MM-DD -- everyone gets the same missions, one attempt. */
 const DAILY = new URLSearchParams(location.search).get('daily');

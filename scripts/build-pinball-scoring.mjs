@@ -44,9 +44,9 @@ const ROWS = [
   ["saucer", "Saucer", "Starts a mission when lit."],
   ["bankClear", "Drop bank cleared", "All three targets down."],
   ["skillShot", "Skill shot", "The lit lane on the opening plunge."],
-  ["jackpot", "Jackpot", "During multiball. Each one raises the next."],
+  ["jackpot", "Star bonus", "During multiball. Each one raises the next."],
   ["rankUp", "Rank up", "Awarded on every promotion."],
-  ["superJackpot", "Super jackpot", "The multiball payoff shot."],
+  ["superJackpot", "Mega star", "The big finishing shot of multiball."],
 ];
 
 function formatPoints(n) {
