@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { PERK_CATALOG } from "../perks/perkCatalog";
 import { GAME_ASSET_MANIFEST, GAME_ASSETS } from "./GameAssetManifest";
 
 describe("GameAssetManifest", () => {
@@ -666,7 +667,7 @@ describe("GameAssetManifest", () => {
   });
 
   it("locks the promoted Batch I 128 px tile contracts", () => {
-    for (const id of ["batch-i-weapon-tiles-v1", "batch-i-perk-tiles-v1", "canonical-perk-tiles-v2", "batch-i-hotkey-tiles-v1"] as const) {
+    for (const id of ["batch-i-weapon-tiles-v1", "batch-i-perk-tiles-v1", "batch-i-hotkey-tiles-v1"] as const) {
       const asset = GAME_ASSETS[id];
       expect(asset.kind).toBe("spritesheet");
       if (asset.kind === "spritesheet") {
@@ -674,6 +675,18 @@ describe("GameAssetManifest", () => {
         expect(asset.logicalWidth).toBe(128);
         expect(asset.logicalHeight).toBe(128);
       }
+    }
+  });
+
+  it("locks the Batch K canonical perk atlas: one frame per perk, in catalogue order", () => {
+    const asset = GAME_ASSETS["canonical-perk-tiles-v3"];
+    expect(asset.kind).toBe("spritesheet");
+    if (asset.kind === "spritesheet") {
+      expect(asset.frameWidth).toBe(128);
+      expect(asset.frameHeight).toBe(128);
+      // 12 grid cells; every catalogue perk has a frame (index = catalogue index).
+      expect(asset.frameCount).toBe(12);
+      expect(asset.frameCount).toBeGreaterThanOrEqual(PERK_CATALOG.length);
     }
   });
 

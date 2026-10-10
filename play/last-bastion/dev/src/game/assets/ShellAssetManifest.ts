@@ -8,7 +8,8 @@ import tacticianSelectPortraitUrl from "../../../../art/production-tests/batch-c
 import tacticianSelectPortraitWebpUrl from "../../../../art/production-tests/batch-character-c3-tactician/tactician-select-portrait-v1-1024x1536.webp";
 import scoutSelectPortraitUrl from "../../../../art/production-tests/batch-character-c3-scout/scout-select-portrait-v1-1024x1536.png";
 import scoutSelectPortraitWebpUrl from "../../../../art/production-tests/batch-character-c3-scout/scout-select-portrait-v1-1024x1536.webp";
-import canonicalPerkTileUrl from "../../../../art/production-tests/batch-i/canonical-perk-tile-atlas-v2-128.png";
+// Batch K: v2 frames 0-6 unchanged, 7-9 the threat-tier perks. v2 stays as the archive master.
+import canonicalPerkTileUrl from "../../../../art/production-tests/batch-k/canonical-perk-tile-atlas-v3-128.png";
 import type { GameAssetDefinition } from "./GameAssetManifest";
 import { BASTION_BACKDROP_ASSET } from "./BastionBackdropAsset";
 import { TITLE_BACKDROP_ASSET } from "./TitleBackdropAsset";
@@ -64,13 +65,13 @@ export const SHELL_CHARACTER_ASSETS: readonly GameAssetDefinition[] = Object.fre
   }),
   Object.freeze({
     kind: "spritesheet",
-    id: "canonical-perk-tiles-v2",
+    id: "canonical-perk-tiles-v3",
     url: canonicalPerkTileUrl,
     logicalWidth: 128,
     logicalHeight: 128,
     pivot: Object.freeze({ x: 0.5, y: 0.5 }),
     frameWidth: 128,
     frameHeight: 128,
-    frameCount: 8,
+    frameCount: 12,
   }),
 ]);

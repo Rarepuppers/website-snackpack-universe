@@ -14,7 +14,7 @@ const assets: readonly GameAssetDefinition[] = [
   },
   {
     kind: "spritesheet",
-    id: "canonical-perk-tiles-v2",
+    id: "canonical-perk-tiles-v3",
     url: "perks.png",
     logicalWidth: 128,
     logicalHeight: 128,
@@ -44,7 +44,7 @@ describe("PhaserAssetQueue", () => {
     expect(queueGameAssets(scene, assets)).toBe(1);
     expect(images).toEqual([]);
     expect(sheets).toEqual([
-      { id: "canonical-perk-tiles-v2", frameWidth: 128, frameHeight: 128 },
+      { id: "canonical-perk-tiles-v3", frameWidth: 128, frameHeight: 128 },
     ]);
   });
 

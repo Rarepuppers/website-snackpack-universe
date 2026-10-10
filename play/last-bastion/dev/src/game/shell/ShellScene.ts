@@ -840,18 +840,11 @@ export class ShellScene extends Phaser.Scene {
       const { x, y } = perkTilePosition(index);
       const selected = index === this.state.perkIndex;
       const unlocked = this.state.unlockedPerkIds.includes(entry.id);
-      if (index < 7) {
-        this.root.add(this.add.sprite(x, y, "canonical-perk-tiles-v2", index)
-          .setDisplaySize(38, 38)
-          .setAlpha(unlocked ? 1 : 0.3)
-          .setTint(selected ? 0xffffff : 0xb7c2cf));
-      } else {
-        // Threat-tier perks have no tile art yet (Codex brief, Batch K). Until
-        // it lands, a code-drawn medal: one to three chevrons for Tier 0-2, in
-        // the threat ladder's own colours, instead of a bare "T0" text box.
-        const tier = index - 7;
-        this.root.add(this.threatTierPerkGlyph(x, y, tier, unlocked));
-      }
+      // One atlas frame per perk, in catalogue order (Batch K added 7-9).
+      this.root.add(this.add.sprite(x, y, "canonical-perk-tiles-v3", index)
+        .setDisplaySize(38, 38)
+        .setAlpha(unlocked ? 1 : 0.3)
+        .setTint(selected ? 0xffffff : 0xb7c2cf));
       if (selected) {
         this.root.add(this.add.rectangle(x, y, 44, 44).setStrokeStyle(3, perkUnlocked ? TEAL_HEX : 0xff9a52));
       }
@@ -937,27 +930,6 @@ export class ShellScene extends Phaser.Scene {
    * The bottom bound is the perk layout own headingY rather than a constant, so
    * the two cannot drift apart — which is how the overflow arrived.
    */
-  private threatTierPerkGlyph(x: number, y: number, tier: number, unlocked: boolean): Phaser.GameObjects.Graphics {
-    const accents = [TEAL_HEX, 0xffc061, 0xff9a52];
-    const accent = unlocked ? accents[tier] ?? TEAL_HEX : 0x596779;
-    const glyph = this.add.graphics().setAlpha(unlocked ? 1 : 0.55);
-    glyph.fillStyle(unlocked ? 0x183c46 : 0x202936, 1);
-    glyph.fillCircle(x, y, 19);
-    glyph.lineStyle(2, accent, 1);
-    glyph.strokeCircle(x, y, 19);
-    const chevrons = tier + 1;
-    glyph.lineStyle(3, accent, 1);
-    for (let index = 0; index < chevrons; index += 1) {
-      const centreY = y + (index - (chevrons - 1) / 2) * 6 + 1;
-      glyph.beginPath();
-      glyph.moveTo(x - 8, centreY + 3);
-      glyph.lineTo(x, centreY - 3);
-      glyph.lineTo(x + 8, centreY + 3);
-      glyph.strokePath();
-    }
-    return glyph;
-  }
-
   private fittedDossier(spacedContent: string, compactContent: string, headingY: number): Phaser.GameObjects.Text {
     const style = { fontFamily: "Consolas, monospace", align: "left" };
     const fitFor = (content: string) => fitText({

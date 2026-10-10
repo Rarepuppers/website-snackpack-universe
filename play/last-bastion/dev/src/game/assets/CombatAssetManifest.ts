@@ -57,7 +57,7 @@ const GALLERY_ONLY_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
 ]);
 
 const ROUTE_ONLY_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
-  "canonical-perk-tiles-v2",
+  "canonical-perk-tiles-v3",
   "marine-select-portrait-v1",
   "medic-select-portrait-v1",
   "assault-select-portrait-v1",

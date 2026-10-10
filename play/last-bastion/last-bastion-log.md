@@ -5066,3 +5066,14 @@ the Codex art redirect all **accepted**.
   `playtest-evidence/2026-10-11-screens-auto/` inspected (adds `menu` and `debrief-daily`).
 - Not done: observed play of a full Daily to its debrief (unit + save round-trip cover the
   path); GoatCounter activation (phase 5) still needs Mark's site code.
+
+## 11 October 2026 — Batch K perk tiles wired
+
+- Codex's `batch-k/canonical-perk-tile-atlas-v3-128.png` (`fe974ba5`) replaces v2 as the one
+  perk sheet, id `canonical-perk-tiles-v3`, 12 frames. Checked before wiring: frames 0–6
+  pixel-identical to v2, 7–9 = Vanguard / Logistician / Recon Specialist, `batch-i/`
+  untouched. The code-drawn chevron placeholder is removed; every perk now indexes its own
+  frame. New contract test: frame count covers the whole perk catalogue.
+- Worker release `2026-10-11-batch-k-perks`. `verify:last-bastion` all required lanes PASS;
+  character-select capture inspected at 1080p. The v2 runtime PNG stays in `game-assets/`
+  (an orphan report is never a deletion list).
