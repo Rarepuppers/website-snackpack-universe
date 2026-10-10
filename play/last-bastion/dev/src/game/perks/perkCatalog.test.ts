@@ -11,6 +11,7 @@ function progress(overrides: Partial<GameProgress> = {}): GameProgress {
     threatTierVictories: overrides.threatTierVictories ?? { 0: 0, 1: 0, 2: 0 },
     commandMarksLifetime: overrides.commandMarksLifetime ?? 0,
     purchasedArmoryNodeIds: overrides.purchasedArmoryNodeIds ?? [],
+    daily: overrides.daily ?? {},
   };
 }
 

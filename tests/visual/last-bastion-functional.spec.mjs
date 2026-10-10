@@ -40,6 +40,41 @@ test.describe("Last Bastion executable acceptance", () => {
     await expectHealthyCanvas(page, failures);
   });
 
+  test("the menu offers Daily, Quick Drop and Expedition, hides LAB, and starts today's Daily", async ({ page }) => {
+    const failures = watchRuntime(page);
+    await page.goto("/play/last-bastion/?flow=menu");
+    await page.waitForFunction(() => window.__shellState?.screen === "menu");
+    const cards = await page.evaluate(() => window.__shellState.menuCards.map((card) => card.id));
+    expect(cards.slice(0, 3)).toEqual(["daily", "quick-drop", "expedition"]);
+    expect(cards).toContain("arcade");
+    expect(cards).not.toContain("lab");
+    // A first visit is focused on the short mode.
+    expect(await page.evaluate(() => window.__shellState.menuCards[window.__shellState.menuIndex].id)).toBe("quick-drop");
+    await page.keyboard.press("ArrowLeft");
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(() => window.__shellState?.screen === "character-select"
+      && window.__shellState?.runMode === "daily");
+    // Character art loads on entry; input is ignored until it has.
+    await page.waitForFunction(() => window.__shellAssetsReady === true);
+    await page.keyboard.press("Enter");
+    await page.waitForURL((url) => url.searchParams.get("screen") === "game" && url.searchParams.has("daily"));
+    const today = await page.evaluate(() => {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    });
+    expect(new URL(page.url()).searchParams.get("daily")).toBe(today);
+    await expectHealthyCanvas(page, failures);
+  });
+
+  test("LAB stays reachable for QA with ?lab=1", async ({ page }) => {
+    // Not ?debug=1 alone: "debug" is a combat review parameter and routes to combat.
+    for (const route of ["?flow=menu&lab=1", "?screen=title&flow=menu&debug=1"]) {
+      await page.goto(`/play/last-bastion/${route}`);
+      await page.waitForFunction(() => window.__shellState?.screen === "menu");
+      expect(await page.evaluate(() => window.__shellState.menuCards.map((card) => card.id))).toContain("lab");
+    }
+  });
+
   test("map and combat routes create their runtime state", async ({ page }) => {
     const failures = watchRuntime(page);
     await page.goto("/play/last-bastion/?screen=map&mapseed=2026&threat=2");
@@ -344,5 +379,24 @@ test.describe("Last Bastion executable acceptance", () => {
       }
       await expectHealthyCanvas(page, failures);
     }
+  });
+});
+
+test.describe("Last Bastion on a touch-only phone", () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+
+  test("explains the keyboard requirement before boot and still lets a player continue", async ({ page }) => {
+    await page.goto("/play/last-bastion/?screen=title");
+    const notice = page.getByRole("dialog", { name: "Last Bastion needs a keyboard or controller" });
+    await expect(notice).toBeVisible();
+    await expect(notice.getByRole("link", { name: "Browse the arcade" })).toHaveAttribute("href", "/play/");
+    await expect(page.locator("#game-root canvas")).toHaveCount(0);
+    await notice.getByRole("button", { name: "I have a keyboard or controller" }).click();
+    await expect(notice).toHaveCount(0);
+    await page.waitForFunction(() => window.__shellState?.screen === "title");
+    // The choice lasts for the tab, so the next screen boots straight away.
+    await page.reload();
+    await page.waitForFunction(() => window.__shellState?.screen === "title");
+    await expect(page.getByRole("dialog")).toHaveCount(0);
   });
 });

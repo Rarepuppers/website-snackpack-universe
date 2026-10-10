@@ -22,16 +22,20 @@ import {
 import {
   createShellState,
   howToPlayPages,
+  isShellRunMode,
+  menuCardSubtitle,
   LAB_ROUTES,
-  MENU_CARDS,
+  MENU_COLUMNS,
   perkGridLayout,
   perkTilePosition,
   ROSTER,
   settingsRowsForDisplayCapabilities,
   stepShell,
   type ShellIntent,
+  type ShellRunMode,
   type ShellState,
 } from "./ScreenFlow";
+import { dailyLabel } from "../run/DailyDrop";
 import {
   GAMEPAD_BINDABLE_ACTIONS,
   KEYBOARD_BINDABLE_ACTIONS,
@@ -126,6 +130,7 @@ export class ShellScene extends Phaser.Scene {
       save.selectedThreatTier,
       save.selectedArmoryNodeId,
       save.runHistory.length,
+      { labEnabled: requestedLabAccess(), runMode: requestedRunMode() },
     );
     this.root = this.add.container(0, 0);
 
@@ -226,8 +231,16 @@ export class ShellScene extends Phaser.Scene {
       } else if (effect.type === "start-run") {
         this.saveStore.selectPerk(effect.perkId);
         this.saveStore.selectHero(effect.heroId);
-        this.saveStore.selectThreatTier(effect.threatTier);
-        window.location.href = `?screen=map&hero=${effect.heroId}&threat=${effect.threatTier}`;
+        if (effect.mode === "expedition") {
+          this.saveStore.selectThreatTier(effect.threatTier);
+          window.location.href = `?screen=map&hero=${effect.heroId}&threat=${effect.threatTier}`;
+          return;
+        }
+        const params = new URLSearchParams({ screen: "game", hero: effect.heroId, perk: effect.perkId });
+        // The day is fixed when the player presses deploy, so a run started at
+        // 23:59 is still that day's Daily when it ends after midnight.
+        if (effect.mode === "daily") params.set("daily", localDayKey(Date.now()));
+        window.location.href = `?${params.toString()}`;
         return;
       } else if (effect.type === "open-url") {
         window.location.href = effect.url;
@@ -274,7 +287,9 @@ export class ShellScene extends Phaser.Scene {
     // Review hook: the harness and browser checks read the flow state directly.
     (window as unknown as { __shellState?: ShellState }).__shellState = this.state;
     (window as unknown as { __savePersistence?: object }).__savePersistence = this.saveStore.persistence();
-    if (!this.ensureScreenAssets()) return;
+    const assetsReady = this.ensureScreenAssets();
+    (window as unknown as { __shellAssetsReady?: boolean }).__shellAssetsReady = assetsReady;
+    if (!assetsReady) return;
     this.root.removeAll(true);
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY));
     const backdropId = this.state.screen === "title"
@@ -390,9 +405,9 @@ export class ShellScene extends Phaser.Scene {
     if (uiChromeEnabled()) this.root.add(this.uiHeaderPlate(220, 48, 330, 62));
     this.root.add(this.text(70, 48, "LAST BASTION", IVORY, "28px"));
     const progress = this.saveStore.load().progress;
-    const columns = 2;
-    const cardWidth = 380, cardHeight = 72, originX = 90, originY = 100, gap = 16;
-    MENU_CARDS.forEach((card, index) => {
+    const columns = MENU_COLUMNS;
+    const cardWidth = 252, cardHeight = 72, originX = 90, originY = 100, gap = 12;
+    this.state.menuCards.forEach((card, index) => {
       const column = index % columns;
       const row = Math.floor(index / columns);
       const x = originX + column * (cardWidth + gap);
@@ -422,17 +437,9 @@ export class ShellScene extends Phaser.Scene {
           cardHeight + 12,
         ));
       }
-      this.root.add(this.text(x + 22, y + 18, card.label, focused ? TEAL : IVORY, "20px"));
-      const sub = card.id === "expedition" ? "20 NODES • ONE LIFE (Quick Drop until the starchart lands)"
-        : card.id === "armory" ? `${progress.commandMarksLifetime} lifetime command marks • permanent starting kits`
-        : card.id === "records" ? recordsLine(progress)
-          : card.id === "codex" ? "The encyclopedia — discoveries fill the Monsterdex"
-            : card.id === "lab" ? "Review scenarios and art galleries"
-              : card.id === "settings" ? (this.saveStore.persistence().kind === "saved"
-                ? "Persisted immediately to local save"
-                : "Settings apply now; local save is unavailable")
-                : "Four short pages";
-      this.root.add(this.text(x + 22, y + 44, sub, MUTED, "11px"));
+      this.root.add(this.text(x + 18, y + 16, card.label, focused ? TEAL : IVORY, "19px"));
+      const sub = menuCardSubtitle(card, progress, this.saveStore.persistence().kind === "saved", localDayKey(Date.now()));
+      this.root.add(this.text(x + 18, y + 44, sub, card.id === "daily" ? TEAL : MUTED, "10px"));
       this.clickZone(x, y, cardWidth, cardHeight, () => {
         this.state = { ...this.state, menuIndex: index };
         this.apply("confirm");
@@ -785,6 +792,7 @@ export class ShellScene extends Phaser.Scene {
 
   private renderCharacterSelect(): void {
     this.root.add(this.text(70, 48, "CHARACTER SELECT", IVORY, "28px"));
+    this.root.add(this.text(890, 52, runModeLabel(this.state.runMode), TEAL, "14px").setOrigin(1, 0));
     const hero = ROSTER[this.state.rosterIndex]!;
     const perk = PERK_CATALOG[this.state.perkIndex]!;
     const perkUnlocked = this.state.unlockedPerkIds.includes(perk.id);
@@ -816,8 +824,11 @@ export class ShellScene extends Phaser.Scene {
       .setStrokeStyle(1, 0x3b4d63));
     if (isHeroId(hero.id)) {
       const definition = heroDefinition(hero.id);
-      const dossier = heroDossierCopy(definition, heroUnlocked);
-      this.root.add(this.fittedDossier(dossier, perkLayout.headingY));
+      this.root.add(this.fittedDossier(
+        heroDossierCopy(definition, heroUnlocked, true),
+        heroDossierCopy(definition, heroUnlocked),
+        perkLayout.headingY,
+      ));
     } else {
       this.root.add(this.text(660, 240, "Signal lost.\nFuture hero slot.", MUTED, "14px", true));
     }
@@ -835,11 +846,11 @@ export class ShellScene extends Phaser.Scene {
           .setAlpha(unlocked ? 1 : 0.3)
           .setTint(selected ? 0xffffff : 0xb7c2cf));
       } else {
+        // Threat-tier perks have no tile art yet (Codex brief, Batch K). Until
+        // it lands, a code-drawn medal: one to three chevrons for Tier 0-2, in
+        // the threat ladder's own colours, instead of a bare "T0" text box.
         const tier = index - 7;
-        this.root.add(this.add.rectangle(x, y, 38, 38, unlocked ? 0x183c46 : 0x202936)
-          .setStrokeStyle(2, unlocked ? TEAL_HEX : 0x596779)
-          .setAlpha(unlocked ? 1 : 0.55));
-        this.root.add(this.text(x, y - 7, `T${tier}`, unlocked ? TEAL : MUTED, "12px", true));
+        this.root.add(this.threatTierPerkGlyph(x, y, tier, unlocked));
       }
       if (selected) {
         this.root.add(this.add.rectangle(x, y, 44, 44).setStrokeStyle(3, perkUnlocked ? TEAL_HEX : 0xff9a52));
@@ -889,8 +900,12 @@ export class ShellScene extends Phaser.Scene {
       const y = 150 + index * 105;
       const focused = index === this.state.threatTierIndex;
       const unlocked = this.state.unlockedThreatTiers.includes(definition.tier);
-      this.root.add(this.add.rectangle(WIDTH / 2, y, 760, 82, focused ? 0x24384f : PANEL)
+      const tierFrame = uiChromeEnabled()
+        ? this.uiButtonFrame(WIDTH / 2, y, 760, 82, focused ? "selected" : unlocked ? "idle" : "disabled")
+        : null;
+      this.root.add(tierFrame ?? this.add.rectangle(WIDTH / 2, y, 760, 82, focused ? 0x24384f : PANEL)
         .setStrokeStyle(focused ? 3 : 1, focused ? (unlocked ? TEAL_HEX : 0xff9a52) : 0x3b4d63));
+      if (focused && uiChromeEnabled()) this.root.add(this.uiFocusBrackets(WIDTH / 2, y, 772, 94));
       this.root.add(this.text(130, y - 19, `TIER ${definition.tier}  ${unlocked ? definition.name : "LOCKED"}`,
         unlocked ? (focused ? TEAL : IVORY) : ORANGE, "16px"));
       const detail = unlocked
@@ -908,7 +923,7 @@ export class ShellScene extends Phaser.Scene {
     const selected = THREAT_TIERS[this.state.threatTierIndex]!;
     const canDeploy = this.state.unlockedThreatTiers.includes(selected.tier);
     this.root.add(this.text(WIDTH / 2, 480, canDeploy ? "ENTER  BEGIN EXPEDITION" : "TIER LOCKED", canDeploy ? TEAL : ORANGE, "14px", true));
-    this.root.add(this.text(70, HEIGHT - 24, "ARROWS SELECT  -  ENTER DEPLOY  -  ESC BACK", MUTED, "12px"));
+    this.root.add(this.text(70, HEIGHT - 24, "ARROWS SELECT  •  ENTER DEPLOY  •  ESC BACK", MUTED, "12px"));
   }
 
   /**
@@ -922,15 +937,40 @@ export class ShellScene extends Phaser.Scene {
    * The bottom bound is the perk layout own headingY rather than a constant, so
    * the two cannot drift apart — which is how the overflow arrived.
    */
-  private fittedDossier(content: string, headingY: number): Phaser.GameObjects.Text {
+  private threatTierPerkGlyph(x: number, y: number, tier: number, unlocked: boolean): Phaser.GameObjects.Graphics {
+    const accents = [TEAL_HEX, 0xffc061, 0xff9a52];
+    const accent = unlocked ? accents[tier] ?? TEAL_HEX : 0x596779;
+    const glyph = this.add.graphics().setAlpha(unlocked ? 1 : 0.55);
+    glyph.fillStyle(unlocked ? 0x183c46 : 0x202936, 1);
+    glyph.fillCircle(x, y, 19);
+    glyph.lineStyle(2, accent, 1);
+    glyph.strokeCircle(x, y, 19);
+    const chevrons = tier + 1;
+    glyph.lineStyle(3, accent, 1);
+    for (let index = 0; index < chevrons; index += 1) {
+      const centreY = y + (index - (chevrons - 1) / 2) * 6 + 1;
+      glyph.beginPath();
+      glyph.moveTo(x - 8, centreY + 3);
+      glyph.lineTo(x, centreY - 3);
+      glyph.lineTo(x + 8, centreY + 3);
+      glyph.strokePath();
+    }
+    return glyph;
+  }
+
+  private fittedDossier(spacedContent: string, compactContent: string, headingY: number): Phaser.GameObjects.Text {
     const style = { fontFamily: "Consolas, monospace", align: "left" };
-    const fit = fitText({
+    const fitFor = (content: string) => fitText({
       content,
       maxWidth: DOSSIER_WRAP_WIDTH + DOSSIER_PADDING * 2,
       maxHeight: (headingY - DOSSIER_HEADING_GAP) - DOSSIER_TOP + DOSSIER_PADDING * 2,
       sizesPx: DOSSIER_SIZES,
       padding: DOSSIER_PADDING,
     }, phaserTextMeasure(this, style));
+    // Prefer separated fields; a long locked-hero dossier keeps the compact form.
+    const spaced = fitFor(spacedContent);
+    const content = spaced.overflowed ? compactContent : spacedContent;
+    const fit = spaced.overflowed ? fitFor(compactContent) : spaced;
     return this.add.text(DOSSIER_LEFT, DOSSIER_TOP, content, {
       ...style,
       color: IVORY,
@@ -1059,14 +1099,30 @@ export class ShellScene extends Phaser.Scene {
   }
 }
 
-function recordsLine(progress: GameProgress): string {
-  return `Runs ${progress.runsFinished}  •  Victories ${progress.victories}  •  Kills ${progress.totalKills}`;
-}
-
 function requestedInitialScreen() {
   if (typeof window === "undefined") return "title";
   return requestedShellScreen(window.location.search);
 }
+
+/** LAB is a review tool: reachable by URL for QA, never listed for players. */
+function requestedLabAccess(): boolean {
+  if (typeof window === "undefined") return false;
+  const params = new URLSearchParams(window.location.search);
+  return params.get("debug") === "1" || params.get("lab") === "1";
+}
+
+/** `?flow=character-select&mode=quick-drop` lets the debrief return to the same mode. */
+function requestedRunMode(): ShellRunMode | undefined {
+  if (typeof window === "undefined") return undefined;
+  const mode = new URLSearchParams(window.location.search).get("mode");
+  return isShellRunMode(mode) ? mode : undefined;
+}
+
+function runModeLabel(mode: ShellRunMode): string {
+  if (mode === "daily") return `DAILY DROP  •  ${dailyLabel(localDayKey(Date.now()))}`;
+  return mode === "quick-drop" ? "QUICK DROP  •  10 WAVES" : "EXPEDITION  •  20 NODES";
+}
+
 
 function requestedHeroC3Preview(heroId: string): boolean {
   return typeof window !== "undefined"

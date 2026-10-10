@@ -98,7 +98,7 @@ describe("goatCounterTransport", () => {
     const VOCABULARY = new Set([
       "last-bastion",
       "opened", "run-started", "wave-1", "wave-5", "run-ended", "returning",
-      "quick-drop", "expedition",
+      "quick-drop", "daily", "expedition",
       "victory", "defeat", "abandoned",
       "wave-1-4", "wave-5-9", "wave-10-19", "wave-20-plus",
     ]);
@@ -107,6 +107,7 @@ describe("goatCounterTransport", () => {
     for (const properties of [
       { outcome: "victory", depth: "wave-20-plus", mode: "expedition" },
       { outcome: "defeat", depth: "wave-1-4", mode: "quick-drop" },
+      { outcome: "victory", depth: "wave-10-19", mode: "daily" },
       {},
     ] as const) {
       goatCounterTransport(host).send("run-ended", properties);

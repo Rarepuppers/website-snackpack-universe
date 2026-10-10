@@ -1,4 +1,5 @@
 import type { GameProgress, GameSettings } from "../save/LocalSaveStore";
+import { dailyLabel, dailyStreak } from "../run/DailyDrop";
 import type { HeroDefinition } from "../hero/HeroDefinition";
 import { isHeroId } from "../hero/HeroCatalog";
 import type { DisplayCapabilities } from "../rendering/DisplayCapabilities";
@@ -51,8 +52,15 @@ export type ShellScreen =
 
 export type ShellIntent = "up" | "down" | "left" | "right" | "confirm" | "back";
 
+/** What the character-select screen is choosing a hero for. */
+export type ShellRunMode = "expedition" | "quick-drop" | "daily";
+
+export function isShellRunMode(value: unknown): value is ShellRunMode {
+  return value === "expedition" || value === "quick-drop" || value === "daily";
+}
+
 export type ShellEffect =
-  | { type: "start-run"; heroId: HeroDefinition["id"]; perkId: PerkId; threatTier: ThreatTier }
+  | { type: "start-run"; mode: ShellRunMode; heroId: HeroDefinition["id"]; perkId: PerkId; threatTier: ThreatTier }
   | { type: "open-url"; url: string }
   | { type: "set-setting"; key: keyof GameSettings; value: GameSettings[keyof GameSettings] }
   | { type: "capture-binding"; device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction }
@@ -61,24 +69,75 @@ export type ShellEffect =
   | { type: "transfer-save"; operation: "export" | "import" };
 
 export interface MenuCard {
-  id: "expedition" | "armory" | "how-to-play" | "settings" | "codex" | "lab" | "records";
+  id: "daily" | "quick-drop" | "expedition" | "armory" | "how-to-play" | "settings" | "codex" | "records"
+    | "arcade" | "lab";
   label: string;
 }
 
+/**
+ * The player's main menu, three cards to a row. The three ways to play lead.
+ *
+ * LAB is not here: it lists review scenarios for every boss and the art gallery,
+ * which spoils the late game and reads as unfinished. It is appended only for a
+ * `?lab=1` or `?flow=lab` session, or `?screen=title&debug=1` (a bare `?debug=1`
+ * is a combat review parameter and routes to combat). See `menuCardsFor`.
+ */
 export const MENU_CARDS: readonly MenuCard[] = Object.freeze([
+  { id: "daily", label: "DAILY DROP" },
+  { id: "quick-drop", label: "QUICK DROP" },
   { id: "expedition", label: "EXPEDITION" },
   { id: "armory", label: "ARMORY" },
+  { id: "records", label: "RECORDS" },
+  { id: "codex", label: "CODEX" },
   { id: "how-to-play", label: "HOW TO PLAY" },
   { id: "settings", label: "SETTINGS" },
-  { id: "codex", label: "CODEX" },
-  { id: "lab", label: "LAB" },
-  { id: "records", label: "RECORDS" },
+  { id: "arcade", label: "MORE GAMES" },
 ]);
+
+export const MENU_COLUMNS = 3;
+
+/**
+ * One short line per card, written for players. These replaced developer notes
+ * ("Quick Drop until the starchart lands", "Persisted immediately to local save")
+ * that had been shipping on the main menu.
+ */
+export function menuCardSubtitle(
+  card: MenuCard,
+  progress: GameProgress,
+  saveAvailable: boolean,
+  today: string,
+): string {
+  switch (card.id) {
+    case "daily": {
+      const record = progress.daily[today];
+      const streak = dailyStreak(progress.daily, today);
+      const streakText = streak > 1 ? `  •  ${streak}-day streak` : "";
+      const result = !record ? "same waves for all" : record.cleared ? "cleared" : `best wave ${record.bestWave}`;
+      return `${dailyLabel(today)}  •  ${result}${streakText}`;
+    }
+    case "quick-drop": return "10 waves  •  about 10 minutes";
+    case "expedition": return "20-node campaign  •  one life";
+    case "armory": return `${progress.commandMarksLifetime} command marks earned`;
+    case "records": return `Runs ${progress.runsFinished}  •  Wins ${progress.victories}  •  Kills ${progress.totalKills}`;
+    case "codex": return "Weapons, enemies and status effects";
+    case "how-to-play": return "Controls and modes";
+    case "settings": return saveAvailable ? "Audio, controls, display" : "Changes last until you close the tab";
+    case "arcade": return "Back to the SnackPack arcade";
+    case "lab": return "Review routes (debug)";
+  }
+}
+
+/** Leaves the game for the site's arcade hub. Same-site, not a funnel into an app store. */
+export const ARCADE_URL = "/play/";
+
+export function menuCardsFor(labEnabled: boolean): readonly MenuCard[] {
+  return labEnabled ? [...MENU_CARDS, { id: "lab", label: "LAB" }] : MENU_CARDS;
+}
 
 export const HOW_TO_PLAY_PAGES: readonly { title: string; body: string }[] = Object.freeze([
   {
     title: "MOVE AND SURVIVE",
-    body: "WASD or left stick moves. Mouse or right stick aims.\nSPACE rolls with a short invulnerability window.\nHold position for one second to Entrench for bonus armour.",
+    body: "WASD or left stick moves. Mouse or right stick aims.\nSPACE rolls with a short invulnerability window.\nEach hero has a passive; read it on the character screen.",
   },
   {
     title: "YOUR ARSENAL",
@@ -89,8 +148,8 @@ export const HOW_TO_PLAY_PAGES: readonly { title: string; body: string }[] = Obj
     body: "Fire builds Blaze. Shock builds Overload. Cryo builds Freeze.\nToxic builds Corrode. Buildup at the threshold applies the status.\nDamage numbers share the same colour language.",
   },
   {
-    title: "THE EXPEDITION",
-    body: "One life. Clear waves, choose upgrades, spend Scrap at the shop.\nElites drop caches. Mini-bosses guard arsenal rewards.\nThe run autosaves between encounters - not mid-fight.",
+    title: "THREE WAYS TO PLAY",
+    body: "Quick Drop: ten waves, one life, about ten minutes.\nDaily Drop: the same ten waves for everyone today; keep a streak.\nExpedition: a 20-node campaign that autosaves between encounters.",
   },
 ]);
 
@@ -98,7 +157,7 @@ export function howToPlayPages(bindings: ControlBindings): readonly { title: str
   const move = [bindings.keyboard.moveUp, bindings.keyboard.moveLeft, bindings.keyboard.moveDown, bindings.keyboard.moveRight]
     .map(keyboardBindingLabel).join("");
   return [
-    { title: "MOVE AND SURVIVE", body: `${move} or left stick moves. Mouse or right stick aims.\n${keyboardBindingLabel(bindings.keyboard.evade)} / ${gamepadBindingLabel(bindings.gamepad.evade)} rolls with a short invulnerability window.\nHold position for one second to Entrench for bonus armour.` },
+    { title: "MOVE AND SURVIVE", body: `${move} or left stick moves. Mouse or right stick aims.\n${keyboardBindingLabel(bindings.keyboard.evade)} / ${gamepadBindingLabel(bindings.gamepad.evade)} rolls with a short invulnerability window.\nEach hero has a passive; read it on the character screen.` },
     { title: "YOUR ARSENAL", body: `Weapons follow Auto-fire / Manual; ${keyboardBindingLabel(bindings.keyboard.toggleFireMode)} / ${gamepadBindingLabel(bindings.gamepad.toggleFireMode)} toggles it.\n${keyboardBindingLabel(bindings.keyboard.ultimate)} / ${gamepadBindingLabel(bindings.gamepad.ultimate)} fires the ultimate. ${keyboardBindingLabel(bindings.keyboard.kit)} / ${gamepadBindingLabel(bindings.gamepad.kit)} uses your carried kit.\nAutonomous support weapons keep their own cadence in either mode.` },
     ...HOW_TO_PLAY_PAGES.slice(2),
   ];
@@ -292,6 +351,10 @@ export const LAB_ROUTES: readonly LabRoute[] = Object.freeze([
 export interface ShellState {
   screen: ShellScreen;
   menuIndex: number;
+  menuCards: readonly MenuCard[];
+  labEnabled: boolean;
+  /** Which mode the character-select screen will start. */
+  runMode: ShellRunMode;
   howToPlayPage: number;
   settingsIndex: number;
   settingsRows: readonly SettingsRow[];
@@ -323,7 +386,7 @@ export function createShellState(
     bestiary: {},
     threatTierBestNodes: { 0: 0, 1: 0, 2: 0 },
     threatTierVictories: { 0: 0, 1: 0, 2: 0 },
-    commandMarksLifetime: 0, purchasedArmoryNodeIds: [],
+    commandMarksLifetime: 0, purchasedArmoryNodeIds: [], daily: {},
   },
   selectedPerkId: PerkId | null = "perk-veteran",
   selectedHeroId: HeroDefinition["id"] = "marine",
@@ -332,12 +395,20 @@ export function createShellState(
   selectedThreatTier: ThreatTier = 0,
   selectedArmoryNodeId: ArmoryNodeId | null = null,
   runHistoryCount = 0,
+  options: { labEnabled?: boolean; runMode?: ShellRunMode } = {},
 ): ShellState {
   const unlocked = unlockedPerkIds(progress);
   const selectedIndex = Math.max(0, PERK_CATALOG.findIndex((perk) => perk.id === selectedPerkId));
+  const labEnabled = options.labEnabled === true || screen === "lab";
+  const menuCards = menuCardsFor(labEnabled);
+  // A first visit lands on the short mode; a returning player on today's Daily.
+  const firstFocus = progress.runsFinished === 0 ? "quick-drop" : "daily";
   return {
     screen,
-    menuIndex: 0,
+    menuIndex: Math.max(0, menuCards.findIndex((card) => card.id === firstFocus)),
+    menuCards,
+    labEnabled,
+    runMode: options.runMode ?? "expedition",
     howToPlayPage: 0,
     settingsIndex: 0,
     settingsRows,
@@ -384,6 +455,7 @@ export function stepShell(state: ShellState, intent: ShellIntent): ShellStepResu
     case "controls":
       return stepControls(state, intent);
     case "lab":
+      if (!state.labEnabled) return { state: { ...state, screen: "menu" }, effects: [] };
       return stepLab(state, intent);
     case "records":
       if (intent === "up") {
@@ -414,17 +486,25 @@ function stepMenu(state: ShellState, intent: ShellIntent): ShellStepResult {
   if (intent === "back") {
     return { state: { ...state, screen: "title" }, effects: [] };
   }
-  if (intent === "up" || intent === "left") {
-    return { state: { ...state, menuIndex: wrap(state.menuIndex - 1, MENU_CARDS.length) }, effects: [] };
+  const count = state.menuCards.length;
+  if (intent === "left") {
+    return { state: { ...state, menuIndex: wrap(state.menuIndex - 1, count) }, effects: [] };
   }
-  if (intent === "down" || intent === "right") {
-    return { state: { ...state, menuIndex: wrap(state.menuIndex + 1, MENU_CARDS.length) }, effects: [] };
+  if (intent === "right") {
+    return { state: { ...state, menuIndex: wrap(state.menuIndex + 1, count) }, effects: [] };
+  }
+  if (intent === "up" || intent === "down") {
+    return { state: { ...state, menuIndex: stepMenuRow(state.menuIndex, intent === "up" ? -1 : 1, count) }, effects: [] };
   }
   if (intent === "confirm") {
-    const card = MENU_CARDS[state.menuIndex]!;
+    const card = state.menuCards[state.menuIndex]!;
     switch (card.id) {
+      case "daily":
+      case "quick-drop":
       case "expedition":
-        return { state: { ...state, screen: "character-select", rosterIndex: 0 }, effects: [] };
+        return { state: { ...state, screen: "character-select", runMode: card.id }, effects: [] };
+      case "arcade":
+        return { state, effects: [{ type: "open-url", url: ARCADE_URL }] };
       case "armory":
         return { state: { ...state, screen: "armory", armoryIndex: 0 }, effects: [] };
       case "how-to-play":
@@ -567,6 +647,14 @@ function stepCharacterSelect(state: ShellState, intent: ShellIntent): ShellStepR
       || !state.unlockedPerkIds.includes(perk.id)) {
       return { state, effects: [] };
     }
+    // Quick and Daily Drops have no threat ladder, and while only Tier 0 is
+    // unlocked the threat screen is a one-option detour on the first-run path.
+    if (state.runMode !== "expedition" || state.unlockedThreatTiers.length <= 1) {
+      const threatTier: ThreatTier = state.runMode === "expedition"
+        ? state.unlockedThreatTiers[0] ?? 0
+        : 0;
+      return { state, effects: [{ type: "start-run", mode: state.runMode, heroId: hero.id, perkId: perk.id, threatTier }] };
+    }
     return { state: { ...state, screen: "threat-select" }, effects: [] };
   }
   return { state, effects: [] };
@@ -625,9 +713,21 @@ function stepThreatSelect(state: ShellState, intent: ShellIntent): ShellStepResu
       || !state.unlockedThreatTiers.includes(tier)) {
       return { state, effects: [] };
     }
-    return { state, effects: [{ type: "start-run", heroId: hero.id, perkId: perk.id, threatTier: tier }] };
+    return { state, effects: [{ type: "start-run", mode: "expedition", heroId: hero.id, perkId: perk.id, threatTier: tier }] };
   }
   return { state, effects: [] };
+}
+
+/**
+ * Up/down move a whole row in the three-column grid. Past the top or bottom it
+ * wraps to the same column on the far row, or to the last card when the final
+ * row is short.
+ */
+function stepMenuRow(index: number, direction: -1 | 1, count: number): number {
+  const rows = Math.ceil(count / MENU_COLUMNS);
+  const column = index % MENU_COLUMNS;
+  const row = (Math.floor(index / MENU_COLUMNS) + direction + rows) % rows;
+  return Math.min(count - 1, row * MENU_COLUMNS + column);
 }
 
 function wrap(index: number, length: number): number {

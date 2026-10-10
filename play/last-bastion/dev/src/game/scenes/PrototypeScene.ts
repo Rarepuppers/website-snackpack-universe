@@ -1,4 +1,8 @@
 import Phaser from "phaser";
+import { playerFunnel } from "../telemetry/PlayerFunnelRuntime";
+import { dailySeed, isDailyKey } from "../run/DailyDrop";
+import { localDayKey } from "../run/LocalDayKey";
+import { isHeroId } from "../hero/HeroCatalog";
 import { KeyboardMouseInput } from "../input/KeyboardMouseInput";
 import type { GamepadTuning } from "../input/GamepadIntentMapper";
 import { applyAimAssist } from "../input/AimAssist";
@@ -190,6 +194,8 @@ export class PrototypeScene extends Phaser.Scene {
   private settings = applySettingOverrides(this.saveStore);
   private readonly performanceGovernor = new AdaptivePerformanceGovernor(this.settings.effectQuality);
   private readonly expeditionContext = readExpeditionContext(this.saveStore);
+  /** Today's Daily, or null. An old Daily link replays its seed but never scores. */
+  private readonly dailyKey = readScoredDailyKey(this.expeditionContext);
   private readonly runSeed = readRunSeed(this.expeditionContext);
   private readonly initialRunSettings = { ...this.settings };
   private gameSpeedModified = false;
@@ -353,6 +359,12 @@ export class PrototypeScene extends Phaser.Scene {
     }
     this.assetLoadFeedback?.destroy();
     this.assetLoadFeedback = null;
+    // Gated on isRecordableRun for the same reason progress is: Lab and stress
+    // routes are review tools, and counting a developer's scenario check as a
+    // player starting a run would corrupt the one number being measured.
+    if (this.isRecordableRun(this.simulation.snapshot())) {
+      playerFunnel().runStarted(this.funnelMode());
+    }
     if (new URLSearchParams(window.location.search).get("expedition") === "1" && !this.expeditionContext) {
       window.location.href = "?screen=map";
       return;
@@ -913,16 +925,18 @@ export class PrototypeScene extends Phaser.Scene {
     this.firstDropOnboarding = createFirstDropOnboarding();
     const x = safe.left + 12;
     const y = safe.top + 72;
-    const background = this.add.rectangle(0, 0, 390, 70, 0x101923, 0.94)
+    // Sized to its two lines: at 390x70 it was mostly empty box over the arena's
+    // top-left, where the first enemies arrive.
+    const background = this.add.rectangle(0, 0, 300, 48, 0x101923, 0.94)
       .setOrigin(0, 0)
       .setStrokeStyle(2, 0x68e4e8);
-    const title = this.add.text(14, 10, "FIRST DROP", {
+    const title = this.add.text(12, 7, "FIRST DROP", {
       color: "#68e4e8", fontFamily: "monospace", fontSize: "11px",
     });
-    this.firstDropInstruction = this.add.text(14, 31, "", {
+    this.firstDropInstruction = this.add.text(12, 26, "", {
       color: "#e8e2d4", fontFamily: "monospace", fontSize: "10px",
     });
-    this.firstDropProgress = this.add.text(376, 12, "0 / 4", {
+    this.firstDropProgress = this.add.text(288, 8, "0 / 4", {
       color: "#8fa1b3", fontFamily: "monospace", fontSize: "9px",
     }).setOrigin(1, 0);
     this.firstDropPanel = this.add.container(x, y, [
@@ -1251,6 +1265,7 @@ export class PrototypeScene extends Phaser.Scene {
         return;
       }
       if (this.isRecordableRun(snapshot)) {
+        playerFunnel().runEnded(snapshot.status, snapshot.waveNumber, this.funnelMode());
         const summary = this.summaryFromSnapshot(snapshot, "quick-drop", 0, snapshot.runMetrics);
         const before = this.saveStore.load();
         const after = this.saveStore.recordRunEnd({
@@ -1264,6 +1279,11 @@ export class PrototypeScene extends Phaser.Scene {
     }
   }
 
+  private funnelMode(): "expedition" | "quick-drop" | "daily" {
+    if (this.expeditionContext) return "expedition";
+    return this.dailyKey ? "daily" : "quick-drop";
+  }
+
   /** Lab and stress routes are review tools; they never touch player progress. */
   private isRecordableRun(snapshot: CombatSnapshot): boolean {
     return this.expeditionContext !== null
@@ -1275,6 +1295,7 @@ export class PrototypeScene extends Phaser.Scene {
     const combinedMetrics = mergeRunMetrics(this.expeditionContext.run.state.metrics, snapshot.runMetrics);
     const completedBeforeEncounter = Math.max(0, this.expeditionContext.run.state.clearedNodeIds.length - 1);
     if (snapshot.status === "defeat") {
+      playerFunnel().runEnded("defeat", this.expeditionContext.encounter.column + 1, "expedition");
       this.saveStore.clearExpedition();
       const summary = this.summaryFromSnapshot(
         snapshot,
@@ -1312,6 +1333,7 @@ export class PrototypeScene extends Phaser.Scene {
       metrics: completed.state.metrics,
     });
     if (completed.state.currentNodeId === completed.map.bossNodeId) {
+      playerFunnel().runEnded("victory", completed.map.columns, "expedition");
       const summary = this.summaryFromSnapshot(
         snapshot,
         "expedition",
@@ -1396,6 +1418,7 @@ export class PrototypeScene extends Phaser.Scene {
         level: upgrade.level,
       })),
       transformation: snapshot.transformation,
+      dailyKey: mode === "quick-drop" && this.isRecordableRun(snapshot) ? this.dailyKey : null,
       provenance: createCurrentRunProvenance({
         combatSeed: this.runSeed,
         mapSeed: mode === "expedition" ? this.expeditionContext?.run.state.mapSeed ?? null : null,
@@ -1423,6 +1446,9 @@ export class PrototypeScene extends Phaser.Scene {
     // Flush once per wave rather than per kill: a busy wave produces hundreds
     // of events and localStorage writes are synchronous.
     if (snapshot.waveNumber !== this.lastFlushedWaveNumber) {
+      // Reuses the once-per-wave edge. The wave the player has just *finished*
+      // is the one before the number that has now appeared.
+      if (this.isRecordableRun(snapshot)) playerFunnel().waveCleared(snapshot.waveNumber - 1);
       this.lastFlushedWaveNumber = snapshot.waveNumber;
       this.flushBestiary();
     }
@@ -4480,12 +4506,31 @@ function readStartingWeaponIds(): readonly WeaponId[] | null {
  */
 function readRunSeed(expeditionContext: ExpeditionCombatContext | null): number {
   if (expeditionContext) return expeditionContext.encounter.seed;
+  // `?daily=YYYY-MM-DD` is the shared seed for that local day, whoever plays it.
+  const daily = new URLSearchParams(window.location.search).get("daily");
+  if (isDailyKey(daily)) return dailySeed(daily);
   const parameter = new URLSearchParams(window.location.search).get("seed");
   const requested = parameter === null ? Number.NaN : Number(parameter);
   if (Number.isSafeInteger(requested)) return requested;
   const values = new Uint32Array(1);
   globalThis.crypto?.getRandomValues?.(values);
   return values[0] || (Date.now() >>> 0);
+}
+
+/**
+ * The Daily scores only on its own day. A shared link to last Tuesday replays
+ * Tuesday's waves but must not backfill a streak, so it plays as a Quick Drop.
+ * The key is read once when the scene is built, so a run that crosses midnight
+ * still belongs to the day it started.
+ */
+function readScoredDailyKey(expeditionContext: ExpeditionCombatContext | null): string | null {
+  if (expeditionContext) return null;
+  const params = new URLSearchParams(window.location.search);
+  const daily = params.get("daily");
+  if (!isDailyKey(daily) || daily !== localDayKey(Date.now())) return null;
+  // Review routes that happen to carry ?daily= are still review routes.
+  if (params.has("scenario") || params.has("stress")) return null;
+  return daily;
 }
 
 function readWorldObjectTheme(): string | undefined {
@@ -4503,7 +4548,9 @@ function readMarineArtPreview(): boolean {
 
 function readHeroPreview(): HeroDefinition["id"] | null {
   const hero = new URLSearchParams(window.location.search).get("hero");
-  return hero === "marine" || hero === "assault" || hero === "tactician" || hero === "scout" ? hero : null;
+  // Previously listed four heroes by hand and left out the Medic, so a Medic
+  // "retry this seed" link silently started whichever hero the save held.
+  return isHeroId(hero) ? hero : null;
 }
 
 function readPerkPreview(): PerkId | null {

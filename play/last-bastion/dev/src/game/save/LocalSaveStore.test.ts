@@ -338,6 +338,58 @@ describe("LocalSaveStore", () => {
     expect(reloaded.progress.bestWaveReached).toBe(5);
   });
 
+  it("keeps run provenance and the Daily day across a page load", () => {
+    // Every debrief is a fresh page load, so a summary that survives only in
+    // memory is a summary the player never sees. Provenance used to be dropped
+    // here, which showed SEED UNKNOWN and hid "retry this seed" on every run.
+    const storage = fakeStorage();
+    const store = new LocalSaveStore(storage);
+    const summary = createRunSummary({
+      mode: "quick-drop",
+      outcome: "defeat",
+      heroId: "marine",
+      perkId: "perk-veteran",
+      waveReached: 6,
+      nodesCleared: 0,
+      kills: 140,
+      scrapEarned: 30,
+      scrapBanked: 0,
+      level: 7,
+      damageByWeapon: { "bastion-service-rifle": 900 },
+      weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }],
+      upgrades: [],
+      dailyKey: "2026-10-11",
+      provenance: {
+        combatSeed: 424242,
+        mapSeed: null,
+        buildVersion: "web-test",
+        simulationVersion: 3,
+        settings: { gameSpeedMultiplier: 1, autoFireEnabled: true, aimAssistStrength: 0.5 },
+        gameSpeedModified: false,
+      },
+    });
+    store.recordRunEnd({ victory: false, waveReached: 6, summary });
+    const reloaded = new LocalSaveStore(storage).load();
+    expect(reloaded.lastRunSummary?.provenance.combatSeed).toBe(424242);
+    expect(reloaded.lastRunSummary?.provenance.buildVersion).toBe("web-test");
+    expect(reloaded.lastRunSummary?.dailyKey).toBe("2026-10-11");
+    expect(reloaded.runHistory[0]?.summary.provenance.combatSeed).toBe(424242);
+    expect(reloaded.progress.daily).toEqual({
+      "2026-10-11": { bestWave: 6, bestKills: 140, cleared: false, attempts: 1 },
+    });
+  });
+
+  it("never records a Daily day for an expedition summary", () => {
+    const summary = createRunSummary({
+      mode: "expedition", outcome: "defeat", heroId: "marine", perkId: null, waveReached: 3,
+      nodesCleared: 2, kills: 10, scrapEarned: 0, scrapBanked: 0, level: 2, damageByWeapon: {},
+      weapons: [], upgrades: [], dailyKey: "2026-10-11",
+    });
+    expect(summary.dailyKey).toBeNull();
+    const saved = new LocalSaveStore(fakeStorage()).recordRunEnd({ victory: false, waveReached: 3, summary });
+    expect(saved.progress.daily).toEqual({});
+  });
+
   it("persists the final summary, lifetime records, and newly unlocked perks", () => {
     const storage = fakeStorage();
     const store = new LocalSaveStore(storage);

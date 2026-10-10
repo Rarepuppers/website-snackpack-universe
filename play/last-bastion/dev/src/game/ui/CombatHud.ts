@@ -372,7 +372,7 @@ export class CombatHud {
       + `${armourLabel(snapshot.playerArmour, snapshot.playerFlatDamageReduction)}${flags}`,
     );
     this.healthText.setText(`${Math.ceil(snapshot.playerHealth)}/${snapshot.playerMaxHealth}${bonusLabel}${shieldLabel}`);
-    this.xpText.setText(`${snapshot.experience}/${snapshot.experienceForNextLevel}`);
+    this.xpText.setText(`XP ${snapshot.experience}/${snapshot.experienceForNextLevel}`);
     const scrapVisible = snapshot.securedScrap > 0 || snapshot.scenario === "scrap-shop";
     const secured = snapshot.events.some((event) => event.type === "scrap-secured");
     const spent = snapshot.events.some((event) => event.type === "scrap-spent");

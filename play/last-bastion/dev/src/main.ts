@@ -15,6 +15,9 @@ import { registerDisplayScaleReapply, setUiDeviceScale } from "./game/rendering/
 import { createLocalSaveStore } from "./game/save/SaveStorage";
 import { resolveSceneRoute } from "./game/SceneRoute";
 import { loadInitialScene } from "./game/loadInitialScene";
+import { startPlayerFunnel } from "./game/telemetry/FunnelTransport";
+import { publishPlayerFunnel } from "./game/telemetry/PlayerFunnelRuntime";
+import { awaitTouchNotice } from "./game/platform/TouchNotice";
 
 // A direct Last Bastion visit must install the root arcade worker itself. The
 // desktop host uses a custom protocol, so registration is limited to HTTP(S).
@@ -114,6 +117,17 @@ async function boot(): Promise<Phaser.Game> {
 }
 
 async function start(): Promise<Phaser.Game> {
+  // Reported before any scene loads (and before the touch notice), so the
+  // denominator counts arrivals rather than arrivals that got far enough to
+  // render. Session-scoped internally, so the title -> map -> combat -> debrief
+  // page loads of one visit count once. Inert until FunnelTransport's SITE_CODE
+  // is set; analytics never block boot.
+  try {
+    publishPlayerFunnel(startPlayerFunnel(window));
+  } catch {
+    // A storage or script failure must cost us a counter, never the game.
+  }
+  await awaitTouchNotice(window);
   const adapter = initializePlatformAdapter(window as unknown as SteamworksWindow);
   await initializeSteamInputRuntime(window as unknown as SteamworksWindow);
   await initializeDesktopDisplayRuntime(window as unknown as DesktopDisplayWindow);

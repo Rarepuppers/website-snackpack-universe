@@ -33,17 +33,19 @@ const VIEWPORTS = [
  */
 const SCREENS = [
   { id: "title", route: "/play/last-bastion/", note: "LB-05 menu title inside its plate" },
+  { id: "menu", route: "/play/last-bastion/?flow=menu", note: "three ways to play, player-facing card copy" },
   { id: "map", route: "/play/last-bastion/?screen=map", note: "LB-07 map quality, LB-08 armed route" },
   { id: "combat", route: "/play/last-bastion/?screen=game", note: "LB-01 projectiles, HUD safe area" },
   // ?summarydemo=1 populates a representative summary. Without it the debrief
   // renders its empty state, which is worth capturing but is not the screen the
   // defects live on.
   { id: "debrief", route: "/play/last-bastion/?screen=summary&summarydemo=1", note: "QA-09 run identity, debrief focus" },
+  { id: "debrief-daily", route: "/play/last-bastion/?screen=summary&summarydemo=daily", note: "Daily Drop result, streak, share action" },
   { id: "debrief-empty", route: "/play/last-bastion/?screen=summary", note: "empty-state debrief" },
   { id: "event", route: "/play/last-bastion/?screen=event-lab", note: "event copy layout" },
   // LB-06's screen. Character select is shell state rather than a URL, so it is
   // reached the way a player reaches it: Enter from the title, then Enter again
-  // from the main menu's first entry.
+  // on the menu's first-visit focus (Quick Drop).
   {
     id: "character-select",
     route: "/play/last-bastion/",
@@ -60,9 +62,13 @@ const SCREENS = [
   },
 ];
 
+// The local calendar day, not toISOString()'s UTC day: east of Greenwich a
+// morning run was filed under yesterday's folder.
+const NOW = new Date();
+const LOCAL_DAY = `${NOW.getFullYear()}-${String(NOW.getMonth() + 1).padStart(2, "0")}-${String(NOW.getDate()).padStart(2, "0")}`;
 const OUT_ROOT = join(
   "play", "last-bastion", "playtest-evidence",
-  `${new Date().toISOString().slice(0, 10)}-screens-auto`,
+  `${LOCAL_DAY}-screens-auto`,
 );
 
 test.describe("Last Bastion screenshot matrix", () => {

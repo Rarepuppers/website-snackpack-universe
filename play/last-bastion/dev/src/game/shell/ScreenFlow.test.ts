@@ -4,8 +4,11 @@ import {
   createShellState,
   howToPlayPages,
   HOW_TO_PLAY_PAGES,
+  ARCADE_URL,
   LAB_ROUTES,
   MENU_CARDS,
+  MENU_COLUMNS,
+  menuCardSubtitle,
   perkGridLayout,
   perkTilePosition,
   ROSTER,
@@ -35,24 +38,92 @@ describe("Shell screen flow", () => {
     expect(stepShell(menu, "back").state.screen).toBe("title");
   });
 
-  it("navigates the menu with wrapping focus and opens every card's screen", () => {
-    let state = boot("menu");
-    expect(stepShell(state, "up").state.menuIndex).toBe(MENU_CARDS.length - 1);
+  it("navigates the three-column menu by card and by row, and opens every card's screen", () => {
+    let state = { ...boot("menu"), menuIndex: 0 };
+    expect(stepShell(state, "left").state.menuIndex).toBe(MENU_CARDS.length - 1);
+    expect(stepShell(state, "right").state.menuIndex).toBe(1);
     state = drive(state, ["down", "down"]);
-    expect(state.menuIndex).toBe(2);
+    expect(state.menuIndex).toBe(2 * MENU_COLUMNS);
+    expect(stepShell({ ...state, menuIndex: 1 }, "up").state.menuIndex).toBe(MENU_COLUMNS * 2 + 1);
 
     const targets: Record<string, string> = {
+      daily: "character-select",
+      "quick-drop": "character-select",
       expedition: "character-select",
       armory: "armory",
       "how-to-play": "how-to-play",
       settings: "settings",
-      lab: "lab",
     };
     for (const [cardId, screen] of Object.entries(targets)) {
       const index = MENU_CARDS.findIndex((card) => card.id === cardId);
       const opened = stepShell({ ...boot("menu"), menuIndex: index }, "confirm").state;
       expect(opened.screen).toBe(screen);
     }
+  });
+
+  it("carries the chosen mode into character select", () => {
+    for (const mode of ["daily", "quick-drop", "expedition"] as const) {
+      const index = MENU_CARDS.findIndex((card) => card.id === mode);
+      expect(stepShell({ ...boot("menu"), menuIndex: index }, "confirm").state.runMode).toBe(mode);
+    }
+  });
+
+  it("starts a first visit on Quick Drop and a returning player on the Daily", () => {
+    const first = createShellState(DEFAULT_SAVE.settings, "menu");
+    expect(first.menuCards[first.menuIndex]!.id).toBe("quick-drop");
+    const returning = createShellState(DEFAULT_SAVE.settings, "menu", { ...DEFAULT_SAVE.progress, runsFinished: 3 });
+    expect(returning.menuCards[returning.menuIndex]!.id).toBe("daily");
+  });
+
+  it("keeps LAB out of the player menu and reachable only by a debug session", () => {
+    expect(MENU_CARDS.map((card) => card.id)).not.toContain("lab");
+    const player = boot("menu");
+    expect(player.menuCards.map((card) => card.id)).not.toContain("lab");
+    // A crafted jump to the lab screen without access falls back to the menu.
+    expect(stepShell({ ...player, screen: "lab" }, "down").state.screen).toBe("menu");
+
+    const debug = createShellState(
+      DEFAULT_SAVE.settings, "menu", undefined, undefined, undefined, undefined, undefined, undefined, undefined, 0,
+      { labEnabled: true },
+    );
+    const labIndex = debug.menuCards.findIndex((card) => card.id === "lab");
+    expect(labIndex).toBeGreaterThan(-1);
+    expect(stepShell({ ...debug, menuIndex: labIndex }, "confirm").state.screen).toBe("lab");
+    // ?flow=lab is a review route in its own right.
+    expect(boot("lab").labEnabled).toBe(true);
+  });
+
+  it("shows today's Daily result and streak on its card", () => {
+    const daily = MENU_CARDS.find((card) => card.id === "daily")!;
+    expect(menuCardSubtitle(daily, DEFAULT_SAVE.progress, true, "2026-10-11")).toBe("11 OCT  •  same waves for all");
+    const progress = {
+      ...DEFAULT_SAVE.progress,
+      daily: {
+        "2026-10-10": { bestWave: 4, bestKills: 20, cleared: false, attempts: 1 },
+        "2026-10-11": { bestWave: 7, bestKills: 90, cleared: false, attempts: 2 },
+      },
+    };
+    expect(menuCardSubtitle(daily, progress, true, "2026-10-11")).toBe("11 OCT  •  best wave 7  •  2-day streak");
+  });
+
+  it("leaves for the arcade hub from the menu", () => {
+    const index = MENU_CARDS.findIndex((card) => card.id === "arcade");
+    const result = stepShell({ ...boot("menu"), menuIndex: index }, "confirm");
+    expect(result.effects).toEqual([{ type: "open-url", url: ARCADE_URL }]);
+    expect(ARCADE_URL).toBe("/play/");
+  });
+
+  it("writes menu and help copy for players, not developers", () => {
+    const copy = [
+      ...MENU_CARDS.map((card) => card.label),
+      ...MENU_CARDS.map((card) => menuCardSubtitle(card, DEFAULT_SAVE.progress, true, "2026-10-11")),
+      ...MENU_CARDS.map((card) => menuCardSubtitle(card, DEFAULT_SAVE.progress, false, "2026-10-11")),
+      ...HOW_TO_PLAY_PAGES.flatMap((page) => [page.title, page.body]),
+      ...howToPlayPages(DEFAULT_SAVE.controls).flatMap((page) => [page.title, page.body]),
+    ].join("\n");
+    expect(copy).not.toMatch(/starchart|lands\)|persisted|\bLAB\b|placeholder|prototype|\bSIM\b/i);
+    // Entrench is the Marine's passive; it is described on his dossier, not as a universal rule.
+    expect(copy).not.toMatch(/Entrench/);
   });
 
   it("opens the codex externally and Records as a real screen", () => {
@@ -240,16 +311,20 @@ describe("Shell screen flow", () => {
   it("starts a run only for a playable and unlocked hero", () => {
     const state = boot("character-select");
     expect(ROSTER[0]!.status).toBe("playable");
-    const threat = stepShell(state, "confirm").state;
-    expect(threat.screen).toBe("threat-select");
-    expect(stepShell(threat, "confirm").effects).toEqual([
-      { type: "start-run", heroId: "marine", perkId: "perk-veteran", threatTier: 0 },
+    // Only Tier 0 is open, so the threat screen would offer one choice: skip it.
+    expect(stepShell(state, "confirm").effects).toEqual([
+      { type: "start-run", mode: "expedition", heroId: "marine", perkId: "perk-veteran", threatTier: 0 },
+    ]);
+    expect(stepShell({ ...state, runMode: "quick-drop" }, "confirm").effects).toEqual([
+      { type: "start-run", mode: "quick-drop", heroId: "marine", perkId: "perk-veteran", threatTier: 0 },
+    ]);
+    expect(stepShell({ ...state, runMode: "daily" }, "confirm").effects).toEqual([
+      { type: "start-run", mode: "daily", heroId: "marine", perkId: "perk-veteran", threatTier: 0 },
     ]);
 
     const medic = stepShell(state, "right").state;
-    const medicThreat = stepShell(medic, "confirm").state;
-    expect(stepShell(medicThreat, "confirm").effects).toEqual([
-      { type: "start-run", heroId: "medic", perkId: "perk-veteran", threatTier: 0 },
+    expect(stepShell(medic, "confirm").effects).toEqual([
+      { type: "start-run", mode: "expedition", heroId: "medic", perkId: "perk-veteran", threatTier: 0 },
     ]);
 
     const locked = stepShell(medic, "right").state;
@@ -265,10 +340,8 @@ describe("Shell screen flow", () => {
       ],
     };
     const assault = createShellState(DEFAULT_SAVE.settings, "character-select", assaultProgress, "perk-veteran", "assault");
-    const assaultThreat = stepShell(assault, "confirm").state;
-    expect(assaultThreat.screen).toBe("threat-select");
-    expect(stepShell(assaultThreat, "confirm").effects).toEqual([
-      { type: "start-run", heroId: "assault", perkId: "perk-veteran", threatTier: 0 },
+    expect(stepShell(assault, "confirm").effects).toEqual([
+      { type: "start-run", mode: "expedition", heroId: "assault", perkId: "perk-veteran", threatTier: 0 },
     ]);
 
     const tacticianProgress: typeof DEFAULT_SAVE.progress = {
@@ -281,10 +354,8 @@ describe("Shell screen flow", () => {
     const tactician = createShellState(
       DEFAULT_SAVE.settings, "character-select", tacticianProgress, "perk-veteran", "tactician",
     );
-    const tacticianThreat = stepShell(tactician, "confirm").state;
-    expect(tacticianThreat.screen).toBe("threat-select");
-    expect(stepShell(tacticianThreat, "confirm").effects).toEqual([
-      { type: "start-run", heroId: "tactician", perkId: "perk-veteran", threatTier: 0 },
+    expect(stepShell(tactician, "confirm").effects).toEqual([
+      { type: "start-run", mode: "expedition", heroId: "tactician", perkId: "perk-veteran", threatTier: 0 },
     ]);
 
     const scoutProgress: typeof DEFAULT_SAVE.progress = {
@@ -297,10 +368,8 @@ describe("Shell screen flow", () => {
     const scout = createShellState(
       DEFAULT_SAVE.settings, "character-select", scoutProgress, "perk-veteran", "scout",
     );
-    const scoutThreat = stepShell(scout, "confirm").state;
-    expect(scoutThreat.screen).toBe("threat-select");
-    expect(stepShell(scoutThreat, "confirm").effects).toEqual([
-      { type: "start-run", heroId: "scout", perkId: "perk-veteran", threatTier: 0 },
+    expect(stepShell(scout, "confirm").effects).toEqual([
+      { type: "start-run", mode: "expedition", heroId: "scout", perkId: "perk-veteran", threatTier: 0 },
     ]);
 
     const craftedThreat = { ...locked, screen: "threat-select" as const };
@@ -336,7 +405,7 @@ describe("Shell screen flow", () => {
   });
 
   it("blocks locked threat tiers and unlocks a tier from the prior victory", () => {
-    const locked = stepShell(boot("character-select"), "confirm").state;
+    const locked = { ...boot("character-select"), screen: "threat-select" as const };
     const selectedTierOne = stepShell(locked, "down").state;
     expect(stepShell(selectedTierOne, "confirm").effects).toEqual([]);
 
@@ -346,9 +415,12 @@ describe("Shell screen flow", () => {
     };
     const unlocked = createShellState(DEFAULT_SAVE.settings, "character-select", progress);
     const tierScreen = stepShell(unlocked, "confirm").state;
+    expect(tierScreen.screen).toBe("threat-select");
     const tierOne = stepShell(tierScreen, "down").state;
     expect(stepShell(tierOne, "confirm").effects).toEqual([
-      { type: "start-run", heroId: "marine", perkId: "perk-veteran", threatTier: 1 },
+      { type: "start-run", mode: "expedition", heroId: "marine", perkId: "perk-veteran", threatTier: 1 },
     ]);
+    // Quick and Daily Drops never visit the threat ladder.
+    expect(stepShell({ ...unlocked, runMode: "daily" }, "confirm").effects[0]).toMatchObject({ mode: "daily", threatTier: 0 });
   });
 });

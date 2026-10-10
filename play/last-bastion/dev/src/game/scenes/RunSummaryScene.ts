@@ -7,6 +7,17 @@ import { PERK_CATALOG } from "../perks/perkCatalog";
 import { createLocalSaveStore } from "../save/SaveStorage";
 import { createCurrentRunProvenance, createRunSummary, damagePerMinute, type RunSummary } from "../run/RunSummary";
 import { formatRunDetails, quickDropRetryUrl } from "../run/RunReport";
+import {
+  QUICK_DROP_WAVES,
+  dailyLabel,
+  dailyShareText,
+  dailyStreak,
+  previousDailyKey,
+  type DailyRecord,
+} from "../run/DailyDrop";
+import { localDayKey } from "../run/LocalDayKey";
+import { heroDefinition, isHeroId } from "../hero/HeroCatalog";
+import type { GameProgress } from "../save/LocalSaveStore";
 import { createTransformationCodexSnapshot } from "../transformations/TransformationSnapshot";
 import { normalizeTransformationAffinityState } from "../transformations/TransformationAffinity";
 import { weaponTilePresentation } from "../ui/WeaponTileFrames";
@@ -47,9 +58,13 @@ export class RunSummaryScene extends Phaser.Scene {
     const save = store.load();
     const params = new URLSearchParams(window.location.search);
     const reviewWeapons = weaponReviewPage(params);
-    const summary = params.get("summarydemo") === "1" || reviewWeapons
+    // `?summarydemo=daily` is the Daily Drop review route: a mid-run defeat on
+    // today's Daily with a three-day streak, none of it written to the save.
+    const dailyDemo = params.get("summarydemo") === "daily" ? demoDailySummary() : null;
+    const summary = dailyDemo?.summary ?? (params.get("summarydemo") === "1" || reviewWeapons
       ? demoSummary(reviewWeapons ?? undefined)
-      : save.lastRunSummary;
+      : save.lastRunSummary);
+    const progress = dailyDemo ? { ...save.progress, daily: dailyDemo.daily } : save.progress;
     this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY);
     this.add.image(WIDTH / 2, HEIGHT / 2, "bastion-logistics-map-backdrop-v1")
       .setDisplaySize(WIDTH, 640).setAlpha(0.42);
@@ -65,24 +80,30 @@ export class RunSummaryScene extends Phaser.Scene {
     const victory = summary.outcome === "victory";
     this.add.rectangle(WIDTH / 2, 57, WIDTH - 84, 72, 0x0b121c, 0.8)
       .setStrokeStyle(1, victory ? 0x68e4e8 : 0xff9a52, 0.7);
-    this.text(54, 32, victory ? "EXPEDITION SECURED" : "BASTION LOST", victory ? TEAL : ORANGE, "28px");
-    this.text(56, 70, `${victory ? "THE LINE HELD" : "THE LINE WAS OVERRUN"}  •  ${summary.mode === "expedition" ? "EXPEDITION" : "QUICK DROP"}  •  ${summary.heroId.toUpperCase()}  •  LEVEL ${summary.level}`, MUTED, "12px");
+    this.text(54, 32, debriefHeadline(summary), victory ? TEAL : ORANGE, "28px");
+    this.text(56, 70, `${victory ? "THE LINE HELD" : "THE LINE WAS OVERRUN"}  •  ${debriefModeLabel(summary)}  •  ${heroName(summary.heroId).toUpperCase()}  •  LEVEL ${summary.level}`, MUTED, "12px");
     if (summary.threatTier !== null) {
       const threat = threatTierDefinition(summary.threatTier);
       this.text(892, 70, `THREAT ${threat.tier}  ${threat.name}`, threat.tier > 0 ? ORANGE : TEAL, "10px", false, 1);
     }
     const seedLabel = summary.provenance.combatSeed === null ? "SEED UNKNOWN" : `SEED ${summary.provenance.combatSeed}`;
-    this.text(892, 82, `${seedLabel}  /  SIM ${summary.provenance.simulationVersion || "?"}`, MUTED, "8px", false, 1);
+    // The simulation version stays in Copy Run Details, where a bug report needs it.
+    this.text(892, 82, seedLabel, MUTED, "8px", false, 1);
     if (!victory && summary.defeatCause) this.text(56, 86, summary.defeatCause.toUpperCase(), ORANGE, "9px");
-    if (summary.newBestWave || summary.newBestNodes) {
+    if (summary.dailyKey) {
+      this.text(892, 46, dailyStanding(summary.dailyKey, progress), TEAL, "11px", false, 1);
+    } else if (summary.newBestWave || summary.newBestNodes) {
       this.text(892, 48, "NEW RECORD", TEAL, "11px", false, 1);
     }
 
     this.panel(42, 104, 260, 310);
     this.text(62, 122, "RUN TOTALS", IVORY, "18px");
     const totals = [
-      ["Nodes cleared", String(summary.nodesCleared)],
-      ["Wave / column", String(summary.waveReached)],
+      // Quick and Daily Drops have no map, so a nodes row would always read 0.
+      ...(summary.mode === "expedition" ? [["Nodes cleared", String(summary.nodesCleared)]] : []),
+      [summary.mode === "expedition" ? "Map column reached" : "Wave reached", summary.mode === "expedition"
+        ? String(summary.waveReached)
+        : `${summary.waveReached} / ${QUICK_DROP_WAVES}`],
       ["Enemies defeated", String(summary.kills)],
       ["Elite kills", String(summary.eliteKills)],
       ["Damage taken", format(summary.damageTaken)],
@@ -197,10 +218,10 @@ export class RunSummaryScene extends Phaser.Scene {
       this.text(54, 438, "No new perk unlocks this run.", MUTED, "12px");
     }
     this.text(54, 458, `COMMAND MARKS BANKED  +${summary.commandMarksEarned}`, ORANGE, "12px");
-    this.addReturnControls(summary);
+    this.addReturnControls(summary, progress);
   }
 
-  private addReturnControls(summary?: RunSummary): void {
+  private addReturnControls(summary?: RunSummary, progress?: GameProgress): void {
     const leave = () => { window.location.href = "?screen=title"; };
     if (!summary) {
       this.add.rectangle(WIDTH / 2, 498, 286, 42, 0x24384f, 0.96).setStrokeStyle(2, 0x68e4e8);
@@ -215,22 +236,45 @@ export class RunSummaryScene extends Phaser.Scene {
       this.add.zone(337, 477, 286, 42).setOrigin(0, 0).setInteractive().on("pointerdown", leave);
       return;
     }
-    const retryUrl = quickDropRetryUrl(summary);
+    // A Daily retried after midnight would replay yesterday's seed unscored;
+    // send the player to today's Daily instead, which is what "retry" means there.
+    const today = localDayKey(Date.now());
+    const dailyRetryUrl = summary.dailyKey
+      ? `?${new URLSearchParams({ screen: "game", hero: summary.heroId, ...(summary.perkId ? { perk: summary.perkId } : {}), daily: today }).toString()}`
+      : null;
+    const retryUrl = dailyRetryUrl ?? quickDropRetryUrl(summary);
     const retry = () => { if (retryUrl) window.location.href = retryUrl; };
-    const quickDrop = () => { window.location.href = `?screen=game&hero=${summary.heroId}`; };
-    const expedition = () => { window.location.href = "?screen=title&flow=character-select"; };
+    const quickDrop = () => {
+      const params = new URLSearchParams({ screen: "game", hero: summary.heroId });
+      if (summary.perkId) params.set("perk", summary.perkId);
+      window.location.href = `?${params.toString()}`;
+    };
+    const expedition = () => { window.location.href = "?screen=title&flow=character-select&mode=expedition"; };
     const copy = () => { void this.copyRunDetails(summary); };
-    const copyLink = () => { void this.copyGameLink(); };
+    const shareText = summary.dailyKey
+      ? dailyShareText({
+        dayKey: summary.dailyKey,
+        waveReached: summary.waveReached,
+        totalWaves: QUICK_DROP_WAVES,
+        kills: summary.kills,
+        heroName: heroName(summary.heroId),
+        cleared: summary.outcome === "victory",
+        streak: dailyStreak(progress?.daily ?? {}, summary.dailyKey),
+      })
+      : null;
+    const copyLink = () => { void this.copyGameLink(shareText); };
+    const moreGames = () => { window.location.href = "/play/"; };
     const actionDefinitions = [
-      ...(retryUrl ? [{ label: "RETRY THIS SEED", shortcut: "R", run: retry }] : []),
+      ...(retryUrl ? [{ label: summary.dailyKey ? "RETRY DAILY" : "RETRY THIS SEED", shortcut: "R", run: retry }] : []),
       { label: "NEW QUICK DROP", shortcut: "Q", run: quickDrop },
       { label: "NEW EXPEDITION", shortcut: "N", run: expedition },
       { label: "COPY RUN DETAILS", shortcut: "C", run: copy },
-      { label: "COPY GAME LINK", shortcut: "L", run: copyLink },
+      { label: shareText ? "COPY DAILY RESULT" : "COPY GAME LINK", shortcut: "L", run: copyLink },
+      { label: "MORE GAMES", shortcut: "G", run: moreGames },
       { label: "MAIN MENU", shortcut: "ESC / B", run: leave },
     ];
-    const actionWidth = actionDefinitions.length > 5 ? 146 : 174;
-    const spacing = actionDefinitions.length > 5 ? 150 : 178;
+    const actionWidth = actionDefinitions.length > 6 ? 124 : actionDefinitions.length > 5 ? 146 : 174;
+    const spacing = actionDefinitions.length > 6 ? 128 : actionDefinitions.length > 5 ? 150 : 178;
     const firstX = WIDTH / 2 - spacing * (actionDefinitions.length - 1) / 2;
     const actions = actionDefinitions.map((action, index) => ({ ...action, x: firstX + index * spacing }));
     this.returnActions = actions;
@@ -250,7 +294,7 @@ export class RunSummaryScene extends Phaser.Scene {
     });
     this.refreshReturnActions();
     this.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
-      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter", "Space", "KeyR", "KeyQ", "KeyN", "KeyC", "KeyL", "Escape"].includes(event.code)) {
+      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter", "Space", "KeyR", "KeyQ", "KeyN", "KeyC", "KeyL", "KeyG", "Escape"].includes(event.code)) {
         event.preventDefault();
       }
       if (event.code === "ArrowLeft" || event.code === "ArrowUp") this.moveReturnAction(-1);
@@ -261,6 +305,7 @@ export class RunSummaryScene extends Phaser.Scene {
       else if (event.code === "KeyN") expedition();
       else if (event.code === "KeyC") copy();
       else if (event.code === "KeyL") copyLink();
+      else if (event.code === "KeyG") moreGames();
       else if (event.code === "Escape") leave();
     });
     this.input.gamepad?.on("down", (_pad: unknown, button: { index: number }) => {
@@ -286,15 +331,17 @@ export class RunSummaryScene extends Phaser.Scene {
     }
   }
 
-  private async copyGameLink(): Promise<void> {
-    const url = "https://www.snackpackuniverse.com/play/last-bastion/";
+  private async copyGameLink(shareText: string | null = null): Promise<void> {
+    const text = shareText ?? "https://www.snackpackuniverse.com/play/last-bastion/";
     try {
       if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
-      await navigator.clipboard.writeText(url);
-      this.setCopyStatus("GAME LINK COPIED", TEAL);
+      await navigator.clipboard.writeText(text);
+      this.setCopyStatus(shareText ? "DAILY RESULT COPIED" : "GAME LINK COPIED", TEAL);
     } catch {
-      showSelectableRunDetails(url, "Clipboard access was blocked. Select and copy this game link:");
-      this.setCopyStatus("COPY BLOCKED — LINK OPENED FOR SELECTION", ORANGE);
+      showSelectableRunDetails(text, shareText
+        ? "Clipboard access was blocked. Select and copy your Daily result:"
+        : "Clipboard access was blocked. Select and copy this game link:");
+      this.setCopyStatus("COPY BLOCKED — TEXT OPENED FOR SELECTION", ORANGE);
     }
   }
 
@@ -490,7 +537,7 @@ function demoSummary(reviewWeapons: readonly WeaponId[] = [
     upgrades: [
       { upgradeId: "rapid-cycling", level: 3 },
       { upgradeId: "heavy-calibre", level: 2 },
-      { upgradeId: "armour-plating", level: 2 },
+      { upgradeId: "composite-plating", level: 2 },
     ],
     transformation: normalizeTransformationAffinityState({
       committedPathId: "cybernetic-ascension",
@@ -505,4 +552,53 @@ function demoSummary(reviewWeapons: readonly WeaponId[] = [
       aimAssistStrength: 0.35,
     }),
   });
+}
+
+function heroName(heroId: string): string {
+  return isHeroId(heroId) ? heroDefinition(heroId).displayName : heroId;
+}
+
+function debriefHeadline(summary: RunSummary): string {
+  const victory = summary.outcome === "victory";
+  if (summary.mode === "expedition") return victory ? "EXPEDITION SECURED" : "BASTION LOST";
+  if (summary.dailyKey) return victory ? "DAILY DROP CLEARED" : "DAILY DROP OVER";
+  return victory ? "DROP SURVIVED" : "BASTION LOST";
+}
+
+function debriefModeLabel(summary: RunSummary): string {
+  if (summary.mode === "expedition") return "EXPEDITION";
+  return summary.dailyKey ? `DAILY DROP ${dailyLabel(summary.dailyKey)}` : "QUICK DROP";
+}
+
+/** Today's best and the streak, read back from the save the run just updated. */
+function dailyStanding(dayKey: string, progress: GameProgress): string {
+  const record = progress.daily[dayKey];
+  const streak = dailyStreak(progress.daily, dayKey);
+  const best = record ? (record.cleared ? "CLEARED" : `BEST WAVE ${record.bestWave}`) : "";
+  return [best, streak > 1 ? `${streak}-DAY STREAK` : ""].filter(Boolean).join("  •  ");
+}
+
+function demoDailySummary(): { summary: RunSummary; daily: Record<string, DailyRecord> } {
+  const today = localDayKey(Date.now());
+  const yesterday = previousDailyKey(today);
+  const base = demoSummary();
+  return {
+    summary: createRunSummary({
+      ...base,
+      mode: "quick-drop",
+      threatTier: null,
+      outcome: "defeat",
+      waveReached: 7,
+      nodesCleared: 0,
+      kills: 214,
+      defeatCause: "Overrun at close range",
+      newlyUnlockedPerkIds: [],
+      dailyKey: today,
+    }),
+    daily: {
+      [previousDailyKey(yesterday)]: { bestWave: 5, bestKills: 120, cleared: false, attempts: 1 },
+      [yesterday]: { bestWave: 10, bestKills: 330, cleared: true, attempts: 2 },
+      [today]: { bestWave: 7, bestKills: 214, cleared: false, attempts: 1 },
+    },
+  };
 }

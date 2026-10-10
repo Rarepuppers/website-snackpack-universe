@@ -31,3 +31,82 @@ canvas {
   image-rendering: crisp-edges;
   image-rendering: pixelated;
 }
+
+/* Touch-only devices: shown before boot because there are no touch controls. */
+.touch-notice {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 24px 20px;
+  overflow-y: auto;
+  color: #e8e2d4;
+  line-height: 1.5;
+}
+
+.touch-notice h1 {
+  margin: 0;
+  color: #68e4e8;
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+.touch-notice p {
+  margin: 0;
+  color: #c7d6e4;
+}
+
+.touch-notice .touch-notice-label {
+  margin-top: 8px;
+  color: #e8e2d4;
+  font-weight: 600;
+}
+
+.touch-notice ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.touch-notice a,
+.touch-notice button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid #3b4d63;
+  border-radius: 8px;
+  background: #1d2938;
+  color: #e8e2d4;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.touch-notice .touch-notice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.touch-notice .touch-notice-primary {
+  border-color: #68e4e8;
+  background: #24384f;
+  color: #68e4e8;
+  font-weight: 600;
+}
+
+.touch-notice a:focus-visible,
+.touch-notice button:focus-visible {
+  outline: 3px solid #ff9a52;
+  outline-offset: 2px;
+}

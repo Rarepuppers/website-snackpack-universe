@@ -1,3 +1,4 @@
+import { QUICK_DROP_WAVES } from "../run/DailyDrop";
 import type { PlayerIntent } from "../input/PlayerIntent";
 import type { Vector2Data } from "../math/Vector2Data";
 import { normalizeVector } from "../math/Vector2Data";
@@ -1531,7 +1532,7 @@ interface EquippedWeaponState extends EquippedWeapon {
   orbitAngleRadians: number;
 }
 
-const TOTAL_WAVES = 10;
+const TOTAL_WAVES = QUICK_DROP_WAVES;
 export const PLAYER_MAX_HEALTH = 10;
 // Deliberately weak passive regen (0.5 HP per 10s tick = 0.05 HP/s) so active
 // healing — Supply Depots, healing shrines/events, the Medic — is worth

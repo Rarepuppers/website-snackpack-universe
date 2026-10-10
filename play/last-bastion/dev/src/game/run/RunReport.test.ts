@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { createCurrentRunProvenance, createRunSummary } from "./RunSummary";
-import { formatRunDetails, quickDropRetryUrl } from "./RunReport";
+import { formatRunDetails, quickDropRetryUrl, runModeName } from "./RunReport";
+import { UPGRADE_CATALOG } from "../content/upgradeCatalog";
+import RUN_SUMMARY_SCENE from "../scenes/RunSummaryScene.ts?raw";
 
 function summary(mode: "quick-drop" | "expedition" = "quick-drop") {
   return createRunSummary({
@@ -64,5 +66,23 @@ describe("reproducible run report", () => {
     const old = createRunSummary({ ...summary(), provenance: undefined });
     expect(old.provenance).toMatchObject({ combatSeed: null, mapSeed: null, buildVersion: "unknown", simulationVersion: 0 });
     expect(quickDropRetryUrl(old)).toBeNull();
+  });
+
+  it("keeps a Daily retry a Daily and names the mode in the report", () => {
+    const daily = createRunSummary({ ...summary(), dailyKey: "2026-10-11" });
+    expect(new URLSearchParams(quickDropRetryUrl(daily)!).get("daily")).toBe("2026-10-11");
+    expect(new URLSearchParams(quickDropRetryUrl(summary())!).get("daily")).toBeNull();
+    expect(runModeName(daily)).toBe("Daily Drop (2026-10-11)");
+    expect(runModeName(summary())).toBe("Quick Drop");
+    expect(formatRunDetails(daily)).toContain("Mode: Daily Drop (2026-10-11)");
+    expect(formatRunDetails(summary())).toContain("Progress: wave 4, level 5");
+  });
+
+  it("uses only real upgrade ids in the debrief review fixture", () => {
+    // The fixture once named a non-existent "armour-plating", so every debrief
+    // capture showed a raw id instead of an upgrade name.
+    const ids = [...RUN_SUMMARY_SCENE.matchAll(/upgradeId: "([a-z-]+)"/g)].map((match) => match[1]!);
+    expect(ids.length).toBeGreaterThan(0);
+    for (const id of ids) expect(Object.keys(UPGRADE_CATALOG), id).toContain(id);
   });
 });

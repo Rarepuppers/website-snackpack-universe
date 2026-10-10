@@ -329,8 +329,11 @@ export class ExpeditionScene extends Phaser.Scene {
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, theme.backdropColor));
     const backdropAsset = mapBackdropAssetForTheme(theme.id);
     if (this.textures.exists(backdropAsset.id)) {
+      // Full-bleed, like the shell backdrops. At 768x512 the plate stopped
+      // 96px short of each edge while the route frame below spans the canvas,
+      // so two misaligned rectangles framed the map.
       this.root.add(this.add.image(WIDTH / 2, HEIGHT / 2, backdropAsset.id)
-        .setDisplaySize(768, 512)
+        .setDisplaySize(WIDTH, WIDTH * (512 / 768))
         .setAlpha(0.72));
     }
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2 + 10, WIDTH - 72, HEIGHT - 108, theme.backdropColor, 0.46)

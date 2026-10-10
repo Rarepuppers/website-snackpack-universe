@@ -1,5 +1,6 @@
 import type { PerkId } from "../perks/perkCatalog";
 import type { ThreatTier } from "../expedition/ThreatTier";
+import { isDailyKey } from "./DailyDrop";
 import { SIMULATION_COMPATIBILITY_VERSION } from "../combat/SimulationCompatibility";
 import {
   cloneTransformationAffinityState,
@@ -36,7 +37,7 @@ export interface RunProvenance {
   gameSpeedModified: boolean;
 }
 
-export const LAST_BASTION_BUILD_VERSION = "web-2026.09.10-qa09";
+export const LAST_BASTION_BUILD_VERSION = "web-2026.10.11-daily-drop";
 
 export interface RunSummary {
   mode: "quick-drop" | "expedition";
@@ -70,6 +71,8 @@ export interface RunSummary {
   provenance: RunProvenance;
   /** Persistent meta-currency banked when this run ended. */
   commandMarksEarned: number;
+  /** Local day of a Daily Drop run (a seeded Quick Drop); null for every other run. */
+  dailyKey: string | null;
 }
 
 export const EMPTY_RUN_METRICS: Readonly<RunMetrics> = Object.freeze({
@@ -165,7 +168,7 @@ export function createRunSummary(
     "newlyUnlockedPerkIds" | "transformation" | "elapsedSeconds" | "damageTaken"
     | "eliteKills" | "bossDamage" | "highestHit" | "criticalHits" | "damageTakenBySource"
     | "damageBySecond" | "threatTier" | "commandMarksEarned"
-    | "defeatCause" | "newBestWave" | "newBestNodes" | "provenance"
+    | "defeatCause" | "newBestWave" | "newBestNodes" | "provenance" | "dailyKey"
   > & {
     newlyUnlockedPerkIds?: readonly PerkId[];
     transformation?: TransformationAffinityState;
@@ -183,6 +186,7 @@ export function createRunSummary(
     threatTier?: ThreatTier | null;
     commandMarksEarned?: number;
     provenance?: Partial<RunProvenance> | null;
+    dailyKey?: string | null;
   },
 ): RunSummary {
   return {
@@ -214,6 +218,7 @@ export function createRunSummary(
     newlyUnlockedPerkIds: [...(input.newlyUnlockedPerkIds ?? [])],
     provenance: normalizeRunProvenance(input.provenance),
     commandMarksEarned: Math.max(0, Math.floor(input.commandMarksEarned ?? 0)),
+    dailyKey: input.mode === "quick-drop" && isDailyKey(input.dailyKey) ? input.dailyKey : null,
   };
 }
 

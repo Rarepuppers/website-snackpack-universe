@@ -1,3 +1,4 @@
+import { readDailyRecords, recordDailyAttempt, type DailyRecord } from "../run/DailyDrop";
 import { isPerkId, unlockedPerkIds, type PerkId } from "../perks/perkCatalog";
 import type { HeroDefinition } from "../hero/HeroDefinition";
 import { heroDefinition, isHeroId } from "../hero/HeroCatalog";
@@ -120,6 +121,8 @@ export interface GameProgress {
   threatTierVictories: Record<ThreatTier, number>;
   commandMarksLifetime: number;
   purchasedArmoryNodeIds: ArmoryNodeId[];
+  /** Daily Drop best-of records keyed by local day. Additive: pre-Daily saves read as {}. */
+  daily: Record<string, DailyRecord>;
 }
 
 /**
@@ -235,6 +238,7 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     threatTierVictories: Object.freeze({ 0: 0, 1: 0, 2: 0 }),
     commandMarksLifetime: 0,
     purchasedArmoryNodeIds: Object.freeze([]) as unknown as ArmoryNodeId[],
+    daily: Object.freeze({}) as Record<string, DailyRecord>,
   }),
   expedition: null,
   selectedPerkId: "perk-veteran",
@@ -531,6 +535,13 @@ export class LocalSaveStore {
       threatTierBestNodes,
       threatTierVictories,
       commandMarksLifetime: this.cached.progress.commandMarksLifetime + commandMarksEarned,
+      daily: summary?.dailyKey
+        ? recordDailyAttempt(this.cached.progress.daily, summary.dailyKey, {
+          waveReached: summary.waveReached,
+          kills: summary.kills,
+          victory: outcome.victory,
+        })
+        : this.cached.progress.daily,
     };
     const newlyUnlockedPerkIds = unlockedPerkIds(nextProgress).filter((id) => !beforeUnlocks.has(id));
     const completedSummary = summary
@@ -642,6 +653,7 @@ function normalizeSave(parsed: unknown): SaveData {
       threatTierVictories: readThreatTierCounts(candidate.progress?.threatTierVictories),
       commandMarksLifetime: readCount(candidate.progress?.commandMarksLifetime),
       purchasedArmoryNodeIds,
+      daily: readDailyRecords(candidate.progress?.daily),
     },
     expedition: version >= 2 ? readExpedition(candidate.expedition, heroStartingWeaponId) : null,
     selectedPerkId: version >= 3 && isPerkId(candidate.selectedPerkId)
@@ -1034,6 +1046,10 @@ function readRunSummary(value: unknown): RunSummary | null {
       ? candidate.newlyUnlockedPerkIds.filter(isPerkId)
       : [],
     commandMarksEarned: readCount(candidate.commandMarksEarned),
+    // Provenance was once dropped here, so every debrief rendered after a page
+    // load showed SEED UNKNOWN and could never offer "retry this seed".
+    provenance: candidate.provenance ?? null,
+    dailyKey: candidate.dailyKey ?? null,
   });
 }
 
@@ -1073,6 +1089,7 @@ function cloneSave(save: SaveData): SaveData {
       threatTierBestNodes: { ...save.progress.threatTierBestNodes },
       threatTierVictories: { ...save.progress.threatTierVictories },
       purchasedArmoryNodeIds: [...save.progress.purchasedArmoryNodeIds],
+      daily: readDailyRecords(save.progress.daily),
     },
     expedition: save.expedition === null ? null : cloneExpedition(save.expedition),
     selectedPerkId: save.selectedPerkId,

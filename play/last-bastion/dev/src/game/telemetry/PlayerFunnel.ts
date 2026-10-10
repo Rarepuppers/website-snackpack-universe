@@ -61,7 +61,7 @@ export type FunnelOutcome = "victory" | "defeat" | "abandoned";
 export interface FunnelProperties {
   readonly depth?: FunnelDepth;
   readonly outcome?: FunnelOutcome;
-  readonly mode?: "quick-drop" | "expedition";
+  readonly mode?: "quick-drop" | "daily" | "expedition";
 }
 
 /**
