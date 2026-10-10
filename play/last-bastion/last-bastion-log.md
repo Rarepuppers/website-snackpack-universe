@@ -5025,3 +5025,44 @@ the Codex art redirect all **accepted**.
   reimplementing one queue cost more than either implementation.
 - Full verification: **1,729 tests across 304 files**, all `verify:last-bastion` lanes green,
   including Codex's twelve browser scenarios.
+
+## 11 October 2026 — Plan 2026-10-09 phases 1–4: honest shell, Quick/Daily Drop, phones, polish
+
+- **Two real defects found on the way, both invisible to the existing tests.**
+  - **Telemetry was never wired.** The 11 September funnel wiring (`0c605e2b`) was dropped
+    by the 12 September reconciliation: `main.ts` never started the funnel and no scene
+    reported a run. All telemetry tests stayed green because they test the funnel, not its
+    call sites. Setting `SITE_CODE` would have produced an empty dashboard. Restored, plus
+    `telemetry/funnelWiring.test.ts`, which asserts the call sites exist.
+  - **Saved run summaries lost their provenance.** `readRunSummary` never read `provenance`,
+    so every real debrief (always a fresh page load) showed SEED UNKNOWN, never offered
+    "retry this seed", and copied run details without seed or build. The debrief captures
+    hid it because they use an in-memory demo summary. Fixed; the new round-trip test was
+    watched failing without the fix.
+- **Shell (phase 1).** Menu copy rewritten for players ("Quick Drop until the starchart
+  lands" and "Persisted immediately to local save" are gone). LAB is no longer a player
+  card: `?lab=1`, `?flow=lab` or `?screen=title&debug=1` (a bare `?debug=1` routes to
+  combat). Debrief drops `SIM n` (still in Copy Run Details) and "Wave / column". How to
+  Play no longer presents the Marine's Entrench as universal. Threat-tier screen uses the
+  shared chrome and separator. Debrief fixture's non-existent `armour-plating` replaced,
+  with a test that fixture ids resolve. Screens harness files by local date.
+- **Quick Drop + Daily Drop (phase 2).** Three-column menu led by DAILY DROP, QUICK DROP,
+  EXPEDITION; first visit focuses Quick Drop, returning players the Daily. Daily = Quick
+  Drop seeded by FNV-1a of the local day (`run/DailyDrop.ts`); scores only on its own day
+  (an old link replays unscored); best-of per day in `progress.daily` (additive, no schema
+  bump, pruned to 60 days, merged by cloud save); streak derived. Debrief: Retry Daily,
+  Copy Daily Result share line, today's best + streak. Threat screen skipped while only
+  Tier 0 is open. Funnel vocabulary gains `daily`. Medic was missing from the URL hero
+  parser, so a Medic "retry this seed" started the saved hero instead.
+- **Phones and exits (phase 3).** `platform/TouchNotice.ts`: touch-only devices without a
+  fine pointer or controller see an accessible notice before boot (three touch arcade
+  games, arcade link, "I have a keyboard or controller"). MORE GAMES on menu and debrief.
+- **Polish (phase 4).** Threat-tier perks drawn as code chevron medals until Codex art
+  lands; dossier fields spaced when they fit; map backdrop full-bleed; First Drop panel
+  sized to its text; XP readout labelled; Quick/Daily debrief hides "Nodes cleared".
+- Build identity `web-2026.10.11-daily-drop`; worker release `2026-10-11-daily-drop`.
+- Verification: 1,762+ unit tests, `verify:last-bastion` all required lanes PASS (browser
+  lane now includes menu/Daily, LAB access and a touch-phone case); screens matrix
+  `playtest-evidence/2026-10-11-screens-auto/` inspected (adds `menu` and `debrief-daily`).
+- Not done: observed play of a full Daily to its debrief (unit + save round-trip cover the
+  path); GoatCounter activation (phase 5) still needs Mark's site code.

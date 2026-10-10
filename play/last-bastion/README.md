@@ -3,7 +3,7 @@
 Eighteen `.md` files live in this folder and several are historical. This index says which
 to trust. **Read this before acting on any plan doc.**
 
-Last reviewed: 11 September 2026 (revised plan; historical counts below retain their dates).
+Last reviewed: 11 October 2026 (queue moved to the 9 October plan; historical counts below retain their dates).
 
 ---
 
@@ -11,8 +11,10 @@ Last reviewed: 11 September 2026 (revised plan; historical counts below retain t
 
 | File | What it is |
 |---|---|
+| `implementation-plan-2026-10-09.md` | **The current queue — read this first.** 9 October audit and phased plan; phases 1–4 implemented 11 October (see its §5 closeout). Phase 5 (telemetry activation) waits on the GoatCounter site code. |
+| `implementation-review-2026-09-20.md` | Codex's 20 September queue; fully closed 21 September. History. |
 | `product-strategy-plan-2026-09-11.md` | **The product, design and distribution plan.** Opens with the finding that the game had zero inbound links, was absent from the sitemap and the arcade hub, and so had no discovery path at all. Covers strategy (the browser build is the wishlist engine, not a demo), distribution, the Steam audience gate, first-session/startup work, the content freeze, and what to park. Proposal — four decisions are owed. |
-| `implementation-plan-2026-09-11.md` | **The current queue — read this first.** Re-verifies every 7 September task against the code, closes QA-01/02/03 and LB-08/09/10/12, adds eight new findings (combat-event presentation coverage, published-bundle drift, the missing CI unit lane, service-worker failure caching, the unseeded arena, and three smaller ones), demotes the large-file split, and logs what landed on 11 September. |
+| `implementation-plan-2026-09-11.md` | **Superseded queue (history).** Re-verifies every 7 September task against the code, closes QA-01/02/03 and LB-08/09/10/12, adds eight new findings (combat-event presentation coverage, published-bundle drift, the missing CI unit lane, service-worker failure caching, the unseeded arena, and three smaller ones), demotes the large-file split, and logs what landed on 11 September. |
 | `quality-audit-2026-09-07.md` | **Superseded as a queue** by the file above; still the reference for each original task's evidence and acceptance wording. Verified automated baseline, twelve prioritized correctness/QoL/verification tasks, acceptance criteria, and the missing Godot-handover scope warning. |
 | `presentation-defect-plan-2026-08-23.md` | **Presentation defect register.** Existing LB findings, shared layout/text/inspection work, art gates, and separate presentation acceptance lane; recheck closure against current code and observed evidence. |
 | `last-bastion-improvement-and-steam-plan-2026-08-07.md` | **The forward plan.** Full review of the current build, the Full HD/4K/ultrawide/Steam Deck display plan, the Steam client plan, the gameplay-depth backlog, new Codex asset batches 68–75, a task-level implementation breakdown (§10) with file targets, line ranges, and acceptance criteria, and §11 on HUD readouts and run pacing (shield bar, overheal, armour display, wave timer, game speed). Does not restate the asset queue — it references it. |
