@@ -5,12 +5,12 @@
 
 ## Readiness baseline
 
-- `npm run verify` passes: image audit, combat-boundary audit, generated content inventory, typecheck, 1,577 tests across 281 files, production build, HTTP smoke test, and offline boot.
+- `npm run verify:last-bastion` passed on 11 October 2026: image and combat audits, content inventory, UI text audit, typecheck, 1,763 unit tests, production build, HTTP and offline smoke tests, 18 browser acceptance tests, and 28 desktop tests.
 - Desktop `npm run typecheck` and `npm test` pass: 28 tests across save recovery, bridge validation, display policy, packaging, Steam Input, Steamworks fallback, and the desktop protocol.
-- Windows unpacked packaging completes on Electron 43.4.0. Packaged renderer acceptance remains open:
-  the Codex managed host exits in Electron's pre-app `IsSandboxedProcess` path with `0xC0000005`,
-  including on Electron 42.9.0 and 43.3.0. Run `npm run smoke:package:win` and the visible executable
-  from an ordinary local PowerShell session before attributing this host-policy crash to game code.
+- Windows unpacked packaging completes on Electron 43.4.0. On 11 October 2026, the rebuilt package
+  passed `npm run smoke:package:win` in the managed host, loading the game through its custom protocol.
+  Visible controls, display, audio, combat, Steam-down, and live-Steam acceptance remain open. Earlier
+  managed sessions crashed before app startup with `0xC0000005`.
 - Live browser boot reaches Title and Main Menu at the canonical 960×540 logical render size without console errors or warnings. Full HD uses an exact 1920×1080 backing buffer and 4K uses an exact 3840×2160 backing buffer across shell, gallery, map, event, debrief, and combat routes; scene coordinates remain 960×540. Browser review confirmed the title, menu, character-select pointer mapping, and power-up gallery at 4K. The title uses a dedicated text-free 3840×2160 master rather than enlarging and cropping the 3:2 expedition map plate.
 - This is ready for **local gameplay and balance testing**. It is not yet a paid-Steam-release candidate: packaged-window/live-Steam acceptance, creator-led visual/audio review, and the observed-run gate remain open.
 

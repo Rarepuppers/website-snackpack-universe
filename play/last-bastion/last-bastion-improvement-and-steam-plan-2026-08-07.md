@@ -948,9 +948,10 @@ constructed by anything.
   native host. Reproducible electron-builder directory packaging now stages only published web/codex/
   runtime/Steam Input files, keeps native Steamworks binaries outside ASAR, and reads packaged content
   from `resources/game`. The unsigned Windows x64 directory build completes and its required file set
-  is verified. Remaining before DONE: run the checked-in packaged-renderer smoke harness on a normal
-  Windows desktop; this managed session exits Electron with `0xC0000005`, including with Steam and GPU
-  disabled, so it cannot supply trustworthy custom-protocol acceptance. The release icon is complete:
+  is verified. The rebuilt Electron 43.4.0 package passed the checked-in packaged-renderer smoke
+  harness in the managed Windows host on 11 October 2026, including custom-protocol document loading.
+  Visible window, input, display, audio, combat, Steam-down, and live-Steam acceptance remain open.
+  Earlier managed sessions exited with `0xC0000005`. The release icon is complete:
   a retained square Marine-helmet source plus tested seven-resolution ICO, 1024 px ICNS, and 512 px PNG
   derivatives are wired per platform, and Windows packaging embeds the mark without the default Electron
   icon warning. A signing identity is still required before distribution.

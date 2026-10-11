@@ -51,13 +51,12 @@ keyboard/controller navigation, windowed/borderless transitions, the target moni
 focus loss/resume, and a short combat encounter. Repeat once with Steam closed and once from the
 Steam client when an App ID is assigned.
 
-The Codex managed Windows environment currently terminates Electron 42.9.0, 43.3.0, and 43.4.0 in
-Electron's pre-app `IsSandboxedProcess` startup path with Windows access violation `0xC0000005`.
-The web build, desktop unit tests, and packaging complete before that environment-only launch
-failure. Do not weaken `sandbox: true` or suppress the smoke gate to make it appear green; run the
-executable from an ordinary local PowerShell session to distinguish host policy from a distributable
-failure. Electron is pinned to the current stable 43.4.0 patch and should be retested when Electron 44
-reaches stable.
+On 11 October 2026, Electron 43.4.0 packaged successfully and `npm run smoke:package:win`
+reported `PASS packaged renderer` in the managed Windows environment. This checks the hidden
+window's document, game root, and custom-protocol load. It does not exercise visible controls,
+audio, display changes, combat, or the Steam bridge (which smoke mode intentionally disables).
+Run the executable visibly and complete those checks before desktop acceptance. Earlier managed
+sessions crashed before app startup with `0xC0000005`; retain that history if the failure recurs.
 
 ## SteamPipe
 
