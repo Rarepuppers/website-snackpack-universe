@@ -31,6 +31,7 @@ import {
 import { normalizeThreatTier, threatTierDefinition } from "../expedition/ThreatTier";
 import { expeditionMapGamepadIntent } from "../input/ExpeditionMapInput";
 import { createNodeMedallionIcon } from "../ui/NodeMedallionIcon";
+import { createClearedBadgeIcon, createObjectiveBadgeIcon } from "../ui/MapStateIcons";
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -419,13 +420,10 @@ export class ExpeditionScene extends Phaser.Scene {
         ? expeditionEncounterForNode(this.run.state.mapSeed, node, this.run.state.threatTier).objectiveMode
         : null;
       if (objectiveMode) {
-        const badge = objectiveMode === "escort" ? "E" : objectiveMode === "deny" ? "D" : "C";
-        this.root.add(this.add.circle(x + radius - 2, y - radius + 2, 8, 0x132637)
-          .setStrokeStyle(2, 0xffd36b).setDepth(13));
-        this.root.add(this.text(x + radius - 2, y - radius + 2, badge, "#ffd36b", "9px", true).setDepth(14));
+        this.root.add(createObjectiveBadgeIcon(this, objectiveMode, x + radius - 2, y - radius + 2));
       }
       if (presentation === "cleared") {
-        this.root.add(this.text(x + radius - 4, y - radius + 2, "✓", TEAL, "11px", true).setDepth(12).setAlpha(0.8));
+        this.root.add(createClearedBadgeIcon(this, x + radius - 2, y + radius - 2).setAlpha(0.8));
       }
       if (presentation === "current") {
         const pulse = this.add.circle(x, y, radius + 7).setStrokeStyle(2, TEAL_HEX, 0.85).setDepth(9);

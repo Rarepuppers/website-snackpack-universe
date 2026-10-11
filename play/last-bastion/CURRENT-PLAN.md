@@ -36,6 +36,11 @@ published `game-assets/` as the source of truth for what ships.
   findings from the [presentation register](presentation-defect-plan-2026-08-23.md), with
   full-context evidence at 960×540, 1920×1080, and 3840×2160. Confirm the five-run matrix
   on keyboard/mouse and gamepad before claiming the slice is fair or finished.
+- **LB-07 progress, 11 October:** the map already uses nine distinct vector node pictograms.
+  Objective modes now use shape badges instead of `E/D/C`, and cleared status has a separate
+  lower corner so it cannot cover an objective badge. New automated map captures at the three
+  sizes above are in `playtest-evidence/2026-10-11-screens-auto/`. An observed review of the
+  map and its backdrop at real display sizes is still required before LB-07 closes.
 - Fix repeated comprehension, fairness, input, or registration failures; rerun the exact
   failed hero/tier/input combination. Do not expand Threat Tiers 3–11 before these gates pass.
 
