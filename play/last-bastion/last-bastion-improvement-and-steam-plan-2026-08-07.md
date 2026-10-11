@@ -1,8 +1,12 @@
 # Last Bastion — improvement and Steam plan
 
+> **Current order, 11 October 2026:** see [the current plan](CURRENT-PLAN.md). The
+> sections below retain detailed contracts and dated delivery evidence; they are not
+> a second implementation queue.
+
 ## Audit update — 7 September 2026
 
-The [quality audit and implementation queue](quality-audit-2026-09-07.md) adds twelve
+The [quality audit and implementation queue](archive/quality-audit-2026-09-07.md) adds twelve
 prioritized tasks with source evidence, dependencies and acceptance checks. Start with
 visible save failures, expedition-save validation, and debrief controller/hint correctness;
 then add executable browser acceptance and strengthen replay continuity before broad file

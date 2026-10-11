@@ -4,7 +4,7 @@ import type { TransformationRunModifiers } from "../transformations/Transformati
 
 /**
  * The unified player stat vector (Brotato-style overhaul — see
- * `last-bastion-shop-economy-plan.md`). This is the single resolved surface
+ * `archive/last-bastion-shop-economy-plan.md`). This is the single resolved surface
  * combat reads for damage, defence, crit, and economy scaling, folded once from
  * every build source: hero base + level growth, perks, relics/artifacts,
  * transformations, upgrades, and — the point of the overhaul — shop items.

@@ -57,7 +57,7 @@ export interface ExpeditionBuildSnapshot {
   bonusLifestealPerKill?: number;
   /**
    * Raw non-item stat contributions (Brotato overhaul — see
-   * `last-bastion-shop-economy-plan.md`). A partial `PlayerStatBlock` folded into
+   * `archive/last-bastion-shop-economy-plan.md`). A partial `PlayerStatBlock` folded into
    * the resolved player stats at combat construction. Item purchases live in
    * `ownedItemIds`; this hook is for stat grants that aren't catalogue items
    * (e.g. a shrine handing out a raw stat) and for tests.

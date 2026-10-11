@@ -481,7 +481,7 @@ First proposed special kit:
 - **HUD icon:** three converging chartreuse/ivory bullet tips over a dark armour plate. The triangular grouping remains recognizable under a 75% radial shadow; the circular timer ring and number are runtime UI.
 - **Feedback:** one brief weapon-ring pulse on activation, a restrained green-white tracer accent while active, and a soft final-three-second warning. Preserve each weapon's original damage-type colour so the buff does not falsely imply Toxic conversion.
 
-Implemented 24 July 2026: Siege Loader, Phase Jacket, Hunter Optics, and Last Stand Stimulant joined the seeded field-drop rotation alongside Overcharge/Magnet Pulse/Adrenaline/Aegis (`POWERUP_WAVE_CYCLE` in `CombatSimulation.ts`), so all four kits below are now live game rules, not proposals. World/HUD art for the three not yet illustrated (Hunter Optics, Last Stand Stimulant) is still outstanding — see `item-ui-asset-production-plan.md`.
+Implemented 24 July 2026: Siege Loader, Phase Jacket, Hunter Optics, and Last Stand Stimulant joined the seeded field-drop rotation alongside Overcharge/Magnet Pulse/Adrenaline/Aegis (`POWERUP_WAVE_CYCLE` in `CombatSimulation.ts`), so all four kits below are now live game rules, not proposals. The earlier World/HUD identity-art gap has since been filled; see `local-playtest-plan-2026-08-21.md` for its current acceptance gate and `archive/item-ui-asset-production-plan.md` for the original brief.
 
 | Effect | Source | Duration | Rule | Icon motif |
 | --- | --- | ---: | --- | --- |

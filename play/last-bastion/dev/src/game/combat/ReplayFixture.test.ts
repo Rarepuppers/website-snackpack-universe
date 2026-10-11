@@ -286,7 +286,7 @@ describe("versioned fixed-step replay fixture", () => {
 });
 
 /**
- * Closing a coverage hole flagged in `last-bastion-content-debt-plan.md`: the
+ * Closing a coverage hole flagged in `archive/last-bastion-content-debt-plan.md`: the
  * ranked reward planning consumes `random()` draws, and no
  * replay fixture ever kills a ranked enemy — so the digest passed while saying
  * nothing about that branch of the stream. The gameplay fixtures cannot reach a

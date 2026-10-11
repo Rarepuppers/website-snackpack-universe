@@ -1,7 +1,8 @@
 # Last Bastion — audit and plan, 9 October 2026
 
-Author: Claude. Status: **phases 1–4 approved and implemented 11 October 2026 (§5); phase 5
-waits on the GoatCounter site code.** Supersedes the
+Author: Claude. **Archived 11 October 2026.** Phases 1–4 and local phase 5 activation
+completed; deployment and dashboard receipt remain in [the current plan](../CURRENT-PLAN.md).
+Supersedes the
 queue in `implementation-review-2026-09-20.md`, which is fully closed (see its §6).
 
 ## 0. Baseline (measured today, not carried forward)

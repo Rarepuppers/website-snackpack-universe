@@ -5077,3 +5077,16 @@ the Codex art redirect all **accepted**.
 - Worker release `2026-10-11-batch-k-perks`. `verify:last-bastion` all required lanes PASS;
   character-select capture inspected at 1080p. The v2 runtime PNG stays in `game-assets/`
   (an orphan report is never a deletion list).
+
+## 11 October 2026 — telemetry prepared and plan consolidated
+
+- GoatCounter site code `snackpack` was supplied and activated in the web funnel. The
+  published bundle, Last Bastion worker release, and privacy disclosure were updated;
+  `verify:last-bastion` passed all required automated lanes. Dashboard receipt still
+  requires deployment and a controlled real-browser visit.
+- A current-source Windows unpacked package passed the hidden renderer smoke. Visible
+  window, input, audio, hardware, Steam-down and live-Steam acceptance remain manual.
+- `CURRENT-PLAN.md` now owns the execution queue. Superseded audits, completed system
+  plans and old one-off preflights moved under `archive/`; their still-open conditional
+  items were carried forward. The five creator-observed runs and presentation evidence
+  remain the next gameplay gates. No content expansion or site push was performed.

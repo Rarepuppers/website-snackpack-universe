@@ -1,5 +1,9 @@
 # Last Bastion — presentation defect plan and playtest-gate revision
 
+> **Current status, 11 October 2026:** most code-owned fixes shipped. LB-04 helmet
+> registration and LB-07 map iconography still need observed acceptance, along with
+> the five-run presentation lane. Use [the current plan](CURRENT-PLAN.md) for order.
+
 **Created:** 23 August 2026
 **Trigger:** first creator-observed local run against `local-playtest-plan-2026-08-21.md`.
 > ## STATUS UPDATE — 11 September 2026
@@ -44,8 +48,8 @@
 > `npm run screens:last-bastion` (QA-04b). Two defects were found by those pictures that no
 > source review had caught: a threat arrow sitting on the pause hint, and LB-06's real extent.
 
-**Status:** plan only. No code, no art, no doc-index change has been made yet beyond this file and
-the evidence folder in §9.
+The original proposal below is retained for its root-cause evidence; its old implementation
+status and line numbers are historical.
 
 This document does three things:
 

@@ -2,7 +2,7 @@ import type { ItemDefinition, ItemRarity, ItemTag } from "./itemCatalog";
 
 /**
  * Themed shop stock (Brotato overhaul Phase 4 — see
- * `last-bastion-shop-economy-plan.md`).
+ * `archive/last-bastion-shop-economy-plan.md`).
  *
  * Phase 3B put an ordinary scrap shop after *every* cleared node, so a special
  * shop can no longer be special just by existing. What makes a liberation shop

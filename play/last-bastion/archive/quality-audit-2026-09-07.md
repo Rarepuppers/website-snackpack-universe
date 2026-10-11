@@ -1,6 +1,7 @@
 # Last Bastion quality audit and implementation queue
 
-Date: 7 September 2026. Status: audit and planning only; implementation remains open.
+Date: 7 September 2026. Archived 11 October 2026; implementation status is tracked in
+[the current plan](../CURRENT-PLAN.md). Findings and counts below are dated evidence.
 Baseline: website repository commit `5bd77110`, plus the working tree inspected today.
 
 ## 1. Scope and handover mismatch

@@ -3,7 +3,7 @@ import type { PlayerStatBlock } from "../stats/PlayerStatBlock";
 
 /**
  * Brotato-style level-up stat cards (overhaul Phase 3C — see
- * `last-bastion-shop-economy-plan.md`).
+ * `archive/last-bastion-shop-economy-plan.md`).
  *
  * Every card is a small permanent bump to one field of the unified
  * `PlayerStatBlock`, which is the whole point: the shop, items, and level-ups

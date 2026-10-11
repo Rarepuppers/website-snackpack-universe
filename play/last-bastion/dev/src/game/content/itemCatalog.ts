@@ -1,7 +1,7 @@
 import { NO_PLAYER_STATS, type PlayerStatBlock } from "../stats/PlayerStatBlock";
 
 /**
- * Shop items (Brotato overhaul — see `last-bastion-shop-economy-plan.md`). An
+ * Shop items (Brotato overhaul — see `archive/last-bastion-shop-economy-plan.md`). An
  * item is a bundle of stat modifiers with a rarity and a price; the entire
  * economy of positive-and-negative trade-offs is expressed as data here, and
  * combat needs no per-item wiring because every modifier lands in the unified

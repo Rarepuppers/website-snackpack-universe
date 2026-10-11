@@ -1,5 +1,10 @@
 # Last Bastion next asset review — 26 July 2026
 
+> **Storefront priority complete, 11 October 2026:** the arcade tile, guide screenshots,
+> social share card, and short WebM loop exist and are wired into their pages. The
+> 11 September priority list below is historical. Further game art follows observed
+> LB-04/LB-07 or playtest findings; see [the current plan](CURRENT-PLAN.md).
+
 > ## PRIORITY REDIRECTED — 11 September 2026
 >
 > **Codex's next Last Bastion art is the store and landing assets, not more game content.**

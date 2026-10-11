@@ -1,9 +1,9 @@
 # Last Bastion — revised implementation plan
 
-> ## CURRENT QUEUE — Codex review, updated 21 September 2026
+> ## ARCHIVED QUEUE — superseded 9 October 2026
 >
-> **Planning review only; implementation has not begun.** Read the reconciliation banner
-> below, then the [reviewed queue and handover](implementation-review-2026-09-20.md).
+> This is historical evidence. Read the [current plan](../CURRENT-PLAN.md) for open work;
+> the [reviewed queue and handover](implementation-review-2026-09-20.md) records the 20 September decisions.
 > That review replaces the old execution order and "still open" lists in this document.
 > Sections 1–4a below are historical evidence, including superseded findings and closure
 > claims. Their test counts and line numbers are not current verification results.

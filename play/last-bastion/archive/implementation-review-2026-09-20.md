@@ -1,9 +1,10 @@
 # Last Bastion — reviewed queue and handover
 
-Date: 20 September 2026; implemented 21 September 2026. Author: Codex. Status: implemented
-and verified, with live analytics activation still awaiting Mark's GoatCounter site code.
+Date: 20 September 2026; implemented 21 September 2026. Author: Codex. Archived
+11 October 2026. GoatCounter is configured locally; deployment and dashboard receipt
+remain in [the current plan](../CURRENT-PLAN.md).
 
-This is the active queue linked from `implementation-plan-2026-09-11.md`. Keep that
+This was the active queue linked from `implementation-plan-2026-09-11.md`. Keep that
 document's reconciliation banner as the ownership record; its older task lists are history.
 
 ## 1. Baseline and constraints
