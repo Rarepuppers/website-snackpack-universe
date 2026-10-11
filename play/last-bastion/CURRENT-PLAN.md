@@ -41,6 +41,14 @@ published `game-assets/` as the source of truth for what ships.
   lower corner so it cannot cover an objective badge. New automated map captures at the three
   sizes above are in `playtest-evidence/2026-10-11-screens-auto/`. An observed review of the
   map and its backdrop at real display sizes is still required before LB-07 closes.
+- **LB-04 progress, 11 October:** the retained Marine overlay is now scaled and placed per pose
+  in gameplay and the gallery. The 12-frame gallery was captured at 960×540, 1920×1080,
+  and 3840×2160; a combat capture checks the live 960×540 placement. This runtime
+  registration leaves the source master intact. Creator-observed motion and the Medic and
+  Assault galleries still need sign-off before LB-04 closes.
+- The verifier now checks every published JavaScript chunk against the service worker's atomic
+  offline core before browser tests. This caught the new helmet module missing from that list;
+  its entry is present and the isolated offline acceptance test passes.
 - Fix repeated comprehension, fairness, input, or registration failures; rerun the exact
   failed hero/tier/input combination. Do not expand Threat Tiers 3–11 before these gates pass.
 

@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { registerMarineHelmet } from "../rendering/MarineHelmetRegistration";
 import { playerFunnel } from "../telemetry/PlayerFunnelRuntime";
 import { dailySeed, isDailyKey } from "../run/DailyDrop";
 import { localDayKey } from "../run/LocalDayKey";
@@ -407,6 +408,7 @@ export class PrototypeScene extends Phaser.Scene {
       if (this.useMarineHelmet) {
         this.marineHelmetSprite = this.add.sprite(0, 0, heroHelmetAsset, 0);
         applyManifestOrigin(this.marineHelmetSprite, heroHelmetAsset);
+        if (heroHelmetAsset === "marine-helmet-v1") registerMarineHelmet(this.marineHelmetSprite, 0);
         playerLayers.push(this.marineHelmetSprite);
       }
     } else {
@@ -1181,6 +1183,9 @@ export class PrototypeScene extends Phaser.Scene {
     const frame = row * 4 + this.marineFacingColumn;
     setSpriteFrameIfAvailable(this.marineSprite, frame);
     setSpriteFrameIfAvailable(this.marineHelmetSprite, frame);
+    if (this.marineHelmetSprite?.texture.key === "marine-helmet-v1") {
+      registerMarineHelmet(this.marineHelmetSprite, frame);
+    }
     setSpriteFrameIfAvailable(this.marineRimSprite, frame);
   }
 

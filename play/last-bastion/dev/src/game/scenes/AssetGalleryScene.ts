@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { loadGameAssets } from "../assets/PhaserAssetLoader";
 import { GAME_ASSETS } from "../assets/GameAssetManifest";
 import { calculateWeaponRingLayout } from "../equipment/WeaponRingLayout";
+import { registerMarineHelmet } from "../rendering/MarineHelmetRegistration";
 
 export class AssetGalleryScene extends Phaser.Scene {
   constructor() {
@@ -240,7 +241,7 @@ export class AssetGalleryScene extends Phaser.Scene {
       return;
     }
     this.add.text(20, 14, "LAST BASTION — PRODUCTION ART DEBUG GALLERY", style("#ffffff", "17px"));
-    this.add.text(20, 38, "Every frame uses manifest scale and pivot.  Return with ?art=marine", style("#8fb2c9", "11px"));
+    this.add.text(20, 38, "Marine helmet is pose-registered over the retained body sheet. Return with ?art=marine", style("#8fb2c9", "11px"));
 
     this.add.text(20, 66, "MARINE BODY + HELMET — idle / move / dodge × S N E W", style("#68e4e8", "11px"));
     for (let frame = 0; frame < 12; frame += 1) {
@@ -250,6 +251,7 @@ export class AssetGalleryScene extends Phaser.Scene {
       const helmet = this.add.sprite(x, y, "marine-helmet-v1", frame).setScale(0.68);
       setManifestOrigin(body, "marine-base-v1");
       setManifestOrigin(helmet, "marine-helmet-v1");
+      registerMarineHelmet(helmet, frame, x, y, 0.68);
       this.drawPivot(x, y);
       this.add.text(x, 170, String(frame), style("#728ba1", "9px")).setOrigin(0.5);
     }

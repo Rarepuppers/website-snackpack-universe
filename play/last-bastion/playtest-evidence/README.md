@@ -21,6 +21,7 @@ image-optimisation generators before committing.
 |---|---|---|---|
 | `2026-08-23-run-0` | local dev, pre-fix | 1920×1080 windowed, keyboard/mouse | LB-01 … LB-12 |
 | `2026-09-11-screens-auto` | branch `last-bastion-quality-2026-09-11` | 960×540, 1920×1080, 3840×2160, 1280×800 | LB-05 closed, LB-06 open, HUD collision found |
+| `2026-10-11-screens-auto` | local `main`, pre-deployment | 960×540, 1920×1080, 3840×2160 | LB-07 map badges and LB-04 Marine helmet registration captured; observed acceptance open |
 
 ### 2026-09-11-screens-auto — captured, not observed
 

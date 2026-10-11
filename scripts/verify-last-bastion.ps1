@@ -30,6 +30,7 @@ $desktopRoot = Join-Path $gameRoot 'desktop'
 
 $lanes = @(
   @{ Name = 'web';     Title = 'Web static/unit/build/smoke/offline'; Dir = $webRoot;     Args = @('run', 'verify') }
+  @{ Name = 'site-js'; Title = 'Website JavaScript and offline core'; Dir = $siteRoot; Args = @('run', 'check:javascript') }
   @{ Name = 'browser'; Title = 'Executable browser acceptance';       Dir = $siteRoot;    Args = @('run', 'test:last-bastion') }
   @{ Name = 'desktop'; Title = 'Desktop host build and tests';        Dir = $desktopRoot; Args = @('test') }
 )
