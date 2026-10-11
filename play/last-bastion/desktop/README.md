@@ -51,7 +51,8 @@ keyboard/controller navigation, windowed/borderless transitions, the target moni
 focus loss/resume, and a short combat encounter. Repeat once with Steam closed and once from the
 Steam client when an App ID is assigned.
 
-On 11 October 2026, Electron 43.4.0 packaged successfully and `npm run smoke:package:win`
+On 11 October 2026, Electron 43.4.0 was repackaged after the map badge and Marine helmet
+changes, and `npm run smoke:package:win`
 reported `PASS packaged renderer` in the managed Windows environment. This checks the hidden
 window's document, game root, and custom-protocol load. It does not exercise visible controls,
 audio, display changes, combat, or the Steam bridge (which smoke mode intentionally disables).

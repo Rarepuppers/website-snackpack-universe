@@ -54,7 +54,9 @@ published `game-assets/` as the source of truth for what ships.
 
 ## 3. Desktop and Steam acceptance
 
-- The rebuilt Electron 43.4.0 package passes the hidden renderer smoke. Run
+- The Electron 43.4.0 Windows unpacked package was rebuilt after the map and Marine helmet
+  changes on 11 October 2026. `npm run smoke:package:win` passes against the packaged
+  renderer. Run
   `desktop/release/win-unpacked/LastBastion.exe` visibly to check title, input,
   windowed/borderless transitions, monitor selection, pause, focus/resume, audio, and combat.
 - Repeat with Steam closed for offline boot and save recovery. Repeat from Steam once an
