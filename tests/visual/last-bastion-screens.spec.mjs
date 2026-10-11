@@ -34,7 +34,7 @@ const VIEWPORTS = [
 const SCREENS = [
   { id: "title", route: "/play/last-bastion/", note: "LB-05 menu title inside its plate" },
   { id: "menu", route: "/play/last-bastion/?flow=menu", note: "three ways to play, player-facing card copy" },
-  { id: "map", route: "/play/last-bastion/?screen=map", note: "LB-07 map quality, LB-08 armed route" },
+  { id: "map", route: "/play/last-bastion/?screen=map&mapseed=2026", note: "LB-07 map quality, LB-08 armed route; fixed seed for comparable captures" },
   { id: "gallery-marine", route: "/play/last-bastion/?mode=gallery", note: "LB-04 Marine helmet registration across 12 poses" },
   { id: "combat", route: "/play/last-bastion/?screen=game", note: "LB-01 projectiles, HUD safe area" },
   // ?summarydemo=1 populates a representative summary. Without it the debrief
