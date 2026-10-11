@@ -20,10 +20,10 @@ import { localDayKey } from "../run/LocalDayKey";
  *
  * ## Privacy contract — read before adding a field
  *
- * No identifier of any kind leaves the browser. There is no visitor id, no
- * fingerprint, no session token, no URL, no referrer, no timestamp finer than a
- * local calendar day, and no free text. Every payload below is either a fixed
- * event name or a value drawn from a small closed set defined in this file.
+ * The game sends no identifier, fingerprint, session token, page URL, referrer,
+ * exact timestamp or free text in its event payload. Ordinary HTTPS requests
+ * still expose connection metadata to the analytics provider. Every event path
+ * below uses a fixed name or a value from a small closed set in this file.
  * That is what makes it defensible on a family-facing site, and it is a
  * constraint on future edits, not a description of the current state.
  *

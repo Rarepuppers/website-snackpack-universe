@@ -15,26 +15,20 @@ import {
  * Delivery for the four funnel questions, and the browser-local state behind
  * the "do they come back?" one.
  *
- * ## Why this is dormant until a site code is set
+ * ## Why this uses a separate endpoint
  *
  * Cloudflare Web Analytics, which the site already loads, has no event model at
  * all — it counts page views and nothing else, so it cannot answer any of the
  * four questions. A second, event-capable endpoint is therefore required, and
  * choosing one is a privacy decision on a family-facing site, not a coding one.
- *
- * So the instrumentation ships complete and switched off. Set `SITE_CODE` and
- * every counter starts working; leave it empty and the game sends nothing.
- * Visit-day state is still maintained locally while disabled so enabling the
- * transport later can identify a return without inventing a remote identifier.
+ * Visit-day state remains local; the transport sends only coarse event paths.
  *
  * ## Activating it
  *
- * 1. Create and configure the approved GoatCounter site. Confirm its current
- *    privacy and retention settings rather than relying on a provider slogan.
- * 2. Put the code — the `<code>.goatcounter.com` subdomain — in `SITE_CODE`.
- * 3. Update `/privacy/last-bastion/` to disclose it before shipping the change, not after.
+ * GoatCounter uses the `snackpack` site. Keep `/privacy/last-bastion/` aligned
+ * with the event vocabulary and confirm the site's data-collection settings.
  */
-const SITE_CODE = "";
+const SITE_CODE = "snackpack";
 
 /** Reported as a path so the events group together in any host's dashboard. */
 function eventPath(event: FunnelEvent, properties: FunnelProperties): string {
@@ -46,7 +40,7 @@ function eventPath(event: FunnelEvent, properties: FunnelProperties): string {
 }
 
 interface GoatCounterApi {
-  count(payload: { path: string; title: string; event: boolean }): void;
+  count(payload: { path: string; title: string; event: boolean; referrer: string; no_session: boolean }): void;
 }
 
 /**
@@ -59,7 +53,13 @@ export function goatCounterTransport(host: Window): FunnelTransport {
     send(event, properties) {
       const api = (host as unknown as { goatcounter?: GoatCounterApi }).goatcounter;
       if (!api || typeof api.count !== "function") return false;
-      api.count({ path: eventPath(event, properties), title: event, event: true });
+      api.count({
+        path: eventPath(event, properties),
+        title: event,
+        event: true,
+        referrer: "",
+        no_session: true,
+      });
       return true;
     },
   };
@@ -128,7 +128,7 @@ export function bufferedGoatCounterTransport(host: Window): FunnelTransport {
 
 /**
  * Injects the counter script once. Returns false when no site code is
- * configured, which is the current state and is not an error.
+ * configured, so tests and temporary builds can disable transport.
  */
 export function installFunnelTransport(host: Window, siteCode: string = SITE_CODE): boolean {
   if (!siteCode) return false;

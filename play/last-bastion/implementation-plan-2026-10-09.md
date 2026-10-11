@@ -192,4 +192,14 @@ Vanguard, Logistician and Recon Specialist as a new `canonical-perk-tile-atlas-v
 (frames 0–6 identical to v2, 7–9 new) from new masters beside the v2 ones; then swap the
 code glyph in `ShellScene.renderCharacterSelect` for frames 7–9.
 
-Remaining: D4 site code → phase 5; D5 five observed runs; push (one CI run) when Mark says.
+Remaining: D5 five observed runs; push (one CI run) when Mark says.
+
+## 6. Phase 5 local closeout — 11 October 2026
+
+Mark supplied the GoatCounter site code `snackpack`. `FunnelTransport.ts` now uses it;
+the published web bundle was rebuilt, the Last Bastion service-worker release was
+bumped, and `/privacy/last-bastion/` now discloses the provider and coarse event set.
+The game sends an empty event referrer and disables GoatCounter's automatic page view
+and session tracking for these events. `npm run verify:last-bastion` passed all required
+automated lanes after the change. Dashboard receipt and the baseline date remain open
+until this commit is deployed and a controlled real-browser funnel is observed.

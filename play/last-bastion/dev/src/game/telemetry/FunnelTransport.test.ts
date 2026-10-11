@@ -49,10 +49,17 @@ function fakeHost(options: { storage?: Storage | null; session?: Storage | null;
 }
 
 describe("installFunnelTransport", () => {
-  it("installs nothing while no site code is configured", () => {
+  it("installs nothing when the site code is explicitly disabled", () => {
     const { host, appended } = fakeHost();
-    expect(installFunnelTransport(host)).toBe(false);
+    expect(installFunnelTransport(host, "")).toBe(false);
     expect(appended).toHaveLength(0);
+  });
+
+  it("uses the configured production site by default", () => {
+    const { host, appended } = fakeHost();
+    expect(installFunnelTransport(host)).toBe(true);
+    expect(appended[0]?.dataset.goatcounter).toBe("https://snackpack.goatcounter.com/count");
+    expect(appended[0]?.dataset.goatcounterSettings).toBe(JSON.stringify({ no_onload: true }));
   });
 
   it("installs once with the configured endpoint and flushes after load", () => {
@@ -83,6 +90,8 @@ describe("goatCounterTransport", () => {
       path: "last-bastion/run-ended/expedition/defeat/wave-5-9",
       title: "run-ended",
       event: true,
+      referrer: "",
+      no_session: true,
     });
   });
 
@@ -116,7 +125,9 @@ describe("goatCounterTransport", () => {
       for (const segment of payload.path.split("/")) {
         expect(VOCABULARY.has(segment), segment).toBe(true);
       }
-      expect(Object.keys(payload).sort()).toEqual(["event", "path", "title"]);
+      expect(Object.keys(payload).sort()).toEqual(["event", "no_session", "path", "referrer", "title"]);
+      expect(payload.referrer).toBe("");
+      expect(payload.no_session).toBe(true);
     }
   });
 });
@@ -208,7 +219,7 @@ describe("startPlayerFunnel", () => {
   it("records a first visit without claiming a return", () => {
     const { host } = fakeHost();
     const funnel = startPlayerFunnel(host, Date.UTC(2026, 8, 11, 12));
-    expect(funnel.reported()).not.toContain("opened");
+    expect(funnel.reported()).toContain("opened");
     expect(funnel.reported()).not.toContain("returning");
   });
 

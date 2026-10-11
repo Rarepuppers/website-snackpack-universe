@@ -120,8 +120,7 @@ async function start(): Promise<Phaser.Game> {
   // Reported before any scene loads (and before the touch notice), so the
   // denominator counts arrivals rather than arrivals that got far enough to
   // render. Session-scoped internally, so the title -> map -> combat -> debrief
-  // page loads of one visit count once. Inert until FunnelTransport's SITE_CODE
-  // is set; analytics never block boot.
+  // page loads of one visit count once. Analytics never block boot.
   try {
     publishPlayerFunnel(startPlayerFunnel(window));
   } catch {

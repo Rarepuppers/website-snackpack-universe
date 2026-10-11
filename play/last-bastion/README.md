@@ -11,7 +11,7 @@ Last reviewed: 11 October 2026 (queue moved to the 9 October plan; historical co
 
 | File | What it is |
 |---|---|
-| `implementation-plan-2026-10-09.md` | **The current queue — read this first.** 9 October audit and phased plan; phases 1–4 implemented 11 October (see its §5 closeout). Phase 5 (telemetry activation) waits on the GoatCounter site code. |
+| `implementation-plan-2026-10-09.md` | **The current queue — read this first.** 9 October audit and phased plan; phases 1–4 implemented 11 October (see its §5 closeout). Phase 5 is configured for GoatCounter and awaits deployment and dashboard receipt. |
 | `implementation-review-2026-09-20.md` | Codex's 20 September queue; fully closed 21 September. History. |
 | `product-strategy-plan-2026-09-11.md` | **The product, design and distribution plan.** Opens with the finding that the game had zero inbound links, was absent from the sitemap and the arcade hub, and so had no discovery path at all. Covers strategy (the browser build is the wishlist engine, not a demo), distribution, the Steam audience gate, first-session/startup work, the content freeze, and what to park. Proposal — four decisions are owed. |
 | `implementation-plan-2026-09-11.md` | **Superseded queue (history).** Re-verifies every 7 September task against the code, closes QA-01/02/03 and LB-08/09/10/12, adds eight new findings (combat-event presentation coverage, published-bundle drift, the missing CI unit lane, service-worker failure caching, the unseeded arena, and three smaller ones), demotes the large-file split, and logs what landed on 11 September. |
