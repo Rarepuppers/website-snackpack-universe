@@ -3,8 +3,10 @@ $ErrorActionPreference = 'Stop'
 $siteRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')
 $port = 44173
 $processInfo = [System.Diagnostics.ProcessStartInfo]::new()
-$processInfo.FileName = 'C:\Python314\python.exe'
-$processInfo.Arguments = "-m http.server $port --bind 127.0.0.1 --directory `"$siteRoot`""
+$processInfo.FileName = (Get-Command node -ErrorAction Stop).Source
+$processInfo.Arguments = 'scripts/serve-static.mjs'
+$processInfo.WorkingDirectory = $siteRoot.Path
+$processInfo.EnvironmentVariables['PORT'] = [string]$port
 $processInfo.UseShellExecute = $false
 $processInfo.CreateNoWindow = $true
 $server = [System.Diagnostics.Process]::Start($processInfo)
@@ -21,6 +23,12 @@ try {
   }
   if ($null -eq $page) {
     throw 'Local smoke server did not become ready.'
+  }
+  $about = Invoke-WebRequest -UseBasicParsing "http://127.0.0.1:$port/play/last-bastion/about/"
+  if (($about.StatusCode -ne 200) -or
+      (-not $about.Content.Contains('id="game-title"')) -or
+      (-not $about.Content.Contains('href="/play/last-bastion/"'))) {
+    throw 'Last Bastion about page is missing its title or play link.'
   }
   $assetPath = [regex]::Match(
     $page.Content,
@@ -268,6 +276,7 @@ try {
 
   [pscustomobject]@{
     PageStatus = $page.StatusCode
+    AboutStatus = $about.StatusCode
     ContentType = $page.Headers['Content-Type']
     HasGameRoot = $true
     AssetPath = $assetPath
@@ -278,7 +287,7 @@ try {
   }
 }
 finally {
-  if (-not $server.HasExited) {
+  if ($server -and -not $server.HasExited) {
     $server.Kill()
     $server.WaitForExit()
   }
