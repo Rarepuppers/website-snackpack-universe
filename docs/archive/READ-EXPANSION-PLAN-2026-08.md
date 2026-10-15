@@ -1,3 +1,5 @@
+> **Archived 2026-10-15.** Superseded by `READ-PLAN-2026-10.md`. Its book-import and PDF how-to now lives in the importers and `build-read-pdfs.mjs`.
+
 # /read/ expansion + printable PDFs — build plan
 
 > **Superseded 2026-10-15 for planning:** open items now live in `READ-PLAN-2026-10.md`. Keep this file as the how-to reference for importing books and building PDFs.

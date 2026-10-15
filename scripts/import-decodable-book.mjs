@@ -1,7 +1,7 @@
 // Imports a decodable reader from the ABCs app into /read/ as a free web book.
 //
 // Nothing here generates art or prose — cover, interior pages, titles and page
-// text all come from apps/snackpack-1-abcs-alphabet. See READ-EXPANSION-PLAN.md.
+// text all come from apps/snackpack-1-abcs-alphabet. See READ-PLAN-2026-10.md (how-to history: docs/archive/READ-EXPANSION-PLAN-2026-08.md).
 //
 // Usage (from the website repo root):
 //   node scripts/import-decodable-book.mjs --slug=ten-red-hens          # dry run

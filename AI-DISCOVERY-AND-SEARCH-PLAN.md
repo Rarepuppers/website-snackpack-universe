@@ -2,7 +2,7 @@
 
 Written 2026-09-19, from a full re-measure of Cloudflare Web Analytics, Google
 Search Console and the Bing Webmaster API. Companion to `LINK-BUILDING-PLAN.md`
-(why links are the bottleneck), `READ-EXPANSION-PLAN.md` (the `/read/` build)
+(why links are the bottleneck), `READ-PLAN-2026-10.md` (the `/read/` plan; the original August build plan is archived in `docs/archive/`)
 and `SITE-IMPROVEMENT-PLAN.md` (the running log).
 
 ## Why this doc exists

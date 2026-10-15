@@ -1,0 +1,111 @@
+# Release notes — snackpackuniverse.com
+
+Newest first. Every push to `main` deploys through GitHub Pages; each entry
+names the commit that shipped it. These notes start on 2026-10-15; for earlier
+changes see the git history and the plans at the repository root (finished ones
+are in [`docs/archive/`](archive/README.md)).
+
+## 2026-10-15 — Housekeeping: Brain Games count, docs, archive
+
+- **Brain Games Vol 1 now says 24 games everywhere, as the app does.** On
+  2026-10-08 the site was cut to "17" when seven games were briefly removed from
+  the app. The app restored all 24 the same day (Solitaire, FreeCell, Hearts,
+  Spades, Gin Rummy, Euchre and Pinball came back), but the site was never
+  updated. Fixed at the source (`data/game-counts.json`) plus the hand-written
+  lineups on `/apps/`, the Brain Games page and `llms.txt`.
+  `build-game-counts.mjs --check` is green again.
+- **The `/read/` plan was rewritten as a short current plan.** The day's build
+  log moved to `docs/archive/`. Archived as finished or obsolete: the August
+  `/read/` expansion plan, the App 7 launch checklist and the World Cup data
+  automation notes.
+- **Outreach drafts in `LINK-BUILDING-PLAN.md` were corrected before anyone
+  posts them.** The shelf is 17 books, not 8. The FreeCell pool is 1,991
+  solver-verified deals, not 73 (re-verified today: 1,991 solved, 0
+  unsolvable). "Nothing tracked" is now "no cookies (just an anonymous page
+  count)", because the site does use Cloudflare's cookie-free analytics.
+- `scripts/README.md` documents the new `/read/` scripts.
+
+## 2026-10-15 — Number stories shelf (`d5e522ef`)
+
+- Four free illustrated maths stories from SnackPack Basic Math, one per school
+  year: **Luckybug** (Year 1, adding and subtracting to 20), **Biscuit-Bouncer**
+  (Year 2, adding, subtracting, measuring and sharing), **Hop-Tart** (Year 3,
+  times tables and remainders) and **Centi-Peed** (Year 4, negative numbers).
+  Together with Ted-E-Bear's Button Trail they form a new "Number stories"
+  group. The shelf is now 17 books.
+- A "Try it" question on every page. Tap an answer: a wrong one invites another
+  go, the right one opens the explanation. With JavaScript off, or printed, the
+  choices are a plain list with "Show the answer". Read to me also reads the
+  question.
+- All nine free Basic Math books were read in full and every picture checked.
+  Five were **held back** for fixes in the app: Pork-ulele (page 1's clock shows
+  the wrong time), Wise Owl (a mis-worded question and a muddled explanation of
+  primes), Ted-E-Bear's Lantern and Booklava (characters change design
+  mid-book) and Vincent Van Mouse (3 pages without art).
+- Verified in Playwright on a phone, a tablet and desktop, with JavaScript on
+  and off. All pages, PDFs and share cards confirmed live. Submitted to Google,
+  Bing and IndexNow.
+
+## 2026-10-15 — Reading aids (`ea6efe03`)
+
+- **Read to me** on every book page: the browser's own voice (British English
+  where available, a little slower) reads the page aloud and lights up each
+  word as it is spoken.
+- **One page at a time**: a full-screen picture-book mode with Back/Next, arrow
+  keys, swipe and Esc, full screen on phones and tablets.
+- **Stage shortcuts** at the top of the bookshelf.
+- **Save the bookshelf for offline**: one button stores every book page and
+  picture (about 11 MB; PDFs excluded) so the shelf opens with no signal. The
+  status is read from the device's actual cache, never a remembered flag.
+- Service worker cache bumped (`snackpack-arcade-v22`).
+- Verified end to end on the live site: saved the shelf, went offline and
+  opened a book with its art and reading tools. Read to me was tested with a
+  stand-in speech engine, because test browsers have no voices. Not yet heard
+  on a real device.
+
+## 2026-10-15 — Sharing (`41d0adfa`)
+
+- **"Share this book"** beside "Begin the story" and again at the end of every
+  book. It opens the phone's share sheet, or copies the link on desktop, and
+  always shares the clean book address.
+- A **1200×630 share card** for every book, so chat previews show the whole
+  cover with the title (58–94 KB each). The portrait covers used to be cropped.
+- The bookshelf's share image went from a 1.3 MB PNG to a 126 KB JPEG.
+- Bookshelf search title is now "Free Decodable Readers & Printable Phonics
+  Books", with a matching description.
+- The homepage storybooks section now shows six real free books from the shelf,
+  instead of covers that linked to app pages.
+
+## 2026-10-15 — Reading Trail complete (`0995cf92`)
+
+- Reading Trail steps 3–6 published free, as approved by Mark: **Stripe-Scout's
+  Blend Bridge** (blends), **Sub-Zero's Magic-E Lantern** (magic e),
+  **Meow-inara's Vowel-Team Duet** (vowel teams) and **Quill-Berry's Ending
+  Clues** (word endings). The path now runs unbroken from s a t p i n to word
+  endings.
+- Practice words are highlighted by each book's spelling pattern. Alt text
+  describes the actual pictures.
+- Phonics sound cards grew to eight sheets.
+
+## 2026-10-15 — Sound cards (`9ee34645`)
+
+- **`/read/sound-cards/`**: printable sound, word and tricky-word cards for each
+  stage, exactly one A4 or Letter page per stage, black on white in every
+  theme. Linked from the bookshelf and the printable-readers guide.
+
+## 2026-10-15 — Digraph Dash (`6afc6d9c`)
+
+- **Hen-Berry's Digraph Dash** (sh, ch, th, wh), the first step after Stage 3.
+  It is free in SnackPack Sentences & Spelling, and all five pages are
+  illustrated.
+
+## 2026-10-15 — Reading path (`7d2942da`)
+
+- The bookshelf is ordered as a reading path: Stage 1, then 2, then 3, then
+  further stories.
+- Every book ends with a link to the next one.
+- `ItemList` structured data lists the books for search engines and assistants.
+- Breadcrumb structured data was added to the Earth Science and Space Math app
+  pages.
+- The shelf is generated from one list (`scripts/build-read-shelf.mjs`), so new
+  books slot in without hand edits.

@@ -1,7 +1,8 @@
 # SnackPack Universe — Website
 
 **Live site:** [www.snackpackuniverse.com](https://www.snackpackuniverse.com)  
-**Hosted:** GitHub Pages (free tier)
+**Hosted:** GitHub Pages (free tier)  
+**What shipped:** [`docs/RELEASE-NOTES.md`](docs/RELEASE-NOTES.md) · **Plans:** `*-PLAN.md` at the root (finished ones in [`docs/archive/`](docs/archive/README.md)) · **Scripts:** [`scripts/README.md`](scripts/README.md)
 
 ---
 

@@ -1126,7 +1126,7 @@ Four decisions worth keeping:
 Verified a tagged URL returns HTTP 200 from Play, and that the referrer decodes
 back to exactly the three intended UTM pairs.
 
-### R3 — `APP7-LAUNCH-CHECKLIST.md` — **done**
+### R3 — `APP7-LAUNCH-CHECKLIST.md` (archived: `docs/archive/APP7-LAUNCH-CHECKLIST-2026-08.md`) — **done**
 
 Nine steps with ready-to-paste snippets, verified against how the twelve live
 apps are actually wired. Package id `com.snackpackuniverse.mathematics`.

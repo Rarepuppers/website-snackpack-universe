@@ -1,3 +1,5 @@
+> **Archived 2026-10-15.** Completed: SnackPack Mathematics (App 7) launched and is wired into every site surface listed here.
+
 # App 7 (Mathematics) — website launch checklist
 
 Prepared 2026-08-15, while app7 was in Play review with production expected

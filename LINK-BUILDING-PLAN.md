@@ -86,10 +86,13 @@ submitting — directory submission paths change often.
   cannot claim.
 
 ### 4. Homeschool / teacher resource lists — best fit for `/read/`
-The reading shelf (`/read/`, 8 full illustrated books with printable A4 PDFs,
-free, no sign-in, no ads) is the most linkable thing on the site. Six books are
-staged phonics/decodable readers and two are companion early-reading stories.
-Free printable readers are
+The reading shelf (`/read/`, **17** full illustrated books with printable A4 PDFs,
+free, no sign-in, no ads) is the most linkable thing on the site. As of
+2026-10-15: six staged decodable readers (Stages 1–3), a six-step Reading Trail
+(short vowels → digraphs → blends → magic e → vowel teams → endings), five
+number stories with a maths question on every page, and printable phonics
+sound cards (`/read/sound-cards/`). Every book also has Read to me, a
+one-page-at-a-time mode and offline saving. Free printable readers are
 genuinely scarce and teachers link them unprompted. Target: homeschool
 blogs, teacher resource roundups, and dyslexia/phonics parent communities.
 This is the single highest-probability source of a real, relevant,
@@ -121,15 +124,16 @@ Why this angle: "another free games site" is not a story; "the deals are
 solver-checked" is a real engineering claim almost no competitor can make —
 see `scripts/verify-freecell-deals.js` and `scripts/klondike-solver.js`.
 
-> **Accuracy note before posting.** The web FreeCell `CHECKED` pool is **73**
-> deals, not the ~1550 the *Android* app ships — do not quote the app's number
-> for the web page. Only the four-free-cell mode is solver-guaranteed (the pool
+> **Accuracy note before posting (re-checked 2026-10-15).** The web FreeCell
+> `CHECKED` pool is now **1,991** deals (grown from 73 on 2026-08-13, all
+> verified winnable at four free cells). The Android app ships its own,
+> different pool (~1,550), so quote 1,991 for the web page, never the app's
+> number. Only the four-free-cell mode is solver-guaranteed (the pool
 > was solved at four cells); the page already says so. HN will check, and one
 > inflated number costs more credibility than the post can earn.
 >
-> Verified 2026-08-13 from the website repo root:
-> `node scripts/verify-freecell-deals.js` → 73 in pool, 73 solved, 0 unsolvable,
-> 0 inconclusive. So the *claim* is sound; only the count is small.
+> Historical (2026-08-13, before the pool grew): `node scripts/verify-freecell-deals.js`
+> reported 73 in pool, 73 solved. Re-run it before posting; it reads the pool from the page.
 >
 > Note `verify-freecell-deals.js` **only checks the existing pool — it does not
 > generate new deals.** Its `CHECKED` list is seeds 1–100 with the failures
@@ -169,12 +173,13 @@ deleted. Pitch `/read/`, never the arcade.
 > about it].
 >
 > I make free early readers and thought they might suit that list. There are
-> eight full illustrated books, including six staged phonics readers, available
-> in the browser and as A4 PDFs:
-> https://www.snackpackuniverse.com/guides/free-printable-decodable-readers/
+> seventeen full illustrated books in phonics order (six staged decodable
+> readers, then digraphs, blends, magic e and vowel teams), plus matching sound
+> cards, all readable in the browser or printable as A4 PDFs:
+> https://www.snackpackuniverse.com/read/
 >
-> No ads, no sign-up, no email capture, nothing tracked — it's a free page, not
-> a funnel. There's a paid app in the background, but the books stand alone and
+> No ads, no sign-up, no email capture, no cookies (just an anonymous page
+> count). It's a free page, not a funnel. There's a paid app in the background, but the books stand alone and
 > I'm not asking you to mention it.
 >
 > Feel free to print them for home or classroom use. If a particular phonics
