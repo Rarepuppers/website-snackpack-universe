@@ -2451,3 +2451,15 @@ button:focus-visible {
 
 /* /read/ number stories */
 .math-question{margin:0 0 20px;padding:18px 20px;border:2px solid #f2c27b;border-radius:18px;background:#fff8ec;color:#201713}.math-q{margin:0 0 12px;font-size:1.1rem;line-height:1.5}.math-choices{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 12px;padding:0;list-style:none}.math-choices li{min-width:3.2em;padding:8px 14px;border:2px solid #d9b98a;border-radius:12px;background:#fff;color:#201713;font-weight:800;text-align:center}.math-choices li:has(.math-choice){padding:0;border:0;background:none}.math-choice{min-width:3.4em;min-height:48px;padding:8px 16px;border:2px solid #b07a3a;border-radius:12px;background:#fff;color:#201713;font:inherit;font-size:1.15rem;font-weight:800;cursor:pointer}.math-choice:hover:not(:disabled),.math-choice:focus-visible{background:#ffefd2;color:#201713}.math-choice.is-right{border-color:#1f6f5c;background:#d6f2e7;color:#0f3d32}.math-choice.is-tried{border-style:dashed;color:#6b5a4a;opacity:.75}.math-choice:disabled{cursor:default}.math-feedback{min-height:1.4em;margin:0 0 8px;font-weight:800;color:#1f6f5c}.math-answer{margin:0}.math-answer summary{cursor:pointer;font-weight:700;color:#7a4b1f}.math-answer p{margin:8px 0 0;line-height:1.55}@media print{.math-answer:not([open]) p{display:block}}
+
+/* /read/ bookshelf filters and New badge (read/shelf-filter.js) */
+.read-filters{margin:0 0 22px}.read-filters[hidden]{display:none}
+.read-filter-row{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.read-filter-btn{padding:8px 15px;border:1px solid var(--line-strong);border-radius:999px;background:transparent;color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.read-filter-btn:hover,.read-filter-btn:focus-visible{border-color:var(--ink)}
+.read-filter-btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface-strong)}
+.read-filter-status{min-height:1.4em;margin:2px 0 0;color:var(--muted);font-weight:700}
+.read-filter-empty{margin:0 0 40px;color:var(--muted)}.read-filter-empty[hidden]{display:none}
+.read-filter-reset{padding:0;border:0;background:none;font:inherit;font-weight:700;cursor:pointer}
+.read-library-card[hidden],.read-shelf-group[hidden],.read-jump-chip[hidden]{display:none}
+.read-new-badge{display:inline-block;margin:0 0 8px;padding:3px 10px;border-radius:999px;background:#d43f2a;color:#fff;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}

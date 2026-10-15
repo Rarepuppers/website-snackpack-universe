@@ -201,6 +201,7 @@
   "/read/share.js",
   "/read/reader.js",
   "/read/offline.js",
+  "/read/shelf-filter.js",
   "/assets/fonts/fonts.css",
   "/assets/favicon-32.png",
   "/assets/snackpack-mark-96.png",

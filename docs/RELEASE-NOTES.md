@@ -5,6 +5,20 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-15 — Bookshelf filters and "New" badges (Phase C2)
+
+- The bookshelf can be filtered by **type** (Phonics, Stories, Maths) and by
+  **age** (3–4, 5–6, 7–8, 9–10). Groups and stage shortcuts with nothing left
+  in them hide themselves, a line says "Showing N of 29 books", and an empty
+  combination offers a one-tap reset.
+- Filters live in the address bar (for example `/read/?type=maths&age=7-8`),
+  so a parent or teacher can share exactly the books that suit a child.
+- Books added in the last 30 days carry a **New** badge, worked out from the
+  reader's own date, so it never goes stale.
+- Ages come from the apps where they record one (Basic Math, 1-2-3 Counting);
+  phonics books follow the usual UK phonics timing. Without JavaScript the
+  filters stay hidden and the full shelf shows.
+
 ## 2026-10-15 — Lighter pictures on phones, tablets and desktops (Phase C1)
 
 - Every /read/ picture now comes in 480, 800 and 960 px WebP sizes as well as
