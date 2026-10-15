@@ -5,6 +5,16 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-16 — Richer book details for search engines (Phase C5)
+
+- Each book page now tells search engines and assistants its age range, number
+  of pages, language (British English), that it is an e-book with a printable
+  PDF, and what it teaches: the subject, the phonics stage, Reading Trail step
+  or UK school year, and the topic or sounds it covers. This helps match searches
+  such as "decodable reader stage 2" or "Year 3 maths story".
+- Generated from the shelf list, and checked in CI, so new books get it
+  automatically. Nothing visible on the pages changes.
+
 ## 2026-10-16 — Read to me speed (Phase C4)
 
 - A **Speed: slow / normal** button now sits beside every "Read to me" button.

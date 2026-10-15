@@ -238,10 +238,51 @@ hub = splice(hub, "read-itemlist:generated", itemListBlock(), "read/index.html")
 hub = splice(hub, "read-pdf-count:generated", `${NUMBER_WORDS[pdfs] ?? pdfs} free reader PDFs`, "read/index.html");
 write("read/index.html", hub);
 
+// Richer Book schema (READ-PLAN C5, 2026-10-16). The importers write each
+// book's Book JSON-LD with its name, level and topic ("about"); this adds the
+// fields search engines and assistants use to match "decodable reader stage 2"
+// or "Year 3 maths story": age range, page count, language, format, the PDF,
+// and an educationalAlignment (subject, phonics stage or school year, and what
+// the book teaches, reusing the importer's "about"). Merged into the existing
+// object, so the importer-owned fields stay as they are.
+const SUBJECT = { phonics: "Phonics", stories: "Reading", maths: "Mathematics" };
+// UK phonics timing, matching the ages on the shelf filters (C2).
+// UK years only: they do not map one-to-one onto US grades (Reception is
+// nearer Pre-K than Kindergarten), and the site is written for en-GB.
+const PHONICS_YEAR = { "4-5": "Reception (UK)", "4-6": "Reception (UK)", "5-6": "Reception to Year 1 (UK)", "6-7": "Year 1 to Year 2 (UK)" };
+const BOOK_RE = /<script type="application\/ld\+json">(\{"@context":"https:\/\/schema.org","@type":"Book".*?\})<\/script>/;
+function bookSchema(html, b, rel) {
+  const m = html.match(BOOK_RE);
+  if (!m) throw new Error(`${rel}: no one-line Book JSON-LD to enrich`);
+  const book = JSON.parse(m[1]);
+  const kind = KIND[b.group];
+  const pages = (html.match(/<article class="story-page-card"/g) || []).length;
+  if (!pages) throw new Error(`${rel}: no story pages counted`);
+  const levels = [];
+  const stage = b.group.match(/^stage-(\d)$/);
+  if (stage) levels.push(`Phonics Stage ${stage[1]}`);
+  const step = b.eyebrow.match(/Reading Trail step (\d)/);
+  if (step) levels.push(`Reading Trail step ${step[1]} of 6`);
+  if (kind === "phonics") levels.push(PHONICS_YEAR[`${b.age[0]}-${b.age[1]}`] ?? (() => { throw new Error(`${rel}: no school year for phonics ages ${b.age}`); })());
+  if (kind === "maths") levels.push((String(book.educationalLevel).match(/^Year \d+ \(UK\)/) || ["Nursery (UK)"])[0]);
+  const align = (type, name) => ({ "@type": "AlignmentObject", alignmentType: type, targetName: name });
+  const pdf = fs.existsSync(path.join(ROOT, "read", b.slug, `${b.slug}.pdf`));
+  Object.assign(book, {
+    inLanguage: "en-GB",
+    bookFormat: "https://schema.org/EBook",
+    numberOfPages: pages,
+    typicalAgeRange: `${b.age[0]}-${b.age[1]}`,
+    educationalAlignment: [align("educationalSubject", SUBJECT[kind]), ...levels.map((l) => align("educationalLevel", l)), ...(book.about ? [align("teaches", book.about)] : [])],
+  });
+  if (pdf) book.encoding = { "@type": "MediaObject", encodingFormat: "application/pdf", contentUrl: `${SITE}/read/${b.slug}/${b.slug}.pdf` };
+  return html.replace(m[0], () => `<script type="application/ld+json">${JSON.stringify(book)}</script>`);
+}
+
 SHELF.forEach((b, i) => {
   const rel = `read/${b.slug}/index.html`;
   let html = ensureShareTopMarker(fs.readFileSync(path.join(ROOT, rel), "utf8"), rel);
   html = splice(html, "read-share-top:generated", shareTopBlock(), rel);
+  html = bookSchema(html, b, rel);
   write(rel, splice(html, "read-next:generated", nextBlock(i), rel));
 });
 

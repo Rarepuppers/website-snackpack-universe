@@ -81,7 +81,7 @@ The plan, rules and held-back list live in `READ-PLAN-2026-10.md`. The scripts:
 
 | Script | What it does | When to run |
 |---|---|---|
-| `build-read-shelf.mjs` | Generates everything that depends on shelf order from one `SHELF` list: hub groups and stage chips, the `ItemList` JSON-LD, the PDF count, each book's share buttons and "Next story" link, the homepage `#read` section, and `read/offline-manifest.json` | After adding or reordering a book. `--check` to fail instead of fix |
+| `build-read-shelf.mjs` | Generates everything that depends on shelf order from one `SHELF` list: hub groups and stage chips, the `ItemList` JSON-LD, the PDF count, each book's share buttons, "Next story" link and the extra `Book` schema fields (age range, pages, language, PDF, educational alignment), the homepage `#read` section, and `read/offline-manifest.json` | After adding or reordering a book. `--check` to fail instead of fix |
 | `build-read-social-cards.py` | A 1200×630 share card per book (`read/<slug>/social-card.jpg`) and its `og:image`/`twitter:image` tags | After adding a book or changing a title. `--check` to fail instead of fix |
 | `build-sound-cards.py` | Builds `/read/sound-cards/` (one print page per stage) and appends its print CSS once | After adding a stage or Reading Trail step |
 | `import-decodable-book.mjs` | Imports an ABCs-app decodable reader | Per book, then the shelf steps in `READ-PLAN-2026-10.md` |
