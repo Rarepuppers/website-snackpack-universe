@@ -29,6 +29,64 @@ books worth sharing, easy sharing, and a good read on a phone, in that order.
 | Homepage | `#read` section with six real books and the live shelf count |
 | Search | Hub title "Free Decodable Readers & Printable Phonics Books"; all pages submitted to Google, Bing and IndexNow |
 
+## Next round: review, fixes, improvements and new books (planned 2026-10-15)
+
+Grounded in a content review of all 17 live books (live pages checked in
+Playwright, text diffed against each app's source) and an inventory of every
+app's illustrated books. Work top to bottom: each phase is independent of the
+ones below it.
+
+### Phase A: fix what the review found (no decisions needed)
+
+| # | Finding | Fix |
+|---|---|---|
+| A1 | **Ted-E-Bear's Short-Vowel Kit differs from the app on all 5 pages.** The app text was rewritten after the August import. The web copy uses words a short-vowel reader cannot decode yet (props, clips, grins, snug, slips). | Re-import from `reading-trail-drafts.ts` with `import-reading-trail-book.mjs` (add a `BOOKS` entry, keep the slug), rebuild its PDF, re-check the highlights. The other 12 phonics books match the app word for word. |
+| A2 | **5 of 6 decodables have no end-of-book question** (only Pip Sits has one, written for the web in August). The app data has none to copy. | Write one comprehension question per book from its own text, in Pip Sits's format. This is web editorial, like alt text: decodable words only, plus the answer. |
+| A3 | **4 images have missing or under-15-character alt text** (Bug in a Cup ×1, Nan and Pip ×2, The Cat and the Rat ×1). **Each Reading Trail book uses page 1's art as its cover with the same alt text**, so screen readers hear it twice. | Describe the four pictures. Set the title image's `alt=""` where it repeats page 1. |
+| A4 | **The printable-readers guide still says "Eight free printable readers"** in its title, H1, description and schema. The shelf is 17 books plus sound cards. | Refresh the guide's copy and book list to the current shelf, keeping the URL. It is the one `/read/` page with Google clicks, so change the copy, not the structure. Re-check in Search Console two weeks later. |
+| A5 | **Read to me has only been tested with a stub engine.** | Mark: try it once on an Android phone and an iPhone/iPad. iOS Safari fires fewer word-boundary events, so highlighting may lag; if it does, highlight by sentence there. |
+
+### Phase B: add books (free tier, after a quality read)
+
+Same rules as always: every page illustrated, a quality read of every page and
+picture, text verbatim, and nothing Pro without Mark.
+
+| # | Source | What is there | Plan |
+|---|---|---|---|
+| B1 | **1-2-3 Counting**, free | 2 stories with 6 illustrations each: `panda-cake-market-basket`, `sub-zero-snowflake-post` (Button Trail is already live) | Confirm page counts (the inventory parse did not count this app's pages), quality-read, then add both to **Number stories** as the youngest entries (Reception/Year 1 counting). Needs a small importer or a `BOOKS`-style extension; art is landscape `.jpg`. |
+| B2 | **Sentences & Spelling quick reads**, free (`STORY_BOOKS` + `EXTRA_STORY_BOOKS`) | **~60 four-page books with every page illustrated on disk** (wired through `BOOK_PAGE_ARTWORK`), each with a talk prompt per page and a 2-question quiz, in the same format as the Reading Trail | The biggest source by far, but read all 60 before importing any. Quality varies, and about a third are science/topic books (glacier, materials, five senses, continents) that need a **fact check**. Sample finding: `sub-zero-glacier-discovery` says a glacier may be "older than mountains", which is wrong. Pick the best **12–20** for a new **"Short reads"** group, themed (friendship and feelings · nature and science · adventures). Extend `import-reading-trail-book.mjs` to read `books.ts`; the quiz becomes the end-of-book question. |
+| B3 | **Zoo World animal books** | 16 books (Arctic Ice, Ocean Dive, Masters of Disguise…), each a cover plus 9 generated illustrations; the app has a fact-validation pipeline | Highest search demand of any source ("animal facts for kids"). **Check first:** which books are free, that every image is generated rather than a licensed photo (`unsplashBundledImageCredits.ts` exists in the app), and that the text passes the app's validators. Then quality-read and add an **"Animal fact books"** group. |
+| B4 | Held-back books, once their app fixes land | Pork-ulele, Wise Owl, Ted-E-Bear's Lantern, Booklava (task proposed); Pocketful of Sounds (art); 5 ABC books (text) | Re-read after the fix, then import with the existing scripts. |
+| B5 | **Pro books with full art** (Mark's call) | e.g. Counting's *Booklava and the Number That Hid* and *The Night the Lanterns Went Out*; the Pro Spelling quick reads | Only if Mark approves publishing more Pro content free. Today's revenue is $0, so the cost is low, but it's his decision. |
+
+Not candidates: Earth Science and Space Math (one cover per story), Mathematics
+(two scenes per story), Store Keeper (app is unbuildable).
+
+### Phase C: improve the experience (once the shelf passes ~25 books)
+
+| # | Improvement | Why |
+|---|---|---|
+| C1 | **Responsive images**: a 600 px WebP per page plus `srcset`/`sizes` | Most readers are on phones (mobile views tripled in October). Pages send 768–1200 px art to a 390 px screen. Expect about 60% less data per book. |
+| C2 | **Hub filters**: by age/year and by skill, plus a "New" badge | A 30+ book shelf is a long scroll. Generate from `SHELF` (add `age` and `skill` fields), with no client framework. |
+| C3 | **Questions page in each PDF**: the book's quiz or end question and the talk prompts on a final printable page | Teachers print; the PDFs currently have pictures only. Extend `build-read-pdfs.mjs` (it is zero-dependency, so text pages need a simple built-in font path). |
+| C4 | **Read to me controls**: a slower/normal speed toggle, remembered on the device (localStorage, wrapped in try/catch) | Early readers need slower speech; adults reading along may want normal. |
+| C5 | **Richer `Book` schema**: `typicalAgeRange`, `educationalAlignment` (phonics stage / school year), `numberOfPages`, `inLanguage` | Helps search engines and assistants match "decodable reader stage 2" or "Year 3 maths story". |
+
+### Phase D: decisions for Mark
+
+1. Zoo World animal books on the web? (Depends on B3's free and licence check.)
+2. Any more Pro books free (B5)?
+3. Pocketful of Sounds: commission 7 illustrations, or a text-led read-aloud format?
+4. Phase A5: a two-minute real-device check of Read to me.
+
+### Order and size
+
+A1–A4 are small and can ship together (one session). Then B1 (small), B2 (large,
+mostly reading: plan a session for the read and a session for the import),
+then C1 (medium, mechanical) and C2 once B2 lands. B3 waits on its checks.
+Re-measure on 2026-11-15 (already scheduled) before committing to B2's full
+size: if multi-book sessions grew, scale up; if not, stop at 12 quick reads.
+
 ## Open: needs Mark
 
 1. **Pocketful of Sounds art.** `ted-e-bear-pocketful-of-sounds` (app1, free,
