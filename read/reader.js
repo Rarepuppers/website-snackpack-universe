@@ -39,7 +39,8 @@
     if (copy._words) return copy._words;
     var text = "";
     var words = [];
-    var paras = copy.querySelectorAll(":scope > p");
+    // Story text, plus a number story's question so a child hears it too.
+    var paras = copy.querySelectorAll(":scope > p, :scope > .math-question > .math-q");
     Array.prototype.forEach.call(paras, function (p, pi) {
       if (pi) text += " ";
       var walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null);
@@ -115,11 +116,50 @@
       btn.textContent = "Read to me";
       btn.setAttribute("aria-pressed", "false");
       btn.addEventListener("click", function () { speak(card, btn); });
-      var aside = copy.querySelector(":scope > aside");
-      copy.insertBefore(btn, aside || null);
+      // Straight after the story text: before a number story's question box
+      // or a "Talk together" note, whichever comes first.
+      var after = copy.querySelector(":scope > .math-question, :scope > aside");
+      copy.insertBefore(btn, after || null);
     });
     window.addEventListener("pagehide", stop);
   }
+
+  // ── Number stories: tap an answer ────────────────────────────────────────
+  // The page ships the choices as a plain list with "Show the answer" below,
+  // which works without JS and on paper. Here each choice becomes a button: a
+  // right answer opens the explanation, a wrong one invites another try and is
+  // never marked in red, because the reader is six.
+  Array.prototype.forEach.call(document.querySelectorAll(".math-choices[data-answer]"), function (list) {
+    var answer = list.getAttribute("data-answer");
+    var box = list.closest(".math-question");
+    var details = box && box.querySelector(".math-answer");
+    var note = document.createElement("p");
+    note.className = "math-feedback";
+    note.setAttribute("aria-live", "polite");
+    list.parentNode.insertBefore(note, list.nextSibling);
+    Array.prototype.forEach.call(list.querySelectorAll("li"), function (li) {
+      var value = li.textContent.trim();
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "math-choice";
+      b.textContent = value;
+      li.textContent = "";
+      li.appendChild(b);
+      b.addEventListener("click", function () {
+        var right = value.replace("−", "-") === answer.replace("−", "-");
+        if (right) {
+          Array.prototype.forEach.call(list.querySelectorAll(".math-choice"), function (x) { x.disabled = true; });
+          b.classList.add("is-right");
+          note.textContent = "Yes! " + value + " is right.";
+          if (details) details.open = true;
+        } else {
+          b.classList.add("is-tried");
+          b.disabled = true;
+          note.textContent = "Not quite. Have another go.";
+        }
+      });
+    });
+  });
 
   // ── One page at a time ───────────────────────────────────────────────────
   var current = 0;
