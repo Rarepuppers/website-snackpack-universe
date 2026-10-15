@@ -236,6 +236,38 @@ function offlineManifest() {
   if (prev !== next) { changes.push(rel); if (!CHECK) fs.writeFileSync(path.join(ROOT, rel), next); }
 }
 
+// The printable-readers guide (the one /read/ page with Google clicks) keeps its
+// eight hand-written cards, which are the copy that ranks; everything else on
+// the shelf, plus the sound cards, is generated below them, and every stated
+// count follows the shelf so the page can never again say "eight" for 17 books.
+const GUIDE = "guides/free-printable-decodable-readers/index.html";
+const GUIDE_FIXED = new Set(["pip-sits", "nan-and-pip", "the-cat-and-the-rat", "ten-red-hens", "dog-in-the-fog", "bug-in-a-cup", "ted-e-bears-short-vowel-kit", "ted-e-bear-and-the-button-trail"]);
+function guideMoreBlock() {
+  const card = (index, title, blurb, tags, read, pdf) =>
+    `<article class="app-card"><div class="app-card-top"><span class="app-index">${index}</span><h2>${title}</h2><p>${blurb}</p><div class="tag-row">${tags.map((t) => `<span class="tag">${t}</span>`).join("")}</div><div class="app-actions"><a class="text-link" href="${read}">${pdf ? "Read online" : "Open and print"}</a>${pdf ? `<a class="text-link" href="${pdf}" download>Download PDF</a>` : ""}</div></div></article>`;
+  const rest = SHELF.filter((b) => !GUIDE_FIXED.has(b.slug));
+  const cards = rest.map((b) => card(b.eyebrow, plainTitle(b.title), b.blurb, [GROUPS.find((g) => g.id === b.group).title.split(" · ")[0]], `../../read/${b.slug}/`, `../../read/${b.slug}/${b.slug}.pdf`));
+  cards.push(card("Printable cards · one A4 page per stage", "Phonics sound cards", "Sound, word and tricky-word cards for every stage, from s a t p i n to vowel teams and word endings.", ["Printables"], "../../read/sound-cards/", null));
+  return `<div style="max-width:760px;margin:48px auto 28px;text-align:center;"><span class="eyebrow">More on the shelf</span><h2 class="section-title">Next steps, number stories and sound cards</h2><p class="section-copy">When the first eight feel easy, the Reading Trail carries on through sh, ch, th and wh, blends, magic e, vowel teams and word endings. The number stories add a maths question to every page. All free, all printable.</p></div><div class="grid app-grid">\n${cards.join("\n")}\n</div>`;
+}
+{
+  const n = SHELF.length;
+  const Word = NUMBER_WORDS[n] ?? String(n);
+  let guide = splice(fs.readFileSync(path.join(ROOT, GUIDE), "utf8"), "read-guide-more:generated", guideMoreBlock(), GUIDE);
+  const rules = [
+    [/\b(\d+|Eight) Free Printable Decodable Readers/g, `${n} Free Printable Decodable Readers`],
+    [/<h1>\w+ free printable readers for early phonics practice<\/h1>/, `<h1>${Word} free printable readers for early phonics practice</h1>`],
+    [/"description": "\w+ free illustrated early readers as A4 PDFs/, `"description": "${Word} free illustrated early readers as A4 PDFs`],
+    [/Download \w+ free illustrated early readers as A4 PDFs/, `Download ${Word.toLowerCase()} free illustrated early readers as A4 PDFs`],
+  ];
+  for (const [re, to] of rules) {
+    if (!re.test(guide)) throw new Error(`${GUIDE}: count rule no longer matches ${re} — update build-read-shelf.mjs`);
+    re.lastIndex = 0;
+    guide = guide.replace(re, to);
+  }
+  write(GUIDE, guide);
+}
+
 write("index.html", splice(fs.readFileSync(path.join(ROOT, "index.html"), "utf8"), "read-home:generated", homeBlock(), "index.html"));
 
 if (CHECK) {

@@ -9,6 +9,13 @@
 //   node scripts/import-decodable-book.mjs --all --write
 //
 // After importing, re-run: build-webp, build-sitemap, build-breadcrumbs.
+//
+// WARNING (2026-10-15): this template predates the theme/PWA/breadcrumb/share
+// blocks, the "Daily" nav item and the end-of-book questions that the six live
+// decodables now carry. Use it for NEW books only. Re-running --write over an
+// existing book would strip those; if you must, diff the result first.
+// End-of-book questions are web editorial (the app has none): add one to
+// QUESTIONS for any new book, in decodable words, answer plus a sound-out cue.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -25,6 +32,14 @@ const args = process.argv.slice(2);
 const WRITE = args.includes("--write");
 const ALL = args.includes("--all");
 const slugArg = (args.find((a) => a.startsWith("--slug=")) || "").split("=")[1];
+
+const QUESTIONS = {
+  "nan-and-pip": ["What did Nan tap?", "A pan. Can you sound out p-a-n?"],
+  "ten-red-hens": ["Where did the hens hide?", "In the pen. Can you sound out p-e-n?"],
+  "the-cat-and-the-rat": ["Where did the rat hide?", "In a can. Can you sound out c-a-n?"],
+  "bug-in-a-cup": ["What did Pip get?", "A big cup. Can you sound out c-u-p?"],
+  "dog-in-the-fog": ["How did the dog find Nan in the fog?", "Nan hit a hot pot: bam, bam, bam! Can you sound out p-o-t?"],
+};
 
 const esc = (s) =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -128,7 +143,7 @@ function buildHtml(book) {
 ${pageCards}
 </section>
 
-<section><div class="shell story-finish-card"><span class="eyebrow">The end &middot; Brilliant reading</span><h2>For grown-ups</h2><p>${esc(book.parentNote)}</p><p>SnackPack ABC &amp; Alphabet continues with letter activities, read-together stories and more early phonics practice.</p><div class="stack-inline"><a class="btn btn-primary" href="${PLAY_URL}" target="_blank" rel="noopener">Get the app on Google Play</a><a class="btn btn-secondary" href="../../apps/snackpack-1-abcs-alphabet/">Explore the app</a><a class="btn btn-secondary" href="./${book.id}.pdf" download>Print this book (PDF)</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>
+<section><div class="shell story-finish-card"><span class="eyebrow">The end &middot; Brilliant reading</span>${QUESTIONS[book.id] ? `<h2>${esc(QUESTIONS[book.id][0])}</h2><details class="story-answer"><summary>Show the answer</summary><p>${esc(QUESTIONS[book.id][1])}</p></details><h3 class="story-grownups">For grown-ups</h3>` : "<h2>For grown-ups</h2>"}<p>${esc(book.parentNote)}</p><p>SnackPack ABC &amp; Alphabet continues with letter activities, read-together stories and more early phonics practice.</p><div class="stack-inline"><a class="btn btn-primary" href="${PLAY_URL}" target="_blank" rel="noopener">Get the app on Google Play</a><a class="btn btn-secondary" href="../../apps/snackpack-1-abcs-alphabet/">Explore the app</a><a class="btn btn-secondary" href="./${book.id}.pdf" download>Print this book (PDF)</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>
 </main>
 <footer class="foot"><div class="shell foot-wrap"><p class="foot-note">Story from SnackPack ABC &amp; Alphabet.</p><div class="footer-links"><a class="text-link" href="../">Bookshelf</a><a class="text-link" href="../../privacy/snackpack-1-abcs-alphabet/">Privacy</a></div></div></footer>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${BEACON}"}'></script>

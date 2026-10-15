@@ -38,6 +38,11 @@ ones below it.
 
 ### Phase A: fix what the review found (no decisions needed)
 
+**Status 2026-10-15: A1–A4 DONE** (see `docs/RELEASE-NOTES.md`). A5 waits on
+Mark's device check. Decodable end questions live in `QUESTIONS` in
+`import-decodable-book.mjs`; that importer's template is stale, so use it for
+new books only.
+
 | # | Finding | Fix |
 |---|---|---|
 | A1 | **Ted-E-Bear's Short-Vowel Kit differs from the app on all 5 pages.** The app text was rewritten after the August import. The web copy uses words a short-vowel reader cannot decode yet (props, clips, grins, snug, slips). | Re-import from `reading-trail-drafts.ts` with `import-reading-trail-book.mjs` (add a `BOOKS` entry, keep the slug), rebuild its PDF, re-check the highlights. The other 12 phonics books match the app word for word. |
