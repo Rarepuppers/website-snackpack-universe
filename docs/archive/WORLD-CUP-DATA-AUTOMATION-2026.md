@@ -1,4 +1,4 @@
-> **Archived 2026-10-15.** Obsolete: the 2026 World Cup ended on 2026-07-19 and its sub-pages are noindexed. The `update-world-cup-data.yml` workflow should be disabled.
+> **Archived 2026-10-15.** Obsolete: the 2026 World Cup ended on 2026-07-19 and its sub-pages are noindexed. The `update-world-cup-data.yml` workflow was disabled on 2026-10-15.
 
 # World Cup data automation
 

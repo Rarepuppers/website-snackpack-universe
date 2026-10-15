@@ -299,7 +299,7 @@ Use `--seed-data` rarely. For everyday changes, leave it off.
 
 The workflow `.github/workflows/update-world-cup-data.yml` runs every 5 minutes
 and commits `data/world-cup-2026.json` when scores change. It needs a repository
-secret `API_FOOTBALL_KEY`. Setup notes are archived at `docs/archive/WORLD-CUP-DATA-AUTOMATION-2026.md` (tournament over; the workflow should be disabled).
+secret `API_FOOTBALL_KEY`. Setup notes are archived at `docs/archive/WORLD-CUP-DATA-AUTOMATION-2026.md` (tournament over; workflow disabled 2026-10-15).
 
 ## Counting download clicks
 

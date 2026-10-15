@@ -92,6 +92,12 @@ jobs:
       - name: Check newsletter CTA
         run: node scripts/build-newsletter-cta.mjs --check
 
+      # The /read/ hub groups, the "Next story" chain and the ItemList schema are
+      # all generated from one ordered shelf. A book added by hand would break
+      # the chain without anything looking wrong, so assert the blocks are current.
+      - name: Check /read/ bookshelf
+        run: node scripts/build-read-shelf.mjs --check
+
       # Catches a rule that pins a background but lets its text follow the theme:
       # fine in cream, invisible in dark. This is how the hero and the primary
       # button shipped unreadable.
