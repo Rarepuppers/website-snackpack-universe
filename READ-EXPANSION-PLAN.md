@@ -1,5 +1,7 @@
 # /read/ expansion + printable PDFs — build plan
 
+> **Superseded 2026-10-15 for planning:** open items now live in `READ-PLAN-2026-10.md`. Keep this file as the how-to reference for importing books and building PDFs.
+
 Written 2026-08-13. For whoever executes it (Codex or Claude). Companion to
 `LINK-BUILDING-PLAN.md`, which explains *why* `/read/` is the priority: free
 decodable readers with no sign-up wall are the site's only realistic magnet for
