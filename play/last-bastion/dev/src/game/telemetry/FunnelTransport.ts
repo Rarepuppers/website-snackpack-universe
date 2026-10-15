@@ -1,3 +1,4 @@
+import { localDayKey } from "../run/LocalDayKey";
 import {
   NEW_VISITOR,
   NO_OP_TRANSPORT,
@@ -159,9 +160,10 @@ const SESSION_LEDGER_KEY = "lastBastion.funnelSession.v1";
 /**
  * Session storage, not local: the ledger must survive the title -> map -> combat
  * -> debrief page loads of one visit and then be forgotten, so tomorrow's visit
- * is counted again. It holds event names only.
+ * begins. It holds a local day and event names; neither ledger nor day is sent.
  */
-function sessionLedger(host: Window): SessionLedger {
+function sessionLedger(host: Window, day: string): SessionLedger {
+  const key = SESSION_LEDGER_KEY;
   let storage: Storage;
   try {
     storage = host.sessionStorage;
@@ -172,8 +174,10 @@ function sessionLedger(host: Window): SessionLedger {
   }
   const read = (): string[] => {
     try {
-      const parsed: unknown = JSON.parse(storage.getItem(SESSION_LEDGER_KEY) ?? "[]");
-      return Array.isArray(parsed) ? parsed.filter((v): v is string => typeof v === "string") : [];
+      const parsed: unknown = JSON.parse(storage.getItem(key) ?? "null");
+      const record = parsed as { day?: string; events?: unknown } | null;
+      return record?.day === day && Array.isArray(record.events)
+        ? record.events.filter((v): v is string => typeof v === "string") : [];
     } catch {
       return [];
     }
@@ -182,7 +186,7 @@ function sessionLedger(host: Window): SessionLedger {
     has: (event) => read().includes(event),
     add: (event) => {
       try {
-        storage.setItem(SESSION_LEDGER_KEY, JSON.stringify([...new Set([...read(), event])]));
+        storage.setItem(SESSION_LEDGER_KEY, JSON.stringify({ day, events: [...new Set([...read(), event])] }));
       } catch {
         /* the visit is still playable without a tidy denominator */
       }
@@ -237,13 +241,16 @@ export function startPlayerFunnel(
   const active = installFunnelTransport(host, siteCode);
   const funnel = new PlayerFunnel(
     active ? bufferedGoatCounterTransport(host) : NO_OP_TRANSPORT,
-    sessionLedger(host),
+    sessionLedger(host, localDayKey(nowMs)),
   );
 
   const { state, isReturningToday } = recordVisit(readVisitState(host), nowMs);
-  writeVisitState(host, state);
-
   funnel.opened();
   if (isReturningToday) funnel.returning();
+  writeVisitState(host, {
+    ...state,
+    returningReportedOn: isReturningToday && !funnel.reported().includes("returning")
+      ? readVisitState(host).returningReportedOn : state.returningReportedOn,
+  });
   return funnel;
 }

@@ -37,7 +37,7 @@ export interface RunProvenance {
   gameSpeedModified: boolean;
 }
 
-export const LAST_BASTION_BUILD_VERSION = "web-2026.10.11-daily-drop";
+export const LAST_BASTION_BUILD_VERSION = "web-2026.10.15-reliability";
 
 export interface RunSummary {
   mode: "quick-drop" | "expedition";

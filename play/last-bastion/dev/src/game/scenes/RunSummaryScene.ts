@@ -243,7 +243,12 @@ export class RunSummaryScene extends Phaser.Scene {
       ? `?${new URLSearchParams({ screen: "game", hero: summary.heroId, ...(summary.perkId ? { perk: summary.perkId } : {}), daily: today }).toString()}`
       : null;
     const retryUrl = dailyRetryUrl ?? quickDropRetryUrl(summary);
-    const retry = () => { if (retryUrl) window.location.href = retryUrl; };
+    const retry = () => {
+      if (!retryUrl) return;
+      const target = new URL(retryUrl, window.location.href);
+      if (summary.dailyKey) target.searchParams.set("daily", localDayKey(Date.now()));
+      window.location.href = target.href;
+    };
     const quickDrop = () => {
       const params = new URLSearchParams({ screen: "game", hero: summary.heroId });
       if (summary.perkId) params.set("perk", summary.perkId);
@@ -259,13 +264,14 @@ export class RunSummaryScene extends Phaser.Scene {
         kills: summary.kills,
         heroName: heroName(summary.heroId),
         cleared: summary.outcome === "victory",
-        streak: dailyStreak(progress?.daily ?? {}, summary.dailyKey),
+        streak: dailyStreak(progress?.daily ?? {}, summary.dailyKey, progress?.dailyParticipation),
+        rules: summary.provenance.settings ? { buildVersion: summary.provenance.buildVersion, gameSpeedMultiplier: summary.provenance.settings.gameSpeedMultiplier } : undefined,
       })
       : null;
     const copyLink = () => { void this.copyGameLink(shareText); };
     const moreGames = () => { window.location.href = "/play/"; };
     const actionDefinitions = [
-      ...(retryUrl ? [{ label: summary.dailyKey ? "RETRY DAILY" : "RETRY THIS SEED", shortcut: "R", run: retry }] : []),
+      ...(retryUrl ? [{ label: summary.dailyKey ? "PLAY TODAY’S DAILY" : "RETRY THIS SEED", shortcut: "R", run: retry }] : []),
       { label: "NEW QUICK DROP", shortcut: "Q", run: quickDrop },
       { label: "NEW EXPEDITION", shortcut: "N", run: expedition },
       { label: "COPY RUN DETAILS", shortcut: "C", run: copy },
@@ -573,7 +579,7 @@ function debriefModeLabel(summary: RunSummary): string {
 /** Today's best and the streak, read back from the save the run just updated. */
 function dailyStanding(dayKey: string, progress: GameProgress): string {
   const record = progress.daily[dayKey];
-  const streak = dailyStreak(progress.daily, dayKey);
+  const streak = dailyStreak(progress.daily, dayKey, progress.dailyParticipation);
   const best = record ? (record.cleared ? "CLEARED" : `BEST WAVE ${record.bestWave}`) : "";
   return [best, streak > 1 ? `${streak}-DAY STREAK` : ""].filter(Boolean).join("  •  ");
 }

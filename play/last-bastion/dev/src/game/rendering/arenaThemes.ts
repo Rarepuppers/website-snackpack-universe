@@ -40,7 +40,7 @@ export const ARENA_THEMES: readonly ArenaTheme[] = Object.freeze([
     boundaryTexture: "arena-boundary-v1",
     obstacleTexture: "arena-obstacle-v1",
     decalTexture: null,
-    readabilityWashAlpha: 0,
+    readabilityWashAlpha: 0.12,
   }),
   Object.freeze({
     id: "emberfall",

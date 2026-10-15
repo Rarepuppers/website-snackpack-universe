@@ -52,6 +52,28 @@
 </head>
   <body>
     <main id="game-root" aria-label="Last Bastion game"></main>
+    <section id="boot-status" role="status" style="position:fixed;inset:0;z-index:5;background:#111722;color:#edf4ff;display:grid;place-content:center;text-align:center;padding:24px;font:18px system-ui">
+      <h1>Last Bastion</h1><p id="boot-message">Preparing your game...</p>
+      <div id="boot-actions" hidden><button type="button" id="boot-retry">Retry loading</button> <a href="/play/">Back to arcade</a></div>
+      <noscript>JavaScript is needed to play Last Bastion.</noscript>
+    </section>
+    <script>
+      (() => {
+        const panel = document.getElementById('boot-status');
+        const showFailure = () => {
+          if (!panel.isConnected) return;
+          document.getElementById('boot-message').textContent = 'The game could not finish loading. Check your connection and try again. Your save has not been reset.';
+          document.getElementById('boot-actions').hidden = false;
+        };
+        const timeout = setTimeout(showFailure, 30000);
+        document.getElementById('boot-retry').addEventListener('click', () => location.reload());
+        window.addEventListener('last-bastion-ready', () => { clearTimeout(timeout); panel.remove(); }, { once: true });
+        window.addEventListener('last-bastion-boot-failed', showFailure);
+        window.addEventListener('error', (event) => {
+          if (event.target instanceof HTMLScriptElement && event.target.type === 'module') showFailure();
+        }, true);
+      })();
+    </script>
   <script src="../game-ui-assets.js" defer></script>
   <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"

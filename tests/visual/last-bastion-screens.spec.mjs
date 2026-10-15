@@ -32,11 +32,14 @@ const VIEWPORTS = [
  * screen here boots from a single URL, which is what makes this cheap.
  */
 const SCREENS = [
+  { id: "settings", route: "/play/last-bastion/?flow=settings", note: "Grouped settings fit above footer" },
+  { id: "build", route: "/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&pausepreview=build", note: "Paged build inspection" },
+  { id: "affinity", route: "/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&pausepreview=build", keys: ["ArrowLeft"], note: "Affinity thresholds and consequences" },
   { id: "title", route: "/play/last-bastion/", note: "LB-05 menu title inside its plate" },
   { id: "menu", route: "/play/last-bastion/?flow=menu", note: "three ways to play, player-facing card copy" },
   { id: "map", route: "/play/last-bastion/?screen=map&mapseed=2026", note: "LB-07 map quality, LB-08 armed route; fixed seed for comparable captures" },
   { id: "gallery-marine", route: "/play/last-bastion/?mode=gallery", note: "LB-04 Marine helmet registration across 12 poses" },
-  { id: "combat", route: "/play/last-bastion/?screen=game", note: "LB-01 projectiles, HUD safe area" },
+  { id: "combat", route: "/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061", note: "LB-01 projectiles, HUD safe area" },
   // ?summarydemo=1 populates a representative summary. Without it the debrief
   // renders its empty state, which is worth capturing but is not the screen the
   // defects live on.
@@ -81,11 +84,17 @@ test.describe("Last Bastion screenshot matrix", () => {
         await page.setViewportSize({ width: viewport.width, height: viewport.height });
         await page.goto(screen.route);
         await page.waitForSelector("#game-root canvas", { state: "visible", timeout: 60_000 });
+        if (screen.id === "build" || screen.id === "affinity") {
+          await page.waitForFunction(() => window.__buildInspection !== undefined);
+        }
         for (const key of screen.keys ?? []) {
           // Each press changes shell state and redraws; a short settle between
           // them keeps the capture off a half-built screen.
           await page.waitForTimeout(700);
-          await page.keyboard.press(key);
+          await page.keyboard.press(key, { delay: 80 });
+        }
+        if (screen.id === "affinity") {
+          await page.waitForFunction(() => window.__buildInspection?.title.startsWith("TRANSFORMATION AFFINITY"));
         }
         // Settle: wait for the asset queue to go quiet rather than a fixed sleep,
         // so a heavy route is not photographed mid-load and a light one is not

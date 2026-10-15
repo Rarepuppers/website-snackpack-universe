@@ -102,6 +102,7 @@ async function boot(): Promise<Phaser.Game> {
     callbacks: {
       // postBoot runs after Phaser's own scale setup, so our zoom survives.
       postBoot: (booted) => {
+        window.dispatchEvent(new Event("last-bastion-ready"));
         const apply = () => applyDisplayScale(booted, useWorldPresentation);
         apply();
         requestAnimationFrame(apply);
@@ -137,5 +138,8 @@ async function start(): Promise<Phaser.Game> {
   return boot();
 }
 
-const game = start();
+const game = start().catch(() => {
+  window.dispatchEvent(new Event("last-bastion-boot-failed"));
+  return null;
+});
 export default game;

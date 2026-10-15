@@ -1,4 +1,4 @@
-import { readDailyRecords, recordDailyAttempt, type DailyRecord } from "../run/DailyDrop";
+import { dailyParticipation, type DailyParticipation, readDailyRecords, recordDailyAttempt, type DailyRecord } from "../run/DailyDrop";
 import { isPerkId, unlockedPerkIds, type PerkId } from "../perks/perkCatalog";
 import type { HeroDefinition } from "../hero/HeroDefinition";
 import { heroDefinition, isHeroId } from "../hero/HeroCatalog";
@@ -123,6 +123,7 @@ export interface GameProgress {
   purchasedArmoryNodeIds: ArmoryNodeId[];
   /** Daily Drop best-of records keyed by local day. Additive: pre-Daily saves read as {}. */
   daily: Record<string, DailyRecord>;
+  dailyParticipation?: DailyParticipation;
 }
 
 /**
@@ -238,6 +239,7 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     threatTierVictories: Object.freeze({ 0: 0, 1: 0, 2: 0 }),
     commandMarksLifetime: 0,
     purchasedArmoryNodeIds: Object.freeze([]) as unknown as ArmoryNodeId[],
+    dailyParticipation: Object.freeze([]),
     daily: Object.freeze({}) as Record<string, DailyRecord>,
   }),
   expedition: null,
@@ -535,6 +537,10 @@ export class LocalSaveStore {
       threatTierBestNodes,
       threatTierVictories,
       commandMarksLifetime: this.cached.progress.commandMarksLifetime + commandMarksEarned,
+      dailyParticipation: dailyParticipation([
+        ...(this.cached.progress.dailyParticipation ?? []),
+        ...(summary?.dailyKey ? [{ start: summary.dailyKey, end: summary.dailyKey }] : []),
+      ], this.cached.progress.daily),
       daily: summary?.dailyKey
         ? recordDailyAttempt(this.cached.progress.daily, summary.dailyKey, {
           waveReached: summary.waveReached,
@@ -654,6 +660,7 @@ function normalizeSave(parsed: unknown): SaveData {
       commandMarksLifetime: readCount(candidate.progress?.commandMarksLifetime),
       purchasedArmoryNodeIds,
       daily: readDailyRecords(candidate.progress?.daily),
+      dailyParticipation: dailyParticipation(candidate.progress?.dailyParticipation, readDailyRecords(candidate.progress?.daily)),
     },
     expedition: version >= 2 ? readExpedition(candidate.expedition, heroStartingWeaponId) : null,
     selectedPerkId: version >= 3 && isPerkId(candidate.selectedPerkId)
@@ -732,8 +739,8 @@ function normalizeSettings(value: unknown): GameSettings {
     uiVolume: readBoundedNumber(candidate.uiVolume, 1, 0, 1),
     musicVolume: readBoundedNumber(candidate.musicVolume, 1, 0, 1),
     ambienceVolume: readBoundedNumber(candidate.ambienceVolume, 1, 0, 1),
-    gamepadMoveDeadzone: readBoundedNumber(candidate.gamepadMoveDeadzone, 0.18, 0, 1),
-    gamepadAimDeadzone: readBoundedNumber(candidate.gamepadAimDeadzone, 0.25, 0, 1),
+    gamepadMoveDeadzone: readBoundedNumber(candidate.gamepadMoveDeadzone, 0.18, 0, 0.95),
+    gamepadAimDeadzone: readBoundedNumber(candidate.gamepadAimDeadzone, 0.25, 0, 0.95),
     gamepadAimSensitivity: readBoundedNumber(candidate.gamepadAimSensitivity, 1, 0.25, 3),
     gamepadVibrationStrength: readBoundedNumber(candidate.gamepadVibrationStrength, 0.75, 0, 1),
     aimAssistStrength: readBoundedNumber(candidate.aimAssistStrength, 0, 0, 1),
@@ -1090,6 +1097,7 @@ function cloneSave(save: SaveData): SaveData {
       threatTierVictories: { ...save.progress.threatTierVictories },
       purchasedArmoryNodeIds: [...save.progress.purchasedArmoryNodeIds],
       daily: readDailyRecords(save.progress.daily),
+      dailyParticipation: dailyParticipation(save.progress.dailyParticipation, save.progress.daily),
     },
     expedition: save.expedition === null ? null : cloneExpedition(save.expedition),
     selectedPerkId: save.selectedPerkId,

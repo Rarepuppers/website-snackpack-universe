@@ -69,14 +69,42 @@ export function previousDailyKey(dayKey: string): string {
  * Consecutive played days ending today — or ending yesterday when today has
  * not been played yet, so a streak does not read as broken all morning.
  */
-export function dailyStreak(records: Readonly<Record<string, DailyRecord>>, todayKey: string): number {
-  let cursor = records[todayKey] ? todayKey : previousDailyKey(todayKey);
-  let streak = 0;
-  while (cursor && records[cursor]) {
-    streak += 1;
-    cursor = previousDailyKey(cursor);
+export type DailyParticipation = readonly { start: string; end: string }[];
+
+/** Merge validated date intervals and retained legacy result dates without double counting. */
+export function dailyParticipation(value: unknown, records: Readonly<Record<string, DailyRecord>> = {}): DailyParticipation {
+  const intervals: { start: string; end: string }[] = Object.keys(records)
+    .filter(isDailyKey).map(day => ({ start: day, end: day }));
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      if (item && isDailyKey(item.start) && isDailyKey(item.end) && item.start <= item.end) {
+        intervals.push({ start: item.start, end: item.end });
+      }
+    }
   }
-  return streak;
+  intervals.sort((a, b) => a.start.localeCompare(b.start));
+  const merged: { start: string; end: string }[] = [];
+  for (const interval of intervals) {
+    const last = merged.at(-1);
+    if (last && previousDailyKey(interval.start) <= last.end) {
+      if (interval.end > last.end) last.end = interval.end;
+    } else merged.push({ ...interval });
+  }
+  return merged;
+}
+
+export function dailyStreak(records: Readonly<Record<string, DailyRecord>>, todayKey: string, participation: DailyParticipation = []): number {
+  if (!isDailyKey(todayKey)) return 0;
+  const intervals = dailyParticipation(participation, records);
+  const yesterday = previousDailyKey(todayKey);
+  const interval = intervals.find(row => row.start <= todayKey && row.end >= yesterday);
+  if (!interval) return 0;
+  const end = interval.end < todayKey ? interval.end : todayKey;
+  const utcDay = (day: string) => {
+    const [year, month, date] = day.split("-").map(Number);
+    return Date.UTC(year!, month! - 1, date!);
+  };
+  return Math.round((utcDay(end) - utcDay(interval.start)) / 86400000) + 1;
 }
 
 export function recordDailyAttempt(
@@ -174,12 +202,14 @@ export function dailyShareText(input: {
   heroName: string;
   cleared: boolean;
   streak: number;
+  rules?: { buildVersion: string; gameSpeedMultiplier: number };
 }): string {
   const result = input.cleared
     ? `cleared all ${input.totalWaves} waves`
     : `reached wave ${input.waveReached}/${input.totalWaves}`;
   const streak = input.streak > 1 ? ` Streak: ${input.streak} days.` : "";
-  return `Last Bastion Daily Drop, ${dailyLabel(input.dayKey)}: ${result} with ${input.kills} ${input.kills === 1 ? "kill" : "kills"} as the ${input.heroName}.${streak} ${LAST_BASTION_PUBLIC_URL}`;
+  const rules = input.rules ? ` Build ${input.rules.buildVersion}; speed ${input.rules.gameSpeedMultiplier}x. Heroes, perks and assistance may differ.` : "";
+  return `Last Bastion Daily Drop, ${dailyLabel(input.dayKey)}: ${result} with ${input.kills} ${input.kills === 1 ? "kill" : "kills"} as the ${input.heroName}.${streak}${rules} ${LAST_BASTION_PUBLIC_URL}`;
 }
 
 function readCount(value: unknown): number {

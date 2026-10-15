@@ -199,7 +199,8 @@ export class PlayerFunnel {
   }
 
   runEnded(outcome: FunnelOutcome, waveReached: number, mode: FunnelProperties["mode"]): void {
-    this.once(this.sentThisRun, "run-ended", { outcome, depth: depthBucket(waveReached), mode });
+    // Expedition progress is measured in nodes, not waves. Do not label node depth as waves.
+    this.once(this.sentThisRun, "run-ended", { outcome, ...(mode === "expedition" ? {} : { depth: depthBucket(waveReached) }), mode });
   }
 
   /** Test seam: which events this instance has already reported. */

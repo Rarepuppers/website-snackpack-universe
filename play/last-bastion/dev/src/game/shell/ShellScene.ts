@@ -21,6 +21,8 @@ import {
 } from "../rendering/DesktopDisplayRuntime";
 import {
   createShellState,
+  SETTINGS_GROUPS,
+  settingsGroup,
   howToPlayPages,
   isShellRunMode,
   menuCardSubtitle,
@@ -95,6 +97,7 @@ export class ShellScene extends Phaser.Scene {
   private state!: ShellState;
   private root!: Phaser.GameObjects.Container;
   private titlePulse = 0;
+  private characterLoadFailed = false;
   private loadingAssetGroup: "shell-character" | null = null;
   private bindingCapture: { device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction } | null = null;
   private fullscreenFeedback: string | null = null;
@@ -199,7 +202,16 @@ export class ShellScene extends Phaser.Scene {
   };
 
   private apply(intent: ShellIntent): void {
-    if (this.loadingAssetGroup) return;
+    if (this.state.screen === "character-select" && (this.loadingAssetGroup || this.characterLoadFailed)) {
+      if (intent === "back") {
+        this.state = { ...this.state, screen: "menu" };
+        this.render();
+      } else if (intent === "confirm" && this.characterLoadFailed) {
+        this.characterLoadFailed = false;
+        this.render();
+      }
+      return;
+    }
     const result = stepShell(this.state, intent);
     this.state = result.state;
     for (const effect of result.effects) {
@@ -289,6 +301,7 @@ export class ShellScene extends Phaser.Scene {
     (window as unknown as { __savePersistence?: object }).__savePersistence = this.saveStore.persistence();
     const assetsReady = this.ensureScreenAssets();
     (window as unknown as { __shellAssetsReady?: boolean }).__shellAssetsReady = assetsReady;
+    (window as unknown as { __shellLoadFailed?: boolean }).__shellLoadFailed = this.characterLoadFailed;
     if (!assetsReady) return;
     this.root.removeAll(true);
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY));
@@ -337,7 +350,14 @@ export class ShellScene extends Phaser.Scene {
     const group = this.state.screen === "character-select" ? "shell-character" : null;
     const assets = group ? SHELL_CHARACTER_ASSETS : null;
     if (!assets || areGameAssetsLoaded(this, assets)) return true;
-    if (this.loadingAssetGroup === group) return false;
+    if (this.characterLoadFailed) {
+      this.renderLoadingPanel();
+      return false;
+    }
+    if (this.loadingAssetGroup === group) {
+      this.renderLoadingPanel();
+      return false;
+    }
 
     this.loadingAssetGroup = group;
     this.renderLoadingPanel();
@@ -348,7 +368,8 @@ export class ShellScene extends Phaser.Scene {
     }
     this.load.once(Phaser.Loader.Events.COMPLETE, () => {
       this.loadingAssetGroup = null;
-      this.render();
+      this.characterLoadFailed = !areGameAssetsLoaded(this, assets);
+      if (this.sys.isActive()) this.render();
     });
     this.load.start();
     return false;
@@ -363,8 +384,17 @@ export class ShellScene extends Phaser.Scene {
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY, 0.74));
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, 360, 94, PANEL)
       .setStrokeStyle(2, TEAL_HEX));
-    this.root.add(this.text(WIDTH / 2, HEIGHT / 2 - 10, "PREPARING DOSSIERS", TEAL, "18px", true));
-    this.root.add(this.text(WIDTH / 2, HEIGHT / 2 + 20, "LOADING CHARACTER ART...", MUTED, "10px", true));
+    this.root.add(this.text(WIDTH / 2, HEIGHT / 2 - 10, this.characterLoadFailed ? "CHARACTER ART UNAVAILABLE" : "PREPARING DOSSIERS", TEAL, "18px", true));
+    this.root.add(this.text(WIDTH / 2, HEIGHT / 2 + 20, this.characterLoadFailed ? "ENTER / A: RETRY    ESC / B: BACK" : "LOADING CHARACTER ART...  ESC / B: BACK", MUTED, "10px", true));
+    const back = this.text(WIDTH / 2 - 80, HEIGHT / 2 + 70, "BACK", TEAL, "16px", true).setInteractive({ useHandCursor: true });
+    back.on("pointerdown", () => this.apply("back"));
+    this.root.add(back);
+    if (this.characterLoadFailed) {
+      const retry = this.text(WIDTH / 2 + 80, HEIGHT / 2 + 70, "RETRY", TEAL, "16px", true).setInteractive({ useHandCursor: true });
+      retry.on("pointerdown", () => this.apply("confirm"));
+      this.root.add(retry);
+    }
+
   }
 
   private renderTitle(): void {
@@ -393,7 +423,7 @@ export class ShellScene extends Phaser.Scene {
     this.root.add(this.text(
       WIDTH / 2,
       HEIGHT - 28,
-      "SOLO EXPEDITION  •  KEYBOARD & CONTROLLER  •  AUTOSAVES BETWEEN NODES",
+      "QUICK DROP  •  DAILY DROP  •  EXPEDITION  |  KEYBOARD & CONTROLLER",
       MUTED,
       "12px",
       true,
@@ -542,18 +572,28 @@ export class ShellScene extends Phaser.Scene {
     this.root.add(this.text(
       70,
       84,
-      this.saveTransferFeedback ?? this.fullscreenFeedback ?? "Changes persist immediately. URL parameters remain as review overrides.",
+      this.saveTransferFeedback ?? this.fullscreenFeedback ?? "Changes save automatically. Select a group to see its settings.",
       this.saveTransferFeedback || this.fullscreenFeedback ? ORANGE : MUTED,
       "12px",
     ));
     if (uiChromeEnabled()) this.root.add(this.uiDivider(WIDTH / 2, 448, 760));
-    const rowsPerColumn = Math.ceil(this.state.settingsRows.length / 2);
-    const rowStep = rowsPerColumn > 13 ? 28 : 30;
-    this.state.settingsRows.forEach((row, index) => {
-      const column = Math.floor(index / rowsPerColumn);
-      const rowIndex = index % rowsPerColumn;
+    const group = settingsGroup(this.state.settingsRows[this.state.settingsIndex]!.key);
+    SETTINGS_GROUPS.forEach((name, groupIndex) => {
+      const x = 70 + groupIndex * 166;
+      this.root.add(this.text(x, 112, name, name === group ? TEAL : IVORY, "12px"));
+      this.clickZone(x - 4, 104, 160, 30, () => {
+        const index = this.state.settingsRows.findIndex(row => settingsGroup(row.key) === name);
+        if (index >= 0) { this.state = { ...this.state, settingsIndex: index }; this.render(); }
+      });
+    });
+    const visibleRows = this.state.settingsRows.map((row, index) => ({ row, index }))
+      .filter(({ row }) => settingsGroup(row.key) === group);
+    const rowsPerColumn = Math.ceil(visibleRows.length / 2);
+    visibleRows.forEach(({ row, index }, visibleIndex) => {
+      const column = Math.floor(visibleIndex / rowsPerColumn);
+      const rowIndex = visibleIndex % rowsPerColumn;
       const x = 70 + column * 420;
-      const y = 102 + rowIndex * rowStep;
+      const y = 158 + rowIndex * 38;
       const focused = index === this.state.settingsIndex;
       this.root.add(this.add.rectangle(x + 190, y + 11, 380, 26, focused ? 0x24384f : PANEL)
         .setStrokeStyle(focused ? 2 : 1, focused ? TEAL_HEX : 0x3b4d63));
@@ -571,7 +611,7 @@ export class ShellScene extends Phaser.Scene {
         this.apply("confirm");
       });
     });
-    this.root.add(this.text(70, HEIGHT - 22, "UP/DOWN SELECT  •  ENTER/LEFT/RIGHT TOGGLE  •  ESC BACK", MUTED, "11px"));
+    this.root.add(this.text(70, HEIGHT - 22, "UP/DOWN BROWSE ALL SETTINGS  •  ENTER/LEFT/RIGHT CHANGE  •  ESC BACK", MUTED, "11px"));
   }
 
   private exportSaveBackup(): void {

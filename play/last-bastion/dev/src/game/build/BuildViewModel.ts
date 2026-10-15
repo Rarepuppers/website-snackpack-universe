@@ -3,7 +3,7 @@ import { WEAPON_CATALOG, type WeaponAttackPattern, type WeaponId } from "../cont
 import type { PlayerStatBlock } from "../stats/PlayerStatBlock";
 
 export interface WeaponBuildView { instanceId: number; weaponId: WeaponId; name: string; tier: number; weaponClass: string; attackPattern: WeaponAttackPattern; damageType: string; effectiveDamage: number; cadenceSeconds: number; estimatedDps: number; dpsLabel: "estimated"; reachMetres: number; projectileCount: number; critExpectation: number; statusRole: string; }
-export interface BuildViewModel { hero: { id: string; name: string }; perkId: string | null; rack: readonly (WeaponBuildView | null)[]; stash: readonly (WeaponBuildView | null)[]; rawStats: PlayerStatBlock; effectiveStats: PlayerStatBlock; cappedStats: readonly string[]; upgrades: readonly { id: string; level: number; used: number; capacity: number }[]; relicIds: readonly string[]; artifactId: string | null; transformation: CombatSnapshot["transformation"]; activeBuffs: CombatSnapshot["activeBuffs"]; synergyTags: readonly string[]; }
+export interface BuildViewModel { hero: { id: string; name: string }; perkId: string | null; rack: readonly (WeaponBuildView | null)[]; stash: readonly (WeaponBuildView | null)[]; stashLabels?: readonly string[]; rawStats: PlayerStatBlock; effectiveStats: PlayerStatBlock; cappedStats: readonly string[]; upgrades: readonly { id: string; level: number; used: number; capacity: number }[]; relicIds: readonly string[]; artifactId: string | null; transformation: CombatSnapshot["transformation"]; activeBuffs: CombatSnapshot["activeBuffs"]; synergyTags: readonly string[]; }
 export interface ShopPreview { scrapBefore: number; scrapAfter: number; playerHealthBefore: number; playerHealthAfter: number; playerShieldBefore: number; playerShieldAfter: number; statDelta: Partial<Record<keyof PlayerStatBlock, number>>; capLoss: readonly string[]; duplicateCount: number; cumulativeItemCount: number; helpsCurrentBuild: readonly string[]; irreversibleWarning: string | null; }
 
 function effectiveWeaponDamage(weapon: EquippedWeaponSnapshot, stats: PlayerStatBlock): number {
@@ -39,6 +39,7 @@ export function createBuildViewModel(snapshot: CombatSnapshot): BuildViewModel {
     hero: { id: snapshot.heroId, name: snapshot.heroPresentation.displayName }, perkId: snapshot.activePerkId,
     rack: snapshot.weaponInventory.rack.map((slot) => slot.tile ? tileView(slot.tile) : null),
     stash: snapshot.weaponInventory.stash.map((tile) => tile ? tileView(tile) : null),
+    stashLabels: snapshot.weaponInventory.stash.filter(Boolean).map(tile => `${WEAPON_CATALOG[tile!.weaponId].displayName} T${tile!.tier}`),
     rawStats: { ...snapshot.playerStats.raw }, effectiveStats: { ...snapshot.playerStats.effective }, cappedStats: [...snapshot.playerStats.capped],
     upgrades: snapshot.upgradeLevels.map((upgrade) => ({ ...upgrade, used: snapshot.upgradeSlots.find((slot) => slot.category === "offensive")?.used ?? 0, capacity: snapshot.upgradeSlots.find((slot) => slot.category === "offensive")?.capacity ?? 0 })),
     relicIds: [...snapshot.relicIds], artifactId: snapshot.equippedArtifactId, transformation: snapshot.transformation, activeBuffs: snapshot.activeBuffs, synergyTags: [...tags].sort(),

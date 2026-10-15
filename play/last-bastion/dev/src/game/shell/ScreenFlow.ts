@@ -110,7 +110,7 @@ export function menuCardSubtitle(
   switch (card.id) {
     case "daily": {
       const record = progress.daily[today];
-      const streak = dailyStreak(progress.daily, today);
+      const streak = dailyStreak(progress.daily, today, progress.dailyParticipation);
       const streakText = streak > 1 ? `  •  ${streak}-day streak` : "";
       const result = !record ? "same waves for all" : record.cleared ? "cleared" : `best wave ${record.bestWave}`;
       return `${dailyLabel(today)}  •  ${result}${streakText}`;
@@ -149,7 +149,7 @@ export const HOW_TO_PLAY_PAGES: readonly { title: string; body: string }[] = Obj
   },
   {
     title: "THREE WAYS TO PLAY",
-    body: "Quick Drop: ten waves, one life, about ten minutes.\nDaily Drop: the same ten waves for everyone today; keep a streak.\nExpedition: a 20-node campaign that autosaves between encounters.",
+    body: "Quick Drop: ten waves, one life, about ten minutes.\nDaily Drop: a shared daily seed; builds and assistance may differ.\nExpedition: a 20-node campaign that autosaves between encounters.",
   },
 ]);
 
@@ -169,6 +169,15 @@ export type SettingsRow =
   | { kind: "range"; key: keyof GameSettings; label: string; min: number; max: number; step: number }
   | { kind: "action"; key: "controls" | "export-save" | "import-save" | "privacy"; label: string };
 
+export const SETTINGS_GROUPS = ["Accessibility", "Audio", "Controls", "Display", "Save & privacy"] as const;
+export function settingsGroup(key: string): typeof SETTINGS_GROUPS[number] {
+  if (["soundEnabled", "masterVolume", "sfxVolume"].includes(key)) return "Audio";
+  if (["autoFireEnabled", "gamepadMoveDeadzone", "gamepadAimDeadzone", "gamepadVibrationStrength", "aimAssistStrength", "controls"].includes(key)) return "Controls";
+  if (["displaySizePercent", "presentationMode", "brightness", "gamma", "effectQuality", "fullscreenMode", "selectedDisplayId", "frameCap"].includes(key)) return "Display";
+  if (["export-save", "import-save", "privacy"].includes(key)) return "Save & privacy";
+  return "Accessibility";
+}
+
 export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "toggle", key: "screenShakeEnabled", label: "Screen shake" },
   { kind: "range", key: "screenShakeIntensity", label: "Shake intensity", min: 0, max: 1, step: 0.25 },
@@ -187,8 +196,8 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   // persist in GameSettings, but nothing consumes them yet: there is no music,
   // and AudioMixer's ui/music/ambience buses are not routed. Re-list them in
   // the same breath as wiring the mixer — an inert slider is a lie.
-  { kind: "range", key: "gamepadMoveDeadzone", label: "Move deadzone", min: 0, max: 1, step: 0.01 },
-  { kind: "range", key: "gamepadAimDeadzone", label: "Aim deadzone", min: 0, max: 1, step: 0.01 },
+  { kind: "range", key: "gamepadMoveDeadzone", label: "Move deadzone", min: 0, max: 0.95, step: 0.01 },
+  { kind: "range", key: "gamepadAimDeadzone", label: "Aim deadzone", min: 0, max: 0.95, step: 0.01 },
   // gamepadAimSensitivity is likewise unlisted. Aiming here is absolute — the
   // right stick's direction *is* the aim vector — so there is no rate for a
   // sensitivity multiplier to scale. The field is retained so saves written by
@@ -540,15 +549,22 @@ function stepHowToPlay(state: ShellState, intent: ShellIntent): ShellStepResult 
   return { state, effects: [] };
 }
 
+function nextSettingsIndex(state: ShellState, direction: -1 | 1): number {
+  const order = state.settingsRows.map((row, index) => ({ row, index }))
+    .sort((a, b) => SETTINGS_GROUPS.indexOf(settingsGroup(a.row.key)) - SETTINGS_GROUPS.indexOf(settingsGroup(b.row.key)))
+    .map(entry => entry.index);
+  return order[wrap(order.indexOf(state.settingsIndex) + direction, order.length)]!;
+}
+
 function stepSettings(state: ShellState, intent: ShellIntent): ShellStepResult {
   if (intent === "back") {
     return { state: { ...state, screen: "menu" }, effects: [] };
   }
   if (intent === "up") {
-    return { state: { ...state, settingsIndex: wrap(state.settingsIndex - 1, state.settingsRows.length) }, effects: [] };
+    return { state: { ...state, settingsIndex: nextSettingsIndex(state, -1) }, effects: [] };
   }
   if (intent === "down") {
-    return { state: { ...state, settingsIndex: wrap(state.settingsIndex + 1, state.settingsRows.length) }, effects: [] };
+    return { state: { ...state, settingsIndex: nextSettingsIndex(state, 1) }, effects: [] };
   }
   if (intent === "left" || intent === "right" || intent === "confirm") {
     const row = state.settingsRows[state.settingsIndex]!;

@@ -14,8 +14,9 @@ $server = [System.Diagnostics.Process]::Start($processInfo)
 try {
   $page = $null
   for ($attempt = 0; $attempt -lt 20 -and $null -eq $page; $attempt += 1) {
+    if ($server.HasExited) { throw "Local smoke server exited with code $($server.ExitCode). Check port $port." }
     try {
-      $page = Invoke-WebRequest -UseBasicParsing "http://127.0.0.1:$port/play/last-bastion/"
+      $page = Invoke-WebRequest -UseBasicParsing -TimeoutSec 2 "http://127.0.0.1:$port/play/last-bastion/"
     }
     catch {
       Start-Sleep -Milliseconds 150

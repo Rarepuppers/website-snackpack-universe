@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { localDayKey } from "../run/LocalDayKey";
 import { NEW_VISITOR } from "./PlayerFunnel";
 import {
   bufferedGoatCounterTransport,
@@ -202,7 +203,7 @@ describe("the session ledger", () => {
     const second = fakeHost({ session });
     startPlayerFunnel(first.host, Date.UTC(2026, 8, 11, 12), "snackpack-test");
     startPlayerFunnel(second.host, Date.UTC(2026, 8, 11, 12, 5), "snackpack-test");
-    expect(session.getItem("lastBastion.funnelSession.v1")).toBe(JSON.stringify(["opened"]));
+    expect(session.getItem("lastBastion.funnelSession.v1")).toBe(JSON.stringify({ day: localDayKey(Date.UTC(2026, 8, 11, 12)), events: ["opened"] }));
   });
 
   it("falls back to memory when session storage throws", () => {
@@ -233,5 +234,31 @@ describe("startPlayerFunnel", () => {
   it("still starts the game when storage is unavailable", () => {
     const { host } = fakeHost({ storage: null });
     expect(() => startPlayerFunnel(host, Date.now())).not.toThrow();
+  });
+});
+
+describe("daily visit lifecycle", () => {
+  it("counts each new day in a reused tab and deduplicates same-day navigation", () => {
+    const count = vi.fn();
+    const { host } = fakeHost({ goatcounter: { count } });
+    for (let day = 11; day <= 14; day++) {
+      const time = new Date(2026, 9, day, 12).getTime();
+      startPlayerFunnel(host, time);
+      startPlayerFunnel(host, time + 1000);
+    }
+    expect(count.mock.calls.filter(([event]) => event.title === "opened")).toHaveLength(4);
+    expect(count.mock.calls.filter(([event]) => event.title === "returning")).toHaveLength(3);
+  });
+  it("does not consume a return when neither delivery nor queue persistence succeeds", () => {
+    const session = { getItem: () => null, setItem: () => { throw Error("full"); } } as unknown as Storage;
+    const { host } = fakeHost({ session });
+    const day1 = new Date(2026, 9, 11, 12).getTime();
+    startPlayerFunnel(host, day1);
+    startPlayerFunnel(host, day1 + 86400000);
+    expect(readVisitState(host).returningReportedOn).toBeNull();
+    const count = vi.fn();
+    (host as unknown as { goatcounter: unknown }).goatcounter = { count };
+    startPlayerFunnel(host, day1 + 86400000);
+    expect(count.mock.calls.some(([event]) => event.title === "returning")).toBe(true);
   });
 });

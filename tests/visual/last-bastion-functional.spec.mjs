@@ -400,3 +400,73 @@ test.describe("Last Bastion on a touch-only phone", () => {
     await expect(page.getByRole("dialog")).toHaveCount(0);
   });
 });
+
+test.describe("October reliability regressions", () => {
+  test.use({ serviceWorkers: "block" });
+  test("failed character art stops loading and can recover on explicit retry", async ({ page }) => {
+    await page.route("**/sw.js", route => route.abort());
+    let fail = true;
+    let requests = 0;
+    await page.route("**/*", route => {
+      const url = route.request().url();
+      if (!url.includes("assault-select-portrait") || !(url.endsWith(".png") || url.endsWith(".webp"))) return route.fallback();
+      requests++;
+      return fail ? route.fulfill({ status: 404, body: "missing" }) : route.continue();
+    });
+    await page.goto("/play/last-bastion/?flow=menu");
+    await page.waitForFunction(() => window.__shellState?.screen === "menu");
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(() => window.__shellState?.screen === "character-select");
+    await expect.poll(() => requests).toBeGreaterThan(0);
+    await page.waitForFunction(() => window.__shellLoadFailed === true);
+    const settledRequests = requests;
+    // A bounded observation window verifies there is no automatic reload cycle.
+    await page.waitForTimeout(1000);
+    expect(requests).toBe(settledRequests);
+    fail = false;
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(() => window.__shellAssetsReady === true);
+    expect(requests).toBeGreaterThan(settledRequests);
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(() => window.__shellState?.screen === "menu");
+  });
+
+  test("failed entry module offers recovery without clearing saves", async ({ page }) => {
+    await page.route("**/game-assets/game.js", route => route.abort());
+    await page.goto("/play/last-bastion/");
+    await expect(page.getByRole("button", { name: "Retry loading" })).toBeVisible();
+    await expect(page.locator("#boot-message")).toContainText("Your save has not been reset");
+  });
+
+  test("Daily retry resolves the date when clicked, not when the screen was opened", async ({ page }) => {
+    await page.clock.install({ time: new Date(2026, 9, 14, 23, 59, 0) });
+    await page.goto("/play/last-bastion/?screen=summary&summarydemo=daily");
+    await expect(page.locator("#game-root canvas")).toBeVisible();
+    await page.waitForFunction(() => window.__runSummary !== undefined);
+    await page.clock.setSystemTime(new Date(2026, 9, 15, 0, 1, 0));
+    await page.keyboard.press("r");
+    await page.waitForURL(url => url.searchParams.get("daily") === "2026-10-15");
+  });
+});
+
+test("build pages are keyboard-operable and include affinity", async ({ page }) => {
+  await page.goto("/play/last-bastion/?screen=game&pausepreview=build");
+  await page.waitForFunction(() => window.__buildInspection?.page === 0);
+  await page.keyboard.press("ArrowLeft");
+  await page.waitForFunction(() => window.__buildInspection?.title.startsWith("TRANSFORMATION AFFINITY"));
+  expect(await page.evaluate(() => window.__buildInspection.lines.join(" "))).toContain("Commit 3 / Ascend 5 / Apex 7");
+  await page.keyboard.press("ArrowRight");
+  await page.waitForFunction(() => window.__buildInspection?.page === 0);
+});
+
+for (const viewport of [{ width: 1920, height: 1080 }, { width: 3840, height: 2160 }]) {
+  test(`build controls stay onscreen at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.goto("/play/last-bastion/?screen=game&pausepreview=build");
+    await page.waitForFunction(() => window.__buildInspection?.page === 0);
+    const canvas = await page.locator("#game-root canvas").boundingBox();
+    // Exercise the visible NEXT control, not a programmatic page transition.
+    await page.mouse.click(canvas.x + canvas.width * 630 / 960, canvas.y + canvas.height * 430 / 540);
+    await page.waitForFunction(() => window.__buildInspection?.page === 1);
+  });
+}

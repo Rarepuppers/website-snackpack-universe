@@ -762,6 +762,8 @@ export class PrototypeScene extends Phaser.Scene {
       this.pauseOverlay.activate();
     }
 
+    // Keyboard edges above already handled WASD/arrows. Only sticks need a neutral latch.
+    if (this.controls.activeInputDevice !== "gamepad") return;
     const vertical = intent.move.y;
     const horizontal = intent.move.x;
     if (Math.abs(vertical) < 0.35 && Math.abs(horizontal) < 0.35) {
@@ -1270,7 +1272,7 @@ export class PrototypeScene extends Phaser.Scene {
         return;
       }
       if (this.isRecordableRun(snapshot)) {
-        playerFunnel().runEnded(snapshot.status, snapshot.waveNumber, this.funnelMode());
+        playerFunnel().runEnded(snapshot.runMetrics.defeatCause === "Run abandoned" ? "abandoned" : snapshot.status, snapshot.waveNumber, this.funnelMode());
         const summary = this.summaryFromSnapshot(snapshot, "quick-drop", 0, snapshot.runMetrics);
         const before = this.saveStore.load();
         const after = this.saveStore.recordRunEnd({
@@ -1300,7 +1302,7 @@ export class PrototypeScene extends Phaser.Scene {
     const combinedMetrics = mergeRunMetrics(this.expeditionContext.run.state.metrics, snapshot.runMetrics);
     const completedBeforeEncounter = Math.max(0, this.expeditionContext.run.state.clearedNodeIds.length - 1);
     if (snapshot.status === "defeat") {
-      playerFunnel().runEnded("defeat", this.expeditionContext.encounter.column + 1, "expedition");
+      playerFunnel().runEnded(snapshot.runMetrics.defeatCause === "Run abandoned" ? "abandoned" : "defeat", this.expeditionContext.encounter.column + 1, "expedition");
       this.saveStore.clearExpedition();
       const summary = this.summaryFromSnapshot(
         snapshot,

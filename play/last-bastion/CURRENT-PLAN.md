@@ -1,13 +1,53 @@
 # Last Bastion — current plan
 
-**Updated:** 11 October 2026
+**Updated:** 15 October 2026
 
-**Status:** local browser work is built and verified. Deployment, live measurement,
+**Status:** accepted October audit fixes are implemented locally; all required automated verification lanes pass. Deployment, live measurement,
 creator-observed play, visible desktop acceptance, and Steam client acceptance remain open.
 
 This replaces the execution order in the [9 October audit](archive/implementation-plan-2026-10-09.md).
 Keep the content freeze until the evidence below is collected. Use `dev/src/game/` and the
 published `game-assets/` as the source of truth for what ships.
+
+## Accepted October audit implementation
+
+See [audit and implementation details](AUDIT-PLAN-2026-10-14.md). The accepted scope is
+recovery, Daily correctness, trustworthy metrics, build/affinity clarity and settings polish.
+Content expansion, new art batches and practice mode remain conditional on observed play.
+
+- Implemented: bounded character-art failure with retry/back; startup recovery; long Daily
+  streak participation intervals and cloud merge; midnight-safe retry; local-day visit ledger;
+  abandonment classification; named and paginated build inventories and affinity explanations;
+  grouped settings; consistent deadzone limits; three-mode title copy.
+- Additional fixes found during implementation: stashed weapon names were omitted by an
+  equipped-only lookup; settings could overlap the footer; smoke readiness requests were unbounded;
+  keyboard build navigation advanced twice because a keyboard direction also entered the gamepad path;
+  pause/build panels used display dimensions inside an already scaled camera, pushing them offscreen at 1080p/4K.
+- Save change is additive to schema 16: missing participation intervals migrate from retained
+  Daily results. Historical days already discarded cannot be recovered. Detailed results remain
+  bounded to 60 days; participation is stored separately as merged date intervals.
+- Measurement: opened/start/wave milestones are per browser-tab local day, not unique people.
+  Run endings are a separate all-run outcome distribution, not the final stage of that funnel.
+  Expedition endings omit the wave-depth field because their progression is measured in nodes.
+- The live menu already showed Quick/Daily on 14 October. Do not infer exact deployed bundle
+  identity or analytics delivery from the older deployment-pending notes below.
+
+## Local validation — 15 October 2026
+
+- Full `npm run verify:last-bastion`: all required lanes pass, including 1,771 unit tests
+  across 309 files, 24 browser acceptance tests, smoke/offline recovery, 25 matching published
+  outputs, and desktop host build with 28 tests.
+- Website checks: 54 JavaScript files and 272 pages pass. Portfolio `node scripts/check-all.js`:
+  all 19 guards pass. Local browser verification required execution outside the sandbox.
+- Browser regressions exercise failed character art with explicit retry, failed module startup,
+  a Daily retry across midnight, and keyboard build-page navigation. Service workers are blocked
+  only for fault-injection cases so cached assets cannot bypass the injected failure.
+- Fresh settings, build, affinity and combat captures are retained in
+  `playtest-evidence/2026-10-15-screens-auto/`. These are layout evidence, not observed full runs
+  or physical-display/controller acceptance. The standard floor wash is now 12%; motion and
+  audio acceptance remains open.
+- Release identity: `web-2026.10.15-reliability`. Web output is rebuilt; the older packaged
+  desktop executable has not been repackaged with these changes. Nothing was pushed or deployed.
 
 ## 1. Deploy and confirm the browser release
 
@@ -67,7 +107,7 @@ published `game-assets/` as the source of truth for what ships.
 
 ## 4. Read data before expanding scope
 
-- After two weeks of live measurement, compare open → start → wave 1 → wave 5 → end and
+- After two weeks of live measurement, compare open → start → wave 1 → wave 5, the separate run-outcome distribution, and
   next-day return. Separate a traffic problem from an onboarding or balance problem.
 - Review the five observed runs alongside the funnel. Only then decide whether touch
   controls, new content, additional tiers, or further art earn production time.

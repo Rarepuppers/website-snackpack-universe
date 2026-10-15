@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import type { GameSettings } from "../save/LocalSaveStore";
-import { uiTextResolution } from "../rendering/DisplayScaling";
-import type { BuildOverlayModel } from "./BuildOverlay";
+import { BASE_WIDTH, BASE_HEIGHT, uiTextResolution } from "../rendering/DisplayScaling";
+import { buildPages, type BuildOverlayModel } from "./BuildOverlay";
 
 type OverlayMode = "root" | "settings" | "build" | "confirm-restart" | "confirm-abandon";
 
@@ -27,6 +27,7 @@ export class CombatPauseOverlay {
   private readonly container: Phaser.GameObjects.Container;
   private mode: OverlayMode = "root";
   private selection = 0;
+  private buildPage = 0;
   private entries: MenuEntry[] = [];
   private inputDevice: "keyboard" | "gamepad" = "keyboard";
 
@@ -63,12 +64,14 @@ export class CombatPauseOverlay {
   }
 
   move(direction: -1 | 1): void {
+    if (this.mode === "build") { this.changeBuildPage(direction); return; }
     if (this.entries.length === 0) return;
     this.selection = Phaser.Math.Wrap(this.selection + direction, 0, this.entries.length);
     this.render();
   }
 
   adjust(direction: -1 | 1): void {
+    if (this.mode === "build") { this.changeBuildPage(direction); return; }
     this.entries[this.selection]?.adjust?.(direction);
   }
 
@@ -90,6 +93,7 @@ export class CombatPauseOverlay {
 
   showBuild(): void {
     this.mode = "build";
+    this.buildPage = 0;
     this.selection = 0;
     this.render();
   }
@@ -115,7 +119,9 @@ export class CombatPauseOverlay {
   private render(): void {
     this.position();
     this.container.removeAll(true);
-    const { width, height } = this.scene.scale;
+    // The camera already scales simulation coordinates to the display.
+    const width = BASE_WIDTH;
+    const height = BASE_HEIGHT;
     this.container.add(this.scene.add.rectangle(width / 2, height / 2, width, height, 0x04080d, 0.74));
     this.container.add(this.scene.add.rectangle(width / 2, height / 2, 520, 420, 0x101923, 0.98)
       .setStrokeStyle(2, 0x68e4e8, 0.86));
@@ -188,6 +194,7 @@ export class CombatPauseOverlay {
         label: "VIEW BUILD",
         activate: () => {
           this.mode = "build";
+          this.buildPage = 0;
           this.selection = 0;
           this.render();
         },
@@ -290,26 +297,33 @@ export class CombatPauseOverlay {
     return { label, value: String(value).toUpperCase(), activate: () => adjust(1), adjust };
   }
 
+  private changeBuildPage(direction: -1 | 1): void {
+    this.buildPage = Phaser.Math.Wrap(this.buildPage + direction, 0, buildPages(this.callbacks.getBuild()).length);
+    this.render();
+  }
+
   private renderBuild(width: number, height: number): void {
     const build = this.callbacks.getBuild();
-    this.container.add(this.text(width / 2 - 200, 108, build.heroLine.toUpperCase(), "#68e4e8", 11));
-    this.container.add(this.text(width / 2 - 200, 140, "WEAPONS", "#e8e2d4", 10));
-    this.container.add(this.text(width / 2 - 200, 161, build.weaponLines.slice(0, 5).join("\n") || "No weapons", "#b9c6d3", 9)
-      .setLineSpacing(6));
-    this.container.add(this.text(width / 2 + 35, 140, "COMBAT STATS", "#e8e2d4", 10));
-    this.container.add(this.text(width / 2 + 35, 161, build.statLines.join("\n"), "#b9c6d3", 9).setLineSpacing(6));
-    this.container.add(this.text(width / 2 - 200, 296, "RELICS / ARTIFACT", "#e8e2d4", 10));
-    this.container.add(this.text(width / 2 - 200, 317, build.relicLines.slice(0, 4).join("\n") || "None", "#b9c6d3", 8)
-      .setLineSpacing(5));
-    this.container.add(this.text(width / 2 + 35, 296, "SYNERGIES", "#e8e2d4", 10));
-    this.container.add(this.text(width / 2 + 35, 317, build.synergyLines.slice(0, 4).join("\n") || "No active synergies", "#b9c6d3", 8)
-      .setLineSpacing(5));
-    const back = this.scene.add.rectangle(width / 2, 430, 180, 34, 0x24384f, 0.98)
-      .setStrokeStyle(2, 0x68e4e8).setInteractive({ useHandCursor: true });
-    back.on("pointerdown", () => this.back());
-    this.container.add([back, this.text(width / 2, 430, "BACK", "#68e4e8", 10).setOrigin(0.5)]);
-    const hint = this.inputDevice === "gamepad" ? "B / START BACK" : "ESC BACK";
-    this.container.add(this.text(width / 2, height - 72, hint, "#8fa1b3", 8).setOrigin(0.5));
+    const pages = buildPages(build);
+    this.buildPage = Math.min(this.buildPage, pages.length - 1);
+    const page = pages[this.buildPage]!;
+    (window as unknown as { __buildInspection?: object }).__buildInspection = { page: this.buildPage, count: pages.length, title: page.title, lines: [...page.lines] };
+    this.container.add(this.text(width / 2 - 220, 108, build.heroLine, "#68e4e8", 11));
+    this.container.add(this.text(width / 2 - 220, 142, page.title, "#e8e2d4", 12));
+    page.lines.forEach((line, index) => {
+      this.container.add(this.text(width / 2 - 220, 180 + index * 34, line, "#b9c6d3", 11)
+        .setWordWrapWidth(440));
+    });
+    const button = (x: number, label: string, action: () => void) => {
+      const rect = this.scene.add.rectangle(x, 430, 132, 34, 0x24384f).setStrokeStyle(2, 0x68e4e8)
+        .setInteractive({ useHandCursor: true }).on("pointerdown", action);
+      this.container.add([rect, this.text(x, 430, label, "#68e4e8", 10).setOrigin(0.5)]);
+    };
+    button(width / 2 - 150, "PREVIOUS", () => this.changeBuildPage(-1));
+    button(width / 2, "BACK", () => this.back());
+    button(width / 2 + 150, "NEXT", () => this.changeBuildPage(1));
+    const hint = this.inputDevice === "gamepad" ? "D-PAD PAGES / B BACK" : "ARROWS PAGES / ESC BACK";
+    this.container.add(this.text(width / 2, height - 72, `${this.buildPage + 1}/${pages.length}  ${hint}`, "#8fa1b3", 9).setOrigin(0.5));
     this.entries = [{ label: "BACK", activate: () => this.back() }];
   }
 

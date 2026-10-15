@@ -1,4 +1,4 @@
-import { mergeDailyRecords } from "../run/DailyDrop";
+import { dailyParticipation, mergeDailyRecords } from "../run/DailyDrop";
 import { normalizeControlBindings } from "../input/ControlBindings";
 import { SAVE_SCHEMA_VERSION, type BestiaryEntry, type SaveData } from "../save/LocalSaveStore";
 import type { ThreatTier } from "../expedition/ThreatTier";
@@ -70,6 +70,10 @@ export function resolveCloudSaveConflict(local: CloudSaveEnvelope, remote: Cloud
           remote.save.progress.commandMarksLifetime,
         ),
         purchasedArmoryNodeIds,
+        dailyParticipation: dailyParticipation([
+          ...dailyParticipation(local.save.progress.dailyParticipation, local.save.progress.daily),
+          ...dailyParticipation(remote.save.progress.dailyParticipation, remote.save.progress.daily),
+        ]),
         daily: mergeDailyRecords(local.save.progress.daily, remote.save.progress.daily),
       },
       expedition: preferred.save.expedition ?? secondary.save.expedition,
