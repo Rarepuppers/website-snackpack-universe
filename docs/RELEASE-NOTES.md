@@ -5,6 +5,16 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-16 — Correct US grades on the number stories
+
+- The four number stories gave the wrong US grade beside the UK year: they
+  said Year 1 = Grade 1, but US grades run one year behind (Year 1 is
+  Kindergarten, Year 2 is Grade 1, Year 3 is Grade 2, Year 4 is Grade 3).
+  Fixed on each book's label, search description and schema.
+- Fixed at the source too: the Basic Math app's book data had the same
+  mistake (the app itself showed the right grade), and its content check now
+  catches any mismatched pair, so a future import can't bring it back.
+
 ## 2026-10-16 — Richer book details for search engines (Phase C5)
 
 - Each book page now tells search engines and assistants its age range, number
