@@ -58,7 +58,7 @@ picture, text verbatim, and nothing Pro without Mark.
 
 | # | Source | What is there | Plan |
 |---|---|---|---|
-| B1 | **1-2-3 Counting**, free | 2 stories with 6 illustrations each: `panda-cake-market-basket`, `sub-zero-snowflake-post` (Button Trail is already live) | Confirm page counts (the inventory parse did not count this app's pages), quality-read, then add both to **Number stories** as the youngest entries (Reception/Year 1 counting). Needs a small importer or a `BOOKS`-style extension; art is landscape `.jpg`. |
+| B1 | **1-2-3 Counting**, free | 2 stories: `panda-cake-market-basket`, `sub-zero-snowflake-post` | **Read 2026-10-15: neither publishable; app fixes owed.** Panda-Cake's art mapping in the app is shifted one page (pages 2–5 show the wrong picture; page 2's image is an off-model panda with a dolphin), and page 5 has no art of its own. Sub-Zero's pages 1–5 show a scarf penguin, while page 6 shows the canonical chef-hat Sub-Zero, and page 2's sleds carry shapes, not numbers. |
 | B2 | **Sentences & Spelling quick reads**, free (`STORY_BOOKS` + `EXTRA_STORY_BOOKS`) | **~60 four-page books with every page illustrated on disk** (wired through `BOOK_PAGE_ARTWORK`), each with a talk prompt per page and a 2-question quiz, in the same format as the Reading Trail | The biggest source by far, but read all 60 before importing any. Quality varies, and about a third are science/topic books (glacier, materials, five senses, continents) that need a **fact check**. Sample finding: `sub-zero-glacier-discovery` says a glacier may be "older than mountains", which is wrong. Pick the best **12–20** for a new **"Short reads"** group, themed (friendship and feelings · nature and science · adventures). Extend `import-reading-trail-book.mjs` to read `books.ts`; the quiz becomes the end-of-book question. |
 | B3 | **Zoo World animal books** | 16 books (Arctic Ice, Ocean Dive, Masters of Disguise…), each a cover plus 9 generated illustrations; the app has a fact-validation pipeline | Highest search demand of any source ("animal facts for kids"). **Check first:** which books are free, that every image is generated rather than a licensed photo (`unsplashBundledImageCredits.ts` exists in the app), and that the text passes the app's validators. Then quality-read and add an **"Animal fact books"** group. |
 | B4 | Held-back books, once their app fixes land | Pork-ulele, Wise Owl, Ted-E-Bear's Lantern, Booklava (task proposed); Pocketful of Sounds (art); 5 ABC books (text) | Re-read after the fix, then import with the existing scripts. |
@@ -170,6 +170,8 @@ and run `scripts/notify-search-engines.mjs <urls>`.
 | Wise Owl and the Festival of Factors | app4, free | page 1 question wording; page 2 prime explanation |
 | Ted-E-Bear's Lantern; Booklava's Number Nest | app4, free | character designs change mid-book |
 | Vincent Van Mouse and the Mural | app4, free | 4/7 pages illustrated |
+| Panda-Cake's Market Basket | app2, free | app art mapping off by one on pages 2–5; off-model page-2 image; page 5 has no art |
+| Sub-Zero and the Snowflake Post | app2, free | Sub-Zero changes design on page 6; page 2 sleds show shapes, not numbers |
 | "Which book first?" QR PDF | — | dropped: the stage-ordered hub does the job, and QR would add the repo's first dependency |
 
 ## Gotchas worth keeping
