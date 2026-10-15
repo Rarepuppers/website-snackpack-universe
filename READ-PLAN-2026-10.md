@@ -166,3 +166,17 @@ Phase 4 re-measure → Phase 2.4 / Phase 5 only if the numbers justify it.
   printables guide's new "Next steps" block. The separate "which book first?"
   QR PDF was **dropped**: the stage-ordered hub now does that job, and QR
   generation would add the repo's first dependency.
+- 2026-10-15: **Phase 2.3 assessed: the 5 free ABC books are NOT imported.**
+  They fail section 1b's quality rule, not the art rule.
+  `PANDA_CAKE_ALPHABET` uses "his" on every page under a "Discovers **Her**
+  ABCs" subtitle. Several entries are fragments ("E is for Earth - round like
+  the little plate on the table"). French-Toast and Wise Owl are
+  `remixAlphabet()` variants of the Ted-E-Bear sentences with a few
+  overrides. Only 7–8 of 26 letters are illustrated. The fix belongs in the
+  **app** (`constants/alphabet.ts`): consistent pronouns and full sentences.
+  After that, re-assess. Publishing the current text would put the app's
+  weakest writing on the page that is earning shares.
+- **Where the plan stands:** Phases 1 and 3 are done. Phase 2 has added 1 book
+  (Digraph Dash). The rest of Phase 2 waits on decisions: art for Pocketful
+  of Sounds, Pro approval for Reading Trail steps 3–6, and app-side fixes to
+  the ABC text. Phase 2.4 and the Phase 4 re-measure are due **2026-11-15**.
