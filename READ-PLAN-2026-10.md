@@ -193,3 +193,19 @@ Phase 4 re-measure → Phase 2.4 / Phase 5 only if the numbers justify it.
   (Digraph Dash). The rest of Phase 2 waits on decisions: art for Pocketful
   of Sounds, Pro approval for Reading Trail steps 3–6, and app-side fixes to
   the ABC text. Phase 2.4 and the Phase 4 re-measure are due **2026-11-15**.
+- 2026-10-15: **Sharing batch shipped** (Mark approved). Why: Google sends
+  `/read/` almost nothing (2 impressions in 90 days); growth is links shared in
+  chat apps. (1) "Share this book" on all 13 books, beside "Begin the story"
+  and in the end card (`read/share.js`: share sheet on phones, copy-link on
+  desktop, always the canonical URL), injected by `build-read-shelf.mjs`.
+  (2) 1200×630 share cards per book (`scripts/build-read-social-cards.py`,
+  58–94 KB each, `--check` mode); covers were portrait and got cropped in chat
+  previews. (3) Hub share image is now `social-card.jpg` at 126 KB (was a
+  1.3 MB PNG). (4) Hub title is "Free Decodable Readers & Printable Phonics
+  Books", with a matching description and lead. (5) The homepage
+  storybooks section (six cards linking to app pages) is now the `#read`
+  section: six real free books along the path plus the shelf count, generated
+  from SHELF. Tested in Playwright on a Pixel 7 and on desktop. Gotcha: the
+  homepage card `<img>` must NOT carry width/height attributes, because
+  `.storybook-card img` sets aspect-ratio without `height:auto` and the
+  attribute stretched it to 1536px.

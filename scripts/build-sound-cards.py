@@ -77,7 +77,7 @@ html = f'''<!DOCTYPE html>
 <title>Free Printable Phonics Sound Cards | s a t p i n to Vowel Teams</title>
 <meta name="description" content="Free printable phonics flash cards: sound cards, word cards and tricky-word cards for s a t p i n through digraphs, blends, magic e, vowel teams and word endings. One A4 sheet per stage, matched to free decodable readers.">
 <link rel="canonical" href="{U}">
-<meta property="og:title" content="Free printable phonics sound cards"><meta property="og:description" content="Sound, word and tricky-word cards for each phonics stage, matched to free decodable readers."><meta property="og:image" content="https://www.snackpackuniverse.com/read/social-card.png"><meta property="og:url" content="{U}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="Free printable phonics sound cards"><meta property="og:description" content="Sound, word and tricky-word cards for each phonics stage, matched to free decodable readers."><meta property="og:image" content="https://www.snackpackuniverse.com/read/social-card.jpg"><meta property="og:url" content="{U}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/assets/favicon-32.png"><link rel="preload" href="/assets/fonts/dmsans-ed656a5d.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/fraunces-36024e18.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/fonts/fonts.css"><link rel="stylesheet" href="../../site.css">
 <script type="application/ld+json">{ld}</script>
 <!-- breadcrumbs:generated -->

@@ -91,14 +91,66 @@ function itemListBlock() {
   return `<script type="application/ld+json">\n${JSON.stringify(data, null, 2)}\n</script>`;
 }
 
+// Sharing is how /read/ grows (October 2026: Telegram and direct visits, almost
+// no search), so every book offers it twice: beside "Begin the story" and again
+// at the end, when a reader has just enjoyed it. read/share.js does the work.
+const SHARE_BUTTON = (cls) =>
+  `<button class="${cls}" type="button" data-read-share aria-live="polite">Share this book</button>`;
+
+function shareTopBlock() {
+  return SHARE_BUTTON("btn btn-secondary read-share-btn");
+}
+
 function nextBlock(i) {
   const next = SHELF[i + 1];
+  const share = `<p class="story-share">Know a family or class who would enjoy it? ${SHARE_BUTTON("btn btn-secondary read-share-btn")}</p>\n<script defer src="../share.js"></script>`;
   if (!next) {
-    return `<p class="story-next">That’s the whole shelf, and every book has a printable PDF. <a class="text-link" href="../">Back to the bookshelf</a></p>`;
+    return `<p class="story-next">That’s the whole shelf, and every book has a printable PDF. <a class="text-link" href="../">Back to the bookshelf</a></p>\n${share}`;
   }
   const g = GROUPS.find((x) => x.id === next.group);
   const label = g.id === SHELF[i].group ? "Next story" : `Next: ${g.title.split(" · ")[0]}`;
-  return `<p class="story-next"><span class="eyebrow">${label}</span><a class="story-next-link" href="../${next.slug}/">${next.title} <span aria-hidden="true">→</span></a></p>`;
+  return `<p class="story-next"><span class="eyebrow">${label}</span><a class="story-next-link" href="../${next.slug}/">${next.title} <span aria-hidden="true">→</span></a></p>\n${share}`;
+}
+
+// The homepage section: a few books spread across the reading path, so the
+// first thing a parent sees is something they can read now, not an app page.
+const HOME_FEATURED = ["pip-sits", "ten-red-hens", "dog-in-the-fog", "hen-berrys-digraph-dash", "sub-zeros-magic-e-lantern", "meow-inaras-vowel-team-duet"];
+
+function homeBlock() {
+  const words = (n) => (NUMBER_WORDS[n] ?? String(n)).toLowerCase();
+  const cards = HOME_FEATURED.map((slug) => {
+    const b = SHELF.find((x) => x.slug === slug);
+    if (!b) throw new Error(`HOME_FEATURED: ${slug} is not on the shelf`);
+    const src = `/read/${b.slug}/${b.cover}`;
+    const label = b.eyebrow.split(" · ")[0].replace(/ decodable$/, "");
+    return `        <a class="storybook-card" href="/read/${b.slug}/">
+          <picture><source srcset="${src}.webp" type="image/webp"><img src="${src}.${b.ext}" loading="lazy" alt="${b.alt}"></picture>
+          <span class="storybook-app">${label}</span>
+          <strong>${b.title}</strong>
+        </a>`;
+  }).join("\n");
+  return `    <div class="shell">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Free bookshelf</span>
+          <h2 class="section-title">${words(SHELF.length).replace(/^./, (c) => c.toUpperCase())} illustrated readers, free to read or print</h2>
+          <p class="section-copy">Complete picture books from the SnackPack apps, in phonics order from the first sounds s a t p i n to vowel teams and word endings. Read them in your browser or print the PDF. No account, no ads, no download.</p>
+        </div>
+        <div class="stack-inline"><a class="btn btn-primary" href="/read/">Open the bookshelf</a><a class="text-link" href="/read/sound-cards/">Print phonics sound cards</a></div>
+      </div>
+      <div class="storybook-grid">
+${cards}
+      </div>
+    </div>`;
+}
+
+// One-time migration: books built before the share button existed get the
+// marker inserted right after their "Begin the story" link.
+function ensureShareTopMarker(html, rel) {
+  if (html.includes("<!-- read-share-top:generated -->")) return html;
+  const anchor = 'href="#page-1">Begin the story</a>';
+  if (!html.includes(anchor)) throw new Error(`${rel}: no "Begin the story" link to place the share button after`);
+  return html.replace(anchor, `${anchor}<!-- read-share-top:generated -->\n<!-- /read-share-top:generated -->`);
 }
 
 // Replace the content between <!-- name --> and <!-- /name -->, or report it missing.
@@ -134,9 +186,12 @@ write("read/index.html", hub);
 
 SHELF.forEach((b, i) => {
   const rel = `read/${b.slug}/index.html`;
-  const html = fs.readFileSync(path.join(ROOT, rel), "utf8");
+  let html = ensureShareTopMarker(fs.readFileSync(path.join(ROOT, rel), "utf8"), rel);
+  html = splice(html, "read-share-top:generated", shareTopBlock(), rel);
   write(rel, splice(html, "read-next:generated", nextBlock(i), rel));
 });
+
+write("index.html", splice(fs.readFileSync(path.join(ROOT, "index.html"), "utf8"), "read-home:generated", homeBlock(), "index.html"));
 
 if (CHECK) {
   if (changes.length) {
