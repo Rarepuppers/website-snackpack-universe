@@ -198,7 +198,7 @@ export class PrototypeScene extends Phaser.Scene {
   /** Today's Daily, or null. An old Daily link replays its seed but never scores. */
   private readonly dailyKey = readScoredDailyKey(this.expeditionContext);
   private readonly runSeed = readRunSeed(this.expeditionContext);
-  private readonly initialRunSettings = { ...this.settings };
+  private initialRunSettings = { ...this.settings };
   private gameSpeedModified = false;
   private readonly perkId = readPerkPreview() ?? this.saveStore.load().selectedPerkId;
   private simulation = createSimulation(
@@ -282,7 +282,6 @@ export class PrototypeScene extends Phaser.Scene {
     d: Phaser.Input.Keyboard.Key;
   } | null = null;
   private isPaused = false;
-  private pauseStickReady = true;
   private lastAimAngle = 0;
   private marineFacingColumn = 0;
   private lastRollTrailMilliseconds = -1000;
@@ -645,14 +644,12 @@ export class PrototypeScene extends Phaser.Scene {
     this.hitStopRemainingMilliseconds = 0;
     this.setPresentationHitStopFrozen(false);
     this.isPaused = true;
-    this.pauseStickReady = true;
     this.pauseOverlay?.open();
   }
 
   private resumeFromPause(): void {
     this.pauseOverlay.close();
     this.isPaused = false;
-    this.pauseStickReady = true;
   }
 
   private abandonFromPause(): void {
@@ -729,7 +726,12 @@ export class PrototypeScene extends Phaser.Scene {
     this.damageNumbers.setMaximumActive(budget.maximumDamageNumbers);
   }
 
-  private handlePauseNavigation(intent: PlayerIntent): void {
+  private handlePauseNavigation(): void {
+    const action = this.controls.consumeMenuAction();
+    if (this.controls.keyboardPausePressed || action === "back") { this.pauseOverlay.back(); return; }
+    if (action === "confirm") { this.pauseOverlay.activate(); return; }
+    if (action === "up" || action === "down") { this.pauseOverlay.move(action === "up" ? -1 : 1); return; }
+    if (action === "left" || action === "right") { this.pauseOverlay.adjust(action === "left" ? -1 : 1); return; }
     if (!this.menuKeys) return;
     if (
       Phaser.Input.Keyboard.JustDown(this.menuKeys.up)
@@ -757,22 +759,10 @@ export class PrototypeScene extends Phaser.Scene {
     }
     if (
       Phaser.Input.Keyboard.JustDown(this.menuKeys.confirm)
-      || intent.evasiveMovePressed
     ) {
       this.pauseOverlay.activate();
     }
 
-    // Keyboard edges above already handled WASD/arrows. Only sticks need a neutral latch.
-    if (this.controls.activeInputDevice !== "gamepad") return;
-    const vertical = intent.move.y;
-    const horizontal = intent.move.x;
-    if (Math.abs(vertical) < 0.35 && Math.abs(horizontal) < 0.35) {
-      this.pauseStickReady = true;
-    } else if (this.pauseStickReady) {
-      if (Math.abs(vertical) >= Math.abs(horizontal)) this.pauseOverlay.move(vertical < 0 ? -1 : 1);
-      else this.pauseOverlay.adjust(horizontal < 0 ? -1 : 1);
-      this.pauseStickReady = false;
-    }
   }
 
   update(_time: number, deltaMilliseconds: number): void {
@@ -812,20 +802,15 @@ export class PrototypeScene extends Phaser.Scene {
       return;
     }
 
-    if (intent.pausePressed && this.lastSnapshot.pendingDecision === null) {
-      if (this.isPaused) this.pauseOverlay.back();
-      else this.openPauseMenu();
-    }
-
     if (this.isPaused) {
-      if (this.controls.consumeGamepadBackPressed()) {
-        this.pauseOverlay.back();
-      }
       if (this.menuKeys && Phaser.Input.Keyboard.JustDown(this.menuKeys.abandon)) {
         this.pauseOverlay.showAbandonConfirmation();
-      }
-      this.handlePauseNavigation(intent);
+      } else this.handlePauseNavigation();
       this.renderSnapshot(this.lastSnapshot, false);
+      return;
+    }
+    if (intent.pausePressed && this.lastSnapshot.pendingDecision === null) {
+      this.openPauseMenu();
       return;
     }
 
@@ -1061,6 +1046,8 @@ export class PrototypeScene extends Phaser.Scene {
       reducedMotion: this.settings.reducedMotionEnabled,
       moveRightBinding: this.moveRightBinding,
       paused: this.isPaused,
+      initialGameSpeed: this.initialRunSettings.gameSpeedMultiplier,
+      gameSpeedModified: this.gameSpeedModified,
     };
   }
 
@@ -1192,6 +1179,11 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   private restartRun(): void {
+    this.initialRunSettings = { ...this.settings };
+    this.gameSpeedModified = false;
+    this.simulationAccumulatorSeconds = 0;
+    this.hitStopRemainingMilliseconds = 0;
+    this.setPresentationHitStopFrozen(false);
     this.simulation = createSimulation(
       this.startingWeaponCount, this.stressProfile, this.startingWeaponIds, this.scenario, this.uraniumLab,
       this.expeditionContext, this.perkId, this.heroPreview ?? this.saveStore.load().selectedHeroId,

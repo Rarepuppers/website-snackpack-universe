@@ -470,3 +470,43 @@ for (const viewport of [{ width: 1920, height: 1080 }, { width: 3840, height: 21
     await page.waitForFunction(() => window.__buildInspection?.page === 1);
   });
 }
+
+test("restart resets the attempt's settings provenance", async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 540 });
+  await page.goto("/play/last-bastion/?screen=game&pausepreview=settings");
+  await page.waitForFunction(() => window.__combatAccessibilityAudit?.paused);
+  await page.mouse.click(480, 304, { delay: 80 }); // Game speed: 1 -> 1.25
+  await page.waitForFunction(() => window.__combatAccessibilityAudit?.gameSpeedModified);
+  await page.keyboard.press("Escape", { delay: 80 });
+  await page.waitForFunction(() => window.__combatPauseMode === "root");
+  await page.mouse.click(480, 255, { delay: 80 }); // Restart encounter
+  await page.waitForFunction(() => window.__combatPauseMode === "confirm-restart");
+  await page.mouse.click(480, 164, { delay: 80 }); // Confirm restart
+  await page.waitForFunction(() => window.__combatAccessibilityAudit?.paused === false);
+  expect(await page.evaluate(() => window.__combatAccessibilityAudit)).toMatchObject({ initialGameSpeed: 1.25, gameSpeedModified: false });
+});
+
+for (const action of ["evade", "pause"]) {
+  test(`physical B goes back once with ${action} rebound to B`, async ({ page }) => {
+    await page.addInitScript((binding) => {
+      localStorage.setItem("last-bastion-save", JSON.stringify({ version: 16, controls: { gamepad: { [binding]: "east", kit: binding === "evade" ? "south" : "start" } } }));
+      const pad = { id: "Standard test controller", index: 0, connected: true, mapping: "standard", timestamp: 1, axes: [0, 0, 0, 0], buttons: Array.from({ length: 17 }, () => ({ pressed: false, touched: false, value: 0 })) };
+      window.__testPad = pad;
+      Object.defineProperty(navigator, "getGamepads", { value: () => { pad.timestamp = performance.now(); return [pad]; } });
+    }, action);
+    await page.goto("/play/last-bastion/?screen=game&pausepreview=build");
+    await page.waitForFunction(() => window.__buildInspection?.page === 0);
+    const button = async (index) => {
+      await page.evaluate(i => { window.__testPad.buttons[i] = { pressed: true, touched: true, value: 1 }; window.__testPad.timestamp++; }, index);
+      await page.waitForTimeout(120);
+      await page.evaluate(i => { window.__testPad.buttons[i] = { pressed: false, touched: false, value: 0 }; window.__testPad.timestamp++; }, index);
+      await page.waitForTimeout(120);
+    };
+    await button(15);
+    await page.waitForFunction(() => window.__buildInspection?.page === 1);
+    await button(1);
+    expect(await page.evaluate(() => window.__combatAccessibilityAudit.paused)).toBe(true);
+    await button(0); // Root Resume
+    await page.waitForFunction(() => window.__combatAccessibilityAudit?.paused === false);
+  });
+}

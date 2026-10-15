@@ -202,13 +202,13 @@ export function dailyShareText(input: {
   heroName: string;
   cleared: boolean;
   streak: number;
-  rules?: { buildVersion: string; gameSpeedMultiplier: number };
+  rules?: { buildVersion: string; gameSpeedMultiplier: number; gameSpeedModified?: boolean };
 }): string {
   const result = input.cleared
     ? `cleared all ${input.totalWaves} waves`
     : `reached wave ${input.waveReached}/${input.totalWaves}`;
   const streak = input.streak > 1 ? ` Streak: ${input.streak} days.` : "";
-  const rules = input.rules ? ` Build ${input.rules.buildVersion}; speed ${input.rules.gameSpeedMultiplier}x. Heroes, perks and assistance may differ.` : "";
+  const rules = input.rules ? ` Build ${input.rules.buildVersion}; ${input.rules.gameSpeedModified ? `started at ${input.rules.gameSpeedMultiplier}x; speed changed during run` : `speed ${input.rules.gameSpeedMultiplier}x`}. Heroes, perks and assistance may differ.` : "";
   return `Last Bastion Daily Drop, ${dailyLabel(input.dayKey)}: ${result} with ${input.kills} ${input.kills === 1 ? "kill" : "kills"} as the ${input.heroName}.${streak}${rules} ${LAST_BASTION_PUBLIC_URL}`;
 }
 

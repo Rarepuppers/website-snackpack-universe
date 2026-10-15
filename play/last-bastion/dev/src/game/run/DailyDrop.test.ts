@@ -141,3 +141,9 @@ describe("Daily Drop", () => {
     expect(merged["2026-10-11"]).toEqual({ bestWave: 6, bestKills: 70, cleared: false, attempts: 2 });
   });
 });
+
+it("discloses a speed change even when the attempt returned to its starting speed", () => {
+  const attempt = { dayKey: "2026-10-15", waveReached: 3, totalWaves: 10, kills: 2, heroName: "Marine", cleared: false, streak: 1 };
+  expect(dailyShareText({ ...attempt, rules: { buildVersion: "test", gameSpeedMultiplier: 1, gameSpeedModified: true } })).toContain("started at 1x; speed changed during run");
+  expect(dailyShareText({ ...attempt, rules: { buildVersion: "test", gameSpeedMultiplier: 0.75, gameSpeedModified: false } })).toContain("speed 0.75x.");
+});

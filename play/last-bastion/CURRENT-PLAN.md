@@ -49,6 +49,18 @@ Content expansion, new art batches and practice mode remain conditional on obser
 - Release identity: `web-2026.10.15-reliability`. Web output is rebuilt; the older packaged
   desktop executable has not been repackaged with these changes. Nothing was pushed or deployed.
 
+## Follow-up corrections — 15 October 2026
+
+Release `web-2026.10.15-controls` addresses the [follow-up audit](AUDIT-FOLLOWUP-2026-10-15.md):
+independent physical controller menu actions, working D-pad pages, truthful mixed-speed shares,
+and fresh per-attempt settings after restart. It also corrects the affinity count, clarifies build
+navigation hints, and preserves pointer targets while hovering pause/settings rows so first clicks
+are not lost. No saved-data schema change was required.
+
+Validation: 1,775 unit tests in 310 files and 27 browser checks; all required full-verifier lanes pass, including
+smoke/offline, matching published output and desktop host tests. Portfolio audit completed with all 19 guards passing. Physical-controller, audio, observed-play,
+packaged desktop and Steam acceptance remain open. No push or deployment performed.
+
 ## 1. Deploy and confirm the browser release
 
 - **Ready locally:** Quick and Daily Drop, phone notice, Lab gating, shell/HUD polish,

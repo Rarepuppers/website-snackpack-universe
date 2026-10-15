@@ -265,7 +265,7 @@ export class RunSummaryScene extends Phaser.Scene {
         heroName: heroName(summary.heroId),
         cleared: summary.outcome === "victory",
         streak: dailyStreak(progress?.daily ?? {}, summary.dailyKey, progress?.dailyParticipation),
-        rules: summary.provenance.settings ? { buildVersion: summary.provenance.buildVersion, gameSpeedMultiplier: summary.provenance.settings.gameSpeedMultiplier } : undefined,
+        rules: summary.provenance.settings ? { buildVersion: summary.provenance.buildVersion, gameSpeedMultiplier: summary.provenance.settings.gameSpeedMultiplier, gameSpeedModified: summary.provenance.gameSpeedModified } : undefined,
       })
       : null;
     const copyLink = () => { void this.copyGameLink(shareText); };

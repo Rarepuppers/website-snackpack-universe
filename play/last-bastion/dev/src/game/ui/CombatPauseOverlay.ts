@@ -117,6 +117,7 @@ export class CombatPauseOverlay {
   }
 
   private render(): void {
+    (window as unknown as { __combatPauseMode?: string }).__combatPauseMode = this.mode;
     this.position();
     this.container.removeAll(true);
     // The camera already scales simulation coordinates to the display.
@@ -149,6 +150,7 @@ export class CombatPauseOverlay {
     const rowHeight = this.mode === "settings"
       ? this.entries.length > 13 ? 25 : 28
       : this.mode === "root" ? 43 : 50;
+    const rowRects: Phaser.GameObjects.Rectangle[] = [];
     this.entries.forEach((entry, index) => {
       const y = startY + index * rowHeight;
       const selected = index === this.selection;
@@ -156,6 +158,7 @@ export class CombatPauseOverlay {
       const border = entry.danger ? 0xff795f : selected ? 0x68e4e8 : 0x3b4d63;
       const rect = this.scene.add.rectangle(width / 2, y, 430, rowHeight - 6, color, 0.98)
         .setStrokeStyle(selected ? 2 : 1, border);
+      rowRects.push(rect);
       const fontSize = this.mode === "settings" ? 9 : 11;
       const label = this.text(width / 2 - 194, y, entry.label, entry.danger ? "#ffab8d" : "#e8e2d4", fontSize)
         .setOrigin(0, 0.5);
@@ -167,7 +170,11 @@ export class CombatPauseOverlay {
       zone.on("pointerover", () => {
         if (this.selection !== index) {
           this.selection = index;
-          this.render();
+          rowRects.forEach((row, rowIndex) => {
+            const danger = this.entries[rowIndex]?.danger;
+            row.setFillStyle(danger ? 0x5b2630 : rowIndex === index ? 0x24384f : 0x1d2938, 0.98);
+            row.setStrokeStyle(rowIndex === index ? 2 : 1, danger ? 0xff795f : rowIndex === index ? 0x68e4e8 : 0x3b4d63);
+          });
         }
       });
       zone.on("pointerdown", () => {
@@ -322,7 +329,7 @@ export class CombatPauseOverlay {
     button(width / 2 - 150, "PREVIOUS", () => this.changeBuildPage(-1));
     button(width / 2, "BACK", () => this.back());
     button(width / 2 + 150, "NEXT", () => this.changeBuildPage(1));
-    const hint = this.inputDevice === "gamepad" ? "D-PAD PAGES / B BACK" : "ARROWS PAGES / ESC BACK";
+    const hint = this.inputDevice === "gamepad" ? "D-PAD/STICK PAGES / A OR B BACK" : "ARROWS PAGES / ENTER OR ESC BACK";
     this.container.add(this.text(width / 2, height - 72, `${this.buildPage + 1}/${pages.length}  ${hint}`, "#8fa1b3", 9).setOrigin(0.5));
     this.entries = [{ label: "BACK", activate: () => this.back() }];
   }

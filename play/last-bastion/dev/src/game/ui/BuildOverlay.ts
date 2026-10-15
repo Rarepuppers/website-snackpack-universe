@@ -55,7 +55,7 @@ export function buildPages(build: BuildOverlayModel): BuildPage[] {
   return sections.flatMap(([title, lines]) => {
     const pages: BuildPage[] = [];
     for (let i = 0; i < Math.max(1, lines.length); i += 6) {
-      pages.push({ title: `${title} (${lines.length})`, lines: lines.length ? lines.slice(i, i + 6) : ["None yet"] });
+      pages.push({ title: title === "TRANSFORMATION AFFINITY" ? title : `${title} (${lines.length})`, lines: lines.length ? lines.slice(i, i + 6) : ["None yet"] });
     }
     return pages;
   });

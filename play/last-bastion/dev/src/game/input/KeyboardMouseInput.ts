@@ -1,3 +1,4 @@
+import { GamepadMenuInput, type GamepadMenuAction } from "./GamepadMenuInput";
 import Phaser from "phaser";
 import type { PlayerIntent } from "./PlayerIntent";
 import { normalizeVector } from "../math/Vector2Data";
@@ -38,8 +39,9 @@ export class KeyboardMouseInput {
   private readonly gamepadMapper: GamepadIntentMapper;
   private lastPointer = { x: Number.NaN, y: Number.NaN };
   private activeDevice: "keyboard" | "gamepad" = "keyboard";
-  private previousGamepadEast = false;
-  private gamepadBackPressed = false;
+  private readonly menuMapper = new GamepadMenuInput();
+  private menuAction: GamepadMenuAction | null = null;
+  keyboardPausePressed = false;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -75,6 +77,7 @@ export class KeyboardMouseInput {
   read(playerPosition: { x: number; y: number }): PlayerIntent {
     const pointer = this.scene.input.activePointer;
     const gamepadState = this.readGamepadState();
+    this.menuAction = this.menuMapper.read(this.scene.input.gamepad?.getPad(0) ?? null);
     const horizontal = Number(this.keys.right.isDown || this.keys.rightAlt.isDown)
       - Number(this.keys.left.isDown || this.keys.leftAlt.isDown);
     const vertical = Number(this.keys.down.isDown || this.keys.downAlt.isDown)
@@ -110,9 +113,8 @@ export class KeyboardMouseInput {
       || gamepadState.westPressed || gamepadState.northPressed || gamepadState.startPressed
       || gamepadState.rightStickPressed
     );
-    this.gamepadBackPressed = gamepadState.eastPressed && !this.previousGamepadEast;
-    this.previousGamepadEast = gamepadState.eastPressed;
-    if (gamepadActive) this.activeDevice = "gamepad";
+    this.keyboardPausePressed = keyboardMouse.pausePressed;
+    if (gamepadActive || this.menuAction) this.activeDevice = "gamepad";
     else if (keyboardActive) this.activeDevice = "keyboard";
     return mergeIntents(keyboardMouse, this.gamepadMapper.update(gamepadState));
   }
@@ -126,10 +128,10 @@ export class KeyboardMouseInput {
     return this.activeDevice;
   }
 
-  consumeGamepadBackPressed(): boolean {
-    const pressed = this.gamepadBackPressed;
-    this.gamepadBackPressed = false;
-    return pressed;
+  consumeMenuAction(): GamepadMenuAction | null {
+    const action = this.menuAction;
+    this.menuAction = null;
+    return action;
   }
 
   private readGamepadState(): GamepadStateSnapshot {
