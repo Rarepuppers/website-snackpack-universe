@@ -209,3 +209,21 @@ Phase 4 re-measure → Phase 2.4 / Phase 5 only if the numbers justify it.
   homepage card `<img>` must NOT carry width/height attributes, because
   `.storybook-card img` sets aspect-ratio without `height:auto` and the
   attribute stretched it to 1536px.
+- 2026-10-15: **Reading-aids batch shipped** (Batch 2). `read/reader.js` on
+  every book adds two things. **Read to me** uses the browser's speech engine
+  (en-GB voice preferred, rate 0.82) and lights up each word as it is spoken;
+  `<mark>` highlights survive the word wrapping. **One page at a time** is a
+  full-screen picture-book mode with Back/Next, arrow keys, swipe and Esc; it
+  goes full screen on touch devices, and "The end" lands on the finish card.
+  The hub gains stage shortcut chips and **Save the bookshelf for offline**
+  (`read/offline.js` plus a generated `read/offline-manifest.json`: 115 files,
+  11.4 MB of art, no PDFs). It writes into sw.js's own `snackpack-arcade-*`
+  cache, because that is the only cache sw.js serves offline pages from, and
+  it reads its status from the cache, never from a remembered flag. A sw.js
+  update clears the cache, so the hub then offers to save again.
+  sw.js `CACHE` bumped v21 → v22. Tested in Playwright: Pixel 7, iPad
+  landscape, desktop. Read-to-me used a stub speech engine, because headless
+  Chromium has no voices and `speechSynthesis` must be replaced with
+  `Object.defineProperty`, not by assignment. Offline: saved, then went offline
+  and opened a book with all its art and CSS. **Not yet heard on a real
+  device**: voice quality varies by device.

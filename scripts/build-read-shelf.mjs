@@ -61,8 +61,18 @@ function card(b, i) {
   return `<a class="read-library-card" href="./${b.slug}/"><picture><source srcset="${src}.webp" type="image/webp"><img src="${src}.${b.ext}" alt="${b.alt}" width="${b.w}" height="${b.h}"${i > 2 ? " loading=\"lazy\"" : ""}></picture><div><span class="eyebrow">${b.eyebrow}</span><h3>${b.title}</h3><p>${b.blurb}</p><span class="btn btn-primary">Read the story</span></div></a>`;
 }
 
+// Stage shortcuts (a 13-book shelf is a long scroll on a phone) and the
+// offline save, whose button read/offline.js reveals only where it can work.
+function shelfTools() {
+  const chips = GROUPS.filter((g) => SHELF.some((b) => b.group === g.id))
+    .map((g) => `<a class="read-jump-chip" href="#${g.id}">${g.title.split(" · ")[0]}</a>`).join("");
+  return `<nav class="read-jump" aria-label="Jump to a stage">${chips}</nav>
+<div class="read-offline" hidden><button class="btn btn-secondary" type="button" data-read-offline>Save the bookshelf for offline</button><p class="read-offline-status" data-read-offline-status aria-live="polite"></p></div>
+<script defer src="./offline.js"></script>`;
+}
+
 function shelfBlock() {
-  const out = [];
+  const out = [shelfTools()];
   for (const g of GROUPS) {
     const books = SHELF.filter((b) => b.group === g.id);
     if (!books.length) continue;
@@ -103,7 +113,7 @@ function shareTopBlock() {
 
 function nextBlock(i) {
   const next = SHELF[i + 1];
-  const share = `<p class="story-share">Know a family or class who would enjoy it? ${SHARE_BUTTON("btn btn-secondary read-share-btn")}</p>\n<script defer src="../share.js"></script>`;
+  const share = `<p class="story-share">Know a family or class who would enjoy it? ${SHARE_BUTTON("btn btn-secondary read-share-btn")}</p>\n<script defer src="../share.js"></script>\n<script defer src="../reader.js"></script>`;
   if (!next) {
     return `<p class="story-next">That’s the whole shelf, and every book has a printable PDF. <a class="text-link" href="../">Back to the bookshelf</a></p>\n${share}`;
   }
@@ -190,6 +200,36 @@ SHELF.forEach((b, i) => {
   html = splice(html, "read-share-top:generated", shareTopBlock(), rel);
   write(rel, splice(html, "read-next:generated", nextBlock(i), rel));
 });
+
+// Everything read/offline.js saves: the hub, sound cards, every book page and
+// its WebP art (the <picture> source every current browser picks), plus the
+// shared CSS, scripts and fonts those pages need. PDFs are deliberately out.
+function offlineManifest() {
+  const urls = ["/read/", "/read/sound-cards/"];
+  for (const b of SHELF) {
+    urls.push(`/read/${b.slug}/`);
+    const dir = path.join(ROOT, "read", b.slug, "pages");
+    for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".webp")).sort()) urls.push(`/read/${b.slug}/pages/${f}`);
+  }
+  urls.push("/site.css", "/theme.js", "/read/share.js", "/read/reader.js", "/read/offline.js",
+    "/assets/fonts/fonts.css", "/assets/favicon-32.png", "/assets/snackpack-mark-96.png");
+  for (const f of fs.readdirSync(path.join(ROOT, "assets/fonts")).filter((f) => f.endsWith(".woff2")).sort()) urls.push(`/assets/fonts/${f}`);
+  // The size shown to readers counts only the book art (~95% of the download).
+  // Counting HTML/CSS too would make this file stale, and CI red, on every
+  // unrelated stylesheet or nav edit anywhere on the site.
+  const bytes = urls.reduce((n, u) => {
+    const file = path.join(ROOT, u.endsWith("/") ? `${u}index.html` : u);
+    if (!fs.existsSync(file)) throw new Error(`offline manifest: ${u} has no file at ${file}`);
+    return u.endsWith(".webp") ? n + fs.statSync(file).size : n;
+  }, 0);
+  return JSON.stringify({ books: SHELF.length, bytes, urls }, null, 1) + "\n";
+}
+{
+  const rel = "read/offline-manifest.json";
+  const next = offlineManifest();
+  const prev = fs.existsSync(path.join(ROOT, rel)) ? fs.readFileSync(path.join(ROOT, rel), "utf8") : "";
+  if (prev !== next) { changes.push(rel); if (!CHECK) fs.writeFileSync(path.join(ROOT, rel), next); }
+}
 
 write("index.html", splice(fs.readFileSync(path.join(ROOT, "index.html"), "utf8"), "read-home:generated", homeBlock(), "index.html"));
 
