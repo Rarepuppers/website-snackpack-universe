@@ -142,3 +142,17 @@ Phase 4 re-measure → Phase 2.4 / Phase 5 only if the numbers justify it.
   `play/thirteen/`, which was not touched here. `sw.js` `CACHE` was **not**
   bumped because another session has uncommitted edits in it. HTML and CSS
   are network-first, so the change lands without the bump.
+- 2026-10-15: **Phase 2.1 blocked on art.** `ted-e-bear-pocketful-of-sounds`
+  has a cover and only **1 of 8** pages illustrated (page 3's hero); the rest
+  are emoji scenes in the app. That fails the shelf's "complete artwork" rule.
+  It needs Mark's go-ahead to commission 7 interiors, or a separate
+  text-led "read aloud" format. Skipped, not dropped.
+- 2026-10-15: **Phase 2.2, first book live: `hen-berrys-digraph-dash`** (app3
+  Reading Trail step 2, `isFree: true`, 5/5 pages illustrated, text verbatim
+  from `reading-trail-drafts.ts`, all five pages viewed). It fills the first
+  phonics gap after Stage 3 (sh, ch, th, wh). The new "Reading Trail · next
+  steps" group puts the Short-Vowel Kit (step 1) first, then this book.
+  **Next candidates:** Reading Trail steps 3–6 (blends, magic-e, vowel
+  teams, endings) are all `isFree: false`, so continuing the trail needs
+  Mark's Pro decision. That is the most valuable decision in this plan,
+  because those four books complete the phonics path a teacher would follow.

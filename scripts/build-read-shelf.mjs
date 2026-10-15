@@ -32,7 +32,8 @@ const GROUPS = [
   { id: "stage-1", title: "Stage 1 · first sounds", intro: "Start here. Every word uses only s, a, t, p, i and n, plus a few tricky words to read together." },
   { id: "stage-2", title: "Stage 2 · six more sounds", intro: "Adds c, e, h, r, m and d. Ready when Stage 1 words feel easy." },
   { id: "stage-3", title: "Stage 3 · short o and u", intro: "Adds g, o, u, l, f and b, so every short vowel is covered." },
-  { id: "more", title: "More stories", intro: "Read-together stories for sharing, counting and short-vowel practice." }
+  { id: "trail", title: "Reading Trail · next steps", intro: "Longer read-together stories. Review short vowels, then meet two letters that make one sound: sh, ch, th and wh." },
+  { id: "more", title: "More stories", intro: "A read-together counting adventure." }
 ];
 
 // The shelf, in reading order. The "next story" chain follows this order.
@@ -43,7 +44,8 @@ const SHELF = [
   { slug: "the-cat-and-the-rat", group: "stage-2", title: "The Cat and the Rat", eyebrow: "Stage 2 decodable · 8 pages", blurb: "Every word is a plain three-sound word — the best book on the shelf for a first independent read.", cover: "pages/cover", ext: "jpg", alt: "The Cat and the Rat decodable book cover.", w: 1024, h: 1536 },
   { slug: "bug-in-a-cup", group: "stage-3", title: "Bug in a Cup", eyebrow: "Stage 3 decodable · 8 pages", blurb: "A short-U story that adds g, o, u, l, f and b to the sounds a new reader already knows.", cover: "pages/cover", ext: "jpg", alt: "Bug in a Cup decodable book cover.", w: 1024, h: 1536 },
   { slug: "dog-in-the-fog", group: "stage-3", title: "Dog in the Fog", eyebrow: "Stage 3 decodable · 8 pages", blurb: "A short-O story for readers ready to move past the first six letter sounds.", cover: "pages/cover", ext: "jpg", alt: "Dog in the Fog decodable book cover.", w: 1024, h: 1536 },
-  { slug: "ted-e-bears-short-vowel-kit", group: "more", title: "Ted‑E‑Bear’s Short‑Vowel Kit", eyebrow: "Short-vowel reader · 5 pages", blurb: "A warm den-building story full of short-vowel words for beginning readers.", cover: "pages/reading-trail-ted-short-vowel-kit-p1", ext: "jpg", alt: "Ted-E-Bear with his box, rug and den-building kit.", w: 768, h: 1152 },
+  { slug: "ted-e-bears-short-vowel-kit", group: "trail", title: "Ted‑E‑Bear’s Short‑Vowel Kit", eyebrow: "Reading Trail step 1 · 5 pages", blurb: "A warm den-building story full of short-vowel words for beginning readers.", cover: "pages/reading-trail-ted-short-vowel-kit-p1", ext: "jpg", alt: "Ted-E-Bear with his box, rug and den-building kit.", w: 768, h: 1152 },
+  { slug: "hen-berrys-digraph-dash", group: "trail", title: "Hen‑Berry’s Digraph Dash", eyebrow: "Reading Trail step 2 · 5 pages", blurb: "Fog hides the path home. A shell, a fish and a few sh, ch, th and wh words lead the way.", cover: "pages/reading-trail-hen-berry-digraph-dash-p1", ext: "jpg", alt: "Hen-Berry and a chick in her cosy shop at dusk.", w: 768, h: 1152 },
   { slug: "ted-e-bear-and-the-button-trail", group: "more", title: "Ted‑E‑Bear and the Button Trail", eyebrow: "Counting adventure · 6 pages", blurb: "Follow a missing-button mystery through counting, number order, comparisons and courage.", cover: "pages/cover", ext: "png", alt: "Ted-E-Bear and the Button Trail story cover.", w: 640, h: 640 }
 ];
 
