@@ -156,3 +156,13 @@ Phase 4 re-measure → Phase 2.4 / Phase 5 only if the numbers justify it.
   teams, endings) are all `isFree: false`, so continuing the trail needs
   Mark's Pro decision. That is the most valuable decision in this plan,
   because those four books complete the phonics path a teacher would follow.
+- 2026-10-15: **Phase 3 done: `/read/sound-cards/`.** Sound, word and
+  tricky-word cards for Stages 1–3 and the sh/ch/th/wh step. The letters and
+  words come from `decodableBooks.ts` / `curriculum.ts` and the Digraph Dash
+  text. It is an HTML page with print CSS, not a PDF, so it stays indexable
+  and needs no dependencies. Verified with Playwright that it prints exactly
+  **4 pages (one per stage) on both A4 and Letter**, black on white even from
+  the dark theme. Linked from the hub ("Print sound cards") and from the
+  printables guide's new "Next steps" block. The separate "which book first?"
+  QR PDF was **dropped**: the stage-ordered hub now does that job, and QR
+  generation would add the repo's first dependency.
