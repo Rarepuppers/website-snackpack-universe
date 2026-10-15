@@ -5,6 +5,17 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-16 — Read to me speed (Phase C4)
+
+- A **Speed: slow / normal** button now sits beside every "Read to me" button.
+  Slow (the default, as before) suits a child following each word; normal suits
+  an adult reading along.
+- One tap changes the speed for the whole book, and a page that is being read
+  restarts at the new speed. The choice is remembered on that device, and
+  nothing leaves the device.
+- No service worker bump, so bookshelves that readers saved for offline stay
+  saved.
+
 ## 2026-10-16 — Questions page in every printable book (Phase C3)
 
 - Every "Print this book (PDF)" now ends with a **questions page**: the talk
