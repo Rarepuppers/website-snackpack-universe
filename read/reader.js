@@ -23,6 +23,30 @@
   var canSpeak = !!(synth && window.SpeechSynthesisUtterance);
   var speaking = null; // { card, button }
 
+  // Speed (READ-PLAN C4): "Slow" for a child following each word, "Normal"
+  // for an adult reading along. Remembered on this device only; if storage is
+  // blocked (private window, previews) it simply starts at Slow each visit.
+  var RATES = { slow: 0.82, normal: 1 };
+  var SPEED_KEY = "snackpack-read-speed";
+  var speed = "slow";
+  try { if (localStorage.getItem(SPEED_KEY) === "normal") speed = "normal"; } catch (e) {}
+  var speedButtons = [];
+
+  function syncSpeed() {
+    speedButtons.forEach(function (b) {
+      b.textContent = speed === "slow" ? "Speed: slow" : "Speed: normal";
+      b.setAttribute("aria-label", "Reading speed: " + speed + ". Change to " + (speed === "slow" ? "normal" : "slow") + ".");
+    });
+  }
+
+  function toggleSpeed() {
+    speed = speed === "slow" ? "normal" : "slow";
+    try { localStorage.setItem(SPEED_KEY, speed); } catch (e) {}
+    syncSpeed();
+    // A voice can't change speed mid-sentence, so restart the page being read.
+    if (speaking) { var s = speaking; stop(); speak(s.card, s.button); }
+  }
+
   function pickVoice() {
     var voices = synth.getVoices() || [];
     function find(test) { for (var i = 0; i < voices.length; i++) if (test(voices[i])) return voices[i]; return null; }
@@ -89,7 +113,7 @@
     var u = new SpeechSynthesisUtterance(data.text);
     var voice = pickVoice();
     if (voice) { u.voice = voice; u.lang = voice.lang; } else { u.lang = "en-GB"; }
-    u.rate = 0.82; // early readers follow along; slower than conversational
+    u.rate = RATES[speed];
     u.onboundary = function (e) {
       if (!speaking || speaking.card !== card || e.name === "sentence") return;
       clearSpoken(card);
@@ -116,11 +140,21 @@
       btn.textContent = "Read to me";
       btn.setAttribute("aria-pressed", "false");
       btn.addEventListener("click", function () { speak(card, btn); });
+      var spd = document.createElement("button");
+      spd.type = "button";
+      spd.className = "read-speed-btn";
+      spd.addEventListener("click", toggleSpeed);
+      speedButtons.push(spd);
+      var row = document.createElement("div");
+      row.className = "read-aloud-row";
+      row.appendChild(btn);
+      row.appendChild(spd);
       // Straight after the story text: before a number story's question box
       // or a "Talk together" note, whichever comes first.
       var after = copy.querySelector(":scope > .math-question, :scope > aside");
-      copy.insertBefore(btn, after || null);
+      copy.insertBefore(row, after || null);
     });
+    syncSpeed();
     window.addEventListener("pagehide", stop);
   }
 
