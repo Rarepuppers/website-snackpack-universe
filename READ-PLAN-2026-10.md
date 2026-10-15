@@ -176,7 +176,20 @@ Phase 4 re-measure → Phase 2.4 / Phase 5 only if the numbers justify it.
   **app** (`constants/alphabet.ts`): consistent pronouns and full sentences.
   After that, re-assess. Publishing the current text would put the app's
   weakest writing on the page that is earning shares.
-- **Where the plan stands:** Phases 1 and 3 are done. Phase 2 has added 1 book
+- 2026-10-15: **Mark approved publishing Reading Trail steps 3–6 (Pro in the
+  app) on the free shelf.** All four are live: Stripe-Scout's Blend Bridge,
+  Sub-Zero's Magic-E Lantern, Meow-inara's Vowel-Team Duet and Quill-Berry's
+  Ending Clues. Each has 5/5 pages illustrated, all 20 viewed. The new
+  `scripts/import-reading-trail-book.mjs` copies text verbatim from
+  `reading-trail-drafts.ts`. Alt text is written from the art, which differs
+  in places: the Blend Bridge sign shows shapes, not "FRIENDS HELP".
+  Highlighting matches each book's spelling pattern, not the app's
+  `focusWord` (which marked "glow" in the magic-e book). The shelf is now **13
+  books**, and the Reading Trail runs steps 1–6 without a break.
+  `/read/sound-cards/` now has **8 sheets** (adds blends, magic e, vowel
+  teams, endings). Verified 8 print pages on A4 and Letter. The generator
+  moved into the repo as `scripts/build-sound-cards.py`.
+- **Where the plan stands (superseded by the entry above for Phase 2.2):** Phases 1 and 3 are done. Phase 2 has added 1 book
   (Digraph Dash). The rest of Phase 2 waits on decisions: art for Pocketful
   of Sounds, Pro approval for Reading Trail steps 3–6, and app-side fixes to
   the ABC text. Phase 2.4 and the Phase 4 re-measure are due **2026-11-15**.

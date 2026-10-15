@@ -32,7 +32,7 @@ const GROUPS = [
   { id: "stage-1", title: "Stage 1 · first sounds", intro: "Start here. Every word uses only s, a, t, p, i and n, plus a few tricky words to read together." },
   { id: "stage-2", title: "Stage 2 · six more sounds", intro: "Adds c, e, h, r, m and d. Ready when Stage 1 words feel easy." },
   { id: "stage-3", title: "Stage 3 · short o and u", intro: "Adds g, o, u, l, f and b, so every short vowel is covered." },
-  { id: "trail", title: "Reading Trail · next steps", intro: "Longer read-together stories. Review short vowels, then meet two letters that make one sound: sh, ch, th and wh." },
+  { id: "trail", title: "Reading Trail · next steps", intro: "Six read-together stories that carry on after Stage 3: short-vowel review, sh/ch/th/wh, blends, magic e, vowel teams and word endings." },
   { id: "more", title: "More stories", intro: "A read-together counting adventure." }
 ];
 
@@ -46,6 +46,10 @@ const SHELF = [
   { slug: "dog-in-the-fog", group: "stage-3", title: "Dog in the Fog", eyebrow: "Stage 3 decodable · 8 pages", blurb: "A short-O story for readers ready to move past the first six letter sounds.", cover: "pages/cover", ext: "jpg", alt: "Dog in the Fog decodable book cover.", w: 1024, h: 1536 },
   { slug: "ted-e-bears-short-vowel-kit", group: "trail", title: "Ted‑E‑Bear’s Short‑Vowel Kit", eyebrow: "Reading Trail step 1 · 5 pages", blurb: "A warm den-building story full of short-vowel words for beginning readers.", cover: "pages/reading-trail-ted-short-vowel-kit-p1", ext: "jpg", alt: "Ted-E-Bear with his box, rug and den-building kit.", w: 768, h: 1152 },
   { slug: "hen-berrys-digraph-dash", group: "trail", title: "Hen‑Berry’s Digraph Dash", eyebrow: "Reading Trail step 2 · 5 pages", blurb: "Fog hides the path home. A shell, a fish and a few sh, ch, th and wh words lead the way.", cover: "pages/reading-trail-hen-berry-digraph-dash-p1", ext: "jpg", alt: "Hen-Berry and a chick in her cosy shop at dusk.", w: 768, h: 1152 },
+  { slug: "stripe-scouts-blend-bridge", group: "trail", title: "Stripe‑Scout’s Blend Bridge", eyebrow: "Reading Trail step 3 · 5 pages", blurb: "A branch blocks the bridge. A frog, a crab and plenty of blends help Stripe-Scout lift it.", cover: "pages/reading-trail-stripe-scout-blend-bridge-p1", ext: "jpg", alt: "Stripe-Scout the tiger on a wooden bridge blocked by a fallen branch.", w: 768, h: 1152 },
+  { slug: "sub-zeros-magic-e-lantern", group: "trail", title: "Sub‑Zero’s Magic‑E Lantern", eyebrow: "Reading Trail step 4 · 5 pages", blurb: "A lost note, a runaway kite and a lantern made from tape, rope and a red cape.", cover: "pages/reading-trail-sub-zero-magic-e-lantern-p1", ext: "jpg", alt: "Sub-Zero the penguin ties a note to a kite in the snow.", w: 768, h: 1152 },
+  { slug: "meow-inaras-vowel-team-duet", group: "trail", title: "Meow‑inara’s Vowel‑Team Duet", eyebrow: "Reading Trail step 5 · 5 pages", blurb: "The music never arrives, so Meow-inara listens, paints the beat and plays anyway.", cover: "pages/reading-trail-meow-inara-vowel-team-duet-p1", ext: "jpg", alt: "Meow-inara the cat waits by a green gate in the rain.", w: 768, h: 1152 },
+  { slug: "quill-berrys-ending-clues", group: "trail", title: "Quill‑Berry’s Ending Clues", eyebrow: "Reading Trail step 6 · 5 pages", blurb: "A poem has lost its endings. Quill-Berry adds -ing, -ed and -er and claps the beats.", cover: "pages/reading-trail-quill-berry-ending-clues-p1", ext: "jpg", alt: "Quill-Berry the hedgehog looks at a book with blank spaces.", w: 768, h: 1152 },
   { slug: "ted-e-bear-and-the-button-trail", group: "more", title: "Ted‑E‑Bear and the Button Trail", eyebrow: "Counting adventure · 6 pages", blurb: "Follow a missing-button mystery through counting, number order, comparisons and courage.", cover: "pages/cover", ext: "png", alt: "Ted-E-Bear and the Button Trail story cover.", w: 640, h: 640 }
 ];
 
