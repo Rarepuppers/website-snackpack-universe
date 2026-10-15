@@ -5090,3 +5090,22 @@ the Codex art redirect all **accepted**.
   plans and old one-off preflights moved under `archive/`; their still-open conditional
   items were carried forward. The five creator-observed runs and presentation evidence
   remain the next gameplay gates. No content expansion or site push was performed.
+
+## 15 October 2026 — audit corrections, release notes and archive
+
+- `c7779414`: startup/art recovery, Daily participation intervals and midnight retry, local-day
+  reporting and abandoned outcomes, paginated named build/affinity inspection, grouped settings,
+  floor readability, deadzone consistency and 1080p/4K pause layout corrections.
+- `ebc9a4b2`: physical controller menu actions independent of combat remapping, D-pad pages,
+  mixed-speed Daily disclosure, restart provenance reset, affinity count/navigation hints and
+  first-click reliability for pause/settings rows. No destructive save migration was required.
+- Current identity is `web-2026.10.15-controls`; worker release is `2026-10-15-controls`.
+  Final full verifier passed all required lanes (61.7s): 1,775 unit tests / 310 files, 27 browser
+  checks, smoke/offline, 25 matching published outputs and desktop-host build/28 tests.
+  The portfolio rerun completed with all 19 guards passing.
+- Consolidated CURRENT-PLAN.md around remaining gates, archived both completed October audits,
+  added player-facing RELEASE-NOTES.md and refreshed the documentation index. Historical
+  validation numbers remain in archived reports rather than competing with the current result.
+- No push/deployment or fresh desktop package was performed. Observed runs, physical controller,
+  audio/display, packaged-window and Steam-client acceptance remain open. Conditional content,
+  practice, accessibility and art work was preserved rather than marked complete.

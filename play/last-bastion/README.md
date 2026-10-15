@@ -1,12 +1,13 @@
 # Last Bastion documentation
 
-Last reviewed: 11 October 2026. The game lives in the **nested website Git repo**.
+Last reviewed: 15 October 2026. The game lives in the **nested website Git repo**.
 `dev/src/game/` describes current behavior; plans explain intent and acceptance.
 
 ## Start here
 
 | Document | Use |
 |---|---|
+| [Release notes](RELEASE-NOTES.md) | Player-facing changes and local/deployed status. |
 | [Current plan](CURRENT-PLAN.md) | The only active execution queue and release gates. |
 | [Local playtest plan](local-playtest-plan-2026-08-21.md) | Five creator-observed runs, evidence fields, and pass thresholds. |
 | [Presentation register](presentation-defect-plan-2026-08-23.md) | LB defects and the separate visual acceptance lane; recheck status against current code and observed play. |
@@ -20,7 +21,7 @@ Last reviewed: 11 October 2026. The game lives in the **nested website Git repo*
 | [Asset review](asset-next-production-review-2026-07-26.md) | Asset acceptance and conditional art queue. Its original storefront priority list is complete. |
 | [Environment plan](environment-production-plan.md) and [prompts](environment-prompts.md) | Environment kit contracts and prompt library. Further art follows observed failures. |
 | [World-object plan](world-object-production-plan.md) | Placement/density contract; O2/O3 acceptance remains conditional. |
-| [Transformation plan](transformation-path-production-plan.md) | Step 5 onward and Affinity comprehension work remain deferred. |
+| [Transformation plan](transformation-path-production-plan.md) | Later production steps remain deferred; build inspection now explains affinity thresholds. Further comprehension work follows observed play. |
 | [Product strategy](product-strategy-plan-2026-09-11.md) | Distribution rationale and measurement questions. Its old implementation queue is superseded. |
 | [Frozen content plan](last-bastion-content-design-plan-2026-08-07.md) | Proposals only; do not expand content until observed play and funnel data justify it. |
 | [Game design](last-bastion-game.md), [content design](last-bastion-content.md), [systems model](last-bastion-model.md), [balance notes](wave_balance.md) | Original design intent. Catalogues and tests own current counts. |

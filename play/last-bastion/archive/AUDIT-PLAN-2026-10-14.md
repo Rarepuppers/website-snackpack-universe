@@ -1,5 +1,10 @@
 # Last Bastion audit and proposed implementation plan
 
+> Archived 15 October 2026: accepted corrections completed in `c7779414` and `ebc9a4b2`.
+> This document preserves the original findings and verification history. Remaining manual
+> gates and conditional proposals are tracked in [CURRENT-PLAN.md](../CURRENT-PLAN.md).
+> Relative source paths in the historical text are relative to the game root.
+
 14 October 2026 audit; implementation accepted by Mark on 15 October 2026.
 Accepted runtime fixes are implemented and verified locally. Deployment remains a separate explicit step.
 Reviewed website commit `00c34329`, source and published output, current plans, automated

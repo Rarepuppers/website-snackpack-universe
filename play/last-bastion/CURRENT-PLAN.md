@@ -1,139 +1,90 @@
 # Last Bastion — current plan
 
 **Updated:** 15 October 2026
+**Local release:** `web-2026.10.15-controls` (service worker `2026-10-15-controls`).
+**Status:** accepted audit corrections are implemented and committed. All required automated
+verification lanes pass. This release has not been pushed or deployed by this work.
 
-**Status:** accepted October audit fixes are implemented locally; all required automated verification lanes pass. Deployment, live measurement,
-creator-observed play, visible desktop acceptance, and Steam client acceptance remain open.
+This is the only active execution queue. Completed audit tasks are in the
+[archive](archive/README.md); player-facing changes are in the [release notes](RELEASE-NOTES.md).
+Keep the content freeze until observed play and live measurement justify expansion.
 
-This replaces the execution order in the [9 October audit](archive/implementation-plan-2026-10-09.md).
-Keep the content freeze until the evidence below is collected. Use `dev/src/game/` and the
-published `game-assets/` as the source of truth for what ships.
+## Completed and verified
 
-## Accepted October audit implementation
+- Reliability and comprehension pass: `c7779414`. Startup/art recovery, long Daily streaks,
+  midnight-safe retry, local-day visit reporting, abandonment classification, grouped settings,
+  readable paginated build/affinity inspection, deadzone consistency and large-display panels.
+- Controller/reporting follow-up: `ebc9a4b2`. Physical menu controls independent of combat
+  remapping, D-pad pages, mixed-speed share disclosure, fresh attempt settings after restart,
+  corrected affinity count/navigation hints and reliable first clicks on pause/settings rows.
+- Final `npm run verify:last-bastion`: all required lanes passed (61.7 seconds): 1,775 unit
+  tests in 310 files, 27 browser checks, smoke/offline acceptance, 25 matching published outputs,
+  website JavaScript/offline-core checks and desktop host build with 28 tests.
+- Portfolio `node scripts/check-all.js`: all 19 guards passed on 15 October. Separate website
+  check previously verified 272 pages. Those results do not establish live deployment status.
+- Layout captures remain in `playtest-evidence/2026-10-15-screens-auto/`. They predate the
+  follow-up label changes and are layout evidence, not final screenshots of every current label.
 
-See [audit and implementation details](AUDIT-PLAN-2026-10-14.md). The accepted scope is
-recovery, Daily correctness, trustworthy metrics, build/affinity clarity and settings polish.
-Content expansion, new art batches and practice mode remain conditional on observed play.
+## 1. Deploy and verify the browser release — open
 
-- Implemented: bounded character-art failure with retry/back; startup recovery; long Daily
-  streak participation intervals and cloud merge; midnight-safe retry; local-day visit ledger;
-  abandonment classification; named and paginated build inventories and affinity explanations;
-  grouped settings; consistent deadzone limits; three-mode title copy.
-- Additional fixes found during implementation: stashed weapon names were omitted by an
-  equipped-only lookup; settings could overlap the footer; smoke readiness requests were unbounded;
-  keyboard build navigation advanced twice because a keyboard direction also entered the gamepad path;
-  pause/build panels used display dimensions inside an already scaled camera, pushing them offscreen at 1080p/4K.
-- Save change is additive to schema 16: missing participation intervals migrate from retained
-  Daily results. Historical days already discarded cannot be recovered. Detailed results remain
-  bounded to 60 days; participation is stored separately as merged date intervals.
-- Measurement: opened/start/wave milestones are per browser-tab local day, not unique people.
-  Run endings are a separate all-run outcome distribution, not the final stage of that funnel.
-  Expedition endings omit the wave-depth field because their progression is measured in nodes.
-- The live menu already showed Quick/Daily on 14 October. Do not infer exact deployed bundle
-  identity or analytics delivery from the older deployment-pending notes below.
+- [ ] Obtain an explicit deployment request: Mark's standing instruction is **do not push unless asked**.
+- [ ] Review the website repository's release scope, including unrelated working-tree changes;
+  push only the authorized release, wait for CI, and verify the live game and privacy page.
+- [ ] Confirm the served build identity matches `web-2026.10.15-controls` and test a warm-cache
+  offline upgrade. The live menu already showed Quick/Daily on 14 October; this does not prove
+  that the current bundle or analytics configuration is deployed.
+- [ ] Confirm `opened`, `run-started`, `wave-1`, `wave-5`, `run-ended`, and next-local-day
+  `returning` in the `snackpack` GoatCounter dashboard. Record the first verified measurement
+  date and confirm optional individual-pageview collection is disabled.
 
-## Local validation — 15 October 2026
+Measurement contract: open/start/wave milestones are per browser-tab local day, not unique
+people. Run endings form a separate all-run outcome distribution. Expedition endings omit
+wave depth because their progress is measured in nodes.
 
-- Full `npm run verify:last-bastion`: all required lanes pass, including 1,771 unit tests
-  across 309 files, 24 browser acceptance tests, smoke/offline recovery, 25 matching published
-  outputs, and desktop host build with 28 tests.
-- Website checks: 54 JavaScript files and 272 pages pass. Portfolio `node scripts/check-all.js`:
-  all 19 guards pass. Local browser verification required execution outside the sandbox.
-- Browser regressions exercise failed character art with explicit retry, failed module startup,
-  a Daily retry across midnight, and keyboard build-page navigation. Service workers are blocked
-  only for fault-injection cases so cached assets cannot bypass the injected failure.
-- Fresh settings, build, affinity and combat captures are retained in
-  `playtest-evidence/2026-10-15-screens-auto/`. These are layout evidence, not observed full runs
-  or physical-display/controller acceptance. The standard floor wash is now 12%; motion and
-  audio acceptance remains open.
-- Release identity: `web-2026.10.15-reliability`. Web output is rebuilt; the older packaged
-  desktop executable has not been repackaged with these changes. Nothing was pushed or deployed.
+## 2. Observed gameplay and presentation — open
 
-## Follow-up corrections — 15 October 2026
+- [ ] Complete Runs 1–5 in the [playtest matrix](local-playtest-plan-2026-08-21.md), recording
+  comprehension, fairness, damage sources, input, frame pacing, visuals and audio. Run 0 does
+  not count. Cover keyboard/mouse and a physical controller, including remapped controls.
+- [ ] Verify the standard floor wash in motion and listen to audio during actual combat.
+- [ ] Close or explicitly accept LB-04 helmet registration and LB-07 map iconography in the
+  [presentation register](presentation-defect-plan-2026-08-23.md). The 11 October map/gallery
+  captures and Marine pose adjustments remain evidence; Medic/Assault galleries and observed
+  motion still require acceptance. Review at 960×540, 1920×1080 and 3840×2160.
+- [ ] Fix observed failures and repeat the affected hero/tier/input combination.
 
-Release `web-2026.10.15-controls` addresses the [follow-up audit](AUDIT-FOLLOWUP-2026-10-15.md):
-independent physical controller menu actions, working D-pad pages, truthful mixed-speed shares,
-and fresh per-attempt settings after restart. It also corrects the affinity count, clarifies build
-navigation hints, and preserves pointer targets while hovering pause/settings rows so first clicks
-are not lost. No saved-data schema change was required.
+## 3. Desktop and Steam acceptance — open
 
-Validation: 1,775 unit tests in 310 files and 27 browser checks; all required full-verifier lanes pass, including
-smoke/offline, matching published output and desktop host tests. Portfolio audit completed with all 19 guards passing. Physical-controller, audio, observed-play,
-packaged desktop and Steam acceptance remain open. No push or deployment performed.
+- [ ] Package the current web release for desktop. The Windows executable last built/smoke-tested
+  on 11 October predates the October 15 corrections; desktop-host tests do not refresh it.
+- [ ] Smoke-test the fresh package, then visibly verify input, pause, focus/resume, audio,
+  windowed/borderless transitions and monitor selection. Test offline boot/save recovery with
+  Steam closed.
+- [ ] Once Steam App ID and partner access are available, verify achievements, cloud saves,
+  controller mapping and Steam-down fallback from the actual Steam client.
+- [ ] Record GPU, driver, frame pacing and display behavior on Full HD, 4K, ultrawide and
+  Deck-shaped hardware. Headless captures are not hardware acceptance.
 
-## 1. Deploy and confirm the browser release
+## 4. Evidence-led improvements — deferred
 
-- **Ready locally:** Quick and Daily Drop, phone notice, Lab gating, shell/HUD polish,
-  Batch K perk tiles, game overview, social art, GoatCounter site code `snackpack`,
-  rebuilt `game-assets/`, privacy disclosure, and service-worker release bump are committed.
-- **Verification:** `npm run verify:last-bastion` passed all required automated lanes after
-  telemetry activation; `node scripts/check-site.mjs` checked 272 pages clean. The Windows
-  unpacked package also passed `npm run smoke:package:win` on 11 October 2026.
-- **Next:** Mark's earlier instruction is **do not push unless asked**. When Mark requests
-  deployment, push the website repo, wait for the single CI run, confirm the live game and
-  privacy page serve this release, and test a warm-cache offline upgrade.
-- **Analytics acceptance:** in a clean real-browser session, confirm `opened`, `run-started`,
-  `wave-1`, and `run-ended` appear in the `snackpack` GoatCounter dashboard. Confirm
-  `wave-5` after reaching it and `returning` on a later local day. Record the first live
-  measurement date. Confirm GoatCounter's optional individual-pageview collection is disabled.
-  [Provider privacy behavior](https://www.goatcounter.com/help/privacy) should be checked
-  against the account settings before deployment.
+- Review two weeks of verified live data: open → start → wave 1 → wave 5, the separate outcome
+  distribution, and next-day return. Combine with the five observed runs before changing scope.
+- Replayable practice, full DOM-backed menu accessibility, affinity-HUD/codex improvements,
+  legacy modifier cleanup, VFX/transformation art and further music remain conditional work.
+  Build/affinity inspection is implemented; full accessible shell semantics are not.
+- Touch controls, new heroes/regions, multiplayer, leaderboards and Threat Tiers 3–11 are not
+  approved production tasks. Use observed needs and operating constraints to select additions.
+- Historical details remain in the [content-debt](archive/last-bastion-content-debt-plan.md)
+  and [item-UI](archive/item-ui-asset-production-plan.md) plans; old counts and batch numbers
+  are not current acceptance evidence.
 
-## 2. Creator-observed play and presentation
+## Compatibility and working rules
 
-- Complete Runs 1–5 in the [local playtest matrix](local-playtest-plan-2026-08-21.md).
-  Record completion, damage source, comprehension, input, frame pacing, visual and audio
-  findings immediately after each run. The 23 August shakedown is Run 0 and does not count.
-- Close or explicitly accept remaining LB-04 helmet registration and LB-07 map iconography
-  findings from the [presentation register](presentation-defect-plan-2026-08-23.md), with
-  full-context evidence at 960×540, 1920×1080, and 3840×2160. Confirm the five-run matrix
-  on keyboard/mouse and gamepad before claiming the slice is fair or finished.
-- **LB-07 progress, 11 October:** the map already uses nine distinct vector node pictograms.
-  Objective modes now use shape badges instead of `E/D/C`, and cleared status has a separate
-  lower corner so it cannot cover an objective badge. New automated map captures at the three
-  sizes above are in `playtest-evidence/2026-10-11-screens-auto/`. An observed review of the
-  map and its backdrop at real display sizes is still required before LB-07 closes.
-- **LB-04 progress, 11 October:** the retained Marine overlay is now scaled and placed per pose
-  in gameplay and the gallery. The 12-frame gallery was captured at 960×540, 1920×1080,
-  and 3840×2160; a combat capture checks the live 960×540 placement. This runtime
-  registration leaves the source master intact. Creator-observed motion and the Medic and
-  Assault galleries still need sign-off before LB-04 closes.
-- The verifier now checks every published JavaScript chunk against the service worker's atomic
-  offline core before browser tests. This caught the new helmet module missing from that list;
-  its entry is present and the isolated offline acceptance test passes.
-- Fix repeated comprehension, fairness, input, or registration failures; rerun the exact
-  failed hero/tier/input combination. Do not expand Threat Tiers 3–11 before these gates pass.
-
-## 3. Desktop and Steam acceptance
-
-- The Electron 43.4.0 Windows unpacked package was rebuilt after the map and Marine helmet
-  changes on 11 October 2026. `npm run smoke:package:win` passes against the packaged
-  renderer. Run
-  `desktop/release/win-unpacked/LastBastion.exe` visibly to check title, input,
-  windowed/borderless transitions, monitor selection, pause, focus/resume, audio, and combat.
-- Repeat with Steam closed for offline boot and save recovery. Repeat from Steam once an
-  App ID and partner access are assigned; validate achievements, cloud save, controller
-  mapping, and Steam-down fallback. Packaging success is not a Steam sign-off.
-- Record GPU, driver, display and frame pacing on real Full HD, 4K, ultrawide, and
-  Deck-shaped hardware before tuning scale or presentation from headless timings.
-
-## 4. Read data before expanding scope
-
-- After two weeks of live measurement, compare open → start → wave 1 → wave 5, the separate run-outcome distribution, and
-  next-day return. Separate a traffic problem from an onboarding or balance problem.
-- Review the five observed runs alongside the funnel. Only then decide whether touch
-  controls, new content, additional tiers, or further art earn production time.
-- The archived [content-debt plan](archive/last-bastion-content-debt-plan.md) still names
-  Affinity HUD, codex gaps, non-boolean settings machinery, and legacy modifier cleanup.
-  The archived [item-UI plan](archive/item-ui-asset-production-plan.md) still proposes
-  VFX renewal and transformation identity art. Keep them conditional on observed failures;
-  do not treat historical batch numbers or counts as current acceptance.
-
-## Working rules
-
-- Commit in the **website** repo; stage only Last Bastion paths. Do not modify or remove
-  retained `art/production-tests/` masters.
-- After a meaningful runtime change, build in `dev/`, commit generated `game-assets/`, bump
-  `LAST_BASTION_RELEASE` in repo-root `sw.js`, and run `npm run verify:last-bastion`.
-- Keep manual gates explicit. Automated tests and screenshots do not substitute for observed
-  gameplay, visible packaged-window behavior, audio listening, or Steam client acceptance.
+- Save schema remains 16. Daily participation intervals are additive; old saves migrate retained
+  dates. Days discarded by an older build cannot be reconstructed. Detailed history stays at 60 days.
+- Commit in the nested website repository and stage only relevant paths. Preserve retained art
+  masters and unrelated work. Do not push without the explicit request described above.
+- After meaningful runtime edits, rebuild `dev/`, include generated `game-assets/`, update the
+  service-worker release identity and run `npm run verify:last-bastion`.
+- Keep manual gates explicit. Automated checks cannot complete observed gameplay, audio,
+  physical-controller, packaged-window or Steam-client acceptance.

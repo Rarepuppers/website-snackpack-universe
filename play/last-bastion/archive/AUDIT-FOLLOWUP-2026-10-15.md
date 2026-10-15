@@ -1,5 +1,10 @@
 # Last Bastion follow-up audit — 15 October 2026
 
+> Archived 15 October 2026: accepted corrections completed in `c7779414` and `ebc9a4b2`.
+> This document preserves the original findings and verification history. Remaining manual
+> gates and conditional proposals are tracked in [CURRENT-PLAN.md](../CURRENT-PLAN.md).
+> Relative source paths in the historical text are relative to the game root.
+
 Reviewed local implementation at c7779414. This is a source/control-flow review with focused
 production-function tests, not a physical-controller or observed-play acceptance. The initial audit changed no gameplay files; the subsequently authorized corrections are recorded below. Existing unrelated working-tree changes were left intact.
 
