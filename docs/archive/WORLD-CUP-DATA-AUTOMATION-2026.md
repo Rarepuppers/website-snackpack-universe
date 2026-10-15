@@ -1,3 +1,5 @@
+> **Archived 2026-10-15.** Obsolete: the 2026 World Cup ended on 2026-07-19 and its sub-pages are noindexed. The `update-world-cup-data.yml` workflow should be disabled.
+
 # World Cup data automation
 
 The bracket page at `/world-cup/bracket/` reads `data/world-cup-2026.json`.

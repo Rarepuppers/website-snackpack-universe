@@ -1,247 +1,128 @@
-# /read/ — add, expand, improve (plan of record, 2026-10-15)
+# /read/ — plan of record
 
-Supersedes the open items in `READ-EXPANSION-PLAN.md` (2026-08-13). That file
-remains the reference for *how* to import a book and build its PDF. This one
-says *what to do next and why*.
+Updated 2026-10-15, end of day. This is the **current** plan: what is live, what
+is open, and the rules for adding to the shelf. The day-by-day build log, with
+every decision and measurement behind it, is archived at
+[`docs/archive/READ-PLAN-2026-10-15-build-log.md`](docs/archive/READ-PLAN-2026-10-15-build-log.md).
+What shipped, in release form, is in [`docs/RELEASE-NOTES.md`](docs/RELEASE-NOTES.md).
 
-## 1. Why /read/ is now the priority
+## Why /read/ matters
 
-Measured 2026-10-15 (Cloudflare Web Analytics, 30 days, counts rounded to 10):
+On 2026-10-15 `/read/` was the busiest and fastest-growing part of the site
+(hub 130 → 540 views in 30 days; mobile tripled; ChatGPT referrals 20 → 70).
+The growth came from **links shared between parents and teachers**, not search:
+Google showed `/read/` only 2 impressions in 90 days. So the priorities are
+books worth sharing, easy sharing, and a good read on a phone, in that order.
 
-| Signal | Now | Prior 30d |
-|---|---:|---:|
-| `/read/` hub views | 540 | 130 |
-| Book page views (all 8) | ~560 | ~190 |
-| Printable-readers guide views | 120 | 30 |
-| Site-wide mobile views | 1,080 | 320 |
-| Internal clicks (page to page) | 830 | 260 |
-| chatgpt.com referrals | 70 | 20 |
+**Hard rule:** no sign-up, email capture, interstitial or ad anywhere in
+`/read/`. Being free with no friction is why it gets shared.
 
-- The 11–14 Oct spike was UAE phones and tablets landing on `/read/` and then
-  reading several books in a row, with a Telegram referral among them. That
-  looks like a link shared in a parents' or teachers' group, which is people,
-  not bots.
-- `/read/` and the printables guide are the only part of the site where Google
-  search, ChatGPT and word of mouth are **all** sending readers. The arcade
-  and `/apps/` are not.
-- The current shelf is 8 books (6 decodables + 2 Ted-E-Bear stories). Readers
-  who arrive now run out of books in one sitting.
+## Status at a glance
 
-**Goal:** deepen a session that already works. Visitors who start one book
-should find the next one easily, and there should be more books worth reading.
+| Area | State |
+|---|---|
+| Shelf | **17 books**, 17 PDFs: Stage 1–3 decodables (6) · Reading Trail steps 1–6 · Number stories (5) |
+| Hub | Stage-ordered groups, stage shortcut chips, ItemList schema, "Save the bookshelf for offline" |
+| Every book | Next-story chain, Share button (top and end), 1200×630 share card, printable PDF, Read to me, One page at a time |
+| Number stories | Tap-to-answer question on every page, plain-list + "Show the answer" fallback |
+| Printables | `/read/sound-cards/`: 8 sheets, Stage 1 → word endings, one A4/Letter page each |
+| Homepage | `#read` section with six real books and the live shelf count |
+| Search | Hub title "Free Decodable Readers & Printable Phonics Books"; all pages submitted to Google, Bing and IndexNow |
 
-**Do not:** add a sign-up, email capture, interstitial or ad anywhere in
-`/read/`. Being free with no friction is the reason it gets shared.
+## Open: needs Mark
 
-## 2. What is available (inventory 2026-10-15)
+1. **Pocketful of Sounds art.** `ted-e-bear-pocketful-of-sounds` (app1, free,
+   rated excellent) has a cover and 1 of 8 pages illustrated. Commission 7
+   interiors, or decide on a text-led read-aloud format.
+2. **ABC book text.** The 5 free alphabet books fail the quality bar in the
+   *app*. Panda-Cake's pages say "his" under a "Her ABCs" subtitle, some entries
+   are fragments, and French-Toast/Wise Owl are remixed Ted-E-Bear sentences.
+   Fix `apps/snackpack-1-abcs-alphabet/constants/alphabet.ts` first.
+3. **Basic Math content fixes** (proposed as their own task). Pork-ulele's
+   page 1 clock shows the wrong time; Wise Owl's page 1 question and page 2
+   prime explanation are wrong; Ted-E-Bear's Lantern and Booklava change
+   character design mid-book. Once fixed, add them via
+   `scripts/import-math-story-book.py`.
+4. **Outreach.** `LINK-BUILDING-PLAN.md` §4 has the homeschool/phonics pitch,
+   updated to 17 books. Only Mark can post it.
+5. **Disable the World Cup workflow.** `update-world-cup-data.yml` still runs
+   several times a day for a tournament that ended in July. Run
+   `gh workflow disable "Update World Cup data" -R Rarepuppers/website-snackpack-universe`
+   (Claude was not permitted to).
+6. **Push the shelf CI check.** Run `gh auth refresh -s workflow`; the
+   `build-read-shelf.mjs --check` step is written in `site-check.yml` but
+   unpushed.
 
-| Source | Free-tier, fully illustrated | Status |
+## Open: can be done without a decision
+
+- **Re-measure on or after 2026-11-15.** Run `node scripts/report-referrals.mjs --history`,
+  the Cloudflare `/read/*` paths, and GSC page rows for `/read/*`. Success means
+  more books per visit (`www.snackpackuniverse.com` as referrer on book pages,
+  and views per visit), not raw totals. Share-button taps are not counted:
+  sharing happens in the browser, where Cloudflare's beacon cannot see it. Its
+  effect shows up as chat-app referrers (Telegram, WhatsApp, `l.facebook.com`)
+  and direct visits to book pages.
+- **Hear Read to me on real devices.** It was tested with a stub engine, because
+  headless Chromium has no voices. Voice quality and word-boundary events vary
+  by device. Safari on iOS fires fewer boundary events, so highlighting may lag.
+- **Cache bump.** Batch 3 (Number stories) changed `site.css`/`reader.js`
+  without bumping `sw.js` `CACHE`, because another session had uncommitted
+  edits there. Code is network-first, so this is not urgent. Bump at the next
+  sw.js commit.
+
+## Rules for adding a book
+
+1. **Free in the app**, or explicitly approved by Mark. Reading Trail steps 3–6
+   (Pro) were approved 2026-10-15; the 4 Pro decodables were approved
+   2026-08-13. Nothing else Pro.
+2. **Every page illustrated**, resolved the way the app resolves it. Basic Math:
+   `getBookPageImage(illustrationId ?? page.id)`. A first measurement that
+   ignored the page-id fallback wrongly reported books as unillustrated.
+3. **Quality read before import.** Read every page and view every image. Reject
+   wrong maths or facts, wrong pictures (e.g. a clock showing the wrong time),
+   characters that change design mid-book, and weak or remixed text.
+4. **Text verbatim from the app.** Web-only editorial (alt text, lead line,
+   share-card blurb) lives in each importer's `BOOKS` map and describes the
+   actual picture.
+
+### How (per source)
+
+| Source | Importer | Then |
 |---|---|---|
-| app1 decodables | 6 of 6 | **all live** (2 free + 4 Pro approved 2026-08-13) |
-| app1 alphabet books | 5 free (`panda-cake`, `eggs-benedict`, `french-toast`, `meow-inara`, `wise-owl-librarian`) | **not imported**. 6–8 art pages each, covering selected letters |
-| app1 featured mini-story | `ted-e-bear-pocketful-of-sounds` (free; rated *excellent* in the 2026-08-02 review) | not imported |
-| app3 Spelling & Sentences | `FREE_STORY_BOOKS` (story, extra, controlled-decodable, free reading-trail sets); 471 page-art files | 1 live (Short-Vowel Kit) |
-| app4 Basic Math | `FREE_BOOK_IDS` in `constants/skillProgress.ts` (6+ books with `book-page-images/` art) | none live |
-| app2 1-2-3 Counting | stories with `isProOnly: false`; landscape page art | 1 live (Button Trail) |
+| app1 decodables | `scripts/import-decodable-book.mjs` | add to `SHELF` |
+| app3 Reading Trail | `scripts/import-reading-trail-book.mjs` (alt text in `BOOKS`) | add to `SHELF` |
+| app4 Basic Math | `scripts/import-math-story-book.py` (converts WebP → JPEG for the PDF builder) | add to `SHELF` (group `numbers`) |
 
-There are more free illustrated books available than the site needs. As the
-August plan said, quality is the limit, not supply.
+After any import, run these in order: `build-webp.mjs` →
+`build-read-pdfs.mjs --slug=<slug> --write` → `build-read-shelf.mjs` (hub, chain,
+ItemList, homepage, offline manifest) → `build-read-social-cards.py` →
+`build-breadcrumbs.mjs` (it has **no** `--check`; it writes, so commit only your
+paths) → `build-play-links.mjs` → `build-go-links.mjs` → `build-sitemap.mjs`.
+Verify with `check-site.mjs`, `check-contrast.mjs`, `build-read-shelf.mjs --check`
+and `build-read-social-cards.py --check`. After pushing, confirm the live URLs
+and run `scripts/notify-search-engines.mjs <urls>`.
 
-## 3. Phases
+## Held back (and why)
 
-### Phase 1: Make the existing shelf easier to move through (no new content)
+| Book | Source | Reason |
+|---|---|---|
+| Pocketful of Sounds | app1 featured, free | 1/8 pages illustrated |
+| 5 ABC books | app1, free | text quality (pronouns, fragments, remixes) |
+| Pork-ulele's Clockwork Concert | app4, free | page 1 clock shows 4:15 for "quarter past three" |
+| Wise Owl and the Festival of Factors | app4, free | page 1 question wording; page 2 prime explanation |
+| Ted-E-Bear's Lantern; Booklava's Number Nest | app4, free | character designs change mid-book |
+| Vincent Van Mouse and the Mural | app4, free | 4/7 pages illustrated |
+| "Which book first?" QR PDF | — | dropped: the stage-ordered hub does the job, and QR would add the repo's first dependency |
 
-1. **Order the hub as a reading path.** Show Stage 1, then Stage 2, then
-   Stage 3, then "More stories". Give each stage group a short heading that
-   names its letter sounds. At the moment the order is mixed (Stage 1, 2, 1,
-   2, 3, 3).
-2. **Add a "Next story" link to the end of every book.** It should be the
-   next book in reading-path order, and the last book loops back to the shelf.
-   The end card currently offers only the app, the PDF and "Back to the
-   bookshelf".
-3. **Add `ItemList` JSON-LD to the hub** listing every book. The hub currently
-   has only `BreadcrumbList`. This helps both search engines and assistants,
-   which are already citing `/read/`.
-4. **Fix the hub's print-card copy** so the PDF count comes from the shelf
-   ("Eight free reader PDFs" will be wrong as soon as a book is added).
+## Gotchas worth keeping
 
-Done when: the hub is ordered by stage, all 8 books link onward, the
-`ItemList` lists exactly the books on the shelf, and every page still passes
-`npm test` / site checks.
-
-### Phase 2: Add the free-tier books that pass a quality check
-
-Order is by value to a parent or teacher, highest first:
-
-1. **`ted-e-bear-pocketful-of-sounds`** (app1, free, rated excellent). This is
-   the strongest story available and needs no approval.
-2. **app3 free controlled-decodable / reading-trail books.** These continue
-   the phonics path past Stage 3 (digraphs, blends, long vowels), which is the
-   gap teachers will notice first. Read each book before importing and judge
-   it directly. Never import a whole shelf at once.
-3. **The 5 free alphabet books.** These suit a different, younger reader
-   ("letters", not "reading"), so they get their own section ("ABC picture
-   books") rather than being mixed into the phonics path. They need a
-   26-letter page template, because only 6–8 letters have art.
-4. **app4 free maths stories, then app2.** Add these only if 1–3 are done
-   and the numbers in section 5 still show multi-book sessions. They go in a
-   separate "Number stories" section.
-
-For each book: get the text from the app's `constants/`, not from filenames.
-Optimise images to about 100 KB per page. Build the PDF with
-`scripts/build-read-pdfs.mjs`. Re-run `build-webp`, `build-sitemap` and
-`build-breadcrumbs`. Add the book to the hub, the `ItemList` and the "next
-story" chain.
-
-**Not included without Mark's approval:** any Pro book beyond the 4
-decodables already approved, and any new artwork.
-
-### Phase 3: Printables that teachers can pass around
-
-- One printable **sound card sheet per stage** (the letter sounds each stage
-  uses, plus its tricky words), built from `decodableBooks.ts`. A single page
-  of A4.
-- A **"which book first?" one-page guide PDF**: the reading path from section
-  3, with QR codes pointing to each book.
-- Link both from the hub and from `/guides/free-printable-decodable-readers/`.
-
-### Phase 4: Measure, and only then decide what to build next
-
-- Re-measure on or after **2026-11-15**:
-  `node scripts/report-referrals.mjs --history`, the Cloudflare `/read/` paths
-  query and GSC page rows for `/read/*`.
-- Success means multi-book sessions grow. Watch `www.snackpackuniverse.com`
-  as the referrer on `/read/<book>/` pages, and views per visit on `/read/*`.
-  Raw totals are not the measure.
-- PDF downloads are invisible to Cloudflare (a PDF runs no beacon). If
-  downloads become the question, count them by linking through a tiny HTML
-  redirect page, not by adding a tracker.
-
-### Phase 5 (Mark decides): distribution and paid content
-
-- `LINK-BUILDING-PLAN.md` already has drafted outreach to homeschool and
-  phonics groups. Only Mark can post it. The UAE share shows this channel
-  works without any outreach.
-- Whether to publish more Pro books on the web is a monetisation decision.
-  Revenue across the apps is $0 (see the portfolio reality note), so giving
-  books away costs nothing today, but that decision is Mark's.
-
-## 4. Order of work
-
-Phase 1 → Phase 2.1 → Phase 2.2 (one book at a time) → Phase 3 → Phase 2.3 →
-Phase 4 re-measure → Phase 2.4 / Phase 5 only if the numbers justify it.
-
-## 5. Execution log
-
-- 2026-10-15: plan written.
-- 2026-10-15: **Phase 1 done.** `scripts/build-read-shelf.mjs` (`--check` step for `site-check.yml` written but **not pushed**: the gh token lacks `workflow` scope; push it from a session with Codex's deploy key) now generates the stage-grouped hub, the `ItemList`
-  JSON-LD, the PDF count and a "Next story" link on every book from one
-  `SHELF` list. Checked in the preview at desktop and 375px with no horizontal
-  scroll. `check-site`, `check-contrast` and the link generators are clean.
-  The one pre-existing red is `build-newsletter-cta --check` on
-  `play/thirteen/`, which was not touched here. `sw.js` `CACHE` was **not**
-  bumped because another session has uncommitted edits in it. HTML and CSS
-  are network-first, so the change lands without the bump.
-- 2026-10-15: **Phase 2.1 blocked on art.** `ted-e-bear-pocketful-of-sounds`
-  has a cover and only **1 of 8** pages illustrated (page 3's hero); the rest
-  are emoji scenes in the app. That fails the shelf's "complete artwork" rule.
-  It needs Mark's go-ahead to commission 7 interiors, or a separate
-  text-led "read aloud" format. Skipped, not dropped.
-- 2026-10-15: **Phase 2.2, first book live: `hen-berrys-digraph-dash`** (app3
-  Reading Trail step 2, `isFree: true`, 5/5 pages illustrated, text verbatim
-  from `reading-trail-drafts.ts`, all five pages viewed). It fills the first
-  phonics gap after Stage 3 (sh, ch, th, wh). The new "Reading Trail · next
-  steps" group puts the Short-Vowel Kit (step 1) first, then this book.
-  **Next candidates:** Reading Trail steps 3–6 (blends, magic-e, vowel
-  teams, endings) are all `isFree: false`, so continuing the trail needs
-  Mark's Pro decision. That is the most valuable decision in this plan,
-  because those four books complete the phonics path a teacher would follow.
-- 2026-10-15: **Phase 3 done: `/read/sound-cards/`.** Sound, word and
-  tricky-word cards for Stages 1–3 and the sh/ch/th/wh step. The letters and
-  words come from `decodableBooks.ts` / `curriculum.ts` and the Digraph Dash
-  text. It is an HTML page with print CSS, not a PDF, so it stays indexable
-  and needs no dependencies. Verified with Playwright that it prints exactly
-  **4 pages (one per stage) on both A4 and Letter**, black on white even from
-  the dark theme. Linked from the hub ("Print sound cards") and from the
-  printables guide's new "Next steps" block. The separate "which book first?"
-  QR PDF was **dropped**: the stage-ordered hub now does that job, and QR
-  generation would add the repo's first dependency.
-- 2026-10-15: **Phase 2.3 assessed: the 5 free ABC books are NOT imported.**
-  They fail section 1b's quality rule, not the art rule.
-  `PANDA_CAKE_ALPHABET` uses "his" on every page under a "Discovers **Her**
-  ABCs" subtitle. Several entries are fragments ("E is for Earth - round like
-  the little plate on the table"). French-Toast and Wise Owl are
-  `remixAlphabet()` variants of the Ted-E-Bear sentences with a few
-  overrides. Only 7–8 of 26 letters are illustrated. The fix belongs in the
-  **app** (`constants/alphabet.ts`): consistent pronouns and full sentences.
-  After that, re-assess. Publishing the current text would put the app's
-  weakest writing on the page that is earning shares.
-- 2026-10-15: **Mark approved publishing Reading Trail steps 3–6 (Pro in the
-  app) on the free shelf.** All four are live: Stripe-Scout's Blend Bridge,
-  Sub-Zero's Magic-E Lantern, Meow-inara's Vowel-Team Duet and Quill-Berry's
-  Ending Clues. Each has 5/5 pages illustrated, all 20 viewed. The new
-  `scripts/import-reading-trail-book.mjs` copies text verbatim from
-  `reading-trail-drafts.ts`. Alt text is written from the art, which differs
-  in places: the Blend Bridge sign shows shapes, not "FRIENDS HELP".
-  Highlighting matches each book's spelling pattern, not the app's
-  `focusWord` (which marked "glow" in the magic-e book). The shelf is now **13
-  books**, and the Reading Trail runs steps 1–6 without a break.
-  `/read/sound-cards/` now has **8 sheets** (adds blends, magic e, vowel
-  teams, endings). Verified 8 print pages on A4 and Letter. The generator
-  moved into the repo as `scripts/build-sound-cards.py`.
-- **Where the plan stands (superseded by the entry above for Phase 2.2):** Phases 1 and 3 are done. Phase 2 has added 1 book
-  (Digraph Dash). The rest of Phase 2 waits on decisions: art for Pocketful
-  of Sounds, Pro approval for Reading Trail steps 3–6, and app-side fixes to
-  the ABC text. Phase 2.4 and the Phase 4 re-measure are due **2026-11-15**.
-- 2026-10-15: **Sharing batch shipped** (Mark approved). Why: Google sends
-  `/read/` almost nothing (2 impressions in 90 days); growth is links shared in
-  chat apps. (1) "Share this book" on all 13 books, beside "Begin the story"
-  and in the end card (`read/share.js`: share sheet on phones, copy-link on
-  desktop, always the canonical URL), injected by `build-read-shelf.mjs`.
-  (2) 1200×630 share cards per book (`scripts/build-read-social-cards.py`,
-  58–94 KB each, `--check` mode); covers were portrait and got cropped in chat
-  previews. (3) Hub share image is now `social-card.jpg` at 126 KB (was a
-  1.3 MB PNG). (4) Hub title is "Free Decodable Readers & Printable Phonics
-  Books", with a matching description and lead. (5) The homepage
-  storybooks section (six cards linking to app pages) is now the `#read`
-  section: six real free books along the path plus the shelf count, generated
-  from SHELF. Tested in Playwright on a Pixel 7 and on desktop. Gotcha: the
-  homepage card `<img>` must NOT carry width/height attributes, because
-  `.storybook-card img` sets aspect-ratio without `height:auto` and the
-  attribute stretched it to 1536px.
-- 2026-10-15: **Reading-aids batch shipped** (Batch 2). `read/reader.js` on
-  every book adds two things. **Read to me** uses the browser's speech engine
-  (en-GB voice preferred, rate 0.82) and lights up each word as it is spoken;
-  `<mark>` highlights survive the word wrapping. **One page at a time** is a
-  full-screen picture-book mode with Back/Next, arrow keys, swipe and Esc; it
-  goes full screen on touch devices, and "The end" lands on the finish card.
-  The hub gains stage shortcut chips and **Save the bookshelf for offline**
-  (`read/offline.js` plus a generated `read/offline-manifest.json`: 115 files,
-  11.4 MB of art, no PDFs). It writes into sw.js's own `snackpack-arcade-*`
-  cache, because that is the only cache sw.js serves offline pages from, and
-  it reads its status from the cache, never from a remembered flag. A sw.js
-  update clears the cache, so the hub then offers to save again.
-  sw.js `CACHE` bumped v21 → v22. Tested in Playwright: Pixel 7, iPad
-  landscape, desktop. Read-to-me used a stub speech engine, because headless
-  Chromium has no voices and `speechSynthesis` must be replaced with
-  `Object.defineProperty`, not by assignment. Offline: saved, then went offline
-  and opened a book with all its art and CSS. **Not yet heard on a real
-  device**: voice quality varies by device.
-- 2026-10-15: **Phase 2.4 done: Number stories shelf (4 new books + Button
-  Trail).** All 9 Basic Math `FREE_BOOK_IDS` were read in full, with every
-  page of art viewed. Art resolves the way the app's reader does it
-  (`getBookPageImage(illustrationId ?? page.id)`); an early measurement
-  ignored the page-id fallback and wrongly reported 0/7 for two books.
-  Published: Luckybug (Y1, to 20), Biscuit-Bouncer (Y2), Hop-Tart (Y3, ×
-  tables and remainders), Centi-Peed (Y4, negative numbers), all free in the
-  app. **Held back, with app fixes owed:** Pork-ulele page 1's clock shows
-  quarter past FOUR for "quarter past three"; Wise Owl page 1 asks "which
-  pair" but offers single numbers, and page 2 muddles primes; Ted-E-Bear and
-  Booklava change character design mid-book (two art batches); Vincent Van
-  Mouse has 4/7 pages illustrated. Importer:
-  `scripts/import-math-story-book.py`, which converts the app's WebP to JPEG
-  for the PDF builder. Each page has a "Try it" question. `reader.js` turns
-  the choices into buttons: a wrong answer gives a gentle retry, the right one
-  opens the explanation. The plain list plus "Show the answer" still works
-  with JS off and on paper. Read-to-me also reads the question. The shelf is
-  17 books.
+- **Offline save** writes into sw.js's own `snackpack-arcade-*` cache, the only
+  cache sw.js serves offline pages from. Every sw.js `CACHE` bump empties it,
+  and the hub then honestly offers "Save all N books" again.
+- **The offline manifest's size counts art only.** Counting HTML/CSS would make
+  `build-read-shelf.mjs --check` fail on any unrelated site edit.
+- **Homepage book cards must not carry `width`/`height`.** `.storybook-card img`
+  sets `aspect-ratio` without `height:auto`, and the attribute stretches it.
+- **Pushing with another session's unpushed commit on local `main`:** build your
+  commit on the remote head with a temporary index, push that, then commit locally
+  and merge. See the memory note on this.

@@ -75,6 +75,20 @@ first, because several pages build HTML by string concatenation and matching
 inside those produces nonsense targets like `' + href + '`.
 
 
+## The /read/ bookshelf
+
+The plan, rules and held-back list live in `READ-PLAN-2026-10.md`. The scripts:
+
+| Script | What it does | When to run |
+|---|---|---|
+| `build-read-shelf.mjs` | Generates everything that depends on shelf order from one `SHELF` list: hub groups and stage chips, the `ItemList` JSON-LD, the PDF count, each book's share buttons and "Next story" link, the homepage `#read` section, and `read/offline-manifest.json` | After adding or reordering a book. `--check` to fail instead of fix |
+| `build-read-social-cards.py` | A 1200×630 share card per book (`read/<slug>/social-card.jpg`) and its `og:image`/`twitter:image` tags | After adding a book or changing a title. `--check` to fail instead of fix |
+| `build-sound-cards.py` | Builds `/read/sound-cards/` (one print page per stage) and appends its print CSS once | After adding a stage or Reading Trail step |
+| `import-decodable-book.mjs` | Imports an ABCs-app decodable reader | Per book, then the shelf steps in `READ-PLAN-2026-10.md` |
+| `import-reading-trail-book.mjs` | Imports a Sentences & Spelling Reading Trail book (text verbatim; alt text in its `BOOKS` map) | Per book |
+| `import-math-story-book.py` | Imports a free Basic Math story, resolving art the way the app does (`illustrationId ?? page.id`) and converting WebP to JPEG for the PDF builder | Per book; its docstring lists which books are held back and why |
+| `build-read-pdfs.mjs` | One printable PDF per book, zero dependencies | `--slug=<slug> --write` per new book |
+
 ## Install attribution
 
 `build-play-links.mjs` rewrites every outbound Play link to carry:
@@ -285,7 +299,7 @@ Use `--seed-data` rarely. For everyday changes, leave it off.
 
 The workflow `.github/workflows/update-world-cup-data.yml` runs every 5 minutes
 and commits `data/world-cup-2026.json` when scores change. It needs a repository
-secret `API_FOOTBALL_KEY`. See `WORLD-CUP-DATA-AUTOMATION.md` for full setup.
+secret `API_FOOTBALL_KEY`. Setup notes are archived at `docs/archive/WORLD-CUP-DATA-AUTOMATION-2026.md` (tournament over; the workflow should be disabled).
 
 ## Counting download clicks
 

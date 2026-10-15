@@ -208,7 +208,7 @@ const phraseFiles = {
     { key: "arcade", re: /(")(\d+)( calm, ad-free browser games)/ }
   ],
   "apps/snackpack-brain-games/index.html": [
-    { key: "vol1", re: /(calm, offline collection of )(\d+)( puzzles)/ },
+    { key: "vol1", re: /(calm, offline collection of )(\d+)( card, puzzle)/ },
     { key: "vol1", re: /(A calm, offline collection of )(\d+)( classic games)/ }
   ]
 };
