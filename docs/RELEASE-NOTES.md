@@ -24,6 +24,12 @@ are in [`docs/archive/`](archive/README.md)).
   unsolvable). "Nothing tracked" is now "no cookies (just an anonymous page
   count)", because the site does use Cloudflare's cookie-free analytics.
 - `scripts/README.md` documents the new `/read/` scripts.
+- **Site checks green again.** The six arcade-hub visual baselines had been
+  stale since 2026-10-12, when the hub gained the intended "New to Last Bastion?
+  See the modes and controls" link. They were refreshed from CI's own Linux
+  renders, following the procedure in `scripts/README.md`: the artifact commit
+  matches `main`, and the images were inspected. The only content change is that
+  link plus the Brain Games count.
 
 ## 2026-10-15 — Number stories shelf (`d5e522ef`)
 
