@@ -45,13 +45,8 @@ books worth sharing, easy sharing, and a good read on a phone, in that order.
    `scripts/import-math-story-book.py`.
 4. **Outreach.** `LINK-BUILDING-PLAN.md` §4 has the homeschool/phonics pitch,
    updated to 17 books. Only Mark can post it.
-5. **Disable the World Cup workflow.** `update-world-cup-data.yml` still runs
-   several times a day for a tournament that ended in July. Run
-   `gh workflow disable "Update World Cup data" -R Rarepuppers/website-snackpack-universe`
-   (Claude was not permitted to).
-6. **Push the shelf CI check.** Run `gh auth refresh -s workflow`; the
-   `build-read-shelf.mjs --check` step is written in `site-check.yml` but
-   unpushed.
+Done 2026-10-15: Mark disabled the World Cup workflow and granted the `workflow`
+scope; the `build-read-shelf.mjs --check` step is now in `site-check.yml`.
 
 ## Open: can be done without a decision
 

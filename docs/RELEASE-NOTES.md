@@ -5,6 +5,15 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-15 — CI guards the bookshelf; World Cup automation off
+
+- `site-check.yml` now runs `build-read-shelf.mjs --check`, so a book added or
+  reordered by hand (which would silently break the hub groups, the "Next story"
+  chain, the ItemList schema, the homepage section or the offline manifest)
+  fails CI instead of shipping.
+- The `Update World Cup data` workflow is disabled (by Mark). It had kept
+  running several times a day since the tournament ended on 2026-07-19.
+
 ## 2026-10-15 — Housekeeping: Brain Games count, docs, archive
 
 - **Brain Games Vol 1 now says 24 games everywhere, as the app does.** On
