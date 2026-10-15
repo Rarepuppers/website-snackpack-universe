@@ -21,7 +21,7 @@ books worth sharing, easy sharing, and a good read on a phone, in that order.
 
 | Area | State |
 |---|---|
-| Shelf | **17 books**, 17 PDFs: Stage 1–3 decodables (6) · Reading Trail steps 1–6 · Number stories (5) |
+| Shelf | **29 books**, 29 PDFs: Stage 1–3 decodables (6) · Reading Trail steps 1–6 · Short reads (12) · Number stories (5) |
 | Hub | Stage-ordered groups, stage shortcut chips, ItemList schema, "Save the bookshelf for offline" |
 | Every book | Next-story chain, Share button (top and end), 1200×630 share card, printable PDF, Read to me, One page at a time |
 | Number stories | Tap-to-answer question on every page, plain-list + "Show the answer" fallback |
@@ -59,7 +59,7 @@ picture, text verbatim, and nothing Pro without Mark.
 | # | Source | What is there | Plan |
 |---|---|---|---|
 | B1 | **1-2-3 Counting**, free | 2 stories: `panda-cake-market-basket`, `sub-zero-snowflake-post` | **Read 2026-10-15: neither publishable; app fixes owed.** Panda-Cake's art mapping in the app is shifted one page (pages 2–5 show the wrong picture; page 2's image is an off-model panda with a dolphin), and page 5 has no art of its own. Sub-Zero's pages 1–5 show a scarf penguin, while page 6 shows the canonical chef-hat Sub-Zero, and page 2's sleds carry shapes, not numbers. |
-| B2 | **Sentences & Spelling quick reads**, free (`STORY_BOOKS` + `EXTRA_STORY_BOOKS`) | **~60 four-page books with every page illustrated on disk** (wired through `BOOK_PAGE_ARTWORK`), each with a talk prompt per page and a 2-question quiz, in the same format as the Reading Trail | The biggest source by far, but read all 60 before importing any. Quality varies, and about a third are science/topic books (glacier, materials, five senses, continents) that need a **fact check**. Sample finding: `sub-zero-glacier-discovery` says a glacier may be "older than mountains", which is wrong. Pick the best **12–20** for a new **"Short reads"** group, themed (friendship and feelings · nature and science · adventures). Extend `import-reading-trail-book.mjs` to read `books.ts`; the quiz becomes the end-of-book question. |
+| B2 | **Sentences & Spelling short reads**, free | 60 four-page books, all fully illustrated | **DONE 2026-10-15: 12 published** as the new "Short reads" group (`import-reading-trail-book.mjs`, `source: "short"`). All 60 were read. #34–60 are weaker vocabulary/science books with factual errors: butterfly "cocoon" (it's a chrysalis) and "a larvae", honey "made from pollen", a sunflower blooming in 3 weeks, "every word in every language has a vowel", a child's heart rate of 60, a glacier "older than mountains", an octopus glowing. Rejected, plus #17 (pseudo-science) and #27/#28 (Biscuit-Bouncer and Hop-Tart change pronoun versus books already on the shelf). Of 21 art-checked, rejected for mid-book character changes: Blanket Fort, Library Day, Moonlight Story; Garden Race (its Centi-Peed clashes with the shelf's). **Reserve** (passed both reads; add if the 2026-11-15 re-measure shows multi-book sessions): Mountain Climb, Coral Reef, Luckybug's Art Gallery, Corgi's Countryside Run, Slow and Steady. |
 | B3 | **Zoo World animal books** | 16 books (Arctic Ice, Ocean Dive, Masters of Disguise…), each a cover plus 9 generated illustrations; the app has a fact-validation pipeline | Highest search demand of any source ("animal facts for kids"). **Check first:** which books are free, that every image is generated rather than a licensed photo (`unsplashBundledImageCredits.ts` exists in the app), and that the text passes the app's validators. Then quality-read and add an **"Animal fact books"** group. |
 | B4 | Held-back books, once their app fixes land | Pork-ulele, Wise Owl, Ted-E-Bear's Lantern, Booklava (task proposed); Pocketful of Sounds (art); 5 ABC books (text) | Re-read after the fix, then import with the existing scripts. |
 | B5 | **Pro books with full art** (Mark's call) | e.g. Counting's *Booklava and the Number That Hid* and *The Night the Lanterns Went Out*; the Pro Spelling quick reads | Only if Mark approves publishing more Pro content free. Today's revenue is $0, so the cost is low, but it's his decision. |
@@ -170,6 +170,8 @@ and run `scripts/notify-search-engines.mjs <urls>`.
 | Wise Owl and the Festival of Factors | app4, free | page 1 question wording; page 2 prime explanation |
 | Ted-E-Bear's Lantern; Booklava's Number Nest | app4, free | character designs change mid-book |
 | Vincent Van Mouse and the Mural | app4, free | 4/7 pages illustrated |
+| Spelling short reads #34–60 | app3, free | weaker vocabulary/science books; several factual errors (see B2) |
+| Blanket Fort, Library Day, Moonlight Story, Garden Race | app3, free | a character changes design mid-book, or clashes with the shelf |
 | Panda-Cake's Market Basket | app2, free | app art mapping off by one on pages 2–5; off-model page-2 image; page 5 has no art |
 | Sub-Zero and the Snowflake Post | app2, free | Sub-Zero changes design on page 6; page 2 sleds show shapes, not numbers |
 | "Which book first?" QR PDF | — | dropped: the stage-ordered hub does the job, and QR would add the repo's first dependency |

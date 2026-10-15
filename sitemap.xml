@@ -7,7 +7,7 @@
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/apps/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
@@ -82,7 +82,7 @@
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/apps/snackpack-brain-games/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -207,12 +207,12 @@
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/play/</loc>
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/play/2048/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -222,17 +222,17 @@
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/play/cascade/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/play/checkers/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/play/connect-4/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -292,7 +292,7 @@
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/play/kakuro/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -312,17 +312,17 @@
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/play/mahjong/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/play/memory-match/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/play/minesweeper/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -347,7 +347,7 @@
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/play/reversi/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -387,7 +387,7 @@
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/play/sudoku/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -417,7 +417,7 @@
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/play/word-search/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -556,6 +556,16 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://www.snackpackuniverse.com/read/baby-bulldogs-at-the-playground/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/baby-bulldogs-at-the-playground/baby-bulldogs-at-the-playground.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.snackpackuniverse.com/read/biscuit-bouncers-parcel-parade/</loc>
     <lastmod>2026-10-15</lastmod>
     <priority>0.8</priority>
@@ -573,6 +583,16 @@
   <url>
     <loc>https://www.snackpackuniverse.com/read/bug-in-a-cup/bug-in-a-cup.pdf</loc>
     <lastmod>2026-08-13</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/captain-beakons-star-watch/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/captain-beakons-star-watch/captain-beakons-star-watch.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -596,6 +616,36 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.snackpackuniverse.com/read/fe-line-mignons-moonlit-cafe/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/fe-line-mignons-moonlit-cafe/fe-line-mignons-moonlit-cafe.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/foxy-loxs-mystery-trail/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/foxy-loxs-mystery-trail/foxy-loxs-mystery-trail.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/ham-and-cheeses-big-maze/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/ham-and-cheeses-big-maze/ham-and-cheeses-big-maze.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.snackpackuniverse.com/read/hen-berrys-digraph-dash/</loc>
     <lastmod>2026-10-15</lastmod>
     <priority>0.8</priority>
@@ -606,12 +656,32 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.snackpackuniverse.com/read/hen-berrys-helping-day/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/hen-berrys-helping-day/hen-berrys-helping-day.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.snackpackuniverse.com/read/hop-tarts-stepping-stone-switch/</loc>
     <lastmod>2026-10-15</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/read/hop-tarts-stepping-stone-switch/hop-tarts-stepping-stone-switch.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/lionnaise-and-the-dragon/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/lionnaise-and-the-dragon/lionnaise-and-the-dragon.pdf</loc>
     <lastmod>2026-10-15</lastmod>
     <priority>0.8</priority>
   </url>
@@ -646,6 +716,36 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.snackpackuniverse.com/read/nutmegs-four-seasons/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/nutmegs-four-seasons/nutmegs-four-seasons.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/nutmegs-garden-morning/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/nutmegs-garden-morning/nutmegs-garden-morning.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/octo-pops-ocean-adventure/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/octo-pops-ocean-adventure/octo-pops-ocean-adventure.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.snackpackuniverse.com/read/pip-sits/</loc>
     <lastmod>2026-10-15</lastmod>
     <priority>0.8</priority>
@@ -653,6 +753,16 @@
   <url>
     <loc>https://www.snackpackuniverse.com/read/pip-sits/pip-sits.pdf</loc>
     <lastmod>2026-08-13</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/polly-rogers-pirate-cove/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/polly-rogers-pirate-cove/polly-rogers-pirate-cove.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -677,6 +787,16 @@
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/read/stripe-scouts-blend-bridge/stripe-scouts-blend-bridge.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/stripe-scouts-trail-clues/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/stripe-scouts-trail-clues/stripe-scouts-trail-clues.pdf</loc>
     <lastmod>2026-10-15</lastmod>
     <priority>0.8</priority>
   </url>

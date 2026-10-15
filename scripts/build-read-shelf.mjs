@@ -33,6 +33,7 @@ const GROUPS = [
   { id: "stage-2", title: "Stage 2 · six more sounds", intro: "Adds c, e, h, r, m and d. Ready when Stage 1 words feel easy." },
   { id: "stage-3", title: "Stage 3 · short o and u", intro: "Adds g, o, u, l, f and b, so every short vowel is covered." },
   { id: "trail", title: "Reading Trail · next steps", intro: "Six read-together stories that carry on after Stage 3: short-vowel review, sh/ch/th/wh, blends, magic e, vowel teams and word endings." },
+  { id: "short", title: "Short reads · four-page stories", intro: "Quick illustrated stories to read together, with a talk prompt on every page and a question at the end: friendship and kindness, adventures and mysteries, nature and the night sky." },
   { id: "numbers", title: "Number stories · maths on every page", intro: "Illustrated maths stories with a question on every page, from counting to negative numbers. Tap an answer to check it, or print the book and work on paper." },
   { id: "more", title: "More stories", intro: "Read-together stories." }
 ];
@@ -51,6 +52,18 @@ const SHELF = [
   { slug: "sub-zeros-magic-e-lantern", group: "trail", title: "Sub‑Zero’s Magic‑E Lantern", eyebrow: "Reading Trail step 4 · 5 pages", blurb: "A lost note, a runaway kite and a lantern made from tape, rope and a red cape.", cover: "pages/reading-trail-sub-zero-magic-e-lantern-p1", ext: "jpg", alt: "Sub-Zero the penguin ties a note to a kite in the snow.", w: 768, h: 1152 },
   { slug: "meow-inaras-vowel-team-duet", group: "trail", title: "Meow‑inara’s Vowel‑Team Duet", eyebrow: "Reading Trail step 5 · 5 pages", blurb: "The music never arrives, so Meow-inara listens, paints the beat and plays anyway.", cover: "pages/reading-trail-meow-inara-vowel-team-duet-p1", ext: "jpg", alt: "Meow-inara the cat waits by a green gate in the rain.", w: 768, h: 1152 },
   { slug: "quill-berrys-ending-clues", group: "trail", title: "Quill‑Berry’s Ending Clues", eyebrow: "Reading Trail step 6 · 5 pages", blurb: "A poem has lost its endings. Quill-Berry adds -ing, -ed and -er and claps the beats.", cover: "pages/reading-trail-quill-berry-ending-clues-p1", ext: "jpg", alt: "Quill-Berry the hedgehog looks at a book with blank spaces.", w: 768, h: 1152 },
+  { slug: "baby-bulldogs-at-the-playground", group: "short", title: "Baby Bulldogs at the Playground", eyebrow: "Short read · Friendship · 4 pages", blurb: "A quiet puppy, a red ball and a chalk-line game that lets everyone join in.", cover: "pages/baby-bulldogs-playground-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
+  { slug: "fe-line-mignons-moonlit-cafe", group: "short", title: "Fe‑Line‑Mignon’s Moonlit Café", eyebrow: "Short read · Kindness · 4 pages", blurb: "Every table is full, so the guests make one long table with room for a shy new kitten.", cover: "pages/fe-line-mignon-moonlit-cafe-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
+  { slug: "octo-pops-ocean-adventure", group: "short", title: "Octo‑Pop’s Ocean Adventure", eyebrow: "Short read · Friendship · 4 pages", blurb: "A wave steals the welcome shell, and the shyest swimmer is the fastest to bring it back.", cover: "pages/octo-pop-ocean-adventure-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
+  { slug: "hen-berrys-helping-day", group: "short", title: "Hen‑Berry’s Helping Day", eyebrow: "Short read · Kindness · 4 pages", blurb: "Hen-Berry’s basket breaks. Ted-E-Bear has advice; Wise Owl listens first.", cover: "pages/hen-berry-helping-day-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
+  { slug: "stripe-scouts-trail-clues", group: "short", title: "Stripe‑Scout’s Trail Clues", eyebrow: "Short read · Adventure · 4 pages", blurb: "A short muddy path or a long starry one? A clue helps Stripe-Scout choose.", cover: "pages/stripe-scout-trail-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
+  { slug: "lionnaise-and-the-dragon", group: "short", title: "Lionnaise and the Dragon", eyebrow: "Short read · Adventure · 4 pages", blurb: "A dragon blocks the bridge, and Lionnaise answers with an invitation instead of a roar.", cover: "pages/lionnaise-dragon-quest-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
+  { slug: "polly-rogers-pirate-cove", group: "short", title: "Polly Roger’s Pirate Cove", eyebrow: "Short read · Adventure · 4 pages", blurb: "A chest full of gold, and Polly Roger spends it on the one thing the whole cove needs.", cover: "pages/polly-roger-pirate-cove-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
+  { slug: "ham-and-cheeses-big-maze", group: "short", title: "Ham‑and‑Cheese’s Big Maze", eyebrow: "Short read · Kindness · 4 pages", blurb: "Ham-and-Cheese could beat his fastest time, or help a lost mouse find the way out.", cover: "pages/ham-and-cheese-maze-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
+  { slug: "foxy-loxs-mystery-trail", group: "short", title: "Foxy‑Lox’s Mystery Trail", eyebrow: "Short read · Mystery · 4 pages", blurb: "A hoof print, a split crumb trail and a lost badge lead Foxy-Lox to the answer before the storm.", cover: "pages/foxy-lox-mystery-trail-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
+  { slug: "nutmegs-garden-morning", group: "short", title: "Nutmeg’s Garden Morning", eyebrow: "Short read · Nature · 4 pages", blurb: "Nutmeg checks her seed before lunch, after lunch and every day until the seventh morning.", cover: "pages/nutmeg-garden-morning-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
+  { slug: "captain-beakons-star-watch", group: "short", title: "Captain Beakon’s Star Watch", eyebrow: "Short read · Night sky · 4 pages", blurb: "Clouds hide the sky, so Captain Beakon and Luckybug give it five patient minutes.", cover: "pages/captain-beakon-star-watch-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
+  { slug: "nutmegs-four-seasons", group: "short", title: "Nutmeg’s Four Seasons", eyebrow: "Short read · Nature · 4 pages", blurb: "One acorn, four seasons and a friend for every one of them.", cover: "pages/nutmeg-four-seasons-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
   { slug: "ted-e-bear-and-the-button-trail", group: "numbers", title: "Ted‑E‑Bear and the Button Trail", eyebrow: "Counting · 6 pages", blurb: "Follow a missing-button mystery through counting, number order, comparisons and courage.", cover: "pages/cover", ext: "png", alt: "Ted-E-Bear and the Button Trail story cover.", w: 640, h: 640 },
   { slug: "luckybugs-market-morning", group: "numbers", title: "Luckybug and the Market Morning Mix‑Up", eyebrow: "Year 1 · adding to 20 · 7 pages", blurb: "Berries roll, eggs run low and signs need string. Seven quick sums get the market open by noon.", cover: "pages/cover", ext: "jpg", alt: "Luckybug and the Market Morning Mix-Up book cover.", w: 1024, h: 1536 },
   { slug: "biscuit-bouncers-parcel-parade", group: "numbers", title: "Biscuit‑Bouncer and the Parcel Parade", eyebrow: "Year 2 · add, subtract, measure · 9 pages", blurb: "The fastest route misses the quiet homes. Biscuit-Bouncer and Ginger-Deer find a better one, sum by sum.", cover: "pages/cover", ext: "jpg", alt: "Biscuit-Bouncer and the Parcel Parade book cover.", w: 1024, h: 1536 },
@@ -63,7 +76,7 @@ const plainTitle = (t) => t.replace(/‑/g, "-");
 
 function card(b, i) {
   const src = `./${b.slug}/${b.cover}`;
-  return `<a class="read-library-card" href="./${b.slug}/"><picture><source srcset="${src}.webp" type="image/webp"><img src="${src}.${b.ext}" alt="${b.alt}" width="${b.w}" height="${b.h}"${i > 2 ? " loading=\"lazy\"" : ""}></picture><div><span class="eyebrow">${b.eyebrow}</span><h3>${b.title}</h3><p>${b.blurb}</p><span class="btn btn-primary">Read the story</span></div></a>`;
+  return `<a class="read-library-card" href="./${b.slug}/"><picture><source srcset="${src}.webp" type="image/webp"><img src="${src}.${b.ext}" alt="${b.alt}" width="${b.w}" height="${b.h}"${i > 2 ? " loading=\"lazy\"" : ""}></picture><div><span class="eyebrow">${b.eyebrow}</span><h3>${plainTitle(b.title)}</h3><p>${b.blurb}</p><span class="btn btn-primary">Read the story</span></div></a>`;
 }
 
 // Stage shortcuts (a 13-book shelf is a long scroll on a phone) and the
@@ -248,15 +261,21 @@ function guideMoreBlock() {
   const rest = SHELF.filter((b) => !GUIDE_FIXED.has(b.slug));
   const cards = rest.map((b) => card(b.eyebrow, plainTitle(b.title), b.blurb, [GROUPS.find((g) => g.id === b.group).title.split(" · ")[0]], `../../read/${b.slug}/`, `../../read/${b.slug}/${b.slug}.pdf`));
   cards.push(card("Printable cards · one A4 page per stage", "Phonics sound cards", "Sound, word and tricky-word cards for every stage, from s a t p i n to vowel teams and word endings.", ["Printables"], "../../read/sound-cards/", null));
-  return `<div style="max-width:760px;margin:48px auto 28px;text-align:center;"><span class="eyebrow">More on the shelf</span><h2 class="section-title">Next steps, number stories and sound cards</h2><p class="section-copy">When the first eight feel easy, the Reading Trail carries on through sh, ch, th and wh, blends, magic e, vowel teams and word endings. The number stories add a maths question to every page. All free, all printable.</p></div><div class="grid app-grid">\n${cards.join("\n")}\n</div>`;
+  return `<div style="max-width:760px;margin:48px auto 28px;text-align:center;"><span class="eyebrow">More on the shelf</span><h2 class="section-title">Next steps, short reads, number stories and sound cards</h2><p class="section-copy">When the first eight feel easy, the Reading Trail carries on through sh, ch, th and wh, blends, magic e, vowel teams and word endings. The short reads are four-page stories to read together, and the number stories add a maths question to every page. All free, all printable.</p></div><div class="grid app-grid">\n${cards.join("\n")}\n</div>`;
 }
 {
+  // Two different counts, so every claim stays true. The title and H1 say
+  // "decodable readers ... for early phonics practice", so they count only the
+  // phonics books (Stages 1-3 + the Reading Trail). The descriptions say
+  // "early readers", which covers the whole shelf.
   const n = SHELF.length;
   const Word = NUMBER_WORDS[n] ?? String(n);
+  const phonics = SHELF.filter((b) => ["stage-1", "stage-2", "stage-3", "trail"].includes(b.group)).length;
+  const PhonicsWord = NUMBER_WORDS[phonics] ?? String(phonics);
   let guide = splice(fs.readFileSync(path.join(ROOT, GUIDE), "utf8"), "read-guide-more:generated", guideMoreBlock(), GUIDE);
   const rules = [
-    [/\b(\d+|Eight) Free Printable Decodable Readers/g, `${n} Free Printable Decodable Readers`],
-    [/<h1>\w+ free printable readers for early phonics practice<\/h1>/, `<h1>${Word} free printable readers for early phonics practice</h1>`],
+    [/\b(\d+|Eight) Free Printable Decodable Readers/g, `${phonics} Free Printable Decodable Readers`],
+    [/<h1>\w+ free printable readers for early phonics practice<\/h1>/, `<h1>${PhonicsWord} free printable readers for early phonics practice</h1>`],
     [/"description": "\w+ free illustrated early readers as A4 PDFs/, `"description": "${Word} free illustrated early readers as A4 PDFs`],
     [/Download \w+ free illustrated early readers as A4 PDFs/, `Download ${Word.toLowerCase()} free illustrated early readers as A4 PDFs`],
   ];

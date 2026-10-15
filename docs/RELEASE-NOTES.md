@@ -5,6 +5,27 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-15 — Short reads: 12 new four-page stories (Phase B2)
+
+- A new **Short reads** group: twelve free illustrated stories from SnackPack
+  Sentences & Spelling, each with a talk prompt on every page and a question at
+  the end. Friendship and kindness (Baby Bulldogs at the Playground,
+  Fe-Line-Mignon's Moonlit Café, Octo-Pop's Ocean Adventure, Hen-Berry's
+  Helping Day, Ham-and-Cheese's Big Maze), adventures and mysteries
+  (Stripe-Scout's Trail Clues, Lionnaise and the Dragon, Polly Roger's Pirate
+  Cove, Foxy-Lox's Mystery Trail), and nature and the night sky (Nutmeg's Garden
+  Morning, Captain Beakon's Star Watch, Nutmeg's Four Seasons). The shelf is
+  now 29 books.
+- Chosen from all 60 free short reads after reading every one and checking the
+  art. Science books with factual errors, and books whose characters change
+  design mid-book, were left out (details in `READ-PLAN-2026-10.md`). Five more
+  are approved and held until the 15 November re-measure.
+- The printable-readers guide's title and heading now count only the phonics
+  books (12), which is what "decodable readers ... for early phonics practice"
+  claims. The descriptions count every early reader (29).
+- Fix: long hyphenated names (Fe-Line-Mignon, Ham-and-Cheese) no longer
+  overflow their bookshelf cards.
+
 ## 2026-10-15 — /read/ content review fixes (Phase A)
 
 - **Ted-E-Bear's Short-Vowel Kit now matches the app.** Its web text had been
