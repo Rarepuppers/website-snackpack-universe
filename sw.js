@@ -13,7 +13,7 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v22";
+const CACHE = "snackpack-arcade-v23";
 const LAST_BASTION_RELEASE = "2026-10-15-controls";
 const LAST_BASTION_CACHE = `last-bastion-${LAST_BASTION_RELEASE}`;
 
@@ -197,8 +197,19 @@ self.addEventListener("fetch", (e) => {
           fetch(req).then((res) => {
             cacheSuccessful(CACHE, req, res);
             return res;
-          })
+          }).catch(() => sizedVariantFallback(url))
       )
     );
   }
 });
+
+// /read/ pictures offer -480w/-800w WebP sizes (scripts/build-read-responsive.mjs),
+// but "Save the bookshelf for offline" stores only each picture's original. Offline,
+// a page may ask for a size that was never saved: answer with the saved original
+// rather than a broken image.
+function sizedVariantFallback(url) {
+  if (!/-\d+w\.webp$/.test(url.pathname)) return offlineUnavailable();
+  return caches
+    .match(url.pathname.replace(/-\d+w\.webp$/, ".webp"))
+    .then((hit) => hit || offlineUnavailable());
+}

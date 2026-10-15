@@ -22,6 +22,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isVariant, sourceTag } from "./lib/read-srcset.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://www.snackpackuniverse.com";
@@ -76,7 +77,7 @@ const plainTitle = (t) => t.replace(/‑/g, "-");
 
 function card(b, i) {
   const src = `./${b.slug}/${b.cover}`;
-  return `<a class="read-library-card" href="./${b.slug}/"><picture><source srcset="${src}.webp" type="image/webp"><img src="${src}.${b.ext}" alt="${b.alt}" width="${b.w}" height="${b.h}"${i > 2 ? " loading=\"lazy\"" : ""}></picture><div><span class="eyebrow">${b.eyebrow}</span><h3>${plainTitle(b.title)}</h3><p>${b.blurb}</p><span class="btn btn-primary">Read the story</span></div></a>`;
+  return `<a class="read-library-card" href="./${b.slug}/"><picture>${sourceTag(path.join(ROOT, "read", b.slug, `${b.cover}.webp`), src, "hub")}<img src="${src}.${b.ext}" alt="${b.alt}" width="${b.w}" height="${b.h}"${i > 2 ? " loading=\"lazy\"" : ""}></picture><div><span class="eyebrow">${b.eyebrow}</span><h3>${plainTitle(b.title)}</h3><p>${b.blurb}</p><span class="btn btn-primary">Read the story</span></div></a>`;
 }
 
 // Stage shortcuts (a 13-book shelf is a long scroll on a phone) and the
@@ -152,7 +153,7 @@ function homeBlock() {
     const src = `/read/${b.slug}/${b.cover}`;
     const label = b.eyebrow.split(" · ")[0].replace(/ decodable$/, "");
     return `        <a class="storybook-card" href="/read/${b.slug}/">
-          <picture><source srcset="${src}.webp" type="image/webp"><img src="${src}.${b.ext}" loading="lazy" alt="${b.alt}"></picture>
+          <picture>${sourceTag(path.join(ROOT, "read", b.slug, `${b.cover}.webp`), src, "home")}<img src="${src}.${b.ext}" loading="lazy" alt="${b.alt}"></picture>
           <span class="storybook-app">${label}</span>
           <strong>${b.title}</strong>
         </a>`;
@@ -227,7 +228,9 @@ function offlineManifest() {
   for (const b of SHELF) {
     urls.push(`/read/${b.slug}/`);
     const dir = path.join(ROOT, "read", b.slug, "pages");
-    for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".webp")).sort()) urls.push(`/read/${b.slug}/pages/${f}`);
+    // Originals only: the -480w/-800w sizes would add ~65% to the download, and
+    // sw.js answers an unsaved size with the saved original when offline.
+    for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".webp") && !isVariant(f)).sort()) urls.push(`/read/${b.slug}/pages/${f}`);
   }
   urls.push("/site.css", "/theme.js", "/read/share.js", "/read/reader.js", "/read/offline.js",
     "/assets/fonts/fonts.css", "/assets/favicon-32.png", "/assets/snackpack-mark-96.png");

@@ -71,7 +71,7 @@ Not candidates: Earth Science and Space Math (one cover per story), Mathematics
 
 | # | Improvement | Why |
 |---|---|---|
-| C1 | **Responsive images**: a 600 px WebP per page plus `srcset`/`sizes` | Most readers are on phones (mobile views tripled in October). Pages send 768–1200 px art to a 390 px screen. Expect about 60% less data per book. |
+| C1 | **Responsive images** | **DONE 2026-10-15.** 480/800/960 px WebP sizes plus `srcset`/`sizes` measured per layout (`build-read-responsive.mjs`, `lib/read-srcset.mjs`; hub and homepage cards via `build-read-shelf.mjs`). Measured image data per visit: desktop/tablet −66%, 2× phones −26%, 2.6× phones −10% (−30% on landscape books), 3× iPhones unchanged, because they need full resolution and the 768 px portrait originals already match. A flat 600 px size would only have helped desktops. Offline save keeps originals only; `sw.js` (CACHE v23) answers an unsaved size with the saved original. |
 | C2 | **Hub filters**: by age/year and by skill, plus a "New" badge | A 30+ book shelf is a long scroll. Generate from `SHELF` (add `age` and `skill` fields), with no client framework. |
 | C3 | **Questions page in each PDF**: the book's quiz or end question and the talk prompts on a final printable page | Teachers print; the PDFs currently have pictures only. Extend `build-read-pdfs.mjs` (it is zero-dependency, so text pages need a simple built-in font path). |
 | C4 | **Read to me controls**: a slower/normal speed toggle, remembered on the device (localStorage, wrapped in try/catch) | Early readers need slower speech; adults reading along may want normal. |
@@ -152,7 +152,7 @@ scope; the `build-read-shelf.mjs --check` step is now in `site-check.yml`.
 | app4 Basic Math | `scripts/import-math-story-book.py` (converts WebP → JPEG for the PDF builder) | add to `SHELF` (group `numbers`) |
 
 After any import, run these in order: `build-webp.mjs` →
-`build-read-pdfs.mjs --slug=<slug> --write` → `build-read-shelf.mjs` (hub, chain,
+`build-read-pdfs.mjs --slug=<slug> --write` → `build-read-responsive.mjs` → `build-read-shelf.mjs` (hub, chain,
 ItemList, homepage, offline manifest) → `build-read-social-cards.py` →
 `build-breadcrumbs.mjs` (it has **no** `--check`; it writes, so commit only your
 paths) → `build-play-links.mjs` → `build-go-links.mjs` → `build-sitemap.mjs`.

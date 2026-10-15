@@ -98,6 +98,12 @@ jobs:
       - name: Check /read/ bookshelf
         run: node scripts/build-read-shelf.mjs --check
 
+      # Every /read/ picture offers 480/800/960 px WebP sizes via srcset. A book
+      # imported without re-running the generator would ship one big image to
+      # every phone, so assert every page is responsive and every size exists.
+      - name: Check /read/ responsive images
+        run: node scripts/build-read-responsive.mjs --check
+
       # Catches a rule that pins a background but lets its text follow the theme:
       # fine in cream, invisible in dark. This is how the hero and the primary
       # button shipped unreadable.

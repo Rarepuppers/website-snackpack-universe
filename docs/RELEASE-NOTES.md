@@ -5,6 +5,21 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-15 — Lighter pictures on phones, tablets and desktops (Phase C1)
+
+- Every /read/ picture now comes in 480, 800 and 960 px WebP sizes as well as
+  the original, and the browser picks the smallest one that is still sharp for
+  the screen. The `sizes` hints match the layout as measured on a phone, a
+  tablet and a desktop.
+- Measured image data per visit: **−66%** on desktops and tablets, **−26%** on
+  2× phones, **−10%** on 2.6× phones (−30% on the landscape books). 3× iPhones
+  are unchanged, because they genuinely need the full resolution.
+- "Save the bookshelf for offline" still saves only the originals (22.8 MB).
+  The service worker (`snackpack-arcade-v23`) now shows the saved original when
+  an offline page asks for a smaller size, which was tested by saving, going
+  offline and opening a book.
+- CI checks every book page offers the sizes (`build-read-responsive.mjs --check`).
+
 ## 2026-10-15 — Short reads: 12 new four-page stories (Phase B2)
 
 - A new **Short reads** group: twelve free illustrated stories from SnackPack
