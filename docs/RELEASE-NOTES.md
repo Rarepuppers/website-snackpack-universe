@@ -5,6 +5,17 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-16 — Questions page in every printable book (Phase C3)
+
+- Every "Print this book (PDF)" now ends with a **questions page**: the talk
+  prompt for each page (or, in the number stories, the maths question with its
+  choices), then the question to ask at the end of the book.
+- All the answers sit together below a dotted line, so a printed copy can be
+  folded to hide them and used as a quiz. The answers always stay on one page.
+- The questions are taken from each book's web page when the PDF is built, so
+  the printed copy can't drift from the online one. The PDFs grew by only a few
+  KB each and still fit A4 and US Letter.
+
 ## 2026-10-15 — Bookshelf filters and "New" badges (Phase C2)
 
 - The bookshelf can be filtered by **type** (Phonics, Stories, Maths) and by

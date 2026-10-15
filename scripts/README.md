@@ -87,7 +87,7 @@ The plan, rules and held-back list live in `READ-PLAN-2026-10.md`. The scripts:
 | `import-decodable-book.mjs` | Imports an ABCs-app decodable reader | Per book, then the shelf steps in `READ-PLAN-2026-10.md` |
 | `import-reading-trail-book.mjs` | Imports a Sentences & Spelling Reading Trail book (text verbatim; alt text in its `BOOKS` map) | Per book |
 | `import-math-story-book.py` | Imports a free Basic Math story, resolving art the way the app does (`illustrationId ?? page.id`) and converting WebP to JPEG for the PDF builder | Per book; its docstring lists which books are held back and why |
-| `build-read-pdfs.mjs` | One printable PDF per book, zero dependencies | `--slug=<slug> --write` per new book |
+| `build-read-pdfs.mjs` | One printable PDF per book, zero dependencies; ends with a questions page (prompts, maths questions, end question; answers below a fold line) extracted from the book's HTML, so re-run it after any text change | `--slug=<slug> --write` per new book |
 | `build-read-responsive.mjs` | Makes 480/800/960 px WebP sizes of every book picture (ImageMagick, from the JPEG/PNG original) and gives each `<source>` a `srcset` + measured `sizes`. Widths and the measurements behind them live in `lib/read-srcset.mjs` | After any importer, **before** `build-read-shelf.mjs`. `--check` (no ImageMagick needed) runs in CI |
 
 ## Install attribution
