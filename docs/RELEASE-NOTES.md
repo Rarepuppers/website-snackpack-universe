@@ -5,6 +5,28 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-15 — /read/ content review fixes (Phase A)
+
+- **Ted-E-Bear's Short-Vowel Kit now matches the app.** Its web text had been
+  hand-imported in August, before the app rewrote it, and it had drifted on all
+  five pages to include words a short-vowel reader cannot decode yet (props,
+  clips, grins, snug). It is now generated from the app by
+  `import-reading-trail-book.mjs`, as is Hen-Berry's Digraph Dash, so neither
+  can drift again. All 13 phonics books were re-checked against the app: every
+  page matches.
+- **End-of-book questions on every decodable.** Nan and Pip, Ten Red Hens, The
+  Cat and the Rat, Bug in a Cup and Dog in the Fog each end with a question and
+  a sound-it-out answer, like Pip Sits. The "For grown-ups" notes are kept below.
+- **Real image descriptions.** The 38 pictures in those five books had their
+  sentence as alt text, so screen readers heard each line twice. Every one now
+  describes what the picture shows. On Reading Trail books the title picture
+  repeats page 1, so it is now marked decorative.
+- **The printable-readers guide is current.** Its title, heading, description
+  and schema now say 17, and are kept in step with the shelf by
+  `build-read-shelf.mjs`. The original eight cards are unchanged; a generated
+  "More on the shelf" grid adds the Reading Trail, the number stories and the
+  sound cards.
+
 ## 2026-10-15 — CI guards the bookshelf; World Cup automation off
 
 - `site-check.yml` now runs `build-read-shelf.mjs --check`, so a book added or

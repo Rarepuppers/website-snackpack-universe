@@ -29,6 +29,40 @@ const PLAY = "https://play.google.com/store/apps/details?id=com.snackpackunivers
 
 // Per-book web editorial. `slug` is the public URL; `alts` describe the art.
 const BOOKS = {
+  // Step 1 was hand-built in August; the app rewrote its text afterwards, so it
+  // now imports like the others (2026-10-15) and cannot drift again.
+  "ted-short-vowel-kit": {
+    slug: "ted-e-bears-short-vowel-kit",
+    skill: "Short vowels",
+    lead: "A five-page den-building story for practising short-vowel words like box, rug, map, peg and cup.",
+    blurb: "A box, a rug, a map and a cup: Ted-E-Bear builds a den one short-vowel word at a time.",
+    about: "CVC words with short vowels a, e, i, o and u",
+    pattern: /^[bcdfghjklmnpqrstvwxyz][aeiou][bcdfghjklmnpqrstvwxz]s?$/,
+    stop: ["his", "has", "is", "it", "can", "on", "in", "of", "and", "the", "ted", "put"],
+    alts: [
+      "Ted-E-Bear kneels beside a big cardboard box, with a red rug and a map on the floor.",
+      "The box tips onto the rug and the map slides into a gap in the floorboards.",
+      "Ted props the box up with a small cup to make the walls of his den.",
+      "Ted pegs the map to the den wall and kneels on the rug.",
+      "Ted sits inside his finished den on the red rug, reading a book.",
+    ]
+  },
+  "hen-berry-digraph-dash": {
+    slug: "hen-berrys-digraph-dash",
+    skill: "Digraphs",
+    lead: "A five-page foggy-night adventure where two letters share one sound: sh, ch, th and wh.",
+    blurb: "Fog hides the path home. A shell, a fish and a few sh, ch, th and wh words lead the way.",
+    about: "sh, ch, th and wh digraphs",
+    pattern: /sh|ch|th|wh/,
+    stop: ["the", "they", "them"],
+    alts: [
+      "Hen-Berry closes her shop for the night while the chick sweeps beside her.",
+      "Hen-Berry and the chick wonder which way to go as thick fog covers two paths.",
+      "Hen-Berry points out a small shell lying on the narrow track by the pond.",
+      "Hen-Berry and the chick hurry past the pond as a friendly fish pops up to say hello.",
+      "The chick hugs Hen-Berry outside the shed at sunset."
+    ]
+  },
   "stripe-scout-blend-bridge": {
     slug: "stripe-scouts-blend-bridge",
     skill: "Consonant blends",
@@ -209,7 +243,7 @@ function render(id, book, ed) {
 ${SHARED}</head>
 <body class="story-reader-page">
 ${HEADER}<main>
-<section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">Reading Trail · Step ${book.step} · Free</span><h1>${h1}</h1><p class="lead">${esc(ed.lead)}</p><div class="tag-row"><span class="tag">Beginning reader</span><span class="tag">${ed.skill}</span><span class="tag">Read together</span></div><a class="btn btn-primary" href="#page-1">Begin the story</a></div><picture><source srcset="./pages/${art}-p1.webp" type="image/webp"><img src="./pages/${art}-p1.jpg" alt="${esc(ed.alts[0])}" width="768" height="1152"></picture></div></section>
+<section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">Reading Trail · Step ${book.step} · Free</span><h1>${h1}</h1><p class="lead">${esc(ed.lead)}</p><div class="tag-row"><span class="tag">Beginning reader</span><span class="tag">${ed.skill}</span><span class="tag">Read together</span></div><a class="btn btn-primary" href="#page-1">Begin the story</a></div><picture><source srcset="./pages/${art}-p1.webp" type="image/webp"><img src="./pages/${art}-p1.jpg" alt="" width="768" height="1152"></picture></div></section>
 
 <section class="story-pages" aria-label="Story pages">
 ${cards}
