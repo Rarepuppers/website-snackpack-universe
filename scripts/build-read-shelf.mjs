@@ -33,7 +33,8 @@ const GROUPS = [
   { id: "stage-2", title: "Stage 2 · six more sounds", intro: "Adds c, e, h, r, m and d. Ready when Stage 1 words feel easy." },
   { id: "stage-3", title: "Stage 3 · short o and u", intro: "Adds g, o, u, l, f and b, so every short vowel is covered." },
   { id: "trail", title: "Reading Trail · next steps", intro: "Six read-together stories that carry on after Stage 3: short-vowel review, sh/ch/th/wh, blends, magic e, vowel teams and word endings." },
-  { id: "more", title: "More stories", intro: "A read-together counting adventure." }
+  { id: "numbers", title: "Number stories · maths on every page", intro: "Illustrated maths stories with a question on every page, from counting to negative numbers. Tap an answer to check it, or print the book and work on paper." },
+  { id: "more", title: "More stories", intro: "Read-together stories." }
 ];
 
 // The shelf, in reading order. The "next story" chain follows this order.
@@ -50,7 +51,11 @@ const SHELF = [
   { slug: "sub-zeros-magic-e-lantern", group: "trail", title: "Sub‑Zero’s Magic‑E Lantern", eyebrow: "Reading Trail step 4 · 5 pages", blurb: "A lost note, a runaway kite and a lantern made from tape, rope and a red cape.", cover: "pages/reading-trail-sub-zero-magic-e-lantern-p1", ext: "jpg", alt: "Sub-Zero the penguin ties a note to a kite in the snow.", w: 768, h: 1152 },
   { slug: "meow-inaras-vowel-team-duet", group: "trail", title: "Meow‑inara’s Vowel‑Team Duet", eyebrow: "Reading Trail step 5 · 5 pages", blurb: "The music never arrives, so Meow-inara listens, paints the beat and plays anyway.", cover: "pages/reading-trail-meow-inara-vowel-team-duet-p1", ext: "jpg", alt: "Meow-inara the cat waits by a green gate in the rain.", w: 768, h: 1152 },
   { slug: "quill-berrys-ending-clues", group: "trail", title: "Quill‑Berry’s Ending Clues", eyebrow: "Reading Trail step 6 · 5 pages", blurb: "A poem has lost its endings. Quill-Berry adds -ing, -ed and -er and claps the beats.", cover: "pages/reading-trail-quill-berry-ending-clues-p1", ext: "jpg", alt: "Quill-Berry the hedgehog looks at a book with blank spaces.", w: 768, h: 1152 },
-  { slug: "ted-e-bear-and-the-button-trail", group: "more", title: "Ted‑E‑Bear and the Button Trail", eyebrow: "Counting adventure · 6 pages", blurb: "Follow a missing-button mystery through counting, number order, comparisons and courage.", cover: "pages/cover", ext: "png", alt: "Ted-E-Bear and the Button Trail story cover.", w: 640, h: 640 }
+  { slug: "ted-e-bear-and-the-button-trail", group: "numbers", title: "Ted‑E‑Bear and the Button Trail", eyebrow: "Counting · 6 pages", blurb: "Follow a missing-button mystery through counting, number order, comparisons and courage.", cover: "pages/cover", ext: "png", alt: "Ted-E-Bear and the Button Trail story cover.", w: 640, h: 640 },
+  { slug: "luckybugs-market-morning", group: "numbers", title: "Luckybug and the Market Morning Mix‑Up", eyebrow: "Year 1 · adding to 20 · 7 pages", blurb: "Berries roll, eggs run low and signs need string. Seven quick sums get the market open by noon.", cover: "pages/cover", ext: "jpg", alt: "Luckybug and the Market Morning Mix-Up book cover.", w: 1024, h: 1536 },
+  { slug: "biscuit-bouncers-parcel-parade", group: "numbers", title: "Biscuit‑Bouncer and the Parcel Parade", eyebrow: "Year 2 · add, subtract, measure · 9 pages", blurb: "The fastest route misses the quiet homes. Biscuit-Bouncer and Ginger-Deer find a better one, sum by sum.", cover: "pages/cover", ext: "jpg", alt: "Biscuit-Bouncer and the Parcel Parade book cover.", w: 1024, h: 1536 },
+  { slug: "hop-tarts-stepping-stone-switch", group: "numbers", title: "Hop‑Tart and the Stepping‑Stone Switch", eyebrow: "Year 3 · times tables · 4 pages", blurb: "A current twists the stepping stones. Hop-Tart builds a path that waits for Centi-Peed.", cover: "pages/cover", ext: "jpg", alt: "Hop-Tart and the Stepping-Stone Switch book cover.", w: 1024, h: 1536 },
+  { slug: "centi-peeds-below-zero-burrow", group: "numbers", title: "Centi‑Peed and the Below‑Zero Burrow", eyebrow: "Year 4 · negative numbers · 4 pages", blurb: "Firefly footprints lead below zero. Centi-Peed and Sub-Zero count every step through the cold.", cover: "pages/cover", ext: "jpg", alt: "Centi-Peed and the Below-Zero Burrow book cover.", w: 1024, h: 1536 }
 ];
 
 const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty"];
@@ -144,7 +149,7 @@ function homeBlock() {
         <div>
           <span class="eyebrow">Free bookshelf</span>
           <h2 class="section-title">${words(SHELF.length).replace(/^./, (c) => c.toUpperCase())} illustrated readers, free to read or print</h2>
-          <p class="section-copy">Complete picture books from the SnackPack apps, in phonics order from the first sounds s a t p i n to vowel teams and word endings. Read them in your browser or print the PDF. No account, no ads, no download.</p>
+          <p class="section-copy">Complete picture books from the SnackPack apps, in phonics order from the first sounds s a t p i n to vowel teams and word endings, plus number stories with a maths question on every page. Read them in your browser or print the PDF. No account, no ads, no download.</p>
         </div>
         <div class="stack-inline"><a class="btn btn-primary" href="/read/">Open the bookshelf</a><a class="text-link" href="/read/sound-cards/">Print phonics sound cards</a></div>
       </div>

@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.snackpackuniverse.com/</loc>
-    <lastmod>2026-10-12</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
@@ -556,6 +556,16 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://www.snackpackuniverse.com/read/biscuit-bouncers-parcel-parade/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/biscuit-bouncers-parcel-parade/biscuit-bouncers-parcel-parade.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.snackpackuniverse.com/read/bug-in-a-cup/</loc>
     <lastmod>2026-10-15</lastmod>
     <priority>0.8</priority>
@@ -563,6 +573,16 @@
   <url>
     <loc>https://www.snackpackuniverse.com/read/bug-in-a-cup/bug-in-a-cup.pdf</loc>
     <lastmod>2026-08-13</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/centi-peeds-below-zero-burrow/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/centi-peeds-below-zero-burrow/centi-peeds-below-zero-burrow.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -582,6 +602,26 @@
   </url>
   <url>
     <loc>https://www.snackpackuniverse.com/read/hen-berrys-digraph-dash/hen-berrys-digraph-dash.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/hop-tarts-stepping-stone-switch/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/hop-tarts-stepping-stone-switch/hop-tarts-stepping-stone-switch.pdf</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/luckybugs-market-morning/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/read/luckybugs-market-morning/luckybugs-market-morning.pdf</loc>
     <lastmod>2026-10-15</lastmod>
     <priority>0.8</priority>
   </url>

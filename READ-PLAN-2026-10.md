@@ -227,3 +227,21 @@ Phase 4 re-measure → Phase 2.4 / Phase 5 only if the numbers justify it.
   `Object.defineProperty`, not by assignment. Offline: saved, then went offline
   and opened a book with all its art and CSS. **Not yet heard on a real
   device**: voice quality varies by device.
+- 2026-10-15: **Phase 2.4 done: Number stories shelf (4 new books + Button
+  Trail).** All 9 Basic Math `FREE_BOOK_IDS` were read in full, with every
+  page of art viewed. Art resolves the way the app's reader does it
+  (`getBookPageImage(illustrationId ?? page.id)`); an early measurement
+  ignored the page-id fallback and wrongly reported 0/7 for two books.
+  Published: Luckybug (Y1, to 20), Biscuit-Bouncer (Y2), Hop-Tart (Y3, ×
+  tables and remainders), Centi-Peed (Y4, negative numbers), all free in the
+  app. **Held back, with app fixes owed:** Pork-ulele page 1's clock shows
+  quarter past FOUR for "quarter past three"; Wise Owl page 1 asks "which
+  pair" but offers single numbers, and page 2 muddles primes; Ted-E-Bear and
+  Booklava change character design mid-book (two art batches); Vincent Van
+  Mouse has 4/7 pages illustrated. Importer:
+  `scripts/import-math-story-book.py`, which converts the app's WebP to JPEG
+  for the PDF builder. Each page has a "Try it" question. `reader.js` turns
+  the choices into buttons: a wrong answer gives a gentle retry, the right one
+  opens the explanation. The plain list plus "Show the answer" still works
+  with JS off and on paper. Read-to-me also reads the question. The shelf is
+  17 books.
