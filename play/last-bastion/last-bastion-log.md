@@ -5109,3 +5109,26 @@ the Codex art redirect all **accepted**.
 - No push/deployment or fresh desktop package was performed. Observed runs, physical controller,
   audio/display, packaged-window and Steam-client acceptance remain open. Conditional content,
   practice, accessibility and art work was preserved rather than marked complete.
+
+
+## 16 October 2026 — asset inventory and opt-in floor pilot
+
+Completed the first implementation checkpoint of the accepted Full HD/4K patch: a reproducible
+213-entry GameAssetManifest inventory, confirmed consumer notes, two original floor candidates
+and one transparent scuff. Untouched sources and exact generation prompts/hashes are retained.
+Explicit `floorpilot=a|b` routes select a material only with the standard Bastion theme; normal
+combat excludes pilot downloads. Four-tile repeats preserve world units and collision geometry.
+
+Validation: `npm run verify:last-bastion` passed all required lanes in 63.5 seconds (1,776 unit
+checks in 310 files, 29 browser checks, 25 matching published outputs, smoke/offline and 28 desktop
+host tests). Six baseline/A/B native Full HD/4K captures passed and were retained. The manifest
+count guard initially caught the addition of three assets; its expected count was updated before
+the successful full rerun. No deployment or desktop packaging was performed.
+
+This closes only the initial inventory/pilot checkpoint. Shell/candidate inventory, optimized
+runtime derivatives, expanded accepted kit, targeted registration/effect repairs and UI polish
+remain in the active asset plan. Motion, audio and hardware acceptance are still open. Historical
+held-weapon/production notes now flag stale consumer claims; earlier audit plans remain archived.
+
+Portfolio follow-through: `node scripts/check-all.js` completed with all 19 guards passing on
+16 October. The long-running shared game-UI delivery scan completed successfully.

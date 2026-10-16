@@ -1,6 +1,6 @@
 # Last Bastion documentation
 
-Last reviewed: 15 October 2026. The game lives in the **nested website Git repo**.
+Last reviewed: 16 October 2026. The game lives in the **nested website Git repo**.
 `dev/src/game/` describes current behavior; plans explain intent and acceptance.
 
 ## Start here
@@ -17,6 +17,7 @@ Last reviewed: 15 October 2026. The game lives in the **nested website Git repo*
 
 | Document | Use |
 |---|---|
+| [Full HD/4K asset patch proposal](ASSET-IMPROVEMENT-PLAN-2026-10-16.md) | Prioritized floor, registration, VFX and UI pilots; proposed scope and acceptance gates. |
 | [Art bible](last-bastion-art-bible.md) | Source-master retention, framing, pivots, frame order, and 4K rules. |
 | [Asset review](asset-next-production-review-2026-07-26.md) | Asset acceptance and conditional art queue. Its original storefront priority list is complete. |
 | [Environment plan](environment-production-plan.md) and [prompts](environment-prompts.md) | Environment kit contracts and prompt library. Further art follows observed failures. |

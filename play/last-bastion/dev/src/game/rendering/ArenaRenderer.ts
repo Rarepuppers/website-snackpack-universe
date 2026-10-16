@@ -111,6 +111,14 @@ function renderAuthoredFloor(
   tilePixels: number,
   theme: ArenaTheme,
 ): void {
+  if (theme.floorTileSpan) {
+    const textureWidth = scene.textures.get(theme.floorTexture).get(0).width;
+    scene.add.tileSprite(columns * tilePixels / 2, rows * tilePixels / 2,
+      columns * tilePixels, rows * tilePixels, theme.floorTexture, 0)
+      .setTileScale(tilePixels * theme.floorTileSpan / textureWidth)
+      .setDepth(-20).setTint(theme.floorTint);
+    return;
+  }
   for (let row = 0; row < rows; row += 1) {
     for (let column = 0; column < columns; column += 1) {
       const frame = authoredFloorFrame(theme, column, row);

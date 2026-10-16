@@ -1,3 +1,6 @@
+import floorPilotAUrl from "../../../../art/production-tests/bastion-floor-pilot/bastion-floor-pilot-a-source.png";
+import floorPilotBUrl from "../../../../art/production-tests/bastion-floor-pilot/bastion-floor-pilot-b-source.png";
+import floorScuffUrl from "../../../../art/production-tests/bastion-floor-pilot/bastion-scuff-pilot-source.png";
 import marineBaseSheetUrl from "../../../../art/production-tests/marine-base-spritesheet-v1-96.png";
 import marineHelmetSheetUrl from "../../../../art/production-tests/marine-bastion-helmet-overlay-v1-96.png";
 import serviceRifleUrl from "../../../../art/production-tests/legacy-weapon-refresh/service-rifle-gameplay-v2-256x128.png";
@@ -289,6 +292,9 @@ export type GameAssetId =
   | "scuttler-v1"
   | "egg-cluster-v1"
   | "brain-blob-v1"
+  | "bastion-floor-pilot-a"
+  | "bastion-floor-pilot-b"
+  | "bastion-scuff-pilot"
   | "arena-floor-v1"
   | "arena-boundary-v1"
   | "arena-obstacle-v1"
@@ -538,6 +544,9 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("scuttler-v1", runtimeImageUrl(scuttlerSheetUrl, scuttlerSheetWebpUrl), 64, 64, 8, 0.5, 0.5, 256, 256),
   sheet("egg-cluster-v1", runtimeImageUrl(eggClusterSheetUrl, eggClusterSheetWebpUrl), 64, 64, 4, 0.5, 0.5, 256, 256),
   sheet("brain-blob-v1", brainBlobSheetUrl, 64, 64, 4, 0.5, 0.5, 256, 256),
+  sheet("bastion-floor-pilot-a", floorPilotAUrl, 256, 256, 1, 0.5, 0.5, 1254, 1254),
+  sheet("bastion-floor-pilot-b", floorPilotBUrl, 256, 256, 1, 0.5, 0.5, 1254, 1254),
+  sheet("bastion-scuff-pilot", floorScuffUrl, 64, 64, 1, 0.5, 0.5, 1254, 1254),
   sheet("arena-floor-v1", arenaFloorSheetUrl, 64, 64, 6, 0.5, 0.5),
   sheet("arena-boundary-v1", arenaBoundarySheetUrl, 64, 64, 8, 0.5, 0.5),
   sheet("arena-obstacle-v1", arenaObstacleSheetUrl, 96, 96, 8, 0.5, 0.5),

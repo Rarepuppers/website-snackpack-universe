@@ -1,7 +1,7 @@
 # Last Bastion — current plan
 
-**Updated:** 15 October 2026
-**Local release:** `web-2026.10.15-controls` (service worker `2026-10-15-controls`).
+**Updated:** 16 October 2026
+**Local release:** `web-2026.10.16-floor-pilot` (service worker `2026-10-16-floor-pilot`).
 **Status:** accepted audit corrections are implemented and committed. All required automated
 verification lanes pass. This release has not been pushed or deployed by this work.
 
@@ -17,12 +17,15 @@ Keep the content freeze until observed play and live measurement justify expansi
 - Controller/reporting follow-up: `ebc9a4b2`. Physical menu controls independent of combat
   remapping, D-pad pages, mixed-speed share disclosure, fresh attempt settings after restart,
   corrected affinity count/navigation hints and reliable first clicks on pause/settings rows.
-- Final `npm run verify:last-bastion`: all required lanes passed (61.7 seconds): 1,775 unit
-  tests in 310 files, 27 browser checks, smoke/offline acceptance, 25 matching published outputs,
+- Latest `npm run verify:last-bastion`: all required lanes passed (63.5 seconds): 1,776 unit
+  tests in 310 files, 29 browser checks, smoke/offline acceptance, 25 matching published outputs,
   website JavaScript/offline-core checks and desktop host build with 28 tests.
-- Portfolio `node scripts/check-all.js`: all 19 guards passed on 15 October. Separate website
+- Portfolio `node scripts/check-all.js`: all 19 guards passed on 16 October. Separate website
   check previously verified 272 pages. Those results do not establish live deployment status.
-- Layout captures remain in `playtest-evidence/2026-10-15-screens-auto/`. They predate the
+- Floor pilot: 213-entry manifest inventory, two opt-in floor materials and one transparent scuff.
+  Six baseline/A/B captures at native Full HD and 4K are in
+  `playtest-evidence/2026-10-16-screens-auto/`. Default gameplay does not load the pilot art.
+- Earlier layout captures remain in `playtest-evidence/2026-10-15-screens-auto/`. They predate the
   follow-up label changes and are layout evidence, not final screenshots of every current label.
 
 ## 1. Deploy and verify the browser release — open
@@ -30,7 +33,7 @@ Keep the content freeze until observed play and live measurement justify expansi
 - [ ] Obtain an explicit deployment request: Mark's standing instruction is **do not push unless asked**.
 - [ ] Review the website repository's release scope, including unrelated working-tree changes;
   push only the authorized release, wait for CI, and verify the live game and privacy page.
-- [ ] Confirm the served build identity matches `web-2026.10.15-controls` and test a warm-cache
+- [ ] Confirm the served build identity matches `web-2026.10.16-floor-pilot` and test a warm-cache
   offline upgrade. The live menu already showed Quick/Daily on 14 October; this does not prove
   that the current bundle or analytics configuration is deployed.
 - [ ] Confirm `opened`, `run-started`, `wave-1`, `wave-5`, `run-ended`, and next-local-day
@@ -65,7 +68,13 @@ wave depth because their progress is measured in nodes.
 - [ ] Record GPU, driver, frame pacing and display behavior on Full HD, 4K, ultrawide and
   Deck-shaped hardware. Headless captures are not hardware acceptance.
 
-## 4. Evidence-led improvements — deferred
+## 4. Authorized asset patch — in progress
+
+The [16 October Full HD/4K asset patch proposal](ASSET-IMPROVEMENT-PLAN-2026-10-16.md)
+sets out the next staged art and improvement work. Implementation is authorized. The manifest inventory and opt-in A/B floor pilot are implemented;
+the standard floor remains unchanged. See [inventory scope](ASSET-INVENTORY-NOTES.md) for gaps
+and the patch proposal’s progress checklist for remaining non-testing work. Acceptance gates above remain open.
+
 
 - Review two weeks of verified live data: open → start → wave 1 → wave 5, the separate outcome
   distribution, and next-day return. Combine with the five observed runs before changing scope.

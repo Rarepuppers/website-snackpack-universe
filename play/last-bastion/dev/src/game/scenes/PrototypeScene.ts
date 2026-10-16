@@ -50,7 +50,7 @@ import { GAME_ASSETS, type GameAssetId } from "../assets/GameAssetManifest";
 import { renderArena } from "../rendering/ArenaRenderer";
 import { obstacleFrameIndex, worldObjectArtAssetId } from "../rendering/TerrainVisualState";
 import { miniBossSpriteScale } from "../rendering/MiniBossPresentation";
-import { arenaThemeById, arenaThemeVariant, containmentUnderworldTheme, pickArenaTheme, starshipTransitTheme, surfaceFrontierTheme } from "../rendering/arenaThemes";
+import { bastionFloorPilot, arenaThemeById, arenaThemeVariant, containmentUnderworldTheme, pickArenaTheme, starshipTransitTheme, surfaceFrontierTheme } from "../rendering/arenaThemes";
 import { BASE_HEIGHT, BASE_WIDTH, uiSafeArea, uiTextResolution } from "../rendering/DisplayScaling";
 import { CombatWorldPresenter } from "../rendering/CombatWorldPresenter";
 import { screenShakeIntensity } from "../rendering/ScreenShake";
@@ -4608,7 +4608,7 @@ function resolveArenaTheme(runSeed: number) {
     const seed = Number.isFinite(worldSeed) ? worldSeed : 0;
     const surfaceSelected = surfaceFrontierTheme(requested, seed, params.get("biome"));
     const starshipSelected = starshipTransitTheme(surfaceSelected, seed, params.get("room"));
-    const selected = containmentUnderworldTheme(starshipSelected, seed, params.get("room"));
+    const selected = bastionFloorPilot(containmentUnderworldTheme(starshipSelected, seed, params.get("room")), params.get("floorpilot"));
     return Number.isFinite(worldSeed) ? arenaThemeVariant(selected, worldSeed) : selected;
   }
   // Derived from the run seed, never from Math.random(): an arena the player

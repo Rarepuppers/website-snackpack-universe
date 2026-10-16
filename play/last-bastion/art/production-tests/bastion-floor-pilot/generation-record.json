@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-16",
+  "generator": "built-in image_gen",
+  "assets": [
+    {
+      "file": "bastion-floor-pilot-a-source.png",
+      "prompt": "Create a square seamless tileable game floor texture, 1024x1024 if supported. Asset: Last Bastion quiet industrial floor pilot A. Orthographic straight top-down sci-fi navy charcoal metal flooring, modern restrained pixel art with crisp deliberate pixel clusters, flat broad service plates, extremely subtle wear, very low contrast joints, muted blue grey #172331 to #223244 palette. Designed to tile seamlessly on all four edges as the quiet backdrop underneath a busy action game. No perspective, no border or outer frame, no bevel tile rim, no bright highlights, no lights, no text, no symbols, no objects, no cables, no hazard stripes, no focal point. Full bleed opaque floor material. Sparse large quiet shapes, not a dense small checkerboard. Must read as walkable floor, never as a raised obstacle. Match a tense but colorful original sci-fi pixel-art game. This is a production raster tile, not a mockup or screenshot.",
+      "transparentBackground": false,
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2382376,
+      "sha256": "0bf382435169ad232fe4a3cb602a0bbe7e6936cabeb141b8a76e1e0090a7ebdb"
+    },
+    {
+      "file": "bastion-floor-pilot-b-source.png",
+      "prompt": "Create one seamless square tileable game texture: Last Bastion quiet industrial floor pilot B, alternate surface. Straight top-down orthographic modern pixel-art dark navy/charcoal broad metal service plates. Very subtle worn scuffs and one subdued repaired inset, very low contrast shallow seams, large quiet shapes with ample flat surface, controlled pixel clusters, no perspective, no raised objects, no frame, no outer rim, no glow, no bright lights, no symbols or text. Palette muted #172331 through #223244. Full bleed opaque, edge-to-edge seamless across all four sides. This is a walkable background beneath action-game characters and projectiles, not a hero asset. Match practical sci-fi industrial floor style. Prefer square 1024x1024. Avoid busy noise and small repetitive checkerboard.",
+      "transparentBackground": false,
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1744633,
+      "sha256": "1ef8d9749c87adbfb5e2c6c5a2cea038d4b3567714d412419246288868b2c62d"
+    },
+    {
+      "file": "bastion-scuff-pilot-source.png",
+      "prompt": "Create one transparent background game decal for Last Bastion: a sparse cluster of faint worn dark-blue grey scuff marks on a flat metal floor viewed directly overhead, modern restrained pixel art with deliberate pixel clusters. Centered compact irregular shallow abrasion, mostly empty transparent canvas with generous transparent margins. Very low contrast charcoal navy #243445 marks, no white highlights, no cast shadow, no raised debris, no object, no lighting, no glow, no text or symbols, no border, no puddle or hazard-like shape. Intended as a subtle walkable-floor surface detail beneath a top-down sci-fi action game. Single isolated decal, square canvas, not a sheet.",
+      "transparentBackground": true,
+      "width": 1254,
+      "height": 1254,
+      "bytes": 108813,
+      "sha256": "fc2d726e085a0027c5d972c580f0bd9a36b77e82bcd604e802d702f4c50b2c2e"
+    }
+  ]
+}

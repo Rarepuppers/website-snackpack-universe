@@ -75,6 +75,7 @@ const ROUTE_ONLY_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
 ]);
 
 const ARENA_ASSET_IDS: ReadonlySet<GameAssetId> = new Set([
+  "bastion-floor-pilot-a", "bastion-floor-pilot-b", "bastion-scuff-pilot",
   "arena-floor-v1",
   "arena-boundary-v1",
   "arena-obstacle-v1",

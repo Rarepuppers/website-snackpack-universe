@@ -19,6 +19,8 @@ export interface ArenaTheme {
   decalTexture: string | null;
   /** Optional contiguous frame window used by partitioned floor atlases. */
   floorFrameOffset?: number;
+  /** Review-only repeating material spans this many collision tiles; does not change world units. */
+  floorTileSpan?: number;
   floorFrameCount?: number;
   /** Optional deterministic decal pool for a room/biome subset. */
   decalFrames?: readonly number[];
@@ -354,4 +356,11 @@ function scaleRgb(color: number, multiplier: number): number {
   const green = Math.round(((color >>> 8) & 0xff) * multiplier);
   const blue = Math.round((color & 0xff) * multiplier);
   return (red << 16) | (green << 8) | blue;
+}
+
+/** Opt-in presentation pilot; never enters the normal theme pool. */
+export function bastionFloorPilot(theme: ArenaTheme, variant: string | null): ArenaTheme {
+  if (theme.id !== "bastion-standard" || (variant !== "a" && variant !== "b")) return theme;
+  return { ...theme, floorTexture: `bastion-floor-pilot-${variant}`, floorFrameCount: 1,
+    floorTileSpan: 4, decalTexture: "bastion-scuff-pilot", decalFrames: [0], readabilityWashAlpha: 0.04 };
 }

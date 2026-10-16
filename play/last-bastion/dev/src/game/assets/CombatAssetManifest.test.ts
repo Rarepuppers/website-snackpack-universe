@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { WorldObjectArtAssetId } from "../arena/WorldObjectCatalog";
-import { ARENA_THEMES, arenaThemeById } from "../rendering/arenaThemes";
+import { ARENA_THEMES, arenaThemeById, bastionFloorPilot } from "../rendering/arenaThemes";
 import { combatAssetsForSession } from "./CombatAssetManifest";
 import { GAME_ASSET_MANIFEST, type GameAssetId } from "./GameAssetManifest";
 
@@ -242,4 +242,19 @@ describe("combatAssetsForSession", () => {
     }).map((asset) => asset.id));
     for (const id of expected) expect(ids.has(id)).toBe(true);
   });
+});
+
+it("loads only an explicitly requested floor pilot without changing the production theme", () => {
+  const standard = arenaThemeById("bastion-standard")!;
+  const ids = (arenaTheme: typeof standard) => combatAssetsForSession({ arenaTheme, heroId: "marine", productionArt: true, helmet: false, worldObjectAssetIds: [] }).map(asset => asset.id);
+  expect(ids(standard)).not.toContain("bastion-floor-pilot-a");
+  expect(ids(standard)).not.toContain("bastion-floor-pilot-b");
+  expect(ids(standard)).not.toContain("bastion-scuff-pilot");
+  for (const variant of ["a", "b"]) {
+    const pilot = bastionFloorPilot(standard, variant);
+    expect(ids(pilot)).toContain(`bastion-floor-pilot-${variant}`);
+    expect(ids(pilot)).toContain("bastion-scuff-pilot");
+    expect(pilot.boundaryTexture).toBe(standard.boundaryTexture);
+  }
+  expect(bastionFloorPilot(standard, "invalid")).toBe(standard);
 });

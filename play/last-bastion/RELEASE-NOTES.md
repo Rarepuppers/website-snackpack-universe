@@ -1,5 +1,24 @@
 # Last Bastion release notes
 
+## 16 October 2026 — Full HD / 4K floor pilot
+
+**Release:** `web-2026.10.16-floor-pilot`
+
+**Status:** prepared locally; not deployed. This is an opt-in art review patch.
+
+- Two original floor candidates and a transparent scuff can be previewed with
+  `?screen=game&theme=bastion-standard&seed=61061&floorpilot=a` (or `b`).
+- Broad floor repeats preserve collision geometry and world scale. Normal sessions retain
+  the existing floor and do not download pilot textures.
+- Retained generation sources, prompts, hashes and a reproducible 213-entry runtime-manifest
+  inventory document the asset pipeline. Older claims about unused held weapons were corrected.
+- Baseline and both candidates have native 1920×1080 and 3840×2160 captures.
+
+Required verifier lanes pass: 1,776 unit tests, 29 browser checks, smoke/offline and published
+output checks, plus 28 desktop-host tests. Six capture checks and all 19 portfolio guards pass. Save schema remains 16.
+Runtime image optimization, floor-kit expansion and motion/hardware acceptance remain open;
+these captures do not establish 4K performance or final art acceptance.
+
 ## 15 October 2026 — reliability, controls and build inspection
 
 **Release:** `web-2026.10.15-controls`

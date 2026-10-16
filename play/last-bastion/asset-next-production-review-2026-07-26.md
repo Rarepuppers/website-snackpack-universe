@@ -1,5 +1,9 @@
 # Last Bastion next asset review — 26 July 2026
 
+> Inventory correction, 16 October 2026: current code enables `HELD_WEAPONS_IN_POOL` and
+> contains live world-object rendering. Historical availability statements below are not current
+> release gates. See the game-root `ASSET-INVENTORY-NOTES.md` and current code before commissioning art.
+
 > **Storefront priority complete, 11 October 2026:** the arcade tile, guide screenshots,
 > social share card, and short WebM loop exist and are wired into their pages. The
 > 11 September priority list below is historical. Further game art follows observed

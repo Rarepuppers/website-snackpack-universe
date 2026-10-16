@@ -510,3 +510,17 @@ for (const action of ["evade", "pause"]) {
     await page.waitForFunction(() => window.__combatAccessibilityAudit?.paused === false);
   });
 }
+
+for (const variant of ["a", "b"]) {
+  test(`floor pilot ${variant} boots through its real texture loader`, async ({ page }) => {
+    const failures = [];
+    page.on("pageerror", error => failures.push(error.message));
+    const loaded = [];
+    page.on("response", response => { if (response.url().includes("pilot") && response.url().endsWith(".png")) loaded.push({ url: response.url(), status: response.status() }); });
+    await page.goto(`/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=${variant}`);
+    await page.waitForFunction(() => window.__combatAccessibilityAudit !== undefined);
+    expect(loaded.some(row => row.url.includes(`floor-pilot-${variant}-source`) && row.status === 200)).toBe(true);
+    expect(loaded.some(row => row.url.includes("scuff-pilot-source") && row.status === 200)).toBe(true);
+    expect(failures).toEqual([]);
+  });
+}

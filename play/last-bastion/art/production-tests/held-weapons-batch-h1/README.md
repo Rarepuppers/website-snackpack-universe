@@ -1,5 +1,9 @@
 # Held Weapons Batch H1
 
+> Inventory correction, 16 October 2026: current code enables `HELD_WEAPONS_IN_POOL` and
+> contains live world-object rendering. Historical availability statements below are not current
+> release gates. See the game-root `ASSET-INVENTORY-NOTES.md` and current code before commissioning art.
+
 Production candidate atlases for the six behavior-live held weapons currently held out of the chest pool pending art/audio acceptance.
 
 ## Atlas contract

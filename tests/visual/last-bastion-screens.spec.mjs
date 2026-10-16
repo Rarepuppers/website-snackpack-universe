@@ -32,6 +32,8 @@ const VIEWPORTS = [
  * screen here boots from a single URL, which is what makes this cheap.
  */
 const SCREENS = [
+  { id: "floor-pilot-a", route: "/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=a", note: "Quiet floor pilot A; candidate only" },
+  { id: "floor-pilot-b", route: "/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=b", note: "Quiet floor pilot B; candidate only" },
   { id: "settings", route: "/play/last-bastion/?flow=settings", note: "Grouped settings fit above footer" },
   { id: "build", route: "/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&pausepreview=build", note: "Paged build inspection" },
   { id: "affinity", route: "/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&pausepreview=build", keys: ["ArrowLeft"], note: "Affinity thresholds and consequences" },
