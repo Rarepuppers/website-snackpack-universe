@@ -29,6 +29,13 @@ Keep the content freeze until observed play and live measurement justify expansi
 - Earlier layout captures remain in `playtest-evidence/2026-10-15-screens-auto/`. They predate the
   follow-up label changes and are layout evidence, not final screenshots of every current label.
 
+## Remaining work requires release or physical-device acceptance
+
+The code/assets checkpoint is complete. The [release handoff](RELEASE-HANDOFF-2026-10-16.md)
+assigns the remaining human/device/build/deployment gates and records existing build commands.
+Four further dense browser cases passed across all palettes and HUD scales 0.8–1.2 at 1080p/4K;
+see [sampled evidence](playtest-evidence/2026-10-16-polish-review/README.md). These are not Runs 1–5.
+
 ## 1. Deploy and verify the browser release — open
 
 - [ ] Obtain an explicit deployment request: Mark's standing instruction is **do not push unless asked**.

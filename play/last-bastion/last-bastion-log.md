@@ -5143,3 +5143,12 @@ All game verification lanes passed (1,777 unit, 30 browser, 28 desktop-host). No
 or desktop packaging. Manual acceptance remains explicit in CURRENT-PLAN.
 
 Final portfolio verification: all 19 guards passed on 16 October for this patch.
+
+
+## 16 October 2026 — dense presentation follow-through and release handoff
+
+Four extra keyboard-driven stress checks passed across all colour-vision modes, 1080p/4K,
+HUD scales 0.8–1.2 and radar scales 0.75–1.25. Real HUD clicks opened the affinity inspector.
+Captures/JSON are retained in `playtest-evidence/2026-10-16-polish-review/`. No runtime change
+was needed. RELEASE-HANDOFF records remaining human/device checks, Claude build ownership
+and explicit deployment authorization. These samples do not close the five-run gate.

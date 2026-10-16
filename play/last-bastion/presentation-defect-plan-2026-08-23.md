@@ -1,8 +1,10 @@
 # Last Bastion — presentation defect plan and playtest-gate revision
 
-> **Current status, 11 October 2026:** most code-owned fixes shipped. LB-04 helmet
+> **Current status, 16 October 2026:** code-owned fixes and the asset-polish checkpoint are implemented. LB-04 helmet
 > registration and LB-07 map iconography still need observed acceptance, along with
-> the five-run presentation lane. Use [the current plan](CURRENT-PLAN.md) for order.
+> the five-run presentation lane. Map states now have focus brackets, READY labels and barred
+> closed-route badges; new sampled browser evidence does not close human acceptance.
+> Use [the current plan](CURRENT-PLAN.md) for order.
 
 **Created:** 23 August 2026
 **Trigger:** first creator-observed local run against `local-playtest-plan-2026-08-21.md`.

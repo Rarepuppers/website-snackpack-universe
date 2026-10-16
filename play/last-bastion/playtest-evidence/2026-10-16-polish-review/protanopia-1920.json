@@ -1,0 +1,17 @@
+{
+  "palette": "protanopia",
+  "width": 1920,
+  "height": 1080,
+  "scale": 0.8,
+  "radar": 0.75,
+  "initial": {
+    "x": 22.5,
+    "y": 12.65625
+  },
+  "moved": {
+    "x": 26.762999999999977,
+    "y": 10.524750000000012
+  },
+  "errors": [],
+  "evidence": "2.4-second keyboard-driven stress sample; no human/hardware acceptance"
+}
