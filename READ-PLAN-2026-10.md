@@ -97,10 +97,13 @@ size: if multi-book sessions grew, scale up; if not, stop at 12 quick reads.
 1. **Pocketful of Sounds art.** `ted-e-bear-pocketful-of-sounds` (app1, free,
    rated excellent) has a cover and 1 of 8 pages illustrated. Commission 7
    interiors, or decide on a text-led read-aloud format.
-2. **ABC book text.** The 5 free alphabet books fail the quality bar in the
-   *app*. Panda-Cake's pages say "his" under a "Her ABCs" subtitle, some entries
-   are fragments, and French-Toast/Wise Owl are remixed Ted-E-Bear sentences.
-   Fix `apps/snackpack-1-abcs-alphabet/constants/alphabet.ts` first.
+2. **ABC book art (text fixed 2026-10-16).** The text of the 5 free alphabet
+   books is fixed in the app (see B4). They are still blocked by rule 2 below:
+   only 7–8 of 26 letters per book have art (Panda-Cake 8, Eggs-Benedict 7,
+   Meow-inara 8, French-Toast 8, Wise Owl 8). Choose one: commission about 90
+   letter images through Codex; publish a 26-letter page where unillustrated
+   letters show the large letter and the emoji (an exception to rule 2); or
+   publish only the illustrated letters as a short "taster" of each book.
 3. **Basic Math content fixes** (proposed as their own task). Pork-ulele's
    page 1 clock shows the wrong time; Wise Owl's page 1 question and page 2
    prime explanation are wrong; Ted-E-Bear's Lantern and Booklava change
@@ -165,7 +168,7 @@ and run `scripts/notify-search-engines.mjs <urls>`.
 | Book | Source | Reason |
 |---|---|---|
 | Pocketful of Sounds | app1 featured, free | 1/8 pages illustrated |
-| 5 ABC books | app1, free | text quality (pronouns, fragments, remixes) |
+| 5 ABC books | app1, free | text fixed 2026-10-16 (`f2e21e7d5`); art covers only 7–8 of 26 letters per book, so it waits on Mark's art decision (Open: needs Mark, item 2) |
 | Pork-ulele's Clockwork Concert | app4, free | page 1 clock shows 4:15 for "quarter past three" |
 | Wise Owl and the Festival of Factors | app4, free | page 1 question wording; page 2 prime explanation |
 | Ted-E-Bear's Lantern; Booklava's Number Nest | app4, free | character designs change mid-book |
