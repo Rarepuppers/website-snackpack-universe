@@ -18,7 +18,8 @@
 //   node scripts/import-zoo-book.mjs --id=animal-architects           # dry run + provenance check
 //   node scripts/import-zoo-book.mjs --id=animal-architects --write
 //
-// Then, as for every book: build-webp, build-read-pdfs --slug=<slug> --write,
+// Then, as for every book: build-webp (wraps each <img> in a <picture> where
+// it makes a WebP), build-read-pdfs --slug=<slug> --write,
 // build-read-responsive, add the book to SHELF in build-read-shelf.mjs and run
 // it, build-read-social-cards.py, build-breadcrumbs, build-play-links,
 // build-go-links, build-sitemap.
@@ -119,10 +120,10 @@ const HEADER = TEMPLATE.slice(TEMPLATE.indexOf('<header class="topbar">'), TEMPL
 const url = `${SITE}/read/${ed.slug}/`;
 const [main, sub] = book.title.split(/: /);
 const sizes = Object.fromEntries(files.map((f) => [f, jpegSize(fs.readFileSync(path.join(ART, f)))]));
-const pic = (f, alt, lazy) => {
-  const base = f.replace(/\.jpg$/, "");
-  return `<picture><source srcset="./pages/${base}.webp" type="image/webp"><img src="./pages/${f}" alt="${esc(alt)}" width="${sizes[f].w}" height="${sizes[f].h}"${lazy ? ' loading="lazy"' : ""}></picture>`;
-};
+// Plain <img>: build-webp wraps it in a <picture> only when it actually makes a
+// WebP (it skips images under 120 KB), so no <source> can point at a missing file.
+const pic = (f, alt, lazy) =>
+  `<img src="./pages/${f}" alt="${esc(alt)}" width="${sizes[f].w}" height="${sizes[f].h}"${lazy ? ' loading="lazy"' : ""}>`;
 const cards = book.pages.map((p, i) =>
   `<article class="story-page-card" id="page-${p.n}">${pic(files[i + 1], p.alt, true)}<div class="story-page-copy"><span>Page ${p.n} of ${book.pages.length}</span><p>${esc(curly(p.text))}</p></div></article>`
 ).join("\n");
@@ -149,7 +150,7 @@ ${SHARED}</head>
 ${HEADER}<main>
 <section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">Animal fact book · Free</span><h1>${esc(main)}${sub ? `<br>${esc(sub)}` : ""}</h1><p class="lead">${esc(ed.lead)}</p><div class="tag-row"><span class="tag">Read together</span><span class="tag">Animal homes</span><span class="tag">9 pages</span></div><a class="btn btn-primary" href="#page-1">Begin the story</a></div>${pic(files[0], "", false)}</div></section>
 
-<section class="story-pages story-pages-landscape" aria-label="Story pages">
+<section class="story-pages story-pages-landscape story-pages-natural" aria-label="Story pages">
 ${cards}
 </section>
 

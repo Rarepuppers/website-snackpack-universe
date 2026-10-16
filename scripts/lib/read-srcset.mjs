@@ -60,8 +60,11 @@ export function srcsetFor(absWebp, urlNoExt) {
 
 // The full <source> tag for a picture: responsive when variants exist,
 // otherwise the plain single-file form the page used before.
+// No WebP at all (build-webp skips art under 120 KB) means no <source>, so the
+// browser uses the <img> rather than a missing file.
 export function sourceTag(absWebp, urlNoExt, sizesKey) {
-  const set = fs.existsSync(absWebp) ? srcsetFor(absWebp, urlNoExt) : null;
+  if (!fs.existsSync(absWebp)) return "";
+  const set = srcsetFor(absWebp, urlNoExt);
   return set
     ? `<source srcset="${set}" sizes="${SIZES[sizesKey]}" type="image/webp">`
     : `<source srcset="${urlNoExt}.webp" type="image/webp">`;

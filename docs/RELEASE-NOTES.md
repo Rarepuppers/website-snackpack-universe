@@ -5,6 +5,23 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-16 — Animal Architects, the first animal fact book
+
+- **Animal Architects: Built by Nature**, from SnackPack Zoo World: nine pages on
+  how beavers, honeybees, weaverbirds, rabbits, octopuses, meerkats and ants
+  build their homes, and the problem each home solves. Free, with Read to me,
+  one-page mode, a printable PDF and a question at the end.
+- Every picture is original SnackPack art. Most Zoo World books use stock
+  wildlife photos, which this shelf does not republish, so six new pages were
+  made for this book. The importer refuses any page that isn't recorded as
+  original art.
+- The facts are checked against the Smithsonian National Zoo, the US
+  Geological Survey and the San Diego Zoo, linked at the end of the book.
+- A new **Animal fact books** group and an **Animals** filter on the bookshelf.
+  The pictures show at their full shape, uncropped.
+- Fix: a book cover small enough to skip its WebP copy no longer leaves the
+  bookshelf card pointing at a missing image.
+
 ## 2026-10-16 — Correct US grades on the number stories
 
 - The four number stories gave the wrong US grade beside the UK year: they

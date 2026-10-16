@@ -36,6 +36,7 @@ const GROUPS = [
   { id: "trail", title: "Reading Trail · next steps", intro: "Six read-together stories that carry on after Stage 3: short-vowel review, sh/ch/th/wh, blends, magic e, vowel teams and word endings." },
   { id: "short", title: "Short reads · four-page stories", intro: "Quick illustrated stories to read together, with a talk prompt on every page and a question at the end: friendship and kindness, adventures and mysteries, nature and the night sky." },
   { id: "numbers", title: "Number stories · maths on every page", intro: "Illustrated maths stories with a question on every page, from counting to factors and primes. Tap an answer to check it, or print the book and work on paper." },
+  { id: "animals", title: "Animal fact books · real science, original art", intro: "Read-together animal books from SnackPack Zoo World, every fact checked against zoo and science sources, every picture made for the book." },
   { id: "more", title: "More stories", intro: "Read-together stories." }
 ];
 
@@ -77,7 +78,10 @@ const SHELF = [
   { slug: "biscuit-bouncers-parcel-parade", group: "numbers", age: [6, 8], added: "2026-10-15", title: "Biscuit‑Bouncer and the Parcel Parade", eyebrow: "Year 2 · add, subtract, measure · 9 pages", blurb: "The fastest route misses the quiet homes. Biscuit-Bouncer and Ginger-Deer find a better one, sum by sum.", cover: "pages/cover", ext: "jpg", alt: "Biscuit-Bouncer and the Parcel Parade book cover.", w: 1024, h: 1536 },
   { slug: "hop-tarts-stepping-stone-switch", group: "numbers", age: [7, 9], added: "2026-10-15", title: "Hop‑Tart and the Stepping‑Stone Switch", eyebrow: "Year 3 · times tables · 4 pages", blurb: "A current twists the stepping stones. Hop-Tart builds a path that waits for Centi-Peed.", cover: "pages/cover", ext: "jpg", alt: "Hop-Tart and the Stepping-Stone Switch book cover.", w: 1024, h: 1536 },
   { slug: "centi-peeds-below-zero-burrow", group: "numbers", age: [8, 10], added: "2026-10-15", title: "Centi‑Peed and the Below‑Zero Burrow", eyebrow: "Year 4 · negative numbers · 4 pages", blurb: "Firefly footprints lead below zero. Centi-Peed and Sub-Zero count every step through the cold.", cover: "pages/cover", ext: "jpg", alt: "Centi-Peed and the Below-Zero Burrow book cover.", w: 1024, h: 1536 },
-  { slug: "wise-owl-festival-of-factors", group: "numbers", age: [9, 11], added: "2026-10-16", title: "Wise Owl and the Festival of Factors", eyebrow: "Year 5 · factors and primes · 4 pages", blurb: "Twenty-four flags and a gatepost in the way. Wise Owl and Booklava find more than one right answer.", cover: "pages/cover", ext: "jpg", alt: "Wise Owl and the Festival of Factors book cover.", w: 1024, h: 1536 }
+  { slug: "wise-owl-festival-of-factors", group: "numbers", age: [9, 11], added: "2026-10-16", title: "Wise Owl and the Festival of Factors", eyebrow: "Year 5 · factors and primes · 4 pages", blurb: "Twenty-four flags and a gatepost in the way. Wise Owl and Booklava find more than one right answer.", cover: "pages/cover", ext: "jpg", alt: "Wise Owl and the Festival of Factors book cover.", w: 1024, h: 1536 },
+  // Animal fact books (READ-PLAN B3): Zoo World books with fully original art
+  // only, via scripts/import-zoo-book.mjs. Ages follow the app's 6-10 audience.
+  { slug: "animal-architects", group: "animals", age: [6, 9], added: "2026-10-16", title: "Animal Architects: Built by Nature", eyebrow: "Animal fact book · 9 pages", blurb: "Beavers, bees, weaverbirds, rabbits, octopuses and meerkats each build a home that solves a different problem.", cover: "pages/animal-architects-cover", ext: "jpg", alt: "A beaver building a dam and lodge in a sunlit woodland river.", w: 900, h: 600 }
 ];
 
 const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty"];
@@ -93,8 +97,8 @@ function card(b, i) {
 // Bookshelf filters (READ-PLAN C2). The buttons are rendered `hidden` and only
 // revealed by read/shelf-filter.js, so without JavaScript the whole shelf shows
 // and nothing on the page pretends to work.
-const KIND = { "stage-1": "phonics", "stage-2": "phonics", "stage-3": "phonics", trail: "phonics", short: "stories", numbers: "maths", more: "stories" };
-const KINDS = [["phonics", "Phonics"], ["stories", "Stories"], ["maths", "Maths"]];
+const KIND = { "stage-1": "phonics", "stage-2": "phonics", "stage-3": "phonics", trail: "phonics", short: "stories", numbers: "maths", animals: "animals", more: "stories" };
+const KINDS = [["phonics", "Phonics"], ["stories", "Stories"], ["maths", "Maths"], ["animals", "Animals"]];
 const AGES = [["3-4", "Ages 3–4"], ["5-6", "5–6"], ["7-8", "7–8"], ["9-10", "9–10"]];
 function filterBar() {
   const btn = (attr, val, label, on) => `<button type="button" class="read-filter-btn" ${attr}="${val}" aria-pressed="${on}">${label}</button>`;
@@ -246,7 +250,7 @@ write("read/index.html", hub);
 // and an educationalAlignment (subject, phonics stage or school year, and what
 // the book teaches, reusing the importer's "about"). Merged into the existing
 // object, so the importer-owned fields stay as they are.
-const SUBJECT = { phonics: "Phonics", stories: "Reading", maths: "Mathematics" };
+const SUBJECT = { phonics: "Phonics", stories: "Reading", maths: "Mathematics", animals: "Science" };
 // UK phonics timing, matching the ages on the shelf filters (C2).
 // UK years only: they do not map one-to-one onto US grades (Reception is
 // nearer Pre-K than Kindergarten), and the site is written for en-GB.
