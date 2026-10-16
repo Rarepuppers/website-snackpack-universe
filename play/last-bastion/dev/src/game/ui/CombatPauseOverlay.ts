@@ -91,9 +91,9 @@ export class CombatPauseOverlay {
     this.render();
   }
 
-  showBuild(): void {
+  showBuild(affinity = false): void {
     this.mode = "build";
-    this.buildPage = 0;
+    this.buildPage = affinity ? Math.max(0, buildPages(this.callbacks.getBuild()).findIndex(page => page.title === "TRANSFORMATION AFFINITY")) : 0;
     this.selection = 0;
     this.render();
   }
@@ -148,7 +148,7 @@ export class CombatPauseOverlay {
 
     const startY = this.mode === "settings" ? 104 : this.mode === "root" ? 126 : 164;
     const rowHeight = this.mode === "settings"
-      ? this.entries.length > 13 ? 25 : 28
+      ? Math.min(28, (height - 200) / Math.max(1, this.entries.length - 1))
       : this.mode === "root" ? 43 : 50;
     const rowRects: Phaser.GameObjects.Rectangle[] = [];
     this.entries.forEach((entry, index) => {
@@ -240,6 +240,7 @@ export class CombatPauseOverlay {
       this.toggle("SCREEN SHAKE", "screenShakeEnabled", settings.screenShakeEnabled),
       this.toggle("REDUCED FLASH", "reducedFlashEnabled", settings.reducedFlashEnabled),
       this.toggle("DAMAGE NUMBERS", "damageNumbersEnabled", settings.damageNumbersEnabled),
+      this.toggle("AFFINITY INDICATOR", "affinityHudEnabled", settings.affinityHudEnabled),
       this.toggle("SOUND", "soundEnabled", settings.soundEnabled),
       this.choice("MASTER VOLUME", "masterVolume", settings.masterVolume, [0, 0.25, 0.5, 0.75, 1]),
       this.choice("SFX VOLUME", "sfxVolume", settings.sfxVolume, [0, 0.25, 0.5, 0.75, 1]),
@@ -282,7 +283,7 @@ export class CombatPauseOverlay {
 
   private toggle(
     label: string,
-    key: "screenShakeEnabled" | "reducedFlashEnabled" | "damageNumbersEnabled" | "soundEnabled" | "highContrastOutlinesEnabled",
+    key: "affinityHudEnabled" | "screenShakeEnabled" | "reducedFlashEnabled" | "damageNumbersEnabled" | "soundEnabled" | "highContrastOutlinesEnabled",
     value: boolean,
   ): MenuEntry {
     const activate = () => this.callbacks.onSettingsChanged({ [key]: !this.callbacks.getSettings()[key] });

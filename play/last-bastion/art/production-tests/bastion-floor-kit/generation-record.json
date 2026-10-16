@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-16",
+  "tool": "builtin image_gen",
+  "sources": [
+    {
+      "file": "floor-kit-source.png",
+      "prompt": "Create one production sprite atlas for Last Bastion: EXACTLY 8 square floor tiles in a tight 4-column 2-row grid, no gaps, no outer border, ideally 2048x1024. Reference image is STYLE ONLY for dark navy charcoal industrial metal; do not copy its seam pattern. Top-down orthographic modern pixel-art coherent clustered edges, broad quiet flat surfaces, subtle texture, extremely low contrast details. Each cell is its own 512x512 tile. EVERY TILE MUST HAVE THE SAME flat dark navy outermost 32 pixel band (approx RGB 26,39,49), no lines entering edges, so any tile joins any other in any order. Eight interiors in reading order: clean service plate, softly worn plate, broad plate with inset joint, flush patched plate, subtle recessed cable channel, tiny flush vent inset, recessed shallow joint, scuffed plate. All details kept inside inner 75 percent. Absolutely no raised objects, cast shadows, text, labels, logos, glows, loot dots, hazard marks, debris or UI. Consistent brightness and flat lighting across all 8 cells. This is game floor art designed to stay visually subordinate to bright enemies and projectiles.",
+      "transparent": false,
+      "bytes": 1836974,
+      "sha256": "f65e4c7397e70a7a7bb1d463ac215d8be89177d9540045a4d0c7b2d7c3b65eea",
+      "pixelWidth": 1774,
+      "pixelHeight": 887
+    },
+    {
+      "file": "decal-kit-source.png",
+      "prompt": "Production transparent sprite atlas for Last Bastion, EXACTLY four isolated flat ground wear decals in a 2x2 grid, square canvas 1024x1024 preferred. Genuine transparent background, all four decals have generous transparent padding inside their cells and never touch cell edges. Reading order: small irregular charcoal scuff; a few fine hairline dark cracks; faint desaturated brown oil stain; tiny sparse inert grey metal flakes. Strict top-down orthographic pixel-art clustered texture consistent with navy industrial floor. Low contrast, restrained dark grey palette, no glow, text, labels, outlines, UI, shadows, rings, blood, large objects or loot-like bright spots. Each mark small and sparse at centre of its cell. No visible background colour and no grid lines. This is one atlas artwork, four independent decals.",
+      "transparent": true,
+      "bytes": 210489,
+      "sha256": "85410c7d5c2b7b1d5a604c693034b1c29bc9d951edd6690384fe12bfbb39f28d",
+      "pixelWidth": 1254,
+      "pixelHeight": 1254
+    }
+  ],
+  "derivatives": "dev/scripts/prepare-floor-runtime.ps1: deterministic box downsampling; originals untouched"
+}

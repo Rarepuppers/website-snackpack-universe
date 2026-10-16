@@ -1,6 +1,8 @@
-import floorPilotAUrl from "../../../../art/production-tests/bastion-floor-pilot/bastion-floor-pilot-a-source.png";
-import floorPilotBUrl from "../../../../art/production-tests/bastion-floor-pilot/bastion-floor-pilot-b-source.png";
-import floorScuffUrl from "../../../../art/production-tests/bastion-floor-pilot/bastion-scuff-pilot-source.png";
+import floorKitUrl from "../../../../art/production-tests/bastion-floor-kit/floor-kit-runtime.png";
+import decalKitUrl from "../../../../art/production-tests/bastion-floor-kit/decal-kit-runtime.png";
+import floorPilotAUrl from "../../../../art/production-tests/bastion-floor-pilot/floor-pilot-a-runtime.png";
+import floorPilotBUrl from "../../../../art/production-tests/bastion-floor-pilot/floor-pilot-b-runtime.png";
+import floorScuffUrl from "../../../../art/production-tests/bastion-floor-pilot/scuff-pilot-runtime.png";
 import marineBaseSheetUrl from "../../../../art/production-tests/marine-base-spritesheet-v1-96.png";
 import marineHelmetSheetUrl from "../../../../art/production-tests/marine-bastion-helmet-overlay-v1-96.png";
 import serviceRifleUrl from "../../../../art/production-tests/legacy-weapon-refresh/service-rifle-gameplay-v2-256x128.png";
@@ -292,6 +294,8 @@ export type GameAssetId =
   | "scuttler-v1"
   | "egg-cluster-v1"
   | "brain-blob-v1"
+  | "bastion-floor-kit"
+  | "bastion-decal-kit"
   | "bastion-floor-pilot-a"
   | "bastion-floor-pilot-b"
   | "bastion-scuff-pilot"
@@ -544,9 +548,11 @@ export const GAME_ASSET_MANIFEST: readonly GameAssetDefinition[] = Object.freeze
   sheet("scuttler-v1", runtimeImageUrl(scuttlerSheetUrl, scuttlerSheetWebpUrl), 64, 64, 8, 0.5, 0.5, 256, 256),
   sheet("egg-cluster-v1", runtimeImageUrl(eggClusterSheetUrl, eggClusterSheetWebpUrl), 64, 64, 4, 0.5, 0.5, 256, 256),
   sheet("brain-blob-v1", brainBlobSheetUrl, 64, 64, 4, 0.5, 0.5, 256, 256),
-  sheet("bastion-floor-pilot-a", floorPilotAUrl, 256, 256, 1, 0.5, 0.5, 1254, 1254),
-  sheet("bastion-floor-pilot-b", floorPilotBUrl, 256, 256, 1, 0.5, 0.5, 1254, 1254),
-  sheet("bastion-scuff-pilot", floorScuffUrl, 64, 64, 1, 0.5, 0.5, 1254, 1254),
+  sheet("bastion-floor-kit", floorKitUrl, 128, 128, 8, 0.5, 0.5, 256, 256),
+  sheet("bastion-decal-kit", decalKitUrl, 64, 64, 4, 0.5, 0.5, 256, 256),
+  sheet("bastion-floor-pilot-a", floorPilotAUrl, 256, 256, 1, 0.5, 0.5, 512, 512),
+  sheet("bastion-floor-pilot-b", floorPilotBUrl, 256, 256, 1, 0.5, 0.5, 512, 512),
+  sheet("bastion-scuff-pilot", floorScuffUrl, 64, 64, 1, 0.5, 0.5, 256, 256),
   sheet("arena-floor-v1", arenaFloorSheetUrl, 64, 64, 6, 0.5, 0.5),
   sheet("arena-boundary-v1", arenaBoundarySheetUrl, 64, 64, 8, 0.5, 0.5),
   sheet("arena-obstacle-v1", arenaObstacleSheetUrl, 96, 96, 8, 0.5, 0.5),

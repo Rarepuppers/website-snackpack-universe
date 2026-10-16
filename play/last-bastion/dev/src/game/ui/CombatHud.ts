@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { affinityHudModel } from "./AffinityHudModel";
 import type { CombatScenario, CombatSnapshot, PowerupType } from "../combat/CombatSimulation";
 import { DAMAGE_TYPE_COLOURS } from "../combat/damageTypes";
 import {
@@ -56,6 +57,8 @@ interface StatusTrayView {
 
 export class CombatHud {
   private readonly scene: Phaser.Scene;
+  private readonly affinityText: Phaser.GameObjects.Text;
+  private readonly affinityPanel: Phaser.GameObjects.Rectangle;
   private readonly healthFill: Phaser.GameObjects.Rectangle;
   private readonly bonusHealthFill: Phaser.GameObjects.Rectangle;
   private readonly shieldFill: Phaser.GameObjects.Rectangle;
@@ -111,6 +114,8 @@ export class CombatHud {
     uiScale: 0.8 | 1 | 1.2 = 1,
     colorVisionMode: ColorVisionMode = "standard",
     onPowerupInspect: (type: PowerupType | null) => void = () => {},
+    private readonly affinityHudEnabled = true,
+    onAffinityInspect: () => void = () => {},
   ) {
     const hudChildrenStart = scene.children.list.length;
     this.scene = scene;
@@ -201,6 +206,12 @@ export class CombatHud {
       .setStrokeStyle(1, 0x68e4e8).setDepth(2000);
     this.fireModeText = scene.add.text(safe.right - 40 * s, fireModeY, "", hudText("#68e4e8", "9px"))
       .setOrigin(0.5).setDepth(2001);
+
+    this.affinityPanel = scene.add.rectangle(safe.right - 123 * s, fireModeY + 38 * s, 246 * s, 40 * s, 0x0b121c, 0.88).setStrokeStyle(1, 0x52677b).setDepth(2000).setVisible(false)
+      .setInteractive({ useHandCursor: true }).on("pointerdown", onAffinityInspect);
+    this.affinityText = scene.add.text(safe.right - 6 * s, fireModeY + 22 * s, "", {
+      ...hudText("#c7d6e4", "9px"), align: "right", lineSpacing: 4,
+    }).setOrigin(1, 0).setDepth(2001).setVisible(false);
 
     const actionDefinitions = [
       { label: "ROLL", binding: keyboardBindingLabel(bindings.keyboard.evade), color: 0x68e4e8, frame: 0 },
@@ -307,6 +318,13 @@ export class CombatHud {
     activeEffectCount: number,
     performanceLabel = "",
   ): void {
+    const affinity = this.affinityHudEnabled ? affinityHudModel(snapshot.transformation) : null;
+    this.affinityPanel.setVisible(affinity !== null);
+    this.affinityText.setVisible(affinity !== null);
+    if (affinity) {
+      this.affinityText.setText(`${affinity.title}\n${affinity.detail}`);
+      this.affinityText.setScale(Math.min(1, 234 * this.uiScale / Math.max(1, this.affinityText.width)));
+    }
     // Clamped: without this the fill scales past 1 and overflows its frame the
     // moment health can exceed maximum (see the overheal note in the plan).
     const bars = healthBarView(

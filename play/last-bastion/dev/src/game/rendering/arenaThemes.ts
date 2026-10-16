@@ -360,7 +360,9 @@ function scaleRgb(color: number, multiplier: number): number {
 
 /** Opt-in presentation pilot; never enters the normal theme pool. */
 export function bastionFloorPilot(theme: ArenaTheme, variant: string | null): ArenaTheme {
-  if (theme.id !== "bastion-standard" || (variant !== "a" && variant !== "b")) return theme;
+  if (theme.id !== "bastion-standard") return theme;
+  if (variant === "kit") return { ...theme, floorTexture: "bastion-floor-kit", floorFrameCount: 8, floorTileSpan: 4, decalTexture: "bastion-decal-kit", decalFrames: [0, 1, 2, 3], readabilityWashAlpha: 0.04 };
+  if (variant !== "a" && variant !== "b") return theme;
   return { ...theme, floorTexture: `bastion-floor-pilot-${variant}`, floorFrameCount: 1,
     floorTileSpan: 4, decalTexture: "bastion-scuff-pilot", decalFrames: [0], readabilityWashAlpha: 0.04 };
 }

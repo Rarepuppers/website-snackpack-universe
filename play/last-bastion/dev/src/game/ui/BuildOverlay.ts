@@ -2,6 +2,7 @@ import { RELIC_CATALOG, ARTIFACT_CATALOG } from "../content/relicCatalog";
 import { PERK_CATALOG } from "../perks/perkCatalog";
 import { createTransformationCodexSnapshot } from "../transformations/TransformationSnapshot";
 import { TRANSFORMATION_COMMIT_AFFINITY, TRANSFORMATION_ASCEND_AFFINITY, TRANSFORMATION_APEX_AFFINITY } from "../transformations/TransformationAffinity";
+import { transformationChoiceById } from "../transformations/TransformationChoiceCatalog";
 import type { BuildViewModel } from "../build/BuildViewModel";
 
 /** Read-only presentation contract; scene wiring can mount this in combat, map, or pause. */
@@ -26,8 +27,13 @@ export function buildOverlayModel(view: BuildViewModel): BuildOverlayModel {
     affinityLines: [
       `Commit ${TRANSFORMATION_COMMIT_AFFINITY} / Ascend ${TRANSFORMATION_ASCEND_AFFINITY} / Apex ${TRANSFORMATION_APEX_AFFINITY} affinity`,
       "Committing locks other paths. Their exposure is retained.",
-      ...createTransformationCodexSnapshot(view.transformation).paths.map(path =>
-        `${path.name}: ${path.affinity} (${path.stage})${path.committed ? " - committed" : view.transformation.committedPathId ? " - inactive" : ""}`),
+      ...createTransformationCodexSnapshot(view.transformation).paths.flatMap(path => [
+        `${path.name}: ${path.affinity} (${path.stage})${path.committed ? " - committed" : view.transformation.committedPathId ? " - inactive" : ""}`,
+        ...path.choices.flatMap(choice => {
+          const definition = transformationChoiceById(choice.id);
+          return [`${choice.name} rank ${choice.rank}: ${definition.boon.summary}`, `Cost: ${definition.scar.summary}`];
+        }),
+      ]),
     ],
     statLines: [
       `Damage ${view.effectiveStats.damagePercent}%`,
@@ -52,10 +58,22 @@ export function buildPages(build: BuildOverlayModel): BuildPage[] {
     ["COMBAT STATS", build.statLines], ["RELICS / ARTIFACT", build.relicLines],
     ["SYNERGIES", build.synergyLines], ["TRANSFORMATION AFFINITY", build.affinityLines],
   ] as const;
-  return sections.flatMap(([title, lines]) => {
+  return sections.flatMap(([title, sourceLines]) => {
+    // Reserve physical rows for wrapped copy so long catalogue names never overlap.
+    const lines = sourceLines.flatMap(line => {
+      const words = line.split(/\s+/);
+      const rows: string[] = [];
+      let row = "";
+      for (const word of words) {
+        if (row && row.length + word.length + 1 > 62) { rows.push(row); row = ""; }
+        row += `${row ? " " : ""}${word}`;
+      }
+      if (row) rows.push(row);
+      return rows;
+    });
     const pages: BuildPage[] = [];
     for (let i = 0; i < Math.max(1, lines.length); i += 6) {
-      pages.push({ title: title === "TRANSFORMATION AFFINITY" ? title : `${title} (${lines.length})`, lines: lines.length ? lines.slice(i, i + 6) : ["None yet"] });
+      pages.push({ title: title === "TRANSFORMATION AFFINITY" ? title : `${title} (${sourceLines.length})`, lines: lines.length ? lines.slice(i, i + 6) : ["None yet"] });
     }
     return pages;
   });

@@ -445,6 +445,8 @@ export class PrototypeScene extends Phaser.Scene {
       this.settings.uiScale,
       this.settings.colorVisionMode,
       (type) => { this.hoveredHudPowerupType = type; },
+      this.settings.affinityHudEnabled,
+      () => { this.openPauseMenu(); this.pauseOverlay.showBuild(true); },
     );
     this.inspectCard = new InspectCard(this);
     this.synth.setVolume(this.settings.masterVolume * this.settings.sfxVolume);
@@ -689,12 +691,15 @@ export class PrototypeScene extends Phaser.Scene {
     }
     const rebuildHud = partial.uiScale !== undefined
       || partial.radarSize !== undefined
-      || partial.colorVisionMode !== undefined;
+      || partial.colorVisionMode !== undefined
+      || partial.cooldownTimersEnabled !== undefined
+      || partial.affinityHudEnabled !== undefined;
     this.settings = this.saveStore.updateSettings(partial).settings;
     this.synth.enabled = this.settings.soundEnabled;
     this.synth.setVolume(this.settings.masterVolume * this.settings.sfxVolume);
     this.haptics.setStrength(this.settings.gamepadVibrationStrength);
     this.controls?.setGamepadTuning(this.gamepadTuning());
+    this.effectPool.setReducedFlash(this.settings.reducedFlashEnabled);
     if (partial.effectQuality !== undefined) {
       this.performanceGovernor.setPreference(this.settings.effectQuality);
       this.applyPerformanceBudget();
@@ -715,6 +720,8 @@ export class PrototypeScene extends Phaser.Scene {
         this.settings.uiScale,
         this.settings.colorVisionMode,
         (type) => { this.hoveredHudPowerupType = type; },
+        this.settings.affinityHudEnabled,
+        () => { this.openPauseMenu(); this.pauseOverlay.showBuild(true); },
       );
     }
     this.pauseOverlay.refresh();
@@ -723,6 +730,7 @@ export class PrototypeScene extends Phaser.Scene {
   private applyPerformanceBudget(): void {
     const budget = combatEffectsBudget(this.performanceGovernor.snapshot().tier, this.stressProfile);
     this.effectPool.setBudget(budget.maximumActiveEffects, budget.burstScale);
+    this.effectPool.setReducedFlash(this.settings.reducedFlashEnabled);
     this.damageNumbers.setMaximumActive(budget.maximumDamageNumbers);
   }
 

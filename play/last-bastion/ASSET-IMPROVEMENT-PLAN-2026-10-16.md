@@ -1,7 +1,7 @@
 # Last Bastion — Full HD and 4K asset/improvement patch proposal
 
 **Date:** 16 October 2026
-**Status:** implementation authorized; A0 inventory and A1 floor pilot are in progress. This plan answers the request for the
+**Status:** Patch A implementation delivered locally; visual/hardware acceptance remains open. This plan answers the request for the
 next asset/content patch; it does not authorize deployment or declare existing manual gates closed.
 **Recommended theme:** clearer combat, less repetitive arenas, stronger character registration,
 and more understandable build progression. Preserve the established modern pixel-art identity.
@@ -191,14 +191,16 @@ observed play supports it. The initial planning pass generated no assets. The ac
 - [x] Generate two floor candidates and one transparent decal with retained sources and exact prompts.
 - [x] Bind an opt-in A/B combat route, isolated loading, broad material repeats and deterministic decals.
 - [x] Capture baseline and both candidates at Full HD and 4K.
-- [ ] Finish shell/candidate inventory coverage and per-family source/consumer classification.
-- [ ] Produce optimized runtime derivatives before any default-floor adoption.
-- [ ] Expand an accepted floor direction to the eight-tile/four-decal kit.
-- [ ] Apply only necessary character/helmet source repairs.
-- [ ] Implement selected weapon/hazard effect refinements.
-- [ ] Implement optional affinity HUD and catalogue-backed transformation explanations.
-- [ ] Complete map-state/build-screen polish.
-- [ ] Package accepted assets and finish release documentation.
+- [x] Extend inventory to 227 unique definitions and list 1,328 unmapped sources; record reuse/review dispositions and alpha bounds. Historical reachability is not inferred from references.
+- [x] Produce reproducible optimized runtime derivatives; keep new floors opt-in.
+- [x] Expand direction B to an eight-tile/four-decal review kit with deterministic weighted placement.
+- [x] Retain current character/helmet registration and masters: no specific failed frame established for repainting. Motion sign-off remains open.
+- [x] Reuse current effects and hazard art; reduce pooled effect opacity and honour Reduced Flash without changing hazard geometry/timing.
+- [x] Implement persisted optional affinity HUD, threshold warning, inspect action and catalogue-backed boon/cost explanations.
+- [x] Add map focus brackets, armed READY label and closed-route badge; paginate wrapped build copy and fit combat settings rows.
+- [x] Include optimized assets in published web output and update release documentation. Desktop packaging remains a separate release task.
 
-Practice and encounter variants remain the later Patch B scope. The open implementation items
-above exclude testing; manual acceptance gates elsewhere still apply.
+Practice and encounter variants remain later Patch B scope, contingent on observed play.
+The completed implementation checkpoint is archived in `archive/ASSET-PATCH-A-IMPLEMENTATION-2026-10-16.md`.
+This plan remains active for motion/hardware acceptance and any resulting corrections. No claim
+is made that every historical candidate has a proven runtime consumer or that 4K60 is established.

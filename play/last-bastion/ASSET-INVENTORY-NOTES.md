@@ -6,10 +6,10 @@
 node play/last-bastion/dev/scripts/inventory-production-assets.mjs
 ```
 
-It currently covers 213 GameAssetManifest definitions: logical/source-frame sizes, pivots, source
+It now covers 227 unique game, shell, portrait, backdrop and UI-chrome definitions: logical/source-frame sizes, pivots, source
 paths, byte sizes, hashes, PNG dimensions and static references. It is generated from actual calls
-and refuses unknown call formats rather than silently dropping definitions. It does not claim all
-source candidates, separate shell manifests or runtime reachability have been reviewed.
+and refuses unknown call formats rather than silently dropping definitions. It also lists 1,328 unmapped art files without classifying them as unused or safe to delete.
+Shared shell/game definitions are deduplicated. Static references do not prove runtime reachability.
 
 ## Confirmed consumer traces
 
@@ -22,12 +22,21 @@ source candidates, separate shell manifests or runtime reachability have been re
 | Persistent floor hazards | `ArenaRenderer.renderHazards` currently draws shape/hatch cues in code. O2 source atlases exist but their existence alone does not mean this consumer uses them. |
 | H1 held weapons | `weaponCatalog.ts` enables the held pool. Do not commission a “release the held pool” task from historical H1 notes. Trace individual sprite/effect consumers before replacing art. |
 
-## Remaining inventory implementation
+## Geometry and dispositions
 
-- Extend generated coverage to the separate shell/portrait manifest and unmapped source candidates.
-- Complete per-family loader/render/encounter traces and explicit reuse/repair/replace decisions.
-- Add per-frame alpha bounds and explicit body/helmet/muzzle anchor metadata where applicable.
-- Register release-ready optimized derivatives and budgets for approved new assets.
+`dev/scripts/audit-asset-geometry.py` (Python with Pillow) reads all 227 definitions and records
+per-frame alpha bounds, source dimensions and estimated decoded RGBA bytes in `asset-geometry.json`.
+It rejects out-of-bounds slicing. It never edits artwork. Manifest pivots remain authoritative;
+Marine body/helmet pose registration stays in `MarineHelmetRegistration.ts`, and weapon attachment
+metadata stays with the existing weapon render consumers. No generic anchor is substituted.
 
-Static references are navigation aids, not runtime evidence. Runtime PNG/WebP files are not
-necessarily original source masters. Retain provenance and source paths separately.
+- Game actors, body/helmet frames, pickups, world objects and H1 weapons: reuse current runtime
+  assets. No specific failed frame has been established that justifies regeneration in this patch.
+- Shell/portraits/backdrops/chrome: reuse; inventory includes their separate declarations.
+- Floor: retain existing default; new eight-tile/four-decal kit and optimized A/B pilots are review-only.
+- Effects: reuse all six existing visual families; reduce pooled impact opacity and respect Reduced
+  Flash. Persistent hazard geometry and tells remain code-native. No new effects mechanics.
+- Unmapped artwork: retain as candidates/masters/derivatives. Unmapped is not equivalent to unused.
+
+This closes manifest and filesystem coverage, not a scene-by-scene reachability proof for every
+historical source. Individual replacement decisions still require a named failing consumer/frame.

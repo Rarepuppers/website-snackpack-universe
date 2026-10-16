@@ -32,6 +32,8 @@ const VIEWPORTS = [
  * screen here boots from a single URL, which is what makes this cheap.
  */
 const SCREENS = [
+  { id: "floor-kit-affinity", route: "/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=kit&transformation=gravity-adept", note: "Expanded floor kit and real affinity HUD" },
+  { id: "affinity-details", route: "/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&transformation=gravity-adept&pausepreview=build", keys: ["ArrowLeft"], note: "Catalogue cost details" },
   { id: "floor-pilot-a", route: "/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=a", note: "Quiet floor pilot A; candidate only" },
   { id: "floor-pilot-b", route: "/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=b", note: "Quiet floor pilot B; candidate only" },
   { id: "settings", route: "/play/last-bastion/?flow=settings", note: "Grouped settings fit above footer" },
@@ -86,7 +88,7 @@ test.describe("Last Bastion screenshot matrix", () => {
         await page.setViewportSize({ width: viewport.width, height: viewport.height });
         await page.goto(screen.route);
         await page.waitForSelector("#game-root canvas", { state: "visible", timeout: 60_000 });
-        if (screen.id === "build" || screen.id === "affinity") {
+        if (screen.id === "build" || screen.id === "affinity" || screen.id === "affinity-details") {
           await page.waitForFunction(() => window.__buildInspection !== undefined);
         }
         for (const key of screen.keys ?? []) {
@@ -95,7 +97,7 @@ test.describe("Last Bastion screenshot matrix", () => {
           await page.waitForTimeout(700);
           await page.keyboard.press(key, { delay: 80 });
         }
-        if (screen.id === "affinity") {
+        if (screen.id === "affinity" || screen.id === "affinity-details") {
           await page.waitForFunction(() => window.__buildInspection?.title.startsWith("TRANSFORMATION AFFINITY"));
         }
         // Settle: wait for the asset queue to go quiet rather than a fixed sleep,

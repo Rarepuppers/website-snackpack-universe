@@ -1,7 +1,7 @@
 # Last Bastion — current plan
 
 **Updated:** 16 October 2026
-**Local release:** `web-2026.10.16-floor-pilot` (service worker `2026-10-16-floor-pilot`).
+**Local release:** `web-2026.10.16-asset-polish` (service worker `2026-10-16-asset-polish`).
 **Status:** accepted audit corrections are implemented and committed. All required automated
 verification lanes pass. This release has not been pushed or deployed by this work.
 
@@ -17,13 +17,14 @@ Keep the content freeze until observed play and live measurement justify expansi
 - Controller/reporting follow-up: `ebc9a4b2`. Physical menu controls independent of combat
   remapping, D-pad pages, mixed-speed share disclosure, fresh attempt settings after restart,
   corrected affinity count/navigation hints and reliable first clicks on pause/settings rows.
-- Latest `npm run verify:last-bastion`: all required lanes passed (63.5 seconds): 1,776 unit
-  tests in 310 files, 29 browser checks, smoke/offline acceptance, 25 matching published outputs,
-  website JavaScript/offline-core checks and desktop host build with 28 tests.
+- Latest `npm run verify:last-bastion`: all required lanes passed (73 seconds): 1,777 unit
+  tests in 311 files, 30 browser checks, smoke/offline acceptance, 25 matching published outputs,
+  website JavaScript/offline-core checks and desktop host build with 28 tests. A subsequent saved-HUD
+  preference regression passed with its 51-test targeted suite (one additional unit test).
 - Portfolio `node scripts/check-all.js`: all 19 guards passed on 16 October. Separate website
   check previously verified 272 pages. Those results do not establish live deployment status.
-- Floor pilot: 213-entry manifest inventory, two opt-in floor materials and one transparent scuff.
-  Six baseline/A/B captures at native Full HD and 4K are in
+- Asset patch: 227-definition inventory/geometry report, eight-tile/four-decal kit, optimized pilots,
+  affinity HUD/catalogue details and map/build/effect polish. Baseline/A/B and new kit/UI captures are in
   `playtest-evidence/2026-10-16-screens-auto/`. Default gameplay does not load the pilot art.
 - Earlier layout captures remain in `playtest-evidence/2026-10-15-screens-auto/`. They predate the
   follow-up label changes and are layout evidence, not final screenshots of every current label.
@@ -33,7 +34,7 @@ Keep the content freeze until observed play and live measurement justify expansi
 - [ ] Obtain an explicit deployment request: Mark's standing instruction is **do not push unless asked**.
 - [ ] Review the website repository's release scope, including unrelated working-tree changes;
   push only the authorized release, wait for CI, and verify the live game and privacy page.
-- [ ] Confirm the served build identity matches `web-2026.10.16-floor-pilot` and test a warm-cache
+- [ ] Confirm the served build identity matches `web-2026.10.16-asset-polish` and test a warm-cache
   offline upgrade. The live menu already showed Quick/Daily on 14 October; this does not prove
   that the current bundle or analytics configuration is deployed.
 - [ ] Confirm `opened`, `run-started`, `wave-1`, `wave-5`, `run-ended`, and next-local-day
@@ -68,17 +69,19 @@ wave depth because their progress is measured in nodes.
 - [ ] Record GPU, driver, frame pacing and display behavior on Full HD, 4K, ultrawide and
   Deck-shaped hardware. Headless captures are not hardware acceptance.
 
-## 4. Authorized asset patch — in progress
+## 4. Asset patch — implementation complete, acceptance open
 
 The [16 October Full HD/4K asset patch proposal](ASSET-IMPROVEMENT-PLAN-2026-10-16.md)
-sets out the next staged art and improvement work. Implementation is authorized. The manifest inventory and opt-in A/B floor pilot are implemented;
+sets out the next staged art and improvement work. Implementation now includes the expanded 227-definition inventory, alpha-bound report, optimized
+eight-tile/four-decal kit, optional affinity HUD, catalogue explanations, map/build polish and effect
+opacity fixes. See the [completed checkpoint](archive/ASSET-PATCH-A-IMPLEMENTATION-2026-10-16.md);
 the standard floor remains unchanged. See [inventory scope](ASSET-INVENTORY-NOTES.md) for gaps
 and the patch proposal’s progress checklist for remaining non-testing work. Acceptance gates above remain open.
 
 
 - Review two weeks of verified live data: open → start → wave 1 → wave 5, the separate outcome
   distribution, and next-day return. Combine with the five observed runs before changing scope.
-- Replayable practice, full DOM-backed menu accessibility, affinity-HUD/codex improvements,
+- Replayable practice, full DOM-backed menu accessibility, further codex expansion,
   legacy modifier cleanup, VFX/transformation art and further music remain conditional work.
   Build/affinity inspection is implemented; full accessible shell semantics are not.
 - Touch controls, new heroes/regions, multiplayer, leaderboards and Threat Tiers 3–11 are not

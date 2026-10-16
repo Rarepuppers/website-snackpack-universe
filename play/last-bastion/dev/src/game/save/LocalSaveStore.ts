@@ -59,6 +59,7 @@ export interface GameSettings {
   soundEnabled: boolean;
   damageNumbersEnabled: boolean;
   cooldownTimersEnabled: boolean;
+  affinityHudEnabled: boolean;
   autoFireEnabled: boolean;
   enemyHealthBars: "off" | "threats" | "all";
   reducedMotionEnabled: boolean;
@@ -195,6 +196,7 @@ export const DEFAULT_SAVE: Readonly<SaveData> = Object.freeze({
     soundEnabled: true,
     damageNumbersEnabled: true,
     cooldownTimersEnabled: true,
+    affinityHudEnabled: true,
     autoFireEnabled: true,
     enemyHealthBars: "threats",
     reducedMotionEnabled: false,
@@ -729,6 +731,7 @@ function normalizeSettings(value: unknown): GameSettings {
     soundEnabled: readBoolean(candidate.soundEnabled, DEFAULT_SAVE.settings.soundEnabled),
     damageNumbersEnabled: readBoolean(candidate.damageNumbersEnabled, DEFAULT_SAVE.settings.damageNumbersEnabled),
     cooldownTimersEnabled: readBoolean(candidate.cooldownTimersEnabled, DEFAULT_SAVE.settings.cooldownTimersEnabled),
+    affinityHudEnabled: readBoolean(candidate.affinityHudEnabled, DEFAULT_SAVE.settings.affinityHudEnabled),
     autoFireEnabled: readBoolean(candidate.autoFireEnabled, DEFAULT_SAVE.settings.autoFireEnabled),
     enemyHealthBars,
     reducedMotionEnabled: readBoolean(candidate.reducedMotionEnabled, DEFAULT_SAVE.settings.reducedMotionEnabled),

@@ -185,6 +185,7 @@ export const SETTINGS_ROWS: readonly SettingsRow[] = Object.freeze([
   { kind: "toggle", key: "soundEnabled", label: "Sound" },
   { kind: "toggle", key: "damageNumbersEnabled", label: "Damage numbers" },
   { kind: "toggle", key: "cooldownTimersEnabled", label: "Cooldown timers" },
+  { kind: "toggle", key: "affinityHudEnabled", label: "Affinity indicator" },
   { kind: "toggle", key: "autoFireEnabled", label: "Auto-fire" },
   { kind: "choice", key: "enemyHealthBars", label: "Enemy health bars", options: ["off", "threats", "all"] },
   { kind: "toggle", key: "reducedMotionEnabled", label: "Reduced motion" },

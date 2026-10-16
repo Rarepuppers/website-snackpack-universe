@@ -30,6 +30,9 @@ export class VisualEffectPool {
   private activeBudget: number;
   private burstScale = 1;
   private suppressed = 0;
+  private reducedFlash = false;
+
+  setReducedFlash(enabled: boolean): void { this.reducedFlash = enabled; }
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -58,7 +61,7 @@ export class VisualEffectPool {
     view.setTexture(effect.texture ?? "combat-effects-v1", effect.frame)
       .setPosition(effect.x, effect.y)
       .setRotation(effect.rotation ?? 0)
-      .setAlpha(1)
+      .setAlpha(this.reducedFlash ? 0.3 : 0.7)
       .setScale(startScale)
       .setVisible(true)
       .setActive(true)
@@ -82,7 +85,7 @@ export class VisualEffectPool {
       .setRadius(effect.radius)
       .setFillStyle(effect.color, effect.outlineOnly ? 0 : effect.alpha ?? 0.85)
       .setStrokeStyle(effect.outlineOnly ? 3 : 0, effect.color, effect.alpha ?? 0.9)
-      .setAlpha(1)
+      .setAlpha(this.reducedFlash ? 0.3 : 0.7)
       .setScale(effect.outlineOnly ? 0.2 : 1)
       .setVisible(true)
       .setActive(true)

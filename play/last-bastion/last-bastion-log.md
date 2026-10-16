@@ -5132,3 +5132,14 @@ held-weapon/production notes now flag stale consumer claims; earlier audit plans
 
 Portfolio follow-through: `node scripts/check-all.js` completed with all 19 guards passing on
 16 October. The long-running shared game-UI delivery scan completed successfully.
+
+
+## 16 October 2026 — Patch A asset/presentation implementation
+
+Completed inventory/geometry coverage, optimized pilots and eight-tile/four-decal review kit,
+affinity HUD/inspection, map/build polish and pooled Reduced Flash support. See
+`archive/ASSET-PATCH-A-IMPLEMENTATION-2026-10-16.md` for the completed checkpoint and evidence.
+All game verification lanes passed (1,777 unit, 30 browser, 28 desktop-host). No deployment
+or desktop packaging. Manual acceptance remains explicit in CURRENT-PLAN.
+
+Final portfolio verification: all 19 guards passed on 16 October for this patch.

@@ -425,6 +425,23 @@ export class ExpeditionScene extends Phaser.Scene {
       if (presentation === "cleared") {
         this.root.add(createClearedBadgeIcon(this, x + radius - 2, y + radius - 2).setAlpha(0.8));
       }
+      if (intelVisible && presentation === "unreachable") {
+        // A barred badge communicates a closed route without relying on desaturation.
+        const closed = this.add.graphics().setDepth(12);
+        closed.fillStyle(0x101720, 1).fillCircle(x + radius - 2, y + radius - 2, 5);
+        closed.lineStyle(2, 0x8fa1b3, 1).lineBetween(x + radius - 5, y + radius - 2, x + radius + 1, y + radius - 2);
+        this.root.add(closed);
+      }
+      if (focused || armed) {
+        const brackets = this.add.graphics().setDepth(12).lineStyle(2, armed ? 0xff9a52 : TEAL_HEX, 1);
+        const inset = radius + 5;
+        for (const dx of [-1, 1]) for (const dy of [-1, 1]) {
+          brackets.beginPath().moveTo(x + dx * inset, y + dy * (inset - 6))
+            .lineTo(x + dx * inset, y + dy * inset).lineTo(x + dx * (inset - 6), y + dy * inset).strokePath();
+        }
+        this.root.add(brackets);
+        if (armed) this.root.add(this.text(x, y + radius + 14, "READY", ORANGE, "9px", true).setDepth(12));
+      }
       if (presentation === "current") {
         const pulse = this.add.circle(x, y, radius + 7).setStrokeStyle(2, TEAL_HEX, 0.85).setDepth(9);
         pulse.setName("current-pulse");

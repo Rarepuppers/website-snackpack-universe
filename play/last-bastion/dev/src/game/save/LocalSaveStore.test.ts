@@ -996,3 +996,11 @@ describe("Save schema v2 — expedition autosave", () => {
     expect(save.progress.bestWaveReached).toBe(3);
   });
 });
+
+it("retains the optional affinity HUD preference across store reloads", () => {
+  const storage = fakeStorage();
+  const first = new LocalSaveStore(storage);
+  expect(first.load().settings.affinityHudEnabled).toBe(true);
+  first.updateSettings({ affinityHudEnabled: false });
+  expect(new LocalSaveStore(storage).load().settings.affinityHudEnabled).toBe(false);
+});

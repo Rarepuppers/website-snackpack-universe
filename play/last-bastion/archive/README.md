@@ -6,6 +6,7 @@ Unlinked relative paths quoted inside these older documents were written from th
 
 | File | Why archived |
 |---|---|
+| [16 October asset implementation](ASSET-PATCH-A-IMPLEMENTATION-2026-10-16.md) | Patch A code/assets delivered locally; new-floor acceptance and hardware/release gates remain in the active plan. |
 | [14 October audit](AUDIT-PLAN-2026-10-14.md), [15 October follow-up](AUDIT-FOLLOWUP-2026-10-15.md) | Accepted reliability, Daily, controller and UI corrections completed in `c7779414` / `ebc9a4b2`; manual release gates and deferred proposals moved to the current plan. |
 | [9 October implementation audit](implementation-plan-2026-10-09.md) | Phases 1–4 and local telemetry activation completed; deployment and observed gates moved to the current plan. |
 | [11 September implementation plan](implementation-plan-2026-09-11.md), [20 September review](implementation-review-2026-09-20.md), [7 September quality audit](quality-audit-2026-09-07.md) | Superseded audit and implementation queues; retain evidence and decisions. |

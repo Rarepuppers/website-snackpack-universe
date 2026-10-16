@@ -519,8 +519,24 @@ for (const variant of ["a", "b"]) {
     page.on("response", response => { if (response.url().includes("pilot") && response.url().endsWith(".png")) loaded.push({ url: response.url(), status: response.status() }); });
     await page.goto(`/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=${variant}`);
     await page.waitForFunction(() => window.__combatAccessibilityAudit !== undefined);
-    expect(loaded.some(row => row.url.includes(`floor-pilot-${variant}-source`) && row.status === 200)).toBe(true);
-    expect(loaded.some(row => row.url.includes("scuff-pilot-source") && row.status === 200)).toBe(true);
+    expect(loaded.some(row => row.url.includes(`floor-pilot-${variant}-runtime`) && row.status === 200)).toBe(true);
+    expect(loaded.some(row => row.url.includes("scuff-pilot-runtime") && row.status === 200)).toBe(true);
     expect(failures).toEqual([]);
   });
 }
+
+ test("expanded floor kit and affinity inspect load through real combat", async ({ page }) => {
+   const failures = [];
+   page.on("pageerror", error => failures.push(error.message));
+   const loaded = [];
+   page.on("response", response => { if (response.url().includes("kit-runtime")) loaded.push(response.status()); });
+   await page.goto("/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=kit&transformation=gravity-adept");
+   await page.waitForFunction(() => window.__combatAccessibilityAudit !== undefined);
+   expect(loaded).toEqual([200, 200]);
+   const canvas = await page.locator("#game-root canvas").boundingBox();
+   expect(canvas).toBeTruthy();
+   await page.mouse.click(canvas.x + canvas.width * 880 / 960, canvas.y + canvas.height * 110 / 540);
+   await page.waitForFunction(() => window.__buildInspection?.title === "TRANSFORMATION AFFINITY");
+   expect(await page.evaluate(() => window.__buildInspection.lines.join(" "))).toContain("Void Initiation");
+   expect(failures).toEqual([]);
+ });

@@ -1,5 +1,26 @@
 # Last Bastion release notes
 
+## 16 October 2026 — asset and progression clarity patch
+
+**Release:** `web-2026.10.16-asset-polish` — local only; not deployed or desktop-packaged.
+
+- Optional affinity indicator shows the active/leading path and next threshold, warns before an
+  aligned choice commits, and opens build inspection. Toggle it in settings; it hides with no affinity.
+- Build inspection explains acquired transformation boons and costs from the production catalogue.
+  Long copy paginates without overlapping; combat settings fit their available height.
+- Map focus uses corner brackets, armed routes show READY, and closed routes gain a barred badge.
+- Pooled impacts are less opaque and quieter with Reduced Flash. Cooldown timer changes refresh
+  immediately. No damage radii, tell timing, progression or save-schema version changed.
+- Eight floor variants/four decals are available through `floorpilot=kit` on the standard Bastion
+  review route. Optimized pilots and kit retain untouched masters and exact generation prompts.
+  Existing default floors remain in use pending motion acceptance.
+- Inventory/geometry reports cover 227 definitions plus retained unmapped candidates.
+
+All game verifier lanes pass: 1,777 unit tests, 30 browser checks and 28 desktop-host tests,
+including smoke/offline and generated-output checks. All 19 portfolio guards passed.
+Native Full HD/4K captures are retained.
+Motion, physical controller/audio, packaged hardware and Steam acceptance remain open; no 4K60 claim.
+
 ## 16 October 2026 — Full HD / 4K floor pilot
 
 **Release:** `web-2026.10.16-floor-pilot`
