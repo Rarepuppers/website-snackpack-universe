@@ -14,9 +14,10 @@ and alt text written from the pictures themselves.
 Which books, and why only these four (quality read, 2026-10-15, READ-PLAN-2026-10.md):
 all nine FREE_BOOK_IDS were read in full and every page of art viewed.
   * Included: Luckybug (Y1), Biscuit-Bouncer (Y2), Hop-Tart (Y3), Centi-Peed (Y4).
+  * Added 2026-10-16: Wise Owl (Y5), after app fixes 1cf18e520 (page 1 question, page 2 primes)
+    and 768ec8149 (page 4 said 36 cushions; the picture shows 16).
   * Held back, app fixes owed:
       pork-ulele-clockwork-concert   page 1 says "quarter past three"; the clock shows quarter past four
-      wise-owl-festival-of-factors   page 1 asks "which pair" but offers single numbers; page 2 muddles primes
       ted-e-bear-lantern-half        Ted and Honey-Beats change design mid-book (two art batches)
       booklava-number-nest           Booklava alternates between a brown and a purple owl
       vincent-van-mouse-mural-...    only 4 of 7 pages illustrated
@@ -91,6 +92,17 @@ BOOKS = {
             "Sub-Zero the penguin shelters a small firefly while Centi-Peed looks up the warm tunnel.",
             "Four ice lanterns glow from cold blue to warm gold along the burrow floor.",
             "Centi-Peed and Sub-Zero lead the fireflies through a clear tunnel to the moonlit roots.",
+        ],
+    },
+    "wise-owl-festival-of-factors": {
+        "slug": "wise-owl-festival-of-factors",
+        "lead": "A four-page lantern festival for practising factors, multiples, prime numbers and square numbers, with a question on every page.",
+        "blurb": "Twenty-four flags and a gatepost in the way. Wise Owl and Booklava find more than one right answer.",
+        "alts": [
+            "Wise Owl, Booklava and Quill-Berry study a row of lanterns and tiles under purple and gold flags at the festival gate.",
+            "Wise Owl, Booklava and Quill-Berry look over rows of gold and purple chimes on a long table.",
+            "Wise Owl points to purple and gold ribbons tied round the lamp posts as Booklava and Quill-Berry listen.",
+            "Festival friends gather round a square of 16 purple and gold cushions in the reading garden.",
         ],
     },
 }

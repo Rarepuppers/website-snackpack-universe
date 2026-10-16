@@ -1,6 +1,6 @@
 {
- "books": 29,
- "bytes": 23913488,
+ "books": 30,
+ "bytes": 24589808,
  "urls": [
   "/read/",
   "/read/sound-cards/",
@@ -196,6 +196,12 @@
   "/read/centi-peeds-below-zero-burrow/pages/page-2.webp",
   "/read/centi-peeds-below-zero-burrow/pages/page-3.webp",
   "/read/centi-peeds-below-zero-burrow/pages/page-4.webp",
+  "/read/wise-owl-festival-of-factors/",
+  "/read/wise-owl-festival-of-factors/pages/cover.webp",
+  "/read/wise-owl-festival-of-factors/pages/page-1.webp",
+  "/read/wise-owl-festival-of-factors/pages/page-2.webp",
+  "/read/wise-owl-festival-of-factors/pages/page-3.webp",
+  "/read/wise-owl-festival-of-factors/pages/page-4.webp",
   "/site.css",
   "/theme.js",
   "/read/share.js",
