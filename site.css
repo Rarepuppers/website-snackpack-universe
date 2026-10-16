@@ -2463,3 +2463,4 @@ button:focus-visible {
 .read-filter-reset{padding:0;border:0;background:none;font:inherit;font-weight:700;cursor:pointer}
 .read-library-card[hidden],.read-shelf-group[hidden],.read-jump-chip[hidden]{display:none}
 .read-new-badge{display:inline-block;margin:0 0 8px;padding:3px 10px;border-radius:999px;background:#d43f2a;color:#fff;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.story-pages.story-pages-natural .story-page-card img{aspect-ratio:auto}

@@ -1,6 +1,6 @@
 {
- "books": 30,
- "bytes": 24589808,
+ "books": 31,
+ "bytes": 25623590,
  "urls": [
   "/read/",
   "/read/sound-cards/",
@@ -202,6 +202,13 @@
   "/read/wise-owl-festival-of-factors/pages/page-2.webp",
   "/read/wise-owl-festival-of-factors/pages/page-3.webp",
   "/read/wise-owl-festival-of-factors/pages/page-4.webp",
+  "/read/animal-architects/",
+  "/read/animal-architects/pages/animal-architects-p1.webp",
+  "/read/animal-architects/pages/animal-architects-p2.webp",
+  "/read/animal-architects/pages/animal-architects-p3.webp",
+  "/read/animal-architects/pages/animal-architects-p5.webp",
+  "/read/animal-architects/pages/animal-architects-p6.webp",
+  "/read/animal-architects/pages/animal-architects-p7.webp",
   "/site.css",
   "/theme.js",
   "/read/share.js",
