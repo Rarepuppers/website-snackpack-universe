@@ -1,9 +1,13 @@
 # Last Bastion — current plan
 
-**Updated:** 16 October 2026
+**Updated:** 17 October 2026
 **Local release:** `web-2026.10.16-asset-polish` (service worker `2026-10-16-asset-polish`).
 **Status:** accepted audit corrections are implemented and committed. All required automated
 verification lanes pass. This release has not been pushed or deployed by this work.
+
+For continuation, use the [17 October next-chat handover](NEXT-CHAT-HANDOVER-2026-10-17.md).
+It organizes remaining work into presentation, platform, release/measurement and conditional
+Patch B phases; it adds no newly confirmed bugs or unconditional asset commissions.
 
 This is the only active execution queue. Completed audit tasks are in the
 [archive](archive/README.md); player-facing changes are in the [release notes](RELEASE-NOTES.md).
