@@ -108,6 +108,10 @@
     background: #0b6461 var(--sp-card-back, url("../shared-assets/game-ui/pro-hand-painted/card-decks/backs/emerald-arcade.png")) center / cover no-repeat;
     border-color: #0a4f4d;
   }
+  /* WebP card back where the browser can choose; the url() above stays the fallback. */
+  @supports (background-image: image-set(url("a.webp") type("image/webp"))) {
+    .tp-card.down { background-image: var(--sp-card-back, image-set(url("../shared-assets/game-ui/pro-hand-painted/card-decks/backs/emerald-arcade.webp") type("image/webp"), url("../shared-assets/game-ui/pro-hand-painted/card-decks/backs/emerald-arcade.png") type("image/png"))); }
+  }
   .tp-card.covered { filter: brightness(.82); }
   .tp-card.playable { cursor: pointer; outline: 3px solid var(--gold,#f3d27a); outline-offset: -1px; z-index: 2; }
   .tp-card.playable:hover { transform: translateY(-4px); }

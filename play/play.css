@@ -227,11 +227,13 @@
 
 .ms-flag-icon {
   background-image: url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine-flag-red.png");
+  background-image: image-set(url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine-flag-red.webp") type("image/webp"), url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine-flag-red.png") type("image/png"));
   vertical-align: -0.18em;
 }
 
 .pc-cross-icon {
   background-image: url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/x-mark.png");
+  background-image: image-set(url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/x-mark.webp") type("image/webp"), url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/x-mark.png") type("image/png"));
   vertical-align: -0.16em;
 }
 
@@ -395,14 +397,17 @@
 
 .ms-cell.is-flag::after {
   background-image: url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine-flag-red.png");
+  background-image: image-set(url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine-flag-red.webp") type("image/webp"), url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine-flag-red.png") type("image/png"));
 }
 
 .ms-cell.is-mine::after {
   background-image: url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine.png");
+  background-image: image-set(url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine.webp") type("image/webp"), url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine.png") type("image/png"));
 }
 
 .ms-cell.is-hit::after {
   background-image: url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine-hit.png");
+  background-image: image-set(url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine-hit.webp") type("image/webp"), url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/mine-hit.png") type("image/png"));
 }
 
 .ms-cell[data-n="1"] { color: #2f6fd6; }
@@ -505,10 +510,12 @@
 .c4-cell.is-p1 {
   background-color: var(--c4-p1-dark, #b9481e);
   background-image: url("shared-assets/game-ui/pro-hand-painted/strategy-tokens/png/connect-red.png");
+  background-image: image-set(url("shared-assets/game-ui/pro-hand-painted/strategy-tokens/png/connect-red.webp") type("image/webp"), url("shared-assets/game-ui/pro-hand-painted/strategy-tokens/png/connect-red.png") type("image/png"));
 }
 .c4-cell.is-p2 {
   background-color: var(--c4-p2-dark, #d99b1f);
   background-image: url("shared-assets/game-ui/pro-hand-painted/strategy-tokens/png/connect-yellow.png");
+  background-image: image-set(url("shared-assets/game-ui/pro-hand-painted/strategy-tokens/png/connect-yellow.webp") type("image/webp"), url("shared-assets/game-ui/pro-hand-painted/strategy-tokens/png/connect-yellow.png") type("image/png"));
 }
 .c4-cell.is-drop {
   animation: c4-drop 0.34s cubic-bezier(0.2, 0.88, 0.28, 1.12);
@@ -678,6 +685,10 @@
   background: #0b6461 var(--sp-card-back, url("shared-assets/game-ui/pro-hand-painted/card-decks/backs/emerald-arcade.png")) center / cover no-repeat;
   box-shadow: inset 0 -3px 0 rgba(32, 23, 19, 0.16);
 }
+/* WebP card back where the browser can choose; the url() above stays the fallback. */
+@supports (background-image: image-set(url("a.webp") type("image/webp"))) {
+  .mem-face--cover { background-image: var(--sp-card-back, image-set(url("shared-assets/game-ui/pro-hand-painted/card-decks/backs/emerald-arcade.webp") type("image/webp"), url("shared-assets/game-ui/pro-hand-painted/card-decks/backs/emerald-arcade.png") type("image/png"))); }
+}
 
 .mem-face--symbol {
   background: linear-gradient(180deg, #fffdf8, #f3ead9);
@@ -725,10 +736,10 @@
   vertical-align: -0.14em;
   filter: drop-shadow(0 1px 2px rgba(32, 23, 19, 0.14));
 }
-.card-suit-icon--spade { background-image: url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/spade.png"); }
-.card-suit-icon--heart { background-image: url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/heart.png"); }
-.card-suit-icon--diamond { background-image: url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/diamond.png"); }
-.card-suit-icon--club { background-image: url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/club.png"); }
+.card-suit-icon--spade { background-image: url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/spade.png"); background-image: image-set(url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/spade.webp") type("image/webp"), url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/spade.png") type("image/png")); }
+.card-suit-icon--heart { background-image: url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/heart.png"); background-image: image-set(url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/heart.webp") type("image/webp"), url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/heart.png") type("image/png")); }
+.card-suit-icon--diamond { background-image: url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/diamond.png"); background-image: image-set(url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/diamond.webp") type("image/webp"), url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/diamond.png") type("image/png")); }
+.card-suit-icon--club { background-image: url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/club.png"); background-image: image-set(url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/club.webp") type("image/webp"), url("shared-assets/game-ui/pro-hand-painted/card-decks/suits/club.png") type("image/png")); }
 
 .mem-card:hover:not(.is-flipped):not(.is-matched) .mem-face--cover {
   filter: saturate(1.05) brightness(1.04);
@@ -911,6 +922,7 @@ button.th-card.is-selected {
   width: 78%;
   height: 78%;
   background: url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/x-mark.png") center / contain no-repeat;
+  background-image: image-set(url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/x-mark.webp") type("image/webp"), url("shared-assets/game-ui/pro-hand-painted/grid-logic-markers/png/x-mark.png") type("image/png"));
 }
 .pc-cell.pc-edge-l { margin-left: 2px; }
 .pc-cell.pc-edge-t { margin-top: 2px; }
