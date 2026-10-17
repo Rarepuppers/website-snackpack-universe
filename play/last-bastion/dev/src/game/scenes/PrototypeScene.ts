@@ -107,6 +107,7 @@ import {
 } from "../expedition/ExpeditionEncounter";
 import { normalizeThreatTier, threatTierDefinition } from "../expedition/ThreatTier";
 import { selectedArmoryWeapon } from "../progression/ArmoryProgression";
+import { mountQaSessionPanel } from "../performance/QaSessionPanel";
 import { createCurrentRunProvenance, createRunSummary, mergeRunMetrics, type RunMetrics } from "../run/RunSummary";
 import {
   advanceFirstDropOnboarding,
@@ -297,6 +298,7 @@ export class PrototypeScene extends Phaser.Scene {
   private damageDirectionIndicator: Phaser.GameObjects.Triangle | null = null;
   private lowHealthFrame: Phaser.GameObjects.Graphics | null = null;
   private readonly arenaTheme = resolveArenaTheme(this.runSeed);
+  private qaSession: ReturnType<typeof mountQaSessionPanel> | null = null;
   private assetLoadFeedback: AssetLoadFeedbackHandle | null = null;
   private assetRetryListener: ((event: KeyboardEvent) => void) | null = null;
   private readonly synth = new WebAudioSynth(this.settings.soundEnabled, this.simulation.snapshot().heroId);
@@ -581,6 +583,19 @@ export class PrototypeScene extends Phaser.Scene {
     if (new URLSearchParams(window.location.search).get("rendertexture") !== "0") {
       this.worldPresenter = new CombatWorldPresenter(this, this.stressProfile);
     }
+    if (new URLSearchParams(window.location.search).get("qasession") === "1") {
+      this.qaSession = mountQaSessionPanel(this.game.canvas, () => ({
+        provenance: this.currentRunProvenance(),
+        hero: this.lastSnapshot.heroId,
+        weapons: this.lastSnapshot.equippedWeapons.map((weapon) => weapon.weaponId),
+        settings: {
+          presentationMode: this.settings.presentationMode, effectQuality: this.settings.effectQuality,
+          frameCap: this.settings.frameCap, uiScale: this.settings.uiScale,
+          reducedFlashEnabled: this.settings.reducedFlashEnabled,
+        },
+        paused: this.isPaused || this.lastSnapshot.pendingDecision !== null,
+      }));
+    }
     window.addEventListener("blur", this.onWindowBlur);
     document.addEventListener("visibilitychange", this.onVisibilityChange);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.removeFocusPauseListeners, this);
@@ -593,6 +608,8 @@ export class PrototypeScene extends Phaser.Scene {
     this.pauseOverlay?.destroy();
     this.eventFeed?.destroy();
     this.decisionOverlay?.destroy();
+    this.qaSession?.destroy();
+    this.qaSession = null;
     this.worldPresenter?.destroy();
     this.worldPresenter = null;
     this.setPresentationHitStopFrozen(false);
@@ -785,6 +802,7 @@ export class PrototypeScene extends Phaser.Scene {
       this.applyPerformanceBudget();
     }
     this.worldPresenter?.sampleFrame(deltaMilliseconds, this.isPaused || document.hidden);
+    this.qaSession?.tick(performance.now(), this.isPaused || document.hidden || this.lastSnapshot.pendingDecision !== null);
 
     if (this.lastSnapshot.pendingDecision) {
       this.decisionOverlay.handleNavigation(intent);
@@ -1187,6 +1205,7 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   private restartRun(): void {
+    this.qaSession?.stop("attempt restarted");
     this.initialRunSettings = { ...this.settings };
     this.gameSpeedModified = false;
     this.simulationAccumulatorSeconds = 0;
@@ -1385,6 +1404,17 @@ export class PrototypeScene extends Phaser.Scene {
     });
   }
 
+  private currentRunProvenance() {
+    return createCurrentRunProvenance({
+      combatSeed: this.runSeed,
+      mapSeed: this.expeditionContext?.run.state.mapSeed ?? null,
+      gameSpeedMultiplier: this.initialRunSettings.gameSpeedMultiplier,
+      autoFireEnabled: this.initialRunSettings.autoFireEnabled,
+      aimAssistStrength: this.initialRunSettings.aimAssistStrength,
+      gameSpeedModified: this.gameSpeedModified,
+    });
+  }
+
   private summaryFromSnapshot(
     snapshot: CombatSnapshot,
     mode: "quick-drop" | "expedition",
@@ -1426,14 +1456,7 @@ export class PrototypeScene extends Phaser.Scene {
       })),
       transformation: snapshot.transformation,
       dailyKey: mode === "quick-drop" && this.isRecordableRun(snapshot) ? this.dailyKey : null,
-      provenance: createCurrentRunProvenance({
-        combatSeed: this.runSeed,
-        mapSeed: mode === "expedition" ? this.expeditionContext?.run.state.mapSeed ?? null : null,
-        gameSpeedMultiplier: this.initialRunSettings.gameSpeedMultiplier,
-        autoFireEnabled: this.initialRunSettings.autoFireEnabled,
-        aimAssistStrength: this.initialRunSettings.aimAssistStrength,
-        gameSpeedModified: this.gameSpeedModified,
-      }),
+      provenance: this.currentRunProvenance(),
     });
   }
 

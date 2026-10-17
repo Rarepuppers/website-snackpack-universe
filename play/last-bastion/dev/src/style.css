@@ -32,6 +32,24 @@ canvas {
   image-rendering: pixelated;
 }
 
+.qa-session {
+  position: fixed;
+  left: 8px;
+  top: 8px;
+  z-index: 20;
+  max-width: min(480px, calc(100vw - 16px));
+  padding: 8px;
+  background: #111722;
+  border: 1px solid #68e4e8;
+  color: #edf4ff;
+  font: 12px system-ui, sans-serif;
+}
+.qa-session p { margin: 0 0 6px; }
+.qa-session button { margin-right: 6px; min-height: 32px; }
+.qa-session :focus-visible { outline: 3px solid #ff9a52; outline-offset: 2px; }
+.qa-session textarea { display: block; width: 100%; height: 180px; margin-top: 8px; }
+.qa-session textarea[hidden] { display: none; }
+
 /* Touch-only devices: shown before boot because there are no touch controls. */
 .touch-notice {
   position: fixed;

@@ -1,5 +1,52 @@
 import { test, expect } from "@playwright/test";
 
+test("opt-in local QA session exports active frames, excludes pause, stops and resets", async ({ page }) => {
+  const failures = watchRuntime(page);
+  await page.goto("/play/last-bastion/?scenario=weapon-review&loadout=bastion-service-rifle&qasession=1&sound=0");
+  const panel = page.getByRole("region", { name: "Local QA session" });
+  await expect(panel).toHaveAttribute("data-state", "idle");
+  await page.waitForFunction(() => window.__combatAccessibilityAudit !== undefined);
+  const save = await page.evaluate(() => localStorage.getItem("last-bastion-save"));
+  await panel.getByRole("button", { name: "Start QA", exact: true }).focus();
+  await page.keyboard.press("Enter");
+  await expect(panel).toHaveAttribute("data-state", "recording");
+  await page.waitForTimeout(500);
+  await page.locator("#game-root canvas").click({ position: { x: 500, y: 300 } });
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => window.__combatAccessibilityAudit.paused);
+  await page.waitForTimeout(500);
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => !window.__combatAccessibilityAudit.paused);
+  await page.waitForTimeout(300);
+  await panel.getByRole("button", { name: "Stop QA", exact: true }).click();
+  await expect(panel).toHaveAttribute("data-state", "stopped");
+  const download = page.waitForEvent("download");
+  await panel.getByRole("button", { name: "Export QA", exact: true }).click();
+  expect((await download).suggestedFilename()).toBe("last-bastion-qa-session.json");
+  const report = JSON.parse(await panel.getByRole("textbox", { name: "QA report JSON" }).inputValue());
+  expect(report.session.activeSamples).toBeGreaterThan(0);
+  expect(report.session.excludedMilliseconds).toBeGreaterThan(300);
+  expect(report.session.droppedSamples).toBe(0);
+  expect(report.start.provenance.buildVersion).toContain("web-");
+  expect(report.end.backing.width).toBeGreaterThan(0);
+  expect(report.end.hardware).toBeNull();
+  expect(report.end.rollingWindow.capacity).toBe(600);
+  await page.waitForTimeout(200);
+  await page.evaluate(() => { URL.createObjectURL = () => { throw new Error("QA download intentionally unavailable"); }; });
+  await panel.getByRole("button", { name: "Export QA", exact: true }).click();
+  const again = JSON.parse(await panel.getByRole("textbox", { name: "QA report JSON" }).inputValue());
+  expect(again.session).toEqual(report.session);
+  await page.screenshot({ path: test.info().outputPath("qa-session.png") });
+  expect(await page.evaluate(() => localStorage.getItem("last-bastion-save"))).toBe(save);
+  await panel.getByRole("button", { name: "Reset QA", exact: true }).click();
+  await expect(panel).toHaveAttribute("data-state", "idle");
+  await expect(panel.getByRole("button", { name: "Export QA", exact: true })).toBeDisabled();
+  expect(failures).toEqual([]);
+  await page.goto("/play/last-bastion/?scenario=weapon-review&sound=0");
+  await expect(page.locator("#game-root canvas")).toBeVisible();
+  await expect(page.locator(".qa-session")).toHaveCount(0);
+});
+
 function watchRuntime(page) {
   const failures = [];
   page.on("pageerror", (error) => failures.push(`pageerror: ${error.stack ?? error.message}`));
