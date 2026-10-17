@@ -176,11 +176,11 @@
             <button class="btn-game btn-game--primary" id="ms-new" type="button">New game</button>
           </div>
         </div>
-        <p class="game-status" id="ms-status" aria-live="polite">Click any square to begin.</p>
+        <p class="game-status" id="ms-status" aria-live="polite">Tap or click any square to begin.</p>
         <div class="game-board-wrap">
           <div class="ms-grid" id="ms-grid" role="grid" aria-label="Minesweeper board"></div>
         </div>
-        <p class="game-hint">Left-click to reveal · Right-click or long-press to flag · First click is always safe.</p>
+        <p class="game-hint">Tap or click to reveal · Long-press, right-click or Flag mode to flag · Your first pick is always safe.</p>
         <p class="kbd-help">Keyboard: <kbd>Tab</kbd> to the board, <kbd>←↑→↓</kbd> to move, <kbd>Enter</kbd> to reveal, <kbd>F</kbd> to flag.</p>
       </div>
     </div>
@@ -411,7 +411,7 @@
     clearInterval(timer); timer = null;
     minesEl.textContent = mineCount;
     timeEl.textContent = "0";
-    statusEl.textContent = "Click any square to begin.";
+    statusEl.textContent = "Tap or click any square to begin.";
     statusEl.className = "game-status";
     build();
     renderBest();
@@ -684,7 +684,7 @@
     });
     minesEl.textContent = mineCount - flagsUsed;
     timeEl.textContent = seconds;
-    statusEl.textContent = started ? "Game resumed." : "Click any square to begin.";
+    statusEl.textContent = started ? "Game resumed." : "Tap or click any square to begin.";
     statusEl.className = "game-status";
     flagBtn.setAttribute("aria-pressed", String(flagMode));
     flagBtn.classList.toggle("btn-game--primary", flagMode);

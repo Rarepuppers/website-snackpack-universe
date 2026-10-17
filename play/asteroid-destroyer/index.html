@@ -688,12 +688,15 @@
     statusEl.className = "game-status " + (newBest ? "game-status--win" : "game-status--lose");
     startBtn.style.display = ""; startBtn.textContent = "Play again";
     state.phase = "ended";
-    if (window.SnackPack) window.SnackPack.celebrate({
-      title: newBest ? "New high score! 🎉" : "Nice run! 🚀",
+    // Celebrate a new best only: a "Nice run!" and a tip ask after scoring
+    // nothing read as mockery.
+    if (window.SnackPack && newBest) window.SnackPack.celebrate({
+      title: "New high score! 🎉",
       body: "Scored " + state.score + ". We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app to play Asteroid Destroyer and more, offline."
     });
-    // After celebrate, always — the share card must not be able to suppress the funnel.
-    if (window.SnackPackShare) window.SnackPackShare.result({
+    // After celebrate, always — the share card must not be able to suppress the
+    // funnel. A run that scored nothing is not worth a "share your result".
+    if (window.SnackPackShare && state.score > 0) window.SnackPackShare.result({
       game: "Asteroid Destroyer",
       headline: "Scored " + state.score.toLocaleString(),
       stats: newBest ? ["new personal best"] : []

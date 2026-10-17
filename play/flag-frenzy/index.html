@@ -600,10 +600,21 @@
   var streakEl = document.getElementById("ff-streak");
   var bestStreakEl = document.getElementById("ff-best-streak");
 
-  var PROGRESS_KEY = "snackpack-flag-frenzy-progress";
-  var STREAK_KEY = "snackpack-flag-frenzy-streak";
-  var MAXSTREAK_KEY = "snackpack-flag-frenzy-maxstreak";
-  var STREAKDATE_KEY = "snackpack-flag-frenzy-streakdate";
+  // sp_ namespace like every other game, so /stats/ shows these and its
+  // "clear" really clears them. Earlier builds used snackpack-flag-frenzy-*;
+  // move those across once so nobody loses a streak.
+  var PROGRESS_KEY = "sp_flag_frenzy_progress";
+  var STREAK_KEY = "sp_flag_frenzy_streak";
+  var MAXSTREAK_KEY = "sp_flag_frenzy_maxstreak";
+  var STREAKDATE_KEY = "sp_flag_frenzy_streakdate";
+  try {
+    ["progress", "streak", "maxstreak", "streakdate"].forEach(function (name) {
+      var legacy = "snackpack-flag-frenzy-" + name, current = "sp_flag_frenzy_" + name;
+      var value = localStorage.getItem(legacy);
+      if (value != null && localStorage.getItem(current) == null) localStorage.setItem(current, value);
+      if (value != null) localStorage.removeItem(legacy);
+    });
+  } catch (e) {}
 
   var TEAM_DATA = {};
   var mode = "daily";

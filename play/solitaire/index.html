@@ -237,7 +237,7 @@
             <button class="btn-game btn-game--primary" id="sol-new" type="button">New game</button>
           </div>
         </div>
-        <p class="game-status" id="sol-status" aria-live="polite">Click a card to select it, then click where it should go.</p>
+        <p class="game-status" id="sol-status" aria-live="polite">Pick a card, then choose where it should go.</p>
         <div class="game-board-wrap">
           <div class="sol-table" id="sol-table">
             <div class="sol-row sol-top">
@@ -264,7 +264,7 @@
             <div class="sol-row" id="sol-tableau-row"></div>
           </div>
         </div>
-        <p class="game-hint">Drag a card to move it — or click a card then its destination · Double-click sends a card to its foundation · Click the stock to deal.</p>
+        <p class="game-hint">Drag a card to move it — or pick a card, then its destination · Double-click sends a card to its foundation · Tap or click the stock to deal.</p>
       </div>
     </div>
   </section>
@@ -545,7 +545,7 @@
     clearInterval(timer); seconds = 0; renderTime();
     document.getElementById("sol-deal").textContent = String(currentDealSeed);
     statusEl.className = "game-status";
-    statusEl.textContent = "Click a card to select it, then click where it should go.";
+    statusEl.textContent = "Pick a card, then choose where it should go.";
     renderBest();
     render();
   }
@@ -817,7 +817,7 @@
       if (window.SnackPackAudio) window.SnackPackAudio.play("win");
       return;
     }
-    statusEl.textContent = hasAnyMove() ? "Click a card to select it, then click where it should go." : "No legal moves left — try Undo or start a New Game.";
+    statusEl.textContent = hasAnyMove() ? "Pick a card, then choose where it should go." : "No legal moves left — try Undo or start a New Game.";
   }
 
   // ── Stock / waste ────────────────────────────────

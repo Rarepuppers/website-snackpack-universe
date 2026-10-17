@@ -35,7 +35,7 @@ test("Snakes & Ladders conjugates for 'You'", async ({ page }) => {
     window.setTimeout = (f, d, ...a) => st(f, Math.min(d || 0, 4), ...a);
     window.setInterval = (f, d, ...a) => si(f, Math.min(d || 0, 4), ...a);
     // The once-a-day donation modal opens on a first win and covers New game.
-    localStorage.setItem("sp_donate_shown_on", new Date().toISOString().slice(0, 10));
+    const d = new Date(); localStorage.setItem("sp_donate_shown_on", d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"));
   });
   await page.goto("/play/snakes-and-ladders/", { waitUntil: "load" });
   await page.evaluate(() => {
@@ -60,4 +60,46 @@ test("Snakes & Ladders conjugates for 'You'", async ({ page }) => {
   expect(s.move, "the player never met a snake or ladder").toBe(true);
   expect(s.win, "the player never won").toBe(true);
   expect(s.lines.filter(l => /\bYou (wins|slides|climbs)\b/.test(l))).toEqual([]);
+});
+
+// Word Search's only sign of a find was the strike-through in the word list,
+// which sits below the board and off-screen on a phone.
+test("Word Search says which word was found and how many are left", async ({ page }) => {
+  await page.goto("/play/word-search/");
+  const found = await page.evaluate(() => {
+    const cells = [...document.querySelectorAll("#ws-board .ws-cell")];
+    const n = Math.round(Math.sqrt(cells.length));
+    const letters = cells.map((c) => c.textContent.trim());
+    const words = [...document.querySelectorAll("#ws-list [data-word]")].map((w) => w.dataset.word);
+    for (const w of words) for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) for (const [dr, dc] of [[0, 1], [1, 0], [1, 1], [-1, 1], [0, -1], [-1, 0], [-1, -1], [1, -1]]) {
+      let ok = true;
+      for (let k = 0; k < w.length && ok; k++) { const rr = r + dr * k, cc = c + dc * k; ok = rr >= 0 && cc >= 0 && rr < n && cc < n && letters[rr * n + cc] === w[k]; }
+      if (ok) return { word: w, a: r * n + c, b: (r + dr * (w.length - 1)) * n + c + dc * (w.length - 1), total: words.length };
+    }
+    return null;
+  });
+  expect(found).not.toBeNull();
+  await page.locator("#ws-board .ws-cell").nth(found.a).click();
+  await page.locator("#ws-board .ws-cell").nth(found.b).click();
+  await expect(page.locator("#ws-status")).toHaveText(`Found ${found.word} — ${found.total - 1} words to go.`);
+});
+
+// Flag Frenzy kept its progress under snackpack-flag-frenzy-*, outside the sp_
+// namespace /stats/ shows and clears. Existing players' data must move across.
+test("Flag Frenzy moves legacy progress into the sp_ namespace", async ({ page }) => {
+  await page.addInitScript(() => {
+    if (sessionStorage.getItem("seeded")) return;
+    sessionStorage.setItem("seeded", "1");
+    localStorage.setItem("snackpack-flag-frenzy-streak", "7");
+    localStorage.setItem("snackpack-flag-frenzy-maxstreak", "9");
+  });
+  await page.goto("/play/flag-frenzy/");
+  const keys = await page.evaluate(() => ({
+    streak: localStorage.getItem("sp_flag_frenzy_streak"),
+    max: localStorage.getItem("sp_flag_frenzy_maxstreak"),
+    legacy: Object.keys(localStorage).filter((k) => k.startsWith("snackpack-flag-frenzy-")),
+  }));
+  expect(keys.max).toBe("9");
+  expect(keys.streak).not.toBeNull();
+  expect(keys.legacy).toEqual([]);
 });

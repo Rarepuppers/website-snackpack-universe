@@ -69,7 +69,7 @@ async function fastTimers(page) {
     const st = window.setTimeout;
     window.setTimeout = (f, d, ...a) => st(f, Math.min(d || 0, 5), ...a);
     // The once-a-day donation modal opens on a first win and covers the board.
-    localStorage.setItem("sp_donate_shown_on", new Date().toISOString().slice(0, 10));
+    const d = new Date(); localStorage.setItem("sp_donate_shown_on", d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"));
   });
 }
 const total = (t) => t.split("\u2013").reduce((n, x) => n + Number(x), 0);

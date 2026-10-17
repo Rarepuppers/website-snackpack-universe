@@ -31,8 +31,11 @@
   var DWELL_MS = 10 * 60 * 1000; // 10 minutes of continuous play
   var SHOWN_KEY = "sp_donate_shown_on";
 
+  // The player's own calendar day. toISOString() is UTC, so "once a day"
+  // reset mid-evening for anyone west of Greenwich.
   function todayStamp() {
-    return new Date().toISOString().slice(0, 10);
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
   }
 
   function shownToday() {

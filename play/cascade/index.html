@@ -536,9 +536,10 @@
       statusEl.textContent = "Game over — you scored " + score + ". Hit New game to try again.";
       statusEl.className = "game-status game-status--lose";
     }
-    // Outside the best-score branch: every finished run is worth offering a
-    // share on, and this runs after celebrate either way.
-    if (window.SnackPackShare) window.SnackPackShare.result({
+    // Outside the best-score branch: every run that cleared a line is worth
+    // offering a share on ("Nice one — scored 1" was not), and this runs after
+    // celebrate either way.
+    if (window.SnackPackShare && lines > 0) window.SnackPackShare.result({
       game: "Cascade",
       headline: "Scored " + score.toLocaleString(),
       stats: [lines + (lines === 1 ? " line" : " lines")].concat(score > prevBest && prevBest > 0 ? ["new personal best"] : [])
