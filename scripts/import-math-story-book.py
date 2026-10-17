@@ -42,20 +42,22 @@ DATA_FILES = ["curatedMathBooks.ts", "expandedCuratedMathBooks.ts", "pendingCura
 BOOKS = {
     "luckybug-market-morning": {
         "slug": "luckybugs-market-morning",
+        "rev": 2,  # pages 2, 3, 5 and 6 redrawn 2026-10-17 (ac798997c)
         "lead": "A seven-page market story for practising addition and subtraction to 20, with a question on every page.",
         "blurb": "Berries roll, eggs run low and signs need string. Seven quick sums get the market open by noon.",
         "alts": [
             "Hen-Berry's basket tips and berries roll across the market path while Luckybug the ladybird hurries over.",
-            "Hen-Berry counts the eggs left in a wooden tray as Luckybug looks on.",
-            "Luckybug and Hen-Berry with baskets of yellow and purple flowers.",
+            "Hen-Berry looks at a tray of eighteen egg cups holding twelve eggs, with six cups empty, while Luckybug points.",
+            "Luckybug adds a flower to a basket of nine yellow flowers beside a basket of eight purple ones, as Hen-Berry smiles.",
             "Luckybug and Hen-Berry sort wooden tokens at the stall.",
-            "Hen-Berry sets out jam jars on two matching shelves.",
-            "Luckybug and Hen-Berry hang painted picture signs above the stalls.",
+            "Hen-Berry and Luckybug check two shelves with six jam jars on each.",
+            "Nine picture signs hang above the stalls and six more wait on the bench while Luckybug holds the string and Hen-Berry hangs one up.",
             "Woodland friends arrive at the busy market as the noon bell rings.",
         ],
     },
     "biscuit-bouncer-parcel-parade": {
         "slug": "biscuit-bouncers-parcel-parade",
+        "rev": 2,  # page 6 redrawn 2026-10-17 (ac798997c)
         "lead": "A nine-page delivery adventure for practising adding, subtracting, measuring and sharing, with a question on every page.",
         "blurb": "The fastest route misses the quiet homes. Biscuit-Bouncer and Ginger-Deer find a better one, sum by sum.",
         "alts": [
@@ -64,7 +66,7 @@ BOOKS = {
             "Biscuit-Bouncer posts letters into little painted mailboxes by the creek as Ginger-Deer watches.",
             "Biscuit-Bouncer and Ginger-Deer split the invitations into two bags at the foot of a muddy hill.",
             "The friends tie ribbon across a wobbly plank bridge to mark a safe crossing.",
-            "Biscuit-Bouncer sniffs one of three fern paths while Ginger-Deer checks another.",
+            "Biscuit-Bouncer sniffs the start of one of three fern paths while Ginger-Deer looks along the shortest one towards a cottage.",
             "Ginger-Deer and Biscuit-Bouncer tie ribbon bows on five little wagons.",
             "Biscuit-Bouncer and a crowd of woodland friends gather at the parade field.",
             "Ginger-Deer leads the parade with Biscuit-Bouncer beside her.",
@@ -239,21 +241,21 @@ def render(book_id, book, ed, template):
     for i, p in enumerate(book["pages"], 1):
         choices = "".join('<li>%s</li>' % esc(c) for c in p["choices"])
         cards.append(
-            '<article class="story-page-card" id="page-%d"><picture><source srcset="./pages/page-%d.webp" type="image/webp">'
-            '<img src="./pages/page-%d.jpg" alt="%s" loading="lazy" width="1200" height="800"></picture>'
+            '<article class="story-page-card" id="page-%d"><picture><source srcset="./pages/%s.webp" type="image/webp">'
+            '<img src="./pages/%s.jpg" alt="%s" loading="lazy" width="1200" height="800"></picture>'
             '<div class="story-page-copy"><span>Page %d of %d · %s</span><p>%s</p>'
             '<div class="math-question"><p class="math-q"><strong>Try it:</strong> %s</p>'
             '<ul class="math-choices" data-answer="%s" aria-label="Choices">%s</ul>'
             '<details class="story-answer math-answer"><summary>Show the answer</summary><p><strong>%s.</strong> %s</p></details>'
             '</div></div></article>' % (
-                i, i, i, esc(ed["alts"][i - 1]), i, n, esc(p["title"]), esc(p["body"].replace("'", "’")),
+                i, page_name(ed, i), page_name(ed, i), esc(ed["alts"][i - 1]), i, n, esc(p["title"]), esc(p["body"].replace("'", "’")),
                 esc(p["prompt"].replace("'", "’")), esc(p["answer"]), choices, esc(p["answer"]),
                 esc(p["explanation"].replace("'", "’"))))
     ld = ('{"@context":"https://schema.org","@type":"Book","name":%s,"author":{"@type":"Organization","name":"SnackPack Studios"},'
           '"isAccessibleForFree":true,"educationalLevel":%s,"learningResourceType":"Illustrated maths story","about":%s,'
-          '"image":"%spages/page-1.jpg","url":"%s"}') % (
+          '"image":"%spages/%s.jpg","url":"%s"}') % (
         html.escape('"%s"' % title, quote=False), '"%s (UK) / %s (US)"' % (book["year"], book["grade"]),
-        '"%s"' % book["topic"], url, url)
+        '"%s"' % book["topic"], url, page_name(ed, 1), url)
     first, _, rest = title.partition(" and ")
     h1 = ("%s<br>and %s" % (first, rest)) if rest else title
     return """<!DOCTYPE html>
@@ -297,6 +299,13 @@ def render(book_id, book, ed, template):
         "play": PLAY, "slug": slug}
 
 
+def page_name(ed, i):
+    """page-3, or page-3-r2 once a book's art is replaced (BOOKS "rev"): sw.js
+    serves images cache-first, so new art at an old URL stays stale for every
+    returning reader. Bump "rev" whenever a live book's pictures change."""
+    return "page-%d%s" % (i, "-r%d" % ed["rev"] if ed.get("rev") else "")
+
+
 def save_jpg(src, dst, size):
     # Crop to the target shape, then scale: a few app pages are 4:3 (1200x900)
     # and a plain resize to 1200x800 would squash them.
@@ -330,7 +339,7 @@ def main():
         os.makedirs(d, exist_ok=True)
         save_jpg(cover, os.path.join(d, "cover.jpg"), (1024, 1536))
         for i, f in enumerate(files, 1):
-            save_jpg(f, os.path.join(d, "page-%d.jpg" % i), (1200, 800))
+            save_jpg(f, os.path.join(d, page_name(ed, i) + ".jpg"), (1200, 800))
         open(os.path.join(ROOT, "read", ed["slug"], "index.html"), "w", encoding="utf-8", newline="").write(
             render(book_id, book, ed, template))
 

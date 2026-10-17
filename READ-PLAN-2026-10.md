@@ -122,9 +122,18 @@ Lantern's 4:3 page 2 is not squashed); and Pocketful of Sounds (ABCs, new
 `import-abc-story.py`, new shelf group "Read-aloud picture books"). App fix:
 Stripe-Scout was "he" in Vincent's book and "she" in the two Spelling books on
 the shelf; the app now says "Her ears flatten" (Basic Math `year6MathBooks.ts`,
-`npm run verify` passes). **Still owed to Codex:**
-`docs/ART-BRIEF-LIVE-BOOK-FIXES-2026-10-17.md` (13 images for five live books:
-Button Trail, Market Morning, Parcel Parade, Baby Bulldogs, Moonlit Café).
+`npm run verify` passes). **Live-book fixes landed too (2026-10-17):** the 13 images of
+`docs/ART-BRIEF-LIVE-BOOK-FIXES-2026-10-17.md` (monorepo `ac798997c`, handoff
+`docs/LIVE-BOOK-FIXES-HANDOFF-2026-10-17.md`) all passed review (counts and
+character designs) and are live: Button Trail (now imported by
+`import-counting-book.mjs`, replacing the hand-built August page, with
+tap-to-answer questions), Market Morning, Parcel Parade, Baby Bulldogs and
+Moonlit Café. **Replaced art gets new web file names:** each importer has a
+per-book `rev` (files become `page-3-r2.jpg` / `...-p3-r2.jpg`), because sw.js
+serves images cache-first and a new picture at an old URL stays stale for
+returning readers. Bump `rev` whenever a live book's pictures change, and
+update any SHELF `cover` that points at a page image. The old files were
+removed.
 
 ## Open: needs Mark
 

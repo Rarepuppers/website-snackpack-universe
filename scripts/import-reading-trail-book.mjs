@@ -132,6 +132,7 @@ const BOOKS = {
   // pita-pan-mountain-climb, octo-pop-coral-reef, luckybug-art-gallery,
   // corgi-on-the-cob-countryside, shelly-pop-slow-and-steady.
   "baby-bulldogs-playground": {
+    rev: 2, // page art redrawn 2026-10-17 (ac798997c)
     source: "short", slug: "baby-bulldogs-at-the-playground", skill: "Friendship",
     lead: "A four-page playground story about a shy puppy and a welcome that needs no words.",
     blurb: "A quiet puppy, a red ball and a chalk-line game that lets everyone join in.",
@@ -139,11 +140,12 @@ const BOOKS = {
     alts: [
       "A small bulldog puppy sits alone beside a red ball while three Baby Bulldogs play behind.",
       "Two Baby Bulldogs talk excitedly to the quiet puppy, who sits facing away.",
-      "The Baby Bulldogs wait beside a chalk line with a star at each end, the red ball between them.",
+      "Luckybug draws a chalk line with a star at each end while three Baby Bulldogs wait at one end and the shy puppy sits by the red ball at the other.",
       "The new puppy runs and plays with the Baby Bulldogs, chasing the red ball."
     ]
   },
   "fe-line-mignon-moonlit-cafe": {
+    rev: 2, // page art redrawn 2026-10-17 (ac798997c)
     source: "short", slug: "fe-line-mignons-moonlit-cafe", skill: "Kindness",
     lead: "A four-page story about a full café and a new kitten who finds a place at the table.",
     blurb: "Every table is full, so the guests make one long table with room for a shy new kitten.",
@@ -151,7 +153,7 @@ const BOOKS = {
     alts: [
       "Fe-Line-Mignon lights candles on the café tables while a small grey kitten sits alone by the window.",
       "Meow-inara carries a tray of croissants past full tables as the kitten watches.",
-      "The café guests push their little tables together so there is room for everyone.",
+      "The café guests have joined their tables into one long curve, and the kitten sits in the open place in the middle.",
       "Fe-Line-Mignon gives the kitten a glowing candle by the window."
     ]
   },
@@ -295,6 +297,10 @@ const SRC = fs.readFileSync(path.join(APP, "constants/reading-trail-drafts.ts"),
 // and EXTRA_STORY_BOOKS). Same page shape as the trail, but no trail step or
 // target words, art named <id>-pN.jpg, and quizzes without a "why" line.
 const SRC_SHORT = fs.readFileSync(path.join(APP, "constants/books.ts"), "utf8");
+// Web page-image name. `rev` (per BOOKS entry) adds -r2 etc. once a live book's
+// art is replaced: sw.js serves images cache-first, so a new picture at an old
+// URL would stay stale for every returning reader. Bump it when pictures change.
+const webPage = (art, ed, n) => `${art}-p${n}${ed.rev ? `-r${ed.rev}` : ""}`;
 const artPrefix = (id, ed) => (ed.source === "short" ? id : `reading-trail-${id}`);
 
 // Reads a single- or double-quoted JS string literal starting at s[i].
@@ -397,13 +403,13 @@ function render(id, book, ed) {
   const h1 = second ? `${nb(first)}<br>${nb(second)}` : nb(title);
   const titleCase = ed.skill.replace(/\b[a-z]/g, (c) => c.toUpperCase());
   const cards = book.pages.map((p, i) =>
-    `<article class="story-page-card" id="page-${i + 1}"><picture><source srcset="./pages/${art}-p${i + 1}.webp" type="image/webp"><img src="./pages/${art}-p${i + 1}.jpg" alt="${esc(ed.alts[i])}" width="768" height="1152" loading="lazy"></picture><div class="story-page-copy"><span>Page ${i + 1} of ${n}</span><p>${mark(p.text, short ? [p.focusWord] : words, ed)}</p><aside><strong>Talk together:</strong> ${esc(curly(p.prompt))}</aside></div></article>`
+    `<article class="story-page-card" id="page-${i + 1}"><picture><source srcset="./pages/${webPage(art, ed, i + 1)}.webp" type="image/webp"><img src="./pages/${webPage(art, ed, i + 1)}.jpg" alt="${esc(ed.alts[i])}" width="768" height="1152" loading="lazy"></picture><div class="story-page-copy"><span>Page ${i + 1} of ${n}</span><p>${mark(p.text, short ? [p.focusWord] : words, ed)}</p><aside><strong>Talk together:</strong> ${esc(curly(p.prompt))}</aside></div></article>`
   ).join("\n");
   const ld = JSON.stringify({
     "@context": "https://schema.org", "@type": "Book", name: title,
     author: { "@type": "Organization", name: "SnackPack Studios" },
     isAccessibleForFree: true, educationalLevel: "Beginning reader", learningResourceType: short ? "Illustrated short story" : "Illustrated story",
-    about: ed.about, image: `${url}pages/${art}-p1.jpg`, url
+    about: ed.about, image: `${url}pages/${webPage(art, ed, 1)}.jpg`, url
   });
   return `<!DOCTYPE html>
 <html lang="en">
@@ -412,7 +418,7 @@ function render(id, book, ed) {
 <title>${title} | ${short ? "Free Illustrated Short Read" : `Free ${titleCase} Story`}</title>
 <meta name="description" content="Read ${esc(title)}, a free ${n}-page illustrated story for beginning readers. ${esc(ed.lead.replace(/^A [a-z-]+-page /, "").replace(/^./, (c) => c.toUpperCase()))} Printable PDF included.">
 <link rel="canonical" href="${url}">
-<meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(ed.blurb)}"><meta property="og:image" content="${url}pages/${art}-p1.jpg"><meta property="og:url" content="${url}"><meta property="og:type" content="book"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(ed.blurb)}"><meta property="og:image" content="${url}pages/${webPage(art, ed, 1)}.jpg"><meta property="og:url" content="${url}"><meta property="og:type" content="book"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/assets/favicon-32.png"><link rel="preload" href="/assets/fonts/dmsans-ed656a5d.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/fraunces-36024e18.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/fonts/fonts.css"><link rel="stylesheet" href="../../site.css">
 <script type="application/ld+json">${ld}</script>
 <!-- breadcrumbs:generated -->
@@ -420,7 +426,7 @@ function render(id, book, ed) {
 ${SHARED}</head>
 <body class="story-reader-page">
 ${HEADER}<main>
-<section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">${short ? "Short read" : `Reading Trail · Step ${book.step}`} · Free</span><h1>${h1}</h1><p class="lead">${esc(ed.lead)}</p><div class="tag-row">${short ? `<span class="tag">Read together</span><span class="tag">${ed.skill}</span><span class="tag">4 pages</span>` : `<span class="tag">Beginning reader</span><span class="tag">${ed.skill}</span><span class="tag">Read together</span>`}</div><a class="btn btn-primary" href="#page-1">Begin the story</a></div><picture><source srcset="./pages/${art}-p1.webp" type="image/webp"><img src="./pages/${art}-p1.jpg" alt="" width="768" height="1152"></picture></div></section>
+<section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">${short ? "Short read" : `Reading Trail · Step ${book.step}`} · Free</span><h1>${h1}</h1><p class="lead">${esc(ed.lead)}</p><div class="tag-row">${short ? `<span class="tag">Read together</span><span class="tag">${ed.skill}</span><span class="tag">4 pages</span>` : `<span class="tag">Beginning reader</span><span class="tag">${ed.skill}</span><span class="tag">Read together</span>`}</div><a class="btn btn-primary" href="#page-1">Begin the story</a></div><picture><source srcset="./pages/${webPage(art, ed, 1)}.webp" type="image/webp"><img src="./pages/${webPage(art, ed, 1)}.jpg" alt="" width="768" height="1152"></picture></div></section>
 
 <section class="story-pages" aria-label="Story pages">
 ${cards}
@@ -450,7 +456,7 @@ for (const id of ids) {
   if (!WRITE) continue;
   fs.mkdirSync(path.join(dir, "pages"), { recursive: true });
   for (let i = 1; i <= book.pages.length; i++) {
-    fs.copyFileSync(path.join(APP, "assets/book-page-art", `${art}-p${i}.jpg`), path.join(dir, "pages", `${art}-p${i}.jpg`));
+    fs.copyFileSync(path.join(APP, "assets/book-page-art", `${art}-p${i}.jpg`), path.join(dir, "pages", `${webPage(art, ed, i)}.jpg`));
   }
   fs.writeFileSync(path.join(dir, "index.html"), render(id, book, ed));
 }
