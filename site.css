@@ -2502,3 +2502,23 @@ button:focus-visible {
   .story-title-grid>picture img,.story-title-grid>img{max-height:42vh;max-height:42dvh;width:auto;max-width:100%;border-width:6px;border-radius:18px;transform:none}
   .story-title-grid>picture:has(img[src$="/page-1.jpg"]),.story-title-grid>img[src$="/page-1.jpg"]{display:none}
 }
+
+/* Compact site header on phones and tablets (2026-10-17). The nav used to wrap
+   into a second row under the brand, ~155 px pinned on every page (about a
+   fifth of a phone screen). Now one pinned row: the brand, then the links on a
+   single line that scrolls sideways, faded at the right edge to show there is
+   more. It stays sticky because pinball measures the header to dock its HUD
+   (play/pinball/index.html, --pb-dock-top). Phones keep only the brand mark;
+   its alt text still names the link. */
+@media (max-width: 980px) {
+  .topbar-inner{flex-direction:row;align-items:center;min-height:0;padding:8px 0;gap:12px}
+  .topbar-inner>nav{flex:1;min-width:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+  .topbar-inner>nav::-webkit-scrollbar{display:none}
+  .topbar-inner .nav-links{flex-wrap:nowrap;gap:14px;width:max-content;padding:2px 28px 2px 2px;white-space:nowrap}
+  .topbar-inner .pill-link{padding:7px 13px}
+  .topbar-inner .theme-toggle{width:30px;height:30px;font-size:13px}
+}
+@media (max-width: 720px) {
+  .topbar-inner .brand-copy{display:none}
+  .topbar-inner .brand-mark{width:34px;height:34px;border-radius:11px}
+}

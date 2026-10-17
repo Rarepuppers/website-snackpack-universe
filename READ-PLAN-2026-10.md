@@ -101,9 +101,11 @@ down. Now: bookshelf 994 px and arcade 2,465 px on the homepage; hub 8,568 px
 with the first books at ~750 px; page 1 at ~700–1,050 px. All of it is one
 phone-only block at the end of `site.css` plus the homepage section order and
 the hub `sizes` in `scripts/lib/read-srcset.mjs` (two cards a row, so phones
-pick the 480 px covers). No `sw.js` bump (see the cache note below). Not done,
-because it is site-wide: the header's nav wraps to two rows (~155 px) and stays
-pinned while scrolling, taking about a fifth of a phone screen on every page.
+pick the 480 px covers). No `sw.js` bump (see the cache note below). Also
+2026-10-17, site-wide: the header was two rows (~155 px) pinned on every page at
+≤980 px; it is now one pinned row (51 px phone, 59 px tablet) with the links on a
+sideways-scrolling line. It stays sticky because pinball measures the header to
+dock its HUD (`--pb-dock-top`).
 
 ## Open: needs Mark
 
