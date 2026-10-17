@@ -4,11 +4,12 @@
 **Local release:** `web-2026.10.17-qa-readiness` (service worker `2026-10-17-qa-readiness`).
 **Status:** Patch A and QA preparation implemented; fresh 17 October game verification passes.
 Human, hardware, Steam and release gates remain open.
-This continuation did not push, deploy or package.
+Mark explicitly authorized commit/push on 17 October. Publication verification is in progress;
+production packaging remains with Claude and has not run in this work.
 
-For continuation, use the [17 October next-chat handover](NEXT-CHAT-HANDOVER-2026-10-17.md).
-It organizes remaining work into presentation, platform, release/measurement and conditional
-Patch B phases; it adds no newly confirmed bugs or unconditional asset commissions.
+Continue from this plan, the [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md) and
+[QA operator guide](QA-READINESS.md). The older next-chat prompt, September product strategy and
+July systems tracker are archived historical context, not additional execution queues.
 
 This is the only active execution queue. Completed audit tasks are in the
 [archive](archive/README.md); player-facing changes are in the [release notes](RELEASE-NOTES.md).
@@ -68,11 +69,13 @@ legal three/four-weapon base racks and a single weapon. The hero remains identif
 samples; mixed/bonus-slot racks in dense earned play still need review. No production defect was
 established that justifies attachment spacing or mechanics changes.
 
-## 1. Deploy and verify the browser release — open
+## 1. Publish and verify the browser release — authorized, verification open
 
-- [ ] Obtain an explicit deployment request: Mark's standing instruction is **do not push unless asked**.
-- [ ] Review the website repository's release scope, including unrelated working-tree changes;
-  push only the authorized release, wait for CI, and verify the live game and privacy page.
+- [x] Explicit commit/push request received on 17 October 2026.
+- [x] Reviewed the full `origin/main..HEAD` range. It includes committed Last Bastion QA work
+  and committed arcade layout/shared-art changes; dirty About/social/privacy/site art and scratch
+  files remain unstaged. No force push, history rewrite or production packaging is authorized.
+- [ ] Push the reviewed release, wait for CI/Pages, and verify the live game and privacy page.
 - [ ] Confirm the served build identity matches `web-2026.10.17-qa-readiness` and test a warm-cache
   offline upgrade. The live menu already showed Quick/Daily on 14 October; this does not prove
   that the current bundle or analytics configuration is deployed.
@@ -136,7 +139,8 @@ and the patch proposal’s progress checklist for remaining non-testing work. Ac
 - Save schema remains 16. Daily participation intervals are additive; old saves migrate retained
   dates. Days discarded by an older build cannot be reconstructed. Detailed history stays at 60 days.
 - Commit in the nested website repository and stage only relevant paths. Preserve retained art
-  masters and unrelated work. Do not push without the explicit request described above.
+  masters and unrelated work. The current release push is authorized; later releases still require
+  an explicit request.
 - After meaningful runtime edits, rebuild `dev/`, include generated `game-assets/`, update the
   service-worker release identity and run `npm run verify:last-bastion`.
 - Keep manual gates explicit. Automated checks cannot complete observed gameplay, audio,

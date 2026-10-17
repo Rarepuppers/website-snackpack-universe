@@ -1,5 +1,10 @@
 # Last Bastion production plan
 
+Archived 17 October 2026: this July tracker and its dated task statuses are superseded by
+[CURRENT-PLAN](../CURRENT-PLAN.md), the production code/catalogues and
+[completed-work log](../last-bastion-log.md). Open human/hardware/Steam gates and conditional
+content decisions remain in the current plan. Do not restart old numbered tasks from this file.
+
 ## Document purpose
 
 This document tracks decisions, work status, validation gates, and the production workflow for Last Bastion.

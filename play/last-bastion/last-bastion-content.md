@@ -1004,7 +1004,7 @@ Random-pool promotion remains blocked until the production Prime/biomass/effects
 
 ## Briefs added by the 23 July 2026 plan review
 
-These support Tasks 92 and 94 in `last-bastion-model.md`. Same rules as every batch: no baked text/numbers/bindings/rings; all timers, prices, and selection states are code-drawn; retain ≥4× masters; nearest-neighbour runtime normalization. **Generate only after the dependent behavior gate passes** — the Shrine/Event node systems (Task 94) and the transformation decision (Task 93) must be live-or-cut first.
+These support Tasks 92 and 94 in `archive/last-bastion-model.md`. Same rules as every batch: no baked text/numbers/bindings/rings; all timers, prices, and selection states are code-drawn; retain ≥4× masters; nearest-neighbour runtime normalization. **Generate only after the dependent behavior gate passes** — the Shrine/Event node systems (Task 94) and the transformation decision (Task 93) must be live-or-cut first.
 
 ### Audio Batch S4 — music and ambience (Task 92)
 
@@ -1053,7 +1053,7 @@ Acceptance: relic/artifact tiles are silhouette-distinct from weapon tiles (no g
 
 ## Content-expansion design — 23 July 2026 (creator-directed)
 
-Expansion brief: ~44 new events (Slay the Spire / FTL inspiration, Last Bastion twist), ~9 new artifacts, ~6 new weapons, and a Blood Market that trades HP / max HP for items and transformation. Execution phases and decisions are in `last-bastion-model.md` ("Content-expansion plan — 23 July 2026"). All events ship as pure data + tests in `EncounterEventCatalog.ts`, keep the mandatory Leave choice, and calibrate HP costs to the real 10-19 HP scale (base 10, +1/level). Cheap outcome types exist today; medium/big ones are added in Phases 2-3.
+Expansion brief: ~44 new events (Slay the Spire / FTL inspiration, Last Bastion twist), ~9 new artifacts, ~6 new weapons, and a Blood Market that trades HP / max HP for items and transformation. Execution phases and decisions are in `archive/last-bastion-model.md` ("Content-expansion plan — 23 July 2026"). All events ship as pure data + tests in `EncounterEventCatalog.ts`, keep the mandatory Leave choice, and calibrate HP costs to the real 10-19 HP scale (base 10, +1/level). Cheap outcome types exist today; medium/big ones are added in Phases 2-3.
 
 ### New events (44), grouped by family
 

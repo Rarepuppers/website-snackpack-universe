@@ -1,5 +1,10 @@
 # Last Bastion — next-chat handover prompt
 
+Archived 17 October 2026 after its executable phases were completed. Use
+[CURRENT-PLAN](../CURRENT-PLAN.md), the [worksheet](../ACCEPTANCE-WORKSHEET-2026-10-17.md) and
+[QA guide](../QA-READINESS.md) for current status. The copied instructions below are historical;
+their old no-push checkpoint does not override Mark's later explicit release request.
+
 Continuation update: QA-01/QA-02 from the subsequent accepted plan are implemented in `4675b9ab`
 and `f7506ea2`. Prepared identity is now `web-2026.10.17-qa-readiness`; follow CURRENT-PLAN and
 QA-READINESS.md for current evidence/commands. The older baseline below is historical. Human,

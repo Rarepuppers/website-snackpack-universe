@@ -26,9 +26,8 @@ Last reviewed: 17 October 2026. The game lives in the **nested website Git repo*
 | [Environment plan](environment-production-plan.md) and [prompts](environment-prompts.md) | Environment kit contracts and prompt library. Further art follows observed failures. |
 | [World-object plan](world-object-production-plan.md) | Placement/density contract; O2/O3 acceptance remains conditional. |
 | [Transformation plan](transformation-path-production-plan.md) | Later production steps remain deferred; build inspection now explains affinity thresholds. Further comprehension work follows observed play. |
-| [Product strategy](product-strategy-plan-2026-09-11.md) | Distribution rationale and measurement questions. Its old implementation queue is superseded. |
 | [Frozen content plan](last-bastion-content-design-plan-2026-08-07.md) | Proposals only; do not expand content until observed play and funnel data justify it. |
-| [Game design](last-bastion-game.md), [content design](last-bastion-content.md), [systems model](last-bastion-model.md), [balance notes](wave_balance.md) | Original design intent. Catalogues and tests own current counts. |
+| [Game design](last-bastion-game.md), [content design](last-bastion-content.md), [balance notes](wave_balance.md) | Original design intent. Catalogues and tests own current counts; CURRENT-PLAN owns implementation status. |
 | [Running log](last-bastion-log.md) | Append-only delivery history. |
 | [Player codex](last-bastion-codex.html) | Shipped content reference; `content/codexDrift.test.ts` checks its coverage. |
 
@@ -37,3 +36,5 @@ Last reviewed: 17 October 2026. The game lives in the **nested website Git repo*
 The [archive](archive/README.md) contains completed or superseded plans, audits, and one-off
 preflights. They remain available for rationale and historical evidence. Open items found in
 those documents are carried into the [current plan](CURRENT-PLAN.md), not treated as a second queue.
+The old next-chat prompt, September strategy and July systems tracker are now archived too;
+active playtest, presentation, asset and platform contracts remain above while acceptance is open.

@@ -1,10 +1,14 @@
 # Last Bastion — product, design and distribution plan
 
+Archived 17 October 2026. Discovery, Quick/Daily and telemetry implementation are delivered;
+current live measurement, content freeze and human acceptance gates are owned by
+[CURRENT-PLAN](../CURRENT-PLAN.md). Retain the dated analysis below as rationale, not a task queue.
+
 Date: 11 September 2026. **Status, 11 October: strategy reference, not an execution queue.**
 The discovery gaps measured below were fixed: the arcade hub, sitemap, game overview,
 guide media and social card now link to the game. Quick/Daily Drop and the coarse funnel
 are built locally. Deployment, observed play and live measurement remain in
-[the current plan](CURRENT-PLAN.md). Numbers and claims below describe 11 September.
+[the current plan](../CURRENT-PLAN.md). Numbers and claims below describe 11 September.
 Companion to `archive/implementation-plan-2026-09-11.md`, which covers code quality. That document
 asks "is this built correctly?" This one asks "is this the right thing to build, and can
 anyone find it?"

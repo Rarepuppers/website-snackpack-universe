@@ -4,7 +4,7 @@
 
 This is the durable game design document for Last Bastion. It describes the game we are trying to make, the decisions that are currently locked, and the boundaries between the prototype, vertical slice, web MVP, and future releases.
 
-Implementation status belongs in `last-bastion-model.md`. Detailed content lists should eventually live in data files rather than being duplicated here.
+Implementation status belongs in `CURRENT-PLAN.md`; the old tracker is retained in `archive/last-bastion-model.md`. Production catalogues own current content lists.
 
 Current supporting documents:
 
@@ -161,7 +161,7 @@ Solo, so this is a hero dossier rather than a versus grid:
 Replaces stage select entirely. A horizontal, left-to-right starchart in the spirit of FTL's sector map crossed with Slay the Spire's branching lanes:
 
 - **Topology:** 20 nodes in ~8 columns across 3 lanes. Node 1 is the drop site; node 20 is the Bastion Eater. Edges connect only to the next column (straight or one lane up/down), so every route is 8–11 encounters — a player sees roughly half the map per run, which fuels replay.
-- **Node types and budget per map:** Combat (majority), Elite ×2 (guaranteed cache), Mini-boss ×1–2 (drawn from the seeded pool), Supply Depot ×2 (the existing heal/armoury/shield decision as a safe node), Weapon Cache ×2 (the existing chest as a node), and the Boss terminus. The Scrap Shop is deliberately **not** a node type: every route instead receives post-encounter shop stops after zero-based columns 3 and 5, fronted by varied shop keepers and, in the future, keeper specialties (see Task 45 in `last-bastion-model.md`). Shrine and Event nodes are reserved future types and render as design placeholders until their systems exist.
+- **Node types and budget per map:** Combat (majority), Elite ×2 (guaranteed cache), Mini-boss ×1–2 (drawn from the seeded pool), Supply Depot ×2 (the existing heal/armoury/shield decision as a safe node), Weapon Cache ×2 (the existing chest as a node), and the Boss terminus. The Scrap Shop is deliberately **not** a node type: every route instead receives post-encounter shop stops after zero-based columns 3 and 5, fronted by varied shop keepers and, in the future, keeper specialties (see Task 45 in `archive/last-bastion-model.md`). Shrine and Event nodes are reserved future types and render as design placeholders until their systems exist.
 - **Generation rules (seeded, pure, unit-tested):** no two Elite/Mini-boss nodes adjacent on any path; at least one Supply Depot reachable before the first Mini-boss; every lane rejoins before the boss; the seed reproduces the exact map for bug reports.
 - **Presentation:** current node pulses; reachable next nodes glow teal with connecting route lines; visited nodes dim with a claw-mark "cleared" stamp; unreachable branches grey out. Hovering/selecting a node shows a small intel card (type, threat hint, reward hint). A small dropship token animates along the chosen edge.
 - **Persistence:** the save schema versions up to carry mid-run state (map seed, cleared nodes, hero build, health/shield); autosave happens on returning to the map, honouring the existing "browser storage is not cloud storage" rule.
@@ -541,7 +541,7 @@ Perks are the between-runs progression layer, distinct from the three in-run lay
 - **Unlocked by play**, through Records milestones persisted in the local save store (runs finished, victories, total nodes cleared, elites killed). Each perk states its unlock condition on its locked card, so the perk rail doubles as a goal list.
 - **Resolved once at run start** into the same modifier pipeline heroes and items use; no perk may require mid-run special-casing in combat code.
 
-The initial seven: Veteran (start at level 2), Scrapper (75% sell price), Quartermaster (+2 inventory slots), Fast Learner (+15% XP, waves/nodes early only), Gunsmith (merge grants bonus damage), Survivor (damage reduction below 30% health), Pathfinder (see one extra map column). Balance magnitudes live in `wave_balance.md` once the system's behavior gate opens (Task 46 in `last-bastion-model.md`).
+The initial seven: Veteran (start at level 2), Scrapper (75% sell price), Quartermaster (+2 inventory slots), Fast Learner (+15% XP, waves/nodes early only), Gunsmith (merge grants bonus damage), Survivor (damage reduction below 30% health), Pathfinder (see one extra map column). Balance magnitudes live in `wave_balance.md` once the system's behavior gate opens (Task 46 in `archive/last-bastion-model.md`).
 
 ## Saving
 

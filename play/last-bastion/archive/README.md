@@ -6,6 +6,9 @@ Unlinked relative paths quoted inside these older documents were written from th
 
 | File | Why archived |
 |---|---|
+| [17 October next-chat prompt](NEXT-CHAT-HANDOVER-2026-10-17.md) | Executable continuation completed; CURRENT-PLAN and the acceptance worksheet replace the copied prompt. |
+| [September product strategy](product-strategy-plan-2026-09-11.md) | Discovery/Quick/Daily/telemetry work delivered; measurement and content gates live in CURRENT-PLAN. |
+| [July systems tracker](last-bastion-model.md) | Old milestone/status queue superseded by code, catalogues, the completed-work log and CURRENT-PLAN; retained for design/task rationale. |
 | [17 October QA readiness implementation](QA-READINESS-IMPLEMENTATION-2026-10-17.md) | QA-01 session reporting and QA-02 package provenance delivered; real run/package/hardware/release acceptance remains active. |
 | [17 October continuation review](CONTINUATION-REVIEW-2026-10-17.md) | Fresh verification, normal-rack diagnostics and handoff preparation completed; observed/hardware/Steam/release dependencies remain active. |
 | [16 October asset implementation](ASSET-PATCH-A-IMPLEMENTATION-2026-10-16.md) | Patch A code/assets delivered locally; new-floor acceptance and hardware/release gates remain in the active plan. |

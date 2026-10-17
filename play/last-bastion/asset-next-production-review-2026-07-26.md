@@ -27,7 +27,7 @@
 > 4. **A short loop or GIF** of a run, for the communities where a browser roguelite
 >    actually spreads.
 >
-> Rationale in [`product-strategy-plan-2026-09-11.md`](product-strategy-plan-2026-09-11.md).
+> Rationale in [`product-strategy-plan-2026-09-11.md`](archive/product-strategy-plan-2026-09-11.md).
 > Content art is frozen alongside the content design plan; presentation-defect art
 > (LB-04's helmet, LB-07's node icons) is **not** frozen — that is fixing what exists.
 
