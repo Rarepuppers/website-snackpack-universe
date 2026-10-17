@@ -49,6 +49,7 @@
   ]
 }
 </script>
+<script src="../ai-search.js" defer></script>
 <script src="../game-ui-controls.js" defer></script>
 <script src="../game-ui-assets.js" defer></script>
 <script type="application/ld+json">
@@ -561,16 +562,18 @@
     return nb;
   }
 
-  function minimax(b, d, alpha, beta, maximizing) {
+  function minimax(b, d, alpha, beta, maximizing, control) {
+    window.SnackPackSearch.tick(control);
     if (winner(b, CPU)) return 100000 - (depth - d);
     if (winner(b, HUMAN)) return -100000 + (depth - d);
     var cols = validCols(b);
-    if (d === 0 || cols.length === 0) return score(b);
+    if (cols.length === 0) return 0;
+    if (d === 0) return score(b);
     var i, val;
     if (maximizing) {
       val = -Infinity;
       for (i = 0; i < cols.length; i++) {
-        val = Math.max(val, minimax(drop(b, cols[i], CPU), d - 1, alpha, beta, false));
+        val = Math.max(val, minimax(drop(b, cols[i], CPU), Math.max(0, d - 1), alpha, beta, false, control));
         alpha = Math.max(alpha, val);
         if (alpha >= beta) break;
       }
@@ -578,7 +581,7 @@
     } else {
       val = Infinity;
       for (i = 0; i < cols.length; i++) {
-        val = Math.min(val, minimax(drop(b, cols[i], HUMAN), d - 1, alpha, beta, true));
+        val = Math.min(val, minimax(drop(b, cols[i], HUMAN), Math.max(0, d - 1), alpha, beta, true, control));
         beta = Math.min(beta, val);
         if (alpha >= beta) break;
       }
@@ -594,12 +597,11 @@
     for (i = 0; i < cols.length; i++) if (winner(drop(board, cols[i], HUMAN), HUMAN)) return cols[i];
     // On Easy, mix in randomness.
     if (depth <= 2 && Math.random() < 0.35) return cols[Math.floor(Math.random() * cols.length)];
-    var best = cols[0], bestVal = -Infinity;
-    for (i = 0; i < cols.length; i++) {
-      var v = minimax(drop(board, cols[i], CPU), depth - 1, -Infinity, Infinity, false);
-      if (v > bestVal) { bestVal = v; best = cols[i]; }
-    }
-    return best;
+    return window.SnackPackSearch.choose(cols, depth, function (col) {
+      return score(drop(board, col, CPU));
+    }, function (col, remaining, control) {
+      return minimax(drop(board, col, CPU), remaining, -Infinity, Infinity, false, control);
+    });
   }
 
   // ── Input ────────────────────────────────────────

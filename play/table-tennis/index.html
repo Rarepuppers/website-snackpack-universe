@@ -388,13 +388,14 @@
     var newTrail = [{ x: ballX, y: ballY, age: 0 }];
     state.ballTrail.forEach(function (t) { if (t.age + 1 < TRAIL_MAX) newTrail.push({ x: t.x, y: t.y, age: t.age + 1 }); });
 
+    var previousX = ballX;
     ballX += ballVX; ballY += ballVY;
 
     if (ballY - BALL_R <= 0) { ballY = BALL_R; ballVY = Math.abs(ballVY); }
     else if (ballY + BALL_R >= H) { ballY = H - BALL_R; ballVY = -Math.abs(ballVY); }
 
     var lPaddleRight = PADDLE_X_L + PADDLE_W;
-    if (ballX - BALL_R <= lPaddleRight && ballX - BALL_R >= PADDLE_X_L && ballVX < 0) {
+    if (previousX - BALL_R >= lPaddleRight && ballX - BALL_R <= lPaddleRight && ballVX < 0) {
       var hitPosL = (ballY - paddleL) / (PADDLE_H / 2);
       if (Math.abs(hitPosL) <= 1.05) {
         var angL = reflectAngle(Math.max(-1, Math.min(1, hitPosL)));
@@ -402,7 +403,7 @@
         ballVX = Math.abs(spdL * Math.cos(angL)); ballVY = spdL * Math.sin(angL); ballX = lPaddleRight + BALL_R + 1;
       }
     }
-    if (ballX + BALL_R >= PADDLE_X_R && ballX + BALL_R <= W - PADDLE_X_OFFSET && ballVX > 0) {
+    if (previousX + BALL_R <= PADDLE_X_R && ballX + BALL_R >= PADDLE_X_R && ballVX > 0) {
       var hitPosR = (ballY - paddleR) / (PADDLE_H / 2);
       if (Math.abs(hitPosR) <= 1.05) {
         var angR = reflectAngle(Math.max(-1, Math.min(1, hitPosR)));
