@@ -15,11 +15,22 @@ test("Thirteen says 'You lead' when the player opens a round", async ({ page }) 
 
 // Snakes & Ladders built its messages the same way: "You wins!", "Snake! You
 // slides to 6.", "Ladder! You climbs to 38." Whether the player meets a snake
-// or wins is down to the dice, so the game's timers are sped up and games are
-// played until the player has done both, reading every status line on the way.
+// or wins is down to the dice. Supply legal rolls for one short ladder route
+// and speed up timers, while reading the real game's status mutations.
 test("Snakes & Ladders conjugates for 'You'", async ({ page }) => {
-  test.setTimeout(180_000);
+  test.setTimeout(30_000);
   await page.addInitScript(() => {
+    // Choose inputs from the visible turn/position rather than relying on a
+    // random win within a wall-clock budget. Animation frames consume random
+    // values too, so a call-count sequence would be brittle.
+    const route = { 0: 4, 14: 6, 38: 2, 59: 4, 81: 6, 87: 6, 93: 6, 99: 1 };
+    Math.random = () => {
+      const player = [...document.querySelectorAll("#s-playerlist .sl-pchip")].find(p => p.querySelector("strong")?.textContent === "You");
+      const human = document.getElementById("s-turn")?.textContent === "You";
+      const square = Number(player?.querySelector(".sl-ppos")?.textContent.replace("Square ", ""));
+      const roll = human ? route[square] ?? 1 : 1;
+      return (roll - 0.5) / 6;
+    };
     const st = window.setTimeout, si = window.setInterval;
     window.setTimeout = (f, d, ...a) => st(f, Math.min(d || 0, 4), ...a);
     window.setInterval = (f, d, ...a) => si(f, Math.min(d || 0, 4), ...a);
@@ -38,7 +49,7 @@ test("Snakes & Ladders conjugates for 'You'", async ({ page }) => {
     const lines = await page.evaluate(() => window.__lines);
     return { lines, move: lines.some(l => /^(Snake|Ladder)! You /.test(l)), win: lines.some(l => /^You \w+! Reached 100/.test(l)) };
   };
-  const until = Date.now() + 150_000;
+  const until = Date.now() + 20_000;
   let s = await seen();
   while (Date.now() < until && !(s.move && s.win)) {
     if (/Reached 100/.test(await page.locator("#s-status").textContent())) await page.locator("#s-new").click();
