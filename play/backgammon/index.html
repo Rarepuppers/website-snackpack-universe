@@ -419,6 +419,8 @@
   var BLUNDER = { beginner: 0.45, casual: 0.18, intermediate: 0.05, hard: 0 };
   function inHome(c, i) { return c === "w" ? i <= 5 : i >= 18; }
   function evaluate(p, c) {
+    if ((c === "w" ? p.offW : p.offB) >= 15) return 1000000;
+    if ((c === "w" ? p.offB : p.offW) >= 15) return -1000000;
     var s = pipCount(p, other(c)) - pipCount(p, c);
     s += (c === "w" ? p.offW : p.offB) * 6;
     s -= (c === "w" ? p.barW : p.barB) * 30;
