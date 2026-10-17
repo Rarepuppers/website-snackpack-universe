@@ -1,3 +1,5 @@
+> **Superseded 2026-10-17 by `CODEX-ASSET-BRIEF-2026-10-17.md`.** Job A is carried over there; Job B (WebP) moved to the derivative pipeline. Kept for history.
+
 # Codex asset handover — arcade art
 
 Two jobs, in priority order: **(A) six assets that are missing or are placeholders**, and
