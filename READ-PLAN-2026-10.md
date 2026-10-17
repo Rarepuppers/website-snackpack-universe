@@ -21,7 +21,7 @@ books worth sharing, easy sharing, and a good read on a phone, in that order.
 
 | Area | State |
 |---|---|
-| Shelf | **31 books**, 31 PDFs: Stage 1–3 decodables (6) · Reading Trail steps 1–6 · Short reads (12) · Number stories (6) · Animal fact books (1) |
+| Shelf | **39 books**, 39 PDFs: Stage 1–3 decodables (6) · Reading Trail steps 1–6 · Short reads (12) · Number stories (13) · Animal fact books (1) · Read-aloud picture books (1) |
 | Hub | Stage-ordered groups, stage shortcut chips, ItemList schema, "Save the bookshelf for offline" |
 | Every book | Next-story chain, Share button (top and end), 1200×630 share card, printable PDF, Read to me, One page at a time |
 | Number stories | Tap-to-answer question on every page, plain-list + "Show the answer" fallback |
@@ -107,6 +107,25 @@ pick the 480 px covers). No `sw.js` bump (see the cache note below). Also
 sideways-scrolling line. It stays sticky because pinball measures the header to
 dock its HUD (`--pb-dock-top`).
 
+### Story-gap art landed (done 2026-10-17)
+
+Codex delivered the 37 images of `docs/ART-BRIEF-STORY-GAPS-2026-10-16.md`
+(monorepo `3572e1a31`, `c37c44c2d`; handoff `docs/STORY-GAP-ART-HANDOFF-2026-10-17.md`).
+Every page was viewed against its text: counts (berries, plates, stones, bells,
+snowflakes, lanterns, books, pots), clock faces and character designs. All
+pass; Codex's three noted limits (Number Nest bundle sizes, the page-1 hour hand)
+do not affect any question, and the alt text claims no exact bundle counts. Eight
+books went live: Panda-Cake, Sub-Zero and Luckybug's Pairing Parade (Counting,
+`import-counting-book.mjs`); Lantern, Number Nest, Clockwork Concert and
+Vincent's Mural (Basic Math, `import-math-story-book.py`, now centre-cropping so
+Lantern's 4:3 page 2 is not squashed); and Pocketful of Sounds (ABCs, new
+`import-abc-story.py`, new shelf group "Read-aloud picture books"). App fix:
+Stripe-Scout was "he" in Vincent's book and "she" in the two Spelling books on
+the shelf; the app now says "Her ears flatten" (Basic Math `year6MathBooks.ts`,
+`npm run verify` passes). **Still owed to Codex:**
+`docs/ART-BRIEF-LIVE-BOOK-FIXES-2026-10-17.md` (13 images for five live books:
+Button Trail, Market Morning, Parcel Parade, Baby Bulldogs, Moonlit Café).
+
 ## Open: needs Mark
 
 1. **Pocketful of Sounds art.** `ted-e-bear-pocketful-of-sounds` (app1, free,
@@ -190,15 +209,11 @@ and run `scripts/notify-search-engines.mjs <urls>`.
 
 | Book | Source | Reason |
 |---|---|---|
-| Pocketful of Sounds | app1 featured, free | 1/8 pages illustrated |
 | 5 ABC books | app1, free | text fixed 2026-10-16 (`f2e21e7d5`); art covers only 7–8 of 26 letters per book, so it waits on Mark's art decision (Open: needs Mark, item 2) |
-| Pork-ulele's Clockwork Concert | app4, free | page 1 clock shows 4:15 for "quarter past three" |
-| Ted-E-Bear's Lantern; Booklava's Number Nest | app4, free | character designs change mid-book |
-| Vincent Van Mouse and the Mural | app4, free | 4/7 pages illustrated |
 | Spelling short reads #34–60 | app3, free | weaker vocabulary/science books; several factual errors (see B2) |
 | Blanket Fort, Library Day, Moonlight Story, Garden Race | app3, free | a character changes design mid-book, or clashes with the shelf |
-| Panda-Cake's Market Basket | app2, free | mapping fixed 2026-10-16 (`63ac293f1`); Panda-Cake changes outfit on pages 2/4/6, page 5 has no art, page 6 doesn't show 12 places: art brief |
-| Sub-Zero and the Snowflake Post | app2, free | Sub-Zero changes design on page 6; page 2 sleds show shapes, not numbers; page 6 shows 18 flakes for 15: art brief |
+| Corgi's Ten-Frame Picnic; Honey-Beats and the Number Neighbours | app2, free | the supporting character in the text is drawn as Bottle-Nose on every page, and pictures contradict the counts (~12 images; Mark's call) |
+| Cereal-Swimmer's Number Line Lagoon | app2, free | the octopus changes design on page 3 |
 | "Which book first?" QR PDF | — | dropped: the stage-ordered hub does the job, and QR would add the repo's first dependency |
 
 ## Gotchas worth keeping
