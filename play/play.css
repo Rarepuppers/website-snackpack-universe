@@ -2270,3 +2270,91 @@ button.th-card.is-selected {
 .pb-modes-title,
 .pb-overlay-title { color: #ffffff; }
 .pb-overlay-body { color: #ffd479; }
+
+/* ── Game-first layout (2026-10-17) ─────────────────
+   Every game page opened on its marketing hero and an options toolbar, so the
+   board sat below the first screen on phones (672–1,104 px down on an 812 px
+   screen) and was cut off on a 1280×800 desktop. The hero is now a title
+   strip, the game section starts right under it, and on phones the options
+   fold behind one "Options" button where height is short (game-ui-assets.js adds it). The hero's
+   description is not lost: the page's prose section below the game covers it.
+   :has() keeps this to pages that actually hold a game. */
+body:has(.game-stage) .page-hero { padding: 26px 0 6px; }
+body:has(.game-stage) .page-hero-card { padding: 16px 24px; }
+body:has(.game-stage) .page-hero h1 { margin: 2px 0 6px; font-size: clamp(2rem, 4.2vw, 3.2rem); }
+body:has(.game-stage) .page-hero .lead { margin-bottom: 0; font-size: 0.98rem; line-height: 1.5; }
+body:has(.game-stage) main > section:has(> .shell > .game-stage, > .game-stage) { padding-top: 6px; }
+
+.sp-options-toggle[aria-expanded="true"] { background: var(--ink, #201713); color: #fff; }
+.sp-options-toggle .sp-options-summary { font-weight: 600; opacity: 0.8; }
+
+@media (max-width: 760px) {
+  body:has(.game-stage) .page-hero { padding: 10px 0 0; }
+  body:has(.game-stage) .page-hero-card { padding: 10px 14px; border-radius: 18px; }
+  body:has(.game-stage) .page-hero .eyebrow,
+  body:has(.game-stage) .page-hero .lead { display: none; }
+  body:has(.game-stage) .page-hero h1 { margin: 0; font-size: clamp(1.6rem, 7vw, 2.1rem); line-height: 1.05; }
+  body:has(.game-stage) .game-stage { padding: 14px; }
+}
+/* Folded options wherever vertical room is short — phones, and laptops 900 px
+   tall or less, where the full options row alone pushed the board off the
+   screen. Keep what is used mid-game (New game, Undo, Hint, Pause) and the
+   toggle; everything else waits behind it. The rules sit on the children, so
+   controls other scripts add later (sound, card back) fold too. */
+@media (max-width: 760px), (max-height: 900px) {
+  body:has(.game-stage) .page-hero .eyebrow,
+  body:has(.game-stage) .page-hero .lead { display: none; }
+  .game-stage.sp-has-options:not(.sp-options-open) :is(.game-controls, .fc-actions) > :not(.btn-game--primary):not(.primary):not(.sp-options-toggle):not([id$="-undo"]):not([id$="-hint"]):not(#sp-pause),
+  .game-stage.sp-has-options:not(.sp-options-open) :is(.color-pick, .category-controls) { display: none !important; }
+}
+@media (min-width: 761px) and (min-height: 901px) {
+  .sp-options-toggle { display: none !important; }
+}
+
+/* ── Hub on phones (2026-10-17) ─────────────────────
+   The /play/ hub put its first game tile 2,391 px down a 19,000 px page: a
+   727 px hero, an 830 px daily panel, a 400 px filter block, then 40 tiles in
+   one column at 312 px each. On phones the hero is a title and its buttons,
+   the daily picks sit two to a row, the category chips scroll sideways in one
+   row, and games are compact two-up tiles (the tile is still the whole link;
+   descriptions return from 721 px up). */
+@media (max-width: 720px) {
+  body:has(.daily-challenge-panel) .page-hero { padding: 12px 0 0; }
+  body:has(.daily-challenge-panel) .page-hero-card { padding: 16px; }
+  body:has(.daily-challenge-panel) .page-hero .eyebrow,
+  body:has(.daily-challenge-panel) .page-hero .lead { display: none; }
+  body:has(.daily-challenge-panel) .page-hero h1 { margin: 0 0 12px; font-size: clamp(1.8rem, 8vw, 2.3rem); line-height: 1.05; }
+  body:has(.daily-challenge-panel) .page-hero .stack-inline { gap: 8px; }
+  body:has(.daily-challenge-panel) .page-hero .stack-inline .btn { padding: 10px 16px; }
+  body:has(.daily-challenge-panel) main section { padding: 14px 0 10px; }
+
+  .daily-challenge-panel { padding: 14px; gap: 10px; }
+  .daily-challenge-head .eyebrow, .daily-challenge-head .section-copy { display: none; }
+  .daily-challenge-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .daily-challenge-card { min-height: 0; padding: 10px 12px; gap: 4px; }
+  .daily-challenge-card strong { font-size: 1rem; }
+  .daily-challenge-card span:not(.daily-challenge-seed) { display: none; }
+
+  body:has(.daily-challenge-panel) #games .section-head .section-copy { display: none; }
+  .arcade-tools { margin: 10px 0 14px; padding: 12px; }
+  .arcade-categories { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-top: 10px; padding-bottom: 2px; }
+  .arcade-categories::-webkit-scrollbar { display: none; }
+  .arcade-categories button { flex: 0 0 auto; }
+
+  .game-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .game-grid .game-tile { padding: 14px 12px 12px; border-radius: 18px; }
+  .game-grid .game-tile .game-icon { width: 56px; height: 56px; border-radius: 14px; margin-bottom: 10px; }
+  .game-grid .game-tile h3 { font-size: 1.08rem; line-height: 1.15; margin: 0; }
+  .game-grid .game-tile p, .game-grid .game-tile .game-play { display: none; }
+  .game-grid .game-badge-new { top: 10px; right: 46px; padding: 3px 8px; font-size: 0.62rem; }
+  .game-grid .game-favourite { width: 32px; height: 32px; top: 8px; right: 8px; }
+}
+@media (max-width: 720px) {
+  body:has(.daily-challenge-panel) #games .section-head .eyebrow { display: none; }
+  .arcade-search-row { flex-wrap: nowrap; align-items: end; gap: 8px; }
+  .arcade-search-row > .arcade-search { flex: 1 1 auto; width: auto; }
+  .arcade-search-row > .arcade-sort { flex: 0 0 auto; width: auto; }
+  .arcade-sort > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .arcade-sort select { min-width: 0; width: 132px; }
+  .arcade-search-row > .arcade-clear { flex: 0 0 auto; width: auto; }
+}

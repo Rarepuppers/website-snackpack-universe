@@ -149,6 +149,42 @@
     apply();
   }());
 
+  // Phones: fold the options row behind one button so the board is on the
+  // first screen. play.css does the hiding (≤760 px) and keeps New game, Undo,
+  // Hint and Pause out; this adds the button and names the current choices on
+  // it, so a folded row never hides which mode you are in.
+  (function addOptionsDisclosure() {
+    // Pinball docks its own HUD under the header and is another session's.
+    if (/^\/play\/pinball\/?$/.test(location.pathname)) return;
+    var stage = document.querySelector(".game-stage");
+    var controls = stage && stage.querySelector(".game-controls, .fc-actions");
+    if (!controls || controls.querySelector(".sp-options-toggle")) return;
+    var keep = ".btn-game--primary, .primary, [id$='-undo'], [id$='-hint'], #sp-pause";
+    var foldable = Array.prototype.filter.call(controls.children, function (el) { return !el.matches(keep); }).length
+      + stage.querySelectorAll(".color-pick, .category-controls").length;
+    // The sound toggle joins later (enableArcadeAudio), so one is enough.
+    if (foldable < 1) return;
+    stage.classList.add("sp-has-options");
+    var toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "btn-game sp-options-toggle";
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.innerHTML = 'Options <span class="sp-options-summary"></span>';
+    var summary = toggle.querySelector(".sp-options-summary");
+    function describe() {
+      var picked = Array.prototype.map.call(controls.querySelectorAll(".seg [aria-pressed='true'], [role=group] [aria-pressed='true'], .fc-seg [aria-pressed='true']"), function (b) { return b.textContent.trim(); }).filter(Boolean);
+      summary.textContent = picked.length ? "· " + picked.slice(0, 2).join(" · ") : "";
+    }
+    toggle.addEventListener("click", function () {
+      var open = !stage.classList.contains("sp-options-open");
+      stage.classList.toggle("sp-options-open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+    });
+    controls.addEventListener("click", function () { setTimeout(describe, 0); });
+    controls.insertBefore(toggle, controls.firstChild);
+    describe();
+  }());
+
   (function enableArcadeAudio() {
     var gameMatch = location.pathname.match(/^\/play\/([^/]+)\/?$/);
     // Last Bastion owns its own Phaser audio stack. Without this guard the
