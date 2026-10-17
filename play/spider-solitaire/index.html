@@ -78,7 +78,7 @@
 .spi-dones { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
 .spi-dones .spi-slot { width: calc(var(--cw) * 0.74); height: calc(var(--cw) * 1.04); }
 .btn-game:disabled { opacity: 0.4; cursor: default; }
-.btn-game[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.btn-game[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
 </style>
 <script type="application/ld+json">
 {
@@ -108,6 +108,7 @@
   ]
 }
 </script>
+<script src="../game-ui-controls.js" defer></script>
 <script src="../game-ui-assets.js" defer></script>
 <script type="application/ld+json">
 {

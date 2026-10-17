@@ -27,9 +27,10 @@ from `table.js` geometry.
 
 The original generated source was reviewed and edited to remove curved orbit-like marks
 and a ringed planet from the playing area so the decoration cannot imply false
-ball paths. Alternate skins, sprites, tile, social art and audio remain
-deferred from the first pilot. Audio, alternate skins, tile and social art
-remain deferred after this quality pass.
+ball paths. Sprites and audio are now active: canonical audio cues and delivery
+records are under `../audio/pinball/`, with `scripts/check-pinball-audio.js`
+checking consumers. Additional skins, tables and cosmetic variants remain
+separate product decisions.
 
 Generated with the built-in image generation tool on 2026-09-20. The exact
 prompt and edit are recorded in `PROMPT.md`.

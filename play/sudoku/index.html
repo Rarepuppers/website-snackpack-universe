@@ -108,7 +108,7 @@
   color: var(--muted);
   line-height: 1.05;
 }
-.su-pad .su-util[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.su-pad .su-util[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
 @media (max-width: 480px) {
   .su-pad { grid-template-columns: repeat(5, 1fr); }
   .su-pad button { min-height: 44px; font-size: 1.1rem; }
@@ -212,6 +212,7 @@
 </script>
 <script defer src="/theme.js"></script>
 <!-- /theme:generated -->
+<script src="../game-ui-controls.js" defer></script>
 <script src="../game-ui-assets.js" defer></script>
 </head>
 <body>
