@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Five Dice — Free Dice Game Online vs Computer | No Ads — SnackPack</title>
+<meta name="description" content="Play Five Dice free in your browser — roll five dice up to three times, hold the ones you want and fill a 13-box scorecard. Solo, vs the computer or two players. Daily dice challenge. No ads, no sign-in.">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/five-dice/">
+<meta name="theme-color" content="#de6a38">
+<link rel="icon" type="image/png" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/snackpack-mark-180.png">
+<meta property="og:title" content="Five Dice — Free Dice Game Online | No Ads">
+<meta property="og:description" content="Roll, hold and score: chase full houses, straights and five of a kind. Solo, vs the computer or two players, with a daily dice challenge. Free in your browser.">
+<meta property="og:image" content="https://www.snackpackuniverse.com/play/social/five-dice.png">
+<meta property="og:url" content="https://www.snackpackuniverse.com/play/five-dice/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.snackpackuniverse.com/play/social/five-dice.png">
+<link rel="preload" href="/assets/fonts/dmsans-ed656a5d.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-36024e18.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../site.css">
+<link rel="stylesheet" href="../play.css?v=13">
+<style>
+  .fd-dice { display: flex; justify-content: center; gap: clamp(6px, 2vw, 12px); margin: 6px 0 12px; }
+  .fd-die {
+    width: clamp(52px, 15vw, 72px); aspect-ratio: 1; padding: 6px;
+    border: 2px solid var(--line-strong); border-radius: 16px; background: var(--surface-strong);
+    cursor: pointer; display: grid; place-items: center; position: relative;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+  .fd-die .board-icon { width: 100%; height: 100%; }
+  .fd-die[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--surface-strong)); transform: translateY(-4px); }
+  .fd-die[aria-pressed="true"]::after {
+    content: "Held"; position: absolute; bottom: -9px; left: 50%; transform: translateX(-50%);
+    padding: 1px 7px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 0.66rem; font-weight: 800;
+  }
+  .fd-die:disabled { cursor: default; }
+  .fd-die.is-blank .board-icon { opacity: 0.22; }
+  .fd-die.is-rolling { animation: fd-shake 0.32s ease; }
+  @keyframes fd-shake { 25% { transform: rotate(-8deg); } 75% { transform: rotate(8deg); } }
+  .fd-rollrow { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .fd-card { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  .fd-card th, .fd-card td { padding: 5px 6px; border-bottom: 1px solid var(--line); text-align: left; }
+  .fd-card th.fd-num, .fd-card td.fd-num { text-align: center; width: 4.6em; }
+  .fd-card thead th { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  .fd-card .fd-sub td { font-weight: 800; background: var(--surface); }
+  .fd-box {
+    width: 100%; min-height: 34px; border: 1px dashed var(--line-strong); border-radius: 10px;
+    background: transparent; color: var(--muted); font: inherit; font-weight: 700; cursor: default;
+  }
+  .fd-box.is-open { border-style: solid; border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); cursor: pointer; }
+  .fd-box.is-zero { border-color: var(--line-strong); color: var(--muted); background: transparent; }
+  .fd-box.is-scored { border: 0; color: var(--ink); background: transparent; }
+  .fd-box.is-new { color: #1f8f77; }
+  .fd-cat small { display: block; color: var(--muted); font-size: 0.74rem; font-weight: 500; }
+  @media (prefers-reduced-motion: reduce) {
+    .fd-die, .fd-die[aria-pressed="true"] { transition: none; transform: none; }
+    .fd-die.is-rolling { animation: none; }
+  }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Five Dice",
+  "url": "https://www.snackpackuniverse.com/play/five-dice/",
+  "applicationCategory": "Game",
+  "genre": "Dice",
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "playMode": ["SinglePlayer", "MultiPlayer"],
+  "description": "Free browser dice game. Roll five dice up to three times a turn, hold the ones you want and fill a 13-box scorecard of pairs, full houses, straights and five of a kind. Solo, against the computer or two players, plus a daily challenge. No ads, no sign-in.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Five Dice",
+  "step": [
+    { "@type": "HowToStep", "name": "Roll", "text": "Roll all five dice. You get up to three rolls a turn." },
+    { "@type": "HowToStep", "name": "Hold", "text": "Tap any dice you want to keep, then roll the rest again." },
+    { "@type": "HowToStep", "name": "Score", "text": "Pick one empty box on the scorecard to score the dice. Every box is used once; after 13 turns the highest total wins." }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is Five Dice free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It plays free in your browser with no ads, no sign-in, and nothing to install." } },
+    { "@type": "Question", "name": "How does scoring work in Five Dice?", "acceptedAnswer": { "@type": "Answer", "text": "The top half scores the total of one face (all the threes, all the sixes); reach 63 there for a 35-point bonus. The bottom half scores combinations: three and four of a kind score the total of all dice, a full house 25, a small straight 30, a large straight 40, five of a kind 50, and chance is any total. Every extra five of a kind after the first scores a 100-point bonus." } },
+    { "@type": "Question", "name": "Can I play Five Dice against the computer?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Play solo for a high score, against a relaxed or a sharp computer opponent, or two players passing one device. Your record against each computer is kept on this device." } },
+    { "@type": "Question", "name": "How do I play Five Dice with a keyboard?", "acceptedAnswer": { "@type": "Answer", "text": "Every die, the Roll button and every scorecard box is a button: Tab moves between them and Enter or Space presses them. Every other control is reachable by Tab." } },
+    { "@type": "Question", "name": "Does my progress save?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, on this device only. A game in progress is saved, so you can close the tab and pick it back up — each mode keeps its own. There is no account and nothing is uploaded." } },
+    { "@type": "Question", "name": "Is there a daily Five Dice challenge?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Daily game gives everyone the same dice for the same rolls today, so scores are worth comparing. Share yours when you finish." } },
+    { "@type": "Question", "name": "Can I play Five Dice offline?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The site installs from your browser and keeps working with no connection: once you have opened a game it is cached on your device. The five-dice game is also in Snackpack Brain Games Vol 2 on Android." } }
+  ]
+}
+</script>
+<script src="../game-ui-controls.js" defer></script>
+<script src="../game-ui-assets.js" defer></script>
+<!-- breadcrumbs:generated -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.snackpackuniverse.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Play",
+      "item": "https://www.snackpackuniverse.com/play/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Five Dice",
+      "item": "https://www.snackpackuniverse.com/play/five-dice/"
+    }
+  ]
+}
+</script>
+<!-- /breadcrumbs:generated -->
+<!-- pwa:generated -->
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SnackPack">
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    });
+  }
+</script>
+<!-- /pwa:generated -->
+<!-- theme:generated -->
+<script>
+  (function () {
+    var d = document.documentElement, t = null;
+    try { t = localStorage.getItem("snackpack.theme.v1"); } catch (e) {}
+    if (t !== "dark" && t !== "light" && t !== "cream") {
+      t = "cream";
+    }
+    d.setAttribute("data-theme", t);
+    d.setAttribute("data-theme-default", "cream");
+  })();
+</script>
+<script defer src="/theme.js"></script>
+<!-- /theme:generated -->
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../../">
+      <img class="brand-mark" src="/assets/snackpack-mark-96.png" alt="SnackPack Studios icon" width="96" height="94" decoding="async">
+      <span class="brand-copy">
+        <span class="brand-title">SnackPack Studios</span>
+        <span class="brand-subtitle">Five Dice</span>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="/apps/">Apps</a></li>
+        <li><a href="/play/">Play</a></li>
+        <li><a href="/play/daily/">Daily</a></li>
+        <li><a href="/read/">Read</a></li>
+        <li><a href="/guides/">Guides</a></li>
+        <li><a href="/#pipeline">Roadmap</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+        <li><a class="pill-link" href="mailto:support@snackpackuniverse.com">Support</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="page-hero-card" style="text-align:center;">
+        <span class="eyebrow">Free · No download</span>
+        <h1>Five Dice</h1>
+        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">Roll five dice up to three times, hold the ones you like and fill your scorecard: full houses, straights and five of a kind. Play solo, against the computer or a friend, or take today's daily dice. No ads, no sign-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="game-stage" data-no-keyboard-reason="Five Dice is played with buttons — five dice to hold, Roll, and one button per scorecard box — not a grid, so keyboard-grid.js roving focus does not apply. Tab moves between them and Enter or Space presses them. Every other control is reachable by Tab." style="max-width:560px;">
+        <div class="game-toolbar">
+          <div class="game-readout">
+            <span class="readout-chip"><span id="fd-you-label">Score</span><b id="fd-you">0</b></span>
+            <span class="readout-chip" id="fd-opp-chip" style="display:none"><span id="fd-opp-label">CPU</span><b id="fd-opp">0</b></span>
+            <span class="readout-chip"><span>Turn</span><b id="fd-turn">1/13</b></span>
+            <span class="readout-chip" title="Best solo score, or your record against this opponent, on this device"><span id="fd-best-label">Best</span><b id="fd-best">—</b></span>
+          </div>
+          <div class="game-controls">
+            <div class="seg" role="group" aria-label="Mode">
+              <button type="button" data-mode="solo" aria-pressed="true">Solo</button>
+              <button type="button" data-mode="cpu" aria-pressed="false">vs CPU</button>
+              <button type="button" data-mode="sharp" aria-pressed="false">Sharp CPU</button>
+              <button type="button" data-mode="2p" aria-pressed="false">2 players</button>
+            </div>
+            <button class="btn-game" id="fd-daily" type="button">Daily</button>
+            <button class="btn-game btn-game--primary" id="fd-new" type="button">New game</button>
+          </div>
+        </div>
+        <p class="game-status" id="fd-status" aria-live="polite">Roll to start your first turn.</p>
+
+        <div class="game-board-wrap" style="display:block;">
+          <div class="fd-dice" id="fd-dice" role="group" aria-label="Dice — tap to hold"></div>
+          <div class="fd-rollrow">
+            <button class="btn-game btn-game--primary" id="fd-roll" type="button">Roll</button>
+            <span class="game-hint" id="fd-rolls" style="margin:0;">3 rolls left</span>
+          </div>
+          <table class="fd-card" aria-label="Scorecard">
+            <thead><tr><th scope="col">Box</th><th scope="col" class="fd-num" id="fd-col-0">You</th><th scope="col" class="fd-num" id="fd-col-1" hidden>CPU</th></tr></thead>
+            <tbody id="fd-rows"></tbody>
+          </table>
+        </div>
+        <p class="game-hint">Roll, tap dice to hold them, roll again — up to three rolls — then pick a box to score. Every box is used once.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="funnel-card">
+        <div>
+          <span class="eyebrow">Play on the go</span>
+          <h2>Like it? Take it offline.</h2>
+          <p>This five-dice game is one of the games in Snackpack Brain Games Vol 2 — our calm, ad-free Android bundle with board games, cards and puzzles in one app.</p>
+          <ul class="funnel-points">
+            <li>Plays fully offline — flights, commutes, anywhere</li>
+            <li>More modes and dice styles in the app</li>
+            <li>More games in the same app · no ads, no tracking</li>
+          </ul>
+          <div class="stack-inline">
+            <a class="store-badge-link" href="/go/arcade/five-dice/braingames2/" target="_blank" rel="noopener" aria-label="Get Snackpack Brain Games Vol 2 on Google Play">
+              <img class="store-badge" src="../../assets/google-play-badge.svg" alt="Get it on Google Play" loading="lazy" decoding="async">
+            </a>
+          </div>
+        </div>
+        <div class="funnel-aside">
+          <img class="funnel-qr" src="../../assets/qrcodes/qr-code-brain-games.png" alt="QR code to download Snackpack Brain Games on Google Play" loading="lazy" decoding="async">
+          <span style="color:var(--muted);font-size:0.82rem;font-weight:600;">Scan to download</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell seo-prose">
+      <h2>How to play Five Dice</h2>
+      <p>Five Dice is the classic roll-and-score dice game. Each turn you roll five dice, keep the ones you like, and roll the rest again — up to three rolls in all. Then you must score the dice in one empty box on your scorecard. There are thirteen boxes, so a game is thirteen turns, and every box is filled exactly once, even if that means scoring a zero. The skill is in the choices: which dice to hold, when to stop rolling, and which box to spend on a disappointing roll so the valuable ones stay open.</p>
+
+      <h3>The scorecard</h3>
+      <ul>
+        <li><strong>Ones to Sixes</strong> — the total of the dice showing that face. Reach 63 across these six and you earn a 35-point bonus: that is three of each face.</li>
+        <li><strong>Three of a kind / Four of a kind</strong> — the total of all five dice, if at least three (or four) match.</li>
+        <li><strong>Full house</strong> — three of one face and two of another, worth 25.</li>
+        <li><strong>Small straight</strong> — four in a row (1-2-3-4, 2-3-4-5 or 3-4-5-6), worth 30. <strong>Large straight</strong> — five in a row, worth 40.</li>
+        <li><strong>Five of a kind</strong> — all five dice the same, worth 50. Every further five of a kind adds a 100-point bonus and can be scored in any open box at its full value.</li>
+        <li><strong>Chance</strong> — the total of any roll. Your safety net.</li>
+      </ul>
+
+      <h3>Modes</h3>
+      <ul>
+        <li><strong>Solo</strong> — chase your best score.</li>
+        <li><strong>vs CPU</strong> — a relaxed computer opponent; <strong>Sharp CPU</strong> plays to protect its big boxes.</li>
+        <li><strong>2 players</strong> — pass the device between turns.</li>
+        <li><strong>Daily</strong> — the same dice for everyone today, so scores are worth comparing.</li>
+      </ul>
+
+      <h3>Tips</h3>
+      <ul>
+        <li>Early on, aim for the upper bonus: three fives or three sixes in their own boxes is worth far more than it looks.</li>
+        <li>Holding four in a row with rolls left gives a fair chance at a large straight.</li>
+        <li>Save Chance for a bad roll late in the game rather than spending it early.</li>
+      </ul>
+
+      <h3>Frequently asked questions</h3>
+      <div class="faq-list" style="margin-top:14px;">
+        <details class="faq-item"><summary>Is Five Dice free?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
+        <details class="faq-item"><summary>Do I have to use all three rolls?</summary><p>No. Score as soon as you like; any roll can go in any open box.</p></details>
+        <details class="faq-item"><summary>What if nothing fits?</summary><p>You still fill a box — pick one you were unlikely to score well anyway and it records a zero.</p></details>
+        <details class="faq-item"><summary>Does my game save?</summary><p>Yes, on this device. Close the tab mid-game and you will be offered your game back next time.</p></details>
+      </div>
+
+      <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
+    </div>
+  </section>
+</main>
+
+<!-- related-games:generated -->
+<section class="related-games" aria-label="More free browser games">
+  <div class="shell">
+    <h2 class="related-games-title">More free games</h2>
+    <div class="game-grid game-grid--compact">
+      <a class="game-tile" href="/atlas-quest/">
+        <img class="game-icon" src="../tiles/atlas-quest.svg" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <h3>Atlas Quest</h3>
+      </a>
+      <a class="game-tile" href="../cascade/">
+        <img class="game-icon" src="../tiles/cascade.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <h3>Cascade</h3>
+      </a>
+      <a class="game-tile" href="../thirteen/">
+        <img class="game-icon" src="../tiles/thirteen.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <h3>Thirteen</h3>
+      </a>
+      <a class="game-tile" href="../table-tennis/">
+        <img class="game-icon" src="../tiles/table-tennis.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <h3>Table Tennis</h3>
+      </a>
+      <a class="game-tile" href="../pinball/">
+        <img class="game-icon" src="../tiles/pinball.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <h3>Pinball</h3>
+      </a>
+      <a class="game-tile" href="../asteroid-destroyer/">
+        <img class="game-icon" src="../tiles/asteroid-destroyer.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <h3>Asteroid Destroyer</h3>
+      </a>
+      <a class="game-tile" href="../flappy-snacky/">
+        <img class="game-icon" src="../tiles/flappy-snacky.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <h3>Flappy Snacky</h3>
+      </a>
+    </div>
+    <p class="related-games-more"><a class="text-link" href="../">See all games in the arcade →</a></p>
+  </div>
+</section>
+<!-- /related-games:generated -->
+
+<footer class="foot">
+  <div class="shell foot-support">
+    <a class="donate-badge" href="https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04" target="_blank" rel="noopener" aria-label="Tip or donate to support SnackPack Studios" title="Tip or donate to support SnackPack">
+      <picture><source srcset="../../assets/donate2-50.webp" type="image/webp"><img src="../../assets/donate2-50.png" alt="SnackPack — Tip or Donate · Support Us" width="104" height="81" loading="lazy"></picture>
+    </a>
+    <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
+  </div>
+  <div class="shell foot-wrap">
+    <p class="foot-note">Play Five Dice free · SnackPack Arcade.</p>
+    <div class="footer-links">
+      <a class="text-link" href="../">Arcade</a>
+      <a class="text-link" href="../../apps/snackpack-brain-games-vol-2/">Brain Games Vol 2 app</a>
+      <a class="text-link" href="../../privacy/">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>window.SP_PLAY_URL = "https://www.snackpackuniverse.com/go/arcade/five-dice/braingames2/";</script>
+<script src="../funnel.js"></script>
+<script src="../daily-state.js"></script><script src="../share-result.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // ════ Engine (ported from the Vol 2 app's yahtzee/engine.ts) ════
+  var CATEGORIES = [
+    { id: "ones", label: "Ones", upper: 1 }, { id: "twos", label: "Twos", upper: 2 },
+    { id: "threes", label: "Threes", upper: 3 }, { id: "fours", label: "Fours", upper: 4 },
+    { id: "fives", label: "Fives", upper: 5 }, { id: "sixes", label: "Sixes", upper: 6 },
+    { id: "threeKind", label: "Three of a kind", hint: "total of all dice" },
+    { id: "fourKind", label: "Four of a kind", hint: "total of all dice" },
+    { id: "fullHouse", label: "Full house", hint: "25" },
+    { id: "smallStraight", label: "Small straight", hint: "four in a row · 30" },
+    { id: "largeStraight", label: "Large straight", hint: "five in a row · 40" },
+    { id: "fiveKind", label: "Five of a kind", hint: "50" },
+    { id: "chance", label: "Chance", hint: "any total" }
+  ];
+  var BONUS_AT = 63, BONUS = 35, EXTRA_FIVE = 100;
+  var ZERO_PENALTY = { ones: 2, twos: 4, threes: 6, fours: 8, fives: 10, sixes: 12, threeKind: 14, fourKind: 18, fullHouse: 20, smallStraight: 22, largeStraight: 32, fiveKind: 40, chance: 6 };
+
+  function counts(dice) { var c = [0, 0, 0, 0, 0, 0, 0]; dice.forEach(function (d) { c[d]++; }); return c; }
+  function sum(dice) { return dice.reduce(function (a, b) { return a + b; }, 0); }
+  function isFive(dice) { return counts(dice).some(function (n) { return n === 5; }); }
+  function hasRun(dice, runs) { var s = {}; dice.forEach(function (d) { s[d] = true; }); return runs.some(function (r) { return r.every(function (v) { return s[v]; }); }); }
+  function catById(id) { return CATEGORIES.filter(function (c) { return c.id === id; })[0]; }
+
+  function scoreCategory(id, dice) {
+    var c = counts(dice), cat = catById(id);
+    if (cat.upper) return c[cat.upper] * cat.upper;
+    switch (id) {
+      case "threeKind": return c.some(function (n) { return n >= 3; }) ? sum(dice) : 0;
+      case "fourKind": return c.some(function (n) { return n >= 4; }) ? sum(dice) : 0;
+      case "fullHouse": return c.indexOf(3) >= 0 && c.indexOf(2) >= 0 ? 25 : 0;
+      case "smallStraight": return hasRun(dice, [[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]]) ? 30 : 0;
+      case "largeStraight": return hasRun(dice, [[1, 2, 3, 4, 5], [2, 3, 4, 5, 6]]) ? 40 : 0;
+      case "fiveKind": return isFive(dice) ? 50 : 0;
+      case "chance": return sum(dice);
+    }
+    return 0;
+  }
+  // An extra five of a kind (after 50 is banked) scores any open box at its
+  // full value plus a 100 bonus: the app's always-your-choice joker rule.
+  function jokerValue(id, dice) {
+    var cat = catById(id);
+    if (cat.upper) return cat.upper * 5;
+    return { threeKind: sum(dice), fourKind: sum(dice), chance: sum(dice), fullHouse: 25, smallStraight: 30, largeStraight: 40 }[id] || 0;
+  }
+  function valueFor(card, id, dice) {
+    if (card.scores.fiveKind === 50 && isFive(dice) && id !== "fiveKind") return jokerValue(id, dice);
+    return scoreCategory(id, dice);
+  }
+  function openIds(card) { return CATEGORIES.map(function (c) { return c.id; }).filter(function (id) { return card.scores[id] == null; }); }
+  function totals(card) {
+    var upper = 0, lower = 0;
+    CATEGORIES.forEach(function (c) { var v = card.scores[c.id] || 0; if (c.upper) upper += v; else lower += v; });
+    var bonus = upper >= BONUS_AT ? BONUS : 0;
+    return { upper: upper, bonus: bonus, lower: lower, extra: card.extraFives * EXTRA_FIVE, grand: upper + bonus + lower + card.extraFives * EXTRA_FIVE };
+  }
+
+  // CPU (the app's heuristics). Casual sometimes picks a box at random and
+  // sometimes re-rolls everything; Sharp avoids zeroing its big boxes.
+  function cpuHolds(dice, card, sharp, rnd) {
+    if (!sharp && rnd() < 0.2) return dice.map(function () { return false; });
+    var c = counts(dice), best = 1;
+    for (var f = 2; f <= 6; f++) if (c[f] >= c[best]) best = f;
+    if (card.scores.fiveKind == null && c[best] >= 3) return dice.map(function (d) { return d === best; });
+    if (card.scores.smallStraight == null || card.scores.largeStraight == null) {
+      var s = {}; dice.forEach(function (d) { s[d] = true; });
+      var runs = [[1, 2, 3, 4, 5], [2, 3, 4, 5, 6], [1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]];
+      var run = runs.filter(function (r) { return r.filter(function (v) { return s[v]; }).length >= r.length - 1; })[0];
+      if (run) { var used = {}; return dice.map(function (d) { if (run.indexOf(d) >= 0 && !used[d]) { used[d] = true; return true; } return false; }); }
+    }
+    if (c[best] >= 2) return dice.map(function (d) { return d === best; });
+    return dice.map(function () { return false; });
+  }
+  function cpuBox(dice, card, sharp, rnd) {
+    var scored = openIds(card).map(function (id) {
+      var raw = valueFor(card, id, dice);
+      return { id: id, value: sharp && raw === 0 ? -ZERO_PENALTY[id] : raw };
+    });
+    if (!sharp && rnd() < 0.25) return scored[Math.floor(rnd() * scored.length)].id;
+    scored.sort(function (a, b) { return b.value - a.value; });
+    return scored[0].id;
+  }
+
+  // Seeded dice for the daily game: everyone draws from the same sequence.
+  function makeRng(seedStr) {
+    if (!seedStr) return Math.random;
+    var h = 1779033703 ^ seedStr.length;
+    for (var i = 0; i < seedStr.length; i++) { h = Math.imul(h ^ seedStr.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = h >>> 0;
+    return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  // ════ UI ════
+  var $ = function (id) { return document.getElementById(id); };
+  var statusEl = $("fd-status"), diceEl = $("fd-dice"), rollBtn = $("fd-roll"), rollsEl = $("fd-rolls");
+  var rowsEl = $("fd-rows"), youEl = $("fd-you"), oppEl = $("fd-opp"), oppChip = $("fd-opp-chip");
+  var turnEl = $("fd-turn"), bestEl = $("fd-best"), bestLabel = $("fd-best-label");
+  var CPU_DELAY = 650;
+
+  var urlDaily = new URLSearchParams(location.search).get("daily");
+  function dailyNumber() {
+    var q = new URLSearchParams(location.search).get("daily");
+    var iso = q && /^\d{4}-\d{2}-\d{2}$/.test(q) ? Date.parse(q + "T00:00:00Z") : NaN;
+    if (!isNaN(iso)) return Math.floor(iso / 86400000);
+    var n = q == null ? NaN : Number(q);
+    return isNaN(n) ? Math.floor(Date.now() / 86400000) : n;
+  }
+  var daily = !!urlDaily;
+  var mode = "solo";
+  try { mode = localStorage.getItem("sp_five_dice_mode") || mode; } catch (e) {}
+  if (["solo", "cpu", "sharp", "2p"].indexOf(mode) < 0) mode = "solo";
+  if (daily) mode = "solo";
+
+  var st = null, rng = Math.random, busy = false, resume = null;
+
+  function playersFor(m) {
+    if (m === "cpu") return [{ name: "You", human: true }, { name: "CPU", human: false, sharp: false }];
+    if (m === "sharp") return [{ name: "You", human: true }, { name: "Sharp CPU", human: false, sharp: true }];
+    if (m === "2p") return [{ name: "Player 1", human: true }, { name: "Player 2", human: true }];
+    return [{ name: "You", human: true }];
+  }
+  function variantKey() { return daily ? "daily-" + dailyNumber() : mode; }
+
+  // Best solo score, or a W–L record per computer opponent.
+  function bestKey() { return mode === "solo" ? "sp_five_dice_best_" + (daily ? "daily" : "solo") : "sp_five_dice_record_" + mode; }
+  function readBest() { try { return JSON.parse(localStorage.getItem(bestKey()) || "null"); } catch (e) { return null; } }
+  function showBest() {
+    var b = readBest();
+    if (mode === "2p") { bestLabel.textContent = "Mode"; bestEl.textContent = "2P"; return; }
+    if (mode === "solo") { bestLabel.textContent = "Best"; bestEl.textContent = b && Number.isFinite(b.score) ? b.score : "—"; return; }
+    bestLabel.textContent = "Record";
+    bestEl.textContent = (b && b.won || 0) + "–" + (b && b.lost || 0);
+  }
+
+  function newState() {
+    rng = makeRng(daily ? "five-dice-" + dailyNumber() : null);
+    var players = playersFor(mode);
+    return {
+      players: players,
+      cards: players.map(function () { return { scores: {}, extraFives: 0 }; }),
+      current: 0, dice: [1, 1, 1, 1, 1], held: [false, false, false, false, false],
+      rolls: 0, over: false, lastScored: null, draws: 0
+    };
+  }
+
+  function grand(i) { return totals(st.cards[i]).grand; }
+  function turnNumber() { return Math.min(13, 13 - openIds(st.cards[st.current]).length + 1); }
+
+  function render() {
+    var p = st.players[st.current], human = p.human && !st.over;
+    // Dice
+    diceEl.innerHTML = "";
+    st.dice.forEach(function (d, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "fd-die" + (st.rolls === 0 ? " is-blank" : "");
+      b.setAttribute("aria-pressed", String(!!st.held[i]));
+      b.setAttribute("aria-label", st.rolls === 0 ? "Die " + (i + 1) + ", not rolled yet" : "Die " + (i + 1) + ": " + d + (st.held[i] ? ", held" : ""));
+      b.disabled = !human || busy || st.rolls === 0 || st.rolls >= 3;
+      b.innerHTML = '<span class="board-icon board-icon--dice-' + d + '" aria-hidden="true"></span>';
+      b.addEventListener("click", function () { if (!b.disabled) { st.held[i] = !st.held[i]; render(); } });
+      diceEl.appendChild(b);
+    });
+    rollBtn.disabled = !human || busy || st.rolls >= 3;
+    rollBtn.textContent = st.rolls === 0 ? "Roll" : "Roll again";
+    rollsEl.textContent = st.over ? "" : human ? (3 - st.rolls) + (3 - st.rolls === 1 ? " roll left" : " rolls left") : p.name + " is rolling…";
+
+    // Scorecard: one column per player, the current player's open boxes
+    // offered as buttons showing what they would score.
+    var two = st.players.length > 1;
+    $("fd-col-0").textContent = st.players[0].name;
+    $("fd-col-1").hidden = !two;
+    if (two) $("fd-col-1").textContent = st.players[1].name;
+    rowsEl.innerHTML = "";
+    function row(label, hint, cells, cls) {
+      var tr = document.createElement("tr"); if (cls) tr.className = cls;
+      var th = document.createElement("th"); th.scope = "row"; th.className = "fd-cat";
+      th.innerHTML = label + (hint ? "<small>" + hint + "</small>" : "");
+      tr.appendChild(th);
+      cells.forEach(function (c) { var td = document.createElement("td"); td.className = "fd-num"; if (typeof c === "string") td.textContent = c; else td.appendChild(c); tr.appendChild(td); });
+      rowsEl.appendChild(tr);
+    }
+    CATEGORIES.forEach(function (cat, ci) {
+      var cells = st.players.map(function (pl, pi) {
+        var card = st.cards[pi], v = card.scores[cat.id];
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "fd-box"; b.dataset.box = cat.id;
+        if (v != null) {
+          b.className += " is-scored" + (st.lastScored && st.lastScored.p === pi && st.lastScored.id === cat.id ? " is-new" : "");
+          b.textContent = v; b.disabled = true;
+          b.setAttribute("aria-label", cat.label + ": scored " + v);
+        } else if (pi === st.current && human && st.rolls > 0 && !busy) {
+          var would = valueFor(card, cat.id, st.dice);
+          b.className += " is-open" + (would === 0 ? " is-zero" : "");
+          b.textContent = would;
+          b.setAttribute("aria-label", "Score " + would + " in " + cat.label);
+          b.addEventListener("click", function () { scoreBox(cat.id); });
+        } else {
+          b.textContent = ""; b.disabled = true;
+          b.setAttribute("aria-label", cat.label + ": open");
+        }
+        return b;
+      });
+      row(cat.label, cat.upper ? null : cat.hint, cells);
+      if (ci === 5) row("Top bonus", "35 at 63+", st.cards.map(function (card) { var t = totals(card); return t.bonus ? "+" + t.bonus : t.upper + "/63"; }), "fd-sub");
+    });
+    if (st.cards.some(function (c) { return c.extraFives; })) row("Extra fives", "+100 each", st.cards.map(function (c) { return c.extraFives ? "+" + c.extraFives * EXTRA_FIVE : "—"; }), "fd-sub");
+    row("Total", null, st.cards.map(function (c) { return String(totals(c).grand); }), "fd-sub");
+
+    youEl.textContent = grand(0);
+    $("fd-you-label").textContent = two ? st.players[0].name : "Score";
+    oppChip.style.display = two ? "" : "none"; // .readout-chip sets display, which beats [hidden]
+    if (two) { $("fd-opp-label").textContent = st.players[1].name; oppEl.textContent = grand(1); }
+    turnEl.textContent = turnNumber() + "/13";
+    showBest();
+  }
+
+  function setStatus(text, kind) { statusEl.textContent = text; statusEl.className = "game-status" + (kind ? " game-status--" + kind : ""); }
+
+  function doRoll() {
+    if (st.over || st.rolls >= 3) return;
+    // Count draws so a restored daily game continues the same dice sequence.
+    st.dice = st.dice.map(function (d, i) { if (st.held[i]) return d; st.draws++; return 1 + Math.floor(rng() * 6); });
+    st.rolls++;
+    st.lastScored = null;
+    render();
+    diceEl.querySelectorAll(".fd-die").forEach(function (el, i) { if (!st.held[i]) el.classList.add("is-rolling"); });
+    var who = st.players[st.current];
+    if (isFive(st.dice)) setStatus("Five of a kind!" + (who.human ? " Score it." : ""), "win");
+    else if (who.human) setStatus(st.rolls < 3 ? "Hold dice by tapping them, roll again, or pick a box." : "Pick a box to score.");
+  }
+
+  function scoreBox(id) {
+    var card = st.cards[st.current];
+    if (st.over || st.rolls === 0 || card.scores[id] != null) return;
+    var extra = card.scores.fiveKind === 50 && isFive(st.dice) && id !== "fiveKind";
+    card.scores[id] = valueFor(card, id, st.dice);
+    if (extra) card.extraFives++;
+    st.lastScored = { p: st.current, id: id };
+    var name = st.players[st.current].name, label = catById(id).label;
+    if (st.cards.every(function (c) { return openIds(c).length === 0; })) { finish(); return; }
+    st.current = (st.current + 1) % st.players.length;
+    st.dice = [1, 1, 1, 1, 1]; st.held = [false, false, false, false, false]; st.rolls = 0;
+    var next = st.players[st.current];
+    setStatus((st.players.length > 1 ? name + " scored " + card.scores[id] + " in " + label + ". " : "Scored " + card.scores[id] + " in " + label + ". ") + (next.human ? (st.players.length > 1 ? next.name + " — roll." : "Roll for the next turn.") : ""));
+    render();
+    if (resume) resume.changed();
+    if (!next.human) cpuTurn();
+  }
+
+  function cpuTurn() {
+    busy = true; render();
+    var me = st.players[st.current], card = st.cards[st.current];
+    function step() {
+      if (st.over) return;
+      doRoll();
+      if (st.rolls < 3) {
+        var holds = cpuHolds(st.dice, card, me.sharp, Math.random);
+        // Stop early on a roll that already fills a big box.
+        var keepAll = holds.every(Boolean) || (isFive(st.dice) && card.scores.fiveKind == null);
+        if (!keepAll) { st.held = holds; setTimeout(function () { render(); setTimeout(step, CPU_DELAY); }, CPU_DELAY); return; }
+      }
+      setTimeout(function () { busy = false; scoreBox(cpuBox(st.dice, card, me.sharp, Math.random)); }, CPU_DELAY);
+    }
+    setTimeout(step, CPU_DELAY);
+  }
+
+  function finish() {
+    st.over = true; busy = false;
+    var g0 = grand(0);
+    if (st.players.length === 1) {
+      var prev = readBest(), isBest = !prev || !Number.isFinite(prev.score) || g0 > prev.score;
+      if (isBest) try { localStorage.setItem(bestKey(), JSON.stringify({ score: g0 })); } catch (e) {}
+      setStatus("Final score " + g0 + (isBest && prev ? " — a new best! 🎉" : "."), isBest ? "win" : null);
+      if (isBest && window.SnackPack) window.SnackPack.celebrate({ title: "New best: " + g0 + " 🎲", body: "We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app for more dice and board games, offline." });
+      if (window.SnackPackShare) window.SnackPackShare.result({ game: "Five Dice", puzzle: daily ? dailyNumber() : undefined, headline: (daily ? "Daily dice: " : "Scored ") + g0, stats: [totals(st.cards[0]).bonus ? "top bonus" : "no top bonus"].concat(st.cards[0].scores.fiveKind === 50 ? ["five of a kind"] : []) });
+    } else {
+      var g1 = grand(1), p0 = st.players[0], p1 = st.players[1];
+      var text = g0 === g1 ? "A tie, " + g0 + " each." : (g0 > g1 ? p0.name : p1.name) + (g0 > g1 && p0.name === "You" ? " win " : " wins ") + Math.max(g0, g1) + "–" + Math.min(g0, g1) + "!";
+      if (!p1.human && g0 !== g1) {
+        var r = readBest() || { won: 0, lost: 0 };
+        if (g0 > g1) r.won = (r.won || 0) + 1; else r.lost = (r.lost || 0) + 1;
+        try { localStorage.setItem(bestKey(), JSON.stringify(r)); } catch (e) {}
+      }
+      setStatus(text, g0 >= g1 ? "win" : "lose");
+      if (g0 > g1 && !p1.human && window.SnackPack) window.SnackPack.celebrate({ title: "You beat the " + p1.name + "! 🎲", body: "Won " + g0 + "–" + g1 + ". We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app for more dice games, offline." });
+      if (window.SnackPackShare && g0 > g1) window.SnackPackShare.result({ game: "Five Dice", headline: "Won " + g0 + "–" + g1 + " vs " + p1.name });
+    }
+    render();
+    if (resume) resume.clear();
+  }
+
+  function newGame() {
+    st = newState(); busy = false;
+    setStatus(daily ? "Daily dice #" + dailyNumber() + " — everyone gets the same rolls today. Roll to start." : st.players.length > 1 ? st.players[0].name + " — roll to start." : "Roll to start your first turn.");
+    render();
+  }
+
+  rollBtn.addEventListener("click", function () { if (!busy) doRoll(); });
+  $("fd-new").addEventListener("click", function () {
+    if (resume) resume.clear();
+    if (daily) { daily = false; history.replaceState(null, "", location.pathname); }
+    newGame();
+  });
+  $("fd-daily").addEventListener("click", function () {
+    location.search = "?daily=" + new Date().toISOString().slice(0, 10);
+  });
+  function syncModeButtons() { document.querySelectorAll(".seg [data-mode]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.mode === mode)); }); }
+  document.querySelectorAll(".seg [data-mode]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      mode = b.dataset.mode;
+      if (daily) { daily = false; history.replaceState(null, "", location.pathname); }
+      try { localStorage.setItem("sp_five_dice_mode", mode); } catch (e) {}
+      syncModeButtons(); newGame();
+      if (resume) resume.variantChanged();
+    });
+  });
+  syncModeButtons();
+  newGame();
+
+  // Saved progress, only while a person is to play: never mid CPU turn.
+  function validSave(p) {
+    if (!p || !Array.isArray(p.players) || !Array.isArray(p.cards) || p.players.length !== p.cards.length || !p.players.length) return false;
+    if (!Array.isArray(p.dice) || p.dice.length !== 5 || !p.dice.every(function (d) { return d >= 1 && d <= 6; })) return false;
+    if (!(p.current >= 0 && p.current < p.players.length) || !p.players[p.current].human || !(p.rolls >= 0 && p.rolls <= 3)) return false;
+    return p.cards.every(function (c) { return c && typeof c.scores === "object" && Object.keys(c.scores).every(function (k) { return !!catById(k) && Number.isFinite(c.scores[k]); }); });
+  }
+  if (window.SnackPackResume) {
+    resume = window.SnackPackResume.attach({
+      game: "five-dice",
+      variant: variantKey,
+      serialize: function () { return { players: st.players, cards: st.cards, current: st.current, dice: st.dice, held: st.held, rolls: st.rolls, draws: st.draws }; },
+      validate: validSave,
+      restore: function (p) {
+        st = newState();
+        st.players = p.players; st.cards = p.cards; st.current = p.current; st.dice = p.dice; st.held = p.held || [false, false, false, false, false]; st.rolls = p.rolls;
+        for (var i = 0; i < (p.draws || 0); i++) rng(); // resume the daily sequence where it stopped
+        st.draws = p.draws || 0;
+        busy = false; setStatus("Saved game restored — " + (st.rolls ? "pick a box or roll again." : "roll to continue."));
+        render();
+        return true;
+      },
+      isActive: function () {
+        return !st.over && !busy && st.players[st.current].human && st.cards.some(function (c) { return Object.keys(c.scores).length > 0; });
+      }
+    });
+    new MutationObserver(function () { if (resume) resume.changed(); }).observe(rowsEl, { childList: true });
+  }
+})();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
