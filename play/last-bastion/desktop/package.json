@@ -9,6 +9,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check:package": "node dist/PackageProvenance.js check",
     "test": "npm run build && node --test dist/*.test.js",
     "start": "npm run build && electron .",
     "package:win": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-desktop.ps1 -Platform win",

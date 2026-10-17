@@ -24,6 +24,12 @@ primary reads from the backup and is never rotated over that backup.
 
 ## Packaging
 
+Build ownership remains with Claude unless Mark assigns a specific build elsewhere. See
+[QA readiness](../QA-READINESS.md) for the new staged identity/package manifest and read-only
+`npm run check:package -- <package-dir> [expected-build]` command. Windows packaging writes and
+checks provenance automatically; renderer smoke and visible hardware acceptance remain separate.
+No current executable is implied by tests of these scripts.
+
 Run the platform script on that platform:
 
 ```powershell

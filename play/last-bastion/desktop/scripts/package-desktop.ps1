@@ -39,11 +39,19 @@ Copy-Item -LiteralPath (Join-Path $gameRoot "index.html") -Destination $stageGam
 Copy-Item -LiteralPath (Join-Path $gameRoot "last-bastion-codex.html") -Destination $stageGame
 Copy-Item -LiteralPath (Join-Path $gameRoot "game-assets") -Destination $stageGame -Recurse
 Copy-Item -Path (Join-Path $gameRoot "steam-input\*") -Destination $stageInput -Recurse
+& node (Join-Path $desktopRoot 'dist/PackageProvenance.js') stamp $stageGame
+if ($LASTEXITCODE -ne 0) { throw 'Staged build identity failed.' }
 
 Push-Location $desktopRoot
 try {
   $platformSwitch = "--$Platform"
   & npx.cmd electron-builder $platformSwitch dir --publish never
   if ($LASTEXITCODE -ne 0) { throw "Electron packaging failed for $Platform." }
+  if ($Platform -eq 'win') {
+    & node dist/PackageProvenance.js write release/win-unpacked LastBastion.exe
+    if ($LASTEXITCODE -ne 0) { throw 'Package provenance failed.' }
+    & node dist/PackageProvenance.js check release/win-unpacked
+    if ($LASTEXITCODE -ne 0) { throw 'Package consistency failed.' }
+  }
 }
 finally { Pop-Location }
