@@ -36,7 +36,7 @@ measurement start date. Production desktop packaging and all human/hardware/Stea
   Responsive Options tests and 25 reviewed screenshot baselines now match the intended layout;
   the unrelated random-win wording regression also has deterministic legal dice inputs.
 
-The publication portfolio run passed 18 of 19 guards; the asset-delivery guard first hit a
-sandbox rename restriction. Its host retry passed fixtures, then reported seven missing Vol 2
-scene assets during another session's active parent-repository migration. That work is preserved.
-Earlier all-green portfolio evidence above is historical, not a claim that this newer tree is green.
+`publication-portfolio-verification.txt`: the completed final host run of
+`node scripts/check-all.js` passed all 19 guards. An earlier sandbox rename restriction and
+transient seven missing Vol 2 scenes during another session's migration are superseded by this
+result. No changes to that session's files were made by this work.

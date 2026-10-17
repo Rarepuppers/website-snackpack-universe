@@ -5210,3 +5210,7 @@ Website CI and Pages passed on `31139871`: 154 arcade checks, 31 Last Bastion br
 The newer portfolio run passed 18 guards; asset delivery encountered a sandbox rename restriction,
 then its host retry identified seven missing Vol 2 scenes during another session's parent-repo
 migration. Preserve that work; the older all-19-green QA checkpoint is historical evidence.
+
+Final portfolio follow-up: the host `node scripts/check-all.js` rerun completed with all 19
+guards passing. Retained `publication-portfolio-verification.txt` supersedes the transient
+migration/sandbox failures above. No repair to another session's files was made by this work.

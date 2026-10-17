@@ -91,10 +91,10 @@ Measurement contract: open/start/wave milestones are per browser-tab local day, 
 people. Run endings form a separate all-run outcome distribution. Expedition endings omit
 wave depth because their progress is measured in nodes.
 
-Publication verification also found an unrelated parent-repository issue: the latest portfolio
-run passed 18 guards, while the asset-delivery host retry reported seven missing Vol 2 scene
-assets during another session's migration. Preserve that session's source/manifests; its owner
-must finish delivery and rerun `node scripts/check-all.js`. Website CI above passes independently.
+The final host `node scripts/check-all.js` rerun passed all 19 portfolio guards. An earlier
+sandbox rename restriction and transient missing Vol 2 scenes during another session's migration
+are superseded by that completed result; no changes to the other session's work were needed.
+See `publication-portfolio-verification.txt` in the publication evidence.
 
 ## 2. Observed gameplay and presentation — open
 
