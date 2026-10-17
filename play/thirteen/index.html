@@ -603,10 +603,10 @@
     if (gs.lastCombo) {
       gs.lastCombo.cards.forEach(function (c) { tableCardsEl.appendChild(cardEl(c)); });
       tableLabelEl.textContent = comboName(gs.lastCombo);
-      tableByEl.textContent = gs.lastPlayerIdx != null ? "played by " + gs.players[gs.lastPlayerIdx].name : "";
+      tableByEl.textContent = gs.lastPlayerIdx != null ? "played by " + (gs.lastPlayerIdx === 0 ? "you" : gs.players[gs.lastPlayerIdx].name) : "";
     } else {
       tableLabelEl.textContent = "New round";
-      tableByEl.textContent = gs.phase === "playing" ? gs.players[gs.currentPlayer].name + " leads" : "";
+      tableByEl.textContent = gs.phase !== "playing" ? "" : gs.currentPlayer === 0 ? "You lead" : gs.players[gs.currentPlayer].name + " leads";
     }
 
     // Hand
