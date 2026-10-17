@@ -208,8 +208,14 @@
 }
 @media (max-width: 640px) {
   .trivia-stage { padding: 14px; }
-  .trivia-card { padding: 18px; }
-  .trivia-options { grid-template-columns: 1fr; }
+  /* Phone: the answers must start on the first screen even when a long
+     question wraps (arcade-layout.spec), so the card runs tighter here. */
+  .trivia-card { padding: 14px; min-height: 0; }
+  .trivia-topline { flex-wrap: nowrap; margin-bottom: 10px; }
+  .trivia-meter { flex: 1; }
+  .trivia-question { font-size: 1.3rem; margin-bottom: 12px; }
+  .trivia-options { grid-template-columns: 1fr; gap: 8px; }
+  .trivia-options button { min-height: 52px; }
 }
 </style>
 <script type="application/ld+json">

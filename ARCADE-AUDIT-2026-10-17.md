@@ -245,6 +245,28 @@ All of the art above is in `CODEX-ASSET-BRIEF-2026-10-17.md`.
 
 ---
 
+## Status — end of 2026-10-17 (all live unless noted)
+
+Mark accepted the plan and the optional work; everything below was done the same day.
+
+| Step | Result |
+| --- | --- |
+| Verifier masking bug | Fixed; all four targets verify clean in one run. |
+| Website WebP | Pipeline delivers a .webp beside every shared-art PNG the site uses; the site copy holds only the 8 packs it uses (62 → 32 MB). Flappy Snacky cold load 3,588 → 592 KB (phone), Checkers 993 → 437 KB. `arcade-webp.spec`. |
+| Game-first layout | Hero is a title strip; options fold behind "Options" where height is short. Phone: 28 boards wholly on the first screen, 10 tall canvases start on it (was 34 below it). `arcade-layout.spec`. Another session then moved the toggle code into `game-ui-controls.js` and refreshed the screenshot references from CI. |
+| Hub on phones | First tile 2,391 → 873 px, page 18,953 → ~7,600 px. Search row fixed and `.sr-only` defined (labels marked sr-only were showing everywhere). |
+| Polish batch | Snakes & Ladders resumes; Checkers/Reversi/Penalty keep a W–L record; touch-neutral hints; Asteroid/Cascade celebrate only real results; Word Search tap-to-select was broken (now fixed) and announces finds; funnel modal stamped with the local date; Flag Frenzy keys moved into `sp_`. |
+| Mahjong / Crossword / Thirteen | Mahjong scales to its stage (41×56 px tiles on a phone, 67×91 desktop). Thirteen's CPU rewritten: the old one opened Classic with a 2 instead of the 3♠ in about two-thirds of games; an old-strategy player now wins 12% against it (was 26%). Crossword left as is: only the 15-column General grid is small (20 px) and a phone cannot fit it much larger; the clue bar and keyboard carry the input. |
+| New games | Five Dice (40), Hearts (41), Spades (42), Backgammon (43), each with daily mode, resume, records, SCORECARD.md, specs, and Node simulations of thousands of games against the page's own engine. Interim tile/social art; final art is items 8–11 of the Codex brief. |
+| Vol 2 backdrops | Already in the pipeline (Codex migrated them); the one that could not be quantised, `tile-slide-picnic`, is now WebP (2.1 MB → 179 KB). Vol 2 code change only — **no build**. |
+| Vol 3 markers | Akari, Masyu, Slitherlink, Hitori, Nurikabe use the painted markers. Hashi, KenKen, Killer Sudoku, Word Guess wait on text-free art (brief G1b). |
+
+**Still open, for Mark:**
+
+- Brain Games Vol 2 lists the dice game under its trademarked name ("Yahtzee"). The web page avoids it; the app's listing and in-app name deserve a look before its next release.
+- `build-pwa.mjs` / `build-theme.mjs` add their blocks to Pinball, Keeping Up and Last Bastion's privacy page, which deliberately do without them. I restored those files each time; whoever owns those generators should add an exclusion.
+- Codex art: brief items 1–11 and G1b.
+
 ## Recommended order
 
 Small items do not need a decision; the **bold** ones change many files or the
