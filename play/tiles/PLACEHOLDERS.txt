@@ -4,3 +4,5 @@ last-bastion.png = PLACEHOLDER (studio mark), awaiting Codex: a Last Bastion arc
                    This one is the odd case out - the game has 4 GB of source art and
                    still no 72x72 tile, because nothing on the site ever linked to it.
 five-dice.png = INTERIM (composed from the shared painted dice, 2026-10-17), awaiting Codex: final tile + social card, see CODEX-ASSET-BRIEF-2026-10-17.md item 8
+hearts.png = INTERIM (painted suits composite, 2026-10-17), awaiting Codex: CODEX-ASSET-BRIEF-2026-10-17.md item 9
+spades.png = INTERIM (painted suits composite, 2026-10-17), awaiting Codex: CODEX-ASSET-BRIEF-2026-10-17.md item 10

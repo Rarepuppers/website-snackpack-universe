@@ -142,7 +142,7 @@
         <h1>Today's puzzles.<br>Same boards for everyone.</h1>
         <p class="lead">One set a day, drawn from the same seed for every player — so a time or a streak actually means something. Free, no ads, no sign-in, nothing to install.</p>
         <div class="dl-hero-stats">
-          <span class="dl-stat">Done today <b id="dl-done">0/<span data-game-count="daily">18</span></b></span>
+          <span class="dl-stat">Done today <b id="dl-done">0/<span data-game-count="daily">20</span></b></span>
           <span class="dl-stat">Streak <b id="dl-streak">0</b></span>
           <span class="dl-stat">Best streak <b id="dl-best">0</b></span>
         </div>
@@ -159,7 +159,7 @@
             <!-- Number kept mid-sentence on purpose: build-game-counts.mjs
                  renders word-format markers lowercase, so a sentence-initial
                  one would read "twelve boards". -->
-            <h2>One day, <span data-game-count="daily" data-game-count-format="word">eighteen</span> boards.</h2>
+            <h2>One day, <span data-game-count="daily" data-game-count-format="word">twenty</span> boards.</h2>
           </div>
           <span class="daily-challenge-date" id="dl-seed">Seed loading</span>
         </div>
@@ -225,6 +225,16 @@
             <div><h3>Five Dice</h3><p>Today's shared dice</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
+          <a class="dl-card" data-game="hearts" href="../hearts/">
+            <img src="../tiles/hearts.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <div><h3>Hearts</h3><p>Today's shared deals</p></div>
+            <span class="dl-tick" hidden>Done</span>
+          </a>
+          <a class="dl-card" data-game="spades" href="../spades/">
+            <img src="../tiles/spades.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <div><h3>Spades</h3><p>Today's shared deals</p></div>
+            <span class="dl-tick" hidden>Done</span>
+          </a>
           <a class="dl-card" data-game="minesweeper" href="../minesweeper/">
             <img src="../tiles/minesweeper.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
             <div><h3>Minesweeper</h3><p>Shared once you open the same square</p></div>
@@ -273,7 +283,7 @@
       <h2>Why a daily puzzle at all?</h2>
       <p>Because a score only means something if the board is the same. Every puzzle here is generated from the date, so the Sudoku you solve is the Sudoku everyone else solved today — and the FreeCell deal is drawn from a pool a solver has already proven winnable, which most daily card games can't promise.</p>
       <p>Your streak and results are stored on your own device. There is no account, no email capture and no leaderboard server — nothing leaves your browser. Come back tomorrow and the set refreshes.</p>
-      <p><a href="../">Browse all <span data-game-count="arcade">40</span> free games</a> if you'd rather just play something.</p>
+      <p><a href="../">Browse all <span data-game-count="arcade">42</span> free games</a> if you'd rather just play something.</p>
     </div>
   </section>
 </main>
@@ -292,7 +302,7 @@
     snackwords: "SnackWords", sudoku: "Sudoku", "word-search": "Word Search", freecell: "FreeCell",
     mahjong: "Mahjong", "golf-solitaire": "Golf Solitaire", "memory-match": "Memory Match",
     thirteen: "Thirteen", minesweeper: "Minesweeper", "water-sort": "Water Sort", "flag-frenzy": "Flag Frenzy",
-    "five-dice": "Five Dice"
+    "five-dice": "Five Dice", hearts: "Hearts", spades: "Spades"
   };
   var cards = [].slice.call(document.querySelectorAll(".dl-card"));
 

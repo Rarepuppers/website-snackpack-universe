@@ -2359,3 +2359,48 @@ body:has(.game-stage) main > section:has(> .shell > .game-stage, > .game-stage) 
   .arcade-sort select { min-width: 0; width: 132px; }
   .arcade-search-row > .arcade-clear { flex: 0 0 auto; width: auto; }
 }
+
+/* ── Trick-taking card table (Hearts, Spades) ───────
+   Four seats: the player at the bottom with their hand as buttons, three
+   computer seats around a centre where the trick is played. */
+.tc-table { display: grid; grid-template-columns: 1fr 1.4fr 1fr; grid-template-rows: auto auto auto; gap: 8px; align-items: center; justify-items: center; padding: 12px 8px; border-radius: 22px; background: radial-gradient(circle at 50% 40%, #2f8f6c, #1d5f48); color: #f6f1e7; }
+.tc-seat { display: grid; justify-items: center; gap: 2px; font-size: 0.82rem; font-weight: 700; text-align: center; min-width: 0; }
+.tc-seat b { font-size: 1rem; }
+.tc-seat.is-turn .tc-name { color: #f3d27a; }
+.tc-seat .tc-sub { font-weight: 500; opacity: 0.85; font-size: 0.74rem; }
+.tc-north { grid-column: 2; grid-row: 1; }
+.tc-west { grid-column: 1; grid-row: 2; }
+.tc-east { grid-column: 3; grid-row: 2; }
+.tc-you { grid-column: 2; grid-row: 3; }
+.tc-trick { grid-column: 2; grid-row: 2; position: relative; width: 100%; max-width: 190px; aspect-ratio: 1.15; }
+.tc-trick .tc-card { position: absolute; transform: translate(-50%, -50%); }
+.tc-trick .tc-at-0 { left: 50%; top: 78%; }
+.tc-trick .tc-at-1 { left: 20%; top: 50%; }
+.tc-trick .tc-at-2 { left: 50%; top: 22%; }
+.tc-trick .tc-at-3 { left: 80%; top: 50%; }
+.tc-card {
+  width: 46px; height: 64px; border-radius: 7px; border: 1px solid #d7cfc0; background: #fffdf8; color: #201713;
+  display: grid; grid-template-rows: auto 1fr; justify-items: center; align-items: center; padding: 3px 0 4px;
+  font: 800 0.95rem/1 var(--sans, system-ui); box-shadow: 0 2px 6px rgba(16, 47, 36, 0.28); position: relative;
+}
+.tc-card.is-red { color: #c0392b; }
+.tc-card .card-suit-icon { width: 22px; }
+.tc-hand { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin: 14px 0 6px; }
+button.tc-card { cursor: pointer; transition: transform 0.12s ease, opacity 0.12s ease; }
+button.tc-card:disabled { cursor: default; opacity: 0.42; }
+button.tc-card.is-picked { transform: translateY(-9px); outline: 3px solid var(--gold, #efb54d); outline-offset: -1px; }
+button.tc-card:not(:disabled):hover { transform: translateY(-4px); }
+.tc-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 6px; }
+.tc-bids { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.tc-bids button { min-width: 42px; }
+.tc-roundtable { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.92rem; }
+.tc-roundtable th, .tc-roundtable td { padding: 5px 6px; border-bottom: 1px solid var(--line); text-align: center; }
+.tc-roundtable th:first-child, .tc-roundtable td:first-child { text-align: left; }
+@media (max-width: 420px) {
+  .tc-card { width: 42px; height: 58px; font-size: 0.88rem; }
+  .tc-card .card-suit-icon { width: 19px; }
+  .tc-hand { gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  button.tc-card, button.tc-card.is-picked, button.tc-card:not(:disabled):hover { transition: none; transform: none; }
+}
