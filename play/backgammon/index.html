@@ -429,7 +429,7 @@
     }
     return s;
   }
-  function chooseTurnMoves(pos, level) {
+  function greedyTurn(pos, level) {
     var blunder = BLUNDER[level] || 0, me = pos.turn, moves = [], cur = pos, guard = 0;
     while (cur.dice.length && guard++ < 8) {
       var legal = legalMoves(cur); if (!legal.length) break;
@@ -440,6 +440,45 @@
     }
     return moves;
   }
+function chooseTurnMoves(pos, difficulty, options = {}) {
+    const fallback = greedyTurn(pos, difficulty);
+    if (difficulty !== 'hard' || !fallback.length)
+        return fallback;
+    const deadline = Date.now() + Math.max(0, options.budgetMs ?? 60);
+    const maxNodes = Math.max(0, options.maxNodes ?? 4000);
+    let nodes = 0, best = -Infinity, chosen = fallback;
+    const stop = {};
+    const seen = new Set();
+    const visit = (p, path) => {
+        if (++nodes > maxNodes || Date.now() >= deadline)
+            throw stop;
+        const key = JSON.stringify([p.points, p.barW, p.barB, p.offW, p.offB, p.dice.slice().sort()]);
+        if (seen.has(key))
+            return;
+        seen.add(key);
+        const legal = legalMoves(p);
+        if (!legal.length) {
+            const value = evaluate(p, pos.turn);
+            if (value > best) {
+                best = value;
+                chosen = path;
+            }
+            return;
+        }
+        for (const move of legal)
+            visit(applyMove(p, move), [...path, move]);
+    };
+    try {
+        visit(pos, []);
+    }
+    catch (error) {
+        if (error !== stop)
+            throw error;
+        return fallback;
+    }
+    return chosen;
+}
+
   function makeRng(seedStr) {
     if (!seedStr) return Math.random;
     var h = 1779033703 ^ seedStr.length;

@@ -13,7 +13,7 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v34";
+const CACHE = "snackpack-arcade-v35";
 const LAST_BASTION_RELEASE = "2026-10-17-qa-readiness";
 const LAST_BASTION_CACHE = `last-bastion-${LAST_BASTION_RELEASE}`;
 
@@ -73,6 +73,7 @@ const SHELL = [
   "/play/resume.js",
   "/play/hub.js",
   "/play/game-ui-assets.js",
+  "/play/ai-search.js",
   "/play/game-ui-controls.js",
   "/play/stats/",
   "/play/stats/stats.js",

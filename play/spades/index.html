@@ -434,7 +434,7 @@
     var mate = teamOf(winner) === teamOf(p);
     var follows = moves.filter(function (c) { return c.s === led; });
     if (follows.length) {
-      if (mate || winning.c.s === 2) return minBy(follows, function (c) { return c.r; });
+      if (mate || (winning.c.s === 2 && led !== 2)) return minBy(follows, function (c) { return c.r; });
       var overs = follows.filter(function (c) { return c.r > winning.c.r; });
       return overs.length ? minBy(overs, function (c) { return c.r; }) : minBy(follows, function (c) { return c.r; });
     }

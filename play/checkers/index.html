@@ -98,6 +98,7 @@
   ]
 }
 </script>
+<script src="../ai-search.js" defer></script>
 <script src="../game-ui-controls.js" defer></script>
 <script src="../game-ui-assets.js" defer></script>
 <script type="application/ld+json">
@@ -615,7 +616,8 @@
     return s; // positive favours RED
   }
 
-  function minimax(b, d, alpha, beta, who) {
+  function minimax(b, d, alpha, beta, who, control) {
+    window.SnackPackSearch.tick(control);
     var moves = genMoves(b, who);
     if (moves.length === 0) return who === RED ? -1000 : 1000; // side to move loses
     if (d === 0) return evaluate(b);
@@ -623,7 +625,7 @@
     if (who === BLACK) { // CPU minimises (favours negative)
       var best = Infinity;
       for (i = 0; i < moves.length; i++) {
-        best = Math.min(best, minimax(applyMove(b, moves[i]), d - 1, alpha, beta, RED));
+        best = Math.min(best, minimax(applyMove(b, moves[i]), Math.max(0, d - 1), alpha, beta, RED, control));
         beta = Math.min(beta, best);
         if (alpha >= beta) break;
       }
@@ -631,7 +633,7 @@
     } else {
       var bestR = -Infinity;
       for (i = 0; i < moves.length; i++) {
-        bestR = Math.max(bestR, minimax(applyMove(b, moves[i]), d - 1, alpha, beta, BLACK));
+        bestR = Math.max(bestR, minimax(applyMove(b, moves[i]), Math.max(0, d - 1), alpha, beta, BLACK, control));
         alpha = Math.max(alpha, bestR);
         if (alpha >= beta) break;
       }
@@ -642,12 +644,12 @@
   function pickCpuMove(moves) {
     // Easy: some randomness.
     if (depth <= 2 && Math.random() < 0.3) return moves[Math.floor(Math.random() * moves.length)];
-    var best = moves[0], bestVal = Infinity;
-    for (var i = 0; i < moves.length; i++) {
-      var v = minimax(applyMove(board, moves[i]), depth - 1, -Infinity, Infinity, RED);
-      if (v < bestVal) { bestVal = v; best = moves[i]; }
-    }
-    return best;
+    return window.SnackPackSearch.choose(moves, depth, function (move) {
+      var child = applyMove(board, move);
+      return genMoves(child, RED).length ? -evaluate(child) : 1000;
+    }, function (move, remaining, control) {
+      return -minimax(applyMove(board, move), remaining, -Infinity, Infinity, RED, control);
+    });
   }
 
   // ── Input ────────────────────────────────────────
