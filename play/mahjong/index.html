@@ -485,7 +485,7 @@
     if (!wrap || !w || !h) return;
     var byWidth = (wrap.clientWidth - 8) / w;
     var byHeight = Math.max(260, window.innerHeight - 170) / h;
-    var k = Math.max(1, Math.min(2.4, byWidth, byHeight));
+    var k = Math.max(0.1, Math.min(2.4, byWidth, byHeight));
     boardEl.style.transform = k === 1 ? "" : "scale(" + k.toFixed(3) + ")";
     wrap.style.height = Math.ceil(h * k + 8) + "px";
   }
@@ -503,6 +503,10 @@
       el.type = "button";
       el.className = "mj-tile" + (open ? " is-open" : " is-blocked") + (t.id === selectedId ? " is-selected" : "");
       el.dataset.id = t.id;
+      el.dataset.suit = t.suit;
+      var familyNames = { dots: 'Dots', bamboo: 'Bamboo', cracks: 'Characters', winds: 'Wind', flowers: 'Flower', snacks: 'Snack' };
+      el.setAttribute('aria-label', familyNames[t.suit] + ' ' + t.label + (open ? ', open' : ', blocked') + (t.id === selectedId ? ', selected' : ''));
+      el.setAttribute('aria-pressed', String(t.id === selectedId));
       // Keep only the roving cursor (managed by attachGrid below, among
       // .is-open tiles) in the tab order. Without this every tile — including
       // blocked ones nobody can act on, and every open tile not currently

@@ -1954,7 +1954,21 @@ button.th-card.is-selected {
 .sp-large-pieces .cw-clet,
 .sp-large-pieces .mj-label { font-size: 1.2em; }
 .sp-large-pieces .cw-key { min-height: 50px; font-size: 1.08rem; }
-.sp-large-pieces .mj-tile { transform: scale(1.08); transform-origin: center; }
+/* Board fitting owns Mahjong geometry. Scaling individual tiles overlaps their
+   neighbors and changes the apparent stacking order. Enlarge only face content. */
+.sp-large-pieces .mj-glyph { font-size: 1.1rem; }
+.mj-tile.is-selected { outline: 3px solid #18263a; outline-offset: -3px; }
+.mj-tile.is-hint { outline: 2px dashed #18263a; outline-offset: -3px; }
+.sp-clear-faces .mj-tile { color: #18263a; background: #fffcf2; }
+.sp-clear-faces .mj-glyph > * { display: none; }
+.sp-clear-faces .mj-glyph::before { font-size: 1.1rem; font-weight: 900; }
+.sp-clear-faces [data-suit="dots"] .mj-glyph::before { content: "○"; }
+.sp-clear-faces [data-suit="bamboo"] .mj-glyph::before { content: "║"; }
+.sp-clear-faces [data-suit="cracks"] .mj-glyph::before { content: "◇"; }
+.sp-clear-faces [data-suit="winds"] .mj-glyph::before { content: "↔"; }
+.sp-clear-faces [data-suit="flowers"] .mj-glyph::before { content: "✿"; }
+.sp-clear-faces [data-suit="snacks"] .mj-glyph::before { content: "★"; }
+.sp-clear-faces .mj-label { font-size: 1rem; color: #18263a; }
 .sp-deck-picker select { min-height: 40px; max-width: 150px; padding: 7px 28px 7px 10px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface-strong); color: var(--ink); font: inherit; font-size: .84rem; font-weight: 700; }
 
 @media (max-width: 800px) {
