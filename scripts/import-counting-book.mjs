@@ -19,13 +19,11 @@
 //       pass. Their missing and off-model pages were redrawn by Codex
 //       (monorepo docs/ART-BRIEF-STORY-GAPS-2026-10-16.md, delivered 3572e1a31
 //       and c37c44c2d); every page was viewed against its text and counted.
-//   * corgi-cob-ten-frame-picnic   rejected: Ted-E-Bear in the text is drawn
-//       as Bottle-Nose the dolphin on all six pages; page 4 has no sideways
-//       frame; page 5 shows 8 of 12 spaces for "seven ... make ten"; page 6's
-//       "complete ten-frame" shows 7 of 11.
-//   * honey-beats-number-neighbours   rejected: Flutter-Butter in the text is
-//       drawn as Bottle-Nose; the stones the text numbers carry no numbers;
-//       page 4's reversed stone is not in the picture.
+//   * corgi-cob-ten-frame-picnic, honey-beats-number-neighbours   pass, after
+//       Codex redrew all twelve pages (docs/ART-BRIEF-COUNTING-CORGI-HONEYBEATS-
+//       2026-10-18.md, 779e542f1): Ted and Flutter-Butter replace the dolphin,
+//       every ten-frame is 2 x 5 with the right count, the stones carry their
+//       numbers, and page 4's reversed footprint is visible. Re-read 2026-10-18.
 //   * cereal-swimmer-number-line-lagoon   not read: its octopus changes design
 //       on page 3.
 //   * ted-e-bear-button-trail   on the shelf since 2026-08-12 as a hand-built
@@ -53,6 +51,42 @@ const SITE = "https://www.snackpackuniverse.com";
 const PLAY = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.counting";
 
 const BOOKS = {
+  "corgi-cob-ten-frame-picnic": {
+    slug: "corgi-on-the-cobs-ten-frame-picnic",
+    lead: "A six-page clifftop picnic for seeing groups on a ten-frame and making ten, with a question on every page.",
+    blurb: "A gust scatters the treats. Corgi and Ted fill the ten-frame again before the guests arrive.",
+    art: [1, 2, 3, 4, 5, 6].map((n) => `corgi-cob-ten-frame-picnic-p${n}-v3.jpg`),
+    alts: [
+      "Corgi-on-the-Cob touches the first space of an empty ten-frame board, two rows of five, while Ted-E-Bear holds down the windblown picnic cloth.",
+      "Corgi places the third berry bun in the top row of the ten-frame as Ted points at the three filled spaces.",
+      "Two ten-frames side by side at sunset: four apple slices on Ted's board and six corn cakes on Corgi's.",
+      "Four picnic frames in a row; the third is turned sideways so its spaces run top to bottom, and Ted points it out.",
+      "Seven golden treats fill the ten-frame, with three empty spaces left, as Ted brings a bowl of honey buttons.",
+      "Ted carries the full ten-frame, ten treats in two rows of five, while Corgi and woodland guests gather round.",
+    ],
+    end: {
+      q: "Why is a ten-frame easy to count?",
+      a: "Its spaces sit in two rows of five, so you can see how many treats there are, and how many more make ten, without counting one by one.",
+    },
+  },
+  "honey-beats-number-neighbours": {
+    slug: "honey-beats-and-the-number-neighbours",
+    lead: "A six-page moonlit concert path for finding the numbers before, after and between, up to twenty.",
+    blurb: "The stepping-stone numbers have drifted apart. Honey-Beats and Flutter-Butter put every neighbour back so the concert can begin.",
+    art: [1, 2, 3, 4, 5, 6].map((n) => `honey-beats-number-neighbours-p${n}-v3.jpg`),
+    alts: [
+      "Flutter-Butter carries the stone marked 3 into place after stones 1 and 2, leaving a gap, while Honey-Beats taps her drumsticks.",
+      "A squirrel drummer waits on stone 4; stones 3, 4 and 6 glow with a gap where 5 belongs.",
+      "Stones 7, 8 and 10 glow by the flower arch with a gap between 8 and 10, as a hedgehog waits with a xylophone.",
+      "Honey-Beats studies a loop of stones carved with paw prints; the middle print points the wrong way.",
+      "Stone 15 sits alone between two muddy gaps as Flutter-Butter and Honey-Beats search either side.",
+      "Stones 17, 18 and 19 lead to the stage with one empty space before it, as the band waits and Honey-Beats sings.",
+    ],
+    end: {
+      q: "What are the neighbours of a number?",
+      a: "The number just before it and the number just after it. The neighbours of 15 are 14 and 16.",
+    },
+  },
   "ted-e-bear-button-trail": {
     slug: "ted-e-bear-and-the-button-trail",
     rev: 2,
