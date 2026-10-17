@@ -2336,7 +2336,7 @@ button:focus-visible {
 .story-title-section .read-share-btn{margin-left:10px}.story-finish-card>.story-share{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin:0 auto 26px}.read-library-note{max-width:760px;margin:28px auto 0;color:var(--muted,#675d55);text-align:center}
 .story-title-section{padding:70px 0;background:linear-gradient(135deg,var(--bg-soft),var(--bg))}
 .story-title-grid{display:grid;grid-template-columns:1.1fr minmax(280px,.6fr);gap:60px;align-items:center}
-.story-title-grid>picture img{display:block;width:100%;height:auto;max-height:700px;aspect-ratio:2/3;object-fit:cover;border:12px solid #fff;border-radius:28px;box-shadow:0 30px 80px rgba(73,47,32,.18);transform:rotate(2deg)}
+.story-title-grid>picture img,.story-title-grid>img{display:block;width:100%;height:auto;max-height:700px;aspect-ratio:2/3;object-fit:cover;border:12px solid #fff;border-radius:28px;box-shadow:0 30px 80px rgba(73,47,32,.18);transform:rotate(2deg)}
 .story-title-grid .btn{margin-top:26px}
 .story-pages{display:grid;gap:64px;max-width:1040px;margin:0 auto;padding:72px 24px}
 .story-page-card{display:grid;grid-template-columns:minmax(300px,.86fr) 1fr;gap:48px;align-items:center}
@@ -2345,7 +2345,7 @@ button:focus-visible {
 .story-page-card img{display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;border-radius:24px;box-shadow:0 24px 55px rgba(55,43,35,.16)}
 .story-pages-landscape .story-page-card img{aspect-ratio:3/2}
 .story-hero-landscape .story-title-grid{grid-template-columns:.85fr 1.15fr}
-.story-hero-landscape .story-title-grid>picture img{max-height:none;aspect-ratio:3/2;transform:rotate(1deg)}
+.story-hero-landscape .story-title-grid>picture img,.story-hero-landscape .story-title-grid>img{max-height:none;aspect-ratio:3/2;transform:rotate(1deg)}
 .story-page-copy>span{color:#a65e45;font-size:.78rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
 .story-page-copy>p{margin:16px 0 22px;font-family:var(--font-display,Georgia,serif);font-size:clamp(1.8rem,3.4vw,3rem);line-height:1.32}
 .story-long-copy .story-page-copy>p{font-size:clamp(1.35rem,2.1vw,1.9rem);line-height:1.48}
@@ -2358,7 +2358,7 @@ button:focus-visible {
 .story-answer{max-width:620px;margin:0 auto;padding:16px;border:1px solid rgba(55,43,35,.12);border-radius:15px;background:var(--surface-strong);text-align:left}
 .story-answer summary{cursor:pointer;font-weight:900}
 @media(max-width:980px){.read-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.read-library-grid{grid-template-columns:1fr}.read-library-card,.story-title-grid,.story-hero-landscape .story-title-grid,.story-page-card,.story-page-card:nth-child(even){grid-template-columns:1fr}.read-library-card img,.story-title-grid>picture img{max-width:430px;margin:0 auto}.story-page-card:nth-child(even)>picture{order:0}.story-page-card{gap:24px}.story-pages{gap:76px}.story-page-copy>p{font-size:2rem}.story-finish-card{padding:32px 22px}}
+@media(max-width:760px){.read-library-grid{grid-template-columns:1fr}.read-library-card,.story-title-grid,.story-hero-landscape .story-title-grid,.story-page-card,.story-page-card:nth-child(even){grid-template-columns:1fr}.read-library-card img,.story-title-grid>picture img,.story-title-grid>img{max-width:430px;margin:0 auto}.story-page-card:nth-child(even)>picture{order:0}.story-page-card{gap:24px}.story-pages{gap:76px}.story-page-copy>p{font-size:2rem}.story-finish-card{padding:32px 22px}}
 
 /* ── Newsletter signup on app pages (build-newsletter-cta.mjs) ─────────────
    Every colour here is a theme token, so background and text move together
@@ -2464,3 +2464,41 @@ button:focus-visible {
 .read-library-card[hidden],.read-shelf-group[hidden],.read-jump-chip[hidden]{display:none}
 .read-new-badge{display:inline-block;margin:0 0 8px;padding:3px 10px;border-radius:999px;background:#d43f2a;color:#fff;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .story-pages.story-pages-natural .story-page-card img{aspect-ratio:auto}
+
+/* /read/ on phones (2026-10-17): the hub showed no book on the first screen and
+   ran ~26,800 px (one ~700 px card per book); a book's page 1 started two
+   screens down. Two compact cards a row (the whole card is the link, so the
+   blurb and button go), a shorter hero, filters on one scrolling line (the
+   stage chips hide while the filters work), "Save for offline" after the
+   shelf, and on book pages a tighter title area that drops the title picture
+   when it is only page 1 again. */
+@media(max-width:760px){
+  .read-hub-hero{padding:28px 0 18px}
+  .read-hub-hero h1,.story-title-section h1{margin:10px 0 14px;font-size:clamp(2.3rem,10vw,2.9rem);line-height:1}
+  .read-hub-hero .lead{margin-bottom:0;font-size:.98rem;line-height:1.5}
+  .read-library-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .read-library-card{gap:10px;padding:8px 8px 12px;border-radius:18px;box-shadow:0 10px 26px rgba(55,43,35,.08)}
+  .read-library-card>picture{border-radius:12px;box-shadow:none}
+  .read-library-card img{max-width:none}
+  .read-library-card .eyebrow{font-size:.66rem;letter-spacing:.06em;line-height:1.3}
+  .read-library-card h2,.read-library-card h3{margin:6px 0 0;font-size:1.15rem;line-height:1.15}
+  .read-library-card p,.read-library-card .btn{display:none}
+  .read-shelf-group+.read-shelf-group{margin-top:40px}
+  .read-hub-hero+section{padding-top:14px}
+  .read-jump:has(~ .read-filters:not([hidden])){display:none}
+  .read-filter-row{flex-wrap:nowrap;overflow-x:auto;margin:0 0 8px;padding:2px 0;scrollbar-width:none}
+  .read-filter-status:empty{display:none}
+  .read-filters{margin-bottom:14px}
+  .read-offline-status{font-size:.9rem}
+  .read-hub-hero+section>.shell{display:flex;flex-direction:column}
+  .read-hub-hero+section .read-offline{order:1;margin:40px 0 0}
+  .read-filter-row::-webkit-scrollbar{display:none}
+  .read-filter-btn{flex:none}
+  .read-offline{margin-bottom:22px}
+  .read-shelf-intro{margin-bottom:16px}
+  .story-title-section{padding:24px 0 28px}
+  .story-title-grid{gap:18px}
+  .story-title-grid .btn{margin-top:16px}
+  .story-title-grid>picture img,.story-title-grid>img{max-height:42vh;max-height:42dvh;width:auto;max-width:100%;border-width:6px;border-radius:18px;transform:none}
+  .story-title-grid>picture:has(img[src$="/page-1.jpg"]),.story-title-grid>img[src$="/page-1.jpg"]{display:none}
+}

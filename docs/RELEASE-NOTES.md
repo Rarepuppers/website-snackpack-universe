@@ -5,6 +5,24 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-17 — The bookshelf on a phone
+
+- **The free books and games are near the top of the homepage.** On a phone they
+  used to start about 16,500 px and 22,600 px down, behind the full list of
+  apps; now the bookshelf comes straight after the welcome and the arcade
+  after that. Desktop gets the same order.
+- **The bookshelf fits a phone.** Two books a row, each card just the cover,
+  title and stage, so the first books show on the first screen and the whole
+  shelf is about a third as long (8,600 px instead of 26,800). The type and
+  age filters sit on one scrolling line each; "Save the bookshelf for offline"
+  moves to the end of the shelf. Phones also download smaller cover images.
+- **Each book starts sooner.** A smaller title area, and a cover picture no
+  taller than about two-fifths of the screen. Where the cover is only page 1
+  again, it is left out on phones, so the story begins straight away.
+- Fix: the Animal Architects cover was stretched tall (355 × 600 for a 3:2
+  picture) on every screen size. Covers too small to need a WebP copy now get
+  the same sizing as the rest.
+
 ## 2026-10-16 — Animal Architects, the first animal fact book
 
 - **Animal Architects: Built by Nature**, from SnackPack Zoo World: nine pages on
