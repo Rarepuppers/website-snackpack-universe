@@ -60,3 +60,19 @@ test("Options shows the folded controls and names the current choice", async ({ 
   await toggle.click();
   await expect(page.locator("#ck-new")).toBeVisible();
 });
+
+// Mahjong laid its tiles out on a fixed 30x40 px grid, so a tile was 28 px
+// wide at every width — under a comfortable tap size on a phone and tiny in a
+// 640 px desktop stage. The board now scales to its stage; a tap must still
+// select the tile under the finger.
+test("Mahjong tiles scale with the stage and taps still land", async ({ page }) => {
+  for (const size of [{ width: 375, height: 812 }, { width: 1280, height: 800 }]) {
+    await page.setViewportSize(size);
+    await page.goto("/play/mahjong/", { waitUntil: "load" });
+    const tile = page.locator(".mj-tile.is-open").nth(2);
+    const box = await tile.boundingBox();
+    expect(box.width, `tile width at ${size.width}px`).toBeGreaterThanOrEqual(size.width < 700 ? 40 : 56);
+    await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+    await expect(tile).toHaveClass(/is-selected/);
+  }
+});

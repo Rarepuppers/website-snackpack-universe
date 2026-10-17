@@ -1272,6 +1272,7 @@ button.th-card.is-selected {
   position: relative;
   margin: 0 auto;
   flex: none;
+  transform-origin: top center; /* fit() in mahjong/index.html scales it */
 }
 
 .mj-tile {

@@ -472,7 +472,24 @@
     var pad = zmax * OFF + 6;
     boardEl.style.width = (pad * 2 + (maxX - minX + 1) * UX) + "px";
     boardEl.style.height = (pad * 2 + (maxY - minY + 1) * UY) + "px";
+    fit();
   }
+
+  // Scale the board to its stage. Tiles are laid out on a fixed 30x40 px grid,
+  // which left a 216x196 px board — 28 px tiles — in a 640 px stage at every
+  // width. A transform keeps hit-testing exact, so the layout maths stays
+  // as it is. Capped so the whole board still fits on screen vertically.
+  function fit() {
+    var wrap = boardEl.parentNode;
+    var w = parseFloat(boardEl.style.width) || 0, h = parseFloat(boardEl.style.height) || 0;
+    if (!wrap || !w || !h) return;
+    var byWidth = (wrap.clientWidth - 8) / w;
+    var byHeight = Math.max(260, window.innerHeight - 170) / h;
+    var k = Math.max(1, Math.min(2.4, byWidth, byHeight));
+    boardEl.style.transform = k === 1 ? "" : "scale(" + k.toFixed(3) + ")";
+    wrap.style.height = Math.ceil(h * k + 8) + "px";
+  }
+  window.addEventListener("resize", function () { if (board) fit(); });
 
   function render() {
     var pad = zmax * OFF + 6;
