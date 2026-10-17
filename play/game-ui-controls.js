@@ -75,6 +75,21 @@
     apply();
   }());
 
+  (function addClearMahjongFaces() {
+    if (!/^\/play\/mahjong\/?$/.test(location.pathname)) return;
+    var controls = document.querySelector('.game-controls');
+    var stage = document.querySelector('.game-stage');
+    if (!controls || !stage) return;
+    var key = 'sp_mahjong_clear_faces', on = false;
+    try { on = localStorage.getItem(key) === '1'; } catch (error) {}
+    var button = document.createElement('button');
+    button.className = 'btn-game'; button.type = 'button'; button.textContent = 'Clear faces';
+    button.title = 'Use simple family symbols and larger tile ranks';
+    function apply() { stage.classList.toggle('sp-clear-faces', on); button.setAttribute('aria-pressed', String(on)); }
+    button.addEventListener('click', function () { on = !on; try { localStorage.setItem(key, on ? '1' : '0'); } catch (error) {} apply(); });
+    controls.insertBefore(button, controls.lastElementChild); apply();
+  }());
+
   (function addDeckPicker() {
     if (!/^\/play\/(solitaire|spider-solitaire|tripeaks|memory-match)\/?$/.test(location.pathname)) return;
     var controls = document.querySelector(".game-controls");
