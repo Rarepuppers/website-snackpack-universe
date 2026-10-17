@@ -214,6 +214,7 @@
           <div class="game-readout">
             <span class="readout-chip"><span id="ck-p1-label">You</span><b id="ck-you">12</b></span>
             <span class="readout-chip"><span id="ck-p2-label">CPU</span><b id="ck-cpu">12</b></span>
+            <span class="readout-chip" title="Wins and losses against this opponent on this device"><span>Record</span><b id="ck-record">0–0</b></span>
           </div>
           <div class="game-controls">
             <div class="seg" role="group" aria-label="Difficulty">
@@ -380,6 +381,26 @@
   var undoStack = [];
   // Assigned at the end of the file, once SnackPackResume is known to exist.
   var resume = null;
+  // Win/loss record, kept per opponent like Connect 4's: the chips beside it
+  // show live piece counts, so the record needs its own. Beating Hard is not
+  // the same as beating Easy, and a two-player tally is no record against the
+  // computer.
+  var recordEl = document.getElementById("ck-record");
+  function recordKey() { return "sp_checkers_record_" + (localMode ? "local" : "cpu" + depth); }
+  function loadRecord() {
+    try {
+      var r = JSON.parse(localStorage.getItem(recordKey()) || "null");
+      if (r && Number.isFinite(r.won) && Number.isFinite(r.lost) && r.won >= 0 && r.lost >= 0) return r;
+    } catch (e) {}
+    return { won: 0, lost: 0 };
+  }
+  function showRecord() { var r = loadRecord(); recordEl.textContent = r.won + "–" + r.lost; }
+  function bumpRecord(won) {
+    var r = loadRecord();
+    if (won) r.won++; else r.lost++;
+    try { localStorage.setItem(recordKey(), JSON.stringify(r)); } catch (e) {}
+    showRecord();
+  }
   function updateUndo() { undoBtn.disabled = busy || undoStack.length === 0; }
 
   function build() {
@@ -395,6 +416,7 @@
   }
 
   function reset() {
+    showRecord();
     board = new Array(64).fill(0);
     for (var r = 0; r < 8; r++) for (var c = 0; c < 8; c++) {
       if ((r + c) % 2 === 1) {
@@ -558,6 +580,7 @@
 
   function end(who) {
     gameOver = true; busy = false; updateUndo();
+    bumpRecord(who === "you");
     if (who === "you") {
       statusEl.textContent = localMode ? "Player 1 wins! 🎉" : "You win! 🎉 The computer is out of moves.";
       statusEl.className = "game-status";

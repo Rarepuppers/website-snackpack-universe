@@ -193,6 +193,7 @@
             <span class="readout-chip"><span>You</span><b id="pk-you">0</b></span>
             <span class="readout-chip"><span>CPU</span><b id="pk-cpu">0</b></span>
             <span class="readout-chip"><span>Round</span><b id="pk-round">1</b></span>
+            <span class="readout-chip" title="Shootouts won and lost against this keeper on this device"><span>Record</span><b id="pk-record">0–0</b></span>
           </div>
           <div class="game-controls">
             <div class="seg" role="group" aria-label="Difficulty">
@@ -370,6 +371,24 @@
   var BALL_START = { x: 230, y: 286 };
 
   var smart = 0.4;
+  // Shootout record, kept per difficulty: the You/CPU chips only count goals
+  // in the current shootout, so a result used to vanish with the next one.
+  var recordEl = document.getElementById("pk-record");
+  function recordKey() { return "sp_penalty_shootout_record_" + (smart <= 0.25 ? "easy" : smart <= 0.4 ? "medium" : "hard"); }
+  function loadRecord() {
+    try {
+      var r = JSON.parse(localStorage.getItem(recordKey()) || "null");
+      if (r && Number.isFinite(r.won) && Number.isFinite(r.lost) && r.won >= 0 && r.lost >= 0) return r;
+    } catch (e) {}
+    return { won: 0, lost: 0 };
+  }
+  function showRecord() { var r = loadRecord(); recordEl.textContent = r.won + "–" + r.lost; }
+  function bumpRecord(won) {
+    var r = loadRecord();
+    if (won) r.won++; else r.lost++;
+    try { localStorage.setItem(recordKey(), JSON.stringify(r)); } catch (e) {}
+    showRecord();
+  }
   var you, cpu, round, phase, busy;
   var cpuShotDir = null, lastCpuShot = null;
   var anim = null; // { ball:{x,y}, keeper:{x}, t }
@@ -381,6 +400,7 @@
   var fxFlash = null;
 
   function reset() {
+    showRecord();
     you = 0; cpu = 0; round = 1; busy = false; phase = "shoot";
     youResults = []; cpuResults = []; cpuShotDir = null; lastCpuShot = null;
     keeperX = dirX("C"); ballPos = { x: BALL_START.x, y: BALL_START.y };
@@ -522,6 +542,7 @@
 
   function finish() {
     phase = "over"; setPad(false);
+    bumpRecord(you > cpu);
     if (you > cpu) {
       statusEl.textContent = "You win the shootout " + you + "–" + cpu + "! 🏆";
       statusEl.className = "game-status";

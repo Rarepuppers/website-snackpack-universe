@@ -209,6 +209,7 @@
           <div class="game-readout">
             <span class="readout-chip"><span id="rv-p1-label">You ⚫</span><b id="rv-you">2</b></span>
             <span class="readout-chip"><span id="rv-p2-label">CPU ⚪</span><b id="rv-cpu">2</b></span>
+            <span class="readout-chip" title="Wins and losses against this opponent on this device"><span>Record</span><b id="rv-record">0–0</b></span>
           </div>
           <div class="game-controls">
             <div class="seg" role="group" aria-label="Difficulty">
@@ -384,6 +385,26 @@
   var undoStack = [];
   // Assigned at the end of the file, once SnackPackResume is known to exist.
   var resume = null;
+  // Win/loss record, kept per opponent like Connect 4's: the chips beside it
+  // show live piece counts, so the record needs its own. Beating Hard is not
+  // the same as beating Easy, and a two-player tally is no record against the
+  // computer.
+  var recordEl = document.getElementById("rv-record");
+  function recordKey() { return "sp_reversi_record_" + (localMode ? "local" : "cpu" + depth); }
+  function loadRecord() {
+    try {
+      var r = JSON.parse(localStorage.getItem(recordKey()) || "null");
+      if (r && Number.isFinite(r.won) && Number.isFinite(r.lost) && r.won >= 0 && r.lost >= 0) return r;
+    } catch (e) {}
+    return { won: 0, lost: 0 };
+  }
+  function showRecord() { var r = loadRecord(); recordEl.textContent = r.won + "–" + r.lost; }
+  function bumpRecord(won) {
+    var r = loadRecord();
+    if (won) r.won++; else r.lost++;
+    try { localStorage.setItem(recordKey(), JSON.stringify(r)); } catch (e) {}
+    showRecord();
+  }
   function updateUndo() { undoBtn.disabled = busy || undoStack.length === 0; }
 
   function build() {
@@ -399,6 +420,7 @@
   }
 
   function reset() {
+    showRecord();
     board = new Array(64).fill(0);
     board[27] = -1; board[28] = 1; board[35] = 1; board[36] = -1; // d4 w, e4 b, d5 b, e5 w
     busy = false; gameOver = false; currentSide = HUMAN;
@@ -536,6 +558,7 @@
     gameOver = true; busy = false;
     var cnt = counts(board);
     render();
+    if (cnt.you !== cnt.cpu) bumpRecord(cnt.you > cnt.cpu); // a tie counts for neither
     if (cnt.you > cnt.cpu) {
       statusEl.textContent = (localMode ? "Player 1 wins " : "You win ") + cnt.you + "–" + cnt.cpu + "! 🎉";
       statusEl.className = "game-status";

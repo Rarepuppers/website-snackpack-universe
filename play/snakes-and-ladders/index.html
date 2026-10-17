@@ -305,6 +305,7 @@
 <script>window.SP_PLAY_URL = "https://www.snackpackuniverse.com/go/arcade/snakes-and-ladders/braingames2/";</script>
 <script src="../funnel.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script>
 <script>
 (function () {
   "use strict";
@@ -371,6 +372,7 @@
   try { mode = localStorage.getItem("sp_snakes_and_ladders_mode") || mode; } catch (e) {}
   if (["classic", "2p", "4p", "chaos"].indexOf(mode) < 0) mode = "classic";
   var players, snakes, ladders, current, busy, over;
+  var resume = null;
   function winsKey() { return "sp_snakes_and_ladders_wins_" + mode; }
   function showWins() { var n = 0; try { n = +(localStorage.getItem(winsKey()) || 0); } catch (e) {} winsEl.textContent = n; }
 
@@ -590,18 +592,52 @@
 
   diceEl.addEventListener("click", doRoll);
   rollBtn.addEventListener("click", doRoll);
-  newBtn.addEventListener("click", newGame);
+  // Clear the save from the button only: newGame() also runs on a mode switch,
+  // and each mode keeps its own save.
+  newBtn.addEventListener("click", function () { if (resume) resume.clear(); newGame(); });
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       mode = btn.dataset.mode;
       try { localStorage.setItem("sp_snakes_and_ladders_mode", mode); } catch (e) {}
       document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
       newGame();
+      if (resume) resume.variantChanged();
     });
   });
 
   document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.mode === mode)); });
   newGame();
+
+  // Saved progress: a family game can run ten minutes, often pass-and-play, so
+  // a closed tab should not cost the board. Only saved when a person is to
+  // roll, never while a CPU owes a move, so a restore never needs to re-enter
+  // the CPU's turn. Chaos boards are random, so the board itself is saved too.
+  function validSave(p) {
+    if (!p || !Array.isArray(p.players) || !p.players.length || p.players.length > 4) return false;
+    if (!(p.current >= 0 && p.current < p.players.length) || !p.players[p.current].isHuman) return false;
+    if (!p.players.every(function (q) { return Number.isInteger(q.pos) && q.pos >= 0 && q.pos < 100; })) return false;
+    return !!(p.snakes && p.ladders && typeof p.snakes === "object" && typeof p.ladders === "object");
+  }
+  if (window.SnackPackResume) {
+    resume = window.SnackPackResume.attach({
+      game: "snakes-and-ladders",
+      variant: function () { return mode; },
+      serialize: function () { return { players: players, current: current, snakes: snakes, ladders: ladders }; },
+      validate: validSave,
+      restore: function (p) {
+        players = p.players; current = p.current; snakes = p.snakes; ladders = p.ladders;
+        busy = false; over = false;
+        buildBoard(); drawOverlay(); renderTokens(); renderPlayers(); setTurnReadout(); showWins();
+        statusEl.className = "game-status";
+        statusEl.textContent = players[current].name === "You" ? "Your turn — roll." : players[current].name + "'s turn — roll.";
+        return true;
+      },
+      isActive: function () {
+        return !over && !busy && players[current].isHuman && players.some(function (q) { return q.pos > 0; });
+      }
+    });
+    new MutationObserver(function () { if (resume) resume.changed(); }).observe(tokensEl, { childList: true, subtree: true });
+  }
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

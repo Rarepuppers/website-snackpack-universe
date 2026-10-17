@@ -378,3 +378,43 @@ test("reversi: the opening four discs are not offered back", async ({ page }) =>
   await page.reload();
   await expect(page.locator(".sp-resume")).toHaveCount(0);
 });
+
+// Snakes & Ladders is a 5–10 minute family game, often pass-and-play. Roll
+// until the player has moved and it is their turn again, reload, resume, and
+// check the tokens are where they were and the Roll button works.
+test("snakes-and-ladders: a game survives a reload", async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.goto("/play/snakes-and-ladders/");
+  const roll = page.locator("#s-roll");
+  const positions = () => page.locator(".sl-ppos").allTextContents();
+  for (let i = 0; i < 6; i++) {
+    await expect(roll).toBeEnabled({ timeout: 15_000 });
+    await roll.click();
+  }
+  await expect(roll).toBeEnabled({ timeout: 15_000 });
+  const before = await positions();
+  expect(before.some((p) => p !== "Square 0"), "someone moved").toBe(true);
+
+  await page.waitForTimeout(700);
+  await page.reload();
+  await expect(page.locator(".sp-resume"), "resume offer shown").toBeVisible();
+  await page.locator(".sp-resume [data-resume]").click();
+  expect(await positions()).toEqual(before);
+  await expect(roll).toBeEnabled();
+  await roll.click();
+  await expect(page.locator("#s-status")).not.toHaveText(/Saved game restored/, { timeout: 5_000 });
+});
+
+test("snakes-and-ladders: New game retires the save", async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.goto("/play/snakes-and-ladders/");
+  const roll = page.locator("#s-roll");
+  for (let i = 0; i < 2; i++) { await expect(roll).toBeEnabled({ timeout: 15_000 }); await roll.click(); }
+  await expect(roll).toBeEnabled({ timeout: 15_000 });
+  await page.waitForTimeout(700);
+  await page.locator("#s-new").click();
+  await page.waitForTimeout(300);
+  await page.reload();
+  await page.waitForTimeout(500);
+  await expect(page.locator(".sp-resume")).toHaveCount(0);
+});
