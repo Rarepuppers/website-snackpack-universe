@@ -5152,3 +5152,18 @@ HUD scales 0.8–1.2 and radar scales 0.75–1.25. Real HUD clicks opened the af
 Captures/JSON are retained in `playtest-evidence/2026-10-16-polish-review/`. No runtime change
 was needed. RELEASE-HANDOFF records remaining human/device checks, Claude build ownership
 and explicit deployment authorization. These samples do not close the five-run gate.
+
+## 17 October 2026 — continuation diagnostics and concrete acceptance handoff
+
+Re-read the accepted handover/reference plans against current `20b82c98`; preserved unrelated
+website and parent-repo changes. Reviewed retained floor/map/stress evidence, traced normal rack
+capacity and captured five short legal-base-rack diagnostics at 1080p/4K. No named production
+failure justified an attachment, art or mechanics change. Completed the shell accessibility
+contract inventory and an owner/evidence acceptance worksheet; implementation stays conditional.
+
+Fresh game verifier passed all required lanes in 89.3 seconds: 1,778 unit tests / 311 files,
+30 browser checks, 28 desktop-host tests, smoke/offline and 25 matching published outputs.
+All 19 portfolio guards passed in the host rerun. Environment failures and the result are recorded in
+`archive/CONTINUATION-REVIEW-2026-10-17.md`, alongside completed review scope and remaining owners.
+Release/service-worker identity and schema stay unchanged. No package, push, deployment, Steam
+upload or messages to another chat. Human/hardware/Steam/release gates remain in CURRENT-PLAN.

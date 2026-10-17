@@ -1,6 +1,6 @@
 # Last Bastion documentation
 
-Last reviewed: 16 October 2026. The game lives in the **nested website Git repo**.
+Last reviewed: 17 October 2026. The game lives in the **nested website Git repo**.
 `dev/src/game/` describes current behavior; plans explain intent and acceptance.
 
 ## Start here
@@ -9,6 +9,7 @@ Last reviewed: 16 October 2026. The game lives in the **nested website Git repo*
 |---|---|
 | [Release notes](RELEASE-NOTES.md) | Player-facing changes and local/deployed status. |
 | [Current plan](CURRENT-PLAN.md) | The only active execution queue and release gates. |
+| [Acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md) | Human/build/hardware/Steam owners, exact checks and evidence to return. |
 | [Local playtest plan](local-playtest-plan-2026-08-21.md) | Five creator-observed runs, evidence fields, and pass thresholds. |
 | [Presentation register](presentation-defect-plan-2026-08-23.md) | LB defects and the separate visual acceptance lane; recheck status against current code and observed play. |
 | [Steam and display plan](last-bastion-improvement-and-steam-plan-2026-08-07.md) | Desktop, display, input, and longer-range design contracts. Its dated status sections are historical; use the current plan for order. |
@@ -18,6 +19,7 @@ Last reviewed: 16 October 2026. The game lives in the **nested website Git repo*
 | Document | Use |
 |---|---|
 | [Full HD/4K asset patch proposal](ASSET-IMPROVEMENT-PLAN-2026-10-16.md) | Prioritized floor, registration, VFX and UI pilots; proposed scope and acceptance gates. |
+| [Shell accessibility contract inventory](SHELL-ACCESSIBILITY-CONTRACT-2026-10-17.md) | Existing state, effects, inputs and DOM surfaces; preparation for conditional implementation. |
 | [Art bible](last-bastion-art-bible.md) | Source-master retention, framing, pivots, frame order, and 4K rules. |
 | [Asset review](asset-next-production-review-2026-07-26.md) | Asset acceptance and conditional art queue. Its original storefront priority list is complete. |
 | [Environment plan](environment-production-plan.md) and [prompts](environment-prompts.md) | Environment kit contracts and prompt library. Further art follows observed failures. |

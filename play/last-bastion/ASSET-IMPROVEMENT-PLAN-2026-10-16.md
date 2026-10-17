@@ -187,6 +187,13 @@ observed play supports it. The initial planning pass generated no assets. The ac
 
 ## Implementation progress
 
+17 October follow-through: retained baseline/A/B/kit/map/stress captures reviewed, normal-rack
+diagnostics added and shell accessibility contracts inventoried. See the
+[archived checkpoint](archive/CONTINUATION-REVIEW-2026-10-17.md) and
+[acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md). No named failed registration frame,
+normal-loadout readability failure or floor-adoption evidence was established; no new art or
+runtime change follows from this preparation. Motion/hardware gates remain active.
+
 - [x] Generate a reproducible 213-entry runtime-manifest inventory and document confirmed consumer traces.
 - [x] Generate two floor candidates and one transparent decal with retained sources and exact prompts.
 - [x] Bind an opt-in A/B combat route, isolated loading, broad material repeats and deterministic decals.

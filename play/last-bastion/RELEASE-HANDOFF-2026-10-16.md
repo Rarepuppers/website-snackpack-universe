@@ -4,6 +4,12 @@
 **State:** local source and published web output verified; not pushed, not deployed, not desktop-packaged.
 No further unconditional Patch A implementation items remain. New floors remain opt-in review art.
 
+17 October continuation: unchanged runtime identity and published output freshly verified at
+`20b82c98` (1,778 unit / 30 browser / 28 desktop-host tests). The
+[acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md) gives the exact package/evidence return
+contract for the build owner and human testers. No fresh executable, deployment, Steam acceptance
+or live measurement start date was produced. The original evidence below remains historical.
+
 ## Completed evidence
 
 - Full game verifier: 1,777 unit tests / 311 files, 30 browser checks, 28 desktop-host tests,

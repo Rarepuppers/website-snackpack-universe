@@ -1,5 +1,15 @@
 # Last Bastion release notes
 
+## 17 October 2026 — release preparation checkpoint
+
+No player-facing runtime changes; release identity remains `web-2026.10.16-asset-polish`.
+Fresh verification passed 1,778 unit tests, 30 browser checks, 28 desktop-host tests,
+smoke/offline and all 25 published-output comparisons. All 19 portfolio guards passed.
+Five normal-rack diagnostic captures,
+a shell accessibility contract inventory and an owner/evidence acceptance worksheet are retained.
+The completed preparation checkpoint is archived. Floor adoption, observed runs, audio/controller,
+hardware, Steam and deployment acceptance remain open. No push or packaging ran.
+
 ## 16 October 2026 — asset and progression clarity patch
 
 **Release:** `web-2026.10.16-asset-polish` — local only; not deployed or desktop-packaged.

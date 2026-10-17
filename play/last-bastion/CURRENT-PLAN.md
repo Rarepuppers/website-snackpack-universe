@@ -2,8 +2,8 @@
 
 **Updated:** 17 October 2026
 **Local release:** `web-2026.10.16-asset-polish` (service worker `2026-10-16-asset-polish`).
-**Status:** accepted audit corrections are implemented and committed. All required automated
-verification lanes pass. This release has not been pushed or deployed by this work.
+**Status:** implementation complete; fresh 17 October game verification passes. Human, hardware,
+Steam and release gates remain open. This continuation did not push, deploy or package.
 
 For continuation, use the [17 October next-chat handover](NEXT-CHAT-HANDOVER-2026-10-17.md).
 It organizes remaining work into presentation, platform, release/measurement and conditional
@@ -13,6 +13,10 @@ This is the only active execution queue. Completed audit tasks are in the
 [archive](archive/README.md); player-facing changes are in the [release notes](RELEASE-NOTES.md).
 Keep the content freeze until observed play and live measurement justify expansion.
 
+Use the [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md) for exact owner actions and
+evidence to return. The [17 October checkpoint](archive/CONTINUATION-REVIEW-2026-10-17.md)
+archives completed diagnostic/preparation work; do not restart it as an implementation queue.
+
 ## Completed and verified
 
 - Reliability and comprehension pass: `c7779414`. Startup/art recovery, long Daily streaks,
@@ -21,12 +25,13 @@ Keep the content freeze until observed play and live measurement justify expansi
 - Controller/reporting follow-up: `ebc9a4b2`. Physical menu controls independent of combat
   remapping, D-pad pages, mixed-speed share disclosure, fresh attempt settings after restart,
   corrected affinity count/navigation hints and reliable first clicks on pause/settings rows.
-- Latest `npm run verify:last-bastion`: all required lanes passed (73 seconds): 1,777 unit
-  tests in 311 files, 30 browser checks, smoke/offline acceptance, 25 matching published outputs,
-  website JavaScript/offline-core checks and desktop host build with 28 tests. A subsequent saved-HUD
-  preference regression passed with its 51-test targeted suite (one additional unit test).
-- Portfolio `node scripts/check-all.js`: all 19 guards passed on 16 October. Separate website
-  check previously verified 272 pages. Those results do not establish live deployment status.
+- Latest `npm run verify:last-bastion`: all required lanes passed on 17 October (89.3 seconds):
+  1,778 unit tests in 311 files, 30 browser checks, smoke/offline, 25 matching published outputs,
+  website JavaScript/offline-core checks and desktop host build with 28 tests. No runtime edits
+  or regenerated published output were needed. See the archived report for execution limitations.
+- Portfolio `node scripts/check-all.js`: all 19 guards passed on 17 October in the host rerun.
+  Initial sandbox run passed 18/19 and failed a game-UI temporary-fixture rename with access
+  denied; the successful rerun used workspace-local TEMP/TMP. Neither result establishes deployment.
 - Asset patch: 227-definition inventory/geometry report, eight-tile/four-decal kit, optimized pilots,
   affinity HUD/catalogue details and map/build/effect polish. Baseline/A/B and new kit/UI captures are in
   `playtest-evidence/2026-10-16-screens-auto/`. Default gameplay does not load the pilot art.
@@ -39,6 +44,10 @@ The code/assets checkpoint is complete. The [release handoff](RELEASE-HANDOFF-20
 assigns the remaining human/device/build/deployment gates and records existing build commands.
 Four further dense browser cases passed across all palettes and HUD scales 0.8–1.2 at 1080p/4K;
 see [sampled evidence](playtest-evidence/2026-10-16-polish-review/README.md). These are not Runs 1–5.
+Five new [normal-rack diagnostics](playtest-evidence/2026-10-17-loadout-review/README.md) inspected
+legal three/four-weapon base racks and a single weapon. The hero remains identifiable in those
+samples; mixed/bonus-slot racks in dense earned play still need review. No production defect was
+established that justifies attachment spacing or mechanics changes.
 
 ## 1. Deploy and verify the browser release — open
 
@@ -95,6 +104,8 @@ and the patch proposal’s progress checklist for remaining non-testing work. Ac
 - Replayable practice, full DOM-backed menu accessibility, further codex expansion,
   legacy modifier cleanup, VFX/transformation art and further music remain conditional work.
   Build/affinity inspection is implemented; full accessible shell semantics are not.
+  The [shell contract inventory](SHELL-ACCESSIBILITY-CONTRACT-2026-10-17.md) is prepared;
+  implementation remains conditional and must preserve the existing state/effect/input contracts.
 - Touch controls, new heroes/regions, multiplayer, leaderboards and Threat Tiers 3–11 are not
   approved production tasks. Use observed needs and operating constraints to select additions.
 - Historical details remain in the [content-debt](archive/last-bastion-content-debt-plan.md)
