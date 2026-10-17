@@ -1,6 +1,6 @@
 # Last Bastion completed-work log
 
-This is the archive of finished, verified work, split out of `last-bastion-model.md` on 18 July 2026 so the tracker reads as a plan. Both Claude and Codex treat this file as the authoritative record of what is already implemented: check here before re-planning or re-generating anything, and append each newly completed checkpoint here (newest at the bottom) with its date, scope, and verification evidence.
+This is the archive of finished, verified work, split out of `archive/last-bastion-model.md` on 18 July 2026 so the tracker reads as a plan. Both Claude and Codex treat this file as the authoritative record of what is already implemented: check here before re-planning or re-generating anything, and append each newly completed checkpoint here (newest at the bottom) with its date, scope, and verification evidence.
 
 Numbered-step completion notes remain inline in the model file's "Revised implementation order"; production batch statuses remain in its "Production batch status" section until a later archival pass.
 
@@ -5183,3 +5183,30 @@ published outputs. All 19 portfolio guards passed; result/evidence are in the ar
 Plans, release notes, operator guide and handoff updated; finished QA tasks archived. No executable
 package, push, deployment, Steam upload or cross-chat message ran. Human/hardware/Steam/release
 gates and evidence-dependent optional work remain explicit in CURRENT-PLAN.
+
+## 17 October 2026 — browser publication and plan archive cleanup
+
+Mark explicitly authorized commit and push. Reviewed the nested repository's full outgoing
+range, preserved dirty work from other sessions, and published QA-readiness to the browser.
+Archived the superseded next-chat handover, September strategy and July systems tracker;
+CURRENT-PLAN remains the active queue, with the acceptance worksheet retaining external gates.
+
+Publication CI demonstrated expanded Options contrast failure in dark mode and four interaction
+tests reaching folded controls directly. Fixed contrast (`0a01088a`) and made those tests open
+Options (`6a364f9b`). Reviewed 21 game baselines and four hub baselines (`77ecd3a0`); the hub
+capture now paints the full themed background, avoiding Chromium's fixed-background capture gap.
+A separate random-win wording test failed after 153 other checks passed. Deterministic legal
+dice inputs now reach the real ladder/win messages (`31139871`), with three consecutive live-UI
+runs passing in 3.2 seconds. Game mechanics and default Last Bastion art did not change.
+
+Live build identity, old/new cache evidence, warmed fixed-theme offline boot and HTTP-200 privacy
+storage/GoatCounter disclosures are retained in `playtest-evidence/2026-10-17-qa-readiness/`.
+Analytics was blocked in diagnostic probes; dashboard receipt/settings and measurement start
+remain unverified. Claude still owns fresh desktop packaging; physical play/audio/controller,
+hardware and Steam acceptance remain open. No executable build or Steam upload ran.
+
+Website CI and Pages passed on `31139871`: 154 arcade checks, 31 Last Bastion browser journeys,
+1,781 game tests, desktop-host tests and integrity/audit checks. Publication records retain URLs.
+The newer portfolio run passed 18 guards; asset delivery encountered a sandbox rename restriction,
+then its host retry identified seven missing Vol 2 scenes during another session's parent-repo
+migration. Preserve that work; the older all-19-green QA checkpoint is historical evidence.

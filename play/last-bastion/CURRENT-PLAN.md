@@ -1,10 +1,10 @@
 # Last Bastion — current plan
 
 **Updated:** 17 October 2026
-**Local release:** `web-2026.10.17-qa-readiness` (service worker `2026-10-17-qa-readiness`).
+**Browser release:** `web-2026.10.17-qa-readiness` (service worker `2026-10-17-qa-readiness`).
 **Status:** Patch A and QA preparation implemented; fresh 17 October game verification passes.
-Human, hardware, Steam and release gates remain open.
-Mark explicitly authorized commit/push on 17 October. Publication verification is in progress;
+Human, hardware, Steam and analytics-dashboard gates remain open.
+Mark explicitly authorized commit/push on 17 October. The browser release is served and website CI/Pages pass;
 production packaging remains with Claude and has not run in this work.
 
 Continue from this plan, the [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md) and
@@ -51,17 +51,17 @@ below; acceptance of recommendations did not supply missing observations or rele
   refreshed published output passed. See the archived report for execution limitations.
 - Portfolio `node scripts/check-all.js`: the fresh QA-readiness run passed all 19 guards.
   Its result is retained in the archived implementation/evidence. This is local verification;
-  human, hardware, Steam and deployment acceptance remain separate.
+  human, hardware, Steam and live analytics acceptance remain separate.
 - Asset patch: 227-definition inventory/geometry report, eight-tile/four-decal kit, optimized pilots,
   affinity HUD/catalogue details and map/build/effect polish. Baseline/A/B and new kit/UI captures are in
   `playtest-evidence/2026-10-16-screens-auto/`. Default gameplay does not load the pilot art.
 - Earlier layout captures remain in `playtest-evidence/2026-10-15-screens-auto/`. They predate the
   follow-up label changes and are layout evidence, not final screenshots of every current label.
 
-## Remaining work requires release or physical-device acceptance
+## Remaining work requires external or physical-device acceptance
 
 The code/assets checkpoint is complete. The [release handoff](RELEASE-HANDOFF-2026-10-16.md)
-assigns the remaining human/device/build/deployment gates and records existing build commands.
+assigns the remaining human/device/build/analytics gates and records existing build commands.
 Four further dense browser cases passed across all palettes and HUD scales 0.8–1.2 at 1080p/4K;
 see [sampled evidence](playtest-evidence/2026-10-16-polish-review/README.md). These are not Runs 1–5.
 Five new [normal-rack diagnostics](playtest-evidence/2026-10-17-loadout-review/README.md) inspected
@@ -69,16 +69,20 @@ legal three/four-weapon base racks and a single weapon. The hero remains identif
 samples; mixed/bonus-slot racks in dense earned play still need review. No production defect was
 established that justifies attachment spacing or mechanics changes.
 
-## 1. Publish and verify the browser release — authorized, verification open
+## 1. Browser publication — live and verified; dashboard acceptance open
 
 - [x] Explicit commit/push request received on 17 October 2026.
 - [x] Reviewed the full `origin/main..HEAD` range. It includes committed Last Bastion QA work
   and committed arcade layout/shared-art changes; dirty About/social/privacy/site art and scratch
   files remain unstaged. No force push, history rewrite or production packaging is authorized.
-- [ ] Push the reviewed release, wait for CI/Pages, and verify the live game and privacy page.
-- [ ] Confirm the served build identity matches `web-2026.10.17-qa-readiness` and test a warm-cache
-  offline upgrade. The live menu already showed Quick/Daily on 14 October; this does not prove
-  that the current bundle or analytics configuration is deployed.
+- [x] Pushed the reviewed release; Pages deployed. Live game and privacy page return successfully.
+- [x] Website CI and Pages passed on `31139871`: 154 arcade checks, 31 Last Bastion browser
+  journeys, 1,781 game tests, desktop-host tests and integrity checks. The publication evidence
+  retains the CI/Pages URLs and checked commit.
+- [x] Live identity is `web-2026.10.17-qa-readiness`; an isolated Chromium profile warmed on
+  asset-polish upgraded to the QA-readiness cache, then booted a fixed-theme/seed route offline.
+  See [publication evidence](playtest-evidence/2026-10-17-qa-readiness/README.md). Analytics was blocked
+  in the probe, so this does not prove dashboard receipt.
 - [ ] Confirm `opened`, `run-started`, `wave-1`, `wave-5`, `run-ended`, and next-local-day
   `returning` in the `snackpack` GoatCounter dashboard. Record the first verified measurement
   date and confirm optional individual-pageview collection is disabled.
@@ -86,6 +90,11 @@ established that justifies attachment spacing or mechanics changes.
 Measurement contract: open/start/wave milestones are per browser-tab local day, not unique
 people. Run endings form a separate all-run outcome distribution. Expedition endings omit
 wave depth because their progress is measured in nodes.
+
+Publication verification also found an unrelated parent-repository issue: the latest portfolio
+run passed 18 guards, while the asset-delivery host retry reported seven missing Vol 2 scene
+assets during another session's migration. Preserve that session's source/manifests; its owner
+must finish delivery and rerun `node scripts/check-all.js`. Website CI above passes independently.
 
 ## 2. Observed gameplay and presentation — open
 

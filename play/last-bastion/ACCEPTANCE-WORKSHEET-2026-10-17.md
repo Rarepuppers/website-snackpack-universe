@@ -1,6 +1,6 @@
 # Remaining acceptance worksheet — 17 October 2026
 
-Use with CURRENT-PLAN and the five-run matrix. Every result below starts **NOT RUN**.
+Use with CURRENT-PLAN and the five-run matrix. Human and physical-device results below remain **NOT RUN**.
 Mark or an assigned human tester owns observed play; Claude owns production packaging.
 This document requests no deployment, scheduled monitoring, Steam upload or cross-chat message.
 
@@ -75,8 +75,8 @@ Steam owner supplies real App/Depot IDs, partner access and exported controller 
 Follow `steam-input/README.md`; validate achievements, cloud conflict/recovery, controller mapping,
 overlay and Steam-down fallback with the actual client. No App 480 substitute or fabricated VDFs.
 
-After explicit deployment authorization: review the full website release range and dirty files,
-push intended commits, wait for CI, verify served build and `/privacy/last-bastion/`, then test
-warm-cache upgrade/offline. Dashboard owner verifies optional individual pageviews disabled and
+Browser publication was authorized and pushed on 17 October. Served QA-readiness identity,
+`/privacy/last-bastion/` and warmed-cache offline boot are verified; final CI is tracked in
+CURRENT-PLAN. Dashboard owner still verifies optional individual pageviews disabled and
 receipt of opened/start/wave-1/wave-5/end/next-local-day return. Record the actual measurement start
 date; it is currently unset. Review two weeks of data plus observed runs before conditional Patch B.

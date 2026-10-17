@@ -1,7 +1,8 @@
 # Last Bastion release handoff — 16 October 2026
 
 **Prepared build:** `web-2026.10.17-qa-readiness`, runtime `4675b9ab`, package tooling `f7506ea2`.
-**State:** local source and published web output verified; not pushed, not deployed, not desktop-packaged.
+**State (updated 17 October):** browser release pushed and served; live identity, privacy route and
+warmed offline boot verified. Website CI and Pages passed on `31139871`. Desktop is not packaged.
 No further unconditional Patch A implementation items remain. New floors remain opt-in review art.
 
 Latest continuation: QA-01 local session reports and QA-02 package provenance are complete.
@@ -37,9 +38,10 @@ or live measurement start date was produced. The original evidence below remains
    recorded for the build owner, not executed by this work. Check current script/config first.
 3. **Hardware/Steam:** test the fresh packaged executable on actual target displays/GPUs, record
    Windows scaling and frame pacing, and verify Steam integration when App ID/partner access exists.
-4. **Deployment:** requires an explicit push/deploy request under the standing no-push instruction.
-   Review the full nested-repo commit range before pushing: other sessions have unrelated changes.
-   After CI, verify served build identity, warm-cache offline upgrade and analytics events.
+4. **Browser release:** publication was explicitly authorized on 17 October; the reviewed range
+   is pushed and served. Live identity/privacy and warmed offline boot are verified. Dashboard
+   owner still verifies event receipt, individual-pageview settings and next-local-day return;
+   measurement start date remains unset. Passing CI/Pages evidence is linked from CURRENT-PLAN.
 
 Build-owner commands from `play/last-bastion/desktop`:
 

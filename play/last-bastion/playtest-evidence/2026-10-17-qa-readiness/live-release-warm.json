@@ -1,0 +1,19 @@
+{
+  "phase": "warm",
+  "checkedAt": "2026-10-17T05:51:33.725Z",
+  "origin": "https://www.snackpackuniverse.com",
+  "builds": [
+    "web-2026.10.16-asset-polish"
+  ],
+  "cacheKeys": [
+    "snackpack-arcade-v25",
+    "last-bastion-2026-10-16-asset-polish"
+  ],
+  "cacheKeysBefore": [
+    "snackpack-arcade-v25",
+    "last-bastion-2026-10-16-asset-polish"
+  ],
+  "errors": [],
+  "offlineUpgradeVerified": false,
+  "limits": "Isolated headless profile; analytics blocked; no human/hardware/Steam/dashboard acceptance."
+}

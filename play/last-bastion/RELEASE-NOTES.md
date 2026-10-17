@@ -2,7 +2,7 @@
 
 ## 17 October 2026 — local QA and package readiness
 
-**Release:** `web-2026.10.17-qa-readiness` — prepared locally; not deployed or desktop-packaged.
+**Release:** `web-2026.10.17-qa-readiness` — published to the browser on 17 October; desktop packaging remains pending.
 
 - Explicit `qasession=1` combat routes offer local Start/Stop/Reset/Export controls. Reports include
   active-frame percentiles, pause exclusions, overflow, run provenance and display/texture context.
@@ -13,7 +13,11 @@
 
 Fresh full verifier: 1,781 unit tests, 31 browser checks, 31 desktop-host tests, smoke/offline and
 25 matching published outputs pass. All 19 portfolio guards passed. Session reports do not establish hardware performance or
-human acceptance. Fresh packaging, physical tests, Steam and deployment remain external gates.
+human acceptance. Fresh packaging, physical tests, Steam and analytics-dashboard acceptance remain external gates.
+
+Publication also corrects expanded arcade Options contrast in dark mode. Responsive arcade
+regression tests now open the Options panel before selecting folded controls. Website CI passes
+154 arcade checks and 31 Last Bastion browser journeys; Pages and live/offline checks pass.
 
 ## 17 October 2026 — release preparation checkpoint
 

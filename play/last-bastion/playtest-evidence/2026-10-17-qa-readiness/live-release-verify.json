@@ -1,0 +1,20 @@
+{
+  "phase": "verify",
+  "route": "/play/last-bastion/?scenario=weapon-review&loadout=bastion-service-rifle&sound=0&theme=bastion-standard&seed=61061&qasession=1",
+  "checkedAt": "2026-10-17T06:01:28.155Z",
+  "origin": "https://www.snackpackuniverse.com",
+  "builds": [
+    "web-2026.10.17-qa-readiness"
+  ],
+  "cacheKeys": [
+    "snackpack-arcade-v25",
+    "last-bastion-2026-10-17-qa-readiness"
+  ],
+  "cacheKeysBefore": [
+    "snackpack-arcade-v25",
+    "last-bastion-2026-10-17-qa-readiness"
+  ],
+  "errors": [],
+  "offlineUpgradeVerified": true,
+  "limits": "Isolated headless profile; analytics blocked; no human/hardware/Steam/dashboard acceptance."
+}
