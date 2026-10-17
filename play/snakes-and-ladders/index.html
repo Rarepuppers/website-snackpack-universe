@@ -529,12 +529,15 @@
     if (steps.length === 0) { clearInterval(stepTimer); resolveLanding(); }
   }
 
+  // "You slide" but "CPU 1 slides": the human player is named "You".
+  function act(p, verb) { return p.name === "You" ? "You " + verb : p.name + " " + verb + "s"; }
+
   function resolveLanding() {
     var p = players[current];
     var landed = p.pos;
     var msg = "";
-    if (snakes[landed]) { p.pos = snakes[landed]; msg = "Snake! " + p.name + " slides to " + p.pos + "."; }
-    else if (ladders[landed]) { p.pos = ladders[landed]; msg = "Ladder! " + p.name + " climbs to " + p.pos + "."; }
+    if (snakes[landed]) { p.pos = snakes[landed]; msg = "Snake! " + act(p, "slide") + " to " + p.pos + "."; }
+    else if (ladders[landed]) { p.pos = ladders[landed]; msg = "Ladder! " + act(p, "climb") + " to " + p.pos + "."; }
 
     setTimeout(function () {
       renderTokens(); renderPlayers();
@@ -554,7 +557,7 @@
 
   function finish(winner) {
     over = true; busy = false;
-    statusEl.textContent = winner.name + " wins! Reached 100.";
+    statusEl.textContent = act(winner, "win") + "! Reached 100.";
     statusEl.className = "game-status " + (winner.isHuman && winner.id === 0 ? "game-status--win" : "game-status--lose");
     setTurnReadout(); renderPlayers();
     if (winner.id === 0) {

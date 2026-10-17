@@ -1,3 +1,5 @@
+> **2026-10-17:** full play-through, asset map and the next plan are in `ARCADE-AUDIT-2026-10-17.md`; art requests in `CODEX-ASSET-BRIEF-2026-10-17.md`.
+
 # Arcade quality plan
 
 Where the 39 games in `play/` stand against `scripts/check-new-game.mjs` — the bar

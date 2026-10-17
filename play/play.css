@@ -1747,6 +1747,10 @@ button.th-card.is-selected {
    has to be lifted above the overlay or the overlay covers the very button
    used to resume. */
 .game-stage .game-toolbar { position: relative; z-index: 45; }
+/* The 45 above must only compete inside the stage. Without a stacking context
+   here it outranks the sticky site header (z-index 20), so the score chips and
+   buttons slid over the header whenever the page scrolled. */
+.game-stage { isolation: isolate; }
 .sp-pause-overlay {
   position: absolute;
   inset: 0;
