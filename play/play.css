@@ -2285,7 +2285,7 @@ body:has(.game-stage) .page-hero h1 { margin: 2px 0 6px; font-size: clamp(2rem, 
 body:has(.game-stage) .page-hero .lead { margin-bottom: 0; font-size: 0.98rem; line-height: 1.5; }
 body:has(.game-stage) main > section:has(> .shell > .game-stage, > .game-stage) { padding-top: 6px; }
 
-.sp-options-toggle[aria-expanded="true"] { background: var(--ink, #201713); color: #fff; }
+.sp-options-toggle[aria-expanded="true"] { background: #201713; color: #fff; }
 .sp-options-toggle .sp-options-summary { font-weight: 600; opacity: 0.8; }
 
 @media (max-width: 760px) {
