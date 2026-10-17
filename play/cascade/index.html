@@ -52,7 +52,7 @@
   color: var(--ink); cursor: pointer; transition: transform 0.1s ease, border-color 0.1s ease;
 }
 .cs-pad button:hover { transform: translateY(-1px); border-color: var(--accent); }
-.cs-pad button.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+.cs-pad button.primary { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
 .cs-over { margin-top: 8px; }
 @media (max-width: 480px) { .cs-side { min-width: 0; flex-direction: row; } }
 </style>
@@ -153,6 +153,7 @@
 </script>
 <script defer src="/theme.js"></script>
 <!-- /theme:generated -->
+<script src="../game-ui-controls.js" defer></script>
 <script src="../game-ui-assets.js" defer></script>
 </head>
 <body>
