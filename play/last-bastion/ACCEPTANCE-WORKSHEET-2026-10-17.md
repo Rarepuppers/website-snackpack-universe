@@ -4,6 +4,10 @@ Use with CURRENT-PLAN and the five-run matrix. Every result below starts **NOT R
 Mark or an assigned human tester owns observed play; Claude owns production packaging.
 This document requests no deployment, scheduled monitoring, Steam upload or cross-chat message.
 
+Current prepared build is `web-2026.10.17-qa-readiness`. Use the
+[QA readiness instructions](QA-READINESS.md) for opt-in session export and package provenance.
+Reports are evidence aids; their presence does not mark any NOT RUN row as passed.
+
 ## Observed play: Mark / human tester
 
 Start `npm run dev -- --host 127.0.0.1` in `dev/`, open
@@ -53,6 +57,8 @@ npm run smoke:package:win
 ```
 
 Return: source commit, build identity, package time/path, executable SHA-256 and complete smoke log.
+Windows packaging now writes `qa-package-manifest.json` and checks its hashes automatically;
+return that manifest too. It records actual packaged/staged bytes and relevant dirty inputs.
 Packaging rebuilds web output and stages resources; desktop host tests alone do not refresh the exe.
 No packaging command was executed by this continuation.
 

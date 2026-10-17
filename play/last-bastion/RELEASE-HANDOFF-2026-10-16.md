@@ -1,16 +1,22 @@
 # Last Bastion release handoff — 16 October 2026
 
-**Prepared build:** `web-2026.10.16-asset-polish`, implementation `17ee207c`.
+**Prepared build:** `web-2026.10.17-qa-readiness`, runtime `4675b9ab`, package tooling `f7506ea2`.
 **State:** local source and published web output verified; not pushed, not deployed, not desktop-packaged.
 No further unconditional Patch A implementation items remain. New floors remain opt-in review art.
 
-17 October continuation: unchanged runtime identity and published output freshly verified at
+Latest continuation: QA-01 local session reports and QA-02 package provenance are complete.
+Full game verifier passed in 82.4 seconds: 1,781 unit / 31 browser / 31 desktop-host tests,
+smoke/offline and 25 matching published outputs. Use [QA readiness](QA-READINESS.md) for commands.
+Claude's next Windows packaging run now writes/checks a package manifest; return it with the
+separate renderer smoke log. No executable has been refreshed by these host tests.
+
+Earlier 17 October preparation, before QA tooling: unchanged asset-polish runtime/output verified at
 `20b82c98` (1,778 unit / 30 browser / 28 desktop-host tests). The
 [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md) gives the exact package/evidence return
 contract for the build owner and human testers. No fresh executable, deployment, Steam acceptance
 or live measurement start date was produced. The original evidence below remains historical.
 
-## Completed evidence
+## Earlier asset-polish evidence (historical)
 
 - Full game verifier: 1,777 unit tests / 311 files, 30 browser checks, 28 desktop-host tests,
   smoke/offline and 25 matching published outputs. Subsequent saved-preference regression passed

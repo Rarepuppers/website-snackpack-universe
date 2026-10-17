@@ -1,9 +1,9 @@
 # Last Bastion — current plan
 
 **Updated:** 17 October 2026
-**Local release:** `web-2026.10.16-asset-polish` (service worker `2026-10-16-asset-polish`).
-**Status:** Patch A implementation complete; fresh 17 October game verification passes. The next
-preparation queue below is planned. Human, hardware, Steam and release gates remain open.
+**Local release:** `web-2026.10.17-qa-readiness` (service worker `2026-10-17-qa-readiness`).
+**Status:** Patch A and QA preparation implemented; fresh 17 October game verification passes.
+Human, hardware, Steam and release gates remain open.
 This continuation did not push, deploy or package.
 
 For continuation, use the [17 October next-chat handover](NEXT-CHAT-HANDOVER-2026-10-17.md).
@@ -18,64 +18,23 @@ Use the [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md) for exact own
 evidence to return. The [17 October checkpoint](archive/CONTINUATION-REVIEW-2026-10-17.md)
 archives completed diagnostic/preparation work; do not restart it as an implementation queue.
 
-## Next implementation queue — recommendations accepted for planning
+## QA preparation — completed
 
-Added after Mark accepted the continuation checkpoint and requested further recommendations.
-This section defines the next small tasks; it does not waive human evidence, content freeze,
-build ownership or deployment authorization. No new player-facing defect is claimed from planning.
-Start with QA-01, then QA-02. Stop adding preparation tools once these make acceptance practical.
+Mark accepted the recommendations and optional work. QA-01 and QA-02 are now implemented:
 
-| Priority / task | Scope and reason | Exit evidence |
-|---|---|---|
-| P0 / QA-01: opt-in local session report | Reuse existing display/pacing/texture audits and run provenance. Add start/stop/export for QA sessions so a hardware tester can return usable evidence without assembling browser globals by hand. | Tests exercise the production collector/export; a browser case verifies start/stop, pause exclusion, reset and export. Report records actual build, sample interval and limitations; no network send or progression writes. |
-| P0 / QA-02: desktop package provenance | Add a manifest/hash report for the assigned build owner's package, plus a read-only consistency check. Current packaging stages assets and smoke checks boot, but the handoff still requires manual source/build/hash identification. | Disposable-directory tests detect changed/missing staged files and wrong identity; report records source commit/dirty scope, build/simulation identity, package time and relevant hashes. No executable is built by Codex without a specific assignment. |
-| P1 / ACCEPT-01: close observed findings | Run the existing five-run/presentation worksheet. Turn only demonstrated failures into focused repair tasks, then repeat the failed combination. | Tester, build, route/seed, hero/loadout, input/display and full-frame/motion evidence; explicit accept/fix/defer decision. |
-| P1 / PERF-01: optimize the measured bottleneck | After named hardware baseline, use QA-01 evidence to identify CPU, render/overdraw, allocations or texture residency costs. Change one measured cause at a time. | Matched before/after route, hardware, settings and duration; readable combat and no unexplained regression. No native 4K60 claim from headless results. |
+- `4675b9ab`: opt-in local session reporting with start/stop/reset/export, bounded full-session
+  samples, explicit pause/hidden exclusions and overflow, shared run provenance and selectable
+  fallback. The original 600-frame rolling view stays separate. Default routes have no QA panel.
+- `f7506ea2`: staged identity/runtime hashes, Windows package manifest and a read-only consistency
+  checker. Fixtures exercise actual stamping, dirty inputs, altered/missing/extra files and mixed
+  runtime. Real packaging remains Claude's task.
+- Use [QA readiness](QA-READINESS.md) for commands and limitations. The completed task scope and
+  fresh evidence are in the [archived implementation](archive/QA-READINESS-IMPLEMENTATION-2026-10-17.md).
+  No further preparation tool is queued merely to fill an external gate.
 
-QA-01 implementation boundaries:
-
-- Existing `FramePacingTelemetry` is a **600-frame rolling window**, not a whole 15-minute run.
-  Keep that useful live view; label its interval. Add separate bounded session collection with
-  explicit sample count, active duration, excluded pause/hidden time, hitch thresholds and any
-  dropped samples/overflow. Do not average per-window p95/p99 and call it a session percentile.
-- Export measured CSS/backing dimensions, DPR, presentation mode/scale, quality settings and
-  observed texture/context-loss information. Label decoded texture bytes as an estimate;
-  browser timings are not direct GPU timings. Hardware/driver and Windows scaling may require
-  tester-supplied values; represent unavailable values explicitly rather than infer them.
-- Use an explicit QA route/control and local download or selectable-text fallback. Capture no
-  save contents, filesystem paths, account identifiers or extra analytics; do not persist every frame
-  to localStorage. Preserve the existing Copy Run Details action and reuse its provenance contract.
-- Measurement must survive pause/resume correctly and state its start/stop boundaries. It does
-  not automatically count a diagnostic session as an observed campaign run or hardware acceptance.
-
-QA-02 implementation boundaries:
-
-- Inspect current packaging tests/scripts before adding a second staging or hashing pipeline.
-  Hash actual packaged/staged runtime files, not only source; define which generated metadata is
-  excluded to avoid self-referential hashes. Record dirty state honestly; never imply a commit alone
-  reproduces uncommitted input. Do not include credentials, local save data or `steam_appid.txt`.
-- The read-only check must report a stale/mixed bundle clearly and must not rebuild, repair,
-  delete, upload or launch it. Keep renderer smoke as a separate boot result.
-- Preparing scripts and testing disposable fixtures is executable locally; Claude runs the real
-  package and returns the manifest plus smoke log under the existing ownership boundary.
-
-Conditional follow-through, in recommended order:
-
-1. **Comprehension:** if observed players cannot repeat move/aim/evade/inspect safely, implement
-   the already-proposed replayable practice slice with real production inputs and no progression,
-   Daily, achievement or outcome-metric effects. Correct teaching copy first; diagrams follow it.
-2. **Menu accessibility:** after the existing acceptance/scope gate, implement title → menu →
-   settings → back against the [contract inventory](SHELL-ACCESSIBILITY-CONTRACT-2026-10-17.md).
-   Extend to other shell screens in small slices; actual screen-reader/controller acceptance remains
-   required. This is a known missing capability, not a newly verified regression.
-3. **Visual/audio clarity:** repair only named failed helmet frames, map states, dense earned
-   loadouts, hostile tells or audio cues. Preserve projectile origins/mechanics when evaluating
-   attachment changes. Keep floors opt-in until motion/contrast/implied-collision acceptance.
-4. **Variety:** only after observed play and two weeks of verified live data support it, prototype
-   one existing-region encounter variant. Reuse current enemies/art before commissioning more.
-
-No blanket retexture, new asset batches, broad refactor, new heroes/regions or difficulty expansion
-is recommended now. The next useful polish decisions should come from the pending acceptance.
+Next executable runtime work requires a named observed failure (ACCEPT-01) or a measured hardware
+bottleneck (PERF-01). Practice, accessibility, art/audio and encounter variety retain the conditions
+below; acceptance of recommendations did not supply missing observations or release authorization.
 
 ## Completed and verified
 
@@ -85,13 +44,13 @@ is recommended now. The next useful polish decisions should come from the pendin
 - Controller/reporting follow-up: `ebc9a4b2`. Physical menu controls independent of combat
   remapping, D-pad pages, mixed-speed share disclosure, fresh attempt settings after restart,
   corrected affinity count/navigation hints and reliable first clicks on pause/settings rows.
-- Latest `npm run verify:last-bastion`: all required lanes passed on 17 October (89.3 seconds):
-  1,778 unit tests in 311 files, 30 browser checks, smoke/offline, 25 matching published outputs,
-  website JavaScript/offline-core checks and desktop host build with 28 tests. No runtime edits
-  or regenerated published output were needed. See the archived report for execution limitations.
-- Portfolio `node scripts/check-all.js`: all 19 guards passed on 17 October in the host rerun.
-  Initial sandbox run passed 18/19 and failed a game-UI temporary-fixture rename with access
-  denied; the successful rerun used workspace-local TEMP/TMP. Neither result establishes deployment.
+- Latest `npm run verify:last-bastion`: all required lanes passed on 17 October (82.4 seconds):
+  1,781 unit tests in 312 files, 31 browser checks, smoke/offline, 25 matching published outputs,
+  website JavaScript/offline-core checks and desktop host build with 31 tests. QA runtime changes and
+  refreshed published output passed. See the archived report for execution limitations.
+- Portfolio `node scripts/check-all.js`: the fresh QA-readiness run passed all 19 guards.
+  Its result is retained in the archived implementation/evidence. This is local verification;
+  human, hardware, Steam and deployment acceptance remain separate.
 - Asset patch: 227-definition inventory/geometry report, eight-tile/four-decal kit, optimized pilots,
   affinity HUD/catalogue details and map/build/effect polish. Baseline/A/B and new kit/UI captures are in
   `playtest-evidence/2026-10-16-screens-auto/`. Default gameplay does not load the pilot art.
@@ -114,7 +73,7 @@ established that justifies attachment spacing or mechanics changes.
 - [ ] Obtain an explicit deployment request: Mark's standing instruction is **do not push unless asked**.
 - [ ] Review the website repository's release scope, including unrelated working-tree changes;
   push only the authorized release, wait for CI, and verify the live game and privacy page.
-- [ ] Confirm the served build identity matches `web-2026.10.16-asset-polish` and test a warm-cache
+- [ ] Confirm the served build identity matches `web-2026.10.17-qa-readiness` and test a warm-cache
   offline upgrade. The live menu already showed Quick/Daily on 14 October; this does not prove
   that the current bundle or analytics configuration is deployed.
 - [ ] Confirm `opened`, `run-started`, `wave-1`, `wave-5`, `run-ended`, and next-local-day

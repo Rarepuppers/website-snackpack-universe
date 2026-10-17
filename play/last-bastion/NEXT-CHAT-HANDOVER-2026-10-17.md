@@ -1,5 +1,10 @@
 # Last Bastion — next-chat handover prompt
 
+Continuation update: QA-01/QA-02 from the subsequent accepted plan are implemented in `4675b9ab`
+and `f7506ea2`. Prepared identity is now `web-2026.10.17-qa-readiness`; follow CURRENT-PLAN and
+QA-READINESS.md for current evidence/commands. The older baseline below is historical. Human,
+hardware, Steam, content and release gates still apply; do not repeat the completed QA work.
+
 Copy the prompt below into the next chat. Paths are relative to the game directory unless stated otherwise.
 
 ---

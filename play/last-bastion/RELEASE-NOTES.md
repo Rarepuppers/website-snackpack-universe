@@ -1,5 +1,20 @@
 # Last Bastion release notes
 
+## 17 October 2026 — local QA and package readiness
+
+**Release:** `web-2026.10.17-qa-readiness` — prepared locally; not deployed or desktop-packaged.
+
+- Explicit `qasession=1` combat routes offer local Start/Stop/Reset/Export controls. Reports include
+  active-frame percentiles, pause exclusions, overflow, run provenance and display/texture context.
+  A selectable JSON fallback remains available when downloading is blocked. Normal routes show no panel.
+- Windows packaging scripts now record staged identity/runtime hashes and a packaged-file manifest.
+  A read-only checker detects stale/mixed/changed/missing/extra files without rebuilding or launching.
+- Default gameplay, floor selection, save schema 16 and simulation compatibility 3 are unchanged.
+
+Fresh full verifier: 1,781 unit tests, 31 browser checks, 31 desktop-host tests, smoke/offline and
+25 matching published outputs pass. All 19 portfolio guards passed. Session reports do not establish hardware performance or
+human acceptance. Fresh packaging, physical tests, Steam and deployment remain external gates.
+
 ## 17 October 2026 — release preparation checkpoint
 
 No player-facing runtime changes; release identity remains `web-2026.10.16-asset-polish`.

@@ -5167,3 +5167,19 @@ All 19 portfolio guards passed in the host rerun. Environment failures and the r
 `archive/CONTINUATION-REVIEW-2026-10-17.md`, alongside completed review scope and remaining owners.
 Release/service-worker identity and schema stay unchanged. No package, push, deployment, Steam
 upload or messages to another chat. Human/hardware/Steam/release gates remain in CURRENT-PLAN.
+
+## 17 October 2026 — QA session reports and package provenance
+
+Completed QA-01 (`4675b9ab`) and QA-02 (`f7506ea2`) from the accepted follow-through queue.
+Opt-in local session controls/export preserve rolling-vs-session evidence, pause/hidden exclusions,
+overflow and provenance; blocked downloads retain selectable JSON. Windows packaging now stamps
+staged bytes and checks a packaged-file manifest; its read-only checker detects mixed/changed/
+missing/extra files. Real production packaging still belongs to Claude.
+
+Prepared build/worker are `web-2026.10.17-qa-readiness` / `2026-10-17-qa-readiness`; save schema 16
+and simulation compatibility 3 stay unchanged. Fresh full verifier passed in 82.4 seconds: 1,781
+unit tests / 312 files, 31 browser checks, 31 desktop-host tests, smoke/offline and 25 matching
+published outputs. All 19 portfolio guards passed; result/evidence are in the archived QA checkpoint.
+Plans, release notes, operator guide and handoff updated; finished QA tasks archived. No executable
+package, push, deployment, Steam upload or cross-chat message ran. Human/hardware/Steam/release
+gates and evidence-dependent optional work remain explicit in CURRENT-PLAN.

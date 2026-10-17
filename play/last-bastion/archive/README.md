@@ -6,6 +6,7 @@ Unlinked relative paths quoted inside these older documents were written from th
 
 | File | Why archived |
 |---|---|
+| [17 October QA readiness implementation](QA-READINESS-IMPLEMENTATION-2026-10-17.md) | QA-01 session reporting and QA-02 package provenance delivered; real run/package/hardware/release acceptance remains active. |
 | [17 October continuation review](CONTINUATION-REVIEW-2026-10-17.md) | Fresh verification, normal-rack diagnostics and handoff preparation completed; observed/hardware/Steam/release dependencies remain active. |
 | [16 October asset implementation](ASSET-PATCH-A-IMPLEMENTATION-2026-10-16.md) | Patch A code/assets delivered locally; new-floor acceptance and hardware/release gates remain in the active plan. |
 | [14 October audit](AUDIT-PLAN-2026-10-14.md), [15 October follow-up](AUDIT-FOLLOWUP-2026-10-15.md) | Accepted reliability, Daily, controller and UI corrections completed in `c7779414` / `ebc9a4b2`; manual release gates and deferred proposals moved to the current plan. |

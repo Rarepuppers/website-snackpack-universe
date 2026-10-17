@@ -3,12 +3,14 @@
 **Created:** 21 August 2026  
 **Purpose:** close the five-observed-run gate before Threat Tiers 3–11, dailies, leaderboards, or more permanent progression are expanded.
 
-## Current handoff — 16 October 2026
+## Current handoff — 17 October 2026
 
-Use `web-2026.10.16-asset-polish` for the next observed runs. The implementation and sampled
+Use `web-2026.10.17-qa-readiness` for the next observed runs. The implementation and sampled
 1080p/4K palette/HUD checks are complete; the five human runs are not. The older package readiness
 below is historical, not evidence of a fresh desktop package. See
 [release handoff](RELEASE-HANDOFF-2026-10-16.md) for build ownership and outstanding gates.
+Optional single-document QA reports and package provenance are now available; follow
+[QA readiness](QA-READINESS.md). They do not replace the five human runs or physical acceptance.
 
 ## Readiness baseline
 
