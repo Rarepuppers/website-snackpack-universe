@@ -1,0 +1,20 @@
+{
+  "id": "marine-four-4k",
+  "hero": "marine",
+  "loadout": "arc-carbine,bastion-service-rifle,bulwark-rotary-cannon,grenade-tube",
+  "width": 3840,
+  "height": 2160,
+  "route": "/play/last-bastion/?screen=game&scenario=weapon-review&theme=bastion-standard&seed=61061&hero=marine&loadout=arc-carbine,bastion-service-rifle,bulwark-rotary-cannon,grenade-tube&sound=0",
+  "initial": {
+    "x": 22.5,
+    "y": 12.65625
+  },
+  "final": {
+    "x": 23.476937499999995,
+    "y": 11.501687500000006
+  },
+  "errors": [],
+  "sourceCommit": "20b82c98",
+  "build": "web-2026.10.16-asset-polish",
+  "evidence": "2.4-second isolated keyboard-driven weapon lab; legal base-rack classes, not an earned campaign or human acceptance"
+}

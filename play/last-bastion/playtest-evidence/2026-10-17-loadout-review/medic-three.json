@@ -1,0 +1,20 @@
+{
+  "id": "medic-three",
+  "hero": "medic",
+  "loadout": "injector-carbine,arc-carbine,bolt-carbine",
+  "width": 1920,
+  "height": 1080,
+  "route": "/play/last-bastion/?screen=game&scenario=weapon-review&theme=bastion-standard&seed=61061&hero=medic&loadout=injector-carbine,arc-carbine,bolt-carbine&sound=0",
+  "initial": {
+    "x": 22.5,
+    "y": 12.65625
+  },
+  "final": {
+    "x": 25.815000000000033,
+    "y": 10.531249999999979
+  },
+  "errors": [],
+  "sourceCommit": "20b82c98",
+  "build": "web-2026.10.16-asset-polish",
+  "evidence": "2.4-second isolated keyboard-driven weapon lab; legal base-rack classes, not an earned campaign or human acceptance"
+}

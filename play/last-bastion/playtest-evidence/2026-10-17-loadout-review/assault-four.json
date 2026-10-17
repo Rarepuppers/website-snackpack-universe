@@ -1,0 +1,20 @@
+{
+  "id": "assault-four",
+  "hero": "assault",
+  "loadout": "marauder-ar,bolt-carbine,scattergun,patrol-blade",
+  "width": 1920,
+  "height": 1080,
+  "route": "/play/last-bastion/?screen=game&scenario=weapon-review&theme=bastion-standard&seed=61061&hero=assault&art=c3&loadout=marauder-ar,bolt-carbine,scattergun,patrol-blade&sound=0",
+  "initial": {
+    "x": 22.5,
+    "y": 12.65625
+  },
+  "final": {
+    "x": 27.179999999999993,
+    "y": 10.496250000000003
+  },
+  "errors": [],
+  "sourceCommit": "20b82c98",
+  "build": "web-2026.10.16-asset-polish",
+  "evidence": "2.4-second isolated keyboard-driven weapon lab; legal base-rack classes, not an earned campaign or human acceptance"
+}
