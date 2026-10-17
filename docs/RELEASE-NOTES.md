@@ -5,6 +5,25 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-17 — Corrected pictures in five books
+
+- **Ted-E-Bear and the Button Trail:** pages 2 to 6 are new. Ted now looks the
+  same on every page, the bridge really has 5 planks against 7, page 5 shows
+  the nine napkins and page 6 shows the picnic where Ted finds his button.
+  The book also gets the tap-to-answer questions the other counting stories
+  have.
+- **Luckybug and the Market Morning Mix-Up:** Luckybug and Hen-Berry look the
+  same on every page, and the eggs, flowers, jam jars and signs match the sums.
+- **Biscuit-Bouncer and the Parcel Parade:** page 6 shows Biscuit-Bouncer
+  again, not a different dog.
+- **Baby Bulldogs at the Playground:** Luckybug is in the picture drawing the
+  chalk line.
+- **Fe-Line-Mignon's Moonlit Café:** Meow-inara carries the croissants, and
+  the guests' tables really do join into one long curve with room for the
+  kitten.
+- The corrected pictures have new web addresses, so anyone who read these books
+  before sees the new ones straight away, not a saved copy of the old ones.
+
 ## 2026-10-17 — Eight new books (39 on the shelf)
 
 - **Three counting stories** from SnackPack 123 Counting, each with a

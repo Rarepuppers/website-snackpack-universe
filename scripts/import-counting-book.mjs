@@ -28,9 +28,10 @@
 //       page 4's reversed stone is not in the picture.
 //   * cereal-swimmer-number-line-lagoon   not read: its octopus changes design
 //       on page 3.
-//   * ted-e-bear-button-trail   on the shelf since 2026-08-12 (hand-built), but
-//       its pages 4-6 show the wrong pictures; redraws are briefed in
-//       docs/ART-BRIEF-LIVE-BOOK-FIXES-2026-10-17.md. Add it here once they land.
+//   * ted-e-bear-button-trail   on the shelf since 2026-08-12 as a hand-built
+//       page; pages 2-6 showed the wrong pictures and Ted in three designs.
+//       Redrawn by Codex (docs/ART-BRIEF-LIVE-BOOK-FIXES-2026-10-17.md,
+//       ac798997c), re-read 2026-10-17 and now imported here (rev 2).
 //
 // Usage (from the website repo root):
 //   node scripts/import-counting-book.mjs                 # dry run, every entry
@@ -52,6 +53,32 @@ const SITE = "https://www.snackpackuniverse.com";
 const PLAY = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.counting";
 
 const BOOKS = {
+  "ted-e-bear-button-trail": {
+    slug: "ted-e-bear-and-the-button-trail",
+    rev: 2,
+    lead: "Ted’s lucky button is missing before the First Picnic. Can two friends follow the clues and find it?",
+    blurb: "Follow a missing-button mystery through counting, number order, comparisons and courage.",
+    art: [
+      "ted-e-bear-button-trail-empty-thread-landscape-v2.jpg",
+      "ted-e-bear-button-trail-p2-v3.jpg",
+      "ted-e-bear-button-trail-p3-v3.jpg",
+      "ted-e-bear-button-trail-p4-v3.jpg",
+      "ted-e-bear-button-trail-p5-v3.jpg",
+      "ted-e-bear-button-trail-p6-v3.jpg",
+    ],
+    alts: [
+      "Ted-E-Bear, in a green waistcoat and red neckerchief, finds two loose threads by his bed where his button should be, as Corgi-on-the-Cob peeks round the door.",
+      "Ted-E-Bear takes a careful step along the woodland path while Corgi sniffs the first of four paw prints.",
+      "Acorns numbered 3, 4 and 6 sit on a mossy log with a gap where 5 belongs; the stray 5 lies in the clover as Ted studies the row.",
+      "Two lines of stepping planks cross the creek, five on the left and seven on the right, where Corgi waits halfway for Ted.",
+      "Ted and Corgi lift the corners of nine checked napkins on the hilltop, with a gold glint under one of them.",
+      "At sunset Ted sews his golden button back onto his waistcoat beside Corgi, with ten buns in two rows of five on the picnic cloth.",
+    ],
+    end: {
+      q: "Was the button Ted’s only kind of luck?",
+      a: "Ted discovered that his own brave paws, and a patient friend, helped him finish the trail.",
+    },
+  },
   "panda-cake-market-basket": {
     slug: "panda-cakes-market-basket",
     lead: "A six-page bakery picnic for counting, comparing and making ten, with a question on every page.",
@@ -201,7 +228,10 @@ const SHARED = TEMPLATE.slice(TEMPLATE.indexOf("<!-- pwa:generated -->"), TEMPLA
 const HEADER = TEMPLATE.slice(TEMPLATE.indexOf('<header class="topbar">'), TEMPLATE.indexOf("<main>"));
 const url = `${SITE}/read/${ed.slug}/`;
 const n = book.pages.length;
-const names = book.pages.map((_, i) => `page-${i + 1}.jpg`);
+// `rev` renames every page file (page-3-r2.jpg) when a book's art is replaced:
+// sw.js serves images cache-first, so a new picture at an old URL would stay
+// stale for every returning reader. Bump it whenever a live book's art changes.
+const names = book.pages.map((_, i) => `page-${i + 1}${ed.rev ? `-r${ed.rev}` : ""}.jpg`);
 const sizes = files.map((f) => jpegSize(fs.readFileSync(f)));
 // Plain <img>: build-webp wraps it in a <picture> only when it actually makes a
 // WebP (it skips images under 120 KB), so no <source> can point at a missing file.
