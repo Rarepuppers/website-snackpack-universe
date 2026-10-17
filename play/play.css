@@ -2366,8 +2366,8 @@ body:has(.game-stage) main > section:has(> .shell > .game-stage, > .game-stage) 
 }
 @media (max-width: 720px) {
   body:has(.daily-challenge-panel) #games .section-head .eyebrow { display: none; }
-  .arcade-search-row { flex-wrap: nowrap; align-items: end; gap: 8px; }
-  .arcade-search-row > .arcade-search { flex: 1 1 auto; width: auto; }
+  .arcade-search-row { flex-wrap: wrap; align-items: end; gap: 8px; }
+  .arcade-search-row > .arcade-search { flex: 1 1 100%; width: 100%; }
   .arcade-search-row > .arcade-sort { flex: 0 0 auto; width: auto; }
   .arcade-sort > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .arcade-sort select { min-width: 0; width: 132px; }
@@ -2418,3 +2418,8 @@ button.tc-card:not(:disabled):hover { transform: translateY(-4px); }
 @media (prefers-reduced-motion: reduce) {
   button.tc-card, button.tc-card.is-picked, button.tc-card:not(:disabled):hover { transition: none; transform: none; }
 }
+
+/* Visually hidden, still read by screen readers. Several labels used this
+   class (the hub search, the card-back picker) but nothing defined it, so the
+   "hidden" labels were showing. */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
