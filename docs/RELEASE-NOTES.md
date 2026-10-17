@@ -5,6 +5,26 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-17 — Eight new books (39 on the shelf)
+
+- **Three counting stories** from SnackPack 123 Counting, each with a
+  tap-to-answer question on every page: *Panda-Cake's Market Basket* (counting
+  and making ten, ages 3–4), *Sub-Zero and the Snowflake Post* (number order,
+  ages 4–5) and *Luckybug's Pairing Parade* (odd and even numbers, ages 4–6).
+- **Four number stories** from SnackPack Basic Math: *Ted-E-Bear and the
+  Lantern That Needed a Half* (halves and doubles, Year 1), *Booklava and the
+  Number That Lost Its Place* (place value, Year 2), *Pork-ulele and the
+  Clockwork Concert* (telling the time, Year 2) and *Vincent Van Mouse and the
+  Mural in Proportion* (ratio and scale, Year 6).
+- **A read-aloud picture book**, *Ted-E-Bear and the Pocketful of Sounds* from
+  SnackPack ABC: a nervous reader learns to begin with one small sound. Each
+  page has a first sound to find and a line to say together. It starts a new
+  "Read-aloud picture books" group on the shelf.
+- All eight were held back until their pictures were fixed: missing pages
+  drawn, characters kept the same from page to page, clocks set to the right
+  time and every counted thing drawn the right number of times. 37 new
+  pictures in all, and the same fixes reach the apps in their next updates.
+
 ## 2026-10-17 — The bookshelf and the header on a phone
 
 - **The free books and games are near the top of the homepage.** On a phone they

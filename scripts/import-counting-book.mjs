@@ -15,12 +15,10 @@
 // It also refuses Pro books (Mark's call) and any page without art.
 //
 // Quality read, 2026-10-17 (READ-PLAN-2026-10.md, B1):
-//   * luckybug-pairing-parade   passes every count and question. Its
-//       Flutter-Butter (pages 1 and 3) is a purple butterfly, not the
-//       canonical one already on the shelf (Hop-Tart's book), so it waits on
-//       two redrawn pages: docs/ART-BRIEF-STORY-GAPS-2026-10-16.md §8.
-//   * panda-cake-market-basket, sub-zero-snowflake-post: art in progress
-//       (same brief, §1-2); add entries after reviewing it.
+//   * panda-cake-market-basket, sub-zero-snowflake-post, luckybug-pairing-parade
+//       pass. Their missing and off-model pages were redrawn by Codex
+//       (monorepo docs/ART-BRIEF-STORY-GAPS-2026-10-16.md, delivered 3572e1a31
+//       and c37c44c2d); every page was viewed against its text and counted.
 //   * corgi-cob-ten-frame-picnic   rejected: Ted-E-Bear in the text is drawn
 //       as Bottle-Nose the dolphin on all six pages; page 4 has no sideways
 //       frame; page 5 shows 8 of 12 spaces for "seven ... make ten"; page 6's
@@ -30,7 +28,9 @@
 //       page 4's reversed stone is not in the picture.
 //   * cereal-swimmer-number-line-lagoon   not read: its octopus changes design
 //       on page 3.
-//   * ted-e-bear-button-trail   already on the shelf (hand-built, 2026-08-12).
+//   * ted-e-bear-button-trail   on the shelf since 2026-08-12 (hand-built), but
+//       its pages 4-6 show the wrong pictures; redraws are briefed in
+//       docs/ART-BRIEF-LIVE-BOOK-FIXES-2026-10-17.md. Add it here once they land.
 //
 // Usage (from the website repo root):
 //   node scripts/import-counting-book.mjs                 # dry run, every entry
@@ -52,22 +52,72 @@ const SITE = "https://www.snackpackuniverse.com";
 const PLAY = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.counting";
 
 const BOOKS = {
+  "panda-cake-market-basket": {
+    slug: "panda-cakes-market-basket",
+    lead: "A six-page bakery picnic for counting, comparing and making ten, with a question on every page.",
+    blurb: "Apples, berries, buns and one tiny honey jar. Panda-Cake counts the picnic basket full, with room to share.",
+    art: [
+      "panda-cake-market-basket-three-apples-landscape-v2.jpg",
+      "panda-cake-market-basket-p2-v3.jpg",
+      "panda-cake-market-basket-3-landscape-v2.jpg",
+      "panda-cake-market-basket-p4-v3.jpg",
+      "panda-cake-market-basket-p5-v3.jpg",
+      "panda-cake-market-basket-p6-v3.jpg",
+    ],
+    alts: [
+      "Panda-Cake, a panda in a chef's hat, reaches for three red apples rolling across the bakery counter while Corgi-on-the-Cob peeks out of a basket.",
+      "Panda-Cake stands between two market stalls: one bowl holds four blueberries and the other holds six.",
+      "Four bread baskets wait on the counter, the third hidden under a checked cloth, as Panda-Cake and Corgi look on.",
+      "Panda-Cake sets out two rows of five buns, one on a blue cloth and one on a yellow cloth, while Corgi keeps watch.",
+      "A packed picnic basket of apples, blueberries and buns with one empty corner, and a small jar of honey waiting beside it.",
+      "Woodland friends gather round a long picnic table set with twelve colourful plates in two rows of six.",
+    ],
+    end: {
+      q: "How did Panda-Cake fit the honey jar into a full basket?",
+      a: "By looking carefully, Panda-Cake found the one open corner and arranged everything so the jar fitted without squashing a single bun.",
+    },
+  },
+  "sub-zero-snowflake-post": {
+    slug: "sub-zero-and-the-snowflake-post",
+    lead: "A six-page snowy delivery round for number order, comparing and counting to fifteen, with a question on every page.",
+    blurb: "A gust mixes up every parcel. Sub-Zero and Booklava put the numbers back in order before the sun gets warm.",
+    art: [
+      "sub-zero-snowflake-post-p1-v3.jpg",
+      "sub-zero-snowflake-post-p2-v3.jpg",
+      "sub-zero-snowflake-post-p3-v3.jpg",
+      "sub-zero-snowflake-post-p4-v3.jpg",
+      "sub-zero-snowflake-post-p5-v3.jpg",
+      "sub-zero-snowflake-post-p6-v3.jpg",
+    ],
+    alts: [
+      "Sub-Zero, a penguin in a chef's hat and tuxedo, wears one blue snowflake mitten while Booklava the owl ties the pair together. Parcel tags blow past the open door.",
+      "Four parcel sleds in the snow with cards showing 7, 8, a blank card turned face down, and 10. Booklava flies above.",
+      "Two trails of icy stepping stones curve around a snowdrift: six stones on the left and nine on the right.",
+      "Sub-Zero rings one of ten silver bells along a snowy garden fence, holding a parcel.",
+      "Sub-Zero peeks into an empty basket beside a completely empty parcel shelf while Booklava perches on top.",
+      "Sub-Zero and Booklava hang fifteen paper snowflakes, each with a tiny picture, above the post-office desk.",
+    ],
+    end: {
+      q: "Why was the empty shelf good news?",
+      a: "An empty outgoing shelf meant every parcel had reached the right home.",
+    },
+  },
   "luckybug-pairing-parade": {
     slug: "luckybugs-pairing-parade",
     lead: "A six-page garden parade for learning odd and even numbers by making pairs, with a question on every page.",
     blurb: "Every marcher needs a partner, until one is left over. Luckybug finds a place for everyone.",
     art: [
-      "luckybug-pairing-parade-0-landscape-v2.jpg",
+      "luckybug-pairing-parade-p1-v3.jpg",
       "luckybug-pairing-parade-1-landscape-v2.jpg",
-      "luckybug-pairing-parade-2-landscape-v2.jpg",
+      "luckybug-pairing-parade-p3-v3.jpg",
       "luckybug-pairing-parade-3-landscape-v2.jpg",
       "luckybug-pairing-parade-4-landscape-v2.jpg",
       "luckybug-pairing-parade-5-landscape-v2.jpg",
     ],
     alts: [
-      "Luckybug the ladybird pegs two red flags to a line while Flutter-Butter claps.",
+      "Luckybug the ladybird pegs two red flags to a string while Flutter-Butter the butterfly flutters beside them, delighted.",
       "Luckybug points to three ladybird drummers standing in a row with their drums.",
-      "Luckybug and Flutter-Butter under a garden arch hung with two red bows and two blue bows.",
+      "Under a garden arch hung with two red bows and two blue bows, Luckybug waves and Flutter-Butter flutters nearby.",
       "Luckybug behind two boards of flowers: six yellow flowers in pairs, and five red flowers with one left over.",
       "Luckybug points at trays holding two, four and six counters, with an empty tray at the end.",
       "Luckybug leads the parade through the garden gate: two butterflies, two bees, two snails and two caterpillars marching in pairs.",

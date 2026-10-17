@@ -16,12 +16,10 @@ all nine FREE_BOOK_IDS were read in full and every page of art viewed.
   * Included: Luckybug (Y1), Biscuit-Bouncer (Y2), Hop-Tart (Y3), Centi-Peed (Y4).
   * Added 2026-10-16: Wise Owl (Y5), after app fixes 1cf18e520 (page 1 question, page 2 primes)
     and 768ec8149 (page 4 said 36 cushions; the picture shows 16).
-  * Held back, app fixes owed:
-      pork-ulele-clockwork-concert   page 1 says "quarter past three"; the clock shows quarter past four
-      ted-e-bear-lantern-half        Ted and Honey-Beats change design mid-book (two art batches)
-      booklava-number-nest           Booklava alternates between a brown and a purple owl
-      vincent-van-mouse-mural-...    only 4 of 7 pages illustrated
-All four are free in the app, so no monetisation decision is involved.
+  * Added 2026-10-17: Lantern (Y2), Number Nest (Y2), Clockwork Concert (Y2) and the Mural (Y6),
+    after Codex redrew their off-model, portrait and missing pages, and app fix (Stripe-Scout is "she",
+    matching the Spelling books on the shelf).
+All of them are free in the app, so no monetisation decision is involved.
 
 Then: build-webp.mjs, build-read-pdfs.mjs --slug=<slug> --write, add to SHELF in
 build-read-shelf.mjs, build-read-shelf.mjs, build-read-social-cards.py,
@@ -32,7 +30,7 @@ import os
 import re
 import sys
 
-from PIL import Image
+from PIL import Image, ImageOps
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 APP = os.path.join(ROOT, "..", "apps", "snackpack-4-math-arithmetic")
@@ -103,6 +101,65 @@ BOOKS = {
             "Wise Owl, Booklava and Quill-Berry look over rows of gold and purple chimes on a long table.",
             "Wise Owl points to purple and gold ribbons tied round the lamp posts as Booklava and Quill-Berry listen.",
             "Festival friends gather round a square of 16 purple and gold cushions in the reading garden.",
+        ],
+    },
+    # Added 2026-10-17 after Codex redrew their off-model and missing pages
+    # (monorepo docs/ART-BRIEF-STORY-GAPS-2026-10-16.md, delivered 3572e1a31);
+    # every page viewed against its text, counts and clock faces checked.
+    "ted-e-bear-lantern-half": {
+        "slug": "ted-e-bear-and-the-lantern-that-needed-a-half",
+        "lead": "A seven-page walk home in the dark for practising halves, doubles and sharing, with a question on every page.",
+        "blurb": "Eight lanterns, two dark paths and one worried friend. Ted shares the light so everyone gets home.",
+        "alts": [
+            "Ted-E-Bear, in a flower crown and apron, kneels at a fork in the woodland path with a basket of eight glowing lanterns as Honey-Beats looks on.",
+            "Ted-E-Bear turns back on the windy path towards Honey-Beats, who stands beside her lanterns, two of them gone dark.",
+            "Ted-E-Bear sets a lantern on one side of a little wooden bridge while Honey-Beats holds up her two glowing lanterns.",
+            "Ted-E-Bear and Honey-Beats lean on a footbridge over a creek between two lanterns, each with three fireflies beside it.",
+            "Ted-E-Bear pulls a wagon of six glowing lanterns up the hill path towards a lit cottage window, with Honey-Beats beside him.",
+            "Honey-Beats sets glowing lanterns outside the round tree-cottage door while Ted-E-Bear places one in the window.",
+            "At the cottage door, Honey-Beats holds out a plate of honey biscuits and Ted-E-Bear takes two for his walk home.",
+        ],
+    },
+    "booklava-number-nest": {
+        "slug": "booklava-and-the-number-that-lost-its-place",
+        "lead": "A seven-page library mystery for practising place value: hundreds, tens, ones and the zero that holds a place.",
+        "blurb": "A runaway zero, a shrinking shelf label and a little owl who proves that every place matters.",
+        "alts": [
+            "Booklava, a small brown owl in a purple jumper, lifts the reading rug to find Zero, a glowing golden 0 with a worried face.",
+            "Booklava stands on a spiral staircase beside six tied bundles of books and three single books.",
+            "Booklava points across an echoing hall of empty arched shelves towards Zero glowing on the floor.",
+            "Three tall stacks of books stand beside a little ladder where Zero stands proudly, with seven single books on the other side and Booklava holding the ladder.",
+            "Booklava flies alongside a rolling book cart, steering it towards the nearer bookcase.",
+            "Zero, glowing and smiling, stands beside Booklava in front of a carved shelf with a golden 0 in its third arch.",
+            "Booklava lays a ribbon bookmark beside an open book as Zero steps back into the page and waves.",
+        ],
+    },
+    "pork-ulele-clockwork-concert": {
+        "slug": "pork-ulele-and-the-clockwork-concert",
+        "lead": "A seven-page concert countdown for telling the time: quarter past, half past, quarter to and how long things take.",
+        "blurb": "The concert clock has stopped. Pork-ulele and Cluck O'Clock get every act on stage on time.",
+        "alts": [
+            "Pork-ulele the piglet plays the ukulele on a forest stage while Cluck O'Clock points at the big clock showing quarter past three.",
+            "Pork-ulele taps a drum kit as the stage clock shows half past four and Cluck O'Clock watches.",
+            "Pork-ulele and Cluck O'Clock wait by the red stage curtain as the lamp-post clock shows quarter to five.",
+            "Pork-ulele sings at a microphone with the band behind while Cluck O'Clock checks a small brass clock.",
+            "A rabbit, a goose and a lamb take a bow under the clock at half past four while Pork-ulele plays and Cluck O'Clock claps.",
+            "Backstage, Pork-ulele holds the ukulele and Cluck O'Clock holds a brass pocket watch, with the lit stage beyond the curtain.",
+            "Woodland friends cheer as Pork-ulele plays and Cluck O'Clock conducts under a full moon.",
+        ],
+    },
+    "vincent-van-mouse-mural-in-proportion": {
+        "slug": "vincent-van-mouse-and-the-mural",
+        "lead": "A seven-page festival mural for practising ratio, proportion and scale, with a question on every page.",
+        "blurb": "A postcard-sized sketch, an enormous wall and a sunset that only works if every part grows by the same factor.",
+        "alts": [
+            "Vincent Van Mouse holds up his small sunset sketch beside a long blank wall as Sail-Affe the giraffe and Stripe-Scout the tiger cub look on.",
+            "Stripe-Scout waits with a brush beside a tub of red paint and eight empty red pots while Vincent opens a crate of yellow.",
+            "Stripe-Scout looks worried beside yesterday's paint tub while Vincent mixes colours in front of the half-painted sunset.",
+            "Sail-Affe stretches up to paint a top square of the chalk grid on the wall while Stripe-Scout paints a low square and Vincent watches.",
+            "Grey clouds roll in as Sail-Affe and Stripe-Scout paint the last bare squares of the sunset and Vincent checks his sketch.",
+            "Vincent pours gold paint into three cups of different sizes for himself, Sail-Affe and Stripe-Scout as the first raindrops fall.",
+            "The town gathers before the finished sunset mural as Professor Hooten the owl holds up a postcard and the painters celebrate.",
         ],
     },
 }
@@ -241,8 +298,9 @@ def render(book_id, book, ed, template):
 
 
 def save_jpg(src, dst, size):
-    im = Image.open(src).convert("RGB")
-    im = im.resize(size, Image.LANCZOS)
+    # Crop to the target shape, then scale: a few app pages are 4:3 (1200x900)
+    # and a plain resize to 1200x800 would squash them.
+    im = ImageOps.fit(Image.open(src).convert("RGB"), size, Image.LANCZOS)
     im.save(dst, "JPEG", quality=84, optimize=True, progressive=True)
 
 
