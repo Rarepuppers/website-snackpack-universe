@@ -61,7 +61,7 @@
   panel.className = "arcade-tools";
   panel.innerHTML =
     '<div class="arcade-search-row">' +
-      '<label class="arcade-search"><span class="sr-only">Search games</span><input type="search" placeholder="Search 38 games" autocomplete="off"></label>' +
+      '<label class="arcade-search"><span class="sr-only">Search games</span><input type="search" placeholder="Search ' + tiles.length + ' games" autocomplete="off"></label>' +
       '<label class="arcade-sort"><span>Sort</span><select><option value="featured">Featured</option><option value="az">A to Z</option><option value="new">Recently added</option><option value="favourites">Favourites first</option></select></label>' +
       '<button class="btn-game arcade-clear" type="button">Clear filters</button>' +
     '</div>' +
