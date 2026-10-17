@@ -6,6 +6,12 @@
         "faces/classic/"
       ],
       "reason": "The 52 premium full-face PNGs are app-only masters. No website page consumes classicFacePath; web card games render CSS faces with shared suit and back art."
+    },
+    "card-decks": {
+      "exclude": [
+        "faces/"
+      ],
+      "reason": "Web card games draw faces in CSS with the shared suit and back art; nothing on the site requests a face PNG (checked by loading every game and every option, 2026-10-17)."
     }
   }
 }

@@ -17,6 +17,18 @@
     { key: "obsidian-star", name: "Obsidian Star", tier: "pro", src: PRO + "card-decks/backs/obsidian-star.png" }
   ];
 
+  // A CSS image value for a shared-art PNG: WebP with the PNG as fallback where
+  // the browser understands image-set(... type()), else the plain PNG. Never
+  // hand an unsupported value to a custom property: inside var() it would
+  // blank the whole background instead of falling back.
+  var IMAGE_SET_OK = !!(window.CSS && CSS.supports && CSS.supports("background-image", 'image-set(url("a.webp") type("image/webp"))'));
+  function cssImage(pngUrl) {
+    var webpUrl = pngUrl.replace(/\.png$/i, ".webp");
+    return IMAGE_SET_OK
+      ? 'image-set(url("' + webpUrl + '") type("image/webp"), url("' + pngUrl + '") type("image/png"))'
+      : 'url("' + pngUrl + '")';
+  }
+
   window.SnackPackGameUiAssets = {
     base: BASE,
     cards: {
@@ -26,39 +38,18 @@
         D: PRO + "card-decks/suits/diamond.png",
         S: PRO + "card-decks/suits/spade.png",
         H: PRO + "card-decks/suits/heart.png"
-      },
-      classicFacePath: BASE + "card-decks/faces/classic/"
+      }
     },
-    mahjongTiles: BASE + "mahjong-tiles/png/",
+    // Only the packs the site ships (Website target in
+    // shared-assets/game-ui/derivative-profiles.json). Each PNG there has a
+    // .webp beside it; use webp() to prefer it.
     strategyTokens: PRO + "strategy-tokens/png/",
-    chessPieces: BASE + "chess-pieces/png/",
-    sokoban: BASE + "sokoban/png/",
-    battleships: BASE + "battleships/png/",
     boardGames: PRO + "board-games/png/",
-    dominoes: BASE + "dominoes/png/",
     gridLogicMarkers: PRO + "grid-logic-markers/png/",
-    wordGameTiles: BASE + "word-game-tiles/png/",
-    arcadeSprites: BASE + "arcade-sprites/png/",
-    photoJigsaw: BASE + "photo-jigsaw/png/",
-    tableThemes: BASE + "table-themes/png/",
-    proHandPainted: {
-      boardGames: BASE + "pro-hand-painted/board-games/png/",
-      cardDecks: {
-        backs: BASE + "pro-hand-painted/card-decks/backs/",
-        suits: BASE + "pro-hand-painted/card-decks/suits/"
-      },
-      mahjongTiles: BASE + "pro-hand-painted/mahjong-tiles/png/",
-      strategyTokens: BASE + "pro-hand-painted/strategy-tokens/png/",
-      chessPieces: BASE + "pro-hand-painted/chess-pieces/png/",
-      sokoban: BASE + "pro-hand-painted/sokoban/png/",
-      battleships: BASE + "pro-hand-painted/battleships/png/",
-      dominoes: BASE + "pro-hand-painted/dominoes/png/",
-      gridLogicMarkers: BASE + "pro-hand-painted/grid-logic-markers/png/",
-      wordGameTiles: BASE + "pro-hand-painted/word-game-tiles/png/",
-      arcadeSprites: BASE + "pro-hand-painted/arcade-sprites/png/",
-      photoJigsaw: BASE + "pro-hand-painted/photo-jigsaw/png/",
-      tableThemes: BASE + "pro-hand-painted/table-themes/png/"
-    }
+    arcadeSprites: PRO + "arcade-sprites/png/",
+    tableThemes: PRO + "table-themes/png/",
+    webp: function (pngUrl) { return pngUrl.replace(/\.png$/i, ".webp"); },
+    cssImage: cssImage
   };
 
   // Keep a small, private-on-device return trail for the arcade hub. This file
@@ -150,7 +141,7 @@
     select.value = current;
     function apply() {
       var back = cardBacks.find(function (item) { return item.key === select.value; }) || cardBacks[0];
-      stage.style.setProperty("--sp-card-back", 'url("' + back.src + '")');
+      stage.style.setProperty("--sp-card-back", cssImage(back.src));
       try { localStorage.setItem("sp_cards_back", back.key); } catch (error) {}
     }
     select.addEventListener("change", apply);

@@ -17,8 +17,8 @@
       }
     },
     "flappy-snacky": {
-      bgDay: "flappy-snacky-bg-day.png",
-      bgNight: "flappy-snacky-bg-night.png",
+      bgDay: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/backgrounds/flappy-snacky-bg-day.png",
+      bgNight: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/backgrounds/flappy-snacky-bg-night.png",
       pipeGreenBody: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe-green-body.png",
       pipeGreenCap: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe-green-cap.png",
       pipeBlueBody: "../../shared-assets/game-ui/pro-hand-painted/arcade-sprites/png/pipe-blue-body.png",
@@ -54,8 +54,13 @@
 
   var cache = {};
 
+  // Shared art (shared-assets/game-ui) is delivered with a .webp beside every
+  // PNG, so ask for that first and retry the PNG if it fails to decode. The
+  // site's own sheets in sprites/arcade have no WebP and load as they are.
   function loadImage(url, pack, key) {
     var img = new Image();
+    var png = url;
+    var tryWebp = /shared-assets\/game-ui\/.*\.png$/i.test(url);
     img.onload = function () {
       pack.images[key] = img;
       pack.pending -= 1;
@@ -65,13 +70,14 @@
       }
     };
     img.onerror = function () {
+      if (tryWebp) { tryWebp = false; img.src = png; return; }
       pack.pending -= 1;
       if (pack.pending === 0) {
         pack.ready = true;
         window.dispatchEvent(new CustomEvent("snackpack:arcade-assets-ready", { detail: { slug: pack.slug } }));
       }
     };
-    img.src = url;
+    img.src = tryWebp ? url.replace(/\.png$/i, ".webp") : url;
   }
 
   function load(slug) {
