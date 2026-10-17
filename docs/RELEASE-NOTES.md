@@ -5,6 +5,17 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-18 — Two more counting stories (41 on the shelf)
+
+- *Corgi-on-the-Cob's Ten-Frame Picnic* (ages 3–5): seeing groups on a
+  ten-frame and making ten, as a gust scatters the picnic treats.
+- *Honey-Beats and the Number Neighbours* (ages 4–6): the numbers before,
+  after and between, up to twenty, on a moonlit stepping-stone path.
+- Both from SnackPack 123 Counting, with a tap-to-answer question on every
+  page. They were held back because their pictures didn't match the words; all
+  twelve pages were redrawn first, and the app gets the same pictures in its
+  next update.
+
 ## 2026-10-17 — Corrected pictures in five books
 
 - **Ted-E-Bear and the Button Trail:** pages 2 to 6 are new. Ted now looks the

@@ -21,7 +21,7 @@ books worth sharing, easy sharing, and a good read on a phone, in that order.
 
 | Area | State |
 |---|---|
-| Shelf | **39 books**, 39 PDFs: Stage 1–3 decodables (6) · Reading Trail steps 1–6 · Short reads (12) · Number stories (13) · Animal fact books (1) · Read-aloud picture books (1) |
+| Shelf | **41 books**, 41 PDFs: Stage 1–3 decodables (6) · Reading Trail steps 1–6 · Short reads (12) · Number stories (15) · Animal fact books (1) · Read-aloud picture books (1) |
 | Hub | Stage-ordered groups, stage shortcut chips, ItemList schema, "Save the bookshelf for offline" |
 | Every book | Next-story chain, Share button (top and end), 1200×630 share card, printable PDF, Read to me, One page at a time |
 | Number stories | Tap-to-answer question on every page, plain-list + "Show the answer" fallback |
@@ -135,6 +135,16 @@ returning readers. Bump `rev` whenever a live book's pictures change, and
 update any SHELF `cover` that points at a page image. The old files were
 removed.
 
+### Corgi and Honey-Beats (done 2026-10-18)
+
+Mark chose to fix both rejected Counting books. Codex redrew all 12 pages
+(`docs/ART-BRIEF-COUNTING-CORGI-HONEYBEATS-2026-10-18.md`, monorepo
+`779e542f1`). Every ten-frame is 2 × 5 with the right count, Ted and
+Flutter-Butter replace the dolphin, the stones carry their numbers, and page 4's
+reversed footprint is visible. Both are live via `import-counting-book.mjs`
+(41 books). Of the free Counting books, only Cereal-Swimmer's Number Line
+Lagoon is still off the shelf (its octopus changes on page 3).
+
 ## Open: needs Mark
 
 1. **Pocketful of Sounds art.** `ted-e-bear-pocketful-of-sounds` (app1, free,
@@ -221,7 +231,6 @@ and run `scripts/notify-search-engines.mjs <urls>`.
 | 5 ABC books | app1, free | text fixed 2026-10-16 (`f2e21e7d5`); art covers only 7–8 of 26 letters per book, so it waits on Mark's art decision (Open: needs Mark, item 2) |
 | Spelling short reads #34–60 | app3, free | weaker vocabulary/science books; several factual errors (see B2) |
 | Blanket Fort, Library Day, Moonlight Story, Garden Race | app3, free | a character changes design mid-book, or clashes with the shelf |
-| Corgi's Ten-Frame Picnic; Honey-Beats and the Number Neighbours | app2, free | the supporting character in the text is drawn as Bottle-Nose on every page, and pictures contradict the counts (~12 images; Mark's call) |
 | Cereal-Swimmer's Number Line Lagoon | app2, free | the octopus changes design on page 3 |
 | "Which book first?" QR PDF | — | dropped: the stage-ordered hub does the job, and QR would add the repo's first dependency |
 
