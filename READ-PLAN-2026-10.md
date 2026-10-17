@@ -92,6 +92,19 @@ then C1 (medium, mechanical) and C2 once B2 lands. B3 waits on its checks.
 Re-measure on 2026-11-15 (already scheduled) before committing to B2's full
 size: if multi-book sessions grew, scale up; if not, stop at 12 quick reads.
 
+### Phone layout (done 2026-10-17)
+
+Measured on a 375 px phone before the change: the homepage put the bookshelf
+16,573 px down and the arcade 22,610 px down (of 25,468); the /read/ hub was
+26,820 px with no book on the first screen; a book's page 1 began ~1,150–1,570 px
+down. Now: bookshelf 994 px and arcade 2,465 px on the homepage; hub 8,568 px
+with the first books at ~750 px; page 1 at ~700–1,050 px. All of it is one
+phone-only block at the end of `site.css` plus the homepage section order and
+the hub `sizes` in `scripts/lib/read-srcset.mjs` (two cards a row, so phones
+pick the 480 px covers). No `sw.js` bump (see the cache note below). Not done,
+because it is site-wide: the header's nav wraps to two rows (~155 px) and stays
+pinned while scrolling, taking about a fifth of a phone screen on every page.
+
 ## Open: needs Mark
 
 1. **Pocketful of Sounds art.** `ted-e-bear-pocketful-of-sounds` (app1, free,

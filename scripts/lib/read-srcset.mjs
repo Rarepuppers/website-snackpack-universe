@@ -19,12 +19,13 @@ export const VARIANT_WIDTHS = [480, 800, 960];
 export const MIN_GAIN = 1.15;
 
 // The rendered width of each kind of picture, per breakpoint (CSS px), as
-// measured on a 412 px phone (story picture 364 = 100vw - 48), an 820 px tablet
+// measured on a 412 px phone (story picture 364 = 100vw - 48; hub card picture
+// 168 = 50vw - 38, two cards a row since 2026-10-17), an 820 px tablet
 // and a 1280 px desktop. Over-stating these makes phones skip a size they could use.
 export const SIZES = {
   page: "(max-width: 760px) calc(100vw - 48px), (max-width: 1100px) 42vw, 440px",
   hero: "(max-width: 760px) min(100vw, 430px), (max-width: 1100px) 36vw, 420px",
-  hub: "(max-width: 760px) calc(100vw - 66px), (max-width: 1100px) 41vw, 330px",
+  hub: "(max-width: 760px) calc(50vw - 38px), (max-width: 1100px) 41vw, 330px",
   home: "(max-width: 760px) 46vw, (max-width: 1100px) 31vw, 180px",
 };
 
