@@ -5,7 +5,7 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
-## 2026-10-17 — The bookshelf on a phone
+## 2026-10-17 — The bookshelf and the header on a phone
 
 - **The free books and games are near the top of the homepage.** On a phone they
   used to start about 16,500 px and 22,600 px down, behind the full list of
@@ -19,6 +19,10 @@ are in [`docs/archive/`](archive/README.md)).
 - **Each book starts sooner.** A smaller title area, and a cover picture no
   taller than about two-fifths of the screen. Where the cover is only page 1
   again, it is left out on phones, so the story begins straight away.
+- **A slimmer header everywhere on phones and tablets.** The menu used to wrap
+  into a second row and stay pinned at about 155 px, a fifth of a phone screen
+  on every page. It is now one pinned row of about 51 px: the SnackPack logo,
+  then the links on a single line you can swipe sideways. Desktop is unchanged.
 - Fix: the Animal Architects cover was stretched tall (355 × 600 for a 3:2
   picture) on every screen size. Covers too small to need a WebP copy now get
   the same sizing as the rest.
