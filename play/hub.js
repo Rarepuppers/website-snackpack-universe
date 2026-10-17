@@ -8,12 +8,12 @@
     cards: ["solitaire", "spider-solitaire", "freecell", "tripeaks", "pyramid", "golf-solitaire", "thirteen", "hearts", "spades"],
     puzzles: ["atlas-quest", "sudoku", "minesweeper", "kakuro", "picross", "water-sort", "2048", "cascade", "memory-match"],
     word: ["snackwords", "crossword", "word-search"],
-    board: ["mahjong", "checkers", "connect-4", "reversi", "snakes-and-ladders", "five-dice"],
+    board: ["mahjong", "checkers", "connect-4", "reversi", "snakes-and-ladders", "five-dice", "backgammon"],
     arcade: ["table-tennis", "asteroid-destroyer", "flappy-snacky", "snacky-worm"],
     soccer: ["flag-frenzy", "soccer-trivia-sprint", "keepy-uppy", "target-shooting-arena", "free-kick-curl", "crossbar-challenge", "goalkeeper-hero", "penalty-shootout", "dribble-rush", "header-hero"],
-    daily: ["sudoku", "minesweeper", "word-search", "freecell", "snackwords", "crossword", "kakuro", "picross", "water-sort", "mahjong", "flag-frenzy", "soccer-trivia-sprint", "thirteen", "five-dice", "hearts", "spades"]
+    daily: ["sudoku", "minesweeper", "word-search", "freecell", "snackwords", "crossword", "kakuro", "picross", "water-sort", "mahjong", "flag-frenzy", "soccer-trivia-sprint", "thirteen", "five-dice", "hearts", "spades", "backgammon"]
   };
-  var recentAdded = ["hearts", "spades", "five-dice", "water-sort", "spider-solitaire", "tripeaks", "pyramid", "snackwords", "flag-frenzy", "dribble-rush", "header-hero"];
+  var recentAdded = ["backgammon", "hearts", "spades", "five-dice", "water-sort", "spider-solitaire", "tripeaks", "pyramid", "snackwords", "flag-frenzy", "dribble-rush", "header-hero"];
   var tiles = Array.from(grid.querySelectorAll(":scope > .game-tile"));
   var records = [];
 

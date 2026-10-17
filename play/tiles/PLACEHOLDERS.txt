@@ -6,3 +6,4 @@ last-bastion.png = PLACEHOLDER (studio mark), awaiting Codex: a Last Bastion arc
 five-dice.png = INTERIM (composed from the shared painted dice, 2026-10-17), awaiting Codex: final tile + social card, see CODEX-ASSET-BRIEF-2026-10-17.md item 8
 hearts.png = INTERIM (painted suits composite, 2026-10-17), awaiting Codex: CODEX-ASSET-BRIEF-2026-10-17.md item 9
 spades.png = INTERIM (painted suits composite, 2026-10-17), awaiting Codex: CODEX-ASSET-BRIEF-2026-10-17.md item 10
+backgammon.png = INTERIM (CSS board + painted dice composite, 2026-10-17), awaiting Codex: CODEX-ASSET-BRIEF-2026-10-17.md item 11
