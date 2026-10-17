@@ -45,6 +45,8 @@ Context and evidence: `ARCADE-AUDIT-2026-10-17.md`.
 | 6 | `play/tiles/thirteen.png`, `@2x` | 144×144, 288×288 | **Redraw** — currently near-identical to Solitaire's fanned cards. Four small hands of cards around a round table seen from above, one card (a 3 of spades shape — suit symbol only, no text) played in the middle. |
 | 7 | `play/tiles/picross.png`, `@2x` | 144×144, 288×288 | **Redraw** — currently reads as Sudoku's colour grid. A 5×5 grid with clue strips along the top and left (shown as short bars/dots, not digits) and the filled cells forming a heart. |
 | 8 | `play/tiles/five-dice.png`, `@2x`; `play/social/five-dice.png` | 144×144, 288×288; 1200×630 | **New game (live 2026-10-17).** Five dice mid-roll on warm felt, a couple still tumbling. The current files are interim composites of the shared painted dice — replace them, keep the names. Do not use or write the trademarked name of the game. |
+| 9 | `play/tiles/hearts.png`, `@2x`; `play/social/hearts.png` | 144×144, 288×288; 1200×630 | **New game (2026-10-17).** A hand of cards fanned around the Queen of Spades with a few hearts — the Queen is the identity of Hearts. Interim composites are live; replace them, keep the names. |
+| 10 | `play/tiles/spades.png`, `@2x`; `play/social/spades.png` | 144×144, 288×288; 1200×630 | **New game (2026-10-17).** A trick of four cards on green felt topped by a spade trumping in (Ace of Spades in front). Must not look like the Hearts tile. Interim composites are live. |
 
 Also deliver a `.webp` beside each PNG (same basename, q88, `method=6`) for 1–7.
 After delivery, update `play/tiles/PLACEHOLDERS.txt` to remove the pyramid and
