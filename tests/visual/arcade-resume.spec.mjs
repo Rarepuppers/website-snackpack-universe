@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { openOptions } from "./helpers/options.mjs";
 
 // Keep persistence checks independent of the live analytics edge on localhost.
 test.beforeEach(async ({ page }) => {
@@ -111,6 +112,8 @@ test("mahjong: each layout keeps its own save", async ({ page }) => {
   await page.locator(`#mj-board .mj-tile[data-id="${pair[1]}"]`).click();
   const classicLeft = await page.locator("#mj-left").textContent();
   await page.waitForTimeout(700);
+
+  await openOptions(page);
 
   // Switch to another layout: no offer, because that layout has no save.
   await page.locator('[data-layout="fortress"]').click();
@@ -258,6 +261,7 @@ test("connect-4: each difficulty keeps its own save", async ({ page }) => {
   const medium = await discs(page);
   await page.waitForTimeout(700);
 
+  await openOptions(page);
   await page.locator('.seg [data-level="2"]').click();
   await expect(page.locator(".sp-resume"), "easy has no save").toHaveCount(0);
   await page.locator('.seg [data-level="4"]').click();

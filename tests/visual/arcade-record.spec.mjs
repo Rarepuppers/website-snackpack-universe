@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { openOptions } from "./helpers/options.mjs";
 
 // Persisted results.
 //
@@ -20,6 +21,7 @@ test("connect-4: the win record survives a reload and is per opponent", async ({
   // thinks, and stays disabled once the game ends, so the loop has to wait for
   // "my turn again, or over" rather than for a column on its own — otherwise
   // the last CPU move looks identical to a stall.
+  await openOptions(page);
   await page.locator('.seg [data-level="2"]').click();
   const turnState = () => page.evaluate(() => ({
     open: [...document.querySelectorAll(".c4-col-btn")].filter((b) => !b.disabled).map((b) => b.dataset.col),
@@ -44,6 +46,8 @@ test("connect-4: the win record survives a reload and is per opponent", async ({
   await page.reload();
   expect(await page.locator("#c-you").textContent(), "record survived the reload").toBe(you);
   expect(await page.locator("#c-cpu").textContent()).toBe(cpu);
+
+  await openOptions(page);
 
   // A different opponent keeps its own record.
   await page.locator('.seg [data-level="6"]').click();

@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { openOptions } from "./helpers/options.mjs";
 
 async function fresh(page, path) {
   await page.goto(path, { waitUntil: "domcontentloaded" });
@@ -68,6 +69,7 @@ test("Water Sort daily board is deterministic and patterns are available", async
 
 test("Water Sort verifies a solution and builds every difficulty", async ({ page }) => {
   await fresh(page, "/play/water-sort/?daily=2026-08-29");
+  await openOptions(page);
   const sizes = { Easy: 6, Classic: 8, Hard: 11, Expert: 14 };
   for (const [name, count] of Object.entries(sizes)) {
     await page.getByRole("button", { name, exact: true }).click();

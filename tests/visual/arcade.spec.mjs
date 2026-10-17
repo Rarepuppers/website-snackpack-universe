@@ -23,6 +23,10 @@ for (const surface of surfaces) for (const theme of themes) for (const [viewport
     }, { selectedTheme: theme });
     await page.goto(surface.path, { waitUntil: "networkidle" });
     await page.addStyleTag({ content: "*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}.topbar{position:static!important}" });
+    // Chromium only paints fixed backgrounds inside the viewport during a
+    // tall element capture. Scroll the wash for hub captures so offscreen
+    // cards retain their actual themed background instead of screenshot white.
+    if (surface.slug === "hub") await page.addStyleTag({ content: "body{background-attachment:scroll!important}" });
     await expect(page.locator(surface.target).first()).toBeVisible();
     await expect(page.locator(surface.target).first()).toHaveScreenshot(`${surface.slug}-${theme}-${viewportName}.png`, {
       // Linux and Windows rasterize the small Sudoku numerals differently;
