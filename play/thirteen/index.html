@@ -489,23 +489,104 @@
     return 0;
   }
 
-  // CPU choice (ported)
+  // CPU play. The ported version always led its lowest single card, so it shed
+  // one card per lead while a person dumped runs and pairs, held no 2s back,
+  // and in Classic (where 2 is the lowest rank) opened the game with a 2
+  // instead of the 3 of spades the rules require. This one:
+  //   - leads the combination that sheds the most low cards (run, then
+  //     triple, then pair, then single), always including the 3 of spades on
+  //     the opening play;
+  //   - follows with the cheapest combination that wins, preferring one that
+  //     does not break up its own pairs, triples or runs;
+  //   - keeps its 2s and bombs while nobody is close to going out.
   function cpuChoosePlay(state, idx) {
     var hand = state.players[idx].hand, mode = state.mode, current = state.lastCombo;
-    function lowestSingle() {
-      return hand.map(function (c) { return identifyCombo([c], mode); }).sort(function (a, b) { return a.rankKey - b.rankKey; })[0] || "pass";
+    var leading = !current || state.lastPlayerIdx === idx;
+    var mustHold = state.isFirstTurn ? hand.filter(function (c) { return c.value === 3 && c.suit === 0; })[0] : null;
+    var fewestOther = Math.min.apply(null, state.players.filter(function (_, i) { return i !== idx; }).map(function (p) { return p.hand.length; }));
+    var endgame = fewestOther <= 3 || hand.length <= 4;
+    var isHigh = function (c) { return mode === "standard" ? c.value === 2 : c.value === 1; }; // the top rank: 2 in Standard, Ace in Classic
+
+    // Every legal combination in hand (singles, pairs, triples, quads, runs,
+    // runs of pairs). Hands are 13 cards, so plain enumeration is cheap.
+    function groups() { var m = {}; hand.forEach(function (c) { (m[c.value] = m[c.value] || []).push(c); }); return m; }
+    function allCombos() {
+      var out = [], m = groups();
+      hand.forEach(function (c) { out.push(identifyCombo([c], mode)); });
+      Object.keys(m).forEach(function (k) {
+        var g = sortCards(m[k], mode);
+        for (var n = 2; n <= g.length; n++) {
+          // Lowest-suited n of a kind, plus the highest-suited one so a pair
+          // can still beat a same-rank pair by suit.
+          out.push(identifyCombo(g.slice(0, n), mode));
+          if (g.length > n) out.push(identifyCombo(g.slice(g.length - n), mode));
+        }
+      });
+      // Runs: one card per value, lowest suit first, any length >= 3.
+      var byRank = {}; hand.forEach(function (c) { var r = seqRank(c); (byRank[r] = byRank[r] || []).push(c); });
+      var ranks = Object.keys(byRank).map(Number).sort(function (a, b) { return a - b; });
+      for (var i = 0; i < ranks.length; i++) {
+        var run = [];
+        for (var j = i; j < ranks.length && (j === i || ranks[j] === ranks[j - 1] + 1); j++) {
+          run.push(sortCards(byRank[ranks[j]], mode)[0]);
+          if (run.length >= 3) {
+            out.push(identifyCombo(run.slice(), mode));
+            // Same run ending on the top card's highest suit, to beat by suit.
+            var hi = run.slice(0, -1).concat([sortCards(byRank[ranks[j]], mode).slice(-1)[0]]);
+            out.push(identifyCombo(hi, mode));
+          }
+          var pairs = [];
+          for (var q = i; q <= j; q++) { if (byRank[ranks[q]].length < 2) { pairs = null; break; } pairs = pairs.concat(sortCards(byRank[ranks[q]], mode).slice(0, 2)); }
+          if (pairs && j - i + 1 >= 3) out.push(identifyCombo(pairs, mode));
+        }
+      }
+      return out.filter(Boolean);
     }
-    if (!current || state.lastPlayerIdx === idx) return lowestSingle();
-    var cand = [];
-    function byValue() { var m = {}; hand.forEach(function (c) { (m[c.value] = m[c.value] || []).push(c); }); return m; }
-    if (current.type === "single") hand.forEach(function (c) { var cm = identifyCombo([c], mode); if (cm && canBeat(cm, current, mode)) cand.push(cm); });
-    if (current.type === "pair") { var m = byValue(); Object.keys(m).forEach(function (k) { if (m[k].length >= 2) { var cm = identifyCombo(m[k].slice(0, 2), mode); if (cm && canBeat(cm, current, mode)) cand.push(cm); } }); }
-    if (current.type === "triple") { var m2 = byValue(); Object.keys(m2).forEach(function (k) { if (m2[k].length >= 3) { var cm = identifyCombo(m2[k].slice(0, 3), mode); if (cm && canBeat(cm, current, mode)) cand.push(cm); } }); }
-    if (current.type === "sequence") { var len = current.cards.length, srt = sortCards(hand, mode); for (var i = 0; i <= srt.length - len; i++) { var cm = identifyCombo(srt.slice(i, i + len), mode); if (cm && cm.type === "sequence" && canBeat(cm, current, mode)) cand.push(cm); } }
-    if (current.type === "single" && current.cards[0].value === 2 && mode === "standard") { var m3 = byValue(); Object.keys(m3).forEach(function (k) { if (m3[k].length === 4) { var cm = identifyCombo(m3[k], mode); if (cm) cand.push(cm); } }); }
-    if (cand.length === 0) return "pass";
-    var nonBombs = cand.filter(function (c) { return c.type !== "quad"; });
-    return (nonBombs.length ? nonBombs : cand).sort(function (a, b) { return a.rankKey - b.rankKey; })[0];
+
+    // How much a play costs: its rank, plus a penalty for each card that
+    // breaks up a pair/triple it was not played with, plus a large one for
+    // spending a 2 or a bomb before the endgame.
+    var m0 = groups();
+    function cost(cm) {
+      var played = {}; cm.cards.forEach(function (c) { played[c.id] = true; });
+      var broken = 0;
+      Object.keys(m0).forEach(function (k) {
+        var g = m0[k], usedHere = g.filter(function (c) { return played[c.id]; }).length;
+        if (usedHere > 0 && usedHere < g.length && g.length >= 2) broken += 1;
+      });
+      var spendsHigh = cm.cards.some(isHigh) || cm.type === "quad" || (cm.type === "pair-sequence" && current && current.type !== "pair-sequence");
+      return cm.rankKey + broken * 14 + (spendsHigh && !endgame ? 60 : 0);
+    }
+
+    var combos = allCombos();
+    if (mustHold) combos = combos.filter(function (cm) { return cm.cards.some(function (c) { return c.id === mustHold.id; }); });
+
+    if (leading) {
+      // Shed the most cards; among equals, the lowest. Never lead a 2 or bomb
+      // while a cheaper lead exists, unless it would win the game outright.
+      var lowest = Math.min.apply(null, combos.map(function (cm) { return cm.cards[0] ? rankValue(sortCards(cm.cards, mode)[0], mode) : 99; }));
+      var leads = combos.filter(function (cm) {
+        if (cm.cards.length === hand.length) return true;
+        return rankValue(sortCards(cm.cards, mode)[0], mode) === lowest || cm.cards.length >= 3;
+      });
+      leads.sort(function (a, b) {
+        if (a.cards.length === hand.length) return -1;
+        if (b.cards.length === hand.length) return 1;
+        return (cost(a) - a.cards.length * 6) - (cost(b) - b.cards.length * 6);
+      });
+      return leads[0] || combos.sort(function (a, b) { return a.rankKey - b.rankKey; })[0] || "pass";
+    }
+
+    var cand = combos.filter(function (cm) { return canBeat(cm, current, mode); });
+    if (!cand.length) return "pass";
+    // Going out wins outright.
+    var finishing = cand.filter(function (cm) { return cm.cards.length === hand.length; });
+    if (finishing.length) return finishing[0];
+    cand.sort(function (a, b) { return cost(a) - cost(b); });
+    var best = cand[0];
+    // Hold a 2 or a bomb rather than spend it early on a low play.
+    if (!endgame && (best.cards.some(isHigh) || best.type === "quad")) return "pass";
+    return best;
   }
 
   function nextTurn(state, currentIdx, passed) {
@@ -582,6 +663,10 @@
     var v = c.value;
     var face = v === 1 ? "A" : v === 11 ? "J" : v === 12 ? "Q" : v === 13 ? "K" : String(v);
     b.innerHTML = '<span class="th-rank">' + face + '</span><span class="th-suit"><span class="card-suit-icon card-suit-icon--' + SUIT_SYMBOLS[c.suit] + '" aria-hidden="true"></span></span>';
+    // The suit is only an icon, so name the card for screen readers.
+    var name = { A: "Ace", J: "Jack", Q: "Queen", K: "King" }[face] || face;
+    b.setAttribute("aria-label", name + " of " + ["spades", "clubs", "diamonds", "hearts"][c.suit]);
+    if (!opts.button) b.setAttribute("role", "img");
     return b;
   }
 

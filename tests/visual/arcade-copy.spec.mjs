@@ -103,3 +103,35 @@ test("Flag Frenzy moves legacy progress into the sp_ namespace", async ({ page }
   expect(keys.streak).not.toBeNull();
   expect(keys.legacy).toEqual([]);
 });
+
+// Thirteen's CPU always led its lowest single card. In Classic, where 2 is the
+// lowest rank, a CPU holding the 3 of spades therefore opened with a 2 — the
+// rules say the opening play must include the 3 of spades. Deal Classic games
+// until a CPU opens, five times, and check every opening play.
+test("Thirteen Classic: a CPU's opening play includes the 3 of spades", async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.addInitScript(() => { const st = window.setTimeout; window.setTimeout = (f, d, ...a) => st(f, Math.min(d || 0, 5), ...a); });
+  await page.goto("/play/thirteen/");
+  await page.locator('.seg [data-mode="classic"]').evaluate((b) => b.click());
+  // Record the first cards to land on the table after each deal: later plays
+  // replace them within milliseconds once the CPUs are sped up.
+  await page.evaluate(() => {
+    window.__openings = []; window.__fresh = false;
+    const table = document.getElementById("t-tablecards");
+    new MutationObserver(() => {
+      if (!window.__fresh || !table.children.length) return;
+      window.__fresh = false;
+      window.__openings.push([...table.children].map((c) => c.getAttribute("aria-label")).join(", "));
+    }).observe(table, { childList: true });
+  });
+  let cpuOpened = 0;
+  for (let deal = 0; deal < 60 && cpuOpened < 5; deal++) {
+    await page.evaluate(() => { window.__fresh = true; document.getElementById("t-new").click(); });
+    await page.waitForTimeout(80);
+    if (/lead the round/i.test(await page.locator("#t-status").textContent())) { await page.evaluate(() => { window.__fresh = false; }); continue; }
+    cpuOpened++;
+  }
+  const openings = (await page.evaluate(() => window.__openings)).slice(-5);
+  expect(openings.length).toBe(5);
+  for (const o of openings) expect(o, `opening play "${o}"`).toMatch(/3 of spades/);
+});
