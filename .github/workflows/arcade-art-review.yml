@@ -1,0 +1,32 @@
+name: Capture arcade hub for art review
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      # These are review candidates only. Never commit or auto-adopt them here.
+      - name: Capture six current hub surfaces
+        run: npx playwright test tests/visual/arcade.spec.mjs --grep '^hub' --update-snapshots
+      - name: Identify reviewed source
+        run: git rev-parse HEAD > hub-review-commit.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arcade-hub-review
+          retention-days: 7
+          path: |
+            tests/visual/__screenshots__/hub-*.png
+            hub-review-commit.txt
