@@ -28,7 +28,7 @@ for (const failure of ['all-art', 'webp-only']) {
         await expect(icon).toHaveCSS('background-image', new RegExp(`${suit}\\.png`));
       }
     }
-    await page.locator('#sol-stock').click();
+    await page.locator('#sol-stock [data-act="draw"]').click();
     await expect(page.locator('#sol-moves')).toHaveText('1');
     await expect(page.locator('#sol-waste .sol-card .r').first()).toBeVisible();
     await openOptions(page);
