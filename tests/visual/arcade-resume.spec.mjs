@@ -93,6 +93,10 @@ test("mahjong: a part-cleared board survives a reload", async ({ page }) => {
   await page.locator(`#mj-board .mj-tile[data-id="${pair[1]}"]`).click();
   const after = await page.locator("#mj-left").textContent();
   expect(Number(after), "two tiles cleared").toBe(Number(before) - 2);
+  const remainingBoard = await page.locator("#mj-board .mj-tile").evaluateAll(tiles => tiles.map(tile => ({
+    id: tile.dataset.id, suit: tile.dataset.suit, label: tile.querySelector(".mj-label").textContent,
+    open: tile.classList.contains("is-open")
+  })));
 
   await page.waitForTimeout(700);
   await page.reload();
@@ -100,8 +104,15 @@ test("mahjong: a part-cleared board survives a reload", async ({ page }) => {
   await expect(prompt, "resume offered").toBeVisible();
   await prompt.locator("[data-resume]").click();
   await expect(page.locator("#mj-left"), "tile count restored").toHaveText(after);
-  // The board must be playable again, not just painted.
-  expect(await matchAPair(page), "still has a playable pair").not.toBeNull();
+  // Restore the exact remaining tiles and legal input states. A random deal
+  // may legitimately have no pair after the chosen removal; that is not a
+  // persistence failure. Still exercise a real tile control after reload.
+  expect(await page.locator("#mj-board .mj-tile").evaluateAll(tiles => tiles.map(tile => ({
+    id: tile.dataset.id, suit: tile.dataset.suit, label: tile.querySelector(".mj-label").textContent,
+    open: tile.classList.contains("is-open")
+  })))).toEqual(remainingBoard);
+  await page.locator("#mj-board .mj-tile.is-open").first().click();
+  await expect(page.locator("#mj-board .mj-tile.is-selected")).toHaveCount(1);
   expect(errors).toEqual([]);
 });
 
