@@ -6,6 +6,25 @@
     window.SnackPackGameUiControls.started = true;
     var cardBacks = assets.cards.backs;
     var cssImage = assets.cssImage;
+    // A failed decorative image must never erase a card's suit. Start with a
+    // native glyph; replace it only after one of the actual formats decodes.
+    function loadSuitArtwork() {
+      if (!document.querySelector('.card-suit-icon')) return;
+      Object.entries({ spade: 'S', heart: 'H', diamond: 'D', club: 'C' }).forEach(function (entry) {
+        var name = entry[0], png = assets.cards.suits[entry[1]], image = new Image();
+        var triedPng = false;
+        image.onload = function () {
+          document.documentElement.style.setProperty('--sp-suit-' + name + '-image', 'url("' + image.src + '")');
+          document.documentElement.classList.add('sp-suit-' + name + '-ready');
+        };
+        image.onerror = function () {
+          if (!triedPng) { triedPng = true; image.src = png; }
+        };
+        image.src = assets.webp(png);
+      });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadSuitArtwork, { once: true });
+    else loadSuitArtwork();
   // Keep a small, private-on-device return trail for the arcade hub. This file
   // is already loaded by every game, so one guarded hook covers the full set.
   (function recordRecentGame() {
