@@ -1,6 +1,6 @@
 # /read/ — plan of record
 
-Updated 2026-10-16. This is the **current** plan: what is live, what
+Updated 2026-10-18. This is the **current** plan: what is live, what
 is open, and the rules for adding to the shelf. The day-by-day build log, with
 every decision and measurement behind it, is archived at
 [`docs/archive/READ-PLAN-2026-10-15-build-log.md`](docs/archive/READ-PLAN-2026-10-15-build-log.md).
@@ -19,9 +19,44 @@ books worth sharing, easy sharing, and a good read on a phone, in that order.
 
 ## Status at a glance
 
+### Current expansion decision - 2026-10-18
+
+Mark approved the app-first improvements and chose to complete and publish
+one full ABC book now. This supersedes the older open decisions below.
+
+- **Cereal-Swimmer:** a full six-page read found more than the octopus issue:
+  missing number sequences and the wrong direction/gate tasks. All six pages
+  are redrawn and wired in the Counting app; the reviewed importer pins them.
+- **Short reads:** Star Watch, Lionnaise and the Dragon, Garden Morning and
+  Helping Day are rewritten in the Spelling app with the same pictured beats.
+  Six primary end questions now ask for reasons or consequences (Playground,
+  Trail Clues, Ocean Adventure, Garden Morning, Helping Day and Star Watch).
+  Re-imported app text, prompts, answers and explanations remain the source.
+- **One complete ABC book:** Panda-Cake has all 26 pages, with 21 new images
+  after the audit found three existing pages needing replacement as well as
+  18 missing letters. A/F/M/U/Z remain. No emoji placeholders or partial taster.
+  `import-alphabet-book.mjs` checks the current exported app words, all 26
+  artwork mappings and reviewed image hashes. New ABC shelf group/filter.
+- **Printables:** the PDF builder now prints each page's story text beneath
+  its picture. The two new books and seven affected short reads have rebuilt
+  PDFs; the complete A-Z printable stays below 3 MB.
+- **15 November:** measure books per visit, internal referrals, ABC discovery
+  and Animal Architects engagement before commissioning the other four ABC
+  books or more Zoo art. A larger search market is a hypothesis, not verified
+  demand. Revenue quoted in the recommendation was not rechecked here.
+- **Pro/Zoo:** do not change app tiers or publish more Pro books now. Quality
+  read Booklava and the Number That Hid before any later free-web decision.
+  If animals warrant a next book, prefer Ocean Dive or Jungle Secrets;
+  Safari Morning needs its app text fixed first. Keep the existing re-measure.
+
+This delivery brings the shelf to **43 books and 43 PDFs**: one complete ABC
+book, 6 decodables, 6 Reading Trail books, 12 short reads, 16 number stories,
+one animal fact book and one read-aloud picture book. App changes ship with
+their next Claude-owned builds. The older phase tables retain their history.
+
 | Area | State |
 |---|---|
-| Shelf | **41 books**, 41 PDFs: Stage 1–3 decodables (6) · Reading Trail steps 1–6 · Short reads (12) · Number stories (15) · Animal fact books (1) · Read-aloud picture books (1) |
+| Shelf | **43 books**, 43 PDFs: Alphabet books (1) · Stage 1–3 decodables (6) · Reading Trail steps 1–6 · Short reads (12) · Number stories (16) · Animal fact books (1) · Read-aloud picture books (1) |
 | Hub | Stage-ordered groups, stage shortcut chips, ItemList schema, "Save the bookshelf for offline" |
 | Every book | Next-story chain, Share button (top and end), 1200×630 share card, printable PDF, Read to me, One page at a time |
 | Number stories | Tap-to-answer question on every page, plain-list + "Show the answer" fallback |
@@ -150,13 +185,9 @@ Lagoon is still off the shelf (its octopus changes on page 3).
 1. **Pocketful of Sounds art.** `ted-e-bear-pocketful-of-sounds` (app1, free,
    rated excellent) has a cover and 1 of 8 pages illustrated. Commission 7
    interiors, or decide on a text-led read-aloud format.
-2. **ABC book art (text fixed 2026-10-16).** The text of the 5 free alphabet
-   books is fixed in the app (see B4). They are still blocked by rule 2 below:
-   only 7–8 of 26 letters per book have art (Panda-Cake 8, Eggs-Benedict 7,
-   Meow-inara 8, French-Toast 8, Wise Owl 8). Choose one: commission about 90
-   letter images through Codex; publish a 26-letter page where unillustrated
-   letters show the large letter and the emoji (an exception to rule 2); or
-   publish only the illustrated letters as a short "taster" of each book.
+2. **ABC book art: decision made 2026-10-18.** Complete Panda-Cake first, with
+   all 26 letters illustrated consistently, then review results after 15
+   November before the other four. No letter-and-emoji or taster exception.
 3. **Basic Math content fixes.** Art is now briefed for Codex (`docs/ART-BRIEF-STORY-GAPS-2026-10-16.md`, monorepo root); Wise Owl's text fix shipped 2026-10-16. Pork-ulele's
    page 1 clock shows the wrong time; Wise Owl's page 1 question and page 2
    prime explanation are wrong; Ted-E-Bear's Lantern and Booklava change
@@ -228,10 +259,9 @@ and run `scripts/notify-search-engines.mjs <urls>`.
 
 | Book | Source | Reason |
 |---|---|---|
-| 5 ABC books | app1, free | text fixed 2026-10-16 (`f2e21e7d5`); art covers only 7–8 of 26 letters per book, so it waits on Mark's art decision (Open: needs Mark, item 2) |
+| 4 remaining ABC books | app1, free | Panda-Cake completed 2026-10-18; audit word/art matches and character consistency before commissioning the others after the re-measure |
 | Spelling short reads #34–60 | app3, free | weaker vocabulary/science books; several factual errors (see B2) |
 | Blanket Fort, Library Day, Moonlight Story, Garden Race | app3, free | a character changes design mid-book, or clashes with the shelf |
-| Cereal-Swimmer's Number Line Lagoon | app2, free | the octopus changes design on page 3 |
 | "Which book first?" QR PDF | — | dropped: the stage-ordered hub does the job, and QR would add the repo's first dependency |
 
 ## Gotchas worth keeping

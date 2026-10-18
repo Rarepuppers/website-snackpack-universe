@@ -55,6 +55,9 @@ jobs:
       - name: Check JavaScript syntax
         run: node scripts/check-javascript.mjs
 
+      - name: Check complete alphabet publication guards
+        run: node scripts/test-alphabet-book.mjs
+
       - name: Enforce new arcade game quality bar
         run: node scripts/check-new-game.mjs
 
