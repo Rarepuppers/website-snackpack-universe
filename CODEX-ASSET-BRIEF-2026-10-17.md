@@ -5,6 +5,15 @@ site copy) is **no longer a Codex job**: encoding is moving into the derivative
 pipeline, where it is reproducible (see `ARCADE-AUDIT-2026-10-17.md`, step 2).
 This brief is only for art that has to be **made or redrawn**.
 
+Delivery status, 18 October 2026: items 1–11 are now generated and delivered as
+144/288 PNG/WebP tiles and 1200×630 PNG/WebP social cards. G1b's 28 blank assets
+are present in the monorepo canonical packs and delivered through the derivative
+pipeline. Existing source pack canvases are 256×256 (not the estimated 512 above),
+so blank siblings match those actual dimensions. Original files remain intact.
+The public dice-game name is now Dice Score; `five-dice` filenames/URLs and app
+internal save IDs are retained. Publication/CI screenshot review remains tracked
+in `docs/BRAIN_GAMES_NEXT_PLAN_2026-10-18.md` in the monorepo.
+
 Context and evidence: `ARCADE-AUDIT-2026-10-17.md`.
 
 ---
