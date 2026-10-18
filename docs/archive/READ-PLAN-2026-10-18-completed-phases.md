@@ -1,12 +1,12 @@
-> Historical snapshot archived 2026-10-19. Completed phase tables contain superseded holds. Use `READ-PLAN-2026-10.md` at the website root for current tasks.
+> Historical snapshot archived 2026-10-19. Completed phase tables contain superseded holds. Use [the current plan](../../READ-PLAN-2026-10.md) for tasks. Relative document links were adjusted for this archive location.
 
 # /read/ — plan of record
 
 Updated 2026-10-18. This is the **current** plan: what is live, what
 is open, and the rules for adding to the shelf. The day-by-day build log, with
 every decision and measurement behind it, is archived at
-[`docs/archive/READ-PLAN-2026-10-15-build-log.md`](docs/archive/READ-PLAN-2026-10-15-build-log.md).
-What shipped, in release form, is in [`docs/RELEASE-NOTES.md`](docs/RELEASE-NOTES.md).
+[`docs/archive/READ-PLAN-2026-10-15-build-log.md`](READ-PLAN-2026-10-15-build-log.md).
+What shipped, in release form, is in [`docs/RELEASE-NOTES.md`](../RELEASE-NOTES.md).
 
 ## Why /read/ matters
 
