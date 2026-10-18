@@ -28,11 +28,14 @@ for (const failure of ['all-art', 'webp-only']) {
         await expect(icon).toHaveCSS('background-image', new RegExp(`${suit}\\.png`));
       }
     }
+    await expect(page.locator('#sol-waste .sol-card')).toHaveCount(0);
     await page.locator('#sol-stock [data-act="draw"]').click();
-    await expect(page.locator('#sol-moves')).toHaveText('1');
+    // Stock draws are undoable but the game's move counter counts transfers.
+    await expect(page.locator('#sol-waste .sol-card')).toHaveCount(1);
     await expect(page.locator('#sol-waste .sol-card .r').first()).toBeVisible();
     await openOptions(page);
     await page.getByRole('button', { name: 'Undo', exact: true }).click();
+    await expect(page.locator('#sol-waste .sol-card')).toHaveCount(0);
     await expect(page.locator('#sol-moves')).toHaveText('0');
     expect(errors).toEqual([]);
     await page.locator('.game-stage').screenshot({ path: testInfo.outputPath(`${failure}.png`) });
