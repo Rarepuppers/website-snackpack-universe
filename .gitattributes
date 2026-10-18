@@ -1,0 +1,2 @@
+# Keep hashed blank SVG delivery bytes stable on Windows.
+**/*-blank.svg text eol=lf
