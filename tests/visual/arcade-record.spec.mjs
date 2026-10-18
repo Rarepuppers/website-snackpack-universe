@@ -74,26 +74,33 @@ async function fastTimers(page) {
 }
 const total = (t) => t.split("\u2013").reduce((n, x) => n + Number(x), 0);
 
-test("checkers: a finished game is kept in the record", async ({ page }) => {
-  test.setTimeout(120_000);
+// A deterministic late-game save tests result persistence without assuming
+// arbitrary first-legal moves will finish a full match (kings can repeat).
+for (const scenario of [
+  { name: "win", red: 40, black: 33, blackPiece: -1, from: 40, to: 26, record: "1\u20130" },
+  { name: "loss", red: 24, black: 10, blackPiece: -2, from: 24, to: 17, record: "0\u20131" }
+]) test("checkers: a finished " + scenario.name + " is kept in the record", async ({ page }) => {
   await fastTimers(page);
+  await page.addInitScript((fixture) => {
+    if (localStorage.getItem("sp_checkers_record_fixture")) return;
+    localStorage.setItem("sp_checkers_record_fixture", "1");
+    const board = Array(64).fill(0);
+    board[fixture.red] = 1; board[fixture.black] = fixture.blackPiece;
+    localStorage.setItem("sp_checkers_mode", "4");
+    localStorage.setItem("sp_checkers_save_cpu_4", JSON.stringify({
+      schemaVersion: 1, gameVersion: 1, variant: "cpu-4", updatedAt: Date.now(),
+      payload: { board, currentSide: 1, undoStack: [] }
+    }));
+  }, scenario);
   await page.goto("/play/checkers/");
   await expect(page.locator("#ck-record")).toHaveText("0\u20130");
-  for (let k = 0; k < 300; k++) {
-    const st = await page.locator("#ck-status").textContent();
-    if (/wins|win!/i.test(st)) break;
-    if (!/your move|move undone/i.test(st)) { await page.waitForTimeout(30); continue; }
-    const pieces = await page.locator("#ck-board .ck-sq:has(.ck-piece.red)").all();
-    for (const sq of pieces) {
-      await sq.click();
-      const moves = page.locator("#ck-board .ck-sq.move");
-      if (await moves.count()) { await moves.first().click(); break; }
-    }
-  }
+  await page.locator(".sp-resume [data-resume]").click();
+  await page.locator('#ck-board .ck-sq[data-i="' + scenario.from + '"]').click();
+  await page.locator('#ck-board .ck-sq.move[data-i="' + scenario.to + '"]').click();
   await expect(page.locator("#ck-status")).toContainText(/win/i);
-  expect(total(await page.locator("#ck-record").textContent())).toBe(1);
+  await expect(page.locator("#ck-record")).toHaveText(scenario.record);
   await page.reload();
-  expect(total(await page.locator("#ck-record").textContent())).toBe(1);
+  await expect(page.locator("#ck-record")).toHaveText(scenario.record);
 });
 
 test("reversi: a finished game is kept in the record", async ({ page }) => {
