@@ -7,6 +7,8 @@ are in [`docs/archive/`](archive/README.md)).
 
 ## 2026-10-18 - Complete ABC book, lagoon repair and stronger short reads
 
+Published in `902f1005` (local implementation commit `5461f678`).
+
 - The shelf reaches 43 books and 43 printable PDFs. Panda-Cake's complete
   A-Z book adds the first ABC group and filter, with an illustration on all
   26 pages. Twenty-one new pictures complete the gaps and replace three

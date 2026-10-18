@@ -177,17 +177,18 @@ Mark chose to fix both rejected Counting books. Codex redrew all 12 pages
 `779e542f1`). Every ten-frame is 2 × 5 with the right count, Ted and
 Flutter-Butter replace the dolphin, the stones carry their numbers, and page 4's
 reversed footprint is visible. Both are live via `import-counting-book.mjs`
-(41 books). Of the free Counting books, only Cereal-Swimmer's Number Line
-Lagoon is still off the shelf (its octopus changes on page 3).
+(41 books at that point). **Update 2026-10-18:** Cereal-Swimmer's Number-Line
+Lagoon has now passed a full six-page replacement and count review and is
+published. Panda-Cake's complete alphabet brings the current shelf to 43.
 
 ## Open: needs Mark
 
 1. **Pocketful of Sounds art.** `ted-e-bear-pocketful-of-sounds` (app1, free,
    rated excellent) has a cover and 1 of 8 pages illustrated. Commission 7
    interiors, or decide on a text-led read-aloud format.
-2. **ABC book art: decision made 2026-10-18.** Complete Panda-Cake first, with
-   all 26 letters illustrated consistently, then review results after 15
-   November before the other four. No letter-and-emoji or taster exception.
+2. **Remaining ABC books:** Panda-Cake is complete and published with all
+   26 letters illustrated consistently. Review results after 15 November
+   before commissioning the other four. No letter-and-emoji or taster exception.
 3. **Basic Math content fixes.** Art is now briefed for Codex (`docs/ART-BRIEF-STORY-GAPS-2026-10-16.md`, monorepo root); Wise Owl's text fix shipped 2026-10-16. Pork-ulele's
    page 1 clock shows the wrong time; Wise Owl's page 1 question and page 2
    prime explanation are wrong; Ted-E-Bear's Lantern and Booklava change
