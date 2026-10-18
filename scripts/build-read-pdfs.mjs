@@ -203,12 +203,13 @@ function buildPdf(images, title, textPages = []) {
   const obj = (n, body) => { offsets[n] = len; push(`${n} 0 obj\n`); push(body); push("\nendobj\n"); };
 
   const n = images.length;
+  const hasFonts = textPages.length > 0 || images.some(img => img.caption?.length);
   // 1 catalog, 2 pages, then per image: page, contents, xobject; then the two
   // fonts, then per text page: page, contents.
   const pageIds = images.map((_, i) => 3 + i * 3);
   const fontReg = 3 + n * 3, fontBold = fontReg + 1;
   const textIds = textPages.map((_, i) => fontBold + 1 + i * 2);
-  const total = 2 + n * 3 + (textPages.length ? 2 + textPages.length * 2 : 0);
+  const total = 2 + n * 3 + (hasFonts ? 2 : 0) + textPages.length * 2;
   const kids = [...pageIds, ...textIds];
 
   push("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n");
@@ -218,15 +219,28 @@ function buildPdf(images, title, textPages = []) {
   images.forEach((img, i) => {
     const pageId = pageIds[i], contentId = pageId + 1, imgId = pageId + 2;
     // Fit inside the shared safe box, preserving aspect, centred on the sheet.
-    const scale = Math.min(BOX_W / img.width, BOX_H / img.height);
+    const copy = img.caption || [];
+    const heading = copy.length ? wrap(copy[0], 16, true, BOX_W) : [];
+    const lines = copy.slice(1).flatMap(p => wrap(p, 13, false, BOX_W));
+    const copyH = copy.length ? heading.length * 20 + lines.length * 18 + 24 : 0;
+    if (copyH > BOX_H / 2) throw new Error(`Page ${i + 1}: story copy too long for a readable picture-book page`);
+    const scale = Math.min(BOX_W / img.width, (BOX_H - copyH) / img.height);
     const w = img.width * scale, h = img.height * scale;
-    const x = (PAGE_W - w) / 2, y = (PAGE_H - h) / 2;
-    const content = `q\n${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)} cm\n/Im0 Do\nQ\n`;
+    const x = (PAGE_W - w) / 2, y = copy.length ? (PAGE_H + BOX_H) / 2 - h : (PAGE_H - h) / 2;
+    let content = `q\n${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)} cm\n/Im0 Do\nQ\n`;
+    let textY = y - 26;
+    for (const [font, size, lineHeight, rows] of [['F2', 16, 20, heading], ['F1', 13, 18, lines]]) {
+      for (const line of rows) {
+        content += `BT /${font} ${size} Tf 0.13 0.09 0.07 rg ${((PAGE_W - BOX_W) / 2).toFixed(2)} ${textY.toFixed(2)} Td ${pdfText(line)} Tj ET\n`;
+        textY -= lineHeight;
+      }
+    }
+    const contentBytes = Buffer.from(content, 'latin1');
 
     obj(pageId,
       `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] ` +
-      `/Resources << /XObject << /Im0 ${imgId} 0 R >> >> /Contents ${contentId} 0 R >>`);
-    obj(contentId, `<< /Length ${content.length} >>\nstream\n${content}endstream`);
+      `/Resources << /XObject << /Im0 ${imgId} 0 R >> ${hasFonts ? `/Font << /F1 ${fontReg} 0 R /F2 ${fontBold} 0 R >>` : ''} >> /Contents ${contentId} 0 R >>`);
+    obj(contentId, `<< /Length ${contentBytes.length} >>\nstream\n${content}endstream`);
 
     offsets[imgId] = len;
     push(`${imgId} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${img.width} /Height ${img.height} ` +
@@ -235,7 +249,7 @@ function buildPdf(images, title, textPages = []) {
     push("\nendstream\nendobj\n");
   });
 
-  if (textPages.length) {
+  if (hasFonts) {
     obj(fontReg, "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>");
     obj(fontBold, "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
     textPages.forEach((content, i) => {
@@ -266,11 +280,24 @@ function buildPdf(images, title, textPages = []) {
 function pagesFor(slug) {
   const html = fs.readFileSync(path.join(READ, slug, "index.html"), "utf8");
   const files = [];
+  const captions = new Map();
+  for (const m of html.matchAll(/<article class="story-page-card"[^>]*>([\s\S]*?)<\/article>/g)) {
+    const file = m[1].match(/<img src="\.\/pages\/([^"/]+\.jpg)"/);
+    const copy = m[1].match(/<div class="story-page-copy">([\s\S]*)/);
+    if (!file || !copy) continue;
+    const label = copy[1].match(/<span>([\s\S]*?)<\/span>/);
+    const letterHeading = copy[1].match(/<h2>([\s\S]*?)<\/h2>/);
+    // Story paragraphs only; questions and answers keep their own final sheet.
+    const storyCopy = copy[1].split(/<aside|<details|<p class="math-q"/)[0];
+    const paragraphs = [...storyCopy.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/g)]
+      .map(p => strip(p[1]));
+    if (paragraphs.length) captions.set(file[1], [[label ? strip(label[1]) : '', letterHeading ? strip(letterHeading[1]) : ''].filter(Boolean).join(' · '), ...paragraphs]);
+  }
   const cover = html.match(/<img src="\.\/pages\/(cover\.jpg)"/);
   if (cover) files.push(cover[1]);
   for (const m of html.matchAll(/<img src="\.\/pages\/([^"]+\.jpg)"[^>]*loading="lazy"/g)) files.push(m[1]);
   const title = (html.match(/<title>([^|<]+)/) || [, slug])[1].trim();
-  return { files, title: decode(title), questions: questionsFor(html) };
+  return { files, captions, title: decode(title), questions: questionsFor(html) };
 }
 
 const slugs = fs.readdirSync(READ)
@@ -280,13 +307,13 @@ const slugs = fs.readdirSync(READ)
 console.log(WRITE ? "Building PDFs:" : "Dry run (pass --write to emit):");
 let built = 0;
 for (const slug of slugs) {
-  const { files, title, questions } = pagesFor(slug);
+  const { files, captions, title, questions } = pagesFor(slug);
   if (files.length < 2) { console.log(`  SKIP ${slug}: found ${files.length} page(s)`); continue; }
 
   const images = files.map((f) => {
     const p = path.join(READ, slug, "pages", f);
     const data = fs.readFileSync(p);
-    return { ...jpegInfo(data), data };
+    return { ...jpegInfo(data), data, caption: captions.get(f) };
   });
 
   const textPages = questions.items.length ? questionPages(title, questions) : [];

@@ -1,0 +1,192 @@
+{
+  "panda-cake-alphabet": {
+    "slug": "panda-cake-discovers-her-abcs",
+    "reviewed": "2026-10-18",
+    "lead": "A complete A-Z picture book to read together, with Panda-Cake in her kitchen and garden.",
+    "blurb": "Acorn to zucchini: discover every letter with Panda-Cake, with an illustration on all 26 pages.",
+    "pages": [
+      {
+        "letter": "A",
+        "word": "Acorn",
+        "art": "panda-cake-a-acorn.webp",
+        "sha256": "aff7aff1ca5e169cb219ffb460c59647505cab4c21221d0f84f1787a147a3614",
+        "alt": "Panda-Cake picks up an acorn beside the picnic rug in her sunny garden."
+      },
+      {
+        "letter": "B",
+        "word": "Balloon",
+        "art": "panda-cake-alphabet-b-v3.webp",
+        "sha256": "9664420333d92eab467ecaeb5d83ec11ea11b7f740cf7b027c8508fcaeb3dd49",
+        "alt": "Panda-Cake ties a red balloon to the back of her wooden picnic chair."
+      },
+      {
+        "letter": "C",
+        "word": "Cake",
+        "art": "panda-cake-alphabet-c-v3.webp",
+        "sha256": "35bfbf07356206ee3b1d330fffe100b449d8d7e03c84cc722c03efebd0bc67e3",
+        "alt": "Panda-Cake places red berries on top of a large layered cake."
+      },
+      {
+        "letter": "D",
+        "word": "Donut",
+        "art": "panda-cake-alphabet-d-v3.webp",
+        "sha256": "26b8cf82726cb6c196e7f42cfc46f95c7911348daaf9d9412b4c5d92b529f2fd",
+        "alt": "Panda-Cake saves a pink sprinkle doughnut beside a plain doughnut."
+      },
+      {
+        "letter": "E",
+        "word": "Earth",
+        "art": "panda-cake-alphabet-e-v3.webp",
+        "sha256": "f4d26ae4e19100730eee6b18174d20c16279bb1e591bd6f94b61ca8439d6483e",
+        "alt": "Panda-Cake spins a globe and points to a little home marker."
+      },
+      {
+        "letter": "F",
+        "word": "Flower",
+        "art": "panda-cake-f-flower.webp",
+        "sha256": "8e83dc24cad271ad8c77b3dccb240271bf158675e6a1e639a33e257963a720b2",
+        "alt": "Panda-Cake places a pink flower in a clear jam jar."
+      },
+      {
+        "letter": "G",
+        "word": "Garden",
+        "art": "panda-cake-alphabet-g-v3.webp",
+        "sha256": "3a552c042c75326357b4cd5145bc4e1f216cbea389059b56321a9928384802b5",
+        "alt": "Panda-Cake picks red berries into a basket in her cottage garden."
+      },
+      {
+        "letter": "H",
+        "word": "Honey",
+        "art": "panda-cake-alphabet-h-v3.webp",
+        "sha256": "524ba55962cab3ea27eab22f00aaf5262a10c8420f36a71dd8e97568948e8624",
+        "alt": "Panda-Cake drizzles golden honey from a dipper onto hot pancakes."
+      },
+      {
+        "letter": "I",
+        "word": "Ice Cream",
+        "art": "panda-cake-alphabet-i-v3.webp",
+        "sha256": "447ee23e2a1af083b68c338323c8734ad4956a2bd1f9688f06007de44c4a7517",
+        "alt": "Panda-Cake adds a small scoop of vanilla ice cream to her pancakes."
+      },
+      {
+        "letter": "J",
+        "word": "Jam",
+        "art": "panda-cake-alphabet-j-v3.webp",
+        "sha256": "18812e0023f24c2b01e21375146eae9c1334ab7424efc4c148086a2a813f4db6",
+        "alt": "Panda-Cake spreads red jam onto a square slice of toast."
+      },
+      {
+        "letter": "K",
+        "word": "Kiwi",
+        "art": "panda-cake-alphabet-k-v3.webp",
+        "sha256": "e60d0fd5fcfb67fbc06e3d7da21d0f7e94b54d419db95ff6744815d8007f0da7",
+        "alt": "Panda-Cake cuts a kiwi fruit into small green slices on a board."
+      },
+      {
+        "letter": "L",
+        "word": "Leaf",
+        "art": "panda-cake-alphabet-l-v3.webp",
+        "sha256": "a26cd4f7dd071f859bfff5b97370feabae6258d125797758e34784dd8793ac94",
+        "alt": "Panda-Cake catches a green leaf above the open syrup jug."
+      },
+      {
+        "letter": "M",
+        "word": "Milk",
+        "art": "panda-cake-m-milk.webp",
+        "sha256": "44bb3b64e4189f80aeaec9cc152f8859e6761ad4d4b273842df09bc63720fae2",
+        "alt": "Panda-Cake pours milk from a glass jug into a glass without spilling."
+      },
+      {
+        "letter": "N",
+        "word": "Nest",
+        "art": "panda-cake-alphabet-n-v3.webp",
+        "sha256": "d74c77cb4c228f31b1003bbd0ccc95e114a8bcc2f77a88f121b2043e86b1b7ad",
+        "alt": "Panda-Cake waves from the ground to two birds in a twig nest."
+      },
+      {
+        "letter": "O",
+        "word": "Oven",
+        "art": "panda-cake-alphabet-o-v3.webp",
+        "sha256": "3bfc21e5f8d08fb7d6da3f09e3df634908eeeddaca2472b04013e019a2629a47",
+        "alt": "Panda-Cake peeks through the closed oven door at a tray of muffins."
+      },
+      {
+        "letter": "P",
+        "word": "Panda",
+        "art": "panda-cake-alphabet-p-v3.webp",
+        "sha256": "ffe8cfab893d1eec103420e2bc20c38e20c10a1a2cda719f50b86f198d84453d",
+        "alt": "Panda-Cake gives a happy wave in her garden, wearing her pancake wrap and patterned apron."
+      },
+      {
+        "letter": "Q",
+        "word": "Quiet",
+        "art": "panda-cake-alphabet-q-v3.webp",
+        "sha256": "1b184fb9c831b3a32f6651205a4e783441736bcb07c078c8d004a3492f3ae086",
+        "alt": "Panda-Cake tiptoes quietly past bowls of rising bread dough."
+      },
+      {
+        "letter": "R",
+        "word": "Rainbow",
+        "art": "panda-cake-alphabet-r-v3.webp",
+        "sha256": "08c63e0b2637a9dfed7a34649d36553d5bfd901aa5a9c33e78cdcfc9e7ee1429",
+        "alt": "Panda-Cake sees a rainbow above the wet garden after the rain."
+      },
+      {
+        "letter": "S",
+        "word": "Star",
+        "art": "panda-cake-alphabet-s-v3.webp",
+        "sha256": "d881cf32a78c37343d99e3bf89a71411bccd800ea56fad7f553cd03cfe2b1980",
+        "alt": "Panda-Cake cuts a star shape from a slice of watermelon."
+      },
+      {
+        "letter": "T",
+        "word": "Teapot",
+        "art": "panda-cake-alphabet-t-v3.webp",
+        "sha256": "f9651204351b73a27dcc6173e2406ef2f455097cb1b357ef218c6c321307c090",
+        "alt": "Panda-Cake fills a teapot for a tea party with cups set on the table."
+      },
+      {
+        "letter": "U",
+        "word": "Umbrella",
+        "art": "panda-cake-u-umbrella.webp",
+        "sha256": "3a76476709f061fe3dbdca04545158ad3f1b2d2f5da6b2a7f7a0ad0c5f36fa1b",
+        "alt": "Panda-Cake walks in the rain beneath her spotty umbrella."
+      },
+      {
+        "letter": "V",
+        "word": "Van",
+        "art": "panda-cake-alphabet-v-v3.webp",
+        "sha256": "c8c0eee5536e0edc511e7f2300b69449ff200a447ae0204a2bc04587dd37a44e",
+        "alt": "Panda-Cake waves from the garden gate to a passing snack van."
+      },
+      {
+        "letter": "W",
+        "word": "Watermelon",
+        "art": "panda-cake-alphabet-w-v3.webp",
+        "sha256": "83517647944d43a543e5b1449a4e167a6acc8e34773abcda3718010de2a130cd",
+        "alt": "Panda-Cake shares big watermelon slices with a rabbit and squirrel at the picnic."
+      },
+      {
+        "letter": "X",
+        "word": "Xylophone",
+        "art": "panda-cake-alphabet-x-v3.webp",
+        "sha256": "277485f56d453921597eb4d1ba6ab51956c73f41a580077870dd3b73eecb3400",
+        "alt": "Panda-Cake taps a colourful xylophone with two round-tipped mallets."
+      },
+      {
+        "letter": "Y",
+        "word": "Yellow",
+        "art": "panda-cake-alphabet-y-v3.webp",
+        "sha256": "3df0072f3594b7cda65131431b1c6bed636ece3c7ecb192153fd5432053061dd",
+        "alt": "Panda-Cake paints her kitchen door bright yellow."
+      },
+      {
+        "letter": "Z",
+        "word": "Zucchini",
+        "art": "panda-cake-z-zucchini.webp",
+        "sha256": "3f8671d4ae71e7260223fa72c96e0365527b46ab54bd59d435648d8ebafbfd7a",
+        "alt": "Panda-Cake grates zucchini into a bowl to make muffins."
+      }
+    ]
+  }
+}

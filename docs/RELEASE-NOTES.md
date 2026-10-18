@@ -5,6 +5,25 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-18 - Complete ABC book, lagoon repair and stronger short reads
+
+- The shelf reaches 43 books and 43 printable PDFs. Panda-Cake's complete
+  A-Z book adds the first ABC group and filter, with an illustration on all
+  26 pages. Twenty-one new pictures complete the gaps and replace three
+  mismatched pages. The app retains all 26 source sentences unchanged.
+- Cereal-Swimmer's Number-Line Lagoon completes the free Counting set after
+  a full audit and six new pictures: exact bubbles/fish counts, visible
+  number sequences, one backwards fish and seven of ten gate spaces.
+- Four short reads now use more concrete dialogue and endings, written in
+  the Spelling app first. Six end questions ask why/how, with explanations;
+  seven affected books are re-imported from the app verbatim.
+- The PDF builder now includes story text below artwork. Nine PDFs rebuilt;
+  the complete ABC printable is 2.71 MB. Responsive art, sharing, offline
+  manifest, social cards and next-book links include both new books.
+- Alphabet imports require all 26 current app words and reviewed art hashes;
+  rejection tests run in CI. No app builds or submissions. More Pro/Zoo
+  releases and the other four ABC books wait for the 15 November review.
+
 ## 2026-10-18 — Two more counting stories (41 on the shelf)
 
 - *Corgi-on-the-Cob's Ten-Frame Picnic* (ages 3–5): seeing groups on a

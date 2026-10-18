@@ -30,6 +30,7 @@ const CHECK = process.argv.includes("--check");
 
 // Reading-path groups, in order. `intro` is shown under the group heading.
 const GROUPS = [
+  { id: "alphabet", title: "Alphabet books · all the letters", intro: "Meet A to Z in a complete illustrated picture book. Read together, name the letters and look for familiar things in every picture." },
   { id: "stage-1", title: "Stage 1 · first sounds", intro: "Start here. Every word uses only s, a, t, p, i and n, plus a few tricky words to read together." },
   { id: "stage-2", title: "Stage 2 · six more sounds", intro: "Adds c, e, h, r, m and d. Ready when Stage 1 words feel easy." },
   { id: "stage-3", title: "Stage 3 · short o and u", intro: "Adds g, o, u, l, f and b, so every short vowel is covered." },
@@ -49,6 +50,7 @@ const GROUPS = [
 // `added` is the date the book first went live (git history); the hub marks
 // books added in the last 30 days as "New", worked out in the reader's browser.
 const SHELF = [
+  { slug: "panda-cake-discovers-her-abcs", group: "alphabet", age: [3, 5], added: "2026-10-18", title: "Panda-Cake Discovers Her ABCs", eyebrow: "Alphabet picture book · A-Z · 26 pages", blurb: "Acorn to zucchini: join Panda-Cake in the kitchen and garden for every letter of the alphabet.", cover: "pages/letter-a", ext: "jpg", alt: "", w: 1200, h: 800 },
   { slug: "pip-sits", group: "stage-1", age: [4, 5], added: "2026-08-12", title: "Pip Sits", eyebrow: "Stage 1 · first reader · 6 pages", blurb: "A gentle read-it-myself story using the first letter sounds s, a, t, p, i and n.", cover: "pages/cover", ext: "jpg", alt: "Pip Sits first-reader book cover.", w: 1024, h: 1536 },
   { slug: "nan-and-pip", group: "stage-1", age: [4, 5], added: "2026-08-13", title: "Nan and Pip", eyebrow: "Stage 1 decodable · 6 pages", blurb: "A take-turns story that repeats a small set of words so a new reader builds confidence.", cover: "pages/cover", ext: "jpg", alt: "Nan and Pip decodable book cover.", w: 1024, h: 1536 },
   { slug: "ten-red-hens", group: "stage-2", age: [4, 5], added: "2026-08-13", title: "Ten Red Hens", eyebrow: "Stage 2 decodable · 8 pages", blurb: "Ten hens, one net and a runaway chase — a short-E story a new reader can sound out alone.", cover: "pages/cover", ext: "jpg", alt: "Ten Red Hens decodable book cover.", w: 1024, h: 1536 },
@@ -88,6 +90,7 @@ const SHELF = [
   { slug: "centi-peeds-below-zero-burrow", group: "numbers", age: [8, 10], added: "2026-10-15", title: "Centi‑Peed and the Below‑Zero Burrow", eyebrow: "Year 4 · negative numbers · 4 pages", blurb: "Firefly footprints lead below zero. Centi-Peed and Sub-Zero count every step through the cold.", cover: "pages/cover", ext: "jpg", alt: "Centi-Peed and the Below-Zero Burrow book cover.", w: 1024, h: 1536 },
   { slug: "wise-owl-festival-of-factors", group: "numbers", age: [9, 11], added: "2026-10-16", title: "Wise Owl and the Festival of Factors", eyebrow: "Year 5 · factors and primes · 4 pages", blurb: "Twenty-four flags and a gatepost in the way. Wise Owl and Booklava find more than one right answer.", cover: "pages/cover", ext: "jpg", alt: "Wise Owl and the Festival of Factors book cover.", w: 1024, h: 1536 },
   { slug: "vincent-van-mouse-and-the-mural", group: "numbers", age: [10, 11], added: "2026-10-17", title: "Vincent Van Mouse and the Mural in Proportion", eyebrow: "Year 6 · ratio and scale · 7 pages", blurb: "A postcard-sized sketch, an enormous wall and a sunset that only works if every part grows by the same factor.", cover: "pages/cover", ext: "jpg", alt: "Vincent Van Mouse and the Mural in Proportion book cover.", w: 1024, h: 1536 },
+  { slug: "cereal-swimmer-and-the-number-line-lagoon", group: "numbers", age: [4, 6], added: "2026-10-18", title: "Cereal-Swimmer and the Number-Line Lagoon", eyebrow: "Counting · number lines · 6 pages", blurb: "Waves scatter the stepping stones. Cereal-Swimmer and Octo-Pop count forward to bring the fish home.", cover: "pages/page-1", ext: "jpg", alt: "", w: 1200, h: 800 },
   // Animal fact books (READ-PLAN B3): Zoo World books with fully original art
   // only, via scripts/import-zoo-book.mjs. Ages follow the app's 6-10 audience.
   { slug: "animal-architects", group: "animals", age: [6, 9], added: "2026-10-16", title: "Animal Architects: Built by Nature", eyebrow: "Animal fact book · 9 pages", blurb: "Beavers, bees, weaverbirds, rabbits, octopuses and meerkats each build a home that solves a different problem.", cover: "pages/animal-architects-cover", ext: "jpg", alt: "A beaver building a dam and lodge in a sunlit woodland river.", w: 900, h: 600 },
@@ -109,8 +112,8 @@ function card(b, i) {
 // Bookshelf filters (READ-PLAN C2). The buttons are rendered `hidden` and only
 // revealed by read/shelf-filter.js, so without JavaScript the whole shelf shows
 // and nothing on the page pretends to work.
-const KIND = { "stage-1": "phonics", "stage-2": "phonics", "stage-3": "phonics", trail: "phonics", short: "stories", numbers: "maths", animals: "animals", more: "stories" };
-const KINDS = [["phonics", "Phonics"], ["stories", "Stories"], ["maths", "Maths"], ["animals", "Animals"]];
+const KIND = { alphabet: "alphabet", "stage-1": "phonics", "stage-2": "phonics", "stage-3": "phonics", trail: "phonics", short: "stories", numbers: "maths", animals: "animals", more: "stories" };
+const KINDS = [["alphabet", "ABCs"], ["phonics", "Phonics"], ["stories", "Stories"], ["maths", "Maths"], ["animals", "Animals"]];
 const AGES = [["3-4", "Ages 3–4"], ["5-6", "5–6"], ["7-8", "7–8"], ["9-10", "9–10"]];
 function filterBar() {
   const btn = (attr, val, label, on) => `<button type="button" class="read-filter-btn" ${attr}="${val}" aria-pressed="${on}">${label}</button>`;
@@ -262,7 +265,7 @@ write("read/index.html", hub);
 // and an educationalAlignment (subject, phonics stage or school year, and what
 // the book teaches, reusing the importer's "about"). Merged into the existing
 // object, so the importer-owned fields stay as they are.
-const SUBJECT = { phonics: "Phonics", stories: "Reading", maths: "Mathematics", animals: "Science" };
+const SUBJECT = { alphabet: "Alphabet recognition", phonics: "Phonics", stories: "Reading", maths: "Mathematics", animals: "Science" };
 // UK phonics timing, matching the ages on the shelf filters (C2).
 // UK years only: they do not map one-to-one onto US grades (Reception is
 // nearer Pre-K than Kindergarten), and the site is written for en-GB.

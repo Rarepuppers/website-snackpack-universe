@@ -24,8 +24,9 @@
 //       2026-10-18.md, 779e542f1): Ted and Flutter-Butter replace the dolphin,
 //       every ten-frame is 2 x 5 with the right count, the stones carry their
 //       numbers, and page 4's reversed footprint is visible. Re-read 2026-10-18.
-//   * cereal-swimmer-number-line-lagoon   not read: its octopus changes design
-//       on page 3.
+//   * cereal-swimmer-number-line-lagoon passes after the full six-page audit
+//       and redraw on 2026-10-18: five bubbles, five plus two fish, clear
+//       missing-number lines, one backward fish and seven of ten gate spaces.
 //   * ted-e-bear-button-trail   on the shelf since 2026-08-12 as a hand-built
 //       page; pages 2-6 showed the wrong pictures and Ted in three designs.
 //       Redrawn by Codex (docs/ART-BRIEF-LIVE-BOOK-FIXES-2026-10-17.md,
@@ -51,6 +52,24 @@ const SITE = "https://www.snackpackuniverse.com";
 const PLAY = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.counting";
 
 const BOOKS = {
+  "cereal-swimmer-number-line-lagoon": {
+    slug: "cereal-swimmer-and-the-number-line-lagoon",
+    lead: "A six-page lagoon adventure about counting on, missing numbers and making ten, with a question on every page.",
+    blurb: "Waves scatter the stepping stones. Cereal-Swimmer and Octo-Pop count forward to bring the fish home.",
+    art: [1, 2, 3, 4, 5, 6].map(n => `cereal-swimmer-number-line-lagoon-p${n}-v3.jpg`),
+    alts: [
+      "Five bubbles float above the first lagoon stones as Cereal-Swimmer watches and purple Octo-Pop reaches up to count.",
+      "Five orange fish and two blue fish join above stones marked 5, 6 and 7 as Cereal-Swimmer hops forward.",
+      "Stones marked 2, 3 and 5 remain visible while foam hides the stone between 3 and 5; Octo-Pop steadies the rope.",
+      "Seven fish follow right-pointing stone arrows, but the fourth fish faces left as Cereal-Swimmer and Octo-Pop pause.",
+      "Seven fish hover over the first seven of ten stones numbered 1 to 10, leaving three places empty by the lagoon gate.",
+      "Stones 7, 8 and 9 lead to an empty final space while the friends and seven fish wait beside the coral garden.",
+    ],
+    end: {
+      q: "How can you add two to five without starting again at one?",
+      a: "Start at five and count two more steps: six, seven. The number line helps you keep your place.",
+    },
+  },
   "corgi-cob-ten-frame-picnic": {
     slug: "corgi-on-the-cobs-ten-frame-picnic",
     lead: "A six-page clifftop picnic for seeing groups on a ten-frame and making ten, with a question on every page.",
