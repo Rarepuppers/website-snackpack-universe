@@ -1,0 +1,26 @@
+name: Review arcade artwork fallbacks
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test tests/visual/arcade-art-fallback.spec.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arcade-fallback-review
+          retention-days: 7
+          path: |
+            test-results/
+            playwright-report/
