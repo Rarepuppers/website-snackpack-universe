@@ -40,20 +40,22 @@ source commit contains the relevant changes; no new build was run here.
 
 | Task | Source work | Website work | Owner / next step |
 |---|---|---|---|
-| Ted-E-Bear's Blanket Fort | Replace page 1 art; improve recall-only primary quiz; check quiz 2 against pictured chairs/pillows | Not published; import after review | Codex art brief; Claude source quiz review and import |
-| Wise Owl's Library Day | Replace page 3 fox with Meow-inara; improve primary quiz; fix quiz 2's unsupported claim that Quill put the poem on a table | Not published; import after review | Same |
-| Meow-inara's Moonlight Story | Replace pages 1-3; replace quiz 2 about twinkling stars absent from the story; review primary quiz | Not published; import after review | Same |
-| Centi-Peed's Garden Race | Replace pages 1-4 with brown centipede design; retain/check relevant existing quizzes | Not published; import after review | Same |
-| Other Spelling books held back on quality | Fact/editorial/pronoun review in `constants/books.ts`; flags include butterfly larvae/cocoon wording, honey quiz, universal vowel claim, heart-rate/glacier-age wording and Octo-Pop glow/pronouns | Keep off shelf until source and images pass review | Separate app content repair pass; no blanket rewrite commissioned |
-| Safari Morning | Review long pages, "shared cold" sneeze-vote line and rainforest visitor/harpy cameo in `zooData/booksData.ts` | Not published; no import until source review and art decision | App editorial backlog; Zoo expansion deferred |
+| Ted-E-Bear's Blanket Fort | Page 1 art and both quiz corrections complete | Not published; final review/import pending | Claude |
+| Wise Owl's Library Day | Page 3 Meow-inara art and both quiz corrections complete | Not published; final review/import pending | Claude |
+| Meow-inara's Moonlight Story | Pages 1-3 art and both quiz corrections complete | Not published; final review/import pending | Claude |
+| Centi-Peed's Garden Race | Pages 1-4 brown centipede art complete; relevant quizzes retained; literal hundred-boots claim removed | Not published; final review/import pending | Claude |
+| Other Spelling books held back on quality | Source repairs completed across 27 books including the four above; four additional Deep Glow/Metamorphosis pictures repaired | Keep off shelf until each book's full art and publication review passes | Claude review; no blanket approval for remaining books |
+| Safari Morning | All nine source pages repaired, display/TTS aligned, factual references registered | Not published; original-art decision remains deferred | Claude app release handoff; Zoo expansion decision after re-measure |
 | Read to me | No source defect demonstrated; real Android/iOS voice and boundary check lacks recorded evidence | Check actual audio, highlighting, pause and speed on devices | Mark/device tester |
 | Decodable importer | Template warning says re-importing a live book strips modern reader features | Modernise before next existing-book re-import; do not regenerate these six now | Maintenance before next import |
 
-The active production brief is **`docs/ART-BRIEF-SHORT-READS-2026-10-18.md`
-at the monorepo root**: nine pictures across the four books above. It has
-not been delivered. Its handoff explicitly gives Claude the source quiz
-fixes and final publication. Existing 43 books do not depend on this work.
-Do not increase shelf counts before delivery and publication.
+Source repairs completed on 19 October. Monorepo delivery evidence is in
+`docs/SHORT-READS-CONTENT-HANDOFF-2026-10-19.md` and
+`docs/READ-CONTENT-REPAIRS-2026-10-19.md`. The original brief's nine pictures,
+four additional science pictures and source quiz corrections are delivered.
+Claude retains final website review/import and app build/submission. Existing
+43 books do not depend on this work. Do not increase shelf counts before
+publication; these four books are still unpublished.
 
 ## Deferred until 15 November 2026
 
