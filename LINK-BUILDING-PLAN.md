@@ -86,11 +86,11 @@ submitting — directory submission paths change often.
   cannot claim.
 
 ### 4. Homeschool / teacher resource lists — best fit for `/read/`
-The reading shelf (`/read/`, **17** full illustrated books with printable A4 PDFs,
+The reading shelf (`/read/`, **43** full illustrated books with printable A4 PDFs,
 free, no sign-in, no ads) is the most linkable thing on the site. As of
-2026-10-15: six staged decodable readers (Stages 1–3), a six-step Reading Trail
-(short vowels → digraphs → blends → magic e → vowel teams → endings), five
-number stories with a maths question on every page, and printable phonics
+2026-10-19: one complete A-Z alphabet book, six staged decodable readers
+(Stages 1–3), a six-step Reading Trail, twelve short reads, sixteen number
+stories, one animal fact book, one read-aloud picture book, and printable phonics
 sound cards (`/read/sound-cards/`). Every book also has Read to me, a
 one-page-at-a-time mode and offline saving. Free printable readers are
 genuinely scarce and teachers link them unprompted. Target: homeschool
