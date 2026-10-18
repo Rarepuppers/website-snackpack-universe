@@ -5,6 +5,16 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-18 — Printable books now include the story
+
+- Every printable PDF on the shelf now has the words under each picture.
+  Until today, 34 of the 43 PDFs printed the pictures and the questions page
+  only, so a printed copy couldn't be read on its own. All 43 now carry every
+  page's text.
+- *Lionnaise and the Dragon:* the question at the end now matches the story
+  ("Why did the dragon open the way across the bridge?") and explains the
+  answer.
+
 ## 2026-10-18 - Complete ABC book, lagoon repair and stronger short reads
 
 Published in `902f1005` (local implementation commit `5461f678`).

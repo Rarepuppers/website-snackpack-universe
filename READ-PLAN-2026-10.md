@@ -181,6 +181,16 @@ reversed footprint is visible. Both are live via `import-counting-book.mjs`
 Lagoon has now passed a full six-page replacement and count review and is
 published. Panda-Cake's complete alphabet brings the current shelf to 43.
 
+### PDFs carry the story text (done 2026-10-18)
+
+Codex's builder fix (prose under each picture) had only been applied to the 9
+PDFs it rebuilt; the other 34 printed pictures alone. All 43 were rebuilt and
+checked: every story page's text is present in its PDF. Lionnaise's end
+question still said "lower the bridge" after the short-read rewrite; fixed in
+the app (monorepo `458d8b0de`, Spelling `npm run verify` passes) and re-imported.
+Next Codex brief: `docs/ART-BRIEF-SHORT-READS-2026-10-18.md` (monorepo) — 9
+images for Blanket Fort, Library Day, Moonlight Story and Garden Race.
+
 ## Open: needs Mark
 
 1. **Pocketful of Sounds art.** `ted-e-bear-pocketful-of-sounds` (app1, free,
