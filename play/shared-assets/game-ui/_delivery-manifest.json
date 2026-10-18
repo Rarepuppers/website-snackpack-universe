@@ -2613,6 +2613,28 @@
     },
     {
       "pack": "pro-hand-painted/grid-logic-markers",
+      "sourcePath": "pro-hand-painted/grid-logic-markers/png/cage-corner-blank.png",
+      "targetPath": "pro-hand-painted/grid-logic-markers/png/cage-corner-blank.png",
+      "sourceHash": "7a0d4ab8aee8c28217689115c20671f65ff441b70f9c93bfbbb8a79777d9489a",
+      "outputHash": "7a0d4ab8aee8c28217689115c20671f65ff441b70f9c93bfbbb8a79777d9489a",
+      "dimensions": "256x256",
+      "psnrDb": 120.0,
+      "candidatePsnrDb": null,
+      "deliveryMode": "copy"
+    },
+    {
+      "pack": "pro-hand-painted/grid-logic-markers",
+      "sourcePath": "pro-hand-painted/grid-logic-markers/png/cage-corner-blank.png",
+      "targetPath": "pro-hand-painted/grid-logic-markers/png/cage-corner-blank.webp",
+      "sourceHash": "7a0d4ab8aee8c28217689115c20671f65ff441b70f9c93bfbbb8a79777d9489a",
+      "outputHash": "e05d98e1f9dd0022b3e0a970a888a5da55691e62d7a622d9b220c5218354fb67",
+      "dimensions": "256x256",
+      "psnrDb": 41.259,
+      "candidatePsnrDb": null,
+      "deliveryMode": "webp"
+    },
+    {
+      "pack": "pro-hand-painted/grid-logic-markers",
       "sourcePath": "pro-hand-painted/grid-logic-markers/png/cage-corner.png",
       "targetPath": "pro-hand-painted/grid-logic-markers/png/cage-corner.png",
       "sourceHash": "2decb57e540856bd29886021d4d0992a6aaf68c39552dbf89f2846bfcb983b23",
@@ -2740,6 +2762,28 @@
       "outputHash": "73981c12a3d987016671798c68706ff9c51bcaf5ace1cb00551c05c445f8c530",
       "dimensions": "256x256",
       "psnrDb": 39.633,
+      "candidatePsnrDb": null,
+      "deliveryMode": "webp"
+    },
+    {
+      "pack": "pro-hand-painted/grid-logic-markers",
+      "sourcePath": "pro-hand-painted/grid-logic-markers/png/clue-badge-blank.png",
+      "targetPath": "pro-hand-painted/grid-logic-markers/png/clue-badge-blank.png",
+      "sourceHash": "397c0850af8a3fb716ac58de3cab40708ddcbc4f9c10e3d9fda340d568c1ccca",
+      "outputHash": "397c0850af8a3fb716ac58de3cab40708ddcbc4f9c10e3d9fda340d568c1ccca",
+      "dimensions": "256x256",
+      "psnrDb": 120.0,
+      "candidatePsnrDb": null,
+      "deliveryMode": "copy"
+    },
+    {
+      "pack": "pro-hand-painted/grid-logic-markers",
+      "sourcePath": "pro-hand-painted/grid-logic-markers/png/clue-badge-blank.png",
+      "targetPath": "pro-hand-painted/grid-logic-markers/png/clue-badge-blank.webp",
+      "sourceHash": "397c0850af8a3fb716ac58de3cab40708ddcbc4f9c10e3d9fda340d568c1ccca",
+      "outputHash": "bcc0dc18460382c259c067b02edc90c1cfc24cf6f8e125d6afddabc83897d1b3",
+      "dimensions": "256x256",
+      "psnrDb": 49.257,
       "candidatePsnrDb": null,
       "deliveryMode": "webp"
     },
@@ -2938,6 +2982,28 @@
       "outputHash": "cd7ea36064374ae700c6ead35451918ae43caf32eac7833a3ca525a162ff33c8",
       "dimensions": "256x256",
       "psnrDb": 45.517,
+      "candidatePsnrDb": null,
+      "deliveryMode": "webp"
+    },
+    {
+      "pack": "pro-hand-painted/grid-logic-markers",
+      "sourcePath": "pro-hand-painted/grid-logic-markers/png/island-blank.png",
+      "targetPath": "pro-hand-painted/grid-logic-markers/png/island-blank.png",
+      "sourceHash": "880de818986fea64155e916edbeefa52815b5ac0b4e99cfd63bf9f0b38d5ff8d",
+      "outputHash": "880de818986fea64155e916edbeefa52815b5ac0b4e99cfd63bf9f0b38d5ff8d",
+      "dimensions": "256x256",
+      "psnrDb": 120.0,
+      "candidatePsnrDb": null,
+      "deliveryMode": "copy"
+    },
+    {
+      "pack": "pro-hand-painted/grid-logic-markers",
+      "sourcePath": "pro-hand-painted/grid-logic-markers/png/island-blank.png",
+      "targetPath": "pro-hand-painted/grid-logic-markers/png/island-blank.webp",
+      "sourceHash": "880de818986fea64155e916edbeefa52815b5ac0b4e99cfd63bf9f0b38d5ff8d",
+      "outputHash": "f916c2d6a3ca8e627a52a3d3a62a5c7c3009d22218b6ae61b935c8912f9c535d",
+      "dimensions": "256x256",
+      "psnrDb": 40.706,
       "candidatePsnrDb": null,
       "deliveryMode": "webp"
     },
@@ -3563,6 +3629,39 @@
       "targetPath": "pro-hand-painted/grid-logic-markers/README.md",
       "sourceHash": "882e334ba8d0b971eba0d951b2aa089bcce6cd384139f7723e9e2d8807251b45",
       "outputHash": "882e334ba8d0b971eba0d951b2aa089bcce6cd384139f7723e9e2d8807251b45",
+      "dimensions": null,
+      "psnrDb": null,
+      "candidatePsnrDb": null,
+      "deliveryMode": "copy"
+    },
+    {
+      "pack": "pro-hand-painted/grid-logic-markers",
+      "sourcePath": "pro-hand-painted/grid-logic-markers/svg/cage-corner-blank.svg",
+      "targetPath": "pro-hand-painted/grid-logic-markers/svg/cage-corner-blank.svg",
+      "sourceHash": "db0cd23e3e0ac4d2e0fb7906dc82a5becdd167c9c376599a2ebdf16c5d1013c5",
+      "outputHash": "db0cd23e3e0ac4d2e0fb7906dc82a5becdd167c9c376599a2ebdf16c5d1013c5",
+      "dimensions": null,
+      "psnrDb": null,
+      "candidatePsnrDb": null,
+      "deliveryMode": "copy"
+    },
+    {
+      "pack": "pro-hand-painted/grid-logic-markers",
+      "sourcePath": "pro-hand-painted/grid-logic-markers/svg/clue-badge-blank.svg",
+      "targetPath": "pro-hand-painted/grid-logic-markers/svg/clue-badge-blank.svg",
+      "sourceHash": "2d2befc8c02fee2fc480c319124485949e2e607d82df4f2d79ff32f59fcc3983",
+      "outputHash": "2d2befc8c02fee2fc480c319124485949e2e607d82df4f2d79ff32f59fcc3983",
+      "dimensions": null,
+      "psnrDb": null,
+      "candidatePsnrDb": null,
+      "deliveryMode": "copy"
+    },
+    {
+      "pack": "pro-hand-painted/grid-logic-markers",
+      "sourcePath": "pro-hand-painted/grid-logic-markers/svg/island-blank.svg",
+      "targetPath": "pro-hand-painted/grid-logic-markers/svg/island-blank.svg",
+      "sourceHash": "94b8286e3a20e6f1603d4a472969aa27f36e9bf125693dfaed5c35be9336db72",
+      "outputHash": "94b8286e3a20e6f1603d4a472969aa27f36e9bf125693dfaed5c35be9336db72",
       "dimensions": null,
       "psnrDb": null,
       "candidatePsnrDb": null,
