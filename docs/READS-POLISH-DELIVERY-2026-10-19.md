@@ -93,8 +93,32 @@ See [the publication workflow](READING-PUBLICATION.md).
   progress, stale/corrupt/blocked storage, no-JavaScript reading, 320/390/1280px
   in three themes, enlarged text, collections and simulated speech events.
 - Full site, contrast, syntax, responsive images, shelf, social cards, app
-  links, source/PDF and six-book round-trip checks pass locally. Live delivery,
-  app/portfolio results and CI are appended after completion.
+  links, source/PDF and six-book round-trip checks pass locally.
+
+## Live delivery and app checks
+
+Published website `5b954f6b4b869773dcd77ae15279df0961b655fc`.
+[Pages deployment passed](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/39223063397).
+[Full website CI passed](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/39223063861):
+integrity, Last Bastion and visual/browser regression jobs are all green.
+All fifty book HTML pages plus the new art, PDFs, social cards, collections,
+reader files, shelf, guide, homepage and sitemap match **111 exact committed
+file hashes** on the public website. All twenty reader browser scenarios
+also pass against the live website. Seven new book/collection URLs were
+submitted successfully to Google sitemap submission, IndexNow and Bing.
+
+Spelling's `npm run verify` passes 27 suites / 248 tests. The Expo helper
+passes with 14 modules checked, and all twenty portfolio guards pass.
+Monorepo source/master/review delivery is `341a9e475`; its handoff and machine
+evidence are in `docs/READS-NEXT-BATCH-HANDOFF-2026-10-19.md` and
+`docs/asset-review-qa/reads-2026-10-19/` in the monorepo.
+
+The initial scoped transfer exposed a Git PDF textconv driver issue: six new
+PDFs became extracted prose in commit `c43abb88`. `ef2b436d` restores their
+original binary blobs. All 136 task blob IDs were verified before the final
+push, and live download bytes now match. The publication workflow documents
+`--no-textconv` and proposed-tree blob verification; PDF/Python-only edits now
+trigger CI too. No malformed PDF remains in this accepted live delivery.
 
 ## Audit decisions and limits
 

@@ -7,6 +7,10 @@ are in [`docs/archive/`](archive/README.md)).
 
 ## 2026-10-19 - Find, resume and print the next book
 
+Published in `5b954f6b` (PDF binary repair `ef2b436d`). All 50 book pages
+and new resources verified live: 111 exact committed-file hashes; all 20
+reader scenarios pass against the public site. Pages run `39223063397` passed.
+
 - Bookshelf search works with age/type filters and shareable query links.
   A Start here chooser helps families pick a comfortable reading path.
 - Reading position and normal/larger story text are remembered only on the
