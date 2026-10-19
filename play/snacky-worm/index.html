@@ -392,10 +392,12 @@
   function opposite(d) { return d === "UP" ? "DOWN" : d === "DOWN" ? "UP" : d === "LEFT" ? "RIGHT" : "LEFT"; }
 
   function randomFood(snake, cols, rows) {
-    var pos;
-    do { pos = { x: Math.floor(Math.random() * cols), y: Math.floor(Math.random() * rows) }; }
-    while (snake.some(function (s) { return s.x === pos.x && s.y === pos.y; }));
-    return pos;
+    var occupied = new Set(snake.map(function (s) { return s.y * cols + s.x; }));
+    var empty = [];
+    for (var i = 0; i < cols * rows; i++) if (!occupied.has(i)) empty.push(i);
+    if (!empty.length) return null;
+    var cell = empty[Math.floor(Math.random() * empty.length)];
+    return { x: cell % cols, y: Math.floor(cell / cols) };
   }
 
   function initialState() {
@@ -416,13 +418,14 @@
   // register. Each new turn is validated against the last *queued* direction —
   // not just the current heading — so a rapid UP-then-LEFT both land.
   function steer(d) {
-    if (!st || st.phase === "dead") return;
+    if (!st || (st.phase !== "menu" && st.phase !== "playing")) return;
     var ref = st.dirQueue.length ? st.dirQueue[st.dirQueue.length - 1] : st.dir;
     if (d !== ref && d !== opposite(ref) && st.dirQueue.length < 2) st.dirQueue.push(d);
     startFromMenu();
   }
 
   function tick() {
+    if (st.phase !== "playing") return;
     var cfg = MODE_CONFIG[mode];
     var dir = st.dirQueue.length ? st.dirQueue.shift() : st.dir, head = st.snake[0];
     var nx = head.x + (dir === "RIGHT" ? 1 : dir === "LEFT" ? -1 : 0);
@@ -432,22 +435,27 @@
     else if (nx < 0 || nx >= cfg.cols || ny < 0 || ny >= cfg.rows) { die(); return; }
 
     var newHead = { x: nx, y: ny };
-    if (st.snake.some(function (s) { return s.x === newHead.x && s.y === newHead.y; })) { die(); return; }
-
     var ate = newHead.x === st.food.x && newHead.y === st.food.y;
+    var body = ate ? st.snake : st.snake.slice(0, -1);
+    if (body.some(function (s) { return s.x === newHead.x && s.y === newHead.y; })) { die(); return; }
     st.snake = ate ? [newHead].concat(st.snake) : [newHead].concat(st.snake.slice(0, -1));
     st.dir = dir;
     if (ate) { st.score += 1; st.food = randomFood(st.snake, cfg.cols, cfg.rows); scoreEl.textContent = st.score; }
+    if (!st.food) { die(true); return; }
     draw();
   }
 
-  function die() {
-    st.phase = "dead";
+  function die(won) {
+    if (st.phase !== "playing") return;
+    st.phase = won ? "won" : "dead";
     stopLoop();
     var prevBest = best;
     if (st.score > best) { best = st.score; localStorage.setItem(BEST_KEY, String(best)); }
     bestEl.textContent = best;
-    if (st.score > prevBest && prevBest > 0) {
+    if (won) {
+      statusEl.textContent = "Board cleared! You scored " + st.score + ". New game to play again.";
+      statusEl.className = "game-status game-status--win";
+    } else if (st.score > prevBest && prevBest > 0) {
       statusEl.textContent = "Game over — new best, " + st.score + "! 🎉 New game to retry.";
       statusEl.className = "game-status";
       if (window.SnackPack) window.SnackPack.celebrate({
@@ -495,7 +503,7 @@
     }
 
     // Food (apple)
-    if (!window.SnackPackArcadeAssets.drawSprite(ctx, assets, "food", st.food.x * cw - 1, st.food.y * ch - 5, cw + 2, ch + 7, 0)) {
+    if (st.food && !window.SnackPackArcadeAssets.drawSprite(ctx, assets, "food", st.food.x * cw - 1, st.food.y * ch - 5, cw + 2, ch + 7, 0)) {
       ctx.fillStyle = "#E53935";
       roundRect(st.food.x * cw + 2, st.food.y * ch + 2, cw - 4, ch - 4, 5);
       ctx.fill();
@@ -519,7 +527,7 @@
       ctx.beginPath(); ctx.arc(ex - 3, ey - 3, 2, 0, Math.PI * 2); ctx.arc(ex + 3, ey - 3, 2, 0, Math.PI * 2); ctx.fill();
     }
 
-    if (st.phase === "menu" || st.phase === "dead") {
+    if (st.phase === "menu" || st.phase === "dead" || st.phase === "won") {
       ctx.fillStyle = "rgba(20,30,18,0.5)";
       ctx.fillRect(0, 0, BOARD_SIZE, BOARD_SIZE);
       ctx.textAlign = "center"; ctx.fillStyle = "#fff";
@@ -530,7 +538,7 @@
         ctx.fillText("Press an arrow or swipe to start", BOARD_SIZE / 2, BOARD_SIZE / 2 + 22);
       } else {
         ctx.font = "900 32px 'Fraunces', Georgia, serif";
-        ctx.fillText("Game Over", BOARD_SIZE / 2, BOARD_SIZE / 2 - 16);
+        ctx.fillText(st.phase === "won" ? "Board cleared!" : "Game Over", BOARD_SIZE / 2, BOARD_SIZE / 2 - 16);
         ctx.fillStyle = "#9CCC65";
         ctx.font = "900 48px 'Fraunces', Georgia, serif";
         ctx.fillText(st.score, BOARD_SIZE / 2, BOARD_SIZE / 2 + 28);
