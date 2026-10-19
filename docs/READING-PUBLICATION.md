@@ -52,6 +52,15 @@ changes, run locally with `--require-apps`.
 6. Commit/push only task paths, preserve concurrent work, verify live HTML
    and artifact bytes, and notify search engines for new public URLs.
 
+When transferring a scoped commit onto a newer remote head, use
+`git diff --binary --no-textconv` for its patch. A configured PDF textconv
+driver can otherwise substitute extracted prose for the actual PDF bytes,
+even when `--binary` is present. Before pushing, compare every task path's
+Git blob ID in the proposed tree with the reviewed source commit, then
+verify served bytes against those committed blobs. Windows working files
+may have CRLF line endings; deployed HTML/JavaScript uses committed LF bytes.
+CI also runs for PDF-only and Python verifier changes.
+
 New artwork must not be hidden by an existing cache-first URL. Never bump
 the service-worker cache just for reading UI/content; it evicts saved shelves.
 Existing reviewed JPEG/WebP derivative relationships are pinned in
