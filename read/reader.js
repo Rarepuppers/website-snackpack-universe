@@ -214,11 +214,13 @@
 
   function show(i) {
     stop();
+    var oldFocus = document.activeElement;
     current = Math.max(0, Math.min(cards.length - 1, i));
     cards.forEach(function (c, ci) { c.classList.toggle("is-current", ci === current); });
     label.textContent = "Page " + (current + 1) + " of " + cards.length;
     prevBtn.disabled = current === 0;
     nextBtn.textContent = current === cards.length - 1 ? "The end" : "Next";
+    if ((oldFocus === prevBtn && prevBtn.disabled) || cards.some(function (c) { return c.contains(oldFocus); })) nextBtn.focus();
     window.scrollTo(0, 0);
     if (history.replaceState) history.replaceState(null, "", "#" + cards[current].id);
     document.dispatchEvent(new CustomEvent("snackpack:reading-page", { detail: { index: current, completed: false } }));
@@ -249,13 +251,20 @@
   }
 
   function onKey(e) {
+    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.key === 'Escape') { e.preventDefault(); exit(false); return; }
+    var target = e.target;
+    if (target && (target.isContentEditable || target.closest('input, textarea, select, [role="slider"], [role="spinbutton"], [role="combobox"], [role="tablist"]'))) return;
+    if (target && target !== prevBtn && target !== nextBtn && target.closest('button, a, summary')) return;
     if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); nextBtn.click(); }
     else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); if (current > 0) show(current - 1); }
-    else if (e.key === "Escape") { exit(false); }
   }
 
   var touchX = null, touchY = null;
-  function onTouchStart(e) { var t = e.changedTouches[0]; touchX = t.clientX; touchY = t.clientY; }
+  function onTouchStart(e) {
+    if (e.target.closest('input, textarea, select, button, a, summary, [contenteditable]')) { touchX = null; return; }
+    var t = e.changedTouches[0]; touchX = t.clientX; touchY = t.clientY;
+  }
   function onTouchEnd(e) {
     if (touchX === null) return;
     var t = e.changedTouches[0];
@@ -293,7 +302,8 @@
     document.removeEventListener("touchend", onTouchEnd);
     if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(function () {});
     var target = toEnd ? document.querySelector(".story-finish-card") : cards[current];
-    if (target) target.scrollIntoView({ block: "start" });
+    if (target) target.scrollIntoView({ block: "start", behavior: 'instant' });
+    if (toEnd && target) { target.setAttribute('tabindex','-1'); target.focus({preventScroll:true}); }
     if (!toEnd && lastFocus && lastFocus.focus) lastFocus.focus();
   }
 

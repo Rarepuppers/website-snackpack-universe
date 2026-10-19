@@ -5,6 +5,22 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-20 - Complete offline books, two questions and practical printing
+
+- Save or remove individual books or the full shelf, with cancellation/retry
+  and complete-file/current-story checks. Unsaved books offline return clearly
+  to the bookshelf. Shared/game caches are preserved; no cache-version bump.
+- Add Luckybug's Art Gallery and Corgi's Countryside Run: 52 books / 299 pages.
+  App-first Corgi grammar and stale secondary-quiz corrections are included.
+- Both source questions now appear in all 27 Spelling readers and PDFs. Exact
+  quiz/explanation guards catch an importer boundary defect found by PDF review.
+- Keyboard/focus/reduced-motion polish, phone thumbnail checks, PDF sizes and
+  printed counts, direct print links and precise question-only page ranges.
+- Rebuilt collections include a Windows UTF-8 contents fix. Source/app parity,
+  printable contents and 29 browser scenarios protect the delivery.
+
+See [delivery evidence](READS-QUALITY-DELIVERY-2026-10-20.md).
+
 ## 2026-10-19 - Find, resume and print the next book
 
 Published in `5b954f6b` (PDF binary repair `ef2b436d`). All 50 book pages

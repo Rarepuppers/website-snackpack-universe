@@ -5,7 +5,7 @@ installed TypeScript dependencies are required for a fresh app comparison.
 
 ```powershell
 node scripts/verify-reads.mjs --require-apps --roundtrip
-npx playwright test tests/visual/reads.spec.mjs
+npm run test:reads
 ```
 
 Python needs `pypdf` and Pillow. Set `SNACKPACK_PYTHON` to an existing Python
@@ -46,7 +46,7 @@ changes, run locally with `--require-apps`.
    ```powershell
    node scripts/check-read-publication.mjs --require-apps --write-evidence
    node scripts/verify-reads.mjs --require-apps --roundtrip
-   npx playwright test tests/visual/reads.spec.mjs
+   npm run test:reads
    ```
 
 6. Commit/push only task paths, preserve concurrent work, verify live HTML

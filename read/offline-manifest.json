@@ -1,8 +1,817 @@
 {
- "books": 50,
- "bytes": 50182282,
+ "version": 2,
+ "books": 52,
+ "bytes": 51295386,
+ "shared": [
+  "/read/",
+  "/read/offline-manifest.json",
+  "/read/sound-cards/",
+  "/read/collections/",
+  "/read/collections/first-phonics/",
+  "/read/collections/bedtime/",
+  "/read/collections/kindness/",
+  "/site.css",
+  "/theme.js",
+  "/read/share.js",
+  "/read/reader.js",
+  "/read/reading-position.js",
+  "/read/offline.js",
+  "/read/shelf-filter.js",
+  "/assets/fonts/fonts.css",
+  "/assets/favicon-32.png",
+  "/assets/snackpack-mark-96.png",
+  "/assets/fonts/dmsans-b38d5bb1.woff2",
+  "/assets/fonts/dmsans-ed656a5d.woff2",
+  "/assets/fonts/fraunces-23cb87eb.woff2",
+  "/assets/fonts/fraunces-36024e18.woff2",
+  "/assets/fonts/fraunces-cac1056b.woff2"
+ ],
+ "bookFiles": [
+  {
+   "slug": "panda-cake-discovers-her-abcs",
+   "title": "Panda-Cake Discovers Her ABCs",
+   "urls": [
+    "/read/panda-cake-discovers-her-abcs/",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-a.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-b.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-c.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-d.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-e.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-f.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-g.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-h.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-i.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-j.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-k.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-l.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-m.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-n.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-o.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-p.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-q.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-r.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-s.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-t.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-u.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-v.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-w.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-x.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-y.webp",
+    "/read/panda-cake-discovers-her-abcs/pages/letter-z.webp"
+   ],
+   "html_sha256": "03b9c34a9051fda06ea01a9467b137e46831bcff5058a43b357d679a3fba6062",
+   "bytes": 4537430
+  },
+  {
+   "slug": "pip-sits",
+   "title": "Pip Sits",
+   "urls": [
+    "/read/pip-sits/",
+    "/read/pip-sits/pages/cover.webp",
+    "/read/pip-sits/pages/pip-sits-page-1.webp",
+    "/read/pip-sits/pages/pip-sits-page-2.webp",
+    "/read/pip-sits/pages/pip-sits-page-3.webp",
+    "/read/pip-sits/pages/pip-sits-page-4.webp",
+    "/read/pip-sits/pages/pip-sits-page-5.webp",
+    "/read/pip-sits/pages/pip-sits-page-6.webp"
+   ],
+   "html_sha256": "4677ce3322f9ee912233c9f1b57a2ac91d7852671272418d27c93b8b096759df",
+   "bytes": 964386
+  },
+  {
+   "slug": "nan-and-pip",
+   "title": "Nan and Pip",
+   "urls": [
+    "/read/nan-and-pip/",
+    "/read/nan-and-pip/pages/cover.webp",
+    "/read/nan-and-pip/pages/nan-and-pip-page-1.webp",
+    "/read/nan-and-pip/pages/nan-and-pip-page-2.webp",
+    "/read/nan-and-pip/pages/nan-and-pip-page-3.webp",
+    "/read/nan-and-pip/pages/nan-and-pip-page-4.webp",
+    "/read/nan-and-pip/pages/nan-and-pip-page-5.webp",
+    "/read/nan-and-pip/pages/nan-and-pip-page-6.webp"
+   ],
+   "html_sha256": "6d01067b17407b12e41c7bc8c7436d07f6efbae237c998d8f3c04f68e2dd07bf",
+   "bytes": 1289002
+  },
+  {
+   "slug": "ten-red-hens",
+   "title": "Ten Red Hens",
+   "urls": [
+    "/read/ten-red-hens/",
+    "/read/ten-red-hens/pages/cover.webp",
+    "/read/ten-red-hens/pages/ten-red-hens-page-1.webp",
+    "/read/ten-red-hens/pages/ten-red-hens-page-2.webp",
+    "/read/ten-red-hens/pages/ten-red-hens-page-3.webp",
+    "/read/ten-red-hens/pages/ten-red-hens-page-4.webp",
+    "/read/ten-red-hens/pages/ten-red-hens-page-5.webp",
+    "/read/ten-red-hens/pages/ten-red-hens-page-6.webp",
+    "/read/ten-red-hens/pages/ten-red-hens-page-7.webp",
+    "/read/ten-red-hens/pages/ten-red-hens-page-8.webp"
+   ],
+   "html_sha256": "0d00cc1f2e0bd374ecdc62beec35ff64b24f3777262fc8801bd75fcdb4a64281",
+   "bytes": 1554120
+  },
+  {
+   "slug": "the-cat-and-the-rat",
+   "title": "The Cat and the Rat",
+   "urls": [
+    "/read/the-cat-and-the-rat/",
+    "/read/the-cat-and-the-rat/pages/cover.webp",
+    "/read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-1.webp",
+    "/read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-2.webp",
+    "/read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-3.webp",
+    "/read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-4.webp",
+    "/read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-5.webp",
+    "/read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-6.webp",
+    "/read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-7.webp",
+    "/read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-8.webp"
+   ],
+   "html_sha256": "8ad1c3b8f39c4d2991a5c24c2192826b15c740b9eeb71cf01e7bfacbb6712290",
+   "bytes": 1359794
+  },
+  {
+   "slug": "bug-in-a-cup",
+   "title": "Bug in a Cup",
+   "urls": [
+    "/read/bug-in-a-cup/",
+    "/read/bug-in-a-cup/pages/bug-in-a-cup-page-1.webp",
+    "/read/bug-in-a-cup/pages/bug-in-a-cup-page-2.webp",
+    "/read/bug-in-a-cup/pages/bug-in-a-cup-page-3.webp",
+    "/read/bug-in-a-cup/pages/bug-in-a-cup-page-4.webp",
+    "/read/bug-in-a-cup/pages/bug-in-a-cup-page-5.webp",
+    "/read/bug-in-a-cup/pages/bug-in-a-cup-page-6.webp",
+    "/read/bug-in-a-cup/pages/bug-in-a-cup-page-7.webp",
+    "/read/bug-in-a-cup/pages/bug-in-a-cup-page-8.webp",
+    "/read/bug-in-a-cup/pages/cover.webp"
+   ],
+   "html_sha256": "038a0b5db8f4db1d07eb703e5df3adb5ad8e55bcfc73c6fec3e62f22b3952809",
+   "bytes": 1074262
+  },
+  {
+   "slug": "dog-in-the-fog",
+   "title": "Dog in the Fog",
+   "urls": [
+    "/read/dog-in-the-fog/",
+    "/read/dog-in-the-fog/pages/cover.webp",
+    "/read/dog-in-the-fog/pages/dog-in-the-fog-page-1.webp",
+    "/read/dog-in-the-fog/pages/dog-in-the-fog-page-2.webp",
+    "/read/dog-in-the-fog/pages/dog-in-the-fog-page-3.webp",
+    "/read/dog-in-the-fog/pages/dog-in-the-fog-page-4.webp",
+    "/read/dog-in-the-fog/pages/dog-in-the-fog-page-5.webp",
+    "/read/dog-in-the-fog/pages/dog-in-the-fog-page-6.webp",
+    "/read/dog-in-the-fog/pages/dog-in-the-fog-page-7.webp",
+    "/read/dog-in-the-fog/pages/dog-in-the-fog-page-8.webp"
+   ],
+   "html_sha256": "55c2390790dc96a2cd3afee71d2a3acc21140f98117031df798f5b9cfbd8898d",
+   "bytes": 892338
+  },
+  {
+   "slug": "ted-e-bears-short-vowel-kit",
+   "title": "Ted-E-Bear’s Short-Vowel Kit",
+   "urls": [
+    "/read/ted-e-bears-short-vowel-kit/",
+    "/read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p1.webp",
+    "/read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p2.webp",
+    "/read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p3.webp",
+    "/read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p4.webp",
+    "/read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p5.webp"
+   ],
+   "html_sha256": "414b5e1da4012c4b67976134db0ecc7978124c4b4ea6f00e5a322809eec04194",
+   "bytes": 538170
+  },
+  {
+   "slug": "hen-berrys-digraph-dash",
+   "title": "Hen-Berry’s Digraph Dash",
+   "urls": [
+    "/read/hen-berrys-digraph-dash/",
+    "/read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p1.webp",
+    "/read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p2.webp",
+    "/read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p3.webp",
+    "/read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p4.webp",
+    "/read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p5.webp"
+   ],
+   "html_sha256": "af80c3c8891ae029e14d45b410b63d9ccc852006d079d7983aa023d89f02aab8",
+   "bytes": 552658
+  },
+  {
+   "slug": "stripe-scouts-blend-bridge",
+   "title": "Stripe-Scout’s Blend Bridge",
+   "urls": [
+    "/read/stripe-scouts-blend-bridge/",
+    "/read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p1.webp",
+    "/read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p2.webp",
+    "/read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p3.webp",
+    "/read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p4.webp",
+    "/read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p5.webp"
+   ],
+   "html_sha256": "0015ee97baea33c6d85d93bc8bd31c94d093db103e89312debb48db8af0bafa9",
+   "bytes": 815990
+  },
+  {
+   "slug": "sub-zeros-magic-e-lantern",
+   "title": "Sub-Zero’s Magic-E Lantern",
+   "urls": [
+    "/read/sub-zeros-magic-e-lantern/",
+    "/read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p1.webp",
+    "/read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p2.webp",
+    "/read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p3.webp",
+    "/read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p4.webp",
+    "/read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p5.webp"
+   ],
+   "html_sha256": "64df8e2792b60799fd3183c79648113310688f16cd36e6a73d4340e67da1ca53",
+   "bytes": 613708
+  },
+  {
+   "slug": "meow-inaras-vowel-team-duet",
+   "title": "Meow-inara’s Vowel-Team Duet",
+   "urls": [
+    "/read/meow-inaras-vowel-team-duet/",
+    "/read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p1.webp",
+    "/read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p2.webp",
+    "/read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p3.webp",
+    "/read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p4.webp",
+    "/read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p5.webp"
+   ],
+   "html_sha256": "f599caeb5f125681c20e42a09e96df6a562a5d7134240a282ad70d8e5f89a65f",
+   "bytes": 753430
+  },
+  {
+   "slug": "quill-berrys-ending-clues",
+   "title": "Quill-Berry’s Ending Clues",
+   "urls": [
+    "/read/quill-berrys-ending-clues/",
+    "/read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p1.webp",
+    "/read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p2.webp",
+    "/read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p3.webp",
+    "/read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p4.webp",
+    "/read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p5.webp"
+   ],
+   "html_sha256": "cb5f70c276b7276ed76da8ab0783a928b9b8caaec36545fd463f678fb23cfcba",
+   "bytes": 546088
+  },
+  {
+   "slug": "baby-bulldogs-at-the-playground",
+   "title": "Baby Bulldogs at the Playground",
+   "urls": [
+    "/read/baby-bulldogs-at-the-playground/",
+    "/read/baby-bulldogs-at-the-playground/pages/baby-bulldogs-playground-p1-r2.webp",
+    "/read/baby-bulldogs-at-the-playground/pages/baby-bulldogs-playground-p2-r2.webp",
+    "/read/baby-bulldogs-at-the-playground/pages/baby-bulldogs-playground-p3-r2.webp",
+    "/read/baby-bulldogs-at-the-playground/pages/baby-bulldogs-playground-p4-r2.webp"
+   ],
+   "html_sha256": "81f8f84bb3612fe2709b96c949f567a42590e06e8aaa4512d4571c390821d380",
+   "bytes": 704440
+  },
+  {
+   "slug": "fe-line-mignons-moonlit-cafe",
+   "title": "Fe-Line-Mignon’s Moonlit Café",
+   "urls": [
+    "/read/fe-line-mignons-moonlit-cafe/",
+    "/read/fe-line-mignons-moonlit-cafe/pages/fe-line-mignon-moonlit-cafe-p1-r2.webp",
+    "/read/fe-line-mignons-moonlit-cafe/pages/fe-line-mignon-moonlit-cafe-p2-r2.webp",
+    "/read/fe-line-mignons-moonlit-cafe/pages/fe-line-mignon-moonlit-cafe-p3-r2.webp",
+    "/read/fe-line-mignons-moonlit-cafe/pages/fe-line-mignon-moonlit-cafe-p4-r2.webp"
+   ],
+   "html_sha256": "d3b9e397e34b8184fe8c9b5a96543d1b6222e41ed182656c03a5910c42950e6a",
+   "bytes": 519118
+  },
+  {
+   "slug": "octo-pops-ocean-adventure",
+   "title": "Octo-Pop’s Ocean Adventure",
+   "urls": [
+    "/read/octo-pops-ocean-adventure/",
+    "/read/octo-pops-ocean-adventure/pages/octo-pop-ocean-adventure-p1.webp",
+    "/read/octo-pops-ocean-adventure/pages/octo-pop-ocean-adventure-p2.webp",
+    "/read/octo-pops-ocean-adventure/pages/octo-pop-ocean-adventure-p3.webp",
+    "/read/octo-pops-ocean-adventure/pages/octo-pop-ocean-adventure-p4.webp"
+   ],
+   "html_sha256": "e92cfdc091de39506123eda73327405fc4ce73d18823282682f22fb5c7352697",
+   "bytes": 546078
+  },
+  {
+   "slug": "hen-berrys-helping-day",
+   "title": "Hen-Berry’s Helping Day",
+   "urls": [
+    "/read/hen-berrys-helping-day/",
+    "/read/hen-berrys-helping-day/pages/hen-berry-helping-day-p1.webp",
+    "/read/hen-berrys-helping-day/pages/hen-berry-helping-day-p2.webp",
+    "/read/hen-berrys-helping-day/pages/hen-berry-helping-day-p3.webp",
+    "/read/hen-berrys-helping-day/pages/hen-berry-helping-day-p4.webp"
+   ],
+   "html_sha256": "dda5f665a6310d33ed382a09c0eb68ccdfec8751877ccce6b92daf0c0dc9761f",
+   "bytes": 759970
+  },
+  {
+   "slug": "stripe-scouts-trail-clues",
+   "title": "Stripe-Scout’s Trail Clues",
+   "urls": [
+    "/read/stripe-scouts-trail-clues/",
+    "/read/stripe-scouts-trail-clues/pages/stripe-scout-trail-p1.webp",
+    "/read/stripe-scouts-trail-clues/pages/stripe-scout-trail-p2.webp",
+    "/read/stripe-scouts-trail-clues/pages/stripe-scout-trail-p3.webp",
+    "/read/stripe-scouts-trail-clues/pages/stripe-scout-trail-p4.webp"
+   ],
+   "html_sha256": "96364c856d86f1c8ac8d16b14bb2df43d882e01b5800fac19e20b553cca4e9f8",
+   "bytes": 740304
+  },
+  {
+   "slug": "lionnaise-and-the-dragon",
+   "title": "Lionnaise and the Dragon",
+   "urls": [
+    "/read/lionnaise-and-the-dragon/",
+    "/read/lionnaise-and-the-dragon/pages/lionnaise-dragon-quest-p1.webp",
+    "/read/lionnaise-and-the-dragon/pages/lionnaise-dragon-quest-p2.webp",
+    "/read/lionnaise-and-the-dragon/pages/lionnaise-dragon-quest-p3.webp",
+    "/read/lionnaise-and-the-dragon/pages/lionnaise-dragon-quest-p4.webp"
+   ],
+   "html_sha256": "da7ee7c1907adc3e4d6998272a81bf4ce32af3dc356716d7063e67353bda877b",
+   "bytes": 512746
+  },
+  {
+   "slug": "polly-rogers-pirate-cove",
+   "title": "Polly Roger’s Pirate Cove",
+   "urls": [
+    "/read/polly-rogers-pirate-cove/",
+    "/read/polly-rogers-pirate-cove/pages/polly-roger-pirate-cove-p1.webp",
+    "/read/polly-rogers-pirate-cove/pages/polly-roger-pirate-cove-p2.webp",
+    "/read/polly-rogers-pirate-cove/pages/polly-roger-pirate-cove-p3.webp",
+    "/read/polly-rogers-pirate-cove/pages/polly-roger-pirate-cove-p4.webp"
+   ],
+   "html_sha256": "cde2036ce64195323d6da296e8b68927589dae0ed639feef94b1a4f20155baa2",
+   "bytes": 640332
+  },
+  {
+   "slug": "ham-and-cheeses-big-maze",
+   "title": "Ham-and-Cheese’s Big Maze",
+   "urls": [
+    "/read/ham-and-cheeses-big-maze/",
+    "/read/ham-and-cheeses-big-maze/pages/ham-and-cheese-maze-p1.webp",
+    "/read/ham-and-cheeses-big-maze/pages/ham-and-cheese-maze-p2.webp",
+    "/read/ham-and-cheeses-big-maze/pages/ham-and-cheese-maze-p3.webp",
+    "/read/ham-and-cheeses-big-maze/pages/ham-and-cheese-maze-p4.webp"
+   ],
+   "html_sha256": "c5b510f55f1fd3924ddc68eb0fdd5c78b1f72b5da176ffe13d2580bb772c2458",
+   "bytes": 351670
+  },
+  {
+   "slug": "foxy-loxs-mystery-trail",
+   "title": "Foxy-Lox’s Mystery Trail",
+   "urls": [
+    "/read/foxy-loxs-mystery-trail/",
+    "/read/foxy-loxs-mystery-trail/pages/foxy-lox-mystery-trail-p1.webp",
+    "/read/foxy-loxs-mystery-trail/pages/foxy-lox-mystery-trail-p2.webp",
+    "/read/foxy-loxs-mystery-trail/pages/foxy-lox-mystery-trail-p3.webp",
+    "/read/foxy-loxs-mystery-trail/pages/foxy-lox-mystery-trail-p4.webp"
+   ],
+   "html_sha256": "12d27ed8344d1ccf7079ea82d32f2f7952f935313e5c8ed7ab443645f213ded9",
+   "bytes": 570774
+  },
+  {
+   "slug": "nutmegs-garden-morning",
+   "title": "Nutmeg’s Garden Morning",
+   "urls": [
+    "/read/nutmegs-garden-morning/",
+    "/read/nutmegs-garden-morning/pages/nutmeg-garden-morning-p1.webp",
+    "/read/nutmegs-garden-morning/pages/nutmeg-garden-morning-p2.webp",
+    "/read/nutmegs-garden-morning/pages/nutmeg-garden-morning-p3.webp",
+    "/read/nutmegs-garden-morning/pages/nutmeg-garden-morning-p4.webp"
+   ],
+   "html_sha256": "07dc9a19f8943553b9a565eafcf98fe85b880139adc58fec6588019050af3b6f",
+   "bytes": 486528
+  },
+  {
+   "slug": "captain-beakons-star-watch",
+   "title": "Captain Beakon’s Star Watch",
+   "urls": [
+    "/read/captain-beakons-star-watch/",
+    "/read/captain-beakons-star-watch/pages/captain-beakon-star-watch-p1.webp",
+    "/read/captain-beakons-star-watch/pages/captain-beakon-star-watch-p2.webp",
+    "/read/captain-beakons-star-watch/pages/captain-beakon-star-watch-p3.webp",
+    "/read/captain-beakons-star-watch/pages/captain-beakon-star-watch-p4.webp"
+   ],
+   "html_sha256": "8b632a910c4c64e599588467e5d476e98636313765a687ed8856243ba4c0a9fc",
+   "bytes": 370700
+  },
+  {
+   "slug": "nutmegs-four-seasons",
+   "title": "Nutmeg’s Four Seasons",
+   "urls": [
+    "/read/nutmegs-four-seasons/",
+    "/read/nutmegs-four-seasons/pages/nutmeg-four-seasons-p1.webp",
+    "/read/nutmegs-four-seasons/pages/nutmeg-four-seasons-p2.webp",
+    "/read/nutmegs-four-seasons/pages/nutmeg-four-seasons-p3.webp",
+    "/read/nutmegs-four-seasons/pages/nutmeg-four-seasons-p4.webp"
+   ],
+   "html_sha256": "5ae96dd60651a8b44cbf23726b97d939d14e9b1f33ad61fb9bd1457b6ae8b18c",
+   "bytes": 836102
+  },
+  {
+   "slug": "ted-e-bears-blanket-fort",
+   "title": "Ted-E-Bear’s Blanket Fort",
+   "urls": [
+    "/read/ted-e-bears-blanket-fort/",
+    "/read/ted-e-bears-blanket-fort/pages/ted-blanket-fort-p1-r2.webp",
+    "/read/ted-e-bears-blanket-fort/pages/ted-blanket-fort-p2-r2.webp",
+    "/read/ted-e-bears-blanket-fort/pages/ted-blanket-fort-p3-r2.webp",
+    "/read/ted-e-bears-blanket-fort/pages/ted-blanket-fort-p4-r2.webp"
+   ],
+   "html_sha256": "398f86cb02e83a22f1bc751696ae3ac79bcb3fba0533c4142eda9020c92c103f",
+   "bytes": 448912
+  },
+  {
+   "slug": "wise-owls-library-day",
+   "title": "Wise Owl’s Library Day",
+   "urls": [
+    "/read/wise-owls-library-day/",
+    "/read/wise-owls-library-day/pages/wise-owl-library-day-p1-r2.webp",
+    "/read/wise-owls-library-day/pages/wise-owl-library-day-p2-r2.webp",
+    "/read/wise-owls-library-day/pages/wise-owl-library-day-p3-r2.webp",
+    "/read/wise-owls-library-day/pages/wise-owl-library-day-p4-r2.webp"
+   ],
+   "html_sha256": "54580482210d9808c09583d386a7cf0f93b882dd371005134ae03137152f7eed",
+   "bytes": 520758
+  },
+  {
+   "slug": "meow-inaras-moonlight-story",
+   "title": "Meow-inara’s Moonlight Story",
+   "urls": [
+    "/read/meow-inaras-moonlight-story/",
+    "/read/meow-inaras-moonlight-story/pages/meow-inara-moonlight-p1-r2.webp",
+    "/read/meow-inaras-moonlight-story/pages/meow-inara-moonlight-p2-r2.webp",
+    "/read/meow-inaras-moonlight-story/pages/meow-inara-moonlight-p3-r2.webp",
+    "/read/meow-inaras-moonlight-story/pages/meow-inara-moonlight-p4-r2.webp"
+   ],
+   "html_sha256": "3ac9377f211d03ef8c3cf60e4db56504f0ef8b6e7150c52a2c8364fe98cbb7d5",
+   "bytes": 432206
+  },
+  {
+   "slug": "centi-peeds-garden-race",
+   "title": "Centi-Peed’s Garden Race",
+   "urls": [
+    "/read/centi-peeds-garden-race/",
+    "/read/centi-peeds-garden-race/pages/centi-peed-garden-race-p1-r2.webp",
+    "/read/centi-peeds-garden-race/pages/centi-peed-garden-race-p2-r2.webp",
+    "/read/centi-peeds-garden-race/pages/centi-peed-garden-race-p3-r2.webp",
+    "/read/centi-peeds-garden-race/pages/centi-peed-garden-race-p4-r2.webp"
+   ],
+   "html_sha256": "7798fe205766300810cf254c1f090899cddfbc085d9140b06ecad62147c3c311",
+   "bytes": 667014
+  },
+  {
+   "slug": "pita-pans-mountain-climb",
+   "title": "Pita-Pan’s Mountain Climb",
+   "urls": [
+    "/read/pita-pans-mountain-climb/",
+    "/read/pita-pans-mountain-climb/pages/pita-pan-mountain-climb-p1-r2.webp",
+    "/read/pita-pans-mountain-climb/pages/pita-pan-mountain-climb-p2-r2.webp",
+    "/read/pita-pans-mountain-climb/pages/pita-pan-mountain-climb-p3-r2.webp",
+    "/read/pita-pans-mountain-climb/pages/pita-pan-mountain-climb-p4-r2.webp"
+   ],
+   "html_sha256": "ce823311635f0d2d2a5698ffa0e955de38dacf91936d914d5a5f5c4df7842f49",
+   "bytes": 493156
+  },
+  {
+   "slug": "octo-pops-coral-reef",
+   "title": "Octo-Pop’s Coral Reef",
+   "urls": [
+    "/read/octo-pops-coral-reef/",
+    "/read/octo-pops-coral-reef/pages/octo-pop-coral-reef-p1-r2.webp",
+    "/read/octo-pops-coral-reef/pages/octo-pop-coral-reef-p2-r2.webp",
+    "/read/octo-pops-coral-reef/pages/octo-pop-coral-reef-p3-r2.webp",
+    "/read/octo-pops-coral-reef/pages/octo-pop-coral-reef-p4-r2.webp"
+   ],
+   "html_sha256": "9e789d8b735f11e5638cb90c8629c15056f9efdcc00d3d7e35fb0a8d5916b7de",
+   "bytes": 651064
+  },
+  {
+   "slug": "shelly-pops-slow-and-steady",
+   "title": "Shelly-Pop’s Slow and Steady",
+   "urls": [
+    "/read/shelly-pops-slow-and-steady/",
+    "/read/shelly-pops-slow-and-steady/pages/shelly-pop-slow-and-steady-p1-r2.webp",
+    "/read/shelly-pops-slow-and-steady/pages/shelly-pop-slow-and-steady-p2-r2.webp",
+    "/read/shelly-pops-slow-and-steady/pages/shelly-pop-slow-and-steady-p3-r2.webp",
+    "/read/shelly-pops-slow-and-steady/pages/shelly-pop-slow-and-steady-p4-r2.webp"
+   ],
+   "html_sha256": "e692ca6bb827a1ba6016f20d7a949da76c82d478a44f39a35e4ddff9ea80d64b",
+   "bytes": 676352
+  },
+  {
+   "slug": "luckybugs-art-gallery",
+   "title": "Luckybug's Art Gallery",
+   "urls": [
+    "/read/luckybugs-art-gallery/",
+    "/read/luckybugs-art-gallery/pages/luckybug-art-gallery-p1.webp",
+    "/read/luckybugs-art-gallery/pages/luckybug-art-gallery-p2.webp",
+    "/read/luckybugs-art-gallery/pages/luckybug-art-gallery-p3.webp",
+    "/read/luckybugs-art-gallery/pages/luckybug-art-gallery-p4.webp"
+   ],
+   "html_sha256": "541cff21479d5315c81a7fdf0e0922d432bdfd129e7bde4ef14e80672f9d863a",
+   "bytes": 552774
+  },
+  {
+   "slug": "corgi-on-the-cobs-countryside-run",
+   "title": "Corgi-on-the-Cob's Countryside Run",
+   "urls": [
+    "/read/corgi-on-the-cobs-countryside-run/",
+    "/read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p1.webp",
+    "/read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p2.webp",
+    "/read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p3.webp",
+    "/read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p4.webp"
+   ],
+   "html_sha256": "b9de7285102b8d89b83d1fc3f2be80cbe6e5e89e3765cf9576e955d0fb425984",
+   "bytes": 560330
+  },
+  {
+   "slug": "ted-e-bear-and-the-button-trail",
+   "title": "Ted-E-Bear and the Button Trail",
+   "urls": [
+    "/read/ted-e-bear-and-the-button-trail/",
+    "/read/ted-e-bear-and-the-button-trail/pages/cover.webp",
+    "/read/ted-e-bear-and-the-button-trail/pages/page-1-r2.webp",
+    "/read/ted-e-bear-and-the-button-trail/pages/page-2-r2.webp",
+    "/read/ted-e-bear-and-the-button-trail/pages/page-3-r2.webp",
+    "/read/ted-e-bear-and-the-button-trail/pages/page-4-r2.webp",
+    "/read/ted-e-bear-and-the-button-trail/pages/page-5-r2.webp",
+    "/read/ted-e-bear-and-the-button-trail/pages/page-6-r2.webp"
+   ],
+   "html_sha256": "1b22c7d12d92f025d918b4580813620ac51113237218fb640db84f4c212c5133",
+   "bytes": 1487942
+  },
+  {
+   "slug": "panda-cakes-market-basket",
+   "title": "Panda-Cake’s Market Basket",
+   "urls": [
+    "/read/panda-cakes-market-basket/",
+    "/read/panda-cakes-market-basket/pages/page-1.webp",
+    "/read/panda-cakes-market-basket/pages/page-2.webp",
+    "/read/panda-cakes-market-basket/pages/page-3.webp",
+    "/read/panda-cakes-market-basket/pages/page-4.webp",
+    "/read/panda-cakes-market-basket/pages/page-5.webp",
+    "/read/panda-cakes-market-basket/pages/page-6.webp"
+   ],
+   "html_sha256": "6a0fbdbfc9ce11d90b28ec370a6a2c7b078b6dc8d30f9d813cbfa8a44c40e846",
+   "bytes": 842658
+  },
+  {
+   "slug": "sub-zero-and-the-snowflake-post",
+   "title": "Sub-Zero and the Snowflake Post",
+   "urls": [
+    "/read/sub-zero-and-the-snowflake-post/",
+    "/read/sub-zero-and-the-snowflake-post/pages/page-1.webp",
+    "/read/sub-zero-and-the-snowflake-post/pages/page-2.webp",
+    "/read/sub-zero-and-the-snowflake-post/pages/page-3.webp",
+    "/read/sub-zero-and-the-snowflake-post/pages/page-4.webp",
+    "/read/sub-zero-and-the-snowflake-post/pages/page-5.webp",
+    "/read/sub-zero-and-the-snowflake-post/pages/page-6.webp"
+   ],
+   "html_sha256": "ac25ac3a2502783fcfaccf4968228b969d8a5f9f4c7b0e6c74965ae0678ecb51",
+   "bytes": 1007364
+  },
+  {
+   "slug": "luckybugs-pairing-parade",
+   "title": "Luckybug’s Pairing Parade",
+   "urls": [
+    "/read/luckybugs-pairing-parade/",
+    "/read/luckybugs-pairing-parade/pages/page-1.webp",
+    "/read/luckybugs-pairing-parade/pages/page-2.webp",
+    "/read/luckybugs-pairing-parade/pages/page-3.webp",
+    "/read/luckybugs-pairing-parade/pages/page-4.webp",
+    "/read/luckybugs-pairing-parade/pages/page-5.webp",
+    "/read/luckybugs-pairing-parade/pages/page-6.webp"
+   ],
+   "html_sha256": "ea55ed11a89edaa0f4c4ab273d49e9384d993b092cbb0f187a6fb6d8e230da96",
+   "bytes": 1102600
+  },
+  {
+   "slug": "corgi-on-the-cobs-ten-frame-picnic",
+   "title": "Corgi-on-the-Cob’s Ten-Frame Picnic",
+   "urls": [
+    "/read/corgi-on-the-cobs-ten-frame-picnic/",
+    "/read/corgi-on-the-cobs-ten-frame-picnic/pages/page-1.webp",
+    "/read/corgi-on-the-cobs-ten-frame-picnic/pages/page-2.webp",
+    "/read/corgi-on-the-cobs-ten-frame-picnic/pages/page-3.webp",
+    "/read/corgi-on-the-cobs-ten-frame-picnic/pages/page-4.webp",
+    "/read/corgi-on-the-cobs-ten-frame-picnic/pages/page-5.webp",
+    "/read/corgi-on-the-cobs-ten-frame-picnic/pages/page-6.webp"
+   ],
+   "html_sha256": "77018a75e00a5074a44529c40f53c5210f66418cf902ee9282bbd06dba99683c",
+   "bytes": 1361124
+  },
+  {
+   "slug": "honey-beats-and-the-number-neighbours",
+   "title": "Honey-Beats and the Number Neighbours",
+   "urls": [
+    "/read/honey-beats-and-the-number-neighbours/",
+    "/read/honey-beats-and-the-number-neighbours/pages/page-1.webp",
+    "/read/honey-beats-and-the-number-neighbours/pages/page-2.webp",
+    "/read/honey-beats-and-the-number-neighbours/pages/page-3.webp",
+    "/read/honey-beats-and-the-number-neighbours/pages/page-4.webp",
+    "/read/honey-beats-and-the-number-neighbours/pages/page-5.webp",
+    "/read/honey-beats-and-the-number-neighbours/pages/page-6.webp"
+   ],
+   "html_sha256": "ca6b48ccf1767db345392de3604e3491c42aac90f0314350d9d6314d4a7f403b",
+   "bytes": 1473564
+  },
+  {
+   "slug": "luckybugs-market-morning",
+   "title": "Luckybug and the Market Morning Mix-Up",
+   "urls": [
+    "/read/luckybugs-market-morning/",
+    "/read/luckybugs-market-morning/pages/cover.webp",
+    "/read/luckybugs-market-morning/pages/page-1-r2.webp",
+    "/read/luckybugs-market-morning/pages/page-2-r2.webp",
+    "/read/luckybugs-market-morning/pages/page-3-r2.webp",
+    "/read/luckybugs-market-morning/pages/page-4-r2.webp",
+    "/read/luckybugs-market-morning/pages/page-5-r2.webp",
+    "/read/luckybugs-market-morning/pages/page-6-r2.webp",
+    "/read/luckybugs-market-morning/pages/page-7-r2.webp"
+   ],
+   "html_sha256": "a38af1ee40a9ee1bbd6c348007cb4cd17b90ee0fea78a260c2871c3a90e81585",
+   "bytes": 1770366
+  },
+  {
+   "slug": "ted-e-bear-and-the-lantern-that-needed-a-half",
+   "title": "Ted-E-Bear and the Lantern That Needed a Half",
+   "urls": [
+    "/read/ted-e-bear-and-the-lantern-that-needed-a-half/",
+    "/read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/cover.webp",
+    "/read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/page-1.webp",
+    "/read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/page-2.webp",
+    "/read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/page-3.webp",
+    "/read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/page-4.webp",
+    "/read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/page-5.webp",
+    "/read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/page-6.webp",
+    "/read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/page-7.webp"
+   ],
+   "html_sha256": "3a14e66569f5958296d17d0ef2db87dcf02b2ea496f7e6af10b6477f62c9fe63",
+   "bytes": 1243274
+  },
+  {
+   "slug": "biscuit-bouncers-parcel-parade",
+   "title": "Biscuit-Bouncer and the Parcel Parade",
+   "urls": [
+    "/read/biscuit-bouncers-parcel-parade/",
+    "/read/biscuit-bouncers-parcel-parade/pages/cover.webp",
+    "/read/biscuit-bouncers-parcel-parade/pages/page-1-r2.webp",
+    "/read/biscuit-bouncers-parcel-parade/pages/page-2-r2.webp",
+    "/read/biscuit-bouncers-parcel-parade/pages/page-3-r2.webp",
+    "/read/biscuit-bouncers-parcel-parade/pages/page-4-r2.webp",
+    "/read/biscuit-bouncers-parcel-parade/pages/page-5-r2.webp",
+    "/read/biscuit-bouncers-parcel-parade/pages/page-6-r2.webp",
+    "/read/biscuit-bouncers-parcel-parade/pages/page-7-r2.webp",
+    "/read/biscuit-bouncers-parcel-parade/pages/page-8-r2.webp",
+    "/read/biscuit-bouncers-parcel-parade/pages/page-9-r2.webp"
+   ],
+   "html_sha256": "1de28514700fc7ba818a7c88c50d252c4e64b056fbcb2aa6e4805465ed6c5c76",
+   "bytes": 2247974
+  },
+  {
+   "slug": "booklava-and-the-number-that-lost-its-place",
+   "title": "Booklava and the Number That Lost Its Place",
+   "urls": [
+    "/read/booklava-and-the-number-that-lost-its-place/",
+    "/read/booklava-and-the-number-that-lost-its-place/pages/cover.webp",
+    "/read/booklava-and-the-number-that-lost-its-place/pages/page-1.webp",
+    "/read/booklava-and-the-number-that-lost-its-place/pages/page-2.webp",
+    "/read/booklava-and-the-number-that-lost-its-place/pages/page-3.webp",
+    "/read/booklava-and-the-number-that-lost-its-place/pages/page-4.webp",
+    "/read/booklava-and-the-number-that-lost-its-place/pages/page-5.webp",
+    "/read/booklava-and-the-number-that-lost-its-place/pages/page-6.webp",
+    "/read/booklava-and-the-number-that-lost-its-place/pages/page-7.webp"
+   ],
+   "html_sha256": "8005d53a918ec6893e5ffbb5a738e279992172fec0457670821c8c0343cbe922",
+   "bytes": 1135152
+  },
+  {
+   "slug": "pork-ulele-and-the-clockwork-concert",
+   "title": "Pork-ulele and the Clockwork Concert",
+   "urls": [
+    "/read/pork-ulele-and-the-clockwork-concert/",
+    "/read/pork-ulele-and-the-clockwork-concert/pages/cover.webp",
+    "/read/pork-ulele-and-the-clockwork-concert/pages/page-1.webp",
+    "/read/pork-ulele-and-the-clockwork-concert/pages/page-2.webp",
+    "/read/pork-ulele-and-the-clockwork-concert/pages/page-3.webp",
+    "/read/pork-ulele-and-the-clockwork-concert/pages/page-4.webp",
+    "/read/pork-ulele-and-the-clockwork-concert/pages/page-5.webp",
+    "/read/pork-ulele-and-the-clockwork-concert/pages/page-6.webp",
+    "/read/pork-ulele-and-the-clockwork-concert/pages/page-7.webp"
+   ],
+   "html_sha256": "6d1988592ffc9ecfa0f728706164853bac936b091ba5abeed93949379b102b5b",
+   "bytes": 1716398
+  },
+  {
+   "slug": "hop-tarts-stepping-stone-switch",
+   "title": "Hop-Tart and the Stepping-Stone Switch",
+   "urls": [
+    "/read/hop-tarts-stepping-stone-switch/",
+    "/read/hop-tarts-stepping-stone-switch/pages/cover.webp",
+    "/read/hop-tarts-stepping-stone-switch/pages/page-1.webp",
+    "/read/hop-tarts-stepping-stone-switch/pages/page-2.webp",
+    "/read/hop-tarts-stepping-stone-switch/pages/page-3.webp",
+    "/read/hop-tarts-stepping-stone-switch/pages/page-4.webp"
+   ],
+   "html_sha256": "3df7002db444bfc6a8dcfb40c08571899f76077fbc83aec97ec271c90edba1eb",
+   "bytes": 615610
+  },
+  {
+   "slug": "centi-peeds-below-zero-burrow",
+   "title": "Centi-Peed and the Below-Zero Burrow",
+   "urls": [
+    "/read/centi-peeds-below-zero-burrow/",
+    "/read/centi-peeds-below-zero-burrow/pages/cover.webp",
+    "/read/centi-peeds-below-zero-burrow/pages/page-1.webp",
+    "/read/centi-peeds-below-zero-burrow/pages/page-2.webp",
+    "/read/centi-peeds-below-zero-burrow/pages/page-3.webp",
+    "/read/centi-peeds-below-zero-burrow/pages/page-4.webp"
+   ],
+   "html_sha256": "e492ec5b935eb06db929e2ed249b1370c350cd0dd223b53342d9b7eec018f284",
+   "bytes": 684690
+  },
+  {
+   "slug": "wise-owl-festival-of-factors",
+   "title": "Wise Owl and the Festival of Factors",
+   "urls": [
+    "/read/wise-owl-festival-of-factors/",
+    "/read/wise-owl-festival-of-factors/pages/cover.webp",
+    "/read/wise-owl-festival-of-factors/pages/page-1.webp",
+    "/read/wise-owl-festival-of-factors/pages/page-2.webp",
+    "/read/wise-owl-festival-of-factors/pages/page-3.webp",
+    "/read/wise-owl-festival-of-factors/pages/page-4.webp"
+   ],
+   "html_sha256": "02a1004568cf05f34330d7ea5019bcac212434822392b156df6a4fa7cedd583d",
+   "bytes": 676320
+  },
+  {
+   "slug": "vincent-van-mouse-and-the-mural",
+   "title": "Vincent Van Mouse and the Mural in Proportion",
+   "urls": [
+    "/read/vincent-van-mouse-and-the-mural/",
+    "/read/vincent-van-mouse-and-the-mural/pages/cover.webp",
+    "/read/vincent-van-mouse-and-the-mural/pages/page-1.webp",
+    "/read/vincent-van-mouse-and-the-mural/pages/page-2.webp",
+    "/read/vincent-van-mouse-and-the-mural/pages/page-3.webp",
+    "/read/vincent-van-mouse-and-the-mural/pages/page-4.webp",
+    "/read/vincent-van-mouse-and-the-mural/pages/page-5.webp",
+    "/read/vincent-van-mouse-and-the-mural/pages/page-6.webp",
+    "/read/vincent-van-mouse-and-the-mural/pages/page-7.webp"
+   ],
+   "html_sha256": "3f47ac57b2a4359f92d3917820422ef121e0131feb1682e13d831a62dded8edd",
+   "bytes": 2051926
+  },
+  {
+   "slug": "cereal-swimmer-and-the-number-line-lagoon",
+   "title": "Cereal-Swimmer and the Number-Line Lagoon",
+   "urls": [
+    "/read/cereal-swimmer-and-the-number-line-lagoon/",
+    "/read/cereal-swimmer-and-the-number-line-lagoon/pages/page-1.webp",
+    "/read/cereal-swimmer-and-the-number-line-lagoon/pages/page-2.webp",
+    "/read/cereal-swimmer-and-the-number-line-lagoon/pages/page-3.webp",
+    "/read/cereal-swimmer-and-the-number-line-lagoon/pages/page-4.webp",
+    "/read/cereal-swimmer-and-the-number-line-lagoon/pages/page-5.webp",
+    "/read/cereal-swimmer-and-the-number-line-lagoon/pages/page-6.webp"
+   ],
+   "html_sha256": "ae60b16ba97e06054033b2956244a0be56e76c2448134e1fad54ade745374c3e",
+   "bytes": 1504588
+  },
+  {
+   "slug": "animal-architects",
+   "title": "Animal Architects: Built by Nature",
+   "urls": [
+    "/read/animal-architects/",
+    "/read/animal-architects/pages/animal-architects-p1.webp",
+    "/read/animal-architects/pages/animal-architects-p2.webp",
+    "/read/animal-architects/pages/animal-architects-p3.webp",
+    "/read/animal-architects/pages/animal-architects-p5.webp",
+    "/read/animal-architects/pages/animal-architects-p6.webp",
+    "/read/animal-architects/pages/animal-architects-p7.webp"
+   ],
+   "html_sha256": "8ad053ece2a611cf3b28cd8feea1099d017bbc08efc7f2c536b32adafa6f54de",
+   "bytes": 1033782
+  },
+  {
+   "slug": "ted-e-bear-and-the-pocketful-of-sounds",
+   "title": "Ted-E-Bear and the Pocketful of Sounds",
+   "urls": [
+    "/read/ted-e-bear-and-the-pocketful-of-sounds/",
+    "/read/ted-e-bear-and-the-pocketful-of-sounds/pages/cover.webp",
+    "/read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-1.webp",
+    "/read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-2.webp",
+    "/read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-3.webp",
+    "/read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-4.webp",
+    "/read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-5.webp",
+    "/read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-6.webp",
+    "/read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-7.webp",
+    "/read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-8.webp"
+   ],
+   "html_sha256": "c756a516a06ae1ad8a3a18fc71f9122043f5c5a27e39492b33847105d7d206b3",
+   "bytes": 1807350
+  }
+ ],
  "urls": [
   "/read/",
+  "/read/offline-manifest.json",
   "/read/sound-cards/",
   "/read/collections/",
   "/read/collections/first-phonics/",
@@ -222,6 +1031,16 @@
   "/read/shelly-pops-slow-and-steady/pages/shelly-pop-slow-and-steady-p2-r2.webp",
   "/read/shelly-pops-slow-and-steady/pages/shelly-pop-slow-and-steady-p3-r2.webp",
   "/read/shelly-pops-slow-and-steady/pages/shelly-pop-slow-and-steady-p4-r2.webp",
+  "/read/luckybugs-art-gallery/",
+  "/read/luckybugs-art-gallery/pages/luckybug-art-gallery-p1.webp",
+  "/read/luckybugs-art-gallery/pages/luckybug-art-gallery-p2.webp",
+  "/read/luckybugs-art-gallery/pages/luckybug-art-gallery-p3.webp",
+  "/read/luckybugs-art-gallery/pages/luckybug-art-gallery-p4.webp",
+  "/read/corgi-on-the-cobs-countryside-run/",
+  "/read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p1.webp",
+  "/read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p2.webp",
+  "/read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p3.webp",
+  "/read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p4.webp",
   "/read/ted-e-bear-and-the-button-trail/",
   "/read/ted-e-bear-and-the-button-trail/pages/cover.webp",
   "/read/ted-e-bear-and-the-button-trail/pages/page-1-r2.webp",

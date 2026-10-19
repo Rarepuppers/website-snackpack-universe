@@ -14,6 +14,9 @@
  * cache itself the first time it's visited.
  */
 const CACHE = "snackpack-arcade-v43";
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'READ_CACHE_NAME' && event.ports[0]) event.ports[0].postMessage(CACHE);
+});
 const LAST_BASTION_RELEASE = "2026-10-17-qa-readiness";
 const LAST_BASTION_CACHE = `last-bastion-${LAST_BASTION_RELEASE}`;
 
@@ -131,7 +134,10 @@ function cacheSuccessful(cacheName, req, res) {
   caches.open(cacheName).then((c) => c.put(req, copy)).catch(() => {});
 }
 
-function offlineUnavailable() {
+function offlineUnavailable(requestUrl) {
+  if (requestUrl && new URL(requestUrl).pathname.startsWith('/read/')) {
+    return new Response('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Book not saved for offline | SnackPack</title><main style="max-width:40rem;margin:4rem auto;padding:1rem;font:1.15rem/1.6 system-ui"><h1>This book is not saved for offline</h1><p>Reconnect to open it, then choose Save this book for offline. Books you have already saved are still available.</p><a href="/read/">Back to the bookshelf</a></main></html>', {status:503,headers:{'Content-Type':'text/html; charset=utf-8'}});
+  }
   return new Response("This resource is not available offline.", {
     status: 503,
     headers: { "Content-Type": "text/plain; charset=utf-8" },
@@ -147,7 +153,7 @@ function networkFirst(req, fallback, cacheName = CACHE) {
     .catch(() =>
       caches.match(req, { cacheName }).then((hit) => {
         if (hit) return hit;
-        if (!fallback) return offlineUnavailable();
+        if (!fallback) return offlineUnavailable(req.url);
         return caches.match(fallback, { cacheName }).then(
           (fallbackHit) => fallbackHit || offlineUnavailable()
         );
@@ -178,7 +184,7 @@ self.addEventListener("fetch", (e) => {
   // Navigations: network-first so a page edit lands immediately; fall back to
   // the cached page, then the arcade index, when offline.
   if (req.mode === "navigate") {
-    e.respondWith(networkFirst(req, "/play/"));
+    e.respondWith(networkFirst(req, url.pathname.startsWith('/read/') ? undefined : "/play/"));
     return;
   }
 

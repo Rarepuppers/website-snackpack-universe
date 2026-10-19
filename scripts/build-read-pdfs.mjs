@@ -147,10 +147,11 @@ function questionsFor(html) {
   }
   const fin = html.match(/<div class="shell story-finish-card">([\s\S]*?)<!-- read-next:generated -->/);
   if (fin) {
-    const q = fin[1].match(/<h2>([\s\S]*?)<\/h2>\s*<details class="story-answer">[\s\S]*?<p>([\s\S]*?)<\/p>/);
-    if (q) {
-      items.push({ head: "After reading", text: strip(q[1]), end: true });
-      answers.push(`After reading: ${strip(q[2])}`);
+    const questions = [...fin[1].matchAll(/<h[23](?:\s[^>]*)?>([\s\S]*?)<\/h[23]>\s*<details class="story-answer">[\s\S]*?<p>([\s\S]*?)<\/p>/g)];
+    for (const [i,q] of questions.entries()) {
+      const heading = questions.length > 1 ? `After reading ${i+1}` : 'After reading';
+      items.push({ head: heading, text: strip(q[1]), end: true });
+      answers.push(`${heading}: ${strip(q[2])}`);
     }
   }
   return { items, answers };
@@ -173,7 +174,7 @@ function questionPages(title, { items, answers }) {
   const para = (s, size, bold, grey, gap) => wrap(s, size, bold, width).forEach((l, i) => line(l, size, bold, grey, i === 0 ? gap : 0));
 
   para(`Questions for ${title}`, 20, true, false, 0);
-  para("Read the story together first. Use one question at each page, then the question at the end. Answers are below the dotted line: fold them under or cover them while reading.", 10.5, false, true, 6);
+  para("Read the story together first. Use the page prompts and the questions after reading. Answers are below the dotted line: fold them under or cover them while reading.", 10.5, false, true, 6);
   for (const it of items) {
     para(it.head, 11.5, true, false, it.end ? 16 : 12);
     para(it.text, 12, false, false, 2);
