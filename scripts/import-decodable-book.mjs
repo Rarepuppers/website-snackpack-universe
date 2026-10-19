@@ -10,20 +10,34 @@
 //
 // After importing, re-run: build-webp, build-sitemap, build-breadcrumbs.
 //
-// WARNING (2026-10-15): this template predates the theme/PWA/breadcrumb/share
-// blocks, the "Daily" nav item and the end-of-book questions that the six live
-// decodables now carry. Use it for NEW books only. Re-running --write over an
-// existing book would strip those; if you must, diff the result first.
+// Existing books preserve their reviewed page shell, alt text, phonics cues,
+// questions and generated controls. Only changed app prose is refreshed.
+// Structural or artwork changes fail for review rather than silently dropping
+// editorial work or replacing an image at a cache-first URL. New books use
+// the current reader's shared head/header and generated integration markers.
 // End-of-book questions are web editorial (the app has none): add one to
 // QUESTIONS for any new book, in decodable words, answer plus a sound-out cue.
 
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+import crypto from "node:crypto";
+import { execFileSync } from "node:child_process";
 
-const APP = path.resolve("..", "apps", "snackpack-1-abcs-alphabet");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const APP = path.resolve(ROOT, "..", "apps", "snackpack-1-abcs-alphabet");
 const SRC_ART = path.join(APP, "assets", "decodable");
 const DATA = path.join(APP, "constants", "decodableBooks.ts");
-const OUT_ROOT = path.resolve("read");
+const OUT_ROOT = path.join(ROOT, "read");
+const TEMPLATE = fs.readFileSync(path.join(OUT_ROOT, "hen-berrys-digraph-dash/index.html"), "utf8");
+const SHARED = TEMPLATE.slice(TEMPLATE.indexOf("<!-- pwa:generated -->"), TEMPLATE.indexOf("</head>"));
+const HEADER = TEMPLATE.slice(TEMPLATE.indexOf('<header class="topbar">'), TEMPLATE.indexOf("<main>"));
+const PINS = JSON.parse(fs.readFileSync(path.join(ROOT, "data/decodable-art-pins.json"), "utf8"));
+const digest = (p) => crypto.createHash("sha256").update(fs.readFileSync(p)).digest("hex");
+const jpegName = (p) => p.replace(/\.(?:webp|png|jpe?g)$/i, ".jpg");
+// These six books were already approved for the free web shelf. This does not
+// change app tiers or approve any additional Pro book for publication.
+const APPROVED_WEB = new Set(["pip-sits", "nan-and-pip", "ten-red-hens", "the-cat-and-the-rat", "bug-in-a-cup", "dog-in-the-fog"]);
 const BEACON = "0e57cfb3eb86422ca40e5fac02b1cf94";
 const PLAY_URL =
   "https://play.google.com/store/apps/details?id=com.snackpackuniverse.abcalphabet";
@@ -34,6 +48,7 @@ const ALL = args.includes("--all");
 const slugArg = (args.find((a) => a.startsWith("--slug=")) || "").split("=")[1];
 
 const QUESTIONS = {
+  "pip-sits": ["What did Pip sit in?", "A pan. Can you sound out p-a-n?"],
   "nan-and-pip": ["What did Nan tap?", "A pan. Can you sound out p-a-n?"],
   "ten-red-hens": ["Where did the hens hide?", "In the pen. Can you sound out p-e-n?"],
   "the-cat-and-the-rat": ["Where did the rat hide?", "In a can. Can you sound out c-a-n?"],
@@ -80,13 +95,31 @@ function parseBooks() {
 }
 
 function buildHtml(book) {
+  const existing = path.join(OUT_ROOT, book.id, "index.html");
+  if (fs.existsSync(existing)) {
+    const html = fs.readFileSync(existing, "utf8");
+    const articles = [...html.matchAll(/<article class="story-page-card"[^>]*>[\s\S]*?<\/article>/g)];
+    if (articles.length !== book.pages.length) throw new Error(`${book.id}: page count changed; review the full book before re-import`);
+    let i = 0;
+    const plain = (s) => s.replace(/<[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'");
+    return html.replace(/<article class="story-page-card"[^>]*>[\s\S]*?<\/article>/g, (article) => {
+      const page = book.pages[i++];
+      return article.replace(/(<div class="story-page-copy">[\s\S]*?<p>)([\s\S]*?)(<\/p>)/, (whole, before, prose, after) => {
+        if (plain(prose) === page.text) return whole;
+        // Retain reviewed word highlights where those exact words still occur.
+        const marked = new Set([...prose.matchAll(/<mark>([^<]*)<\/mark>/g)].map(m => plain(m[1]).toLowerCase()));
+        const fresh = esc(page.text).replace(/\b[A-Za-z]+\b/g, word => marked.has(word.toLowerCase()) ? `<mark>${word}</mark>` : word);
+        return before + fresh + after;
+      });
+    });
+  }
   const n = book.pages.length;
   const url = `https://www.snackpackuniverse.com/read/${book.id}/`;
   const desc = `Read ${book.title}, a complete ${n}-page illustrated SnackPack decodable story. ${book.focusSound}. Free, no sign-up.`;
 
   const pageCards = book.pages
     .map((p, i) => {
-      const base = p.file.replace(/\.jpg$/, "");
+      const base = jpegName(p.file).replace(/\.jpg$/, "");
       // The illustration depicts the sentence, so the sentence is the honest alt.
       const alt = esc(p.text);
       const aside = p.tricky.length
@@ -96,11 +129,11 @@ function buildHtml(book) {
             p.tricky.length > 1 ? "them" : "it"
           } together if needed.</aside>`
         : "";
-      return `<article class="story-page-card" id="page-${i + 1}"><picture><source srcset="./pages/${base}.webp" type="image/webp"><img src="./pages/${p.file}" alt="${alt}" loading="lazy" width="1200" height="800"></picture><div class="story-page-copy"><span>Page ${i + 1} of ${n}</span><p>${esc(p.text)}</p>${aside}</div></article>`;
+      return `<article class="story-page-card" id="page-${i + 1}"><picture><source srcset="./pages/${base}.webp" type="image/webp"><img src="./pages/${jpegName(p.file)}" alt="${alt}" loading="lazy" width="1200" height="800"></picture><div class="story-page-copy"><span>Page ${i + 1} of ${n}</span><p>${esc(p.text)}</p>${aside}</div></article>`;
     })
     .join("\n");
 
-  return `<!DOCTYPE html>
+  const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -149,18 +182,33 @@ ${pageCards}
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${BEACON}"}'></script>
 </body></html>
 `;
+  return html.replace('</head>', `<!-- breadcrumbs:generated -->\n<!-- /breadcrumbs:generated -->\n${SHARED}</head>`)
+    .replace(/<header class="topbar">[\s\S]*?<main>/, `${HEADER}<main>`)
+    .replace('href="#page-1">Begin the story</a>', 'href="#page-1">Begin the story</a><!-- read-share-top:generated -->\n<!-- /read-share-top:generated -->')
+    .replace('<div class="stack-inline">', '<!-- read-next:generated -->\n<!-- /read-next:generated --><div class="stack-inline">');
 }
 
 function importBook(book) {
   const outDir = path.join(OUT_ROOT, book.id);
   const pagesDir = path.join(outDir, "pages");
-  const copies = [[book.cover, "cover.jpg"], ...book.pages.map((p) => [p.file, p.file])];
+  const copies = [[book.cover, "cover.jpg"], ...book.pages.map((p) => [p.file, jpegName(p.file)])];
 
   const missing = copies.filter(([src]) => !fs.existsSync(path.join(SRC_ART, src)));
   if (missing.length) {
     console.log(`  SKIP ${book.id}: missing art -> ${missing.map((m) => m[0]).join(", ")}`);
-    return false;
+    throw new Error(`${book.id}: complete artwork is required`);
   }
+  if (!book.isFree && !APPROVED_WEB.has(book.id)) throw new Error(`${book.id}: Pro publication requires a separate reviewed approval`);
+  for (const [src, dest] of copies) {
+    const target = path.join(pagesDir, dest);
+    if (fs.existsSync(target)) {
+      const pin = PINS.find(p => p.book === book.id && p.web === `read/${book.id}/pages/${dest}`);
+      if (!pin || pin.app_sha256 !== digest(path.join(SRC_ART, src)) || pin.web_sha256 !== digest(target))
+        throw new Error(`${book.id}/${dest}: art changed; review and use a revisioned web filename before import`);
+    }
+  }
+  // Validate before any writes, so a failed review cannot leave a half import.
+  const html = buildHtml(book);
 
   console.log(`  ${book.id}: "${book.title}" ${book.pages.length}p${book.isFree ? "" : "  [Pro in app]"}`);
   if (!WRITE) {
@@ -171,10 +219,14 @@ function importBook(book) {
   fs.mkdirSync(pagesDir, { recursive: true });
   let bytes = 0;
   for (const [src, dest] of copies) {
-    fs.copyFileSync(path.join(SRC_ART, src), path.join(pagesDir, dest));
+    const target = path.join(pagesDir, dest);
+    if (!fs.existsSync(target)) {
+      execFileSync("magick", [path.join(SRC_ART, src), "-quality", "85", target]);
+      execFileSync("magick", [path.join(SRC_ART, src), "-quality", "82", "-define", "webp:method=6", target.replace(/\.jpg$/, ".webp")]);
+    }
     bytes += fs.statSync(path.join(pagesDir, dest)).size;
   }
-  fs.writeFileSync(path.join(outDir, "index.html"), buildHtml(book));
+  fs.writeFileSync(path.join(outDir, "index.html"), html);
   console.log(`      wrote index.html + ${copies.length} images (${Math.round(bytes / 1024)} KB)`);
   return true;
 }

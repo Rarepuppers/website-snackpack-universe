@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const ids=['pip-sits','nan-and-pip','ten-red-hens','the-cat-and-the-rat','bug-in-a-cup','dog-in-the-fog'];
+const hash=p=>crypto.createHash('sha256').update(fs.readFileSync(path.join(root,p))).digest('hex');
+const files=ids.map(id=>`read/${id}/index.html`).concat(JSON.parse(fs.readFileSync(path.join(root,'data/decodable-art-pins.json'))).map(p=>p.web));
+const before=files.map(hash);
+execFileSync(process.execPath,[path.join(root,'scripts/import-decodable-book.mjs'),'--all','--write'],{cwd:root,stdio:'pipe'});
+assert.deepEqual(files.map(hash),before,'Re-import changed reviewed shell/phonics cues/alt text/controls or artwork.');
+console.log('Decodable round trip: all six reviewed HTML files and 50 derivative images unchanged.');

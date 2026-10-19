@@ -116,6 +116,8 @@ for slug in sorted(os.listdir(READ)):
     if slug == "sound-cards" or not os.path.isfile(path):
         continue
     page = open(path, encoding="utf-8").read()
+    if 'class="story-page-card"' not in page:
+        continue  # Collection/utility pages have their own sharing metadata.
     title = meta(page, "og:title")
     eyebrow_m = re.search(r'<section class="story-title-section">.*?<span class="eyebrow">([^<]*)</span>', page, re.S)
     art_m = re.search(r'<section class="story-title-section">.*?<img src="\./([^"]+)"', page, re.S)

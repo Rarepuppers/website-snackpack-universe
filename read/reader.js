@@ -115,15 +115,22 @@
     if (voice) { u.voice = voice; u.lang = voice.lang; } else { u.lang = "en-GB"; }
     u.rate = RATES[speed];
     u.onboundary = function (e) {
-      if (!speaking || speaking.card !== card || e.name === "sentence") return;
+      if (!speaking || speaking.utterance !== u || e.name === "sentence") return;
       clearSpoken(card);
       for (var i = 0; i < data.words.length; i++) {
         var w = data.words[i];
         if (e.charIndex >= w.start && e.charIndex < w.end) { w.el.classList.add("is-spoken"); break; }
       }
     };
-    u.onend = u.onerror = function () { if (speaking && speaking.card === card) stop(); };
-    speaking = { card: card, button: button };
+    var status = card.querySelector('.read-aloud-status');
+    if (status) status.textContent = '';
+    u.onend = function () { if (speaking && speaking.utterance === u) stop(); };
+    u.onerror = function (event) {
+      if (!speaking || speaking.utterance !== u) return;
+      stop();
+      if (status && event.error !== 'canceled' && event.error !== 'interrupted') status.textContent = 'Read aloud is unavailable right now. You can keep reading.';
+    };
+    speaking = { card: card, button: button, utterance: u };
     button.textContent = "Stop reading";
     button.setAttribute("aria-pressed", "true");
     synth.speak(u);
@@ -149,6 +156,8 @@
       row.className = "read-aloud-row";
       row.appendChild(btn);
       row.appendChild(spd);
+      var status = document.createElement('span');
+      status.className = 'read-aloud-status'; status.setAttribute('role', 'status'); row.appendChild(status);
       // Straight after the story text: before a number story's question box
       // or a "Talk together" note, whichever comes first.
       var after = copy.querySelector(":scope > .math-question, :scope > aside");
@@ -212,6 +221,7 @@
     nextBtn.textContent = current === cards.length - 1 ? "The end" : "Next";
     window.scrollTo(0, 0);
     if (history.replaceState) history.replaceState(null, "", "#" + cards[current].id);
+    document.dispatchEvent(new CustomEvent("snackpack:reading-page", { detail: { index: current, completed: false } }));
   }
 
   function buildBar() {
@@ -234,6 +244,7 @@
     });
     close.addEventListener("click", function () { exit(false); });
     bar.appendChild(prevBtn); bar.appendChild(label); bar.appendChild(nextBtn); bar.appendChild(close);
+    if (window.SnackPackReading) window.SnackPackReading.addTextControl(bar);
     document.body.appendChild(bar);
   }
 
@@ -273,6 +284,7 @@
 
   function exit(toEnd) {
     stop();
+    if (toEnd) document.dispatchEvent(new CustomEvent("snackpack:reading-page", { detail: { index: cards.length - 1, completed: true } }));
     document.body.classList.remove("reader-mode");
     cards.forEach(function (c) { c.classList.remove("is-current"); });
     if (bar) bar.hidden = true;

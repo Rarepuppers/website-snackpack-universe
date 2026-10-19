@@ -58,6 +58,24 @@ jobs:
       - name: Check complete alphabet publication guards
         run: node scripts/test-alphabet-book.mjs
 
+      - name: Check reading publication evidence and source/art boundaries
+        run: node scripts/check-read-publication.mjs
+
+      - name: Exercise publication failures against real artifacts
+        run: node scripts/test-read-publication.mjs
+
+      - name: Install printable verification dependency
+        run: python -m pip install pypdf==6.1.1
+
+      - name: Check actual printable story and question text
+        run: python scripts/check-read-pdf-text.py
+
+      - name: Check collection PDF source hashes and text
+        run: python scripts/build-read-collection-pdfs.py --check
+
+      - name: Check printable collection pages
+        run: node scripts/build-read-collections.mjs --check
+
       - name: Enforce new arcade game quality bar
         run: node scripts/check-new-game.mjs
 

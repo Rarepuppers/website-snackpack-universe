@@ -9,6 +9,9 @@ import vm from "node:vm";
 const root = path.resolve(".");
 const candidates = [
   path.join(root, "sw.js"),
+  ...fs.readdirSync(path.join(root, "read"), { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".js"))
+    .map((entry) => path.join(root, "read", entry.name)),
   ...fs.readdirSync(path.join(root, "play"), { withFileTypes: true })
     .filter((entry) => entry.isFile() && entry.name.endsWith(".js"))
     .map((entry) => path.join(root, "play", entry.name)),

@@ -325,6 +325,51 @@ const BOOKS = {
       "Centi-Peed and Shelly-Pop dance across the finish behind a bee and a ladybird holding their ribbons."
     ]
   },
+  "pita-pan-mountain-climb": {
+    "source": "short",
+    "rev": 2,
+    "slug": "pita-pans-mountain-climb",
+    "skill": "Friendship",
+    "lead": "A four-page mountain adventure about a frightened climber, a blue rope and a summit reached together.",
+    "blurb": "Pita-Pan wants to climb alone. Helping a younger goat changes what reaching the summit means.",
+    "about": "Cooperation, listening and helping a frightened friend",
+    "alts": [
+      "Pita-Pan ties a blue climbing rope on a rocky ledge beneath a distant summit bell.",
+      "Pita-Pan anchors the blue rope beside a worried younger goat on a narrow ledge.",
+      "The younger goat points towards the sound of a bell through cloud while Pita-Pan holds their rope.",
+      "The two goats stand together beside the summit bell above a golden valley."
+    ]
+  },
+  "octo-pop-coral-reef": {
+    "source": "short",
+    "rev": 2,
+    "slug": "octo-pops-coral-reef",
+    "skill": "Teamwork",
+    "lead": "A four-page reef rescue about eight strong arms, tiny helpers and a pearl passed from fin to fin.",
+    "blurb": "Octo-Pop holds the reef steady. A chain of tiny fish retrieves the light he cannot reach.",
+    "about": "Teamwork and different kinds of strength in a fantasy reef rescue",
+    "alts": [
+      "Octo-Pop, a purple octopus with an orange star, meets tiny fish beside fallen coral blocking a reef arch.",
+      "Octo-Pop carries two stones while steadying the coral; helmeted Cereal-Swimmer arrives with a glowing pearl.",
+      "Tiny fish form a passing chain towards a glowing pearl in a crack while Octo-Pop holds the coral.",
+      "A chain of colourful fish returns the glowing pearl through the cleared reef arch."
+    ]
+  },
+  "shelly-pop-slow-and-steady": {
+    "source": "short",
+    "rev": 2,
+    "slug": "shelly-pops-slow-and-steady",
+    "skill": "Adventure",
+    "lead": "A four-page picnic story about noticing a quiet shortcut before the rain arrives.",
+    "blurb": "While everyone hurries, Shelly-Pop notices ants and white pebbles that point to a careful shortcut.",
+    "about": "Careful observation, calm thinking and helping at a picnic",
+    "alts": [
+      "Shelly-Pop stretches beside her basket of berry cakes outside a cottage under gathering clouds.",
+      "Shelly-Pop notices ants beside a crack in a wall as other walkers hurry along the wide path.",
+      "Shelly-Pop carries her basket along a line of pale pebbles through clover.",
+      "Shelly-Pop covers the berry cakes at the picnic as rain begins and the other walkers arrive."
+    ]
+  },
   "nutmeg-four-seasons": {
     source: "short", slug: "nutmegs-four-seasons", skill: "Nature",
     lead: "A four-page story that follows one little oak tree through spring, summer, autumn and winter.",

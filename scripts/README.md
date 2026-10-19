@@ -1,5 +1,10 @@
 # Scripts
 
+Reading publication: [workflow and source/art/PDF safeguards](../docs/READING-PUBLICATION.md).
+Use `npm run verify:reads` with companion app sources and `npm run test:reads`
+before publishing a reading change. CI explicitly distinguishes committed
+publication evidence from a fresh comparison against the app checkout.
+
 ## Before you push
 
 | Script | What it does | When to run |

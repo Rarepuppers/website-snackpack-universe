@@ -7,11 +7,12 @@ Shipped changes are in [release notes](docs/RELEASE-NOTES.md).
 
 ## Current delivery
 
-**47 books, 279 story pages, 47 printable PDFs.** All page texts match current
+**50 books, 291 story pages, 50 printable PDFs.** All page texts match current
 exported app data, allowing importer quote/dash typography. All primary app
 quizzes used by published Spelling books match the website. Every PDF contains
-its story prose. The 43 previously published article sets/PDFs were verified live; the four
-19 October additions are covered by the publication verification record. There
+its story prose. The 47 previously published article sets/PDFs were verified live;
+the three new reserve books and collections are covered by
+[this batch's delivery record](docs/READS-POLISH-DELIVERY-2026-10-19.md). There
 is no text re-import or PDF rebuild backlog. This is a source/parity audit,
 not a fresh visual or scientific fact review of every illustration/sentence.
 
@@ -20,7 +21,7 @@ not a fresh visual or scientific fact review of every illustration/sentence.
 | Complete alphabet picture books | 1 |
 | Stage 1-3 decodables | 6 |
 | Reading Trail | 6 |
-| Short reads | 16 |
+| Short reads | 19 |
 | Number stories | 16 |
 | Animal fact books | 1 |
 | Read-aloud picture books | 1 |
@@ -37,6 +38,31 @@ Claude owns release preparation/build/submission for the changed ABCs,
 Counting, Spelling, Basic Math and Zoo apps. Confirm the next release's
 source commit contains the relevant changes; no new build was run here.
 
+## Latest approved improvements - 19 October
+
+- Search titles/characters/topics with shareable query, age/type filters and
+  one reset; Start here links explain the available reading paths.
+- Device-only reading position, explicit Resume/Start again, Forget action,
+  and normal/larger text controls, including one-page mode. Blocked/corrupt
+  storage cannot block reading. Related books follow quiet/kindness/skill
+  choices while phonics keeps its stage/step order.
+- The three free reserve stories add twelve pages. Coral Reef page 2 now
+  shows four arms on two stones and four on the coral, corrected in the app
+  first. The other eleven pictures and all app text/quizzes are retained.
+- Three printable collections reuse approved books: first phonics (57 printed
+  pages), quiet stories (11) and kindness (31). Contents/bookmarks and individual
+  downloads included; collections are not additional books in the shelf count.
+- Publication checks now compare actual current app exports locally and
+  committed evidence explicitly in CI; art/metadata/PDF text and six-book
+  decodable round-trip checks catch changed or incomplete imports.
+- Complete Ted-set audit retains the coherent story-specific vest artwork;
+  a future style-unification commission would involve 14 pages and must
+  preserve the vest/button/pocket plot rather than replacing two covers.
+
+Full implementation/verification: [delivery record](docs/READS-POLISH-DELIVERY-2026-10-19.md).
+Publication commands and safeguards: [workflow](docs/READING-PUBLICATION.md).
+The accepted detailed plan is monorepo `docs/READS-NEXT-BATCH-PLAN-2026-10-19.md`.
+
 ## Work remaining now
 
 | Task | Source work | Website work | Owner / next step |
@@ -44,7 +70,7 @@ source commit contains the relevant changes; no new build was run here.
 | Other Spelling books held back on quality | Source repairs completed across 27 books including the four above; four additional Deep Glow/Metamorphosis pictures repaired | Keep off shelf until each book's full art and publication review passes | Claude review; no blanket approval for remaining books |
 | Safari Morning | All nine source pages repaired, display/TTS aligned, factual references registered | Not published; original-art decision remains deferred | Claude app release handoff; Zoo expansion decision after re-measure |
 | Read to me | No source defect demonstrated; real Android/iOS voice and boundary check lacks recorded evidence | Check actual audio, highlighting, pause and speed on devices | Mark/device tester |
-| Decodable importer | Template warning says re-importing a live book strips modern reader features | Modernise before next existing-book re-import; do not regenerate these six now | Maintenance before next import |
+| Decodable importer | Modernised; six-book round trip preserves reviewed layouts and 50 image derivatives; changed source art fails for review | Permanent source/art/PDF checks and real-output failure tests wired into CI | Complete; see publication workflow |
 
 Source repairs completed on 19 October. Monorepo delivery evidence is in
 `docs/SHORT-READS-CONTENT-HANDOFF-2026-10-19.md` and
@@ -74,11 +100,13 @@ and submissions remain with Claude unless Mark assigns a specific release.
 - For another Zoo book, prefer a quality read of Ocean Dive or Jungle
   Secrets if Animal Architects shows demand. Stock photography is not an
   approved substitute for original page art; audit provenance first.
-- Consider the five reviewed reserve short reads: Mountain Climb, Coral
-  Reef, Luckybug's Art Gallery, Corgi's Countryside Run and Slow and Steady.
+- Mountain Climb, Coral Reef and Slow and Steady completed review and join
+  this batch. Luckybug's Art Gallery and Corgi's Countryside Run remain reserve
+  candidates. Deep Glow and Metamorphosis were fully reviewed but are Pro in
+  the app; retain the November publication decision for them.
 
 Outreach remains Mark's task. [The teacher-resource pitch](LINK-BUILDING-PLAN.md)
-now describes 47 books; no outreach messages were sent. Keep the existing
+now describes 50 books; no outreach messages were sent. Keep the existing
 re-measure schedule rather than creating a duplicate reminder.
 
 ## Publication rules and implementation
@@ -90,7 +118,7 @@ editorial. Free in the app, or explicit approval for free-web Pro content.
 
 | App content | Importer under `scripts/` |
 |---|---|
-| ABC decodables | `import-decodable-book.mjs` (stale template; see maintenance task) |
+| ABC decodables | `import-decodable-book.mjs` (preserves reviewed shell; pinned art; round-trip guard) |
 | ABC full A-Z | `import-alphabet-book.mjs` (26 pages, art pins and hashes) |
 | ABC featured story | `import-abc-story.py` |
 | Spelling Reading Trail and short reads | `import-reading-trail-book.mjs` |
