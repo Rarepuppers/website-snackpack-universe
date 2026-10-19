@@ -24,7 +24,12 @@
   var empty = document.querySelector("[data-filter-empty]");
   var groups = Array.prototype.slice.call(document.querySelectorAll(".read-shelf-group"));
   var params = new URLSearchParams(location.search);
-  var state = { kind: params.get("type") || "all", age: params.get("age") || "all" };
+  var search = bar.querySelector("[data-read-search]");
+  var state = { kind: params.get("type") || "all", age: params.get("age") || "all", query: (params.get("q") || "").slice(0, 120) };
+  if (search) search.value = state.query;
+  function folded(text) {
+    return String(text).normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  }
 
   function range(text) {
     var p = String(text).split("-");
@@ -33,6 +38,9 @@
 
   function matches(card) {
     if (state.kind !== "all" && card.getAttribute("data-kind") !== state.kind) return false;
+    var text = folded(card.getAttribute("data-search") || card.textContent);
+    var words = folded(state.query).split(/\s+/).filter(Boolean);
+    if (!words.every(function (word) { return text.indexOf(word) !== -1 || text.replace(/ /g, "").indexOf(word) !== -1; })) return false;
     if (state.age === "all") return true;
     var book = range(card.getAttribute("data-age"));
     var want = range(state.age);
@@ -48,8 +56,9 @@
   function apply(updateUrl) {
     // An unknown value in a shared link (e.g. a typo) falls back to "all",
     // and the address bar is tidied so the bad value is not passed on.
-    if (!bar.querySelector('[data-filter-kind="' + state.kind + '"]')) { state.kind = "all"; updateUrl = true; }
-    if (!bar.querySelector('[data-filter-age="' + state.age + '"]')) { state.age = "all"; updateUrl = true; }
+    function valid(attr, value) { return Array.prototype.some.call(bar.querySelectorAll("[" + attr + "]"), function (b) { return b.getAttribute(attr) === value; }); }
+    if (!valid("data-filter-kind", state.kind)) { state.kind = "all"; updateUrl = true; }
+    if (!valid("data-filter-age", state.age)) { state.age = "all"; updateUrl = true; }
     syncButtons("data-filter-kind", state.kind);
     syncButtons("data-filter-age", state.age);
     var shown = 0;
@@ -64,13 +73,15 @@
       var chip = document.querySelector('.read-jump-chip[href="#' + g.id + '"]');
       if (chip) chip.hidden = !any;
     });
-    var filtered = state.kind !== "all" || state.age !== "all";
+    var filtered = state.kind !== "all" || state.age !== "all" || state.query.trim();
     status.textContent = filtered ? "Showing " + shown + " of " + cards.length + " books" : "";
+    var clear = bar.querySelector('[data-read-reset]'); if (clear) clear.hidden = !filtered;
     if (empty) empty.hidden = shown > 0;
     if (updateUrl && window.history && history.replaceState) {
       var q = new URLSearchParams(location.search);
       if (state.kind === "all") q.delete("type"); else q.set("type", state.kind);
       if (state.age === "all") q.delete("age"); else q.set("age", state.age);
+      if (!state.query.trim()) q.delete("q"); else q.set("q", state.query.trim());
       var qs = q.toString();
       history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + location.hash);
     }
@@ -79,16 +90,26 @@
   bar.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest("button");
     if (!b) return;
-    if (b.hasAttribute("data-filter-kind")) state.kind = b.getAttribute("data-filter-kind");
+    if (b.hasAttribute("data-read-reset")) { state = { kind: "all", age: "all", query: "" }; if (search) { search.value = ""; search.focus(); } }
+    else if (b.hasAttribute("data-filter-kind")) state.kind = b.getAttribute("data-filter-kind");
     else if (b.hasAttribute("data-filter-age")) state.age = b.getAttribute("data-filter-age");
     else return;
     apply(true);
   });
 
+  if (search) search.addEventListener("input", function () { state.query = search.value.slice(0, 120); apply(true); });
+  window.addEventListener("popstate", function () {
+    var p = new URLSearchParams(location.search);
+    state = { kind: p.get("type") || "all", age: p.get("age") || "all", query: (p.get("q") || "").slice(0, 120) };
+    if (search) search.value = state.query;
+    apply(false);
+  });
+
   if (empty) {
     var reset = empty.querySelector("[data-filter-reset]");
     if (reset) reset.addEventListener("click", function () {
-      state = { kind: "all", age: "all" };
+      state = { kind: "all", age: "all", query: "" };
+      if (search) search.value = "";
       apply(true);
       var first = bar.querySelector("button");
       if (first) first.focus();

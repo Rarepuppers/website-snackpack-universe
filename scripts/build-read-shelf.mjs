@@ -23,6 +23,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isVariant, sourceTag } from "./lib/read-srcset.mjs";
+import { READ_COLLECTIONS } from "./lib/read-collections.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://www.snackpackuniverse.com";
@@ -79,6 +80,9 @@ const SHELF = [
   {"slug": "wise-owls-library-day", "group": "short", "age": [5, 8], "added": "2026-10-19", "title": "Wise Owl’s Library Day", "eyebrow": "Short read · Kindness · 4 pages", "blurb": "A gust carries Quill-Berry’s poem away. Meow-inara offers one friendly listener.", "cover": "pages/wise-owl-library-day-p1-r2", "ext": "jpg", "alt": "", "w": 768, "h": 1152},
   {"slug": "meow-inaras-moonlight-story", "group": "short", "age": [5, 8], "added": "2026-10-19", "title": "Meow-inara’s Moonlight Story", "eyebrow": "Short read · Feelings · 4 pages", "blurb": "Tomorrow’s concert keeps Meow-inara awake. Wise Owl finds a story with room for an imperfect first note.", "cover": "pages/meow-inara-moonlight-p1-r2", "ext": "jpg", "alt": "", "w": 768, "h": 1152},
   {"slug": "centi-peeds-garden-race", "group": "short", "age": [5, 8], "added": "2026-10-19", "title": "Centi-Peed’s Garden Race", "eyebrow": "Short read · Kindness · 4 pages", "blurb": "Centi-Peed races ahead, then hears Shelly-Pop call. Helping her matters more than winning.", "cover": "pages/centi-peed-garden-race-p1-r2", "ext": "jpg", "alt": "", "w": 768, "h": 1152},
+  {"slug": "pita-pans-mountain-climb", "group": "short", "age": [5, 8], "added": "2026-10-19", "title": "Pita-Pan’s Mountain Climb", "eyebrow": "Short read · Friendship · 4 pages", "blurb": "Pita-Pan wants to climb alone. Helping a younger goat changes what reaching the summit means.", "cover": "pages/pita-pan-mountain-climb-p1-r2", "ext": "jpg", "alt": "", "w": 768, "h": 1152},
+  {"slug": "octo-pops-coral-reef", "group": "short", "age": [5, 8], "added": "2026-10-19", "title": "Octo-Pop’s Coral Reef", "eyebrow": "Short read · Teamwork · 4 pages", "blurb": "Octo-Pop holds the reef steady. A chain of tiny fish retrieves the light he cannot reach.", "cover": "pages/octo-pop-coral-reef-p1-r2", "ext": "jpg", "alt": "", "w": 768, "h": 1152},
+  {"slug": "shelly-pops-slow-and-steady", "group": "short", "age": [5, 8], "added": "2026-10-19", "title": "Shelly-Pop’s Slow and Steady", "eyebrow": "Short read · Adventure · 4 pages", "blurb": "While everyone hurries, Shelly-Pop notices ants and white pebbles that point to a careful shortcut.", "cover": "pages/shelly-pop-slow-and-steady-p1-r2", "ext": "jpg", "alt": "", "w": 768, "h": 1152},
   { slug: "ted-e-bear-and-the-button-trail", group: "numbers", age: [3, 4], added: "2026-08-12", title: "Ted‑E‑Bear and the Button Trail", eyebrow: "Counting · 6 pages", blurb: "Follow a missing-button mystery through counting, number order, comparisons and courage.", cover: "pages/cover", ext: "png", alt: "Ted-E-Bear and the Button Trail story cover.", w: 640, h: 640 },
   { slug: "panda-cakes-market-basket", group: "numbers", age: [3, 4], added: "2026-10-17", title: "Panda‑Cake’s Market Basket", eyebrow: "Counting · 6 pages", blurb: "Apples, berries, buns and one tiny honey jar. Panda-Cake counts the picnic basket full, with room to share.", cover: "pages/page-1", ext: "jpg", alt: "Panda-Cake in a chef’s hat reaches for three rolling apples.", w: 1200, h: 800 },
   { slug: "sub-zero-and-the-snowflake-post", group: "numbers", age: [4, 5], added: "2026-10-17", title: "Sub‑Zero and the Snowflake Post", eyebrow: "Number order · 6 pages", blurb: "A gust mixes up every parcel. Sub-Zero and Booklava put the numbers back in order before the sun gets warm.", cover: "pages/page-1", ext: "jpg", alt: "Sub-Zero the penguin in the snowy post office with Booklava the owl.", w: 1200, h: 800 },
@@ -108,7 +112,9 @@ const plainTitle = (t) => t.replace(/‑/g, "-");
 
 function card(b, i) {
   const src = `./${b.slug}/${b.cover}`;
-  return `<a class="read-library-card" href="./${b.slug}/" data-kind="${KIND[b.group]}" data-age="${b.age[0]}-${b.age[1]}" data-added="${b.added}"><picture>${sourceTag(path.join(ROOT, "read", b.slug, `${b.cover}.webp`), src, "hub")}<img src="${src}.${b.ext}" alt="${b.alt}" width="${b.w}" height="${b.h}"${i > 2 ? " loading=\"lazy\"" : ""}></picture><div><span class="eyebrow">${b.eyebrow}</span><h3>${plainTitle(b.title)}</h3><p>${b.blurb}</p><span class="btn btn-primary">Read the story</span></div></a>`;
+  const escape = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  const pages = (fs.readFileSync(path.join(ROOT, "read", b.slug, "index.html"), "utf8").match(/<article class="story-page-card"/g) || []).length;
+  return `<a class="read-library-card" href="./${b.slug}/" data-search="${escape(`${b.title} ${b.eyebrow} ${b.blurb}`)}" data-pages="${pages}" data-kind="${KIND[b.group]}" data-age="${b.age[0]}-${b.age[1]}" data-added="${b.added}"><picture>${sourceTag(path.join(ROOT, "read", b.slug, `${b.cover}.webp`), src, "hub")}<img src="${src}.${b.ext}" alt="${b.alt}" width="${b.w}" height="${b.h}"${i > 2 ? " loading=\"lazy\"" : ""}></picture><div><span class="eyebrow">${b.eyebrow}</span><h3>${plainTitle(b.title)}</h3><p>${b.blurb}</p><span class="btn btn-primary">Read the story</span></div></a>`;
 }
 
 // Stage shortcuts (a 13-book shelf is a long scroll on a phone) and the
@@ -122,18 +128,24 @@ const AGES = [["3-4", "Ages 3–4"], ["5-6", "5–6"], ["7-8", "7–8"], ["9-10"
 function filterBar() {
   const btn = (attr, val, label, on) => `<button type="button" class="read-filter-btn" ${attr}="${val}" aria-pressed="${on}">${label}</button>`;
   return `<div class="read-filters" hidden>
+<label class="read-search-label" for="read-search">Find a book</label><input class="read-search" type="search" id="read-search" data-read-search maxlength="120" placeholder="Title, character or topic" autocomplete="off" aria-describedby="read-search-help"><p id="read-search-help" class="read-search-help">Try Ted, bedtime, kindness or counting. Age ranges are a guide; choose a comfortable reading step.</p>
 <div class="read-filter-row" role="group" aria-label="Type of book">${btn("data-filter-kind", "all", "All books", "true")}${KINDS.map(([v, l]) => btn("data-filter-kind", v, l, "false")).join("")}</div>
 <div class="read-filter-row" role="group" aria-label="Reader's age">${btn("data-filter-age", "all", "Any age", "true")}${AGES.map(([v, l]) => btn("data-filter-age", v, l, "false")).join("")}</div>
 <p class="read-filter-status" aria-live="polite" data-filter-status></p>
+<button type="button" class="text-link" data-read-reset hidden>Clear search and filters</button>
 </div>
-<p class="read-filter-empty" hidden data-filter-empty>No books match both filters yet. <button type="button" class="text-link read-filter-reset" data-filter-reset>Show every book</button></p>
+<p class="read-filter-empty" hidden data-filter-empty>No books match this search and these filters. <button type="button" class="text-link read-filter-reset" data-filter-reset>Show every book</button></p>
 <script defer src="./shelf-filter.js"></script>`;
 }
 
 function shelfTools() {
   const chips = GROUPS.filter((g) => SHELF.some((b) => b.group === g.id))
     .map((g) => `<a class="read-jump-chip" href="#${g.id}">${g.title.split(" · ")[0]}</a>`).join("");
-  return `<nav class="read-jump" aria-label="Jump to a stage">${chips}</nav>
+  return `<details class="read-start"><summary>Help me choose a book</summary><p>Start with what your reader enjoys and can comfortably do. Read-together stories can use words beyond a child's independent reading level.</p><div class="read-start-links"><a class="text-link" href="?type=alphabet#alphabet">Learning letters</a><a class="text-link" href="?type=phonics#stage-1">Sounding out words</a><a class="text-link" href="?type=stories#short">Reading together</a><a class="text-link" href="?type=maths#numbers">Practising maths</a></div></details>
+<p class="read-collections-link"><a class="text-link" href="./collections/">Printable collections: first phonics, quiet stories and kindness</a></p>
+<section class="read-continue" data-read-continue aria-label="Your reading position" hidden></section>
+<script defer src="./reading-position.js"></script>
+<nav class="read-jump" aria-label="Jump to a stage">${chips}</nav>
 ${filterBar()}
 <div class="read-offline" hidden><button class="btn btn-secondary" type="button" data-read-offline>Save the bookshelf for offline</button><p class="read-offline-status" data-read-offline-status aria-live="polite"></p></div>
 <script defer src="./offline.js"></script>`;
@@ -180,13 +192,21 @@ function shareTopBlock() {
 }
 
 function nextBlock(i) {
-  const next = SHELF[i + 1];
-  const share = `<p class="story-share">Know a family or class who would enjoy it? ${SHARE_BUTTON("btn btn-secondary read-share-btn")}</p>\n<script defer src="../share.js"></script>\n<script defer src="../reader.js"></script>`;
+  const book = SHELF[i];
+  // Preserve the ordered phonics path. Other readers can choose a related book.
+  const collections = READ_COLLECTIONS.filter(c => c.id !== 'first-phonics').map(c => c.books);
+  const collection = collections.find((list) => list.includes(book.slug));
+  const relatedSlug = collection && collection[(collection.indexOf(book.slug) + 1) % collection.length];
+  const skill = book.eyebrow.split(" · ")[1];
+  const related = relatedSlug ? SHELF.find((b) => b.slug === relatedSlug) : book.group === "short" ?
+    SHELF.slice(i + 1).concat(SHELF.slice(0, i)).find((b) => b.group === book.group && b.eyebrow.split(" · ")[1] === skill) : null;
+  const next = related || SHELF[i + 1];
+  const share = `<p class="story-share">Know a family or class who would enjoy it? ${SHARE_BUTTON("btn btn-secondary read-share-btn")}</p>\n<script defer src="../share.js"></script>\n<script defer src="../reading-position.js"></script>\n<script defer src="../reader.js"></script>`;
   if (!next) {
     return `<p class="story-next">That’s the whole shelf, and every book has a printable PDF. <a class="text-link" href="../">Back to the bookshelf</a></p>\n${share}`;
   }
   const g = GROUPS.find((x) => x.id === next.group);
-  const label = g.id === SHELF[i].group ? "Next story" : `Next: ${g.title.split(" · ")[0]}`;
+  const label = related ? (collection === collections[0] ? "Another quiet read-together story" : collection ? "Another story about kindness" : `Another ${skill.toLowerCase()} story`) : g.id === book.group ? "Next story" : `Next: ${g.title.split(" · ")[0]}`;
   return `<p class="story-next"><span class="eyebrow">${label}</span><a class="story-next-link" href="../${next.slug}/">${next.title} <span aria-hidden="true">→</span></a></p>\n${share}`;
 }
 
@@ -314,7 +334,7 @@ SHELF.forEach((b, i) => {
 // its WebP art (the <picture> source every current browser picks), plus the
 // shared CSS, scripts and fonts those pages need. PDFs are deliberately out.
 function offlineManifest() {
-  const urls = ["/read/", "/read/sound-cards/"];
+  const urls = ["/read/", "/read/sound-cards/", "/read/collections/", ...READ_COLLECTIONS.map(c => `/read/collections/${c.id}/`)];
   for (const b of SHELF) {
     urls.push(`/read/${b.slug}/`);
     const dir = path.join(ROOT, "read", b.slug, "pages");
@@ -322,7 +342,7 @@ function offlineManifest() {
     // sw.js answers an unsaved size with the saved original when offline.
     for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".webp") && !isVariant(f)).sort()) urls.push(`/read/${b.slug}/pages/${f}`);
   }
-  urls.push("/site.css", "/theme.js", "/read/share.js", "/read/reader.js", "/read/offline.js", "/read/shelf-filter.js",
+  urls.push("/site.css", "/theme.js", "/read/share.js", "/read/reader.js", "/read/reading-position.js", "/read/offline.js", "/read/shelf-filter.js",
     "/assets/fonts/fonts.css", "/assets/favicon-32.png", "/assets/snackpack-mark-96.png");
   for (const f of fs.readdirSync(path.join(ROOT, "assets/fonts")).filter((f) => f.endsWith(".woff2")).sort()) urls.push(`/assets/fonts/${f}`);
   // The size shown to readers counts only the book art (~95% of the download).
@@ -366,6 +386,10 @@ function guideMoreBlock() {
   const phonics = SHELF.filter((b) => ["stage-1", "stage-2", "stage-3", "trail"].includes(b.group)).length;
   const PhonicsWord = NUMBER_WORDS[phonics] ?? String(phonics);
   let guide = splice(fs.readFileSync(path.join(ROOT, GUIDE), "utf8"), "read-guide-more:generated", guideMoreBlock(), GUIDE);
+  guide = guide.replace(/Parent and teacher guide · [^<]+/, 'Parent and teacher guide · Updated October 2026')
+    .replace(/"dateModified": "[^"]+"/, '"dateModified": "2026-10-19"')
+    .replace(/<p class="lead">Download warm,[\s\S]*?<\/p>/, `<p class="lead">Start with ${phonics} phonics books: six staged first readers and six Reading Trail stories. They are part of our ${n}-book illustrated shelf, which also includes read-together stories, alphabet, maths and animal books. Read online or print a PDF, with no account, email gate or ads.</p>`);
+  if (!guide.includes('read-printable-collections')) guide = guide.replace('<section id="books">', '<section class="read-printable-collections"><div class="shell"><h2>Print a small collection</h2><p>Choose first phonics readers, quiet stories or kindness. Each collection lists its books, file size and printed pages, with individual downloads too.</p><a class="btn btn-secondary" href="../../read/collections/">Browse printable collections</a></div></section>\n<section id="books">');
   const rules = [
     [/\b(\d+|Eight) Free Printable Decodable Readers/g, `${phonics} Free Printable Decodable Readers`],
     [/<h1>\w+ free printable readers for early phonics practice<\/h1>/, `<h1>${PhonicsWord} free printable readers for early phonics practice</h1>`],

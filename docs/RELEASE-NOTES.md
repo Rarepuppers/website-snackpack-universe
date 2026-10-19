@@ -5,6 +5,22 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-19 - Find, resume and print the next book
+
+- Bookshelf search works with age/type filters and shareable query links.
+  A Start here chooser helps families pick a comfortable reading path.
+- Reading position and normal/larger story text are remembered only on the
+  device, with explicit Resume, Start again and Forget controls. One-page
+  mode includes text size; enlarged text fits narrow readers. Read-aloud
+  stale-event handling and visible failure feedback are improved.
+- Added Mountain Climb, Coral Reef and Slow and Steady, taking the shelf to
+  50 books / 291 story pages / 50 individual PDFs. Coral Reef's four-plus-four
+  arm picture is corrected in its owning app too.
+- Added three printable collections with contents/bookmarks and individual
+  downloads, and related-book choices for quiet/kindness/skill stories.
+- Decodable imports preserve reviewed layouts and pinned art. Maintained
+  source/art/PDF publication checks and real-output mutation tests run in CI.
+
 ## 2026-10-19 - Four illustrated short reads
 
 Published in `7077125b`; all four live books and their PDF/art hashes verified.

@@ -1,0 +1,452 @@
+[
+  {
+    "book": "pip-sits",
+    "app": "assets/decodable/pip-sits-page-1.webp",
+    "app_sha256": "2b6b68e596d448a5ed057f80051490be4b10138f961375d02cfe29fc07f0643e",
+    "web": "read/pip-sits/pages/pip-sits-page-1.jpg",
+    "web_sha256": "5bbb9b2eab8fd5fe506cf3c864318ce9fb12c0bdea4964e8cf15afec3b68e005",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8719
+  },
+  {
+    "book": "pip-sits",
+    "app": "assets/decodable/pip-sits-page-2.webp",
+    "app_sha256": "8c144213546f0dac9131e3c26f79da514a4e80be7c1d36013a74ec7e639e7250",
+    "web": "read/pip-sits/pages/pip-sits-page-2.jpg",
+    "web_sha256": "8584f31da14ce8b27cf38bd0c836e37f4ab154ac6f50cd467df49780cf3317a2",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8651
+  },
+  {
+    "book": "pip-sits",
+    "app": "assets/decodable/pip-sits-page-3.webp",
+    "app_sha256": "2fa2b9311372aaef74a22986844c991fda2765809ece515e67950adc77ec82bc",
+    "web": "read/pip-sits/pages/pip-sits-page-3.jpg",
+    "web_sha256": "84b48d84ac25c5c058ee25ca844a8a8033f004a8a74d8475e3c3b5b97b966e7b",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8648
+  },
+  {
+    "book": "pip-sits",
+    "app": "assets/decodable/pip-sits-page-4.webp",
+    "app_sha256": "6c22745502668118d530560c3546975cec87bc8aba02bf9d18d456259d18bc68",
+    "web": "read/pip-sits/pages/pip-sits-page-4.jpg",
+    "web_sha256": "f8c914a76c25fff38e62fcd92ea7a6219d1d5aa9e906e8c430fbf2273c790e5b",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.87
+  },
+  {
+    "book": "pip-sits",
+    "app": "assets/decodable/pip-sits-page-5.webp",
+    "app_sha256": "7553f44e54c9c93b140467ac738098659c0ec665292665971689f9d5075c73e9",
+    "web": "read/pip-sits/pages/pip-sits-page-5.jpg",
+    "web_sha256": "c078b1016119fbc72af96ee03f56a4fc57e9bb2a2ece6291877540bb7e7cd7a1",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8887
+  },
+  {
+    "book": "pip-sits",
+    "app": "assets/decodable/pip-sits-page-6.webp",
+    "app_sha256": "085a64cfa7d1071ca808214e9cedf6cb2d3f5cca0d1de45cef6574a4c7834768",
+    "web": "read/pip-sits/pages/pip-sits-page-6.jpg",
+    "web_sha256": "0d9dc994568be68485de0eb418c5282fe9ee6a4e41502233467595abbb95ee9b",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8558
+  },
+  {
+    "book": "pip-sits",
+    "app": "assets/decodable/pip-sits-cover.webp",
+    "app_sha256": "2e2e313df0d6cd35317a585f4d7fb83cf68bb5724cd8e945c70521afc8a6b487",
+    "web": "read/pip-sits/pages/cover.jpg",
+    "web_sha256": "bd635fa6a76971bca0f251c5322453de74ecd7edce88a10811254f7880fa4420",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.6976
+  },
+  {
+    "book": "nan-and-pip",
+    "app": "assets/decodable/nan-and-pip-page-1.webp",
+    "app_sha256": "b6d57fe4ca0bd5284b81a5fc898fe15e1934b9de5495934f0863c4f8fe4635fd",
+    "web": "read/nan-and-pip/pages/nan-and-pip-page-1.jpg",
+    "web_sha256": "6254f2bf3cc1f820ee100e3c810d7b7a07f8e20ec91f8c850de35ace5a15c4bf",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.868
+  },
+  {
+    "book": "nan-and-pip",
+    "app": "assets/decodable/nan-and-pip-page-2.webp",
+    "app_sha256": "455624fee0cf78df3d78b8251efac391361f9ff596a9b02fd07d5b86b8d116d4",
+    "web": "read/nan-and-pip/pages/nan-and-pip-page-2.jpg",
+    "web_sha256": "82017e2311e9533fd21cabbc7c2eabf1cb2361c5bf77d80e0a5ab5e2c24d8e41",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8424
+  },
+  {
+    "book": "nan-and-pip",
+    "app": "assets/decodable/nan-and-pip-page-3.webp",
+    "app_sha256": "7bf6da112971c0d0730773ecb47ebb28c23c6fca7fed97880d2d4da4fc8bea02",
+    "web": "read/nan-and-pip/pages/nan-and-pip-page-3.jpg",
+    "web_sha256": "a6fec4000aec73b4ff9e1f31d8ec967217204dbcdae98d6e39fb9ceec27f8fe8",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8867
+  },
+  {
+    "book": "nan-and-pip",
+    "app": "assets/decodable/nan-and-pip-page-4.webp",
+    "app_sha256": "6a54f401b6f20a8b0aa4b6e3919eed0b5dae4f4f2612576535acd52d1b47bd1e",
+    "web": "read/nan-and-pip/pages/nan-and-pip-page-4.jpg",
+    "web_sha256": "abad7a912fc2311cd113c79d128b9c2323b9bc172582949cbd30003cdf8eac36",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8409
+  },
+  {
+    "book": "nan-and-pip",
+    "app": "assets/decodable/nan-and-pip-page-5.webp",
+    "app_sha256": "d93d6fa97f2ed437bd3969fd31c3d7b4e5625469fdceb3dffee322e1ee485c8b",
+    "web": "read/nan-and-pip/pages/nan-and-pip-page-5.jpg",
+    "web_sha256": "6c2d8ea3bb5e8f8390b27034cc2ac2d045ea96a3b8d8d08931c09f66bde78ed2",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.9036
+  },
+  {
+    "book": "nan-and-pip",
+    "app": "assets/decodable/nan-and-pip-page-6.webp",
+    "app_sha256": "66bbb520c2a5dbccb934f38c01dd707e581b702a0d0c7eb1ba277f07d9ff74ed",
+    "web": "read/nan-and-pip/pages/nan-and-pip-page-6.jpg",
+    "web_sha256": "d592bd02a655df9f3a027f8544e450aeec8a5984eac2bb088406065cb404d48c",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8434
+  },
+  {
+    "book": "nan-and-pip",
+    "app": "assets/decodable/nan-and-pip-cover.webp",
+    "app_sha256": "756bb4f42278840af5e713d778c79379dfd587df6a94070c02a619f3c1223e59",
+    "web": "read/nan-and-pip/pages/cover.jpg",
+    "web_sha256": "46ab6e76b58940f663e0bb7df37a02ad44a8d7b2d18211663cce79d3c34ad7f0",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.6877
+  },
+  {
+    "book": "ten-red-hens",
+    "app": "assets/decodable/ten-red-hens-page-1.webp",
+    "app_sha256": "6ed84135521697613d1ce407559753c0c99a591728b1e86020e2cd91325294c3",
+    "web": "read/ten-red-hens/pages/ten-red-hens-page-1.jpg",
+    "web_sha256": "3b73bb9f682d1c9c3d75ce92d06817cd078ff0249c6d19b396ed1395d4020342",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.9308
+  },
+  {
+    "book": "ten-red-hens",
+    "app": "assets/decodable/ten-red-hens-page-2.webp",
+    "app_sha256": "9538d4dcb6b03c21d64f03d0c36a2888aa910e8bbee42796015a3778541a9c3f",
+    "web": "read/ten-red-hens/pages/ten-red-hens-page-2.jpg",
+    "web_sha256": "c35a3ac6e2e6dfe4b2acf2069bcafc9bb89932c13fbb09afd578e8a80fb47061",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8299
+  },
+  {
+    "book": "ten-red-hens",
+    "app": "assets/decodable/ten-red-hens-page-3.webp",
+    "app_sha256": "5edd798363868c935b767fe35b84928adccd1339b60998649dd50ffbac1726e2",
+    "web": "read/ten-red-hens/pages/ten-red-hens-page-3.jpg",
+    "web_sha256": "316413ad3d209c1bb79fe0c2c9982b556b574a615791f934725d4464dd178359",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.9
+  },
+  {
+    "book": "ten-red-hens",
+    "app": "assets/decodable/ten-red-hens-page-4.webp",
+    "app_sha256": "979367ddcd969767037b9ac5ea19b495d23d2adf747c7768331b406d9b96f22b",
+    "web": "read/ten-red-hens/pages/ten-red-hens-page-4.jpg",
+    "web_sha256": "af03a7d47d5db205c34cd75296c8b6b607159959df811eca113634d48a96c4df",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8877
+  },
+  {
+    "book": "ten-red-hens",
+    "app": "assets/decodable/ten-red-hens-page-5.webp",
+    "app_sha256": "90184800af9adea7274813024fa58113835d44924d20af857d768dc0f8a949d3",
+    "web": "read/ten-red-hens/pages/ten-red-hens-page-5.jpg",
+    "web_sha256": "545ef68bc48cbc68678d4aaeea1e751acc7758bbb93e81defa3c8b6cbf6ba8ad",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.9284
+  },
+  {
+    "book": "ten-red-hens",
+    "app": "assets/decodable/ten-red-hens-page-6.webp",
+    "app_sha256": "4014b9523a6a4843cda7d8e87937b3c92870134c62e0b26aa67c392ac2356cf1",
+    "web": "read/ten-red-hens/pages/ten-red-hens-page-6.jpg",
+    "web_sha256": "5f171e39a838fd2c69b9959d3c65e81d6ece2a2b3973c19a1bac7a9bd83eeeae",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.9025
+  },
+  {
+    "book": "ten-red-hens",
+    "app": "assets/decodable/ten-red-hens-page-7.webp",
+    "app_sha256": "1f0467540982da22f78a29c74485219d19ad527034ee7aada7566dabf31acfc6",
+    "web": "read/ten-red-hens/pages/ten-red-hens-page-7.jpg",
+    "web_sha256": "fe2c40cb2b582fe4226927ae647608f24107ccb3feb2e3c2158361cc4b316d5b",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8128
+  },
+  {
+    "book": "ten-red-hens",
+    "app": "assets/decodable/ten-red-hens-page-8.webp",
+    "app_sha256": "6951c6cc72072ef2eaed5fdfac9ed0f8ed54ec92e067c0517b996ddae9fd55e9",
+    "web": "read/ten-red-hens/pages/ten-red-hens-page-8.jpg",
+    "web_sha256": "565597400374fabbcc81017611800a1bbe5815d8da7f2c3ed2d11822c9299bea",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.868
+  },
+  {
+    "book": "ten-red-hens",
+    "app": "assets/decodable/ten-red-hens-cover.webp",
+    "app_sha256": "ea9da13ba61b5da1ba70b8f37787b5f11aae105030134e90b9ae1a98ba4c1ab2",
+    "web": "read/ten-red-hens/pages/cover.jpg",
+    "web_sha256": "5a6eb25dac8f45b8e40af0e78492609967defd35dff85b809a1c150b284b0a36",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.7298
+  },
+  {
+    "book": "the-cat-and-the-rat",
+    "app": "assets/decodable/the-cat-and-the-rat-page-1.webp",
+    "app_sha256": "bf5f495c5704a99cdbcb5581ae845cfaf948542db02c7c4564f1e45b122defe2",
+    "web": "read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-1.jpg",
+    "web_sha256": "8d9ef93148a947049bcc9c28d8227f9caf46747a41317abb03aa7bf5e1c66976",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.858
+  },
+  {
+    "book": "the-cat-and-the-rat",
+    "app": "assets/decodable/the-cat-and-the-rat-page-2.webp",
+    "app_sha256": "5c4d301cbe9f371a76a06495a26f0a789253feaae9f963248cf2f69365ba41be",
+    "web": "read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-2.jpg",
+    "web_sha256": "921d1be9508ab28371d73bfe245891a65dbfdd0d588d11a32d3a92a2830f2659",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8528
+  },
+  {
+    "book": "the-cat-and-the-rat",
+    "app": "assets/decodable/the-cat-and-the-rat-page-3.webp",
+    "app_sha256": "dc6ef6d17f3f2d0e1135752db28d9b9b8535eefcecdd43dc8798c3206d2f7b8e",
+    "web": "read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-3.jpg",
+    "web_sha256": "528d1bc8b077297da8c7338dcead50605ad4c4c477a1d564f604c3eaa5eadb7c",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8441
+  },
+  {
+    "book": "the-cat-and-the-rat",
+    "app": "assets/decodable/the-cat-and-the-rat-page-4.webp",
+    "app_sha256": "04b2025976ab1c9913c809b658efa131fd6223dcbafed728b5a29f4ab0649bde",
+    "web": "read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-4.jpg",
+    "web_sha256": "06cd4ad71142357e0121dc0d06c5bed9530f7109b7f3de11fb1197dcb9cb59ae",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8303
+  },
+  {
+    "book": "the-cat-and-the-rat",
+    "app": "assets/decodable/the-cat-and-the-rat-page-5.webp",
+    "app_sha256": "3013f1e02b853df5e3fab8def0429357adc4adbe3a6d8c80c2c20288cb0f1f2d",
+    "web": "read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-5.jpg",
+    "web_sha256": "c146c2db1db228879e5fc61924fca13e03f9fa72edee909c36c116a73e5c279b",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8518
+  },
+  {
+    "book": "the-cat-and-the-rat",
+    "app": "assets/decodable/the-cat-and-the-rat-page-6.webp",
+    "app_sha256": "1a3d287b9e1b54ee536b962ea9db767ec5abd4a92093307ecec1b4555b0c7b2e",
+    "web": "read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-6.jpg",
+    "web_sha256": "841e6f829623e79c30ff278f2bb0310f752258f0e8a0a5ce7a860a29274966e5",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8261
+  },
+  {
+    "book": "the-cat-and-the-rat",
+    "app": "assets/decodable/the-cat-and-the-rat-page-7.webp",
+    "app_sha256": "5efe99832c1f828986bc2378b8084c5b8bd68d4d4681809c57d907f40c4eacd0",
+    "web": "read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-7.jpg",
+    "web_sha256": "f86c7449524c5d437627c6d304fe7f1e2be0c390375fa2bce6f95cc28bf84e9a",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.809
+  },
+  {
+    "book": "the-cat-and-the-rat",
+    "app": "assets/decodable/the-cat-and-the-rat-page-8.webp",
+    "app_sha256": "f1afbdb457deaf3620c3049463f698727f15dbaafa904bfd1aa21b4e7edfebc3",
+    "web": "read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-8.jpg",
+    "web_sha256": "e30e1cdc2e11101bc618bec3b566038e6767b7e3af21f4d439532d58ef3f4238",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8705
+  },
+  {
+    "book": "the-cat-and-the-rat",
+    "app": "assets/decodable/the-cat-and-the-rat-cover.webp",
+    "app_sha256": "5683da8730da8c90d5b15b8e286ebaaf15c6741d9b86b9a451adfc68bafdfb15",
+    "web": "read/the-cat-and-the-rat/pages/cover.jpg",
+    "web_sha256": "6e65cf069f2552ec791e4276ae6e30241a4133298feaf393ea647e30990c1c5e",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.6819
+  },
+  {
+    "book": "bug-in-a-cup",
+    "app": "assets/decodable/bug-in-a-cup-page-1.webp",
+    "app_sha256": "0cf4eee8c9cf63884bb50505a78a0069dd5d02daf29d75878c3d857a2cab3c1c",
+    "web": "read/bug-in-a-cup/pages/bug-in-a-cup-page-1.jpg",
+    "web_sha256": "a38fd4f9c64a98898f0a49bbff6beb936368f29acce36c318540117782940196",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.827
+  },
+  {
+    "book": "bug-in-a-cup",
+    "app": "assets/decodable/bug-in-a-cup-page-2.webp",
+    "app_sha256": "69acbf06bbc659655411464ead77fca2595d326416839767d9827e307db94a76",
+    "web": "read/bug-in-a-cup/pages/bug-in-a-cup-page-2.jpg",
+    "web_sha256": "a502677bbbec5a0ea51a19804389fad4b27023ed7702aad231d66744f923fd12",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8912
+  },
+  {
+    "book": "bug-in-a-cup",
+    "app": "assets/decodable/bug-in-a-cup-page-3.webp",
+    "app_sha256": "9c4f74dbaf00e81c24f509f8dafe7d1e61cf22c32e23ece3bb5c03de75d8d649",
+    "web": "read/bug-in-a-cup/pages/bug-in-a-cup-page-3.jpg",
+    "web_sha256": "8ae2276fbd6851ac116a28422097db5a26b6bc50ba161ae3826d06cf20389e49",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8284
+  },
+  {
+    "book": "bug-in-a-cup",
+    "app": "assets/decodable/bug-in-a-cup-page-4.webp",
+    "app_sha256": "c8dbebf941512bd464b1647451c47fafaec80b30f28522346d912c81b9f454c2",
+    "web": "read/bug-in-a-cup/pages/bug-in-a-cup-page-4.jpg",
+    "web_sha256": "793e0525b325f8c78e9c7bc82450e1491e66bc6bcff451c6dd0d231f3aa24a27",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8611
+  },
+  {
+    "book": "bug-in-a-cup",
+    "app": "assets/decodable/bug-in-a-cup-page-5.webp",
+    "app_sha256": "8556ab84bc129c8d2c41d9f06a42548c24cd6a1c1c9d4889244b7fc1261c088b",
+    "web": "read/bug-in-a-cup/pages/bug-in-a-cup-page-5.jpg",
+    "web_sha256": "551e5ba2c47bb07416d693887c90daa29738afc726ba78b4efc3a6cccefe725f",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.866
+  },
+  {
+    "book": "bug-in-a-cup",
+    "app": "assets/decodable/bug-in-a-cup-page-6.webp",
+    "app_sha256": "bf6a5a38f902aedf5906bed9bdfb8a118530823fcc9f408dcd19692c34fb6c06",
+    "web": "read/bug-in-a-cup/pages/bug-in-a-cup-page-6.jpg",
+    "web_sha256": "024479c5cf4b0bfafb0df99c201b9054b3dec80f29aa7adba978fba6976cec0b",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8627
+  },
+  {
+    "book": "bug-in-a-cup",
+    "app": "assets/decodable/bug-in-a-cup-page-7.webp",
+    "app_sha256": "49b031a084e0631c5c10f33ad4a104cbc64f1723513ff56ceca03932614f2986",
+    "web": "read/bug-in-a-cup/pages/bug-in-a-cup-page-7.jpg",
+    "web_sha256": "2265a547e9679f628e928e70083ac918a5f48c7e42b562edc06bafc7451a144d",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.7847
+  },
+  {
+    "book": "bug-in-a-cup",
+    "app": "assets/decodable/bug-in-a-cup-page-8.webp",
+    "app_sha256": "2c10ffe52349899fa46474a18d8f555865772e2c1f4d30ef1c5c15c970bbbd2f",
+    "web": "read/bug-in-a-cup/pages/bug-in-a-cup-page-8.jpg",
+    "web_sha256": "f615114e3ad22a2bdca02f6544b92b78ad1c32547f3e8456a60ca1bcc077ad0a",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8674
+  },
+  {
+    "book": "bug-in-a-cup",
+    "app": "assets/decodable/bug-in-a-cup-cover.webp",
+    "app_sha256": "a1d855ca56c7adc56172b21787fcc63a864f0a03f8d415873ec24b8f50cc50ef",
+    "web": "read/bug-in-a-cup/pages/cover.jpg",
+    "web_sha256": "1bba5abb84172cef60c9a208878e832e306f3cd28563321060d77eb0ad321b82",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.6785
+  },
+  {
+    "book": "dog-in-the-fog",
+    "app": "assets/decodable/dog-in-the-fog-page-1.webp",
+    "app_sha256": "8591f6a83d355c379983b3d435a043a4e8d6c867415ee902d89591565f58120a",
+    "web": "read/dog-in-the-fog/pages/dog-in-the-fog-page-1.jpg",
+    "web_sha256": "31cbdb3393887d9e77699d9215da4beaa7480fd5dc8c2de6cb7c464a2518ac3e",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.7599
+  },
+  {
+    "book": "dog-in-the-fog",
+    "app": "assets/decodable/dog-in-the-fog-page-2.webp",
+    "app_sha256": "2d3eb0b480772c319ce86edacd634c208b7d656b300ae90cd3bd45409cc08389",
+    "web": "read/dog-in-the-fog/pages/dog-in-the-fog-page-2.jpg",
+    "web_sha256": "6f794150600c012b3713894fb58be1851adba5771edbb0a6fc3b17b72413629a",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.7006
+  },
+  {
+    "book": "dog-in-the-fog",
+    "app": "assets/decodable/dog-in-the-fog-page-3.webp",
+    "app_sha256": "6436f00a47b4779b7dadb0ec3a468e27b607e6e8b4850d67470e6d70e06044a1",
+    "web": "read/dog-in-the-fog/pages/dog-in-the-fog-page-3.jpg",
+    "web_sha256": "8f7af5b7c183fde64a70ea6c0784ba6bedf9ad229dc320eae30a5b35e218d3f0",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.6852
+  },
+  {
+    "book": "dog-in-the-fog",
+    "app": "assets/decodable/dog-in-the-fog-page-4.webp",
+    "app_sha256": "4fc8d367c823cca159ede6f869cdb6d0b3bf0a1f5fbba2a926fc05e56a2cd175",
+    "web": "read/dog-in-the-fog/pages/dog-in-the-fog-page-4.jpg",
+    "web_sha256": "251c5dc5e4c85b6e409329f52706967522fd8d11b9edabf73e6771a9d239d287",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.7392
+  },
+  {
+    "book": "dog-in-the-fog",
+    "app": "assets/decodable/dog-in-the-fog-page-5.webp",
+    "app_sha256": "b25575db22de8e21a0b6ea38637e0c59a3e34b3a5f87855c408d901b09bd4247",
+    "web": "read/dog-in-the-fog/pages/dog-in-the-fog-page-5.jpg",
+    "web_sha256": "c09f190f65c38a7a7bc519bda0223d69e7b9d7b780676f6b4763a7a3caa976ff",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.778
+  },
+  {
+    "book": "dog-in-the-fog",
+    "app": "assets/decodable/dog-in-the-fog-page-6.webp",
+    "app_sha256": "3eacec5fbcb0a16f11fa2bafb1e8f59668b517c28fc874c64b936b56631bf98d",
+    "web": "read/dog-in-the-fog/pages/dog-in-the-fog-page-6.jpg",
+    "web_sha256": "accb06f2274af13fbfc52baf20efe46fd515c6270ef2fc7de8d9ad15fd3830ef",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.7754
+  },
+  {
+    "book": "dog-in-the-fog",
+    "app": "assets/decodable/dog-in-the-fog-page-7.webp",
+    "app_sha256": "b8e6d48b97a3f29b60b63a5a82602af25294ace3a7aec485db3d13187404f4ab",
+    "web": "read/dog-in-the-fog/pages/dog-in-the-fog-page-7.jpg",
+    "web_sha256": "f1b533160373e5add16e3803ff0468d6b9aa4fdcf38290b061427e81d7e82083",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8742
+  },
+  {
+    "book": "dog-in-the-fog",
+    "app": "assets/decodable/dog-in-the-fog-page-8.webp",
+    "app_sha256": "c1eea0dfe62321d945ccfc05abe84854e8f8276695bd1ab485dfa487e896b744",
+    "web": "read/dog-in-the-fog/pages/dog-in-the-fog-page-8.jpg",
+    "web_sha256": "fbf947222e576fabbcc12f2e4131cf1a809badb6c185a6e8075067d829b5c115",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.8946
+  },
+  {
+    "book": "dog-in-the-fog",
+    "app": "assets/decodable/dog-in-the-fog-cover.webp",
+    "app_sha256": "2c3a96d5c48b1ee20899b9f4107272a4706976d6c0a65dce4f1e62386f3ff443",
+    "web": "read/dog-in-the-fog/pages/cover.jpg",
+    "web_sha256": "83c6cecc6b8d1df75c64ba952f139752e6a9a522d9201988196b8548af984721",
+    "relationship": "existing published JPEG derivative of current app WebP",
+    "thumbnail_mean_error": 0.603
+  }
+]

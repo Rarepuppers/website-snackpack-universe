@@ -1,0 +1,124 @@
+[
+  {
+    "id": "first-phonics",
+    "pages": 57,
+    "bytes": 13637395,
+    "sha256": "1aa5435bab9e309fc10136cd3637e41966934866bf02fbb51918056b975bdbe9",
+    "sources": [
+      {
+        "slug": "pip-sits",
+        "title": "Pip Sits",
+        "pages": 8,
+        "start": 2,
+        "sha256": "ece655cd768a4c343eaf3c436049cc90161c8ec113490f74de153d5f52156102"
+      },
+      {
+        "slug": "nan-and-pip",
+        "title": "Nan and Pip",
+        "pages": 8,
+        "start": 10,
+        "sha256": "8304e33b6e31f2b0681b4af2d2ad62e00b9a080cd0c2e7c4f51e8f83df560f12"
+      },
+      {
+        "slug": "ten-red-hens",
+        "title": "Ten Red Hens",
+        "pages": 10,
+        "start": 18,
+        "sha256": "8a4377fb4622aa074cf83e8547bf7ad31f463266501c36736d9632d2eca82c81"
+      },
+      {
+        "slug": "the-cat-and-the-rat",
+        "title": "The Cat and the Rat",
+        "pages": 10,
+        "start": 28,
+        "sha256": "5f18124cd94e3ad158883e8c09ee73f5e708f4579bcf5e646a1634f7a75790d9"
+      },
+      {
+        "slug": "bug-in-a-cup",
+        "title": "Bug in a Cup",
+        "pages": 10,
+        "start": 38,
+        "sha256": "a0f427b9a337be98ef1212ed376d846007bfdfd0583ce0826a119e2434a6aba0"
+      },
+      {
+        "slug": "dog-in-the-fog",
+        "title": "Dog in the Fog",
+        "pages": 10,
+        "start": 48,
+        "sha256": "d598a684bce78a8b91f554b3c50ad0dbee0cae08bf9910373da83381a80677a6"
+      }
+    ]
+  },
+  {
+    "id": "bedtime",
+    "pages": 11,
+    "bytes": 1578737,
+    "sha256": "65a00e65ab4b1ed19e633a5dcabae62af34460f98c2f9a055444e2c7c5f91d0d",
+    "sources": [
+      {
+        "slug": "ted-e-bears-blanket-fort",
+        "title": "Ted-E-Bear’s Blanket Fort",
+        "pages": 5,
+        "start": 2,
+        "sha256": "398c421f2bb10cb77dd384147a6c2d3ecaa9d73f50e7059aa49c3ead1a623d3e"
+      },
+      {
+        "slug": "meow-inaras-moonlight-story",
+        "title": "Meow-inara’s Moonlight Story",
+        "pages": 5,
+        "start": 7,
+        "sha256": "c71de48e1348c5d41b0e5470ca1026a9e6fdbf9c4f21f606c13cc46c0b515787"
+      }
+    ]
+  },
+  {
+    "id": "kindness",
+    "pages": 31,
+    "bytes": 5438841,
+    "sha256": "f52aefa0a2eab23390d675a2166ba6b2c4f91e62b001f24c516858b2e5a5858a",
+    "sources": [
+      {
+        "slug": "baby-bulldogs-at-the-playground",
+        "title": "Baby Bulldogs at the Playground",
+        "pages": 5,
+        "start": 2,
+        "sha256": "da9d882dd8567e2808658dd474c183e1a897fe1ce3a09d2cbd6d8b162fb0d99e"
+      },
+      {
+        "slug": "fe-line-mignons-moonlit-cafe",
+        "title": "Fe-Line-Mignon’s Moonlit Café",
+        "pages": 5,
+        "start": 7,
+        "sha256": "5d6509376e985f00f6687ea17b8c56652a61912f910aca476ee98e8062e039b5"
+      },
+      {
+        "slug": "hen-berrys-helping-day",
+        "title": "Hen-Berry’s Helping Day",
+        "pages": 5,
+        "start": 12,
+        "sha256": "c3e59e1e5cc89e2fb3e451195d6b4cfe5527aa50f0cfe3c18f0fbe4485fe02ba"
+      },
+      {
+        "slug": "ham-and-cheeses-big-maze",
+        "title": "Ham-and-Cheese’s Big Maze",
+        "pages": 5,
+        "start": 17,
+        "sha256": "b016d00bc4e5eac94b338b8e90c589964482809002c2c90be73e750c5e041bb1"
+      },
+      {
+        "slug": "wise-owls-library-day",
+        "title": "Wise Owl’s Library Day",
+        "pages": 5,
+        "start": 22,
+        "sha256": "ed5ab3ed42caff208d2ec3b668034a106dcf01fa8475bbc78c1f10140228c3af"
+      },
+      {
+        "slug": "centi-peeds-garden-race",
+        "title": "Centi-Peed’s Garden Race",
+        "pages": 5,
+        "start": 27,
+        "sha256": "63b27965b72712baebd868c385beaa9bf3702589feef421695954878e31827e8"
+      }
+    ]
+  }
+]
