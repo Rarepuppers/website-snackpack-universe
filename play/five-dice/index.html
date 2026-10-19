@@ -281,7 +281,7 @@
       <h3>Modes</h3>
       <ul>
         <li><strong>Solo</strong> — chase your best score.</li>
-        <li><strong>vs CPU</strong> — a relaxed computer opponent; <strong>Sharp CPU</strong> plays to protect its big boxes.</li>
+        <li><strong>vs CPU</strong> — a relaxed computer opponent; <strong>Sharp CPU</strong> compares holds and open boxes, including bonuses earned this turn.</li>
         <li><strong>2 players</strong> — pass the device between turns.</li>
         <li><strong>Daily</strong> — the same dice for everyone today, so scores are worth comparing.</li>
       </ul>
@@ -425,9 +425,94 @@
     return { upper: upper, bonus: bonus, lower: lower, extra: card.extraFives * EXTRA_FIVE, grand: upper + bonus + lower + card.extraFives * EXTRA_FIVE };
   }
 
-  // CPU (the app's heuristics). Casual sometimes picks a box at random and
-  // sometimes re-rolls everything; Sharp avoids zeroing its big boxes.
-  function cpuHolds(dice, card, sharp, rnd) {
+  // Casual keeps its simple heuristics. Sharp maximizes expected points this
+  // turn across the rolls left, not an estimate of the entire game's score.
+// BEGIN generated five-dice policy
+function createSharpDicePlanner(card) {
+    const open = openIds(card);
+    const beforeUpper = totals(card).upper;
+    const outcomes = [];
+    const factorial = [1, 1, 2, 6, 24, 120];
+    for (let size = 0; size <= 5; size++) {
+        const rows = [];
+        const visit = (dice, face) => {
+            if (dice.length === size) {
+                const cnt = counts(dice);
+                const permutations = factorial[size] / cnt.slice(1).reduce((n, c) => n * factorial[c], 1);
+                rows.push({ dice, weight: permutations / (6 ** size) });
+                return;
+            }
+            for (let next = face; next <= 6; next++)
+                visit([...dice, next], next);
+        };
+        visit([], 1);
+        outcomes.push(rows);
+    }
+    const terminalCache = new Map();
+    const terminal = (dice) => {
+        const key = [...dice].sort().join('');
+        const cached = terminalCache.get(key);
+        if (cached)
+            return cached;
+        let category = null, gain = 0;
+        const extra = card.scores.fiveKind === 50 && isFive(dice) ? EXTRA_FIVE : 0;
+        for (const cat of open) {
+            const raw = valueFor(card, cat, dice);
+            const upper = CATEGORIES.find(c => c.id === cat).upper;
+            const bonus = upper && beforeUpper < BONUS_AT && beforeUpper + raw >= BONUS_AT ? BONUS : 0;
+            const value = raw + bonus + extra;
+            if (category === null || value > gain || (value === 0 && gain === 0 && ZERO_PENALTY[cat] < ZERO_PENALTY[category])) {
+                category = cat;
+                gain = value;
+            }
+        }
+        const result = { category, gain };
+        terminalCache.set(key, result);
+        return result;
+    };
+    const plans = new Map(), expectations = new Map();
+    const solve = (dice, left) => {
+        const sorted = [...dice].sort((a, b) => a - b), key = `${left}:${sorted.join('')}`;
+        const cached = plans.get(key);
+        if (cached)
+            return cached;
+        if (left === 0 || open.length === 0)
+            return { keep: sorted, gain: terminal(sorted).gain };
+        // Keeping all dice represents banking now. Prefer it on exact ties.
+        let best = { keep: sorted, gain: terminal(sorted).gain };
+        const seen = new Set();
+        for (let mask = 0; mask < 32; mask++) {
+            const keep = sorted.filter((_, i) => (mask & (1 << i)) !== 0);
+            const keepKey = `${left}:${keep.join('')}`;
+            if (seen.has(keepKey))
+                continue;
+            seen.add(keepKey);
+            let gain = expectations.get(keepKey);
+            if (gain === undefined) {
+                gain = 0;
+                for (const outcome of outcomes[5 - keep.length])
+                    gain += outcome.weight * solve([...keep, ...outcome.dice], left - 1).gain;
+                expectations.set(keepKey, gain);
+            }
+            if (gain > best.gain + 1e-9 || (Math.abs(gain - best.gain) <= 1e-9 && keep.length > best.keep.length))
+                best = { keep, gain };
+        }
+        plans.set(key, best);
+        return best;
+    };
+    return {
+        chooseCategory: (dice) => terminal(dice).category,
+        expectedGain: (dice, rollsLeft) => solve(dice, Math.max(0, Math.min(2, Math.floor(rollsLeft)))).gain,
+        chooseHolds: (dice, rollsLeft) => {
+            const needed = counts(solve(dice, Math.max(0, Math.min(2, Math.floor(rollsLeft)))).keep);
+            return dice.map(d => needed[d] > 0 ? (needed[d]--, true) : false);
+        },
+    };
+}
+// END generated five-dice policy
+
+  function cpuHolds(dice, card, sharp, rnd, rollsLeft) {
+    if (sharp) return createSharpDicePlanner(card).chooseHolds(dice, rollsLeft == null ? 1 : rollsLeft);
     if (!sharp && rnd() < 0.2) return dice.map(function () { return false; });
     var c = counts(dice), best = 1;
     for (var f = 2; f <= 6; f++) if (c[f] >= c[best]) best = f;
@@ -442,6 +527,7 @@
     return dice.map(function () { return false; });
   }
   function cpuBox(dice, card, sharp, rnd) {
+    if (sharp) return createSharpDicePlanner(card).chooseCategory(dice);
     var scored = openIds(card).map(function (id) {
       var raw = valueFor(card, id, dice);
       return { id: id, value: sharp && raw === 0 ? -ZERO_PENALTY[id] : raw };
@@ -621,16 +707,18 @@
   function cpuTurn() {
     busy = true; render();
     var me = st.players[st.current], card = st.cards[st.current];
+    var turnState = st, turnPlayer = st.current;
+    function active() { return st === turnState && !st.over && st.current === turnPlayer && !st.players[turnPlayer].human; }
     function step() {
-      if (st.over) return;
+      if (!active()) return;
       doRoll();
       if (st.rolls < 3) {
-        var holds = cpuHolds(st.dice, card, me.sharp, Math.random);
+        var holds = cpuHolds(st.dice, card, me.sharp, Math.random, 3 - st.rolls);
         // Stop early on a roll that already fills a big box.
-        var keepAll = holds.every(Boolean) || (isFive(st.dice) && card.scores.fiveKind == null);
-        if (!keepAll) { st.held = holds; setTimeout(function () { render(); setTimeout(step, CPU_DELAY); }, CPU_DELAY); return; }
+        var keepAll = holds.every(Boolean) || (!me.sharp && isFive(st.dice) && card.scores.fiveKind == null);
+        if (!keepAll) { st.held = holds; setTimeout(function () { if (!active()) return; render(); setTimeout(step, CPU_DELAY); }, CPU_DELAY); return; }
       }
-      setTimeout(function () { busy = false; scoreBox(cpuBox(st.dice, card, me.sharp, Math.random)); }, CPU_DELAY);
+      setTimeout(function () { if (!active()) return; busy = false; scoreBox(cpuBox(st.dice, card, me.sharp, Math.random)); }, CPU_DELAY);
     }
     setTimeout(step, CPU_DELAY);
   }
