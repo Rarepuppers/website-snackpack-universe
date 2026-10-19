@@ -5,6 +5,19 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-19 - Four illustrated short reads
+
+- Added Ted-E-Bear's Blanket Fort, Wise Owl's Library Day, Meow-inara's
+  Moonlight Story and Centi-Peed's Garden Race: 16 pages copied from their
+  Spelling app sources, with the corrected primary questions and explanations.
+- Reviewed character art includes Ted's crown/bee apron, Meow-inara's round
+  tabby/red pendant and brown centipede Centi-Peed's horned helmet/red boots.
+- All four have printable story-and-question PDFs, responsive art, social
+  cards, reader controls, offline-manifest entries and attributed app links.
+  The shelf is now 47 books / 279 story pages / 47 PDFs.
+- Website publication only. App-source repairs remain in the monorepo;
+  installed apps receive them with a later native app release.
+
 ## 2026-10-18 — Printable books now include the story
 
 - Every printable PDF on the shelf now has the words under each picture.

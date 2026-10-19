@@ -7,10 +7,11 @@ Shipped changes are in [release notes](docs/RELEASE-NOTES.md).
 
 ## Current delivery
 
-**43 books, 263 story pages, 43 printable PDFs.** All page texts match current
+**47 books, 279 story pages, 47 printable PDFs.** All page texts match current
 exported app data, allowing importer quote/dash typography. All primary app
 quizzes used by published Spelling books match the website. Every PDF contains
-its story prose. All 43 live article sets and PDFs match local outputs. There
+its story prose. The 43 previously published article sets/PDFs were verified live; the four
+19 October additions are covered by the publication verification record. There
 is no text re-import or PDF rebuild backlog. This is a source/parity audit,
 not a fresh visual or scientific fact review of every illustration/sentence.
 
@@ -19,7 +20,7 @@ not a fresh visual or scientific fact review of every illustration/sentence.
 | Complete alphabet picture books | 1 |
 | Stage 1-3 decodables | 6 |
 | Reading Trail | 6 |
-| Short reads | 12 |
+| Short reads | 16 |
 | Number stories | 16 |
 | Animal fact books | 1 |
 | Read-aloud picture books | 1 |
@@ -40,10 +41,6 @@ source commit contains the relevant changes; no new build was run here.
 
 | Task | Source work | Website work | Owner / next step |
 |---|---|---|---|
-| Ted-E-Bear's Blanket Fort | Page 1 art and both quiz corrections complete | Not published; final review/import pending | Claude |
-| Wise Owl's Library Day | Page 3 Meow-inara art and both quiz corrections complete | Not published; final review/import pending | Claude |
-| Meow-inara's Moonlight Story | Pages 1-3 art and both quiz corrections complete | Not published; final review/import pending | Claude |
-| Centi-Peed's Garden Race | Pages 1-4 brown centipede art complete; relevant quizzes retained; literal hundred-boots claim removed | Not published; final review/import pending | Claude |
 | Other Spelling books held back on quality | Source repairs completed across 27 books including the four above; four additional Deep Glow/Metamorphosis pictures repaired | Keep off shelf until each book's full art and publication review passes | Claude review; no blanket approval for remaining books |
 | Safari Morning | All nine source pages repaired, display/TTS aligned, factual references registered | Not published; original-art decision remains deferred | Claude app release handoff; Zoo expansion decision after re-measure |
 | Read to me | No source defect demonstrated; real Android/iOS voice and boundary check lacks recorded evidence | Check actual audio, highlighting, pause and speed on devices | Mark/device tester |
@@ -53,9 +50,12 @@ Source repairs completed on 19 October. Monorepo delivery evidence is in
 `docs/SHORT-READS-CONTENT-HANDOFF-2026-10-19.md` and
 `docs/READ-CONTENT-REPAIRS-2026-10-19.md`. The original brief's nine pictures,
 four additional science pictures and source quiz corrections are delivered.
-Claude retains final website review/import and app build/submission. Existing
-43 books do not depend on this work. Do not increase shelf counts before
-publication; these four books are still unpublished.
+Mark reassigned the website handoff to Codex on 19 October. Blanket Fort,
+Library Day, Moonlight Story and Garden Race are now imported with the app
+text, corrected quizzes, reviewed art, four new printable PDFs, responsive
+images, social cards and shelf/offline entries. Publication verification is
+recorded in `docs/SHORT-READS-PUBLICATION-2026-10-19.md`. App native builds
+and submissions remain with Claude unless Mark assigns a specific release.
 
 ## Deferred until 15 November 2026
 
