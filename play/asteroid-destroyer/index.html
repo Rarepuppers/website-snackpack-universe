@@ -315,9 +315,11 @@
 <script src="../funnel.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script src="../arcade-assets.js"></script>
+<script src="../fixed-step-clock.js"></script>
 <script>
 (function () {
   "use strict";
+  var stepClock = window.SnackPackClock.createFixedStepClock();
 
   // ════ Engine (ported from the Vol 2 app's asteroid-destroyer/engine.ts) ════
   var W = 390, H = 680;
@@ -555,6 +557,8 @@
   function bestFor(m) { try { return parseInt(localStorage.getItem(bestKey(m)) || "0", 10) || 0; } catch (e) { return 0; } }
 
   function reset(startNow) {
+    stepClock.reset();
+    input = { left: false, right: false, thrust: false, fire: false };
     state = initialState(mode, bestFor(mode));
     state.phase = startNow ? "playing" : "paused";
     fireTimer = 0;
@@ -587,9 +591,10 @@
     waveEl.textContent = MODE_CONFIG[mode].blitz ? Math.ceil(state.blitzTimeLeft / 60) + "s" : state.wave;
   }
 
-  function loop() {
+  function loop(now) {
     requestAnimationFrame(loop);
-    if (state.phase !== "playing") return;
+    if (state.phase !== "playing") { stepClock.reset(); return; }
+    var steps = stepClock.advance(now, function () {
     // inputs
     if (MODE_CONFIG[mode].canRotate) {
       if (input.left) rotateLeft(state);
@@ -599,9 +604,10 @@
     if (fireTimer > 0) fireTimer -= 1;
     if (input.fire && fireTimer <= 0) { fireDirectional(state); fireTimer = FIRE_CD; }
     tick(state);
-    draw();
-    updateHud();
-    if (state.phase === "dead" || state.phase === "blitz-end") finish();
+    if (state.phase === "dead" || state.phase === "blitz-end") { draw(); updateHud(); finish(); return false; }
+    return true;
+    });
+    if (steps && state.phase === "playing") { draw(); updateHud(); }
   }
 
   function draw() {
@@ -756,8 +762,8 @@
       mount: document.querySelector(".game-controls"),
       stage: document.querySelector(".game-stage"),
       isPlaying: function () { return state.phase === "playing"; },
-      pause: function () { state.phase = "paused"; },
-      resume: function () { state.phase = "playing"; }
+      pause: function () { state.phase = "paused"; input = { left: false, right: false, thrust: false, fire: false }; stepClock.reset(); },
+      resume: function () { stepClock.reset(); state.phase = "playing"; }
     });
   }
 })();
