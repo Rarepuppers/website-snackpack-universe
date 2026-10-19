@@ -265,6 +265,66 @@ const BOOKS = {
       "Captain Beakon and Luckybug sit together on the hilltop under the stars."
     ]
   },
+  "ted-blanket-fort": {
+    "source": "short",
+    "rev": 2,
+    "slug": "ted-e-bears-blanket-fort",
+    "skill": "Friendship",
+    "lead": "A four-page reading-fort story about a collapsing blanket and making room for a friend.",
+    "blurb": "A blue blanket keeps sliding down. Panda-Cake helps Ted make a fort with room for two.",
+    "about": "Cooperation, friendship and sharing",
+    "alts": [
+      "Ted-E-Bear, wearing his flower crown, halo and bee apron, stacks pillows between two chairs beside a folded blue blanket.",
+      "Ted sits under a heap of blue blanket after his fort collapses.",
+      "Panda-Cake holds the blue blanket while Ted sits beneath it with a lamp and an open book.",
+      "Ted and Panda-Cake read together inside their warm blue-blanket fort as rain falls outside."
+    ]
+  },
+  "wise-owl-library-day": {
+    "source": "short",
+    "rev": 2,
+    "slug": "wise-owls-library-day",
+    "skill": "Kindness",
+    "lead": "A four-page library story about a windblown poem and choosing when to share your work.",
+    "blurb": "A gust carries Quill-Berry’s poem away. Meow-inara offers one friendly listener.",
+    "about": "Respect, confidence and sharing creative work",
+    "alts": [
+      "Wise Owl welcomes Quill-Berry, who holds a folded page, at the leafy library door.",
+      "A sheet of paper lies on the floor beneath a library table while Quill-Berry looks worried.",
+      "Meow-inara, a round tabby with a red pendant, returns a folded page to Quill-Berry in a quiet library corner.",
+      "Quill-Berry shares her writing with Wise Owl, Meow-inara and a circle of listeners beside a blank display page."
+    ]
+  },
+  "meow-inara-moonlight": {
+    "source": "short",
+    "rev": 2,
+    "slug": "meow-inaras-moonlight-story",
+    "skill": "Feelings",
+    "lead": "A four-page bedtime story about concert nerves, slow breathing and a first note that can wobble.",
+    "blurb": "Tomorrow’s concert keeps Meow-inara awake. Wise Owl finds a story with room for an imperfect first note.",
+    "about": "Managing anticipation, breathing and accepting mistakes",
+    "alts": [
+      "Meow-inara, a round tabby wearing her red pendant, lies awake on plum cushions by a moonlit window.",
+      "Wise Owl reads a bedtime book beside Meow-inara on the window seat.",
+      "Meow-inara rests beside an open book, looking calmer in the warm lantern light.",
+      "Meow-inara sleeps on the plum cushions beneath the moonlit window, her red pendant resting at her chest."
+    ]
+  },
+  "centi-peed-garden-race": {
+    "source": "short",
+    "rev": 2,
+    "slug": "centi-peeds-garden-race",
+    "skill": "Kindness",
+    "lead": "A four-page garden race about stopping to help a friend when a ribbon is within reach.",
+    "blurb": "Centi-Peed races ahead, then hears Shelly-Pop call. Helping her matters more than winning.",
+    "about": "Helping others, kindness and sportsmanship",
+    "alts": [
+      "Centi-Peed, a brown centipede in a horned helmet, ties his red racing boots beside Shelly-Pop on a flower-lined path.",
+      "Wise Owl claps as Centi-Peed races ahead of Shelly-Pop and two small garden friends.",
+      "Centi-Peed stops beside Shelly-Pop, whose race tag is caught under a fallen twig near the roses.",
+      "Centi-Peed and Shelly-Pop dance across the finish behind a bee and a ladybird holding their ribbons."
+    ]
+  },
   "nutmeg-four-seasons": {
     source: "short", slug: "nutmegs-four-seasons", skill: "Nature",
     lead: "A four-page story that follows one little oak tree through spring, summer, autumn and winter.",
