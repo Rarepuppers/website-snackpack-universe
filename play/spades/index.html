@@ -45,7 +45,7 @@
   "step": [
     { "@type": "HowToStep", "name": "Bid", "text": "Each player bids how many of the 13 tricks they expect to win. You and your partner (North) add your bids into a team contract." },
     { "@type": "HowToStep", "name": "Play", "text": "Follow the suit that was led if you can. Spades are always trump and beat any other suit, but cannot be led until a spade has been played." },
-    { "@type": "HowToStep", "name": "Score", "text": "Make your contract for 10 points a bid trick; fall short and lose that much. Extra tricks are bags: every 10 bags costs 100 points. The first team to the target wins." }
+    { "@type": "HowToStep", "name": "Score", "text": "Make your contract for 10 points a bid trick; fall short and lose that much. Each extra trick scores 1 point and 1 bag; every 10 bags costs 100 points. At the target, the higher score wins; a tie continues." }
   ]
 }
 </script>
@@ -56,7 +56,7 @@
   "mainEntity": [
     { "@type": "Question", "name": "Is this Spades game free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It plays free in your browser with no ads, no sign-in, and nothing to install." } },
     { "@type": "Question", "name": "What is a nil bid in Spades?", "acceptedAnswer": { "@type": "Answer", "text": "Bidding nil means you promise to win no tricks at all. Succeed and your team scores 100; take even one trick and it loses 100. Your partner's bid is scored separately." } },
-    { "@type": "Question", "name": "What are bags in Spades?", "acceptedAnswer": { "@type": "Answer", "text": "Bags are tricks your team wins above its contract. Each one is a point you do not score, and every ten bags costs your team 100 points, so overshooting your bid is not free." } },
+    { "@type": "Question", "name": "What are bags in Spades?", "acceptedAnswer": { "@type": "Answer", "text": "Bags are tricks your team wins above its contract. Each scores one point and adds one bag. Every ten bags costs your team 100 points, so overshooting your bid is not free." } },
     { "@type": "Question", "name": "How do I play Spades with a keyboard?", "acceptedAnswer": { "@type": "Answer", "text": "Every bid and every card in your hand is a button: Tab moves between them and Enter or Space chooses one. Cards you may not play are disabled. Every other control is reachable by Tab." } },
     { "@type": "Question", "name": "Does my progress save?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, on this device only. A game in progress is saved, so you can close the tab and pick it back up. Your win-loss record against each difficulty is kept too. There is no account and nothing is uploaded." } },
     { "@type": "Question", "name": "Can I play Spades offline?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The site installs from your browser and keeps working with no connection: once you have opened a game it is cached on your device. Spades is also in Snackpack Brain Games on Android." } }
@@ -197,7 +197,7 @@
           <div class="tc-actions" id="sp-actions"></div>
           <div id="sp-summary"></div>
         </div>
-        <p class="game-hint">North is your partner. Spades are trump and can't be led until one has been played. Make your team's contract; extra tricks are bags.</p>
+        <p class="game-hint">North is your partner. Lead spades only after one has been played, or if you hold only spades. Each extra trick scores 1 point and 1 bag.</p>
       </div>
     </div>
   </section>
@@ -232,10 +232,11 @@
     <div class="shell seo-prose">
       <h2>How to play Spades</h2>
       <p>Spades is a four-player partnership trick-taking game. You sit South and your partner sits North; West and East play against you. All 52 cards are dealt, thirteen each. Before play, everyone bids the number of tricks they expect to win, and the two bids on each side add up to that team's contract. Play then runs clockwise: follow the suit that was led if you can, and the highest card of that suit wins — unless someone plays a spade. Spades are always trump, so any spade beats any card of another suit, and the highest spade wins. You cannot lead a spade until one has been played, unless your hand holds nothing else.</p>
-      <p>At the end of the round, a team that wins at least as many tricks as its contract scores ten points for each trick bid; a team that falls short loses that many. Every trick won above the contract is a bag worth one point, and every ten bags costs the team 100 points. The first team to reach the target — 500, or 250 for a quick game — wins.</p>
+      <p>At the end of the round, a team that wins at least as many tricks as its contract scores ten points for each trick bid; a team that falls short loses that many. Every trick won above the contract is a bag worth one point, and every ten bags costs the team 100 points. At the target — 500, or 250 for a quick game — the higher score wins. A tie continues into another round.</p>
 
       <h3>Bidding nil</h3>
-      <p>A bid of nil promises that you will win no tricks at all. Make it and your team scores a 100-point bonus; take even one trick and it loses 100. Your partner's bid counts on its own, so a nil is usually best with a hand full of low cards and a partner bidding confidently.</p>
+      <p>A bid of nil promises that you will win no tricks at all. Make it and your team scores a 100-point bonus; take even one trick and it loses 100. In this version, tricks taken by a failed nil bidder still count toward the team contract. A nil is usually best with a hand full of low cards and a partner bidding confidently.</p>
+      <p>Sharp considers protected honours when bidding, covers a partner's live nil when possible, and tries to avoid extra bags once the team contract is made. It uses its own cards and the public table.</p>
 
       <h3>Tips</h3>
       <ul>
@@ -342,15 +343,7 @@
   function minBy(a, f) { return a.reduce(function (b, x) { return f(x) < f(b) ? x : b; }, a[0]); }
   function maxBy(a, f) { return a.reduce(function (b, x) { return f(x) > f(b) ? x : b; }, a[0]); }
 
-  function aiBid(hand, level, rng) {
-    var exp = 0, spades = hand.filter(function (c) { return c.s === 2; });
-    hand.forEach(function (c) { if (c.r === 14) exp += 1; else if (c.r === 13) exp += 0.7; else if (c.r === 12 && c.s === 2) exp += 0.6; });
-    exp += Math.max(0, spades.length - 3) * 0.5;
-    spades.forEach(function (c) { if (c.r >= 12) exp += 0.3; });
-    var bid = Math.round(exp);
-    if (level === "casual") bid += rng() < 0.5 ? -1 : 0;
-    return Math.max(1, Math.min(13, bid));
-  }
+
   function placeBid(st, bid) {
     st.bids[st.turn] = bid;
     if (st.bids.every(function (b) { return b !== null; })) { st.phase = "playing"; st.turn = st.leader; st.trick = []; }
@@ -390,18 +383,7 @@
     if (done) endRound(st);
     return st;
   }
-  function scoreTeam(st, team) {
-    var a = TEAMS[team][0], b = TEAMS[team][1], contract = 0, nil = 0;
-    [a, b].forEach(function (p) {
-      if (st.bids[p] === 0) nil += st.tricksWon[p] === 0 ? 100 : -100;
-      else contract += st.bids[p] || 0;
-    });
-    var tricks = st.tricksWon[a] + st.tricksWon[b], base, bags = st.teamBags[team];
-    if (tricks >= contract) { base = 10 * contract; bags += tricks - contract; } else base = -10 * contract;
-    var bagPenalty = 0;
-    while (bags >= 10) { bagPenalty -= 100; bags -= 10; }
-    return { base: base, nil: nil, bagPenalty: bagPenalty, total: base + nil + bagPenalty, contract: contract, tricks: tricks, bags: bags };
-  }
+
   function endRound(st) {
     var r0 = scoreTeam(st, 0), r1 = scoreTeam(st, 1);
     st.teamScores = [st.teamScores[0] + r0.total, st.teamScores[1] + r1.total];
@@ -412,44 +394,178 @@
     st.winner = over ? (st.teamScores[0] > st.teamScores[1] ? 0 : 1) : null;
   }
 
-  function aiPlay(st, rng) {
-    var p = st.turn, moves = legalMoves(st, p);
-    if (moves.length === 1) return moves[0];
-    if (st.level === "casual" && rng() < 0.3) return moves[Math.floor(rng() * moves.length)];
-    // A seat bidding nil plays its lowest card, and ducks when it can.
-    if (st.bids[p] === 0) {
-      if (st.trick.length) {
-        var wE = st.trick.filter(function (e) { return e.p === trickWinner(st.trick); })[0];
-        var under = moves.filter(function (c) { return (c.s === wE.c.s && c.r < wE.c.r) || (c.s !== 2 && c.s !== st.trick[0].c.s); });
-        if (under.length) return maxBy(under, function (c) { return c.r; });
-      }
-      return minBy(moves, function (c) { return c.r + (c.s === 2 ? 20 : 0); });
+
+
+// BEGIN generated spades policy
+function aiBid(hand, difficulty, rng = Math.random) {
+    if (difficulty === 'sharp') {
+        // Own cards only: unsupported side-suit honours are not certain tricks.
+        const trump = hand.filter(c => c.s === 2).sort((a, b) => b.r - a.r);
+        let expected = 0;
+        for (const suit of [0, 1, 3]) {
+            const cards = hand.filter(c => c.s === suit);
+            if (cards.some(c => c.r === 14))
+                expected += 1;
+            if (cards.some(c => c.r === 13) && cards.length >= 2)
+                expected += cards.some(c => c.r === 14) ? 0.9 : 0.6;
+            if (cards.some(c => c.r === 12) && cards.length >= 3 && cards.some(c => c.r === 14 || c.r === 13))
+                expected += 0.35;
+        }
+        trump.forEach((c, i) => { expected += c.r >= 14 - i ? 1 : c.r >= 11 ? 0.55 : 0.15; });
+        expected += Math.max(0, trump.length - 3) * 0.35;
+        if (trump.length >= 3)
+            expected += [0, 1, 3].filter(s => hand.filter(c => c.s === s).length <= 1).length * 0.4;
+        return Math.max(1, Math.min(13, Math.round(expected)));
     }
-    if (!st.trick.length) {
-      var nonSpades = moves.filter(function (c) { return c.s !== 2; });
-      return maxBy(nonSpades.length ? nonSpades : moves, function (c) { return c.r; });
+    let exp = 0;
+    const spades = hand.filter((c) => c.s === 2);
+    for (const c of hand) {
+        if (c.r === 14)
+            exp += 1; // aces
+        else if (c.r === 13)
+            exp += 0.7; // kings
+        else if (c.r === 12 && c.s === 2)
+            exp += 0.6; // Q♠
     }
-    var led = st.trick[0].c.s, winner = trickWinner(st.trick);
-    var winning = st.trick.filter(function (e) { return e.p === winner; })[0];
-    var mate = teamOf(winner) === teamOf(p);
-    var follows = moves.filter(function (c) { return c.s === led; });
-    if (follows.length) {
-      if (mate || (winning.c.s === 2 && led !== 2)) return minBy(follows, function (c) { return c.r; });
-      var overs = follows.filter(function (c) { return c.r > winning.c.r; });
-      return overs.length ? minBy(overs, function (c) { return c.r; }) : minBy(follows, function (c) { return c.r; });
+    exp += Math.max(0, spades.length - 3) * 0.5; // long-trump tricks
+    for (const c of spades)
+        if (c.r >= 12)
+            exp += 0.3; // high trumps
+    let bid = Math.round(exp);
+    if (difficulty === 'casual')
+        bid += rng() < 0.5 ? -1 : 0;
+    return Math.max(1, Math.min(13, bid));
+}
+function scoreTeam(state, team, bagsIn = state.teamBags[team]) {
+    const [a, b] = TEAMS[team];
+    let contract = 0;
+    let nil = 0;
+    for (const p of [a, b]) {
+        if (state.bids[p] === 0) {
+            nil += state.tricksWon[p] === 0 ? 100 : -100;
+        }
+        else {
+            contract += state.bids[p] ?? 0;
+        }
     }
-    var spades = moves.filter(function (c) { return c.s === 2; }), off = moves.filter(function (c) { return c.s !== 2; });
-    if (mate) return off.length ? minBy(off, function (c) { return c.r; }) : minBy(spades, function (c) { return c.r; });
+    const tricks = state.tricksWon[a] + state.tricksWon[b];
+    let base = 0;
+    let bags = bagsIn;
+    if (tricks >= contract) {
+        base = 10 * contract + tricks - contract;
+        bags += tricks - contract;
+    }
+    else {
+        base = -10 * contract;
+    }
+    let bagPenalty = 0;
+    while (bags >= 10) {
+        bagPenalty -= 100;
+        bags -= 10;
+    }
+    return { base, nil, bagPenalty, total: base + nil + bagPenalty, contract, tricks, bags };
+}
+function nilPlay(state, moves) {
+    const p = state.turn;
+    if (state.trick.length) {
+        const losing = moves.filter(c => trickWinner([...state.trick, { p, c }]) !== p);
+        if (losing.length)
+            return maxBy(losing, c => c.r + (c.s === 2 ? 20 : 0));
+    }
+    return minBy(moves, c => c.r + (c.s === 2 ? 20 : 0));
+}
+function sharpPlay(state, moves) {
+    const p = state.turn, partner = (p + 2) % 4;
+    const contract = (state.bids[p] ?? 0) + (state.bids[partner] ?? 0);
+    const made = state.tricksWon[p] + state.tricksWon[partner] >= contract;
+    const protectingNil = state.bids[partner] === 0 && state.tricksWon[partner] === 0;
+    if (state.trick.length === 0) {
+        // Low leads let a nil partner duck. Once made, avoid collecting bags.
+        if (protectingNil || made)
+            return minBy(moves, c => c.r + (c.s === 2 ? 20 : 0));
+        // Cash own aces first; do not burn unsupported kings while aces remain.
+        const aces = moves.filter(c => c.r === 14);
+        if (aces.length)
+            return minBy(aces, c => c.s === 2 ? 1 : 0);
+        return null;
+    }
+    const winner = trickWinner(state.trick);
+    const winners = moves.filter(c => trickWinner([...state.trick, { p, c }]) === p);
+    const losers = moves.filter(c => !winners.includes(c));
+    if (protectingNil && winner === partner && winners.length) {
+        return minBy(winners, c => c.r + (c.s === 2 ? 20 : 0));
+    }
+    if (protectingNil && !state.trick.some(e => e.p === partner) && winners.length) {
+        // Put the strongest available cover down before the nil partner plays.
+        return maxBy(winners, c => c.r + (c.s === 2 ? 20 : 0));
+    }
+    if (teamOf(winner) !== teamOf(p) && state.bids[winner] === 0 && state.tricksWon[winner] === 0 && losers.length) {
+        // Let an opposing live nil take the trick rather than rescuing it.
+        return maxBy(losers, c => c.r + (c.s === 2 ? 20 : 0));
+    }
+    // Do not sacrifice a live nil to avoid a bag. Nil protection has priority.
+    if (made && !(protectingNil && winner === partner) && losers.length) {
+        return maxBy(losers, c => c.r + (c.s === 2 ? 20 : 0));
+    }
+    // With the last seat to play, a win cannot be overtrumped later.
+    if (!made && state.trick.length === 3 && teamOf(winner) !== teamOf(p) && winners.length) {
+        return minBy(winners, c => c.r + (c.s === 2 ? 20 : 0));
+    }
+    return null;
+}
+function aiPlay(state, rng = Math.random) {
+    const p = state.turn;
+    const moves = legalMoves(state, p);
+    if (moves.length === 1)
+        return moves[0];
+    if (state.level === 'casual' && rng() < 0.3) {
+        return moves[Math.floor(rng() * moves.length)];
+    }
+    if (state.bids[p] === 0 && state.tricksWon[p] === 0)
+        return nilPlay(state, moves);
+    if (state.level === 'sharp') {
+        const choice = sharpPlay(state, moves);
+        if (choice)
+            return choice;
+    }
+    // Leading: try to cash a high non-trump; fall back to low trump.
+    if (state.trick.length === 0) {
+        const nonSpades = moves.filter((c) => c.s !== 2);
+        const pool = nonSpades.length ? nonSpades : moves;
+        return maxBy(pool, (c) => c.r);
+    }
+    const led = state.trick[0].c.s;
+    const winner = trickWinner(state.trick);
+    const winningEntry = state.trick.find((e) => e.p === winner);
+    const teammateWinning = teamOf(winner) === teamOf(p);
+    const canFollow = moves.some((c) => c.s === led);
+    if (canFollow) {
+        const follows = moves.filter((c) => c.s === led);
+        if (teammateWinning)
+            return minBy(follows, (c) => c.r); // let partner take it
+        if (winningEntry.c.s === 2 && led !== 2)
+            return minBy(follows, (c) => c.r); // a non-trump follow cannot beat a trump
+        const overs = follows.filter((c) => c.r > winningEntry.c.r);
+        return overs.length ? minBy(overs, (c) => c.r) : minBy(follows, (c) => c.r);
+    }
+    // Void in the led suit.
+    const spades = moves.filter((c) => c.s === 2);
+    const offSuit = moves.filter((c) => c.s !== 2);
+    if (teammateWinning) {
+        return offSuit.length ? minBy(offSuit, (c) => c.r) : minBy(spades, (c) => c.r);
+    }
     if (spades.length) {
-      if (winning.c.s === 2) {
-        var ov = spades.filter(function (c) { return c.r > winning.c.r; });
-        if (ov.length) return minBy(ov, function (c) { return c.r; });
-        return off.length ? minBy(off, function (c) { return c.r; }) : minBy(spades, function (c) { return c.r; });
-      }
-      return minBy(spades, function (c) { return c.r; });
+        if (winningEntry.c.s === 2) {
+            const overs = spades.filter((c) => c.r > winningEntry.c.r);
+            if (overs.length)
+                return minBy(overs, (c) => c.r);
+            return offSuit.length ? minBy(offSuit, (c) => c.r) : minBy(spades, (c) => c.r);
+        }
+        return minBy(spades, (c) => c.r); // trump in cheaply to win
     }
-    return minBy(moves, function (c) { return c.r; });
-  }
+    return minBy(moves, (c) => c.r);
+}
+// END generated spades policy
 
   function makeRng(seedStr) {
     if (!seedStr) return Math.random;
