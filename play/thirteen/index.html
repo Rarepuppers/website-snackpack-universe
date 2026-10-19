@@ -296,11 +296,11 @@
         <h3>Atlas Quest</h3>
       </a>
       <a class="game-tile" href="../hearts/">
-        <img class="game-icon" src="../tiles/hearts.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <picture><source srcset="../tiles/hearts.webp" type="image/webp"><img class="game-icon" src="../tiles/hearts.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72"></picture>
         <h3>Hearts</h3>
       </a>
       <a class="game-tile" href="../spades/">
-        <img class="game-icon" src="../tiles/spades.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <picture><source srcset="../tiles/spades.webp" type="image/webp"><img class="game-icon" src="../tiles/spades.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72"></picture>
         <h3>Spades</h3>
       </a>
       <a class="game-tile" href="../table-tennis/">
@@ -490,105 +490,70 @@
     return 0;
   }
 
-  // CPU play. The ported version always led its lowest single card, so it shed
-  // one card per lead while a person dumped runs and pairs, held no 2s back,
-  // and in Classic (where 2 is the lowest rank) opened the game with a 2
-  // instead of the 3 of spades the rules require. This one:
-  //   - leads the combination that sheds the most low cards (run, then
-  //     triple, then pair, then single), always including the 3 of spades on
-  //     the opening play;
-  //   - follows with the cheapest combination that wins, preferring one that
-  //     does not break up its own pairs, triples or runs;
-  //   - keeps its 2s and bombs while nobody is close to going out.
-  function cpuChoosePlay(state, idx) {
-    var hand = state.players[idx].hand, mode = state.mode, current = state.lastCombo;
-    var leading = !current || state.lastPlayerIdx === idx;
-    var mustHold = state.isFirstTurn ? hand.filter(function (c) { return c.value === 3 && c.suit === 0; })[0] : null;
-    var fewestOther = Math.min.apply(null, state.players.filter(function (_, i) { return i !== idx; }).map(function (p) { return p.hand.length; }));
-    var endgame = fewestOther <= 3 || hand.length <= 4;
-    var isHigh = function (c) { return mode === "standard" ? c.value === 2 : c.value === 1; }; // the top rank: 2 in Standard, Ace in Classic
-
-    // Every legal combination in hand (singles, pairs, triples, quads, runs,
-    // runs of pairs). Hands are 13 cards, so plain enumeration is cheap.
-    function groups() { var m = {}; hand.forEach(function (c) { (m[c.value] = m[c.value] || []).push(c); }); return m; }
-    function allCombos() {
-      var out = [], m = groups();
-      hand.forEach(function (c) { out.push(identifyCombo([c], mode)); });
-      Object.keys(m).forEach(function (k) {
-        var g = sortCards(m[k], mode);
-        for (var n = 2; n <= g.length; n++) {
-          // Lowest-suited n of a kind, plus the highest-suited one so a pair
-          // can still beat a same-rank pair by suit.
-          out.push(identifyCombo(g.slice(0, n), mode));
-          if (g.length > n) out.push(identifyCombo(g.slice(g.length - n), mode));
+  // Complete own-hand move generation and public-count tactical policy.
+// BEGIN generated thirteen policy
+const comboCache = new Map();
+function enumerateCombos(hand, mode) {
+    if (hand.length === 0 || hand.length > 13 || new Set(hand.map(c => c.id)).size !== hand.length)
+        return [];
+    const sorted = sortCards(hand, mode);
+    const key = mode + ':' + sorted.map(c => `${c.id}/${c.value}/${c.suit}`).join(',');
+    let combos = comboCache.get(key);
+    if (!combos) {
+        combos = [];
+        for (let mask = 1; mask < (1 << sorted.length); mask++) {
+            const cards = sorted.filter((_, i) => (mask & (1 << i)) !== 0);
+            const combo = identifyCombo(cards, mode);
+            if (combo)
+                combos.push(combo);
         }
-      });
-      // Runs: one card per value, lowest suit first, any length >= 3.
-      var byRank = {}; hand.forEach(function (c) { var r = seqRank(c); (byRank[r] = byRank[r] || []).push(c); });
-      var ranks = Object.keys(byRank).map(Number).sort(function (a, b) { return a - b; });
-      for (var i = 0; i < ranks.length; i++) {
-        var run = [];
-        for (var j = i; j < ranks.length && (j === i || ranks[j] === ranks[j - 1] + 1); j++) {
-          run.push(sortCards(byRank[ranks[j]], mode)[0]);
-          if (run.length >= 3) {
-            out.push(identifyCombo(run.slice(), mode));
-            // Same run ending on the top card's highest suit, to beat by suit.
-            var hi = run.slice(0, -1).concat([sortCards(byRank[ranks[j]], mode).slice(-1)[0]]);
-            out.push(identifyCombo(hi, mode));
-          }
-          var pairs = [];
-          for (var q = i; q <= j; q++) { if (byRank[ranks[q]].length < 2) { pairs = null; break; } pairs = pairs.concat(sortCards(byRank[ranks[q]], mode).slice(0, 2)); }
-          if (pairs && j - i + 1 >= 3) out.push(identifyCombo(pairs, mode));
+        if (comboCache.size >= 24)
+            comboCache.delete(comboCache.keys().next().value);
+        comboCache.set(key, combos);
+    }
+    // Consumers can sort/select freely without corrupting a cached candidate.
+    return combos.map(c => ({ ...c, cards: c.cards.map(card => ({ ...card })) }));
+}
+function legalCombos(state, playerIdx) {
+    const current = state.lastPlayerIdx === playerIdx ? null : state.lastCombo;
+    return enumerateCombos(state.players[playerIdx].hand, state.mode).filter(combo => (!state.isFirstTurn || combo.cards.some(c => c.value === 3 && c.suit === 0))
+        && canBeat(combo, current, state.mode));
+}
+function cpuChoosePlay(state, playerIdx) {
+    const hand = state.players[playerIdx].hand, mode = state.mode;
+    const leading = !state.lastCombo || state.lastPlayerIdx === playerIdx;
+    const candidates = legalCombos(state, playerIdx);
+    if (!candidates.length)
+        return 'pass';
+    const finishing = candidates.find(c => c.cards.length === hand.length);
+    if (finishing)
+        return finishing;
+    const fewestOther = Math.min(...state.players.filter((_, i) => i !== playerIdx).map(p => p.hand.length));
+    const endgame = fewestOther <= 3 || hand.length <= 4;
+    const groups = new Map();
+    for (const card of hand)
+        groups.set(card.value, [...(groups.get(card.value) ?? []), card]);
+    const high = (card) => card.value === (mode === 'standard' ? 2 : 1);
+    const cost = (combo) => {
+        const ids = new Set(combo.cards.map(c => c.id));
+        let broken = 0;
+        for (const group of groups.values()) {
+            const used = group.filter(c => ids.has(c.id)).length;
+            if (used > 0 && used < group.length && group.length >= 2)
+                broken++;
         }
-      }
-      return out.filter(Boolean);
-    }
-
-    // How much a play costs: its rank, plus a penalty for each card that
-    // breaks up a pair/triple it was not played with, plus a large one for
-    // spending a 2 or a bomb before the endgame.
-    var m0 = groups();
-    function cost(cm) {
-      var played = {}; cm.cards.forEach(function (c) { played[c.id] = true; });
-      var broken = 0;
-      Object.keys(m0).forEach(function (k) {
-        var g = m0[k], usedHere = g.filter(function (c) { return played[c.id]; }).length;
-        if (usedHere > 0 && usedHere < g.length && g.length >= 2) broken += 1;
-      });
-      var spendsHigh = cm.cards.some(isHigh) || cm.type === "quad" || (cm.type === "pair-sequence" && current && current.type !== "pair-sequence");
-      return cm.rankKey + broken * 14 + (spendsHigh && !endgame ? 60 : 0);
-    }
-
-    var combos = allCombos();
-    if (mustHold) combos = combos.filter(function (cm) { return cm.cards.some(function (c) { return c.id === mustHold.id; }); });
-
-    if (leading) {
-      // Shed the most cards; among equals, the lowest. Never lead a 2 or bomb
-      // while a cheaper lead exists, unless it would win the game outright.
-      var lowest = Math.min.apply(null, combos.map(function (cm) { return cm.cards[0] ? rankValue(sortCards(cm.cards, mode)[0], mode) : 99; }));
-      var leads = combos.filter(function (cm) {
-        if (cm.cards.length === hand.length) return true;
-        return rankValue(sortCards(cm.cards, mode)[0], mode) === lowest || cm.cards.length >= 3;
-      });
-      leads.sort(function (a, b) {
-        if (a.cards.length === hand.length) return -1;
-        if (b.cards.length === hand.length) return 1;
-        return (cost(a) - a.cards.length * 6) - (cost(b) - b.cards.length * 6);
-      });
-      return leads[0] || combos.sort(function (a, b) { return a.rankKey - b.rankKey; })[0] || "pass";
-    }
-
-    var cand = combos.filter(function (cm) { return canBeat(cm, current, mode); });
-    if (!cand.length) return "pass";
-    // Going out wins outright.
-    var finishing = cand.filter(function (cm) { return cm.cards.length === hand.length; });
-    if (finishing.length) return finishing[0];
-    cand.sort(function (a, b) { return cost(a) - cost(b); });
-    var best = cand[0];
-    // Hold a 2 or a bomb rather than spend it early on a low play.
-    if (!endgame && (best.cards.some(isHigh) || best.type === "quad")) return "pass";
+        const reserve = combo.cards.some(high) || combo.type === 'quad'
+            || (combo.type === 'pair-sequence' && state.lastCombo?.type !== 'pair-sequence');
+        return combo.rankKey + 14 * broken + (reserve && !endgame ? 60 : 0) - (leading ? combo.cards.length * 6 : 0);
+    };
+    candidates.sort((a, b) => cost(a) - cost(b) || a.rankKey - b.rankKey);
+    const best = candidates[0];
+    // Save scarce control cards early, but never pass away an immediate win.
+    if (!leading && !endgame && (best.cards.some(high) || best.type === 'quad'))
+        return 'pass';
     return best;
-  }
+}
+// END generated thirteen policy
 
   function nextTurn(state, currentIdx, passed) {
     var n = state.players.length, skip = passed || state.passedPlayers;
