@@ -32,9 +32,10 @@ test("a solo game runs 13 turns, and the best score survives a reload", async ({
   await expect(page.locator("#fd-best")).toHaveText(total);
 });
 
-test("a game against the computer finishes and is kept in the record", async ({ page }) => {
+for (const mode of ["cpu", "sharp"]) {
+test(`a game against ${mode} finishes and is kept in the record`, async ({ page }) => {
   await page.goto("/play/five-dice/");
-  await page.locator('.seg [data-mode="cpu"]').evaluate((b) => b.click());
+  await page.locator(`.seg [data-mode="${mode}"]`).evaluate((b) => b.click());
   for (let t = 0; t < 13; t++) {
     await expect(page.locator("#fd-roll")).toBeEnabled({ timeout: 10_000 });
     await humanTurn(page);
@@ -44,6 +45,7 @@ test("a game against the computer finishes and is kept in the record", async ({ 
   const [won, lost] = (await page.locator("#fd-best").textContent()).split("–").map(Number);
   expect(won + lost).toBe(tie ? 0 : 1);
 });
+}
 
 test("the daily game deals everyone the same dice", async ({ browser }) => {
   const firstRolls = [];
