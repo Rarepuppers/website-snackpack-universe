@@ -69,4 +69,22 @@ need their individual complete art/publication review. Real Android/iOS
 read-aloud testing, stale decodable-importer maintenance before its next use
 and the November re-measure remain listed in the current plan.
 
-Deployment and search-notification evidence is appended after publication.
+## Live publication
+
+Published website commit: `7077125b125a3663259c7ee2b324555eee511902`.
+GitHub Pages deployment run `39186698729` succeeded on 19 October. All four
+book URLs returned HTTP 200 with the expected 16 story articles. All 56
+new artwork, printable PDF and social-card binaries matched the reviewed
+local files byte-for-byte. The live shelf, offline manifest and sitemap
+contain all four books.
+
+- [Ted-E-Bear's Blanket Fort](https://www.snackpackuniverse.com/read/ted-e-bears-blanket-fort/)
+- [Wise Owl's Library Day](https://www.snackpackuniverse.com/read/wise-owls-library-day/)
+- [Meow-inara's Moonlight Story](https://www.snackpackuniverse.com/read/meow-inaras-moonlight-story/)
+- [Centi-Peed's Garden Race](https://www.snackpackuniverse.com/read/centi-peeds-garden-race/)
+
+Google accepted the sitemap submission. IndexNow accepted four URLs and
+Bing confirmed four URL submissions (daily quota 100 to 96). Submission is
+not an indexing/ranking guarantee. Full live binary hashes and check counts
+are retained in monorepo
+`docs/short-reads-website-publication-2026-10-19.json`.

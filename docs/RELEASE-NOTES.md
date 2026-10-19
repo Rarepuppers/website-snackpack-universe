@@ -7,6 +7,8 @@ are in [`docs/archive/`](archive/README.md)).
 
 ## 2026-10-19 - Four illustrated short reads
 
+Published in `7077125b`; all four live books and their PDF/art hashes verified.
+
 - Added Ted-E-Bear's Blanket Fort, Wise Owl's Library Day, Meow-inara's
   Moonlight Story and Centi-Peed's Garden Race: 16 pages copied from their
   Spelling app sources, with the corrected primary questions and explanations.
