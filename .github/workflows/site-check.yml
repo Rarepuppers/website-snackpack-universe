@@ -9,6 +9,8 @@ on:
       - "**/*.mjs"
       - "**/*.json"
       - "**/*.xml"
+      - "read/**"
+      - "scripts/**/*.py"
       - "assets/**"
       - "play/**"
       # The visual baselines gate this workflow, so a change to them has to be
@@ -26,6 +28,8 @@ on:
       - "**/*.mjs"
       - "**/*.json"
       - "**/*.xml"
+      - "read/**"
+      - "scripts/**/*.py"
       - "assets/**"
       - "play/**"
       # The visual baselines gate this workflow, so a change to them has to be
