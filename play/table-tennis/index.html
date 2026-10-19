@@ -319,9 +319,11 @@
 <script src="../funnel.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script src="../arcade-assets.js"></script>
+<script src="../fixed-step-clock.js"></script>
 <script>
 (function () {
   "use strict";
+  var stepClock = window.SnackPackClock.createFixedStepClock();
 
   // ════ Engine (ported from the Vol 2 app's table-tennis/engine.ts) ════
   var W = 390, H = 680, PADDLE_H = 80, PADDLE_W = 12, BALL_R = 9, PADDLE_X_OFFSET = 14;
@@ -464,6 +466,8 @@
   });
 
   function resetGame(startNow) {
+    stepClock.reset();
+    keys = {};
     state = initialState(mode, 7, paddleColor);
     slEl.textContent = "0"; srEl.textContent = "0";
     statusEl.className = "game-status";
@@ -488,9 +492,15 @@
     }
   }
 
-  function loop() {
+  function loop(now) {
     rafId = requestAnimationFrame(loop);
-    if (state.phase === "playing") { applyInput(); tick(state); draw(); updateScores(); if (state.phase === "gameover") finish(); }
+    if (state.phase !== "playing") { stepClock.reset(); return; }
+    var steps = stepClock.advance(now, function () {
+      applyInput(); tick(state);
+      if (state.phase === "gameover") { draw(); updateScores(); finish(); return false; }
+      return true;
+    });
+    if (steps && state.phase === "playing") { draw(); updateScores(); }
   }
 
   function updateScores() { slEl.textContent = state.scoreL; srEl.textContent = state.scoreR; }
@@ -631,8 +641,8 @@
       mount: document.querySelector(".game-controls"),
       stage: document.querySelector(".game-stage"),
       isPlaying: function () { return state.phase === "playing"; },
-      pause: function () { state.phase = "paused"; },
-      resume: function () { state.phase = "playing"; }
+      pause: function () { state.phase = "paused"; keys = {}; stepClock.reset(); },
+      resume: function () { stepClock.reset(); state.phase = "playing"; }
     });
   }
 })();
