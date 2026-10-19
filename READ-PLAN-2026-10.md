@@ -78,7 +78,7 @@ and submissions remain with Claude unless Mark assigns a specific release.
   Reef, Luckybug's Art Gallery, Corgi's Countryside Run and Slow and Steady.
 
 Outreach remains Mark's task. [The teacher-resource pitch](LINK-BUILDING-PLAN.md)
-now describes 43 books; no outreach messages were sent. Keep the existing
+now describes 47 books; no outreach messages were sent. Keep the existing
 re-measure schedule rather than creating a duplicate reminder.
 
 ## Publication rules and implementation
