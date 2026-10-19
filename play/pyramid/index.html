@@ -437,7 +437,7 @@
 
   // Any legal move right now? Mirrors hasMove() in the app's engine.
   function hasMove(st) {
-    if (st.stock.length || st.recycles > 0) return true;
+    if (st.stock.length || (st.recycles > 0 && st.waste.length)) return true;
     var open = [];
     for (var i = 0; i < SIZE; i++) {
       if (!exposed(st, i)) continue;
@@ -650,7 +650,7 @@
       state.waste.push(state.stock.pop());
       state.moves++;
       if (window.SnackPackAudio) window.SnackPackAudio.play("pickup");
-    } else if (state.recycles > 0) {
+    } else if (state.recycles > 0 && state.waste.length) {
       snapshot();
       hintPair = null;
       // The waste goes back under the stock in the order it will come out again.
@@ -660,6 +660,8 @@
       state.moves++;
       if (window.SnackPackAudio) window.SnackPackAudio.play("whoosh");
     } else {
+      endCheck();
+      render();
       return;
     }
     selected = null;
