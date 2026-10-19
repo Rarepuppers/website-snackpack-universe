@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {printable,printableLabel} from './lib/read-printables.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { READ_COLLECTIONS } from './lib/read-collections.mjs';
@@ -18,7 +19,7 @@ function write(rel,html){const f=path.join(root,rel);const before=fs.existsSync(
  if(crumb)html=html.replace(/<!-- breadcrumbs:generated -->[\s\S]*?<!-- \/breadcrumbs:generated -->/,crumb[0]);
  if(before!==html){changed.push(rel);if(!check){fs.mkdirSync(path.dirname(f),{recursive:true});fs.writeFileSync(f,html);}}}
 for(const c of READ_COLLECTIONS){const m=meta.find(m=>m.id===c.id);if(!m)throw Error('Missing collection PDF metadata: '+c.id);
- const rows=c.books.map(slug=>{if(!evidence.books.some(b=>b.slug===slug))throw Error('Unpublished collection member '+slug);return `<li><h2><a href="/read/${slug}/">${titleFor(slug)}</a></h2><a class="text-link" href="/read/${slug}/${slug}.pdf" download>Download this book (PDF)</a></li>`;}).join('\n');
+ const rows=c.books.map(slug=>{if(!evidence.books.some(b=>b.slug===slug))throw Error('Unpublished collection member '+slug);return `<li><h2><a href="/read/${slug}/">${titleFor(slug)}</a></h2><a class="text-link" href="/read/${slug}/${slug}.pdf" download>Download this book (PDF)</a><span class="read-download-meta">${printableLabel(printable(root,slug))}</span></li>`;}).join('\n');
  const body=`<p><a class="btn btn-primary" href="./${c.id}.pdf" download>Download the collection (PDF)</a></p><p>${c.books.length} complete books · ${m.pages} printed pages · ${(m.bytes/1048576).toFixed(1)} MB. Includes contents and every book’s questions. PDFs are not included in Save the bookshelf for offline.</p><p>Print at actual size (100%) on A4 or US Letter. Pages fit the shared safe area. Choose only the books or pages you want; individual PDFs are below.</p><ol class="read-collection-books">${rows}</ol><p><a href="/read/collections/">All printable collections</a></p>`;
  write(`read/collections/${c.id}/index.html`,page(c.title,c.description,`/read/collections/${c.id}/`,body));}
 write('read/collections/index.html',page('Choose a printable collection','Small sets of complete books for phonics practice, quiet reading together and kindness. Individual books remain free to read and print.','/read/collections/',`<div class="grid app-grid">${READ_COLLECTIONS.map(c=>`<article class="app-card"><div class="app-card-top"><h2>${esc(c.title)}</h2><p>${esc(c.description)}</p><p>${c.books.length} complete books</p><a class="btn btn-secondary" href="./${c.id}/">See books and download</a></div></article>`).join('')}</div>`));

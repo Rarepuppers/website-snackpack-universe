@@ -1,5 +1,5 @@
 {
-  "reviewed": "2026-10-19",
+  "reviewed": "2026-10-20",
   "books": [
     {
       "slug": "animal-architects",
@@ -27,6 +27,7 @@
         "Our plans are complete: slow the water, fit shapes tightly, weave flexible fibres, dig extra exits, and reuse what already exists. Animal architects do not build for applause. They build because a good home helps life continue. Next time you see a nest, web, mound, burrow, or dam, pause before passing it. You may be looking at someone's greatest invention. What will you notice first?"
       ],
       "expected": [],
+      "quizzes": [],
       "art": {
         "read/animal-architects/pages/animal-architects-p1.jpg": "1a94f91e57d09cbd88509a05cea5c89cbc9e1622df3a41593ce2ae9ee4ba8d0d",
         "read/animal-architects/pages/animal-architects-p2.jpg": "1894900a6bd74bb916834d903cbdf94f173b6d330e6236f1f365762392304229",
@@ -60,10 +61,22 @@
         "Why did the chalk game help the quiet puppy join in?",
         "The puppy could play without having to speak",
         "Rolling the ball let the puppy answer the welcome with an action.",
+        "What did the puppy do before joining the game?",
+        "Nudged the red ball back",
         "What might the quiet puppy be feeling?",
         "Why might the invitation feel difficult to answer?",
         "How does the chalk game make joining easier?",
         "What welcoming action worked best?"
+      ],
+      "quizzes": [
+        {
+          "question": "Why did the chalk game help the quiet puppy join in?",
+          "answer": "The puppy could play without having to speak. Rolling the ball let the puppy answer the welcome with an action."
+        },
+        {
+          "question": "What did the puppy do before joining the game?",
+          "answer": "Nudged the red ball back."
+        }
       ],
       "art": {
         "read/baby-bulldogs-at-the-playground/pages/baby-bulldogs-playground-p1-r2.jpg": "d808a5190b349a1afb2568b5a7f3bcb1c064d1f053e404e17af85a8802b04567",
@@ -72,7 +85,7 @@
         "read/baby-bulldogs-at-the-playground/pages/baby-bulldogs-playground-p4-r2.jpg": "81e4adb070596e2a5868fd11c27b2e08c2d864d734680827d7a3bd6a3bc37de8"
       },
       "pdf": "read/baby-bulldogs-at-the-playground/baby-bulldogs-at-the-playground.pdf",
-      "pdf_sha256": "da9d882dd8567e2808658dd474c183e1a897fe1ce3a09d2cbd6d8b162fb0d99e"
+      "pdf_sha256": "845a3e5c9291e46b150caa088a70cf625788f8e0bc393f37bc712036bcf80dd3"
     },
     {
       "slug": "biscuit-bouncers-parcel-parade",
@@ -119,6 +132,7 @@
         "How many seats are still empty?",
         "Count up from 26 to 30: 27, 28, 29, 30. That is 4 steps."
       ],
+      "quizzes": [],
       "art": {
         "read/biscuit-bouncers-parcel-parade/pages/page-1-r2.jpg": "372806da9dba32bfd5801c768ca3883785a30bc86c366fc203cff697911b9c65",
         "read/biscuit-bouncers-parcel-parade/pages/page-2-r2.jpg": "b873d042662ba05528b4e2125a6b1ada89e09d68bab0b3012a22f41f115fb7f5",
@@ -170,6 +184,7 @@
         "Which is the largest number: 47, 74, 407, or 470?",
         "Compare hundreds first. 407 and 470 both have 4 hundreds; compare tens next. Seven tens is greater than zero tens, so 470 is largest."
       ],
+      "quizzes": [],
       "art": {
         "read/booklava-and-the-number-that-lost-its-place/pages/page-1.jpg": "70b0da592d443aa0c07f180cb45b0016002b9b1f4a239f18483a62bf870b1927",
         "read/booklava-and-the-number-that-lost-its-place/pages/page-2.jpg": "80c6df9dea946ec179ed42a05258776bb42a60199a3cc9153f88f2b097b1b672",
@@ -207,6 +222,7 @@
         "The bug sat in the sun. Pip had fun."
       ],
       "expected": [],
+      "quizzes": [],
       "art": {
         "read/bug-in-a-cup/pages/bug-in-a-cup-page-1.jpg": "a38fd4f9c64a98898f0a49bbff6beb936368f29acce36c318540117782940196",
         "read/bug-in-a-cup/pages/bug-in-a-cup-page-2.jpg": "a502677bbbec5a0ea51a19804389fad4b27023ed7702aad231d66744f923fd12",
@@ -239,10 +255,22 @@
         "What would Luckybug have missed if she had gone home at once?",
         "The chance to see the planet when a gap opened",
         "Waiting gave the sky time to change, even though the gap did not last.",
+        "What glowed beside the moon?",
+        "A bright planet",
         "What might Captain Beakon be thinking when he sees the clouds?",
         "Why might five more minutes make a difference?",
         "Why does Captain Beakon give Luckybug a turn straight away?",
         "What shows that Luckybug feels differently about waiting now?"
+      ],
+      "quizzes": [
+        {
+          "question": "What would Luckybug have missed if she had gone home at once?",
+          "answer": "The chance to see the planet when a gap opened. Waiting gave the sky time to change, even though the gap did not last."
+        },
+        {
+          "question": "What glowed beside the moon?",
+          "answer": "A bright planet."
+        }
       ],
       "art": {
         "read/captain-beakons-star-watch/pages/captain-beakon-star-watch-p1.jpg": "13d398a21cb8fb04d207116ba35fdb4ef87b2200ef31c30234ec994071092b51",
@@ -251,7 +279,7 @@
         "read/captain-beakons-star-watch/pages/captain-beakon-star-watch-p4.jpg": "1f273188859b3f7b3ba196ff1c9c0fd75c55a40b1b5a745584fc7562cb15d7bc"
       },
       "pdf": "read/captain-beakons-star-watch/captain-beakons-star-watch.pdf",
-      "pdf_sha256": "5cf54580c6a3b842376f7507ef760d26ecf298ab02fd046d9ce747402c330e64"
+      "pdf_sha256": "4ecd4f25a8548e9c0b328f23ccdb7aede32d0af07652885151d49ca05ed482ac"
     },
     {
       "slug": "centi-peeds-below-zero-burrow",
@@ -278,6 +306,7 @@
         "Starting at x = −2, what is the new x-coordinate after moving 4 steps right?",
         "Moving right adds 4 to x: −2 + 4 = 2. The y-coordinate stays unchanged."
       ],
+      "quizzes": [],
       "art": {
         "read/centi-peeds-below-zero-burrow/pages/page-1.jpg": "71394bba4ec68747e5de4d0e122893e27a6695fb6895a71a6530c5601016de67",
         "read/centi-peeds-below-zero-burrow/pages/page-2.jpg": "d81d68ca0478b5794fd3a740ca335a7263f73f2d192afe8e1b3ba0d4e4370859",
@@ -305,10 +334,22 @@
       "expected": [
         "Why did Centi-Peed stop during the race?",
         "To free Shelly-Pop's trapped race number",
+        "What gave the starting signal?",
+        "A clap from Wise Owl",
         "How is Centi-Peed feeling before the race?",
         "What begins the race?",
         "Why does Centi-Peed stop while leading?",
         "What matters more than the ribbon at the finish?"
+      ],
+      "quizzes": [
+        {
+          "question": "Why did Centi-Peed stop during the race?",
+          "answer": "To free Shelly-Pop's trapped race number."
+        },
+        {
+          "question": "What gave the starting signal?",
+          "answer": "A clap from Wise Owl."
+        }
       ],
       "art": {
         "read/centi-peeds-garden-race/pages/centi-peed-garden-race-p1-r2.jpg": "122eec8b9428cbb3f30ae7980d0f1b5a622ba35a8bd45b4d7f5232b8a8dbc6b7",
@@ -317,7 +358,7 @@
         "read/centi-peeds-garden-race/pages/centi-peed-garden-race-p4-r2.jpg": "f186ee5f32496edff80c51f22689c0e63fbb01c000e2a9203024404374a9d00a"
       },
       "pdf": "read/centi-peeds-garden-race/centi-peeds-garden-race.pdf",
-      "pdf_sha256": "63b27965b72712baebd868c385beaa9bf3702589feef421695954878e31827e8"
+      "pdf_sha256": "8162502965fae0d029a1cbd2a4901672d24f49832fcd07f03cdd001e698b0af0"
     },
     {
       "slug": "cereal-swimmer-and-the-number-line-lagoon",
@@ -370,6 +411,7 @@
         "11",
         "Ten completes the lagoon line."
       ],
+      "quizzes": [],
       "art": {
         "read/cereal-swimmer-and-the-number-line-lagoon/pages/page-1.jpg": "735bb7fcb04eee20d8d0d67a57bbe11b36d3569d2c8c17e1a1b9d68fffa9fb7e",
         "read/cereal-swimmer-and-the-number-line-lagoon/pages/page-2.jpg": "df91ff170ae9d63c4be6cde0ad04fa7ae1a3203db23015dcbddb2c7dc75c1c76",
@@ -380,6 +422,50 @@
       },
       "pdf": "read/cereal-swimmer-and-the-number-line-lagoon/cereal-swimmer-and-the-number-line-lagoon.pdf",
       "pdf_sha256": "a5fe5c4bc9ff7cb3447efecbdaa3682e885b6627637cf80295fd622337ac83c0"
+    },
+    {
+      "slug": "corgi-on-the-cobs-countryside-run",
+      "source_id": "corgi-on-the-cob-countryside",
+      "source_art": {
+        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/corgi-on-the-cob-countryside-p1.jpg": "5cfa0704ba74f680e40c0c4084eaea93d0a20b608332685e718d641521403112",
+        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/corgi-on-the-cob-countryside-p2.jpg": "b2a4d3d2574f49a785531f49b5a69f5914b67c4ca9b412f59a3a701aec35fa17",
+        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/corgi-on-the-cob-countryside-p3.jpg": "68d4bfdacf6cda8dce47b244578cedffae487d810f38de191ea073f593aa7b50",
+        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/corgi-on-the-cob-countryside-p4.jpg": "705fbf86e4f1053b472a3ea8bbb5a2900495ba4214dc4b170cec3cf2f1993699"
+      },
+      "text": [
+        "Corgi-on-the-Cob bounds through the farm gate when Ginger-Deer challenges him to race around the old mill. Corgi wants to win for once.",
+        "Corgi leaps the low fence and takes the lead. Behind him comes a snap: Ginger's race ribbon has caught on a splinter.",
+        "He turns back, nibbles the ribbon free, and runs alongside Ginger. Neither friend asks who is ahead now.",
+        "They cross the gate together and Corgi flops onto the mat laughing. He did not win the race, but he kept the friend he wanted to race again."
+      ],
+      "expected": [
+        "Why did Corgi-on-the-Cob give up his lead?",
+        "To free Ginger-Deer's caught ribbon",
+        "How did the friends finish the race?",
+        "They crossed together",
+        "What does Corgi hope will happen in the race?",
+        "What happens after Corgi takes the lead?",
+        "Why does Corgi turn back?",
+        "What does Corgi value more than winning?"
+      ],
+      "quizzes": [
+        {
+          "question": "Why did Corgi-on-the-Cob give up his lead?",
+          "answer": "To free Ginger-Deer's caught ribbon."
+        },
+        {
+          "question": "How did the friends finish the race?",
+          "answer": "They crossed together."
+        }
+      ],
+      "art": {
+        "read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p1.jpg": "5cfa0704ba74f680e40c0c4084eaea93d0a20b608332685e718d641521403112",
+        "read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p2.jpg": "b2a4d3d2574f49a785531f49b5a69f5914b67c4ca9b412f59a3a701aec35fa17",
+        "read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p3.jpg": "68d4bfdacf6cda8dce47b244578cedffae487d810f38de191ea073f593aa7b50",
+        "read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p4.jpg": "705fbf86e4f1053b472a3ea8bbb5a2900495ba4214dc4b170cec3cf2f1993699"
+      },
+      "pdf": "read/corgi-on-the-cobs-countryside-run/corgi-on-the-cobs-countryside-run.pdf",
+      "pdf_sha256": "dcbf0f82536acb51e01388c784b330e77fa20936ec13fbb503c3329ab08b94f6"
     },
     {
       "slug": "corgi-on-the-cobs-ten-frame-picnic",
@@ -432,6 +518,7 @@
         "12",
         "Two rows of five make ten."
       ],
+      "quizzes": [],
       "art": {
         "read/corgi-on-the-cobs-ten-frame-picnic/pages/page-1.jpg": "12e86eaad9c2778fe2ededcd93b7aebde8dcd95c5f50aaa82e8bbe408c6aef85",
         "read/corgi-on-the-cobs-ten-frame-picnic/pages/page-2.jpg": "eff4b2aef0d773043828a70c174304b26a014da2b28039f76d93dc0af25220a9",
@@ -468,6 +555,7 @@
         "Nan and the dog sit on the log."
       ],
       "expected": [],
+      "quizzes": [],
       "art": {
         "read/dog-in-the-fog/pages/dog-in-the-fog-page-1.jpg": "31cbdb3393887d9e77699d9215da4beaa7480fd5dc8c2de6cb7c464a2518ac3e",
         "read/dog-in-the-fog/pages/dog-in-the-fog-page-2.jpg": "6f794150600c012b3713894fb58be1851adba5771edbb0a6fc3b17b72413629a",
@@ -499,10 +587,22 @@
       "expected": [
         "How did the guests welcome the new kitten?",
         "They joined their tables and made her a place",
+        "What did Fe-Line-Mignon give the kitten?",
+        "The candle by the window",
         "Who does Fe-Line-Mignon notice by the window?",
         "Why does the kitten think she must leave?",
         "How do the guests make room?",
         "What promise does the candle represent?"
+      ],
+      "quizzes": [
+        {
+          "question": "How did the guests welcome the new kitten?",
+          "answer": "They joined their tables and made her a place."
+        },
+        {
+          "question": "What did Fe-Line-Mignon give the kitten?",
+          "answer": "The candle by the window."
+        }
       ],
       "art": {
         "read/fe-line-mignons-moonlit-cafe/pages/fe-line-mignon-moonlit-cafe-p1-r2.jpg": "011ea1ccf9ee7a9ae96f43f01892e18828b69113015a3a61182c87bf36257fd0",
@@ -511,7 +611,7 @@
         "read/fe-line-mignons-moonlit-cafe/pages/fe-line-mignon-moonlit-cafe-p4-r2.jpg": "3287efaf541608914e53e6ca441ecaf191fb1298f5969c1641416eef6bcd4315"
       },
       "pdf": "read/fe-line-mignons-moonlit-cafe/fe-line-mignons-moonlit-cafe.pdf",
-      "pdf_sha256": "5d6509376e985f00f6687ea17b8c56652a61912f910aca476ee98e8062e039b5"
+      "pdf_sha256": "91f746cf843c6ea77c050a8d8395053c0af9082dfff3608e54d6a90005febe09"
     },
     {
       "slug": "foxy-loxs-mystery-trail",
@@ -531,10 +631,22 @@
       "expected": [
         "Where did the clues lead Foxy-Lox?",
         "To Ginger-Deer in the town garden",
+        "Why had Ginger-Deer forgotten the picnic?",
+        "She was helping the garden seedlings",
         "Why must Foxy-Lox solve the clue soon?",
         "How does Foxy choose the correct trail?",
         "What does the badge tell Foxy?",
         "What kind act explains Ginger's disappearance?"
+      ],
+      "quizzes": [
+        {
+          "question": "Where did the clues lead Foxy-Lox?",
+          "answer": "To Ginger-Deer in the town garden."
+        },
+        {
+          "question": "Why had Ginger-Deer forgotten the picnic?",
+          "answer": "She was helping the garden seedlings."
+        }
       ],
       "art": {
         "read/foxy-loxs-mystery-trail/pages/foxy-lox-mystery-trail-p1.jpg": "2f91335f5dfb029cd6bded9ed103bea1966110554ba1e1c2afe09a5bc623cba8",
@@ -543,7 +655,7 @@
         "read/foxy-loxs-mystery-trail/pages/foxy-lox-mystery-trail-p4.jpg": "5df9eebc211cd3e5b89a2d4fdfcf72a94d423338dec67b917c6f40a29a6ec16f"
       },
       "pdf": "read/foxy-loxs-mystery-trail/foxy-loxs-mystery-trail.pdf",
-      "pdf_sha256": "8d3753aabbfb5766b3add8c0e92b2a0edf9b842a53dd8198d50d273e6cf1d106"
+      "pdf_sha256": "7cc6b8767e22fe19dd39e8801725bc584f54deae3a87326f7125836a443611aa"
     },
     {
       "slug": "ham-and-cheeses-big-maze",
@@ -563,10 +675,22 @@
       "expected": [
         "Why did Ham-and-Cheese miss his fastest time?",
         "He stopped to help a lost mouse",
+        "What was waiting at the centre?",
+        "A piece of cheese",
         "What does Ham-and-Cheese want to achieve?",
         "Who needs help inside the tunnel?",
         "What does Ham give up to help the mouse?",
         "Why does the prize feel better at the end?"
+      ],
+      "quizzes": [
+        {
+          "question": "Why did Ham-and-Cheese miss his fastest time?",
+          "answer": "He stopped to help a lost mouse."
+        },
+        {
+          "question": "What was waiting at the centre?",
+          "answer": "A piece of cheese."
+        }
       ],
       "art": {
         "read/ham-and-cheeses-big-maze/pages/ham-and-cheese-maze-p1.jpg": "efbc66ce315520104a9ba8c96b1e62046ff45312f64285d9916a9b8814c7b8f1",
@@ -575,7 +699,7 @@
         "read/ham-and-cheeses-big-maze/pages/ham-and-cheese-maze-p4.jpg": "368f8d0e42f1ec42a2cfda1834456b47f526182e41999881b2ed7e9139d4c63a"
       },
       "pdf": "read/ham-and-cheeses-big-maze/ham-and-cheeses-big-maze.pdf",
-      "pdf_sha256": "b016d00bc4e5eac94b338b8e90c589964482809002c2c90be73e750c5e041bb1"
+      "pdf_sha256": "687189529553a656f452b3554bb9f777262c457fcde19dcc8b27d3a4b08b2f5a"
     },
     {
       "slug": "hen-berrys-digraph-dash",
@@ -598,11 +722,24 @@
         "What helps Hen-Berry choose the path?",
         "A shell",
         "Hen-Berry recognises the shell as a clue from the fish-pond path.",
+        "Which word begins with the same two-letter sound as shop?",
+        "shell",
+        "Shop and shell both begin with the sh digraph.",
         "Who is still in the shop?",
         "What makes the path hard to see?",
         "What clue does Hen-Berry find?",
         "Where do they arrive?",
         "What did the friends share?"
+      ],
+      "quizzes": [
+        {
+          "question": "What helps Hen-Berry choose the path?",
+          "answer": "A shell. Hen-Berry recognises the shell as a clue from the fish-pond path."
+        },
+        {
+          "question": "Which word begins with the same two-letter sound as shop?",
+          "answer": "shell. Shop and shell both begin with the sh digraph."
+        }
       ],
       "art": {
         "read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p1.jpg": "976c213605c1ebc44d550888e5ae069755d749b49046375cb769784f425a7820",
@@ -612,7 +749,7 @@
         "read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p5.jpg": "ce489a96ecba20568eaa276ee3cab39a5cf6f83deab23fc3f32e4696e5bc658c"
       },
       "pdf": "read/hen-berrys-digraph-dash/hen-berrys-digraph-dash.pdf",
-      "pdf_sha256": "3ceae05f7b8e7c4ff956e193565d3aa9e6e5b698b6fc585119d401c65f3e6595"
+      "pdf_sha256": "2b7f6d626e6c201e7794a33f31ce991cd83ed65a5ca234bd5f5bcf11d8e27e4f"
     },
     {
       "slug": "hen-berrys-helping-day",
@@ -633,10 +770,22 @@
         "Why was bringing a bowl more useful than giving basket advice?",
         "It let Hen-Berry put down the berries she was holding",
         "Listening helped Ted solve the problem Hen-Berry had right then.",
+        "What did Wise Owl do to help?",
+        "Asked Hen-Berry what would help and listened",
         "Why is gathering the berries difficult for Hen-Berry?",
         "Why does Hen-Berry ask Ted to pick up the berry first?",
         "How does asking and listening help the friends choose what to do?",
         "What has Ted learned about helping a friend?"
+      ],
+      "quizzes": [
+        {
+          "question": "Why was bringing a bowl more useful than giving basket advice?",
+          "answer": "It let Hen-Berry put down the berries she was holding. Listening helped Ted solve the problem Hen-Berry had right then."
+        },
+        {
+          "question": "What did Wise Owl do to help?",
+          "answer": "Asked Hen-Berry what would help and listened."
+        }
       ],
       "art": {
         "read/hen-berrys-helping-day/pages/hen-berry-helping-day-p1.jpg": "d40fc22d8a885b6eccb666e48dca260e71981102cfc1f3daa18831729d2fbf2b",
@@ -645,7 +794,7 @@
         "read/hen-berrys-helping-day/pages/hen-berry-helping-day-p4.jpg": "190f6565fd69d2434cbaeaba18f3f74d0c5ccee9ff4523864fa4fc75f88871e5"
       },
       "pdf": "read/hen-berrys-helping-day/hen-berrys-helping-day.pdf",
-      "pdf_sha256": "c3e59e1e5cc89e2fb3e451195d6b4cfe5527aa50f0cfe3c18f0fbe4485fe02ba"
+      "pdf_sha256": "045ae6c23a7b7e2ad8b29973682abb0f2eb7416908889a4e0c9169f4a5ffb785"
     },
     {
       "slug": "honey-beats-and-the-number-neighbours",
@@ -698,6 +847,7 @@
         "21",
         "Twenty completes the concert path."
       ],
+      "quizzes": [],
       "art": {
         "read/honey-beats-and-the-number-neighbours/pages/page-1.jpg": "81ce1bf1e08a60602a652d22b561da14a700ff1ce1b1ec0104de1544a47ae466",
         "read/honey-beats-and-the-number-neighbours/pages/page-2.jpg": "2d7c851b7e3a1b7df4b0d3bb01f267229fa7f091cfb1bca09b9f079749c4fe4b",
@@ -734,6 +884,7 @@
         "How many markers are in 2 groups of 8?",
         "Double 8 to find two equal groups: 8 + 8 = 16."
       ],
+      "quizzes": [],
       "art": {
         "read/hop-tarts-stepping-stone-switch/pages/page-1.jpg": "0ad0fc0551672ceb2c232e80297ca8c8d309f637c45af5425ed9ba49cef9dc7d",
         "read/hop-tarts-stepping-stone-switch/pages/page-2.jpg": "1fc2064970d60e3b542740a5cbd28dd731a13086f23cd494c9a9bdc655d20ff0",
@@ -762,10 +913,22 @@
         "Why did the dragon open the way across the bridge?",
         "Lionnaise invited him to the feast",
         "Nobody had ever asked the dragon before. Her kind question showed she saw a worried friend, not a monster.",
+        "What was Lionnaise's bravest act?",
+        "Asking a kind question",
         "What does the little squeak tell you about how Lionnaise feels?",
         "Which clues suggest the dragon is worried?",
         "Why does the invitation surprise the dragon?",
         "How did a kind question help more than a roar could?"
+      ],
+      "quizzes": [
+        {
+          "question": "Why did the dragon open the way across the bridge?",
+          "answer": "Lionnaise invited him to the feast. Nobody had ever asked the dragon before. Her kind question showed she saw a worried friend, not a monster."
+        },
+        {
+          "question": "What was Lionnaise's bravest act?",
+          "answer": "Asking a kind question."
+        }
       ],
       "art": {
         "read/lionnaise-and-the-dragon/pages/lionnaise-dragon-quest-p1.jpg": "aa7f30d0ab5abd10b7bf024395f8ca2fe2c702af8566d7b920080ce3bd062377",
@@ -774,7 +937,51 @@
         "read/lionnaise-and-the-dragon/pages/lionnaise-dragon-quest-p4.jpg": "b6a99b1772c3744aed412d2b10322d4125ae4759c8a957678a814d5b9c240368"
       },
       "pdf": "read/lionnaise-and-the-dragon/lionnaise-and-the-dragon.pdf",
-      "pdf_sha256": "315adf0a794d1777cdecc076d1fbd2bdf0a13a5c0caa452f750061c3e5c9d850"
+      "pdf_sha256": "b78b7d67b556e60f20b97d84158910df0d5c3f46394640c9b424228e031765d2"
+    },
+    {
+      "slug": "luckybugs-art-gallery",
+      "source_id": "luckybug-art-gallery",
+      "source_art": {
+        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/luckybug-art-gallery-p1.jpg": "6bd4dbb081ec76b9c7ab9effe03b42ad5007afb80ea9ed013a3b3a2e8c75789e",
+        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/luckybug-art-gallery-p2.jpg": "45a46890aec0912b03a67e8f8679bff5adb94b303dea8697b3fe74e1c622b22a",
+        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/luckybug-art-gallery-p3.jpg": "5afeb6418fae6de5c5260699bf54fff0234c91798955c359e6b63b1487f610f0",
+        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/luckybug-art-gallery-p4.jpg": "793920d648d4fbe404287d9a01fd95697065ce5abae08c0699f4000480773b11"
+      },
+      "text": [
+        "Luckybug mixes a sunset orange on her palette for the gallery's empty centre wall. She wants her first large painting to be perfect.",
+        "Quill-Berry carries over Ted's portrait-and bumps the table. A blue splash lands across Luckybug's glowing sky.",
+        "Luckybug nearly hides the canvas. Then Flutter-Butter says the splash looks like a river, so all three turn the smudge into a moonlit town.",
+        "At the gallery opening, visitors point first to the blue river. Luckybug signs all three names because the accident became their shared idea."
+      ],
+      "expected": [
+        "What did the friends turn the blue splash into?",
+        "A moonlit river",
+        "What did Luckybug learn about mistakes?",
+        "They can become new ideas",
+        "Why is Luckybug taking such care with her palette?",
+        "What accident changes the painting?",
+        "How do the friends transform the mistake?",
+        "Why are three names signed on the artwork?"
+      ],
+      "quizzes": [
+        {
+          "question": "What did the friends turn the blue splash into?",
+          "answer": "A moonlit river."
+        },
+        {
+          "question": "What did Luckybug learn about mistakes?",
+          "answer": "They can become new ideas."
+        }
+      ],
+      "art": {
+        "read/luckybugs-art-gallery/pages/luckybug-art-gallery-p1.jpg": "6bd4dbb081ec76b9c7ab9effe03b42ad5007afb80ea9ed013a3b3a2e8c75789e",
+        "read/luckybugs-art-gallery/pages/luckybug-art-gallery-p2.jpg": "45a46890aec0912b03a67e8f8679bff5adb94b303dea8697b3fe74e1c622b22a",
+        "read/luckybugs-art-gallery/pages/luckybug-art-gallery-p3.jpg": "5afeb6418fae6de5c5260699bf54fff0234c91798955c359e6b63b1487f610f0",
+        "read/luckybugs-art-gallery/pages/luckybug-art-gallery-p4.jpg": "793920d648d4fbe404287d9a01fd95697065ce5abae08c0699f4000480773b11"
+      },
+      "pdf": "read/luckybugs-art-gallery/luckybugs-art-gallery.pdf",
+      "pdf_sha256": "d8bd6d35d1f3f98262d6cf5736170f17d4efa68d5d284431700991b89735da0a"
     },
     {
       "slug": "luckybugs-market-morning",
@@ -813,6 +1020,7 @@
         "How many friends arrive altogether?",
         "Eight plus 7 can become 10 + 5, which equals 15."
       ],
+      "quizzes": [],
       "art": {
         "read/luckybugs-market-morning/pages/page-1-r2.jpg": "80e0efc81b632d24c2333eb5d97474038b701958655fe850fdcbaa7f343ac50e",
         "read/luckybugs-market-morning/pages/page-2-r2.jpg": "9c32dc42fbed12f06d3e27c8b94c18114b1ce85d0e0f44e79c1ee79441e40d14",
@@ -873,6 +1081,7 @@
         "Even",
         "Nine is odd: four pairs and one leader."
       ],
+      "quizzes": [],
       "art": {
         "read/luckybugs-pairing-parade/pages/page-1.jpg": "3a1378bf9c53a2278ce9c83460a2228f20221e97cb2a95d221833f27a432904a",
         "read/luckybugs-pairing-parade/pages/page-2.jpg": "f9568b7c03e0e7a95ec1e29a4eec2971ae631739dc5604498dbe3b77afd00946",
@@ -903,10 +1112,22 @@
         "How did the bedtime story help Meow-inara?",
         "She accepted that her first note might wobble too",
         "She listened, breathed slowly and stopped expecting a perfect first note.",
+        "What did Meow-inara do during the quiet lines?",
+        "Breathed slowly in and out",
         "Why can Meow-inara not settle?",
         "Why might Wise Owl choose this particular story?",
         "What helps Meow-inara's thoughts become quieter?",
         "What has Meow-inara accepted by the end?"
+      ],
+      "quizzes": [
+        {
+          "question": "How did the bedtime story help Meow-inara?",
+          "answer": "She accepted that her first note might wobble too. She listened, breathed slowly and stopped expecting a perfect first note."
+        },
+        {
+          "question": "What did Meow-inara do during the quiet lines?",
+          "answer": "Breathed slowly in and out."
+        }
       ],
       "art": {
         "read/meow-inaras-moonlight-story/pages/meow-inara-moonlight-p1-r2.jpg": "20ec0d90149ef1742f85e5c26aa942253597e5bba6d3cec3c3c9b99a601525fe",
@@ -915,7 +1136,7 @@
         "read/meow-inaras-moonlight-story/pages/meow-inara-moonlight-p4-r2.jpg": "7f68b155b3ae882a921e1f8dd5deaed759062824bf0a47a13eaeef2138c27fc1"
       },
       "pdf": "read/meow-inaras-moonlight-story/meow-inaras-moonlight-story.pdf",
-      "pdf_sha256": "c71de48e1348c5d41b0e5470ca1026a9e6fdbf9c4f21f606c13cc46c0b515787"
+      "pdf_sha256": "c0bc12061423134e8305567d7e5afabc7a51de4ef55059cdc2bd30210a53f26a"
     },
     {
       "slug": "meow-inaras-vowel-team-duet",
@@ -938,11 +1159,24 @@
         "How does Meow-inara learn the tune?",
         "She listens and paints sound marks",
         "She listens for the beat and paints marks for the sounds she hears.",
+        "Which word contains the same vowel team as rain?",
+        "mail",
+        "Rain and mail both use the ai vowel team.",
         "What is Meow-inara waiting for?",
         "Where is Pork-ulele playing?",
         "How does listening help her?",
         "What do the friends play together?",
         "Why does she keep the painted score?"
+      ],
+      "quizzes": [
+        {
+          "question": "How does Meow-inara learn the tune?",
+          "answer": "She listens and paints sound marks. She listens for the beat and paints marks for the sounds she hears."
+        },
+        {
+          "question": "Which word contains the same vowel team as rain?",
+          "answer": "mail. Rain and mail both use the ai vowel team."
+        }
       ],
       "art": {
         "read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p1.jpg": "a1d6ac37e50b6ffbb917c5df873d5542f1b100e4f874270b18e79d70b984b1d4",
@@ -952,7 +1186,7 @@
         "read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p5.jpg": "12bae94bea5ff4c89b9f00277c8e60ff62936a716b65415d3c6657d527e8b9b0"
       },
       "pdf": "read/meow-inaras-vowel-team-duet/meow-inaras-vowel-team-duet.pdf",
-      "pdf_sha256": "bfb21b0a18f9c4464571db42697c9dd07cf6be45fbefce572e40f873aa79032e"
+      "pdf_sha256": "22b58c13d05a29a1b317acf057d95ecd0fb6502e77cb61e5726d38d29fb4dd79"
     },
     {
       "slug": "nan-and-pip",
@@ -975,6 +1209,7 @@
         "Nan and Pip nap."
       ],
       "expected": [],
+      "quizzes": [],
       "art": {
         "read/nan-and-pip/pages/nan-and-pip-page-1.jpg": "6254f2bf3cc1f820ee100e3c810d7b7a07f8e20ec91f8c850de35ace5a15c4bf",
         "read/nan-and-pip/pages/nan-and-pip-page-2.jpg": "82017e2311e9533fd21cabbc7c2eabf1cb2361c5bf77d80e0a5ab5e2c24d8e41",
@@ -1004,10 +1239,22 @@
       "expected": [
         "What helped the young tree survive the dry summer?",
         "Buckets of water from the friends",
+        "Why did Nutmeg leave an acorn in autumn?",
+        "A hungry jay needed food",
         "What promise does Nutmeg make in spring?",
         "How do the Bulldogs help during summer?",
         "Why does Nutmeg leave one acorn behind?",
         "What has Nutmeg learned by winter?"
+      ],
+      "quizzes": [
+        {
+          "question": "What helped the young tree survive the dry summer?",
+          "answer": "Buckets of water from the friends."
+        },
+        {
+          "question": "Why did Nutmeg leave an acorn in autumn?",
+          "answer": "A hungry jay needed food."
+        }
       ],
       "art": {
         "read/nutmegs-four-seasons/pages/nutmeg-four-seasons-p1.jpg": "852264183b084d4ca24c9be05ef58f38f9268331edd472c0f62f31b75bbd6da3",
@@ -1016,7 +1263,7 @@
         "read/nutmegs-four-seasons/pages/nutmeg-four-seasons-p4.jpg": "5773682f2e11ff7ded1ad2141ec16c5cb1e86b782ede84f9dad5b30407e379a5"
       },
       "pdf": "read/nutmegs-four-seasons/nutmegs-four-seasons.pdf",
-      "pdf_sha256": "ba8628fbb7b814eb5b0e470e3ef297d2ec3e360c91bf1d8dc5705fabbdd7bd03"
+      "pdf_sha256": "5347073f99ac1abec541cc23aa5ab0d2575f445d4c6476dcb8d68efc0e89f48c"
     },
     {
       "slug": "nutmegs-garden-morning",
@@ -1037,10 +1284,22 @@
         "Why will Nutmeg bring water rather than dig up the seed next time?",
         "She has seen that a seed can grow while it is hidden",
         "The sprout appeared after she cared for the soil and gave it time.",
+        "Why did Hen-Berry cover the soil again?",
+        "To leave the seed tucked in while it grew",
         "Why does Nutmeg want to dig up the seed?",
         "Why might leaving the seed alone help it?",
         "What did Nutmeg do while she waited for the sprout?",
         "What does Nutmeg plan to do differently next time?"
+      ],
+      "quizzes": [
+        {
+          "question": "Why will Nutmeg bring water rather than dig up the seed next time?",
+          "answer": "She has seen that a seed can grow while it is hidden. The sprout appeared after she cared for the soil and gave it time."
+        },
+        {
+          "question": "Why did Hen-Berry cover the soil again?",
+          "answer": "To leave the seed tucked in while it grew."
+        }
       ],
       "art": {
         "read/nutmegs-garden-morning/pages/nutmeg-garden-morning-p1.jpg": "a214de153128fcba02edc3cca17db798d63e7669215e79a3e06a4222c19f1eb9",
@@ -1049,7 +1308,7 @@
         "read/nutmegs-garden-morning/pages/nutmeg-garden-morning-p4.jpg": "30dbd2bc086d57175e1538101ccaa9f525526438edf6782dc42f73c5c79d838e"
       },
       "pdf": "read/nutmegs-garden-morning/nutmegs-garden-morning.pdf",
-      "pdf_sha256": "f02ea4227e34f827f950a340dc5978b268fcb7f09c3da9dfe1c2bd5959c2171a"
+      "pdf_sha256": "e0080604b5cc9561a0a7ca3ed4e3ca7b8aa12b3de7d9bb92b0a579e4a42820ed"
     },
     {
       "slug": "octo-pops-coral-reef",
@@ -1069,10 +1328,22 @@
       "expected": [
         "How did the fish recover the pearl?",
         "They formed a passing chain",
+        "Why could Octo-Pop not retrieve the pearl himself?",
+        "He had to keep holding the reef steady",
         "Why must Octo-Pop clear the reef quickly?",
         "How does Octo-Pop use all eight arms?",
         "Why does Octo-Pop need the tiny fish?",
         "What does the rescue show about different kinds of strength?"
+      ],
+      "quizzes": [
+        {
+          "question": "How did the fish recover the pearl?",
+          "answer": "They formed a passing chain."
+        },
+        {
+          "question": "Why could Octo-Pop not retrieve the pearl himself?",
+          "answer": "He had to keep holding the reef steady."
+        }
       ],
       "art": {
         "read/octo-pops-coral-reef/pages/octo-pop-coral-reef-p1-r2.jpg": "00a22375d8db77d7c92efef9442792d557706049bff8467a93397918054ae6f6",
@@ -1081,7 +1352,7 @@
         "read/octo-pops-coral-reef/pages/octo-pop-coral-reef-p4-r2.jpg": "26fd3fbc1c2a705b9bb7baa80ca3acb0ef2aa67212806a2e54462d8e04b6ad46"
       },
       "pdf": "read/octo-pops-coral-reef/octo-pops-coral-reef.pdf",
-      "pdf_sha256": "08494e510ec9ea5bad7960423441fe97a5c16bc4e39c02b38b553d8579769c93"
+      "pdf_sha256": "72f0704a5e057a39f500c6262e4fe54169d49f75e993e815b6b46e9f53915d76"
     },
     {
       "slug": "octo-pops-ocean-adventure",
@@ -1102,10 +1373,22 @@
         "What helped Cereal-Swimmer ask for a place at the picnic?",
         "His friends saved a place and worked with him",
         "Being included helped him feel brave enough to say what he wanted.",
+        "How did Octo-Pop help Cereal-Swimmer feel welcome?",
+        "He saved a place beside him",
         "Why is Cereal-Swimmer hiding near the coral?",
         "What does Octo-Pop save for his shy friend?",
         "How do the friends work together in the current?",
         "What does Cereal-Swimmer finally say?"
+      ],
+      "quizzes": [
+        {
+          "question": "What helped Cereal-Swimmer ask for a place at the picnic?",
+          "answer": "His friends saved a place and worked with him. Being included helped him feel brave enough to say what he wanted."
+        },
+        {
+          "question": "How did Octo-Pop help Cereal-Swimmer feel welcome?",
+          "answer": "He saved a place beside him."
+        }
       ],
       "art": {
         "read/octo-pops-ocean-adventure/pages/octo-pop-ocean-adventure-p1.jpg": "cd05a4b8e790732930e4bedca754e7cb1ede422c4c8edd27b98a80e911ee5cb1",
@@ -1114,7 +1397,7 @@
         "read/octo-pops-ocean-adventure/pages/octo-pop-ocean-adventure-p4.jpg": "bc3bb006e073d717ae7f2b7dcd0496b5fdc91f03448d4c08db49ff191d6ec323"
       },
       "pdf": "read/octo-pops-ocean-adventure/octo-pops-ocean-adventure.pdf",
-      "pdf_sha256": "7741b8541990daf0c234f8641ee166bfa7ffd674a5c11c8ae9f927950ab71f10"
+      "pdf_sha256": "01190259fd1e533412e78ea3c3ea9e99db32b1ff181ecc68a278f3ebe8edd0be"
     },
     {
       "slug": "panda-cake-discovers-her-abcs",
@@ -1176,6 +1459,7 @@
         "Z is for Zucchini - Panda-Cake hides one in her muffins."
       ],
       "expected": [],
+      "quizzes": [],
       "art": {
         "read/panda-cake-discovers-her-abcs/pages/letter-a.jpg": "fcb901a2663ccb6149ba1923c081481630da19487f0f955e701309f98b55496f",
         "read/panda-cake-discovers-her-abcs/pages/letter-b.jpg": "c1a97387e0bf31694d6b9a2529447ea646e597720917806c20c685fed93d4135",
@@ -1258,6 +1542,7 @@
         "13",
         "Twelve places are ready for twelve hungry friends."
       ],
+      "quizzes": [],
       "art": {
         "read/panda-cakes-market-basket/pages/page-1.jpg": "d637819e417d92c1ab8228e46a96ebf20f6ba38cafd8ac3ee38fec80124e9702",
         "read/panda-cakes-market-basket/pages/page-2.jpg": "6bc69aa08d395a478bc14e05b5a0d658fa83d0837cb6602fed32a2dccc9d028b",
@@ -1290,6 +1575,7 @@
         "Pip naps."
       ],
       "expected": [],
+      "quizzes": [],
       "art": {
         "read/pip-sits/pages/pip-sits-page-1.jpg": "5bbb9b2eab8fd5fe506cf3c864318ce9fb12c0bdea4964e8cf15afec3b68e005",
         "read/pip-sits/pages/pip-sits-page-2.jpg": "8584f31da14ce8b27cf38bd0c836e37f4ab154ac6f50cd467df49780cf3317a2",
@@ -1319,10 +1605,22 @@
       "expected": [
         "Why did Pita-Pan stop on the ledge?",
         "To help a frightened younger goat",
+        "How did the younger goat guide them through the cloud?",
+        "She listened for the summit bell",
         "What does Pita-Pan want to prove?",
         "What choice does Pita make on the ledge?",
         "How does the younger goat help in the cloud?",
         "How has Pita's idea of success changed?"
+      ],
+      "quizzes": [
+        {
+          "question": "Why did Pita-Pan stop on the ledge?",
+          "answer": "To help a frightened younger goat."
+        },
+        {
+          "question": "How did the younger goat guide them through the cloud?",
+          "answer": "She listened for the summit bell."
+        }
       ],
       "art": {
         "read/pita-pans-mountain-climb/pages/pita-pan-mountain-climb-p1-r2.jpg": "224118517833c33e8c4012e12581d6706658eeb4edd4f4f55f3e39cabc9c7ce9",
@@ -1331,7 +1629,7 @@
         "read/pita-pans-mountain-climb/pages/pita-pan-mountain-climb-p4-r2.jpg": "88a3462b139038e5e55790733fe5118be800e24bfae548c73a9a8e43bba0fc8b"
       },
       "pdf": "read/pita-pans-mountain-climb/pita-pans-mountain-climb.pdf",
-      "pdf_sha256": "51497807eed741a4134ff8841eb41ed1a10f82a7336cfe26a13409eac6fa696d"
+      "pdf_sha256": "672af6151f506e22d18828e25fbc56a903ef51ad9732b7adceb008892440289a"
     },
     {
       "slug": "polly-rogers-pirate-cove",
@@ -1351,10 +1649,22 @@
       "expected": [
         "What did Polly use most of the treasure to repair?",
         "The lighthouse",
+        "Why was the lighthouse important?",
+        "It guided boats safely home",
         "What problem does Polly see from the mast?",
         "What does Polly first want to buy with the treasure?",
         "Why must the crew decide quickly?",
         "What makes Polly's treasure choice generous?"
+      ],
+      "quizzes": [
+        {
+          "question": "What did Polly use most of the treasure to repair?",
+          "answer": "The lighthouse."
+        },
+        {
+          "question": "Why was the lighthouse important?",
+          "answer": "It guided boats safely home."
+        }
       ],
       "art": {
         "read/polly-rogers-pirate-cove/pages/polly-roger-pirate-cove-p1.jpg": "905f6b59ba4994df701b78cca06b505ca12c76aa2ac301d8cae6f876e48e2155",
@@ -1363,7 +1673,7 @@
         "read/polly-rogers-pirate-cove/pages/polly-roger-pirate-cove-p4.jpg": "dfe14dea79ea22b309614bba2ac9310eb6ce76ab1c8a338b7430cec2ac4a4c01"
       },
       "pdf": "read/polly-rogers-pirate-cove/polly-rogers-pirate-cove.pdf",
-      "pdf_sha256": "d1f2af967e63dd0a9d36eb711716b64ef60cdba4f53f041e5ef9bf75bcab7aaa"
+      "pdf_sha256": "7b53b3911e9b5adb1b598728b6e98b1c608a79baf99f4765a33ddf4e9a4612f9"
     },
     {
       "slug": "pork-ulele-and-the-clockwork-concert",
@@ -1402,6 +1712,7 @@
         "How many minutes is one hour and 30 minutes?",
         "One hour is 60 minutes. Add 30 more: 60 + 30 = 90."
       ],
+      "quizzes": [],
       "art": {
         "read/pork-ulele-and-the-clockwork-concert/pages/page-1.jpg": "5496951996efde3303aff6dab046cdf3ab0b750f2949b3ea7a1c044b0f189517",
         "read/pork-ulele-and-the-clockwork-concert/pages/page-2.jpg": "6cc8af7b15713b52d1994597877132487de500ca1c66b865399a723839212728",
@@ -1435,11 +1746,24 @@
         "What does Quill add to the unfinished words?",
         "Endings",
         "Quill completes the poem by joining endings such as ing and ed to its words.",
+        "Which word tells about an action that already happened?",
+        "painted",
+        "The ed ending in painted shows that the action has already happened.",
         "What is missing from the poem?",
         "How do the endings change time?",
         "How many beats can you hear in faster?",
         "What do the friends clap?",
         "Why does Quill leave one blank?"
+      ],
+      "quizzes": [
+        {
+          "question": "What does Quill add to the unfinished words?",
+          "answer": "Endings. Quill completes the poem by joining endings such as ing and ed to its words."
+        },
+        {
+          "question": "Which word tells about an action that already happened?",
+          "answer": "painted. The ed ending in painted shows that the action has already happened."
+        }
       ],
       "art": {
         "read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p1.jpg": "f86ac4228d921d609fa3da7af2b0634d2cf9744b45ad1e24a2c917e9965fbece",
@@ -1449,7 +1773,7 @@
         "read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p5.jpg": "8baa93e22256078a66a750d7c89a8e84e84e14941493d3e65eeb05e5df1f922c"
       },
       "pdf": "read/quill-berrys-ending-clues/quill-berrys-ending-clues.pdf",
-      "pdf_sha256": "f31c468df58bc6f9a078b63b734c5579777f410c6ae32ba5f2ad8ab6c826f1e3"
+      "pdf_sha256": "a1c0259148957473bfdf9c3e9b2f390a80315a9a03225137f0f07e2c9d47a21d"
     },
     {
       "slug": "shelly-pops-slow-and-steady",
@@ -1469,10 +1793,22 @@
       "expected": [
         "What helped Shelly-Pop find the shortcut?",
         "A line of white pebbles",
+        "What did Shelly protect from the rain?",
+        "The hilltop picnic",
         "Why does Shelly-Pop begin early?",
         "What does Shelly notice because she stays calm?",
         "How do the pebbles help Shelly?",
         "Why does Shelly reach the picnic first?"
+      ],
+      "quizzes": [
+        {
+          "question": "What helped Shelly-Pop find the shortcut?",
+          "answer": "A line of white pebbles."
+        },
+        {
+          "question": "What did Shelly protect from the rain?",
+          "answer": "The hilltop picnic."
+        }
       ],
       "art": {
         "read/shelly-pops-slow-and-steady/pages/shelly-pop-slow-and-steady-p1-r2.jpg": "957e504d538c0cab75d3df962ceb78e05305bf3fa2958c06c23965e404641fb7",
@@ -1481,7 +1817,7 @@
         "read/shelly-pops-slow-and-steady/pages/shelly-pop-slow-and-steady-p4-r2.jpg": "45527dfca0be35e0f71d65d4932ebfe2dbb36125562fbff5b33239ed6f4c46e1"
       },
       "pdf": "read/shelly-pops-slow-and-steady/shelly-pops-slow-and-steady.pdf",
-      "pdf_sha256": "32cfc7f0f296eb14566b87654e017fccdeae321fc8412447c522bdd1890cb65e"
+      "pdf_sha256": "411ae358b7689ca9d52db707676a8f4fffc2857031eb2edda1b38406ac1c8b24"
     },
     {
       "slug": "stripe-scouts-blend-bridge",
@@ -1504,11 +1840,24 @@
         "How do the friends clear the bridge?",
         "They lift the branch together",
         "Stripe-Scout, the frog, and the crab lift the branch from the planks as a team.",
+        "Which word begins with a consonant blend?",
+        "flag",
+        "Flag begins with fl, where both consonant sounds can be heard.",
         "What blocks the bridge?",
         "Who stops to help?",
         "Which three actions move the branch?",
         "What do they plant?",
         "What made the crossing possible?"
+      ],
+      "quizzes": [
+        {
+          "question": "How do the friends clear the bridge?",
+          "answer": "They lift the branch together. Stripe-Scout, the frog, and the crab lift the branch from the planks as a team."
+        },
+        {
+          "question": "Which word begins with a consonant blend?",
+          "answer": "flag. Flag begins with fl, where both consonant sounds can be heard."
+        }
       ],
       "art": {
         "read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p1.jpg": "543c8bd22b426f14233ffd1d97307dab327e2abcc84ca4390efa084de9e79ba2",
@@ -1518,7 +1867,7 @@
         "read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p5.jpg": "a10679717020003d896105580194f4bfa7c36d2210bbbd02b71b0fcc0ff0ffc1"
       },
       "pdf": "read/stripe-scouts-blend-bridge/stripe-scouts-blend-bridge.pdf",
-      "pdf_sha256": "de8f8c298ea48c5e608931a933293cfddf7dcdf395b6d752d0d028179c800bca"
+      "pdf_sha256": "5cdeb5be58dc0c111ea1644238f2bb795184be0c9bd8ac03639cdd0f2bd1fbf3"
     },
     {
       "slug": "stripe-scouts-trail-clues",
@@ -1539,10 +1888,22 @@
         "Why did Stripe-Scout choose the longer path?",
         "She wanted everyone to arrive safely together",
         "The clue mattered more to her than taking a shortcut.",
+        "What did they see above the treasure picnic?",
+        "A rainbow",
         "What choice does the map give Stripe-Scout?",
         "What does the clue tell them to value?",
         "How does Stripe-Scout make the path safer?",
         "What is the real treasure in this story?"
+      ],
+      "quizzes": [
+        {
+          "question": "Why did Stripe-Scout choose the longer path?",
+          "answer": "She wanted everyone to arrive safely together. The clue mattered more to her than taking a shortcut."
+        },
+        {
+          "question": "What did they see above the treasure picnic?",
+          "answer": "A rainbow."
+        }
       ],
       "art": {
         "read/stripe-scouts-trail-clues/pages/stripe-scout-trail-p1.jpg": "6547e0008ddb348d8f9e48ab13e096c478e6d9f36ac7378a4f53f83c4bf52164",
@@ -1551,7 +1912,7 @@
         "read/stripe-scouts-trail-clues/pages/stripe-scout-trail-p4.jpg": "03ca7560c5d172340fcaaf92ab6de3a2b31e0cbbf6b7e9b3c2e3b8fdc32860e9"
       },
       "pdf": "read/stripe-scouts-trail-clues/stripe-scouts-trail-clues.pdf",
-      "pdf_sha256": "2090a04e93b641b5d9d29b4f1bbed63a46b055a7d7bbe8439087e44654e34b04"
+      "pdf_sha256": "b001612db5425a3c2af317752d0062a5f286b4e39967912fe5d9448a1fe11ba3"
     },
     {
       "slug": "sub-zero-and-the-snowflake-post",
@@ -1604,6 +1965,7 @@
         "16",
         "Fifteen snowflakes celebrate a perfectly ordered route."
       ],
+      "quizzes": [],
       "art": {
         "read/sub-zero-and-the-snowflake-post/pages/page-1.jpg": "ed4d7ce4429098c70c2b4e8acc3418e8b882729ed502e110e6859d6bf2655ef6",
         "read/sub-zero-and-the-snowflake-post/pages/page-2.jpg": "e57a6c97f93ca29cb9c7575618f4a13f9144c052733b16e5c61311428e06601f",
@@ -1636,11 +1998,24 @@
         "What guides the friends home?",
         "A lantern",
         "The lantern's glow makes a clear line through the snow toward home.",
+        "Which silent-e word grows from kit?",
+        "kite",
+        "Adding silent e changes the short i in kit to the long i in kite.",
         "What does Sub-Zero pin to the kite?",
         "What happens to the note?",
         "Which things form the lantern?",
         "How does the lantern help?",
         "What finally carries the message?"
+      ],
+      "quizzes": [
+        {
+          "question": "What guides the friends home?",
+          "answer": "A lantern. The lantern's glow makes a clear line through the snow toward home."
+        },
+        {
+          "question": "Which silent-e word grows from kit?",
+          "answer": "kite. Adding silent e changes the short i in kit to the long i in kite."
+        }
       ],
       "art": {
         "read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p1.jpg": "90279eee00d28eae5fd0f0c181a19ffeab99aab149588472987246b0546496e7",
@@ -1650,7 +2025,7 @@
         "read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p5.jpg": "bc245bfb498d96b1cb5fad3cea8c75b7dc80a0abb3a97c2cbb5aa848a1d0e535"
       },
       "pdf": "read/sub-zeros-magic-e-lantern/sub-zeros-magic-e-lantern.pdf",
-      "pdf_sha256": "16092ff946324db30d953f43fd2cafa35dab4a0e2694113a3139fdf3c3c175e1"
+      "pdf_sha256": "9fb321dc6e15f25c4b0c35a3576b74103db3fcbddac0ce1343bf974847a4cfce"
     },
     {
       "slug": "ted-e-bear-and-the-button-trail",
@@ -1703,6 +2078,7 @@
         "12",
         "Two fives make ten — enough for a brave picnic together."
       ],
+      "quizzes": [],
       "art": {
         "read/ted-e-bear-and-the-button-trail/pages/page-1-r2.jpg": "a2f3bc7f4e9b442c62ba8e30ae173a5e1439df7b6a337fbd5ec320ba2a37d047",
         "read/ted-e-bear-and-the-button-trail/pages/page-2-r2.jpg": "e5829acf8d8e53bb88e5bef3a5b1e4330b42a20ffbc0366a3d442c363b21bdfb",
@@ -1751,6 +2127,7 @@
         "How many biscuits is half of 4?",
         "Four shared into two equal parts is 2 and 2. Half of 4 is 2."
       ],
+      "quizzes": [],
       "art": {
         "read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/page-1.jpg": "06438260a065c2d6608387a02e79ab41b4dab9876646d81bf39dc4bc80fad81b",
         "read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/page-2.jpg": "e9ab6f7e875021d8dd69fc59eb3f649436d8520f0afd78fdee5b7e652c871df2",
@@ -1787,6 +2164,7 @@
         "The gate swings open. Ted reads the final line slowly, with pauses in all the right places and one pause that was not planned. Then the picnic erupts in cheers. His voice was never too small. It was exactly big enough to carry one sound, then another, all the way to the end."
       ],
       "expected": [],
+      "quizzes": [],
       "art": {
         "read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-1.jpg": "e420bd6a7a28db0de41762976eb3de4129cd5e53d6ccfae5b4a6066a02c49f4b",
         "read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-2.jpg": "a6f9af8772a8766f39cbcca5ae4c087305ed56438239f4096112e879bd6f2762",
@@ -1819,10 +2197,22 @@
         "Why did the fort stay up when Panda-Cake helped?",
         "They held and clipped the blanket together",
         "Panda-Cake held one corner while Ted clipped the other.",
+        "What did Ted and Panda-Cake do inside the finished fort?",
+        "Read a story together",
         "What does Ted want to make with the pillows?",
         "What went wrong with the blanket?",
         "How did Panda-Cake help the story begin?",
         "What did Ted learn about a cosy fort?"
+      ],
+      "quizzes": [
+        {
+          "question": "Why did the fort stay up when Panda-Cake helped?",
+          "answer": "They held and clipped the blanket together. Panda-Cake held one corner while Ted clipped the other."
+        },
+        {
+          "question": "What did Ted and Panda-Cake do inside the finished fort?",
+          "answer": "Read a story together."
+        }
       ],
       "art": {
         "read/ted-e-bears-blanket-fort/pages/ted-blanket-fort-p1-r2.jpg": "2ef9e4d2935c9d3b18ef380dc44b8d96cee2c5e951625e65ae4fdbafec62d172",
@@ -1831,7 +2221,7 @@
         "read/ted-e-bears-blanket-fort/pages/ted-blanket-fort-p4-r2.jpg": "c4c77ced7ebf8b63dfc8a9a07fd5b01123713a2de0dd616d5dd3858c153db678"
       },
       "pdf": "read/ted-e-bears-blanket-fort/ted-e-bears-blanket-fort.pdf",
-      "pdf_sha256": "398c421f2bb10cb77dd384147a6c2d3ecaa9d73f50e7059aa49c3ead1a623d3e"
+      "pdf_sha256": "e63d9051ae22f02cffab2c51641096b35d059d59a2d804f0bd90a1b9e9e00bb0"
     },
     {
       "slug": "ted-e-bears-short-vowel-kit",
@@ -1854,11 +2244,24 @@
         "What does Ted put by the box?",
         "A cup",
         "On page 3, Ted takes a cup from his bag and puts it by the box.",
+        "Which word has the same short vowel sound as bed?",
+        "red",
+        "Bed and red share the same short e sound.",
         "Where is the den?",
         "Where is the map?",
         "How does the cup help?",
         "What can pin the map to the den?",
         "Why is Ted proud of his kit?"
+      ],
+      "quizzes": [
+        {
+          "question": "What does Ted put by the box?",
+          "answer": "A cup. On page 3, Ted takes a cup from his bag and puts it by the box."
+        },
+        {
+          "question": "Which word has the same short vowel sound as bed?",
+          "answer": "red. Bed and red share the same short e sound."
+        }
       ],
       "art": {
         "read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p1.jpg": "5b329470289b50cc524b3bf2d467fb38b0f30d1702f0def423a2729acf0424ba",
@@ -1868,7 +2271,7 @@
         "read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p5.jpg": "960521c4a1ead6174d09e5823b858bdae9dd16ede6de28a645c8a3ef7a91afca"
       },
       "pdf": "read/ted-e-bears-short-vowel-kit/ted-e-bears-short-vowel-kit.pdf",
-      "pdf_sha256": "f36279110a6d195d3fa6bdc165f3b256097ae8f8f56b9cda76c5ac0d22f74918"
+      "pdf_sha256": "63145f24b7fa58b6d852d085d690358236842ac36390253580bd5bbe621e8845"
     },
     {
       "slug": "ten-red-hens",
@@ -1895,6 +2298,7 @@
         "Ten red hens sit! Nan can nap."
       ],
       "expected": [],
+      "quizzes": [],
       "art": {
         "read/ten-red-hens/pages/ten-red-hens-page-1.jpg": "3b73bb9f682d1c9c3d75ce92d06817cd078ff0249c6d19b396ed1395d4020342",
         "read/ten-red-hens/pages/ten-red-hens-page-2.jpg": "c35a3ac6e2e6dfe4b2acf2069bcafc9bb89932c13fbb09afd578e8a80fb47061",
@@ -1933,6 +2337,7 @@
         "The rat and the cat nap in the hat!"
       ],
       "expected": [],
+      "quizzes": [],
       "art": {
         "read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-1.jpg": "8d9ef93148a947049bcc9c28d8227f9caf46747a41317abb03aa7bf5e1c66976",
         "read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-2.jpg": "921d1be9508ab28371d73bfe245891a65dbfdd0d588d11a32d3a92a2830f2659",
@@ -1983,6 +2388,7 @@
         "The mural is 200 cm tall. At a scale of 1 to 25, how tall is the postcard picture, in centimetres?",
         "To scale down, divide every length by 25: 200 ÷ 25 = 8 cm. That is exactly the size of Vincent's first sketch."
       ],
+      "quizzes": [],
       "art": {
         "read/vincent-van-mouse-and-the-mural/pages/page-1.jpg": "238e6fc6f17334b0e657474359a18df115c1cd32e928f046805afbe82551bbe7",
         "read/vincent-van-mouse-and-the-mural/pages/page-2.jpg": "accf6984d3c592fafde42d595929ccb15e72374897ccb1067d51ae29c73cc681",
@@ -2020,6 +2426,7 @@
         "How many cushions belong in each row of a square made from 16 cushions?",
         "A square has the same number of rows and columns. Since 4 × 4 = 16, each row has 4 cushions. That makes 16 a square number."
       ],
+      "quizzes": [],
       "art": {
         "read/wise-owl-festival-of-factors/pages/page-1.jpg": "5d5a59151b0535eb97bdde1f7303d4cd6022b868513235fb93442315af3e0c75",
         "read/wise-owl-festival-of-factors/pages/page-2.jpg": "ed5978352c3ed120e54359b6c354801a14803f5c8c7c6616dc091d69b54c0005",
@@ -2048,10 +2455,22 @@
         "Why did returning the poem unread help Quill-Berry?",
         "It let Quill choose when and with whom to share",
         "Meow-inara respected Quill and offered one friendly listener.",
+        "What carried the poem beneath the table?",
+        "A gust of wind",
         "Why is Quill-Berry waiting at the library?",
         "How does Quill-Berry feel when the poem blows away?",
         "How does Meow-inara respect Quill-Berry?",
         "What changed between the first and final page?"
+      ],
+      "quizzes": [
+        {
+          "question": "Why did returning the poem unread help Quill-Berry?",
+          "answer": "It let Quill choose when and with whom to share. Meow-inara respected Quill and offered one friendly listener."
+        },
+        {
+          "question": "What carried the poem beneath the table?",
+          "answer": "A gust of wind."
+        }
       ],
       "art": {
         "read/wise-owls-library-day/pages/wise-owl-library-day-p1-r2.jpg": "9450918ee630e09a38644b5e5deb973445767366b1731faf47cf7a2db53f223c",
@@ -2060,7 +2479,7 @@
         "read/wise-owls-library-day/pages/wise-owl-library-day-p4-r2.jpg": "03519544e4635a72a4a99645dbf8b25000454d113650cfb0777e3f4872bac5fb"
       },
       "pdf": "read/wise-owls-library-day/wise-owls-library-day.pdf",
-      "pdf_sha256": "ed5ab3ed42caff208d2ec3b668034a106dcf01fa8475bbc78c1f10140228c3af"
+      "pdf_sha256": "2b777d55a47b9025c3cd25f5598d537c2aa7559a8aa8ed81a8e8f55f7629a214"
     }
   ]
 }

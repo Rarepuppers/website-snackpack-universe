@@ -19,6 +19,7 @@ const norm = s => String(s ?? '').replace(/<[^>]*>/g, '').replace(/&#(\d+);/g, (
 const hasApps = fs.existsSync(path.join(APP_ROOT, 'snackpack-3-spelling-sentences/constants/books.ts'));
 if ((WRITE || REQUIRE_APPS) && !hasApps) throw new Error('Companion app sources required; evidence-only verification cannot establish current app parity.');
 let candidates = [];
+let spellingIds = new Set();
 let sourceArtFor = () => ({});
 if (hasApps) {
   const req = createRequire(path.join(APP_ROOT, 'snackpack-1-abcs-alphabet/package.json'));
@@ -28,6 +29,7 @@ if (hasApps) {
   globalThis.__DEV__ = false;
   const load = (app, name) => req(path.join(APP_ROOT, app, 'constants', name + '.ts'));
   const abc = 'snackpack-1-abcs-alphabet';
+  spellingIds = new Set(load('snackpack-3-spelling-sentences', 'books').ALL_STORY_BOOKS.map(b=>b.id));
   candidates = [
     ...load(abc, 'decodableBooks').DECODABLE_BOOKS,
     ...load(abc, 'curatedFeaturedStories').CURATED_FEATURED_STORIES,
@@ -68,6 +70,7 @@ for (const slug of fs.readdirSync(path.join(ROOT, 'read')).sort()) {
   const plain = norm(html);
   const expected = [];
   if (book?.quiz) expected.push(...[book.quiz.question, book.quiz.answer, book.quiz.why].filter(Boolean));
+  if (book?.quiz2) expected.push(...[book.quiz2.question, book.quiz2.answer, book.quiz2.why].filter(Boolean));
   book?.pages.forEach((p, i) => {
     const prompt = p.riddle?.prompt || p.prompt;
     if (prompt) expected.push(prompt);
@@ -80,6 +83,12 @@ for (const slug of fs.readdirSync(path.join(ROOT, 'read')).sort()) {
     }
   });
   for (const item of hasApps ? expected : previous.expected) assert(plain.includes(norm(item)), `${slug}: missing prompt/question/answer: ${item}`);
+  const quizzes = hasApps ? (spellingIds.has(book.id) ? [book.quiz,book.quiz2].filter(Boolean).map(q=>({question:norm(q.question),answer:norm(q.answer+'.'+(q.why?' '+q.why:''))})) : []) : previous.quizzes;
+  if (quizzes?.length) {
+    const finish = html.split('class="shell story-finish-card"')[1]?.split('<!-- read-next:generated -->')[0] || '';
+    const actual = [...finish.matchAll(/<h[23](?:\s[^>]*)?>([\s\S]*?)<\/h[23]>\s*<details class="story-answer">[\s\S]*?<p>([\s\S]*?)<\/p>/g)].map(m=>({question:norm(m[1]),answer:norm(m[2])}));
+    assert.deepEqual(actual,quizzes,`${slug}: app quiz text/answer/explanation differs or contains extra text`);
+  }
   const art = {};
   for (const card of cards) {
     const img = card.match(/<img[^>]*src="([^\"]*)"[^>]*alt="([^\"]*)"/);
@@ -94,7 +103,7 @@ for (const slug of fs.readdirSync(path.join(ROOT, 'read')).sort()) {
   assert.equal(schema?.numberOfPages, cards.length, `${slug}: schema page count`);
   const source_art = hasApps ? sourceArtFor(book) : previous.source_art;
   if (!WRITE && hasApps) assert.deepEqual(source_art, previous.source_art, `${slug}: owning app artwork changed since review`);
-  const record = { slug, source_id: book?.id || previous.source_id, source_art, text, expected: hasApps ? expected : previous.expected, art, pdf, pdf_sha256: sha(path.join(ROOT, pdf)) };
+  const record = { slug, source_id: book?.id || previous.source_id, source_art, text, expected: hasApps ? expected : previous.expected, quizzes, art, pdf, pdf_sha256: sha(path.join(ROOT, pdf)) };
   if (!WRITE) { assert.deepEqual(art, previous.art, `${slug}: art changed without new reviewed evidence`); assert.equal(record.pdf_sha256, previous.pdf_sha256, `${slug}: PDF changed without text/render verification`); }
   records.push(record);
 }
@@ -105,6 +114,6 @@ for (const pin of JSON.parse(fs.readFileSync(path.join(ROOT, 'data/decodable-art
   assert.equal(sha(path.join(ROOT, pin.web)), pin.web_sha256, `Decodable art pin changed: ${pin.web}`);
   if (hasApps) assert.equal(sha(path.join(APP_ROOT, 'snackpack-1-abcs-alphabet', pin.app)), pin.app_sha256, `App decodable art changed: ${pin.app}`);
 }
-if (WRITE) fs.writeFileSync(EVIDENCE, JSON.stringify({ reviewed: '2026-10-19', books: records }, null, 2) + '\n');
+if (WRITE) fs.writeFileSync(EVIDENCE, JSON.stringify({ reviewed: '2026-10-20', books: records }, null, 2) + '\n');
 console.log(`Read publication: ${records.length} books / ${records.reduce((n, b) => n + b.text.length, 0)} pages; art, prompts, answers, PDFs and metadata pass.`);
 console.log(hasApps ? 'Current app exports compared directly.' : 'CI evidence-only mode: validates committed app comparison; current companion app sources unavailable and NOT rechecked.');

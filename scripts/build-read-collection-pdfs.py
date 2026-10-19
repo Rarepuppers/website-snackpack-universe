@@ -3,7 +3,8 @@ from pathlib import Path
 import json,re,html,io,hashlib,subprocess,sys
 from pypdf import PdfReader,PdfWriter
 ROOT=Path(__file__).resolve().parent.parent
-collections=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {READ_COLLECTIONS} from './scripts/lib/read-collections.mjs'; console.log(JSON.stringify(READ_COLLECTIONS));"],cwd=ROOT,text=True))
+collections=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {READ_COLLECTIONS} from './scripts/lib/read-collections.mjs'; console.log(JSON.stringify(READ_COLLECTIONS));"],cwd=ROOT,text=True,encoding='utf-8'))
+print_text=lambda text:text.translate(str.maketrans({'–':'-','—':'-','‑':'-'}))
 sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 if '--check' in sys.argv:
  metadata=json.loads((ROOT/'data/read-collections.json').read_text(encoding='utf-8'))
@@ -12,6 +13,9 @@ if '--check' in sys.argv:
   assert record['id']==collection['id']
   assert collection['books']==[s['slug'] for s in record['sources']]
   p=ROOT/'read/collections'/record['id']/(record['id']+'.pdf');assert sha(p)==record['sha256'];reader=PdfReader(p);assert len(reader.pages)==record['pages'];assert p.stat().st_size==record['bytes']
+  header=reader.pages[0].extract_text() or ''
+  assert print_text(collection['title']) in header,(record['id'],'contents title encoding')
+  assert re.sub(r'\s+',' ',print_text(collection['description'])).strip() in re.sub(r'\s+',' ',header),(record['id'],'contents description encoding')
   for source in record['sources']:
    original=ROOT/'read'/source['slug']/(source['slug']+'.pdf');assert sha(original)==source['sha256'],source['slug']+' PDF changed; rebuild collection'
    for i,page in enumerate(PdfReader(original).pages):assert page.extract_text()==reader.pages[source['start']-1+i].extract_text()
@@ -25,7 +29,7 @@ for collection in collections:
  for slug in collection['books']:
   p=ROOT/'read'/slug/(slug+'.pdf');reader=PdfReader(p);doc=(ROOT/'read'/slug/'index.html').read_text(encoding='utf-8');title=html.unescape(re.search(r'<meta property="og:title" content="([^"]*)"',doc)[1]);sources.append(dict(slug=slug,title=title,file=p,pages=len(reader.pages),start=next_page,sha256=sha(p)));next_page+=len(reader.pages)
  buf=io.BytesIO();c=canvas.Canvas(buf,pagesize=A4);c.setTitle(collection['title']);left=40;y=785;c.setFont('Helvetica-Bold',21);c.drawString(left,y,collection['title']);y-=40;c.setFont('Helvetica',12)
- for line in simpleSplit(collection['description'],'Helvetica',12,510):c.drawString(left,y,line);y-=18
+ for line in simpleSplit(print_text(collection['description']),'Helvetica',12,510):c.drawString(left,y,line);y-=18
  y-=25;c.setFont('Helvetica-Bold',13);c.drawString(left,y,'Contents');y-=26
  for source in sources:
   c.setFont('Helvetica-Bold',12)

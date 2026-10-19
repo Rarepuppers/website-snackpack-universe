@@ -29,6 +29,31 @@ const PLAY = "https://play.google.com/store/apps/details?id=com.snackpackunivers
 
 // Per-book web editorial. `slug` is the public URL; `alts` describe the art.
 const BOOKS = {
+  "luckybug-art-gallery": {
+    source: "short", slug: "luckybugs-art-gallery", skill: "Creativity",
+    lead: "A four-page gallery story about an unexpected splash, a new idea and a painting made together.",
+    blurb: "A blue splash ruins Luckybug's perfect sky - until her friends see a river in it.",
+    about: "Creativity, adapting plans and sharing credit",
+    alts: [
+      "Luckybug mixes orange paint on a palette beneath the gallery's empty centre frame.",
+      "Quill-Berry holds Ted's portrait beside a sunset canvas as blue paint splashes across it.",
+      "Luckybug, Quill-Berry and Flutter-Butter turn the blue splash into a river through a moonlit town.",
+      "Gallery visitors admire the finished river painting with Luckybug, Quill-Berry and Flutter-Butter."
+    ]
+  },
+  "corgi-on-the-cob-countryside": {
+    source: "short", slug: "corgi-on-the-cobs-countryside-run", skill: "Kindness",
+    lead: "A four-page countryside race about a caught ribbon and a friend worth turning back for.",
+    blurb: "Corgi takes the lead, then hears Ginger's ribbon snag. Winning can wait.",
+    about: "Friendship, helping and choosing what matters",
+    alts: [
+      "Corgi-on-the-Cob and Ginger-Deer run through a farm gate beneath a hilltop windmill.",
+      "Corgi clears a low fence while Ginger-Deer's pink race ribbon catches on a wooden splinter.",
+      "Corgi returns to the fence and takes Ginger's caught ribbon gently in his mouth.",
+      "Corgi rests laughing on a woven mat beside Ginger-Deer, whose pink ribbon is free."
+    ]
+  },
+
   // Step 1 was hand-built in August; the app rewrote its text afterwards, so it
   // now imports like the others (2026-10-15) and cannot drift again.
   "ted-short-vowel-kit": {
@@ -425,6 +450,20 @@ function field(block, name, optional = false) {
   if (!m) throw new Error(`missing ${name}`);
   return readString(block, m.index + m[0].length - 1).value;
 }
+function quizFrom(block, name) {
+  const at = block.indexOf(name + ':');
+  if (at === -1) return null;
+  const start = block.indexOf('{', at);
+  let depth = 0, end = start;
+  for (; end < block.length; end++) {
+    if (block[end] === '"' || block[end] === "'") { end = readString(block,end).end - 1; continue; }
+    if (block[end] === '{') depth++;
+    if (block[end] === '}' && --depth === 0) break;
+  }
+  if (end === block.length) throw Error('Unterminated '+name);
+  const part = block.slice(start,end+1);
+  return {question:field(part,'question'),answer:field(part,'answer'),why:field(part,'why',true)};
+}
 function parseShort(id) {
   const start = SRC_SHORT.indexOf(`\n    id: '${id}',`);
   if (start === -1) throw new Error(`${id} not found in books.ts`);
@@ -440,7 +479,8 @@ function parseShort(id) {
   const quizPart = block.slice(block.indexOf("quiz:"), q2 === -1 ? undefined : q2);
   return {
     step: null, title: field(block, "title"), subtitle: field(block, "subtitle"), targetWords: [], pages,
-    quiz: { question: field(quizPart, "question"), answer: field(quizPart, "answer"), why: field(quizPart, "why", true) }
+    quiz: { question: field(quizPart, "question"), answer: field(quizPart, "answer"), why: field(quizPart, "why", true) },
+    quiz2: quizFrom(block,'quiz2')
   };
 }
 
@@ -465,7 +505,8 @@ function parseBook(id, ed) {
     subtitle: field(block, "subtitle"),
     targetWords,
     pages,
-    quiz: { question: field(quizLine, "question"), answer: field(quizLine, "answer"), why: field(quizLine, "why") }
+    quiz: { question: field(quizLine, "question"), answer: field(quizLine, "answer"), why: field(quizLine, "why") },
+    quiz2: quizFrom(block,'quiz2')
   };
 }
 
@@ -537,7 +578,7 @@ ${HEADER}<main>
 ${cards}
 </section>
 
-<section><div class="shell story-finish-card"><span class="eyebrow">The end · Great reading</span><h2>${esc(curly(book.quiz.question))}</h2><details class="story-answer"><summary>Show the answer</summary><p>${esc(curly(book.quiz.answer))}.${book.quiz.why ? ` ${esc(curly(book.quiz.why))}` : ""}</p></details><p>${short ? "SnackPack Sentences &amp; Spelling has many more short reads like this one, plus the Reading Trail, word packs and literacy games." : "SnackPack Sentences &amp; Spelling has the full Reading Trail, longer stories, word packs and eight literacy games."}</p><!-- read-next:generated -->
+<section><div class="shell story-finish-card"><span class="eyebrow">The end · Great reading</span><h2>${esc(curly(book.quiz.question))}</h2><details class="story-answer"><summary>Show the answer</summary><p>${esc(curly(book.quiz.answer))}.${book.quiz.why ? ` ${esc(curly(book.quiz.why))}` : ""}</p></details>${book.quiz2 ? `<h3 class="story-second-question">${esc(curly(book.quiz2.question))}</h3><details class="story-answer"><summary>Show the answer</summary><p>${esc(curly(book.quiz2.answer))}.${book.quiz2.why ? ` ${esc(curly(book.quiz2.why))}` : ""}</p></details>` : ""}<p>${short ? "SnackPack Sentences &amp; Spelling has many more short reads like this one, plus the Reading Trail, word packs and literacy games." : "SnackPack Sentences &amp; Spelling has the full Reading Trail, longer stories, word packs and eight literacy games."}</p><!-- read-next:generated -->
 <!-- /read-next:generated --><div class="stack-inline"><a class="btn btn-primary" href="${PLAY}" target="_blank" rel="noopener">Get the app on Google Play</a><a class="btn btn-secondary" href="../../apps/snackpack-3-spelling-sentences/">Explore the app</a><a class="btn btn-secondary" href="./${slug}.pdf" download>Print this book (PDF)</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>
 </main>
 <footer class="foot"><div class="shell foot-wrap"><p class="foot-note">Story from SnackPack Sentences &amp; Spelling.</p><div class="footer-links"><a class="text-link" href="../">Bookshelf</a><a class="text-link" href="../../privacy/snackpack-3-spelling-sentences/">Privacy</a></div></div></footer>

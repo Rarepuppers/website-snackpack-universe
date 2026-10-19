@@ -21,9 +21,11 @@
 // add one entry to SHELF in reading order and re-run this script.
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { isVariant, sourceTag } from "./lib/read-srcset.mjs";
 import { READ_COLLECTIONS } from "./lib/read-collections.mjs";
+import {printable,printableLabel} from './lib/read-printables.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://www.snackpackuniverse.com";
@@ -83,6 +85,8 @@ const SHELF = [
   {"slug": "pita-pans-mountain-climb", "group": "short", "age": [5, 8], "added": "2026-10-19", "title": "Pita-Pan’s Mountain Climb", "eyebrow": "Short read · Friendship · 4 pages", "blurb": "Pita-Pan wants to climb alone. Helping a younger goat changes what reaching the summit means.", "cover": "pages/pita-pan-mountain-climb-p1-r2", "ext": "jpg", "alt": "", "w": 768, "h": 1152},
   {"slug": "octo-pops-coral-reef", "group": "short", "age": [5, 8], "added": "2026-10-19", "title": "Octo-Pop’s Coral Reef", "eyebrow": "Short read · Teamwork · 4 pages", "blurb": "Octo-Pop holds the reef steady. A chain of tiny fish retrieves the light he cannot reach.", "cover": "pages/octo-pop-coral-reef-p1-r2", "ext": "jpg", "alt": "", "w": 768, "h": 1152},
   {"slug": "shelly-pops-slow-and-steady", "group": "short", "age": [5, 8], "added": "2026-10-19", "title": "Shelly-Pop’s Slow and Steady", "eyebrow": "Short read · Adventure · 4 pages", "blurb": "While everyone hurries, Shelly-Pop notices ants and white pebbles that point to a careful shortcut.", "cover": "pages/shelly-pop-slow-and-steady-p1-r2", "ext": "jpg", "alt": "", "w": 768, "h": 1152},
+  { slug: "luckybugs-art-gallery", group: "short", age: [5, 8], added: "2026-10-20", title: "Luckybug's Art Gallery", eyebrow: "Short read · Creativity · 4 pages", blurb: "A blue splash ruins Luckybug's perfect sky, until her friends see a river in it.", cover: "pages/luckybug-art-gallery-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
+  { slug: "corgi-on-the-cobs-countryside-run", group: "short", age: [5, 8], added: "2026-10-20", title: "Corgi-on-the-Cob's Countryside Run", eyebrow: "Short read · Kindness · 4 pages", blurb: "Corgi takes the lead, then hears Ginger's ribbon snag. Winning can wait.", cover: "pages/corgi-on-the-cob-countryside-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
   { slug: "ted-e-bear-and-the-button-trail", group: "numbers", age: [3, 4], added: "2026-08-12", title: "Ted‑E‑Bear and the Button Trail", eyebrow: "Counting · 6 pages", blurb: "Follow a missing-button mystery through counting, number order, comparisons and courage.", cover: "pages/cover", ext: "png", alt: "Ted-E-Bear and the Button Trail story cover.", w: 640, h: 640 },
   { slug: "panda-cakes-market-basket", group: "numbers", age: [3, 4], added: "2026-10-17", title: "Panda‑Cake’s Market Basket", eyebrow: "Counting · 6 pages", blurb: "Apples, berries, buns and one tiny honey jar. Panda-Cake counts the picnic basket full, with room to share.", cover: "pages/page-1", ext: "jpg", alt: "Panda-Cake in a chef’s hat reaches for three rolling apples.", w: 1200, h: 800 },
   { slug: "sub-zero-and-the-snowflake-post", group: "numbers", age: [4, 5], added: "2026-10-17", title: "Sub‑Zero and the Snowflake Post", eyebrow: "Number order · 6 pages", blurb: "A gust mixes up every parcel. Sub-Zero and Booklava put the numbers back in order before the sun gets warm.", cover: "pages/page-1", ext: "jpg", alt: "Sub-Zero the penguin in the snowy post office with Booklava the owl.", w: 1200, h: 800 },
@@ -189,6 +193,14 @@ const SHARE_BUTTON = (cls) =>
 
 function shareTopBlock() {
   return SHARE_BUTTON("btn btn-secondary read-share-btn");
+}
+
+function printInfo(b) {
+  const file = path.join(ROOT, 'read', b.slug, `${b.slug}.pdf`);
+  if (!fs.existsSync(file)) return '';
+  const info=printable(ROOT,b.slug);
+  const range=info.questionStart===info.pages ? `page ${info.pages}` : `pages ${info.questionStart}-${info.pages}`;
+  return `<p class="read-print-info">${printableLabel(info)} · A4 or US Letter. <a class="text-link" href="./${b.slug}.pdf" download>Download PDF</a> · <a class="text-link" href="./${b.slug}.pdf" target="_blank" rel="noopener">Open PDF to print</a><span class="read-print-help">Opens in a new tab. Use the PDF viewer's Print control.${info.questionStart<=info.pages ? ` To use less ink, read online and choose only the questions on ${range} in Print.` : ''}</span></p>`;
 }
 
 function nextBlock(i) {
@@ -325,7 +337,7 @@ function bookSchema(html, b, rel) {
 SHELF.forEach((b, i) => {
   const rel = `read/${b.slug}/index.html`;
   let html = ensureShareTopMarker(fs.readFileSync(path.join(ROOT, rel), "utf8"), rel);
-  html = splice(html, "read-share-top:generated", shareTopBlock(), rel);
+  html = splice(html, "read-share-top:generated", shareTopBlock() + printInfo(b) + `\n<div class="read-offline" data-offline-book="${b.slug}" hidden><button class="btn btn-secondary" type="button" data-read-offline>Save this book for offline</button><button class="text-link" type="button" data-read-remove hidden>Remove saved book</button><button class="text-link" type="button" data-read-cancel hidden>Cancel saving</button><p class="read-offline-status" data-read-offline-status role="status"></p></div><script defer src="/read/offline.js"></script>`, rel);
   html = bookSchema(html, b, rel);
   write(rel, splice(html, "read-next:generated", nextBlock(i), rel));
 });
@@ -334,13 +346,18 @@ SHELF.forEach((b, i) => {
 // its WebP art (the <picture> source every current browser picks), plus the
 // shared CSS, scripts and fonts those pages need. PDFs are deliberately out.
 function offlineManifest() {
-  const urls = ["/read/", "/read/sound-cards/", "/read/collections/", ...READ_COLLECTIONS.map(c => `/read/collections/${c.id}/`)];
+  const bookFiles = [];
+  const urls = ["/read/", "/read/offline-manifest.json", "/read/sound-cards/", "/read/collections/", ...READ_COLLECTIONS.map(c => `/read/collections/${c.id}/`)];
   for (const b of SHELF) {
-    urls.push(`/read/${b.slug}/`);
+    const resources = [`/read/${b.slug}/`];
     const dir = path.join(ROOT, "read", b.slug, "pages");
     // Originals only: the -480w/-800w sizes would add ~65% to the download, and
     // sw.js answers an unsaved size with the saved original when offline.
-    for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".webp") && !isVariant(f)).sort()) urls.push(`/read/${b.slug}/pages/${f}`);
+    for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".webp") && !isVariant(f)).sort()) resources.push(`/read/${b.slug}/pages/${f}`);
+    urls.push(...resources);
+    bookFiles.push({ slug: b.slug, title: plainTitle(b.title), urls: resources,
+      html_sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT,'read',b.slug,'index.html'),'utf8').replace(/\r\n/g,'\n')).digest('hex'),
+      bytes: resources.filter(u => u.endsWith('.webp')).reduce((n,u) => n + fs.statSync(path.join(ROOT,u)).size,0) });
   }
   urls.push("/site.css", "/theme.js", "/read/share.js", "/read/reader.js", "/read/reading-position.js", "/read/offline.js", "/read/shelf-filter.js",
     "/assets/fonts/fonts.css", "/assets/favicon-32.png", "/assets/snackpack-mark-96.png");
@@ -353,7 +370,9 @@ function offlineManifest() {
     if (!fs.existsSync(file)) throw new Error(`offline manifest: ${u} has no file at ${file}`);
     return u.endsWith(".webp") ? n + fs.statSync(file).size : n;
   }, 0);
-  return JSON.stringify({ books: SHELF.length, bytes, urls }, null, 1) + "\n";
+  const owned = new Set(bookFiles.flatMap(b => b.urls));
+  const shared = urls.filter(u => !owned.has(u));
+  return JSON.stringify({ version: 2, books: SHELF.length, bytes, shared, bookFiles, urls }, null, 1) + "\n";
 }
 {
   const rel = "read/offline-manifest.json";
@@ -387,7 +406,7 @@ function guideMoreBlock() {
   const PhonicsWord = NUMBER_WORDS[phonics] ?? String(phonics);
   let guide = splice(fs.readFileSync(path.join(ROOT, GUIDE), "utf8"), "read-guide-more:generated", guideMoreBlock(), GUIDE);
   guide = guide.replace(/Parent and teacher guide · [^<]+/, 'Parent and teacher guide · Updated October 2026')
-    .replace(/"dateModified": "[^"]+"/, '"dateModified": "2026-10-19"')
+    .replace(/"dateModified": "[^"]+"/, '"dateModified": "2026-10-20"')
     .replace(/<p class="lead">Download warm,[\s\S]*?<\/p>/, `<p class="lead">Start with ${phonics} phonics books: six staged first readers and six Reading Trail stories. They are part of our ${n}-book illustrated shelf, which also includes read-together stories, alphabet, maths and animal books. Read online or print a PDF, with no account, email gate or ads.</p>`);
   if (!guide.includes('read-printable-collections')) guide = guide.replace('<section id="books">', '<section class="read-printable-collections"><div class="shell"><h2>Print a small collection</h2><p>Choose first phonics readers, quiet stories or kindness. Each collection lists its books, file size and printed pages, with individual downloads too.</p><a class="btn btn-secondary" href="../../read/collections/">Browse printable collections</a></div></section>\n<section id="books">');
   const rules = [
@@ -401,6 +420,8 @@ function guideMoreBlock() {
     re.lastIndex = 0;
     guide = guide.replace(re, to);
   }
+  guide=guide.replace(/<span class="read-download-meta">[^<]*<\/span>/g,'')
+    .replace(/(<a[^>]*href="\.\.\/\.\.\/read\/([^/]+)\/[^"/]+\.pdf"[^>]*>[\s\S]*?<\/a>)/g,(all,anchor,slug)=>`${anchor}<span class="read-download-meta">${printableLabel(printable(ROOT,slug))}</span>`);
   write(GUIDE, guide);
 }
 
