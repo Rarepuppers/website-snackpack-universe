@@ -45,7 +45,7 @@
   "step": [
     { "@type": "HowToStep", "name": "Pass three cards", "text": "Each round starts by passing three cards — left, then right, then across, then no pass." },
     { "@type": "HowToStep", "name": "Follow suit", "text": "The 2 of clubs leads the first trick. Follow the suit that was led if you can; the highest card of that suit takes the trick." },
-    { "@type": "HowToStep", "name": "Dodge the points", "text": "Each heart you take is a point and the Queen of Spades is 13. Take all 26 and you shoot the moon: everyone else gets 26 instead. The lowest score when someone reaches the target wins." }
+    { "@type": "HowToStep", "name": "Dodge the points", "text": "Each heart you take is a point and the Queen of Spades is 13. Take all 26 and you shoot the moon: everyone else gets 26 instead. Once someone reaches the target, the unique lowest score wins; tied lowest scores play another round." }
   ]
 }
 </script>
@@ -231,7 +231,7 @@
     <div class="shell seo-prose">
       <h2>How to play Hearts</h2>
       <p>Hearts is a four-player trick-taking card game where the aim is to take as few points as you can. All 52 cards are dealt, thirteen each. Before each round you pass three cards — to the left, then the right, then across, and every fourth round you keep your hand. The player holding the 2 of clubs leads it to the first trick, and everyone must follow suit if they can. The highest card of the suit that was led wins the trick, and its winner leads the next one.</p>
-      <p>Points come only from the cards you take: every heart is one point and the Queen of Spades is thirteen. You cannot lead a heart until hearts are broken — until someone has discarded a heart or the Queen — and nobody may play a point card on the very first trick. The game ends when someone reaches the target score (100, or 50 for a quick game), and the lowest total wins.</p>
+      <p>Points come only from the cards you take: every heart is one point and the Queen of Spades is thirteen. You cannot lead a heart until hearts are broken — until someone has discarded a heart or the Queen — unless you hold only hearts. On the first trick, play a card without points if you legally can. Once someone reaches the target score (100, or 50 for a quick game), the unique lowest total wins; tied lowest scores play another round.</p>
 
       <h3>Shooting the moon</h3>
       <p>There is one way to turn a terrible hand into a great one. Take every heart and the Queen of Spades in the same round — all 26 points — and you score nothing while every other player is given 26. It is a gamble: one heart slipping to an opponent and you are left holding 25.</p>
@@ -246,7 +246,7 @@
       <h3>Frequently asked questions</h3>
       <div class="faq-list" style="margin-top:14px;">
         <details class="faq-item"><summary>Is Hearts free here?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
-        <details class="faq-item"><summary>How strong are the computer players?</summary><p>Casual players sometimes play a random legal card; Standard plays sensibly; Sharp also dumps its high spades when it gets the chance.</p></details>
+        <details class="faq-item"><summary>How strong are the computer players?</summary><p>Casual players sometimes play a random legal card; Standard ducks points; Sharp also plans last-seat play and reacts to public moon threats.</p></details>
         <details class="faq-item"><summary>Does the game save?</summary><p>Yes, on this device. Close the tab mid-game and you will be offered your game back next time.</p></details>
       </div>
 
@@ -415,18 +415,15 @@
     return st;
   }
   function endRound(st) {
-    var moon = st.roundPts.indexOf(26);
-    var delta = moon >= 0 ? st.roundPts.map(function (_, i) { return i === moon ? 0 : 26; }) : st.roundPts.slice();
-    st.totals = st.totals.map(function (t, i) { return t + delta[i]; });
-    st.lastDelta = delta; st.moon = moon >= 0 ? moon : null;
-    var over = Math.max.apply(null, st.totals) >= st.target;
-    st.phase = over ? "gameover" : "roundover";
-    if (over) { var min = Math.min.apply(null, st.totals); st.winner = st.totals[0] === min ? 0 : st.totals.indexOf(min); }
+    var result = scoreHeartsRound(st.roundPts, st.totals, st.target);
+    st.totals = result.totals; st.lastDelta = result.lastRoundDelta;
+    st.moon = result.moonShooter; st.phase = result.phase; st.winner = result.winner;
   }
 
   function aiPlay(st, rng) {
     var moves = legalMoves(st, st.turn);
     if (moves.length === 1) return moves[0];
+    if (st.level === "sharp") return sharpHeartsPlay(st, moves);
     if (st.level === "casual" && rng() < 0.35) return moves[Math.floor(rng() * moves.length)];
     function minBy(a, f) { return a.reduce(function (b, x) { return f(x) < f(b) ? x : b; }, a[0]); }
     function maxBy(a, f) { return a.reduce(function (b, x) { return f(x) > f(b) ? x : b; }, a[0]); }
@@ -446,6 +443,85 @@
     if (hearts.length && !st.firstTrick) return maxBy(hearts, function (c) { return c.r; });
     return maxBy(moves, function (c) { return c.r + (c.s === 2 && c.r >= 12 ? 15 : 0); });
   }
+
+// BEGIN generated hearts policy
+function scoreHeartsRound(roundPts, previousTotals, target) {
+    const moonShooter = roundPts.findIndex((pts) => pts === 26);
+    const delta = moonShooter >= 0
+        ? roundPts.map((_, i) => (i === moonShooter ? 0 : 26))
+        : [...roundPts];
+    const totals = previousTotals.map((t, i) => t + delta[i]);
+    const min = Math.min(...totals);
+    const over = Math.max(...totals) >= target && totals.filter(t => t === min).length === 1;
+    return {
+        totals,
+        lastRoundDelta: delta,
+        moonShooter: moonShooter >= 0 ? moonShooter : null,
+        phase: over ? 'gameover' : 'roundover',
+        winner: over ? totals.indexOf(min) : null,
+    };
+}
+function sharpHeartsPlay(state, moves) {
+    const highest = (cards) => cards.reduce((a, b) => b.r > a.r ? b : a);
+    const lowest = (cards) => cards.reduce((a, b) => b.r < a.r ? b : a);
+    const p = state.turn;
+    if (state.trick.length === 0) {
+        // Prefer low entries in short suits, retaining the existing high-spade caution.
+        return moves.reduce((a, b) => {
+            const cost = (c) => c.r + state.hands[p].filter(h => h.s === c.s).length * 2 + (c.s === 2 && c.r >= 12 ? 20 : 0);
+            return cost(b) < cost(a) ? b : a;
+        });
+    }
+    const led = state.trick[0].c.s;
+    const following = moves.filter(c => c.s === led);
+    const currentWinner = state.trick.filter(e => e.c.s === led).reduce((a, b) => b.c.r > a.c.r ? b : a);
+    const last = state.trick.length === 3;
+    // Evidence of a moon threat is public: one opponent holds all points so far,
+    // including at least the queen's thirteen. This is a heuristic, not intent detection.
+    const moonThreat = state.roundPts.findIndex((pts, i) => i !== p && pts >= 13 && state.roundPts.every((other, j) => j === i || other === 0));
+    const threatened = moonThreat >= 0 && currentWinner.p === moonThreat;
+    if (following.length) {
+        const winners = following.filter(c => c.r > currentWinner.c.r);
+        const safeQueen = following.find(c => c.s === 2 && c.r === 12 && c.r < currentWinner.c.r);
+        if (safeQueen && !(last && threatened))
+            return safeQueen;
+        if (last && threatened && trickPoints(state.trick) > 0 && winners.length) {
+            const minPoints = Math.min(...winners.map(cardPoints));
+            return highest(winners.filter(c => cardPoints(c) === minPoints));
+        }
+        // In last seat, a clean card on a clean trick cannot collect penalties.
+        // Shed the largest such card even if it wins, saving low escape cards.
+        if (last && trickPoints(state.trick) === 0) {
+            const clean = following.filter(c => cardPoints(c) === 0);
+            if (clean.length)
+                return highest(clean);
+        }
+        const unders = following.filter(c => c.r < currentWinner.c.r);
+        if (unders.length)
+            return highest(unders);
+        if (last) {
+            const minPoints = Math.min(...following.map(cardPoints));
+            return highest(following.filter(c => cardPoints(c) === minPoints));
+        }
+        return lowest(following);
+    }
+    if (last && threatened) {
+        const clean = moves.filter(c => cardPoints(c) === 0);
+        if (clean.length)
+            return highest(clean);
+    }
+    const queen = moves.find(c => c.s === 2 && c.r === 12);
+    if (queen)
+        return queen;
+    const highSpades = moves.filter(c => c.s === 2 && c.r > 12);
+    if (highSpades.length)
+        return highest(highSpades);
+    const hearts = moves.filter(c => c.s === 3);
+    if (hearts.length)
+        return highest(hearts);
+    return highest(moves);
+}
+// END generated hearts policy
 
   function makeRng(seedStr) {
     if (!seedStr) return Math.random;
@@ -619,6 +695,7 @@
   function finishIfNeeded() {
     if (st.phase === "roundover") {
       var msg = st.moon != null ? (st.moon === 0 ? "You shot the moon! Everyone else takes 26." : SEAT[st.moon] + " shot the moon.") : "Round over.";
+      if (Math.max.apply(null, st.totals) >= st.target) msg += " Lowest scores tied. Play another round.";
       setStatus(msg + " Your total: " + st.totals[0] + ".", st.moon === 0 ? "win" : null);
       render(); save();
     } else if (st.phase === "gameover") {
