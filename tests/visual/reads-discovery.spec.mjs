@@ -42,7 +42,7 @@ test.describe('saved shelf discovery',()=>{
 });
 test('stage preparation preserves audited exceptions and Trail support',async({page})=>{
  for(const [slug,tricky,bridge] of [['pip-sits','a, is, the','sits, taps, tips, naps'],['nan-and-pip','a, and','pats, taps'],['ten-red-hens','a, is, the','hens, naps'],['the-cat-and-the-rat','a, is, the','none'],['bug-in-a-cup','a, to, the','spot'],['dog-in-the-fog','a, is, to, the','spot']]){
-  await page.goto('/read/'+slug+'/');const prep=page.locator('.read-preparation');await expect(prep).toContainText('Prepare tricky words: '+tricky);await expect(prep).toContainText('Words needing an extra skill: '+bridge);
+  await page.goto('/read/'+slug+'/');const prep=page.locator('.read-preparation');await expect(prep).toContainText('Prepare tricky words: '+tricky);await expect(page.locator('.story-finish-card')).not.toContainText('every word is a plain three-sound word');await expect(page.locator('.story-finish-card a[href="#reading-preparation"]')).toHaveCount(1);await expect(prep).toContainText('Words needing an extra skill: '+bridge);
   expect(await prep.evaluate(e=>e.compareDocumentPosition(document.querySelector('a[href="#page-1"]'))&Node.DOCUMENT_POSITION_FOLLOWING)).toBeTruthy();
  }
  await page.goto('/read/hen-berrys-digraph-dash/');await expect(page.locator('.read-preparation')).toContainText('not a controlled independent decodable stage');
