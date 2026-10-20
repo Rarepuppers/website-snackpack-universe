@@ -86,7 +86,7 @@ submitting — directory submission paths change often.
   cannot claim.
 
 ### 4. Homeschool / teacher resource lists — best fit for `/read/`
-The reading shelf (`/read/`, **52** full illustrated books with printable A4 PDFs,
+The reading shelf (`/read/`, **54** full illustrated books with printable A4 PDFs,
 free, no sign-in, no ads) is the most linkable thing on the site. As of
 2026-10-20: one complete A-Z alphabet book, six staged decodable readers
 (Stages 1–3), a six-step Reading Trail, twenty-one short reads, sixteen number

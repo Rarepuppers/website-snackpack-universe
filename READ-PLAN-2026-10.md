@@ -135,7 +135,7 @@ and submissions remain with Claude unless Mark assigns a specific release.
   the app; retain the November publication decision for them.
 
 Outreach remains Mark's task. [The teacher-resource pitch](LINK-BUILDING-PLAN.md)
-now describes the current shelf; no outreach messages were sent. Keep the existing
+now describes 54 books; no outreach messages were sent. Keep the existing
 re-measure schedule rather than creating a duplicate reminder.
 
 ## Publication rules and implementation
