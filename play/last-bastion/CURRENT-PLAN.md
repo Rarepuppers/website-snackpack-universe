@@ -1,8 +1,8 @@
 # Last Bastion — current plan
 
-**Updated:** 17 October 2026
+**Updated:** 21 October 2026
 **Browser release:** `web-2026.10.17-qa-readiness` (service worker `2026-10-17-qa-readiness`).
-**Status:** Patch A and QA preparation implemented; fresh 17 October game verification passes.
+**Status:** Patch A and QA preparation implemented; fresh 21 October audit checks pass as listed below.
 Human, hardware, Steam and analytics-dashboard gates remain open.
 Mark explicitly authorized commit/push on 17 October. The browser release is served and website CI/Pages pass;
 production packaging remains with Claude and has not run in this work.
@@ -14,6 +14,34 @@ July systems tracker are archived historical context, not additional execution q
 This is the only active execution queue. Completed audit tasks are in the
 [archive](archive/README.md); player-facing changes are in the [release notes](RELEASE-NOTES.md).
 Keep the content freeze until observed play and live measurement justify expansion.
+
+## 21 October audit — proposed next work
+
+The [detailed audit and prioritized polish proposal](AUDIT-REVIEW-2026-10-21.md) records fresh
+source review and visual evidence. It is a specification for this queue, not another independent
+queue. The audit request did not implement game changes or authorize another release.
+
+Recommended order:
+
+1. **P1 QA-03:** fix demonstrated gallery oversizing, unbounded manifest text and silent hero
+   selector fallback. Use logical dimensions and honest selected-hero labels before art sign-off.
+2. **P1 ACCEPT-02 / ART-01 / ART-02 / CLARITY-01:** complete the existing five-run matrix;
+   compare the existing quieter floor kit in motion, review hero registration and test telegraphs
+   against earned dense loadouts. Generate art only for a named failure that survives reuse/layout fixes.
+3. **P1 proposed ACCESS-01:** scope semantic title/menu/settings controls through the existing
+   ScreenFlow contracts. Implementation remains conditional; keyboard canvas navigation alone
+   does not establish screen-reader access.
+4. **P2 UX-01 / AUDIO-01 / QA-04:** evidence-led shell hierarchy/help and existing audio-mix polish;
+   correct stale placeholder descriptions so delivered assets are not commissioned again.
+5. **P1 for desktop PERF-02:** named hardware measurements and Claude's fresh package, then
+   Steam acceptance when access exists. Practice/encounter additions keep their existing content gates.
+
+Fresh results: 1,781 unit tests / 312 files; 31 browser journeys; TypeScript; content, image,
+adapter-boundary and text audits; stale-output regression and all 25 published-output comparisons
+pass. The fresh portfolio runner passed all 20 guards. Twelve short browser captures produced no page errors. No new crash/save/simulation failure
+was reproduced. Three concrete gallery defects and the existing semantic-shell limitation are
+distinguished from subjective polish. See [current evidence and limits](playtest-evidence/2026-10-21-audit/README.md).
+No new raster asset is yet demonstrated to be essential. No human/hardware/Steam gate is closed.
 
 Use the [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md) for exact owner actions and
 evidence to return. The [17 October checkpoint](archive/CONTINUATION-REVIEW-2026-10-17.md)

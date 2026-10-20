@@ -1,0 +1,6 @@
+Fresh host run, 21 October 2026.
+ Test Files  312 passed (312)
+      Tests  1781 passed (1781)
+   Start at  09:33:49
+   Duration  9.58s (transform 40.13s, setup 0ms, import 68.91s, tests 20.86s, environment 34ms)
+

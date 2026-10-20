@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-10-20T22:36:21.491Z",
+  "results": [
+    {
+      "name": "medic-correct-gallery",
+      "query": "?mode=gallery&batch=p",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "medic-combat",
+      "query": "?screen=game&hero=medic&theme=bastion-standard&seed=61061",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "assault-combat",
+      "query": "?screen=game&hero=assault&art=c3&theme=bastion-standard&seed=61061",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "settings-4k",
+      "query": "?flow=settings",
+      "width": 3840,
+      "height": 2160,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 3840,
+        "height": 2160
+      }
+    }
+  ]
+}

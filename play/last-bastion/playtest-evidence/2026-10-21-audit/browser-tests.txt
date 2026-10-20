@@ -1,0 +1,42 @@
+
+[WebServer] (node:26768) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 31 tests using 1 worker
+
+
+(node:31976) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/31] tests\visual\last-bastion-functional.spec.mjs:3:1 › opt-in local QA session exports active frames, excludes pause, stops and resets
+[2/31] tests\visual\last-bastion-functional.spec.mjs:81:3 › Last Bastion executable acceptance › title reaches the main menu by keyboard
+[3/31] tests\visual\last-bastion-functional.spec.mjs:90:3 › Last Bastion executable acceptance › the menu offers Daily, Quick Drop and Expedition, hides LAB, and starts today's Daily
+[4/31] tests\visual\last-bastion-functional.spec.mjs:116:3 › Last Bastion executable acceptance › LAB stays reachable for QA with ?lab=1
+[5/31] tests\visual\last-bastion-functional.spec.mjs:125:3 › Last Bastion executable acceptance › map and combat routes create their runtime state
+[6/31] tests\visual\last-bastion-functional.spec.mjs:151:3 › Last Bastion executable acceptance › the Scrap Shop does not preload unrelated encounter art
+[7/31] tests\visual\last-bastion-functional.spec.mjs:163:3 › Last Bastion executable acceptance › settings can export a versioned save backup
+[8/31] tests\visual\last-bastion-functional.spec.mjs:177:3 › Last Bastion executable acceptance › settings exposes the game privacy policy without overflowing the minimum viewport
+[9/31] tests\visual\last-bastion-functional.spec.mjs:198:3 › Last Bastion executable acceptance › debrief keyboard navigation updates the selected action
+[10/31] tests\visual\last-bastion-functional.spec.mjs:211:3 › Last Bastion executable acceptance › run details remain selectable when clipboard access is blocked
+[11/31] tests\visual\last-bastion-functional.spec.mjs:233:3 › Last Bastion executable acceptance › debrief game link remains selectable when clipboard access is blocked
+[12/31] tests\visual\last-bastion-functional.spec.mjs:252:3 › Last Bastion executable acceptance › focus loss clears a held irreversible confirmation
+[13/31] tests\visual\last-bastion-functional.spec.mjs:269:3 › Last Bastion executable acceptance › maximum HUD scale, reduced motion, and remapped movement work at the minimum viewport
+[14/31] tests\visual\last-bastion-functional.spec.mjs:322:3 › Last Bastion executable acceptance › a warmed release boots offline and an unwarmed combat theme fails visibly
+[15/31] tests\visual\last-bastion-functional.spec.mjs:343:3 › Last Bastion executable acceptance › storage read failure stays visible and retryable
+[16/31] tests\visual\last-bastion-functional.spec.mjs:367:3 › Last Bastion executable acceptance › repeated renderer boots and scene transitions remain crash-free
+[17/31] tests\visual\last-bastion-functional.spec.mjs:394:3 › Last Bastion executable acceptance › combat decisions remain keyboard-operable after overlay extraction
+[18/31] tests\visual\last-bastion-functional.spec.mjs:413:3 › Last Bastion executable acceptance › level-up stat cards fit their rendered text inside the choices
+[19/31] tests\visual\last-bastion-functional.spec.mjs:435:3 › Last Bastion on a touch-only phone › explains the keyboard requirement before boot and still lets a player continue
+[20/31] tests\visual\last-bastion-functional.spec.mjs:453:3 › October reliability regressions › failed character art stops loading and can recover on explicit retry
+[21/31] tests\visual\last-bastion-functional.spec.mjs:481:3 › October reliability regressions › failed entry module offers recovery without clearing saves
+[22/31] tests\visual\last-bastion-functional.spec.mjs:488:3 › October reliability regressions › Daily retry resolves the date when clicked, not when the screen was opened
+[23/31] tests\visual\last-bastion-functional.spec.mjs:499:1 › build pages are keyboard-operable and include affinity
+[24/31] tests\visual\last-bastion-functional.spec.mjs:510:3 › build controls stay onscreen at 1920x1080
+[25/31] tests\visual\last-bastion-functional.spec.mjs:510:3 › build controls stay onscreen at 3840x2160
+[26/31] tests\visual\last-bastion-functional.spec.mjs:521:1 › restart resets the attempt's settings provenance
+[27/31] tests\visual\last-bastion-functional.spec.mjs:537:3 › physical B goes back once with evade rebound to B
+[28/31] tests\visual\last-bastion-functional.spec.mjs:537:3 › physical B goes back once with pause rebound to B
+[29/31] tests\visual\last-bastion-functional.spec.mjs:562:3 › floor pilot a boots through its real texture loader
+[30/31] tests\visual\last-bastion-functional.spec.mjs:562:3 › floor pilot b boots through its real texture loader
+[31/31] tests\visual\last-bastion-functional.spec.mjs:575:2 › expanded floor kit and affinity inspect load through real combat
+  31 passed (52.3s)

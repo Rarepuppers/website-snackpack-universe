@@ -1,0 +1,117 @@
+{
+  "checkedAt": "2026-10-20T22:34:43.529Z",
+  "results": [
+    {
+      "name": "menu-small",
+      "query": "?flow=menu",
+      "width": 960,
+      "height": 540,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "menu-portrait",
+      "query": "?flow=menu",
+      "width": 390,
+      "height": 844,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 312,
+        "width": 390,
+        "height": 219.375
+      }
+    },
+    {
+      "name": "map",
+      "query": "?screen=map&mapseed=2026",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "gallery-medic",
+      "query": "?mode=gallery&hero=medic",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "gallery-assault",
+      "query": "?mode=gallery&hero=assault&art=c3",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "combat-baseline",
+      "query": "?screen=game&theme=bastion-standard&seed=61061",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "combat-kit",
+      "query": "?screen=game&theme=bastion-standard&seed=61061&floorpilot=kit",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "build-small",
+      "query": "?screen=game&theme=bastion-standard&seed=61061&pausepreview=build",
+      "width": 960,
+      "height": 540,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    }
+  ]
+}

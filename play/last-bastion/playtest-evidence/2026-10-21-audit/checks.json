@@ -1,0 +1,50 @@
+{
+  "auditDate": "2026-10-21",
+  "scope": "Local source, committed browser output, static visual samples; no production package or deployment",
+  "checks": {
+    "unit": {
+      "files": 312,
+      "tests": 1781,
+      "result": "pass"
+    },
+    "browser": {
+      "tests": 31,
+      "seconds": 52.3,
+      "result": "pass"
+    },
+    "typecheck": "pass",
+    "imageDerivatives": {
+      "assets": 63,
+      "result": "pass"
+    },
+    "contentInventory": {
+      "tests": 3,
+      "result": "pass"
+    },
+    "combatAdapters": {
+      "adapters": 33,
+      "result": "pass"
+    },
+    "uiTextAudit": {
+      "scenes": 6,
+      "result": "pass"
+    },
+    "publishedComparison": {
+      "outputs": 25,
+      "result": "pass"
+    },
+    "staleOutputRegression": "pass",
+    "portfolio": {
+      "guards": 20,
+      "result": "pass"
+    }
+  },
+  "limits": [
+    "No new runtime implementation",
+    "No human gameplay/audio/controller acceptance",
+    "No hardware performance result",
+    "No fresh desktop package or Steam acceptance",
+    "No live analytics verification",
+    "No full smoke/offline/desktop-host rerun in this audit; prior evidence remains historical"
+  ]
+}
