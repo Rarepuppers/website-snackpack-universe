@@ -7,6 +7,9 @@ are in [`docs/archive/`](archive/README.md)).
 
 ## 2026-10-20 - Complete offline books, two questions and practical printing
 
+Published in `3b542981`. Full CI and Pages pass; all 29 reader cases pass on
+the live site, and 150 served-file hashes match the reviewed commit.
+
 - Save or remove individual books or the full shelf, with cancellation/retry
   and complete-file/current-story checks. Unsaved books offline return clearly
   to the bookshelf. Shared/game caches are preserved; no cache-version bump.

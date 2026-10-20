@@ -53,7 +53,19 @@ collection contents sheets. Both new PDFs' text fits the A4/Letter safe area.
 No physical printer, real screen reader, phone voice or native runtime claim
 is inferred from these automated checks.
 
-Final portfolio, live-byte and GitHub CI/Pages results are recorded after push.
+## Live acceptance
+
+Published `3b542981935db0ca2112295ec16e5b608f6ffe31` (normal checkout
+equivalent `079ea459`). [Full website CI passed](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/39343627741)
+and [Pages deployment passed](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/39343626943).
+All 20 portfolio guards pass. All 29 browser cases also pass against the live
+website, including the full 52-book save/remove flow and disconnected reading.
+All 52 HTML stories and PDFs, collections, new art, social cards and reader
+files match **150 exact committed-file hashes** on the public site. Google
+sitemap submission, IndexNow and Bing accepted both new book URLs.
+Monorepo handoff and machine evidence are `docs/READS-QUALITY-HANDOFF-2026-10-20.md`
+and `docs/asset-review-qa/reads-2026-10-20/`.
+
 Native release inclusion is tracked separately in monorepo
 `docs/READS-APP-RELEASE-CHECKLIST-2026-10-20.md`; installed-store inclusion is
 unknown until a release records it. No native builds, submissions, versions,
