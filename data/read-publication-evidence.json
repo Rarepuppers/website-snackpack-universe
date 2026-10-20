@@ -46,10 +46,10 @@
       "slug": "baby-bulldogs-at-the-playground",
       "source_id": "baby-bulldogs-playground",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/baby-bulldogs-playground-p1.jpg": "d808a5190b349a1afb2568b5a7f3bcb1c064d1f053e404e17af85a8802b04567",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/baby-bulldogs-playground-p2.jpg": "6e718ac7bd69b917b32b215d151f724a29b54bb9b558e0df0c58227ffc0f2d44",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/baby-bulldogs-playground-p3.jpg": "997d462c85b7fa7a4f93126edf5fbac6be552e741239eb87f01c9dbc72566896",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/baby-bulldogs-playground-p4.jpg": "81e4adb070596e2a5868fd11c27b2e08c2d864d734680827d7a3bd6a3bc37de8"
+        "snackpack-3-spelling-sentences/assets/book-page-art/baby-bulldogs-playground-p1.jpg": "d808a5190b349a1afb2568b5a7f3bcb1c064d1f053e404e17af85a8802b04567",
+        "snackpack-3-spelling-sentences/assets/book-page-art/baby-bulldogs-playground-p2.jpg": "6e718ac7bd69b917b32b215d151f724a29b54bb9b558e0df0c58227ffc0f2d44",
+        "snackpack-3-spelling-sentences/assets/book-page-art/baby-bulldogs-playground-p3.jpg": "997d462c85b7fa7a4f93126edf5fbac6be552e741239eb87f01c9dbc72566896",
+        "snackpack-3-spelling-sentences/assets/book-page-art/baby-bulldogs-playground-p4.jpg": "81e4adb070596e2a5868fd11c27b2e08c2d864d734680827d7a3bd6a3bc37de8"
       },
       "text": [
         "The Baby Bulldogs chase their red ball across the grass until it rolls beside a puppy sitting alone. The puppy nudges it back without looking up.",
@@ -91,15 +91,15 @@
       "slug": "biscuit-bouncers-parcel-parade",
       "source_id": "biscuit-bouncer-parcel-parade",
       "source_art": {
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/parcel-1.webp": "225f21595750c6577341a1bbc050da60dfcec77c5866fa58f29eb0f1d6ac89ee",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/parcel-2.webp": "20e4640fb8a49a177e4d08d902ebf7a4a611d2f9d01870dddf2612edb6eac7c4",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/parcel-3.webp": "9910d42a0a59c8647ff5979b323fcfbc0f5bd1e74abf91874fd230118fb91127",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/parcel-4.webp": "099e7b7e057336a75ee8701924856eba7dcb5dde3976f2de169cb9ad28c61ea4",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/parcel-5.webp": "02838daed07dce0f8671ff1ea21cfb53a362d86baa1172922b51cf6777045594",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/parcel-6.webp": "bd295c6fc7d309d8ac98cb97e353e9132e29cb4779060f1e0444612581fc647f",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/parcel-7.webp": "0874afc0412b2be560b192e0725c38fed95e693b0a39ca590abced36e22d2980",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/parcel-8.webp": "589e59e3e39f103c287b3ccdcb2ccd6085170863c951e3edd23d5d278982f15e",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/parcel-9.webp": "a88042b9210fdd9dcb9b77f1adec5db8b4ce3326245a62de86619498c565b68c"
+        "snackpack-4-math-arithmetic/assets/book-page-images/parcel-1.webp": "225f21595750c6577341a1bbc050da60dfcec77c5866fa58f29eb0f1d6ac89ee",
+        "snackpack-4-math-arithmetic/assets/book-page-images/parcel-2.webp": "20e4640fb8a49a177e4d08d902ebf7a4a611d2f9d01870dddf2612edb6eac7c4",
+        "snackpack-4-math-arithmetic/assets/book-page-images/parcel-3.webp": "9910d42a0a59c8647ff5979b323fcfbc0f5bd1e74abf91874fd230118fb91127",
+        "snackpack-4-math-arithmetic/assets/book-page-images/parcel-4.webp": "099e7b7e057336a75ee8701924856eba7dcb5dde3976f2de169cb9ad28c61ea4",
+        "snackpack-4-math-arithmetic/assets/book-page-images/parcel-5.webp": "02838daed07dce0f8671ff1ea21cfb53a362d86baa1172922b51cf6777045594",
+        "snackpack-4-math-arithmetic/assets/book-page-images/parcel-6.webp": "bd295c6fc7d309d8ac98cb97e353e9132e29cb4779060f1e0444612581fc647f",
+        "snackpack-4-math-arithmetic/assets/book-page-images/parcel-7.webp": "0874afc0412b2be560b192e0725c38fed95e693b0a39ca590abced36e22d2980",
+        "snackpack-4-math-arithmetic/assets/book-page-images/parcel-8.webp": "589e59e3e39f103c287b3ccdcb2ccd6085170863c951e3edd23d5d278982f15e",
+        "snackpack-4-math-arithmetic/assets/book-page-images/parcel-9.webp": "a88042b9210fdd9dcb9b77f1adec5db8b4ce3326245a62de86619498c565b68c"
       },
       "text": [
         "Biscuit-Bouncer wakes with his tail thumping like a parade drum. He has 9 invitations for homes beside the meadow and 6 for homes beyond the creek. \"Easy!\" he barks. \"I will sprint the short road and be back before breakfast.\"",
@@ -151,13 +151,13 @@
       "slug": "booklava-and-the-number-that-lost-its-place",
       "source_id": "booklava-number-nest",
       "source_art": {
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/generated-booklava-place-value.webp": "f2a533780798b9539a2e7cd316397916c6ac3061eb32286d8b351eb2010b9a04",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/nest-2.webp": "7df8e4c6076c17b0d402d58ae6e6f94435555a600b5e7910a109d5e712abd9c5",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/nest-3.webp": "75dcb8cdd89d5f18049337d8c3b3c0ba511e061f3f89d472b15ab2580a4f4754",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/generated-landscape-booklava-place-value-ladder.webp": "d3e6fd65071d11a1837fcdb596e6933dacff34db238c2ce9ba456bf33a028d0c",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/nest-5.webp": "3fffe9ef613e58c39e6512b7b6aa47b426f2ff7864a9f6e0d87381994c0e2d00",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/nest-6.webp": "e5b05ee54c2f349ed6c6412f5c2a6d703aaf8b2679f3133229889546815a0111",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/nest-7.webp": "8b0c5af79ee5edb4cf9e3d9f2a8244e0e0bb0e76c4443b62434da2a3b0a6e84f"
+        "snackpack-4-math-arithmetic/assets/book-page-images/generated-booklava-place-value.webp": "f2a533780798b9539a2e7cd316397916c6ac3061eb32286d8b351eb2010b9a04",
+        "snackpack-4-math-arithmetic/assets/book-page-images/nest-2.webp": "7df8e4c6076c17b0d402d58ae6e6f94435555a600b5e7910a109d5e712abd9c5",
+        "snackpack-4-math-arithmetic/assets/book-page-images/nest-3.webp": "75dcb8cdd89d5f18049337d8c3b3c0ba511e061f3f89d472b15ab2580a4f4754",
+        "snackpack-4-math-arithmetic/assets/book-page-images/generated-landscape-booklava-place-value-ladder.webp": "d3e6fd65071d11a1837fcdb596e6933dacff34db238c2ce9ba456bf33a028d0c",
+        "snackpack-4-math-arithmetic/assets/book-page-images/nest-5.webp": "3fffe9ef613e58c39e6512b7b6aa47b426f2ff7864a9f6e0d87381994c0e2d00",
+        "snackpack-4-math-arithmetic/assets/book-page-images/nest-6.webp": "e5b05ee54c2f349ed6c6412f5c2a6d703aaf8b2679f3133229889546815a0111",
+        "snackpack-4-math-arithmetic/assets/book-page-images/nest-7.webp": "8b0c5af79ee5edb4cf9e3d9f2a8244e0e0bb0e76c4443b62434da2a3b0a6e84f"
       },
       "text": [
         "Booklava closes the library alone and hears a papery sniffle. A zero is hiding beneath the reading rug. Without it, the number 40 on the shelf label has become 4.",
@@ -201,15 +201,15 @@
       "slug": "bug-in-a-cup",
       "source_id": "bug-in-a-cup",
       "source_art": {
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-1.webp": "0cf4eee8c9cf63884bb50505a78a0069dd5d02daf29d75878c3d857a2cab3c1c",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-2.webp": "69acbf06bbc659655411464ead77fca2595d326416839767d9827e307db94a76",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-3.webp": "9c4f74dbaf00e81c24f509f8dafe7d1e61cf22c32e23ece3bb5c03de75d8d649",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-4.webp": "c8dbebf941512bd464b1647451c47fafaec80b30f28522346d912c81b9f454c2",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-5.webp": "8556ab84bc129c8d2c41d9f06a42548c24cd6a1c1c9d4889244b7fc1261c088b",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-6.webp": "bf6a5a38f902aedf5906bed9bdfb8a118530823fcc9f408dcd19692c34fb6c06",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-7.webp": "49b031a084e0631c5c10f33ad4a104cbc64f1723513ff56ceca03932614f2986",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-8.webp": "2c10ffe52349899fa46474a18d8f555865772e2c1f4d30ef1c5c15c970bbbd2f",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-cover.webp": "a1d855ca56c7adc56172b21787fcc63a864f0a03f8d415873ec24b8f50cc50ef"
+        "snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-1.webp": "0cf4eee8c9cf63884bb50505a78a0069dd5d02daf29d75878c3d857a2cab3c1c",
+        "snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-2.webp": "69acbf06bbc659655411464ead77fca2595d326416839767d9827e307db94a76",
+        "snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-3.webp": "9c4f74dbaf00e81c24f509f8dafe7d1e61cf22c32e23ece3bb5c03de75d8d649",
+        "snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-4.webp": "c8dbebf941512bd464b1647451c47fafaec80b30f28522346d912c81b9f454c2",
+        "snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-5.webp": "8556ab84bc129c8d2c41d9f06a42548c24cd6a1c1c9d4889244b7fc1261c088b",
+        "snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-6.webp": "bf6a5a38f902aedf5906bed9bdfb8a118530823fcc9f408dcd19692c34fb6c06",
+        "snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-7.webp": "49b031a084e0631c5c10f33ad4a104cbc64f1723513ff56ceca03932614f2986",
+        "snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-page-8.webp": "2c10ffe52349899fa46474a18d8f555865772e2c1f4d30ef1c5c15c970bbbd2f",
+        "snackpack-1-abcs-alphabet/assets/decodable/bug-in-a-cup-cover.webp": "a1d855ca56c7adc56172b21787fcc63a864f0a03f8d415873ec24b8f50cc50ef"
       },
       "text": [
         "A bug sat in a mug.",
@@ -237,13 +237,57 @@
       "pdf_sha256": "a0f427b9a337be98ef1212ed376d846007bfdfd0583ce0826a119e2434a6aba0"
     },
     {
+      "slug": "captain-beakons-air-show",
+      "source_id": "captain-beakon-air-show",
+      "source_art": {
+        "snackpack-3-spelling-sentences/assets/book-page-art/captain-beakon-air-show-p1.jpg": "49eedffe9e71567923dba102c7af2c2e27eeb08e2f338d961df65079619f0654",
+        "snackpack-3-spelling-sentences/assets/book-page-art/captain-beakon-air-show-p2.jpg": "a745d38c0b9ebd6918b9ce24749b121b97e95d688a7a60282b6316c956ae8584",
+        "snackpack-3-spelling-sentences/assets/book-page-art/captain-beakon-air-show-p3.jpg": "02ac77d9c1c00abc04c17a81b7cb9f9444d90f6c110d4f104959adf5690c6e91",
+        "snackpack-3-spelling-sentences/assets/book-page-art/captain-beakon-air-show-p4.jpg": "3a380cec32688ec074aa07051c6535cff3d20f3f42fbea0325cabe30691fa008"
+      },
+      "text": [
+        "Captain Beakon lifts the little red plane for the final air-show loop. The long red-and-gold ribbon behind it suddenly tears free.",
+        "Stripe-Scout sees the ribbon drifting toward the river. She lowers her helicopter, but the wind keeps pushing it away.",
+        "The Baby Bulldogs race their bikes along the bank, calling left and right. Their directions guide Stripe-Scout above the exact spot.",
+        "Stripe catches the ribbon, and Beakon flies one slower loop so every helper can wave. The brightest colour in the show belongs to the whole team."
+      ],
+      "expected": [
+        "How did the crew recover the red-and-gold ribbon?",
+        "The Bulldogs guided Stripe-Scout from below",
+        "Why was the last loop slower?",
+        "So every helper could share the applause",
+        "What goes wrong during the plane's final loop?",
+        "Why can Stripe-Scout not catch the ribbon alone?",
+        "How do the Bulldogs help from the ground?",
+        "Why does Beakon fly one more slow loop?"
+      ],
+      "quizzes": [
+        {
+          "question": "How did the crew recover the red-and-gold ribbon?",
+          "answer": "The Bulldogs guided Stripe-Scout from below."
+        },
+        {
+          "question": "Why was the last loop slower?",
+          "answer": "So every helper could share the applause."
+        }
+      ],
+      "art": {
+        "read/captain-beakons-air-show/pages/captain-beakon-air-show-p1.jpg": "49eedffe9e71567923dba102c7af2c2e27eeb08e2f338d961df65079619f0654",
+        "read/captain-beakons-air-show/pages/captain-beakon-air-show-p2.jpg": "a745d38c0b9ebd6918b9ce24749b121b97e95d688a7a60282b6316c956ae8584",
+        "read/captain-beakons-air-show/pages/captain-beakon-air-show-p3.jpg": "02ac77d9c1c00abc04c17a81b7cb9f9444d90f6c110d4f104959adf5690c6e91",
+        "read/captain-beakons-air-show/pages/captain-beakon-air-show-p4.jpg": "3a380cec32688ec074aa07051c6535cff3d20f3f42fbea0325cabe30691fa008"
+      },
+      "pdf": "read/captain-beakons-air-show/captain-beakons-air-show.pdf",
+      "pdf_sha256": "56a7ea3726789d075cd69b7a1bdd262785390d14d4318112d6bd45f627ec0cbf"
+    },
+    {
       "slug": "captain-beakons-star-watch",
       "source_id": "captain-beakon-star-watch",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/captain-beakon-star-watch-p1.jpg": "13d398a21cb8fb04d207116ba35fdb4ef87b2200ef31c30234ec994071092b51",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/captain-beakon-star-watch-p2.jpg": "9b51ca7b65c7e8d6d368a1f0f4fc17e6931f34eb77e8dbcac47a19c6451e86df",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/captain-beakon-star-watch-p3.jpg": "77fa3a533026afe0d491f01be2b362155b4e5d6f5f18f5e86edbd4d432a27186",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/captain-beakon-star-watch-p4.jpg": "1f273188859b3f7b3ba196ff1c9c0fd75c55a40b1b5a745584fc7562cb15d7bc"
+        "snackpack-3-spelling-sentences/assets/book-page-art/captain-beakon-star-watch-p1.jpg": "13d398a21cb8fb04d207116ba35fdb4ef87b2200ef31c30234ec994071092b51",
+        "snackpack-3-spelling-sentences/assets/book-page-art/captain-beakon-star-watch-p2.jpg": "9b51ca7b65c7e8d6d368a1f0f4fc17e6931f34eb77e8dbcac47a19c6451e86df",
+        "snackpack-3-spelling-sentences/assets/book-page-art/captain-beakon-star-watch-p3.jpg": "77fa3a533026afe0d491f01be2b362155b4e5d6f5f18f5e86edbd4d432a27186",
+        "snackpack-3-spelling-sentences/assets/book-page-art/captain-beakon-star-watch-p4.jpg": "1f273188859b3f7b3ba196ff1c9c0fd75c55a40b1b5a745584fc7562cb15d7bc"
       },
       "text": [
         "Captain Beakon carries his telescope up the hill. Tonight he hopes to show Luckybug a planet. He looks up. Clouds stretch from one end of the sky to the other.",
@@ -285,10 +329,10 @@
       "slug": "centi-peeds-below-zero-burrow",
       "source_id": "centi-peed-below-zero-burrow",
       "source_art": {
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/burrow-1.webp": "fcfc022c945821e7032566dfc60a86eec2f0956bce88abbf219ccec324c0090f",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/burrow-2.webp": "f9693e147fb8a80bb13cfbd69f7321892d098aad7ff83657a869890170eec5a5",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/burrow-3.webp": "6eb61dae6fadd8a39ebd8fdcdc89b6ff2c26c5e4b9aa1ffd21eceadd3e0e3679",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/burrow-4.webp": "684b24a0e5143f3fe1e18edbc40feaa6811576e5dd5d6d8e3f03126cbd5442f0"
+        "snackpack-4-math-arithmetic/assets/book-page-images/burrow-1.webp": "fcfc022c945821e7032566dfc60a86eec2f0956bce88abbf219ccec324c0090f",
+        "snackpack-4-math-arithmetic/assets/book-page-images/burrow-2.webp": "f9693e147fb8a80bb13cfbd69f7321892d098aad7ff83657a869890170eec5a5",
+        "snackpack-4-math-arithmetic/assets/book-page-images/burrow-3.webp": "6eb61dae6fadd8a39ebd8fdcdc89b6ff2c26c5e4b9aa1ffd21eceadd3e0e3679",
+        "snackpack-4-math-arithmetic/assets/book-page-images/burrow-4.webp": "684b24a0e5143f3fe1e18edbc40feaa6811576e5dd5d6d8e3f03126cbd5442f0"
       },
       "text": [
         "Centi-Peed finds a frosted burrow beneath the roots. The entrance marker reads 3°C, but tiny firefly footprints descend seven degree-steps. \"Below zero is still somewhere,\" Sub-Zero says, drawing a glowing number line through the air.",
@@ -320,10 +364,10 @@
       "slug": "centi-peeds-garden-race",
       "source_id": "centi-peed-garden-race",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/centi-peed-garden-race-p1.jpg": "122eec8b9428cbb3f30ae7980d0f1b5a622ba35a8bd45b4d7f5232b8a8dbc6b7",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/centi-peed-garden-race-p2.jpg": "1d07e40449a8fd5edc5678930c9dd111c29c0bf23010777007853c1b6f1f6027",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/centi-peed-garden-race-p3.jpg": "578ec8d755abc2e3e0c001e956f980fd310b51c957efe16c08f0a03abb3a6197",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/centi-peed-garden-race-p4.jpg": "f186ee5f32496edff80c51f22689c0e63fbb01c000e2a9203024404374a9d00a"
+        "snackpack-3-spelling-sentences/assets/book-page-art/centi-peed-garden-race-p1.jpg": "122eec8b9428cbb3f30ae7980d0f1b5a622ba35a8bd45b4d7f5232b8a8dbc6b7",
+        "snackpack-3-spelling-sentences/assets/book-page-art/centi-peed-garden-race-p2.jpg": "1d07e40449a8fd5edc5678930c9dd111c29c0bf23010777007853c1b6f1f6027",
+        "snackpack-3-spelling-sentences/assets/book-page-art/centi-peed-garden-race-p3.jpg": "578ec8d755abc2e3e0c001e956f980fd310b51c957efe16c08f0a03abb3a6197",
+        "snackpack-3-spelling-sentences/assets/book-page-art/centi-peed-garden-race-p4.jpg": "f186ee5f32496edff80c51f22689c0e63fbb01c000e2a9203024404374a9d00a"
       },
       "text": [
         "Centi-Peed laces his many racing boots and announces he will win by one hundred steps. Shelly-Pop quietly wishes everyone luck.",
@@ -364,12 +408,12 @@
       "slug": "cereal-swimmer-and-the-number-line-lagoon",
       "source_id": "cereal-swimmer-number-line-lagoon",
       "source_art": {
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/cereal-swimmer-number-line-lagoon-p1-v3.jpg": "735bb7fcb04eee20d8d0d67a57bbe11b36d3569d2c8c17e1a1b9d68fffa9fb7e",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/cereal-swimmer-number-line-lagoon-p2-v3.jpg": "df91ff170ae9d63c4be6cde0ad04fa7ae1a3203db23015dcbddb2c7dc75c1c76",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/cereal-swimmer-number-line-lagoon-p3-v3.jpg": "4c557590146c2f6b1b7bb11055f32af39cc27af25964119dec578f061d56a158",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/cereal-swimmer-number-line-lagoon-p4-v3.jpg": "5d654ea6fde6732200190d322b480c804e4e5e920a4b53f4c7c2d9c51b8e53b5",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/cereal-swimmer-number-line-lagoon-p5-v3.jpg": "ea98766141cd50e6c96f0c3e9d5447f74bf598bfeae07c1d28d01e40e584bb9d",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/cereal-swimmer-number-line-lagoon-p6-v3.jpg": "791cf15e370b1d4b69160a55f1e59e34b46c87b796021980a8d7fffacee06a50"
+        "snackpack-2-123s-counting/assets/story-page-art/cereal-swimmer-number-line-lagoon-p1-v3.jpg": "735bb7fcb04eee20d8d0d67a57bbe11b36d3569d2c8c17e1a1b9d68fffa9fb7e",
+        "snackpack-2-123s-counting/assets/story-page-art/cereal-swimmer-number-line-lagoon-p2-v3.jpg": "df91ff170ae9d63c4be6cde0ad04fa7ae1a3203db23015dcbddb2c7dc75c1c76",
+        "snackpack-2-123s-counting/assets/story-page-art/cereal-swimmer-number-line-lagoon-p3-v3.jpg": "4c557590146c2f6b1b7bb11055f32af39cc27af25964119dec578f061d56a158",
+        "snackpack-2-123s-counting/assets/story-page-art/cereal-swimmer-number-line-lagoon-p4-v3.jpg": "5d654ea6fde6732200190d322b480c804e4e5e920a4b53f4c7c2d9c51b8e53b5",
+        "snackpack-2-123s-counting/assets/story-page-art/cereal-swimmer-number-line-lagoon-p5-v3.jpg": "ea98766141cd50e6c96f0c3e9d5447f74bf598bfeae07c1d28d01e40e584bb9d",
+        "snackpack-2-123s-counting/assets/story-page-art/cereal-swimmer-number-line-lagoon-p6-v3.jpg": "791cf15e370b1d4b69160a55f1e59e34b46c87b796021980a8d7fffacee06a50"
       },
       "text": [
         "A rolling wave has scattered the lagoon stepping stones and separated a school of little fish. Cereal-Swimmer finds a trail of bubbles beside the first stone. Octo-Pop taps each bubble while they count the starting place on their watery number line.",
@@ -427,10 +471,10 @@
       "slug": "corgi-on-the-cobs-countryside-run",
       "source_id": "corgi-on-the-cob-countryside",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/corgi-on-the-cob-countryside-p1.jpg": "5cfa0704ba74f680e40c0c4084eaea93d0a20b608332685e718d641521403112",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/corgi-on-the-cob-countryside-p2.jpg": "b2a4d3d2574f49a785531f49b5a69f5914b67c4ca9b412f59a3a701aec35fa17",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/corgi-on-the-cob-countryside-p3.jpg": "68d4bfdacf6cda8dce47b244578cedffae487d810f38de191ea073f593aa7b50",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/corgi-on-the-cob-countryside-p4.jpg": "705fbf86e4f1053b472a3ea8bbb5a2900495ba4214dc4b170cec3cf2f1993699"
+        "snackpack-3-spelling-sentences/assets/book-page-art/corgi-on-the-cob-countryside-p1.jpg": "5cfa0704ba74f680e40c0c4084eaea93d0a20b608332685e718d641521403112",
+        "snackpack-3-spelling-sentences/assets/book-page-art/corgi-on-the-cob-countryside-p2.jpg": "b2a4d3d2574f49a785531f49b5a69f5914b67c4ca9b412f59a3a701aec35fa17",
+        "snackpack-3-spelling-sentences/assets/book-page-art/corgi-on-the-cob-countryside-p3.jpg": "68d4bfdacf6cda8dce47b244578cedffae487d810f38de191ea073f593aa7b50",
+        "snackpack-3-spelling-sentences/assets/book-page-art/corgi-on-the-cob-countryside-p4.jpg": "705fbf86e4f1053b472a3ea8bbb5a2900495ba4214dc4b170cec3cf2f1993699"
       },
       "text": [
         "Corgi-on-the-Cob bounds through the farm gate when Ginger-Deer challenges him to race around the old mill. Corgi wants to win for once.",
@@ -471,12 +515,12 @@
       "slug": "corgi-on-the-cobs-ten-frame-picnic",
       "source_id": "corgi-cob-ten-frame-picnic",
       "source_art": {
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/corgi-cob-ten-frame-picnic-p1-v3.jpg": "12e86eaad9c2778fe2ededcd93b7aebde8dcd95c5f50aaa82e8bbe408c6aef85",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/corgi-cob-ten-frame-picnic-p2-v3.jpg": "eff4b2aef0d773043828a70c174304b26a014da2b28039f76d93dc0af25220a9",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/corgi-cob-ten-frame-picnic-p3-v3.jpg": "81645a987b961fe1e2147b227cf8a90fbadc92f614d8302eb813c0c7ccbc036a",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/corgi-cob-ten-frame-picnic-p4-v3.jpg": "cfa2b0b9ded6756a102c800444d9490238f187c3c71ea7ddf595837c79f31fd4",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/corgi-cob-ten-frame-picnic-p5-v3.jpg": "e6f8ef083a87246c5b7083ab58068188c71917f390c6ad1ea2478846fa4e093c",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/corgi-cob-ten-frame-picnic-p6-v3.jpg": "f7719805c329d31e27311e048f3de20330f99e467615d53ec200209ae3f75544"
+        "snackpack-2-123s-counting/assets/story-page-art/corgi-cob-ten-frame-picnic-p1-v3.jpg": "12e86eaad9c2778fe2ededcd93b7aebde8dcd95c5f50aaa82e8bbe408c6aef85",
+        "snackpack-2-123s-counting/assets/story-page-art/corgi-cob-ten-frame-picnic-p2-v3.jpg": "eff4b2aef0d773043828a70c174304b26a014da2b28039f76d93dc0af25220a9",
+        "snackpack-2-123s-counting/assets/story-page-art/corgi-cob-ten-frame-picnic-p3-v3.jpg": "81645a987b961fe1e2147b227cf8a90fbadc92f614d8302eb813c0c7ccbc036a",
+        "snackpack-2-123s-counting/assets/story-page-art/corgi-cob-ten-frame-picnic-p4-v3.jpg": "cfa2b0b9ded6756a102c800444d9490238f187c3c71ea7ddf595837c79f31fd4",
+        "snackpack-2-123s-counting/assets/story-page-art/corgi-cob-ten-frame-picnic-p5-v3.jpg": "e6f8ef083a87246c5b7083ab58068188c71917f390c6ad1ea2478846fa4e093c",
+        "snackpack-2-123s-counting/assets/story-page-art/corgi-cob-ten-frame-picnic-p6-v3.jpg": "f7719805c329d31e27311e048f3de20330f99e467615d53ec200209ae3f75544"
       },
       "text": [
         "Corgi sets a ten-frame picnic board beneath the apple tree. A gust flips the cloth and scatters the treats into the grass. Ted-E-Bear holds the corners while Corgi checks the spaces in the first row.",
@@ -534,15 +578,15 @@
       "slug": "dog-in-the-fog",
       "source_id": "dog-in-the-fog",
       "source_art": {
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-1.webp": "8591f6a83d355c379983b3d435a043a4e8d6c867415ee902d89591565f58120a",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-2.webp": "2d3eb0b480772c319ce86edacd634c208b7d656b300ae90cd3bd45409cc08389",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-3.webp": "6436f00a47b4779b7dadb0ec3a468e27b607e6e8b4850d67470e6d70e06044a1",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-4.webp": "4fc8d367c823cca159ede6f869cdb6d0b3bf0a1f5fbba2a926fc05e56a2cd175",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-5.webp": "b25575db22de8e21a0b6ea38637e0c59a3e34b3a5f87855c408d901b09bd4247",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-6.webp": "3eacec5fbcb0a16f11fa2bafb1e8f59668b517c28fc874c64b936b56631bf98d",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-7.webp": "b8e6d48b97a3f29b60b63a5a82602af25294ace3a7aec485db3d13187404f4ab",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-8.webp": "c1eea0dfe62321d945ccfc05abe84854e8f8276695bd1ab485dfa487e896b744",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-cover.webp": "2c3a96d5c48b1ee20899b9f4107272a4706976d6c0a65dce4f1e62386f3ff443"
+        "snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-1.webp": "8591f6a83d355c379983b3d435a043a4e8d6c867415ee902d89591565f58120a",
+        "snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-2.webp": "2d3eb0b480772c319ce86edacd634c208b7d656b300ae90cd3bd45409cc08389",
+        "snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-3.webp": "6436f00a47b4779b7dadb0ec3a468e27b607e6e8b4850d67470e6d70e06044a1",
+        "snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-4.webp": "4fc8d367c823cca159ede6f869cdb6d0b3bf0a1f5fbba2a926fc05e56a2cd175",
+        "snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-5.webp": "b25575db22de8e21a0b6ea38637e0c59a3e34b3a5f87855c408d901b09bd4247",
+        "snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-6.webp": "3eacec5fbcb0a16f11fa2bafb1e8f59668b517c28fc874c64b936b56631bf98d",
+        "snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-7.webp": "b8e6d48b97a3f29b60b63a5a82602af25294ace3a7aec485db3d13187404f4ab",
+        "snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-page-8.webp": "c1eea0dfe62321d945ccfc05abe84854e8f8276695bd1ab485dfa487e896b744",
+        "snackpack-1-abcs-alphabet/assets/decodable/dog-in-the-fog-cover.webp": "2c3a96d5c48b1ee20899b9f4107272a4706976d6c0a65dce4f1e62386f3ff443"
       },
       "text": [
         "A dog sat on a log.",
@@ -573,10 +617,10 @@
       "slug": "fe-line-mignons-moonlit-cafe",
       "source_id": "fe-line-mignon-moonlit-cafe",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/fe-line-mignon-moonlit-cafe-p1.jpg": "011ea1ccf9ee7a9ae96f43f01892e18828b69113015a3a61182c87bf36257fd0",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/fe-line-mignon-moonlit-cafe-p2.jpg": "0bda5b0ebde3d5ba01c1f5a431714ffe5328b887001173cf70890c2a5a1f6922",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/fe-line-mignon-moonlit-cafe-p3.jpg": "cead218f473ed24b604b3b4e941c0b511d8c1ebb6d30885a6fbe0231a00b132b",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/fe-line-mignon-moonlit-cafe-p4.jpg": "3287efaf541608914e53e6ca441ecaf191fb1298f5969c1641416eef6bcd4315"
+        "snackpack-3-spelling-sentences/assets/book-page-art/fe-line-mignon-moonlit-cafe-p1.jpg": "011ea1ccf9ee7a9ae96f43f01892e18828b69113015a3a61182c87bf36257fd0",
+        "snackpack-3-spelling-sentences/assets/book-page-art/fe-line-mignon-moonlit-cafe-p2.jpg": "0bda5b0ebde3d5ba01c1f5a431714ffe5328b887001173cf70890c2a5a1f6922",
+        "snackpack-3-spelling-sentences/assets/book-page-art/fe-line-mignon-moonlit-cafe-p3.jpg": "cead218f473ed24b604b3b4e941c0b511d8c1ebb6d30885a6fbe0231a00b132b",
+        "snackpack-3-spelling-sentences/assets/book-page-art/fe-line-mignon-moonlit-cafe-p4.jpg": "3287efaf541608914e53e6ca441ecaf191fb1298f5969c1641416eef6bcd4315"
       },
       "text": [
         "Fe-Line-Mignon lights each candle for the moonlit café, then notices a new kitten sitting alone beside the window.",
@@ -617,10 +661,10 @@
       "slug": "foxy-loxs-mystery-trail",
       "source_id": "foxy-lox-mystery-trail",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/foxy-lox-mystery-trail-p1.jpg": "2f91335f5dfb029cd6bded9ed103bea1966110554ba1e1c2afe09a5bc623cba8",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/foxy-lox-mystery-trail-p2.jpg": "d18caa7880c1d12145cf81dfeff17b2a6d17fd6a95b6911f3f2b6a1db8fcef69",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/foxy-lox-mystery-trail-p3.jpg": "8939be1a57c80346751dd6f395c18fcc28df56d27bd86e582da1956151cb6402",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/foxy-lox-mystery-trail-p4.jpg": "5df9eebc211cd3e5b89a2d4fdfcf72a94d423338dec67b917c6f40a29a6ec16f"
+        "snackpack-3-spelling-sentences/assets/book-page-art/foxy-lox-mystery-trail-p1.jpg": "2f91335f5dfb029cd6bded9ed103bea1966110554ba1e1c2afe09a5bc623cba8",
+        "snackpack-3-spelling-sentences/assets/book-page-art/foxy-lox-mystery-trail-p2.jpg": "d18caa7880c1d12145cf81dfeff17b2a6d17fd6a95b6911f3f2b6a1db8fcef69",
+        "snackpack-3-spelling-sentences/assets/book-page-art/foxy-lox-mystery-trail-p3.jpg": "8939be1a57c80346751dd6f395c18fcc28df56d27bd86e582da1956151cb6402",
+        "snackpack-3-spelling-sentences/assets/book-page-art/foxy-lox-mystery-trail-p4.jpg": "5df9eebc211cd3e5b89a2d4fdfcf72a94d423338dec67b917c6f40a29a6ec16f"
       },
       "text": [
         "Foxy-Lox finds a small hoof print beside a picnic basket that no one has collected. A storm will soak everything by evening.",
@@ -661,10 +705,10 @@
       "slug": "ham-and-cheeses-big-maze",
       "source_id": "ham-and-cheese-maze",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/ham-and-cheese-maze-p1.jpg": "efbc66ce315520104a9ba8c96b1e62046ff45312f64285d9916a9b8814c7b8f1",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/ham-and-cheese-maze-p2.jpg": "a023a6e453f6be2b34d1ba10cc1c4c8d388111ec884ea5155cc56c306442b659",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/ham-and-cheese-maze-p3.jpg": "ffb7e9d0da5069619a87a261b1b8c87e179e6447778fb5681843e79d9ed62023",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/ham-and-cheese-maze-p4.jpg": "368f8d0e42f1ec42a2cfda1834456b47f526182e41999881b2ed7e9139d4c63a"
+        "snackpack-3-spelling-sentences/assets/book-page-art/ham-and-cheese-maze-p1.jpg": "efbc66ce315520104a9ba8c96b1e62046ff45312f64285d9916a9b8814c7b8f1",
+        "snackpack-3-spelling-sentences/assets/book-page-art/ham-and-cheese-maze-p2.jpg": "a023a6e453f6be2b34d1ba10cc1c4c8d388111ec884ea5155cc56c306442b659",
+        "snackpack-3-spelling-sentences/assets/book-page-art/ham-and-cheese-maze-p3.jpg": "ffb7e9d0da5069619a87a261b1b8c87e179e6447778fb5681843e79d9ed62023",
+        "snackpack-3-spelling-sentences/assets/book-page-art/ham-and-cheese-maze-p4.jpg": "368f8d0e42f1ec42a2cfda1834456b47f526182e41999881b2ed7e9139d4c63a"
       },
       "text": [
         "Ham-and-Cheese enters the cardboard maze certain his nose will lead him straight to the prize. He wants to beat his fastest time.",
@@ -705,11 +749,11 @@
       "slug": "hen-berrys-digraph-dash",
       "source_id": "reading-trail-hen-berry-digraph-dash",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-hen-berry-digraph-dash-p1.jpg": "976c213605c1ebc44d550888e5ae069755d749b49046375cb769784f425a7820",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-hen-berry-digraph-dash-p2.jpg": "b4580ecfa0e776c4a7b047fd248ccbe384093a9f71640d84f71699961e54bfd9",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-hen-berry-digraph-dash-p3.jpg": "2f2e272df8d6c937769d3df743e1cf2473db6a51c4d12503ccd83d56bdff238f",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-hen-berry-digraph-dash-p4.jpg": "e00b0f849ac591b5a3f919a4a5dc1d605844caa3e0ba555922f8dd4ffddf0502",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-hen-berry-digraph-dash-p5.jpg": "ce489a96ecba20568eaa276ee3cab39a5cf6f83deab23fc3f32e4696e5bc658c"
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-hen-berry-digraph-dash-p1.jpg": "976c213605c1ebc44d550888e5ae069755d749b49046375cb769784f425a7820",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-hen-berry-digraph-dash-p2.jpg": "b4580ecfa0e776c4a7b047fd248ccbe384093a9f71640d84f71699961e54bfd9",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-hen-berry-digraph-dash-p3.jpg": "2f2e272df8d6c937769d3df743e1cf2473db6a51c4d12503ccd83d56bdff238f",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-hen-berry-digraph-dash-p4.jpg": "e00b0f849ac591b5a3f919a4a5dc1d605844caa3e0ba555922f8dd4ffddf0502",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-hen-berry-digraph-dash-p5.jpg": "ce489a96ecba20568eaa276ee3cab39a5cf6f83deab23fc3f32e4696e5bc658c"
       },
       "text": [
         "Hen-Berry shuts the shop and checks each dish and whisk. One chick is still with her.",
@@ -755,10 +799,10 @@
       "slug": "hen-berrys-helping-day",
       "source_id": "hen-berry-helping-day",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/hen-berry-helping-day-p1.jpg": "d40fc22d8a885b6eccb666e48dca260e71981102cfc1f3daa18831729d2fbf2b",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/hen-berry-helping-day-p2.jpg": "991ea541ea49f851f89e9eb8823b22b4fb31c3b474fcaacec009c41a936dfb57",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/hen-berry-helping-day-p3.jpg": "4a01c0e0b6654c47b724a546e7a37c283e34758db9e546214204cea9faa01d84",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/hen-berry-helping-day-p4.jpg": "190f6565fd69d2434cbaeaba18f3f74d0c5ccee9ff4523864fa4fc75f88871e5"
+        "snackpack-3-spelling-sentences/assets/book-page-art/hen-berry-helping-day-p1.jpg": "d40fc22d8a885b6eccb666e48dca260e71981102cfc1f3daa18831729d2fbf2b",
+        "snackpack-3-spelling-sentences/assets/book-page-art/hen-berry-helping-day-p2.jpg": "991ea541ea49f851f89e9eb8823b22b4fb31c3b474fcaacec009c41a936dfb57",
+        "snackpack-3-spelling-sentences/assets/book-page-art/hen-berry-helping-day-p3.jpg": "4a01c0e0b6654c47b724a546e7a37c283e34758db9e546214204cea9faa01d84",
+        "snackpack-3-spelling-sentences/assets/book-page-art/hen-berry-helping-day-p4.jpg": "190f6565fd69d2434cbaeaba18f3f74d0c5ccee9ff4523864fa4fc75f88871e5"
       },
       "text": [
         "Hen-Berry carries her basket towards the picnic. Snap! The handle breaks. Berries tumble across the path. She scoops them into her wings, but each time she bends down, another berry rolls away.",
@@ -800,12 +844,12 @@
       "slug": "honey-beats-and-the-number-neighbours",
       "source_id": "honey-beats-number-neighbours",
       "source_art": {
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/honey-beats-number-neighbours-p1-v3.jpg": "81ce1bf1e08a60602a652d22b561da14a700ff1ce1b1ec0104de1544a47ae466",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/honey-beats-number-neighbours-p2-v3.jpg": "2d7c851b7e3a1b7df4b0d3bb01f267229fa7f091cfb1bca09b9f079749c4fe4b",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/honey-beats-number-neighbours-p3-v3.jpg": "66551c0c7928cf9793efdbe798e4f5c469a9ac6a029b21577f335cdc85abaf8d",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/honey-beats-number-neighbours-p4-v3.jpg": "bef653d8ed09021b9cdd27f62506422f21db5672d86c1562572ae04ddf3ba1db",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/honey-beats-number-neighbours-p5-v3.jpg": "099e580365fe7ac777f024138839a62e979f12dbc70ed4f0f4da16ba5d02281e",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/honey-beats-number-neighbours-p6-v3.jpg": "72cde029c4919be9bfbc4911c6ae0f07d4e3e10896b2046051ff5db1cb0cfadb"
+        "snackpack-2-123s-counting/assets/story-page-art/honey-beats-number-neighbours-p1-v3.jpg": "81ce1bf1e08a60602a652d22b561da14a700ff1ce1b1ec0104de1544a47ae466",
+        "snackpack-2-123s-counting/assets/story-page-art/honey-beats-number-neighbours-p2-v3.jpg": "2d7c851b7e3a1b7df4b0d3bb01f267229fa7f091cfb1bca09b9f079749c4fe4b",
+        "snackpack-2-123s-counting/assets/story-page-art/honey-beats-number-neighbours-p3-v3.jpg": "66551c0c7928cf9793efdbe798e4f5c469a9ac6a029b21577f335cdc85abaf8d",
+        "snackpack-2-123s-counting/assets/story-page-art/honey-beats-number-neighbours-p4-v3.jpg": "bef653d8ed09021b9cdd27f62506422f21db5672d86c1562572ae04ddf3ba1db",
+        "snackpack-2-123s-counting/assets/story-page-art/honey-beats-number-neighbours-p5-v3.jpg": "099e580365fe7ac777f024138839a62e979f12dbc70ed4f0f4da16ba5d02281e",
+        "snackpack-2-123s-counting/assets/story-page-art/honey-beats-number-neighbours-p6-v3.jpg": "72cde029c4919be9bfbc4911c6ae0f07d4e3e10896b2046051ff5db1cb0cfadb"
       },
       "text": [
         "Honey-Beats reaches the concert meadow just as the musicians arrive, but the numbered stepping stones are scattered through the tall grass. Flutter-Butter lifts the first three back into a row while Honey taps a rhythm that should lead them to the next neighbour.",
@@ -863,10 +907,10 @@
       "slug": "hop-tarts-stepping-stone-switch",
       "source_id": "hop-tart-stepping-stone-switch",
       "source_art": {
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/stepping-1.webp": "1c27e19ccc7358b91d86251da29ec41f4126ac0cf306024bd7cdbdd77126c3aa",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/stepping-2.webp": "9d2af8f17b44d7df04fdfe72bf1b85d9d38cae3f6d45eb308ab51ae8f49e4923",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/stepping-3.webp": "2f9eec2496326f5dc5b10cc2fe7d1f3378946605163eaa08350e4248b305a8c1",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/stepping-4.webp": "21cc1e4db281741ea104197e6094269f7cff6c4c6bee848a8649dd97bf7ffa08"
+        "snackpack-4-math-arithmetic/assets/book-page-images/stepping-1.webp": "1c27e19ccc7358b91d86251da29ec41f4126ac0cf306024bd7cdbdd77126c3aa",
+        "snackpack-4-math-arithmetic/assets/book-page-images/stepping-2.webp": "9d2af8f17b44d7df04fdfe72bf1b85d9d38cae3f6d45eb308ab51ae8f49e4923",
+        "snackpack-4-math-arithmetic/assets/book-page-images/stepping-3.webp": "2f9eec2496326f5dc5b10cc2fe7d1f3378946605163eaa08350e4248b305a8c1",
+        "snackpack-4-math-arithmetic/assets/book-page-images/stepping-4.webp": "21cc1e4db281741ea104197e6094269f7cff6c4c6bee848a8649dd97bf7ffa08"
       },
       "text": [
         "Hop-Tart reaches the pond as the first raindrops dimple the water. A fast current has spun every stepping stone sideways. Hop could leap across alone, but Centi-Peed needs a path with small, even gaps. Together they find three rows with four safe stones in each.",
@@ -898,10 +942,10 @@
       "slug": "lionnaise-and-the-dragon",
       "source_id": "lionnaise-dragon-quest",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/lionnaise-dragon-quest-p1.jpg": "aa7f30d0ab5abd10b7bf024395f8ca2fe2c702af8566d7b920080ce3bd062377",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/lionnaise-dragon-quest-p2.jpg": "093920c9b357fcda3c389d96ea4808e19323d47af246bc0a69d3aafdcb9fc6d2",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/lionnaise-dragon-quest-p3.jpg": "b269804ea5183ad078831169239adb3d5f6a7cde64476513b7c0c9741a7eaac3",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/lionnaise-dragon-quest-p4.jpg": "b6a99b1772c3744aed412d2b10322d4125ae4759c8a957678a814d5b9c240368"
+        "snackpack-3-spelling-sentences/assets/book-page-art/lionnaise-dragon-quest-p1.jpg": "aa7f30d0ab5abd10b7bf024395f8ca2fe2c702af8566d7b920080ce3bd062377",
+        "snackpack-3-spelling-sentences/assets/book-page-art/lionnaise-dragon-quest-p2.jpg": "093920c9b357fcda3c389d96ea4808e19323d47af246bc0a69d3aafdcb9fc6d2",
+        "snackpack-3-spelling-sentences/assets/book-page-art/lionnaise-dragon-quest-p3.jpg": "b269804ea5183ad078831169239adb3d5f6a7cde64476513b7c0c9741a7eaac3",
+        "snackpack-3-spelling-sentences/assets/book-page-art/lionnaise-dragon-quest-p4.jpg": "b6a99b1772c3744aed412d2b10322d4125ae4759c8a957678a814d5b9c240368"
       },
       "text": [
         "Lionnaise carries a golden invitation through the enchanted forest. Beyond the bridge, the feast is waiting. She practises a mighty roar, but it comes out as a squeak.",
@@ -943,10 +987,10 @@
       "slug": "luckybugs-art-gallery",
       "source_id": "luckybug-art-gallery",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/luckybug-art-gallery-p1.jpg": "6bd4dbb081ec76b9c7ab9effe03b42ad5007afb80ea9ed013a3b3a2e8c75789e",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/luckybug-art-gallery-p2.jpg": "45a46890aec0912b03a67e8f8679bff5adb94b303dea8697b3fe74e1c622b22a",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/luckybug-art-gallery-p3.jpg": "5afeb6418fae6de5c5260699bf54fff0234c91798955c359e6b63b1487f610f0",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/luckybug-art-gallery-p4.jpg": "793920d648d4fbe404287d9a01fd95697065ce5abae08c0699f4000480773b11"
+        "snackpack-3-spelling-sentences/assets/book-page-art/luckybug-art-gallery-p1.jpg": "6bd4dbb081ec76b9c7ab9effe03b42ad5007afb80ea9ed013a3b3a2e8c75789e",
+        "snackpack-3-spelling-sentences/assets/book-page-art/luckybug-art-gallery-p2.jpg": "45a46890aec0912b03a67e8f8679bff5adb94b303dea8697b3fe74e1c622b22a",
+        "snackpack-3-spelling-sentences/assets/book-page-art/luckybug-art-gallery-p3.jpg": "5afeb6418fae6de5c5260699bf54fff0234c91798955c359e6b63b1487f610f0",
+        "snackpack-3-spelling-sentences/assets/book-page-art/luckybug-art-gallery-p4.jpg": "793920d648d4fbe404287d9a01fd95697065ce5abae08c0699f4000480773b11"
       },
       "text": [
         "Luckybug mixes a sunset orange on her palette for the gallery's empty centre wall. She wants her first large painting to be perfect.",
@@ -987,13 +1031,13 @@
       "slug": "luckybugs-market-morning",
       "source_id": "luckybug-market-morning",
       "source_art": {
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/market-1.webp": "5f0f583c3de02452d6e598f019f4d694c19585d5a0fb8a5c4d2d5ac4a0513b5f",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/market-2.webp": "dcb2b7640ccbecc11010ae3f02efd31af9a33d7726e9cd326c75d30b47faaba0",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/market-3.webp": "e3544fe7b0a6942f19ff0060d6ba9fb0d81f5d97408ad55b882b593b70cf9ff4",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/market-4.webp": "2c046bd988827a9296424e2dd8f41ee7b089f5395936b30272631ddb9fd123d8",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/market-5.webp": "89bb31ccc501b0f3c9379d4ebaf998c8fea9e83be75b32469223a4d8784d4a8d",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/market-6.webp": "51f29afadf96ac6b0994c70ddc09959737107d0eed9191951913e2595cfe16fe",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/market-7.webp": "14f20e73a8c934541abd5d4adb78b577229b75d4bc6121b5c8ee05e2842c0ac5"
+        "snackpack-4-math-arithmetic/assets/book-page-images/market-1.webp": "5f0f583c3de02452d6e598f019f4d694c19585d5a0fb8a5c4d2d5ac4a0513b5f",
+        "snackpack-4-math-arithmetic/assets/book-page-images/market-2.webp": "dcb2b7640ccbecc11010ae3f02efd31af9a33d7726e9cd326c75d30b47faaba0",
+        "snackpack-4-math-arithmetic/assets/book-page-images/market-3.webp": "e3544fe7b0a6942f19ff0060d6ba9fb0d81f5d97408ad55b882b593b70cf9ff4",
+        "snackpack-4-math-arithmetic/assets/book-page-images/market-4.webp": "2c046bd988827a9296424e2dd8f41ee7b089f5395936b30272631ddb9fd123d8",
+        "snackpack-4-math-arithmetic/assets/book-page-images/market-5.webp": "89bb31ccc501b0f3c9379d4ebaf998c8fea9e83be75b32469223a4d8784d4a8d",
+        "snackpack-4-math-arithmetic/assets/book-page-images/market-6.webp": "51f29afadf96ac6b0994c70ddc09959737107d0eed9191951913e2595cfe16fe",
+        "snackpack-4-math-arithmetic/assets/book-page-images/market-7.webp": "14f20e73a8c934541abd5d4adb78b577229b75d4bc6121b5c8ee05e2842c0ac5"
       },
       "text": [
         "Luckybug reaches Hen-Berry's stall just as a basket tips. Seven berries stop by the flowers and five roll beneath the table.",
@@ -1037,12 +1081,12 @@
       "slug": "luckybugs-pairing-parade",
       "source_id": "luckybug-pairing-parade",
       "source_art": {
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/luckybug-pairing-parade-p1-v3.jpg": "3a1378bf9c53a2278ce9c83460a2228f20221e97cb2a95d221833f27a432904a",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/luckybug-pairing-parade-1-landscape-v2.jpg": "f9568b7c03e0e7a95ec1e29a4eec2971ae631739dc5604498dbe3b77afd00946",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/luckybug-pairing-parade-p3-v3.jpg": "6a2d6a745947e4d73c9b7dfa021a55a7772a14f26047133a92c6d7b5769819ef",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/luckybug-pairing-parade-3-landscape-v2.jpg": "6d6e30893601d8b3d1eefd5a16a21b5404f8c3985177aaee1d96bb351673e6b3",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/luckybug-pairing-parade-4-landscape-v2.jpg": "d945678ea1af46a6a1753f6104fca75c77358e2e1a8d409e0b3b4a9e324feab1",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/luckybug-pairing-parade-5-landscape-v2.jpg": "96e78b5b6dbb7652c8efd6315ffdbb4c7af121ddb31263b3a53c127deb26d77d"
+        "snackpack-2-123s-counting/assets/story-page-art/luckybug-pairing-parade-p1-v3.jpg": "3a1378bf9c53a2278ce9c83460a2228f20221e97cb2a95d221833f27a432904a",
+        "snackpack-2-123s-counting/assets/story-page-art/luckybug-pairing-parade-1-landscape-v2.jpg": "f9568b7c03e0e7a95ec1e29a4eec2971ae631739dc5604498dbe3b77afd00946",
+        "snackpack-2-123s-counting/assets/story-page-art/luckybug-pairing-parade-p3-v3.jpg": "6a2d6a745947e4d73c9b7dfa021a55a7772a14f26047133a92c6d7b5769819ef",
+        "snackpack-2-123s-counting/assets/story-page-art/luckybug-pairing-parade-3-landscape-v2.jpg": "6d6e30893601d8b3d1eefd5a16a21b5404f8c3985177aaee1d96bb351673e6b3",
+        "snackpack-2-123s-counting/assets/story-page-art/luckybug-pairing-parade-4-landscape-v2.jpg": "d945678ea1af46a6a1753f6104fca75c77358e2e1a8d409e0b3b4a9e324feab1",
+        "snackpack-2-123s-counting/assets/story-page-art/luckybug-pairing-parade-5-landscape-v2.jpg": "96e78b5b6dbb7652c8efd6315ffdbb4c7af121ddb31263b3a53c127deb26d77d"
       },
       "text": [
         "Luckybug clips a small set of bright flags together for the garden parade. Flutter-Butter checks whether every flag has a partner. They decide every parade group should try marching in pairs.",
@@ -1097,10 +1141,10 @@
       "slug": "meow-inaras-moonlight-story",
       "source_id": "meow-inara-moonlight",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/meow-inara-moonlight-p1.jpg": "20ec0d90149ef1742f85e5c26aa942253597e5bba6d3cec3c3c9b99a601525fe",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/meow-inara-moonlight-p2.jpg": "c3f83c1ebe53b25f948a2c3828be8e8c8b79994a98baeaf634fe3185e13517fd",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/meow-inara-moonlight-p3.jpg": "729981a695dc507a672991ecf5cdf322f11373254d710f6718f17800bc4d2c1d",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/meow-inara-moonlight-p4.jpg": "7f68b155b3ae882a921e1f8dd5deaed759062824bf0a47a13eaeef2138c27fc1"
+        "snackpack-3-spelling-sentences/assets/book-page-art/meow-inara-moonlight-p1.jpg": "20ec0d90149ef1742f85e5c26aa942253597e5bba6d3cec3c3c9b99a601525fe",
+        "snackpack-3-spelling-sentences/assets/book-page-art/meow-inara-moonlight-p2.jpg": "c3f83c1ebe53b25f948a2c3828be8e8c8b79994a98baeaf634fe3185e13517fd",
+        "snackpack-3-spelling-sentences/assets/book-page-art/meow-inara-moonlight-p3.jpg": "729981a695dc507a672991ecf5cdf322f11373254d710f6718f17800bc4d2c1d",
+        "snackpack-3-spelling-sentences/assets/book-page-art/meow-inara-moonlight-p4.jpg": "7f68b155b3ae882a921e1f8dd5deaed759062824bf0a47a13eaeef2138c27fc1"
       },
       "text": [
         "Meow-inara curls beside the moonlit window, but every tiny sound makes her ears spring up. Tomorrow's concert keeps marching through her thoughts.",
@@ -1142,11 +1186,11 @@
       "slug": "meow-inaras-vowel-team-duet",
       "source_id": "reading-trail-meow-inara-vowel-team-duet",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-meow-inara-vowel-team-duet-p1.jpg": "a1d6ac37e50b6ffbb917c5df873d5542f1b100e4f874270b18e79d70b984b1d4",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-meow-inara-vowel-team-duet-p2.jpg": "d0b27ea2a65483b1aea182722cd40e1b61a3edc4fadc9b38a68bff5d1b503236",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-meow-inara-vowel-team-duet-p3.jpg": "d060f37bd49a89ad64c31de12b0adab941b629b006e2450ab50b716781c6fb3a",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-meow-inara-vowel-team-duet-p4.jpg": "5d81e82f11b195525b55cc0cf49aab8d723bcde5fb0870746dfc3ad2a08ff16c",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-meow-inara-vowel-team-duet-p5.jpg": "12bae94bea5ff4c89b9f00277c8e60ff62936a716b65415d3c6657d527e8b9b0"
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-meow-inara-vowel-team-duet-p1.jpg": "a1d6ac37e50b6ffbb917c5df873d5542f1b100e4f874270b18e79d70b984b1d4",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-meow-inara-vowel-team-duet-p2.jpg": "d0b27ea2a65483b1aea182722cd40e1b61a3edc4fadc9b38a68bff5d1b503236",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-meow-inara-vowel-team-duet-p3.jpg": "d060f37bd49a89ad64c31de12b0adab941b629b006e2450ab50b716781c6fb3a",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-meow-inara-vowel-team-duet-p4.jpg": "5d81e82f11b195525b55cc0cf49aab8d723bcde5fb0870746dfc3ad2a08ff16c",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-meow-inara-vowel-team-duet-p5.jpg": "12bae94bea5ff4c89b9f00277c8e60ff62936a716b65415d3c6657d527e8b9b0"
       },
       "text": [
         "Meow-inara waits by the green gate for a music sheet in the mail. Rain dots her coat.",
@@ -1192,13 +1236,13 @@
       "slug": "nan-and-pip",
       "source_id": "nan-and-pip",
       "source_art": {
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-page-1.webp": "b6d57fe4ca0bd5284b81a5fc898fe15e1934b9de5495934f0863c4f8fe4635fd",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-page-2.webp": "455624fee0cf78df3d78b8251efac391361f9ff596a9b02fd07d5b86b8d116d4",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-page-3.webp": "7bf6da112971c0d0730773ecb47ebb28c23c6fca7fed97880d2d4da4fc8bea02",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-page-4.webp": "6a54f401b6f20a8b0aa4b6e3919eed0b5dae4f4f2612576535acd52d1b47bd1e",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-page-5.webp": "d93d6fa97f2ed437bd3969fd31c3d7b4e5625469fdceb3dffee322e1ee485c8b",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-page-6.webp": "66bbb520c2a5dbccb934f38c01dd707e581b702a0d0c7eb1ba277f07d9ff74ed",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-cover.webp": "756bb4f42278840af5e713d778c79379dfd587df6a94070c02a619f3c1223e59"
+        "snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-page-1.webp": "b6d57fe4ca0bd5284b81a5fc898fe15e1934b9de5495934f0863c4f8fe4635fd",
+        "snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-page-2.webp": "455624fee0cf78df3d78b8251efac391361f9ff596a9b02fd07d5b86b8d116d4",
+        "snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-page-3.webp": "7bf6da112971c0d0730773ecb47ebb28c23c6fca7fed97880d2d4da4fc8bea02",
+        "snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-page-4.webp": "6a54f401b6f20a8b0aa4b6e3919eed0b5dae4f4f2612576535acd52d1b47bd1e",
+        "snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-page-5.webp": "d93d6fa97f2ed437bd3969fd31c3d7b4e5625469fdceb3dffee322e1ee485c8b",
+        "snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-page-6.webp": "66bbb520c2a5dbccb934f38c01dd707e581b702a0d0c7eb1ba277f07d9ff74ed",
+        "snackpack-1-abcs-alphabet/assets/decodable/nan-and-pip-cover.webp": "756bb4f42278840af5e713d778c79379dfd587df6a94070c02a619f3c1223e59"
       },
       "text": [
         "Nan and Pip sit.",
@@ -1225,10 +1269,10 @@
       "slug": "nutmegs-four-seasons",
       "source_id": "nutmeg-four-seasons",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-four-seasons-p1.jpg": "852264183b084d4ca24c9be05ef58f38f9268331edd472c0f62f31b75bbd6da3",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-four-seasons-p2.jpg": "ea113d186bc4b616f82102d92285b552ef7af7a206ef6ede17887961507ff46e",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-four-seasons-p3.jpg": "17aabbb40dbac6b547e91a5c7479c213844658bd28bd71d57555cdadc4ee592d",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-four-seasons-p4.jpg": "5773682f2e11ff7ded1ad2141ec16c5cb1e86b782ede84f9dad5b30407e379a5"
+        "snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-four-seasons-p1.jpg": "852264183b084d4ca24c9be05ef58f38f9268331edd472c0f62f31b75bbd6da3",
+        "snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-four-seasons-p2.jpg": "ea113d186bc4b616f82102d92285b552ef7af7a206ef6ede17887961507ff46e",
+        "snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-four-seasons-p3.jpg": "17aabbb40dbac6b547e91a5c7479c213844658bd28bd71d57555cdadc4ee592d",
+        "snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-four-seasons-p4.jpg": "5773682f2e11ff7ded1ad2141ec16c5cb1e86b782ede84f9dad5b30407e379a5"
       },
       "text": [
         "In spring, Nutmeg plants one acorn beneath the old oak blossom. She promises the bare patch that something small can become something strong.",
@@ -1269,10 +1313,10 @@
       "slug": "nutmegs-garden-morning",
       "source_id": "nutmeg-garden-morning",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-garden-morning-p1.jpg": "a214de153128fcba02edc3cca17db798d63e7669215e79a3e06a4222c19f1eb9",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-garden-morning-p2.jpg": "42667b31232518d387dade9893b0f95187d977171f61ffc688844f4e5208657b",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-garden-morning-p3.jpg": "904323a357b46fe9aae40df7b02af5d342e6b317e7aef1d7e8317d25aac3e301",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-garden-morning-p4.jpg": "30dbd2bc086d57175e1538101ccaa9f525526438edf6782dc42f73c5c79d838e"
+        "snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-garden-morning-p1.jpg": "a214de153128fcba02edc3cca17db798d63e7669215e79a3e06a4222c19f1eb9",
+        "snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-garden-morning-p2.jpg": "42667b31232518d387dade9893b0f95187d977171f61ffc688844f4e5208657b",
+        "snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-garden-morning-p3.jpg": "904323a357b46fe9aae40df7b02af5d342e6b317e7aef1d7e8317d25aac3e301",
+        "snackpack-3-spelling-sentences/assets/book-page-art/nutmeg-garden-morning-p4.jpg": "30dbd2bc086d57175e1538101ccaa9f525526438edf6782dc42f73c5c79d838e"
       },
       "text": [
         "Nutmeg presses a seed into the garden bed. She checks before lunch. Nothing. She checks after lunch. Still nothing. Perhaps she should dig it up and see what is wrong.",
@@ -1314,10 +1358,10 @@
       "slug": "octo-pops-coral-reef",
       "source_id": "octo-pop-coral-reef",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-coral-reef-p1.jpg": "00a22375d8db77d7c92efef9442792d557706049bff8467a93397918054ae6f6",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-coral-reef-p2.jpg": "babb840dad6424077dbcef193c9c00a6fcf925e872651fbc44558172ec2bc12e",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-coral-reef-p3.jpg": "79b085e4cc5ccf04abec1e52211b14246f0f23800d82eff98b4add7dd0849b76",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-coral-reef-p4.jpg": "26fd3fbc1c2a705b9bb7baa80ca3acb0ef2aa67212806a2e54462d8e04b6ad46"
+        "snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-coral-reef-p1.jpg": "00a22375d8db77d7c92efef9442792d557706049bff8467a93397918054ae6f6",
+        "snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-coral-reef-p2.jpg": "babb840dad6424077dbcef193c9c00a6fcf925e872651fbc44558172ec2bc12e",
+        "snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-coral-reef-p3.jpg": "79b085e4cc5ccf04abec1e52211b14246f0f23800d82eff98b4add7dd0849b76",
+        "snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-coral-reef-p4.jpg": "26fd3fbc1c2a705b9bb7baa80ca3acb0ef2aa67212806a2e54462d8e04b6ad46"
       },
       "text": [
         "A storm has wedged loose coral across the reef nursery. Octo-Pop promises the tiny fish he will clear a safe path before the strong current returns.",
@@ -1358,10 +1402,10 @@
       "slug": "octo-pops-ocean-adventure",
       "source_id": "octo-pop-ocean-adventure",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-ocean-adventure-p1.jpg": "cd05a4b8e790732930e4bedca754e7cb1ede422c4c8edd27b98a80e911ee5cb1",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-ocean-adventure-p2.jpg": "40882819ffe4919078287987ff664e735d63b7466cb11e51eee534c9954a4be0",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-ocean-adventure-p3.jpg": "8031ac62c25222db7900f96c0c85660c9638fbb90ed3921a77e2eaced08e0468",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-ocean-adventure-p4.jpg": "bc3bb006e073d717ae7f2b7dcd0496b5fdc91f03448d4c08db49ff191d6ec323"
+        "snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-ocean-adventure-p1.jpg": "cd05a4b8e790732930e4bedca754e7cb1ede422c4c8edd27b98a80e911ee5cb1",
+        "snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-ocean-adventure-p2.jpg": "40882819ffe4919078287987ff664e735d63b7466cb11e51eee534c9954a4be0",
+        "snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-ocean-adventure-p3.jpg": "8031ac62c25222db7900f96c0c85660c9638fbb90ed3921a77e2eaced08e0468",
+        "snackpack-3-spelling-sentences/assets/book-page-art/octo-pop-ocean-adventure-p4.jpg": "bc3bb006e073d717ae7f2b7dcd0496b5fdc91f03448d4c08db49ff191d6ec323"
       },
       "text": [
         "Octo-Pop plans a coral picnic, but Cereal-Swimmer hovers behind a rock. He wants to join in and is too shy to ask.",
@@ -1403,32 +1447,32 @@
       "slug": "panda-cake-discovers-her-abcs",
       "source_id": "panda-cake-alphabet",
       "source_art": {
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-a-acorn.webp": "aff7aff1ca5e169cb219ffb460c59647505cab4c21221d0f84f1787a147a3614",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-b-v3.webp": "9664420333d92eab467ecaeb5d83ec11ea11b7f740cf7b027c8508fcaeb3dd49",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-c-v3.webp": "35bfbf07356206ee3b1d330fffe100b449d8d7e03c84cc722c03efebd0bc67e3",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-d-v3.webp": "26b8cf82726cb6c196e7f42cfc46f95c7911348daaf9d9412b4c5d92b529f2fd",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-e-v3.webp": "f4d26ae4e19100730eee6b18174d20c16279bb1e591bd6f94b61ca8439d6483e",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-f-flower.webp": "8e83dc24cad271ad8c77b3dccb240271bf158675e6a1e639a33e257963a720b2",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-g-v3.webp": "3a552c042c75326357b4cd5145bc4e1f216cbea389059b56321a9928384802b5",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-h-v3.webp": "524ba55962cab3ea27eab22f00aaf5262a10c8420f36a71dd8e97568948e8624",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-i-v3.webp": "447ee23e2a1af083b68c338323c8734ad4956a2bd1f9688f06007de44c4a7517",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-j-v3.webp": "18812e0023f24c2b01e21375146eae9c1334ab7424efc4c148086a2a813f4db6",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-k-v3.webp": "e60d0fd5fcfb67fbc06e3d7da21d0f7e94b54d419db95ff6744815d8007f0da7",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-l-v3.webp": "a26cd4f7dd071f859bfff5b97370feabae6258d125797758e34784dd8793ac94",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-m-milk.webp": "44bb3b64e4189f80aeaec9cc152f8859e6761ad4d4b273842df09bc63720fae2",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-n-v3.webp": "d74c77cb4c228f31b1003bbd0ccc95e114a8bcc2f77a88f121b2043e86b1b7ad",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-o-v3.webp": "3bfc21e5f8d08fb7d6da3f09e3df634908eeeddaca2472b04013e019a2629a47",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-p-v3.webp": "ffe8cfab893d1eec103420e2bc20c38e20c10a1a2cda719f50b86f198d84453d",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-q-v3.webp": "1b184fb9c831b3a32f6651205a4e783441736bcb07c078c8d004a3492f3ae086",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-r-v3.webp": "08c63e0b2637a9dfed7a34649d36553d5bfd901aa5a9c33e78cdcfc9e7ee1429",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-s-v3.webp": "d881cf32a78c37343d99e3bf89a71411bccd800ea56fad7f553cd03cfe2b1980",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-t-v3.webp": "f9651204351b73a27dcc6173e2406ef2f455097cb1b357ef218c6c321307c090",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-u-umbrella.webp": "3a76476709f061fe3dbdca04545158ad3f1b2d2f5da6b2a7f7a0ad0c5f36fa1b",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-v-v3.webp": "c8c0eee5536e0edc511e7f2300b69449ff200a447ae0204a2bc04587dd37a44e",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-w-v3.webp": "83517647944d43a543e5b1449a4e167a6acc8e34773abcda3718010de2a130cd",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-x-v3.webp": "277485f56d453921597eb4d1ba6ab51956c73f41a580077870dd3b73eecb3400",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-y-v3.webp": "3df0072f3594b7cda65131431b1c6bed636ece3c7ecb192153fd5432053061dd",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-z-zucchini.webp": "3f8671d4ae71e7260223fa72c96e0365527b46ab54bd59d435648d8ebafbfd7a"
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-a-acorn.webp": "aff7aff1ca5e169cb219ffb460c59647505cab4c21221d0f84f1787a147a3614",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-b-v3.webp": "9664420333d92eab467ecaeb5d83ec11ea11b7f740cf7b027c8508fcaeb3dd49",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-c-v3.webp": "35bfbf07356206ee3b1d330fffe100b449d8d7e03c84cc722c03efebd0bc67e3",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-d-v3.webp": "26b8cf82726cb6c196e7f42cfc46f95c7911348daaf9d9412b4c5d92b529f2fd",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-e-v3.webp": "f4d26ae4e19100730eee6b18174d20c16279bb1e591bd6f94b61ca8439d6483e",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-f-flower.webp": "8e83dc24cad271ad8c77b3dccb240271bf158675e6a1e639a33e257963a720b2",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-g-v3.webp": "3a552c042c75326357b4cd5145bc4e1f216cbea389059b56321a9928384802b5",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-h-v3.webp": "524ba55962cab3ea27eab22f00aaf5262a10c8420f36a71dd8e97568948e8624",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-i-v3.webp": "447ee23e2a1af083b68c338323c8734ad4956a2bd1f9688f06007de44c4a7517",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-j-v3.webp": "18812e0023f24c2b01e21375146eae9c1334ab7424efc4c148086a2a813f4db6",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-k-v3.webp": "e60d0fd5fcfb67fbc06e3d7da21d0f7e94b54d419db95ff6744815d8007f0da7",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-l-v3.webp": "a26cd4f7dd071f859bfff5b97370feabae6258d125797758e34784dd8793ac94",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-m-milk.webp": "44bb3b64e4189f80aeaec9cc152f8859e6761ad4d4b273842df09bc63720fae2",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-n-v3.webp": "d74c77cb4c228f31b1003bbd0ccc95e114a8bcc2f77a88f121b2043e86b1b7ad",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-o-v3.webp": "3bfc21e5f8d08fb7d6da3f09e3df634908eeeddaca2472b04013e019a2629a47",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-p-v3.webp": "ffe8cfab893d1eec103420e2bc20c38e20c10a1a2cda719f50b86f198d84453d",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-q-v3.webp": "1b184fb9c831b3a32f6651205a4e783441736bcb07c078c8d004a3492f3ae086",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-r-v3.webp": "08c63e0b2637a9dfed7a34649d36553d5bfd901aa5a9c33e78cdcfc9e7ee1429",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-s-v3.webp": "d881cf32a78c37343d99e3bf89a71411bccd800ea56fad7f553cd03cfe2b1980",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-t-v3.webp": "f9651204351b73a27dcc6173e2406ef2f455097cb1b357ef218c6c321307c090",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-u-umbrella.webp": "3a76476709f061fe3dbdca04545158ad3f1b2d2f5da6b2a7f7a0ad0c5f36fa1b",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-v-v3.webp": "c8c0eee5536e0edc511e7f2300b69449ff200a447ae0204a2bc04587dd37a44e",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-w-v3.webp": "83517647944d43a543e5b1449a4e167a6acc8e34773abcda3718010de2a130cd",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-x-v3.webp": "277485f56d453921597eb4d1ba6ab51956c73f41a580077870dd3b73eecb3400",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-alphabet-y-v3.webp": "3df0072f3594b7cda65131431b1c6bed636ece3c7ecb192153fd5432053061dd",
+        "snackpack-1-abcs-alphabet/assets/book-pages/panda-cake-z-zucchini.webp": "3f8671d4ae71e7260223fa72c96e0365527b46ab54bd59d435648d8ebafbfd7a"
       },
       "text": [
         "A is for Acorn - Panda-Cake finds one by the picnic rug.",
@@ -1495,12 +1539,12 @@
       "slug": "panda-cakes-market-basket",
       "source_id": "panda-cake-market-basket",
       "source_art": {
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/panda-cake-market-basket-three-apples-landscape-v2.jpg": "d637819e417d92c1ab8228e46a96ebf20f6ba38cafd8ac3ee38fec80124e9702",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/panda-cake-market-basket-p2-v3.jpg": "6bc69aa08d395a478bc14e05b5a0d658fa83d0837cb6602fed32a2dccc9d028b",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/panda-cake-market-basket-3-landscape-v2.jpg": "7a2cb36a3c8a20af4e596b0f6b77a02814435624a28416c1346685aa40f99b57",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/panda-cake-market-basket-p4-v3.jpg": "5a32c6c156d336d93571e27319f587e04639372c368eb36410eacd4b3ba31f7b",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/panda-cake-market-basket-p5-v3.jpg": "38c940b83ae2df00bcd8d5a9e91099b32d2e28388de48b1b3487c8ee12d09c47",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/panda-cake-market-basket-p6-v3.jpg": "506379d6d5c2ce555756597bd0d5748dd9405d2ae0196ca64666cb1bccf778b5"
+        "snackpack-2-123s-counting/assets/story-page-art/panda-cake-market-basket-three-apples-landscape-v2.jpg": "d637819e417d92c1ab8228e46a96ebf20f6ba38cafd8ac3ee38fec80124e9702",
+        "snackpack-2-123s-counting/assets/story-page-art/panda-cake-market-basket-p2-v3.jpg": "6bc69aa08d395a478bc14e05b5a0d658fa83d0837cb6602fed32a2dccc9d028b",
+        "snackpack-2-123s-counting/assets/story-page-art/panda-cake-market-basket-3-landscape-v2.jpg": "7a2cb36a3c8a20af4e596b0f6b77a02814435624a28416c1346685aa40f99b57",
+        "snackpack-2-123s-counting/assets/story-page-art/panda-cake-market-basket-p4-v3.jpg": "5a32c6c156d336d93571e27319f587e04639372c368eb36410eacd4b3ba31f7b",
+        "snackpack-2-123s-counting/assets/story-page-art/panda-cake-market-basket-p5-v3.jpg": "38c940b83ae2df00bcd8d5a9e91099b32d2e28388de48b1b3487c8ee12d09c47",
+        "snackpack-2-123s-counting/assets/story-page-art/panda-cake-market-basket-p6-v3.jpg": "506379d6d5c2ce555756597bd0d5748dd9405d2ae0196ca64666cb1bccf778b5"
       },
       "text": [
         "Panda-Cake opens the bakery pantry and finds the picnic list tucked inside an empty basket. The first picture shows apples. Corgi-on-the-Cob rolls them gently across the counter while Panda-Cake catches each one before it reaches the flour bin.",
@@ -1558,13 +1602,13 @@
       "slug": "pip-sits",
       "source_id": "pip-sits",
       "source_art": {
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/pip-sits-page-1.webp": "2b6b68e596d448a5ed057f80051490be4b10138f961375d02cfe29fc07f0643e",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/pip-sits-page-2.webp": "8c144213546f0dac9131e3c26f79da514a4e80be7c1d36013a74ec7e639e7250",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/pip-sits-page-3.webp": "2fa2b9311372aaef74a22986844c991fda2765809ece515e67950adc77ec82bc",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/pip-sits-page-4.webp": "6c22745502668118d530560c3546975cec87bc8aba02bf9d18d456259d18bc68",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/pip-sits-page-5.webp": "7553f44e54c9c93b140467ac738098659c0ec665292665971689f9d5075c73e9",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/pip-sits-page-6.webp": "085a64cfa7d1071ca808214e9cedf6cb2d3f5cca0d1de45cef6574a4c7834768",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/pip-sits-cover.webp": "2e2e313df0d6cd35317a585f4d7fb83cf68bb5724cd8e945c70521afc8a6b487"
+        "snackpack-1-abcs-alphabet/assets/decodable/pip-sits-page-1.webp": "2b6b68e596d448a5ed057f80051490be4b10138f961375d02cfe29fc07f0643e",
+        "snackpack-1-abcs-alphabet/assets/decodable/pip-sits-page-2.webp": "8c144213546f0dac9131e3c26f79da514a4e80be7c1d36013a74ec7e639e7250",
+        "snackpack-1-abcs-alphabet/assets/decodable/pip-sits-page-3.webp": "2fa2b9311372aaef74a22986844c991fda2765809ece515e67950adc77ec82bc",
+        "snackpack-1-abcs-alphabet/assets/decodable/pip-sits-page-4.webp": "6c22745502668118d530560c3546975cec87bc8aba02bf9d18d456259d18bc68",
+        "snackpack-1-abcs-alphabet/assets/decodable/pip-sits-page-5.webp": "7553f44e54c9c93b140467ac738098659c0ec665292665971689f9d5075c73e9",
+        "snackpack-1-abcs-alphabet/assets/decodable/pip-sits-page-6.webp": "085a64cfa7d1071ca808214e9cedf6cb2d3f5cca0d1de45cef6574a4c7834768",
+        "snackpack-1-abcs-alphabet/assets/decodable/pip-sits-cover.webp": "2e2e313df0d6cd35317a585f4d7fb83cf68bb5724cd8e945c70521afc8a6b487"
       },
       "text": [
         "Pip sits.",
@@ -1591,10 +1635,10 @@
       "slug": "pita-pans-mountain-climb",
       "source_id": "pita-pan-mountain-climb",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/pita-pan-mountain-climb-p1.jpg": "224118517833c33e8c4012e12581d6706658eeb4edd4f4f55f3e39cabc9c7ce9",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/pita-pan-mountain-climb-p2.jpg": "cb361ad3e08bc93f8864a1e06d9dbcf984f95607cc4c449260f7deddf3891e66",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/pita-pan-mountain-climb-p3.jpg": "603736e29694e43861b12915f2d9111e6ce9ac902eb1b8a2237639942b80652a",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/pita-pan-mountain-climb-p4.jpg": "88a3462b139038e5e55790733fe5118be800e24bfae548c73a9a8e43bba0fc8b"
+        "snackpack-3-spelling-sentences/assets/book-page-art/pita-pan-mountain-climb-p1.jpg": "224118517833c33e8c4012e12581d6706658eeb4edd4f4f55f3e39cabc9c7ce9",
+        "snackpack-3-spelling-sentences/assets/book-page-art/pita-pan-mountain-climb-p2.jpg": "cb361ad3e08bc93f8864a1e06d9dbcf984f95607cc4c449260f7deddf3891e66",
+        "snackpack-3-spelling-sentences/assets/book-page-art/pita-pan-mountain-climb-p3.jpg": "603736e29694e43861b12915f2d9111e6ce9ac902eb1b8a2237639942b80652a",
+        "snackpack-3-spelling-sentences/assets/book-page-art/pita-pan-mountain-climb-p4.jpg": "88a3462b139038e5e55790733fe5118be800e24bfae548c73a9a8e43bba0fc8b"
       },
       "text": [
         "Pita-Pan ties his blue rope and hopes to reach the summit before the evening light turns gold. Today he wants to prove he can climb alone.",
@@ -1635,10 +1679,10 @@
       "slug": "polly-rogers-pirate-cove",
       "source_id": "polly-roger-pirate-cove",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/polly-roger-pirate-cove-p1.jpg": "905f6b59ba4994df701b78cca06b505ca12c76aa2ac301d8cae6f876e48e2155",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/polly-roger-pirate-cove-p2.jpg": "c060fa4d5b97d814dc6705d8f96eeaf9dbfeabfc4922c2fddd4da0fa6ea0f7ec",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/polly-roger-pirate-cove-p3.jpg": "6334967ba810271525ed73257632cc7d3033e025b141b609cd91cd4932e01a9e",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/polly-roger-pirate-cove-p4.jpg": "dfe14dea79ea22b309614bba2ac9310eb6ce76ab1c8a338b7430cec2ac4a4c01"
+        "snackpack-3-spelling-sentences/assets/book-page-art/polly-roger-pirate-cove-p1.jpg": "905f6b59ba4994df701b78cca06b505ca12c76aa2ac301d8cae6f876e48e2155",
+        "snackpack-3-spelling-sentences/assets/book-page-art/polly-roger-pirate-cove-p2.jpg": "c060fa4d5b97d814dc6705d8f96eeaf9dbfeabfc4922c2fddd4da0fa6ea0f7ec",
+        "snackpack-3-spelling-sentences/assets/book-page-art/polly-roger-pirate-cove-p3.jpg": "6334967ba810271525ed73257632cc7d3033e025b141b609cd91cd4932e01a9e",
+        "snackpack-3-spelling-sentences/assets/book-page-art/polly-roger-pirate-cove-p4.jpg": "dfe14dea79ea22b309614bba2ac9310eb6ce76ab1c8a338b7430cec2ac4a4c01"
       },
       "text": [
         "From the mast, Polly Roger spots a lighthouse with a broken lamp. Without it, small boats cannot find the cove after dark.",
@@ -1679,13 +1723,13 @@
       "slug": "pork-ulele-and-the-clockwork-concert",
       "source_id": "pork-ulele-clockwork-concert",
       "source_art": {
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/clock-1.webp": "a49cb8bef7e253922da2c24abfcbf96c7484d0c0f48454c9a86e01d7be67a52b",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/clock-2.webp": "aba37016ed159e1448307ffb900c30e82c9513de252488221a8a95d7af55974b",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/clock-3.webp": "9bba4a19e53cb13ee4a9107c21ff62608ec1a0b1593f4ef35ff4ceb481a2790f",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/clock-4.webp": "cc514d2b46778c6a4b60221ed52b7392ef6043a41ca3b9500bf8dcafa6077fe1",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/clock-5.webp": "c276c64ed4ebc0a922d0b9d5e083c0bed73d1455d3b893f55d2d586270968083",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/clock-6.webp": "f8ada2dd6767fbe0df42fe772a2ab3b77bad6122e79825a0ea261906a70baefe",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/clock-7.webp": "fc14faa4b8a33ce3868b8356ceebab0c872f4816a0a70c3a651a41b2cd13669b"
+        "snackpack-4-math-arithmetic/assets/book-page-images/clock-1.webp": "a49cb8bef7e253922da2c24abfcbf96c7484d0c0f48454c9a86e01d7be67a52b",
+        "snackpack-4-math-arithmetic/assets/book-page-images/clock-2.webp": "aba37016ed159e1448307ffb900c30e82c9513de252488221a8a95d7af55974b",
+        "snackpack-4-math-arithmetic/assets/book-page-images/clock-3.webp": "9bba4a19e53cb13ee4a9107c21ff62608ec1a0b1593f4ef35ff4ceb481a2790f",
+        "snackpack-4-math-arithmetic/assets/book-page-images/clock-4.webp": "cc514d2b46778c6a4b60221ed52b7392ef6043a41ca3b9500bf8dcafa6077fe1",
+        "snackpack-4-math-arithmetic/assets/book-page-images/clock-5.webp": "c276c64ed4ebc0a922d0b9d5e083c0bed73d1455d3b893f55d2d586270968083",
+        "snackpack-4-math-arithmetic/assets/book-page-images/clock-6.webp": "f8ada2dd6767fbe0df42fe772a2ab3b77bad6122e79825a0ea261906a70baefe",
+        "snackpack-4-math-arithmetic/assets/book-page-images/clock-7.webp": "fc14faa4b8a33ce3868b8356ceebab0c872f4816a0a70c3a651a41b2cd13669b"
       },
       "text": [
         "Pork-ulele promises to rehearse at quarter past three. Cluck O'Clock points to the minute hand travelling one quarter around the clock.",
@@ -1726,14 +1770,58 @@
       "pdf_sha256": "ef01fdb80637ba321adaca8f7fdf18c93c3840003c4f184e5f502d4dcc47b10d"
     },
     {
+      "slug": "pork-uleles-picnic-song",
+      "source_id": "pork-ulele-picnic-song",
+      "source_art": {
+        "snackpack-3-spelling-sentences/assets/book-page-art/pork-ulele-picnic-song-p1.jpg": "2a5fcf7720453a458320f8d809d81c3335438fe9b50af2b2083cbea8a758cd07",
+        "snackpack-3-spelling-sentences/assets/book-page-art/pork-ulele-picnic-song-p2.jpg": "f0f501115342d180738034483fc28ab8c356e517a2a79d224209aa83a53a753b",
+        "snackpack-3-spelling-sentences/assets/book-page-art/pork-ulele-picnic-song-p3.jpg": "9137cbec9b170a8bb429affbb71a34b48fc179457394b09a989197675e50ea99",
+        "snackpack-3-spelling-sentences/assets/book-page-art/pork-ulele-picnic-song-p4.jpg": "783dc951b92a729b00eb64e26fd92d4accded4c000d6e8ae7acdcb0faa9c56d4"
+      },
+      "text": [
+        "Pork-ulele tunes each string for the picnic concert. He has written a gentle tune and imagines everyone playing it exactly his way.",
+        "Coop-Accino adds a sleepy melody, but Octo-Pop splashes in with a much faster beat. Pork-ulele stops playing. \"That is not how my tune goes.\"",
+        "They listen again: slow melody, quick rhythm, then a bright plink from Pork-ulele. The different sounds begin answering one another instead of competing.",
+        "Their new song is nothing like Pork-ulele planned-and much better than anything he could play alone. Even the birds add a chorus from the trees."
+      ],
+      "expected": [
+        "What did the crew make together?",
+        "A happy song",
+        "What did Octo-Pop add to the song?",
+        "A faster beat",
+        "What does Pork-ulele expect the group to do?",
+        "Why does the music stop?",
+        "How do the musicians solve their problem?",
+        "Why is the final song special?"
+      ],
+      "quizzes": [
+        {
+          "question": "What did the crew make together?",
+          "answer": "A happy song."
+        },
+        {
+          "question": "What did Octo-Pop add to the song?",
+          "answer": "A faster beat."
+        }
+      ],
+      "art": {
+        "read/pork-uleles-picnic-song/pages/pork-ulele-picnic-song-p1.jpg": "2a5fcf7720453a458320f8d809d81c3335438fe9b50af2b2083cbea8a758cd07",
+        "read/pork-uleles-picnic-song/pages/pork-ulele-picnic-song-p2.jpg": "f0f501115342d180738034483fc28ab8c356e517a2a79d224209aa83a53a753b",
+        "read/pork-uleles-picnic-song/pages/pork-ulele-picnic-song-p3-r2.jpg": "9137cbec9b170a8bb429affbb71a34b48fc179457394b09a989197675e50ea99",
+        "read/pork-uleles-picnic-song/pages/pork-ulele-picnic-song-p4.jpg": "783dc951b92a729b00eb64e26fd92d4accded4c000d6e8ae7acdcb0faa9c56d4"
+      },
+      "pdf": "read/pork-uleles-picnic-song/pork-uleles-picnic-song.pdf",
+      "pdf_sha256": "c4bf3a189201a7948c5bf9e3757331df6e3d43f10ebfab28a2cfbeb645385360"
+    },
+    {
       "slug": "quill-berrys-ending-clues",
       "source_id": "reading-trail-quill-berry-ending-clues",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-quill-berry-ending-clues-p1.jpg": "f86ac4228d921d609fa3da7af2b0634d2cf9744b45ad1e24a2c917e9965fbece",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-quill-berry-ending-clues-p2.jpg": "cfe87b17a8e5d4093fdda794f886aea21aa8f105c984a4e264adfe37cb50b7a2",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-quill-berry-ending-clues-p3.jpg": "beed0edddb28d86e50aa8a138e778dc2dab5e5c3c58bc50e0f6f9ff0f8b8c46b",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-quill-berry-ending-clues-p4.jpg": "b72b4b78911da3f8de8cfea97c8d30178325a17162f4337ec3b6eef751e6e692",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-quill-berry-ending-clues-p5.jpg": "8baa93e22256078a66a750d7c89a8e84e84e14941493d3e65eeb05e5df1f922c"
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-quill-berry-ending-clues-p1.jpg": "f86ac4228d921d609fa3da7af2b0634d2cf9744b45ad1e24a2c917e9965fbece",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-quill-berry-ending-clues-p2.jpg": "cfe87b17a8e5d4093fdda794f886aea21aa8f105c984a4e264adfe37cb50b7a2",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-quill-berry-ending-clues-p3.jpg": "beed0edddb28d86e50aa8a138e778dc2dab5e5c3c58bc50e0f6f9ff0f8b8c46b",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-quill-berry-ending-clues-p4.jpg": "b72b4b78911da3f8de8cfea97c8d30178325a17162f4337ec3b6eef751e6e692",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-quill-berry-ending-clues-p5.jpg": "8baa93e22256078a66a750d7c89a8e84e84e14941493d3e65eeb05e5df1f922c"
       },
       "text": [
         "Quill-Berry finds a poem with its endings missing. \"The rabbit is jump___; the painter paint___,\" she reads.",
@@ -1779,10 +1867,10 @@
       "slug": "shelly-pops-slow-and-steady",
       "source_id": "shelly-pop-slow-and-steady",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/shelly-pop-slow-and-steady-p1.jpg": "957e504d538c0cab75d3df962ceb78e05305bf3fa2958c06c23965e404641fb7",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/shelly-pop-slow-and-steady-p2.jpg": "a3872af3245872c670c13cfb03adaeb7b5366bdb502c95ddc6736b3b95e200df",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/shelly-pop-slow-and-steady-p3.jpg": "ff7c4613113b45d8f07c71baaab3e97646c29cd08931c737ecd9e6b98625b998",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/shelly-pop-slow-and-steady-p4.jpg": "45527dfca0be35e0f71d65d4932ebfe2dbb36125562fbff5b33239ed6f4c46e1"
+        "snackpack-3-spelling-sentences/assets/book-page-art/shelly-pop-slow-and-steady-p1.jpg": "957e504d538c0cab75d3df962ceb78e05305bf3fa2958c06c23965e404641fb7",
+        "snackpack-3-spelling-sentences/assets/book-page-art/shelly-pop-slow-and-steady-p2.jpg": "a3872af3245872c670c13cfb03adaeb7b5366bdb502c95ddc6736b3b95e200df",
+        "snackpack-3-spelling-sentences/assets/book-page-art/shelly-pop-slow-and-steady-p3.jpg": "ff7c4613113b45d8f07c71baaab3e97646c29cd08931c737ecd9e6b98625b998",
+        "snackpack-3-spelling-sentences/assets/book-page-art/shelly-pop-slow-and-steady-p4.jpg": "45527dfca0be35e0f71d65d4932ebfe2dbb36125562fbff5b33239ed6f4c46e1"
       },
       "text": [
         "Shelly-Pop stretches at sunrise before carrying berry cakes to the hilltop picnic. Grey clouds tell her she cannot waste the morning.",
@@ -1823,11 +1911,11 @@
       "slug": "stripe-scouts-blend-bridge",
       "source_id": "reading-trail-stripe-scout-blend-bridge",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-stripe-scout-blend-bridge-p1.jpg": "543c8bd22b426f14233ffd1d97307dab327e2abcc84ca4390efa084de9e79ba2",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-stripe-scout-blend-bridge-p2.jpg": "a231bae4f78769c863cd85af490d3dc0f776a465f28bbb70437fcbddf8064ba7",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-stripe-scout-blend-bridge-p3.jpg": "f909eecac776e6864e8029e377beab95139554c5252b675a9260c6354f67b6a1",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-stripe-scout-blend-bridge-p4.jpg": "fa574ce72079b013d445a89e5dd8f9f43dbd20092f35819edc5ab32b8d4c8bfa",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-stripe-scout-blend-bridge-p5.jpg": "a10679717020003d896105580194f4bfa7c36d2210bbbd02b71b0fcc0ff0ffc1"
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-stripe-scout-blend-bridge-p1.jpg": "543c8bd22b426f14233ffd1d97307dab327e2abcc84ca4390efa084de9e79ba2",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-stripe-scout-blend-bridge-p2.jpg": "a231bae4f78769c863cd85af490d3dc0f776a465f28bbb70437fcbddf8064ba7",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-stripe-scout-blend-bridge-p3.jpg": "f909eecac776e6864e8029e377beab95139554c5252b675a9260c6354f67b6a1",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-stripe-scout-blend-bridge-p4.jpg": "fa574ce72079b013d445a89e5dd8f9f43dbd20092f35819edc5ab32b8d4c8bfa",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-stripe-scout-blend-bridge-p5.jpg": "a10679717020003d896105580194f4bfa7c36d2210bbbd02b71b0fcc0ff0ffc1"
       },
       "text": [
         "Stripe-Scout must cross a bridge to plant the camp flag. A branch blocks the first step.",
@@ -1873,10 +1961,10 @@
       "slug": "stripe-scouts-trail-clues",
       "source_id": "stripe-scout-trail",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/stripe-scout-trail-p1.jpg": "6547e0008ddb348d8f9e48ab13e096c478e6d9f36ac7378a4f53f83c4bf52164",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/stripe-scout-trail-p2.jpg": "b8259c1108cc56ad3cdf0dcdaf16f17c8e65c83086874929a647267c89d490b6",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/stripe-scout-trail-p3.jpg": "0e9046751512869ab74a696cd8d8426c52f9d68dc09349bda870553203d5c1f1",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/stripe-scout-trail-p4.jpg": "03ca7560c5d172340fcaaf92ab6de3a2b31e0cbbf6b7e9b3c2e3b8fdc32860e9"
+        "snackpack-3-spelling-sentences/assets/book-page-art/stripe-scout-trail-p1.jpg": "6547e0008ddb348d8f9e48ab13e096c478e6d9f36ac7378a4f53f83c4bf52164",
+        "snackpack-3-spelling-sentences/assets/book-page-art/stripe-scout-trail-p2.jpg": "b8259c1108cc56ad3cdf0dcdaf16f17c8e65c83086874929a647267c89d490b6",
+        "snackpack-3-spelling-sentences/assets/book-page-art/stripe-scout-trail-p3.jpg": "0e9046751512869ab74a696cd8d8426c52f9d68dc09349bda870553203d5c1f1",
+        "snackpack-3-spelling-sentences/assets/book-page-art/stripe-scout-trail-p4.jpg": "03ca7560c5d172340fcaaf92ab6de3a2b31e0cbbf6b7e9b3c2e3b8fdc32860e9"
       },
       "text": [
         "Stripe-Scout unrolls her map beside a fork in the trail. One route is short and muddy; the other is long and marked with tiny stars.",
@@ -1918,12 +2006,12 @@
       "slug": "sub-zero-and-the-snowflake-post",
       "source_id": "sub-zero-snowflake-post",
       "source_art": {
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/sub-zero-snowflake-post-p1-v3.jpg": "ed4d7ce4429098c70c2b4e8acc3418e8b882729ed502e110e6859d6bf2655ef6",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/sub-zero-snowflake-post-p2-v3.jpg": "e57a6c97f93ca29cb9c7575618f4a13f9144c052733b16e5c61311428e06601f",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/sub-zero-snowflake-post-p3-v3.jpg": "0308cb4a2cfbd18e23c6f1087414180d57b27948ace2cfa87e785bf54eed8ae6",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/sub-zero-snowflake-post-p4-v3.jpg": "8b7d6b649f1fb711b7b032802fc7177090dd3280b54ea3e6a76aa7143a3faf72",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/sub-zero-snowflake-post-p5-v3.jpg": "1e00e74a6d73b477eec143af902e299c2f5e2a6eda29ace6a51fb39fd2bf9691",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/sub-zero-snowflake-post-p6-v3.jpg": "02e638449b4dd57e7515c7fdcd0ab479a1eecca8f1308011fdd1182bddba0cce"
+        "snackpack-2-123s-counting/assets/story-page-art/sub-zero-snowflake-post-p1-v3.jpg": "ed4d7ce4429098c70c2b4e8acc3418e8b882729ed502e110e6859d6bf2655ef6",
+        "snackpack-2-123s-counting/assets/story-page-art/sub-zero-snowflake-post-p2-v3.jpg": "e57a6c97f93ca29cb9c7575618f4a13f9144c052733b16e5c61311428e06601f",
+        "snackpack-2-123s-counting/assets/story-page-art/sub-zero-snowflake-post-p3-v3.jpg": "0308cb4a2cfbd18e23c6f1087414180d57b27948ace2cfa87e785bf54eed8ae6",
+        "snackpack-2-123s-counting/assets/story-page-art/sub-zero-snowflake-post-p4-v3.jpg": "8b7d6b649f1fb711b7b032802fc7177090dd3280b54ea3e6a76aa7143a3faf72",
+        "snackpack-2-123s-counting/assets/story-page-art/sub-zero-snowflake-post-p5-v3.jpg": "1e00e74a6d73b477eec143af902e299c2f5e2a6eda29ace6a51fb39fd2bf9691",
+        "snackpack-2-123s-counting/assets/story-page-art/sub-zero-snowflake-post-p6-v3.jpg": "02e638449b4dd57e7515c7fdcd0ab479a1eecca8f1308011fdd1182bddba0cce"
       },
       "text": [
         "Sub-Zero arrives at the snowy post office wearing one mitten and carrying the other. Booklava ties both mittens together so neither can escape into the wind. Outside, parcel labels spin across the ice.",
@@ -1981,11 +2069,11 @@
       "slug": "sub-zeros-magic-e-lantern",
       "source_id": "reading-trail-sub-zero-magic-e-lantern",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-sub-zero-magic-e-lantern-p1.jpg": "90279eee00d28eae5fd0f0c181a19ffeab99aab149588472987246b0546496e7",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-sub-zero-magic-e-lantern-p2.jpg": "ee60390306deec9864ae4043621aae8693b58fea66032d38235fa463e7383742",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-sub-zero-magic-e-lantern-p3.jpg": "9544a3ce90961a2f137b122d910ce7cee0b9143e225322c04292f84ed8532175",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-sub-zero-magic-e-lantern-p4.jpg": "443423e8577a5c69bcf2af6671bfa526f5533de5bff97b0bf011217a5faacc47",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-sub-zero-magic-e-lantern-p5.jpg": "bc245bfb498d96b1cb5fad3cea8c75b7dc80a0abb3a97c2cbb5aa848a1d0e535"
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-sub-zero-magic-e-lantern-p1.jpg": "90279eee00d28eae5fd0f0c181a19ffeab99aab149588472987246b0546496e7",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-sub-zero-magic-e-lantern-p2.jpg": "ee60390306deec9864ae4043621aae8693b58fea66032d38235fa463e7383742",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-sub-zero-magic-e-lantern-p3.jpg": "9544a3ce90961a2f137b122d910ce7cee0b9143e225322c04292f84ed8532175",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-sub-zero-magic-e-lantern-p4.jpg": "443423e8577a5c69bcf2af6671bfa526f5533de5bff97b0bf011217a5faacc47",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-sub-zero-magic-e-lantern-p5.jpg": "bc245bfb498d96b1cb5fad3cea8c75b7dc80a0abb3a97c2cbb5aa848a1d0e535"
       },
       "text": [
         "Sub-Zero pins a note to a kite. He hopes it will guide his friends home through the snow.",
@@ -2031,12 +2119,12 @@
       "slug": "ted-e-bear-and-the-button-trail",
       "source_id": "ted-e-bear-button-trail",
       "source_art": {
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/ted-e-bear-button-trail-empty-thread-landscape-v2.jpg": "a2f3bc7f4e9b442c62ba8e30ae173a5e1439df7b6a337fbd5ec320ba2a37d047",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/ted-e-bear-button-trail-p2-v3.jpg": "e5829acf8d8e53bb88e5bef3a5b1e4330b42a20ffbc0366a3d442c363b21bdfb",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/ted-e-bear-button-trail-p3-v3.jpg": "4765b6daba2c7c424c0ff82013a89ef9b28a257250dcf22386fe4614a17614dc",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/ted-e-bear-button-trail-p4-v3.jpg": "44e9b9b470e6e0ef339aeadbe9597f6af1b7241596f490fb5f8a4494db69848c",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/ted-e-bear-button-trail-p5-v3.jpg": "0238835e45fa79e3f3071a39a3315dfa1c8399ff0a0047e882832ac3f8e20a3d",
-        "../../../apps/snackpack-2-123s-counting/assets/story-page-art/ted-e-bear-button-trail-p6-v3.jpg": "1a166c3b82ca776b8c9f5e1a4c70299bbd5d5f657e06532a40d3d7c0fa1eb455"
+        "snackpack-2-123s-counting/assets/story-page-art/ted-e-bear-button-trail-empty-thread-landscape-v2.jpg": "a2f3bc7f4e9b442c62ba8e30ae173a5e1439df7b6a337fbd5ec320ba2a37d047",
+        "snackpack-2-123s-counting/assets/story-page-art/ted-e-bear-button-trail-p2-v3.jpg": "e5829acf8d8e53bb88e5bef3a5b1e4330b42a20ffbc0366a3d442c363b21bdfb",
+        "snackpack-2-123s-counting/assets/story-page-art/ted-e-bear-button-trail-p3-v3.jpg": "4765b6daba2c7c424c0ff82013a89ef9b28a257250dcf22386fe4614a17614dc",
+        "snackpack-2-123s-counting/assets/story-page-art/ted-e-bear-button-trail-p4-v3.jpg": "44e9b9b470e6e0ef339aeadbe9597f6af1b7241596f490fb5f8a4494db69848c",
+        "snackpack-2-123s-counting/assets/story-page-art/ted-e-bear-button-trail-p5-v3.jpg": "0238835e45fa79e3f3071a39a3315dfa1c8399ff0a0047e882832ac3f8e20a3d",
+        "snackpack-2-123s-counting/assets/story-page-art/ted-e-bear-button-trail-p6-v3.jpg": "1a166c3b82ca776b8c9f5e1a4c70299bbd5d5f657e06532a40d3d7c0fa1eb455"
       },
       "text": [
         "Ted-E-Bear taps his vest before every adventure. Tap-tap means, 'I can try.' But this morning his paw finds an empty spot. His lucky button is gone. Corgi-on-the-Cob sniffs the curling threads, then sneezes a tiny pop of corn. The first clues are waiting beside Ted's bed.",
@@ -2094,13 +2182,13 @@
       "slug": "ted-e-bear-and-the-lantern-that-needed-a-half",
       "source_id": "ted-e-bear-lantern-half",
       "source_art": {
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/generated-ted-lantern-sharing.webp": "79978f46811f0c2957b69aea56f8393ae67f83cd2adeaca60caa18fe69522c6c",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/ted-windy-bend.webp": "353dbe9305402befbe2780c4bb93c4b025f8231c5fcaeb7a3c18e5ecc663ab73",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/lantern-3.webp": "6157bdc8700b3c54e1ab6979cac0ddb21a9e61b19cd9844fad515368171d2066",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/generated-landscape-ted-firefly-groups.webp": "2583de36da0a31badb2cf144595345c4fdc207d9c254e1dee968199f74aa1306",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/lantern-5.webp": "357b1359080bf4041677d0f38233c5435d68b441620143240438cab6cfd7fd6e",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/lantern-6.webp": "06f5482633dd939049c62d8ca8b0558f75c059ab02c9e41a1b37cac273d79f2d",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/lantern-7.webp": "36256314d4c0b8942bbbf3c4963f104d68ea87df27b1d9c77472a8fb1fd5235e"
+        "snackpack-4-math-arithmetic/assets/book-page-images/generated-ted-lantern-sharing.webp": "79978f46811f0c2957b69aea56f8393ae67f83cd2adeaca60caa18fe69522c6c",
+        "snackpack-4-math-arithmetic/assets/book-page-images/ted-windy-bend.webp": "353dbe9305402befbe2780c4bb93c4b025f8231c5fcaeb7a3c18e5ecc663ab73",
+        "snackpack-4-math-arithmetic/assets/book-page-images/lantern-3.webp": "6157bdc8700b3c54e1ab6979cac0ddb21a9e61b19cd9844fad515368171d2066",
+        "snackpack-4-math-arithmetic/assets/book-page-images/generated-landscape-ted-firefly-groups.webp": "2583de36da0a31badb2cf144595345c4fdc207d9c254e1dee968199f74aa1306",
+        "snackpack-4-math-arithmetic/assets/book-page-images/lantern-5.webp": "357b1359080bf4041677d0f38233c5435d68b441620143240438cab6cfd7fd6e",
+        "snackpack-4-math-arithmetic/assets/book-page-images/lantern-6.webp": "06f5482633dd939049c62d8ca8b0558f75c059ab02c9e41a1b37cac273d79f2d",
+        "snackpack-4-math-arithmetic/assets/book-page-images/lantern-7.webp": "36256314d4c0b8942bbbf3c4963f104d68ea87df27b1d9c77472a8fb1fd5235e"
       },
       "text": [
         "The woodland picnic ends beneath a purple sky. Ted-E-Bear has 8 little lanterns. One path leads to Honey-Beats's cottage and the other leads to his own. \"Nobody should walk home in the dark,\" Ted says.",
@@ -2144,14 +2232,14 @@
       "slug": "ted-e-bear-and-the-pocketful-of-sounds",
       "source_id": "ted-e-bear-pocketful-of-sounds",
       "source_art": {
-        "../../../apps/snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p1.webp": "6529c548a71d6589e393d445f74df9bc0a17a077c47465c0384cc39ed16367c9",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p2.webp": "cc83827aa7eb16995d5946c392371de924e7f6e8172deab51b5f0bf0ac2a3bb8",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p3.webp": "8ca5a87d4b2e8be4c3bbcfc3efe47ad69eee2cfe6dcc85aafe2c95547658939d",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p4.webp": "1c8aab188e4fcf3e724b0f57e681c4403ead416a39dd57659a1618a1659c1d38",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p5.webp": "e58790dca882a0dc26e1c746a2944387ff5b66da6d99b7801eeb2fa4fce71274",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p6.webp": "46620c58dee4d232cc1eb6ccc36bb7d1d2cb0ac6cd128662ca598b69ce3f81b2",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p7.webp": "a71d6af03db35e9d8c0421dbb6d993ae224c03f1aa2338b3542f98348d1dfd65",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p8.webp": "67d7d2cf5fee6339448bfbef8ee3b47e5365d770606ef9fc3be80f725a6adf62"
+        "snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p1.webp": "6529c548a71d6589e393d445f74df9bc0a17a077c47465c0384cc39ed16367c9",
+        "snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p2.webp": "cc83827aa7eb16995d5946c392371de924e7f6e8172deab51b5f0bf0ac2a3bb8",
+        "snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p3.webp": "8ca5a87d4b2e8be4c3bbcfc3efe47ad69eee2cfe6dcc85aafe2c95547658939d",
+        "snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p4.webp": "1c8aab188e4fcf3e724b0f57e681c4403ead416a39dd57659a1618a1659c1d38",
+        "snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p5.webp": "e58790dca882a0dc26e1c746a2944387ff5b66da6d99b7801eeb2fa4fce71274",
+        "snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p6.webp": "46620c58dee4d232cc1eb6ccc36bb7d1d2cb0ac6cd128662ca598b69ce3f81b2",
+        "snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p7.webp": "a71d6af03db35e9d8c0421dbb6d993ae224c03f1aa2338b3542f98348d1dfd65",
+        "snackpack-1-abcs-alphabet/assets/story-heroes/ted-e-bear-pocketful-of-sounds-p8.webp": "67d7d2cf5fee6339448bfbef8ee3b47e5365d770606ef9fc3be80f725a6adf62"
       },
       "text": [
         "Ted-E-Bear has one important job at the First Picnic: read the welcome card when the gate opens. He practised beside his bed. He practised beside the bath. But now the card trembles in his paws, and every word looks much bigger than it did at home.",
@@ -2182,10 +2270,10 @@
       "slug": "ted-e-bears-blanket-fort",
       "source_id": "ted-blanket-fort",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/ted-blanket-fort-p1.jpg": "2ef9e4d2935c9d3b18ef380dc44b8d96cee2c5e951625e65ae4fdbafec62d172",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/ted-blanket-fort-p2.jpg": "ff71887b92b2b9f212e9e348181345181339a198d03623c63574f5ca6bb81686",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/ted-blanket-fort-p3.jpg": "d91e9c7a007093d5510742c57bfe02b524ee4b22b7480f28c47712276e57bfca",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/ted-blanket-fort-p4.jpg": "c4c77ced7ebf8b63dfc8a9a07fd5b01123713a2de0dd616d5dd3858c153db678"
+        "snackpack-3-spelling-sentences/assets/book-page-art/ted-blanket-fort-p1.jpg": "2ef9e4d2935c9d3b18ef380dc44b8d96cee2c5e951625e65ae4fdbafec62d172",
+        "snackpack-3-spelling-sentences/assets/book-page-art/ted-blanket-fort-p2.jpg": "ff71887b92b2b9f212e9e348181345181339a198d03623c63574f5ca6bb81686",
+        "snackpack-3-spelling-sentences/assets/book-page-art/ted-blanket-fort-p3.jpg": "d91e9c7a007093d5510742c57bfe02b524ee4b22b7480f28c47712276e57bfca",
+        "snackpack-3-spelling-sentences/assets/book-page-art/ted-blanket-fort-p4.jpg": "c4c77ced7ebf8b63dfc8a9a07fd5b01123713a2de0dd616d5dd3858c153db678"
       },
       "text": [
         "Ted-E-Bear stacks his softest pillows between two chairs. He wants a reading fort big enough for one bear and one enormous adventure.",
@@ -2227,11 +2315,11 @@
       "slug": "ted-e-bears-short-vowel-kit",
       "source_id": "reading-trail-ted-short-vowel-kit",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-ted-short-vowel-kit-p1.jpg": "5b329470289b50cc524b3bf2d467fb38b0f30d1702f0def423a2729acf0424ba",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-ted-short-vowel-kit-p2.jpg": "65d1b23b932c7f6e3f143dc1d70587dc647bc998b1d7286218fdf1161ffbebfb",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-ted-short-vowel-kit-p3.jpg": "c12c1eb9970a25a984617ac4d83df33c739bbc03720b1e595feefa2ca2da7ff9",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-ted-short-vowel-kit-p4.jpg": "331db3681facb333b1b01fcb24609ab528f3bb777b6bbbd4009f4f482c237dee",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-ted-short-vowel-kit-p5.jpg": "960521c4a1ead6174d09e5823b858bdae9dd16ede6de28a645c8a3ef7a91afca"
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-ted-short-vowel-kit-p1.jpg": "5b329470289b50cc524b3bf2d467fb38b0f30d1702f0def423a2729acf0424ba",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-ted-short-vowel-kit-p2.jpg": "65d1b23b932c7f6e3f143dc1d70587dc647bc998b1d7286218fdf1161ffbebfb",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-ted-short-vowel-kit-p3.jpg": "c12c1eb9970a25a984617ac4d83df33c739bbc03720b1e595feefa2ca2da7ff9",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-ted-short-vowel-kit-p4.jpg": "331db3681facb333b1b01fcb24609ab528f3bb777b6bbbd4009f4f482c237dee",
+        "snackpack-3-spelling-sentences/assets/book-page-art/reading-trail-ted-short-vowel-kit-p5.jpg": "960521c4a1ead6174d09e5823b858bdae9dd16ede6de28a645c8a3ef7a91afca"
       },
       "text": [
         "Ted has a big box, a red rug, and a map. His den is by his bed.",
@@ -2277,15 +2365,15 @@
       "slug": "ten-red-hens",
       "source_id": "ten-red-hens",
       "source_art": {
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-1.webp": "6ed84135521697613d1ce407559753c0c99a591728b1e86020e2cd91325294c3",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-2.webp": "9538d4dcb6b03c21d64f03d0c36a2888aa910e8bbee42796015a3778541a9c3f",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-3.webp": "5edd798363868c935b767fe35b84928adccd1339b60998649dd50ffbac1726e2",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-4.webp": "979367ddcd969767037b9ac5ea19b495d23d2adf747c7768331b406d9b96f22b",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-5.webp": "90184800af9adea7274813024fa58113835d44924d20af857d768dc0f8a949d3",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-6.webp": "4014b9523a6a4843cda7d8e87937b3c92870134c62e0b26aa67c392ac2356cf1",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-7.webp": "1f0467540982da22f78a29c74485219d19ad527034ee7aada7566dabf31acfc6",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-8.webp": "6951c6cc72072ef2eaed5fdfac9ed0f8ed54ec92e067c0517b996ddae9fd55e9",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-cover.webp": "ea9da13ba61b5da1ba70b8f37787b5f11aae105030134e90b9ae1a98ba4c1ab2"
+        "snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-1.webp": "6ed84135521697613d1ce407559753c0c99a591728b1e86020e2cd91325294c3",
+        "snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-2.webp": "9538d4dcb6b03c21d64f03d0c36a2888aa910e8bbee42796015a3778541a9c3f",
+        "snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-3.webp": "5edd798363868c935b767fe35b84928adccd1339b60998649dd50ffbac1726e2",
+        "snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-4.webp": "979367ddcd969767037b9ac5ea19b495d23d2adf747c7768331b406d9b96f22b",
+        "snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-5.webp": "90184800af9adea7274813024fa58113835d44924d20af857d768dc0f8a949d3",
+        "snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-6.webp": "4014b9523a6a4843cda7d8e87937b3c92870134c62e0b26aa67c392ac2356cf1",
+        "snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-7.webp": "1f0467540982da22f78a29c74485219d19ad527034ee7aada7566dabf31acfc6",
+        "snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-page-8.webp": "6951c6cc72072ef2eaed5fdfac9ed0f8ed54ec92e067c0517b996ddae9fd55e9",
+        "snackpack-1-abcs-alphabet/assets/decodable/ten-red-hens-cover.webp": "ea9da13ba61b5da1ba70b8f37787b5f11aae105030134e90b9ae1a98ba4c1ab2"
       },
       "text": [
         "Ten red hens sit.",
@@ -2316,15 +2404,15 @@
       "slug": "the-cat-and-the-rat",
       "source_id": "the-cat-and-the-rat",
       "source_art": {
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-1.webp": "bf5f495c5704a99cdbcb5581ae845cfaf948542db02c7c4564f1e45b122defe2",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-2.webp": "5c4d301cbe9f371a76a06495a26f0a789253feaae9f963248cf2f69365ba41be",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-3.webp": "dc6ef6d17f3f2d0e1135752db28d9b9b8535eefcecdd43dc8798c3206d2f7b8e",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-4.webp": "04b2025976ab1c9913c809b658efa131fd6223dcbafed728b5a29f4ab0649bde",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-5.webp": "3013f1e02b853df5e3fab8def0429357adc4adbe3a6d8c80c2c20288cb0f1f2d",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-6.webp": "1a3d287b9e1b54ee536b962ea9db767ec5abd4a92093307ecec1b4555b0c7b2e",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-7.webp": "5efe99832c1f828986bc2378b8084c5b8bd68d4d4681809c57d907f40c4eacd0",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-8.webp": "f1afbdb457deaf3620c3049463f698727f15dbaafa904bfd1aa21b4e7edfebc3",
-        "../../../apps/snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-cover.webp": "5683da8730da8c90d5b15b8e286ebaaf15c6741d9b86b9a451adfc68bafdfb15"
+        "snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-1.webp": "bf5f495c5704a99cdbcb5581ae845cfaf948542db02c7c4564f1e45b122defe2",
+        "snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-2.webp": "5c4d301cbe9f371a76a06495a26f0a789253feaae9f963248cf2f69365ba41be",
+        "snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-3.webp": "dc6ef6d17f3f2d0e1135752db28d9b9b8535eefcecdd43dc8798c3206d2f7b8e",
+        "snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-4.webp": "04b2025976ab1c9913c809b658efa131fd6223dcbafed728b5a29f4ab0649bde",
+        "snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-5.webp": "3013f1e02b853df5e3fab8def0429357adc4adbe3a6d8c80c2c20288cb0f1f2d",
+        "snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-6.webp": "1a3d287b9e1b54ee536b962ea9db767ec5abd4a92093307ecec1b4555b0c7b2e",
+        "snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-7.webp": "5efe99832c1f828986bc2378b8084c5b8bd68d4d4681809c57d907f40c4eacd0",
+        "snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-page-8.webp": "f1afbdb457deaf3620c3049463f698727f15dbaafa904bfd1aa21b4e7edfebc3",
+        "snackpack-1-abcs-alphabet/assets/decodable/the-cat-and-the-rat-cover.webp": "5683da8730da8c90d5b15b8e286ebaaf15c6741d9b86b9a451adfc68bafdfb15"
       },
       "text": [
         "A cat sat in a hat.",
@@ -2355,13 +2443,13 @@
       "slug": "vincent-van-mouse-and-the-mural",
       "source_id": "vincent-van-mouse-mural-in-proportion",
       "source_art": {
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/y6-mural-sketch.webp": "ba28c8af8b75629e32240d486399f2c7a692103d27e644bd7c350e9e470dac2d",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/mural-2.webp": "f30450eb4edd75d24b86b1f63fda98d0e70f60ef9a7f53a59f49d5fddcc66b9a",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/y6-mural-mixing.webp": "1eb1e06e8e0c1f1351fd3f291bd785b43ea4a52b2082dc2c3ce04ef0836efa06",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/mural-4.webp": "963349bb79182bf8be0ffcbe7648bc829530e95f779127bef095ee71c6f541a6",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/y6-mural-rain.webp": "c884b608081b66d38114c8cffef5906fe1af18a4040c0c82227edb55fb31c959",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/mural-6.webp": "c703afd96901b8c1b5449a17562aa6b3bba18db38421ea959b01727f8d049a9e",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/y6-mural-unveiling.webp": "fa87c79239c05d4dbba166230da28600f7d67cc88e51987abf79d4d34098e995"
+        "snackpack-4-math-arithmetic/assets/book-page-images/y6-mural-sketch.webp": "ba28c8af8b75629e32240d486399f2c7a692103d27e644bd7c350e9e470dac2d",
+        "snackpack-4-math-arithmetic/assets/book-page-images/mural-2.webp": "f30450eb4edd75d24b86b1f63fda98d0e70f60ef9a7f53a59f49d5fddcc66b9a",
+        "snackpack-4-math-arithmetic/assets/book-page-images/y6-mural-mixing.webp": "1eb1e06e8e0c1f1351fd3f291bd785b43ea4a52b2082dc2c3ce04ef0836efa06",
+        "snackpack-4-math-arithmetic/assets/book-page-images/mural-4.webp": "963349bb79182bf8be0ffcbe7648bc829530e95f779127bef095ee71c6f541a6",
+        "snackpack-4-math-arithmetic/assets/book-page-images/y6-mural-rain.webp": "c884b608081b66d38114c8cffef5906fe1af18a4040c0c82227edb55fb31c959",
+        "snackpack-4-math-arithmetic/assets/book-page-images/mural-6.webp": "c703afd96901b8c1b5449a17562aa6b3bba18db38421ea959b01727f8d049a9e",
+        "snackpack-4-math-arithmetic/assets/book-page-images/y6-mural-unveiling.webp": "fa87c79239c05d4dbba166230da28600f7d67cc88e51987abf79d4d34098e995"
       },
       "text": [
         "The town square has one long blank wall, and the Harvest Festival is in three days. Vincent Van Mouse unrolls his sketch: a sunset over the hills, small enough to fit in his paw. \"Every centimetre on my sketch becomes 25 centimetres on the wall,\" he explains. Stripe-Scout whistles. Sail-Affe stretches her neck to see the top of the wall.",
@@ -2405,10 +2493,10 @@
       "slug": "wise-owl-festival-of-factors",
       "source_id": "wise-owl-festival-of-factors",
       "source_art": {
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/factors-1.webp": "84e179e97bece8a5622fe17f3970622eec8edf3ba05f1e27d69368307b3a24e5",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/factors-2.webp": "0cb8a80171a56ade9f4c2d5ead970cf394fa00ce03cf09b2aea1fc289d936369",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/factors-3.webp": "ea6bcceb09f24886f334570032c0397f465916e107f87d31b3c5864bd30787fd",
-        "../../../apps/snackpack-4-math-arithmetic/assets/book-page-images/factors-4.webp": "bfea953df6e91c561a2a4191122d0df424105e4a68b72e783c5fb9897f714ab5"
+        "snackpack-4-math-arithmetic/assets/book-page-images/factors-1.webp": "84e179e97bece8a5622fe17f3970622eec8edf3ba05f1e27d69368307b3a24e5",
+        "snackpack-4-math-arithmetic/assets/book-page-images/factors-2.webp": "0cb8a80171a56ade9f4c2d5ead970cf394fa00ce03cf09b2aea1fc289d936369",
+        "snackpack-4-math-arithmetic/assets/book-page-images/factors-3.webp": "ea6bcceb09f24886f334570032c0397f465916e107f87d31b3c5864bd30787fd",
+        "snackpack-4-math-arithmetic/assets/book-page-images/factors-4.webp": "bfea953df6e91c561a2a4191122d0df424105e4a68b72e783c5fb9897f714ab5"
       },
       "text": [
         "Wise Owl hangs 24 lantern flags for the reading festival. Booklava tries one long row, but the tall gateposts hide half the display. Quill-Berry suggests testing equal rectangles until every visitor can see.",
@@ -2440,10 +2528,10 @@
       "slug": "wise-owls-library-day",
       "source_id": "wise-owl-library-day",
       "source_art": {
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/wise-owl-library-day-p1.jpg": "9450918ee630e09a38644b5e5deb973445767366b1731faf47cf7a2db53f223c",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/wise-owl-library-day-p2.jpg": "0e80e5fbeb2428a2039a74df99a7c224b25d39089792685bfdccf1c51b883b87",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/wise-owl-library-day-p3.jpg": "0551b50ccfa4d741601b1918166255686d5a4aa59a60fcaac6262dd72314aff8",
-        "../../../apps/snackpack-3-spelling-sentences/assets/book-page-art/wise-owl-library-day-p4.jpg": "03519544e4635a72a4a99645dbf8b25000454d113650cfb0777e3f4872bac5fb"
+        "snackpack-3-spelling-sentences/assets/book-page-art/wise-owl-library-day-p1.jpg": "9450918ee630e09a38644b5e5deb973445767366b1731faf47cf7a2db53f223c",
+        "snackpack-3-spelling-sentences/assets/book-page-art/wise-owl-library-day-p2.jpg": "0e80e5fbeb2428a2039a74df99a7c224b25d39089792685bfdccf1c51b883b87",
+        "snackpack-3-spelling-sentences/assets/book-page-art/wise-owl-library-day-p3.jpg": "0551b50ccfa4d741601b1918166255686d5a4aa59a60fcaac6262dd72314aff8",
+        "snackpack-3-spelling-sentences/assets/book-page-art/wise-owl-library-day-p4.jpg": "03519544e4635a72a4a99645dbf8b25000454d113650cfb0777e3f4872bac5fb"
       },
       "text": [
         "Wise Owl opens the library and finds Quill-Berry waiting outside with a folded page. \"I wrote something,\" Quill whispers, \"but I am not sure I can share it.\"",

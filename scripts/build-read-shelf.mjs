@@ -19,6 +19,7 @@
 //
 // To add a book: import it (scripts/import-decodable-book.mjs or by hand), then
 // add one entry to SHELF in reading order and re-run this script.
+import {nextChoices} from "./lib/read-recommendations.mjs";
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
@@ -34,10 +35,10 @@ const CHECK = process.argv.includes("--check");
 // Reading-path groups, in order. `intro` is shown under the group heading.
 const GROUPS = [
   { id: "alphabet", title: "Alphabet books · all the letters", intro: "Meet A to Z in a complete illustrated picture book. Read together, name the letters and look for familiar things in every picture." },
-  { id: "stage-1", title: "Stage 1 · first sounds", intro: "Start here. Every word uses only s, a, t, p, i and n, plus a few tricky words to read together." },
+  { id: "stage-1", title: "Stage 1 · first sounds", intro: "Start with s, a, t, p, i and n. Prepare the tricky words and word endings together before these supported first reads." },
   { id: "stage-2", title: "Stage 2 · six more sounds", intro: "Adds c, e, h, r, m and d. Ready when Stage 1 words feel easy." },
   { id: "stage-3", title: "Stage 3 · short o and u", intro: "Adds g, o, u, l, f and b, so every short vowel is covered." },
-  { id: "trail", title: "Reading Trail · next steps", intro: "Six read-together stories that carry on after Stage 3: short-vowel review, sh/ch/th/wh, blends, magic e, vowel teams and word endings." },
+  { id: "trail", title: "Reading Trail · next steps", intro: "Six read-together stories for focused phonics practice, rather than controlled independent decodables: short-vowel review, sh/ch/th/wh, blends, magic e, vowel teams and word endings." },
   { id: "short", title: "Short reads · four-page stories", intro: "Quick illustrated stories to read together, with a talk prompt on every page and a question at the end: friendship and kindness, adventures and mysteries, nature and the night sky." },
   { id: "numbers", title: "Number stories · maths on every page", intro: "Illustrated maths stories with a question on every page, from counting to factors and primes. Tap an answer to check it, or print the book and work on paper." },
   { id: "animals", title: "Animal fact books · real science, original art", intro: "Read-together animal books from SnackPack Zoo World, every fact checked against zoo and science sources, every picture made for the book." },
@@ -54,10 +55,10 @@ const GROUPS = [
 // books added in the last 30 days as "New", worked out in the reader's browser.
 const SHELF = [
   { slug: "panda-cake-discovers-her-abcs", group: "alphabet", age: [3, 5], added: "2026-10-18", title: "Panda-Cake Discovers Her ABCs", eyebrow: "Alphabet picture book · A-Z · 26 pages", blurb: "Acorn to zucchini: join Panda-Cake in the kitchen and garden for every letter of the alphabet.", cover: "pages/letter-a", ext: "jpg", alt: "", w: 1200, h: 800 },
-  { slug: "pip-sits", group: "stage-1", age: [4, 5], added: "2026-08-12", title: "Pip Sits", eyebrow: "Stage 1 · first reader · 6 pages", blurb: "A gentle read-it-myself story using the first letter sounds s, a, t, p, i and n.", cover: "pages/cover", ext: "jpg", alt: "Pip Sits first-reader book cover.", w: 1024, h: 1536 },
+  { slug: "pip-sits", group: "stage-1", age: [4, 5], added: "2026-08-12", title: "Pip Sits", eyebrow: "Stage 1 · first reader · 6 pages", blurb: "A supported Stage 1 bridge using s, a, t, p, i and n, with tricky words and -s endings to prepare together.", cover: "pages/cover", ext: "jpg", alt: "Pip Sits first-reader book cover.", w: 1024, h: 1536 },
   { slug: "nan-and-pip", group: "stage-1", age: [4, 5], added: "2026-08-13", title: "Nan and Pip", eyebrow: "Stage 1 decodable · 6 pages", blurb: "A take-turns story that repeats a small set of words so a new reader builds confidence.", cover: "pages/cover", ext: "jpg", alt: "Nan and Pip decodable book cover.", w: 1024, h: 1536 },
-  { slug: "ten-red-hens", group: "stage-2", age: [4, 5], added: "2026-08-13", title: "Ten Red Hens", eyebrow: "Stage 2 decodable · 8 pages", blurb: "Ten hens, one net and a runaway chase — a short-E story a new reader can sound out alone.", cover: "pages/cover", ext: "jpg", alt: "Ten Red Hens decodable book cover.", w: 1024, h: 1536 },
-  { slug: "the-cat-and-the-rat", group: "stage-2", age: [4, 5], added: "2026-08-13", title: "The Cat and the Rat", eyebrow: "Stage 2 decodable · 8 pages", blurb: "Every word is a plain three-sound word — the best book on the shelf for a first independent read.", cover: "pages/cover", ext: "jpg", alt: "The Cat and the Rat decodable book cover.", w: 1024, h: 1536 },
+  { slug: "ten-red-hens", group: "stage-2", age: [4, 5], added: "2026-08-13", title: "Ten Red Hens", eyebrow: "Stage 2 decodable · 8 pages", blurb: "Ten hens, one net and a runaway chase — short-E practice with tricky words and -s endings to prepare together.", cover: "pages/cover", ext: "jpg", alt: "Ten Red Hens decodable book cover.", w: 1024, h: 1536 },
+  { slug: "the-cat-and-the-rat", group: "stage-2", age: [4, 5], added: "2026-08-13", title: "The Cat and the Rat", eyebrow: "Stage 2 decodable · 8 pages", blurb: "Short-A practice without blends or added endings. Prepare a, is and the together; let your reader try the other words.", cover: "pages/cover", ext: "jpg", alt: "The Cat and the Rat decodable book cover.", w: 1024, h: 1536 },
   { slug: "bug-in-a-cup", group: "stage-3", age: [4, 6], added: "2026-08-13", title: "Bug in a Cup", eyebrow: "Stage 3 decodable · 8 pages", blurb: "A short-U story that adds g, o, u, l, f and b to the sounds a new reader already knows.", cover: "pages/cover", ext: "jpg", alt: "Bug in a Cup decodable book cover.", w: 1024, h: 1536 },
   { slug: "dog-in-the-fog", group: "stage-3", age: [4, 6], added: "2026-08-13", title: "Dog in the Fog", eyebrow: "Stage 3 decodable · 8 pages", blurb: "A short-O story for readers ready to move past the first six letter sounds.", cover: "pages/cover", ext: "jpg", alt: "Dog in the Fog decodable book cover.", w: 1024, h: 1536 },
   { slug: "ted-e-bears-short-vowel-kit", group: "trail", age: [5, 6], added: "2026-08-12", title: "Ted‑E‑Bear’s Short‑Vowel Kit", eyebrow: "Reading Trail step 1 · 5 pages", blurb: "A warm den-building story full of short-vowel words for beginning readers.", cover: "pages/reading-trail-ted-short-vowel-kit-p1", ext: "jpg", alt: "Ted-E-Bear with his box, rug and den-building kit.", w: 768, h: 1152 },
@@ -87,6 +88,8 @@ const SHELF = [
   {"slug": "shelly-pops-slow-and-steady", "group": "short", "age": [5, 8], "added": "2026-10-19", "title": "Shelly-Pop’s Slow and Steady", "eyebrow": "Short read · Adventure · 4 pages", "blurb": "While everyone hurries, Shelly-Pop notices ants and white pebbles that point to a careful shortcut.", "cover": "pages/shelly-pop-slow-and-steady-p1-r2", "ext": "jpg", "alt": "", "w": 768, "h": 1152},
   { slug: "luckybugs-art-gallery", group: "short", age: [5, 8], added: "2026-10-20", title: "Luckybug's Art Gallery", eyebrow: "Short read · Creativity · 4 pages", blurb: "A blue splash ruins Luckybug's perfect sky, until her friends see a river in it.", cover: "pages/luckybug-art-gallery-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
   { slug: "corgi-on-the-cobs-countryside-run", group: "short", age: [5, 8], added: "2026-10-20", title: "Corgi-on-the-Cob's Countryside Run", eyebrow: "Short read · Kindness · 4 pages", blurb: "Corgi takes the lead, then hears Ginger's ribbon snag. Winning can wait.", cover: "pages/corgi-on-the-cob-countryside-p1", ext: "jpg", alt: "", w: 768, h: 1152 },
+  { slug:"pork-uleles-picnic-song",group:"short",age:[5,8],added:"2026-10-20",title:"Pork-ulele's Picnic Song",eyebrow:"Short read · Music · 4 pages",blurb:"Pork-ulele wants his tune played his way. A slow melody and a fast beat change his mind.",cover:"pages/pork-ulele-picnic-song-p1",ext:"jpg",alt:"Pork-ulele tunes his ukulele on a sunny picnic blanket.",w:768,h:1152 },
+  { slug:"captain-beakons-air-show",group:"short",age:[5,8],added:"2026-10-20",title:"Captain Beakon's Air Show",eyebrow:"Short read · Teamwork · 4 pages",blurb:"A red-and-gold ribbon drifts toward the river. Four cycling Bulldogs guide Stripe-Scout to the rescue.",cover:"pages/captain-beakon-air-show-p1",ext:"jpg",alt:"Captain Beakon reaches for a ribbon from his red plane.",w:768,h:1152 },
   { slug: "ted-e-bear-and-the-button-trail", group: "numbers", age: [3, 4], added: "2026-08-12", title: "Ted‑E‑Bear and the Button Trail", eyebrow: "Counting · 6 pages", blurb: "Follow a missing-button mystery through counting, number order, comparisons and courage.", cover: "pages/cover", ext: "png", alt: "Ted-E-Bear and the Button Trail story cover.", w: 640, h: 640 },
   { slug: "panda-cakes-market-basket", group: "numbers", age: [3, 4], added: "2026-10-17", title: "Panda‑Cake’s Market Basket", eyebrow: "Counting · 6 pages", blurb: "Apples, berries, buns and one tiny honey jar. Panda-Cake counts the picnic basket full, with room to share.", cover: "pages/page-1", ext: "jpg", alt: "Panda-Cake in a chef’s hat reaches for three rolling apples.", w: 1200, h: 800 },
   { slug: "sub-zero-and-the-snowflake-post", group: "numbers", age: [4, 5], added: "2026-10-17", title: "Sub‑Zero and the Snowflake Post", eyebrow: "Number order · 6 pages", blurb: "A gust mixes up every parcel. Sub-Zero and Booklava put the numbers back in order before the sun gets warm.", cover: "pages/page-1", ext: "jpg", alt: "Sub-Zero the penguin in the snowy post office with Booklava the owl.", w: 1200, h: 800 },
@@ -118,7 +121,7 @@ function card(b, i) {
   const src = `./${b.slug}/${b.cover}`;
   const escape = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
   const pages = (fs.readFileSync(path.join(ROOT, "read", b.slug, "index.html"), "utf8").match(/<article class="story-page-card"/g) || []).length;
-  return `<a class="read-library-card" href="./${b.slug}/" data-search="${escape(`${b.title} ${b.eyebrow} ${b.blurb}`)}" data-pages="${pages}" data-kind="${KIND[b.group]}" data-age="${b.age[0]}-${b.age[1]}" data-added="${b.added}"><picture>${sourceTag(path.join(ROOT, "read", b.slug, `${b.cover}.webp`), src, "hub")}<img src="${src}.${b.ext}" alt="${b.alt}" width="${b.w}" height="${b.h}"${i > 2 ? " loading=\"lazy\"" : ""}></picture><div><span class="eyebrow">${b.eyebrow}</span><h3>${plainTitle(b.title)}</h3><p>${b.blurb}</p><span class="btn btn-primary">Read the story</span></div></a>`;
+  return `<a class="read-library-card" href="./${b.slug}/" data-search="${escape(`${b.title} ${b.eyebrow} ${b.blurb}`)}" data-pages="${pages}" data-kind="${KIND[b.group]}" data-age="${b.age[0]}-${b.age[1]}" data-added="${b.added}"><picture>${sourceTag(path.join(ROOT, "read", b.slug, `${b.cover}.webp`), src, "hub")}<img src="${src}.${b.ext}" alt="${b.alt}" width="${b.w}" height="${b.h}"${i > 2 ? " loading=\"lazy\"" : ""}></picture><div><span class="eyebrow">${b.eyebrow}</span><h3>${plainTitle(b.title)}</h3><span class="read-saved-label" data-saved-label>Saved status unavailable</span><p>${b.blurb}</p><span class="btn btn-primary">Read the story</span></div></a>`;
 }
 
 // Stage shortcuts (a 13-book shelf is a long scroll on a phone) and the
@@ -135,6 +138,7 @@ function filterBar() {
 <label class="read-search-label" for="read-search">Find a book</label><input class="read-search" type="search" id="read-search" data-read-search maxlength="120" placeholder="Title, character or topic" autocomplete="off" aria-describedby="read-search-help"><p id="read-search-help" class="read-search-help">Try Ted, bedtime, kindness or counting. Age ranges are a guide; choose a comfortable reading step.</p>
 <div class="read-filter-row" role="group" aria-label="Type of book">${btn("data-filter-kind", "all", "All books", "true")}${KINDS.map(([v, l]) => btn("data-filter-kind", v, l, "false")).join("")}</div>
 <div class="read-filter-row" role="group" aria-label="Reader's age">${btn("data-filter-age", "all", "Any age", "true")}${AGES.map(([v, l]) => btn("data-filter-age", v, l, "false")).join("")}</div>
+<div class="read-filter-row"><button type="button" class="read-filter-btn" data-filter-saved aria-pressed="false">Saved on this device</button><span>Saved results depend on this device.</span></div>
 <p class="read-filter-status" aria-live="polite" data-filter-status></p>
 <button type="button" class="text-link" data-read-reset hidden>Clear search and filters</button>
 </div>
@@ -205,26 +209,14 @@ function printInfo(b) {
 
 function nextBlock(i) {
   const book = SHELF[i];
-  // Preserve the ordered phonics path. Other readers can choose a related book.
-  const collections = READ_COLLECTIONS.filter(c => c.id !== 'first-phonics').map(c => c.books);
-  const collection = collections.find((list) => list.includes(book.slug));
-  const relatedSlug = collection && collection[(collection.indexOf(book.slug) + 1) % collection.length];
-  const skill = book.eyebrow.split(" · ")[1];
-  const related = relatedSlug ? SHELF.find((b) => b.slug === relatedSlug) : book.group === "short" ?
-    SHELF.slice(i + 1).concat(SHELF.slice(0, i)).find((b) => b.group === book.group && b.eyebrow.split(" · ")[1] === skill) : null;
-  const next = related || SHELF[i + 1];
+  const choices = nextChoices(SHELF, book.slug, READ_COLLECTIONS);
   const share = `<p class="story-share">Know a family or class who would enjoy it? ${SHARE_BUTTON("btn btn-secondary read-share-btn")}</p>\n<script defer src="../share.js"></script>\n<script defer src="../reading-position.js"></script>\n<script defer src="../reader.js"></script>`;
-  if (!next) {
-    return `<p class="story-next">That’s the whole shelf, and every book has a printable PDF. <a class="text-link" href="../">Back to the bookshelf</a></p>\n${share}`;
-  }
-  const g = GROUPS.find((x) => x.id === next.group);
-  const label = related ? (collection === collections[0] ? "Another quiet read-together story" : collection ? "Another story about kindness" : `Another ${skill.toLowerCase()} story`) : g.id === book.group ? "Next story" : `Next: ${g.title.split(" · ")[0]}`;
-  return `<p class="story-next"><span class="eyebrow">${label}</span><a class="story-next-link" href="../${next.slug}/">${next.title} <span aria-hidden="true">→</span></a></p>\n${share}`;
+  return choices.map(({book:next,label}) => `<p class="story-next"><span class="eyebrow">${label}</span><a class="story-next-link" href="../${next.slug}/">${next.title} <span aria-hidden="true">→</span></a></p>`).join("\n") + `\n${share}`;
 }
 
 // The homepage section: a few books spread across the reading path, so the
 // first thing a parent sees is something they can read now, not an app page.
-const HOME_FEATURED = ["pip-sits", "ten-red-hens", "dog-in-the-fog", "hen-berrys-digraph-dash", "sub-zeros-magic-e-lantern", "meow-inaras-vowel-team-duet"];
+const HOME_FEATURED = ["pip-sits", "hen-berrys-digraph-dash", "panda-cake-discovers-her-abcs", "luckybugs-art-gallery", "panda-cakes-market-basket", "animal-architects"];
 
 function homeBlock() {
   const words = (n) => (NUMBER_WORDS[n] ?? String(n)).toLowerCase();
@@ -234,7 +226,7 @@ function homeBlock() {
     const src = `/read/${b.slug}/${b.cover}`;
     const label = b.eyebrow.split(" · ")[0].replace(/ decodable$/, "");
     return `        <a class="storybook-card" href="/read/${b.slug}/">
-          <picture>${sourceTag(path.join(ROOT, "read", b.slug, `${b.cover}.webp`), src, "home")}<img src="${src}.${b.ext}" loading="lazy" alt="${b.alt}"></picture>
+          <picture>${sourceTag(path.join(ROOT, "read", b.slug, `${b.cover}.webp`), src, "home")}<img src="${src}.${b.ext}" loading="lazy" alt="${b.alt}" width="${b.w}" height="${b.h}"></picture>
           <span class="storybook-app">${label}</span>
           <strong>${b.title}</strong>
         </a>`;
@@ -244,7 +236,7 @@ function homeBlock() {
         <div>
           <span class="eyebrow">Free bookshelf</span>
           <h2 class="section-title">${words(SHELF.length).replace(/^./, (c) => c.toUpperCase())} illustrated readers, free to read or print</h2>
-          <p class="section-copy">Complete picture books from the SnackPack apps, in phonics order from the first sounds s a t p i n to vowel teams and word endings, plus number stories with a maths question on every page. Read them in your browser or print the PDF. No account, no ads, no download.</p>
+          <p class="section-copy">Explore alphabet pictures, staged phonics with adult preparation, Reading Trail practice, shared stories, number adventures and animal facts from the SnackPack apps. Read them in your browser or print the PDF. No account, no ads, no download.</p>
         </div>
         <div class="stack-inline"><a class="btn btn-primary" href="/read/">Open the bookshelf</a><a class="text-link" href="/read/sound-cards/">Print phonics sound cards</a></div>
       </div>
@@ -393,7 +385,7 @@ function guideMoreBlock() {
   const rest = SHELF.filter((b) => !GUIDE_FIXED.has(b.slug));
   const cards = rest.map((b) => card(b.eyebrow, plainTitle(b.title), b.blurb, [GROUPS.find((g) => g.id === b.group).title.split(" · ")[0]], `../../read/${b.slug}/`, `../../read/${b.slug}/${b.slug}.pdf`));
   cards.push(card("Printable cards · one A4 page per stage", "Phonics sound cards", "Sound, word and tricky-word cards for every stage, from s a t p i n to vowel teams and word endings.", ["Printables"], "../../read/sound-cards/", null));
-  return `<div style="max-width:760px;margin:48px auto 28px;text-align:center;"><span class="eyebrow">More on the shelf</span><h2 class="section-title">Next steps, short reads, number stories and sound cards</h2><p class="section-copy">When the first eight feel easy, the Reading Trail carries on through sh, ch, th and wh, blends, magic e, vowel teams and word endings. The short reads are four-page stories to read together, and the number stories add a maths question to every page. All free, all printable.</p></div><div class="grid app-grid">\n${cards.join("\n")}\n</div>`;
+  return `<div style="max-width:760px;margin:48px auto 28px;text-align:center;"><span class="eyebrow">More on the shelf</span><h2 class="section-title">Next steps, short reads, number stories and sound cards</h2><p class="section-copy">The Reading Trail offers shared phonics practice through sh, ch, th and wh, blends, magic e, vowel teams and word endings. These stories include vocabulary beyond the focus pattern and need adult support; they are not the next controlled decodable stages. The short reads are four-page stories to read together, and the number stories add a maths question to every page. All free, all printable.</p></div><div class="grid app-grid">\n${cards.join("\n")}\n</div>`;
 }
 {
   // Two different counts, so every claim stays true. The title and H1 say
@@ -410,7 +402,7 @@ function guideMoreBlock() {
     .replace(/<p class="lead">Download warm,[\s\S]*?<\/p>/, `<p class="lead">Start with ${phonics} phonics books: six staged first readers and six Reading Trail stories. They are part of our ${n}-book illustrated shelf, which also includes read-together stories, alphabet, maths and animal books. Read online or print a PDF, with no account, email gate or ads.</p>`);
   if (!guide.includes('read-printable-collections')) guide = guide.replace('<section id="books">', '<section class="read-printable-collections"><div class="shell"><h2>Print a small collection</h2><p>Choose first phonics readers, quiet stories or kindness. Each collection lists its books, file size and printed pages, with individual downloads too.</p><a class="btn btn-secondary" href="../../read/collections/">Browse printable collections</a></div></section>\n<section id="books">');
   const rules = [
-    [/\b(\d+|Eight) Free Printable Decodable Readers/g, `${phonics} Free Printable Decodable Readers`],
+    [/\b(?:(?:\d+|Eight) Free Printable Decodable Readers|6 Decodable Readers and 6 Reading Trail Stories)/g, `6 Decodable Readers and 6 Reading Trail Stories`],
     [/<h1>\w+ free printable readers for early phonics practice<\/h1>/, `<h1>${PhonicsWord} free printable readers for early phonics practice</h1>`],
     [/"description": "\w+ free illustrated early readers as A4 PDFs/, `"description": "${Word} free illustrated early readers as A4 PDFs`],
     [/Download \w+ free illustrated early readers as A4 PDFs/, `Download ${Word.toLowerCase()} free illustrated early readers as A4 PDFs`],

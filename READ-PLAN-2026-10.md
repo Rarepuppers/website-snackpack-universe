@@ -7,12 +7,11 @@ Shipped changes are in [release notes](docs/RELEASE-NOTES.md).
 
 ## Current delivery
 
-**52 books, 299 story pages, 52 printable PDFs.** All page texts match current
+**54 books, 307 story pages, 54 printable PDFs (379 printed pages).** All page texts match current
 exported app data, allowing importer quote/dash typography. Both app
-quizzes used by all 27 published Spelling books match the website. Every PDF contains
-its story prose. The 47 previously published article sets/PDFs were verified live;
-the three new reserve books and collections are covered by
-[this batch's delivery record](docs/READS-POLISH-DELIVERY-2026-10-19.md). There
+quizzes used by all 29 published Spelling books match the website. Every PDF contains
+its story prose. The full current shelf and both new music/flight books are covered by
+[this batch’s delivery record](docs/READS-DISCOVERY-DELIVERY-2026-10-20.md). There
 is no text re-import or PDF rebuild backlog. This is a source/parity audit,
 not a fresh visual or scientific fact review of every illustration/sentence.
 
@@ -21,7 +20,7 @@ not a fresh visual or scientific fact review of every illustration/sentence.
 | Complete alphabet picture books | 1 |
 | Stage 1-3 decodables | 6 |
 | Reading Trail | 6 |
-| Short reads | 21 |
+| Short reads | 23 |
 | Number stories | 16 |
 | Animal fact books | 1 |
 | Read-aloud picture books | 1 |
@@ -84,6 +83,16 @@ Full implementation/verification: [delivery record](docs/READS-POLISH-DELIVERY-2
 Publication commands and safeguards: [workflow](docs/READING-PUBLICATION.md).
 The accepted detailed plan is monorepo `docs/READS-NEXT-BATCH-PLAN-2026-10-19.md`.
 
+## Discovery and guidance batch - 20 October
+
+- Saved card status and a device-only saved filter share the actual cache completeness check; search/type/age combine, with reset and blocked-storage recovery.
+- Six-book claims audited against ABC's existing auditor, exceptions and parent notes; two faulty source notes corrected. Reading Trail is labelled shared practice.
+- Two distinct next choices preserve stage/Trail order and offer a route beyond the immediate quiet-story pair. Homepage six slots represent phonics, alphabet, short reads, numbers and animals with full pictures.
+- Pork-ulele's Picnic Song and Captain Beakon's Air Show pass all eight page reviews and four quizzes. Seven pictures retained, one corrected proof delivered app-first. Colour wording corrected app-first; exact imports and both rendered five-page PDFs accepted.
+- Decodable importer work and permanent source/art/PDF guards are complete; six-book round-trip verification remains required on publication.
+
+See [current delivery](docs/READS-DISCOVERY-DELIVERY-2026-10-20.md). The existing 15 November gate is unchanged.
+
 ## Work remaining now
 
 | Task | Source work | Website work | Owner / next step |
@@ -91,7 +100,6 @@ The accepted detailed plan is monorepo `docs/READS-NEXT-BATCH-PLAN-2026-10-19.md
 | Other Spelling books held back on quality | Source repairs completed across 27 books including the four above; four additional Deep Glow/Metamorphosis pictures repaired | Keep off shelf until each book's full art and publication review passes | Further per-book art review; no blanket approval for remaining books |
 | Safari Morning | All nine source pages repaired, display/TTS aligned, factual references registered | Not published; original-art decision remains deferred | Claude app release handoff; Zoo expansion decision after re-measure |
 | Read to me | No source defect demonstrated; real Android/iOS voice and boundary check lacks recorded evidence | Check actual audio, highlighting, pause and speed on devices | Mark/device tester |
-| Decodable importer | Modernised; six-book round trip preserves reviewed layouts and 50 image derivatives; changed source art fails for review | Permanent source/art/PDF checks and real-output failure tests wired into CI | Complete; see publication workflow |
 
 Source repairs completed on 19 October. Monorepo delivery evidence is in
 `docs/SHORT-READS-CONTENT-HANDOFF-2026-10-19.md` and
@@ -127,7 +135,7 @@ and submissions remain with Claude unless Mark assigns a specific release.
   the app; retain the November publication decision for them.
 
 Outreach remains Mark's task. [The teacher-resource pitch](LINK-BUILDING-PLAN.md)
-now describes 50 books; no outreach messages were sent. Keep the existing
+now describes the current shelf; no outreach messages were sent. Keep the existing
 re-measure schedule rather than creating a duplicate reminder.
 
 ## Publication rules and implementation

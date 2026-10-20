@@ -87,6 +87,8 @@ function parseBooks() {
       focusSound: one("focusSound"),
       stage: (b.match(/stage: (\d+)/) || [, "1"])[1],
       isFree: /isFree: true/.test(b),
+      trickyWords: (b.match(/trickyWords: \[([^\]]*)\]/)?.[1] || '').match(/'([^']+)'/g)?.map(w=>w.slice(1,-1)) || [],
+      bridgeWords: (b.match(/bridgeWords: \[([^\]]*)\]/)?.[1] || '').match(/'([^']+)'/g)?.map(w=>w.slice(1,-1)) || [],
       parentNote: noteM ? noteM[1].replace(/\\'/g, "'") : "",
       pages,
       cover: coverM ? coverM[1] : null,
@@ -94,6 +96,9 @@ function parseBooks() {
   });
 }
 
+function preparation(book) {
+  return `<aside class="read-preparation"><h2>Before reading together</h2><p>${esc(book.parentNote)}</p><p>Prepare tricky words: ${esc(book.trickyWords.join(', ') || 'none')}. Words needing an extra skill: ${esc(book.bridgeWords.join(', ') || 'none')}.</p></aside>`;
+}
 function buildHtml(book) {
   const existing = path.join(OUT_ROOT, book.id, "index.html");
   if (fs.existsSync(existing)) {
@@ -102,7 +107,8 @@ function buildHtml(book) {
     if (articles.length !== book.pages.length) throw new Error(`${book.id}: page count changed; review the full book before re-import`);
     let i = 0;
     const plain = (s) => s.replace(/<[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'");
-    return html.replace(/<article class="story-page-card"[^>]*>[\s\S]*?<\/article>/g, (article) => {
+    const prepared = html.replace(/(<section class="story-title-section">[\s\S]*?<p class="lead">)[\s\S]*?(<\/p>)/, (_,start,end)=>start + `A ${book.pages.length}-page Stage ${book.stage} sound practice story. Prepare the declared exceptions together before your reader tries the words.` + end).replace(/<aside class="read-preparation">[\s\S]*?<\/aside>/g,'').replace('<a class="btn btn-primary" href="#page-1">Begin the story</a>', preparation(book) + '<a class="btn btn-primary" href="#page-1">Begin the story</a>');
+    return prepared.replace(/<article class="story-page-card"[^>]*>[\s\S]*?<\/article>/g, (article) => {
       const page = book.pages[i++];
       return article.replace(/(<div class="story-page-copy">[\s\S]*?<p>)([\s\S]*?)(<\/p>)/, (whole, before, prose, after) => {
         if (plain(prose) === page.text) return whole;
@@ -170,7 +176,7 @@ function buildHtml(book) {
   </ul>
 </nav></div></header>
 <main>
-<section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">Stage ${book.stage} phonics &middot; Free</span><h1>${esc(book.title)}</h1><p class="lead">${esc(book.subtitle)}. A ${n}-page decodable story focusing on ${esc(book.focusSound)}.</p><div class="tag-row"><span class="tag">Stage ${book.stage}</span><span class="tag">Decodable</span><span class="tag">Read together</span></div><a class="btn btn-primary" href="#page-1">Begin the story</a></div><picture><source srcset="./pages/cover.webp" type="image/webp"><img src="./pages/cover.jpg" alt="Cover of ${esc(book.title)}." width="1024" height="1536"></picture></div></section>
+<section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">Stage ${book.stage} phonics &middot; Free</span><h1>${esc(book.title)}</h1><p class="lead">${esc(book.subtitle)}. A ${n}-page supported decodable story focusing on ${esc(book.focusSound)}.</p><div class="tag-row"><span class="tag">Stage ${book.stage}</span><span class="tag">Decodable</span><span class="tag">Read together</span></div>${preparation(book)}<a class="btn btn-primary" href="#page-1">Begin the story</a></div><picture><source srcset="./pages/cover.webp" type="image/webp"><img src="./pages/cover.jpg" alt="Cover of ${esc(book.title)}." width="1024" height="1536"></picture></div></section>
 
 <section class="story-pages story-pages-landscape" aria-label="Story pages">
 ${pageCards}

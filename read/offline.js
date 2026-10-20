@@ -45,11 +45,11 @@
   function selected(m) { return slug ? m.bookFiles.filter(function (b) { return b.slug === slug; }) : m.bookFiles; }
   function urlsFor(m) { return Array.from(new Set(m.shared.concat.apply(m.shared,selected(m).map(function (b) { return b.urls; })))); }
   function inspect(m,name) {
-    if (!name) return Promise.resolve({complete:0,any:false});
+    if (!name) return Promise.resolve({complete:0,any:false,books:Object.fromEntries(m.bookFiles.map(function(b){return [b.slug,'unsaved'];}))});
     return caches.open(name).then(function (cache) {
-      var urls = urlsFor(m);
+      var urls = urlsFor(m), raw = new Set();
       return Promise.all(urls.map(function (u) { return cache.match(u).then(async function (r) {
-        if (!r || !r.ok) return false;
+        if (!r || !r.ok) return false; raw.add(u);
         var book = selected(m).find(function (b) { return b.urls[0] === u; });
         if (!book) return true;
         var text = (await r.text()).replace(/\r\n/g,'\n');
@@ -58,8 +58,9 @@
       }); })).then(function (hits) {
         var present = new Set(urls.filter(function (_,i) { return hits[i]; }));
         var sharedReady = m.shared.every(function (u) { return present.has(u); });
-        return {complete:selected(m).filter(function (b) { return sharedReady && b.urls.every(function (u) { return present.has(u); }); }).length,
-          any:selected(m).some(function (b) { return b.urls.some(function (u) { return present.has(u); }); })};
+        var states = {}; m.bookFiles.forEach(function(b) { states[b.slug] = sharedReady && b.urls.every(function(u){return present.has(u);}) ? 'saved' : b.urls.some(function(u){return raw.has(u);}) ? 'incomplete' : 'unsaved'; });
+        return {books:states,complete:selected(m).filter(function (b) { return sharedReady && b.urls.every(function (u) { return present.has(u); }); }).length,
+          any:selected(m).some(function (b) { return b.urls.some(function (u) { return raw.has(u); }); })};
       });
     });
   }
@@ -68,6 +69,7 @@
       var m = values[0], name = values[1], books = selected(m);
       if (!books.length) throw Error('book');
       return inspect(m,name).then(function (saved) {
+        window.dispatchEvent(new CustomEvent('read-saved-status',{detail:saved.books}));
         var all = saved.complete === books.length;
         saveButton.textContent = all ? 'Saved for offline' : slug ? 'Save this book for offline' : 'Save all ' + books.length + ' books for offline';
         saveButton.disabled = running || all; remove.hidden = !saved.any; remove.disabled = running;
@@ -76,7 +78,7 @@
           (slug ? 'This book is not fully saved.' : saved.complete + ' of ' + books.length + ' complete books saved.') + ' About ' + mb(size) + ' of artwork' + (slug ? ', plus shared reader files.' : '.');
         say((note ? note + ' ' : '') + detail + ' PDFs are not included. Your browser may clear saved files when storage is low.');
       });
-    }).catch(function () { saveButton.disabled = running; say((note ? note + ' ' : '') + 'Offline saving is unavailable right now. Reconnect and try again.'); });
+    }).catch(function () { window.dispatchEvent(new CustomEvent('read-saved-status',{detail:null})); saveButton.disabled = running; say((note ? note + ' ' : '') + 'Offline saving is unavailable right now. Reconnect and try again.'); });
   }
   function ready() {
     return new Promise(function (resolve,reject) {
@@ -135,5 +137,7 @@
   });
   window.addEventListener('online',function () { if (!running) { manifest = null; refresh(); } });
   navigator.serviceWorker.addEventListener('controllerchange',function () { if (!running) refresh(); });
+  window.addEventListener('pageshow',function(){if(!running){manifest=null;refresh();}});
+  window.addEventListener('focus',function(){if(!running){manifest=null;refresh();}});
   refresh();
 })();

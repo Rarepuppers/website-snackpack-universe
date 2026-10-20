@@ -412,3 +412,8 @@ Published in `902f1005` (local implementation commit `5461f678`).
   pages.
 - The shelf is generated from one list (`scripts/build-read-shelf.mjs`), so new
   books slot in without hand edits.
+
+
+## 20 October 2026 - Reads discovery and two reviewed books
+
+The 54-book / 307-page shelf adds Pork-ulele's Picnic Song and Captain Beakon's Air Show, with 54 PDFs totalling 379 printed pages. Saved-book card status and a device-only filter use actual cache completeness; phonics preparation/claims, distinct next choices and a six-group homepage improve discovery. Seven candidate pictures retained; one canonical-character correction delivered app-first. Full source, browser, PDF and publication evidence: [delivery record](READS-DISCOVERY-DELIVERY-2026-10-20.md). App source corrections do not establish a native/store release. The 15 November decision gate is unchanged.
