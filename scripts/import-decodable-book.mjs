@@ -97,7 +97,7 @@ function parseBooks() {
 }
 
 function preparation(book) {
-  return `<aside class="read-preparation"><h2>Before reading together</h2><p>${esc(book.parentNote)}</p><p>Prepare tricky words: ${esc(book.trickyWords.join(', ') || 'none')}. Words needing an extra skill: ${esc(book.bridgeWords.join(', ') || 'none')}.</p></aside>`;
+  return `<aside class="read-preparation" id="reading-preparation"><h2>Before reading together</h2><p>${esc(book.parentNote)}</p><p>Prepare tricky words: ${esc(book.trickyWords.join(', ') || 'none')}. Words needing an extra skill: ${esc(book.bridgeWords.join(', ') || 'none')}.</p></aside>`;
 }
 function buildHtml(book) {
   const existing = path.join(OUT_ROOT, book.id, "index.html");
@@ -107,8 +107,8 @@ function buildHtml(book) {
     if (articles.length !== book.pages.length) throw new Error(`${book.id}: page count changed; review the full book before re-import`);
     let i = 0;
     const plain = (s) => s.replace(/<[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'");
-    const prepared = html.replace(/(<section class="story-title-section">[\s\S]*?<p class="lead">)[\s\S]*?(<\/p>)/, (_,start,end)=>start + `A ${book.pages.length}-page Stage ${book.stage} sound practice story. Prepare the declared exceptions together before your reader tries the words.` + end).replace(/<aside class="read-preparation">[\s\S]*?<\/aside>/g,'').replace('<a class="btn btn-primary" href="#page-1">Begin the story</a>', preparation(book) + '<a class="btn btn-primary" href="#page-1">Begin the story</a>');
-    return prepared.replace(/<article class="story-page-card"[^>]*>[\s\S]*?<\/article>/g, (article) => {
+    const prepared = html.replace(/(<(?:h2|h3)[^>]*>For grown-ups<\/(?:h2|h3)>)[\s\S]*?<p>[\s\S]*?<\/p>/, '$1<p><a class="text-link" href="#reading-preparation">Review the preparation note and word lists above</a>.</p>').replace(/(<section class="story-title-section">[\s\S]*?<p class="lead">)[\s\S]*?(<\/p>)/, (_,start,end)=>start + `A ${book.pages.length}-page Stage ${book.stage} sound practice story. Prepare the declared exceptions together before your reader tries the words.` + end).replace(/<aside class="read-preparation"[^>]*>[\s\S]*?<\/aside>/g,'').replace('<a class="btn btn-primary" href="#page-1">Begin the story</a>', preparation(book) + '<a class="btn btn-primary" href="#page-1">Begin the story</a>');
+    return (prepared.includes('href="#reading-preparation"') ? prepared : prepared.replace('<p>SnackPack ABC', '<p><a class="text-link" href="#reading-preparation">Review the preparation note and word lists above</a>.</p><p>SnackPack ABC')).replace(/<article class="story-page-card"[^>]*>[\s\S]*?<\/article>/g, (article) => {
       const page = book.pages[i++];
       return article.replace(/(<div class="story-page-copy">[\s\S]*?<p>)([\s\S]*?)(<\/p>)/, (whole, before, prose, after) => {
         if (plain(prose) === page.text) return whole;
@@ -182,7 +182,7 @@ function buildHtml(book) {
 ${pageCards}
 </section>
 
-<section><div class="shell story-finish-card"><span class="eyebrow">The end &middot; Brilliant reading</span>${QUESTIONS[book.id] ? `<h2>${esc(QUESTIONS[book.id][0])}</h2><details class="story-answer"><summary>Show the answer</summary><p>${esc(QUESTIONS[book.id][1])}</p></details><h3 class="story-grownups">For grown-ups</h3>` : "<h2>For grown-ups</h2>"}<p>${esc(book.parentNote)}</p><p>SnackPack ABC &amp; Alphabet continues with letter activities, read-together stories and more early phonics practice.</p><div class="stack-inline"><a class="btn btn-primary" href="${PLAY_URL}" target="_blank" rel="noopener">Get the app on Google Play</a><a class="btn btn-secondary" href="../../apps/snackpack-1-abcs-alphabet/">Explore the app</a><a class="btn btn-secondary" href="./${book.id}.pdf" download>Print this book (PDF)</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>
+<section><div class="shell story-finish-card"><span class="eyebrow">The end &middot; Brilliant reading</span>${QUESTIONS[book.id] ? `<h2>${esc(QUESTIONS[book.id][0])}</h2><details class="story-answer"><summary>Show the answer</summary><p>${esc(QUESTIONS[book.id][1])}</p></details><h3 class="story-grownups">For grown-ups</h3>` : "<h2>For grown-ups</h2>"}<p><a class="text-link" href="#reading-preparation">Review the preparation note and word lists above</a>.</p><p>SnackPack ABC &amp; Alphabet continues with letter activities, read-together stories and more early phonics practice.</p><div class="stack-inline"><a class="btn btn-primary" href="${PLAY_URL}" target="_blank" rel="noopener">Get the app on Google Play</a><a class="btn btn-secondary" href="../../apps/snackpack-1-abcs-alphabet/">Explore the app</a><a class="btn btn-secondary" href="./${book.id}.pdf" download>Print this book (PDF)</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>
 </main>
 <footer class="foot"><div class="shell foot-wrap"><p class="foot-note">Story from SnackPack ABC &amp; Alphabet.</p><div class="footer-links"><a class="text-link" href="../">Bookshelf</a><a class="text-link" href="../../privacy/snackpack-1-abcs-alphabet/">Privacy</a></div></div></footer>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${BEACON}"}'></script>
