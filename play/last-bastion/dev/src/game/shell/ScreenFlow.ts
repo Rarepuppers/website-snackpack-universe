@@ -598,12 +598,34 @@ function stepSettings(state: ShellState, intent: ShellIntent): ShellStepResult {
       const direction = intent === "left" ? -1 : 1;
       value = Math.min(row.max, Math.max(row.min, Math.round((current + direction * row.step) / row.step) * row.step));
     }
-    return {
-      state: { ...state, settings: { ...state.settings, [row.key]: value } },
-      effects: [{ type: "set-setting", key: row.key, value }],
-    };
+    return setShellSetting(state, value);
   }
   return { state, effects: [] };
+}
+
+/** Native controls and directional input share validation and the same persistence effect. */
+export function setShellSetting(state: ShellState, requested: unknown): ShellStepResult {
+  if (state.screen !== "settings") return { state, effects: [] };
+  const row = state.settingsRows[state.settingsIndex];
+  if (!row || row.kind === "action") return { state, effects: [] };
+  let value: GameSettings[keyof GameSettings];
+  if (row.kind === "toggle") {
+    if (typeof requested !== "boolean") return { state, effects: [] };
+    value = requested;
+  } else if (row.kind === "choice") {
+    if (!row.options.includes(String(requested))) return { state, effects: [] };
+    value = String(requested) as GameSettings[keyof GameSettings];
+    if (row.key === "uiScale" || row.key === "radarSize" || (row.key === "frameCap" && value !== "display")) {
+      value = Number(value) as GameSettings[keyof GameSettings];
+    }
+  } else {
+    const numeric = Number(requested);
+    if (!Number.isFinite(numeric)) return { state, effects: [] };
+    value = Math.min(row.max, Math.max(row.min, Math.round(numeric / row.step) * row.step));
+  }
+  if (Object.is(state.settings[row.key], value)) return { state, effects: [] };
+  return { state: { ...state, settings: { ...state.settings, [row.key]: value } },
+    effects: [{ type: "set-setting", key: row.key, value }] };
 }
 
 function stepControls(state: ShellState, intent: ShellIntent): ShellStepResult {

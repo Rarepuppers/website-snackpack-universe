@@ -25,7 +25,7 @@ export function cadenceWeapons(
 
 /**
  * Two-letter code on the cooldown tile — the only per-weapon text the HUD has,
- * and the tiebreaker while thirteen weapons share eight placeholder tiles. The
+ * used when its authored icon is unavailable. The
  * default (`weaponId.slice(0, 2)`) collapses every `bastion-*` and `-carbine`
  * family onto the same pair, so every id gets an explicit entry.
  */

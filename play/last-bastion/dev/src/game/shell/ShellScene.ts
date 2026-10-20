@@ -33,6 +33,7 @@ import {
   ROSTER,
   settingsRowsForDisplayCapabilities,
   stepShell,
+  setShellSetting,
   type ShellIntent,
   type ShellRunMode,
   type ShellState,
@@ -65,6 +66,7 @@ import {
 } from "../assets/UiChromeAssets";
 import { requestedShellScreen } from "./ShellReviewRoute";
 import { heroDossierCopy } from "./HeroDossierCopy";
+import { SemanticShell } from "./SemanticShell";
 
 type UiPanelWeight = "recessed" | "raised" | "emphasis";
 
@@ -88,11 +90,13 @@ const ORANGE = "#ff9a52";
 const MUTED = "#8fa1b3";
 
 /**
- * Task 37 behavior gate: the code-native front-end shell. Every panel is a
- * placeholder rectangle plus code-rendered text; Batch G art replaces the
- * dressing later without touching the ScreenFlow rules.
+ * Front-end shell: authored chrome plus ScreenFlow-owned state/effects.
+ * Title/menu/settings use visible semantic controls; remaining screens retain
+ * their canvas controls until separately accepted accessibility slices land.
  */
 export class ShellScene extends Phaser.Scene {
+  private semantic?: SemanticShell;
+  private focusSemanticSelection = false;
   private saveStore!: LocalSaveStore;
   private state!: ShellState;
   private root!: Phaser.GameObjects.Container;
@@ -136,6 +140,27 @@ export class ShellScene extends Phaser.Scene {
       { labEnabled: requestedLabAccess(), runMode: requestedRunMode() },
     );
     this.root = this.add.container(0, 0);
+    this.semantic = new SemanticShell(this.game.canvas, {
+      intent: intent => this.apply(intent),
+      select: index => {
+        const key = this.state.screen === "menu" ? "menuIndex" : "settingsIndex";
+        if (this.state[key] === index) return;
+        this.state = { ...this.state, [key]: index }; this.render();
+      },
+      activate: index => {
+        const key = this.state.screen === "menu" ? "menuIndex" : "settingsIndex";
+        this.state = { ...this.state, [key]: index }; this.apply("confirm");
+      },
+      group: name => {
+        const index = this.state.settingsRows.findIndex(row => settingsGroup(row.key) === name);
+        if (index >= 0) { this.state = { ...this.state, settingsIndex: index }; this.focusSemanticSelection = true; this.render(); }
+      },
+      setting: (index, value) => {
+        this.state = { ...this.state, settingsIndex: index };
+        this.applyResult(setShellSetting(this.state, value));
+      },
+      retrySave: () => { this.saveStore.retryPersistence(); this.render(); },
+    });
 
     // One direct window listener instead of the Phaser keyboard plugin: the
     // plugin can deliver capture-list keys (Enter, Space, arrows) a second
@@ -143,21 +168,26 @@ export class ShellScene extends Phaser.Scene {
     window.addEventListener("keydown", this.handleKey);
     document.addEventListener("fullscreenchange", this.handleFullscreenChange);
     this.events.once("shutdown", () => {
+      this.semantic?.destroy();
+      this.semantic = undefined;
       window.removeEventListener("keydown", this.handleKey);
       document.removeEventListener("fullscreenchange", this.handleFullscreenChange);
+      this.input.gamepad?.off("down", this.handleGamepad);
     });
-    this.input.gamepad?.on("down", (_pad: unknown, button: { index: number }) => {
+    this.input.gamepad?.on("down", this.handleGamepad);
+
+    this.render();
+  }
+
+  private readonly handleGamepad = (_pad: unknown, button: { index: number }): void => {
       if (this.bindingCapture?.device === "gamepad") {
         const mapped = gamepadButtonFromIndex(button.index);
         if (mapped) this.commitGamepadBinding(mapped);
         return;
       }
       const intent = padButtonToIntent(button.index);
-      if (intent) this.apply(intent);
-    });
-
-    this.render();
-  }
+      if (intent) { this.focusSemanticSelection = true; this.apply(intent); }
+  };
 
   override update(_time: number, delta: number): void {
     this.titlePulse += delta;
@@ -180,6 +210,18 @@ export class ShellScene extends Phaser.Scene {
       this.commitKeyboardBinding(event.code);
       return;
     }
+    if (this.semantic?.owns(event.target)) {
+      // Native Enter/Space and form arrows must fire once through their own
+      // controls, never a second time through the scene's global shortcut.
+      const target = event.target as HTMLElement;
+      const checkbox = target instanceof HTMLInputElement && target.type === "checkbox";
+      if (checkbox && ["Enter", "NumpadEnter"].includes(event.code)) {
+        event.preventDefault(); this.apply("confirm"); return;
+      }
+      const checkboxNavigation = checkbox && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.code);
+      if (event.code !== "Escape" && !checkboxNavigation && (target.matches("input, select, textarea")
+        || ["Enter", "NumpadEnter", "Space", "Tab"].includes(event.code))) return;
+    }
     if (event.code === "KeyP" && this.saveStore.persistence().kind === "failed") {
       event.preventDefault();
       this.saveStore.retryPersistence();
@@ -197,6 +239,7 @@ export class ShellScene extends Phaser.Scene {
     const intent = keyToIntent(event.code);
     if (intent) {
       event.preventDefault();
+      this.focusSemanticSelection = true;
       this.apply(intent);
     }
   };
@@ -212,7 +255,10 @@ export class ShellScene extends Phaser.Scene {
       }
       return;
     }
-    const result = stepShell(this.state, intent);
+    this.applyResult(stepShell(this.state, intent));
+  }
+
+  private applyResult(result: ReturnType<typeof stepShell>): void {
     this.state = result.state;
     for (const effect of result.effects) {
       if (effect.type === "set-setting") {
@@ -302,7 +348,7 @@ export class ShellScene extends Phaser.Scene {
     const assetsReady = this.ensureScreenAssets();
     (window as unknown as { __shellAssetsReady?: boolean }).__shellAssetsReady = assetsReady;
     (window as unknown as { __shellLoadFailed?: boolean }).__shellLoadFailed = this.characterLoadFailed;
-    if (!assetsReady) return;
+    if (!assetsReady) { this.renderSemantics(); return; }
     this.root.removeAll(true);
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY));
     const backdropId = this.state.screen === "title"
@@ -326,12 +372,22 @@ export class ShellScene extends Phaser.Scene {
       case "threat-select": this.renderThreatSelect(); break;
     }
     this.renderPersistenceWarning();
+    this.renderSemantics();
+  }
+
+  private renderSemantics(): void {
+    const persistence = this.saveStore.persistence();
+    this.semantic?.render({ state: this.state, progress: this.saveStore.load().progress,
+      saved: persistence.kind === "saved", saveFailed: persistence.kind === "failed",
+      feedback: this.saveTransferFeedback ?? this.fullscreenFeedback, formatValue: formatSettingValue,
+    }, this.focusSemanticSelection);
+    this.focusSemanticSelection = false;
   }
 
   private renderPersistenceWarning(): void {
     const persistence = this.saveStore.persistence();
     (window as unknown as { __savePersistence?: object }).__savePersistence = persistence;
-    if (persistence.kind === "saved") return;
+    if (persistence.kind === "saved" || (this.semantic && ["title", "menu", "settings"].includes(this.state.screen))) return;
     const message = persistence.kind === "memory-only"
       ? "SAVE UNAVAILABLE  •  PROGRESS LASTS UNTIL THIS WINDOW CLOSES"
       : "SAVE ERROR  •  PRESS P OR CLICK HERE TO RETRY";
@@ -399,10 +455,10 @@ export class ShellScene extends Phaser.Scene {
 
   private renderTitle(): void {
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT - 54, WIDTH, 108, 0x0b121c, 0.76));
-    this.root.add(this.text(WIDTH / 2, 170, "LAST BASTION", IVORY, "54px", true));
+    this.root.add(this.text(WIDTH / 2, 170, "LAST BASTION", IVORY, "54px", true).setVisible(!this.semantic));
     this.root.add(this.text(WIDTH / 2, 225, "HOLD THE LINE", TEAL, "16px", true));
     const prompt = this.text(WIDTH / 2, 330, "PRESS ENTER", ORANGE, "22px", true);
-    prompt.setName("title-prompt");
+    prompt.setName("title-prompt").setVisible(!this.semantic);
     const promptFrame = uiChromeEnabled()
       ? this.add.nineslice(
         prompt.x,
@@ -428,12 +484,12 @@ export class ShellScene extends Phaser.Scene {
       "12px",
       true,
     ));
-    this.clickZone(0, 0, WIDTH, HEIGHT, () => this.apply("confirm"));
+    if (!this.semantic) this.clickZone(0, 0, WIDTH, HEIGHT, () => this.apply("confirm"));
   }
 
   private renderMenu(): void {
     if (uiChromeEnabled()) this.root.add(this.uiHeaderPlate(220, 48, 330, 62));
-    this.root.add(this.text(70, 48, "LAST BASTION", IVORY, "28px"));
+    this.root.add(this.text(70, 48, "LAST BASTION", IVORY, "28px").setVisible(!this.semantic));
     const progress = this.saveStore.load().progress;
     const columns = MENU_COLUMNS;
     const cardWidth = 252, cardHeight = 72, originX = 90, originY = 100, gap = 12;
@@ -467,10 +523,10 @@ export class ShellScene extends Phaser.Scene {
           cardHeight + 12,
         ));
       }
-      this.root.add(this.text(x + 18, y + 16, card.label, focused ? TEAL : IVORY, "19px"));
+      this.root.add(this.text(x + 18, y + 16, card.label, focused ? TEAL : IVORY, "19px").setVisible(!this.semantic));
       const sub = menuCardSubtitle(card, progress, this.saveStore.persistence().kind === "saved", localDayKey(Date.now()));
-      this.root.add(this.text(x + 18, y + 44, sub, card.id === "daily" ? TEAL : MUTED, "10px"));
-      this.clickZone(x, y, cardWidth, cardHeight, () => {
+      this.root.add(this.text(x + 18, y + 44, sub, card.id === "daily" ? TEAL : MUTED, "10px").setVisible(!this.semantic));
+      if (!this.semantic) this.clickZone(x, y, cardWidth, cardHeight, () => {
         this.state = { ...this.state, menuIndex: index };
         this.apply("confirm");
       }, chromeFrame, focused ? "selected" : "idle");
@@ -568,20 +624,20 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private renderSettings(): void {
-    this.root.add(this.text(70, 48, "SETTINGS", IVORY, "28px"));
+    this.root.add(this.text(70, 48, "SETTINGS", IVORY, "28px").setVisible(!this.semantic));
     this.root.add(this.text(
       70,
       84,
       this.saveTransferFeedback ?? this.fullscreenFeedback ?? "Changes save automatically. Select a group to see its settings.",
       this.saveTransferFeedback || this.fullscreenFeedback ? ORANGE : MUTED,
       "12px",
-    ));
+    ).setVisible(!this.semantic));
     if (uiChromeEnabled()) this.root.add(this.uiDivider(WIDTH / 2, 448, 760));
     const group = settingsGroup(this.state.settingsRows[this.state.settingsIndex]!.key);
     SETTINGS_GROUPS.forEach((name, groupIndex) => {
       const x = 70 + groupIndex * 166;
-      this.root.add(this.text(x, 112, name, name === group ? TEAL : IVORY, "12px"));
-      this.clickZone(x - 4, 104, 160, 30, () => {
+      this.root.add(this.text(x, 112, name, name === group ? TEAL : IVORY, "12px").setVisible(!this.semantic));
+      if (!this.semantic) this.clickZone(x - 4, 104, 160, 30, () => {
         const index = this.state.settingsRows.findIndex(row => settingsGroup(row.key) === name);
         if (index >= 0) { this.state = { ...this.state, settingsIndex: index }; this.render(); }
       });
@@ -597,7 +653,7 @@ export class ShellScene extends Phaser.Scene {
       const focused = index === this.state.settingsIndex;
       this.root.add(this.add.rectangle(x + 190, y + 11, 380, 26, focused ? 0x24384f : PANEL)
         .setStrokeStyle(focused ? 2 : 1, focused ? TEAL_HEX : 0x3b4d63));
-      this.root.add(this.text(x + 12, y + 5, row.label, focused ? TEAL : IVORY, "10px"));
+      this.root.add(this.text(x + 12, y + 5, row.label, focused ? TEAL : IVORY, "10px").setVisible(!this.semantic));
       const actionRow = row.kind === "action";
       const enabled = actionRow || row.kind !== "toggle" || Boolean(this.state.settings[row.key]);
       const valueLabel = actionRow
@@ -605,13 +661,13 @@ export class ShellScene extends Phaser.Scene {
         : row.kind === "toggle"
           ? enabled ? "ON" : "OFF"
           : formatSettingValue(row.key, this.state.settings[row.key]);
-      this.root.add(this.text(x + 364, y + 5, valueLabel, enabled ? TEAL : ORANGE, "10px").setOrigin(1, 0));
-      this.clickZone(x, y - 2, 380, 27, () => {
+      this.root.add(this.text(x + 364, y + 5, valueLabel, enabled ? TEAL : ORANGE, "10px").setOrigin(1, 0).setVisible(!this.semantic));
+      if (!this.semantic) this.clickZone(x, y - 2, 380, 27, () => {
         this.state = { ...this.state, settingsIndex: index };
         this.apply("confirm");
       });
     });
-    this.root.add(this.text(70, HEIGHT - 22, "UP/DOWN BROWSE ALL SETTINGS  •  ENTER/LEFT/RIGHT CHANGE  •  ESC BACK", MUTED, "11px"));
+    this.root.add(this.text(70, HEIGHT - 22, "TAB BROWSE  •  NATIVE CONTROLS CHANGE  •  ESC BACK", MUTED, "11px"));
   }
 
   private exportSaveBackup(): void {

@@ -1,20 +1,48 @@
 import Phaser from "phaser";
-import { loadGameAssets } from "../assets/PhaserAssetLoader";
-import { GAME_ASSETS } from "../assets/GameAssetManifest";
+import { loadGameAssetIds, loadGameAssets } from "../assets/PhaserAssetLoader";
+import { GAME_ASSETS, type GameAssetId } from "../assets/GameAssetManifest";
 import { calculateWeaponRingLayout } from "../equipment/WeaponRingLayout";
 import { registerMarineHelmet } from "../rendering/MarineHelmetRegistration";
 
 export class AssetGalleryScene extends Phaser.Scene {
+  private manifestPage = 0;
+  private manifestRoot?: Phaser.GameObjects.Container;
+  private readonly reviewSamples: Phaser.GameObjects.Sprite[] = [];
+  private requestedHero: string | null = null;
+
   constructor() {
     super("asset-gallery");
   }
 
   preload(): void {
-    loadGameAssets(this);
+    this.requestedHero = new URLSearchParams(window.location.search).get("hero");
+    const family = heroGalleryFamily(this.requestedHero);
+    if (family) loadGameAssetIds(this, family);
+    else if (this.requestedHero === null) loadGameAssets(this);
+    // Unknown hero selectors need only the error screen, never a Marine fallback.
   }
 
   create(): void {
+    this.reviewSamples.length = 0;
+    this.manifestPage = 0;
+    this.manifestRoot = undefined;
     this.add.rectangle(480, 270, 960, 540, 0x111a25);
+    this.events.once("shutdown", () => {
+      window.removeEventListener("keydown", this.handleReviewKey);
+      this.input.gamepad?.off("down", this.handleReviewPad);
+      delete (window as GalleryWindow).__galleryReview;
+    });
+    window.addEventListener("keydown", this.handleReviewKey);
+    this.input.gamepad?.on("down", this.handleReviewPad);
+    if (this.requestedHero !== null) {
+      if (heroGalleryFamily(this.requestedHero)) this.createHeroReview(this.requestedHero);
+      else {
+        this.add.text(40, 70, "UNKNOWN HERO REVIEW", style("#ffffff", "22px"));
+        this.add.text(40, 120, "Choose ?mode=gallery&hero=marine, medic, assault, tactician or scout.\nHero selection takes precedence over historical batch selectors.", style("#8fb2c9", "14px"));
+        (window as GalleryWindow).__galleryReview = { heroId: null, error: "Unknown hero selector", samples: [] };
+      }
+      return;
+    }
     const batch = new URLSearchParams(window.location.search).get("batch");
     if (batch === "boss-b2-b3") {
       this.createRegionalBossGallery();
@@ -259,8 +287,9 @@ export class AssetGalleryScene extends Phaser.Scene {
     this.add.text(20, 188, "SCUTTLER — gait A/B × S N E W", style("#ff9a72", "11px"));
     for (let frame = 0; frame < 8; frame += 1) {
       const x = 52 + frame * 68;
-      this.add.sprite(x, 235, "scuttler-v1", frame);
+      this.reviewSprite(x, 235, "scuttler-v1", frame);
       this.drawPivot(x, 235);
+      this.add.text(x, 270, String(frame), style("#aebed0", "8px")).setOrigin(0.5);
     }
 
     this.add.text(588, 188, "SERVICE RIFLE + RING CAPACITY", style("#ffd36b", "11px"));
@@ -271,25 +300,110 @@ export class AssetGalleryScene extends Phaser.Scene {
     this.add.text(20, 286, "EGG CLUSTER — dormant / pulse / cracked / empty", style("#ff9a72", "11px"));
     for (let frame = 0; frame < 4; frame += 1) {
       const x = 62 + frame * 82;
-      this.add.sprite(x, 340, "egg-cluster-v1", frame);
+      this.reviewSprite(x, 340, "egg-cluster-v1", frame);
       this.drawPivot(x, 340);
+      this.add.text(x, 378, String(frame), style("#aebed0", "8px")).setOrigin(0.5);
     }
 
     this.add.text(414, 286, "BRAIN BLOB — drift / wind-up / lunge / recover", style("#d696ff", "11px"));
     for (let frame = 0; frame < 4; frame += 1) {
       const x = 468 + frame * 100;
-      this.add.sprite(x, 340, "brain-blob-v1", frame);
+      this.reviewSprite(x, 340, "brain-blob-v1", frame);
       this.drawPivot(x, 340);
+      this.add.text(x, 378, String(frame), style("#aebed0", "8px")).setOrigin(0.5);
     }
 
-    this.add.rectangle(480, 444, 920, 126, 0x0b121c, 0.9).setStrokeStyle(2, 0x405a72);
-    this.add.text(36, 394, "MANIFEST CONTRACT", style("#68e4e8", "11px"));
-    const lines = Object.values(GAME_ASSETS).map((asset) => (
-      `${asset.id.padEnd(20)} ${asset.kind.padEnd(11)} ${asset.logicalWidth}×${asset.logicalHeight} pivot ${asset.pivot.x.toFixed(2)},${asset.pivot.y.toFixed(2)}`
-    ));
-    this.add.text(42, 414, lines.slice(0, 3).join("\n"), style("#aebed0", "10px"));
-    this.add.text(500, 414, lines.slice(3).join("\n"), style("#aebed0", "10px"));
-    this.add.text(480, 516, "Debug cross = runtime pivot • ?stress=4 normal readability • ?stress=12 capacity", style("#8fb2c9", "10px")).setOrigin(0.5);
+    this.renderManifestPage();
+  }
+
+  private readonly handleReviewKey = (event: KeyboardEvent): void => {
+    if (event.target instanceof HTMLElement && event.target.closest("button, a, input, select, textarea")) return;
+    if (event.code === "Escape") { window.location.href = "?flow=menu"; return; }
+    if (!this.manifestRoot) return;
+    if (event.code === "ArrowLeft" || event.code === "ArrowRight") {
+      event.preventDefault();
+      this.changeManifestPage(event.code === "ArrowLeft" ? -1 : 1);
+    }
+  };
+
+  private readonly handleReviewPad = (_pad: unknown, button: { index: number }): void => {
+    if (button.index === 1) window.location.href = "?flow=menu";
+    else if (this.manifestRoot && (button.index === 14 || button.index === 15)) this.changeManifestPage(button.index === 14 ? -1 : 1);
+  };
+
+  private changeManifestPage(direction: number): void {
+    const pages = Math.ceil(Object.values(GAME_ASSETS).length / 8);
+    this.manifestPage = Math.max(0, Math.min(pages - 1, this.manifestPage + direction));
+    this.renderManifestPage();
+  }
+
+  private renderManifestPage(): void {
+    this.manifestRoot?.destroy(true);
+    const root = this.add.container(0, 0);
+    this.manifestRoot = root;
+    const assets = Object.values(GAME_ASSETS);
+    const pages = Math.ceil(assets.length / 8);
+    root.add(this.add.rectangle(480, 450, 920, 120, 0x0b121c, 0.95).setStrokeStyle(2, 0x405a72));
+    root.add(this.add.text(36, 390, `MANIFEST CONTRACT - ${assets.length} definitions - ${this.manifestPage + 1}/${pages}`, style("#68e4e8", "11px")));
+    const labels: Phaser.GameObjects.Text[] = [];
+    assets.slice(this.manifestPage * 8, this.manifestPage * 8 + 8).forEach((asset, index) => {
+      const x = 36 + Math.floor(index / 4) * 455;
+      const y = 410 + (index % 4) * 15;
+      const label = this.add.text(x, y, `${asset.id}  ${asset.logicalWidth}x${asset.logicalHeight}`, style("#aebed0", "9px"));
+      labels.push(label); root.add(label);
+    });
+    for (const [label, x, direction, enabled] of [["PREVIOUS", 90, -1, this.manifestPage > 0], ["NEXT", 845, 1, this.manifestPage < pages - 1]] as const) {
+      const button = this.add.text(x, 480, label, style(enabled ? "#68e4e8" : "#728ba1", "12px")).setOrigin(0.5);
+      root.add(button);
+      if (enabled) button.setInteractive({ useHandCursor: true }).on("pointerdown", () => this.changeManifestPage(direction));
+    }
+    root.add(this.add.text(480, 481, "LEFT/RIGHT or D-PAD: pages | ESC / B: menu", style("#8fb2c9", "10px")).setOrigin(0.5));
+    this.publishReview(null, labels);
+  }
+
+  private reviewSprite(x: number, y: number, id: GameAssetId, frame: number, scale = 1): Phaser.GameObjects.Sprite {
+    const asset = GAME_ASSETS[id];
+    const sprite = this.add.sprite(x, y, id, frame).setOrigin(asset.pivot.x, asset.pivot.y)
+      .setDisplaySize(asset.logicalWidth * scale, asset.logicalHeight * scale);
+    this.reviewSamples.push(sprite);
+    return sprite;
+  }
+
+  private createHeroReview(hero: string): void {
+    const family = heroGalleryFamily(hero)!;
+    const bodyId = family[0]!;
+    const body = GAME_ASSETS[bodyId];
+    const count = body.kind === "spritesheet" ? body.frameCount : 1;
+    this.add.text(28, 20, `${hero.toUpperCase()} - PRODUCTION FRAME REVIEW`, style("#ffffff", "22px"));
+    this.add.text(28, 55, "Body + helmet where present; authored pivots. Frame numbers are source IDs.", style("#8fb2c9", "12px"));
+    const hasBreach = hero === "assault";
+    const samples = this.add.container(0, 0);
+    for (let frame = 0; frame < count; frame++) {
+      const x = 115 + (frame % 4) * 225, y = 126 + Math.floor(frame / 4) * 74;
+      samples.add(this.reviewSprite(x, y, bodyId, frame, 0.6));
+      if (hero === "marine") {
+        const helmet = this.reviewSprite(x, y, "marine-helmet-v1", frame, 0.6);
+        registerMarineHelmet(helmet, frame, x, y, 0.6); samples.add(helmet);
+      } else if (hero === "medic") samples.add(this.reviewSprite(x, y, "medic-helmet-v1", frame, 0.6));
+      if (hasBreach) {
+        // Breach overlay is an action layer, not an always-on helmet. Isolate it
+        // beside its source frame so the review cannot imply a permanent layer.
+        samples.add(this.reviewSprite(x + 65, y, "assault-breach-overlay-v1", frame, 0.45));
+      }
+      this.drawPivot(x, y);
+      this.add.text(x, y + 23, `FRAME ${frame}${hasBreach ? " + BREACH" : ""}`, style("#aebed0", "9px")).setOrigin(0.5);
+    }
+    this.add.text(28, 502, "Static frame review only. Accept registration and transitions in real combat motion.", style("#8fb2c9", "11px"));
+    this.add.text(28, 524, "ESC / B: menu | hero=marine / medic / assault / tactician / scout", style("#68e4e8", "10px"));
+    this.publishReview(hero, []);
+  }
+
+  private publishReview(heroId: string | null, labels: Phaser.GameObjects.Text[]): void {
+    (window as GalleryWindow).__galleryReview = {
+      heroId, page: this.manifestPage, pageCount: Math.ceil(Object.values(GAME_ASSETS).length / 8),
+      samples: this.reviewSamples.map(sprite => ({ id: sprite.texture.key, frame: sprite.frame.name, ...sprite.getBounds() })),
+      rows: labels.map(label => ({ text: label.text, ...label.getBounds() })),
+    };
   }
 
   private createBatchIGallery(): void {
@@ -1745,7 +1859,7 @@ export class AssetGalleryScene extends Phaser.Scene {
     const slots = calculateWeaponRingLayout(count);
     for (const slot of slots) {
       this.add.image(x + slot.x * 30, y + slot.y * 30, "service-rifle-v1")
-        .setOrigin(0.25, 0.5).setScale(scale);
+        .setOrigin(0.25, 0.5).setDisplaySize(GAME_ASSETS["service-rifle-v1"].logicalWidth * scale, GAME_ASSETS["service-rifle-v1"].logicalHeight * scale);
     }
     this.add.circle(x, y, 10, 0x253d5f).setStrokeStyle(2, 0xe9e3cf);
     this.add.text(x, y + 43, String(count), style("#ffffff", "10px")).setOrigin(0.5);
@@ -1767,3 +1881,15 @@ function setManifestOrigin(sprite: Phaser.GameObjects.Sprite, id: "marine-base-v
 function style(color: string, fontSize: string): Phaser.Types.GameObjects.Text.TextStyle {
   return { color, fontFamily: "monospace", fontSize };
 }
+
+function heroGalleryFamily(hero: string | null): readonly GameAssetId[] | null {
+  switch (hero) {
+    case "marine": return ["marine-base-v1", "marine-helmet-v1"];
+    case "medic": return ["medic-base-v1", "medic-helmet-v1"];
+    case "assault": return ["assault-base-v1", "assault-breach-overlay-v1"];
+    case "tactician": return ["tactician-base-v1"];
+    case "scout": return ["scout-base-v1"];
+    default: return null;
+  }
+}
+type GalleryWindow = Window & { __galleryReview?: object };

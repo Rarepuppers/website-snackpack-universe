@@ -15,30 +15,25 @@ import {
   shopWeaponTilePresentation,
 } from "./WeaponTileFrames";
 
-const PENDING_ART_WEAPON_IDS: readonly WeaponId[] = [
+const LEGACY_FALLBACK_WEAPON_IDS: readonly WeaponId[] = [
   "railspike", "seeker-swarm", "cryo-lance", "tesla-coil", "flamethrower", "sawblade", "event-horizon",
-  // Elemental balance pass (31 July 2026), art pending on the same terms.
+  // Legacy Batch I fallback; production overrides use dedicated identity atlases.
   "corrosive-lobber", "scourge-repeater", "bile-lance", "hoarfrost-scatter", "glacier-ward", "tether-harpoon",
-  // First deployable, art pending on the same terms.
+  // Legacy deployable fallback.
   "sentry-stake",
   // Transformation-bound support entity; never appears in the weapon ring.
   "auxiliary-drone",
-  // Tier 1 hole-fillers (8 Aug 2026), art pending on the same terms — they
-  // borrow by attack pattern until asset batch 80 lands.
+  // Legacy Tier 1 fallback; dedicated 68C tiles are checked below.
   "emberlance", "storm-coil-beam",
 ];
 
 const STANDALONE_TILE_WEAPON_IDS: readonly WeaponId[] = ["marauder-ar"];
 
-/**
- * The close-quarters family (25 July 2026) has no Batch I slots yet either, but
- * borrows the Patrol Blade's blade frame rather than the rifle's so the
- * placeholder at least reads as melee.
- */
-const PENDING_MELEE_WEAPON_IDS: readonly WeaponId[] = ["combat-knife", "machete", "fire-axe", "shock-baton", "breaching-maul", "plasma-saber", "rime-cleaver", "blight-scythe"];
+/** Explicit legacy Batch I mapping coverage, independent of dedicated production tiles. */
+const LEGACY_MELEE_FALLBACK_IDS: readonly WeaponId[] = ["combat-knife", "machete", "fire-axe", "shock-baton", "breaching-maul", "plasma-saber", "rime-cleaver", "blight-scythe"];
 
-/** The tile each art-pending weapon borrows, chosen by attack pattern. */
-const EXPECTED_PLACEHOLDER_FRAME: Readonly<Record<string, number>> = {
+/** Legacy eight-frame contract retained for callers requesting that atlas. */
+const EXPECTED_LEGACY_FRAME: Readonly<Record<string, number>> = {
   // Projectiles → rifle; the gravitic/explosive shell → grenade tube.
   railspike: 7,
   "seeker-swarm": 7,
@@ -70,7 +65,7 @@ const EXPECTED_PLACEHOLDER_FRAME: Readonly<Record<string, number>> = {
 describe("canonical Batch I weapon tile mapping", () => {
   it("maps every Batch I weapon to one unique atlas frame", () => {
     const batchIIds = (Object.keys(WEAPON_CATALOG) as WeaponId[])
-      .filter((id) => !PENDING_ART_WEAPON_IDS.includes(id) && !PENDING_MELEE_WEAPON_IDS.includes(id) && !STANDALONE_TILE_WEAPON_IDS.includes(id));
+      .filter((id) => !LEGACY_FALLBACK_WEAPON_IDS.includes(id) && !LEGACY_MELEE_FALLBACK_IDS.includes(id) && !STANDALONE_TILE_WEAPON_IDS.includes(id));
     const frames = batchIIds.map(canonicalWeaponTileFrame);
     expect(batchIIds).toHaveLength(8);
     expect(new Set(frames).size).toBe(8);
@@ -154,11 +149,11 @@ describe("canonical Batch I weapon tile mapping", () => {
   });
 
   it("groups every art-pending weapon onto the tile closest to how it plays", () => {
-    for (const id of PENDING_ART_WEAPON_IDS) {
-      expect(canonicalWeaponTileFrame(id)).toBe(EXPECTED_PLACEHOLDER_FRAME[id]);
+    for (const id of LEGACY_FALLBACK_WEAPON_IDS) {
+      expect(canonicalWeaponTileFrame(id)).toBe(EXPECTED_LEGACY_FRAME[id]);
     }
     // Contact weapons all read as a blade.
-    for (const id of PENDING_MELEE_WEAPON_IDS) {
+    for (const id of LEGACY_MELEE_FALLBACK_IDS) {
       expect(canonicalWeaponTileFrame(id)).toBe(1);
     }
   });

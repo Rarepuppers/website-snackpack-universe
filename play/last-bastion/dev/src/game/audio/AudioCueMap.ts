@@ -2,9 +2,8 @@ import type { CombatEvent } from "../combat/CombatSimulation";
 import type { WeaponId } from "../content/weaponCatalog";
 
 /**
- * Representative audio cues for combat events. Each cue currently describes a
- * short synthesized placeholder tone; when production audio files exist, the
- * same event → cue ids become the lookup for real samples.
+ * Stable combat event-to-cue IDs select approved production samples. The
+ * synthesis parameters remain a fallback for unavailable samples.
  */
 export interface AudioCue {
   id: string;

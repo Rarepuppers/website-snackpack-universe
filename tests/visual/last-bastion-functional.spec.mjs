@@ -587,3 +587,182 @@ for (const variant of ["a", "b"]) {
    expect(await page.evaluate(() => window.__buildInspection.lines.join(" "))).toContain("Void Initiation");
    expect(failures).toEqual([]);
  });
+
+
+for (const [width, height] of [[960, 540], [1920, 1080], [3840, 2160]]) {
+  test(`gallery logical sizes and every manifest page fit at ${width}x${height}`, async ({ page }) => {
+    const failures = watchRuntime(page);
+    await page.setViewportSize({ width, height });
+    await page.goto("/play/last-bastion/?mode=gallery");
+    await page.waitForFunction(() => window.__galleryReview?.pageCount > 0);
+    const first = await page.evaluate(() => window.__galleryReview);
+    expect(first.samples).toHaveLength(16);
+    for (const sample of first.samples) {
+      expect(sample.width).toBe(64); expect(sample.height).toBe(64);
+      expect(sample.x).toBeGreaterThanOrEqual(20); expect(sample.x + sample.width).toBeLessThan(940);
+      expect(sample.y).toBeGreaterThan(195); expect(sample.y + sample.height).toBeLessThan(380);
+    }
+    const seen = new Set();
+    for (let index = 0; index < first.pageCount; index++) {
+      const pageState = await page.evaluate(() => window.__galleryReview);
+      expect(pageState.page).toBe(index);
+      for (const row of pageState.rows) {
+        expect(row.x).toBeGreaterThanOrEqual(20); expect(row.x + row.width).toBeLessThan(940);
+        expect(row.y).toBeGreaterThanOrEqual(410); expect(row.y + row.height).toBeLessThan(475);
+        expect(seen.has(row.text)).toBe(false); seen.add(row.text);
+      }
+      await page.keyboard.press("ArrowRight");
+    }
+    expect(seen.size).toBeGreaterThan(200);
+    expect((await page.evaluate(() => window.__galleryReview)).page).toBe(first.pageCount - 1);
+    await page.keyboard.press("ArrowLeft");
+    expect((await page.evaluate(() => window.__galleryReview)).page).toBe(first.pageCount - 2);
+    expect(failures).toEqual([]);
+  });
+}
+
+test("hero gallery routes show the requested family and reject unknown heroes", async ({ page }) => {
+  const failures = watchRuntime(page);
+  for (const [hero, frames] of [["marine", 12], ["medic", 20], ["assault", 12], ["tactician", 12], ["scout", 12]]) {
+    await page.goto(`/play/last-bastion/?mode=gallery&hero=${hero}`);
+    await page.waitForFunction(hero => window.__galleryReview?.heroId === hero, hero);
+    const samples = (await page.evaluate(() => window.__galleryReview)).samples;
+    expect(samples.filter(sample => sample.id === `${hero}-base-v1`)).toHaveLength(frames);
+    expect(samples.every(sample => sample.id.startsWith(hero))).toBe(true);
+    for (const sample of samples) {
+      expect(sample.x).toBeGreaterThan(20); expect(sample.x + sample.width).toBeLessThan(940);
+      expect(sample.y).toBeGreaterThan(75); expect(sample.y + sample.height).toBeLessThan(495);
+    }
+  }
+  await page.goto("/play/last-bastion/?mode=gallery&hero=unknown");
+  await page.waitForFunction(() => window.__galleryReview?.error);
+  expect((await page.evaluate(() => window.__galleryReview)).samples).toEqual([]);
+  expect(failures).toEqual([]);
+});
+
+test("semantic menus activate once and restore focus on return", async ({ page }) => {
+  const failures = watchRuntime(page);
+  await page.goto("/play/last-bastion/");
+  await expect(page.getByRole("button", { name: "Start game", exact: true })).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("button", { name: /QUICK DROP/ })).toBeFocused();
+  expect(await page.evaluate(() => window.__shellState.screen)).toBe("menu");
+  await page.getByRole("button", { name: /SETTINGS.*Audio/ }).click();
+  await expect(page.getByRole("heading", { name: "SETTINGS", exact: true })).toBeVisible();
+  await expect(page.getByRole("checkbox", { name: "Screen shake", exact: true })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("button", { name: /SETTINGS.*Audio/ })).toBeFocused();
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Start game", exact: true })).toBeFocused();
+  await page.keyboard.press("Space");
+  expect(await page.evaluate(() => window.__shellState.screen)).toBe("menu");
+  await page.getByRole("button", { name: /QUICK DROP/ }).click();
+  await page.waitForFunction(() => window.__shellState.screen === "character-select" && window.__shellAssetsReady);
+  await expect(page.locator(".semantic-shell")).toBeHidden();
+  await expect(page.locator("#game-root canvas")).not.toHaveAttribute("aria-hidden", "true");
+  expect(failures).toEqual([]);
+});
+
+test("native settings toggle once, retain input focus and persist actual values", async ({ page }) => {
+  const failures = watchRuntime(page);
+  await page.goto("/play/last-bastion/?flow=settings");
+  const shake = page.getByRole("checkbox", { name: "Screen shake", exact: true });
+  await expect(shake).toBeChecked();
+  await shake.press("Space");
+  await expect(shake).not.toBeChecked();
+  await expect(shake).toBeFocused();
+  expect(await page.evaluate(() => window.__shellState.settings.screenShakeEnabled)).toBe(false);
+  await shake.press("Enter");
+  await expect(shake).toBeChecked();
+  await page.getByRole("combobox", { name: "HUD scale", exact: true }).selectOption("1.2");
+  expect(await page.evaluate(() => window.__shellState.settings.uiScale)).toBe(1.2);
+  await page.getByRole("button", { name: "Audio", exact: true }).click();
+  const volume = page.getByRole("slider", { name: "Master volume", exact: true });
+  await volume.focus();
+  const original = Number(await volume.inputValue());
+  await volume.press("ArrowLeft");
+  await expect(volume).toBeFocused();
+  expect(Number(await volume.inputValue())).toBeCloseTo(original - 0.1);
+  expect(await page.evaluate(() => window.__shellState.settings.masterVolume)).toBeCloseTo(original - 0.1);
+  await page.reload();
+  await expect(page.getByRole("combobox", { name: "HUD scale", exact: true })).toHaveValue("1.2");
+  await page.getByRole("button", { name: "Audio", exact: true }).click();
+  expect(Number(await volume.inputValue())).toBeCloseTo(original - 0.1);
+  expect(failures).toEqual([]);
+});
+
+test("semantic controls follow the actual canvas box after resize", async ({ page }) => {
+  await page.goto("/play/last-bastion/?flow=settings");
+  await expect(page.getByRole("heading", { name: "SETTINGS", exact: true })).toBeVisible();
+  for (const [width, height] of [[960, 540], [1280, 800], [1920, 1080], [3840, 2160]]) {
+    await page.setViewportSize({ width, height });
+    // Measure one layout snapshot; separate round trips can straddle Phaser's
+    // resize and ResizeObserver updates and compare old canvas/new controls.
+    await expect.poll(() => page.evaluate(() => {
+      const canvas = document.querySelector("#game-root canvas").getBoundingClientRect();
+      const layer = document.querySelector(".semantic-shell").getBoundingClientRect();
+      const alignment = Math.max(Math.abs(canvas.x - layer.x), Math.abs(canvas.y - layer.y), Math.abs(canvas.width - layer.width), Math.abs(canvas.height - layer.height));
+      const controls = [...document.querySelectorAll(".semantic-shell button, .semantic-shell input, .semantic-shell select")];
+      const overflow = controls.some(control => {
+        const box = control.getBoundingClientRect();
+        return box.left < canvas.left - 1 || box.right > canvas.right + 1 || box.top < canvas.top - 1 || box.bottom > canvas.bottom + 1;
+      });
+      return { aligned: alignment < 2, contained: !overflow };
+    })).toEqual({ aligned: true, contained: true });
+  }
+});
+
+
+test("native save import reports invalid files and cancellation without changing progress", async ({ page }) => {
+  const failures = watchRuntime(page);
+  await page.goto("/play/last-bastion/?flow=settings");
+  await page.getByRole("button", { name: "Save & privacy", exact: true }).click();
+  const before = await page.evaluate(() => localStorage.getItem("last-bastion-save"));
+  const choose = page.waitForEvent("filechooser");
+  const action = page.getByRole("button", { name: "Import save backup", exact: true });
+  await action.click();
+  await (await choose).setFiles({ name: "invalid.json", mimeType: "application/json", buffer: Buffer.from("not json") });
+  await expect(page.getByRole("status")).not.toContainText("Changes save automatically");
+  await expect(action).toBeFocused();
+  expect(await page.evaluate(() => localStorage.getItem("last-bastion-save"))).toBe(before);
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export save backup", exact: true }).click();
+  const exported = await download;
+  page.once("dialog", dialog => dialog.dismiss());
+  const chooseValid = page.waitForEvent("filechooser");
+  await action.click();
+  await (await chooseValid).setFiles(await exported.path());
+  await expect(page.getByRole("status")).toContainText("Import cancelled");
+  await expect(action).toBeFocused();
+  expect(await page.evaluate(() => localStorage.getItem("last-bastion-save"))).toBe(before);
+  expect(failures).toEqual([]);
+});
+
+test("menu gamepad selection follows native focus and B returns exactly once", async ({ page }) => {
+  await page.addInitScript(() => {
+    const pad = { id: "Standard test controller", index: 0, connected: true, mapping: "standard", timestamp: 1, axes: [0, 0, 0, 0], buttons: Array.from({ length: 17 }, () => ({ pressed: false, touched: false, value: 0 })) };
+    window.__testPad = pad;
+    Object.defineProperty(navigator, "getGamepads", { value: () => { pad.timestamp = performance.now(); return [pad]; } });
+  });
+  await page.goto("/play/last-bastion/?flow=menu");
+  const button = async index => {
+    await page.evaluate(i => { window.__testPad.buttons[i] = { pressed: true, touched: true, value: 1 }; }, index);
+    await page.waitForTimeout(120);
+    await page.evaluate(i => { window.__testPad.buttons[i] = { pressed: false, touched: false, value: 0 }; }, index);
+    await page.waitForTimeout(120);
+  };
+  const quick = page.getByRole("button", { name: /QUICK DROP/ });
+  await expect(quick).toBeFocused();
+  await button(13); // Quick Drop -> Records -> Settings, retaining three-column order.
+  await expect(page.getByRole("button", { name: /RECORDS/ })).toBeFocused();
+  await button(13);
+  await expect(page.getByRole("button", { name: /SETTINGS.*Audio/ })).toBeFocused();
+  await button(0);
+  await expect(page.getByRole("checkbox", { name: "Screen shake", exact: true })).toBeFocused();
+  await button(1);
+  await expect(page.getByRole("button", { name: /SETTINGS.*Audio/ })).toBeFocused();
+  expect(await page.evaluate(() => window.__shellState.screen)).toBe("menu");
+  await page.getByRole("button", { name: /QUICK DROP/ }).focus();
+  await button(15);
+  await expect(page.getByRole("button", { name: /EXPEDITION/ })).toBeFocused();
+});

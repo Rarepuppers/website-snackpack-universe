@@ -8,7 +8,7 @@ import { productionFeedbackAssetIdsForCue, PRODUCTION_AUDIO_FEEDBACK_ASSETS } fr
 import { PRODUCTION_AUDIO_FEEDBACK_URLS, PRODUCTION_AUDIO_S1_URLS } from "./ProductionAudioAssets";
 
 /**
- * Minimal WebAudio placeholder synthesizer. Browsers block audio until a user
+ * WebAudio production-sample player with synthesized fallback. Browsers block audio until a user
  * gesture, so the context is created lazily and resumed on demand; if audio is
  * unavailable the synth silently does nothing.
  */

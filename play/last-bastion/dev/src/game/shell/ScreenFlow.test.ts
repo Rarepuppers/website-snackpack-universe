@@ -14,6 +14,7 @@ import {
   ROSTER,
   SETTINGS_ROWS,
   stepShell,
+  setShellSetting,
   type ShellIntent,
   type ShellState,
 } from "./ScreenFlow";
@@ -422,5 +423,26 @@ describe("Shell screen flow", () => {
     ]);
     // Quick and Daily Drops never visit the threat ladder.
     expect(stepShell({ ...unlocked, runMode: "daily" }, "confirm").effects[0]).toMatchObject({ mode: "daily", threatTier: 0 });
+  });
+});
+
+
+describe("native setting changes share ScreenFlow validation", () => {
+  const select = (key: string) => {
+    const state = createShellState(DEFAULT_SAVE.settings, "settings");
+    return { ...state, settingsIndex: state.settingsRows.findIndex(row => row.key === key) };
+  };
+  it("rejects values outside the exposed control contract", () => {
+    expect(setShellSetting(select("screenShakeEnabled"), "false").effects).toEqual([]);
+    expect(setShellSetting(select("uiScale"), "4").effects).toEqual([]);
+    expect(setShellSetting(select("masterVolume"), NaN).effects).toEqual([]);
+    expect(setShellSetting(select("privacy"), "change").effects).toEqual([]);
+  });
+  it("emits one typed persistence effect for native choices and ranges", () => {
+    expect(setShellSetting(select("uiScale"), "1.2").effects).toEqual([{ type: "set-setting", key: "uiScale", value: 1.2 }]);
+    expect(setShellSetting(select("masterVolume"), -10).effects).toEqual([{ type: "set-setting", key: "masterVolume", value: 0 }]);
+    const result = setShellSetting(select("screenShakeEnabled"), false);
+    expect(result.effects).toEqual([{ type: "set-setting", key: "screenShakeEnabled", value: false }]);
+    expect(setShellSetting(result.state, false).effects).toEqual([]);
   });
 });

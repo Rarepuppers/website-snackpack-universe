@@ -128,3 +128,24 @@ canvas {
   outline: 3px solid #ff9a52;
   outline-offset: 2px;
 }
+
+/* Native menu foreground, matched to the 960x540 canvas chrome by its actual CSS box. */
+.semantic-shell { position: fixed; width: 960px; height: 540px; transform-origin: top left; z-index: 3; pointer-events: none; font: 12px Consolas, monospace; color: #e8e2d4; }
+.semantic-shell[hidden] { display: none; }
+.semantic-shell > * { position: absolute; box-sizing: border-box; margin: 0; }
+.semantic-shell h1 { font: 28px Consolas, monospace; line-height: 38px; }
+.semantic-shell .semantic-title { font-size: 54px; text-align: center; line-height: 65px; }
+.semantic-shell button, .semantic-shell input, .semantic-shell select { pointer-events: auto; font: inherit; color: #e8e2d4; background: #152333; border: 1px solid #405a72; border-radius: 0; cursor: pointer; }
+.semantic-shell button:focus-visible, .semantic-shell input:focus-visible, .semantic-shell select:focus-visible { outline: 2px solid #ff9a52; outline-offset: 3px; }
+.semantic-shell button:hover { color: #68e4e8; border-color: #68e4e8; }
+.semantic-shell .semantic-start { font-size: 22px; color: #ff9a52; background: transparent; border: 0; }
+.semantic-shell .semantic-menu-card { padding: 16px 18px 8px; text-align: left; background: transparent; border: 0; }
+.semantic-menu-card > span { display: block; font-size: 19px; }
+.semantic-menu-card > small { display: block; margin-top: 8px; font-size: 10px; color: #b1bfcd; }
+.semantic-shell [data-selected="true"], .semantic-shell [aria-pressed="true"] { color: #68e4e8; }
+.semantic-shell .semantic-group { text-align: left; background: transparent; border: 0; }
+.semantic-shell label { pointer-events: auto; font-size: 10px; cursor: pointer; }
+.semantic-shell input { margin: 0; accent-color: #68e4e8; }
+.semantic-shell select, .semantic-shell output { font-size: 10px; }
+.semantic-shell .semantic-setting-action { text-align: left; padding-left: 12px; font-size: 10px; }
+.semantic-shell [data-shell-key="save-warning"] { background: #4a211c; color: #ffb885; text-align: center; line-height: 28px; }

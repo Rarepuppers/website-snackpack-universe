@@ -73,16 +73,9 @@ export function shopWeaponTilePresentation(choiceId: string): WeaponTilePresenta
   return weaponId in WEAPON_CATALOG ? weaponTilePresentation(weaponId as WeaponId) : null;
 }
 
-/**
- * Batch I master order, shared by every compact weapon presentation.
- *
- * Eight weapons own a slot. The thirteen released on 26 July 2026 have no Batch
- * I art yet, so rather than parking all of them on the rifle's frame they are
- * grouped by **attack pattern** onto the closest existing motif: a Flamethrower
- * reads as a blade-ish sweep sooner than it reads as a rifle, and two melee
- * tools sitting on the same tile is far less confusing than a Sawblade and a
- * Railspike sharing one. Same placeholder budget, better grouping. Replace each
- * `case` with its own slot as the tiles land.
+/** Stable eight-frame Batch I contract and fallback for non-player entities.
+ * Player-facing expansion weapons use the dedicated overrides above. Keep the
+ * fallback pattern mapping for callers explicitly requesting the old atlas.
  */
 export function canonicalWeaponTileFrame(weaponId: WeaponId): number {
   switch (weaponId) {
@@ -98,7 +91,7 @@ export function canonicalWeaponTileFrame(weaponId: WeaponId): number {
   }
 }
 
-/** Which owned tile a not-yet-authored weapon borrows, chosen by how it plays. */
+/** Legacy atlas fallback, chosen by attack pattern; dedicated tiles resolve above. */
 function placeholderFrameByPattern(weaponId: WeaponId): number {
   const stats = WEAPON_CATALOG[weaponId];
   switch (stats.attackPattern) {
