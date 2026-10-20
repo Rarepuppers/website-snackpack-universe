@@ -2550,3 +2550,36 @@ button:focus-visible {
 .read-saved-label{display:block;font-size:.85rem;font-weight:650;margin:.35rem 0;color:var(--ink)}
 .read-preparation{margin:1rem 0;padding:1rem;border:1px solid currentColor;border-radius:12px;font-size:1rem}
 .read-preparation h2{font-size:1.15rem;margin:0 0 .5rem}
+
+/* Let homepage content reflow at narrow widths and browser/text zoom.
+   Grid items otherwise keep their min-content widths, clipping the hero
+   and pushing the newsletter beyond the viewport. */
+.hero-panel > *, .newsletter-row > * { min-width: 0; }
+.hero-panel, .newsletter-row { overflow-wrap: anywhere; }
+@media (max-width: 980px) {
+  .hero-panel, .newsletter-row { grid-template-columns: minmax(0, 1fr); }
+}
+
+.newsletter-row .sib-optin label > span { min-width: 0; }
+@media (max-width: 560px) {
+  .newsletter-card { padding: 12px; }
+  #newsletter #sib-container { padding: 12px !important; }
+  #newsletter #sib-container .sib-form-block { padding-left: 0; padding-right: 0; }
+}
+
+.home-page main, .home-page .foot { overflow-wrap: anywhere; }
+@media (max-width: 980px) {
+  .home-page .featured-app-card { grid-template-columns: minmax(0, 1fr); }
+}
+
+.home-page .store-badge-link { max-width: 100%; }
+.home-page .store-badge { max-width: 100%; height: auto; max-height: 48px; }
+@media (max-width: 560px) {
+  .home-page .featured-qr { flex-wrap: wrap; }
+  .home-page .featured-qr > span { min-width: 0; }
+  .home-page .showcase-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 360px) {
+  .home-page .hero-panel, .home-page .featured-app-card { padding: 12px; }
+  .home-page .featured-qr { padding: 6px; }
+}
