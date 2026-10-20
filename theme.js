@@ -100,6 +100,21 @@
       apply(next(current()), true);
     });
 
+    // Native focus scrolling can leave part of a compact-nav link outside
+    // its scroller at page zoom. Reveal the complete focused control.
+    if (nav && document.body.classList.contains("home-page")) {
+      var scroller = nav.closest("nav");
+      if (scroller) scroller.addEventListener("focusin", function (event) {
+        var target = event.target.closest("a,button");
+        if (!target) return;
+        requestAnimationFrame(function () {
+          if (scroller.scrollWidth <= scroller.clientWidth) return;
+          var frame = scroller.getBoundingClientRect(), item = target.getBoundingClientRect();
+          var scale = frame.width / scroller.offsetWidth;
+          scroller.scrollTo({left: scroller.scrollLeft + (item.left + item.right - frame.left - frame.right) / (2 * scale), behavior: "instant"});
+        });
+      });
+    }
     paint(current());
   }
 
