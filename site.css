@@ -2023,8 +2023,10 @@ button:focus-visible {
 .storybook-card img {
   display: block;
   width: 100%;
+  height: auto;
   aspect-ratio: 0.72;
-  object-fit: cover;
+  object-fit: contain;
+  background: var(--paper);
   border-radius: 18px;
   border: 5px solid rgba(255, 255, 255, 0.94);
   box-shadow: 0 16px 34px rgba(32, 23, 19, 0.14);
@@ -2543,3 +2545,8 @@ button:focus-visible {
 .read-download-meta{display:block;margin:6px 0;font-size:.9rem;color:var(--muted)}
 .read-offline{margin:20px 0}.read-offline>button{margin:4px 10px 4px 0}.read-offline-status,.read-print-info{font-size:.95rem;line-height:1.6;color:var(--muted)}.read-print-info{margin:14px 0;max-width:42rem}.read-print-help{display:block}.story-second-question{max-width:620px;margin:28px auto 12px;font-size:1.35rem;line-height:1.4}.story-page-card:focus-visible,.story-finish-card:focus-visible{outline:3px solid currentColor;outline-offset:5px}
 @media(prefers-reduced-motion:reduce){html:has(.story-pages){scroll-behavior:auto}.story-page-card,.story-title-section,.reader-bar{animation:none!important;transition:none!important}}
+
+/* Device-only shelf status and reading preparation. */
+.read-saved-label{display:block;font-size:.85rem;font-weight:650;margin:.35rem 0;color:var(--ink)}
+.read-preparation{margin:1rem 0;padding:1rem;border:1px solid currentColor;border-radius:12px;font-size:1rem}
+.read-preparation h2{font-size:1.15rem;margin:0 0 .5rem}

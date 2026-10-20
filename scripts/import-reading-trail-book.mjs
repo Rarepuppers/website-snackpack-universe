@@ -29,6 +29,20 @@ const PLAY = "https://play.google.com/store/apps/details?id=com.snackpackunivers
 
 // Per-book web editorial. `slug` is the public URL; `alts` describe the art.
 const BOOKS = {
+  "pork-ulele-picnic-song": {
+    source:"short", slug:"pork-uleles-picnic-song", skill:"Music", revisions:{3:2},
+    lead:"A four-page picnic concert about listening to different ideas and making a song together.",
+    blurb:"Pork-ulele wants his tune played his way. A slow melody and a fast beat change his mind.",
+    about:"Music, listening and collaboration",
+    alts:["Pork-ulele tunes his ukulele beside a music stand on a sunny picnic blanket.","Pork-ulele pauses as Coop-Accino sings and Octo-Pop taps two splashing buckets.","Pork-ulele plays his ukulele, Coop-Accino sings and Octo-Pop taps blue and orange buckets as they listen to one another.","Pork-ulele, Coop-Accino and Octo-Pop share their song as two birds join in above the picnic."]
+  },
+  "captain-beakon-air-show": {
+    source:"short", slug:"captain-beakons-air-show", skill:"Teamwork",
+    lead:"A four-page air-show rescue about a lost ribbon and helpers in the sky and on the ground.",
+    blurb:"A red-and-gold ribbon drifts toward the river. Four cycling Bulldogs guide Stripe-Scout to the rescue.",
+    about:"Teamwork and communication",
+    alts:["Captain Beakon reaches from his red plane as a red-and-gold ribbon tears free above a river valley.","Stripe-Scout reaches from a blue helicopter toward the ribbon drifting over the river.","Four Baby Bulldogs on bicycles point toward the drifting ribbon beneath Stripe-Scout's helicopter.","Stripe-Scout holds the recovered ribbon beside her landed helicopter as the Bulldogs and Captain Beakon wave."]
+  },
   "luckybug-art-gallery": {
     source: "short", slug: "luckybugs-art-gallery", skill: "Creativity",
     lead: "A four-page gallery story about an unexpected splash, a new idea and a painting made together.",
@@ -430,7 +444,7 @@ const SRC_SHORT = fs.readFileSync(path.join(APP, "constants/books.ts"), "utf8");
 // Web page-image name. `rev` (per BOOKS entry) adds -r2 etc. once a live book's
 // art is replaced: sw.js serves images cache-first, so a new picture at an old
 // URL would stay stale for every returning reader. Bump it when pictures change.
-const webPage = (art, ed, n) => `${art}-p${n}${ed.rev ? `-r${ed.rev}` : ""}`;
+const webPage = (art, ed, n) => `${art}-p${n}${ed.revisions?.[n] ? `-r${ed.revisions[n]}` : ed.rev ? `-r${ed.rev}` : ""}`;
 const artPrefix = (id, ed) => (ed.source === "short" ? id : `reading-trail-${id}`);
 
 // Reads a single- or double-quoted JS string literal starting at s[i].
@@ -572,7 +586,7 @@ function render(id, book, ed) {
 ${SHARED}</head>
 <body class="story-reader-page">
 ${HEADER}<main>
-<section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">${short ? "Short read" : `Reading Trail · Step ${book.step}`} · Free</span><h1>${h1}</h1><p class="lead">${esc(ed.lead)}</p><div class="tag-row">${short ? `<span class="tag">Read together</span><span class="tag">${ed.skill}</span><span class="tag">4 pages</span>` : `<span class="tag">Beginning reader</span><span class="tag">${ed.skill}</span><span class="tag">Read together</span>`}</div><a class="btn btn-primary" href="#page-1">Begin the story</a></div><picture><source srcset="./pages/${webPage(art, ed, 1)}.webp" type="image/webp"><img src="./pages/${webPage(art, ed, 1)}.jpg" alt="" width="768" height="1152"></picture></div></section>
+<section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">${short ? "Short read" : `Reading Trail · Step ${book.step}`} · Free</span><h1>${h1}</h1><p class="lead">${esc(ed.lead)}</p>${short ? "" : `<p class="read-preparation">Read together: practise the focus sounds with an adult. This story uses wider vocabulary and is not a controlled independent decodable stage.</p>`}<div class="tag-row">${short ? `<span class="tag">Read together</span><span class="tag">${ed.skill}</span><span class="tag">4 pages</span>` : `<span class="tag">Beginning reader</span><span class="tag">${ed.skill}</span><span class="tag">Read together</span>`}</div><a class="btn btn-primary" href="#page-1">Begin the story</a></div><picture><source srcset="./pages/${webPage(art, ed, 1)}.webp" type="image/webp"><img src="./pages/${webPage(art, ed, 1)}.jpg" alt="" width="768" height="1152"></picture></div></section>
 
 <section class="story-pages" aria-label="Story pages">
 ${cards}

@@ -151,7 +151,8 @@ function networkFirst(req, fallback, cacheName = CACHE) {
       return res;
     })
     .catch(() =>
-      caches.match(req, { cacheName }).then((hit) => {
+      // Shelf filters are client-side URL state; reuse the saved canonical shelf.
+      caches.match(req, { cacheName, ignoreSearch: new URL(req.url).pathname === '/read/' }).then((hit) => {
         if (hit) return hit;
         if (!fallback) return offlineUnavailable(req.url);
         return caches.match(fallback, { cacheName }).then(
