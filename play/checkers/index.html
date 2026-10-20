@@ -275,6 +275,7 @@
       <p>Checkers — known as draughts outside North America — is played on an 8×8 board using only the dark squares. Each player starts with 12 pieces. You are red and move first, sending pieces diagonally <em>forward</em> one square at a time onto an empty dark square. The aim is to capture all of your opponent's pieces, or to leave them with no legal move.</p>
       <p>You capture by jumping: if an opponent's piece sits diagonally in front of yours with an empty square directly beyond it, you leap over it and remove it. <strong>Captures are compulsory</strong> — if you can jump, you must, and if more jumps are available with the same piece, you must keep going in one turn. When a piece reaches the far row it becomes a <strong>king</strong>, which can move and capture in any diagonal direction. Here, click one of your pieces and the legal destinations light up; click a highlighted square to move.</p>
 
+      <p>This version draws automatically when the same board and side to move occur three times, or after 40 moves each without a capture or man move. Undo and saved progress preserve that history. These are automatic casual-game endings rather than tournament referee claims.</p>
       <h3>Strategy tips</h3>
       <ul>
         <li><strong>Control the centre.</strong> Central pieces have more options and are harder to trap against the edge.</li>
@@ -381,6 +382,10 @@
   try { savedDepth = +(localStorage.getItem("sp_checkers_mode") || 4); localMode = localStorage.getItem("sp_checkers_players") === "2"; } catch (e) {}
   var board, cells, selected = -1, legalForSel = [], busy = false, gameOver = false, depth = [2,4,6].indexOf(savedDepth) >= 0 ? savedDepth : 4, currentSide = RED;
   var undoStack = [];
+  var drawState, drawUndo = [], gameEpoch = 0;
+  function drawBoard(b) { return b.map(function(v) { return v === 1 ? 1 : v === -1 ? 2 : v === 2 ? 3 : v === -2 ? 4 : 0; }); }
+  function seedDraw(b, turn) { return initialCheckersDraw(drawBoard(b),turn === RED ? 1 : 2); }
+  function stepDraw(before, after, nextSide, previous) { return advanceCheckersDraw(drawBoard(before),drawBoard(after),nextSide === RED ? 1 : 2,previous); }
   // Assigned at the end of the file, once SnackPackResume is known to exist.
   var resume = null;
   // Win/loss record, kept per opponent like Connect 4's: the chips beside it
@@ -418,6 +423,7 @@
   }
 
   function reset() {
+    gameEpoch++;
     showRecord();
     board = new Array(64).fill(0);
     for (var r = 0; r < 8; r++) for (var c = 0; c < 8; c++) {
@@ -428,10 +434,55 @@
     }
     selected = -1; legalForSel = []; busy = false; gameOver = false; currentSide = RED;
     undoStack = [];
+    drawState = seedDraw(board,RED); drawUndo = [];
     statusEl.textContent = localMode ? "Player 1's move — red." : "Your move — you're red.";
     statusEl.className = "game-status";
     render();
   }
+
+// BEGIN generated checkers policy
+function checkersPositionKey(board, turn) {
+    return `${turn}:${board.join('')}`;
+}
+function initialCheckersDraw(board, turn) {
+    return { version: 1, quietPlies: 0, positions: [checkersPositionKey(board, turn)] };
+}
+function advanceCheckersDraw(before, after, nextTurn, previous) {
+    const progress = after.filter(v => v !== 0).length < before.filter(v => v !== 0).length || before.some((v, i) => (v === 1 || v === 2) && after[i] !== v);
+    const key = checkersPositionKey(after, nextTurn);
+    return progress ? { version: 1, quietPlies: 0, positions: [key] }
+        : { version: 1, quietPlies: previous.quietPlies + 1, positions: [...previous.positions, key] };
+}
+function checkersDrawReason(state) {
+    const last = state.positions[state.positions.length - 1];
+    if (state.positions.filter(k => k === last).length >= 3)
+        return 'repetition';
+    return state.quietPlies >= 80 ? 'no-progress' : null;
+}
+function validCheckersDraw(value, board, turn) {
+    if (!value || typeof value !== 'object')
+        return false;
+    const d = value;
+    if (d.version !== 1 || !Number.isInteger(d.quietPlies) || d.quietPlies < 0 || d.quietPlies >= 80)
+        return false;
+    if (!Array.isArray(d.positions) || d.positions.length !== d.quietPlies + 1 || d.positions.length > 80)
+        return false;
+    const counts = new Map();
+    for (let i = 0; i < d.positions.length; i++) {
+        const key = d.positions[i];
+        if (typeof key !== 'string' || !/^[12]:[0-4]{64}$/.test(key) || (i && key[0] === d.positions[i - 1][0]))
+            return false;
+        for (let sq = 0; sq < 64; sq++)
+            if ((Math.floor(sq / 8) + sq % 8) % 2 === 0 && key[sq + 2] !== '0')
+                return false;
+        const n = (counts.get(key) ?? 0) + 1;
+        if (n >= 3)
+            return false;
+        counts.set(key, n);
+    }
+    return !board || d.positions[d.positions.length - 1] === checkersPositionKey(board, turn);
+}
+// END generated checkers policy
 
   function side(v) { return v > 0 ? 1 : (v < 0 ? -1 : 0); }
   function isKing(v) { return Math.abs(v) === 2; }
@@ -538,7 +589,11 @@
       var pick = legalForSel.filter(function (mv) { return mv.seq[mv.seq.length - 1] === i; });
       if (pick.length) {
         undoStack.push(board.slice());
+        drawUndo.push(drawState);
+        var before = board;
         board = applyMove(board, pick[0]);
+        drawState = stepDraw(before,board,-movingSide,drawState);
+        if (localMode) currentSide = -movingSide;
         selected = -1; legalForSel = [];
         render();
         if (checkEnd(-movingSide)) return;
@@ -550,7 +605,8 @@
         }
         busy = true;
         statusEl.textContent = "Computer is thinking…";
-        setTimeout(cpuTurn, 300);
+        var epoch = gameEpoch;
+        setTimeout(function () { if (epoch === gameEpoch && busy && !gameOver && !localMode) cpuTurn(); }, 300);
         return;
       }
     }
@@ -561,7 +617,9 @@
     var moves = genMoves(board, BLACK);
     if (!moves.length) { busy = false; checkEnd(BLACK); return; }
     var mv = pickCpuMove(moves);
+    var before = board;
     board = applyMove(board, mv);
+    drawState = stepDraw(before,board,RED,drawState);
     render();
     busy = false;
     if (checkEnd(RED)) return;
@@ -577,11 +635,19 @@
     if (genMoves(board, nextSide).length === 0) {
       return end(nextSide === RED ? "cpu" : "you");
     }
+    if (checkersDrawReason(drawState)) return end("draw");
     return false;
   }
 
   function end(who) {
+    if (gameOver) return true;
     gameOver = true; busy = false; updateUndo();
+    if (who === "draw") {
+      statusEl.textContent = checkersDrawReason(drawState) === "repetition" ? "Draw — same position three times." : "Draw — 40 moves each without a capture or man move.";
+      statusEl.className = "game-status";
+      if (resume) resume.clear();
+      return true;
+    }
     bumpRecord(who === "you");
     if (who === "you") {
       statusEl.textContent = localMode ? "Player 1 wins! 🎉" : "You win! 🎉 The computer is out of moves.";
@@ -616,16 +682,18 @@
     return s; // positive favours RED
   }
 
-  function minimax(b, d, alpha, beta, who, control) {
+  function minimax(b, d, alpha, beta, who, control, draw) {
     window.SnackPackSearch.tick(control);
     var moves = genMoves(b, who);
     if (moves.length === 0) return who === RED ? -1000 : 1000; // side to move loses
+    if (draw && checkersDrawReason(draw)) return 0;
     if (d === 0) return evaluate(b);
     var i;
     if (who === BLACK) { // CPU minimises (favours negative)
       var best = Infinity;
       for (i = 0; i < moves.length; i++) {
-        best = Math.min(best, minimax(applyMove(b, moves[i]), Math.max(0, d - 1), alpha, beta, RED, control));
+        var child = applyMove(b, moves[i]);
+        best = Math.min(best, minimax(child, Math.max(0, d - 1), alpha, beta, RED, control, draw ? stepDraw(b,child,RED,draw) : null));
         beta = Math.min(beta, best);
         if (alpha >= beta) break;
       }
@@ -633,7 +701,8 @@
     } else {
       var bestR = -Infinity;
       for (i = 0; i < moves.length; i++) {
-        bestR = Math.max(bestR, minimax(applyMove(b, moves[i]), Math.max(0, d - 1), alpha, beta, BLACK, control));
+        var childR = applyMove(b, moves[i]);
+        bestR = Math.max(bestR, minimax(childR, Math.max(0, d - 1), alpha, beta, BLACK, control, draw ? stepDraw(b,childR,BLACK,draw) : null));
         alpha = Math.max(alpha, bestR);
         if (alpha >= beta) break;
       }
@@ -642,13 +711,16 @@
   }
 
   function pickCpuMove(moves) {
+    var rootDraw = typeof drawState === "undefined" ? null : drawState;
     // Easy: some randomness.
     if (depth <= 2 && Math.random() < 0.3) return moves[Math.floor(Math.random() * moves.length)];
     return window.SnackPackSearch.choose(moves, depth, function (move) {
       var child = applyMove(board, move);
-      return genMoves(child, RED).length ? -evaluate(child) : 1000;
+      if (!genMoves(child, RED).length) return 1000;
+      return rootDraw && checkersDrawReason(stepDraw(board,child,RED,rootDraw)) ? 0 : -evaluate(child);
     }, function (move, remaining, control) {
-      return -minimax(applyMove(board, move), remaining, -Infinity, Infinity, RED, control);
+      var child = applyMove(board,move);
+      return -minimax(child, remaining, -Infinity, Infinity, RED, control, rootDraw ? stepDraw(board,child,RED,rootDraw) : null);
     });
   }
 
@@ -660,6 +732,7 @@
   function undo() {
     if (busy || !undoStack.length) return;
     board = undoStack.pop();
+    drawState = drawUndo.pop() || seedDraw(board,localMode ? -currentSide : RED);
     selected = -1; legalForSel = []; gameOver = false;
     if (localMode) currentSide = -currentSide;
     statusEl.textContent = localMode ? (currentSide === RED ? "Move undone — Player 1's turn." : "Move undone — Player 2's turn.") : "Move undone — your turn.";
@@ -776,6 +849,17 @@
     if (!p || !validBoard(p.board)) return false;
     if (p.currentSide !== RED && p.currentSide !== BLACK) return false;
     if (p.undoStack && !Array.isArray(p.undoStack)) return false;
+    if (p.undoStack && (p.undoStack.length > 40 || !p.undoStack.every(validBoard))) return false;
+    if (!localMode && p.currentSide !== RED) return false;
+    if (!genMoves(p.board,p.currentSide).length) return false;
+    if (p.drawState !== undefined || p.drawUndo !== undefined) {
+      if (!validCheckersDraw(p.drawState,drawBoard(p.board),p.currentSide === RED ? 1 : 2)) return false;
+      if (!Array.isArray(p.drawUndo) || p.drawUndo.length !== (p.undoStack || []).length) return false;
+      for (var h=0;h<p.drawUndo.length;h++) {
+        var turn = localMode ? ((p.undoStack.length-h)%2 ? -p.currentSide : p.currentSide) : RED;
+        if (!validCheckersDraw(p.drawUndo[h],drawBoard(p.undoStack[h]),turn === RED ? 1 : 2)) return false;
+      }
+    }
     var red = p.board.filter(function (v) { return v > 0; }).length;
     var black = p.board.filter(function (v) { return v < 0; }).length;
     // Both sides must still have a piece, or the match was already decided,
@@ -797,7 +881,9 @@
         return {
           board: board,
           currentSide: currentSide,
-          undoStack: undoStack.slice(-40)
+          undoStack: undoStack.slice(-40),
+          drawState: drawState,
+          drawUndo: drawUndo.slice(-40)
         };
       },
       validate: validSave,
@@ -805,6 +891,9 @@
         board = p.board;
         currentSide = p.currentSide;
         undoStack = Array.isArray(p.undoStack) ? p.undoStack : [];
+        drawState = p.drawState || seedDraw(board,currentSide);
+        drawUndo = p.drawUndo || undoStack.map(function(b,i) { return seedDraw(b,localMode ? ((undoStack.length-i)%2 ? -currentSide : currentSide) : RED); });
+        gameEpoch++;
         selected = -1;
         legalForSel = [];
         busy = false;
