@@ -25,3 +25,10 @@ Pork-ulele and Beakon: reviewed every full-resolution source picture beside all 
 Task commits are transferred with binary/no-textconv preservation onto current remote main in an isolated website worktree. Compare every proposed task blob before push. CI, Pages, served-byte hashes, live browser acceptance and search notifications must be recorded after deployment; a commit alone is not live evidence.
 
 No app build/submission/version/signing/Play edit, outreach, access change or new reminder. Existing **15 November 2026** decision gate remains. Physical devices, actual screen readers, printer output and native/store inclusion remain release-owner gates.
+
+
+## Actual live acceptance
+
+Published feature commit **62dc964e583083e4562ebcdb965583ca7d064856** and preparation-note follow-up **f6bd0410d5ce8b65a5a5452b08ca08491385f6e5**; normal checkout equivalents 901746b0 and 6ba00da0. The final [Pages deployment passed](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/39400783248). **158/158 exact committed-file hashes match live**: every story HTML/PDF, collections, new art/social images, reader files, homepage/guide/shelf and service worker. All **37 browser cases pass against the live website**, including real-worker disconnected reading of both additions and saved-only shelf filtering. Source and full two-book pipeline round trips are unchanged across all 104 reviewed task files. All **20 root portfolio guards pass**. Current preparation appears once before reading; the endings link back instead of retaining contradictory old notes.
+
+Google sitemap, IndexNow and Bing accepted both new URLs; indexing is not guaranteed. Final CI details and machine records are in the monorepo dated handoff and docs/asset-review-qa/reads-next-2026-10-20/. No app build/submission or native/store rollout is implied by this web deployment.
