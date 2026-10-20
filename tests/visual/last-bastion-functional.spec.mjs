@@ -766,3 +766,29 @@ test("menu gamepad selection follows native focus and B returns exactly once", a
   await button(15);
   await expect(page.getByRole("button", { name: /EXPEDITION/ })).toBeFocused();
 });
+
+
+test("4K native foreground leaves the canvas background intact", async ({ page }) => {
+  await page.setViewportSize({ width: 3840, height: 2160 });
+  await page.goto("/play/last-bastion/?flow=settings");
+  await expect(page.getByRole("button", { name: "Back", exact: true })).toBeVisible();
+  await page.waitForTimeout(500);
+  // Chromium previously painted an opaque black copy of Back's bounds into
+  // the vertically mirrored canvas area. Inspect real composed pixels, not CSS.
+  const screenshot = (await page.screenshot()).toString("base64");
+  const blackFraction = await page.evaluate(async encoded => {
+    const img = new Image();
+    img.src = `data:image/png;base64,${encoded}`;
+    await img.decode();
+    const sample = document.createElement("canvas");
+    sample.width = img.width; sample.height = img.height;
+    const ctx = sample.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    const back = document.querySelector('[data-shell-key="back"]').getBoundingClientRect();
+    const data = ctx.getImageData(back.x + 8, img.height - back.bottom + 8, back.width - 16, back.height - 16).data;
+    let black = 0;
+    for (let i = 0; i < data.length; i += 4) if (data[i] < 3 && data[i + 1] < 3 && data[i + 2] < 3) black++;
+    return black / (data.length / 4);
+  }, screenshot);
+  expect(blackFraction).toBeLessThan(0.01);
+});

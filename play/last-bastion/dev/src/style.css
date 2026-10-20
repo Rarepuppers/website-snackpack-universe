@@ -132,6 +132,9 @@ canvas {
 /* Native menu foreground, matched to the 960x540 canvas chrome by its actual CSS box. */
 .semantic-shell { position: fixed; width: 960px; height: 540px; transform-origin: top left; z-index: 3; pointer-events: none; font: 12px Consolas, monospace; color: #e8e2d4; }
 .semantic-shell[hidden] { display: none; }
+/* Keep native controls in a blended layer. Chromium can otherwise paint a
+   mirrored black Back-button rectangle into the canvas at 4K. */
+.semantic-shell { opacity: 0.999; }
 .semantic-shell > * { position: absolute; box-sizing: border-box; margin: 0; }
 .semantic-shell h1 { font: 28px Consolas, monospace; line-height: 38px; }
 .semantic-shell .semantic-title { font-size: 54px; text-align: center; line-height: 65px; }
