@@ -32,9 +32,11 @@ async function playToEnd(page, prefix, endRe) {
 }
 const total = (t) => t.split("–").reduce((n, x) => n + Number(x), 0);
 
-test("Hearts: a quick game plays to a result and is recorded", async ({ page }) => {
+for (const level of ["standard", "sharp"]) {
+test(`Hearts: a ${level} quick game plays to a result and is recorded`, async ({ page }) => {
   test.setTimeout(180_000);
   await page.goto("/play/hearts/");
+  await page.locator(`.seg [data-level="${level}"]`).evaluate((b) => b.click());
   await page.locator('.seg [data-target="50"]').evaluate((b) => b.click());
   // Passing takes exactly three cards.
   const cards = page.locator("#hc-hand button.tc-card");
@@ -45,6 +47,7 @@ test("Hearts: a quick game plays to a result and is recorded", async ({ page }) 
   await page.reload();
   expect(total(await page.locator("#hc-record").textContent())).toBe(1);
 });
+}
 
 test("Spades: a quick game plays to a result and is recorded", async ({ page }) => {
   test.setTimeout(240_000);
