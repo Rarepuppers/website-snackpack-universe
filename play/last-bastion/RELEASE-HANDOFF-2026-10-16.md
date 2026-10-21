@@ -1,11 +1,18 @@
 # Last Bastion release handoff — 16 October 2026
 
-**Prepared build:** `web-2026.10.17-qa-readiness`, runtime `4675b9ab`, package tooling `f7506ea2`.
+**Prepared local build (21 October):** `web-2026.10.21-menu-review`, implementation `637f6ec8` + `6472ceeb`;
+package provenance tooling remains `f7506ea2`. New source/output is not pushed or packaged.
+Gallery defects and the semantic title/menu/settings slice are implemented. Full verifier passes:
+1,783 unit / 41 browser / 31 desktop-host, smoke/offline and 25 matching outputs. This includes
+native import/gamepad and the corrected 4K composition regression. Human/assistive-technology
+acceptance remains open.
+
+**Earlier published build:** `web-2026.10.17-qa-readiness`, runtime `4675b9ab`.
 **State (updated 17 October):** browser release pushed and served; live identity, privacy route and
 warmed offline boot verified. Website CI and Pages passed on `31139871`. Desktop is not packaged.
 No further unconditional Patch A implementation items remain. New floors remain opt-in review art.
 
-Latest continuation: QA-01 local session reports and QA-02 package provenance are complete.
+Earlier 17 October continuation: QA-01 local session reports and QA-02 package provenance are complete.
 Full game verifier passed in 82.4 seconds: 1,781 unit / 31 browser / 31 desktop-host tests,
 smoke/offline and 25 matching published outputs. Use [QA readiness](QA-READINESS.md) for commands.
 Claude's next Windows packaging run now writes/checks a package manifest; return it with the

@@ -1,10 +1,13 @@
 # Last Bastion — current plan
 
 **Updated:** 21 October 2026
-**Browser release:** `web-2026.10.17-qa-readiness` (service worker `2026-10-17-qa-readiness`).
-**Status:** Patch A and QA preparation implemented; fresh 21 October audit checks pass as listed below.
+**Prepared local release:** `web-2026.10.21-menu-review` (service worker `2026-10-21-menu-review`).
+**Last verified published release:** `web-2026.10.17-qa-readiness`; the new patch is not pushed/deployed.
+**Status:** accepted gallery fixes and title/menu/settings semantic controls implemented locally;
+fresh full game verification passes. Physical and assistive-technology acceptance remain open.
 Human, hardware, Steam and analytics-dashboard gates remain open.
-Mark explicitly authorized commit/push on 17 October. The browser release is served and website CI/Pages pass;
+The 17 October publication and CI evidence below is historical. The new local implementation
+needs separate publication authorization;
 production packaging remains with Claude and has not run in this work.
 
 Continue from this plan, the [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md) and
@@ -15,33 +18,52 @@ This is the only active execution queue. Completed audit tasks are in the
 [archive](archive/README.md); player-facing changes are in the [release notes](RELEASE-NOTES.md).
 Keep the content freeze until observed play and live measurement justify expansion.
 
-## 21 October audit — proposed next work
+## 21 October accepted follow-through — executable scope complete
 
-The [detailed audit and prioritized polish proposal](AUDIT-REVIEW-2026-10-21.md) records fresh
-source review and visual evidence. It is a specification for this queue, not another independent
-queue. The audit request did not implement game changes or authorize another release.
+Mark accepted the [audit and prioritized proposal](AUDIT-REVIEW-2026-10-21.md). Implementation
+commits `637f6ec8` and `6472ceeb` deliver QA-03, QA-04 and the scoped ACCESS-01 slice. The
+[completed implementation record](archive/MENU-REVIEW-IMPLEMENTATION-2026-10-21.md) and
+[current evidence](playtest-evidence/2026-10-21-menu-review/README.md) preserve scope and limitations.
 
-Recommended order:
+- **QA-03 complete:** logical-size gallery sprites, bounded eight-entry manifest pages, explicit
+  supported/unknown hero handling and family-only loading for all five hero review routes.
+- **QA-04 complete:** corrected legacy-tile and production-audio descriptions without removing
+  fallback paths; added real-scene identity/bounds and native-control regressions.
+- **ACCESS-01 implementation complete for title/menu/settings:** visible native controls dispatch
+  through ScreenFlow/effects, retain focus on input updates, restore focus on return, synchronize
+  simulated gamepad selection, and preserve real save transfer/privacy routes. Other screens
+  remain canvas-based. Actual screen-reader and physical-controller acceptance still needs a tester.
+- **UX-01 bounded slice complete:** native menu heading aligns in its plate; explicit Start/Back
+  and native setting controls replace canvas foregrounds. Further contextual help remains driven
+  by observed confusion, not additional speculative menu copy.
+- Fresh final game verifier passes in 89.9 seconds: 1,783 unit tests / 312 files, 41 browser cases,
+  smoke/offline, all 25 published-output comparisons and 31 desktop-host tests. This includes native
+  save-import/gamepad and composed-pixel regressions. The final report ran at `637f6ec8` plus the
+  dirty CSS/test fix subsequently committed as `6472ceeb`; it is not an exact-HEAD claim.
+- Corrected a reproduced 4K Chromium composition defect: an opaque black rectangle mirrored the
+  native Back button into the canvas. A blended foreground layer removes it; the pixel regression
+  failed before the fix and passes afterward. Fresh final captures include the corrected 4K view.
+- Final portfolio `node scripts/check-all.js` passes all 20 discovered guards, including asset delivery.
+- Seven fresh captures show the real repaired gallery and native UI. No new raster assets were
+  needed. Published identity, floor default, save schema 16 and simulation compatibility 3 remain
+  separate: the prepared build changes identity only; gameplay/content and floor adoption did not change.
 
-1. **P1 QA-03:** fix demonstrated gallery oversizing, unbounded manifest text and silent hero
-   selector fallback. Use logical dimensions and honest selected-hero labels before art sign-off.
-2. **P1 ACCEPT-02 / ART-01 / ART-02 / CLARITY-01:** complete the existing five-run matrix;
-   compare the existing quieter floor kit in motion, review hero registration and test telegraphs
-   against earned dense loadouts. Generate art only for a named failure that survives reuse/layout fixes.
-3. **P1 proposed ACCESS-01:** scope semantic title/menu/settings controls through the existing
-   ScreenFlow contracts. Implementation remains conditional; keyboard canvas navigation alone
-   does not establish screen-reader access.
-4. **P2 UX-01 / AUDIO-01 / QA-04:** evidence-led shell hierarchy/help and existing audio-mix polish;
-   correct stale placeholder descriptions so delivered assets are not commissioned again.
-5. **P1 for desktop PERF-02:** named hardware measurements and Claude's fresh package, then
-   Steam acceptance when access exists. Practice/encounter additions keep their existing content gates.
+Next actions require evidence or an external owner:
 
-Fresh results: 1,781 unit tests / 312 files; 31 browser journeys; TypeScript; content, image,
-adapter-boundary and text audits; stale-output regression and all 25 published-output comparisons
-pass. The fresh portfolio runner passed all 20 guards. Twelve short browser captures produced no page errors. No new crash/save/simulation failure
-was reproduced. Three concrete gallery defects and the existing semantic-shell limitation are
-distinguished from subjective polish. See [current evidence and limits](playtest-evidence/2026-10-21-audit/README.md).
-No new raster asset is yet demonstrated to be essential. No human/hardware/Steam gate is closed.
+1. **ACCEPT-02 / ART-01 / ART-02 / CLARITY-01:** complete observed Runs 1–5, compare the existing
+   quieter floor kit in motion, inspect hero registration and earned mixed racks. Do not change the
+   default floor or repaint a hero without a named failure/acceptance result.
+2. **ACCESS-01 acceptance:** keyboard + actual screen-reader check of this limited slice; physical
+   controller and focus/resize review. Scope other screens separately; no whole-game accessibility claim.
+3. **AUDIO-01 / remaining UX-01:** listen to production cues and record comprehension problems;
+   tune/generate only what those observations demonstrate is needed.
+4. **PERF-02:** Claude supplies a fresh package, testers supply named hardware measurements and
+   Steam access. Use existing QA reports/provenance; no additional diagnostic tool is queued.
+5. **LEARN-01 / VARIETY-01:** existing observed-play and verified-live-data gates remain active.
+   No new practice/content/region/hero/tier work follows merely from accepting this audit.
+
+The original [audit evidence](playtest-evidence/2026-10-21-audit/README.md) is the pre-change baseline,
+not current implementation acceptance. No human/hardware/Steam gate was closed by these checks.
 
 Use the [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md) for exact owner actions and
 evidence to return. The [17 October checkpoint](archive/CONTINUATION-REVIEW-2026-10-17.md)
@@ -62,7 +84,7 @@ Mark accepted the recommendations and optional work. QA-01 and QA-02 are now imp
   No further preparation tool is queued merely to fill an external gate.
 
 Next executable runtime work requires a named observed failure (ACCEPT-01) or a measured hardware
-bottleneck (PERF-01). Practice, accessibility, art/audio and encounter variety retain the conditions
+bottleneck (PERF-01). Practice, further accessibility, art/audio and encounter variety retain the conditions
 below; acceptance of recommendations did not supply missing observations or release authorization.
 
 ## Completed and verified
@@ -162,9 +184,11 @@ and the patch proposal’s progress checklist for remaining non-testing work. Ac
   distribution, and next-day return. Combine with the five observed runs before changing scope.
 - Replayable practice, full DOM-backed menu accessibility, further codex expansion,
   legacy modifier cleanup, VFX/transformation art and further music remain conditional work.
-  Build/affinity inspection is implemented; full accessible shell semantics are not.
+  Build/affinity inspection and semantic title/menu/settings controls are implemented locally;
+  other shell screens and whole-game accessibility are not covered by that limited slice.
   The [shell contract inventory](SHELL-ACCESSIBILITY-CONTRACT-2026-10-17.md) is prepared;
-  implementation remains conditional and must preserve the existing state/effect/input contracts.
+  title/menu/settings implementation is now local; further slices require separate scope and must
+  preserve the existing state/effect/input contracts. Actual assistive-technology acceptance remains open.
 - Touch controls, new heroes/regions, multiplayer, leaderboards and Threat Tiers 3–11 are not
   approved production tasks. Use observed needs and operating constraints to select additions.
 - Historical details remain in the [content-debt](archive/last-bastion-content-debt-plan.md)
@@ -176,8 +200,8 @@ and the patch proposal’s progress checklist for remaining non-testing work. Ac
 - Save schema remains 16. Daily participation intervals are additive; old saves migrate retained
   dates. Days discarded by an older build cannot be reconstructed. Detailed history stays at 60 days.
 - Commit in the nested website repository and stage only relevant paths. Preserve retained art
-  masters and unrelated work. The current release push is authorized; later releases still require
-  an explicit request.
+  masters and unrelated work. The explicitly authorized 17 October push is complete; the new
+  21 October patch requires separate publication authorization.
 - After meaningful runtime edits, rebuild `dev/`, include generated `game-assets/`, update the
   service-worker release identity and run `npm run verify:last-bastion`.
 - Keep manual gates explicit. Automated checks cannot complete observed gameplay, audio,

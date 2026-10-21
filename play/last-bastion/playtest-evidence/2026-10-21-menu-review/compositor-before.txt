@@ -1,0 +1,31 @@
+
+[WebServer] (node:6856) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+
+(node:27100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/1] tests\visual\last-bastion-functional.spec.mjs:771:1 › 4K native foreground leaves the canvas background intact
+  1) tests\visual\last-bastion-functional.spec.mjs:771:1 › 4K native foreground leaves the canvas background intact
+
+    Error: expect(received).toBeLessThan(expected)
+
+    Expected: < 0.01
+    Received:   1
+
+      791 |     return black / (data.length / 4);
+      792 |   }, screenshot);
+    > 793 |   expect(blackFraction).toBeLessThan(0.01);
+          |                         ^
+      794 | });
+      795 |
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:793:25
+
+    Error Context: test-results\last-bastion-functional-4K-9c32e-he-canvas-background-intact\error-context.md
+
+
+  1 failed
+    tests\visual\last-bastion-functional.spec.mjs:771:1 › 4K native foreground leaves the canvas background intact

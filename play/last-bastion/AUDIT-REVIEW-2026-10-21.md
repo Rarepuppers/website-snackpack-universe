@@ -1,8 +1,11 @@
 # Last Bastion audit and prioritized polish proposal — 21 October 2026
 
 This is the detailed review/acceptance specification linked from CURRENT-PLAN, not a second
-execution queue. Status: **review complete; implementation proposed**. The request was to audit
-and plan. No game code, art, progression, save schema or published bundle was changed.
+execution queue. Mark accepted it on 21 October. QA-03, QA-04 and the limited title/menu/settings
+ACCESS-01 implementation are delivered locally in `637f6ec8`; see the
+[implementation record](archive/MENU-REVIEW-IMPLEMENTATION-2026-10-21.md).
+The audit evidence and findings below describe the pre-change baseline. Remaining motion,
+audio, assistive-technology, hardware, Steam and conditional-content gates still apply.
 
 ## Recommendation
 

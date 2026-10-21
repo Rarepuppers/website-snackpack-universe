@@ -1,0 +1,13 @@
+
+[WebServer] (node:7200) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+
+(node:27844) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/2] tests\visual\last-bastion-functional.spec.mjs:716:1 › native save import reports invalid files and cancellation without changing progress
+[2/2] tests\visual\last-bastion-functional.spec.mjs:741:1 › menu gamepad selection follows native focus and B returns exactly once
+  2 passed (3.6s)

@@ -1,7 +1,9 @@
 # Shell accessibility preparation — 17 October 2026
 
-Inventory only, against `20b82c98`. DOM-backed shell implementation remains conditional in
-CURRENT-PLAN; no screen-reader support claim follows from current keyboard navigation.
+Original inventory against `20b82c98`, retained as the integration contract. On 21 October,
+`637f6ec8` implemented visible semantic title/menu/settings controls through ScreenFlow. Browser
+keyboard/input, simulated-controller, persistence and focus checks pass; actual screen-reader
+and physical-controller acceptance remain open. Other screens still use canvas controls.
 
 | Existing production contract | Preserve when implementation is justified |
 |---|---|
@@ -26,4 +28,6 @@ Enter/Space once, Escape/back, toggles/sliders, disabled hero/deploy, binding ca
 restoration. Also retest pointer/controller, resize/DPR and scene transitions. Source searches,
 unit tests or an invisible list of duplicate labels cannot establish operable screen-reader support.
 
-No dependencies, DOM overlay, input rewrite or new accessibility promise was added in this pass.
+The original 17 October pass added no implementation. The 21 October follow-through uses a
+visible native foreground, keyed nodes and shared state/effects; it does not establish whole-game
+accessibility. See CURRENT-PLAN for remaining acceptance and scope.

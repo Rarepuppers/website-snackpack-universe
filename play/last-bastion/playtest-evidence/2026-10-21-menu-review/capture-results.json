@@ -1,0 +1,103 @@
+{
+  "checkedAt": "2026-10-20T23:58:35.267Z",
+  "results": [
+    {
+      "name": "title-native",
+      "query": "",
+      "width": 960,
+      "height": 540,
+      "errors": [],
+      "dom": "LAST BASTION\nStart game",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "menu-native",
+      "query": "?flow=menu",
+      "width": 960,
+      "height": 540,
+      "errors": [],
+      "dom": "LAST BASTION\nDAILY DROP\n21 OCT • same waves for all\nQUICK DROP\n10 waves • about 10 minutes\nEXPEDITION\n20-node campaign • one life\nARMORY\n0 command marks earned\nRECORDS\nRuns 0 • Wins 0 • Kills 0\nCODEX\nWeapons, enemies and status effects\nHOW TO PLAY\nControls and modes\nSETTINGS\nAudio, controls, display\nMORE GAMES\nBack to the SnackPack arcade\nBack",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "settings-native",
+      "query": "?flow=settings",
+      "width": 960,
+      "height": 540,
+      "errors": [],
+      "dom": "SETTINGS\n\nChanges save automatically. Select a group to see its settings.\n\nAccessibility\nAudio\nControls\nDisplay\nSave & privacy\nScreen shake\nShake intensity\n1\nReduced flash\nDamage numbers\nCooldown timers\nAffinity indicator\nEnemy health bars\nOFF\nTHREATS\nALL\nReduced motion\nHigh-contrast outlines\nHUD scale\n0.8x\n1x\n1.2x\nRadar size\n0.75x\n1x\n1.25x\nThreat indicators\nOFF\nTHREATS\nALL\nColour-vision palette\nSTANDARD\nDEUTERANOPIA\nPROTANOPIA\nTRITANOPIA\nGame speed\n0.75\n1\n1.25\nBack",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "settings-4k",
+      "query": "?flow=settings",
+      "width": 3840,
+      "height": 2160,
+      "errors": [],
+      "dom": "SETTINGS\n\nChanges save automatically. Select a group to see its settings.\n\nAccessibility\nAudio\nControls\nDisplay\nSave & privacy\nScreen shake\nShake intensity\n1\nReduced flash\nDamage numbers\nCooldown timers\nAffinity indicator\nEnemy health bars\nOFF\nTHREATS\nALL\nReduced motion\nHigh-contrast outlines\nHUD scale\n0.8x\n1x\n1.2x\nRadar size\n0.75x\n1x\n1.25x\nThreat indicators\nOFF\nTHREATS\nALL\nColour-vision palette\nSTANDARD\nDEUTERANOPIA\nPROTANOPIA\nTRITANOPIA\nGame speed\n0.75\n1\n1.25\nBack",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 3840,
+        "height": 2160
+      }
+    },
+    {
+      "name": "gallery-fixed",
+      "query": "?mode=gallery",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "gallery-medic-fixed",
+      "query": "?mode=gallery&hero=medic",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "gallery-assault-fixed",
+      "query": "?mode=gallery&hero=assault",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "dom": "",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    }
+  ]
+}

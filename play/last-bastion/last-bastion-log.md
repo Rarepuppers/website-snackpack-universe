@@ -5214,3 +5214,29 @@ migration. Preserve that work; the older all-19-green QA checkpoint is historica
 Final portfolio follow-up: the host `node scripts/check-all.js` rerun completed with all 19
 guards passing. Retained `publication-portfolio-verification.txt` supersedes the transient
 migration/sandbox failures above. No repair to another session's files was made by this work.
+
+
+## 21 October 2026 — accepted audit follow-through
+
+Recorded the fresh game/art audit in `18e14e56`. Mark accepted its priorities. `637f6ec8`
+repairs logical gallery sprite sizes, bounds/pagination and explicit hero selection; adds visible
+native title/menu/settings controls through the existing state/effect owner; preserves focus,
+settings/save actions and input parity; and corrects stale art/audio descriptions.
+`6472ceeb` fixes a demonstrated 4K Chromium canvas/native-layer black rectangle with a blended
+foreground. The composed-pixel test fails before the fix and passes after it. No new raster art,
+floor-default adoption, gameplay/content change, save-schema or simulation change was made.
+
+Final full verifier passes in 89.9 seconds: 1,783 unit tests / 312 files, 41 browser cases,
+31 desktop-host tests, smoke/offline, site checks and 25 matching outputs. The report records
+`637f6ec8` plus dirty CSS/test inputs subsequently committed as `6472ceeb`; current evidence
+retains that provenance. Seven fresh final captures and the reproduced before-fix image are
+retained under `playtest-evidence/2026-10-21-menu-review/`.
+
+Completed implementation is archived; CURRENT-PLAN and the acceptance worksheet retain observed
+Runs 1–5, real screen-reader/controller/audio checks, floor/hero acceptance, named hardware,
+Claude's fresh package, Steam access and analytics receipt/start-date dependencies. The prepared
+identity is `web-2026.10.21-menu-review`; the last verified published build remains 17 October.
+No new push/deploy, executable packaging, Steam action or cross-chat message ran.
+
+Final portfolio verification also passes all 20 discovered guards, including shared-asset delivery.
+The retained `portfolio-verification.txt` records this final run.

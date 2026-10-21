@@ -4,7 +4,8 @@ Use with CURRENT-PLAN and the five-run matrix. Human and physical-device results
 Mark or an assigned human tester owns observed play; Claude owns production packaging.
 This document requests no deployment, scheduled monitoring, Steam upload or cross-chat message.
 
-Current prepared build is `web-2026.10.17-qa-readiness`. Use the
+Current prepared local build is `web-2026.10.21-menu-review`; it is not published or packaged.
+The earlier browser publication below refers to the 17 October QA-readiness build. Use the
 [QA readiness instructions](QA-READINESS.md) for opt-in session export and package provenance.
 Reports are evidence aids; their presence does not mark any NOT RUN row as passed.
 
@@ -46,10 +47,22 @@ Presentation decisions require named evidence and accept/correct/defer with test
 Do not count Runs 1–5 until touched S1/S2 presentation issues are closed or explicitly accepted.
 Use the original plan's thresholds; a screenshot or simulated pad input cannot sign this table.
 
+## Semantic menu acceptance: human tester
+
+Title, menu and settings have native controls in the new local build. Verify with a real screen
+reader: heading and control names, selected settings group, checkbox/select/range values,
+Tab/Shift+Tab order, one Enter/Space activation, Escape/back focus, save-import cancellation and
+privacy/export actions. Repeat with physical controller, resize/DPR and return from other scenes.
+Help, records, armory, hero/threat select, map, debrief and combat remain separate canvas consumers.
+Do not sign off whole-game screen-reader support from this limited slice. Store observations and
+failures by screen/control under a dated evidence folder; preserve the tester's real save.
+
 ## Desktop package: Claude, then hardware tester
 
-Build-ready source checkpoint is documented in the archived continuation review. Read root
-`docs/RELEASING.md` and inspect current changes before packaging. From `desktop/`:
+Use the current prepared source in [CURRENT-PLAN](CURRENT-PLAN.md) and
+[release handoff](RELEASE-HANDOFF-2026-10-16.md), including `637f6ec8` + `6472ceeb`; the archived
+17 October checkpoint is older. Read root `docs/RELEASING.md` and inspect current changes before
+packaging. From `desktop/`:
 
 ```powershell
 npm run package:win

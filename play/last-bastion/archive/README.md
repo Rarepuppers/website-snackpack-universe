@@ -6,6 +6,7 @@ Unlinked relative paths quoted inside these older documents were written from th
 
 | File | Why archived |
 |---|---|
+| [21 October menu/gallery implementation](MENU-REVIEW-IMPLEMENTATION-2026-10-21.md) | QA-03/QA-04 and the semantic title/menu/settings slice delivered locally; human/assistive-technology, hardware and publication gates remain in CURRENT-PLAN. |
 | [17 October next-chat prompt](NEXT-CHAT-HANDOVER-2026-10-17.md) | Executable continuation completed; CURRENT-PLAN and the acceptance worksheet replace the copied prompt. |
 | [September product strategy](product-strategy-plan-2026-09-11.md) | Discovery/Quick/Daily/telemetry work delivered; measurement and content gates live in CURRENT-PLAN. |
 | [July systems tracker](last-bastion-model.md) | Old milestone/status queue superseded by code, catalogues, the completed-work log and CURRENT-PLAN; retained for design/task rationale. |

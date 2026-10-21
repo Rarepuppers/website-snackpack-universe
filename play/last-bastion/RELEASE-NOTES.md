@@ -1,5 +1,19 @@
 # Last Bastion release notes
 
+## 21 October 2026 — menu controls and art-review repairs
+
+**Prepared locally:** `web-2026.10.21-menu-review` — not pushed, deployed or desktop-packaged.
+
+- Title, menu and settings now have visible native buttons, checkboxes, choices and sliders.
+  They retain focus, follow keyboard/controller selection and use existing save/state rules.
+  Remaining screens use canvas controls; no whole-game screen-reader support claim is made.
+- Art review uses correct logical sprite sizes and bounded manifest pages. Explicit hero routes
+  show the requested family, load its sheets, and reject unknown hero selectors visibly.
+- Fixed a reproduced black rectangle during 4K native-control/canvas composition.
+- Corrected stale placeholder descriptions; no new art, floor adoption, content or balance change.
+- Save schema 16 and simulation compatibility 3 remain unchanged. Full game verification passes;
+  human/controller/audio, screen-reader, hardware and Steam acceptance remain open.
+
 ## 17 October 2026 — local QA and package readiness
 
 **Release:** `web-2026.10.17-qa-readiness` — published to the browser on 17 October; desktop packaging remains pending.

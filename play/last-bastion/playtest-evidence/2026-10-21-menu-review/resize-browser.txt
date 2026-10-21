@@ -1,0 +1,22 @@
+
+[WebServer] (node:11536) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 3 workers
+
+
+(node:12188) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:4972) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:19212) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/3] tests\visual\last-bastion-functional.spec.mjs:694:1 › semantic controls follow the actual canvas box after resize
+[2/3] tests\visual\last-bastion-functional.spec.mjs:694:1 › semantic controls follow the actual canvas box after resize
+[3/3] tests\visual\last-bastion-functional.spec.mjs:694:1 › semantic controls follow the actual canvas box after resize
+  3 passed (2.0s)
