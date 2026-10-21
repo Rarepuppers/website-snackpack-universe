@@ -1,0 +1,14 @@
+# Block Puzzle — new game scorecard
+
+- **Game and public name:** Block Puzzle (`/play/block-puzzle/`). A generic, descriptive name. The Vol 3 app calls the same game "Block Blast", which is the name of another company's game; the web page deliberately does not use it (see the naming note below).
+- **Independent name-search evidence and date:** 2026-10-22. No measured figure for this site. "Block puzzle" is a very large generic mobile-games search family, dominated by app-store listings; the browser page is a calm, ad-free alternative and a Vol 3 funnel. This page is the measurement.
+- **Competition assessment:** Many browser versions exist, nearly all with ads and interstitials. The angle: no ads, no sign-in, no clock in Classic or Big, offline, a daily puzzle.
+- **Source engine and test coverage:** Ported from Brain Games Vol 3's `components/games/block-blast/engine.ts`: the same 22-shape catalogue in the same order, placement, simultaneous row-and-column clears and scoring. A one-off Node check transpiled the app's TypeScript and compared it with the page over 300 random games / 4,954 placements: identical legal squares, clears and scores. Web-side differences: cells store a colour number (any non-zero value is filled, as the app's checks read it) and the random source is passed in for the daily seed. `arcade-block-puzzle.spec` plays a whole Classic game through the page to game over with the best score kept, checks a non-fitting placement is refused, that the daily blocks are shared, and that Timed's clock stops while paused.
+- **Web interaction and accessibility risks:** Tray blocks are buttons labelled by shape ("Block 2: L shape, fits nowhere"); 1/2/3 pick a block. The board uses `keyboard-grid.js` (one tab stop, arrows, Enter places the block's top-left square on the highlighted cell); with a block picked, the focused or hovered square previews the placement in green or red.
+- **Existing art to reuse:** The hub tile is Vol 3's own painted block-game icon (no text). The board is CSS.
+- **New 144×144 tile and 1200×630 social card:** Tile from the Vol 3 icon; the social card is an interim composite of that icon (Codex brief item 13).
+- **Maintenance cost:** Low.
+- **Naming/trademark review:** "Block Puzzle" is generic. The app's "Block Blast" title matches another company's product name, the same kind of issue as Vol 2's "Yahtzee"; flagged for Mark before Vol 3's next release.
+- **Fit with calm, ad-free, no-sign-in play:** Strong; untimed by default, Timed pauses with the tab.
+- **Daily mode:** Supported — the day's block sequence is seeded per mode; a resumed daily continues the sequence (draws are counted and replayed).
+- **Decision and measurement window:** Ship. Review after 28 days with Search Console impressions for block-puzzle queries and `/go/arcade/block-puzzle/braingames3/` clicks.
