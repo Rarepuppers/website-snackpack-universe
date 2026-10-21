@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileEol, replaceMarkerBlock, withEol } from "./lib/marker-block.mjs";
+import { ownsPageWiring } from "./lib/page-wiring-owner.mjs";
 
 /*
  * Injects the PWA wiring — manifest link, apple-touch-icon and the service
@@ -44,13 +45,12 @@ async function* pages(dir) {
     const p = path.join(dir, entry.name);
     const rel = path.relative(root, p).split(path.sep).join("/");
     // Last Bastion ships its own dev tree and its own build; leave it alone.
-    if (rel.startsWith("play/last-bastion")) continue;
+    if (ownsPageWiring(rel)) continue;
     // go/ holds noindex click-counting interstitials that redirect to Play via
     // location.replace() the moment they load. Registering a service worker on
     // a page that is already leaving is pointless, and build-go-links.mjs
     // rewrites those files wholesale from a template -- so anything injected
     // here is wiped on its next run and the two generators fight forever.
-    if (rel.startsWith("go/")) continue;
     if (entry.isDirectory()) yield* pages(p);
     else if (entry.name.endsWith(".html") && !SKIP.has(rel)) yield p;
   }

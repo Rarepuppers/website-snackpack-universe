@@ -174,6 +174,9 @@
         else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
       }
       if (event.key === 'Escape' && stage.classList.contains('sp-focus-play')) {
+        // The active pause layer owns Escape first; a second Escape exits
+        // focus play after the ordinary pause helper has resumed the game.
+        if (stage.querySelector('.sp-pause-overlay.is-open')) return;
         event.preventDefault(); event.stopImmediatePropagation(); setFocus(false); focus.focus();
       }
     }, true);
@@ -211,6 +214,34 @@
     });
     new MutationObserver(revealSelection).observe(grid, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
     addEventListener('resize', revealSelection);
+  }());
+
+  (function enlargeBackgammonBoard() {
+    if (!/^\/play\/backgammon\/?$/.test(location.pathname)) return;
+    var board = document.querySelector('#bg-board');
+    if (!board) return;
+    var viewport = document.createElement('div');
+    viewport.className = 'sp-backgammon-viewport';
+    viewport.setAttribute('role', 'region'); viewport.setAttribute('aria-label', 'Backgammon board');
+    board.before(viewport); viewport.appendChild(board);
+    var button = document.createElement('button');
+    button.className = 'btn-game sp-grid-zoom'; button.type = 'button';
+    button.textContent = 'Enlarge board'; button.setAttribute('aria-pressed', 'false');
+    viewport.before(button);
+    button.addEventListener('click', function () {
+      var on = viewport.classList.toggle('sp-backgammon-zoom');
+      button.setAttribute('aria-pressed', String(on)); button.textContent = on ? 'Show whole board' : 'Enlarge board';
+      if (!on) viewport.scrollLeft = 0;
+    });
+    function revealPicked() {
+      if (!viewport.classList.contains('sp-backgammon-zoom')) return;
+      var picked = board.querySelector('.is-picked, :focus');
+      if (!picked) return;
+      var a = picked.getBoundingClientRect(), b = viewport.getBoundingClientRect();
+      if (a.left < b.left || a.right > b.right) viewport.scrollLeft += a.left - b.left - (b.width - a.width) / 2;
+    }
+    board.addEventListener('focusin', revealPicked);
+    new MutationObserver(revealPicked).observe(board, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
   }());
 
   (function addClearMahjongFaces() {

@@ -1,6 +1,5 @@
-last-bastion.png = PLACEHOLDER (studio mark), awaiting Codex: a Last Bastion arcade tile.
-                   This one is the odd case out - the game has 4 GB of source art and
-                   still no 72x72 tile, because nothing on the site ever linked to it.
+Reviewed 2026-10-21: last-bastion.png is the delivered helmet icon, not the old
+studio-mark placeholder. No replacement is queued. Preserve its independent art ownership.
 
 Delivered 2026-10-18: Pyramid, TriPeaks, Spider Solitaire, Thirteen, Picross,
 Dice Score (five-dice filename), Hearts, Spades and Backgammon final tiles;

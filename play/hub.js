@@ -36,6 +36,9 @@
   tiles.forEach(function (tile, index) {
     var slug = slugFor(tile);
     var cats = Object.keys(categories).filter(function (cat) { return categories[cat].indexOf(slug) >= 0; });
+    // Standard arcade pages have touch controls. The two separately owned
+    // projects need their own input acceptance rather than an inferred claim.
+    if (slug !== 'last-bastion' && slug !== 'atlas-quest') cats.push('touch');
     tile.dataset.cat = cats.join(" ");
     tile.dataset.slug = slug;
     var wrap = document.createElement("div");
@@ -66,8 +69,8 @@
       '<button class="btn-game arcade-clear" type="button">Clear filters</button>' +
     '</div>' +
     '<div class="arcade-categories" role="group" aria-label="Game categories">' +
-      ['all', 'cards', 'puzzles', 'word', 'board', 'arcade', 'soccer', 'daily'].map(function (cat) {
-        return '<button type="button" data-category="' + cat + '" aria-pressed="' + (cat === 'all') + '">' + (cat === 'all' ? 'All games' : cat.charAt(0).toUpperCase() + cat.slice(1)) + '</button>';
+      ['all', 'touch', 'cards', 'puzzles', 'word', 'board', 'arcade', 'soccer', 'daily'].map(function (cat) {
+        return '<button type="button" data-category="' + cat + '" aria-pressed="' + (cat === 'all') + '">' + (cat === 'all' ? 'All games' : cat === 'touch' ? 'Touch controls' : cat.charAt(0).toUpperCase() + cat.slice(1)) + '</button>';
       }).join("") +
     '</div>' +
     '<p class="arcade-result-count" aria-live="polite"></p>' +

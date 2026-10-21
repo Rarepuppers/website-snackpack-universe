@@ -110,3 +110,65 @@ test('Thirteen describes its existing house variants without unsupported regiona
   await expect(rules).toContainText('circular-sequence house variant');
   await expect(rules).not.toContainText('Northern (Miền Bắc) rules');
 });
+
+test('hub offers first-screen quick play and discloses input requirements', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/play/');
+  const quick = page.getByRole('navigation', { name: 'Quick play', exact: true });
+  const quickBox = await quick.boundingBox();
+  expect(quickBox.y + quickBox.height).toBeLessThan(812);
+  await expect(quick.getByRole('link', { name: '2048', exact: true })).toHaveAttribute('href', './2048/');
+  const bastion = page.locator('a.game-tile[href="/play/last-bastion/"]');
+  await expect(bastion.locator('.game-capability')).toBeVisible();
+  await page.getByRole('button', { name: 'Touch controls', exact: true }).click();
+  await expect(bastion).toBeHidden();
+  await expect(page.locator('a.game-tile[href="./2048/"]')).toBeVisible();
+  await page.getByRole('button', { name: 'Clear filters', exact: true }).click();
+  await expect(bastion).toBeVisible();
+});
+
+test('Backgammon enlarged points stay inside a local scroller and remain playable', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/play/backgammon/');
+  await page.getByRole('button', { name: 'Enlarge board', exact: true }).click();
+  const point = page.locator('.bg-pt').first();
+  expect((await point.boundingBox()).width).toBeGreaterThanOrEqual(32);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
+  await page.locator('#bg-roll').click();
+  await expect(page.locator('.bg-pt.is-source, .bg-bar.is-source').first()).toBeVisible();
+  await page.locator('.bg-pt.is-source, .bg-bar.is-source').first().click();
+  const destination = page.locator('.bg-pt.is-dest, .bg-off.is-dest').first();
+  await expect(destination).toBeVisible();
+  await destination.click();
+  await page.getByRole('button', { name: 'Show whole board', exact: true }).click();
+  await expect(page.locator('.sp-backgammon-viewport')).not.toHaveClass(/sp-backgammon-zoom/);
+});
+
+test('Focus play preserves an existing pause and Escape resumes before exiting', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/play/asteroid-destroyer/');
+  await page.locator('#as-start').click();
+  await page.locator('#sp-pause').click();
+  await expect(page.locator('.sp-pause-overlay')).toHaveClass(/is-open/);
+  await page.getByRole('button', { name: 'Focus play', exact: true }).click();
+  await expect(page.locator('.sp-pause-overlay')).toHaveClass(/is-open/);
+  await expect(page.locator('#sp-pause')).toHaveText('Resume');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.sp-pause-overlay')).not.toHaveClass(/is-open/);
+  await expect(page.locator('.game-stage')).toHaveClass(/sp-focus-play/);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.game-stage')).not.toHaveClass(/sp-focus-play/);
+});
+
+for (const width of [320, 390]) {
+  test(`compact Cascade and Asteroid controls fit at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 812 });
+    for (const slug of ['cascade', 'asteroid-destroyer']) {
+      await page.goto(`/play/${slug}/`);
+      await expect(page.getByRole('button', { name: 'Focus play', exact: true })).toBeVisible();
+      await expect.poll(() => page.evaluate(() => [...document.querySelectorAll('.cs-well, #as-canvas, .cs-pad button, .as-controls button')].filter(el => el.getBoundingClientRect().height > 0).every(el => {
+        const r = el.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.top >= 0 && r.bottom <= innerHeight;
+      }))).toBe(true);
+    }
+  });
+}

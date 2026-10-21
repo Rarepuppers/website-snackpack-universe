@@ -99,6 +99,9 @@
     // own handler, so it sees the state the game already changed to.
     mount.addEventListener("click", function (e) {
       if (!paused || e.target === btn || btn.contains(e.target)) return;
+      // Focus play changes presentation without restarting or resuming the
+      // simulation. Keep its paused state and overlay in sync.
+      if (e.target.closest('.sp-focus-toggle')) return;
       paused = false;
       btn.textContent = "Pause";
       btn.setAttribute("aria-pressed", "false");

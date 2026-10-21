@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileEol, replaceMarkerBlock, withEol } from "./lib/marker-block.mjs";
+import { ownsPageWiring } from "./lib/page-wiring-owner.mjs";
 
 /*
  * Injects the three-way theme wiring into every page: the anti-flash <head>
@@ -61,11 +62,10 @@ async function* pages(dir) {
     const rel = path.relative(root, p).split(path.sep).join("/");
     // Last Bastion ships its own dev tree, its own build and its own art
     // direction; the shared theme has no business in it.
-    if (rel.startsWith("play/last-bastion")) continue;
+    if (ownsPageWiring(rel)) continue;
     // go/ interstitials carry their own inline <style>, never load site.css or
     // theme.js, and redirect away on load. They are also regenerated wholesale
     // by build-go-links.mjs, which would wipe anything injected here.
-    if (rel.startsWith("go/")) continue;
     if (entry.isDirectory()) yield* pages(p);
     else if (entry.name.endsWith(".html")) yield p;
   }

@@ -59,6 +59,9 @@ jobs:
       - name: Check JavaScript syntax
         run: node scripts/check-javascript.mjs
 
+      - name: Check standalone page wiring ownership
+        run: node scripts/test-page-wiring-owner.mjs
+
       - name: Check complete alphabet publication guards
         run: node scripts/test-alphabet-book.mjs
 
