@@ -1,6 +1,13 @@
 # Last Bastion release handoff — 16 October 2026
 
-**Prepared local build (21 October):** `web-2026.10.21-menu-review`, implementation `637f6ec8` + `6472ceeb`;
+**Prepared local build (22 October):** `web-2026.10.22-help-accessibility`, adding native
+How to Play instructions/navigation and diagram descriptions to the 21 October implementation.
+See the [completed scope](archive/HELP-ACCESSIBILITY-IMPLEMENTATION-2026-10-22.md) and
+[current evidence](playtest-evidence/2026-10-22-help-accessibility/README.md). Package this latest
+checkpoint when assigned; the earlier implementation evidence below remains historical.
+No new executable, publication or human/AT acceptance is supplied by this patch.
+
+**Earlier local build (21 October):** `web-2026.10.21-menu-review`, implementation `637f6ec8` + `6472ceeb`;
 package provenance tooling remains `f7506ea2`. New source/output is not pushed or packaged.
 Gallery defects and the semantic title/menu/settings slice are implemented. Full verifier passes:
 1,783 unit / 41 browser / 31 desktop-host, smoke/offline and 25 matching outputs. This includes

@@ -768,6 +768,123 @@ test("menu gamepad selection follows native focus and B returns exactly once", a
 });
 
 
+test("native help pages activate once, expose instructions and restore menu focus", async ({ page }) => {
+  const failures = watchRuntime(page);
+  await page.goto("/play/last-bastion/?flow=menu");
+  const help = page.getByRole("button", { name: /HOW TO PLAY/ });
+  await help.click();
+  await expect(page.getByRole("heading", { name: "HOW TO PLAY", exact: true })).toBeVisible();
+  const next = page.getByRole("button", { name: "Next page", exact: true });
+  const previous = page.getByRole("button", { name: "Previous page", exact: true });
+  await expect(next).toBeFocused();
+  await expect(previous).toHaveAttribute("aria-disabled", "true");
+  await page.locator("#game-root canvas").click({ position: { x: 480, y: 240 } });
+  expect(await page.evaluate(() => window.__shellState.howToPlayPage)).toBe(0);
+  await previous.click({ force: true }); // Guarded even if a caller bypasses aria-disabled.
+  expect(await page.evaluate(() => window.__shellState.howToPlayPage)).toBe(0);
+  await next.press("Enter");
+  await expect(page.getByRole("heading", { name: "YOUR ARSENAL", exact: true })).toBeVisible();
+  await expect(next).toBeFocused();
+  await expect(previous).toHaveAttribute("aria-disabled", "false");
+  await previous.press("Space");
+  await expect(page.getByRole("heading", { name: "MOVE AND SURVIVE", exact: true })).toBeVisible();
+  await expect(previous).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(next).toBeFocused();
+  await next.press("Space");
+  await expect(page.getByRole("heading", { name: "YOUR ARSENAL", exact: true })).toBeVisible();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("heading", { name: "DAMAGE AND STATUS", exact: true })).toBeVisible();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("heading", { name: "THREE WAYS TO PLAY", exact: true })).toBeVisible();
+  const finish = page.getByRole("button", { name: "Return to menu", exact: true });
+  await expect(finish).toBeFocused();
+  await page.keyboard.press("ArrowRight"); // Last page clamps; confirm returns.
+  await expect(finish).toBeFocused();
+  await expect(page.getByRole("img", { name: /branching expedition route/ })).toBeVisible();
+  await expect(page.locator('[data-shell-key="help-content"]')).toHaveAttribute("aria-live", "polite");
+  await finish.press("Enter");
+  await expect(help).toBeFocused();
+  await help.press("Enter");
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(help).toBeFocused();
+  await help.press("Enter");
+  await page.keyboard.press("Escape");
+  await expect(help).toBeFocused();
+  expect(failures).toEqual([]);
+});
+
+for (const deviceScaleFactor of [1, 2]) {
+  test(`native help uses saved bindings and stays within its panel at DPR ${deviceScaleFactor}`, async ({ browser }) => {
+    const context = await browser.newContext({ deviceScaleFactor, viewport: { width: 960, height: 540 } });
+    const page = await context.newPage();
+    try {
+      // Seed through the application's actual save, retaining its schema and progress.
+      await page.goto("/play/last-bastion/?flow=settings");
+      await expect(page.getByRole("heading", { name: "SETTINGS", exact: true })).toBeVisible();
+      await page.getByRole("checkbox", { name: "Screen shake", exact: true }).uncheck();
+      await page.evaluate(() => {
+        const save = JSON.parse(localStorage.getItem("last-bastion-save"));
+        save.controls.keyboard.evade = "KeyF";
+        save.controls.gamepad.evade = "north";
+        localStorage.setItem("last-bastion-save", JSON.stringify(save));
+      });
+      await page.goto("/play/last-bastion/?flow=how-to-play");
+      await expect(page.locator('[data-shell-key="help-content"]')).toContainText("F / Y rolls");
+      const before = await page.evaluate(() => localStorage.getItem("last-bastion-save"));
+      for (const [width, height] of [[960, 540], [1280, 800], [1920, 1080], [3840, 2160]]) {
+        await page.setViewportSize({ width, height });
+        for (let index = 0; index < 4; index++) {
+          await expect(page.locator('[data-shell-key="help-status"]')).toHaveText(`Page ${index + 1} of 4`);
+          await expect.poll(() => page.evaluate(() => {
+            const canvas = document.querySelector("#game-root canvas").getBoundingClientRect();
+            const layer = document.querySelector(".semantic-shell").getBoundingClientRect();
+            const content = document.querySelector('[data-shell-key="help-content"]');
+            const nodes = [...document.querySelectorAll('.semantic-shell button, .semantic-shell article, .semantic-shell figure, .semantic-shell h1')];
+            return {
+              aligned: Math.abs(canvas.width - layer.width) < 2 && Math.abs(canvas.top - layer.top) < 2,
+              contained: nodes.every(node => { const box = node.getBoundingClientRect(); return box.left >= canvas.left - 1 && box.right <= canvas.right + 1 && box.top >= canvas.top - 1 && box.bottom <= canvas.bottom + 1; }),
+              textFits: content.scrollHeight <= content.clientHeight,
+              buttons: document.querySelectorAll('.semantic-shell button').length,
+            };
+          })).toEqual({ aligned: true, contained: true, textFits: true, buttons: 3 });
+          await expect(page.getByRole("img")).toHaveCount(1);
+          if (index < 3) await page.getByRole("button", { name: "Next page", exact: true }).click();
+        }
+        for (let index = 0; index < 3; index++) await page.getByRole("button", { name: "Previous page", exact: true }).click();
+      }
+      expect(await page.evaluate(() => localStorage.getItem("last-bastion-save"))).toBe(before);
+    } finally { await context.close(); }
+  });
+}
+
+test("help gamepad page controls preserve confirm and back behavior", async ({ page }) => {
+  await page.addInitScript(() => {
+    const pad = { id: "Help test controller", index: 0, connected: true, mapping: "standard", timestamp: 1, axes: [0, 0, 0, 0], buttons: Array.from({ length: 17 }, () => ({ pressed: false, touched: false, value: 0 })) };
+    window.__testPad = pad;
+    Object.defineProperty(navigator, "getGamepads", { value: () => { pad.timestamp = performance.now(); return [pad]; } });
+  });
+  await page.goto("/play/last-bastion/?flow=menu");
+  const help = page.getByRole("button", { name: /HOW TO PLAY/ });
+  await help.click();
+  const press = async index => {
+    await page.evaluate(i => { window.__testPad.buttons[i] = { pressed: true, touched: true, value: 1 }; }, index);
+    await page.waitForTimeout(120);
+    await page.evaluate(i => { window.__testPad.buttons[i] = { pressed: false, touched: false, value: 0 }; }, index);
+    await page.waitForTimeout(120);
+  };
+  await press(15);
+  await expect(page.getByRole("heading", { name: "YOUR ARSENAL", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Next page", exact: true })).toBeFocused();
+  await press(14);
+  await expect(page.getByRole("heading", { name: "MOVE AND SURVIVE", exact: true })).toBeVisible();
+  await press(0);
+  await expect(page.getByRole("heading", { name: "YOUR ARSENAL", exact: true })).toBeVisible();
+  await press(1);
+  await expect(help).toBeFocused();
+  expect(await page.evaluate(() => window.__shellState.screen)).toBe("menu");
+});
+
 test("4K native foreground leaves the canvas background intact", async ({ page }) => {
   await page.setViewportSize({ width: 3840, height: 2160 });
   await page.goto("/play/last-bastion/?flow=settings");

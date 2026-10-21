@@ -3,7 +3,10 @@
 Original inventory against `20b82c98`, retained as the integration contract. On 21 October,
 `637f6ec8` implemented visible semantic title/menu/settings controls through ScreenFlow. Browser
 keyboard/input, simulated-controller, persistence and focus checks pass; actual screen-reader
-and physical-controller acceptance remain open. Other screens still use canvas controls.
+and physical-controller acceptance remain open. On 22 October, the separately authorized
+How to Play slice adds native instructions and page controls, described vector diagrams, active
+binding copy and polite content updates. See [the implementation record](archive/HELP-ACCESSIBILITY-IMPLEMENTATION-2026-10-22.md).
+Other screens still use canvas controls; actual AT acceptance covers neither slice yet.
 
 | Existing production contract | Preserve when implementation is justified |
 |---|---|

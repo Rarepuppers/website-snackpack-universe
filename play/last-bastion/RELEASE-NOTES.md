@@ -1,5 +1,19 @@
 # Last Bastion release notes
 
+## 22 October 2026 — native How to Play
+
+**Prepared locally:** `web-2026.10.22-help-accessibility` — not pushed, deployed or desktop-packaged.
+
+- How to Play now exposes native headings, instructions, described diagrams and Previous/Next/Back
+  controls. The last page offers Return to menu; focus returns to the originating menu card.
+- Instructions reflect saved keyboard/controller bindings. Keyboard arrows and controller page
+  navigation retain the existing rules; native Enter/Space activates once. Clicking the diagram
+  no longer turns a page through an invisible full-screen zone.
+- Existing vector diagrams and teaching copy are retained. No new art, content, floor adoption or
+  balance change; save schema 16 and simulation compatibility 3 remain unchanged.
+- Actual screen-reader/controller acceptance remains open. Other shell/game screens retain their
+  separate canvas controls; this is not whole-game accessibility acceptance.
+
 ## 21 October 2026 — menu controls and art-review repairs
 
 **Prepared locally:** `web-2026.10.21-menu-review` — not pushed, deployed or desktop-packaged.

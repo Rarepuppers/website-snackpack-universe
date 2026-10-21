@@ -5251,3 +5251,22 @@ replacement was established. Static/diagnostic evidence does not close human/dev
 owner/acceptance handoffs; CURRENT-PLAN links it as supporting detail, not another queue.
 No runtime/release-note change, generation, package, push or deployment. Full verifier and
 portfolio results above remain historical; only the browser suite was rerun for this review.
+
+### Native How to Play — 22 October 2026
+
+Mark accepted further recommendations and authorized executable tasks. Implemented the next
+bounded ACCESS-01 slice: visible native headings/instructions, described existing vector diagrams,
+Previous/Next/Back and final Return to menu, live content updates and stable/return focus. Saved
+bindings and ScreenFlow retain ownership; native Enter/Space and simulated D-pad/A/B activate once.
+Decorative canvas clicks no longer invoke hidden full-screen help page-turn zones. Save warnings
+use the existing native retry surface. Other shell/game accessibility and real AT acceptance remain open.
+
+Prepared `web-2026.10.22-help-accessibility` and matching worker identity; rebuilt local web output.
+Full verifier passes in 129.6 seconds: 1,783 unit / 312 files, 45 browser cases, smoke/offline,
+source/output consistency, site checks and 31 desktop-host tests. Report source is `a58f17ff` plus
+dirty scoped implementation. Eight inspected captures cover four pages at minimum size and first/
+final pages at letterboxed DPR 2 and 4K. Completed implementation is archived; current plan,
+release notes, acceptance worksheet and release/QA handoffs are updated. No raster generation,
+content/balance/floor adoption, executable packaging, publication or cross-chat message occurred.
+Fresh root `node scripts/check-all.js` also passes all 20 portfolio guards, including shared-asset
+generation/delivery and all consumer manifests; the retained evidence includes its full summary.

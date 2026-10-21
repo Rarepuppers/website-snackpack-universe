@@ -4,6 +4,11 @@ Reviewed 21 October 2026 against `7780ba86` plus the pre-existing dirty working 
 This is the post-implementation review; [the earlier audit](AUDIT-REVIEW-2026-10-21.md)
 is the pre-fix baseline. [CURRENT-PLAN](CURRENT-PLAN.md) remains the only execution queue.
 
+**22 October follow-through:** Mark authorized executable implementation. The next bounded
+ACCESS-01 slice, native How to Play, is now implemented locally; see the
+[completed record](archive/HELP-ACCESSIBILITY-IMPLEMENTATION-2026-10-22.md). The canvas-only help
+limitation below describes the audit baseline. Other human/content/hardware gates remain open.
+
 ## Verdict and evidence
 
 The existing art is sufficient to continue acceptance. **No new essential raster asset or newly

@@ -1,0 +1,128 @@
+{
+  "checkedAt": "2026-10-21T13:36:36.741Z",
+  "identity": "web-2026.10.22-help-accessibility",
+  "source": "a58f17ff plus the scoped help implementation",
+  "limitations": "Headless Chromium; sampled layouts and accessibility-tree exposure, not actual AT/controller or hardware acceptance.",
+  "results": [
+    {
+      "name": "minimum",
+      "width": 960,
+      "height": 540,
+      "dpr": 1,
+      "page": 1,
+      "errors": [],
+      "semantics": "- region \"Game menus\":\n  - heading \"HOW TO PLAY\" [level=1]\n  - paragraph: LEFT/RIGHT or D-PAD pages • ENTER / A next • ESC / B back\n  - img \"Movement path around cover toward an evade position, with a threat ahead.\"\n  - article:\n    - heading \"MOVE AND SURVIVE\" [level=2]\n    - paragraph: WASD or left stick moves. Mouse or right stick aims. SPACE / A rolls with a short invulnerability window. Each hero has a passive; read it on the character screen.\n  - paragraph: Page 1 of 4\n  - button \"Previous page\" [disabled]\n  - button \"Next page\"\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "minimum",
+      "width": 960,
+      "height": 540,
+      "dpr": 1,
+      "page": 2,
+      "errors": [],
+      "semantics": "- region \"Game menus\":\n  - heading \"HOW TO PLAY\" [level=1]\n  - paragraph: LEFT/RIGHT or D-PAD pages • ENTER / A next • ESC / B back\n  - img \"A player surrounded by a weapon rack, aiming toward a target in Auto-fire or Manual mode.\"\n  - article:\n    - heading \"YOUR ARSENAL\" [level=2]\n    - paragraph: Weapons follow Auto-fire / Manual; T / R3 toggles it. R / Y fires the ultimate. Q / B uses your carried kit. Autonomous support weapons keep their own cadence in either mode.\n  - paragraph: Page 2 of 4\n  - button \"Previous page\"\n  - button \"Next page\"\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "minimum",
+      "width": 960,
+      "height": 540,
+      "dpr": 1,
+      "page": 3,
+      "errors": [],
+      "semantics": "- region \"Game menus\":\n  - heading \"HOW TO PLAY\" [level=1]\n  - paragraph: LEFT/RIGHT or D-PAD pages • ENTER / A next • ESC / B back\n  - img \"Fire, Shock, Cryo and Toxic build status toward a threshold marker.\"\n  - article:\n    - heading \"DAMAGE AND STATUS\" [level=2]\n    - paragraph: Fire builds Blaze. Shock builds Overload. Cryo builds Freeze. Toxic builds Corrode. Buildup at the threshold applies the status. Damage numbers share the same colour language.\n  - paragraph: Page 3 of 4\n  - button \"Previous page\"\n  - button \"Next page\"\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "minimum",
+      "width": 960,
+      "height": 540,
+      "dpr": 1,
+      "page": 4,
+      "errors": [],
+      "semantics": "- region \"Game menus\":\n  - heading \"HOW TO PLAY\" [level=1]\n  - paragraph: LEFT/RIGHT or D-PAD pages • ENTER / A next • ESC / B back\n  - img \"A branching expedition route passes encounters and rejoins before a boss.\"\n  - article:\n    - heading \"THREE WAYS TO PLAY\" [level=2]\n    - paragraph: \"Quick Drop: ten waves, one life, about ten minutes. Daily Drop: a shared daily seed; builds and assistance may differ. Expedition: a 20-node campaign that autosaves between encounters.\"\n  - paragraph: Page 4 of 4\n  - button \"Previous page\"\n  - button \"Return to menu\"\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "letterbox",
+      "width": 1280,
+      "height": 800,
+      "dpr": 2,
+      "page": 1,
+      "errors": [],
+      "semantics": "- region \"Game menus\":\n  - heading \"HOW TO PLAY\" [level=1]\n  - paragraph: LEFT/RIGHT or D-PAD pages • ENTER / A next • ESC / B back\n  - img \"Movement path around cover toward an evade position, with a threat ahead.\"\n  - article:\n    - heading \"MOVE AND SURVIVE\" [level=2]\n    - paragraph: WASD or left stick moves. Mouse or right stick aims. SPACE / A rolls with a short invulnerability window. Each hero has a passive; read it on the character screen.\n  - paragraph: Page 1 of 4\n  - button \"Previous page\" [disabled]\n  - button \"Next page\"\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 40,
+        "width": 1280,
+        "height": 720
+      }
+    },
+    {
+      "name": "letterbox",
+      "width": 1280,
+      "height": 800,
+      "dpr": 2,
+      "page": 4,
+      "errors": [],
+      "semantics": "- region \"Game menus\":\n  - heading \"HOW TO PLAY\" [level=1]\n  - paragraph: LEFT/RIGHT or D-PAD pages • ENTER / A next • ESC / B back\n  - img \"A branching expedition route passes encounters and rejoins before a boss.\"\n  - article:\n    - heading \"THREE WAYS TO PLAY\" [level=2]\n    - paragraph: \"Quick Drop: ten waves, one life, about ten minutes. Daily Drop: a shared daily seed; builds and assistance may differ. Expedition: a 20-node campaign that autosaves between encounters.\"\n  - paragraph: Page 4 of 4\n  - button \"Previous page\"\n  - button \"Return to menu\"\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 40,
+        "width": 1280,
+        "height": 720
+      }
+    },
+    {
+      "name": "4k",
+      "width": 3840,
+      "height": 2160,
+      "dpr": 1,
+      "page": 1,
+      "errors": [],
+      "semantics": "- region \"Game menus\":\n  - heading \"HOW TO PLAY\" [level=1]\n  - paragraph: LEFT/RIGHT or D-PAD pages • ENTER / A next • ESC / B back\n  - img \"Movement path around cover toward an evade position, with a threat ahead.\"\n  - article:\n    - heading \"MOVE AND SURVIVE\" [level=2]\n    - paragraph: WASD or left stick moves. Mouse or right stick aims. SPACE / A rolls with a short invulnerability window. Each hero has a passive; read it on the character screen.\n  - paragraph: Page 1 of 4\n  - button \"Previous page\" [disabled]\n  - button \"Next page\"\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 3840,
+        "height": 2160
+      }
+    },
+    {
+      "name": "4k",
+      "width": 3840,
+      "height": 2160,
+      "dpr": 1,
+      "page": 4,
+      "errors": [],
+      "semantics": "- region \"Game menus\":\n  - heading \"HOW TO PLAY\" [level=1]\n  - paragraph: LEFT/RIGHT or D-PAD pages • ENTER / A next • ESC / B back\n  - img \"A branching expedition route passes encounters and rejoins before a boss.\"\n  - article:\n    - heading \"THREE WAYS TO PLAY\" [level=2]\n    - paragraph: \"Quick Drop: ten waves, one life, about ten minutes. Daily Drop: a shared daily seed; builds and assistance may differ. Expedition: a 20-node campaign that autosaves between encounters.\"\n  - paragraph: Page 4 of 4\n  - button \"Previous page\"\n  - button \"Return to menu\"\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 3840,
+        "height": 2160
+      }
+    }
+  ]
+}

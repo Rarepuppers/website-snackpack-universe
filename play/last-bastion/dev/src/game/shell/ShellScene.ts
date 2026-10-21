@@ -91,7 +91,7 @@ const MUTED = "#8fa1b3";
 
 /**
  * Front-end shell: authored chrome plus ScreenFlow-owned state/effects.
- * Title/menu/settings use visible semantic controls; remaining screens retain
+ * Title/menu/settings/help use visible semantic controls; remaining screens retain
  * their canvas controls until separately accepted accessibility slices land.
  */
 export class ShellScene extends Phaser.Scene {
@@ -387,7 +387,7 @@ export class ShellScene extends Phaser.Scene {
   private renderPersistenceWarning(): void {
     const persistence = this.saveStore.persistence();
     (window as unknown as { __savePersistence?: object }).__savePersistence = persistence;
-    if (persistence.kind === "saved" || (this.semantic && ["title", "menu", "settings"].includes(this.state.screen))) return;
+    if (persistence.kind === "saved" || (this.semantic && ["title", "menu", "settings", "how-to-play"].includes(this.state.screen))) return;
     const message = persistence.kind === "memory-only"
       ? "SAVE UNAVAILABLE  •  PROGRESS LASTS UNTIL THIS WINDOW CLOSES"
       : "SAVE ERROR  •  PRESS P OR CLICK HERE TO RETRY";
@@ -539,14 +539,14 @@ export class ShellScene extends Phaser.Scene {
     const pages = howToPlayPages(this.state.controls);
     const page = pages[this.state.howToPlayPage]!;
     if (uiChromeEnabled()) this.root.add(this.uiHeaderPlate(220, 48, 330, 62));
-    this.root.add(this.text(70, 35, "HOW TO PLAY", IVORY, "28px"));
+    this.root.add(this.text(70, 35, "HOW TO PLAY", IVORY, "28px").setVisible(!this.semantic));
     this.root.add(this.add.rectangle(WIDTH / 2, 290, 740, 300, PANEL, 0.9));
     this.root.add(uiChromeEnabled()
       ? this.uiPanelFrame(WIDTH / 2, 290, 760, 320, "recessed")
       : this.add.rectangle(WIDTH / 2, 290, 760, 320, PANEL, 0).setStrokeStyle(1, 0x3b4d63));
     this.renderHowToPlayDiagram(this.state.howToPlayPage);
-    this.root.add(this.text(WIDTH / 2, 330, page.title, TEAL, "20px", true));
-    this.root.add(this.text(WIDTH / 2, 386, page.body, IVORY, "14px", true));
+    this.root.add(this.text(WIDTH / 2, 330, page.title, TEAL, "20px", true).setVisible(!this.semantic));
+    this.root.add(this.text(WIDTH / 2, 386, page.body, IVORY, "14px", true).setVisible(!this.semantic));
     this.root.add(this.text(
       WIDTH / 2,
       470,
@@ -554,9 +554,11 @@ export class ShellScene extends Phaser.Scene {
       MUTED,
       "12px",
       true,
-    ));
-    this.clickZone(0, 0, WIDTH / 2, HEIGHT, () => this.apply("left"));
-    this.clickZone(WIDTH / 2, 0, WIDTH / 2, HEIGHT, () => this.apply("right"));
+    ).setVisible(!this.semantic));
+    if (!this.semantic) {
+      this.clickZone(0, 0, WIDTH / 2, HEIGHT, () => this.apply("left"));
+      this.clickZone(WIDTH / 2, 0, WIDTH / 2, HEIGHT, () => this.apply("right"));
+    }
   }
 
   /** Vector teaching diagrams stay sharp at Full HD and 4K and carry no baked key labels. */

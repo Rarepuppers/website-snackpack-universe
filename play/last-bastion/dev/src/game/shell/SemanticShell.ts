@@ -1,6 +1,14 @@
 import type { GameProgress } from "../save/LocalSaveStore";
 import { localDayKey } from "../run/LocalDayKey";
-import { menuCardSubtitle, SETTINGS_GROUPS, settingsGroup, type ShellIntent, type ShellState } from "./ScreenFlow";
+import { howToPlayPages, menuCardSubtitle, SETTINGS_GROUPS, settingsGroup, type ShellIntent, type ShellState } from "./ScreenFlow";
+
+/** Text alternatives for the existing code-native teaching diagrams. */
+const HELP_DIAGRAM_DESCRIPTIONS = [
+  "Movement path around cover toward an evade position, with a threat ahead.",
+  "A player surrounded by a weapon rack, aiming toward a target in Auto-fire or Manual mode.",
+  "Fire, Shock, Cryo and Toxic build status toward a threshold marker.",
+  "A branching expedition route passes encounters and rejoins before a boss.",
+] as const;
 
 interface ShellActions {
   intent(intent: ShellIntent): void;
@@ -59,7 +67,7 @@ export class SemanticShell {
 
   render(view: SemanticShellView, focusSelection = false): void {
     const { state } = view;
-    const supported = ["title", "menu", "settings"].includes(state.screen);
+    const supported = ["title", "menu", "settings", "how-to-play"].includes(state.screen);
     const changed = this.screen !== state.screen;
     const hadFocus = this.owns(document.activeElement);
     if (changed) {
@@ -120,6 +128,37 @@ export class SemanticShell {
       });
       selectedKey = `menu-${state.menuCards[state.menuIndex]!.id}`;
       button("back", "Back", 825, 496, 84, 28, () => this.actions.intent("back"));
+    } else if (state.screen === "how-to-play") {
+      const pages = howToPlayPages(state.controls);
+      const page = pages[state.howToPlayPage]!;
+      text("heading", "HOW TO PLAY", 70, 29, 600, 38, "h1");
+      text("help-hint", "LEFT/RIGHT or D-PAD pages  •  ENTER / A next  •  ESC / B back", 110, 94, 740, 22).className = "semantic-help-status";
+      const diagram = node<HTMLElement>("help-diagram", "figure", 290, 175, 380, 130);
+      diagram.setAttribute("role", "img");
+      diagram.setAttribute("aria-label", HELP_DIAGRAM_DESCRIPTIONS[state.howToPlayPage]!);
+      const content = node<HTMLElement>("help-content", "article", 110, 318, 740, 120);
+      content.id = "shell-help-content";
+      content.className = "semantic-help-content";
+      content.setAttribute("aria-live", "polite");
+      content.setAttribute("aria-atomic", "true");
+      if (!content.firstElementChild) content.innerHTML = "<h2></h2><p></p>";
+      if (content.firstElementChild!.textContent !== page.title) content.firstElementChild!.textContent = page.title;
+      if (content.lastElementChild!.textContent !== page.body) content.lastElementChild!.textContent = page.body;
+      const status = text("help-status", `Page ${state.howToPlayPage + 1} of ${pages.length}`, 390, 450, 180, 22);
+      status.id = "shell-help-status";
+      status.className = "semantic-help-status";
+      const previous = button("help-previous", "Previous page", 110, 482, 160, 34, () => {
+        if (state.howToPlayPage > 0) this.actions.intent("left");
+      });
+      // Keep the boundary button focusable so returning to page one never
+      // drops native focus. aria-disabled and the guarded action agree.
+      previous.setAttribute("aria-disabled", String(state.howToPlayPage === 0));
+      const next = button("help-next", state.howToPlayPage === pages.length - 1 ? "Return to menu" : "Next page",
+        690, 482, 160, 34, () => this.actions.intent("confirm"));
+      next.setAttribute("aria-describedby", "shell-help-status shell-help-content");
+      previous.setAttribute("aria-describedby", "shell-help-status");
+      button("back", "Back", 438, 482, 84, 34, () => this.actions.intent("back"));
+      selectedKey = "help-next";
     } else {
       text("heading", "SETTINGS", 70, 48, 600, 38, "h1");
       const feedback = text("feedback", view.feedback ?? "Changes save automatically. Select a group to see its settings.", 70, 84, 820, 20);

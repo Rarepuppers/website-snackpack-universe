@@ -1,6 +1,6 @@
 # Local QA and package provenance
 
-Prepared local release: `web-2026.10.21-menu-review`; schema 16, simulation compatibility 3.
+Prepared local release: `web-2026.10.22-help-accessibility`; schema 16, simulation compatibility 3.
 These tools prepare evidence. They do not complete human, hardware, Steam or release acceptance.
 
 ## Session reports

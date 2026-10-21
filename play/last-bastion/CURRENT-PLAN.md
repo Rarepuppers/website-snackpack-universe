@@ -1,10 +1,10 @@
 # Last Bastion — current plan
 
-**Updated:** 21 October 2026
-**Prepared local release:** `web-2026.10.21-menu-review` (service worker `2026-10-21-menu-review`).
+**Updated:** 22 October 2026
+**Prepared local release:** `web-2026.10.22-help-accessibility` (service worker `2026-10-22-help-accessibility`).
 **Last verified published release:** `web-2026.10.17-qa-readiness`; the new patch is not pushed/deployed.
-**Status:** accepted gallery fixes and title/menu/settings semantic controls implemented locally;
-fresh full game verification passes. Physical and assistive-technology acceptance remain open.
+**Status:** gallery repairs and native title/menu/settings/How to Play controls implemented locally.
+Physical and assistive-technology acceptance remain open; dated verification is recorded below.
 Human, hardware, Steam and analytics-dashboard gates remain open.
 The 17 October publication and CI evidence below is historical. The new local implementation
 needs separate publication authorization;
@@ -17,6 +17,25 @@ July systems tracker are archived historical context, not additional execution q
 This is the only active execution queue. Completed audit tasks are in the
 [archive](archive/README.md); player-facing changes are in the [release notes](RELEASE-NOTES.md).
 Keep the content freeze until observed play and live measurement justify expansion.
+
+## 22 October authorized implementation — How to Play complete locally
+
+Mark accepted the further recommendations and asked to implement executable tasks. The completed
+bounded ACCESS-01 slice is **How to Play**: visible native heading/instructions and Previous,
+Next/Return to menu and Back buttons, semantic descriptions for the existing vector diagrams,
+active remappable bindings, page announcements, stable focus and single activation through
+ScreenFlow. Preserve keyboard arrows/Enter/Escape and physical-menu gamepad intents.
+Four new browser cases cover all four pages at minimum landscape size, letterboxed output,
+1080p/4K and DPR 1/2; pointer, keyboard and simulated controller, final-page behavior, remapped
+instructions, progress preservation and return focus. Eight fresh captures show the native UI.
+See the [completed implementation](archive/HELP-ACCESSIBILITY-IMPLEMENTATION-2026-10-22.md)
+and [evidence](playtest-evidence/2026-10-22-help-accessibility/README.md) for scope and checks.
+Fresh full verifier passes in **129.6 seconds**: **1,783 unit / 312 files, 45 browser cases,
+31 desktop-host tests**, smoke/offline, source/output consistency and website checks. The report
+records `a58f17ff` plus the scoped dirty implementation; it is not an exact-clean-HEAD claim.
+The fresh complete portfolio run also passes **all 20 guards**, including shared-asset delivery.
+Actual screen-reader/controller acceptance stays open. No practice/content, new art, floor-default,
+balance or production packaging/deployment work follows from this implementation slice.
 
 ## Latest post-implementation audit — 21 October
 
@@ -200,10 +219,10 @@ and the patch proposal’s progress checklist for remaining non-testing work. Ac
   distribution, and next-day return. Combine with the five observed runs before changing scope.
 - Replayable practice, full DOM-backed menu accessibility, further codex expansion,
   legacy modifier cleanup, VFX/transformation art and further music remain conditional work.
-  Build/affinity inspection and semantic title/menu/settings controls are implemented locally;
+  Build/affinity inspection and semantic title/menu/settings/How to Play controls are implemented locally;
   other shell screens and whole-game accessibility are not covered by that limited slice.
   The [shell contract inventory](SHELL-ACCESSIBILITY-CONTRACT-2026-10-17.md) is prepared;
-  title/menu/settings implementation is now local; further slices require separate scope and must
+  title/menu/settings/How to Play implementation is now local; further slices require separate scope and must
   preserve the existing state/effect/input contracts. Actual assistive-technology acceptance remains open.
 - Touch controls, new heroes/regions, multiplayer, leaderboards and Threat Tiers 3–11 are not
   approved production tasks. Use observed needs and operating constraints to select additions.

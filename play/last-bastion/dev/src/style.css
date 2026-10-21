@@ -151,4 +151,9 @@ canvas {
 .semantic-shell input { margin: 0; accent-color: #68e4e8; }
 .semantic-shell select, .semantic-shell output { font-size: 10px; }
 .semantic-shell .semantic-setting-action { text-align: left; padding-left: 12px; font-size: 10px; }
+.semantic-help-content { text-align: center; }
+.semantic-help-content h2 { margin: 0; color: #68e4e8; font: 20px/26px Consolas, monospace; }
+.semantic-help-content p { margin: 14px 0 0; white-space: pre-line; font: 14px/22px Consolas, monospace; }
+.semantic-help-status { text-align: center; color: #b1bfcd; line-height: 22px; }
+.semantic-shell button[aria-disabled="true"] { opacity: 0.5; cursor: default; }
 .semantic-shell [data-shell-key="save-warning"] { background: #4a211c; color: #ffb885; text-align: center; line-height: 28px; }
