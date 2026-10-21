@@ -136,10 +136,13 @@ test('Backgammon enlarged points stay inside a local scroller and remain playabl
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
   await page.locator('#bg-roll').click();
   await expect(page.locator('.bg-pt.is-source, .bg-bar.is-source').first()).toBeVisible();
+  const beforePips = Number(await page.locator('#bg-pw').textContent());
   await page.locator('.bg-pt.is-source, .bg-bar.is-source').first().click();
   const destination = page.locator('.bg-pt.is-dest, .bg-off.is-dest').first();
-  await expect(destination).toBeVisible();
-  await destination.click();
+  // The actual controller immediately applies a source with only one legal
+  // destination. Multiple-destination sources require the second click.
+  if (await destination.count()) await destination.click();
+  await expect.poll(async () => Number(await page.locator('#bg-pw').textContent())).toBeLessThan(beforePips);
   await page.getByRole('button', { name: 'Show whole board', exact: true }).click();
   await expect(page.locator('.sp-backgammon-viewport')).not.toHaveClass(/sp-backgammon-zoom/);
 });
