@@ -1,0 +1,39 @@
+
+[WebServer] (node:26920) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:27048) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] tests\visual\last-bastion-functional.spec.mjs:993:1 › native capture supports Enter and Tab bindings without reopening on release
+  1) tests\visual\last-bastion-functional.spec.mjs:993:1 › native capture supports Enter and Tab bindings without reopening on release
+
+    Error: expect(locator).toBeFocused() failed
+
+    Locator: getByRole('dialog')
+    Expected: focused
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeFocused" with timeout 5000ms
+      - waiting for getByRole('dialog')
+
+
+       997 |   await expect(page.getByRole("dialog")).toBeFocused();
+       998 |   await page.keyboard.down("Enter"); // Held opener repeats must not become a new binding.
+    >  999 |   await expect(page.getByRole("dialog")).toBeFocused();
+           |                                          ^
+      1000 |   await page.keyboard.up("Enter");
+      1001 |   await page.keyboard.press("Enter");
+      1002 |   await expect(page.getByRole("dialog")).toHaveCount(0);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:999:42
+
+    Error Context: test-results\last-bastion-functional-na-046f3-ithout-reopening-on-release\error-context.md
+
+
+  1 failed
+    tests\visual\last-bastion-functional.spec.mjs:993:1 › native capture supports Enter and Tab bindings without reopening on release

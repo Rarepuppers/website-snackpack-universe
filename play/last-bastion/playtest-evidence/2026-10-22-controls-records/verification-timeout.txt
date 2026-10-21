@@ -1,0 +1,96 @@
+Last Bastion verification
+Commit: 5974c948
+Build identity: web-2026.10.22-controls-records
+Working tree: DIRTY
+
+=== Web static/unit/build/smoke/offline ===
+
+> last-bastion-web@0.0.1 verify
+> npm run image:audit:webp && npm run combat:audit:boundaries && npm run content:audit && npm run ui:audit:text && npm run typecheck && npm run test && npm run test:build-check && npm run build:check && npm run smoke && npm run offline
+
+
+> last-bastion-web@0.0.1 image:audit:webp
+> node scripts/audit-production-images.mjs
+
+PASS 8 lossy + 55 lossless derivatives
+Runtime WebP audit complete: 63 assets; 51.93 MiB -> 27.06 MiB (52.1%).
+
+> last-bastion-web@0.0.1 combat:audit:boundaries
+> node scripts/audit-combat-boundaries.mjs
+
+PASS 33 enemy adapters delegate policy with no inline switch state machines.
+First shared-state seam: ordinary projectile volley geometry; runtime mutation and world effects remain simulation-owned.
+
+> last-bastion-web@0.0.1 content:audit
+> vitest run src/game/content/ContentInventory.test.ts --reporter=verbose
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+ ✓ src/game/content/ContentInventory.test.ts > generated content inventory > 5 heroes; 34 weapons (31 draftable, 1 earned unique, 1 hero-bound, 1 transformation-only); 38 enemy catalogue types (20 regular/treasure, 8 summons/props, 7 mini-bosses, 3 bosses); 7 elite identities; 47 items, 14 relics, 12 artifacts; 20 upgrades, 16 level-stat cards, 29 world objects, 4 objective modes 1ms
+ ✓ src/game/content/ContentInventory.test.ts > generated content inventory > partitions every enemy catalogue entry exactly once 0ms
+ ✓ src/game/content/ContentInventory.test.ts > generated content inventory > keeps elite and ranked-enemy identities unique 0ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  01:44:47
+   Duration  1.09s (transform 814ms, setup 0ms, import 964ms, tests 3ms, environment 0ms)
+
+
+> last-bastion-web@0.0.1 ui:audit:text
+> node scripts/audit-ui-text-resolution.mjs
+
+UI text-resolution audit passed for 6 release scenes.
+
+> last-bastion-web@0.0.1 typecheck
+> tsc --noEmit
+
+
+> last-bastion-web@0.0.1 test
+> vitest run
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+ ❯ src/game/arena/WorldObjectNavigation.test.ts (5 tests | 1 failed) 8002ms
+     × still holds after any single object is destroyed 5175ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/game/arena/WorldObjectNavigation.test.ts > world object navigation guarantee > still holds after any single object is destroyed
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/game/arena/WorldObjectNavigation.test.ts:107:3
+    105|   });
+    106|
+    107|   it("still holds after any single object is destroyed", () => {
+       |   ^
+    108|     // Destruction is the harder case: removing a wall can only open t…
+    109|     // but the gates are tuned against the *furnished* layout, so this…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 311 passed (312)
+      Tests  1 failed | 1782 passed (1783)
+   Start at  01:44:50
+   Duration  12.48s (transform 60.46s, setup 0ms, import 117.93s, tests 46.04s, environment 46ms)
+
+FAIL Web static/unit/build/smoke/offline (17.0s)
+NOT-RUN Website JavaScript and offline core (a previous lane failed)
+NOT-RUN Executable browser acceptance (a previous lane failed)
+NOT-RUN Desktop host build and tests (a previous lane failed)
+
+Report written to play/last-bastion/.qa-runtime/controls-records-final-verification.json
+
+FAIL     Web static/unit/build/smoke/offline
+NOT-RUN  Website JavaScript and offline core
+NOT-RUN  Executable browser acceptance
+NOT-RUN  Desktop host build and tests
+
+Manual gates, not covered by anything above:
+  MANUAL   Observed gameplay, visual and audio review
+  MANUAL   Packaged-window hardware checks
+  MANUAL   Steam client acceptance
+
+VERIFICATION FAILED (17.1s)

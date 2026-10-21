@@ -53,7 +53,7 @@ import {
   type GamepadButton,
   type KeyboardBindableAction,
 } from "../input/ControlBindings";
-import { runRecordPresentation } from "../run/RunRecordPresentation";
+import { historyRecordPresentation } from "../run/RunRecordPresentation";
 import { localDayKey } from "../run/LocalDayKey";
 import { fitText, phaserTextMeasure } from "../ui/MeasuredText";
 import {
@@ -66,7 +66,8 @@ import {
 } from "../assets/UiChromeAssets";
 import { requestedShellScreen } from "./ShellReviewRoute";
 import { heroDossierCopy } from "./HeroDossierCopy";
-import { SemanticShell } from "./SemanticShell";
+import { SemanticShell, type BindingCapture } from "./SemanticShell";
+import { careerRecordRows, controlActionLabel } from "./ShellPresentation";
 
 type UiPanelWeight = "recessed" | "raised" | "emphasis";
 
@@ -91,7 +92,7 @@ const MUTED = "#8fa1b3";
 
 /**
  * Front-end shell: authored chrome plus ScreenFlow-owned state/effects.
- * Title/menu/settings/help use visible semantic controls; remaining screens retain
+ * Title/menu/settings/help/controls/records use native semantics; remaining screens retain
  * their canvas controls until separately accepted accessibility slices land.
  */
 export class ShellScene extends Phaser.Scene {
@@ -103,7 +104,8 @@ export class ShellScene extends Phaser.Scene {
   private titlePulse = 0;
   private characterLoadFailed = false;
   private loadingAssetGroup: "shell-character" | null = null;
-  private bindingCapture: { device: "keyboard" | "gamepad"; action: KeyboardBindableAction | GamepadBindableAction } | null = null;
+  private bindingCapture: BindingCapture | null = null;
+  private bindingFeedback: string | null = null;
   private fullscreenFeedback: string | null = null;
   private saveTransferFeedback: string | null = null;
 
@@ -143,12 +145,12 @@ export class ShellScene extends Phaser.Scene {
     this.semantic = new SemanticShell(this.game.canvas, {
       intent: intent => this.apply(intent),
       select: index => {
-        const key = this.state.screen === "menu" ? "menuIndex" : "settingsIndex";
+        const key = this.state.screen === "menu" ? "menuIndex" : this.state.screen === "controls" ? "controlIndex" : "settingsIndex";
         if (this.state[key] === index) return;
         this.state = { ...this.state, [key]: index }; this.render();
       },
       activate: index => {
-        const key = this.state.screen === "menu" ? "menuIndex" : "settingsIndex";
+        const key = this.state.screen === "menu" ? "menuIndex" : this.state.screen === "controls" ? "controlIndex" : "settingsIndex";
         this.state = { ...this.state, [key]: index }; this.apply("confirm");
       },
       group: name => {
@@ -160,6 +162,9 @@ export class ShellScene extends Phaser.Scene {
         this.applyResult(setShellSetting(this.state, value));
       },
       retrySave: () => { this.saveStore.retryPersistence(); this.render(); },
+      device: device => { if (this.state.controlDevice !== device) this.apply("right"); },
+      resetBindings: () => this.resetControlBindings(),
+      cancelBinding: () => this.cancelBindingCapture(),
     });
 
     // One direct window listener instead of the Phaser keyboard plugin: the
@@ -180,9 +185,11 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private readonly handleGamepad = (_pad: unknown, button: { index: number }): void => {
-      if (this.bindingCapture?.device === "gamepad") {
-        const mapped = gamepadButtonFromIndex(button.index);
-        if (mapped) this.commitGamepadBinding(mapped);
+      if (this.bindingCapture) {
+        if (this.bindingCapture.device === "gamepad") {
+          const mapped = gamepadButtonFromIndex(button.index);
+          if (mapped) this.commitGamepadBinding(mapped);
+        }
         return;
       }
       const intent = padButtonToIntent(button.index);
@@ -200,20 +207,27 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private readonly handleKey = (event: KeyboardEvent): void => {
-    if (this.bindingCapture?.device === "keyboard") {
-      event.preventDefault();
+    if (this.bindingCapture) {
+      // The key that opened capture can still be held. Require a fresh
+      // key-down so its repeats never silently assign that opener.
+      if (event.repeat) { event.preventDefault(); return; }
       if (event.code === "Escape") {
-        this.bindingCapture = null;
-        this.render();
+        event.preventDefault(); this.cancelBindingCapture();
         return;
       }
-      this.commitKeyboardBinding(event.code);
+      const cancel = event.target instanceof HTMLElement && event.target.closest('[data-shell-key="capture-cancel"]');
+      // A native Cancel activation belongs to the dialog, not the binding.
+      if (cancel && ["Enter", "NumpadEnter", "Space"].includes(event.code)) return;
+      event.preventDefault();
+      if (this.bindingCapture.device === "keyboard") this.commitKeyboardBinding(event.code);
+      else if (event.code === "Tab") document.querySelector<HTMLButtonElement>('[data-shell-key="capture-cancel"]')?.focus();
       return;
     }
     if (this.semantic?.owns(event.target)) {
       // Native Enter/Space and form arrows must fire once through their own
       // controls, never a second time through the scene's global shortcut.
       const target = event.target as HTMLElement;
+      if (target.closest("[data-native-scroll]") && ["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", "Space"].includes(event.code)) return;
       const checkbox = target instanceof HTMLInputElement && target.type === "checkbox";
       if (checkbox && ["Enter", "NumpadEnter"].includes(event.code)) {
         event.preventDefault(); this.apply("confirm"); return;
@@ -230,10 +244,7 @@ export class ShellScene extends Phaser.Scene {
     }
     if (this.state.screen === "controls" && event.code === "Delete") {
       event.preventDefault();
-      const controls = normalizeControlBindings(DEFAULT_CONTROL_BINDINGS);
-      this.saveStore.updateControlBindings(controls);
-      this.state = { ...this.state, controls };
-      this.render();
+      this.resetControlBindings();
       return;
     }
     const intent = keyToIntent(event.code);
@@ -305,6 +316,7 @@ export class ShellScene extends Phaser.Scene {
         return;
       } else if (effect.type === "capture-binding") {
         this.bindingCapture = { device: effect.device, action: effect.action };
+        this.bindingFeedback = null;
       } else if (effect.type === "purchase-armory-node") {
         this.saveStore.purchaseArmoryNode(effect.nodeId);
       } else if (effect.type === "select-armory-node") {
@@ -380,6 +392,8 @@ export class ShellScene extends Phaser.Scene {
     this.semantic?.render({ state: this.state, progress: this.saveStore.load().progress,
       saved: persistence.kind === "saved", saveFailed: persistence.kind === "failed",
       feedback: this.saveTransferFeedback ?? this.fullscreenFeedback, formatValue: formatSettingValue,
+      bindingCapture: this.bindingCapture, bindingFeedback: this.bindingFeedback,
+      history: this.saveStore.load().runHistory,
     }, this.focusSemanticSelection);
     this.focusSemanticSelection = false;
   }
@@ -387,7 +401,7 @@ export class ShellScene extends Phaser.Scene {
   private renderPersistenceWarning(): void {
     const persistence = this.saveStore.persistence();
     (window as unknown as { __savePersistence?: object }).__savePersistence = persistence;
-    if (persistence.kind === "saved" || (this.semantic && ["title", "menu", "settings", "how-to-play"].includes(this.state.screen))) return;
+    if (persistence.kind === "saved" || (this.semantic && ["title", "menu", "settings", "how-to-play", "controls", "records"].includes(this.state.screen))) return;
     const message = persistence.kind === "memory-only"
       ? "SAVE UNAVAILABLE  •  PROGRESS LASTS UNTIL THIS WINDOW CLOSES"
       : "SAVE ERROR  •  PRESS P OR CLICK HERE TO RETRY";
@@ -714,9 +728,9 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private renderControls(): void {
-    this.root.add(this.text(70, 42, "CONTROL BINDINGS", IVORY, "27px"));
-    this.root.add(this.text(70, 76, "LEFT/RIGHT DEVICE  •  ENTER REBIND  •  DELETE RESET ALL  •  ESC CANCEL/BACK", MUTED, "11px"));
-    this.root.add(this.text(700, 42, this.state.controlDevice === "keyboard" ? "KEYBOARD" : "CONTROLLER", TEAL, "16px", true));
+    this.root.add(this.text(70, 42, "CONTROL BINDINGS", IVORY, "27px").setVisible(!this.semantic));
+    this.root.add(this.text(70, 76, "LEFT/RIGHT DEVICE  •  ENTER REBIND  •  DELETE RESET ALL  •  ESC CANCEL/BACK", MUTED, "11px").setVisible(!this.semantic));
+    this.root.add(this.text(700, 42, this.state.controlDevice === "keyboard" ? "KEYBOARD" : "CONTROLLER", TEAL, "16px", true).setVisible(!this.semantic));
     KEYBOARD_BINDABLE_ACTIONS.forEach((action, index) => {
       const column = index < 5 ? 0 : 1;
       const row = index % 5;
@@ -727,6 +741,7 @@ export class ShellScene extends Phaser.Scene {
       const unavailable = this.state.controlDevice === "gamepad" && !gamepadAction;
       this.root.add(this.add.rectangle(x + 190, y + 23, 380, 54, focused ? 0x24384f : PANEL)
         .setStrokeStyle(focused ? 3 : 1, focused ? TEAL_HEX : 0x3b4d63));
+      if (this.semantic) return;
       this.root.add(this.text(x + 16, y + 10, controlActionLabel(action), unavailable ? MUTED : focused ? TEAL : IVORY, "15px"));
       const binding = this.state.controlDevice === "keyboard"
         ? keyboardBindingLabel(this.state.controls.keyboard[action])
@@ -737,7 +752,7 @@ export class ShellScene extends Phaser.Scene {
         this.apply("confirm");
       });
     });
-    if (this.bindingCapture) {
+    if (this.bindingCapture && !this.semantic) {
       this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, 570, 120, 0x0b121c, 0.97).setStrokeStyle(3, TEAL_HEX));
       this.root.add(this.text(WIDTH / 2, HEIGHT / 2 - 18, `PRESS A ${this.bindingCapture.device === "keyboard" ? "KEY" : "CONTROLLER BUTTON"}`, IVORY, "20px", true));
       this.root.add(this.text(WIDTH / 2, HEIGHT / 2 + 22, "Duplicate assignments swap automatically  •  ESC cancels keyboard capture", MUTED, "10px", true));
@@ -746,20 +761,45 @@ export class ShellScene extends Phaser.Scene {
 
   private commitKeyboardBinding(code: string): void {
     if (!this.bindingCapture || this.bindingCapture.device !== "keyboard") return;
-    if (!isBindableKeyboardCode(code)) return;
+    if (!isBindableKeyboardCode(code)) {
+      this.bindingFeedback = "That key cannot be assigned. Press another key, or Escape to cancel.";
+      this.render(); return;
+    }
+    const action = this.bindingCapture.action;
     const controls = rebindKeyboard(this.state.controls, this.bindingCapture.action as KeyboardBindableAction, code);
     this.saveStore.updateControlBindings(controls);
     this.state = { ...this.state, controls };
     this.bindingCapture = null;
+    this.bindingFeedback = `${controlActionLabel(action)} bound to ${keyboardBindingLabel(code)}. Duplicate assignments swap automatically.`;
+    this.focusSemanticSelection = true;
     this.render();
   }
 
   private commitGamepadBinding(button: GamepadButton): void {
     if (!this.bindingCapture || this.bindingCapture.device !== "gamepad") return;
-    const controls = rebindGamepad(this.state.controls, this.bindingCapture.action as GamepadBindableAction, button);
+    const action = this.bindingCapture.action;
+    const controls = rebindGamepad(this.state.controls, action as GamepadBindableAction, button);
     this.saveStore.updateControlBindings(controls);
     this.state = { ...this.state, controls };
     this.bindingCapture = null;
+    this.bindingFeedback = `${controlActionLabel(action)} bound to ${gamepadBindingLabel(button)}. Duplicate assignments swap automatically.`;
+    this.focusSemanticSelection = true;
+    this.render();
+  }
+
+  private cancelBindingCapture(): void {
+    this.bindingCapture = null;
+    this.bindingFeedback = "Rebinding cancelled. Bindings unchanged.";
+    this.focusSemanticSelection = true;
+    this.render();
+  }
+
+  private resetControlBindings(): void {
+    if (this.bindingCapture) return;
+    const controls = normalizeControlBindings(DEFAULT_CONTROL_BINDINGS);
+    this.saveStore.updateControlBindings(controls);
+    this.state = { ...this.state, controls };
+    this.bindingFeedback = "All bindings reset to defaults.";
     this.render();
   }
 
@@ -783,20 +823,12 @@ export class ShellScene extends Phaser.Scene {
   private renderRecords(): void {
     const save = this.saveStore.load();
     const progress = save.progress;
-    this.root.add(this.text(70, 48, "RECORDS", IVORY, "28px"));
+    this.root.add(this.text(70, 48, "RECORDS", IVORY, "28px").setVisible(!this.semantic));
     this.root.add(this.add.rectangle(250, 278, 360, 350, PANEL).setStrokeStyle(1, 0x3b4d63));
     this.root.add(this.add.rectangle(675, 278, 450, 350, PANEL).setStrokeStyle(1, 0x3b4d63));
+    if (this.semantic) return;
     this.root.add(this.text(90, 92, "CAREER", TEAL, "13px"));
-    const rows: readonly [string, string][] = [
-      ["RUNS FINISHED", String(progress.runsFinished)],
-      ["VICTORIES", String(progress.victories)],
-      ["BEST WAVE / COLUMN", String(progress.bestWaveReached)],
-      ["BEST EXPEDITION NODES", String(progress.bestNodesCleared)],
-      ["LIFETIME NODES CLEARED", String(progress.nodesCleared)],
-      ["ENEMIES DEFEATED", String(progress.totalKills)],
-      ["TOTAL DAMAGE", formatRecord(progress.totalDamage)],
-      ["SCRAP EARNED", formatRecord(progress.totalScrapEarned)],
-    ];
+    const rows = careerRecordRows(progress);
     rows.forEach(([label, value], index) => {
       const y = 120 + index * 38;
       this.root.add(this.text(90, y, label, MUTED, "10px"));
@@ -813,23 +845,17 @@ export class ShellScene extends Phaser.Scene {
     }
     visibleHistory.forEach((entry, index) => {
       const summary = entry.summary;
-      const record = runRecordPresentation(summary);
+      const record = historyRecordPresentation(entry);
       const y = 124 + index * 52;
       const resultColor = summary.outcome === "victory" ? TEAL : "#ff7d72";
-      const date = entry.completedAtMs > 0
-        ? localDayKey(entry.completedAtMs)
-        : "LEGACY SAVE";
-      const progressLabel = summary.mode === "expedition"
-        ? `${summary.nodesCleared} NODES${summary.threatTier === null ? "" : `  T${summary.threatTier}`}`
-        : `WAVE ${summary.waveReached}`;
       this.root.add(this.add.rectangle(675, y + 18, 410, 44, 0x172335).setStrokeStyle(1, 0x334860));
-      this.root.add(this.text(484, y + 5, summary.outcome.toUpperCase(), resultColor, "11px"));
-      this.root.add(this.text(570, y + 5, progressLabel, IVORY, "11px"));
-      this.root.add(this.text(852, y + 5, date, MUTED, "9px", true));
+      this.root.add(this.text(484, y + 5, record.outcome, resultColor, "11px"));
+      this.root.add(this.text(570, y + 5, record.progress, IVORY, "11px"));
+      this.root.add(this.text(852, y + 5, record.date, MUTED, "9px", true));
       this.root.add(this.text(
         484,
         y + 24,
-        `${record.heroLabel}  •  ${summary.kills} KILLS  •  ${summary.commandMarksEarned} MARKS  •  ${record.balanceSignal}`,
+        record.detail,
         MUTED,
         "8px",
       ));
@@ -1199,10 +1225,6 @@ function requestedHeroC3Preview(heroId: string): boolean {
     && new URLSearchParams(window.location.search).get("c3") === heroId;
 }
 
-function formatRecord(value: number): string {
-  return value.toFixed(1).replace(/\.0$/, "");
-}
-
 function formatSettingValue(key: string, value: unknown): string {
   if (key.endsWith("Volume") || key === "aimAssistStrength" || key === "brightness") return `${Math.round(Number(value) * 100)}%`;
   if (key === "gamma") return Number(value).toFixed(1);
@@ -1243,12 +1265,4 @@ function padButtonToIntent(index: number): ShellIntent | null {
 
 function gamepadButtonFromIndex(index: number): GamepadButton | null {
   return ({ 0: "south", 1: "east", 2: "west", 3: "north", 9: "start", 11: "rightStick" } as Record<number, GamepadButton>)[index] ?? null;
-}
-
-function controlActionLabel(action: KeyboardBindableAction): string {
-  return ({
-    moveUp: "MOVE UP", moveDown: "MOVE DOWN", moveLeft: "MOVE LEFT", moveRight: "MOVE RIGHT",
-    evade: "ROLL / EVADE", interact: "INTERACT", ultimate: "ULTIMATE", kit: "USE KIT",
-    toggleFireMode: "FIRE MODE", pause: "PAUSE",
-  })[action];
 }

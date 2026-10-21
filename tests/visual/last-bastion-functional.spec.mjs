@@ -832,7 +832,12 @@ for (const deviceScaleFactor of [1, 2]) {
       await page.goto("/play/last-bastion/?flow=how-to-play");
       await expect(page.locator('[data-shell-key="help-content"]')).toContainText("F / Y rolls");
       const before = await page.evaluate(() => localStorage.getItem("last-bastion-save"));
-      for (const [width, height] of [[960, 540], [1280, 800], [1920, 1080], [3840, 2160]]) {
+      // Keep the physical output at or below the declared 4K review target.
+      // A 3840 CSS viewport at DPR 2 requests 8K, not a scaled 4K display.
+      const viewports = deviceScaleFactor === 1
+        ? [[960, 540], [1280, 800], [1920, 1080], [3840, 2160]]
+        : [[960, 540], [1280, 800], [1920, 1080]];
+      for (const [width, height] of viewports) {
         await page.setViewportSize({ width, height });
         for (let index = 0; index < 4; index++) {
           await expect(page.locator('[data-shell-key="help-status"]')).toHaveText(`Page ${index + 1} of 4`);
@@ -883,6 +888,225 @@ test("help gamepad page controls preserve confirm and back behavior", async ({ p
   await press(1);
   await expect(help).toBeFocused();
   expect(await page.evaluate(() => window.__shellState.screen)).toBe("menu");
+});
+
+async function installShellTestPad(page) {
+  await page.addInitScript(() => {
+    const pad = { id: "Bindings test controller", index: 0, connected: true, mapping: "standard", timestamp: 1, axes: [0, 0, 0, 0], buttons: Array.from({ length: 17 }, () => ({ pressed: false, touched: false, value: 0 })) };
+    window.__testPad = pad;
+    Object.defineProperty(navigator, "getGamepads", { value: () => { pad.timestamp = performance.now(); return [pad]; } });
+  });
+}
+
+async function shellPadPress(page, index) {
+  await page.evaluate(i => { window.__testPad.buttons[i] = { pressed: true, touched: true, value: 1 }; }, index);
+  await page.waitForTimeout(120);
+  await page.evaluate(i => { window.__testPad.buttons[i] = { pressed: false, touched: false, value: 0 }; }, index);
+  await page.waitForTimeout(120);
+}
+
+test("native rebinding swaps duplicates, owns capture input, persists and resets", async ({ page }) => {
+  const failures = watchRuntime(page);
+  await installShellTestPad(page);
+  await page.goto("/play/last-bastion/?flow=settings");
+  await page.getByRole("button", { name: "Controls", exact: true }).click();
+  const entry = page.getByRole("button", { name: "Control bindings", exact: true });
+  await entry.click();
+  const up = page.getByRole("button", { name: "MOVE UP: W", exact: true });
+  await expect(up).toBeFocused();
+  const backBox = await page.getByRole("button", { name: "Back", exact: true }).boundingBox();
+  const sampleBack = async () => {
+    const encoded = (await page.screenshot()).toString("base64");
+    return page.evaluate(async ({ encoded, box }) => {
+      const image = new Image(); image.src = `data:image/png;base64,${encoded}`; await image.decode();
+      const canvas = document.createElement("canvas"); canvas.width = image.width; canvas.height = image.height;
+      const ctx = canvas.getContext("2d"); ctx.drawImage(image, 0, 0);
+      const pixels = ctx.getImageData(box.x + 7, box.y + 7, 5, 5).data;
+      let sum = 0; for (let i = 0; i < pixels.length; i += 4) sum += pixels[i] + pixels[i + 1] + pixels[i + 2];
+      return sum / (pixels.length / 4);
+    }, { encoded, box: backBox });
+  };
+  const backBefore = await sampleBack();
+  await page.getByRole("button", { name: "ROLL / EVADE: SPACE", exact: true }).press("Enter");
+  const dialog = page.getByRole("dialog", { name: "Rebind ROLL / EVADE", exact: true });
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toBeFocused();
+  await expect(up).toHaveAttribute("inert", "");
+  expect(await sampleBack()).toBeLessThan(backBefore * 0.7);
+  await shellPadPress(page, 1); // Pad B must not navigate during keyboard capture.
+  await expect(dialog).toBeVisible();
+  expect(await page.evaluate(() => window.__shellState.screen)).toBe("controls");
+  await page.keyboard.press("r"); // Swap existing ultimate binding with evade.
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "ROLL / EVADE: R", exact: true })).toBeFocused();
+  await expect(page.getByRole("button", { name: "ULTIMATE: SPACE", exact: true })).toBeVisible();
+  await page.reload();
+  await page.getByRole("button", { name: "Controls", exact: true }).click();
+  await entry.click();
+  await expect(page.getByRole("button", { name: "ROLL / EVADE: R", exact: true })).toBeVisible();
+  const beforeCancel = await page.evaluate(() => localStorage.getItem("last-bastion-save"));
+  await page.getByRole("button", { name: "ROLL / EVADE: R", exact: true }).press("Space");
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press("Delete"); // Invalid capture key must not reset everything.
+  await expect(dialog).toContainText("That key cannot be assigned");
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveCount(0);
+  expect(await page.evaluate(() => localStorage.getItem("last-bastion-save"))).toBe(beforeCancel);
+  await page.getByRole("button", { name: "ROLL / EVADE: R", exact: true }).click();
+  await page.getByRole("button", { name: "Cancel capture", exact: true }).click();
+  await expect(page.getByRole("button", { name: "ROLL / EVADE: R", exact: true })).toBeFocused();
+  await page.getByRole("button", { name: "Reset all bindings", exact: true }).press("Enter");
+  await expect(page.getByRole("button", { name: "ROLL / EVADE: SPACE", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "ULTIMATE: R", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(entry).toBeFocused();
+  expect(failures).toEqual([]);
+});
+
+test("controller capture ignores keyboard navigation, cancels safely and swaps actual pad buttons", async ({ page }) => {
+  await installShellTestPad(page);
+  await page.goto("/play/last-bastion/?flow=controls");
+  await page.getByRole("button", { name: "Controller", exact: true }).click();
+  const movement = page.getByRole("button", { name: "MOVE UP: LEFT STICK", exact: true });
+  await expect(movement).toHaveAttribute("aria-disabled", "true");
+  await movement.click({ force: true });
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  const evade = page.getByRole("button", { name: "ROLL / EVADE: A", exact: true });
+  await evade.click();
+  await expect(page.getByRole("dialog")).toBeFocused();
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Backspace");
+  expect(await page.evaluate(() => window.__shellState.controlIndex)).toBe(4);
+  expect(await page.evaluate(() => window.__shellState.screen)).toBe("controls");
+  await page.keyboard.press("Escape");
+  await expect(evade).toBeFocused();
+  await evade.click();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Cancel capture", exact: true })).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(evade).toBeFocused();
+  await shellPadPress(page, 0); // Physical A opens capture once.
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await shellPadPress(page, 1); // Physical B is a bindable button here, not menu Back.
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "ROLL / EVADE: B", exact: true })).toBeFocused();
+  await expect(page.getByRole("button", { name: "USE KIT: A", exact: true })).toBeVisible();
+  await shellPadPress(page, 1); // Once capture ends, B resumes its physical menu meaning.
+  await expect(page.getByRole("heading", { name: "SETTINGS", exact: true })).toBeVisible();
+});
+
+test("native capture supports Enter and Tab bindings without reopening on release", async ({ page }) => {
+  await page.goto("/play/last-bastion/?flow=controls");
+  await page.getByRole("button", { name: "MOVE UP: W", exact: true }).focus();
+  await page.keyboard.down("Enter");
+  await expect(page.getByRole("dialog")).toBeFocused();
+  await page.keyboard.down("Enter"); // Held opener repeats must not become a new binding.
+  await expect(page.getByRole("dialog")).toBeFocused();
+  await page.keyboard.up("Enter");
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "MOVE UP: ENTER", exact: true })).toBeFocused();
+  await page.getByRole("button", { name: "MOVE DOWN: S", exact: true }).click();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "MOVE DOWN: TAB", exact: true })).toBeFocused();
+  await page.getByRole("button", { name: "MOVE LEFT: A", exact: true }).click();
+  await page.keyboard.press("Space");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "MOVE LEFT: SPACE", exact: true })).toBeFocused();
+});
+
+test("native records exposes empty and populated history, clamps navigation and preserves saves", async ({ page }) => {
+  const failures = watchRuntime(page);
+  await installShellTestPad(page);
+  await page.goto("/play/last-bastion/?flow=menu");
+  const records = page.getByRole("button", { name: /RECORDS/ });
+  await records.click();
+  await expect(page.getByRole("heading", { name: "RECORDS", exact: true })).toBeVisible();
+  await expect(page.getByText("NO COMPLETED RUNS YET", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Older runs", exact: true })).toHaveAttribute("aria-disabled", "true");
+  await page.getByRole("button", { name: "Back", exact: true }).press("Enter");
+  await expect(records).toBeFocused();
+  // Production debrief supplies a real normalized summary for disposable history fixtures.
+  await page.goto("/play/last-bastion/?flow=settings");
+  await page.getByRole("checkbox", { name: "Screen shake", exact: true }).uncheck();
+  await page.goto("/play/last-bastion/?screen=summary&summarydemo=1");
+  await page.waitForFunction(() => Boolean(window.__runSummary));
+  await page.evaluate(() => {
+    const save = JSON.parse(localStorage.getItem("last-bastion-save"));
+    const summary = window.__runSummary;
+    save.runHistory = Array.from({ length: 8 }, (_, index) => ({
+      id: `native-record-${index}`, completedAtMs: index === 7 ? 0 : Date.now() - index * 86400000,
+      summary: { ...summary, mode: index === 7 ? "expedition" : "quick-drop", threatTier: index === 7 ? 2 : null,
+        nodesCleared: index === 7 ? 17 : 0, waveReached: 10 - index, heroId: "medic",
+        outcome: index === 0 ? "victory" : "defeat", defeatCause: "arc-warden", commandMarksEarned: index + 1 },
+    }));
+    save.progress.runsFinished = 8; save.progress.totalDamage = 1234.5;
+    localStorage.setItem("last-bastion-save", JSON.stringify(save));
+  });
+  await page.goto("/play/last-bastion/?flow=records");
+  const list = page.getByRole("list", { name: "Recent runs", exact: true });
+  await expect(list.getByRole("listitem")).toHaveCount(6);
+  await expect(page.getByRole("status")).toHaveText("1–6 of 8");
+  await expect(list).toContainText("MEDIC");
+  await expect(page.locator('[data-shell-key="career"]')).toContainText("1234.5");
+  const saved = await page.evaluate(() => localStorage.getItem("last-bastion-save"));
+  await page.getByRole("button", { name: "Older runs", exact: true }).press("Enter");
+  await expect(page.getByRole("status")).toHaveText("2–7 of 8");
+  await page.getByRole("button", { name: "Older runs", exact: true }).press("Space");
+  await expect(page.getByRole("status")).toHaveText("3–8 of 8");
+  await expect(list).toContainText("LEGACY SAVE");
+  await expect(list).toContainText("17 NODES T2");
+  await expect(list).toContainText("DOWNED BY ARC WARDEN");
+  await page.getByRole("button", { name: "Older runs", exact: true }).click({ force: true });
+  await expect(page.getByRole("status")).toHaveText("3–8 of 8");
+  await page.getByRole("button", { name: "Back", exact: true }).focus();
+  await page.keyboard.press("ArrowUp");
+  await expect(page.getByRole("status")).toHaveText("2–7 of 8");
+  await list.focus();
+  await page.keyboard.press("ArrowDown"); // Native list scrolling does not skip history entries.
+  await expect(page.getByRole("status")).toHaveText("2–7 of 8");
+  await shellPadPress(page, 13);
+  await expect(page.getByRole("status")).toHaveText("3–8 of 8");
+  await expect(page.getByRole("button", { name: "Back", exact: true })).toBeFocused();
+  expect(await page.evaluate(() => localStorage.getItem("last-bastion-save"))).toBe(saved);
+  await shellPadPress(page, 1);
+  expect(await page.evaluate(() => window.__shellState.screen)).toBe("menu");
+  expect(failures).toEqual([]);
+});
+
+test("native controls, capture and records follow canvas bounds across resolution and DPR", async ({ browser }) => {
+  for (const deviceScaleFactor of [1, 2]) {
+    const context = await browser.newContext({ deviceScaleFactor, viewport: { width: 960, height: 540 } });
+    const page = await context.newPage();
+    try {
+    for (const flow of ["controls", "records"]) {
+      await page.goto(`/play/last-bastion/?flow=${flow}`);
+      await expect(page.locator(".semantic-shell")).toBeVisible();
+      const viewports = deviceScaleFactor === 1
+        ? [[960, 540], [1280, 800], [1920, 1080], [3840, 2160]]
+        : [[960, 540], [1280, 800], [1920, 1080]];
+      for (const [width, height] of viewports) {
+        await page.setViewportSize({ width, height });
+        await expect.poll(() => page.evaluate(() => {
+          const canvas = document.querySelector("#game-root canvas").getBoundingClientRect();
+          const layer = document.querySelector(".semantic-shell").getBoundingClientRect();
+          return Math.max(Math.abs(canvas.left - layer.left), Math.abs(canvas.top - layer.top), Math.abs(canvas.width - layer.width), Math.abs(canvas.height - layer.height)) < 2
+            && [...document.querySelectorAll(".semantic-shell > *")].every(el => {
+              const box = el.getBoundingClientRect();
+              return box.left >= canvas.left - 1 && box.right <= canvas.right + 1 && box.top >= canvas.top - 1 && box.bottom <= canvas.bottom + 1;
+            });
+        })).toBe(true);
+        if (flow === "controls") {
+          await page.getByRole("button", { name: "ROLL / EVADE: SPACE", exact: true }).click();
+          await expect(page.getByRole("dialog")).toBeVisible();
+          await page.keyboard.press("Escape");
+          await expect(page.getByRole("button", { name: "ROLL / EVADE: SPACE", exact: true })).toBeFocused();
+        }
+      }
+    }
+    } finally { await context.close(); }
+  }
 });
 
 test("4K native foreground leaves the canvas background intact", async ({ page }) => {

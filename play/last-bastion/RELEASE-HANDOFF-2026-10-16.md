@@ -1,10 +1,16 @@
 # Last Bastion release handoff — 16 October 2026
 
-**Prepared local build (22 October):** `web-2026.10.22-help-accessibility`, adding native
+**Prepared local build (22 October):** `web-2026.10.22-controls-records`, adding native control
+rebinding/records and capture isolation fixes on top of `5974c948`. Use the
+[completed record](archive/CONTROLS-RECORDS-IMPLEMENTATION-2026-10-22.md) and
+[current evidence](playtest-evidence/2026-10-22-controls-records/README.md). Claude owns the next
+assigned package; no executable/publication or real AT/controller acceptance is supplied here.
+
+**Earlier local build (22 October):** `web-2026.10.22-help-accessibility`, adding native
 How to Play instructions/navigation and diagram descriptions to the 21 October implementation.
 See the [completed scope](archive/HELP-ACCESSIBILITY-IMPLEMENTATION-2026-10-22.md) and
-[current evidence](playtest-evidence/2026-10-22-help-accessibility/README.md). Package this latest
-checkpoint when assigned; the earlier implementation evidence below remains historical.
+[earlier evidence](playtest-evidence/2026-10-22-help-accessibility/README.md). Use the newer
+controls/records checkpoint above when packaging; the evidence below remains historical.
 No new executable, publication or human/AT acceptance is supplied by this patch.
 
 **Earlier local build (21 October):** `web-2026.10.21-menu-review`, implementation `637f6ec8` + `6472ceeb`;

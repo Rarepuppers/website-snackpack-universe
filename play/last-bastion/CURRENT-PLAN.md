@@ -1,9 +1,9 @@
 # Last Bastion — current plan
 
 **Updated:** 22 October 2026
-**Prepared local release:** `web-2026.10.22-help-accessibility` (service worker `2026-10-22-help-accessibility`).
+**Prepared local release:** `web-2026.10.22-controls-records` (service worker `2026-10-22-controls-records`).
 **Last verified published release:** `web-2026.10.17-qa-readiness`; the new patch is not pushed/deployed.
-**Status:** gallery repairs and native title/menu/settings/How to Play controls implemented locally.
+**Status:** gallery repairs and native title/menu/settings/How to Play/rebinding/records implemented locally.
 Physical and assistive-technology acceptance remain open; dated verification is recorded below.
 Human, hardware, Steam and analytics-dashboard gates remain open.
 The 17 October publication and CI evidence below is historical. The new local implementation
@@ -17,6 +17,32 @@ July systems tracker are archived historical context, not additional execution q
 This is the only active execution queue. Completed audit tasks are in the
 [archive](archive/README.md); player-facing changes are in the [release notes](RELEASE-NOTES.md).
 Keep the content freeze until observed play and live measurement justify expansion.
+
+## 22 October controls and records — complete locally
+
+Mark asked to continue native control-rebinding and records work. Both slices are implemented:
+native action/device/reset controls, a cancellable capture dialog with inert background and row
+focus restoration; career/history semantics, empty/legacy states, bounded navigation and wrapping
+rows. Shared labels/presentation and ScreenFlow/save ownership preserve existing rules.
+Reproduced and corrected both cross-device capture leaks against compiled `5974c948` bytes:
+pad B navigated away during keyboard capture; keyboard Backspace navigated away during pad capture.
+New browser cases cover duplicates, persistence/reset/cancel, Enter/Tab/Space capture, inert/dimmed
+background, simulated pad semantics, records/progress preservation and canvas alignment through
+4K/DPR 2. Final UI review corrected Back appearing above the capture shade and Records header
+clearance. A failing held-Enter regression also established repeat events silently assigning the
+opener; capture now requires a fresh key-down. See [completed scope](archive/CONTROLS-RECORDS-IMPLEMENTATION-2026-10-22.md) and
+[evidence](playtest-evidence/2026-10-22-controls-records/README.md).
+Final full game verifier passes in **145.4 seconds**: **1,783 unit tests / 312 files, 50 browser
+cases and 31 desktop-host tests**, plus static/output/smoke/offline checks. Report source is
+`5974c948` with scoped dirty implementation, not an exact-clean-HEAD claim. A previous post-review
+run timed out in an unchanged navigation test; isolated and final full reruns passed with the
+original threshold. Final `node scripts/check-all.js` completes with **19/20 passing**: the Expo
+dependency guard reports patch-version drift in 12 unrelated apps, while all 19 other guards
+(including shared-asset delivery) pass. This is not an all-green portfolio claim. The exact
+affected apps/versions are retained in `portfolio-verification.txt` beside the game evidence;
+dependency maintenance is a separate app-owner handoff, with no app packages changed here.
+Real AT/controller, observed play, audio, hardware, Steam and publication gates remain open.
+Remaining canvas screens require separate scope; no conditional content/art task is opened.
 
 ## 22 October authorized implementation — How to Play complete locally
 
@@ -219,10 +245,10 @@ and the patch proposal’s progress checklist for remaining non-testing work. Ac
   distribution, and next-day return. Combine with the five observed runs before changing scope.
 - Replayable practice, full DOM-backed menu accessibility, further codex expansion,
   legacy modifier cleanup, VFX/transformation art and further music remain conditional work.
-  Build/affinity inspection and semantic title/menu/settings/How to Play controls are implemented locally;
+  Build/affinity inspection and semantic title/menu/settings/How to Play/controls/records are implemented locally;
   other shell screens and whole-game accessibility are not covered by that limited slice.
   The [shell contract inventory](SHELL-ACCESSIBILITY-CONTRACT-2026-10-17.md) is prepared;
-  title/menu/settings/How to Play implementation is now local; further slices require separate scope and must
+  these six shell surfaces are now local; further slices require separate scope and must
   preserve the existing state/effect/input contracts. Actual assistive-technology acceptance remains open.
 - Touch controls, new heroes/regions, multiplayer, leaderboards and Threat Tiers 3–11 are not
   approved production tasks. Use observed needs and operating constraints to select additions.

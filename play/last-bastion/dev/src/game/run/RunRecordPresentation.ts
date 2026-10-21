@@ -1,5 +1,20 @@
 import { heroDefinition, isHeroId } from "../hero/HeroCatalog";
 import type { RunSummary } from "./RunSummary";
+import type { RunHistoryEntry } from "./RunHistory";
+import { localDayKey } from "./LocalDayKey";
+
+export function historyRecordPresentation(entry: RunHistoryEntry): { outcome: string; progress: string; date: string; detail: string } {
+  const summary = entry.summary;
+  const record = runRecordPresentation(summary);
+  return {
+    outcome: summary.outcome.toUpperCase(),
+    progress: summary.mode === "expedition"
+      ? `${summary.nodesCleared} NODES${summary.threatTier === null ? "" : `  T${summary.threatTier}`}`
+      : `WAVE ${summary.waveReached}`,
+    date: entry.completedAtMs > 0 ? localDayKey(entry.completedAtMs) : "LEGACY SAVE",
+    detail: `${record.heroLabel}  •  ${summary.kills} KILLS  •  ${summary.commandMarksEarned} MARKS  •  ${record.balanceSignal}`,
+  };
+}
 
 export interface RunRecordPresentation {
   readonly heroLabel: string;

@@ -5270,3 +5270,30 @@ release notes, acceptance worksheet and release/QA handoffs are updated. No rast
 content/balance/floor adoption, executable packaging, publication or cross-chat message occurred.
 Fresh root `node scripts/check-all.js` also passes all 20 portfolio guards, including shared-asset
 generation/delivery and all consumer manifests; the retained evidence includes its full summary.
+
+### Native rebinding and records — 22 October 2026
+
+Continued the authorized next shell slices on `5974c948`: native device/action/reset controls,
+cancellable named capture dialog with inert/dimmed background, feedback and restored row focus;
+native career/history semantics, empty/legacy records, wrapping details and bounded navigation.
+Shared presentation and ScreenFlow/save ownership retain duplicate swaps, progression and physical
+menu meanings. Reproduced cross-device capture escape against compiled baseline bytes: pad B left
+keyboard capture; keyboard Backspace left controller capture. Fixed both handler ownership leaks.
+Visual review also corrected Back drawing above the shade and Records header clearance.
+
+Prepared identity `web-2026.10.22-controls-records`; generated web output and worker updated.
+Five new browser cases include real persistence, swaps/reset/cancel, Enter/Tab/Space key release,
+modal composed pixels, simulated pad, records/progress preservation and resolution/DPR checks.
+Ten final captures plus a before-fix image and baseline replay are retained. Final full verifier
+passes in 145.4 seconds: 1,783 unit / 312 files, 50 browser cases, 31 desktop-host tests and all
+required static/output/offline lanes. An unchanged navigation test timed out in a prior attempt;
+isolated/final full reruns passed without loosening thresholds. Evidence retains both attempts.
+Plans, release notes, QA/release/acceptance handoffs and archived implementation record updated.
+Final input review also reproduced held Enter assigning the opener through repeat events;
+capture now requires a fresh key-down, with a retained before/after regression.
+Human AT/controller, gameplay/audio, hardware, Steam and analytics gates remain open. No new art,
+content/balance/floor adoption, executable packaging, push/deploy or cross-chat messaging.
+The final full portfolio run completes with 19/20 guards passing, including asset delivery.
+The Expo dependency guard reports patch drift in 12 unrelated apps (with SDK autolinking matches);
+full diagnostics and a separate app-maintenance handoff are retained. No app package/lockfiles
+were changed, and this checkpoint makes no all-green portfolio/native-app release claim.

@@ -4,7 +4,7 @@ Use with CURRENT-PLAN and the five-run matrix. Human and physical-device results
 Mark or an assigned human tester owns observed play; Claude owns production packaging.
 This document requests no deployment, scheduled monitoring, Steam upload or cross-chat message.
 
-Current prepared local build is `web-2026.10.22-help-accessibility`; it is not published or packaged.
+Current prepared local build is `web-2026.10.22-controls-records`; it is not published or packaged.
 The earlier browser publication below refers to the 17 October QA-readiness build. Use the
 [QA readiness instructions](QA-READINESS.md) for opt-in session export and package provenance.
 Reports are evidence aids; their presence does not mark any NOT RUN row as passed.
@@ -49,21 +49,30 @@ Use the original plan's thresholds; a screenshot or simulated pad input cannot s
 
 ## Semantic menu acceptance: human tester
 
-Title, menu, settings and How to Play have native controls in the new local build. Verify with a real screen
+Title, menu, settings, How to Play, rebinding and records have native semantics locally. Verify with a real screen
 reader: heading and control names, selected settings group, checkbox/select/range values,
 Tab/Shift+Tab order, one Enter/Space activation, Escape/back focus, save-import cancellation and
 privacy/export actions. For How to Play, check all four page headings/instructions, diagram
 descriptions, page-change announcements, remapped key/button labels, Previous boundary state,
 Next/Return to menu, Back, focus retention and return to the originating menu card. Repeat with
 physical controller, resize/DPR and return from other scenes.
-Records, controls/rebinding, armory, hero/threat select, map, debrief and combat remain separate canvas consumers.
+For rebinding, verify named action/current value and device state, fixed-stick rows, capture dialog
+announcements, invalid-key feedback, Escape/native Cancel, duplicate swaps, reset and focus return.
+Keyboard capture keeps Tab/Enter/Space bindable; use Escape or native Cancel to cancel. During
+capture, holding the opener must not assign it; release and press a fresh key to bind. During
+controller capture, keyboard Tab reaches Cancel; gamepad B is a binding candidate, then resumes
+physical menu Back after capture ends. Neither device may navigate menus during the other's capture.
+For records, verify career labels/values, empty and legacy history, outcome/hero/progress/threat/date,
+Newer/Older boundaries, list reading/scrolling, Back/return focus and unchanged save/progression.
+Armory, hero/threat select, LAB, map, debrief and combat remain separate canvas consumers.
 Do not sign off whole-game screen-reader support from this limited slice. Store observations and
 failures by screen/control under a dated evidence folder; preserve the tester's real save.
 
 ## Desktop package: Claude, then hardware tester
 
 Use the current prepared source in [CURRENT-PLAN](CURRENT-PLAN.md) and
-[release handoff](RELEASE-HANDOFF-2026-10-16.md), including the 22 October How to Play patch
+[release handoff](RELEASE-HANDOFF-2026-10-16.md), including the 22 October controls/records patch
+and How to Play patch
 on top of `637f6ec8` + `6472ceeb`; the archived
 17 October checkpoint is older. Read root `docs/RELEASING.md` and inspect current changes before
 packaging. From `desktop/`:

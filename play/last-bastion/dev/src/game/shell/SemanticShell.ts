@@ -1,6 +1,15 @@
 import type { GameProgress } from "../save/LocalSaveStore";
 import { localDayKey } from "../run/LocalDayKey";
 import { howToPlayPages, menuCardSubtitle, SETTINGS_GROUPS, settingsGroup, type ShellIntent, type ShellState } from "./ScreenFlow";
+import { GAMEPAD_BINDABLE_ACTIONS, KEYBOARD_BINDABLE_ACTIONS, gamepadBindingLabel, keyboardBindingLabel, type GamepadBindableAction, type KeyboardBindableAction } from "../input/ControlBindings";
+import type { RunHistoryEntry } from "../run/RunHistory";
+import { historyRecordPresentation } from "../run/RunRecordPresentation";
+import { careerRecordRows, controlActionLabel } from "./ShellPresentation";
+
+export interface BindingCapture {
+  device: "keyboard" | "gamepad";
+  action: KeyboardBindableAction | GamepadBindableAction;
+}
 
 /** Text alternatives for the existing code-native teaching diagrams. */
 const HELP_DIAGRAM_DESCRIPTIONS = [
@@ -17,6 +26,9 @@ interface ShellActions {
   group(name: string): void;
   setting(index: number, value: unknown): void;
   retrySave(): void;
+  device(device: "keyboard" | "gamepad"): void;
+  resetBindings(): void;
+  cancelBinding(): void;
 }
 
 export interface SemanticShellView {
@@ -26,6 +38,9 @@ export interface SemanticShellView {
   saveFailed: boolean;
   feedback: string | null;
   formatValue(key: string, value: unknown): string;
+  bindingCapture: BindingCapture | null;
+  bindingFeedback: string | null;
+  history: readonly RunHistoryEntry[];
 }
 
 /** Visible native controls, positioned over the existing canvas chrome.
@@ -37,6 +52,7 @@ export class SemanticShell {
   private screen = "";
   private readonly nodes = new Map<string, HTMLElement>();
   private readonly observer: ResizeObserver;
+  private capturing = false;
 
   constructor(private readonly canvas: HTMLCanvasElement, private readonly actions: ShellActions) {
     this.root.className = "semantic-shell";
@@ -67,7 +83,7 @@ export class SemanticShell {
 
   render(view: SemanticShellView, focusSelection = false): void {
     const { state } = view;
-    const supported = ["title", "menu", "settings", "how-to-play"].includes(state.screen);
+    const supported = ["title", "menu", "settings", "how-to-play", "controls", "records"].includes(state.screen);
     const changed = this.screen !== state.screen;
     const hadFocus = this.owns(document.activeElement);
     if (changed) {
@@ -159,6 +175,68 @@ export class SemanticShell {
       previous.setAttribute("aria-describedby", "shell-help-status");
       button("back", "Back", 438, 482, 84, 34, () => this.actions.intent("back"));
       selectedKey = "help-next";
+    } else if (state.screen === "controls") {
+      text("heading", "CONTROL BINDINGS", 70, 29, 500, 38, "h1");
+      const status = text("binding-status", view.bindingFeedback ?? "Select an action to rebind. Duplicate assignments swap. Delete resets all; Escape goes back.", 70, 78, 820, 24);
+      status.setAttribute("role", "status");
+      for (const [index, device] of (["keyboard", "gamepad"] as const).entries()) {
+        const el = button(`device-${device}`, device === "keyboard" ? "Keyboard" : "Controller", 594 + index * 148, 34, 140, 30, () => this.actions.device(device));
+        el.setAttribute("aria-pressed", String(state.controlDevice === device));
+      }
+      KEYBOARD_BINDABLE_ACTIONS.forEach((action, index) => {
+        const available = state.controlDevice === "keyboard" || GAMEPAD_BINDABLE_ACTIONS.includes(action as GamepadBindableAction);
+        const binding = state.controlDevice === "keyboard" ? keyboardBindingLabel(state.controls.keyboard[action])
+          : available ? gamepadBindingLabel(state.controls.gamepad[action as GamepadBindableAction]) : "LEFT STICK";
+        const el = button(`binding-${action}`, `${controlActionLabel(action)}: ${binding}`, 80 + Math.floor(index / 5) * 420, 108 + (index % 5) * 72, 380, 54,
+          () => { if (available) this.actions.activate(index); });
+        el.className = "semantic-binding";
+        el.dataset.selected = String(state.controlIndex === index);
+        el.setAttribute("aria-disabled", String(!available));
+        el.onfocus = () => this.actions.select(index);
+      });
+      button("bindings-reset", "Reset all bindings", 80, 486, 220, 34, this.actions.resetBindings);
+      button("back", "Back", 800, 486, 80, 34, () => this.actions.intent("back"));
+      selectedKey = `binding-${KEYBOARD_BINDABLE_ACTIONS[state.controlIndex]}`;
+    } else if (state.screen === "records") {
+      text("heading", "RECORDS", 70, 29, 500, 38, "h1");
+      text("career-heading", "CAREER", 90, 76, 300, 24, "h2").className = "semantic-record-heading";
+      const career = node<HTMLElement>("career", "dl", 90, 120, 320, 310);
+      career.className = "semantic-career";
+      if (!career.firstElementChild) for (const [label, value] of careerRecordRows(view.progress)) {
+        const term = document.createElement("dt"), detail = document.createElement("dd");
+        term.textContent = label; detail.textContent = value; career.append(term, detail);
+      }
+      text("history-heading", "RECENT RUNS", 470, 76, 220, 24, "h2").className = "semantic-record-heading";
+      const history = view.history.slice(state.recordsOffset, state.recordsOffset + 6);
+      const first = view.history.length === 0 ? 0 : state.recordsOffset + 1;
+      const status = text("history-status", `${first}–${state.recordsOffset + history.length} of ${view.history.length}`, 710, 76, 170, 24);
+      status.setAttribute("role", "status");
+      status.className = "semantic-history-status";
+      const list = node<HTMLOListElement>("history-list", "ol", 466, 118, 418, 328);
+      list.className = "semantic-run-list";
+      list.tabIndex = 0;
+      list.dataset.nativeScroll = "true";
+      list.setAttribute("aria-label", "Recent runs");
+      list.start = first || 1;
+      const signature = `${state.recordsOffset}:${view.history.map(entry => entry.id).join("|")}`;
+      if (list.dataset.records !== signature) {
+        list.replaceChildren(...history.map(entry => {
+          const record = historyRecordPresentation(entry);
+          const row = document.createElement("li"), heading = document.createElement("p"), detail = document.createElement("p");
+          heading.textContent = `${record.outcome}  •  ${record.progress}  •  ${record.date}`;
+          detail.textContent = record.detail;
+          row.append(heading, detail); return row;
+        }));
+        list.dataset.records = signature;
+        list.scrollTop = 0;
+      }
+      if (!history.length) text("history-empty", "NO COMPLETED RUNS YET", 470, 240, 410, 40).className = "semantic-help-status";
+      const newer = button("history-newer", "Newer runs", 470, 478, 135, 34, () => this.actions.intent("up"));
+      newer.setAttribute("aria-disabled", String(state.recordsOffset === 0));
+      const older = button("history-older", "Older runs", 620, 478, 135, 34, () => this.actions.intent("down"));
+      older.setAttribute("aria-disabled", String(state.recordsOffset + 6 >= view.history.length));
+      button("back", "Back", 800, 478, 80, 34, () => this.actions.intent("back"));
+      selectedKey = "back";
     } else {
       text("heading", "SETTINGS", 70, 48, 600, 38, "h1");
       const feedback = text("feedback", view.feedback ?? "Changes save automatically. Select a group to see its settings.", 70, 84, 820, 20);
@@ -220,11 +298,31 @@ export class SemanticShell {
       if (view.saveFailed) button("save-warning", message, 0, 0, 960, 28, this.actions.retrySave);
       else text("save-warning", message, 0, 0, 960, 28).setAttribute("role", "status");
     }
+    if (view.bindingCapture) {
+      node<HTMLElement>("capture-shade", "div", 0, 0, 960, 540).className = "semantic-capture-shade";
+      const dialog = node<HTMLElement>("capture-dialog", "section", 180, 184, 600, 172);
+      dialog.className = "semantic-capture";
+      dialog.setAttribute("role", "dialog");
+      dialog.setAttribute("aria-modal", "true");
+      dialog.setAttribute("aria-labelledby", "shell-capture-title");
+      dialog.setAttribute("aria-describedby", "shell-capture-detail");
+      dialog.tabIndex = -1;
+      if (!dialog.firstElementChild) dialog.innerHTML = '<h2 id="shell-capture-title"></h2><p id="shell-capture-detail" role="status"></p><button type="button" data-shell-key="capture-cancel">Cancel capture</button>';
+      dialog.querySelector("h2")!.textContent = `Rebind ${controlActionLabel(view.bindingCapture.action)}`;
+      dialog.querySelector("p")!.textContent = view.bindingFeedback ?? (view.bindingCapture.device === "keyboard"
+        ? "Press a key. Duplicate assignments swap automatically. Escape cancels."
+        : "Press a controller button. Duplicate assignments swap automatically. Escape or Cancel capture cancels.");
+      dialog.querySelector("button")!.onclick = this.actions.cancelBinding;
+    }
     for (const [key, el] of this.nodes) if (!used.has(key)) { el.remove(); this.nodes.delete(key); }
+    for (const [key, el] of this.nodes) el.inert = Boolean(view.bindingCapture) && key !== "capture-dialog";
     const back = this.nodes.get("back");
     // New group controls are appended; keep Back after them in native tab order.
-    if (back && back !== this.root.lastElementChild && back !== document.activeElement) this.root.append(back);
-    if (changed || focusSelection) this.nodes.get(selectedKey)?.focus({ preventScroll: true });
+    if (back && !view.bindingCapture && back !== this.root.lastElementChild && back !== document.activeElement) this.root.append(back);
+    if (view.bindingCapture) {
+      if (!this.capturing || changed) this.nodes.get("capture-dialog")?.focus({ preventScroll: true });
+    } else if (changed || focusSelection || this.capturing) this.nodes.get(selectedKey)?.focus({ preventScroll: true });
+    this.capturing = Boolean(view.bindingCapture);
     this.position();
   }
 }

@@ -8,6 +8,8 @@ is the pre-fix baseline. [CURRENT-PLAN](CURRENT-PLAN.md) remains the only execut
 ACCESS-01 slice, native How to Play, is now implemented locally; see the
 [completed record](archive/HELP-ACCESSIBILITY-IMPLEMENTATION-2026-10-22.md). The canvas-only help
 limitation below describes the audit baseline. Other human/content/hardware gates remain open.
+Subsequent authorized continuation also delivers native rebinding/records and demonstrated
+capture-navigation fixes; see [completed scope](archive/CONTROLS-RECORDS-IMPLEMENTATION-2026-10-22.md).
 
 ## Verdict and evidence
 

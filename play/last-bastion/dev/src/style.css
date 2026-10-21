@@ -156,4 +156,20 @@ canvas {
 .semantic-help-content p { margin: 14px 0 0; white-space: pre-line; font: 14px/22px Consolas, monospace; }
 .semantic-help-status { text-align: center; color: #b1bfcd; line-height: 22px; }
 .semantic-shell button[aria-disabled="true"] { opacity: 0.5; cursor: default; }
+.semantic-shell .semantic-binding { text-align: left; padding: 10px 16px; font-size: 14px; background: transparent; }
+.semantic-capture-shade { background: #050c17c9; pointer-events: auto; }
+.semantic-capture { padding: 20px; background: #0b121c; border: 3px solid #68e4e8; pointer-events: auto; text-align: center; }
+.semantic-capture h2 { margin: 0 0 12px; font: 20px Consolas, monospace; }
+.semantic-capture p { margin: 0 0 18px; line-height: 18px; }
+.semantic-capture button { padding: 7px 18px; }
+.semantic-record-heading { font: 13px/24px Consolas, monospace; color: #68e4e8; }
+.semantic-career { display: grid; grid-template-columns: 1fr auto; grid-auto-rows: 38px; align-items: start; gap: 0 12px; }
+.semantic-career dt { font-size: 10px; color: #b1bfcd; }
+.semantic-career dd { margin: 0; font-size: 15px; text-align: right; }
+.semantic-history-status { text-align: right; font-size: 10px; line-height: 24px; color: #b1bfcd; }
+.semantic-run-list { margin: 0; padding: 0 4px; list-style: none; overflow: auto; pointer-events: auto; }
+.semantic-run-list:focus-visible { outline: 2px solid #ff9a52; outline-offset: 3px; }
+.semantic-run-list li { min-height: 48px; margin: 0 0 4px; padding: 5px 8px; background: #172335; border: 1px solid #334860; box-sizing: border-box; }
+.semantic-run-list p { margin: 0; font: 10px/15px Consolas, monospace; overflow-wrap: anywhere; }
+.semantic-run-list p + p { color: #b1bfcd; }
 .semantic-shell [data-shell-key="save-warning"] { background: #4a211c; color: #ffb885; text-align: center; line-height: 28px; }

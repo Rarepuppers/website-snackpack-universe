@@ -1,0 +1,108 @@
+Running 20 portfolio guards.
+
+PASS  check-android-permissions.js
+PASS  check-bundled-assets.js
+PASS  check-copy-register.js
+PASS  check-cta-contrast.js
+FAIL  check-expo-deps.js
+PASS  check-external-links.js
+PASS  check-game-logic.js
+PASS  check-game-ui-delivery.js
+PASS  check-image-host-disclosure.js
+PASS  check-key-backups.js
+PASS  check-listing-live.js
+PASS  check-listing-source.js
+PASS  check-no-ads-claim.js
+PASS  check-offline-claim.js
+PASS  check-pinball-audio.js
+PASS  check-pinball-marketing.js
+PASS  check-stale-native-art.js
+PASS  check-telemetry-disclosure.js
+PASS  check-verify-script.js
+PASS  check-version-sync.js
+
+check-all FAILED: 1 of 20 guards.
+
+--- check-expo-deps.js -------------------------------------------------------
+      FAIL  badgify
+              packages off the installed SDK line:
+                - expo@55.0.31 - expected version: ~55.0.32
+                - expo-dev-client@55.0.40 - expected version: ~55.0.41
+                - expo-sharing@55.0.24 - expected version: ~55.0.25
+                - Your project may not work correctly until you install the expected versions of the packages.
+              (29 autolinked modules match this SDK)
+      FAIL  pawsitivedose
+              packages off the installed SDK line:
+                - expo@55.0.31 - expected version: ~55.0.32
+                - expo-dev-client@55.0.40 - expected version: ~55.0.41
+                - expo-sharing@55.0.24 - expected version: ~55.0.25
+                - Your project may not work correctly until you install the expected versions of the packages.
+              (28 autolinked modules match this SDK)
+      FAIL  snackpack-1-abcs-alphabet
+              packages off the installed SDK line:
+                - expo@55.0.31 - expected version: ~55.0.32
+                - expo-dev-client@55.0.40 - expected version: ~55.0.41
+                - Your project may not work correctly until you install the expected versions of the packages.
+              (27 autolinked modules match this SDK)
+      FAIL  snackpack-2-123s-counting
+              packages off the installed SDK line:
+                - expo@55.0.31 - expected version: ~55.0.32
+                - expo-dev-client@55.0.40 - expected version: ~55.0.41
+                - Your project may not work correctly until you install the expected versions of the packages.
+              (26 autolinked modules match this SDK)
+      PASS  snackpack-3-spelling-sentences  (14 autolinked modules match this SDK)
+      FAIL  snackpack-4-math-arithmetic
+              packages off the installed SDK line:
+                - expo-asset@12.0.13 - expected version: ~12.0.14
+                - Your project may not work correctly until you install the expected versions of the packages.
+              (16 autolinked modules match this SDK)
+      FAIL  snackpack-7-mathematics
+              packages off the installed SDK line:
+                - expo-asset@12.0.13 - expected version: ~12.0.14
+                - Your project may not work correctly until you install the expected versions of the packages.
+              (17 autolinked modules match this SDK)
+      PASS  snackpack-8-earth-science  (16 autolinked modules match this SDK)
+      PASS  snackpack-9-space-math  (15 autolinked modules match this SDK)
+      FAIL  snackpack-brain-games
+              packages off the installed SDK line:
+                - expo@55.0.31 - expected version: ~55.0.32
+                - expo-dev-client@55.0.40 - expected version: ~55.0.41
+                - Your project may not work correctly until you install the expected versions of the packages.
+              (27 autolinked modules match this SDK)
+      FAIL  snackpack-brain-games-vol-2
+              packages off the installed SDK line:
+                - expo@55.0.31 - expected version: ~55.0.32
+                - expo-dev-client@55.0.40 - expected version: ~55.0.41
+                - Your project may not work correctly until you install the expected versions of the packages.
+              (25 autolinked modules match this SDK)
+      FAIL  snackpack-brain-games-vol-3
+              packages off the installed SDK line:
+                - expo@55.0.31 - expected version: ~55.0.32
+                - expo-dev-client@55.0.40 - expected version: ~55.0.41
+                - Your project may not work correctly until you install the expected versions of the packages.
+              (25 autolinked modules match this SDK)
+      FAIL  snackpack-garden-world
+              packages off the installed SDK line:
+                - expo@55.0.31 - expected version: ~55.0.32
+                - Your project may not work correctly until you install the expected versions of the packages.
+              (21 autolinked modules match this SDK)
+      FAIL  snackpack-prehistoric-pals
+              packages off the installed SDK line:
+                - expo@55.0.31 - expected version: ~55.0.32
+                - expo-dev-client@55.0.40 - expected version: ~55.0.41
+                - expo-sharing@55.0.24 - expected version: ~55.0.25
+                - Your project may not work correctly until you install the expected versions of the packages.
+              (29 autolinked modules match this SDK)
+      FAIL  snackpack-zoo-world
+              packages off the installed SDK line:
+                - expo-asset@12.0.13 - expected version: ~12.0.14
+                - Your project may not work correctly until you install the expected versions of the packages.
+              (18 autolinked modules match this SDK)
+
+      3/15 apps verified.
+
+      Fix with:  npx expo install --fix
+      Transitive hoists are invisible to --fix: pin the shadowed package as a
+      direct dependency (npx expo install <pkg>), then run npm dedupe.
+      If a peer range is the cause (e.g. @expo/vector-icons peers expo-font >=14),
+      pin that package as a direct dependency on the app's SDK line.

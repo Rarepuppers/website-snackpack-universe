@@ -6,7 +6,10 @@ keyboard/input, simulated-controller, persistence and focus checks pass; actual 
 and physical-controller acceptance remain open. On 22 October, the separately authorized
 How to Play slice adds native instructions and page controls, described vector diagrams, active
 binding copy and polite content updates. See [the implementation record](archive/HELP-ACCESSIBILITY-IMPLEMENTATION-2026-10-22.md).
-Other screens still use canvas controls; actual AT acceptance covers neither slice yet.
+The subsequent 22 October slice adds native rebinding/records and isolates both capture devices;
+see [the controls/records record](archive/CONTROLS-RECORDS-IMPLEMENTATION-2026-10-22.md).
+Armory, hero/threat selection, LAB and other game scenes still use canvas controls. Actual
+assistive-technology acceptance remains open for all implemented slices.
 
 | Existing production contract | Preserve when implementation is justified |
 |---|---|

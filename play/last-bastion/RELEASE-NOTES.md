@@ -1,5 +1,22 @@
 # Last Bastion release notes
 
+## 22 October 2026 — native rebinding and records
+
+**Prepared locally:** `web-2026.10.22-controls-records` — not pushed, deployed or desktop-packaged.
+
+- Control bindings now expose native device/action/reset controls and an isolated capture dialog
+  with Cancel, invalid-key feedback and restored focus. Duplicate assignments retain automatic
+  swaps; bindings persist through the existing save store.
+- Fixed cross-device capture navigation: controller input cannot leave keyboard capture, and
+  keyboard navigation cannot leave controller capture. Escape cancels; controller buttons remain
+  bindable during controller capture and regain physical menu meanings when capture ends.
+- Holding the Enter key that opens rebinding no longer assigns Enter through repeat events.
+  Capture accepts a fresh key-down, preserving Enter/Tab/Space as deliberate bindings.
+- Records now exposes native career/history text, wrapping run details, empty/legacy states and
+  Newer/Older/Back controls. Browsing preserves progression and the existing six-entry window.
+- No art/content/balance/floor-default change. Save schema 16 and simulation compatibility 3
+  unchanged. Actual AT/controller and whole-game accessibility acceptance remain open.
+
 ## 22 October 2026 — native How to Play
 
 **Prepared locally:** `web-2026.10.22-help-accessibility` — not pushed, deployed or desktop-packaged.

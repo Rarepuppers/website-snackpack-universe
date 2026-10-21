@@ -1,0 +1,139 @@
+{
+  "checkedAt": "2026-10-21T14:45:06.939Z",
+  "identity": "web-2026.10.22-controls-records",
+  "source": "5974c948 plus scoped implementation",
+  "limitations": "Headless Chromium, disposable seeded history, semantic tree exposure only; no human/AT/hardware acceptance.",
+  "errors": [],
+  "results": [
+    {
+      "name": "controls-minimum",
+      "width": 960,
+      "height": 540,
+      "dpr": 1,
+      "semantics": "- region \"Game menus\":\n  - heading \"CONTROL BINDINGS\" [level=1]\n  - status: Select an action to rebind. Duplicate assignments swap. Delete resets all; Escape goes back.\n  - button \"Keyboard\" [pressed]\n  - button \"Controller\"\n  - 'button \"MOVE UP: W\"'\n  - 'button \"MOVE DOWN: S\"'\n  - 'button \"MOVE LEFT: A\"'\n  - 'button \"MOVE RIGHT: D\"'\n  - 'button \"ROLL / EVADE: SPACE\"'\n  - 'button \"INTERACT: E\"'\n  - 'button \"ULTIMATE: R\"'\n  - 'button \"USE KIT: Q\"'\n  - 'button \"FIRE MODE: T\"'\n  - 'button \"PAUSE: ESC\"'\n  - button \"Reset all bindings\"\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "capture-minimum",
+      "width": 960,
+      "height": 540,
+      "dpr": 1,
+      "semantics": "- region \"Game menus\":\n  - heading \"CONTROL BINDINGS\" [level=1]\n  - status: Select an action to rebind. Duplicate assignments swap. Delete resets all; Escape goes back.\n  - button \"Keyboard\" [pressed]\n  - button \"Controller\"\n  - 'button \"MOVE UP: W\"'\n  - 'button \"MOVE DOWN: S\"'\n  - 'button \"MOVE LEFT: A\"'\n  - 'button \"MOVE RIGHT: D\"'\n  - 'button \"ROLL / EVADE: SPACE\"'\n  - 'button \"INTERACT: E\"'\n  - 'button \"ULTIMATE: R\"'\n  - 'button \"USE KIT: Q\"'\n  - 'button \"FIRE MODE: T\"'\n  - 'button \"PAUSE: ESC\"'\n  - button \"Reset all bindings\"\n  - button \"Back\"\n  - dialog \"Rebind ROLL / EVADE\":\n    - heading \"Rebind ROLL / EVADE\" [level=2]\n    - status: Press a key. Duplicate assignments swap automatically. Escape cancels.\n    - button \"Cancel capture\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "controller-minimum",
+      "width": 960,
+      "height": 540,
+      "dpr": 1,
+      "semantics": "- region \"Game menus\":\n  - heading \"CONTROL BINDINGS\" [level=1]\n  - status: Rebinding cancelled. Bindings unchanged.\n  - button \"Keyboard\"\n  - button \"Controller\" [pressed]\n  - 'button \"MOVE UP: LEFT STICK\" [disabled]'\n  - 'button \"MOVE DOWN: LEFT STICK\" [disabled]'\n  - 'button \"MOVE LEFT: LEFT STICK\" [disabled]'\n  - 'button \"MOVE RIGHT: LEFT STICK\" [disabled]'\n  - 'button \"ROLL / EVADE: A\"'\n  - 'button \"INTERACT: X\"'\n  - 'button \"ULTIMATE: Y\"'\n  - 'button \"USE KIT: B\"'\n  - 'button \"FIRE MODE: R3\"'\n  - 'button \"PAUSE: START\"'\n  - button \"Reset all bindings\"\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "controller-capture-minimum",
+      "width": 960,
+      "height": 540,
+      "dpr": 1,
+      "semantics": "- region \"Game menus\":\n  - heading \"CONTROL BINDINGS\" [level=1]\n  - status: Select an action to rebind. Duplicate assignments swap. Delete resets all; Escape goes back.\n  - button \"Keyboard\"\n  - button \"Controller\" [pressed]\n  - 'button \"MOVE UP: LEFT STICK\" [disabled]'\n  - 'button \"MOVE DOWN: LEFT STICK\" [disabled]'\n  - 'button \"MOVE LEFT: LEFT STICK\" [disabled]'\n  - 'button \"MOVE RIGHT: LEFT STICK\" [disabled]'\n  - 'button \"ROLL / EVADE: A\"'\n  - 'button \"INTERACT: X\"'\n  - 'button \"ULTIMATE: Y\"'\n  - 'button \"USE KIT: B\"'\n  - 'button \"FIRE MODE: R3\"'\n  - 'button \"PAUSE: START\"'\n  - button \"Reset all bindings\"\n  - button \"Back\"\n  - dialog \"Rebind ROLL / EVADE\":\n    - heading \"Rebind ROLL / EVADE\" [level=2]\n    - status: Press a controller button. Duplicate assignments swap automatically. Escape or Cancel capture cancels.\n    - button \"Cancel capture\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "records-empty-minimum",
+      "width": 960,
+      "height": 540,
+      "dpr": 1,
+      "semantics": "- region \"Game menus\":\n  - heading \"RECORDS\" [level=1]\n  - heading \"CAREER\" [level=2]\n  - term: RUNS FINISHED\n  - definition: \"0\"\n  - term: VICTORIES\n  - definition: \"0\"\n  - term: BEST WAVE / COLUMN\n  - definition: \"0\"\n  - term: BEST EXPEDITION NODES\n  - definition: \"0\"\n  - term: LIFETIME NODES CLEARED\n  - definition: \"0\"\n  - term: ENEMIES DEFEATED\n  - definition: \"0\"\n  - term: TOTAL DAMAGE\n  - definition: \"0\"\n  - term: SCRAP EARNED\n  - definition: \"0\"\n  - heading \"RECENT RUNS\" [level=2]\n  - status: 0–0 of 0\n  - list \"Recent runs\"\n  - paragraph: NO COMPLETED RUNS YET\n  - button \"Newer runs\" [disabled]\n  - button \"Older runs\" [disabled]\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "records-populated-minimum",
+      "width": 960,
+      "height": 540,
+      "dpr": 1,
+      "semantics": "- region \"Game menus\":\n  - heading \"RECORDS\" [level=1]\n  - heading \"CAREER\" [level=2]\n  - term: RUNS FINISHED\n  - definition: \"8\"\n  - term: VICTORIES\n  - definition: \"0\"\n  - term: BEST WAVE / COLUMN\n  - definition: \"0\"\n  - term: BEST EXPEDITION NODES\n  - definition: \"0\"\n  - term: LIFETIME NODES CLEARED\n  - definition: \"0\"\n  - term: ENEMIES DEFEATED\n  - definition: \"0\"\n  - term: TOTAL DAMAGE\n  - definition: \"1234.5\"\n  - term: SCRAP EARNED\n  - definition: \"0\"\n  - heading \"RECENT RUNS\" [level=2]\n  - status: 3–8 of 8\n  - list \"Recent runs\":\n    - listitem:\n      - paragraph: DEFEAT • WAVE 8 • 2026-10-20\n      - paragraph: MEDIC • 286 KILLS • 3 MARKS • DOWNED BY ARC WARDEN\n    - listitem:\n      - paragraph: DEFEAT • WAVE 7 • 2026-10-19\n      - paragraph: MEDIC • 286 KILLS • 4 MARKS • DOWNED BY ARC WARDEN\n    - listitem:\n      - paragraph: DEFEAT • WAVE 6 • 2026-10-18\n      - paragraph: MEDIC • 286 KILLS • 5 MARKS • DOWNED BY ARC WARDEN\n    - listitem:\n      - paragraph: DEFEAT • WAVE 5 • 2026-10-17\n      - paragraph: MEDIC • 286 KILLS • 6 MARKS • DOWNED BY ARC WARDEN\n    - listitem:\n      - paragraph: DEFEAT • WAVE 4 • 2026-10-16\n      - paragraph: MEDIC • 286 KILLS • 7 MARKS • DOWNED BY ARC WARDEN\n    - listitem:\n      - paragraph: DEFEAT • 17 NODES T2 • LEGACY SAVE\n      - paragraph: MEDIC • 286 KILLS • 8 MARKS • DOWNED BY ARC WARDEN\n  - button \"Newer runs\"\n  - button \"Older runs\" [disabled]\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "controls-4k",
+      "width": 3840,
+      "height": 2160,
+      "dpr": 1,
+      "semantics": "- region \"Game menus\":\n  - heading \"CONTROL BINDINGS\" [level=1]\n  - status: Select an action to rebind. Duplicate assignments swap. Delete resets all; Escape goes back.\n  - button \"Keyboard\" [pressed]\n  - button \"Controller\"\n  - 'button \"MOVE UP: W\"'\n  - 'button \"MOVE DOWN: S\"'\n  - 'button \"MOVE LEFT: A\"'\n  - 'button \"MOVE RIGHT: D\"'\n  - 'button \"ROLL / EVADE: SPACE\"'\n  - 'button \"INTERACT: E\"'\n  - 'button \"ULTIMATE: R\"'\n  - 'button \"USE KIT: Q\"'\n  - 'button \"FIRE MODE: T\"'\n  - 'button \"PAUSE: ESC\"'\n  - button \"Reset all bindings\"\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 3840,
+        "height": 2160
+      }
+    },
+    {
+      "name": "capture-4k",
+      "width": 3840,
+      "height": 2160,
+      "dpr": 1,
+      "semantics": "- region \"Game menus\":\n  - heading \"CONTROL BINDINGS\" [level=1]\n  - status: Select an action to rebind. Duplicate assignments swap. Delete resets all; Escape goes back.\n  - button \"Keyboard\" [pressed]\n  - button \"Controller\"\n  - 'button \"MOVE UP: W\"'\n  - 'button \"MOVE DOWN: S\"'\n  - 'button \"MOVE LEFT: A\"'\n  - 'button \"MOVE RIGHT: D\"'\n  - 'button \"ROLL / EVADE: SPACE\"'\n  - 'button \"INTERACT: E\"'\n  - 'button \"ULTIMATE: R\"'\n  - 'button \"USE KIT: Q\"'\n  - 'button \"FIRE MODE: T\"'\n  - 'button \"PAUSE: ESC\"'\n  - button \"Reset all bindings\"\n  - button \"Back\"\n  - dialog \"Rebind ROLL / EVADE\":\n    - heading \"Rebind ROLL / EVADE\" [level=2]\n    - status: Press a key. Duplicate assignments swap automatically. Escape cancels.\n    - button \"Cancel capture\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 3840,
+        "height": 2160
+      }
+    },
+    {
+      "name": "records-populated-4k",
+      "width": 3840,
+      "height": 2160,
+      "dpr": 1,
+      "semantics": "- region \"Game menus\":\n  - heading \"RECORDS\" [level=1]\n  - heading \"CAREER\" [level=2]\n  - term: RUNS FINISHED\n  - definition: \"8\"\n  - term: VICTORIES\n  - definition: \"0\"\n  - term: BEST WAVE / COLUMN\n  - definition: \"0\"\n  - term: BEST EXPEDITION NODES\n  - definition: \"0\"\n  - term: LIFETIME NODES CLEARED\n  - definition: \"0\"\n  - term: ENEMIES DEFEATED\n  - definition: \"0\"\n  - term: TOTAL DAMAGE\n  - definition: \"1234.5\"\n  - term: SCRAP EARNED\n  - definition: \"0\"\n  - heading \"RECENT RUNS\" [level=2]\n  - status: 3–8 of 8\n  - list \"Recent runs\":\n    - listitem:\n      - paragraph: DEFEAT • WAVE 8 • 2026-10-20\n      - paragraph: MEDIC • 286 KILLS • 3 MARKS • DOWNED BY ARC WARDEN\n    - listitem:\n      - paragraph: DEFEAT • WAVE 7 • 2026-10-19\n      - paragraph: MEDIC • 286 KILLS • 4 MARKS • DOWNED BY ARC WARDEN\n    - listitem:\n      - paragraph: DEFEAT • WAVE 6 • 2026-10-18\n      - paragraph: MEDIC • 286 KILLS • 5 MARKS • DOWNED BY ARC WARDEN\n    - listitem:\n      - paragraph: DEFEAT • WAVE 5 • 2026-10-17\n      - paragraph: MEDIC • 286 KILLS • 6 MARKS • DOWNED BY ARC WARDEN\n    - listitem:\n      - paragraph: DEFEAT • WAVE 4 • 2026-10-16\n      - paragraph: MEDIC • 286 KILLS • 7 MARKS • DOWNED BY ARC WARDEN\n    - listitem:\n      - paragraph: DEFEAT • 17 NODES T2 • LEGACY SAVE\n      - paragraph: MEDIC • 286 KILLS • 8 MARKS • DOWNED BY ARC WARDEN\n  - button \"Newer runs\"\n  - button \"Older runs\" [disabled]\n  - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 3840,
+        "height": 2160
+      }
+    },
+    {
+      "name": "capture-letterbox",
+      "width": 1280,
+      "height": 800,
+      "dpr": 2,
+      "semantics": "- region \"Game menus\":\n  - heading \"CONTROL BINDINGS\" [level=1]\n  - status: Select an action to rebind. Duplicate assignments swap. Delete resets all; Escape goes back.\n  - button \"Keyboard\" [pressed]\n  - button \"Controller\"\n  - 'button \"MOVE UP: W\"'\n  - 'button \"MOVE DOWN: S\"'\n  - 'button \"MOVE LEFT: A\"'\n  - 'button \"MOVE RIGHT: D\"'\n  - 'button \"ROLL / EVADE: SPACE\"'\n  - 'button \"INTERACT: E\"'\n  - 'button \"ULTIMATE: R\"'\n  - 'button \"USE KIT: Q\"'\n  - 'button \"FIRE MODE: T\"'\n  - 'button \"PAUSE: ESC\"'\n  - button \"Reset all bindings\"\n  - button \"Back\"\n  - dialog \"Rebind ROLL / EVADE\":\n    - heading \"Rebind ROLL / EVADE\" [level=2]\n    - status: Press a key. Duplicate assignments swap automatically. Escape cancels.\n    - button \"Cancel capture\"",
+      "canvas": {
+        "x": 0,
+        "y": 40,
+        "width": 1280,
+        "height": 720
+      }
+    }
+  ]
+}

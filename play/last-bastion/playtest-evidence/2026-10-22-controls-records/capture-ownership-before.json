@@ -1,0 +1,37 @@
+{
+  "checkedAt": "2026-10-21T14:41:22.625Z",
+  "baselineSource": "5974c948",
+  "method": "Intercepted all compiled JS/CSS with Git bytes from the baseline commit; unchanged local art. Disposable profiles, simulated pad; not AT/hardware acceptance.",
+  "results": [
+    {
+      "captureDevice": "keyboard",
+      "input": "physical B (simulated)",
+      "before": {
+        "screen": "controls",
+        "device": "keyboard",
+        "index": 0
+      },
+      "after": {
+        "screen": "settings",
+        "device": "keyboard",
+        "index": 0
+      },
+      "errors": []
+    },
+    {
+      "captureDevice": "gamepad",
+      "input": "keyboard Backspace",
+      "before": {
+        "screen": "controls",
+        "device": "gamepad",
+        "index": 4
+      },
+      "after": {
+        "screen": "settings",
+        "device": "gamepad",
+        "index": 4
+      },
+      "errors": []
+    }
+  ]
+}
