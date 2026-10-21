@@ -256,7 +256,7 @@
 
       <h3>Tips to win the shootout</h3>
       <ul>
-        <li><strong>Mix up your corners.</strong> A smart keeper will read a pattern, so don't keep aiming the same way.</li>
+        <li><strong>Mix up your corners.</strong> The keeper chooses before you kick. Harder levels more often anticipate your most-used direction from the last eight completed kicks, so vary your aim.</li>
         <li><strong>The centre is sneaky.</strong> Keepers often dive to a side, so straight down the middle can pay off.</li>
         <li><strong>When saving, watch the rhythm.</strong> On harder levels the computer is a better shooter — trust your read and commit.</li>
         <li><strong>Stay cool in sudden death.</strong> One save or one goal can settle it; don't get predictable when it matters most.</li>
@@ -392,6 +392,7 @@
   }
   var you, cpu, round, phase, busy;
   var cpuShotDir = null, lastCpuShot = null;
+  var cpuKeeperDir = null, shotHistory = [];
   var anim = null; // { ball:{x,y}, keeper:{x}, t }
   var keeperX = dirX("C"), ballPos = { x: BALL_START.x, y: BALL_START.y };
   var youResults = [], cpuResults = [];
@@ -401,9 +402,12 @@
   var fxFlash = null;
 
   function reset() {
+    if (beat) { clearTimeout(beat.id); beat = null; }
+    if (flight) { cancelAnimationFrame(flight.raf); flight = null; }
     showRecord();
     you = 0; cpu = 0; round = 1; busy = false; phase = "shoot";
     youResults = []; cpuResults = []; cpuShotDir = null; lastCpuShot = null;
+    shotHistory = []; cpuKeeperDir = aiKeeper();
     keeperX = dirX("C"); ballPos = { x: BALL_START.x, y: BALL_START.y };
     keeperPose = "C"; ballTrail = []; badgeFlash = null; fxFlash = null;
     youEl.textContent = "0"; cpuEl.textContent = "0"; roundEl.textContent = "1";
@@ -434,9 +438,17 @@
     var opts = DIRS.filter(function (d) { return d !== exclude; });
     return opts[Math.floor(Math.random() * opts.length)];
   }
-  function aiKeeper(playerDir) { return Math.random() < smart ? playerDir : randDir(playerDir); }
+  // Commit before the shooting controls open. Only completed kicks are visible.
+  function aiKeeper() {
+    if (!shotHistory.length || Math.random() >= smart) return randDir();
+    var counts = { L: 0, C: 0, R: 0 };
+    shotHistory.forEach(function (dir) { counts[dir]++; });
+    var most = Math.max(counts.L, counts.C, counts.R);
+    var choices = DIRS.filter(function (dir) { return counts[dir] === most; });
+    return choices[Math.floor(Math.random() * choices.length)];
+  }
   function aiShooter() {
-    // Mostly random, lightly avoid shooting the same way three times running.
+    // Mostly random, sometimes avoid repeating the previous shot.
     var d = DIRS[Math.floor(Math.random() * 3)];
     if (d === lastCpuShot && Math.random() < 0.5) d = randDir(lastCpuShot);
     lastCpuShot = d;
@@ -445,18 +457,21 @@
 
   // ── Flow ─────────────────────────────────────────
   function onChoose(dir) {
-    if (busy) return;
+    if (busy || DIRS.indexOf(dir) === -1) return;
     if (phase === "shoot") doShoot(dir);
     else if (phase === "save") doSave(dir);
   }
 
   function doShoot(dir) {
     busy = true; setPad(false);
-    var keeperDir = aiKeeper(dir);
+    var keeperDir = cpuKeeperDir;
+    cpuKeeperDir = null;
     var scored = keeperDir !== dir;
     var woodwork = scored && Math.random() < 0.1 ? (dir === "C" ? "crossbar" : "post") : null;
     statusEl.textContent = "You shoot " + label(dir) + "…";
     animate({ kind: "shoot", ballTo: dir, keeperTo: keeperDir, woodwork: woodwork }, function () {
+      shotHistory.push(dir);
+      if (shotHistory.length > 8) shotHistory.shift();
       if (woodwork) {
         youResults.push("woodwork");
         statusEl.textContent = "Off the " + woodwork + "! The frame saves the keeper.";
@@ -533,6 +548,7 @@
     round++;
     roundEl.textContent = round;
     phase = "shoot";
+    cpuKeeperDir = aiKeeper();
     keeperX = dirX("C"); ballPos = { x: BALL_START.x, y: BALL_START.y };
     keeperPose = "C"; ballTrail = [];
     statusEl.textContent = round > 5 ? "Sudden death — you shoot. Pick a corner." : "Your kick — pick a corner.";
@@ -542,6 +558,7 @@
   }
 
   function finish() {
+    if (phase === "over") return;
     phase = "over"; setPad(false);
     bumpRecord(you > cpu);
     if (you > cpu) {
@@ -578,7 +595,11 @@
   function schedule(fn, delay) {
     if (beat) clearTimeout(beat.id);
     beat = { fn: fn, dueAt: performance.now() + delay, remaining: delay, id: null };
-    beat.id = setTimeout(function () { var b = beat; beat = null; b.fn(); }, delay);
+    var scheduled = beat;
+    beat.id = setTimeout(function () {
+      if (beat !== scheduled) return;
+      beat = null; scheduled.fn();
+    }, delay);
   }
 
   function animate(spec, done) {
