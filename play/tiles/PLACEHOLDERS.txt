@@ -9,3 +9,8 @@ Added 2026-10-22: rummy-500.png / @2x is Vol 2's own painted Rummy 500 game icon
 (apps/snackpack-brain-games-vol-2/assets/game-icons/rummy-500.png), not a placeholder.
 social/rummy-500.png is an interim composite; final art is item 12 of
 CODEX-ASSET-BRIEF-2026-10-17.md.
+
+Added 2026-10-22: block-puzzle.png / @2x is Vol 3's own painted block-game icon
+(apps/snackpack-brain-games-vol-3/assets/game-icons/block-blast.png), not a placeholder.
+social/block-puzzle.png is an interim composite; final art is item 13 of
+CODEX-ASSET-BRIEF-2026-10-17.md.
