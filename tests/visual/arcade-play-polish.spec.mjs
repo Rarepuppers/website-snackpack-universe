@@ -58,7 +58,9 @@ for (const slug of ['cascade', 'asteroid-destroyer', 'table-tennis']) {
     await expect.poll(contained).toEqual([]);
     await expect(field).toBeVisible();
     await page.setViewportSize({ width: 812, height: 375 });
-    await page.getByRole('button', { name: 'Focus play', exact: true }).click();
+    const focusButton = page.getByRole('button', { name: 'Focus play', exact: true });
+    await focusButton.focus();
+    await focusButton.press('Space');
     await expect.poll(contained).toEqual([]);
     await expect(page.getByRole('dialog')).toHaveAttribute('aria-modal', 'true');
     expect(await page.locator('.topbar').evaluate(el => el.inert)).toBe(true);

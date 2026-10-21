@@ -167,6 +167,9 @@
     }
     focus.addEventListener('click', function () { setFocus(!stage.classList.contains('sp-focus-play')); });
     document.addEventListener('keydown', function (event) {
+      // Let this native button own activation. Cascade otherwise consumes
+      // Space as hard drop, and Asteroid treats it as fire before the click.
+      if (event.target === focus && (event.key === ' ' || event.key === 'Enter')) event.stopPropagation();
       if (event.key === 'Tab' && stage.classList.contains('sp-focus-play')) {
         var stops = Array.from(stage.querySelectorAll('button:not(:disabled), input:not(:disabled), select:not(:disabled), a[href], [tabindex="0"]')).filter(function (el) { return el.getBoundingClientRect().height > 0; });
         var first = stops[0], last = stops[stops.length - 1];
