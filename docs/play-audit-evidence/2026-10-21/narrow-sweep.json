@@ -1,0 +1,2378 @@
+{
+  "at": "2026-10-21T07:27:29.414Z",
+  "origin": "http://127.0.0.1:44256",
+  "games": [
+    "2048",
+    "asteroid-destroyer",
+    "backgammon",
+    "cascade",
+    "checkers",
+    "connect-4",
+    "crossbar-challenge",
+    "crossword",
+    "dribble-rush",
+    "five-dice",
+    "flag-frenzy",
+    "flappy-snacky",
+    "free-kick-curl",
+    "freecell",
+    "goalkeeper-hero",
+    "golf-solitaire",
+    "header-hero",
+    "hearts",
+    "kakuro",
+    "keepy-uppy",
+    "mahjong",
+    "memory-match",
+    "minesweeper",
+    "penalty-shootout",
+    "picross",
+    "pinball",
+    "pyramid",
+    "reversi",
+    "snackwords",
+    "snacky-worm",
+    "snakes-and-ladders",
+    "soccer-trivia-sprint",
+    "solitaire",
+    "spades",
+    "spider-solitaire",
+    "sudoku",
+    "table-tennis",
+    "target-shooting-arena",
+    "thirteen",
+    "tripeaks",
+    "water-sort",
+    "word-search"
+  ],
+  "results": [
+    {
+      "slug": "hub",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Free Games Online | Solitaire, Sudoku & Spider Solitaire — SnackPack",
+      "h1": "Play classic games, right here.",
+      "overflow": 0,
+      "height": 9096,
+      "board": null,
+      "stage": null,
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nPlay classic games, right here.\nChoose a game\nAbout the app\nA fresh set for today.\nWed 21 Oct - 2026-10-21\nSudoku seed\nSEED 2026-10-21\nWord Search seed\nSEED 2026-10-21\nFreeCell deal\nSEED 2026-10-21\nDribble Rush\nTODAY'S PICK\nPick a game\n\nNew to Last Bastion? See the modes and controls →\n\nSearch games\nSort\nFeatured\nA to Z\nRecently added\nFavourites first\nClear filters\nAll games\nCards\nPuzzles\nWord\nBoard\nArcade\nSoccer\nDaily\n\n44 games shown\n\nNEW\nLast Bastion\n☆\nAtlas Quest\n☆\nSolitaire\n☆\nNEW\nSpider Solitaire\n☆\nSudoku\n☆\nFreeCell\n☆\nNEW\nTriPeaks Solitaire\n☆\nNEW\nPyramid Solitaire\n☆\nGolf Solitaire\n☆\nMahjong Solitaire\n☆\nCheckers\n☆\nMinesweeper\n☆\nNEW\nSnackWords\n☆\nCrossword\n☆\nWord Search\n☆\nKakuro\n☆\nPicross\n☆\nNEW\nWater Sort\n☆\n2048\n☆\nConnect 4\n☆\nReversi\n☆\nMemory Match\n☆\nSnakes & Ladders\n☆\nNEW\nDice ",
+      "links": [
+        {
+          "href": "/play/last-bastion/about/",
+          "text": "New to Last Bastion? See the modes and controls →"
+        },
+        {
+          "href": "./stats/",
+          "text": "Your stats →"
+        },
+        {
+          "href": "/play/last-bastion/",
+          "text": "NEW\nLast Bastion"
+        },
+        {
+          "href": "/atlas-quest/",
+          "text": "Atlas Quest"
+        },
+        {
+          "href": "./solitaire/",
+          "text": "Solitaire"
+        },
+        {
+          "href": "./spider-solitaire/",
+          "text": "NEW\nSpider Solitaire"
+        },
+        {
+          "href": "./sudoku/",
+          "text": "Sudoku"
+        },
+        {
+          "href": "./freecell/",
+          "text": "FreeCell"
+        },
+        {
+          "href": "./tripeaks/",
+          "text": "NEW\nTriPeaks Solitaire"
+        },
+        {
+          "href": "./pyramid/",
+          "text": "NEW\nPyramid Solitaire"
+        },
+        {
+          "href": "./golf-solitaire/",
+          "text": "Golf Solitaire"
+        },
+        {
+          "href": "./mahjong/",
+          "text": "Mahjong Solitaire"
+        },
+        {
+          "href": "./checkers/",
+          "text": "Checkers"
+        },
+        {
+          "href": "./minesweeper/",
+          "text": "Minesweeper"
+        },
+        {
+          "href": "./snackwords/",
+          "text": "NEW\nSnackWords"
+        },
+        {
+          "href": "./crossword/",
+          "text": "Crossword"
+        },
+        {
+          "href": "./word-search/",
+          "text": "Word Search"
+        },
+        {
+          "href": "./kakuro/",
+          "text": "Kakuro"
+        },
+        {
+          "href": "./picross/",
+          "text": "Picross"
+        },
+        {
+          "href": "./water-sort/",
+          "text": "NEW\nWater Sort"
+        },
+        {
+          "href": "./2048/",
+          "text": "2048"
+        },
+        {
+          "href": "./connect-4/",
+          "text": "Connect 4"
+        },
+        {
+          "href": "./reversi/",
+          "text": "Reversi"
+        },
+        {
+          "href": "./memory-match/",
+          "text": "Memory Match"
+        },
+        {
+          "href": "./snakes-and-ladders/",
+          "text": "Snakes & Ladders"
+        },
+        {
+          "href": "./five-dice/",
+          "text": "NEW\nDice Score"
+        },
+        {
+          "href": "./backgammon/",
+          "text": "NEW\nBackgammon"
+        },
+        {
+          "href": "./cascade/",
+          "text": "Cascade"
+        },
+        {
+          "href": "./thirteen/",
+          "text": "Thirteen"
+        },
+        {
+          "href": "./hearts/",
+          "text": "NEW\nHearts"
+        },
+        {
+          "href": "./spades/",
+          "text": "NEW\nSpades"
+        },
+        {
+          "href": "./table-tennis/",
+          "text": "Table Tennis"
+        },
+        {
+          "href": "./pinball/",
+          "text": "Pinball"
+        },
+        {
+          "href": "./asteroid-destroyer/",
+          "text": "Asteroid Destroyer"
+        },
+        {
+          "href": "./flappy-snacky/",
+          "text": "Flappy Snacky"
+        },
+        {
+          "href": "./snacky-worm/",
+          "text": "Snacky Worm"
+        },
+        {
+          "href": "./flag-frenzy/",
+          "text": "NEW\nFlag Frenzy"
+        },
+        {
+          "href": "./soccer-trivia-sprint/",
+          "text": "Soccer Trivia Sprint"
+        },
+        {
+          "href": "./keepy-uppy/",
+          "text": "Keepy-Uppy"
+        },
+        {
+          "href": "./target-shooting-arena/",
+          "text": "Target Shooting Arena"
+        },
+        {
+          "href": "./free-kick-curl/",
+          "text": "Free Kick Curl"
+        },
+        {
+          "href": "./crossbar-challenge/",
+          "text": "Crossbar Challenge"
+        },
+        {
+          "href": "./goalkeeper-hero/",
+          "text": "Goalkeeper Hero"
+        },
+        {
+          "href": "./penalty-shootout/",
+          "text": "Penalty Shootout"
+        },
+        {
+          "href": "./dribble-rush/",
+          "text": "NEW\nDribble Rush"
+        },
+        {
+          "href": "./header-hero/",
+          "text": "NEW\nHeader Hero"
+        }
+      ]
+    },
+    {
+      "slug": "daily",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Today's Free Daily Puzzles | SnackWords, Sudoku & More — SnackPack",
+      "h1": "Today's puzzles.\nSame boards for everyone.",
+      "overflow": 0,
+      "height": 3415,
+      "board": null,
+      "stage": null,
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nToday's puzzles.\nSame boards for everyone.\nDone today 0/21\nStreak 0\nBest streak 0\nOne day, 21 boards.\nSeed 2026-10-21\nPinball\n\nToday's shared table\n\nSnackWords\n\nToday's five-letter word\n\nSudoku\n\nToday's shared grid\n\nWord Search\n\nToday's themed grid\n\nFreeCell\n\nToday's solver-checked deal\n\nMahjong Solitaire\n\nToday's shared layout\n\nPyramid Solitaire\n\nToday's shared pyramid\n\nTriPeaks Solitaire\n\nToday's shared deal\n\nGolf Solitaire\n\nToday's shared deal\n\nMemory Match\n\nToday's shared card layout\n\nThirteen\n\nToday's shared deal\n\nDice Score\n\nToday's shared dice\n\nHearts\n\nToday's shared deals\n\nSpades\n\nToday's shared deals\n\nBackgammon\n\nToday's shared dice\n\nMinesweeper\n\nShared once you open the same square\n\nWater Sort\n\nToday's shared colour sort\n\nFlag Frenzy\n\nGuess today's mystery team\n\nCrosswo",
+      "links": []
+    },
+    {
+      "slug": "stats",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Your Arcade Stats | On This Device — SnackPack",
+      "h1": "Your arcade stats",
+      "overflow": 0,
+      "height": 1696,
+      "board": null,
+      "stage": null,
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [],
+      "text": "Apps\nPlay\nDaily\nGuides\nPrivacy\n◐\n◐\nPRIVATE · NO ACCOUNT\nYour arcade stats\n\nYour saved games, favourites and best times live only in this browser. Nothing here is uploaded or tied to an account.\n\nBack to the arcade\nClear arcade data\nON THIS DEVICE\nAt a glance\n0\nSaved games\n0\nPersonal bests\n0\nFavourites\n0\nDaily streak\n\nPERSONAL BESTS\nYour best results\n\nTimes and scores are grouped by game and mode.\n\nNo personal bests yet\n\nFinish a timed game such as Sudoku, Minesweeper, Word Search, Picross or Kakuro and the result will appear here.\n\nChoose a game\n\nSnackPack Arcade stats stay on this device.\n\nArcade\nDaily challenges\nPrivacy",
+      "links": []
+    },
+    {
+      "slug": "2048",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play 2048 Online Free | No Ads, No Download — SnackPack",
+      "h1": "2048",
+      "overflow": 0,
+      "height": 4379,
+      "board": {
+        "x": 25,
+        "y": 357,
+        "w": 270,
+        "h": 320
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 628
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Undo",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\n2048\nSCORE\n0\nBEST\n0\nUndo\nSound off\nNew game\n\nUse the arrow keys or swipe to start.\n\n2\n2\n\nArrow keys ← ↑ → ↓ on desktop · Swipe on touch.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\n2048 is one of 24 classics in Snackpack Brain Games — our calm, ad-free Android bundle that plays anywhere, even with no signal.\n\nPlays fully offline — flights, commutes, anywhere\nBest scores & daily streaks saved on your device\n23 more games in the same app · no ads, no tracking\nScan to download\nHow to play 2048\n\n2048 is played on a 4×4 grid. Each move slides every tile as far as it can go in one direction — up, down, left, or right. When two tiles with the same number collide, they merge into a single tile worth their sum: two 2s become a 4, two 4s become an 8, and so on. After every move that changes",
+      "links": []
+    },
+    {
+      "slug": "asteroid-destroyer",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Asteroid Destroyer Online Free | Asteroids Arcade Game — SnackPack",
+      "h1": "Asteroid Destroyer",
+      "overflow": 0,
+      "height": 4499,
+      "board": {
+        "x": 25,
+        "y": 389,
+        "w": 270,
+        "h": 503
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 929
+      },
+      "brokenImages": [],
+      "canvases": [
+        {
+          "w": 390,
+          "h": 680,
+          "box": {
+            "x": 25,
+            "y": 389,
+            "w": 270,
+            "h": 503
+          },
+          "label": "Asteroid field"
+        }
+      ],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Classic",
+        "Pause",
+        "Classic",
+        "Rotation",
+        "Blitz",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nAsteroid Destroyer\nSCORE\n0\nBEST\n0\nLIVES\n3\nWAVE\n1\nOptions\n· Classic\nPause\nNew game\n\nPress Start to launch.\n\nStart\n◀\n▶\nFIRE\n\nKeys: ← → aim · Space fire. Or use the buttons / tap the field. (Classic = fixed turret you can aim.)\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nAsteroid Destroyer is one of the games in Snackpack Brain Games Vol 2 — our calm, ad-free Android bundle with arcade games, cards and puzzles in one app.\n\nPlays fully offline — flights, commutes, anywhere\nHigh scores saved on your device\nMore games in the same app · no ads, no tracking\nScan to download\nHow to play Asteroid Destroyer\n\nAsteroid Destroyer is a modern take on the arcade classic Asteroids. Rocks drift across the screen and your job is to blow them up before they hit you. Shooting a large asteroid breaks i",
+      "links": []
+    },
+    {
+      "slug": "backgammon",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Backgammon Online Free vs Computer | No Ads — SnackPack",
+      "h1": "Backgammon",
+      "overflow": 0,
+      "height": 3724,
+      "board": {
+        "x": 25,
+        "y": 428,
+        "w": 270,
+        "h": 302
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 717
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [
+        {
+          "text": "Point 13: 5 light",
+          "box": {
+            "x": 33,
+            "y": 436,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 14: empty",
+          "box": {
+            "x": 49,
+            "y": 436,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 15: empty",
+          "box": {
+            "x": 65,
+            "y": 436,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 16: empty",
+          "box": {
+            "x": 81,
+            "y": 436,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 17: 3 dark",
+          "box": {
+            "x": 98,
+            "y": 436,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 18: empty",
+          "box": {
+            "x": 114,
+            "y": 436,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 12: 5 dark",
+          "box": {
+            "x": 33,
+            "y": 558,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 11: empty",
+          "box": {
+            "x": 49,
+            "y": 558,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 10: empty",
+          "box": {
+            "x": 65,
+            "y": 558,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 9: empty",
+          "box": {
+            "x": 81,
+            "y": 558,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 8: 3 light",
+          "box": {
+            "x": 98,
+            "y": 558,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 7: empty",
+          "box": {
+            "x": 114,
+            "y": 558,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 19: 5 dark",
+          "box": {
+            "x": 156,
+            "y": 436,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 20: empty",
+          "box": {
+            "x": 172,
+            "y": 436,
+            "w": 16,
+            "h": 108
+          }
+        },
+        {
+          "text": "Point 21: empty",
+          "box": {
+            "x": 188,
+            "y": 436,
+            "w": 16,
+            "h": 108
+          }
+        }
+      ],
+      "options": [
+        "Options\n· Casual",
+        "Beginner",
+        "Casual",
+        "Intermediate",
+        "Hard",
+        "2 players",
+        "Daily",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nBackgammon\nYOUR PIPS\n167\nCPU PIPS\n167\nRECORD\n0–0\nOptions\n· Casual\nNew game\n\nRoll to start. You play the light checkers, moving toward your home board at the bottom right.\n\n12\n11\n10\n9\n8\n7\n6\n5\n4\n3\n2\n1\n0\noff\n0\nRoll\nUndo\n\nTap a point with your checker, then a highlighted point (or the tray at the right to bear off). Light moves counter-clockwise to the bottom right.\n\nHow to play Backgammon\n\nBackgammon is one of the oldest board games still played — a race with dice in which each player moves fifteen checkers around a board of 24 points and tries to bear them all off first. You play the light checkers and move toward your home board at the bottom right; the computer plays the dark checkers the opposite way round. Each turn you roll two dice and move one checker by each number, or one ",
+      "links": []
+    },
+    {
+      "slug": "cascade",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Cascade Online Free | Falling-Blocks Puzzle, No Ads — SnackPack",
+      "h1": "Cascade",
+      "overflow": 0,
+      "height": 5119,
+      "board": {
+        "x": 25,
+        "y": 407,
+        "w": 270,
+        "h": 659
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 1101
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Normal",
+        "Pause",
+        "Normal",
+        "Turbo",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nCascade\nSCORE\n0\nLINES\n0\nBEST\n0\nOptions\n· Normal\nPause\nNew game\n\nClear full rows to score. Arrow keys or the buttons below.\n\nNEXT\nLEVEL\n1\n←\n↺\n↻\n→\n↓\n⤓\n\nDesktop: ← → move · ↑ or Z/X rotate · ↓ soft drop · Space hard drop · P pause · Tap board halves to rotate.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nCascade is one of 24 classics in Snackpack Brain Games — our calm, ad-free Android bundle, with a Turbo mode and saved top scores.\n\nPlays fully offline — flights, commutes, anywhere\nTop scores, level & survival time saved on your device\n23 more games in the same app · no ads, no tracking\nScan to download\nHow to play Cascade\n\nCascade is a falling-blocks puzzle played in a tall well, ten columns wide and twenty rows high. Shapes made of four blocks — the seven classic tetromino forms — ",
+      "links": []
+    },
+    {
+      "slug": "checkers",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Checkers Online Free vs Computer | No Ads — SnackPack",
+      "h1": "Checkers",
+      "overflow": 0,
+      "height": 4958,
+      "board": {
+        "x": 25,
+        "y": 389,
+        "w": 270,
+        "h": 270
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 720
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Medium · 1 player",
+        "Easy",
+        "Medium",
+        "Hard",
+        "1 player",
+        "2 players",
+        "Undo",
+        "Large pieces",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nCheckers\nYOU\n12\nCPU\n12\nRECORD\n0–0\nOptions\n· Medium · 1 player\nUndo\nNew game\n\nYour move — you're red.\n\nPick one of your pieces, then a highlighted square · Captures are compulsory · Reach the top row to make a king.\n\nKeyboard: Tab to the board, ←↑→↓ to move, Enter to select a piece then its destination.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nCheckers is one of 24 classics in Snackpack Brain Games — our calm, ad-free Android bundle of strategy and puzzles.\n\nPlays fully offline — flights, commutes, anywhere\nWins & daily streaks saved on your device\n23 more games in the same app · no ads, no tracking\nScan to download\nHow to play Checkers\n\nCheckers — known as draughts outside North America — is played on an 8×8 board using only the dark squares. Each player starts with 12 pieces. ",
+      "links": []
+    },
+    {
+      "slug": "connect-4",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Connect 4 Online Free vs Computer | No Ads — SnackPack",
+      "h1": "Connect 4",
+      "overflow": 0,
+      "height": 4455,
+      "board": {
+        "x": 25,
+        "y": 413,
+        "w": 270,
+        "h": 354
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 723
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Medium · 1 player",
+        "Easy",
+        "Medium",
+        "Hard",
+        "1 player",
+        "2 players",
+        "Large pieces",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nConnect 4\nYOU\n0\nCPU\n0\nOptions\n· Medium · 1 player\nNew game\n\nYour move — drop a disc.\n\nYou: red\nComputer: amber\n\nClick a column on the board, or use the buttons above each column.\n\n▾\n▾\n▾\n▾\n▾\n▾\n▾\n\nKeyboard: Tab to the columns, ← → to choose, Enter to drop.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nConnect 4 is one of 24 classics in Snackpack Brain Games — our calm, ad-free Android bundle with strategy and puzzles in one app.\n\nPlays fully offline — flights, commutes, anywhere\nWins & daily streaks saved on your device\n23 more games in the same app · no ads, no tracking\nScan to download\nHow to play Connect 4\n\nConnect 4 is played on a grid that's seven columns wide and six rows tall. Players take turns dropping a coloured disc into a column; it falls to the lowest empty slot. Choose 1",
+      "links": []
+    },
+    {
+      "slug": "crossbar-challenge",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Crossbar Challenge Online Free | Soccer Skill Game - SnackPack",
+      "h1": "Crossbar Challenge",
+      "overflow": 0,
+      "height": 4611,
+      "board": {
+        "x": 25,
+        "y": 407,
+        "w": 270,
+        "h": 181
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 806
+      },
+      "brokenImages": [],
+      "canvases": [
+        {
+          "w": 640,
+          "h": 430,
+          "box": {
+            "x": 25,
+            "y": 407,
+            "w": 270,
+            "h": 181
+          },
+          "label": "Crossbar Challenge soccer field. Focus and use left/right arrow keys to aim along the bar, then Enter or Space to shoot."
+        }
+      ],
+      "tinyControls": [
+        {
+          "text": "cb-power",
+          "box": {
+            "x": 27,
+            "y": 631,
+            "w": 270,
+            "h": 16
+          }
+        }
+      ],
+      "options": [
+        "Options\n· Rookie",
+        "Pause",
+        "Rookie",
+        "Pro",
+        "Legend",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nCrossbar Challenge\nSCORE\n0\nSHOT\n1/15\nBEST\n0\nSTREAK\n0\nOptions\n· Rookie\nPause\nNew game\n\nDrag the target along the bar, set power, then shoot.\n\nPOWER\nLeft\nStraight\nRight\nShoot\nDrag or tap the crossbar to aim.\nPerfect hits are worth extra.\nWind grows on harder levels.\nMORE SOCCER GAMES\nAnother one-shot skill test.\n\nCrossbar Challenge joins the SnackPack soccer arcade: quick free games from the 2026 World Cup, tuned for one more attempt.\n\nInstant browser play on phone or desktop\nNo ads, no sign-in, no download\nHigh score and streak saved locally on your device\nWorld Cup games hub\nPlay Free Kick Curl\nHit the bar. Beat your best.\nHow to play Crossbar Challenge\n\nYou have 15 shots to hit the soccer crossbar. Drag the target along the bar, set your power, choose curl, and shoot. A crossbar",
+      "links": []
+    },
+    {
+      "slug": "crossword",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Crossword Online Free | Mini Themed Crosswords — SnackPack",
+      "h1": "Crossword",
+      "overflow": 0,
+      "height": 4718,
+      "board": {
+        "x": 25,
+        "y": 359,
+        "w": 270,
+        "h": 440
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 1429
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [
+        {
+          "text": "E",
+          "box": {
+            "x": 146,
+            "y": 815,
+            "w": 23,
+            "h": 42
+          }
+        },
+        {
+          "text": "F",
+          "box": {
+            "x": 174,
+            "y": 815,
+            "w": 23,
+            "h": 42
+          }
+        },
+        {
+          "text": "I",
+          "box": {
+            "x": 264,
+            "y": 815,
+            "w": 18,
+            "h": 42
+          }
+        },
+        {
+          "text": "J",
+          "box": {
+            "x": 287,
+            "y": 815,
+            "w": 23,
+            "h": 42
+          }
+        }
+      ],
+      "options": [
+        "Options\n· General",
+        "General",
+        "Animals",
+        "Movies",
+        "Space",
+        "Daily",
+        "Large pieces",
+        "Sound off",
+        "New"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nCrossword\nTIME\n0:00\nBEST\n—\nOptions\n· General\nNew\n\nSelect a clue and start typing.\n\n‹\n1 Down: Straight edge for lines\n›\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\nA\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ\n⌫\nCheck\nReveal cell\nReveal word\nAcross\n3 It rings between lessons\n4 Look over written words\n7 Group of pupils\n8 Subject of numbers\n10 Reading material\n11 Classroom assessment\nDown\n1 Straight edge for lines\n2 Writing instrument with ink\n5 Big final assessment\n6 Work surface for a pupil\n7 White stick for the board\n9 Short written reminder\nPLAY ON THE GO\nLike it? Take it offline.\n\nCrossword is one of the games in Snackpack Brain Games Vol 2 — our calm, ad-free Android bundle with word games, puzzles and arcade games in one app.\n\nPlays fully offline — flights, commutes, anywhere\nBest times sa",
+      "links": []
+    },
+    {
+      "slug": "dribble-rush",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Dribble Rush Online Free | Endless Soccer Runner, No Ads — SnackPack",
+      "h1": "Dribble Rush",
+      "overflow": 0,
+      "height": 4783,
+      "board": {
+        "x": 25,
+        "y": 457,
+        "w": 270,
+        "h": 471
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 956
+      },
+      "brokenImages": [],
+      "canvases": [
+        {
+          "w": 390,
+          "h": 680,
+          "box": {
+            "x": 25,
+            "y": 457,
+            "w": 270,
+            "h": 471
+          },
+          "label": "Dribble Rush endless soccer runner"
+        }
+      ],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Sunday League",
+        "Pause",
+        "Sunday League",
+        "Cup Final",
+        "Extra Time",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nDribble Rush\nDISTANCE\n0m\nSTARS\n0\nSCORE\n0\nLIVES\n1\nBOOST\n—\nBEST\n0m\nOptions\n· Sunday League\nPause\nNew game\n\nTap the pitch (or press space) to start running.\n\n◀ Left\nHop\nRight ▶\n\nTap left/right side of the pitch to switch lanes, middle to hop · or ← → to move, Space / ↑ to hop.\n\nMORE SOCCER GAMES\nOne more run, every time.\n\nDribble Rush joins the SnackPack soccer arcade: quick free games from the 2026 World Cup, tuned for one more attempt.\n\nInstant browser play on phone or desktop\nNo ads, no sign-in, no download\nBest distance and score saved locally on your device\nWorld Cup games hub\nPlay Keepy-Uppy\nEvery metre counts. Beat your best.\nHow to play Dribble Rush\n\nDribble Rush is an endless three-lane soccer runner. Your score starts with distance, then grows with star pickups, consecutiv",
+      "links": []
+    },
+    {
+      "slug": "five-dice",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Dice Score — Free Dice Game Online vs Computer | No Ads — SnackPack",
+      "h1": "Dice Score",
+      "overflow": 0,
+      "height": 5318,
+      "board": {
+        "x": 25,
+        "y": 389,
+        "w": 270,
+        "h": 848
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 1206
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Solo",
+        "Solo",
+        "vs CPU",
+        "Sharp CPU",
+        "2 players",
+        "Daily",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nDice Score\nSCORE\n0\nTURN\n1/13\nBEST\n—\nOptions\n· Solo\nNew game\n\nRoll to start your first turn.\n\nRoll\n3 rolls left\nBOX\tYOU\nOnes\t\nTwos\t\nThrees\t\nFours\t\nFives\t\nSixes\t\nTop bonus\n35 at 63+\n\t0/63\nThree of a kind\ntotal of all dice\n\t\nFour of a kind\ntotal of all dice\n\t\nFull house\n25\n\t\nSmall straight\nfour in a row · 30\n\t\nLarge straight\nfive in a row · 40\n\t\nFive of a kind\n50\n\t\nChance\nany total\n\t\nTotal\t0\n\nRoll, tap dice to hold them, roll again — up to three rolls — then pick a box to score. Every box is used once.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nThis five-dice game is one of the games in Snackpack Brain Games Vol 2 — our calm, ad-free Android bundle with board games, cards and puzzles in one app.\n\nPlays fully offline — flights, commutes, anywhere\nMore modes and dice styles in the app",
+      "links": []
+    },
+    {
+      "slug": "flag-frenzy",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Flag Frenzy Online Free | Daily World Cup Team Guessing Game - SnackPack",
+      "h1": "Flag Frenzy",
+      "overflow": 0,
+      "height": 4825,
+      "board": {
+        "x": 25,
+        "y": 624,
+        "w": 175,
+        "h": 47
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 799
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nFlag Frenzy\nGUESS\n0/6\nSTREAK\n0\nBEST STREAK\n0\n\nUse the starter clue, then guess today's World Cup team.\n\nPuzzle #143\nGeography:\nUEFA play in Europe.\nGuess\nPractice round (random team)\nGreen chip = exact match.\n▲ / ▼ on points means the answer is higher / lower.\nStatus compares how far each team got.\nMORE SOCCER GAMES\nOne team to guess, every day.\n\nFlag Frenzy joins the SnackPack soccer arcade: quick free games from the 2026 World Cup.\n\nInstant browser play on phone or desktop\nNo ads, no sign-in, no download\nDaily streak saved locally on your device\nWorld Cup games hub\nPlay Soccer Trivia Sprint\nOne team a day. Don't break the streak.\nHow to play Flag Frenzy\n\nEvery day, Flag Frenzy picks one of the 48 teams at the World Cup 2026. You have 6 guesses to find it. Type any team name int",
+      "links": []
+    },
+    {
+      "slug": "flappy-snacky",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Flappy Snacky Online Free | Tap-to-Fly Arcade, No Ads — SnackPack",
+      "h1": "Flappy Snacky",
+      "overflow": 0,
+      "height": 4754,
+      "board": {
+        "x": 25,
+        "y": 357,
+        "w": 270,
+        "h": 471
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 837
+      },
+      "brokenImages": [],
+      "canvases": [
+        {
+          "w": 390,
+          "h": 680,
+          "box": {
+            "x": 25,
+            "y": 357,
+            "w": 270,
+            "h": 471
+          },
+          "label": "Flappy Snacky game"
+        }
+      ],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Classic",
+        "Pause",
+        "Classic",
+        "Hard",
+        "Night",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nFlappy Snacky\nSCORE\n0\nBEST\n0\nOptions\n· Classic\nPause\nNew game\n\nTap the board (or press space) to start flying.\n\nSpeed\nCozy\nNormal\nZippy\n\nTap / click the board · or Space / ↑ to flap · Mode switch starts a fresh run.\n\nFROM BRAIN GAMES VOL 2\nWant the full pack?\n\nFlappy Snacky is one of the new games in Snackpack Brain Games Vol 2 — our calm, ad-free Android bundle with more arcade games, modes and saved high scores.\n\nPlays fully offline — flights, commutes, anywhere\nHigh scores & daily challenges saved on your device\nMore new games in the app · no ads, no tracking\nAbout Brain Games Vol 2\nTip the studio\nA tiny, ad-free studio — tips keep us flying.\nHow to play Flappy Snacky\n\nFlappy Snacky is a one-button arcade game. Snacky is constantly pulled down by gravity, so you tap, click, or",
+      "links": []
+    },
+    {
+      "slug": "free-kick-curl",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Free Kick Curl Online Free | Soccer Free Kick Game - SnackPack",
+      "h1": "Free Kick Curl",
+      "overflow": 0,
+      "height": 4638,
+      "board": {
+        "x": 25,
+        "y": 407,
+        "w": 270,
+        "h": 181
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 806
+      },
+      "brokenImages": [],
+      "canvases": [
+        {
+          "w": 640,
+          "h": 430,
+          "box": {
+            "x": 25,
+            "y": 407,
+            "w": 270,
+            "h": 181
+          },
+          "label": "Free Kick Curl soccer field. Focus and use arrow keys to aim, then Enter or Space to shoot."
+        }
+      ],
+      "tinyControls": [
+        {
+          "text": "fk-power",
+          "box": {
+            "x": 27,
+            "y": 631,
+            "w": 270,
+            "h": 16
+          }
+        }
+      ],
+      "options": [
+        "Options\n· Rookie",
+        "Pause",
+        "Rookie",
+        "Pro",
+        "Legend",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nFree Kick Curl\nSCORE\n0\nKICK\n1/10\nBEST\n0\nSTREAK\n0\nOptions\n· Rookie\nPause\nNew game\n\nAim inside the goal, set curl, then shoot.\n\nPOWER\nLeft\nStraight\nRight\nShoot\nDrag or tap the goal to aim.\nGolden corners are bonus targets.\nMore curl helps beat the wall.\nMORE SOCCER GAMES\nBuilt for football's biggest summer.\n\nFree Kick Curl is part of the SnackPack soccer arcade: quick browser games from the 2026 World Cup, built to keep playing long after the final whistle.\n\nPlay instantly on phone or desktop\nNo ads, no sign-in, no download\nMore soccer games planned for the tournament run-up\nWorld Cup games hub\nPlay Penalty Shootout\nOriginal SnackPack soccer arcade game.\nHow to play Free Kick Curl\n\nYou have 10 free kicks. Aim inside the goal, choose your curl direction, set power, and press Shoot. ",
+      "links": []
+    },
+    {
+      "slug": "freecell",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play FreeCell Online Free | Solver-Checked Deals, No Ads — SnackPack",
+      "h1": "FreeCell",
+      "overflow": 0,
+      "height": 6219,
+      "board": {
+        "x": 37,
+        "y": 368,
+        "w": 246,
+        "h": 273
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 761
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nFreeCell\nTime 0:00\nMoves 0\nDeal 498\nBest –\nOptions\n· 4 cells\nUndo\nHint\nNew deal\n\nSelect a card, then select its destination.\n\n10\nA\nJ\nA\nJ\nA\n5\n7\n7\n3\nK\n5\n9\n3\n4\n10\n4\n3\n8\n2\nK\nQ\n10\n9\n2\n3\n6\nK\n7\n8\n5\n4\nK\n8\nQ\n7\n6\nA\n6\n9\n10\n8\n9\n5\nQ\n2\n6\nJ\n4\n2\nJ\nQ\n\nDrag a card to move it — or click a card then its destination. Double-click sends a card straight to its foundation. Auto finishes the game for you once it's fully solvable from here. Valid runs move together; empty cells and columns increase your supermove capacity.\n\nEvery numbered deal here has been checked by a solver, so this board is winnable with four cells.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nFor an offline collection of puzzles, strategy and arcade games, explore Snackpack Brain Games on Android.\n\nPlays fully offline — flights, commut",
+      "links": []
+    },
+    {
+      "slug": "goalkeeper-hero",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Goalkeeper Hero Online Free | Soccer Save Game - SnackPack",
+      "h1": "Goalkeeper Hero",
+      "overflow": 0,
+      "height": 4553,
+      "board": {
+        "x": 25,
+        "y": 389,
+        "w": 270,
+        "h": 181
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 737
+      },
+      "brokenImages": [],
+      "canvases": [
+        {
+          "w": 640,
+          "h": 430,
+          "box": {
+            "x": 25,
+            "y": 389,
+            "w": 270,
+            "h": 181
+          },
+          "label": "Goalkeeper Hero soccer goal"
+        }
+      ],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Rookie",
+        "Pause",
+        "Rookie",
+        "Pro",
+        "Legend",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nGoalkeeper Hero\nSCORE\n0\nSHOT\n1/12\nBEST\n0\nSTREAK\n0\nOptions\n· Rookie\nPause\nNew game\n\nShot 1: read the striker and dive.\n\nLeft\nCentre\nRight\nClick the goal or use the buttons.\nFast correct dives earn quick-save points.\nThe striker gives smaller clues on harder levels.\nMORE SOCCER GAMES\nKeep your save streak going.\n\nGoalkeeper Hero joins Free Kick Curl and Penalty Shootout in the SnackPack soccer arcade: quick free games from the 2026 World Cup, made for replay any time.\n\nInstant browser play on phone or desktop\nNo ads, no sign-in, no download\nHigh score and streaks saved locally on your device\nWorld Cup games hub\nPlay Header Hero\nMake the save. Keep the streak.\nHow to play Goalkeeper Hero\n\nYou face 12 shots. Before each kick, the striker leans toward a likely side. Choose left, centr",
+      "links": []
+    },
+    {
+      "slug": "golf-solitaire",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Golf Solitaire Online Free | No Ads, No Download — SnackPack",
+      "h1": "Golf Solitaire",
+      "overflow": 0,
+      "height": 3291,
+      "board": {
+        "x": 37,
+        "y": 347,
+        "w": 246,
+        "h": 93
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 674
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options",
+        "Round the corner",
+        "Sound off",
+        "New deal"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nGolf Solitaire\nCLEARED\n0/35\nSTOCK\n16\nMOVES\n0\nBEST\n—\nOptions\nNew deal\n\n1 card playable.\n\nK\nK\nK\n7\n5\n6\n2\n4\n3\n2\n10\n8\nJ\n9\nJ\n4\n8\n3\nJ\n9\n10\n5\nQ\nQ\n7\nA\nK\n10\n6\nA\n10\n4\n3\nJ\n6\n16\n\nStock\n\n3\n\nWaste\n\nUndo\nSound off\nHint\n\nTap the stock to turn a new card. A column card is playable when it is exactly one rank above or below the waste card — suit is irrelevant.\n\nHow Golf Solitaire works\n\nThirty-five cards are dealt into seven columns of five, all face up, so nothing is hidden — every decision is one you can actually reason about. One card sits face up on the waste pile, and the rest form the stock.\n\nYou may take the exposed card at the foot of any column and move it to the waste whenever it is one rank above or below the current waste card. Suits are ignored entirely, which is what makes Golf quicke",
+      "links": []
+    },
+    {
+      "slug": "header-hero",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Header Hero Online Free | Soccer Heading Game - SnackPack",
+      "h1": "Header Hero",
+      "overflow": 0,
+      "height": 4298,
+      "board": {
+        "x": 25,
+        "y": 389,
+        "w": 270,
+        "h": 181
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 767
+      },
+      "brokenImages": [],
+      "canvases": [
+        {
+          "w": 640,
+          "h": 430,
+          "box": {
+            "x": 25,
+            "y": 389,
+            "w": 270,
+            "h": 181
+          },
+          "label": "Header Hero soccer goal"
+        }
+      ],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Rookie",
+        "Pause",
+        "Rookie",
+        "Pro",
+        "Legend",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nHeader Hero\nSCORE\n0\nCROSS\n1/12\nBEST\n0\nSTREAK\n0\nOptions\n· Rookie\nPause\nNew game\n\nCross 1: time your jump.\n\nHead It!\nLeft\nCentre\nRight\nTap the pitch, press space, or Head It — right as the cross arrives.\nPerfect timing always scores.\nRepeating the same corner makes the keeper wise to it.\nMORE SOCCER GAMES\nFrom the box to the six-yard line.\n\nHeader Hero joins Goalkeeper Hero in the SnackPack soccer arcade: quick free games from the 2026 World Cup, made for replay any time.\n\nInstant browser play on phone or desktop\nNo ads, no sign-in, no download\nHigh score and streaks saved locally on your device\nWorld Cup games hub\nPlay Goalkeeper Hero\nMeet it clean. Find the corner.\nHow to play Header Hero\n\nYou face 12 crosses. Before each one arrives, choose where you want to aim — left, centre, ",
+      "links": []
+    },
+    {
+      "slug": "hearts",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Hearts Online Free vs Computer | No Ads — SnackPack",
+      "h1": "Hearts",
+      "overflow": 0,
+      "height": 4427,
+      "board": {
+        "x": 25,
+        "y": 407,
+        "w": 270,
+        "h": 471
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 847
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Standard · Full (100)",
+        "Casual",
+        "Standard",
+        "Sharp",
+        "Quick (50)",
+        "Full (100)",
+        "Daily",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nHearts\nROUND\n1\nYOUR POINTS\n0\nRECORD\n0–0\nOptions\n· Standard · Full (100)\nNew game\n\nRound 1: pick three cards to pass left.\n\nNorth\n0\n13 cards\nWest\n0\n13 cards\nEast\n0\n13 cards\nYou\n0\n4\n6\n8\n5\n2\n6\n9\nJ\nQ\nA\n2\n5\n9\nPass 0/3 left\n\nAvoid taking hearts (1 point each) and the Queen of Spades (13). Lowest score wins when anyone reaches the target.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nHearts is one of the games in Snackpack Brain Games — our calm, ad-free Android bundle with card games, board games and puzzles in one app.\n\nPlays fully offline — flights, commutes, anywhere\nSpades, Euchre, Gin Rummy and more card games\nMore games in the same app · no ads, no tracking\nScan to download\nHow to play Hearts\n\nHearts is a four-player trick-taking card game where the aim is to take as few points as y",
+      "links": []
+    },
+    {
+      "slug": "kakuro",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Kakuro Online Free | Cross-Sums Number Puzzle — SnackPack",
+      "h1": "Kakuro",
+      "overflow": 0,
+      "height": 4351,
+      "board": {
+        "x": 25,
+        "y": 353,
+        "w": 270,
+        "h": 322
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 820
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Starter",
+        "Starter",
+        "Classic",
+        "Expert",
+        "Daily",
+        "Sound off",
+        "New"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nKakuro\nTIME\n0:00\nFILLED\n2/15\nBEST\n—\nOptions\n· Starter\nNew\n\nFill each run so it adds up to its clue.\n\n20\n13\n22\n7\n12\n16\n3\n20\n24\n8\n1\n2\n3\n4\n5\n6\n7\n8\n9\n⌫\nUndo\nCheck\nHint\n\nTap a white cell, then a number. Top-right clue = sum across → · bottom-left clue = sum down ↓.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nKakuro is one of 24 classics in Snackpack Brain Games — our calm, ad-free Android bundle with number puzzles and strategy in one app.\n\nPlays fully offline — flights, commutes, anywhere\nBest times saved on your device\n23 more games in the same app · no ads, no tracking\nScan to download\nHow to play Kakuro\n\nKakuro — sometimes called cross-sums — is a number logic puzzle that looks like a crossword grid. Instead of letters you place the digits 1 to 9, and instead of word clues you have",
+      "links": []
+    },
+    {
+      "slug": "keepy-uppy",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Keepy-Uppy Online Free | Soccer Juggling Game - SnackPack",
+      "h1": "Keepy-Uppy",
+      "overflow": 0,
+      "height": 4379,
+      "board": {
+        "x": 25,
+        "y": 389,
+        "w": 270,
+        "h": 181
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 673
+      },
+      "brokenImages": [],
+      "canvases": [
+        {
+          "w": 640,
+          "h": 430,
+          "box": {
+            "x": 25,
+            "y": 389,
+            "w": 270,
+            "h": 181
+          },
+          "label": "Keepy-Uppy soccer juggling field"
+        }
+      ],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Chill",
+        "Pause",
+        "Chill",
+        "Match",
+        "Chaos",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nKeepy-Uppy\nSCORE\n0\nTOUCHES\n0\nBEST\n0\nCOMBO\nx1\nOptions\n· Chill\nPause\nNew game\n\nTap the ball to start juggling.\n\nKick\nTap/click the ball, or press Kick.\nHit near the centre for cleaner control.\nStars add bonus points.\nMORE SOCCER GAMES\nFast touches, fast rematches.\n\nKeepy-Uppy is a pure one-more-go soccer game for the SnackPack World Cup arcade. Short sessions, instant restarts, and a best score to chase.\n\nInstant browser play on phone or desktop\nNo ads, no sign-in, no download\nHigh score saved locally on your device\nWorld Cup games hub\nPlay Dribble Rush\nOne touch away from a new best.\nHow to play Keepy-Uppy\n\nTap or click the ball before it hits the grass. Every good touch pops the ball back into the air and adds points. Clean centre touches keep the ball under control, while edge t",
+      "links": []
+    },
+    {
+      "slug": "mahjong",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Mahjong Solitaire Online Free | Tile Match Game — SnackPack",
+      "h1": "Mahjong Solitaire",
+      "overflow": 0,
+      "height": 4256,
+      "board": {
+        "x": 29,
+        "y": 357,
+        "w": 262,
+        "h": 238
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 628
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Classic",
+        "Classic",
+        "Fortress",
+        "Garden",
+        "Daily",
+        "Large pieces",
+        "Clear faces",
+        "Sound off",
+        "New"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nMahjong Solitaire\nTIME\n0:00\nTILES\n36\nBEST\n—\nOptions\n· Classic\nNew\n\nMatch two free tiles with the same face.\n\n4\n3\n3\n2\n4\n4\n3\n2\n3\n1\n6\n2\n6\n5\n5\n5\n6\n6\n4\n6\n5\n1\n1\n1\n1\n2\n3\n2\n6\n3\n2\n4\n5\n1\n5\n4\nHint\nShuffle\n\nFree tiles have an open left or right side and nothing on top. Tap two matching free tiles to clear them.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nMahjong Tiles is one of 24 classics in Snackpack Brain Games — our calm, ad-free Android bundle with tile games and puzzles in one app.\n\nPlays fully offline — flights, commutes, anywhere\nBest times saved on your device\n23 more games in the same app · no ads, no tracking\nScan to download\nHow to play Mahjong Solitaire\n\nMahjong Solitaire (also called Shanghai or Mahjong tiles) is a calm single-player matching game built from the tiles of classic",
+      "links": []
+    },
+    {
+      "slug": "memory-match",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Memory Match Online Free | Card Matching Game — SnackPack",
+      "h1": "Memory Match",
+      "overflow": 0,
+      "height": 4339,
+      "board": {
+        "x": 25,
+        "y": 407,
+        "w": 270,
+        "h": 270
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 667
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Classic",
+        "Quick",
+        "Classic",
+        "Challenge",
+        "Expert",
+        "Daily",
+        "Felt GreenClassic NavySnackPack GoldRoyal PlumMidnight NeonMarble RoseEmerald ArcadeObsidian Star",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nMemory Match\nMOVES\n0\nTIME\n0:00\nBEST\n—\nOptions\n· Classic\nNew game\n\nFlip two cards to find a matching pair.\n\nClassic · 4×4 board · 8 pairs\n\nKeyboard: Tab to the board, ←↑→↓ to move, Enter to flip a card.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nMemory Match is one of 24 classics in Snackpack Brain Games — our calm, ad-free Android bundle with puzzles and strategy in one app.\n\nPlays fully offline — flights, commutes, anywhere\nBest moves & times saved on your device\n23 more games in the same app · no ads, no tracking\nScan to download\nHow to play Memory Match\n\nMemory Match — also known as Concentration, Pairs or Pelmanism — is a game of pure recall. All the cards start face down in a grid, each one hiding a symbol that appears exactly twice. On your turn you flip two cards: if their",
+      "links": []
+    },
+    {
+      "slug": "minesweeper",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Minesweeper Online Free | No Ads, No Download — SnackPack",
+      "h1": "Minesweeper",
+      "overflow": 0,
+      "height": 5233,
+      "board": {
+        "x": 25,
+        "y": 389,
+        "w": 270,
+        "h": 332
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 747
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Beginner",
+        "Beginner",
+        "Inter",
+        "Expert",
+        " Flag",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nMinesweeper\nMINES\n10\nTIME\n0\nBEST\n—\nOptions\n· Beginner\nNew game\n\nTap or click any square to begin.\n\nTap or click to reveal · Long-press, right-click or Flag mode to flag · Your first pick is always safe.\n\nKeyboard: Tab to the board, ←↑→↓ to move, Enter to reveal, F to flag.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nThe full Minesweeper — with extra lives, chord reveal, number highlights and saved best times — is part of Snackpack Brain Games, our calm Android bundle of 24 classics.\n\nPlays fully offline — flights, commutes, anywhere\nBest times & daily streaks saved on your device\n23 more games in the same app · no ads, no tracking\nScan to download\nHow to play Minesweeper\n\nThe goal is simple: reveal every square that doesn't hide a mine. Click a square to uncover it. If it's a mine",
+      "links": []
+    },
+    {
+      "slug": "penalty-shootout",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Penalty Shootout Online Free | Soccer Penalty Kicks, No Ads — SnackPack",
+      "h1": "Penalty Shootout",
+      "overflow": 0,
+      "height": 4797,
+      "board": {
+        "x": 25,
+        "y": 407,
+        "w": 270,
+        "h": 188
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 714
+      },
+      "brokenImages": [],
+      "canvases": [
+        {
+          "w": 460,
+          "h": 320,
+          "box": {
+            "x": 25,
+            "y": 407,
+            "w": 270,
+            "h": 188
+          },
+          "label": "Penalty shootout"
+        }
+      ],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Medium",
+        "Pause",
+        "Easy",
+        "Medium",
+        "Hard",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nPenalty Shootout\nYOU\n0\nCPU\n0\nROUND\n1\nRECORD\n0–0\nOptions\n· Medium\nPause\nNew game\n\nYou're shooting first — pick a corner.\n\n◀ Left\n▲ Centre\nRight ▶\nYou\nCPU\n\nPick a side with the buttons (or tap the left, middle or right of the goal). When shooting, beat the keeper; when saving, dive the same way as the striker.\n\nLOVE QUICK ARCADE GAMES?\nTry our calm, ad-free bundle.\n\nIf a one-more-go arcade game is your thing, you'll feel right at home in Snackpack Brain Games Vol 2 — Flappy Snacky, Snacky Worm, Table Tennis and more, all offline and ad-free.\n\nQuick arcade games made to be calm, not noisy\nPlays fully offline with high scores saved on your device\nNo ads, no tracking — ever\nAbout Brain Games Vol 2\nTip the studio\nA tiny, ad-free studio — tips keep us building.\nHow to play Penalty Shoot",
+      "links": []
+    },
+    {
+      "slug": "picross",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Picross / Nonogram Online Free | Picture Logic Puzzle — SnackPack",
+      "h1": "Picross",
+      "overflow": 0,
+      "height": 4287,
+      "board": {
+        "x": 25,
+        "y": 285,
+        "w": 270,
+        "h": 242
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 630
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· 5×5",
+        "5×5",
+        "10×10",
+        "15×15",
+        "Daily",
+        "Sound off",
+        "New"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nPicross\nTIME\n0:00\nBEST\n—\nOptions\n· 5×5\nNew\n\nFill the cells that match the clues.\n\n▣\n2\n1\n1\n3\n1\n1\n2\n1\n1\n1\n1\n3\n1\n3\nHint\nUndo\nClear\n\nTap to mark · switch Fill / Cross with the corner toggle · right-click a cell to cross it.\n\nKeyboard: Tab to the grid, ←↑→↓ to move, Enter to mark, X to switch fill / cross.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nPicross is one of the games in Snackpack Brain Games Vol 2 — our calm, ad-free Android bundle with picture-logic puzzles, cards and arcade games in one app.\n\nPlays fully offline — flights, commutes, anywhere\nBest times saved on your device\nDozens of puzzles · no ads, no tracking\nScan to download\nHow to play Picross (Nonograms)\n\nPicross — also called Nonograms, Griddlers or Hanjie — is a picture logic puzzle. Each row and column has a list o",
+      "links": []
+    },
+    {
+      "slug": "pinball",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Pinball Online Free | Classic Arcade Pinball Table — SnackPack",
+      "h1": "Pinball",
+      "overflow": 0,
+      "height": 6855,
+      "board": {
+        "x": 25,
+        "y": 255,
+        "w": 270,
+        "h": 562
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 840
+      },
+      "brokenImages": [],
+      "canvases": [
+        {
+          "w": 270,
+          "h": 562,
+          "box": {
+            "x": 25,
+            "y": 255,
+            "w": 270,
+            "h": 562
+          },
+          "label": "Pinball table"
+        }
+      ],
+      "tinyControls": [],
+      "options": [
+        "Pause",
+        "Sound off"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\nPinball\nSCORE\n0\nBALL\n1 / 3\nPause\nSound off\n\nSHOOT THE HATCH FOR A MISSION\n\nChoose a mode to start.\n\nChoose a mode\n\nRelaxed\n5 balls · kickback always on\nClassic\n3 balls · the standard table\nExpert\n3 balls · faster, no kickback\nEndless\nNo ball loss · chase the score\n\nKeys: Z / ← left flipper · / / → right flipper · hold Space or ↑ to charge the plunger and release to fire · , and . nudge · N nudge up. On a phone: hold the left or right third of the table for the flippers, the middle for the plunger.\n\nHow to play pinball\n\nHold the plunger to charge it, then let go. A full plunge sends the ball all the way around the top arch, through the three rollover lanes, and back down to the right flipper ready to shoot — so your first real decision arrives about two seconds into every ball. From",
+      "links": []
+    },
+    {
+      "slug": "pyramid",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Pyramid Solitaire Online Free | Pairs That Make 13, No Ads — SnackPack",
+      "h1": "Pyramid Solitaire",
+      "overflow": 0,
+      "height": 4435,
+      "board": {
+        "x": 19,
+        "y": 490,
+        "w": 282,
+        "h": 253
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 924
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Classic",
+        "Relaxed",
+        "Classic",
+        "Hard",
+        "Daily",
+        "Sound off",
+        "New deal"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nPyramid Solitaire\nCLEARED\n0/28\nSTOCK\n24\nRECYCLES\n2\nMOVES\n0\nBEST\n—\nOptions\n· Classic\nNew deal\n\nPair two exposed cards that add to thirteen, or tap an exposed King.\n\n5\nJ\nJ\n10\nQ\n7\n2\n10\n2\n5\n3\n8\n6\n10\n6\nK\nK\nQ\nK\n8\nK\n4\nJ\n6\n4\nA\nA\n5\n24\n\nStock\n\n—\n\nWaste\n\nUndo\nSound off\nHint\n\nAce counts 1, Jack 11, Queen 12, King 13. Tap two exposed cards that add to thirteen, or a single exposed King.\n\nHow Pyramid Solitaire works\n\nTwenty-eight cards are dealt into a seven-row pyramid, each row overlapping the one above it, and the remaining twenty-four become the stock. A pyramid card is exposed — and therefore usable — only once both of the cards overlapping it from below have been removed. At the start, that means the seven cards along the bottom row.\n\nRemove cards in pairs whose ranks add up to thirteen:",
+      "links": []
+    },
+    {
+      "slug": "reversi",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Reversi / Othello Online Free vs Computer | No Ads — SnackPack",
+      "h1": "Reversi",
+      "overflow": 0,
+      "height": 4747,
+      "board": {
+        "x": 25,
+        "y": 407,
+        "w": 270,
+        "h": 270
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 703
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Medium · 1 player",
+        "Easy",
+        "Medium",
+        "Hard",
+        "1 player",
+        "2 players",
+        "Undo",
+        "Large pieces",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nReversi\nYOU ⚫\n2\nCPU ⚪\n2\nRECORD\n0–0\nOptions\n· Medium · 1 player\nUndo\nNew game\n\nYour move — you're black. Legal squares are dotted.\n\nPick a dotted square to place a disc and flip the trapped line · Corners can't be flipped — grab them.\n\nKeyboard: Tab to the board, ←↑→↓ to move, Enter to place a disc.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nReversi is one of 24 classics in Snackpack Brain Games — our calm, ad-free Android bundle of strategy and puzzles.\n\nPlays fully offline — flights, commutes, anywhere\nWins & daily streaks saved on your device\n23 more games in the same app · no ads, no tracking\nScan to download\nHow to play Reversi (Othello)\n\nReversi is played on an 8×8 board. It begins with four discs in the centre — two black, two white — placed diagonally. You play black and m",
+      "links": []
+    },
+    {
+      "slug": "snackwords",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play SnackWords | Free Daily Word Game, No Ads — SnackPack",
+      "h1": "SnackWords",
+      "overflow": 0,
+      "height": 3417,
+      "board": {
+        "x": 25,
+        "y": 353,
+        "w": 270,
+        "h": 318
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 826
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [
+        {
+          "text": "Q",
+          "box": {
+            "x": 25,
+            "y": 689,
+            "w": 23,
+            "h": 52
+          }
+        },
+        {
+          "text": "W",
+          "box": {
+            "x": 52,
+            "y": 689,
+            "w": 23,
+            "h": 52
+          }
+        },
+        {
+          "text": "E",
+          "box": {
+            "x": 80,
+            "y": 689,
+            "w": 23,
+            "h": 52
+          }
+        },
+        {
+          "text": "R",
+          "box": {
+            "x": 107,
+            "y": 689,
+            "w": 23,
+            "h": 52
+          }
+        },
+        {
+          "text": "T",
+          "box": {
+            "x": 135,
+            "y": 689,
+            "w": 23,
+            "h": 52
+          }
+        },
+        {
+          "text": "Y",
+          "box": {
+            "x": 162,
+            "y": 689,
+            "w": 23,
+            "h": 52
+          }
+        },
+        {
+          "text": "U",
+          "box": {
+            "x": 189,
+            "y": 689,
+            "w": 23,
+            "h": 52
+          }
+        },
+        {
+          "text": "I",
+          "box": {
+            "x": 217,
+            "y": 689,
+            "w": 23,
+            "h": 52
+          }
+        },
+        {
+          "text": "O",
+          "box": {
+            "x": 244,
+            "y": 689,
+            "w": 23,
+            "h": 52
+          }
+        },
+        {
+          "text": "P",
+          "box": {
+            "x": 272,
+            "y": 689,
+            "w": 23,
+            "h": 52
+          }
+        }
+      ],
+      "options": [
+        "Options",
+        "Hard mode",
+        "Sound off",
+        "How to play"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nSnackWords\nPUZZLE\n#658\nSTREAK\n0\nPLAYED\n0\nOptions\n\nType a five-letter word and press Enter.\n\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nENTER\nZ\nX\nC\nV\nB\nN\nM\nDEL\n\nGreen: right letter, right place. Gold: right letter, wrong place. Grey: not in the word.\n\nA free daily word game\n\nSnackWords gives you one hidden five-letter word a day and six attempts to find it. Every player gets the same word, because the answer is worked out from the date itself rather than fetched from a server — which also means the game keeps working with no connection.\n\nThere are no ads, no account, no email capture and no timer pressuring you. Your streak lives on your own device and nothing is uploaded. If you want more than one puzzle a day, the daily hub has twenty more, or there are 43 free games in the arcade.\n\n",
+      "links": []
+    },
+    {
+      "slug": "snacky-worm",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Snacky Worm Online Free | Classic Snake Game, No Ads — SnackPack",
+      "h1": "Snacky Worm",
+      "overflow": 0,
+      "height": 5036,
+      "board": {
+        "x": 25,
+        "y": 357,
+        "w": 270,
+        "h": 270
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 844
+      },
+      "brokenImages": [],
+      "canvases": [
+        {
+          "w": 400,
+          "h": 400,
+          "box": {
+            "x": 25,
+            "y": 357,
+            "w": 270,
+            "h": 270
+          },
+          "label": "Snacky Worm game"
+        }
+      ],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Classic",
+        "Pause",
+        "Classic",
+        "Zen",
+        "Speed",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nSnacky Worm\nSCORE\n0\nBEST\n0\nOptions\n· Classic\nPause\nNew game\n\nPress an arrow key (or swipe) to start.\n\n↑\n←\n↓\n→\nCalm\nNormal\nQuick\nFour-zone tap: off\n\nArrow keys / WASD · swipe the board · or the pad · Zen mode wraps around the walls.\n\nFROM BRAIN GAMES VOL 2\nWant the full pack?\n\nSnacky Worm is one of the new games in Snackpack Brain Games Vol 2 — our calm, ad-free Android bundle with more arcade games, modes and saved high scores.\n\nPlays fully offline — flights, commutes, anywhere\nHigh scores & daily challenges saved on your device\nMore new games in the app · no ads, no tracking\nAbout Brain Games Vol 2\nTip the studio\nA tiny, ad-free studio — tips keep us building.\nHow to play Snacky Worm\n\nSnacky Worm is the timeless Snake game. You control a worm that's always on the move, and your ",
+      "links": []
+    },
+    {
+      "slug": "snakes-and-ladders",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Snakes & Ladders Online Free vs Computer | No Ads — SnackPack",
+      "h1": "Snakes & Ladders",
+      "overflow": 0,
+      "height": 4020,
+      "board": {
+        "x": 25,
+        "y": 339,
+        "w": 270,
+        "h": 270
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 850
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Solo",
+        "Solo",
+        "2 Player",
+        "4 Player",
+        "Chaos",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nSnakes & Ladders\nTURN\nYou\nWINS\n0\nOptions\n· Solo\nNew game\n\nRoll to start.\n\n100\n99\n98\n97\n96\n95\n94\n93\n92\n91\n81\n82\n83\n84\n85\n86\n87\n88\n89\n90\n80\n79\n78\n77\n76\n75\n74\n73\n72\n71\n61\n62\n63\n64\n65\n66\n67\n68\n69\n70\n60\n59\n58\n57\n56\n55\n54\n53\n52\n51\n41\n42\n43\n44\n45\n46\n47\n48\n49\n50\n40\n39\n38\n37\n36\n35\n34\n33\n32\n31\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n20\n19\n18\n17\n16\n15\n14\n13\n12\n11\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\nRoll\nYou\nSquare 0\nCPU 1\nSquare 0\n\nTap the dice (or Roll) on your turn. Ladders climb up, snakes slide down — land exactly on 100 to win.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nSnakes & Ladders is one of the games in Snackpack Brain Games Vol 2 — our calm, ad-free Android bundle with board games, cards and puzzles in one app.\n\nPlays fully offline — flights, commutes, anywhere\nPass-and-play and solo-vs-computer modes\nM",
+      "links": []
+    },
+    {
+      "slug": "soccer-trivia-sprint",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Soccer Trivia Sprint Online Free | Football Quiz Game - SnackPack",
+      "h1": "Soccer Trivia Sprint",
+      "overflow": 0,
+      "height": 4898,
+      "board": {
+        "x": 40,
+        "y": 522,
+        "w": 240,
+        "h": 232
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 933
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Rookie",
+        "Pause",
+        "Rookie",
+        "Pro",
+        "Legend",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nSoccer Trivia Sprint\nSCORE\n0\nQUESTION\n1/12\nBEST\n0\nSTREAK\n0\nOptions\n· Rookie\nPause\nNew game\n\nQuestion 1: answer fast for bonus points.\n\nWORLD CUP 2026 EVENT\nWhich two 2026 host cities are in Canada?\nMontreal and Ottawa\nCalgary and Edmonton\nQuebec City and Winnipeg\nToronto and Vancouver\nHint\nNext\n12 questions per sprint.\nFast correct answers score extra.\nOne hint removes two wrong answers for 35 points.\nWrong answers reset your streak.\nMORE SOCCER GAMES\nKnowledge counts too.\n\nTest your football knowledge, learn from each answer, and try another soccer game between sprints.\n\nInstant browser play on phone or desktop\nNo ads, no sign-in, no download\nBest score saved locally on your device\nWorld Cup games hub\nPlay Flag Frenzy\nFast answers. Bigger streaks.\nHow to play Soccer Trivia Sprin",
+      "links": []
+    },
+    {
+      "slug": "solitaire",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Solitaire Online Free | Klondike, No Ads — SnackPack",
+      "h1": "Solitaire",
+      "overflow": 0,
+      "height": 5734,
+      "board": {
+        "x": 25,
+        "y": 407,
+        "w": 270,
+        "h": 186
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 580
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Draw 1",
+        "Draw 1",
+        "Draw 3",
+        "Undo",
+        "Sound off",
+        "⤢ Large cards",
+        "Felt GreenClassic NavySnackPack GoldRoyal PlumMidnight NeonMarble RoseEmerald ArcadeObsidian Star",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nSolitaire\nTIME\n0:00\nMOVES\n0\nDEAL\n1737\nBEST\n–\nOptions\n· Draw 1\nUndo\nNew game\n\nPick a card, then choose where it should go.\n\n9\n8\n6\n3\nJ\n5\n9\n\nDrag a card to move it — or pick a card, then its destination · Double-click sends a card to its foundation · Tap or click the stock to deal.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nFor an offline collection of puzzles, strategy and arcade games, explore Snackpack Brain Games on Android.\n\nPlays fully offline — flights, commutes, anywhere\nBest times & daily streaks saved on your device\n23 more games in the same app · no ads, no tracking\nScan to download\nHow to play Klondike Solitaire\n\nSolitaire — properly called Klondike — is played with a standard 52-card deck. The board has four areas: the tableau of seven columns where most play happens, f",
+      "links": []
+    },
+    {
+      "slug": "spades",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Spades Online Free vs Computer | No Ads — SnackPack",
+      "h1": "Spades",
+      "overflow": 0,
+      "height": 4780,
+      "board": {
+        "x": 25,
+        "y": 407,
+        "w": 270,
+        "h": 558
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 952
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Standard · Full (500)",
+        "Casual",
+        "Standard",
+        "Sharp",
+        "Quick (250)",
+        "Full (500)",
+        "Daily",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nSpades\nUS\n0\nTHEM\n0\nROUND\n1\nRECORD\n0–0\nOptions\n· Standard · Full (500)\nNew game\n\nYour bid: how many tricks will you take?\n\nNorth (partner)\nbid … · 13 cards\nWest\nbid … · 13 cards\nEast\nbid … · 13 cards\nYou\nbid …\n10\n2\n3\n4\n8\n9\n10\nJ\nQ\n2\n5\n9\nA\nNil\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n\nNorth is your partner. Lead spades only after one has been played, or if you hold only spades. Each extra trick scores 1 point and 1 bag.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nSpades is one of the games in Snackpack Brain Games — our calm, ad-free Android bundle with card games, board games and puzzles in one app.\n\nPlays fully offline — flights, commutes, anywhere\nHearts, Euchre, Gin Rummy and more card games\nMore games in the same app · no ads, no tracking\nScan to download\nHow to play Spades\n\nSpades is a fo",
+      "links": []
+    },
+    {
+      "slug": "spider-solitaire",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Spider Solitaire Online Free | 1, 2 & 4 Suit, No Ads — SnackPack",
+      "h1": "Spider Solitaire",
+      "overflow": 0,
+      "height": 5354,
+      "board": {
+        "x": 25,
+        "y": 407,
+        "w": 270,
+        "h": 159
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 553
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· 1 suit",
+        "1 suit",
+        "2 suits",
+        "4 suits",
+        "Undo",
+        "Sound off",
+        "⤢ Large cards",
+        "Felt GreenClassic NavySnackPack GoldRoyal PlumMidnight NeonMarble RoseEmerald ArcadeObsidian Star",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nSpider Solitaire\nTIME\n0:00\nMOVES\n0\nRUNS\n0/8\nBEST\n–\nOptions\n· 1 suit\nUndo\nNew game\n\nBuild columns downward. Same-suit runs move together.\n\n7\n5\n10\nQ\n2\n9\nJ\n10\nQ\n8\n\nDrag a card or run to move it — or pick a card, then its destination · Tap or click the stock to deal a new row · Unlimited undo.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nSpider Solitaire is one of 24 games in Snackpack Brain Games Vol 3 — our calm, ad-free Android bundle of chess, strategy and pen-and-paper logic puzzles.\n\nPlays fully offline — flights, commutes, anywhere\nBest times & daily streaks saved on your device\n22 more games in the same app · no ads, no tracking\nScan to download\nHow to play Spider Solitaire\n\nSpider Solitaire is played with two full decks — 104 cards — spread across ten columns. Fifty-four cards",
+      "links": []
+    },
+    {
+      "slug": "sudoku",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Sudoku Online Free | No Ads, No Download — SnackPack",
+      "h1": "Sudoku",
+      "overflow": 0,
+      "height": 5385,
+      "board": {
+        "x": 25,
+        "y": 407,
+        "w": 270,
+        "h": 270
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 810
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Easy",
+        "Easy",
+        "Medium",
+        "Hard",
+        "Expert",
+        "Undo",
+        "Large pieces",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nSudoku\nTIME\n0:00\nMISTAKES\n0\nBEST\n—\nOptions\n· Easy\nUndo\nNew game\n\nSelect a square, then pick a number.\n\n2\n8\n6\n7\n9\n7\n5\n8\n3\n9\n2\n1\n9\n4\n3\n5\n1\n9\n3\n5\n4\n4\n1\n8\n2\n7\n4\n7\n2\n1\n5\n2\n4\n7\n6\n8\n1\n5\n3\n4\n1\n3\n1\n2\n3\n4\n5\n6\n7\n8\n9\nErase\nNotes\nOff\nHint\nCheck\n\nPick a square, then type a number or use the pad · Notes mode adds pencil marks · Arrow keys move.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nThe full Sudoku — with tracked hints, notes and saved best times — is part of Snackpack Brain Games, our calm Android bundle of 24 classics.\n\nPlays fully offline — flights, commutes, anywhere\nBest times & daily streaks saved on your device\n23 more games in the same app · no ads, no tracking\nScan to download\nHow to play Sudoku\n\nSudoku is played on a 9×9 grid divided into nine 3×3 boxes. A handful of digits are fi",
+      "links": []
+    },
+    {
+      "slug": "table-tennis",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Table Tennis (Pong) Online Free vs Computer | No Ads — SnackPack",
+      "h1": "Table Tennis",
+      "overflow": 0,
+      "height": 4256,
+      "board": {
+        "x": 25,
+        "y": 447,
+        "w": 270,
+        "h": 503
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 901
+      },
+      "brokenImages": [],
+      "canvases": [
+        {
+          "w": 390,
+          "h": 680,
+          "box": {
+            "x": 25,
+            "y": 447,
+            "w": 270,
+            "h": 503
+          },
+          "label": "Table tennis court"
+        }
+      ],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Beginner",
+        "Pause",
+        "Beginner",
+        "Club",
+        "Pro",
+        "Turbo",
+        "2P",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nTable Tennis\nYOU\n0\nOPP\n0\nRECORD\n0–0\nOptions\n· Beginner\nPause\nNew game\n\nPress Start, then move your paddle.\n\nYour paddle:\nStart\n\nMove: slide / mouse, or W & S. First to 7 wins.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nTable Tennis is one of the games in Snackpack Brain Games Vol 2 — our calm, ad-free Android bundle with arcade games, cards and puzzles in one app.\n\nPlays fully offline — flights, commutes, anywhere\nThree CPU levels, 2-player and turbo\nMore games in the same app · no ads, no tracking\nScan to download\nHow to play Table Tennis\n\nTable Tennis is our take on Pong, the game that started it all. A ball bounces between two paddles; you control the one on your side, sliding it up and down to keep the ball in play. Miss it and your opponent scores. The clever part is the ang",
+      "links": []
+    },
+    {
+      "slug": "target-shooting-arena",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Target Shooting Arena Online Free | Soccer Shooting Game - SnackPack",
+      "h1": "Target Shooting Arena",
+      "overflow": 0,
+      "height": 4521,
+      "board": {
+        "x": 25,
+        "y": 389,
+        "w": 270,
+        "h": 181
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 792
+      },
+      "brokenImages": [],
+      "canvases": [
+        {
+          "w": 640,
+          "h": 430,
+          "box": {
+            "x": 25,
+            "y": 389,
+            "w": 270,
+            "h": 181
+          },
+          "label": "Target Shooting Arena soccer goal. Focus and use arrow keys to aim, then Enter or Space to shoot."
+        }
+      ],
+      "tinyControls": [
+        {
+          "text": "ts-power",
+          "box": {
+            "x": 27,
+            "y": 613,
+            "w": 270,
+            "h": 16
+          }
+        }
+      ],
+      "options": [
+        "Options\n· Rookie",
+        "Pause",
+        "Rookie",
+        "Pro",
+        "Legend",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nTarget Shooting Arena\nSCORE\n0\nSHOT\n1/12\nBEST\n0\nCOMBO\nx1\nOptions\n· Rookie\nPause\nNew game\n\nTap the goal to aim, then shoot.\n\nPOWER\nShoot\nTap or drag in the goal to aim.\nHit the centre ring for bullseyes.\nMoving targets are worth more.\nLegend: target keeps moving after you shoot.\nMORE SOCCER GAMES\nOne shot, one target, one more go.\n\nTarget Shooting Arena adds a simple arcade scoring loop to the SnackPack World Cup games hub: moving targets, short rounds, and fast restarts.\n\nInstant browser play on phone or desktop\nNo ads, no sign-in, no download\nHigh score saved locally on your device\nWorld Cup games hub\nPlay Keepy-Uppy\nPick the corner. Hit the ring.\nHow to play Target Shooting Arena\n\nYou get 12 shots. Tap or drag inside the goal to aim, set power, and shoot at the moving target. A ",
+      "links": []
+    },
+    {
+      "slug": "thirteen",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Thirteen (13) Card Game Online — Free, vs Computer | Tiến Lên",
+      "h1": "Thirteen (13)",
+      "overflow": 0,
+      "height": 5148,
+      "board": {
+        "x": 25,
+        "y": 643,
+        "w": 270,
+        "h": 198
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 814
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Normal · Standard",
+        "Easy",
+        "Normal",
+        "Sharp",
+        "Standard",
+        "Classic",
+        "Daily",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nThirteen (13)\nRECORD\n0–0\nWINS\n0\nOptions\n· Normal · Standard\nNew game\n\nCPU 1 is thinking…\n\nCPU 1\n13 cards · thinking…\nCPU 2\n13 cards\nCPU 3\n13 cards\nNEW ROUND\nCPU 1 leads\n5\n6\n7\n7\n8\nJ\nQ\nQ\nK\nK\nA\nA\n2\nPlay\nPass\nSort\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nThirteen is one of the games in Snackpack Brain Games Vol 2 — our calm, ad-free Android bundle with cards, puzzles and arcade games in one app.\n\nPlays fully offline — flights, commutes, anywhere\nWins & high scores saved on your device\nMore games in the same app · no ads, no tracking\nScan to download\nHow to play Thirteen (Tiến Lên)\n\nThirteen — known in Vietnam as Tiến Lên, written Tien Len without accents, meaning \"go forward\" — is a shedding-type card game for four players using a standard 52-card deck. Everyone is dealt 13 cards, ",
+      "links": []
+    },
+    {
+      "slug": "tripeaks",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "TriPeaks Solitaire Online Free | Winnable Deals, No Ads — SnackPack",
+      "h1": "TriPeaks Solitaire",
+      "overflow": 0,
+      "height": 4508,
+      "board": null,
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 736
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options",
+        "Round the corner",
+        "Daily",
+        "Felt GreenClassic NavySnackPack GoldRoyal PlumMidnight NeonMarble RoseEmerald ArcadeObsidian Star",
+        "Sound off",
+        "New deal"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nTriPeaks Solitaire\nSCORE\n0\nSTREAK\n0\nCLEARED\n0/28\nSTOCK\n23\nBEST\n—\nOptions\nNew deal\n\n1 card playable.\n\nJ\nQ\n9\n7\n10\n3\n10\n4\n3\nJ\n2\n8\n10\n4\n3\nK\nA\n2\n9\nJ\nJ\nQ\n2\nQ\n7\n4\nA\n6\n23\n\nStock\n\nA\n\nWaste\n\nUndo\nSound off\nHint\n\nA card is playable once nothing overlaps it and it sits one rank above or below the waste card. Drawing from the stock resets your streak — hold on as long as you can.\n\nHow TriPeaks Solitaire works\n\nTwenty-eight cards are dealt into three overlapping peaks — three cards at the tips, then six, then nine, all resting on a shared base row of ten. One card starts face up on the waste pile and the remaining twenty-three form the stock.\n\nA card can be played only when nothing overlaps it. At the start that means the ten base-row cards; every card you remove uncovers more of the peaks abo",
+      "links": []
+    },
+    {
+      "slug": "water-sort",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Water Sort Online Free | No Ads, Daily Puzzle — SnackPack",
+      "h1": "Water Sort",
+      "overflow": 0,
+      "height": 6229,
+      "board": {
+        "x": 25,
+        "y": 435,
+        "w": 270,
+        "h": 319
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 963
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Classic",
+        "Easy",
+        "Classic",
+        "Hard",
+        "Expert",
+        "Sound off",
+        "New puzzle"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nWater Sort\nTIME\n0:00\nMOVES\n0\nBEST\n—\nOptions\n· Classic\nNew puzzle\n\nBest times are stored by difficulty on this device.\n\nSort each colour into its own tube.\n\nUndo\nReset\nHint\nColour patterns\nDaily puzzle\n\nTap one tube, then another. You can pour into an empty tube or onto the same top colour.\n\nKeyboard: Tab to the tubes, ←↑→↓ to move, Enter or Space to select and pour.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nWater Sort is included in Snackpack Brain Games Vol 2, our calm Android bundle of puzzles, cards and arcade games.\n\nPlays fully offline — flights, commutes, anywhere\nNo adverts and no extra-tube video gates\nMore puzzle modes and local progress\nScan to download\nHow to play Water Sort\n\nWater Sort is a colour-sorting logic puzzle played with layered liquid in glass tubes. Select",
+      "links": []
+    },
+    {
+      "slug": "word-search",
+      "label": "phone",
+      "theme": "cream",
+      "status": 200,
+      "errors": [],
+      "bad": [],
+      "failed": [],
+      "title": "Play Word Search Online Free | No Ads, No Download — SnackPack",
+      "h1": "Word Search",
+      "overflow": 0,
+      "height": 4673,
+      "board": {
+        "x": 25,
+        "y": 407,
+        "w": 270,
+        "h": 270
+      },
+      "stage": {
+        "x": 10,
+        "y": 116,
+        "w": 300,
+        "h": 854
+      },
+      "brokenImages": [],
+      "canvases": [],
+      "tinyControls": [],
+      "options": [
+        "Options\n· Animals",
+        "Animals",
+        "Food",
+        "Nature",
+        "Space",
+        "Sound off",
+        "New game"
+      ],
+      "text": "Apps\nPlay\nDaily\nRead\nGuides\nRoadmap\nPrivacy\nTerms\nSupport\n◐\nWord Search\nFOUND\n0\n/\n10\nTIME\n0:00\nBEST\n—\nOptions\n· Animals\nNew game\n\nDrag across the letters to find a word.\n\nA\nE\nR\nN\nP\nK\nO\nA\nL\nA\nM\nY\nJ\nP\nG\nT\nZ\nK\nQ\nK\nT\nT\nK\nO\nU\nS\nM\nU\nP\nU\nO\nZ\nT\nS\nF\nY\nU\nE\nG\nI\nL\nB\nU\nY\nA\nR\nN\nX\nU\nS\nA\nQ\nE\nP\nW\nU\nH\nZ\nC\nX\nL\nE\nL\nG\nT\nS\nV\nW\nH\nA\nL\nE\nY\nO\nK\nY\nL\nM\nR\nA\nD\nN\nA\nP\nL\nT\nQ\nT\nS\nE\nO\nO\nE\nW\nV\nC\nM\nQ\nA\nR\nB\nE\nZ\nO\nH\nJ\nB\nV\nZ\nP\nC\nO\nK\nC\nE\nG\nS\nJ\nI\nH\nA\nO\nT\nT\nE\nR\nQ\nR\nO\nE\nH\nH\nT\nD\nT\nI\nG\nE\nR\nM\nJ\nX\nX\nE\nANIMALS\nTIGER\nPANDA\nOTTER\nEAGLE\nZEBRA\nMOOSE\nKOALA\nHORSE\nWHALE\nGECKO\n\nDrag from the first letter to the last · or tap the first letter, then the last.\n\nKeyboard: Tab to the grid, ←↑→↓ to move, Enter on the first and last letter of a word.\n\nPLAY ON THE GO\nLike it? Take it offline.\n\nWord Search is one of 24 classics in Snackpack Brain Games — our calm, ad-free Android bundle, with more theme",
+      "links": []
+    }
+  ]
+}

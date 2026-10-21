@@ -1,4 +1,9 @@
-> **2026-10-17:** full play-through, asset map and the next plan are in `ARCADE-AUDIT-2026-10-17.md`; art requests in `CODEX-ASSET-BRIEF-2026-10-17.md`.
+> **2026-10-21:** the fresh website/game audit, evidence limits and prioritized proposals are in
+> [Play audit and priorities](docs/PLAY-AUDIT-AND-PRIORITIES-2026-10-21.md).
+> This file is the historical quality ledger; its old gap counts and asset requests are not a current queue.
+>
+> **2026-10-17:** earlier play-through and asset map: `ARCADE-AUDIT-2026-10-17.md`;
+> delivered art is recorded in `CODEX-ASSET-BRIEF-2026-10-17.md`.
 
 # Arcade quality plan
 
