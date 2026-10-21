@@ -800,6 +800,11 @@
 .th-opp.is-turn { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(31, 143, 119, 0.18); }
 .th-opp.is-passed { opacity: 0.55; }
 
+.th-rules-table { overflow-x: auto; margin: 10px 0 18px; }
+.th-rules-table table { width: 100%; min-width: 320px; border-collapse: collapse; font-size: 0.95rem; }
+.th-rules-table th, .th-rules-table td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.th-rules-table thead th { font-weight: 800; }
+
 .th-table {
   display: grid;
   gap: 6px;
@@ -2042,6 +2047,8 @@ body.sp-play-focused { overflow: hidden; }
     border-radius: 18px;
   }
   .game-controls > .seg > button { flex: 1 1 calc(50% - 4px); }
+  /* Three choices (Easy / Normal / Sharp…) share one row instead of 2 + 1. */
+  .game-controls > .seg:has(> button:nth-child(3):last-child) > button { flex-basis: calc(33.333% - 6px); }
   .arcade-tools { padding: 14px; }
   .arcade-search-row > * { flex-basis: 100%; width: 100%; }
   .arcade-recent-grid { grid-template-columns: 1fr; }

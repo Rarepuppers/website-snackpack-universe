@@ -13,6 +13,12 @@
     soccer: ["flag-frenzy", "soccer-trivia-sprint", "keepy-uppy", "target-shooting-arena", "free-kick-curl", "crossbar-challenge", "goalkeeper-hero", "penalty-shootout", "dribble-rush", "header-hero"],
     daily: ["sudoku", "minesweeper", "word-search", "freecell", "snackwords", "crossword", "kakuro", "picross", "water-sort", "mahjong", "flag-frenzy", "soccer-trivia-sprint", "thirteen", "five-dice", "hearts", "spades", "backgammon"]
   };
+  // Featured leads with the games people actually search for (Search Console,
+  // 20 Sep – 17 Oct 2026: Thirteen 1,287 impressions, 2048 141, Minesweeper 80,
+  // Snacky Worm 73; Solitaire is the biggest search term the arcade targets).
+  // Everything else keeps page order.
+  var featuredFirst = ["thirteen", "2048", "minesweeper", "snacky-worm", "solitaire"];
+  function featuredRank(record) { var i = featuredFirst.indexOf(record.slug); return i < 0 ? featuredFirst.length : i; }
   var recentAdded = ["backgammon", "hearts", "spades", "five-dice", "water-sort", "spider-solitaire", "tripeaks", "pyramid", "snackwords", "flag-frenzy", "dribble-rush", "header-hero"];
   var tiles = Array.from(grid.querySelectorAll(":scope > .game-tile"));
   var records = [];
@@ -132,7 +138,7 @@
     if (select.value === "az") ordered.sort(function (a, b) { return a.title.localeCompare(b.title); });
     else if (select.value === "new") ordered.sort(function (a, b) { return (recentAdded.indexOf(b.slug) >= 0) - (recentAdded.indexOf(a.slug) >= 0) || a.index - b.index; });
     else if (select.value === "favourites") ordered.sort(function (a, b) { return (favs.indexOf(b.slug) >= 0) - (favs.indexOf(a.slug) >= 0) || a.index - b.index; });
-    else ordered.sort(function (a, b) { return a.index - b.index; });
+    else ordered.sort(function (a, b) { return featuredRank(a) - featuredRank(b) || a.index - b.index; });
     ordered.forEach(function (record) { grid.appendChild(record.wrap); });
     count.textContent = visible + (visible === 1 ? " game" : " games") + " shown";
     empty.hidden = visible !== 0;
