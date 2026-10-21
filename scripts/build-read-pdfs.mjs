@@ -132,9 +132,10 @@ function questionsFor(html) {
     const label = strip((body.match(/<span>([\s\S]*?)<\/span>/) || [, ""])[1]).replace(/^Page \d+ of \d+\s*·?\s*/, "");
     const math = body.match(/<p class="math-q">([\s\S]*?)<\/p>/);
     if (math) {
+      const model = [...body.matchAll(/<p class="counting-(?:sequence|observation)"[^>]*>([\s\S]*?)<\/p>/g)].map(m => strip(m[1])).join(" ");
       const choices = [...body.matchAll(/<li>([\s\S]*?)<\/li>/g)].map((c) => strip(c[1]));
       const ans = body.match(/<details class="story-answer math-answer">[\s\S]*?<p>([\s\S]*?)<\/p>/);
-      items.push({ head: `Page ${n}${label ? ` · ${label}` : ""}`, text: strip(math[1]).replace(/^Try it:\s*/, ""), extra: choices.length ? `Choices: ${choices.join("  ·  ")}` : "" });
+      items.push({ head: `Page ${n}${label ? ` · ${label}` : ""}`, text: strip(math[1]).replace(/^Try it:\s*/, ""), extra: [model, choices.length ? `Choices: ${choices.join("  ·  ")}` : ""].filter(Boolean).join(" ") });
       if (ans) answers.push(`Page ${n}: ${strip(ans[1])}`);
       continue;
     }

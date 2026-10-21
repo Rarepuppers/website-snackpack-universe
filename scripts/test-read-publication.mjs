@@ -23,6 +23,10 @@ try {
   mutation(`read/${b.slug}/index.html`,(f,s)=>fs.writeFileSync(f,s.toString().replace('Why did the fort stay up when Panda-Cake helped?','An invented quiz question?')),'Changed app quiz must fail.');
   mutation(`read/${b.slug}/index.html`,(f,s)=>fs.writeFileSync(f,s.toString().replace('What did Ted and Panda-Cake do inside the finished fort?','An invented second question?')),'Changed secondary app quiz must fail.');
   mutation(`read/${b.slug}/index.html`,(f,s)=>fs.writeFileSync(f,s.toString().replace('Read a story together.</p>','Read a story together. An unrelated explanation.</p>')),'Extra invented explanation must fail.');
+  const sequencePath='read/panda-cakes-market-basket/index.html';
+  mutation(sequencePath,(f,s)=>fs.writeFileSync(f,s.toString().replace(/<p class="counting-sequence"[^>]*>[\s\S]*?<\/p>/,'')),'Removing source model must fail despite unchanged prose and answer.');
+  mutation(sequencePath,(f,s)=>fs.writeFileSync(f,s.toString().replace('data-counting-sequence="2,3,-1,5"','data-counting-sequence="2,4,-1,5"')),'Changing source model values must fail.');
+  mutation(sequencePath,(f,s)=>fs.writeFileSync(f,s.toString().replace('Sequence: 2, 3, ?, 5','Sequence: 2, 4, ?, 5')),'Changing visible teaching sequence must fail.');
   const required=spawnSync(process.execPath,[path.join(root,'scripts/check-read-publication.mjs'),'--site-root='+temp,'--require-apps'],{encoding:'utf8'});
   assert.notEqual(required.status,0,'Missing app checkout must not pass a required source comparison.');
   console.log('Publication boundary passes real-output mutations: changed prose, quiz, art, PDF and missing companion source are rejected.');

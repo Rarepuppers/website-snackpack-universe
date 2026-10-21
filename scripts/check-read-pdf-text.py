@@ -19,6 +19,14 @@ for b in books:
  for i,sentence in enumerate(b['text']):
   matches=[j for j in range(cursor,len(texts)) if norm(sentence) in norm(texts[j])]
   assert matches,(b['slug'],i+1,'story prose missing or out of order')
+  teaching=(b.get('teaching') or [None]*len(b['text']))[i]
+  if teaching:
+   if teaching.get('sequence'):
+    model='Sequence: '+', '.join('?' if n==-1 else str(n) for n in teaching['sequence'])
+    assert norm(model) in norm(texts[matches[0]]),(b['slug'],i+1,'actual PDF story page omits source sequence')
+    assert norm(model) in norm(' '.join(texts[len(b['text']):])),(b['slug'],i+1,'printable questions omit sequence')
+   if teaching.get('observation'):
+    assert norm(teaching['observation']) in norm(texts[matches[0]]),(b['slug'],i+1,'actual PDF omits observation alternative')
   cursor=matches[0]+1 # Some printables have a separate cover before page 1.
  doc=(ROOT/'read'/b['slug']/'index.html').read_text(encoding='utf-8')
  finish=doc.split('class="shell story-finish-card"')[-1]

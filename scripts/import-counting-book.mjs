@@ -61,7 +61,7 @@ const BOOKS = {
       "Five bubbles float above the first lagoon stones as Cereal-Swimmer watches and purple Octo-Pop reaches up to count.",
       "Five orange fish and two blue fish join above stones marked 5, 6 and 7 as Cereal-Swimmer hops forward.",
       "Stones marked 2, 3 and 5 remain visible while foam hides the stone between 3 and 5; Octo-Pop steadies the rope.",
-      "Seven fish follow right-pointing stone arrows, but the fourth fish faces left as Cereal-Swimmer and Octo-Pop pause.",
+      "Cereal-Swimmer and Octo-Pop watch seven fish above right-pointing stone arrows. The fish directions are described beside the question.",
       "Seven fish hover over the first seven of ten stones numbered 1 to 10, leaving three places empty by the lagoon gate.",
       "Stones 7, 8 and 9 lead to an empty final space while the friends and seven fish wait beside the coral garden.",
     ],
@@ -79,7 +79,7 @@ const BOOKS = {
       "Corgi-on-the-Cob touches the first space of an empty ten-frame board, two rows of five, while Ted-E-Bear holds down the windblown picnic cloth.",
       "Corgi places the third berry bun in the top row of the ten-frame as Ted points at the three filled spaces.",
       "Two ten-frames side by side at sunset: four apple slices on Ted's board and six corn cakes on Corgi's.",
-      "Four picnic frames in a row; the third is turned sideways so its spaces run top to bottom, and Ted points it out.",
+      "Corgi and Ted study four picnic frames arranged from left to right. The frame orientations are described beside the question.",
       "Seven golden treats fill the ten-frame, with three empty spaces left, as Ted brings a bowl of honey buttons.",
       "Ted carries the full ten-frame, ten treats in two rows of five, while Corgi and woodland guests gather round.",
     ],
@@ -97,7 +97,7 @@ const BOOKS = {
       "Flutter-Butter carries the stone marked 3 into place after stones 1 and 2, leaving a gap, while Honey-Beats taps her drumsticks.",
       "A squirrel drummer waits on stone 4; stones 3, 4 and 6 glow with a gap where 5 belongs.",
       "Stones 7, 8 and 10 glow by the flower arch with a gap between 8 and 10, as a hedgehog waits with a xylophone.",
-      "Honey-Beats studies a loop of stones carved with paw prints; the middle print points the wrong way.",
+      "Honey-Beats studies a loop of stones carved with paw prints. The three front prints are described from left to right beside the question.",
       "Stone 15 sits alone between two muddy gaps as Flutter-Butter and Honey-Beats search either side.",
       "Stones 17, 18 and 19 lead to the stage with one empty space before it, as the band waits and Honey-Beats sings.",
     ],
@@ -290,10 +290,16 @@ const sizes = files.map((f) => jpegSize(fs.readFileSync(f)));
 // WebP (it skips images under 120 KB), so no <source> can point at a missing file.
 const img = (i, alt, lazy) =>
   `<img src="./pages/${names[i]}" alt="${esc(alt)}" width="${sizes[i].w}" height="${sizes[i].h}"${lazy ? ' loading="lazy"' : ""}>`;
+const teaching = p => {
+  const sequence = p.sequenceNumbers?.length ? `<p class="counting-sequence" data-counting-sequence="${p.sequenceNumbers.join(',')}">Sequence: ${p.sequenceNumbers.map(n => n === -1 ? '?' : n).join(', ')}</p>` : '';
+  const observation = p.observationDescription ? `<p class="counting-observation">${esc(p.observationDescription)}</p>` : '';
+  return sequence + observation;
+};
 const cards = book.pages.map((p, i) => {
   const r = p.riddle;
   const answer = r.choices[r.correctIndex];
   return `<article class="story-page-card" id="page-${i + 1}">${img(i, ed.alts[i], true)}<div class="story-page-copy"><span>Page ${i + 1} of ${n} · ${esc(curly(p.title))}</span><p>${esc(curly(p.body))}</p>`
+    + teaching(p)
     + `<div class="math-question"><p class="math-q"><strong>Try it:</strong> ${esc(curly(r.prompt))}</p>`
     + `<ul class="math-choices" data-answer="${esc(answer)}" aria-label="Choices">${r.choices.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>`
     + `<details class="story-answer math-answer"><summary>Show the answer</summary><p><strong>${esc(answer)}.</strong> ${esc(curly(r.successText))}</p></details>`

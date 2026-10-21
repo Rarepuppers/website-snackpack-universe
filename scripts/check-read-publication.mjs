@@ -69,6 +69,20 @@ for (const slug of fs.readdirSync(path.join(ROOT, 'read')).sort()) {
   const book = hasApps ? candidates.find(b => b.pages.length === text.length && b.pages.every((p, i) => norm(p.text || p.body) === text[i])) : null;
   if (hasApps) assert(book, `${slug}: story differs from every current app export; fix source/import first`);
   if (!WRITE) { assert(previous, `${slug}: no committed app-source evidence`); assert.deepEqual(text, previous.text, `${slug}: text changed since app comparison`); }
+  const teaching = hasApps ? book.pages.map(p => ({sequence: p.sequenceNumbers || null, observation: p.observationDescription || null})) : previous.teaching;
+  if (teaching) teaching.forEach((model,i) => {
+    const card = cards[i];
+    if (model.sequence) {
+      const sequence = card.match(/<p class="counting-sequence" data-counting-sequence="([^"]+)">([\s\S]*?)<\/p>/);
+      assert(sequence, `${slug}: missing sequence model page ${i+1}`);
+      assert.equal(sequence[1], model.sequence.join(','), `${slug}: sequence values changed page ${i+1}`);
+      assert.equal(norm(sequence[2]), 'Sequence: '+model.sequence.map(n=>n===-1?'?':n).join(', '), `${slug}: displayed sequence differs page ${i+1}`);
+    }
+    if (model.observation) {
+      assert.equal(norm(card.match(/<p class="counting-observation">([\s\S]*?)<\/p>/)?.[1]), norm(model.observation), `${slug}: observation description changed page ${i+1}`);
+    }
+  });
+  if (!WRITE && hasApps) assert.deepEqual(teaching, previous.teaching, `${slug}: teaching source changed since review`);
   const plain = norm(html);
   const expected = [];
   if (book?.quiz) expected.push(...[book.quiz.question, book.quiz.answer, book.quiz.why].filter(Boolean));
@@ -105,7 +119,7 @@ for (const slug of fs.readdirSync(path.join(ROOT, 'read')).sort()) {
   assert.equal(schema?.numberOfPages, cards.length, `${slug}: schema page count`);
   const source_art = hasApps ? sourceArtFor(book) : previous.source_art;
   if (!WRITE && hasApps) assert.deepEqual(source_art, previous.source_art, `${slug}: owning app artwork changed since review`);
-  const record = { slug, source_id: book?.id || previous.source_id, source_art, text, expected: hasApps ? expected : previous.expected, quizzes, art, pdf, pdf_sha256: sha(path.join(ROOT, pdf)) };
+  const record = { slug, source_id: book?.id || previous.source_id, source_art, text, teaching, expected: hasApps ? expected : previous.expected, quizzes, art, pdf, pdf_sha256: sha(path.join(ROOT, pdf)) };
   if (!WRITE) { assert.deepEqual(art, previous.art, `${slug}: art changed without new reviewed evidence`); assert.equal(record.pdf_sha256, previous.pdf_sha256, `${slug}: PDF changed without text/render verification`); }
   records.push(record);
 }
@@ -116,6 +130,6 @@ for (const pin of JSON.parse(fs.readFileSync(path.join(ROOT, 'data/decodable-art
   assert.equal(sha(path.join(ROOT, pin.web)), pin.web_sha256, `Decodable art pin changed: ${pin.web}`);
   if (hasApps) assert.equal(sha(path.join(APP_ROOT, 'snackpack-1-abcs-alphabet', pin.app)), pin.app_sha256, `App decodable art changed: ${pin.app}`);
 }
-if (WRITE) fs.writeFileSync(EVIDENCE, JSON.stringify({ reviewed: '2026-10-21', books: records }, null, 2) + '\n');
+if (WRITE) fs.writeFileSync(EVIDENCE, JSON.stringify({ reviewed: '2026-10-22', books: records }, null, 2) + '\n');
 console.log(`Read publication: ${records.length} books / ${records.reduce((n, b) => n + b.text.length, 0)} pages; art, prompts, answers, PDFs and metadata pass.`);
 console.log(hasApps ? 'Current app exports compared directly.' : 'CI evidence-only mode: validates committed app comparison; current companion app sources unavailable and NOT rechecked.');

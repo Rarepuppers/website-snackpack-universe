@@ -189,15 +189,19 @@
       li.textContent = "";
       li.appendChild(b);
       b.addEventListener("click", function () {
+        if (b.getAttribute("aria-disabled") === "true") return;
         var right = value.replace("−", "-") === answer.replace("−", "-");
         if (right) {
-          Array.prototype.forEach.call(list.querySelectorAll(".math-choice"), function (x) { x.disabled = true; });
+          Array.prototype.forEach.call(list.querySelectorAll(".math-choice"), function (x) {
+            x.setAttribute("aria-disabled", "true");
+            if (x !== b) x.tabIndex = -1;
+          });
           b.classList.add("is-right");
           note.textContent = "Yes! " + value + " is right.";
           if (details) details.open = true;
         } else {
           b.classList.add("is-tried");
-          b.disabled = true;
+          b.setAttribute("aria-disabled", "true");
           note.textContent = "Not quite. Have another go.";
         }
       });
@@ -213,6 +217,13 @@
   var lastFocus = null;
   function fitBar() {
     if (!bar || bar.hidden) return;
+    bar.classList.remove('reader-bar-short');
+    var scale = bar.getBoundingClientRect().width / bar.offsetWidth || 1;
+    var available = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    if (bar.getBoundingClientRect().height > available * 0.48) {
+      bar.style.setProperty('--reader-bar-limit', (available * 0.48 / scale) + 'px');
+      bar.classList.add('reader-bar-short');
+    }
     document.documentElement.style.setProperty('--reader-bar-space', (bar.offsetHeight + 24) + 'px');
   }
 
@@ -254,6 +265,7 @@
     document.body.appendChild(bar);
     if (window.ResizeObserver) new ResizeObserver(fitBar).observe(bar);
     window.addEventListener('resize', fitBar);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', fitBar);
   }
 
   function onKey(e) {

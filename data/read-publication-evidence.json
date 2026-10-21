@@ -1,5 +1,5 @@
 {
-  "reviewed": "2026-10-21",
+  "reviewed": "2026-10-22",
   "books": [
     {
       "slug": "animal-architects",
@@ -25,6 +25,44 @@
         "On the dry grasslands, meerkats share an underground fortress. Their burrows can have many entrances, rooms, and levels. While some forage, a lookout stands tall and warns the group about danger. The tunnels offer cool shade and a fast escape. Meerkats sometimes reuse burrows first dug by other animals. Could sharing an old building be smart architecture too?",
         "Even tiny builders reshape their world. Ants carry grains far heavier than they look, opening tunnels that let air and water move through soil. Some nests have nurseries, food chambers, and rubbish areas. The colony follows scent trails instead of a foreman's instructions. One ant moves one crumb; thousands create a city. What big thing could many small actions build?",
         "Our plans are complete: slow the water, fit shapes tightly, weave flexible fibres, dig extra exits, and reuse what already exists. Animal architects do not build for applause. They build because a good home helps life continue. Next time you see a nest, web, mound, burrow, or dam, pause before passing it. You may be looking at someone's greatest invention. What will you notice first?"
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [],
       "quizzes": [],
@@ -56,6 +94,24 @@
         "One Bulldog invites the puppy to the swing. Another talks so excitedly that the invitation gets lost beneath a tumble of words.",
         "Luckybug draws a chalk line with a star at each end. The puppy can join by rolling the ball across-no talking needed.",
         "Soon the playground has one longer team and one very waggy new friend. The Bulldogs learn that a welcome can be an action, not only a question."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "Why did the chalk game help the quiet puppy join in?",
@@ -112,6 +168,44 @@
         "At the parade field, five little wagons wait without decorations. The friends have 40 ribbons and decide that every wagon should look equally splendid. Ginger ties careful bows while Biscuit holds the fluttering ends.",
         "The first drum rolls. Seventeen children gather beside 8 grown-ups, including every family from the hidden creek lane. Biscuit's legs are muddy and his breakfast is long gone, but his grin could fill the whole field.",
         "There are 30 seats beside the bandstand and 26 are filled when the music begins. Biscuit saves the last few for tired travellers. \"Fast is useful,\" he says, \"but noticing people is how we all arrive together.\" Ginger-Deer finally takes the proud first step at the head of the parade."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "How many invitations must Biscuit-Bouncer deliver altogether?",
@@ -170,6 +264,36 @@
         "\"I do not always add value,\" says Zero, \"but sometimes I hold a place.\" Booklava nods. In 450, Zero keeps the 5 in the tens column.",
         "Zero slips back into the book. Every shelf label grows to its proper size. Booklava leaves a small bookmark beside the page: Every place matters-even an empty one."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [
         "In 40, what value does the digit 4 have?",
         "The 4 is in the tens place. Four tens are worth 40.",
@@ -223,6 +347,40 @@
         "Pip let the bug hop up.",
         "The bug sat in the sun. Pip had fun."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [],
       "quizzes": [],
       "art": {
@@ -252,6 +410,24 @@
         "Stripe-Scout sees the ribbon drifting toward the river. She lowers her helicopter, but the wind keeps pushing it away.",
         "The Baby Bulldogs race their bikes along the bank, calling left and right. Their directions guide Stripe-Scout above the exact spot.",
         "Stripe catches the ribbon, and Beakon flies one slower loop so every helper can wave. The brightest colour in the show belongs to the whole team."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "How did the crew recover the red-and-gold ribbon?",
@@ -296,6 +472,24 @@
         "A single star peeps through, then vanishes. \"Shall we go home?\" asks Luckybug. Captain Beakon sets up the telescope. \"Five more minutes,\" he says. \"Let us see what happens.\"",
         "The clouds pull apart. Beside the moon, a bright planet shines through the gap. Captain Beakon looks, then steps aside. \"Your turn.\" Luckybug hurries to the telescope before the clouds return.",
         "Soon the gap closes. They sit in the quiet and watch the sky. \"I nearly missed it,\" says Luckybug. On the way home, she keeps looking up, hoping for another gap."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "What would Luckybug have missed if she had gone home at once?",
@@ -343,6 +537,24 @@
         "Four ice lanterns show -8, -4, 0, and 4. Each brighter lantern is four steps warmer than the last. Centi-Peed follows the pattern rather than guessing, and the missing fireflies answer with a cheerful flash.",
         "The return map marks the firefly nest at (-2, 1). A clear tunnel runs four grid steps to the right and stays at the same height. Centi-Peed leads this time, reading along the x-axis first. Every firefly reaches the moonlit roots safely."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [
         "What temperature is 7 degrees below 3°C?",
         "Count down seven steps from 3: 2, 1, 0, −1, −2, −3, −4.",
@@ -377,6 +589,24 @@
         "Wise Owl claps the starting signal. Centi-Peed springs ahead so quickly that his bootlaces hum.",
         "He zooms past the roses, then hears Shelly call: a fallen twig has pinned her race number. Centi skids to a stop.",
         "After he frees Shelly, they cross the finish together behind the others. Centi wins no ribbon, but all his boots join Shelly's happiest dance."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "Why did Centi-Peed stop during the race?",
@@ -426,6 +656,42 @@
         "Seven fish reach the old lagoon gate, but its number line has more spaces to fill before it will open. Octo-Pop gathers the remaining swimmers while Cereal-Swimmer counts forward from seven to discover the missing part needed to reach ten.",
         "The fish settle beside the restored stones, and the coral garden glows beyond the gate. One final space remains after seven, eight, nine. Cereal-Swimmer and Octo-Pop must name the number that completes the line and brings the whole school home."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": [
+            2,
+            3,
+            -1,
+            5
+          ],
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": "Read the seven fish from left to right. Fish 1, 2 and 3 face right. Fish 4 faces left. Fish 5, 6 and 7 face right. The arrows on the stones point right."
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": [
+            7,
+            8,
+            9,
+            -1
+          ],
+          "observation": null
+        }
+      ],
       "expected": [
         "Count the bubbles.",
         "4",
@@ -443,9 +709,9 @@
         "6",
         "Four belongs between three and five.",
         "Which fish is out of order?",
-        "The backward fish",
-        "The first fish",
-        "The striped fish",
+        "Fish 2",
+        "Fish 4",
+        "Fish 6",
         "The backward fish was breaking the direction pattern.",
         "Seven needs how many more to make ten?",
         "2",
@@ -468,7 +734,7 @@
         "read/cereal-swimmer-and-the-number-line-lagoon/pages/page-6.jpg": "791cf15e370b1d4b69160a55f1e59e34b46c87b796021980a8d7fffacee06a50"
       },
       "pdf": "read/cereal-swimmer-and-the-number-line-lagoon/cereal-swimmer-and-the-number-line-lagoon.pdf",
-      "pdf_sha256": "a5fe5c4bc9ff7cb3447efecbdaa3682e885b6627637cf80295fd622337ac83c0"
+      "pdf_sha256": "a7be04fe1c0fe336c4b4a6b5557bac58ab58942b413251ba845670e6dd4be2af"
     },
     {
       "slug": "corgi-on-the-cobs-countryside-run",
@@ -484,6 +750,24 @@
         "Corgi leaps the low fence and takes the lead. Behind him comes a snap: Ginger's race ribbon has caught on a splinter.",
         "He turns back, nibbles the ribbon free, and runs alongside Ginger. Neither friend asks who is ahead now.",
         "They cross the gate together and Corgi flops onto the mat laughing. He did not win the race, but he kept the friend he wanted to race again."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "Why did Corgi-on-the-Cob give up his lead?",
@@ -533,6 +817,32 @@
         "Seven treats are ready on the picnic board, but some spaces are still empty. Ted-E-Bear brings a bowl of honey buttons. Corgi must count the open spaces to choose exactly enough buttons to complete the frame.",
         "The guests arrive as Corgi fills the final open space. Every treat now sits in two tidy rows, making the whole group easy to see. Ted-E-Bear carries the completed frame to the blanket for one final count."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": "Read the four frames from left to right. Frame 1 has two horizontal rows of five spaces. Frame 2 has two horizontal rows of five spaces. Frame 3 has five rows of two spaces. Frame 4 has two horizontal rows of five spaces."
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [
         "How many spaces are in one row?",
         "4",
@@ -550,9 +860,9 @@
         "They match",
         "Six is more than four.",
         "Which frame does not match the others?",
-        "The sideways frame",
-        "The full frame",
-        "The empty frame",
+        "Frame 1",
+        "Frame 2",
+        "Frame 3",
         "The sideways frame was the odd one out.",
         "How many more treats make ten?",
         "2",
@@ -575,7 +885,7 @@
         "read/corgi-on-the-cobs-ten-frame-picnic/pages/page-6.jpg": "f7719805c329d31e27311e048f3de20330f99e467615d53ec200209ae3f75544"
       },
       "pdf": "read/corgi-on-the-cobs-ten-frame-picnic/corgi-on-the-cobs-ten-frame-picnic.pdf",
-      "pdf_sha256": "288cb690d1660a61f26b858505927fee655b81d569fbfbd7076c7ade08bebf8f"
+      "pdf_sha256": "75f0cad5caae0f5a0e0e5dec366b135bc0ab550ab19a5fd08d66ba7c3626df11"
     },
     {
       "slug": "dog-in-the-fog",
@@ -600,6 +910,40 @@
         "The dog ran to Nan.",
         "The fog is not big. The sun is up.",
         "Nan and the dog sit on the log."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [],
       "quizzes": [],
@@ -630,6 +974,24 @@
         "Meow-inara carries a tray of warm croissants, but every table is full. The kitten whispers that she can simply go home.",
         "The guests slide their little tables together into one long moon-shaped curve. A space appears exactly where the kitten can see everyone.",
         "At goodnight, the kitten asks if she may return tomorrow. Fe-Line-Mignon gives her the candle by the window and says, \"This light will save your place.\""
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "How did the guests welcome the new kitten?",
@@ -675,6 +1037,24 @@
         "Behind a mossy log lies Ginger-Deer's helper badge. Foxy remembers seeing the same badge pinned beside the town garden.",
         "The mystery ends at the garden, where Ginger is planting in the rain. She forgot the picnic while helping seedlings, so Foxy spreads the blanket above them both."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [
         "Where did the clues lead Foxy-Lox?",
         "To Ginger-Deer in the town garden",
@@ -718,6 +1098,24 @@
         "Inside a narrow tunnel, he hears a squeak behind a loose flap. A younger mouse has lost both the exit and her courage.",
         "The cheesy smell drifts around the next turn, but Ham walks away from it to guide the mouse outside. His old record slips away.",
         "They solve the route together and reach the centre from a new direction. The cheese tastes better shared-and the mouse asks for another race."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "Why did Ham-and-Cheese miss his fastest time?",
@@ -764,6 +1162,28 @@
         "Hen-Berry spots a shell beside the thin track. \"This is the path from the fish pond.\"",
         "They rush past the pond, chat with a fish, and reach the chick's shed.",
         "The chick thanks Hen-Berry with a quick hug. Two letters can share one sound, and two friends can share one path."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "What helps Hen-Berry choose the path?",
@@ -812,6 +1232,24 @@
         "Ted-E-Bear wants to share an idea. \"You need a basket with a stronger handle.\" Hen-Berry watches a berry roll past his foot. \"Could you pick that up first?\" she asks.",
         "Wise Owl stops beside them. \"What would help?\" Hen-Berry shows her full wings. Wise Owl listens, and Ted brings a bowl. At last Hen-Berry can put the berries down.",
         "They set off with a small bowl each. Hen-Berry can walk without dropping anything. \"Next time,\" says Ted, \"I will ask first.\" Hen-Berry smiles. \"You can help carry these now.\""
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "Why was bringing a bowl more useful than giving basket advice?",
@@ -862,6 +1300,56 @@
         "At the final bend, the stone marked fifteen sits alone between two muddy spaces. Flutter-Butter searches for the neighbour that belongs before it, and Honey-Beats searches for the one after it. Both are needed to reconnect the path to the concert stage.",
         "The stage lights glow, but the last stepping-stone space is still empty after seventeen, eighteen, nineteen. Every musician waits together at the edge of the meadow. Honey-Beats begins a rising counting song, and Flutter-Butter listens for the number that will finish the path."
       ],
+      "teaching": [
+        {
+          "sequence": [
+            1,
+            2,
+            3,
+            -1
+          ],
+          "observation": null
+        },
+        {
+          "sequence": [
+            3,
+            4,
+            -1,
+            6
+          ],
+          "observation": null
+        },
+        {
+          "sequence": [
+            7,
+            8,
+            -1,
+            10
+          ],
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": "Read the three front stones from left to right. The left paw print points towards the stage. The middle paw print points away from the stage. The right paw print points towards the stage."
+        },
+        {
+          "sequence": [
+            14,
+            15,
+            -1
+          ],
+          "observation": null
+        },
+        {
+          "sequence": [
+            17,
+            18,
+            19,
+            -1
+          ],
+          "observation": null
+        }
+      ],
       "expected": [
         "Which number comes after 3?",
         "2",
@@ -879,9 +1367,9 @@
         "11",
         "Nine is the neighbour between eight and ten.",
         "Which stone is turned the wrong way?",
-        "The reversed stone",
-        "The first stone",
-        "The flower stone",
+        "The left front stone",
+        "The middle front stone",
+        "The right front stone",
         "The reversed stone was interrupting the pattern.",
         "Which pair are the neighbours of 15?",
         "13 and 14",
@@ -904,7 +1392,7 @@
         "read/honey-beats-and-the-number-neighbours/pages/page-6.jpg": "72cde029c4919be9bfbc4911c6ae0f07d4e3e10896b2046051ff5db1cb0cfadb"
       },
       "pdf": "read/honey-beats-and-the-number-neighbours/honey-beats-and-the-number-neighbours.pdf",
-      "pdf_sha256": "39cb0e32cf02bdbb10af81f1088e7db3c62d29178ceec3135f9bf7a87aa39a63"
+      "pdf_sha256": "b2e64d2d2cff5ca5f2c42e5c84b4ded778fd4d2122cbcbec4b1fa88cb1294276"
     },
     {
       "slug": "hop-tarts-stepping-stone-switch",
@@ -921,6 +1409,24 @@
         "The stones are steady, but Centi-Peed's many little feet need handrails. Flutter-Butter brings 24 strong reed ties. The friends share them equally across six short bridge sections, checking that no section is wobblier than another.",
         "Centi-Peed counts 19 glow-seeds for marking the route. Four seeds fit neatly around each landing stone. After four complete groups, three seeds remain. Hop-Tart starts to call them leftovers, then notices the darkest bend in the path.",
         "The three spare seeds light the difficult bend, and two final groups of eight markers glow along the bank. Hop-Tart slows his biggest bounce to match Centi-Peed's careful steps. They reach shelter together-not by making the fastest path, but by making one that waits for everyone."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "How many safe stones are in 3 rows of 4?",
@@ -956,6 +1462,24 @@
         "A dragon stands across the bridge. Lionnaise stops. He could frighten anyone away, yet his claws twist together and a tiny puff of smoke escapes his nose. He looks worried too.",
         "Lionnaise holds her crown against her chest and looks up. \"Would you like to come to the feast?\" she asks. The dragon blinks. \"Me? Nobody has asked me before.\"",
         "The dragon smiles and opens the way across. Then he offers Lionnaise a ride above the trees. She holds the invitation tight. \"Shall we go in together?\" she asks. There is no need for a roar."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "Why did the dragon open the way across the bridge?",
@@ -1001,6 +1525,24 @@
         "Quill-Berry carries over Ted's portrait-and bumps the table. A blue splash lands across Luckybug's glowing sky.",
         "Luckybug nearly hides the canvas. Then Flutter-Butter says the splash looks like a river, so all three turn the smudge into a moonlit town.",
         "At the gallery opening, visitors point first to the blue river. Luckybug signs all three names because the accident became their shared idea."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "What did the friends turn the blue splash into?",
@@ -1053,6 +1595,36 @@
         "Fifteen picture-signs were painted, but nine are already hanging above stalls. The rest still need string.",
         "Eight woodland friends arrive from one path and seven from another. The market opens with every stall ready and nobody left waiting."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [
         "How many berries rolled out altogether?",
         "Make 10 first: 7 needs 3, leaving 2. Then 10 + 2 = 12.",
@@ -1101,6 +1673,37 @@
         "The parade board shows three growing groups, then an empty space. Luckybug taps each group while Flutter-Butter listens for the next number that can still split into pairs.",
         "The marchers reach the garden gate. Friends stand together in pairs, and Luckybug proudly leads at the front. The parade has room for pairs and leaders, and every friend belongs."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": [
+            2,
+            4,
+            6,
+            -1
+          ],
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [
         "Is 2 odd or even?",
         "Odd",
@@ -1140,7 +1743,7 @@
         "read/luckybugs-pairing-parade/pages/page-6.jpg": "96e78b5b6dbb7652c8efd6315ffdbb4c7af121ddb31263b3a53c127deb26d77d"
       },
       "pdf": "read/luckybugs-pairing-parade/luckybugs-pairing-parade.pdf",
-      "pdf_sha256": "62159c6774f31fcee2c4f797fa0326c993774a1c55a7f663856a79f725eba042"
+      "pdf_sha256": "d3c0411d256bc9ca0ef6a076470ac71dd0a94ecbfbece9a0619759f7874172db"
     },
     {
       "slug": "meow-inaras-moonlight-story",
@@ -1156,6 +1759,24 @@
         "Wise Owl chooses a bedtime story about a musician whose first note wobbled. She reads slowly and leaves room between each sentence.",
         "Meow-inara breathes in during one quiet line and breathes out during the next. The concert is still tomorrow, but it no longer fills the whole room.",
         "At last she feels sleepy. \"My first note can wobble too,\" she murmurs, closing her eyes beneath the patient moon."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "How did the bedtime story help Meow-inara?",
@@ -1203,6 +1824,28 @@
         "Meow-inara cannot see each note, so she listens for the beat. She paints three sound marks: slow, high, sweet.",
         "They meet beneath the moon and play a duet. Her clear notes float over his deep chords.",
         "The missing sheet arrives the next day, but Meow-inara keeps her painted score. A good team can hear a new way forward."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "How does Meow-inara learn the tune?",
@@ -1257,6 +1900,32 @@
         "Pip taps a tin.",
         "Nan and Pip nap."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [],
       "quizzes": [],
       "art": {
@@ -1284,6 +1953,24 @@
         "Summer arrives hot and dry. While the Baby Bulldogs splash, they carry one little bucket each to Nutmeg's drooping shoot.",
         "In autumn, Nutmeg gathers acorns, but leaves the finest one beneath her young tree. A hungry jay needs winter food too.",
         "Frost silvers the hill, and the little tree stands firm. Nutmeg cannot hurry a whole year, but she can care for what grows through it."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "What helped the young tree survive the dry summer?",
@@ -1328,6 +2015,24 @@
         "Hen-Berry pats the soil back into place. \"Give it a little water,\" she says. \"Then leave it tucked in.\" Nutmeg puts down her trowel. Waiting feels harder than digging.",
         "Each morning Nutmeg checks the soil and waters when it needs a drink. On the seventh morning, she spots a green sprout lifting a crumb of earth. \"You were there all along!\"",
         "That evening Nutmeg sits beside her little garden. The sprout is hardly taller than a pebble, but she can find it at once. Tomorrow she will bring water, not her trowel."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "Why will Nutmeg bring water rather than dig up the seed next time?",
@@ -1374,6 +2079,24 @@
         "A wave knocks the pearl into a narrow crack. Octo cannot reach it while holding the reef, so he asks the smallest fish to form a passing chain.",
         "The chain returns the pearl one fin at a time, and its glow guides everyone through. Eight strong arms saved the reef; many small fins saved its light."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [
         "How did the fish recover the pearl?",
         "They formed a passing chain",
@@ -1417,6 +2140,24 @@
         "Octo-Pop carries the picnic through the seaweed and saves one quiet place beside him. Then a rushing wave snatches the welcome shell.",
         "The current spins the shell toward a dark trench. Cereal-Swimmer darts faster than anyone, while Bottle-Nose guides him with bright clicks.",
         "They return before the tide turns. Cereal-Swimmer sets the shell in the middle and says, \"I would like to sit here,\" and everyone makes room."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "What helped Cereal-Swimmer ask for a place at the picnic?",
@@ -1507,6 +2248,112 @@
         "Y is for Yellow - Panda-Cake paints her kitchen door yellow.",
         "Z is for Zucchini - Panda-Cake hides one in her muffins."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [],
       "quizzes": [],
       "art": {
@@ -1559,6 +2406,37 @@
         "The list is complete, but a tiny jar of honey still waits on the counter. Panda-Cake looks at the packed basket and notices one open corner. Careful arranging can make space without squashing a single bun.",
         "At the meadow, Panda-Cake places every treat on the long cloth. Friends arrive in twos and threes until twelve happy picnic places are filled. Panda-Cake checks the basket one last time. There is enough because everyone planned and counted together."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": [
+            2,
+            3,
+            -1,
+            5
+          ],
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [
         "How many apples belong in the basket?",
         "2",
@@ -1601,7 +2479,7 @@
         "read/panda-cakes-market-basket/pages/page-6.jpg": "506379d6d5c2ce555756597bd0d5748dd9405d2ae0196ca64666cb1bccf778b5"
       },
       "pdf": "read/panda-cakes-market-basket/panda-cakes-market-basket.pdf",
-      "pdf_sha256": "2295df0ea8caa23862f1c5edf7d218968caf5964a460caf223a6e6e39c4fc69f"
+      "pdf_sha256": "925ed8b4640ca0be4573d2a987a7a6192c5ec9b72f5d4ed8b0d72021daa04ae7"
     },
     {
       "slug": "pip-sits",
@@ -1622,6 +2500,32 @@
         "Pip tips the tin.",
         "Tap, tap, tap!",
         "Pip naps."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [],
       "quizzes": [],
@@ -1650,6 +2554,24 @@
         "On a narrow ledge, he finds a younger goat frozen with fear. The quickest path continues upward, but Pita anchors the rope beside her.",
         "Inside a cold cloud, they cannot see the trail. Pita asks his new partner to listen for the bell at the peak, and she leads by sound.",
         "They reach the summit as the valley glows below. Pita did not prove he could climb alone; he discovered how far two careful climbers can go."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "Why did Pita-Pan stop on the ledge?",
@@ -1694,6 +2616,24 @@
         "Captain Beakon's treasure map promises gold beneath a crooked palm. Polly imagines a mountain of crackers all for herself.",
         "They reach the rocky shore and uncover the X as the sun begins to sink. The dark lighthouse waits across the bay.",
         "The chest is full of gold coins. Polly keeps one shiny coin for the ship and spends the rest repairing the light that guides everyone home."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "What did Polly use most of the treasure to repair?",
@@ -1746,6 +2686,36 @@
         "The main show lasts 50 minutes and the hall is booked for 70 minutes. The remaining time can become an encore.",
         "The concert and tidy-up together take one hour and 30 minutes. Every performer leaves beneath a chiming moon."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [
         "How many minutes past the hour is quarter past?",
         "A full clock is 60 minutes. One quarter of 60 is 15 minutes.",
@@ -1789,6 +2759,24 @@
         "Coop-Accino adds a sleepy melody, but Octo-Pop splashes in with a much faster beat. Pork-ulele stops playing. \"That is not how my tune goes.\"",
         "They listen again: slow melody, quick rhythm, then a bright plink from Pork-ulele. The different sounds begin answering one another instead of competing.",
         "Their new song is nothing like Pork-ulele planned-and much better than anything he could play alone. Even the birds add a chorus from the trees."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "What did the crew make together?",
@@ -1835,6 +2823,28 @@
         "The next clue says, \"A fast runner becomes a faster runner.\" Quill circles er and reads the word in two beats: fast-er.",
         "A reader comes calling from the hall. Together they clap the beats in helping, resting, and looking.",
         "Quill restores every line, then leaves one blank for the next reader. Words can keep growing when endings join them."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "What does Quill add to the unfinished words?",
@@ -1884,6 +2894,24 @@
         "Beside the ants, a line of white pebbles marks a safe shortcut through the clover. Shelly follows it without tipping one cake.",
         "Shelly arrives first and covers the picnic just as rain begins. Slow did not mean late; careful helped her see what rushing feet had missed."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [
         "What helped Shelly-Pop find the shortcut?",
         "A line of white pebbles",
@@ -1929,6 +2957,28 @@
         "\"Grip, lift, step!\" calls Stripe-Scout. The three friends lift the branch from the planks.",
         "They cross, plant the flag, and clap. The frog taps a drum while the crab does his best dance.",
         "Stripe-Scout adds a sign: FRIENDS HELP. The strongest part of the bridge is the team upon it."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "How do the friends clear the bridge?",
@@ -1977,6 +3027,24 @@
         "Snack-Spector spots a crumbly clue beneath the star sign: \"Choose the path that leaves no friend behind.\" The short route suddenly looks less clever.",
         "They take the longer path and help each other cross a wobbly bridge. When one board squeaks, Stripe-Scout waits until every paw is safely over.",
         "The trail ends at a picnic beneath a brilliant rainbow. The treasure is not just the food-it is arriving together with nobody missing."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "Why did Stripe-Scout choose the longer path?",
@@ -2027,6 +3095,37 @@
         "Back at the post office, the outgoing shelf is empty. Sub-Zero checks behind the basket and under the scarf. Every parcel has reached the right home. An empty shelf is good news today.",
         "As the last sled returns, fifteen paper snowflakes flutter from village windows. Each one carries a tiny thank-you picture. Sub-Zero and Booklava hang them above the post desk where they will never melt."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": [
+            7,
+            8,
+            -1,
+            10
+          ],
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [
         "How many mittens make a pair?",
         "1",
@@ -2069,7 +3168,7 @@
         "read/sub-zero-and-the-snowflake-post/pages/page-6.jpg": "02e638449b4dd57e7515c7fdcd0ab479a1eecca8f1308011fdd1182bddba0cce"
       },
       "pdf": "read/sub-zero-and-the-snowflake-post/sub-zero-and-the-snowflake-post.pdf",
-      "pdf_sha256": "c598e38a207778615cecd9d29e7a5e36067395a47e1947ac9fc42b698cf84dd8"
+      "pdf_sha256": "f87bb7c8c5e03fa9bd6a416c700856a4bbcd11a6973c409d946dba5c8b254a1a"
     },
     {
       "slug": "sub-zeros-magic-e-lantern",
@@ -2087,6 +3186,28 @@
         "Sub-Zero uses tape and rope to make a safe lantern frame. His red cape becomes its bright shade.",
         "He raises the lantern beside the gate. Its glow makes a clear line toward home.",
         "His friends wave when they see the light. Sub-Zero saves the note, but the lantern carries the message."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "What guides the friends home?",
@@ -2140,6 +3261,37 @@
         "On the hill, picnic napkins flap in the breeze. Something gold flashes beneath them, then disappears. Corgi's tail starts popping so quickly that Ted laughs. Together they lift each napkin while the warm smell of honey-oat buns drifts from the basket.",
         "The button was holding down the picnic cloth all along. Ted sews it back onto his vest, then pauses. He crossed the path, solved the acorns, and braved the bridge without it. Corgi leans close. Tap-tap. 'Lucky button,' says Ted, 'meet my brave paws.'"
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": [
+            3,
+            4,
+            -1,
+            6
+          ],
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [
         "How many loose threads curl from Ted's vest?",
         "1",
@@ -2182,7 +3334,7 @@
         "read/ted-e-bear-and-the-button-trail/pages/page-6-r2.jpg": "1a166c3b82ca776b8c9f5e1a4c70299bbd5d5f657e06532a40d3d7c0fa1eb455"
       },
       "pdf": "read/ted-e-bear-and-the-button-trail/ted-e-bear-and-the-button-trail.pdf",
-      "pdf_sha256": "5db7983ebf93800fb68459dadee3a1c6c0ba74996d54da1be00a4e3904e206d0"
+      "pdf_sha256": "e13e6d5398683842e083a74f8547701e7c41c2d7ab3ecd0553c7c31c73a91580"
     },
     {
       "slug": "ted-e-bear-and-the-lantern-that-needed-a-half",
@@ -2205,6 +3357,36 @@
         "The cottage window appears at the top of the hill. Ted still has the 6 spare lanterns in his wagon and wants both friends to carry the same number.",
         "Honey-Beats places 3 lanterns outside. Ted places 3 inside. The cottage glows like a tiny sunrise, and the dark no longer feels so large.",
         "Before Ted leaves, Honey-Beats gives him half of 4 honey biscuits for his walk. \"You came back for me,\" she says. Ted smiles. \"That is what friends do.\" They relight the path lanterns for the walk home."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "If Ted shares 8 lanterns equally between 2 paths, how many lanterns light each path?",
@@ -2258,6 +3440,40 @@
         "Ted unfolds the card. The first word is WELCOME. \"W,\" he whispers. Wind. Warm. Welcome. His voice wobbles on the second word, so he stops, breathes, and begins it again. Nobody laughs. Corgi's ears point towards every sound as if each one matters-because it does.",
         "The gate swings open. Ted reads the final line slowly, with pauses in all the right places and one pause that was not planned. Then the picnic erupts in cheers. His voice was never too small. It was exactly big enough to carry one sound, then another, all the way to the end."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [],
       "quizzes": [],
       "art": {
@@ -2287,6 +3503,24 @@
         "He pulls a blue blanket over the top-but whoomph! It slides down and buries him in a woolly heap.",
         "Panda-Cake holds one corner while Ted clips the other. Inside their sturdy fort, Ted switches on a lamp and opens a story they can share.",
         "Rain whispers at the window, but the little fort is cosy and bright. Ted decides the best forts are not the biggest-they are the ones with room for a friend."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "Why did the fort stay up when Panda-Cake helped?",
@@ -2334,6 +3568,28 @@
         "A cup and a peg are in his bag. Ted can put the cup by the box. It can sit up!",
         "Ted has a peg. The peg can pin the map to the den. Ted can sit on the rug.",
         "Ted is in his den. His kit did a big job. It is fun to sit on the red rug!"
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "What does Ted put by the box?",
@@ -2392,6 +3648,40 @@
         "Nan sat. Nan is sad.",
         "Ten red hens sit! Nan can nap."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [],
       "quizzes": [],
       "art": {
@@ -2431,6 +3721,40 @@
         "The cat sat and sat.",
         "The rat and the cat nap in the hat!"
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [],
       "quizzes": [],
       "art": {
@@ -2467,6 +3791,36 @@
         "On the last afternoon, grey clouds roll over the hills. Seven squares are still bare. Stripe-Scout wants to give up and throw a sheet over the wall, but Vincent checks the clock instead. They have been painting 3 squares every 12 minutes, steady and neat.",
         "They finish with minutes to spare, and the first raindrops miss the wall. One small pot of gold paint is left for the sun's rays. Vincent shares its 30 ml in the ratio 1:2:3 between himself, Sail-Affe and Stripe-Scout, because Stripe-Scout has the most rays to paint.",
         "At the festival, the whole town gathers in front of the wall. The sunset glows exactly like the sketch, only twenty-five times taller. Professor Hooten asks for a postcard of the mural for every reader in the library. Vincent smiles. Scaling works in both directions."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "The sketch is 8 cm tall. If every 1 cm becomes 25 cm, how tall will the mural be, in centimetres?",
@@ -2513,6 +3867,24 @@
         "Booklava ties a purple ribbon every fourth flag. Quill-Berry ties a gold ribbon every sixth flag. Wise Owl asks them to find the first place after the starting post where both colours will meet.",
         "For the centre of the festival, 16 purple and gold cushions must form a perfect square, with clear paths on every side. Booklava smiles: the earlier rectangles were not mistakes, just different factor pairs. The final festival celebrates every elegant solution."
       ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
       "expected": [
         "If the 24 flags hang in 4 equal rows, how many flags go in each row?",
         "Four rows of 6 make 4 × 6 = 24. So 4 and 6 are a factor pair of 24.",
@@ -2547,6 +3919,24 @@
         "A gust slips through the door and carries the poem beneath a table. Quill-Berry freezes, certain everyone will laugh if they read it.",
         "Meow-inara finds the page but does not read it. She returns it in the quiet corner and asks, \"Would you like one friendly listener?\"",
         "Quill-Berry reads her poem to two friends, then four, then the whole afternoon circle. Wise Owl adds a blank page to the display for whatever Quill writes next."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
       ],
       "expected": [
         "Why did returning the poem unread help Quill-Berry?",
