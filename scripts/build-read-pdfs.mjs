@@ -282,10 +282,13 @@ function pagesFor(slug) {
   const html = fs.readFileSync(path.join(READ, slug, "index.html"), "utf8");
   const files = [];
   const captions = new Map();
+  const prints = new Map();
   for (const m of html.matchAll(/<article class="story-page-card"[^>]*>([\s\S]*?)<\/article>/g)) {
     const file = m[1].match(/<img src="\.\/pages\/([^"/]+\.jpg)"/);
     const copy = m[1].match(/<div class="story-page-copy">([\s\S]*)/);
     if (!file || !copy) continue;
+    const model = m[1].match(/data-print-model="\.\/([^"<>]+)"/);
+    if (model) prints.set(file[1], model[1]);
     const label = copy[1].match(/<span>([\s\S]*?)<\/span>/);
     const letterHeading = copy[1].match(/<h2>([\s\S]*?)<\/h2>/);
     // Story paragraphs only; questions and answers keep their own final sheet.
@@ -294,11 +297,11 @@ function pagesFor(slug) {
       .map(p => strip(p[1]));
     if (paragraphs.length) captions.set(file[1], [[label ? strip(label[1]) : '', letterHeading ? strip(letterHeading[1]) : ''].filter(Boolean).join(' · '), ...paragraphs]);
   }
-  const cover = html.match(/<img src="\.\/pages\/(cover\.jpg)"/);
+  const cover = html.match(/<img src="\.\/pages\/(cover(?:-r\d+)?\.jpg)"/);
   if (cover) files.push(cover[1]);
   for (const m of html.matchAll(/<img src="\.\/pages\/([^"]+\.jpg)"[^>]*loading="lazy"/g)) files.push(m[1]);
   const title = (html.match(/<title>([^|<]+)/) || [, slug])[1].trim();
-  return { files, captions, title: decode(title), questions: questionsFor(html) };
+  return { files, captions, prints, title: decode(title), questions: questionsFor(html) };
 }
 
 const slugs = fs.readdirSync(READ)
@@ -308,11 +311,11 @@ const slugs = fs.readdirSync(READ)
 console.log(WRITE ? "Building PDFs:" : "Dry run (pass --write to emit):");
 let built = 0;
 for (const slug of slugs) {
-  const { files, captions, title, questions } = pagesFor(slug);
+  const { files, captions, prints, title, questions } = pagesFor(slug);
   if (files.length < 2) { console.log(`  SKIP ${slug}: found ${files.length} page(s)`); continue; }
 
   const images = files.map((f) => {
-    const p = path.join(READ, slug, "pages", f);
+    const p = prints.has(f) ? path.join(READ, slug, prints.get(f)) : path.join(READ, slug, "pages", f);
     const data = fs.readFileSync(p);
     return { ...jpegInfo(data), data, caption: captions.get(f) };
   });

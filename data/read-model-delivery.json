@@ -1,0 +1,160 @@
+[
+  {
+    "slug": "centi-peeds-below-zero-burrow",
+    "page": 1,
+    "id": "burrow-1",
+    "model": {
+      "kind": "line",
+      "start": -5,
+      "end": 4,
+      "markers": [
+        3
+      ],
+      "title": "Seven steps colder",
+      "instruction": "Start at 3. Move seven steps left.",
+      "alt": "A number line from minus five to four, in steps of one, with the start marked at three. Move seven steps left to find the new temperature."
+    },
+    "image": "read/centi-peeds-below-zero-burrow/pages/model-burrow-1-r1.png",
+    "sha256": "efdf43829ee5af2f2a790a036335d8fa0f757b0e9302a42dd2dead768d7b55b6",
+    "print": "read/centi-peeds-below-zero-burrow/print-models/page-1-r1.jpg",
+    "print_sha256": "fe43d42da9d4d1b013bc94902d570a5c58e7b318b42155f97c1a2cee5f01ec27"
+  },
+  {
+    "slug": "centi-peeds-below-zero-burrow",
+    "page": 2,
+    "id": "burrow-2",
+    "model": {
+      "kind": "line",
+      "start": -6,
+      "end": 3,
+      "markers": [
+        -6,
+        2
+      ],
+      "title": "Through zero",
+      "instruction": "Count the intervals from minus six to two.",
+      "alt": "A number line from minus six to three. Minus six and two are marked. Count the intervals between the two markers."
+    },
+    "image": "read/centi-peeds-below-zero-burrow/pages/model-burrow-2-r1.png",
+    "sha256": "4f473c84347109d3f28a67a571ecf0b25dcba9db80093420d7385bd309c89031",
+    "print": "read/centi-peeds-below-zero-burrow/print-models/page-2-r1.jpg",
+    "print_sha256": "32525f797dfd3c4bcf1f9d3153116ddbf01c7fe0ba8995e20dfab8141144e81a"
+  },
+  {
+    "slug": "centi-peeds-below-zero-burrow",
+    "page": 3,
+    "id": "burrow-3",
+    "model": {
+      "kind": "sequence",
+      "values": [
+        -8,
+        -4,
+        0,
+        4,
+        "?"
+      ],
+      "title": "The lantern sequence",
+      "instruction": "Find the equal step. Then fill the next box.",
+      "alt": "Five sequence boxes read minus eight, minus four, zero, four, then a question mark. Find the next value."
+    },
+    "image": "read/centi-peeds-below-zero-burrow/pages/model-burrow-3-r1.png",
+    "sha256": "d321c16baf97c3333b1039d3ecc4cf9c2416035ba21cba1c571248c82f5c0c53",
+    "print": "read/centi-peeds-below-zero-burrow/print-models/page-3-r1.jpg",
+    "print_sha256": "85983899e3362c1e9ac9b2344eda9ea65a87040e4fd91c603455aefdbdc0e513"
+  },
+  {
+    "slug": "centi-peeds-below-zero-burrow",
+    "page": 4,
+    "id": "burrow-4",
+    "model": {
+      "kind": "coordinates",
+      "x": -2,
+      "y": 1,
+      "title": "Along before up",
+      "instruction": "Start at (-2, 1). Move four steps right.",
+      "alt": "A coordinate grid with horizontal x-axis and vertical y-axis, labelled from minus three to three. The starting point is minus two, one. Move four steps right, keeping y equal to one."
+    },
+    "image": "read/centi-peeds-below-zero-burrow/pages/model-burrow-4-r1.png",
+    "sha256": "e87221b7a3412b7bb236961433a70c4f6d99e1e0d653c713ad45dc23cd1285a2",
+    "print": "read/centi-peeds-below-zero-burrow/print-models/page-4-r1.jpg",
+    "print_sha256": "8a47123484a25c999187080c356c7a6a1e14fc070593da6a40b9e97aa9d57008"
+  },
+  {
+    "slug": "hop-tarts-stepping-stone-switch",
+    "page": 1,
+    "id": "stepping-1",
+    "model": {
+      "kind": "groups",
+      "rows": [
+        4,
+        4,
+        4
+      ],
+      "title": "Three equal rows",
+      "instruction": "Count four stones in each row.",
+      "alt": "Three rows of stones. Each row has four stones. Count the stones across all three rows."
+    },
+    "image": "read/hop-tarts-stepping-stone-switch/pages/model-stepping-1-r1.png",
+    "sha256": "dfb0935dea73a629ff89fc13aae87ac15b99d07ca43f42fb473e7ccf6eb54ff2",
+    "print": "read/hop-tarts-stepping-stone-switch/print-models/page-1-r1.jpg",
+    "print_sha256": "95603266cd0594d5464a9a671c65684e8bbd58dd37c29553978fa03dce2c12a4"
+  },
+  {
+    "slug": "hop-tarts-stepping-stone-switch",
+    "page": 2,
+    "id": "stepping-2",
+    "model": {
+      "kind": "sharing",
+      "total": 24,
+      "groups": 6,
+      "title": "Share the reed ties",
+      "instruction": "Share all 24 ties between six sections.",
+      "alt": "Twenty-four reed ties waiting above six empty sections. Share the ties equally between the sections."
+    },
+    "image": "read/hop-tarts-stepping-stone-switch/pages/model-stepping-2-r1.png",
+    "sha256": "b54180db6a7a27563d4414f8c21a1e8655a9ba23047cccbf1c11d63eda8821ed",
+    "print": "read/hop-tarts-stepping-stone-switch/print-models/page-2-r1.jpg",
+    "print_sha256": "7b0c9e1f771415c1d3052e247565e978810641dee69d07073d4f02b6a4d7b11c"
+  },
+  {
+    "slug": "hop-tarts-stepping-stone-switch",
+    "page": 3,
+    "id": "stepping-3",
+    "model": {
+      "kind": "groups",
+      "rows": [
+        4,
+        4,
+        4,
+        4,
+        3
+      ],
+      "title": "Groups and spare seeds",
+      "instruction": "Each complete group needs four seeds.",
+      "alt": "Four groups containing four glow-seeds each, followed by three ungrouped seeds. Count only the complete groups."
+    },
+    "image": "read/hop-tarts-stepping-stone-switch/pages/model-stepping-3-r1.png",
+    "sha256": "1235a0b0849a3c89fc4a1b584361998b589ddb86f94b1a69be292672aa479550",
+    "print": "read/hop-tarts-stepping-stone-switch/print-models/page-3-r1.jpg",
+    "print_sha256": "f506908bdcc8461de9878b0b87a86271362b435484ca3424bf20ab1b7e1d1b11"
+  },
+  {
+    "slug": "hop-tarts-stepping-stone-switch",
+    "page": 4,
+    "id": "stepping-4",
+    "model": {
+      "kind": "groups",
+      "rows": [
+        8,
+        8
+      ],
+      "title": "Two equal groups",
+      "instruction": "Count eight markers in each group.",
+      "alt": "Two separate groups of markers, with eight markers in each group. Count both groups together."
+    },
+    "image": "read/hop-tarts-stepping-stone-switch/pages/model-stepping-4-r1.png",
+    "sha256": "a156067759869863eb115fe57922e133a28088f2224880c26d9db423ed19304c",
+    "print": "read/hop-tarts-stepping-stone-switch/print-models/page-4-r1.jpg",
+    "print_sha256": "b10b4a6e542a87dce52e7f4bdda38f8152c9ca7d67f902f846c8c4089248169e"
+  }
+]

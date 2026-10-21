@@ -107,9 +107,9 @@ for (const width of [320,390,1280]) for (const theme of ['cream','dark','light']
   });
 }
 
-test('no JavaScript still shows books and the start-here links',async({browser})=>{
-  const context=await browser.newContext({javaScriptEnabled:false});const page=await context.newPage();
-  await page.goto('http://127.0.0.1:4173/read/');
+test('no JavaScript still shows books and the start-here links',async({browser,baseURL})=>{
+  const context=await browser.newContext({javaScriptEnabled:false,baseURL});const page=await context.newPage();
+  await page.goto('/read/');
   await expect(page.locator('.read-library-card:visible')).toHaveCount(bookCount);
   await expect(page.locator('.read-filters')).toBeHidden();
   await page.locator('.read-start summary').click();

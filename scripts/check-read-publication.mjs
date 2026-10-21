@@ -50,6 +50,8 @@ if (hasApps) {
       (book.id === 'animal-architects' ? path.join(APP_ROOT, 'snackpack-zoo-world/assets/books', book.id, `${book.id}-p${i + 1}.jpg`) : null));
     assert(images.every(p => typeof p === 'string' && fs.existsSync(p)), `${book.id}: current app page art missing/unmapped`);
     if (typeof book.cover === 'string' && fs.existsSync(book.cover)) images.push(book.cover);
+    const mathCover = path.join(APP_ROOT,'snackpack-4-math-arithmetic/assets/book-covers',book.id+'.webp');
+    if (fs.existsSync(mathCover)) images.push(mathCover);
     return Object.fromEntries(images.map(p => [path.relative(APP_ROOT, p).replace(/\\/g, '/'), sha(p)]));
   };
 }
@@ -114,6 +116,6 @@ for (const pin of JSON.parse(fs.readFileSync(path.join(ROOT, 'data/decodable-art
   assert.equal(sha(path.join(ROOT, pin.web)), pin.web_sha256, `Decodable art pin changed: ${pin.web}`);
   if (hasApps) assert.equal(sha(path.join(APP_ROOT, 'snackpack-1-abcs-alphabet', pin.app)), pin.app_sha256, `App decodable art changed: ${pin.app}`);
 }
-if (WRITE) fs.writeFileSync(EVIDENCE, JSON.stringify({ reviewed: '2026-10-20', books: records }, null, 2) + '\n');
+if (WRITE) fs.writeFileSync(EVIDENCE, JSON.stringify({ reviewed: '2026-10-21', books: records }, null, 2) + '\n');
 console.log(`Read publication: ${records.length} books / ${records.reduce((n, b) => n + b.text.length, 0)} pages; art, prompts, answers, PDFs and metadata pass.`);
 console.log(hasApps ? 'Current app exports compared directly.' : 'CI evidence-only mode: validates committed app comparison; current companion app sources unavailable and NOT rechecked.');

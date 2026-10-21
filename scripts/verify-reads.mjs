@@ -13,3 +13,4 @@ run(python,['scripts/build-read-social-cards.py','--check']);
 if(process.argv.includes('--roundtrip'))run(process.execPath,['scripts/test-decodable-roundtrip.mjs']);
 if(source.length){run(process.execPath,['scripts/import-alphabet-book.mjs','--id=panda-cake-alphabet']);run(process.execPath,['scripts/import-zoo-book.mjs','--id=animal-architects']);}
 console.log('Reads publication checks passed. Run the real-browser reads suite and review rendered PDFs before publishing new artifacts.');
+run(process.execPath,['scripts/check-read-models.mjs']);

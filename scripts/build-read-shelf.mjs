@@ -101,7 +101,7 @@ const SHELF = [
   { slug: "biscuit-bouncers-parcel-parade", group: "numbers", age: [6, 8], added: "2026-10-15", title: "Biscuit‑Bouncer and the Parcel Parade", eyebrow: "Year 2 · add, subtract, measure · 9 pages", blurb: "The fastest route misses the quiet homes. Biscuit-Bouncer and Ginger-Deer find a better one, sum by sum.", cover: "pages/cover", ext: "jpg", alt: "Biscuit-Bouncer and the Parcel Parade book cover.", w: 1024, h: 1536 },
   { slug: "booklava-and-the-number-that-lost-its-place", group: "numbers", age: [6, 8], added: "2026-10-17", title: "Booklava and the Number That Lost Its Place", eyebrow: "Year 2 · place value · 7 pages", blurb: "A runaway zero, a shrinking shelf label and a little owl who proves that every place matters.", cover: "pages/cover", ext: "jpg", alt: "Booklava and the Number That Lost Its Place book cover.", w: 1024, h: 1536 },
   { slug: "pork-ulele-and-the-clockwork-concert", group: "numbers", age: [6, 8], added: "2026-10-17", title: "Pork‑ulele and the Clockwork Concert", eyebrow: "Year 2 · telling the time · 7 pages", blurb: "The concert clock has stopped. Pork-ulele and Cluck O’Clock get every act on stage on time.", cover: "pages/cover", ext: "jpg", alt: "Pork-ulele and the Clockwork Concert book cover.", w: 1024, h: 1536 },
-  { slug: "hop-tarts-stepping-stone-switch", group: "numbers", age: [7, 9], added: "2026-10-15", title: "Hop‑Tart and the Stepping‑Stone Switch", eyebrow: "Year 3 · times tables · 4 pages", blurb: "A current twists the stepping stones. Hop-Tart builds a path that waits for Centi-Peed.", cover: "pages/cover", ext: "jpg", alt: "Hop-Tart and the Stepping-Stone Switch book cover.", w: 1024, h: 1536 },
+  { slug: "hop-tarts-stepping-stone-switch", group: "numbers", age: [7, 9], added: "2026-10-15", title: "Hop‑Tart and the Stepping‑Stone Switch", eyebrow: "Year 3 · times tables · 4 pages", blurb: "A current twists the stepping stones. Hop-Tart builds a path that waits for Centi-Peed.", cover: "pages/cover-r2", ext: "jpg", alt: "Hop-Tart and the Stepping-Stone Switch book cover.", w: 1024, h: 1536 },
   { slug: "centi-peeds-below-zero-burrow", group: "numbers", age: [8, 10], added: "2026-10-15", title: "Centi‑Peed and the Below‑Zero Burrow", eyebrow: "Year 4 · negative numbers · 4 pages", blurb: "Firefly footprints lead below zero. Centi-Peed and Sub-Zero count every step through the cold.", cover: "pages/cover", ext: "jpg", alt: "Centi-Peed and the Below-Zero Burrow book cover.", w: 1024, h: 1536 },
   { slug: "wise-owl-festival-of-factors", group: "numbers", age: [9, 11], added: "2026-10-16", title: "Wise Owl and the Festival of Factors", eyebrow: "Year 5 · factors and primes · 4 pages", blurb: "Twenty-four flags and a gatepost in the way. Wise Owl and Booklava find more than one right answer.", cover: "pages/cover", ext: "jpg", alt: "Wise Owl and the Festival of Factors book cover.", w: 1024, h: 1536 },
   { slug: "vincent-van-mouse-and-the-mural", group: "numbers", age: [10, 11], added: "2026-10-17", title: "Vincent Van Mouse and the Mural in Proportion", eyebrow: "Year 6 · ratio and scale · 7 pages", blurb: "A postcard-sized sketch, an enormous wall and a sunset that only works if every part grows by the same factor.", cover: "pages/cover", ext: "jpg", alt: "Vincent Van Mouse and the Mural in Proportion book cover.", w: 1024, h: 1536 },
@@ -120,8 +120,11 @@ const plainTitle = (t) => t.replace(/‑/g, "-");
 function card(b, i) {
   const src = `./${b.slug}/${b.cover}`;
   const escape = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
-  const pages = (fs.readFileSync(path.join(ROOT, "read", b.slug, "index.html"), "utf8").match(/<article class="story-page-card"/g) || []).length;
-  return `<a class="read-library-card" href="./${b.slug}/" data-search="${escape(`${b.title} ${b.eyebrow} ${b.blurb}`)}" data-pages="${pages}" data-kind="${KIND[b.group]}" data-age="${b.age[0]}-${b.age[1]}" data-added="${b.added}"><picture>${sourceTag(path.join(ROOT, "read", b.slug, `${b.cover}.webp`), src, "hub")}<img src="${src}.${b.ext}" alt="${b.alt}" width="${b.w}" height="${b.h}"${i > 2 ? " loading=\"lazy\"" : ""}></picture><div><span class="eyebrow">${b.eyebrow}</span><h3>${plainTitle(b.title)}</h3><span class="read-saved-label" data-saved-label>Saved status unavailable</span><p>${b.blurb}</p><span class="btn btn-primary">Read the story</span></div></a>`;
+  const bookHtml = fs.readFileSync(path.join(ROOT, "read", b.slug, "index.html"), "utf8");
+  const pages = (bookHtml.match(/<article class="story-page-card"/g) || []).length;
+  const schema = [...bookHtml.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1])).find(x => x['@type'] === 'Book');
+  const topic = b.group === 'numbers' ? String(schema?.about || '').replace(/<[^>]*>/g,'') : '';
+  return `<a class="read-library-card" href="./${b.slug}/" data-search="${escape(`${b.title} ${b.eyebrow} ${b.blurb} ${topic}`)}" data-pages="${pages}" data-kind="${KIND[b.group]}" data-age="${b.age[0]}-${b.age[1]}" data-added="${b.added}"><picture>${sourceTag(path.join(ROOT, "read", b.slug, `${b.cover}.webp`), src, "hub")}<img src="${src}.${b.ext}" alt="${b.alt}" width="${b.w}" height="${b.h}"${i > 2 ? " loading=\"lazy\"" : ""}></picture><div><span class="eyebrow">${b.eyebrow}</span><h3>${plainTitle(b.title)}</h3>${topic ? `<span class="read-topic">${escape(topic)}</span>` : ""}<span class="read-saved-label" data-saved-label>Saved status unavailable</span><p>${b.blurb}</p><span class="btn btn-primary">Read the story</span></div></a>`;
 }
 
 // Stage shortcuts (a 13-book shelf is a long scroll on a phone) and the
@@ -345,11 +348,14 @@ function offlineManifest() {
     const dir = path.join(ROOT, "read", b.slug, "pages");
     // Originals only: the -480w/-800w sizes would add ~65% to the download, and
     // sw.js answers an unsaved size with the saved original when offline.
-    for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".webp") && !isVariant(f)).sort()) resources.push(`/read/${b.slug}/pages/${f}`);
+    const bookHtml = fs.readFileSync(path.join(ROOT,'read',b.slug,'index.html'),'utf8');
+    const currentArt = new Set([...bookHtml.matchAll(/<source srcset="([^"]+)"/g)].flatMap(m => m[1].split(',').map(s => s.trim().split(/\s+/)[0])).filter(u => u.startsWith('./pages/') && u.endsWith('.webp') && !isVariant(u)));
+    for (const u of [...currentArt].sort()) resources.push(`/read/${b.slug}/${u.slice(2)}`);
+    for (const model of bookHtml.matchAll(/src="\.\/pages\/(model-[^"/]+\.png)"/g)) resources.push(`/read/${b.slug}/pages/${model[1]}`);
     urls.push(...resources);
     bookFiles.push({ slug: b.slug, title: plainTitle(b.title), urls: resources,
       html_sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT,'read',b.slug,'index.html'),'utf8').replace(/\r\n/g,'\n')).digest('hex'),
-      bytes: resources.filter(u => u.endsWith('.webp')).reduce((n,u) => n + fs.statSync(path.join(ROOT,u)).size,0) });
+      bytes: resources.filter(u => /\.(webp|png)$/.test(u)).reduce((n,u) => n + fs.statSync(path.join(ROOT,u)).size,0) });
   }
   urls.push("/site.css", "/theme.js", "/read/share.js", "/read/reader.js", "/read/reading-position.js", "/read/offline.js", "/read/shelf-filter.js",
     "/assets/fonts/fonts.css", "/assets/favicon-32.png", "/assets/snackpack-mark-96.png");
@@ -360,7 +366,7 @@ function offlineManifest() {
   const bytes = urls.reduce((n, u) => {
     const file = path.join(ROOT, u.endsWith("/") ? `${u}index.html` : u);
     if (!fs.existsSync(file)) throw new Error(`offline manifest: ${u} has no file at ${file}`);
-    return u.endsWith(".webp") ? n + fs.statSync(file).size : n;
+    return /\.(webp|png)$/.test(u) ? n + fs.statSync(file).size : n;
   }, 0);
   const owned = new Set(bookFiles.flatMap(b => b.urls));
   const shared = urls.filter(u => !owned.has(u));
@@ -393,19 +399,21 @@ function guideMoreBlock() {
   // phonics books (Stages 1-3 + the Reading Trail). The descriptions say
   // "early readers", which covers the whole shelf.
   const n = SHELF.length;
+  const staged = SHELF.filter(b => /^stage-/.test(b.group)).length;
+  const trail = SHELF.filter(b => b.group === 'trail').length;
   const Word = NUMBER_WORDS[n] ?? String(n);
   const phonics = SHELF.filter((b) => ["stage-1", "stage-2", "stage-3", "trail"].includes(b.group)).length;
   const PhonicsWord = NUMBER_WORDS[phonics] ?? String(phonics);
   let guide = splice(fs.readFileSync(path.join(ROOT, GUIDE), "utf8"), "read-guide-more:generated", guideMoreBlock(), GUIDE);
   guide = guide.replace(/Parent and teacher guide · [^<]+/, 'Parent and teacher guide · Updated October 2026')
-    .replace(/"dateModified": "[^"]+"/, '"dateModified": "2026-10-20"')
-    .replace(/<p class="lead">Download warm,[\s\S]*?<\/p>/, `<p class="lead">Start with ${phonics} phonics books: six staged first readers and six Reading Trail stories. They are part of our ${n}-book illustrated shelf, which also includes read-together stories, alphabet, maths and animal books. Read online or print a PDF, with no account, email gate or ads.</p>`);
+    .replace(/"dateModified": "[^"]+"/, '"dateModified": "2026-10-21"')
+    .replace(/<p class="lead">[\s\S]*?<\/p>/, `<p class="lead">Start with ${phonics} phonics books: ${staged} staged first readers and ${trail} Reading Trail stories. They are part of our ${n}-book illustrated shelf, which also includes read-together stories, alphabet, maths and animal books. Read online or print a PDF, with no account, email gate or ads.</p>`);
   if (!guide.includes('read-printable-collections')) guide = guide.replace('<section id="books">', '<section class="read-printable-collections"><div class="shell"><h2>Print a small collection</h2><p>Choose first phonics readers, quiet stories or kindness. Each collection lists its books, file size and printed pages, with individual downloads too.</p><a class="btn btn-secondary" href="../../read/collections/">Browse printable collections</a></div></section>\n<section id="books">');
   const rules = [
-    [/\b(?:(?:\d+|Eight) Free Printable Decodable Readers|6 Decodable Readers and 6 Reading Trail Stories)/g, `6 Decodable Readers and 6 Reading Trail Stories`],
+    [/\b(?:(?:\d+|Eight) Free Printable Decodable Readers|6 Decodable Readers and 6 Reading Trail Stories)/g, `${staged} Decodable Readers and ${trail} Reading Trail Stories`],
     [/<h1>\w+ free printable readers for early phonics practice<\/h1>/, `<h1>${PhonicsWord} free printable readers for early phonics practice</h1>`],
-    [/"description": "\w+ free illustrated early readers as A4 PDFs/, `"description": "${Word} free illustrated early readers as A4 PDFs`],
-    [/Download \w+ free illustrated early readers as A4 PDFs/, `Download ${Word.toLowerCase()} free illustrated early readers as A4 PDFs`],
+    [/"description": "\w+ free illustrated (?:early readers|books) as A4 PDFs/, `"description": "${Word} free illustrated books as A4 PDFs`],
+    [/Download \w+ free illustrated (?:early readers|books) as A4 PDFs/, `Download ${Word.toLowerCase()} free illustrated books as A4 PDFs`],
   ];
   for (const [re, to] of rules) {
     if (!re.test(guide)) throw new Error(`${GUIDE}: count rule no longer matches ${re} — update build-read-shelf.mjs`);
@@ -415,6 +423,16 @@ function guideMoreBlock() {
   guide=guide.replace(/<span class="read-download-meta">[^<]*<\/span>/g,'')
     .replace(/(<a[^>]*href="\.\.\/\.\.\/read\/([^/]+)\/[^"/]+\.pdf"[^>]*>[\s\S]*?<\/a>)/g,(all,anchor,slug)=>`${anchor}<span class="read-download-meta">${printableLabel(printable(ROOT,slug))}</span>`);
   write(GUIDE, guide);
+  for (const rel of ['guides/index.html','guides/phonics-sound-order-satpin/index.html','guides/decodable-vs-levelled-readers/index.html']) {
+    let text = fs.readFileSync(path.join(ROOT,rel),'utf8');
+    text = text.replace(/(?:Eight|Twelve|\d+) free printable readers for early phonics/g, `${PhonicsWord} free printable readers for early phonics`)
+      .replace(/(?:eight|six|\d+) free staged readers/g, `${staged} free staged readers`)
+      .replace(/(?:eight|twelve|\d+) free readers to try/g, `${phonics} phonics-practice books to try`)
+      .replace(/(?:\d+) phonics-practice books to try/g, `${phonics} phonics-practice books to try`)
+      .replace(/See all (?:eight|twelve|\d+) readers, with printing guidance/g, `See all ${phonics} phonics-practice books, with printing guidance`)
+      .replace(/See all (?:\d+) phonics-practice books, with printing guidance/g, `See all ${phonics} phonics-practice books, with printing guidance`);
+    write(rel,text);
+  }
 }
 
 write("index.html", splice(fs.readFileSync(path.join(ROOT, "index.html"), "utf8"), "read-home:generated", homeBlock(), "index.html"));

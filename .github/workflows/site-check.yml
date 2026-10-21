@@ -65,6 +65,9 @@ jobs:
       - name: Check reading publication evidence and source/art boundaries
         run: node scripts/check-read-publication.mjs
 
+      - name: Check authored teaching models and offline delivery
+        run: node scripts/check-read-models.mjs
+
       - name: Exercise publication failures against real artifacts
         run: node scripts/test-read-publication.mjs
 

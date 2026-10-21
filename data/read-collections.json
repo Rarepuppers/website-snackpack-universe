@@ -74,8 +74,8 @@
   {
     "id": "kindness",
     "pages": 31,
-    "bytes": 5440412,
-    "sha256": "0ca8609d849f2632754a314df57a4c62ccc0685fffdfb8848ec9d5c5ffc04006",
+    "bytes": 5440411,
+    "sha256": "6df06bdbfb680afc99c4fd3c14fe61e926cbb0bb9efa95816f82e8bde6f84fed",
     "sources": [
       {
         "slug": "baby-bulldogs-at-the-playground",
@@ -110,7 +110,7 @@
         "title": "Wise Owl’s Library Day",
         "pages": 5,
         "start": 22,
-        "sha256": "2b777d55a47b9025c3cd25f5598d537c2aa7559a8aa8ed81a8e8f55f7629a214"
+        "sha256": "2b5f4c5f63d8d6f12a34d5b740d9fd19ba78dcae62563cfd2073e2d23249f504"
       },
       {
         "slug": "centi-peeds-garden-race",

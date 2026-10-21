@@ -211,6 +211,10 @@
   var prevBtn = null;
   var nextBtn = null;
   var lastFocus = null;
+  function fitBar() {
+    if (!bar || bar.hidden) return;
+    document.documentElement.style.setProperty('--reader-bar-space', (bar.offsetHeight + 24) + 'px');
+  }
 
   function show(i) {
     stop();
@@ -248,6 +252,8 @@
     bar.appendChild(prevBtn); bar.appendChild(label); bar.appendChild(nextBtn); bar.appendChild(close);
     if (window.SnackPackReading) window.SnackPackReading.addTextControl(bar);
     document.body.appendChild(bar);
+    if (window.ResizeObserver) new ResizeObserver(fitBar).observe(bar);
+    window.addEventListener('resize', fitBar);
   }
 
   function onKey(e) {
@@ -280,6 +286,7 @@
     var fromHash = cards.findIndex ? cards.findIndex(function (c) { return "#" + c.id === location.hash; }) : -1;
     document.body.classList.add("reader-mode");
     bar.hidden = false;
+    fitBar();
     show(fromHash > -1 ? fromHash : 0);
     document.addEventListener("keydown", onKey);
     document.addEventListener("touchstart", onTouchStart, { passive: true });

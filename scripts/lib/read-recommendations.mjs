@@ -14,8 +14,10 @@ export function nextChoices(shelf, slug, collections = []) {
     choices.push({book:next,label}); excluded.add(next.slug);
   }
   const appropriate = b => !book.age || !b.age || (b.age[0] <= book.age[1] && b.age[1] >= book.age[0]);
-  const wider = ordered.find(b => !excluded.has(b.slug) && b.group !== book.group && !/^stage-/.test(b.group) && b.group !== 'trail' && appropriate(b)) ||
-    ordered.find(b => !excluded.has(b.slug) && appropriate(b));
-  if (wider) choices.push({book:wider,label:'Explore another book · read together'});
+  const eligible = ordered.filter(b => !excluded.has(b.slug) && b.group !== book.group && !/^stage-/.test(b.group) && b.group !== 'trail' && appropriate(b));
+  // Stable variety uses the source shelf position, without random or personal
+  // history. A single first-match fallback sent most stories to the same book.
+  const wider = eligible.length ? eligible[index % eligible.length] : ordered.find(b => !excluded.has(b.slug) && appropriate(b));
+  if (wider) choices.push({book:wider,label:wider.group === 'numbers' ? 'Explore a number story · read together' : 'Explore another book · read together'});
   return choices;
 }

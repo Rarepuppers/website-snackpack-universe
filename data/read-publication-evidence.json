@@ -1,5 +1,5 @@
 {
-  "reviewed": "2026-10-20",
+  "reviewed": "2026-10-21",
   "books": [
     {
       "slug": "animal-architects",
@@ -99,13 +99,14 @@
         "snackpack-4-math-arithmetic/assets/book-page-images/parcel-6.webp": "bd295c6fc7d309d8ac98cb97e353e9132e29cb4779060f1e0444612581fc647f",
         "snackpack-4-math-arithmetic/assets/book-page-images/parcel-7.webp": "0874afc0412b2be560b192e0725c38fed95e693b0a39ca590abced36e22d2980",
         "snackpack-4-math-arithmetic/assets/book-page-images/parcel-8.webp": "589e59e3e39f103c287b3ccdcb2ccd6085170863c951e3edd23d5d278982f15e",
-        "snackpack-4-math-arithmetic/assets/book-page-images/parcel-9.webp": "a88042b9210fdd9dcb9b77f1adec5db8b4ce3326245a62de86619498c565b68c"
+        "snackpack-4-math-arithmetic/assets/book-page-images/parcel-9.webp": "a88042b9210fdd9dcb9b77f1adec5db8b4ce3326245a62de86619498c565b68c",
+        "snackpack-4-math-arithmetic/assets/book-covers/biscuit-bouncer-parcel-parade.webp": "afd132c0db0ecf71ab9407086f6256e2e9b61aa2bf9ac6ffa8404f39efb33959"
       },
       "text": [
         "Biscuit-Bouncer wakes with his tail thumping like a parade drum. He has 9 invitations for homes beside the meadow and 6 for homes beyond the creek. \"Easy!\" he barks. \"I will sprint the short road and be back before breakfast.\"",
         "At the forest gate, Ginger-Deer studies the map in silence. The bright red route is 35 metres, but a pencilled path to the creek homes adds another 27 metres. Biscuit nearly races on without noticing her raised hoof.",
-        "They follow the missing line and find a lane tucked behind silver reeds. Of the 24 letters in Biscuit's full postbag, 9 are now safe in little painted mailboxes. \"Good spotting,\" Biscuit tells Ginger. Her shy smile is brighter than the morning mist.",
-        "The creek path forks around a muddy hill. Ginger suggests two delivery teams, each carrying 8 invitations. Biscuit wants to dash ahead, but he remembers how easily the quiet lane vanished from his map. This time, he listens.",
+        "They follow the missing line and find a lane tucked behind silver reeds. After delivering the invitations, they collect a new postbag of 24 letters. Nine are now safe in little painted mailboxes. \"Good spotting,\" Biscuit tells Ginger. Her shy smile is brighter than the morning mist.",
+        "The creek path forks around a muddy hill. A fresh batch of invitations waits here. Ginger suggests two delivery teams, each carrying 8 invitations. Biscuit wants to dash ahead, but he remembers how easily the quiet lane vanished from his map. This time, he listens.",
         "A loose plank blocks the next crossing. Ginger has a 75-centimetre ribbon and Biscuit finds another 25 centimetres in his satchel. Tied together, the ribbon can mark a safe one-metre boundary while they repair the plank.",
         "Beyond the bridge are three fern paths. One is 18 metres, one is 25 metres, and one is 22 metres. Biscuit sniffs each trail while Ginger checks that the shortest one still reaches the final cottage.",
         "At the parade field, five little wagons wait without decorations. The friends have 40 ribbons and decide that every wagon should look equally splendid. Ginger ties careful bows while Biscuit holds the fluttering ends.",
@@ -145,7 +146,7 @@
         "read/biscuit-bouncers-parcel-parade/pages/page-9-r2.jpg": "0f9ea90eeda75c4a04e43e64f8b19c8432edcd797a50a2a8fce9a97d70983cb6"
       },
       "pdf": "read/biscuit-bouncers-parcel-parade/biscuit-bouncers-parcel-parade.pdf",
-      "pdf_sha256": "c0e53310e73334c407ccda0515efc673279d0edd063cc8bd495118be6ce03a4c"
+      "pdf_sha256": "c8ffd555b68ee41e8049ec979cffa85a54df84de89c13625288ccfbb14c61d96"
     },
     {
       "slug": "booklava-and-the-number-that-lost-its-place",
@@ -157,7 +158,8 @@
         "snackpack-4-math-arithmetic/assets/book-page-images/generated-landscape-booklava-place-value-ladder.webp": "d3e6fd65071d11a1837fcdb596e6933dacff34db238c2ce9ba456bf33a028d0c",
         "snackpack-4-math-arithmetic/assets/book-page-images/nest-5.webp": "3fffe9ef613e58c39e6512b7b6aa47b426f2ff7864a9f6e0d87381994c0e2d00",
         "snackpack-4-math-arithmetic/assets/book-page-images/nest-6.webp": "e5b05ee54c2f349ed6c6412f5c2a6d703aaf8b2679f3133229889546815a0111",
-        "snackpack-4-math-arithmetic/assets/book-page-images/nest-7.webp": "8b0c5af79ee5edb4cf9e3d9f2a8244e0e0bb0e76c4443b62434da2a3b0a6e84f"
+        "snackpack-4-math-arithmetic/assets/book-page-images/nest-7.webp": "8b0c5af79ee5edb4cf9e3d9f2a8244e0e0bb0e76c4443b62434da2a3b0a6e84f",
+        "snackpack-4-math-arithmetic/assets/book-covers/booklava-number-nest.webp": "5809202e84ae64f1721d8fd5d176a3ad96227a4e046608d73697b23ad45e793a"
       },
       "text": [
         "Booklava closes the library alone and hears a papery sniffle. A zero is hiding beneath the reading rug. Without it, the number 40 on the shelf label has become 4.",
@@ -173,7 +175,7 @@
         "The 4 is in the tens place. Four tens are worth 40.",
         "What number is 6 tens and 3 ones?",
         "Six tens make 60. Add 3 ones: 60 + 3 = 63.",
-        "How many tens are in 205?",
+        "Which digit is in the tens place in 205?",
         "In 205, the digits mean 2 hundreds, 0 tens, and 5 ones. The zero holds the tens place.",
         "What number has 3 hundreds, 0 tens, and 7 ones?",
         "Three hundreds are 300, zero tens add nothing, and 7 ones make 307.",
@@ -195,7 +197,7 @@
         "read/booklava-and-the-number-that-lost-its-place/pages/page-7.jpg": "d060557a0b75780f659466c96ded1a6102efca27a1832f547fdf15e4918795f5"
       },
       "pdf": "read/booklava-and-the-number-that-lost-its-place/booklava-and-the-number-that-lost-its-place.pdf",
-      "pdf_sha256": "208b577e2bc192d81a86a5413f9746df425ae108fc9f2e6c11a863f548c248f2"
+      "pdf_sha256": "9a0b3309660454d5079f0b5e380d2e534b4eca242cb8a4eaec9a551e76aecef7"
     },
     {
       "slug": "bug-in-a-cup",
@@ -332,7 +334,8 @@
         "snackpack-4-math-arithmetic/assets/book-page-images/burrow-1.webp": "fcfc022c945821e7032566dfc60a86eec2f0956bce88abbf219ccec324c0090f",
         "snackpack-4-math-arithmetic/assets/book-page-images/burrow-2.webp": "f9693e147fb8a80bb13cfbd69f7321892d098aad7ff83657a869890170eec5a5",
         "snackpack-4-math-arithmetic/assets/book-page-images/burrow-3.webp": "6eb61dae6fadd8a39ebd8fdcdc89b6ff2c26c5e4b9aa1ffd21eceadd3e0e3679",
-        "snackpack-4-math-arithmetic/assets/book-page-images/burrow-4.webp": "684b24a0e5143f3fe1e18edbc40feaa6811576e5dd5d6d8e3f03126cbd5442f0"
+        "snackpack-4-math-arithmetic/assets/book-page-images/burrow-4.webp": "684b24a0e5143f3fe1e18edbc40feaa6811576e5dd5d6d8e3f03126cbd5442f0",
+        "snackpack-4-math-arithmetic/assets/book-covers/centi-peed-below-zero-burrow.webp": "f88436eeab88ee3cfd7fc96affe1dd67ba1a24c9a3113c956cdf5fe7d6660418"
       },
       "text": [
         "Centi-Peed finds a frosted burrow beneath the roots. The entrance marker reads 3°C, but tiny firefly footprints descend seven degree-steps. \"Below zero is still somewhere,\" Sub-Zero says, drawing a glowing number line through the air.",
@@ -358,7 +361,7 @@
         "read/centi-peeds-below-zero-burrow/pages/page-4.jpg": "3bb96f2f366c70c8e5a3f3369b36070fcb87a5841a67024482dd4f3d6f3bb92b"
       },
       "pdf": "read/centi-peeds-below-zero-burrow/centi-peeds-below-zero-burrow.pdf",
-      "pdf_sha256": "8dff2c63b4723a1d0312eedcf42622d1c0618547ebcbbfc253135443fb3f95bc"
+      "pdf_sha256": "57e5dd0ce06956463248a1dd4cb740f8604c7ab5f5253ee35c4adac6f403c47a"
     },
     {
       "slug": "centi-peeds-garden-race",
@@ -910,7 +913,8 @@
         "snackpack-4-math-arithmetic/assets/book-page-images/stepping-1.webp": "1c27e19ccc7358b91d86251da29ec41f4126ac0cf306024bd7cdbdd77126c3aa",
         "snackpack-4-math-arithmetic/assets/book-page-images/stepping-2.webp": "9d2af8f17b44d7df04fdfe72bf1b85d9d38cae3f6d45eb308ab51ae8f49e4923",
         "snackpack-4-math-arithmetic/assets/book-page-images/stepping-3.webp": "2f9eec2496326f5dc5b10cc2fe7d1f3378946605163eaa08350e4248b305a8c1",
-        "snackpack-4-math-arithmetic/assets/book-page-images/stepping-4.webp": "21cc1e4db281741ea104197e6094269f7cff6c4c6bee848a8649dd97bf7ffa08"
+        "snackpack-4-math-arithmetic/assets/book-page-images/stepping-4.webp": "21cc1e4db281741ea104197e6094269f7cff6c4c6bee848a8649dd97bf7ffa08",
+        "snackpack-4-math-arithmetic/assets/book-covers/hop-tart-stepping-stone-switch.webp": "59ce4af35eff9149e58cec3d0116149b149ceb5f8676b8a9c6898e9b4bc18ca4"
       },
       "text": [
         "Hop-Tart reaches the pond as the first raindrops dimple the water. A fast current has spun every stepping stone sideways. Hop could leap across alone, but Centi-Peed needs a path with small, even gaps. Together they find three rows with four safe stones in each.",
@@ -936,7 +940,7 @@
         "read/hop-tarts-stepping-stone-switch/pages/page-4.jpg": "ce73e6f5d6ad2ffa0160a0c4050c64a01c3bde7857850fb4dce81cb2541eee2c"
       },
       "pdf": "read/hop-tarts-stepping-stone-switch/hop-tarts-stepping-stone-switch.pdf",
-      "pdf_sha256": "037169fdfc0eb8e9add4bca740a09a5dc680e08696df33f8db8d79ccf9521250"
+      "pdf_sha256": "d4aac1edbab9d4860f374aded0aa2f2143c4b5868ca4744bedce69325462bb76"
     },
     {
       "slug": "lionnaise-and-the-dragon",
@@ -1037,7 +1041,8 @@
         "snackpack-4-math-arithmetic/assets/book-page-images/market-4.webp": "2c046bd988827a9296424e2dd8f41ee7b089f5395936b30272631ddb9fd123d8",
         "snackpack-4-math-arithmetic/assets/book-page-images/market-5.webp": "89bb31ccc501b0f3c9379d4ebaf998c8fea9e83be75b32469223a4d8784d4a8d",
         "snackpack-4-math-arithmetic/assets/book-page-images/market-6.webp": "51f29afadf96ac6b0994c70ddc09959737107d0eed9191951913e2595cfe16fe",
-        "snackpack-4-math-arithmetic/assets/book-page-images/market-7.webp": "14f20e73a8c934541abd5d4adb78b577229b75d4bc6121b5c8ee05e2842c0ac5"
+        "snackpack-4-math-arithmetic/assets/book-page-images/market-7.webp": "14f20e73a8c934541abd5d4adb78b577229b75d4bc6121b5c8ee05e2842c0ac5",
+        "snackpack-4-math-arithmetic/assets/book-covers/luckybug-market-morning.webp": "0f47df75e29570591d631c0ca54aa723eae2f7bc3011ad2677282091f8bde125"
       },
       "text": [
         "Luckybug reaches Hen-Berry's stall just as a basket tips. Seven berries stop by the flowers and five roll beneath the table.",
@@ -1729,7 +1734,8 @@
         "snackpack-4-math-arithmetic/assets/book-page-images/clock-4.webp": "cc514d2b46778c6a4b60221ed52b7392ef6043a41ca3b9500bf8dcafa6077fe1",
         "snackpack-4-math-arithmetic/assets/book-page-images/clock-5.webp": "c276c64ed4ebc0a922d0b9d5e083c0bed73d1455d3b893f55d2d586270968083",
         "snackpack-4-math-arithmetic/assets/book-page-images/clock-6.webp": "f8ada2dd6767fbe0df42fe772a2ab3b77bad6122e79825a0ea261906a70baefe",
-        "snackpack-4-math-arithmetic/assets/book-page-images/clock-7.webp": "fc14faa4b8a33ce3868b8356ceebab0c872f4816a0a70c3a651a41b2cd13669b"
+        "snackpack-4-math-arithmetic/assets/book-page-images/clock-7.webp": "fc14faa4b8a33ce3868b8356ceebab0c872f4816a0a70c3a651a41b2cd13669b",
+        "snackpack-4-math-arithmetic/assets/book-covers/pork-ulele-clockwork-concert.webp": "7313f15b3e3bd418b4a6aa0767b8e4828b3ce6a1cba09360bbea9041b51bad87"
       },
       "text": [
         "Pork-ulele promises to rehearse at quarter past three. Cluck O'Clock points to the minute hand travelling one quarter around the clock.",
@@ -2188,16 +2194,17 @@
         "snackpack-4-math-arithmetic/assets/book-page-images/generated-landscape-ted-firefly-groups.webp": "2583de36da0a31badb2cf144595345c4fdc207d9c254e1dee968199f74aa1306",
         "snackpack-4-math-arithmetic/assets/book-page-images/lantern-5.webp": "357b1359080bf4041677d0f38233c5435d68b441620143240438cab6cfd7fd6e",
         "snackpack-4-math-arithmetic/assets/book-page-images/lantern-6.webp": "06f5482633dd939049c62d8ca8b0558f75c059ab02c9e41a1b37cac273d79f2d",
-        "snackpack-4-math-arithmetic/assets/book-page-images/lantern-7.webp": "36256314d4c0b8942bbbf3c4963f104d68ea87df27b1d9c77472a8fb1fd5235e"
+        "snackpack-4-math-arithmetic/assets/book-page-images/lantern-7.webp": "36256314d4c0b8942bbbf3c4963f104d68ea87df27b1d9c77472a8fb1fd5235e",
+        "snackpack-4-math-arithmetic/assets/book-covers/ted-e-bear-lantern-half.webp": "fe4f2ca99b23e0e5fe4db3a463574b662bdec6d72ba29cd272201491b29e823c"
       },
       "text": [
-        "The woodland picnic ends beneath a purple sky. Ted-E-Bear has 8 little lanterns. One path leads to Honey-Beats's cottage and the other leads to his own. \"Nobody should walk home in the dark,\" Ted says.",
+        "The woodland picnic ends beneath a purple sky. Ted-E-Bear sets out 8 little lanterns for the paths, with 6 spare lanterns waiting in his wagon. One path leads to Honey-Beats's cottage and the other leads to his own. \"Nobody should walk home in the dark,\" Ted says.",
         "At the bend, the wind blows out 2 of Honey-Beats's 4 lanterns. Ted hears a worried little hum beyond the trees and turns back.",
-        "Two lanterns are not much, but Honey-Beats holds them high. \"Small lights still count,\" she says. Ted places one lantern on each side of the narrow bridge.",
+        "Two lanterns are not much, but Honey-Beats holds them high. \"Small lights still count,\" she says. Ted moves the 2 still-glowing path lanterns to the narrow bridge, one on each side.",
         "Three fireflies settle near each lantern. Their gold-green light makes the bridge sparkle, and Honey-Beats's shoulders finally relax.",
-        "The cottage window appears at the top of the hill. Ted has 6 lanterns left in his wagon and wants both friends to carry the same number.",
+        "The cottage window appears at the top of the hill. Ted still has the 6 spare lanterns in his wagon and wants both friends to carry the same number.",
         "Honey-Beats places 3 lanterns outside. Ted places 3 inside. The cottage glows like a tiny sunrise, and the dark no longer feels so large.",
-        "Before Ted leaves, Honey-Beats gives him half of 4 honey biscuits for his walk. \"You came back for me,\" she says. Ted smiles. \"That is what friends do.\" Both paths shine all the way home."
+        "Before Ted leaves, Honey-Beats gives him half of 4 honey biscuits for his walk. \"You came back for me,\" she says. Ted smiles. \"That is what friends do.\" They relight the path lanterns for the walk home."
       ],
       "expected": [
         "If Ted shares 8 lanterns equally between 2 paths, how many lanterns light each path?",
@@ -2226,7 +2233,7 @@
         "read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/page-7.jpg": "a1e437b338457558311a05d4d681442673c3659c19a8aac1144301332080bafd"
       },
       "pdf": "read/ted-e-bear-and-the-lantern-that-needed-a-half/ted-e-bear-and-the-lantern-that-needed-a-half.pdf",
-      "pdf_sha256": "55c6570cdf93968dfe3f70d8d03b9ad736b09b0323850a9cfff10604bae1b5c3"
+      "pdf_sha256": "67de9775ed31e628988505f85d846d144277d941e0c7602ae263d5a885b9b9f2"
     },
     {
       "slug": "ted-e-bear-and-the-pocketful-of-sounds",
@@ -2246,7 +2253,7 @@
         "Corgi-on-the-Cob sits beside Ted without telling him to hurry. His tail gives one soft bark-pop against the basket. \"I cannot carry the words for you,\" Corgi says, \"but I can listen for the first sound.\" Ted folds the card and puts it safely in his pocket.",
         "They walk the quiet path before the guests arrive. Pinecones lie under the pines, and pebbles press into the mud. \"Pinecone. Pine. Pebble. Path,\" Ted says. Four words begin with the same little puff of air. He tucks the P sound into an imaginary pocket.",
         "At the bridge, leaves lift and land while the creek makes a low, laughing sound. Ted listens. \"Leaf. Lift. Land. Low.\" The L sound feels smooth and light on his tongue. Into the other pocket it goes. The card no longer feels quite so heavy.",
-        "A breeze flips the picnic sign, and Ted spots a word beginning with H. He opens his mouth, but the sound is only warm air. \"It is hiding,\" he says. Corgi shakes his head. \"Not hiding. H is a hush sound. Quiet sounds still count.\" Ted pockets the gentle breath.",
+        "A breeze flips the picnic sign, and Ted spots a word beginning with H. He opens his mouth, but the sound is only warm air. \"It is hiding,\" he says. Corgi shakes his head. \"Not hiding. H is a soft breath, as at the start of hello. Quiet sounds still count.\" Ted pockets the gentle breath.",
         "Footsteps gather beyond the gate. Ted's tummy flips. He could slip behind the bun table and nobody would be angry. Then Corgi touches the pocket holding P, and Ted touches the pocket holding L. He has not learned every word. He has learned how to begin one.",
         "Ted unfolds the card. The first word is WELCOME. \"W,\" he whispers. Wind. Warm. Welcome. His voice wobbles on the second word, so he stops, breathes, and begins it again. Nobody laughs. Corgi's ears point towards every sound as if each one matters-because it does.",
         "The gate swings open. Ted reads the final line slowly, with pauses in all the right places and one pause that was not planned. Then the picnic erupts in cheers. His voice was never too small. It was exactly big enough to carry one sound, then another, all the way to the end."
@@ -2264,7 +2271,7 @@
         "read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-8.jpg": "729d8f8f0d2f56ec641715039ca6e60d8786576d80654cb5e192693b6f174b55"
       },
       "pdf": "read/ted-e-bear-and-the-pocketful-of-sounds/ted-e-bear-and-the-pocketful-of-sounds.pdf",
-      "pdf_sha256": "f20a8c8d98bf8fb3cc816e7db20ef7487834b6f7575c58135cb8b05735bd1519"
+      "pdf_sha256": "f5173e1f34933c303dc2d78977f8ab7e3391dfd8eb55f518153114caf3848c93"
     },
     {
       "slug": "ted-e-bears-blanket-fort",
@@ -2449,7 +2456,8 @@
         "snackpack-4-math-arithmetic/assets/book-page-images/mural-4.webp": "963349bb79182bf8be0ffcbe7648bc829530e95f779127bef095ee71c6f541a6",
         "snackpack-4-math-arithmetic/assets/book-page-images/y6-mural-rain.webp": "c884b608081b66d38114c8cffef5906fe1af18a4040c0c82227edb55fb31c959",
         "snackpack-4-math-arithmetic/assets/book-page-images/mural-6.webp": "c703afd96901b8c1b5449a17562aa6b3bba18db38421ea959b01727f8d049a9e",
-        "snackpack-4-math-arithmetic/assets/book-page-images/y6-mural-unveiling.webp": "fa87c79239c05d4dbba166230da28600f7d67cc88e51987abf79d4d34098e995"
+        "snackpack-4-math-arithmetic/assets/book-page-images/y6-mural-unveiling.webp": "fa87c79239c05d4dbba166230da28600f7d67cc88e51987abf79d4d34098e995",
+        "snackpack-4-math-arithmetic/assets/book-covers/vincent-van-mouse-mural-in-proportion.webp": "ed416e16c6e4ddf754b7f6c21660f29ba54fa091c9a041728c096d2e2dc928fb"
       },
       "text": [
         "The town square has one long blank wall, and the Harvest Festival is in three days. Vincent Van Mouse unrolls his sketch: a sunset over the hills, small enough to fit in his paw. \"Every centimetre on my sketch becomes 25 centimetres on the wall,\" he explains. Stripe-Scout whistles. Sail-Affe stretches her neck to see the top of the wall.",
@@ -2496,7 +2504,8 @@
         "snackpack-4-math-arithmetic/assets/book-page-images/factors-1.webp": "84e179e97bece8a5622fe17f3970622eec8edf3ba05f1e27d69368307b3a24e5",
         "snackpack-4-math-arithmetic/assets/book-page-images/factors-2.webp": "0cb8a80171a56ade9f4c2d5ead970cf394fa00ce03cf09b2aea1fc289d936369",
         "snackpack-4-math-arithmetic/assets/book-page-images/factors-3.webp": "ea6bcceb09f24886f334570032c0397f465916e107f87d31b3c5864bd30787fd",
-        "snackpack-4-math-arithmetic/assets/book-page-images/factors-4.webp": "bfea953df6e91c561a2a4191122d0df424105e4a68b72e783c5fb9897f714ab5"
+        "snackpack-4-math-arithmetic/assets/book-page-images/factors-4.webp": "bfea953df6e91c561a2a4191122d0df424105e4a68b72e783c5fb9897f714ab5",
+        "snackpack-4-math-arithmetic/assets/book-covers/wise-owl-festival-of-factors.webp": "82e2044031f86ef91a7e5de9c3003b15720a1cd838767ae72fd41a0e2549129c"
       },
       "text": [
         "Wise Owl hangs 24 lantern flags for the reading festival. Booklava tries one long row, but the tall gateposts hide half the display. Quill-Berry suggests testing equal rectangles until every visitor can see.",
@@ -2537,7 +2546,7 @@
         "Wise Owl opens the library and finds Quill-Berry waiting outside with a folded page. \"I wrote something,\" Quill whispers, \"but I am not sure I can share it.\"",
         "A gust slips through the door and carries the poem beneath a table. Quill-Berry freezes, certain everyone will laugh if they read it.",
         "Meow-inara finds the page but does not read it. She returns it in the quiet corner and asks, \"Would you like one friendly listener?\"",
-        "Quill-Berry reads her story to two friends, then four, then the whole afternoon circle. Wise Owl adds a blank page to the display for whatever Quill writes next."
+        "Quill-Berry reads her poem to two friends, then four, then the whole afternoon circle. Wise Owl adds a blank page to the display for whatever Quill writes next."
       ],
       "expected": [
         "Why did returning the poem unread help Quill-Berry?",
@@ -2567,7 +2576,7 @@
         "read/wise-owls-library-day/pages/wise-owl-library-day-p4-r2.jpg": "03519544e4635a72a4a99645dbf8b25000454d113650cfb0777e3f4872bac5fb"
       },
       "pdf": "read/wise-owls-library-day/wise-owls-library-day.pdf",
-      "pdf_sha256": "2b777d55a47b9025c3cd25f5598d537c2aa7559a8aa8ed81a8e8f55f7629a214"
+      "pdf_sha256": "2b5f4c5f63d8d6f12a34d5b740d9fd19ba78dcae62563cfd2073e2d23249f504"
     }
   ]
 }

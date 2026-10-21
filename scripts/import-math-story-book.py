@@ -27,6 +27,7 @@ build-breadcrumbs.mjs, build-play-links.mjs, build-go-links.mjs, build-sitemap.m
 """
 import html
 import os
+import json, shutil, hashlib
 import re
 import sys
 
@@ -238,18 +239,21 @@ def render(book_id, book, ed, template):
     url = "%s/read/%s/" % (SITE, slug)
     title = book["title"].replace("'", "’")
     cards = []
+    models = json.load(open(os.path.join(APP, 'constants', 'storyTeachingModels.json'), encoding='utf-8'))
     for i, p in enumerate(book["pages"], 1):
         choices = "".join('<li>%s</li>' % esc(c) for c in p["choices"])
+        model = models.get(p['id'])
+        model_html = ('<figure class="story-teaching-model" data-model-id="%s" data-print-model="./print-models/page-%d-r1.jpg"><img src="./pages/model-%s-r1.png" alt="%s" width="1200" height="600"><figcaption>%s</figcaption></figure>' % (p['id'], i, p['id'], esc(model['alt']), esc(model['instruction']))) if model else ''
         cards.append(
             '<article class="story-page-card" id="page-%d"><picture><source srcset="./pages/%s.webp" type="image/webp">'
             '<img src="./pages/%s.jpg" alt="%s" loading="lazy" width="1200" height="800"></picture>'
             '<div class="story-page-copy"><span>Page %d of %d · %s</span><p>%s</p>'
-            '<div class="math-question"><p class="math-q"><strong>Try it:</strong> %s</p>'
+            '%s<div class="math-question"><p class="math-q"><strong>Try it:</strong> %s</p>'
             '<ul class="math-choices" data-answer="%s" aria-label="Choices">%s</ul>'
             '<details class="story-answer math-answer"><summary>Show the answer</summary><p><strong>%s.</strong> %s</p></details>'
             '</div></div></article>' % (
                 i, page_name(ed, i), page_name(ed, i), esc(ed["alts"][i - 1]), i, n, esc(p["title"]), esc(p["body"].replace("'", "’")),
-                esc(p["prompt"].replace("'", "’")), esc(p["answer"]), choices, esc(p["answer"]),
+                model_html, esc(p["prompt"].replace("'", "’")), esc(p["answer"]), choices, esc(p["answer"]),
                 esc(p["explanation"].replace("'", "’"))))
     ld = ('{"@context":"https://schema.org","@type":"Book","name":%s,"author":{"@type":"Organization","name":"SnackPack Studios"},'
           '"isAccessibleForFree":true,"educationalLevel":%s,"learningResourceType":"Illustrated maths story","about":%s,'
@@ -337,11 +341,36 @@ def main():
             continue
         d = os.path.join(ROOT, "read", ed["slug"], "pages")
         os.makedirs(d, exist_ok=True)
-        save_jpg(cover, os.path.join(d, "cover.jpg"), (1024, 1536))
+        save_jpg(cover, os.path.join(d, "cover-r2.jpg" if book_id == 'hop-tart-stepping-stone-switch' else "cover.jpg"), (1024, 1536))
         for i, f in enumerate(files, 1):
             save_jpg(f, os.path.join(d, page_name(ed, i) + ".jpg"), (1200, 800))
-        open(os.path.join(ROOT, "read", ed["slug"], "index.html"), "w", encoding="utf-8", newline="").write(
-            render(book_id, book, ed, template))
+        models = json.load(open(os.path.join(APP, 'constants', 'storyTeachingModels.json'), encoding='utf-8'))
+        delivery_file = os.path.join(ROOT, 'data', 'read-model-delivery.json')
+        delivery = json.load(open(delivery_file, encoding='utf-8')) if os.path.exists(delivery_file) else []
+        delivery = [r for r in delivery if r['slug'] != ed['slug']]
+        for i, p in enumerate(book['pages'], 1):
+            if p['id'] not in models:
+                continue
+            model = models[p['id']]
+            model_file = os.path.join(APP, 'assets', 'story-models', p['id']+'.png')
+            web = os.path.join(d, 'model-'+p['id']+'-r1.png')
+            shutil.copyfile(model_file, web)
+            scene = Image.open(os.path.join(d, page_name(ed,i)+'.jpg')).convert('RGB')
+            diagram = Image.open(model_file).convert('RGB')
+            diagram.thumbnail((1200,600),Image.LANCZOS)
+            print_image = Image.new('RGB',(1200,800+diagram.height),'#fff9ed')
+            print_image.paste(scene,(0,0))
+            print_image.paste(diagram,((1200-diagram.width)//2,800))
+            print_dir = os.path.join(ROOT,'read',ed['slug'],'print-models')
+            os.makedirs(print_dir,exist_ok=True)
+            print_file = os.path.join(print_dir,'page-%d-r1.jpg'%i)
+            print_image.save(print_file,'JPEG',quality=94,optimize=True)
+            delivery.append({'slug':ed['slug'],'page':i,'id':p['id'],'model':model,'image':os.path.relpath(web,ROOT).replace('\\','/'),'sha256':hashlib.sha256(open(web,'rb').read()).hexdigest(),'print':os.path.relpath(print_file,ROOT).replace('\\','/'),'print_sha256':hashlib.sha256(open(print_file,'rb').read()).hexdigest()})
+        open(delivery_file,'w',encoding='utf-8').write(json.dumps(sorted(delivery,key=lambda r:r['id']),indent=2)+'\n')
+        rendered = render(book_id, book, ed, template)
+        if book_id == 'hop-tart-stepping-stone-switch':
+            rendered = rendered.replace('./pages/cover.webp','./pages/cover-r2.webp').replace('./pages/cover.jpg','./pages/cover-r2.jpg')
+        open(os.path.join(ROOT, "read", ed["slug"], "index.html"), "w", encoding="utf-8", newline="").write(rendered)
 
 
 if __name__ == "__main__":

@@ -97,7 +97,7 @@ function parseBooks() {
 }
 
 function preparation(book) {
-  return `<aside class="read-preparation" id="reading-preparation"><h2>Before reading together</h2><p>${esc(book.parentNote)}</p><p>Prepare tricky words: ${esc(book.trickyWords.join(', ') || 'none')}. Words needing an extra skill: ${esc(book.bridgeWords.join(', ') || 'none')}.</p></aside>`;
+  return `<aside class="read-preparation" id="reading-preparation"><h2>Before reading together</h2><p>Prepare tricky words: ${esc(book.trickyWords.join(', ') || 'none')}. Words needing an extra skill: ${esc(book.bridgeWords.join(', ') || 'none')}.</p><details><summary>Adult preparation and reading support</summary><p>${esc(book.parentNote)}</p></details></aside>`;
 }
 function buildHtml(book) {
   const existing = path.join(OUT_ROOT, book.id, "index.html");
